@@ -1,0 +1,23 @@
+{
+  "extends": "./.svelte-kit/tsconfig.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": [
+      "./node_modules/network-information-types"
+    ],
+    "resolveJsonModule": true,
+    "rootDirs": [
+      ".",
+      "./.svelte-kit/types",
+      "./$houdini/types"
+    ],
+    "skipLibCheck": true,
+    "strict": true
+  },
+  "exclude": [
+    "./node_modules/**",
+    "./.svelte-kit/[!ambient.d.ts]**",
+    "./src/service-worker/index.ts"
+  ],
+}

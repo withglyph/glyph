@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "esnext",
+      "webworker"
+    ],
+    "types": [
+      "@sveltejs/kit"
+    ],
+    "strict": true
+  },
+  "include": [
+    "./**/*.ts"
+  ]
+}
