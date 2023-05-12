@@ -30,19 +30,21 @@
   <Wordmark class="w-40 self-center text-brand-500" />
 </div>
 
-<form class="mt-12 w-80 space-y-4" use:form>
-  <FormField name="email" label="이메일">
-    <TextInput class="w-full" />
-  </FormField>
+<form class="mt-8 w-80" use:form>
+  <div class="space-y-4">
+    <FormField name="email" label="이메일">
+      <TextInput class="w-full" />
+    </FormField>
 
-  <FormField name="password" label="비밀번호">
-    <PasswordInput class="w-full" />
-    <Link class="text-xs font-medium text-blue-500" href="">
-      비밀번호를 잊으셨나요?
-    </Link>
-  </FormField>
+    <FormField name="password" label="비밀번호">
+      <PasswordInput class="w-full" />
+      <Link class="text-xs font-medium text-blue-500" href="">
+        비밀번호를 잊으셨나요?
+      </Link>
+    </FormField>
+  </div>
 
-  <Button class="w-full" type="submit">로그인</Button>
+  <Button class="mt-8 w-full" type="submit">로그인</Button>
 </form>
 
 <div class="mt-2 text-xs text-gray-500">

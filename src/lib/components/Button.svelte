@@ -9,8 +9,6 @@
   export let disabled = false;
   export let loading = false;
 
-  let showSpinner = false;
-
   const { form } = getFormContext();
   const { isSubmitting } = form ?? {};
 
