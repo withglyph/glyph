@@ -1,6 +1,6 @@
 <script lang="ts">
   import clsx from 'clsx';
-  import { getFormField } from './context';
+  import { getFormContext } from '$lib/form';
   import type { HTMLInputAttributes } from 'svelte/elements';
 
   export let name: HTMLInputAttributes['name'] = undefined;
@@ -10,7 +10,8 @@
 
   type $$Props = HTMLInputAttributes;
 
-  const field = getFormField();
+  const { field } = getFormContext();
+
   if (field) {
     name = field.name;
   }
@@ -26,7 +27,7 @@
     id={name}
     {name}
     class={clsx(
-      'rounded px-4 py-2 border transition hover:border-gray-300 focus:border-brand-300',
+      'rounded px-4 py-2 border transition enabled:(hover:border-gray-300 focus:border-brand-300 aria-[invalid]:border-red-500) disabled:opacity-50',
       _class,
       'left-icon' in $$slots && 'pl-10',
       'right-icon' in $$slots && 'pr-10'

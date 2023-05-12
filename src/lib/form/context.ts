@@ -6,8 +6,10 @@ import type {
   SetupCurrentForm,
 } from '@felte/core';
 
-const key = Symbol();
-const keys = [
+const formKey = Symbol();
+const fieldKey = Symbol();
+
+const contextKeys = [
   'data',
   'errors',
   'warnings',
@@ -20,20 +22,33 @@ const keys = [
 ] satisfies (keyof Form<Obj>)[];
 
 type Form<T extends Obj> = SetupCurrentForm<T> | MountedCurrentForm<T>;
-type Context<T extends Obj> = Pick<Form<T>, (typeof keys)[number]>;
+type FormContext = Pick<Form<Obj>, (typeof contextKeys)[number]>;
+
+type FieldContext = {
+  name: string;
+};
 
 export const context = <T extends Obj>(): Extender<T> => {
   return (currentForm) => {
     const context = Object.fromEntries(
-      Object.entries(currentForm).filter(([key]) => keys.includes(key as never))
+      Object.entries(currentForm).filter(([key]) =>
+        contextKeys.includes(key as never)
+      )
     );
 
-    setContext(key, context);
+    setContext(formKey, context);
 
     return {};
   };
 };
 
-export const getForm = <T extends Obj>() => {
-  return getContext<Context<T> | undefined>(key);
+export const setFormField = (context: FieldContext) => {
+  setContext(fieldKey, context);
+};
+
+export const getFormContext = () => {
+  return {
+    form: getContext<FormContext | undefined>(formKey),
+    field: getContext<FieldContext | undefined>(fieldKey),
+  };
 };

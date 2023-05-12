@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { getForm } from './context';
+  import { getFormContext } from '$lib/form';
 
   let errorFor: string;
   export { errorFor as for };
   export let type: 'error' | 'warning' = 'error';
 
-  const form = getForm();
+  const { form } = getFormContext();
   if (!form) {
     throw new Error('Validation must be used within a Form');
   }

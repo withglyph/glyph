@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { FormValidationMessage } from '$lib/form';
-  import { setFormField } from './context';
+  import { setFormField } from '$lib/form';
+  import FormValidationMessage from './FormValidationMessage.svelte';
 
   export let name: string;
   export let label: string;
