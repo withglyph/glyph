@@ -1,5 +1,6 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import { getFormField } from './context';
   import type { HTMLInputAttributes } from 'svelte/elements';
 
   export let name: HTMLInputAttributes['name'] = undefined;
@@ -8,6 +9,11 @@
   export { _class as class };
 
   type $$Props = HTMLInputAttributes;
+
+  const field = getFormField();
+  if (field) {
+    name = field.name;
+  }
 </script>
 
 <div class="relative">
