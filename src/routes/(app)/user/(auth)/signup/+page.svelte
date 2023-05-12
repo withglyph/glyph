@@ -2,8 +2,8 @@
   import { goto } from '$app/navigation';
   import { graphql } from '$houdini';
   import { Button, Helmet, Link } from '$lib/components';
-  import { PasswordInput, TextInput } from '$lib/components/forms';
-  import { createMutationForm, FormValidationMessage } from '$lib/form';
+  import { FormField, PasswordInput, TextInput } from '$lib/components/forms';
+  import { createMutationForm } from '$lib/form';
   import { refreshAll } from '$lib/houdini';
   import { SignupInputSchema } from '$lib/validations';
 
@@ -27,53 +27,20 @@
 
 <div class="text-2xl font-bold">새 계정 만들기</div>
 
-<form class="w-80" use:form>
-  <div class="my-8 space-y-4">
-    <div>
-      <div class="mb-1 flex justify-between">
-        <label class="text-sm font-medium text-gray-700" for="email">
-          이메일
-        </label>
-        <FormValidationMessage for="email" let:message>
-          <div class="flex items-center gap-1 text-xs text-red-500">
-            <span class="i-lc-alert-circle" />
-            {message}
-          </div>
-        </FormValidationMessage>
-      </div>
-      <TextInput name="email" class="w-full" />
-    </div>
+<form class="mt-4 w-80 space-y-4" use:form>
+  <FormField name="email" label="이메일">
+    <TextInput class="w-full" />
+  </FormField>
 
-    <div>
-      <div class="mb-1 flex justify-between">
-        <label class="text-sm font-medium text-gray-700" for="password">
-          비밀번호
-        </label>
-        <FormValidationMessage for="password" let:message>
-          <div class="flex items-center gap-1 text-xs text-red-500">
-            <span class="i-lc-alert-circle" />
-            {message}
-          </div>
-        </FormValidationMessage>
-      </div>
-      <PasswordInput name="password" class="w-full" />
-    </div>
+  <FormField name="password" label="비밀번호">
+    <PasswordInput class="w-full" />
+  </FormField>
 
-    <div>
-      <div class="mb-1 flex justify-between">
-        <label class="text-sm font-medium" for="name">닉네임</label>
-        <FormValidationMessage for="name" let:message>
-          <div class="flex items-center gap-1 text-xs text-red-500">
-            <span class="i-lc-alert-circle" />
-            {message}
-          </div>
-        </FormValidationMessage>
-      </div>
-      <TextInput name="name" class="w-full" />
-    </div>
-  </div>
+  <FormField name="name" label="닉네임">
+    <TextInput class="w-full" />
+  </FormField>
 
-  <Button class="mt-4 w-full" type="submit">가입하기</Button>
+  <Button class="w-full" type="submit">가입하기</Button>
 </form>
 
 <div class="mt-2 text-xs text-gray-500">
