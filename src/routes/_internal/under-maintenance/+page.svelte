@@ -1,16 +1,34 @@
 <script lang="ts">
-  import ForbiddenIcon from '$assets/status-codes/403.svg?component';
+  import Wordmark from '$assets/branding/wordmark.svg?component';
 </script>
 
-<div class="relative flex grow flex-col center">
-  <ForbiddenIcon class="w-25" />
-
-  <p class="mt-4 text-sm font-bold">서비스 점검이 진행중이에요</p>
-
-  <a
-    class="mt-8 text-sm text-sky-500 underline underline-offset-8"
-    href="https://twitter.com/primnow"
-  >
-    공식 트위터 둘러보기
+<div class="mx-auto my-12 flex grow flex-col items-center justify-between">
+  <a href="/">
+    <Wordmark class="h-6 text-black" />
   </a>
+
+  <section class="flex flex-col center text-center">
+    <svg class="w-25" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="m53.138 19.753 1.943-.941a6.07 6.07 0 0 0 3.262-4.064l2.37-9.81a1 1 0 0 0-1.206-1.206L49.7 6.1a6.078 6.078 0 0 0-4.07 3.266c-.535 1.015-1.127 2.644-1.977 3.4L32.072 24.349l-1.325-1.326C34.897 11.322 22.531.27 11.343 5.678a1.007 1.007 0 0 0-.275 1.608l9.848 9.85-1.191 3.576-3.576 1.191-9.85-9.848a1.007 1.007 0 0 0-1.608.274c-4.545 9.172 2.557 20.349 12.716 20.2 1.208.144 2.897-.75 1.117.677l-12.85 12.86a3.45 3.45 0 0 0 .16 4.865l7.68 7.68a3.455 3.455 0 0 0 4.864.16L31.24 45.917a10.585 10.585 0 0 0 2.041-2.939l15.514 15.513a6.159 6.159 0 0 0 8.71-8.71l-17.41-17.409c.576-.419 12.68-13.076 13.042-12.62zM29.824 44.507l-12.86 12.85a1.462 1.462 0 0 1-2.035-.16l-7.68-7.68a1.455 1.455 0 0 1-.161-2.037l12.848-12.856a8.572 8.572 0 0 1 3.056-1.935l8.763 8.763a8.564 8.564 0 0 1-1.93 3.055zm26.268 6.69a4.16 4.16 0 0 1-5.882 5.881l-27.211-27.21a.997.997 0 0 0-1.098-.21A12.105 12.105 0 0 1 5.949 14.532l9.223 9.223a.998.998 0 0 0 1.023.241l4.637-1.546a.995.995 0 0 0 .632-.632l1.545-4.636a1 1 0 0 0-.241-1.024l-9.222-9.222A12.105 12.105 0 0 1 28.67 22.889a.997.997 0 0 0 .21 1.097c.01.01 2.48 2.48 2.49 2.488 4.42 4.422 20.043 20.044 24.72 24.722zm-17.41-20.238-5.196-5.196 11.576-11.576a13.568 13.568 0 0 0 2.368-3.944 4.088 4.088 0 0 1 2.736-2.198l8.219-1.985-1.988 8.224a4.08 4.08 0 0 1-2.192 2.73 13.483 13.483 0 0 0-3.94 2.363z"
+      />
+    </svg>
+
+    <h2 class="mt-4 text-2xl font-semibold">프림은 지금 점검중이에요.</h2>
+
+    <p class="mt-4 text-sm text-gray-500">
+      서비스 점검이 진행중이에요.
+      <br />
+      잠시 후 다시 시도해주세요!
+    </p>
+
+    <a
+      class="mt-4 text-sm text-sky-500 underline-offset-2 hover:underline"
+      href="https://twitter.com/primnow"
+    >
+      @primnow
+    </a>
+  </section>
+
+  <div />
 </div>
