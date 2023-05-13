@@ -27,7 +27,7 @@
 <Helmet title="로그인" />
 
 <div class="flex center">
-  <Wordmark class="w-40 self-center text-brand-500" />
+  <Wordmark class="w-40 self-center text-black" />
 </div>
 
 <form class="mt-8 w-80" use:form>
