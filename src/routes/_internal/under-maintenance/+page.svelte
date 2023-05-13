@@ -14,7 +14,7 @@
       />
     </svg>
 
-    <h2 class="mt-4 text-2xl font-semibold">프림은 지금 점검중이에요.</h2>
+    <h2 class="mt-4 text-2xl font-semibold">PRIM은 지금 점검중이에요.</h2>
 
     <p class="mt-4 text-sm text-gray-500">
       서비스 점검이 진행중이에요.
