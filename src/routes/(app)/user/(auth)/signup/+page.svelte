@@ -40,7 +40,7 @@
     <TextInput class="w-full" />
   </FormField>
 
-  <Button class="w-full" type="submit">가입하기</Button>
+  <Button class="w-full py-4" type="submit">가입하기</Button>
 </form>
 
 <div class="mt-2 text-xs text-gray-500">

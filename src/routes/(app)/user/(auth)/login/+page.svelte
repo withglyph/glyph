@@ -44,7 +44,7 @@
     </FormField>
   </div>
 
-  <Button class="mt-8 w-full" type="submit">로그인</Button>
+  <Button class="mt-8 w-full py-4" type="submit">로그인</Button>
 </form>
 
 <div class="mt-2 text-xs text-gray-500">
