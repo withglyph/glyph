@@ -13,9 +13,9 @@
       transition:fade={{ duration: 150 }}
     />
 
-    <div class="pointer-events-none absolute inset-0 flex center">
+    <div class="pointer-events-none absolute inset-0 flex center p-8">
       <div
-        class="pointer-events-auto max-w-md w-full rounded-xl bg-white shadow-xl"
+        class="pointer-events-auto max-h-full max-w-md w-full flex flex-col rounded-xl bg-white shadow-xl"
         in:fly={{ y: '10%', duration: 150 }}
         out:fade={{ duration: 150 }}
       >
@@ -32,7 +32,7 @@
           </button>
         </div>
 
-        <div class="px-6 pb-6 text-sm">
+        <div class="overflow-x-hidden overflow-y-scroll px-6 pb-6 text-sm">
           <slot />
         </div>
 
