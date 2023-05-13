@@ -22,6 +22,9 @@
 <Button on:click={mutate}>Click me</Button>
 
 <Modal bind:open>
-  <h1 class="text-xl font-semibold">Response</h1>
-  <div class="mt-4 font-mono">{data?.noop}</div>
+  <svelte:fragment slot="title">Response</svelte:fragment>
+
+  <div class="font-mono">{data?.noop}</div>
+
+  <Button slot="action" on:click={() => (open = false)}>닫기</Button>
 </Modal>
