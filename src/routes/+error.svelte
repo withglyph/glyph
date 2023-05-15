@@ -46,7 +46,7 @@
       class="mt-16 rounded-full bg-gray-800 px-4 py-2 font-medium leading-none text-white transition duration-300 active:bg-black hover:bg-gray-900"
       href="/"
     >
-      PRIM 홈으로 가기
+      펜슬 홈으로 가기
     </a>
   </section>
 

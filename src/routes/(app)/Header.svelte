@@ -33,7 +33,7 @@
 <header class="relative sticky top-0 bg-black px-4">
   <nav class="mx-auto h-16 max-w-screen-lg flex items-center">
     <a href="/">
-      <Wordmark class="h-5 text-white" />
+      <Wordmark class="h-7 text-white" />
     </a>
     <div class="grow" />
     {#if $query.me}

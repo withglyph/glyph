@@ -120,7 +120,7 @@ builder.mutationFields((t) => ({
         .executeTakeFirstOrThrow();
 
       const accessToken = await createAccessToken(sessionId);
-      context.cookies.set('prim-so', accessToken, {
+      context.cookies.set('penxle-at', accessToken, {
         expires: dayjs().add(5, 'years').toDate(),
         path: '/',
       });
@@ -132,7 +132,7 @@ builder.mutationFields((t) => ({
   logout: t.field({
     type: 'Void',
     resolve: (_, __, context) => {
-      context.cookies.delete('prim-so', { path: '/' });
+      context.cookies.delete('penxle-at', { path: '/' });
       return true;
     },
   }),
@@ -191,7 +191,7 @@ builder.mutationFields((t) => ({
           .executeTakeFirstOrThrow();
 
         const accessToken = await createAccessToken(sessionId);
-        context.cookies.set('prim-so', accessToken, {
+        context.cookies.set('penxle-at', accessToken, {
           expires: dayjs().add(5, 'years').toDate(),
           path: '/',
         });

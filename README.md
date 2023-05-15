@@ -1,4 +1,4 @@
-# PRIM
+# penxle
 
 ## 요구사항
 
@@ -27,8 +27,8 @@ $ npm install -g pnpm
 ## 환경 초기화
 
 ```bash
-$ git clone git@github.com:primitiveinc/prim.git
-$ cd prim
+$ git clone git@github.com:penxle/penxle.git
+$ cd penxle
 $ pnpm bootstrap
 
 $ doppler login

@@ -25,7 +25,7 @@ export const extendContext = async (
     ...context.locals,
   };
 
-  const accessToken = context.cookies.get('prim-so');
+  const accessToken = context.cookies.get('penxle-at');
   if (accessToken) {
     try {
       const payload = await decodeAccessToken(accessToken);

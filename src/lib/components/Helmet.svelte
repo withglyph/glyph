@@ -12,7 +12,7 @@
 </script>
 
 <svelte:head>
-  <title>{title} · PRIM</title>
+  <title>{title} | penxle</title>
   <meta content={title} property="og:title" />
   {#if description}
     <meta name="description" content={description} />
@@ -26,5 +26,5 @@
   <meta content={href} property="og:url" />
   <meta content="website" property="og:type" />
   <meta content={twitterCard} property="twitter:card" />
-  <meta content="@primnow" property="twitter:site" />
+  <meta content="@penxle" property="twitter:site" />
 </svelte:head>

@@ -4,11 +4,11 @@
 
 <footer class="bg-black px-4 py-8 text-xs">
   <nav class="mx-auto max-w-screen-lg space-y-4">
-    <Wordmark class="h-5 text-gray-400" />
+    <Wordmark class="h-8 text-gray-400" />
 
     <section class="text-gray-500">
       <div class="flex items-center gap-2">
-        <div>(주)프리미티브</div>
+        <div>(주)펜슬</div>
         <div class="h-2 border-l border-l-gray-700" />
         <div>대표: XXX</div>
         <div class="h-2 border-l border-l-gray-700" />
@@ -26,7 +26,7 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <div>이메일: support@primitive.im</div>
+        <div>이메일: support@penxle.io</div>
         <div class="h-2 border-l border-l-gray-700" />
         <div>전화: 02-123-4567</div>
       </div>
@@ -42,7 +42,7 @@
 
     <section class="flex items-center gap-1 text-gray-500">
       Made with <span class="i-ri-heart-fill" />
-      by Primitive Inc.
+      by Penxle Inc.
     </section>
   </nav>
 </footer>
