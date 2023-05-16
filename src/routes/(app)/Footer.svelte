@@ -4,11 +4,11 @@
 
 <footer class="bg-black px-4 py-8 text-xs">
   <nav class="mx-auto max-w-screen-lg space-y-4">
-    <Wordmark class="h-8 text-gray-400" />
+    <Wordmark class="h-6 text-gray-400" />
 
     <section class="text-gray-500">
       <div class="flex items-center gap-2">
-        <div>(주)펜슬</div>
+        <div>(주)펜슬컴퍼니</div>
         <div class="h-2 border-l border-l-gray-700" />
         <div>대표: XXX</div>
         <div class="h-2 border-l border-l-gray-700" />

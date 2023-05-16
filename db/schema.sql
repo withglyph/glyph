@@ -15,7 +15,7 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 -- GTID state at the beginning of the backup
 --
 
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ 'bb10e197-ef45-11ed-9c64-727f3dd41fb6:1-134';
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ 'f22adb21-f398-11ed-a5a7-0e053c9098dc:1-136';
 
 --
 -- Table structure for table `profiles`
@@ -82,7 +82,7 @@ CREATE TABLE `users` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping routines for database 'prim'
+-- Dumping routines for database 'penxle'
 --
 SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
