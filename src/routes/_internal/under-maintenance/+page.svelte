@@ -4,7 +4,7 @@
 
 <div class="mx-auto my-12 flex grow flex-col items-center justify-between">
   <a href="/">
-    <Wordmark class="h-6 text-black" />
+    <Wordmark class="h-7 text-black" />
   </a>
 
   <section class="flex flex-col center text-center">
@@ -23,7 +23,7 @@
     </p>
 
     <a
-      class="mt-4 text-sm text-sky-500 underline-offset-2 hover:underline"
+      class="mt-8 text-sm text-sky-500 underline-offset-2 hover:underline"
       href="https://twitter.com/penxle"
     >
       @penxle
