@@ -35,7 +35,7 @@
     "@playwright/test": "^1.33.0",
     "@pothos/core": "^3.30.0",
     "@pothos/plugin-dataloader": "^3.17.1",
-    "@pothos/plugin-scope-auth": "^3.19.1",
+    "@pothos/plugin-scope-auth": "^3.19.2",
     "@pothos/plugin-simple-objects": "^3.6.8",
     "@pothos/plugin-validation": "^3.9.1",
     "@svelte-kits/store": "^0.1.1",
@@ -90,7 +90,7 @@
     "svgo": "^3.0.2",
     "typescript": "^5.0.4",
     "unocss": "^0.51.13",
-    "vite": "^4.3.6",
+    "vite": "^4.3.7",
     "web-vitals": "^3.3.1",
     "zod": "^3.21.4"
   },
