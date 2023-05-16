@@ -12,7 +12,7 @@
 </script>
 
 <svelte:head>
-  <title>{title} | penxle</title>
+  <title>{title}</title>
   <meta content={title} property="og:title" />
   {#if description}
     <meta name="description" content={description} />

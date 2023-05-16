@@ -25,7 +25,7 @@
 
 <Helmet title="새 계졍 만들기" />
 
-<div class="text-2xl font-bold">새 계정 만들기</div>
+<div class="text-2xl font-bold">새 펜슬 계정 만들기</div>
 
 <form class="mt-4 w-80 space-y-4" use:form>
   <FormField name="email" label="이메일">

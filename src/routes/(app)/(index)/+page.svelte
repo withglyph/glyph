@@ -12,7 +12,7 @@
   );
 </script>
 
-<Helmet title="Index" />
+<Helmet title="펜슬 메인" />
 
 <code>{$query.greeting}</code>
 
