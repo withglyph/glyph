@@ -14,7 +14,7 @@
 
 <div class="mx-auto my-12 flex grow flex-col items-center justify-between">
   <a href="/">
-    <Wordmark class="h-7 text-black" />
+    <Wordmark class="h-5 text-black" />
   </a>
 
   <section class="flex flex-col center text-center">

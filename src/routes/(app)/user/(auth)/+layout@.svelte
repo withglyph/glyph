@@ -9,7 +9,7 @@
   />
 
   <a class="absolute left-4 top-4 z-1" href="/">
-    <Wordmark class="h-8 text-white" />
+    <Wordmark class="h-6 text-white" />
   </a>
 
   <div class="z-1 rounded-xl bg-white p-12 shadow-2xl">

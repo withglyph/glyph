@@ -45,5 +45,5 @@
 
 <div class="mt-2 text-xs text-gray-500">
   이미 계정이 있으신가요?
-  <Link class="font-bold text-blue-500" href="/user/login">로그인하기</Link>
+  <Link class="font-bold" colored href="/user/login">로그인하기</Link>
 </div>

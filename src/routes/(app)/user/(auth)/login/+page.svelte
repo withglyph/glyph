@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import Wordmark from '$assets/branding/wordmark.svg?component';
+  import Wordmark from '$assets/branding/wordmark-colored.svg?component';
   import { graphql } from '$houdini';
   import { Button, Helmet, Link } from '$lib/components';
   import { FormField, PasswordInput, TextInput } from '$lib/components/forms';
@@ -38,7 +38,7 @@
 
     <FormField name="password" label="비밀번호">
       <PasswordInput class="w-full" />
-      <Link class="text-xs font-medium text-blue-500" href="">
+      <Link class="text-xs font-medium" colored href="/user/reset-password">
         비밀번호를 잊으셨나요?
       </Link>
     </FormField>
@@ -49,7 +49,5 @@
 
 <div class="mt-2 text-xs text-gray-500">
   계정이 아직 없으신가요?
-  <Link class="font-bold text-blue-500" href="/user/signup">
-    새 계정 만들기
-  </Link>
+  <Link class="font-bold" colored href="/user/signup">새 계정 만들기</Link>
 </div>

@@ -16,7 +16,7 @@
 
 <code>{$query.greeting}</code>
 
-<div class="mt-4 flex gap-1">
+<!-- <div class="mt-4 flex gap-1">
   <div class="square-8 rounded bg-blue-50" />
   <div class="square-8 rounded bg-blue-100" />
   <div class="square-8 rounded bg-blue-200" />
@@ -56,4 +56,4 @@
   <div class="square-8 rounded bg-indigo-800" />
   <div class="square-8 rounded bg-indigo-900" />
   <div class="square-8 rounded bg-indigo-950" />
-</div>
+</div> -->
