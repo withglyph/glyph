@@ -32,7 +32,7 @@
     "@iconify-json/lucide": "^1.1.92",
     "@iconify-json/ri": "^1.1.9",
     "@iconify/utils": "^2.1.5",
-    "@playwright/test": "^1.34.1",
+    "@playwright/test": "^1.34.2",
     "@pothos/core": "^3.30.0",
     "@pothos/plugin-dataloader": "^3.17.1",
     "@pothos/plugin-scope-auth": "^3.19.2",
