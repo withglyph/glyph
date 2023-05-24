@@ -1,4 +1,6 @@
 <script lang="ts">
+  import clsx from 'clsx';
+  import { page } from '$app/stores';
   import Wordmark from '$assets/branding/wordmark-colored.svg?component';
   import { fragment, graphql } from '$houdini';
   import { refreshAll } from '$lib/houdini';
@@ -18,6 +20,9 @@
     `)
   );
 
+  $: isArtworks = $page.url.pathname.startsWith('/artworks');
+  $: isPosts = $page.url.pathname.startsWith('/posts');
+
   const logout = graphql(/* GraphQL */ `
     mutation AppLayout_Header_Logout_Mutation {
       logout
@@ -34,20 +39,25 @@
   <nav class="mx-auto max-w-screen-lg">
     <section class="h-16 flex items-center">
       <a href="/">
-        <Wordmark class="h-6 text-black" />
+        <Wordmark class="h-6" />
       </a>
-
-      <div class="mx-4 h-6 border-x" />
-      <div class="text-lg font-medium">페인트</div>
+      {#if isArtworks}
+        <div class="mx-4 h-6 border-x" />
+        <div class="text-lg font-medium">아트</div>
+      {/if}
+      {#if isPosts}
+        <div class="mx-4 h-6 border-x" />
+        <div class="text-lg font-medium">포스트</div>
+      {/if}
 
       <div class="grow" />
 
       {#if $query.me}
-        <div class="text-sm font-medium text-white">{$query.me.name}</div>
-        <div class="mx-6 h-6 border-x border-x-gray-700" />
+        <div class="text-sm font-medium">{$query.me.name}</div>
+        <div class="mx-6 h-6 border-x border-x-gray-300" />
         <div class="flex items-center gap-5">
-          <div class="i-lc-heart square-5 text-white" />
-          <div class="i-lc-bell square-5 text-white" />
+          <div class="i-lc-heart square-5" />
+          <div class="i-lc-bell square-5" />
         </div>
         <button type="button" on:click={handleLogout}>
           <img
@@ -72,15 +82,29 @@
     </section>
 
     <section class="h-16 w-full flex items-center gap-6">
-      <a class="text-xl font-semibold uppercase text-brand-500">전체</a>
       <a
-        class="text-xl font-semibold uppercase transition hover:text-gray-500"
-        href="/arts"
+        class={clsx(
+          'text-xl font-semibold transition',
+          isArtworks || isPosts ? 'hover:text-gray-500' : 'text-brand-500'
+        )}
+        href="/"
+      >
+        전체
+      </a>
+      <a
+        class={clsx(
+          'text-xl font-semibold transition',
+          isArtworks ? 'text-brand-500' : 'hover:text-gray-500'
+        )}
+        href="/artworks"
       >
         아트
       </a>
       <a
-        class="text-xl font-semibold uppercase transition hover:text-gray-500"
+        class={clsx(
+          'text-xl font-semibold transition',
+          isPosts ? 'text-brand-500' : 'hover:text-gray-500'
+        )}
         href="posts"
       >
         포스트

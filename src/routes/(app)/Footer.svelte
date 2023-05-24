@@ -22,7 +22,7 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <div>주소: 서울특별시 강남구 삼성로 212, 1동 9층</div>
+        <div>주소: 서울특별시 강남구 강남대로 1, 1층</div>
       </div>
 
       <div class="flex items-center gap-2">
