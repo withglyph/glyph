@@ -12,7 +12,12 @@
   );
 </script>
 
-<Helmet title="펜슬 메인" />
+<Helmet
+  description="창작을 즐겁게, 펜슬"
+  image="https://b.pnxl.net/static/og.png"
+  title="펜슬 메인"
+  twitterCard="summary_large_image"
+/>
 
 <code>{$query.greeting}</code>
 
