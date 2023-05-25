@@ -5,7 +5,7 @@ import preprocess from 'svelte-preprocess';
 export default {
   preprocess: preprocess(),
   kit: {
-    adapter: vercel({ runtime: 'edge', regions: ['hnd1'] }),
+    adapter: vercel({ runtime: 'edge', regions: ['icn1'] }),
     alias: {
       $assets: './src/assets',
       $houdini: './$houdini',

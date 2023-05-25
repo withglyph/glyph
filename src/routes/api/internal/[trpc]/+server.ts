@@ -4,5 +4,5 @@ export { handler as GET, handler as POST } from '$lib/server/internal/handler';
 
 export const config: Config = {
   runtime: 'nodejs18.x',
-  regions: ['hnd1'],
+  regions: ['icn1'],
 };
