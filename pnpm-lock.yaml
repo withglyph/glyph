@@ -17,8 +17,8 @@ devDependencies:
     specifier: ^1.5.1
     version: 1.5.1(graphql-yoga@3.9.1)(graphql@16.6.0)
   '@iconify-json/lucide':
-    specifier: ^1.1.92
-    version: 1.1.92
+    specifier: ^1.1.93
+    version: 1.1.93
   '@iconify-json/ri':
     specifier: ^1.1.9
     version: 1.1.9
@@ -26,8 +26,8 @@ devDependencies:
     specifier: ^2.1.5
     version: 2.1.5
   '@playwright/test':
-    specifier: ^1.34.2
-    version: 1.34.2
+    specifier: ^1.34.3
+    version: 1.34.3
   '@pothos/core':
     specifier: ^3.30.0
     version: 3.30.0(graphql@16.6.0)
@@ -53,11 +53,11 @@ devDependencies:
     specifier: ^1.18.0
     version: 1.18.0(svelte@3.59.1)(vite@4.3.8)
   '@trpc/client':
-    specifier: ^10.27.1
-    version: 10.27.1(@trpc/server@10.27.1)
+    specifier: ^10.27.3
+    version: 10.27.3(@trpc/server@10.27.3)
   '@trpc/server':
-    specifier: ^10.27.1
-    version: 10.27.1
+    specifier: ^10.27.3
+    version: 10.27.3
   '@types/node':
     specifier: ^20.2.3
     version: 20.2.3
@@ -134,11 +134,11 @@ devDependencies:
     specifier: ^3.9.1
     version: 3.9.1(graphql@16.6.0)
   houdini:
-    specifier: ^1.2.3
-    version: 1.2.3
+    specifier: ^1.2.4
+    version: 1.2.4
   houdini-svelte:
-    specifier: ^1.2.3
-    version: 1.2.3(@types/node@20.2.3)(sass@1.62.1)
+    specifier: ^1.2.4
+    version: 1.2.4(@types/node@20.2.3)(sass@1.62.1)
   husky:
     specifier: ^8.0.3
     version: 8.0.3
@@ -780,8 +780,8 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
-  /@iconify-json/lucide@1.1.92:
-    resolution: {integrity: sha512-wuzrWw992ovykJ1af829d33qoan9drb9RXGv1aLcALtVKRoFC5DkGXxS5pIxFRshCIOXOIur7mJdWC28/4/dMQ==}
+  /@iconify-json/lucide@1.1.93:
+    resolution: {integrity: sha512-CJkgc30AEY5g3dI1MU496tOM3mzrk2WiF6QHM7V6XTzsEUCUOgYDj91Vp7C7VLVcNfUpW/xGJAnS0iDtwDA4AQ==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true
@@ -940,13 +940,13 @@ packages:
     engines: {node: '>=16'}
     dev: true
 
-  /@playwright/test@1.34.2:
-    resolution: {integrity: sha512-v/LBnwzD0225q8xEv3t9DmNPX61yvNnEbiA8PoNk1fbkxApJFCWYLPpQbdVWzHaARdZD9g1PYBoOvnffortfKw==}
+  /@playwright/test@1.34.3:
+    resolution: {integrity: sha512-zPLef6w9P6T/iT6XDYG3mvGOqOyb6eHaV9XtkunYs0+OzxBtrPAAaHotc0X+PJ00WPPnLfFBTl7mf45Mn8DBmw==}
     engines: {node: '>=14'}
     hasBin: true
     dependencies:
       '@types/node': 20.2.3
-      playwright-core: 1.34.2
+      playwright-core: 1.34.3
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
@@ -1158,16 +1158,16 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /@trpc/client@10.27.1(@trpc/server@10.27.1):
-    resolution: {integrity: sha512-e9Syj6F41OHDSUg3JvT67fgoD22UbxPzYgp9Bno13NFpyeJc6vkXRlAgDc8ZuouqUPQuouJWll/I90CsuxEqvA==}
+  /@trpc/client@10.27.3(@trpc/server@10.27.3):
+    resolution: {integrity: sha512-UjGHU7/XA8l7uUd0G7bIDlLHMBy+r5Z9XKe8/6uTGEc+u//0GnZ33iCeLkp86pPKzARmUnRDfRV1BYRb4f9+Jw==}
     peerDependencies:
-      '@trpc/server': 10.27.1
+      '@trpc/server': 10.27.3
     dependencies:
-      '@trpc/server': 10.27.1
+      '@trpc/server': 10.27.3
     dev: true
 
-  /@trpc/server@10.27.1:
-    resolution: {integrity: sha512-oMTNpei0+CAet0BuDdBE9cup0SseJAOlWRhWhcTAU05rETsJnzCA5DfNkf+aP3XiAM8rMJfrTfC0Z3aeADhHaA==}
+  /@trpc/server@10.27.3:
+    resolution: {integrity: sha512-WFW4al/ceCseYvp0ZeCwcY7wcypXuA0N0hH0l/VCSk7CHMJ5N9iduVtZXcnap3GAC8FNUEdwUW2/eQQ4DRra9A==}
     dev: true
 
   /@trysound/sax@0.2.0:
@@ -2003,7 +2003,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001489
-      electron-to-chromium: 1.4.405
+      electron-to-chromium: 1.4.407
       node-releases: 2.0.12
       update-browserslist-db: 1.0.11(browserslist@4.21.5)
     dev: true
@@ -2655,8 +2655,8 @@ packages:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
     dev: true
 
-  /electron-to-chromium@1.4.405:
-    resolution: {integrity: sha512-JdDgnwU69FMZURoesf9gNOej2Cms1XJFfLk24y1IBtnAdhTcJY/mXnokmpmxHN59PcykBP4bgUU98vLY44Lhuw==}
+  /electron-to-chromium@1.4.407:
+    resolution: {integrity: sha512-5smEvFSFYMv90tICOzRVP7Opp98DAC4KW7RRipg3BuNpGbbV3N+x24Zh3sbLb1T5haGtOSy/hrBfXsWnIM9aCg==}
     dev: true
 
   /emoji-regex@8.0.0:
@@ -2667,8 +2667,8 @@ packages:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
     dev: true
 
-  /enhanced-resolve@5.14.0:
-    resolution: {integrity: sha512-+DCows0XNwLDcUhbFJPdlQEVnT2zXlCv7hPxemTz86/O+B/hCQ+mb7ydkPKiflpVraqLPCAfu7lDy+hBXueojw==}
+  /enhanced-resolve@5.14.1:
+    resolution: {integrity: sha512-Vklwq2vDKtl0y/vtwjSesgJ5MYS7Etuk5txS8VdKL4AOS1aUlD96zqIfsOSLQsdv3xgMRbtkWM8eG9XDfKUPow==}
     engines: {node: '>=10.13.0'}
     dependencies:
       graceful-fs: 4.2.11
@@ -2858,7 +2858,7 @@ packages:
       eslint-plugin-import: '*'
     dependencies:
       debug: 4.3.4
-      enhanced-resolve: 5.14.0
+      enhanced-resolve: 5.14.1
       eslint: 8.41.0
       eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.59.7)(eslint-import-resolver-node@0.3.7)(eslint-import-resolver-typescript@3.5.5)(eslint@8.41.0)
       eslint-plugin-import: 2.27.5(@typescript-eslint/parser@5.59.7)(eslint-import-resolver-typescript@3.5.5)(eslint@8.41.0)
@@ -3768,15 +3768,15 @@ packages:
       lru-cache: 7.18.3
     dev: true
 
-  /houdini-svelte@1.2.3(@types/node@20.2.3)(sass@1.62.1):
-    resolution: {integrity: sha512-L5gIUA4hk/kPVYMrYx4/UTtmC24QmsjhLfKa7id4JhGs3MyQGKvgfDfM9VgbxXnSxBW+P1E1t0AQvqZQ0Vbjbg==}
+  /houdini-svelte@1.2.4(@types/node@20.2.3)(sass@1.62.1):
+    resolution: {integrity: sha512-9vsq1Z5k0Z9URpP+/R/WjeZWxY3pFoh76jMA08rHW98GkJc7L+yWtbibO9U4RH5WC9gkZn1VxQaGiFsLIuhG+A==}
     dependencies:
       '@kitql/helper': 0.5.0
       '@sveltejs/kit': 1.18.0(svelte@3.59.1)(vite@4.3.8)
       ast-types: 0.16.1
       estree-walker: 3.0.3
       graphql: 15.8.0
-      houdini: 1.2.3
+      houdini: 1.2.4
       recast: 0.23.2
       rollup: 3.23.0
       svelte: 3.59.1
@@ -3791,8 +3791,8 @@ packages:
       - terser
     dev: true
 
-  /houdini@1.2.3:
-    resolution: {integrity: sha512-AjLP5M9sluW+EiG/8BKGS2HI4iUGsy62oSSqN+HLw5k29LBQw6CGGuLi/u4u4mylU6R+/ypMSOP9DVnVupwxcw==}
+  /houdini@1.2.4:
+    resolution: {integrity: sha512-76f9lNVpfxrk2N5CZZTOuS+5o0/4IqON/XnT2WzvcJrN6m5/pjKfNKM2cwgnNJDM8FbcmKE9dEGoAqlMVmeIEA==}
     hasBin: true
     dependencies:
       '@babel/parser': 7.21.9
@@ -5293,8 +5293,8 @@ packages:
     hasBin: true
     dev: true
 
-  /playwright-core@1.34.2:
-    resolution: {integrity: sha512-MrkgGWLANc5qthXduvIY1a/tuafROyTORVd86fwKwgoYrmnBooN/GgeZSBm7ljTLV2FCWNSXV3se7qeScKn83g==}
+  /playwright-core@1.34.3:
+    resolution: {integrity: sha512-2pWd6G7OHKemc5x1r1rp8aQcpvDh7goMBZlJv6Co5vCNLVcQJdhxRL09SGaY6HcyHH9aT4tiynZabMofVasBYw==}
     engines: {node: '>=14'}
     hasBin: true
     dev: true
