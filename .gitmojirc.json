@@ -2,5 +2,7 @@
   "autoAdd": false,
   "emojiFormat": "emoji",
   "scopePrompt": true,
+  "messagePrompt": false,
+  "capitalizeTitle": false,
   "gitmojisUrl": "https://gitmoji.dev/api/gitmojis"
 }
