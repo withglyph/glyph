@@ -3,7 +3,6 @@
   import { beforeNavigate } from '$app/navigation';
   import { updated } from '$app/stores';
   import { setupAnalytics } from '$lib/analytics';
-  import { Helmet } from '$lib/components';
   import { production } from '$lib/environment';
   import { ToastLayer } from '$lib/notification';
   import BranchIndicator from './BranchIndicator.svelte';
@@ -18,8 +17,6 @@
     }
   });
 </script>
-
-<Helmet title="펜슬" />
 
 <div class="min-h-screen flex flex-col">
   <slot />

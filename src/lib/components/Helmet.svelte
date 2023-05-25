@@ -3,8 +3,10 @@
 
   export let title: string;
   export let description: string | undefined = undefined;
-  export let image: string | undefined = undefined;
-  export let twitterCard: 'summary' | 'summary_large_image' = 'summary';
+  export let image:
+    | string
+    | { src: string; size: 'small' | 'large' }
+    | undefined = undefined;
 
   $: ({
     url: { href },
@@ -18,13 +20,19 @@
     <meta name="description" content={description} />
     <meta content={description} property="og:description" />
   {/if}
-  {#if image}
+  {#if typeof image === 'string'}
     <meta content={image} property="og:image" />
-    <meta content={image} property="twitter:image" />
+    <meta content="summary" property="twitter:card" />
+  {:else if typeof image === 'object'}
+    <meta content={image.src} property="og:image" />
+    {#if image.size === 'large'}
+      <meta content="summary_large_image" property="twitter:card" />
+    {:else}
+      <meta content="summary" property="twitter:card" />
+    {/if}
   {/if}
   <link {href} rel="canonical" />
   <meta content={href} property="og:url" />
   <meta content="website" property="og:type" />
-  <meta content={twitterCard} property="twitter:card" />
   <meta content="@penxle" property="twitter:site" />
 </svelte:head>

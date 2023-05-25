@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import Wordmark from '$assets/branding/wordmark.svg?component';
-  import { Button, Modal } from '$lib/components';
+  import { Button, Helmet, Modal } from '$lib/components';
   import { deserializeAppError, UnknownError } from '$lib/errors';
 
   let open = false;
@@ -11,6 +11,8 @@
     : new UnknownError();
   $: code = error.extra.code ?? $page.status;
 </script>
+
+<Helmet title="펜슬" />
 
 <div class="mx-auto my-12 flex grow flex-col items-center justify-between">
   <a href="/">
