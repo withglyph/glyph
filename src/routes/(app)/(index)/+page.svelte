@@ -13,9 +13,9 @@
 </script>
 
 <Helmet
-  description="창작을 즐겁게, 펜슬"
-  image={{ src: 'https://b.pnxl.net/static/og.png', size: 'large' }}
-  title="펜슬 메인"
+  description="펜슬은 개인 창작자들을 위한 자유롭고 즐거운 창작 공간이에요."
+  image={{ src: 'https://pnxl.net/static/og.png', size: 'large' }}
+  title="펜슬 - 자유롭고 즐거운 창작 공간"
 />
 
 <code>{$query.greeting}</code>
