@@ -2,7 +2,12 @@
   import { goto } from '$app/navigation';
   import { graphql } from '$houdini';
   import { Button, Helmet, Link } from '$lib/components';
-  import { FormField, PasswordInput, TextInput } from '$lib/components/forms';
+  import {
+    Checkbox,
+    FormField,
+    PasswordInput,
+    TextInput,
+  } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { refreshAll } from '$lib/houdini';
   import { SignupInputSchema } from '$lib/validations';
@@ -40,7 +45,10 @@
     <TextInput class="w-full" />
   </FormField>
 
-  <Button class="w-full py-4" type="submit">가입하기</Button>
+  <section class="pt-4 space-y-2">
+    <Checkbox name="isAgreed">펜슬 이용약관에 동의합니다.</Checkbox>
+    <Button class="w-full py-4" type="submit">가입하기</Button>
+  </section>
 </form>
 
 <div class="mt-2 text-xs text-gray-500">
