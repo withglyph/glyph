@@ -21,7 +21,7 @@
   <input
     id={name}
     {name}
-    class="relative checked:after:(square-4 i-lc-check text-white content-empty) square-5 flex appearance-none center border rounded transition checked:(border-none bg-brand-500) enabled:(aria-[invalid]:border-red-500)"
+    class="relative checked:after:(square-4 i-lc-check text-white content-empty) square-5 flex appearance-none center border rounded transition checked:(border-none bg-brand-500) enabled:(aria-[invalid]:border-red-500 hover:border-gray-300)"
     type="checkbox"
     bind:checked
     {...$$restProps}
