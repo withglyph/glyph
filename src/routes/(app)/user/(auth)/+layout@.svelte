@@ -1,9 +1,10 @@
 <script lang="ts">
   import Wordmark from '$assets/branding/wordmark.svg?component';
+  import { Image } from '$lib/components';
 </script>
 
 <main class="flex grow center">
-  <img
+  <Image
     class="pointer-events-none absolute inset-0 h-full w-full"
     src="https://picsum.photos/1920/1080"
   />
