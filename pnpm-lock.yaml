@@ -13,6 +13,9 @@ devDependencies:
   '@felte/validator-zod':
     specifier: ^1.0.13
     version: 1.0.13(zod@3.21.4)
+  '@floating-ui/dom':
+    specifier: ^1.2.8
+    version: 1.2.8
   '@graphql-yoga/plugin-graphql-sse':
     specifier: ^1.5.1
     version: 1.5.1(graphql-yoga@3.9.1)(graphql@16.6.0)
@@ -632,6 +635,16 @@ packages:
     dependencies:
       '@felte/common': 1.1.4
       zod: 3.21.4
+    dev: true
+
+  /@floating-ui/core@1.2.6:
+    resolution: {integrity: sha512-EvYTiXet5XqweYGClEmpu3BoxmsQ4hkj3QaYA6qEnigCWffTP3vNRwBReTdrwDwo7OoJ3wM8Uoe9Uk4n+d4hfg==}
+    dev: true
+
+  /@floating-ui/dom@1.2.8:
+    resolution: {integrity: sha512-XLwhYV90MxiHDq6S0rzFZj00fnDM+A1R9jhSioZoMsa7G0Q0i+Q4x40ajR8FHSdYDE1bgjG45mIWe6jtv9UPmg==}
+    dependencies:
+      '@floating-ui/core': 1.2.6
     dev: true
 
   /@graphql-tools/executor@0.0.18(graphql@16.6.0):

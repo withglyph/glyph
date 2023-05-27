@@ -25,5 +25,8 @@ export const portal: Action<HTMLElement, Parameter> = (
 
   return {
     update,
+    destroy: () => {
+      element.remove();
+    },
   };
 };
