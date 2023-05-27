@@ -1,6 +1,6 @@
 <script lang="ts">
   import { graphql } from '$houdini';
-  import { Helmet } from '$lib/components';
+  import { Helmet, Image } from '$lib/components';
   import { unwrap } from '$lib/houdini';
 
   const query = unwrap(
@@ -19,3 +19,4 @@
 />
 
 <code>{$query.greeting}</code>
+<Image src="https://pnxl.net/static/og.png" />
