@@ -3,7 +3,7 @@
   import { page } from '$app/stores';
   import Wordmark from '$assets/branding/wordmark-colored.svg?component';
   import { fragment, graphql } from '$houdini';
-  import { Avatar } from '$lib/components';
+  import { Avatar, Tooltip } from '$lib/components';
   import { refreshAll } from '$lib/houdini';
   import type { AppLayout_Header_query } from '$houdini';
 
@@ -61,7 +61,9 @@
           <div class="i-lc-bell square-5" />
         </div>
         <button class="ml-6" type="button" on:click={handleLogout}>
-          <Avatar class="square-8" src="https://picsum.photos/512/512" />
+          <Tooltip message="클릭해서 로그아웃">
+            <Avatar class="square-8" src="https://picsum.photos/512/512" />
+          </Tooltip>
         </button>
       {:else}
         <a
