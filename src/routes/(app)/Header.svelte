@@ -36,7 +36,7 @@
   };
 </script>
 
-<header class="relative sticky top-0 border-b px-4">
+<header class="relative sticky top-0 border-b bg-white px-4">
   <nav class="mx-auto max-w-screen-lg">
     <section class="h-16 flex items-center">
       <a href="/">
