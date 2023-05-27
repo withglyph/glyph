@@ -48,6 +48,7 @@ const SignupInput = builder.inputType('SignupInput', {
     email: t.string(),
     password: t.string(),
     name: t.string(),
+    isAgreed: t.boolean(),
   }),
   validate: { schema: SignupInputSchema },
 });

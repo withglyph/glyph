@@ -11,7 +11,7 @@
 
 <input
   class={clsx(
-    'relative flex w-10 aspect-2/1 p-1 rounded-full transition appearance-none bg-gray-200 justify-start checked:(bg-brand-300 justify-end) after:(rounded-full content-none bg-white h-full aspect-1/1)',
+    'relative flex w-10 aspect-2/1 p-1 rounded-full transition appearance-none bg-gray-200 justify-start checked:(bg-brand-500 justify-end) after:(rounded-full content-empty bg-white h-full aspect-1/1)',
     _class
   )}
   type="checkbox"

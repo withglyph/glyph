@@ -20,4 +20,5 @@ export const SignupInputSchema = z.object({
     .string()
     .min(1, '닉네임을 입력해주세요')
     .max(20, '닉네임은 20자를 넘을 수 없어요'),
+  isAgreed: z.boolean().refine((v) => v, '약관에 동의해주세요'),
 });

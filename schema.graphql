@@ -35,6 +35,7 @@ type Query {
 
 input SignupInput {
   email: String!
+  isAgreed: Boolean!
   name: String!
   password: String!
 }
