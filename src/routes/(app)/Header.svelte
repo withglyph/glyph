@@ -3,8 +3,7 @@
   import { page } from '$app/stores';
   import Wordmark from '$assets/branding/wordmark-colored.svg?component';
   import { fragment, graphql } from '$houdini';
-  import { Avatar, Tooltip } from '$lib/components';
-  import { refreshAll } from '$lib/houdini';
+  import UserMenu from './UserMenu.svelte';
   import type { AppLayout_Header_query } from '$houdini';
 
   let _query: AppLayout_Header_query;
@@ -15,7 +14,7 @@
     graphql(/* GraphQL */ `
       fragment AppLayout_Header_query on Query {
         me {
-          name
+          ...AppLayout_UserMenu_profile
         }
       }
     `)
@@ -23,17 +22,6 @@
 
   $: isArtworks = $page.url.pathname.startsWith('/artworks');
   $: isPosts = $page.url.pathname.startsWith('/posts');
-
-  const logout = graphql(/* GraphQL */ `
-    mutation AppLayout_Header_Logout_Mutation {
-      logout
-    }
-  `);
-
-  const handleLogout = async () => {
-    await logout.mutate(null);
-    await refreshAll();
-  };
 </script>
 
 <header class="relative sticky top-0 border-b bg-white px-4">
@@ -54,17 +42,14 @@
       <div class="grow" />
 
       {#if $query.me}
-        <div class="text-sm font-medium">{$query.me.name}</div>
         <div class="mx-6 h-6 border-x border-x-gray-300" />
         <div class="flex items-center gap-5">
           <div class="i-lc-heart square-5" />
           <div class="i-lc-bell square-5" />
         </div>
-        <button class="ml-6" type="button" on:click={handleLogout}>
-          <Tooltip message="클릭해서 로그아웃">
-            <Avatar class="square-8" src="https://picsum.photos/512/512" />
-          </Tooltip>
-        </button>
+        <div class="ml-6">
+          <UserMenu $profile={$query.me} />
+        </div>
       {:else}
         <a
           class="rounded px-4 py-2 font-semibold transition duration-300 hover:bg-gray-200"
@@ -112,3 +97,9 @@
     </section>
   </nav>
 </header>
+
+<style lang="scss">
+  .menu-item {
+    --uno: flex items-center gap-2 justify-stretch rounded m-1 px-2 py-1 text-gray-500 hover:(bg-gray-100 text-gray-700);
+  }
+</style>

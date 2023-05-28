@@ -61,7 +61,7 @@
   }
 </script>
 
-<div bind:this={targetEl} class="inline" use:hover={hovered}>
+<div bind:this={targetEl} class="inline flex center" use:hover={hovered}>
   <slot />
 </div>
 
