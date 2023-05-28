@@ -97,6 +97,3 @@
     </section>
   </nav>
 </header>
---
-
-<style lang="scss"></style>
