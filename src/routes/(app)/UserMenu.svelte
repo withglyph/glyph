@@ -1,7 +1,6 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import { tick } from 'svelte';
-  import { fade } from 'svelte/transition';
   import { fragment, graphql } from '$houdini';
   import { Avatar } from '$lib/components';
   import { refreshAll } from '$lib/houdini';
@@ -42,7 +41,7 @@
 
     const position = await computePosition(targetEl, menuEl, {
       placement: 'bottom-end',
-      middleware: [offset(8), flip(), shift({ padding: 8 })],
+      middleware: [offset(4), flip(), shift({ padding: 8 })],
     });
 
     Object.assign(menuEl.style, {
@@ -70,11 +69,10 @@
 
   <div
     bind:this={menuEl}
-    class="absolute w-60 flex flex-col rounded bg-white drop-shadow-xl"
+    class="absolute w-60 flex flex-col border rounded bg-white py-2 shadow"
     use:portal
-    in:fade|local={{ duration: 100 }}
   >
-    <div class="p-4">
+    <div class="px-4 py-2">
       <div class="font-medium">
         {$profile.name}
       </div>
@@ -83,12 +81,19 @@
       </div>
     </div>
 
-    <hr class="mx-4 mb-2" />
+    <hr class="mx-4 my-2" />
 
     <a class="menu-item" href={`/u/${$profile.handle}`}>
       <span class="i-lc-user" />
       내 프로필
     </a>
+
+    <a class="menu-item" href="/profile/switch">
+      <span class="i-lc-shuffle" />
+      프로필 전환
+    </a>
+
+    <hr class="mx-4 my-2" />
 
     <a class="menu-item" href="/settings">
       <span class="i-lc-settings" />
@@ -104,6 +109,6 @@
 
 <style lang="scss">
   .menu-item {
-    --uno: flex items-center gap-2 justify-stretch rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700);
+    --uno: flex items-center gap-2 justify-stretch select-none rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700);
   }
 </style>
