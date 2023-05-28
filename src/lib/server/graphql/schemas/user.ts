@@ -1,6 +1,7 @@
+import argon2 from 'argon2';
 import dayjs from 'dayjs';
 import { FormValidationError } from '$lib/errors';
-import { db, injectLoader } from '$lib/server/database';
+import { db } from '$lib/server/database';
 import { createAccessToken } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { LoginInputSchema, SignupInputSchema } from '$lib/validations';
@@ -10,24 +11,18 @@ import { builder } from '../builder';
  * * Types
  */
 
-export const User = builder.loadableObject('User', {
-  ...injectLoader('users'),
+builder.prismaObject('User', {
   fields: (t) => ({
     id: t.exposeString('id'),
     email: t.exposeString('email'),
   }),
 });
 
-export const Profile = builder.loadableObject('Profile', {
-  ...injectLoader('profiles'),
+builder.prismaObject('Profile', {
   fields: (t) => ({
     id: t.exposeString('id'),
     name: t.exposeString('name'),
-    handle: t.exposeString('handle'),
-    user: t.field({
-      type: User,
-      resolve: (profile) => profile.userId,
-    }),
+    user: t.relation('user'),
   }),
 });
 
@@ -58,11 +53,18 @@ const SignupInput = builder.inputType('SignupInput', {
  */
 
 builder.queryFields((t) => ({
-  me: t.field({
-    type: Profile,
+  me: t.prismaField({
+    type: 'Profile',
     nullable: true,
-    resolve: (_, __, context) => {
-      return context.session?.profileId;
+    resolve: async (query, _, __, context) => {
+      if (!context.session) {
+        return null;
+      }
+
+      return await db.profile.findUnique({
+        ...query,
+        where: { id: context.session.profileId },
+      });
     },
   }),
 }));
@@ -72,61 +74,51 @@ builder.queryFields((t) => ({
  */
 
 builder.mutationFields((t) => ({
-  login: t.field({
-    type: Profile,
+  login: t.prismaField({
+    type: 'Profile',
     args: { input: t.arg({ type: LoginInput }) },
-    resolve: async (_, { input }, context) => {
-      const user = await db
-        .selectFrom('users')
-        .select(['id', 'state', 'password'])
-        .where('email', '=', input.email)
-        .executeTakeFirst();
+    resolve: async (query, _, { input }, context) => {
+      const user = await db.user.findUnique({
+        select: { id: true, state: true, password: true },
+        where: { email: input.email.toLowerCase() },
+      });
 
-      if (!user || user.state !== 'ACTIVE' || user.password === '') {
-        await context.internalApi.hashPassword.mutate(input.password);
+      if (!user || user.state !== 'ACTIVE' || !user.password) {
+        await argon2.hash(input.password);
         throw new FormValidationError(
           'password',
           '잘못된 이메일이거나 비밀번호에요.'
         );
       }
 
-      if (
-        !(await context.internalApi.verifyPassword.mutate({
-          hash: user.password,
-          password: input.password,
-        }))
-      ) {
+      if (!(await argon2.verify(user.password, input.password))) {
         throw new FormValidationError(
           'password',
           '잘못된 이메일이거나 비밀번호에요.'
         );
       }
 
-      const profile = await db
-        .selectFrom('profiles')
-        .select('id')
-        .where('userId', '=', user.id)
-        .where('state', '=', 'PRIMARY')
-        .executeTakeFirstOrThrow();
+      const profile = await db.profile.findFirstOrThrow({
+        ...query,
+        where: { userId: user.id, order: 0 },
+      });
 
-      const sessionId = createId();
-      await db
-        .insertInto('sessions')
-        .values({
-          id: sessionId,
+      const session = await db.session.create({
+        select: { id: true },
+        data: {
+          id: createId(),
           userId: user.id,
           profileId: profile.id,
-          createdAt: new Date(),
-        })
-        .executeTakeFirstOrThrow();
+        },
+      });
 
-      const accessToken = await createAccessToken(sessionId);
+      const accessToken = await createAccessToken(session.id);
       context.cookies.set('penxle-at', accessToken, {
         expires: dayjs().add(5, 'years').toDate(),
         path: '/',
       });
 
-      return profile.id;
+      return profile;
     },
   }),
 
@@ -138,67 +130,57 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  signup: t.field({
-    type: Profile,
+  signup: t.prismaField({
+    type: 'Profile',
     args: { input: t.arg({ type: SignupInput }) },
-    resolve: async (_, { input }, context) => {
-      const existingUser = await db
-        .selectFrom('users')
-        .select('state')
-        .where('email', '=', input.email)
-        .executeTakeFirst();
+    resolve: async (query, _, { input }, context) => {
+      const existingUser = await db.user.findUnique({
+        select: { state: true },
+        where: { email: input.email.toLowerCase() },
+      });
 
       if (existingUser?.state === 'ACTIVE') {
         throw new FormValidationError('email', '이미 사용중인 이메일이에요.');
       }
 
-      return await db.transaction().execute(async (tx) => {
-        const userId = createId();
-        await tx
-          .insertInto('users')
-          .values({
-            id: userId,
-            email: input.email,
-            password: await context.internalApi.hashPassword.mutate(
-              input.password
-            ),
-            state: 'ACTIVE',
-            createdAt: new Date(),
-          })
-          .executeTakeFirstOrThrow();
-
-        const profileId = createId();
-        await tx
-          .insertInto('profiles')
-          .values({
-            id: profileId,
-            userId,
+      const { profile, session } = await db.$transaction(async (tx) => {
+        const profile = await tx.profile.create({
+          ...query,
+          data: {
+            id: createId(),
             name: input.name,
-            handle: createId(10),
-            state: 'PRIMARY',
-            createdAt: new Date(),
-          })
-          .executeTakeFirstOrThrow();
-
-        const sessionId = createId();
-        await db
-          .insertInto('sessions')
-          .values({
-            id: sessionId,
-            userId,
-            profileId,
-            createdAt: new Date(),
-          })
-          .executeTakeFirstOrThrow();
-
-        const accessToken = await createAccessToken(sessionId);
-        context.cookies.set('penxle-at', accessToken, {
-          expires: dayjs().add(5, 'years').toDate(),
-          path: '/',
+            order: 0,
+            state: 'ACTIVE',
+            user: {
+              create: {
+                id: createId(),
+                email: input.email.toLowerCase(),
+                password: await argon2.hash(input.password),
+                state: 'ACTIVE',
+              },
+            },
+          },
         });
 
-        return profileId;
+        const session = await tx.session.create({
+          select: { id: true },
+          data: {
+            id: createId(),
+            userId: profile.userId,
+            profileId: profile.id,
+          },
+        });
+
+        return { profile, session };
       });
+
+      const accessToken = await createAccessToken(session.id);
+      context.cookies.set('penxle-at', accessToken, {
+        expires: dayjs().add(5, 'years').toDate(),
+        path: '/',
+      });
+
+      return profile;
     },
   }),
 }));
