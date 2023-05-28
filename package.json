@@ -82,7 +82,7 @@
     "network-information-types": "^0.1.1",
     "postcss": "^8.4.23",
     "prettier": "^2.8.8",
-    "prettier-plugin-svelte": "^2.10.0",
+    "prettier-plugin-svelte": "^2.10.1",
     "radash": "^10.8.1",
     "sass": "^1.62.1",
     "svelte": "^3.59.1",
