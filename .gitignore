@@ -2,7 +2,6 @@
 node_modules
 
 /$houdini
-/$kysely
 /.svelte-kit
 /.tests
 /.vercel
