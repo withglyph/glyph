@@ -20,7 +20,6 @@
     graphql(`
       fragment AppLayout_UserMenu_profile on Profile {
         name
-        handle
       }
     `)
   );
@@ -76,17 +75,17 @@
       <div class="font-medium">
         {$profile.name}
       </div>
-      <div class="mt-1 text-sm text-gray-500">
+      <!-- <div class="mt-1 text-sm text-gray-500">
         @{$profile.handle}
-      </div>
+      </div> -->
     </div>
 
     <hr class="mx-4 my-2" />
 
-    <a class="menu-item" href={`/u/${$profile.handle}`}>
+    <!-- <a class="menu-item" href={`/u/${$profile.handle}`}>
       <span class="i-lc-user" />
       내 프로필
-    </a>
+    </a> -->
 
     <a class="menu-item" href="/profile/switch">
       <span class="i-lc-shuffle" />

@@ -1,4 +1,3 @@
-import { useGraphQLSSE } from '@graphql-yoga/plugin-graphql-sse';
 import { createYoga } from 'graphql-yoga';
 import { extendContext } from './context';
 import { useErrorHandling } from './plugins';
@@ -11,9 +10,6 @@ export const handler = createYoga<RequestEvent>({
   fetchAPI: globalThis,
   graphqlEndpoint: '/api/graphql',
   maskedErrors: false,
-  plugins: [
-    useErrorHandling(),
-    useGraphQLSSE({ endpoint: '/api/graphql/stream' }),
-  ],
+  plugins: [useErrorHandling()],
   graphiql: { subscriptionsProtocol: 'GRAPHQL_SSE' },
 });

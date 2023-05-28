@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator pothos {
+  provider = "prisma-pothos-types"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProfileState {
+  ACTIVE
+  INACTIVE
+}
+
+model Profile {
+  id        String       @id
+  userId    String       @map("user_id")
+  user      User         @relation(fields: [userId], references: [id])
+  name      String
+  state     ProfileState
+  order     Int
+  createdAt DateTime     @default(now()) @map("created_at")
+
+  sessions Session[]
+
+  @@index([userId, state])
+  @@map("profiles")
+}
+
+model Session {
+  id        String   @id
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  profileId String   @map("profile_id")
+  profile   Profile  @relation(fields: [profileId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("sessions")
+}
+
+enum UserState {
+  ACTIVE
+  INACTIVE
+}
+
+model User {
+  id        String    @id
+  email     String    @unique
+  password  String?
+  state     UserState
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  profiles Profile[]
+  sessions Session[]
+
+  @@index([id, state])
+  @@map("users")
+}

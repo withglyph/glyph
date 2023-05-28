@@ -21,7 +21,6 @@ type Mutation {
 }
 
 type Profile {
-  handle: String!
   id: String!
   name: String!
   user: User!
