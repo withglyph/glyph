@@ -4,7 +4,6 @@
 
 - Node 18 LTS 이상
 - pnpm 8 이상
-- MySQL CLI
 - Doppler CLI
 
 ## 초대 필요한 외부 서비스
@@ -15,12 +14,11 @@
 | :---: | :---: | :---: | :---: |
 | [Vercel](https://vercel.com) | 서비스 및 프리뷰 배포 | :white_check_mark: | :white_check_mark: |
 | [Doppler](https://doppler.com) | 환경변수 중앙 관리 | :white_check_mark: | :white_check_mark: |
-| [PlanetScale](https://planetscale.com) | 데이터베이스 | | :white_check_mark: |
 
 ## 요구사항 설치
 
 ``` bash
-$ brew install node mysql dopplerhq/cli/doppler
+$ brew install node dopplerhq/cli/doppler
 $ npm install -g pnpm
 ```
 
@@ -55,10 +53,4 @@ $ pnpm dev
 
 ```bash
 $ pnpm sync
-```
-
-### DB 스키마 변경이 필요할 경우
-
-```bash
-$ pnpm db:new
 ```
