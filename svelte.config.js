@@ -9,7 +9,6 @@ export default {
     alias: {
       $assets: './src/assets',
       $houdini: './$houdini',
-      $kysely: './$kysely',
     },
     files: {
       hooks: { server: 'src/hooks/server', client: 'src/hooks/client' },
