@@ -11,7 +11,7 @@
 
   $: query = fragment(
     _query,
-    graphql(/* GraphQL */ `
+    graphql(`
       fragment AppLayout_Header_query on Query {
         me {
           ...AppLayout_UserMenu_profile
@@ -97,9 +97,6 @@
     </section>
   </nav>
 </header>
+--
 
-<style lang="scss">
-  .menu-item {
-    --uno: flex items-center gap-2 justify-stretch rounded m-1 px-2 py-1 text-gray-500 hover:(bg-gray-100 text-gray-700);
-  }
-</style>
+<style lang="scss"></style>

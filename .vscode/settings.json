@@ -50,15 +50,10 @@
     "codegen",
     "felte",
     "kysely",
-    "paramless",
     "penxle",
-    "pino",
     "planetscale",
     "pothos",
-    "preflights",
     "radash",
-    "requiredness",
-    "serde",
     "unocss",
     "wordmark"
   ]

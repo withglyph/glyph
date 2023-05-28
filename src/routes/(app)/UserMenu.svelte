@@ -1,6 +1,7 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import { tick } from 'svelte';
+  import { fade } from 'svelte/transition';
   import { fragment, graphql } from '$houdini';
   import { Avatar } from '$lib/components';
   import { refreshAll } from '$lib/houdini';
@@ -17,7 +18,7 @@
 
   $: profile = fragment(
     _profile,
-    graphql(/* GraphQL */ `
+    graphql(`
       fragment AppLayout_UserMenu_profile on Profile {
         name
         handle
@@ -25,7 +26,7 @@
     `)
   );
 
-  const logout = graphql(/* GraphQL */ `
+  const logout = graphql(`
     mutation AppLayout_UserMenu_Logout_Mutation {
       logout
     }
@@ -71,6 +72,7 @@
     bind:this={menuEl}
     class="absolute w-60 flex flex-col rounded bg-white drop-shadow-xl"
     use:portal
+    in:fade|local={{ duration: 100 }}
   >
     <div class="p-4">
       <div class="font-medium">
@@ -87,8 +89,6 @@
       <span class="i-lc-user" />
       내 프로필
     </a>
-
-    <!-- <hr class="mx-4 my-2" /> -->
 
     <a class="menu-item" href="/settings">
       <span class="i-lc-settings" />

@@ -2,7 +2,7 @@
   import { graphql } from '$houdini';
   import { Helmet } from '$lib/components';
 
-  const subscription = graphql(/* GraphQL */ `
+  const subscription = graphql(`
     subscription SubscriptionPage_Subscription {
       countdown
     }

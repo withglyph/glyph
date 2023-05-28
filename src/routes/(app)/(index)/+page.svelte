@@ -4,7 +4,7 @@
   import { unwrap } from '$lib/houdini';
 
   const query = unwrap(
-    graphql(/* GraphQL */ `
+    graphql(`
       query IndexPage_Query @load {
         greeting
       }

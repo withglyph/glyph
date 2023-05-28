@@ -2,7 +2,7 @@
   import { graphql } from '$houdini';
   import { Button, Helmet, Modal } from '$lib/components';
 
-  const noop = graphql(/* GraphQL */ `
+  const noop = graphql(`
     mutation Noop {
       noop
     }

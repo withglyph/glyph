@@ -13,7 +13,7 @@
   import { SignupInputSchema } from '$lib/validations';
 
   const { form } = createMutationForm({
-    mutation: graphql(/* GraphQL */ `
+    mutation: graphql(`
       mutation UserSignupPage_Signup_Mutation($input: SignupInput!) {
         signup(input: $input) {
           __typename

@@ -6,7 +6,7 @@
   import Header from './Header.svelte';
 
   const query = unwrap(
-    graphql(/* GraphQL */ `
+    graphql(`
       query AppLayout_Query @load {
         ...AppLayout_Header_query
       }
