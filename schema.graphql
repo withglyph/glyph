@@ -3,6 +3,16 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTime
 
+input FinalizeImageUploadInput {
+  name: String!
+  path: String!
+}
+
+type Image {
+  id: String!
+  path: String!
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -14,10 +24,17 @@ input LoginInput {
 }
 
 type Mutation {
+  finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   login(input: LoginInput!): Profile!
   logout: Void!
   noop: String!
+  prepareImageUpload: PrepareImageUploadPayload!
   signup(input: SignupInput!): Profile!
+}
+
+type PrepareImageUploadPayload {
+  path: String!
+  presignedUrl: String!
 }
 
 type Profile {

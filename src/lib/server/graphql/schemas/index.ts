@@ -1,3 +1,4 @@
+import './image';
 import './test';
 import './user';
 import { builder } from '../builder';

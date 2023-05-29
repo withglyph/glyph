@@ -53,7 +53,6 @@ module.exports = {
     'import/newline-after-import': 'warn',
     'import/no-default-export': 'error',
     'import/no-empty-named-blocks': 'error',
-    'import/no-nodejs-modules': 'error',
     'import/no-mutable-exports': 'error',
     'import/no-unresolved': 'off',
     'import/no-useless-path-segments': 'warn',
@@ -75,7 +74,6 @@ module.exports = {
       files: ['./.eslintrc.cjs', './*.config.{js,cjs,ts}', './scripts/**/*.js'],
       parserOptions: { project: null },
       rules: {
-        'import/no-nodejs-modules': 'off',
         'import/no-default-export': 'off',
       },
       env: { node: true },
