@@ -1,16 +1,13 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: './tsconfig.json',
-    extraFileExtensions: ['.svelte'],
-  },
-  env: { browser: true },
+  env: { browser: true, node: true },
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
     'plugin:unicorn/recommended',
     'plugin:import/recommended',
+    'plugin:import/typescript',
     'plugin:@unocss/recommended',
   ],
   plugins: ['simple-import-sort'],
@@ -38,6 +35,13 @@ module.exports = {
     'prefer-template': 'warn',
     'spaced-comment': 'warn',
 
+    // @typescript-eslint
+    '@typescript-eslint/consistent-type-definitions': ['warn', 'type'],
+    '@typescript-eslint/method-signature-style': 'warn',
+    '@typescript-eslint/no-require-imports': 'error',
+    '@typescript-eslint/no-useless-empty-export': 'warn',
+    '@typescript-eslint/prefer-enum-initializers': 'error',
+
     // unicorn
     'unicorn/custom-error-definition': 'error',
     'unicorn/no-nested-ternary': 'off',
@@ -53,7 +57,6 @@ module.exports = {
     'import/newline-after-import': 'warn',
     'import/no-default-export': 'error',
     'import/no-empty-named-blocks': 'error',
-    'import/no-nodejs-modules': 'error',
     'import/no-mutable-exports': 'error',
     'import/no-unresolved': 'off',
     'import/no-useless-path-segments': 'warn',
@@ -71,43 +74,6 @@ module.exports = {
     'prettier/prettier': 'warn',
   },
   overrides: [
-    {
-      files: ['./.eslintrc.cjs', './*.config.{js,cjs,ts}', './scripts/**/*.js'],
-      parserOptions: { project: null },
-      rules: {
-        'import/no-nodejs-modules': 'off',
-        'import/no-default-export': 'off',
-      },
-      env: { node: true },
-    },
-    {
-      files: ['src/**/*.ts', 'tests/**/*.ts', 'src/**/*.svelte'],
-      extends: [
-        'plugin:@typescript-eslint/recommended-requiring-type-checking',
-        'plugin:@typescript-eslint/strict',
-        'plugin:import/typescript',
-      ],
-      rules: {
-        '@typescript-eslint/consistent-type-definitions': ['warn', 'type'],
-        '@typescript-eslint/consistent-type-exports': 'warn',
-        '@typescript-eslint/consistent-type-imports': 'warn',
-        '@typescript-eslint/method-signature-style': 'warn',
-        '@typescript-eslint/no-duplicate-type-constituents': 'warn',
-        '@typescript-eslint/no-confusing-void-expression': [
-          'warn',
-          { ignoreArrowShorthand: true, ignoreVoidOperator: true },
-        ],
-        '@typescript-eslint/no-non-null-assertion': 'off',
-        '@typescript-eslint/no-redundant-type-constituents': 'warn',
-        '@typescript-eslint/no-require-imports': 'error',
-        '@typescript-eslint/no-unnecessary-qualifier': 'warn',
-        '@typescript-eslint/no-useless-empty-export': 'warn',
-        '@typescript-eslint/prefer-enum-initializers': 'error',
-        '@typescript-eslint/prefer-regexp-exec': 'warn',
-        '@typescript-eslint/promise-function-async': 'error',
-        '@typescript-eslint/switch-exhaustiveness-check': 'error',
-      },
-    },
     {
       files: ['src/**/*.svelte'],
       parser: 'svelte-eslint-parser',
@@ -130,10 +96,6 @@ module.exports = {
           { varsIgnorePattern: '^\\$\\$(Props|Events|Slots)$' },
         ],
       },
-    },
-    {
-      files: ['src/service-worker/**/*.ts'],
-      parserOptions: { project: './src/service-worker/tsconfig.json' },
     },
   ],
   settings: {

@@ -2,23 +2,7 @@
   import clsx from 'clsx';
   import { page } from '$app/stores';
   import Wordmark from '$assets/branding/wordmark-colored.svg?component';
-  import { fragment, graphql } from '$houdini';
   import UserMenu from './UserMenu.svelte';
-  import type { AppLayout_Header_query } from '$houdini';
-
-  let _query: AppLayout_Header_query;
-  export { _query as $query };
-
-  $: query = fragment(
-    _query,
-    graphql(`
-      fragment AppLayout_Header_query on Query {
-        me {
-          ...AppLayout_UserMenu_profile
-        }
-      }
-    `)
-  );
 
   $: isArtworks = $page.url.pathname.startsWith('/artworks');
   $: isPosts = $page.url.pathname.startsWith('/posts');

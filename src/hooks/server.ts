@@ -1,4 +1,5 @@
 import { json } from '@sveltejs/kit';
+import { createTRPCClient } from '$lib/api';
 import { enabled } from '$lib/features';
 import { setupGlobals } from './common';
 import type { Handle, RequestEvent } from '@sveltejs/kit';
@@ -9,6 +10,7 @@ setupGlobals();
 
 const populateLocals = (event: RequestEvent): App.Locals => {
   return {
+    trpc: createTRPCClient(event.fetch),
     ipAddress: event.getClientAddress(),
   };
 };

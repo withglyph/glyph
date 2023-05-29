@@ -1,15 +1,9 @@
 <script lang="ts">
-  import { graphql } from '$houdini';
+  import { load } from '$lib/api';
   import { Helmet, Image, Tooltip } from '$lib/components';
-  import { unwrap } from '$lib/houdini';
+  import Test from './Test.svelte';
 
-  const query = unwrap(
-    graphql(`
-      query IndexPage_Query @load {
-        greeting
-      }
-    `)
-  );
+  const data = load((t) => t.test.greeting.query());
 </script>
 
 <Helmet
@@ -18,7 +12,12 @@
   title="펜슬 - 창작을 즐겁게"
 />
 
-<code>{$query.greeting}</code>
+<code>{$data}</code>
+<Test />
+<Test />
+<Test />
+<Test />
+<Test />
 
 <Tooltip message="OG Image" placement="top">
   <Image src="https://pnxl.net/static/og.png" />

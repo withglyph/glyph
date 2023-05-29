@@ -7,11 +7,6 @@
       "./node_modules/network-information-types"
     ],
     "resolveJsonModule": true,
-    "rootDirs": [
-      ".",
-      "./.svelte-kit/types",
-      "./$houdini/types"
-    ],
     "skipLibCheck": true,
     "strict": true
   },

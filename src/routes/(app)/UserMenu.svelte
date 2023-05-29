@@ -1,39 +1,15 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import { tick } from 'svelte';
-  import { fragment, graphql } from '$houdini';
   import { Avatar } from '$lib/components';
-  import { refreshAll } from '$lib/houdini';
   import { portal } from '$lib/svelte/actions';
-  import type { AppLayout_UserMenu_profile } from '$houdini';
-
-  let _profile: AppLayout_UserMenu_profile;
-  export { _profile as $profile };
 
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLDivElement;
 
   let open = false;
 
-  $: profile = fragment(
-    _profile,
-    graphql(`
-      fragment AppLayout_UserMenu_profile on Profile {
-        name
-      }
-    `)
-  );
-
-  const logout = graphql(`
-    mutation AppLayout_UserMenu_Logout_Mutation {
-      logout
-    }
-  `);
-
-  const handleLogout = async () => {
-    await logout.mutate(null);
-    await refreshAll();
-  };
+  const handleLogout = async () => {};
 
   const update = async () => {
     await tick();
