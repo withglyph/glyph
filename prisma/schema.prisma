@@ -11,9 +11,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum ProfileState {
-  ACTIVE
-  INACTIVE
+model Image {
+  id          String   @id
+  profileId   String   @map("profile_id")
+  profile     Profile  @relation(fields: [profileId], references: [id])
+  name        String
+  size        Int
+  format      String
+  width       Int
+  height      Int
+  path        String
+  placeholder String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("images")
 }
 
 model Profile {
@@ -25,7 +36,8 @@ model Profile {
   order     Int
   createdAt DateTime     @default(now()) @map("created_at")
 
-  sessions Session[]
+  sessions       Session[]
+  uploadedImages Image[]
 
   @@index([userId, state])
   @@map("profiles")
@@ -42,11 +54,6 @@ model Session {
   @@map("sessions")
 }
 
-enum UserState {
-  ACTIVE
-  INACTIVE
-}
-
 model User {
   id        String    @id
   email     String    @unique
@@ -59,4 +66,14 @@ model User {
 
   @@index([id, state])
   @@map("users")
+}
+
+enum ProfileState {
+  ACTIVE
+  INACTIVE
+}
+
+enum UserState {
+  ACTIVE
+  INACTIVE
 }

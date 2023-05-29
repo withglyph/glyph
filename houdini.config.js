@@ -12,5 +12,5 @@ export default {
     JSON: { type: 'unknown' },
     Void: { type: 'never' },
   },
-  watchSchema: { url: 'http://127.0.0.1:4000/api/graphql', interval: null },
+  watchSchema: { url: 'http://127.0.0.1:4000/api/graphql' },
 };

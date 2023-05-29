@@ -18,10 +18,10 @@ if (dev) {
 
 export const builder = new SchemaBuilder<{
   AuthContexts: {
-    auth: Context & AuthContext;
+    loggedIn: Context & AuthContext;
   };
   AuthScopes: {
-    auth: boolean;
+    loggedIn: boolean;
   };
   Context: Context;
   DefaultInputFieldRequiredness: true;
@@ -33,7 +33,7 @@ export const builder = new SchemaBuilder<{
   };
 }>({
   authScopes: (context) => ({
-    auth: !!context.session,
+    loggedIn: !!context.session,
   }),
   defaultInputFieldRequiredness: true,
   plugins: [
