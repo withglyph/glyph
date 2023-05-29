@@ -1,5 +1,5 @@
 <script lang="ts">
-  import 'virtual:uno.css'; // <!-- ! FIXME: remove after next unocss release -->
+  import 'uno.css';
   import { beforeNavigate } from '$app/navigation';
   import { updated } from '$app/stores';
   import { setupAnalytics } from '$lib/analytics';
@@ -28,6 +28,6 @@
   <BranchIndicator />
 {/if}
 
-<style global lang="scss" uno:safelist uno:preflights>
+<style global lang="scss">
   @import '../styles/index.scss';
 </style>
