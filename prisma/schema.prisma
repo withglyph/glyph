@@ -21,6 +21,7 @@ model Image {
   width       Int
   height      Int
   path        String
+  color       String
   placeholder String
   createdAt   DateTime @default(now()) @map("created_at")
 

@@ -11,6 +11,7 @@ input FinalizeImageUploadInput {
 type Image {
   id: String!
   path: String!
+  placeholder: String!
 }
 
 """

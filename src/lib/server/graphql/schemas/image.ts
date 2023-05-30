@@ -1,9 +1,8 @@
-import { decode, encode } from 'blurhash';
-import { nanoid } from 'nanoid';
+import lqip from 'lqip-modern';
 import sharp from 'sharp';
 import { db } from '$lib/server/database';
 import {
-  createS3UploadPath,
+  createS3ObjectKey,
   s3DeleteObject,
   s3GetObject,
   s3PutObject,
@@ -20,6 +19,7 @@ builder.prismaObject('Image', {
   fields: (t) => ({
     id: t.exposeString('id'),
     path: t.exposeString('path'),
+    placeholder: t.exposeString('placeholder'),
   }),
 });
 
@@ -57,7 +57,7 @@ builder.mutationFields((t) => ({
     type: PrepareImageUploadPayload,
     authScopes: { loggedIn: true },
     resolve: async () => {
-      const path = createS3UploadPath('uploads', nanoid(), '');
+      const path = `uploads/${createS3ObjectKey()}`;
 
       return {
         path,
@@ -74,36 +74,40 @@ builder.mutationFields((t) => ({
       const data = await s3GetObject(input.path);
       await s3DeleteObject(input.path);
 
-      const image = sharp(data, { failOn: 'none' }).rotate();
-      const webp = await image
-        .webp({ quality: 100, effort: 6 })
-        .toBuffer({ resolveWithObject: true });
+      const loadImage = () => sharp(data, { failOn: 'none' }).rotate();
 
-      const path = createS3UploadPath('w-full', nanoid(), '.webp');
-      await s3PutObject(path, 'image/webp', webp.data);
+      const metadata = await loadImage().metadata();
+      const key = `${createS3ObjectKey()}.avif`;
 
-      const raw = await image
-        .resize(32, 32, { fit: 'inside' })
-        .ensureAlpha()
-        .raw()
-        .toBuffer({ resolveWithObject: true });
+      const resize = async (width: number) => {
+        const buffer = await loadImage()
+          .resize(width, width, { fit: 'inside' })
+          .avif({ quality: 50, effort: 4 })
+          .toBuffer();
+        await s3PutObject(`${width}w/${key}`, 'image/avif', buffer);
+      };
 
-      const hash = encode(
-        new Uint8ClampedArray(raw.data),
-        raw.info.width,
-        raw.info.height,
-        4,
-        4
-      );
+      const orig = async () => {
+        const buffer = await loadImage()
+          .avif({ lossless: true, effort: 4 })
+          .toBuffer();
+        await s3PutObject(`blob/${key}`, 'image/avif', buffer);
+      };
 
-      const pixels = Buffer.from(decode(hash, raw.info.width, raw.info.height));
-      const buffer = await sharp(pixels, {
-        raw: { width: raw.info.width, height: raw.info.height, channels: 4 },
-      })
-        .webp({ quality: 100, effort: 6 })
-        .toBuffer();
+      await Promise.all([
+        resize(320),
+        resize(480),
+        resize(640),
+        resize(720),
+        orig(),
+      ]);
 
-      const placeholder = `data:image/webp;base64,${buffer.toString('base64')}`;
+      const {
+        metadata: { dataURIBase64 },
+      } = await lqip(Buffer.from(data), {
+        resize: 16,
+        outputOptions: { quality: 75, effort: 6 },
+      });
 
       return await db.image.create({
         ...query,
@@ -111,12 +115,13 @@ builder.mutationFields((t) => ({
           id: createId(),
           profileId: context.session.profileId,
           name: input.name,
-          size: webp.info.size,
-          format: webp.info.format,
-          width: webp.info.width,
-          height: webp.info.height,
-          path,
-          placeholder,
+          size: metadata.size!,
+          format: metadata.format!,
+          width: metadata.width!,
+          height: metadata.height!,
+          path: key,
+          placeholder: dataURIBase64,
+          color: '',
         },
       });
     },
