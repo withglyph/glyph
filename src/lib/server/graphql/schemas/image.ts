@@ -77,21 +77,21 @@ builder.mutationFields((t) => ({
       const loadImage = () => sharp(data, { failOn: 'none' }).rotate();
 
       const metadata = await loadImage().metadata();
-      const key = `${createS3ObjectKey()}.avif`;
+      const key = `${createS3ObjectKey()}.webp`;
 
       const resize = async (width: number) => {
         const buffer = await loadImage()
           .resize(width, width, { fit: 'inside' })
-          .avif({ quality: 50, effort: 0 })
+          .webp({ quality: 75, effort: 6 })
           .toBuffer();
-        await s3PutObject(`${width}w/${key}`, 'image/avif', buffer);
+        await s3PutObject(`${width}w/${key}`, 'image/webp', buffer);
       };
 
       const orig = async () => {
         const buffer = await loadImage()
-          .avif({ lossless: true, effort: 0 })
+          .webp({ lossless: true, effort: 6 })
           .toBuffer();
-        await s3PutObject(`blob/${key}`, 'image/avif', buffer);
+        await s3PutObject(`blob/${key}`, 'image/webp', buffer);
       };
 
       await Promise.all([
