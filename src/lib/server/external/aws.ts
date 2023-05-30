@@ -5,12 +5,14 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { nanoid } from 'nanoid';
 import { AWS_S3_BUCKET } from '$env/static/private';
 
 const S3 = new S3Client({ region: 'ap-northeast-2' });
 
-export const createS3UploadPath = (root: string, key: string, ext: string) => {
-  return `${root}/${key[0]}/${key[0]}${key[1]}/${key}${ext}`;
+export const createS3ObjectKey = () => {
+  const key = nanoid();
+  return `${key[0]}/${key[0]}${key[1]}/${key}`;
 };
 
 export const s3GetObject = async (path: string) => {
@@ -21,7 +23,7 @@ export const s3GetObject = async (path: string) => {
     })
   );
 
-  return await resp.Body?.transformToByteArray();
+  return await resp.Body!.transformToByteArray();
 };
 
 export const s3PutObject = async (

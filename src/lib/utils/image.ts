@@ -14,7 +14,9 @@ const finalizeImageUpload = graphql(`
     $input: FinalizeImageUploadInput!
   ) {
     finalizeImageUpload(input: $input) {
+      id
       path
+      placeholder
     }
   }
 `);
@@ -29,11 +31,8 @@ export const uploadImage = async (file: File) => {
   });
 
   const finalizeResp = await finalizeImageUpload.mutate({
-    input: {
-      path,
-      name: file.name,
-    },
+    input: { path, name: file.name },
   });
 
-  return `https://pnxl.net/${finalizeResp.data!.finalizeImageUpload.path}`;
+  return finalizeResp.data!.finalizeImageUpload;
 };
