@@ -82,14 +82,14 @@ builder.mutationFields((t) => ({
       const resize = async (width: number) => {
         const buffer = await loadImage()
           .resize(width, width, { fit: 'inside' })
-          .avif({ quality: 50, effort: 4 })
+          .avif({ quality: 50, effort: 0 })
           .toBuffer();
         await s3PutObject(`${width}w/${key}`, 'image/avif', buffer);
       };
 
       const orig = async () => {
         const buffer = await loadImage()
-          .avif({ lossless: true, effort: 4 })
+          .avif({ lossless: true, effort: 0 })
           .toBuffer();
         await s3PutObject(`blob/${key}`, 'image/avif', buffer);
       };
