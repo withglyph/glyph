@@ -82,14 +82,14 @@ builder.mutationFields((t) => ({
       const resize = async (width: number) => {
         const buffer = await loadImage()
           .resize(width, width, { fit: 'inside' })
-          .webp({ quality: 75, effort: 6 })
+          .webp({ quality: 75, effort: 0 })
           .toBuffer();
         await s3PutObject(`${width}w/${key}`, 'image/webp', buffer);
       };
 
       const orig = async () => {
         const buffer = await loadImage()
-          .webp({ lossless: true, effort: 6 })
+          .webp({ lossless: true, effort: 0 })
           .toBuffer();
         await s3PutObject(`blob/${key}`, 'image/webp', buffer);
       };
