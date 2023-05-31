@@ -6,6 +6,7 @@ export const processMedia = async (path: string, sizes: number[] = []) => {
   return (await resp.json()) as {
     path: string;
     size: number;
+    sizes: number[];
     format: string;
     width: number;
     height: number;

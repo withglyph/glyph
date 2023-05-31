@@ -74,10 +74,17 @@ builder.mutationFields((t) => ({
     authScopes: { loggedIn: true },
     args: { input: t.arg({ type: FinalizeImageUploadInput }) },
     resolve: async (query, _, { input }, context) => {
-      const sizes = [320, 640, 960, 1280];
-
-      const { path, size, format, width, height, placeholder, color, hash } =
-        await processMedia(input.path, sizes);
+      const {
+        path,
+        size,
+        sizes,
+        format,
+        width,
+        height,
+        placeholder,
+        color,
+        hash,
+      } = await processMedia(input.path, [320, 640, 960, 1280]);
 
       return await db.image.create({
         ...query,
