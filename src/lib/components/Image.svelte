@@ -26,7 +26,6 @@
         width
         height
 
-        color
         placeholder
       }
     `)
@@ -64,17 +63,22 @@
   />
 
   {#if !fullyLoaded}
+    <img
+      style:object-fit={fit}
+      class={clsx(
+        'f transition duration-200 ease-in-out',
+        loaded ? 'opacity-0 scale-100' : 'opacity-100 scale-125'
+      )}
+      src={$image.placeholder}
+      on:transitionend={() => (fullyLoaded = true)}
+    />
+
     <div
       class={clsx(
-        'f transition duration-300 ease-in-out',
-        loaded ? 'opacity-0 scale-100' : 'opacity-100 scale-100'
+        'f transition duration-200 ease-in-out',
+        loaded ? 'backdrop-blur-0' : 'backdrop-blur-xl'
       )}
-      on:transitionend={() => (fullyLoaded = true)}
-    >
-      <img style:object-fit={fit} class="f" src={$image.placeholder} />
-
-      <div class="f backdrop-blur-xl" />
-    </div>
+    />
   {/if}
 </div>
 
