@@ -22,7 +22,6 @@
       <Link href="/">Home</Link>
       <Link href="/db">Database</Link>
       <Link href="/upload">Upload</Link>
-      <Link href="/subscription">Subscription</Link>
       <Link href="/test">404</Link>
       <Link href="/toast">Toast</Link>
     </div>
