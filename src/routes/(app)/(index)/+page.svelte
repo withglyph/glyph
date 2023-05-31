@@ -1,6 +1,6 @@
 <script lang="ts">
   import { graphql } from '$houdini';
-  import { Helmet, Image, Tooltip } from '$lib/components';
+  import { Helmet, Tooltip } from '$lib/components';
   import { unwrap } from '$lib/houdini';
 
   const query = unwrap(
@@ -21,5 +21,5 @@
 <code>{$query.greeting}</code>
 
 <Tooltip message="OG Image" placement="top">
-  <Image src="https://pnxl.net/static/og.png" />
+  <img src="https://pnxl.net/static/og.png" />
 </Tooltip>

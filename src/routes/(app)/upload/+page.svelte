@@ -1,20 +1,16 @@
 <script lang="ts">
-  // import { graphql } from '$houdini';
   import { Button, Helmet, Image, Modal } from '$lib/components';
   import { uploadImage } from '$lib/utils';
 
   let open = false;
   let loading = false;
   let files: FileList | undefined;
-  let src: string | undefined;
-  let placeholder: string | undefined;
+  let image: Awaited<ReturnType<typeof uploadImage>> | undefined;
 
   const handleUpload = async () => {
     try {
       loading = true;
-      const image = await uploadImage(files![0]);
-      src = `https://pnxl.net/blob/${image.path}`;
-      placeholder = image.placeholder;
+      image = await uploadImage(files![0]);
       open = true;
     } finally {
       loading = false;
@@ -39,8 +35,13 @@
 <Modal bind:open>
   <svelte:fragment slot="title">Response</svelte:fragment>
 
-  {#if src}
-    <Image class="aspect-1/1 w-full object-contain" {placeholder} {src} />
+  {#if image}
+    <Image
+      class="aspect-1/1 w-full rounded-xl"
+      $image={image}
+      fit="cover"
+      size={400}
+    />
   {/if}
 
   <Button slot="action" on:click={() => (open = false)}>닫기</Button>

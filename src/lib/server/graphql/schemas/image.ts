@@ -1,13 +1,9 @@
-import lqip from 'lqip-modern';
-import sharp from 'sharp';
 import { db } from '$lib/server/database';
 import {
   createS3ObjectKey,
-  s3DeleteObject,
-  s3GetObject,
-  s3PutObject,
   s3PutObjectGetSignedUrl,
 } from '$lib/server/external/aws';
+import { processMedia } from '$lib/server/external/mp';
 import { createId } from '$lib/utils';
 import { builder } from '../builder';
 
@@ -18,7 +14,14 @@ import { builder } from '../builder';
 builder.prismaObject('Image', {
   fields: (t) => ({
     id: t.exposeString('id'),
+
     path: t.exposeString('path'),
+    sizes: t.exposeIntList('sizes'),
+
+    width: t.exposeInt('width'),
+    height: t.exposeInt('height'),
+
+    color: t.exposeString('color'),
     placeholder: t.exposeString('placeholder'),
   }),
 });
@@ -57,7 +60,7 @@ builder.mutationFields((t) => ({
     type: PrepareImageUploadPayload,
     authScopes: { loggedIn: true },
     resolve: async () => {
-      const path = `uploads/${createS3ObjectKey()}`;
+      const path = `u/${createS3ObjectKey()}`;
 
       return {
         path,
@@ -71,43 +74,10 @@ builder.mutationFields((t) => ({
     authScopes: { loggedIn: true },
     args: { input: t.arg({ type: FinalizeImageUploadInput }) },
     resolve: async (query, _, { input }, context) => {
-      const data = await s3GetObject(input.path);
-      await s3DeleteObject(input.path);
+      const sizes = [320, 640, 960, 1280];
 
-      const loadImage = () => sharp(data, { failOn: 'none' }).rotate();
-
-      const metadata = await loadImage().metadata();
-      const key = `${createS3ObjectKey()}.webp`;
-
-      const resize = async (width: number) => {
-        const buffer = await loadImage()
-          .resize(width, width, { fit: 'inside' })
-          .webp({ quality: 75, effort: 0 })
-          .toBuffer();
-        await s3PutObject(`${width}w/${key}`, 'image/webp', buffer);
-      };
-
-      const orig = async () => {
-        const buffer = await loadImage()
-          .webp({ lossless: true, effort: 0 })
-          .toBuffer();
-        await s3PutObject(`blob/${key}`, 'image/webp', buffer);
-      };
-
-      await Promise.all([
-        resize(320),
-        resize(480),
-        resize(640),
-        resize(720),
-        orig(),
-      ]);
-
-      const {
-        metadata: { dataURIBase64 },
-      } = await lqip(Buffer.from(data), {
-        resize: 16,
-        outputOptions: { quality: 75, effort: 6 },
-      });
+      const { path, size, format, width, height, placeholder, color, hash } =
+        await processMedia(input.path, sizes);
 
       return await db.image.create({
         ...query,
@@ -115,13 +85,15 @@ builder.mutationFields((t) => ({
           id: createId(),
           profileId: context.session.profileId,
           name: input.name,
-          size: metadata.size!,
-          format: metadata.format!,
-          width: metadata.width!,
-          height: metadata.height!,
-          path: key,
-          placeholder: dataURIBase64,
-          color: '',
+          path,
+          sizes,
+          size,
+          format,
+          width,
+          height,
+          placeholder,
+          color,
+          hash,
         },
       });
     },

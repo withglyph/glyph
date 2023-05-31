@@ -9,9 +9,13 @@ input FinalizeImageUploadInput {
 }
 
 type Image {
+  color: String!
+  height: Int!
   id: String!
   path: String!
   placeholder: String!
+  sizes: [Int!]!
+  width: Int!
 }
 
 """
