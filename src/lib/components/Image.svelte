@@ -108,21 +108,21 @@
 
     {#if !fullyLoaded}
       <div
-        class="absolute inset-0 square-full children:(transition duration-200 ease-in-out)"
+        class="absolute inset-0 square-full children:(transition duration-150 ease-out)"
         on:transitionend={() => (fullyLoaded = true)}
       >
         <img
           class={clsx(
             'square-full object-cover',
-            loaded ? 'opacity-0 scale-100' : 'opacity-100 scale-125'
+            loaded ? 'opacity-0' : 'opacity-100'
           )}
           src={$image.placeholder}
         />
 
         <div
           class={clsx(
-            'absolute inset-0 square-full backdrop-blur-xl',
-            loaded ? 'opacity-0' : 'opacity-100'
+            'absolute inset-0 square-full',
+            loaded ? 'backdrop-blur-none' : 'backdrop-blur-xl'
           )}
         />
       </div>
