@@ -1,19 +1,23 @@
 <script lang="ts">
+  import { writable } from '@svelte-kits/store';
   import clsx from 'clsx';
   import { PUBLIC_CDN_URL } from '$env/static/public';
   import { fragment, graphql } from '$houdini';
+  import { intersectionObserver } from '$lib/svelte/actions';
   import type { Image_image } from '$houdini';
 
   let _image: Image_image;
   let _class: string | undefined = undefined;
   export let size: number | undefined = undefined;
   export let fit: 'contain' | 'cover' = 'cover';
+  export let eagerLoad = false;
   export { _image as $image };
   export { _class as class };
 
   let src: string;
   let srcset: string | undefined = undefined;
 
+  let visible = writable(false);
   let loaded = false;
   let fullyLoaded = false;
 
@@ -62,13 +66,19 @@
       !fullyLoaded && 'blur-0',
       $image.width > $image.height === (fit === 'cover') ? 'h-full' : 'w-full'
     )}
+    use:intersectionObserver={{
+      store: visible,
+      once: true,
+    }}
   >
-    <img
-      class="square-full object-cover"
-      {src}
-      {srcset}
-      on:load={() => (loaded = true)}
-    />
+    {#if eagerLoad || $visible}
+      <img
+        class="square-full object-cover"
+        {src}
+        {srcset}
+        on:load={() => (loaded = true)}
+      />
+    {/if}
 
     {#if !fullyLoaded}
       <div
