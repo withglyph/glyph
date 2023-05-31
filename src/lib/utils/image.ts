@@ -15,8 +15,7 @@ const finalizeImageUpload = graphql(`
   ) {
     finalizeImageUpload(input: $input) {
       id
-      path
-      placeholder
+      ...Image_image
     }
   }
 `);
