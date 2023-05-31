@@ -13,14 +13,20 @@
   export { _image as $image };
   export { _class as class };
 
-  let src: string;
+  let src: string | undefined = undefined;
 
   let visible = writable(false);
   let loaded = false;
   let fullyLoaded = false;
 
-  let offsetWidth: number;
-  let offsetHeight: number;
+  let outerWidth: number | undefined = undefined;
+  let outerHeight: number | undefined = undefined;
+
+  let innerWidth = 0;
+  let innerHeight = 0;
+
+  let actualWidth: number | undefined = undefined;
+  let actualHeight: number | undefined = undefined;
 
   $: image = fragment(
     _image,
@@ -37,11 +43,34 @@
     `)
   );
 
+  $: ({ width, height } = $image);
   $: sizes = [...$image.sizes, Number.POSITIVE_INFINITY].sort((a, b) => a - b);
+  $: ratio = width / height;
 
-  $: {
+  $: console.log({ outerWidth, outerHeight, innerWidth, innerHeight });
+
+  $: if (outerWidth && outerHeight) {
+    if (width > height === (fit === 'contain')) {
+      innerWidth = outerWidth;
+      innerHeight = outerWidth / ratio;
+    } else {
+      innerWidth = outerHeight * ratio;
+      innerHeight = outerHeight;
+    }
+  } else if (outerWidth && outerHeight === 0) {
+    innerWidth = outerWidth;
+    innerHeight = outerWidth / ratio;
+  } else if (outerWidth === 0 && outerHeight) {
+    innerWidth = outerHeight * ratio;
+    innerHeight = outerHeight;
+  } else if (outerWidth === 0 && outerHeight === 0) {
+    innerWidth = 0;
+    innerHeight = 0;
+  }
+
+  $: if (actualWidth && actualHeight) {
     const targetSize =
-      window.devicePixelRatio * Math.max(offsetWidth, offsetHeight);
+      window.devicePixelRatio * Math.max(actualWidth, actualWidth);
     for (const size of sizes) {
       if (size > targetSize) {
         src = `${PUBLIC_CDN_URL}/${$image.path}/${
@@ -53,22 +82,23 @@
   }
 </script>
 
-<div class={clsx('flex center overflow-hidden', _class)}>
+<div
+  class={clsx('flex center overflow-hidden', _class)}
+  bind:clientWidth={outerWidth}
+  bind:clientHeight={outerHeight}
+>
   <div
-    style:aspect-ratio={$image.width / $image.height}
-    class={clsx(
-      'relative overflow-hidden',
-      !fullyLoaded && 'blur-0',
-      $image.width > $image.height === (fit === 'cover') ? 'h-full' : 'w-full'
-    )}
-    bind:offsetWidth
-    bind:offsetHeight
+    style:width={`${innerWidth}px`}
+    style:height={`${innerHeight}px`}
+    class={clsx('relative overflow-hidden', !fullyLoaded && 'blur-0')}
+    bind:clientWidth={actualWidth}
+    bind:clientHeight={actualHeight}
     use:intersectionObserver={{
       store: visible,
       once: true,
     }}
   >
-    {#if eagerLoad || $visible}
+    {#if src && (eagerLoad || $visible)}
       <img
         class="square-full object-cover"
         {src}
