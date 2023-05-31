@@ -39,7 +39,7 @@
     <Image
       class="aspect-1/1 w-full rounded-xl"
       $image={image}
-      fit="cover"
+      fit="contain"
       size={400}
     />
   {/if}

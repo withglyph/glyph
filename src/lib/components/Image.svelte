@@ -13,6 +13,7 @@
 
   let src: string;
   let srcset: string | undefined = undefined;
+
   let loaded = false;
   let fullyLoaded = false;
 
@@ -53,37 +54,42 @@
   };
 </script>
 
-<div class={clsx('relative overflow-hidden', !fullyLoaded && 'blur-0', _class)}>
-  <img
-    style:object-fit={fit}
-    class="f"
-    {src}
-    {srcset}
-    on:load={() => (loaded = true)}
-  />
-
-  {#if !fullyLoaded}
+<div class={clsx('flex center overflow-hidden', _class)}>
+  <div
+    style:aspect-ratio={$image.width / $image.height}
+    class={clsx(
+      'relative overflow-hidden',
+      !fullyLoaded && 'blur-0',
+      $image.width > $image.height === (fit === 'cover') ? 'h-full' : 'w-full'
+    )}
+  >
     <img
-      style:object-fit={fit}
-      class={clsx(
-        'f transition duration-200 ease-in-out',
-        loaded ? 'opacity-0 scale-100' : 'opacity-100 scale-125'
-      )}
-      src={$image.placeholder}
-      on:transitionend={() => (fullyLoaded = true)}
+      class="square-full object-cover"
+      {src}
+      {srcset}
+      on:load={() => (loaded = true)}
     />
 
-    <div
-      class={clsx(
-        'f transition duration-200 ease-in-out',
-        loaded ? 'backdrop-blur-0' : 'backdrop-blur-xl'
-      )}
-    />
-  {/if}
+    {#if !fullyLoaded}
+      <div
+        class="absolute inset-0 square-full children:(transition duration-200 ease-in-out)"
+        on:transitionend={() => (fullyLoaded = true)}
+      >
+        <img
+          class={clsx(
+            'square-full object-cover',
+            loaded ? 'opacity-0 scale-100' : 'opacity-100 scale-125'
+          )}
+          src={$image.placeholder}
+        />
+
+        <div
+          class={clsx(
+            'absolute inset-0 square-full backdrop-blur-xl',
+            loaded ? 'opacity-0' : 'opacity-100'
+          )}
+        />
+      </div>
+    {/if}
+  </div>
 </div>
-
-<style lang="scss">
-  .f {
-    --uno: absolute inset-0 square-full;
-  }
-</style>
