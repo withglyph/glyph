@@ -1,0 +1,5 @@
+query UserAuthLayout_Query {
+  authBackgroundImage {
+    ...Image_image
+  }
+}

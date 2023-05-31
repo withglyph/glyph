@@ -67,6 +67,21 @@ builder.queryFields((t) => ({
       });
     },
   }),
+
+  authBackgroundImage: t.prismaField({
+    type: 'Image',
+    nullable: true,
+    resolve: async (query) => {
+      const count = await db.image.count();
+
+      return await db.image.findFirst({
+        ...query,
+        skip: Math.floor(Math.random() * count),
+        take: 1,
+        orderBy: { createdAt: 'asc' },
+      });
+    },
+  }),
 }));
 
 /**

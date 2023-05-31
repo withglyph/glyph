@@ -1,12 +1,21 @@
 <script lang="ts">
   import Wordmark from '$assets/branding/wordmark.svg?component';
+  import { Image } from '$lib/components';
+  import type { LayoutData } from './$houdini';
+
+  export let data: LayoutData;
+
+  $: ({ UserAuthLayout_Query } = data);
+  $: ({ data: query } = $UserAuthLayout_Query);
 </script>
 
 <main class="flex grow center">
-  <img
-    class="pointer-events-none absolute inset-0 h-full w-full"
-    src="https://picsum.photos/1920/1080"
-  />
+  {#if query?.authBackgroundImage}
+    <Image
+      class="pointer-events-none absolute inset-0 square-full"
+      $image={query.authBackgroundImage}
+    />
+  {/if}
 
   <a class="absolute left-4 top-4 z-1" href="/">
     <Wordmark class="h-6 text-white" />
