@@ -8,18 +8,19 @@
 
   let _image: Image_image;
   let _class: string | undefined = undefined;
-  export let size: number | undefined = undefined;
   export let fit: 'contain' | 'cover' = 'cover';
   export let eagerLoad = false;
   export { _image as $image };
   export { _class as class };
 
   let src: string;
-  let srcset: string | undefined = undefined;
 
   let visible = writable(false);
   let loaded = false;
   let fullyLoaded = false;
+
+  let offsetWidth: number;
+  let offsetHeight: number;
 
   $: image = fragment(
     _image,
@@ -36,26 +37,20 @@
     `)
   );
 
-  $: src = url(size);
-  $: srcset = size
-    ? `${url(size)} 1x, ${url(size * 2)} 2x, ${url(size * 3)} 3x`
-    : undefined;
+  $: sizes = [...$image.sizes, Number.POSITIVE_INFINITY].sort((a, b) => a - b);
 
-  const url = (targetSize?: number) => {
-    const { path, sizes } = $image;
-
-    if (targetSize) {
-      const definedSizes = sizes.sort((a, b) => a - b);
-
-      for (const definedSize of definedSizes) {
-        if (definedSize > targetSize) {
-          return `${PUBLIC_CDN_URL}/${path}/${definedSize}`;
-        }
+  $: {
+    const targetSize =
+      window.devicePixelRatio * Math.max(offsetWidth, offsetHeight);
+    for (const size of sizes) {
+      if (size > targetSize) {
+        src = `${PUBLIC_CDN_URL}/${$image.path}/${
+          size === Number.POSITIVE_INFINITY ? 'full' : size
+        }`;
+        break;
       }
     }
-
-    return `${PUBLIC_CDN_URL}/${path}/full`;
-  };
+  }
 </script>
 
 <div class={clsx('flex center overflow-hidden', _class)}>
@@ -66,6 +61,8 @@
       !fullyLoaded && 'blur-0',
       $image.width > $image.height === (fit === 'cover') ? 'h-full' : 'w-full'
     )}
+    bind:offsetWidth
+    bind:offsetHeight
     use:intersectionObserver={{
       store: visible,
       once: true,
@@ -75,7 +72,6 @@
       <img
         class="square-full object-cover"
         {src}
-        {srcset}
         on:load={() => (loaded = true)}
       />
     {/if}

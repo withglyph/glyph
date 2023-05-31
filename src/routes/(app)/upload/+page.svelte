@@ -36,12 +36,7 @@
   <svelte:fragment slot="title">Response</svelte:fragment>
 
   {#if image}
-    <Image
-      class="aspect-1/1 w-full rounded-xl"
-      $image={image}
-      fit="contain"
-      size={400}
-    />
+    <Image class="aspect-1/1 w-full rounded-xl" $image={image} fit="contain" />
   {/if}
 
   <Button slot="action" on:click={() => (open = false)}>닫기</Button>
