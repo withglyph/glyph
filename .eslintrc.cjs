@@ -116,6 +116,7 @@ module.exports = {
         'svelte/block-lang': ['error', { script: 'ts', style: 'scss' }],
         'svelte/valid-compile': 'off',
         'svelte/prefer-destructured-store-props': 'off',
+        'svelte/prefer-class-directive': 'off',
         'svelte/experimental-require-slot-types': 'off',
         'svelte/experimental-require-strict-events': 'off',
         'svelte/@typescript-eslint/no-unnecessary-condition': 'off',
