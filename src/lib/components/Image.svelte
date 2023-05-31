@@ -47,8 +47,6 @@
   $: sizes = [...$image.sizes, Number.POSITIVE_INFINITY].sort((a, b) => a - b);
   $: ratio = width / height;
 
-  $: console.log({ outerWidth, outerHeight, innerWidth, innerHeight });
-
   $: if (outerWidth && outerHeight) {
     if (width > height === (fit === 'contain')) {
       innerWidth = outerWidth;
