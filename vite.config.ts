@@ -4,6 +4,7 @@ import unocss from 'unocss/vite';
 import { defineConfig } from 'vite';
 import { svg } from './src/vite';
 
+// eslint-disable-next-line import/no-default-export
 export default defineConfig({
   server: { host: '127.0.0.1', port: 4000, strictPort: true },
   plugins: [unocss({ mode: 'global' }), houdini(), svg(), sveltekit()],

@@ -1,6 +1,7 @@
 import { env } from 'node:process';
 import { defineConfig, devices } from '@playwright/test';
 
+// eslint-disable-next-line import/no-default-export
 export default defineConfig({
   testDir: './tests',
   testMatch: '**/*.test.ts',
