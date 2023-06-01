@@ -8,7 +8,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { nanoid } from 'nanoid';
 import { AWS_S3_BUCKET } from '$env/static/private';
 
-const S3 = new S3Client({ region: 'ap-northeast-2' });
+const S3 = new S3Client({});
 
 export const createS3ObjectKey = () => {
   const key = nanoid();
