@@ -87,27 +87,31 @@
       내 프로필
     </a> -->
 
-    <a class="menu-item" href="/profile/switch">
+    <a
+      class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
+      href="/profile/switch"
+    >
       <span class="i-lc-shuffle" />
       프로필 전환
     </a>
 
     <hr class="mx-4 my-2" />
 
-    <a class="menu-item" href="/settings">
+    <a
+      class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
+      href="/settings"
+    >
       <span class="i-lc-settings" />
       설정
     </a>
 
-    <button class="menu-item" type="button" on:click={handleLogout}>
+    <button
+      class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
+      type="button"
+      on:click={handleLogout}
+    >
       <span class="i-lc-log-out" />
       로그아웃
     </button>
   </div>
 {/if}
-
-<style lang="scss">
-  .menu-item {
-    --uno: flex items-center gap-2 justify-stretch select-none rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700);
-  }
-</style>

@@ -1,4 +1,5 @@
 /** @type {import('houdini').ConfigFile} */
+// eslint-disable-next-line import/no-default-export
 export default {
   acceptImperativeInstability: true,
   defaultCachePolicy: 'CacheAndNetwork',
