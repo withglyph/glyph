@@ -1,13 +1,8 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: './tsconfig.json',
-    extraFileExtensions: ['.svelte'],
-  },
-  env: { browser: true },
+  env: { browser: true, serviceworker: true, node: true },
   extends: [
     'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
     'plugin:unicorn/recommended',
     'plugin:import/recommended',
@@ -36,7 +31,7 @@ module.exports = {
     'prefer-rest-params': 'error',
     'prefer-spread': 'warn',
     'prefer-template': 'warn',
-    'spaced-comment': 'warn',
+    'spaced-comment': ['warn', 'always', { markers: ['/'] }],
 
     // unicorn
     'unicorn/custom-error-definition': 'error',
@@ -71,16 +66,17 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['./.eslintrc.cjs', './*.config.{js,cjs,ts}', './scripts/**/*.js'],
-      parserOptions: { project: null },
-      rules: {
-        'import/no-default-export': 'off',
+      files: [
+        'src/{hooks,lib,routes,vite}/**/*.ts',
+        'tests/**/*.ts',
+        'src/**/*.svelte',
+      ],
+      parserOptions: {
+        project: './tsconfig.json',
+        extraFileExtensions: ['.svelte'],
       },
-      env: { node: true },
-    },
-    {
-      files: ['src/**/*.ts', 'tests/**/*.ts', 'src/**/*.svelte'],
       extends: [
+        'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
         'plugin:@typescript-eslint/strict',
         'plugin:import/typescript',
@@ -129,10 +125,6 @@ module.exports = {
           { varsIgnorePattern: '^\\$\\$(Props|Events|Slots)$' },
         ],
       },
-    },
-    {
-      files: ['src/service-worker/**/*.ts'],
-      parserOptions: { project: './src/service-worker/tsconfig.json' },
     },
   ],
   settings: {

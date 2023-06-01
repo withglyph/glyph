@@ -7,11 +7,11 @@
   import type { Image_image } from '$houdini';
 
   let _image: Image_image;
+  export { _image as $image };
   let _class: string | undefined = undefined;
+  export { _class as class };
   export let fit: 'contain' | 'cover' = 'cover';
   export let eagerLoad = false;
-  export { _image as $image };
-  export { _class as class };
 
   let src: string | undefined = undefined;
 
