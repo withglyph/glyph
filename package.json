@@ -60,7 +60,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
-    "eslint-plugin-svelte": "^2.29.0",
+    "eslint-plugin-svelte": "^2.30.0",
     "eslint-plugin-unicorn": "^47.0.0",
     "felte": "^1.2.7",
     "gitmoji-cli": "^8.3.0",
