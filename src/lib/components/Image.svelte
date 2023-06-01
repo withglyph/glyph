@@ -48,7 +48,14 @@
   $: ratio = width / height;
 
   $: if (outerWidth && outerHeight) {
-    if (width > height === (fit === 'contain')) {
+    if (width === height) {
+      const minmax = (fit === 'contain' ? Math.min : Math.max)(
+        outerWidth,
+        outerHeight
+      );
+      innerWidth = minmax;
+      innerHeight = minmax;
+    } else if (width > height === (fit === 'contain')) {
       innerWidth = outerWidth;
       innerHeight = outerWidth / ratio;
     } else {
