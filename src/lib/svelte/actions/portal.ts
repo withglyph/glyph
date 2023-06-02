@@ -1,12 +1,12 @@
 import type { Action } from 'svelte/action';
 
-type Parameter = HTMLElement | string;
+type Parameter = HTMLElement | string | undefined;
 
 export const portal: Action<HTMLElement, Parameter> = (
   element,
   target = 'body'
 ) => {
-  const update = (target: Parameter) => {
+  const update = (target: Parameter = 'body') => {
     let targetElement: HTMLElement | null;
 
     if (typeof target === 'string') {

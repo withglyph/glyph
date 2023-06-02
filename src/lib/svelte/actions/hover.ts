@@ -4,10 +4,6 @@ import type { Action } from 'svelte/action';
 type Parameter = Writable<boolean>;
 
 export const hover: Action<HTMLElement, Parameter> = (element, store) => {
-  if (!store) {
-    throw new Error('No store provided.');
-  }
-
   const mouseenter = () => store.set(true);
   const mouseleave = () => store.set(false);
 

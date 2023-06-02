@@ -15,10 +15,6 @@ export const intersectionObserver: Action<HTMLElement, Parameter> = (
   element,
   param
 ) => {
-  if (!param) {
-    throw new Error('No param provided.');
-  }
-
   const { store, once } = param;
 
   const observer = new IntersectionObserver((entries) => {

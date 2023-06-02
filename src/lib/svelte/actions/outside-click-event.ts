@@ -4,7 +4,7 @@ type Attributes = {
   'on:outsideClick': (event: CustomEvent) => void;
 };
 
-export const outsideClickEvent: Action<HTMLElement, void, Attributes> = (
+export const outsideClickEvent: Action<HTMLElement, never, Attributes> = (
   element
 ) => {
   const handler = (event: MouseEvent) => {

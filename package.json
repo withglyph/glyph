@@ -81,7 +81,7 @@
     "prisma": "^4.15.0",
     "radash": "^10.8.1",
     "sass": "^1.62.1",
-    "svelte": "^3.59.1",
+    "svelte": "4.0.0-next.0",
     "svelte-check": "^3.4.3",
     "svelte-preprocess": "^5.0.4",
     "svgo": "^3.0.2",
@@ -90,5 +90,12 @@
     "vite": "^4.3.9",
     "web-vitals": "^3.3.2",
     "zod": "^3.21.4"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "svelte": "4"
+      }
+    }
   }
 }
