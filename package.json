@@ -54,7 +54,7 @@
     "argon2": "^0.30.3",
     "autoprefixer": "^10.4.14",
     "clsx": "^1.2.1",
-    "dayjs": "^1.11.7",
+    "dayjs": "^1.11.8",
     "eslint": "^8.41.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-import-resolver-typescript": "^3.5.5",
