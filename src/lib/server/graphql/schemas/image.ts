@@ -1,4 +1,4 @@
-import { db } from '$lib/server/database';
+import { db, injectLoader } from '$lib/server/database';
 import {
   createS3ObjectKey,
   s3DeleteObject,
@@ -12,12 +12,13 @@ import { builder } from '../builder';
  * * Types
  */
 
-builder.prismaObject('Image', {
+const Image = builder.loadableObject('Image', {
+  ...injectLoader('images'),
   fields: (t) => ({
     id: t.exposeString('id'),
 
     path: t.exposeString('path'),
-    sizes: t.exposeIntList('sizes'),
+    sizes: t.intList({ resolve: ({ sizes }) => sizes as number[] }),
 
     placeholder: t.exposeString('placeholder'),
   }),
@@ -54,28 +55,28 @@ const FinalizeImageUploadInput = builder.inputType('FinalizeImageUploadInput', {
  */
 
 builder.queryFields((t) => ({
-  images: t.prismaField({
-    type: ['Image'],
-    resolve: async (query) => {
-      return await db.image.findMany({
-        ...query,
-        orderBy: { createdAt: 'desc' },
-      });
+  images: t.field({
+    type: [Image],
+    resolve: async () => {
+      return await db.selectFrom('images').selectAll().execute();
     },
   }),
 
-  authBackgroundImage: t.prismaField({
-    type: 'Image',
+  authBackgroundImage: t.field({
+    type: Image,
     nullable: true,
-    resolve: async (query) => {
-      const count = await db.image.count();
+    resolve: async () => {
+      const { count } = await db
+        .selectFrom('images')
+        .select(db.fn.count<number>('id').as('count'))
+        .executeTakeFirstOrThrow();
 
-      return await db.image.findFirst({
-        ...query,
-        skip: Math.floor(Math.random() * count),
-        take: 1,
-        orderBy: { createdAt: 'asc' },
-      });
+      return await db
+        .selectFrom('images')
+        .selectAll()
+        .offset(Math.floor(Math.random() * count))
+        .limit(1)
+        .executeTakeFirst();
     },
   }),
 }));
@@ -99,11 +100,11 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  finalizeImageUpload: t.prismaField({
-    type: 'Image',
-    args: { input: t.arg({ type: FinalizeImageUploadInput }) },
+  finalizeImageUpload: t.authField({
+    type: Image,
     authScopes: { loggedIn: true },
-    resolve: async (query, _, { input }) => {
+    args: { input: t.arg({ type: FinalizeImageUploadInput }) },
+    resolve: async (_, { input }) => {
       const {
         path,
         size,
@@ -118,13 +119,14 @@ builder.mutationFields((t) => ({
       await s3DeleteObject(input.path);
       const name = input.path.split('/').pop()!;
 
-      return await db.image.create({
-        ...query,
-        data: {
-          id: createId(),
-          name,
+      const id = createId();
+      await db
+        .insertInto('images')
+        .values({
+          id,
+          name: input.name,
           path,
-          sizes,
+          sizes: JSON.stringify(sizes),
           size,
           format,
           width,
@@ -132,8 +134,11 @@ builder.mutationFields((t) => ({
           placeholder,
           color,
           hash,
-        },
-      });
+          createdAt: new Date(),
+        })
+        .executeTakeFirstOrThrow();
+
+      return id;
     },
   }),
 }));
