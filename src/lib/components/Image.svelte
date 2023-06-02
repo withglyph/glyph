@@ -106,6 +106,7 @@
     {#if src && (eagerLoad || $visible)}
       <img
         class="square-full object-cover"
+        alt=""
         {src}
         on:load={() => (loaded = true)}
       />
@@ -121,6 +122,7 @@
             'square-full object-cover',
             loaded ? 'opacity-0' : 'opacity-100'
           )}
+          alt=""
           src={$image.placeholder}
         />
 

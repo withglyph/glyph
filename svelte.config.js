@@ -18,10 +18,4 @@ export default {
     output: { preloadStrategy: 'preload-mjs' },
     version: { pollInterval: 60 * 1000 },
   },
-  onwarn: (warning, handler) => {
-    if (warning.code.startsWith('a11y-')) {
-      return;
-    }
-    handler(warning);
-  },
 };

@@ -9,7 +9,10 @@
   <div class="fixed inset-0 z-50" use:portal>
     <div
       class="absolute inset-0 bg-black/50 backdrop-blur"
+      role="button"
+      tabindex="-1"
       on:click={() => (open = false)}
+      on:keypress={null}
       transition:fade={{ duration: 150 }}
     />
 

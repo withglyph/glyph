@@ -21,5 +21,5 @@
 <code>{$query.greeting}</code>
 
 <Tooltip message="OG Image" placement="top">
-  <img src="https://pnxl.net/static/og.png" />
+  <img alt="" src="https://pnxl.net/static/og.png" />
 </Tooltip>

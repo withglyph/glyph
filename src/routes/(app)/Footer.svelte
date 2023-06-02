@@ -33,9 +33,9 @@
     </section>
 
     <section class="flex items-center gap-2 text-gray-400">
-      <a href="" rel="noopener noreferrer" target="_blank">이용약관</a>
+      <a href="/" rel="noopener noreferrer" target="_blank">이용약관</a>
       <div class="h-2 border-x border-l-gray-300" />
-      <a class="font-medium" href="" rel="noopener noreferrer" target="_blank">
+      <a class="font-medium" href="/" rel="noopener noreferrer" target="_blank">
         개인정보처리방침
       </a>
     </section>

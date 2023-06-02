@@ -64,7 +64,14 @@
 </button>
 
 {#if open}
-  <div class="fixed inset-0" on:click={() => (open = false)} use:portal />
+  <div
+    class="fixed inset-0"
+    role="button"
+    tabindex="-1"
+    on:click={() => (open = false)}
+    on:keypress={null}
+    use:portal
+  />
 
   <div
     bind:this={menuEl}

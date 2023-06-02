@@ -6,4 +6,4 @@
   export let src: string;
 </script>
 
-<img class={clsx('rounded-full', _class)} {src} />
+<img class={clsx('rounded-full', _class)} alt="" {src} />
