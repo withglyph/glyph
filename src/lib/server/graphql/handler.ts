@@ -11,5 +11,4 @@ export const handler = createYoga<RequestEvent>({
   graphqlEndpoint: '/api/graphql',
   maskedErrors: false,
   plugins: [useErrorHandling()],
-  graphiql: { subscriptionsProtocol: 'GRAPHQL_SSE' },
 });

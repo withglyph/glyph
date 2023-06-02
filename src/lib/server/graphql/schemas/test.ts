@@ -12,7 +12,10 @@ builder.queryFields((t) => ({
 
   db: t.string({
     resolve: async () => {
-      const result = await db.user.findFirstOrThrow();
+      const result = await db
+        .selectFrom('users')
+        .select(['id'])
+        .executeTakeFirstOrThrow();
       return result.id;
     },
   }),
