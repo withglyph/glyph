@@ -94,8 +94,6 @@ module.exports = {
         '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/no-redundant-type-constituents': 'warn',
         '@typescript-eslint/no-require-imports': 'error',
-        '@typescript-eslint/no-unsafe-member-access': 'off',
-        '@typescript-eslint/no-unsafe-return': 'off',
         '@typescript-eslint/no-unnecessary-qualifier': 'warn',
         '@typescript-eslint/no-useless-empty-export': 'warn',
         '@typescript-eslint/prefer-enum-initializers': 'error',
