@@ -1,0 +1,6 @@
+query ArtworksPage_Query {
+  images {
+    id
+    ...Image_image
+  }
+}

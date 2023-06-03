@@ -1,27 +1,26 @@
 <script lang="ts">
-  import { graphql } from '$houdini';
   import { Helmet, Image } from '$lib/components';
-  import { unwrap } from '$lib/houdini';
+  import type { PageData } from './$houdini';
 
-  const query = unwrap(
-    graphql(`
-      query ArtworksPage_Query @load {
-        images {
-          id
-          ...Image_image
-        }
-      }
-    `)
-  );
+  export let data: PageData;
+
+  $: ({ ArtworksPage_Query } = data);
 </script>
 
 <Helmet title="아트" />
 
 <div class="grid grid-cols-4 gap-4">
-  {#each $query.images as image (image.id)}
-    <Image
-      class="aspect-1 w-full border rounded-3xl object-contain"
-      $image={image}
-    />
-  {/each}
+  {#if $ArtworksPage_Query.data}
+    {#each $ArtworksPage_Query.data.images as image (image.id)}
+      <Image
+        class="aspect-1 w-full border rounded-3xl object-contain"
+        $image={image}
+      />
+    {/each}
+  {:else}
+    <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
+    {#each Array.from({ length: 20 }) as _, index (index)}
+      <div class="aspect-1 w-full border rounded-3xl bg-gray-200" />
+    {/each}
+  {/if}
 </div>

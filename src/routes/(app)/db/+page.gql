@@ -1,0 +1,3 @@
+query DbPage_Query {
+  db
+}

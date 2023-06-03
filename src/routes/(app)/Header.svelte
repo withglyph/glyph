@@ -6,7 +6,7 @@
   import UserMenu from './UserMenu.svelte';
   import type { AppLayout_Header_query } from '$houdini';
 
-  let _query: AppLayout_Header_query;
+  let _query: AppLayout_Header_query | null;
   export { _query as $query };
 
   $: query = fragment(
@@ -41,28 +41,30 @@
 
       <div class="grow" />
 
-      {#if $query.me}
-        <div class="mx-6 h-6 border-x border-x-gray-300" />
-        <div class="flex items-center gap-5">
-          <div class="i-lc-heart square-5" />
-          <div class="i-lc-bell square-5" />
-        </div>
-        <div class="ml-6">
-          <UserMenu $profile={$query.me} />
-        </div>
-      {:else}
-        <a
-          class="rounded px-4 py-2 font-semibold transition duration-300 hover:bg-gray-200"
-          href="/user/login"
-        >
-          로그인
-        </a>
-        <a
-          class="rounded px-4 py-2 font-semibold text-brand-500 transition duration-300 hover:bg-gray-200"
-          href="/user/signup"
-        >
-          새 계정 만들기
-        </a>
+      {#if $query}
+        {#if $query.me}
+          <div class="mx-6 h-6 border-x border-x-gray-300" />
+          <div class="flex items-center gap-5">
+            <div class="i-lc-heart square-5" />
+            <div class="i-lc-bell square-5" />
+          </div>
+          <div class="ml-6">
+            <UserMenu $profile={$query.me} />
+          </div>
+        {:else}
+          <a
+            class="rounded px-4 py-2 font-semibold transition duration-300 hover:bg-gray-200"
+            href="/user/login"
+          >
+            로그인
+          </a>
+          <a
+            class="rounded px-4 py-2 font-semibold text-brand-500 transition duration-300 hover:bg-gray-200"
+            href="/user/signup"
+          >
+            새 계정 만들기
+          </a>
+        {/if}
       {/if}
     </section>
 

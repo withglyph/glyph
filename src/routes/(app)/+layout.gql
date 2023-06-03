@@ -1,0 +1,3 @@
+query AppLayout_Query {
+  ...AppLayout_Header_query
+}

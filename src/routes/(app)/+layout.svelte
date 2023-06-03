@@ -1,20 +1,15 @@
 <script lang="ts">
-  import { graphql } from '$houdini';
   import { Link } from '$lib/components';
-  import { unwrap } from '$lib/houdini';
   import Footer from './Footer.svelte';
   import Header from './Header.svelte';
+  import type { LayoutData } from './$houdini';
 
-  const query = unwrap(
-    graphql(`
-      query AppLayout_Query @load {
-        ...AppLayout_Header_query
-      }
-    `)
-  );
+  export let data: LayoutData;
+
+  $: ({ AppLayout_Query } = data);
 </script>
 
-<Header {$query} />
+<Header $query={$AppLayout_Query.data} />
 
 <main class="grow p-4">
   <div class="mx-auto max-w-screen-lg">

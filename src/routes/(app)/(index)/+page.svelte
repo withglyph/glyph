@@ -1,15 +1,10 @@
 <script lang="ts">
-  import { graphql } from '$houdini';
   import { Helmet, Tooltip } from '$lib/components';
-  import { unwrap } from '$lib/houdini';
+  import type { PageData } from './$houdini';
 
-  const query = unwrap(
-    graphql(`
-      query IndexPage_Query @load {
-        greeting
-      }
-    `)
-  );
+  export let data: PageData;
+
+  $: ({ IndexPage_Query } = data);
 </script>
 
 <Helmet
@@ -18,7 +13,7 @@
   title="펜슬 - 창작을 즐겁게"
 />
 
-<code>{$query.greeting}</code>
+<code>{$IndexPage_Query.data?.greeting}</code>
 
 <Tooltip message="OG Image" placement="top">
   <img alt="" src="https://pnxl.net/static/og.png" />

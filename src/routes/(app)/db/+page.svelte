@@ -1,17 +1,12 @@
 <script lang="ts">
-  import { graphql } from '$houdini';
   import { Helmet } from '$lib/components';
-  import { unwrap } from '$lib/houdini';
+  import type { PageData } from './$houdini';
 
-  const query = unwrap(
-    graphql(`
-      query DbPage_Query @load {
-        db
-      }
-    `)
-  );
+  export let data: PageData;
+
+  $: ({ DbPage_Query } = data);
 </script>
 
 <Helmet title="Database" />
 
-<code>{$query.db}</code>
+<code>{$DbPage_Query.data?.db}</code>

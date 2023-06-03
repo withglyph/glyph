@@ -122,7 +122,7 @@ module.exports = {
         ],
         '@typescript-eslint/no-unused-vars': [
           'warn',
-          { varsIgnorePattern: '^\\$\\$(Props|Events|Slots)$' },
+          { varsIgnorePattern: '^(\\$\\$(Props|Events|Slots)$|_)' },
         ],
       },
     },

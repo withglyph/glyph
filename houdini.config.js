@@ -3,12 +3,7 @@
 export default {
   acceptImperativeInstability: true,
   defaultCachePolicy: 'CacheAndNetwork',
-  plugins: {
-    'houdini-svelte': {
-      client: './src/lib/houdini/client',
-      defaultRouteBlocking: true,
-    },
-  },
+  plugins: { 'houdini-svelte': { client: './src/lib/houdini/client' } },
   scalars: {
     JSON: { type: 'unknown' },
     Void: { type: 'never' },
