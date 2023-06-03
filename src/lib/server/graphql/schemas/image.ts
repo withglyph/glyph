@@ -57,6 +57,7 @@ builder.queryFields((t) => ({
     resolve: async (query) => {
       return await db.image.findMany({
         ...query,
+        orderBy: { createdAt: 'desc' },
       });
     },
   }),
@@ -82,7 +83,7 @@ builder.queryFields((t) => ({
  */
 
 builder.mutationFields((t) => ({
-  prepareImageUpload: t.withAuth({ loggedIn: true }).field({
+  prepareImageUpload: t.field({
     type: PrepareImageUploadPayload,
     authScopes: { loggedIn: true },
     resolve: async () => {
@@ -95,11 +96,11 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  finalizeImageUpload: t.withAuth({ loggedIn: true }).prismaField({
+  finalizeImageUpload: t.prismaField({
     type: 'Image',
     authScopes: { loggedIn: true },
     args: { input: t.arg({ type: FinalizeImageUploadInput }) },
-    resolve: async (query, _, { input }, context) => {
+    resolve: async (query, _, { input }) => {
       const {
         path,
         size,
@@ -116,7 +117,6 @@ builder.mutationFields((t) => ({
         ...query,
         data: {
           id: createId(),
-          profileId: context.session.profileId,
           name: input.name,
           path,
           sizes,

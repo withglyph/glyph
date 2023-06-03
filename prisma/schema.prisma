@@ -13,8 +13,6 @@ datasource db {
 
 model Image {
   id          String   @id
-  profileId   String   @map("profile_id")
-  profile     Profile  @relation(fields: [profileId], references: [id])
   name        String
   size        Int
   format      String
@@ -40,7 +38,6 @@ model Profile {
   createdAt DateTime     @default(now()) @map("created_at")
 
   sessions       Session[]
-  uploadedImages Image[]
 
   @@index([userId, state])
   @@map("profiles")
