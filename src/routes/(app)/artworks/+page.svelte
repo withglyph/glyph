@@ -19,6 +19,9 @@
 
 <div class="grid grid-cols-4 gap-4">
   {#each $query.images as image (image.id)}
-    <Image class="aspect-1 w-full rounded-3xl object-cover" $image={image} />
+    <Image
+      class="aspect-1 w-full border rounded-3xl object-contain"
+      $image={image}
+    />
   {/each}
 </div>

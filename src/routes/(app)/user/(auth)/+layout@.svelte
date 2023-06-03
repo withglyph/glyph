@@ -12,7 +12,7 @@
 <main class="flex grow center">
   {#if query?.authBackgroundImage}
     <Image
-      class="pointer-events-none absolute inset-0 square-full"
+      class="pointer-events-none absolute inset-0 square-full object-cover"
       $image={query.authBackgroundImage}
     />
   {/if}

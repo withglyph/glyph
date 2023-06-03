@@ -14,8 +14,7 @@
   let loaded = false;
 
   let src: string | undefined = undefined;
-  let clientWidth: number | undefined = undefined;
-  let clientHeight: number | undefined = undefined;
+  let placeholderEl: HTMLImageElement | undefined = undefined;
 
   $: image = fragment(
     _image,
@@ -30,8 +29,10 @@
 
   $: sizes = [...$image.sizes, Number.POSITIVE_INFINITY].sort((a, b) => a - b);
 
-  $: if (clientWidth && clientHeight) {
-    const s = window.devicePixelRatio * Math.max(clientWidth, clientHeight);
+  $: if (placeholderEl) {
+    const s =
+      window.devicePixelRatio *
+      Math.max(placeholderEl.clientWidth, placeholderEl.clientHeight);
 
     for (const size of sizes) {
       if (size > s) {
@@ -53,14 +54,14 @@
 {#if loaded}
   <img class={_class} alt="" {src} />
 {:else}
-  <div
-    bind:clientWidth
-    bind:clientHeight
+  <img
+    bind:this={placeholderEl}
+    class={_class}
+    alt=""
+    src={$image.placeholder}
     use:intersectionObserver={{
       store: visible,
       once: true,
     }}
-  >
-    <img class={_class} alt="" src={$image.placeholder} />
-  </div>
+  />
 {/if}
