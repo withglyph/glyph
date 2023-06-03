@@ -20,6 +20,7 @@
     graphql(`
       fragment AppLayout_UserMenu_profile on Profile {
         name
+        ...Avatar_profile
       }
     `)
   );
@@ -60,7 +61,7 @@
   type="button"
   on:click={() => (open = true)}
 >
-  <Avatar class="square-8" src="https://picsum.photos/512/512" />
+  <Avatar class="square-8" {$profile} />
 </button>
 
 {#if open}

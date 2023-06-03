@@ -25,6 +25,8 @@ model Image {
   placeholder String
   createdAt   DateTime @default(now()) @map("created_at")
 
+  avatarProfile Profile[]
+
   @@map("images")
 }
 
@@ -35,9 +37,11 @@ model Profile {
   name      String
   state     ProfileState
   order     Int
+  avatarId  String?      @map("avatar_id")
+  avatar    Image?       @relation(fields: [avatarId], references: [id])
   createdAt DateTime     @default(now()) @map("created_at")
 
-  sessions       Session[]
+  sessions Session[]
 
   @@index([userId, state])
   @@map("profiles")

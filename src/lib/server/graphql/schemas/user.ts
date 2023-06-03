@@ -23,6 +23,7 @@ builder.prismaObject('Profile', {
     id: t.exposeString('id'),
     name: t.exposeString('name'),
     user: t.relation('user'),
+    avatar: t.relation('avatar', { nullable: true }),
   }),
 });
 
