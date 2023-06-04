@@ -5,14 +5,14 @@
 
   export let data: LayoutData;
 
-  $: ({ UserAuthLayout_Query } = data);
+  $: ({ UserAuthLayout_Query: query } = data);
 </script>
 
 <main class="flex grow center">
-  {#if $UserAuthLayout_Query.data?.authBackgroundImage}
+  {#if $query.data?.authBackgroundImage}
     <Image
       class="pointer-events-none absolute inset-0 square-full object-cover"
-      $image={$UserAuthLayout_Query.data.authBackgroundImage}
+      $image={$query.data.authBackgroundImage}
     />
   {/if}
 

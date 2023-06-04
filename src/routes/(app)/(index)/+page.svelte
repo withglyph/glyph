@@ -4,7 +4,7 @@
 
   export let data: PageData;
 
-  $: ({ IndexPage_Query } = data);
+  $: ({ IndexPage_Query: query } = data);
 </script>
 
 <Helmet
@@ -13,4 +13,4 @@
   title="펜슬 - 창작을 즐겁게"
 />
 
-<code>{$IndexPage_Query.data?.greeting}</code>
+<code>{$query.data?.greeting}</code>

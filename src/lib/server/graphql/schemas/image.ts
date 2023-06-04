@@ -37,9 +37,14 @@ const PrepareImageUploadPayload = builder.simpleObject(
  * * Inputs
  */
 
-const FinalizeImageUploadInput = builder.inputType('FinalizeImageUploadInput', {
+const PrepareImageUploadInput = builder.inputType('PrepareImageUploadInput', {
   fields: (t) => ({
     name: t.string(),
+  }),
+});
+
+const FinalizeImageUploadInput = builder.inputType('FinalizeImageUploadInput', {
+  fields: (t) => ({
     path: t.string(),
   }),
 });
@@ -82,9 +87,10 @@ builder.queryFields((t) => ({
 builder.mutationFields((t) => ({
   prepareImageUpload: t.field({
     type: PrepareImageUploadPayload,
+    args: { input: t.arg({ type: PrepareImageUploadInput }) },
     authScopes: { loggedIn: true },
-    resolve: async () => {
-      const path = `u/${createS3ObjectKey()}`;
+    resolve: async (_, { input }) => {
+      const path = `u/${createS3ObjectKey()}/${input.name}`;
 
       return {
         path,
@@ -95,8 +101,8 @@ builder.mutationFields((t) => ({
 
   finalizeImageUpload: t.prismaField({
     type: 'Image',
-    authScopes: { loggedIn: true },
     args: { input: t.arg({ type: FinalizeImageUploadInput }) },
+    authScopes: { loggedIn: true },
     resolve: async (query, _, { input }) => {
       const {
         path,
@@ -110,12 +116,13 @@ builder.mutationFields((t) => ({
         hash,
       } = await processMedia(input.path, [320, 640, 960, 1280]);
       await s3DeleteObject(input.path);
+      const name = input.path.split('/').pop()!;
 
       return await db.image.create({
         ...query,
         data: {
           id: createId(),
-          name: input.name,
+          name,
           path,
           sizes,
           size,

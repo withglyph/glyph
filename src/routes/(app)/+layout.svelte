@@ -5,10 +5,10 @@
 
   export let data: LayoutData;
 
-  $: ({ AppLayout_Query } = data);
+  $: ({ AppLayout_Query: query } = data);
 </script>
 
-<Header $query={$AppLayout_Query.data} />
+<Header $query={$query.data} />
 
 <main class="grow p-4">
   <div class="mx-auto max-w-screen-lg">

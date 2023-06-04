@@ -5,11 +5,13 @@
   import type { ChangeEventHandler } from 'svelte/elements';
 
   export let data: PageData;
-  $: ({ ArtworksPage_Query } = data);
+  $: ({ ArtworksPage_Query: query } = data);
 
   const prepareImageUpload = graphql(`
-    mutation ArtworksPage_PrepareImageUploadMutation {
-      prepareImageUpload {
+    mutation ArtworksPage_PrepareImageUpload_Mutation(
+      $input: PrepareImageUploadInput!
+    ) {
+      prepareImageUpload(input: $input) {
         path
         presignedUrl
       }
@@ -17,7 +19,7 @@
   `);
 
   const finalizeImageUpload = graphql(`
-    mutation ArtworksPage_FinalizeImageUploadMutation(
+    mutation ArtworksPage_FinalizeImageUpload_Mutation(
       $input: FinalizeImageUploadInput!
     ) {
       finalizeImageUpload(input: $input) {
@@ -38,7 +40,10 @@
     try {
       loading = true;
 
-      const resp = await prepareImageUpload.mutate(null);
+      const resp = await prepareImageUpload.mutate({
+        input: { name: files[0].name },
+      });
+
       if (resp.data === null || resp.errors) {
         throw new Error('Failed to prepare image upload');
       }
@@ -51,7 +56,7 @@
       });
 
       await finalizeImageUpload.mutate({
-        input: { path, name: files[0].name },
+        input: { path },
       });
     } finally {
       loading = false;
@@ -73,8 +78,8 @@
 </div>
 
 <div class="grid grid-cols-4 gap-4">
-  {#if $ArtworksPage_Query.data}
-    {#each $ArtworksPage_Query.data.images as image (image.id)}
+  {#if $query.data}
+    {#each $query.data.images as image (image.id)}
       <Tooltip message={image.id}>
         <Image
           class="aspect-1 w-full border rounded-3xl object-cover"
