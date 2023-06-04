@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Helmet, Image } from '$lib/components';
+  import { Helmet, Image, Tooltip } from '$lib/components';
   import type { PageData } from './$houdini';
 
   export let data: PageData;
@@ -12,10 +12,12 @@
 <div class="grid grid-cols-4 gap-4">
   {#if $ArtworksPage_Query.data}
     {#each $ArtworksPage_Query.data.images as image (image.id)}
-      <Image
-        class="aspect-1 w-full border rounded-3xl object-contain"
-        $image={image}
-      />
+      <Tooltip message={image.id}>
+        <Image
+          class="aspect-1 w-full border rounded-3xl object-cover"
+          $image={image}
+        />
+      </Tooltip>
     {/each}
   {:else}
     <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->

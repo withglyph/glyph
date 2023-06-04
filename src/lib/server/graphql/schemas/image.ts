@@ -1,6 +1,7 @@
 import { db } from '$lib/server/database';
 import {
   createS3ObjectKey,
+  s3DeleteObject,
   s3PutObjectGetSignedUrl,
 } from '$lib/server/external/aws';
 import { processMedia } from '$lib/server/external/mp';
@@ -18,10 +19,6 @@ builder.prismaObject('Image', {
     path: t.exposeString('path'),
     sizes: t.exposeIntList('sizes'),
 
-    width: t.exposeInt('width'),
-    height: t.exposeInt('height'),
-
-    color: t.exposeString('color'),
     placeholder: t.exposeString('placeholder'),
   }),
 });
@@ -112,6 +109,7 @@ builder.mutationFields((t) => ({
         color,
         hash,
       } = await processMedia(input.path, [320, 640, 960, 1280]);
+      await s3DeleteObject(input.path);
 
       return await db.image.create({
         ...query,

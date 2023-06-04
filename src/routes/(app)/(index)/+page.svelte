@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Helmet, Tooltip } from '$lib/components';
+  import { Helmet } from '$lib/components';
   import type { PageData } from './$houdini';
 
   export let data: PageData;
@@ -14,7 +14,3 @@
 />
 
 <code>{$IndexPage_Query.data?.greeting}</code>
-
-<Tooltip message="OG Image" placement="top">
-  <img alt="" src="https://pnxl.net/static/og.png" />
-</Tooltip>
