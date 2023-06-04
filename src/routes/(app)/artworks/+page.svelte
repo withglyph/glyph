@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Button, Helmet, Image, Tooltip } from '$lib/components';
   import { graphql, useMutation, useQuery } from '$lib/houdini';
+  import { trackable } from '$lib/svelte/store';
   import type { ChangeEventHandler } from 'svelte/elements';
 
   const query = useQuery(
@@ -39,7 +40,7 @@
     `)
   );
 
-  let loading = false;
+  let loading = trackable();
   let fileEl: HTMLInputElement;
 
   const handleUpload: ChangeEventHandler<HTMLInputElement> = async (event) => {
@@ -48,9 +49,7 @@
       return;
     }
 
-    try {
-      loading = true;
-
+    await loading.track(async () => {
       const { path, presignedUrl } = await prepareImageUpload({
         name: file.name,
       });
@@ -61,16 +60,14 @@
       });
 
       await finalizeImageUpload({ path });
-    } finally {
-      loading = false;
-    }
+    });
   };
 </script>
 
 <Helmet title="아트" />
 
 <div class="mb-4 flex flex-col items-end">
-  <Button {loading} on:click={() => fileEl.click()}>Upload</Button>
+  <Button loading={$loading} on:click={() => fileEl.click()}>Upload</Button>
   <input
     bind:this={fileEl}
     class="hidden"
