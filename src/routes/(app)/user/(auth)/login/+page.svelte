@@ -8,7 +8,7 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation LoginPage_Login_Mutation($input: LoginInput!) {
+      mutation UserLoginPage_Login_Mutation($input: LoginInput!) {
         login(input: $input) {
           __typename
         }

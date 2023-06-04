@@ -3,6 +3,7 @@
   import { tick } from 'svelte';
   import { fragment, graphql } from '$houdini';
   import { Avatar } from '$lib/components';
+  import { useMutation } from '$lib/houdini';
   import { portal } from '$lib/svelte/actions';
   import type { AppLayout_UserMenu_profile } from '$houdini';
 
@@ -24,15 +25,17 @@
     `)
   );
 
-  const logout = graphql(`
-    mutation AppLayout_UserMenu_Logout_Mutation {
-      logout
-    }
-  `);
+  const logout = useMutation(
+    graphql(`
+      mutation AppLayout_UserMenu_Logout_Mutation {
+        logout
+      }
+    `)
+  );
 
   const handleLogout = async () => {
-    await logout.mutate(null);
-    location.reload();
+    await logout();
+    location.href = '/';
   };
 
   const update = async () => {
