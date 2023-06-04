@@ -1,11 +1,12 @@
 <script lang="ts">
   import { graphql } from '$houdini';
   import { Button, Helmet, Image, Tooltip } from '$lib/components';
+  import { useQuery } from '$lib/houdini';
   import type { PageData } from './$houdini';
   import type { ChangeEventHandler } from 'svelte/elements';
 
   export let data: PageData;
-  $: ({ ArtworksPage_Query: query } = data);
+  $: query = useQuery(data.ArtworksPage_Query);
 
   const prepareImageUpload = graphql(`
     mutation ArtworksPage_PrepareImageUpload_Mutation(
@@ -78,19 +79,12 @@
 </div>
 
 <div class="grid grid-cols-4 gap-4">
-  {#if $query.data}
-    {#each $query.data.images as image (image.id)}
-      <Tooltip message={image.id}>
-        <Image
-          class="aspect-1 w-full border rounded-3xl object-cover"
-          $image={image}
-        />
-      </Tooltip>
-    {/each}
-  {:else}
-    <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
-    {#each Array.from({ length: 20 }) as _, index (index)}
-      <div class="aspect-1 w-full border rounded-3xl bg-gray-200" />
-    {/each}
-  {/if}
+  {#each $query.images as image (image.id)}
+    <Tooltip message={image.id}>
+      <Image
+        class="aspect-1 w-full border rounded-3xl object-cover"
+        $image={image}
+      />
+    </Tooltip>
+  {/each}
 </div>

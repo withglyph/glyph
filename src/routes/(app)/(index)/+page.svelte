@@ -1,10 +1,10 @@
 <script lang="ts">
   import { Helmet } from '$lib/components';
+  import { useQuery } from '$lib/houdini';
   import type { PageData } from './$houdini';
 
   export let data: PageData;
-
-  $: ({ IndexPage_Query: query } = data);
+  $: query = useQuery(data.IndexPage_Query);
 </script>
 
 <Helmet
@@ -13,4 +13,4 @@
   title="펜슬 - 창작을 즐겁게"
 />
 
-<code>{$query.data?.greeting}</code>
+<code>{$query.greeting}</code>

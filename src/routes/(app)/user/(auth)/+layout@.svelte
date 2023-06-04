@@ -1,18 +1,18 @@
 <script lang="ts">
   import Wordmark from '$assets/branding/wordmark.svg?component';
   import { Image } from '$lib/components';
+  import { useQuery } from '$lib/houdini';
   import type { LayoutData } from './$houdini';
 
   export let data: LayoutData;
-
-  $: ({ UserAuthLayout_Query: query } = data);
+  $: query = useQuery(data.UserAuthLayout_Query);
 </script>
 
 <main class="flex grow center">
-  {#if $query.data?.authBackgroundImage}
+  {#if $query.authBackgroundImage}
     <Image
       class="pointer-events-none absolute inset-0 square-full object-cover"
-      $image={$query.data.authBackgroundImage}
+      $image={$query.authBackgroundImage}
     />
   {/if}
 
