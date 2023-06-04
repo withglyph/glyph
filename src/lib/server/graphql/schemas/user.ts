@@ -1,3 +1,4 @@
+import { hashPassword } from '@penxle/wasm';
 import dayjs from 'dayjs';
 import { FormValidationError } from '$lib/errors';
 import { db, injectLoader } from '$lib/server/database';
@@ -158,7 +159,7 @@ builder.mutationFields((t) => ({
             .values({
               id: userId,
               email: input.email.toLowerCase(),
-              password: input.password,
+              password: hashPassword(input.password),
               state: 'ACTIVE',
               createdAt: new Date(),
             })
