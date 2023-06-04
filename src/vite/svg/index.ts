@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises'; // eslint-disable-line import/no-nodejs-modules
+import { readFile } from 'node:fs/promises';
 import { compile } from 'svelte/compiler';
 import { optimize } from 'svgo';
 import type { Plugin } from 'vite';
@@ -28,7 +28,6 @@ export const svg = (): Plugin => ({
 
     const svg = data.replace(/<svg/, '<svg {...$$$$props}');
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { js } = compile(svg, {
       filename,
       namespace: 'svg',
@@ -37,7 +36,6 @@ export const svg = (): Plugin => ({
       hydratable: !transformOptions?.ssr,
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return js;
   },
 });
