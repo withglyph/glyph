@@ -68,7 +68,7 @@
 <Helmet title="아트" />
 
 <div class="mb-4 flex flex-col items-end">
-  <Button on:click={() => greet('hello')}>Greet</Button>
+  <Button on:click={() => alert(greet('hello'))}>Greet</Button>
   <Button loading={$loading} on:click={() => fileEl.click()}>Upload</Button>
   <input
     bind:this={fileEl}

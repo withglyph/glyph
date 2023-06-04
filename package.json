@@ -12,6 +12,7 @@
     "bootstrap": "pnpm install && husky install",
     "dev": "doppler run --command 'vite dev'",
     "build": "vite build",
+    "build:wasm": "cd wasm && pnpm build",
     "sync": "pnpm run codegen",
     "codegen": "pnpm run codegen:kit && pnpm run codegen:db && pnpm run codegen:gql",
     "codegen:kit": "doppler run --command 'pnpm exec svelte-kit sync'",
