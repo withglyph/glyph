@@ -11,17 +11,34 @@ import type {
 import type { Unwrap } from '$lib/types';
 import type { Readable } from 'svelte/store';
 
-type Mutate<D extends GraphQLObject> = () => Promise<Unwrap<D>>;
+type UseQueryReturn<D extends GraphQLObject> = Readable<D> & {
+  refetch: () => Promise<void>;
+};
 
-type ParameterizedMutate<
+type Mutate<D extends GraphQLObject> = () => Promise<Unwrap<D>>;
+type ParameterizedMutate<D extends GraphQLObject, V> = (
+  input: V
+) => Promise<Unwrap<D>>;
+type UseMutationReturn<
   D extends GraphQLObject,
-  I extends GraphQLVariables
-> = (input: I) => Promise<Unwrap<D>>;
+  I extends { input: GraphQLVariables } | null
+> = (I extends { input: infer V } ? ParameterizedMutate<D, V> : Mutate<D>) &
+  Readable<{ inflight: boolean }>;
 
 export const useQuery = <D extends GraphQLObject, I extends GraphQLVariables>(
   store: QueryStore<D, I>
-): Readable<D> => {
-  return derived(store, ($store: QueryResult<D, I>) => $store.data!);
+): UseQueryReturn<D> => {
+  const { subscribe } = derived(
+    store,
+    ($store: QueryResult<D, I>) => $store.data!
+  );
+
+  return {
+    subscribe,
+    refetch: async () => {
+      await store.fetch();
+    },
+  };
 };
 
 export const useMutation = <
@@ -31,8 +48,8 @@ export const useMutation = <
   O extends GraphQLObject
 >(
   store: MutationStore<D, I, O>
-): I extends null ? Mutate<D> : ParameterizedMutate<D, V> => {
-  return async (input?: V) => {
+): UseMutationReturn<D, I> => {
+  const mutate = (async (input?: V) => {
     try {
       const { data } = await store.mutate((input ? { input } : null) as I);
       const fields = Object.values(data!);
@@ -50,5 +67,12 @@ export const useMutation = <
       }
       throw error;
     }
-  };
+  }) as UseMutationReturn<D, I>;
+
+  const { subscribe } = derived(store, ($store: QueryResult<D, I>) => ({
+    inflight: $store.fetching,
+  }));
+
+  mutate.subscribe = subscribe;
+  return mutate;
 };
