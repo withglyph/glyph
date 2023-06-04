@@ -8,12 +8,14 @@
   $: ({ AppLayout_Query: query } = data);
 </script>
 
-<Header $query={$query.data} />
+{#if $query.data}
+  <Header $query={$query.data} />
 
-<main class="grow p-4">
-  <div class="mx-auto max-w-screen-lg">
-    <slot />
-  </div>
-</main>
+  <main class="grow p-4">
+    <div class="mx-auto max-w-screen-lg">
+      <slot />
+    </div>
+  </main>
 
-<Footer />
+  <Footer />
+{/if}

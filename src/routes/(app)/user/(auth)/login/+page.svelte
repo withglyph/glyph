@@ -1,11 +1,9 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
   import Wordmark from '$assets/branding/wordmark-colored.svg?component';
   import { graphql } from '$houdini';
   import { Button, Helmet, Link } from '$lib/components';
   import { FormField, PasswordInput, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
-  import { refreshAll } from '$lib/houdini';
   import { LoginInputSchema } from '$lib/validations';
 
   const { form } = createMutationForm({
@@ -17,9 +15,8 @@
       }
     `),
     schema: LoginInputSchema,
-    onSuccess: async () => {
-      await refreshAll();
-      await goto('/');
+    onSuccess: () => {
+      location.href = '/';
     },
   });
 </script>

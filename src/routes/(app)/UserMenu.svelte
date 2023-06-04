@@ -3,7 +3,6 @@
   import { tick } from 'svelte';
   import { fragment, graphql } from '$houdini';
   import { Avatar } from '$lib/components';
-  import { refreshAll } from '$lib/houdini';
   import { portal } from '$lib/svelte/actions';
   import type { AppLayout_UserMenu_profile } from '$houdini';
 
@@ -33,7 +32,7 @@
 
   const handleLogout = async () => {
     await logout.mutate(null);
-    await refreshAll();
+    location.reload();
   };
 
   const update = async () => {

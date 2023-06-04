@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
   import { graphql } from '$houdini';
   import { Button, Helmet, Link } from '$lib/components';
   import {
@@ -9,7 +8,6 @@
     TextInput,
   } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
-  import { refreshAll } from '$lib/houdini';
   import { SignupInputSchema } from '$lib/validations';
 
   const { form } = createMutationForm({
@@ -21,9 +19,8 @@
       }
     `),
     schema: SignupInputSchema,
-    onSuccess: async () => {
-      await refreshAll();
-      await goto('/');
+    onSuccess: () => {
+      location.href = '/';
     },
   });
 </script>
