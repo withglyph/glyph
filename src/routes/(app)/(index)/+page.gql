@@ -1,3 +1,0 @@
-query IndexPage_Query {
-  greeting
-}

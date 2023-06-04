@@ -1,10 +1,14 @@
 <script lang="ts">
   import { Helmet } from '$lib/components';
-  import { useQuery } from '$lib/houdini';
-  import type { PageData } from './$houdini';
+  import { graphql, useQuery } from '$lib/houdini';
 
-  export let data: PageData;
-  $: query = useQuery(data.IndexPage_Query);
+  const query = useQuery(
+    graphql(`
+      query IndexPage_Query @load {
+        greeting
+      }
+    `)
+  );
 </script>
 
 <Helmet

@@ -1,11 +1,15 @@
 <script lang="ts">
-  import { useQuery } from '$lib/houdini';
+  import { graphql, useQuery } from '$lib/houdini';
   import Footer from './Footer.svelte';
   import Header from './Header.svelte';
-  import type { LayoutData } from './$houdini';
 
-  export let data: LayoutData;
-  $: query = useQuery(data.AppLayout_Query);
+  const query = useQuery(
+    graphql(`
+      query AppLayout_Query @load {
+        ...AppLayout_Header_query
+      }
+    `)
+  );
 </script>
 
 {#if $query}

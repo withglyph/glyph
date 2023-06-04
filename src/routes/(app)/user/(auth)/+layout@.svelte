@@ -4,6 +4,7 @@
   import { useQuery } from '$lib/houdini';
   import type { LayoutData } from './$houdini';
 
+  // houdini에 @ 들어가는 파일명에서는 @load 가 제대로 동작 안 하는 버그 있음. 별도의 gql 파일로 workaround 함
   export let data: LayoutData;
   $: query = useQuery(data.UserAuthLayout_Query);
 </script>
