@@ -5,6 +5,7 @@ import { createAccessToken } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { LoginInputSchema, SignupInputSchema } from '$lib/validations';
 import { builder } from '../builder';
+import { Image } from './image';
 
 /**
  * * Types
@@ -24,6 +25,11 @@ export const Profile = builder.loadableObject('Profile', {
     id: t.exposeString('id'),
     name: t.exposeString('name'),
     user: t.field({ type: User, resolve: ({ userId }) => userId }),
+    avatar: t.field({
+      type: Image,
+      nullable: true,
+      resolve: ({ avatarId }) => avatarId,
+    }),
   }),
 });
 

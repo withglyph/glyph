@@ -12,7 +12,7 @@ import { builder } from '../builder';
  * * Types
  */
 
-const Image = builder.loadableObject('Image', {
+export const Image = builder.loadableObject('Image', {
   ...injectLoader('images'),
   fields: (t) => ({
     id: t.exposeString('id'),
@@ -58,7 +58,11 @@ builder.queryFields((t) => ({
   images: t.field({
     type: [Image],
     resolve: async () => {
-      return await db.selectFrom('images').selectAll().execute();
+      return await db
+        .selectFrom('images')
+        .selectAll()
+        .orderBy('createdAt', 'desc')
+        .execute();
     },
   }),
 
@@ -124,7 +128,7 @@ builder.mutationFields((t) => ({
         .insertInto('images')
         .values({
           id,
-          name: input.name,
+          name,
           path,
           sizes: JSON.stringify(sizes),
           size,
