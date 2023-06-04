@@ -1,5 +1,5 @@
 query ArtworksPage_Query {
-  images {
+  images @list(name: "ArtworksPage_Query_images") {
     id
     ...Image_image
   }
