@@ -1,5 +1,7 @@
 import { json } from '@sveltejs/kit';
+import { ipAddress } from '@vercel/edge';
 import { enabled } from '$lib/features';
+import { createTaskRunner } from '$lib/server/task';
 import { setupGlobals } from './common';
 import type { Handle, RequestEvent } from '@sveltejs/kit';
 
@@ -9,7 +11,8 @@ setupGlobals();
 
 const populateLocals = (event: RequestEvent): App.Locals => {
   return {
-    ipAddress: event.getClientAddress(),
+    ipAddress: ipAddress(event.request) ?? event.getClientAddress(),
+    runTask: createTaskRunner(event),
   };
 };
 
