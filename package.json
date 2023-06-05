@@ -12,18 +12,18 @@
     "bootstrap": "pnpm install && husky install",
     "dev": "doppler run --command 'vite dev'",
     "build": "vite build",
-    "sync": "pnpm run db:migrate && pnpm run codegen",
+    "sync": "pnpm run codegen",
     "codegen": "pnpm run codegen:kit && pnpm run codegen:db && pnpm run codegen:gql",
     "codegen:kit": "doppler run --command 'pnpm exec svelte-kit sync'",
-    "codegen:db": "doppler run --command 'pnpm prisma generate'",
+    "codegen:db": "prisma generate",
     "codegen:gql": "houdini generate --pull-schema",
-    "db:migrate": "doppler run --command 'pnpm prisma migrate dev'",
-    "db:migrate:create": "doppler run --command 'pnpm prisma migrate dev --create-only'",
+    "db:migrate": "doppler run --command 'pnpm exec prisma migrate dev'",
+    "db:migrate:create": "doppler run --command 'pnpm exec prisma migrate dev --create-only'",
     "lint": "eslint --max-warnings=0 .",
     "format": "eslint --fix .",
     "check": "svelte-check --fail-on-warnings",
     "test": "playwright test",
-    "vercel-build": "prisma generate && pnpm run build && prisma migrate deploy"
+    "vercel-build": "pnpm run codegen && pnpm run build && prisma migrate deploy"
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.345.0",

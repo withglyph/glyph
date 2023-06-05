@@ -12,6 +12,7 @@ import { builder } from '../builder';
  */
 
 builder.prismaObject('User', {
+  select: true,
   fields: (t) => ({
     id: t.exposeString('id'),
     email: t.exposeString('email'),
@@ -19,6 +20,7 @@ builder.prismaObject('User', {
 });
 
 builder.prismaObject('Profile', {
+  select: true,
   fields: (t) => ({
     id: t.exposeString('id'),
     name: t.exposeString('name'),
