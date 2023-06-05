@@ -71,6 +71,7 @@
     "graphql": "^16.6.0",
     "graphql-scalars": "^1.22.1",
     "graphql-yoga": "^3.9.1",
+    "hash-wasm": "^4.9.0",
     "houdini": "^1.2.5",
     "houdini-svelte": "^1.2.5",
     "husky": "^8.0.3",

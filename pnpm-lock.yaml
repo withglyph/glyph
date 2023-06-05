@@ -143,6 +143,9 @@ devDependencies:
   graphql-yoga:
     specifier: ^3.9.1
     version: 3.9.1(graphql@16.6.0)
+  hash-wasm:
+    specifier: ^4.9.0
+    version: 4.9.0
   houdini:
     specifier: ^1.2.5
     version: 1.2.5
@@ -5019,6 +5022,10 @@ packages:
 
   /hash-it@6.0.0:
     resolution: {integrity: sha512-KHzmSFx1KwyMPw0kXeeUD752q/Kfbzhy6dAZrjXV9kAIXGqzGvv8vhkUqj+2MGZldTo0IBpw6v7iWE7uxsvH0w==}
+    dev: true
+
+  /hash-wasm@4.9.0:
+    resolution: {integrity: sha512-7SW7ejyfnRxuOc7ptQHSf4LDoZaWOivfzqw+5rpcQku0nHfmicPKE51ra9BiRLAmT8+gGLestr1XroUkqdjL6w==}
     dev: true
 
   /hosted-git-info@2.8.9:

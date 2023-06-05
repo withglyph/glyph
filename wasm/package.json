@@ -1,5 +1,8 @@
 {
   "scripts": {
     "build": "wasm-pack build --scope penxle && rm -rf pkg/.gitignore"
+  },
+  "devDependencies": {
+    "hash-wasm": "^4.9.0"
   }
 }

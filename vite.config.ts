@@ -9,6 +9,7 @@ import { svg } from './src/vite';
 // eslint-disable-next-line import/no-default-export
 export default defineConfig({
   server: { host: '127.0.0.1', port: 4000, strictPort: true },
-  plugins: [svg(), wasm(), tla(), houdini(), unocss(), sveltekit()],
+  // plugins: [tla(), svg(), wasm(), houdini(), unocss(), sveltekit()],
+  plugins: [tla(), svg(), wasm(), houdini(), unocss(), sveltekit()],
   preview: { host: '127.0.0.1', port: 5000, strictPort: true },
 });
