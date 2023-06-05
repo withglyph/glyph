@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { FormValidationError } from '$lib/errors';
 import { db, injectLoader } from '$lib/server/database';
-import { createAccessToken, hashPassword } from '$lib/server/utils';
+import { createAccessToken } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { LoginInputSchema, SignupInputSchema } from '$lib/validations';
 import { builder } from '../builder';
@@ -158,7 +158,7 @@ builder.mutationFields((t) => ({
             .values({
               id: userId,
               email: input.email.toLowerCase(),
-              password: await hashPassword(input.password),
+              password: input.password,
               state: 'ACTIVE',
               createdAt: new Date(),
             })

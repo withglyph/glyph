@@ -4,13 +4,11 @@
   "files": [
     "wasm_bg.wasm",
     "wasm.js",
-    "wasm_bg.js",
     "wasm.d.ts"
   ],
   "module": "wasm.js",
   "types": "wasm.d.ts",
   "sideEffects": [
-    "./wasm.js",
     "./snippets/*"
   ]
 }

@@ -1,1 +1,1 @@
-export { handler as GET, handler as POST } from '$lib/server/graphql/handler';
+export { handler as POST } from '$lib/server/graphql/handler';

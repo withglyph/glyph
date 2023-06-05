@@ -1,3 +1,4 @@
+import init, { greet } from '@penxle/wasm';
 import { db } from '$lib/server/database';
 import { builder } from '../builder';
 
@@ -7,7 +8,10 @@ import { builder } from '../builder';
 
 builder.queryFields((t) => ({
   greeting: t.string({
-    resolve: () => 'Hello world!',
+    resolve: async () => {
+      await init();
+      return greet('Hello world!');
+    },
   }),
 
   db: t.string({
