@@ -23,7 +23,7 @@
     "format": "eslint --fix .",
     "check": "svelte-check --fail-on-warnings",
     "test": "playwright test",
-    "vercel-build": "pnpm run codegen && pnpm run build && prisma migrate deploy"
+    "vercel-build": "prisma generate && pnpm run build && prisma migrate deploy"
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.345.0",
