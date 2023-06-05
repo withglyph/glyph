@@ -1,0 +1,1 @@
+ALTER TABLE "images" ADD COLUMN "hash" TEXT NOT NULL;

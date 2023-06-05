@@ -7,17 +7,12 @@ import { builder } from '../builder';
 
 builder.queryFields((t) => ({
   greeting: t.string({
-    resolve: () => {
-      return 'Hello world!';
-    },
+    resolve: () => 'Hello world!',
   }),
 
   db: t.string({
     resolve: async () => {
-      const result = await db
-        .selectFrom('users')
-        .select(['id'])
-        .executeTakeFirstOrThrow();
+      const result = await db.user.findFirstOrThrow();
       return result.id;
     },
   }),
