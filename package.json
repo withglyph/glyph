@@ -1,12 +1,11 @@
 {
-  "name": "@penxle/penxle",
+  "name": "@penxle/web",
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@8.6.0",
   "engines": {
-    "node": ">=18",
-    "pnpm": ">=8"
+    "node": "^18 || ^20",
+    "pnpm": "^8.6.0"
   },
   "scripts": {
     "bootstrap": "pnpm install && husky install",
@@ -23,7 +22,7 @@
     "format": "eslint --fix .",
     "check": "svelte-check --fail-on-warnings",
     "test": "playwright test",
-    "vercel-build": "prisma generate && pnpm run build && prisma migrate deploy"
+    "vercel-build": "svelte-kit sync && prisma generate && pnpm run build && prisma migrate deploy"
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.345.0",
