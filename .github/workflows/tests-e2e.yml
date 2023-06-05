@@ -3,6 +3,9 @@ name: "Tests: E2E"
 on:
   deployment_status:
 
+env:
+  DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+
 jobs:
   playwright:
     name: Playwright
@@ -34,12 +37,9 @@ jobs:
 
       - name: Run code generation
         run: pnpm run codegen
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
 
       - name: Run tests
         run: pnpm run test
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.environment_url }}
           VERCEL_PROTECTION_BYPASS_TOKEN: ${{ secrets.VERCEL_PROTECTION_BYPASS_TOKEN }}
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
