@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { greet } from '@penxle/wasm';
   import { Button, Helmet, Image, Tooltip } from '$lib/components';
   import { graphql, useMutation, useQuery } from '$lib/houdini';
   import { trackable } from '$lib/svelte/store';
@@ -68,7 +67,6 @@
 <Helmet title="아트" />
 
 <div class="mb-4 flex flex-col items-end">
-  <Button on:click={() => greet('hello')}>Greet</Button>
   <Button loading={$loading} on:click={() => fileEl.click()}>Upload</Button>
   <input
     bind:this={fileEl}

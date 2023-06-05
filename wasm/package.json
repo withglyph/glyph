@@ -1,5 +1,0 @@
-{
-  "scripts": {
-    "build": "wasm-pack build --scope penxle && rm -rf pkg/.gitignore"
-  }
-}
