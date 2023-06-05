@@ -32,10 +32,11 @@ export const extendContext = async (
       const sessionId = payload.jti;
 
       if (sessionId) {
-        const session = await db.session.findUnique({
-          select: { userId: true, profileId: true },
-          where: { id: sessionId },
-        });
+        const session = await db
+          .selectFrom('sessions')
+          .select(['userId', 'profileId'])
+          .where('id', '=', sessionId)
+          .executeTakeFirst();
 
         if (session) {
           ctx.session = {

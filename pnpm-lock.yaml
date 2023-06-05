@@ -27,23 +27,26 @@ devDependencies:
     specifier: ^1.2.9
     version: 1.2.9
   '@iconify-json/lucide':
-    specifier: ^1.1.96
-    version: 1.1.96
+    specifier: ^1.1.97
+    version: 1.1.97
   '@iconify-json/ri':
     specifier: ^1.1.9
     version: 1.1.9
   '@iconify/utils':
     specifier: ^2.1.5
     version: 2.1.5
+  '@planetscale/database':
+    specifier: ^1.7.0
+    version: 1.7.0
   '@playwright/test':
     specifier: ^1.34.3
     version: 1.34.3
   '@pothos/core':
     specifier: ^3.30.0
     version: 3.30.0(graphql@16.6.0)
-  '@pothos/plugin-prisma':
-    specifier: ^3.51.1
-    version: 3.51.1(@pothos/core@3.30.0)(@prisma/client@4.15.0)(graphql@16.6.0)(typescript@5.1.3)
+  '@pothos/plugin-dataloader':
+    specifier: ^3.17.1
+    version: 3.17.1(@pothos/core@3.30.0)(dataloader@2.2.2)(graphql@16.6.0)
   '@pothos/plugin-scope-auth':
     specifier: ^3.19.2
     version: 3.19.2(@pothos/core@3.30.0)(graphql@16.6.0)
@@ -80,6 +83,9 @@ devDependencies:
   '@vercel/analytics':
     specifier: ^1.0.1
     version: 1.0.1
+  '@vercel/edge':
+    specifier: ^0.3.4
+    version: 0.3.4
   argon2:
     specifier: ^0.30.3
     version: 0.30.3
@@ -92,6 +98,9 @@ devDependencies:
   dayjs:
     specifier: ^1.11.8
     version: 1.11.8
+  dbmate:
+    specifier: ^2.4.0
+    version: 2.4.0
   eslint:
     specifier: ^8.42.0
     version: 8.42.0
@@ -143,9 +152,21 @@ devDependencies:
   jose:
     specifier: ^4.14.4
     version: 4.14.4
+  kysely:
+    specifier: ^0.25.0
+    version: 0.25.0
+  kysely-codegen:
+    specifier: ^0.10.0
+    version: 0.10.0(kysely@0.25.0)(mysql2@3.3.3)
+  kysely-planetscale:
+    specifier: ^1.3.0
+    version: 1.3.0(@planetscale/database@1.7.0)(kysely@0.25.0)
   lint-staged:
     specifier: ^13.2.2
     version: 13.2.2
+  mysql2:
+    specifier: ^3.3.3
+    version: 3.3.3
   nanoid:
     specifier: ^4.0.2
     version: 4.0.2
@@ -1231,6 +1252,13 @@ packages:
       '@babel/types': 7.22.4
     dev: true
 
+  /@babel/runtime@7.22.3:
+    resolution: {integrity: sha512-XsDuspWKLUsxwCp6r7EhsExHtYfbe5oAGQ19kqngTdCPUoPQzOPdUbD/pB9PJiwb2ptYKQDjSJT3R6dC+EPqfQ==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: 0.13.11
+    dev: true
+
   /@babel/types@7.22.4:
     resolution: {integrity: sha512-Tx9x3UBHTTsMSW85WB2kphxYQVvrZ/t1FxD88IpSgIjiUJlCm9z+xWIDwyo1vffTwSqteqyznB8ZE9vYYk16zA==}
     engines: {node: '>=6.9.0'}
@@ -1239,6 +1267,62 @@ packages:
       '@babel/helper-validator-identifier': 7.19.1
       to-fast-properties: 2.0.0
     dev: true
+
+  /@dbmate/darwin-arm64@2.4.0:
+    resolution: {integrity: sha512-5WC39mWcY39QK3di51q2Gf1e9e7OYi3Ymt5H41R99kwyD50f66cE9qldf+AbNZf3HF5ihxyYaEvmxMoXPqIjuw==}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@dbmate/darwin-x64@2.4.0:
+    resolution: {integrity: sha512-hOL8+P4/2MfzzbtGTo0u1WDVXNvKsryQ5RG/c2PS0hCqO/dZyN2BMumhMuViyKfz9QAu/a/GrZdp20v+OFbLPA==}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@dbmate/linux-arm64@2.4.0:
+    resolution: {integrity: sha512-VlZnaPWvwGFry4JG4MexnFa0E3BIayLN3uYHYLUc+Ur20Q3OChJclTzcf4OVqGn0sYe44CVXfWgOGkij74xbAQ==}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@dbmate/linux-arm@2.4.0:
+    resolution: {integrity: sha512-czRZNv/U9XwvO4vsu8Ege9k/Az3WChbLzcLaDejrTAl8HfSHCCFSZoaicVicALFz6OttfxqfCXiliBOBSN9dVA==}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@dbmate/linux-ia32@2.4.0:
+    resolution: {integrity: sha512-hERJYspX8WQ7LYsE1/KFKBMXMeN3TjIlv1bzNRNchCAW9KBdyLh6q29lpHQm5GyVqTGKbnkpDxkxk2ez5cwSxQ==}
+    cpu: [ia32]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@dbmate/linux-x64@2.4.0:
+    resolution: {integrity: sha512-mtfWy5E5asffjNJRBYU7QTPOuocYrRjiNTan0gxwdLnRK/xdVRgkOYGXY6R5ruijOn4vMOeCBrLQqagInHGguw==}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@dbmate/win32-x64@2.4.0:
+    resolution: {integrity: sha512-jtfrcZZ+qZ+nH+gnMclEIdNUpMG9yxr34MbDKVsBj65aMjA2LsYwXfZYonK84Y3LooOyI/Xu1Es1+jt2MURmhw==}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
 
   /@envelop/core@3.0.6:
     resolution: {integrity: sha512-06t1xCPXq6QFN7W1JUEf68aCwYN0OUDNAIoJe7bAqhaoa2vn7NCcuX1VHkJ/OWpmElUgCsRO6RiBbIru1in0Ig==}
@@ -1683,8 +1767,8 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
-  /@iconify-json/lucide@1.1.96:
-    resolution: {integrity: sha512-y0qoCKLdcRFCinhvgUGUUk2KkgM5PU7z1+MH4dYIrPQBusKTwfsXfw1+9X8P1jPKyG8G7mD3qleSVqXE5Rlemg==}
+  /@iconify-json/lucide@1.1.97:
+    resolution: {integrity: sha512-yGnfrwYrTn40cr18yn0RmwOzzWu+VDz4YgS/bBkDWxH1LvDqVFneAYXvxMO2IJtqOrLNi0Eyk6DxlH7U1oCjHQ==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true
@@ -1838,6 +1922,11 @@ packages:
       tslib: 2.5.3
     dev: true
 
+  /@planetscale/database@1.7.0:
+    resolution: {integrity: sha512-lWR6biXChUyQnxsT4RT1CIeR3ZJvwTQXiQ+158MnY3VjLwjHEGakDzdH9kwUGPk6CHvu6UeqRXp1DgUOVHJFTw==}
+    engines: {node: '>=16'}
+    dev: true
+
   /@playwright/test@1.34.3:
     resolution: {integrity: sha512-zPLef6w9P6T/iT6XDYG3mvGOqOyb6eHaV9XtkunYs0+OzxBtrPAAaHotc0X+PJ00WPPnLfFBTl7mf45Mn8DBmw==}
     engines: {node: '>=14'}
@@ -1882,22 +1971,16 @@ packages:
       graphql: 16.6.0
     dev: true
 
-  /@pothos/plugin-prisma@3.51.1(@pothos/core@3.30.0)(@prisma/client@4.15.0)(graphql@16.6.0)(typescript@5.1.3):
-    resolution: {integrity: sha512-L1js/JQ8LgOQ3gCEDKxnSpEspPVLPAem0ypolP/Q+EXoBEg9byXIbA9Dtcei7ElIKqMpqVJEcS5k2a0tq4cE+Q==}
-    hasBin: true
+  /@pothos/plugin-dataloader@3.17.1(@pothos/core@3.30.0)(dataloader@2.2.2)(graphql@16.6.0):
+    resolution: {integrity: sha512-vY1e8Wufk3pq7mOi2AOClu7N22k3J7AIm4Rsb6a4SL4sq4GxxXaYMgYizSQixxDvIrZC2njrUW24pJJn//aLow==}
     peerDependencies:
       '@pothos/core': '*'
-      '@prisma/client': '*'
+      dataloader: '2'
       graphql: '>=15.1.0'
-      typescript: '>=4.7.2'
     dependencies:
       '@pothos/core': 3.30.0(graphql@16.6.0)
-      '@prisma/client': 4.15.0(prisma@4.15.0)
-      '@prisma/generator-helper': 4.15.0
+      dataloader: 2.2.2
       graphql: 16.6.0
-      typescript: 5.1.3
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /@pothos/plugin-scope-auth@3.19.2(@pothos/core@3.30.0)(graphql@16.6.0):
@@ -1946,16 +2029,6 @@ packages:
       prisma: 4.15.0
     dev: true
 
-  /@prisma/debug@4.15.0:
-    resolution: {integrity: sha512-dkbPz+gOVlWDBAaOEseSpAUz9NppT38UlwdryPyrwct6OClLirNC7wH+TpAQk5OZp9x59hNnfDz+T7XvL1v0/Q==}
-    dependencies:
-      '@types/debug': 4.1.8
-      debug: 4.3.4
-      strip-ansi: 6.0.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /@prisma/engines-version@4.15.0-28.8fbc245156db7124f997f4cecdd8d1219e360944:
     resolution: {integrity: sha512-sVOig4tjGxxlYaFcXgE71f/rtFhzyYrfyfNFUsxCIEJyVKU9rdOWIlIwQ2NQ7PntvGnn+x0XuFo4OC1jvPJKzg==}
     dev: true
@@ -1963,17 +2036,6 @@ packages:
   /@prisma/engines@4.15.0:
     resolution: {integrity: sha512-FTaOCGs0LL0OW68juZlGxFtYviZa4xdQj/rQEdat2txw0s3Vu/saAPKjNVXfIgUsGXmQ72HPgNr6935/P8FNAA==}
     requiresBuild: true
-    dev: true
-
-  /@prisma/generator-helper@4.15.0:
-    resolution: {integrity: sha512-JVHNgXr0LrcqXqmFrs+BzxfyRL6cFD5GLTMVWfCLU7kqSJdWuZxfoZW995tg6mOXnBgPTf6Ocv3RY4RLQq8k4g==}
-    dependencies:
-      '@prisma/debug': 4.15.0
-      '@types/cross-spawn': 6.0.2
-      cross-spawn: 7.0.3
-      kleur: 4.1.5
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /@repeaterjs/repeater@3.0.4:
@@ -2198,18 +2260,6 @@ packages:
     resolution: {integrity: sha512-COUnqfB2+ckwXXSFInsFdOAWQzCCx+a5hq2ruyj+Vjund94RJQd4LG2u9hnvJrTgunKAaax7ancBYlDrNYxA0g==}
     dev: true
 
-  /@types/cross-spawn@6.0.2:
-    resolution: {integrity: sha512-KuwNhp3eza+Rhu8IFI5HUXRP0LIhqH5cAjubUvGXXthh4YYBuP2ntwEX+Cz8GJoZUHlKo247wPWOfA9LYEq4cw==}
-    dependencies:
-      '@types/node': 20.2.5
-    dev: true
-
-  /@types/debug@4.1.8:
-    resolution: {integrity: sha512-/vPO1EPOs306Cvhwv7KfVfYvOJqA/S/AXjaHQiJboCZzcNDb+TIJFN9/2C9DZ//ijSKWioNyUxD792QmDJ+HKQ==}
-    dependencies:
-      '@types/ms': 0.7.31
-    dev: true
-
   /@types/estree@1.0.1:
     resolution: {integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==}
     dev: true
@@ -2240,10 +2290,6 @@ packages:
 
   /@types/minimist@1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
-    dev: true
-
-  /@types/ms@0.7.31:
-    resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
     dev: true
 
   /@types/node@20.2.5:
@@ -2609,6 +2655,10 @@ packages:
 
   /@vercel/analytics@1.0.1:
     resolution: {integrity: sha512-Ux0c9qUfkcPqng3vrR0GTrlQdqNJ2JREn/2ydrVuKwM3RtMfF2mWX31Ijqo1opSjNAq6rK76PwtANw6kl6TAow==}
+    dev: true
+
+  /@vercel/edge@0.3.4:
+    resolution: {integrity: sha512-dFU+yAUDQRwpuRGxRDlEO1LMq0y1LGsBgkyryQWe4w15/Fy2/lCnpvdIoAhHl3QvIGAxCLHzwRHsqfLRdpxgJQ==}
     dev: true
 
   /@vercel/nft@0.22.6:
@@ -3443,8 +3493,32 @@ packages:
     engines: {node: '>= 12'}
     dev: true
 
+  /dataloader@2.2.2:
+    resolution: {integrity: sha512-8YnDaaf7N3k/q5HnTJVuzSyLETjoZjVmHc4AeKAzOvKHEFQKcn64OKBfzHYtE9zGjctNM7V9I0MfnUVLpi7M5g==}
+    dev: true
+
+  /date-fns@2.30.0:
+    resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
+    engines: {node: '>=0.11'}
+    dependencies:
+      '@babel/runtime': 7.22.3
+    dev: true
+
   /dayjs@1.11.8:
     resolution: {integrity: sha512-LcgxzFoWMEPO7ggRv1Y2N31hUf2R0Vj7fuy/m+Bg1K8rr+KAs1AEy4y9jd5DXe8pbHgX+srkHNS7TH6Q6ZhYeQ==}
+    dev: true
+
+  /dbmate@2.4.0:
+    resolution: {integrity: sha512-Y82anjH+/qrA27hGBKHJ5LIcK75SS7nfxEGaiNmfffkBdWnWvyyeSo3T081IAVuc6WD+QpBlTDD2Vt23SWKXiw==}
+    hasBin: true
+    optionalDependencies:
+      '@dbmate/darwin-arm64': 2.4.0
+      '@dbmate/darwin-x64': 2.4.0
+      '@dbmate/linux-arm': 2.4.0
+      '@dbmate/linux-arm64': 2.4.0
+      '@dbmate/linux-ia32': 2.4.0
+      '@dbmate/linux-x64': 2.4.0
+      '@dbmate/win32-x64': 2.4.0
     dev: true
 
   /debounce-fn@5.1.2:
@@ -3599,6 +3673,11 @@ packages:
     resolution: {integrity: sha512-bd2L678uiWATM6m5Z1VzNCErI3jiGzt6HGY8OVICs40JQq/HALfbyNJmp0UDakEY4pMMaN0Ly5om/B1VI/+xfQ==}
     dev: true
 
+  /denque@2.1.0:
+    resolution: {integrity: sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw==}
+    engines: {node: '>=0.10'}
+    dev: true
+
   /depd@2.0.0:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
     engines: {node: '>= 0.8'}
@@ -3682,6 +3761,11 @@ packages:
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dependencies:
       type-fest: 2.19.0
+    dev: true
+
+  /dotenv@16.1.4:
+    resolution: {integrity: sha512-m55RtE8AsPeJBpOIFKihEmqUcoVncQIwo7x9U8ZwLEZw9ZpXboz2c+rvog+jUaJvVrZ5kBOeYQBX5+8Aa/OZQw==}
+    engines: {node: '>=12'}
     dev: true
 
   /dset@3.1.2:
@@ -4500,6 +4584,12 @@ packages:
       wide-align: 1.1.5
     dev: true
 
+  /generate-function@2.3.1:
+    resolution: {integrity: sha512-eeB5GfMNeevm/GRYq20ShmsaGcmI81kIX2K9XQx5miC8KdHaC6Jm0qQ8ZNeGOi7wYB8OsdxKs+Y2oVuTFuVwKQ==}
+    dependencies:
+      is-property: 1.0.2
+    dev: true
+
   /get-intrinsic@1.2.1:
     resolution: {integrity: sha512-2DcsyfABl+gVHEfCOaTrWgyt+tb6MSEGmKq+kI5HwLbIYgjgmMcV8KQ41uaKz1xxUcn9tJtgFbQUEVcEbd0FYw==}
     dependencies:
@@ -4942,6 +5032,13 @@ packages:
       safer-buffer: 2.1.2
     dev: true
 
+  /iconv-lite@0.6.3:
+    resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
+    engines: {node: '>=0.10.0'}
+    dependencies:
+      safer-buffer: 2.1.2
+    dev: true
+
   /ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
     dev: true
@@ -5244,6 +5341,10 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
+  /is-property@1.0.2:
+    resolution: {integrity: sha512-Ks/IoX00TtClbGQr4TWXemAnktAQvYB7HzcCxDGqEZU6oCmb2INHuOoKxbtR+HFkmYWBKv/dOZtGRiAjDhj92g==}
+    dev: true
+
   /is-reference@3.0.1:
     resolution: {integrity: sha512-baJJdQLiYaJdvFbJqXrcGv3WU3QCzBlUcI5QhbesIm6/xPsvmO+2CDoi/GMOFBQEQm+PXkwOPrp9KK5ozZsp2w==}
     dependencies:
@@ -5463,6 +5564,46 @@ packages:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
     dev: true
 
+  /kysely-codegen@0.10.0(kysely@0.25.0)(mysql2@3.3.3):
+    resolution: {integrity: sha512-EV2v9yr9N9WrUPrURvFl5FPTtz39npsi1p1tLpJwEcFeOAKAPJruBpAASvnZWdqu5Pw/aaTssStE3qcI2sfxMQ==}
+    hasBin: true
+    peerDependencies:
+      better-sqlite3: '>=7.6.2'
+      kysely: '>=0.19.12'
+      mysql2: ^2.3.3 || ^3.0.0
+      pg: ^8.8.0
+    peerDependenciesMeta:
+      better-sqlite3:
+        optional: true
+      mysql2:
+        optional: true
+      pg:
+        optional: true
+    dependencies:
+      chalk: 4.1.2
+      dotenv: 16.1.4
+      kysely: 0.25.0
+      micromatch: 4.0.5
+      minimist: 1.2.8
+      mysql2: 3.3.3
+    dev: true
+
+  /kysely-planetscale@1.3.0(@planetscale/database@1.7.0)(kysely@0.25.0):
+    resolution: {integrity: sha512-lAldOF+Yg2raVvRfyXjBqlZ63ONpNZRpfWUK9WrtEdVUIYJxOhbgzihYaRtb4lHVFNyAZyuSCvatEsK7hszcJg==}
+    peerDependencies:
+      '@planetscale/database': '*'
+      kysely: '*'
+    dependencies:
+      '@planetscale/database': 1.7.0
+      date-fns: 2.30.0
+      kysely: 0.25.0
+    dev: true
+
+  /kysely@0.25.0:
+    resolution: {integrity: sha512-srn0efIMu5IoEBk0tBmtGnoUss4uwvxtbFQWG/U2MosfqIace1l43IFP1PmEpHRDp+Z79xIcKEqmHH3dAvQdQA==}
+    engines: {node: '>=14.0.0'}
+    dev: true
+
   /latest-version@7.0.0:
     resolution: {integrity: sha512-KvNT4XqAMzdcL6ka6Tl3i2lYeFDgXNCuIX+xNx6ZMVR1dFq+idXd9FLKNMOIx0t9mJ9/HudyX4oZWXZQ0UJHeg==}
     engines: {node: '>=14.16'}
@@ -5601,6 +5742,10 @@ packages:
       wrap-ansi: 6.2.0
     dev: true
 
+  /long@5.2.3:
+    resolution: {integrity: sha512-lcHwpNoggQTObv5apGNCTdJrO69eHOZMi4BNC+rTLER8iHAqGrUVeLh/irVIM7zTw2bOXA8T6uNPeujwOLg/2Q==}
+    dev: true
+
   /lowercase-keys@3.0.0:
     resolution: {integrity: sha512-ozCC6gdQ+glXOQsveKD0YsDy8DSQFjDTz4zyzEHNV5+JP5D62LmfDZ6o1cycFx9ouG940M5dE8C8CTewdj2YWQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -5622,6 +5767,11 @@ packages:
   /lru-cache@7.18.3:
     resolution: {integrity: sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==}
     engines: {node: '>=12'}
+    dev: true
+
+  /lru-cache@8.0.5:
+    resolution: {integrity: sha512-MhWWlVnuab1RG5/zMRRcVGXZLCXrZTgfwMikgzCegsPnG62yDQo5JnqKkrK4jO5iKqDAZGItAqN5CtKBCBWRUA==}
+    engines: {node: '>=16.14'}
     dev: true
 
   /magic-string@0.27.0:
@@ -5816,6 +5966,27 @@ packages:
   /mute-stream@1.0.0:
     resolution: {integrity: sha512-avsJQhyd+680gKXyG/sQc0nXaC6rBkPOfyHYcFb9+hdkqQkR9bdnkJ0AMZhke0oesPqIO+mFFJ+IdBc7mst4IA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
+    dev: true
+
+  /mysql2@3.3.3:
+    resolution: {integrity: sha512-MxDQJztArk4JFX1PKVjDhIXRzAmVJfuqZrVU+my6NeYBAA/XZRaDw5q7vga8TNvgyy3Lv3rivBFBBuJFbsdjaw==}
+    engines: {node: '>= 8.0'}
+    dependencies:
+      denque: 2.1.0
+      generate-function: 2.3.1
+      iconv-lite: 0.6.3
+      long: 5.2.3
+      lru-cache: 8.0.5
+      named-placeholders: 1.1.3
+      seq-queue: 0.0.5
+      sqlstring: 2.3.3
+    dev: true
+
+  /named-placeholders@1.1.3:
+    resolution: {integrity: sha512-eLoBxg6wE/rZkJPhU/xRX1WTpkFEwDJEN96oxFrTsqBdbT5ec295Q+CoHrL9IT0DipqKhmGcaZmwOt8OON5x1w==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      lru-cache: 7.18.3
     dev: true
 
   /nanoid@3.3.6:
@@ -6575,6 +6746,10 @@ packages:
       strip-indent: 4.0.0
     dev: true
 
+  /regenerator-runtime@0.13.11:
+    resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
+    dev: true
+
   /regexp-tree@0.1.27:
     resolution: {integrity: sha512-iETxpjK6YoRWJG5o6hXLwvjYAoW+FEZn9os0PD/b6AP6xQwsa/Y7lCVgIixBbUPMfhu+i2LtdeAqVTgGlQarfA==}
     hasBin: true
@@ -6803,6 +6978,10 @@ packages:
       lru-cache: 6.0.0
     dev: true
 
+  /seq-queue@0.0.5:
+    resolution: {integrity: sha512-hr3Wtp/GZIc/6DAGPDcV4/9WoZhjrkXsi5B/07QgX8tsdc6ilr7BFM6PM6rbdAX1kFSDYeZGLipIZZKyQP0O5Q==}
+    dev: true
+
   /set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
     dev: true
@@ -6952,6 +7131,11 @@ packages:
 
   /spdx-license-ids@3.0.13:
     resolution: {integrity: sha512-XkD+zwiqXHikFZm4AX/7JSCXA98U5Db4AFd5XUg/+9UNtnH75+Z9KxtpYiJZx36mUDVOwH83pl7yvCer6ewM3w==}
+    dev: true
+
+  /sqlstring@2.3.3:
+    resolution: {integrity: sha512-qC9iz2FlN7DQl3+wjwn3802RTyjCx7sDvfQEXchwa6CWOx07/WVfh91gBmQ9fahw8snwGEWU3xGzOt4tFyHLxg==}
+    engines: {node: '>= 0.6'}
     dev: true
 
   /statuses@2.0.1:
