@@ -55,7 +55,3 @@
     </div>
   </div>
 </main>
-
-<!-- <pre class="whitespace-pre p-4 font-mono text-xs">
-{JSON.stringify(value, null, 2)}
-</pre> -->
