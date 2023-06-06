@@ -5,4 +5,4 @@
 
 <Helmet title="포스트" />
 
-<Tiptap />
+<Tiptap autofocus />

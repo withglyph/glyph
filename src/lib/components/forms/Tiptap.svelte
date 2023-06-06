@@ -2,16 +2,33 @@
   import { Editor } from '@tiptap/core';
   import { StarterKit } from '@tiptap/starter-kit';
   import { onDestroy, onMount } from 'svelte';
+  import type { JSONContent } from '@tiptap/core';
 
   let element: HTMLDivElement;
   let editor: Editor | undefined;
 
+  export let value: JSONContent | undefined = undefined;
+  export let autofocus = false;
+
   onMount(() => {
     editor = new Editor({
       element,
+      autofocus,
       extensions: [StarterKit],
-      content: '<p>Hello World! 🌍️ </p>',
-      onTransaction: () => (editor = editor),
+      editorProps: {
+        handleKeyDown: (_, event) => {
+          // 맥 구름입력기에서 엔터키 입력시 마지막 글자 잘리는 문제 workaround
+          if (editor && event.key === 'Enter') {
+            const s = editor.view.state.selection;
+            editor.commands.setTextSelection(s.to);
+          }
+        },
+      },
+      content: value,
+      onTransaction: () => {
+        editor = editor;
+        value = editor?.getJSON();
+      },
     });
   });
 
