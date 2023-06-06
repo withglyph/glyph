@@ -5,7 +5,7 @@
   let value: object;
 </script>
 
-<Helmet title="새 게시물 작성하기" />
+<Helmet title="새 포스트 작성하기" />
 
 <main class="flex grow">
   <div class="mx-auto max-w-2xl flex grow flex-col">
