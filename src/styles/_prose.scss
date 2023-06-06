@@ -1,0 +1,25 @@
+.prose {
+  strong {
+    --uno: font-bold;
+  }
+
+  em {
+    --uno: font-italic;
+  }
+
+  s {
+    --uno: line-through;
+  }
+
+  u {
+    --uno: underline;
+  }
+
+  sup {
+    --uno: align-super;
+  }
+
+  sub {
+    --uno: align-sub;
+  }
+}

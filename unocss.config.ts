@@ -27,7 +27,7 @@ export default defineConfig({
     presetTypography(),
   ],
   transformers: [transformerDirectives(), transformerVariantGroup()],
-  rules: [['keep-all', { 'word-break': 'keep-all' }]],
+  // rules: [['keep-all', { 'word-break': 'keep-all' }]],
   shortcuts: [
     [/^square-(.*)$/, ([, c]) => `w-${c} h-${c}`],
     ['center', 'justify-center items-center'],

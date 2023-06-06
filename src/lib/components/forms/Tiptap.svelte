@@ -11,6 +11,7 @@
       element,
       extensions: [StarterKit],
       content: '<p>Hello World! 🌍️ </p>',
+      onTransaction: () => (editor = editor),
     });
   });
 
@@ -19,4 +20,11 @@
   });
 </script>
 
-<div bind:this={element} />
+<div
+  bind:this={element}
+  class="max-w-full border rounded p-4 prose prose-neutral"
+/>
+
+<pre class="whitespace-pre p-4 font-mono text-xs">
+{JSON.stringify(editor?.getJSON(), null, 2)}
+</pre>
