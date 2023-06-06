@@ -1,21 +1,27 @@
 <script lang="ts">
   import { Editor } from '@tiptap/core';
+  import { Placeholder } from '@tiptap/extension-placeholder';
   import { StarterKit } from '@tiptap/starter-kit';
+  import clsx from 'clsx';
   import { onDestroy, onMount } from 'svelte';
-  import type { JSONContent } from '@tiptap/core';
 
   let element: HTMLDivElement;
-  let editor: Editor | undefined;
+  export let editor: Editor | undefined = undefined;
 
-  export let value: JSONContent | undefined = undefined;
-  export let autofocus = false;
+  let _class: string | undefined = undefined;
+  export { _class as class };
+  export let value: object | undefined = undefined;
+  export let placeholder = '내용을 입력하세요.';
 
   onMount(() => {
     editor = new Editor({
       element,
-      autofocus,
-      extensions: [StarterKit],
+      content: value,
+      extensions: [StarterKit, Placeholder.configure({ placeholder })],
       editorProps: {
+        attributes: {
+          class: clsx('max-w-full prose prose-neutral', _class),
+        },
         handleKeyDown: (_, event) => {
           // 맥 구름입력기에서 엔터키 입력시 마지막 글자 잘리는 문제 workaround
           if (editor && event.key === 'Enter') {
@@ -24,7 +30,6 @@
           }
         },
       },
-      content: value,
       onTransaction: () => {
         editor = editor;
         value = editor?.getJSON();
@@ -37,11 +42,4 @@
   });
 </script>
 
-<div
-  bind:this={element}
-  class="max-w-full border rounded p-4 prose prose-neutral"
-/>
-
-<pre class="whitespace-pre p-4 font-mono text-xs">
-{JSON.stringify(editor?.getJSON(), null, 2)}
-</pre>
+<div bind:this={element} class="contents" />
