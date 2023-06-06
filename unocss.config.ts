@@ -67,8 +67,7 @@ export default defineConfig({
       '2xs': ['0.625rem', '0.75rem'],
     },
     fontFamily: {
-      ui: ['SUIT'],
-      body: ['Pretendard'],
+      sans: ['SUIT', 'Pretendard'],
       mono: ['FiraCode'],
     },
   },
