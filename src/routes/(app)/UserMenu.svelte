@@ -68,7 +68,7 @@
 
 {#if open}
   <div
-    class="fixed inset-0"
+    class="fixed inset-0 z-49"
     role="button"
     tabindex="-1"
     on:click={() => (open = false)}
@@ -78,7 +78,7 @@
 
   <div
     bind:this={menuEl}
-    class="absolute w-60 flex flex-col border rounded bg-white py-2 shadow"
+    class="absolute z-50 w-60 flex flex-col border rounded bg-white py-2 shadow"
     use:portal
   >
     <div class="px-4 py-2">
