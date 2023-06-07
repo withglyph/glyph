@@ -13,5 +13,5 @@
 <main class="flex grow flex-col">
   <Header />
   <Editor bind:editor />
-  <Toolbar bind:editor />
+  <Toolbar {editor} />
 </main>
