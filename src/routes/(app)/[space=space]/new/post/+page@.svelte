@@ -12,6 +12,6 @@
 
 <main class="flex grow flex-col">
   <Header />
-  <Editor {editor} />
-  <Toolbar {editor} />
+  <Editor bind:editor />
+  <Toolbar bind:editor />
 </main>
