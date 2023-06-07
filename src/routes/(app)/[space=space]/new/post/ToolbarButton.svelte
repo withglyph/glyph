@@ -8,8 +8,12 @@
   export let active = false;
 </script>
 
-<Tooltip message={name}>
-  <button class="rounded p-1.5 hover:bg-gray-100" type="button" on:click>
+<Tooltip message={name} placement="top">
+  <button
+    class="square-10 flex center rounded hover:bg-gray-100"
+    type="button"
+    on:click
+  >
     <span class={clsx('square-6', _class, active && 'text-brand-500')} />
   </button>
 </Tooltip>

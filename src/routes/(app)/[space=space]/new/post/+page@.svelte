@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Helmet } from '$lib/components';
+  import Logo from '$assets/branding/logo.svg?component';
+  import { Button, Helmet } from '$lib/components';
   import { Tiptap } from '$lib/components/forms';
   import ToolbarButton from './ToolbarButton.svelte';
   import type { Editor } from '@tiptap/core';
@@ -10,9 +11,37 @@
 
 <Helmet title="새 포스트 작성하기" />
 
-<main class="flex grow">
-  <div class="mx-auto max-w-2xl flex grow flex-col">
-    <div class="sticky top-0 z-50 flex items-center bg-white pt-4">
+<main class="flex grow flex-col">
+  <div class="sticky top-0 z-50 bg-white py-4">
+    <div class="mx-auto max-w-4xl w-full flex items-center">
+      <a href="/">
+        <Logo class="square-8 rounded" />
+      </a>
+      <div class="grow" />
+      <Button>게시하기</Button>
+    </div>
+  </div>
+
+  <div class="mx-auto max-w-3xl w-full flex grow flex-col">
+    <input
+      class="mt-12 w-full text-3xl font-semibold"
+      placeholder="제목을 입력하세요."
+      type="text"
+    />
+
+    <input
+      class="mt-2 w-full text-lg"
+      placeholder="부제목을 입력하세요."
+      type="text"
+    />
+
+    <hr class="mb-4 mt-8" />
+
+    <Tiptap class="grow" bind:value bind:editor />
+  </div>
+
+  <div class="sticky bottom-0 z-50 bg-white py-4">
+    <div class="mx-auto max-w-4xl w-full flex items-center">
       <div class="flex grow items-center gap-2">
         <ToolbarButton
           name="굵게"
@@ -99,7 +128,7 @@
         />
       </div>
 
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
         <ToolbarButton
           name="실행 취소"
           class="i-lc-rotate-ccw !square-5"
@@ -111,24 +140,6 @@
           on:click={() => editor?.chain().focus().redo().run()}
         />
       </div>
-    </div>
-
-    <div class="flex grow flex-col">
-      <input
-        class="mt-12 w-full text-3xl font-semibold"
-        placeholder="제목을 입력하세요."
-        type="text"
-      />
-
-      <input
-        class="mt-2 w-full text-lg"
-        placeholder="부제목을 입력하세요."
-        type="text"
-      />
-
-      <hr class="mb-4 mt-8" />
-
-      <Tiptap class="mb-8 grow" bind:value bind:editor />
     </div>
   </div>
 </main>
