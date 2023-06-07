@@ -1,3 +1,4 @@
+export * from './focused';
 export * from './hover';
 export * from './intersection-observer';
 export * from './outside-click-event';

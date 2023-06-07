@@ -24,7 +24,7 @@
       ],
       editorProps: {
         attributes: {
-          class: 'max-w-full prose prose-neutral',
+          class: 'max-w-full grow prose prose-neutral',
         },
         scrollMargin: { top: 100, bottom: 100, left: 0, right: 0 },
         scrollThreshold: { top: 100, bottom: 100, left: 0, right: 0 },
