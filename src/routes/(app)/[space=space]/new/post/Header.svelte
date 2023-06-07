@@ -4,7 +4,7 @@
 </script>
 
 <div class="sticky top-0 z-50 bg-white py-4">
-  <div class="mx-auto max-w-4xl w-full flex items-center">
+  <div class="mx-auto w-4xl flex items-center">
     <a href="/">
       <Logo class="square-8 rounded" />
     </a>

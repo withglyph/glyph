@@ -6,7 +6,7 @@
 </script>
 
 <div class="sticky bottom-0 z-50 bg-white py-4">
-  <div class="mx-auto max-w-4xl w-full flex items-center">
+  <div class="mx-auto w-4xl flex items-center">
     <div class="flex grow items-center gap-2">
       <ToolbarButton
         name="굵게"
