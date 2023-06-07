@@ -147,21 +147,23 @@ builder.mutationFields((t) => ({
       }
 
       const { profile, session } = await db.$transaction(async (tx) => {
+        const user = await tx.user.create({
+          data: {
+            id: createId(),
+            email: input.email.toLowerCase(),
+            password: await argon2.hash(input.password),
+            state: 'ACTIVE',
+          },
+        });
+
         const profile = await tx.profile.create({
           ...query,
           data: {
             id: createId(),
+            userId: user.id,
             name: input.name,
             order: 0,
             state: 'ACTIVE',
-            user: {
-              create: {
-                id: createId(),
-                email: input.email.toLowerCase(),
-                password: await argon2.hash(input.password),
-                state: 'ACTIVE',
-              },
-            },
           },
         });
 
@@ -169,7 +171,7 @@ builder.mutationFields((t) => ({
           select: { id: true },
           data: {
             id: createId(),
-            userId: profile.userId,
+            userId: user.id,
             profileId: profile.id,
           },
         });
