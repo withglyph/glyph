@@ -47,6 +47,8 @@
     "@sveltejs/kit": "^1.20.1",
     "@tiptap/core": "^2.0.3",
     "@tiptap/extension-placeholder": "^2.0.3",
+    "@tiptap/extension-text-align": "^2.0.3",
+    "@tiptap/extension-underline": "^2.0.3",
     "@tiptap/pm": "^2.0.3",
     "@tiptap/starter-kit": "^2.0.3",
     "@types/node": "^20.2.5",

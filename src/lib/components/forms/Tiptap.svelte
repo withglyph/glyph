@@ -1,6 +1,8 @@
 <script lang="ts">
   import { Editor } from '@tiptap/core';
   import { Placeholder } from '@tiptap/extension-placeholder';
+  import { TextAlign } from '@tiptap/extension-text-align';
+  import { Underline } from '@tiptap/extension-underline';
   import { StarterKit } from '@tiptap/starter-kit';
   import clsx from 'clsx';
   import { onDestroy, onMount } from 'svelte';
@@ -17,7 +19,12 @@
     editor = new Editor({
       element,
       content: value,
-      extensions: [StarterKit, Placeholder.configure({ placeholder })],
+      extensions: [
+        Placeholder.configure({ placeholder }),
+        StarterKit,
+        TextAlign.configure({ types: ['heading', 'paragraph'] }),
+        Underline,
+      ],
       editorProps: {
         attributes: {
           class: clsx('max-w-full prose prose-neutral', _class),
