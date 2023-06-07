@@ -25,7 +25,7 @@
   });
 </script>
 
-<Helmet title="새 계졍 만들기" />
+<Helmet title="새 계정 만들기" />
 
 <div class="text-2xl font-bold">새 펜슬 계정 만들기</div>
 
