@@ -1,9 +1,18 @@
 <script lang="ts">
   import { Editor } from '@tiptap/core';
+  import { Bold } from '@tiptap/extension-bold';
+  import { Document } from '@tiptap/extension-document';
+  import { HardBreak } from '@tiptap/extension-hard-break';
+  import { Heading } from '@tiptap/extension-heading';
+  import { History } from '@tiptap/extension-history';
+  import { Italic } from '@tiptap/extension-italic';
+  import { Paragraph } from '@tiptap/extension-paragraph';
   import { Placeholder } from '@tiptap/extension-placeholder';
+  import { Strike } from '@tiptap/extension-strike';
+  import { Text } from '@tiptap/extension-text';
   import { TextAlign } from '@tiptap/extension-text-align';
+  import { Typography } from '@tiptap/extension-typography';
   import { Underline } from '@tiptap/extension-underline';
-  import { StarterKit } from '@tiptap/starter-kit';
   import { onDestroy, onMount } from 'svelte';
 
   let element: HTMLDivElement;
@@ -17,9 +26,26 @@
       element,
       content: value,
       extensions: [
+        Bold,
+        Document,
+        HardBreak,
+        Heading.configure({ levels: [1, 2, 3] }),
+        History,
+        Italic,
+        Paragraph,
         Placeholder.configure({ placeholder }),
-        StarterKit,
+        Strike,
+        Text,
         TextAlign.configure({ types: ['heading', 'paragraph'] }),
+        Typography.configure({
+          copyright: false,
+          registeredTrademark: false,
+          trademark: false,
+          servicemark: false,
+          oneHalf: false,
+          oneQuarter: false,
+          threeQuarters: false,
+        }),
         Underline,
       ],
       editorProps: {
