@@ -27,7 +27,18 @@ export default defineConfig({
     presetTypography(),
   ],
   transformers: [transformerDirectives(), transformerVariantGroup()],
-  // rules: [['keep-all', { 'word-break': 'keep-all' }]],
+  rules: [
+    [
+      'font-sans',
+      { 'font-family': 'SUIT, Pretendard', 'font-feature-settings': '"ss18"' },
+    ],
+    ['font-mono', { 'font-family': 'FiraCode' }],
+
+    [
+      'font-content-sans',
+      { 'font-family': 'SUIT, Pretendard', 'font-feature-settings': '"ss18"' },
+    ],
+  ],
   shortcuts: [
     [/^square-(.*)$/, ([, c]) => `w-${c} h-${c}`],
     ['center', 'justify-center items-center'],
@@ -65,10 +76,6 @@ export default defineConfig({
     },
     fontSize: {
       '2xs': ['0.625rem', '0.75rem'],
-    },
-    fontFamily: {
-      sans: ['SUIT', 'Pretendard'],
-      mono: ['FiraCode'],
     },
   },
 });
