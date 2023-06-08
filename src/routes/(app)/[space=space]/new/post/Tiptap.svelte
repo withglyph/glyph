@@ -51,7 +51,8 @@
       injectCSS: false,
       editorProps: {
         attributes: {
-          class: 'grow font-content-sans',
+          class:
+            'grow font-content-sans prose prose-neutral max-w-full whitespace-pre-wrap',
         },
         scrollMargin: { top: 100, bottom: 100, left: 0, right: 0 },
         scrollThreshold: { top: 100, bottom: 100, left: 0, right: 0 },
@@ -77,7 +78,9 @@
 
 <div bind:this={element} class="contents">
   {#if !editor}
-    <div class="ProseMirror font-content-sans">
+    <div
+      class="ProseMirror max-w-full whitespace-pre-wrap prose prose-neutral font-content-sans"
+    >
       <p class="is-editor-empty" data-placeholder={placeholder} />
     </div>
   {/if}
