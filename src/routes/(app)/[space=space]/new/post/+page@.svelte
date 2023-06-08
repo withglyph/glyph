@@ -1,9 +1,12 @@
 <script lang="ts">
   import { Helmet } from '$lib/components';
+  import { warnOnUnload } from '$lib/svelte/lifecycle';
   import Editor from './Editor.svelte';
   import Header from './Header.svelte';
   import Toolbar from './Toolbar.svelte';
   import type { Editor as TiptapEditor } from '@tiptap/core';
+
+  warnOnUnload();
 
   let editor: TiptapEditor | undefined;
 </script>
