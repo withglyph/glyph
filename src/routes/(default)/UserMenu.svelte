@@ -5,9 +5,9 @@
   import { Avatar } from '$lib/components';
   import { useMutation } from '$lib/houdini';
   import { portal } from '$lib/svelte/actions';
-  import type { AppLayout_UserMenu_profile } from '$houdini';
+  import type { DefaultLayout_UserMenu_profile } from '$houdini';
 
-  let _profile: AppLayout_UserMenu_profile;
+  let _profile: DefaultLayout_UserMenu_profile;
   export { _profile as $profile };
 
   let targetEl: HTMLButtonElement;
@@ -18,7 +18,7 @@
   $: profile = fragment(
     _profile,
     graphql(`
-      fragment AppLayout_UserMenu_profile on Profile {
+      fragment DefaultLayout_UserMenu_profile on Profile {
         name
         ...Avatar_profile
       }
@@ -27,7 +27,7 @@
 
   const logout = useMutation(
     graphql(`
-      mutation AppLayout_UserMenu_Logout_Mutation {
+      mutation DefaultLayout_UserMenu_Logout_Mutation {
         logout
       }
     `)

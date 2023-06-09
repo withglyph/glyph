@@ -65,7 +65,7 @@ builder.queryFields((t) => ({
     },
   }),
 
-  authBackgroundImage: t.prismaField({
+  featuredImage: t.prismaField({
     type: 'Image',
     nullable: true,
     resolve: async (query) => {

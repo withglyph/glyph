@@ -1,19 +1,24 @@
 <script lang="ts">
   import Wordmark from '$assets/branding/wordmark.svg?component';
   import { Image } from '$lib/components';
-  import { useQuery } from '$lib/houdini';
-  import type { LayoutData } from './$houdini';
+  import { graphql, useQuery } from '$lib/houdini';
 
-  // houdini에 @ 들어가는 파일명에서는 @load 가 제대로 동작 안 하는 버그 있음. 별도의 gql 파일로 workaround 함
-  export let data: LayoutData;
-  $: query = useQuery(data.UserAuthLayout_Query);
+  const query = useQuery(
+    graphql(`
+      query AuthLayout_Query @load {
+        featuredImage {
+          ...Image_image
+        }
+      }
+    `)
+  );
 </script>
 
 <main class="flex grow center">
-  {#if $query.authBackgroundImage}
+  {#if $query.featuredImage}
     <Image
       class="pointer-events-none absolute inset-0 square-full object-cover"
-      $image={$query.authBackgroundImage}
+      $image={$query.featuredImage}
     />
   {/if}
 

@@ -5,8 +5,8 @@
 
   const query = useQuery(
     graphql(`
-      query AppLayout_Query @load {
-        ...AppLayout_Header_query
+      query DefaultLayout_Query @load {
+        ...DefaultLayout_Header_query
       }
     `)
   );

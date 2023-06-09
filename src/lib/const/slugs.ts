@@ -4,14 +4,9 @@ export const BLACKLIST_SPACE_SLUGS = [
   'posts',
   'user',
 
-  // 사칭 방지 URL
+  // 혼란 방지 URL
   'admin',
-  'dashboard',
-  'event',
-  'events',
 
   // 미래에 쓰일지도 모르는 URL
   'me',
-  'notification',
-  'notifications',
 ];

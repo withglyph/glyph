@@ -4,17 +4,17 @@
   import Wordmark from '$assets/branding/wordmark-colored.svg?component';
   import { fragment, graphql } from '$houdini';
   import UserMenu from './UserMenu.svelte';
-  import type { AppLayout_Header_query } from '$houdini';
+  import type { DefaultLayout_Header_query } from '$houdini';
 
-  let _query: AppLayout_Header_query;
+  let _query: DefaultLayout_Header_query;
   export { _query as $query };
 
   $: query = fragment(
     _query,
     graphql(`
-      fragment AppLayout_Header_query on Query {
+      fragment DefaultLayout_Header_query on Query {
         meOrNull {
-          ...AppLayout_UserMenu_profile
+          ...DefaultLayout_UserMenu_profile
         }
       }
     `)
@@ -53,13 +53,13 @@
       {:else}
         <a
           class="rounded px-4 py-2 font-semibold transition duration-300 hover:bg-gray-200"
-          href="/user/login"
+          href="/_/login"
         >
           로그인
         </a>
         <a
           class="rounded px-4 py-2 font-semibold text-brand-500 transition duration-300 hover:bg-gray-200"
-          href="/user/signup"
+          href="/_/signup"
         >
           새 계정 만들기
         </a>

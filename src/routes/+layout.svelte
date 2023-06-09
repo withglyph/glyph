@@ -4,7 +4,7 @@
   import { updated } from '$app/stores';
   import { setupAnalytics } from '$lib/analytics';
   import { production } from '$lib/environment';
-  import { ToastLayer } from '$lib/notification';
+  import { ToastProvider } from '$lib/notification';
   import BranchIndicator from './BranchIndicator.svelte';
 
   if (production) {
@@ -22,7 +22,7 @@
   <slot />
 </div>
 
-<ToastLayer />
+<ToastProvider />
 
 {#if !production}
   <BranchIndicator />

@@ -8,7 +8,7 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation UserLoginPage_Login_Mutation($input: LoginInput!) {
+      mutation LoginPage_Login_Mutation($input: LoginInput!) {
         login(input: $input) {
           __typename
         }
@@ -46,5 +46,5 @@
 
 <div class="mt-2 text-xs text-gray-500">
   계정이 아직 없으신가요?
-  <Link class="font-bold" colored href="/user/signup">새 계정 만들기</Link>
+  <Link class="font-bold" colored href="/_/signup">새 계정 만들기</Link>
 </div>

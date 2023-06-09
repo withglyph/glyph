@@ -22,11 +22,11 @@ export const handle = (async ({ event, resolve }) => {
 
   if (
     enabled('under-maintenance') &&
-    event.route.id !== '/_internal/under-maintenance'
+    event.route.id !== '/_/internal/under-maintenance'
   ) {
     return event.route.id?.startsWith('/api')
       ? json({ code: 'under_maintenance' })
-      : await event.fetch('/_internal/under-maintenance');
+      : await event.fetch('/_/internal/under-maintenance');
   }
 
   return await resolve(event);

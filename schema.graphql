@@ -56,8 +56,8 @@ type Profile {
 }
 
 type Query {
-  authBackgroundImage: Image
   db: String!
+  featuredImage: Image
   greeting: String!
   images: [Image!]!
   me: Profile!

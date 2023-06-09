@@ -1,2 +1,2 @@
-export { default as ToastLayer } from './Layer.svelte';
+export { default as ToastProvider } from './Provider.svelte';
 export { toast } from './store';
