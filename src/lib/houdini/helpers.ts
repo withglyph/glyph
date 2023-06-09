@@ -5,7 +5,6 @@ import type {
   GraphQLObject,
   GraphQLVariables,
   MutationStore,
-  QueryResult,
   QueryStore,
 } from '$houdini';
 import type { Unwrap } from '$lib/types';
@@ -28,10 +27,7 @@ type UseMutationReturn<
 export const useQuery = <D extends GraphQLObject, I extends GraphQLVariables>(
   store: QueryStore<D, I>
 ): UseQueryReturn<D> => {
-  const { subscribe } = derived(
-    store,
-    ($store: QueryResult<D, I>) => $store.data!
-  );
+  const { subscribe } = derived(store, ($store) => $store.data!);
 
   return {
     subscribe,
@@ -69,7 +65,7 @@ export const useMutation = <
     }
   }) as UseMutationReturn<D, I>;
 
-  const { subscribe } = derived(store, ($store: QueryResult<D, I>) => ({
+  const { subscribe } = derived(store, ($store) => ({
     inflight: $store.fetching,
   }));
 
