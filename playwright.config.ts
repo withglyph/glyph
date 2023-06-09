@@ -29,6 +29,7 @@ export default defineConfig({
 
     baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL ?? 'http://127.0.0.1:5000',
     extraHTTPHeaders: {
+      'x-vercel-set-bypass-cookie': 'true',
       'x-vercel-protection-bypass':
         process.env.VERCEL_PROTECTION_BYPASS_TOKEN ?? '',
     },
