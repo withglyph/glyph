@@ -35,13 +35,13 @@
           </button>
         </div>
 
-        <div class="overflow-x-hidden overflow-y-scroll px-6 pb-6 text-sm">
+        <div class="overflow-x-hidden overflow-y-scroll px-6 pb-6">
           <slot />
         </div>
 
         <!-- eslint-disable @typescript-eslint/no-unsafe-member-access -->
         {#if $$slots.action}
-          <div class="border-t px-6 py-4">
+          <div class="flex items-center justify-end border-t px-6 py-4">
             <slot name="action" />
           </div>
         {/if}
