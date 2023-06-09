@@ -22,7 +22,3 @@ export const SignupInputSchema = z.object({
     .max(20, '닉네임은 20자를 넘을 수 없어요'),
   isAgreed: z.boolean().refine((v) => v, '약관에 동의해주세요'),
 });
-
-export const PrepareFileUploadSchema = z.object({
-  filename: z.string().min(1, '파일명을 입력해주세요'),
-});

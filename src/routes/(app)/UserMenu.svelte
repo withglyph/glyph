@@ -99,7 +99,7 @@
 
     <a
       class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
-      href="/profile/switch"
+      href="/me/profile/switch"
     >
       <span class="i-lc-shuffle" />
       프로필 전환
@@ -109,7 +109,7 @@
 
     <a
       class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
-      href="/settings"
+      href="/me/settings"
     >
       <span class="i-lc-settings" />
       설정

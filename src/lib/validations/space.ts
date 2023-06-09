@@ -15,3 +15,11 @@ export const SpaceSlugSchema = z
     (v) => !BLACKLIST_SPACE_SLUGS.includes(v),
     '사용할 수 없는 URL이에요'
   );
+
+export const CreateSpaceInputSchema = z.object({
+  name: z
+    .string()
+    .min(1, '스페이스 이름을 입력해주세요')
+    .max(20, '스페이스 이름은 20자를 넘을 수 없어요'),
+  slug: SpaceSlugSchema,
+});

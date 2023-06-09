@@ -43,6 +43,7 @@ model Profile {
   createdAt DateTime     @default(now()) @map("created_at")
 
   sessions Session[]
+  spaces   SpaceMember[]
 
   @@index([userId, state])
   @@map("profiles")
@@ -57,6 +58,30 @@ model Session {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("sessions")
+}
+
+model Space {
+  id        String     @id
+  slug      String     @unique
+  name      String
+  state     SpaceState
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  members SpaceMember[]
+
+  @@map("spaces")
+}
+
+model SpaceMember {
+  id        String   @id
+  spaceId   String   @map("space_id")
+  space     Space    @relation(fields: [spaceId], references: [id])
+  profileId String   @map("profile_id")
+  profile   Profile  @relation(fields: [profileId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([spaceId, profileId])
+  @@map("space_members")
 }
 
 model User {
@@ -74,6 +99,11 @@ model User {
 }
 
 enum ProfileState {
+  ACTIVE
+  INACTIVE
+}
+
+enum SpaceState {
   ACTIVE
   INACTIVE
 }

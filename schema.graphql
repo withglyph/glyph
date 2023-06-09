@@ -1,3 +1,8 @@
+input CreateSpaceInput {
+  name: String!
+  slug: String!
+}
+
 """
 A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -25,6 +30,7 @@ input LoginInput {
 }
 
 type Mutation {
+  createSpace(input: CreateSpaceInput!): Space!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   login(input: LoginInput!): Profile!
   logout: Void!
@@ -54,7 +60,9 @@ type Query {
   db: String!
   greeting: String!
   images: [Image!]!
-  me: Profile
+  me: Profile!
+  meOrNull: Profile
+  space(slug: String!): Space!
 }
 
 input SignupInput {
@@ -62,6 +70,17 @@ input SignupInput {
   isAgreed: Boolean!
   name: String!
   password: String!
+}
+
+type Space {
+  id: String!
+  name: String!
+}
+
+type SpaceMember {
+  id: String!
+  profile: Profile!
+  space: Space!
 }
 
 type Subscription {

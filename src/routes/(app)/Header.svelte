@@ -13,7 +13,7 @@
     _query,
     graphql(`
       fragment AppLayout_Header_query on Query {
-        me {
+        meOrNull {
           ...AppLayout_UserMenu_profile
         }
       }
@@ -41,14 +41,14 @@
 
       <div class="grow" />
 
-      {#if $query.me}
+      {#if $query.meOrNull}
         <div class="mx-6 h-6 border-x border-x-gray-300" />
         <div class="flex items-center gap-5">
           <div class="i-lc-heart square-5" />
           <div class="i-lc-bell square-5" />
         </div>
         <div class="ml-6">
-          <UserMenu $profile={$query.me} />
+          <UserMenu $profile={$query.meOrNull} />
         </div>
       {:else}
         <a

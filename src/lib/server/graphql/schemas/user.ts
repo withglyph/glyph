@@ -1,6 +1,6 @@
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
-import { FormValidationError } from '$lib/errors';
+import { FormValidationError, PermissionDeniedError } from '$lib/errors';
 import { db } from '$lib/server/database';
 import { createAccessToken } from '$lib/server/utils';
 import { createId } from '$lib/utils';
@@ -57,6 +57,20 @@ const SignupInput = builder.inputType('SignupInput', {
 
 builder.queryFields((t) => ({
   me: t.prismaField({
+    type: 'Profile',
+    resolve: async (query, _, __, context) => {
+      if (!context.session) {
+        throw new PermissionDeniedError();
+      }
+
+      return await db.profile.findUniqueOrThrow({
+        ...query,
+        where: { id: context.session.profileId },
+      });
+    },
+  }),
+
+  meOrNull: t.prismaField({
     type: 'Profile',
     nullable: true,
     resolve: async (query, _, __, context) => {
