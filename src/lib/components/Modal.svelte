@@ -18,11 +18,11 @@
 
     <div class="pointer-events-none absolute inset-0 flex center p-8">
       <div
-        class="pointer-events-auto max-h-full max-w-md w-full flex flex-col rounded-xl bg-white shadow-xl"
+        class="pointer-events-auto max-h-full max-w-md w-full flex flex-col overflow-hidden rounded-xl bg-white shadow-xl"
         in:fly={{ y: '10%', duration: 150 }}
         out:fade={{ duration: 150 }}
       >
-        <div class="flex justify-between p-6">
+        <div class="flex justify-between border-b p-6">
           <h3 class="text-xl font-semibold">
             <slot name="title" />
           </h3>
@@ -35,7 +35,7 @@
           </button>
         </div>
 
-        <div class="overflow-x-hidden overflow-y-scroll px-6 pb-6">
+        <div class="overflow-x-hidden overflow-y-scroll p-6">
           <slot />
         </div>
 

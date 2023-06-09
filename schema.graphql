@@ -1,3 +1,8 @@
+input CreateProfileInput {
+  handle: String!
+  name: String!
+}
+
 input CreateSpaceInput {
   name: String!
   slug: String!
@@ -30,6 +35,7 @@ input LoginInput {
 }
 
 type Mutation {
+  createProfile(input: CreateProfileInput!): Profile!
   createSpace(input: CreateSpaceInput!): Space!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   login(input: LoginInput!): Profile!
@@ -37,6 +43,7 @@ type Mutation {
   noop: String!
   prepareImageUpload(input: PrepareImageUploadInput!): PrepareImageUploadPayload!
   signup(input: SignupInput!): Profile!
+  switchProfile(input: SwitchProfileInput!): Profile!
 }
 
 input PrepareImageUploadInput {
@@ -50,6 +57,7 @@ type PrepareImageUploadPayload {
 
 type Profile {
   avatar: Image
+  handle: String!
   id: String!
   name: String!
   user: User!
@@ -87,9 +95,14 @@ type Subscription {
   countdown: Int!
 }
 
+input SwitchProfileInput {
+  profileId: String!
+}
+
 type User {
   email: String!
   id: String!
+  profiles: [Profile!]!
 }
 
 """Represents NULL values"""

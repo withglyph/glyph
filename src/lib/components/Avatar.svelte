@@ -1,3 +1,14 @@
+<script context="module" lang="ts">
+  const colorize = (string: string, salt: number) => {
+    let hash = 0;
+    for (let i = 0; i < string.length; i++) {
+      hash = string.codePointAt(i)! + ((hash << salt) - hash);
+      hash &= hash;
+    }
+    return `hsl(${hash % 360}, 75%, 50%)`;
+  };
+</script>
+
 <script lang="ts">
   import clsx from 'clsx';
   import { fragment, graphql } from '$houdini';
@@ -13,6 +24,8 @@
     _profile,
     graphql(`
       fragment Avatar_profile on Profile {
+        id
+
         avatar {
           ...Image_image
         }
@@ -24,5 +37,11 @@
 {#if $profile.avatar}
   <Image class={clsx('rounded-full', _class)} $image={$profile.avatar} />
 {:else}
-  <div class={clsx('rounded-full bg-brand-500', _class)} />
+  <div
+    style:background={`linear-gradient(to bottom right, ${colorize(
+      $profile.id,
+      5
+    )}, ${colorize(`${$profile.id}`, 13)})`}
+    class={clsx('rounded-full', _class)}
+  />
 {/if}

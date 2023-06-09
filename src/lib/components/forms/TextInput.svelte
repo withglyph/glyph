@@ -17,20 +17,28 @@
   }
 </script>
 
-<div class="relative">
+<div class="relative flex items-center">
   {#if 'left-icon' in $$slots}
     <div class="absolute inset-y-0 left-4 flex center">
       <slot name="left-icon" />
+    </div>
+  {/if}
+  {#if 'left-text' in $$slots}
+    <div
+      class="border border-r-0 rounded-l bg-gray-100 px-4 py-2 text-gray-400"
+    >
+      <slot name="left-text" />
     </div>
   {/if}
   <input
     id={name}
     {name}
     class={clsx(
-      'rounded px-4 py-2 border transition enabled:(hover:border-gray-300 focus:border-brand-300 aria-[invalid]:border-red-500) disabled:opacity-50',
+      'px-4 py-2 border transition enabled:(hover:border-gray-300 focus:border-brand-300 aria-[invalid]:border-red-500) disabled:opacity-50',
       _class,
       'left-icon' in $$slots && 'pl-10',
-      'right-icon' in $$slots && 'pr-10'
+      'right-icon' in $$slots && 'pr-10',
+      'left-text' in $$slots ? 'rounded-r' : 'rounded'
     )}
     type="text"
     bind:value

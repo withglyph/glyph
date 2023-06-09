@@ -5,6 +5,7 @@
   import { Avatar } from '$lib/components';
   import { useMutation } from '$lib/houdini';
   import { portal } from '$lib/svelte/actions';
+  import SwitchProfileModal from './SwitchProfileModal.svelte';
   import type { DefaultLayout_UserMenu_profile } from '$houdini';
 
   let _profile: DefaultLayout_UserMenu_profile;
@@ -14,13 +15,18 @@
   let menuEl: HTMLDivElement;
 
   let open = false;
+  let openSwitchProfile = false;
 
   $: profile = fragment(
     _profile,
     graphql(`
       fragment DefaultLayout_UserMenu_profile on Profile {
+        id
         name
+        handle
+
         ...Avatar_profile
+        ...DefaultLayout_UserMenu_SwitchProfileModal_profile
       }
     `)
   );
@@ -32,11 +38,6 @@
       }
     `)
   );
-
-  const handleLogout = async () => {
-    await logout();
-    location.href = '/';
-  };
 
   const update = async () => {
     await tick();
@@ -81,29 +82,28 @@
     class="absolute z-50 w-60 flex flex-col border rounded bg-white py-2 shadow"
     use:portal
   >
-    <div class="px-4 py-2">
-      <div class="font-medium">
-        {$profile.name}
+    <div class="flex items-center gap-2 px-4 py-2">
+      <div class="flex flex-col">
+        <div class="font-medium">
+          {$profile.name}
+        </div>
+        <div class="text-sm text-gray-500">
+          @{$profile.handle}
+        </div>
       </div>
-      <!-- <div class="mt-1 text-sm text-gray-500">
-        @{$profile.handle}
-      </div> -->
     </div>
 
-    <hr class="mx-4 my-2" />
-
-    <!-- <a class="menu-item" href={`/u/${$profile.handle}`}>
-      <span class="i-lc-user" />
-      내 프로필
-    </a> -->
-
-    <a
+    <button
       class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
-      href="/me/profile/switch"
+      type="button"
+      on:click={() => {
+        open = false;
+        openSwitchProfile = true;
+      }}
     >
       <span class="i-lc-shuffle" />
       프로필 전환
-    </a>
+    </button>
 
     <hr class="mx-4 my-2" />
 
@@ -118,10 +118,15 @@
     <button
       class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
       type="button"
-      on:click={handleLogout}
+      on:click={async () => {
+        await logout();
+        location.href = '/';
+      }}
     >
       <span class="i-lc-log-out" />
       로그아웃
     </button>
   </div>
 {/if}
+
+<SwitchProfileModal {$profile} bind:open={openSwitchProfile} />

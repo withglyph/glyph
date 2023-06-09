@@ -36,6 +36,7 @@ model Profile {
   userId    String       @map("user_id")
   user      User         @relation(fields: [userId], references: [id])
   name      String
+  handle    String       @unique
   state     ProfileState
   order     Int
   avatarId  String?      @map("avatar_id")

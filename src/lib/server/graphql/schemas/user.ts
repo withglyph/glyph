@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { FormValidationError, PermissionDeniedError } from '$lib/errors';
 import { db } from '$lib/server/database';
 import { createAccessToken } from '$lib/server/utils';
-import { createId } from '$lib/utils';
+import { createHandle, createId } from '$lib/utils';
 import { LoginInputSchema, SignupInputSchema } from '$lib/validations';
 import { builder } from '../builder';
 
@@ -16,6 +16,7 @@ builder.prismaObject('User', {
   fields: (t) => ({
     id: t.exposeString('id'),
     email: t.exposeString('email'),
+    profiles: t.relation('profiles', { query: { orderBy: { order: 'asc' } } }),
   }),
 });
 
@@ -24,6 +25,7 @@ builder.prismaObject('Profile', {
   fields: (t) => ({
     id: t.exposeString('id'),
     name: t.exposeString('name'),
+    handle: t.exposeString('handle'),
     user: t.relation('user'),
     avatar: t.relation('avatar', { nullable: true }),
   }),
@@ -49,6 +51,19 @@ const SignupInput = builder.inputType('SignupInput', {
     isAgreed: t.boolean(),
   }),
   validate: { schema: SignupInputSchema },
+});
+
+const CreateProfileInput = builder.inputType('CreateProfileInput', {
+  fields: (t) => ({
+    name: t.string(),
+    handle: t.string(),
+  }),
+});
+
+const SwitchProfileInput = builder.inputType('SwitchProfileInput', {
+  fields: (t) => ({
+    profileId: t.string(),
+  }),
 });
 
 /**
@@ -176,6 +191,7 @@ builder.mutationFields((t) => ({
             id: createId(),
             userId: user.id,
             name: input.name,
+            handle: createHandle(),
             order: 0,
             state: 'ACTIVE',
           },
@@ -197,6 +213,68 @@ builder.mutationFields((t) => ({
       context.cookies.set('penxle-at', accessToken, {
         expires: dayjs().add(5, 'years').toDate(),
         path: '/',
+      });
+
+      return profile;
+    },
+  }),
+
+  createProfile: t.withAuth({ loggedIn: true }).prismaField({
+    type: 'Profile',
+    args: { input: t.arg({ type: CreateProfileInput }) },
+    resolve: async (query, _, { input }, context) => {
+      const existingProfile = await db.profile.findUnique({
+        where: { handle: input.handle },
+      });
+
+      if (existingProfile) {
+        throw new FormValidationError(
+          'handle',
+          '이미 사용중인 프로필 URL이에요.'
+        );
+      }
+
+      const order = await db.profile.count({
+        where: { userId: context.session.userId },
+      });
+
+      const profile = await db.profile.create({
+        ...query,
+        data: {
+          id: createId(),
+          userId: context.session.userId,
+          name: input.name,
+          handle: input.handle,
+          order,
+          state: 'ACTIVE',
+        },
+      });
+
+      await db.session.update({
+        where: { id: context.session.id },
+        data: { profileId: profile.id },
+      });
+
+      return profile;
+    },
+  }),
+
+  switchProfile: t.withAuth({ loggedIn: true }).prismaField({
+    type: 'Profile',
+    args: { input: t.arg({ type: SwitchProfileInput }) },
+    resolve: async (query, _, { input }, context) => {
+      const profile = await db.profile.findUniqueOrThrow({
+        ...query,
+        where: {
+          id: input.profileId,
+          userId: context.session.userId,
+          state: 'ACTIVE',
+        },
+      });
+
+      await db.session.update({
+        where: { id: context.session.id },
+        data: { profileId: profile.id },
       });
 
       return profile;
