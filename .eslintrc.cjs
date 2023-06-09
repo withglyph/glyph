@@ -47,6 +47,7 @@ module.exports = {
     'import/first': 'warn',
     'import/newline-after-import': 'warn',
     'import/no-default-export': 'error',
+    'import/no-duplicates': 'off',
     'import/no-empty-named-blocks': 'error',
     'import/no-mutable-exports': 'error',
     'import/no-unresolved': 'off',
