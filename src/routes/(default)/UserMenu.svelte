@@ -61,6 +61,7 @@
 <button
   bind:this={targetEl}
   class="flex center"
+  tabindex="-1"
   type="button"
   on:click={() => (open = true)}
 >
@@ -79,10 +80,11 @@
 
   <div
     bind:this={menuEl}
-    class="absolute z-50 w-60 flex flex-col border rounded bg-white py-2 shadow"
+    class="absolute z-50 w-60 flex flex-col border rounded-lg bg-white py-2"
     use:portal
   >
     <div class="flex items-center gap-2 px-4 py-2">
+      <Avatar class="square-10" {$profile} />
       <div class="flex flex-col">
         <div class="font-medium">
           {$profile.name}
@@ -101,11 +103,11 @@
         openSwitchProfile = true;
       }}
     >
-      <span class="i-lc-shuffle" />
+      <span class="i-lc-users" />
       프로필 전환
     </button>
 
-    <hr class="mx-4 my-2" />
+    <hr class="my-2" />
 
     <a
       class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
@@ -117,6 +119,7 @@
 
     <button
       class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
+      tabindex="-1"
       type="button"
       on:click={async () => {
         await logout();

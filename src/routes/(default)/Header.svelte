@@ -3,6 +3,7 @@
   import { page } from '$app/stores';
   import Wordmark from '$assets/branding/wordmark-colored.svg?component';
   import { fragment, graphql } from '$houdini';
+  import Search from './Search.svelte';
   import UserMenu from './UserMenu.svelte';
   import type { DefaultLayout_Header_query } from '$houdini';
 
@@ -41,18 +42,17 @@
 
       <div class="grow" />
 
+      <Search />
+
       {#if $query.meOrNull}
-        <div class="mx-6 h-6 border-x border-x-gray-300" />
-        <div class="flex items-center gap-5">
-          <div class="i-lc-heart square-5" />
-          <div class="i-lc-bell square-5" />
-        </div>
-        <div class="ml-6">
+        <div class="ml-8 flex items-center gap-8">
+          <div class="i-lc-heart square-5 text-gray-500" />
+          <div class="i-lc-bell square-5 text-gray-500" />
           <UserMenu $profile={$query.meOrNull} />
         </div>
       {:else}
         <a
-          class="rounded px-4 py-2 font-semibold transition duration-300 hover:bg-gray-200"
+          class="ml-4 rounded px-4 py-2 font-semibold transition duration-300 hover:bg-gray-200"
           href="/_/login"
         >
           로그인

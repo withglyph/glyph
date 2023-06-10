@@ -3,6 +3,7 @@ export const BLACKLIST_SPACE_SLUGS = [
   'artworks',
   'posts',
   'user',
+  'search',
 
   // 혼란 방지 URL
   'admin',
