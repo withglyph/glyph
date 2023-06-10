@@ -1,7 +1,7 @@
 <script lang="ts">
   import Logo from '$assets/branding/logo.svg?component';
   import { fragment, graphql } from '$houdini';
-  import NewButton from './NewButton.svelte';
+  import NewEntityMenu from './NewEntityMenu.svelte';
   import SearchBar from './SearchBar.svelte';
   import UserMenu from './UserMenu.svelte';
   import type { DefaultLayout_Header_query } from '$houdini';
@@ -15,6 +15,7 @@
       fragment DefaultLayout_Header_query on Query {
         meOrNull {
           ...DefaultLayout_UserMenu_profile
+          ...DefaultLayout_NewEntityMenu_profile
         }
       }
     `)
@@ -37,7 +38,7 @@
           <div class="i-lc-heart square-5 text-gray-500" />
           <div class="i-lc-bell square-5 text-gray-500" />
           <UserMenu $profile={$query.meOrNull} />
-          <NewButton />
+          <NewEntityMenu $profile={$query.meOrNull} />
         </div>
       {:else}
         <a

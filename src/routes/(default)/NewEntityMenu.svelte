@@ -1,14 +1,32 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import { tick } from 'svelte';
+  import { fragment, graphql } from '$houdini';
   import { portal } from '$lib/svelte/actions';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
+  import NewEntityModal from './NewEntityModal.svelte';
+  import type { DefaultLayout_NewEntityMenu_profile } from '$houdini';
+
+  let _profile: DefaultLayout_NewEntityMenu_profile;
+  export { _profile as $profile };
 
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLDivElement;
 
   let open = false;
   let openCreateSpace = false;
+  let openNewEntity = false;
+
+  let newEntityType: 'artwork' | 'post';
+
+  $: profile = fragment(
+    _profile,
+    graphql(`
+      fragment DefaultLayout_NewEntityMenu_profile on Profile {
+        ...DefaultLayout_NewEntityMenu_NewEntityModal_profile
+      }
+    `)
+  );
 
   const update = async () => {
     await tick();
@@ -31,13 +49,13 @@
 
 <button
   bind:this={targetEl}
-  class="relative flex items-center gap-2 rounded-full from-cyan-500 via-brand-500 to-violet-500 bg-gradient-to-rb px-4 py-2 font-medium text-white transition before:(absolute inset-0 rounded-full from-cyan-500 via-brand-500 to-violet-500 bg-gradient-to-lt opacity-0 transition content-empty hover:opacity-100)"
+  class="relative flex items-center gap-2 rounded-full from-cyan-500 via-brand-500 to-violet-500 bg-gradient-to-rb px-4 py-2 font-medium text-white transition before:(absolute inset-0 rounded-full bg-brand-500 opacity-0 transition content-empty hover:opacity-100)"
   tabindex="-1"
   type="button"
   on:click={() => (open = true)}
 >
-  <span class="z-1">창작물 게시하기</span>
-  <span class="i-lc-pencil z-1 square-5" />
+  <span class="z-1 text-sm">올리기</span>
+  <span class="i-lc-pencil z-1 square-4" />
 </button>
 
 {#if open}
@@ -52,10 +70,19 @@
 
   <div
     bind:this={menuEl}
-    class="absolute z-50 w-64 flex flex-col border rounded bg-white py-2 shadow"
+    class="absolute z-50 w-80 flex flex-col border rounded bg-white py-2 shadow"
     use:portal
   >
-    <div class="group flex items-center gap-4 px-4 py-2 hover:bg-gray-100">
+    <button
+      class="group flex items-center gap-4 px-4 py-2 hover:bg-gray-100"
+      tabindex="-1"
+      type="button"
+      on:click={() => {
+        newEntityType = 'post';
+        open = false;
+        openNewEntity = true;
+      }}
+    >
       <div
         class="square-12 flex center rounded-xl bg-gray-100 group-hover:bg-gray-200"
       >
@@ -63,11 +90,20 @@
       </div>
       <div class="flex flex-col">
         <div class="font-bold">글</div>
-        <div class="text-sm text-gray-500">새 글을 게시해요.</div>
+        <div class="text-sm text-gray-500">새로운 글을 작성해요.</div>
       </div>
-    </div>
+    </button>
 
-    <div class="group flex items-center gap-4 px-4 py-2 hover:bg-gray-100">
+    <button
+      class="group flex items-center gap-4 px-4 py-2 hover:bg-gray-100"
+      tabindex="-1"
+      type="button"
+      on:click={() => {
+        newEntityType = 'artwork';
+        open = false;
+        openNewEntity = true;
+      }}
+    >
       <div
         class="square-12 flex center rounded-xl bg-gray-100 group-hover:bg-gray-200"
       >
@@ -75,14 +111,15 @@
       </div>
       <div class="flex flex-col">
         <div class="font-bold">그림</div>
-        <div class="text-sm text-gray-500">새 그림을 게시해요.</div>
+        <div class="text-sm text-gray-500">새로운 그림을 업로드해요.</div>
       </div>
-    </div>
+    </button>
 
     <hr class="my-2" />
 
     <button
-      class="group flex items-center gap-4 px-4 py-2 text-left hover:bg-gray-100"
+      class="group flex items-center gap-4 px-4 py-2 hover:bg-gray-100"
+      tabindex="-1"
       type="button"
       on:click={() => {
         open = false;
@@ -103,3 +140,4 @@
 {/if}
 
 <CreateSpaceModal bind:open={openCreateSpace} />
+<NewEntityModal {$profile} type={newEntityType} bind:open={openNewEntity} />
