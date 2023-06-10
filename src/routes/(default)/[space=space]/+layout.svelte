@@ -2,7 +2,7 @@
   import { graphql } from '$houdini';
   import { useQuery } from '$lib/houdini';
 
-  useQuery(
+  $: useQuery(
     graphql(`
       query SpaceLayout_Query($slug: String!) {
         space(slug: $slug) {

@@ -9,7 +9,7 @@
 
   warnOnUnload();
 
-  const query = useQuery(
+  $: query = useQuery(
     graphql(`
       query SpaceNewPostPage_Query($slug: String!) @load {
         ...SpaceNewPostPage_Header_query @with(slug: $slug)

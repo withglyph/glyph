@@ -2,7 +2,7 @@
   import { Helmet } from '$lib/components';
   import { graphql, useQuery } from '$lib/houdini';
 
-  const query = useQuery(
+  $: query = useQuery(
     graphql(`
       query SpacePage_Query($slug: String!) @load {
         space(slug: $slug) {
