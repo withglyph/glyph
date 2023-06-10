@@ -15,6 +15,7 @@
       'square-4 text-gray-300 transition hover:text-gray-400',
       reveal ? 'i-lc-eye-off' : 'i-lc-eye'
     )}
+    tabindex="-1"
     type="button"
     on:click={() => (reveal = !reveal)}
   />
