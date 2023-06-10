@@ -60,6 +60,7 @@ type Profile {
   handle: String!
   id: String!
   name: String!
+  spaces: [SpaceMember!]!
   user: User!
 }
 
@@ -83,6 +84,7 @@ input SignupInput {
 type Space {
   id: String!
   name: String!
+  slug: String!
 }
 
 type SpaceMember {

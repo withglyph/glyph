@@ -1,7 +1,8 @@
 <script lang="ts">
   import Logo from '$assets/branding/logo.svg?component';
   import { fragment, graphql } from '$houdini';
-  import Search from './Search.svelte';
+  import NewButton from './NewButton.svelte';
+  import SearchBar from './SearchBar.svelte';
   import UserMenu from './UserMenu.svelte';
   import type { DefaultLayout_Header_query } from '$houdini';
 
@@ -27,7 +28,7 @@
         <Logo class="square-8 rounded text-gray-900" />
       </a>
 
-      <Search />
+      <SearchBar />
 
       <div class="grow" />
 
@@ -36,6 +37,7 @@
           <div class="i-lc-heart square-5 text-gray-500" />
           <div class="i-lc-bell square-5 text-gray-500" />
           <UserMenu $profile={$query.meOrNull} />
+          <NewButton />
         </div>
       {:else}
         <a

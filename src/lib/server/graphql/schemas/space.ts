@@ -12,6 +12,7 @@ builder.prismaObject('Space', {
   select: true,
   fields: (t) => ({
     id: t.exposeString('id'),
+    slug: t.exposeString('slug'),
     name: t.exposeString('name'),
   }),
 });

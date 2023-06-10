@@ -5,6 +5,7 @@
   import { Avatar } from '$lib/components';
   import { useMutation } from '$lib/houdini';
   import { portal } from '$lib/svelte/actions';
+  import GotoSpaceModal from './GotoSpaceModal.svelte';
   import SwitchProfileModal from './SwitchProfileModal.svelte';
   import type { DefaultLayout_UserMenu_profile } from '$houdini';
 
@@ -15,6 +16,7 @@
   let menuEl: HTMLDivElement;
 
   let open = false;
+  let openGotoSpace = false;
   let openSwitchProfile = false;
 
   $: profile = fragment(
@@ -26,6 +28,7 @@
         handle
 
         ...Avatar_profile
+        ...DefaultLayout_UserMenu_GotoSpaceModal_profile
         ...DefaultLayout_UserMenu_SwitchProfileModal_profile
       }
     `)
@@ -80,7 +83,7 @@
 
   <div
     bind:this={menuEl}
-    class="absolute z-50 w-60 flex flex-col border rounded bg-white py-2 shadow"
+    class="absolute z-50 w-64 flex flex-col border rounded bg-white py-2 shadow"
     use:portal
   >
     <div class="flex items-center gap-2 px-4 py-2">
@@ -95,6 +98,20 @@
       </div>
     </div>
 
+    <hr class="my-2" />
+
+    <button
+      class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
+      type="button"
+      on:click={() => {
+        open = false;
+        openGotoSpace = true;
+      }}
+    >
+      <span class="i-lc-box" />
+      내 스페이스
+    </button>
+
     <button
       class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
       type="button"
@@ -106,8 +123,6 @@
       <span class="i-lc-users" />
       프로필 전환
     </button>
-
-    <hr class="my-2" />
 
     <a
       class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
@@ -132,4 +147,5 @@
   </div>
 {/if}
 
+<GotoSpaceModal {$profile} bind:open={openGotoSpace} />
 <SwitchProfileModal {$profile} bind:open={openSwitchProfile} />

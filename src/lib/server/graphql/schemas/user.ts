@@ -28,6 +28,7 @@ builder.prismaObject('Profile', {
     handle: t.exposeString('handle'),
     user: t.relation('user'),
     avatar: t.relation('avatar', { nullable: true }),
+    spaces: t.relation('spaces'),
   }),
 });
 
