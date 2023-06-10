@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from '$app/stores';
   import { graphql } from '$houdini';
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
@@ -35,7 +36,7 @@
 
       <FormField name="handle" label="프로필 URL">
         <TextInput class="w-full">
-          <span slot="left-text">penxle.com/@</span>
+          <span slot="left-text">{$page.url.host}/@</span>
         </TextInput>
       </FormField>
     </div>
