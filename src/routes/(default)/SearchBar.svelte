@@ -1,8 +1,18 @@
 <script lang="ts">
   import qs from 'query-string';
-  import { goto } from '$app/navigation';
+  import { afterNavigate, goto } from '$app/navigation';
+  import { page } from '$app/stores';
 
   let value: string;
+  if ($page.url.pathname === '/search') {
+    value = $page.url.searchParams.get('q') ?? '';
+  }
+
+  afterNavigate(({ from, to }) => {
+    if (from?.url.pathname === '/search' && to?.url.pathname !== '/search') {
+      value = '';
+    }
+  });
 </script>
 
 <div class="relative">
