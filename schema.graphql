@@ -60,7 +60,7 @@ type Profile {
   handle: String!
   id: String!
   name: String!
-  spaces: [SpaceMember!]!
+  spaces: [Space!]!
   user: User!
 }
 

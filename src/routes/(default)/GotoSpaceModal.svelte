@@ -15,12 +15,13 @@
     _profile,
     graphql(`
       fragment DefaultLayout_UserMenu_GotoSpaceModal_profile on Profile {
-        spaces {
-          space {
-            id
-            slug
-            name
-          }
+        spaces
+          @list(
+            name: "__DefaultLayout_UserMenu_GotoSpaceModal_profile__spaces"
+          ) {
+          id
+          slug
+          name
         }
       }
     `)
@@ -31,7 +32,7 @@
   <svelte:fragment slot="title">내 스페이스</svelte:fragment>
 
   <div class="flex flex-col">
-    {#each $profile.spaces as { space } (space.id)}
+    {#each $profile.spaces as space (space.id)}
       <a
         class="group flex items-center gap-2 px-4 py-2 text-left hover:bg-gray-100"
         href={`/${space.slug}`}

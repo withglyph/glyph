@@ -4,8 +4,30 @@
   import { updated } from '$app/stores';
   import { setupAnalytics } from '$lib/analytics';
   import { production } from '$lib/environment';
+  import { graphql, useQuery } from '$lib/houdini';
   import { ToastProvider } from '$lib/notification';
+  import { session } from '$lib/stores';
   import BranchIndicator from './BranchIndicator.svelte';
+
+  $: query = useQuery(
+    graphql(`
+      query Layout_Query @load {
+        meOrNull {
+          id
+          user {
+            id
+          }
+        }
+      }
+    `)
+  );
+
+  $: $session = $query.meOrNull
+    ? {
+        userId: $query.meOrNull.user.id,
+        profileId: $query.meOrNull.id,
+      }
+    : null;
 
   if (production) {
     setupAnalytics();

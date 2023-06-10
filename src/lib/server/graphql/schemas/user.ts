@@ -28,7 +28,13 @@ builder.prismaObject('Profile', {
     handle: t.exposeString('handle'),
     user: t.relation('user'),
     avatar: t.relation('avatar', { nullable: true }),
-    spaces: t.relation('spaces'),
+    spaces: t.prismaField({
+      type: ['Space'],
+      select: (_, __, nestedSelection) => ({
+        spaces: { select: { space: nestedSelection(true) } },
+      }),
+      resolve: (_, parent) => parent.spaces.map(({ space }) => space),
+    }),
   }),
 });
 

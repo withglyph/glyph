@@ -12,6 +12,7 @@ type MutationFormConfig<Z extends AnyZodObject, D extends GraphQLObject> = {
   schema: Z | { validate: Z; warn: Z };
   initialValues?: RecursivePartial<TypeOf<Z>>;
   mutation: MutationStore<D, { input: TypeOf<Z> }, never>;
+  getExtraVariables?: () => Record<string, unknown>;
   onSuccess?: (data: Unwrap<D>) => MaybePromise<void>;
   onError?: (error: AppError) => MaybePromise<void>;
 };
@@ -23,7 +24,8 @@ export const createMutationForm = <
   config: MutationFormConfig<Z, D>
 ) => {
   const extend: Extender<TypeOf<Z>>[] = [context()];
-  const { schema, mutation, onSuccess, onError, ...rest } = config;
+  const { schema, mutation, getExtraVariables, onSuccess, onError, ...rest } =
+    config;
 
   if ('validate' in schema && 'warn' in schema) {
     extend.push(
@@ -38,7 +40,12 @@ export const createMutationForm = <
     ...rest,
     extend,
     onSubmit: async (values) => {
-      const { data } = await mutation.mutate({ input: values });
+      const extraVariables = getExtraVariables?.();
+
+      const { data } = await mutation.mutate({
+        input: values,
+        ...extraVariables,
+      });
 
       const fields = Object.values(data!);
       if (fields.length !== 1) {
