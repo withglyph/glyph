@@ -18,7 +18,7 @@
 
 <button
   class={clsx(
-    'relative flex center rounded-full px-4 py-2 font-semibold leading-none transition duration-300',
+    'relative flex center rounded-full px-4 py-2 font-semibold leading-none transition duration-300 text-center',
     disabled && 'text-gray-500 bg-gray-300 opacity-50',
     !disabled &&
       color === 'brand' &&
