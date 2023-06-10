@@ -3,7 +3,7 @@
   import Footer from './Footer.svelte';
   import Header from './Header.svelte';
 
-  const query = useQuery(
+  $: query = useQuery(
     graphql(`
       query DefaultLayout_Query @load {
         ...DefaultLayout_Header_query

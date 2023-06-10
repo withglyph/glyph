@@ -111,7 +111,7 @@ module.exports = {
       rules: {
         'import/no-mutable-exports': 'off',
         'svelte/block-lang': ['error', { script: 'ts', style: 'scss' }],
-        'svelte/valid-compile': 'off',
+        'svelte/no-immutable-reactive-statements': 'off',
         'svelte/prefer-destructured-store-props': 'off',
         'svelte/prefer-class-directive': 'off',
         'svelte/require-store-reactive-access': 'off',

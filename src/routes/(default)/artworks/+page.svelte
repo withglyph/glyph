@@ -4,7 +4,7 @@
   import { trackable } from '$lib/svelte/store';
   import type { ChangeEventHandler } from 'svelte/elements';
 
-  const query = useQuery(
+  $: query = useQuery(
     graphql(`
       query ArtworksPage_Query @load {
         images @list(name: "ArtworksPage_Query_images") {

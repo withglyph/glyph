@@ -3,7 +3,7 @@
   import { graphql, useQuery } from '$lib/houdini';
   import { absolutePath } from '$lib/utils';
 
-  const query = useQuery(
+  $: query = useQuery(
     graphql(`
       query IndexPage_Query @load {
         greeting

@@ -2,7 +2,7 @@
   import { Image } from '$lib/components';
   import { graphql, useQuery } from '$lib/houdini';
 
-  const query = useQuery(
+  $: query = useQuery(
     graphql(`
       query AuthLayout_Query @load {
         featuredImage {
