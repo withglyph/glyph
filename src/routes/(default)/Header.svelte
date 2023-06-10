@@ -1,7 +1,5 @@
 <script lang="ts">
-  import clsx from 'clsx';
-  import { page } from '$app/stores';
-  import Wordmark from '$assets/branding/wordmark-colored.svg?component';
+  import Logo from '$assets/branding/logo.svg?component';
   import { fragment, graphql } from '$houdini';
   import Search from './Search.svelte';
   import UserMenu from './UserMenu.svelte';
@@ -20,29 +18,18 @@
       }
     `)
   );
-
-  $: isArtworks = $page.url.pathname.startsWith('/artworks');
-  $: isPosts = $page.url.pathname.startsWith('/posts');
 </script>
 
-<header class="relative sticky top-0 z-10 border-b bg-white px-4">
-  <nav class="mx-auto max-w-screen-lg">
+<header class="relative sticky top-0 z-10 border-b bg-white px-8">
+  <nav>
     <section class="h-16 flex items-center">
-      <a href="/">
-        <Wordmark class="h-6" />
+      <a class="mr-4" href="/">
+        <Logo class="square-8 rounded" />
       </a>
-      {#if isArtworks}
-        <div class="mx-4 h-6 border-x" />
-        <div class="text-lg font-medium">아트</div>
-      {/if}
-      {#if isPosts}
-        <div class="mx-4 h-6 border-x" />
-        <div class="text-lg font-medium">포스트</div>
-      {/if}
-
-      <div class="grow" />
 
       <Search />
+
+      <div class="grow" />
 
       {#if $query.meOrNull}
         <div class="ml-8 flex items-center gap-8">
@@ -66,7 +53,7 @@
       {/if}
     </section>
 
-    <section class="h-16 w-full flex items-center gap-6">
+    <!-- <section class="h-16 w-full flex items-center gap-6">
       <a
         class={clsx(
           'text-xl font-semibold transition',
@@ -94,6 +81,6 @@
       >
         포스트
       </a>
-    </section>
+    </section> -->
   </nav>
 </header>

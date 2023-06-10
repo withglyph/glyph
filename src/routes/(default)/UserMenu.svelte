@@ -80,7 +80,7 @@
 
   <div
     bind:this={menuEl}
-    class="absolute z-50 w-60 flex flex-col border rounded-lg bg-white py-2"
+    class="absolute z-50 w-60 flex flex-col border rounded bg-white py-2 shadow"
     use:portal
   >
     <div class="flex items-center gap-2 px-4 py-2">

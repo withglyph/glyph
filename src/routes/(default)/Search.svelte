@@ -5,10 +5,10 @@
   let value: string;
 </script>
 
-<div class="group relative">
+<div class="relative">
   <input
-    class="w-64 rounded-full bg-gray-100 py-2 pl-10 pr-4 text-sm"
-    placeholder="키워드 또는 창작자를 검색해보세요."
+    class="w-64 rounded-full bg-gray-100 py-2 pl-10 pr-4 text-sm next:focus:text-gray-500"
+    placeholder="펜슬 검색하기"
     type="text"
     bind:value
     on:keydown={async (e) => {
@@ -17,9 +17,7 @@
       }
     }}
   />
-  <div class="absolute inset-y-0 left-4 flex center">
-    <span
-      class="i-lc-search square-4 text-gray-300 transition group-hover:text-gray-400"
-    />
+  <div class="absolute inset-y-0 left-4 flex center text-gray-300">
+    <span class="i-lc-search square-4 transition" />
   </div>
 </div>
