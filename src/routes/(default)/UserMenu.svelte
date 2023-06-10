@@ -1,6 +1,7 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import { tick } from 'svelte';
+  import { afterNavigate } from '$app/navigation';
   import { fragment, graphql } from '$houdini';
   import { Avatar } from '$lib/components';
   import { useMutation } from '$lib/houdini';
@@ -59,6 +60,10 @@
   $: if (open) {
     void update();
   }
+
+  afterNavigate(() => {
+    open = false;
+  });
 </script>
 
 <button
