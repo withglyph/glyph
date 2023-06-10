@@ -1,8 +1,13 @@
 <script lang="ts">
   import { fade, fly } from 'svelte/transition';
+  import { afterNavigate } from '$app/navigation';
   import { portal } from '$lib/svelte/actions';
 
   export let open: boolean;
+
+  afterNavigate(() => {
+    open = false;
+  });
 </script>
 
 {#if open}
