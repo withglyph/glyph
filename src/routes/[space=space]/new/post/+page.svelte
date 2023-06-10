@@ -20,7 +20,7 @@
   let editor: TiptapEditor | undefined;
 </script>
 
-<Helmet title="새 포스트 작성하기" />
+<Helmet title="새 글 작성하기" />
 
 <main class="flex grow flex-col">
   <Header {$query} />

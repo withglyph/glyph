@@ -30,7 +30,7 @@
       <Logo class="square-8 rounded" />
     </a>
     <div class="text-sm text-gray-500">
-      {$query.space.name}에 새 포스트 작성중...
+      {$query.space.name}에 새 글 작성중...
     </div>
     <div class="grow" />
     <Button>게시하기</Button>
