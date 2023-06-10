@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Logo from '$assets/branding/logo.svg?component';
   import { graphql } from '$houdini';
   import { Button, Helmet, Link } from '$lib/components';
   import {
@@ -27,7 +28,13 @@
 
 <Helmet title="새 계정 만들기" />
 
-<div class="text-2xl font-bold">새 펜슬 계정 만들기</div>
+<div class="flex items-center gap-4">
+  <a href="/">
+    <Logo class="square-8 rounded text-gray-900" />
+  </a>
+  <div class="h-10 border-x border-gray-900" />
+  <div class="text-2xl font-bold">새 펜슬 계정 만들기</div>
+</div>
 
 <form class="mt-4 w-80 space-y-4" use:form>
   <FormField name="email" label="이메일">

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Wordmark from '$assets/branding/wordmark-colored.svg?component';
+  import Logo from '$assets/branding/logo.svg?component';
   import { graphql } from '$houdini';
   import { Button, Helmet, Link } from '$lib/components';
   import { FormField, PasswordInput, TextInput } from '$lib/components/forms';
@@ -23,8 +23,12 @@
 
 <Helmet title="로그인" />
 
-<div class="flex center">
-  <Wordmark class="w-40 self-center text-black" />
+<div class="flex items-center gap-4">
+  <a href="/">
+    <Logo class="square-8 rounded text-gray-900" />
+  </a>
+  <div class="h-10 border-x border-gray-900" />
+  <div class="text-2xl font-bold">로그인</div>
 </div>
 
 <form class="mt-8 w-80" use:form>

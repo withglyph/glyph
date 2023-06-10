@@ -24,7 +24,7 @@
   <nav>
     <section class="h-16 flex items-center">
       <a class="mr-4" href="/">
-        <Logo class="square-8 rounded" />
+        <Logo class="square-8 rounded text-gray-900" />
       </a>
 
       <Search />
