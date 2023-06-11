@@ -71,6 +71,7 @@ type Query {
   images: [Image!]!
   me: Profile!
   meOrNull: Profile
+  profile(handle: String!): Profile!
   space(slug: String!): Space!
 }
 

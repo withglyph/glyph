@@ -91,7 +91,7 @@
     class="absolute z-50 w-64 flex flex-col border rounded bg-white py-2 shadow"
     use:portal
   >
-    <div class="flex items-center gap-2 px-4 py-2">
+    <a class="flex items-center gap-2 px-4 py-2" href={`/@${$profile.handle}`}>
       <Avatar class="square-10" {$profile} />
       <div class="flex flex-col">
         <div class="font-medium">
@@ -101,7 +101,7 @@
           @{$profile.handle}
         </div>
       </div>
-    </div>
+    </a>
 
     <hr class="my-2" />
 

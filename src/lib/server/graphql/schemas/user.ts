@@ -1,10 +1,18 @@
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
-import { FormValidationError, PermissionDeniedError } from '$lib/errors';
+import {
+  FormValidationError,
+  NotFoundError,
+  PermissionDeniedError,
+} from '$lib/errors';
 import { db } from '$lib/server/database';
 import { createAccessToken } from '$lib/server/utils';
 import { createHandle, createId } from '$lib/utils';
-import { LoginInputSchema, SignupInputSchema } from '$lib/validations';
+import {
+  LoginInputSchema,
+  ProfileHandleSchema,
+  SignupInputSchema,
+} from '$lib/validations';
 import { builder } from '../builder';
 
 /**
@@ -104,6 +112,25 @@ builder.queryFields((t) => ({
         ...query,
         where: { id: context.session.profileId },
       });
+    },
+  }),
+
+  profile: t.prismaField({
+    type: 'Profile',
+    args: {
+      handle: t.arg.string({ validate: { schema: ProfileHandleSchema } }),
+    },
+    resolve: async (query, _, args) => {
+      const profile = await db.profile.findUnique({
+        ...query,
+        where: { handle: args.handle },
+      });
+
+      if (profile) {
+        return profile;
+      } else {
+        throw new NotFoundError();
+      }
     },
   }),
 }));
