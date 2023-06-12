@@ -9,7 +9,10 @@ export const db = new PrismaClient().$extends({
       ): Promise<boolean> {
         const context = Prisma.getExtensionContext(this);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const result = await (context as any).findUnique({ where });
+        const result = await (context as any).findUnique({
+          where,
+          select: { id: true },
+        });
         return result !== null;
       },
     },
