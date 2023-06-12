@@ -50,7 +50,6 @@
     };
 
     let id = requestAnimationFrame(tick);
-
     return () => cancelAnimationFrame(id);
   });
 </script>
@@ -61,7 +60,7 @@
   style:top={`${$top ?? 0}px`}
   style:right="0px"
   class={clsx(
-    'max-w-100 min-w-100 border rounded px-4 py-3 shadow-lg',
+    'max-w-100 min-w-100 border rounded px-4 py-3',
     toast.type === 'info' && 'border-brand-300 bg-brand-50',
     toast.type === 'success' && 'border-green-500 bg-green-50',
     toast.type === 'error' && 'border-red-500 bg-red-50'
@@ -73,7 +72,7 @@
     <span
       class={clsx(
         'square-5',
-        toast.type === 'info' && 'i-ri-information-fill text-brand-300',
+        toast.type === 'info' && 'i-ri-information-fill text-brand-500',
         toast.type === 'success' && 'i-ri-checkbox-circle-fill text-green-500',
         toast.type === 'error' && 'i-ri-close-circle-fill text-red-500'
       )}
@@ -81,7 +80,7 @@
     <div
       class={clsx(
         'grow break-all font-semibold',
-        toast.type === 'info' && 'text-brand-500',
+        toast.type === 'info' && 'text-brand-700',
         toast.type === 'success' && 'text-green-900',
         toast.type === 'error' && 'text-red-700'
       )}
@@ -95,7 +94,7 @@
     <button
       class={clsx(
         'i-ri-close-line square-5',
-        toast.type === 'info' && 'text-brand-300',
+        toast.type === 'info' && 'text-brand-500',
         toast.type === 'success' && 'text-green-500',
         toast.type === 'error' && 'text-red-500'
       )}

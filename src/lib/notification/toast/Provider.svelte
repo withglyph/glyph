@@ -12,7 +12,7 @@
   }
 </script>
 
-<div class="fixed right-8 top-8 z-60 flex flex-col gap-2">
+<div class="fixed right-8 top-8 z-100 flex flex-col gap-2">
   {#each $store as toast (toast.id)}
     <Item {toast} />
   {/each}
