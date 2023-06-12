@@ -21,6 +21,7 @@
       }
     `),
     schema: SignupInputSchema,
+    refetch: false,
     onSuccess: async () => {
       await goto('/');
     },
