@@ -5,6 +5,7 @@
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
+  import { toast } from '$lib/notification';
   import { CreateSpaceInputSchema } from '$lib/validations';
   import type { DefaultLayout_CreateSpaceModal_profile } from '$houdini';
 
@@ -38,6 +39,7 @@
     getExtraVariables: () => ({ profileId: $profile.id }),
     onSuccess: async ({ slug }) => {
       await goto(`/${slug}`);
+      toast.success('스페이스를 만들었어요.');
     },
   });
 </script>
