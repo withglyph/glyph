@@ -36,7 +36,7 @@ model Profile {
   userId    String       @map("user_id")
   user      User         @relation(fields: [userId], references: [id])
   name      String
-  handle    String       @unique
+  handle    String
   state     ProfileState
   order     Int
   avatarId  String?      @map("avatar_id")
@@ -46,7 +46,7 @@ model Profile {
   sessions Session[]
   spaces   SpaceMember[]
 
-  @@index([userId, state])
+  @@index([handle])
   @@map("profiles")
 }
 
@@ -63,13 +63,14 @@ model Session {
 
 model Space {
   id        String     @id
-  slug      String     @unique
+  slug      String
   name      String
   state     SpaceState
   createdAt DateTime   @default(now()) @map("created_at")
 
   members SpaceMember[]
 
+  @@index([slug])
   @@map("spaces")
 }
 
@@ -95,7 +96,6 @@ model User {
   profiles Profile[]
   sessions Session[]
 
-  @@index([id, state])
   @@map("users")
 }
 
