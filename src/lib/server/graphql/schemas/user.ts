@@ -260,11 +260,11 @@ builder.mutationFields((t) => ({
     type: 'Profile',
     args: { input: t.arg({ type: CreateProfileInput }) },
     resolve: async (query, _, { input }, context) => {
-      const existingProfile = await db.profile.findUnique({
+      const isHandleExists = await db.profile.exists({
         where: { handle: input.handle },
       });
 
-      if (existingProfile) {
+      if (isHandleExists) {
         throw new FormValidationError(
           'handle',
           '이미 사용중인 프로필 URL이에요.'

@@ -5,7 +5,7 @@ export const db = new PrismaClient().$extends({
     $allModels: {
       async exists<T>(
         this: T,
-        { where }: { where: Prisma.Args<T, 'findUnique'>['where'] }
+        { where }: { where: Prisma.Args<T, 'findFirst'>['where'] }
       ): Promise<boolean> {
         const context = Prisma.getExtensionContext(this);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
