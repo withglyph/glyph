@@ -30,9 +30,7 @@
       ) {
         createSpace(input: $input) {
           slug
-          ...__DefaultLayout_NewEntityModal_profile_spaces_insert
-            @append
-            @parentID(value: $profileId)
+          ...__ProfilePage_profile_spaces_insert @parentID(value: $profileId)
         }
       }
     `),

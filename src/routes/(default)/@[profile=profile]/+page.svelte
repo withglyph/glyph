@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { Avatar, Helmet } from '$lib/components';
+  import { Avatar, Helmet, Link } from '$lib/components';
   import { graphql, useQuery } from '$lib/houdini';
 
   $: query = useQuery(
@@ -10,7 +10,7 @@
           name
           handle
 
-          spaces {
+          spaces @list(name: "__ProfilePage_profile_spaces") {
             id
             slug
             name
@@ -31,9 +31,14 @@
     <div class="text-2xl font-semibold">
       {$query.profile.name}
     </div>
-    <div class="flex items-center gap-2 text-sm text-gray-700">
-      <span class="i-lc-link" />
-      {$page.url.host}/@{$query.profile.handle}
+    <div class="flex items-center text-sm">
+      <span class="i-lc-link mr-1.5 text-gray-500" />
+      <div class="text-gray-500">
+        {$page.url.host}/
+      </div>
+      <div>
+        @{$query.profile.handle}
+      </div>
     </div>
   </div>
 </div>
@@ -45,10 +50,10 @@
   스페이스
 </div>
 
-<div class="mt-4">
+<div class="ml-6 mt-4 flex flex-col gap-2">
   {#each $query.profile.spaces as space (space.id)}
-    <a class="block px-4 py-2 hover:bg-gray-100" href="/{space.slug}">
-      {space.name}
-    </a>
+    <Link href="/{space.slug}">
+      {space.name} ({space.slug})
+    </Link>
   {/each}
 </div>

@@ -6,6 +6,7 @@
     graphql(`
       query SpacePage_Query($slug: String!) @load {
         space(slug: $slug) {
+          slug
           name
         }
       }
@@ -15,4 +16,15 @@
 
 <Helmet title={$query.space.name} />
 
-{$query.space.name}
+<div class="flex items-center">
+  <div class="grow text-2xl font-semibold">
+    {$query.space.name}
+  </div>
+  <a
+    class="flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-medium text-white"
+    href="/{$query.space.slug}/dashboard"
+  >
+    <span class="i-lc-mouse-pointer-click" />
+    대시보드
+  </a>
+</div>
