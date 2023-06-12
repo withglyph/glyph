@@ -29,8 +29,8 @@
         handle
 
         ...Avatar_profile
-        ...DefaultLayout_UserMenu_GotoSpaceModal_profile
-        ...DefaultLayout_UserMenu_SwitchProfileModal_profile
+        ...DefaultLayout_GotoSpaceModal_profile
+        ...DefaultLayout_SwitchProfileModal_profile
       }
     `)
   );

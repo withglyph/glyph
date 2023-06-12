@@ -23,7 +23,8 @@
     _profile,
     graphql(`
       fragment DefaultLayout_NewEntityMenu_profile on Profile {
-        ...DefaultLayout_NewEntityMenu_NewEntityModal_profile
+        ...DefaultLayout_NewEntityModal_profile
+        ...DefaultLayout_CreateSpaceModal_profile
       }
     `)
   );
@@ -139,5 +140,5 @@
   </div>
 {/if}
 
-<CreateSpaceModal bind:open={openCreateSpace} />
+<CreateSpaceModal {$profile} bind:open={openCreateSpace} />
 <NewEntityModal {$profile} type={newEntityType} bind:open={openNewEntity} />

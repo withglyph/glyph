@@ -10,7 +10,7 @@
 
   const { form, handleSubmit, isSubmitting } = createMutationForm({
     mutation: graphql(`
-      mutation DefaultLayout_UserMenu_CreateProfileModal_CreateProfile_Mutation(
+      mutation DefaultLayout_CreateProfileModal_CreateProfile_Mutation(
         $input: CreateProfileInput!
       ) {
         createProfile(input: $input) {

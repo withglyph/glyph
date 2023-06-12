@@ -3,9 +3,9 @@
   import { Button, Modal } from '$lib/components';
   import { absolutePath } from '$lib/utils';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
-  import type { DefaultLayout_NewEntityMenu_NewEntityModal_profile } from '$houdini';
+  import type { DefaultLayout_NewEntityModal_profile } from '$houdini';
 
-  let _profile: DefaultLayout_NewEntityMenu_NewEntityModal_profile;
+  let _profile: DefaultLayout_NewEntityModal_profile;
   export { _profile as $profile };
 
   export let open = false;
@@ -15,12 +15,14 @@
   $: profile = fragment(
     _profile,
     graphql(`
-      fragment DefaultLayout_NewEntityMenu_NewEntityModal_profile on Profile {
-        spaces @list(name: "__DefaultLayout__profile__spaces") {
+      fragment DefaultLayout_NewEntityModal_profile on Profile {
+        spaces @list(name: "__DefaultLayout_NewEntityModal_profile_spaces") {
           id
           slug
           name
         }
+
+        ...DefaultLayout_CreateSpaceModal_profile
       }
     `)
   );
@@ -66,4 +68,4 @@
   <Button slot="action" on:click={() => (open = false)}>닫기</Button>
 </Modal>
 
-<CreateSpaceModal bind:open={openCreateSpace} />
+<CreateSpaceModal {$profile} bind:open={openCreateSpace} />

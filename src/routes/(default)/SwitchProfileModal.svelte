@@ -3,9 +3,9 @@
   import { Avatar, Button, Modal } from '$lib/components';
   import { useMutation } from '$lib/houdini';
   import CreateProfileModal from './CreateProfileModal.svelte';
-  import type { DefaultLayout_UserMenu_SwitchProfileModal_profile } from '$houdini';
+  import type { DefaultLayout_SwitchProfileModal_profile } from '$houdini';
 
-  let _profile: DefaultLayout_UserMenu_SwitchProfileModal_profile;
+  let _profile: DefaultLayout_SwitchProfileModal_profile;
   export { _profile as $profile };
 
   export let open = false;
@@ -14,7 +14,7 @@
   $: profile = fragment(
     _profile,
     graphql(`
-      fragment DefaultLayout_UserMenu_SwitchProfileModal_profile on Profile {
+      fragment DefaultLayout_SwitchProfileModal_profile on Profile {
         id
 
         user {
@@ -33,7 +33,7 @@
 
   const switchProfile = useMutation(
     graphql(`
-      mutation DefaultLayout_UserMenu_SwitchProfileModal_SwitchProfile_Mutation(
+      mutation DefaultLayout_SwitchProfileModal_SwitchProfile_Mutation(
         $input: SwitchProfileInput!
       ) {
         switchProfile(input: $input) {
