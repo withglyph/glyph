@@ -50,7 +50,7 @@ builder.queryFields((t) => ({
     resolve: async (query, _, args) => {
       const space = await db.space.findUnique({
         ...query,
-        where: { slug: args.slug },
+        where: { slug: args.slug, state: 'ACTIVE' },
       });
 
       if (space) {
@@ -71,12 +71,11 @@ builder.mutationFields((t) => ({
     type: 'Space',
     args: { input: t.arg({ type: CreateSpaceInput }) },
     resolve: async (query, _, { input }, context) => {
-      const existingSpace = await db.space.findUnique({
-        select: { state: true },
-        where: { slug: input.slug },
+      const existingSpace = await db.space.count({
+        where: { slug: input.slug, state: 'ACTIVE' },
       });
 
-      if (existingSpace?.state === 'ACTIVE') {
+      if (existingSpace) {
         throw new FormValidationError('slug', '이미 사용중인 URL이에요.');
       }
 
