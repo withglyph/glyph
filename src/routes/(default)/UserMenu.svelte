@@ -1,7 +1,7 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import { tick } from 'svelte';
-  import { afterNavigate } from '$app/navigation';
+  import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$houdini';
   import { Avatar } from '$lib/components';
   import { useMutation } from '$lib/houdini';
@@ -143,7 +143,7 @@
       type="button"
       on:click={async () => {
         await logout();
-        location.href = '/';
+        await goto('/');
       }}
     >
       <span class="i-lc-log-out" />

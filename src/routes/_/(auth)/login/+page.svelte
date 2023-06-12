@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import Logo from '$assets/branding/logo.svg?component';
   import { graphql } from '$houdini';
   import { Button, Helmet, Link } from '$lib/components';
@@ -15,8 +16,8 @@
       }
     `),
     schema: LoginInputSchema,
-    onSuccess: () => {
-      location.href = '/';
+    onSuccess: async () => {
+      await goto('/');
     },
   });
 </script>

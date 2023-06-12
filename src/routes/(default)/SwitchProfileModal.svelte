@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import { fragment, graphql } from '$houdini';
   import { Avatar, Button, Modal } from '$lib/components';
   import { useMutation } from '$lib/houdini';
@@ -54,7 +55,7 @@
         type="button"
         on:click={async () => {
           await switchProfile({ profileId: profile.id });
-          location.href = '/';
+          await goto('/');
         }}
       >
         <Avatar class="square-10" $profile={profile} />
