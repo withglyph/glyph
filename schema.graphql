@@ -84,6 +84,7 @@ input SignupInput {
 
 type Space {
   id: String!
+  members: [SpaceMember!]!
   name: String!
   slug: String!
 }

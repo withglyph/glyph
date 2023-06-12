@@ -14,6 +14,7 @@ builder.prismaObject('Space', {
     id: t.exposeString('id'),
     slug: t.exposeString('slug'),
     name: t.exposeString('name'),
+    members: t.relation('members'),
   }),
 });
 
