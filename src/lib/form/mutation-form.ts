@@ -1,6 +1,7 @@
 import { validator } from '@felte/validator-zod';
 import { createForm } from 'felte';
 import { AppError, FormValidationError } from '$lib/errors';
+import { useMutation } from '$lib/houdini';
 import { toast } from '$lib/notification';
 import { context } from './context';
 import type { AssignableErrors, Extender, RecursivePartial } from '@felte/core';
@@ -12,7 +13,6 @@ type MutationFormConfig<Z extends AnyZodObject, D extends GraphQLObject> = {
   schema: Z | { validate: Z; warn: Z };
   initialValues?: RecursivePartial<TypeOf<Z>>;
   mutation: MutationStore<D, { input: TypeOf<Z> }, never>;
-  getExtraVariables?: () => Record<string, unknown>;
   onSuccess?: (data: Unwrap<D>) => MaybePromise<void>;
   onError?: (error: AppError) => MaybePromise<void>;
 };
@@ -24,8 +24,7 @@ export const createMutationForm = <
   config: MutationFormConfig<Z, D>
 ) => {
   const extend: Extender<TypeOf<Z>>[] = [context()];
-  const { schema, mutation, getExtraVariables, onSuccess, onError, ...rest } =
-    config;
+  const { schema, mutation, onSuccess, onError, ...rest } = config;
 
   if ('validate' in schema && 'warn' in schema) {
     extend.push(
@@ -40,21 +39,9 @@ export const createMutationForm = <
     ...rest,
     extend,
     onSubmit: async (values) => {
-      const extraVariables = getExtraVariables?.();
-
-      const { data } = await mutation.mutate({
-        input: values,
-        ...extraVariables,
-      });
-
-      const fields = Object.values(data!);
-      if (fields.length !== 1) {
-        throw new Error(
-          `Expected exactly one field in mutation response, got ${fields.length}`
-        );
-      }
-
-      await onSuccess?.(fields[0] as Unwrap<D>);
+      const m = useMutation(mutation, { throwOnError: true });
+      const data = await m(values);
+      await onSuccess?.(data);
     },
     onError: async (error) => {
       if (error instanceof FormValidationError) {
@@ -66,6 +53,7 @@ export const createMutationForm = <
           toast.error(error.message);
         }
       } else {
+        console.error(error);
         toast.error('An unknown error occurred');
       }
 

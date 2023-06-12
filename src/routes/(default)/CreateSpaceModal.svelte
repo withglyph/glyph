@@ -1,42 +1,26 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { fragment, graphql } from '$houdini';
+  import { graphql } from '$houdini';
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { CreateSpaceInputSchema } from '$lib/validations';
-  import type { DefaultLayout_CreateSpaceModal_profile } from '$houdini';
 
   export let open = false;
-
-  let _profile: DefaultLayout_CreateSpaceModal_profile;
-  export { _profile as $profile };
-
-  $: profile = fragment(
-    _profile,
-    graphql(`
-      fragment DefaultLayout_CreateSpaceModal_profile on Profile {
-        id
-      }
-    `)
-  );
 
   const { form, handleSubmit, isSubmitting } = createMutationForm({
     mutation: graphql(`
       mutation DefaultLayout_CreateSpaceModal_CreateSpace_Mutation(
         $input: CreateSpaceInput!
-        $profileId: ID!
       ) {
         createSpace(input: $input) {
           slug
-          ...__ProfilePage_profile_spaces_insert @parentID(value: $profileId)
         }
       }
     `),
     schema: CreateSpaceInputSchema,
-    getExtraVariables: () => ({ profileId: $profile.id }),
     onSuccess: async ({ slug }) => {
       await goto(`/${slug}`);
       toast.success('스페이스를 만들었어요.');

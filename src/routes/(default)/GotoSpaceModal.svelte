@@ -15,13 +15,11 @@
     _profile,
     graphql(`
       fragment DefaultLayout_GotoSpaceModal_profile on Profile {
-        spaces @list(name: "__DefaultLayout_GotoSpaceModal_profile_spaces") {
+        spaces {
           id
           slug
           name
         }
-
-        ...DefaultLayout_CreateSpaceModal_profile
       }
     `)
   );
@@ -67,4 +65,4 @@
   <Button slot="action" on:click={() => (open = false)}>닫기</Button>
 </Modal>
 
-<CreateSpaceModal {$profile} bind:open={openCreateSpace} />
+<CreateSpaceModal bind:open={openCreateSpace} />

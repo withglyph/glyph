@@ -10,7 +10,7 @@
           name
           handle
 
-          spaces @list(name: "__ProfilePage_profile_spaces") {
+          spaces {
             id
             slug
             name

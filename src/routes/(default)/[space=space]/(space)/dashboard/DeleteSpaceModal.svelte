@@ -31,7 +31,7 @@
         $input: DeleteSpaceInput!
       ) {
         deleteSpace(input: $input) {
-          id @Space_delete
+          id
         }
       }
     `)
@@ -70,9 +70,9 @@
     disabled={confirm !== $space.slug}
     loading={$deleteSpace.inflight}
     on:click={async () => {
-      await goto('/');
       await deleteSpace({ spaceId: $space.id });
       toast.success('스페이스를 삭제했어요.');
+      await goto('/');
     }}
   >
     삭제하기

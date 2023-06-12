@@ -7,7 +7,7 @@
   $: query = useQuery(
     graphql(`
       query ArtworksPage_Query @load {
-        images @list(name: "ArtworksPage_Query_images") {
+        images {
           id
           ...Image_image
         }
@@ -34,7 +34,7 @@
         $input: FinalizeImageUploadInput!
       ) {
         finalizeImageUpload(input: $input) {
-          ...ArtworksPage_Query_images_insert @prepend
+          __typename
         }
       }
     `)

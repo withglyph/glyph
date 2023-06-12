@@ -3,11 +3,11 @@
   import { tick } from 'svelte';
   import { fragment, graphql } from '$houdini';
   import { portal } from '$lib/svelte/actions';
+  import CreateEntityModal from './CreateEntityModal.svelte';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
-  import NewEntityModal from './NewEntityModal.svelte';
-  import type { DefaultLayout_NewEntityMenu_profile } from '$houdini';
+  import type { DefaultLayout_CreateEntityMenu_profile } from '$houdini';
 
-  let _profile: DefaultLayout_NewEntityMenu_profile;
+  let _profile: DefaultLayout_CreateEntityMenu_profile;
   export { _profile as $profile };
 
   let targetEl: HTMLButtonElement;
@@ -15,16 +15,15 @@
 
   let open = false;
   let openCreateSpace = false;
-  let openNewEntity = false;
+  let openCreateEntity = false;
 
-  let newEntityType: 'artwork' | 'post';
+  let createEntityType: 'artwork' | 'post';
 
   $: profile = fragment(
     _profile,
     graphql(`
-      fragment DefaultLayout_NewEntityMenu_profile on Profile {
-        ...DefaultLayout_NewEntityModal_profile
-        ...DefaultLayout_CreateSpaceModal_profile
+      fragment DefaultLayout_CreateEntityMenu_profile on Profile {
+        ...DefaultLayout_CreateEntityModal_profile
       }
     `)
   );
@@ -79,9 +78,9 @@
       tabindex="-1"
       type="button"
       on:click={() => {
-        newEntityType = 'post';
+        createEntityType = 'post';
         open = false;
-        openNewEntity = true;
+        openCreateEntity = true;
       }}
     >
       <div
@@ -102,9 +101,9 @@
       tabindex="-1"
       type="button"
       on:click={() => {
-        newEntityType = 'artwork';
+        createEntityType = 'artwork';
         open = false;
-        openNewEntity = true;
+        openCreateEntity = true;
       }}
     >
       <div
@@ -144,5 +143,9 @@
   </div>
 {/if}
 
-<CreateSpaceModal {$profile} bind:open={openCreateSpace} />
-<NewEntityModal {$profile} type={newEntityType} bind:open={openNewEntity} />
+<CreateSpaceModal bind:open={openCreateSpace} />
+<CreateEntityModal
+  {$profile}
+  type={createEntityType}
+  bind:open={openCreateEntity}
+/>
