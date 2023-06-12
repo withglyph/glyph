@@ -91,7 +91,9 @@
       </div>
       <div class="flex flex-col">
         <div class="font-bold">글</div>
-        <div class="text-sm text-gray-500">새로운 글을 작성해요.</div>
+        <div class="text-sm text-gray-500">
+          새로운 글을 스페이스에 작성해요.
+        </div>
       </div>
     </button>
 
@@ -112,7 +114,9 @@
       </div>
       <div class="flex flex-col">
         <div class="font-bold">그림</div>
-        <div class="text-sm text-gray-500">새로운 그림을 업로드해요.</div>
+        <div class="text-sm text-gray-500">
+          새로운 그림을 스페이스에 업로드해요.
+        </div>
       </div>
     </button>
 
