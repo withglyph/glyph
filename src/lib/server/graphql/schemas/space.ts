@@ -39,6 +39,12 @@ const CreateSpaceInput = builder.inputType('CreateSpaceInput', {
   validate: { schema: CreateSpaceInputSchema },
 });
 
+const DeleteSpaceInput = builder.inputType('DeleteSpaceInput', {
+  fields: (t) => ({
+    spaceId: t.string(),
+  }),
+});
+
 /**
  * * Queries
  */
@@ -93,6 +99,22 @@ builder.mutationFields((t) => ({
             },
           },
         },
+      });
+    },
+  }),
+
+  deleteSpace: t.withAuth({ loggedIn: true }).prismaField({
+    type: 'Space',
+    args: { input: t.arg({ type: DeleteSpaceInput }) },
+    resolve: async (query, _, { input }, context) => {
+      return await db.space.update({
+        ...query,
+        where: {
+          id: input.spaceId,
+          state: 'ACTIVE',
+          members: { some: { profileId: context.session.profileId } },
+        },
+        data: { state: 'INACTIVE' },
       });
     },
   }),
