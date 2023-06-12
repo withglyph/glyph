@@ -39,7 +39,10 @@ builder.prismaObject('Profile', {
     spaces: t.prismaField({
       type: ['Space'],
       select: (_, __, nestedSelection) => ({
-        spaces: { select: { space: nestedSelection(true) } },
+        spaces: {
+          select: { space: nestedSelection(true) },
+          where: { space: { state: 'ACTIVE' } },
+        },
       }),
       resolve: (_, parent) => parent.spaces.map(({ space }) => space),
     }),
