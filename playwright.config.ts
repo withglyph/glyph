@@ -30,7 +30,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     video: 'on-first-retry',
 
-    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL ?? 'http://127.0.0.1:5000',
+    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL ?? 'http://127.0.0.1:4001',
     extraHTTPHeaders: {
       'x-vercel-set-bypass-cookie': 'true',
       'x-vercel-protection-bypass':
@@ -51,6 +51,6 @@ export default defineConfig({
     : {
         command:
           'doppler run -- pnpm run build --mode=ci --logLevel=silent 1>/dev/null 2>&1 && pnpm exec vite preview --logLevel=error',
-        port: 5000,
+        port: 4001,
       },
 });

@@ -25,7 +25,7 @@
 <header class="relative sticky top-0 z-10 border-b bg-white px-8">
   <nav>
     <section class="h-16 flex items-center">
-      <a class="mr-4" href="/">
+      <a class="mr-4 flex-none" href="/">
         <Logo class="square-8 rounded text-gray-900" />
       </a>
 

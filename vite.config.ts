@@ -8,5 +8,5 @@ import { svg } from './src/vite';
 export default defineConfig({
   server: { host: '127.0.0.1', port: 4000, strictPort: true },
   plugins: [svg(), unocss(), houdini(), sveltekit()],
-  preview: { host: '127.0.0.1', port: 5000, strictPort: true },
+  preview: { host: '127.0.0.1', port: 4001, strictPort: true },
 });
