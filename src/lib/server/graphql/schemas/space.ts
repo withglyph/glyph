@@ -54,7 +54,7 @@ builder.queryFields((t) => ({
     type: 'Space',
     args: { slug: t.arg.string({ validate: { schema: SpaceSlugSchema } }) },
     resolve: async (query, _, args) => {
-      const space = await db.space.findUnique({
+      const space = await db.space.findFirst({
         ...query,
         where: { slug: args.slug, state: 'ACTIVE' },
       });

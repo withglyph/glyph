@@ -124,9 +124,9 @@ builder.queryFields((t) => ({
       handle: t.arg.string({ validate: { schema: ProfileHandleSchema } }),
     },
     resolve: async (query, _, args) => {
-      const profile = await db.profile.findUnique({
+      const profile = await db.profile.findFirst({
         ...query,
-        where: { handle: args.handle },
+        where: { handle: args.handle, state: 'ACTIVE' },
       });
 
       if (profile) {
