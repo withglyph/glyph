@@ -11,6 +11,6 @@ test('메인 페이지에 GraphQL 응답이 포함되어 있는지 확인 (CSR)'
   page,
 }) => {
   await page.goto('/search?q=1');
-  await page.locator('header > nav > section > a').click();
+  await page.locator('header > a[href="/"]').click();
   await expect(page.getByText('Hello world!')).toBeVisible();
 });
