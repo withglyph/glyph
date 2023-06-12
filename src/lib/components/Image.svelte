@@ -10,11 +10,9 @@
   let _class: string | undefined = undefined;
   export { _class as class };
 
+  let imgEl: HTMLImageElement;
   let visible = writable(false);
-  let loaded = false;
-
   let src: string | undefined = undefined;
-  let placeholderEl: HTMLImageElement | undefined = undefined;
 
   $: image = fragment(
     _image,
@@ -29,10 +27,9 @@
 
   $: sizes = [...$image.sizes, Number.POSITIVE_INFINITY].sort((a, b) => a - b);
 
-  $: if (placeholderEl) {
+  $: if ($visible) {
     const s =
-      window.devicePixelRatio *
-      Math.max(placeholderEl.clientWidth, placeholderEl.clientHeight);
+      window.devicePixelRatio * Math.max(imgEl.clientWidth, imgEl.clientHeight);
 
     for (const size of sizes) {
       if (size > s) {
@@ -43,25 +40,15 @@
       }
     }
   }
-
-  $: if (src && $visible) {
-    const img = new Image();
-    img.addEventListener('load', () => (loaded = true));
-    img.src = src;
-  }
 </script>
 
-{#if loaded}
-  <img class={_class} alt="" {src} />
-{:else}
-  <img
-    bind:this={placeholderEl}
-    class={_class}
-    alt=""
-    src={$image.placeholder}
-    use:intersectionObserver={{
-      store: visible,
-      once: true,
-    }}
-  />
-{/if}
+<img
+  bind:this={imgEl}
+  class={_class}
+  alt=""
+  src={src ?? $image.placeholder}
+  use:intersectionObserver={{
+    store: visible,
+    once: true,
+  }}
+/>
