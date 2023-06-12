@@ -11,6 +11,9 @@ export default defineConfig({
   retries: env.CI ? 2 : 0,
   workers: env.CI ? 1 : undefined,
 
+  timeout: 10 * 1000,
+  expect: { timeout: 5 * 1000 },
+
   reporter: process.env.CI
     ? [['dot'], ['github']]
     : [
