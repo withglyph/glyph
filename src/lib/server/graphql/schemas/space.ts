@@ -1,3 +1,4 @@
+import { SpaceMemberRole } from '@prisma/client';
 import { FormValidationError, NotFoundError } from '$lib/errors';
 import { db } from '$lib/server/database';
 import { createId } from '$lib/utils';
@@ -15,6 +16,27 @@ builder.prismaObject('Space', {
     slug: t.exposeString('slug'),
     name: t.exposeString('name'),
     members: t.relation('members'),
+
+    meAsMember: t.prismaField({
+      type: 'SpaceMember',
+      nullable: true,
+      select: { id: true },
+      resolve: async (query, space, __, context) => {
+        if (!context.session) {
+          return null;
+        }
+
+        return await db.spaceMember.findUnique({
+          ...query,
+          where: {
+            spaceId_profileId: {
+              spaceId: space.id,
+              profileId: context.session.profileId,
+            },
+          },
+        });
+      },
+    }),
   }),
 });
 
@@ -22,10 +44,24 @@ builder.prismaObject('SpaceMember', {
   select: true,
   fields: (t) => ({
     id: t.exposeString('id'),
+    role: t.expose('role', { type: SpaceMemberRole }),
     space: t.relation('space'),
     profile: t.relation('profile'),
+
+    canAccessDashboard: t.boolean({
+      select: { profileId: true },
+      resolve: (member, _, context) => {
+        return member.profileId === context.session?.profileId;
+      },
+    }),
   }),
 });
+
+/**
+ * * Enums
+ */
+
+builder.enumType(SpaceMemberRole, { name: 'SpaceMemberRole' });
 
 /**
  * * Inputs
@@ -96,6 +132,7 @@ builder.mutationFields((t) => ({
             create: {
               id: createId(),
               profileId: context.session.profileId,
+              role: 'OWNER',
             },
           },
         },

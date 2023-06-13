@@ -89,15 +89,23 @@ input SignupInput {
 
 type Space {
   id: String!
+  meAsMember: SpaceMember
   members: [SpaceMember!]!
   name: String!
   slug: String!
 }
 
 type SpaceMember {
+  canAccessDashboard: Boolean!
   id: String!
   profile: Profile!
+  role: SpaceMemberRole!
   space: Space!
+}
+
+enum SpaceMemberRole {
+  MEMBER
+  OWNER
 }
 
 type Subscription {

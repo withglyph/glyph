@@ -75,12 +75,13 @@ model Space {
 }
 
 model SpaceMember {
-  id        String   @id
-  spaceId   String   @map("space_id")
-  space     Space    @relation(fields: [spaceId], references: [id])
-  profileId String   @map("profile_id")
-  profile   Profile  @relation(fields: [profileId], references: [id])
-  createdAt DateTime @default(now()) @map("created_at")
+  id        String          @id
+  spaceId   String          @map("space_id")
+  space     Space           @relation(fields: [spaceId], references: [id])
+  profileId String          @map("profile_id")
+  profile   Profile         @relation(fields: [profileId], references: [id])
+  role      SpaceMemberRole
+  createdAt DateTime        @default(now()) @map("created_at")
 
   @@unique([spaceId, profileId])
   @@map("space_members")
@@ -112,4 +113,9 @@ enum SpaceState {
 enum UserState {
   ACTIVE
   INACTIVE
+}
+
+enum SpaceMemberRole {
+  OWNER
+  MEMBER
 }

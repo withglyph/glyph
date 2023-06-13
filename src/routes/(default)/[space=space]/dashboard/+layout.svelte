@@ -4,9 +4,11 @@
 
   $: useQuery(
     graphql(`
-      query SpaceLayout_Query($slug: String!) @load {
+      query SpaceDashboardLayout_Query($slug: String!) @load {
         space(slug: $slug) {
-          __typename
+          meAsMember {
+            canAccessDashboard
+          }
         }
       }
     `)

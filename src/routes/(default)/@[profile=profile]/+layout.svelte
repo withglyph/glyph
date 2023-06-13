@@ -3,7 +3,7 @@
 
   $: useQuery(
     graphql(`
-      query ProfileLayout_Query($handle: String!) {
+      query ProfileLayout_Query($handle: String!) @load {
         profile(handle: $handle) {
           __typename
         }
