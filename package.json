@@ -60,7 +60,7 @@
     "@tiptap/extension-typography": "^2.0.3",
     "@tiptap/extension-underline": "^2.0.3",
     "@tiptap/pm": "^2.0.3",
-    "@types/node": "^20.3.0",
+    "@types/node": "^20.3.1",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",
     "@unocss/eslint-plugin": "^0.53.1",
