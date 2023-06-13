@@ -1,4 +1,4 @@
-import { derived } from 'svelte/store';
+import { derived, writable } from 'svelte/store';
 import { AppError } from '$lib/errors';
 import { toast } from '$lib/notification';
 import type {
@@ -63,8 +63,10 @@ export const useMutation = <
   store: MutationStore<D, I, O>,
   options?: UseMutationOptions
 ): UseMutationReturn<D, I> => {
+  const { subscribe, set } = writable({ inflight: false });
   const mutate = (async (input?: V) => {
     try {
+      set({ inflight: true });
       const { data } = await store.mutate((input ? { input } : null) as I);
       const fields = Object.values(data!);
       if (fields.length !== 1) {
@@ -99,12 +101,10 @@ export const useMutation = <
       }
 
       throw error;
+    } finally {
+      set({ inflight: false });
     }
   }) as UseMutationReturn<D, I>;
-
-  const { subscribe } = derived(store, ($store) => ({
-    inflight: $store.fetching,
-  }));
 
   mutate.subscribe = subscribe;
   return mutate;
