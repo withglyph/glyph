@@ -191,11 +191,17 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  logout: t.field({
-    type: 'Void',
-    resolve: (_, __, context) => {
+  logout: t.withAuth({ loggedIn: true }).prismaField({
+    type: 'Profile',
+    resolve: async (query, _, __, context) => {
+      const { profile } = await db.session.delete({
+        include: { profile: query },
+        where: { id: context.session.id },
+      });
+
       context.cookies.delete('penxle-at', { path: '/' });
-      return true;
+
+      return profile;
     },
   }),
 

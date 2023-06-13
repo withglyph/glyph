@@ -44,7 +44,7 @@ type Mutation {
   deleteSpace(input: DeleteSpaceInput!): Space!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   login(input: LoginInput!): Profile!
-  logout: Void!
+  logout: Profile!
   noop: String!
   prepareImageUpload(input: PrepareImageUploadInput!): PrepareImageUploadPayload!
   signup(input: SignupInput!): Profile!

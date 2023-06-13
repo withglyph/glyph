@@ -38,7 +38,9 @@
   const logout = useMutation(
     graphql(`
       mutation DefaultLayout_UserMenu_Logout_Mutation {
-        logout
+        logout {
+          __typename
+        }
       }
     `)
   );
