@@ -1,5 +1,5 @@
 import { derived, writable } from 'svelte/store';
-import { AppError } from '$lib/errors';
+import { AppError, deserializeGraphQLError } from '$lib/errors';
 import { toast } from '$lib/notification';
 import type {
   GraphQLObject,
@@ -67,7 +67,14 @@ export const useMutation = <
   const mutate = (async (input?: V) => {
     try {
       set({ inflight: true });
-      const { data } = await store.mutate((input ? { input } : null) as I);
+      const { data, errors } = await store.mutate(
+        (input ? { input } : null) as I
+      );
+
+      if (errors && errors.length > 0) {
+        throw deserializeGraphQLError(errors[0]);
+      }
+
       const fields = Object.values(data!);
       if (fields.length !== 1) {
         throw new Error(
@@ -76,17 +83,7 @@ export const useMutation = <
       }
 
       if (options?.refetch !== false) {
-        try {
-          await Promise.all(
-            renderedQueries.map(async (q) =>
-              q.refetch().catch(() => {
-                // noop
-              })
-            )
-          );
-        } catch {
-          // noop
-        }
+        await refetchQueries();
       }
 
       return fields[0] as Unwrap<D>;
@@ -108,4 +105,18 @@ export const useMutation = <
 
   mutate.subscribe = subscribe;
   return mutate;
+};
+
+export const refetchQueries = async () => {
+  try {
+    await Promise.all(
+      renderedQueries.map(async (q) =>
+        q.refetch().catch(() => {
+          // noop
+        })
+      )
+    );
+  } catch {
+    // noop
+  }
 };

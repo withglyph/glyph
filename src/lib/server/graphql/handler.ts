@@ -6,10 +6,10 @@ import type { RequestEvent } from '@sveltejs/kit';
 
 export const handler = createYoga<RequestEvent>({
   schema,
+  batching: true,
   context: extendContext,
   fetchAPI: globalThis,
   graphqlEndpoint: '/api/graphql',
   maskedErrors: false,
   plugins: [useErrorHandling()],
-  graphiql: { subscriptionsProtocol: 'GRAPHQL_SSE' },
 });
