@@ -3,9 +3,9 @@
   import { Button, Modal } from '$lib/components';
   import { absolutePath } from '$lib/utils';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
-  import type { DefaultLayout_CreateEntityModal_profile } from '$houdini';
+  import type { DefaultLayout_PublishModal_profile } from '$houdini';
 
-  let _profile: DefaultLayout_CreateEntityModal_profile;
+  let _profile: DefaultLayout_PublishModal_profile;
   export { _profile as $profile };
 
   export let open = false;
@@ -15,7 +15,7 @@
   $: profile = fragment(
     _profile,
     graphql(`
-      fragment DefaultLayout_CreateEntityModal_profile on Profile {
+      fragment DefaultLayout_PublishModal_profile on Profile {
         spaces {
           id
           slug
@@ -33,7 +33,7 @@
     {#each $profile.spaces as space (space.id)}
       <a
         class="group flex items-center gap-2 px-4 py-2 text-left hover:bg-gray-100"
-        href={`/${space.slug}/new/${type}`}
+        href={`/${space.slug}/publish/${type}`}
       >
         <div class="flex flex-col">
           <div class="font-medium">{space.name}</div>
