@@ -97,6 +97,7 @@ type Space {
 
 type SpaceMember {
   canAccessDashboard: Boolean!
+  canPublish: Boolean!
   id: String!
   profile: Profile!
   role: SpaceMemberRole!

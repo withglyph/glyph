@@ -11,8 +11,8 @@
 
   $: query = useQuery(
     graphql(`
-      query SpaceNewPostPage_Query($slug: String!) @load {
-        ...SpaceNewPostPage_Header_query @with(slug: $slug)
+      query SpacePublishPostPage_Query($slug: String!) @load {
+        ...SpacePublishPostPage_Header_query @with(slug: $slug)
       }
     `)
   );

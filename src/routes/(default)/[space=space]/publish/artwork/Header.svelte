@@ -1,16 +1,17 @@
 <script lang="ts">
   import Logo from '$assets/branding/logo.svg?component';
   import { fragment, graphql } from '$houdini';
-  import { Avatar, Button } from '$lib/components';
-  import type { SpaceNewPostPage_Header_query } from '$houdini';
+  import { Avatar } from '$lib/components';
+  import PublishButton from './PublishButton.svelte';
+  import type { SpacePublishArtworkPage_Header_query } from '$houdini';
 
-  let _query: SpaceNewPostPage_Header_query;
+  let _query: SpacePublishArtworkPage_Header_query;
   export { _query as $query };
 
   $: query = fragment(
     _query,
     graphql(`
-      fragment SpaceNewPostPage_Header_query on Query
+      fragment SpacePublishArtworkPage_Header_query on Query
       @arguments(slug: { type: "String!" }) {
         me {
           ...Avatar_profile
@@ -18,6 +19,7 @@
 
         space(slug: $slug) {
           name
+          ...SpacePublishArtworkPage_PublishButton_space
         }
       }
     `)
@@ -30,10 +32,10 @@
       <Logo class="square-8 rounded" />
     </a>
     <div class="text-sm text-gray-500">
-      {$query.space.name}에 새 글 작성중...
+      {$query.space.name}에 새 그림 게시중...
     </div>
     <div class="grow" />
-    <Button>게시하기</Button>
+    <PublishButton $space={$query.space} />
     <Avatar class="square-8" $profile={$query.me} />
   </div>
 </div>

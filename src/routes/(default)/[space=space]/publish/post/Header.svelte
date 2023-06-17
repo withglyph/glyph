@@ -2,15 +2,15 @@
   import Logo from '$assets/branding/logo.svg?component';
   import { fragment, graphql } from '$houdini';
   import { Avatar, Button } from '$lib/components';
-  import type { SpaceNewArtworkPage_Header_query } from '$houdini';
+  import type { SpacePublishPostPage_Header_query } from '$houdini';
 
-  let _query: SpaceNewArtworkPage_Header_query;
+  let _query: SpacePublishPostPage_Header_query;
   export { _query as $query };
 
   $: query = fragment(
     _query,
     graphql(`
-      fragment SpaceNewArtworkPage_Header_query on Query
+      fragment SpacePublishPostPage_Header_query on Query
       @arguments(slug: { type: "String!" }) {
         me {
           ...Avatar_profile
@@ -30,7 +30,7 @@
       <Logo class="square-8 rounded" />
     </a>
     <div class="text-sm text-gray-500">
-      {$query.space.name}에 새 그림 게시중...
+      {$query.space.name}에 새 글 작성중...
     </div>
     <div class="grow" />
     <Button>게시하기</Button>
