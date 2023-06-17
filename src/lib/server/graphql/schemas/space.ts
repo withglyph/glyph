@@ -48,6 +48,13 @@ builder.prismaObject('SpaceMember', {
     space: t.relation('space'),
     profile: t.relation('profile'),
 
+    canPublish: t.boolean({
+      select: { profileId: true },
+      resolve: (member, _, context) => {
+        return member.profileId === context.session?.profileId;
+      },
+    }),
+
     canAccessDashboard: t.boolean({
       select: { profileId: true },
       resolve: (member, _, context) => {

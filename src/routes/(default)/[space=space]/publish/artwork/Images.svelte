@@ -1,54 +1,8 @@
 <script lang="ts">
-  // import { Image } from '$lib/components';
-  // import { graphql, useMutation } from '$lib/houdini';
-  // import { trackable } from '$lib/svelte/store';
   import FileImage from './FileImage.svelte';
-  // import type { Image_image } from '$houdini';
   import type { ChangeEventHandler, DragEventHandler } from 'svelte/elements';
 
-  // const prepareImageUpload = useMutation(
-  //   graphql(`
-  //     mutation SpaceNewArtworkPage_Uploader_PrepareImageUpload_Mutation(
-  //       $input: PrepareImageUploadInput!
-  //     ) {
-  //       prepareImageUpload(input: $input) {
-  //         path
-  //         presignedUrl
-  //       }
-  //     }
-  //   `)
-  // );
-
-  // const finalizeImageUpload = useMutation(
-  //   graphql(`
-  //     mutation SpaceNewArtworkPage_Uploader_FinalizeImageUpload_Mutation(
-  //       $input: FinalizeImageUploadInput!
-  //     ) {
-  //       finalizeImageUpload(input: $input) {
-  //         id
-  //         ...Image_image
-  //       }
-  //     }
-  //   `)
-  // );
-
-  // let loading = trackable();
-  let files: File[] = [];
-
-  // const doUpload = async (file: File) => {
-  //   await loading.track(async () => {
-  //     const { path, presignedUrl } = await prepareImageUpload({
-  //       name: file.name,
-  //     });
-
-  //     await fetch(presignedUrl, {
-  //       method: 'PUT',
-  //       body: file,
-  //     });
-
-  //     await finalizeImageUpload({ path });
-  //   });
-  // };
+  export let files: File[];
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const file = event.currentTarget.files?.[0];
