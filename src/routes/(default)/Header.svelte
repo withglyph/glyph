@@ -1,7 +1,7 @@
 <script lang="ts">
   import Logo from '$assets/branding/logo.svg?component';
   import { fragment, graphql } from '$houdini';
-  import CreateEntityMenu from './CreateEntityMenu.svelte';
+  import CreateEntityMenu from './PublishMenu.svelte';
   import SearchBar from './SearchBar.svelte';
   import UserMenu from './UserMenu.svelte';
   import type { DefaultLayout_Header_query } from '$houdini';
@@ -15,7 +15,7 @@
       fragment DefaultLayout_Header_query on Query {
         meOrNull {
           ...DefaultLayout_UserMenu_profile
-          ...DefaultLayout_CreateEntityMenu_profile
+          ...DefaultLayout_PublishMenu_profile
         }
       }
     `)

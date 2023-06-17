@@ -3,11 +3,11 @@
   import { tick } from 'svelte';
   import { fragment, graphql } from '$houdini';
   import { portal } from '$lib/svelte/actions';
-  import CreateEntityModal from './CreateEntityModal.svelte';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
-  import type { DefaultLayout_CreateEntityMenu_profile } from '$houdini';
+  import PublishModal from './PublishModal.svelte';
+  import type { DefaultLayout_PublishMenu_profile } from '$houdini';
 
-  let _profile: DefaultLayout_CreateEntityMenu_profile;
+  let _profile: DefaultLayout_PublishMenu_profile;
   export { _profile as $profile };
 
   let targetEl: HTMLButtonElement;
@@ -15,15 +15,15 @@
 
   let open = false;
   let openCreateSpace = false;
-  let openCreateEntity = false;
+  let openPublish = false;
 
-  let createEntityType: 'artwork' | 'post';
+  let publishType: 'artwork' | 'post';
 
   $: profile = fragment(
     _profile,
     graphql(`
-      fragment DefaultLayout_CreateEntityMenu_profile on Profile {
-        ...DefaultLayout_CreateEntityModal_profile
+      fragment DefaultLayout_PublishMenu_profile on Profile {
+        ...DefaultLayout_PublishModal_profile
       }
     `)
   );
@@ -78,9 +78,9 @@
       tabindex="-1"
       type="button"
       on:click={() => {
-        createEntityType = 'post';
+        publishType = 'post';
         open = false;
-        openCreateEntity = true;
+        openPublish = true;
       }}
     >
       <div
@@ -101,9 +101,9 @@
       tabindex="-1"
       type="button"
       on:click={() => {
-        createEntityType = 'artwork';
+        publishType = 'artwork';
         open = false;
-        openCreateEntity = true;
+        openPublish = true;
       }}
     >
       <div
@@ -144,8 +144,4 @@
 {/if}
 
 <CreateSpaceModal bind:open={openCreateSpace} />
-<CreateEntityModal
-  {$profile}
-  type={createEntityType}
-  bind:open={openCreateEntity}
-/>
+<PublishModal {$profile} type={publishType} bind:open={openPublish} />
