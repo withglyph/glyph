@@ -10,6 +10,7 @@
       return;
     }
 
+    event.currentTarget.value = '';
     files = [...files, file];
   };
 
