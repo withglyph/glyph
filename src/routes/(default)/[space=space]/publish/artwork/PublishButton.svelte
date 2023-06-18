@@ -2,10 +2,14 @@
   import { fragment, graphql } from '$houdini';
   import { Button } from '$lib/components';
   import { useMutation } from '$lib/houdini';
+  import { trackable } from '$lib/svelte/store';
   import type { SpacePublishArtworkPage_PublishButton_space } from '$houdini';
 
   let _space: SpacePublishArtworkPage_PublishButton_space;
   export { _space as $space };
+  export let files: File[];
+
+  const loading = trackable();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   $: space = fragment(
@@ -37,7 +41,6 @@
       ) {
         finalizeImageUpload(input: $input) {
           id
-          ...Image_image
         }
       }
     `)
@@ -54,8 +57,15 @@
       body: file,
     });
 
-    await finalizeImageUpload({ path });
+    return await finalizeImageUpload({ path });
+  };
+
+  const doPublish = async () => {
+    await loading.track(async () => {
+      const images = await Promise.all(files.map(async (v) => doUpload(v)));
+      console.log(images.map((v) => v.id));
+    });
   };
 </script>
 
-<Button>게시하기</Button>
+<Button loading={$loading} on:click={doPublish}>게시하기</Button>

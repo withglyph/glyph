@@ -7,6 +7,7 @@
 
   let _query: SpacePublishArtworkPage_Header_query;
   export { _query as $query };
+  export let files: File[];
 
   $: query = fragment(
     _query,
@@ -35,7 +36,7 @@
       {$query.space.name}에 새 그림 게시중...
     </div>
     <div class="grow" />
-    <PublishButton $space={$query.space} />
+    <PublishButton $space={$query.space} bind:files />
     <Avatar class="square-8" $profile={$query.me} />
   </div>
 </div>

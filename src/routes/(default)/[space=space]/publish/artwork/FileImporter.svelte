@@ -69,6 +69,7 @@
   id="file"
   class="hidden"
   accept={validMimes.join(',')}
+  multiple
   type="file"
   on:change={async ({ currentTarget }) => {
     await addFiles(currentTarget.files);
