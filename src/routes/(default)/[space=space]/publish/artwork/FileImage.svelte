@@ -12,4 +12,10 @@
   });
 </script>
 
-<img class={_class} alt="" {src} />
+<img
+  class={_class}
+  alt=""
+  {src}
+  on:contextmenu|preventDefault
+  on:dragstart|preventDefault
+/>

@@ -42,13 +42,23 @@
 </script>
 
 <svelte:window
-  on:dragenter={({ target }) => (dragging = target)}
+  on:dragenter={({ target, dataTransfer }) => {
+    if (dataTransfer?.types.includes('Files')) {
+      dragging = target;
+    }
+  }}
   on:dragleave={({ target }) => {
     if (dragging === target) {
       dragging = null;
     }
   }}
-  on:dragover|preventDefault
+  on:dragover|preventDefault={({ dataTransfer }) => {
+    if (dataTransfer) {
+      dataTransfer.dropEffect = dataTransfer.types.includes('Files')
+        ? 'copy'
+        : 'none';
+    }
+  }}
   on:drop|preventDefault={async ({ dataTransfer }) => {
     dragging = null;
     await addFiles(dataTransfer?.files);
