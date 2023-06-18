@@ -12,11 +12,13 @@
 
   const isValidFile = async (file: File) => {
     if (file.size > maxSize) {
+      toast.error(`32MB를 초과하는 파일은 업로드할 수 없어요 (${file.name})`);
       return false;
     }
 
     const mime = await fileMime(file);
     if (!validMimes.includes(mime)) {
+      toast.error(`허용되지 않는 파일 타입이에요 (${file.name})`);
       return false;
     }
 
@@ -30,11 +32,9 @@
 
     const validFiles: File[] = [];
     for (const file of newFiles) {
-      if (!(await isValidFile(file))) {
-        toast.error(`${file.name} 파일은 업로드할 수 없어요.`);
-        continue;
+      if (await isValidFile(file)) {
+        validFiles.push(file);
       }
-      validFiles.push(file);
     }
 
     files = [...files, ...validFiles];
