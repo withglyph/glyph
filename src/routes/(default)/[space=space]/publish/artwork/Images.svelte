@@ -1,42 +1,9 @@
 <script lang="ts">
   import FileImage from './FileImage.svelte';
-  import type { ChangeEventHandler, DragEventHandler } from 'svelte/elements';
+  import FileImporter from './FileImporter.svelte';
 
   export let files: File[];
-
-  const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    const file = event.currentTarget.files?.[0];
-    if (!file) {
-      return;
-    }
-
-    event.currentTarget.value = '';
-    files = [...files, file];
-  };
-
-  const handleDragOver: DragEventHandler<HTMLLabelElement> = (event) => {
-    event.preventDefault();
-  };
-
-  const handleDrop: DragEventHandler<HTMLLabelElement> = (event) => {
-    event.preventDefault();
-
-    const file = event.dataTransfer?.files[0];
-    if (!file) {
-      return;
-    }
-
-    files = [...files, file];
-  };
 </script>
-
-<input
-  id="file"
-  class="hidden"
-  accept="image/jpeg,image/png"
-  type="file"
-  on:change={handleChange}
-/>
 
 <div class="h-100 flex center gap-4 overflow-x-auto bg-gray-100">
   {#each files as file (file)}
@@ -56,10 +23,10 @@
     <label
       class="square-full flex cursor-pointer center bg-white text-sm transition hover:bg-gray-50"
       for="file"
-      on:dragover={handleDragOver}
-      on:drop={handleDrop}
     >
       <span class="i-lc-plus-circle square-8 text-gray-300" />
     </label>
   </div>
 </div>
+
+<FileImporter bind:files />
