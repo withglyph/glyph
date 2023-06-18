@@ -47,6 +47,8 @@
   class={_class}
   alt=""
   src={src ?? $image.placeholder}
+  on:contextmenu|preventDefault
+  on:dragstart|preventDefault
   use:intersectionObserver={{
     store: visible,
     once: true,
