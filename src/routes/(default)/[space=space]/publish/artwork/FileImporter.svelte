@@ -1,26 +1,36 @@
 <script lang="ts">
   import { toast } from '$lib/notification';
+  import { fileMime } from '$lib/utils';
   import type { Nullable } from '$lib/types';
 
   export let files: File[];
 
-  const validTypes = ['image/jpeg', 'image/png'];
+  const validMimes = ['image/jpeg', 'image/png'];
   const maxSize = 32 * 1024 * 1024; // 32MB
 
   let dragging: EventTarget | null;
 
-  const isValidFile = (file: File) => {
-    return validTypes.includes(file.type) && file.size <= maxSize;
+  const isValidFile = async (file: File) => {
+    if (file.size > maxSize) {
+      return false;
+    }
+
+    const mime = await fileMime(file);
+    if (!validMimes.includes(mime)) {
+      return false;
+    }
+
+    return true;
   };
 
-  const addFiles = (newFiles: Nullable<FileList>) => {
+  const addFiles = async (newFiles: Nullable<FileList>) => {
     if (!newFiles) {
       return;
     }
 
     const validFiles: File[] = [];
     for (const file of newFiles) {
-      if (!isValidFile(file)) {
+      if (!(await isValidFile(file))) {
         toast.error(`${file.name} 파일은 업로드할 수 없어요.`);
         continue;
       }
@@ -39,19 +49,19 @@
     }
   }}
   on:dragover|preventDefault
-  on:drop|preventDefault={({ dataTransfer }) => {
+  on:drop|preventDefault={async ({ dataTransfer }) => {
     dragging = null;
-    addFiles(dataTransfer?.files);
+    await addFiles(dataTransfer?.files);
   }}
 />
 
 <input
   id="file"
   class="hidden"
-  accept={validTypes.join(',')}
+  accept={validMimes.join(',')}
   type="file"
-  on:change={({ currentTarget }) => {
-    addFiles(currentTarget.files);
+  on:change={async ({ currentTarget }) => {
+    await addFiles(currentTarget.files);
     currentTarget.value = '';
   }}
 />
