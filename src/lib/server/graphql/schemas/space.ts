@@ -49,16 +49,22 @@ builder.prismaObject('SpaceMember', {
     profile: t.relation('profile'),
 
     canPublish: t.boolean({
-      select: { profileId: true },
-      resolve: (member, _, context) => {
-        return member.profileId === context.session?.profileId;
+      resolve: () => {
+        return true;
       },
     }),
 
     canAccessDashboard: t.boolean({
       select: { profileId: true },
-      resolve: (member, _, context) => {
-        return member.profileId === context.session?.profileId;
+      resolve: () => {
+        return true;
+      },
+    }),
+
+    canAdministrate: t.boolean({
+      select: { role: true },
+      resolve: (member) => {
+        return member.role === 'OWNER';
       },
     }),
   }),
@@ -156,7 +162,9 @@ builder.mutationFields((t) => ({
         where: {
           id: input.spaceId,
           state: 'ACTIVE',
-          members: { some: { profileId: context.session.profileId } },
+          members: {
+            some: { profileId: context.session.profileId, role: 'OWNER' },
+          },
         },
         data: { state: 'INACTIVE' },
       });

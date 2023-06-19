@@ -11,6 +11,10 @@
           slug
           name
 
+          meAsMember {
+            canAdministrate
+          }
+
           ...SpaceDashboardPage_DeleteSpaceModal_space
         }
       }
@@ -31,12 +35,14 @@
 </a>
 <div class="text-2xl font-bold">대시보드</div>
 
-<button
-  class="rounded px-4 py-2 font-medium text-red-500 hover:bg-red-50"
-  type="button"
-  on:click={() => (openDeleteSpace = true)}
->
-  스페이스 삭제하기
-</button>
+{#if $query.space.meAsMember?.canAdministrate}
+  <button
+    class="rounded px-4 py-2 font-medium text-red-500 hover:bg-red-50"
+    type="button"
+    on:click={() => (openDeleteSpace = true)}
+  >
+    스페이스 삭제하기
+  </button>
 
-<DeleteSpaceModal $space={$query.space} bind:open={openDeleteSpace} />
+  <DeleteSpaceModal $space={$query.space} bind:open={openDeleteSpace} />
+{/if}
