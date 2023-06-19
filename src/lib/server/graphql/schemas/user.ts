@@ -5,6 +5,7 @@ import {
   NotFoundError,
   PermissionDeniedError,
 } from '$lib/errors';
+import { updateUser } from '$lib/server/analytics';
 import { db } from '$lib/server/database';
 import { createAccessToken } from '$lib/server/utils';
 import { createHandle, createId } from '$lib/utils';
@@ -187,6 +188,7 @@ builder.mutationFields((t) => ({
         path: '/',
       });
 
+      await updateUser(user.id);
       context.track('user:login', {
         distinct_id: user.id,
         method: 'email',
@@ -265,6 +267,7 @@ builder.mutationFields((t) => ({
         path: '/',
       });
 
+      await updateUser(user.id);
       context.track('user:signup', {
         distinct_id: user.id,
         method: 'email',

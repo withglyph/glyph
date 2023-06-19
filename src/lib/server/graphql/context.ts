@@ -27,7 +27,7 @@ export const extendContext = async (
   const ctx: ExtendedContext = {
     ...context.locals,
     track: (eventName, properties) => {
-      track(context, eventName, properties);
+      track(context, eventName, { ...properties });
     },
   };
 

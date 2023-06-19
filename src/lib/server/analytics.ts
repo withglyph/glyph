@@ -1,7 +1,8 @@
 import Mixpanel from 'mixpanel';
 import UAParser from 'ua-parser-js';
-import { MIXPANEL_TOKEN } from '$env/static/private';
+import { CDN_URL, MIXPANEL_TOKEN } from '$env/static/private';
 import { production } from '$lib/environment';
+import { db } from './database';
 import type { RequestEvent } from '@sveltejs/kit';
 
 export const mixpanel = Mixpanel.init(MIXPANEL_TOKEN);
@@ -9,8 +10,12 @@ export const mixpanel = Mixpanel.init(MIXPANEL_TOKEN);
 export const track = (
   event: RequestEvent,
   eventName: string,
-  properties?: Record<string, unknown>
+  properties: Record<string, unknown>
 ) => {
+  if (!properties.distinct_id) {
+    throw new Error('distinct_id is required');
+  }
+
   if (!production) {
     return;
   }
@@ -24,5 +29,35 @@ export const track = (
     $device: device.type,
     $os: os.name,
     ...properties,
+  });
+};
+
+export const updateUser = async (userId: string) => {
+  const user = await db.user.findUniqueOrThrow({
+    select: {
+      email: true,
+      createdAt: true,
+      profiles: {
+        select: {
+          name: true,
+          handle: true,
+          avatar: { select: { path: true } },
+        },
+        where: { order: 0 },
+      },
+    },
+    where: { id: userId },
+  });
+
+  const [profile] = user.profiles;
+
+  mixpanel.people.set(userId, {
+    $avatar: profile.avatar
+      ? `${CDN_URL}/${profile.avatar.path}/full`
+      : undefined,
+    $email: user.email,
+    $name: profile.name,
+    $created: user.createdAt.toISOString(),
+    handle: `@${profile.handle}`,
   });
 };
