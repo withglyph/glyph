@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/sveltekit';
+import { PUBLIC_SENTRY_DSN } from '$env/static/public';
 import { setupDayjs } from '$lib/datetime';
 import {
   AppError,
@@ -8,10 +10,11 @@ import {
 import type { HandleClientError, HandleServerError } from '@sveltejs/kit';
 
 export const setupGlobals = () => {
+  Sentry.init({ dsn: PUBLIC_SENTRY_DSN });
   setupDayjs();
 };
 
-export const handleError = (({ error, event }) => {
+const _handleError = (({ error, event }) => {
   if (event.route.id === null) {
     return serializeAppError(new NotFoundError());
   } else if (error instanceof AppError) {
@@ -22,3 +25,5 @@ export const handleError = (({ error, event }) => {
     return serializeAppError(new UnknownError());
   }
 }) satisfies HandleServerError & HandleClientError;
+
+export const handleError = Sentry.handleErrorWithSentry(_handleError);
