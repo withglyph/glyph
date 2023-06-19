@@ -65,6 +65,7 @@
     "@typescript-eslint/parser": "^5.59.11",
     "@unocss/eslint-plugin": "^0.53.1",
     "@vercel/analytics": "^1.0.1",
+    "@vercel/edge-config": "^0.2.1",
     "argon2": "^0.30.3",
     "autoprefixer": "^10.4.14",
     "clsx": "^1.2.1",
