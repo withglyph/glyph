@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import Wordmark from '$assets/branding/wordmark.svg?component';
+  import Logo from '$assets/branding/logo.svg?component';
   import { Button, Helmet, Modal } from '$lib/components';
   import { deserializeAppError, UnknownError } from '$lib/errors';
 
@@ -14,10 +14,12 @@
 
 <Helmet title="펜슬" />
 
+<a class="absolute left-8 top-4" href="/">
+  <Logo class="square-8 rounded" />
+</a>
+
 <div class="mx-auto my-12 flex grow flex-col items-center justify-between">
-  <a href="/">
-    <Wordmark class="h-5 text-black" />
-  </a>
+  <div />
 
   <section class="flex flex-col center text-center">
     <svg class="w-25" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">

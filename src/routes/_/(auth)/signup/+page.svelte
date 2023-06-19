@@ -32,7 +32,7 @@
 
 <div class="flex items-center gap-4">
   <a href="/">
-    <Logo class="square-8 rounded text-gray-900" />
+    <Logo class="square-8 rounded" />
   </a>
   <div class="h-10 border-x border-gray-900" />
   <div class="text-2xl font-bold">새 펜슬 계정 만들기</div>
