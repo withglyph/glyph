@@ -1,6 +1,6 @@
 import Mixpanel from 'mixpanel';
 import UAParser from 'ua-parser-js';
-import { CDN_URL, MIXPANEL_TOKEN } from '$env/static/private';
+import { MIXPANEL_TOKEN } from '$env/static/private';
 import { production } from '$lib/environment';
 import { db } from './database';
 import type { RequestEvent } from '@sveltejs/kit';
@@ -24,40 +24,27 @@ export const track = (
   const { browser, device, os } = parser.getResult();
 
   mixpanel.track(eventName, {
-    ip: event.getClientAddress(),
     $browser: browser.name,
     $device: device.type,
     $os: os.name,
+    ip: event.getClientAddress(),
     ...properties,
   });
 };
 
-export const updateUser = async (userId: string) => {
+export const updateUser = async (event: RequestEvent, userId: string) => {
+  if (!production) {
+    return;
+  }
+
   const user = await db.user.findUniqueOrThrow({
-    select: {
-      email: true,
-      createdAt: true,
-      profiles: {
-        select: {
-          name: true,
-          handle: true,
-          avatar: { select: { path: true } },
-        },
-        where: { order: 0 },
-      },
-    },
+    select: { email: true, createdAt: true },
     where: { id: userId },
   });
 
-  const [profile] = user.profiles;
-
   mixpanel.people.set(userId, {
-    $avatar: profile.avatar
-      ? `${CDN_URL}/${profile.avatar.path}/full`
-      : undefined,
     $email: user.email,
-    $name: profile.name,
     $created: user.createdAt.toISOString(),
-    handle: `@${profile.handle}`,
+    ip: event.getClientAddress(),
   });
 };

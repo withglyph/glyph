@@ -188,7 +188,7 @@ builder.mutationFields((t) => ({
         path: '/',
       });
 
-      await updateUser(user.id);
+      await updateUser(context, user.id);
       context.track('user:login', {
         $user_id: user.id,
         method: 'email',
@@ -267,7 +267,7 @@ builder.mutationFields((t) => ({
         path: '/',
       });
 
-      await updateUser(user.id);
+      await updateUser(context, user.id);
       context.track('user:signup', {
         $user_id: user.id,
         method: 'email',
