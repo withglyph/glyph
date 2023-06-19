@@ -12,8 +12,8 @@ export const track = (
   eventName: string,
   properties: Record<string, unknown>
 ) => {
-  if (!properties.distinct_id) {
-    throw new Error('distinct_id is required');
+  if (!properties.$user_id) {
+    throw new Error('$user_id is required');
   }
 
   if (!production) {

@@ -190,7 +190,7 @@ builder.mutationFields((t) => ({
 
       await updateUser(user.id);
       context.track('user:login', {
-        distinct_id: user.id,
+        $user_id: user.id,
         method: 'email',
       });
 
@@ -269,7 +269,7 @@ builder.mutationFields((t) => ({
 
       await updateUser(user.id);
       context.track('user:signup', {
-        distinct_id: user.id,
+        $user_id: user.id,
         method: 'email',
       });
 

@@ -52,7 +52,7 @@ export const extendContext = async (
 
           ctx.track = (eventName, properties) => {
             track(context, eventName, {
-              distinct_id: session.userId,
+              $user_id: session.userId,
               ...properties,
             });
           };
