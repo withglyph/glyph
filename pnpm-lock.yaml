@@ -27,8 +27,8 @@ devDependencies:
     specifier: ^1.4.1
     version: 1.4.1
   '@iconify-json/lucide':
-    specifier: ^1.1.101
-    version: 1.1.101
+    specifier: ^1.1.102
+    version: 1.1.102
   '@iconify-json/ri':
     specifier: ^1.1.9
     version: 1.1.9
@@ -1922,8 +1922,8 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
-  /@iconify-json/lucide@1.1.101:
-    resolution: {integrity: sha512-ijEWw52wUFxZXsjbSWhyw5EUE1IBxu4v0t52SyQlgM33RK5557xkrBKWRv0oHV2xDcvkdNuQLoNwg7vl7rUtGA==}
+  /@iconify-json/lucide@1.1.102:
+    resolution: {integrity: sha512-B/elOdrHKfRPSk3nzvH6zI2JJP9OXSEhpC0CRdYOrf9/Ukk5EBrw/7z6PgYqCzavRhdB6cGCI+lXa05BAOZ9gw==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true
