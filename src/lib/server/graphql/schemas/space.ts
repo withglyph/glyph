@@ -134,7 +134,7 @@ builder.mutationFields((t) => ({
         throw new FormValidationError('slug', '이미 사용중인 URL이에요.');
       }
 
-      return await db.space.create({
+      const space = await db.space.create({
         ...query,
         data: {
           id: createId(),
@@ -150,6 +150,10 @@ builder.mutationFields((t) => ({
           },
         },
       });
+
+      context.track('space:create');
+
+      return space;
     },
   }),
 
@@ -157,7 +161,7 @@ builder.mutationFields((t) => ({
     type: 'Space',
     args: { input: t.arg({ type: DeleteSpaceInput }) },
     resolve: async (query, _, { input }, context) => {
-      return await db.space.update({
+      const space = await db.space.update({
         ...query,
         where: {
           id: input.spaceId,
@@ -168,6 +172,10 @@ builder.mutationFields((t) => ({
         },
         data: { state: 'INACTIVE' },
       });
+
+      context.track('space:delete');
+
+      return space;
     },
   }),
 }));

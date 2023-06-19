@@ -1,10 +1,13 @@
+import { track } from '../analytics';
 import { db } from '../database';
 import { decodeAccessToken } from '../utils/access-token';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { YogaInitialContext } from 'graphql-yoga';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-type DefaultContext = {};
+type DefaultContext = {
+  track: (eventName: string, properties?: Record<string, unknown>) => void;
+};
 
 export type AuthContext = {
   session: {
@@ -23,6 +26,9 @@ export const extendContext = async (
 ): Promise<ExtendedContext> => {
   const ctx: ExtendedContext = {
     ...context.locals,
+    track: (eventName, properties) => {
+      track(context, eventName, properties);
+    },
   };
 
   const accessToken = context.cookies.get('penxle-at');
@@ -42,6 +48,13 @@ export const extendContext = async (
             id: sessionId,
             userId: session.userId,
             profileId: session.profileId,
+          };
+
+          ctx.track = (eventName, properties) => {
+            track(context, eventName, {
+              distinct_id: session.userId,
+              ...properties,
+            });
           };
         }
       }

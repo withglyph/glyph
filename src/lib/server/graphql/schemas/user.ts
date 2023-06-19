@@ -187,6 +187,11 @@ builder.mutationFields((t) => ({
         path: '/',
       });
 
+      context.track('user:login', {
+        distinct_id: user.id,
+        method: 'email',
+      });
+
       return profile;
     },
   }),
@@ -200,6 +205,8 @@ builder.mutationFields((t) => ({
       });
 
       context.cookies.delete('penxle-at', { path: '/' });
+
+      context.track('user:logout');
 
       return profile;
     },
@@ -218,7 +225,7 @@ builder.mutationFields((t) => ({
         throw new FormValidationError('email', '이미 사용중인 이메일이에요.');
       }
 
-      const { profile, session } = await db.$transaction(async (tx) => {
+      const { user, profile, session } = await db.$transaction(async (tx) => {
         const user = await tx.user.create({
           data: {
             id: createId(),
@@ -249,13 +256,18 @@ builder.mutationFields((t) => ({
           },
         });
 
-        return { profile, session };
+        return { user, profile, session };
       });
 
       const accessToken = await createAccessToken(session.id);
       context.cookies.set('penxle-at', accessToken, {
         expires: dayjs().add(5, 'years').toDate(),
         path: '/',
+      });
+
+      context.track('user:signup', {
+        distinct_id: user.id,
+        method: 'email',
       });
 
       return profile;
@@ -298,6 +310,8 @@ builder.mutationFields((t) => ({
         data: { profileId: profile.id },
       });
 
+      context.track('profile:create');
+
       return profile;
     },
   }),
@@ -319,6 +333,8 @@ builder.mutationFields((t) => ({
         where: { id: context.session.id },
         data: { profileId: profile.id },
       });
+
+      context.track('profile:switch');
 
       return profile;
     },
