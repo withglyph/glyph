@@ -7,7 +7,7 @@ export default {
   preprocess: preprocess(),
   kit: {
     adapter: vercel({
-      runtime: 'edge',
+      runtime: 'nodejs18.x',
       regions: ['icn1'],
     }),
     alias: {
