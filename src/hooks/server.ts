@@ -1,22 +1,14 @@
 import { json } from '@sveltejs/kit';
 import { enabled } from '$lib/features';
 import { setupGlobals } from './common';
-import type { Handle, RequestEvent } from '@sveltejs/kit';
+import type { Handle } from '@sveltejs/kit';
 
 export { handleError } from './common';
 
 setupGlobals();
 
-const populateLocals = (event: RequestEvent): App.Locals => {
-  return {
-    ipAddress: event.getClientAddress(),
-  };
-};
-
 export const handle = (async ({ event, resolve }) => {
-  event.locals = populateLocals(event);
-
-  if (event.request.method === 'OPTIONS') {
+  if (!['GET', 'POST'].includes(event.request.method)) {
     return new Response(null, { status: 405 });
   }
 
