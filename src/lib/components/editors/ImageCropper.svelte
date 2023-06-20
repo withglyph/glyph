@@ -1,0 +1,205 @@
+<script lang="ts">
+  import clsx from 'clsx';
+  import { onMount } from 'svelte';
+  import { clamp } from '$lib/utils';
+  import type { MouseEventHandler, TouchEventHandler } from 'svelte/elements';
+
+  let top = 0;
+  let left = 0;
+  let width = 100;
+  let height = 100;
+
+  let containerEl: HTMLDivElement;
+  let targetEl: HTMLDivElement;
+
+  type Point = { clientX: number; clientY: number };
+  type Rect = Point & { width: number; height: number };
+  let origin: { target: Rect; cursor: Point; position: string } | null = null;
+
+  let blink = false;
+
+  const handle = ({ clientX, clientY }: Point) => {
+    if (!origin) {
+      return;
+    }
+
+    const container = containerEl.getBoundingClientRect();
+    const { position, target, cursor } = origin;
+
+    let dx = clientX - cursor.clientX;
+    let dy = clientY - cursor.clientY;
+
+    if (position === 'center') {
+      // move
+      const absoluteX = target.clientX + dx;
+      const absoluteY = target.clientY + dy;
+
+      const relativeX = absoluteX - container.left;
+      const relativeY = absoluteY - container.top;
+
+      top = clamp(relativeY, 0, container.height - height);
+      left = clamp(relativeX, 0, container.width - width);
+    } else {
+      // resize
+      dx *= position.includes('left') ? -1 : 1;
+      dy *= position.includes('top') ? -1 : 1;
+      const d = Math.max(dx, dy);
+
+      let newLeft = position.includes('left')
+        ? target.clientX - d - container.left
+        : left;
+      let newTop = position.includes('top')
+        ? target.clientY - d - container.top
+        : top;
+      let newWidth = target.width + d;
+      let newHeight = target.height + d;
+
+      if (newLeft < 0 || newTop < 0) {
+        const delta = Math.min(newLeft, newTop);
+        newLeft -= delta;
+        newTop -= delta;
+      }
+
+      if (
+        newLeft + newWidth > container.width ||
+        newTop + newHeight > container.height
+      ) {
+        const delta = Math.min(
+          container.width - newLeft - newWidth,
+          container.height - newTop - newHeight
+        );
+        newLeft += delta;
+        newTop += delta;
+      }
+
+      console.log({ newLeft, newTop });
+
+      // if (newWidth < 0 || newHeight < 0) {
+      //   return;
+      // }
+
+      // if (
+      //   newLeft + newWidth > container.width ||
+      //   newTop + newHeight > container.height
+      // ) {
+      //   return;
+      // }
+
+      top = newTop;
+      left = newLeft;
+
+      const max = Math.min(container.width - left, container.height - top);
+
+      width = clamp(newWidth, 0, max);
+      height = clamp(newHeight, 0, max);
+    }
+  };
+
+  const setOrigin = ({
+    target,
+    clientX,
+    clientY,
+  }: Point & { target: EventTarget | null }) => {
+    const { x, y, width, height } = targetEl.getBoundingClientRect();
+    origin = {
+      position: (target as HTMLElement).dataset.pos ?? 'center',
+      target: { clientX: x, clientY: y, width, height },
+      cursor: { clientX, clientY },
+    };
+  };
+
+  const onMouseDown: MouseEventHandler<HTMLDivElement> = (event) => {
+    setOrigin(event);
+  };
+
+  const onMouseMove: MouseEventHandler<Window> = (event) => {
+    handle(event);
+  };
+
+  const onTouchDown: TouchEventHandler<HTMLDivElement> = (event) => {
+    if (event.touches.length === 1) {
+      setOrigin(event.touches[0]);
+    }
+  };
+
+  const onTouchMove: TouchEventHandler<Window> = (event) => {
+    if (event.touches.length === 1) {
+      event.preventDefault();
+      handle(event.touches[0]);
+    }
+  };
+
+  onMount(() => {
+    const interval = setInterval(() => {
+      blink = !blink;
+    }, 500);
+
+    return () => clearInterval(interval);
+  });
+</script>
+
+<svelte:window
+  on:mouseup={() => (origin = null)}
+  on:touchend={() => (origin = null)}
+  on:mousemove={origin ? onMouseMove : undefined}
+  on:touchmove|nonpassive={origin ? onTouchMove : undefined}
+/>
+
+<div
+  bind:this={containerEl}
+  class="relative square-100 select-none overflow-hidden border"
+>
+  <img
+    class="pointer-events-none square-full select-none object-cover"
+    alt=""
+    src="https://pnxl.net/i/L/Lg/Lg3283-f4h67a0C6itqpn.avif/640"
+  />
+  <div
+    bind:this={targetEl}
+    style:top={`${top}px`}
+    style:left={`${left}px`}
+    style:width={`${width}px`}
+    style:height={`${height}px`}
+    class="absolute square-50 cursor-move outline-10000 outline-black/50 outline-solid"
+    role="presentation"
+    on:mousedown={onMouseDown}
+    on:touchstart={onTouchDown}
+  >
+    <svg class="square-full" viewBox="0 0 100 100">
+      <rect class="square-full fill-none stroke-1 stroke-black" />
+      <rect
+        class="square-full fill-none stroke-1 stroke-dash-4 stroke-white"
+        vector-effect="non-scaling-stroke"
+      />
+    </svg>
+
+    <div
+      class={clsx(
+        'absolute square-2 border border-white/80 bg-black/20 -left-1 -top-1 cursor-nwse-resize',
+        blink ? 'bg-black/20' : 'bg-black/50'
+      )}
+      data-pos="top-left"
+    />
+    <div
+      class={clsx(
+        'absolute square-2 border border-white/80 bg-black/20 -right-1 -top-1 cursor-nesw-resize',
+        blink ? 'bg-black/20' : 'bg-black/50'
+      )}
+      data-pos="top-right"
+    />
+    <div
+      class={clsx(
+        'absolute square-2 border border-white/80 bg-black/20 -right-1 -bottom-1 cursor-nwse-resize',
+        blink ? 'bg-black/20' : 'bg-black/50'
+      )}
+      data-pos="bottom-right"
+    />
+    <div
+      class={clsx(
+        'absolute square-2 border border-white/80 bg-black/20 -left-1 -bottom-1 cursor-nesw-resize',
+        blink ? 'bg-black/20' : 'bg-black/50'
+      )}
+      data-pos="bottom-left"
+    />
+  </div>
+</div>
