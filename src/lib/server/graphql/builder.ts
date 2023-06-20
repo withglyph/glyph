@@ -4,7 +4,7 @@ import PrismaPlugin from '@pothos/plugin-prisma';
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects';
 import ValidationPlugin from '@pothos/plugin-validation';
-import { GraphQLDateTime, GraphQLJSON, GraphQLVoid } from 'graphql-scalars';
+import { GraphQLDateTime, GraphQLJSON } from 'graphql-scalars';
 import { dev } from '$app/environment';
 import { PermissionDeniedError } from '$lib/errors';
 import { db } from '../database';
@@ -55,8 +55,6 @@ export const builder = new SchemaBuilder<{
 
 builder.queryType();
 builder.mutationType();
-builder.subscriptionType();
 
 builder.addScalarType('DateTime', GraphQLDateTime, {});
 builder.addScalarType('JSON', GraphQLJSON, {});
-builder.addScalarType('Void', GraphQLVoid, {});

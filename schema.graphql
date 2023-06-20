@@ -45,7 +45,6 @@ type Mutation {
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   login(input: LoginInput!): Profile!
   logout: Profile!
-  noop: String!
   prepareImageUpload(input: PrepareImageUploadInput!): PrepareImageUploadPayload!
   signup(input: SignupInput!): Profile!
   switchProfile(input: SwitchProfileInput!): Profile!
@@ -70,9 +69,7 @@ type Profile {
 }
 
 type Query {
-  db: String!
   featuredImage: Image
-  greeting: String!
   images: [Image!]!
   me: Profile!
   meOrNull: Profile
@@ -110,10 +107,6 @@ enum SpaceMemberRole {
   OWNER
 }
 
-type Subscription {
-  countdown: Int!
-}
-
 input SwitchProfileInput {
   profileId: String!
 }
@@ -123,6 +116,3 @@ type User {
   id: String!
   profiles: [Profile!]!
 }
-
-"""Represents NULL values"""
-scalar Void

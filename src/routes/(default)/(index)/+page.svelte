@@ -1,14 +1,5 @@
 <script lang="ts">
   import { Helmet } from '$lib/components';
-  import { graphql, useQuery } from '$lib/houdini';
-
-  $: query = useQuery(
-    graphql(`
-      query IndexPage_Query @load {
-        greeting
-      }
-    `)
-  );
 </script>
 
 <Helmet
@@ -17,4 +8,4 @@
   title="펜슬 - 창작을 즐겁게"
 />
 
-<code>{$query.greeting}</code>
+Hello world!

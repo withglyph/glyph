@@ -10,7 +10,7 @@ export default {
     },
   },
   scalars: {
+    DateTime: { type: 'Date' },
     JSON: { type: 'unknown' },
-    Void: { type: 'never' },
   },
 };

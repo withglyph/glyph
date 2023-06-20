@@ -1,6 +1,5 @@
 import './image';
 import './space';
-import './test';
 import './user';
 import { dev } from '$app/environment';
 import { builder } from '../builder';
