@@ -8,4 +8,4 @@
   title="펜슬 - 창작을 즐겁게"
 />
 
-Hello world!
+<code>Hello world!</code>
