@@ -1,5 +1,9 @@
 import * as Sentry from '@sentry/sveltekit';
-import { PUBLIC_SENTRY_DSN } from '$env/static/public';
+import { dev } from '$app/environment';
+import {
+  PUBLIC_SENTRY_DSN,
+  PUBLIC_VERCEL_GIT_COMMIT_REF,
+} from '$env/static/public';
 import { setupDayjs } from '$lib/datetime';
 import {
   AppError,
@@ -10,7 +14,11 @@ import {
 import type { HandleClientError, HandleServerError } from '@sveltejs/kit';
 
 export const setupGlobals = () => {
-  Sentry.init({ dsn: PUBLIC_SENTRY_DSN });
+  Sentry.init({
+    enabled: !dev,
+    dsn: PUBLIC_SENTRY_DSN,
+    environment: PUBLIC_VERCEL_GIT_COMMIT_REF,
+  });
   setupDayjs();
 };
 
