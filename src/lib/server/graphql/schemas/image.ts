@@ -18,7 +18,10 @@ builder.prismaObject('Image', {
     id: t.exposeString('id'),
 
     path: t.exposeString('path'),
-    sizes: t.exposeIntList('sizes'),
+    sizes: t.intList({
+      select: { sizes: true },
+      resolve: (image) => image.sizes.sort((a, b) => a - b),
+    }),
 
     placeholder: t.exposeString('placeholder'),
   }),
