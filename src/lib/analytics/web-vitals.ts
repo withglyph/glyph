@@ -22,7 +22,6 @@ const onEvent = (metric: Metric) => {
     href: page.url.href,
     page: page.route.id ?? '(unknown)',
     // @ts-expect-error: navigator connection is not yet in the types
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     speed: navigator.connection?.effectiveType ?? '',
   });
 
