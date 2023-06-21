@@ -4,6 +4,7 @@
   import { warnOnUnload } from '$lib/svelte/lifecycle';
   import Header from './Header.svelte';
   import Images from './Images.svelte';
+  import Thumbnail from './Thumbnail.svelte';
 
   warnOnUnload();
 
@@ -23,4 +24,7 @@
 <main class="flex grow flex-col">
   <Header {$query} bind:files />
   <Images bind:files />
+  <div class="mx-auto">
+    <Thumbnail />
+  </div>
 </main>
