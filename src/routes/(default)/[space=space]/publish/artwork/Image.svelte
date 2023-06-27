@@ -1,11 +1,12 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
+  import type { Artwork } from './types';
 
-  export let file: File;
+  export let artwork: Artwork;
   let _class: string | undefined = undefined;
   export { _class as class };
 
-  const src = URL.createObjectURL(file);
+  const src = URL.createObjectURL(artwork.file);
 
   onDestroy(() => {
     URL.revokeObjectURL(src);
