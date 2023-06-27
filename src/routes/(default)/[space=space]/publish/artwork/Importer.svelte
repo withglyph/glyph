@@ -1,9 +1,10 @@
 <script lang="ts">
   import { toast } from '$lib/notification';
-  import { fileMime } from '$lib/utils';
+  import { createId, fileMime } from '$lib/utils';
+  import type { Artwork } from './types';
   import type { Nullable } from '$lib/types';
 
-  export let files: File[];
+  export let artworks: Artwork[];
 
   const validMimes = ['image/jpeg', 'image/png'];
   const maxSize = 32 * 1024 * 1024; // 32MB
@@ -30,14 +31,18 @@
       return;
     }
 
-    const validFiles: File[] = [];
+    const validFiles: Artwork[] = [];
     for (const file of newFiles) {
       if (await isValidFile(file)) {
-        validFiles.push(file);
+        validFiles.push({
+          id: createId(),
+          file,
+          thumbnail: { translateX: 0, translateY: 0 },
+        });
       }
     }
 
-    files = [...files, ...validFiles];
+    artworks = [...artworks, ...validFiles];
   };
 </script>
 

@@ -3,11 +3,12 @@
   import { fragment, graphql } from '$houdini';
   import { Avatar } from '$lib/components';
   import PublishButton from './PublishButton.svelte';
+  import type { Artwork } from './types';
   import type { SpacePublishArtworkPage_Header_query } from '$houdini';
 
   let _query: SpacePublishArtworkPage_Header_query;
   export { _query as $query };
-  export let files: File[];
+  export let artworks: Artwork[];
 
   $: query = fragment(
     _query,
@@ -36,7 +37,7 @@
       {$query.space.name}에 새 그림 게시중...
     </div>
     <div class="grow" />
-    <PublishButton $space={$query.space} bind:files />
+    <PublishButton $space={$query.space} bind:artworks />
     <Avatar class="square-8" $profile={$query.me} />
   </div>
 </div>

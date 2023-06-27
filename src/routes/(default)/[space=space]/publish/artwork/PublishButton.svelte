@@ -3,11 +3,12 @@
   import { Button } from '$lib/components';
   import { useMutation } from '$lib/houdini';
   import { trackable } from '$lib/svelte/store';
+  import type { Artwork } from './types';
   import type { SpacePublishArtworkPage_PublishButton_space } from '$houdini';
 
   let _space: SpacePublishArtworkPage_PublishButton_space;
   export { _space as $space };
-  export let files: File[];
+  export let artworks: Artwork[];
 
   const loading = trackable();
 
@@ -62,7 +63,9 @@
 
   const doPublish = async () => {
     await loading.track(async () => {
-      const images = await Promise.all(files.map(async (v) => doUpload(v)));
+      const images = await Promise.all(
+        artworks.map(async (v) => doUpload(v.file))
+      );
       console.log(images.map((v) => v.id));
     });
   };

@@ -1,21 +1,25 @@
 <script lang="ts">
-  import FileImage from './FileImage.svelte';
-  import FileImporter from './FileImporter.svelte';
+  import Image from './Image.svelte';
+  import Importer from './Importer.svelte';
+  import Thumbnail from './Thumbnail.svelte';
+  import type { Artwork } from './types';
 
-  export let files: File[];
+  export let artworks: Artwork[];
 </script>
 
 <div class="h-100 flex center gap-4 overflow-x-auto bg-gray-100">
-  {#each files as file (file)}
-    <div class="relative square-80 flex-none overflow-hidden rounded bg-white">
-      <FileImage class="square-full object-contain" {file} />
+  {#each artworks as artwork (artwork.id)}
+    <div class="relative square-80 flex-none rounded bg-white">
+      <Image class="square-full rounded object-contain" {artwork} />
       <button
         class="absolute right-2 top-2 square-8 flex center rounded-full bg-black/50"
         type="button"
-        on:click={() => (files = files.filter((f) => f !== file))}
+        on:click={() =>
+          (artworks = artworks.filter((v) => v.id !== artwork.id))}
       >
         <span class="i-lc-x square-6 text-white" />
       </button>
+      <Thumbnail bind:artwork />
     </div>
   {/each}
 
@@ -29,4 +33,4 @@
   </div>
 </div>
 
-<FileImporter bind:files />
+<Importer bind:artworks />
