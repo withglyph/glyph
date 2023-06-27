@@ -56,6 +56,9 @@ devDependencies:
   '@prisma/client':
     specifier: ^4.16.1
     version: 4.16.1(prisma@4.16.1)
+  '@sentry/cli':
+    specifier: ^2.19.2
+    version: 2.19.2
   '@sentry/sveltekit':
     specifier: ^7.56.0
     version: 7.56.0(@sveltejs/kit@1.20.5)(svelte@4.0.0)
