@@ -42,7 +42,6 @@
     "@pothos/plugin-simple-objects": "^3.7.0",
     "@pothos/plugin-validation": "^3.9.2",
     "@prisma/client": "^4.16.1",
-    "@sentry/cli": "^2.19.2",
     "@sentry/sveltekit": "^7.56.0",
     "@svelte-kits/store": "^0.1.2",
     "@sveltejs/adapter-vercel": "^3.0.1",
@@ -111,12 +110,5 @@
     "vite": "^4.3.9",
     "web-vitals": "^3.3.2",
     "zod": "^3.21.4"
-  },
-  "pnpm": {
-    "peerDependencyRules": {
-      "allowedVersions": {
-        "svelte": "4"
-      }
-    }
   }
 }
