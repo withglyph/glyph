@@ -9,7 +9,10 @@ import { svg } from './src/vite';
 export default defineConfig({
   server: { host: '127.0.0.1', port: 4000, strictPort: true },
   plugins: [
-    sentry({ autoInstrument: false }),
+    sentry({
+      autoInstrument: false,
+      sourceMapsUploadOptions: { telemetry: false },
+    }),
     svg(),
     unocss(),
     houdini(),
