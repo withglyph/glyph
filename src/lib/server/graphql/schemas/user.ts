@@ -6,7 +6,6 @@ import {
   PermissionDeniedError,
 } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
-import { db } from '$lib/server/database';
 import { createAccessToken } from '$lib/server/utils';
 import { createHandle, createId } from '$lib/utils';
 import {
@@ -92,7 +91,7 @@ const SwitchProfileInput = builder.inputType('SwitchProfileInput', {
 builder.queryFields((t) => ({
   me: t.prismaField({
     type: 'Profile',
-    resolve: async (query, _, __, context) => {
+    resolve: async (query, _, __, { db, ...context }) => {
       if (!context.session) {
         throw new PermissionDeniedError();
       }
@@ -107,7 +106,7 @@ builder.queryFields((t) => ({
   meOrNull: t.prismaField({
     type: 'Profile',
     nullable: true,
-    resolve: async (query, _, __, context) => {
+    resolve: async (query, _, __, { db, ...context }) => {
       if (!context.session) {
         return null;
       }
@@ -124,7 +123,7 @@ builder.queryFields((t) => ({
     args: {
       handle: t.arg.string({ validate: { schema: ProfileHandleSchema } }),
     },
-    resolve: async (query, _, args) => {
+    resolve: async (query, _, args, { db }) => {
       const profile = await db.profile.findFirst({
         ...query,
         where: { handle: args.handle, state: 'ACTIVE' },
@@ -147,7 +146,7 @@ builder.mutationFields((t) => ({
   login: t.prismaField({
     type: 'Profile',
     args: { input: t.arg({ type: LoginInput }) },
-    resolve: async (query, _, { input }, context) => {
+    resolve: async (query, _, { input }, { db, ...context }) => {
       const user = await db.user.findUnique({
         select: { id: true, state: true, password: true },
         where: { email: input.email.toLowerCase() },
@@ -200,7 +199,7 @@ builder.mutationFields((t) => ({
 
   logout: t.withAuth({ loggedIn: true }).prismaField({
     type: 'Profile',
-    resolve: async (query, _, __, context) => {
+    resolve: async (query, _, __, { db, ...context }) => {
       const { profile } = await db.session.delete({
         include: { profile: query },
         where: { id: context.session.id },
@@ -217,7 +216,7 @@ builder.mutationFields((t) => ({
   signup: t.prismaField({
     type: 'Profile',
     args: { input: t.arg({ type: SignupInput }) },
-    resolve: async (query, _, { input }, context) => {
+    resolve: async (query, _, { input }, { db, ...context }) => {
       const existingUser = await db.user.findUnique({
         select: { state: true },
         where: { email: input.email.toLowerCase() },
@@ -227,38 +226,34 @@ builder.mutationFields((t) => ({
         throw new FormValidationError('email', '이미 사용중인 이메일이에요.');
       }
 
-      const { user, profile, session } = await db.$transaction(async (tx) => {
-        const user = await tx.user.create({
-          data: {
-            id: createId(),
-            email: input.email.toLowerCase(),
-            password: await argon2.hash(input.password),
-            state: 'ACTIVE',
-          },
-        });
+      const user = await db.user.create({
+        data: {
+          id: createId(),
+          email: input.email.toLowerCase(),
+          password: await argon2.hash(input.password),
+          state: 'ACTIVE',
+        },
+      });
 
-        const profile = await tx.profile.create({
-          ...query,
-          data: {
-            id: createId(),
-            userId: user.id,
-            name: input.name,
-            handle: createHandle(),
-            order: 0,
-            state: 'ACTIVE',
-          },
-        });
+      const profile = await db.profile.create({
+        ...query,
+        data: {
+          id: createId(),
+          userId: user.id,
+          name: input.name,
+          handle: createHandle(),
+          order: 0,
+          state: 'ACTIVE',
+        },
+      });
 
-        const session = await tx.session.create({
-          select: { id: true },
-          data: {
-            id: createId(),
-            userId: user.id,
-            profileId: profile.id,
-          },
-        });
-
-        return { user, profile, session };
+      const session = await db.session.create({
+        select: { id: true },
+        data: {
+          id: createId(),
+          userId: user.id,
+          profileId: profile.id,
+        },
       });
 
       const accessToken = await createAccessToken(session.id);
@@ -280,7 +275,7 @@ builder.mutationFields((t) => ({
   createProfile: t.withAuth({ loggedIn: true }).prismaField({
     type: 'Profile',
     args: { input: t.arg({ type: CreateProfileInput }) },
-    resolve: async (query, _, { input }, context) => {
+    resolve: async (query, _, { input }, { db, ...context }) => {
       const isHandleExists = await db.profile.exists({
         where: { handle: input.handle },
       });
@@ -322,7 +317,7 @@ builder.mutationFields((t) => ({
   switchProfile: t.withAuth({ loggedIn: true }).prismaField({
     type: 'Profile',
     args: { input: t.arg({ type: SwitchProfileInput }) },
-    resolve: async (query, _, { input }, context) => {
+    resolve: async (query, _, { input }, { db, ...context }) => {
       const profile = await db.profile.findUniqueOrThrow({
         ...query,
         where: {

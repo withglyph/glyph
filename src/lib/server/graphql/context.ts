@@ -1,11 +1,12 @@
 import { track } from '../analytics';
-import { db } from '../database';
+import { prismaClient } from '../database';
 import { decodeAccessToken } from '../utils/access-token';
+import type { TransactionClient } from '../prisma/transaction';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { YogaInitialContext } from 'graphql-yoga';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 type DefaultContext = {
+  db: TransactionClient;
   track: (eventName: string, properties?: Record<string, unknown>) => void;
 };
 
@@ -26,6 +27,7 @@ export const extendContext = async (
 ): Promise<ExtendedContext> => {
   const ctx: ExtendedContext = {
     ...context.locals,
+    db: await prismaClient.$begin(),
     track: (eventName, properties) => {
       track(context, eventName, { ...properties });
     },
@@ -38,7 +40,7 @@ export const extendContext = async (
       const sessionId = payload.jti;
 
       if (sessionId) {
-        const session = await db.session.findUnique({
+        const session = await prismaClient.session.findUnique({
           select: { userId: true, profileId: true },
           where: { id: sessionId },
         });

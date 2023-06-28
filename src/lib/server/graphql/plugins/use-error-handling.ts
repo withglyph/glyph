@@ -1,6 +1,7 @@
 import { isAsyncIterable } from '@envelop/core';
 import { GraphQLError } from 'graphql';
 import { AppError, GraphQLAppError, UnknownError } from '$lib/errors';
+import type { Context } from '../context';
 import type {
   AsyncIterableIteratorOrValue,
   ExecutionResult,
@@ -52,7 +53,7 @@ const resultHandler = ({
   }
 };
 
-export const useErrorHandling = (): Plugin => {
+export const useErrorHandling = (): Plugin<Context> => {
   return {
     onPluginInit: ({ registerContextErrorHandler }) => {
       registerContextErrorHandler(errorHandler);

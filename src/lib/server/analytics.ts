@@ -2,7 +2,7 @@ import Mixpanel from 'mixpanel';
 import UAParser from 'ua-parser-js';
 import { MIXPANEL_TOKEN } from '$env/static/private';
 import { production } from '$lib/environment';
-import { db } from './database';
+import { prismaClient } from './database';
 import type { RequestEvent } from '@sveltejs/kit';
 
 export const mixpanel = Mixpanel.init(MIXPANEL_TOKEN);
@@ -37,7 +37,7 @@ export const updateUser = async (event: RequestEvent, userId: string) => {
     return;
   }
 
-  const user = await db.user.findUniqueOrThrow({
+  const user = await prismaClient.user.findUniqueOrThrow({
     select: { email: true, createdAt: true },
     where: { id: userId },
   });
