@@ -9,10 +9,14 @@ export type TransactionClient = Omit<BareTransactionClient, '$begin'> & {
   $rollback: () => Promise<void>;
 };
 
+type BeginOptions = {
+  isolation?: Prisma.TransactionIsolationLevel;
+};
+
 export const transaction = Prisma.defineExtension({
   name: 'transaction',
   client: {
-    async $begin() {
+    async $begin(options?: BeginOptions) {
       let set: (client: BareTransactionClient) => void;
       let commit: () => void;
       let rollback: () => void;
@@ -27,10 +31,17 @@ export const transaction = Prisma.defineExtension({
       });
 
       (Prisma.getExtensionContext(this) as PrismaClient)
-        .$transaction(async ($tx) => {
-          set($tx);
-          await txPromise;
-        })
+        .$transaction(
+          async ($tx) => {
+            set($tx);
+            await txPromise;
+          },
+          {
+            isolationLevel: options?.isolation,
+            maxWait: 10 * 1000,
+            timeout: 60 * 1000,
+          }
+        )
         .catch(() => {
           // noop
         });
