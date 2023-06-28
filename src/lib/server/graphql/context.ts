@@ -27,7 +27,7 @@ export const extendContext = async (
 ): Promise<ExtendedContext> => {
   const ctx: ExtendedContext = {
     ...context.locals,
-    db: await prismaClient.$begin(),
+    db: await prismaClient.$begin({ isolation: 'RepeatableRead' }),
     track: (eventName, properties) => {
       track(context, eventName, { ...properties });
     },
