@@ -1,6 +1,5 @@
 import { SpaceMemberRole } from '@prisma/client';
 import { FormValidationError, NotFoundError } from '$lib/errors';
-import { db } from '$lib/server/database';
 import { createId } from '$lib/utils';
 import { CreateSpaceInputSchema, SpaceSlugSchema } from '$lib/validations';
 import { builder } from '../builder';
@@ -21,7 +20,7 @@ builder.prismaObject('Space', {
       type: 'SpaceMember',
       nullable: true,
       select: { id: true },
-      resolve: async (query, space, __, context) => {
+      resolve: async (query, space, __, { db, ...context }) => {
         if (!context.session) {
           return null;
         }
@@ -102,7 +101,7 @@ builder.queryFields((t) => ({
   space: t.prismaField({
     type: 'Space',
     args: { slug: t.arg.string({ validate: { schema: SpaceSlugSchema } }) },
-    resolve: async (query, _, args) => {
+    resolve: async (query, _, args, { db }) => {
       const space = await db.space.findFirst({
         ...query,
         where: { slug: args.slug, state: 'ACTIVE' },
@@ -125,7 +124,7 @@ builder.mutationFields((t) => ({
   createSpace: t.withAuth({ loggedIn: true }).prismaField({
     type: 'Space',
     args: { input: t.arg({ type: CreateSpaceInput }) },
-    resolve: async (query, _, { input }, context) => {
+    resolve: async (query, _, { input }, { db, ...context }) => {
       const isSlugExists = await db.space.exists({
         where: { slug: input.slug, state: 'ACTIVE' },
       });
@@ -160,7 +159,7 @@ builder.mutationFields((t) => ({
   deleteSpace: t.withAuth({ loggedIn: true }).prismaField({
     type: 'Space',
     args: { input: t.arg({ type: DeleteSpaceInput }) },
-    resolve: async (query, _, { input }, context) => {
+    resolve: async (query, _, { input }, { db, ...context }) => {
       const space = await db.space.update({
         ...query,
         where: {

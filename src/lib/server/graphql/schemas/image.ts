@@ -1,4 +1,3 @@
-import { db } from '$lib/server/database';
 import {
   createS3ObjectKey,
   s3DeleteObject,
@@ -57,7 +56,7 @@ const FinalizeImageUploadInput = builder.inputType('FinalizeImageUploadInput', {
 builder.queryFields((t) => ({
   images: t.prismaField({
     type: ['Image'],
-    resolve: async (query) => {
+    resolve: async (query, _, __, { db }) => {
       return await db.image.findMany({
         ...query,
         orderBy: { createdAt: 'desc' },
@@ -68,7 +67,7 @@ builder.queryFields((t) => ({
   featuredImage: t.prismaField({
     type: 'Image',
     nullable: true,
-    resolve: async (query) => {
+    resolve: async (query, _, __, { db }) => {
       const count = await db.image.count();
 
       return await db.image.findFirst({
@@ -86,10 +85,9 @@ builder.queryFields((t) => ({
  */
 
 builder.mutationFields((t) => ({
-  prepareImageUpload: t.field({
+  prepareImageUpload: t.withAuth({ loggedIn: true }).field({
     type: PrepareImageUploadPayload,
     args: { input: t.arg({ type: PrepareImageUploadInput }) },
-    authScopes: { loggedIn: true },
     resolve: async (_, { input }) => {
       const path = `u/${createS3ObjectKey()}/${input.name}`;
 
@@ -100,11 +98,10 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  finalizeImageUpload: t.prismaField({
+  finalizeImageUpload: t.withAuth({ loggedIn: true }).prismaField({
     type: 'Image',
     args: { input: t.arg({ type: FinalizeImageUploadInput }) },
-    authScopes: { loggedIn: true },
-    resolve: async (query, _, { input }) => {
+    resolve: async (query, _, { input }, { db }) => {
       const {
         path,
         size,
