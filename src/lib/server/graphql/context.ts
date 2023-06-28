@@ -4,6 +4,7 @@ import { decodeAccessToken } from '../utils/access-token';
 import type { TransactionClient } from '../prisma/transaction';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { YogaInitialContext } from 'graphql-yoga';
+import type { JWTPayload } from 'jose';
 
 type DefaultContext = {
   db: TransactionClient;
@@ -25,9 +26,11 @@ export type Context = InitialContext & ExtendedContext;
 export const extendContext = async (
   context: InitialContext
 ): Promise<ExtendedContext> => {
+  const db = await prismaClient.$begin({ isolation: 'RepeatableRead' });
+
   const ctx: ExtendedContext = {
     ...context.locals,
-    db: await prismaClient.$begin({ isolation: 'RepeatableRead' }),
+    db,
     track: (eventName, properties) => {
       track(context, eventName, { ...properties });
     },
@@ -35,12 +38,19 @@ export const extendContext = async (
 
   const accessToken = context.cookies.get('penxle-at');
   if (accessToken) {
+    let payload: JWTPayload | undefined;
+
     try {
-      const payload = await decodeAccessToken(accessToken);
+      payload = await decodeAccessToken(accessToken);
+    } catch {
+      // noop
+    }
+
+    if (payload) {
       const sessionId = payload.jti;
 
       if (sessionId) {
-        const session = await prismaClient.session.findUnique({
+        const session = await db.session.findUnique({
           select: { userId: true, profileId: true },
           where: { id: sessionId },
         });
@@ -60,8 +70,6 @@ export const extendContext = async (
           };
         }
       }
-    } catch {
-      // TODO: 에러 어떻게 처리할지 고민해보기
     }
   }
 
