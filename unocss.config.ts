@@ -13,7 +13,7 @@ export default defineConfig({
   presets: [
     presetIcons({
       collections: {
-        cc: FileSystemIconLoader('./src/assets/icons'),
+        px: FileSystemIconLoader('./src/assets/icons'),
         lc: async () => import('@iconify-json/lucide/icons.json'),
         lg: async () => import('@iconify-json/simple-icons/icons.json'),
       },
