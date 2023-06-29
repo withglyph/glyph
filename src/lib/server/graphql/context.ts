@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+import { createId } from '$lib/utils';
 import { track } from '../analytics';
 import { prismaClient } from '../database';
 import type { TransactionClient } from '../database';
@@ -6,6 +8,7 @@ import type { YogaInitialContext } from 'graphql-yoga';
 
 type DefaultContext = {
   db: TransactionClient;
+  deviceId: string;
   track: (eventName: string, properties?: Record<string, unknown>) => void;
 };
 
@@ -25,12 +28,24 @@ export const extendContext = async (
   context: InitialContext
 ): Promise<ExtendedContext> => {
   const db = await prismaClient.$begin({ isolation: 'RepeatableRead' });
+  let deviceId = context.cookies.get('penxle-did');
+  if (!deviceId) {
+    deviceId = createId();
+    context.cookies.set('penxle-did', deviceId, {
+      path: '/',
+      expires: dayjs().add(5, 'years').toDate(),
+    });
+  }
 
   const ctx: ExtendedContext = {
     ...context.locals,
     db,
+    deviceId,
     track: (eventName, properties) => {
-      track(context, eventName, { ...properties });
+      track(context, eventName, {
+        $device_id: deviceId,
+        ...properties,
+      });
     },
   };
 
@@ -50,6 +65,7 @@ export const extendContext = async (
 
       ctx.track = (eventName, properties) => {
         track(context, eventName, {
+          $device_id: deviceId,
           $user_id: session.userId,
           ...properties,
         });
