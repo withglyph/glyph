@@ -1,7 +1,7 @@
 import { SpaceMemberRole } from '@prisma/client';
 import { FormValidationError, NotFoundError } from '$lib/errors';
 import { createId } from '$lib/utils';
-import { CreateSpaceInputSchema, SpaceSlugSchema } from '$lib/validations';
+import { CreateSpaceInputSchema } from '$lib/validations';
 import { builder } from '../builder';
 
 /**
@@ -100,7 +100,7 @@ const DeleteSpaceInput = builder.inputType('DeleteSpaceInput', {
 builder.queryFields((t) => ({
   space: t.prismaField({
     type: 'Space',
-    args: { slug: t.arg.string({ validate: { schema: SpaceSlugSchema } }) },
+    args: { slug: t.arg.string() },
     resolve: async (query, _, args, { db }) => {
       const space = await db.space.findFirst({
         ...query,

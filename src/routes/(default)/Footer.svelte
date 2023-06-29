@@ -13,7 +13,7 @@
       <Wordmark class="h-4" />
 
       <div class="flex items-center gap-4">
-        <Link class="hover:text-gray-900" href="/blog">
+        <Link class="hover:text-gray-900" href="/penxle.team">
           <Logo class="square-5 rounded" />
         </Link>
         <Link
@@ -84,7 +84,7 @@
       <div class="h-2 border-l border-gray-300" />
       <Link class="hover:text-gray-500" href="/help">도움 센터</Link>
       <div class="h-2 border-l border-gray-300" />
-      <Link class="hover:text-gray-500" href="/news">펜슬 소식</Link>
+      <Link class="hover:text-gray-500" href="/blog">펜슬 소식</Link>
       <div class="h-2 border-l border-gray-300" />
       <Link class="hover:text-gray-500" href="https://penxle.io">
         펜슬컴퍼니 소개

@@ -7,11 +7,7 @@ import {
 } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
 import { createHandle, createId } from '$lib/utils';
-import {
-  LoginInputSchema,
-  ProfileHandleSchema,
-  SignupInputSchema,
-} from '$lib/validations';
+import { LoginInputSchema, SignupInputSchema } from '$lib/validations';
 import { builder } from '../builder';
 
 /**
@@ -119,9 +115,7 @@ builder.queryFields((t) => ({
 
   profile: t.prismaField({
     type: 'Profile',
-    args: {
-      handle: t.arg.string({ validate: { schema: ProfileHandleSchema } }),
-    },
+    args: { handle: t.arg.string() },
     resolve: async (query, _, args, { db }) => {
       const profile = await db.profile.findFirst({
         ...query,

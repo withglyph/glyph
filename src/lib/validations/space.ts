@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { UNAVAILABLE_SPACE_SLUGS } from '$lib/const';
 
-export const SpaceSlugSchema = z
+const SpaceSlugSchema = z
   .string()
   .min(2, '스페이스 URL은 2글자 이상이어야 해요')
   .max(20, '스페이스 URL은 20자를 넘을 수 없어요')
