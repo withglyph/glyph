@@ -89,10 +89,11 @@
       </Link>
       <div class="h-2 border-l border-gray-300" />
       <Link
-        class="flex items-center gap-0.75 hover:text-gray-500"
+        class="flex items-center hover:text-gray-500"
         href={`https://github.com/penxle/penxle/tree/${PUBLIC_VERCEL_GIT_COMMIT_SHA}`}
       >
-        <span class="i-lc-git-commit" />
+        현재 배포 버전:
+        <span class="i-lc-git-commit ml-1 mr-0.5" />
         {PUBLIC_VERCEL_GIT_COMMIT_SHA.slice(0, 7)}
       </Link>
     </section>
