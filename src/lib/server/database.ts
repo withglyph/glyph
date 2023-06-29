@@ -1,6 +1,5 @@
 import { PrismaClient as DefaultPrismaClient } from '@prisma/client';
-import { exists } from './prisma/exists';
-import { transaction } from './prisma/transaction';
+import { exists, transaction } from './prisma';
 
 export const prismaClient = new DefaultPrismaClient()
   .$extends(exists)
