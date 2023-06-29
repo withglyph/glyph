@@ -89,10 +89,10 @@
       </Link>
       <div class="h-2 border-l border-gray-300" />
       <Link
-        class="flex items-center gap-1 hover:text-gray-500"
+        class="flex items-center gap-0.75 hover:text-gray-500"
         href={`https://github.com/penxle/penxle/tree/${PUBLIC_VERCEL_GIT_COMMIT_SHA}`}
       >
-        <span class="i-lc-git-branch" />
+        <span class="i-lc-git-commit" />
         {PUBLIC_VERCEL_GIT_COMMIT_SHA.slice(0, 7)}
       </Link>
     </section>
