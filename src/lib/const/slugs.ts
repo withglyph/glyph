@@ -1,26 +1,63 @@
 export const UNAVAILABLE_SPACE_SLUGS = {
   EXACT: [
-    // route url
+    // route urls
     'api',
     'me',
     'search',
 
-    // static url
+    // static urls
+    '_app',
     'favicon.ico',
     'icons',
     'robots.txt',
     'sitemap.xml',
 
-    // reserved url
+    // vercel internal urls
+    '_logs',
+    '_src',
+    '_vercel',
+
+    // reserved keywords
+    'account',
+    'accounts',
     'admin',
     'announcement',
+    'announcements',
+    'article',
+    'articles',
     'blog',
+    'event',
+    'events',
+    'help',
+    'image',
+    'images',
+    'legal',
+    'login',
+    'logout',
+    'member',
+    'members',
+    'membership',
+    'memberships',
     'notice',
+    'notices',
+    'new',
+    'news',
     'official',
+    'post',
+    'posts',
     'profile',
+    'profiles',
+    'signup',
     'space',
+    'spaces',
+    'story',
+    'stories',
+    'support',
+    'supports',
     'team',
+    'teams',
     'user',
+    'users',
   ],
 
   CONTAIN: ['penxle'],
