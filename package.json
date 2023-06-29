@@ -88,7 +88,6 @@
     "houdini": "^1.2.6",
     "houdini-svelte": "^1.2.6",
     "husky": "^8.0.3",
-    "jose": "^4.14.4",
     "lint-staged": "^13.2.3",
     "mixpanel": "^0.17.0",
     "nanoid": "^4.0.2",

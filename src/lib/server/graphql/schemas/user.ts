@@ -6,7 +6,6 @@ import {
   PermissionDeniedError,
 } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
-import { createAccessToken } from '$lib/server/utils';
 import { createHandle, createId } from '$lib/utils';
 import {
   LoginInputSchema,
@@ -181,8 +180,7 @@ builder.mutationFields((t) => ({
         },
       });
 
-      const accessToken = await createAccessToken(session.id);
-      context.cookies.set('penxle-at', accessToken, {
+      context.cookies.set('penxle-sid', session.id, {
         expires: dayjs().add(5, 'years').toDate(),
         path: '/',
       });
@@ -256,8 +254,7 @@ builder.mutationFields((t) => ({
         },
       });
 
-      const accessToken = await createAccessToken(session.id);
-      context.cookies.set('penxle-at', accessToken, {
+      context.cookies.set('penxle-sid', session.id, {
         expires: dayjs().add(5, 'years').toDate(),
         path: '/',
       });

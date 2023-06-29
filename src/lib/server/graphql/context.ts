@@ -1,10 +1,8 @@
 import { track } from '../analytics';
 import { prismaClient } from '../database';
-import { decodeAccessToken } from '../utils/access-token';
 import type { TransactionClient } from '../database';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { YogaInitialContext } from 'graphql-yoga';
-import type { JWTPayload } from 'jose';
 
 type DefaultContext = {
   db: TransactionClient;
@@ -36,40 +34,26 @@ export const extendContext = async (
     },
   };
 
-  const accessToken = context.cookies.get('penxle-at');
-  if (accessToken) {
-    let payload: JWTPayload | undefined;
+  const sessionId = context.cookies.get('penxle-sid');
+  if (sessionId) {
+    const session = await db.session.findUnique({
+      select: { userId: true, profileId: true },
+      where: { id: sessionId },
+    });
 
-    try {
-      payload = await decodeAccessToken(accessToken);
-    } catch {
-      // noop
-    }
+    if (session) {
+      ctx.session = {
+        id: sessionId,
+        userId: session.userId,
+        profileId: session.profileId,
+      };
 
-    if (payload) {
-      const sessionId = payload.jti;
-
-      if (sessionId) {
-        const session = await db.session.findUnique({
-          select: { userId: true, profileId: true },
-          where: { id: sessionId },
+      ctx.track = (eventName, properties) => {
+        track(context, eventName, {
+          $user_id: session.userId,
+          ...properties,
         });
-
-        if (session) {
-          ctx.session = {
-            id: sessionId,
-            userId: session.userId,
-            profileId: session.profileId,
-          };
-
-          ctx.track = (eventName, properties) => {
-            track(context, eventName, {
-              $user_id: session.userId,
-              ...properties,
-            });
-          };
-        }
-      }
+      };
     }
   }
 
