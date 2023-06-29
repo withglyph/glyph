@@ -55,35 +55,5 @@
         </a>
       {/if}
     </section>
-
-    <!-- <section class="h-16 w-full flex items-center gap-6">
-      <a
-        class={clsx(
-          'text-xl font-semibold transition',
-          isArtworks || isPosts ? 'hover:text-gray-500' : 'text-brand-500'
-        )}
-        href="/"
-      >
-        전체
-      </a>
-      <a
-        class={clsx(
-          'text-xl font-semibold transition',
-          isArtworks ? 'text-brand-500' : 'hover:text-gray-500'
-        )}
-        href="/artworks"
-      >
-        아트
-      </a>
-      <a
-        class={clsx(
-          'text-xl font-semibold transition',
-          isPosts ? 'text-brand-500' : 'hover:text-gray-500'
-        )}
-        href="posts"
-      >
-        포스트
-      </a>
-    </section> -->
   </nav>
 </header>
