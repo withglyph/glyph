@@ -20,7 +20,7 @@ import { builder } from '../builder';
  */
 
 builder.prismaObject('User', {
-  select: true,
+  select: { id: true },
   fields: (t) => ({
     id: t.exposeString('id'),
     email: t.exposeString('email'),
@@ -29,7 +29,7 @@ builder.prismaObject('User', {
 });
 
 builder.prismaObject('Profile', {
-  select: true,
+  select: { id: true },
   fields: (t) => ({
     id: t.exposeString('id'),
     name: t.exposeString('name'),
@@ -44,7 +44,7 @@ builder.prismaObject('Profile', {
           where: { space: { state: 'ACTIVE' } },
         },
       }),
-      resolve: (_, parent) => parent.spaces.map(({ space }) => space),
+      resolve: (_, { spaces }) => spaces.map(({ space }) => space),
     }),
   }),
 });

@@ -9,7 +9,7 @@ import { builder } from '../builder';
  */
 
 builder.prismaObject('Space', {
-  select: true,
+  select: { id: true },
   fields: (t) => ({
     id: t.exposeString('id'),
     slug: t.exposeString('slug'),
@@ -40,7 +40,7 @@ builder.prismaObject('Space', {
 });
 
 builder.prismaObject('SpaceMember', {
-  select: true,
+  select: { id: true },
   fields: (t) => ({
     id: t.exposeString('id'),
     role: t.expose('role', { type: SpaceMemberRole }),
