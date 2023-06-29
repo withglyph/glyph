@@ -72,9 +72,9 @@
     <span
       class={clsx(
         'square-5',
-        toast.type === 'info' && 'i-ri-information-fill text-brand-500',
-        toast.type === 'success' && 'i-ri-checkbox-circle-fill text-green-500',
-        toast.type === 'error' && 'i-ri-close-circle-fill text-red-500'
+        toast.type === 'info' && 'i-lc-info text-brand-500',
+        toast.type === 'success' && 'i-lc-check-circle text-green-500',
+        toast.type === 'error' && 'i-lc-alert-circle text-red-500'
       )}
     />
     <div
@@ -93,7 +93,7 @@
     </div>
     <button
       class={clsx(
-        'i-ri-close-line square-5',
+        'i-lc-x square-5',
         toast.type === 'info' && 'text-brand-500',
         toast.type === 'success' && 'text-green-500',
         toast.type === 'error' && 'text-red-500'
