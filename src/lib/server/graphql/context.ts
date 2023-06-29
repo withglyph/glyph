@@ -1,7 +1,7 @@
 import { track } from '../analytics';
 import { prismaClient } from '../database';
 import { decodeAccessToken } from '../utils/access-token';
-import type { TransactionClient } from '../prisma/transaction';
+import type { TransactionClient } from '../database';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { YogaInitialContext } from 'graphql-yoga';
 import type { JWTPayload } from 'jose';

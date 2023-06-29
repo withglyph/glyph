@@ -2,7 +2,7 @@ import Mixpanel from 'mixpanel';
 import UAParser from 'ua-parser-js';
 import { MIXPANEL_TOKEN } from '$env/static/private';
 import { production } from '$lib/environment';
-import type { TransactionClient } from './prisma/transaction';
+import type { TransactionClient } from './database';
 import type { RequestEvent } from '@sveltejs/kit';
 
 export const mixpanel = Mixpanel.init(MIXPANEL_TOKEN);

@@ -6,3 +6,4 @@ export const prismaClient = new DefaultPrismaClient()
   .$extends(transaction);
 
 export type PrismaClient = typeof prismaClient;
+export type { TransactionClient } from './prisma';
