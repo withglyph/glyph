@@ -34,6 +34,7 @@
     "@floating-ui/dom": "^1.4.2",
     "@iconify-json/lucide": "^1.1.106",
     "@iconify-json/ri": "^1.1.10",
+    "@iconify-json/simple-icons": "^1.1.58",
     "@iconify/utils": "^2.1.7",
     "@playwright/test": "^1.35.1",
     "@pothos/core": "^3.30.0",

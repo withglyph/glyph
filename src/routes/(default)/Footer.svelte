@@ -32,20 +32,20 @@
         <div class="h-2 border-x border-l-gray-300" />
         <div>전화: 02-123-4567</div>
       </div>
-
-      <div class="flex items-center gap-2">
-        <Link
-          href={`https://github.com/penxle/penxle/tree/${PUBLIC_VERCEL_GIT_COMMIT_SHA}`}
-        >
-          버전: {PUBLIC_VERCEL_GIT_COMMIT_SHA.slice(0, 7)}
-        </Link>
-      </div>
     </section>
 
     <section class="flex items-center gap-2 text-gray-400">
       <Link href="/">이용약관</Link>
       <div class="h-2 border-x border-l-gray-300" />
       <Link class="font-medium" href="/">개인정보처리방침</Link>
+      <div class="h-2 border-x border-l-gray-300" />
+      <Link
+        class="flex items-center gap-1"
+        href={`https://github.com/penxle/penxle/tree/${PUBLIC_VERCEL_GIT_COMMIT_SHA}`}
+      >
+        <span class="i-lg-github" />
+        {PUBLIC_VERCEL_GIT_COMMIT_SHA.slice(0, 7)}
+      </Link>
     </section>
   </nav>
 </footer>

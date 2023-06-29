@@ -16,6 +16,7 @@ export default defineConfig({
         cc: FileSystemIconLoader('./src/assets/icons'),
         lc: async () => import('@iconify-json/lucide/icons.json'),
         ri: async () => import('@iconify-json/ri/icons.json'),
+        lg: async () => import('@iconify-json/simple-icons/icons.json'),
       },
       extraProperties: {
         'flex': 'none',
