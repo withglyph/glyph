@@ -1,5 +1,7 @@
 <script lang="ts">
   import Wordmark from '$assets/branding/wordmark.svg?component';
+  import { PUBLIC_VERCEL_GIT_COMMIT_SHA } from '$env/static/public';
+  import { Link } from '$lib/components';
 </script>
 
 <footer class="border-t px-4 py-8 text-xs tracking-wider">
@@ -30,14 +32,20 @@
         <div class="h-2 border-x border-l-gray-300" />
         <div>전화: 02-123-4567</div>
       </div>
+
+      <div class="flex items-center gap-2">
+        <Link
+          href={`https://github.com/penxle/penxle/tree/${PUBLIC_VERCEL_GIT_COMMIT_SHA}`}
+        >
+          버전: {PUBLIC_VERCEL_GIT_COMMIT_SHA.slice(0, 7)}
+        </Link>
+      </div>
     </section>
 
     <section class="flex items-center gap-2 text-gray-400">
-      <a href="/" rel="noopener noreferrer" target="_blank">이용약관</a>
+      <Link href="/">이용약관</Link>
       <div class="h-2 border-x border-l-gray-300" />
-      <a class="font-medium" href="/" rel="noopener noreferrer" target="_blank">
-        개인정보처리방침
-      </a>
+      <Link class="font-medium" href="/">개인정보처리방침</Link>
     </section>
   </nav>
 </footer>
