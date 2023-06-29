@@ -82,6 +82,8 @@
         통신판매중개 고지
       </button>
       <div class="h-2 border-l border-gray-300" />
+      <Link class="hover:text-gray-500" href="/help">도움 센터</Link>
+      <div class="h-2 border-l border-gray-300" />
       <Link class="hover:text-gray-500" href="/news">펜슬 소식</Link>
       <div class="h-2 border-l border-gray-300" />
       <Link class="hover:text-gray-500" href="https://penxle.io">
@@ -89,11 +91,11 @@
       </Link>
       <div class="h-2 border-l border-gray-300" />
       <Link
-        class="flex items-center hover:text-gray-500"
+        class="flex items-center gap-0.5 hover:text-gray-500"
         href={`https://github.com/penxle/penxle/tree/${PUBLIC_VERCEL_GIT_COMMIT_SHA}`}
       >
         현재 배포 버전:
-        <span class="i-lc-git-commit ml-1 mr-0.5" />
+        <span class="i-lc-git-commit" />
         {PUBLIC_VERCEL_GIT_COMMIT_SHA.slice(0, 7)}
       </Link>
     </section>
