@@ -11,15 +11,15 @@
     <section class="text-gray-400">
       <div class="flex items-center gap-2">
         <div>(주)펜슬컴퍼니</div>
-        <div class="h-2 border-x border-l-gray-300" />
+        <div class="h-2 border-l border-gray-300" />
         <div>대표: XXX</div>
-        <div class="h-2 border-x border-l-gray-300" />
+        <div class="h-2 border-l border-gray-300" />
         <div>개인정보관리책임자: XXX</div>
       </div>
 
       <div class="flex items-center gap-2">
         <div>사업자등록번호: 123-45-67890</div>
-        <div class="h-2 border-x border-l-gray-300" />
+        <div class="h-2 border-l border-gray-300" />
         <div>통신판매업신고: 2023-서울강남-1234</div>
       </div>
 
@@ -29,16 +29,16 @@
 
       <div class="flex items-center gap-2">
         <div>이메일: support@penxle.io</div>
-        <div class="h-2 border-x border-l-gray-300" />
+        <div class="h-2 border-l border-gray-300" />
         <div>전화: 02-123-4567</div>
       </div>
     </section>
 
     <section class="flex items-center gap-2 text-gray-400">
       <Link href="/">이용약관</Link>
-      <div class="h-2 border-x border-l-gray-300" />
+      <div class="h-2 border-l border-gray-300" />
       <Link class="font-medium" href="/">개인정보처리방침</Link>
-      <div class="h-2 border-x border-l-gray-300" />
+      <div class="h-2 border-l border-gray-300" />
       <Link
         class="flex items-center gap-1"
         href={`https://github.com/penxle/penxle/tree/${PUBLIC_VERCEL_GIT_COMMIT_SHA}`}
