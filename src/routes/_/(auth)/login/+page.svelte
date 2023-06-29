@@ -41,7 +41,12 @@
 
     <FormField name="password" label="비밀번호">
       <PasswordInput class="w-full" />
-      <Link class="text-xs font-medium" colored href="/user/reset-password">
+      <Link
+        class="text-xs font-medium"
+        colored
+        href="/user/reset-password"
+        underline
+      >
         비밀번호를 잊으셨나요?
       </Link>
     </FormField>
@@ -52,5 +57,7 @@
 
 <div class="mt-2 text-xs text-gray-500">
   계정이 아직 없으신가요?
-  <Link class="font-bold" colored href="/_/signup">새 계정 만들기</Link>
+  <Link class="font-bold" colored href="/_/signup" underline>
+    새 계정 만들기
+  </Link>
 </div>

@@ -3,14 +3,15 @@
 
   let _class: string | undefined = undefined;
   export { _class as class };
-  export let href: string | undefined = undefined;
+  export let href: string;
+  export let underline = false;
   export let colored = false;
-  export let external = false;
+  export let external = !href.startsWith('/');
 </script>
 
 <a
   class={clsx(
-    'hover:underline underline-offset-2',
+    underline && 'hover:underline underline-offset-2',
     colored && 'text-brand-500',
     _class
   )}

@@ -52,7 +52,7 @@
 
 <div class="ml-6 mt-4 flex flex-col gap-2">
   {#each $query.profile.spaces as space (space.id)}
-    <Link href="/{space.slug}">
+    <Link href="/{space.slug}" underline>
       {space.name} ({space.slug})
     </Link>
   {/each}
