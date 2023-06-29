@@ -1,13 +1,27 @@
-export const BLACKLIST_SPACE_SLUGS = [
-  // 루트 URL
-  'artworks',
-  'posts',
-  'user',
-  'search',
+export const UNAVAILABLE_SPACE_SLUGS = {
+  EXACT: [
+    // route url
+    'api',
+    'me',
+    'search',
 
-  // 혼란 방지 URL
-  'admin',
+    // static url
+    'favicon.ico',
+    'icons',
+    'robots.txt',
+    'sitemap.xml',
 
-  // 미래에 쓰일지도 모르는 URL
-  'me',
-];
+    // reserved url
+    'admin',
+    'announcement',
+    'blog',
+    'notice',
+    'official',
+    'profile',
+    'space',
+    'team',
+    'user',
+  ],
+
+  CONTAIN: ['penxle'],
+};

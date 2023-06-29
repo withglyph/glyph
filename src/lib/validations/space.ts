@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BLACKLIST_SPACE_SLUGS } from '$lib/const';
+import { UNAVAILABLE_SPACE_SLUGS } from '$lib/const';
 
 export const SpaceSlugSchema = z
   .string()
@@ -12,7 +12,9 @@ export const SpaceSlugSchema = z
     '.로 시작하거나 끝날 수 없어요'
   )
   .refine(
-    (v) => !BLACKLIST_SPACE_SLUGS.includes(v),
+    (v) =>
+      !UNAVAILABLE_SPACE_SLUGS.EXACT.includes(v) &&
+      !UNAVAILABLE_SPACE_SLUGS.CONTAIN.some((s) => v.includes(s)),
     '사용할 수 없는 URL이에요'
   );
 
