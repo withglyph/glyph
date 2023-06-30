@@ -1,8 +1,8 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import Logo from '$assets/branding/logo.svg?component';
   import { graphql } from '$houdini';
   import { Button, Helmet, Link } from '$lib/components';
+  import { Logo } from '$lib/components/branding';
   import {
     Checkbox,
     FormField,
@@ -31,9 +31,7 @@
 <Helmet title="새 계정 만들기" />
 
 <div class="flex items-center gap-4">
-  <a href="/">
-    <Logo class="square-8 rounded" />
-  </a>
+  <Logo class="square-8" />
   <div class="h-10 border-x border-gray-900" />
   <div class="text-2xl font-bold">새 펜슬 계정 만들기</div>
 </div>

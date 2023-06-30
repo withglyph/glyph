@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Logo from '$assets/branding/logo.svg?component';
   import Wordmark from '$assets/branding/wordmark.svg?component';
   import { PUBLIC_VERCEL_GIT_COMMIT_SHA } from '$env/static/public';
   import { Link } from '$lib/components';
@@ -13,9 +12,10 @@
       <Wordmark class="h-4" />
 
       <div class="flex items-center gap-4">
-        <Link class="hover:text-gray-900" href="/penxle.team">
-          <Logo class="square-5 rounded" />
-        </Link>
+        <Link
+          class="i-px-logo square-5 hover:text-gray-900"
+          href="/penxle.team"
+        />
         <Link
           class="i-lg-twitter square-5 hover:text-[#1DA1F2]"
           href="https://twitter.com/penxle"

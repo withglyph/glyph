@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Logo from '$assets/branding/logo.svg?component';
   import { fragment, graphql } from '$houdini';
   import { Avatar, Button } from '$lib/components';
+  import { Logo } from '$lib/components/branding';
   import type { SpacePublishPostPage_Header_query } from '$houdini';
 
   let _query: SpacePublishPostPage_Header_query;
@@ -26,9 +26,7 @@
 
 <div class="sticky top-0 z-50 bg-white py-4">
   <div class="mx-auto w-4xl flex items-center gap-4">
-    <a href="/">
-      <Logo class="square-8 rounded" />
-    </a>
+    <Logo class="square-8" />
     <div class="text-sm text-gray-500">
       {$query.space.name}에 새 글 작성중...
     </div>

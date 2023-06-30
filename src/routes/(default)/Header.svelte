@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Logo from '$assets/branding/logo.svg?component';
   import { fragment, graphql } from '$houdini';
+  import { Logo } from '$lib/components/branding';
   import CreateEntityMenu from './PublishMenu.svelte';
   import SearchBar from './SearchBar.svelte';
   import UserMenu from './UserMenu.svelte';
@@ -25,9 +25,7 @@
 <header class="relative sticky top-0 z-10 border-b bg-white px-8">
   <nav>
     <section class="h-16 flex items-center">
-      <a class="mr-4 flex-none" href="/">
-        <Logo class="square-8 rounded" />
-      </a>
+      <Logo class="mr-4 square-8" />
 
       <SearchBar />
 

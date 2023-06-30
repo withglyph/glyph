@@ -20,7 +20,7 @@ const _handle = (async ({ event, resolve }) => {
     event.route.id !== '/_/internal/under-maintenance'
   ) {
     const allowlistedIps = await get<string[]>('allowlisted-ips');
-    if (!allowlistedIps?.includes(event.getClientAddress())) {
+    if (allowlistedIps?.includes(event.getClientAddress())) {
       return event.route.id?.startsWith('/api')
         ? json({ code: 'under_maintenance' })
         : await event.fetch('/_/internal/under-maintenance');

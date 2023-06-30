@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import Logo from '$assets/branding/logo.svg?component';
   import { Button, Helmet, Modal } from '$lib/components';
+  import { Logo } from '$lib/components/branding';
   import { deserializeAppError, UnknownError } from '$lib/errors';
 
   let open = false;
@@ -14,9 +14,7 @@
 
 <Helmet title="펜슬" />
 
-<a class="absolute left-8 top-4" href="/">
-  <Logo class="square-8 rounded" />
-</a>
+<Logo class="absolute left-8 top-4 square-8" />
 
 <div class="mx-auto my-12 flex grow flex-col items-center justify-between">
   <div />
