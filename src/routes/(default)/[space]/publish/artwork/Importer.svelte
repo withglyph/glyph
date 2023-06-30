@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { nanoid } from 'nanoid';
   import { toast } from '$lib/notification';
-  import { createId, fileMime } from '$lib/utils';
+  import { fileMime } from '$lib/utils';
   import type { Artwork } from './types';
   import type { Nullable } from '$lib/types';
 
@@ -35,7 +36,7 @@
     for (const file of newFiles) {
       if (await isValidFile(file)) {
         validFiles.push({
-          id: createId(),
+          id: nanoid(),
           file,
           thumbnail: { translateX: 0, translateY: 0 },
         });

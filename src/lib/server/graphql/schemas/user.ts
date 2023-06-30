@@ -1,5 +1,6 @@
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
+import { customAlphabet } from 'nanoid';
 import {
   FormValidationError,
   NotFoundError,
@@ -7,7 +8,6 @@ import {
 } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
 import { createAccessToken } from '$lib/server/utils';
-import { createHandle } from '$lib/utils';
 import { LoginInputSchema, SignupInputSchema } from '$lib/validations';
 import { builder } from '../builder';
 
@@ -232,7 +232,7 @@ builder.mutationFields((t) => ({
         data: {
           userId: user.id,
           name: input.name,
-          handle: createHandle(),
+          handle: randomHandle(),
           order: 0,
           state: 'ACTIVE',
         },
@@ -327,3 +327,9 @@ builder.mutationFields((t) => ({
     },
   }),
 }));
+
+/**
+ * * Utils
+ */
+
+const randomHandle = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 8);

@@ -11,7 +11,7 @@ import { AWS_S3_BUCKET } from '$env/static/private';
 const S3 = new S3Client({});
 
 export const createS3ObjectKey = () => {
-  const key = nanoid();
+  const key = nanoid(24);
   return `${key[0]}/${key[0]}${key[1]}/${key}`;
 };
 

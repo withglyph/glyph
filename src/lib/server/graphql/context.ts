@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { createId } from '$lib/utils';
+import { nanoid } from 'nanoid';
 import { track } from '../analytics';
 import { prismaClient } from '../database';
 import { decodeAccessToken } from '../utils/access-token';
@@ -31,7 +31,7 @@ export const extendContext = async (
   const db = await prismaClient.$begin({ isolation: 'RepeatableRead' });
   let deviceId = context.cookies.get('penxle-did');
   if (!deviceId) {
-    deviceId = createId();
+    deviceId = nanoid(32);
     context.cookies.set('penxle-did', deviceId, {
       path: '/',
       expires: dayjs().add(5, 'years').toDate(),
