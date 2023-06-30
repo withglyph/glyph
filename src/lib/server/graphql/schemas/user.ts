@@ -1,5 +1,4 @@
 import argon2 from 'argon2';
-import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
 import {
   FormValidationError,
@@ -175,10 +174,7 @@ builder.mutationFields((t) => ({
       });
 
       const accessToken = await createAccessToken(session.id);
-      context.cookies.set('penxle-at', accessToken, {
-        expires: dayjs().add(5, 'years').toDate(),
-        path: '/',
-      });
+      context.cookies.set('penxle-at', accessToken);
 
       await updateUser(db, context, user.id);
       context.track('user:login', {
@@ -198,7 +194,7 @@ builder.mutationFields((t) => ({
         where: { id: context.session.id },
       });
 
-      context.cookies.delete('penxle-at', { path: '/' });
+      context.cookies.delete('penxle-at');
 
       context.track('user:logout');
 
@@ -247,10 +243,7 @@ builder.mutationFields((t) => ({
       });
 
       const accessToken = await createAccessToken(session.id);
-      context.cookies.set('penxle-at', accessToken, {
-        expires: dayjs().add(5, 'years').toDate(),
-        path: '/',
-      });
+      context.cookies.set('penxle-at', accessToken);
 
       await updateUser(db, context, user.id);
       context.track('user:signup', {

@@ -61,6 +61,7 @@
     "@tiptap/extension-typography": "^2.0.3",
     "@tiptap/extension-underline": "^2.0.3",
     "@tiptap/pm": "^2.0.3",
+    "@types/cookie": "^0.5.1",
     "@types/node": "^20.3.2",
     "@types/ua-parser-js": "^0.7.36",
     "@typescript-eslint/eslint-plugin": "^5.60.1",

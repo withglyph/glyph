@@ -113,6 +113,9 @@ devDependencies:
   '@tiptap/pm':
     specifier: ^2.0.3
     version: 2.0.3(@tiptap/core@2.0.3)
+  '@types/cookie':
+    specifier: ^0.5.1
+    version: 0.5.1
   '@types/node':
     specifier: ^20.3.2
     version: 20.3.2

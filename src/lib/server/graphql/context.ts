@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { track } from '../analytics';
 import { prismaClient } from '../database';
@@ -32,10 +31,7 @@ export const extendContext = async (
   let deviceId = context.cookies.get('penxle-did');
   if (!deviceId) {
     deviceId = nanoid(32);
-    context.cookies.set('penxle-did', deviceId, {
-      path: '/',
-      expires: dayjs().add(5, 'years').toDate(),
-    });
+    context.cookies.set('penxle-did', deviceId);
   }
 
   const ctx: ExtendedContext = {
