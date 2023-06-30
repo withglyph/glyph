@@ -1,6 +1,7 @@
 <script context="module" lang="ts">
-  const colorize = (string: string, salt: number) => {
+  const colorize = (value: number, salt: number) => {
     let hash = 0;
+    let string = String(value);
     for (let i = 0; i < string.length; i++) {
       hash = string.codePointAt(i)! + ((hash << salt) - hash);
       hash &= hash;
@@ -41,7 +42,7 @@
     style:background={`linear-gradient(to bottom right, ${colorize(
       $profile.id,
       5
-    )}, ${colorize(`${$profile.id}`, 13)})`}
+    )}, ${colorize($profile.id, 13)})`}
     class={clsx('rounded-full', _class)}
   />
 {/if}

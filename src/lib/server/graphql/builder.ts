@@ -30,7 +30,6 @@ export const builder = new SchemaBuilder<{
   Scalars: {
     DateTime: { Input: Date; Output: Date };
     JSON: { Input: unknown; Output: unknown };
-    Void: { Input: never; Output: boolean };
   };
 }>({
   authScopes: (context) => ({

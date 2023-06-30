@@ -14,7 +14,7 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 scalar DateTime
 
 input DeleteSpaceInput {
-  spaceId: String!
+  spaceId: Int!
 }
 
 input FinalizeImageUploadInput {
@@ -22,7 +22,7 @@ input FinalizeImageUploadInput {
 }
 
 type Image {
-  id: String!
+  id: Int!
   path: String!
   placeholder: String!
   sizes: [Int!]!
@@ -62,7 +62,7 @@ type PrepareImageUploadPayload {
 type Profile {
   avatar: Image
   handle: String!
-  id: String!
+  id: Int!
   name: String!
   spaces: [Space!]!
   user: User!
@@ -85,7 +85,7 @@ input SignupInput {
 }
 
 type Space {
-  id: String!
+  id: Int!
   meAsMember: SpaceMember
   members: [SpaceMember!]!
   name: String!
@@ -96,7 +96,7 @@ type SpaceMember {
   canAccessDashboard: Boolean!
   canAdministrate: Boolean!
   canPublish: Boolean!
-  id: String!
+  id: Int!
   profile: Profile!
   role: SpaceMemberRole!
   space: Space!
@@ -108,11 +108,11 @@ enum SpaceMemberRole {
 }
 
 input SwitchProfileInput {
-  profileId: String!
+  profileId: Int!
 }
 
 type User {
   email: String!
-  id: String!
+  id: Int!
   profiles: [Profile!]!
 }
