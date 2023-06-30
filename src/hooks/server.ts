@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/sveltekit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { isUnderMaintenance } from '$lib/server/external/vercel';
+// import { isUnderMaintenance } from '$lib/server/external/vercel';
 import { setupGlobals } from './common';
 import type { Handle } from '@sveltejs/kit';
 
@@ -13,9 +13,9 @@ const _handle = (async ({ event, resolve }) => {
     return new Response(null, { status: 405 });
   }
 
-  if (await isUnderMaintenance(event)) {
-    return await event.fetch('/_/internal/under-maintenance', event.request);
-  }
+  // if (await isUnderMaintenance(event)) {
+  //   return await event.fetch('/_/internal/under-maintenance', event.request);
+  // }
 
   return await resolve(event);
 }) satisfies Handle;
