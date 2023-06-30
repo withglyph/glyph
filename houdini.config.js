@@ -2,7 +2,7 @@
 // eslint-disable-next-line import/no-default-export
 export default {
   acceptImperativeInstability: true,
-  defaultCachePolicy: 'NetworkOnly',
+  defaultCachePolicy: 'CacheAndNetwork',
   plugins: {
     'houdini-svelte': {
       client: './src/lib/houdini/client',
