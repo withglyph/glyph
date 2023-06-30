@@ -1,8 +1,6 @@
 import * as Sentry from '@sentry/sveltekit';
-import { json } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { get } from '@vercel/edge-config';
-import { enabled } from '$lib/features';
+import { isUnderMaintenance } from '$lib/server/external/vercel';
 import { setupGlobals } from './common';
 import type { Handle } from '@sveltejs/kit';
 
@@ -15,16 +13,8 @@ const _handle = (async ({ event, resolve }) => {
     return new Response(null, { status: 405 });
   }
 
-  if (
-    enabled('under-maintenance') &&
-    event.route.id !== '/_/internal/under-maintenance'
-  ) {
-    const allowlistedIps = await get<string[]>('allowlisted-ips');
-    if (allowlistedIps?.includes(event.getClientAddress())) {
-      return event.route.id?.startsWith('/api')
-        ? json({ code: 'under_maintenance' })
-        : await event.fetch('/_/internal/under-maintenance');
-    }
+  if (await isUnderMaintenance(event)) {
+    return await event.fetch('/_/internal/under-maintenance');
   }
 
   return await resolve(event);
