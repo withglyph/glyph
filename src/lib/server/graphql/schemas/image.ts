@@ -4,7 +4,6 @@ import {
   s3PutObjectGetSignedUrl,
 } from '$lib/server/external/aws';
 import { processMedia } from '$lib/server/external/mp';
-import { createId } from '$lib/utils';
 import { builder } from '../builder';
 
 /**
@@ -14,7 +13,7 @@ import { builder } from '../builder';
 builder.prismaObject('Image', {
   select: true,
   fields: (t) => ({
-    id: t.exposeString('id'),
+    id: t.exposeInt('id'),
 
     path: t.exposeString('path'),
     sizes: t.exposeIntList('sizes'),
@@ -59,7 +58,7 @@ builder.queryFields((t) => ({
     resolve: async (query, _, __, { db }) => {
       return await db.image.findMany({
         ...query,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { id: 'desc' },
       });
     },
   }),
@@ -74,7 +73,7 @@ builder.queryFields((t) => ({
         ...query,
         skip: Math.floor(Math.random() * count),
         take: 1,
-        orderBy: { createdAt: 'asc' },
+        orderBy: { id: 'asc' },
       });
     },
   }),
@@ -119,7 +118,6 @@ builder.mutationFields((t) => ({
       return await db.image.create({
         ...query,
         data: {
-          id: createId(),
           name,
           path,
           sizes,

@@ -14,7 +14,7 @@ datasource db {
 }
 
 model Image {
-  id          String   @id
+  id          Int      @id @default(autoincrement())
   name        String
   size        Int
   format      String
@@ -33,14 +33,14 @@ model Image {
 }
 
 model Profile {
-  id        String       @id
-  userId    String       @map("user_id")
+  id        Int          @id @default(autoincrement())
+  userId    Int          @map("user_id")
   user      User         @relation(fields: [userId], references: [id])
   name      String
   handle    String
   state     ProfileState
   order     Int
-  avatarId  String?      @map("avatar_id")
+  avatarId  Int?         @map("avatar_id")
   avatar    Image?       @relation(fields: [avatarId], references: [id])
   createdAt DateTime     @default(now()) @map("created_at")
 
@@ -52,10 +52,10 @@ model Profile {
 }
 
 model Session {
-  id        String   @id
-  userId    String   @map("user_id")
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
   user      User     @relation(fields: [userId], references: [id])
-  profileId String   @map("profile_id")
+  profileId Int      @map("profile_id")
   profile   Profile  @relation(fields: [profileId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -63,7 +63,7 @@ model Session {
 }
 
 model Space {
-  id        String     @id
+  id        Int        @id @default(autoincrement())
   slug      String
   name      String
   state     SpaceState
@@ -76,10 +76,10 @@ model Space {
 }
 
 model SpaceMember {
-  id        String          @id
-  spaceId   String          @map("space_id")
+  id        Int             @id @default(autoincrement())
+  spaceId   Int             @map("space_id")
   space     Space           @relation(fields: [spaceId], references: [id])
-  profileId String          @map("profile_id")
+  profileId Int             @map("profile_id")
   profile   Profile         @relation(fields: [profileId], references: [id])
   role      SpaceMemberRole
   createdAt DateTime        @default(now()) @map("created_at")
@@ -89,7 +89,7 @@ model SpaceMember {
 }
 
 model User {
-  id        String    @id
+  id        Int       @id @default(autoincrement())
   email     String    @unique
   password  String?
   state     UserState

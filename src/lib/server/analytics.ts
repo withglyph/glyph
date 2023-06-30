@@ -12,10 +12,6 @@ export const track = (
   eventName: string,
   properties: Record<string, unknown>
 ) => {
-  if (!properties.$user_id) {
-    throw new Error('$user_id is required');
-  }
-
   if (!production) {
     return;
   }
@@ -35,7 +31,7 @@ export const track = (
 export const updateUser = async (
   db: TransactionClient,
   event: RequestEvent,
-  userId: string
+  userId: number
 ) => {
   if (!production) {
     return;
@@ -46,7 +42,7 @@ export const updateUser = async (
     where: { id: userId },
   });
 
-  mixpanel.people.set(userId, {
+  mixpanel.people.set(String(userId), {
     $email: user.email,
     $created: user.createdAt.toISOString(),
     ip: event.getClientAddress(),

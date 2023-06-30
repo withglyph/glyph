@@ -18,7 +18,7 @@
 
 <div class="grid grid-cols-4 gap-4">
   {#each $query.images as image (image.id)}
-    <Tooltip message={image.id}>
+    <Tooltip message={String(image.id)}>
       <Image
         class="aspect-1 w-full border rounded-3xl object-cover"
         $image={image}

@@ -7,7 +7,7 @@ import {
 } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
 import { createAccessToken } from '$lib/server/utils';
-import { createHandle, createId } from '$lib/utils';
+import { createHandle } from '$lib/utils';
 import { LoginInputSchema, SignupInputSchema } from '$lib/validations';
 import { builder } from '../builder';
 
@@ -18,7 +18,7 @@ import { builder } from '../builder';
 builder.prismaObject('User', {
   select: { id: true },
   fields: (t) => ({
-    id: t.exposeString('id'),
+    id: t.exposeInt('id'),
     email: t.exposeString('email'),
     profiles: t.relation('profiles', { query: { orderBy: { order: 'asc' } } }),
   }),
@@ -27,7 +27,7 @@ builder.prismaObject('User', {
 builder.prismaObject('Profile', {
   select: { id: true },
   fields: (t) => ({
-    id: t.exposeString('id'),
+    id: t.exposeInt('id'),
     name: t.exposeString('name'),
     handle: t.exposeString('handle'),
     user: t.relation('user'),
@@ -76,7 +76,7 @@ const CreateProfileInput = builder.inputType('CreateProfileInput', {
 
 const SwitchProfileInput = builder.inputType('SwitchProfileInput', {
   fields: (t) => ({
-    profileId: t.string(),
+    profileId: t.int(),
   }),
 });
 
@@ -169,7 +169,6 @@ builder.mutationFields((t) => ({
       const session = await db.session.create({
         select: { id: true },
         data: {
-          id: createId(),
           userId: user.id,
           profileId: profile.id,
         },
@@ -222,7 +221,6 @@ builder.mutationFields((t) => ({
 
       const user = await db.user.create({
         data: {
-          id: createId(),
           email: input.email.toLowerCase(),
           password: await argon2.hash(input.password),
           state: 'ACTIVE',
@@ -232,7 +230,6 @@ builder.mutationFields((t) => ({
       const profile = await db.profile.create({
         ...query,
         data: {
-          id: createId(),
           userId: user.id,
           name: input.name,
           handle: createHandle(),
@@ -244,7 +241,6 @@ builder.mutationFields((t) => ({
       const session = await db.session.create({
         select: { id: true },
         data: {
-          id: createId(),
           userId: user.id,
           profileId: profile.id,
         },
@@ -288,7 +284,6 @@ builder.mutationFields((t) => ({
       const profile = await db.profile.create({
         ...query,
         data: {
-          id: createId(),
           userId: context.session.userId,
           name: input.name,
           handle: input.handle,

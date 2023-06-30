@@ -9,16 +9,16 @@ const loadPublicKey = memo(async () =>
 );
 const loadPrivateKey = memo(async () => jose.importJWK(jwk));
 
-export const createAccessToken = async (sessionId: string) => {
+export const createAccessToken = async (sessionId: number) => {
   const key = await loadPrivateKey();
   return await new jose.SignJWT({})
     .setProtectedHeader({ alg: jwk.alg! })
-    .setJti(sessionId)
+    .setJti(String(sessionId))
     .sign(key);
 };
 
 export const decodeAccessToken = async (bearerToken: string) => {
   const key = await loadPublicKey();
   const result = await jose.jwtVerify(bearerToken, key);
-  return result.payload;
+  return Number(result.payload.jti);
 };

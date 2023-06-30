@@ -6,7 +6,6 @@ import { decodeAccessToken } from '../utils/access-token';
 import type { TransactionClient } from '../database';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { YogaInitialContext } from 'graphql-yoga';
-import type { JWTPayload } from 'jose';
 
 type DefaultContext = {
   db: TransactionClient;
@@ -16,9 +15,9 @@ type DefaultContext = {
 
 export type AuthContext = {
   session: {
-    id: string;
-    userId: string;
-    profileId: string;
+    id: number;
+    userId: number;
+    profileId: number;
   };
 };
 
@@ -53,38 +52,34 @@ export const extendContext = async (
 
   const accessToken = context.cookies.get('penxle-at');
   if (accessToken) {
-    let payload: JWTPayload | undefined;
+    let sessionId: number | undefined;
 
     try {
-      payload = await decodeAccessToken(accessToken);
+      sessionId = await decodeAccessToken(accessToken);
     } catch {
       // noop
     }
 
-    if (payload) {
-      const sessionId = payload.jti;
+    if (sessionId) {
+      const session = await db.session.findUnique({
+        select: { userId: true, profileId: true },
+        where: { id: sessionId },
+      });
 
-      if (sessionId) {
-        const session = await db.session.findUnique({
-          select: { userId: true, profileId: true },
-          where: { id: sessionId },
-        });
+      if (session) {
+        ctx.session = {
+          id: sessionId,
+          userId: session.userId,
+          profileId: session.profileId,
+        };
 
-        if (session) {
-          ctx.session = {
-            id: sessionId,
-            userId: session.userId,
-            profileId: session.profileId,
-          };
-
-          ctx.track = (eventName, properties) => {
-            track(context, eventName, {
-              $device_id: deviceId,
-              $user_id: session.userId,
-              ...properties,
-            });
-          };
-        }
+        ctx.track = (eventName, properties) => {
+          track(context, eventName, {
+            $device_id: deviceId,
+            $user_id: session.userId,
+            ...properties,
+          });
+        };
       }
     }
   }
