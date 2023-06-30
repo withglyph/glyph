@@ -1,7 +1,14 @@
 import { PrismaClient as DefaultPrismaClient } from '@prisma/client';
-import { exists, transaction } from './prisma';
+import { dev } from '$app/environment';
+import { exists, logging, transaction } from './prisma';
 
-export const prismaClient = new DefaultPrismaClient()
+const defaultClient = new DefaultPrismaClient({
+  log: dev ? [{ level: 'query', emit: 'event' }] : [],
+});
+
+defaultClient.$on('query', logging);
+
+export const prismaClient = defaultClient
   .$extends(exists)
   .$extends(transaction);
 
