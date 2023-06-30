@@ -14,7 +14,7 @@ const _handle = (async ({ event, resolve }) => {
   }
 
   if (await isUnderMaintenance(event)) {
-    return await event.fetch('/_/internal/under-maintenance');
+    return await event.fetch('/_/internal/under-maintenance', event.request);
   }
 
   return await resolve(event);
