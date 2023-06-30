@@ -11,7 +11,7 @@ import { builder } from '../builder';
  */
 
 builder.prismaObject('Image', {
-  select: true,
+  select: { id: true },
   fields: (t) => ({
     id: t.exposeInt('id'),
 
