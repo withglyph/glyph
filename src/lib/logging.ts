@@ -3,5 +3,5 @@ import { dev } from '$app/environment';
 
 export const logger = pino({
   base: null,
-  level: dev ? 'trace' : ' info',
+  level: dev ? 'trace' : 'info',
 });
