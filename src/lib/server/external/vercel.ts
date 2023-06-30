@@ -8,7 +8,10 @@ type MaintenanceConfig = {
 };
 
 export const isUnderMaintenance = async (event: RequestEvent) => {
-  if (event.route.id === '/_/internal/under-maintenance') {
+  if (
+    event.isSubRequest ||
+    event.route.id === '/_/internal/under-maintenance'
+  ) {
     return false;
   }
 
@@ -18,15 +21,11 @@ export const isUnderMaintenance = async (event: RequestEvent) => {
     bypass: { ips, token },
   } = config!;
 
-  if (!targets[VERCEL_GIT_COMMIT_REF]) {
-    return false;
-  }
-
-  if (ips.includes(event.getClientAddress())) {
-    return false;
-  }
-
-  if (event.request.headers.get('x-vercel-protection-bypass') === token) {
+  if (
+    !targets[VERCEL_GIT_COMMIT_REF] ||
+    ips.includes(event.getClientAddress()) ||
+    event.request.headers.get('x-vercel-protection-bypass') === token
+  ) {
     return false;
   }
 
