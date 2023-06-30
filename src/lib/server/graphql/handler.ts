@@ -1,6 +1,6 @@
 import { createYoga } from 'graphql-yoga';
 import { extendContext } from './context';
-import { useErrorHandling, useTransaction } from './plugins';
+import { useErrorHandling, useLogging, useTransaction } from './plugins';
 import { schema } from './schemas';
 import type { RequestEvent } from '@sveltejs/kit';
 
@@ -10,5 +10,5 @@ export const handler = createYoga<RequestEvent>({
   fetchAPI: globalThis,
   graphqlEndpoint: '/api/graphql',
   maskedErrors: false,
-  plugins: [useErrorHandling(), useTransaction()],
+  plugins: [useErrorHandling(), useLogging(), useTransaction()],
 });
