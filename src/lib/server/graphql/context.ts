@@ -2,9 +2,11 @@ import dayjs from 'dayjs';
 import { createId } from '$lib/utils';
 import { track } from '../analytics';
 import { prismaClient } from '../database';
+import { decodeAccessToken } from '../utils/access-token';
 import type { TransactionClient } from '../database';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { YogaInitialContext } from 'graphql-yoga';
+import type { JWTPayload } from 'jose';
 
 type DefaultContext = {
   db: TransactionClient;
@@ -49,27 +51,41 @@ export const extendContext = async (
     },
   };
 
-  const sessionId = context.cookies.get('penxle-sid');
-  if (sessionId) {
-    const session = await db.session.findUnique({
-      select: { userId: true, profileId: true },
-      where: { id: sessionId },
-    });
+  const accessToken = context.cookies.get('penxle-at');
+  if (accessToken) {
+    let payload: JWTPayload | undefined;
 
-    if (session) {
-      ctx.session = {
-        id: sessionId,
-        userId: session.userId,
-        profileId: session.profileId,
-      };
+    try {
+      payload = await decodeAccessToken(accessToken);
+    } catch {
+      // noop
+    }
 
-      ctx.track = (eventName, properties) => {
-        track(context, eventName, {
-          $device_id: deviceId,
-          $user_id: session.userId,
-          ...properties,
+    if (payload) {
+      const sessionId = payload.jti;
+
+      if (sessionId) {
+        const session = await db.session.findUnique({
+          select: { userId: true, profileId: true },
+          where: { id: sessionId },
         });
-      };
+
+        if (session) {
+          ctx.session = {
+            id: sessionId,
+            userId: session.userId,
+            profileId: session.profileId,
+          };
+
+          ctx.track = (eventName, properties) => {
+            track(context, eventName, {
+              $device_id: deviceId,
+              $user_id: session.userId,
+              ...properties,
+            });
+          };
+        }
+      }
     }
   }
 
