@@ -47,7 +47,10 @@ export const useQuery = <D extends GraphQLObject, I extends GraphQLVariables>(
       };
     },
     refetch: async () => {
-      await store.fetch();
+      await store.fetch({
+        blocking: true,
+        policy: 'NetworkOnly',
+      });
     },
   } satisfies UseQueryReturn<D>;
 
@@ -76,17 +79,7 @@ export const useMutation = <
       }
 
       if (options?.refetch !== false) {
-        try {
-          await Promise.all(
-            renderedQueries.map(async (q) =>
-              q.refetch().catch(() => {
-                // noop
-              })
-            )
-          );
-        } catch {
-          // noop
-        }
+        await refetchQueries();
       }
 
       return fields[0] as Unwrap<D>;
@@ -96,7 +89,7 @@ export const useMutation = <
           toast.error(error.message);
         } else {
           console.error(error);
-          toast.error('An unknown error occurred');
+          toast.error('알 수 없는 오류가 발생했어요');
         }
       }
 
@@ -108,4 +101,16 @@ export const useMutation = <
 
   mutate.subscribe = subscribe;
   return mutate;
+};
+
+export const refetchQueries = async () => {
+  await Promise.all(
+    renderedQueries.map(async (q) =>
+      q.refetch().catch(() => {
+        // noop
+      })
+    )
+  ).catch(() => {
+    // noop
+  });
 };
