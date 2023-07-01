@@ -5,35 +5,20 @@
   export { _class as class };
 </script>
 
-<svg class={clsx('spinner', _class)} stroke-width="5" viewBox="25 25 50 50">
-  <circle cx="50" cy="50" r="20" />
+<svg
+  class={clsx('animate-spin animate-duration-2000 stroke-5', _class)}
+  viewBox="25 25 50 50"
+>
+  <circle
+    class="animate-[rs-stretch] animate-duration-1500 animate-ease-in-out animate-count-infinite fill-none stroke-dash-[1,200] stroke-current stroke-cap-round"
+    cx="50"
+    cy="50"
+    r="20"
+  />
 </svg>
 
 <style lang="scss">
-  .spinner {
-    --uib-speed: 2s;
-
-    vertical-align: middle;
-    transform-origin: center;
-    animation: rotate var(--uib-speed) linear infinite;
-  }
-
-  .spinner circle {
-    fill: none;
-    stroke: currentColor;
-    stroke-dasharray: 1, 200;
-    stroke-dashoffset: 0;
-    stroke-linecap: round;
-    animation: stretch calc(var(--uib-speed) * 0.75) ease-in-out infinite;
-  }
-
-  @keyframes rotate {
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  @keyframes stretch {
+  @keyframes -global-rs-stretch {
     0% {
       stroke-dasharray: 1, 200;
       stroke-dashoffset: 0;

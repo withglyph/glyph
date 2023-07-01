@@ -34,7 +34,7 @@
 >
   {#if showSpinner}
     <div class="absolute inset-0 flex center px-4 py-2">
-      <RingSpinner class="square-full" />
+      <RingSpinner class="h-full" />
     </div>
   {/if}
   <div class={clsx('contents', showSpinner && 'invisible')}>
