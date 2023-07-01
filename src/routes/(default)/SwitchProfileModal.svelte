@@ -3,6 +3,7 @@
   import { fragment, graphql } from '$houdini';
   import { Avatar, Button, Modal } from '$lib/components';
   import { useMutation } from '$lib/houdini';
+  import { toast } from '$lib/notification';
   import CreateProfileModal from './CreateProfileModal.svelte';
   import type { DefaultLayout_SwitchProfileModal_profile } from '$houdini';
 
@@ -56,6 +57,7 @@
         on:click={async () => {
           await switchProfile({ profileId: profile.id });
           await goto('/');
+          toast.info('프로필을 전환했어요.');
         }}
       >
         <Avatar class="square-10" $profile={profile} />
