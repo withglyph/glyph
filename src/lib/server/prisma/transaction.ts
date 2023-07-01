@@ -1,13 +1,25 @@
 import { Prisma } from '@prisma/client';
 import type { PrismaClient } from '../database';
 
-type BareTransactionClient = Parameters<
-  Parameters<PrismaClient['$transaction']>[0]
->[0];
-export type TransactionClient = Omit<BareTransactionClient, '$begin'> & {
+type BareTransactionClient = Omit<
+  PrismaClient,
+  | '$connect'
+  | '$disconnect'
+  | '$on'
+  | '$transaction'
+  | '$begin'
+  | '$use'
+  | '$extends'
+>;
+
+export type TransactionClient = BareTransactionClient & {
   $commit: () => Promise<void>;
   $rollback: () => Promise<void>;
 };
+export type InteractiveTransactionClient = Omit<
+  TransactionClient,
+  '$commit' | '$rollback'
+>;
 
 type BeginOptions = {
   isolation?: Prisma.TransactionIsolationLevel;
@@ -50,17 +62,19 @@ export const transaction = Prisma.defineExtension({
 
       return new Proxy(client, {
         get(target, prop) {
-          if (prop === '$commit') {
-            return commit;
+          switch (prop) {
+            case '$commit': {
+              return commit;
+            }
+            case '$rollback': {
+              return rollback;
+            }
+            default: {
+              return target[prop as keyof BareTransactionClient];
+            }
           }
-
-          if (prop === '$rollback') {
-            return rollback;
-          }
-
-          return target[prop as keyof BareTransactionClient];
         },
-      }) as unknown as TransactionClient;
+      }) as TransactionClient;
     },
   },
 });

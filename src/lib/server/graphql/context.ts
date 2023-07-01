@@ -2,12 +2,12 @@ import { nanoid } from 'nanoid';
 import { track } from '../analytics';
 import { prismaClient } from '../database';
 import { decodeAccessToken } from '../utils/access-token';
-import type { TransactionClient } from '../database';
+import type { InteractiveTransactionClient } from '../database';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { YogaInitialContext } from 'graphql-yoga';
 
 type DefaultContext = {
-  db: TransactionClient;
+  db: InteractiveTransactionClient;
   deviceId: string;
   track: (eventName: string, properties?: Record<string, unknown>) => void;
 };

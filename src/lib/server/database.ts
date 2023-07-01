@@ -1,16 +1,14 @@
-import { PrismaClient as DefaultPrismaClient } from '@prisma/client';
+import { PrismaClient as BasePrismaClient } from '@prisma/client';
 import { dev } from '$app/environment';
 import { exists, logging, transaction } from './prisma';
 
-const defaultClient = new DefaultPrismaClient({
+const baseClient = new BasePrismaClient({
   log: dev ? [{ level: 'query', emit: 'event' }] : [],
 });
 
-defaultClient.$on('query', logging);
+baseClient.$on('query', logging);
 
-export const prismaClient = defaultClient
-  .$extends(exists)
-  .$extends(transaction);
+export const prismaClient = baseClient.$extends(exists).$extends(transaction);
 
 export type PrismaClient = typeof prismaClient;
-export type { TransactionClient } from './prisma';
+export type { InteractiveTransactionClient, TransactionClient } from './prisma';
