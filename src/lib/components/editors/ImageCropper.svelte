@@ -122,7 +122,7 @@
 
 <div
   bind:this={containerEl}
-  class="relative square-100 select-none overflow-hidden border"
+  class="relative square-100 select-none overflow-hidden"
 >
   <img
     class="pointer-events-none square-full select-none object-cover"
@@ -135,43 +135,38 @@
     style:left={`${left}px`}
     style:width={`${width}px`}
     style:height={`${height}px`}
-    class="absolute square-50 cursor-move outline-10000 outline-black/50 outline-solid"
+    style:border-image-source="url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMCAxMCI+CiAgPHBhdGggZD0iTTEgMGgydjFIMXYySDBWMGgxWm0wIDdIMHYzaDNWOUgxVjdabTctN0g3djFoMnYyaDFWMEg4Wm0xIDlIN3YxaDNWN0g5djJaIi8+CiAgPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgM2gxdjRIMFYzWm05IDB2NGgxVjNIOVpNMyAxaDRWMEgzdjFabTAgOWg0VjlIM3YxWiIvPgo8L3N2Zz4K)"
+    style:border-image-repeat="repeat"
+    style:border-image-slice="10%"
+    class="absolute square-50 cursor-move border outline-10000 outline-black/50 outline-solid"
     role="presentation"
     on:mousedown={onMouseDown}
     on:touchstart={onTouchDown}
   >
-    <svg class="square-full" viewBox="0 0 100 100">
-      <rect class="square-full fill-none stroke-1 stroke-black" />
-      <rect
-        class="square-full fill-none stroke-1 stroke-dash-4 stroke-white"
-        vector-effect="non-scaling-stroke"
-      />
-    </svg>
-
     <div
       class={clsx(
-        'absolute square-2 border border-white/80 bg-black/20 -left-1 -top-1 cursor-nwse-resize',
+        'absolute square-2 border border-white/80 -left-1 -top-1 cursor-nwse-resize',
         blink ? 'bg-black/20' : 'bg-black/50'
       )}
       data-pos="top-left"
     />
     <div
       class={clsx(
-        'absolute square-2 border border-white/80 bg-black/20 -right-1 -top-1 cursor-nesw-resize',
+        'absolute square-2 border border-white/80 -right-1 -top-1 cursor-nesw-resize',
         blink ? 'bg-black/20' : 'bg-black/50'
       )}
       data-pos="top-right"
     />
     <div
       class={clsx(
-        'absolute square-2 border border-white/80 bg-black/20 -right-1 -bottom-1 cursor-nwse-resize',
+        'absolute square-2 border border-white/80 -right-1 -bottom-1 cursor-nwse-resize',
         blink ? 'bg-black/20' : 'bg-black/50'
       )}
       data-pos="bottom-right"
     />
     <div
       class={clsx(
-        'absolute square-2 border border-white/80 bg-black/20 -left-1 -bottom-1 cursor-nesw-resize',
+        'absolute square-2 border border-white/80 -left-1 -bottom-1 cursor-nesw-resize',
         blink ? 'bg-black/20' : 'bg-black/50'
       )}
       data-pos="bottom-left"
