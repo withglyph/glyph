@@ -1,19 +1,17 @@
-# penxle
+# PENXLE
 
-## 요구사항
+## 시스템 요구사항
 
 - Node 18 LTS 이상
 - pnpm 8 이상
 - Doppler CLI
 
-## 초대 필요한 외부 서비스
+## 외부 서비스 요구사항
 
-아래 계정의 초대가 필요합니다. 개발팀에 요청해주세요.
-
-| 서비스 | 목적 | 프론트 개발시 필요 | 백엔드 개발시 필요 |
-| :---: | :---: | :---: | :---: |
-| [Vercel](https://vercel.com) | 서비스 및 프리뷰 배포 | :white_check_mark: | :white_check_mark: |
-| [Doppler](https://doppler.com) | 환경변수 중앙 관리 | :white_check_mark: | :white_check_mark: |
+| 서비스 | 목적 |
+| :---: | :---: |
+| [Vercel](https://vercel.com) | 서비스 및 프리뷰 배포 |
+| [Doppler](https://doppler.com) | 환경변수 중앙 관리 |
 
 ## 요구사항 설치
 
@@ -49,8 +47,17 @@ $ pnpm dev
 
 ## 개발 
 
-### GraphQL 스키마 혹은 DB 스키마가 변경된 경우 
+### DB 스키마 변경시
 
 ```bash
-$ pnpm sync
+$ # 마이그레이션 생성 및 즉시 적용하기
+$ pnpm db:migrate
+
+$ # 마이그레이션 생성만 하기 (적용하려면 다시 `pnpm db:migrate` 실행)
+$ pnpm db:migrate:create
 ```
+
+## 라이센스 및 기여
+
+- [LICENSE](https://github.com/penxle/penxle/blob/main/LICENSE)
+- [Contributor License Agreement](https://github.com/penxle/penxle/blob/main/CLA)
