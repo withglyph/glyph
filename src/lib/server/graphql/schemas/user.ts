@@ -7,7 +7,12 @@ import {
 } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
 import { createAccessToken } from '$lib/server/utils';
-import { LoginInputSchema, SignupInputSchema } from '$lib/validations';
+import {
+  CreateProfileInputSchema,
+  LoginInputSchema,
+  SignupInputSchema,
+  UpdateProfileInputSchema,
+} from '$lib/validations';
 import { builder } from '../builder';
 
 /**
@@ -71,6 +76,15 @@ const CreateProfileInput = builder.inputType('CreateProfileInput', {
     name: t.string(),
     handle: t.string(),
   }),
+  validate: { schema: CreateProfileInputSchema },
+});
+
+const UpdateProfileInput = builder.inputType('UpdateProfileInput', {
+  fields: (t) => ({
+    name: t.string(),
+    handle: t.string(),
+  }),
+  validate: { schema: UpdateProfileInputSchema },
 });
 
 const SwitchProfileInput = builder.inputType('SwitchProfileInput', {
@@ -291,6 +305,39 @@ builder.mutationFields((t) => ({
       });
 
       context.track('profile:create');
+
+      return profile;
+    },
+  }),
+
+  updateProfile: t.withAuth({ loggedIn: true }).prismaField({
+    type: 'Profile',
+    args: { input: t.arg({ type: UpdateProfileInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const isHandleExists = await db.profile.exists({
+        where: {
+          id: { not: context.session.profileId },
+          handle: input.handle,
+        },
+      });
+
+      if (isHandleExists) {
+        throw new FormValidationError(
+          'handle',
+          '이미 사용중인 프로필 URL이에요.'
+        );
+      }
+
+      const profile = await db.profile.update({
+        ...query,
+        where: { id: context.session.profileId },
+        data: {
+          name: input.name,
+          handle: input.handle,
+        },
+      });
+
+      context.track('profile:update');
 
       return profile;
     },

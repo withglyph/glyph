@@ -48,6 +48,7 @@ type Mutation {
   prepareImageUpload(input: PrepareImageUploadInput!): PrepareImageUploadPayload!
   signup(input: SignupInput!): Profile!
   switchProfile(input: SwitchProfileInput!): Profile!
+  updateProfile(input: UpdateProfileInput!): Profile!
 }
 
 input PrepareImageUploadInput {
@@ -109,6 +110,11 @@ enum SpaceMemberRole {
 
 input SwitchProfileInput {
   profileId: Int!
+}
+
+input UpdateProfileInput {
+  handle: String!
+  name: String!
 }
 
 type User {

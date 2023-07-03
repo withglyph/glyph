@@ -1,7 +1,8 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { Avatar, Helmet, Link } from '$lib/components';
+  import { Avatar, Button, Helmet, Link } from '$lib/components';
   import { graphql, useQuery } from '$lib/houdini';
+  import UpdateProfileModal from './UpdateProfileModal.svelte';
 
   $: query = useQuery(
     graphql(`
@@ -17,10 +18,13 @@
           }
 
           ...Avatar_profile
+          ...ProfilePage_UpdateProfileModal_profile
         }
       }
     `)
   );
+
+  let openUpdateProfile = false;
 </script>
 
 <Helmet title={$query.profile.name} />
@@ -41,6 +45,10 @@
       </div>
     </div>
   </div>
+  <Button class="flex gap-2" on:click={() => (openUpdateProfile = true)}>
+    <span class="i-lc-edit-3" />
+    수정
+  </Button>
 </div>
 
 <hr class="my-8" />
@@ -57,3 +65,5 @@
     </Link>
   {/each}
 </div>
+
+<UpdateProfileModal $profile={$query.profile} bind:open={openUpdateProfile} />
