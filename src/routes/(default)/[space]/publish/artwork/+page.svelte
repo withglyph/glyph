@@ -22,6 +22,6 @@
 <Helmet title="새 그림 업로드하기" />
 
 <main class="flex grow flex-col">
-  <Header {$query} bind:artworks />
+  <Header _query={$query} bind:artworks />
   <Images bind:artworks />
 </main>

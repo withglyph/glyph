@@ -23,7 +23,7 @@
 <Helmet title="새 글 작성하기" />
 
 <main class="flex grow flex-col">
-  <Header {$query} />
+  <Header _query={$query} />
   <Editor bind:editor />
   <Toolbar {editor} />
 </main>

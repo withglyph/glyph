@@ -5,8 +5,7 @@
   import { intersectionObserver } from '$lib/svelte/actions';
   import type { Image_image } from '$houdini';
 
-  let _image: Image_image;
-  export { _image as $image };
+  export let _image: Image_image;
   let _class: string | undefined = undefined;
   export { _class as class };
 

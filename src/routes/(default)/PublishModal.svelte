@@ -5,11 +5,10 @@
   import CreateSpaceModal from './CreateSpaceModal.svelte';
   import type { DefaultLayout_PublishModal_profile } from '$houdini';
 
-  let _profile: DefaultLayout_PublishModal_profile;
-  export { _profile as $profile };
-
+  export let _profile: DefaultLayout_PublishModal_profile;
   export let open = false;
   export let type: 'artwork' | 'post';
+
   let openCreateSpace = false;
 
   $: profile = fragment(

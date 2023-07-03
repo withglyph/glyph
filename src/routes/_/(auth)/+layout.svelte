@@ -17,7 +17,7 @@
   {#if $query.featuredImage}
     <Image
       class="pointer-events-none absolute inset-0 square-full object-cover"
-      $image={$query.featuredImage}
+      _image={$query.featuredImage}
     />
   {/if}
 

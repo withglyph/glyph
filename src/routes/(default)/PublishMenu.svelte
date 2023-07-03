@@ -7,8 +7,7 @@
   import PublishModal from './PublishModal.svelte';
   import type { DefaultLayout_PublishMenu_profile } from '$houdini';
 
-  let _profile: DefaultLayout_PublishMenu_profile;
-  export { _profile as $profile };
+  export let _profile: DefaultLayout_PublishMenu_profile;
 
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLDivElement;
@@ -144,4 +143,4 @@
 {/if}
 
 <CreateSpaceModal bind:open={openCreateSpace} />
-<PublishModal {$profile} type={publishType} bind:open={openPublish} />
+<PublishModal _profile={$profile} type={publishType} bind:open={openPublish} />

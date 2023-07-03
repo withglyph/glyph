@@ -6,8 +6,7 @@
   import UserMenu from './UserMenu.svelte';
   import type { DefaultLayout_Header_query } from '$houdini';
 
-  let _query: DefaultLayout_Header_query;
-  export { _query as $query };
+  export let _query: DefaultLayout_Header_query;
 
   $: query = fragment(
     _query,
@@ -35,8 +34,8 @@
         <div class="ml-8 flex items-center gap-8">
           <div class="i-lc-heart square-5 text-gray-500" />
           <div class="i-lc-bell square-5 text-gray-500" />
-          <UserMenu $profile={$query.meOrNull} />
-          <CreateEntityMenu $profile={$query.meOrNull} />
+          <UserMenu _profile={$query.meOrNull} />
+          <CreateEntityMenu _profile={$query.meOrNull} />
         </div>
       {:else}
         <a

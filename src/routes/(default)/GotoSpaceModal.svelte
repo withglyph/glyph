@@ -5,10 +5,9 @@
   import CreateSpaceModal from './CreateSpaceModal.svelte';
   import type { DefaultLayout_GotoSpaceModal_profile } from '$houdini';
 
-  let _profile: DefaultLayout_GotoSpaceModal_profile;
-  export { _profile as $profile };
-
+  export let _profile: DefaultLayout_GotoSpaceModal_profile;
   export let open = false;
+
   let openCreateSpace = false;
 
   $: profile = fragment(

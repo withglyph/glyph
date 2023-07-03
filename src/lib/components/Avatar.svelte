@@ -16,8 +16,7 @@
   import Image from './Image.svelte';
   import type { Avatar_profile } from '$houdini';
 
-  let _profile: Avatar_profile;
-  export { _profile as $profile };
+  export let _profile: Avatar_profile;
   let _class: string | undefined = undefined;
   export { _class as class };
 
@@ -36,7 +35,7 @@
 </script>
 
 {#if $profile.avatar}
-  <Image class={clsx('rounded-full', _class)} $image={$profile.avatar} />
+  <Image class={clsx('rounded-full', _class)} _image={$profile.avatar} />
 {:else}
   <div
     style:background={`linear-gradient(to bottom right, ${colorize(

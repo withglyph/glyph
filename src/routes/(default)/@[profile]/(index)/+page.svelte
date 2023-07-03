@@ -30,7 +30,7 @@
 <Helmet title={$query.profile.name} />
 
 <div class="flex items-center gap-4">
-  <Avatar class="square-24" $profile={$query.profile} />
+  <Avatar class="square-24" _profile={$query.profile} />
   <div class="flex grow flex-col gap-2">
     <div class="text-2xl font-semibold">
       {$query.profile.name}
@@ -66,4 +66,4 @@
   {/each}
 </div>
 
-<UpdateProfileModal $profile={$query.profile} bind:open={openUpdateProfile} />
+<UpdateProfileModal _profile={$query.profile} bind:open={openUpdateProfile} />

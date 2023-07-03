@@ -9,8 +9,7 @@
   import { UpdateProfileInputSchema } from '$lib/validations';
   import type { ProfilePage_UpdateProfileModal_profile } from '$houdini';
 
-  let _profile: ProfilePage_UpdateProfileModal_profile;
-  export { _profile as $profile };
+  export let _profile: ProfilePage_UpdateProfileModal_profile;
   export let open = false;
 
   $: profile = fragment(

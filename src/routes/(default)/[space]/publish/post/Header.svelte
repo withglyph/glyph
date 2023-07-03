@@ -4,8 +4,7 @@
   import { Logo } from '$lib/components/branding';
   import type { SpacePublishPostPage_Header_query } from '$houdini';
 
-  let _query: SpacePublishPostPage_Header_query;
-  export { _query as $query };
+  export let _query: SpacePublishPostPage_Header_query;
 
   $: query = fragment(
     _query,
@@ -32,6 +31,6 @@
     </div>
     <div class="grow" />
     <Button>게시하기</Button>
-    <Avatar class="square-8" $profile={$query.me} />
+    <Avatar class="square-8" _profile={$query.me} />
   </div>
 </div>

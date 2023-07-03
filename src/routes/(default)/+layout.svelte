@@ -13,7 +13,7 @@
 </script>
 
 {#if $query}
-  <Header {$query} />
+  <Header _query={$query} />
 
   <main class="grow p-4">
     <div class="mx-auto max-w-screen-lg">

@@ -7,10 +7,8 @@
   import { toast } from '$lib/notification';
   import type { SpaceDashboardPage_DeleteSpaceModal_space } from '$houdini';
 
+  export let _space: SpaceDashboardPage_DeleteSpaceModal_space;
   export let open = false;
-
-  let _space: SpaceDashboardPage_DeleteSpaceModal_space;
-  export { _space as $space };
 
   let confirm = '';
 

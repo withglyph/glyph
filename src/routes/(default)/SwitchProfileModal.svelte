@@ -7,10 +7,9 @@
   import CreateProfileModal from './CreateProfileModal.svelte';
   import type { DefaultLayout_SwitchProfileModal_profile } from '$houdini';
 
-  let _profile: DefaultLayout_SwitchProfileModal_profile;
-  export { _profile as $profile };
-
+  export let _profile: DefaultLayout_SwitchProfileModal_profile;
   export let open = false;
+
   let openCreateProfile = false;
 
   $: profile = fragment(
@@ -60,7 +59,7 @@
           toast.info('프로필을 전환했어요.');
         }}
       >
-        <Avatar class="square-10" $profile={profile} />
+        <Avatar class="square-10" _profile={profile} />
         <div class="flex flex-col">
           <div class="font-medium">{profile.name}</div>
           <div class="text-sm text-gray-500">@{profile.handle}</div>

@@ -6,8 +6,7 @@
   import type { Artwork } from './types';
   import type { SpacePublishArtworkPage_PublishButton_space } from '$houdini';
 
-  let _space: SpacePublishArtworkPage_PublishButton_space;
-  export { _space as $space };
+  export let _space: SpacePublishArtworkPage_PublishButton_space;
   export let artworks: Artwork[];
 
   const loading = trackable();

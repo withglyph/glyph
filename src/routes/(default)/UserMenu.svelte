@@ -10,8 +10,7 @@
   import SwitchProfileModal from './SwitchProfileModal.svelte';
   import type { DefaultLayout_UserMenu_profile } from '$houdini';
 
-  let _profile: DefaultLayout_UserMenu_profile;
-  export { _profile as $profile };
+  export let _profile: DefaultLayout_UserMenu_profile;
 
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLDivElement;
@@ -75,7 +74,7 @@
   type="button"
   on:click={() => (open = true)}
 >
-  <Avatar class="square-8" {$profile} />
+  <Avatar class="square-8" _profile={$profile} />
 </button>
 
 {#if open}
@@ -94,7 +93,7 @@
     use:portal
   >
     <a class="flex items-center gap-2 px-4 py-2" href={`/@${$profile.handle}`}>
-      <Avatar class="square-10" {$profile} />
+      <Avatar class="square-10" _profile={$profile} />
       <div class="flex flex-col">
         <div class="font-medium">
           {$profile.name}
@@ -154,5 +153,5 @@
   </div>
 {/if}
 
-<GotoSpaceModal {$profile} bind:open={openGotoSpace} />
-<SwitchProfileModal {$profile} bind:open={openSwitchProfile} />
+<GotoSpaceModal _profile={$profile} bind:open={openGotoSpace} />
+<SwitchProfileModal _profile={$profile} bind:open={openSwitchProfile} />

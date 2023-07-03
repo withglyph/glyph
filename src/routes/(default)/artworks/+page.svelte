@@ -21,7 +21,7 @@
     <Tooltip message={String(image.id)}>
       <Image
         class="aspect-1 w-full border rounded-3xl object-cover"
-        $image={image}
+        _image={image}
       />
     </Tooltip>
   {/each}
