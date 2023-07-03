@@ -43,55 +43,30 @@
       // resize
       dx *= position.includes('left') ? -1 : 1;
       dy *= position.includes('top') ? -1 : 1;
+
       const d = Math.max(dx, dy);
 
-      let newLeft = position.includes('left')
+      const newLeft = position.includes('left')
         ? target.clientX - d - container.left
         : left;
-      let newTop = position.includes('top')
+      const newTop = position.includes('top')
         ? target.clientY - d - container.top
         : top;
-      let newWidth = target.width + d;
-      let newHeight = target.height + d;
 
-      if (newLeft < 0 || newTop < 0) {
-        const delta = Math.min(newLeft, newTop);
-        newLeft -= delta;
-        newTop -= delta;
-      }
+      const newWidth = target.width + d;
+      const newHeight = target.height + d;
 
       if (
         newLeft + newWidth > container.width ||
         newTop + newHeight > container.height
       ) {
-        const delta = Math.min(
-          container.width - newLeft - newWidth,
-          container.height - newTop - newHeight
-        );
-        newLeft += delta;
-        newTop += delta;
+        return;
       }
-
-      console.log({ newLeft, newTop });
-
-      // if (newWidth < 0 || newHeight < 0) {
-      //   return;
-      // }
-
-      // if (
-      //   newLeft + newWidth > container.width ||
-      //   newTop + newHeight > container.height
-      // ) {
-      //   return;
-      // }
 
       top = newTop;
       left = newLeft;
-
-      const max = Math.min(container.width - left, container.height - top);
-
-      width = clamp(newWidth, 0, max);
-      height = clamp(newHeight, 0, max);
+      width = newWidth;
+      height = newHeight;
     }
   };
 
