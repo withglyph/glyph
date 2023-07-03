@@ -2,7 +2,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { fragment, graphql } from '$houdini';
-  import { Button, Modal } from '$lib/components';
+  import { Avatar, Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
@@ -18,6 +18,8 @@
       fragment ProfilePage_UpdateProfileModal_profile on Profile {
         name
         handle
+
+        ...Avatar_profile
       }
     `)
   );
@@ -50,7 +52,20 @@
   <svelte:fragment slot="title">프로필 수정하기</svelte:fragment>
 
   <form use:form>
-    <div class="space-y-4">
+    <div class="flex flex-col gap-4">
+      <div>
+        <div class="mb-2 select-none text-sm font-medium">아바타</div>
+        <div class="flex items-center gap-4">
+          <Avatar class="square-24" _profile={$profile} />
+          <div class="flex flex-col items-center gap-2">
+            <Button class="text-sm" color="brand">새 아바타 업로드</Button>
+            <button class="text-sm text-gray-500" type="button">
+              아바타 제거
+            </button>
+          </div>
+        </div>
+      </div>
+
       <FormField name="name" label="닉네임">
         <TextInput class="w-full" />
       </FormField>
