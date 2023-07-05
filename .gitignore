@@ -1,12 +1,7 @@
 .DS_Store
+
 node_modules
 
-/$houdini
 /.svelte-kit
-/.tests
-/.vercel
-
-/.env.local
-
-/vite.config.js.timestamp-*
+/$houdini
 /vite.config.ts.timestamp-*

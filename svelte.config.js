@@ -20,7 +20,6 @@ export default {
         client: 'src/hooks/client',
       },
     },
-    output: { preloadStrategy: 'preload-mjs' },
     version: { pollInterval: 60 * 1000 },
   },
 };
