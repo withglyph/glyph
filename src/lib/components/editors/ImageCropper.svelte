@@ -4,9 +4,11 @@
   import { clamp } from '$lib/utils';
   import type { MouseEventHandler, TouchEventHandler } from 'svelte/elements';
 
+  const ratio = 1.5;
+
   let top = 0;
   let left = 0;
-  let width = 100;
+  let width = 150;
   let height = 100;
 
   let containerEl: HTMLDivElement;
@@ -43,25 +45,65 @@
       // resize
       dx *= position.includes('left') ? -1 : 1;
       dy *= position.includes('top') ? -1 : 1;
+      const factor = dx < 0 || dy < 0 ? -1 : 1;
+      const d = Math.max(Math.abs(dx), Math.abs(dy)) * factor;
 
-      const d = Math.max(dx, dy);
+      let newWidth = clamp(target.width + d, 0, container.width);
+      let newHeight = clamp(target.height + d, 0, container.height);
 
-      const newLeft = position.includes('left')
-        ? target.clientX - d - container.left
-        : left;
-      const newTop = position.includes('top')
-        ? target.clientY - d - container.top
-        : top;
-
-      const newWidth = target.width + d;
-      const newHeight = target.height + d;
-
-      if (
-        newLeft + newWidth > container.width ||
-        newTop + newHeight > container.height
-      ) {
-        return;
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (ratio > 1) {
+        newHeight = newWidth / ratio;
+      } else {
+        newWidth = newHeight * ratio;
       }
+
+      let newLeft = target.clientX - container.left;
+      let newTop = target.clientY - container.top;
+
+      if (position.includes('left')) {
+        newLeft -= newWidth - target.width;
+      }
+
+      if (position.includes('top')) {
+        newTop -= newHeight - target.height;
+      }
+
+      // console.log({ newWidth, newHeight, newLeft, newTop });
+
+      // if (newLeft < 0) {
+      //   newWidth += newLeft;
+      //   newLeft = 0;
+      // }
+
+      // const clampedWidth = clamp(newWidth, 0, container.width);
+      // const clampedHeight = clamp(newHeight, 0, container.height);
+      // const clampedLeft = clamp(newLeft, 0, container.width);
+      // const clampedTop = clamp(newTop, 0, container.height);
+
+      // console.log({ clampedWidth, clampedHeight, clampedLeft, clampedTop });
+
+      // newWidth = clampedWidth;
+      // newHeight = clampedHeight;
+      // newLeft = clampedLeft;
+      // newTop = clampedTop;
+
+      // if (newLeft + newWidth > container.width) {
+      //   newWidth = container.width - newLeft;
+      //   newHeight = newWidth / ratio;
+      // }
+
+      // if (newTop + newHeight > container.height) {
+      //   newHeight = container.height - newTop;
+      //   newWidth = newHeight * ratio;
+      // }
+
+      // if (
+      //   newLeft + newWidth > container.width ||
+      //   newTop + newHeight > container.height
+      // ) {
+      //   return;
+      // }
 
       top = newTop;
       left = newLeft;
@@ -120,10 +162,7 @@
   on:touchmove|nonpassive={origin ? onTouchMove : undefined}
 />
 
-<div
-  bind:this={containerEl}
-  class="relative square-100 select-none overflow-hidden"
->
+<div bind:this={containerEl} class="relative square-100 select-none">
   <img
     class="pointer-events-none square-full select-none object-cover"
     alt=""
