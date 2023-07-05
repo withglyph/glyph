@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Helmet } from '$lib/components';
-  import { ImageCropper } from '$lib/components/editors';
 </script>
 
 <Helmet
@@ -10,5 +9,3 @@
 />
 
 <code>Hello world!</code>
-
-<ImageCropper />
