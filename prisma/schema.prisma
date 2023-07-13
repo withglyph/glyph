@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["extendedWhereUnique", "jsonProtocol"]
+  provider = "prisma-client-js"
 }
 
 generator pothos {
