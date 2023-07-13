@@ -1,3 +1,4 @@
+import { useGraphQlJit } from '@envelop/graphql-jit';
 import { createYoga } from 'graphql-yoga';
 import { extendContext } from './context';
 import { useErrorHandling, useLogging, useTransaction } from './plugins';
@@ -10,5 +11,10 @@ export const handler = createYoga<RequestEvent>({
   fetchAPI: globalThis,
   graphqlEndpoint: '/api/graphql',
   maskedErrors: false,
-  plugins: [useErrorHandling(), useLogging(), useTransaction()],
+  plugins: [
+    useErrorHandling(),
+    useGraphQlJit(),
+    useLogging(),
+    useTransaction(),
+  ],
 });
