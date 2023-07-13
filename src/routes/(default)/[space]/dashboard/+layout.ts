@@ -13,7 +13,7 @@ export const _houdini_afterLoad = ({
     SpaceDashboardLayout_Query: { space },
   },
 }: AfterLoadEvent) => {
-  if (!space.meAsMember?.canAccessDashboard) {
+  if (!space.meAsMember) {
     throw new PermissionDeniedError();
   }
 };

@@ -10,7 +10,7 @@
           name
 
           meAsMember {
-            canAccessDashboard
+            __typename
           }
         }
       }
@@ -24,7 +24,7 @@
   <div class="grow text-2xl font-semibold">
     {$query.space.name}
   </div>
-  {#if $query.space.meAsMember?.canAccessDashboard}
+  {#if $query.space.meAsMember}
     <a
       class="flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-medium text-white"
       href="/{$query.space.slug}/dashboard"

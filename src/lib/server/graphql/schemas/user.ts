@@ -1,10 +1,6 @@
 import argon2 from 'argon2';
 import { customAlphabet } from 'nanoid';
-import {
-  FormValidationError,
-  NotFoundError,
-  PermissionDeniedError,
-} from '$lib/errors';
+import { FormValidationError, NotFoundError } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
 import { createAccessToken } from '$lib/server/utils';
 import {
@@ -21,6 +17,7 @@ import { builder } from '../builder';
 
 builder.prismaObject('User', {
   select: { id: true },
+  authScopes: (user) => ({ user }),
   fields: (t) => ({
     id: t.exposeInt('id'),
     email: t.exposeString('email'),
@@ -34,8 +31,8 @@ builder.prismaObject('Profile', {
     id: t.exposeInt('id'),
     name: t.exposeString('name'),
     handle: t.exposeString('handle'),
-    user: t.relation('user'),
     avatar: t.relation('avatar', { nullable: true }),
+    user: t.relation('user', { authScopes: (profile) => ({ profile }) }),
     spaces: t.prismaField({
       type: ['Space'],
       select: (_, __, nestedSelection) => ({
@@ -98,13 +95,9 @@ const SwitchProfileInput = builder.inputType('SwitchProfileInput', {
  */
 
 builder.queryFields((t) => ({
-  me: t.prismaField({
+  me: t.withAuth({ auth: true }).prismaField({
     type: 'Profile',
     resolve: async (query, _, __, { db, ...context }) => {
-      if (!context.session) {
-        throw new PermissionDeniedError();
-      }
-
       return await db.profile.findUniqueOrThrow({
         ...query,
         where: { id: context.session.profileId },
@@ -200,7 +193,7 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  logout: t.withAuth({ loggedIn: true }).prismaField({
+  logout: t.withAuth({ auth: true }).prismaField({
     type: 'Profile',
     resolve: async (query, _, __, { db, ...context }) => {
       const { profile } = await db.session.delete({
@@ -269,7 +262,7 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  createProfile: t.withAuth({ loggedIn: true }).prismaField({
+  createProfile: t.withAuth({ auth: true }).prismaField({
     type: 'Profile',
     args: { input: t.arg({ type: CreateProfileInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
@@ -310,7 +303,7 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  updateProfile: t.withAuth({ loggedIn: true }).prismaField({
+  updateProfile: t.withAuth({ auth: true }).prismaField({
     type: 'Profile',
     args: { input: t.arg({ type: UpdateProfileInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
@@ -343,7 +336,7 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  switchProfile: t.withAuth({ loggedIn: true }).prismaField({
+  switchProfile: t.withAuth({ auth: true }).prismaField({
     type: 'Profile',
     args: { input: t.arg({ type: SwitchProfileInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {

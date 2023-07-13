@@ -94,9 +94,6 @@ type Space {
 }
 
 type SpaceMember {
-  canAccessDashboard: Boolean!
-  canAdministrate: Boolean!
-  canPublish: Boolean!
   id: Int!
   profile: Profile!
   role: SpaceMemberRole!

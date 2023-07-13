@@ -84,7 +84,7 @@ builder.queryFields((t) => ({
  */
 
 builder.mutationFields((t) => ({
-  prepareImageUpload: t.withAuth({ loggedIn: true }).field({
+  prepareImageUpload: t.withAuth({ auth: true }).field({
     type: PrepareImageUploadPayload,
     args: { input: t.arg({ type: PrepareImageUploadInput }) },
     resolve: async (_, { input }) => {
@@ -97,7 +97,7 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  finalizeImageUpload: t.withAuth({ loggedIn: true }).prismaField({
+  finalizeImageUpload: t.withAuth({ auth: true }).prismaField({
     type: 'Image',
     args: { input: t.arg({ type: FinalizeImageUploadInput }) },
     resolve: async (query, _, { input }, { db }) => {

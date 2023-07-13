@@ -18,7 +18,6 @@ builder.prismaObject('Space', {
     meAsMember: t.prismaField({
       type: 'SpaceMember',
       nullable: true,
-      select: { id: true },
       resolve: async (query, space, __, { db, ...context }) => {
         if (!context.session) {
           return null;
@@ -45,26 +44,6 @@ builder.prismaObject('SpaceMember', {
     role: t.expose('role', { type: SpaceMemberRole }),
     space: t.relation('space'),
     profile: t.relation('profile'),
-
-    canPublish: t.boolean({
-      resolve: () => {
-        return true;
-      },
-    }),
-
-    canAccessDashboard: t.boolean({
-      select: { profileId: true },
-      resolve: () => {
-        return true;
-      },
-    }),
-
-    canAdministrate: t.boolean({
-      select: { role: true },
-      resolve: (member) => {
-        return member.role === 'OWNER';
-      },
-    }),
   }),
 });
 
@@ -120,7 +99,7 @@ builder.queryFields((t) => ({
  */
 
 builder.mutationFields((t) => ({
-  createSpace: t.withAuth({ loggedIn: true }).prismaField({
+  createSpace: t.withAuth({ auth: true }).prismaField({
     type: 'Space',
     args: { input: t.arg({ type: CreateSpaceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
@@ -153,7 +132,7 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  deleteSpace: t.withAuth({ loggedIn: true }).prismaField({
+  deleteSpace: t.withAuth({ auth: true }).prismaField({
     type: 'Space',
     args: { input: t.arg({ type: DeleteSpaceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {

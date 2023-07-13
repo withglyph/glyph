@@ -9,7 +9,7 @@ export const _houdini_load = graphql(`
   query SpacePublishLayout_Query($slug: String!) @load {
     space(slug: $slug) {
       meAsMember {
-        canPublish
+        __typename
       }
     }
   }
@@ -24,7 +24,7 @@ export const _houdini_afterLoad = ({
     SpacePublishLayout_Query: { space },
   },
 }: AfterLoadEvent) => {
-  if (!space.meAsMember?.canPublish) {
+  if (!space.meAsMember) {
     throw new PermissionDeniedError();
   }
 };

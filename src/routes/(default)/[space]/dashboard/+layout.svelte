@@ -7,7 +7,7 @@
       query SpaceDashboardLayout_Query($slug: String!) @load {
         space(slug: $slug) {
           meAsMember {
-            canAccessDashboard
+            __typename
           }
         }
       }
