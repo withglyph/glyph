@@ -21,7 +21,9 @@ builder.prismaObject('User', {
   fields: (t) => ({
     id: t.exposeInt('id'),
     email: t.exposeString('email'),
-    profiles: t.relation('profiles', { query: { orderBy: { order: 'asc' } } }),
+    profiles: t.relation('profiles', {
+      query: { where: { state: 'ACTIVE' }, orderBy: { order: 'asc' } },
+    }),
   }),
 });
 
@@ -148,11 +150,11 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: LoginInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const user = await db.user.findUnique({
-        select: { id: true, state: true, password: true },
-        where: { email: input.email.toLowerCase() },
+        select: { id: true, password: true },
+        where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
       });
 
-      if (!user || user.state !== 'ACTIVE' || !user.password) {
+      if (!user?.password) {
         await argon2.hash(input.password);
         throw new FormValidationError(
           'password',
@@ -169,15 +171,12 @@ builder.mutationFields((t) => ({
 
       const profile = await db.profile.findFirstOrThrow({
         ...query,
-        where: { userId: user.id, order: 0 },
+        where: { userId: user.id, state: 'ACTIVE', order: 0 },
       });
 
       const session = await db.session.create({
         select: { id: true },
-        data: {
-          userId: user.id,
-          profileId: profile.id,
-        },
+        data: { userId: user.id, profileId: profile.id },
       });
 
       const accessToken = await createAccessToken(session.id);
@@ -213,12 +212,11 @@ builder.mutationFields((t) => ({
     type: 'Profile',
     args: { input: t.arg({ type: SignupInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      const existingUser = await db.user.findUnique({
-        select: { state: true },
-        where: { email: input.email.toLowerCase() },
+      const isEmailUsed = await db.user.exists({
+        where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
       });
 
-      if (existingUser?.state === 'ACTIVE') {
+      if (isEmailUsed) {
         throw new FormValidationError('email', '이미 사용중인 이메일이에요.');
       }
 
@@ -243,10 +241,7 @@ builder.mutationFields((t) => ({
 
       const session = await db.session.create({
         select: { id: true },
-        data: {
-          userId: user.id,
-          profileId: profile.id,
-        },
+        data: { userId: user.id, profileId: profile.id },
       });
 
       const accessToken = await createAccessToken(session.id);
@@ -266,11 +261,11 @@ builder.mutationFields((t) => ({
     type: 'Profile',
     args: { input: t.arg({ type: CreateProfileInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      const isHandleExists = await db.profile.exists({
+      const isHandleUsed = await db.profile.exists({
         where: { handle: input.handle },
       });
 
-      if (isHandleExists) {
+      if (isHandleUsed) {
         throw new FormValidationError(
           'handle',
           '이미 사용중인 프로필 URL이에요.'
@@ -307,14 +302,15 @@ builder.mutationFields((t) => ({
     type: 'Profile',
     args: { input: t.arg({ type: UpdateProfileInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      const isHandleExists = await db.profile.exists({
+      const isHandleUsed = await db.profile.exists({
         where: {
           id: { not: context.session.profileId },
           handle: input.handle,
+          state: 'ACTIVE',
         },
       });
 
-      if (isHandleExists) {
+      if (isHandleUsed) {
         throw new FormValidationError(
           'handle',
           '이미 사용중인 프로필 URL이에요.'

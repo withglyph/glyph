@@ -14,10 +14,8 @@ builder.prismaObject('Image', {
   select: { id: true },
   fields: (t) => ({
     id: t.exposeInt('id'),
-
     path: t.exposeString('path'),
     sizes: t.exposeIntList('sizes'),
-
     placeholder: t.exposeString('placeholder'),
   }),
 });
