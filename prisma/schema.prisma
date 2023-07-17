@@ -15,14 +15,13 @@ datasource db {
 model Image {
   id          Int      @id @default(autoincrement())
   name        String
-  size        Int
   format      String
+  fileSize    Int      @map("file_size")
+  blobSize    Int      @map("blob_size")
   width       Int
   height      Int
   path        String
-  sizes       Int[]
   hash        String
-  color       String
   placeholder String
   createdAt   DateTime @default(now()) @map("created_at")
 

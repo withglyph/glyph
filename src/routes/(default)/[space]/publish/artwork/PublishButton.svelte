@@ -27,7 +27,7 @@
         $input: PrepareImageUploadInput!
       ) {
         prepareImageUpload(input: $input) {
-          path
+          key
           presignedUrl
         }
       }
@@ -48,7 +48,7 @@
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const doUpload = async (file: File) => {
-    const { path, presignedUrl } = await prepareImageUpload({
+    const { key, presignedUrl } = await prepareImageUpload({
       name: file.name,
     });
 
@@ -57,7 +57,7 @@
       body: file,
     });
 
-    return await finalizeImageUpload({ path });
+    return await finalizeImageUpload({ key });
   };
 
   const doPublish = async () => {

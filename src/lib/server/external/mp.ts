@@ -1,17 +1,17 @@
 import { MP_URL } from '$env/static/private';
 
-export const processMedia = async (path: string, sizes: number[] = []) => {
-  const resp = await fetch(`${MP_URL}/${path}?s=${sizes.join(',')}`);
+export const processMedia = async (key: string) => {
+  const resp = await fetch(`${MP_URL}/${key}`);
 
   return (await resp.json()) as {
-    path: string;
-    size: number;
-    sizes: number[];
+    name: string;
     format: string;
+    fileSize: number;
+    blobSize: number;
     width: number;
     height: number;
-    placeholder: string;
-    color: string;
+    path: string;
     hash: string;
+    placeholder: string;
   };
 };

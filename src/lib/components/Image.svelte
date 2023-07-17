@@ -18,17 +18,16 @@
     graphql(`
       fragment Image_image on Image {
         path
-        sizes
         placeholder
       }
     `)
   );
 
   onMount(() => {
-    const { clientWidth, clientHeight } = imgEl;
-    const size = window.devicePixelRatio * Math.max(clientWidth, clientHeight);
-    const suffix = $image.sizes.find((v) => v > size) ?? 'full';
-    src = `https://pnxl.net/${$image.path}/${suffix}`;
+    // const { clientWidth, clientHeight } = imgEl;
+    // const size = window.devicePixelRatio * Math.max(clientWidth, clientHeight);
+    // const suffix = $image.sizes.find((v) => v > size) ?? 'full';
+    src = `https://pnxl.net/${$image.path}`;
   });
 </script>
 

@@ -18,14 +18,13 @@ input DeleteSpaceInput {
 }
 
 input FinalizeImageUploadInput {
-  path: String!
+  key: String!
 }
 
 type Image {
   id: Int!
   path: String!
   placeholder: String!
-  sizes: [Int!]!
 }
 
 """
@@ -56,7 +55,7 @@ input PrepareImageUploadInput {
 }
 
 type PrepareImageUploadPayload {
-  path: String!
+  key: String!
   presignedUrl: String!
 }
 

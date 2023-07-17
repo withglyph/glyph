@@ -1,6 +1,5 @@
 import {
   DeleteObjectCommand,
-  GetObjectCommand,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
@@ -15,48 +14,23 @@ export const createS3ObjectKey = () => {
   return `${key[0]}/${key[0]}${key[1]}/${key}`;
 };
 
-export const s3GetObject = async (path: string) => {
-  const resp = await S3.send(
-    new GetObjectCommand({
-      Bucket: AWS_S3_BUCKET,
-      Key: path,
-    })
-  );
-
-  return await resp.Body!.transformToByteArray();
-};
-
-export const s3PutObject = async (
-  path: string,
-  contentType: string,
-  buffer: Buffer
-) => {
-  await S3.send(
-    new PutObjectCommand({
-      Bucket: AWS_S3_BUCKET,
-      Key: path,
-      Body: buffer,
-      ContentType: contentType,
-    })
-  );
-};
-
-export const s3PutObjectGetSignedUrl = async (path: string) => {
+export const s3PutObjectGetSignedUrl = async (key: string, name: string) => {
   return await getSignedUrl(
     S3,
     new PutObjectCommand({
       Bucket: AWS_S3_BUCKET,
-      Key: path,
+      Key: key,
+      Metadata: { Name: encodeURIComponent(name) },
     }),
-    { expiresIn: 60 * 60 }
+    { expiresIn: 20 * 60 } // 20 minutes
   );
 };
 
-export const s3DeleteObject = async (path: string) => {
+export const s3DeleteObject = async (key: string) => {
   await S3.send(
     new DeleteObjectCommand({
       Bucket: AWS_S3_BUCKET,
-      Key: path,
+      Key: key,
     })
   );
 };

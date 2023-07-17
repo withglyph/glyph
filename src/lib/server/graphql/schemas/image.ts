@@ -1,6 +1,5 @@
 import {
   createS3ObjectKey,
-  s3DeleteObject,
   s3PutObjectGetSignedUrl,
 } from '$lib/server/external/aws';
 import { processMedia } from '$lib/server/external/mp';
@@ -15,7 +14,6 @@ builder.prismaObject('Image', {
   fields: (t) => ({
     id: t.exposeInt('id'),
     path: t.exposeString('path'),
-    sizes: t.exposeIntList('sizes'),
     placeholder: t.exposeString('placeholder'),
   }),
 });
@@ -24,7 +22,7 @@ const PrepareImageUploadPayload = builder.simpleObject(
   'PrepareImageUploadPayload',
   {
     fields: (t) => ({
-      path: t.string(),
+      key: t.string(),
       presignedUrl: t.string(),
     }),
   }
@@ -42,7 +40,7 @@ const PrepareImageUploadInput = builder.inputType('PrepareImageUploadInput', {
 
 const FinalizeImageUploadInput = builder.inputType('FinalizeImageUploadInput', {
   fields: (t) => ({
-    path: t.string(),
+    key: t.string(),
   }),
 });
 
@@ -86,11 +84,11 @@ builder.mutationFields((t) => ({
     type: PrepareImageUploadPayload,
     args: { input: t.arg({ type: PrepareImageUploadInput }) },
     resolve: async (_, { input }) => {
-      const path = `u/${createS3ObjectKey()}/${input.name}`;
+      const key = createS3ObjectKey();
 
       return {
-        path,
-        presignedUrl: await s3PutObjectGetSignedUrl(path),
+        key,
+        presignedUrl: await s3PutObjectGetSignedUrl(key, input.name),
       };
     },
   }),
@@ -100,32 +98,29 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: FinalizeImageUploadInput }) },
     resolve: async (query, _, { input }, { db }) => {
       const {
-        path,
-        size,
-        sizes,
+        name,
         format,
+        fileSize,
+        blobSize,
         width,
         height,
-        placeholder,
-        color,
+        path,
         hash,
-      } = await processMedia(input.path, [320, 640, 960, 1280]);
-      await s3DeleteObject(input.path);
-      const name = input.path.split('/').pop()!;
+        placeholder,
+      } = await processMedia(input.key);
 
       return await db.image.create({
         ...query,
         data: {
           name,
-          path,
-          sizes,
-          size,
           format,
+          fileSize,
+          blobSize,
           width,
           height,
-          placeholder,
-          color,
+          path,
           hash,
+          placeholder,
         },
       });
     },
