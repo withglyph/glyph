@@ -1,5 +1,5 @@
 <script lang="ts">
-  import clsx from 'clsx';
+  import { clsx } from 'clsx';
   import { getFormContext } from '$lib/form';
   import type { HTMLInputAttributes } from 'svelte/elements';
 

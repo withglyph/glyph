@@ -1,5 +1,5 @@
 <script lang="ts">
-  import clsx from 'clsx';
+  import { clsx } from 'clsx';
   import { RingSpinner } from '$lib/components/spinners';
   import { getFormContext } from '$lib/form';
 

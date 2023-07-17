@@ -11,7 +11,7 @@
 </script>
 
 <script lang="ts">
-  import clsx from 'clsx';
+  import { clsx } from 'clsx';
   import { fragment, graphql } from '$houdini';
   import Image from './Image.svelte';
   import type { Avatar_profile } from '$houdini';

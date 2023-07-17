@@ -3,7 +3,7 @@
 </script>
 
 <script lang="ts">
-  import clsx from 'clsx';
+  import { clsx } from 'clsx';
   import { onDestroy } from 'svelte';
   import { Button, Modal } from '$lib/components';
   import { clamp } from '$lib/utils';

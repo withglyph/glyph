@@ -1,6 +1,6 @@
 <script lang="ts">
   import { writable } from '@svelte-kits/store';
-  import clsx from 'clsx';
+  import { clsx } from 'clsx';
   import { onMount } from 'svelte';
   import { cubicOut } from 'svelte/easing';
   import { tweened } from 'svelte/motion';

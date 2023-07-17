@@ -1,5 +1,5 @@
 <script lang="ts">
-  import clsx from 'clsx';
+  import { clsx } from 'clsx';
   import { Link } from '..';
 
   let _class: string | undefined = undefined;

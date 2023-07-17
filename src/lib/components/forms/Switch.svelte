@@ -1,5 +1,5 @@
 <script lang="ts">
-  import clsx from 'clsx';
+  import { clsx } from 'clsx';
   import type { HTMLInputAttributes } from 'svelte/elements';
 
   export let checked: HTMLInputAttributes['checked'] = false;

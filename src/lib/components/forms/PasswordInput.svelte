@@ -1,5 +1,5 @@
 <script lang="ts">
-  import clsx from 'clsx';
+  import { clsx } from 'clsx';
   import TextInput from './TextInput.svelte';
   import type { ComponentProps } from 'svelte';
 

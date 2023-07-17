@@ -35,6 +35,7 @@ module.exports = {
 
     // unicorn
     'unicorn/custom-error-definition': 'error',
+    'unicorn/no-empty-file': 'off',
     'unicorn/no-nested-ternary': 'off',
     'unicorn/no-null': 'off',
     'unicorn/no-useless-undefined': 'off',

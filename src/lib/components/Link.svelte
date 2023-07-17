@@ -1,5 +1,5 @@
 <script lang="ts">
-  import clsx from 'clsx';
+  import { clsx } from 'clsx';
 
   let _class: string | undefined = undefined;
   export { _class as class };
