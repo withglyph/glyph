@@ -1,4 +1,4 @@
-import { logger } from '$lib/logging';
+import { logger } from '$lib/server/logging';
 import type { Prisma } from '@prisma/client';
 
 const interpolateQuery = (query: string, params: unknown[]) => {

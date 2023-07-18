@@ -3,9 +3,13 @@
   "configurations": [
     {
       "name": "Launch",
-      "type": "node-terminal",
+      "type": "node",
       "request": "launch",
-      "command": "pnpm run dev",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
     }
   ]
 }

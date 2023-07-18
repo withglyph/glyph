@@ -1,4 +1,4 @@
-import { logger } from '$lib/logging';
+import { logger } from '$lib/server/logging';
 import type { Context } from '../context';
 import type { Plugin } from 'graphql-yoga';
 
