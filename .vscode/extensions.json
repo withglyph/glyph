@@ -3,8 +3,8 @@
     "antfu.unocss",
     "dbaeumer.vscode-eslint",
     "GitHub.copilot",
-    "GraphQL.vscode-graphql",
     "GraphQL.vscode-graphql-syntax",
+    "Prisma.prisma",
     "streetsidesoftware.code-spell-checker",
     "svelte.svelte-vscode"
   ]
