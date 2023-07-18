@@ -35,7 +35,8 @@
     "@iconify-json/lucide": "^1.1.110",
     "@iconify-json/simple-icons": "^1.1.60",
     "@iconify/utils": "^2.1.7",
-    "@logtail/pino": "^0.4.4",
+    "@logtail/node": "^0.4.4",
+    "@logtail/winston": "^0.4.4",
     "@playwright/test": "^1.36.1",
     "@pothos/core": "^3.30.0",
     "@pothos/plugin-prisma": "^3.52.0",
@@ -95,9 +96,7 @@
     "mixpanel": "^0.17.0",
     "nanoid": "^4.0.2",
     "network-information-types": "^0.1.1",
-    "pino": "^8.14.1",
     "pino-abstract-transport": "^1.0.0",
-    "pino-pretty": "^10.0.1",
     "postcss": "^8.4.26",
     "prettier": "^2.8.8",
     "prettier-plugin-svelte": "^2.10.1",
@@ -114,6 +113,8 @@
     "unocss": "^0.53.5",
     "vite": "^4.4.4",
     "web-vitals": "^3.4.0",
+    "winston": "^3.10.0",
+    "winston-transport": "^4.5.0",
     "zod": "^3.21.4"
   }
 }

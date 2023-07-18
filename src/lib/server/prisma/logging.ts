@@ -12,11 +12,10 @@ const interpolateQuery = (query: string, params: unknown[]) => {
 };
 
 export const logging = (e: Prisma.QueryEvent) => {
-  if (/^(SELECT|INSERT|UPDATE|DELETE)/.test(e.query)) {
-    logger.trace({
-      context: 'database',
-      query: interpolateQuery(e.query, JSON.parse(e.params)),
-      duration: e.duration,
-    });
-  }
+  logger.verbose(e.query, {
+    scope: 'database',
+    query: interpolateQuery(e.query, JSON.parse(e.params)),
+    params: e.params,
+    duration: e.duration,
+  });
 };
