@@ -4,15 +4,12 @@ import type { Plugin } from 'graphql-yoga';
 
 export const useLogging = (): Plugin<Context> => ({
   onExecute: ({ args }) => {
-    logger.info(
-      `${args.operationName}(${JSON.stringify(args.variableValues)})`,
-      {
-        scope: 'graphql',
-        id: args.contextValue.session?.profileId,
-        ip: args.contextValue.getClientAddress(),
-        operation_name: args.operationName,
-        variables: args.variableValues,
-      }
-    );
+    logger.info(`${args.operationName}`, {
+      scope: 'graphql',
+      id: args.contextValue.session?.profileId,
+      ip: args.contextValue.getClientAddress(),
+      operation_name: args.operationName,
+      variables: args.variableValues,
+    });
   },
 });
