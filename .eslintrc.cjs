@@ -69,11 +69,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: [
-        'src/{hooks,lib,routes,vite}/**/*.ts',
-        'tests/**/*.ts',
-        'src/**/*.svelte',
-      ],
+      files: ['*.ts', '*.svelte'],
       parserOptions: {
         project: './tsconfig.json',
         extraFileExtensions: ['.svelte'],
@@ -112,7 +108,7 @@ module.exports = {
       },
     },
     {
-      files: ['src/**/*.svelte'],
+      files: ['*.svelte'],
       parser: 'svelte-eslint-parser',
       parserOptions: { parser: '@typescript-eslint/parser' },
       extends: ['plugin:svelte/all', 'plugin:svelte/prettier'],
@@ -136,6 +132,10 @@ module.exports = {
           { varsIgnorePattern: '^(\\$\\$(Props|Events|Slots)$|_)' },
         ],
       },
+    },
+    {
+      files: ['service-worker.ts', '*.config.ts'],
+      extends: ['plugin:@typescript-eslint/disable-type-checked'],
     },
   ],
   settings: {
