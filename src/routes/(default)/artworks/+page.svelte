@@ -10,7 +10,7 @@
           ...Image_image
         }
       }
-    `)
+    `),
   );
 </script>
 

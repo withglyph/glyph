@@ -13,7 +13,7 @@
       query SpacePublishArtworkPage_Query($slug: String!) @load {
         ...SpacePublishArtworkPage_Header_query @with(slug: $slug)
       }
-    `)
+    `),
   );
 
   let artworks: Artwork[] = [];

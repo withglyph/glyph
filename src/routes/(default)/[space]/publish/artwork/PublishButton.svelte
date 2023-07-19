@@ -18,7 +18,7 @@
       fragment SpacePublishArtworkPage_PublishButton_space on Space {
         id
       }
-    `)
+    `),
   );
 
   const prepareImageUpload = useMutation(
@@ -31,7 +31,7 @@
           presignedUrl
         }
       }
-    `)
+    `),
   );
 
   const finalizeImageUpload = useMutation(
@@ -43,7 +43,7 @@
           id
         }
       }
-    `)
+    `),
   );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -63,7 +63,7 @@
   const doPublish = async () => {
     await loading.track(async () => {
       const images = await Promise.all(
-        artworks.map(async (v) => doUpload(v.file))
+        artworks.map(async (v) => doUpload(v.file)),
       );
       console.log(images.map((v) => v.id));
     });

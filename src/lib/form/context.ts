@@ -32,8 +32,8 @@ export const context = <T extends Obj>(): Extender<T> => {
   return (currentForm) => {
     const context = Object.fromEntries(
       Object.entries(currentForm).filter(([key]) =>
-        contextKeys.includes(key as never)
-      )
+        contextKeys.includes(key as never),
+      ),
     );
 
     setContext(formKey, context);

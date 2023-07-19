@@ -24,7 +24,7 @@
       fragment DefaultLayout_PublishMenu_profile on Profile {
         ...DefaultLayout_PublishModal_profile
       }
-    `)
+    `),
   );
 
   const update = async () => {

@@ -9,7 +9,7 @@
           ...Image_image
         }
       }
-    `)
+    `),
   );
 </script>
 

@@ -8,7 +8,7 @@ const ProfileHandleSchema = z
   .refine((v) => !v.includes('..'), '.은 연속으로 사용할 수 없어요')
   .refine(
     (v) => !v.startsWith('.') && !v.endsWith('.'),
-    '.로 시작하거나 끝날 수 없어요'
+    '.로 시작하거나 끝날 수 없어요',
   );
 
 export const LoginInputSchema = z.object({

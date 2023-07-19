@@ -5,7 +5,7 @@ import { JWK } from '$env/static/private';
 const jwk = JSON.parse(Buffer.from(JWK, 'base64').toString()) as jose.JWK;
 
 const loadPublicKey = memo(async () =>
-  jose.importJWK({ ...jwk, d: undefined })
+  jose.importJWK({ ...jwk, d: undefined }),
 );
 const loadPrivateKey = memo(async () => jose.importJWK(jwk));
 

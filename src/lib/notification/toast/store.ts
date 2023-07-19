@@ -31,7 +31,7 @@ const createToastStore = () => {
     toast: (
       type: ToastType,
       message: string,
-      options?: Partial<ToastOptions>
+      options?: Partial<ToastOptions>,
     ) => {
       const id = Symbol();
 
@@ -46,7 +46,7 @@ const createToastStore = () => {
         dismiss: () => update((toasts) => toasts.filter((t) => t.id !== id)),
         set: (toast) =>
           update((toasts) =>
-            toasts.map((t) => (t.id === id ? { ...t, ...toast } : t))
+            toasts.map((t) => (t.id === id ? { ...t, ...toast } : t)),
           ),
 
         mounted: false,

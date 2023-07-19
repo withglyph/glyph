@@ -25,7 +25,7 @@ type InitialContext = YogaInitialContext & RequestEvent;
 export type Context = InitialContext & ExtendedContext;
 
 export const extendContext = async (
-  context: InitialContext
+  context: InitialContext,
 ): Promise<ExtendedContext> => {
   const db = await prismaClient.$begin({ isolation: 'RepeatableRead' });
   let deviceId = context.cookies.get('penxle-did');

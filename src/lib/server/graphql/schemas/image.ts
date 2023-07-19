@@ -25,7 +25,7 @@ const PrepareImageUploadPayload = builder.simpleObject(
       key: t.string(),
       presignedUrl: t.string(),
     }),
-  }
+  },
 );
 
 /**

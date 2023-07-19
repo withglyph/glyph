@@ -16,11 +16,11 @@ type UseQueryReturn<D extends GraphQLObject> = Readable<D> & {
 
 type Mutate<D extends GraphQLObject> = () => Promise<Unwrap<D>>;
 type ParameterizedMutate<D extends GraphQLObject, V> = (
-  input: V
+  input: V,
 ) => Promise<Unwrap<D>>;
 type UseMutationReturn<
   D extends GraphQLObject,
-  I extends { input: GraphQLVariables } | null
+  I extends { input: GraphQLVariables } | null,
 > = (I extends { input: infer V } ? ParameterizedMutate<D, V> : Mutate<D>) &
   Readable<{ inflight: boolean }>;
 type UseMutationOptions = {
@@ -32,7 +32,7 @@ type UseMutationOptions = {
 const renderedQueries: UseQueryReturn<any>[] = [];
 
 export const useQuery = <D extends GraphQLObject, I extends GraphQLVariables>(
-  store: QueryStore<D, I>
+  store: QueryStore<D, I>,
 ): UseQueryReturn<D> => {
   const { subscribe } = derived(store, ($store) => $store.data!);
 
@@ -61,10 +61,10 @@ export const useMutation = <
   D extends GraphQLObject,
   V extends GraphQLVariables,
   I extends { input: V } | null,
-  O extends GraphQLObject
+  O extends GraphQLObject,
 >(
   store: MutationStore<D, I, O>,
-  options?: UseMutationOptions
+  options?: UseMutationOptions,
 ): UseMutationReturn<D, I> => {
   const { subscribe, set } = writable({ inflight: false });
   const mutate = (async (input?: V) => {
@@ -74,7 +74,7 @@ export const useMutation = <
       const fields = Object.values(data!);
       if (fields.length !== 1) {
         throw new Error(
-          `Expected exactly one field in mutation response, got ${fields.length}`
+          `Expected exactly one field in mutation response, got ${fields.length}`,
         );
       }
 
@@ -108,8 +108,8 @@ export const refetchQueries = async () => {
     renderedQueries.map(async (q) =>
       q.refetch().catch(() => {
         // noop
-      })
-    )
+      }),
+    ),
   ).catch(() => {
     // noop
   });

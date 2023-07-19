@@ -103,7 +103,7 @@
     style:transform={transform(artwork.thumbnail)}
     class={clsx(
       'pointer-events-none',
-      naturalWidth > naturalHeight ? 'h-full max-w-none' : 'w-full max-h-none'
+      naturalWidth > naturalHeight ? 'h-full max-w-none' : 'w-full max-h-none',
     )}
     alt=""
     {src}
@@ -123,7 +123,7 @@
           'select-none cursor-move',
           naturalWidth > naturalHeight
             ? 'h-full max-w-none'
-            : 'w-full max-h-none'
+            : 'w-full max-h-none',
         )}
         alt=""
         role="presentation"

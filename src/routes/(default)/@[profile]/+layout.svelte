@@ -8,7 +8,7 @@
           __typename
         }
       }
-    `)
+    `),
   );
 </script>
 

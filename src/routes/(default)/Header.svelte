@@ -17,7 +17,7 @@
           ...DefaultLayout_PublishMenu_profile
         }
       }
-    `)
+    `),
   );
 </script>
 

@@ -26,7 +26,7 @@
     !disabled &&
       color === 'black' &&
       'text-white bg-gray-800 hover:bg-gray-900 active:bg-black',
-    _class
+    _class,
   )}
   disabled={disabled || showSpinner}
   {type}

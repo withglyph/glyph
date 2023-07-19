@@ -31,7 +31,7 @@
         ...DefaultLayout_GotoSpaceModal_profile
         ...DefaultLayout_SwitchProfileModal_profile
       }
-    `)
+    `),
   );
 
   const logout = useMutation(
@@ -41,7 +41,7 @@
           __typename
         }
       }
-    `)
+    `),
   );
 
   const update = async () => {

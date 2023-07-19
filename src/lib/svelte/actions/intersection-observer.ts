@@ -13,7 +13,7 @@ type Parameter = {
 
 export const intersectionObserver: Action<HTMLElement, Parameter> = (
   element,
-  param
+  param,
 ) => {
   const { store, once } = param;
 

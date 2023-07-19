@@ -20,7 +20,7 @@
         slug
         name
       }
-    `)
+    `),
   );
 
   const deleteSpace = useMutation(
@@ -32,7 +32,7 @@
           id
         }
       }
-    `)
+    `),
   );
 </script>
 

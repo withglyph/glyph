@@ -23,7 +23,7 @@
           ...SpacePublishArtworkPage_PublishButton_space
         }
       }
-    `)
+    `),
   );
 </script>
 

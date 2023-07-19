@@ -18,7 +18,7 @@
           ...SpaceDashboardPage_DeleteSpaceModal_space
         }
       }
-    `)
+    `),
   );
 
   let openDeleteSpace = false;

@@ -27,7 +27,7 @@
           }
         }
       }
-    `)
+    `),
   );
 
   $: profileId = $profile.id;
@@ -41,7 +41,7 @@
           __typename
         }
       }
-    `)
+    `),
   );
 </script>
 

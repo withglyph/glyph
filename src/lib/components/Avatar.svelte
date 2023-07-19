@@ -30,7 +30,7 @@
           ...Image_image
         }
       }
-    `)
+    `),
   );
 </script>
 
@@ -40,7 +40,7 @@
   <div
     style:background={`linear-gradient(to bottom right, ${colorize(
       $profile.id,
-      5
+      5,
     )}, ${colorize($profile.id, 13)})`}
     class={clsx('rounded-full border', _class)}
   />

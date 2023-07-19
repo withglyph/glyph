@@ -4,7 +4,7 @@ type Parameter = HTMLElement | string | undefined;
 
 export const portal: Action<HTMLElement, Parameter> = (
   element,
-  target = 'body'
+  target = 'body',
 ) => {
   const update = (target: Parameter = 'body') => {
     let targetElement: HTMLElement | null;

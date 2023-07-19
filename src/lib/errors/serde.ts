@@ -39,7 +39,7 @@ export const deserializeAppError = ({
   switch (kind) {
     case errors.AppErrorKind.UnknownError: {
       return new errors.UnknownError(
-        extra.cause as errors.UnknownErrorCause | undefined
+        extra.cause as errors.UnknownErrorCause | undefined,
       );
     }
     case errors.AppErrorKind.IntentionalError: {

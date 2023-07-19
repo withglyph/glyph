@@ -52,7 +52,7 @@ export const transaction = Prisma.defineExtension({
             isolationLevel: options?.isolation,
             maxWait: 10 * 1000,
             timeout: 60 * 1000,
-          }
+          },
         )
         .catch(() => {
           // noop

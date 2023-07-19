@@ -38,7 +38,7 @@
       _class,
       'left-icon' in $$slots && 'pl-10',
       'right-icon' in $$slots && 'pr-10',
-      'left-text' in $$slots ? 'rounded-r' : 'rounded'
+      'left-text' in $$slots ? 'rounded-r' : 'rounded',
     )}
     type="text"
     bind:value

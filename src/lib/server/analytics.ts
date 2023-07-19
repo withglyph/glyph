@@ -10,7 +10,7 @@ export const mixpanel = Mixpanel.init(MIXPANEL_TOKEN);
 export const track = (
   event: RequestEvent,
   eventName: string,
-  properties: Record<string, unknown>
+  properties: Record<string, unknown>,
 ) => {
   if (!production) {
     return;
@@ -31,7 +31,7 @@ export const track = (
 export const updateUser = async (
   db: InteractiveTransactionClient,
   event: RequestEvent,
-  userId: number
+  userId: number,
 ) => {
   if (!production) {
     return;

@@ -13,7 +13,7 @@ export const useTransaction = (): Plugin<Context> => {
             async ({ args: { contextValue }, result }) => {
               const db = contextValue.db as TransactionClient;
               await (result.errors ? db.$rollback() : db.$commit());
-            }
+            },
           );
         },
       };

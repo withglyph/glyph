@@ -8,7 +8,7 @@
       query DefaultLayout_Query @load {
         ...DefaultLayout_Header_query
       }
-    `)
+    `),
   );
 </script>
 

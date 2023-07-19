@@ -22,7 +22,7 @@ export const s3PutObjectGetSignedUrl = async (key: string, name: string) => {
       Key: key,
       Metadata: { Name: encodeURIComponent(name) },
     }),
-    { expiresIn: 20 * 60 } // 20 minutes
+    { expiresIn: 20 * 60 }, // 20 minutes
   );
 };
 
@@ -31,6 +31,6 @@ export const s3DeleteObject = async (key: string) => {
     new DeleteObjectCommand({
       Bucket: AWS_S3_BUCKET,
       Key: key,
-    })
+    }),
   );
 };

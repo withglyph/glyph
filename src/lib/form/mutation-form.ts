@@ -20,9 +20,9 @@ type MutationFormConfig<Z extends AnyZodObject, D extends GraphQLObject> = {
 
 export const createMutationForm = <
   Z extends AnyZodObject,
-  D extends GraphQLObject
+  D extends GraphQLObject,
 >(
-  config: MutationFormConfig<Z, D>
+  config: MutationFormConfig<Z, D>,
 ) => {
   const extend: Extender<TypeOf<Z>>[] = [context()];
   const { schema, mutation, refetch, onSuccess, onError, ...rest } = config;
@@ -30,7 +30,7 @@ export const createMutationForm = <
   if ('validate' in schema && 'warn' in schema) {
     extend.push(
       validator({ schema: schema.validate, level: 'error' }),
-      validator({ schema: schema.warn, level: 'warning' })
+      validator({ schema: schema.warn, level: 'warning' }),
     );
   } else {
     extend.push(validator({ schema }));

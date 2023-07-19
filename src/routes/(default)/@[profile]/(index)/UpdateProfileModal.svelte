@@ -21,7 +21,7 @@
 
         ...Avatar_profile
       }
-    `)
+    `),
   );
 
   const { form, handleSubmit, isSubmitting, setInitialValues } =

@@ -21,7 +21,7 @@
           ...ProfilePage_UpdateProfileModal_profile
         }
       }
-    `)
+    `),
   );
 
   let openUpdateProfile = false;

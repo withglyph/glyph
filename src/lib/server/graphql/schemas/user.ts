@@ -158,14 +158,14 @@ builder.mutationFields((t) => ({
         await argon2.hash(input.password);
         throw new FormValidationError(
           'password',
-          '잘못된 이메일이거나 비밀번호에요.'
+          '잘못된 이메일이거나 비밀번호에요.',
         );
       }
 
       if (!(await argon2.verify(user.password, input.password))) {
         throw new FormValidationError(
           'password',
-          '잘못된 이메일이거나 비밀번호에요.'
+          '잘못된 이메일이거나 비밀번호에요.',
         );
       }
 
@@ -268,7 +268,7 @@ builder.mutationFields((t) => ({
       if (isHandleUsed) {
         throw new FormValidationError(
           'handle',
-          '이미 사용중인 프로필 URL이에요.'
+          '이미 사용중인 프로필 URL이에요.',
         );
       }
 
@@ -313,7 +313,7 @@ builder.mutationFields((t) => ({
       if (isHandleUsed) {
         throw new FormValidationError(
           'handle',
-          '이미 사용중인 프로필 URL이에요.'
+          '이미 사용중인 프로필 URL이에요.',
         );
       }
 

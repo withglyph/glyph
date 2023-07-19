@@ -13,7 +13,7 @@
   class={clsx(
     underline && 'hover:underline underline-offset-2',
     colored && 'text-brand-500',
-    _class
+    _class,
   )}
   {href}
   {...external && {

@@ -14,7 +14,7 @@
       query SpacePublishPostPage_Query($slug: String!) @load {
         ...SpacePublishPostPage_Header_query @with(slug: $slug)
       }
-    `)
+    `),
   );
 
   let editor: TiptapEditor | undefined;

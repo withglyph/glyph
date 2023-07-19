@@ -5,7 +5,7 @@ type Attributes = {
 };
 
 export const outsideClickEvent: Action<HTMLElement, never, Attributes> = (
-  element
+  element,
 ) => {
   const handler = (event: MouseEvent) => {
     if (!element.contains(event.target as Node)) {
