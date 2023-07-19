@@ -14,7 +14,7 @@ export default defineConfig({
     presetIcons({
       collections: {
         px: FileSystemIconLoader('./src/assets/icons', (s) =>
-          s.replace(/^<svg /, '<svg fill="currentColor" ')
+          s.replace(/^<svg /, '<svg fill="currentColor" '),
         ),
         lc: async () => import('@iconify-json/lucide/icons.json'),
         lg: async () => import('@iconify-json/simple-icons/icons.json'),

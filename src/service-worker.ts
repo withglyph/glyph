@@ -16,7 +16,7 @@ sw.addEventListener('install', (event) => {
       const cache = await caches.open(cacheKey);
       await cache.addAll(assets);
       await sw.skipWaiting();
-    })()
+    })(),
   );
 });
 
@@ -27,9 +27,9 @@ sw.addEventListener('activate', (event) => {
       await Promise.all(
         keys
           .filter((key) => key !== cacheKey)
-          .map(async (key) => caches.delete(key))
+          .map(async (key) => caches.delete(key)),
       );
-    })()
+    })(),
   );
 });
 
@@ -54,6 +54,6 @@ sw.addEventListener('fetch', (event) => {
       }
 
       return response;
-    })()
+    })(),
   );
 });
