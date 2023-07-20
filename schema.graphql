@@ -1,3 +1,8 @@
+input AddInput {
+  a: Int!
+  b: Int!
+}
+
 input CreateProfileInput {
   handle: String!
   name: String!
@@ -38,16 +43,23 @@ input LoginInput {
 }
 
 type Mutation {
+  add(input: AddInput!): Int!
   createProfile(input: CreateProfileInput!): Profile!
   createSpace(input: CreateSpaceInput!): Space!
   deleteSpace(input: DeleteSpaceInput!): Space!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
+  intro(age: Int!, name: String!): Boolean!
   login(input: LoginInput!): Profile!
   logout: Profile!
   prepareImageUpload(input: PrepareImageUploadInput!): PrepareImageUploadPayload!
   signup(input: SignupInput!): Profile!
   switchProfile(input: SwitchProfileInput!): Profile!
   updateProfile(input: UpdateProfileInput!): Profile!
+}
+
+type Person {
+  age: Int!
+  name: String!
 }
 
 input PrepareImageUploadInput {
@@ -70,11 +82,13 @@ type Profile {
 
 type Query {
   featuredImage: Image
+  hello: String!
   images: [Image!]!
   me: Profile!
   meOrNull: Profile
   profile(handle: String!): Profile!
   space(slug: String!): Space!
+  whoami: Person!
 }
 
 input SignupInput {

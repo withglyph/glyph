@@ -48,6 +48,13 @@ builder.prismaObject('Profile', {
   }),
 });
 
+const Person = builder.simpleObject('Person', {
+  fields: (t) => ({
+    name: t.string(),
+    age: t.int(),
+  }),
+});
+
 /**
  * * Inputs
  */
@@ -89,6 +96,13 @@ const UpdateProfileInput = builder.inputType('UpdateProfileInput', {
 const SwitchProfileInput = builder.inputType('SwitchProfileInput', {
   fields: (t) => ({
     profileId: t.int(),
+  }),
+});
+
+const AddInput = builder.inputType('AddInput', {
+  fields: (t) => ({
+    a: t.int(),
+    b: t.int(),
   }),
 });
 
@@ -138,13 +152,47 @@ builder.queryFields((t) => ({
       }
     },
   }),
+
+  hello: t.string({
+    resolve: () => {
+      if (!name) {
+        return '자기소개를 해주세요.';
+      }
+      return `${name}님! 안녕하세요!`;
+    },
+  }),
+
+  whoami: t.field({
+    type: Person,
+    resolve: () => {
+      return { name, age };
+    },
+  }),
 }));
 
 /**
  * * Mutations
  */
 
+let name = '';
+let age = 0;
+
 builder.mutationFields((t) => ({
+  intro: t.boolean({
+    args: { name: t.arg.string(), age: t.arg.int() },
+    resolve: (_, args) => {
+      name = args.name;
+      age = args.age;
+
+      return true;
+    },
+  }),
+  add: t.int({
+    args: { input: t.arg({ type: AddInput }) },
+    resolve: (_, { input }) => {
+      return input.a + input.b;
+    },
+  }),
   login: t.prismaField({
     type: 'Profile',
     args: { input: t.arg({ type: LoginInput }) },
