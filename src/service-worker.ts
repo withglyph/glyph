@@ -9,12 +9,19 @@ const sw = self as unknown as ServiceWorkerGlobalScope;
 
 const cacheKey = `cache-${version}`;
 const assets = [...build, ...files];
+const remoteAssets = [
+  'https://pnxl.net/static/fonts/SUIT.woff2',
+  'https://pnxl.net/static/fonts/Pretendard.woff2',
+  'https://pnxl.net/static/fonts/RIDIBatang.woff2',
+  'https://pnxl.net/static/fonts/FiraCode.woff2',
+];
 
 sw.addEventListener('install', (event) => {
   event.waitUntil(
     (async () => {
       const cache = await caches.open(cacheKey);
       await cache.addAll(assets);
+      await cache.addAll(remoteAssets);
       await sw.skipWaiting();
     })(),
   );
@@ -34,9 +41,15 @@ sw.addEventListener('activate', (event) => {
 });
 
 sw.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
   if (
-    event.request.method !== 'GET' ||
-    !assets.includes(new URL(event.request.url).pathname)
+    (url.origin !== sw.location.origin || !assets.includes(url.pathname)) &&
+    !remoteAssets.includes(url.href)
   ) {
     return;
   }
@@ -49,7 +62,7 @@ sw.addEventListener('fetch', (event) => {
       if (!response) {
         response = await fetch(event.request);
         if (response.status === 200) {
-          await cache.put(event.request, response.clone());
+          await cache.put(event.request, response);
         }
       }
 
