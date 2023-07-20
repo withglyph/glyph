@@ -1,10 +1,10 @@
 import vercel from '@sveltejs/adapter-vercel';
-import preprocess from 'svelte-preprocess';
+import { vitePreprocess } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */
 // eslint-disable-next-line import/no-default-export
 export default {
-  preprocess: preprocess(),
+  preprocess: vitePreprocess(),
   kit: {
     adapter: vercel({
       runtime: 'nodejs18.x',

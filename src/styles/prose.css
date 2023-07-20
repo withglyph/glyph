@@ -1,29 +1,29 @@
 .ProseMirror {
-  strong {
+  & strong {
     --uno: font-bold;
   }
 
-  em {
+  & em {
     --uno: font-italic;
   }
 
-  s {
+  & s {
     --uno: line-through;
   }
 
-  u {
+  & u {
     --uno: underline;
   }
 
-  sup {
+  & sup {
     --uno: align-super;
   }
 
-  sub {
+  & sub {
     --uno: align-sub;
   }
 
-  p.is-editor-empty:first-child::before {
+  & p.is-editor-empty:first-child::before {
     --uno: text-gray-400 h-0 pointer-events-none float-left;
     content: attr(data-placeholder);
   }
