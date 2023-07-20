@@ -1,4 +1,5 @@
 <script lang="ts">
+  import '../styles/index.css';
   import 'uno.css';
   import { beforeNavigate } from '$app/navigation';
   import { updated } from '$app/stores';
@@ -27,7 +28,3 @@
 {#if !production}
   <BranchIndicator />
 {/if}
-
-<style global lang="scss">
-  @import '../styles/index.scss';
-</style>
