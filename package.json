@@ -28,7 +28,6 @@
     "@aws-sdk/s3-request-presigner": "^3.370.0",
     "@envelop/core": "^4.0.0",
     "@envelop/graphql-jit": "^6.0.1",
-    "@envelop/types": "^4.0.0",
     "@felte/core": "^1.4.0",
     "@felte/validator-zod": "^1.0.16",
     "@floating-ui/dom": "^1.4.5",
@@ -96,8 +95,6 @@
     "lint-staged": "^13.2.3",
     "mixpanel": "^0.17.0",
     "nanoid": "^4.0.2",
-    "network-information-types": "^0.1.1",
-    "pino-abstract-transport": "^1.0.0",
     "prettier": "^3.0.0",
     "prettier-plugin-svelte": "^3.0.0",
     "prisma": "^5.0.0",
@@ -112,7 +109,6 @@
     "vite": "^4.4.4",
     "web-vitals": "^3.4.0",
     "winston": "^3.10.0",
-    "winston-transport": "^4.5.0",
     "zod": "^3.21.4"
   }
 }

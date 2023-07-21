@@ -5,8 +5,8 @@ import type { Context } from '../context';
 import type {
   AsyncIterableIteratorOrValue,
   ExecutionResult,
-  Plugin,
-} from '@envelop/types';
+} from '@envelop/core';
+import type { Plugin } from 'graphql-yoga';
 
 const toGraphQLAppError = (error: unknown): GraphQLAppError => {
   if (error instanceof AppError) {

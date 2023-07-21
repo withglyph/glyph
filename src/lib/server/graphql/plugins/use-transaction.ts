@@ -1,7 +1,7 @@
 import { handleStreamOrSingleExecutionResult } from '@envelop/core';
 import type { Context } from '../context';
-import type { Plugin } from '@envelop/types';
 import type { TransactionClient } from '$lib/server/prisma';
+import type { Plugin } from 'graphql-yoga';
 
 export const useTransaction = (): Plugin<Context> => {
   return {
