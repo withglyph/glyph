@@ -1,4 +1,5 @@
 import argon2 from 'argon2';
+import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
 import { FormValidationError, NotFoundError } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
@@ -180,7 +181,10 @@ builder.mutationFields((t) => ({
       });
 
       const accessToken = await createAccessToken(session.id);
-      context.cookies.set('penxle-at', accessToken);
+      context.cookies.set('penxle-at', accessToken, {
+        path: '/',
+        maxAge: dayjs.duration(1, 'year').asSeconds(),
+      });
 
       await updateUser(db, context, user.id);
       context.track('user:login', {
@@ -200,7 +204,7 @@ builder.mutationFields((t) => ({
         where: { id: context.session.id },
       });
 
-      context.cookies.delete('penxle-at');
+      context.cookies.delete('penxle-at', { path: '/' });
 
       context.track('user:logout');
 
@@ -245,7 +249,10 @@ builder.mutationFields((t) => ({
       });
 
       const accessToken = await createAccessToken(session.id);
-      context.cookies.set('penxle-at', accessToken);
+      context.cookies.set('penxle-at', accessToken, {
+        path: '/',
+        maxAge: dayjs.duration(1, 'year').asSeconds(),
+      });
 
       await updateUser(db, context, user.id);
       context.track('user:signup', {
