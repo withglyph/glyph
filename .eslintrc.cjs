@@ -114,7 +114,7 @@ module.exports = {
       extends: ['plugin:svelte/all', 'plugin:svelte/prettier'],
       rules: {
         'import/no-mutable-exports': 'off',
-        'svelte/block-lang': ['error', { script: 'ts', style: 'scss' }],
+        'svelte/block-lang': ['error', { script: 'ts' }],
         'svelte/no-immutable-reactive-statements': 'off',
         'svelte/no-unused-class-name': 'off',
         'svelte/prefer-destructured-store-props': 'off',
@@ -122,7 +122,6 @@ module.exports = {
         'svelte/require-store-reactive-access': 'off',
         'svelte/experimental-require-slot-types': 'off',
         'svelte/experimental-require-strict-events': 'off',
-        'svelte/@typescript-eslint/no-unnecessary-condition': 'off',
         'unicorn/filename-case': [
           'error',
           { cases: { kebabCase: true, pascalCase: true } },
