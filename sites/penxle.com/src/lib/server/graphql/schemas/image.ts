@@ -2,7 +2,7 @@ import {
   createS3ObjectKey,
   s3PutObjectGetSignedUrl,
 } from '$lib/server/external/aws';
-import { processMedia } from '$lib/server/external/mp';
+import { optimizeMedia } from '$lib/server/external/media-optimizer';
 import { builder } from '../builder';
 
 /**
@@ -107,7 +107,7 @@ builder.mutationFields((t) => ({
         path,
         hash,
         placeholder,
-      } = await processMedia(input.key);
+      } = await optimizeMedia(input.key);
 
       return await db.image.create({
         ...query,
