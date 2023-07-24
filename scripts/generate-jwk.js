@@ -16,7 +16,7 @@ jwk.alg = alg;
 jwk.kid = process.argv[2];
 
 console.log('JWK representation:');
-console.log(JSON.stringify(jwk, null, 2));
+console.log(JSON.stringify(jwk, undefined, 2));
 
 console.log();
 console.log('Environment variable representation:');

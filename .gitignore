@@ -1,7 +1,11 @@
 .DS_Store
 
-node_modules
+node_modules/
 
-/.svelte-kit
-/$houdini
-/vite.config.ts.timestamp-*
+.turbo/
+.svelte-kit/
+.vercel/
+$houdini/
+
+vite.config.ts.timestamp-*
+.env.local

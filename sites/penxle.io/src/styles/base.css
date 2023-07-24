@@ -1,0 +1,53 @@
+*,
+::before,
+::after {
+  --uno: m-0 p-0 max-w-full h-auto color-inherit bg-transparent decoration-none
+    box-border border-0 border-solid border-gray-200;
+  font: inherit;
+}
+
+html {
+  --uno: leading-normal w-full h-full bg-white text-gray-900 font-sans;
+  text-size-adjust: 100%;
+}
+
+button {
+  --uno: cursor-pointer bg-transparent text-left select-none;
+}
+
+hr {
+  --uno: h-0 border-t;
+}
+
+label {
+  --uno: inline-block;
+}
+
+input,
+textarea {
+  --uno: block;
+}
+
+svg,
+img,
+picture,
+video {
+  --uno: block;
+}
+
+ol,
+ul {
+  --uno: list-none;
+}
+
+:disabled {
+  --uno: cursor-default;
+}
+
+:focus-visible {
+  outline: 0;
+}
+
+::placeholder {
+  --uno: text-gray-400;
+}

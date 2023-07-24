@@ -1,4 +1,4 @@
-name: "Tests: E2E"
+name: 'Tests: E2E'
 
 on:
   deployment_status:

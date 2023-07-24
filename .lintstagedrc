@@ -1,3 +1,0 @@
-{
-  "{scripts,src,tests}/**/*.{ts,js,svelte}": "eslint --max-warnings=0"
-}

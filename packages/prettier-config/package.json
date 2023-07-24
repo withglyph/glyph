@@ -1,0 +1,20 @@
+{
+  "name": "@penxle/prettier-config",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "prettier.config.js",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
+  },
+  "dependencies": {
+    "prettier-plugin-svelte": "^3.0.0"
+  },
+  "peerDependencies": {
+    "prettier": "^3.0.0"
+  },
+  "devDependencies": {
+    "@penxle/eslint-config": "workspace:^"
+  }
+}

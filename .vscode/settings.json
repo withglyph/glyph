@@ -1,26 +1,16 @@
 {
-  "editor.formatOnSave": true,
+  "cSpell.words": ["clsx"],
+  "editor.codeActionsOnSave": ["source.formatDocument", "source.fixAll.eslint"],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": false,
   "eslint.enable": true,
   "eslint.format.enable": true,
-  "eslint.validate": [
-    "javascript",
-    "typescript",
-    "svelte"
-  ],
+  "eslint.experimental.useFlatConfig": true,
+  "eslint.validate": ["javascript", "typescript", "svelte"],
+  "eslint.workingDirectories": [{ "mode": "auto" }],
   "svelte.enable-ts-plugin": true,
   "svelte.plugin.svelte.defaultScriptLanguage": "ts",
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "[javascript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  },
-  "[svelte]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  },
-  "cSpell.words": [
-    "clsx",
-  ]
+  "unocss.root": ["sites/penxle.com", "sites/penxle.io"]
 }

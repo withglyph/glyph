@@ -2,10 +2,12 @@
   "recommendations": [
     "antfu.unocss",
     "dbaeumer.vscode-eslint",
-    "GitHub.copilot",
-    "GraphQL.vscode-graphql-syntax",
-    "Prisma.prisma",
+    "github.copilot",
+    "graphql.vscode-graphql-syntax",
+    "prisma.prisma",
     "streetsidesoftware.code-spell-checker",
-    "svelte.svelte-vscode"
+    "svelte.svelte-vscode",
+    "esbenp.prettier-vscode",
+    "rohit-gohri.format-code-action"
   ]
 }
