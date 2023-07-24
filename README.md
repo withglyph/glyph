@@ -9,12 +9,13 @@
 
 ## 모노레포 구성
 
-| 패키지                                                 | 설명                   |
-| ------------------------------------------------------ | ---------------------- |
-| [`sites/penxle.com`](sites/penxle.com)                 | PENXLE 메인 사이트     |
-| [`sites/penxle.io`](sites/penxle.io)                   | 펜슬컴퍼니 공식 사이트 |
-| [`packages/eslint-config`](packages/eslint-config)     | ESLint 공용 설정       |
-| [`packages/prettier-config`](packages/prettier-config) | Prettier 공용 설정     |
+| 패키지                                                 | 설명                           |
+| ------------------------------------------------------ | ------------------------------ |
+| [`sites/penxle.com`](sites/penxle.com)                 | PENXLE 메인 사이트             |
+| [`sites/penxle.io`](sites/penxle.io)                   | 펜슬컴퍼니 공식 사이트         |
+| [`apps/media-optimizer`](apps/media-optimizer)         | 미디어 최적화 전처리 및 후처리 |
+| [`packages/eslint-config`](packages/eslint-config)     | ESLint 공용 설정               |
+| [`packages/prettier-config`](packages/prettier-config) | Prettier 공용 설정             |
 
 ## 시스템 요구사항
 
