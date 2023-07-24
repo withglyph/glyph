@@ -3,3 +3,5 @@ CODEOWNERS
 LICENSE
 
 pnpm-lock.yaml
+
+schema.graphql

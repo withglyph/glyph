@@ -44,9 +44,7 @@ type Mutation {
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   login(input: LoginInput!): Profile!
   logout: Profile!
-  prepareImageUpload(
-    input: PrepareImageUploadInput!
-  ): PrepareImageUploadPayload!
+  prepareImageUpload(input: PrepareImageUploadInput!): PrepareImageUploadPayload!
   signup(input: SignupInput!): Profile!
   switchProfile(input: SwitchProfileInput!): Profile!
   updateProfile(input: UpdateProfileInput!): Profile!
