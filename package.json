@@ -9,6 +9,8 @@
   },
   "scripts": {
     "bootstrap": "pnpm install && husky install",
+    "dev": "turbo run dev",
+    "codegen": "turbo run codegen",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "format": "prettier --check .",
