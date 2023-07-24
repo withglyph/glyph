@@ -9,5 +9,8 @@ export const schema = builder.toSchema();
 if (dev) {
   const { writeFileSync } = await import('node:fs');
   const { lexicographicSortSchema, printSchema } = await import('graphql');
-  writeFileSync('schema.graphql', printSchema(lexicographicSortSchema(schema)));
+  writeFileSync(
+    'schema.graphql',
+    `${printSchema(lexicographicSortSchema(schema))}\n`,
+  );
 }
