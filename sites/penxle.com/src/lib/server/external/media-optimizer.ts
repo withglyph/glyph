@@ -1,7 +1,5 @@
-import { MP_URL } from '$env/static/private';
-
-export const processMedia = async (key: string) => {
-  const resp = await fetch(`${MP_URL}/${key}`);
+export const optimizeMedia = async (key: string) => {
+  const resp = await fetch(`https://media-optimizer.pnxl.app/${key}`);
 
   return (await resp.json()) as {
     name: string;
