@@ -3,25 +3,15 @@
   "pipeline": {
     "deps": { "dependsOn": ["^deps"] },
     "//#deps": { "dependsOn": ["^deps"] },
-
     "dev": { "cache": false, "persistent": true },
-
     "codegen": { "cache": false },
-
     "build": { "dependsOn": ["^build"] },
-
     "check": {},
-
     "lint": { "dependsOn": ["deps"] },
     "//#lint": { "dependsOn": ["deps"] },
-
     "lint:fix": { "dependsOn": ["deps"] },
     "//#lint:fix": { "dependsOn": ["deps"] },
-
-    "format": { "dependsOn": ["deps"] },
     "//#format": { "dependsOn": ["deps"] },
-
-    "format:fix": { "dependsOn": ["deps"] },
     "//#format:fix": { "dependsOn": ["deps"] }
   }
 }
