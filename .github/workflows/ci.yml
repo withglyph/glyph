@@ -8,6 +8,8 @@ on:
 
 env:
   DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
 jobs:
   eslint:
