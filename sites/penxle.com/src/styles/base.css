@@ -51,3 +51,7 @@ ul {
 ::placeholder {
   --uno: text-gray-400;
 }
+
+::-ms-reveal {
+  display: none;
+}
