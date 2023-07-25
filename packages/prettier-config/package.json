@@ -12,10 +12,10 @@
     "prettier-plugin-prisma": "^5.0.0",
     "prettier-plugin-svelte": "^3.0.0"
   },
-  "peerDependencies": {
-    "prettier": "^3.0.0"
-  },
   "devDependencies": {
     "@penxle/eslint-config": "workspace:^"
+  },
+  "peerDependencies": {
+    "prettier": "^3.0.0"
   }
 }
