@@ -2,9 +2,12 @@
 
 node_modules/
 
-.turbo/
+.lambda/
+.serverless/
 .svelte-kit/
+.turbo/
 .vercel/
+
 $houdini/
 
 vite.config.ts.timestamp-*
