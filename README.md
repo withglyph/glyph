@@ -46,7 +46,7 @@ $ pnpm bootstrap
 
 $ doppler login
 $ cd sites/penxle.com
-$ doppler setup  # 명령 실행 후 본인 env 선택
+$ doppler setup # 명령 실행 후 본인 env 선택
 
 $ cd ../..
 $ pnpm codegen

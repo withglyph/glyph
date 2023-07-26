@@ -108,6 +108,9 @@ importers:
       prettier-plugin-prisma:
         specifier: ^5.0.0
         version: 5.0.0(prettier@3.0.0)
+      prettier-plugin-sh:
+        specifier: ^0.13.1
+        version: 0.13.1(prettier@3.0.0)
       prettier-plugin-svelte:
         specifier: ^3.0.0
         version: 3.0.0(prettier@3.0.0)(svelte@4.1.1)
@@ -7968,6 +7971,10 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dev: true
 
+  /mvdan-sh@0.10.1:
+    resolution: {integrity: sha512-kMbrH0EObaKmK3nVRKUIIya1dpASHIEusM13S4V1ViHFuxuNxCo+arxoa6j/dbV22YBGjl7UKJm9QQKJ2Crzhg==}
+    dev: false
+
   /nanoid@3.3.6:
     resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -8714,6 +8721,17 @@ packages:
     dependencies:
       '@prisma/prisma-schema-wasm': 4.17.0-26.6b0aef69b7cdfc787f822ecd7cdc76d5f1991584
       prettier: 3.0.0
+    dev: false
+
+  /prettier-plugin-sh@0.13.1(prettier@3.0.0):
+    resolution: {integrity: sha512-ytMcl1qK4s4BOFGvsc9b0+k9dYECal7U29bL/ke08FEUsF/JLN0j6Peo0wUkFDG4y2UHLMhvpyd6Sd3zDXe/eg==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      prettier: ^3.0.0
+    dependencies:
+      mvdan-sh: 0.10.1
+      prettier: 3.0.0
+      sh-syntax: 0.4.1
     dev: false
 
   /prettier-plugin-svelte@3.0.0(prettier@3.0.0)(svelte@4.1.1):
@@ -9505,6 +9523,13 @@ packages:
   /setprototypeof@1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
     dev: true
+
+  /sh-syntax@0.4.1:
+    resolution: {integrity: sha512-MW/ZsCYTu11EIYYTSZcfAgMFszAodCmQVB27XssHoIN6L4EG0KSA3h32x8whaSOKuYBX5wz9EybfnPBUFQMCKA==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      tslib: 2.6.1
+    dev: false
 
   /sharp@0.32.4:
     resolution: {integrity: sha512-exUnZewqVZC6UXqXuQ8fyJJv0M968feBi04jb9GcUHrWtkRoAKnbJt8IfwT4NJs7FskArbJ14JAFGVuooszoGg==}
