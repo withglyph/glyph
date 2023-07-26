@@ -48,13 +48,13 @@
 
 <button
   bind:this={targetEl}
-  class="relative flex items-center gap-2 rounded-full from-[#ED4D87] to-[#FF9A61] bg-gradient-to-r px-4 py-2 font-medium text-white ring ring-black/10 ring-inset transition before:(absolute inset-0 z-1 rounded-inherit bg-black opacity-0 transition content-empty hover:opacity-10)"
+  class="relative flex items-center gap-2 rounded-lg from-[#ED4D87] to-[#FF9A61] bg-gradient-to-r px-4 py-2 font-medium text-white transition before:(absolute inset-0 z-1 rounded-inherit bg-black opacity-0 transition content-empty hover:opacity-10)"
   tabindex="-1"
   type="button"
   on:click={() => (open = true)}
 >
-  <span class="text-sm">올리기</span>
   <span class="i-lc-pencil square-4" />
+  <span class="text-sm">올리기</span>
 </button>
 
 {#if open}
