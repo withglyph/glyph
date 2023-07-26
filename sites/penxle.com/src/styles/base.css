@@ -7,7 +7,7 @@
 }
 
 html {
-  --uno: leading-normal w-full h-full bg-white text-gray-900 font-sans;
+  --uno: leading-normal w-full h-full bg-gray-50 text-gray-900 font-sans;
   text-size-adjust: 100%;
 }
 
