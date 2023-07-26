@@ -17,6 +17,12 @@
 | [`packages/eslint-config`](packages/eslint-config)     | ESLint 공용 설정               |
 | [`packages/prettier-config`](packages/prettier-config) | Prettier 공용 설정             |
 
+## 디렉토리 구조
+
+- `packages`: 사이트에서 공통으로 사용
+- `sites`: 사이트
+- `scripts`: 스크립트
+
 ## 시스템 요구사항
 
 - Node 18 LTS 이상
