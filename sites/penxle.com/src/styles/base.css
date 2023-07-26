@@ -45,7 +45,7 @@ ul {
 }
 
 :focus-visible {
-  outline: 0;
+  --uno: outline-0;
 }
 
 ::placeholder {
@@ -53,5 +53,5 @@ ul {
 }
 
 ::-ms-reveal {
-  display: none;
+  --uno: hidden;
 }
