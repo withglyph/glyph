@@ -54,17 +54,17 @@ export default defineConfig({
       // https://github.com/unocss/unocss/blob/main/packages/preset-mini/src/_theme/colors.ts
       // neutral로 gray 덮어씀
       gray: {
-        50: '#FAFAFA',
-        100: '#F5F5F5',
-        200: '#E5E5E5',
-        300: '#D4D4D4',
-        400: '#A3A3A3',
-        500: '#737373',
-        600: '#525252',
-        700: '#404040',
-        800: '#262626',
-        900: '#171717',
-        950: '#0A0A0A',
+        50: '#FAFAF9',
+        100: '#F5F5F4',
+        200: '#E7E5E4',
+        300: '#D6D3D1',
+        400: '#A8A29E',
+        500: '#78716C',
+        600: '#57534E',
+        700: '#44403C',
+        800: '#292524',
+        900: '#1C1917',
+        950: '#0C0A09',
       },
       brand: {
         50: '#F0F7FE',
