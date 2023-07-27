@@ -23,7 +23,6 @@
     "lightningcss": "^1.21.5",
     "svelte": "4.1.1",
     "svelte-check": "^3.4.6",
-    "svgo": "^3.0.2",
     "typescript": "^5.1.6",
     "unocss": "^0.53.6",
     "vite": "^4.4.7",
