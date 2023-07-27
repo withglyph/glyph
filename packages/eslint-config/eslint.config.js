@@ -391,5 +391,5 @@ export default [
       'unocss/order': 'error',
     },
   },
-  { ignores: ['node_modules/**', '$houdini/**', '.svelte-kit/**'] },
+  { ignores: ['node_modules/**', 'dist/**', '$houdini/**', '.svelte-kit/**'] },
 ];
