@@ -3,10 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": "^18 || ^20",
-    "pnpm": "^8.6.0"
-  },
   "scripts": {
     "dev": "vite dev",
     "build": "svelte-kit sync && vite build",
@@ -20,7 +16,7 @@
     "@penxle/eslint-config": "workspace:^",
     "@sveltejs/adapter-vercel": "^3.0.2",
     "@sveltejs/kit": "^1.22.3",
-    "@types/node": "^20.4.4",
+    "@types/node": "^20.4.5",
     "@vercel/analytics": "^1.0.1",
     "browserslist": "^4.21.9",
     "clsx": "^2.0.0",
