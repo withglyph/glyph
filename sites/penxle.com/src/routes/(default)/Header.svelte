@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Wordmark from '$assets/branding/wordmark.svg?component';
   import { fragment, graphql } from '$houdini';
   import { Logo } from '$lib/components/branding';
   import CreateEntityMenu from './PublishMenu.svelte';
@@ -24,7 +25,8 @@
 <header class="relative sticky top-0 z-10 border-b bg-white px-8">
   <nav>
     <section class="h-16 flex items-center">
-      <Logo class="mr-4 square-8" />
+      <Logo class="mr-2 square-8" />
+      <Wordmark class="mr-4 h-5" />
 
       <SearchBar />
 
