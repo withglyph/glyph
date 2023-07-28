@@ -13,7 +13,7 @@
     "@typescript-eslint/parser": "^6.2.0",
     "@unocss/eslint-plugin": "^0.53.6",
     "eslint-import-resolver-typescript": "^3.5.5",
-    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-import": "^2.28.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-svelte": "2.32.4",
     "eslint-plugin-unicorn": "^48.0.1",
