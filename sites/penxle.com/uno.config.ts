@@ -18,6 +18,7 @@ export default defineConfig<Theme>({
           s.replace(/^<svg /, '<svg fill="currentColor" '),
         ),
         lc: async () => import('@iconify-json/lucide/icons.json'),
+        // @ts-expect-error - wrong types
         lg: async () => import('@iconify-json/simple-icons/icons.json'),
       },
       extraProperties: {
@@ -103,7 +104,7 @@ export default defineConfig<Theme>({
         20: '#FDDFDE',
         30: '#FCC8C6',
         40: '#F98B88',
-        50: '#E95554',
+        50: '#F66062',
         60: '#A83E3D',
         70: '#83302E',
         80: '#4F1C1C',
