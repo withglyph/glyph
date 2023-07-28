@@ -5,7 +5,7 @@
 ![](https://img.shields.io/github/license/penxle/penxle)
 ![](https://img.shields.io/github/languages/code-size/penxle/penxle)
 
-창작을 즐겁게, PENXLE.
+함께 그리는 반짝임, PENXLE.
 
 ## 모노레포 구성
 
