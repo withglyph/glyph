@@ -10,7 +10,7 @@
 }
 
 html {
-  --uno: leading-normal text-gray-90 font-sans;
+  --uno: leading-normal text-gray-90 font-sans antialiased;
   text-size-adjust: 100%;
 }
 
