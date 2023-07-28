@@ -60,7 +60,7 @@ export default defineConfig<Theme>({
       white: '#FFFFFF',
       gray: {
         5: '#FAFAF9',
-        10: '#F5F5F4',
+        10: '#F4F4F3',
         20: '#E7E5E4',
         30: '#D6D3D1',
         40: '#A8A29E',
@@ -99,7 +99,7 @@ export default defineConfig<Theme>({
       },
       brand: {
         5: '#FFF9F8',
-        10: '#FEF3F1',
+        10: '#FEF1F0',
         20: '#FDDFDE',
         30: '#FCC8C6',
         40: '#F98B88',
