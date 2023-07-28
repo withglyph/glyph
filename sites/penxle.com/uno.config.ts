@@ -1,3 +1,4 @@
+import { lookupCollection } from '@iconify/json';
 import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders';
 import {
   defineConfig,
@@ -17,9 +18,8 @@ export default defineConfig<Theme>({
         px: FileSystemIconLoader('./src/assets/icons', (s) =>
           s.replace(/^<svg /, '<svg fill="currentColor" '),
         ),
-        lc: async () => import('@iconify-json/lucide/icons.json'),
-        // @ts-expect-error - wrong types
-        lg: async () => import('@iconify-json/simple-icons/icons.json'),
+        lc: async () => lookupCollection('lucide'),
+        lg: async () => lookupCollection('simple-icons'),
       },
       extraProperties: {
         'flex': 'none',

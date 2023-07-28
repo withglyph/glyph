@@ -142,12 +142,9 @@ importers:
       '@floating-ui/dom':
         specifier: ^1.5.0
         version: 1.5.0
-      '@iconify-json/lucide':
-        specifier: ^1.1.113
-        version: 1.1.113
-      '@iconify-json/simple-icons':
-        specifier: ^1.1.62
-        version: 1.1.62
+      '@iconify/json':
+        specifier: ^2.2.95
+        version: 2.2.95
       '@iconify/utils':
         specifier: ^2.1.7
         version: 2.1.7
@@ -1664,16 +1661,11 @@ packages:
   /@humanwhocodes/object-schema@1.2.1:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
 
-  /@iconify-json/lucide@1.1.113:
-    resolution: {integrity: sha512-Jd1lZcQl/1c+xgfCh74w3WQi4PZAQ27MMaLgZg9KXMXxla43z0HeCHtiyNnQRDofWbCmwC2vLz58oPmZzEIFDA==}
+  /@iconify/json@2.2.95:
+    resolution: {integrity: sha512-54c4P8Z2Zuvgd3EEhAGV/byNPJ1sjVHO+Sd94376//6heUW73x04TjtNAnYviFdypI8S7SdYCn+ncyW4JhOmiA==}
     dependencies:
       '@iconify/types': 2.0.0
-    dev: true
-
-  /@iconify-json/simple-icons@1.1.62:
-    resolution: {integrity: sha512-idHWbDrd9HKtZq9XBJyVN5+QCxJ+oO4BJeJtNNi9GfFSgoA2ig0LZt7adj9uZ/zzEX0i5OY37OpuotkeFRCWfg==}
-    dependencies:
-      '@iconify/types': 2.0.0
+      pathe: 1.1.1
     dev: true
 
   /@iconify/types@2.0.0:
