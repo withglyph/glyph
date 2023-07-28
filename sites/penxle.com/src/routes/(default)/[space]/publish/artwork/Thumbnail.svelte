@@ -95,7 +95,7 @@
 />
 
 <button
-  class="absolute bottom-4 right-4 square-20 flex center overflow-hidden rounded ring-4 ring-brand-500"
+  class="absolute bottom-4 right-4 square-20 flex center overflow-hidden rounded ring-4 ring-brand-50"
   type="button"
   on:click={() => (open = true)}
 >
@@ -134,7 +134,7 @@
       />
       <div
         bind:this={targetEl}
-        class="pointer-events-none absolute inset-0 square-full rounded outline-10000 outline-white/80 outline-offset-4 outline-solid ring-4 ring-brand-500"
+        class="pointer-events-none absolute inset-0 square-full rounded outline-10000 outline-white/80 outline-offset-4 outline-solid ring-4 ring-brand-50"
       />
     </div>
   </div>

@@ -32,7 +32,7 @@
 
 <div class="flex items-center gap-4">
   <Logo class="square-8" />
-  <div class="h-10 border-x border-gray-900" />
+  <div class="h-10 border-x border-gray-90" />
   <div class="text-2xl font-bold">새 펜슬 계정 만들기</div>
 </div>
 
@@ -55,7 +55,7 @@
   </section>
 </form>
 
-<div class="mt-2 text-xs text-gray-500">
+<div class="mt-2 text-xs text-gray-50">
   이미 계정이 있으신가요?
   <Link class="font-bold" colored href="/_/login" underline>로그인하기</Link>
 </div>

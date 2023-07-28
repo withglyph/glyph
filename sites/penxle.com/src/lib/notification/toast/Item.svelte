@@ -61,9 +61,9 @@
   style:right="0px"
   class={clsx(
     'max-w-100 min-w-100 border rounded px-4 py-3',
-    toast.type === 'info' && 'border-brand-300 bg-brand-50',
-    toast.type === 'success' && 'border-green-500 bg-green-50',
-    toast.type === 'error' && 'border-red-500 bg-red-50',
+    toast.type === 'info' && 'border-brand-30 bg-brand-5',
+    toast.type === 'success' && 'border-green-50 bg-green-5',
+    toast.type === 'error' && 'border-red-50 bg-red-5',
   )}
   use:hover={hovered}
   transition:fade={{ duration: 200 }}
@@ -72,17 +72,17 @@
     <span
       class={clsx(
         'square-5',
-        toast.type === 'info' && 'i-lc-info text-brand-500',
-        toast.type === 'success' && 'i-lc-check-circle text-green-500',
-        toast.type === 'error' && 'i-lc-alert-circle text-red-500',
+        toast.type === 'info' && 'i-lc-info text-brand-50',
+        toast.type === 'success' && 'i-lc-check-circle text-green-50',
+        toast.type === 'error' && 'i-lc-alert-circle text-red-50',
       )}
     />
     <div
       class={clsx(
         'grow break-all font-semibold',
-        toast.type === 'info' && 'text-brand-700',
-        toast.type === 'success' && 'text-green-900',
-        toast.type === 'error' && 'text-red-700',
+        toast.type === 'info' && 'text-brand-70',
+        toast.type === 'success' && 'text-green-90',
+        toast.type === 'error' && 'text-red-70',
       )}
     >
       {#if toast.title}
@@ -94,9 +94,9 @@
     <button
       class={clsx(
         'i-lc-x square-5',
-        toast.type === 'info' && 'text-brand-500',
-        toast.type === 'success' && 'text-green-500',
-        toast.type === 'error' && 'text-red-500',
+        toast.type === 'info' && 'text-brand-50',
+        toast.type === 'success' && 'text-green-50',
+        toast.type === 'error' && 'text-red-50',
       )}
       type="button"
       on:click={toast.dismiss}
@@ -106,9 +106,9 @@
     <div
       class={clsx(
         'break-all px-9 mt-1',
-        toast.type === 'info' && 'text-brand-500',
-        toast.type === 'success' && 'text-green-900',
-        toast.type === 'error' && 'text-red-700',
+        toast.type === 'info' && 'text-brand-50',
+        toast.type === 'success' && 'text-green-90',
+        toast.type === 'error' && 'text-red-70',
       )}
     >
       {toast.message}

@@ -7,7 +7,7 @@
   export let artworks: Artwork[];
 </script>
 
-<div class="h-100 flex center gap-4 overflow-x-auto bg-gray-100">
+<div class="h-100 flex center gap-4 overflow-x-auto bg-gray-10">
   {#each artworks as artwork (artwork.id)}
     <div class="relative square-80 flex-none rounded bg-white">
       <Image class="square-full rounded object-contain" {artwork} />
@@ -25,10 +25,10 @@
 
   <div class="square-80 flex-none border-4 rounded border-dashed">
     <label
-      class="square-full flex cursor-pointer center bg-white text-sm transition hover:bg-gray-50"
+      class="square-full flex cursor-pointer center bg-white text-sm transition hover:bg-gray-5"
       for="file"
     >
-      <span class="i-lc-plus-circle square-8 text-gray-300" />
+      <span class="i-lc-plus-circle square-8 text-gray-30" />
     </label>
   </div>
 </div>

@@ -2,6 +2,7 @@ CLA
 CODEOWNERS
 LICENSE
 
+.husky/_/
 pnpm-lock.yaml
 
 schema.graphql

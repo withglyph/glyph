@@ -51,7 +51,7 @@
   <div class="flex flex-col">
     {#each $profile.user.profiles as profile (profile.id)}
       <button
-        class="flex items-center gap-2 px-4 py-2 text-left hover:bg-gray-100"
+        class="flex items-center gap-2 px-4 py-2 text-left hover:bg-gray-10"
         type="button"
         on:click={async () => {
           await switchProfile({ profileId: profile.id });
@@ -62,17 +62,17 @@
         <Avatar class="square-10" _profile={profile} />
         <div class="flex flex-col">
           <div class="font-medium">{profile.name}</div>
-          <div class="text-sm text-gray-500">@{profile.handle}</div>
+          <div class="text-sm text-gray-50">@{profile.handle}</div>
         </div>
         <div class="grow" />
         {#if profile.id === profileId}
-          <div class="text-sm text-gray-500">현재 프로필</div>
+          <div class="text-sm text-gray-50">현재 프로필</div>
         {/if}
       </button>
     {/each}
 
     <button
-      class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
+      class="flex items-center gap-2 px-4 py-2 hover:bg-gray-10"
       type="button"
       on:click={() => {
         open = false;
@@ -80,11 +80,11 @@
       }}
     >
       <div
-        class="square-10 flex center border border-gray-400 rounded-full border-dashed"
+        class="square-10 flex center border border-gray-40 rounded-full border-dashed"
       >
-        <span class="i-lc-plus square-5 text-gray-400" />
+        <span class="i-lc-plus square-5 text-gray-40" />
       </div>
-      <div class="text-gray-400">새 프로필 만들기</div>
+      <div class="text-gray-40">새 프로필 만들기</div>
     </button>
   </div>
 

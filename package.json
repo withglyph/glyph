@@ -13,8 +13,8 @@
     "codegen": "turbo run codegen",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "format": "prettier --check .",
-    "format:fix": "prettier --write ."
+    "format": "prettier --check --ignore-unknown '**/*'",
+    "format:fix": "prettier --write --ignore-unknown '**/*'"
   },
   "devDependencies": {
     "@penxle/eslint-config": "workspace:^",

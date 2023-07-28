@@ -26,7 +26,7 @@
 <div class="sticky top-0 z-50 bg-white py-4">
   <div class="mx-auto w-4xl flex items-center gap-4">
     <Logo class="square-8" />
-    <div class="text-sm text-gray-500">
+    <div class="text-sm text-gray-50">
       {$query.space.name}에 새 글 작성중...
     </div>
     <div class="grow" />
