@@ -1,7 +1,7 @@
 *,
 ::before,
 ::after {
-  --uno: box-border border-0 border-solid border-gray-200;
+  --uno: box-border border-0 border-solid border-gray-20;
 }
 
 * {
@@ -10,7 +10,7 @@
 }
 
 html {
-  --uno: leading-normal text-gray-900 font-sans;
+  --uno: leading-normal text-gray-90 font-sans;
   text-size-adjust: 100%;
 }
 
@@ -56,7 +56,7 @@ ul {
 }
 
 ::placeholder {
-  --uno: text-gray-400;
+  --uno: text-gray-40;
 }
 
 ::-ms-reveal {

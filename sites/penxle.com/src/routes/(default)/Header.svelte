@@ -34,20 +34,20 @@
 
       {#if $query.meOrNull}
         <div class="ml-8 flex items-center gap-8">
-          <div class="i-lc-heart square-5 text-gray-500" />
-          <div class="i-lc-bell square-5 text-gray-500" />
+          <div class="i-lc-heart square-5 text-gray-50" />
+          <div class="i-lc-bell square-5 text-gray-50" />
           <UserMenu _profile={$query.meOrNull} />
           <CreateEntityMenu _profile={$query.meOrNull} />
         </div>
       {:else}
         <a
-          class="ml-4 rounded px-4 py-2 font-semibold transition duration-300 hover:bg-gray-200"
+          class="ml-4 rounded px-4 py-2 font-semibold transition duration-300 hover:bg-gray-20"
           href="/_/login"
         >
           로그인
         </a>
         <a
-          class="rounded px-4 py-2 font-semibold text-brand-500 transition duration-300 hover:bg-gray-200"
+          class="rounded px-4 py-2 font-semibold text-brand-50 transition duration-300 hover:bg-gray-20"
           href="/_/signup"
         >
           새 계정 만들기

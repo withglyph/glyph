@@ -26,7 +26,7 @@
   </div>
   {#if $query.space.meAsMember}
     <a
-      class="flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-medium text-white"
+      class="flex items-center gap-2 rounded-full bg-gray-90 px-4 py-2 text-sm font-medium text-white"
       href="/{$query.space.slug}/dashboard"
     >
       <span class="i-lc-mouse-pointer-click" />

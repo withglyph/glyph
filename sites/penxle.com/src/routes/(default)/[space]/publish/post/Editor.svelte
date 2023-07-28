@@ -63,7 +63,7 @@
         >
           {#if !enableCoverImage}
             <button
-              class="flex items-center gap-1 rounded px-1 py-0.5 text-sm text-gray-500 transition hover:bg-gray-100"
+              class="flex items-center gap-1 rounded px-1 py-0.5 text-sm text-gray-50 transition hover:bg-gray-10"
               tabindex="-1"
               type="button"
               on:click={() => (enableCoverImage = true)}
@@ -75,7 +75,7 @@
 
           {#if !enableSubtitle}
             <button
-              class="flex items-center gap-1 rounded px-1 py-0.5 text-sm text-gray-500 transition hover:bg-gray-100"
+              class="flex items-center gap-1 rounded px-1 py-0.5 text-sm text-gray-50 transition hover:bg-gray-10"
               tabindex="-1"
               type="button"
               on:click={() => (enableSubtitle = true)}

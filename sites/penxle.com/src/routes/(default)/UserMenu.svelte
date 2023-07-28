@@ -98,7 +98,7 @@
         <div class="font-medium">
           {$profile.name}
         </div>
-        <div class="text-sm text-gray-500">
+        <div class="text-sm text-gray-50">
           @{$profile.handle}
         </div>
       </div>
@@ -107,7 +107,7 @@
     <hr class="my-2" />
 
     <button
-      class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
+      class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-50 hover:(bg-gray-10 text-gray-70)"
       type="button"
       on:click={() => {
         open = false;
@@ -119,7 +119,7 @@
     </button>
 
     <button
-      class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
+      class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-50 hover:(bg-gray-10 text-gray-70)"
       type="button"
       on:click={() => {
         open = false;
@@ -131,7 +131,7 @@
     </button>
 
     <a
-      class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
+      class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-50 hover:(bg-gray-10 text-gray-70)"
       href="/me/settings"
     >
       <span class="i-lc-settings" />
@@ -139,7 +139,7 @@
     </a>
 
     <button
-      class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-500 hover:(bg-gray-100 text-gray-700)"
+      class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-50 hover:(bg-gray-10 text-gray-70)"
       tabindex="-1"
       type="button"
       on:click={async () => {

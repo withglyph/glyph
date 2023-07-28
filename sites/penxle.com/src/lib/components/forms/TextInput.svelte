@@ -24,9 +24,7 @@
     </div>
   {/if}
   {#if 'left-text' in $$slots}
-    <div
-      class="border border-r-0 rounded-l bg-gray-100 px-4 py-2 text-gray-400"
-    >
+    <div class="border border-r-0 rounded-l bg-gray-10 px-4 py-2 text-gray-40">
       <slot name="left-text" />
     </div>
   {/if}
@@ -34,7 +32,7 @@
     id={name}
     {name}
     class={clsx(
-      'px-4 py-2 border transition enabled:(hover:border-gray-300 focus:border-brand-300 aria-[invalid]:border-red-500) disabled:opacity-50',
+      'px-4 py-2 border transition enabled:(hover:border-gray-30 focus:border-brand-30 aria-[invalid]:border-red-50) disabled:opacity-50',
       _class,
       'left-icon' in $$slots && 'pl-10',
       'right-icon' in $$slots && 'pr-10',

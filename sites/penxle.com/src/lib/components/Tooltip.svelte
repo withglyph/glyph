@@ -68,12 +68,12 @@
 {#if $hovered}
   <div
     bind:this={tooltipEl}
-    class="absolute z-100 rounded bg-gray-900 px-4 py-2 text-xs font-semibold text-white"
+    class="absolute z-100 rounded bg-gray-90 px-4 py-2 text-xs font-semibold text-white"
     role="tooltip"
     use:portal
     transition:scale={{ start: 0.9, duration: 200 }}
   >
     {message}
-    <div bind:this={arrowEl} class="absolute square-2 rotate-45 bg-gray-900" />
+    <div bind:this={arrowEl} class="absolute square-2 rotate-45 bg-gray-90" />
   </div>
 {/if}

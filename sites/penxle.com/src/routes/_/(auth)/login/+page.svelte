@@ -27,7 +27,7 @@
 
 <div class="flex items-center gap-4">
   <Logo class="square-8" />
-  <div class="h-10 border-x border-gray-900" />
+  <div class="h-10 border-x border-gray-90" />
   <div class="text-2xl font-bold">로그인</div>
 </div>
 
@@ -53,7 +53,7 @@
   <Button class="mt-8 w-full py-4" type="submit">로그인</Button>
 </form>
 
-<div class="mt-2 text-xs text-gray-500">
+<div class="mt-2 text-xs text-gray-50">
   계정이 아직 없으신가요?
   <Link class="font-bold" colored href="/_/signup" underline>
     새 계정 만들기

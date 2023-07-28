@@ -59,7 +59,7 @@
           <Avatar class="square-24" _profile={$profile} />
           <div class="flex flex-col items-center gap-2">
             <Button class="text-sm" color="brand">새 아바타 업로드</Button>
-            <button class="text-sm text-gray-500" type="button">
+            <button class="text-sm text-gray-50" type="button">
               아바타 제거
             </button>
           </div>
