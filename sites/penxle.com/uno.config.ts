@@ -7,9 +7,10 @@ import {
   transformerDirectives,
   transformerVariantGroup,
 } from 'unocss';
+import type { Theme } from '@unocss/preset-uno';
 
 // eslint-disable-next-line import/no-default-export
-export default defineConfig({
+export default defineConfig<Theme>({
   presets: [
     presetIcons({
       collections: {
@@ -49,10 +50,14 @@ export default defineConfig({
     [/^square-(.*)$/, ([, c]) => `w-${c} h-${c}`],
     ['center', 'justify-center items-center'],
   ],
-  theme: {
+  extendTheme: (theme) => ({
+    ...theme,
     colors: {
-      // https://github.com/unocss/unocss/blob/main/packages/preset-mini/src/_theme/colors.ts
-      // neutral로 gray 덮어씀
+      inherit: 'inherit',
+      current: 'currentColor',
+      transparent: 'transparent',
+      black: '#000000',
+      white: '#FFFFFF',
       gray: {
         50: '#FAFAF9',
         100: '#F5F5F4',
@@ -65,6 +70,32 @@ export default defineConfig({
         800: '#292524',
         900: '#1C1917',
         950: '#0C0A09',
+      },
+      red: {
+        50: '#FEF2F2',
+        100: '#FEE2E2',
+        200: '#FECACA',
+        300: '#FCA5A5',
+        400: '#F87171',
+        500: '#EF4444',
+        600: '#DC2626',
+        700: '#B91C1C',
+        800: '#991B1B',
+        900: '#7F1D1D',
+        950: '#450A0A',
+      },
+      green: {
+        50: '#F0FDF4',
+        100: '#DCFCE7',
+        200: '#BBF7D0',
+        300: '#86EFAC',
+        400: '#4ADE80',
+        500: '#22C55E',
+        600: '#16A34A',
+        700: '#15803D',
+        800: '#166534',
+        900: '#14532D',
+        950: '#052E16',
       },
       brand: {
         50: '#FFF9F8',
@@ -81,7 +112,8 @@ export default defineConfig({
       },
     },
     fontSize: {
+      ...theme.fontSize,
       '2xs': ['0.625rem', '0.75rem'],
     },
-  },
+  }),
 });
