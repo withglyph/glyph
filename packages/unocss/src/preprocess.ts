@@ -7,7 +7,7 @@ import { production } from './environment';
 import { hashClasses } from './hash';
 import type { UnoGenerator } from '@unocss/core';
 import type { PreprocessorGroup } from 'svelte/compiler';
-import type { Attribute, TemplateNode } from 'svelte/types/compiler/interfaces';
+import type { TemplateNode } from 'svelte/types/compiler/interfaces';
 
 export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
   const unoPromise = uno
@@ -19,49 +19,38 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
     markup: async ({ content, filename }) => {
       const uno = await unoPromise;
 
+      type Replacement = { value: string; start: number; end: number };
+      const replacements: Array<Replacement> = [];
       const shortcuts: Record<string, string> = {};
+
       const source = new MagicString(content);
       const ast = parse(content);
 
-      const walk = async (node: TemplateNode) => {
-        if (node.children) {
-          await Promise.all(node.children.map(async (child) => walk(child)));
-        }
-
-        if (
-          node.type === 'InlineComponent' ||
-          node.type === 'SlotTemplate' ||
-          node.type === 'Title' ||
-          node.type === 'Slot' ||
-          node.type === 'Element' ||
-          node.type === 'Head' ||
-          node.type === 'Options' ||
-          node.type === 'Window' ||
-          node.type === 'Document' ||
-          node.type === 'Body'
-        ) {
-          await Promise.all(
-            node.attributes
-              .filter(
-                (attr: TemplateNode) =>
-                  attr.type === 'Attribute' && attr.name === 'class',
-              )
-              .flatMap((attr: Attribute) =>
-                attr.value.map(async (value) => walkValue(value)),
-              ),
-          );
-        }
+      const walk = (node: TemplateNode) => {
+        traverse(node, ({ value: node }) => {
+          if (node.type === 'Attribute' && node.name === 'class') {
+            for (const value of node.value) {
+              walkValue(value);
+            }
+          }
+        });
       };
 
-      const walkValue = async (node: TemplateNode) => {
+      const walkValue = (node: TemplateNode) => {
         if (node.type === 'Text') {
-          const shortcut = await transformClasses(node.data);
-          source.overwrite(node.start, node.end, shortcut);
+          replacements.push({
+            value: node.data,
+            start: node.start,
+            end: node.end,
+          });
         } else if (node.type === 'MustacheTag') {
-          traverse(node, async ({ value: node }) => {
+          traverse(node, ({ value: node }) => {
             if (node.type === 'Literal' && typeof node.value === 'string') {
-              const shortcut = await transformClasses(node.value);
-              source.overwrite(node.start + 1, node.end - 1, shortcut);
+              replacements.push({
+                value: node.value,
+                start: node.start + 1,
+                end: node.end - 1,
+              });
             }
           });
         }
@@ -102,7 +91,14 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
         }
       };
 
-      await walk(ast.html);
+      walk(ast.html);
+
+      await Promise.all(
+        replacements.map(async ({ value, start, end }) => {
+          const shortcut = await transformClasses(value);
+          source.overwrite(start, end, shortcut);
+        }),
+      );
 
       if (Object.keys(shortcuts).length === 0) {
         return;
