@@ -10,9 +10,8 @@ export default {
       regions: ['icn1'],
     }),
     alias: {
-      '$assets': './src/assets',
-      '$houdini': './$houdini',
-      '@penxle/vite': '../../packages/vite/src/index.ts',
+      $assets: './src/assets',
+      $houdini: './$houdini',
     },
     files: {
       hooks: {
