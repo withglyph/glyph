@@ -1,0 +1,34 @@
+{
+  "name": "@penxle/landing.penxle.com",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "svelte-kit sync && vite build",
+    "codegen": "svelte-kit sync",
+    "check": "svelte-check --fail-on-warnings",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
+  },
+  "devDependencies": {
+    "@iconify/json": "^2.2.95",
+    "@iconify/utils": "^2.1.7",
+    "@penxle/eslint-config": "workspace:^",
+    "@sveltejs/adapter-vercel": "^3.0.2",
+    "@sveltejs/kit": "^1.22.3",
+    "@types/node": "^20.4.5",
+    "@unocss/preset-uno": "^0.54.0",
+    "@vercel/analytics": "^1.0.1",
+    "browserslist": "^4.21.9",
+    "clsx": "^2.0.0",
+    "lightningcss": "^1.21.5",
+    "svelte": "4.1.1",
+    "svelte-check": "^3.4.6",
+    "svgo": "^3.0.2",
+    "typescript": "^5.1.6",
+    "unocss": "^0.54.0",
+    "vite": "^4.4.7",
+    "web-vitals": "^3.4.0"
+  }
+}

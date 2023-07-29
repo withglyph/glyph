@@ -119,6 +119,63 @@ importers:
         specifier: workspace:^
         version: link:../eslint-config
 
+  sites/landing.penxle.com:
+    devDependencies:
+      '@iconify/json':
+        specifier: ^2.2.95
+        version: 2.2.95
+      '@iconify/utils':
+        specifier: ^2.1.7
+        version: 2.1.7
+      '@penxle/eslint-config':
+        specifier: workspace:^
+        version: link:../../packages/eslint-config
+      '@sveltejs/adapter-vercel':
+        specifier: ^3.0.2
+        version: 3.0.2(@sveltejs/kit@1.22.3)
+      '@sveltejs/kit':
+        specifier: ^1.22.3
+        version: 1.22.3(svelte@4.1.1)(vite@4.4.7)
+      '@types/node':
+        specifier: ^20.4.5
+        version: 20.4.5
+      '@unocss/preset-uno':
+        specifier: ^0.54.0
+        version: 0.54.0
+      '@vercel/analytics':
+        specifier: ^1.0.1
+        version: 1.0.1
+      browserslist:
+        specifier: ^4.21.9
+        version: 4.21.9
+      clsx:
+        specifier: ^2.0.0
+        version: 2.0.0
+      lightningcss:
+        specifier: ^1.21.5
+        version: 1.21.5
+      svelte:
+        specifier: 4.1.1
+        version: 4.1.1
+      svelte-check:
+        specifier: ^3.4.6
+        version: 3.4.6(@babel/core@7.22.9)(postcss@8.4.27)(svelte@4.1.1)
+      svgo:
+        specifier: ^3.0.2
+        version: 3.0.2
+      typescript:
+        specifier: ^5.1.6
+        version: 5.1.6
+      unocss:
+        specifier: ^0.54.0
+        version: 0.54.0(postcss@8.4.27)(vite@4.4.7)
+      vite:
+        specifier: ^4.4.7
+        version: 4.4.7(@types/node@20.4.5)(lightningcss@1.21.5)
+      web-vitals:
+        specifier: ^3.4.0
+        version: 3.4.0
+
   sites/penxle.com:
     devDependencies:
       '@aws-sdk/client-s3':
