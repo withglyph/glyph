@@ -7,7 +7,7 @@
     "dev": { "cache": false, "persistent": true },
     "codegen": { "cache": false },
 
-    "build": { "dependsOn": ["^build"] },
+    "build": { "dependsOn": ["^codegen", "^build"] },
 
     "check": {},
 
