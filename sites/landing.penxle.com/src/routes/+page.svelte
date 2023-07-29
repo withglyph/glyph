@@ -2,7 +2,7 @@
   import ComingSoon from '$assets/coming-soon.svg?component';
   import Logo from '$assets/logo.svg?component';
   import Slogan from '$assets/slogan.svg?component';
-  import { Helmet } from '$lib/components';
+  import { Helmet, Link } from '$lib/components';
   // import { RingSpinner } from '$lib/components/spinners';
 
   // const status: 'idle' | 'submitting' | 'submitted' = 'idle';
@@ -21,6 +21,21 @@
   <Logo class="square-100px" />
   <ComingSoon class="mt-40px h-50px" />
   <Slogan class="mt-32px h-25px" />
+
+  <div class="mt-40px flex gap-8 text-gray-40">
+    <Link
+      class="i-lg-twitter square-5 hover:text-[#1DA1F2]"
+      href="https://twitter.com/penxle"
+    />
+    <Link
+      class="i-lg-instagram square-5 hover:text-[#E4405F]"
+      href="https://www.instagram.com/penxle.team/"
+    />
+    <Link
+      class="i-lg-github square-5 hover:text-[#181717]"
+      href="https://github.com/penxle"
+    />
+  </div>
 
   <!-- <input
     class="mt-40px w-350px border-b-2 border-b-gray-70 px-3 py-2.5 text-center font-bold"
