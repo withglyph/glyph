@@ -16,8 +16,9 @@ export const unoPreprocess = (): PreprocessorGroup => {
       const { config } = await configPromise;
       const generator = createGenerator(config);
 
+      const shortcuts: Record<string, string> = {};
       const source = new MagicString(content);
-      const { html } = parse(content);
+      const ast = parse(content);
 
       const walk = async (node: TemplateNode) => {
         if (node.children) {
@@ -80,12 +81,12 @@ export const unoPreprocess = (): PreprocessorGroup => {
 
         if (production) {
           const hashed = hashClasses(filename ?? '', known);
-          generator.config.shortcuts.push([hashed, known]);
+          shortcuts[hashed] = known;
           return unknowns.size === 0 ? hashed : `${unknown} ${hashed}`;
         } else {
           const hashes = [...knowns].map((cls) => {
             const hashed = hashClasses(filename ?? '', cls);
-            generator.config.shortcuts.push([hashed, cls]);
+            shortcuts[hashed] = cls;
             return hashed;
           });
           const hashed = hashes.join(' ');
@@ -93,10 +94,18 @@ export const unoPreprocess = (): PreprocessorGroup => {
         }
       };
 
-      await walk(html);
+      await walk(ast.html);
 
-      let code = source.toString();
-      const { css } = await generator.generate(code, {
+      if (Object.keys(shortcuts).length === 0) {
+        return;
+      }
+
+      generator.config.shortcuts = [
+        ...generator.config.shortcuts,
+        ...Object.entries(shortcuts),
+      ];
+
+      const { css } = await generator.generate(Object.keys(shortcuts), {
         preflights: false,
         safelist: false,
         minify: true,
@@ -104,9 +113,16 @@ export const unoPreprocess = (): PreprocessorGroup => {
 
       const style = css.replaceAll(/(\.\S+?)({[\S\s]+?})/g, ':global($1)$2');
 
-      code += `\n\n<style>\n${style}\n</style>`;
+      if (ast.css) {
+        source.appendRight(ast.css.content.end, style);
+      } else {
+        source.append(`<style>${style}</style>`);
+      }
 
-      return { code };
+      return {
+        code: source.toString(),
+        map: source.generateMap({ hires: true, source: filename }),
+      };
     },
   };
 };
