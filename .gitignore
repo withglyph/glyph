@@ -8,6 +8,7 @@ node_modules/
 .turbo/
 .vercel/
 
+dist/
 $houdini/
 
 vite.config.ts.timestamp-*

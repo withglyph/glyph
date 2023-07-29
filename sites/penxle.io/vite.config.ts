@@ -1,3 +1,4 @@
+import { svg } from '@penxle/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import browserslist from 'browserslist';
 import { browserslistToTargets } from 'lightningcss';
@@ -19,7 +20,7 @@ export default defineConfig({
       ),
     },
   },
-  plugins: [unocss(), sveltekit()],
+  plugins: [svg(), unocss(), sveltekit()],
   server: {
     host: '127.0.0.1',
     port: 4010,

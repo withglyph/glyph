@@ -11,6 +11,7 @@
     "bootstrap": "pnpm install && husky install",
     "dev": "turbo run dev",
     "codegen": "turbo run codegen",
+    "build": "turbo run build --filter './packages/**'",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "format": "prettier --check --ignore-unknown '**/*'",
