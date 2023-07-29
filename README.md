@@ -16,6 +16,7 @@
 | [`apps/media-optimizer`](apps/media-optimizer)         | 미디어 최적화 전처리 및 후처리 |
 | [`packages/eslint-config`](packages/eslint-config)     | ESLint 공용 설정               |
 | [`packages/prettier-config`](packages/prettier-config) | Prettier 공용 설정             |
+| [`packages/vite`](packages/vite)                       | Vite 서포트 패키지             |
 
 ## 디렉토리 구조
 
