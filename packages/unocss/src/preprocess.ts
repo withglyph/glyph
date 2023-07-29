@@ -12,7 +12,7 @@ export const unoPreprocess = (): PreprocessorGroup => {
   const configPromise = loadConfig();
 
   return {
-    name: 'unocss',
+    name: '@penxle/unocss',
     markup: async ({ content, filename }) => {
       const { config } = await configPromise;
       const generator = createGenerator(config);
