@@ -146,6 +146,9 @@ importers:
       tsup:
         specifier: ^7.1.0
         version: 7.1.0(typescript@5.1.6)
+      vite:
+        specifier: ^4.4.7
+        version: 4.4.7(@types/node@20.4.5)(lightningcss@1.21.5)
 
   packages/vite:
     dependencies:
@@ -177,6 +180,9 @@ importers:
       '@penxle/eslint-config':
         specifier: workspace:^
         version: link:../../packages/eslint-config
+      '@penxle/unocss':
+        specifier: workspace:^
+        version: link:../../packages/unocss
       '@penxle/vite':
         specifier: workspace:^
         version: link:../../packages/vite
@@ -264,6 +270,9 @@ importers:
       '@penxle/eslint-config':
         specifier: workspace:^
         version: link:../../packages/eslint-config
+      '@penxle/unocss':
+        specifier: workspace:^
+        version: link:../../packages/unocss
       '@penxle/vite':
         specifier: workspace:^
         version: link:../../packages/vite

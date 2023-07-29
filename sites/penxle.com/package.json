@@ -27,6 +27,7 @@
     "@logtail/node": "^0.4.5",
     "@logtail/winston": "^0.4.5",
     "@penxle/eslint-config": "workspace:^",
+    "@penxle/unocss": "workspace:^",
     "@penxle/vite": "workspace:^",
     "@playwright/test": "^1.36.2",
     "@pothos/core": "^3.32.1",

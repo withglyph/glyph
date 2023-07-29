@@ -15,6 +15,7 @@
     "@iconify/json": "^2.2.95",
     "@iconify/utils": "^2.1.7",
     "@penxle/eslint-config": "workspace:^",
+    "@penxle/unocss": "workspace:^",
     "@penxle/vite": "workspace:^",
     "@supabase/supabase-js": "^2.31.0",
     "@sveltejs/adapter-vercel": "^3.0.2",

@@ -1,10 +1,10 @@
+import { unocss } from '@penxle/unocss';
 import { svg } from '@penxle/vite';
 import { sentrySvelteKit as sentry } from '@sentry/sveltekit';
 import { sveltekit } from '@sveltejs/kit/vite';
 import browserslist from 'browserslist';
 import houdini from 'houdini/vite';
 import { browserslistToTargets } from 'lightningcss';
-import unocss from 'unocss/vite';
 import { defineConfig } from 'vite';
 
 // eslint-disable-next-line import/no-default-export
