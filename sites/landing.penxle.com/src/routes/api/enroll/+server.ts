@@ -3,7 +3,9 @@ import { json } from '@sveltejs/kit';
 import { SUPABASE_KEY, SUPABASE_URL } from '$env/static/private';
 import type { RequestHandler } from './$types';
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: { persistSession: false },
+});
 
 export const POST = (async ({ request }) => {
   const { phoneNumber } = await request.json();
