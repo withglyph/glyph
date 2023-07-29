@@ -1847,6 +1847,11 @@ packages:
       - supports-color
     dev: true
 
+  /@ljharb/through@2.3.9:
+    resolution: {integrity: sha512-yN599ZBuMPPK4tdoToLlvgJB4CLK8fGl7ntfy0Wn7U6ttNvHYurd81bfUiK/6sMkiIwm65R6ck4L6+Y3DfVbNQ==}
+    engines: {node: '>= 0.4'}
+    dev: true
+
   /@logtail/core@0.4.5:
     resolution: {integrity: sha512-8FoypevmxVfpJHFj9/mAHzyugAk3iqkbIvJaROuMTMPysZ5c/6D+mFBjLFa3ohdbWKqHjdhCVUYQGUosBuaUwA==}
     dependencies:
@@ -4117,8 +4122,8 @@ packages:
     resolution: {integrity: sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==}
     engines: {node: '>= 0.4'}
 
-  /aws-sdk@2.1424.0:
-    resolution: {integrity: sha512-F6+wIp/K4UCg4sWQmQuuFReRNA0eYaPTHjt2is5uHE+2Vk2ojBbwatahbUnEB335tRZhndKf4UwyoyuuAdakMw==}
+  /aws-sdk@2.1425.0:
+    resolution: {integrity: sha512-DbY5z7E8RsrX8/0pMBKMuh/rWFic3AghtU2AWkUdzxDi0cUSK7rOSPS/OIURU9Rh0jaNXoA0ujBDdx/CC5CvRA==}
     engines: {node: '>= 10.0.0'}
     dependencies:
       buffer: 4.9.2
@@ -4272,7 +4277,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001517
-      electron-to-chromium: 1.4.475
+      electron-to-chromium: 1.4.477
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.9)
     dev: true
@@ -5280,8 +5285,8 @@ packages:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
     dev: true
 
-  /electron-to-chromium@1.4.475:
-    resolution: {integrity: sha512-mTye5u5P98kSJO2n7zYALhpJDmoSQejIGya0iR01GpoRady8eK3bw7YHHnjA1Rfi4ZSLdpuzlAC7Zw+1Zu7Z6A==}
+  /electron-to-chromium@1.4.477:
+    resolution: {integrity: sha512-shUVy6Eawp33dFBFIoYbIwLHrX0IZ857AlH9ug2o4rvbWmpaCUdBpQ5Zw39HRrfzAFm4APJE9V+E2A/WB0YqJw==}
     dev: true
 
   /emoji-regex@8.0.0:
@@ -6394,8 +6399,8 @@ packages:
       conf: 11.0.1
       execa: 7.2.0
       fuse.js: 6.6.2
-      inquirer: 9.2.8
-      inquirer-autocomplete-prompt: 3.0.0(inquirer@9.2.8)
+      inquirer: 9.2.9
+      inquirer-autocomplete-prompt: 3.0.0(inquirer@9.2.9)
       meow: 11.0.0
       node-fetch: 3.3.2
       ora: 6.3.1
@@ -6885,7 +6890,7 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /inquirer-autocomplete-prompt@3.0.0(inquirer@9.2.8):
+  /inquirer-autocomplete-prompt@3.0.0(inquirer@9.2.9):
     resolution: {integrity: sha512-nsPWllBQB3qhvpVgV1UIJN4xo3yz7Qv8y1+zrNVpJUNPxtUZ7btCum/4UCAs5apPCe/FVhKH1V6Wx0cAwkreyg==}
     engines: {node: '>=12'}
     peerDependencies:
@@ -6893,7 +6898,7 @@ packages:
     dependencies:
       ansi-escapes: 6.2.0
       figures: 5.0.0
-      inquirer: 9.2.8
+      inquirer: 9.2.9
       picocolors: 1.0.0
       run-async: 2.4.1
       rxjs: 7.8.1
@@ -6920,10 +6925,11 @@ packages:
       wrap-ansi: 7.0.0
     dev: true
 
-  /inquirer@9.2.8:
-    resolution: {integrity: sha512-SJ0fVfgIzZL1AD6WvFhivlh5/3hN6WeAvpvPrpPXH/8MOcQHeXhinmSm5CDJNRC2Q+sLh9YJ5k8F8/5APMXSfw==}
+  /inquirer@9.2.9:
+    resolution: {integrity: sha512-0VXHov2GGwWquYxwxlcIcm3yOHvFb2jh/+HkY8/AUXSTWShpo6QJMlSfHi5Xo74NO40UePBM3rQcI3OkzOF/7A==}
     engines: {node: '>=14.18.0'}
     dependencies:
+      '@ljharb/through': 2.3.9
       ansi-escapes: 4.3.2
       chalk: 5.3.0
       cli-cursor: 3.1.0
@@ -6937,7 +6943,6 @@ packages:
       rxjs: 7.8.1
       string-width: 4.2.3
       strip-ansi: 6.0.1
-      through: 2.3.8
       wrap-ansi: 6.2.0
     dev: true
 
@@ -8433,7 +8438,7 @@ packages:
     dependencies:
       destr: 2.0.0
       node-fetch-native: 1.2.0
-      ufo: 1.1.2
+      ufo: 1.2.0
     dev: true
 
   /once@1.4.0:
@@ -9639,7 +9644,7 @@ packages:
       ajv: 8.12.0
       ajv-formats: 2.1.1(ajv@8.12.0)
       archiver: 5.3.1
-      aws-sdk: 2.1424.0
+      aws-sdk: 2.1425.0
       bluebird: 3.7.2
       cachedir: 2.4.0
       chalk: 4.1.2
@@ -10695,8 +10700,8 @@ packages:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
     dev: true
 
-  /ufo@1.1.2:
-    resolution: {integrity: sha512-TrY6DsjTQQgyS3E3dBaOXf0TpPD8u9FVrVYmKVegJuFw51n/YB9XPt+U6ydzFG5ZIN7+DIjPbNmXoBj9esYhgQ==}
+  /ufo@1.2.0:
+    resolution: {integrity: sha512-RsPyTbqORDNDxqAdQPQBpgqhWle1VcTSou/FraClYlHf6TZnQcGslpLcAphNR+sQW4q5lLWLbOsRlh9j24baQg==}
     dev: true
 
   /unbox-primitive@1.0.2:
