@@ -15,6 +15,7 @@
     "@unocss/config": "^0.54.0",
     "@unocss/core": "^0.54.0",
     "magic-string": "^0.30.2",
+    "object-traversal": "^1.0.1",
     "svelte": "^4.1.1"
   },
   "devDependencies": {

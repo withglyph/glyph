@@ -1,6 +1,7 @@
 import { loadConfig } from '@unocss/config';
 import { createGenerator, expandVariantGroup } from '@unocss/core';
 import MagicString from 'magic-string';
+import { traverse } from 'object-traversal';
 import { parse } from 'svelte/compiler';
 import { production } from './environment';
 import { hashClasses } from './hash';
@@ -55,7 +56,12 @@ export const unoPreprocess = (): PreprocessorGroup => {
           const shortcut = await transformClasses(node.data);
           source.overwrite(node.start, node.end, shortcut);
         } else if (node.type === 'MustacheTag') {
-          // console.log(node.expression);
+          traverse(node, async ({ value: node }) => {
+            if (node.type === 'Literal' && typeof node.value === 'string') {
+              const shortcut = await transformClasses(node.value);
+              source.overwrite(node.start + 1, node.end - 1, shortcut);
+            }
+          });
         }
       };
 
