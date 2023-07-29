@@ -36,11 +36,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run code generation
-        run: pnpm exec turbo run codegen
-
       - name: Run build
         run: pnpm run build
+
+      - name: Run code generation
+        run: pnpm exec turbo run codegen
 
       - name: Run lint
         run: pnpm exec turbo run lint
@@ -69,11 +69,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run code generation
-        run: pnpm exec turbo run codegen
-
       - name: Run build
         run: pnpm run build
+
+      - name: Run code generation
+        run: pnpm exec turbo run codegen
 
       - name: Run format
         run: pnpm exec turbo run format
@@ -102,11 +102,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run code generation
-        run: pnpm exec turbo run codegen
-
       - name: Run build
         run: pnpm run build
+
+      - name: Run code generation
+        run: pnpm exec turbo run codegen
 
       - name: Run check
         run: pnpm exec turbo run check
