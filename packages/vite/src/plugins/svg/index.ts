@@ -1,3 +1,6 @@
+// eslint-disable-next-line typescript/triple-slash-reference
+/// <reference path="ambient.d.ts" />
+
 import { readFile } from 'node:fs/promises';
 import { compile } from 'svelte/compiler';
 import { optimize } from 'svgo';
