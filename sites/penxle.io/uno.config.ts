@@ -7,9 +7,10 @@ import {
   transformerDirectives,
   transformerVariantGroup,
 } from 'unocss';
+import type { Theme } from '@unocss/preset-uno';
 
 // eslint-disable-next-line import/no-default-export
-export default defineConfig({
+export default defineConfig<Theme>({
   presets: [
     presetIcons({
       collections: {
@@ -38,36 +39,66 @@ export default defineConfig({
     [/^square-(.*)$/, ([, c]) => `w-${c} h-${c}`],
     ['center', 'justify-center items-center'],
   ],
-  theme: {
+  extendTheme: (theme) => ({
+    ...theme,
     colors: {
-      // https://github.com/unocss/unocss/blob/main/packages/preset-mini/src/_theme/colors.ts
-      // neutral로 gray 덮어씀
+      inherit: 'inherit',
+      current: 'currentColor',
+      transparent: 'transparent',
+      black: '#000000',
+      white: '#FFFFFF',
       gray: {
-        50: '#FAFAFA',
-        100: '#F5F5F5',
-        200: '#E5E5E5',
-        300: '#D4D4D4',
-        400: '#A3A3A3',
-        500: '#737373',
-        600: '#525252',
-        700: '#404040',
-        800: '#262626',
-        900: '#171717',
-        950: '#0A0A0A',
+        5: '#FAFAF9',
+        10: '#F4F4F3',
+        20: '#E7E5E4',
+        30: '#D6D3D1',
+        40: '#A8A29E',
+        50: '#78716C',
+        60: '#57534E',
+        70: '#44403C',
+        80: '#292524',
+        90: '#1C1917',
+        100: '#0C0A09',
+      },
+      red: {
+        5: '#FEF2F2',
+        10: '#FEE2E2',
+        20: '#FECACA',
+        30: '#FCA5A5',
+        40: '#F87171',
+        50: '#EF4444',
+        60: '#DC2626',
+        70: '#B91C1C',
+        80: '#991B1B',
+        90: '#7F1D1D',
+        100: '#450A0A',
+      },
+      green: {
+        5: '#F0FDF4',
+        10: '#DCFCE7',
+        20: '#BBF7D0',
+        30: '#86EFAC',
+        40: '#4ADE80',
+        50: '#22C55E',
+        60: '#16A34A',
+        70: '#15803D',
+        80: '#166534',
+        90: '#14532D',
+        100: '#052E16',
       },
       brand: {
-        50: '#F0F7FE',
-        100: '#DDECFC',
-        200: '#C3DFFA',
-        300: '#9ACBF6',
-        400: '#6AAFF0',
-        500: '#468FEA',
-        600: '#3273DE',
-        700: '#295FCC',
-        800: '#274DA6',
-        900: '#254383',
-        950: '#1B2A50',
+        5: '#FFF9F8',
+        10: '#FEF1F0',
+        20: '#FDDFDE',
+        30: '#FCC8C6',
+        40: '#F98B88',
+        50: '#F66062',
+        60: '#A83E3D',
+        70: '#83302E',
+        80: '#4F1C1C',
+        90: '#361312',
+        100: '#170807',
       },
     },
-  },
+  }),
 });

@@ -27,7 +27,7 @@
 <Helmet title={`대시보드 | ${$query.space.name}}`} />
 
 <a
-  class="flex items-center text-sm text-gray-500"
+  class="flex items-center text-sm text-gray-50"
   href={`/${$query.space.slug}`}
 >
   {$query.space.name}
@@ -37,7 +37,7 @@
 
 {#if $query.space.meAsMember?.role === 'OWNER'}
   <button
-    class="rounded px-4 py-2 font-medium text-red-500 hover:bg-red-50"
+    class="rounded px-4 py-2 font-medium text-red-50 hover:bg-red-5"
     type="button"
     on:click={() => (openDeleteSpace = true)}
   >

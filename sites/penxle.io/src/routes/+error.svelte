@@ -5,7 +5,7 @@
 
 <Helmet title="펜슬컴퍼니" />
 
-<Link class="i-px-logo absolute left-8 top-4 square-8 text-gray-900" href="/" />
+<Link class="i-px-logo absolute left-8 top-4 square-8 text-gray-90" href="/" />
 
 <div class="mx-auto my-12 flex grow flex-col items-center justify-between">
   <div />
@@ -26,7 +26,7 @@
     </h2>
 
     {#if $page.status === 404}
-      <p class="mt-4 text-sm text-gray-500">
+      <p class="mt-4 text-sm text-gray-50">
         페이지를 찾을 수가 없었어요.
         <br />
         주소가 정확한지 다시 한번 확인해 주세요.
@@ -34,7 +34,7 @@
     {/if}
 
     <a
-      class="mt-16 rounded-full bg-gray-800 px-4 py-2 font-medium leading-none text-white transition duration-300 active:bg-black hover:bg-gray-900"
+      class="mt-16 rounded-full bg-gray-80 px-4 py-2 font-medium leading-none text-white transition duration-300 active:bg-black hover:bg-gray-90"
       href="/"
     >
       펜슬컴퍼니 홈으로 가기

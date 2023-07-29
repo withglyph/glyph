@@ -5,7 +5,7 @@
 ![](https://img.shields.io/github/license/penxle/penxle)
 ![](https://img.shields.io/github/languages/code-size/penxle/penxle)
 
-창작을 즐겁게, PENXLE.
+함께 그리는 반짝임, PENXLE.
 
 ## 모노레포 구성
 
@@ -53,7 +53,7 @@ $ pnpm bootstrap
 
 $ doppler login
 $ cd sites/penxle.com
-$ doppler setup  # 명령 실행 후 본인 env 선택
+$ doppler setup # 명령 실행 후 본인 env 선택
 
 $ cd ../..
 $ pnpm codegen

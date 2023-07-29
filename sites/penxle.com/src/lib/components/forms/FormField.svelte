@@ -14,7 +14,7 @@
   <div class="mb-1 flex justify-between">
     <label class="select-none text-sm font-medium" for={name}>{label}</label>
     <FormValidationMessage for={name} let:message>
-      <div class="flex items-center gap-1 text-xs font-semibold text-red-500">
+      <div class="flex items-center gap-1 text-xs font-semibold text-red-50">
         <span class="i-lc-alert-triangle" />
         {message}
       </div>

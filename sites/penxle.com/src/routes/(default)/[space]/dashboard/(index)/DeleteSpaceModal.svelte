@@ -45,7 +45,7 @@
   스페이스를 삭제하면 스페이스에 게시되어 있던 모든 컨텐츠와 설정도 같이 삭제돼요.
 
   <div
-    class="mt-4 flex items-center gap-4 border border-red-500 rounded-lg bg-red-100 px-4 py-2 text-sm text-red-500"
+    class="mt-4 flex items-center gap-4 border border-red-50 rounded-lg bg-red-10 px-4 py-2 text-sm text-red-50"
   >
     <span class="i-lc-alert-triangle" />
     <div>

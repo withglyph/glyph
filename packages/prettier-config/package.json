@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "prettier-plugin-prisma": "^5.0.0",
-    "prettier-plugin-svelte": "^3.0.0"
+    "prettier-plugin-sh": "^0.13.1",
+    "prettier-plugin-svelte": "^3.0.3"
   },
   "devDependencies": {
     "@penxle/eslint-config": "workspace:^"

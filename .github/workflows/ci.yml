@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+  merge_group:
 
 env:
   DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
