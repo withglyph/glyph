@@ -1,11 +1,31 @@
 <script lang="ts">
+  import { clsx } from 'clsx';
+  import { fade } from 'svelte/transition';
   import ComingSoon from '$assets/coming-soon.svg?component';
   import Logo from '$assets/logo.svg?component';
   import Slogan from '$assets/slogan.svg?component';
   import { Helmet, Link } from '$lib/components';
-  // import { RingSpinner } from '$lib/components/spinners';
+  import { RingSpinner } from '$lib/components/spinners';
 
-  // const status: 'idle' | 'submitting' | 'submitted' = 'idle';
+  let phoneNumber = '';
+  let status: 'idle' | 'submitting' | 'submitted' | 'invalid' = 'invalid';
+
+  $: {
+    const valid = /^0\d{2}-?\d{3,4}-?\d{4}$/.test(phoneNumber);
+    status = valid ? 'idle' : 'invalid';
+  }
+
+  const handleSubmit = async () => {
+    status = 'submitting';
+    try {
+      await fetch('/api/enroll', {
+        method: 'POST',
+        body: JSON.stringify({ phoneNumber }),
+      });
+    } finally {
+      status = 'submitted';
+    }
+  };
 </script>
 
 <Helmet
@@ -17,50 +37,84 @@
   title="함께 그리는 반짝임, PENXLE"
 />
 
-<div class="c flex grow center bg-gray-10">
-  <div class="flex flex-col center px-32px">
+<div
+  class="c flex grow flex-col center items-center justify-between bg-gray-10 p-32px"
+>
+  <div />
+
+  <div class="flex flex-col center">
     <Logo class="square-100px" />
     <ComingSoon class="mt-40px h-50px" />
     <Slogan class="mt-32px h-25px" />
 
-    <div class="mt-40px flex gap-8 text-gray-40">
-      <Link
-        class="i-lg-twitter square-5 hover:text-[#1DA1F2]"
-        href="https://twitter.com/penxle"
-      />
-      <Link
-        class="i-lg-instagram square-5 hover:text-[#E4405F]"
-        href="https://www.instagram.com/penxle.team/"
-      />
-      <Link
-        class="i-lg-github square-5 hover:text-[#181717]"
-        href="https://github.com/penxle"
-      />
-    </div>
+    <form
+      class="mt-64px flex flex-col center gap-2"
+      method="POST"
+      on:submit|preventDefault={handleSubmit}
+    >
+      <div class="flex justify-center gap-4 text-sm">
+        <input
+          class="w-200px rounded-xl bg-white px-3 py-2.5 text-center font-bold"
+          disabled={status !== 'idle' && status !== 'invalid'}
+          placeholder="010-1234-5678"
+          type="text"
+          bind:value={phoneNumber}
+        />
+
+        <button
+          class={clsx(
+            'relative overflow-hidden rounded-xl px-6 font-bold transition duration-150',
+            status === 'idle' && 'bg-gray-80 text-gray-10 hover:bg-black',
+            status === 'submitting' && 'bg-black text-gray-10',
+            status === 'submitted' && 'bg-green-60 text-gray-10',
+            status === 'invalid' && 'bg-gray-30 text-gray-10',
+          )}
+          disabled={status !== 'idle'}
+          type="submit"
+        >
+          <div
+            class={clsx(
+              'contents',
+              status !== 'idle' && status !== 'invalid' && 'invisible',
+            )}
+          >
+            알림 신청
+          </div>
+          {#if status !== 'idle'}
+            <div
+              class="absolute inset-0 flex center py-2.5"
+              transition:fade={{ duration: 150 }}
+            >
+              {#if status === 'submitting'}
+                <RingSpinner class="h-full" />
+              {:else if status === 'submitted'}
+                <div class="i-lc-check-circle" />
+                <div class="ml-1">신청 완료</div>
+              {/if}
+            </div>
+          {/if}
+        </button>
+      </div>
+      <div class="text-xs text-gray-50">
+        서비스가 오픈하면 입력하신 휴대전화 번호로 알려드릴게요!
+      </div>
+    </form>
   </div>
 
-  <!-- <input
-    class="mt-40px w-350px border-b-2 border-b-gray-70 px-3 py-2.5 text-center font-bold"
-    placeholder="전화번호 입력"
-    type="text"
-  />
-
-  <button
-    class="relative mt-32px overflow-hidden rounded bg-gray-80 px-3 py-2 font-extrabold text-gray-10 transition duration-300 hover:bg-black"
-    type="button"
-    on:click={() => (status = 'submitting')}
-  >
-    오픈하면 알림 받기
-    {#if status === 'submitting'}
-      <div class="absolute inset-0 flex center bg-gray-80 px-3 py-2">
-        <div class="flex items-center justify-center">
-          <div class="i-lc-check-circle text-green-60" />
-          <div class="ml-10px text-green-60">등록 완료</div>
-        </div>
-        <RingSpinner class="h-full" />
-      </div>
-    {/if}
-  </button> -->
+  <div class="flex gap-8 text-gray-40">
+    <Link
+      class="i-lg-twitter square-5 hover:text-[#1DA1F2]"
+      href="https://twitter.com/penxle"
+    />
+    <Link
+      class="i-lg-instagram square-5 hover:text-[#E4405F]"
+      href="https://www.instagram.com/penxle.team/"
+    />
+    <Link
+      class="i-lg-github square-5 hover:text-[#181717]"
+      href="https://github.com/penxle"
+    />
+  </div>
 </div>
 
 <style>
