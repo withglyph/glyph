@@ -17,24 +17,26 @@
   title="함께 그리는 반짝임, PENXLE"
 />
 
-<div class="c flex grow flex-col center bg-gray-10">
-  <Logo class="square-100px" />
-  <ComingSoon class="mt-40px h-50px" />
-  <Slogan class="mt-32px h-25px" />
+<div class="c flex grow center bg-gray-10">
+  <div class="flex flex-col center px-32px">
+    <Logo class="square-100px" />
+    <ComingSoon class="mt-40px h-50px" />
+    <Slogan class="mt-32px h-25px" />
 
-  <div class="mt-40px flex gap-8 text-gray-40">
-    <Link
-      class="i-lg-twitter square-5 hover:text-[#1DA1F2]"
-      href="https://twitter.com/penxle"
-    />
-    <Link
-      class="i-lg-instagram square-5 hover:text-[#E4405F]"
-      href="https://www.instagram.com/penxle.team/"
-    />
-    <Link
-      class="i-lg-github square-5 hover:text-[#181717]"
-      href="https://github.com/penxle"
-    />
+    <div class="mt-40px flex gap-8 text-gray-40">
+      <Link
+        class="i-lg-twitter square-5 hover:text-[#1DA1F2]"
+        href="https://twitter.com/penxle"
+      />
+      <Link
+        class="i-lg-instagram square-5 hover:text-[#E4405F]"
+        href="https://www.instagram.com/penxle.team/"
+      />
+      <Link
+        class="i-lg-github square-5 hover:text-[#181717]"
+        href="https://github.com/penxle"
+      />
+    </div>
   </div>
 
   <!-- <input
