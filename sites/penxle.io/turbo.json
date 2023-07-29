@@ -1,0 +1,9 @@
+{
+  "extends": ["//"],
+  "pipeline": {
+    "build": {
+      "env": ["VERCEL_ANALYTICS_ID", "VERCEL_GIT_COMMIT_REF"],
+      "outputs": [".svelte-kit/**", ".vercel/**"]
+    }
+  }
+}

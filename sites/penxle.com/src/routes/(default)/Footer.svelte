@@ -1,6 +1,5 @@
 <script lang="ts">
   import Wordmark from '$assets/branding/wordmark.svg?component';
-  import { PUBLIC_VERCEL_GIT_COMMIT_SHA } from '$env/static/public';
   import { Link } from '$lib/components';
 
   let showDisclosure = false;
@@ -88,15 +87,6 @@
       <div class="h-2 border-l border-gray-30" />
       <Link class="hover:text-gray-50" href="https://penxle.io">
         펜슬컴퍼니 소개
-      </Link>
-      <div class="h-2 border-l border-gray-30" />
-      <Link
-        class="flex items-center gap-0.5 hover:text-gray-50"
-        href={`https://github.com/penxle/penxle/tree/${PUBLIC_VERCEL_GIT_COMMIT_SHA}`}
-      >
-        현재 배포 버전:
-        <span class="i-lc-git-commit" />
-        {PUBLIC_VERCEL_GIT_COMMIT_SHA.slice(0, 7)}
       </Link>
     </section>
   </nav>

@@ -7,11 +7,7 @@
     "dev": { "cache": false, "persistent": true },
     "codegen": { "cache": false },
 
-    "build": {
-      "dependsOn": ["^build"],
-      "env": ["*"],
-      "outputs": [".svelte-kit/**", ".vercel/**"]
-    },
+    "build": { "dependsOn": ["^build"] },
 
     "check": {},
 
