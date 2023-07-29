@@ -1,24 +1,33 @@
 import { loadConfig } from '@unocss/config';
 import { createGenerator } from '@unocss/core';
 import { unoPreprocess } from './preprocess';
+import { transformCode } from './transform';
+import type { UnoGenerator } from '@unocss/core';
 import type { Plugin } from 'vite';
 
-export const unocss = (): Plugin[] => {
-  return [preprocess(), virtual()];
+export const unocss = async (): Promise<Plugin[]> => {
+  const { config } = await loadConfig();
+  const uno = createGenerator(config);
+
+  return [
+    preprocess(uno),
+    virtual(uno),
+    transform(uno, 'pre'),
+    transform(uno),
+    transform(uno, 'post'),
+  ];
 };
 
-const preprocess = (): Plugin => {
+const preprocess = (uno: UnoGenerator): Plugin => {
   return {
     name: '@penxle/unocss:preprocess',
-    api: { sveltePreprocess: unoPreprocess() },
+    api: { sveltePreprocess: unoPreprocess(uno) },
   };
 };
 
-const virtual = (): Plugin => {
+const virtual = (uno: UnoGenerator): Plugin => {
   const virtualModuleId = 'virtual:uno.css';
   const resolvedVirtualModuleId = `\0${virtualModuleId}`;
-
-  const configPromise = loadConfig();
 
   return {
     name: '@penxle/unocss:virtual',
@@ -29,10 +38,7 @@ const virtual = (): Plugin => {
     },
     load: async (id) => {
       if (id === resolvedVirtualModuleId) {
-        const { config } = await configPromise;
-        const generator = createGenerator(config);
-
-        const { css } = await generator.generate('', {
+        const { css } = await uno.generate('', {
           preflights: true,
           safelist: true,
           minify: true,
@@ -40,6 +46,16 @@ const virtual = (): Plugin => {
 
         return css;
       }
+    },
+  };
+};
+
+const transform = (uno: UnoGenerator, enforce?: 'pre' | 'post'): Plugin => {
+  return {
+    name: `@penxle/unocss:transform-${enforce ?? 'default'}`,
+    enforce,
+    transform: async (code, id) => {
+      return await transformCode(uno, id, code, enforce);
     },
   };
 };

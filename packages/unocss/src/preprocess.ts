@@ -5,17 +5,19 @@ import { traverse } from 'object-traversal';
 import { parse } from 'svelte/compiler';
 import { production } from './environment';
 import { hashClasses } from './hash';
+import type { UnoGenerator } from '@unocss/core';
 import type { PreprocessorGroup } from 'svelte/compiler';
 import type { Attribute, TemplateNode } from 'svelte/types/compiler/interfaces';
 
-export const unoPreprocess = (): PreprocessorGroup => {
-  const configPromise = loadConfig();
+export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
+  const unoPromise = uno
+    ? new Promise<UnoGenerator>((resolve) => resolve(uno))
+    : _loadUno();
 
   return {
     name: '@penxle/unocss',
     markup: async ({ content, filename }) => {
-      const { config } = await configPromise;
-      const generator = createGenerator(config);
+      const uno = await unoPromise;
 
       const shortcuts: Record<string, string> = {};
       const source = new MagicString(content);
@@ -71,7 +73,7 @@ export const unoPreprocess = (): PreprocessorGroup => {
         const unknowns = new Set<string>();
 
         for (const cls of list) {
-          if (await generator.parseToken(cls)) {
+          if (await uno.parseToken(cls)) {
             knowns.add(cls);
           } else {
             unknowns.add(cls);
@@ -106,16 +108,19 @@ export const unoPreprocess = (): PreprocessorGroup => {
         return;
       }
 
-      generator.config.shortcuts = [
-        ...generator.config.shortcuts,
+      const configuredShortcuts = uno.config.shortcuts;
+      uno.config.shortcuts = [
+        ...configuredShortcuts,
         ...Object.entries(shortcuts),
       ];
 
-      const { css } = await generator.generate(Object.keys(shortcuts), {
+      const { css } = await uno.generate(Object.keys(shortcuts), {
         preflights: false,
         safelist: false,
         minify: true,
       });
+
+      uno.config.shortcuts = configuredShortcuts;
 
       const style = css.replaceAll(/(\.\S+?)({[\S\s]+?})/g, ':global($1)$2');
 
@@ -131,4 +136,9 @@ export const unoPreprocess = (): PreprocessorGroup => {
       };
     },
   };
+};
+
+const _loadUno = async () => {
+  const { config } = await loadConfig();
+  return createGenerator(config);
 };
