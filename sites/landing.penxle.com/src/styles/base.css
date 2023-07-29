@@ -1,0 +1,64 @@
+*,
+::before,
+::after {
+  --uno: box-border border-0 border-solid border-gray-20;
+}
+
+* {
+  --uno: m-0 p-0 text-inherit bg-transparent;
+  font: inherit;
+}
+
+html {
+  --uno: leading-normal text-gray-90 font-sans antialiased;
+  text-size-adjust: 100%;
+}
+
+a {
+  --uno: decoration-none;
+}
+
+button {
+  --uno: cursor-pointer bg-transparent text-left select-none;
+}
+
+hr {
+  --uno: h-0 border-t;
+}
+
+label {
+  --uno: inline-block;
+}
+
+input,
+textarea {
+  --uno: block;
+}
+
+svg,
+img,
+picture,
+video {
+  --uno: block max-w-full h-auto;
+}
+
+ol,
+ul {
+  --uno: list-none;
+}
+
+:disabled {
+  --uno: cursor-default;
+}
+
+:focus-visible {
+  --uno: outline-0;
+}
+
+::placeholder {
+  --uno: text-gray-40;
+}
+
+::-ms-reveal {
+  --uno: hidden;
+}
