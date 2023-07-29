@@ -119,6 +119,31 @@ importers:
         specifier: workspace:^
         version: link:../eslint-config
 
+  packages/unocss:
+    dependencies:
+      '@sindresorhus/string-hash':
+        specifier: ^2.0.0
+        version: 2.0.0
+      '@unocss/config':
+        specifier: ^0.54.0
+        version: 0.54.0
+      '@unocss/core':
+        specifier: ^0.54.0
+        version: 0.54.0
+      magic-string:
+        specifier: ^0.30.2
+        version: 0.30.2
+      svelte:
+        specifier: ^4.1.1
+        version: 4.1.1
+    devDependencies:
+      '@penxle/eslint-config':
+        specifier: workspace:^
+        version: link:../eslint-config
+      tsup:
+        specifier: ^7.1.0
+        version: 7.1.0(typescript@5.1.6)
+
   packages/vite:
     dependencies:
       svelte:
@@ -419,6 +444,9 @@ importers:
       '@penxle/eslint-config':
         specifier: workspace:^
         version: link:../../packages/eslint-config
+      '@penxle/unocss':
+        specifier: workspace:^
+        version: link:../../packages/unocss
       '@penxle/vite':
         specifier: workspace:^
         version: link:../../packages/vite
@@ -2424,6 +2452,11 @@ packages:
       - encoding
     dev: true
 
+  /@sindresorhus/fnv1a@3.0.0:
+    resolution: {integrity: sha512-M6pmbdZqAryzjZ4ELAzrdCMoMZk5lH/fshKrapfSeXdf2W+GDqZvPmfXaNTZp43//FVbSwkTPwpEMnehSyskkQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dev: false
+
   /@sindresorhus/is@4.6.0:
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
     engines: {node: '>=10'}
@@ -2433,6 +2466,13 @@ packages:
     resolution: {integrity: sha512-TV7t8GKYaJWsn00tFDqBw8+Uqmr8A0fRU1tvTQhyZzGv0sJCGRQL3JGMI3ucuKo3XIZdUP+Lx7/gh2t3lewy7g==}
     engines: {node: '>=14.16'}
     dev: true
+
+  /@sindresorhus/string-hash@2.0.0:
+    resolution: {integrity: sha512-eNmMOd5DZkiu9LxIeHdh1XvDbcpFXV4HdBqg9hlg8YNKDvE6qmHiJ+Vy+rFrzXofRYmtheNv4A3ESad8unxwwA==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dependencies:
+      '@sindresorhus/fnv1a': 3.0.0
+    dev: false
 
   /@smithy/abort-controller@2.0.1:
     resolution: {integrity: sha512-0s7XjIbsTwZyUW9OwXQ8J6x1UiA1TNCh60Vaw56nHahL7kUZsLhmTlWiaxfLkFtO2Utkj8YewcpHTYpxaTzO+w==}

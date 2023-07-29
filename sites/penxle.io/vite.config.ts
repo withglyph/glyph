@@ -2,7 +2,6 @@ import { svg } from '@penxle/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import browserslist from 'browserslist';
 import { browserslistToTargets } from 'lightningcss';
-import unocss from 'unocss/vite';
 import { defineConfig } from 'vite';
 
 // eslint-disable-next-line import/no-default-export
@@ -20,7 +19,7 @@ export default defineConfig({
       ),
     },
   },
-  plugins: [svg(), unocss(), sveltekit()],
+  plugins: [svg(), sveltekit()],
   server: {
     host: '127.0.0.1',
     port: 4010,

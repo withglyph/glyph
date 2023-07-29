@@ -1,6 +1,5 @@
 <script lang="ts">
   import '../styles/index.css';
-  import 'uno.css';
   import { beforeNavigate } from '$app/navigation';
   import { updated } from '$app/stores';
   import { setupAnalytics } from '$lib/analytics';

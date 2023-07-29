@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "strict": true,
+    "outDir": "dist"
+  }
+}

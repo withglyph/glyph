@@ -14,6 +14,7 @@
   "devDependencies": {
     "@iconify/utils": "^2.1.7",
     "@penxle/eslint-config": "workspace:^",
+    "@penxle/unocss": "workspace:^",
     "@penxle/vite": "workspace:^",
     "@sveltejs/adapter-vercel": "^3.0.2",
     "@sveltejs/kit": "^1.22.3",
