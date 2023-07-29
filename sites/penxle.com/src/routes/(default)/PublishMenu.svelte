@@ -48,13 +48,13 @@
 
 <button
   bind:this={targetEl}
-  class="relative flex items-center gap-2 rounded-full from-cyan-500 via-brand-500 to-violet-500 bg-gradient-to-rb px-4 py-2 font-medium text-white transition before:(absolute inset-0 rounded-full bg-brand-500 opacity-0 transition content-empty hover:opacity-100)"
+  class="relative flex items-center gap-2 rounded-lg from-[#ED4D87] to-[#FF9A61] bg-gradient-to-r px-4 py-2 font-medium text-white transition before:(absolute inset-0 z-1 rounded-inherit bg-black opacity-0 transition content-empty hover:opacity-10)"
   tabindex="-1"
   type="button"
   on:click={() => (open = true)}
 >
-  <span class="z-1 text-sm">올리기</span>
-  <span class="i-lc-pencil z-1 square-4" />
+  <span class="i-lc-pencil square-4" />
+  <span class="text-sm">올리기</span>
 </button>
 
 {#if open}
@@ -73,7 +73,7 @@
     use:portal
   >
     <button
-      class="group flex items-center gap-4 px-4 py-2 hover:bg-gray-100"
+      class="group flex items-center gap-4 px-4 py-2 hover:bg-gray-10"
       tabindex="-1"
       type="button"
       on:click={() => {
@@ -83,20 +83,18 @@
       }}
     >
       <div
-        class="square-12 flex center rounded-xl bg-gray-100 group-hover:bg-gray-200"
+        class="square-12 flex center rounded-xl bg-gray-10 group-hover:bg-gray-20"
       >
-        <span class="i-lc-wrap-text square-6 text-gray-500" />
+        <span class="i-lc-wrap-text square-6 text-gray-50" />
       </div>
       <div class="flex flex-col">
         <div class="font-bold">글</div>
-        <div class="text-sm text-gray-500">
-          새로운 글을 스페이스에 작성해요.
-        </div>
+        <div class="text-sm text-gray-50">새로운 글을 스페이스에 작성해요.</div>
       </div>
     </button>
 
     <button
-      class="group flex items-center gap-4 px-4 py-2 hover:bg-gray-100"
+      class="group flex items-center gap-4 px-4 py-2 hover:bg-gray-10"
       tabindex="-1"
       type="button"
       on:click={() => {
@@ -106,13 +104,13 @@
       }}
     >
       <div
-        class="square-12 flex center rounded-xl bg-gray-100 group-hover:bg-gray-200"
+        class="square-12 flex center rounded-xl bg-gray-10 group-hover:bg-gray-20"
       >
-        <span class="i-lc-image square-6 text-gray-500" />
+        <span class="i-lc-image square-6 text-gray-50" />
       </div>
       <div class="flex flex-col">
         <div class="font-bold">그림</div>
-        <div class="text-sm text-gray-500">
+        <div class="text-sm text-gray-50">
           새로운 그림을 스페이스에 업로드해요.
         </div>
       </div>
@@ -121,7 +119,7 @@
     <hr class="my-2" />
 
     <button
-      class="group flex items-center gap-4 px-4 py-2 hover:bg-gray-100"
+      class="group flex items-center gap-4 px-4 py-2 hover:bg-gray-10"
       tabindex="-1"
       type="button"
       on:click={() => {
@@ -130,13 +128,13 @@
       }}
     >
       <div
-        class="square-12 flex center rounded-xl bg-gray-100 group-hover:bg-gray-200"
+        class="square-12 flex center rounded-xl bg-gray-10 group-hover:bg-gray-20"
       >
-        <span class="i-lc-box square-6 text-gray-500" />
+        <span class="i-lc-box square-6 text-gray-50" />
       </div>
       <div class="flex flex-col">
         <div class="font-bold">스페이스</div>
-        <div class="text-sm text-gray-500">새 스페이스를 만들어요.</div>
+        <div class="text-sm text-gray-50">새 스페이스를 만들어요.</div>
       </div>
     </button>
   </div>

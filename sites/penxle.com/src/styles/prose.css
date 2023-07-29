@@ -24,7 +24,7 @@
   }
 
   & p.is-editor-empty:first-child::before {
-    --uno: text-gray-400 h-0 pointer-events-none float-left;
+    --uno: text-gray-40 h-0 pointer-events-none float-left;
     content: attr(data-placeholder);
   }
 }

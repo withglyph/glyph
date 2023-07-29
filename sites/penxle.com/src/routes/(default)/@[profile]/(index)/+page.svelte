@@ -36,8 +36,8 @@
       {$query.profile.name}
     </div>
     <div class="flex items-center text-sm">
-      <span class="i-lc-link mr-1.5 text-gray-500" />
-      <div class="text-gray-500">
+      <span class="i-lc-link mr-1.5 text-gray-50" />
+      <div class="text-gray-50">
         {$page.url.host}/
       </div>
       <div>
@@ -54,7 +54,7 @@
 <hr class="my-8" />
 
 <div class="flex items-center gap-2 font-medium">
-  <span class="i-lc-box text-gray-700" />
+  <span class="i-lc-box text-gray-70" />
   스페이스
 </div>
 

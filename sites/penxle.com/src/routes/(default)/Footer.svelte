@@ -6,14 +6,14 @@
   let showDisclosure = false;
 </script>
 
-<footer class="border-t px-4 py-8 text-xs tracking-wider text-gray-400">
+<footer class="border-t px-4 py-8 text-xs tracking-wider text-gray-40">
   <nav class="mx-auto max-w-screen-lg space-y-4">
     <section class="flex items-center justify-between">
       <Wordmark class="h-4" />
 
       <div class="flex items-center gap-4">
         <Link
-          class="i-px-logo square-5 hover:text-gray-900"
+          class="i-px-logo square-5 hover:text-gray-90"
           href="/penxle.team"
         />
         <Link
@@ -34,17 +34,17 @@
     <section>
       <div class="flex items-center gap-2">
         <div>(주)펜슬컴퍼니</div>
-        <div class="h-2 border-l border-gray-300" />
+        <div class="h-2 border-l border-gray-30" />
         <div>대표: XXX</div>
-        <div class="h-2 border-l border-gray-300" />
+        <div class="h-2 border-l border-gray-30" />
         <div>개인정보관리책임자: XXX</div>
       </div>
 
       <div class="flex items-center gap-2">
         <div>사업자등록번호: 123-45-67890</div>
-        <div class="h-2 border-l border-gray-300" />
+        <div class="h-2 border-l border-gray-30" />
         <Link
-          class="hover:text-gray-500"
+          class="hover:text-gray-50"
           href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=1234567890"
         >
           통신판매업신고: 2023-서울강남-1234
@@ -53,13 +53,13 @@
 
       <div class="flex items-center gap-2">
         <div>주소: 서울특별시 강남구 강남대로 1, 1층</div>
-        <div class="h-2 border-l border-gray-300" />
+        <div class="h-2 border-l border-gray-30" />
         <div>전화: 02-123-4567</div>
       </div>
     </section>
 
     {#if showDisclosure}
-      <section class="font-light text-gray-300">
+      <section class="font-light text-gray-30">
         (주)펜슬컴퍼니는 통신판매중개자이며, 통신판매의 당사자가 아닙니다.
         <br />
         콘텐츠 및 거래에 관한 의무와 책임은 콘텐츠 소유자 및 거래 당사자 각자에게
@@ -68,30 +68,30 @@
     {/if}
 
     <section class="flex items-center gap-2">
-      <Link class="hover:text-gray-500" href="/legal/terms">이용약관</Link>
-      <div class="h-2 border-l border-gray-300" />
-      <Link class="font-medium hover:text-gray-500" href="/legal/privacy">
+      <Link class="hover:text-gray-50" href="/legal/terms">이용약관</Link>
+      <div class="h-2 border-l border-gray-30" />
+      <Link class="font-medium hover:text-gray-50" href="/legal/privacy">
         개인정보처리방침
       </Link>
-      <div class="h-2 border-l border-gray-300" />
+      <div class="h-2 border-l border-gray-30" />
       <button
-        class="hover:text-gray-500"
+        class="hover:text-gray-50"
         type="button"
         on:click={() => (showDisclosure = !showDisclosure)}
       >
         통신판매중개 고지
       </button>
-      <div class="h-2 border-l border-gray-300" />
-      <Link class="hover:text-gray-500" href="/help">도움 센터</Link>
-      <div class="h-2 border-l border-gray-300" />
-      <Link class="hover:text-gray-500" href="/blog">펜슬 소식</Link>
-      <div class="h-2 border-l border-gray-300" />
-      <Link class="hover:text-gray-500" href="https://penxle.io">
+      <div class="h-2 border-l border-gray-30" />
+      <Link class="hover:text-gray-50" href="/help">도움 센터</Link>
+      <div class="h-2 border-l border-gray-30" />
+      <Link class="hover:text-gray-50" href="/blog">펜슬 소식</Link>
+      <div class="h-2 border-l border-gray-30" />
+      <Link class="hover:text-gray-50" href="https://penxle.io">
         펜슬컴퍼니 소개
       </Link>
-      <div class="h-2 border-l border-gray-300" />
+      <div class="h-2 border-l border-gray-30" />
       <Link
-        class="flex items-center gap-0.5 hover:text-gray-500"
+        class="flex items-center gap-0.5 hover:text-gray-50"
         href={`https://github.com/penxle/penxle/tree/${PUBLIC_VERCEL_GIT_COMMIT_SHA}`}
       >
         현재 배포 버전:

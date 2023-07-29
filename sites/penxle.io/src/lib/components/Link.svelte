@@ -12,7 +12,7 @@
 <a
   class={clsx(
     underline && 'hover:underline underline-offset-2',
-    colored && 'text-brand-500',
+    colored && 'text-brand-50',
     _class,
   )}
   {href}

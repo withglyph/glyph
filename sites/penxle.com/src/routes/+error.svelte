@@ -34,7 +34,7 @@
       {/if}
     </h2>
 
-    <p class="mt-4 text-sm text-gray-500">
+    <p class="mt-4 text-sm text-gray-50">
       {#if code === 404}
         페이지를 찾을 수가 없었어요.
         <br />
@@ -45,7 +45,7 @@
     </p>
 
     <a
-      class="mt-16 rounded-full bg-gray-800 px-4 py-2 font-medium leading-none text-white transition duration-300 active:bg-black hover:bg-gray-900"
+      class="mt-16 rounded-full bg-gray-80 px-4 py-2 font-medium leading-none text-white transition duration-300 active:bg-black hover:bg-gray-90"
       href="/"
     >
       펜슬 홈으로 가기
@@ -55,7 +55,7 @@
   <div>
     {#if error instanceof UnknownError && error.cause}
       <button
-        class="cursor-pointer text-sm text-gray-500"
+        class="cursor-pointer text-sm text-gray-50"
         type="button"
         on:click={() => (open = true)}
       >

@@ -12,7 +12,7 @@
   <button
     slot="right-icon"
     class={clsx(
-      'square-4 text-gray-300 transition hover:text-gray-400',
+      'square-4 text-gray-30 transition hover:text-gray-40',
       reveal ? 'i-lc-eye-off' : 'i-lc-eye',
     )}
     tabindex="-1"

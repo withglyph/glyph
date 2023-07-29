@@ -33,7 +33,7 @@
               <slot name="title" />
             </h3>
             <button
-              class="square-7 flex center rounded text-gray-500 transition hover:(bg-gray-100 text-gray-600)"
+              class="square-7 flex center rounded text-gray-50 transition hover:(bg-gray-10 text-gray-60)"
               type="button"
               on:click={() => (open = false)}
             >
@@ -42,7 +42,7 @@
           </div>
         {:else}
           <button
-            class="absolute right-4 top-4 z-1 square-7 flex center rounded text-gray-500 transition hover:(bg-gray-100 text-gray-600)"
+            class="absolute right-4 top-4 z-1 square-7 flex center rounded text-gray-50 transition hover:(bg-gray-10 text-gray-60)"
             type="button"
             on:click={() => (open = false)}
           >

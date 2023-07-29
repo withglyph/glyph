@@ -5,7 +5,7 @@
 ![](https://img.shields.io/github/license/penxle/penxle)
 ![](https://img.shields.io/github/languages/code-size/penxle/penxle)
 
-창작을 즐겁게, PENXLE.
+함께 그리는 반짝임, PENXLE.
 
 ## 모노레포 구성
 
@@ -16,6 +16,13 @@
 | [`apps/media-optimizer`](apps/media-optimizer)         | 미디어 최적화 전처리 및 후처리 |
 | [`packages/eslint-config`](packages/eslint-config)     | ESLint 공용 설정               |
 | [`packages/prettier-config`](packages/prettier-config) | Prettier 공용 설정             |
+
+## 디렉토리 구조
+
+- `apps/`: 독립적으로 동작하는 애플리케이션 코드
+- `packages/`: 사이트에서 공통으로 사용
+- `scripts/`: 스크립트
+- `sites/`: 사이트
 
 ## 시스템 요구사항
 
