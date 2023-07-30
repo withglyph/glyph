@@ -123,9 +123,9 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
       const style = css.replaceAll(/(\.\S+?)({[\S\s]+?})/g, ':global($1) $2');
 
       if (ast.css) {
-        source.appendRight(ast.css.content.end, style);
+        source.appendRight(ast.css.content.end, `\n${style}\n`);
       } else {
-        source.append(`<style>${style}</style>`);
+        source.append(`\n<style>\n${style}\n</style>\n`);
       }
 
       return {
