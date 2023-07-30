@@ -128,6 +128,9 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
         source.append(`\n<style>\n${style}\n</style>\n`);
       }
 
+      console.log(filename);
+      console.log(source.toString());
+
       return {
         code: source.toString(),
         map: source.generateMap({ hires: true, source: filename }),
