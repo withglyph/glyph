@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Helmet } from '$lib/components';
+  import { Helmet } from '@penxle/ui';
   import { graphql, useQuery } from '$lib/houdini';
   import { warnOnUnload } from '$lib/svelte/lifecycle';
   import Editor from './Editor.svelte';

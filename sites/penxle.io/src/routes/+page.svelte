@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Helmet } from '$lib/components';
+  import { Helmet } from '@penxle/ui';
 </script>
 
 <Helmet title="펜슬컴퍼니" />

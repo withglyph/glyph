@@ -266,6 +266,9 @@ importers:
       '@penxle/eslint-config':
         specifier: workspace:^
         version: link:../../packages/eslint-config
+      '@penxle/ui':
+        specifier: workspace:^
+        version: link:../../packages/ui
       '@penxle/vite':
         specifier: workspace:^
         version: link:../../packages/vite
@@ -449,6 +452,9 @@ importers:
       '@penxle/eslint-config':
         specifier: workspace:^
         version: link:../../packages/eslint-config
+      '@penxle/ui':
+        specifier: workspace:^
+        version: link:../../packages/ui
       '@penxle/vite':
         specifier: workspace:^
         version: link:../../packages/vite

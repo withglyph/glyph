@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Helmet, Image, Tooltip } from '$lib/components';
+  import { Helmet } from '@penxle/ui';
+  import { Image, Tooltip } from '$lib/components';
   import { graphql, useQuery } from '$lib/houdini';
 
   $: query = useQuery(
