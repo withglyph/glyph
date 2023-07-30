@@ -61,6 +61,7 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
       };
 
       const transformClasses = async (classes: string) => {
+        console.log(classes);
         const list = classes.split(/\s+/);
         const knowns = new Set<string>();
         const unknowns = new Set<string>();
