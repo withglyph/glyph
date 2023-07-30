@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
   import { page } from '$app/stores';
-  import { Button, Helmet, Modal } from '$lib/components';
+  import { Button, Modal } from '$lib/components';
   import { Logo } from '$lib/components/branding';
   import { deserializeAppError, UnknownError } from '$lib/errors';
 
@@ -70,7 +71,7 @@
   <Modal bind:open>
     <svelte:fragment slot="title">{name}: {message}</svelte:fragment>
 
-    <div class="overflow-auto whitespace-pre font-mono">
+    <div class="font-mono overflow-auto whitespace-pre">
       {stack ?? 'Stacktrace not available'}
     </div>
 

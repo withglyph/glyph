@@ -80,7 +80,7 @@
 <div bind:this={element} class="contents">
   {#if !editor}
     <div
-      class="ProseMirror max-w-full whitespace-pre-wrap prose prose-gray font-content-sans"
+      class="ProseMirror font-content-sans max-w-full whitespace-pre-wrap prose prose-gray"
     >
       <p class="is-editor-empty" data-placeholder={placeholder} />
     </div>

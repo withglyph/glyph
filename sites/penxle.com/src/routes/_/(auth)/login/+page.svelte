@@ -1,7 +1,8 @@
 <script lang="ts">
+  import { Helmet, Link } from '@penxle/ui';
   import { goto } from '$app/navigation';
   import { graphql } from '$houdini';
-  import { Button, Helmet, Link } from '$lib/components';
+  import { Button } from '$lib/components';
   import { Logo } from '$lib/components/branding';
   import { FormField, PasswordInput, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';

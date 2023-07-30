@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { Helmet, Link } from '@penxle/ui';
   import { page } from '$app/stores';
-  import { Avatar, Button, Helmet, Link } from '$lib/components';
+  import { Avatar, Button } from '$lib/components';
   import { graphql, useQuery } from '$lib/houdini';
   import UpdateProfileModal from './UpdateProfileModal.svelte';
 

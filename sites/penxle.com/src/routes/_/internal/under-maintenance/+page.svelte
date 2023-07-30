@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Link } from '$lib/components';
+  import { Link } from '@penxle/ui';
 </script>
 
 <div class="mx-auto flex grow flex-col center gap-4 text-center">

@@ -1,6 +1,6 @@
 <script lang="ts">
+  import { Link } from '@penxle/ui';
   import Wordmark from '$assets/branding/wordmark.svg?component';
-  import { Link } from '$lib/components';
 
   let showDisclosure = false;
 </script>

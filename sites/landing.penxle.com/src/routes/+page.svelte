@@ -1,10 +1,10 @@
 <script lang="ts">
+  import { Helmet, Link } from '@penxle/ui';
   import { clsx } from 'clsx';
   import { fade } from 'svelte/transition';
   import ComingSoon from '$assets/coming-soon.svg?component';
   import Logo from '$assets/logo.svg?component';
   import Slogan from '$assets/slogan.svg?component';
-  import { Helmet, Link } from '$lib/components';
   import { RingSpinner } from '$lib/components/spinners';
 
   let phoneNumber = '';

@@ -1,6 +1,6 @@
 <script lang="ts">
+  import { Helmet, Link } from '@penxle/ui';
   import { page } from '$app/stores';
-  import { Helmet, Link } from '$lib/components';
 </script>
 
 <Helmet title="펜슬컴퍼니" />
