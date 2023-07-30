@@ -127,7 +127,6 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
 
       return {
         code: source.toString(),
-        map: source.generateMap({ hires: true, source: filename }),
       };
     },
   };
