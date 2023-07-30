@@ -11,7 +11,6 @@ export default defineConfig({
     cssMinify: 'lightningcss',
   },
   css: {
-    devSourcemap: true,
     transformer: 'lightningcss',
     lightningcss: {
       drafts: { nesting: true },
