@@ -1,5 +1,5 @@
 import { loadConfig } from '@unocss/config';
-import { createGenerator, expandVariantGroup } from '@unocss/core';
+import { createGenerator } from '@unocss/core';
 import MagicString from 'magic-string';
 import { traverse } from 'object-traversal';
 import { parse } from 'svelte/compiler';
@@ -61,7 +61,7 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
       };
 
       const transformClasses = async (classes: string) => {
-        const list = expandVariantGroup(classes).split(/\s+/);
+        const list = classes.split(/\s+/);
         const knowns = new Set<string>();
         const unknowns = new Set<string>();
 
