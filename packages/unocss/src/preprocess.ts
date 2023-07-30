@@ -131,6 +131,7 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
       if (filename?.includes('TextInput')) {
         console.log(filename);
         console.log(source.toString());
+        console.log({ css, shortcuts });
       }
 
       return {
