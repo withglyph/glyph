@@ -109,6 +109,10 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
       const shortcuts = [...uno.config.shortcuts];
       uno.config.shortcuts = [...shortcuts, ...Object.entries(shortcutMap)];
 
+      if (filename?.includes('TextInput')) {
+        console.log(uno.config.shortcuts);
+      }
+
       const { css } = await uno.generate(Object.keys(shortcutMap), {
         preflights: false,
         safelist: false,
