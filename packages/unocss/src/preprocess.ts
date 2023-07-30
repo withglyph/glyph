@@ -19,9 +19,9 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
     markup: async ({ content, filename }) => {
       const uno = await unoPromise;
 
-      type Replacement = { value: string; start: number; end: number };
-      const replacements: Array<Replacement> = [];
-      const shortcuts: Record<string, string> = {};
+      type Classes = { value: string; start: number; end: number };
+      const classesList: Array<Classes> = [];
+      const shortcutMap: Record<string, string> = {};
 
       const source = new MagicString(content);
       const ast = parse(content);
@@ -42,7 +42,7 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
 
       const walkValue = (node: TemplateNode) => {
         if (node?.type === 'Text') {
-          replacements.push({
+          classesList.push({
             value: node.data,
             start: node.start,
             end: node.end,
@@ -50,7 +50,7 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
         } else if (node?.type === 'MustacheTag') {
           traverse(node, ({ value: node }) => {
             if (node?.type === 'Literal' && typeof node.value === 'string') {
-              replacements.push({
+              classesList.push({
                 value: node.value,
                 start: node.start + 1,
                 end: node.end - 1,
@@ -82,12 +82,12 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
 
         if (production) {
           const hashed = hashClasses(filename ?? '', known);
-          shortcuts[hashed] = known;
+          shortcutMap[hashed] = known;
           return unknowns.size === 0 ? hashed : `${unknown} ${hashed}`;
         } else {
           const hashes = [...knowns].map((cls) => {
             const hashed = hashClasses(filename ?? '', cls);
-            shortcuts[hashed] = cls;
+            shortcutMap[hashed] = cls;
             return hashed;
           });
           const hashed = hashes.join(' ');
@@ -97,28 +97,25 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
 
       walk(ast.html);
 
-      for (const { value, start, end } of replacements) {
-        const shortcut = await transformClasses(value);
-        source.overwrite(start, end, shortcut);
+      for (const { value, start, end } of classesList) {
+        const transformed = await transformClasses(value);
+        source.overwrite(start, end, transformed);
       }
 
-      if (Object.keys(shortcuts).length === 0) {
+      if (Object.keys(shortcutMap).length === 0) {
         return;
       }
 
-      const configuredShortcuts = uno.config.shortcuts;
       uno.config.shortcuts = [
-        ...configuredShortcuts,
-        ...Object.entries(shortcuts),
+        ...uno.config.shortcuts,
+        ...Object.entries(shortcutMap),
       ];
 
-      const { css } = await uno.generate(Object.keys(shortcuts), {
+      const { css } = await uno.generate(Object.keys(shortcutMap), {
         preflights: false,
         safelist: false,
         minify: true,
       });
-
-      uno.config.shortcuts = configuredShortcuts;
 
       const style = css.replaceAll(/(\.\S+?)({[\S\s]+?})/g, ':global($1)$2');
 
@@ -131,7 +128,7 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
       if (filename?.includes('TextInput')) {
         console.log(filename);
         console.log(source.toString());
-        console.log({ css, shortcuts });
+        console.log({ css, shortcutMap });
       }
 
       return {
