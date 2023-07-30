@@ -125,12 +125,6 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
         source.append(`\n<style>\n${style}\n</style>\n`);
       }
 
-      if (filename?.includes('TextInput')) {
-        console.log(filename);
-        console.log(source.toString());
-        console.log({ css, shortcutMap });
-      }
-
       return {
         code: source.toString(),
         map: source.generateMap({ hires: true, source: filename }),
