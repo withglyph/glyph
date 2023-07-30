@@ -61,7 +61,6 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
       };
 
       const transformClasses = async (classes: string) => {
-        console.log(classes);
         const list = classes.split(/\s+/);
         const knowns = new Set<string>();
         const unknowns = new Set<string>();
@@ -121,7 +120,7 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
 
       uno.config.shortcuts = configuredShortcuts;
 
-      const style = css.replaceAll(/(\.\S+?)({[\S\s]+?})/g, ':global($1) $2');
+      const style = css.replaceAll(/(\.\S+?)({[\S\s]+?})/g, ':global($1)$2');
 
       if (ast.css) {
         source.appendRight(ast.css.content.end, `\n${style}\n`);
