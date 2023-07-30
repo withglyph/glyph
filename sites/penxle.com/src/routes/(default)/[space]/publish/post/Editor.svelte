@@ -93,5 +93,8 @@
 <!-- <hr class="mb-4 mt-8" /> -->
 
 <div class="mx-auto w-3xl flex grow">
-  <Tiptap bind:editor />
+  <Tiptap
+    class="max-w-full grow whitespace-pre-wrap prose prose-gray font-content-sans"
+    bind:editor
+  />
 </div>

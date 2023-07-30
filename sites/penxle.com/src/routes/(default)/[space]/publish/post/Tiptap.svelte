@@ -13,9 +13,12 @@
   import { TextAlign } from '@tiptap/extension-text-align';
   import { Typography } from '@tiptap/extension-typography';
   import { Underline } from '@tiptap/extension-underline';
+  import { clsx } from 'clsx';
   import { onDestroy, onMount } from 'svelte';
 
   let element: HTMLDivElement;
+  let _class: string;
+  export { _class as class };
   export let editor: Editor | undefined = undefined;
   export let value: object | undefined = undefined;
 
@@ -50,10 +53,7 @@
       ],
       injectCSS: false,
       editorProps: {
-        attributes: {
-          class:
-            'grow font-content-sans prose prose-gray max-w-full whitespace-pre-wrap',
-        },
+        attributes: { class: _class },
         scrollMargin: { top: 100, bottom: 100, left: 0, right: 0 },
         scrollThreshold: { top: 100, bottom: 100, left: 0, right: 0 },
         handleKeyDown: (_, event) => {
@@ -79,9 +79,7 @@
 
 <div bind:this={element} class="contents">
   {#if !editor}
-    <div
-      class="ProseMirror max-w-full whitespace-pre-wrap prose prose-gray font-content-sans"
-    >
+    <div class={clsx('ProseMirror', _class)}>
       <p class="is-editor-empty" data-placeholder={placeholder} />
     </div>
   {/if}
