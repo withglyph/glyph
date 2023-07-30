@@ -1,4 +1,3 @@
-import { cssIdRE } from '@unocss/core';
 import MagicString from 'magic-string';
 import type {
   SourceCodeTransformer,
@@ -49,7 +48,6 @@ const transformerEmptyBlock = (): SourceCodeTransformer => {
   return {
     name: '@penxle/unocss:transformer-empty-block',
     enforce: 'pre',
-    idFilter: (id) => cssIdRE.test(id),
     transform: (code) => {
       // 마크업에 element가 없는 svelte 파일의 경우 *{} 가 잘못된 최적화로 {} 로 바뀌는데, 이를 다시 *{} 로 고침.
       code.replaceAll('}{}', '}*{}');
