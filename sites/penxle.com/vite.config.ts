@@ -1,5 +1,4 @@
 import { svg } from '@penxle/vite';
-import { sentrySvelteKit as sentry } from '@sentry/sveltekit';
 import { sveltekit } from '@sveltejs/kit/vite';
 import browserslist from 'browserslist';
 import houdini from 'houdini/vite';
@@ -22,16 +21,7 @@ export default defineConfig({
       ),
     },
   },
-  plugins: [
-    sentry({
-      autoInstrument: false,
-      sourceMapsUploadOptions: { telemetry: false },
-    }),
-    svg(),
-    unocss(),
-    houdini(),
-    sveltekit(),
-  ],
+  plugins: [svg(), unocss(), houdini(), sveltekit()],
   server: {
     host: '127.0.0.1',
     port: 4000,
