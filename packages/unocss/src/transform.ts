@@ -38,7 +38,10 @@ export const transformCode = async (
   }
 
   if (source.hasChanged()) {
-    return source.toString();
+    return {
+      code: source.toString(),
+      map: source.generateMap({ hires: true, source: filename }),
+    };
   }
 };
 
