@@ -146,6 +146,28 @@ importers:
         specifier: ^4.4.7
         version: 4.4.7(@types/node@20.4.5)(lightningcss@1.21.5)
 
+  packages/unocss:
+    dependencies:
+      '@iconify/json':
+        specifier: ^2.2.95
+        version: 2.2.95
+      '@iconify/utils':
+        specifier: ^2.1.7
+        version: 2.1.7
+      '@unocss/preset-uno':
+        specifier: ^0.54.0
+        version: 0.54.0
+      unocss:
+        specifier: ^0.54.0
+        version: 0.54.0(postcss@8.4.27)(vite@4.4.7)
+    devDependencies:
+      '@penxle/eslint-config':
+        specifier: workspace:^
+        version: link:../eslint-config
+      typescript:
+        specifier: ^5.1.6
+        version: 5.1.6
+
   packages/vite:
     dependencies:
       svelte:
@@ -167,18 +189,15 @@ importers:
 
   sites/landing.penxle.com:
     devDependencies:
-      '@iconify/json':
-        specifier: ^2.2.95
-        version: 2.2.95
-      '@iconify/utils':
-        specifier: ^2.1.7
-        version: 2.1.7
       '@penxle/eslint-config':
         specifier: workspace:^
         version: link:../../packages/eslint-config
       '@penxle/ui':
         specifier: workspace:^
         version: link:../../packages/ui
+      '@penxle/unocss':
+        specifier: workspace:^
+        version: link:../../packages/unocss
       '@penxle/vite':
         specifier: workspace:^
         version: link:../../packages/vite
@@ -194,9 +213,6 @@ importers:
       '@types/node':
         specifier: ^20.4.5
         version: 20.4.5
-      '@unocss/preset-uno':
-        specifier: ^0.54.0
-        version: 0.54.0
       '@vercel/analytics':
         specifier: ^1.0.1
         version: 1.0.1
@@ -251,12 +267,6 @@ importers:
       '@floating-ui/dom':
         specifier: ^1.5.1
         version: 1.5.1
-      '@iconify/json':
-        specifier: ^2.2.95
-        version: 2.2.95
-      '@iconify/utils':
-        specifier: ^2.1.7
-        version: 2.1.7
       '@logtail/node':
         specifier: ^0.4.5
         version: 0.4.5
@@ -269,6 +279,9 @@ importers:
       '@penxle/ui':
         specifier: workspace:^
         version: link:../../packages/ui
+      '@penxle/unocss':
+        specifier: workspace:^
+        version: link:../../packages/unocss
       '@penxle/vite':
         specifier: workspace:^
         version: link:../../packages/vite
@@ -356,9 +369,6 @@ importers:
       '@types/ua-parser-js':
         specifier: ^0.7.36
         version: 0.7.36
-      '@unocss/preset-uno':
-        specifier: ^0.54.0
-        version: 0.54.0
       '@vercel/analytics':
         specifier: ^1.0.1
         version: 1.0.1
@@ -446,15 +456,15 @@ importers:
 
   sites/penxle.io:
     devDependencies:
-      '@iconify/utils':
-        specifier: ^2.1.7
-        version: 2.1.7
       '@penxle/eslint-config':
         specifier: workspace:^
         version: link:../../packages/eslint-config
       '@penxle/ui':
         specifier: workspace:^
         version: link:../../packages/ui
+      '@penxle/unocss':
+        specifier: workspace:^
+        version: link:../../packages/unocss
       '@penxle/vite':
         specifier: workspace:^
         version: link:../../packages/vite
@@ -467,9 +477,6 @@ importers:
       '@types/node':
         specifier: ^20.4.5
         version: 20.4.5
-      '@unocss/preset-uno':
-        specifier: ^0.54.0
-        version: 0.54.0
       '@vercel/analytics':
         specifier: ^1.0.1
         version: 1.0.1

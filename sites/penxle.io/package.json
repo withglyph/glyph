@@ -12,14 +12,13 @@
     "lint:fix": "eslint --fix ."
   },
   "devDependencies": {
-    "@iconify/utils": "^2.1.7",
     "@penxle/eslint-config": "workspace:^",
     "@penxle/ui": "workspace:^",
+    "@penxle/unocss": "workspace:^",
     "@penxle/vite": "workspace:^",
     "@sveltejs/adapter-vercel": "^3.0.2",
     "@sveltejs/kit": "^1.22.3",
     "@types/node": "^20.4.5",
-    "@unocss/preset-uno": "^0.54.0",
     "@vercel/analytics": "^1.0.1",
     "browserslist": "^4.21.9",
     "clsx": "^2.0.0",
