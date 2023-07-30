@@ -1,15 +1,27 @@
+import { cssIdRE } from '@unocss/core';
 import MagicString from 'magic-string';
-import type { UnocssPluginContext, UnoGenerator } from '@unocss/core';
+import type {
+  SourceCodeTransformer,
+  UnocssPluginContext,
+  UnoGenerator,
+} from '@unocss/core';
+
+const transformIdRE = /\.(css|svelte)($|\?)/;
 
 export const transformCode = async (
   uno: UnoGenerator,
   filename: string,
   code: string,
-  enforce?: 'pre' | 'post',
+  enforce: 'pre' | 'post' | 'default',
 ) => {
-  const transformers = (uno.config.transformers ?? []).filter(
-    (transformer) => transformer.enforce === enforce,
-  );
+  if (!transformIdRE.test(filename)) {
+    return;
+  }
+
+  const transformers = [
+    transformerEmptyBlock(),
+    ...(uno.config.transformers ?? []),
+  ].filter((transformer) => (transformer.enforce ?? 'default') === enforce);
 
   if (transformers.length === 0) {
     return;
@@ -28,4 +40,16 @@ export const transformCode = async (
   if (source.hasChanged()) {
     return source.toString();
   }
+};
+
+const transformerEmptyBlock = (): SourceCodeTransformer => {
+  return {
+    name: '@penxle/unocss:transformer-empty-block',
+    enforce: 'pre',
+    idFilter: (id) => cssIdRE.test(id),
+    transform: (code) => {
+      // 마크업에 element가 없는 svelte 파일의 경우 *{} 가 잘못된 최적화로 {} 로 바뀌는데, 이를 다시 *{} 로 고침.
+      code.replaceAll('}{}', '}');
+    },
+  };
 };

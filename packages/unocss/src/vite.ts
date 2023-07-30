@@ -13,7 +13,7 @@ export const unocss = async (): Promise<Plugin[]> => {
     preprocess(uno),
     virtual(uno),
     transform(uno, 'pre'),
-    transform(uno),
+    transform(uno, 'default'),
     transform(uno, 'post'),
   ];
 };
@@ -50,10 +50,13 @@ const virtual = (uno: UnoGenerator): Plugin => {
   };
 };
 
-const transform = (uno: UnoGenerator, enforce?: 'pre' | 'post'): Plugin => {
+const transform = (
+  uno: UnoGenerator,
+  enforce: 'pre' | 'default' | 'post',
+): Plugin => {
   return {
-    name: `@penxle/unocss:transform-${enforce ?? 'default'}`,
-    enforce,
+    name: `@penxle/unocss:${enforce}-transform`,
+    enforce: enforce === 'default' ? undefined : enforce,
     transform: async (code, id) => {
       return await transformCode(uno, id, code, enforce);
     },
