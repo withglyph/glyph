@@ -28,7 +28,11 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
 
       const walk = (node: TemplateNode) => {
         traverse(node, ({ value: node }) => {
-          if (node.type === 'Attribute' && node.name === 'class') {
+          if (
+            node?.value &&
+            node.type === 'Attribute' &&
+            node.name === 'class'
+          ) {
             for (const value of node.value) {
               walkValue(value);
             }
@@ -37,15 +41,15 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
       };
 
       const walkValue = (node: TemplateNode) => {
-        if (node.type === 'Text') {
+        if (node?.type === 'Text') {
           replacements.push({
             value: node.data,
             start: node.start,
             end: node.end,
           });
-        } else if (node.type === 'MustacheTag') {
+        } else if (node?.type === 'MustacheTag') {
           traverse(node, ({ value: node }) => {
-            if (node.type === 'Literal' && typeof node.value === 'string') {
+            if (node?.type === 'Literal' && typeof node.value === 'string') {
               replacements.push({
                 value: node.value,
                 start: node.start + 1,
@@ -93,12 +97,10 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
 
       walk(ast.html);
 
-      await Promise.all(
-        replacements.map(async ({ value, start, end }) => {
-          const shortcut = await transformClasses(value);
-          source.overwrite(start, end, shortcut);
-        }),
-      );
+      for (const { value, start, end } of replacements) {
+        const shortcut = await transformClasses(value);
+        source.overwrite(start, end, shortcut);
+      }
 
       if (Object.keys(shortcuts).length === 0) {
         return;
@@ -118,7 +120,7 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
 
       uno.config.shortcuts = configuredShortcuts;
 
-      const style = css.replaceAll(/(\.\S+?)({[\S\s]+?})/g, ':global($1)$2');
+      const style = css.replaceAll(/(\.\S+?)({[\S\s]+?})/g, ':global($1) $2');
 
       if (ast.css) {
         source.appendRight(ast.css.content.end, style);
