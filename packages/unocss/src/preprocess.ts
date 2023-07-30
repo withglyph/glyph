@@ -106,20 +106,16 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
         return;
       }
 
-      const shortcuts = [...uno.config.shortcuts];
-      uno.config.shortcuts = [...shortcuts, ...Object.entries(shortcutMap)];
-
-      if (filename?.includes('TextInput')) {
-        console.log(uno.config.shortcuts);
-      }
+      uno.config.shortcuts = [
+        ...uno.config.shortcuts,
+        ...Object.entries(shortcutMap),
+      ];
 
       const { css } = await uno.generate(Object.keys(shortcutMap), {
         preflights: false,
         safelist: false,
         minify: true,
       });
-
-      uno.config.shortcuts = shortcuts;
 
       const style = css.replaceAll(/(\.\S+?)({[\S\s]+?})/g, ':global($1)$2');
 
