@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalPassThroughEnv": [],
   "pipeline": {
     "deps": { "dependsOn": ["^deps"] },
     "//#deps": { "dependsOn": ["^deps"] },
