@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Helmet, Link } from '@penxle/ui';
+  import confetti from 'canvas-confetti';
   import { clsx } from 'clsx';
   import { fade } from 'svelte/transition';
   import ComingSoon from '$assets/coming-soon.svg?component';
@@ -9,6 +10,8 @@
 
   let phoneNumber = '';
   let status: 'idle' | 'submitting' | 'submitted' | 'invalid' = 'invalid';
+
+  let buttonEl: HTMLButtonElement;
 
   $: {
     const valid = /^0\d{2}-?\d{3,4}-?\d{4}$/.test(phoneNumber);
@@ -24,6 +27,17 @@
       });
     } finally {
       status = 'submitted';
+      const { x, y, width, height } = buttonEl.getBoundingClientRect();
+      await confetti({
+        particleCount: 200,
+        scalar: 1.2,
+        spread: 360,
+        startVelocity: 35,
+        origin: {
+          x: (x + width / 2) / window.innerWidth,
+          y: (y + height / 2) / window.innerHeight,
+        },
+      });
     }
   };
 </script>
@@ -62,6 +76,7 @@
         />
 
         <button
+          bind:this={buttonEl}
           class={clsx(
             'relative overflow-hidden rounded-xl px-6 font-bold transition duration-150',
             status === 'idle' && 'bg-gray-80 text-gray-10 hover:bg-black',
