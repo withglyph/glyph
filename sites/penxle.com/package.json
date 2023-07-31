@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "doppler run -- vite dev",
     "build": "svelte-kit sync && prisma generate && vite build && prisma migrate deploy",
-    "codegen": "doppler run -- svelte-kit sync && prisma generate && houdini generate",
+    "codegen": "svelte-kit sync && houdini generate",
+    "codegen:prisma": "prisma generate",
     "db:migrate": "doppler run -- prisma migrate dev",
     "db:migrate:create": "doppler run -- prisma migrate dev --create-only",
     "check": "svelte-check --fail-on-warnings",
