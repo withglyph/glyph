@@ -3,8 +3,8 @@
   "extends": ["//"],
   "pipeline": {
     "codegen": {
-      "dependsOn": ["codegen:prisma"],
       "dotEnv": [".env"],
+      "dependsOn": ["codegen:prisma"],
       "outputs": [".svelte-kit/**", "$houdini/**"]
     },
     "codegen:prisma": { "cache": false },
@@ -13,8 +13,7 @@
         "PRIVATE_*",
         "PUBLIC_*",
         "VERCEL_ANALYTICS_ID",
-        "VERCEL_GIT_COMMIT_REF",
-        "SENTRY_DSN"
+        "VERCEL_GIT_COMMIT_REF"
       ],
       "outputs": [".svelte-kit/**", ".vercel/**"]
     }

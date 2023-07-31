@@ -23,7 +23,6 @@ export default {
         client: 'src/hooks/client',
       },
     },
-    paths: { relative: false },
     typescript: {
       config: (config) => ({
         ...config,
