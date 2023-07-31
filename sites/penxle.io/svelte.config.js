@@ -11,6 +11,7 @@ export default {
       publicPrefix: 'PUBLIC_',
       privatePrefix: 'PRIVATE_',
     },
+    paths: { relative: false },
     typescript: {
       config: (config) => ({
         ...config,
