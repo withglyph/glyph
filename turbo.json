@@ -1,6 +1,5 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalPassThroughEnv": [],
   "pipeline": {
     "deps": { "dependsOn": ["^deps"] },
     "//#deps": { "dependsOn": ["^deps"] },
@@ -8,7 +7,6 @@
     "dev": {
       "cache": false,
       "dependsOn": ["codegen", "^build"],
-      "passThroughEnv": ["*"],
       "persistent": true
     },
     "codegen": {},
