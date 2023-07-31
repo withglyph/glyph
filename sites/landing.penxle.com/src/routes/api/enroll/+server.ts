@@ -1,9 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 import { json } from '@sveltejs/kit';
-import { SUPABASE_KEY, SUPABASE_URL } from '$env/static/private';
+import {
+  PRIVATE_SUPABASE_KEY,
+  PRIVATE_SUPABASE_URL,
+} from '$env/static/private';
 import type { RequestHandler } from './$types';
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+const supabase = createClient(PRIVATE_SUPABASE_URL, PRIVATE_SUPABASE_KEY, {
   auth: { persistSession: false },
 });
 

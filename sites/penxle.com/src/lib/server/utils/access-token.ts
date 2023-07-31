@@ -1,8 +1,10 @@
 import * as jose from 'jose';
 import { memo } from 'radash';
-import { JWK } from '$env/static/private';
+import { PRIVATE_JWK } from '$env/static/private';
 
-const jwk = JSON.parse(Buffer.from(JWK, 'base64').toString()) as jose.JWK;
+const jwk = JSON.parse(
+  Buffer.from(PRIVATE_JWK, 'base64').toString(),
+) as jose.JWK;
 
 const loadPublicKey = memo(async () =>
   jose.importJWK({ ...jwk, d: undefined }),

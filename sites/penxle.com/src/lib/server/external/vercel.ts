@@ -1,5 +1,5 @@
 import { get } from '@vercel/edge-config';
-import { VERCEL_GIT_COMMIT_REF } from '$env/static/private';
+import { PUBLIC_VERCEL_GIT_COMMIT_REF } from '$env/static/public';
 import type { RequestEvent } from '@sveltejs/kit';
 
 type MaintenanceConfig = {
@@ -22,7 +22,7 @@ export const isUnderMaintenance = async (event: RequestEvent) => {
   } = config!;
 
   if (
-    !targets[VERCEL_GIT_COMMIT_REF] ||
+    !targets[PUBLIC_VERCEL_GIT_COMMIT_REF] ||
     ips.includes(event.getClientAddress()) ||
     event.request.headers.get('x-vercel-protection-bypass') === token
   ) {

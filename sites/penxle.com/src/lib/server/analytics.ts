@@ -1,11 +1,11 @@
 import Mixpanel from 'mixpanel';
 import UAParser from 'ua-parser-js';
-import { MIXPANEL_TOKEN } from '$env/static/private';
+import { PRIVATE_MIXPANEL_TOKEN } from '$env/static/private';
 import { production } from '$lib/environment';
 import type { InteractiveTransactionClient } from './database';
 import type { RequestEvent } from '@sveltejs/kit';
 
-export const mixpanel = Mixpanel.init(MIXPANEL_TOKEN);
+export const mixpanel = Mixpanel.init(PRIVATE_MIXPANEL_TOKEN);
 
 export const track = (
   event: RequestEvent,

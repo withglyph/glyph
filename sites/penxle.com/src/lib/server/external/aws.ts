@@ -1,8 +1,18 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { nanoid } from 'nanoid';
+import {
+  PRIVATE_AWS_ACCESS_KEY_ID,
+  PRIVATE_AWS_SECRET_ACCESS_KEY,
+} from '$env/static/private';
 
-const S3 = new S3Client({ region: 'ap-northeast-2' });
+const S3 = new S3Client({
+  region: 'ap-northeast-2',
+  credentials: {
+    accessKeyId: PRIVATE_AWS_ACCESS_KEY_ID,
+    secretAccessKey: PRIVATE_AWS_SECRET_ACCESS_KEY,
+  },
+});
 
 export const createS3ObjectKey = () => {
   const key = nanoid(24);

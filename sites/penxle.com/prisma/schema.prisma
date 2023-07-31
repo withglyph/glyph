@@ -8,8 +8,8 @@ generator pothos {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DATABASE_DIRECT_URL")
+  url       = env("PRIVATE_DATABASE_URL")
+  directUrl = env("PRIVATE_DATABASE_DIRECT_URL")
 }
 
 model Image {

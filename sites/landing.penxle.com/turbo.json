@@ -7,7 +7,12 @@
       "outputs": [".svelte-kit/**"]
     },
     "build": {
-      "dotEnv": [".env"],
+      "env": [
+        "PRIVATE_*",
+        "PUBLIC_*",
+        "VERCEL_ANALYTICS_ID",
+        "VERCEL_GIT_COMMIT_REF"
+      ],
       "outputs": [".svelte-kit/**", ".vercel/**"]
     }
   }
