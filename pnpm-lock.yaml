@@ -222,6 +222,9 @@ importers:
       '@sveltejs/kit':
         specifier: ^1.22.3
         version: 1.22.3(svelte@4.1.1)(vite@4.4.7)
+      '@types/canvas-confetti':
+        specifier: ^1.6.0
+        version: 1.6.0
       '@types/node':
         specifier: ^20.4.5
         version: 20.4.5
@@ -231,6 +234,9 @@ importers:
       browserslist:
         specifier: ^4.21.9
         version: 4.21.9
+      canvas-confetti:
+        specifier: ^1.6.0
+        version: 1.6.0
       clsx:
         specifier: ^2.0.0
         version: 2.0.0
@@ -3004,6 +3010,10 @@ packages:
       '@types/responselike': 1.0.0
     dev: true
 
+  /@types/canvas-confetti@1.6.0:
+    resolution: {integrity: sha512-Yq6rIccwcco0TLD5SMUrIM7Fk7Fe/C0jmNRxJJCLtAF6gebDkPuUjK5EHedxecm69Pi/aA+It39Ux4OHmFhjRw==}
+    dev: true
+
   /@types/cookie@0.5.1:
     resolution: {integrity: sha512-COUnqfB2+ckwXXSFInsFdOAWQzCCx+a5hq2ruyj+Vjund94RJQd4LG2u9hnvJrTgunKAaax7ancBYlDrNYxA0g==}
     dev: true
@@ -4218,6 +4228,10 @@ packages:
 
   /caniuse-lite@1.0.30001517:
     resolution: {integrity: sha512-Vdhm5S11DaFVLlyiKu4hiUTkpZu+y1KA/rZZqVQfOD5YdDT/eQKlkt7NaE0WGOFgX32diqt9MiP9CAiFeRklaA==}
+    dev: true
+
+  /canvas-confetti@1.6.0:
+    resolution: {integrity: sha512-ej+w/m8Jzpv9Z7W7uJZer14Ke8P2ogsjg4ZMGIuq4iqUOqY2Jq8BNW42iGmNfRwREaaEfFIczLuZZiEVSYNHAA==}
     dev: true
 
   /case-anything@2.1.13:
