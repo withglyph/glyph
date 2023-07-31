@@ -1,20 +1,15 @@
 {
+  "$schema": "https://turbo.build/schema.json",
   "extends": ["//"],
   "pipeline": {
+    "codegen": {
+      "dotEnv": [".env"],
+      "dependsOn": ["codegen:prisma"],
+      "outputs": [".svelte-kit/**", "$houdini/**"]
+    },
+    "codegen:prisma": { "cache": false },
     "build": {
-      "env": [
-        "AWS_ACCESS_KEY_ID",
-        "AWS_SECRET_ACCESS_KEY",
-        "DATABASE_DIRECT_URL",
-        "DATABASE_URL",
-        "EDGE_CONFIG",
-        "JWK",
-        "LOGTAIL_TOKEN",
-        "MIXPANEL_TOKEN",
-        "SENTRY_DSN",
-        "VERCEL_ANALYTICS_ID",
-        "VERCEL_GIT_COMMIT_REF"
-      ],
+      "dotEnv": [".env"],
       "outputs": [".svelte-kit/**", ".vercel/**"]
     }
   }

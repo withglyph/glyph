@@ -1,13 +1,13 @@
 {
+  "$schema": "https://turbo.build/schema.json",
   "extends": ["//"],
   "pipeline": {
+    "codegen": {
+      "dotEnv": [".env"],
+      "outputs": [".svelte-kit/**"]
+    },
     "build": {
-      "env": [
-        "SUPABASE_KEY",
-        "SUPABASE_URL",
-        "VERCEL_ANALYTICS_ID",
-        "VERCEL_GIT_COMMIT_REF"
-      ],
+      "dotEnv": [".env"],
       "outputs": [".svelte-kit/**", ".vercel/**"]
     }
   }
