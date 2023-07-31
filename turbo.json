@@ -5,7 +5,12 @@
     "deps": { "dependsOn": ["^deps"] },
     "//#deps": { "dependsOn": ["^deps"] },
 
-    "dev": { "cache": false, "persistent": true },
+    "dev": {
+      "cache": false,
+      "dependsOn": ["codegen", "^build"],
+      "passThroughEnv": ["*"],
+      "persistent": true
+    },
     "codegen": {},
 
     "build": { "dependsOn": ["^codegen", "^build"] },
