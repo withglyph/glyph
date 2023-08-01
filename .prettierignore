@@ -1,6 +1,5 @@
-CLA
-CODEOWNERS
-LICENSE
+docs/*
+!docs/*.md
 
 .husky/_/
 pnpm-lock.yaml

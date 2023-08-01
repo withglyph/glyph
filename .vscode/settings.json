@@ -13,6 +13,7 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "unocss.root": [
+    "packages/ui",
     "sites/penxle.com",
     "sites/penxle.io",
     "sites/landing.penxle.com"

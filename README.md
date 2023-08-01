@@ -91,4 +91,4 @@ $ pnpm db:migrate:create
 ## 라이센스 및 기여
 
 - [LICENSE](LICENSE)
-- [Contributor License Agreement](CLA)
+- [Contributor License Agreement](docs/CLA)
