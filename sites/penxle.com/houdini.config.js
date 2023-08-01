@@ -9,6 +9,7 @@ export default {
     },
   },
   scalars: {
+    BigInt: { type: 'bigint' },
     DateTime: { type: 'Date' },
     JSON: { type: 'unknown' },
   },

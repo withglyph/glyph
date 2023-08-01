@@ -32,7 +32,7 @@
   <svelte:fragment slot="title">새 스페이스 만들기</svelte:fragment>
 
   <div
-    class="from-cyan-400 to-violet-400 flex items-center gap-4 rounded-lg via-brand-40 bg-gradient-to-rb p-4 text-sm text-white"
+    class="flex items-center gap-4 rounded-lg from-red-40 via-brand-40 to-green-40 bg-gradient-to-rb p-4 text-sm text-white"
   >
     <span class="i-lc-info" />
     <div>

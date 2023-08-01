@@ -11,7 +11,7 @@ const loadPublicKey = memo(async () =>
 );
 const loadPrivateKey = memo(async () => jose.importJWK(jwk));
 
-export const createAccessToken = async (sessionId: number) => {
+export const createAccessToken = async (sessionId: bigint) => {
   const key = await loadPrivateKey();
   return await new jose.SignJWT({})
     .setProtectedHeader({ alg: jwk.alg! })
@@ -22,5 +22,5 @@ export const createAccessToken = async (sessionId: number) => {
 export const decodeAccessToken = async (bearerToken: string) => {
   const key = await loadPublicKey();
   const result = await jose.jwtVerify(bearerToken, key);
-  return Number(result.payload.jti);
+  return result.payload.jti ? BigInt(result.payload.jti) : undefined;
 };

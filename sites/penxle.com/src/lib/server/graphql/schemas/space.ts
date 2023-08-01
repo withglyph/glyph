@@ -10,7 +10,7 @@ import { builder } from '../builder';
 builder.prismaObject('Space', {
   select: { id: true },
   fields: (t) => ({
-    id: t.exposeInt('id'),
+    id: t.expose('id', { type: 'BigInt' }),
     slug: t.exposeString('slug'),
     name: t.exposeString('name'),
     members: t.relation('members'),
@@ -26,9 +26,9 @@ builder.prismaObject('Space', {
         return await db.spaceMember.findUnique({
           ...query,
           where: {
-            spaceId_profileId: {
+            spaceId_userId: {
               spaceId: space.id,
-              profileId: context.session.profileId,
+              userId: context.session.userId,
             },
           },
         });
@@ -40,7 +40,7 @@ builder.prismaObject('Space', {
 builder.prismaObject('SpaceMember', {
   select: { id: true },
   fields: (t) => ({
-    id: t.exposeInt('id'),
+    id: t.expose('id', { type: 'BigInt' }),
     role: t.expose('role', { type: SpaceMemberRole }),
     space: t.relation('space'),
     profile: t.relation('profile'),
@@ -111,6 +111,11 @@ builder.mutationFields((t) => ({
         throw new FormValidationError('slug', '이미 사용중인 URL이에요.');
       }
 
+      const user = await db.user.findUniqueOrThrow({
+        select: { profileId: true },
+        where: { id: context.session.userId },
+      });
+
       const space = await db.space.create({
         ...query,
         data: {
@@ -119,7 +124,8 @@ builder.mutationFields((t) => ({
           state: 'ACTIVE',
           members: {
             create: {
-              profileId: context.session.profileId,
+              userId: context.session.userId,
+              profileId: user.profileId,
               role: 'OWNER',
             },
           },
@@ -142,7 +148,7 @@ builder.mutationFields((t) => ({
           id: input.spaceId,
           state: 'ACTIVE',
           members: {
-            some: { profileId: context.session.profileId, role: 'OWNER' },
+            some: { userId: context.session.userId, role: 'OWNER' },
           },
         },
         data: { state: 'INACTIVE' },

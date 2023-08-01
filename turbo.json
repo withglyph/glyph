@@ -11,7 +11,7 @@
     },
     "codegen": {},
 
-    "build": { "dependsOn": ["^codegen", "^build"] },
+    "build": { "dependsOn": ["codegen", "^build"] },
 
     "check": {},
 

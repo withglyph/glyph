@@ -5,9 +5,9 @@
   import { portal } from '$lib/svelte/actions';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
   import PublishModal from './PublishModal.svelte';
-  import type { DefaultLayout_PublishMenu_profile } from '$houdini';
+  import type { DefaultLayout_PublishMenu_user } from '$houdini';
 
-  export let _profile: DefaultLayout_PublishMenu_profile;
+  export let _user: DefaultLayout_PublishMenu_user;
 
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLDivElement;
@@ -18,11 +18,11 @@
 
   let publishType: 'artwork' | 'post';
 
-  $: profile = fragment(
-    _profile,
+  $: user = fragment(
+    _user,
     graphql(`
-      fragment DefaultLayout_PublishMenu_profile on Profile {
-        ...DefaultLayout_PublishModal_profile
+      fragment DefaultLayout_PublishMenu_user on User {
+        ...DefaultLayout_PublishModal_user
       }
     `),
   );
@@ -141,4 +141,4 @@
 {/if}
 
 <CreateSpaceModal bind:open={openCreateSpace} />
-<PublishModal _profile={$profile} type={publishType} bind:open={openPublish} />
+<PublishModal _user={$user} type={publishType} bind:open={openPublish} />

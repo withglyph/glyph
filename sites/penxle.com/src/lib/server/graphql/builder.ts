@@ -1,11 +1,10 @@
 import SchemaBuilder from '@pothos/core';
-// eslint-disable-next-line import/no-named-as-default
 import PrismaPlugin from '@pothos/plugin-prisma';
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects';
 import ValidationPlugin from '@pothos/plugin-validation';
 import { Prisma } from '@prisma/client';
-import { GraphQLDateTime, GraphQLJSON } from 'graphql-scalars';
+import { GraphQLBigInt, GraphQLDateTime, GraphQLJSON } from 'graphql-scalars';
 import { dev } from '$app/environment';
 import { PermissionDeniedError } from '$lib/errors';
 import type { AuthContext, Context } from './context';
@@ -24,13 +23,13 @@ export const builder = new SchemaBuilder<{
   AuthScopes: {
     auth: boolean;
     staff: boolean;
-    user: { id: number };
-    profile: { id: number };
+    user: { id: bigint };
   };
   Context: Context;
   DefaultInputFieldRequiredness: true;
   PrismaTypes: PrismaTypes;
   Scalars: {
+    BigInt: { Input: bigint; Output: bigint };
     DateTime: { Input: Date; Output: Date };
     JSON: { Input: unknown; Output: unknown };
   };
@@ -39,7 +38,6 @@ export const builder = new SchemaBuilder<{
     auth: !!context.session,
     staff: false,
     user: ({ id }) => context.session?.userId === id,
-    profile: ({ id }) => context.session?.profileId === id,
   }),
   defaultInputFieldRequiredness: true,
   plugins: [
@@ -63,5 +61,6 @@ export const builder = new SchemaBuilder<{
 builder.queryType();
 builder.mutationType();
 
+builder.addScalarType('BigInt', GraphQLBigInt, {});
 builder.addScalarType('DateTime', GraphQLDateTime, {});
 builder.addScalarType('JSON', GraphQLJSON, {});

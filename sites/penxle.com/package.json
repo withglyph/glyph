@@ -5,11 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "doppler run -- vite dev",
-    "build": "svelte-kit sync && prisma generate && vite build && prisma migrate deploy",
+    "build": "vite build",
     "codegen": "svelte-kit sync && houdini generate",
     "codegen:prisma": "prisma generate",
-    "db:migrate": "doppler run -- prisma migrate dev",
-    "db:migrate:create": "doppler run -- prisma migrate dev --create-only",
+    "db:push": "doppler run -- prisma db push",
     "check": "svelte-check --fail-on-warnings",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",

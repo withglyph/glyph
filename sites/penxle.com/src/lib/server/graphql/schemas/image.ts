@@ -9,10 +9,10 @@ import { builder } from '../builder';
  * * Types
  */
 
-builder.prismaObject('Image', {
+export const Image = builder.prismaObject('Image', {
   select: { id: true },
   fields: (t) => ({
-    id: t.exposeInt('id'),
+    id: t.expose('id', { type: 'BigInt' }),
     path: t.exposeString('path'),
     placeholder: t.exposeString('placeholder'),
   }),
