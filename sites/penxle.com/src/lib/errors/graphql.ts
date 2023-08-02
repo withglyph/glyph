@@ -5,9 +5,16 @@ import type { AppError } from './base';
 import type { PortableAppError } from './serde';
 
 export const deserializeGraphQLError = (error: unknown) => {
-  return isPortableAppError(error)
-    ? deserializeAppError(error)
-    : new UnknownError();
+  if (isPortableAppError(error)) {
+    return deserializeAppError(error);
+  } else if (error instanceof Error) {
+    return new UnknownError(error);
+  } else {
+    return new UnknownError({
+      name: 'UnknownError (inferred)',
+      message: JSON.stringify(error),
+    });
+  }
 };
 
 export class GraphQLAppError extends GraphQLError implements PortableAppError {

@@ -42,7 +42,7 @@ export const transaction = Prisma.defineExtension({
         set = resolve;
       });
 
-      (Prisma.getExtensionContext(this) as PrismaClient)
+      (Prisma.getExtensionContext(this) as unknown as PrismaClient)
         .$transaction(
           async ($tx) => {
             set($tx);

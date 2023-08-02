@@ -1,23 +1,21 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { fragment, graphql } from '$houdini';
   import { Avatar, Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
-  import { UpdateProfileInputSchema } from '$lib/validations';
-  import type { ProfilePage_UpdateProfileModal_profile } from '$houdini';
+  import { UpdateUserProfileInputSchema } from '$lib/validations';
+  import type { MePreferencesPage_UpdateUserProfileModal_profile } from '$houdini';
 
-  export let _profile: ProfilePage_UpdateProfileModal_profile;
+  export let _profile: MePreferencesPage_UpdateUserProfileModal_profile;
   export let open = false;
 
   $: profile = fragment(
     _profile,
     graphql(`
-      fragment ProfilePage_UpdateProfileModal_profile on Profile {
+      fragment MePreferencesPage_UpdateUserProfileModal_profile on Profile {
         name
-        handle
 
         ...Avatar_profile
       }
@@ -27,24 +25,22 @@
   const { form, handleSubmit, isSubmitting, setInitialValues } =
     createMutationForm({
       mutation: graphql(`
-        mutation ProfilePage_UpdateProfileModal_UpdateProfile_Mutation(
-          $input: UpdateProfileInput!
+        mutation MePreferencesPage_UpdateUserProfileModal_UpdateUserProfile_Mutation(
+          $input: UpdateUserProfileInput!
         ) {
-          updateProfile(input: $input) {
-            handle
+          updateUserProfile(input: $input) {
+            __typename
           }
         }
       `),
-      schema: UpdateProfileInputSchema,
-      onSuccess: async (resp) => {
-        await goto(`/@${resp.handle}`);
+      schema: UpdateUserProfileInputSchema,
+      onSuccess: () => {
         toast.success('프로필이 수정되었어요');
       },
     });
 
   $: setInitialValues({
     name: $profile.name,
-    handle: $profile.handle,
   });
 </script>
 

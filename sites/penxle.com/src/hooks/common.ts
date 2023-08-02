@@ -30,7 +30,12 @@ const _handleError = (({ error, event }) => {
   } else if (error instanceof Error) {
     return serializeAppError(new UnknownError(error));
   } else {
-    return serializeAppError(new UnknownError());
+    return serializeAppError(
+      new UnknownError({
+        name: 'UnknownError (inferred)',
+        message: JSON.stringify(error),
+      }),
+    );
   }
 }) satisfies HandleServerError & HandleClientError;
 

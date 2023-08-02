@@ -3,18 +3,18 @@
   import { Button, Modal } from '$lib/components';
   import { absolutePath } from '$lib/utils';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
-  import type { DefaultLayout_PublishModal_profile } from '$houdini';
+  import type { DefaultLayout_PublishModal_user } from '$houdini';
 
-  export let _profile: DefaultLayout_PublishModal_profile;
+  export let _user: DefaultLayout_PublishModal_user;
   export let open = false;
   export let type: 'artwork' | 'post';
 
   let openCreateSpace = false;
 
   $: profile = fragment(
-    _profile,
+    _user,
     graphql(`
-      fragment DefaultLayout_PublishModal_profile on Profile {
+      fragment DefaultLayout_PublishModal_user on User {
         spaces {
           id
           slug

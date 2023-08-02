@@ -7,63 +7,43 @@ generator pothos {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("PRIVATE_DATABASE_URL")
-  directUrl = env("PRIVATE_DATABASE_DIRECT_URL")
+  provider     = "mysql"
+  url          = env("PRIVATE_DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Image {
-  id          Int      @id @default(autoincrement())
-  name        String
-  format      String
+  id          String   @id @db.VarChar(32)
+  name        String   @db.VarChar(256)
+  format      String   @db.VarChar(8)
   fileSize    Int      @map("file_size")
   blobSize    Int      @map("blob_size")
   width       Int
   height      Int
-  path        String
-  hash        String
-  placeholder String
+  path        String   @db.VarChar(256)
+  hash        String   @db.VarChar(256)
+  placeholder String   @db.VarChar(1024)
   createdAt   DateTime @default(now()) @map("created_at")
 
-  avatarProfile Profile[]
+  profileUsingThisAsAvatar Profile?
 
   @@map("images")
 }
 
-model Profile {
-  id        Int          @id @default(autoincrement())
-  userId    Int          @map("user_id")
-  user      User         @relation(fields: [userId], references: [id])
-  name      String
-  handle    String
-  state     ProfileState
-  order     Int
-  avatarId  Int?         @map("avatar_id")
-  avatar    Image?       @relation(fields: [avatarId], references: [id])
-  createdAt DateTime     @default(now()) @map("created_at")
-
-  sessions Session[]
-  spaces   SpaceMember[]
-
-  @@index([handle])
-  @@map("profiles")
-}
-
 model Session {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @map("user_id")
+  id        String   @id @db.VarChar(32)
+  userId    String   @map("user_id") @db.VarChar(32)
   user      User     @relation(fields: [userId], references: [id])
-  profileId Int      @map("profile_id")
-  profile   Profile  @relation(fields: [profileId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
 
+  @@index([userId])
   @@map("sessions")
 }
 
 model Space {
-  id        Int        @id @default(autoincrement())
-  slug      String
-  name      String
+  id        String     @id @db.VarChar(32)
+  slug      String     @db.VarChar(32)
+  name      String     @db.VarChar(32)
   state     SpaceState
   createdAt DateTime   @default(now()) @map("created_at")
 
@@ -74,34 +54,48 @@ model Space {
 }
 
 model SpaceMember {
-  id        Int             @id @default(autoincrement())
-  spaceId   Int             @map("space_id")
+  id        String          @id @db.VarChar(32)
+  spaceId   String          @map("space_id") @db.VarChar(32)
   space     Space           @relation(fields: [spaceId], references: [id])
-  profileId Int             @map("profile_id")
+  userId    String          @map("user_id") @db.VarChar(32)
+  user      User            @relation(fields: [userId], references: [id])
+  profileId String          @map("profile_id") @db.VarChar(32)
   profile   Profile         @relation(fields: [profileId], references: [id])
   role      SpaceMemberRole
   createdAt DateTime        @default(now()) @map("created_at")
 
-  @@unique([spaceId, profileId])
+  @@unique([spaceId, userId])
+  @@index([profileId])
+  @@index([userId])
   @@map("space_members")
 }
 
+model Profile {
+  id        String   @id @db.VarChar(32)
+  name      String   @db.VarChar(32)
+  avatarId  String   @unique @map("avatar_id") @db.VarChar(32)
+  avatar    Image    @relation(fields: [avatarId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+
+  spaces SpaceMember[]
+  user   User?
+
+  @@map("profiles")
+}
+
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  password  String?
+  id        String    @id @db.VarChar(32)
+  email     String    @unique @db.VarChar(256)
+  password  String?   @db.VarChar(256)
+  profileId String    @unique @map("profile_id") @db.VarChar(32)
+  profile   Profile   @relation(fields: [profileId], references: [id])
   state     UserState
   createdAt DateTime  @default(now()) @map("created_at")
 
-  profiles Profile[]
   sessions Session[]
+  spaces   SpaceMember[]
 
   @@map("users")
-}
-
-enum ProfileState {
-  ACTIVE
-  INACTIVE
 }
 
 enum SpaceState {
@@ -109,12 +103,12 @@ enum SpaceState {
   INACTIVE
 }
 
-enum UserState {
-  ACTIVE
-  INACTIVE
-}
-
 enum SpaceMemberRole {
   OWNER
   MEMBER
+}
+
+enum UserState {
+  ACTIVE
+  INACTIVE
 }

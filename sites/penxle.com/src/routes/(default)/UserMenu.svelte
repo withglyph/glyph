@@ -7,29 +7,28 @@
   import { useMutation } from '$lib/houdini';
   import { portal } from '$lib/svelte/actions';
   import GotoSpaceModal from './GotoSpaceModal.svelte';
-  import SwitchProfileModal from './SwitchProfileModal.svelte';
-  import type { DefaultLayout_UserMenu_profile } from '$houdini';
+  import type { DefaultLayout_UserMenu_user } from '$houdini';
 
-  export let _profile: DefaultLayout_UserMenu_profile;
+  export let _user: DefaultLayout_UserMenu_user;
 
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLDivElement;
 
   let open = false;
   let openGotoSpace = false;
-  let openSwitchProfile = false;
 
-  $: profile = fragment(
-    _profile,
+  $: user = fragment(
+    _user,
     graphql(`
-      fragment DefaultLayout_UserMenu_profile on Profile {
+      fragment DefaultLayout_UserMenu_user on User {
         id
-        name
-        handle
 
-        ...Avatar_profile
-        ...DefaultLayout_GotoSpaceModal_profile
-        ...DefaultLayout_SwitchProfileModal_profile
+        profile {
+          name
+          ...Avatar_profile
+        }
+
+        ...DefaultLayout_GotoSpaceModal_user
       }
     `),
   );
@@ -74,7 +73,7 @@
   type="button"
   on:click={() => (open = true)}
 >
-  <Avatar class="square-8" _profile={$profile} />
+  <Avatar class="square-8" _profile={$user.profile} />
 </button>
 
 {#if open}
@@ -92,14 +91,11 @@
     class="absolute z-50 w-64 flex flex-col border rounded bg-white py-2 shadow"
     use:portal
   >
-    <a class="flex items-center gap-2 px-4 py-2" href={`/@${$profile.handle}`}>
-      <Avatar class="square-10" _profile={$profile} />
+    <a class="flex items-center gap-2 px-4 py-2" href="/me/preferences">
+      <Avatar class="square-10" _profile={$user.profile} />
       <div class="flex flex-col">
         <div class="font-medium">
-          {$profile.name}
-        </div>
-        <div class="text-sm text-gray-50">
-          @{$profile.handle}
+          {$user.profile.name}
         </div>
       </div>
     </a>
@@ -116,18 +112,6 @@
     >
       <span class="i-lc-box" />
       내 스페이스
-    </button>
-
-    <button
-      class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-50 hover:(bg-gray-10 text-gray-70)"
-      type="button"
-      on:click={() => {
-        open = false;
-        openSwitchProfile = true;
-      }}
-    >
-      <span class="i-lc-users" />
-      프로필 전환
     </button>
 
     <a
@@ -153,5 +137,4 @@
   </div>
 {/if}
 
-<GotoSpaceModal _profile={$profile} bind:open={openGotoSpace} />
-<SwitchProfileModal _profile={$profile} bind:open={openSwitchProfile} />
+<GotoSpaceModal _user={$user} bind:open={openGotoSpace} />

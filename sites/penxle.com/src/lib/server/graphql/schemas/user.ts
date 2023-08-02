@@ -1,14 +1,13 @@
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
-import { customAlphabet } from 'nanoid';
-import { FormValidationError, NotFoundError } from '$lib/errors';
+import { FormValidationError } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
 import { createAccessToken } from '$lib/server/utils';
+import { createId } from '$lib/utils';
 import {
-  CreateProfileInputSchema,
   LoginInputSchema,
   SignupInputSchema,
-  UpdateProfileInputSchema,
+  UpdateUserProfileInputSchema,
 } from '$lib/validations';
 import { builder } from '../builder';
 
@@ -18,24 +17,12 @@ import { builder } from '../builder';
 
 builder.prismaObject('User', {
   select: { id: true },
-  authScopes: (user) => ({ user }),
   fields: (t) => ({
-    id: t.exposeInt('id'),
-    email: t.exposeString('email'),
-    profiles: t.relation('profiles', {
-      query: { where: { state: 'ACTIVE' }, orderBy: { order: 'asc' } },
-    }),
-  }),
-});
+    id: t.exposeID('id'),
+    email: t.exposeString('email', { authScopes: (user) => ({ user }) }),
 
-builder.prismaObject('Profile', {
-  select: { id: true },
-  fields: (t) => ({
-    id: t.exposeInt('id'),
-    name: t.exposeString('name'),
-    handle: t.exposeString('handle'),
-    avatar: t.relation('avatar', { nullable: true }),
-    user: t.relation('user', { authScopes: (profile) => ({ profile }) }),
+    profile: t.relation('profile'),
+
     spaces: t.prismaField({
       type: ['Space'],
       select: (_, __, nestedSelection) => ({
@@ -46,6 +33,15 @@ builder.prismaObject('Profile', {
       }),
       resolve: (_, { spaces }) => spaces.map(({ space }) => space),
     }),
+  }),
+});
+
+builder.prismaObject('Profile', {
+  select: { id: true },
+  fields: (t) => ({
+    name: t.exposeString('name'),
+
+    avatar: t.relation('avatar'),
   }),
 });
 
@@ -71,26 +67,11 @@ const SignupInput = builder.inputType('SignupInput', {
   validate: { schema: SignupInputSchema },
 });
 
-const CreateProfileInput = builder.inputType('CreateProfileInput', {
+const UpdateUserProfileInput = builder.inputType('UpdateUserProfileInput', {
   fields: (t) => ({
     name: t.string(),
-    handle: t.string(),
   }),
-  validate: { schema: CreateProfileInputSchema },
-});
-
-const UpdateProfileInput = builder.inputType('UpdateProfileInput', {
-  fields: (t) => ({
-    name: t.string(),
-    handle: t.string(),
-  }),
-  validate: { schema: UpdateProfileInputSchema },
-});
-
-const SwitchProfileInput = builder.inputType('SwitchProfileInput', {
-  fields: (t) => ({
-    profileId: t.int(),
-  }),
+  validate: { schema: UpdateUserProfileInputSchema },
 });
 
 /**
@@ -99,44 +80,27 @@ const SwitchProfileInput = builder.inputType('SwitchProfileInput', {
 
 builder.queryFields((t) => ({
   me: t.withAuth({ auth: true }).prismaField({
-    type: 'Profile',
+    type: 'User',
     resolve: async (query, _, __, { db, ...context }) => {
-      return await db.profile.findUniqueOrThrow({
+      return await db.user.findUniqueOrThrow({
         ...query,
-        where: { id: context.session.profileId },
+        where: { id: context.session.userId },
       });
     },
   }),
 
   meOrNull: t.prismaField({
-    type: 'Profile',
+    type: 'User',
     nullable: true,
     resolve: async (query, _, __, { db, ...context }) => {
       if (!context.session) {
         return null;
       }
 
-      return await db.profile.findUnique({
+      return await db.user.findUnique({
         ...query,
-        where: { id: context.session.profileId },
+        where: { id: context.session.userId },
       });
-    },
-  }),
-
-  profile: t.prismaField({
-    type: 'Profile',
-    args: { handle: t.arg.string() },
-    resolve: async (query, _, args, { db }) => {
-      const profile = await db.profile.findFirst({
-        ...query,
-        where: { handle: args.handle, state: 'ACTIVE' },
-      });
-
-      if (profile) {
-        return profile;
-      } else {
-        throw new NotFoundError();
-      }
     },
   }),
 }));
@@ -147,11 +111,12 @@ builder.queryFields((t) => ({
 
 builder.mutationFields((t) => ({
   login: t.prismaField({
-    type: 'Profile',
+    type: 'User',
     args: { input: t.arg({ type: LoginInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const user = await db.user.findUnique({
-        select: { id: true, password: true },
+        include: query.include,
+        select: { id: true, password: true, ...query.select },
         where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
       });
 
@@ -170,14 +135,9 @@ builder.mutationFields((t) => ({
         );
       }
 
-      const profile = await db.profile.findFirstOrThrow({
-        ...query,
-        where: { userId: user.id, state: 'ACTIVE', order: 0 },
-      });
-
       const session = await db.session.create({
         select: { id: true },
-        data: { userId: user.id, profileId: profile.id },
+        data: { id: createId(), userId: user.id },
       });
 
       const accessToken = await createAccessToken(session.id);
@@ -192,15 +152,15 @@ builder.mutationFields((t) => ({
         method: 'email',
       });
 
-      return profile;
+      return user;
     },
   }),
 
   logout: t.withAuth({ auth: true }).prismaField({
-    type: 'Profile',
+    type: 'User',
     resolve: async (query, _, __, { db, ...context }) => {
-      const { profile } = await db.session.delete({
-        include: { profile: query },
+      const { user } = await db.session.delete({
+        include: { user: query },
         where: { id: context.session.id },
       });
 
@@ -208,15 +168,16 @@ builder.mutationFields((t) => ({
 
       context.track('user:logout');
 
-      return profile;
+      return user;
     },
   }),
 
   signup: t.prismaField({
-    type: 'Profile',
+    type: 'User',
     args: { input: t.arg({ type: SignupInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const isEmailUsed = await db.user.exists({
+        ...query,
         where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
       });
 
@@ -224,28 +185,27 @@ builder.mutationFields((t) => ({
         throw new FormValidationError('email', '이미 사용중인 이메일이에요.');
       }
 
-      const user = await db.user.create({
+      const profile = await db.profile.create({
         data: {
-          email: input.email.toLowerCase(),
-          password: await argon2.hash(input.password),
-          state: 'ACTIVE',
+          id: createId(),
+          name: input.name,
+          avatarId: 'FIXME',
         },
       });
 
-      const profile = await db.profile.create({
-        ...query,
+      const user = await db.user.create({
         data: {
-          userId: user.id,
-          name: input.name,
-          handle: randomHandle(),
-          order: 0,
+          id: createId(),
+          email: input.email.toLowerCase(),
+          password: await argon2.hash(input.password),
+          profileId: profile.id,
           state: 'ACTIVE',
         },
       });
 
       const session = await db.session.create({
         select: { id: true },
-        data: { userId: user.id, profileId: profile.id },
+        data: { id: createId(), userId: user.id },
       });
 
       const accessToken = await createAccessToken(session.id);
@@ -260,112 +220,29 @@ builder.mutationFields((t) => ({
         method: 'email',
       });
 
-      return profile;
+      return user;
     },
   }),
 
-  createProfile: t.withAuth({ auth: true }).prismaField({
+  updateUserProfile: t.withAuth({ auth: true }).prismaField({
     type: 'Profile',
-    args: { input: t.arg({ type: CreateProfileInput }) },
+    args: { input: t.arg({ type: UpdateUserProfileInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      const isHandleUsed = await db.profile.exists({
-        where: { handle: input.handle },
-      });
-
-      if (isHandleUsed) {
-        throw new FormValidationError(
-          'handle',
-          '이미 사용중인 프로필 URL이에요.',
-        );
-      }
-
-      const order = await db.profile.count({
-        where: { userId: context.session.userId },
-      });
-
-      const profile = await db.profile.create({
-        ...query,
+      const { profile } = await db.user.update({
+        select: { profile: query },
+        where: { id: context.session.userId },
         data: {
-          userId: context.session.userId,
-          name: input.name,
-          handle: input.handle,
-          order,
-          state: 'ACTIVE',
+          profile: {
+            update: {
+              name: input.name,
+            },
+          },
         },
       });
 
-      await db.session.update({
-        where: { id: context.session.id },
-        data: { profileId: profile.id },
-      });
-
-      context.track('profile:create');
-
-      return profile;
-    },
-  }),
-
-  updateProfile: t.withAuth({ auth: true }).prismaField({
-    type: 'Profile',
-    args: { input: t.arg({ type: UpdateProfileInput }) },
-    resolve: async (query, _, { input }, { db, ...context }) => {
-      const isHandleUsed = await db.profile.exists({
-        where: {
-          id: { not: context.session.profileId },
-          handle: input.handle,
-          state: 'ACTIVE',
-        },
-      });
-
-      if (isHandleUsed) {
-        throw new FormValidationError(
-          'handle',
-          '이미 사용중인 프로필 URL이에요.',
-        );
-      }
-
-      const profile = await db.profile.update({
-        ...query,
-        where: { id: context.session.profileId },
-        data: {
-          name: input.name,
-          handle: input.handle,
-        },
-      });
-
-      context.track('profile:update');
-
-      return profile;
-    },
-  }),
-
-  switchProfile: t.withAuth({ auth: true }).prismaField({
-    type: 'Profile',
-    args: { input: t.arg({ type: SwitchProfileInput }) },
-    resolve: async (query, _, { input }, { db, ...context }) => {
-      const profile = await db.profile.findUniqueOrThrow({
-        ...query,
-        where: {
-          id: input.profileId,
-          userId: context.session.userId,
-          state: 'ACTIVE',
-        },
-      });
-
-      await db.session.update({
-        where: { id: context.session.id },
-        data: { profileId: profile.id },
-      });
-
-      context.track('profile:switch');
+      context.track('profile:user:update');
 
       return profile;
     },
   }),
 }));
-
-/**
- * * Utils
- */
-
-const randomHandle = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 8);
