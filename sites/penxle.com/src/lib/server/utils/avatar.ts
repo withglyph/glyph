@@ -1,6 +1,5 @@
 import { micah } from '@dicebear/collection';
 import { createAvatar } from '@dicebear/core';
-import { optimizeSvg } from '@penxle/lib';
 import { color } from '@penxle/unocss';
 import { renderAsync } from '@resvg/resvg-js';
 import { nanoid } from 'nanoid';
@@ -48,14 +47,12 @@ const options: micah.Options & Options = {
 
 export const createRandomAvatar = () => {
   const bg = draw(backgroundColors)!;
-  return optimizeSvg(
-    createAvatar(micah, {
-      seed: nanoid(),
-      ...options,
-    })
-      .toString()
-      .replaceAll('$$$$$$', bg),
-  );
+  return createAvatar(micah, {
+    seed: nanoid(),
+    ...options,
+  })
+    .toString()
+    .replaceAll('$$$$$$', bg);
 };
 
 export const persistAvatar = async (
