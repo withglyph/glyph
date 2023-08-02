@@ -1,8 +1,10 @@
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
+import { range } from 'radash';
 import { FormValidationError } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
 import { createAccessToken } from '$lib/server/utils';
+import { createRandomAvatar, persistAvatar } from '$lib/server/utils/avatar';
 import { createId } from '$lib/utils';
 import {
   LoginInputSchema,
@@ -103,6 +105,12 @@ builder.queryFields((t) => ({
       });
     },
   }),
+
+  randomAvatars: t.stringList({
+    resolve: () => {
+      return [...range(1, 16)].map(() => createRandomAvatar());
+    },
+  }),
 }));
 
 /**
@@ -185,11 +193,13 @@ builder.mutationFields((t) => ({
         throw new FormValidationError('email', '이미 사용중인 이메일이에요.');
       }
 
+      const avatar = createRandomAvatar();
+
       const profile = await db.profile.create({
         data: {
           id: createId(),
           name: input.name,
-          avatarId: 'FIXME',
+          avatarId: await persistAvatar(db, avatar),
         },
       });
 

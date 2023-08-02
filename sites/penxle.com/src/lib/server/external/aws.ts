@@ -19,6 +19,21 @@ export const createS3ObjectKey = () => {
   return `${key[0]}/${key[0]}${key[1]}/${key}`;
 };
 
+export const s3PutObject = async (
+  key: string,
+  name: string,
+  buffer: Buffer,
+) => {
+  return await S3.send(
+    new PutObjectCommand({
+      Bucket: 'penxle-uploads',
+      Key: key,
+      Body: buffer,
+      Metadata: { Name: encodeURIComponent(name) },
+    }),
+  );
+};
+
 export const s3PutObjectGetSignedUrl = async (key: string, name: string) => {
   return await getSignedUrl(
     S3,

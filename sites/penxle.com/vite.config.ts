@@ -21,6 +21,7 @@ export default defineConfig({
       ),
     },
   },
+  ssr: { noExternal: ['@penxle/lib'] },
   plugins: [svg(), unocss(), houdini(), sveltekit()],
   server: {
     host: '127.0.0.1',
