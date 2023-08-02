@@ -3,6 +3,7 @@ import {
   s3PutObjectGetSignedUrl,
 } from '$lib/server/external/aws';
 import { optimizeMedia } from '$lib/server/external/media-optimizer';
+import { createId } from '$lib/utils';
 import { builder } from '../builder';
 
 /**
@@ -12,7 +13,7 @@ import { builder } from '../builder';
 export const Image = builder.prismaObject('Image', {
   select: { id: true },
   fields: (t) => ({
-    id: t.expose('id', { type: 'BigInt' }),
+    id: t.exposeID('id'),
     path: t.exposeString('path'),
     placeholder: t.exposeString('placeholder'),
   }),
@@ -112,6 +113,7 @@ builder.mutationFields((t) => ({
       return await db.image.create({
         ...query,
         data: {
+          id: createId(),
           name,
           format,
           fileSize,

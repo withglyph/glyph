@@ -15,8 +15,8 @@ type DefaultContext = {
 
 export type AuthContext = {
   session: {
-    id: bigint;
-    userId: bigint;
+    id: string;
+    userId: string;
   };
 };
 
@@ -51,7 +51,7 @@ export const extendContext = async (
 
   const accessToken = context.cookies.get('penxle-at');
   if (accessToken) {
-    let sessionId: bigint | undefined;
+    let sessionId: string | undefined;
 
     try {
       sessionId = await decodeAccessToken(accessToken);

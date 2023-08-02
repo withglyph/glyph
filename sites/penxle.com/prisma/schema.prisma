@@ -13,7 +13,7 @@ datasource db {
 }
 
 model Image {
-  id          BigInt   @id @default(autoincrement())
+  id          String   @id @db.VarChar(32)
   name        String   @db.VarChar(256)
   format      String   @db.VarChar(8)
   fileSize    Int      @map("file_size")
@@ -31,8 +31,8 @@ model Image {
 }
 
 model Session {
-  id        BigInt   @id @default(autoincrement())
-  userId    BigInt   @map("user_id")
+  id        String   @id @db.VarChar(32)
+  userId    String   @map("user_id") @db.VarChar(32)
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -41,7 +41,7 @@ model Session {
 }
 
 model Space {
-  id        BigInt     @id @default(autoincrement())
+  id        String     @id @db.VarChar(32)
   slug      String     @db.VarChar(32)
   name      String     @db.VarChar(32)
   state     SpaceState
@@ -54,12 +54,12 @@ model Space {
 }
 
 model SpaceMember {
-  id        BigInt          @id @default(autoincrement())
-  spaceId   BigInt          @map("space_id")
+  id        String          @id @db.VarChar(32)
+  spaceId   String          @map("space_id") @db.VarChar(32)
   space     Space           @relation(fields: [spaceId], references: [id])
-  userId    BigInt          @map("user_id")
+  userId    String          @map("user_id") @db.VarChar(32)
   user      User            @relation(fields: [userId], references: [id])
-  profileId BigInt          @map("profile_id")
+  profileId String          @map("profile_id") @db.VarChar(32)
   profile   Profile         @relation(fields: [profileId], references: [id])
   role      SpaceMemberRole
   createdAt DateTime        @default(now()) @map("created_at")
@@ -71,9 +71,9 @@ model SpaceMember {
 }
 
 model Profile {
-  id        BigInt   @id @default(autoincrement())
+  id        String   @id @db.VarChar(32)
   name      String   @db.VarChar(32)
-  avatarId  BigInt   @unique @map("avatar_id")
+  avatarId  String   @unique @map("avatar_id") @db.VarChar(32)
   avatar    Image    @relation(fields: [avatarId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -84,10 +84,10 @@ model Profile {
 }
 
 model User {
-  id        BigInt    @id @default(autoincrement())
+  id        String    @id @db.VarChar(32)
   email     String    @unique @db.VarChar(256)
   password  String?   @db.VarChar(256)
-  profileId BigInt    @unique @map("profile_id")
+  profileId String    @unique @map("profile_id") @db.VarChar(32)
   profile   Profile   @relation(fields: [profileId], references: [id])
   state     UserState
   createdAt DateTime  @default(now()) @map("created_at")

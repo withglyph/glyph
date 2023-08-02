@@ -24,6 +24,7 @@
     "@floating-ui/dom": "^1.5.1",
     "@logtail/node": "^0.4.5",
     "@logtail/winston": "^0.4.5",
+    "@paralleldrive/cuid2": "^2.2.1",
     "@penxle/eslint-config": "workspace:^",
     "@penxle/ui": "workspace:^",
     "@penxle/unocss": "workspace:^",

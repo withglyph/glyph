@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { FormValidationError } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
 import { createAccessToken } from '$lib/server/utils';
+import { createId } from '$lib/utils';
 import {
   LoginInputSchema,
   SignupInputSchema,
@@ -17,7 +18,7 @@ import { builder } from '../builder';
 builder.prismaObject('User', {
   select: { id: true },
   fields: (t) => ({
-    id: t.expose('id', { type: 'BigInt' }),
+    id: t.exposeID('id'),
     email: t.exposeString('email', { authScopes: (user) => ({ user }) }),
 
     profile: t.relation('profile'),
@@ -136,7 +137,7 @@ builder.mutationFields((t) => ({
 
       const session = await db.session.create({
         select: { id: true },
-        data: { userId: user.id },
+        data: { id: createId(), userId: user.id },
       });
 
       const accessToken = await createAccessToken(session.id);
@@ -186,13 +187,15 @@ builder.mutationFields((t) => ({
 
       const profile = await db.profile.create({
         data: {
+          id: createId(),
           name: input.name,
-          avatarId: 1,
+          avatarId: 'FIXME',
         },
       });
 
       const user = await db.user.create({
         data: {
+          id: createId(),
           email: input.email.toLowerCase(),
           password: await argon2.hash(input.password),
           profileId: profile.id,
@@ -202,7 +205,7 @@ builder.mutationFields((t) => ({
 
       const session = await db.session.create({
         select: { id: true },
-        data: { userId: user.id },
+        data: { id: createId(), userId: user.id },
       });
 
       const accessToken = await createAccessToken(session.id);

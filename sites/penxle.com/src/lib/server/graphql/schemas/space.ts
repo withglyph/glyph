@@ -1,5 +1,6 @@
 import { SpaceMemberRole } from '@prisma/client';
 import { FormValidationError, NotFoundError } from '$lib/errors';
+import { createId } from '$lib/utils';
 import { CreateSpaceInputSchema } from '$lib/validations';
 import { builder } from '../builder';
 
@@ -10,7 +11,7 @@ import { builder } from '../builder';
 builder.prismaObject('Space', {
   select: { id: true },
   fields: (t) => ({
-    id: t.expose('id', { type: 'BigInt' }),
+    id: t.exposeID('id'),
     slug: t.exposeString('slug'),
     name: t.exposeString('name'),
     members: t.relation('members'),
@@ -40,7 +41,7 @@ builder.prismaObject('Space', {
 builder.prismaObject('SpaceMember', {
   select: { id: true },
   fields: (t) => ({
-    id: t.expose('id', { type: 'BigInt' }),
+    id: t.exposeID('id'),
     role: t.expose('role', { type: SpaceMemberRole }),
     space: t.relation('space'),
     profile: t.relation('profile'),
@@ -67,7 +68,7 @@ const CreateSpaceInput = builder.inputType('CreateSpaceInput', {
 
 const DeleteSpaceInput = builder.inputType('DeleteSpaceInput', {
   fields: (t) => ({
-    spaceId: t.int(),
+    spaceId: t.id(),
   }),
 });
 
@@ -119,11 +120,13 @@ builder.mutationFields((t) => ({
       const space = await db.space.create({
         ...query,
         data: {
+          id: createId(),
           name: input.name,
           slug: input.slug,
           state: 'ACTIVE',
           members: {
             create: {
+              id: createId(),
               userId: context.session.userId,
               profileId: user.profileId,
               role: 'OWNER',

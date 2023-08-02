@@ -23,7 +23,7 @@ export const builder = new SchemaBuilder<{
   AuthScopes: {
     auth: boolean;
     staff: boolean;
-    user: { id: bigint };
+    user: { id: string };
   };
   Context: Context;
   DefaultInputFieldRequiredness: true;
@@ -31,6 +31,7 @@ export const builder = new SchemaBuilder<{
   Scalars: {
     BigInt: { Input: bigint; Output: bigint };
     DateTime: { Input: Date; Output: Date };
+    ID: { Input: string; Output: string };
     JSON: { Input: unknown; Output: unknown };
   };
 }>({

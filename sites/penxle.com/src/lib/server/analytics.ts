@@ -31,7 +31,7 @@ export const track = (
 export const updateUser = async (
   db: InteractiveTransactionClient,
   event: RequestEvent,
-  userId: bigint,
+  userId: string,
 ) => {
   if (!production) {
     return;
