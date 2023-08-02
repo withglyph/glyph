@@ -1,6 +1,5 @@
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
-import { range } from 'radash';
 import { FormValidationError } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
 import { createAccessToken } from '$lib/server/utils';
@@ -103,12 +102,6 @@ builder.queryFields((t) => ({
         ...query,
         where: { id: context.session.userId },
       });
-    },
-  }),
-
-  randomAvatars: t.stringList({
-    resolve: () => {
-      return [...range(1, 16)].map(() => createRandomAvatar());
     },
   }),
 }));

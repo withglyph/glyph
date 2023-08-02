@@ -1,3 +1,4 @@
+import { random } from 'radash';
 import {
   createS3ObjectKey,
   s3PutObjectGetSignedUrl,
@@ -50,17 +51,7 @@ const FinalizeImageUploadInput = builder.inputType('FinalizeImageUploadInput', {
  */
 
 builder.queryFields((t) => ({
-  images: t.prismaField({
-    type: ['Image'],
-    resolve: async (query, _, __, { db }) => {
-      return await db.image.findMany({
-        ...query,
-        orderBy: { id: 'desc' },
-      });
-    },
-  }),
-
-  featuredImage: t.prismaField({
+  authLayoutBackgroundImage: t.prismaField({
     type: 'Image',
     nullable: true,
     resolve: async (query, _, __, { db }) => {
@@ -68,7 +59,7 @@ builder.queryFields((t) => ({
 
       return await db.image.findFirst({
         ...query,
-        skip: Math.floor(Math.random() * count),
+        skip: random(0, count - 1),
         take: 1,
         orderBy: { id: 'asc' },
       });

@@ -5,7 +5,7 @@
   $: query = useQuery(
     graphql(`
       query AuthLayout_Query @load {
-        featuredImage {
+        authLayoutBackgroundImage {
           ...Image_image
         }
       }
@@ -14,10 +14,10 @@
 </script>
 
 <main class="flex grow center">
-  {#if $query.featuredImage}
+  {#if $query.authLayoutBackgroundImage}
     <Image
       class="pointer-events-none absolute inset-0 square-full object-cover"
-      _image={$query.featuredImage}
+      _image={$query.authLayoutBackgroundImage}
     />
   {/if}
 

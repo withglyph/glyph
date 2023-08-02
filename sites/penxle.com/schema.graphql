@@ -63,8 +63,7 @@ type Profile {
 }
 
 type Query {
-  featuredImage: Image
-  images: [Image!]!
+  authLayoutBackgroundImage: Image
   me: User!
   meOrNull: User
   randomAvatars: [String!]!
