@@ -9,7 +9,7 @@
   },
   "scripts": {
     "bootstrap": "pnpm install && husky install",
-    "dev": "turbo run dev --parallel",
+    "dev": "turbo run dev --concurrency 100",
     "codegen": "turbo run codegen",
     "build": "turbo run build --filter './packages/**'",
     "lint": "eslint .",

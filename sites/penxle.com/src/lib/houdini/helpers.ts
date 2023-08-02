@@ -29,7 +29,7 @@ type UseMutationOptions = {
 };
 
 // eslint-disable-next-line typescript/no-explicit-any
-const renderedQueries: UseQueryReturn<any>[] = [];
+const renderedQueries: QueryStore<any, any>[] = [];
 
 export const useQuery = <D extends GraphQLObject, I extends GraphQLVariables>(
   store: QueryStore<D, I>,
@@ -39,10 +39,10 @@ export const useQuery = <D extends GraphQLObject, I extends GraphQLVariables>(
   const s = {
     subscribe: (run, invalidate) => {
       const unsubscribe = subscribe(run, invalidate);
-      renderedQueries.push(s);
+      renderedQueries.push(store);
 
       return () => {
-        renderedQueries.splice(renderedQueries.indexOf(s), 1);
+        renderedQueries.splice(renderedQueries.indexOf(store), 1);
         unsubscribe();
       };
     },
@@ -103,13 +103,17 @@ export const useMutation = <
   return mutate;
 };
 
-export const refetchQueries = async () => {
+export const refetchQueries = async (...operations: string[]) => {
   await Promise.all(
-    renderedQueries.map(async (q) =>
-      q.refetch().catch(() => {
-        // noop
-      }),
-    ),
+    renderedQueries
+      .filter(
+        (store) => operations.length === 0 || operations.includes(store.name),
+      )
+      .map(async (store) =>
+        store.fetch({ blocking: true, policy: 'NetworkOnly' }).catch(() => {
+          // noop
+        }),
+      ),
   ).catch(() => {
     // noop
   });

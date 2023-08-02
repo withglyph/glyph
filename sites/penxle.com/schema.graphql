@@ -67,6 +67,7 @@ type Query {
   images: [Image!]!
   me: User!
   meOrNull: User
+  randomAvatars: [String!]!
   space(slug: String!): Space!
 }
 
