@@ -8,10 +8,7 @@ type MaintenanceConfig = {
 };
 
 export const isUnderMaintenance = async (event: RequestEvent) => {
-  if (
-    event.isSubRequest ||
-    event.route.id === '/_/internal/under-maintenance'
-  ) {
+  if (event.isSubRequest || event.route.id === '/_internal/under-maintenance') {
     return false;
   }
 

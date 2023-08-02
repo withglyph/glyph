@@ -42,13 +42,13 @@
       {:else}
         <a
           class="ml-4 rounded px-4 py-2 font-semibold transition duration-300 hover:bg-gray-20"
-          href="/_/login"
+          href="/login"
         >
           로그인
         </a>
         <a
           class="rounded px-4 py-2 font-semibold text-brand-50 transition duration-300 hover:bg-gray-20"
-          href="/_/signup"
+          href="/signup"
         >
           새 계정 만들기
         </a>

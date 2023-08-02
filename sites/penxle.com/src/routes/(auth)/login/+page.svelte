@@ -56,7 +56,5 @@
 
 <div class="mt-2 text-xs text-gray-50">
   계정이 아직 없으신가요?
-  <Link class="font-bold" colored href="/_/signup" underline>
-    새 계정 만들기
-  </Link>
+  <Link class="font-bold" colored href="/signup" underline>새 계정 만들기</Link>
 </div>
