@@ -12,9 +12,9 @@
   );
 </script>
 
-<Helmet title="아바타" />
+<Helmet title="아바타 플레이그라운드" />
 
-<div class="flex center">
+<div class="flex grow center">
   <div class="w-150 flex flex-col center gap-4">
     <div class="grid grid-cols-4 gap-4">
       {#each $query.randomAvatars as avatar (avatar)}
