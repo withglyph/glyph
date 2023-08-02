@@ -1,9 +1,13 @@
 export const UNAVAILABLE_SPACE_SLUGS = {
   EXACT: [
     // route urls
+    '_internal',
+    '_playground',
     'api',
+    'login',
     'me',
     'search',
+    'signup',
 
     // static urls
     '_app',
@@ -26,13 +30,13 @@ export const UNAVAILABLE_SPACE_SLUGS = {
     'article',
     'articles',
     'blog',
+    'blogs',
     'event',
     'events',
     'help',
     'image',
     'images',
     'legal',
-    'login',
     'logout',
     'member',
     'members',
@@ -43,11 +47,11 @@ export const UNAVAILABLE_SPACE_SLUGS = {
     'new',
     'news',
     'official',
+    'officials',
     'post',
     'posts',
     'profile',
     'profiles',
-    'signup',
     'space',
     'spaces',
     'story',
