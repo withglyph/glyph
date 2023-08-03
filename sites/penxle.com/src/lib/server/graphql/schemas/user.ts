@@ -116,8 +116,7 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: LoginInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const user = await db.user.findUnique({
-        include: query.include,
-        select: { id: true, password: true, ...query.select },
+        select: { id: true, password: { select: { hash: true } } },
         where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
       });
 
@@ -129,7 +128,7 @@ builder.mutationFields((t) => ({
         );
       }
 
-      if (!(await argon2.verify(user.password, input.password))) {
+      if (!(await argon2.verify(user.password.hash, input.password))) {
         throw new FormValidationError(
           'password',
           '잘못된 이메일이거나 비밀번호에요.',
@@ -153,7 +152,10 @@ builder.mutationFields((t) => ({
         method: 'email',
       });
 
-      return user;
+      return await db.user.findUniqueOrThrow({
+        ...query,
+        where: { id: user.id },
+      });
     },
   }),
 
@@ -178,7 +180,6 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: SignupInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const isEmailUsed = await db.user.exists({
-        ...query,
         where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
       });
 
@@ -197,12 +198,18 @@ builder.mutationFields((t) => ({
       });
 
       const user = await db.user.create({
+        ...query,
         data: {
           id: createId(),
           email: input.email.toLowerCase(),
-          password: await argon2.hash(input.password),
           profileId: profile.id,
           state: 'ACTIVE',
+          password: {
+            create: {
+              id: createId(),
+              hash: await argon2.hash(input.password),
+            },
+          },
         },
       });
 
