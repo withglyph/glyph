@@ -9,7 +9,6 @@
   let _class: string | undefined = undefined;
   export { _class as class };
 
-  let imgEl: HTMLImageElement;
   const visible = writable(false);
   let src: string;
 
@@ -18,10 +17,14 @@
     graphql(`
       fragment Image_image on Image {
         path
-        placeholder
+        color
       }
     `),
   );
+
+  $: placeholder = `data:image/svg+xml;base64,${btoa(
+    `<svg viewBox="0 0 1 1" xmlns="http://www.w3.org/2000/svg"><rect fill="${$image.color}" height="1" width="1" /></svg>`,
+  )}`;
 
   onMount(() => {
     // const { clientWidth, clientHeight } = imgEl;
@@ -32,10 +35,9 @@
 </script>
 
 <img
-  bind:this={imgEl}
   class={_class}
   alt=""
-  src={$visible ? src : $image.placeholder}
+  src={$visible ? src : placeholder}
   on:contextmenu|preventDefault
   on:dragstart|preventDefault
   use:intersectionObserver={{

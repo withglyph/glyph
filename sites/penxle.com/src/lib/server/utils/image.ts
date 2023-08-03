@@ -11,7 +11,7 @@ export const persistImage = async (
   const key = createS3ObjectKey();
   await s3PutObject(key, name, buffer);
 
-  const { format, fileSize, blobSize, width, height, path, hash, placeholder } =
+  const { format, fileSize, blobSize, width, height, path, color, hash } =
     await optimizeMedia(key);
 
   const { id } = await db.image.create({
@@ -25,8 +25,8 @@ export const persistImage = async (
       width,
       height,
       path,
+      color,
       hash,
-      placeholder,
     },
   });
 
