@@ -13,17 +13,17 @@ datasource db {
 }
 
 model Image {
-  id          String   @id @db.VarChar(32)
-  name        String   @db.VarChar(256)
-  format      String   @db.VarChar(8)
-  fileSize    Int      @map("file_size")
-  blobSize    Int      @map("blob_size")
-  width       Int
-  height      Int
-  path        String   @db.VarChar(256)
-  hash        String   @db.VarChar(256)
-  placeholder String   @db.VarChar(1024)
-  createdAt   DateTime @default(now()) @map("created_at")
+  id        String   @id @db.VarChar(32)
+  name      String   @db.VarChar(256)
+  format    String   @db.VarChar(8)
+  fileSize  Int      @map("file_size")
+  blobSize  Int      @map("blob_size")
+  width     Int
+  height    Int
+  path      String   @db.VarChar(256)
+  color     String   @db.VarChar(8)
+  hash      String   @db.VarChar(256)
+  createdAt DateTime @default(now()) @map("created_at")
 
   profileUsingThisAsAvatar Profile?
 

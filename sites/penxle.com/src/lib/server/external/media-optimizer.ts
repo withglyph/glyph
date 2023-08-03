@@ -9,7 +9,7 @@ export const optimizeMedia = async (key: string) => {
     width: number;
     height: number;
     path: string;
+    color: string;
     hash: string;
-    placeholder: string;
   };
 };

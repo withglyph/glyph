@@ -1,4 +1,5 @@
 import sharp from 'sharp';
+import { getDominantColor } from './mmcq';
 
 export const optimize = async (input: Buffer) => {
   const image = sharp(input, { failOn: 'none' })
@@ -12,6 +13,11 @@ export const optimize = async (input: Buffer) => {
       .clone()
       .webp({ quality: 80, effort: 6 })
       .toBuffer({ resolveWithObject: true });
+  };
+
+  const getColor = async () => {
+    const buffer = await image.clone().raw().toBuffer();
+    return getDominantColor(buffer);
   };
 
   const getHash = async () => {
@@ -42,21 +48,10 @@ export const optimize = async (input: Buffer) => {
     return hash;
   };
 
-  const getPlaceholder = async () => {
-    const buffer = await image
-      .clone()
-      .resize(32, 32, { fit: 'inside' })
-      .blur(4)
-      .webp({ quality: 100, effort: 6 })
-      .toBuffer();
-
-    return `data:image/webp;base64,${buffer.toString('base64')}`;
-  };
-
-  const [output, hash, placeholder] = await Promise.all([
+  const [output, color, hash] = await Promise.all([
     getOutput(),
+    getColor(),
     getHash(),
-    getPlaceholder(),
   ]);
 
   return {
@@ -67,8 +62,8 @@ export const optimize = async (input: Buffer) => {
       blobSize: output.info.size,
       width: output.info.width,
       height: output.info.height,
+      color,
       hash,
-      placeholder,
     },
   };
 };
