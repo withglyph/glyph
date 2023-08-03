@@ -40,14 +40,9 @@
           <PublishMenu _user={$query.meOrNull} />
         </div>
       {:else}
+        <a class="ml-4 rounded px-4 py-2 font-semibold" href="/login">로그인</a>
         <a
-          class="ml-4 rounded px-4 py-2 font-semibold transition duration-300 hover:bg-gray-20"
-          href="/login"
-        >
-          로그인
-        </a>
-        <a
-          class="rounded px-4 py-2 font-semibold text-brand-50 transition duration-300 hover:bg-gray-20"
+          class="relative ml-4 flex center rounded bg-brand-50 px-4 py-2 text-center font-bold text-brand-90 transition duration-300 active:bg-brand-55 hover:bg-brand-55"
           href="/signup"
         >
           새 계정 만들기
