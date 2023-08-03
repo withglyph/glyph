@@ -14,6 +14,7 @@ const colors = (...colors: ColorShade[]) =>
 
 const backgroundColors = colors(
   'red-30',
+  'yellow-30',
   'orange-30',
   'green-30',
   'blue-30',

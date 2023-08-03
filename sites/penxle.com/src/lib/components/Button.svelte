@@ -18,11 +18,11 @@
 
 <button
   class={clsx(
-    'relative flex center rounded-full px-4 py-2 font-semibold leading-none transition duration-300 text-center',
+    'relative flex center rounded-lg px-5.5 py-2.5 font-bold leading-none transition duration-300 text-center',
     disabled && 'text-gray-50 bg-gray-30 opacity-50',
     !disabled &&
       color === 'brand' &&
-      'text-white bg-brand-50 hover:bg-brand-60 active:bg-brand-70',
+      'text-brand-90 bg-brand-50 hover:bg-brand-55 active:bg-brand-55',
     !disabled &&
       color === 'black' &&
       'text-white bg-gray-80 hover:bg-gray-90 active:bg-black',

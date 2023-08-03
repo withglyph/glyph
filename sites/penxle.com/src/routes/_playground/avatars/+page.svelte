@@ -26,7 +26,10 @@
       {/each}
     </div>
 
-    <Button on:click={async () => refetchQueries('AvatarsPage_Query')}>
+    <Button
+      color="brand"
+      on:click={async () => refetchQueries('AvatarsPage_Query')}
+    >
       재생성
     </Button>
   </div>
