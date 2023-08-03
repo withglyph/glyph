@@ -51,6 +51,7 @@ export const builder = new SchemaBuilder<{
     dmmf: Prisma.dmmf,
     client: (ctx) => ctx.db as unknown as PrismaClient,
     filterConnectionTotalCount: true,
+    onUnusedQuery: dev ? 'error' : undefined,
   },
   scopeAuthOptions: {
     authorizeOnSubscribe: true,
