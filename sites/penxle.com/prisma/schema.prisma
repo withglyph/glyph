@@ -108,14 +108,20 @@ model UserPassword {
 enum SpaceState {
   ACTIVE
   INACTIVE
+
+  @@map("_space_state")
 }
 
 enum SpaceMemberRole {
   OWNER
   MEMBER
+
+  @@map("_space_member_role")
 }
 
 enum UserState {
   ACTIVE
   INACTIVE
+
+  @@map("_user_state")
 }
