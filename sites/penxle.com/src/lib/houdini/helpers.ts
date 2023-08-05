@@ -83,17 +83,17 @@ export const useMutation = <
       }
 
       return fields[0] as Unwrap<D>;
-    } catch (error) {
+    } catch (err) {
       if (options?.throwOnError !== true) {
-        if (error instanceof AppError) {
-          toast.error(error.message);
+        if (err instanceof AppError) {
+          toast.error(err.message);
         } else {
-          console.error(error);
+          console.error(err);
           toast.error('알 수 없는 오류가 발생했어요');
         }
       }
 
-      throw error;
+      throw err;
     } finally {
       set({ inflight: false });
     }

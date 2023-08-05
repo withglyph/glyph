@@ -1,5 +1,5 @@
 import { logger } from '$lib/server/logging';
-import type { Context } from '../context';
+import type { Context } from '$lib/server/context';
 import type { Plugin } from 'graphql-yoga';
 
 export const useLogging = (): Plugin<Context> => ({
