@@ -14,6 +14,6 @@
     type="button"
     on:click
   >
-    <span class={clsx('square-6', _class, active && 'text-brand-50')} />
+    <span class={clsx('square-6!', _class, active && 'text-brand-50!')} />
   </button>
 </Tooltip>

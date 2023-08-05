@@ -1,8 +1,7 @@
-import { svg } from '@penxle/vite';
+import { svg, unocss } from '@penxle/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import browserslist from 'browserslist';
 import { browserslistToTargets } from 'lightningcss';
-import unocss from 'unocss/vite';
 import { defineConfig } from 'vite';
 
 // eslint-disable-next-line import/no-default-export
@@ -11,7 +10,6 @@ export default defineConfig({
     cssMinify: 'lightningcss',
   },
   css: {
-    devSourcemap: true,
     transformer: 'lightningcss',
     lightningcss: {
       drafts: { nesting: true },

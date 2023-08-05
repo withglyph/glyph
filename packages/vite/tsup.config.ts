@@ -10,6 +10,5 @@ export default defineConfig({
     banner: '/// <reference path="../ambient.d.ts" />',
   },
 
-  external: ['svgo'],
   noExternal: ['@penxle/lib'],
 });

@@ -16,6 +16,8 @@
   import { onDestroy, onMount } from 'svelte';
 
   let element: HTMLDivElement;
+  let _class: string;
+  export { _class as class };
   export let editor: Editor | undefined = undefined;
   export let value: object | undefined = undefined;
 
@@ -50,10 +52,7 @@
       ],
       injectCSS: false,
       editorProps: {
-        attributes: {
-          class:
-            'grow font-content-sans prose prose-gray max-w-full whitespace-pre-wrap',
-        },
+        attributes: { class: _class },
         scrollMargin: { top: 100, bottom: 100, left: 0, right: 0 },
         scrollThreshold: { top: 100, bottom: 100, left: 0, right: 0 },
         handleKeyDown: (_, event) => {

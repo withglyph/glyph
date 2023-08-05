@@ -96,12 +96,12 @@
     <div class="flex items-center gap-2">
       <ToolbarButton
         name="실행 취소"
-        class="i-lc-rotate-ccw !square-5"
+        class="i-lc-rotate-ccw square-5!"
         on:click={() => editor?.chain().focus().undo().run()}
       />
       <ToolbarButton
         name="다시 실행"
-        class="i-lc-rotate-cw !square-5"
+        class="i-lc-rotate-cw square-5!"
         on:click={() => editor?.chain().focus().redo().run()}
       />
     </div>

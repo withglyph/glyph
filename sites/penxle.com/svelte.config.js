@@ -41,4 +41,11 @@ export default {
     },
     version: { pollInterval: 60 * 1000 },
   },
+  onwarn: (warning, handler) => {
+    if (warning.code === 'vite-plugin-svelte-css-no-scopable-elements') {
+      return;
+    }
+
+    handler(warning);
+  },
 };
