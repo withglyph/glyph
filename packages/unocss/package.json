@@ -11,21 +11,21 @@
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {
-    "@sindresorhus/string-hash": "^2.0.0",
-    "@unocss/config": "^0.54.0",
-    "@unocss/core": "^0.54.0",
     "@iconify/json": "^2.2.98",
     "@iconify/utils": "^2.1.7",
+    "@sindresorhus/string-hash": "^2.0.0",
+    "@unocss/config": "^0.54.1",
+    "@unocss/core": "^0.54.1",
     "@unocss/preset-uno": "^0.54.1",
     "magic-string": "^0.30.2",
     "object-traversal": "^1.0.1",
-    "svelte": "^4.1.1",
+    "svelte": "^4.1.2",
     "unocss": "^0.54.1"
   },
   "devDependencies": {
     "@penxle/eslint-config": "workspace:^",
-    "tsup": "^7.1.0",
+    "tsup": "^7.2.0",
     "typescript": "^5.1.6",
-    "vite": "^4.4.7"
+    "vite": "^4.4.8"
   }
 }
