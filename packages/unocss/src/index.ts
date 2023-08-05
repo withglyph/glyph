@@ -1,4 +1,4 @@
-export { unoPreprocess } from './preprocess';
-export { unocss } from './vite';
-export * from './colors';
+export { color } from './colors';
+export * from './preprocess';
 export * from './preset';
+export * from './vite';

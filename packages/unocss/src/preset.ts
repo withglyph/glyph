@@ -3,8 +3,9 @@ import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders';
 import { definePreset, presetIcons, presetTypography, presetUno } from 'unocss';
 import { basicColors, shadedColors, specialColors } from './colors';
 import type { Theme } from '@unocss/preset-uno';
+import type { Preset } from 'unocss';
 
-export const presetPenxle = () =>
+export const presetPenxle = (): Preset<Theme> =>
   definePreset<Theme>({
     name: '@penxle/unocss:preset-penxle',
     presets: [
