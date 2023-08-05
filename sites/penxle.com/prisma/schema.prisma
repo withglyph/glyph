@@ -91,8 +91,22 @@ model User {
   password UserPassword?
   sessions Session[]
   spaces   SpaceMember[]
+  ssos     UserSSO[]
 
   @@map("users")
+}
+
+model UserSSO {
+  id             String          @id
+  userId         String          @map("user_id")
+  user           User            @relation(fields: [userId], references: [id])
+  provider       UserSSOProvider
+  providerUserId String          @map("provider_user_id")
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([userId, provider])
+  @@unique([provider, providerUserId])
+  @@map("user_ssos")
 }
 
 model UserPassword {
@@ -117,6 +131,13 @@ enum SpaceMemberRole {
   MEMBER
 
   @@map("_space_member_role")
+}
+
+enum UserSSOProvider {
+  GOOGLE
+  NAVER
+
+  @@map("_user_sso_provider")
 }
 
 enum UserState {

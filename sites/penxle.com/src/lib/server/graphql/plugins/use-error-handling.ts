@@ -1,11 +1,11 @@
 import { isAsyncIterable } from '@envelop/core';
 import { GraphQLError } from 'graphql';
 import { AppError, GraphQLAppError, UnknownError } from '$lib/errors';
-import type { Context } from '../context';
 import type {
   AsyncIterableIteratorOrValue,
   ExecutionResult,
 } from '@envelop/core';
+import type { Context } from '$lib/server/context';
 import type { Plugin } from 'graphql-yoga';
 
 const toGraphQLAppError = (error: unknown): GraphQLAppError => {

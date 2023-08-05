@@ -1,7 +1,9 @@
+import { UserSSOProvider } from '@prisma/client';
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
 import { FormValidationError } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
+import { generateGoogleAuthorizationUrl } from '$lib/server/external/google';
 import { createAccessToken } from '$lib/server/utils';
 import { createRandomAvatar, persistAvatar } from '$lib/server/utils/avatar';
 import { createId } from '$lib/utils';
@@ -47,6 +49,12 @@ builder.prismaObject('Profile', {
 });
 
 /**
+ * * Enums
+ */
+
+builder.enumType(UserSSOProvider, { name: 'UserSSOProvider' });
+
+/**
  * * Inputs
  */
 
@@ -67,6 +75,15 @@ const SignupInput = builder.inputType('SignupInput', {
   }),
   validate: { schema: SignupInputSchema },
 });
+
+const IssueSSOAuthorizationUrlInput = builder.inputType(
+  'IssueSSOAuthorizationUrlInput',
+  {
+    fields: (t) => ({
+      provider: t.field({ type: UserSSOProvider }),
+    }),
+  },
+);
 
 const UpdateUserProfileInput = builder.inputType('UpdateUserProfileInput', {
   fields: (t) => ({
@@ -231,6 +248,17 @@ builder.mutationFields((t) => ({
       });
 
       return user;
+    },
+  }),
+
+  issueSSOAuthorizationUrl: t.string({
+    args: { input: t.arg({ type: IssueSSOAuthorizationUrlInput }) },
+    resolve: (_, { input }, context) => {
+      if (input.provider === UserSSOProvider.GOOGLE) {
+        return generateGoogleAuthorizationUrl(context);
+      } else {
+        throw new Error('Unsupported provider');
+      }
     },
   }),
 
