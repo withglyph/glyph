@@ -5,7 +5,7 @@ import { production } from '$lib/environment';
 import type { InteractiveTransactionClient } from './database';
 import type { RequestEvent } from '@sveltejs/kit';
 
-export const mixpanel = Mixpanel.init(PRIVATE_MIXPANEL_TOKEN);
+const mixpanel = Mixpanel.init(PRIVATE_MIXPANEL_TOKEN);
 
 export const track = (
   event: RequestEvent,
