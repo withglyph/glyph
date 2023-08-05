@@ -34,6 +34,14 @@ export const presetPenxle = () =>
         },
       ],
       ['font-mono', { 'font-family': 'FiraCode' }],
+      [
+        'font-content-sans',
+        {
+          'font-family': 'Pretendard',
+          'font-feature-settings': '"case", "ss06", "calt" 0',
+        },
+      ],
+      ['font-content-serif', { 'font-family': 'RIDIBatang' }],
     ],
     shortcuts: [
       [/^square-(.*)$/, ([, c]) => `w-${c} h-${c}`],
