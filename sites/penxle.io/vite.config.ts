@@ -1,5 +1,4 @@
-import { unocss } from '@penxle/unocss';
-import { svg } from '@penxle/vite';
+import { svg, unocss } from '@penxle/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import browserslist from 'browserslist';
 import { browserslistToTargets } from 'lightningcss';
