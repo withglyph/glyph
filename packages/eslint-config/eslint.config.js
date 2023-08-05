@@ -114,7 +114,7 @@ export default [
       'valid-typeof': 'error',
 
       'unicorn/better-regex': 'error',
-      'unicorn/catch-error-name': 'error',
+      'unicorn/catch-error-name': ['error', { name: 'err' }],
       'unicorn/consistent-destructuring': 'error',
       'unicorn/consistent-function-scoping': 'error',
       'unicorn/custom-error-definition': 'error',

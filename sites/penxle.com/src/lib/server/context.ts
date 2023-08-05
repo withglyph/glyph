@@ -1,11 +1,10 @@
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-import { track } from '../analytics';
-import { prismaClient } from '../database';
-import { decodeAccessToken } from '../utils/access-token';
-import type { InteractiveTransactionClient } from '../database';
+import { track } from './analytics';
+import { prismaClient } from './database';
+import { decodeAccessToken } from './utils/access-token';
+import type { InteractiveTransactionClient } from './database';
 import type { RequestEvent } from '@sveltejs/kit';
-import type { YogaInitialContext } from 'graphql-yoga';
 
 type DefaultContext = {
   db: InteractiveTransactionClient;
@@ -20,13 +19,14 @@ export type AuthContext = {
   };
 };
 
-type ExtendedContext = App.Locals & DefaultContext & Partial<AuthContext>;
-type InitialContext = YogaInitialContext & RequestEvent;
-export type Context = InitialContext & ExtendedContext;
+export type Context = RequestEvent &
+  App.Locals &
+  DefaultContext &
+  Partial<AuthContext>;
 
-export const extendContext = async (
-  context: InitialContext,
-): Promise<ExtendedContext> => {
+export const createContext = async (
+  context: RequestEvent,
+): Promise<Context> => {
   const db = await prismaClient.$begin({ isolation: 'RepeatableRead' });
   let deviceId = context.cookies.get('penxle-did');
   if (!deviceId) {
@@ -37,7 +37,8 @@ export const extendContext = async (
     });
   }
 
-  const ctx: ExtendedContext = {
+  const ctx: Context = {
+    ...context,
     ...context.locals,
     db,
     deviceId,

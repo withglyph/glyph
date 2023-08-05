@@ -27,6 +27,10 @@ type Image {
   path: String!
 }
 
+input IssueSSOAuthorizationUrlInput {
+  provider: UserSSOProvider!
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -41,6 +45,7 @@ type Mutation {
   createSpace(input: CreateSpaceInput!): Space!
   deleteSpace(input: DeleteSpaceInput!): Space!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
+  issueSSOAuthorizationUrl(input: IssueSSOAuthorizationUrlInput!): String!
   login(input: LoginInput!): User!
   logout: User!
   prepareImageUpload(input: PrepareImageUploadInput!): PrepareImageUploadPayload!
@@ -106,4 +111,9 @@ type User {
   id: ID!
   profile: Profile!
   spaces: [Space!]!
+}
+
+enum UserSSOProvider {
+  GOOGLE
+  NAVER
 }

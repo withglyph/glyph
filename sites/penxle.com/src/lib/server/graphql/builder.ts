@@ -7,7 +7,7 @@ import { Prisma } from '@prisma/client';
 import { GraphQLBigInt, GraphQLDateTime, GraphQLJSON } from 'graphql-scalars';
 import { dev } from '$app/environment';
 import { PermissionDeniedError } from '$lib/errors';
-import type { AuthContext, Context } from './context';
+import type { AuthContext, Context } from '../context';
 import type PrismaTypes from '@pothos/plugin-prisma/generated';
 import type { PrismaClient } from '@prisma/client';
 
@@ -51,7 +51,6 @@ export const builder = new SchemaBuilder<{
     dmmf: Prisma.dmmf,
     client: (ctx) => ctx.db as unknown as PrismaClient,
     filterConnectionTotalCount: true,
-    onUnusedQuery: dev ? 'error' : undefined,
   },
   scopeAuthOptions: {
     authorizeOnSubscribe: true,

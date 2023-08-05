@@ -1,5 +1,5 @@
 import { handleStreamOrSingleExecutionResult } from '@envelop/core';
-import type { Context } from '../context';
+import type { Context } from '$lib/server/context';
 import type { TransactionClient } from '$lib/server/prisma';
 import type { Plugin } from 'graphql-yoga';
 
