@@ -12,7 +12,9 @@
       fragment SpacePublishPostPage_Header_query on Query
       @arguments(slug: { type: "String!" }) {
         me {
-          ...Avatar_profile
+          profile {
+            ...Avatar_profile
+          }
         }
 
         space(slug: $slug) {
@@ -31,6 +33,6 @@
     </div>
     <div class="grow" />
     <Button>게시하기</Button>
-    <Avatar class="square-8" _profile={$query.me} />
+    <Avatar class="square-8" _profile={$query.me.profile} />
   </div>
 </div>

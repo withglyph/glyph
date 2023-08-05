@@ -13,7 +13,6 @@
   import { TextAlign } from '@tiptap/extension-text-align';
   import { Typography } from '@tiptap/extension-typography';
   import { Underline } from '@tiptap/extension-underline';
-  import { clsx } from 'clsx';
   import { onDestroy, onMount } from 'svelte';
 
   let element: HTMLDivElement;
@@ -79,7 +78,9 @@
 
 <div bind:this={element} class="contents">
   {#if !editor}
-    <div class={clsx('ProseMirror', _class)}>
+    <div
+      class="ProseMirror font-content-sans max-w-full whitespace-pre-wrap prose prose-gray"
+    >
       <p class="is-editor-empty" data-placeholder={placeholder} />
     </div>
   {/if}

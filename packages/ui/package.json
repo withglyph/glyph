@@ -1,0 +1,32 @@
+{
+  "name": "@penxle/ui",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "svelte": "./src/lib/index.ts",
+  "types": "./src/lib/index.ts",
+  "scripts": {
+    "dev": "vite dev",
+    "codegen": "svelte-kit sync",
+    "check": "svelte-check --fail-on-warnings",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
+  },
+  "peerDependencies": {
+    "svelte": "^4.0.0"
+  },
+  "devDependencies": {
+    "@penxle/eslint-config": "workspace:^",
+    "@sveltejs/adapter-auto": "^2.1.0",
+    "@sveltejs/kit": "^1.22.4",
+    "@unocss/preset-uno": "^0.54.1",
+    "browserslist": "^4.21.10",
+    "clsx": "^2.0.0",
+    "lightningcss": "^1.21.5",
+    "svelte": "4.1.2",
+    "svelte-check": "^3.4.6",
+    "typescript": "^5.1.6",
+    "unocss": "^0.54.1",
+    "vite": "^4.4.8"
+  }
+}

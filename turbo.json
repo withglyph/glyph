@@ -4,10 +4,14 @@
     "deps": { "dependsOn": ["^deps"] },
     "//#deps": { "dependsOn": ["^deps"] },
 
-    "dev": { "cache": false, "dependsOn": ["^build"], "persistent": true },
-    "codegen": { "cache": false },
+    "dev": {
+      "cache": false,
+      "dependsOn": ["codegen", "^build"],
+      "persistent": true
+    },
+    "codegen": {},
 
-    "build": { "dependsOn": ["^build"] },
+    "build": { "dependsOn": ["codegen", "^build"] },
 
     "check": {},
 

@@ -3,17 +3,17 @@
   import { Button, Modal } from '$lib/components';
   import { absolutePath } from '$lib/utils';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
-  import type { DefaultLayout_GotoSpaceModal_profile } from '$houdini';
+  import type { DefaultLayout_GotoSpaceModal_user } from '$houdini';
 
-  export let _profile: DefaultLayout_GotoSpaceModal_profile;
+  export let _user: DefaultLayout_GotoSpaceModal_user;
   export let open = false;
 
   let openCreateSpace = false;
 
-  $: profile = fragment(
-    _profile,
+  $: user = fragment(
+    _user,
     graphql(`
-      fragment DefaultLayout_GotoSpaceModal_profile on Profile {
+      fragment DefaultLayout_GotoSpaceModal_user on User {
         spaces {
           id
           slug
@@ -28,7 +28,7 @@
   <svelte:fragment slot="title">내 스페이스</svelte:fragment>
 
   <div class="flex flex-col">
-    {#each $profile.spaces as space (space.id)}
+    {#each $user.spaces as space (space.id)}
       <a
         class="group flex items-center gap-2 px-4 py-2 text-left hover:bg-gray-10"
         href={`/${space.slug}`}

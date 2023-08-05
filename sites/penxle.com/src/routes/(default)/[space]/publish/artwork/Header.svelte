@@ -15,7 +15,9 @@
       fragment SpacePublishArtworkPage_Header_query on Query
       @arguments(slug: { type: "String!" }) {
         me {
-          ...Avatar_profile
+          profile {
+            ...Avatar_profile
+          }
         }
 
         space(slug: $slug) {
@@ -35,6 +37,6 @@
     </div>
     <div class="grow" />
     <PublishButton _space={$query.space} bind:artworks />
-    <Avatar class="square-8" _profile={$query.me} />
+    <Avatar class="square-8" _profile={$query.me.profile} />
   </div>
 </div>

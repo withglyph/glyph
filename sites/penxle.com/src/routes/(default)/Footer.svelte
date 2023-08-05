@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Wordmark from '$assets/branding/wordmark.svg?component';
-  import { Link } from '$lib/components';
+  import { Link } from '@penxle/ui';
+  import WordmarkColorless from '$assets/branding/wordmark-colorless.svg?component';
 
   let showDisclosure = false;
 </script>
@@ -8,7 +8,7 @@
 <footer class="border-t px-4 py-8 text-xs tracking-wider text-gray-40">
   <nav class="mx-auto max-w-screen-lg space-y-4">
     <section class="flex items-center justify-between">
-      <Wordmark class="h-4" />
+      <WordmarkColorless class="h-4" />
 
       <div class="flex items-center gap-4">
         <Link

@@ -1,7 +1,7 @@
-input CreateProfileInput {
-  handle: String!
-  name: String!
-}
+"""
+The `BigInt` scalar type represents non-fractional signed whole numeric values.
+"""
+scalar BigInt
 
 input CreateSpaceInput {
   name: String!
@@ -14,7 +14,7 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 scalar DateTime
 
 input DeleteSpaceInput {
-  spaceId: Int!
+  spaceId: ID!
 }
 
 input FinalizeImageUploadInput {
@@ -22,9 +22,9 @@ input FinalizeImageUploadInput {
 }
 
 type Image {
-  id: Int!
+  color: String!
+  id: ID!
   path: String!
-  placeholder: String!
 }
 
 """
@@ -38,16 +38,14 @@ input LoginInput {
 }
 
 type Mutation {
-  createProfile(input: CreateProfileInput!): Profile!
   createSpace(input: CreateSpaceInput!): Space!
   deleteSpace(input: DeleteSpaceInput!): Space!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
-  login(input: LoginInput!): Profile!
-  logout: Profile!
+  login(input: LoginInput!): User!
+  logout: User!
   prepareImageUpload(input: PrepareImageUploadInput!): PrepareImageUploadPayload!
-  signup(input: SignupInput!): Profile!
-  switchProfile(input: SwitchProfileInput!): Profile!
-  updateProfile(input: UpdateProfileInput!): Profile!
+  signup(input: SignupInput!): User!
+  updateUserProfile(input: UpdateUserProfileInput!): Profile!
 }
 
 input PrepareImageUploadInput {
@@ -60,20 +58,15 @@ type PrepareImageUploadPayload {
 }
 
 type Profile {
-  avatar: Image
-  handle: String!
-  id: Int!
+  avatar: Image!
   name: String!
-  spaces: [Space!]!
-  user: User!
 }
 
 type Query {
-  featuredImage: Image
-  images: [Image!]!
-  me: Profile!
-  meOrNull: Profile
-  profile(handle: String!): Profile!
+  authLayoutBackgroundImage: Image
+  me: User!
+  meOrNull: User
+  randomAvatars: [String!]!
   space(slug: String!): Space!
 }
 
@@ -85,7 +78,7 @@ input SignupInput {
 }
 
 type Space {
-  id: Int!
+  id: ID!
   meAsMember: SpaceMember
   members: [SpaceMember!]!
   name: String!
@@ -93,7 +86,7 @@ type Space {
 }
 
 type SpaceMember {
-  id: Int!
+  id: ID!
   profile: Profile!
   role: SpaceMemberRole!
   space: Space!
@@ -104,17 +97,13 @@ enum SpaceMemberRole {
   OWNER
 }
 
-input SwitchProfileInput {
-  profileId: Int!
-}
-
-input UpdateProfileInput {
-  handle: String!
+input UpdateUserProfileInput {
   name: String!
 }
 
 type User {
   email: String!
-  id: Int!
-  profiles: [Profile!]!
+  id: ID!
+  profile: Profile!
+  spaces: [Space!]!
 }

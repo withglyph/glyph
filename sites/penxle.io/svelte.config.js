@@ -2,12 +2,15 @@ import vercel from '@sveltejs/adapter-vercel';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */
-// eslint-disable-next-line import/no-default-export
 export default {
   preprocess: vitePreprocess(),
   kit: {
     adapter: vercel({ runtime: 'edge' }),
     alias: { $assets: './src/assets' },
+    env: {
+      publicPrefix: 'PUBLIC_',
+      privatePrefix: 'PRIVATE_',
+    },
     typescript: {
       config: (config) => ({
         ...config,

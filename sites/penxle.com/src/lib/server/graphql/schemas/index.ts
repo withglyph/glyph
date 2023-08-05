@@ -1,4 +1,5 @@
 import './image';
+import './playground';
 import './space';
 import './user';
 import { dev } from '$app/environment';

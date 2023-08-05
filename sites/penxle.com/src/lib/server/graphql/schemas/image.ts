@@ -1,20 +1,22 @@
+import { random } from 'radash';
 import {
   createS3ObjectKey,
   s3PutObjectGetSignedUrl,
 } from '$lib/server/external/aws';
 import { optimizeMedia } from '$lib/server/external/media-optimizer';
+import { createId } from '$lib/utils';
 import { builder } from '../builder';
 
 /**
  * * Types
  */
 
-builder.prismaObject('Image', {
+export const Image = builder.prismaObject('Image', {
   select: { id: true },
   fields: (t) => ({
-    id: t.exposeInt('id'),
+    id: t.exposeID('id'),
     path: t.exposeString('path'),
-    placeholder: t.exposeString('placeholder'),
+    color: t.exposeString('color'),
   }),
 });
 
@@ -49,17 +51,7 @@ const FinalizeImageUploadInput = builder.inputType('FinalizeImageUploadInput', {
  */
 
 builder.queryFields((t) => ({
-  images: t.prismaField({
-    type: ['Image'],
-    resolve: async (query, _, __, { db }) => {
-      return await db.image.findMany({
-        ...query,
-        orderBy: { id: 'desc' },
-      });
-    },
-  }),
-
-  featuredImage: t.prismaField({
+  authLayoutBackgroundImage: t.prismaField({
     type: 'Image',
     nullable: true,
     resolve: async (query, _, __, { db }) => {
@@ -67,7 +59,7 @@ builder.queryFields((t) => ({
 
       return await db.image.findFirst({
         ...query,
-        skip: Math.floor(Math.random() * count),
+        skip: random(0, count - 1),
         take: 1,
         orderBy: { id: 'asc' },
       });
@@ -105,13 +97,14 @@ builder.mutationFields((t) => ({
         width,
         height,
         path,
+        color,
         hash,
-        placeholder,
       } = await optimizeMedia(input.key);
 
       return await db.image.create({
         ...query,
         data: {
+          id: createId(),
           name,
           format,
           fileSize,
@@ -119,8 +112,8 @@ builder.mutationFields((t) => ({
           width,
           height,
           path,
+          color,
           hash,
-          placeholder,
         },
       });
     },

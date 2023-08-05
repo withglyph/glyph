@@ -7,114 +7,121 @@ generator pothos {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DATABASE_DIRECT_URL")
+  provider = "postgresql"
+  url      = env("PRIVATE_DATABASE_URL")
 }
 
 model Image {
-  id          Int      @id @default(autoincrement())
-  name        String
-  format      String
-  fileSize    Int      @map("file_size")
-  blobSize    Int      @map("blob_size")
-  width       Int
-  height      Int
-  path        String
-  hash        String
-  placeholder String
-  createdAt   DateTime @default(now()) @map("created_at")
+  id        String   @id
+  name      String
+  format    String
+  fileSize  Int      @map("file_size")
+  blobSize  Int      @map("blob_size")
+  width     Int
+  height    Int
+  path      String
+  color     String
+  hash      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  avatarProfile Profile[]
+  profileUsingThisAsAvatar Profile?
 
+  @@index([id, path, color])
   @@map("images")
 }
 
-model Profile {
-  id        Int          @id @default(autoincrement())
-  userId    Int          @map("user_id")
-  user      User         @relation(fields: [userId], references: [id])
-  name      String
-  handle    String
-  state     ProfileState
-  order     Int
-  avatarId  Int?         @map("avatar_id")
-  avatar    Image?       @relation(fields: [avatarId], references: [id])
-  createdAt DateTime     @default(now()) @map("created_at")
-
-  sessions Session[]
-  spaces   SpaceMember[]
-
-  @@index([handle])
-  @@map("profiles")
-}
-
 model Session {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @map("user_id")
+  id        String   @id
+  userId    String   @map("user_id")
   user      User     @relation(fields: [userId], references: [id])
-  profileId Int      @map("profile_id")
-  profile   Profile  @relation(fields: [profileId], references: [id])
-  createdAt DateTime @default(now()) @map("created_at")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("sessions")
 }
 
 model Space {
-  id        Int        @id @default(autoincrement())
+  id        String     @id
   slug      String
   name      String
   state     SpaceState
-  createdAt DateTime   @default(now()) @map("created_at")
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz
 
   members SpaceMember[]
 
-  @@index([slug])
+  @@index([slug, state])
   @@map("spaces")
 }
 
 model SpaceMember {
-  id        Int             @id @default(autoincrement())
-  spaceId   Int             @map("space_id")
+  id        String          @id
+  spaceId   String          @map("space_id")
   space     Space           @relation(fields: [spaceId], references: [id])
-  profileId Int             @map("profile_id")
+  userId    String          @map("user_id")
+  user      User            @relation(fields: [userId], references: [id])
+  profileId String          @map("profile_id")
   profile   Profile         @relation(fields: [profileId], references: [id])
   role      SpaceMemberRole
-  createdAt DateTime        @default(now()) @map("created_at")
+  createdAt DateTime        @default(now()) @map("created_at") @db.Timestamptz
 
-  @@unique([spaceId, profileId])
+  @@unique([spaceId, userId])
   @@map("space_members")
 }
 
-model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  password  String?
-  state     UserState
-  createdAt DateTime  @default(now()) @map("created_at")
+model Profile {
+  id        String   @id
+  name      String
+  avatarId  String   @unique @map("avatar_id")
+  avatar    Image    @relation(fields: [avatarId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  profiles Profile[]
+  spaces SpaceMember[]
+  user   User?
+
+  @@map("profiles")
+}
+
+model User {
+  id        String    @id
+  email     String    @unique
+  profileId String    @unique @map("profile_id")
+  profile   Profile   @relation(fields: [profileId], references: [id])
+  state     UserState
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  password UserPassword?
   sessions Session[]
+  spaces   SpaceMember[]
 
   @@map("users")
 }
 
-enum ProfileState {
-  ACTIVE
-  INACTIVE
+model UserPassword {
+  id        String   @id
+  userId    String   @unique @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  hash      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("user_passwords")
 }
 
 enum SpaceState {
   ACTIVE
   INACTIVE
-}
 
-enum UserState {
-  ACTIVE
-  INACTIVE
+  @@map("_space_state")
 }
 
 enum SpaceMemberRole {
   OWNER
   MEMBER
+
+  @@map("_space_member_role")
+}
+
+enum UserState {
+  ACTIVE
+  INACTIVE
+
+  @@map("_user_state")
 }

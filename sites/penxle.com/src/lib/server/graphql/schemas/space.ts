@@ -1,5 +1,6 @@
 import { SpaceMemberRole } from '@prisma/client';
 import { FormValidationError, NotFoundError } from '$lib/errors';
+import { createId } from '$lib/utils';
 import { CreateSpaceInputSchema } from '$lib/validations';
 import { builder } from '../builder';
 
@@ -10,7 +11,7 @@ import { builder } from '../builder';
 builder.prismaObject('Space', {
   select: { id: true },
   fields: (t) => ({
-    id: t.exposeInt('id'),
+    id: t.exposeID('id'),
     slug: t.exposeString('slug'),
     name: t.exposeString('name'),
     members: t.relation('members'),
@@ -26,9 +27,9 @@ builder.prismaObject('Space', {
         return await db.spaceMember.findUnique({
           ...query,
           where: {
-            spaceId_profileId: {
+            spaceId_userId: {
               spaceId: space.id,
-              profileId: context.session.profileId,
+              userId: context.session.userId,
             },
           },
         });
@@ -40,7 +41,7 @@ builder.prismaObject('Space', {
 builder.prismaObject('SpaceMember', {
   select: { id: true },
   fields: (t) => ({
-    id: t.exposeInt('id'),
+    id: t.exposeID('id'),
     role: t.expose('role', { type: SpaceMemberRole }),
     space: t.relation('space'),
     profile: t.relation('profile'),
@@ -67,7 +68,7 @@ const CreateSpaceInput = builder.inputType('CreateSpaceInput', {
 
 const DeleteSpaceInput = builder.inputType('DeleteSpaceInput', {
   fields: (t) => ({
-    spaceId: t.int(),
+    spaceId: t.id(),
   }),
 });
 
@@ -111,15 +112,23 @@ builder.mutationFields((t) => ({
         throw new FormValidationError('slug', '이미 사용중인 URL이에요.');
       }
 
+      const user = await db.user.findUniqueOrThrow({
+        select: { profileId: true },
+        where: { id: context.session.userId },
+      });
+
       const space = await db.space.create({
         ...query,
         data: {
+          id: createId(),
           name: input.name,
           slug: input.slug,
           state: 'ACTIVE',
           members: {
             create: {
-              profileId: context.session.profileId,
+              id: createId(),
+              userId: context.session.userId,
+              profileId: user.profileId,
               role: 'OWNER',
             },
           },
@@ -142,7 +151,7 @@ builder.mutationFields((t) => ({
           id: input.spaceId,
           state: 'ACTIVE',
           members: {
-            some: { profileId: context.session.profileId, role: 'OWNER' },
+            some: { userId: context.session.userId, role: 'OWNER' },
           },
         },
         data: { state: 'INACTIVE' },

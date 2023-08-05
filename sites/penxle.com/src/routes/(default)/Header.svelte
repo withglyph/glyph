@@ -2,7 +2,7 @@
   import Wordmark from '$assets/branding/wordmark.svg?component';
   import { fragment, graphql } from '$houdini';
   import { Logo } from '$lib/components/branding';
-  import CreateEntityMenu from './PublishMenu.svelte';
+  import PublishMenu from './PublishMenu.svelte';
   import SearchBar from './SearchBar.svelte';
   import UserMenu from './UserMenu.svelte';
   import type { DefaultLayout_Header_query } from '$houdini';
@@ -14,8 +14,8 @@
     graphql(`
       fragment DefaultLayout_Header_query on Query {
         meOrNull {
-          ...DefaultLayout_UserMenu_profile
-          ...DefaultLayout_PublishMenu_profile
+          ...DefaultLayout_UserMenu_user
+          ...DefaultLayout_PublishMenu_user
         }
       }
     `),
@@ -36,19 +36,14 @@
         <div class="ml-8 flex items-center gap-8">
           <div class="i-lc-heart square-5 text-gray-50" />
           <div class="i-lc-bell square-5 text-gray-50" />
-          <UserMenu _profile={$query.meOrNull} />
-          <CreateEntityMenu _profile={$query.meOrNull} />
+          <UserMenu _user={$query.meOrNull} />
+          <PublishMenu _user={$query.meOrNull} />
         </div>
       {:else}
+        <a class="ml-4 rounded px-4 py-2 font-semibold" href="/login">로그인</a>
         <a
-          class="ml-4 rounded px-4 py-2 font-semibold transition duration-300 hover:bg-gray-20"
-          href="/_/login"
-        >
-          로그인
-        </a>
-        <a
-          class="rounded px-4 py-2 font-semibold text-brand-50 transition duration-300 hover:bg-gray-20"
-          href="/_/signup"
+          class="relative ml-4 flex center rounded bg-brand-50 px-4 py-2 text-center font-bold text-brand-90 transition duration-300 active:bg-brand-55 hover:bg-brand-55"
+          href="/signup"
         >
           새 계정 만들기
         </a>

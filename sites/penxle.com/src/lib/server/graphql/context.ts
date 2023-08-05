@@ -15,9 +15,8 @@ type DefaultContext = {
 
 export type AuthContext = {
   session: {
-    id: number;
-    userId: number;
-    profileId: number;
+    id: string;
+    userId: string;
   };
 };
 
@@ -52,7 +51,7 @@ export const extendContext = async (
 
   const accessToken = context.cookies.get('penxle-at');
   if (accessToken) {
-    let sessionId: number | undefined;
+    let sessionId: string | undefined;
 
     try {
       sessionId = await decodeAccessToken(accessToken);
@@ -62,7 +61,7 @@ export const extendContext = async (
 
     if (sessionId) {
       const session = await db.session.findUnique({
-        select: { userId: true, profileId: true },
+        select: { userId: true },
         where: { id: sessionId },
       });
 
@@ -70,7 +69,6 @@ export const extendContext = async (
         ctx.session = {
           id: sessionId,
           userId: session.userId,
-          profileId: session.profileId,
         };
 
         ctx.track = (eventName, properties) => {

@@ -81,14 +81,10 @@ $ pnpm dev
 ### DB 스키마 변경시
 
 ```bash
-$ # 마이그레이션 생성 및 즉시 적용하기
-$ pnpm db:migrate
-
-$ # 마이그레이션 생성만 하기 (적용하려면 다시 `pnpm db:migrate` 실행)
-$ pnpm db:migrate:create
+$ pnpm db:push
 ```
 
 ## 라이센스 및 기여
 
 - [LICENSE](LICENSE)
-- [Contributor License Agreement](CLA)
+- [Contributor License Agreement](docs/CLA)

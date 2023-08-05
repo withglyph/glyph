@@ -13,6 +13,10 @@ export default {
       $assets: './src/assets',
       $houdini: './$houdini',
     },
+    env: {
+      publicPrefix: 'PUBLIC_',
+      privatePrefix: 'PRIVATE_',
+    },
     files: {
       hooks: {
         server: 'src/hooks/server',
