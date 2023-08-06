@@ -67,28 +67,28 @@
       <ToolbarButton
         name="왼쪽 정렬"
         class="i-lc-align-left"
-        active={editor?.isActive({ textAlign: 'left' })}
+        active={editor?.isActive({ 'text-align': 'left' })}
         on:click={() => editor?.chain().focus().setTextAlign('left').run()}
       />
 
       <ToolbarButton
         name="중앙 정렬"
         class="i-lc-align-center"
-        active={editor?.isActive({ textAlign: 'center' })}
+        active={editor?.isActive({ 'text-align': 'center' })}
         on:click={() => editor?.chain().focus().setTextAlign('center').run()}
       />
 
       <ToolbarButton
         name="오른쪽 정렬"
         class="i-lc-align-right"
-        active={editor?.isActive({ textAlign: 'right' })}
+        active={editor?.isActive({ 'text-align': 'right' })}
         on:click={() => editor?.chain().focus().setTextAlign('right').run()}
       />
 
       <ToolbarButton
         name="양쪽 정렬"
         class="i-lc-align-justify"
-        active={editor?.isActive({ textAlign: 'justify' })}
+        active={editor?.isActive({ 'text-align': 'justify' })}
         on:click={() => editor?.chain().focus().setTextAlign('justify').run()}
       />
     </div>

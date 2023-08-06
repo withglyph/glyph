@@ -1,25 +1,22 @@
 <script lang="ts">
   import { Editor } from '@tiptap/core';
-  import { Bold } from '@tiptap/extension-bold';
-  import { Document } from '@tiptap/extension-document';
-  import { HardBreak } from '@tiptap/extension-hard-break';
-  import { Heading } from '@tiptap/extension-heading';
-  import { History } from '@tiptap/extension-history';
-  import { Italic } from '@tiptap/extension-italic';
-  import { Paragraph } from '@tiptap/extension-paragraph';
-  import { Placeholder } from '@tiptap/extension-placeholder';
-  import { Strike } from '@tiptap/extension-strike';
-  import { Text } from '@tiptap/extension-text';
-  import { TextAlign } from '@tiptap/extension-text-align';
-  import { Typography } from '@tiptap/extension-typography';
-  import { Underline } from '@tiptap/extension-underline';
   import { onDestroy, onMount } from 'svelte';
+  import { History, Placeholder, TextAlign } from '$lib/tiptap/extensions';
+  import { Bold, Italic, Strike, Underline } from '$lib/tiptap/marks';
+  import {
+    Document,
+    HardBreak,
+    Heading,
+    Paragraph,
+    Text,
+  } from '$lib/tiptap/nodes';
+  import type { JSONContent } from '@tiptap/core';
 
   let element: HTMLDivElement;
   let _class: string;
   export { _class as class };
   export let editor: Editor | undefined = undefined;
-  export let value: object | undefined = undefined;
+  export let value: JSONContent | undefined = undefined;
 
   const placeholder = '내용을 입력하세요.';
 
@@ -28,27 +25,25 @@
       element,
       content: value,
       extensions: [
-        Bold,
+        // special nodes
         Document,
-        HardBreak,
-        Heading.configure({ levels: [1, 2, 3] }),
-        History,
-        Italic,
-        Paragraph,
-        Placeholder.configure({ placeholder }),
-        Strike,
         Text,
-        TextAlign.configure({ types: ['heading', 'paragraph'] }),
-        Typography.configure({
-          copyright: false,
-          registeredTrademark: false,
-          trademark: false,
-          servicemark: false,
-          oneHalf: false,
-          oneQuarter: false,
-          threeQuarters: false,
-        }),
+
+        // nodes
+        HardBreak,
+        Heading,
+        Paragraph,
+
+        // marks
+        Bold,
+        Italic,
+        Strike,
         Underline,
+
+        // extensions
+        History,
+        Placeholder,
+        TextAlign,
       ],
       injectCSS: false,
       editorProps: {
@@ -67,6 +62,7 @@
         // eslint-disable-next-line no-self-assign
         editor = editor;
         value = editor?.getJSON();
+        console.log(value);
       },
     });
   });
@@ -78,9 +74,7 @@
 
 <div bind:this={element} class="contents">
   {#if !editor}
-    <div
-      class="ProseMirror font-content-sans max-w-full whitespace-pre-wrap prose prose-gray"
-    >
+    <div class="ProseMirror font-content-sans max-w-full whitespace-pre-wrap">
       <p class="is-editor-empty" data-placeholder={placeholder} />
     </div>
   {/if}
