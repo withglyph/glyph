@@ -18,7 +18,7 @@ export const deserializeGraphQLError = (error: unknown) => {
 };
 
 export class GraphQLAppError extends GraphQLError implements PortableAppError {
-  public readonly extensions: PortableAppError['extensions'];
+  public override readonly extensions: PortableAppError['extensions'];
 
   constructor(error: AppError) {
     super(error.message);

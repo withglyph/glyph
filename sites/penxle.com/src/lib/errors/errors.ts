@@ -17,7 +17,7 @@ export type UnknownErrorCause = {
   stack?: string;
 };
 export class UnknownError extends AppError {
-  public readonly cause?: UnknownErrorCause;
+  public override readonly cause?: UnknownErrorCause;
 
   constructor(cause?: UnknownErrorCause) {
     if (cause) {
