@@ -37,23 +37,29 @@ export const AccessBarrier = createNodeView(Component, {
   addProseMirrorPlugins() {
     return [
       new Plugin({
-        appendTransaction: (_, oldState, newState) => {
-          // state 탐색해서 document 전 후 비교함
-          const [before] = findChildrenByType(oldState.doc, this.type, false);
-          const [after] = findChildrenByType(newState.doc, this.type, false);
+        filterTransaction: (tr) => {
+          // 기존 document에 access_barrier 있었는지 확인함
+          const [child] = findChildrenByType(tr.before, this.type, false);
 
-          // 있었는데요 없었습니다 (access_barrier 삭제됨)
-          if (before && !after) {
-            // 컴포넌트 핸들러 통해서 직접 삭제하는 중
-            if (before.node.attrs.deleting) {
-              return null;
+          // 기존 document에 존재함
+          if (child) {
+            // 트랜잭션 적용해서 삭제 여부 확인 & 새 포지션 계산함
+            const r = tr.mapping.mapResult(child.pos);
+
+            // 있었는데요 없었습니다 (access_barrier 삭제됨)
+            // 컴포넌트 핸들러 통해서 직접 삭제하는거 아님
+            // history 플러그인 통해서 undo/redo 하는거 아님
+            if (
+              r.deleted &&
+              !child.node.attrs.deleting &&
+              !tr.getMeta('history$')
+            ) {
+              // 같은 위치에 재생성함
+              tr.insert(r.pos, this.type.create());
             }
-
-            // 같은 위치에 재생성함
-            return newState.tr.replaceSelectionWith(this.type.create());
           }
 
-          return null;
+          return true;
         },
       }),
     ];
