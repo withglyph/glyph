@@ -34,7 +34,7 @@
     "@penxle/vite": "workspace:^",
     "@playwright/test": "^1.36.2",
     "@pothos/core": "^3.32.1",
-    "@pothos/plugin-prisma": "^3.55.0",
+    "@pothos/plugin-prisma": "^3.56.0",
     "@pothos/plugin-scope-auth": "^3.20.0",
     "@pothos/plugin-simple-objects": "^3.7.0",
     "@pothos/plugin-validation": "^3.9.2",
@@ -87,7 +87,7 @@
     "typescript": "^5.1.6",
     "ua-parser-js": "^1.0.35",
     "unocss": "^0.54.1",
-    "vite": "^4.4.8",
+    "vite": "^4.4.9",
     "web-vitals": "^3.4.0",
     "winston": "^3.10.0",
     "zod": "^3.21.4"
