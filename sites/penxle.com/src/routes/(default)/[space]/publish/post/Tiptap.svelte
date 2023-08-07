@@ -1,8 +1,15 @@
 <script lang="ts">
   import { Editor } from '@tiptap/core';
   import { onDestroy, onMount } from 'svelte';
-  import { History, Placeholder, TextAlign } from '$lib/tiptap/extensions';
+  import {
+    DropCursor,
+    GapCursor,
+    History,
+    Placeholder,
+    TextAlign,
+  } from '$lib/tiptap/extensions';
   import { Bold, Italic, Strike, Underline } from '$lib/tiptap/marks';
+  import { AccessBarrier } from '$lib/tiptap/node-views';
   import {
     Document,
     HardBreak,
@@ -41,9 +48,14 @@
         Underline,
 
         // extensions
+        DropCursor,
+        GapCursor,
         History,
         Placeholder,
         TextAlign,
+
+        // node views
+        AccessBarrier,
       ],
       injectCSS: false,
       editorProps: {
@@ -62,7 +74,6 @@
         // eslint-disable-next-line no-self-assign
         editor = editor;
         value = editor?.getJSON();
-        console.log(value);
       },
     });
   });

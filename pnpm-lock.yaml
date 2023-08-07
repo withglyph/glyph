@@ -460,6 +460,9 @@ importers:
       prisma:
         specifier: ^5.1.1
         version: 5.1.1
+      prosemirror-utils:
+        specifier: 1.2.1-0
+        version: 1.2.1-0(prosemirror-model@1.19.3)(prosemirror-state@1.4.3)
       query-string:
         specifier: ^8.1.0
         version: 8.1.0
@@ -9492,6 +9495,16 @@ packages:
     resolution: {integrity: sha512-GO38mvqJ2yeI0BbL5E1CdHcly032Dlfn9nHqlnCHqlNf9e9jZwJixxp6VRtOeDZ1uTDpDIziezMKbA41LpAx3A==}
     dependencies:
       prosemirror-model: 1.19.3
+    dev: true
+
+  /prosemirror-utils@1.2.1-0(prosemirror-model@1.19.3)(prosemirror-state@1.4.3):
+    resolution: {integrity: sha512-YJNjxSAFhV+w7/nKfLU4SJ0sYEHDJuaIvIxp6V1DgrVFSBBksnvHZTGPVmKGYEnbTqr0kG8HXqopNKPoQtT+3A==}
+    peerDependencies:
+      prosemirror-model: ^1.19.2
+      prosemirror-state: ^1.4.3
+    dependencies:
+      prosemirror-model: 1.19.3
+      prosemirror-state: 1.4.3
     dev: true
 
   /prosemirror-view@1.31.7:

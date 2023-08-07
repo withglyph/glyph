@@ -63,4 +63,20 @@
     --uno: text-gray-40 h-0 pointer-events-none float-left;
     content: attr(data-placeholder);
   }
+
+  /*
+   * others
+  */
+
+  & [data-drag-handle] {
+    --uno: cursor-grab;
+  }
+}
+
+/*
+  * extensions
+*/
+
+.prosemirror-drop-cursor {
+  --uno: bg-brand-50;
 }

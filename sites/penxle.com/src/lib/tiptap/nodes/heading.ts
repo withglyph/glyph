@@ -20,7 +20,6 @@ export const Heading = Node.create({
   addAttributes() {
     return {
       level: {
-        isRequired: true,
         rendered: false,
       },
     };

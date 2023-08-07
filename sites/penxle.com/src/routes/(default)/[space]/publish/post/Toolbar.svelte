@@ -12,6 +12,7 @@
         name="굵게"
         class="i-lc-bold"
         active={editor?.isActive('bold')}
+        enabled={editor?.can().chain().focus().toggleBold().run()}
         on:click={() => editor?.chain().focus().toggleBold().run()}
       />
 
@@ -19,6 +20,7 @@
         name="기울임"
         class="i-lc-italic"
         active={editor?.isActive('italic')}
+        enabled={editor?.can().chain().focus().toggleItalic().run()}
         on:click={() => editor?.chain().focus().toggleItalic().run()}
       />
 
@@ -26,6 +28,7 @@
         name="취소선"
         class="i-lc-strikethrough"
         active={editor?.isActive('strike')}
+        enabled={editor?.can().chain().focus().toggleStrike().run()}
         on:click={() => editor?.chain().focus().toggleStrike().run()}
       />
 
@@ -33,6 +36,7 @@
         name="밑줄"
         class="i-lc-underline"
         active={editor?.isActive('underline')}
+        enabled={editor?.can().chain().focus().toggleUnderline().run()}
         on:click={() => editor?.chain().focus().toggleUnderline().run()}
       />
 
@@ -42,6 +46,12 @@
         name="제목 1"
         class="i-lc-heading-1"
         active={editor?.isActive('heading', { level: 1 })}
+        enabled={editor
+          ?.can()
+          .chain()
+          .focus()
+          .toggleHeading({ level: 1 })
+          .run()}
         on:click={() =>
           editor?.chain().focus().toggleHeading({ level: 1 }).run()}
       />
@@ -50,6 +60,12 @@
         name="제목 2"
         class="i-lc-heading-2"
         active={editor?.isActive('heading', { level: 2 })}
+        enabled={editor
+          ?.can()
+          .chain()
+          .focus()
+          .toggleHeading({ level: 2 })
+          .run()}
         on:click={() =>
           editor?.chain().focus().toggleHeading({ level: 2 }).run()}
       />
@@ -58,6 +74,12 @@
         name="제목 3"
         class="i-lc-heading-3"
         active={editor?.isActive('heading', { level: 3 })}
+        enabled={editor
+          ?.can()
+          .chain()
+          .focus()
+          .toggleHeading({ level: 3 })
+          .run()}
         on:click={() =>
           editor?.chain().focus().toggleHeading({ level: 3 }).run()}
       />
@@ -68,6 +90,7 @@
         name="왼쪽 정렬"
         class="i-lc-align-left"
         active={editor?.isActive({ 'text-align': 'left' })}
+        enabled={editor?.can().chain().focus().setTextAlign('left').run()}
         on:click={() => editor?.chain().focus().setTextAlign('left').run()}
       />
 
@@ -75,6 +98,7 @@
         name="중앙 정렬"
         class="i-lc-align-center"
         active={editor?.isActive({ 'text-align': 'center' })}
+        enabled={editor?.can().chain().focus().setTextAlign('center').run()}
         on:click={() => editor?.chain().focus().setTextAlign('center').run()}
       />
 
@@ -82,6 +106,7 @@
         name="오른쪽 정렬"
         class="i-lc-align-right"
         active={editor?.isActive({ 'text-align': 'right' })}
+        enabled={editor?.can().chain().focus().setTextAlign('right').run()}
         on:click={() => editor?.chain().focus().setTextAlign('right').run()}
       />
 
@@ -89,7 +114,17 @@
         name="양쪽 정렬"
         class="i-lc-align-justify"
         active={editor?.isActive({ 'text-align': 'justify' })}
+        enabled={editor?.can().chain().focus().setTextAlign('justify').run()}
         on:click={() => editor?.chain().focus().setTextAlign('justify').run()}
+      />
+
+      <span class="square-6" />
+
+      <ToolbarButton
+        name="결제 박스 추가"
+        class="i-lc-gift"
+        enabled={editor?.can().setAccessBarrier()}
+        on:click={() => editor?.chain().focus().setAccessBarrier().run()}
       />
     </div>
 
@@ -97,11 +132,13 @@
       <ToolbarButton
         name="실행 취소"
         class="i-lc-rotate-ccw square-5!"
+        enabled={editor?.can().chain().focus().undo().run()}
         on:click={() => editor?.chain().focus().undo().run()}
       />
       <ToolbarButton
         name="다시 실행"
         class="i-lc-rotate-cw square-5!"
+        enabled={editor?.can().chain().focus().redo().run()}
         on:click={() => editor?.chain().focus().redo().run()}
       />
     </div>
