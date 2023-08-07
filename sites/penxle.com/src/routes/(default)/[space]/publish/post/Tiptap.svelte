@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Editor } from '@tiptap/core';
+  import { clsx } from 'clsx';
   import { onDestroy, onMount } from 'svelte';
   import {
     DropCursor,
@@ -85,7 +86,7 @@
 
 <div bind:this={element} class="contents">
   {#if !editor}
-    <div class="ProseMirror font-content-sans max-w-full whitespace-pre-wrap">
+    <div class={clsx('ProseMirror', _class)}>
       <p class="is-editor-empty" data-placeholder={placeholder} />
     </div>
   {/if}
