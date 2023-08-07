@@ -13,7 +13,6 @@
     "@iconify/utils": "^2.1.7",
     "@unocss/core": "^0.54.1",
     "@unocss/preset-icons": "^0.54.1",
-    "@unocss/preset-typography": "^0.54.1",
     "@unocss/preset-uno": "^0.54.1"
   },
   "devDependencies": {

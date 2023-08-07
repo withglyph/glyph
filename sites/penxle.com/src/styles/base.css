@@ -1,7 +1,7 @@
 *,
 ::before,
 ::after {
-  --uno: box-border border-0 border-solid border-gray-20;
+  --uno: box-border border-0 border-solid border-gray-20 ring-gray-20;
 }
 
 * {

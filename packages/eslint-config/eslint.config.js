@@ -116,7 +116,10 @@ export default [
       'unicorn/better-regex': 'error',
       'unicorn/catch-error-name': ['error', { name: 'err' }],
       'unicorn/consistent-destructuring': 'error',
-      'unicorn/consistent-function-scoping': 'error',
+      'unicorn/consistent-function-scoping': [
+        'error',
+        { checkArrowFunctions: false },
+      ],
       'unicorn/custom-error-definition': 'error',
       'unicorn/error-message': 'error',
       'unicorn/escape-case': 'error',

@@ -1,9 +1,33 @@
 .ProseMirror {
-  & strong {
+  /*
+   * nodes
+  */
+
+  & p {
+    --uno: py-1;
+  }
+
+  & h1 {
+    --uno: text-2xl font-bold my-4;
+  }
+
+  & h2 {
+    --uno: text-xl font-bold my-4;
+  }
+
+  & h3 {
+    --uno: text-lg font-bold my-4;
+  }
+
+  /*
+   * marks
+  */
+
+  & b {
     --uno: font-bold;
   }
 
-  & em {
+  & i {
     --uno: font-italic;
   }
 
@@ -15,16 +39,44 @@
     --uno: underline;
   }
 
-  & sup {
-    --uno: align-super;
+  /*
+   * extensions
+  */
+
+  & [data-text-align='left'] {
+    --uno: text-left;
   }
 
-  & sub {
-    --uno: align-sub;
+  & [data-text-align='center'] {
+    --uno: text-center;
+  }
+
+  & [data-text-align='right'] {
+    --uno: text-right;
+  }
+
+  & [data-text-align='justify'] {
+    --uno: text-justify;
   }
 
   & p.is-editor-empty:first-child::before {
     --uno: text-gray-40 h-0 pointer-events-none float-left;
     content: attr(data-placeholder);
   }
+
+  /*
+   * others
+  */
+
+  & [data-drag-handle] {
+    --uno: cursor-grab;
+  }
+}
+
+/*
+  * extensions
+*/
+
+.prosemirror-drop-cursor {
+  --uno: bg-brand-50;
 }

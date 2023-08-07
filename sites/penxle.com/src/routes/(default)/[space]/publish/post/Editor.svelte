@@ -94,7 +94,7 @@
 
 <div class="mx-auto w-3xl flex grow">
   <Tiptap
-    class="font-content-sans max-w-full grow whitespace-pre-wrap prose prose-gray"
+    class="font-content-sans mt-4 max-w-full grow whitespace-pre-wrap"
     bind:editor
   />
 </div>

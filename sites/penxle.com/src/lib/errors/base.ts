@@ -12,7 +12,7 @@ export type AppErrorConstructorParams = {
 };
 
 export class AppError extends Error {
-  public readonly name: AppErrorKind;
+  public override readonly name: AppErrorKind;
   public readonly extra: AppErrorExtra;
 
   constructor({ kind, message, extra = {} }: AppErrorConstructorParams) {
