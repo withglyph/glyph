@@ -45,9 +45,9 @@ model Space {
   id        String     @id
   slug      String
   name      String
-  state     SpaceState
   logoId    String?    @unique @map("logo_id")
   logo      Image?     @relation(fields: [logoId], references: [id])
+  state     SpaceState
   createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz
 
   members SpaceMember[]
