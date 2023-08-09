@@ -13,6 +13,7 @@ export const finalizeMedia = async (key: string) => {
     height: number;
     path: string;
     color: string;
+    placeholder: string;
     hash: string;
   };
 };

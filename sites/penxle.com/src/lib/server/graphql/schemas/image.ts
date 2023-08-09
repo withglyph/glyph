@@ -98,6 +98,7 @@ builder.mutationFields((t) => ({
         height,
         path,
         color,
+        placeholder,
         hash,
       } = await finalizeMedia(input.key);
 
@@ -113,6 +114,7 @@ builder.mutationFields((t) => ({
           height,
           path,
           color,
+          placeholder,
           hash,
         },
       });

@@ -11,8 +11,17 @@ export const persistImage = async (
   const key = createS3ObjectKey();
   await s3PutObject(key, name, buffer);
 
-  const { format, fileSize, blobSize, width, height, path, color, hash } =
-    await finalizeMedia(key);
+  const {
+    format,
+    fileSize,
+    blobSize,
+    width,
+    height,
+    path,
+    color,
+    placeholder,
+    hash,
+  } = await finalizeMedia(key);
 
   const { id } = await db.image.create({
     select: { id: true },
@@ -26,6 +35,7 @@ export const persistImage = async (
       height,
       path,
       color,
+      placeholder,
       hash,
     },
   });
