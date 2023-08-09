@@ -29,6 +29,7 @@ export const App = ({ stack }: StackContext) => {
 
   const api = new Api(stack, 'Api', {
     routes: {
+      'GET /{key+}': 'src/handlers/transform.handler',
       'POST /finalize': 'src/handlers/finalize.handler',
     },
     defaults: {
