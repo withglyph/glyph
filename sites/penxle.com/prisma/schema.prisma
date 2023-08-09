@@ -26,6 +26,7 @@ model Image {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   profileUsingThisAsAvatar Profile?
+  spaceUsingThisAsAvatar   Space?
 
   @@index([id, path, color])
   @@map("images")
@@ -45,6 +46,8 @@ model Space {
   slug      String
   name      String
   state     SpaceState
+  logoId    String     @unique @map("logo_id")
+  logo      Image      @relation(fields: [logoId], references: [id])
   createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz
 
   members SpaceMember[]
