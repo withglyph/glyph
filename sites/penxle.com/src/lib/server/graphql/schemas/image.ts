@@ -17,6 +17,7 @@ export const Image = builder.prismaObject('Image', {
     id: t.exposeID('id'),
     path: t.exposeString('path'),
     color: t.exposeString('color'),
+    placeholder: t.exposeString('placeholder'),
   }),
 });
 
@@ -98,6 +99,7 @@ builder.mutationFields((t) => ({
         height,
         path,
         color,
+        placeholder,
         hash,
       } = await finalizeMedia(input.key);
 
@@ -113,6 +115,7 @@ builder.mutationFields((t) => ({
           height,
           path,
           color,
+          placeholder,
           hash,
         },
       });
