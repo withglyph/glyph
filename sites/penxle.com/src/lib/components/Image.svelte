@@ -29,22 +29,19 @@
   //   `<svg viewBox="0 0 1 1" xmlns="http://www.w3.org/2000/svg"><rect fill="${$image.color}" height="1" width="1" /></svg>`,
   // )}`;
 
-  // thumbhasah 기반으로 placeholder 가져오기
+  // ThumbHash 기반으로 placeholder 가져오기
   $: placeholder = thumbHashToDataURL(Base64.toUint8Array($image.placeholder));
 
   const handleResize = (event: CustomEvent<ResizeObserverEntry>) => {
     const { contentRect } = event.detail;
 
-    const stepUp = (n: number) => Math.pow(2, Math.ceil(Math.log2(n)));
-    const width = stepUp(contentRect.width * window.devicePixelRatio);
-    const height = stepUp(contentRect.height * window.devicePixelRatio);
+    const max =
+      Math.max(contentRect.width, contentRect.height) * window.devicePixelRatio;
+    const size = Math.pow(2, Math.ceil(Math.log2(max)));
 
     src = qs.stringifyUrl({
       url: `https://pnxl.net/${$image.path}`,
-      query: {
-        w: width,
-        h: height,
-      },
+      query: { s: size },
     });
   };
 </script>

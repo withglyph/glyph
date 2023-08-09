@@ -14,11 +14,10 @@ export const handler = ApiHandler(async (event) => {
     return error(400, 'invalid_request');
   }
 
-  const width = Number(event.queryStringParameters.w);
-  const height = Number(event.queryStringParameters.h);
+  const size = Number(event.queryStringParameters.s);
   const quality = Number(event.queryStringParameters.q ?? 80);
 
-  if (!width || !height || !quality) {
+  if (!size || !quality) {
     return error(400, 'invalid_request');
   }
 
@@ -33,8 +32,8 @@ export const handler = ApiHandler(async (event) => {
 
   const image = await sharp(buffer, { failOn: 'none' })
     .resize({
-      width,
-      height,
+      width: size,
+      height: size,
       fit: 'inside',
       withoutEnlargement: true,
     })
