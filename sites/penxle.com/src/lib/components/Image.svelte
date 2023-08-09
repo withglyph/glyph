@@ -1,6 +1,8 @@
 <script lang="ts">
   import { writable } from '@svelte-kits/store';
+  import { Base64 } from 'js-base64';
   import { onMount } from 'svelte';
+  import { thumbHashToDataURL } from 'thumbhash';
   import { fragment, graphql } from '$houdini';
   import { intersectionObserver } from '$lib/svelte/actions';
   import type { Image_image } from '$houdini';
@@ -17,14 +19,18 @@
     graphql(`
       fragment Image_image on Image {
         path
-        color
+        placeholder
       }
     `),
   );
 
-  $: placeholder = `data:image/svg+xml;base64,${btoa(
-    `<svg viewBox="0 0 1 1" xmlns="http://www.w3.org/2000/svg"><rect fill="${$image.color}" height="1" width="1" /></svg>`,
-  )}`;
+  // color 기반으로 placeholder 가져오기 (지금은 안 씀)
+  // $: placeholder = `data:image/svg+xml;base64,${btoa(
+  //   `<svg viewBox="0 0 1 1" xmlns="http://www.w3.org/2000/svg"><rect fill="${$image.color}" height="1" width="1" /></svg>`,
+  // )}`;
+
+  // thumbhasah 기반으로 placeholder 가져오기
+  $: placeholder = thumbHashToDataURL(Base64.toUint8Array($image.placeholder));
 
   onMount(() => {
     // const { clientWidth, clientHeight } = imgEl;

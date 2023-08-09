@@ -25,6 +25,7 @@ type Image {
   color: String!
   id: ID!
   path: String!
+  placeholder: String!
 }
 
 input IssueSSOAuthorizationUrlInput {

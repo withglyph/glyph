@@ -57,6 +57,7 @@ export const handler = ApiHandler(async (event) => {
         height: 100,
         fit: 'inside',
       })
+      .ensureAlpha()
       .raw()
       .toBuffer({ resolveWithObject: true });
 

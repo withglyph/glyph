@@ -17,6 +17,7 @@ export const Image = builder.prismaObject('Image', {
     id: t.exposeID('id'),
     path: t.exposeString('path'),
     color: t.exposeString('color'),
+    placeholder: t.exposeString('placeholder'),
   }),
 });
 
