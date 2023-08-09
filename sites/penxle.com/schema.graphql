@@ -65,6 +65,7 @@ type PrepareImageUploadPayload {
 
 type Profile {
   avatar: Image!
+  id: ID!
   name: String!
 }
 
