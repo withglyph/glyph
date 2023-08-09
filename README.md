@@ -13,7 +13,7 @@
 | ------------------------------------------------------ | ------------------------------ |
 | [`sites/penxle.com`](sites/penxle.com)                 | PENXLE 메인 사이트             |
 | [`sites/penxle.io`](sites/penxle.io)                   | 펜슬컴퍼니 공식 사이트         |
-| [`apps/media-optimizer`](apps/media-optimizer)         | 미디어 최적화 전처리 및 후처리 |
+| [`apps/media`](apps/media-optimizer)                   | 미디어 최적화 전처리 및 후처리 |
 | [`packages/eslint-config`](packages/eslint-config)     | ESLint 공용 설정               |
 | [`packages/prettier-config`](packages/prettier-config) | Prettier 공용 설정             |
 | [`packages/vite`](packages/vite)                       | Vite 서포트 패키지             |

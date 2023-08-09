@@ -1,8 +1,33 @@
 import sharp from 'sharp';
-import { getDominantColor } from './mmcq';
+import { ApiHandler } from 'sst/node/api';
+import { Bucket } from 'sst/node/bucket';
+import { getDominantColor } from '../lib/mmcq';
+import { error } from '../lib/response';
+import { s3DeleteObject, s3GetObject, s3PutObject } from '../lib/s3';
 
-export const optimize = async (input: Buffer) => {
-  const image = sharp(input, { failOn: 'none' })
+export const handler = ApiHandler(async (event) => {
+  if (!event.body) {
+    return error(400, 'invalid_request');
+  }
+
+  const data = JSON.parse(event.body);
+  if (!data.key) {
+    return error(400, 'invalid_request');
+  }
+
+  let object;
+  try {
+    object = await s3GetObject(Bucket.Uploads, data.key);
+  } catch {
+    return error(400, 'object_not_found');
+  }
+
+  await s3DeleteObject(Bucket.Uploads, data.key);
+
+  const name = decodeURIComponent(object.Metadata!.name);
+  const buffer = Buffer.from(await object.Body!.transformToByteArray());
+
+  const image = sharp(buffer, { failOn: 'none' })
     .rotate()
     .flatten({ background: '#ffffff' });
 
@@ -54,9 +79,14 @@ export const optimize = async (input: Buffer) => {
     getHash(),
   ]);
 
+  const path = `images/${data.key}.webp`;
+  await s3PutObject(Bucket.Data, path, 'image/webp', output.data);
+
   return {
-    buffer: output.data,
-    metadata: {
+    statusCode: 200,
+    body: JSON.stringify({
+      name,
+      path,
       format: metadata.format,
       fileSize: metadata.size,
       blobSize: output.info.size,
@@ -64,6 +94,6 @@ export const optimize = async (input: Buffer) => {
       height: output.info.height,
       color,
       hash,
-    },
+    }),
   };
-};
+});

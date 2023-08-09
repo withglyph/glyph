@@ -2,8 +2,7 @@
 
 node_modules/
 
-.lambda/
-.serverless/
+.sst/
 .svelte-kit/
 .turbo/
 .vercel/

@@ -1,6 +1,6 @@
 import { createId } from '$lib/utils';
 import { createS3ObjectKey, s3PutObject } from '../external/aws';
-import { optimizeMedia } from '../external/media-optimizer';
+import { finalizeMedia } from '../external/media';
 import type { InteractiveTransactionClient } from '../database';
 
 export const persistImage = async (
@@ -12,7 +12,7 @@ export const persistImage = async (
   await s3PutObject(key, name, buffer);
 
   const { format, fileSize, blobSize, width, height, path, color, hash } =
-    await optimizeMedia(key);
+    await finalizeMedia(key);
 
   const { id } = await db.image.create({
     select: { id: true },
