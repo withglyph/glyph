@@ -30,6 +30,15 @@ model Image {
   @@map("images")
 }
 
+model RelatedTag {
+  id        String   @id
+  tagId     String   @map("tag_id")
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("related_tags")
+}
+
 model Session {
   id        String   @id
   userId    String   @map("user_id")
@@ -80,27 +89,27 @@ model Profile {
   @@map("profiles")
 }
 
-model Wiki {
-  id        String   @id
-  content   String
-  tagId     String   @unique @map("tag_id")
-  tag       Tag      @relation(fields: [tagId], references: [id])
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  @@map("wikis")
-}
-
 model Tag {
-  id         String @id
-  name       String @unique
-  related    Tag[]  @relation("related")
-  relatedTag Tag[]  @relation("related")
-
+  id        String   @id
+  name      String   @unique
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  wiki Wiki[]
+  tagWiki    TagWiki[]
+  relatedTag RelatedTag[]
 
   @@map("tags")
+}
+
+model TagWiki {
+  id        String   @id
+  tagId     String   @unique @map("tag_id")
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  content   String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("tag_wikis")
 }
 
 model User {
@@ -114,6 +123,7 @@ model User {
   password UserPassword?
   sessions Session[]
   spaces   SpaceMember[]
+  tagWiki  TagWiki[]
   ssos     UserSSO[]
 
   @@map("users")
