@@ -18,7 +18,7 @@
     "@penxle/vite": "workspace:^",
     "@sveltejs/adapter-vercel": "^3.0.3",
     "@sveltejs/kit": "^1.22.4",
-    "@types/node": "^20.4.8",
+    "@types/node": "^20.4.9",
     "@vercel/analytics": "^1.0.1",
     "browserslist": "^4.21.10",
     "clsx": "^2.0.0",
@@ -26,7 +26,7 @@
     "svelte": "4.1.2",
     "svelte-check": "^3.4.6",
     "typescript": "^5.1.6",
-    "unocss": "^0.54.2",
+    "unocss": "^0.54.3",
     "vite": "^4.4.9",
     "web-vitals": "^3.4.0"
   }
