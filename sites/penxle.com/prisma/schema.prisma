@@ -80,6 +80,29 @@ model Profile {
   @@map("profiles")
 }
 
+model Wiki {
+  id        String   @id
+  content   String
+  tagId     String   @unique @map("tag_id")
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("wikis")
+}
+
+model Tag {
+  id         String @id
+  name       String @unique
+  related    Tag[]  @relation("related")
+  relatedTag Tag[]  @relation("related")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  wiki Wiki[]
+
+  @@map("tags")
+}
+
 model User {
   id        String    @id
   email     String    @unique
