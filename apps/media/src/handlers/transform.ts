@@ -15,7 +15,7 @@ export const handler = ApiHandler(async (event) => {
   }
 
   const size = Number(event.queryStringParameters.s);
-  const quality = Number(event.queryStringParameters.q ?? 80);
+  const quality = Number(event.queryStringParameters.q ?? 100);
 
   if (!size || !quality) {
     return error(400, 'invalid_request');

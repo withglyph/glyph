@@ -37,7 +37,7 @@ export const handler = ApiHandler(async (event) => {
   const getOutput = async () => {
     return await image
       .clone()
-      .webp({ quality: 80, effort: 6 })
+      .webp({ quality: 100, effort: 6 })
       .toBuffer({ resolveWithObject: true });
   };
 
