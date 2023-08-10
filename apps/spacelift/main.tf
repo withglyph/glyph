@@ -1,9 +1,11 @@
 provider "spacelift" {}
 
+data "spacelift_current_stack" "this" {}
+
 resource "spacelift_stack" "penxle" {
   name     = "penxle"
   space_id = "root"
-  labels   = ["managed", "depends-on:${data.spacelift_current_stack.this.id}"]
+  labels   = ["terraform", "managed-by:${data.spacelift_current_stack.this.id}"]
 
   repository   = "penxle"
   branch       = "spacelift"
