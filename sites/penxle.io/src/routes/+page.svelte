@@ -23,4 +23,5 @@
   </div>
 
   <div class="font-sans text-2xl">외않되? 정말 쉝이네요.</div>
+  <div class="font-content-sans text-2xl">외않되? 정말 쉝이네요.</div>
 </div>
