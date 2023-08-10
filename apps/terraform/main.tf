@@ -1,1 +1,3 @@
-
+module "aws" {
+  source = "./aws"
+}
