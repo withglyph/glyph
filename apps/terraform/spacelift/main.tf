@@ -1,7 +1,15 @@
-resource "spacelift_stack" "managed-stack" {
-  name = "Stack managed by Spacelift"
+resource "spacelift_stack" "penxle" {
+  name       = "penxle"
+  repository = "penxle"
+  branch     = "main"
+  # slug       = "penxle"
 
-  # Source code.
-  repository = "testing-spacelift"
-  branch     = "master"
+  project_root = "apps/terraform"
+
+  autodeploy            = true
+  enable_local_preview  = true
+  protect_from_deletion = true
+
+  terraform_smart_sanitization = true
+  terraform_version            = ">= 1.5.0"
 }
