@@ -1,0 +1,3 @@
+module "spacelift" {
+  source = "./spacelift"
+}
