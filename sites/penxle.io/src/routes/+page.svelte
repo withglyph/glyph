@@ -16,7 +16,11 @@
     <div class="font-content-sans text-20 font-black">펜슬컴퍼니</div>
   </div>
 
-  <div class="font-sans mt-16 text-20 font-bold">일이삼사 1234 !@#$</div>
+  <div class="font-sans text-20 font-bold">일이삼사 AaBbGgTtYy 1234 !@#$</div>
 
-  <div class="font-content-sans text-20 font-bold">일이삼사 1234 !@#$</div>
+  <div class="font-content-sans text-20 font-bold">
+    일이삼사 AaBbGgTtYyZz 1234 !@#$
+  </div>
+
+  <div class="font-sans text-2xl">외않되? 정말 쉝이네요.</div>
 </div>
