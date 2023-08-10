@@ -2,9 +2,11 @@ resource "spacelift_stack" "penxle" {
   name       = "penxle"
   repository = "penxle"
   branch     = "main"
-  # slug       = "penxle"
+
 
   project_root = "apps/terraform"
+
+  space_id = "root"
 
   autodeploy            = true
   enable_local_preview  = true
