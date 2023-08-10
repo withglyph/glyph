@@ -18,3 +18,14 @@ resource "spacelift_stack" "penxle" {
   terraform_smart_sanitization = true
   terraform_version            = ">= 1.5.0"
 }
+
+resource "spacelift_context" "penxle" {
+  name     = "penxle"
+  space_id = "root"
+  labels   = ["managed-by:${data.spacelift_current_stack.this.id}"]
+}
+
+resource "spacelift_context_attachment" "penxle" {
+  context_id = spacelift_context.penxle.id
+  stack_id   = spacelift_stack.penxle.id
+}
