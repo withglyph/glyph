@@ -42,6 +42,7 @@ builder.prismaObject('User', {
 builder.prismaObject('Profile', {
   select: { id: true },
   fields: (t) => ({
+    id: t.exposeID('id'),
     name: t.exposeString('name'),
 
     avatar: t.relation('avatar'),

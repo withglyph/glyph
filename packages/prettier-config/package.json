@@ -9,7 +9,7 @@
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {
-    "@prettier/plugin-xml": "^3.1.1",
+    "@prettier/plugin-xml": "^3.2.0",
     "prettier-plugin-prisma": "^5.0.0",
     "prettier-plugin-sh": "^0.13.1",
     "prettier-plugin-svelte": "^3.0.3"

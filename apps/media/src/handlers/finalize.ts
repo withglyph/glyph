@@ -1,6 +1,7 @@
 import sharp from 'sharp';
 import { ApiHandler } from 'sst/node/api';
 import { Bucket } from 'sst/node/bucket';
+import { rgbaToThumbHash } from 'thumbhash';
 import { getDominantColor } from '../lib/mmcq';
 import { error } from '../lib/response';
 import { s3DeleteObject, s3GetObject, s3PutObject } from '../lib/s3';
@@ -36,7 +37,7 @@ export const handler = ApiHandler(async (event) => {
   const getOutput = async () => {
     return await image
       .clone()
-      .webp({ quality: 80, effort: 6 })
+      .webp({ quality: 100, effort: 6 })
       .toBuffer({ resolveWithObject: true });
   };
 
@@ -45,13 +46,36 @@ export const handler = ApiHandler(async (event) => {
     return getDominantColor(buffer);
   };
 
+  const getPlaceholder = async () => {
+    const {
+      data: raw,
+      info: { width, height },
+    } = await image
+      .clone()
+      .resize({
+        width: 100,
+        height: 100,
+        fit: 'inside',
+      })
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+
+    const hash = rgbaToThumbHash(width, height, raw);
+    return Buffer.from(hash).toString('base64');
+  };
+
   const getHash = async () => {
     const size = 16;
 
     const raw = await image
       .clone()
       .greyscale()
-      .resize(size + 1, size, { fit: 'fill' })
+      .resize({
+        width: size + 1,
+        height: size,
+        fit: 'fill',
+      })
       .raw()
       .toBuffer();
 
@@ -73,9 +97,10 @@ export const handler = ApiHandler(async (event) => {
     return hash;
   };
 
-  const [output, color, hash] = await Promise.all([
+  const [output, color, placeholder, hash] = await Promise.all([
     getOutput(),
     getColor(),
+    getPlaceholder(),
     getHash(),
   ]);
 
@@ -93,6 +118,7 @@ export const handler = ApiHandler(async (event) => {
       width: output.info.width,
       height: output.info.height,
       color,
+      placeholder,
       hash,
     }),
   };
