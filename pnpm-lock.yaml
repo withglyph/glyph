@@ -118,9 +118,6 @@ importers:
 
   packages/prettier-config:
     dependencies:
-      '@penxle/prettier-plugin-terraform':
-        specifier: workspace:^
-        version: link:../prettier-plugin-terraform
       '@prettier/plugin-xml':
         specifier: ^3.2.0
         version: 3.2.0(prettier@3.0.1)
@@ -140,19 +137,6 @@ importers:
       '@penxle/eslint-config':
         specifier: workspace:^
         version: link:../eslint-config
-
-  packages/prettier-plugin-terraform:
-    dependencies:
-      prettier:
-        specifier: ^3.0.0
-        version: 3.0.1
-    devDependencies:
-      '@penxle/eslint-config':
-        specifier: workspace:^
-        version: link:../eslint-config
-      vscode-languageserver-protocol:
-        specifier: ^3.17.3
-        version: 3.17.3
 
   packages/ui:
     devDependencies:
@@ -13093,22 +13077,6 @@ packages:
       acorn-walk: 8.2.0
     dev: true
 
-  /vscode-jsonrpc@8.1.0:
-    resolution: {integrity: sha512-6TDy/abTQk+zDGYazgbIPc+4JoXdwC8NHU9Pbn4UJP1fehUyZmM4RHp5IthX7A6L5KS30PRui+j+tbbMMMafdw==}
-    engines: {node: '>=14.0.0'}
-    dev: true
-
-  /vscode-languageserver-protocol@3.17.3:
-    resolution: {integrity: sha512-924/h0AqsMtA5yK22GgMtCYiMdCOtWTSGgUOkgEDX+wk2b0x4sAfLiO4NxBxqbiVtz7K7/1/RgVrVI0NClZwqA==}
-    dependencies:
-      vscode-jsonrpc: 8.1.0
-      vscode-languageserver-types: 3.17.3
-    dev: true
-
-  /vscode-languageserver-types@3.17.3:
-    resolution: {integrity: sha512-SYU4z1dL0PyIMd4Vj8YOqFvHu7Hz/enbWtpfnVbJHU4Nd1YNYx8u0ennumc6h48GQNeOLxmwySmnADouT/AuZA==}
-    dev: true
-
   /w3c-keyname@2.2.8:
     resolution: {integrity: sha512-dpojBhNsCNN7T82Tm7k26A6G9ML3NkhDsnw9n/eoxSRlVBB4CEtIQ/KTCLI2Fwf3ataSXRhYFkQi3SlnFwPvPQ==}
     dev: true
@@ -13564,7 +13532,6 @@ time:
   /unocss@0.55.0: '2023-08-09T17:04:52.235Z'
   /vite-plugin-dynamic-import@1.5.0: '2023-07-06T11:31:04.021Z'
   /vite@4.4.9: '2023-08-07T09:16:13.971Z'
-  /vscode-languageserver-protocol@3.17.3: '2023-02-14T14:21:24.439Z'
   /web-vitals@3.4.0: '2023-07-10T18:23:49.756Z'
   /winston@3.10.0: '2023-07-10T20:32:05.941Z'
   /zod@3.21.4: '2023-03-07T04:39:36.379Z'
