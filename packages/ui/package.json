@@ -6,12 +6,9 @@
   "svelte": "./src/lib/index.ts",
   "types": "./src/lib/index.ts",
   "scripts": {
-    "dev": "vite dev",
+    "check": "svelte-check --fail-on-warnings",
     "codegen": "svelte-kit sync",
-    "check": "svelte-check --fail-on-warnings"
-  },
-  "peerDependencies": {
-    "svelte": "^4.0.0"
+    "dev": "vite dev"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^2.1.0",
@@ -25,5 +22,8 @@
     "typescript": "^5.1.6",
     "unocss": "^0.55.0",
     "vite": "^4.4.9"
+  },
+  "peerDependencies": {
+    "svelte": "^4.0.0"
   }
 }

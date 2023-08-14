@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "sst dev",
     "build:layer": "./build-layer.sh",
+    "console": "sst console --stage prod",
     "deploy": "sst deploy --stage prod",
-    "console": "sst console --stage prod"
+    "dev": "sst dev"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.388.0",

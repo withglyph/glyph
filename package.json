@@ -3,19 +3,15 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": "^18 || ^20",
-    "pnpm": "^8.6.0"
-  },
   "scripts": {
     "bootstrap": "pnpm install && husky install",
-    "dev": "turbo run dev --filter './sites/**' --concurrency 255",
-    "codegen": "turbo run codegen",
     "build": "turbo run build --filter './packages/**'",
-    "lint": "eslint '**/*'",
-    "lint:fix": "pnpm lint --fix",
+    "codegen": "turbo run codegen",
+    "dev": "turbo run dev --filter './sites/**' --concurrency 255",
     "format": "prettier --check --ignore-unknown '**/*'",
-    "format:fix": "pnpm format --write"
+    "format:fix": "pnpm format --write",
+    "lint": "eslint '**/*'",
+    "lint:fix": "pnpm lint --fix"
   },
   "devDependencies": {
     "@penxle/eslint-config": "workspace:^",
@@ -28,11 +24,8 @@
     "turbo": "^1.10.12",
     "typescript": "^5.1.6"
   },
-  "pnpm": {
-    "peerDependencyRules": {
-      "allowedVersions": {
-        "serverless-esbuild>esbuild": "0.18"
-      }
-    }
+  "engines": {
+    "node": "^18 || ^20",
+    "pnpm": "^8.6.0"
   }
 }

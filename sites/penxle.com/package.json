@@ -4,12 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "doppler run -- vite dev",
     "build": "vite build",
+    "check": "svelte-check --fail-on-warnings",
     "codegen": "svelte-kit sync && houdini generate",
     "codegen:prisma": "prisma generate",
     "db:push": "doppler run -- prisma db push",
-    "check": "svelte-check --fail-on-warnings",
+    "dev": "doppler run -- vite dev",
     "test": "playwright test"
   },
   "devDependencies": {
