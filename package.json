@@ -12,15 +12,15 @@
     "dev": "turbo run dev --filter './sites/**' --concurrency 255",
     "codegen": "turbo run codegen",
     "build": "turbo run build --filter './packages/**'",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
+    "lint": "eslint '**/*'",
+    "lint:fix": "pnpm lint --fix",
     "format": "prettier --check --ignore-unknown '**/*'",
-    "format:fix": "prettier --write --ignore-unknown '**/*'"
+    "format:fix": "pnpm format --write"
   },
   "devDependencies": {
     "@penxle/eslint-config": "workspace:^",
     "@penxle/prettier-config": "workspace:^",
-    "eslint": "^8.46.0",
+    "eslint": "^8.47.0",
     "gitmoji-cli": "^8.4.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.3",

@@ -8,15 +8,12 @@
   "scripts": {
     "dev": "vite dev",
     "codegen": "svelte-kit sync",
-    "check": "svelte-check --fail-on-warnings",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "check": "svelte-check --fail-on-warnings"
   },
   "peerDependencies": {
     "svelte": "^4.0.0"
   },
   "devDependencies": {
-    "@penxle/eslint-config": "workspace:^",
     "@sveltejs/adapter-auto": "^2.1.0",
     "@sveltejs/kit": "^1.22.5",
     "@unocss/preset-uno": "^0.55.0",

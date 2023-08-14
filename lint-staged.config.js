@@ -1,4 +1,3 @@
 export default {
-  '*': 'prettier --check --ignore-unknown',
-  '*.{ts,js,svelte}': 'eslint',
+  '*': ['eslint --fix', 'prettier --write --ignore-unknown'],
 };

@@ -7,9 +7,7 @@
     "dev": "sst dev",
     "build:layer": "./build-layer.sh",
     "deploy": "sst deploy --stage prod",
-    "console": "sst console --stage prod",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "console": "sst console --stage prod"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.388.0",
@@ -19,7 +17,6 @@
     "thumbhash": "^0.1.1"
   },
   "devDependencies": {
-    "@penxle/eslint-config": "workspace:^",
     "@types/aws-lambda": "^8.10.119",
     "aws-cdk-lib": "2.84.0",
     "constructs": "10.1.156",

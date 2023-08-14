@@ -14,6 +14,7 @@ const loadPrivateKey = memo(async () => jose.importJWK(jwk));
 export const createAccessToken = async (sessionId: string) => {
   const key = await loadPrivateKey();
   return await new jose.SignJWT({})
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     .setProtectedHeader({ alg: jwk.alg! })
     .setJti(sessionId)
     .sign(key);

@@ -30,13 +30,6 @@ export default {
           ...config.compilerOptions,
           rootDirs: [...config.compilerOptions.rootDirs, '../$houdini/types'],
         },
-        include: [
-          'ambient.d.ts',
-          './types/**/$types.d.ts',
-          '../**/*.ts',
-          '../**/*.svelte',
-        ],
-        exclude: ['../node_modules/**', './[!ambient.d.ts]**'],
       }),
     },
     version: { pollInterval: 60 * 1000 },

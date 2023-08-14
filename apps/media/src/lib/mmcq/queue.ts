@@ -17,6 +17,7 @@ export class PriorityQueue implements IterableIterator<VBox> {
 
   consume(pq: PriorityQueue): void {
     while (pq.length > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.push(pq.pop()!);
     }
   }

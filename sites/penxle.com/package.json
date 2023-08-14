@@ -10,8 +10,6 @@
     "codegen:prisma": "prisma generate",
     "db:push": "doppler run -- prisma db push",
     "check": "svelte-check --fail-on-warnings",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
     "test": "playwright test"
   },
   "devDependencies": {

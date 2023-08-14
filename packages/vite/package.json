@@ -6,9 +6,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "build": "tsup"
   },
   "dependencies": {
     "@penxle/lib": "workspace:^",
@@ -21,7 +19,6 @@
     "svgo": "^3.0.2"
   },
   "devDependencies": {
-    "@penxle/eslint-config": "workspace:^",
     "tsup": "^7.2.0",
     "typescript": "^5.1.6",
     "vite": "^4.4.9"

@@ -3,15 +3,15 @@
   import { Button } from '$lib/components';
   import { useMutation } from '$lib/houdini';
   import { trackable } from '$lib/svelte/store';
-  import type { Artwork } from './types';
   import type { SpacePublishArtworkPage_PublishButton_space } from '$houdini';
+  import type { Artwork } from './types';
 
   export let _space: SpacePublishArtworkPage_PublishButton_space;
   export let artworks: Artwork[];
 
   const loading = trackable();
 
-  // eslint-disable-next-line typescript/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   $: space = fragment(
     _space,
     graphql(`

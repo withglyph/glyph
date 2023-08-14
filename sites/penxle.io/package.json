@@ -7,12 +7,9 @@
     "dev": "vite dev",
     "build": "svelte-kit sync && vite build",
     "codegen": "svelte-kit sync",
-    "check": "svelte-check --fail-on-warnings",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "check": "svelte-check --fail-on-warnings"
   },
   "devDependencies": {
-    "@penxle/eslint-config": "workspace:^",
     "@penxle/ui": "workspace:^",
     "@penxle/unocss": "workspace:^",
     "@penxle/vite": "workspace:^",

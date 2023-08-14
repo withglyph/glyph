@@ -14,6 +14,7 @@ const interpolateQuery = (query: string, params: unknown[]) => {
 export const logging = (e: Prisma.QueryEvent) => {
   logger.verbose(e.query, {
     scope: 'database',
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     query: interpolateQuery(e.query, JSON.parse(e.params)),
     params: e.params,
     duration: e.duration,

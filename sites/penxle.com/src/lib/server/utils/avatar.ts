@@ -5,9 +5,9 @@ import { renderAsync } from '@resvg/resvg-js';
 import { nanoid } from 'nanoid';
 import { draw } from 'radash';
 import { persistImage } from './image';
-import type { InteractiveTransactionClient } from '../database';
 import type { Options } from '@dicebear/core';
 import type { ColorShade } from '@penxle/unocss';
+import type { InteractiveTransactionClient } from '../database';
 
 const colors = (...colors: ColorShade[]) =>
   colors.map((v) => color(v).slice(1));
@@ -47,6 +47,7 @@ const options: micah.Options & Options = {
 };
 
 export const createRandomAvatar = () => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const bg = draw(backgroundColors)!;
   return createAvatar(micah, {
     seed: nanoid(),
