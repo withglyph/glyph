@@ -18,7 +18,6 @@ export class AppError extends Error {
   constructor({ kind, message, extra = {} }: AppErrorConstructorParams) {
     super(message);
 
-    // eslint-disable-next-line unicorn/custom-error-definition
     this.name = kind;
     this.extra = extra;
   }

@@ -3,7 +3,7 @@ import { Node } from '@tiptap/core';
 type Level = 1 | 2 | 3;
 
 declare module '@tiptap/core' {
-  // eslint-disable-next-line typescript/consistent-type-definitions
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Commands<ReturnType> {
     heading: {
       toggleHeading: (attributes: { level: Level }) => ReturnType;

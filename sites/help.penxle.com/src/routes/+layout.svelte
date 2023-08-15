@@ -1,6 +1,7 @@
 <script lang="ts">
   import 'virtual:uno.css';
   import '../styles/index.css';
+
   import { Link } from '@penxle/ui';
   import { beforeNavigate } from '$app/navigation';
   import { updated } from '$app/stores';

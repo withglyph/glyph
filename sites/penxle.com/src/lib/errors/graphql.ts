@@ -22,7 +22,7 @@ export class GraphQLAppError extends GraphQLError implements PortableAppError {
 
   constructor(error: AppError) {
     super(error.message);
-    // eslint-disable-next-line unicorn/custom-error-definition
+
     this.name = error.name;
 
     this.extensions = {

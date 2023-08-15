@@ -27,6 +27,7 @@ export const authorizeGoogleUser = async (
   const client = createOAuthClient(context);
   const { tokens } = await client.getToken({ code });
 
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const { aud } = await client.getTokenInfo(tokens.access_token!);
   if (aud !== PRIVATE_GOOGLE_CLIENT_ID) {
     throw new Error('Token validation failed');
@@ -34,8 +35,8 @@ export const authorizeGoogleUser = async (
 
   client.setCredentials(tokens);
 
-  // eslint-disable-next-line typescript/no-explicit-any
-  const response = await client.request<any>({
+  type R = { sub: string; email: string; name: string; picture: string };
+  const response = await client.request<R>({
     url: 'https://www.googleapis.com/oauth2/v3/userinfo',
   });
 

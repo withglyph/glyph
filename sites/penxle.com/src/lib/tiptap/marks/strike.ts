@@ -1,7 +1,7 @@
 import { Mark } from '@tiptap/core';
 
 declare module '@tiptap/core' {
-  // eslint-disable-next-line typescript/consistent-type-definitions
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Commands<ReturnType> {
     strike: {
       toggleStrike: () => ReturnType;

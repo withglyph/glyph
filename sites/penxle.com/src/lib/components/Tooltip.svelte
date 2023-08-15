@@ -41,6 +41,7 @@
     if (position.middlewareData.arrow) {
       const { x, y } = position.middlewareData.arrow;
 
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const staticSide = {
         top: 'bottom',
         right: 'left',
