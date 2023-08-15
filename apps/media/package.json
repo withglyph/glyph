@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "build:layer": "./build-layer.sh",
-    "codegen": "sst build",
     "console": "sst console --stage prod",
     "deploy": "sst deploy --stage prod",
     "dev": "sst dev"

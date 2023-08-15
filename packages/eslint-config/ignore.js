@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import ig from 'ignore';
 
-const matcher = ig().add(fs.readFileSync('.gitignore', 'utf8'));
+const matcher = ig().add(fs.readFileSync('.gitignore', 'utf8')).add('apps/');
 
 export const ignore = (p) => {
   const relative = path.relative(process.cwd(), p);
