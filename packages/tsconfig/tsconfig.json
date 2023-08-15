@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+
+    "target": "esnext",
+    "lib": ["esnext", "DOM", "DOM.Iterable"],
+
+    "module": "esnext",
+    "moduleResolution": "bundler",
+
+    "forceConsistentCasingInFileNames": false,
+    "verbatimModuleSyntax": true
+  }
+}

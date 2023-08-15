@@ -54,6 +54,9 @@ importers:
         specifier: ^0.1.1
         version: 0.1.1
     devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
       '@types/aws-lambda':
         specifier: ^8.10.119
         version: 8.10.119
@@ -111,6 +114,10 @@ importers:
       svgo:
         specifier: ^3.0.2
         version: 3.0.2
+    devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
 
   packages/prettier-config:
     dependencies:
@@ -133,8 +140,13 @@ importers:
         specifier: ^3.0.3
         version: 3.0.3(prettier@3.0.1)(svelte@4.1.2)
 
+  packages/tsconfig: {}
+
   packages/ui:
     devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
       '@sveltejs/adapter-auto':
         specifier: ^2.1.0
         version: 2.1.0(@sveltejs/kit@1.22.5)
@@ -187,6 +199,9 @@ importers:
         specifier: ^0.55.0
         version: 0.55.0
     devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
       typescript:
         specifier: ^5.1.6
         version: 5.1.6
@@ -218,6 +233,9 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
     devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
       tsup:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.1.6)
@@ -230,6 +248,9 @@ importers:
 
   sites/help.penxle.com:
     devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
       '@penxle/ui':
         specifier: workspace:^
         version: link:../../packages/ui
@@ -290,6 +311,9 @@ importers:
 
   sites/landing.penxle.com:
     devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
       '@penxle/ui':
         specifier: workspace:^
         version: link:../../packages/ui
@@ -392,6 +416,9 @@ importers:
       '@penxle/lib':
         specifier: workspace:^
         version: link:../../packages/lib
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
       '@penxle/ui':
         specifier: workspace:^
         version: link:../../packages/ui
@@ -551,6 +578,9 @@ importers:
 
   sites/penxle.io:
     devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
       '@penxle/ui':
         specifier: workspace:^
         version: link:../../packages/ui

@@ -10,6 +10,7 @@
     "dev": "vite dev"
   },
   "devDependencies": {
+    "@penxle/tsconfig": "workspace:^",
     "@penxle/ui": "workspace:^",
     "@penxle/unocss": "workspace:^",
     "@penxle/vite": "workspace:^",

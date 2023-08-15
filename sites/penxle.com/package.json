@@ -27,6 +27,7 @@
     "@paralleldrive/cuid2": "^2.2.2",
     "@penxle/eslint-config": "workspace:^",
     "@penxle/lib": "workspace:^",
+    "@penxle/tsconfig": "workspace:^",
     "@penxle/ui": "workspace:^",
     "@penxle/unocss": "workspace:^",
     "@penxle/vite": "workspace:^",
