@@ -410,9 +410,6 @@ importers:
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2
-      '@penxle/eslint-config':
-        specifier: workspace:^
-        version: link:../../packages/eslint-config
       '@penxle/lib':
         specifier: workspace:^
         version: link:../../packages/lib
