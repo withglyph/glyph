@@ -9,6 +9,7 @@ on:
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  NODE_OPTIONS: --max-old-space-size=4096
 
 jobs:
   eslint:
