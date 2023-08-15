@@ -40,8 +40,8 @@ jobs:
       - name: Run code generation
         run: pnpm exec turbo run codegen
 
-      - name: Run build
-        run: pnpm run build
+      - name: Run dependency build
+        run: pnpm run build:deps
 
       - name: Run lint
         run: pnpm run lint:${{ matrix.linter }}

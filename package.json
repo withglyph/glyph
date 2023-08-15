@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "bootstrap": "pnpm install && husky install",
-    "build": "turbo run build --filter './packages/**'",
+    "build:deps": "turbo run build --filter './packages/**'",
     "codegen": "turbo run codegen",
     "dev": "turbo run dev --filter './sites/**' --concurrency 255",
     "fix:all": "pnpm run '/^fix:.+$/'",

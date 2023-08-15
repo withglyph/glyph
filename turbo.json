@@ -3,7 +3,11 @@
   "pipeline": {
     "build": { "dependsOn": ["codegen", "^build"] },
     "codegen": {},
-    "dev": { "dependsOn": ["codegen", "^build"], "persistent": true },
+    "dev": {
+      "cache": false,
+      "dependsOn": ["codegen", "^build"],
+      "persistent": true
+    },
     "lint:svelte": {}
   }
 }
