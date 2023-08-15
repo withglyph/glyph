@@ -71,7 +71,7 @@ export default [
     },
   },
   {
-    files: ['**/*.js', '**/*.config.ts', '**/service-worker.ts'],
+    files: ['**/*.?(c)js', '**/*.config.?(c)ts', '**/service-worker.ts'],
     languageOptions: { parserOptions: { project: null } },
     rules: typescript.configs['disable-type-checked'].rules,
   },
