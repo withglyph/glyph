@@ -2,8 +2,8 @@ import Mixpanel from 'mixpanel';
 import UAParser from 'ua-parser-js';
 import { PRIVATE_MIXPANEL_TOKEN } from '$env/static/private';
 import { production } from '$lib/environment';
-import type { InteractiveTransactionClient } from './database';
 import type { RequestEvent } from '@sveltejs/kit';
+import type { InteractiveTransactionClient } from './database';
 
 const mixpanel = Mixpanel.init(PRIVATE_MIXPANEL_TOKEN);
 
@@ -16,7 +16,16 @@ export const track = (
     return;
   }
 
-  const parser = new UAParser(event.request.headers.get('user-agent')!);
+  const ua = event.request.headers.get('user-agent');
+  if (!ua) {
+    mixpanel.track(eventName, {
+      ip: event.getClientAddress(),
+      ...properties,
+    });
+    return;
+  }
+
+  const parser = new UAParser(ua);
   const { browser, device, os } = parser.getResult();
 
   mixpanel.track(eventName, {

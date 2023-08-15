@@ -14,8 +14,8 @@ export const handler = ApiHandler(async (event) => {
     return error(400, 'invalid_request');
   }
 
-  const size = Number(event.queryStringParameters.s);
-  const quality = Number(event.queryStringParameters.q ?? 80);
+  const size = Math.max(Number(event.queryStringParameters.s), 8192);
+  const quality = Math.max(Number(event.queryStringParameters.q ?? 75), 75);
 
   if (!size || !quality) {
     return error(400, 'invalid_request');
@@ -28,6 +28,7 @@ export const handler = ApiHandler(async (event) => {
     return error(400, 'object_not_found');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const buffer = Buffer.from(await object.Body!.transformToByteArray());
 
   const image = await sharp(buffer, { failOn: 'none' })
@@ -37,7 +38,10 @@ export const handler = ApiHandler(async (event) => {
       fit: 'inside',
       withoutEnlargement: true,
     })
-    .webp({ quality })
+    .webp({
+      quality,
+      effort: 6,
+    })
     .toBuffer();
 
   return {

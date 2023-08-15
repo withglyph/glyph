@@ -11,7 +11,7 @@ export const handler = ApiHandler(async (event) => {
     return error(400, 'invalid_request');
   }
 
-  const data = JSON.parse(event.body);
+  const data = JSON.parse(event.body) as { key: string };
   if (!data.key) {
     return error(400, 'invalid_request');
   }
@@ -25,7 +25,9 @@ export const handler = ApiHandler(async (event) => {
 
   await s3DeleteObject(Bucket.Uploads, data.key);
 
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const name = decodeURIComponent(object.Metadata!.name);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const buffer = Buffer.from(await object.Body!.transformToByteArray());
 
   const image = sharp(buffer, { failOn: 'none' })
@@ -37,7 +39,7 @@ export const handler = ApiHandler(async (event) => {
   const getOutput = async () => {
     return await image
       .clone()
-      .webp({ quality: 80, effort: 6 })
+      .webp({ quality: 75, effort: 6 })
       .toBuffer({ resolveWithObject: true });
   };
 

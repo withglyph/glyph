@@ -7,6 +7,7 @@ export default {
   xmlQuoteAttributes: 'double',
 
   plugins: [
+    'prettier-plugin-packagejson',
     'prettier-plugin-prisma',
     'prettier-plugin-sh',
     'prettier-plugin-svelte',

@@ -1,0 +1,75 @@
+.prose {
+  /*
+   * nodes
+  */
+
+  & p {
+    --uno: py-1;
+  }
+
+  & h1 {
+    --uno: text-2xl font-bold mt-4;
+  }
+
+  & h2 {
+    --uno: text-xl font-bold mt-4;
+  }
+
+  & h3 {
+    --uno: text-lg font-bold mt-4;
+  }
+
+  & h4 {
+    --uno: text-base font-bold mt-4;
+  }
+
+  & ol,
+  & ul {
+    --uno: list-inside pl-1 py-1;
+
+    & p {
+      --uno: inline;
+    }
+
+    & li {
+      --uno: py-0.5;
+    }
+
+    & ol,
+    & ul {
+      --uno: pl-4;
+    }
+  }
+
+  & ol {
+    --uno: list-decimal;
+  }
+
+  & ul {
+    --uno: list-disc;
+  }
+
+  & blockquote {
+    --uno: border-l-4 pl-2 py-1 whitespace-pre;
+  }
+
+  /*
+   * marks
+  */
+
+  & strong {
+    --uno: font-bold;
+  }
+
+  & i {
+    --uno: font-italic;
+  }
+
+  & s {
+    --uno: line-through;
+  }
+
+  & u {
+    --uno: underline;
+  }
+}

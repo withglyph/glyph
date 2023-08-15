@@ -4,9 +4,8 @@ import {
   transformerDirectives,
   transformerVariantGroup,
 } from 'unocss';
-import type { Theme } from '@penxle/unocss';
 
-export default defineConfig<Theme>({
+export default defineConfig({
   presets: [presetPenxle()],
   transformers: [transformerDirectives(), transformerVariantGroup()],
 });

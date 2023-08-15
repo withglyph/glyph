@@ -3,8 +3,8 @@
   import { Avatar } from '$lib/components';
   import { Logo } from '$lib/components/branding';
   import PublishButton from './PublishButton.svelte';
-  import type { Artwork } from './types';
   import type { SpacePublishArtworkPage_Header_query } from '$houdini';
+  import type { Artwork } from './types';
 
   export let _query: SpacePublishArtworkPage_Header_query;
   export let artworks: Artwork[];

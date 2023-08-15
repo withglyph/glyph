@@ -43,7 +43,8 @@ class SvelteNodeView
         decorations: this.decorations,
         selected: false,
         extension: this.extension,
-        getPos: () => this.getPos(),
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        getPos: () => this.getPos() as number,
         updateAttributes: (attributes = {}) =>
           this.updateAttributes(attributes),
         deleteNode: () => this.deleteNode(),
@@ -72,6 +73,7 @@ class SvelteNodeView
       if (this.node.type.spec.selectable !== false) {
         const { from, to } = this.editor.state.selection;
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         if (from <= this.getPos() && to >= this.getPos() + this.node.nodeSize) {
           this.selectNode();
         } else {

@@ -1,3 +1,1 @@
-import config from '@penxle/eslint-config';
-
-export default [...config, { ignores: ['apps/**', 'packages/**', 'sites/**'] }];
+export { default } from '@penxle/eslint-config';

@@ -1,5 +1,3 @@
-/* eslint-disable unicorn/custom-error-definition */
-
 import { production } from '$lib/environment';
 import { AppError } from './base';
 

@@ -7,9 +7,9 @@ import { Prisma } from '@prisma/client';
 import { GraphQLBigInt, GraphQLDateTime, GraphQLJSON } from 'graphql-scalars';
 import { dev } from '$app/environment';
 import { PermissionDeniedError } from '$lib/errors';
-import type { AuthContext, Context } from '../context';
 import type PrismaTypes from '@pothos/plugin-prisma/generated';
 import type { PrismaClient } from '@prisma/client';
+import type { AuthContext, Context } from '../context';
 
 if (dev) {
   // 개발환경에서만 강제로 순환 참조 걸어서 schema/**/* 리로드할 때 HMR이 builder까지 리로드하도록 함
@@ -48,6 +48,7 @@ export const builder = new SchemaBuilder<{
     ValidationPlugin,
   ],
   prisma: {
+    // spell-checker:disable-next-line
     dmmf: Prisma.dmmf,
     client: (ctx) => ctx.db as unknown as PrismaClient,
     filterConnectionTotalCount: true,

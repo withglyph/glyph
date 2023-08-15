@@ -2,7 +2,7 @@ import { Extension } from '@tiptap/core';
 import { history, redo, undo } from '@tiptap/pm/history';
 
 declare module '@tiptap/core' {
-  // eslint-disable-next-line typescript/consistent-type-definitions
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Commands<ReturnType> {
     history: {
       undo: () => ReturnType;

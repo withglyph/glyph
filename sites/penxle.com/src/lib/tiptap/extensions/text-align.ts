@@ -3,7 +3,7 @@ import { Extension } from '@tiptap/core';
 type Alignment = 'left' | 'center' | 'right' | 'justify';
 
 declare module '@tiptap/core' {
-  // eslint-disable-next-line typescript/consistent-type-definitions
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Commands<ReturnType> {
     textAlign: {
       setTextAlign: (alignment: Alignment) => ReturnType;
@@ -23,7 +23,7 @@ export const TextAlign = Extension.create({
             default: 'left',
             parseHTML: (element) => element.dataset.textAlign,
             renderHTML: (attributes) => ({
-              'data-text-align': attributes['text-align'],
+              'data-text-align': attributes['text-align'] as string,
             }),
           },
         },

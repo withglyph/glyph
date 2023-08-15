@@ -1,13 +1,11 @@
 {
-  "cSpell.words": ["clsx", "penxle"],
-  "editor.codeActionsOnSave": ["source.formatDocument", "source.fixAll.eslint"],
+  "editor.codeActionsOnSave": ["source.fixAll.eslint", "source.formatDocument"],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": false,
   "eslint.enable": true,
   "eslint.format.enable": true,
   "eslint.experimental.useFlatConfig": true,
   "eslint.validate": ["javascript", "typescript", "svelte"],
-  "eslint.workingDirectories": [{ "mode": "auto" }],
   "svelte.enable-ts-plugin": true,
   "svelte.plugin.svelte.defaultScriptLanguage": "ts",
   "typescript.tsdk": "node_modules/typescript/lib",
@@ -16,6 +14,7 @@
     "packages/ui",
     "sites/penxle.com",
     "sites/penxle.io",
+    "sites/help.penxle.com",
     "sites/landing.penxle.com"
   ]
 }

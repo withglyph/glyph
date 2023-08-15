@@ -72,7 +72,6 @@
         },
       },
       onTransaction: () => {
-        // eslint-disable-next-line no-self-assign
         editor = editor;
         value = editor?.getJSON();
       },

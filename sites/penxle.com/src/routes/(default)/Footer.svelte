@@ -67,9 +67,17 @@
     {/if}
 
     <section class="flex items-center gap-2">
-      <Link class="hover:text-gray-50" href="/legal/terms">이용약관</Link>
+      <Link
+        class="hover:text-gray-50"
+        href="https://help.penxle.com/legal/terms"
+      >
+        이용약관
+      </Link>
       <div class="h-2 border-l border-gray-30" />
-      <Link class="font-medium hover:text-gray-50" href="/legal/privacy">
+      <Link
+        class="font-medium hover:text-gray-50"
+        href="https://help.penxle.com/legal/privacy"
+      >
         개인정보처리방침
       </Link>
       <div class="h-2 border-l border-gray-30" />
