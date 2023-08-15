@@ -3,12 +3,16 @@
     "strict": true,
 
     "target": "esnext",
-    "lib": ["esnext", "DOM", "DOM.Iterable"],
+    "lib": ["esnext", "dom", "dom.iterable"],
 
     "module": "esnext",
     "moduleResolution": "bundler",
 
     "forceConsistentCasingInFileNames": false,
+
+    "importsNotUsedAsValues": "remove",
+    "isolatedModules": false,
+    "preserveValueImports": false,
     "verbatimModuleSyntax": true
   }
 }
