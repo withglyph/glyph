@@ -1,18 +1,9 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
-    "deps": { "dependsOn": ["^deps"] },
-    "//#deps": { "dependsOn": ["^deps"] },
-
-    "dev": {
-      "cache": false,
-      "dependsOn": ["codegen", "^build"],
-      "persistent": true
-    },
-    "codegen": {},
-
     "build": { "dependsOn": ["codegen", "^build"] },
-
-    "check": {}
+    "codegen": {},
+    "dev": { "dependsOn": ["codegen", "^build"], "persistent": true },
+    "lint:svelte": {}
   }
 }

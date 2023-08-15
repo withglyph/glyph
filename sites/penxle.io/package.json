@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "svelte-kit sync && vite build",
-    "check": "svelte-check --fail-on-warnings",
     "codegen": "svelte-kit sync",
-    "dev": "vite dev"
+    "dev": "vite dev",
+    "lint:svelte": "svelte-check --fail-on-warnings"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",

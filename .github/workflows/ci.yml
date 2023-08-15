@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        linter: [eslint, prettier, spellcheck]
+        linter: [eslint, prettier, spellcheck, svelte]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -44,33 +44,3 @@ jobs:
 
       - name: Run lint
         run: pnpm run lint:${{ matrix.linter }}
-
-  check:
-    name: Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
-
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run code generation
-        run: pnpm exec turbo run codegen
-
-      - name: Run build
-        run: pnpm run build
-
-      - name: Run check
-        run: pnpm exec turbo run check

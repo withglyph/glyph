@@ -12,7 +12,8 @@
     "fix:prettier": "pnpm format --write",
     "lint:eslint": "eslint '**/*'",
     "lint:prettier": "prettier --check --ignore-unknown '**/*'",
-    "lint:spellcheck": "cspell --no-progress --relative '**/*'"
+    "lint:spellcheck": "cspell --no-progress --relative '**/*'",
+    "lint:svelte": "turbo run lint:svelte"
   },
   "devDependencies": {
     "@penxle/eslint-config": "workspace:^",

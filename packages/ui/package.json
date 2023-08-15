@@ -6,9 +6,9 @@
   "svelte": "./src/lib/index.ts",
   "types": "./src/lib/index.ts",
   "scripts": {
-    "check": "svelte-check --fail-on-warnings",
     "codegen": "svelte-kit sync",
-    "dev": "vite dev"
+    "dev": "vite dev",
+    "lint:svelte": "svelte-check --fail-on-warnings"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",

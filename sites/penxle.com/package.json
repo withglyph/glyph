@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "check": "svelte-check --fail-on-warnings",
     "codegen": "svelte-kit sync && houdini generate",
     "codegen:prisma": "prisma generate",
     "db:push": "doppler run -- prisma db push",
     "dev": "doppler run -- vite dev",
+    "lint:svelte": "svelte-check --fail-on-warnings",
     "test": "playwright test"
   },
   "devDependencies": {
