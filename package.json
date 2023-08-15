@@ -8,14 +8,16 @@
     "build": "turbo run build --filter './packages/**'",
     "codegen": "turbo run codegen",
     "dev": "turbo run dev --filter './sites/**' --concurrency 255",
-    "format": "prettier --check --ignore-unknown '**/*'",
-    "format:fix": "pnpm format --write",
-    "lint": "eslint '**/*'",
-    "lint:fix": "pnpm lint --fix"
+    "fix:eslint": "pnpm lint --fix",
+    "fix:prettier": "pnpm format --write",
+    "lint:eslint": "eslint '**/*'",
+    "lint:prettier": "prettier --check --ignore-unknown '**/*'",
+    "lint:spellcheck": "cspell --no-progress --relative '**/*'"
   },
   "devDependencies": {
     "@penxle/eslint-config": "workspace:^",
     "@penxle/prettier-config": "workspace:^",
+    "cspell": "^7.0.0",
     "eslint": "^8.47.0",
     "gitmoji-cli": "^8.4.0",
     "husky": "^8.0.3",

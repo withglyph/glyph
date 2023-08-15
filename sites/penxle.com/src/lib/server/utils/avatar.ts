@@ -26,6 +26,7 @@ const options: micah.Options & Options = {
   backgroundColor: ['$$$$$$'],
 
   // 얼굴
+  // spell-checker:disable-next-line
   baseColor: ['FADCA9', 'EDB179', 'E09D57'], // https://theklog.co/korean-way-find-your-skin-tone/
 
   // 눈
@@ -42,6 +43,7 @@ const options: micah.Options & Options = {
   earrings: [],
 
   // 털
+  // spell-checker:disable-next-line
   hair: ['dannyPhantom', 'fonze', 'full', 'pixie'],
   facialHair: [],
 };

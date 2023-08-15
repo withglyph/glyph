@@ -48,6 +48,7 @@ export const builder = new SchemaBuilder<{
     ValidationPlugin,
   ],
   prisma: {
+    // spell-checker:disable-next-line
     dmmf: Prisma.dmmf,
     client: (ctx) => ctx.db as unknown as PrismaClient,
     filterConnectionTotalCount: true,

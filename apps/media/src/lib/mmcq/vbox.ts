@@ -1,6 +1,6 @@
 import { mapValues, max, range } from 'radash';
 import { getColorIndex } from './color';
-import { COLOR_SIZE, HISTOGRAM_SIZE, MULTIPLIER, RSHIFT } from './const';
+import { COLOR_SIZE, HISTOGRAM_SIZE, MULTIPLIER, RIGHT_SHIFT } from './const';
 import { clamp } from './utils';
 import type { Color, ColorChannel } from './color';
 
@@ -26,9 +26,9 @@ export class VBox {
     const max = { r: 0, g: 0, b: 0 };
 
     for (let offset = 0; offset < buffer.length; offset += COLOR_SIZE) {
-      const r = buffer[offset + 0] >> RSHIFT;
-      const g = buffer[offset + 1] >> RSHIFT;
-      const b = buffer[offset + 2] >> RSHIFT;
+      const r = buffer[offset + 0] >> RIGHT_SHIFT;
+      const g = buffer[offset + 1] >> RIGHT_SHIFT;
+      const b = buffer[offset + 2] >> RIGHT_SHIFT;
 
       const index = getColorIndex({ r, g, b });
       histogram[index]++;

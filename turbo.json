@@ -13,14 +13,6 @@
 
     "build": { "dependsOn": ["codegen", "^build"] },
 
-    "check": {},
-
-    "lint": { "dependsOn": ["deps"] },
-    "//#lint": { "dependsOn": ["deps"] },
-    "lint:fix": { "dependsOn": ["deps"] },
-    "//#lint:fix": { "dependsOn": ["deps"] },
-
-    "//#format": { "dependsOn": ["deps"] },
-    "//#format:fix": { "dependsOn": ["deps"] }
+    "check": {}
   }
 }

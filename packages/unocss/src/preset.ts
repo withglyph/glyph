@@ -38,6 +38,7 @@ export const presetPenxle = (): Preset<Theme> => ({
       'font-content-sans',
       {
         'font-family': 'Pretendard',
+        // spell-checker:disable-next-line
         'font-feature-settings': '"case", "ss06", "calt" 0',
       },
     ],

@@ -1,5 +1,4 @@
 {
-  "cSpell.words": ["clsx", "penxle"],
   "editor.codeActionsOnSave": ["source.fixAll.eslint", "source.formatDocument"],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": false,
