@@ -12,5 +12,4 @@ dist/
 $houdini/
 
 vite.config.ts.timestamp-*
-.credentials.auto.tfvars
 .env.local
