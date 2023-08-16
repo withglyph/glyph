@@ -16,5 +16,7 @@
     "sites/penxle.io",
     "sites/help.penxle.com",
     "sites/landing.penxle.com"
-  ]
+  ],
+  "[terraform]": { "editor.defaultFormatter": "hashicorp.terraform" },
+  "[terraform-vars]": { "editor.defaultFormatter": "hashicorp.terraform" }
 }
