@@ -5,3 +5,7 @@ module "aws" {
 module "cloudflare" {
   source = "./cloudflare"
 }
+
+module "vercel" {
+  source = "./vercel"
+}

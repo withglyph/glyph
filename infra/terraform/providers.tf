@@ -9,3 +9,7 @@ provider "aws" {
 provider "cloudflare" {}
 
 provider "random" {}
+
+provider "vercel" {
+  team = "penxle"
+}
