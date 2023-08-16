@@ -19,7 +19,7 @@ resource "vercel_project" "company" {
   framework      = "sveltekit-1"
   ignore_command = "../../scripts/vercel-ignore.sh"
 
-  root_directory = "sites/company.penxle.com"
+  root_directory = "sites/penxle.io"
   git_repository = {
     type = "github"
     repo = "penxle/penxle"
