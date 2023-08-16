@@ -42,8 +42,8 @@
     "@svelte-kits/store": "^0.1.2",
     "@sveltejs/adapter-vercel": "^3.0.3",
     "@sveltejs/kit": "^1.22.6",
-    "@tiptap/core": "^2.0.4",
-    "@tiptap/pm": "^2.0.4",
+    "@tiptap/core": "^2.1.0",
+    "@tiptap/pm": "^2.1.0",
     "@types/node": "^20.5.0",
     "@types/ua-parser-js": "^0.7.36",
     "@vercel/analytics": "^1.0.2",
@@ -53,13 +53,13 @@
     "clsx": "^2.0.0",
     "dayjs": "^1.11.9",
     "felte": "^1.2.11",
-    "googleapis": "^124.0.0",
+    "googleapis": "^125.0.0",
     "graphql": "^16.8.0",
     "graphql-scalars": "^1.22.2",
     "graphql-yoga": "^4.0.4",
     "houdini": "^1.2.8",
     "houdini-svelte": "^1.2.8",
-    "itty-router": "^4.0.15",
+    "itty-router": "^4.0.17",
     "jose": "^4.14.4",
     "js-base64": "^3.7.5",
     "lightningcss": "^1.21.5",
@@ -78,6 +78,6 @@
     "vite": "^4.4.9",
     "web-vitals": "^3.4.0",
     "winston": "^3.10.0",
-    "zod": "^3.22.0"
+    "zod": "^3.22.1"
   }
 }

@@ -12,8 +12,8 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.391.0",
     "radash": "^11.0.0",
-    "sharp": "^0.32.4",
-    "sst": "^2.24.2",
+    "sharp": "^0.32.5",
+    "sst": "^2.24.3",
     "thumbhash": "^0.1.1"
   },
   "devDependencies": {
