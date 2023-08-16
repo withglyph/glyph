@@ -137,6 +137,13 @@ model UserPassword {
   @@map("user_passwords")
 }
 
+enum SnsLink {
+  TWITTER
+  INSTAGRAM
+
+  @@map("_sns_link")
+}
+
 enum SpaceState {
   ACTIVE
   INACTIVE
@@ -170,11 +177,4 @@ enum UserState {
   INACTIVE
 
   @@map("_user_state")
-}
-
-enum SnsLink {
-  TWITTER
-  INSTAGRAM
-
-  @@map("_sns_link")
 }
