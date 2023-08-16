@@ -8,6 +8,7 @@ resource "spacelift_stack" "penxle" {
   labels = [
     "infracost",
     "terraform",
+    "feature:add_plan_pr_comment",
     "managed-by:${data.spacelift_current_stack.this.id}"
   ]
 
