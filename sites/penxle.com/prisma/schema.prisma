@@ -42,15 +42,18 @@ model Session {
 }
 
 model Space {
-  id        String     @id
-  slug      String
-  name      String
-  logoId    String?    @unique @map("logo_id")
-  logo      Image?     @relation(fields: [logoId], references: [id])
-  state     SpaceState
-  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  id            String             @id
+  slug          String
+  name          String
+  description   String?
+  logoId        String?            @unique @map("logo_id")
+  logo          Image?             @relation(fields: [logoId], references: [id])
+  state         SpaceState
+  favoriteState SpaceFavoriteState
+  createdAt     DateTime           @default(now()) @map("created_at") @db.Timestamptz
 
-  members SpaceMember[]
+  members    SpaceMember[]
+  spaceLinks SpaceLink[]
 
   @@index([slug, state])
   @@map("spaces")
@@ -69,6 +72,17 @@ model SpaceMember {
 
   @@unique([spaceId, userId])
   @@map("space_members")
+}
+
+model SpaceLink {
+  id        String   @id
+  sns       SnsLink
+  url       String
+  spaceId   String   @map("space_id")
+  space     Space    @relation(fields: [spaceId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("space_links")
 }
 
 model Profile {
@@ -130,6 +144,13 @@ enum SpaceState {
   @@map("_space_state")
 }
 
+enum SpaceFavoriteState {
+  PUBLIC
+  PRIVATE
+
+  @@map("_space_favorite_state")
+}
+
 enum SpaceMemberRole {
   OWNER
   MEMBER
@@ -149,4 +170,11 @@ enum UserState {
   INACTIVE
 
   @@map("_user_state")
+}
+
+enum SnsLink {
+  TWITTER
+  INSTAGRAM
+
+  @@map("_sns_link")
 }
