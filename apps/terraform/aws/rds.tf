@@ -11,7 +11,7 @@ data "aws_rds_engine_version" "latest" {
 }
 
 resource "random_password" "rds" {
-  length  = 16
+  length  = 20
   special = false
 }
 

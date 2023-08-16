@@ -2,7 +2,7 @@
   "allowCompoundWords": true,
   "enableFiletypes": ["*"],
   "enableGlobDot": true,
-  "ignorePaths": [".git", ".vscode", "pnpm-lock.yaml"],
+  "ignorePaths": [".git", ".gitignore", ".vscode", "pnpm-lock.yaml", "*.tf"],
   "numSuggestions": 0,
   "useGitignore": true,
   "words": [
