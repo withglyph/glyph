@@ -3,26 +3,26 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "svelte": "./src/lib/index.ts",
-  "types": "./src/lib/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./spinners": "./src/spinners/index.ts",
+    "./dev": "./src/dev/index.ts"
+  },
   "scripts": {
     "codegen": "svelte-kit sync",
-    "dev": "vite dev",
-    "lint:svelte": "svelte-check --fail-on-warnings"
+    "lint:svelte": "svelte-check --fail-on-warnings",
+    "lint:typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "@sveltejs/adapter-auto": "^2.1.0",
     "@sveltejs/kit": "^1.22.6",
-    "browserslist": "^4.21.10",
     "clsx": "^2.0.0",
-    "lightningcss": "^1.21.5",
     "svelte": "^4.2.0",
     "svelte-check": "^3.5.0",
-    "typescript": "^5.1.6",
-    "vite": "^4.4.9"
+    "typescript": "^5.1.6"
   },
   "peerDependencies": {
+    "@sveltejs/kit": "^1.0.0",
     "svelte": "^4.0.0"
   }
 }

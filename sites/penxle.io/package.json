@@ -7,9 +7,11 @@
     "build": "svelte-kit sync && vite build",
     "codegen": "svelte-kit sync",
     "dev": "vite dev",
-    "lint:svelte": "svelte-check --fail-on-warnings"
+    "lint:svelte": "svelte-check --fail-on-warnings",
+    "lint:typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@penxle/lib": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@penxle/ui": "workspace:^",
     "@penxle/unocss": "workspace:^",

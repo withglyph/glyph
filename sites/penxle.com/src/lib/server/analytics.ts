@@ -1,7 +1,7 @@
+import { production } from '@penxle/lib/environment';
 import Mixpanel from 'mixpanel';
 import UAParser from 'ua-parser-js';
 import { PRIVATE_MIXPANEL_TOKEN } from '$env/static/private';
-import { production } from '$lib/environment';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { InteractiveTransactionClient } from './database';
 

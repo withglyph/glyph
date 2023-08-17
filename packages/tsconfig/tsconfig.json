@@ -8,11 +8,17 @@
     "module": "esnext",
     "moduleResolution": "bundler",
 
-    "forceConsistentCasingInFileNames": false,
+    "noEmit": true,
+    "skipLibCheck": true,
+
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitOverride": true,
 
     "importsNotUsedAsValues": "remove",
     "isolatedModules": false,
     "preserveValueImports": false,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+
+    "outDir": "dist"
   }
 }
