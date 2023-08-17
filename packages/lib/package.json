@@ -10,7 +10,8 @@
   },
   "scripts": {
     "codegen": "svelte-kit sync",
-    "lint:svelte": "svelte-check --fail-on-warnings"
+    "lint:svelte": "svelte-check --fail-on-warnings",
+    "lint:typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@vercel/analytics": "^1.0.2",

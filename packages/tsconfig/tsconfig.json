@@ -8,6 +8,9 @@
     "module": "esnext",
     "moduleResolution": "bundler",
 
+    "noEmit": true,
+    "skipLibCheck": true,
+
     "forceConsistentCasingInFileNames": false,
 
     "importsNotUsedAsValues": "remove",

@@ -9,6 +9,7 @@
     "codegen:prisma": "prisma generate",
     "dev": "doppler run -- vite dev",
     "lint:svelte": "svelte-check --fail-on-warnings",
+    "lint:typecheck": "tsc --noEmit",
     "migrate": "doppler run -- prisma migrate dev",
     "migrate:new": "doppler run -- prisma migrate dev --create-only",
     "test": "playwright test"

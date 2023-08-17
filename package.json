@@ -16,7 +16,8 @@
     "lint:prettier": "prettier --check --ignore-unknown '**/*'",
     "lint:spellcheck": "cspell --no-progress --relative '**/*'",
     "lint:svelte": "turbo run lint:svelte",
-    "lint:syncpack": "syncpack lint"
+    "lint:syncpack": "syncpack lint",
+    "lint:typecheck": "turbo run lint:typecheck"
   },
   "devDependencies": {
     "@penxle/eslint-config": "workspace:^",

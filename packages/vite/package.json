@@ -6,7 +6,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "lint:typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@penxle/lib": "workspace:^",
