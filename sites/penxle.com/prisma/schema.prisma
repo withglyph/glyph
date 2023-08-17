@@ -86,11 +86,11 @@ model Tag {
   name      String   @unique
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  wiki               TagWiki?
-  wikiRevisions      TagWikiRevision[]
-  parentTags         TagHierarchy[]     @relation("parentTags")
-  childTags          TagHierarchy[]     @relation("childTags")
-  userTagPreferences UserTagPreference?
+  wiki            TagWiki?
+  wikiRevisions   TagWikiRevision[]
+  parents         TagHierarchy[]      @relation("parents")
+  children        TagHierarchy[]      @relation("children")
+  userPreferences UserTagPreference[]
 
   @@map("tags")
 }
@@ -98,9 +98,9 @@ model Tag {
 model TagHierarchy {
   id          String   @id
   parentTagId String   @unique @map("parent_tag_id")
-  parentTag   Tag      @relation("parentTags", fields: [parentTagId], references: [id])
+  parentTag   Tag      @relation("parents", fields: [parentTagId], references: [id])
   childTagId  String   @unique @map("child_tag_id")
-  childTag    Tag      @relation("childTags", fields: [childTagId], references: [id])
+  childTag    Tag      @relation("children", fields: [childTagId], references: [id])
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("tag_hierarchies")
@@ -139,12 +139,12 @@ model User {
   state     UserState
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
-  password        UserPassword?
-  sessions        Session[]
-  spaces          SpaceMember[]
-  tagWikiRevision TagWikiRevision?
-  ssos            UserSSO[]
-  tagPreferences  UserTagPreference[]
+  password         UserPassword?
+  sessions         Session[]
+  spaces           SpaceMember[]
+  ssos             UserSSO[]
+  tagPreferences   UserTagPreference[]
+  tagWikiRevisions TagWikiRevision[]
 
   @@map("users")
 }
