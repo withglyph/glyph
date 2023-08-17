@@ -10,6 +10,7 @@
     "lint:svelte": "svelte-check --fail-on-warnings"
   },
   "devDependencies": {
+    "@penxle/lib": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@penxle/ui": "workspace:^",
     "@penxle/unocss": "workspace:^",

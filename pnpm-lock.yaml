@@ -117,13 +117,31 @@ importers:
 
   packages/lib:
     dependencies:
+      '@vercel/analytics':
+        specifier: ^1.0.2
+        version: 1.0.2
       svgo:
         specifier: ^3.0.2
         version: 3.0.2
+      web-vitals:
+        specifier: ^3.4.0
+        version: 3.4.0
     devDependencies:
       '@penxle/tsconfig':
         specifier: workspace:^
         version: link:../tsconfig
+      '@sveltejs/kit':
+        specifier: ^1.22.6
+        version: 1.22.6(svelte@4.2.0)(vite@4.4.9)
+      svelte:
+        specifier: ^4.2.0
+        version: 4.2.0
+      svelte-check:
+        specifier: ^3.5.0
+        version: 3.5.0(postcss@8.4.28)(svelte@4.2.0)
+      typescript:
+        specifier: ^5.1.6
+        version: 5.1.6
 
   packages/prettier-config:
     dependencies:
@@ -153,21 +171,12 @@ importers:
       '@penxle/tsconfig':
         specifier: workspace:^
         version: link:../tsconfig
-      '@sveltejs/adapter-auto':
-        specifier: ^2.1.0
-        version: 2.1.0(@sveltejs/kit@1.22.6)
       '@sveltejs/kit':
         specifier: ^1.22.6
         version: 1.22.6(svelte@4.2.0)(vite@4.4.9)
-      browserslist:
-        specifier: ^4.21.10
-        version: 4.21.10
       clsx:
         specifier: ^2.0.0
         version: 2.0.0
-      lightningcss:
-        specifier: ^1.21.5
-        version: 1.21.5
       svelte:
         specifier: ^4.2.0
         version: 4.2.0
@@ -177,9 +186,6 @@ importers:
       typescript:
         specifier: ^5.1.6
         version: 5.1.6
-      vite:
-        specifier: ^4.4.9
-        version: 4.4.9(@types/node@20.5.0)(lightningcss@1.21.5)
 
   packages/unocss:
     dependencies:
@@ -248,6 +254,9 @@ importers:
 
   sites/help.penxle.com:
     devDependencies:
+      '@penxle/lib':
+        specifier: workspace:^
+        version: link:../../packages/lib
       '@penxle/tsconfig':
         specifier: workspace:^
         version: link:../../packages/tsconfig
@@ -311,6 +320,9 @@ importers:
 
   sites/landing.penxle.com:
     devDependencies:
+      '@penxle/lib':
+        specifier: workspace:^
+        version: link:../../packages/lib
       '@penxle/tsconfig':
         specifier: workspace:^
         version: link:../../packages/tsconfig
@@ -575,6 +587,9 @@ importers:
 
   sites/penxle.io:
     devDependencies:
+      '@penxle/lib':
+        specifier: workspace:^
+        version: link:../../packages/lib
       '@penxle/tsconfig':
         specifier: workspace:^
         version: link:../../packages/tsconfig
@@ -4761,15 +4776,6 @@ packages:
       svelte: 4.2.0
     dev: true
 
-  /@sveltejs/adapter-auto@2.1.0(@sveltejs/kit@1.22.6):
-    resolution: {integrity: sha512-o2pZCfATFtA/Gw/BB0Xm7k4EYaekXxaPGER3xGSY3FvzFJGTlJlZjBseaXwYSM94lZ0HniOjTokN3cWaLX6fow==}
-    peerDependencies:
-      '@sveltejs/kit': ^1.0.0
-    dependencies:
-      '@sveltejs/kit': 1.22.6(svelte@4.2.0)(vite@4.4.9)
-      import-meta-resolve: 3.0.0
-    dev: true
-
   /@sveltejs/adapter-vercel@3.0.3(@sveltejs/kit@1.22.6):
     resolution: {integrity: sha512-0FQMjR6klW4627ewdclSr0lUe/DqiiyOaRTfgb5cXgNbVMsZMOA2fQ77TYQnJdvMfSEWe6y8uznV48XqKh9+vA==}
     peerDependencies:
@@ -5419,7 +5425,6 @@ packages:
 
   /@vercel/analytics@1.0.2:
     resolution: {integrity: sha512-BZFxVrv24VbNNl5xMxqUojQIegEeXMI6rX3rg1uVLYUEXsuKNBSAEQf4BWEcjQDp/8aYJOj6m8V4PUA3x/cxgg==}
-    dev: true
 
   /@vercel/edge-config-fs@0.1.0:
     resolution: {integrity: sha512-NRIBwfcS0bUoUbRWlNGetqjvLSwgYH/BqKqDN7vK1g32p7dN96k0712COgaz6VFizAm9b0g6IG6hR6+hc0KCPg==}
@@ -6533,7 +6538,7 @@ packages:
     resolution: {integrity: sha512-rraC8NXWOEjhADbZe9QBNzLAN5Q3fsTPQtBV+fEVj6xKIgDgNiEVE6ZNfHpZOqfQ21YUzfVNUXLOEZquYvQPPg==}
     dependencies:
       leven: 2.1.0
-      minimist: 1.2.6
+      minimist: 1.2.8
 
   /compress-commons@4.1.1:
     resolution: {integrity: sha512-QLdDLCKNV2dtoTorqgxngQCMA+gWXkM/Nwu7FpeBhk/RdkzimqC3jueb/FDmaZeXh+uby1jkBqE3xArsLBE5wQ==}
@@ -10469,6 +10474,7 @@ packages:
 
   /minimist@1.2.6:
     resolution: {integrity: sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==}
+    dev: false
 
   /minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
@@ -10563,7 +10569,7 @@ packages:
       duplexify: 4.1.2
       help-me: 3.0.0
       inherits: 2.0.4
-      minimist: 1.2.6
+      minimist: 1.2.8
       mqtt-packet: 6.10.0
       pump: 3.0.0
       readable-stream: 3.6.2
@@ -13700,7 +13706,6 @@ packages:
 
   /web-vitals@3.4.0:
     resolution: {integrity: sha512-n9fZ5/bG1oeDkyxLWyep0eahrNcPDF6bFqoyispt7xkW0xhDzpUBTgyDKqWDi1twT0MgH4HvvqzpUyh0ZxZV4A==}
-    dev: true
 
   /webcrypto-core@1.7.7:
     resolution: {integrity: sha512-7FjigXNsBfopEj+5DV2nhNpfic2vumtjjgPmeDKk45z+MJwXKKfhPB7118Pfzrmh4jqOMST6Ch37iPAHoImg5g==}
@@ -14069,7 +14074,6 @@ time:
   /@sindresorhus/string-hash@2.0.0: '2021-08-22T20:59:46.856Z'
   /@supabase/supabase-js@2.32.0: '2023-08-07T01:48:17.922Z'
   /@svelte-kits/store@0.1.2: '2023-06-27T02:47:42.513Z'
-  /@sveltejs/adapter-auto@2.1.0: '2023-05-17T14:52:24.379Z'
   /@sveltejs/adapter-vercel@3.0.3: '2023-07-31T11:22:40.536Z'
   /@sveltejs/kit@1.22.6: '2023-08-14T04:36:04.474Z'
   /@types/aws-lambda@8.10.119: '2023-06-14T22:02:48.324Z'

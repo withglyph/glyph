@@ -3,12 +3,29 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./analytics": "./src/analytics/index.ts",
+    "./environment": "./src/environment.ts"
+  },
+  "scripts": {
+    "codegen": "svelte-kit sync",
+    "lint:svelte": "svelte-check --fail-on-warnings"
+  },
   "dependencies": {
-    "svgo": "^3.0.2"
+    "@vercel/analytics": "^1.0.2",
+    "svgo": "^3.0.2",
+    "web-vitals": "^3.4.0"
   },
   "devDependencies": {
-    "@penxle/tsconfig": "workspace:^"
+    "@penxle/tsconfig": "workspace:^",
+    "@sveltejs/kit": "^1.22.6",
+    "svelte": "^4.2.0",
+    "svelte-check": "^3.5.0",
+    "typescript": "^5.1.6"
+  },
+  "peerDependencies": {
+    "@sveltejs/kit": "^1.0.0",
+    "svelte": "^4.0.0"
   }
 }

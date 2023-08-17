@@ -1,12 +1,12 @@
 <script lang="ts">
   import { Helmet, Link } from '@penxle/ui';
+  import { RingSpinner } from '@penxle/ui/spinners';
   import confetti from 'canvas-confetti';
   import { clsx } from 'clsx';
   import { fade } from 'svelte/transition';
   import ComingSoon from '$assets/coming-soon.svg?component';
   import Logo from '$assets/logo.svg?component';
   import Slogan from '$assets/slogan.svg?component';
-  import { RingSpinner } from '$lib/components/spinners';
 
   let phoneNumber = '';
   let status: 'idle' | 'submitting' | 'submitted' | 'invalid' = 'invalid';
