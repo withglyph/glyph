@@ -11,7 +11,8 @@
     "noEmit": true,
     "skipLibCheck": true,
 
-    "forceConsistentCasingInFileNames": false,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitOverride": true,
 
     "importsNotUsedAsValues": "remove",
     "isolatedModules": false,
