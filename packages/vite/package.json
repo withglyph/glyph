@@ -11,8 +11,8 @@
   "dependencies": {
     "@penxle/lib": "workspace:^",
     "@sindresorhus/string-hash": "^2.0.0",
-    "@unocss/config": "^0.55.0",
-    "@unocss/core": "^0.55.0",
+    "@unocss/config": "^0.55.1",
+    "@unocss/core": "^0.55.1",
     "magic-string": "^0.30.2",
     "object-traversal": "^1.0.1",
     "svelte": "^4.2.0",

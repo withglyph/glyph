@@ -13,7 +13,7 @@
     "@aws-sdk/client-s3": "^3.391.0",
     "radash": "^11.0.0",
     "sharp": "^0.32.5",
-    "sst": "^2.24.3",
+    "sst": "^2.24.7",
     "thumbhash": "^0.1.1"
   },
   "devDependencies": {
