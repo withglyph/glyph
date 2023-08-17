@@ -1,6 +1,6 @@
 <script lang="ts">
+  import { RingSpinner } from '@penxle/ui/spinners';
   import { clsx } from 'clsx';
-  import { RingSpinner } from '$lib/components/spinners';
   import { getFormContext } from '$lib/form';
 
   export let type: 'button' | 'submit' = 'button';

@@ -1,4 +1,5 @@
-export default {
+/** @type {import('prettier').Config} */
+export const prettier = {
   htmlWhitespaceSensitivity: 'ignore',
   singleQuote: true,
   quoteProps: 'consistent',

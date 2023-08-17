@@ -1,1 +1,1 @@
-export { default } from '@penxle/prettier-config';
+export { prettier as default } from '@penxle/lintconfig';

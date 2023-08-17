@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        linter: [eslint, prettier, spellcheck, svelte, syncpack]
+        linter: [eslint, prettier, spellcheck, svelte, syncpack, typecheck]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3

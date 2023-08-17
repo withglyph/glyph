@@ -8,6 +8,7 @@
       "dependsOn": ["codegen", "^build"],
       "persistent": true
     },
-    "lint:svelte": {}
+    "lint:svelte": {},
+    "lint:typecheck": {}
   }
 }

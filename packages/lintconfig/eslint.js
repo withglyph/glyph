@@ -5,12 +5,12 @@ import imports from 'eslint-plugin-import';
 import importsSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 import svelteParser from 'svelte-eslint-parser';
-import { ignore } from './ignore.js';
+import { ignore } from './eslint-ignore.js';
 
 const compat = new FlatCompat();
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
-export default [
+export const eslint = [
   { ignores: [ignore] },
   js.configs.recommended,
   ...compat.extends(

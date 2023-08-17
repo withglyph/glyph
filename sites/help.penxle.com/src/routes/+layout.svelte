@@ -2,13 +2,13 @@
   import 'virtual:uno.css';
   import '../styles/index.css';
 
+  import { setupAnalytics } from '@penxle/lib/analytics';
+  import { production } from '@penxle/lib/environment';
   import { Link } from '@penxle/ui';
+  import { BranchIndicator } from '@penxle/ui/dev';
   import { beforeNavigate } from '$app/navigation';
   import { updated } from '$app/stores';
   import Logo from '$assets/branding/logo.svg?component';
-  import { setupAnalytics } from '$lib/analytics';
-  import { production } from '$lib/environment';
-  import BranchIndicator from './BranchIndicator.svelte';
 
   if (production) {
     setupAnalytics();

@@ -1,1 +1,1 @@
-export { default } from '@penxle/eslint-config';
+export { eslint as default } from '@penxle/lintconfig';
