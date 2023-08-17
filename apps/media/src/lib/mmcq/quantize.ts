@@ -1,4 +1,4 @@
-import { FRACT_BY_POPULATIONS } from './const';
+import { FRACTION_BY_POPULATIONS } from './const';
 import { PriorityQueue } from './queue';
 import { hex } from './utils';
 import { VBox } from './vbox';
@@ -12,7 +12,7 @@ export const quantize = (buffer: Buffer, maxColors: number) => {
   const pq = new PriorityQueue((vbox) => vbox.count);
 
   pq.push(vbox);
-  pq.split(maxColors * FRACT_BY_POPULATIONS);
+  pq.split(maxColors * FRACTION_BY_POPULATIONS);
 
   const pq2 = new PriorityQueue((vbox) => vbox.count * vbox.volume);
   pq2.consume(pq);

@@ -16,6 +16,7 @@ export const Placeholder = Extension.create({
 
             let decoration: Decoration | null = null;
 
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const emptyDocument = doc.type.createAndFill()!;
             if (
               doc.sameMarkup(emptyDocument) &&
@@ -29,6 +30,7 @@ export const Placeholder = Extension.create({
               });
             }
 
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (!decoration) {
               return null;
             }

@@ -1,7 +1,7 @@
 import { Node } from '@tiptap/core';
 import { SvelteNodeViewRenderer } from './renderer';
-import type { NodeViewComponentType } from './renderer';
 import type { NodeConfig } from '@tiptap/core';
+import type { NodeViewComponentType } from './renderer';
 
 type CreateNodeViewOptions = NodeConfig;
 

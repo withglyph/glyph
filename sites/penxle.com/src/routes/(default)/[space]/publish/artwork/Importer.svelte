@@ -2,8 +2,8 @@
   import { nanoid } from 'nanoid';
   import { toast } from '$lib/notification';
   import { fileMime } from '$lib/utils';
-  import type { Artwork } from './types';
   import type { Nullable } from '$lib/types';
+  import type { Artwork } from './types';
 
   export let artworks: Artwork[];
 

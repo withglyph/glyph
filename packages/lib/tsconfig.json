@@ -1,7 +1,3 @@
 {
-  "compilerOptions": {
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "strict": true
-  }
+  "extends": ["./.svelte-kit/tsconfig.json", "@penxle/tsconfig"]
 }

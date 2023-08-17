@@ -1,9 +1,6 @@
 {
+  "extends": ["@penxle/tsconfig"],
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "strict": true,
     "outDir": "dist"
   }
 }

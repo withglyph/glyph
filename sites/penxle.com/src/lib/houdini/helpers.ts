@@ -1,6 +1,7 @@
 import { derived, writable } from 'svelte/store';
 import { AppError } from '$lib/errors';
 import { toast } from '$lib/notification';
+import type { Readable } from 'svelte/store';
 import type {
   GraphQLObject,
   GraphQLVariables,
@@ -8,7 +9,6 @@ import type {
   QueryStore,
 } from '$houdini';
 import type { Unwrap } from '$lib/types';
-import type { Readable } from 'svelte/store';
 
 type UseQueryReturn<D extends GraphQLObject> = Readable<D> & {
   refetch: () => Promise<void>;
@@ -28,12 +28,13 @@ type UseMutationOptions = {
   throwOnError?: boolean;
 };
 
-// eslint-disable-next-line typescript/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const renderedQueries: QueryStore<any, any>[] = [];
 
 export const useQuery = <D extends GraphQLObject, I extends GraphQLVariables>(
   store: QueryStore<D, I>,
 ): UseQueryReturn<D> => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const { subscribe } = derived(store, ($store) => $store.data!);
 
   const s = {
@@ -71,6 +72,7 @@ export const useMutation = <
     try {
       set({ inflight: true });
       const { data } = await store.mutate((input ? { input } : null) as I);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const fields = Object.values(data!);
       if (fields.length !== 1) {
         throw new Error(

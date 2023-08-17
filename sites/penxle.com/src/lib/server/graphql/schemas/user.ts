@@ -9,7 +9,7 @@ import { createRandomAvatar, persistAvatar } from '$lib/server/utils/avatar';
 import { createId } from '$lib/utils';
 import {
   LoginInputSchema,
-  SignupInputSchema,
+  SignUpInputSchema,
   UpdateUserProfileInputSchema,
 } from '$lib/validations';
 import { builder } from '../builder';
@@ -67,14 +67,14 @@ const LoginInput = builder.inputType('LoginInput', {
   validate: { schema: LoginInputSchema },
 });
 
-const SignupInput = builder.inputType('SignupInput', {
+const SignUpInput = builder.inputType('SignUpInput', {
   fields: (t) => ({
     email: t.string(),
     password: t.string(),
     name: t.string(),
     isAgreed: t.boolean(),
   }),
-  validate: { schema: SignupInputSchema },
+  validate: { schema: SignUpInputSchema },
 });
 
 const IssueSSOAuthorizationUrlInput = builder.inputType(
@@ -193,9 +193,9 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  signup: t.prismaField({
+  signUp: t.prismaField({
     type: 'User',
-    args: { input: t.arg({ type: SignupInput }) },
+    args: { input: t.arg({ type: SignUpInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const isEmailUsed = await db.user.exists({
         where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
@@ -243,7 +243,7 @@ builder.mutationFields((t) => ({
       });
 
       await updateUser(db, context, user.id);
-      context.track('user:signup', {
+      context.track('user:sign-up', {
         $user_id: user.id,
         method: 'email',
       });

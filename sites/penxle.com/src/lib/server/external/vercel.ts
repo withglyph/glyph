@@ -16,6 +16,7 @@ export const isUnderMaintenance = async (event: RequestEvent) => {
   const {
     targets,
     bypass: { ips, token },
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   } = config!;
 
   if (

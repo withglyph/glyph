@@ -11,7 +11,7 @@ const supabase = createClient(PRIVATE_SUPABASE_URL, PRIVATE_SUPABASE_KEY, {
 });
 
 export const POST = (async ({ request }) => {
-  const { phoneNumber } = await request.json();
+  const { phoneNumber } = (await request.json()) as { phoneNumber: string };
 
   const valid = /^0\d{2}-?\d{3,4}-?\d{4}$/.test(phoneNumber);
   if (!valid) {

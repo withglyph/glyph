@@ -5,9 +5,9 @@ import { renderAsync } from '@resvg/resvg-js';
 import { nanoid } from 'nanoid';
 import { draw } from 'radash';
 import { persistImage } from './image';
-import type { InteractiveTransactionClient } from '../database';
 import type { Options } from '@dicebear/core';
 import type { ColorShade } from '@penxle/unocss';
+import type { InteractiveTransactionClient } from '../database';
 
 const colors = (...colors: ColorShade[]) =>
   colors.map((v) => color(v).slice(1));
@@ -26,6 +26,7 @@ const options: micah.Options & Options = {
   backgroundColor: ['$$$$$$'],
 
   // 얼굴
+  // spell-checker:disable-next-line
   baseColor: ['FADCA9', 'EDB179', 'E09D57'], // https://theklog.co/korean-way-find-your-skin-tone/
 
   // 눈
@@ -42,11 +43,13 @@ const options: micah.Options & Options = {
   earrings: [],
 
   // 털
+  // spell-checker:disable-next-line
   hair: ['dannyPhantom', 'fonze', 'full', 'pixie'],
   facialHair: [],
 };
 
 export const createRandomAvatar = () => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const bg = draw(backgroundColors)!;
   return createAvatar(micah, {
     seed: nanoid(),

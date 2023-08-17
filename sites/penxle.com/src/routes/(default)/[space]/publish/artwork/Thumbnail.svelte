@@ -7,8 +7,8 @@
   import { onDestroy } from 'svelte';
   import { Button, Modal } from '$lib/components';
   import { clamp } from '$lib/utils';
-  import type { Artwork, Translation } from './types';
   import type { MouseEventHandler, TouchEventHandler } from 'svelte/elements';
+  import type { Artwork, Translation } from './types';
 
   let open = false;
   let translation: Translation = { translateX: 0, translateY: 0 };

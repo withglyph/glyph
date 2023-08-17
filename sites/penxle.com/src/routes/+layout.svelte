@@ -1,12 +1,13 @@
 <script lang="ts">
   import 'virtual:uno.css';
   import '../styles/index.css';
+
+  import { setupAnalytics } from '@penxle/lib/analytics';
+  import { production } from '@penxle/lib/environment';
+  import { BranchIndicator } from '@penxle/ui/dev';
   import { beforeNavigate } from '$app/navigation';
   import { updated } from '$app/stores';
-  import { setupAnalytics } from '$lib/analytics';
-  import { production } from '$lib/environment';
   import { ToastProvider } from '$lib/notification';
-  import BranchIndicator from './BranchIndicator.svelte';
 
   if (production) {
     setupAnalytics();

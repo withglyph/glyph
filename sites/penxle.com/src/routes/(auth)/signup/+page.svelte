@@ -11,17 +11,17 @@
     TextInput,
   } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
-  import { SignupInputSchema } from '$lib/validations';
+  import { SignUpInputSchema } from '$lib/validations';
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation SignupPage_Signup_Mutation($input: SignupInput!) {
-        signup(input: $input) {
+      mutation SignUpPage_SignUp_Mutation($input: SignUpInput!) {
+        signUp(input: $input) {
           __typename
         }
       }
     `),
-    schema: SignupInputSchema,
+    schema: SignUpInputSchema,
     refetch: false,
     onSuccess: async () => {
       await goto('/');

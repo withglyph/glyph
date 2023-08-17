@@ -9,7 +9,7 @@ export const LoginInputSchema = z.object({
   password: z.string().min(1, '비밀번호를 입력해주세요'),
 });
 
-export const SignupInputSchema = LoginInputSchema.extend({
+export const SignUpInputSchema = LoginInputSchema.extend({
   name: z
     .string()
     .min(1, '닉네임을 입력해주세요')

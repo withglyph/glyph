@@ -1,6 +1,4 @@
-/* eslint-disable unicorn/custom-error-definition */
-
-import { production } from '$lib/environment';
+import { production } from '@penxle/lib/environment';
 import { AppError } from './base';
 
 export enum AppErrorKind {

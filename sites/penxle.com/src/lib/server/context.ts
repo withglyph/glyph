@@ -3,8 +3,8 @@ import { nanoid } from 'nanoid';
 import { track } from './analytics';
 import { prismaClient } from './database';
 import { decodeAccessToken } from './utils/access-token';
-import type { InteractiveTransactionClient } from './database';
 import type { RequestEvent } from '@sveltejs/kit';
+import type { InteractiveTransactionClient } from './database';
 
 type DefaultContext = {
   db: InteractiveTransactionClient;

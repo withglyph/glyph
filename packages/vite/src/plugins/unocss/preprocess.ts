@@ -20,36 +20,38 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
       const uno = await unoPromise;
 
       type Classes = { value: string; start: number; end: number };
-      const classesList: Array<Classes> = [];
+      const classesList: Classes[] = [];
       const shortcutMap: Record<string, string> = {};
 
       const source = new MagicString(content);
       const ast = parse(content);
 
       const walk = (node: TemplateNode) => {
-        traverse(node, ({ value: node }) => {
+        traverse(node, ({ value: node }: { value?: TemplateNode }) => {
           if (
             node?.value &&
             node.type === 'Attribute' &&
             node.name === 'class'
           ) {
-            for (const value of node.value) {
-              walkValue(value);
+            for (const value of node.value as (TemplateNode | undefined)[]) {
+              if (value) {
+                walkValue(value);
+              }
             }
           }
         });
       };
 
       const walkValue = (node: TemplateNode) => {
-        if (node?.type === 'Text') {
+        if (node.type === 'Text') {
           classesList.push({
-            value: node.data,
+            value: node.data as string,
             start: node.start,
             end: node.end,
           });
-        } else if (node?.type === 'MustacheTag') {
-          traverse(node, ({ value: node }) => {
-            if (node?.type === 'Literal' && typeof node.value === 'string') {
+        } else if (node.type === 'MustacheTag') {
+          traverse(node, ({ value: node }: { value: TemplateNode }) => {
+            if (node.type === 'Literal' && typeof node.value === 'string') {
               classesList.push({
                 value: node.value,
                 start: node.start + 1,

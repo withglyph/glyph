@@ -20,18 +20,6 @@ export default {
       publicPrefix: 'PUBLIC_',
       privatePrefix: 'PRIVATE_',
     },
-    typescript: {
-      config: (config) => ({
-        ...config,
-        include: [
-          'ambient.d.ts',
-          './types/**/$types.d.ts',
-          '../**/*.ts',
-          '../**/*.svelte',
-        ],
-        exclude: ['../node_modules/**', './[!ambient.d.ts]**'],
-      }),
-    },
     version: { pollInterval: 60 * 1000 },
   },
   onwarn: (warning, handler) => {

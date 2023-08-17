@@ -50,7 +50,7 @@ type Mutation {
   login(input: LoginInput!): User!
   logout: User!
   prepareImageUpload(input: PrepareImageUploadInput!): PrepareImageUploadPayload!
-  signup(input: SignupInput!): User!
+  signUp(input: SignUpInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
 }
 
@@ -77,7 +77,7 @@ type Query {
   space(slug: String!): Space!
 }
 
-input SignupInput {
+input SignUpInput {
   email: String!
   isAgreed: Boolean!
   name: String!

@@ -1,26 +1,14 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
-    "deps": { "dependsOn": ["^deps"] },
-    "//#deps": { "dependsOn": ["^deps"] },
-
+    "build": { "dependsOn": ["codegen", "^build"] },
+    "codegen": {},
     "dev": {
       "cache": false,
       "dependsOn": ["codegen", "^build"],
       "persistent": true
     },
-    "codegen": {},
-
-    "build": { "dependsOn": ["codegen", "^build"] },
-
-    "check": {},
-
-    "lint": { "dependsOn": ["deps"] },
-    "//#lint": { "dependsOn": ["deps"] },
-    "lint:fix": { "dependsOn": ["deps"] },
-    "//#lint:fix": { "dependsOn": ["deps"] },
-
-    "//#format": { "dependsOn": ["deps"] },
-    "//#format:fix": { "dependsOn": ["deps"] }
+    "lint:svelte": {},
+    "lint:typecheck": {}
   }
 }

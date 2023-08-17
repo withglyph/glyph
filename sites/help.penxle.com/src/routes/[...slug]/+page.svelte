@@ -1,7 +1,8 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import type { PageData } from './$types';
 
-  export let data;
+  export let data: PageData;
 </script>
 
 <Helmet title={data.meta.title} />
