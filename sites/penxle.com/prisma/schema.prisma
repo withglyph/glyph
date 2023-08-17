@@ -52,8 +52,8 @@ model Space {
   favoriteState SpaceFavoriteState
   createdAt     DateTime           @default(now()) @map("created_at") @db.Timestamptz
 
-  members    SpaceMember[]
-  spaceLinks SpaceLink[]
+  members SpaceMember[]
+  links   SpaceLink[]
 
   @@index([slug, state])
   @@map("spaces")
