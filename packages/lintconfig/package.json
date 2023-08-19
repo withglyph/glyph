@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "main": "index.js",
+  "exports": {
+    "./eslint": "./eslint.js",
+    "./prettier": "./prettier.js"
+  },
   "dependencies": {
     "@eslint/eslintrc": "^2.1.2",
     "@eslint/js": "^8.47.0",

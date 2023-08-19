@@ -10,7 +10,8 @@ import { ignore } from './eslint-ignore.js';
 const compat = new FlatCompat();
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
-export const eslint = [
+// eslint-disable-next-line import/no-default-export
+export default [
   { ignores: [ignore] },
   js.configs.recommended,
   ...compat.extends(
@@ -19,7 +20,6 @@ export const eslint = [
     'plugin:@typescript-eslint/stylistic-type-checked',
     'plugin:svelte/recommended',
     'plugin:svelte/prettier',
-    'prettier',
   ),
   {
     languageOptions: {
@@ -27,6 +27,8 @@ export const eslint = [
       sourceType: 'module',
       globals: { ...globals.node, ...globals.browser },
       parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
         project: true,
         extraFileExtensions: ['.svelte'],
       },
@@ -73,7 +75,13 @@ export const eslint = [
   {
     files: ['**/*.?(c)js', '**/*.config.?(c)ts', '**/service-worker.ts'],
     languageOptions: { parserOptions: { project: null } },
-    rules: typescript.configs['disable-type-checked'].rules,
+    rules: { ...typescript.configs['disable-type-checked'].rules },
+  },
+  {
+    files: ['**/*.config.[jt]s'],
+    rules: {
+      'import/no-default-export': 'off',
+    },
   },
   {
     files: ['**/*.svelte'],
@@ -95,4 +103,5 @@ export const eslint = [
       'unicorn/no-useless-undefined': 'off',
     },
   },
+  ...compat.extends('prettier'),
 ];

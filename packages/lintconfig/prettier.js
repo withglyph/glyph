@@ -1,5 +1,6 @@
 /** @type {import('prettier').Config} */
-export const prettier = {
+// eslint-disable-next-line import/no-default-export
+export default {
   htmlWhitespaceSensitivity: 'ignore',
   singleQuote: true,
   quoteProps: 'consistent',

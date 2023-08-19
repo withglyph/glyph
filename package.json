@@ -12,7 +12,7 @@
     "fix:eslint": "pnpm lint:eslint --fix",
     "fix:prettier": "pnpm lint:prettier --write",
     "lint": "pnpm run '/^lint:.+$/'",
-    "lint:eslint": "eslint .",
+    "lint:eslint": "eslint --max-warnings 0 .",
     "lint:prettier": "prettier --check --ignore-unknown '**/*'",
     "lint:spellcheck": "cspell --no-progress --relative '**/*'",
     "lint:svelte": "turbo run lint:svelte",

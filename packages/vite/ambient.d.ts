@@ -6,5 +6,6 @@ declare module '*.svg?component' {
     SvelteComponent<SVGAttributes<SVGSVGElement>, SVGSVGElementEventMap, never>
   >;
 
+  // eslint-disable-next-line import/no-default-export
   export default content;
 }
