@@ -15,8 +15,8 @@
     "test": "playwright test"
   },
   "devDependencies": {
-    "@aws-sdk/client-s3": "^3.391.0",
-    "@aws-sdk/s3-request-presigner": "^3.391.0",
+    "@aws-sdk/client-s3": "^3.395.0",
+    "@aws-sdk/s3-request-presigner": "^3.395.0",
     "@dicebear/collection": "^6.0.4",
     "@dicebear/core": "^6.0.4",
     "@envelop/core": "^4.0.0",
@@ -32,7 +32,7 @@
     "@penxle/ui": "workspace:^",
     "@penxle/unocss": "workspace:^",
     "@penxle/vite": "workspace:^",
-    "@playwright/test": "^1.37.0",
+    "@playwright/test": "^1.37.1",
     "@pothos/core": "^3.33.0",
     "@pothos/plugin-prisma": "^3.57.0",
     "@pothos/plugin-scope-auth": "^3.20.0",
@@ -44,9 +44,9 @@
     "@svelte-kits/store": "^0.1.2",
     "@sveltejs/adapter-vercel": "^3.0.3",
     "@sveltejs/kit": "^1.22.6",
-    "@tiptap/core": "^2.1.1",
-    "@tiptap/pm": "^2.1.1",
-    "@types/node": "^20.5.0",
+    "@tiptap/core": "^2.1.6",
+    "@tiptap/pm": "^2.1.6",
+    "@types/node": "^20.5.1",
     "@types/ua-parser-js": "^0.7.36",
     "@vercel/analytics": "^1.0.2",
     "@vercel/edge-config": "^0.2.1",
@@ -55,7 +55,7 @@
     "clsx": "^2.0.0",
     "dayjs": "^1.11.9",
     "felte": "^1.2.11",
-    "googleapis": "^125.0.0",
+    "googleapis": "^126.0.0",
     "graphql": "^16.8.0",
     "graphql-scalars": "^1.22.2",
     "graphql-yoga": "^4.0.4",
@@ -80,6 +80,6 @@
     "vite": "^4.4.9",
     "web-vitals": "^3.4.0",
     "winston": "^3.10.0",
-    "zod": "^3.22.1"
+    "zod": "^3.22.2"
   }
 }

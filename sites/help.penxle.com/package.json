@@ -18,7 +18,7 @@
     "@penxle/vite": "workspace:^",
     "@sveltejs/adapter-vercel": "^3.0.3",
     "@sveltejs/kit": "^1.22.6",
-    "@types/node": "^20.5.0",
+    "@types/node": "^20.5.1",
     "@vercel/analytics": "^1.0.2",
     "browserslist": "^4.21.10",
     "clsx": "^2.0.0",
