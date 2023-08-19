@@ -8,6 +8,7 @@ export default {
     adapter: vercel({
       runtime: 'nodejs18.x',
       regions: ['icn1'],
+      memory: 2048,
     }),
     alias: {
       $assets: './src/assets',
