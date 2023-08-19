@@ -81,30 +81,14 @@ resource "cloudflare_record" "mail_penxle_com_txt_spf" {
   comment = "Amazon SES"
 }
 
-resource "cloudflare_record" "akxggupt5k5bodiac7u5yb5tnigdyzff_domainkey_penxle_com" {
+resource "cloudflare_record" "_domainkey_penxle_com" {
+  for_each = toset(var.sesv2_email_identity_penxle_com_dkim_tokens)
+
   zone_id = cloudflare_zone.penxle_com.id
 
   type    = "CNAME"
-  name    = "akxggupt5k5bodiac7u5yb5tnigdyzff._domainkey.penxle.com"
-  value   = "akxggupt5k5bodiac7u5yb5tnigdyzff.dkim.amazonses.com"
-  comment = "Amazon SES"
-}
-
-resource "cloudflare_record" "ep5ll2uqfx5n4ayiess25l3pn4j7ayum_domainkey_penxle_com" {
-  zone_id = cloudflare_zone.penxle_com.id
-
-  type    = "CNAME"
-  name    = "ep5ll2uqfx5n4ayiess25l3pn4j7ayum._domainkey.penxle.com"
-  value   = "ep5ll2uqfx5n4ayiess25l3pn4j7ayum.dkim.amazonses.com"
-  comment = "Amazon SES"
-}
-
-resource "cloudflare_record" "ntl3we67sato5l5rrsmw6gnm5ivmqydy_domainkey_penxle_com" {
-  zone_id = cloudflare_zone.penxle_com.id
-
-  type    = "CNAME"
-  name    = "ntl3we67sato5l5rrsmw6gnm5ivmqydy._domainkey.penxle.com"
-  value   = "ntl3we67sato5l5rrsmw6gnm5ivmqydy.dkim.amazonses.com"
+  name    = "${each.value}._domainkey.penxle.com"
+  value   = "${each.value}.dkim.amazonses.com"
   comment = "Amazon SES"
 }
 
