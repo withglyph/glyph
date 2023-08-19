@@ -205,24 +205,6 @@ resource "cloudflare_record" "pnxl_cc" {
   comment = "Cloudflare (Page Rules)"
 }
 
-resource "cloudflare_record" "_1bc0e453acb801a0a2abdb3160aa1f4a_pnxl_co" {
-  zone_id = cloudflare_zone.pnxl_co.id
-
-  type    = "CNAME"
-  name    = "_1bc0e453acb801a0a2abdb3160aa1f4a.pnxl.co"
-  value   = "_431c09244febe3509319e67062dcfc5f.nbgfhbpblk.acm-validations.aws"
-  comment = "AWS Certificate Manager"
-}
-
-resource "cloudflare_record" "media_pnxl_co" {
-  zone_id = cloudflare_zone.pnxl_co.id
-
-  type    = "CNAME"
-  name    = "media.pnxl.co"
-  value   = "d-9o8fu89jkj.execute-api.ap-northeast-2.amazonaws.com"
-  comment = "AWS API Gateway"
-}
-
 resource "cloudflare_record" "pnxl_net" {
   zone_id = cloudflare_zone.pnxl_net.id
 

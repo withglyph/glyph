@@ -1,21 +1,20 @@
 import sharp from 'sharp';
-import { ApiHandler } from 'sst/node/api';
-import { Bucket } from 'sst/node/bucket';
 import { error } from '../lib/response';
 import { s3GetObject } from '../lib/s3';
+import type { APIGatewayProxyHandlerV2 } from 'aws-lambda';
 
-export const handler = ApiHandler(async (event) => {
-  if (!event.pathParameters || !event.queryStringParameters) {
+export const handler = (async (event) => {
+  if (!event.queryStringParameters) {
     return error(400, 'invalid_request');
   }
 
-  const key = event.pathParameters.key;
+  const key = event.rawPath.slice(1);
   if (!key) {
     return error(400, 'invalid_request');
   }
 
-  const size = Math.max(Number(event.queryStringParameters.s), 8192);
-  const quality = Math.max(Number(event.queryStringParameters.q ?? 75), 75);
+  const size = Math.min(Number(event.queryStringParameters.s), 8192);
+  const quality = Math.min(Number(event.queryStringParameters.q ?? 75), 75);
 
   if (!size || !quality) {
     return error(400, 'invalid_request');
@@ -23,7 +22,7 @@ export const handler = ApiHandler(async (event) => {
 
   let object;
   try {
-    object = await s3GetObject(Bucket.Data, key);
+    object = await s3GetObject('penxle-data', key);
   } catch {
     return error(400, 'object_not_found');
   }
@@ -50,4 +49,4 @@ export const handler = ApiHandler(async (event) => {
     body: image.toString('base64'),
     isBase64Encoded: true,
   };
-});
+}) satisfies APIGatewayProxyHandlerV2;

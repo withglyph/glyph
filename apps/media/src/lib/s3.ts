@@ -7,27 +7,24 @@ import {
 
 const S3 = new S3Client({});
 
-export const s3GetObject = async (
-  { bucketName }: { bucketName: string },
-  key: string,
-) => {
+export const s3GetObject = async (bucket: string, key: string) => {
   return await S3.send(
     new GetObjectCommand({
-      Bucket: bucketName,
+      Bucket: bucket,
       Key: key,
     }),
   );
 };
 
 export const s3PutObject = async (
-  { bucketName }: { bucketName: string },
+  bucket: string,
   key: string,
   contentType: string,
   buffer: Buffer,
 ) => {
   await S3.send(
     new PutObjectCommand({
-      Bucket: bucketName,
+      Bucket: bucket,
       Key: key,
       Body: buffer,
       ContentType: contentType,
@@ -35,13 +32,10 @@ export const s3PutObject = async (
   );
 };
 
-export const s3DeleteObject = async (
-  { bucketName }: { bucketName: string },
-  key: string,
-) => {
+export const s3DeleteObject = async (bucket: string, key: string) => {
   await S3.send(
     new DeleteObjectCommand({
-      Bucket: bucketName,
+      Bucket: bucket,
       Key: key,
     }),
   );

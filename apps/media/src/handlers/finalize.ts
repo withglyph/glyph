@@ -1,12 +1,11 @@
 import sharp from 'sharp';
-import { ApiHandler } from 'sst/node/api';
-import { Bucket } from 'sst/node/bucket';
 import { rgbaToThumbHash } from 'thumbhash';
 import { getDominantColor } from '../lib/mmcq';
 import { error } from '../lib/response';
 import { s3DeleteObject, s3GetObject, s3PutObject } from '../lib/s3';
+import type { APIGatewayProxyHandlerV2 } from 'aws-lambda';
 
-export const handler = ApiHandler(async (event) => {
+export const handler = (async (event) => {
   if (!event.body) {
     return error(400, 'invalid_request');
   }
@@ -18,12 +17,12 @@ export const handler = ApiHandler(async (event) => {
 
   let object;
   try {
-    object = await s3GetObject(Bucket.Uploads, data.key);
+    object = await s3GetObject('penxle-uploads', data.key);
   } catch {
     return error(400, 'object_not_found');
   }
 
-  await s3DeleteObject(Bucket.Uploads, data.key);
+  await s3DeleteObject('penxle-uploads', data.key);
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const name = decodeURIComponent(object.Metadata!.name);
@@ -107,7 +106,7 @@ export const handler = ApiHandler(async (event) => {
   ]);
 
   const path = `images/${data.key}.webp`;
-  await s3PutObject(Bucket.Data, path, 'image/webp', output.data);
+  await s3PutObject('penxle-data', path, 'image/webp', output.data);
 
   return {
     statusCode: 200,
@@ -124,4 +123,4 @@ export const handler = ApiHandler(async (event) => {
       hash,
     }),
   };
-});
+}) satisfies APIGatewayProxyHandlerV2;
