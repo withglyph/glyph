@@ -77,11 +77,15 @@ builder.mutationFields((t) => ({
     type: PrepareImageUploadPayload,
     args: { input: t.arg({ type: PrepareImageUploadInput }) },
     resolve: async (_, { input }) => {
-      const key = createS3ObjectKey();
+      const key = createS3ObjectKey('images');
 
       return {
         key,
-        presignedUrl: await s3PutObjectGetSignedUrl(key, input.name),
+        presignedUrl: await s3PutObjectGetSignedUrl({
+          bucket: 'penxle-uploads',
+          key,
+          name: input.name,
+        }),
       };
     },
   }),

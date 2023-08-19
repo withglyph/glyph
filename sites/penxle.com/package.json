@@ -15,6 +15,7 @@
     "test": "playwright test"
   },
   "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.395.0",
     "@aws-sdk/client-s3": "^3.395.0",
     "@aws-sdk/s3-request-presigner": "^3.395.0",
     "@dicebear/collection": "^6.0.4",

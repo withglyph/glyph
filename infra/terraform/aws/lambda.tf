@@ -1,24 +1,74 @@
-resource "aws_lambda_function" "media_transform" {
-  function_name = "media-transform"
+data "aws_s3_object" "literoom_transform" {
+  bucket = "penxle-artifacts"
+  key    = "literoom/transform.hash"
+}
 
-  role = aws_iam_role.lambda_media.arn
+data "aws_s3_object" "literoom_finalize" {
+  bucket = "penxle-artifacts"
+  key    = "literoom/finalize.hash"
+}
 
-  package_type  = "Image"
-  image_uri     = "${aws_ecr_repository.media.repository_url}:latest"
+data "aws_s3_object" "literoom_layer" {
+  bucket = "penxle-artifacts"
+  key    = "literoom/layer.hash"
+}
+
+resource "aws_lambda_layer_version" "literoom_layer" {
+  layer_name = "literoom"
+
+  s3_bucket = aws_s3_bucket.penxle_artifacts.id
+  s3_key    = "literoom/layer.zip"
+
+  compatible_runtimes      = ["nodejs18.x"]
+  compatible_architectures = ["arm64"]
+
+  source_code_hash = data.aws_s3_object.literoom_layer.body
+}
+
+resource "aws_lambda_function" "literoom_finalize" {
+  function_name = "literoom-finalize"
+
+  role = aws_iam_role.lambda_literoom_finalize.arn
+
+  runtime       = "nodejs18.x"
   architectures = ["arm64"]
 
   memory_size = 10240
   timeout     = 900
 
-  source_code_hash = trimprefix(data.aws_ecr_image.media.id, "sha256:")
+  s3_bucket = aws_s3_bucket.penxle_artifacts.id
+  s3_key    = "literoom/finalize.zip"
+  handler   = "index.handler"
 
-  image_config {
-    command = ["transform.handler"]
-  }
+  layers = [aws_lambda_layer_version.literoom_layer.id]
+
+  source_code_hash = data.aws_s3_object.literoom_finalize.body
 }
 
-resource "aws_lambda_function_url" "media_transform" {
-  function_name = aws_lambda_function.media_transform.function_name
+resource "aws_lambda_permission" "literoom_finalize" {
+  function_name = aws_lambda_function.literoom_finalize.function_name
 
-  authorization_type = "NONE"
+  statement_id = "literoom-finalize"
+  action       = "lambda:InvokeFunction"
+  principal    = "s3.amazonaws.com"
+}
+
+resource "aws_lambda_function" "literoom_transform" {
+  function_name = "literoom-transform"
+
+  role = aws_iam_role.lambda_literoom_transform.arn
+
+  runtime       = "nodejs18.x"
+  architectures = ["arm64"]
+
+  memory_size = 10240
+  timeout     = 900
+
+  s3_bucket = aws_s3_bucket.penxle_artifacts.id
+  s3_key    = "literoom/transform.zip"
+  handler   = "index.handler"
+
+  layers = [aws_lambda_layer_version.literoom_layer.id]
+
+  source_code_hash = data.aws_s3_object.literoom_transform.body
 }

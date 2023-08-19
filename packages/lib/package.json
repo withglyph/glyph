@@ -6,14 +6,17 @@
   "exports": {
     ".": "./src/index.ts",
     "./analytics": "./src/analytics/index.ts",
+    "./api": "./src/api/index.ts",
     "./environment": "./src/environment.ts"
   },
   "scripts": {
     "codegen": "svelte-kit sync",
-    "lint:svelte": "svelte-check --fail-on-warnings",
     "lint:typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.395.0",
+    "@aws-sdk/client-s3": "^3.395.0",
+    "@aws-sdk/s3-request-presigner": "^3.395.0",
     "@vercel/analytics": "^1.0.2",
     "svgo": "^3.0.2",
     "web-vitals": "^3.4.0"
@@ -22,7 +25,6 @@
     "@penxle/tsconfig": "workspace:^",
     "@sveltejs/kit": "^1.22.6",
     "svelte": "^4.2.0",
-    "svelte-check": "^3.5.0",
     "typescript": "^5.1.6"
   },
   "peerDependencies": {

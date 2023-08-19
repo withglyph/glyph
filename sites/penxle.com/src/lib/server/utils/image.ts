@@ -1,42 +1,62 @@
+import { aws } from '@penxle/lib/api';
 import { createId } from '$lib/utils';
-import { createS3ObjectKey, s3PutObject } from '../external/aws';
-import { finalizeMedia } from '../external/media';
+import { createS3ObjectKey } from './id';
 import type { InteractiveTransactionClient } from '../database';
 
-export const persistImage = async (
+export const uploadImage = async (
   db: InteractiveTransactionClient,
   name: string,
   buffer: Buffer,
 ) => {
-  const key = createS3ObjectKey();
-  await s3PutObject(key, name, buffer);
+  const key = createS3ObjectKey('images');
+  await aws.s3PutObject({
+    bucket: 'penxle-uploads',
+    key,
+    buffer,
+    meta: { name },
+  });
 
-  const {
-    format,
-    fileSize,
-    blobSize,
-    width,
-    height,
-    path,
-    color,
-    placeholder,
-    hash,
-  } = await finalizeMedia(key);
+  return await finalizeImage(db, key);
+};
+
+type FinalizeResult =
+  | {
+      name: string;
+      format: string;
+      fileSize: number;
+      blobSize: number;
+      width: number;
+      height: number;
+      path: string;
+      color: string;
+      placeholder: string;
+      hash: string;
+    }
+  | { error: string };
+
+export const finalizeImage = async (
+  db: InteractiveTransactionClient,
+  key: string,
+) => {
+  let item;
+  try {
+    item = await aws.ddbGetItem<FinalizeResult>({
+      table: 'image-finalize',
+      id: key,
+    });
+  } catch {
+    return;
+  }
+
+  if ('error' in item) {
+    throw new Error(item.error);
+  }
 
   const { id } = await db.image.create({
     select: { id: true },
     data: {
       id: createId(),
-      name,
-      format,
-      fileSize,
-      blobSize,
-      width,
-      height,
-      path,
-      color,
-      placeholder,
-      hash,
+      ...item,
     },
   });
 

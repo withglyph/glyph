@@ -1,28 +1,38 @@
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import sharp from 'sharp';
 import { rgbaToThumbHash } from 'thumbhash';
 import { getDominantColor } from '../lib/mmcq';
-import { error } from '../lib/response';
-import { s3DeleteObject, s3GetObject, s3PutObject } from '../lib/s3';
-import type { APIGatewayProxyHandlerV2 } from 'aws-lambda';
+import type { S3EventRecord, S3Handler } from 'aws-lambda';
+
+const S3 = new S3Client();
 
 export const handler = (async (event) => {
-  if (!event.body) {
-    return error(400, 'invalid_request');
-  }
+  const promises = event.Records.map(async (record) => {
+    try {
+      await finalize(record);
+    } catch (err) {
+      console.error(err);
+      // await ddbPutItem(record.s3.object.key, { error: String(err) });
+    }
+  });
 
-  const data = JSON.parse(event.body) as { key: string };
-  if (!data.key) {
-    return error(400, 'invalid_request');
-  }
+  await Promise.all(promises);
+}) satisfies S3Handler;
 
-  let object;
-  try {
-    object = await s3GetObject('penxle-uploads', data.key);
-  } catch {
-    return error(400, 'object_not_found');
-  }
+const finalize = async (record: S3EventRecord) => {
+  const key = decodeURIComponent(record.s3.object.key.replaceAll('+', ' '));
 
-  await s3DeleteObject('penxle-uploads', data.key);
+  const object = await S3.send(
+    new GetObjectCommand({ Bucket: 'penxle-uploads', Key: key }),
+  );
+  await S3.send(
+    new DeleteObjectCommand({ Bucket: 'penxle-uploads', Key: key }),
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const name = decodeURIComponent(object.Metadata!.name);
@@ -38,7 +48,7 @@ export const handler = (async (event) => {
   const getOutput = async () => {
     return await image
       .clone()
-      .webp({ quality: 75, effort: 6 })
+      .avif({ quality: 75, effort: 4 })
       .toBuffer({ resolveWithObject: true });
   };
 
@@ -105,22 +115,26 @@ export const handler = (async (event) => {
     getHash(),
   ]);
 
-  const path = `images/${data.key}.webp`;
-  await s3PutObject('penxle-data', path, 'image/webp', output.data);
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      name,
-      path,
-      format: metadata.format,
-      fileSize: metadata.size,
-      blobSize: output.info.size,
-      width: output.info.width,
-      height: output.info.height,
-      color,
-      placeholder,
-      hash,
+  const path = `${key}.avif`;
+  await S3.send(
+    new PutObjectCommand({
+      Bucket: 'penxle-data',
+      Key: path,
+      Body: output.data,
+      ContentType: 'image/avif',
     }),
-  };
-}) satisfies APIGatewayProxyHandlerV2;
+  );
+
+  // await ddbPutItem(key, {
+  //   name,
+  //   path,
+  //   format: metadata.format,
+  //   fileSize: metadata.size,
+  //   blobSize: output.info.size,
+  //   width: output.info.width,
+  //   height: output.info.height,
+  //   color,
+  //   placeholder,
+  //   hash,
+  // });
+};

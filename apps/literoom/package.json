@@ -1,17 +1,21 @@
 {
-  "name": "@penxle/media",
+  "name": "@penxle/literoom",
   "version": "0.0.1",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsup",
+    "build": "node scripts/build.js",
     "lint:typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.395.0",
     "@penxle/tsconfig": "workspace:^",
     "@types/aws-lambda": "^8.10.119",
+    "execa": "^8.0.0",
+    "fast-glob": "^3.3.1",
+    "jszip": "^3.10.1",
     "radash": "^11.0.0",
+    "rimraf": "^5.0.1",
     "sharp": "^0.32.5",
     "thumbhash": "^0.1.1",
     "tsup": "^7.2.0",
