@@ -1,9 +1,3 @@
-import * as Sentry from '@sentry/sveltekit';
-import { dev } from '$app/environment';
-import {
-  PUBLIC_SENTRY_DSN,
-  PUBLIC_VERCEL_GIT_COMMIT_REF,
-} from '$env/static/public';
 import { setupDayjs } from '$lib/datetime';
 import {
   AppError,
@@ -14,15 +8,11 @@ import {
 import type { HandleClientError, HandleServerError } from '@sveltejs/kit';
 
 export const setupGlobals = () => {
-  Sentry.init({
-    enabled: !dev,
-    dsn: PUBLIC_SENTRY_DSN,
-    environment: PUBLIC_VERCEL_GIT_COMMIT_REF,
-  });
   setupDayjs();
 };
 
-const _handleError = (({ error, event }) => {
+export const handleError = (({ error, event }) => {
+  console.log({ error, event });
   if (event.route.id === null) {
     return serializeAppError(new NotFoundError());
   } else if (error instanceof AppError) {
@@ -38,5 +28,3 @@ const _handleError = (({ error, event }) => {
     );
   }
 }) satisfies HandleServerError & HandleClientError;
-
-export const handleError = Sentry.handleErrorWithSentry(_handleError);

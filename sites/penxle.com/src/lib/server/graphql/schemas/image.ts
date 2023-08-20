@@ -1,9 +1,7 @@
+import { aws } from '@penxle/lib/api';
 import { random } from 'radash';
-import {
-  createS3ObjectKey,
-  s3PutObjectGetSignedUrl,
-} from '$lib/server/external/aws';
 import { finalizeMedia } from '$lib/server/external/media';
+import { createS3ObjectKey } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { builder } from '../builder';
 
@@ -81,10 +79,10 @@ builder.mutationFields((t) => ({
 
       return {
         key,
-        presignedUrl: await s3PutObjectGetSignedUrl({
+        presignedUrl: await aws.s3PutObjectGetSignedUrl({
           bucket: 'penxle-uploads',
           key,
-          name: input.name,
+          meta: { name: input.name },
         }),
       };
     },

@@ -1,0 +1,28 @@
+{
+  "name": "@penxle/adapter-lambda",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "lint:typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "esbuild": "^0.19.2",
+    "jszip": "^3.10.1"
+  },
+  "devDependencies": {
+    "@penxle/tsconfig": "workspace:^",
+    "@sveltejs/kit": "^1.22.6",
+    "@types/aws-lambda": "^8.10.119",
+    "svelte": "^4.2.0",
+    "tsup": "^7.2.0",
+    "typescript": "^5.1.6"
+  },
+  "peerDependencies": {
+    "@sveltejs/kit": "^1.0.0",
+    "svelte": "^4.0.0"
+  }
+}
