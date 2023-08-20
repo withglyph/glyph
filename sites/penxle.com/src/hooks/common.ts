@@ -12,7 +12,6 @@ export const setupGlobals = () => {
 };
 
 export const handleError = (({ error, event }) => {
-  console.log({ error, event });
   if (event.route.id === null) {
     return serializeAppError(new NotFoundError());
   } else if (error instanceof AppError) {
