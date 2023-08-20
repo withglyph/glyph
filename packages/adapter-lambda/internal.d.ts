@@ -3,14 +3,15 @@ declare module 'SERVER' {
 }
 
 declare module 'MANIFEST' {
-  import { SSRManifest } from '@sveltejs/kit';
+  import type { SSRManifest } from '@sveltejs/kit';
 
   export const manifest: SSRManifest;
   export const prerendered: Set<string>;
 }
 
 declare module 'HANDLER' {
-  import { APIGatewayProxyHandlerV2 } from 'aws-lambda';
+  import type { APIGatewayProxyHandlerV2 } from 'aws-lambda';
+  import type { Context } from './src/handler';
 
-  export const handler: APIGatewayProxyHandlerV2;
+  export const createHandler: (ctx: Context) => APIGatewayProxyHandlerV2;
 }

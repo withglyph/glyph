@@ -89,9 +89,15 @@ importers:
       fast-glob:
         specifier: ^3.3.1
         version: 3.3.1
+      itty-router:
+        specifier: ^4.0.17
+        version: 4.0.17
       jszip:
         specifier: ^3.10.1
         version: 3.10.1
+      mime-types:
+        specifier: ^2.1.35
+        version: 2.1.35
     devDependencies:
       '@penxle/tsconfig':
         specifier: workspace:^
@@ -102,6 +108,9 @@ importers:
       '@types/aws-lambda':
         specifier: ^8.10.119
         version: 8.10.119
+      '@types/mime-types':
+        specifier: ^2.1.1
+        version: 2.1.1
       svelte:
         specifier: ^4.2.0
         version: 4.2.0
@@ -3931,6 +3940,10 @@ packages:
       '@types/braces': 3.0.2
     dev: true
 
+  /@types/mime-types@2.1.1:
+    resolution: {integrity: sha512-vXOTGVSLR2jMw440moWTC7H19iUyLtP3Z1YTj7cSsubOICinjMxFeb/V57v9QdyyPGbbWolUFSSmSiRSn94tFw==}
+    dev: true
+
   /@types/minimist@1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
     dev: true
@@ -7598,7 +7611,6 @@ packages:
 
   /itty-router@4.0.17:
     resolution: {integrity: sha512-Fu/GO3MFX6Hwd+QF1/BFjoFpPQKh2Bu4DtBdse5kECcUwldNBrZqgwq0IariLrP67iADGlzkHIlOWwJ8F4SJ4A==}
-    dev: true
 
   /jackspeak@2.3.0:
     resolution: {integrity: sha512-uKmsITSsF4rUWQHzqaRUuyAir3fZfW3f202Ee34lz/gZCi970CPZwyQXLGNgWJvvZbvFyzeyGq0+4fcG/mBKZg==}
@@ -8513,6 +8525,18 @@ packages:
     dependencies:
       braces: 3.0.2
       picomatch: 2.3.1
+
+  /mime-db@1.52.0:
+    resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
+    engines: {node: '>= 0.6'}
+    dev: false
+
+  /mime-types@2.1.35:
+    resolution: {integrity: sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==}
+    engines: {node: '>= 0.6'}
+    dependencies:
+      mime-db: 1.52.0
+    dev: false
 
   /mime@3.0.0:
     resolution: {integrity: sha512-jSCU7/VB1loIWBZe14aEYHU/+1UMEHoaO7qxCOVJOw9GgH72VAWppxNcjU+x9a2k3GSIBXNKxXQFqRvvZ7vr3A==}

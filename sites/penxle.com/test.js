@@ -1,10 +1,9 @@
-// import { handler } from './.svelte-kit/lambda/function/sites/penxle.com/.svelte-kit/lambda/build/index.js';
 import { handler } from './.svelte-kit/lambda/function/index.mjs';
 
 const a = await handler({
   version: '2.0',
   routeKey: '$default',
-  rawPath: '/',
+  rawPath: '/robots2.txt',
   rawQueryString: 'parameter1=value1&parameter1=value2&parameter2=value',
   cookies: ['cookie1', 'cookie2'],
   headers: {
@@ -45,28 +44,3 @@ const a = await handler({
 });
 
 console.log(a);
-
-// process.on('exit', (code) => console.log(`Caught!. Exit code: ${code}`));
-
-// process.on('uncaughtException', (err, origin) => {
-//   console.error('Unhandled exception. Please handle!', err.stack || err);
-//   console.error(`Origin: ${JSON.stringify(origin)}`);
-// });
-
-// process.on('unhandledRejection', (err, promise) => {
-//   console.error(
-//     'Unhandled promise rejection. Please handle!',
-//     promise,
-//     err.stack || err,
-//   );
-// });
-
-// process.on('warning', (warning) => {
-//   console.warn(warning.name);
-//   console.warn(warning.message);
-//   console.warn(warning.stack);
-// });
-
-// process.on('rejectionHandled', (promise) => {
-//   console.log('rejectionHandled event triggered');
-// });

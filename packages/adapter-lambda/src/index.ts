@@ -37,6 +37,13 @@ export const lambda = (): Adapter => {
         },
       );
 
+      await fs.appendFile(
+        path.join(tmp, 'intermidiate/manifest.js'),
+        `\n\nexport const prerendered = new Set(${JSON.stringify(
+          builder.prerendered.paths,
+        )});\n`,
+      );
+
       await esbuild.build({
         entryPoints: [path.join(tmp, 'intermidiate/handler.js')],
         outdir: path.join(tmp, 'build'),
@@ -47,6 +54,7 @@ export const lambda = (): Adapter => {
 
         bundle: true,
         splitting: true,
+        minify: true,
         packages: 'external',
 
         assetNames: 'assets/[name]-[hash]',
@@ -67,6 +75,20 @@ export const lambda = (): Adapter => {
       for (let i = 1; i < files.length; i++) {
         while (!files[i].startsWith(root)) {
           root = root.slice(0, Math.max(0, root.length - 1));
+        }
+      }
+
+      for (const { message } of traced.warnings) {
+        if (message.startsWith('Failed to resolve dependency')) {
+          const m = /Cannot find module '(.+?)' loaded from (.+)/.exec(message);
+          const [, module, importer] = m ?? [null, message, '(unknown)'];
+
+          if (importer.includes('node_modules')) {
+            continue;
+          }
+
+          const p = path.relative(root, importer);
+          builder.log.error(`Missing dependency: ${module} (imported by ${p})`);
         }
       }
 
@@ -100,6 +122,9 @@ export const lambda = (): Adapter => {
           },
         },
       );
+
+      builder.writeClient(path.join(tmp, 'function/assets'));
+      builder.writePrerendered(path.join(tmp, 'function/prerendered'));
 
       const zip = new Zip();
       const entries = await glob('**/*', {
@@ -145,11 +170,8 @@ export const lambda = (): Adapter => {
       builder.log.minor('Writing final assets...');
 
       await fs.mkdir(path.join(out, 'functions'));
-      await fs.writeFile(path.join(out, 'functions/fn.zip'), buffer);
-      await fs.writeFile(path.join(out, 'functions/fn.hash'), hash);
-
-      builder.writeClient(path.join(out, 'static'));
-      builder.writePrerendered(path.join(out, 'static'));
+      await fs.writeFile(path.join(out, 'function.zip'), buffer);
+      await fs.writeFile(path.join(out, 'function.hash'), hash);
 
       builder.log.minor('Cleaning up...');
 
@@ -158,32 +180,3 @@ export const lambda = (): Adapter => {
     },
   };
 };
-
-// const bundle = await rollup({
-//   input: `${tmp}/handler.js`,
-//   plugins: [
-//     // test(builder),
-//     commonjs({
-//       strictRequires: true,
-//       transformMixedEsModules: true,
-//       ignoreDynamicRequires: true,
-//     }),
-//     json(),
-//     natives({ copyTo: `${out}/server` }),
-//     resolve({
-//       exportConditions: ['node'],
-//       preferBuiltins: true,
-//     }),
-//   ],
-// });
-
-// await bundle.write({
-//   dir: `${out}/server`,
-//   format: 'esm',
-//   inlineDynamicImports: true,
-//   dynamicImportInCjs: true,
-//   esModule: true,
-//   // banner,
-// });
-
-// await bundle.close();

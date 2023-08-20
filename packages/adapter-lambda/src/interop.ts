@@ -25,14 +25,26 @@ export const createRequest = (event: APIGatewayProxyEventV2): Request => {
   return new Request(url, init);
 };
 
+const textTypes = [
+  'text/',
+  'application/javascript',
+  'application/json',
+  'application/xml',
+  'image/svg+xml',
+];
+
 export const createResult = async (
   response: Response,
 ): Promise<APIGatewayProxyResultV2> => {
+  const contentType = response.headers.get('content-type') ?? '';
+  const isText = textTypes.some((type) => contentType.startsWith(type));
+
   return {
     statusCode: response.status,
     headers: Object.fromEntries(response.headers),
-    // body: Buffer.from(await response.arrayBuffer()).toString('base64'),
-    body: await response.text(),
-    isBase64Encoded: false,
+    body: isText
+      ? await response.text()
+      : Buffer.from(await response.arrayBuffer()).toString('base64'),
+    isBase64Encoded: !isText,
   };
 };
