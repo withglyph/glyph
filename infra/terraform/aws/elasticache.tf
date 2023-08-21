@@ -42,11 +42,7 @@ resource "aws_elasticache_user" "default" {
   user_name = "default"
 
   engine        = "REDIS"
-  access_string = "off"
-
-  authentication_mode {
-    type = "no-password-required"
-  }
+  access_string = "off -@all"
 }
 
 resource "aws_elasticache_user" "iam_user" {

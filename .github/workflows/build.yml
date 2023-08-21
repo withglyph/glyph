@@ -1,0 +1,49 @@
+name: Build
+
+on:
+  push:
+    branches: [savepoint]
+  # pull_request:
+
+# env:
+#   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+#   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+#   NODE_OPTIONS: --max-old-space-size=4096
+
+jobs:
+  deps:
+    name: Build dependencies
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        packages: [sites/penxle.com]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run code generation
+        run: pnpm exec turbo run codegen
+
+      - name: Run dependency build
+        run: pnpm run build:deps
+
+      - name: Run lint
+        run: pnpm run lint:${{ matrix.linter }}

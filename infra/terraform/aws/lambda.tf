@@ -13,6 +13,11 @@ data "aws_s3_object" "literoom_layer" {
   key    = "literoom/layer.hash"
 }
 
+data "aws_s3_object" "penxle" {
+  bucket = "penxle-artifacts"
+  key    = "penxle/function.hash"
+}
+
 resource "aws_lambda_layer_version" "literoom_layer" {
   layer_name = "literoom"
 
@@ -71,4 +76,30 @@ resource "aws_lambda_function" "literoom_transform" {
   layers = [aws_lambda_layer_version.literoom_layer.id]
 
   source_code_hash = data.aws_s3_object.literoom_transform.body
+}
+
+resource "aws_lambda_function" "penxle" {
+  function_name = "penxle"
+
+  role = aws_iam_role.lambda_penxle.arn
+
+  runtime       = "nodejs18.x"
+  architectures = ["arm64"]
+
+  memory_size = 2048
+  timeout     = 29
+
+  s3_bucket = aws_s3_bucket.penxle_artifacts.id
+  s3_key    = "penxle/function.zip"
+  handler   = "index.handler"
+
+  source_code_hash = data.aws_s3_object.penxle.body
+}
+
+resource "aws_lambda_permission" "penxle" {
+  function_name = aws_lambda_function.penxle.function_name
+
+  statement_id = "penxle"
+  action       = "lambda:InvokeFunction"
+  principal    = "apigateway.amazonaws.com"
 }
