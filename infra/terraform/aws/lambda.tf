@@ -18,6 +18,11 @@ data "aws_s3_object" "penxle" {
   key    = "penxle/function.hash"
 }
 
+data "aws_s3_object" "actions_runner_orchestrator" {
+  bucket = "penxle-artifacts"
+  key    = "actions-runner-orchestrator/function.hash"
+}
+
 resource "aws_lambda_layer_version" "literoom_layer" {
   layer_name = "literoom"
 
@@ -102,4 +107,27 @@ resource "aws_lambda_permission" "penxle" {
   statement_id = "penxle"
   action       = "lambda:InvokeFunction"
   principal    = "apigateway.amazonaws.com"
+}
+
+resource "aws_lambda_function" "actions_runner_orchestrator" {
+  function_name = "actions-runner-orchestrator"
+
+  role = aws_iam_role.lambda_actions_runner_orchestrator.arn
+
+  runtime       = "nodejs18.x"
+  architectures = ["arm64"]
+
+  memory_size = 512
+  timeout     = 60
+
+  s3_bucket = aws_s3_bucket.penxle_artifacts.id
+  s3_key    = "actions-runner-orchestrator/function.zip"
+  handler   = "index.handler"
+
+  source_code_hash = data.aws_s3_object.actions_runner_orchestrator.body
+}
+
+resource "aws_lambda_function_url" "actions_runner_orchestrator" {
+  function_name      = aws_lambda_function.actions_runner_orchestrator.function_name
+  authorization_type = "NONE"
 }

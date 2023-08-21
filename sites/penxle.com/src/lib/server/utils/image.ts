@@ -38,15 +38,10 @@ export const finalizeImage = async (
   db: InteractiveTransactionClient,
   key: string,
 ) => {
-  let item;
-  try {
-    item = await aws.ddbGetItem<FinalizeResult>({
-      table: 'image-finalize',
-      id: key,
-    });
-  } catch {
-    return;
-  }
+  const item = await aws.ddbGetItem<FinalizeResult>({
+    table: 'image-finalize',
+    id: key,
+  });
 
   if ('error' in item) {
     throw new Error(item.error);

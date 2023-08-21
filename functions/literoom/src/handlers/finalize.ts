@@ -125,16 +125,16 @@ const finalize = async (record: S3EventRecord) => {
     }),
   );
 
-  // await ddbPutItem(key, {
-  //   name,
-  //   path,
-  //   format: metadata.format,
-  //   fileSize: metadata.size,
-  //   blobSize: output.info.size,
-  //   width: output.info.width,
-  //   height: output.info.height,
-  //   color,
-  //   placeholder,
-  //   hash,
-  // });
+  JSON.stringify({
+    name,
+    path,
+    format: metadata.format,
+    fileSize: metadata.size,
+    blobSize: output.info.size,
+    width: output.info.width,
+    height: output.info.height,
+    color,
+    placeholder,
+    hash,
+  });
 };

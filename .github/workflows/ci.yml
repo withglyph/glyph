@@ -14,7 +14,7 @@ env:
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: linux/arm64
     strategy:
       fail-fast: false
       matrix:
@@ -23,25 +23,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
+      - name: Setup workspace
+        uses: ./actions/setup-workspace
 
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Build dependencies
+        run: pnpm run build:deps
 
       - name: Run code generation
         run: pnpm exec turbo run codegen
-
-      - name: Run dependency build
-        run: pnpm run build:deps
 
       - name: Run lint
         run: pnpm run lint:${{ matrix.linter }}

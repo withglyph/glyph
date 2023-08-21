@@ -182,3 +182,18 @@ resource "aws_security_group" "public" {
 
   tags = { Name = "public" }
 }
+
+resource "aws_security_group" "private" {
+  name        = "private"
+  vpc_id      = aws_vpc.penxle.id
+  description = "Not open to the world"
+
+  egress {
+    protocol    = "all"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = { Name = "private" }
+}

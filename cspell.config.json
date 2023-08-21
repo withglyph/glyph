@@ -16,6 +16,7 @@
     "clsx",
     "dopplerhq",
     "dotenv",
+    "execa",
     "felte",
     "firacode",
     "gitmoji",
@@ -38,6 +39,7 @@
     "tsup",
     "ttfb",
     "unocss",
+    "vcpu",
     "vercel",
     "vite"
   ]
