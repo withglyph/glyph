@@ -1,0 +1,33 @@
+name: CD
+
+on:
+  pull_request:
+
+jobs:
+  bundle:
+    name: Bundle
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - name: gh-app
+            project: ./functions/gh-app
+            entrypoint: ./src/index.ts
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup workspace
+        uses: ./actions/setup-workspace
+
+      - name: Bundle lambda function
+        uses: ./actions/bundle-lambda
+        with:
+          name: ${{ matrix.target.name }}
+          project: ${{ matrix.target.project }}
+          entrypoint: ${{ matrix.target.entrypoint }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-northeast-2

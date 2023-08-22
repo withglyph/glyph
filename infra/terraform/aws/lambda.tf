@@ -1,24 +1,3 @@
-
-data "aws_s3_object" "literoom_transform" {
-  bucket = "penxle-artifacts"
-  key    = "literoom/transform.hash"
-}
-
-data "aws_s3_object" "literoom_finalize" {
-  bucket = "penxle-artifacts"
-  key    = "literoom/finalize.hash"
-}
-
-data "aws_s3_object" "literoom_layer" {
-  bucket = "penxle-artifacts"
-  key    = "literoom/layer.hash"
-}
-
-data "aws_s3_object" "penxle" {
-  bucket = "penxle-artifacts"
-  key    = "penxle/function.hash"
-}
-
 data "aws_s3_object" "lambda_gh_app_hash" {
   bucket = "penxle-artifacts"
   key    = "lambda/gh-app/hash.txt"
@@ -47,6 +26,10 @@ resource "aws_lambda_function_url" "gh_app" {
   authorization_type = "NONE"
 }
 
+data "aws_s3_object" "literoom_layer" {
+  bucket = "penxle-artifacts"
+  key    = "literoom/layer.hash"
+}
 
 resource "aws_lambda_layer_version" "literoom_layer" {
   layer_name = "literoom"
@@ -58,6 +41,11 @@ resource "aws_lambda_layer_version" "literoom_layer" {
   compatible_architectures = ["arm64"]
 
   source_code_hash = data.aws_s3_object.literoom_layer.body
+}
+
+data "aws_s3_object" "literoom_finalize" {
+  bucket = "penxle-artifacts"
+  key    = "literoom/finalize.hash"
 }
 
 resource "aws_lambda_function" "literoom_finalize" {
@@ -88,6 +76,11 @@ resource "aws_lambda_permission" "literoom_finalize" {
   principal    = "s3.amazonaws.com"
 }
 
+data "aws_s3_object" "literoom_transform" {
+  bucket = "penxle-artifacts"
+  key    = "literoom/transform.hash"
+}
+
 resource "aws_lambda_function" "literoom_transform" {
   function_name = "literoom-transform"
 
@@ -106,6 +99,11 @@ resource "aws_lambda_function" "literoom_transform" {
   layers = [aws_lambda_layer_version.literoom_layer.id]
 
   source_code_hash = data.aws_s3_object.literoom_transform.body
+}
+
+data "aws_s3_object" "penxle" {
+  bucket = "penxle-artifacts"
+  key    = "penxle/function.hash"
 }
 
 resource "aws_lambda_function" "penxle" {
@@ -132,19 +130,4 @@ resource "aws_lambda_permission" "penxle" {
   statement_id = "penxle"
   action       = "lambda:InvokeFunction"
   principal    = "apigateway.amazonaws.com"
-}
-
-resource "aws_lambda_function" "actions_runner" {
-  function_name = "actions-runner"
-
-  role = aws_iam_role.lambda_actions_runner.arn
-
-  package_type  = "Image"
-  image_uri     = "721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/actions-runner:latest"
-  architectures = ["arm64"]
-
-  memory_size = 10240
-  timeout     = 900
-
-  # source_code_hash = data.aws_s3_object.actions_runner_orchestrator.body
 }

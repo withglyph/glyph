@@ -1,5 +1,5 @@
 {
-  "name": "@penxle/actions-runner",
+  "name": "@penxle/bundle-lambda",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -8,7 +8,11 @@
     "lint:typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "execa": "^8.0.0"
+    "@actions/core": "^1.10.0",
+    "@aws-sdk/client-s3": "^3.395.0",
+    "@vercel/nft": "^0.23.1",
+    "esbuild": "^0.19.2",
+    "jszip": "^3.10.1"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
