@@ -6,14 +6,11 @@ on:
 jobs:
   bundle:
     name: Bundle
-    runs-on: ubuntu-latest
+    runs-on: linux/arm64
     strategy:
       fail-fast: false
       matrix:
-        target:
-          - name: gh-app
-            project: ./functions/gh-app
-            entrypoint: ./src/index.ts
+        project: [gh-app]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -24,6 +21,4 @@ jobs:
       - name: Bundle lambda function
         uses: ./actions/bundle-lambda
         with:
-          name: ${{ matrix.target.name }}
-          project: ${{ matrix.target.project }}
-          entrypoint: ${{ matrix.target.entrypoint }}
+          project: ${{ matrix.project }}

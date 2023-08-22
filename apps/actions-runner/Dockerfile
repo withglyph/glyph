@@ -42,4 +42,4 @@ COPY dist/index.js ./index.mjs
 
 USER runner
 
-CMD ["node", "index.mjs"]
+ENTRYPOINT ["node", "index.mjs"]

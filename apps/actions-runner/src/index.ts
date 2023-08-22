@@ -11,13 +11,17 @@ const main = async () => {
   const options = JSON.parse(process.env.RUNNER_OPT!) as Opt;
 
   try {
-    await Promise.all([run(options), timeout()]);
+    await Promise.race([run(options), timeout()]);
   } catch (err) {
     console.log(err);
   } finally {
     console.log('Removing runner...');
     await execa('./config.sh', ['remove', '--token', options.tokens.remove]);
   }
+
+  console.log('Exiting container...');
+  // eslint-disable-next-line unicorn/no-process-exit
+  process.exit(0);
 };
 
 const run = async (options: Opt) => {
