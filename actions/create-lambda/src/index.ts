@@ -12,7 +12,7 @@ const tmp = process.env.RUNNER_TEMP
   : '/tmp/lambda';
 
 await esbuild.build({
-  entryPoints: { index: actions.getInput('handler') },
+  entryPoints: { index: actions.getInput('entrypoint') },
   outdir: path.join(tmp, 'esbuild'),
 
   format: 'esm',
@@ -30,7 +30,9 @@ await esbuild.build({
 
 // builder.log.minor('Optimizing dependencies...');
 
-const traced = await nodeFileTrace([path.join(tmp, 'esbuild/index.js')]);
+const traced = await nodeFileTrace([path.join(tmp, 'esbuild/index.js')], {
+  base: '.',
+});
 
 // const files = [...traced.fileList];
 
