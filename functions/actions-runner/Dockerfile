@@ -2,8 +2,7 @@ FROM --platform=linux/arm64 ubuntu:latest
 
 ARG RUNNER_VERSION="2.308.0"
 
-WORKDIR /home/runner
-RUN useradd -d /home/runner runner
+WORKDIR /app
 
 RUN sed -i -e \
   's#http://ports.ubuntu.com/ubuntu-ports/#http://mirror.yuki.net.uk/ubuntu-ports/#' \
@@ -19,13 +18,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+  autoconf \
+  automake \
   build-essential \
+  cmake \
   git \
+  libtool \
   nodejs \
   python3 \
   && apt-get autoremove -y \
   && apt-get autoclean -y \
   && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g aws-lambda-ric
 
 RUN curl \
   -o actions-runner.tar.gz \
@@ -38,9 +43,9 @@ RUN ./bin/installdependencies.sh \
   && apt-get autoclean -y \
   && rm -rf /var/lib/apt/lists/*
 
-COPY dist/entrypoint.js ./index.mjs
+COPY dist/index.js ./index.mjs
 
-USER runner
+USER 1000
 
-ENTRYPOINT ["npx", "aws-lambda-ric"]
+ENTRYPOINT ["aws-lambda-ric"]
 CMD ["index.handler"]

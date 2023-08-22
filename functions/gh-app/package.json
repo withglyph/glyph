@@ -1,5 +1,5 @@
 {
-  "name": "@penxle/actions-runner",
+  "name": "@penxle/gh-app",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -8,11 +8,15 @@
     "lint:typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "execa": "^8.0.0",
-    "exit-hook": "^3.2.0"
+    "@aws-sdk/client-lambda": "^3.395.0",
+    "@aws-sdk/client-ssm": "^3.395.0",
+    "@octokit/webhooks": "^12.0.3",
+    "octokit": "^3.1.0"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
+    "@types/aws-lambda": "^8.10.119",
+    "@types/node": "^20.5.1",
     "tsup": "^7.2.0",
     "typescript": "^5.1.6"
   }

@@ -59,6 +59,55 @@ resource "aws_iam_access_key" "penxle_com" {
   user = aws_iam_user.penxle_com.id
 }
 
+resource "aws_iam_role" "doppler" {
+  name = "doppler"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = ["sts:AssumeRole"]
+        Principal = {
+          AWS = "299900769157"
+        }
+        Condition = {
+          StringEquals = {
+            "sts:ExternalId" = "904c42d3cbd4d54e50d5"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "doppler" {
+  role = aws_iam_role.doppler.id
+
+  name = "doppler"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:PutParameter",
+          "ssm:LabelParameterVersion",
+          "ssm:DeleteParameter",
+          "ssm:RemoveTagsFromResource",
+          "ssm:GetParameterHistory",
+          "ssm:AddTagsToResource",
+          "ssm:GetParametersByPath",
+          "ssm:GetParameters",
+          "ssm:GetParameter",
+          "ssm:DeleteParameters"
+        ]
+        Resource = ["*"]
+      },
+    ]
+  })
+}
+
 resource "aws_iam_role" "lambda_literoom_finalize" {
   name = "literoom-finalize@lambda"
 
@@ -173,8 +222,8 @@ resource "aws_iam_role_policy" "lambda_penxle" {
   })
 }
 
-resource "aws_iam_role" "lambda_actions_runner" {
-  name = "actions-runner@lambda"
+resource "aws_iam_role" "lambda_gh_app" {
+  name = "gh-app@lambda"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -190,8 +239,34 @@ resource "aws_iam_role" "lambda_actions_runner" {
   })
 }
 
-resource "aws_iam_role" "lambda_actions_runner_orchestrator" {
-  name = "actions-runner-orchestrator@lambda"
+resource "aws_iam_role_policy" "lambda_gh_app" {
+  role = aws_iam_role.lambda_gh_app.id
+
+  name = "gh-app@lambda"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["lambda:InvokeFunction"]
+        Resource = [aws_lambda_function.actions_runner.arn]
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["ssm:Get*"]
+        Resource = ["*"]
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
+        Resource = ["arn:aws:logs:*:*:*"]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "lambda_actions_runner" {
+  name = "actions-runner@lambda"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -218,103 +293,6 @@ resource "aws_iam_role_policy" "lambda_actions_runner" {
         Effect   = "Allow"
         Action   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
         Resource = ["arn:aws:logs:*:*:*"]
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy" "lambda_actions_runner_orchestrator" {
-  role = aws_iam_role.lambda_actions_runner_orchestrator.id
-
-  name = "actions-runner-orchestrator@lambda"
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect   = "Allow"
-        Action   = ["lambda:InvokeFunction"]
-        Resource = [aws_lambda_function.actions_runner.arn]
-      },
-      {
-        Effect   = "Allow"
-        Action   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
-        Resource = ["arn:aws:logs:*:*:*"]
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role" "ecs_task_execution" {
-  name = "task-execution@ecs"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = ["sts:AssumeRole"]
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy" "ecs_task_execution" {
-  role = aws_iam_role.ecs_task_execution.id
-
-  name = "task-execution@ecs"
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect   = "Allow"
-        Action   = ["logs:CreateLogGroup"]
-        Resource = ["arn:aws:logs:*:*:*"]
-      },
-      {
-        Effect   = "Allow"
-        Action   = ["ssm:GetParameters"]
-        Resource = ["arn:aws:ssm:*:*:parameter/ecs/*"]
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
-  role       = aws_iam_role.ecs_task_execution.id
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
-resource "aws_iam_role" "ecs_actions_runner" {
-  name = "actions-runner@ecs"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = ["sts:AssumeRole"]
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy" "ecs_actions_runner" {
-  role = aws_iam_role.ecs_actions_runner.id
-
-  name = "actions-runner@ecs"
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect   = "Allow"
-        Action   = ["s3:PutObject"]
-        Resource = ["${aws_s3_bucket.penxle_artifacts.arn}/*"]
       }
     ]
   })

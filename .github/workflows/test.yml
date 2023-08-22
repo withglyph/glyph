@@ -6,7 +6,7 @@ on:
 jobs:
   test:
     name: Test
-    runs-on: linux/arm64
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -17,4 +17,4 @@ jobs:
       - name: Create lambda
         uses: ./actions/create-lambda
         with:
-          entrypoint: ./functions/literoom/src/handlers/finalize.ts
+          entrypoint: ./functions/gh-app/src/index.ts
