@@ -22,8 +22,14 @@ webhook.on('workflow_job.queued', async (event) => {
       launchType: 'FARGATE',
       networkConfiguration: {
         awsvpcConfiguration: {
-          subnets: ['subnet-024dd73d6018d2e39', 'subnet-09d82bf9e1fb6bdb6'],
-          securityGroups: ['sg-07b4d23e540b34d41'],
+          assignPublicIp: 'ENABLED',
+          subnets: [
+            'subnet-0c0f1c2302a02567e', // public-az1
+            'subnet-064f753d822401555', // public-az2
+          ],
+          securityGroups: [
+            'sg-07b4d23e540b34d41', // private
+          ],
         },
       },
       overrides: {
@@ -34,7 +40,7 @@ webhook.on('workflow_job.queued', async (event) => {
               {
                 name: 'RUNNER_OPT',
                 value: JSON.stringify({
-                  name: `${organization}-${event.payload.workflow_job.id}`,
+                  name: `${event.payload.repository.name}-${event.payload.workflow_job.name}-${event.payload.workflow_job.id}`,
                   url: event.payload.repository.owner.html_url,
                   tokens: {
                     registration: registrationToken.token,

@@ -17,6 +17,9 @@ const run = async (options: Opt) => {
       '--name',
       options.name,
 
+      '--runnergroup',
+      'penxle',
+
       '--no-default-labels',
       '--labels',
       'linux/arm64',
