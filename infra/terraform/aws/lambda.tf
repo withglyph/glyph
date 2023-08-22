@@ -1,3 +1,4 @@
+
 data "aws_s3_object" "literoom_transform" {
   bucket = "penxle-artifacts"
   key    = "literoom/transform.hash"
@@ -18,10 +19,34 @@ data "aws_s3_object" "penxle" {
   key    = "penxle/function.hash"
 }
 
-# data "aws_s3_object" "actions_runner_orchestrator" {
-#   bucket = "penxle-artifacts"
-#   key    = "actions-runner/orchestrator.hash"
-# }
+data "aws_s3_object" "lambda_gh_app_hash" {
+  bucket = "penxle-artifacts"
+  key    = "lambda/gh-app/hash.txt"
+}
+
+resource "aws_lambda_function" "gh_app" {
+  function_name = "gh-app"
+
+  role = aws_iam_role.lambda_gh_app.arn
+
+  runtime       = "nodejs18.x"
+  architectures = ["arm64"]
+
+  memory_size = 512
+  timeout     = 60
+
+  s3_bucket = aws_s3_bucket.penxle_artifacts.id
+  s3_key    = "lambda/gh-app/function.zip"
+  handler   = "index.handler"
+
+  source_code_hash = data.aws_s3_object.lambda_gh_app_hash.body
+}
+
+resource "aws_lambda_function_url" "gh_app" {
+  function_name      = aws_lambda_function.gh_app.function_name
+  authorization_type = "NONE"
+}
+
 
 resource "aws_lambda_layer_version" "literoom_layer" {
   layer_name = "literoom"
@@ -122,27 +147,4 @@ resource "aws_lambda_function" "actions_runner" {
   timeout     = 900
 
   # source_code_hash = data.aws_s3_object.actions_runner_orchestrator.body
-}
-
-resource "aws_lambda_function" "gh_app" {
-  function_name = "gh-app"
-
-  role = aws_iam_role.lambda_gh_app.arn
-
-  runtime       = "nodejs18.x"
-  architectures = ["arm64"]
-
-  memory_size = 512
-  timeout     = 60
-
-  s3_bucket = aws_s3_bucket.penxle_artifacts.id
-  s3_key    = "lambda/gh-app/function.zip"
-  handler   = "index.handler"
-
-  # source_code_hash = data.aws_s3_object.actions_runner_orchestrator.body
-}
-
-resource "aws_lambda_function_url" "gh_app" {
-  function_name      = aws_lambda_function.gh_app.function_name
-  authorization_type = "NONE"
 }

@@ -1,0 +1,10 @@
+runs:
+  using: node20
+  main: dist/index.js
+inputs:
+  name:
+    required: true
+  project:
+    required: true
+  entrypoint:
+    required: true

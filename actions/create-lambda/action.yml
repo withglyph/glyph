@@ -1,7 +1,0 @@
-name: Create Lambda
-inputs:
-  entrypoint:
-    required: true
-runs:
-  using: node20
-  main: dist/index.js

@@ -14,7 +14,13 @@ jobs:
       - name: Setup workspace
         uses: ./actions/setup-workspace
 
-      - name: Create lambda
-        uses: ./actions/create-lambda
+      - name: Upload lambda
+        uses: ./actions/upload-lambda
         with:
-          entrypoint: ./functions/gh-app/src/index.ts
+          name: gh-app
+          project: ./functions/gh-app
+          entrypoint: ./src/index.ts
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-northeast-2
