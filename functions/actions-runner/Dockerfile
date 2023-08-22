@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && apt-get autoclean -y \
   && rm -rf /var/lib/apt/lists/*
 
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential \
@@ -38,7 +38,9 @@ RUN ./bin/installdependencies.sh \
   && apt-get autoclean -y \
   && rm -rf /var/lib/apt/lists/*
 
-COPY dist/entrypoint.js ./entrypoint.mjs
+COPY dist/entrypoint.js ./index.mjs
 
 USER runner
-CMD ["node", "entrypoint.mjs"]
+
+ENTRYPOINT ["npx", "aws-lambda-ric"]
+CMD ["index.handler"]

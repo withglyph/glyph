@@ -20,7 +20,7 @@ data "aws_s3_object" "penxle" {
 
 data "aws_s3_object" "actions_runner_orchestrator" {
   bucket = "penxle-artifacts"
-  key    = "actions-runner-orchestrator/function.hash"
+  key    = "actions-runner/orchestrator.hash"
 }
 
 resource "aws_lambda_layer_version" "literoom_layer" {
@@ -109,6 +109,21 @@ resource "aws_lambda_permission" "penxle" {
   principal    = "apigateway.amazonaws.com"
 }
 
+resource "aws_lambda_function" "actions_runner" {
+  function_name = "actions-runner"
+
+  role = aws_iam_role.lambda_actions_runner.arn
+
+  package_type  = "Image"
+  image_uri     = "721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/actions-runner:latest"
+  architectures = ["arm64"]
+
+  memory_size = 10240
+  timeout     = 900
+
+  # source_code_hash = data.aws_s3_object.actions_runner_orchestrator.body
+}
+
 resource "aws_lambda_function" "actions_runner_orchestrator" {
   function_name = "actions-runner-orchestrator"
 
@@ -121,7 +136,7 @@ resource "aws_lambda_function" "actions_runner_orchestrator" {
   timeout     = 60
 
   s3_bucket = aws_s3_bucket.penxle_artifacts.id
-  s3_key    = "actions-runner-orchestrator/function.zip"
+  s3_key    = "actions-runner/orchestrator.zip"
   handler   = "index.handler"
 
   source_code_hash = data.aws_s3_object.actions_runner_orchestrator.body

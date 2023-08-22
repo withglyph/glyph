@@ -173,6 +173,23 @@ resource "aws_iam_role_policy" "lambda_penxle" {
   })
 }
 
+resource "aws_iam_role" "lambda_actions_runner" {
+  name = "actions-runner@lambda"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = ["sts:AssumeRole"]
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role" "lambda_actions_runner_orchestrator" {
   name = "actions-runner-orchestrator@lambda"
 
@@ -190,6 +207,22 @@ resource "aws_iam_role" "lambda_actions_runner_orchestrator" {
   })
 }
 
+resource "aws_iam_role_policy" "lambda_actions_runner" {
+  role = aws_iam_role.lambda_actions_runner.id
+
+  name = "actions-runner@lambda"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
+        Resource = ["arn:aws:logs:*:*:*"]
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy" "lambda_actions_runner_orchestrator" {
   role = aws_iam_role.lambda_actions_runner_orchestrator.id
 
@@ -199,13 +232,8 @@ resource "aws_iam_role_policy" "lambda_actions_runner_orchestrator" {
     Statement = [
       {
         Effect   = "Allow"
-        Action   = ["ecs:RunTask"]
-        Resource = [aws_ecs_task_definition.actions_runner.arn_without_revision]
-      },
-      {
-        Effect   = "Allow"
-        Action   = ["iam:PassRole"]
-        Resource = [aws_iam_role.ecs_task_execution.arn, aws_iam_role.ecs_actions_runner.arn]
+        Action   = ["lambda:InvokeFunction"]
+        Resource = [aws_lambda_function.actions_runner.arn]
       },
       {
         Effect   = "Allow"
