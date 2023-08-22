@@ -1,0 +1,11 @@
+runs:
+  using: node20
+  main: 'dist/restore.js'
+  post: 'dist/save.js'
+inputs:
+  path:
+    required: true
+  key:
+    required: true
+  restore-keys:
+    required: false

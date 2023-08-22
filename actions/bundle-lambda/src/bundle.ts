@@ -7,7 +7,7 @@ import { nodeFileTrace } from '@vercel/nft';
 import esbuild from 'esbuild';
 import Zip from 'jszip';
 
-const S3 = new S3Client({ region: 'ap-northeast-2' });
+const S3 = new S3Client();
 
 type BundleParams = {
   lambdaName: string;
