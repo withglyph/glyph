@@ -2,7 +2,8 @@ FROM --platform=linux/arm64 ubuntu:latest
 
 ARG RUNNER_VERSION="2.308.0"
 
-WORKDIR /app
+WORKDIR /runner
+RUN useradd -d /tmp/runner runner
 
 RUN sed -i -e \
   's#http://ports.ubuntu.com/ubuntu-ports/#http://mirror.yuki.net.uk/ubuntu-ports/#' \
@@ -45,7 +46,7 @@ RUN ./bin/installdependencies.sh \
 
 COPY dist/index.js ./index.mjs
 
-USER 1000
+USER runner
 
 ENTRYPOINT ["aws-lambda-ric"]
 CMD ["index.handler"]

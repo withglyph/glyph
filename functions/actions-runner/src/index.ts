@@ -1,5 +1,4 @@
 import { execaSync } from 'execa';
-import exitHook from 'exit-hook';
 
 type Event = {
   name: string;
@@ -8,31 +7,48 @@ type Event = {
 };
 
 export const handler = (event: Event) => {
-  console.log('Configuring runner...');
-  execaSync('./config.sh', [
-    '--disableupdate',
-    '--ephemeral',
-    '--unattended',
+  try {
+    console.log('Copying files...');
+    execaSync('cp', ['-r', '/runner', '/tmp']);
 
-    '--name',
-    event.name,
+    console.log('Configuring runner...');
+    execaSync(
+      './config.sh',
+      [
+        '--disableupdate',
+        '--ephemeral',
+        '--unattended',
 
-    '--no-default-labels',
-    '--labels',
-    'linux/arm64',
+        '--name',
+        event.name,
 
-    '--token',
-    event.tokens.registration,
+        '--no-default-labels',
+        '--labels',
+        'linux/arm64',
 
-    '--url',
-    event.url,
-  ]);
+        '--token',
+        event.tokens.registration,
 
-  exitHook(() => {
+        '--url',
+        event.url,
+      ],
+      { cwd: '/tmp/runner' },
+    );
+
+    console.log('Running runner...');
+    execaSync('./run.sh', {
+      cwd: '/tmp/runner',
+      stdout: 'inherit',
+      stderr: 'inherit',
+    });
+  } catch (err) {
+    console.error(err);
+  } finally {
     console.log('Removing runner...');
-    execaSync('./config.sh', ['remove', '--token', event.tokens.remove]);
-  });
+    execaSync('./config.sh', ['remove', '--token', event.tokens.remove], {
+      cwd: '/tmp/runner',
+    });
+  }
 
-  console.log('Running runner...');
-  execaSync('./run.sh', { stdout: 'inherit', stderr: 'inherit' });
+  return {};
 };

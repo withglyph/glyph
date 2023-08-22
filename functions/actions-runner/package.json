@@ -8,8 +8,7 @@
     "lint:typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "execa": "^8.0.0",
-    "exit-hook": "^3.2.0"
+    "execa": "^8.0.0"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
