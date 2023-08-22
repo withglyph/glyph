@@ -53,18 +53,18 @@ resource "aws_iam_role" "ecs_actions_runner" {
   })
 }
 
-# resource "aws_iam_role_policy" "ecs_actions_runner" {
-#   role = aws_iam_role.ecs_actions_runner.id
+resource "aws_iam_role_policy" "ecs_actions_runner" {
+  role = aws_iam_role.ecs_actions_runner.id
 
-#   name = "actions-runner@ecs"
-#   policy = jsonencode({
-#     Version = "2012-10-17"
-#     Statement = [
-#       {
-#         Effect   = "Allow"
-#         Action   = ["s3:PutObject"]
-#         Resource = ["${aws_s3_bucket.penxle_artifacts.arn}/*"]
-#       }
-#     ]
-#   })
-# }
+  name = "actions-runner@ecs"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["s3:PutObject"]
+        Resource = ["${aws_s3_bucket.penxle_artifacts.arn}/*"]
+      }
+    ]
+  })
+}

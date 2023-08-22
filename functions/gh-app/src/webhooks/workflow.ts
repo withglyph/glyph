@@ -40,7 +40,7 @@ webhook.on('workflow_job.queued', async (event) => {
               {
                 name: 'RUNNER_OPT',
                 value: JSON.stringify({
-                  name: `${event.payload.repository.name}-${event.payload.workflow_job.name}-${event.payload.workflow_job.id}`,
+                  name: `${event.payload.repository.name}-${event.payload.workflow_job.id}`,
                   url: event.payload.repository.owner.html_url,
                   tokens: {
                     registration: registrationToken.token,
