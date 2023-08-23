@@ -12,6 +12,7 @@
   import { Bold, Italic, Strike, Underline } from '$lib/tiptap/marks';
   import { AccessBarrier } from '$lib/tiptap/node-views';
   import {
+    CodeBlock,
     Document,
     HardBreak,
     Heading,
@@ -38,6 +39,7 @@
         Text,
 
         // nodes
+        CodeBlock,
         HardBreak,
         Heading,
         Paragraph,

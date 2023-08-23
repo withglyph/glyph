@@ -19,6 +19,14 @@
     --uno: text-lg font-bold my-4;
   }
 
+  & pre {
+    --uno: bg-black;
+
+    & code {
+      --uno: font-mono text-white text-xs;
+    }
+  }
+
   /*
    * marks
   */

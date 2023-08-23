@@ -111,6 +111,13 @@
         enabled={editor?.can().setAccessBarrier()}
         on:click={() => editor?.chain().focus().setAccessBarrier().run()}
       />
+
+      <ToolbarButton
+        name="코드 블럭 추가"
+        class="i-lc-code"
+        enabled={editor?.can().toggleCodeBlock()}
+        on:click={() => editor?.chain().focus().toggleCodeBlock().run()}
+      />
     </div>
 
     <div class="flex items-center gap-2">
