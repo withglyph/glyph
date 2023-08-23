@@ -129,6 +129,9 @@ importers:
         specifier: ^3.1.0
         version: 3.1.0
     devDependencies:
+      '@paralleldrive/cuid2':
+        specifier: ^2.2.2
+        version: 2.2.2
       '@penxle/tsconfig':
         specifier: workspace:^
         version: link:../../packages/tsconfig

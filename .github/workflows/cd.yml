@@ -35,7 +35,7 @@ jobs:
         run: pnpm run build:actions
 
       - name: Build project
-        run: turbo run build --filter=${{ matrix.project }}
+        run: pnpm exec turbo run build --filter=${{ matrix.project }}
 
       - name: Bundle lambda function
         uses: ./actions/bundle-lambda

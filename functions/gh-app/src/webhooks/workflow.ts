@@ -1,18 +1,22 @@
 import { ECSClient, RunTaskCommand } from '@aws-sdk/client-ecs';
+import { init } from '@paralleldrive/cuid2';
 import { octokit, organization } from '../octokit';
 import { webhook } from '../webhook';
 
 const ECS = new ECSClient();
+const createId = init({ length: 8 });
 
 webhook.on('workflow_job.queued', async (event) => {
-  const { data: registrationToken } = await octokit.request(
-    'POST /orgs/{org}/actions/runners/registration-token',
-    { org: organization },
-  );
+  const name = `${event.payload.repository.name}-${createId()}`;
 
-  const { data: removeToken } = await octokit.request(
-    'POST /orgs/{org}/actions/runners/remove-token',
-    { org: organization },
+  const { data: jitConfig } = await octokit.request(
+    'POST /orgs/{org}/actions/runners/generate-jitconfig',
+    {
+      org: organization,
+      name,
+      labels: ['self-hosted', 'linux', 'arm64'],
+      runner_group_id: 4, // penxle
+    },
   );
 
   await ECS.send(
@@ -20,6 +24,7 @@ webhook.on('workflow_job.queued', async (event) => {
       cluster: 'penxle',
       taskDefinition: 'actions-runner',
       launchType: 'FARGATE',
+      referenceId: name,
       networkConfiguration: {
         awsvpcConfiguration: {
           assignPublicIp: 'ENABLED',
@@ -38,15 +43,8 @@ webhook.on('workflow_job.queued', async (event) => {
             name: 'actions-runner',
             environment: [
               {
-                name: 'RUNNER_OPT',
-                value: JSON.stringify({
-                  name: `${event.payload.repository.name}-${event.payload.workflow_job.id}`,
-                  url: event.payload.repository.owner.html_url,
-                  tokens: {
-                    registration: registrationToken.token,
-                    remove: removeToken.token,
-                  },
-                }),
+                name: 'JIT_CONFIG',
+                value: jitConfig.encoded_jit_config,
               },
             ],
           },

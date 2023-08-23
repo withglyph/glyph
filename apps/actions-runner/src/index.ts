@@ -1,22 +1,10 @@
 import { execa } from 'execa';
 
-type Opt = {
-  name: string;
-  url: string;
-  tokens: { registration: string; remove: string };
-};
-
 const main = async () => {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const options = JSON.parse(process.env.RUNNER_OPT!) as Opt;
-
   try {
-    await Promise.race([run(options), timeout()]);
+    await Promise.race([run(), timeout()]);
   } catch (err) {
     console.log(err);
-  } finally {
-    console.log('Removing runner...');
-    await execa('./config.sh', ['remove', '--token', options.tokens.remove]);
   }
 
   console.log('Exiting container...');
@@ -24,39 +12,15 @@ const main = async () => {
   process.exit(0);
 };
 
-const run = async (options: Opt) => {
-  try {
-    console.log('Configuring runner...');
-    await execa('./config.sh', [
-      '--disableupdate',
-      '--ephemeral',
-      '--unattended',
+const run = async () => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const jitConfig = process.env.JIT_CONFIG!;
 
-      '--name',
-      options.name,
-
-      '--runnergroup',
-      'penxle',
-
-      '--no-default-labels',
-      '--labels',
-      'linux/arm64',
-
-      '--token',
-      options.tokens.registration,
-
-      '--url',
-      options.url,
-    ]);
-
-    console.log('Running runner...');
-    await execa('./run.sh', { stdout: 'inherit', stderr: 'inherit' });
-  } catch (err) {
-    console.error(err);
-  } finally {
-    console.log('Removing runner...');
-    await execa('./config.sh', ['remove', '--token', options.tokens.remove]);
-  }
+  console.log('Running runner...');
+  await execa('./run.sh', ['--jitconfig', jitConfig], {
+    stdout: 'inherit',
+    stderr: 'inherit',
+  });
 };
 
 const timeout = async () => {
