@@ -34,6 +34,9 @@ jobs:
       - name: Prepare local actions
         run: pnpm run build:actions
 
+      - name: Build project
+        run: turbo run build --filter=${{ matrix.project }}
+
       - name: Bundle lambda function
         uses: ./actions/bundle-lambda
         with:
