@@ -1,0 +1,29 @@
+name: Tool cache
+
+on:
+  push:
+
+jobs:
+  tool-cache:
+    name: Tool cache
+    runs-on: [self-hosted, linux, arm64]
+    steps:
+      - name: Clear any existing tool cache
+        run: |
+          rm -rf "${{ runner.tool_cache }}"
+          mkdir -p "${{ runner.tool_cache }}"
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Archive tool cache
+        run: |
+          cd "${{ runner.tool_cache }}"
+          tar -czf tool_cache.tar.gz *
+
+      - name: Upload tool cache artifact
+        uses: actions/upload-artifact@v3
+        with:
+          path: ${{runner.tool_cache}}/tool_cache.tar.gz

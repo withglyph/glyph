@@ -26,26 +26,9 @@ resource "aws_lambda_function_url" "gh_app" {
   authorization_type = "NONE"
 }
 
-data "aws_s3_object" "literoom_layer" {
+data "aws_s3_object" "lambda_literoom_finalize_hash" {
   bucket = "penxle-artifacts"
-  key    = "literoom/layer.hash"
-}
-
-resource "aws_lambda_layer_version" "literoom_layer" {
-  layer_name = "literoom"
-
-  s3_bucket = aws_s3_bucket.penxle_artifacts.id
-  s3_key    = "literoom/layer.zip"
-
-  compatible_runtimes      = ["nodejs18.x"]
-  compatible_architectures = ["arm64"]
-
-  source_code_hash = data.aws_s3_object.literoom_layer.body
-}
-
-data "aws_s3_object" "literoom_finalize" {
-  bucket = "penxle-artifacts"
-  key    = "literoom/finalize.hash"
+  key    = "lambda/literoom-finalize/hash.txt"
 }
 
 resource "aws_lambda_function" "literoom_finalize" {
@@ -60,12 +43,10 @@ resource "aws_lambda_function" "literoom_finalize" {
   timeout     = 900
 
   s3_bucket = aws_s3_bucket.penxle_artifacts.id
-  s3_key    = "literoom/finalize.zip"
+  s3_key    = "lambda/literoom-finalize/function.zip"
   handler   = "index.handler"
 
-  layers = [aws_lambda_layer_version.literoom_layer.id]
-
-  source_code_hash = data.aws_s3_object.literoom_finalize.body
+  source_code_hash = data.aws_s3_object.lambda_literoom_finalize_hash.body
 }
 
 resource "aws_lambda_permission" "literoom_finalize" {
@@ -76,9 +57,9 @@ resource "aws_lambda_permission" "literoom_finalize" {
   principal    = "s3.amazonaws.com"
 }
 
-data "aws_s3_object" "literoom_transform" {
+data "aws_s3_object" "lambda_literoom_transform_hash" {
   bucket = "penxle-artifacts"
-  key    = "literoom/transform.hash"
+  key    = "lambda/literoom-transform/hash.txt"
 }
 
 resource "aws_lambda_function" "literoom_transform" {
@@ -93,23 +74,21 @@ resource "aws_lambda_function" "literoom_transform" {
   timeout     = 900
 
   s3_bucket = aws_s3_bucket.penxle_artifacts.id
-  s3_key    = "literoom/transform.zip"
+  s3_key    = "lambda/literoom-transform/function.zip"
   handler   = "index.handler"
 
-  layers = [aws_lambda_layer_version.literoom_layer.id]
-
-  source_code_hash = data.aws_s3_object.literoom_transform.body
+  source_code_hash = data.aws_s3_object.lambda_literoom_transform_hash.body
 }
 
-data "aws_s3_object" "penxle" {
+data "aws_s3_object" "lambda_penxle_com_hash" {
   bucket = "penxle-artifacts"
-  key    = "penxle/function.hash"
+  key    = "lambda/penxle_com/hash.txt"
 }
 
-resource "aws_lambda_function" "penxle" {
-  function_name = "penxle"
+resource "aws_lambda_function" "penxle_com" {
+  function_name = "penxle_com"
 
-  role = aws_iam_role.lambda_penxle.arn
+  role = aws_iam_role.lambda_penxle_com.arn
 
   runtime       = "nodejs18.x"
   architectures = ["arm64"]
@@ -118,16 +97,16 @@ resource "aws_lambda_function" "penxle" {
   timeout     = 29
 
   s3_bucket = aws_s3_bucket.penxle_artifacts.id
-  s3_key    = "penxle/function.zip"
+  s3_key    = "lambda/penxle_com/function.zip"
   handler   = "index.handler"
 
-  source_code_hash = data.aws_s3_object.penxle.body
+  source_code_hash = data.aws_s3_object.lambda_penxle_com_hash.body
 }
 
-resource "aws_lambda_permission" "penxle" {
-  function_name = aws_lambda_function.penxle.function_name
+resource "aws_lambda_permission" "penxle_com" {
+  function_name = aws_lambda_function.penxle_com.function_name
 
-  statement_id = "penxle"
+  statement_id = "penxle_com"
   action       = "lambda:InvokeFunction"
   principal    = "apigateway.amazonaws.com"
 }

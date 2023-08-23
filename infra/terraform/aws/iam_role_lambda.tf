@@ -127,8 +127,8 @@ resource "aws_iam_role_policy" "lambda_literoom_transform" {
   })
 }
 
-resource "aws_iam_role" "lambda_penxle" {
-  name = "penxle@lambda"
+resource "aws_iam_role" "lambda_penxle_com" {
+  name = "penxle_com@lambda"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -144,10 +144,10 @@ resource "aws_iam_role" "lambda_penxle" {
   })
 }
 
-resource "aws_iam_role_policy" "lambda_penxle" {
-  role = aws_iam_role.lambda_penxle.id
+resource "aws_iam_role_policy" "lambda_penxle_com" {
+  role = aws_iam_role.lambda_penxle_com.id
 
-  name = "penxle@lambda"
+  name = "penxle_com@lambda"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

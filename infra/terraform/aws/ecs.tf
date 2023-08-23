@@ -7,7 +7,7 @@ resource "aws_ecs_task_definition" "actions_runner" {
 
   requires_compatibilities = ["FARGATE"]
 
-  cpu    = "1024"
+  cpu    = "2048"
   memory = "4096"
 
   network_mode = "awsvpc"

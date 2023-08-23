@@ -41,5 +41,6 @@ RUN ./bin/installdependencies.sh \
 COPY dist/index.js ./index.mjs
 
 USER runner
+RUN mkdir /runner/_work
 
 ENTRYPOINT ["node", "index.mjs"]
