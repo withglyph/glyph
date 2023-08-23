@@ -8,11 +8,11 @@ on:
 jobs:
   bundle:
     name: Bundle
-    runs-on: linux/arm64
+    runs-on: [self-hosted, linux, arm64]
     strategy:
       fail-fast: false
       matrix:
-        project: [gh-app, literoom, penxle.com]
+        project: [gh-app, literoom]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
