@@ -38,9 +38,10 @@ RUN ./bin/installdependencies.sh \
   && apt-get autoclean -y \
   && rm -rf /var/lib/apt/lists/*
 
+RUN mkdir /runner/_work && chown runner:runner /runner/_work
+ADD --chown=runner dist/tool-cache.tar.gz /runner/_work/_tool
+
 COPY dist/index.js ./index.mjs
 
 USER runner
-RUN mkdir /runner/_work
-
 ENTRYPOINT ["node", "index.mjs"]

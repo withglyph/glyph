@@ -12,6 +12,6 @@ export default defineConfig([
     format: 'esm',
     splitting: false,
     external: ['SERVER', 'MANIFEST'],
-    noExternal: ['mime-types', 'itty-router'],
+    noExternal: ['@penxle/lambda', 'mime-types'],
   },
 ]);

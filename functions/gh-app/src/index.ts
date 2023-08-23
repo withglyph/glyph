@@ -1,16 +1,16 @@
 import './webhooks';
 
+import { router } from '@penxle/lambda/http';
 import { webhook } from './webhook';
 import type { EmitterWebhookEventName } from '@octokit/webhooks';
-import type { APIGatewayProxyHandlerV2 } from 'aws-lambda';
 
-export const handler = (async (event) => {
-  const id = event.headers['x-github-delivery'];
-  const name = event.headers['x-github-event'] as
-    | EmitterWebhookEventName
-    | undefined;
-  const signature = event.headers['x-hub-signature-256'];
-  const payload = event.body;
+router.post('/', async (request) => {
+  const id = request.headers.get('x-github-delivery');
+  const name = request.headers.get(
+    'x-github-event',
+  ) as EmitterWebhookEventName | null;
+  const signature = request.headers.get('x-hub-signature-256');
+  const payload = await request.text();
 
   if (!id || !name || !signature || !payload) {
     return {
@@ -21,8 +21,7 @@ export const handler = (async (event) => {
 
   await webhook.verifyAndReceive({ id, name, signature, payload });
 
-  return {
-    statusCode: 200,
-    body: 'OK',
-  };
-}) satisfies APIGatewayProxyHandlerV2;
+  return new Response('OK', { status: 200 });
+});
+
+export { handler } from '@penxle/lambda/http';

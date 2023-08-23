@@ -1,25 +1,18 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { router } from '@penxle/lambda/http';
 import { installPolyfills } from '@sveltejs/kit/node/polyfills';
-import { Router } from 'itty-router';
 import { manifest, prerendered } from 'MANIFEST';
 import mime from 'mime-types';
 import { Server } from 'SERVER';
-import { createRequest, createResult } from './interop';
-import type {
-  APIGatewayProxyEventV2,
-  APIGatewayProxyHandlerV2,
-} from 'aws-lambda';
-import type { IRequest } from 'itty-router';
-
-type LRequest = IRequest & { __L: true };
+import type { LambdaRequest } from '@penxle/lambda/http';
 
 installPolyfills();
 
 const server = new Server(manifest);
 await server.init({ env: process.env as Record<string, string> });
 
-const assets = async (request: LRequest) => {
+const assets = async (request: LambdaRequest) => {
   if (
     manifest.assets.has(request.params.path) ||
     request.params.path.startsWith(manifest.appPath)
@@ -36,7 +29,7 @@ const assets = async (request: LRequest) => {
   }
 };
 
-const prerender = async (request: LRequest) => {
+const prerender = async (request: LambdaRequest) => {
   if (prerendered.has(request.params.path)) {
     const buffer = await fs.readFile(
       path.join('prerendered', request.params.path),
@@ -52,10 +45,10 @@ const prerender = async (request: LRequest) => {
   }
 };
 
-const sveltekit = async (request: LRequest, event: APIGatewayProxyEventV2) => {
+const sveltekit = async (request: LambdaRequest) => {
   const response = await server.respond(request, {
-    getClientAddress: () => event.requestContext.http.sourceIp,
-    platform: { event },
+    getClientAddress: () => request.event.requestContext.http.sourceIp,
+    platform: { event: request.event },
   });
 
   if (response.headers.get('cache-control') === null) {
@@ -65,11 +58,6 @@ const sveltekit = async (request: LRequest, event: APIGatewayProxyEventV2) => {
   return response;
 };
 
-const router = Router<LRequest, [event: APIGatewayProxyEventV2]>();
 router.all('/:path+', assets, prerender, sveltekit);
 
-export const handler = (async (event) => {
-  const request = createRequest(event);
-  const response = (await router.handle(request, event)) as Response;
-  return createResult(response);
-}) satisfies APIGatewayProxyHandlerV2;
+export { handler } from '@penxle/lambda/http';

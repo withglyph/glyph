@@ -10,7 +10,7 @@
     "lint:typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "itty-router": "^4.0.17",
+    "@penxle/lambda": "workspace:^",
     "mime-types": "^2.1.35"
   },
   "devDependencies": {
