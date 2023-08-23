@@ -62,6 +62,11 @@ resource "aws_iam_role_policy" "ecs_actions_runner" {
     Statement = [
       {
         Effect   = "Allow"
+        Action   = ["ssm:Get*"]
+        Resource = ["*"]
+      },
+      {
+        Effect   = "Allow"
         Action   = ["s3:PutObject"]
         Resource = ["${aws_s3_bucket.penxle_artifacts.arn}/*"]
       }

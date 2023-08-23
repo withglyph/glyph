@@ -4,9 +4,10 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./http": "./src/http/index.ts"
+    "./http": "./dist/http.js"
   },
   "scripts": {
+    "build": "tsup",
     "lint:typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -16,6 +17,7 @@
     "@penxle/tsconfig": "workspace:^",
     "@types/aws-lambda": "^8.10.119",
     "@types/node": "^20.5.1",
+    "tsup": "^7.2.0",
     "typescript": "^5.1.6"
   }
 }

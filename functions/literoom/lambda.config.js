@@ -1,10 +1,10 @@
 export default [
   {
     name: 'literoom-finalize',
-    entrypoint: './src/handlers/finalize.ts',
+    entrypoint: './dist/finalize.js',
   },
   {
     name: 'literoom-transform',
-    entrypoint: './src/handlers/transform.ts',
+    entrypoint: './dist/transform.js',
   },
 ];

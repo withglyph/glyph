@@ -14,7 +14,7 @@ env:
 jobs:
   lint:
     name: Lint
-    runs-on: [self-hosted, linux, arm64]
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:

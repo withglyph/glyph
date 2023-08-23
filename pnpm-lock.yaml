@@ -87,6 +87,9 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.395.0
         version: 3.395.0
+      execa:
+        specifier: ^8.0.0
+        version: 8.0.0
     devDependencies:
       '@penxle/tsconfig':
         specifier: workspace:^
@@ -169,6 +172,9 @@ importers:
       '@types/aws-lambda':
         specifier: ^8.10.119
         version: 8.10.119
+      tsup:
+        specifier: ^7.2.0
+        version: 7.2.0(typescript@5.1.6)
       typescript:
         specifier: ^5.1.6
         version: 5.1.6
@@ -219,6 +225,9 @@ importers:
       '@types/node':
         specifier: ^20.5.1
         version: 20.5.1
+      tsup:
+        specifier: ^7.2.0
+        version: 7.2.0(typescript@5.1.6)
       typescript:
         specifier: ^5.1.6
         version: 5.1.6

@@ -43,6 +43,7 @@
     "unocss",
     "vcpu",
     "vercel",
-    "vite"
+    "vite",
+    "zstd"
   ]
 }

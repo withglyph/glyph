@@ -23,6 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   git \
   nodejs \
   python3 \
+  zstd \
   && apt-get autoremove -y \
   && apt-get autoclean -y \
   && rm -rf /var/lib/apt/lists/*
