@@ -35,9 +35,6 @@ importers:
       turbo:
         specifier: ^1.10.12
         version: 1.10.12
-      turbo-ignore:
-        specifier: ^1.10.12
-        version: 1.10.12
       typescript:
         specifier: ^5.1.6
         version: 5.1.6
@@ -209,6 +206,25 @@ importers:
       tsup:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.1.6)
+      typescript:
+        specifier: ^5.1.6
+        version: 5.1.6
+
+  packages/lambda:
+    dependencies:
+      itty-router:
+        specifier: ^4.0.17
+        version: 4.0.17
+    devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
+      '@types/aws-lambda':
+        specifier: ^8.10.119
+        version: 8.10.119
+      '@types/node':
+        specifier: ^20.5.1
+        version: 20.5.1
       typescript:
         specifier: ^5.1.6
         version: 5.1.6
@@ -11488,11 +11504,6 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
-
-  /turbo-ignore@1.10.12:
-    resolution: {integrity: sha512-0qHUnQmP2Xo09Op5lq+Ev6ihWCNjMlSPywtdA8Hc6m09I1kr/WyTLdVMgajsuL6/pCsrqyvUB6iKi4OSKYIdgA==}
-    hasBin: true
-    dev: true
 
   /turbo-linux-64@1.10.12:
     resolution: {integrity: sha512-siYhgeX0DidIfHSgCR95b8xPee9enKSOjCzx7EjTLmPqPaCiVebRYvbOIYdQWRqiaKh9yfhUtFmtMOMScUf1gg==}

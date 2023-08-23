@@ -1,0 +1,21 @@
+{
+  "name": "@penxle/lambda",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./http": "./src/http/index.ts"
+  },
+  "scripts": {
+    "lint:typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "itty-router": "^4.0.17"
+  },
+  "devDependencies": {
+    "@penxle/tsconfig": "workspace:^",
+    "@types/aws-lambda": "^8.10.119",
+    "@types/node": "^20.5.1",
+    "typescript": "^5.1.6"
+  }
+}
