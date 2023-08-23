@@ -12,13 +12,27 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [gh-app, literoom]
+        project: [gh-app, literoom, penxle.com]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup workspace
-        uses: ./actions/setup-workspace
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare local actions
+        run: pnpm run build:actions
 
       - name: Bundle lambda function
         uses: ./actions/bundle-lambda

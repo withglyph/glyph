@@ -8,10 +8,3 @@ declare module 'MANIFEST' {
   export const manifest: SSRManifest;
   export const prerendered: Set<string>;
 }
-
-declare module 'HANDLER' {
-  import type { APIGatewayProxyHandlerV2 } from 'aws-lambda';
-  import type { Context } from './src/handler';
-
-  export const createHandler: (ctx: Context) => APIGatewayProxyHandlerV2;
-}

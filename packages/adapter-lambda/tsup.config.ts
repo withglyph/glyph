@@ -3,19 +3,15 @@ import { defineConfig } from 'tsup';
 export default defineConfig([
   {
     clean: true,
-    entry: ['src/index.ts'],
+    entry: ['src/adapter.ts'],
     format: 'esm',
   },
   {
     clean: true,
-    entry: ['src/handler.ts', 'src/entrypoint.ts'],
+    entry: ['src/handler.ts'],
     format: 'esm',
     splitting: false,
-    minify: true,
-    external: ['SERVER', 'MANIFEST', 'HANDLER'],
+    external: ['SERVER', 'MANIFEST'],
     noExternal: ['mime-types', 'itty-router'],
-    banner: {
-      js: `var require=(await import("node:module")).createRequire(import.meta.url);`,
-    },
   },
 ]);

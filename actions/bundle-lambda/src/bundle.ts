@@ -5,6 +5,7 @@ import actions from '@actions/core';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { nodeFileTrace } from '@vercel/nft';
 import esbuild from 'esbuild';
+import glob from 'fast-glob';
 import Zip from 'jszip';
 
 const S3 = new S3Client();
@@ -13,11 +14,13 @@ type BundleParams = {
   lambdaName: string;
   projectDir: string;
   entrypointPath: string;
+  assetPath?: string;
 };
 export const bundle = async ({
   lambdaName,
   projectDir,
   entrypointPath,
+  assetPath,
 }: BundleParams) => {
   actions.info(`Bundling lambda ${lambdaName}...`);
 
@@ -62,23 +65,37 @@ export const bundle = async ({
     }
   }
 
+  actions.info('Listing files...');
+
+  let files = [...traced.fileList];
+
+  if (assetPath) {
+    const assets = await glob('**/*', {
+      cwd: path.join(projectDir, assetPath),
+    });
+    console.log(assets);
+    files = [...files, ...assets];
+  }
+
+  files.sort();
+
   actions.info('Creating function bundle...');
 
   const zip = new Zip();
 
-  for (const filePath of [...traced.fileList].sort()) {
-    const stat = await fs.lstat(filePath);
+  for (const file of files) {
+    const stat = await fs.lstat(file);
 
     if (stat.isSymbolicLink()) {
-      const link = await fs.readlink(filePath);
-      zip.file(filePath, link, {
+      const link = await fs.readlink(file);
+      zip.file(file, link, {
         date: new Date('1970-01-01T00:00:00Z'),
         createFolders: false,
         unixPermissions: 0o12_0755,
       });
     } else if (stat.isFile()) {
-      const buffer = await fs.readFile(filePath);
-      zip.file(filePath, buffer, {
+      const buffer = await fs.readFile(file);
+      zip.file(file, buffer, {
         date: new Date('1970-01-01T00:00:00Z'),
         createFolders: false,
         unixPermissions: 0o755,

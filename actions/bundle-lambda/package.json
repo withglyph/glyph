@@ -13,6 +13,7 @@
     "@node-kit/pnpm-workspace-info": "^3.1.1",
     "@vercel/nft": "^0.23.1",
     "esbuild": "^0.19.2",
+    "fast-glob": "^3.3.1",
     "jszip": "^3.10.1"
   },
   "devDependencies": {

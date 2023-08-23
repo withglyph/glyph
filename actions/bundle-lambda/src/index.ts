@@ -1,4 +1,3 @@
-import fs from 'node:fs/promises';
 import path from 'node:path';
 import actions from '@actions/core';
 import { pnpmWorkspaceInfo } from '@node-kit/pnpm-workspace-info';
@@ -17,17 +16,19 @@ if (!(projectName in workspaceInfo)) {
 const pkg = workspaceInfo[projectName];
 const projectDir = pkg.path;
 
-type LambdaSpec = { name: string; entrypoint: string };
-const spec = JSON.parse(
-  await fs.readFile(path.join(projectDir, 'lambda.json'), 'utf8'),
-) as { lambda?: LambdaSpec | LambdaSpec[] };
+type LambdaSpec = { name: string; entrypoint: string; asset?: string };
+type LambdaConfig = { default: LambdaSpec | LambdaSpec[] };
+const config = (await import(
+  path.resolve(projectDir, 'lambda.config.js')
+)) as LambdaConfig;
 
-if (!spec.lambda) {
-  throw new Error(`Package ${projectName} is not a lambda`);
-}
+const specs = Array.isArray(config.default) ? config.default : [config.default];
 
-const specs = Array.isArray(spec.lambda) ? spec.lambda : [spec.lambda];
-
-for (const { name, entrypoint } of specs) {
-  await bundle({ lambdaName: name, projectDir, entrypointPath: entrypoint });
+for (const spec of specs) {
+  await bundle({
+    lambdaName: spec.name,
+    projectDir,
+    entrypointPath: spec.entrypoint,
+    assetPath: spec.asset,
+  });
 }

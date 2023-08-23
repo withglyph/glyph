@@ -23,10 +23,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup workspace
-        uses: ./actions/setup-workspace
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
 
-      - name: Build dependencies
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare local actions
+        run: pnpm run build:actions
+
+      - name: Build local dependencies
         run: pnpm run build:deps
 
       - name: Run code generation

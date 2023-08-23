@@ -3,18 +3,14 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/adapter.js",
+  "types": "dist/adapter.d.ts",
   "scripts": {
     "build": "tsup",
     "lint:typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@vercel/nft": "^0.23.1",
-    "esbuild": "^0.19.2",
-    "fast-glob": "^3.3.1",
     "itty-router": "^4.0.17",
-    "jszip": "^3.10.1",
     "mime-types": "^2.1.35"
   },
   "devDependencies": {
