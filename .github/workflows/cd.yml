@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -33,9 +36,6 @@ jobs:
 
       - name: Prepare local actions
         run: pnpm run build:actions
-
-      - name: Build project
-        run: pnpm exec turbo run build --filter=${{ matrix.project }}
 
       - name: Bundle lambda function
         uses: ./actions/bundle-lambda

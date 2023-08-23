@@ -22,7 +22,7 @@ export const bundle = async ({
   entrypointPath,
   assetPath,
 }: BundleParams) => {
-  actions.info(`Bundling lambda ${lambdaName}...`);
+  actions.startGroup(`Bundling lambda ${lambdaName}...`);
 
   const outDir = path.join(projectDir, '_lambda');
 
@@ -138,4 +138,6 @@ export const bundle = async ({
       ContentType: 'text/plain',
     }),
   );
+
+  actions.endGroup();
 };

@@ -1,34 +1,29 @@
-import path from 'node:path';
 import actions from '@actions/core';
-import { pnpmWorkspaceInfo } from '@node-kit/pnpm-workspace-info';
+import { build } from './build';
 import { bundle } from './bundle';
+import { checkChanges, getLambdaSpecs, getProjectDir } from './utils';
 
-const workspaceInfo = await pnpmWorkspaceInfo();
-if (!workspaceInfo) {
-  throw new Error('Could not retrieve workspace info');
-}
+const main = async () => {
+  const projectName = actions.getInput('project');
 
-const projectName = actions.getInput('project');
-if (!(projectName in workspaceInfo)) {
-  throw new Error(`Could not locate project ${projectName}`);
-}
+  const changed = await checkChanges(projectName);
+  if (!changed) {
+    actions.info('No changes detected, skipping bundling');
+  }
 
-const pkg = workspaceInfo[projectName];
-const projectDir = pkg.path;
+  await build(projectName);
 
-type LambdaSpec = { name: string; entrypoint: string; asset?: string };
-type LambdaConfig = { default: LambdaSpec | LambdaSpec[] };
-const config = (await import(
-  path.resolve(projectDir, 'lambda.config.js')
-)) as LambdaConfig;
+  const projectDir = await getProjectDir(projectName);
+  const specs = await getLambdaSpecs(projectDir);
 
-const specs = Array.isArray(config.default) ? config.default : [config.default];
+  for (const spec of specs) {
+    await bundle({
+      lambdaName: spec.name,
+      projectDir,
+      entrypointPath: spec.entrypoint,
+      assetPath: spec.asset,
+    });
+  }
+};
 
-for (const spec of specs) {
-  await bundle({
-    lambdaName: spec.name,
-    projectDir,
-    entrypointPath: spec.entrypoint,
-    assetPath: spec.asset,
-  });
-}
+await main();
