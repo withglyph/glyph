@@ -29,16 +29,6 @@ resource "aws_iam_role_policy" "lambda_gh_app" {
       },
       {
         Effect   = "Allow"
-        Action   = ["ecs:RunTask"]
-        Resource = [aws_ecs_task_definition.actions_runner.arn_without_revision]
-      },
-      {
-        Effect   = "Allow"
-        Action   = ["iam:PassRole"]
-        Resource = [aws_iam_role.ecs_task_execution.arn, aws_iam_role.ecs_actions_runner.arn]
-      },
-      {
-        Effect   = "Allow"
         Action   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
         Resource = ["arn:aws:logs:*:*:*"]
       }

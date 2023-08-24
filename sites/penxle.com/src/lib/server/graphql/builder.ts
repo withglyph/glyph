@@ -13,7 +13,7 @@ import type { AuthContext, Context } from '../context';
 
 if (dev) {
   // 개발환경에서만 강제로 순환 참조 걸어서 schema/**/* 리로드할 때 HMR이 builder까지 리로드하도록 함
-  // import('./schemas');
+  import('./schemas');
 }
 
 export const builder = new SchemaBuilder<{

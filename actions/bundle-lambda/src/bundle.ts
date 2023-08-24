@@ -8,7 +8,7 @@ import esbuild from 'esbuild';
 import glob from 'fast-glob';
 import Zip from 'jszip';
 
-const S3 = new S3Client();
+const S3 = new S3Client({ region: 'ap-northeast-2' });
 
 type BundleParams = {
   lambdaName: string;

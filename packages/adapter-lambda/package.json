@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "@sveltejs/kit": "^1.22.6",
+    "@sveltejs/kit": "^1.23.0",
     "@types/aws-lambda": "^8.10.119",
     "@types/mime-types": "^2.1.1",
     "svelte": "^4.2.0",

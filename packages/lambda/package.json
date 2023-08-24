@@ -15,12 +15,12 @@
     "lint:typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "itty-router": "^4.0.17"
+    "itty-router": "^4.0.22"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
     "@types/aws-lambda": "^8.10.119",
-    "@types/node": "^20.5.1",
+    "@types/node": "^20.5.4",
     "tsup": "^7.2.0",
     "typescript": "^5.1.6"
   }

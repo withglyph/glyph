@@ -13,16 +13,16 @@
   "dependencies": {
     "@penxle/lib": "workspace:^",
     "@sindresorhus/string-hash": "^2.0.0",
-    "@unocss/config": "^0.55.1",
-    "@unocss/core": "^0.55.1",
-    "magic-string": "^0.30.2",
+    "@unocss/config": "^0.55.2",
+    "@unocss/core": "^0.55.2",
+    "magic-string": "^0.30.3",
     "object-traversal": "^1.0.1",
     "svelte": "^4.2.0",
     "svgo": "^3.0.2"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "rollup": "^3.28.0",
+    "rollup": "^3.28.1",
     "tsup": "^7.2.0",
     "typescript": "^5.1.6",
     "vite": "^4.4.9"

@@ -8,7 +8,7 @@ on:
 jobs:
   bundle:
     name: Bundle
-    runs-on: [self-hosted, linux, arm64]
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -29,6 +29,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -40,3 +41,6 @@ jobs:
         uses: ./actions/bundle-lambda
         with:
           project: ${{ matrix.project }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

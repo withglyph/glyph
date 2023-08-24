@@ -1,6 +1,5 @@
 packages:
   - 'actions/*'
-  - 'apps/*'
   - 'functions/*'
   - 'packages/*'
   - 'sites/*'
