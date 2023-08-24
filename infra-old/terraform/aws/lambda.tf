@@ -1,7 +1,3 @@
-data "aws_s3_object" "lambda_gh_app_hash" {
-  bucket = "penxle-artifacts"
-  key    = "lambda/gh-app/hash.txt"
-}
 
 resource "aws_lambda_function" "gh_app" {
   function_name = "gh-app"
@@ -18,7 +14,6 @@ resource "aws_lambda_function" "gh_app" {
   s3_key    = "lambda/gh-app/function.zip"
   handler   = "index.handler"
 
-  source_code_hash = data.aws_s3_object.lambda_gh_app_hash.body
 }
 
 resource "aws_lambda_function_url" "gh_app" {
@@ -26,10 +21,7 @@ resource "aws_lambda_function_url" "gh_app" {
   authorization_type = "NONE"
 }
 
-data "aws_s3_object" "lambda_literoom_finalize_hash" {
-  bucket = "penxle-artifacts"
-  key    = "lambda/literoom-finalize/hash.txt"
-}
+
 
 resource "aws_lambda_function" "literoom_finalize" {
   function_name = "literoom-finalize"
@@ -46,7 +38,6 @@ resource "aws_lambda_function" "literoom_finalize" {
   s3_key    = "lambda/literoom-finalize/function.zip"
   handler   = "index.handler"
 
-  source_code_hash = data.aws_s3_object.lambda_literoom_finalize_hash.body
 }
 
 resource "aws_lambda_permission" "literoom_finalize" {
@@ -55,11 +46,6 @@ resource "aws_lambda_permission" "literoom_finalize" {
   statement_id = "literoom-finalize"
   action       = "lambda:InvokeFunction"
   principal    = "s3.amazonaws.com"
-}
-
-data "aws_s3_object" "lambda_literoom_transform_hash" {
-  bucket = "penxle-artifacts"
-  key    = "lambda/literoom-transform/hash.txt"
 }
 
 resource "aws_lambda_function" "literoom_transform" {
@@ -77,14 +63,7 @@ resource "aws_lambda_function" "literoom_transform" {
   s3_key    = "lambda/literoom-transform/function.zip"
   handler   = "index.handler"
 
-  source_code_hash = data.aws_s3_object.lambda_literoom_transform_hash.body
 }
-
-data "aws_s3_object" "lambda_penxle_com_hash" {
-  bucket = "penxle-artifacts"
-  key    = "lambda/penxle_com/hash.txt"
-}
-
 resource "aws_lambda_function" "penxle_com" {
   function_name = "penxle_com"
 
@@ -100,7 +79,6 @@ resource "aws_lambda_function" "penxle_com" {
   s3_key    = "lambda/penxle_com/function.zip"
   handler   = "index.handler"
 
-  source_code_hash = data.aws_s3_object.lambda_penxle_com_hash.body
 }
 
 resource "aws_lambda_permission" "penxle_com" {
