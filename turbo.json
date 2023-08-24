@@ -1,7 +1,10 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
-    "build": { "dependsOn": ["codegen", "^build"] },
+    "build": {
+      "dependsOn": ["codegen", "^build"],
+      "outputs": [".svelte-kit", "dist"]
+    },
     "codegen": {},
     "dev": {
       "cache": false,

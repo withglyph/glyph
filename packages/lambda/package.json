@@ -4,10 +4,14 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./http": "./dist/http.js"
+    "./http": {
+      "import": "./dist/http.js",
+      "types": "./dist/http.d.ts"
+    }
   },
   "scripts": {
     "build": "tsup",
+    "dev": "tsup --watch",
     "lint:typecheck": "tsc --noEmit"
   },
   "dependencies": {

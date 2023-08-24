@@ -9,7 +9,7 @@ resource "aws_lambda_function" "gh_app" {
   role = aws_iam_role.lambda_gh_app.arn
 
   runtime       = "nodejs18.x"
-  architectures = ["x86_64"]
+  architectures = ["arm64"]
 
   memory_size = 512
   timeout     = 60
@@ -37,7 +37,7 @@ resource "aws_lambda_function" "literoom_finalize" {
   role = aws_iam_role.lambda_literoom_finalize.arn
 
   runtime       = "nodejs18.x"
-  architectures = ["x86_64"]
+  architectures = ["arm64"]
 
   memory_size = 10240
   timeout     = 900
@@ -68,7 +68,7 @@ resource "aws_lambda_function" "literoom_transform" {
   role = aws_iam_role.lambda_literoom_transform.arn
 
   runtime       = "nodejs18.x"
-  architectures = ["x86_64"]
+  architectures = ["arm64"]
 
   memory_size = 10240
   timeout     = 900
@@ -91,7 +91,7 @@ resource "aws_lambda_function" "penxle_com" {
   role = aws_iam_role.lambda_penxle_com.arn
 
   runtime       = "nodejs18.x"
-  architectures = ["x86_64"]
+  architectures = ["arm64"]
 
   memory_size = 2048
   timeout     = 29

@@ -103,9 +103,18 @@ importers:
 
   apps/actions-runner:
     dependencies:
+      '@aws-sdk/client-ssm':
+        specifier: ^3.395.0
+        version: 3.395.0
+      '@paralleldrive/cuid2':
+        specifier: ^2.2.2
+        version: 2.2.2
       execa:
         specifier: ^8.0.0
         version: 8.0.0
+      octokit:
+        specifier: ^3.1.0
+        version: 3.1.0
     devDependencies:
       '@penxle/tsconfig':
         specifier: workspace:^

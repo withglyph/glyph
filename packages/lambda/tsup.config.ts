@@ -6,4 +6,5 @@ export default defineConfig({
     http: 'src/http/index.ts',
   },
   format: 'esm',
+  dts: true,
 });

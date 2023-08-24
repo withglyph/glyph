@@ -13,6 +13,7 @@
   "numSuggestions": 0,
   "useGitignore": true,
   "words": [
+    "buildx",
     "clsx",
     "dopplerhq",
     "dotenv",

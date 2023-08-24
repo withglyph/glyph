@@ -8,7 +8,10 @@
     "lint:typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "execa": "^8.0.0"
+    "@aws-sdk/client-ssm": "^3.395.0",
+    "@paralleldrive/cuid2": "^2.2.2",
+    "execa": "^8.0.0",
+    "octokit": "^3.1.0"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",

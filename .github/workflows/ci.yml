@@ -6,11 +6,6 @@ on:
   pull_request:
   merge_group:
 
-env:
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-  NODE_OPTIONS: --max-old-space-size=4096
-
 jobs:
   lint:
     name: Lint
@@ -48,3 +43,5 @@ jobs:
 
       - name: Run lint
         run: pnpm run lint:${{ matrix.linter }}
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096

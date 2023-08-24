@@ -1,4 +1,8 @@
+import { init } from '@paralleldrive/cuid2';
 import { execa } from 'execa';
+import { octokit } from './octokit';
+
+const createId = init({ length: 8 });
 
 const main = async () => {
   try {
@@ -13,11 +17,18 @@ const main = async () => {
 };
 
 const run = async () => {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const jitConfig = process.env.JIT_CONFIG!;
+  const { data: jitConfig } = await octokit.request(
+    'POST /orgs/{org}/actions/runners/generate-jitconfig',
+    {
+      org: 'penxle',
+      name: `penxle-${createId()}`,
+      labels: ['self-hosted', 'linux', 'arm64'],
+      runner_group_id: 4, // penxle
+    },
+  );
 
   console.log('Running runner...');
-  await execa('./run.sh', ['--jitconfig', jitConfig], {
+  await execa('./run.sh', ['--jitconfig', jitConfig.encoded_jit_config], {
     stdout: 'inherit',
     stderr: 'inherit',
   });

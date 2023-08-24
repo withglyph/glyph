@@ -6,7 +6,5 @@ export default defineConfig({
   format: 'esm',
   splitting: false,
   noExternal: [/.*/],
-  banner: {
-    js: 'const require = (await import("module")).createRequire(import.meta.url);',
-  },
+  inject: ['src/shim.ts'],
 });

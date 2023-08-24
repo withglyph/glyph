@@ -2,6 +2,34 @@ resource "aws_ecs_cluster" "penxle" {
   name = "penxle"
 }
 
+resource "aws_ecs_service" "actions_runner" {
+  cluster = aws_ecs_cluster.penxle.id
+  name    = "actions-runner"
+
+  desired_count   = 0
+  launch_type     = "FARGATE"
+  task_definition = aws_ecs_task_definition.actions_runner.arn
+
+  network_configuration {
+    assign_public_ip = true
+
+    subnets = [
+      aws_subnet.public_az1.id,
+      aws_subnet.public_az2.id,
+    ]
+
+    security_groups = [
+      aws_security_group.private.id,
+    ]
+  }
+
+  lifecycle {
+    ignore_changes = [
+      desired_count,
+    ]
+  }
+}
+
 resource "aws_ecs_task_definition" "actions_runner" {
   family = "actions-runner"
 
