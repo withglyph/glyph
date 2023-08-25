@@ -3,19 +3,9 @@
   "extends": ["//"],
   "pipeline": {
     "codegen": {
-      "dotEnv": [".env"],
       "dependsOn": ["codegen:prisma"],
-      "outputs": [".svelte-kit/**", "$houdini/**"]
+      "outputs": ["$houdini/**"]
     },
-    "codegen:prisma": { "cache": false },
-    "build": {
-      "env": [
-        "PRIVATE_*",
-        "PUBLIC_*",
-        "VERCEL_ANALYTICS_ID",
-        "VERCEL_GIT_COMMIT_REF"
-      ],
-      "outputs": [".svelte-kit/**", ".vercel/**"]
-    }
+    "codegen:prisma": { "cache": false }
   }
 }
