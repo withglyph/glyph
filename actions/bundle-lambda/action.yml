@@ -1,0 +1,6 @@
+runs:
+  using: node20
+  main: dist/index.js
+inputs:
+  project:
+    required: true
