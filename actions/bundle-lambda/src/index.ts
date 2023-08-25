@@ -12,8 +12,9 @@ const main = async () => {
   const stackName = getCurrentStack();
   const projectName = actions.getInput('project');
 
+  const actionChanged = await checkChanges('bundle-lambda');
   const changed = await checkChanges(projectName);
-  if (!changed) {
+  if (!actionChanged && !changed) {
     actions.info('No changes detected, skipping bundling');
     return;
   }
