@@ -41,7 +41,6 @@
     "@pothos/plugin-validation": "^3.10.0",
     "@prisma/client": "^5.1.1",
     "@resvg/resvg-js": "^2.4.1",
-    "@sentry/sveltekit": "^7.64.0",
     "@svelte-kits/store": "^0.1.2",
     "@sveltejs/adapter-vercel": "^3.0.3",
     "@sveltejs/kit": "^1.22.6",
