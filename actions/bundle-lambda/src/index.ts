@@ -9,6 +9,7 @@ const main = async () => {
   const changed = await checkChanges(projectName);
   if (!changed) {
     actions.info('No changes detected, skipping bundling');
+    return;
   }
 
   await build(projectName);
