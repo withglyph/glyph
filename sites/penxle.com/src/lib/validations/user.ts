@@ -14,6 +14,7 @@ export const SignUpInputSchema = LoginInputSchema.extend({
     .string()
     .min(1, '닉네임을 입력해주세요')
     .max(20, '닉네임은 20자를 넘을 수 없어요'),
+  password: z.string().min(8, '8자 이상으로 입력해주세요'),
   isAgreed: z.boolean().refine((v) => v, '약관에 동의해주세요'),
 });
 
