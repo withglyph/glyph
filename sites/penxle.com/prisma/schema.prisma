@@ -48,6 +48,7 @@ model Space {
   createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz
 
   members SpaceMember[]
+  posts   Post[]
 
   @@index([slug, state])
   @@map("spaces")
@@ -93,6 +94,7 @@ model User {
   sessions Session[]
   spaces   SpaceMember[]
   ssos     UserSSO[]
+  posts    Post[]
 
   @@map("users")
 }
@@ -118,6 +120,22 @@ model UserPassword {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("user_passwords")
+}
+
+model Post {
+  id        String   @id
+  spaceId   String   @map("space_id")
+  space     Space    @relation(fields: [spaceId], references: [id])
+  userId    String   @map("user_id") // 수익금 정산을 위해 필요?
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  subtitle  String?
+  content   String
+  views     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz // 글 수정가능성 있으니까
+
+  @@map("posts")
 }
 
 enum SpaceState {
