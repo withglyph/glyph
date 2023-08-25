@@ -31,12 +31,13 @@ export const bundle = async ({
   actions.info('Project directory: ' + projectDir);
   actions.info('Entrypoint path: ' + entrypointPath);
   actions.info('Asset path: ' + (assetPath ?? '(none)'));
+  actions.info('');
 
   const outDir = path.join(projectDir, '_lambda');
 
   await fs.mkdir(outDir, { recursive: true });
 
-  actions.info('Building source code...');
+  actions.debug('Building source code...');
 
   await esbuild.build({
     entryPoints: { index: path.join(projectDir, entrypointPath) },
@@ -55,7 +56,7 @@ export const bundle = async ({
     entryNames: '[name]',
   });
 
-  actions.info('Analyzing dependencies...');
+  actions.debug('Analyzing dependencies...');
 
   const traced = await nodeFileTrace([path.join(outDir, 'index.js')]);
 
@@ -73,7 +74,7 @@ export const bundle = async ({
     }
   }
 
-  actions.info('Listing files...');
+  actions.debug('Listing files...');
 
   let files = [...traced.fileList];
 
@@ -87,7 +88,7 @@ export const bundle = async ({
 
   files.sort();
 
-  actions.info('Creating function bundle...');
+  actions.debug('Creating function bundle...');
 
   const zip = new Zip();
 
@@ -127,26 +128,24 @@ export const bundle = async ({
 
   const hash = crypto.createHash('sha256').update(bundle).digest('base64');
 
-  actions.info('Uploading final assets...');
+  actions.debug('Uploading final assets...');
 
-  const artifactsPath = path.join('lambda', stackName, lambdaName);
+  const bundlePath = `lambda/${stackName}/${lambdaName}.zip`;
 
   await S3.send(
     new PutObjectCommand({
       Bucket: 'penxle-artifacts',
-      Key: path.join(artifactsPath, 'function.zip'),
+      Key: bundlePath,
       Body: bundle,
       ContentType: 'application/zip',
+      Metadata: {
+        BundleHash: hash,
+      },
     }),
   );
 
-  await S3.send(
-    new PutObjectCommand({
-      Bucket: 'penxle-artifacts',
-      Key: path.join(artifactsPath, 'hash.txt'),
-      Body: hash,
-      ContentType: 'text/plain',
-    }),
+  actions.info(
+    `Function bundle written to 's3://penxle-artifacts/${bundlePath}'`,
   );
 
   actions.endGroup();
