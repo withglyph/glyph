@@ -10,27 +10,29 @@ import Zip from 'jszip';
 
 const S3 = new S3Client({ region: 'ap-northeast-2' });
 
-type BundleParams = {
+type BuildParams = {
   stackName: string;
   lambdaName: string;
   projectDir: string;
   entrypointPath: string;
-  assetPath?: string;
+  assetsPath?: string;
 };
-export const bundle = async ({
+export const build = async ({
   stackName,
   lambdaName,
   projectDir,
   entrypointPath,
-  assetPath,
-}: BundleParams) => {
-  actions.startGroup(`Bundling lambda ${lambdaName}...`);
+  assetsPath,
+}: BuildParams) => {
+  actions.startGroup(
+    `Building project '${lambdaName}' as a lambda function...`,
+  );
 
   actions.info('Stack name: ' + stackName);
   actions.info('Lambda name: ' + lambdaName);
   actions.info('Project directory: ' + projectDir);
   actions.info('Entrypoint path: ' + entrypointPath);
-  actions.info('Asset path: ' + (assetPath ?? '(none)'));
+  actions.info('Assets path: ' + (assetsPath ?? '(none)'));
   actions.info('');
 
   const outDir = path.join(projectDir, '_lambda');
@@ -78,9 +80,9 @@ export const bundle = async ({
 
   let files = [...traced.fileList];
 
-  if (assetPath) {
+  if (assetsPath) {
     const assets = await glob('**/*', {
-      cwd: path.join(projectDir, assetPath),
+      cwd: path.join(projectDir, assetsPath),
     });
     console.log(assets);
     files = [...files, ...assets];
@@ -88,7 +90,7 @@ export const bundle = async ({
 
   files.sort();
 
-  actions.debug('Creating function bundle...');
+  actions.debug('Creating deployment package...');
 
   const zip = new Zip();
 
@@ -128,7 +130,7 @@ export const bundle = async ({
 
   const hash = crypto.createHash('sha256').update(bundle).digest('base64');
 
-  actions.debug('Uploading final assets...');
+  actions.debug('Uploading deployment package...');
 
   const bundlePath = `lambda/${lambdaName}-${stackName}.zip`;
 
@@ -146,7 +148,7 @@ export const bundle = async ({
 
   actions.info('');
   actions.info(
-    `Function bundle written to 's3://penxle-artifacts/${bundlePath}'`,
+    `Deployment package uploaded to 's3://penxle-artifacts/${bundlePath}'`,
   );
 
   actions.endGroup();

@@ -1,5 +1,5 @@
 import actions from '@actions/core';
-import { bundle } from './bundle';
+import { build } from './build';
 import {
   checkChanges,
   getCurrentStack,
@@ -11,7 +11,7 @@ const main = async () => {
   const stackName = getCurrentStack();
   const projectName = actions.getInput('project');
 
-  const actionChanged = await checkChanges('bundle-lambda');
+  const actionChanged = await checkChanges('lambda-action');
   const changed = await checkChanges(projectName);
   if (!actionChanged && !changed) {
     actions.info('No changes detected, skipping bundling');
@@ -22,12 +22,12 @@ const main = async () => {
   const specs = await getLambdaSpecs(projectDir);
 
   for (const spec of specs) {
-    await bundle({
+    await build({
       stackName,
       lambdaName: spec.name,
       projectDir,
       entrypointPath: spec.entrypoint,
-      assetPath: spec.asset,
+      assetsPath: spec.asset,
     });
   }
 };

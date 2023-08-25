@@ -6,8 +6,8 @@ on:
   pull_request:
 
 jobs:
-  bundle:
-    name: Bundle
+  lambda:
+    name: Lambda
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -39,8 +39,8 @@ jobs:
       - name: Build project
         run: pnpm exec turbo run build --filter=${{ matrix.project }}
 
-      - name: Bundle lambda function
-        uses: ./actions/bundle-lambda
+      - name: Upload lambda function
+        uses: ./actions/upload-lambda
         with:
           project: ${{ matrix.project }}
         env:

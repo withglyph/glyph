@@ -39,7 +39,7 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
 
-  actions/bundle-lambda:
+  actions/upload-lambda:
     dependencies:
       '@actions/core':
         specifier: ^1.10.0
