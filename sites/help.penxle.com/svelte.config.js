@@ -1,4 +1,4 @@
-import vercel from '@sveltejs/adapter-vercel';
+import { lambda } from '@penxle/adapter-lambda';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 import { mdsvex } from 'mdsvex';
 import gfm from 'remark-gfm';
@@ -11,7 +11,7 @@ export default {
     mdsvex({ extensions: ['.md'], remarkPlugins: [gfm] }),
   ],
   kit: {
-    adapter: vercel({ runtime: 'edge' }),
+    adapter: lambda(),
     alias: {
       $assets: './src/assets',
       $pages: './src/pages',

@@ -27,6 +27,7 @@
     "@logtail/node": "^0.4.6",
     "@logtail/winston": "^0.4.6",
     "@paralleldrive/cuid2": "^2.2.2",
+    "@penxle/adapter-lambda": "workspace:^",
     "@penxle/lib": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@penxle/ui": "workspace:^",

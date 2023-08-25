@@ -11,6 +11,7 @@
     "lint:typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@penxle/adapter-lambda": "workspace:^",
     "@penxle/lib": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@penxle/ui": "workspace:^",
