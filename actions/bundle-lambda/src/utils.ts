@@ -1,4 +1,5 @@
 import path from 'node:path';
+import github from '@actions/github';
 import { pnpmWorkspaceInfo } from '@node-kit/pnpm-workspace-info';
 import { $ } from 'execa';
 
@@ -32,4 +33,22 @@ export const checkChanges = async (project: string) => {
 
   const { packages } = JSON.parse(stdout) as { packages: string[] };
   return packages.length === 0 ? false : true;
+};
+
+export const getCurrentStack = () => {
+  if (
+    github.context.eventName === 'pull_request' &&
+    github.context.payload.pull_request
+  ) {
+    return `pr-${github.context.payload.pull_request.number}`;
+  }
+
+  if (
+    github.context.eventName === 'push' &&
+    github.context.ref === 'refs/heads/main'
+  ) {
+    return 'main';
+  }
+
+  throw new Error('Could not determine stack name');
 };

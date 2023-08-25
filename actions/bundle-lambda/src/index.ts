@@ -1,9 +1,15 @@
 import actions from '@actions/core';
 import { build } from './build';
 import { bundle } from './bundle';
-import { checkChanges, getLambdaSpecs, getProjectDir } from './utils';
+import {
+  checkChanges,
+  getCurrentStack,
+  getLambdaSpecs,
+  getProjectDir,
+} from './utils';
 
 const main = async () => {
+  const stackName = getCurrentStack();
   const projectName = actions.getInput('project');
 
   const changed = await checkChanges(projectName);
@@ -19,6 +25,7 @@ const main = async () => {
 
   for (const spec of specs) {
     await bundle({
+      stackName,
       lambdaName: spec.name,
       projectDir,
       entrypointPath: spec.entrypoint,

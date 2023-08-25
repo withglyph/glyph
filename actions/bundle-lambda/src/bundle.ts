@@ -11,12 +11,14 @@ import Zip from 'jszip';
 const S3 = new S3Client({ region: 'ap-northeast-2' });
 
 type BundleParams = {
+  stackName: string;
   lambdaName: string;
   projectDir: string;
   entrypointPath: string;
   assetPath?: string;
 };
 export const bundle = async ({
+  stackName,
   lambdaName,
   projectDir,
   entrypointPath,
@@ -121,10 +123,12 @@ export const bundle = async ({
 
   actions.info('Uploading final assets...');
 
+  const artifactsPath = path.join('lambda', stackName, lambdaName);
+
   await S3.send(
     new PutObjectCommand({
       Bucket: 'penxle-artifacts',
-      Key: `lambda/${lambdaName}/function.zip`,
+      Key: path.join(artifactsPath, 'function.zip'),
       Body: bundle,
       ContentType: 'application/zip',
     }),
@@ -133,7 +137,7 @@ export const bundle = async ({
   await S3.send(
     new PutObjectCommand({
       Bucket: 'penxle-artifacts',
-      Key: `lambda/${lambdaName}/hash.txt`,
+      Key: path.join(artifactsPath, 'hash.txt'),
       Body: hash,
       ContentType: 'text/plain',
     }),
