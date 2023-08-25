@@ -4,7 +4,7 @@ import { color } from '@penxle/unocss';
 import { renderAsync } from '@resvg/resvg-js';
 import { nanoid } from 'nanoid';
 import { draw } from 'radash';
-import { persistImage } from './image';
+import { uploadImage } from './image';
 import type { Options } from '@dicebear/core';
 import type { ColorShade } from '@penxle/unocss';
 import type { InteractiveTransactionClient } from '../database';
@@ -67,5 +67,5 @@ export const persistAvatar = async (
     fitTo: { mode: 'width', value: 512 },
   });
 
-  return await persistImage(db, 'avatar-generated.png', image.asPng());
+  return await uploadImage(db, 'avatar-generated.png', image.asPng());
 };

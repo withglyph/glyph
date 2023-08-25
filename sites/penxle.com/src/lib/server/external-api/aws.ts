@@ -3,6 +3,28 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 export const S3 = new S3Client();
 
+type S3PutObjectParams = {
+  bucket: string;
+  key: string;
+  buffer: Buffer;
+  meta?: Record<string, unknown>;
+};
+export const s3PutObject = async ({
+  bucket,
+  key,
+  buffer,
+  meta,
+}: S3PutObjectParams) => {
+  return await S3.send(
+    new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      Body: buffer,
+      Metadata: meta ? { meta: JSON.stringify(meta) } : undefined,
+    }),
+  );
+};
+
 type S3PutObjectGetSignedUrlParams = {
   bucket: string;
   key: string;
