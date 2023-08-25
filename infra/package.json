@@ -6,12 +6,15 @@
   "main": "src/index.ts",
   "dependencies": {
     "@pulumi/aws": "^5.42.0",
+    "@pulumi/cloudflare": "^5.9.0",
     "@pulumi/pulumi": "^3.78.1",
-    "@pulumi/random": "^4.13.2"
+    "@pulumi/random": "^4.13.2",
+    "@pulumi/tls": "^4.10.0"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "@types/node": "^20.5.4",
+    "@types/node": "^20.5.6",
+    "fast-glob": "^3.3.1",
     "tsx": "^3.12.7"
   }
 }

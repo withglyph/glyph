@@ -4,7 +4,7 @@ import { buckets } from '$aws/s3';
 
 const bunnyNet = new aws.iam.User('bunny.net');
 
-const iamUserBunnyNetAccessKey = new aws.iam.AccessKey('bunny.net', {
+const bunnyNetAccessKey = new aws.iam.AccessKey('bunny.net', {
   user: bunnyNet.name,
 });
 
@@ -24,10 +24,6 @@ new aws.iam.UserPolicy('bunny.net', {
 });
 
 export const outputs = {
-  accessKeys: {
-    'bunny.net': {
-      accessKeyId: iamUserBunnyNetAccessKey.id,
-      secretAccessKey: iamUserBunnyNetAccessKey.secret,
-    },
-  },
+  AWS_IAM_BUNNY_NET_ACCESS_KEY_ID: bunnyNetAccessKey.id,
+  AWS_IAM_BUNNY_NET_SECRET_ACCESS_KEY: bunnyNetAccessKey.secret,
 };

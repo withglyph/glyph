@@ -24,7 +24,7 @@
     "@penxle/tsconfig": "workspace:^",
     "rollup": "^3.28.1",
     "tsup": "^7.2.0",
-    "typescript": "^5.1.6",
+    "typescript": "^5.2.2",
     "vite": "^4.4.9"
   }
 }

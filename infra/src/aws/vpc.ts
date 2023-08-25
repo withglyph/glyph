@@ -143,34 +143,31 @@ const privateSecurityGroup = new aws.ec2.SecurityGroup('private', {
   tags: { Name: 'private' },
 });
 
-const interConnectionSecurityGroup = new aws.ec2.SecurityGroup(
-  'inter-connection',
-  {
-    name: 'inter-connection',
-    description: 'Connection between services',
-    vpcId: vpc.id,
+const internalSecurityGroup = new aws.ec2.SecurityGroup('internal', {
+  name: 'internal',
+  description: 'Connection between services',
+  vpcId: vpc.id,
 
-    ingress: [
-      {
-        protocol: 'all',
-        fromPort: 0,
-        toPort: 0,
-        self: true,
-      },
-    ],
+  ingress: [
+    {
+      protocol: 'all',
+      fromPort: 0,
+      toPort: 0,
+      self: true,
+    },
+  ],
 
-    egress: [
-      {
-        protocol: '-1',
-        fromPort: 0,
-        toPort: 0,
-        cidrBlocks: ['0.0.0.0/0'],
-      },
-    ],
+  egress: [
+    {
+      protocol: '-1',
+      fromPort: 0,
+      toPort: 0,
+      cidrBlocks: ['0.0.0.0/0'],
+    },
+  ],
 
-    tags: { Name: 'inter-connection' },
-  },
-);
+  tags: { Name: 'internal' },
+});
 
 export { vpc };
 
@@ -182,7 +179,7 @@ export const subnets = {
 export const securityGroups = {
   public: publicSecurityGroup,
   private: privateSecurityGroup,
-  interConnection: interConnectionSecurityGroup,
+  internal: internalSecurityGroup,
 };
 
 export const outputs = {};
