@@ -1,0 +1,5 @@
+name: infra
+runtime:
+  name: nodejs
+  options:
+    nodeargs: --loader=tsx --no-warnings
