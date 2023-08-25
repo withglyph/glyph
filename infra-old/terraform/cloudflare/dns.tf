@@ -81,16 +81,16 @@ resource "cloudflare_record" "mail_penxle_com_txt_spf" {
   comment = "Amazon SES"
 }
 
-resource "cloudflare_record" "_domainkey_penxle_com" {
-  for_each = toset(var.sesv2_email_identity_penxle_com_dkim_tokens)
+# resource "cloudflare_record" "_domainkey_penxle_com" {
+#   for_each = toset(var.sesv2_email_identity_penxle_com_dkim_tokens)
 
-  zone_id = cloudflare_zone.penxle_com.id
+#   zone_id = cloudflare_zone.penxle_com.id
 
-  type    = "CNAME"
-  name    = "${each.value}._domainkey.penxle.com"
-  value   = "${each.value}.dkim.amazonses.com"
-  comment = "Amazon SES"
-}
+#   type    = "CNAME"
+#   name    = "${each.value}._domainkey.penxle.com"
+#   value   = "${each.value}.dkim.amazonses.com"
+#   comment = "Amazon SES"
+# }
 
 resource "cloudflare_record" "penxle_io" {
   zone_id = cloudflare_zone.penxle_io.id

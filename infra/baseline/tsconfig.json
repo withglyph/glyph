@@ -1,0 +1,9 @@
+{
+  "extends": ["@penxle/tsconfig"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "$*": ["./src/*"]
+    }
+  }
+}

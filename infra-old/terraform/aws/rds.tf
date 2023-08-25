@@ -1,22 +1,12 @@
-data "aws_rds_engine_version" "latest" {
-  engine  = "aurora-postgresql"
-  version = "15"
-
-  default_only = true
-
-  filter {
-    name   = "engine-mode"
-    values = ["provisioned"]
-  }
-}
-
 resource "random_password" "rds" {
   length  = 20
   special = false
 }
 
 resource "aws_db_subnet_group" "public" {
-  name       = "public"
+  name        = "public"
+  description = "Public subnets"
+
   subnet_ids = [aws_subnet.public_az1.id, aws_subnet.public_az2.id]
 
   tags = { Name = "public" }
@@ -27,9 +17,8 @@ resource "aws_rds_cluster" "penxle" {
 
   engine         = "aurora-postgresql"
   engine_mode    = "provisioned"
-  engine_version = data.aws_rds_engine_version.latest.version
+  engine_version = "15.3"
 
-  port                   = 65432
   db_subnet_group_name   = aws_db_subnet_group.public.name
   vpc_security_group_ids = [aws_security_group.public.id]
 
