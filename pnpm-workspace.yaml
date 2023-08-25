@@ -1,4 +1,5 @@
 packages:
+  - 'actions/*'
   - 'functions/*'
   - 'infra/*'
   - 'packages/*'
