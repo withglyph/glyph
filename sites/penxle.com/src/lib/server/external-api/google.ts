@@ -13,14 +13,14 @@ const createOAuthClient = (context: { url: URL }) => {
   });
 };
 
-export const generateGoogleAuthorizationUrl = (context: { url: URL }) => {
+export const generateAuthorizationUrl = (context: { url: URL }) => {
   const client = createOAuthClient(context);
   return client.generateAuthUrl({
     scope: ['email', 'profile'],
   });
 };
 
-export const authorizeGoogleUser = async (
+export const authorizeUser = async (
   context: { url: URL },
   code: string,
 ): Promise<ExternalUser> => {

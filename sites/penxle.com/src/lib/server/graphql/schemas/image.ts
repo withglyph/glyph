@@ -1,9 +1,6 @@
 import { random } from 'radash';
-import {
-  createS3ObjectKey,
-  s3PutObjectGetSignedUrl,
-} from '$lib/server/external/aws';
-import { finalizeMedia } from '$lib/server/external/media';
+import { aws } from '$lib/server/external-api';
+import { createS3ObjectKey } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { builder } from '../builder';
 
@@ -77,11 +74,15 @@ builder.mutationFields((t) => ({
     type: PrepareImageUploadPayload,
     args: { input: t.arg({ type: PrepareImageUploadInput }) },
     resolve: async (_, { input }) => {
-      const key = createS3ObjectKey();
+      const key = createS3ObjectKey('images');
 
       return {
         key,
-        presignedUrl: await s3PutObjectGetSignedUrl(key, input.name),
+        presignedUrl: await aws.s3PutObjectGetSignedUrl({
+          bucket: 'penxle-uploads',
+          key,
+          meta: { name: input.name },
+        }),
       };
     },
   }),
@@ -90,33 +91,12 @@ builder.mutationFields((t) => ({
     type: 'Image',
     args: { input: t.arg({ type: FinalizeImageUploadInput }) },
     resolve: async (query, _, { input }, { db }) => {
-      const {
-        name,
-        format,
-        fileSize,
-        blobSize,
-        width,
-        height,
-        path,
-        color,
-        placeholder,
-        hash,
-      } = await finalizeMedia(input.key);
-
+      input.key;
       return await db.image.create({
         ...query,
+        // @ts-expect-error temp
         data: {
           id: createId(),
-          name,
-          format,
-          fileSize,
-          blobSize,
-          width,
-          height,
-          path,
-          color,
-          placeholder,
-          hash,
         },
       });
     },
