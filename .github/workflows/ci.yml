@@ -6,11 +6,6 @@ on:
   pull_request:
   merge_group:
 
-env:
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-  NODE_OPTIONS: --max-old-space-size=4096
-
 jobs:
   lint:
     name: Lint
@@ -37,11 +32,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build local dependencies
+        run: pnpm run build:deps
+
       - name: Run code generation
         run: pnpm exec turbo run codegen
 
-      - name: Run dependency build
-        run: pnpm run build:deps
-
       - name: Run lint
         run: pnpm run lint:${{ matrix.linter }}
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
