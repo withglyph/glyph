@@ -3,7 +3,7 @@ import argon2 from 'argon2';
 import dayjs from 'dayjs';
 import { FormValidationError } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
-import { generateGoogleAuthorizationUrl } from '$lib/server/external/google';
+import { google } from '$lib/server/external-api';
 import { createAccessToken } from '$lib/server/utils';
 import { createRandomAvatar, persistAvatar } from '$lib/server/utils/avatar';
 import { createId } from '$lib/utils';
@@ -256,7 +256,7 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: IssueSSOAuthorizationUrlInput }) },
     resolve: (_, { input }, context) => {
       if (input.provider === UserSSOProvider.GOOGLE) {
-        return generateGoogleAuthorizationUrl(context);
+        return google.generateAuthorizationUrl(context);
       } else {
         throw new Error('Unsupported provider');
       }
