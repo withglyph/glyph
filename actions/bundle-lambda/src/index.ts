@@ -1,5 +1,4 @@
 import actions from '@actions/core';
-import { build } from './build';
 import { bundle } from './bundle';
 import {
   checkChanges,
@@ -18,8 +17,6 @@ const main = async () => {
     actions.info('No changes detected, skipping bundling');
     return;
   }
-
-  await build(projectName);
 
   const projectDir = await getProjectDir(projectName);
   const specs = await getLambdaSpecs(projectDir);

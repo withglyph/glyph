@@ -26,6 +26,12 @@ export const bundle = async ({
 }: BundleParams) => {
   actions.startGroup(`Bundling lambda ${lambdaName}...`);
 
+  actions.info('Stack name: ' + stackName);
+  actions.info('Lambda name: ' + lambdaName);
+  actions.info('Project directory: ' + projectDir);
+  actions.info('Entrypoint path: ' + entrypointPath);
+  actions.info('Asset path: ' + (assetPath ?? '(none)'));
+
   const outDir = path.join(projectDir, '_lambda');
 
   await fs.mkdir(outDir, { recursive: true });
