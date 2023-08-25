@@ -130,7 +130,7 @@ export const bundle = async ({
 
   actions.debug('Uploading final assets...');
 
-  const bundlePath = `lambda/${stackName}/${lambdaName}.zip`;
+  const bundlePath = `lambda/${lambdaName}-${stackName}.zip`;
 
   await S3.send(
     new PutObjectCommand({
@@ -139,11 +139,12 @@ export const bundle = async ({
       Body: bundle,
       ContentType: 'application/zip',
       Metadata: {
-        BundleHash: hash,
+        'x-amz-meta-hash': hash,
       },
     }),
   );
 
+  actions.info('');
   actions.info(
     `Function bundle written to 's3://penxle-artifacts/${bundlePath}'`,
   );
