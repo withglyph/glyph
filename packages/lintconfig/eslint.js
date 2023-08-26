@@ -84,6 +84,12 @@ export default [
     },
   },
   {
+    files: ['infra/**/*'],
+    rules: {
+      'unicorn/prefer-spread': 'off',
+    },
+  },
+  {
     files: ['**/*.svelte'],
     languageOptions: {
       parser: svelteParser,

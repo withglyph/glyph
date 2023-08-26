@@ -140,9 +140,7 @@ export const build = async ({
       Key: bundlePath,
       Body: bundle,
       ContentType: 'application/zip',
-      Metadata: {
-        'x-amz-meta-hash': hash,
-      },
+      Metadata: { hash },
     }),
   );
 

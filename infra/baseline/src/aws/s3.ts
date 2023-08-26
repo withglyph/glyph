@@ -25,24 +25,12 @@ const uploads = new aws.s3.Bucket('uploads', {
 
 export const buckets = { artifacts, data, uploads };
 
-// new aws.s3control.ObjectLambdaAccessPoint('penxle-data', {
-//   name: 'penxle-images',
-//   configuration: {
-//     supportingAccessPoint: new aws.s3.AccessPoint('penxle-data', {
-//       name: 'penxle-data',
-//       bucket: data.id,
-//     }).id,
-//     transformationConfigurations: [
-//       {
-//         actions: ['GetObject'],
-//         contentTransformation: {
-//           awsLambda: {
-//             functionArn: '',
-//           },
-//         },
-//       },
-//     ],
-//   },
-// });
+export const outputs = {
+  AWS_S3_BUCKET_ARTIFACTS_BUCKET: artifacts.bucket,
+  AWS_S3_BUCKET_DATA_BUCKET: data.bucket,
+  AWS_S3_BUCKET_UPLOADS_BUCKET: uploads.bucket,
 
-export const outputs = {};
+  AWS_S3_BUCKET_ARTIFACTS_ARN: artifacts.arn,
+  AWS_S3_BUCKET_DATA_ARN: data.arn,
+  AWS_S3_BUCKET_UPLOADS_ARN: uploads.arn,
+};
