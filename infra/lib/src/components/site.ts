@@ -27,6 +27,14 @@ export class Site extends pulumi.ComponentResource {
     const domain = stack === 'production' ? _domain : `${stack}.dev.${_domain}`;
     this.siteDomain = pulumi.output(domain);
 
+    const usEast1 = new aws.Provider(
+      'us-east-1',
+      {
+        region: 'us-east-1',
+      },
+      { parent: this },
+    );
+
     const zone = cloudflare.getZoneOutput(
       { name: args.domain },
       { parent: this },
@@ -34,17 +42,14 @@ export class Site extends pulumi.ComponentResource {
 
     const certificate = new aws.acm.Certificate(
       domain,
-      {
-        domainName: domain,
-        validationMethod: 'DNS',
-      },
-      { parent: this },
+      { domainName: domain, validationMethod: 'DNS' },
+      { parent: this, provider: usEast1 },
     );
 
     const certificateValidation = new aws.acm.CertificateValidation(
       domain,
       { certificateArn: certificate.arn },
-      { parent: this },
+      { parent: this, provider: usEast1 },
     );
 
     new cloudflare.Record(
@@ -115,30 +120,65 @@ export class Site extends pulumi.ComponentResource {
       {
         protocolType: 'HTTP',
         target: lambda.arn,
-        disableExecuteApiEndpoint: true,
       },
       { parent: this },
     );
 
-    const domainName = new aws.apigatewayv2.DomainName(
-      args.name,
+    const distribution = new aws.cloudfront.Distribution(
+      domain,
       {
-        domainName: domain,
-        domainNameConfiguration: {
-          endpointType: 'REGIONAL',
-          certificateArn: certificateValidation.certificateArn,
-          securityPolicy: 'TLS_1_2',
+        enabled: true,
+        aliases: [domain],
+        httpVersion: 'http2and3',
+
+        origins: [
+          {
+            originId: 'apigateway',
+            domainName: api.apiEndpoint.apply((endpoint) =>
+              endpoint.replace('https://', ''),
+            ),
+            customOriginConfig: {
+              httpPort: 80,
+              httpsPort: 443,
+              originProtocolPolicy: 'https-only',
+              originSslProtocols: ['TLSv1.2'],
+            },
+          },
+        ],
+
+        defaultCacheBehavior: {
+          targetOriginId: 'apigateway',
+          viewerProtocolPolicy: 'redirect-to-https',
+          compress: true,
+          allowedMethods: [
+            'GET',
+            'HEAD',
+            'OPTIONS',
+            'PUT',
+            'POST',
+            'PATCH',
+            'DELETE',
+          ],
+          cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
+          cachePolicyId: bedrock('AWS_CLOUDFRONT_API_GATEWAY_CACHE_POLICY_ID'),
+          originRequestPolicyId: bedrock(
+            'AWS_CLOUDFRONT_API_GATEWAY_ORIGIN_REQUEST_POLICY_ID',
+          ),
         },
-      },
-      { parent: this },
-    );
 
-    new aws.apigatewayv2.ApiMapping(
-      args.name,
-      {
-        apiId: api.id,
-        domainName: domainName.domainName,
-        stage: '$default',
+        restrictions: {
+          geoRestriction: {
+            restrictionType: 'none',
+          },
+        },
+
+        viewerCertificate: {
+          acmCertificateArn: certificateValidation.certificateArn,
+          sslSupportMethod: 'sni-only',
+          minimumProtocolVersion: 'TLSv1.2_2021',
+        },
+
+        waitForDeployment: false,
       },
       { parent: this },
     );
@@ -149,8 +189,8 @@ export class Site extends pulumi.ComponentResource {
         zoneId: zone.zoneId,
         type: 'CNAME',
         name: domain,
-        value: domainName.domainNameConfiguration.targetDomainName,
-        comment: 'AWS API Gateway',
+        value: distribution.domainName,
+        comment: 'Amazon CloudFront',
       },
       { parent: this },
     );
