@@ -47,7 +47,7 @@ export const getCurrentStack = () => {
     github.context.eventName === 'push' &&
     github.context.ref === 'refs/heads/main'
   ) {
-    return 'main';
+    return 'production';
   }
 
   throw new Error('Could not determine stack name');

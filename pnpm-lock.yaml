@@ -132,29 +132,7 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
 
-  infra/apps/literoom:
-    dependencies:
-      '@pulumi/aws':
-        specifier: ^5.42.0
-        version: 5.42.0
-      '@pulumi/aws-native':
-        specifier: ^0.73.1
-        version: 0.73.1
-      '@pulumi/pulumi':
-        specifier: ^3.78.1
-        version: 3.78.1
-    devDependencies:
-      '@penxle/tsconfig':
-        specifier: workspace:^
-        version: link:../../../packages/tsconfig
-      '@types/node':
-        specifier: ^20.5.6
-        version: 20.5.6
-      tsx:
-        specifier: ^3.12.7
-        version: 3.12.7
-
-  infra/baseline:
+  infra/bedrock:
     dependencies:
       '@pulumi/aws':
         specifier: ^5.42.0
@@ -181,6 +159,28 @@ importers:
       fast-glob:
         specifier: ^3.3.1
         version: 3.3.1
+      tsx:
+        specifier: ^3.12.7
+        version: 3.12.7
+
+  infra/literoom:
+    dependencies:
+      '@pulumi/aws':
+        specifier: ^5.42.0
+        version: 5.42.0
+      '@pulumi/aws-native':
+        specifier: ^0.73.1
+        version: 0.73.1
+      '@pulumi/pulumi':
+        specifier: ^3.78.1
+        version: 3.78.1
+    devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
+      '@types/node':
+        specifier: ^20.5.6
+        version: 20.5.6
       tsx:
         specifier: ^3.12.7
         version: 3.12.7
@@ -5906,7 +5906,7 @@ packages:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
     dependencies:
       base64-js: 1.5.1
-      ieee754: 1.1.13
+      ieee754: 1.2.1
       isarray: 1.0.0
     dev: false
 

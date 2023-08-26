@@ -1,4 +1,4 @@
-name: baseline
+name: literoom
 runtime:
   name: nodejs
   options:

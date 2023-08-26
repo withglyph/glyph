@@ -1,4 +1,4 @@
-name: apps-literoom
+name: bedrock
 runtime:
   name: nodejs
   options:
