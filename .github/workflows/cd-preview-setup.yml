@@ -1,22 +1,23 @@
 name: CD
 
 on:
-  push:
-    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
-  production:
-    name: Production
+  preview:
+    name: Preview
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        project: [gh-app, literoom, penxle.io]
-    concurrency: ${{ matrix.project }}
+        project: [penxle.io]
+    concurrency: ${{ matrix.project }}-pr-${{ github.event.number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 2
 
       - name: Setup pnpm
@@ -68,8 +69,9 @@ jobs:
         if: steps.check_changes.outputs.changed == 'true'
         run: |
           cd infra/${{ matrix.project }}
-          pulumi stack select penxle/production
-          pulumi up --skip-preview --stack penxle/production
+          pulumi stack select penxle/pr-${{ github.event.number }} || pulumi stack init penxle/pr-${{ github.event.number }}
+          pulumi config cp --stack penxle/production --dest penxle/pr-${{ github.event.number }}
+          pulumi up --skip-preview --stack penxle/pr-${{ github.event.number }}
         env:
           AWS_REGION: ap-northeast-2
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

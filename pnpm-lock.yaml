@@ -39,6 +39,28 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
 
+  actions/check-changes:
+    dependencies:
+      '@actions/core':
+        specifier: ^1.10.0
+        version: 1.10.0
+      '@actions/github':
+        specifier: ^5.1.1
+        version: 5.1.1
+      execa:
+        specifier: ^8.0.1
+        version: 8.0.1
+    devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
+      tsup:
+        specifier: ^7.2.0
+        version: 7.2.0(typescript@5.2.2)
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+
   actions/upload-lambda:
     dependencies:
       '@actions/core':
@@ -59,9 +81,6 @@ importers:
       esbuild:
         specifier: ^0.19.2
         version: 0.19.2
-      execa:
-        specifier: ^8.0.1
-        version: 8.0.1
       fast-glob:
         specifier: ^3.3.1
         version: 3.3.1
