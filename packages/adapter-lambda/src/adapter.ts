@@ -33,8 +33,8 @@ export const lambda = (): Adapter => {
         )});\n`,
       );
 
-      builder.writeClient(path.join(out, '_assets/static'));
-      builder.writePrerendered(path.join(out, '_assets/prerendered'));
+      builder.writeClient(path.join(out, '_assets'));
+      builder.writePrerendered(path.join(out, '_assets'));
     },
   };
 };

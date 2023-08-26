@@ -5,7 +5,7 @@ import actions from '@actions/core';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { nodeFileTrace } from '@vercel/nft';
 import esbuild from 'esbuild';
-import glob from 'fast-glob';
+import fg from 'fast-glob';
 import Zip from 'jszip';
 
 const S3 = new S3Client({ region: 'ap-northeast-2' });
@@ -76,20 +76,26 @@ export const build = async ({
     }
   }
 
-  actions.debug('Listing files...');
+  actions.debug('Copying assets...');
 
-  let files = [...traced.fileList];
-
+  const assets = [];
   if (assetsPath) {
-    const assets = await glob(path.join(projectDir, assetsPath, '**/*'));
-    console.log(assets);
-    files = [...files, ...assets];
-  }
+    const paths = await fg('**/*', {
+      cwd: path.join(projectDir, assetsPath),
+    });
 
-  files.sort();
+    for (const p of paths) {
+      const src = path.join(projectDir, assetsPath, p);
+      const dst = path.join(outDir, '_assets', p);
+      await fs.mkdir(path.dirname(dst), { recursive: true });
+      await fs.copyFile(src, dst);
+      assets.push(dst);
+    }
+  }
 
   actions.debug('Creating deployment package...');
 
+  const files = [...traced.fileList, ...assets].sort();
   const zip = new Zip();
 
   for (const file of files) {
