@@ -3,6 +3,9 @@ name: CD
 on:
   pull_request:
 
+permissions:
+  pull-requests: write
+
 jobs:
   preview:
     name: Preview
@@ -34,13 +37,22 @@ jobs:
       - name: Prepare local actions
         run: pnpm run build:actions
 
+      - name: Check changes
+        id: check_changes
+        uses: ./actions/check-changes
+        with:
+          project: ${{ matrix.project }}
+
       - name: Build local dependencies
+        if: steps.check_changes.outputs.changed == 'true'
         run: pnpm run build:deps
 
       - name: Build project
+        if: steps.check_changes.outputs.changed == 'true'
         run: pnpm exec turbo run build --filter=${{ matrix.project }}
 
       - name: Upload lambda function
+        if: steps.check_changes.outputs.changed == 'true'
         uses: ./actions/upload-lambda
         with:
           project: ${{ matrix.project }}
@@ -50,6 +62,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Applying infrastructure
+        if: steps.check_changes.outputs.changed == 'true'
         uses: pulumi/actions@v4
         with:
           command: up
