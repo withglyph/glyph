@@ -12,6 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         project: [gh-app, literoom, penxle.io]
+    concurrency: ${{ matrix.project }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
