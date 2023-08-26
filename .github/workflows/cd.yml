@@ -6,10 +6,10 @@ on:
   pull_request:
 
 jobs:
-  lambda-production:
-    if: github.event_name == 'push'
-    name: Lambda
+  production:
+    name: Production
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
     strategy:
       fail-fast: false
       matrix:
@@ -37,6 +37,9 @@ jobs:
       - name: Prepare local actions
         run: pnpm run build:actions
 
+      - name: Build local dependencies
+        run: pnpm run build:deps
+
       - name: Build project
         run: pnpm exec turbo run build --filter=${{ matrix.project }}
 
@@ -48,14 +51,14 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-  lambda-preview:
-    if: github.event_name == 'pull_request'
-    name: Lambda
+  preview:
+    name: Preview
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
     strategy:
       fail-fast: false
       matrix:
-        project: []
+        project: [penxle.io]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
