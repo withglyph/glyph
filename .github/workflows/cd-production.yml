@@ -68,7 +68,7 @@ jobs:
         if: steps.check_changes.outputs.changed == 'true'
         run: |
           cd infra/${{ matrix.project }}
-          pulumi stack select penxle/production
+          pulumi stack select penxle/production || pulumi stack init penxle/production
           pulumi up --skip-preview --stack penxle/production
         env:
           AWS_REGION: ap-northeast-2
