@@ -81,9 +81,7 @@ export const build = async ({
   let files = [...traced.fileList];
 
   if (assetsPath) {
-    const assets = await glob('**/*', {
-      cwd: path.join(projectDir, assetsPath),
-    });
+    const assets = await glob(path.join(projectDir, assetsPath, '**/*'));
     console.log(assets);
     files = [...files, ...assets];
   }
