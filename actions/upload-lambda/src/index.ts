@@ -27,7 +27,7 @@ const main = async () => {
       lambdaName: spec.name,
       projectDir,
       entrypointPath: spec.entrypoint,
-      assetsPath: spec.asset,
+      assetsPath: spec.assets,
     });
   }
 };

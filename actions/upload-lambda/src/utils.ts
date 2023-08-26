@@ -3,7 +3,7 @@ import github from '@actions/github';
 import { pnpmWorkspaceInfo } from '@node-kit/pnpm-workspace-info';
 import { $ } from 'execa';
 
-type LambdaSpec = { name: string; entrypoint: string; asset?: string };
+type LambdaSpec = { name: string; entrypoint: string; assets?: string };
 type LambdaConfig = { default: LambdaSpec | LambdaSpec[] };
 
 export const getProjectDir = async (project: string) => {

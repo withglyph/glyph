@@ -1,8 +1,6 @@
 packages:
-  - 'actions/**'
-  - 'functions/**'
-  - 'infra/**'
-  - 'packages/**'
-  - 'sites/**'
-
-  - '!**/$houdini/**'
+  - 'actions/*'
+  - 'functions/*'
+  - 'infra/*'
+  - 'packages/*'
+  - 'sites/*'
