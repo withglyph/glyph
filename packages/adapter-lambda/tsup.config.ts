@@ -13,5 +13,8 @@ export default defineConfig([
     splitting: false,
     external: ['SERVER', 'MANIFEST'],
     noExternal: ['@penxle/lambda', 'mime-types'],
+    banner: {
+      js: `const require = await import('module').then($=>$.createRequire(import.meta.url));`,
+    },
   },
 ]);
