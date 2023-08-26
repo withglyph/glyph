@@ -7,6 +7,7 @@ import { manifest, prerendered } from 'MANIFEST';
 import mime from 'mime-types';
 import { Server } from 'SERVER';
 import type { LambdaRequest } from '@penxle/lambda/http';
+import type { APIGatewayProxyEventV2 } from 'aws-lambda';
 
 installPolyfills();
 
@@ -15,20 +16,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const server = new Server(manifest);
 await server.init({ env: process.env as Record<string, string> });
 
-const assets = async (request: LambdaRequest) => {
-  if (
-    manifest.assets.has(request.params.path) ||
-    request.params.path.startsWith(manifest.appPath)
-  ) {
-    const buffer = await fs.readFile(
-      path.join(__dirname, '_assets', request.params.path),
-    );
-    const immutable = request.params.path.includes('immutable');
+const assets = async (_: LambdaRequest, event: APIGatewayProxyEventV2) => {
+  const pathname = event.rawPath.slice(1);
+
+  if (manifest.assets.has(pathname) || pathname.startsWith(manifest.appPath)) {
+    const buffer = await fs.readFile(path.join(__dirname, '_assets', pathname));
+    const immutable = pathname.startsWith(`${manifest.appPath}/immutable`);
 
     return new Response(buffer, {
       headers: {
-        'content-type':
-          mime.lookup(request.params.path) || 'application/octet-stream',
+        'content-type': mime.lookup(pathname) || 'application/octet-stream',
         'cache-control': immutable
           ? 'public, max-age=31536000, immutable'
           : 'public, max-age=0, must-revalidate',
@@ -37,24 +34,25 @@ const assets = async (request: LambdaRequest) => {
   }
 };
 
-const prerender = async (request: LambdaRequest) => {
-  if (prerendered.has(request.params.path)) {
+const prerender = async (_: LambdaRequest, event: APIGatewayProxyEventV2) => {
+  const pathname = event.rawPath;
+
+  if (prerendered.has(pathname)) {
     const candidates = [
-      path.join(__dirname, '_assets', `${request.params.path}.html`),
-      path.join(__dirname, '_assets', request.params.path, 'index.html'),
+      path.join(__dirname, '_assets', `${pathname}.html`),
+      path.join(__dirname, '_assets', pathname, 'index.html'),
     ];
 
     for (const candidate of candidates) {
       if (!(await fs.stat(candidate).catch(() => null))) {
-        return;
+        continue;
       }
 
       const buffer = await fs.readFile(candidate);
 
       return new Response(buffer, {
         headers: {
-          'content-type':
-            mime.lookup(request.params.path) || 'application/octet-stream',
+          'content-type': 'text/html',
           'cache-control': 'public, max-age=0, must-revalidate',
         },
       });
@@ -62,10 +60,13 @@ const prerender = async (request: LambdaRequest) => {
   }
 };
 
-const sveltekit = async (request: LambdaRequest) => {
+const sveltekit = async (
+  request: LambdaRequest,
+  event: APIGatewayProxyEventV2,
+) => {
   const response = await server.respond(request, {
-    getClientAddress: () => request.event.requestContext.http.sourceIp,
-    platform: { event: request.event },
+    getClientAddress: () => event.requestContext.http.sourceIp,
+    platform: { event },
   });
 
   if (response.headers.get('cache-control') === null) {
@@ -75,6 +76,6 @@ const sveltekit = async (request: LambdaRequest) => {
   return response;
 };
 
-router.all('/:path+', assets, prerender, sveltekit);
+router.all('*', assets, prerender, sveltekit);
 
 export { handler } from '@penxle/lambda/http';
