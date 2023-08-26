@@ -190,6 +190,9 @@ importers:
       '@penxle/infra':
         specifier: workspace:^
         version: link:../lib
+      '@pulumi/pulumi':
+        specifier: ^3.78.1
+        version: 3.78.1
     devDependencies:
       '@penxle/tsconfig':
         specifier: workspace:^
@@ -250,6 +253,9 @@ importers:
       '@penxle/infra':
         specifier: workspace:^
         version: link:../lib
+      '@pulumi/pulumi':
+        specifier: ^3.78.1
+        version: 3.78.1
     devDependencies:
       '@penxle/tsconfig':
         specifier: workspace:^

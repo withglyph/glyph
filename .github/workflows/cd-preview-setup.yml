@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [penxle.io]
+        project: [penxle.io, help.penxle.com]
     concurrency: ${{ matrix.project }}-pr-${{ github.event.number }}
     steps:
       - name: Checkout repository
@@ -70,7 +70,7 @@ jobs:
         run: |
           cd infra/${{ matrix.project }}
           pulumi stack select penxle/pr-${{ github.event.number }} || pulumi stack init penxle/pr-${{ github.event.number }}
-          pulumi config cp --stack penxle/production --dest penxle/pr-${{ github.event.number }}
+          pulumi config set aws:defaultTags '{"tags":{"ManagedBy":"Pulumi"}}'
           pulumi up --skip-preview --stack penxle/pr-${{ github.event.number }}
         env:
           AWS_REGION: ap-northeast-2

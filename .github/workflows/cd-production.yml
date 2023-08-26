@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [gh-app, literoom, penxle.io]
+        project: [gh-app, literoom, penxle.io, help.penxle.com]
     concurrency: ${{ matrix.project }}
     steps:
       - name: Checkout repository
@@ -69,6 +69,7 @@ jobs:
         run: |
           cd infra/${{ matrix.project }}
           pulumi stack select penxle/production || pulumi stack init penxle/production
+          pulumi config set aws:defaultTags '{"tags":{"ManagedBy":"Pulumi"}}'
           pulumi up --skip-preview --stack penxle/production
         env:
           AWS_REGION: ap-northeast-2

@@ -5,7 +5,8 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@penxle/infra": "workspace:^"
+    "@penxle/infra": "workspace:^",
+    "@pulumi/pulumi": "^3.78.1"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
