@@ -1,6 +1,6 @@
-import { Site } from '@penxle/infra-pkg-site';
+import * as penxle from '@penxle/infra/components';
 
-const site = new Site('penxle.io', {
+const site = new penxle.Site('penxle.io', {
   name: 'penxle_io',
   domain: 'penxle.io',
 });

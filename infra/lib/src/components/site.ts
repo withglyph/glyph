@@ -1,7 +1,7 @@
 import * as aws from '@pulumi/aws';
 import * as cloudflare from '@pulumi/cloudflare';
 import * as pulumi from '@pulumi/pulumi';
-import { bedrock } from './ref';
+import { bedrock } from '../ref';
 
 type SiteArgs = {
   name: string;
@@ -198,6 +198,7 @@ export class Site extends pulumi.ComponentResource {
         viewerCertificate: {
           acmCertificateArn: certificate.arn,
           sslSupportMethod: 'sni-only',
+          minimumProtocolVersion: 'TLSv1.2_2021',
         },
 
         waitForDeployment: false,

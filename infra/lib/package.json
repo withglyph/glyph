@@ -1,10 +1,18 @@
 {
-  "name": "@penxle/infra-pkg-site",
+  "name": "@penxle/infra",
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./components": {
+      "import": "./dist/components.js",
+      "types": "./dist/components.d.ts"
+    }
+  },
   "scripts": {
     "build": "tsup",
     "lint:typecheck": "tsc --noEmit"
@@ -12,7 +20,8 @@
   "dependencies": {
     "@pulumi/aws": "^5.42.0",
     "@pulumi/cloudflare": "^5.9.0",
-    "@pulumi/pulumi": "^3.78.1"
+    "@pulumi/pulumi": "^3.78.1",
+    "fast-glob": "^3.3.1"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",

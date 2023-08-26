@@ -134,9 +134,9 @@ importers:
 
   infra/bedrock:
     dependencies:
-      '@penxle/infra-pkg-lib':
+      '@penxle/infra':
         specifier: workspace:^
-        version: link:../packages/lib
+        version: link:../lib
       '@pulumi/aws':
         specifier: ^5.42.0
         version: 5.42.0
@@ -166,11 +166,33 @@ importers:
         specifier: ^3.12.7
         version: 3.12.7
 
+  infra/lib:
+    dependencies:
+      '@pulumi/aws':
+        specifier: ^5.42.0
+        version: 5.42.0
+      '@pulumi/cloudflare':
+        specifier: ^5.9.0
+        version: 5.9.0
+      '@pulumi/pulumi':
+        specifier: ^3.78.1
+        version: 3.78.1
+      fast-glob:
+        specifier: ^3.3.1
+        version: 3.3.1
+    devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
+      tsup:
+        specifier: ^7.2.0
+        version: 7.2.0(typescript@5.2.2)
+
   infra/literoom:
     dependencies:
-      '@penxle/infra-pkg-lib':
+      '@penxle/infra':
         specifier: workspace:^
-        version: link:../packages/lib
+        version: link:../lib
       '@pulumi/aws':
         specifier: ^5.42.0
         version: 5.42.0
@@ -191,43 +213,11 @@ importers:
         specifier: ^3.12.7
         version: 3.12.7
 
-  infra/packages/lib:
-    dependencies:
-      fast-glob:
-        specifier: ^3.3.1
-        version: 3.3.1
-    devDependencies:
-      '@penxle/tsconfig':
-        specifier: workspace:^
-        version: link:../../../packages/tsconfig
-      tsup:
-        specifier: ^7.2.0
-        version: 7.2.0(typescript@5.2.2)
-
-  infra/packages/site:
-    dependencies:
-      '@pulumi/aws':
-        specifier: ^5.42.0
-        version: 5.42.0
-      '@pulumi/cloudflare':
-        specifier: ^5.9.0
-        version: 5.9.0
-      '@pulumi/pulumi':
-        specifier: ^3.78.1
-        version: 3.78.1
-    devDependencies:
-      '@penxle/tsconfig':
-        specifier: workspace:^
-        version: link:../../../packages/tsconfig
-      tsup:
-        specifier: ^7.2.0
-        version: 7.2.0(typescript@5.2.2)
-
   infra/penxle.io:
     dependencies:
-      '@penxle/infra-pkg-site':
+      '@penxle/infra':
         specifier: workspace:^
-        version: link:../packages/site
+        version: link:../lib
       '@pulumi/aws':
         specifier: ^5.42.0
         version: 5.42.0
