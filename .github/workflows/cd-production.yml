@@ -3,13 +3,11 @@ name: CD
 on:
   push:
     branches: [main]
-  pull_request:
 
 jobs:
   production:
     name: Production
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
     strategy:
       fail-fast: false
       matrix:
@@ -39,48 +37,6 @@ jobs:
 
       - name: Build local dependencies
         run: pnpm run build:deps
-
-      - name: Build project
-        run: pnpm exec turbo run build --filter=${{ matrix.project }}
-
-      - name: Upload lambda function
-        uses: ./actions/upload-lambda
-        with:
-          project: ${{ matrix.project }}
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-  preview:
-    name: Preview
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    strategy:
-      fail-fast: false
-      matrix:
-        project: [penxle.io]
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
-
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Prepare local actions
-        run: pnpm run build:actions
 
       - name: Build project
         run: pnpm exec turbo run build --filter=${{ matrix.project }}
