@@ -30,7 +30,7 @@ const lambda = new aws.lambda.Function('literoom-transform', {
   s3Key: pkg.key,
   handler: 'index.handler',
 
-  sourceCodeHash: pkg.metadata.hash,
+  sourceCodeHash: pkg.metadata.Hash,
 });
 
 const accessPoint = new aws.s3.AccessPoint('data', {

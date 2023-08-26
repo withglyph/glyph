@@ -144,7 +144,7 @@ export const build = async ({
       Key: bundlePath,
       Body: bundle,
       ContentType: 'application/zip',
-      Metadata: { hash },
+      Metadata: { Hash: hash },
     }),
   );
 

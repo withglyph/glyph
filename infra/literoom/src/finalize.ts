@@ -50,7 +50,7 @@ const lambda = new aws.lambda.Function(`literoom-finalize`, {
   s3Key: pkg.key,
   handler: 'index.handler',
 
-  sourceCodeHash: pkg.metadata.hash,
+  sourceCodeHash: pkg.metadata.Hash,
 });
 
 new aws.lambda.Permission('literoom-finalize', {
