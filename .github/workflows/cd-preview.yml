@@ -62,15 +62,17 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Applying infrastructure
+      - name: Setup Pulumi
         if: steps.check_changes.outputs.changed == 'true'
         uses: pulumi/actions@v4
-        with:
-          command: up
-          stack-name: penxle/pr-${{ github.event.number }}
-          work-dir: ./infra/${{ matrix.project }}
-          upsert: true
-          comment-on-pr: true
+
+      - name: Deploy infrastructure
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          cd infra/${{ matrix.project }}
+          pulumi stack select penxle/pr-${{ github.event.number }} || pulumi stack init penxle/pr-${{ github.event.number }}
+          pulumi config cp --stack penxle/production --dest penxle/pr-${{ github.event.number }}
+          pulumi up --yes --skip-preview --stack penxle/pr-${{ github.event.number }}
         env:
           AWS_REGION: ap-northeast-2
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
