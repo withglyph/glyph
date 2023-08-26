@@ -8,7 +8,7 @@ import esbuild from 'esbuild';
 import fg from 'fast-glob';
 import Zip from 'jszip';
 
-const S3 = new S3Client({ region: 'ap-northeast-2' });
+const S3 = new S3Client();
 
 type BuildParams = {
   stackName: string;
