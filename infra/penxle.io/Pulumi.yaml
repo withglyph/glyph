@@ -1,0 +1,5 @@
+name: penxle.io
+runtime:
+  name: nodejs
+  options:
+    nodeargs: --loader=tsx --no-warnings
