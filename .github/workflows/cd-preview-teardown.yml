@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [penxle.io, help.penxle.com]
+        project: [penxle.com, penxle.io, help.penxle.com, landing.penxle.com]
     concurrency: ${{ matrix.project }}-pr-${{ github.event.number }}
     steps:
       - name: Checkout repository

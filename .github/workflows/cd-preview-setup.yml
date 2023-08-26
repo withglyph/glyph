@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [penxle.io, help.penxle.com]
+        project: [penxle.com, penxle.io, help.penxle.com, landing.penxle.com]
     concurrency: ${{ matrix.project }}-pr-${{ github.event.number }}
     steps:
       - name: Checkout repository
@@ -46,6 +46,14 @@ jobs:
       - name: Build local dependencies
         if: steps.check_changes.outputs.changed == 'true'
         run: pnpm run build:deps
+
+      - uses: dopplerhq/secrets-fetch-action@v1.1.2
+        if: steps.check_changes.outputs.changed == 'true'
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+          doppler-project: penxle
+          doppler-config: preview
+          inject-env-vars: true
 
       - name: Build project
         if: steps.check_changes.outputs.changed == 'true'

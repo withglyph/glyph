@@ -201,6 +201,22 @@ importers:
         specifier: ^3.12.7
         version: 3.12.7
 
+  infra/landing.penxle.com:
+    dependencies:
+      '@penxle/infra':
+        specifier: workspace:^
+        version: link:../lib
+      '@pulumi/pulumi':
+        specifier: ^3.78.1
+        version: 3.78.1
+    devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
+      tsx:
+        specifier: ^3.12.7
+        version: 3.12.7
+
   infra/lib:
     dependencies:
       '@pulumi/aws':
@@ -244,6 +260,22 @@ importers:
       '@types/node':
         specifier: ^20.5.6
         version: 20.5.6
+      tsx:
+        specifier: ^3.12.7
+        version: 3.12.7
+
+  infra/penxle.com:
+    dependencies:
+      '@penxle/infra':
+        specifier: workspace:^
+        version: link:../lib
+      '@pulumi/pulumi':
+        specifier: ^3.78.1
+        version: 3.78.1
+    devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
       tsx:
         specifier: ^3.12.7
         version: 3.12.7
