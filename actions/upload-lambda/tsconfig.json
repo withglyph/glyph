@@ -1,3 +1,6 @@
 {
-  "extends": ["@penxle/tsconfig"]
+  "extends": ["@penxle/tsconfig"],
+  "compilerOptions": {
+    "outDir": "dist"
+  }
 }
