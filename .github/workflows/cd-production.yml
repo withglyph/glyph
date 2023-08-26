@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [gh-app, literoom]
+        project: [gh-app, literoom, penxle.io]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
