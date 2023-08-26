@@ -1,0 +1,4 @@
+config:
+  aws:defaultTags:
+    tags:
+      ManagedBy: Pulumi

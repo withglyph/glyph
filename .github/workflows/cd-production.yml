@@ -3,11 +3,10 @@ name: CD
 on:
   push:
     branches: [main]
-  pull_request:
 
 jobs:
-  bundle:
-    name: Bundle
+  production:
+    name: Production
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -17,7 +16,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 2
 
       - name: Setup pnpm
@@ -37,8 +35,14 @@ jobs:
       - name: Prepare local actions
         run: pnpm run build:actions
 
-      - name: Bundle lambda function
-        uses: ./actions/bundle-lambda
+      - name: Build local dependencies
+        run: pnpm run build:deps
+
+      - name: Build project
+        run: pnpm exec turbo run build --filter=${{ matrix.project }}
+
+      - name: Upload lambda function
+        uses: ./actions/upload-lambda
         with:
           project: ${{ matrix.project }}
         env:

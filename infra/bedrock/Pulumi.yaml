@@ -1,4 +1,4 @@
-name: infra
+name: bedrock
 runtime:
   name: nodejs
   options:

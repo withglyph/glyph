@@ -1,0 +1,17 @@
+{
+  "name": "@penxle/infra-penxle.io",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@penxle/infra": "workspace:^",
+    "@pulumi/aws": "^5.42.0",
+    "@pulumi/cloudflare": "^5.9.0",
+    "@pulumi/pulumi": "^3.78.1"
+  },
+  "devDependencies": {
+    "@penxle/tsconfig": "workspace:^",
+    "tsx": "^3.12.7"
+  }
+}

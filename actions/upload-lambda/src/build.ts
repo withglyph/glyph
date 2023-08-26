@@ -5,30 +5,41 @@ import actions from '@actions/core';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { nodeFileTrace } from '@vercel/nft';
 import esbuild from 'esbuild';
-import glob from 'fast-glob';
+import fg from 'fast-glob';
 import Zip from 'jszip';
 
 const S3 = new S3Client({ region: 'ap-northeast-2' });
 
-type BundleParams = {
+type BuildParams = {
+  stackName: string;
   lambdaName: string;
   projectDir: string;
   entrypointPath: string;
-  assetPath?: string;
+  assetsPath?: string;
 };
-export const bundle = async ({
+export const build = async ({
+  stackName,
   lambdaName,
   projectDir,
   entrypointPath,
-  assetPath,
-}: BundleParams) => {
-  actions.startGroup(`Bundling lambda ${lambdaName}...`);
+  assetsPath,
+}: BuildParams) => {
+  actions.startGroup(
+    `Building project '${lambdaName}' as a lambda function...`,
+  );
+
+  actions.info('Stack name: ' + stackName);
+  actions.info('Lambda name: ' + lambdaName);
+  actions.info('Project directory: ' + projectDir);
+  actions.info('Entrypoint path: ' + entrypointPath);
+  actions.info('Assets path: ' + (assetsPath ?? '(none)'));
+  actions.info('');
 
   const outDir = path.join(projectDir, '_lambda');
 
   await fs.mkdir(outDir, { recursive: true });
 
-  actions.info('Building source code...');
+  actions.debug('Building source code...');
 
   await esbuild.build({
     entryPoints: { index: path.join(projectDir, entrypointPath) },
@@ -47,7 +58,7 @@ export const bundle = async ({
     entryNames: '[name]',
   });
 
-  actions.info('Analyzing dependencies...');
+  actions.debug('Analyzing dependencies...');
 
   const traced = await nodeFileTrace([path.join(outDir, 'index.js')]);
 
@@ -65,22 +76,26 @@ export const bundle = async ({
     }
   }
 
-  actions.info('Listing files...');
+  actions.debug('Copying assets...');
 
-  let files = [...traced.fileList];
-
-  if (assetPath) {
-    const assets = await glob('**/*', {
-      cwd: path.join(projectDir, assetPath),
+  const assets = [];
+  if (assetsPath) {
+    const paths = await fg('**/*', {
+      cwd: path.join(projectDir, assetsPath),
     });
-    console.log(assets);
-    files = [...files, ...assets];
+
+    for (const p of paths) {
+      const src = path.join(projectDir, assetsPath, p);
+      const dst = path.join(outDir, '_assets', p);
+      await fs.mkdir(path.dirname(dst), { recursive: true });
+      await fs.copyFile(src, dst);
+      assets.push(dst);
+    }
   }
 
-  files.sort();
+  actions.debug('Creating deployment package...');
 
-  actions.info('Creating function bundle...');
-
+  const files = [...traced.fileList, ...assets].sort();
   const zip = new Zip();
 
   for (const file of files) {
@@ -119,24 +134,23 @@ export const bundle = async ({
 
   const hash = crypto.createHash('sha256').update(bundle).digest('base64');
 
-  actions.info('Uploading final assets...');
+  actions.debug('Uploading deployment package...');
+
+  const bundlePath = `lambda/${lambdaName}-${stackName}.zip`;
 
   await S3.send(
     new PutObjectCommand({
       Bucket: 'penxle-artifacts',
-      Key: `lambda/${lambdaName}/function.zip`,
+      Key: bundlePath,
       Body: bundle,
       ContentType: 'application/zip',
+      Metadata: { Hash: hash },
     }),
   );
 
-  await S3.send(
-    new PutObjectCommand({
-      Bucket: 'penxle-artifacts',
-      Key: `lambda/${lambdaName}/hash.txt`,
-      Body: hash,
-      ContentType: 'text/plain',
-    }),
+  actions.info('');
+  actions.info(
+    `Deployment package uploaded to 's3://penxle-artifacts/${bundlePath}'`,
   );
 
   actions.endGroup();

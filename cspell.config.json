@@ -13,6 +13,8 @@
   "numSuggestions": 0,
   "useGitignore": true,
   "words": [
+    "apigatewayv2",
+    "brotli",
     "buildx",
     "clsx",
     "dopplerhq",

@@ -22,6 +22,28 @@ for (const [domain, tokens] of Object.entries(awsSesDkimTokens)) {
   });
 }
 
+// for (const [domain, certificate] of Object.entries(certificates)) {
+//   const created = new Set<string>();
+//   certificate.domainValidationOptions.apply((options) => {
+//     for (const option of options) {
+//       const name = option.resourceRecordName.slice(0, -1);
+//       if (created.has(name)) {
+//         continue;
+//       }
+
+//       new cloudflare.Record(name, {
+//         zoneId: zones[domain as keyof typeof zones].id,
+//         type: option.resourceRecordType,
+//         name,
+//         value: option.resourceRecordValue,
+//         comment: 'AWS Certificate Manager',
+//       });
+
+//       created.add(name);
+//     }
+//   });
+// }
+
 new cloudflare.Record('idea.penxle.com', {
   zoneId: zones.penxle_com.id,
   type: 'CNAME',

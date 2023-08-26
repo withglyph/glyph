@@ -1,8 +1,9 @@
 import path from 'node:path';
+import github from '@actions/github';
 import { pnpmWorkspaceInfo } from '@node-kit/pnpm-workspace-info';
 import { $ } from 'execa';
 
-type LambdaSpec = { name: string; entrypoint: string; asset?: string };
+type LambdaSpec = { name: string; entrypoint: string; assets?: string };
 type LambdaConfig = { default: LambdaSpec | LambdaSpec[] };
 
 export const getProjectDir = async (project: string) => {
@@ -32,4 +33,22 @@ export const checkChanges = async (project: string) => {
 
   const { packages } = JSON.parse(stdout) as { packages: string[] };
   return packages.length === 0 ? false : true;
+};
+
+export const getCurrentStack = () => {
+  if (
+    github.context.eventName === 'pull_request' &&
+    github.context.payload.pull_request
+  ) {
+    return `pr-${github.context.payload.pull_request.number}`;
+  }
+
+  if (
+    github.context.eventName === 'push' &&
+    github.context.ref === 'refs/heads/main'
+  ) {
+    return 'production';
+  }
+
+  throw new Error('Could not determine stack name');
 };
