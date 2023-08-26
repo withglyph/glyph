@@ -2,9 +2,7 @@ name: CD
 
 on:
   pull_request:
-
-permissions:
-  pull-requests: write
+    types: [opened, synchronize, reopened]
 
 jobs:
   preview:
@@ -72,7 +70,7 @@ jobs:
           cd infra/${{ matrix.project }}
           pulumi stack select penxle/pr-${{ github.event.number }} || pulumi stack init penxle/pr-${{ github.event.number }}
           pulumi config cp --stack penxle/production --dest penxle/pr-${{ github.event.number }}
-          pulumi up --yes --skip-preview --stack penxle/pr-${{ github.event.number }}
+          pulumi up --skip-preview --stack penxle/pr-${{ github.event.number }}
         env:
           AWS_REGION: ap-northeast-2
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
