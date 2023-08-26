@@ -5,7 +5,7 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@penxle/infra-lib": "workspace:^",
+    "@penxle/infra-pkg-lib": "workspace:^",
     "@pulumi/aws": "^5.42.0",
     "@pulumi/cloudflare": "^5.9.0",
     "@pulumi/pulumi": "^3.78.1",

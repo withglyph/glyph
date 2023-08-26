@@ -1,5 +1,5 @@
 {
-  "name": "@penxle/infra-lib",
+  "name": "@penxle/infra-pkg-lib",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -14,7 +14,6 @@
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "@types/node": "^20.5.6",
     "tsup": "^7.2.0"
   }
 }
