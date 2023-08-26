@@ -38,12 +38,13 @@ export class Site extends pulumi.ComponentResource {
         domainName: domain,
         validationMethod: 'DNS',
       },
-      {
-        parent: this,
-        provider: new aws.Provider('us-east-1', {
-          region: 'us-east-1',
-        }),
-      },
+      { parent: this },
+    );
+
+    const certificateValidation = new aws.acm.CertificateValidation(
+      domain,
+      { certificateArn: certificate.arn },
+      { parent: this },
     );
 
     new cloudflare.Record(
@@ -53,6 +54,7 @@ export class Site extends pulumi.ComponentResource {
         name: certificate.domainValidationOptions[0].resourceRecordName,
         type: certificate.domainValidationOptions[0].resourceRecordType,
         value: certificate.domainValidationOptions[0].resourceRecordValue,
+        comment: 'AWS Certificate Manager',
       },
       { parent: this },
     );
@@ -112,96 +114,31 @@ export class Site extends pulumi.ComponentResource {
       args.name,
       {
         protocolType: 'HTTP',
+        target: lambda.arn,
+        disableExecuteApiEndpoint: true,
       },
       { parent: this },
     );
 
-    const integration = new aws.apigatewayv2.Integration(
+    const domainName = new aws.apigatewayv2.DomainName(
+      args.name,
+      {
+        domainName: domain,
+        domainNameConfiguration: {
+          endpointType: 'REGIONAL',
+          certificateArn: certificateValidation.certificateArn,
+          securityPolicy: 'TLS_1_2',
+        },
+      },
+      { parent: this },
+    );
+
+    new aws.apigatewayv2.ApiMapping(
       args.name,
       {
         apiId: api.id,
-        integrationType: 'AWS_PROXY',
-        integrationUri: lambda.arn,
-        payloadFormatVersion: '2.0',
-      },
-      { parent: this },
-    );
-
-    new aws.apigatewayv2.Route(
-      args.name,
-      {
-        apiId: api.id,
-        routeKey: '$default',
-        target: pulumi.interpolate`integrations/${integration.id}`,
-      },
-      { parent: this },
-    );
-
-    new aws.apigatewayv2.Stage(
-      args.name,
-      {
-        name: '$default',
-        apiId: api.id,
-        autoDeploy: true,
-      },
-      { parent: this },
-    );
-
-    const distribution = new aws.cloudfront.Distribution(
-      domain,
-      {
-        enabled: true,
-        aliases: [domain],
-        httpVersion: 'http2and3',
-
-        origins: [
-          {
-            originId: 'apigateway',
-            domainName: api.apiEndpoint.apply((endpoint) =>
-              endpoint.replace('https://', ''),
-            ),
-            customOriginConfig: {
-              httpPort: 80,
-              httpsPort: 443,
-              originProtocolPolicy: 'https-only',
-              originSslProtocols: ['TLSv1.2'],
-            },
-          },
-        ],
-
-        defaultCacheBehavior: {
-          targetOriginId: 'apigateway',
-          viewerProtocolPolicy: 'redirect-to-https',
-          compress: true,
-          allowedMethods: [
-            'GET',
-            'HEAD',
-            'OPTIONS',
-            'PUT',
-            'POST',
-            'PATCH',
-            'DELETE',
-          ],
-          cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
-          cachePolicyId: bedrock('AWS_CLOUDFRONT_API_GATEWAY_CACHE_POLICY_ID'),
-          originRequestPolicyId: bedrock(
-            'AWS_CLOUDFRONT_API_GATEWAY_ORIGIN_REQUEST_POLICY_ID',
-          ),
-        },
-
-        restrictions: {
-          geoRestriction: {
-            restrictionType: 'none',
-          },
-        },
-
-        viewerCertificate: {
-          acmCertificateArn: certificate.arn,
-          sslSupportMethod: 'sni-only',
-          minimumProtocolVersion: 'TLSv1.2_2021',
-        },
-
-        waitForDeployment: false,
+        domainName: domainName.domainName,
+        stage: '$default',
       },
       { parent: this },
     );
@@ -212,7 +149,8 @@ export class Site extends pulumi.ComponentResource {
         zoneId: zone.zoneId,
         type: 'CNAME',
         name: domain,
-        value: distribution.domainName,
+        value: domainName.domainNameConfiguration.targetDomainName,
+        comment: 'AWS API Gateway',
       },
       { parent: this },
     );
