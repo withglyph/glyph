@@ -1,22 +1,21 @@
 import path from 'node:path';
 import github from '@actions/github';
-import { pnpmWorkspaceInfo } from '@node-kit/pnpm-workspace-info';
+import { findWorkspacePackagesNoCheck } from '@pnpm/workspace.find-packages';
 import { $ } from 'execa';
 
 type LambdaSpec = { name: string; entrypoint: string; assets?: string };
 type LambdaConfig = { default: LambdaSpec | LambdaSpec[] };
 
 export const getProjectDir = async (project: string) => {
-  const workspaceInfo = await pnpmWorkspaceInfo();
-  if (!workspaceInfo) {
-    throw new Error('Could not retrieve workspace info');
+  const projects = await findWorkspacePackagesNoCheck('.');
+
+  for (const { dir, manifest } of projects) {
+    if (manifest.name === `@penxle/${project}`) {
+      return dir;
+    }
   }
 
-  if (!(project in workspaceInfo)) {
-    throw new Error(`Could not locate project ${project}`);
-  }
-
-  return workspaceInfo[project].path;
+  throw new Error(`Could not locate project ${project}`);
 };
 
 export const getLambdaSpecs = async (projectDir: string) => {
