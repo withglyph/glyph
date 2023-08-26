@@ -134,6 +134,9 @@ importers:
 
   infra/bedrock:
     dependencies:
+      '@penxle/infra-lib':
+        specifier: workspace:^
+        version: link:../../packages/infra-lib
       '@pulumi/aws':
         specifier: ^5.42.0
         version: 5.42.0
@@ -165,6 +168,9 @@ importers:
 
   infra/literoom:
     dependencies:
+      '@penxle/infra-lib':
+        specifier: workspace:^
+        version: link:../../packages/infra-lib
       '@pulumi/aws':
         specifier: ^5.42.0
         version: 5.42.0
@@ -215,6 +221,22 @@ importers:
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
+
+  packages/infra-lib:
+    dependencies:
+      fast-glob:
+        specifier: ^3.3.1
+        version: 3.3.1
+    devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
+      '@types/node':
+        specifier: ^20.5.6
+        version: 20.5.6
+      tsup:
+        specifier: ^7.2.0
+        version: 7.2.0(typescript@5.2.2)
 
   packages/lambda:
     dependencies:

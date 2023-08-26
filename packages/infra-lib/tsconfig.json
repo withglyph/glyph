@@ -1,0 +1,4 @@
+{
+  "extends": ["@penxle/tsconfig"],
+  "exclude": ["dist"]
+}

@@ -1,5 +1,4 @@
-import { outputs as finalize } from './finalize';
-import { outputs as transform } from './transform';
+import { index } from '@penxle/infra-lib';
 
 // eslint-disable-next-line import/no-default-export
-export default Object.assign({}, finalize, transform);
+export default index();
