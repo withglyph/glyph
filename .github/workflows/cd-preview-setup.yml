@@ -50,11 +50,12 @@ jobs:
         if: steps.check_changes.outputs.changed == 'true'
         run: pnpm run build:deps
 
-      - uses: dopplerhq/secrets-fetch-action@v1.1.2
+      - name: Fetch secrets
+        uses: dopplerhq/secrets-fetch-action@v1.1.2
         if: steps.check_changes.outputs.changed == 'true'
         with:
           doppler-token: ${{ secrets.DOPPLER_TOKEN }}
-          doppler-project: penxle
+          doppler-project: penxle-com
           doppler-config: preview
           inject-env-vars: true
 
