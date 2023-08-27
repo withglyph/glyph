@@ -20,6 +20,12 @@ const setupSentry = () => {
         errorSampleRate: 1,
       }),
     );
+  } else {
+    integrations.push(
+      new Sentry.Integrations.OnUncaughtException({}),
+      new Sentry.Integrations.OnUnhandledRejection({ mode: 'strict' }),
+      new Sentry.Integrations.LocalVariables({ captureAllExceptions: true }),
+    );
   }
 
   Sentry.init({

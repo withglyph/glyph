@@ -27,9 +27,7 @@ export type Context = RequestEvent &
 export const createContext = async (
   context: RequestEvent,
 ): Promise<Context> => {
-  console.log('context start');
   const db = await prismaClient.$begin({ isolation: 'RepeatableRead' });
-  console.log('context db');
   let deviceId = context.cookies.get('penxle-did');
   if (!deviceId) {
     deviceId = nanoid(32);
