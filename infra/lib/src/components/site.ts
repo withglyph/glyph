@@ -1,11 +1,14 @@
 import * as aws from '@pulumi/aws';
 import * as cloudflare from '@pulumi/cloudflare';
 import * as pulumi from '@pulumi/pulumi';
-import { bedrock } from '../ref';
+import { bedrockRef } from '../ref';
 
 type SiteArgs = {
   name: string;
+  iamPolicy?: aws.iam.PolicyDocument;
+
   domain: string;
+  zone: string;
 };
 
 export class Site extends pulumi.ComponentResource {
@@ -20,21 +23,24 @@ export class Site extends pulumi.ComponentResource {
 
     const stack = pulumi.getStack();
 
-    const domain =
-      stack === 'production'
-        ? args.domain
-        : `${args.domain.replaceAll('.', '-')}-${stack}.penxle.dev`;
+    const isProd = stack === 'production';
+
+    const resourceName = `${args.name}-${stack}`;
+    const domain = isProd
+      ? args.domain
+      : `${stack}-${args.domain.replaceAll('.', '-')}.pnxl.site`;
+
     this.siteDomain = pulumi.output(domain);
 
     const zone = cloudflare.getZoneOutput(
-      { name: 'penxle.dev' },
+      { name: isProd ? args.zone : 'pnxl.site' },
       { parent: this },
     );
 
     const pkg = aws.s3.getObjectOutput(
       {
-        bucket: bedrock('AWS_S3_BUCKET_ARTIFACTS_BUCKET'),
-        key: `lambda/${args.name}-${stack}.zip`,
+        bucket: bedrockRef('AWS_S3_BUCKET_ARTIFACTS_BUCKET'),
+        key: `lambda/${resourceName}.zip`,
       },
       { parent: this },
     );
@@ -42,6 +48,7 @@ export class Site extends pulumi.ComponentResource {
     const role = new aws.iam.Role(
       `${args.name}@lambda`,
       {
+        name: `${resourceName}@lambda`,
         assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
           Service: 'lambda.amazonaws.com',
         }),
@@ -52,9 +59,21 @@ export class Site extends pulumi.ComponentResource {
       { parent: this },
     );
 
+    if (args.iamPolicy) {
+      new aws.iam.RolePolicy(
+        `${args.name}@lambda`,
+        {
+          role: role.name,
+          policy: args.iamPolicy,
+        },
+        { parent: this },
+      );
+    }
+
     const lambda = new aws.lambda.Function(
       args.name,
       {
+        name: resourceName,
         role: role.arn,
 
         runtime: 'nodejs18.x',
@@ -85,9 +104,15 @@ export class Site extends pulumi.ComponentResource {
     const api = new aws.apigatewayv2.Api(
       args.name,
       {
+        name: resourceName,
         protocolType: 'HTTP',
         target: lambda.arn,
       },
+      { parent: this },
+    );
+
+    const certificate = aws.acm.getCertificateOutput(
+      { domain: isProd ? args.zone : 'pnxl.site' },
       { parent: this },
     );
 
@@ -97,7 +122,7 @@ export class Site extends pulumi.ComponentResource {
         domainName: domain,
         domainNameConfiguration: {
           endpointType: 'REGIONAL',
-          certificateArn: bedrock('AWS_ACM_PENXLE_DEV_CERTIFICATE_ARN'),
+          certificateArn: certificate.arn,
           securityPolicy: 'TLS_1_2',
         },
       },
@@ -122,7 +147,7 @@ export class Site extends pulumi.ComponentResource {
         name: domain,
         value: domainName.domainNameConfiguration.targetDomainName,
         proxied: true,
-        comment: 'Amazon CloudFront',
+        comment: 'Amazon API Gateway',
       },
       { parent: this },
     );

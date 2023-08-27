@@ -79,15 +79,6 @@ new cloudflare.Record('penxle.com,txt=gsv', {
   comment: 'Google Search Console',
 });
 
-new cloudflare.Record('*.penxle.dev', {
-  zoneId: zones.penxle_dev.id,
-  type: 'AAAA',
-  name: '*.penxle.dev',
-  value: '100::',
-  proxied: true,
-  comment: 'Catch all',
-});
-
 new cloudflare.Record('mail.penxle.com,mx=10', {
   zoneId: zones.penxle_com.id,
   type: 'MX',
@@ -198,6 +189,15 @@ new cloudflare.Record('pnxl.net', {
   name: 'pnxl.net',
   value: 'penxle-data.b-cdn.net',
   comment: 'bunny.net',
+});
+
+new cloudflare.Record('*.pnxl.site', {
+  zoneId: zones.pnxl_site.id,
+  type: 'AAAA',
+  name: '*.pnxl.site',
+  value: '100::',
+  proxied: true,
+  comment: 'Catch all',
 });
 
 export const outputs = {};

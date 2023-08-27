@@ -15,3 +15,5 @@ export const index = async () => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return Object.assign({}, ...awaited);
 };
+
+export { bedrockRef } from './ref';
