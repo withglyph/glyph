@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
 
+env:
+  TURBO_TEAM: penxle
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+
 jobs:
   production:
     name: Production
@@ -11,7 +15,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [gh-app, literoom, penxle.io]
+        project:
+          [
+            gh-app,
+            literoom,
+            penxle.com,
+            penxle.io,
+            help.penxle.com,
+            landing.penxle.com,
+          ]
     concurrency: ${{ matrix.project }}
     steps:
       - name: Checkout repository
@@ -46,6 +58,14 @@ jobs:
         if: steps.check_changes.outputs.changed == 'true'
         run: pnpm run build:deps
 
+      - uses: dopplerhq/secrets-fetch-action@v1.1.2
+        if: steps.check_changes.outputs.changed == 'true'
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+          doppler-project: penxle
+          doppler-config: prod
+          inject-env-vars: true
+
       - name: Build project
         if: steps.check_changes.outputs.changed == 'true'
         run: pnpm exec turbo run build --filter=${{ matrix.project }}
@@ -68,7 +88,8 @@ jobs:
         if: steps.check_changes.outputs.changed == 'true'
         run: |
           cd infra/${{ matrix.project }}
-          pulumi stack select penxle/production
+          pulumi stack select penxle/production || pulumi stack init penxle/production
+          pulumi config set aws:defaultTags '{"tags":{"ManagedBy":"Pulumi"}}'
           pulumi up --skip-preview --stack penxle/production
         env:
           AWS_REGION: ap-northeast-2

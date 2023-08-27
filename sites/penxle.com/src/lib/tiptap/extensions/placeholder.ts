@@ -30,7 +30,6 @@ export const Placeholder = Extension.create({
               });
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (!decoration) {
               return null;
             }

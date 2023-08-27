@@ -43,11 +43,11 @@ const createZone = (domain: string) => {
 
 export const zones = {
   penxle_com: createZone('penxle.com'),
-  penxle_dev: createZone('penxle.dev'),
   penxle_io: createZone('penxle.io'),
   pnxl_cc: createZone('pnxl.cc'),
   pnxl_co: createZone('pnxl.co'),
   pnxl_net: createZone('pnxl.net'),
+  pnxl_site: createZone('pnxl.site'),
 };
 
 export const outputs = {};

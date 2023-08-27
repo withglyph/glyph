@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build && prisma migrate deploy",
+    "build": "vite build",
     "codegen": "svelte-kit sync && houdini generate",
     "codegen:prisma": "prisma generate",
     "dev": "doppler run -- vite dev",

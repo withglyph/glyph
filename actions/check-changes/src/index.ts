@@ -9,6 +9,7 @@ const { stdout } = execaSync('pnpm', [
   'run',
   'build',
   `--filter=${projectName}...[HEAD^]`,
+  `--filter={./infra/${projectName}}...[HEAD^]`,
   '--filter={./actions/**}...[HEAD^]',
   '--dry=json',
 ]);

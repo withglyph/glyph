@@ -185,6 +185,38 @@ importers:
         specifier: ^3.12.7
         version: 3.12.7
 
+  infra/help.penxle.com:
+    dependencies:
+      '@penxle/infra':
+        specifier: workspace:^
+        version: link:../lib
+      '@pulumi/pulumi':
+        specifier: ^3.78.1
+        version: 3.78.1
+    devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
+      tsx:
+        specifier: ^3.12.7
+        version: 3.12.7
+
+  infra/landing.penxle.com:
+    dependencies:
+      '@penxle/infra':
+        specifier: workspace:^
+        version: link:../lib
+      '@pulumi/pulumi':
+        specifier: ^3.78.1
+        version: 3.78.1
+    devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
+      tsx:
+        specifier: ^3.12.7
+        version: 3.12.7
+
   infra/lib:
     dependencies:
       '@pulumi/aws':
@@ -232,17 +264,27 @@ importers:
         specifier: ^3.12.7
         version: 3.12.7
 
+  infra/penxle.com:
+    dependencies:
+      '@penxle/infra':
+        specifier: workspace:^
+        version: link:../lib
+      '@pulumi/pulumi':
+        specifier: ^3.78.1
+        version: 3.78.1
+    devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
+      tsx:
+        specifier: ^3.12.7
+        version: 3.12.7
+
   infra/penxle.io:
     dependencies:
       '@penxle/infra':
         specifier: workspace:^
         version: link:../lib
-      '@pulumi/aws':
-        specifier: ^5.42.0
-        version: 5.42.0
-      '@pulumi/cloudflare':
-        specifier: ^5.9.0
-        version: 5.9.0
       '@pulumi/pulumi':
         specifier: ^3.78.1
         version: 3.78.1

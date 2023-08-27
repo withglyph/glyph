@@ -15,7 +15,6 @@ export const load = (async ({ params }) => {
       meta: post.metadata,
     };
   } catch {
-    // eslint-disable-next-line @typescript-eslint/no-throw-literal
     throw error(404);
   }
 }) satisfies PageLoad;

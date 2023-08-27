@@ -11,25 +11,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [penxle.io]
+        project: [penxle.com, penxle.io, help.penxle.com, landing.penxle.com]
     concurrency: ${{ matrix.project }}-pr-${{ github.event.number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
-
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
 
       - name: Setup Pulumi
         uses: pulumi/actions@v4
