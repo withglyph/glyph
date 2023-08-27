@@ -64,27 +64,16 @@ const sveltekit = async (
   request: LambdaRequest,
   event: APIGatewayProxyEventV2,
 ) => {
-  console.log('Handling request', request);
-  console.log('Handling event', event);
+  const response = await server.respond(request, {
+    getClientAddress: () => event.requestContext.http.sourceIp,
+    platform: { event },
+  });
 
-  try {
-    const response = await server.respond(request, {
-      getClientAddress: () => event.requestContext.http.sourceIp,
-      platform: { event },
-    });
-
-    console.log('Handling response', response);
-
-    if (response.headers.get('cache-control') === null) {
-      response.headers.set('cache-control', 'private, no-cache');
-    }
-
-    return response;
-  } catch (err) {
-    console.error(err);
+  if (response.headers.get('cache-control') === null) {
+    response.headers.set('cache-control', 'private, no-cache');
   }
 
-  return 'Internal server error !!';
+  return response;
 };
 
 export const error = () => {
