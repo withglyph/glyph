@@ -19,7 +19,7 @@ export class Site extends pulumi.ComponentResource {
     args: SiteArgs,
     opts?: pulumi.ComponentResourceOptions,
   ) {
-    super('penxle:site:Site', name, {}, opts);
+    super('penxle:index:Site', name, {}, opts);
 
     const stack = pulumi.getStack();
 
@@ -31,6 +31,12 @@ export class Site extends pulumi.ComponentResource {
       : `${stack}-${args.domain.replaceAll('.', '-')}.pnxl.site`;
 
     this.siteDomain = pulumi.output(domain);
+
+    const usEast1 = new aws.Provider(
+      'us-east-1',
+      { region: 'us-east-1' },
+      { parent: this },
+    );
 
     const zone = cloudflare.getZoneOutput(
       { name: isProd ? args.zone : 'pnxl.site' },
@@ -101,6 +107,16 @@ export class Site extends pulumi.ComponentResource {
       { parent: this },
     );
 
+    const apiGatewayCertificate = aws.acm.getCertificateOutput(
+      { domain: isProd ? args.zone : 'pnxl.site' },
+      { parent: this },
+    );
+
+    const cloudfrontCertificate = aws.acm.getCertificateOutput(
+      { domain: isProd ? args.zone : 'pnxl.site' },
+      { parent: this, provider: usEast1 },
+    );
+
     const api = new aws.apigatewayv2.Api(
       args.name,
       {
@@ -111,18 +127,13 @@ export class Site extends pulumi.ComponentResource {
       { parent: this },
     );
 
-    const certificate = aws.acm.getCertificateOutput(
-      { domain: isProd ? args.zone : 'pnxl.site' },
-      { parent: this },
-    );
-
     const domainName = new aws.apigatewayv2.DomainName(
       args.name,
       {
         domainName: domain,
         domainNameConfiguration: {
           endpointType: 'REGIONAL',
-          certificateArn: certificate.arn,
+          certificateArn: apiGatewayCertificate.arn,
           securityPolicy: 'TLS_1_2',
         },
       },
@@ -139,15 +150,74 @@ export class Site extends pulumi.ComponentResource {
       { parent: this },
     );
 
+    const distribution = new aws.cloudfront.Distribution(
+      domain,
+      {
+        enabled: true,
+        aliases: [domain],
+        httpVersion: 'http2and3',
+
+        origins: [
+          {
+            originId: 'apigateway',
+            domainName: domainName.domainNameConfiguration.targetDomainName,
+            customOriginConfig: {
+              httpPort: 80,
+              httpsPort: 443,
+              originProtocolPolicy: 'https-only',
+              originSslProtocols: ['TLSv1.2'],
+            },
+          },
+        ],
+
+        defaultCacheBehavior: {
+          targetOriginId: 'apigateway',
+          viewerProtocolPolicy: 'redirect-to-https',
+          compress: true,
+          allowedMethods: [
+            'GET',
+            'HEAD',
+            'OPTIONS',
+            'PUT',
+            'POST',
+            'PATCH',
+            'DELETE',
+          ],
+          cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
+          cachePolicyId: bedrockRef(
+            'AWS_CLOUDFRONT_API_GATEWAY_CACHE_POLICY_ID',
+          ),
+          originRequestPolicyId: bedrockRef(
+            'AWS_CLOUDFRONT_API_GATEWAY_ORIGIN_REQUEST_POLICY_ID',
+          ),
+        },
+
+        restrictions: {
+          geoRestriction: {
+            restrictionType: 'none',
+          },
+        },
+
+        viewerCertificate: {
+          acmCertificateArn: cloudfrontCertificate.arn,
+          sslSupportMethod: 'sni-only',
+          minimumProtocolVersion: 'TLSv1.2_2021',
+        },
+
+        waitForDeployment: false,
+      },
+      { parent: this },
+    );
+
     new cloudflare.Record(
       domain,
       {
         zoneId: zone.zoneId,
         type: 'CNAME',
         name: domain,
-        value: domainName.domainNameConfiguration.targetDomainName,
-        proxied: true,
-        comment: 'Amazon API Gateway',
+        value: distribution.domainName,
+        proxied: !isProd,
+        comment: 'Amazon CloudFront',
       },
       { parent: this },
     );
