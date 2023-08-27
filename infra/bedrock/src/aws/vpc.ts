@@ -182,4 +182,13 @@ export const securityGroups = {
   internal: internalSecurityGroup,
 };
 
-export const outputs = {};
+export const outputs = {
+  AWS_VPC_ID: vpc.id,
+  AWS_VPC_SUBNET_PUBLIC_AZ1_ID: publicAz1Subnet.id,
+  AWS_VPC_SUBNET_PUBLIC_AZ2_ID: publicAz2Subnet.id,
+  AWS_VPC_SUBNET_PRIVATE_AZ1_ID: privateAz1Subnet.id,
+  AWS_VPC_SUBNET_PRIVATE_AZ2_ID: privateAz2Subnet.id,
+  AWS_VPC_SECURITY_GROUP_PUBLIC_ID: publicSecurityGroup.id,
+  AWS_VPC_SECURITY_GROUP_PRIVATE_ID: privateSecurityGroup.id,
+  AWS_VPC_SECURITY_GROUP_INTERNAL_ID: internalSecurityGroup.id,
+};

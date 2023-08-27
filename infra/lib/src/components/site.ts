@@ -59,7 +59,7 @@ export class Site extends pulumi.ComponentResource {
           Service: 'lambda.amazonaws.com',
         }),
         managedPolicyArns: [
-          aws.iam.ManagedPolicies.AWSLambdaBasicExecutionRole,
+          aws.iam.ManagedPolicies.AWSLambdaVPCAccessExecutionRole,
         ],
       },
       { parent: this },
@@ -93,6 +93,14 @@ export class Site extends pulumi.ComponentResource {
         handler: 'index.handler',
 
         sourceCodeHash: pkg.metadata.Hash,
+
+        vpcConfig: {
+          subnetIds: [
+            bedrockRef('AWS_VPC_SUBNET_PRIVATE_AZ1_ID'),
+            bedrockRef('AWS_VPC_SUBNET_PRIVATE_AZ2_ID'),
+          ],
+          securityGroupIds: [bedrockRef('AWS_VPC_SECURITY_GROUP_INTERNAL_ID')],
+        },
       },
       { parent: this },
     );
