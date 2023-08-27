@@ -20,7 +20,7 @@
   "dependencies": {
     "@pulumi/aws": "^5.42.0",
     "@pulumi/cloudflare": "^5.9.0",
-    "@pulumi/pulumi": "^3.78.1",
+    "@pulumi/pulumi": "^3.79.0",
     "fast-glob": "^3.3.1"
   },
   "devDependencies": {

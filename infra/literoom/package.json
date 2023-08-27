@@ -8,7 +8,7 @@
     "@penxle/infra": "workspace:^",
     "@pulumi/aws": "^5.42.0",
     "@pulumi/aws-native": "^0.73.1",
-    "@pulumi/pulumi": "^3.78.1"
+    "@pulumi/pulumi": "^3.79.0"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",

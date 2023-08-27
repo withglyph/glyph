@@ -23,7 +23,7 @@
   "devDependencies": {
     "@penxle/lintconfig": "workspace:^",
     "cspell": "^7.0.1",
-    "eslint": "^8.47.0",
+    "eslint": "^8.48.0",
     "gitmoji-cli": "^8.4.0",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
