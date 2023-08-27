@@ -5,8 +5,7 @@ import type {
 
 export const createRequest = (event: APIGatewayProxyEventV2): Request => {
   const url = new URL(
-    event.rawPath,
-    `https://${event.requestContext.domainName}`,
+    `https://${event.requestContext.domainName}${event.rawPath}?${event.rawQueryString}`,
   );
 
   const init: RequestInit = {
@@ -16,7 +15,7 @@ export const createRequest = (event: APIGatewayProxyEventV2): Request => {
     ),
   };
 
-  if (event.body && init.method !== 'GET' && init.method !== 'HEAD') {
+  if (event.body) {
     init.body = event.isBase64Encoded
       ? Buffer.from(event.body, 'base64')
       : event.body;
@@ -36,14 +35,8 @@ const textTypes = [
 export const createResult = async (
   response: Response,
 ): Promise<APIGatewayProxyResultV2> => {
-  const contentType = response.headers.get('content-type') ?? '';
-  const isText = textTypes.some((type) => contentType.startsWith(type));
-
-  console.log('Response', {
-    status: response.status,
-    headers: Object.fromEntries(response.headers),
-    isText,
-  });
+  const contentType = response.headers.get('content-type');
+  const isText = textTypes.some((type) => contentType?.startsWith(type));
 
   return {
     statusCode: response.status,

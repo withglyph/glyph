@@ -64,18 +64,33 @@ const sveltekit = async (
   request: LambdaRequest,
   event: APIGatewayProxyEventV2,
 ) => {
-  const response = await server.respond(request, {
-    getClientAddress: () => event.requestContext.http.sourceIp,
-    platform: { event },
-  });
+  console.log('Handling request', request);
+  console.log('Handling event', event);
 
-  if (response.headers.get('cache-control') === null) {
-    response.headers.set('cache-control', 'private, no-cache');
+  try {
+    const response = await server.respond(request, {
+      getClientAddress: () => event.requestContext.http.sourceIp,
+      platform: { event },
+    });
+
+    console.log('Handling response', response);
+
+    if (response.headers.get('cache-control') === null) {
+      response.headers.set('cache-control', 'private, no-cache');
+    }
+
+    return response;
+  } catch (err) {
+    console.error(err);
   }
 
-  return response;
+  return 'Internal server error !!';
 };
 
-router.all('*', assets, prerender, sveltekit);
+export const error = () => {
+  return 'Internal server error !!';
+};
+
+router.all('*', assets, prerender, sveltekit, error);
 
 export { handler } from '@penxle/lambda/http';
