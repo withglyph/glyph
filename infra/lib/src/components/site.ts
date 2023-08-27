@@ -6,7 +6,6 @@ import { bedrock } from '../ref';
 type SiteArgs = {
   name: string;
   domain: string;
-  subdomain?: string;
 };
 
 export class Site extends pulumi.ComponentResource {
@@ -21,38 +20,14 @@ export class Site extends pulumi.ComponentResource {
 
     const stack = pulumi.getStack();
 
-    const _domain = args.subdomain
-      ? `${args.subdomain}.${args.domain}`
-      : args.domain;
-    const domain = stack === 'production' ? _domain : `${stack}.dev.${_domain}`;
+    const domain =
+      stack === 'production'
+        ? args.domain
+        : `${args.domain.replaceAll('.', '-')}-${stack}.penxle.dev`;
     this.siteDomain = pulumi.output(domain);
 
     const zone = cloudflare.getZoneOutput(
-      { name: args.domain },
-      { parent: this },
-    );
-
-    const certificate = new aws.acm.Certificate(
-      domain,
-      { domainName: domain, validationMethod: 'DNS' },
-      { parent: this },
-    );
-
-    const certificateValidation = new aws.acm.CertificateValidation(
-      domain,
-      { certificateArn: certificate.arn },
-      { parent: this },
-    );
-
-    new cloudflare.Record(
-      `_acm.${domain}`,
-      {
-        zoneId: zone.zoneId,
-        name: certificate.domainValidationOptions[0].resourceRecordName,
-        type: certificate.domainValidationOptions[0].resourceRecordType,
-        value: certificate.domainValidationOptions[0].resourceRecordValue,
-        comment: 'AWS Certificate Manager',
-      },
+      { name: 'penxle.dev' },
       { parent: this },
     );
 
@@ -122,7 +97,7 @@ export class Site extends pulumi.ComponentResource {
         domainName: domain,
         domainNameConfiguration: {
           endpointType: 'REGIONAL',
-          certificateArn: certificateValidation.certificateArn,
+          certificateArn: bedrock('AWS_ACM_PENXLE_DEV_CERTIFICATE_ARN'),
           securityPolicy: 'TLS_1_2',
         },
       },

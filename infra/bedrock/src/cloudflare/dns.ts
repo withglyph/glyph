@@ -1,4 +1,5 @@
 import * as cloudflare from '@pulumi/cloudflare';
+import { certificates } from '$aws/acm';
 import { rds } from '$aws/rds';
 import { awsSesDkimTokens } from '$aws/ses';
 import { zones } from '$cloudflare/zone';
@@ -22,27 +23,27 @@ for (const [domain, tokens] of Object.entries(awsSesDkimTokens)) {
   });
 }
 
-// for (const [domain, certificate] of Object.entries(certificates)) {
-//   const created = new Set<string>();
-//   certificate.domainValidationOptions.apply((options) => {
-//     for (const option of options) {
-//       const name = option.resourceRecordName.slice(0, -1);
-//       if (created.has(name)) {
-//         continue;
-//       }
+for (const [domain, certificate] of Object.entries(certificates)) {
+  const created = new Set<string>();
+  certificate.domainValidationOptions.apply((options) => {
+    for (const option of options) {
+      const name = option.resourceRecordName.slice(0, -1);
+      if (created.has(name)) {
+        continue;
+      }
 
-//       new cloudflare.Record(name, {
-//         zoneId: zones[domain as keyof typeof zones].id,
-//         type: option.resourceRecordType,
-//         name,
-//         value: option.resourceRecordValue,
-//         comment: 'AWS Certificate Manager',
-//       });
+      new cloudflare.Record(name, {
+        zoneId: zones[domain as keyof typeof zones].id,
+        type: option.resourceRecordType,
+        name,
+        value: option.resourceRecordValue,
+        comment: 'AWS Certificate Manager',
+      });
 
-//       created.add(name);
-//     }
-//   });
-// }
+      created.add(name);
+    }
+  });
+}
 
 new cloudflare.Record('idea.penxle.com', {
   zoneId: zones.penxle_com.id,
@@ -76,6 +77,15 @@ new cloudflare.Record('penxle.com,txt=gsv', {
   // spell-checker:disable-next-line
   value: 'google-site-verification=bwCGvefwzolnCCx3lMbeJ0VmSp9sawDrbcaQ2WgehJo',
   comment: 'Google Search Console',
+});
+
+new cloudflare.Record('*.penxle.dev', {
+  zoneId: zones.penxle_dev.id,
+  type: 'AAAA',
+  name: '*.penxle.dev',
+  value: '100::',
+  proxied: true,
+  comment: 'Catch all',
 });
 
 new cloudflare.Record('mail.penxle.com,mx=10', {
