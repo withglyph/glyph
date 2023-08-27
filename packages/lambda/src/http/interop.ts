@@ -39,6 +39,12 @@ export const createResult = async (
   const contentType = response.headers.get('content-type') ?? '';
   const isText = textTypes.some((type) => contentType.startsWith(type));
 
+  console.log('Response', {
+    status: response.status,
+    headers: Object.fromEntries(response.headers),
+    isText,
+  });
+
   return {
     statusCode: response.status,
     headers: Object.fromEntries(response.headers),
