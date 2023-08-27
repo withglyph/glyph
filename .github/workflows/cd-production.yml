@@ -16,14 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         project:
-          [
-            gh-app,
-            literoom,
-            penxle.com,
-            penxle.io,
-            help.penxle.com,
-            landing.penxle.com,
-          ]
+          [literoom, penxle.com, penxle.io, help.penxle.com, landing.penxle.com]
     concurrency: ${{ matrix.project }}
     steps:
       - name: Checkout repository

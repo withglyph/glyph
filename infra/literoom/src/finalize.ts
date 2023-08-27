@@ -1,9 +1,9 @@
+import { bedrockRef } from '@penxle/infra';
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
-import { bedrock } from './ref';
 
 const pkg = aws.s3.getObjectOutput({
-  bucket: bedrock('AWS_S3_BUCKET_ARTIFACTS_BUCKET'),
+  bucket: bedrockRef('AWS_S3_BUCKET_ARTIFACTS_BUCKET'),
   key: 'lambda/literoom-finalize-main.zip',
 });
 
@@ -25,12 +25,14 @@ new aws.iam.RolePolicy('literoom-finalize@lambda', {
       {
         Effect: 'Allow',
         Action: ['s3:GetObject', 's3:DeleteObject'],
-        Resource: [pulumi.concat(bedrock('AWS_S3_BUCKET_UPLOADS_ARN'), '/*')],
+        Resource: [
+          pulumi.concat(bedrockRef('AWS_S3_BUCKET_UPLOADS_ARN'), '/*'),
+        ],
       },
       {
         Effect: 'Allow',
         Action: ['s3:PutObject'],
-        Resource: [pulumi.concat(bedrock('AWS_S3_BUCKET_DATA_ARN'), '/*')],
+        Resource: [pulumi.concat(bedrockRef('AWS_S3_BUCKET_DATA_ARN'), '/*')],
       },
     ],
   },
@@ -60,7 +62,7 @@ new aws.lambda.Permission('literoom-finalize', {
 });
 
 new aws.s3.BucketNotification('literoom-finalize@lambda', {
-  bucket: bedrock('AWS_S3_BUCKET_UPLOADS_BUCKET'),
+  bucket: bedrockRef('AWS_S3_BUCKET_UPLOADS_BUCKET'),
   lambdaFunctions: [
     {
       lambdaFunctionArn: lambda.arn,

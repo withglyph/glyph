@@ -1,10 +1,10 @@
+import { bedrockRef } from '@penxle/infra';
 import * as aws from '@pulumi/aws';
 import * as awsnative from '@pulumi/aws-native';
 import * as pulumi from '@pulumi/pulumi';
-import { bedrock } from './ref';
 
 const pkg = aws.s3.getObjectOutput({
-  bucket: bedrock('AWS_S3_BUCKET_ARTIFACTS_BUCKET'),
+  bucket: bedrockRef('AWS_S3_BUCKET_ARTIFACTS_BUCKET'),
   key: `lambda/literoom-transform-main.zip`,
 });
 
@@ -35,7 +35,7 @@ const lambda = new aws.lambda.Function('literoom-transform', {
 
 const accessPoint = new aws.s3.AccessPoint('data', {
   name: 'penxle-data',
-  bucket: bedrock('AWS_S3_BUCKET_DATA_BUCKET'),
+  bucket: bedrockRef('AWS_S3_BUCKET_DATA_BUCKET'),
 });
 
 const objectLambdaAccessPoint = new awsnative.s3objectlambda.AccessPoint(
@@ -75,7 +75,7 @@ new aws.iam.RolePolicy('literoom-transform@lambda', {
 });
 
 new aws.iam.UserPolicy('bunny.net', {
-  user: bedrock('AWS_IAM_USER_BUNNY_NET_NAME'),
+  user: bedrockRef('AWS_IAM_USER_BUNNY_NET_NAME'),
   policy: {
     Version: '2012-10-17',
     Statement: [
