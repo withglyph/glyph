@@ -8,9 +8,8 @@ export const exists = Prisma.defineExtension({
         this: T,
         { where }: Pick<Prisma.Args<T, 'findFirst'>, 'where'>,
       ): Promise<boolean> {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const context = Prisma.getExtensionContext(this) as any;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         const result = await context.findFirst({ where, select: { id: true } });
         return result !== null;
       },

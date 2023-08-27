@@ -42,7 +42,6 @@ export const AccessBarrier = createNodeView(Component, {
           const [child] = findChildrenByType(tr.before, this.type, false);
 
           // 기존 document에 존재함
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           if (child) {
             // 트랜잭션 적용해서 삭제 여부 확인 & 새 포지션 계산함
             const r = tr.mapping.mapResult(child.pos);

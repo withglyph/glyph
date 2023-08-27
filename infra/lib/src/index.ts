@@ -12,7 +12,6 @@ export const index = async () => {
 
   const awaited = await Promise.all(outputs);
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return Object.assign({}, ...awaited);
 };
 
