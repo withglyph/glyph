@@ -12,15 +12,9 @@ const apiGatewayCachePolicy = new aws.cloudfront.CachePolicy('api-gateway', {
     enableAcceptEncodingBrotli: true,
     enableAcceptEncodingGzip: true,
 
-    cookiesConfig: { cookieBehavior: 'all' },
-    queryStringsConfig: { queryStringBehavior: 'all' },
-    headersConfig: {
-      headerBehavior: 'none',
-      // headerBehavior: 'whitelist',
-      // headers: {
-      //   items: ['Authorization', 'Host'],
-      // },
-    },
+    cookiesConfig: { cookieBehavior: 'none' },
+    queryStringsConfig: { queryStringBehavior: 'none' },
+    headersConfig: { headerBehavior: 'none' },
   },
 });
 
@@ -36,8 +30,25 @@ const apiGatewayOriginRequestPolicy = new aws.cloudfront.OriginRequestPolicy(
   },
 );
 
+const apiGatewayResponseHeadersPolicy =
+  new aws.cloudfront.ResponseHeadersPolicy('api-gateway', {
+    name: 'APIGatewayOrigin',
+    comment: 'Response headers policy for API Gateway origins',
+
+    securityHeadersConfig: {
+      strictTransportSecurity: {
+        override: true,
+        accessControlMaxAgeSec: 31_536_000,
+        includeSubdomains: true,
+        preload: true,
+      },
+    },
+  });
+
 export const outputs = {
   AWS_CLOUDFRONT_API_GATEWAY_CACHE_POLICY_ID: apiGatewayCachePolicy.id,
   AWS_CLOUDFRONT_API_GATEWAY_ORIGIN_REQUEST_POLICY_ID:
     apiGatewayOriginRequestPolicy.id,
+  AWS_CLOUDFRONT_API_GATEWAY_RESPONSE_HEADERS_POLICY_ID:
+    apiGatewayResponseHeadersPolicy.id,
 };

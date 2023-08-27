@@ -36,7 +36,7 @@ for (const [domain, certificate] of Object.entries(certificates)) {
         zoneId: zones[domain as keyof typeof zones].id,
         type: option.resourceRecordType,
         name,
-        value: option.resourceRecordValue,
+        value: option.resourceRecordValue.slice(0, -1),
         comment: 'AWS Certificate Manager',
       });
 

@@ -190,6 +190,9 @@ export class Site extends pulumi.ComponentResource {
           originRequestPolicyId: bedrockRef(
             'AWS_CLOUDFRONT_API_GATEWAY_ORIGIN_REQUEST_POLICY_ID',
           ),
+          responseHeadersPolicyId: bedrockRef(
+            'AWS_CLOUDFRONT_API_GATEWAY_RESPONSE_HEADERS_POLICY_ID',
+          ),
         },
 
         restrictions: {
