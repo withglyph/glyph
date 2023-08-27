@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
 
+env:
+  TURBO_TEAM: penxle
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+
 jobs:
   production:
     name: Production

@@ -6,6 +6,10 @@ on:
   pull_request:
   merge_group:
 
+env:
+  TURBO_TEAM: penxle
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+
 jobs:
   lint:
     name: Lint

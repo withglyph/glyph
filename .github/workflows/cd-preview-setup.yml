@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+env:
+  TURBO_TEAM: penxle
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+
 jobs:
   preview:
     name: Preview
