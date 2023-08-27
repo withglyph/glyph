@@ -21,6 +21,7 @@
     "dotenv",
     "execa",
     "felte",
+    "fflate",
     "firacode",
     "gitmoji",
     "gitmojis",

@@ -72,6 +72,9 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.400.0
         version: 3.400.0
+      '@pnpm/find-workspace-dir':
+        specifier: ^6.0.2
+        version: 6.0.2
       '@pnpm/workspace.find-packages':
         specifier: ^1.0.5
         version: 1.0.5(@pnpm/logger@5.0.0)
@@ -84,6 +87,9 @@ importers:
       fast-glob:
         specifier: ^3.3.1
         version: 3.3.1
+      fflate:
+        specifier: ^0.8.0
+        version: 0.8.0
       jszip:
         specifier: ^3.10.1
         version: 3.10.1
@@ -94,6 +100,9 @@ importers:
       tsup:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
+      tsx:
+        specifier: ^3.12.7
+        version: 3.12.7
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -3927,6 +3936,14 @@ packages:
       '@pnpm/resolver-base': 10.0.2
       '@pnpm/types': 9.2.0
       '@types/ssri': 7.1.1
+    dev: false
+
+  /@pnpm/find-workspace-dir@6.0.2:
+    resolution: {integrity: sha512-JSrpQUFCs4vY1D5tOmj7qBb+oE2j/lO6341giEdUpvYf3FijY8CY13l8rPjfHV2y3m//utzl0An+q+qx14S6Nw==}
+    engines: {node: '>=16.14'}
+    dependencies:
+      '@pnpm/error': 5.0.2
+      find-up: 5.0.0
     dev: false
 
   /@pnpm/fs.find-packages@2.0.4:
@@ -8300,6 +8317,10 @@ packages:
       node-domexception: 1.0.0
       web-streams-polyfill: 3.2.1
     dev: true
+
+  /fflate@0.8.0:
+    resolution: {integrity: sha512-FAdS4qMuFjsJj6XHbBaZeXOgaypXp8iw/Tpyuq/w3XA41jjLHT8NPA+n7czH/DDhdncq0nAyDZmPeWXh2qmdIg==}
+    dev: false
 
   /figures@5.0.0:
     resolution: {integrity: sha512-ej8ksPF4x6e5wvK9yevct0UCXh8TTFlWGVLlgjZuoBH1HwjIfKE/IdL5mq89sFA7zELi1VhKpmtDnrs7zWyeyg==}

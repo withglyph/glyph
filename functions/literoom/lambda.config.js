@@ -1,10 +1,12 @@
 export default [
   {
     name: 'literoom-finalize',
-    entrypoint: './dist/finalize.js',
+    base: 'dist',
+    entrypoint: 'finalize.js',
   },
   {
     name: 'literoom-transform',
-    entrypoint: './dist/transform.js',
+    base: 'dist',
+    entrypoint: 'transform.js',
   },
 ];

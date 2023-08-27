@@ -4,23 +4,25 @@ import path from 'node:path';
 import actions from '@actions/core';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { nodeFileTrace } from '@vercel/nft';
-import esbuild from 'esbuild';
 import fg from 'fast-glob';
-import Zip from 'jszip';
+import * as fflate from 'fflate';
+import { getWorkspaceDir } from './utils';
 
 const S3 = new S3Client();
 
 type BuildParams = {
   stackName: string;
   lambdaName: string;
-  projectDir: string;
+  projectPath: string;
+  basePath: string;
   entrypointPath: string;
   assetsPath?: string;
 };
 export const build = async ({
   stackName,
   lambdaName,
-  projectDir,
+  projectPath,
+  basePath,
   entrypointPath,
   assetsPath,
 }: BuildParams) => {
@@ -30,44 +32,66 @@ export const build = async ({
 
   actions.info('Stack name: ' + stackName);
   actions.info('Lambda name: ' + lambdaName);
-  actions.info('Project directory: ' + projectDir);
+  actions.info('Project directory: ' + projectPath);
+  actions.info('Base directory: ' + basePath);
   actions.info('Entrypoint path: ' + entrypointPath);
   actions.info('Assets path: ' + (assetsPath ?? '(none)'));
   actions.info('');
+
+  const workspaceDir = await getWorkspaceDir();
+  const projectDir = path.join(workspaceDir, projectPath);
+  const baseDir = path.join(projectDir, basePath);
 
   const outDir = path.join(projectDir, '_lambda');
 
   await fs.mkdir(outDir, { recursive: true });
 
-  actions.debug('Building source code...');
+  actions.debug('Linking target files...');
 
-  await esbuild.build({
-    entryPoints: { index: path.join(projectDir, entrypointPath) },
-    outdir: outDir,
+  const handler = `
+    export * from './${path.relative(
+      workspaceDir,
+      path.join(outDir, entrypointPath),
+    )}';
+  `;
+  await fs.writeFile(path.join(workspaceDir, 'index.js'), handler);
 
-    format: 'esm',
-    target: 'esnext',
-    platform: 'node',
+  for (const src of await fg('**/*', { absolute: true, cwd: baseDir })) {
+    const dst = path.join(outDir, path.relative(baseDir, src));
+    await fs.mkdir(path.dirname(dst), { recursive: true });
+    await fs.link(src, dst);
+  }
 
-    bundle: true,
-    splitting: true,
-    packages: 'external',
-
-    assetNames: 'assets/[name]-[hash]',
-    chunkNames: 'chunks/[name]-[hash]',
-    entryNames: '[name]',
-  });
+  const assets = [];
+  if (assetsPath) {
+    const assetsDir = path.relative(
+      workspaceDir,
+      path.join(outDir, assetsPath),
+    );
+    const paths = await fg(path.join(assetsDir, '**/*'), { cwd: workspaceDir });
+    assets.push(...paths);
+  }
 
   actions.debug('Analyzing dependencies...');
 
-  const traced = await nodeFileTrace([path.join(outDir, 'index.js')]);
+  const traced = await nodeFileTrace([path.join(workspaceDir, 'index.js')], {
+    base: workspaceDir,
+  });
 
   for (const { message } of traced.warnings) {
     if (message.startsWith('Failed to resolve dependency')) {
       const m = /Cannot find module '(.+?)' loaded from (.+)/.exec(message);
-      const [, module, importer] = m ?? [null, message, '(unknown)'];
+      let [, mod, importer] = m ?? [null, message, '(unknown)'];
 
-      const diag = `Missing dependency: ${module} (imported by ${importer})`;
+      if (mod.startsWith('/')) {
+        mod = path.relative(workspaceDir, mod);
+      }
+
+      if (importer.startsWith('/')) {
+        importer = path.relative(workspaceDir, importer);
+      }
+
+      const diag = `Missing dependency: ${mod} (imported by ${importer})`;
       if (importer.includes('node_modules')) {
         actions.warning(diag);
       } else {
@@ -76,65 +100,66 @@ export const build = async ({
     }
   }
 
-  actions.debug('Copying assets...');
+  actions.debug('Constructing path list...');
 
-  const assets = [];
-  if (assetsPath) {
-    const paths = await fg('**/*', {
-      cwd: path.join(projectDir, assetsPath),
-    });
+  const stack = [...traced.fileList, ...assets];
+  const visited = new Set(stack);
 
-    for (const p of paths) {
-      const src = path.join(projectDir, assetsPath, p);
-      const dst = path.join(outDir, '_assets', p);
-      await fs.mkdir(path.dirname(dst), { recursive: true });
-      await fs.copyFile(src, dst);
-      assets.push(dst);
+  while (stack.length > 0) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const dir = path.dirname(stack.pop()!);
+    if (dir !== '.' && !visited.has(dir)) {
+      visited.add(dir);
+      stack.push(dir);
     }
   }
+
+  const paths = [...visited].sort((a, b) => {
+    const c = a.split('/').length;
+    const d = b.split('/').length;
+
+    return c === d ? a.localeCompare(b) : c - d;
+  });
 
   actions.debug('Creating deployment package...');
 
-  const files = [...traced.fileList, ...assets].sort();
-  const zip = new Zip();
+  // spell-checker:disable-next-line
+  const entries: Record<string, fflate.AsyncZippableFile> = {};
 
-  for (const file of files) {
-    const stat = await fs.lstat(file);
+  for (const relative of paths) {
+    const absolute = path.join(workspaceDir, relative);
+    const stat = await fs.lstat(absolute);
 
-    if (stat.isSymbolicLink()) {
-      const link = await fs.readlink(file);
-      zip.file(file, link, {
-        date: new Date('1970-01-01T00:00:00Z'),
-        createFolders: false,
-        unixPermissions: 0o12_0755,
-      });
+    if (stat.isDirectory()) {
+      entries[relative] = [{}, { attrs: (0o755 << 16) | (1 << 4) }];
     } else if (stat.isFile()) {
-      const buffer = await fs.readFile(file);
-      zip.file(file, buffer, {
-        date: new Date('1970-01-01T00:00:00Z'),
-        createFolders: false,
-        unixPermissions: 0o755,
-      });
+      entries[relative] = [await fs.readFile(absolute), { attrs: 0o755 << 16 }];
+    } else if (stat.isSymbolicLink()) {
+      entries[relative] = [
+        fflate.strToU8(await fs.readlink(absolute)),
+        { attrs: (0o120 << 25) | (0o755 << 16) },
+      ];
     }
   }
 
-  const entry = `export * from './${path.join(outDir, 'index.js')}';`;
-  zip.file('index.mjs', entry, {
-    date: new Date('1970-01-01T00:00:00Z'),
-    createFolders: false,
-    unixPermissions: 0o755,
+  const pkg = await new Promise<Uint8Array>((resolve, reject) => {
+    fflate.zip(
+      entries,
+      { os: 3, mtime: '2000-01-01T00:00:00Z', level: 9, mem: 0 },
+      (err, data) => {
+        if (err) reject(err);
+        else resolve(data);
+      },
+    );
   });
 
-  const bundle = await zip.generateAsync({
-    compression: 'DEFLATE',
-    compressionOptions: { level: 9 },
-    type: 'nodebuffer',
-    platform: 'UNIX',
-  });
-
-  const hash = crypto.createHash('sha256').update(bundle).digest('base64');
+  const hash = crypto.createHash('sha256').update(pkg).digest('base64');
 
   actions.debug('Uploading deployment package...');
+
+  actions.info('');
+  actions.info(`Package hash: ${hash}`);
+  actions.info(`Package size: ${pkg.length} bytes`);
 
   const bundlePath = `lambda/${lambdaName}-${stackName}.zip`;
 
@@ -142,7 +167,7 @@ export const build = async ({
     new PutObjectCommand({
       Bucket: 'penxle-artifacts',
       Key: bundlePath,
-      Body: bundle,
+      Body: pkg,
       ContentType: 'application/zip',
       Metadata: { Hash: hash },
     }),

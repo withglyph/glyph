@@ -1,9 +1,25 @@
 import path from 'node:path';
 import github from '@actions/github';
+import { findWorkspaceDir } from '@pnpm/find-workspace-dir';
 import { findWorkspacePackagesNoCheck } from '@pnpm/workspace.find-packages';
 
-type LambdaSpec = { name: string; entrypoint: string; assets?: string };
+type LambdaSpec = {
+  name: string;
+  base: string;
+  entrypoint: string;
+  assets?: string;
+};
 type LambdaConfig = { default: LambdaSpec | LambdaSpec[] };
+
+export const getWorkspaceDir = async () => {
+  const workspaceDir = await findWorkspaceDir(process.cwd());
+
+  if (!workspaceDir) {
+    throw new Error('Could not locate workspace root');
+  }
+
+  return workspaceDir;
+};
 
 export const getProjectDir = async (project: string) => {
   const projects = await findWorkspacePackagesNoCheck('.');

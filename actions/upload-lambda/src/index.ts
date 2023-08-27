@@ -6,14 +6,15 @@ const main = async () => {
   const stackName = getCurrentStack();
   const projectName = actions.getInput('project');
 
-  const projectDir = await getProjectDir(projectName);
-  const specs = await getLambdaSpecs(projectDir);
+  const projectPath = await getProjectDir(projectName);
+  const specs = await getLambdaSpecs(projectPath);
 
   for (const spec of specs) {
     await build({
       stackName,
       lambdaName: spec.name,
-      projectDir,
+      basePath: spec.base,
+      projectPath,
       entrypointPath: spec.entrypoint,
       assetsPath: spec.assets,
     });
