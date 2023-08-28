@@ -3,6 +3,13 @@ The `BigInt` scalar type represents non-fractional signed whole numeric values.
 """
 scalar BigInt
 
+input CreatePostInput {
+  content: String!
+  spaceId: String!
+  subtitle: String
+  title: String!
+}
+
 input CreateSpaceInput {
   name: String!
   slug: String!
@@ -43,6 +50,7 @@ input LoginInput {
 }
 
 type Mutation {
+  createPost(input: CreatePostInput!): Post!
   createSpace(input: CreateSpaceInput!): Space!
   deleteSpace(input: DeleteSpaceInput!): Space!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
@@ -52,6 +60,17 @@ type Mutation {
   prepareImageUpload(input: PrepareImageUploadInput!): PrepareImageUploadPayload!
   signUp(input: SignUpInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
+}
+
+type Post {
+  content: String!
+  createdAt: DateTime!
+  id: ID!
+  space: Space!
+  subtitle: String
+  title: String!
+  updatedAt: DateTime!
+  views: Int!
 }
 
 input PrepareImageUploadInput {

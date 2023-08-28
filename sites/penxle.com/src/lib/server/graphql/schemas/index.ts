@@ -2,6 +2,7 @@ import './image';
 import './playground';
 import './space';
 import './user';
+import './post';
 
 import { dev } from '$app/environment';
 import { builder } from '../builder';
