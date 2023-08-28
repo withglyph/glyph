@@ -12,6 +12,7 @@ declare module '@tiptap/core' {
 
 const backtickInputRegex = /^`{3}([a-z]+)?\s$/;
 const languageClassPrefix = 'language-';
+const tab = '  ';
 
 export const CodeBlock = Node.create({
   name: 'code_block',
@@ -85,6 +86,128 @@ export const CodeBlock = Node.create({
 
         if ($anchor.parent.type.name === this.name) {
           return editor.commands.selectParentNode();
+        }
+        return false;
+      },
+
+      'Tab': ({ editor }) => {
+        const { empty, to, $anchor, from } = editor.state.selection;
+
+        if ($anchor.parent.type.name !== this.name) {
+          return false;
+        }
+
+        const codeBlockContent = $anchor.parent.content.firstChild?.textContent;
+
+        if (!empty && codeBlockContent) {
+          const selectionStart = from - $anchor.before() - 1;
+          const selectionEnd = selectionStart + (to - from);
+
+          let contentStartIdx = codeBlockContent.lastIndexOf(
+            '\n',
+            selectionStart,
+          );
+          let contentEndIdx = codeBlockContent.indexOf('\n', selectionEnd);
+
+          if (contentStartIdx === -1) {
+            contentStartIdx = 0;
+          } else if (contentStartIdx === selectionStart) {
+            const newContentStartIdx = codeBlockContent.lastIndexOf(
+              '\n',
+              selectionStart - 1,
+            );
+
+            contentStartIdx =
+              newContentStartIdx === -1 ? 0 : newContentStartIdx;
+          }
+
+          if (contentEndIdx === -1) {
+            contentEndIdx = codeBlockContent.length;
+          }
+
+          const indentedContent = codeBlockContent
+            .slice(contentStartIdx, contentEndIdx)
+            .split('\n')
+            .map((line: string) => {
+              if (line === '') {
+                return;
+              }
+              return tab + line;
+            })
+            .join('\n');
+
+          return editor
+            .chain()
+            .command(({ tr }) => {
+              tr.insertText(
+                indentedContent,
+                contentStartIdx + $anchor.before() + 1,
+                contentEndIdx + $anchor.before() + 1,
+              );
+              return true;
+            })
+            .run();
+        }
+
+        return editor.chain().insertContent(tab).run();
+      },
+
+      'Shift-Tab': ({ editor }) => {
+        const { $anchor, from, to } = editor.state.selection;
+
+        if ($anchor.parent.type.name !== this.name) {
+          return false;
+        }
+
+        const codeBlockContent = $anchor.parent.content.firstChild?.textContent;
+        const selectionStart = from - $anchor.before() - 1;
+        const selectionEnd = selectionStart + (to - from);
+
+        if (codeBlockContent) {
+          let contentStartIdx = codeBlockContent.lastIndexOf(
+            '\n',
+            selectionStart,
+          );
+          let contentEndIdx = codeBlockContent.indexOf('\n', selectionEnd);
+
+          if (contentStartIdx === -1) {
+            contentStartIdx = 0;
+          } else if (contentStartIdx === selectionStart) {
+            const newContentStartIdx = codeBlockContent.lastIndexOf(
+              '\n',
+              selectionStart - 1,
+            );
+
+            contentStartIdx =
+              newContentStartIdx === -1 ? 0 : newContentStartIdx;
+          }
+
+          if (contentEndIdx === -1) {
+            contentEndIdx = codeBlockContent.length;
+          }
+
+          const outdentedContent = codeBlockContent
+            .slice(contentStartIdx, contentEndIdx)
+            .split('\n')
+            .map((line: string) => {
+              if (line.startsWith(tab)) {
+                return line.replace(/^\s{2}/, '');
+              }
+              return line.replace(/^ /, '');
+            })
+            .join('\n');
+
+          return editor
+            .chain()
+            .command(({ tr }) => {
+              tr.insertText(
+                outdentedContent,
+                contentStartIdx + $anchor.before() + 1,
+                contentEndIdx + $anchor.before() + 1,
+              );
+              return true;
+            })
+            .run();
         }
         return false;
       },
