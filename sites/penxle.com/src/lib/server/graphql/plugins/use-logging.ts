@@ -8,9 +8,7 @@ export const useLogging = (): Plugin<Context> => ({
       scope: 'graphql',
       user: args.contextValue.session?.userId,
       ip: args.contextValue.getClientAddress(),
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       operation_name: args.operationName,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       variables: args.variableValues,
     });
   },

@@ -11,7 +11,6 @@ router.all('*', auth.handle).all('*', () => error(404));
 export const handler = async (event: RequestEvent) => {
   try {
     const context = await createContext(event);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const response = await router.handle(event.request, context);
     return json(response);
   } catch (err) {

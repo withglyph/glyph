@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "bootstrap": "pnpm install && husky install",
-    "build:deps": "turbo run build --filter './packages/**'",
+    "build:actions": "turbo run build --filter './actions/**'",
+    "build:deps": "turbo run build --filter './packages/**' --filter './infra/lib'",
     "codegen": "turbo run codegen",
     "dev": "turbo run dev --filter './sites/**' --concurrency 255",
     "fix": "pnpm run '/^fix:.+$/'",
@@ -21,18 +22,28 @@
   },
   "devDependencies": {
     "@penxle/lintconfig": "workspace:^",
-    "cspell": "^7.0.0",
-    "eslint": "^8.47.0",
+    "cspell": "^7.0.1",
+    "eslint": "^8.48.0",
     "gitmoji-cli": "^8.4.0",
     "husky": "^8.0.3",
-    "lint-staged": "^14.0.0",
+    "lint-staged": "^14.0.1",
     "prettier": "^3.0.2",
     "syncpack": "^11.2.1",
-    "turbo": "^1.10.12",
-    "typescript": "^5.1.6"
+    "turbo": "^1.10.13",
+    "typescript": "^5.2.2"
   },
   "engines": {
     "node": "^18 || ^20",
     "pnpm": "^8.6.0"
+  },
+  "pnpm": {
+    "allowedDeprecatedVersions": {
+      "@opentelemetry/api-metrics": "*",
+      "debuglog": "*",
+      "querystring": "*",
+      "readdir-scoped-modules": "*",
+      "read-package-tree": "*",
+      "vm2": "*"
+    }
   }
 }

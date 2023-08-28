@@ -4,6 +4,7 @@ import type {
   UnocssPluginContext,
   UnoGenerator,
 } from '@unocss/core';
+import type { TransformResult } from 'rollup';
 
 const transformIdRE = /\.(css|svelte)($|\?)/;
 
@@ -12,7 +13,7 @@ export const transformCode = async (
   filename: string,
   code: string,
   enforce: 'pre' | 'post' | 'default',
-) => {
+): Promise<TransformResult> => {
   if (!transformIdRE.test(filename)) {
     return;
   }
@@ -39,6 +40,7 @@ export const transformCode = async (
   if (source.hasChanged()) {
     return {
       code: source.toString(),
+      map: source.generateMap({ hires: true }),
     };
   }
 };

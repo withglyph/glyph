@@ -1,11 +1,11 @@
-import vercel from '@sveltejs/adapter-vercel';
+import { lambda } from '@penxle/adapter-lambda';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */
 export default {
   preprocess: vitePreprocess(),
   kit: {
-    adapter: vercel({ runtime: 'edge' }),
+    adapter: lambda(),
     alias: { $assets: './src/assets' },
     env: {
       publicPrefix: 'PUBLIC_',
