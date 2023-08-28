@@ -28,7 +28,7 @@ export class Site extends pulumi.ComponentResource {
     const resourceName = `${args.name}-${stack}`;
     const domain = isProd
       ? args.domain
-      : `${stack}-${args.domain.replaceAll('.', '-')}.pnxl.site`;
+      : `${stack}-${args.name.replaceAll('_', '-')}.pnxl.site`;
 
     this.siteDomain = pulumi.output(domain);
 
@@ -105,57 +105,18 @@ export class Site extends pulumi.ComponentResource {
       { parent: this },
     );
 
-    new aws.lambda.Permission(
+    const lambdaUrl = new aws.lambda.FunctionUrl(
       args.name,
       {
-        function: lambda.name,
-        action: 'lambda:InvokeFunction',
-        principal: 'apigateway.amazonaws.com',
+        functionName: lambda.name,
+        authorizationType: 'NONE',
       },
-      { parent: this },
-    );
-
-    const apiGatewayCertificate = aws.acm.getCertificateOutput(
-      { domain: isProd ? args.zone : 'pnxl.site' },
       { parent: this },
     );
 
     const cloudfrontCertificate = aws.acm.getCertificateOutput(
       { domain: isProd ? args.zone : 'pnxl.site' },
       { parent: this, provider: usEast1 },
-    );
-
-    const api = new aws.apigatewayv2.Api(
-      args.name,
-      {
-        name: resourceName,
-        protocolType: 'HTTP',
-        target: lambda.arn,
-      },
-      { parent: this },
-    );
-
-    const domainName = new aws.apigatewayv2.DomainName(
-      args.name,
-      {
-        domainName: domain,
-        domainNameConfiguration: {
-          endpointType: 'REGIONAL',
-          certificateArn: apiGatewayCertificate.arn,
-          securityPolicy: 'TLS_1_2',
-        },
-      },
-      { parent: this },
-    );
-
-    new aws.apigatewayv2.ApiMapping(
-      args.name,
-      {
-        apiId: api.id,
-        domainName: domainName.domainName,
-        stage: '$default',
-      },
-      { parent: this },
     );
 
     const distribution = new aws.cloudfront.Distribution(
@@ -167,8 +128,10 @@ export class Site extends pulumi.ComponentResource {
 
         origins: [
           {
-            originId: 'apigateway',
-            domainName: domainName.domainNameConfiguration.targetDomainName,
+            originId: 'lambda',
+            domainName: lambdaUrl.functionUrl.apply(
+              (url) => new URL(url).hostname,
+            ),
             customOriginConfig: {
               httpPort: 80,
               httpsPort: 443,
@@ -179,7 +142,7 @@ export class Site extends pulumi.ComponentResource {
         ],
 
         defaultCacheBehavior: {
-          targetOriginId: 'apigateway',
+          targetOriginId: 'lambda',
           viewerProtocolPolicy: 'redirect-to-https',
           compress: true,
           allowedMethods: [
@@ -192,14 +155,12 @@ export class Site extends pulumi.ComponentResource {
             'DELETE',
           ],
           cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
-          cachePolicyId: bedrockRef(
-            'AWS_CLOUDFRONT_API_GATEWAY_CACHE_POLICY_ID',
-          ),
+          cachePolicyId: bedrockRef('AWS_CLOUDFRONT_LAMBDA_CACHE_POLICY_ID'),
           originRequestPolicyId: bedrockRef(
-            'AWS_CLOUDFRONT_API_GATEWAY_ORIGIN_REQUEST_POLICY_ID',
+            'AWS_CLOUDFRONT_LAMBDA_ORIGIN_REQUEST_POLICY_ID',
           ),
           responseHeadersPolicyId: bedrockRef(
-            'AWS_CLOUDFRONT_API_GATEWAY_RESPONSE_HEADERS_POLICY_ID',
+            'AWS_CLOUDFRONT_LAMBDA_RESPONSE_HEADERS_POLICY_ID',
           ),
         },
 
