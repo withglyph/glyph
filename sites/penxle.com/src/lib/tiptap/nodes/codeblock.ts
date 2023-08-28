@@ -14,17 +14,17 @@ const backtickInputRegex = /^`{3}([a-z]+)?\s$/;
 const languageClassPrefix = 'language-';
 
 export const CodeBlock = Node.create({
-  name: 'codeBlock',
+  name: 'code_block',
+  group: 'block',
   content: 'text*',
   marks: '',
-  group: 'block',
   code: true,
   defining: true,
 
   addAttributes() {
     return {
       language: {
-        default: null,
+        default: 'plaintext',
         parseHTML: (element) => {
           const classNames = [...(element.firstElementChild?.classList ?? [])];
           const languages = classNames
@@ -80,7 +80,16 @@ export const CodeBlock = Node.create({
 
   addKeyboardShortcuts() {
     return {
-      Backspace: ({ editor }) => {
+      'Mod-a': ({ editor }) => {
+        const { $anchor } = editor.state.selection;
+
+        if ($anchor.parent.type.name === this.name) {
+          return editor.commands.selectParentNode();
+        }
+        return false;
+      },
+
+      'Backspace': ({ editor }) => {
         const { empty, $anchor } = editor.state.selection;
         const isAtStart = $anchor.pos === 1;
 
@@ -95,7 +104,7 @@ export const CodeBlock = Node.create({
         return false;
       },
 
-      Enter: ({ editor }) => {
+      'Enter': ({ editor }) => {
         const { $from, empty } = editor.state.selection;
 
         if (!empty || $from.parent.type !== this.type) {
@@ -120,7 +129,7 @@ export const CodeBlock = Node.create({
           .run();
       },
 
-      ArrowDown: ({ editor }) => {
+      'ArrowDown': ({ editor }) => {
         const { selection, doc } = editor.state;
         const { $from, empty } = selection;
 
@@ -165,8 +174,7 @@ export const CodeBlock = Node.create({
 
   addProseMirrorPlugins() {
     return [
-      // this plugin creates a code block for pasted content from VS Code
-      // we can also detect the copied code language
+      // VSCode에서 복사된 내용 붙여넣기 시 자동으로 코드블럭 생성. 언어 자동감지
       new Plugin({
         key: new PluginKey('codeBlockVSCodeHandler'),
         props: {
@@ -175,7 +183,7 @@ export const CodeBlock = Node.create({
               return false;
             }
 
-            // don’t create a new code block within code blocks
+            // 코드블럭 안에서 코드블럭이 또 생성되는 것 방지
             if (this.editor.isActive(this.type.name)) {
               return false;
             }
@@ -193,25 +201,19 @@ export const CodeBlock = Node.create({
 
             const { tr } = view.state;
 
-            // create an empty code block
+            // 새로운 코드블럭 생성, 새 코드블럭 안으로 커서 이동
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             tr.replaceSelectionWith(this.type.create({ language }));
 
-            // put cursor inside the newly created code block
             tr.setSelection(
               TextSelection.near(
                 tr.doc.resolve(Math.max(0, tr.selection.from - 2)),
               ),
             );
 
-            // add text to code block
-            // strip carriage return chars from text pasted as code
-            // see: https://github.com/ProseMirror/prosemirror-view/commit/a50a6bcceb4ce52ac8fcc6162488d8875613aacd
             tr.insertText(text.replaceAll(/\r\n?/g, '\n'));
 
-            // store meta information
-            // this is useful for other plugins that depends on the paste event
-            // like the paste rule plugin
+            // 메타 데이터 저장. paste 규칙 플러그인과 같은 다른 플러그인 사용 시 유용함
             tr.setMeta('paste', true);
 
             view.dispatch(tr);
