@@ -86,7 +86,7 @@ export class Site extends pulumi.ComponentResource {
         architectures: ['x86_64'],
 
         memorySize: 2048,
-        timeout: 29,
+        timeout: 59,
 
         s3Bucket: pkg.bucket,
         s3Key: pkg.key,
@@ -135,6 +135,8 @@ export class Site extends pulumi.ComponentResource {
             customOriginConfig: {
               httpPort: 80,
               httpsPort: 443,
+              originReadTimeout: 60,
+              originKeepaliveTimeout: 60,
               originProtocolPolicy: 'https-only',
               originSslProtocols: ['TLSv1.2'],
             },
