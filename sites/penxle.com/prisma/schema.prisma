@@ -122,6 +122,17 @@ model UserPassword {
   @@map("user_passwords")
 }
 
+model Tag {
+  id          String @id
+  name        String
+  description String @default("")
+  count       Int    @default(0)
+
+  posts PostTag[]
+
+  @@map("tags")
+}
+
 model Post {
   id        String   @id
   spaceId   String   @map("space_id")
@@ -133,9 +144,24 @@ model Post {
   content   String
   views     Int      @default(0)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz // 글 수정가능성 있으니까
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz // 글 수정가능성 있으니까
+  adultOnly Boolean  @default(false) @map("adult_only")
+
+  tags PostTag[]
 
   @@map("posts")
+}
+
+model PostTag {
+  id        String   @id
+  postId    String   @map("post_id")
+  post      Post     @relation(fields: [postId], references: [id])
+  tagId     String   @map("tag_id")
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  updatedAt DateTime @updatedAt @map("created_at") @db.Timestamptz
+
+  @@unique([postId, tagId])
+  @@map("post_tags")
 }
 
 enum SpaceState {
