@@ -1,9 +1,9 @@
 import actions from '@actions/core';
 import { build } from './build';
-import { getCurrentStack, getLambdaSpecs, getProjectDir } from './utils';
+import { getLambdaSpecs, getProjectDir } from './utils';
 
 const main = async () => {
-  const stackName = getCurrentStack();
+  const stackName = actions.getInput('stack');
   const projectName = actions.getInput('project');
 
   const projectPath = await getProjectDir(projectName);

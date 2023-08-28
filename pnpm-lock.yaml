@@ -32,6 +32,9 @@ importers:
       syncpack:
         specifier: ^11.2.1
         version: 11.2.1
+      tsx:
+        specifier: ^3.12.7
+        version: 3.12.7
       turbo:
         specifier: ^1.10.13
         version: 1.10.13
@@ -107,8 +110,11 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
 
-  functions/gh-app:
+  functions/github-app:
     dependencies:
+      '@aws-sdk/client-ecs':
+        specifier: ^3.398.0
+        version: 3.398.0
       '@aws-sdk/client-ssm':
         specifier: ^3.398.0
         version: 3.398.0
@@ -190,6 +196,28 @@ importers:
       fast-glob:
         specifier: ^3.3.1
         version: 3.3.1
+      tsx:
+        specifier: ^3.12.7
+        version: 3.12.7
+
+  infra/github-app:
+    dependencies:
+      '@penxle/infra':
+        specifier: workspace:^
+        version: link:../lib
+      '@pulumi/aws':
+        specifier: ^5.42.0
+        version: 5.42.0
+      '@pulumi/pulumi':
+        specifier: ^3.79.0
+        version: 3.79.0
+    devDependencies:
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
+      '@types/node':
+        specifier: ^20.5.6
+        version: 20.5.6
       tsx:
         specifier: ^3.12.7
         version: 3.12.7
@@ -1045,6 +1073,51 @@ packages:
       '@aws-sdk/types': 3.398.0
       '@aws-sdk/util-utf8-browser': 3.259.0
       tslib: 1.14.1
+
+  /@aws-sdk/client-ecs@3.398.0:
+    resolution: {integrity: sha512-bjLdxYs9fV6u5qZI5HssZrcrM2pD8JOxqo4ApHTo1ldhwtKiSsrsJv2nJ721bRT0iByDrtgI72EKfGMBysE+lA==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      '@aws-crypto/sha256-browser': 3.0.0
+      '@aws-crypto/sha256-js': 3.0.0
+      '@aws-sdk/client-sts': 3.398.0
+      '@aws-sdk/credential-provider-node': 3.398.0
+      '@aws-sdk/middleware-host-header': 3.398.0
+      '@aws-sdk/middleware-logger': 3.398.0
+      '@aws-sdk/middleware-recursion-detection': 3.398.0
+      '@aws-sdk/middleware-signing': 3.398.0
+      '@aws-sdk/middleware-user-agent': 3.398.0
+      '@aws-sdk/types': 3.398.0
+      '@aws-sdk/util-endpoints': 3.398.0
+      '@aws-sdk/util-user-agent-browser': 3.398.0
+      '@aws-sdk/util-user-agent-node': 3.398.0
+      '@smithy/config-resolver': 2.0.5
+      '@smithy/fetch-http-handler': 2.0.5
+      '@smithy/hash-node': 2.0.5
+      '@smithy/invalid-dependency': 2.0.5
+      '@smithy/middleware-content-length': 2.0.5
+      '@smithy/middleware-endpoint': 2.0.5
+      '@smithy/middleware-retry': 2.0.5
+      '@smithy/middleware-serde': 2.0.5
+      '@smithy/middleware-stack': 2.0.0
+      '@smithy/node-config-provider': 2.0.5
+      '@smithy/node-http-handler': 2.0.5
+      '@smithy/protocol-http': 2.0.5
+      '@smithy/smithy-client': 2.0.5
+      '@smithy/types': 2.2.2
+      '@smithy/url-parser': 2.0.5
+      '@smithy/util-base64': 2.0.0
+      '@smithy/util-body-length-browser': 2.0.0
+      '@smithy/util-body-length-node': 2.1.0
+      '@smithy/util-defaults-mode-browser': 2.0.5
+      '@smithy/util-defaults-mode-node': 2.0.5
+      '@smithy/util-retry': 2.0.0
+      '@smithy/util-utf8': 2.0.0
+      '@smithy/util-waiter': 2.0.5
+      tslib: 2.6.2
+    transitivePeerDependencies:
+      - aws-crt
+    dev: false
 
   /@aws-sdk/client-s3@3.400.0:
     resolution: {integrity: sha512-lnv0pb79Czl8fCMs/z7yM56LvoKTri1I4jX/V33trHMFKPQDoy8i24wxG8+TZl3MUmnUyoQS7tlukh7IFkii1Q==}
@@ -6557,7 +6630,7 @@ packages:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
     dependencies:
       base64-js: 1.5.1
-      ieee754: 1.1.13
+      ieee754: 1.2.1
       isarray: 1.0.0
     dev: false
 

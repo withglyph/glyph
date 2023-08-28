@@ -4,3 +4,5 @@ runs:
 inputs:
   project:
     required: true
+  stack:
+    required: true

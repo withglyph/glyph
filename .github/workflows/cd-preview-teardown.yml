@@ -1,11 +1,11 @@
-name: CD
+name: cd/preview/teardown
 
 on:
   pull_request:
     types: [closed]
 
 jobs:
-  preview-teardown:
+  teardown:
     name: Teardown
     runs-on: ubuntu-latest
     strategy:

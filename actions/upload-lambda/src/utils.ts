@@ -1,5 +1,4 @@
 import path from 'node:path';
-import github from '@actions/github';
 import { findWorkspaceDir } from '@pnpm/find-workspace-dir';
 import { findWorkspacePackagesNoCheck } from '@pnpm/workspace.find-packages';
 
@@ -39,22 +38,4 @@ export const getLambdaSpecs = async (projectDir: string) => {
   )) as LambdaConfig;
 
   return Array.isArray(config) ? config : [config];
-};
-
-export const getCurrentStack = () => {
-  if (
-    github.context.eventName === 'pull_request' &&
-    github.context.payload.pull_request
-  ) {
-    return `pr-${github.context.payload.pull_request.number}`;
-  }
-
-  if (
-    github.context.eventName === 'push' &&
-    github.context.ref === 'refs/heads/main'
-  ) {
-    return 'production';
-  }
-
-  throw new Error('Could not determine stack name');
 };

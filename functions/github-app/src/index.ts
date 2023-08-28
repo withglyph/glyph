@@ -13,10 +13,7 @@ router.post('/', async (request) => {
   const payload = await request.text();
 
   if (!id || !name || !signature || !payload) {
-    return {
-      statusCode: 400,
-      body: 'Invalid request',
-    };
+    return new Response('Invalid request', { status: 400 });
   }
 
   await webhook.verifyAndReceive({ id, name, signature, payload });
