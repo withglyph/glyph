@@ -12,12 +12,17 @@ jobs:
   preview:
     name: Preview
     runs-on: ubuntu-latest
+    container: amazonlinux:2
     strategy:
       fail-fast: false
       matrix:
         project: [penxle.com, penxle.io, help.penxle.com, landing.penxle.com]
     concurrency: ${{ matrix.project }}-pr-${{ github.event.number }}
     steps:
+      - name: Install binaries
+        run: |
+          yum install -y git tar zstd
+
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
@@ -31,7 +36,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 16
           cache: pnpm
 
       - name: Install dependencies
@@ -40,19 +45,11 @@ jobs:
       - name: Prepare local actions
         run: pnpm run build:actions
 
-      - name: Check changes
-        id: check_changes
-        uses: ./actions/check-changes
-        with:
-          project: ${{ matrix.project }}
-
       - name: Build local dependencies
-        if: steps.check_changes.outputs.changed == 'true'
         run: pnpm run build:deps
 
       - name: Fetch secrets
         uses: dopplerhq/secrets-fetch-action@v1.1.2
-        if: steps.check_changes.outputs.changed == 'true'
         with:
           doppler-token: ${{ secrets.DOPPLER_TOKEN }}
           doppler-project: penxle-com
@@ -60,11 +57,9 @@ jobs:
           inject-env-vars: true
 
       - name: Build project
-        if: steps.check_changes.outputs.changed == 'true'
         run: pnpm exec turbo run build --filter=${{ matrix.project }}
 
       - name: Upload lambda function
-        if: steps.check_changes.outputs.changed == 'true'
         uses: ./actions/upload-lambda
         with:
           project: ${{ matrix.project }}
@@ -74,11 +69,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Setup Pulumi
-        if: steps.check_changes.outputs.changed == 'true'
         uses: pulumi/actions@v4
 
       - name: Deploy infrastructure
-        if: steps.check_changes.outputs.changed == 'true'
         run: |
           cd infra/${{ matrix.project }}
           pulumi stack select penxle/pr-${{ github.event.number }} || pulumi stack init penxle/pr-${{ github.event.number }}
