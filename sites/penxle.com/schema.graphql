@@ -68,6 +68,7 @@ type Post {
   id: ID!
   space: Space!
   subtitle: String
+  tags: [Tag!]!
   title: String!
   updatedAt: DateTime!
   views: Int!
@@ -123,6 +124,14 @@ type SpaceMember {
 enum SpaceMemberRole {
   MEMBER
   OWNER
+}
+
+type Tag {
+  count: Int!
+  description: String!
+  id: ID!
+  name: String!
+  posts: [Post!]!
 }
 
 input UpdateUserProfileInput {

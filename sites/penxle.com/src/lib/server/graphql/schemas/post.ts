@@ -17,6 +17,33 @@ builder.prismaObject('Post', {
     views: t.exposeInt('views'),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
+    tags: t.prismaField({
+      type: ['Tag'],
+      select: (_, __, nestedSelection) => ({
+        tags: {
+          select: { tag: nestedSelection(true) },
+        },
+      }),
+      resolve: (_, { tags }) => tags.map(({ tag }) => tag),
+    }),
+  }),
+});
+
+builder.prismaObject('Tag', {
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    name: t.exposeString('name'),
+    description: t.exposeString('description'),
+    count: t.exposeInt('count'),
+    posts: t.prismaField({
+      type: ['Post'],
+      select: (_, __, nestedSelection) => ({
+        posts: {
+          select: { post: nestedSelection(true) },
+        },
+      }),
+      resolve: (_, { posts }) => posts.map(({ post }) => post),
+    }),
   }),
 });
 
