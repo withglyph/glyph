@@ -85,8 +85,12 @@ export const CodeBlock = Node.create({
         const { $anchor } = editor.state.selection;
 
         if ($anchor.parent.type.name === this.name) {
-          return editor.commands.selectParentNode();
+          return editor.commands.setTextSelection({
+            from: $anchor.before() + 1,
+            to: $anchor.after() - 1,
+          });
         }
+
         return false;
       },
 
