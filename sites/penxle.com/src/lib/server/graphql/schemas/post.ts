@@ -40,6 +40,7 @@ builder.prismaObject('Tag', {
       select: (_, __, nestedSelection) => ({
         posts: {
           select: { post: nestedSelection(true) },
+          where: { post: { state: 'ACTIVE' } },
         },
       }),
       resolve: (_, { posts }) => posts.map(({ post }) => post),
@@ -63,6 +64,12 @@ const CreatePostInput = builder.inputType('CreatePostInput', {
   },
 });
 
+const DeletePostInput = builder.inputType('DeletePostInput', {
+  fields: (t) => ({
+    id: t.string(),
+  }),
+});
+
 /**
  * * Queries
  */
@@ -74,7 +81,10 @@ builder.queryFields((t) => ({
     resolve: async (query, _, args, { db }) => {
       const post = await db.post.findFirst({
         ...query,
-        where: { id: args.id },
+        where: {
+          id: args.id,
+          state: 'ACTIVE',
+        },
       });
       if (!post) {
         throw new NotFoundError();
@@ -121,6 +131,46 @@ builder.mutationFields((t) => ({
       context.track('post:create');
 
       return post;
+    },
+  }),
+
+  deletePost: t.withAuth({ auth: true }).prismaField({
+    type: 'Post',
+    args: { input: t.arg({ type: DeletePostInput }) },
+    resolve: async (query, _, { input }, { db, session, track }) => {
+      const post = await db.post.findFirst({
+        where: {
+          id: input.id,
+        },
+      });
+      if (!post || post.state !== 'ACTIVE') {
+        throw new NotFoundError();
+      }
+      if (post.userId !== session.userId) {
+        // 작성자가 아니면 권한을 체크
+        const space = await db.spaceMember.findFirst({
+          where: {
+            spaceId: post.spaceId,
+            userId: session.userId,
+          },
+        });
+        if (!space || !['OWNER'].includes(space.role)) {
+          // 스페이스에서 게시물을 삭제 가능한 권한이 늘어날시 -> 저 배열에 추가하면 OK
+          throw new PermissionDeniedError();
+        }
+      }
+      const deletedPost = await db.post.update({
+        ...query,
+        where: {
+          id: input.id,
+          state: 'ACTIVE',
+        },
+        data: { state: 'INACTIVE' },
+      });
+
+      track('post:delete');
+
+      return deletedPost;
     },
   }),
 }));

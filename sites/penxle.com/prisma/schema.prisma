@@ -134,18 +134,19 @@ model Tag {
 }
 
 model Post {
-  id        String   @id
-  spaceId   String   @map("space_id")
-  space     Space    @relation(fields: [spaceId], references: [id])
-  userId    String   @map("user_id") // 수익금 정산을 위해 필요?
-  user      User     @relation(fields: [userId], references: [id])
+  id        String    @id
+  spaceId   String    @map("space_id")
+  space     Space     @relation(fields: [spaceId], references: [id])
+  userId    String    @map("user_id") // 수익금 정산을 위해 필요?
+  user      User      @relation(fields: [userId], references: [id])
   title     String
   subtitle  String?
   content   String
-  views     Int      @default(0)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz // 글 수정가능성 있으니까
-  adultOnly Boolean  @default(false) @map("adult_only")
+  views     Int       @default(0)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz // 글 수정가능성 있으니까
+  adultOnly Boolean   @default(false) @map("adult_only")
+  state     PostState @default(ACTIVE)
 
   tags PostTag[]
 
@@ -190,4 +191,11 @@ enum UserState {
   INACTIVE
 
   @@map("_user_state")
+}
+
+enum PostState {
+  ACTIVE
+  INACTIVE
+
+  @@map("_post_state")
 }
