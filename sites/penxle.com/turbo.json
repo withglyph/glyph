@@ -3,8 +3,8 @@
   "extends": ["//"],
   "pipeline": {
     "codegen": {
-      "dependsOn": ["codegen:prisma"],
-      "outputs": ["$houdini/**"]
+      "dependsOn": ["codegen:prisma", "^build"],
+      "outputs": [".svelte-kit/**", "$houdini/**"]
     },
     "codegen:prisma": { "cache": false }
   }
