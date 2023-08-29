@@ -27,6 +27,8 @@ model Image {
 
   profileUsingThisAsAvatar Profile?
 
+  usingPost PostImage[]
+
   @@index([id, path, color])
   @@map("images")
 }
@@ -148,7 +150,8 @@ model Post {
   adultOnly Boolean   @default(false) @map("adult_only")
   state     PostState @default(ACTIVE)
 
-  tags PostTag[]
+  tags   PostTag[]
+  images PostImage[]
 
   @@map("posts")
 }
@@ -163,6 +166,16 @@ model PostTag {
 
   @@unique([postId, tagId])
   @@map("post_tags")
+}
+
+model PostImage {
+  postId  String @map("post_id")
+  post    Post   @relation(fields: [postId], references: [id])
+  imageId String @map("image_id")
+  image   Image  @relation(fields: [imageId], references: [id])
+
+  @@id([postId, imageId])
+  @@map("post_images")
 }
 
 enum SpaceState {

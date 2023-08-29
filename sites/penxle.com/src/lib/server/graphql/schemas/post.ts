@@ -26,6 +26,15 @@ builder.prismaObject('Post', {
       }),
       resolve: (_, { tags }) => tags.map(({ tag }) => tag),
     }),
+    images: t.prismaField({
+      type: ['Image'],
+      select: (_, __, nestedSelection) => ({
+        images: {
+          select: { image: nestedSelection(true) },
+        },
+      }),
+      resolve: (_, { images }) => images.map(({ image }) => image),
+    }),
   }),
 });
 
@@ -58,6 +67,7 @@ const CreatePostInput = builder.inputType('CreatePostInput', {
     subtitle: t.string({ required: false }),
     content: t.string(),
     spaceId: t.string(),
+    images: t.idList({ required: false }),
   }),
   validate: {
     schema: CreatePostInputSchema,
@@ -116,15 +126,26 @@ builder.mutationFields((t) => ({
         throw new PermissionDeniedError();
       }
 
+      const postId = createId();
+
       const post = await db.post.create({
         ...query,
         data: {
-          id: createId(),
+          id: postId,
           spaceId: input.spaceId,
           userId: context.session.userId,
           title: input.title,
           subtitle: input.subtitle,
           content: input.content,
+          images: {
+            connect:
+              input.images?.map((id) => ({
+                postId_imageId: {
+                  postId,
+                  imageId: id,
+                },
+              })) ?? [],
+          },
         },
       });
 
