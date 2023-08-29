@@ -1,4 +1,4 @@
-export * from './codeblock';
+export * from './code-block';
 export * from './document';
 export * from './hard-break';
 export * from './heading';
