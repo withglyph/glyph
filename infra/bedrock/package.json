@@ -1,0 +1,21 @@
+{
+  "name": "@penxle/infra-bedrock",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@penxle/infra": "workspace:^",
+    "@pulumi/aws": "^5.42.0",
+    "@pulumi/cloudflare": "^5.9.0",
+    "@pulumi/pulumi": "^3.79.0",
+    "@pulumi/random": "^4.13.2",
+    "@pulumi/tls": "^4.10.0"
+  },
+  "devDependencies": {
+    "@penxle/tsconfig": "workspace:^",
+    "@types/node": "^20.5.6",
+    "fast-glob": "^3.3.1",
+    "tsx": "^3.12.7"
+  }
+}

@@ -17,8 +17,6 @@
     "importsNotUsedAsValues": "remove",
     "isolatedModules": false,
     "preserveValueImports": false,
-    "verbatimModuleSyntax": true,
-
-    "outDir": "dist"
+    "verbatimModuleSyntax": true
   }
 }

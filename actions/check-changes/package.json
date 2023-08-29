@@ -1,0 +1,20 @@
+{
+  "name": "@penxle/action-check-changes",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "lint:typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
+    "execa": "^8.0.1"
+  },
+  "devDependencies": {
+    "@penxle/tsconfig": "workspace:^",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2"
+  }
+}

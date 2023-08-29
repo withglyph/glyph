@@ -1,6 +1,5 @@
 import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
-import typescript from '@typescript-eslint/eslint-plugin';
 import imports from 'eslint-plugin-import';
 import importsSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
@@ -16,8 +15,8 @@ export default [
   js.configs.recommended,
   ...compat.extends(
     'plugin:unicorn/recommended',
-    'plugin:@typescript-eslint/strict-type-checked',
-    'plugin:@typescript-eslint/stylistic-type-checked',
+    'plugin:@typescript-eslint/strict',
+    'plugin:@typescript-eslint/stylistic',
     'plugin:svelte/recommended',
     'plugin:svelte/prettier',
   ),
@@ -29,7 +28,6 @@ export default [
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
-        project: true,
         extraFileExtensions: ['.svelte'],
       },
     },
@@ -38,8 +36,9 @@ export default [
     },
     plugins: { 'import': imports, 'import-sort': importsSort },
     rules: {
+      'no-undef': 'off',
+      'object-shorthand': ['error', 'always'],
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-      '@typescript-eslint/no-confusing-void-expression': 'off',
       'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
       'import/first': 'error',
       'import/newline-after-import': ['error', { considerComments: true }],
@@ -73,14 +72,15 @@ export default [
     },
   },
   {
-    files: ['**/*.?(c)js', '**/*.config.?(c)ts', '**/service-worker.ts'],
-    languageOptions: { parserOptions: { project: null } },
-    rules: { ...typescript.configs['disable-type-checked'].rules },
-  },
-  {
     files: ['**/*.config.[jt]s'],
     rules: {
       'import/no-default-export': 'off',
+    },
+  },
+  {
+    files: ['infra/**/*'],
+    rules: {
+      'unicorn/prefer-spread': 'off',
     },
   },
   {

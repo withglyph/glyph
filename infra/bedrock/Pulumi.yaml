@@ -1,0 +1,5 @@
+name: bedrock
+runtime:
+  name: nodejs
+  options:
+    nodeargs: --loader=tsx --no-warnings

@@ -1,0 +1,35 @@
+name: CD
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  preview-teardown:
+    name: Teardown
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [penxle.com, penxle.io, help.penxle.com, landing.penxle.com]
+    concurrency: ${{ matrix.project }}-pr-${{ github.event.number }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Pulumi
+        uses: pulumi/actions@v4
+
+      - name: Destroy infrastructure
+        run: |
+          cd infra/${{ matrix.project }}
+          pulumi stack select penxle/pr-${{ github.event.number }}
+          pulumi config refresh
+          pulumi destroy --skip-preview --stack penxle/pr-${{ github.event.number }}
+          pulumi stack rm --yes --stack penxle/pr-${{ github.event.number }}
+        env:
+          AWS_REGION: ap-northeast-2
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

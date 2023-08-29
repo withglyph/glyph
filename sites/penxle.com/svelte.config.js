@@ -1,14 +1,14 @@
-import vercel from '@sveltejs/adapter-vercel';
+import { lambda } from '@penxle/adapter-lambda';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */
 export default {
   preprocess: vitePreprocess(),
   kit: {
-    adapter: vercel({
-      runtime: 'nodejs18.x',
-      regions: ['icn1'],
-      memory: 2048,
+    adapter: lambda({
+      // runtime: 'nodejs18.x',
+      // regions: ['icn1'],
+      // memory: 2048,
     }),
     alias: {
       $assets: './src/assets',
