@@ -209,6 +209,7 @@ export const CodeBlock = Node.create({
             })
             .run();
         }
+
         return false;
       },
 
@@ -302,6 +303,13 @@ export const CodeBlock = Node.create({
         key: new PluginKey('codeBlockVSCodeHandler'),
         props: {
           handlePaste: (view, event) => {
+            type VSCodeData = {
+              version: number;
+              isFromEmptySelection: boolean;
+              multicursorText: string[] | null;
+              mode: string | null;
+            };
+
             if (!event.clipboardData) {
               return false;
             }
@@ -313,9 +321,10 @@ export const CodeBlock = Node.create({
 
             const text = event.clipboardData.getData('text/plain');
             const vscode = event.clipboardData.getData('vscode-editor-data');
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const vscodeData = vscode ? JSON.parse(vscode) : undefined;
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
+            const vscodeData: VSCodeData = vscode
+              ? JSON.parse(vscode)
+              : undefined;
             const language = vscodeData?.mode;
 
             if (!text || !language) {
@@ -325,9 +334,7 @@ export const CodeBlock = Node.create({
             const { tr } = view.state;
 
             // 새로운 코드블럭 생성, 새 코드블럭 안으로 커서 이동
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             tr.replaceSelectionWith(this.type.create({ language }));
-
             tr.setSelection(
               TextSelection.near(
                 tr.doc.resolve(Math.max(0, tr.selection.from - 2)),
