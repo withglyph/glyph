@@ -92,6 +92,7 @@ type Query {
   authLayoutBackgroundImage: Image
   me: User!
   meOrNull: User
+  post(id: ID!): Post!
   randomAvatars: [String!]!
   space(slug: String!): Space!
 }

@@ -1,4 +1,4 @@
-import { PermissionDeniedError } from '$lib/errors';
+import { NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { createId } from '$lib/utils';
 import { CreatePostInputSchema } from '$lib/validations';
 import { builder } from '../builder';
@@ -40,18 +40,22 @@ const CreatePostInput = builder.inputType('CreatePostInput', {
  * * Queries
  */
 
-// builder.queryFields((t) => ({
-//   post: t.prismaField({
-//     type: 'Post',
-//     args: { id: t.arg.id() },
-//     resolve: async (query, _, args, { db }) => {
-//       return await db.post.findMany({
-//         ...query,
-//         where: { id: args.id }
-//       });
-//     },
-//   }),
-// }));
+builder.queryFields((t) => ({
+  post: t.prismaField({
+    type: 'Post',
+    args: { id: t.arg.id() },
+    resolve: async (query, _, args, { db }) => {
+      const post = await db.post.findFirst({
+        ...query,
+        where: { id: args.id },
+      });
+      if (!post) {
+        throw new NotFoundError();
+      }
+      return post;
+    },
+  }),
+}));
 
 /**
  * * Mutations
