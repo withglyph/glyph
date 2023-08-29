@@ -15,6 +15,7 @@ builder.prismaObject('Space', {
     slug: t.exposeString('slug'),
     name: t.exposeString('name'),
     members: t.relation('members'),
+    posts: t.relation('posts'),
 
     meAsMember: t.prismaField({
       type: 'SpaceMember',
