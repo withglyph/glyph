@@ -20,7 +20,7 @@ const assets = async (_: LambdaRequest, event: APIGatewayProxyEventV2) => {
   const pathname = event.rawPath.slice(1);
 
   if (manifest.assets.has(pathname) || pathname.startsWith(manifest.appPath)) {
-    const buffer = await fs.readFile(path.join(__dirname, '_assets', pathname));
+    const buffer = await fs.readFile(path.join(__dirname, 'public', pathname));
     const immutable = pathname.startsWith(`${manifest.appPath}/immutable`);
 
     return new Response(buffer, {
@@ -39,8 +39,8 @@ const prerender = async (_: LambdaRequest, event: APIGatewayProxyEventV2) => {
 
   if (prerendered.has(pathname)) {
     const candidates = [
-      path.join(__dirname, '_assets', `${pathname}.html`),
-      path.join(__dirname, '_assets', pathname, 'index.html'),
+      path.join(__dirname, 'public', `${pathname}.html`),
+      path.join(__dirname, 'public', pathname, 'index.html'),
     ];
 
     for (const candidate of candidates) {
