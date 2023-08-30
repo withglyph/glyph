@@ -1,9 +1,9 @@
 import fg from 'fast-glob';
 
 export const index = async () => {
-  const paths = await fg('src/**/*.ts', {
+  const paths = await fg('pulumi/**/*.ts', {
     absolute: true,
-    ignore: ['src/index.ts'],
+    ignore: ['pulumi/index.ts'],
   });
   const imports = paths.map((path) => import(path));
   const outputs = imports.map((i) =>

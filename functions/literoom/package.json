@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "main": "pulumi/index.ts",
   "scripts": {
     "build": "tsup && lambdify",
     "lint:typecheck": "tsc --noEmit"
@@ -15,9 +16,14 @@
   },
   "devDependencies": {
     "@penxle/lambda": "workspace:^",
+    "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
+    "@pulumi/aws": "^5.42.0",
+    "@pulumi/aws-native": "^0.73.1",
+    "@pulumi/pulumi": "^3.79.0",
     "@types/aws-lambda": "^8.10.119",
     "tsup": "^7.2.0",
+    "tsx": "^3.12.7",
     "typescript": "^5.2.2"
   }
 }

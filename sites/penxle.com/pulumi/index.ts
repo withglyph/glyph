@@ -1,4 +1,4 @@
-import * as penxle from '@penxle/infra/components';
+import * as penxle from '@penxle/pulumi/components';
 
 const site = new penxle.Site('penxle.com', {
   name: 'penxle_com',

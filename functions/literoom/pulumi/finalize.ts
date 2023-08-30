@@ -1,4 +1,4 @@
-import { bedrockRef } from '@penxle/infra';
+import { bedrockRef } from '@penxle/pulumi';
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 
