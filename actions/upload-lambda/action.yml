@@ -1,8 +1,0 @@
-runs:
-  using: node16
-  main: dist/index.js
-inputs:
-  project:
-    required: true
-  stack:
-    required: true
