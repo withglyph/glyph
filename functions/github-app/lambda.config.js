@@ -1,5 +1,3 @@
 export default {
-  name: 'github-app',
-  base: 'dist',
-  entrypoint: 'index.js',
+  entry: ['dist/index.js'],
 };

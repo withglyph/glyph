@@ -1,13 +1,14 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { lambdify } from '../cli';
 import type { Adapter } from '@sveltejs/kit';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const lambda = (): Adapter => {
   return {
-    name: '@penxle/adapter-lambda',
+    name: '@penxle/lambda',
     adapt: async (builder) => {
       const out = builder.getBuildDirectory('lambda');
 
@@ -16,12 +17,12 @@ export const lambda = (): Adapter => {
 
       builder.writeServer(out);
       builder.copy(
-        path.join(__dirname, 'handler.js'),
+        path.join(__dirname, 'adapter-handler.js'),
         path.join(out, 'handler.js'),
         {
           replace: {
-            SERVER: './index.js',
-            MANIFEST: './manifest.js',
+            '0SERVER': './index.js',
+            '0MANIFEST': './manifest.js',
           },
         },
       );
@@ -33,8 +34,13 @@ export const lambda = (): Adapter => {
         )});\n`,
       );
 
-      builder.writeClient(path.join(out, '_assets'));
-      builder.writePrerendered(path.join(out, '_assets'));
+      builder.writeClient(path.join(out, 'public'));
+      builder.writePrerendered(path.join(out, 'public'));
+
+      await lambdify({
+        entry: ['.svelte-kit/lambda/handler.js'],
+        public: '.svelte-kit/lambda/public',
+      });
     },
   };
 };

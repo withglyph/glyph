@@ -1,13 +1,13 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { router } from '@penxle/lambda/http';
 import { installPolyfills } from '@sveltejs/kit/node/polyfills';
-import { manifest, prerendered } from 'MANIFEST';
+import { manifest, prerendered } from '0MANIFEST';
+import { Server } from '0SERVER';
 import mime from 'mime-types';
-import { Server } from 'SERVER';
-import type { LambdaRequest } from '@penxle/lambda/http';
+import { router } from '../http';
 import type { APIGatewayProxyEventV2 } from 'aws-lambda';
+import type { LambdaRequest } from '../http';
 
 installPolyfills();
 
@@ -82,4 +82,4 @@ export const error = () => {
 
 router.all('*', assets, prerender, sveltekit, error);
 
-export { handler } from '@penxle/lambda/http';
+export { handler } from '../http';

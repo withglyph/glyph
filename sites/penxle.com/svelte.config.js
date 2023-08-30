@@ -1,15 +1,11 @@
-import { lambda } from '@penxle/adapter-lambda';
+import { lambda } from '@penxle/lambda/adapter';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */
 export default {
   preprocess: vitePreprocess(),
   kit: {
-    adapter: lambda({
-      // runtime: 'nodejs18.x',
-      // regions: ['icn1'],
-      // memory: 2048,
-    }),
+    adapter: lambda(),
     alias: {
       $assets: './src/assets',
       $houdini: './$houdini',

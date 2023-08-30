@@ -12,7 +12,7 @@ jobs:
   deploy:
     name: ${{ matrix.project }}
     runs-on: ubuntu-latest
-    container: node:18-alpine
+    container: node:18
     strategy:
       fail-fast: false
       matrix:
@@ -47,12 +47,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Prepare local actions
-        run: pnpm run build:actions
-
-      - name: Build local dependencies
-        run: pnpm run build:deps
-
       - name: Fetch secrets
         uses: dopplerhq/secrets-fetch-action@v1.1.2
         with:
@@ -63,16 +57,6 @@ jobs:
 
       - name: Build project
         run: pnpm exec turbo run build --filter=${{ matrix.project }}
-
-      - name: Upload lambda function
-        uses: ./actions/upload-lambda
-        with:
-          project: ${{ matrix.project }}
-          stack: pr-${{ github.event.pull_request.number }}
-        env:
-          AWS_REGION: ap-northeast-2
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Deploy infrastructure
         run: |

@@ -4,14 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "svelte-kit sync && vite build",
+    "build": "vite build",
     "codegen": "svelte-kit sync",
     "dev": "vite dev",
     "lint:svelte": "svelte-check --fail-on-warnings",
     "lint:typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@penxle/adapter-lambda": "workspace:^",
+    "@penxle/lambda": "workspace:^",
     "@penxle/lib": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@penxle/ui": "workspace:^",
