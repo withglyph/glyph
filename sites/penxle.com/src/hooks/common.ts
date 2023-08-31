@@ -1,3 +1,6 @@
+import * as Sentry from '@sentry/sveltekit';
+import { browser } from '$app/environment';
+import { PUBLIC_SENTRY_DSN } from '$env/static/public';
 import { setupDayjs } from '$lib/datetime';
 import {
   AppError,
@@ -7,11 +10,37 @@ import {
 } from '$lib/errors';
 import type { HandleClientError, HandleServerError } from '@sveltejs/kit';
 
+const setupSentry = () => {
+  const integrations = [];
+
+  if (browser) {
+    integrations.push(
+      new Sentry.Replay({
+        sessionSampleRate: 0.1,
+        errorSampleRate: 1,
+      }),
+    );
+  } else {
+    integrations.push(
+      new Sentry.Integrations.OnUncaughtException({}),
+      new Sentry.Integrations.OnUnhandledRejection({ mode: 'strict' }),
+      new Sentry.Integrations.LocalVariables({ captureAllExceptions: true }),
+    );
+  }
+
+  Sentry.init({
+    dsn: PUBLIC_SENTRY_DSN,
+    integrations,
+    tracesSampleRate: 1,
+  });
+};
+
 export const setupGlobals = () => {
+  setupSentry();
   setupDayjs();
 };
 
-export const handleError = (({ error, event }) => {
+const _handleError = (({ error, event }) => {
   if (event.route.id === null) {
     return serializeAppError(new NotFoundError());
   } else if (error instanceof AppError) {
@@ -27,3 +56,5 @@ export const handleError = (({ error, event }) => {
     );
   }
 }) satisfies HandleServerError & HandleClientError;
+
+export const handleError = Sentry.handleErrorWithSentry(_handleError);

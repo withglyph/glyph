@@ -1,10 +1,3 @@
-export default [
-  {
-    name: 'literoom-finalize',
-    entrypoint: './dist/finalize.js',
-  },
-  {
-    name: 'literoom-transform',
-    entrypoint: './dist/transform.js',
-  },
-];
+export default {
+  entry: ['dist/finalize.js', 'dist/transform.js'],
+};

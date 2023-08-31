@@ -1,4 +1,4 @@
-import { lambda } from '@penxle/adapter-lambda';
+import { lambda } from '@penxle/lambda/adapter';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */

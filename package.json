@@ -29,6 +29,7 @@
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.2",
     "syncpack": "^11.2.1",
+    "tsx": "^3.12.7",
     "turbo": "^1.10.13",
     "typescript": "^5.2.2"
   },

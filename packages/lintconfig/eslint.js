@@ -78,7 +78,7 @@ export default [
     },
   },
   {
-    files: ['infra/**/*'],
+    files: ['**/pulumi/**/*'],
     rules: {
       'unicorn/prefer-spread': 'off',
     },
