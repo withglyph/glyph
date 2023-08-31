@@ -27,18 +27,6 @@ new aws.iam.RolePolicy('github-app@lambda', {
       },
       {
         Effect: 'Allow',
-        Action: ['ecs:RunTask'],
-        Resource: [
-          'arn:aws:ecs:ap-northeast-2:721144421085:task-definition/actions-runner',
-        ],
-      },
-      {
-        Effect: 'Allow',
-        Action: ['iam:PassRole'],
-        Resource: [
-          bedrockRef('AWS_IAM_ROLE_ECS_EXECUTION_ARN'),
-          'arn:aws:iam::721144421085:role/actions-runner@ecs',
-        ],
       },
     ],
   },

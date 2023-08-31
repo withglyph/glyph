@@ -1,20 +1,31 @@
-name: cd/test3
+name: CD
 
 on:
-  pull_request:
-    types: [opened, synchronize]
+  workflow_dispatch:
+    inputs:
+      project:
+        required: true
+        type: string
+      stack:
+        required: true
+        type: string
+      path:
+        required: true
+        type: string
+      doppler-project:
+        required: true
+        type: string
+      doppler-config:
+        required: true
+        type: string
 
 jobs:
   deploy:
-    name: ${{ matrix.project }}
+    name: ${{ github.event.inputs.stack }}/${{ github.event.inputs.project }}
     runs-on: ubuntu-latest
     container: amazonlinux:2
-    strategy:
-      fail-fast: false
-      matrix:
-        project: [penxle.com, penxle.io, help.penxle.com, landing.penxle.com]
     concurrency:
-      group: ${{ matrix.project }}-pr-${{ github.event.pull_request.number }}
+      group: ${{ github.event.inputs.stack }}/${{ github.event.inputs.project }}
       cancel-in-progress: true
     steps:
       - name: Install binaries
@@ -45,13 +56,14 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build project
-        run: doppler run -- pnpm exec turbo run build --filter=${{ matrix.project }}
+        run: doppler run -- pnpm exec turbo run build --filter=${{ github.event.inputs.project }}
+        shell: bash
         env:
           TURBO_TEAM: penxle
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
-          DOPPLER_PROJECT: penxle-com
-          DOPPLER_CONFIG: preview
+          DOPPLER_PROJECT: ${{ github.event.inputs.doppler-project }}
+          DOPPLER_CONFIG: ${{ github.event.inputs.doppler-config }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
@@ -61,19 +73,18 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Upload lambda function
-        id: upload-lambda
         uses: ./packages/lambda
         with:
-          project: ${{ matrix.project }}
-          stack: pr-${{ github.event.pull_request.number }}
+          project: ${{ github.event.inputs.project }}
+          stack: ${{ github.event.inputs.stack }}
 
       - name: Deploy infrastructure
         run: |
-          cd ${{ steps.upload-lambda.outputs.project-dir }}
+          cd ${{ github.event.inputs.path }}
           pulumi stack select $STACK || pulumi stack init $STACK
           pulumi config set aws:defaultTags '{"tags":{"ManagedBy":"Pulumi"}}'
           pulumi up --skip-preview --stack $STACK
         env:
-          STACK: penxle/pr-${{ github.event.pull_request.number }}
+          STACK: penxle/${{ github.event.inputs.stack }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

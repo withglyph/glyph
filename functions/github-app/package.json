@@ -9,11 +9,11 @@
     "lint:typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-ecs": "^3.398.0",
     "@aws-sdk/client-ssm": "^3.398.0",
     "@octokit/webhooks": "^12.0.3",
     "@penxle/lambda": "workspace:^",
-    "octokit": "^3.1.0"
+    "octokit": "^3.1.0",
+    "yaml": "^2.3.2"
   },
   "devDependencies": {
     "@penxle/pulumi": "workspace:^",
