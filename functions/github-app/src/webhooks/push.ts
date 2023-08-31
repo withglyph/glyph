@@ -44,7 +44,7 @@ webhook.on('push', async (event) => {
           'stack': `production`,
           'path': pkg,
           'doppler-project': project.replaceAll('.', '-'),
-          'doppler-config': 'production',
+          'doppler-config': 'prod',
         },
       },
     );
