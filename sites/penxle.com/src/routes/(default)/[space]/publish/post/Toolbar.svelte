@@ -40,6 +40,27 @@
         on:click={() => editor?.chain().focus().toggleUnderline().run()}
       />
 
+      <ToolbarButton
+        name="폰트 색상 설정"
+        class="i-lc-paintbrush"
+        active={editor?.isActive('color')}
+        enabled={editor?.can().setColor({ 'data-color': 'text-brand-50' })}
+        on:click={() =>
+          editor
+            ?.chain()
+            .focus()
+            .setColor({ 'data-color': 'text-brand-50' })
+            .run()}
+      />
+
+      <ToolbarButton
+        name="폰트 색상 해제"
+        class="i-lc-paintbrush"
+        active={editor?.isActive('color')}
+        enabled={editor?.can().unsetColor()}
+        on:click={() => editor?.chain().focus().unsetColor().run()}
+      />
+
       <span class="square-6" />
 
       <ToolbarButton
