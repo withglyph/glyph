@@ -4,6 +4,7 @@ export default defineConfig([
   {
     clean: true,
     entry: {
+      action: 'src/action/index.ts',
       adapter: 'src/adapter/index.ts',
       cli: 'src/cli/index.ts',
       http: 'src/http/index.ts',

@@ -90,7 +90,7 @@ export class Site extends pulumi.ComponentResource {
 
         s3Bucket: pkg.bucket,
         s3Key: pkg.key,
-        handler: 'index.handler',
+        handler: 'handler.handler',
 
         sourceCodeHash: pkg.metadata.Hash,
 
@@ -104,6 +104,12 @@ export class Site extends pulumi.ComponentResource {
       },
       { parent: this },
     );
+
+    // new aws.lambda.ProvisionedConcurrencyConfig(args.name, {
+    //   functionName: lambda.name,
+    //   provisionedConcurrentExecutions: 1,
+    //   qualifier: '$LATEST',
+    // });
 
     const lambdaUrl = new aws.lambda.FunctionUrl(
       args.name,
