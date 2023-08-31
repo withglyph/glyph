@@ -4,6 +4,8 @@ import type {
 } from 'aws-lambda';
 
 export const createRequest = (event: APIGatewayProxyEventV2): Request => {
+  console.log('event', event);
+
   const url = new URL(
     `https://${event.requestContext.domainName}${event.rawPath}?${event.rawQueryString}`,
   );
