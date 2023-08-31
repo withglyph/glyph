@@ -48,47 +48,50 @@ ${table.join('\n')}
   );
 });
 
-webhook.on('pull_request.synchronize', async (event) => {
-  const { data: lockfile } = await octokit.request(
-    `GET /repos/{owner}/{repo}/contents/{path}`,
-    {
-      owner: event.payload.repository.owner.login,
-      repo: event.payload.repository.name,
-      ref: event.payload.pull_request.head.ref,
-      path: 'pnpm-lock.yaml',
-    },
-  );
-
-  if (!('content' in lockfile)) {
-    return;
-  }
-
-  const buffer = Buffer.from(lockfile.content, 'base64');
-  const document = yaml.parse(buffer.toString());
-  const packages = Object.keys(document.importers);
-
-  for (const pkg of packages) {
-    if (!pkg.startsWith('sites/')) {
-      continue;
-    }
-
-    const project = pkg.replace(/^sites\//, '');
-
-    await octokit.request(
-      `POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches`,
+webhook.on(
+  ['pull_request.opened', 'pull_request.synchronize'],
+  async (event) => {
+    const { data: lockfile } = await octokit.request(
+      `GET /repos/{owner}/{repo}/contents/{path}`,
       {
         owner: event.payload.repository.owner.login,
         repo: event.payload.repository.name,
-        workflow_id: 'cd.yml',
         ref: event.payload.pull_request.head.ref,
-        inputs: {
-          project,
-          'stack': `pr-${event.payload.pull_request.number}`,
-          'path': pkg,
-          'doppler-project': project.replaceAll('.', '-'),
-          'doppler-config': 'preview',
-        },
+        path: 'pnpm-lock.yaml',
       },
     );
-  }
-});
+
+    if (!('content' in lockfile)) {
+      return;
+    }
+
+    const buffer = Buffer.from(lockfile.content, 'base64');
+    const document = yaml.parse(buffer.toString());
+    const packages = Object.keys(document.importers);
+
+    for (const pkg of packages) {
+      if (!pkg.startsWith('sites/')) {
+        continue;
+      }
+
+      const project = pkg.replace(/^sites\//, '');
+
+      await octokit.request(
+        `POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches`,
+        {
+          owner: event.payload.repository.owner.login,
+          repo: event.payload.repository.name,
+          workflow_id: 'cd.yml',
+          ref: event.payload.pull_request.head.ref,
+          inputs: {
+            project,
+            'stack': `pr-${event.payload.pull_request.number}`,
+            'path': pkg,
+            'doppler-project': project.replaceAll('.', '-'),
+            'doppler-config': 'preview',
+          },
+        },
+      );
+    }
+  },
+);
