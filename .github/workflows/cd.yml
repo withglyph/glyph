@@ -26,7 +26,6 @@ jobs:
     container: amazonlinux:2
     concurrency:
       group: ${{ github.event.inputs.stack }}/${{ github.event.inputs.project }}
-      cancel-in-progress: true
     steps:
       - name: Install binaries
         run: |

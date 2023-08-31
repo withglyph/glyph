@@ -25,9 +25,6 @@ new aws.iam.RolePolicy('github-app@lambda', {
         Action: ['ssm:GetParameter'],
         Resource: ['*'],
       },
-      {
-        Effect: 'Allow',
-      },
     ],
   },
 });
