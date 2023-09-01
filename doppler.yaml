@@ -1,10 +1,10 @@
 setup:
-  - project: gh-app
-    config: default
-    path: apps/gh-app
+  - project: github-app
+    config: prod
+    path: apps/github-app
 
   - project: literoom
-    config: default
+    config: prod
     path: apps/literoom
 
   - project: penxle-com
