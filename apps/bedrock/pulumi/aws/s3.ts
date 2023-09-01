@@ -2,6 +2,14 @@ import * as aws from '@pulumi/aws';
 
 const artifacts = new aws.s3.Bucket('artifacts', {
   bucket: 'penxle-artifacts',
+
+  lifecycleRules: [
+    {
+      enabled: true,
+      prefix: 'lambda/',
+      expiration: { days: 7 },
+    },
+  ],
 });
 
 const data = new aws.s3.Bucket('data', {
