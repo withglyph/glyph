@@ -1,4 +1,4 @@
-name: CD (Preview)
+name: Preview
 
 on:
   pull_request:
