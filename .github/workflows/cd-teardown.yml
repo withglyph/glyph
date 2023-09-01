@@ -13,7 +13,7 @@ jobs:
       matrix:
         project: [penxle.com, penxle.io, help.penxle.com, landing.penxle.com]
     concurrency:
-      group: ${{ matrix.project }}-pr-${{ github.event.pull_request.number }}
+      group: pr-${{ github.event.pull_request.number }}/${{ matrix.project }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
