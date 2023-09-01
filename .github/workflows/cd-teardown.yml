@@ -7,7 +7,7 @@ on:
 jobs:
   teardown:
     name: ${{ matrix.app }}
-    runs-on: ubuntu-latest-4vcpu
+    runs-on: ubuntu-latest-8vcpu
     strategy:
       fail-fast: false
       matrix:
