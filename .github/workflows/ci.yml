@@ -41,3 +41,5 @@ jobs:
 
       - name: Run lint
         run: pnpm run lint:${{ matrix.linter }}
+        env:
+          NODE_OPTIONS: --max-old-space-size=8192

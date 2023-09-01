@@ -3,9 +3,7 @@
 node_modules/
 
 .svelte-kit/
-.terraform/
 .turbo/
-.vercel/
 
 dist/
 $houdini/

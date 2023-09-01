@@ -8,7 +8,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "lint:typecheck": "tsc --noEmit"
+    "lint:typecheck": "tsc"
   },
   "dependencies": {
     "@penxle/lib": "workspace:^",

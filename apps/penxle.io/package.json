@@ -1,5 +1,5 @@
 {
-  "name": "@penxle/landing.penxle.com",
+  "name": "@penxle/penxle.io",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -9,7 +9,7 @@
     "codegen": "svelte-kit sync",
     "dev": "vite dev",
     "lint:svelte": "svelte-check --fail-on-warnings",
-    "lint:typecheck": "tsc --noEmit"
+    "lint:typecheck": "tsc"
   },
   "devDependencies": {
     "@penxle/lambda": "workspace:^",
@@ -20,14 +20,11 @@
     "@penxle/unocss": "workspace:^",
     "@penxle/vite": "workspace:^",
     "@pulumi/pulumi": "^3.79.0",
-    "@supabase/supabase-js": "^2.33.1",
     "@sveltejs/adapter-vercel": "^3.0.3",
     "@sveltejs/kit": "^1.23.0",
-    "@types/canvas-confetti": "^1.6.0",
     "@types/node": "^20.5.6",
     "@vercel/analytics": "^1.0.2",
     "browserslist": "^4.21.10",
-    "canvas-confetti": "^1.6.0",
     "clsx": "^2.0.0",
     "lightningcss": "^1.21.7",
     "svelte": "^4.2.0",

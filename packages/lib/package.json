@@ -16,7 +16,7 @@
   "scripts": {
     "build": "tsup",
     "codegen": "svelte-kit sync",
-    "lint:typecheck": "tsc --noEmit"
+    "lint:typecheck": "tsc"
   },
   "dependencies": {
     "svgo": "^3.0.2"

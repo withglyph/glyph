@@ -7,13 +7,13 @@ on:
 
 jobs:
   deploy:
-    name: ${{ matrix.project }}
+    name: ${{ matrix.app }}
     runs-on: ubuntu-latest
     container: amazonlinux:2
     strategy:
       fail-fast: false
       matrix:
-        project:
+        app:
           - github-app
           - literoom
           - penxle.com
@@ -21,7 +21,7 @@ jobs:
           - help.penxle.com
           - landing.penxle.com
     concurrency:
-      group: production/${{ matrix.project }}
+      group: production/${{ matrix.app }}
     steps:
       - name: Install binaries
         run: |
@@ -57,7 +57,7 @@ jobs:
           DOPPLER_CONFIG: prod
 
       - name: Build project
-        run: doppler run -- pnpm exec turbo run build --filter=${{ matrix.project }}
+        run: doppler run -- pnpm exec turbo run build --filter=${{ matrix.app }}
         shell: bash
         env:
           TURBO_TEAM: penxle
@@ -73,15 +73,14 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Upload lambda function
-        id: lambda
         uses: ./packages/lambda
         with:
-          project: ${{ matrix.project }}
+          app: ${{ matrix.app }}
           stack: production
 
       - name: Deploy infrastructure
         run: |
-          cd ${{ steps.lambda.outputs.project-dir }}
+          cd apps/${{ matrix.app }}
           pulumi stack select $STACK || pulumi stack init $STACK
           pulumi config set aws:defaultTags '{"tags":{"ManagedBy":"Pulumi"}}'
           pulumi up --skip-preview --stack $STACK

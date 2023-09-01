@@ -5,7 +5,7 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "lint:typecheck": "tsc --noEmit"
+    "lint:typecheck": "tsc"
   },
   "dependencies": {
     "@iconify/json": "^2.2.106",

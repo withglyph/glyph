@@ -11,7 +11,7 @@
   "scripts": {
     "codegen": "svelte-kit sync",
     "lint:svelte": "svelte-check --fail-on-warnings",
-    "lint:typecheck": "tsc --noEmit"
+    "lint:typecheck": "tsc"
   },
   "devDependencies": {
     "@penxle/lib": "workspace:^",

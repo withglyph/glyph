@@ -42,4 +42,3 @@ jobs:
         run: pnpm run test
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.environment_url }}
-          VERCEL_PROTECTION_BYPASS_TOKEN: ${{ secrets.VERCEL_PROTECTION_BYPASS_TOKEN }}

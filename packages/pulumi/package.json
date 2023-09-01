@@ -15,7 +15,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "lint:typecheck": "tsc --noEmit"
+    "lint:typecheck": "tsc"
   },
   "dependencies": {
     "@pulumi/aws": "^5.42.0",

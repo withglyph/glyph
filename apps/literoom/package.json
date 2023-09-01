@@ -6,7 +6,7 @@
   "main": "pulumi/index.ts",
   "scripts": {
     "build": "tsup && lambdify",
-    "lint:typecheck": "tsc --noEmit"
+    "lint:typecheck": "tsc"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.400.0",
