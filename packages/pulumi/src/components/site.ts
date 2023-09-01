@@ -94,6 +94,12 @@ export class Site extends pulumi.ComponentResource {
 
         sourceCodeHash: pkg.metadata.Hash,
 
+        environment: {
+          variables: {
+            HTTP_HOST: domain,
+          },
+        },
+
         vpcConfig: {
           subnetIds: [
             bedrockRef('AWS_VPC_SUBNET_PRIVATE_AZ1_ID'),
