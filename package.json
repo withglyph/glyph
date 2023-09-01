@@ -20,14 +20,14 @@
   },
   "devDependencies": {
     "@penxle/lintconfig": "workspace:^",
-    "cspell": "^7.0.1",
+    "cspell": "^7.3.2",
     "eslint": "^8.48.0",
     "gitmoji-cli": "^8.4.0",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
-    "prettier": "^3.0.2",
+    "prettier": "^3.0.3",
     "syncpack": "^11.2.1",
-    "tsx": "^3.12.7",
+    "tsx": "^3.12.8",
     "turbo": "^1.10.13",
     "typescript": "^5.2.2"
   },
@@ -42,6 +42,7 @@
       "querystring": "*",
       "readdir-scoped-modules": "*",
       "read-package-tree": "*",
+      "uuid": "*",
       "vm2": "*"
     }
   }
