@@ -4,8 +4,14 @@ import type {
 } from 'aws-lambda';
 
 export const createRequest = (event: APIGatewayProxyEventV2): Request => {
+  const proto = event.headers['x-forwarded-proto'] ?? 'https';
+  const host =
+    process.env.HTTP_HOST ??
+    event.headers.host ??
+    event.requestContext.domainName;
+
   const url = new URL(
-    `https://${event.requestContext.domainName}${event.rawPath}?${event.rawQueryString}`,
+    `${proto}://${host}${event.rawPath}?${event.rawQueryString}`,
   );
 
   const init: RequestInit = {
