@@ -4,7 +4,7 @@ import * as pulumi from '@pulumi/pulumi';
 
 const pkg = aws.s3.getObjectOutput({
   bucket: bedrockRef('AWS_S3_BUCKET_ARTIFACTS_BUCKET'),
-  key: 'lambda/literoom-finalize-main.zip',
+  key: 'lambda/literoom-production.zip',
 });
 
 const role = new aws.iam.Role('literoom-finalize@lambda', {
@@ -50,7 +50,7 @@ const lambda = new aws.lambda.Function(`literoom-finalize`, {
 
   s3Bucket: pkg.bucket,
   s3Key: pkg.key,
-  handler: 'index.handler',
+  handler: 'finalize.handler',
 
   sourceCodeHash: pkg.metadata.Hash,
 });
