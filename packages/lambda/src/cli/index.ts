@@ -155,7 +155,7 @@ export const lambdify = async (spec?: LambdaSpec) => {
   const pkg = await new Promise<Uint8Array>((resolve, reject) => {
     fflate.zip(
       entries,
-      { os: 3, mtime: '2000-01-01T00:00:00Z', level: 0 },
+      { os: 3, mtime: '2000-01-01T00:00:00Z' },
       (err, data) => {
         if (err) reject(err);
         else resolve(data);
