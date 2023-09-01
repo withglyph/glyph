@@ -26,9 +26,9 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@pulumi/aws": "^5.42.0",
+    "@pulumi/aws": "^6.0.3",
     "@pulumi/cloudflare": "^5.9.0",
-    "@pulumi/pulumi": "^3.79.0",
+    "@pulumi/pulumi": "^3.80.0",
     "fast-glob": "^3.3.1"
   },
   "devDependencies": {
