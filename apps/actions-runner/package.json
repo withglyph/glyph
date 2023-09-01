@@ -1,18 +1,16 @@
 {
-  "name": "@penxle/github-app",
+  "name": "@penxle/actions-runner",
   "version": "0.0.1",
   "private": true,
   "type": "module",
   "main": "pulumi/index.ts",
   "scripts": {
-    "build": "tsup && lambdify",
+    "build": "tsup",
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@aws-sdk/client-ecs": "^3.404.0",
     "@aws-sdk/client-ssm": "^3.398.0",
-    "@octokit/webhooks": "^12.0.3",
-    "@penxle/lambda": "workspace:^",
+    "execa": "^8.0.1",
     "octokit": "^3.1.0"
   },
   "devDependencies": {

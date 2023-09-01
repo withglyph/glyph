@@ -1,0 +1,5 @@
+name: actions-runner
+runtime:
+  name: nodejs
+  options:
+    nodeargs: --loader=tsx --no-warnings
