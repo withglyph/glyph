@@ -1,12 +1,12 @@
 import { micah } from '@dicebear/collection';
 import { createAvatar } from '@dicebear/core';
-import { color } from '@penxle/unocss';
+import { color } from '@penxle/lib/unocss';
 import { renderAsync } from '@resvg/resvg-js';
 import { nanoid } from 'nanoid';
 import { draw } from 'radash';
 import { uploadImage } from './image';
 import type { Options } from '@dicebear/core';
-import type { ColorShade } from '@penxle/unocss';
+import type { ColorShade } from '@penxle/lib/unocss';
 import type { InteractiveTransactionClient } from '../database';
 
 const colors = (...colors: ColorShade[]) =>

@@ -15,6 +15,7 @@
   },
   "scripts": {
     "build": "tsup",
+    "dev": "tsup --watch",
     "lint:typecheck": "tsc"
   },
   "dependencies": {

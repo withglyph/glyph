@@ -15,7 +15,7 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
     : _loadUno();
 
   return {
-    name: '@penxle/unocss',
+    name: '@penxle/lib/unocss',
     markup: async ({ content, filename }) => {
       const uno = await unoPromise;
 

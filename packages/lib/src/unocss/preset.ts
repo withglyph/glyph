@@ -7,7 +7,7 @@ import type { Preset } from '@unocss/core';
 import type { Theme } from '@unocss/preset-uno';
 
 export const presetPenxle = (): Preset<Theme> => ({
-  name: '@penxle/unocss:preset-penxle',
+  name: '@penxle/lib/unocss:preset-penxle',
   presets: [
     presetIcons({
       collections: {

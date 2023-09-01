@@ -20,7 +20,7 @@ export const unocss = async (): Promise<Plugin[]> => {
 
 const preprocess = (uno: UnoGenerator): Plugin => {
   return {
-    name: '@penxle/unocss:preprocess',
+    name: '@penxle/lib/unocss:preprocess',
     api: { sveltePreprocess: unoPreprocess(uno) },
   };
 };
@@ -30,7 +30,7 @@ const virtual = (uno: UnoGenerator): Plugin => {
   const resolvedVirtualModuleId = `\0${virtualModuleId}`;
 
   return {
-    name: '@penxle/unocss:virtual',
+    name: '@penxle/lib/unocss:virtual',
     resolveId: (id) => {
       if (id === virtualModuleId) {
         return resolvedVirtualModuleId;
@@ -55,7 +55,7 @@ const transform = (
   enforce: 'pre' | 'default' | 'post',
 ): Plugin => {
   return {
-    name: `@penxle/unocss:${enforce}-transform`,
+    name: `@penxle/lib/unocss:${enforce}-transform`,
     enforce: enforce === 'default' ? undefined : enforce,
     transform: async (code, id) => {
       return await transformCode(uno, id, code, enforce);

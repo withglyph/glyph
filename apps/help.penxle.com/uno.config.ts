@@ -1,4 +1,4 @@
-import { presetPenxle } from '@penxle/unocss';
+import { presetPenxle } from '@penxle/lib/unocss';
 import {
   defineConfig,
   transformerDirectives,
