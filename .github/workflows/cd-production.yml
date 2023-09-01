@@ -8,8 +8,7 @@ on:
 jobs:
   deploy:
     name: ${{ matrix.app }}
-    runs-on: ubuntu-latest
-    container: amazonlinux:2
+    runs-on: node18/arm64
     strategy:
       fail-fast: false
       matrix:
@@ -23,29 +22,23 @@ jobs:
     concurrency:
       group: production/${{ matrix.app }}
     steps:
-      - name: Install binaries
-        run: |
-          yum install -y git tar zstd
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
 
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+      - name: Cache pnpm store
+        uses: ./apps/actions-cache
         with:
-          version: latest
-
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache: pnpm
-
-      - name: Setup doppler
-        uses: dopplerhq/cli-action@v2
-
-      - name: Setup pulumi
-        uses: pulumi/actions@v4
+          path: /pnpm-store
+          key: pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -65,20 +58,13 @@ jobs:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
           PUBLIC_PULUMI_STACK: prod
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
-
       - name: Upload lambda function
         uses: ./packages/lambda
         with:
           app: ${{ matrix.app }}
           stack: prod
 
-      - name: Update infrastructure
+      - name: Deploy infrastructure
         working-directory: apps/${{ matrix.app }}
         run: |
           pulumi up --skip-preview --stack $STACK
