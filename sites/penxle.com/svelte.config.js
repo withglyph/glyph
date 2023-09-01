@@ -27,6 +27,7 @@ export default {
           ...config.compilerOptions,
           rootDirs: [...config.compilerOptions.rootDirs, '../$houdini/types'],
         },
+        include: [...config.include, '../pulumi/**/*.ts'],
       }),
     },
     version: { pollInterval: 60 * 1000 },

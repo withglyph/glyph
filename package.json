@@ -4,9 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "bootstrap": "pnpm install && husky install",
-    "build:actions": "turbo run build --filter './actions/**'",
-    "build:deps": "turbo run build --filter './packages/**' --filter './infra/lib'",
+    "bootstrap": "pnpm install && husky install && doppler setup --no-interactive",
     "codegen": "turbo run codegen",
     "dev": "turbo run dev --filter './sites/**' --concurrency 255",
     "fix": "pnpm run '/^fix:.+$/'",

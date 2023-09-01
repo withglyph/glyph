@@ -14,6 +14,7 @@
     "lint:typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@penxle/lib": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@sveltejs/kit": "^1.23.0",
     "clsx": "^2.0.0",

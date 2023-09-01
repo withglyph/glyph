@@ -1,31 +1,27 @@
-name: CD
+name: CD (Production)
 
 on:
-  workflow_dispatch:
-    inputs:
-      project:
-        required: true
-        type: string
-      stack:
-        required: true
-        type: string
-      path:
-        required: true
-        type: string
-      doppler-project:
-        required: true
-        type: string
-      doppler-config:
-        required: true
-        type: string
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
-    name: ${{ github.event.inputs.stack }}/${{ github.event.inputs.project }}
+    name: ${{ matrix.project }}
     runs-on: ubuntu-latest
     container: amazonlinux:2
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - github-app
+          - literoom
+          - penxle.com
+          - penxle.io
+          - help.penxle.com
+          - landing.penxle.com
     concurrency:
-      group: ${{ github.event.inputs.stack }}/${{ github.event.inputs.project }}
+      group: production/${{ matrix.project }}
     steps:
       - name: Install binaries
         run: |
@@ -48,21 +44,26 @@ jobs:
       - name: Setup doppler
         uses: dopplerhq/cli-action@v2
 
-      - name: Setup Pulumi
+      - name: Setup pulumi
         uses: pulumi/actions@v4
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Setup doppler project
+        run: doppler setup --no-interactive
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          DOPPLER_CONFIG: prod
+
       - name: Build project
-        run: doppler run -- pnpm exec turbo run build --filter=${{ github.event.inputs.project }}
+        run: doppler run -- pnpm exec turbo run build --filter=${{ matrix.project }}
         shell: bash
         env:
           TURBO_TEAM: penxle
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
-          DOPPLER_PROJECT: ${{ github.event.inputs.doppler-project }}
-          DOPPLER_CONFIG: ${{ github.event.inputs.doppler-config }}
+          PUBLIC_PULUMI_STACK: production
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
@@ -72,18 +73,19 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Upload lambda function
+        id: lambda
         uses: ./packages/lambda
         with:
-          project: ${{ github.event.inputs.project }}
-          stack: ${{ github.event.inputs.stack }}
+          project: ${{ matrix.project }}
+          stack: production
 
       - name: Deploy infrastructure
         run: |
-          cd ${{ github.event.inputs.path }}
+          cd ${{ steps.lambda.outputs.project-dir }}
           pulumi stack select $STACK || pulumi stack init $STACK
           pulumi config set aws:defaultTags '{"tags":{"ManagedBy":"Pulumi"}}'
           pulumi up --skip-preview --stack $STACK
         env:
-          STACK: penxle/${{ github.event.inputs.stack }}
+          STACK: penxle/production
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

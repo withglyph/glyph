@@ -6,7 +6,7 @@ on:
 
 jobs:
   teardown:
-    name: Teardown
+    name: ${{ matrix.project }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

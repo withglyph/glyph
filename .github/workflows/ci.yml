@@ -36,9 +36,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build local dependencies
-        run: pnpm run build:deps
-
       - name: Run code generation
         run: pnpm exec turbo run codegen
 

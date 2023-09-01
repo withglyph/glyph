@@ -2,23 +2,8 @@
   import 'virtual:uno.css';
   import '../styles/index.css';
 
-  import { setupAnalytics } from '@penxle/lib/analytics';
-  import { production } from '@penxle/lib/environment';
-  import { Link } from '@penxle/ui';
-  import { BranchIndicator } from '@penxle/ui/dev';
-  import { beforeNavigate } from '$app/navigation';
-  import { updated } from '$app/stores';
+  import { AutoUpdater, Link, StackIndicator } from '@penxle/ui';
   import Logo from '$assets/branding/logo.svg?component';
-
-  if (production) {
-    setupAnalytics();
-  }
-
-  beforeNavigate(({ willUnload, to }) => {
-    if ($updated && !willUnload && to?.url) {
-      location.href = to.url.href;
-    }
-  });
 </script>
 
 <div class="min-h-screen flex flex-col center">
@@ -41,6 +26,5 @@
   </main>
 </div>
 
-{#if !production}
-  <BranchIndicator />
-{/if}
+<AutoUpdater />
+<StackIndicator />

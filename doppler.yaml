@@ -2,5 +2,18 @@ setup:
   - project: gh-app
     config: default
     path: functions/gh-app/
+  - project: literoom
+    config: default
+    path: functions/literoom/
   - project: penxle-com
     path: sites/penxle.com/
+    config: dev
+  - project: penxle-io
+    path: sites/penxle.io/
+    config: dev
+  - project: help-penxle-com
+    path: sites/help.penxle.com/
+    config: dev
+  - project: landing-penxle-com
+    path: sites/landing.penxle.com/
+    config: dev

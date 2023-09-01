@@ -20,6 +20,12 @@ export default {
       publicPrefix: 'PUBLIC_',
       privatePrefix: 'PRIVATE_',
     },
+    typescript: {
+      config: (config) => ({
+        ...config,
+        include: [...config.include, '../pulumi/**/*.ts'],
+      }),
+    },
     version: { pollInterval: 60 * 1000 },
   },
   onwarn: (warning, handler) => {

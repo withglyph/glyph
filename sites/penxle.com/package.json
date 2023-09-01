@@ -25,8 +25,6 @@
     "@felte/core": "^1.4.0",
     "@felte/validator-zod": "^1.0.16",
     "@floating-ui/dom": "^1.5.1",
-    "@logtail/node": "^0.4.6",
-    "@logtail/winston": "^0.4.6",
     "@paralleldrive/cuid2": "^2.2.2",
     "@penxle/lambda": "workspace:^",
     "@penxle/lib": "workspace:^",
