@@ -28,7 +28,10 @@ new aws.iam.RolePolicy('github-app@lambda', {
       {
         Effect: 'Allow',
         Action: ['ecs:RunTask'],
-        Resource: 'arn:aws:ecs:*:*:task-definition/actions-runner:*',
+        Resource: [
+          'arn:aws:ecs:*:*:cluster/actions-runner',
+          'arn:aws:ecs:*:*:task-definition/actions-runner',
+        ],
       },
       {
         Effect: 'Allow',
