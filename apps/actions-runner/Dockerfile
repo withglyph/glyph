@@ -1,6 +1,6 @@
 FROM --platform=linux/arm64 public.ecr.aws/lambda/nodejs:18
 
-WORKDIR /runner
+WORKDIR /root
 
 ARG RUNNER_VERSION="2.308.0"
 ENV RUNNER_ALLOW_RUNASROOT=1
@@ -22,11 +22,11 @@ RUN yum update -y \
   && curl -fsSL https://cli.doppler.com/install.sh | sh \
   && curl -fsSL https://get.pulumi.com | sh \
   && corepack enable \
-  && pnpm config set store-dir /runner/.pnpm \
+  && pnpm config set store-dir /pnpm-store \
   && yum clean all \
   && rm -rf /var/cache/yum
 
-COPY dist/index.cjs /runner/index.js
+COPY dist/index.cjs index.js
 
 ENTRYPOINT [""]
 CMD ["node", "index.js"]

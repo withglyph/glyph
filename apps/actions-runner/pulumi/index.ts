@@ -27,6 +27,12 @@ new aws.iam.RolePolicy('actions-runner', {
         Action: ['ssm:GetParameter'],
         Resource: 'arn:aws:ssm:*:*:parameter/github-app/*',
       },
+      {
+        Effect: 'Allow',
+        Action: ['s3:GetObject', 's3:PutObject', 's3:ListObjectsV2'],
+        // Resource: 'arn:aws:s3:::penxle-artifacts/actions-cache/*',
+        Resource: '*',
+      },
     ],
   },
 });
@@ -37,8 +43,8 @@ new aws.ecs.TaskDefinition('actions-runner', {
   requiresCompatibilities: ['FARGATE'],
   networkMode: 'awsvpc',
 
-  cpu: '2048',
-  memory: '4096',
+  cpu: '4096',
+  memory: '8192',
 
   executionRoleArn: bedrockRef('AWS_IAM_ROLE_ECS_EXECUTION_ARN'),
   taskRoleArn: role.arn,
@@ -59,7 +65,7 @@ new aws.ecs.TaskDefinition('actions-runner', {
         logConfiguration: {
           logDriver: 'awslogs',
           options: {
-            'awslogs-group': 'actions-runner',
+            'awslogs-group': '/aws/ecs/actions-runner',
             'awslogs-region': 'ap-northeast-2',
             'awslogs-create-group': 'true',
             'awslogs-stream-prefix': 'actions-runner',
