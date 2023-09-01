@@ -65,7 +65,12 @@ const sveltekit = async (
   event: APIGatewayProxyEventV2,
 ) => {
   const response = await server.respond(request, {
-    getClientAddress: () => event.requestContext.http.sourceIp,
+    getClientAddress: () => {
+      const xff = request.headers.get('x-forwarded-for');
+      return xff
+        ? xff.split(',')[0].trim()
+        : event.requestContext.http.sourceIp;
+    },
     platform: { event },
   });
 
