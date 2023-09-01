@@ -16,11 +16,6 @@ export const UNAVAILABLE_SPACE_SLUGS = {
     'robots.txt',
     'sitemap.xml',
 
-    // vercel internal urls
-    '_logs',
-    '_src',
-    '_vercel',
-
     // reserved keywords
     'account',
     'accounts',
