@@ -8,6 +8,10 @@ const site = new penxle.Site('penxle.com', {
     zone: 'penxle.com',
   },
 
+  resources: {
+    memory: 2048,
+  },
+
   iam: {
     policy: {
       Version: '2012-10-17',
