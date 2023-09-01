@@ -63,7 +63,7 @@ jobs:
           TURBO_TEAM: penxle
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
-          PUBLIC_PULUMI_STACK: production
+          PUBLIC_PULUMI_STACK: prod
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
@@ -76,13 +76,13 @@ jobs:
         uses: ./packages/lambda
         with:
           app: ${{ matrix.app }}
-          stack: production
+          stack: prod
 
       - name: Update infrastructure
         working-directory: apps/${{ matrix.app }}
         run: |
           pulumi up --skip-preview --stack $STACK
         env:
-          STACK: penxle/production
+          STACK: penxle/prod
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

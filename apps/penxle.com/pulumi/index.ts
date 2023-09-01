@@ -1,19 +1,28 @@
 import * as penxle from '@penxle/pulumi/components';
 
 const site = new penxle.Site('penxle.com', {
-  name: 'penxle_com',
-  domain: 'staging.penxle.com',
-  zone: 'penxle.com',
+  name: 'penxle-com',
 
-  iamPolicy: {
-    Version: '2012-10-17',
-    Statement: [
-      {
-        Effect: 'Allow',
-        Action: ['s3:PutObject'],
-        Resource: ['arn:aws:s3:::penxle-uploads/*'],
-      },
-    ],
+  dns: {
+    name: 'staging.penxle.com',
+    zone: 'penxle.com',
+  },
+
+  resources: {
+    memory: 2048,
+  },
+
+  iam: {
+    policy: {
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Effect: 'Allow',
+          Action: ['s3:PutObject'],
+          Resource: ['arn:aws:s3:::penxle-uploads/*'],
+        },
+      ],
+    },
   },
 });
 

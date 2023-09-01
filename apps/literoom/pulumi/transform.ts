@@ -5,7 +5,7 @@ import * as pulumi from '@pulumi/pulumi';
 
 const pkg = aws.s3.getObjectOutput({
   bucket: bedrockRef('AWS_S3_BUCKET_ARTIFACTS_BUCKET'),
-  key: `lambda/literoom-production.zip`,
+  key: `lambda/prod--literoom.zip`,
 });
 
 const role = new aws.iam.Role('literoom-transform@lambda', {

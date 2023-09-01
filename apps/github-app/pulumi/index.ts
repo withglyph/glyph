@@ -3,7 +3,7 @@ import * as aws from '@pulumi/aws';
 
 const pkg = aws.s3.getObjectOutput({
   bucket: bedrockRef('AWS_S3_BUCKET_ARTIFACTS_BUCKET'),
-  key: 'lambda/github-app-production.zip',
+  key: 'lambda/prod--github-app.zip',
 });
 
 const role = new aws.iam.Role('github-app@lambda', {
