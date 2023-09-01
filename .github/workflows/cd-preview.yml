@@ -80,7 +80,7 @@ jobs:
         working-directory: apps/${{ matrix.app }}
         run: |
           pulumi stack init $STACK
-          pulumi config cp --stack production --dest $STACK
+          pulumi config cp --stack prod --dest $STACK
           pulumi config set --stack $STACK --path 'aws:defaultTags.tags["pulumi.penxle.io/stack"]' pr-${{ github.event.pull_request.number }}
           pulumi up --skip-preview --stack $STACK
         env:

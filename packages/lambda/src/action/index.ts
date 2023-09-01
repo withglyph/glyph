@@ -20,8 +20,8 @@ actions.info('');
 actions.info(`Package hash: ${hash}`);
 actions.info(`Package size: ${pkg.length} bytes`);
 
-const normalizedName = appName.replaceAll('.', '_');
-const packagePath = `lambda/${normalizedName}-${stackName}.zip`;
+const normalizedName = appName.replaceAll('.', '-');
+const packagePath = `lambda/${stackName}--${normalizedName}.zip`;
 
 await S3.send(
   new PutObjectCommand({

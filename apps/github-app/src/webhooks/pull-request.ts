@@ -12,7 +12,7 @@ webhook.on('pull_request.opened', async (event) => {
   const table = sites.map((site) => {
     const subdomain = `pr-${
       event.payload.pull_request.number
-    }-${site.replaceAll('.', '-')}`;
+    }--${site.replaceAll('.', '-')}`;
     return `| ${site} | https://${subdomain}.pnxl.site |`;
   });
 
