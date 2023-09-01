@@ -6,7 +6,8 @@ import { bedrockRef } from '../ref';
 type SiteArgs = {
   name: string;
 
-  resources?: { memory?: number; concurrency?: number };
+  resources?: { memory?: number };
+  concurrency?: { reserved?: number; provisioned?: number };
   dns: { name: string; zone?: string };
   iam?: { policy?: aws.iam.PolicyDocument };
 };
@@ -85,12 +86,14 @@ export class Site extends pulumi.ComponentResource {
 
         memorySize: args.resources?.memory ?? 256,
         timeout: 59,
+        reservedConcurrentExecutions: args.concurrency?.reserved ?? -1,
 
         s3Bucket: pkg.bucket,
         s3Key: pkg.key,
         handler: 'handler.handler',
 
         sourceCodeHash: pkg.metadata.Hash,
+
         publish: true,
 
         environment: {
@@ -127,7 +130,7 @@ export class Site extends pulumi.ComponentResource {
         {
           functionName: lambda.name,
           qualifier: alias.name,
-          provisionedConcurrentExecutions: args.resources?.concurrency ?? 1,
+          provisionedConcurrentExecutions: args.concurrency?.provisioned ?? 1,
         },
         { parent: this },
       );
