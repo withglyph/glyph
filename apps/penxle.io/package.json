@@ -1,0 +1,32 @@
+{
+  "name": "@penxle/penxle.io",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "pulumi/index.ts",
+  "scripts": {
+    "build": "svelte-kit sync && vite build",
+    "codegen": "svelte-kit sync",
+    "dev": "vite dev",
+    "lint:svelte": "svelte-check --fail-on-warnings",
+    "lint:typecheck": "tsc"
+  },
+  "devDependencies": {
+    "@penxle/lambda": "workspace:^",
+    "@penxle/lib": "workspace:^",
+    "@penxle/pulumi": "workspace:^",
+    "@penxle/tsconfig": "workspace:^",
+    "@penxle/ui": "workspace:^",
+    "@pulumi/pulumi": "^3.79.0",
+    "@sveltejs/kit": "^1.23.0",
+    "@types/node": "^20.5.6",
+    "clsx": "^2.0.0",
+    "lightningcss": "^1.21.7",
+    "svelte": "^4.2.0",
+    "svelte-check": "^3.5.0",
+    "tsx": "^3.12.7",
+    "typescript": "^5.2.2",
+    "unocss": "^0.55.3",
+    "vite": "^4.4.9"
+  }
+}

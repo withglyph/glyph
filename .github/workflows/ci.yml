@@ -36,11 +36,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build local dependencies
-        run: pnpm run build:deps
-
       - name: Run code generation
         run: pnpm exec turbo run codegen
 
       - name: Run lint
         run: pnpm run lint:${{ matrix.linter }}
+        env:
+          NODE_OPTIONS: --max-old-space-size=8192

@@ -2,7 +2,7 @@ runs:
   using: node16
   main: dist/action.js
 inputs:
-  project:
+  app:
     required: true
   stack:
     required: true

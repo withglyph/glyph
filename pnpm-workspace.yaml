@@ -1,5 +1,3 @@
 packages:
-  - 'functions/*'
-  - 'infra/*'
+  - 'apps/*'
   - 'packages/*'
-  - 'sites/*'
