@@ -202,7 +202,6 @@ export class Site extends pulumi.ComponentResource {
         type: 'CNAME',
         name: domain,
         value: distribution.domainName,
-        proxied: !isProd,
         comment: 'Amazon CloudFront',
       },
       { parent: this },

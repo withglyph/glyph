@@ -191,13 +191,4 @@ new cloudflare.Record('pnxl.net', {
   comment: 'bunny.net',
 });
 
-new cloudflare.Record('*.pnxl.site', {
-  zoneId: zones.pnxl_site.id,
-  type: 'AAAA',
-  name: '*.pnxl.site',
-  value: '100::',
-  proxied: true,
-  comment: 'Catch all',
-});
-
 export const outputs = {};

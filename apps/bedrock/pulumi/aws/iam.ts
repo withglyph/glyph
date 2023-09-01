@@ -24,20 +24,8 @@ new aws.iam.UserPolicy('bunny.net', {
   },
 });
 
-const ecsExecution = new aws.iam.Role('_execution@ecs', {
-  name: '_execution@ecs',
-  assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
-    Service: 'ecs-tasks.amazonaws.com',
-  }),
-  managedPolicyArns: [
-    'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
-  ],
-});
-
 export const outputs = {
   AWS_IAM_USER_BUNNY_NET_NAME: bunnyNet.name,
   AWS_IAM_USER_BUNNY_NET_ACCESS_KEY_ID: bunnyNetAccessKey.id,
   AWS_IAM_USER_BUNNY_NET_SECRET_ACCESS_KEY: bunnyNetAccessKey.secret,
-
-  AWS_IAM_ROLE_ECS_EXECUTION_ARN: ecsExecution.arn,
 };

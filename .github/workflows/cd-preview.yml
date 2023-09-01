@@ -73,7 +73,6 @@ jobs:
         uses: ./packages/lambda
         with:
           app: ${{ matrix.app }}
-          path: apps/${{ matrix.app }}
           stack: pr-${{ github.event.pull_request.number }}
 
       - name: Deploy infrastructure
