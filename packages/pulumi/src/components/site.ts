@@ -6,7 +6,7 @@ import { bedrockRef } from '../ref';
 type SiteArgs = {
   name: string;
 
-  resources?: { memory?: number };
+  resources?: { memory?: number; concurrency?: number };
   dns: { name: string; zone?: string };
   iam?: { policy?: aws.iam.PolicyDocument };
 };
@@ -91,6 +91,7 @@ export class Site extends pulumi.ComponentResource {
         handler: 'handler.handler',
 
         sourceCodeHash: pkg.metadata.Hash,
+        publish: true,
 
         environment: {
           variables: {
@@ -109,16 +110,34 @@ export class Site extends pulumi.ComponentResource {
       { parent: this },
     );
 
-    // new aws.lambda.ProvisionedConcurrencyConfig(args.name, {
-    //   functionName: lambda.name,
-    //   provisionedConcurrentExecutions: 1,
-    //   qualifier: '$LATEST',
-    // }, { parent: this });
+    const alias = new aws.lambda.Alias(
+      args.name,
+      {
+        name: 'latest',
+
+        functionName: lambda.name,
+        functionVersion: lambda.version,
+      },
+      { parent: this },
+    );
+
+    if (isProd) {
+      new aws.lambda.ProvisionedConcurrencyConfig(
+        args.name,
+        {
+          functionName: lambda.name,
+          qualifier: alias.name,
+          provisionedConcurrentExecutions: args.resources?.concurrency ?? 1,
+        },
+        { parent: this },
+      );
+    }
 
     const lambdaUrl = new aws.lambda.FunctionUrl(
       args.name,
       {
         functionName: lambda.name,
+        qualifier: alias.name,
         authorizationType: 'NONE',
       },
       { parent: this },
