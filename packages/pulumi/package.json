@@ -13,6 +13,13 @@
       "types": "./dist/components.d.ts"
     }
   },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/*"
+      ]
+    }
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

@@ -82,7 +82,7 @@ export class Site extends pulumi.ComponentResource {
         role: role.arn,
 
         runtime: 'nodejs18.x',
-        architectures: ['x86_64'],
+        architectures: ['arm64'],
 
         memorySize: args.resources?.memory ?? 256,
         timeout: 59,

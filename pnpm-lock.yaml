@@ -42,6 +42,40 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
 
+  apps/actions-runner:
+    dependencies:
+      '@aws-sdk/client-ssm':
+        specifier: ^3.398.0
+        version: 3.398.0
+      execa:
+        specifier: ^8.0.1
+        version: 8.0.1
+      octokit:
+        specifier: ^3.1.0
+        version: 3.1.0
+    devDependencies:
+      '@penxle/pulumi':
+        specifier: workspace:^
+        version: link:../../packages/pulumi
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
+      '@pulumi/aws':
+        specifier: ^5.42.0
+        version: 5.42.0
+      '@pulumi/pulumi':
+        specifier: ^3.79.0
+        version: 3.79.0
+      tsup:
+        specifier: ^7.2.0
+        version: 7.2.0(typescript@5.2.2)
+      tsx:
+        specifier: ^3.12.7
+        version: 3.12.7
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+
   apps/bedrock:
     devDependencies:
       '@penxle/pulumi':
@@ -7424,6 +7458,21 @@ packages:
       signal-exit: 3.0.7
       strip-final-newline: 3.0.0
 
+  /execa@8.0.1:
+    resolution: {integrity: sha512-VyhnebXciFV2DESc+p6B+y0LjSm0krU4OgJN44qFAhBY0TJ+1V61tYD2+wHusZ6F9n5K+vl8k0sTy7PEfV4qpg==}
+    engines: {node: '>=16.17'}
+    dependencies:
+      cross-spawn: 7.0.3
+      get-stream: 8.0.1
+      human-signals: 5.0.0
+      is-stream: 3.0.0
+      merge-stream: 2.0.0
+      npm-run-path: 5.1.0
+      onetime: 6.0.0
+      signal-exit: 4.1.0
+      strip-final-newline: 3.0.0
+    dev: false
+
   /exit-hook@3.2.0:
     resolution: {integrity: sha512-aIQN7Q04HGAV/I5BszisuHTZHXNoC23WtLkxdCLuYZMdWviRD0TMIt2bnUBi9MrHaF/hH8b3gwG9iaAUHKnJGA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -7814,6 +7863,11 @@ packages:
   /get-stream@6.0.1:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
     engines: {node: '>=10'}
+
+  /get-stream@8.0.1:
+    resolution: {integrity: sha512-VaUJspBffn/LMCJVoMvSAdmscJyS1auj5Zulnn5UoYcY531UWmdwhRWkcGKnGU93m5HSXP9LP2usOryrBtQowA==}
+    engines: {node: '>=16'}
+    dev: false
 
   /get-symbol-description@1.0.0:
     resolution: {integrity: sha512-2EmdH1YvIQiZpltCNgkuiUnyukzxM/R6NDJX31Ke3BG1Nq5b0S2PhX59UKi9vZpPDQVdqn+1IcaAwnzTT5vCjw==}
@@ -8319,6 +8373,11 @@ packages:
   /human-signals@4.3.1:
     resolution: {integrity: sha512-nZXjEF2nbo7lIw3mgYjItAfgQXog3OjJogSbKa2CQIIvSGWcKgeJnQlNXip6NglNzYH45nSRiEVimMvYL8DDqQ==}
     engines: {node: '>=14.18.0'}
+
+  /human-signals@5.0.0:
+    resolution: {integrity: sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==}
+    engines: {node: '>=16.17.0'}
+    dev: false
 
   /husky@8.0.3:
     resolution: {integrity: sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==}
