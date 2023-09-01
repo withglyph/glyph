@@ -6,14 +6,18 @@ on:
 
 jobs:
   teardown:
-    name: ${{ matrix.project }}
+    name: ${{ matrix.app }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        project: [penxle.com, penxle.io, help.penxle.com, landing.penxle.com]
+        app:
+          - penxle.com
+          - penxle.io
+          - help.penxle.com
+          - landing.penxle.com
     concurrency:
-      group: pr-${{ github.event.pull_request.number }}/${{ matrix.project }}
+      group: pr-${{ github.event.pull_request.number }}/${{ matrix.app }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -30,9 +34,8 @@ jobs:
 
       - name: Destroy infrastructure
         run: |
-          cd sites/${{ matrix.project }}
-          pulumi stack select $STACK
-          pulumi config refresh
+          cd apps/${{ matrix.app }}
+          pulumi config refresh --force --stack $STACK
           pulumi destroy --skip-preview --stack $STACK
           pulumi stack rm --yes --stack $STACK
         env:

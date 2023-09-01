@@ -75,11 +75,24 @@ jobs:
           app: ${{ matrix.app }}
           stack: pr-${{ github.event.pull_request.number }}
 
-      - name: Deploy infrastructure
+      - name: Setup infrastructure
+        if: github.event.action != 'synchronize'
         working-directory: apps/${{ matrix.app }}
         run: |
-          pulumi stack select $STACK || pulumi stack init $STACK
-          pulumi config set aws:defaultTags '{"tags":{"ManagedBy":"Pulumi"}}'
+          pulumi stack init $STACK
+          pulumi config cp --stack production --dest $STACK
+          pulumi config set --stack $STACK --path 'aws:defaultTags.tags["pulumi.penxle.io/stack"]' pr-${{ github.event.pull_request.number }}
+          pulumi up --skip-preview --stack $STACK
+        env:
+          STACK: penxle/pr-${{ github.event.pull_request.number }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      - name: Update infrastructure
+        if: github.event.action == 'synchronize'
+        working-directory: apps/${{ matrix.app }}
+        run: |
+          pulumi config refresh --force --stack $STACK
           pulumi up --skip-preview --stack $STACK
         env:
           STACK: penxle/pr-${{ github.event.pull_request.number }}
