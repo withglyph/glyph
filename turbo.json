@@ -4,7 +4,7 @@
     "build": {
       "dependsOn": ["codegen", "^build"],
       "env": ["PRIVATE_*", "PUBLIC_*"],
-      "outputs": [".svelte-kit/**", "dist/**"]
+      "outputs": [".lambda/**", ".svelte-kit/**", "dist/**"]
     },
     "codegen": {
       "dependsOn": ["^build"],

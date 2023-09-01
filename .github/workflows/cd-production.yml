@@ -1,28 +1,34 @@
-name: CD
+name: Production
 
 on:
   push:
-    branches: [main]
-
-env:
-  TURBO_TEAM: penxle
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+    branches:
+      - main
 
 jobs:
-  production:
-    name: Production
+  deploy:
+    name: ${{ matrix.app }}
     runs-on: ubuntu-latest
+    container: amazonlinux:2
     strategy:
       fail-fast: false
       matrix:
-        project:
-          [literoom, penxle.com, penxle.io, help.penxle.com, landing.penxle.com]
-    concurrency: ${{ matrix.project }}
+        app:
+          - github-app
+          - literoom
+          - penxle.com
+          - penxle.io
+          - help.penxle.com
+          - landing.penxle.com
+    concurrency:
+      group: production/${{ matrix.app }}
     steps:
+      - name: Install binaries
+        run: |
+          yum install -y git tar zstd
+
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -32,49 +38,51 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 16
           cache: pnpm
+
+      - name: Setup doppler
+        uses: dopplerhq/cli-action@v2
+
+      - name: Setup pulumi
+        uses: pulumi/actions@v4
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Prepare local actions
-        run: pnpm run build:actions
+      - name: Setup doppler project
+        run: doppler setup --no-interactive
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          DOPPLER_CONFIG: prod
 
-      - name: Build local dependencies
-        run: pnpm run build:deps
+      - name: Build app
+        run: doppler run -- pnpm exec turbo run build
+        working-directory: apps/${{ matrix.app }}
+        env:
+          TURBO_TEAM: penxle
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          PUBLIC_PULUMI_STACK: production
 
-      - uses: dopplerhq/secrets-fetch-action@v1.1.2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
         with:
-          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
-          doppler-project: penxle
-          doppler-config: prod
-          inject-env-vars: true
-
-      - name: Build project
-        run: pnpm exec turbo run build --filter=${{ matrix.project }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
 
       - name: Upload lambda function
-        uses: ./actions/upload-lambda
+        uses: ./packages/lambda
         with:
-          project: ${{ matrix.project }}
-        env:
-          AWS_REGION: ap-northeast-2
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          app: ${{ matrix.app }}
+          stack: production
 
-      - name: Setup Pulumi
-        uses: pulumi/actions@v4
-
-      - name: Deploy infrastructure
+      - name: Update infrastructure
+        working-directory: apps/${{ matrix.app }}
         run: |
-          cd infra/${{ matrix.project }}
-          pulumi stack select penxle/production || pulumi stack init penxle/production
-          pulumi config set aws:defaultTags '{"tags":{"ManagedBy":"Pulumi"}}'
-          pulumi up --skip-preview --stack penxle/production
+          pulumi up --skip-preview --stack $STACK
         env:
-          AWS_REGION: ap-northeast-2
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          STACK: penxle/production
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

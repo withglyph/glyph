@@ -1,0 +1,10 @@
+runs:
+  using: node16
+  main: dist/action.js
+inputs:
+  app:
+    required: true
+  stack:
+    required: true
+outputs:
+  projectDir: {}

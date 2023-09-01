@@ -4,11 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "bootstrap": "pnpm install && husky install",
-    "build:actions": "turbo run build --filter './actions/**'",
-    "build:deps": "turbo run build --filter './packages/**' --filter './infra/lib'",
+    "bootstrap": "pnpm install && husky install && doppler setup --no-interactive",
     "codegen": "turbo run codegen",
-    "dev": "turbo run dev --filter './sites/**' --concurrency 255",
+    "dev": "turbo run dev --concurrency 255",
     "fix": "pnpm run '/^fix:.+$/'",
     "fix:eslint": "pnpm lint:eslint --fix",
     "fix:prettier": "pnpm lint:prettier --write",
@@ -29,6 +27,7 @@
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.2",
     "syncpack": "^11.2.1",
+    "tsx": "^3.12.7",
     "turbo": "^1.10.13",
     "typescript": "^5.2.2"
   },

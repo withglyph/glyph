@@ -4,22 +4,40 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./adapter": {
+      "import": "./dist/adapter.js",
+      "types": "./dist/adapter.d.ts"
+    },
     "./http": {
       "import": "./dist/http.js",
       "types": "./dist/http.d.ts"
     }
   },
+  "bin": {
+    "lambdify": "./bin/index.js"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "lint:typecheck": "tsc --noEmit"
+    "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "itty-router": "^4.0.22"
+    "@actions/core": "^1.10.0",
+    "@aws-sdk/client-s3": "^3.400.0",
+    "@pnpm/find-workspace-dir": "^6.0.2",
+    "@pnpm/workspace.find-packages": "^1.0.5",
+    "@vercel/nft": "^0.23.1",
+    "exit-hook": "^3.2.0",
+    "fast-glob": "^3.3.1",
+    "fflate": "^0.8.0",
+    "itty-router": "^4.0.22",
+    "mime-types": "^2.1.35"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
+    "@sveltejs/kit": "^1.23.0",
     "@types/aws-lambda": "^8.10.119",
+    "@types/mime-types": "^2.1.1",
     "@types/node": "^20.5.6",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2"
