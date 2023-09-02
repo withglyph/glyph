@@ -18,7 +18,7 @@ export const handler = async (event: Event) => {
   const url = new URL(event.userRequest.url);
 
   const size = Math.min(Number(url.searchParams.get('s')), 8192);
-  const quality = Math.min(Number(url.searchParams.get('q') ?? 75), 75);
+  const quality = Math.min(Number(url.searchParams.get('q') ?? 75), 90);
 
   if (!size || !quality) {
     await S3.send(
@@ -56,10 +56,7 @@ export const handler = async (event: Event) => {
       fit: 'inside',
       withoutEnlargement: true,
     })
-    .avif({
-      quality,
-      effort: 4,
-    })
+    .webp({ quality })
     .toBuffer();
 
   await S3.send(
@@ -67,7 +64,7 @@ export const handler = async (event: Event) => {
       RequestRoute: event.getObjectContext.outputRoute,
       RequestToken: event.getObjectContext.outputToken,
       Body: output,
-      ContentType: 'image/avif',
+      ContentType: 'image/webp',
     }),
   );
 
