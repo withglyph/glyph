@@ -65,10 +65,10 @@ new aws.ecs.TaskDefinition('actions-runner', {
         logConfiguration: {
           logDriver: 'awslogs',
           options: {
-            'awslogs-group': '/aws/ecs/actions-runner',
             'awslogs-region': 'ap-northeast-2',
+            'awslogs-group': '/aws/ecs/actions-runner',
             'awslogs-create-group': 'true',
-            'awslogs-stream-prefix': 'actions-runner',
+            'awslogs-stream-prefix': 'container',
           },
         },
       },
