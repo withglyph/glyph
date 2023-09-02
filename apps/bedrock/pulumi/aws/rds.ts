@@ -32,7 +32,6 @@ const cluster = new aws.rds.Cluster('penxle', {
 
   masterUsername: 'root',
   masterPassword: password.result,
-  iamDatabaseAuthenticationEnabled: true,
 
   applyImmediately: true,
 });
@@ -45,6 +44,7 @@ new aws.rds.ClusterInstance('penxle-1', {
   instanceClass: 'db.t4g.medium',
 
   availabilityZone: subnets.private.az1.availabilityZone,
+  caCertIdentifier: 'rds-ca-rsa2048-g1',
 
   preferredMaintenanceWindow: 'sun:20:00-sun:22:00',
 

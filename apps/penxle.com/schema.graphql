@@ -19,6 +19,7 @@ input DeleteSpaceInput {
 
 input FinalizeImageUploadInput {
   key: String!
+  name: String!
 }
 
 type Image {
@@ -49,13 +50,9 @@ type Mutation {
   issueSSOAuthorizationUrl(input: IssueSSOAuthorizationUrlInput!): String!
   login(input: LoginInput!): User!
   logout: User!
-  prepareImageUpload(input: PrepareImageUploadInput!): PrepareImageUploadPayload!
+  prepareImageUpload: PrepareImageUploadPayload!
   signUp(input: SignUpInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
-}
-
-input PrepareImageUploadInput {
-  name: String!
 }
 
 type PrepareImageUploadPayload {

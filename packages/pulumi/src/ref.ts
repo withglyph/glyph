@@ -1,7 +1,11 @@
 import * as pulumi from '@pulumi/pulumi';
 
-const bedrock = new pulumi.StackReference('penxle/bedrock/prod');
+let ref: pulumi.StackReference;
 
 export const bedrockRef = (name: string) => {
-  return bedrock.requireOutput(name);
+  if (!ref) {
+    ref = new pulumi.StackReference('penxle/bedrock/prod');
+  }
+
+  return ref.requireOutput(name);
 };

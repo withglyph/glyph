@@ -24,7 +24,7 @@ const uploads = new aws.s3.Bucket('uploads', {
       allowedMethods: ['PUT'],
       allowedOrigins: [
         'https://staging.penxle.com',
-        'https://*.penxle.dev',
+        'https://*.pnxl.site',
         'http://127.0.0.1:4000',
       ],
     },
