@@ -56,9 +56,9 @@ export const handler = async (event: Event) => {
       fit: 'inside',
       withoutEnlargement: true,
     })
-    .avif({
+    .webp({
       quality,
-      effort: 4,
+      effort: 6,
     })
     .toBuffer();
 
@@ -67,7 +67,7 @@ export const handler = async (event: Event) => {
       RequestRoute: event.getObjectContext.outputRoute,
       RequestToken: event.getObjectContext.outputToken,
       Body: output,
-      ContentType: 'image/avif',
+      ContentType: 'image/webp',
     }),
   );
 
