@@ -1,5 +1,6 @@
 <script lang="ts">
   import ToolbarButton from './ToolbarButton.svelte';
+  import ToolbarMenu from './ToolbarMenu.svelte';
   import type { Editor } from '@tiptap/core';
 
   export let editor: Editor | undefined;
@@ -40,25 +41,12 @@
         on:click={() => editor?.chain().focus().toggleUnderline().run()}
       />
 
-      <ToolbarButton
+      <ToolbarMenu
         name="폰트 색상 설정"
         class="i-lc-paintbrush"
         active={editor?.isActive('color')}
         enabled={editor?.can().setColor({ 'data-color': 'text-brand-50' })}
-        on:click={() =>
-          editor
-            ?.chain()
-            .focus()
-            .setColor({ 'data-color': 'text-brand-50' })
-            .run()}
-      />
-
-      <ToolbarButton
-        name="폰트 색상 해제"
-        class="i-lc-paintbrush"
-        active={editor?.isActive('color')}
-        enabled={editor?.can().unsetColor()}
-        on:click={() => editor?.chain().focus().unsetColor().run()}
+        {editor}
       />
 
       <span class="square-6" />
