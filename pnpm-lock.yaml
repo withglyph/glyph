@@ -118,6 +118,9 @@ importers:
       '@pulumi/random':
         specifier: ^4.13.2
         version: 4.13.2
+      '@pulumi/tailscale':
+        specifier: ^0.13.0
+        version: 0.13.0
       '@pulumi/tls':
         specifier: ^4.10.0
         version: 4.10.0
@@ -3862,6 +3865,15 @@ packages:
 
   /@pulumi/random@4.13.2:
     resolution: {integrity: sha512-Ao2lLIwwGm/3xV77tJJt6FCQRuZQZ74/1MkrNf59xsNP8bbT1fXFO6M+qp4QNx5hDHdG0Q5uH3JvqAh3Hwxj7g==}
+    requiresBuild: true
+    dependencies:
+      '@pulumi/pulumi': 3.80.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /@pulumi/tailscale@0.13.0:
+    resolution: {integrity: sha512-hXZLlBUv90tBD1vWJDtnSbuJpfj78W57UNCSSotKrHd3OJHYDb94fH6znZRMRzyc81vmEsFtvn9T7yxGC/3l8Q==}
     requiresBuild: true
     dependencies:
       '@pulumi/pulumi': 3.80.0
