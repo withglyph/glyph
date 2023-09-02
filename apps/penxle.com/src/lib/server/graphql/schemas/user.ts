@@ -5,7 +5,8 @@ import { FormValidationError } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
 import { google } from '$lib/server/external-api';
 import { createAccessToken } from '$lib/server/utils';
-import { createRandomAvatar, persistAvatar } from '$lib/server/utils/avatar';
+import { createRandomAvatar, renderAvatar } from '$lib/server/utils/avatar';
+import { directUploadImage } from '$lib/server/utils/image';
 import { createId } from '$lib/utils';
 import {
   LoginInputSchema,
@@ -205,13 +206,18 @@ builder.mutationFields((t) => ({
         throw new FormValidationError('email', '이미 사용중인 이메일이에요.');
       }
 
-      const avatar = createRandomAvatar();
+      const randomAvatar = createRandomAvatar();
+      const avatarId = await directUploadImage({
+        db,
+        name: 'random-avatar.png',
+        buffer: await renderAvatar(randomAvatar),
+      });
 
       const profile = await db.profile.create({
         data: {
           id: createId(),
           name: input.name,
-          avatarId: await persistAvatar(db, avatar),
+          avatarId,
         },
       });
 
@@ -229,6 +235,11 @@ builder.mutationFields((t) => ({
             },
           },
         },
+      });
+
+      await db.image.update({
+        where: { id: avatarId },
+        data: { userId: user.id },
       });
 
       const session = await db.session.create({

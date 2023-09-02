@@ -13,10 +13,10 @@ CREATE TYPE "_user_state" AS ENUM ('ACTIVE', 'INACTIVE');
 -- CreateTable
 CREATE TABLE "images" (
     "id" TEXT NOT NULL,
+    "user_id" TEXT,
     "name" TEXT NOT NULL,
     "format" TEXT NOT NULL,
-    "file_size" INTEGER NOT NULL,
-    "blob_size" INTEGER NOT NULL,
+    "size" INTEGER NOT NULL,
     "width" INTEGER NOT NULL,
     "height" INTEGER NOT NULL,
     "path" TEXT NOT NULL,
@@ -128,6 +128,9 @@ CREATE UNIQUE INDEX "user_ssos_provider_provider_user_id_key" ON "user_ssos"("pr
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_passwords_user_id_key" ON "user_passwords"("user_id");
+
+-- AddForeignKey
+ALTER TABLE "images" ADD CONSTRAINT "images_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
