@@ -2,6 +2,6 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
   clean: true,
-  entry: ['src/handlers/finalize.ts', 'src/handlers/transform.ts'],
+  entry: ['src/handlers/*.ts'],
   format: 'esm',
 });

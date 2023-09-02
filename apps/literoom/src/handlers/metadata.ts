@@ -7,29 +7,20 @@ import {
 import sharp from 'sharp';
 import { rgbaToThumbHash } from 'thumbhash';
 import { getDominantColor } from '../lib/mmcq';
-import type { S3EventRecord, S3Handler } from 'aws-lambda';
 
 const S3 = new S3Client();
 
-export const handler = (async (event) => {
-  const promises = event.Records.map(async (record) => {
-    try {
-      await finalize(record);
-    } catch (err) {
-      console.error(err);
-      // await ddbPutItem(record.s3.object.key, { error: String(err) });
-    }
-  });
+type Event = {
+  key: string;
+};
 
-  await Promise.all(promises);
-}) satisfies S3Handler;
-
-const finalize = async (record: S3EventRecord) => {
-  const key = decodeURIComponent(record.s3.object.key.replaceAll('+', ' '));
+export const handler = async (event: Event) => {
+  const key = event.key;
 
   const object = await S3.send(
     new GetObjectCommand({ Bucket: 'penxle-uploads', Key: key }),
   );
+
   await S3.send(
     new DeleteObjectCommand({ Bucket: 'penxle-uploads', Key: key }),
   );
@@ -44,13 +35,6 @@ const finalize = async (record: S3EventRecord) => {
     .flatten({ background: '#ffffff' });
 
   const metadata = await image.metadata();
-
-  const getOutput = async () => {
-    return await image
-      .clone()
-      .avif({ quality: 75, effort: 4 })
-      .toBuffer({ resolveWithObject: true });
-  };
 
   const getColor = async () => {
     const buffer = await image.clone().raw().toBuffer();
@@ -108,33 +92,32 @@ const finalize = async (record: S3EventRecord) => {
     return hash;
   };
 
-  const [output, color, placeholder, hash] = await Promise.all([
-    getOutput(),
+  const [color, placeholder, hash] = await Promise.all([
     getColor(),
     getPlaceholder(),
     getHash(),
   ]);
 
-  const path = `${key}.avif`;
+  const extension = name.split('.').pop() ?? 'unknown';
+  const path = `${key}.${extension}`;
   await S3.send(
     new PutObjectCommand({
       Bucket: 'penxle-data',
       Key: path,
-      Body: output.data,
-      ContentType: 'image/avif',
+      Body: buffer,
+      ContentType: `image/${metadata.format}`,
     }),
   );
 
-  JSON.stringify({
+  return {
     name,
     path,
     format: metadata.format,
-    fileSize: metadata.size,
-    blobSize: output.info.size,
-    width: output.info.width,
-    height: output.info.height,
+    size: metadata.size,
+    width: metadata.width,
+    height: metadata.height,
     color,
     placeholder,
     hash,
-  });
+  };
 };

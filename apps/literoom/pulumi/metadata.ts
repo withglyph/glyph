@@ -7,16 +7,16 @@ const pkg = aws.s3.getObjectOutput({
   key: 'lambda/prod--literoom.zip',
 });
 
-const role = new aws.iam.Role('literoom-finalize@lambda', {
-  name: 'literoom-finalize@lambda',
+const role = new aws.iam.Role('literoom-metadata@lambda', {
+  name: 'literoom-metadata@lambda',
   assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
     Service: 'lambda.amazonaws.com',
   }),
   managedPolicyArns: [aws.iam.ManagedPolicies.AWSLambdaBasicExecutionRole],
 });
 
-new aws.iam.RolePolicy('literoom-finalize@lambda', {
-  name: 'literoom-finalize@lambda',
+new aws.iam.RolePolicy('literoom-metadata@lambda', {
+  name: 'literoom-metadata@lambda',
   role: role.name,
 
   policy: {
@@ -38,8 +38,8 @@ new aws.iam.RolePolicy('literoom-finalize@lambda', {
   },
 });
 
-const lambda = new aws.lambda.Function(`literoom-finalize`, {
-  name: 'literoom-finalize',
+new aws.lambda.Function(`literoom-metadata`, {
+  name: 'literoom-metadata',
   role: role.arn,
 
   runtime: 'nodejs18.x',
@@ -50,26 +50,7 @@ const lambda = new aws.lambda.Function(`literoom-finalize`, {
 
   s3Bucket: pkg.bucket,
   s3Key: pkg.key,
-  handler: 'finalize.handler',
+  handler: 'metadata.handler',
 
   sourceCodeHash: pkg.metadata.Hash,
 });
-
-new aws.lambda.Permission('literoom-finalize', {
-  function: lambda.name,
-  action: 'lambda:InvokeFunction',
-  principal: 's3.amazonaws.com',
-});
-
-new aws.s3.BucketNotification('literoom-finalize@lambda', {
-  bucket: bedrockRef('AWS_S3_BUCKET_UPLOADS_BUCKET'),
-  lambdaFunctions: [
-    {
-      lambdaFunctionArn: lambda.arn,
-      events: ['s3:ObjectCreated:*'],
-      filterPrefix: 'images/',
-    },
-  ],
-});
-
-export const outputs = {};

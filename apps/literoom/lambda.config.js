@@ -1,3 +1,3 @@
 export default {
-  entry: ['dist/finalize.js', 'dist/transform.js'],
+  entry: ['dist/metadata.js', 'dist/optimize.js', 'dist/transform.js'],
 };
