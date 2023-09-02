@@ -237,6 +237,11 @@ builder.mutationFields((t) => ({
         },
       });
 
+      await db.image.update({
+        where: { id: avatarId },
+        data: { userId: user.id },
+      });
+
       const session = await db.session.create({
         select: { id: true },
         data: { id: createId(), userId: user.id },
