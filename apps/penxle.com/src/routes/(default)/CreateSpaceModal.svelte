@@ -56,7 +56,12 @@
     </div>
   </form>
 
-  <Button slot="action" loading={$isSubmitting} on:click={handleSubmit}>
+  <Button
+    size="md"
+    slot="action"
+    loading={$isSubmitting}
+    on:click={handleSubmit}
+  >
     만들기
   </Button>
 </Modal>

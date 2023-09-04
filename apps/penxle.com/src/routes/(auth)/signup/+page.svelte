@@ -52,7 +52,7 @@
 
   <section class="pt-4 space-y-2">
     <Checkbox name="isAgreed">펜슬 이용약관에 동의합니다.</Checkbox>
-    <Button class="w-full py-4" type="submit">가입하기</Button>
+    <Button class="w-full py-4" size="md" type="submit">가입하기</Button>
   </section>
 </form>
 
