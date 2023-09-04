@@ -32,7 +32,7 @@
       {$query.space.name}에 새 글 작성중...
     </div>
     <div class="grow" />
-    <Button>게시하기</Button>
+    <Button size="md">게시하기</Button>
     <Avatar class="square-8" _profile={$query.me.profile} />
   </div>
 </div>

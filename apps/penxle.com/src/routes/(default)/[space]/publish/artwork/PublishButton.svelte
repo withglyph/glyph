@@ -68,4 +68,4 @@
   };
 </script>
 
-<Button loading={$loading} on:click={doPublish}>게시하기</Button>
+<Button size="md" loading={$loading} on:click={doPublish}>게시하기</Button>
