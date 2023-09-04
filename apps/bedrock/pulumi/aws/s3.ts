@@ -2,6 +2,14 @@ import * as aws from '@pulumi/aws';
 
 const artifacts = new aws.s3.Bucket('artifacts', {
   bucket: 'penxle-artifacts',
+
+  lifecycleRules: [
+    {
+      enabled: true,
+      prefix: 'lambda/',
+      expiration: { days: 7 },
+    },
+  ],
 });
 
 const data = new aws.s3.Bucket('data', {
@@ -16,7 +24,7 @@ const uploads = new aws.s3.Bucket('uploads', {
       allowedMethods: ['PUT'],
       allowedOrigins: [
         'https://staging.penxle.com',
-        'https://*.penxle.dev',
+        'https://*.pnxl.site',
         'http://127.0.0.1:4000',
       ],
     },

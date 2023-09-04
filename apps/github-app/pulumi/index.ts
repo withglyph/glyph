@@ -3,7 +3,7 @@ import * as aws from '@pulumi/aws';
 
 const pkg = aws.s3.getObjectOutput({
   bucket: bedrockRef('AWS_S3_BUCKET_ARTIFACTS_BUCKET'),
-  key: 'lambda/github-app-production.zip',
+  key: 'lambda/prod--github-app.zip',
 });
 
 const role = new aws.iam.Role('github-app@lambda', {
@@ -23,7 +23,20 @@ new aws.iam.RolePolicy('github-app@lambda', {
       {
         Effect: 'Allow',
         Action: ['ssm:GetParameter'],
-        Resource: ['*'],
+        Resource: 'arn:aws:ssm:*:*:parameter/github-app/*',
+      },
+      {
+        Effect: 'Allow',
+        Action: ['ecs:RunTask'],
+        Resource: [
+          'arn:aws:ecs:*:*:cluster/actions-runner',
+          'arn:aws:ecs:*:*:task-definition/actions-runner',
+        ],
+      },
+      {
+        Effect: 'Allow',
+        Action: ['iam:PassRole'],
+        Resource: '*',
       },
     ],
   },
@@ -34,7 +47,7 @@ const lambda = new aws.lambda.Function('github-app', {
   role: role.arn,
 
   runtime: 'nodejs18.x',
-  architectures: ['x86_64'],
+  architectures: ['arm64'],
 
   memorySize: 512,
   timeout: 900,

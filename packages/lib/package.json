@@ -38,13 +38,13 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@iconify/json": "^2.2.106",
+    "@iconify/json": "^2.2.109",
     "@iconify/utils": "^2.1.9",
     "@sindresorhus/string-hash": "^2.0.0",
-    "@unocss/config": "^0.55.3",
-    "@unocss/core": "^0.55.3",
-    "@unocss/preset-icons": "^0.55.3",
-    "@unocss/preset-uno": "^0.55.3",
+    "@unocss/config": "^0.55.4",
+    "@unocss/core": "^0.55.4",
+    "@unocss/preset-icons": "^0.55.4",
+    "@unocss/preset-uno": "^0.55.4",
     "browserslist": "^4.21.10",
     "lightningcss": "^1.21.7",
     "magic-string": "^0.30.3",
@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "@sveltejs/kit": "^1.23.0",
+    "@sveltejs/kit": "^1.24.0",
     "rollup": "^3.28.1",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2"

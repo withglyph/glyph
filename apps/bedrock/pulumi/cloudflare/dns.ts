@@ -1,5 +1,6 @@
 import * as cloudflare from '@pulumi/cloudflare';
 import { certificates } from '$aws/acm';
+import { instances } from '$aws/ec2';
 import { rds } from '$aws/rds';
 import { awsSesDkimTokens } from '$aws/ses';
 import { zones } from '$cloudflare/zone';
@@ -175,12 +176,28 @@ new cloudflare.Record('pnxl.cc', {
   comment: 'Cloudflare (Redirect Rules)',
 });
 
-new cloudflare.Record('pnxl.co', {
+new cloudflare.Record('db.pnxl.co', {
   zoneId: zones.pnxl_co.id,
   type: 'CNAME',
   name: 'db.pnxl.co',
   value: rds.cluster.endpoint,
   comment: 'Amazon RDS',
+});
+
+new cloudflare.Record('reader.db.pnxl.co', {
+  zoneId: zones.pnxl_co.id,
+  type: 'CNAME',
+  name: 'reader.db.pnxl.co',
+  value: rds.cluster.readerEndpoint,
+  comment: 'Amazon RDS',
+});
+
+new cloudflare.Record('pool.db.pnxl.co', {
+  zoneId: zones.pnxl_co.id,
+  type: 'A',
+  name: 'pool.db.pnxl.co',
+  value: instances.rdsPooler.privateIp,
+  comment: 'Amazon EC2',
 });
 
 new cloudflare.Record('pnxl.net', {

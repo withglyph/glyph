@@ -5,10 +5,11 @@ import { bedrockRef } from '../ref';
 
 type SiteArgs = {
   name: string;
-  iamPolicy?: aws.iam.PolicyDocument;
 
-  domain: string;
-  zone: string;
+  resources?: { memory?: number };
+  concurrency?: { reserved?: number; provisioned?: number };
+  dns: { name: string; zone?: string };
+  iam?: { policy?: aws.iam.PolicyDocument };
 };
 
 export class Site extends pulumi.ComponentResource {
@@ -23,14 +24,12 @@ export class Site extends pulumi.ComponentResource {
 
     const stack = pulumi.getStack();
 
-    const isProd = stack === 'production';
+    const isProd = stack === 'prod';
 
-    const resourceName = `${args.name}-${stack}`;
-    const domain = isProd
-      ? args.domain
-      : `${stack}-${args.name.replaceAll('_', '-')}.pnxl.site`;
+    const lambdaName = isProd ? args.name : `${stack}--${args.name}`;
+    const domain = isProd ? args.dns.name : `${stack}--${args.name}.pnxl.site`;
 
-    this.siteDomain = pulumi.output(domain);
+    this.siteDomain = pulumi.output(`https://${domain}`);
 
     const usEast1 = new aws.Provider(
       'us-east-1',
@@ -39,14 +38,14 @@ export class Site extends pulumi.ComponentResource {
     );
 
     const zone = cloudflare.getZoneOutput(
-      { name: isProd ? args.zone : 'pnxl.site' },
+      { name: isProd ? args.dns.zone ?? args.dns.name : 'pnxl.site' },
       { parent: this },
     );
 
     const pkg = aws.s3.getObjectOutput(
       {
         bucket: bedrockRef('AWS_S3_BUCKET_ARTIFACTS_BUCKET'),
-        key: `lambda/${resourceName}.zip`,
+        key: `lambda/${stack}--${args.name}.zip`,
       },
       { parent: this },
     );
@@ -54,7 +53,7 @@ export class Site extends pulumi.ComponentResource {
     const role = new aws.iam.Role(
       `${args.name}@lambda`,
       {
-        name: `${resourceName}@lambda`,
+        name: `${stack}--${args.name}@lambda`,
         assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
           Service: 'lambda.amazonaws.com',
         }),
@@ -65,12 +64,12 @@ export class Site extends pulumi.ComponentResource {
       { parent: this },
     );
 
-    if (args.iamPolicy) {
+    if (args.iam?.policy) {
       new aws.iam.RolePolicy(
         `${args.name}@lambda`,
         {
           role: role.name,
-          policy: args.iamPolicy,
+          policy: args.iam.policy,
         },
         { parent: this },
       );
@@ -79,20 +78,23 @@ export class Site extends pulumi.ComponentResource {
     const lambda = new aws.lambda.Function(
       args.name,
       {
-        name: resourceName,
+        name: lambdaName,
         role: role.arn,
 
         runtime: 'nodejs18.x',
-        architectures: ['x86_64'],
+        architectures: ['arm64'],
 
-        memorySize: 2048,
+        memorySize: args.resources?.memory ?? 256,
         timeout: 59,
+        reservedConcurrentExecutions: args.concurrency?.reserved ?? -1,
 
         s3Bucket: pkg.bucket,
         s3Key: pkg.key,
         handler: 'handler.handler',
 
         sourceCodeHash: pkg.metadata.Hash,
+
+        publish: true,
 
         environment: {
           variables: {
@@ -111,23 +113,41 @@ export class Site extends pulumi.ComponentResource {
       { parent: this },
     );
 
-    // new aws.lambda.ProvisionedConcurrencyConfig(args.name, {
-    //   functionName: lambda.name,
-    //   provisionedConcurrentExecutions: 1,
-    //   qualifier: '$LATEST',
-    // });
+    const alias = new aws.lambda.Alias(
+      args.name,
+      {
+        name: 'latest',
+
+        functionName: lambda.name,
+        functionVersion: lambda.version,
+      },
+      { parent: this },
+    );
+
+    if (isProd) {
+      new aws.lambda.ProvisionedConcurrencyConfig(
+        args.name,
+        {
+          functionName: lambda.name,
+          qualifier: alias.name,
+          provisionedConcurrentExecutions: args.concurrency?.provisioned ?? 1,
+        },
+        { parent: this },
+      );
+    }
 
     const lambdaUrl = new aws.lambda.FunctionUrl(
       args.name,
       {
         functionName: lambda.name,
+        qualifier: alias.name,
         authorizationType: 'NONE',
       },
       { parent: this },
     );
 
     const cloudfrontCertificate = aws.acm.getCertificateOutput(
-      { domain: isProd ? args.zone : 'pnxl.site' },
+      { domain: isProd ? args.dns.zone ?? args.dns.name : 'pnxl.site' },
       { parent: this, provider: usEast1 },
     );
 

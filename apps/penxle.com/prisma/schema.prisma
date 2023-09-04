@@ -8,15 +8,18 @@ generator pothos {
 
 datasource db {
   provider = "postgresql"
-  url      = env("PRIVATE_DATABASE_URL")
+
+  url       = env("PRIVATE_DATABASE_URL")
+  directUrl = env("PRIVATE_DATABASE_DIRECT_URL")
 }
 
 model Image {
   id          String   @id
+  userId      String?  @map("user_id")
+  user        User?    @relation(fields: [userId], references: [id])
   name        String
   format      String
-  fileSize    Int      @map("file_size")
-  blobSize    Int      @map("blob_size")
+  size        Int
   width       Int
   height      Int
   path        String
@@ -93,6 +96,8 @@ model User {
   sessions Session[]
   spaces   SpaceMember[]
   ssos     UserSSO[]
+
+  uploadedImages Image[]
 
   @@map("users")
 }

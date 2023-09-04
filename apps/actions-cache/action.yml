@@ -1,0 +1,12 @@
+runs:
+  using: node16
+  main: dist/restore.js
+  post: dist/save.js
+  post-if: success()
+inputs:
+  path:
+    required: true
+  key:
+    required: true
+  restore-keys:
+    required: false

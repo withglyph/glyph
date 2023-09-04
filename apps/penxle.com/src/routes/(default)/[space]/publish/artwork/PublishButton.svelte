@@ -23,10 +23,8 @@
 
   const prepareImageUpload = useMutation(
     graphql(`
-      mutation SpacePublishArtworkPage_PublishButton_PrepareImageUpload_Mutation(
-        $input: PrepareImageUploadInput!
-      ) {
-        prepareImageUpload(input: $input) {
+      mutation SpacePublishArtworkPage_PublishButton_PrepareImageUpload_Mutation {
+        prepareImageUpload {
           key
           presignedUrl
         }
@@ -47,16 +45,17 @@
   );
 
   const doUpload = async (file: File) => {
-    const { key, presignedUrl } = await prepareImageUpload({
-      name: file.name,
-    });
+    const { key, presignedUrl } = await prepareImageUpload();
 
     await fetch(presignedUrl, {
       method: 'PUT',
       body: file,
     });
 
-    return await finalizeImageUpload({ key });
+    return await finalizeImageUpload({
+      key,
+      name: file.name,
+    });
   };
 
   const doPublish = async () => {

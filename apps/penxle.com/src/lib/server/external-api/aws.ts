@@ -1,47 +1,9 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { S3Client } from '@aws-sdk/client-s3';
+import { nanoid } from 'nanoid';
 
-export const S3 = new S3Client();
+export const s3 = new S3Client();
 
-type S3PutObjectParams = {
-  bucket: string;
-  key: string;
-  buffer: Buffer;
-  meta?: Record<string, unknown>;
-};
-export const s3PutObject = async ({
-  bucket,
-  key,
-  buffer,
-  meta,
-}: S3PutObjectParams) => {
-  return await S3.send(
-    new PutObjectCommand({
-      Bucket: bucket,
-      Key: key,
-      Body: buffer,
-      Metadata: meta ? { meta: JSON.stringify(meta) } : undefined,
-    }),
-  );
-};
-
-type S3PutObjectGetSignedUrlParams = {
-  bucket: string;
-  key: string;
-  meta?: Record<string, unknown>;
-};
-export const s3PutObjectGetSignedUrl = async ({
-  bucket,
-  key,
-  meta,
-}: S3PutObjectGetSignedUrlParams) => {
-  return await getSignedUrl(
-    S3,
-    new PutObjectCommand({
-      Bucket: bucket,
-      Key: key,
-      Metadata: meta ? { meta: JSON.stringify(meta) } : undefined,
-    }),
-    { expiresIn: 60 * 60 }, // 1 hour
-  );
+export const createS3ObjectKey = (prefix: string) => {
+  const key = nanoid(24);
+  return `${prefix}/${key[0]}/${key[0]}${key[1]}/${key}`;
 };

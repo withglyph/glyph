@@ -12,11 +12,9 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "unocss.root": [
     "packages/ui",
-    "sites/penxle.com",
-    "sites/penxle.io",
-    "sites/help.penxle.com",
-    "sites/landing.penxle.com"
-  ],
-  "[terraform]": { "editor.defaultFormatter": "hashicorp.terraform" },
-  "[terraform-vars]": { "editor.defaultFormatter": "hashicorp.terraform" }
+    "apps/penxle.com",
+    "apps/penxle.io",
+    "apps/help.penxle.com",
+    "apps/landing.penxle.com"
+  ]
 }

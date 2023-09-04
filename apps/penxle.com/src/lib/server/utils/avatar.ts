@@ -4,10 +4,8 @@ import { color } from '@penxle/lib/unocss';
 import { renderAsync } from '@resvg/resvg-js';
 import { nanoid } from 'nanoid';
 import { draw } from 'radash';
-import { uploadImage } from './image';
 import type { Options } from '@dicebear/core';
 import type { ColorShade } from '@penxle/lib/unocss';
-import type { InteractiveTransactionClient } from '../database';
 
 const colors = (...colors: ColorShade[]) =>
   colors.map((v) => color(v).slice(1));
@@ -59,13 +57,10 @@ export const createRandomAvatar = () => {
     .replaceAll('$$$$$$', bg);
 };
 
-export const persistAvatar = async (
-  db: InteractiveTransactionClient,
-  avatar: string,
-) => {
+export const renderAvatar = async (avatar: string) => {
   const image = await renderAsync(avatar, {
     fitTo: { mode: 'width', value: 512 },
   });
 
-  return await uploadImage(db, 'avatar-generated.png', image.asPng());
+  return image.asPng();
 };
