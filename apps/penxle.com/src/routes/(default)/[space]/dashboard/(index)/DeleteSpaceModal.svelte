@@ -64,6 +64,7 @@
   </div>
 
   <Button
+    size="md"
     slot="action"
     disabled={confirm !== $space.slug}
     loading={$deleteSpace.inflight}

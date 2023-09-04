@@ -27,7 +27,8 @@
     </div>
 
     <Button
-      color="brand"
+      size="md"
+      color="primary"
       on:click={async () => refetchQueries('AvatarsPage_Query')}
     >
       재생성

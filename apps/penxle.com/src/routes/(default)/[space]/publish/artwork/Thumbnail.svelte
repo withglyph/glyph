@@ -139,6 +139,7 @@
     </div>
   </div>
   <Button
+    size="md"
     slot="action"
     on:click={() => {
       artwork = { ...artwork, thumbnail: { ...translation } };
