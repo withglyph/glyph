@@ -55,6 +55,11 @@ export const presetPenxle = (): Preset<Theme> => ({
       ...basicColors,
       ...shadedColors,
     },
+    breakpoints: {
+      sm: '800px',
+      lg: '1024px',
+      xl: '1920px',
+    },
   }),
 });
 
