@@ -56,7 +56,7 @@
   <Button class="w-full mt-3" type="submit" size="xl">로그인</Button>
 </form>
 
-<Button class="w-full mt-3" type="button" color="tertiary" size="xl">
+<Button class="w-full mt-3 max-w-87.5" type="button" color="tertiary" size="xl">
   회원가입
 </Button>
 
