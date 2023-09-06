@@ -1,7 +1,7 @@
 import { UserSSOProvider } from '@prisma/client';
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
-import { FormValidationError } from '$lib/errors';
+import { FormValidationError, NotFoundError } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
 import { google } from '$lib/server/external-api';
 import { createAccessToken } from '$lib/server/utils';
@@ -10,10 +10,15 @@ import { directUploadImage } from '$lib/server/utils/image';
 import { createId } from '$lib/utils';
 import {
   LoginInputSchema,
+  RequestPasswordResetInputSchema,
   SignUpInputSchema,
   UpdateUserProfileInputSchema,
 } from '$lib/validations';
 import { builder } from '../builder';
+
+const PasswordResetRequestExpiresTime = dayjs
+  .duration(1, 'hour')
+  .asMilliseconds();
 
 /**
  * * Types
@@ -47,6 +52,16 @@ builder.prismaObject('Profile', {
     name: t.exposeString('name'),
 
     avatar: t.relation('avatar'),
+  }),
+});
+
+builder.prismaObject('UserPasswordResetRequest', {
+  fields: (t) => ({
+    expiresAt: t.field({
+      type: 'DateTime',
+      resolve: (root) =>
+        new Date(root.createdAt.getTime() + PasswordResetRequestExpiresTime),
+    }),
   }),
 });
 
@@ -84,6 +99,16 @@ const IssueSSOAuthorizationUrlInput = builder.inputType(
     fields: (t) => ({
       provider: t.field({ type: UserSSOProvider }),
     }),
+  },
+);
+
+const RequestPasswordResetInput = builder.inputType(
+  'RequestPasswordResetInput',
+  {
+    fields: (t) => ({
+      email: t.string(),
+    }),
+    validate: { schema: RequestPasswordResetInputSchema },
   },
 );
 
@@ -271,6 +296,39 @@ builder.mutationFields((t) => ({
       } else {
         throw new Error('Unsupported provider');
       }
+    },
+  }),
+
+  requestPasswordReset: t.prismaField({
+    type: 'UserPasswordResetRequest',
+    args: { input: t.arg({ type: RequestPasswordResetInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const user = await db.user.findUnique({
+        select: { id: true },
+        where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
+      });
+
+      if (!user) {
+        throw new NotFoundError();
+      }
+
+      const token = Math.floor(Math.random() * 100_000)
+        .toString()
+        .padStart(6, '0');
+
+      // TODO: 메일 발송하기
+
+      const request = await db.userPasswordResetRequest.create({
+        data: {
+          id: createId(),
+          userId: user.id,
+          token,
+        },
+      });
+
+      context.track('user:password-reset:request');
+
+      return request;
     },
   }),
 
