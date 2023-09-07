@@ -32,8 +32,8 @@
 
 <h1 class="font-bold text-xl w-full max-w-87.5">계정 찾기</h1>
 
-<form class="w-full max-w-87.5" use:form>
-  <FormField name="email" label="이메일" class="mt-6">
+<form class="w-full max-w-87.5 mt-6" use:form>
+  <FormField name="email" label="이메일">
     <TextInput class="w-full font-bold" placeholder="이메일 입력" bind:value />
   </FormField>
 
