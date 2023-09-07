@@ -28,3 +28,8 @@ export const UpdateUserProfileInputSchema = z.object({
 export const RequestPasswordResetInputSchema = z.object({
   email: z.string().email('잘못된 이메일 형식이에요'),
 });
+
+export const ResetPasswordInputSchema = z.object({
+  password: z.string().min(8, '8자 이상으로 입력해주세요'),
+  token: z.string(),
+});

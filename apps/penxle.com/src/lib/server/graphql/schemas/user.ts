@@ -11,6 +11,7 @@ import { createId } from '$lib/utils';
 import {
   LoginInputSchema,
   RequestPasswordResetInputSchema,
+  ResetPasswordInputSchema,
   SignUpInputSchema,
   UpdateUserProfileInputSchema,
 } from '$lib/validations';
@@ -111,6 +112,14 @@ const RequestPasswordResetInput = builder.inputType(
     validate: { schema: RequestPasswordResetInputSchema },
   },
 );
+
+const ResetPasswordInput = builder.inputType('ResetPasswordInput', {
+  fields: (t) => ({
+    token: t.string(),
+    password: t.string(),
+  }),
+  validate: { schema: ResetPasswordInputSchema },
+});
 
 const UpdateUserProfileInput = builder.inputType('UpdateUserProfileInput', {
   fields: (t) => ({
@@ -312,9 +321,7 @@ builder.mutationFields((t) => ({
         throw new NotFoundError();
       }
 
-      const token = Math.floor(Math.random() * 100_000)
-        .toString()
-        .padStart(6, '0');
+      const token = createId();
 
       // TODO: 메일 발송하기
 
@@ -329,6 +336,45 @@ builder.mutationFields((t) => ({
       context.track('user:password-reset:request');
 
       return request;
+    },
+  }),
+
+  resetPassword: t.boolean({
+    args: { input: t.arg({ type: ResetPasswordInput }) },
+    resolve: async (_, { input }, { db, ...context }) => {
+      const request = await db.userPasswordResetRequest.findUnique({
+        where: { token: input.token },
+      });
+
+      if (
+        !request ||
+        request.state !== 'PENDING' ||
+        request.createdAt <
+          new Date(Date.now() - PasswordResetRequestExpiresTime)
+      ) {
+        throw new NotFoundError();
+      }
+
+      await db.user.update({
+        where: { id: request.userId },
+        data: {
+          password: {
+            create: {
+              id: createId(),
+              hash: await argon2.hash(input.password),
+            },
+          },
+        },
+      });
+
+      await db.userPasswordResetRequest.update({
+        where: { id: request.id },
+        data: { state: 'ACCEPTED' },
+      });
+
+      context.track('user:password-reset:reset');
+
+      return true;
     },
   }),
 
