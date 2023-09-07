@@ -30,7 +30,7 @@
 
 <Helmet title="계정 찾기" />
 
-<h1 class="font-bold text-xl">계정 찾기</h1>
+<h1 class="font-bold text-xl w-full max-w-87.5">계정 찾기</h1>
 
 <form class="w-full max-w-87.5" use:form>
   <FormField name="email" label="이메일" class="mt-6">

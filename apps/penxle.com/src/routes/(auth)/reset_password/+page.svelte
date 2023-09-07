@@ -26,7 +26,9 @@
 
 <Helmet title="비밀번호 재설정" />
 
-<h1 class="font-bold text-xl w-full mb-6">새로운 비밀번호를 설정해 주세요</h1>
+<h1 class="font-bold text-xl w-full max-w-87.5 mb-6">
+  새로운 비밀번호를 설정해 주세요
+</h1>
 
 <form class="w-full max-w-87.5 space-y-4" use:form>
   <FormField name="password" label="비밀번호">
