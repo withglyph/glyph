@@ -2,6 +2,11 @@
   import { Helmet } from '@penxle/ui';
   import { Button } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
+  import CompleteModal from './CompleteModal.svelte';
+  import ConfirmModal from './ConfirmModal.svelte';
+
+  let confirmModalOpen = false;
+  let completeModalOpen = false;
 </script>
 
 <Helmet title="계정 탈퇴" />
@@ -78,7 +83,12 @@
   </div>
 
   <div>
-    <Button type="button" size="xl" class="w-full">
+    <Button
+      type="button"
+      size="xl"
+      class="w-full"
+      on:click={() => (confirmModalOpen = true)}
+    >
       모든 과정을 동의하고 탈퇴합니다
     </Button>
     <Button type="button" size="xl" color="tertiary" class="w-full mt-3">
@@ -86,3 +96,6 @@
     </Button>
   </div>
 </div>
+
+<ConfirmModal bind:open={confirmModalOpen} />
+<CompleteModal bind:open={completeModalOpen} />
