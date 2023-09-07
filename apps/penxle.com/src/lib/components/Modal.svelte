@@ -18,6 +18,7 @@
     <style>
       body {
         overflow: hidden;
+        user-select: none;
       }
     </style>
   {/if}
@@ -65,7 +66,12 @@
                 size !== 'sm' && 'pr-9 mt-4',
               )}
             >
-              <h3 class={clsx('text-lg font-bold', size === 'md' && 'text-xl')}>
+              <h3
+                class={clsx(
+                  'text-lg font-bold break-keep',
+                  size === 'md' && 'text-xl',
+                )}
+              >
                 <slot name="title" />
               </h3>
               {#if $$slots.subtitle}
