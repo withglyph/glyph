@@ -6,7 +6,7 @@
 </script>
 
 <footer
-  class="border-t px-4 py-10 text-xs tracking-wider text-gray-50 flex sm:px-7 xl:px-80"
+  class="border-t border-gray-30 px-4 py-10 text-xs tracking-wider text-gray-50 flex sm:px-7 xl:px-80"
 >
   <div
     class="mx-auto flex flex-wrap justify-between gap-6 w-105 sm:w-200 lg:w-256"
