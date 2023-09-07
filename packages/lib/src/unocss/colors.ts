@@ -10,6 +10,22 @@ export const basicColors = {
 };
 
 export const shadedColors = {
+  alphagray: {
+    10: '#0c0a091a',
+    15: '#0c0a0926',
+    30: '#0c0a094d',
+    50: '#0c0a097f',
+    60: '#0c0a0999',
+    80: '#0c0a09cc',
+  },
+  alphawhite: {
+    10: '#fafaf91a',
+    15: '#fafaf926',
+    30: '#fafaf94d',
+    50: '#fafaf97f',
+    60: '#fafaf999',
+    80: '#fafaf9cc',
+  },
   gray: {
     5: '#FAFAF9',
     10: '#F1F1F0',
