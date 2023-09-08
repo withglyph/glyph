@@ -9,7 +9,13 @@
     Placeholder,
     TextAlign,
   } from '$lib/tiptap/extensions';
-  import { Bold, Italic, Strike, Underline } from '$lib/tiptap/marks';
+  import {
+    Bold,
+    Italic,
+    Strike,
+    TextColor,
+    Underline,
+  } from '$lib/tiptap/marks';
   import { AccessBarrier } from '$lib/tiptap/node-views';
   import {
     Document,
@@ -46,6 +52,7 @@
         Bold,
         Italic,
         Strike,
+        TextColor,
         Underline,
 
         // extensions

@@ -84,6 +84,53 @@ model Profile {
   @@map("profiles")
 }
 
+model Tag {
+  id        String   @id
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  wiki            TagWiki?
+  parents         TagHierarchy[]      @relation("parents")
+  children        TagHierarchy[]      @relation("children")
+  userPreferences UserTagPreference[]
+
+  @@map("tags")
+}
+
+model TagHierarchy {
+  id          String   @id
+  parentTagId String   @unique @map("parent_tag_id")
+  parentTag   Tag      @relation("parents", fields: [parentTagId], references: [id])
+  childTagId  String   @unique @map("child_tag_id")
+  childTag    Tag      @relation("children", fields: [childTagId], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("tag_hierarchies")
+}
+
+model TagWiki {
+  id        String   @id
+  tagId     String   @unique @map("tag_id")
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  revisions TagWikiRevision[]
+
+  @@map("tag_wikis")
+}
+
+model TagWikiRevision {
+  id        String   @id
+  tagWikiId String   @unique @map("tag_wiki_id")
+  tagWiki   TagWiki  @relation(fields: [tagWikiId], references: [id])
+  userId    String   @unique @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  content   String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("tag_wiki_revisions")
+}
+
 model User {
   id        String    @id
   email     String    @unique
@@ -92,13 +139,17 @@ model User {
   state     UserState
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
+  // 주로 쓰이는 릴레이션들
   password              UserPassword?
   sessions              Session[]
   spaces                SpaceMember[]
   ssos                  UserSSO[]
+  tagPreferences        UserTagPreference[]
   passwordResetRequests UserPasswordResetRequest[]
 
-  uploadedImages Image[]
+  // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
+  authoredTagWikiRevisions TagWikiRevision[]
+  uploadedImages           Image[]
 
   @@map("users")
 }
@@ -135,6 +186,25 @@ model UserPasswordResetRequest {
   expiresAt DateTime @map("expires_at") @db.Timestamptz
 
   @@map("user_password_reset_requests")
+}
+
+model UserTagPreference {
+  id        String         @id
+  userId    String         @unique @map("user_id")
+  user      User           @relation(fields: [userId], references: [id])
+  tagId     String         @unique @map("tag_id")
+  tag       Tag            @relation(fields: [tagId], references: [id])
+  type      PreferenceType
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("user_tag_preferences")
+}
+
+enum PreferenceType {
+  FAVORITE
+  MUTE
+
+  @@map("_preference_type")
 }
 
 enum SpaceState {
