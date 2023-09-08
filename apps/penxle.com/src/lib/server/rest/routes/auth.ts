@@ -128,8 +128,6 @@ auth.get('/auth/google', async (_, { db, ...context }) => {
             .then((profileArrayBuffer) => Buffer.from(profileArrayBuffer))
             .catch(() => null)) ?? (await renderAvatar(createRandomAvatar())); // 구글 프로필 사진을 가져오는 데 실패한 경우 (없다던가)
 
-        console.log(avatarBuffer);
-
         const avatarId = await directUploadImage({
           db,
           name: 'avatar.png',
