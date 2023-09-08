@@ -12,7 +12,10 @@
     _profile,
     graphql(`
       fragment Avatar_profile on Profile {
+        id
+
         avatar {
+          id
           ...Image_image
         }
       }

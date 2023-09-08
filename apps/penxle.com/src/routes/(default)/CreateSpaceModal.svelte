@@ -16,6 +16,7 @@
         $input: CreateSpaceInput!
       ) {
         createSpace(input: $input) {
+          id
           slug
         }
       }

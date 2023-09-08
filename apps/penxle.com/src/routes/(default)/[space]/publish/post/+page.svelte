@@ -14,6 +14,7 @@
       ...SpacePublishPostPage_Header_query
 
       space(slug: $slug) {
+        id
         ...SpacePublishPostPage_Header_space
       }
     }

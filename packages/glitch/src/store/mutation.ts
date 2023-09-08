@@ -1,4 +1,6 @@
+import { createRequest } from '@urql/core';
 import { derived, writable } from 'svelte/store';
+import { filter, fromValue, mergeMap, pipe, take, tap, toPromise } from 'wonka';
 import { getClient } from '../client/internal';
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import type { AnyVariables } from '@urql/core';
@@ -11,11 +13,20 @@ export const createMutationStore = (
   const mutate = async (input?: AnyVariables) => {
     const { client, errorHandler } = await getClient();
 
-    count.update((n) => n + 1);
-    const result = await client
-      .mutation(document, input ? { input } : undefined)
-      .toPromise();
-    count.update((n) => n - 1);
+    const request = createRequest(document, input ? { input } : undefined);
+    const operation = client.createRequestOperation('mutation', request, {
+      requestPolicy: 'network-only',
+    });
+
+    const result = await pipe(
+      fromValue(null),
+      tap(() => count.update((n) => n + 1)),
+      mergeMap(() => client.executeRequestOperation(operation)),
+      filter(({ stale }) => !stale),
+      take(1),
+      tap(() => count.update((n) => n - 1)),
+      toPromise,
+    );
 
     if (result.error?.networkError) {
       throw result.error.networkError;
@@ -33,6 +44,8 @@ export const createMutationStore = (
 
   return Object.assign(
     mutate,
-    derived(count, (n) => n > 0),
+    derived(count, (n) => ({
+      inflight: n > 0,
+    })),
   );
 };

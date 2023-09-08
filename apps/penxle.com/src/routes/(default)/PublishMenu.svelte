@@ -22,6 +22,7 @@
     _user,
     graphql(`
       fragment DefaultLayout_PublishMenu_user on User {
+        id
         ...DefaultLayout_PublishModal_user
       }
     `),

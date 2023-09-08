@@ -2,7 +2,10 @@ import { codegen } from '@graphql-codegen/core';
 import * as typedDocumentNode from '@graphql-codegen/typed-document-node';
 import * as typescript from '@graphql-codegen/typescript';
 import * as typescriptOperations from '@graphql-codegen/typescript-operations';
+import { disableFragmentWarnings } from 'graphql-tag';
 import type { GlitchContext } from '../types';
+
+disableFragmentWarnings();
 
 export const generateGQLCodegen = async (context: GlitchContext) => {
   if (!context.schema) {
@@ -10,7 +13,7 @@ export const generateGQLCodegen = async (context: GlitchContext) => {
   }
 
   return await codegen({
-    filename: 'gql.d.ts',
+    filename: 'gql.ts',
     schema: context.schema,
     documents: context.artifacts.map(({ documentNode }) => ({
       document: documentNode,

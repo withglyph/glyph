@@ -14,6 +14,8 @@
     _user,
     graphql(`
       fragment DefaultLayout_GotoSpaceModal_user on User {
+        id
+
         spaces {
           id
           slug
