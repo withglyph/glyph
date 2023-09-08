@@ -17,7 +17,7 @@
     mutation: graphql(`
       mutation SignUpPage_SignUp_Mutation($input: SignUpInput!) {
         signUp(input: $input) {
-          __typename
+          id
         }
       }
     `),

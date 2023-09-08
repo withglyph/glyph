@@ -12,7 +12,7 @@
     mutation: graphql(`
       mutation LoginPage_Login_Mutation($input: LoginInput!) {
         login(input: $input) {
-          __typename
+          id
         }
       }
     `),

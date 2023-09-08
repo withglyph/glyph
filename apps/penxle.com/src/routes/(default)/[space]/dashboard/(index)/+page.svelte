@@ -11,6 +11,7 @@
         name
 
         meAsMember {
+          id
           role
         }
 

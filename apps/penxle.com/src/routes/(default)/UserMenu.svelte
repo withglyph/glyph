@@ -23,6 +23,7 @@
         id
 
         profile {
+          id
           name
           ...Avatar_profile
         }
