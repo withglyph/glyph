@@ -6,7 +6,7 @@ import type { GlitchContext } from '../types';
 export const writeCodegenFile = async (
   context: GlitchContext,
   filePath: string,
-  program: AST.n.Program | string,
+  program: AST.Program | string,
 ) => {
   const code = typeof program === 'string' ? program : AST.print(program).code;
 

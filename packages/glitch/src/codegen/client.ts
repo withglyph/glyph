@@ -1,6 +1,6 @@
 import * as AST from '../ast';
 
-export const generateClient = () => {
+export const generateClient = (): AST.Program => {
   const program = AST.b.program([
     AST.b.exportNamedDeclaration(
       null,

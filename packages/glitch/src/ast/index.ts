@@ -1,22 +1,21 @@
-import { namedTypes as types } from 'ast-types';
 import * as recast from 'recast';
 import * as parser from 'recast/parsers/typescript.js';
 
+const b: typeof recast.types.builders = recast.types.builders;
+type Program = recast.types.namedTypes.Program;
+
 export const parse = (code: string) => {
   const ast = recast.parse(code, { parser });
-  return ast.program as types.Program;
+  return ast.program as Program;
 };
 
-export const print = (program: types.Program) => {
+export const print = (program: Program) => {
   return recast.print(program);
 };
 
-export const walk = async (
-  program: types.Program,
-  visitor: recast.types.Visitor,
-) => {
+export const walk = async (program: Program, visitor: recast.types.Visitor) => {
   recast.visit(program, visitor);
 };
 
-export { builders as b } from 'ast-types';
-export { namedTypes as n } from 'ast-types';
+export { b };
+export type { Program };

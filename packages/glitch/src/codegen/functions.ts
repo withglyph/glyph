@@ -1,7 +1,7 @@
 import * as AST from '../ast';
 import type { GlitchContext } from '../types';
 
-export const generateFunctions = (context: GlitchContext) => {
+export const generateFunctions = (context: GlitchContext): AST.Program => {
   const program = AST.b.program([
     AST.b.importDeclaration(
       [AST.b.importNamespaceSpecifier(AST.b.identifier('gql'))],
