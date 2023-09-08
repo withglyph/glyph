@@ -124,13 +124,13 @@ export class Site extends pulumi.ComponentResource {
       { parent: this },
     );
 
-    if (isProd) {
+    if (args.concurrency?.provisioned) {
       new aws.lambda.ProvisionedConcurrencyConfig(
         args.name,
         {
           functionName: lambda.name,
           qualifier: alias.name,
-          provisionedConcurrentExecutions: args.concurrency?.provisioned ?? 1,
+          provisionedConcurrentExecutions: args.concurrency.provisioned,
         },
         { parent: this },
       );
