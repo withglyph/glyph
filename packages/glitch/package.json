@@ -45,6 +45,7 @@
     "@urql/exchange-graphcache": "^6.3.3",
     "fast-glob": "^3.3.1",
     "graphql": "^16.8.0",
+    "graphql-tag": "^2.12.6",
     "recast": "^0.23.4",
     "svelte": "^4.2.0",
     "wonka": "^6.3.4"
