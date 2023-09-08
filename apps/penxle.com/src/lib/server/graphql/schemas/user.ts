@@ -3,6 +3,8 @@ import argon2 from 'argon2';
 import dayjs from 'dayjs';
 import { FormValidationError } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
+import { sendEmail } from '$lib/server/email';
+import { PasswordReset } from '$lib/server/email/templates';
 import { google } from '$lib/server/external-api';
 import { createAccessToken } from '$lib/server/utils';
 import { createRandomAvatar, renderAvatar } from '$lib/server/utils/avatar';
@@ -53,6 +55,7 @@ builder.prismaObject('Profile', {
 });
 
 builder.prismaObject('UserPasswordResetRequest', {
+  select: { id: true },
   fields: (t) => ({
     expiresAt: t.expose('expiresAt', {
       type: 'DateTime',
@@ -307,7 +310,13 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: RequestPasswordResetInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const user = await db.user.findUnique({
-        select: { id: true },
+        select: {
+          id: true,
+          email: true,
+          profile: {
+            select: { name: true },
+          },
+        },
         where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
       });
 
@@ -317,7 +326,15 @@ builder.mutationFields((t) => ({
 
       const token = createId();
 
-      // TODO: 메일 발송하기
+      await sendEmail({
+        subject: 'PENXLE 비밀번호 재설정',
+        recipient: user.email,
+        template: PasswordReset,
+        props: {
+          name: user.profile.name,
+          url: `${context.url.origin}/reset-password?token=${token}`, // TODO: 비밀번호 재설정 페이지 URL 확정 필요
+        },
+      });
 
       const request = await db.userPasswordResetRequest.create({
         ...query,
