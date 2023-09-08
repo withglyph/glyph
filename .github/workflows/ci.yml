@@ -7,9 +7,8 @@ on:
   merge_group:
 
 env:
+  TURBO_TEAM: penxle
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-  NODE_OPTIONS: --max-old-space-size=4096
 
 jobs:
   lint:
@@ -40,8 +39,7 @@ jobs:
       - name: Run code generation
         run: pnpm exec turbo run codegen
 
-      - name: Run dependency build
-        run: pnpm run build:deps
-
       - name: Run lint
         run: pnpm run lint:${{ matrix.linter }}
+        env:
+          NODE_OPTIONS: --max-old-space-size=8192

@@ -1,8 +1,16 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
-    "build": { "dependsOn": ["codegen", "^build"] },
-    "codegen": {},
+    "build": {
+      "dependsOn": ["codegen", "^build"],
+      "env": ["PRIVATE_*", "PUBLIC_*"],
+      "outputs": [".lambda/**", ".svelte-kit/**", "dist/**"]
+    },
+    "codegen": {
+      "dependsOn": ["^build"],
+      "dotEnv": [".env"],
+      "outputs": [".svelte-kit/**"]
+    },
     "dev": {
       "cache": false,
       "dependsOn": ["codegen", "^build"],

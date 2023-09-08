@@ -1,6 +1,5 @@
 import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
-import typescript from '@typescript-eslint/eslint-plugin';
 import imports from 'eslint-plugin-import';
 import importsSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
@@ -10,16 +9,16 @@ import { ignore } from './eslint-ignore.js';
 const compat = new FlatCompat();
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
-export const eslint = [
+// eslint-disable-next-line import/no-default-export
+export default [
   { ignores: [ignore] },
   js.configs.recommended,
   ...compat.extends(
     'plugin:unicorn/recommended',
-    'plugin:@typescript-eslint/strict-type-checked',
-    'plugin:@typescript-eslint/stylistic-type-checked',
+    'plugin:@typescript-eslint/strict',
+    'plugin:@typescript-eslint/stylistic',
     'plugin:svelte/recommended',
     'plugin:svelte/prettier',
-    'prettier',
   ),
   {
     languageOptions: {
@@ -27,7 +26,8 @@ export const eslint = [
       sourceType: 'module',
       globals: { ...globals.node, ...globals.browser },
       parserOptions: {
-        project: true,
+        ecmaVersion: 'latest',
+        sourceType: 'module',
         extraFileExtensions: ['.svelte'],
       },
     },
@@ -36,8 +36,9 @@ export const eslint = [
     },
     plugins: { 'import': imports, 'import-sort': importsSort },
     rules: {
+      'no-undef': 'off',
+      'object-shorthand': ['error', 'always'],
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-      '@typescript-eslint/no-confusing-void-expression': 'off',
       'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
       'import/first': 'error',
       'import/newline-after-import': ['error', { considerComments: true }],
@@ -71,9 +72,16 @@ export const eslint = [
     },
   },
   {
-    files: ['**/*.?(c)js', '**/*.config.?(c)ts', '**/service-worker.ts'],
-    languageOptions: { parserOptions: { project: null } },
-    rules: typescript.configs['disable-type-checked'].rules,
+    files: ['**/*.config.[jt]s'],
+    rules: {
+      'import/no-default-export': 'off',
+    },
+  },
+  {
+    files: ['**/pulumi/**/*'],
+    rules: {
+      'unicorn/prefer-spread': 'off',
+    },
   },
   {
     files: ['**/*.svelte'],
@@ -95,4 +103,5 @@ export const eslint = [
       'unicorn/no-useless-undefined': 'off',
     },
   },
+  ...compat.extends('prettier'),
 ];

@@ -2,14 +2,11 @@
 
 node_modules/
 
-.sst/
 .svelte-kit/
-.terraform/
+.glitch/
 .turbo/
-.vercel/
 
 dist/
-$houdini/
 
 vite.config.ts.timestamp-*
 .env.local

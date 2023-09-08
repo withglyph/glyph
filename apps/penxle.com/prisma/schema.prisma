@@ -1,0 +1,225 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator pothos {
+  provider = "prisma-pothos-types"
+}
+
+datasource db {
+  provider = "postgresql"
+
+  url       = env("PRIVATE_DATABASE_URL")
+  directUrl = env("PRIVATE_DATABASE_DIRECT_URL")
+}
+
+model Image {
+  id          String   @id
+  userId      String?  @map("user_id")
+  user        User?    @relation(fields: [userId], references: [id])
+  name        String
+  format      String
+  size        Int
+  width       Int
+  height      Int
+  path        String
+  color       String
+  placeholder String
+  hash        String
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  profileUsingThisAsAvatar Profile?
+
+  @@index([id, path, color])
+  @@map("images")
+}
+
+model Session {
+  id        String   @id
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("sessions")
+}
+
+model Space {
+  id        String     @id
+  slug      String
+  name      String
+  state     SpaceState
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz
+
+  members SpaceMember[]
+
+  @@index([slug, state])
+  @@map("spaces")
+}
+
+model SpaceMember {
+  id        String          @id
+  spaceId   String          @map("space_id")
+  space     Space           @relation(fields: [spaceId], references: [id])
+  userId    String          @map("user_id")
+  user      User            @relation(fields: [userId], references: [id])
+  profileId String          @map("profile_id")
+  profile   Profile         @relation(fields: [profileId], references: [id])
+  role      SpaceMemberRole
+  createdAt DateTime        @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([spaceId, userId])
+  @@map("space_members")
+}
+
+model Profile {
+  id        String   @id
+  name      String
+  avatarId  String   @unique @map("avatar_id")
+  avatar    Image    @relation(fields: [avatarId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  spaces SpaceMember[]
+  user   User?
+
+  @@map("profiles")
+}
+
+model Tag {
+  id        String   @id
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  wiki            TagWiki?
+  wikiRevisions   TagWikiRevision[]
+  parents         TagHierarchy[]      @relation("parents")
+  children        TagHierarchy[]      @relation("children")
+  userPreferences UserTagPreference[]
+
+  @@map("tags")
+}
+
+model TagHierarchy {
+  id          String   @id
+  parentTagId String   @unique @map("parent_tag_id")
+  parentTag   Tag      @relation("parents", fields: [parentTagId], references: [id])
+  childTagId  String   @unique @map("child_tag_id")
+  childTag    Tag      @relation("children", fields: [childTagId], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("tag_hierarchies")
+}
+
+model TagWiki {
+  id        String   @id
+  tagId     String   @unique @map("tag_id")
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  revisions TagWikiRevision[]
+
+  @@map("tag_wikis")
+}
+
+model TagWikiRevision {
+  id        String   @id
+  userId    String   @unique @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  tagId     String   @unique @map("tag_id")
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  tagWikiId String   @unique @map("tag_wiki_id")
+  tagWiki   TagWiki  @relation(fields: [tagWikiId], references: [id])
+  content   String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("tag_wiki_revisions")
+}
+
+model User {
+  id        String    @id
+  email     String    @unique
+  profileId String    @unique @map("profile_id")
+  profile   Profile   @relation(fields: [profileId], references: [id])
+  state     UserState
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  password         UserPassword?
+  sessions         Session[]
+  spaces           SpaceMember[]
+  ssos             UserSSO[]
+  tagPreferences   UserTagPreference[]
+  tagWikiRevisions TagWikiRevision[]
+
+  uploadedImages Image[]
+
+  @@map("users")
+}
+
+model UserSSO {
+  id             String          @id
+  userId         String          @map("user_id")
+  user           User            @relation(fields: [userId], references: [id])
+  provider       UserSSOProvider
+  providerUserId String          @map("provider_user_id")
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([userId, provider])
+  @@unique([provider, providerUserId])
+  @@map("user_ssos")
+}
+
+model UserPassword {
+  id        String   @id
+  userId    String   @unique @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  hash      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("user_passwords")
+}
+
+model UserTagPreference {
+  id        String         @id
+  userId    String         @unique @map("user_id")
+  user      User           @relation(fields: [userId], references: [id])
+  tagId     String         @unique @map("tag_id")
+  tag       Tag            @relation(fields: [tagId], references: [id])
+  type      PreferenceType
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("user_tag_preferences")
+}
+
+enum PreferenceType {
+  FAVORITE
+  MUTE
+
+  @@map("_preference_type")
+}
+
+enum SpaceState {
+  ACTIVE
+  INACTIVE
+
+  @@map("_space_state")
+}
+
+enum SpaceMemberRole {
+  OWNER
+  MEMBER
+
+  @@map("_space_member_role")
+}
+
+enum UserSSOProvider {
+  GOOGLE
+  NAVER
+
+  @@map("_user_sso_provider")
+}
+
+enum UserState {
+  ACTIVE
+  INACTIVE
+
+  @@map("_user_state")
+}

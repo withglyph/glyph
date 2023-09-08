@@ -1,0 +1,38 @@
+{
+  "name": "@penxle/pulumi",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./components": {
+      "import": "./dist/components.js",
+      "types": "./dist/components.d.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/*"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint:typecheck": "tsc"
+  },
+  "dependencies": {
+    "@pulumi/aws": "^6.0.4",
+    "@pulumi/cloudflare": "^5.10.0",
+    "@pulumi/pulumi": "^3.81.0",
+    "fast-glob": "^3.3.1"
+  },
+  "devDependencies": {
+    "@penxle/tsconfig": "workspace:^",
+    "tsup": "^7.2.0"
+  }
+}

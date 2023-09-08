@@ -4,15 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "bootstrap": "pnpm install && husky install",
-    "build:deps": "turbo run build --filter './packages/**'",
+    "bootstrap": "pnpm install && husky install && doppler setup --no-interactive",
     "codegen": "turbo run codegen",
-    "dev": "turbo run dev --filter './sites/**' --concurrency 255",
+    "dev": "turbo run dev --concurrency 255",
     "fix": "pnpm run '/^fix:.+$/'",
     "fix:eslint": "pnpm lint:eslint --fix",
     "fix:prettier": "pnpm lint:prettier --write",
     "lint": "pnpm run '/^lint:.+$/'",
-    "lint:eslint": "eslint .",
+    "lint:eslint": "eslint --max-warnings 0 .",
     "lint:prettier": "prettier --check --ignore-unknown '**/*'",
     "lint:spellcheck": "cspell --no-progress --relative '**/*'",
     "lint:svelte": "turbo run lint:svelte",
@@ -21,18 +20,32 @@
   },
   "devDependencies": {
     "@penxle/lintconfig": "workspace:^",
-    "cspell": "^7.0.0",
-    "eslint": "^8.47.0",
-    "gitmoji-cli": "^8.4.0",
+    "cspell": "^7.3.2",
+    "eslint": "^8.48.0",
+    "gitmoji-cli": "^8.5.0",
     "husky": "^8.0.3",
-    "lint-staged": "^14.0.0",
-    "prettier": "^3.0.2",
+    "lint-staged": "^14.0.1",
+    "prettier": "^3.0.3",
     "syncpack": "^11.2.1",
-    "turbo": "^1.10.12",
-    "typescript": "^5.1.6"
+    "tsx": "^3.12.8",
+    "turbo": "^1.10.13",
+    "typescript": "^5.2.2"
   },
   "engines": {
     "node": "^18 || ^20",
     "pnpm": "^8.6.0"
+  },
+  "pnpm": {
+    "allowedDeprecatedVersions": {
+      "@babel/plugin-proposal-class-properties": "*",
+      "@babel/plugin-proposal-object-rest-spread": "*",
+      "@opentelemetry/api-metrics": "*",
+      "debuglog": "*",
+      "querystring": "*",
+      "readdir-scoped-modules": "*",
+      "read-package-tree": "*",
+      "uuid": "*",
+      "vm2": "*"
+    }
   }
 }
