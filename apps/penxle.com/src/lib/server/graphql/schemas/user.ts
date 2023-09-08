@@ -3,6 +3,8 @@ import argon2 from 'argon2';
 import dayjs from 'dayjs';
 import { FormValidationError } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
+import { sendEmail } from '$lib/server/email';
+import { PasswordReset } from '$lib/server/email/templates';
 import { google } from '$lib/server/external-api';
 import { createAccessToken } from '$lib/server/utils';
 import { createRandomAvatar, renderAvatar } from '$lib/server/utils/avatar';
@@ -10,6 +12,8 @@ import { directUploadImage } from '$lib/server/utils/image';
 import { createId } from '$lib/utils';
 import {
   LoginInputSchema,
+  RequestPasswordResetInputSchema,
+  ResetPasswordInputSchema,
   SignUpInputSchema,
   UpdateUserProfileInputSchema,
 } from '$lib/validations';
@@ -50,6 +54,15 @@ builder.prismaObject('Profile', {
   }),
 });
 
+builder.prismaObject('UserPasswordResetRequest', {
+  select: { id: true },
+  fields: (t) => ({
+    expiresAt: t.expose('expiresAt', {
+      type: 'DateTime',
+    }),
+  }),
+});
+
 /**
  * * Enums
  */
@@ -86,6 +99,24 @@ const IssueSSOAuthorizationUrlInput = builder.inputType(
     }),
   },
 );
+
+const RequestPasswordResetInput = builder.inputType(
+  'RequestPasswordResetInput',
+  {
+    fields: (t) => ({
+      email: t.string(),
+    }),
+    validate: { schema: RequestPasswordResetInputSchema },
+  },
+);
+
+const ResetPasswordInput = builder.inputType('ResetPasswordInput', {
+  fields: (t) => ({
+    token: t.string(),
+    password: t.string(),
+  }),
+  validate: { schema: ResetPasswordInputSchema },
+});
 
 const UpdateUserProfileInput = builder.inputType('UpdateUserProfileInput', {
   fields: (t) => ({
@@ -271,6 +302,87 @@ builder.mutationFields((t) => ({
       } else {
         throw new Error('Unsupported provider');
       }
+    },
+  }),
+
+  requestPasswordReset: t.prismaField({
+    type: 'UserPasswordResetRequest',
+    args: { input: t.arg({ type: RequestPasswordResetInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const user = await db.user.findUnique({
+        select: {
+          id: true,
+          email: true,
+          profile: {
+            select: { name: true },
+          },
+        },
+        where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
+      });
+
+      if (!user) {
+        throw new FormValidationError('email', '잘못된 이메일이에요.');
+      }
+
+      const token = createId();
+
+      await sendEmail({
+        subject: 'PENXLE 비밀번호 재설정',
+        recipient: user.email,
+        template: PasswordReset,
+        props: {
+          name: user.profile.name,
+          url: `${context.url.origin}/reset-password?token=${token}`, // TODO: 비밀번호 재설정 페이지 URL 확정 필요
+        },
+      });
+
+      const request = await db.userPasswordResetRequest.create({
+        ...query,
+        data: {
+          id: createId(),
+          userId: user.id,
+          token,
+          expiresAt: dayjs().add(1, 'hour').toDate(),
+        },
+      });
+
+      context.track('user:password-reset:request');
+
+      return request;
+    },
+  }),
+
+  resetPassword: t.boolean({
+    args: { input: t.arg({ type: ResetPasswordInput }) },
+    resolve: async (_, { input }, { db, ...context }) => {
+      const request = await db.userPasswordResetRequest.findUniqueOrThrow({
+        where: {
+          token: input.token,
+          expiresAt: {
+            gte: new Date(),
+          },
+        },
+      });
+
+      await db.user.update({
+        where: { id: request.userId },
+        data: {
+          password: {
+            create: {
+              id: createId(),
+              hash: await argon2.hash(input.password),
+            },
+          },
+        },
+      });
+
+      await db.userPasswordResetRequest.delete({
+        where: { id: request.id },
+      });
+
+      context.track('user:password-reset:reset');
+
+      return true;
     },
   }),
 

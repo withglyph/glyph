@@ -51,6 +51,8 @@ type Mutation {
   login(input: LoginInput!): User!
   logout: User!
   prepareImageUpload: PrepareImageUploadPayload!
+  requestPasswordReset(input: RequestPasswordResetInput!): UserPasswordResetRequest!
+  resetPassword(input: ResetPasswordInput!): Boolean!
   signUp(input: SignUpInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
 }
@@ -74,6 +76,15 @@ type Query {
   meOrNull: User
   randomAvatars: [String!]!
   space(slug: String!): Space!
+}
+
+input RequestPasswordResetInput {
+  email: String!
+}
+
+input ResetPasswordInput {
+  password: String!
+  token: String!
 }
 
 input SignUpInput {
@@ -112,6 +123,10 @@ type User {
   id: ID!
   profile: Profile!
   spaces: [Space!]!
+}
+
+type UserPasswordResetRequest {
+  expiresAt: DateTime!
 }
 
 enum UserSSOProvider {
