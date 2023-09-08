@@ -1,11 +1,11 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import { tick } from 'svelte';
-  import { fragment, graphql } from '$houdini';
+  import { fragment, graphql } from '$glitch';
   import { portal } from '$lib/svelte/actions';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
   import PublishModal from './PublishModal.svelte';
-  import type { DefaultLayout_PublishMenu_user } from '$houdini';
+  import type { DefaultLayout_PublishMenu_user } from '$glitch';
 
   export let _user: DefaultLayout_PublishMenu_user;
 

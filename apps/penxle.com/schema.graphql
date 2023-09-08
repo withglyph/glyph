@@ -68,6 +68,7 @@ type Profile {
 
 type Query {
   authLayoutBackgroundImage: Image
+  hello(email: String!): User!
   email: String!
   me: User!
   meOrNull: User

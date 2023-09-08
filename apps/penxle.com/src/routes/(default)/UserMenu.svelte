@@ -2,12 +2,11 @@
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import { tick } from 'svelte';
   import { afterNavigate, goto } from '$app/navigation';
-  import { fragment, graphql } from '$houdini';
+  import { fragment, graphql } from '$glitch';
   import { Avatar } from '$lib/components';
-  import { useMutation } from '$lib/houdini';
   import { portal } from '$lib/svelte/actions';
   import GotoSpaceModal from './GotoSpaceModal.svelte';
-  import type { DefaultLayout_UserMenu_user } from '$houdini';
+  import type { DefaultLayout_UserMenu_user } from '$glitch';
 
   export let _user: DefaultLayout_UserMenu_user;
 
@@ -33,15 +32,13 @@
     `),
   );
 
-  const logout = useMutation(
-    graphql(`
-      mutation DefaultLayout_UserMenu_Logout_Mutation {
-        logout {
-          __typename
-        }
+  const logout = graphql(`
+    mutation DefaultLayout_UserMenu_Logout_Mutation {
+      logout {
+        __typename
       }
-    `),
-  );
+    }
+  `);
 
   const update = async () => {
     await tick();
