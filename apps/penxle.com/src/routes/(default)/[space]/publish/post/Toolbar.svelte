@@ -44,8 +44,10 @@
       <ToolbarMenu
         name="폰트 색상 설정"
         class="i-lc-paintbrush"
-        active={editor?.isActive('color')}
-        enabled={editor?.can().setColor({ 'data-color': 'text-brand-50' })}
+        active={editor?.isActive('text-color')}
+        enabled={editor
+          ?.can()
+          .setTextColor({ 'data-text-color': 'text-brand-50' })}
         {editor}
       />
 

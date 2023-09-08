@@ -4,18 +4,18 @@ declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Commands<ReturnType> {
     color: {
-      setColor: (attributes: { 'data-color': string }) => ReturnType;
-      unsetColor: () => ReturnType;
+      setTextColor: (attributes: { 'data-text-color': string }) => ReturnType;
+      unsetTextColor: () => ReturnType;
     };
   }
 }
 
-export const Color = Mark.create({
-  name: 'color',
+export const TextColor = Mark.create({
+  name: 'text-color',
 
   addAttributes() {
     return {
-      'data-color': {
+      'data-text-color': {
         rendered: true,
       },
     };
@@ -31,12 +31,12 @@ export const Color = Mark.create({
 
   addCommands() {
     return {
-      setColor:
+      setTextColor:
         (attributes) =>
         ({ commands }) => {
           return commands.setMark(this.name, attributes);
         },
-      unsetColor:
+      unsetTextColor:
         () =>
         ({ commands }) => {
           return commands.unsetMark(this.name);
