@@ -1,5 +1,6 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { resetClient } from '@penxle/glitch';
   import { tick } from 'svelte';
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
@@ -126,6 +127,7 @@
       type="button"
       on:click={async () => {
         await logout();
+        resetClient();
         await goto('/');
       }}
     >

@@ -1,10 +1,15 @@
-import { cacheExchange, createClient, fetchExchange } from '@penxle/glitch';
+import {
+  cacheExchange,
+  createClient,
+  fetchExchange,
+  resetExchange,
+} from '@penxle/glitch';
 import { deserializeGraphQLError } from '$lib/errors';
 
 // eslint-disable-next-line import/no-default-export
 export default () =>
   createClient({
     url: '/api/graphql',
-    exchanges: [cacheExchange(), fetchExchange],
+    exchanges: [resetExchange(), cacheExchange(), fetchExchange],
     errorHandler: deserializeGraphQLError,
   });

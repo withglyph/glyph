@@ -1,4 +1,6 @@
 import { Client } from '@urql/core';
+import { signalReset } from './exchanges/reset';
+import { deleteClient } from './internal';
 import type { Exchange } from '@urql/core';
 import type { GlitchClient } from '../types';
 
@@ -20,4 +22,9 @@ export const createClient = ({
     }),
     errorHandler,
   };
+};
+
+export const resetClient = () => {
+  deleteClient();
+  signalReset(null);
 };
