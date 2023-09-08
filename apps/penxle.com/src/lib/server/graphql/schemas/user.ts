@@ -325,6 +325,7 @@ builder.mutationFields((t) => ({
           id: createId(),
           userId: user.id,
           token,
+          expiresAt: dayjs().add(1, 'hour').toDate(),
         },
       });
 
