@@ -1,7 +1,7 @@
 import { UserSSOProvider } from '@prisma/client';
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
-import { FormValidationError, NotFoundError } from '$lib/errors';
+import { FormValidationError } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
 import { google } from '$lib/server/external-api';
 import { createAccessToken } from '$lib/server/utils';
@@ -16,10 +16,6 @@ import {
   UpdateUserProfileInputSchema,
 } from '$lib/validations';
 import { builder } from '../builder';
-
-const PasswordResetRequestExpiresTime = dayjs
-  .duration(1, 'hour')
-  .asMilliseconds();
 
 /**
  * * Types
@@ -58,10 +54,8 @@ builder.prismaObject('Profile', {
 
 builder.prismaObject('UserPasswordResetRequest', {
   fields: (t) => ({
-    expiresAt: t.field({
+    expiresAt: t.expose('expiresAt', {
       type: 'DateTime',
-      resolve: (root) =>
-        new Date(root.createdAt.getTime() + PasswordResetRequestExpiresTime),
     }),
   }),
 });
@@ -318,7 +312,7 @@ builder.mutationFields((t) => ({
       });
 
       if (!user) {
-        throw new NotFoundError();
+        throw new FormValidationError('email', '잘못된 이메일이에요.');
       }
 
       const token = createId();
@@ -326,6 +320,7 @@ builder.mutationFields((t) => ({
       // TODO: 메일 발송하기
 
       const request = await db.userPasswordResetRequest.create({
+        ...query,
         data: {
           id: createId(),
           userId: user.id,
@@ -342,18 +337,14 @@ builder.mutationFields((t) => ({
   resetPassword: t.boolean({
     args: { input: t.arg({ type: ResetPasswordInput }) },
     resolve: async (_, { input }, { db, ...context }) => {
-      const request = await db.userPasswordResetRequest.findUnique({
-        where: { token: input.token },
+      const request = await db.userPasswordResetRequest.findUniqueOrThrow({
+        where: {
+          token: input.token,
+          expiresAt: {
+            gte: new Date(),
+          },
+        },
       });
-
-      if (
-        !request ||
-        request.state !== 'PENDING' ||
-        request.createdAt <
-          new Date(Date.now() - PasswordResetRequestExpiresTime)
-      ) {
-        throw new NotFoundError();
-      }
 
       await db.user.update({
         where: { id: request.userId },
@@ -367,9 +358,8 @@ builder.mutationFields((t) => ({
         },
       });
 
-      await db.userPasswordResetRequest.update({
+      await db.userPasswordResetRequest.delete({
         where: { id: request.id },
-        data: { state: 'ACCEPTED' },
       });
 
       context.track('user:password-reset:reset');

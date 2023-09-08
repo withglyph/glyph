@@ -127,12 +127,12 @@ model UserPassword {
 }
 
 model UserPasswordResetRequest {
-  id        String                        @id
-  userId    String                        @map("user_id")
-  user      User                          @relation(fields: [userId], references: [id])
-  token     String                        @unique
-  state     UserPasswordResetRequestState @default(PENDING)
-  createdAt DateTime                      @default(now()) @map("created_at") @db.Timestamptz
+  id        String   @id
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  expiresAt DateTime @default(dbgenerated("now() + interval '1 hour'")) @map("expires_at") @db.Timestamptz
 
   @@map("user_password_reset_requests")
 }
@@ -163,11 +163,4 @@ enum UserState {
   INACTIVE
 
   @@map("_user_state")
-}
-
-enum UserPasswordResetRequestState {
-  PENDING
-  ACCEPTED
-
-  @@map("_user_password_reset_request_state")
 }
