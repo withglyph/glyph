@@ -8,7 +8,7 @@
   import type { Editor } from '@tiptap/core';
 
   export let editor: Editor | undefined;
-  let targetEl: HTMLButtonElement;
+  let targetEl: HTMLDivElement;
   let menuEl: HTMLDivElement;
 
   let open = false;
@@ -42,7 +42,7 @@
   });
 </script>
 
-<svelte:element this="button" tabindex="-1" bind:this={targetEl}>
+<div tabindex="-1" bind:this={targetEl}>
   <ToolbarButton
     {name}
     class={_class}
@@ -50,7 +50,7 @@
     {enabled}
     on:click={() => (open = true)}
   />
-</svelte:element>
+</div>
 
 {#if open}
   <div
