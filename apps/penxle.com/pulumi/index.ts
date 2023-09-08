@@ -26,6 +26,11 @@ const site = new penxle.Site('penxle.com', {
             pulumi.concat(bedrockRef('AWS_S3_BUCKET_UPLOADS_ARN'), '/*'),
           ],
         },
+        {
+          Effect: 'Allow',
+          Action: ['ses:SendEmail'],
+          Resource: ['*'],
+        },
       ],
     },
   },
