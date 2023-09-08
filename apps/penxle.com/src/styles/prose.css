@@ -39,7 +39,7 @@
     --uno: underline;
   }
 
-  & [data-color='text-brand-50'] {
+  & [data-text-color='text-brand-50'] {
     --uno: text-brand-50;
   }
 

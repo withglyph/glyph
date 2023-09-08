@@ -68,28 +68,30 @@
   >
     <ColorPaletteButton
       class="bg-brand-50"
-      active={editor?.getAttributes('color')?.['data-color'] ===
+      active={editor?.getAttributes('text-color')?.['data-text-color'] ===
         'text-brand-50'}
-      enabled={editor?.can().setColor({ 'data-color': 'text-brand-50' })}
+      enabled={editor
+        ?.can()
+        .setTextColor({ 'data-text-color': 'text-brand-50' })}
       on:click={() => {
         open = false;
 
         return editor
           ?.chain()
           .focus()
-          .setColor({ 'data-color': 'text-brand-50' })
+          .setTextColor({ 'data-text-color': 'text-brand-50' })
           .run();
       }}
     />
 
     <ColorPaletteButton
       class="bg-gray-90"
-      active={!editor?.isActive('color')}
-      enabled={editor?.can().unsetColor()}
+      active={!editor?.isActive('text-color')}
+      enabled={editor?.can().unsetTextColor()}
       on:click={() => {
         open = false;
 
-        return editor?.chain().focus().unsetColor().run();
+        return editor?.chain().focus().unsetTextColor().run();
       }}
     />
   </div>
