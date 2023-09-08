@@ -5,7 +5,7 @@ import type { Plugin } from 'vite';
 import type { GlitchContext } from '../types';
 
 export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
-  const transformQuery = (filename: string, program: AST.n.Program) => {
+  const transformQuery = (filename: string, program: AST.Program) => {
     if (!/^\+(page|layout)/.test(path.basename(filename))) {
       return false;
     }
@@ -70,7 +70,7 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
     return true;
   };
 
-  const transformMutation = (filename: string, program: AST.n.Program) => {
+  const transformMutation = (filename: string, program: AST.Program) => {
     const mutations = context.artifacts.filter(
       (artifact) =>
         artifact.kind === 'mutation' && artifact.filePath === filename,

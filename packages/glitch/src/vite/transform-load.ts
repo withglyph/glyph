@@ -1,4 +1,5 @@
 import path from 'node:path';
+import recast from 'recast';
 import * as AST from '../ast';
 import type { Plugin } from 'vite';
 import type { GlitchContext } from '../types';
@@ -29,7 +30,10 @@ export const transformLoadPlugin = (context: GlitchContext): Plugin => {
       } catch {
         return;
       }
-      const exportedVariables: Record<string, AST.n.VariableDeclarator> = {};
+      const exportedVariables: Record<
+        string,
+        recast.types.namedTypes.VariableDeclarator
+      > = {};
 
       AST.walk(program, {
         visitExportNamedDeclaration(p) {
