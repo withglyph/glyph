@@ -90,7 +90,6 @@ model Tag {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   wiki            TagWiki?
-  wikiRevisions   TagWikiRevision[]
   parents         TagHierarchy[]      @relation("parents")
   children        TagHierarchy[]      @relation("children")
   userPreferences UserTagPreference[]
@@ -122,12 +121,10 @@ model TagWiki {
 
 model TagWikiRevision {
   id        String   @id
-  userId    String   @unique @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
-  tagId     String   @unique @map("tag_id")
-  tag       Tag      @relation(fields: [tagId], references: [id])
   tagWikiId String   @unique @map("tag_wiki_id")
   tagWiki   TagWiki  @relation(fields: [tagWikiId], references: [id])
+  userId    String   @unique @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
   content   String
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
@@ -142,14 +139,16 @@ model User {
   state     UserState
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
-  password         UserPassword?
-  sessions         Session[]
-  spaces           SpaceMember[]
-  ssos             UserSSO[]
-  tagPreferences   UserTagPreference[]
-  tagWikiRevisions TagWikiRevision[]
+  // 주로 쓰이는 릴레이션들
+  password       UserPassword?
+  sessions       Session[]
+  spaces         SpaceMember[]
+  ssos           UserSSO[]
+  tagPreferences UserTagPreference[]
 
-  uploadedImages Image[]
+  // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
+  authoredTagWikiRevisions TagWikiRevision[]
+  uploadedImages           Image[]
 
   @@map("users")
 }
