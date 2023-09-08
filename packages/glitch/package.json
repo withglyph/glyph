@@ -43,15 +43,10 @@
     "@graphql-typed-document-node/core": "^3.2.0",
     "@urql/core": "^4.1.2",
     "@urql/exchange-graphcache": "^6.3.3",
-    "ast-types": "^0.14.2",
-    "estree-walker": "^3.0.3",
     "fast-glob": "^3.3.1",
     "graphql": "^16.8.0",
-    "magic-string": "^0.30.3",
-    "object-traversal": "^1.0.1",
     "recast": "^0.23.4",
     "svelte": "^4.2.0",
-    "ts-pattern": "^5.0.5",
     "wonka": "^6.3.4"
   },
   "devDependencies": {

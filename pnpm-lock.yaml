@@ -603,33 +603,18 @@ importers:
       '@urql/exchange-graphcache':
         specifier: ^6.3.3
         version: 6.3.3(graphql@16.8.0)
-      ast-types:
-        specifier: ^0.14.2
-        version: 0.14.2
-      estree-walker:
-        specifier: ^3.0.3
-        version: 3.0.3
       fast-glob:
         specifier: ^3.3.1
         version: 3.3.1
       graphql:
         specifier: ^16.8.0
         version: 16.8.0
-      magic-string:
-        specifier: ^0.30.3
-        version: 0.30.3
-      object-traversal:
-        specifier: ^1.0.1
-        version: 1.0.1
       recast:
         specifier: ^0.23.4
         version: 0.23.4
       svelte:
         specifier: ^4.2.0
         version: 4.2.0
-      ts-pattern:
-        specifier: ^5.0.5
-        version: 5.0.5
       wonka:
         specifier: ^6.3.4
         version: 6.3.4
@@ -6388,13 +6373,6 @@ packages:
     dependencies:
       tslib: 2.6.2
     dev: true
-
-  /ast-types@0.14.2:
-    resolution: {integrity: sha512-O0yuUDnZeQDL+ncNGlJ78BiO4jnYI3bvMsD5prT0/nsgijG/LpNBIr63gTjVTNsiGkgQhiyCShTgxt8oXOrklA==}
-    engines: {node: '>=4'}
-    dependencies:
-      tslib: 2.6.2
-    dev: false
 
   /ast-types@0.16.1:
     resolution: {integrity: sha512-6t10qk83GOG8p0vKmaCr8eiilZwO171AvbROMtvvNiwrTly62t+7XkA8RdIIVbpMhCASAsxgAzdRSwh6nw/5Dg==}
@@ -12964,10 +12942,6 @@ packages:
       mkdirp: 0.5.6
       source-map-support: 0.5.21
       yn: 2.0.0
-
-  /ts-pattern@5.0.5:
-    resolution: {integrity: sha512-tL0w8U/pgaacOmkb9fRlYzWEUDCfVjjv9dD4wHTgZ61MjhuMt46VNWTG747NqW6vRzoWIKABVhFSOJ82FvXrfA==}
-    dev: false
 
   /ts-toolbelt@9.6.0:
     resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}

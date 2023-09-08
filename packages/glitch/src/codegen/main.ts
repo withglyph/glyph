@@ -1,6 +1,6 @@
 import * as AST from '../ast';
 
-export const generateMainTypes = () => {
+export const generateMainTypes = (): AST.Program => {
   const program = AST.b.program([
     AST.b.exportAllDeclaration(AST.b.stringLiteral('./functions')),
     AST.b.exportAllDeclaration(AST.b.stringLiteral('./types')),
@@ -27,7 +27,7 @@ export const generateMainTypes = () => {
   return program;
 };
 
-export const generateMain = () => {
+export const generateMain = (): AST.Program => {
   const program = AST.b.program([
     AST.b.exportAllDeclaration(AST.b.stringLiteral('@penxle/glitch/runtime')),
   ]);
