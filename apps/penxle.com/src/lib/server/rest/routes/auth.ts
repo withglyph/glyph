@@ -122,12 +122,18 @@ auth.get('/auth/google', async (_, { db, ...context }) => {
         // 케이스 2-2-2: 콜백이 날아온 구글 계정의 이메일이 연동되지 않았고, 같은 이메일의 계정도 사이트에 없는 경우
         // -> 새로 가입함
 
-        // TODO: 아바타를 구글 계정걸로 적용해야함
-        const randomAvatar = createRandomAvatar();
+        const avatarBuffer =
+          (await fetch(googleUser.avatarUrl)
+            .then((res) => res.arrayBuffer())
+            .then((profileArrayBuffer) => Buffer.from(profileArrayBuffer))
+            .catch(() => null)) ?? (await renderAvatar(createRandomAvatar())); // 구글 프로필 사진을 가져오는 데 실패한 경우 (없다던가)
+
+        console.log(avatarBuffer);
+
         const avatarId = await directUploadImage({
           db,
-          name: 'random-avatar.png',
-          buffer: await renderAvatar(randomAvatar),
+          name: 'avatar.png',
+          buffer: avatarBuffer,
         });
 
         const user = await db.user.create({
