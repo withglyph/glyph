@@ -44,6 +44,8 @@ export const createMutationStore = (
 
   return Object.assign(
     mutate,
-    derived(count, (n) => n > 0),
+    derived(count, (n) => ({
+      inflight: n > 0,
+    })),
   );
 };
