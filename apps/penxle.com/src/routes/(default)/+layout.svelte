@@ -1,15 +1,13 @@
 <script lang="ts">
-  import { graphql, useQuery } from '$lib/houdini';
+  import { graphql } from '$glitch';
   import Footer from './Footer.svelte';
   import Header from './Header.svelte';
 
-  $: query = useQuery(
-    graphql(`
-      query DefaultLayout_Query @load {
-        ...DefaultLayout_Header_query
-      }
-    `),
-  );
+  $: query = graphql(`
+    query DefaultLayout_Query {
+      ...DefaultLayout_Header_query
+    }
+  `);
 </script>
 
 {#if $query}

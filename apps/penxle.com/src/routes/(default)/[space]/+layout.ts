@@ -1,5 +1,5 @@
-import type { SpaceLayout_QueryVariables } from './$houdini';
+import type { LayoutLoadEvent } from './$types';
 
-export const _SpaceLayout_QueryVariables = (({ params }) => ({
-  slug: params.space,
-})) satisfies SpaceLayout_QueryVariables;
+export const _SpaceLayout_QueryVariables = (event: LayoutLoadEvent) => {
+  return { slug: event.params.space };
+};

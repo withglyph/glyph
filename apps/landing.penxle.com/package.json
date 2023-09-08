@@ -17,11 +17,11 @@
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@penxle/ui": "workspace:^",
-    "@pulumi/pulumi": "^3.80.0",
+    "@pulumi/pulumi": "^3.81.0",
     "@supabase/supabase-js": "^2.33.1",
-    "@sveltejs/kit": "^1.24.0",
-    "@types/canvas-confetti": "^1.6.0",
-    "@types/node": "^20.5.7",
+    "@sveltejs/kit": "^1.24.1",
+    "@types/canvas-confetti": "^1.6.1",
+    "@types/node": "^20.5.9",
     "canvas-confetti": "^1.6.0",
     "clsx": "^2.0.0",
     "lightningcss": "^1.21.7",
@@ -29,7 +29,7 @@
     "svelte-check": "^3.5.1",
     "tsx": "^3.12.8",
     "typescript": "^5.2.2",
-    "unocss": "^0.55.4",
+    "unocss": "^0.55.7",
     "vite": "^4.4.9"
   }
 }

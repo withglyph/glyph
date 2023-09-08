@@ -8,7 +8,7 @@ export default {
     adapter: lambda(),
     alias: {
       $assets: './src/assets',
-      $houdini: './$houdini',
+      $glitch: './.glitch',
     },
     env: {
       publicPrefix: 'PUBLIC_',
@@ -23,10 +23,6 @@ export default {
     typescript: {
       config: (config) => ({
         ...config,
-        compilerOptions: {
-          ...config.compilerOptions,
-          rootDirs: [...config.compilerOptions.rootDirs, '../$houdini/types'],
-        },
         include: [...config.include, '../pulumi/**/*.ts'],
       }),
     },

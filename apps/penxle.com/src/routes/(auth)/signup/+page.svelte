@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Helmet, Link } from '@penxle/ui';
   import { goto } from '$app/navigation';
-  import { graphql } from '$houdini';
+  import { graphql } from '$glitch';
   import { Button } from '$lib/components';
   import { Logo } from '$lib/components/branding';
   import {

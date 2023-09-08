@@ -1,21 +1,19 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import { graphql, useQuery } from '$lib/houdini';
+  import { graphql } from '$glitch';
 
-  $: query = useQuery(
-    graphql(`
-      query SpacePage_Query($slug: String!) @load {
-        space(slug: $slug) {
-          slug
-          name
+  $: query = graphql(`
+    query SpacePage_Query($slug: String!) {
+      space(slug: $slug) {
+        slug
+        name
 
-          meAsMember {
-            __typename
-          }
+        meAsMember {
+          __typename
         }
       }
-    `),
-  );
+    }
+  `);
 </script>
 
 <Helmet title={$query.space.name} />

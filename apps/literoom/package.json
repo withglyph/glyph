@@ -9,16 +9,16 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.400.0",
+    "@aws-sdk/client-s3": "^3.408.0",
     "sharp": "^0.32.5"
   },
   "devDependencies": {
     "@penxle/lambda": "workspace:^",
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
-    "@pulumi/aws": "^6.0.3",
+    "@pulumi/aws": "^6.0.4",
     "@pulumi/aws-native": "^0.75.0",
-    "@pulumi/pulumi": "^3.80.0",
+    "@pulumi/pulumi": "^3.81.0",
     "@types/aws-lambda": "^8.10.119",
     "tsup": "^7.2.0",
     "tsx": "^3.12.8",
