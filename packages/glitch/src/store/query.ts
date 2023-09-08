@@ -35,7 +35,7 @@ export const createQueryStore = async (
     throw errorHandler(result.error.graphQLErrors[0]);
   }
 
-  return readable(result.data, (set) => {
+  const store = readable(result.data, (set) => {
     const operation = client.createRequestOperation('query', request, {
       fetch: event.fetch,
       requestPolicy: 'cache-first',
@@ -50,4 +50,12 @@ export const createQueryStore = async (
 
     return unsubscribe;
   });
+
+  const obj = {
+    refetch: () => {
+      client.reexecuteOperation(operation);
+    },
+  };
+
+  return Object.assign(store, obj);
 };
