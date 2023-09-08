@@ -1,19 +1,17 @@
-import { PermissionDeniedError } from '$lib/errors';
-import type {
-  AfterLoadEvent,
-  SpaceDashboardLayout_QueryVariables,
-} from './$houdini';
+import type { LayoutLoadEvent } from './$types';
 
-export const _SpaceDashboardLayout_QueryVariables = (({ params }) => ({
-  slug: params.space,
-})) satisfies SpaceDashboardLayout_QueryVariables;
-
-export const _houdini_afterLoad = ({
-  data: {
-    SpaceDashboardLayout_Query: { space },
-  },
-}: AfterLoadEvent) => {
-  if (!space.meAsMember) {
-    throw new PermissionDeniedError();
-  }
+export const _SpaceDashboardLayout_QueryVariables = (
+  event: LayoutLoadEvent,
+) => {
+  return { slug: event.params.space };
 };
+
+// export const _houdini_afterLoad = ({
+//   data: {
+//     SpaceDashboardLayout_Query: { space },
+//   },
+// }: AfterLoadEvent) => {
+//   if (!space.meAsMember) {
+//     throw new PermissionDeniedError();
+//   }
+// };

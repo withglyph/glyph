@@ -1,11 +1,10 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { fragment, graphql } from '$houdini';
+  import { fragment, graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
   import { TextInput } from '$lib/components/forms';
-  import { useMutation } from '$lib/houdini';
   import { toast } from '$lib/notification';
-  import type { SpaceDashboardPage_DeleteSpaceModal_space } from '$houdini';
+  import type { SpaceDashboardPage_DeleteSpaceModal_space } from '$glitch';
 
   export let _space: SpaceDashboardPage_DeleteSpaceModal_space;
   export let open = false;
@@ -23,17 +22,15 @@
     `),
   );
 
-  const deleteSpace = useMutation(
-    graphql(`
-      mutation SpaceDashboardPage_DeleteSpaceModal_DeleteSpace_Mutation(
-        $input: DeleteSpaceInput!
-      ) {
-        deleteSpace(input: $input) {
-          id
-        }
+  const deleteSpace = graphql(`
+    mutation SpaceDashboardPage_DeleteSpaceModal_DeleteSpace_Mutation(
+      $input: DeleteSpaceInput!
+    ) {
+      deleteSpace(input: $input) {
+        id
       }
-    `),
-  );
+    }
+  `);
 </script>
 
 <Modal bind:open>

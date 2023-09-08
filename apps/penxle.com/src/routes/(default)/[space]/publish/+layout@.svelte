@@ -1,10 +1,16 @@
 <script lang="ts">
-  import { useQuery } from '$lib/houdini';
-  import type { LayoutData } from './$houdini';
+  import { graphql } from '$glitch';
 
-  export let data: LayoutData;
-
-  $: useQuery(data.SpacePublishLayout_Query);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  $: query = graphql(`
+    query SpacePublishLayout_Query($slug: String!) {
+      space(slug: $slug) {
+        meAsMember {
+          __typename
+        }
+      }
+    }
+  `);
 </script>
 
 <slot />

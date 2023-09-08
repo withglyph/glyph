@@ -22,7 +22,7 @@
     "@penxle/lintconfig": "workspace:^",
     "cspell": "^7.3.2",
     "eslint": "^8.48.0",
-    "gitmoji-cli": "^8.4.0",
+    "gitmoji-cli": "^8.5.0",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
@@ -37,6 +37,8 @@
   },
   "pnpm": {
     "allowedDeprecatedVersions": {
+      "@babel/plugin-proposal-class-properties": "*",
+      "@babel/plugin-proposal-object-rest-spread": "*",
       "@opentelemetry/api-metrics": "*",
       "debuglog": "*",
       "querystring": "*",

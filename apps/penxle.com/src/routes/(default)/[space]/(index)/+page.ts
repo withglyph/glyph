@@ -1,5 +1,5 @@
-import type { SpacePage_QueryVariables } from './$houdini';
+import type { PageLoadEvent } from './$types';
 
-export const _SpacePage_QueryVariables = (({ params }) => ({
-  slug: params.space,
-})) satisfies SpacePage_QueryVariables;
+export const _SpacePage_QueryVariables = (event: PageLoadEvent) => {
+  return { slug: event.params.space };
+};

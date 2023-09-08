@@ -34,24 +34,24 @@
       <div class="flex items-center gap-2">
         <div>(주)펜슬컴퍼니</div>
         <div class="h-2 border-l border-gray-30" />
-        <div>대표: XXX</div>
+        <div>대표: 배준현</div>
         <div class="h-2 border-l border-gray-30" />
-        <div>개인정보관리책임자: XXX</div>
+        <div>개인정보관리책임자: 배준현</div>
       </div>
 
       <div class="flex items-center gap-2">
-        <div>사업자등록번호: 123-45-67890</div>
+        <div>사업자등록번호: 610-88-03078</div>
         <div class="h-2 border-l border-gray-30" />
         <Link
           class="hover:text-gray-50"
-          href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=1234567890"
+          href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=6108803078"
         >
-          통신판매업신고: 2023-서울강남-1234
+          통신판매업신고: 2023-서울강남-4541
         </Link>
       </div>
 
       <div class="flex items-center gap-2">
-        <div>주소: 서울특별시 강남구 강남대로 1, 1층</div>
+        <div>주소: 서울특별시 강남구 삼성로 212, 1동 908호</div>
         <div class="h-2 border-l border-gray-30" />
         <div>전화: 02-123-4567</div>
       </div>
