@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { fragment, graphql } from '$houdini';
+  import { fragment, graphql } from '$glitch';
   import { Button } from '$lib/components';
-  import { useMutation } from '$lib/houdini';
   import { trackable } from '$lib/svelte/store';
-  import type { SpacePublishArtworkPage_PublishButton_space } from '$houdini';
+  import type { SpacePublishArtworkPage_PublishButton_space } from '$glitch';
   import type { Artwork } from './types';
 
   export let _space: SpacePublishArtworkPage_PublishButton_space;
@@ -21,28 +20,24 @@
     `),
   );
 
-  const prepareImageUpload = useMutation(
-    graphql(`
-      mutation SpacePublishArtworkPage_PublishButton_PrepareImageUpload_Mutation {
-        prepareImageUpload {
-          key
-          presignedUrl
-        }
+  const prepareImageUpload = graphql(`
+    mutation SpacePublishArtworkPage_PublishButton_PrepareImageUpload_Mutation {
+      prepareImageUpload {
+        key
+        presignedUrl
       }
-    `),
-  );
+    }
+  `);
 
-  const finalizeImageUpload = useMutation(
-    graphql(`
-      mutation SpacePublishArtworkPage_PublishButton_FinalizeImageUpload_Mutation(
-        $input: FinalizeImageUploadInput!
-      ) {
-        finalizeImageUpload(input: $input) {
-          id
-        }
+  const finalizeImageUpload = graphql(`
+    mutation SpacePublishArtworkPage_PublishButton_FinalizeImageUpload_Mutation(
+      $input: FinalizeImageUploadInput!
+    ) {
+      finalizeImageUpload(input: $input) {
+        id
       }
-    `),
-  );
+    }
+  `);
 
   const doUpload = async (file: File) => {
     const { key, presignedUrl } = await prepareImageUpload();

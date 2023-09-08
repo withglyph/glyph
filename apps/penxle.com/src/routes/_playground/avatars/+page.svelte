@@ -1,15 +1,13 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import { graphql } from '$glitch';
   import { Button } from '$lib/components';
-  import { graphql, refetchQueries, useQuery } from '$lib/houdini';
 
-  $: query = useQuery(
-    graphql(`
-      query AvatarsPage_Query @load {
-        randomAvatars
-      }
-    `),
-  );
+  $: query = graphql(`
+    query AvatarsPage_Query {
+      randomAvatars
+    }
+  `);
 </script>
 
 <Helmet title="아바타 플레이그라운드" />
@@ -26,12 +24,6 @@
       {/each}
     </div>
 
-    <Button
-      size="md"
-      color="primary"
-      on:click={async () => refetchQueries('AvatarsPage_Query')}
-    >
-      재생성
-    </Button>
+    <Button size="md" color="primary">재생성</Button>
   </div>
 </div>

@@ -2,7 +2,14 @@
   "allowCompoundWords": true,
   "enableFiletypes": ["*"],
   "enableGlobDot": true,
-  "ignorePaths": [".git", ".gitignore", ".vscode", "pnpm-lock.yaml", "*.sql"],
+  "ignorePaths": [
+    ".git",
+    ".gitignore",
+    ".vscode",
+    "pnpm-lock.yaml",
+    "*.sql",
+    "CODEOWNERS"
+  ],
   "numSuggestions": 0,
   "useGitignore": true,
   "words": [
@@ -11,6 +18,7 @@
     "clsx",
     "dopplerhq",
     "dotenv",
+    "estree",
     "execa",
     "felte",
     "fflate",
@@ -41,8 +49,10 @@
     "tsup",
     "turborepo",
     "unocss",
+    "urql",
     "vcpu",
     "vite",
+    "wonka",
     "zstd"
   ]
 }

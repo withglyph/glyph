@@ -2,7 +2,7 @@
   import { Helmet } from '@penxle/ui';
   import { goto } from '$app/navigation';
   import Wordmark from '$assets/branding/wordmark.svg?component';
-  import { graphql } from '$houdini';
+  import { graphql } from '$glitch';
   import { Button } from '$lib/components';
   import { Logo } from '$lib/components/branding';
   import { FormField, PasswordInput, TextInput } from '$lib/components/forms';

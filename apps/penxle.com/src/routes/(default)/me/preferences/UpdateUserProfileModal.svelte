@@ -1,12 +1,12 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { fragment, graphql } from '$houdini';
+  import { fragment, graphql } from '$glitch';
   import { Avatar, Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { UpdateUserProfileInputSchema } from '$lib/validations';
-  import type { MePreferencesPage_UpdateUserProfileModal_profile } from '$houdini';
+  import type { MePreferencesPage_UpdateUserProfileModal_profile } from '$glitch';
 
   export let _profile: MePreferencesPage_UpdateUserProfileModal_profile;
   export let open = false;

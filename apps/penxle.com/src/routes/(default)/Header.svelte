@@ -1,11 +1,11 @@
 <script lang="ts">
   import Wordmark from '$assets/branding/wordmark.svg?component';
-  import { fragment, graphql } from '$houdini';
+  import { fragment, graphql } from '$glitch';
   import { Logo } from '$lib/components/branding';
   import PublishMenu from './PublishMenu.svelte';
   import SearchBar from './SearchBar.svelte';
   import UserMenu from './UserMenu.svelte';
-  import type { DefaultLayout_Header_query } from '$houdini';
+  import type { DefaultLayout_Header_query } from '$glitch';
 
   export let _query: DefaultLayout_Header_query;
 

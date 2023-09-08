@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/sveltekit';
-import { browser } from '$app/environment';
+import { browser, dev } from '$app/environment';
 import { PUBLIC_SENTRY_DSN } from '$env/static/public';
 import { setupDayjs } from '$lib/datetime';
 import {
@@ -14,12 +14,7 @@ const setupSentry = () => {
   const integrations = [];
 
   if (browser) {
-    integrations.push(
-      new Sentry.Replay({
-        sessionSampleRate: 0.1,
-        errorSampleRate: 1,
-      }),
-    );
+    integrations.push(new Sentry.Replay({}));
   } else {
     integrations.push(
       new Sentry.Integrations.OnUncaughtException({}),
@@ -28,11 +23,15 @@ const setupSentry = () => {
     );
   }
 
-  Sentry.init({
-    dsn: PUBLIC_SENTRY_DSN,
-    integrations,
-    tracesSampleRate: 1,
-  });
+  if (!dev) {
+    Sentry.init({
+      dsn: PUBLIC_SENTRY_DSN,
+      integrations,
+      tracesSampleRate: 1,
+      replaysSessionSampleRate: 0.1,
+      replaysOnErrorSampleRate: 1,
+    });
+  }
 };
 
 export const setupGlobals = () => {

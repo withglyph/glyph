@@ -3,9 +3,9 @@
   import { Base64 } from 'js-base64';
   import qs from 'query-string';
   import { thumbHashToDataURL } from 'thumbhash';
-  import { fragment, graphql } from '$houdini';
+  import { fragment, graphql } from '$glitch';
   import { intersectionObserver, resizeObserver } from '$lib/svelte/actions';
-  import type { Image_image } from '$houdini';
+  import type { Image_image } from '$glitch';
 
   export let _image: Image_image;
   let _class: string | undefined = undefined;

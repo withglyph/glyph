@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import { graphql, useQuery } from '$lib/houdini';
+  import { graphql } from '$glitch';
   import { warnOnUnload } from '$lib/svelte/lifecycle';
   import Editor from './Editor.svelte';
   import Header from './Header.svelte';
@@ -9,13 +9,15 @@
 
   warnOnUnload();
 
-  $: query = useQuery(
-    graphql(`
-      query SpacePublishPostPage_Query($slug: String!) @load {
-        ...SpacePublishPostPage_Header_query @with(slug: $slug)
+  $: query = graphql(`
+    query SpacePublishPostPage_Query($slug: String!) {
+      ...SpacePublishPostPage_Header_query
+
+      space(slug: $slug) {
+        ...SpacePublishPostPage_Header_space
       }
-    `),
-  );
+    }
+  `);
 
   let editor: TiptapEditor | undefined;
 </script>
@@ -23,7 +25,7 @@
 <Helmet title="새 글 작성하기" />
 
 <main class="flex grow flex-col">
-  <Header _query={$query} />
+  <Header _query={$query} _space={$query.space} />
   <Editor bind:editor />
   <Toolbar {editor} />
 </main>

@@ -3,7 +3,7 @@ import winston from 'winston';
 import { dev } from '$app/environment';
 
 export const logger = winston.createLogger({
-  level: dev ? 'verbose' : 'info',
+  level: dev ? 'error' : 'info',
   defaultMeta: { stack },
   transports: [new winston.transports.Console()],
 });
