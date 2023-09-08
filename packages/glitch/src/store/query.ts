@@ -14,30 +14,36 @@ export const createQueryStore = async (
 
   const variables = variablesLoader ? variablesLoader(event) : undefined;
   const request = createRequest(document, variables);
+  const operation = client.createRequestOperation('query', request, {
+    fetch: event.fetch,
+    requestPolicy: 'network-only',
+  });
 
-  const response = await pipe(
-    client.executeQuery(request, {
-      fetch: event.fetch,
-      requestPolicy: 'network-only',
-    }),
+  const source = client.executeRequestOperation(operation);
+  const result = await pipe(
+    source,
     filter(({ stale }) => !stale),
     take(1),
     toPromise,
   );
 
-  if (response.error?.networkError) {
-    throw response.error.networkError;
+  if (result.error?.networkError) {
+    throw result.error.networkError;
   }
 
-  if (response.error?.graphQLErrors.length) {
-    throw errorHandler(response.error.graphQLErrors[0]);
+  if (result.error?.graphQLErrors.length) {
+    throw errorHandler(result.error.graphQLErrors[0]);
   }
 
-  return readable(response.data, (set) => {
+  return readable(result.data, (set) => {
+    const operation = client.createRequestOperation('query', request, {
+      fetch: event.fetch,
+      requestPolicy: 'cache-first',
+    });
+
+    const source = client.executeRequestOperation(operation);
     const { unsubscribe } = pipe(
-      client.executeQuery(request, {
-        requestPolicy: 'cache-first',
-      }),
+      source,
       map(({ data }) => data),
       subscribe(set),
     );
