@@ -1,16 +1,15 @@
 <script lang="ts">
+  import { graphql } from '$glitch';
   import { Image } from '$lib/components';
-  import { graphql, useQuery } from '$lib/houdini';
 
-  $: query = useQuery(
-    graphql(`
-      query AuthLayout_Query @load {
-        authLayoutBackgroundImage {
-          ...Image_image
-        }
+  $: query = graphql(`
+    query AuthLayout_Query {
+      authLayoutBackgroundImage {
+        id
+        ...Image_image
       }
-    `),
-  );
+    }
+  `);
 </script>
 
 <main class="flex grow center">

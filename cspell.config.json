@@ -11,6 +11,7 @@
     "clsx",
     "dopplerhq",
     "dotenv",
+    "estree",
     "execa",
     "felte",
     "fflate",
@@ -41,8 +42,10 @@
     "tsup",
     "turborepo",
     "unocss",
+    "urql",
     "vcpu",
     "vite",
+    "wonka",
     "zstd"
   ]
 }

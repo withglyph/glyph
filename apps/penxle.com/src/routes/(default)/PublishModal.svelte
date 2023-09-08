@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { fragment, graphql } from '$houdini';
+  import { fragment, graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
   import { absolutePath } from '$lib/utils';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
-  import type { DefaultLayout_PublishModal_user } from '$houdini';
+  import type { DefaultLayout_PublishModal_user } from '$glitch';
 
   export let _user: DefaultLayout_PublishModal_user;
   export let open = false;

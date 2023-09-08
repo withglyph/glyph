@@ -6,7 +6,7 @@
   "main": "pulumi/index.ts",
   "scripts": {
     "build": "vite build",
-    "codegen": "svelte-kit sync && houdini generate",
+    "codegen": "svelte-kit sync && glitch generate",
     "codegen:prisma": "prisma generate",
     "dev": "doppler run -- vite dev",
     "lint:svelte": "svelte-check --fail-on-warnings",
@@ -27,6 +27,7 @@
     "@felte/validator-zod": "^1.0.17",
     "@floating-ui/dom": "^1.5.1",
     "@paralleldrive/cuid2": "^2.2.2",
+    "@penxle/glitch": "workspace:^",
     "@penxle/lambda": "workspace:^",
     "@penxle/lib": "workspace:^",
     "@penxle/pulumi": "workspace:^",
@@ -48,6 +49,7 @@
     "@tiptap/pm": "^2.1.7",
     "@types/node": "^20.5.7",
     "@types/ua-parser-js": "^0.7.37",
+    "@urql/core": "^4.1.2",
     "argon2": "^0.31.0",
     "clsx": "^2.0.0",
     "dayjs": "^1.11.9",
@@ -56,8 +58,6 @@
     "graphql": "^16.8.0",
     "graphql-scalars": "^1.22.2",
     "graphql-yoga": "^4.0.4",
-    "houdini": "^1.2.9",
-    "houdini-svelte": "^1.2.9",
     "itty-router": "^4.0.22",
     "jose": "^4.14.4",
     "js-base64": "^3.7.5",
@@ -78,6 +78,7 @@
     "unocss": "^0.55.4",
     "vite": "^4.4.9",
     "winston": "^3.10.0",
+    "wonka": "^6.3.4",
     "zod": "^3.22.2"
   }
 }

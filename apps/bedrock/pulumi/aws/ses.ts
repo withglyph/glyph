@@ -16,14 +16,8 @@ new aws.sesv2.EmailIdentityMailFromAttributes('penxle.com', {
   mailFromDomain: 'mail.penxle.com',
 });
 
-const emailIdentity2 = new aws.sesv2.EmailIdentity('penxle.io', {
-  emailIdentity: 'penxle.io',
-  configurationSetName: configurationSet.configurationSetName,
-});
-
 export const awsSesDkimTokens = {
   penxle_com: emailIdentity.dkimSigningAttributes.tokens,
-  penxle_io: emailIdentity2.dkimSigningAttributes.tokens,
 };
 
 export const outputs = {};

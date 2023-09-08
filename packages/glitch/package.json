@@ -1,0 +1,68 @@
+{
+  "name": "@penxle/glitch",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./runtime": {
+      "import": "./dist/runtime.js",
+      "types": "./dist/runtime.d.ts"
+    },
+    "./vite": {
+      "import": "./dist/vite.js",
+      "types": "./dist/vite.d.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/*"
+      ]
+    }
+  },
+  "bin": {
+    "glitch": "./bin/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint:typecheck": "tsc"
+  },
+  "dependencies": {
+    "@graphql-codegen/core": "^4.0.0",
+    "@graphql-codegen/typed-document-node": "^5.0.1",
+    "@graphql-codegen/typescript": "^4.0.1",
+    "@graphql-codegen/typescript-operations": "^4.0.1",
+    "@graphql-typed-document-node/core": "^3.2.0",
+    "@urql/core": "^4.1.2",
+    "@urql/exchange-graphcache": "^6.3.3",
+    "ast-types": "^0.16.1",
+    "estree-walker": "^3.0.3",
+    "fast-glob": "^3.3.1",
+    "graphql": "^16.8.0",
+    "magic-string": "^0.30.3",
+    "object-traversal": "^1.0.1",
+    "recast": "^0.23.4",
+    "svelte": "^4.2.0",
+    "ts-pattern": "^5.0.5",
+    "wonka": "^6.3.4"
+  },
+  "devDependencies": {
+    "@penxle/tsconfig": "workspace:^",
+    "@sveltejs/kit": "^1.24.0",
+    "rollup": "^3.28.1",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2",
+    "vite": "^4.4.9"
+  },
+  "peerDependencies": {
+    "@sveltejs/kit": "^1.0.0"
+  }
+}
