@@ -1,25 +1,23 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import { graphql, useQuery } from '$lib/houdini';
+  import { graphql } from '$glitch';
   import DeleteSpaceModal from './DeleteSpaceModal.svelte';
 
-  $: query = useQuery(
-    graphql(`
-      query SpaceDashboardPage_Query($slug: String!) @load {
-        space(slug: $slug) {
-          id
-          slug
-          name
+  $: query = graphql(`
+    query SpaceDashboardPage_Query($slug: String!) {
+      space(slug: $slug) {
+        id
+        slug
+        name
 
-          meAsMember {
-            role
-          }
-
-          ...SpaceDashboardPage_DeleteSpaceModal_space
+        meAsMember {
+          role
         }
+
+        ...SpaceDashboardPage_DeleteSpaceModal_space
       }
-    `),
-  );
+    }
+  `);
 
   let openDeleteSpace = false;
 </script>

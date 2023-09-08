@@ -15,6 +15,19 @@ builder.queryFields((t) => ({
     },
   }),
 
+  hello: t.prismaField({
+    type: 'User',
+    args: { email: t.arg.string() },
+    resolve: (query, _, { email }, { db }) => {
+      return db.user.findFirstOrThrow({
+        ...query,
+        where: {
+          email,
+        },
+      });
+    },
+  }),
+
   email: t.string({
     resolve: async () => {
       await sendEmail({
