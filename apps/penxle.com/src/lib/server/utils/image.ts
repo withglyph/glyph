@@ -109,6 +109,7 @@ export const directUploadImage = async ({
       Bucket: 'penxle-data',
       Key: path,
       Body: buffer,
+      ContentType: `image/${metadata.format}`,
     }),
   );
 

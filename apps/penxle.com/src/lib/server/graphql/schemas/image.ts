@@ -114,6 +114,7 @@ builder.mutationFields((t) => ({
           Bucket: 'penxle-data',
           Key: path,
           Body: buffer,
+          ContentType: object.ContentType ?? `image/${metadata.format}`,
         }),
       );
 
