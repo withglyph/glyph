@@ -42,7 +42,7 @@
   });
 </script>
 
-<div tabindex="-1" bind:this={targetEl}>
+<div bind:this={targetEl} tabindex="-1">
   <ToolbarButton
     {name}
     class={_class}

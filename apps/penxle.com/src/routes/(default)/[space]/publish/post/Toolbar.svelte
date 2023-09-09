@@ -45,10 +45,10 @@
         name="폰트 색상 설정"
         class="i-lc-paintbrush"
         active={editor?.isActive('text-color')}
+        {editor}
         enabled={editor
           ?.can()
           .setTextColor({ 'data-text-color': 'text-brand-50' })}
-        {editor}
       />
 
       <span class="square-6" />
