@@ -1,3 +1,3 @@
 export default {
-  entry: ['dist/index.js'],
+  entry: ['dist/serve.js', 'dist/shrink.js'],
 };
