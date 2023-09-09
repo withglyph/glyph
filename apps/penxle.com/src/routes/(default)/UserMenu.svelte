@@ -1,8 +1,7 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
-  import { resetClient } from '@penxle/glitch';
   import { tick } from 'svelte';
-  import { afterNavigate, goto } from '$app/navigation';
+  import { afterNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { Avatar } from '$lib/components';
   import { portal } from '$lib/svelte/actions';
@@ -37,7 +36,7 @@
   const logout = graphql(`
     mutation DefaultLayout_UserMenu_Logout_Mutation {
       logout {
-        __typename
+        id
       }
     }
   `);
@@ -127,8 +126,7 @@
       type="button"
       on:click={async () => {
         await logout();
-        resetClient();
-        await goto('/');
+        location.href = '/';
       }}
     >
       <span class="i-lc-log-out" />
