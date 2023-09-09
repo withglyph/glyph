@@ -13,12 +13,13 @@ type Event = {
 };
 
 const S3 = new S3Client();
+sharp.concurrency(4);
 
 export const handler = async (event: Event) => {
   const url = new URL(event.userRequest.url);
 
   const size = Math.min(Number(url.searchParams.get('s')), 8192);
-  const quality = Math.min(Number(url.searchParams.get('q') ?? 75), 90);
+  const quality = Math.min(Number(url.searchParams.get('q') ?? 50), 75);
 
   if (!size || !quality) {
     await S3.send(
@@ -59,7 +60,7 @@ export const handler = async (event: Event) => {
       withoutEnlargement: true,
     })
     .flatten({ background: { r: 255, g: 255, b: 255 } })
-    .webp({ quality })
+    .avif({ quality })
     .toBuffer();
 
   const finished = performance.now();
@@ -69,7 +70,7 @@ export const handler = async (event: Event) => {
       RequestRoute: event.getObjectContext.outputRoute,
       RequestToken: event.getObjectContext.outputToken,
       Body: output,
-      ContentType: 'image/webp',
+      ContentType: 'image/avif',
       CacheControl: 'public, max-age=31536000, immutable',
       Metadata: {
         Elapsed: String((finished - started).toFixed(2)),
