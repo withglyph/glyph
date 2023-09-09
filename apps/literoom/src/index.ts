@@ -48,6 +48,8 @@ export const handler = async (event: Event) => {
     return { statusCode: 500 };
   }
 
+  const started = performance.now();
+
   const input = await resp.arrayBuffer();
   const output = await sharp(input, { failOn: 'none' })
     .resize({
@@ -60,6 +62,8 @@ export const handler = async (event: Event) => {
     .webp({ quality })
     .toBuffer();
 
+  const finished = performance.now();
+
   await S3.send(
     new WriteGetObjectResponseCommand({
       RequestRoute: event.getObjectContext.outputRoute,
@@ -68,6 +72,7 @@ export const handler = async (event: Event) => {
       ContentType: 'image/webp',
       CacheControl: 'public, max-age=31536000, immutable',
       Metadata: {
+        Elapsed: String((finished - started).toFixed(2)),
         Ratio: String((output.byteLength / input.byteLength).toFixed(2)),
       },
     }),
