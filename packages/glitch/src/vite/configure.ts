@@ -10,7 +10,7 @@ export const configurePlugin = (context: GlitchContext): Plugin => {
 
     configResolved: async (config) => {
       context.root = config.root;
-      context.codegenRoot = path.join(config.root, '.glitch');
+      context.codegenRoot = path.join(config.root, '$glitch');
 
       await fs.mkdir(context.codegenRoot, { recursive: true });
 

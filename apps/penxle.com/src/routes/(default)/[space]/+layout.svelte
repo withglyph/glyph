@@ -4,7 +4,7 @@
   $: graphql(`
     query SpaceLayout_Query($slug: String!) {
       space(slug: $slug) {
-        __typename
+        id
       }
     }
   `);

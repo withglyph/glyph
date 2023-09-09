@@ -52,9 +52,9 @@ export type GlitchClient = {
   errorHandler: (error: unknown) => Error;
 };
 
-export type QueryStore<D> = Readable<D>;
-
-export type FragmentStore<D> = Readable<D>;
+export type QueryStore<D> = Readable<D> & {
+  refetch: () => void;
+};
 
 export type MutationStore<D, V> = Readable<{
   inflight: boolean;
@@ -64,3 +64,5 @@ export type MutationStore<D, V> = Readable<{
     : V extends { input: infer I }
     ? (input: I) => Promise<D[keyof D]>
     : never);
+
+export type FragmentStore<D> = Readable<D>;

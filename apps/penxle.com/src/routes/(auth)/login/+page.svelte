@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resetClient } from '@penxle/glitch';
   import { Helmet } from '@penxle/ui';
   import { goto } from '$app/navigation';
   import Wordmark from '$assets/branding/wordmark.svg?component';
@@ -13,13 +14,14 @@
     mutation: graphql(`
       mutation LoginPage_Login_Mutation($input: LoginInput!) {
         login(input: $input) {
-          __typename
+          id
         }
       }
     `),
     schema: LoginInputSchema,
     refetch: false,
     onSuccess: async () => {
+      resetClient();
       await goto('/');
     },
   });

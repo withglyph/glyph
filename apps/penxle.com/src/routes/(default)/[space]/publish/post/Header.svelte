@@ -15,7 +15,10 @@
     graphql(`
       fragment SpacePublishPostPage_Header_query on Query {
         me {
+          id
+
           profile {
+            id
             ...Avatar_profile
           }
         }

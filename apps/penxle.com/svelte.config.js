@@ -8,7 +8,7 @@ export default {
     adapter: lambda(),
     alias: {
       $assets: './src/assets',
-      $glitch: './.glitch',
+      $glitch: './$glitch',
     },
     env: {
       publicPrefix: 'PUBLIC_',

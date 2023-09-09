@@ -15,8 +15,8 @@
     _profile,
     graphql(`
       fragment MePreferencesPage_UpdateUserProfileModal_profile on Profile {
+        id
         name
-
         ...Avatar_profile
       }
     `),
@@ -29,7 +29,7 @@
           $input: UpdateUserProfileInput!
         ) {
           updateUserProfile(input: $input) {
-            __typename
+            id
           }
         }
       `),

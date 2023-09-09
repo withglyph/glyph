@@ -6,6 +6,7 @@ import {
   isFragmentDocumentNode,
   isOperationDocumentNode,
   validateDocumentNode,
+  validateDocumentNodes,
 } from './validate';
 import type { GlitchContext } from '../types';
 
@@ -17,9 +18,20 @@ export const refreshDocuments = async (context: GlitchContext) => {
   let schemaRefreshed = false;
 
   if (schemaHash !== context.state.schemaHash) {
+    try {
+      context.schema = graphql.parse(schemaSource);
+      context.state.schemaHash = schemaHash;
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(`💥 ${err.message}`);
+      } else {
+        console.error(`💥 ${err}`);
+      }
+
+      return false;
+    }
+
     schemaRefreshed = true;
-    context.schema = graphql.parse(schemaSource);
-    context.state.schemaHash = schemaHash;
   }
 
   const artifactHashes = artifactSources.map(({ source }) => hash(source));
@@ -44,10 +56,22 @@ export const refreshDocuments = async (context: GlitchContext) => {
     }
 
     const source = artifactSources[i];
-    const documentNode = graphql.parse(source.source);
+
+    let documentNode;
+    try {
+      documentNode = graphql.parse(source.source);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(`💥 ${err.message}`);
+      } else {
+        console.error(`💥 ${err}`);
+      }
+
+      return false;
+    }
 
     if (!validateDocumentNode(documentNode)) {
-      continue;
+      return false;
     }
 
     addedArtifactNames.push(documentNode.definitions[0].name.value);
@@ -79,6 +103,14 @@ export const refreshDocuments = async (context: GlitchContext) => {
         documentNode,
       });
     }
+  }
+
+  if (
+    !validateDocumentNodes(
+      context.artifacts.map(({ documentNode }) => documentNode),
+    )
+  ) {
+    return false;
   }
 
   // for (const name of removedArtifactNames) {

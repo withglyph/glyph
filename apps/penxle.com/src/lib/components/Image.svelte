@@ -18,6 +18,7 @@
     _image,
     graphql(`
       fragment Image_image on Image {
+        id
         path
         placeholder
       }

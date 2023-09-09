@@ -14,6 +14,7 @@
     graphql(`
       fragment DefaultLayout_Header_query on Query {
         meOrNull {
+          id
           ...DefaultLayout_UserMenu_user
           ...DefaultLayout_PublishMenu_user
         }

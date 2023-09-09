@@ -24,6 +24,6 @@
       {/each}
     </div>
 
-    <Button size="md" color="primary">재생성</Button>
+    <Button size="md" color="primary" on:click={() => query.refetch()}>재생성</Button>
   </div>
 </div>

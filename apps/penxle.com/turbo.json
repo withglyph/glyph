@@ -4,7 +4,7 @@
   "pipeline": {
     "codegen": {
       "dependsOn": ["codegen:prisma", "^build"],
-      "outputs": [".svelte-kit/**", ".glitch/**"]
+      "outputs": [".svelte-kit/**", "$glitch/**"]
     },
     "codegen:prisma": { "cache": false }
   }

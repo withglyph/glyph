@@ -9,7 +9,7 @@ export const validateDocumentNode = (
   documentNode: DocumentNode,
 ): documentNode is ValidDocumentNode => {
   if (documentNode.definitions.length !== 1) {
-    console.warn('document must have only one definition');
+    console.warn('💥 Document must have only one definition');
     return false;
   }
 
@@ -18,20 +18,34 @@ export const validateDocumentNode = (
     definition.kind !== 'OperationDefinition' &&
     definition.kind !== 'FragmentDefinition'
   ) {
-    console.warn('document must be an operation or fragment');
+    console.warn('💥 Document must be an operation or fragment');
     return false;
   }
 
   if (!definition.name) {
-    console.warn('document must have a name');
+    console.warn('💥 Document must have a name');
     return false;
   }
 
   return true;
 };
 
-export const validateDocumentNodes = () => {
-  // TODO
+export const validateDocumentNodes = (documentsNodes: ValidDocumentNode[]) => {
+  const names = documentsNodes.map(
+    (documentNode) => documentNode.definitions[0].name.value,
+  );
+
+  const duplicates = names.filter(
+    (name, index) => names.indexOf(name) !== index,
+  );
+
+  if (duplicates.length > 0) {
+    console.warn('💥 Documents must have unique names');
+    console.warn(`💥 Duplicates: ${duplicates.join(', ')}`);
+    return false;
+  }
+
+  return true;
 };
 
 export const isOperationDocumentNode = (

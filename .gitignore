@@ -3,10 +3,10 @@
 node_modules/
 
 .svelte-kit/
-.glitch/
 .turbo/
 
 dist/
+$glitch/
 
 vite.config.ts.timestamp-*
 .env.local

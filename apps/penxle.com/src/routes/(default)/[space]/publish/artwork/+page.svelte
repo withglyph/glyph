@@ -13,6 +13,7 @@
       ...SpacePublishArtworkPage_Header_query
 
       space(slug: $slug) {
+        id
         ...SpacePublishArtworkPage_Header_space
       }
     }

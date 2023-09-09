@@ -1,5 +1,6 @@
 import { Client } from '@urql/core';
-import { fetchExchange } from './exchanges/fetch';
+import { signalReset } from './exchanges/reset';
+import { deleteClient } from './internal';
 import type { Exchange } from '@urql/core';
 import type { GlitchClient } from '../types';
 
@@ -17,8 +18,13 @@ export const createClient = ({
   return {
     client: new Client({
       url,
-      exchanges: [...exchanges, fetchExchange],
+      exchanges,
     }),
     errorHandler,
   };
+};
+
+export const resetClient = () => {
+  deleteClient();
+  signalReset(null);
 };

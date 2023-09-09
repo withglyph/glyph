@@ -4,8 +4,10 @@
   $: graphql(`
     query SpaceDashboardLayout_Query($slug: String!) {
       space(slug: $slug) {
+        id
+
         meAsMember {
-          __typename
+          id
         }
       }
     }
