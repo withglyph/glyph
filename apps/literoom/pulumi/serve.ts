@@ -2,6 +2,7 @@ import { bedrockRef } from '@penxle/pulumi';
 import * as aws from '@pulumi/aws';
 import * as awsnative from '@pulumi/aws-native';
 import * as pulumi from '@pulumi/pulumi';
+import { lambda as shrink } from './shrink';
 
 const pkg = aws.s3.getObjectOutput({
   bucket: bedrockRef('AWS_S3_BUCKET_ARTIFACTS_BUCKET'),
@@ -23,7 +24,7 @@ const lambda = new aws.lambda.Function('literoom-serve', {
   runtime: 'nodejs18.x',
   architectures: ['arm64'],
 
-  memorySize: 10_240,
+  memorySize: 256,
   timeout: 900,
 
   s3Bucket: pkg.bucket,
@@ -56,6 +57,7 @@ const objectLambdaAccessPoint = new awsnative.s3objectlambda.AccessPoint(
       ],
     },
   },
+  { replaceOnChanges: ['objectLambdaConfiguration'] },
 );
 
 new aws.iam.RolePolicy('literoom-serve@lambda', {
@@ -68,12 +70,20 @@ new aws.iam.RolePolicy('literoom-serve@lambda', {
       {
         Effect: 'Allow',
         Action: ['s3:GetObject'],
-        Resource: [pulumi.concat(bedrockRef('AWS_S3_BUCKET_DATA_ARN'), '/*')],
+        Resource: [
+          pulumi.concat(bedrockRef('AWS_S3_BUCKET_CACHES_ARN'), '/*'),
+          pulumi.concat(bedrockRef('AWS_S3_BUCKET_DATA_ARN'), '/*'),
+        ],
       },
       {
         Effect: 'Allow',
         Action: ['s3-object-lambda:WriteGetObjectResponse'],
         Resource: [objectLambdaAccessPoint.arn],
+      },
+      {
+        Effect: 'Allow',
+        Action: ['lambda:InvokeFunction'],
+        Resource: [shrink.arn],
       },
     ],
   },

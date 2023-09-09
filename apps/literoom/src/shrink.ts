@@ -1,40 +1,67 @@
 import {
+  DeleteItemCommand,
+  DynamoDBClient,
+  GetItemCommand,
+  PutItemCommand,
+} from '@aws-sdk/client-dynamodb';
+import {
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
-import { SIZES } from './const';
-import type { S3EventRecord, S3Handler } from 'aws-lambda';
 
 sharp.concurrency(4);
 const S3 = new S3Client();
+const DDB = new DynamoDBClient();
 
-export const handler: S3Handler = async (event) => {
-  await Promise.all(event.Records.map((v) => handle(v)));
+type Event = {
+  key: string;
+  size: number;
 };
 
-const handle = async (record: S3EventRecord) => {
-  const bucket = record.s3.bucket.name;
-  const key = decodeURIComponent(record.s3.object.key);
-
-  const object = await S3.send(
-    new GetObjectCommand({
-      Bucket: bucket,
-      Key: key,
+export const handler = async (event: Event) => {
+  const item = await DDB.send(
+    new GetItemCommand({
+      TableName: 'literoom-shrink',
+      Key: {
+        key: { S: event.key },
+        size: { N: String(event.size) },
+      },
     }),
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const input = await object.Body!.transformToByteArray();
+  if (item.Item) {
+    return;
+  }
 
-  const transform = async (size: number) => {
+  await DDB.send(
+    new PutItemCommand({
+      TableName: 'literoom-shrink',
+      Item: {
+        key: { S: event.key },
+        size: { N: String(event.size) },
+        ttl: { N: String(Math.ceil(Date.now() / 1000) + 6 * 60 * 60) },
+      },
+    }),
+  );
+
+  try {
+    const object = await S3.send(
+      new GetObjectCommand({
+        Bucket: 'penxle-data',
+        Key: event.key,
+      }),
+    );
+
     const started = performance.now();
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const input = await object.Body!.transformToByteArray();
     const output = await sharp(input, { failOn: 'none' })
       .resize({
-        width: size,
-        height: size,
+        width: event.size,
+        height: event.size,
         fit: 'inside',
         withoutEnlargement: true,
       })
@@ -46,8 +73,8 @@ const handle = async (record: S3EventRecord) => {
 
     await S3.send(
       new PutObjectCommand({
-        Bucket: bucket,
-        Key: `shrink/${key}/${size}.avif`,
+        Bucket: 'penxle-data',
+        Key: `caches/${event.key}/${event.size}.avif`,
         Body: output,
         ContentType: 'image/avif',
         Metadata: {
@@ -56,7 +83,15 @@ const handle = async (record: S3EventRecord) => {
         },
       }),
     );
-  };
-
-  await Promise.all(SIZES.map(async (size) => await transform(size)));
+  } finally {
+    await DDB.send(
+      new DeleteItemCommand({
+        TableName: 'literoom-shrink',
+        Key: {
+          key: { S: event.key },
+          size: { N: String(event.size) },
+        },
+      }),
+    );
+  }
 };

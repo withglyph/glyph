@@ -1,9 +1,9 @@
+import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
 import {
   GetObjectCommand,
   S3Client,
   WriteGetObjectResponseCommand,
 } from '@aws-sdk/client-s3';
-import { SIZES } from './const';
 
 type Event = {
   getObjectContext: {
@@ -17,6 +17,8 @@ type Event = {
 };
 
 const S3 = new S3Client();
+const LAMBDA = new LambdaClient();
+const SIZES = new Set([64, 128, 256, 512, 1024, 2048, 4096, 8192]);
 
 export const handler = async (event: Event) => {
   const url = new URL(event.userRequest.url);
@@ -24,7 +26,7 @@ export const handler = async (event: Event) => {
   const key = url.pathname.slice(1);
   const size = Number(url.searchParams.get('s'));
 
-  if (!SIZES.includes(size)) {
+  if (!SIZES.has(size)) {
     await S3.send(
       new WriteGetObjectResponseCommand({
         RequestRoute: event.getObjectContext.outputRoute,
@@ -43,7 +45,7 @@ export const handler = async (event: Event) => {
     object = await S3.send(
       new GetObjectCommand({
         Bucket: 'penxle-data',
-        Key: `shrink/${key}/${size}.avif`,
+        Key: `caches/${key}/${size}.avif`,
       }),
     );
 
@@ -66,12 +68,20 @@ export const handler = async (event: Event) => {
         }),
       );
 
+      await LAMBDA.send(
+        new InvokeCommand({
+          FunctionName: 'literoom-shrink',
+          InvocationType: 'Event',
+          Payload: JSON.stringify({ key, size }),
+        }),
+      );
+
       await S3.send(
         new WriteGetObjectResponseCommand({
           RequestRoute: event.getObjectContext.outputRoute,
           RequestToken: event.getObjectContext.outputToken,
           Body: object.Body,
-          CacheControl: 'public, max-age=0, must-revalidate',
+          CacheControl: 'public, max-age=60, must-revalidate',
         }),
       );
 

@@ -15,22 +15,6 @@ const role = new aws.iam.Role('literoom-shrink@lambda', {
   managedPolicyArns: [aws.iam.ManagedPolicies.AWSLambdaBasicExecutionRole],
 });
 
-new aws.iam.RolePolicy('literoom-shrink@lambda', {
-  name: 'literoom-shrink@lambda',
-  role: role.name,
-
-  policy: {
-    Version: '2012-10-17',
-    Statement: [
-      {
-        Effect: 'Allow',
-        Action: ['s3:GetObject', 's3:PutObject'],
-        Resource: pulumi.concat(bedrockRef('AWS_S3_BUCKET_DATA_ARN'), '/*'),
-      },
-    ],
-  },
-});
-
 const lambda = new aws.lambda.Function('literoom-shrink', {
   name: 'literoom-shrink',
   role: role.arn,
@@ -48,19 +32,49 @@ const lambda = new aws.lambda.Function('literoom-shrink', {
   sourceCodeHash: pkg.metadata.Hash,
 });
 
-new aws.lambda.Permission('literoom-shrink', {
-  function: lambda.name,
-  action: 'lambda:InvokeFunction',
-  principal: 's3.amazonaws.com',
+const table = new aws.dynamodb.Table('literoom-shrink', {
+  name: 'literoom-shrink',
+
+  billingMode: 'PAY_PER_REQUEST',
+
+  hashKey: 'key',
+  rangeKey: 'size',
+
+  attributes: [
+    { name: 'key', type: 'S' },
+    { name: 'size', type: 'N' },
+  ],
+
+  ttl: {
+    enabled: true,
+    attributeName: 'ttl',
+  },
 });
 
-new aws.s3.BucketNotification('literoom-shrink@lambda', {
-  bucket: bedrockRef('AWS_S3_BUCKET_DATA_BUCKET'),
-  lambdaFunctions: [
-    {
-      lambdaFunctionArn: lambda.arn,
-      events: ['s3:ObjectCreated:*'],
-      filterPrefix: 'images/',
-    },
-  ],
+new aws.iam.RolePolicy('literoom-shrink@lambda', {
+  name: 'literoom-shrink@lambda',
+  role: role.name,
+
+  policy: {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Action: ['s3:GetObject'],
+        Resource: pulumi.concat(bedrockRef('AWS_S3_BUCKET_DATA_ARN'), '/*'),
+      },
+      {
+        Effect: 'Allow',
+        Action: ['s3:PutObject'],
+        Resource: pulumi.concat(bedrockRef('AWS_S3_BUCKET_CACHES_ARN'), '/*'),
+      },
+      {
+        Effect: 'Allow',
+        Action: ['dynamodb:GetItem', 'dynamodb:PutItem', 'dynamodb:DeleteItem'],
+        Resource: table.arn,
+      },
+    ],
+  },
 });
+
+export { lambda };
