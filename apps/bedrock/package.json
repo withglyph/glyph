@@ -13,7 +13,7 @@
     "@pulumi/random": "^4.13.2",
     "@pulumi/tailscale": "^0.13.1",
     "@pulumi/tls": "^4.10.0",
-    "@types/node": "^20.5.9",
+    "@types/node": "^20.6.0",
     "fast-glob": "^3.3.1",
     "tsx": "^3.12.8"
   }

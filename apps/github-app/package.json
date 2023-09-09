@@ -9,8 +9,8 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@aws-sdk/client-ecs": "^3.408.0",
-    "@aws-sdk/client-ssm": "^3.408.0",
+    "@aws-sdk/client-ecs": "^3.409.0",
+    "@aws-sdk/client-ssm": "^3.409.0",
     "@octokit/webhooks": "^12.0.3",
     "@penxle/lambda": "workspace:^",
     "octokit": "^3.1.0"

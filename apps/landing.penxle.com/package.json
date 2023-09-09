@@ -21,7 +21,7 @@
     "@supabase/supabase-js": "^2.33.1",
     "@sveltejs/kit": "^1.24.1",
     "@types/canvas-confetti": "^1.6.1",
-    "@types/node": "^20.5.9",
+    "@types/node": "^20.6.0",
     "canvas-confetti": "^1.6.0",
     "clsx": "^2.0.0",
     "lightningcss": "^1.21.7",

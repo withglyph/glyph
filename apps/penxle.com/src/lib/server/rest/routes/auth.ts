@@ -2,9 +2,12 @@ import dayjs from 'dayjs';
 import { error, status } from 'itty-router';
 import { updateUser } from '$lib/server/analytics';
 import { google } from '$lib/server/external-api';
-import { createAccessToken } from '$lib/server/utils';
-import { createRandomAvatar, renderAvatar } from '$lib/server/utils/avatar';
-import { directUploadImage } from '$lib/server/utils/image';
+import {
+  createAccessToken,
+  createRandomAvatar,
+  directUploadImage,
+  renderAvatar,
+} from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { createRouter } from '../router';
 

@@ -1,7 +1,5 @@
 <script lang="ts">
-  import { resetClient } from '@penxle/glitch';
   import { Helmet, Link } from '@penxle/ui';
-  import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { Button } from '$lib/components';
   import {
@@ -23,9 +21,8 @@
     `),
     schema: SignUpInputSchema,
     refetch: false,
-    onSuccess: async () => {
-      resetClient();
-      await goto('/');
+    onSuccess: () => {
+      location.href = '/';
     },
   });
 </script>

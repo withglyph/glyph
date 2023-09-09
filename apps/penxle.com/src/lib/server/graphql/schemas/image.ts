@@ -6,7 +6,7 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { random } from 'radash';
 import { aws } from '$lib/server/external-api';
-import { getImageMetadata } from '$lib/server/utils/image';
+import { getImageMetadata } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { builder } from '../builder';
 
