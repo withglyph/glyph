@@ -65,6 +65,10 @@ export const handler = async (event: Event) => {
       RequestToken: event.getObjectContext.outputToken,
       Body: output,
       ContentType: 'image/webp',
+      CacheControl: 'public, max-age=31536000, immutable',
+      Metadata: {
+        Ratio: String((output.byteLength / input.byteLength).toFixed(2)),
+      },
     }),
   );
 
