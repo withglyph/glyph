@@ -73,8 +73,8 @@ export const handler = async (event: Event) => {
 
     await S3.send(
       new PutObjectCommand({
-        Bucket: 'penxle-data',
-        Key: `caches/${event.key}/${event.size}.avif`,
+        Bucket: 'penxle-caches',
+        Key: `${event.key}/${event.size}.avif`,
         Body: output,
         ContentType: 'image/avif',
         Metadata: {

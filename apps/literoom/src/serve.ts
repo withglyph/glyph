@@ -44,8 +44,8 @@ export const handler = async (event: Event) => {
   try {
     object = await S3.send(
       new GetObjectCommand({
-        Bucket: 'penxle-data',
-        Key: `caches/${key}/${size}.avif`,
+        Bucket: 'penxle-caches',
+        Key: `${key}/${size}.avif`,
       }),
     );
 
@@ -81,7 +81,7 @@ export const handler = async (event: Event) => {
           RequestRoute: event.getObjectContext.outputRoute,
           RequestToken: event.getObjectContext.outputToken,
           Body: object.Body,
-          CacheControl: 'public, max-age=60, must-revalidate',
+          CacheControl: 'public, max-age=3600, must-revalidate',
         }),
       );
 
