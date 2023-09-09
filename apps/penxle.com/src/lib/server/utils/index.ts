@@ -1,2 +1,3 @@
 export * from './access-token';
-export * from './id';
+export * from './avatar';
+export * from './image';

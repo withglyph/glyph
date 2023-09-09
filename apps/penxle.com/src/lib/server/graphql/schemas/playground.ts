@@ -1,7 +1,7 @@
 import { range } from 'radash';
 import { sendEmail } from '$lib/server/email';
 import { Test } from '$lib/server/email/templates';
-import { createRandomAvatar } from '$lib/server/utils/avatar';
+import { createRandomAvatar } from '$lib/server/utils';
 import { builder } from '../builder';
 
 /**

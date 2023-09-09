@@ -3,7 +3,6 @@ import sharp from 'sharp';
 import { rgbaToThumbHash } from 'thumbhash';
 import { aws } from '$lib/server/external-api';
 import { createId } from '$lib/utils';
-import { createS3ObjectKey } from './id';
 import { getDominantColor } from './mmcq';
 import type { InteractiveTransactionClient } from '../database';
 
@@ -99,7 +98,7 @@ export const directUploadImage = async ({
   name,
   buffer,
 }: DirectUploadImageParams) => {
-  const key = createS3ObjectKey('images');
+  const key = aws.createS3ObjectKey('images');
   const ext = name.split('.').pop() ?? 'unknown';
   const path = `${key}.${ext}`;
 

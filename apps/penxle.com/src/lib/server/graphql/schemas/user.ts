@@ -6,9 +6,12 @@ import { updateUser } from '$lib/server/analytics';
 import { sendEmail } from '$lib/server/email';
 import { PasswordReset } from '$lib/server/email/templates';
 import { google } from '$lib/server/external-api';
-import { createAccessToken } from '$lib/server/utils';
-import { createRandomAvatar, renderAvatar } from '$lib/server/utils/avatar';
-import { directUploadImage } from '$lib/server/utils/image';
+import {
+  createAccessToken,
+  createRandomAvatar,
+  directUploadImage,
+  renderAvatar,
+} from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import {
   LoginInputSchema,
