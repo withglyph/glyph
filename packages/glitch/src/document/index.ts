@@ -34,7 +34,9 @@ export const refreshDocuments = async (context: GlitchContext) => {
     schemaRefreshed = true;
   }
 
-  const artifactHashes = artifactSources.map(({ source }) => hash(source));
+  const artifactHashes = artifactSources.map(({ filePath, source }) =>
+    hash(filePath + source),
+  );
 
   const removedArtifactNames: string[] = [];
   const addedArtifactNames: string[] = [];
