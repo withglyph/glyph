@@ -9,7 +9,7 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@aws-sdk/client-ssm": "^3.408.0",
+    "@aws-sdk/client-ssm": "^3.409.0",
     "execa": "^8.0.1",
     "octokit": "^3.1.0"
   },
