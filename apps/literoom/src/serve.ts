@@ -81,7 +81,7 @@ export const handler = async (event: Event) => {
           RequestRoute: event.getObjectContext.outputRoute,
           RequestToken: event.getObjectContext.outputToken,
           Body: object.Body,
-          CacheControl: 'public, max-age=3600, must-revalidate',
+          CacheControl: 'public, max-age=60, must-revalidate',
         }),
       );
 

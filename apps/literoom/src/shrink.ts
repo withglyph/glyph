@@ -66,7 +66,7 @@ export const handler = async (event: Event) => {
         withoutEnlargement: true,
       })
       .flatten({ background: { r: 255, g: 255, b: 255 } })
-      .avif({ quality: 75, effort: 9 })
+      .avif({ quality: 50, effort: 6 })
       .toBuffer();
 
     const finished = performance.now();
@@ -78,7 +78,7 @@ export const handler = async (event: Event) => {
         Body: output,
         ContentType: 'image/avif',
         Metadata: {
-          Elapsed: String((finished - started).toFixed(2)),
+          Elapsed: String(((finished - started) / 1000).toFixed(2)),
           Ratio: String((output.byteLength / input.byteLength).toFixed(2)),
         },
       }),
