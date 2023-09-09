@@ -1,8 +1,7 @@
 import type { Action } from 'svelte/action';
-import type { Writable } from 'svelte/store';
 
 type Parameter = {
-  store: Writable<boolean>;
+  handler: (isIntersecting: boolean) => void;
 
   once?: boolean;
 
@@ -15,11 +14,11 @@ export const intersectionObserver: Action<HTMLElement, Parameter> = (
   element,
   param,
 ) => {
-  const { store, once } = param;
+  const { handler, once } = param;
 
   const observer = new IntersectionObserver((entries) => {
     const isIntersecting = entries.some((entry) => entry.isIntersecting);
-    store.set(isIntersecting);
+    handler(isIntersecting);
     if (isIntersecting && once) {
       observer.disconnect();
     }

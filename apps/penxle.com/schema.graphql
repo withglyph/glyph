@@ -65,11 +65,11 @@ type Profile {
 
 type Query {
   authLayoutBackgroundImage: Image
-  email: String!
-  hello(email: String!): User!
   me: User!
   meOrNull: User
   randomAvatars: [String!]!
+  sampleImage: Image!
+  sampleImages: [Image!]!
   space(slug: String!): Space!
 }
 

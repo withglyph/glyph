@@ -54,12 +54,10 @@ builder.queryFields((t) => ({
     type: 'Image',
     nullable: true,
     resolve: async (query, _, __, { db }) => {
-      const count = await db.image.count();
-
       return await db.image.findFirst({
         ...query,
-        skip: random(0, count - 1),
-        take: 1,
+        where: { name: { startsWith: 'sample' } },
+        skip: random(0, 99),
         orderBy: { id: 'asc' },
       });
     },
