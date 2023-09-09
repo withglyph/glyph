@@ -55,6 +55,8 @@ export const handler = async (event: Event) => {
         RequestToken: event.getObjectContext.outputToken,
         Body: object.Body,
         CacheControl: 'public, max-age=31536000, immutable',
+        ContentType: object.ContentType,
+        Metadata: object.Metadata,
       }),
     );
 
@@ -82,6 +84,7 @@ export const handler = async (event: Event) => {
           RequestToken: event.getObjectContext.outputToken,
           Body: object.Body,
           CacheControl: 'public, max-age=60, must-revalidate',
+          ContentType: object.ContentType,
         }),
       );
 
