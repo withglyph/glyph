@@ -2,7 +2,12 @@ import { lookupCollection } from '@iconify/json';
 import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders';
 import { presetIcons } from '@unocss/preset-icons';
 import { presetUno } from '@unocss/preset-uno';
-import { basicColors, shadedColors, specialColors } from './colors';
+import {
+  basicColors,
+  partialShadedColors,
+  shadedColors,
+  specialColors,
+} from './colors';
 import type { Preset } from '@unocss/core';
 import type { Theme } from '@unocss/preset-uno';
 
@@ -54,6 +59,7 @@ export const presetPenxle = (): Preset<Theme> => ({
       ...specialColors,
       ...basicColors,
       ...shadedColors,
+      ...partialShadedColors,
     },
     breakpoints: {
       sm: '800px',
