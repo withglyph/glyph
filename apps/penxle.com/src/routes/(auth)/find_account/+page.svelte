@@ -2,7 +2,7 @@
   import { Helmet } from '@penxle/ui';
   import clsx from 'clsx';
   import { goto } from '$app/navigation';
-  import { graphql } from '$houdini';
+  import { graphql } from '$glitch';
   import { Button } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
@@ -14,7 +14,7 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation LoginPage_Login_Mutation($input: LoginInput!) {
+      mutation LoginPage_Login_Mutation2($input: LoginInput!) {
         login(input: $input) {
           __typename
         }

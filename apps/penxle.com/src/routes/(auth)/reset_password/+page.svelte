@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import { graphql } from '$houdini';
+  import { graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
   import { FormField, PasswordInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
@@ -10,7 +10,7 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation LoginPage_Login_Mutation($input: LoginInput!) {
+      mutation LoginPage_Login_Mutation3($input: LoginInput!) {
         login(input: $input) {
           __typename
         }
