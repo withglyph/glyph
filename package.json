@@ -46,6 +46,11 @@
       "read-package-tree": "*",
       "uuid": "*",
       "vm2": "*"
+    },
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "@graphql-codegen/typescript-urql-graphcache>@urql/exchange-graphcache": "*"
+      }
     }
   }
 }

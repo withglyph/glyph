@@ -8,6 +8,16 @@ export const generateMainTypes = (): AST.Program => {
       null,
       [
         AST.b.exportSpecifier.from({
+          local: AST.b.identifier('GraphCacheConfig'),
+          exported: AST.b.identifier('Cache'),
+        }),
+      ],
+      AST.b.stringLiteral('./gql'),
+    ),
+    AST.b.exportNamedDeclaration(
+      null,
+      [
+        AST.b.exportSpecifier.from({
           local: AST.b.identifier('QueryStore'),
           exported: AST.b.identifier('QueryStore'),
         }),
