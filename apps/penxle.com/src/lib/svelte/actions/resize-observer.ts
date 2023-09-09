@@ -1,17 +1,14 @@
 import type { Action } from 'svelte/action';
 
-type Attributes = {
-  'on:resizeObserved': (event: CustomEvent<ResizeObserverEntry>) => void;
-};
+type Parameter = (entry: ResizeObserverEntry) => void;
 
-export const resizeObserver: Action<HTMLElement, void, Attributes> = (
+export const resizeObserver: Action<HTMLElement, Parameter> = (
   element,
+  callback,
 ) => {
   const observer = new ResizeObserver((entries) => {
     for (const entry of entries) {
-      element.dispatchEvent(
-        new CustomEvent('resizeObserved', { detail: entry }),
-      );
+      callback(entry);
     }
   });
 

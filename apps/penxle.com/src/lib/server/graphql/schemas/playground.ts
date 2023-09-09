@@ -1,6 +1,4 @@
-import { range } from 'radash';
-import { sendEmail } from '$lib/server/email';
-import { Test } from '$lib/server/email/templates';
+import { random, range, shuffle } from 'radash';
 import { createRandomAvatar } from '$lib/server/utils';
 import { builder } from '../builder';
 
@@ -15,29 +13,27 @@ builder.queryFields((t) => ({
     },
   }),
 
-  hello: t.prismaField({
-    type: 'User',
-    args: { email: t.arg.string() },
-    resolve: (query, _, { email }, { db }) => {
-      return db.user.findFirstOrThrow({
+  sampleImage: t.prismaField({
+    type: 'Image',
+    resolve: async (query, _, __, { db }) => {
+      return await db.image.findFirstOrThrow({
         ...query,
-        where: {
-          email,
-        },
+        where: { name: { startsWith: 'sample' } },
+        skip: random(0, 99),
+        orderBy: { id: 'asc' },
       });
     },
   }),
 
-  email: t.string({
-    resolve: async () => {
-      await sendEmail({
-        subject: '안녕하세요!',
-        recipient: 'finn@penxle.io',
-        template: Test,
-        props: { name: 'Finn' },
-      });
-
-      return '';
+  sampleImages: t.prismaField({
+    type: ['Image'],
+    resolve: async (query, _, __, { db }) => {
+      return shuffle(
+        await db.image.findMany({
+          ...query,
+          where: { name: { startsWith: 'sample' } },
+        }),
+      );
     },
   }),
 }));
