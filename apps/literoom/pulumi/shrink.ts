@@ -48,7 +48,7 @@ const lambda = new aws.lambda.Function('literoom-shrink', {
   sourceCodeHash: pkg.metadata.Hash,
 });
 
-new aws.lambda.Permission('literoom-shrink@lambda', {
+new aws.lambda.Permission('literoom-shrink', {
   function: lambda.name,
   action: 'lambda:InvokeFunction',
   principal: 's3.amazonaws.com',
