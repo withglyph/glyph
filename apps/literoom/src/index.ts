@@ -18,10 +18,10 @@ sharp.concurrency(4);
 export const handler = async (event: Event) => {
   const url = new URL(event.userRequest.url);
 
-  const size = Math.min(Number(url.searchParams.get('s')), 8192);
-  const quality = Math.min(Number(url.searchParams.get('q') ?? 75), 90);
+  const size = Number(url.searchParams.get('s'));
+  const quality = Number(url.searchParams.get('q') ?? 75);
 
-  if (!size || !quality) {
+  if (size <= 0 || quality <= 0 || quality > 100) {
     await S3.send(
       new WriteGetObjectResponseCommand({
         RequestRoute: event.getObjectContext.outputRoute,
