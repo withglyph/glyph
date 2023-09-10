@@ -98,7 +98,7 @@ export const handler = async (event: Event) => {
         new WriteGetObjectResponseCommand({
           RequestRoute: event.getObjectContext.outputRoute,
           RequestToken: event.getObjectContext.outputToken,
-          Body: object.Body,
+          Body: output,
           CacheControl: 'public, max-age=60, must-revalidate',
           ContentType: 'image/webp',
           Metadata: {
