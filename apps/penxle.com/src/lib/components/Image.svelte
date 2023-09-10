@@ -8,6 +8,7 @@
   import { thumbHashToDataURL } from 'thumbhash';
   import { fragment, graphql } from '$glitch';
   import { intersectionObserver, resizeObserver } from '$lib/svelte/actions';
+  import { clamp } from '$lib/utils';
   import type { Image_image } from '$glitch';
 
   export let _image: Image_image;
@@ -48,7 +49,7 @@
 
     const max =
       Math.max(domRect.width, domRect.height) * window.devicePixelRatio;
-    const size = Math.pow(2, Math.ceil(Math.log2(max)));
+    const size = clamp(Math.pow(2, Math.ceil(Math.log2(max))), 32, 8192);
 
     src = qs.stringifyUrl({
       url: `https://pnxl.net/${$image.path}`,
