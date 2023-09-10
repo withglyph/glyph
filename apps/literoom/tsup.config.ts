@@ -2,6 +2,6 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
   clean: true,
-  entry: ['src/serve.ts', 'src/shrink.ts'],
+  entry: ['src/index.ts'],
   format: 'esm',
 });
