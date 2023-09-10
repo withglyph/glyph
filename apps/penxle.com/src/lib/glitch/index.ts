@@ -6,6 +6,7 @@ import {
 } from '@penxle/glitch';
 import schema from '$glitch/introspection.json';
 import { deserializeGraphQLError } from '$lib/errors';
+import { updates } from './updater';
 import type { StorageAdapter } from '@urql/exchange-graphcache';
 import type { Cache } from '$glitch';
 
@@ -17,6 +18,7 @@ export default () =>
       resetExchange(),
       cacheExchange<Cache>({
         schema,
+        updates,
         storage: undefined as unknown as StorageAdapter,
       }),
       fetchExchange,
