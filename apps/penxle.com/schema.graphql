@@ -65,8 +65,7 @@ type Profile {
 
 type Query {
   authLayoutBackgroundImage: Image
-  me: User!
-  meOrNull: User
+  me: User
   randomAvatars: [String!]!
   sampleImage: Image!
   sampleImages: [Image!]!

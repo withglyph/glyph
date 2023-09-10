@@ -10,14 +10,12 @@
   `);
 </script>
 
-{#if $query}
-  <Header _query={$query} />
+<Header _query={$query} />
 
-  <main class="grow p-4">
-    <div class="mx-auto max-w-screen-lg">
-      <slot />
-    </div>
-  </main>
+<main class="grow p-4">
+  <div class="mx-auto max-w-screen-lg">
+    <slot />
+  </div>
+</main>
 
-  <Footer />
-{/if}
+<Footer />

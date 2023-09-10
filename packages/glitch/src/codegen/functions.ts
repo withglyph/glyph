@@ -4,6 +4,10 @@ import type { GlitchContext } from '../types';
 export const generateFunctions = (context: GlitchContext): AST.Program => {
   const program = AST.b.program([
     AST.b.importDeclaration(
+      [AST.b.importNamespaceSpecifier(AST.b.identifier('internal'))],
+      AST.b.stringLiteral('./internal'),
+    ),
+    AST.b.importDeclaration(
       [AST.b.importNamespaceSpecifier(AST.b.identifier('gql'))],
       AST.b.stringLiteral('./gql'),
     ),
@@ -32,7 +36,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
                 AST.b.tsTypeReference(
                   AST.b.identifier('glitch.QueryStore'),
                   AST.b.tsTypeParameterInstantiation([
-                    AST.b.tsTypeReference(AST.b.identifier(`gql.${name}`)),
+                    AST.b.tsTypeReference(AST.b.identifier(`internal.${name}`)),
                   ]),
                 ),
               ),
@@ -59,7 +63,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
                 AST.b.tsTypeReference(
                   AST.b.identifier('glitch.MutationStore'),
                   AST.b.tsTypeParameterInstantiation([
-                    AST.b.tsTypeReference(AST.b.identifier(`gql.${name}`)),
+                    AST.b.tsTypeReference(AST.b.identifier(`internal.${name}`)),
                     AST.b.tsTypeReference(
                       AST.b.identifier(`gql.${name}Variables`),
                     ),
@@ -147,7 +151,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
                 AST.b.tsTypeReference(
                   AST.b.identifier('glitch.FragmentStore'),
                   AST.b.tsTypeParameterInstantiation([
-                    AST.b.tsTypeReference(AST.b.identifier(`gql.${name}`)),
+                    AST.b.tsTypeReference(AST.b.identifier(`internal.${name}`)),
                   ]),
                 ),
               ),

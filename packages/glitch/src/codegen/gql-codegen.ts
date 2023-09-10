@@ -31,6 +31,7 @@ export const generateGQLCodegen = async (context: GlitchContext) => {
       },
       {
         typescriptOperations: {
+          avoidOptionals: true,
           inlineFragmentTypes: 'mask',
           namingConvention: 'keep',
           omitOperationSuffix: true,
