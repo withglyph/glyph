@@ -106,7 +106,7 @@ builder.mutationFields((t) => ({
       const metadata = await getImageMetadata(buffer);
 
       const key = aws.createS3ObjectKey('images');
-      const ext = input.name.split('.').pop() ?? 'unknown';
+      const ext = input.name.split('.').pop() ?? 'unk';
       const path = `${key}.${ext}`;
 
       await aws.s3.send(
