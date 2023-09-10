@@ -4,6 +4,7 @@ import {
   S3Client,
   WriteGetObjectResponseCommand,
 } from '@aws-sdk/client-s3';
+import sharp from 'sharp';
 
 type Event = {
   getObjectContext: {
@@ -18,7 +19,7 @@ type Event = {
 
 const S3 = new S3Client();
 const LAMBDA = new LambdaClient();
-const SIZES = new Set([64, 128, 256, 512, 1024, 2048, 4096, 8192]);
+const SIZES = new Set([32, 64, 128, 256, 512, 1024, 2048, 4096, 8192]);
 
 export const handler = async (event: Event) => {
   const url = new URL(event.userRequest.url);
@@ -39,10 +40,8 @@ export const handler = async (event: Event) => {
     return { statusCode: 400 };
   }
 
-  let object;
-
   try {
-    object = await S3.send(
+    const object = await S3.send(
       new GetObjectCommand({
         Bucket: 'penxle-caches',
         Key: `${key}/${size}.avif`,
@@ -63,7 +62,7 @@ export const handler = async (event: Event) => {
     return { statusCode: 200 };
   } catch {
     try {
-      object = await S3.send(
+      const object = await S3.send(
         new GetObjectCommand({
           Bucket: 'penxle-data',
           Key: key,
@@ -78,13 +77,34 @@ export const handler = async (event: Event) => {
         }),
       );
 
+      const started = performance.now();
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const input = await object.Body!.transformToByteArray();
+      const output = await sharp(input, { failOn: 'none' })
+        .resize({
+          width: size,
+          height: size,
+          fit: 'inside',
+          withoutEnlargement: true,
+        })
+        .flatten({ background: { r: 255, g: 255, b: 255 } })
+        .webp({ quality: 75, effort: 2 })
+        .toBuffer();
+
+      const finished = performance.now();
+
       await S3.send(
         new WriteGetObjectResponseCommand({
           RequestRoute: event.getObjectContext.outputRoute,
           RequestToken: event.getObjectContext.outputToken,
           Body: object.Body,
           CacheControl: 'public, max-age=60, must-revalidate',
-          ContentType: object.ContentType,
+          ContentType: 'image/webp',
+          Metadata: {
+            Elapsed: String(((finished - started) / 1000).toFixed(2)),
+            Ratio: String((output.byteLength / input.byteLength).toFixed(2)),
+          },
         }),
       );
 

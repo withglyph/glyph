@@ -24,7 +24,7 @@ const lambda = new aws.lambda.Function('literoom-serve', {
   runtime: 'nodejs18.x',
   architectures: ['arm64'],
 
-  memorySize: 256,
+  memorySize: 2048,
   timeout: 900,
 
   s3Bucket: pkg.bucket,
