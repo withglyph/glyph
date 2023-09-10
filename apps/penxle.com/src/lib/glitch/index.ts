@@ -1,9 +1,7 @@
-import {
-  cacheExchange,
-  createClient,
-  fetchExchange,
-  resetExchange,
-} from '@penxle/glitch';
+import { createClient, resetExchange } from '@penxle/glitch';
+import { fetchExchange } from '@urql/core';
+import { devtoolsExchange } from '@urql/devtools';
+import { cacheExchange } from '@urql/exchange-graphcache';
 import schema from '$glitch/introspection.json';
 import { deserializeGraphQLError } from '$lib/errors';
 import { updates } from './updater';
@@ -15,6 +13,7 @@ export default () =>
   createClient({
     url: '/api/graphql',
     exchanges: [
+      devtoolsExchange,
       resetExchange(),
       cacheExchange<Cache>({
         schema,
