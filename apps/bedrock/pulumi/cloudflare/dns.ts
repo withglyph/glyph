@@ -208,4 +208,13 @@ new cloudflare.Record('pnxl.net', {
   comment: 'bunny.net',
 });
 
+new cloudflare.Record('t.pnxl.net', {
+  zoneId: zones.pnxl_net.id,
+  type: 'A',
+  name: 't.pnxl.net',
+  value: instances.mixpanelProxy.publicIp,
+  proxied: true,
+  comment: 'Amazon EC2',
+});
+
 export const outputs = {};
