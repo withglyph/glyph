@@ -16,7 +16,7 @@
 <Helmet title="이미지 플레이그라운드" />
 
 <div class="flex flex-col gap-4 grow center">
-  <Image class="w-1/4 aspect-1/1 rounded-xl" _image={$query.sampleImage} />
+  <Image class="w-1/4 aspect-1/1 rounded-xl" $image={$query.sampleImage} />
 
   <Button color="brand" on:click={() => query.refetch()}>refetch</Button>
 </div>

@@ -26,7 +26,7 @@
 <Helmet title="새 글 작성하기" />
 
 <main class="flex grow flex-col">
-  <Header _query={$query} _space={$query.space} />
+  <Header {$query} $space={$query.space} />
   <Editor bind:editor />
   <Toolbar {editor} />
 </main>

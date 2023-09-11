@@ -5,7 +5,8 @@
   import CreateSpaceModal from './CreateSpaceModal.svelte';
   import type { DefaultLayout_GotoSpaceModal_user } from '$glitch';
 
-  export let _user: DefaultLayout_GotoSpaceModal_user;
+  let _user: DefaultLayout_GotoSpaceModal_user;
+  export { _user as $user };
   export let open = false;
 
   let openCreateSpace = false;

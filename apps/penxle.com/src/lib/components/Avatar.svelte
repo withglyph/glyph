@@ -4,9 +4,9 @@
   import Image from './Image.svelte';
   import type { Avatar_profile } from '$glitch';
 
-  export let _profile: Avatar_profile;
+  let _profile: Avatar_profile;
   let _class: string | undefined = undefined;
-  export { _class as class };
+  export { _profile as $profile, _class as class };
 
   $: profile = fragment(
     _profile,
@@ -23,4 +23,4 @@
   );
 </script>
 
-<Image class={clsx('rounded-full border', _class)} _image={$profile.avatar} />
+<Image class={clsx('rounded-full border', _class)} $image={$profile.avatar} />

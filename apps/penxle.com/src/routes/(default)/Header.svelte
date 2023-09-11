@@ -7,7 +7,8 @@
   import UserMenu from './UserMenu.svelte';
   import type { DefaultLayout_Header_query } from '$glitch';
 
-  export let _query: DefaultLayout_Header_query;
+  let _query: DefaultLayout_Header_query;
+  export { _query as $query };
 
   $: query = fragment(
     _query,
@@ -37,8 +38,8 @@
         <div class="ml-8 flex items-center gap-8">
           <div class="i-lc-heart square-5 text-gray-50" />
           <div class="i-lc-bell square-5 text-gray-50" />
-          <UserMenu _user={$query.me} />
-          <PublishMenu _user={$query.me} />
+          <UserMenu $user={$query.me} />
+          <PublishMenu $user={$query.me} />
         </div>
       {:else}
         <a class="ml-4 rounded px-4 py-2 font-semibold" href="/login">로그인</a>

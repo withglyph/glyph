@@ -6,7 +6,8 @@
   import { toast } from '$lib/notification';
   import type { SpaceDashboardPage_DeleteSpaceModal_space } from '$glitch';
 
-  export let _space: SpaceDashboardPage_DeleteSpaceModal_space;
+  let _space: SpaceDashboardPage_DeleteSpaceModal_space;
+  export { _space as $space };
   export let open = false;
 
   let confirm = '';

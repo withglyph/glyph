@@ -10,9 +10,9 @@
   import { intersectionObserver, resizeObserver } from '$lib/svelte/actions';
   import type { Image_image } from '$glitch';
 
-  export let _image: Image_image;
+  let _image: Image_image;
   let _class: string | undefined = undefined;
-  export { _class as class };
+  export { _image as $image, _class as class };
   export let quality: number | undefined = undefined;
   export let fit: 'cover' | 'contain' = 'cover';
   export let fade = true;

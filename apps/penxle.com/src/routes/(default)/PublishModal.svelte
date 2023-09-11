@@ -5,7 +5,8 @@
   import CreateSpaceModal from './CreateSpaceModal.svelte';
   import type { DefaultLayout_PublishModal_user } from '$glitch';
 
-  export let _user: DefaultLayout_PublishModal_user;
+  let _user: DefaultLayout_PublishModal_user;
+  export { _user as $user };
   export let open = false;
   export let type: 'artwork' | 'post';
 

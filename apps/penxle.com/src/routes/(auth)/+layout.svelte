@@ -13,7 +13,7 @@
 </script>
 
 {#if $query.authLayoutBackgroundImage}
-  <Image class="fixed inset-0" _image={$query.authLayoutBackgroundImage} />
+  <Image class="fixed inset-0" $image={$query.authLayoutBackgroundImage} />
 {/if}
 
 <main class="fixed inset-0 flex center">

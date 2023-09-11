@@ -8,7 +8,8 @@
   import { UpdateUserProfileInputSchema } from '$lib/validations';
   import type { MePreferencesPage_UpdateUserProfileModal_profile } from '$glitch';
 
-  export let _profile: MePreferencesPage_UpdateUserProfileModal_profile;
+  let _profile: MePreferencesPage_UpdateUserProfileModal_profile;
+  export { _profile as $profile };
   export let open = false;
 
   $: profile = fragment(
@@ -52,7 +53,7 @@
       <div>
         <div class="mb-2 select-none text-sm font-medium">아바타</div>
         <div class="flex items-center gap-4">
-          <Avatar class="square-24" _profile={$profile} />
+          <Avatar class="square-24" {$profile} />
           <div class="flex flex-col items-center gap-2">
             <Button class="text-sm" color="brand">새 아바타 업로드</Button>
             <button class="text-sm text-gray-50" type="button">

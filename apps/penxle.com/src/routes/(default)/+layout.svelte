@@ -10,7 +10,7 @@
   `);
 </script>
 
-<Header _query={$query} />
+<Header {$query} />
 
 <main class="grow p-4">
   <div class="mx-auto max-w-screen-lg">
