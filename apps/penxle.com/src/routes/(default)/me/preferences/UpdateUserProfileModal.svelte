@@ -77,9 +77,9 @@
   </form>
 
   <Button
-    size="md"
     slot="action"
     loading={$isSubmitting}
+    size="md"
     on:click={handleSubmit}
   >
     수정하기

@@ -40,8 +40,8 @@
     <FormField name="name" label="닉네임">
       <TextInput
         class="w-full font-bold"
-        placeholder="닉네임 입력"
         maxlength={10}
+        placeholder="닉네임 입력"
       >
         <span slot="right-icon">0 / 10</span>
       </TextInput>

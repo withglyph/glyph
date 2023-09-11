@@ -5,11 +5,11 @@
   export let open = false;
 </script>
 
-<Modal bind:open size="sm">
+<Modal size="sm" bind:open>
   <svelte:fragment slot="title">탈퇴가 완료되었어요</svelte:fragment>
   <svelte:fragment slot="subtitle">함께해줘서 고마웠어요!</svelte:fragment>
 
-  <Button size="xl" class="w-full" on:click={() => goto('/')}>
+  <Button class="w-full" size="xl" on:click={() => goto('/')}>
     홈으로 가기
   </Button>
 </Modal>

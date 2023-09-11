@@ -75,7 +75,7 @@
       {stack ?? 'Stacktrace not available'}
     </div>
 
-    <Button size="md" slot="action" on:click={() => (open = false)}>
+    <Button slot="action" size="md" on:click={() => (open = false)}>
       닫기
     </Button>
   </Modal>

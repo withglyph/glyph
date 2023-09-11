@@ -58,9 +58,9 @@
   </form>
 
   <Button
-    size="md"
     slot="action"
     loading={$isSubmitting}
+    size="md"
     on:click={handleSubmit}
   >
     만들기

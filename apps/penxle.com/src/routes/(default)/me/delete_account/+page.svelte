@@ -65,10 +65,10 @@
       <label for="email">탈퇴 계정 이메일</label>
       <input
         name="email"
-        type="email"
         class="text-gray-50"
-        value="kylie@penxle.io"
         disabled
+        type="email"
+        value="kylie@penxle.io"
       />
     </div>
   </div>
@@ -84,14 +84,14 @@
 
   <div>
     <Button
-      type="button"
-      size="xl"
       class="w-full"
+      size="xl"
+      type="button"
       on:click={() => (confirmModalOpen = true)}
     >
       모든 과정을 동의하고 탈퇴합니다
     </Button>
-    <Button type="button" size="xl" color="tertiary" class="w-full mt-3">
+    <Button class="w-full mt-3" color="tertiary" size="xl" type="button">
       탈퇴를 취소할래요
     </Button>
   </div>

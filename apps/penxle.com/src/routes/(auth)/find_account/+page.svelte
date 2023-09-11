@@ -48,8 +48,8 @@
 
   <Button
     class={clsx(!isSuccessful && 'mt-6', 'w-full')}
-    type="submit"
     size="xl"
+    type="submit"
   >
     계정 찾기
   </Button>

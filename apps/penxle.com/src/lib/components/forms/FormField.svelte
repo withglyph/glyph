@@ -14,7 +14,7 @@
   <div
     class="flex flex-col gap-1 border border-gray-10 rounded-2xl transition bg-gray-10 pt-3 pb-4 px-3.5 hover:border-gray-30 focus-within:border-gray-90 [&:has(input[aria-invalid])]:border-red-50 disabled:opacity-50"
   >
-    <label for={name} class="text-3.25 font-bold">{label}</label>
+    <label class="text-3.25 font-bold" for={name}>{label}</label>
     <slot />
   </div>
   <FormValidationMessage for={name} let:message>

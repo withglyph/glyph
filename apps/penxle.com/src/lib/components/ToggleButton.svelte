@@ -6,14 +6,14 @@
 </script>
 
 <button
-  type="button"
-  aria-pressed={pressed}
   class={clsx(
     'bg-gray-20  p-1',
     pressed && 'bg-green-50',
     size === 'sm' && 'w-7.5 h-4 rounded-6',
     size === 'lg' && 'w-11 h-6 rounded-9',
   )}
+  aria-pressed={pressed}
+  type="button"
   on:click={() => (pressed = !pressed)}
 >
   <div class="relative">

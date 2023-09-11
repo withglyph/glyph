@@ -139,8 +139,8 @@
     </div>
   </div>
   <Button
-    size="md"
     slot="action"
+    size="md"
     on:click={() => {
       artwork = { ...artwork, thumbnail: { ...translation } };
       open = false;

@@ -61,10 +61,10 @@
   </div>
 
   <Button
-    size="md"
     slot="action"
     disabled={confirm !== $space.slug}
     loading={$deleteSpace.inflight}
+    size="md"
     on:click={async () => {
       await deleteSpace({ spaceId: $space.id });
       toast.success('스페이스를 삭제했어요.');

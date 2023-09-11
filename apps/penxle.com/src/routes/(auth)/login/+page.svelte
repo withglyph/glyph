@@ -52,13 +52,13 @@
     </FormField>
   </div>
 
-  <Button class="w-full mt-3" type="submit" size="xl">로그인</Button>
+  <Button class="w-full mt-3" size="xl" type="submit">로그인</Button>
 </form>
 
-<Button class="w-full mt-3 max-w-87.5" type="button" color="tertiary" size="xl">
+<Button class="w-full mt-3 max-w-87.5" color="tertiary" size="xl" type="button">
   회원가입
 </Button>
 
-<Button class="w-full my-4 text-gray-50" type="button" size="lg" variant="text">
+<Button class="w-full my-4 text-gray-50" size="lg" type="button" variant="text">
   계정을 찾을 수 없나요?
 </Button>

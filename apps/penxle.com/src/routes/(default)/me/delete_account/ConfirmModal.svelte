@@ -23,7 +23,7 @@
   });
 </script>
 
-<Modal bind:open size="md">
+<Modal size="md" bind:open>
   <svelte:fragment slot="title">
     탈퇴를 진행하실 수 있도록 사용하고 계신 비밀번호를 입력해 주세요
   </svelte:fragment>
@@ -38,6 +38,6 @@
       </FormField>
     </div>
 
-    <Button class="w-full mt-3" type="submit" size="xl">탈퇴하기</Button>
+    <Button class="w-full mt-3" size="xl" type="submit">탈퇴하기</Button>
   </form>
 </Modal>

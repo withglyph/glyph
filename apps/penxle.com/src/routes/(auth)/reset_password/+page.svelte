@@ -39,18 +39,18 @@
     <PasswordInput class="w-full font-bold" placeholder="비밀번호 확인 입력" />
   </FormField>
 
-  <Button class="w-full" type="button" size="xl" on:click={() => (open = true)}>
+  <Button class="w-full" size="xl" type="button" on:click={() => (open = true)}>
     비밀번호 재설정하기
   </Button>
 </form>
 
-<Modal bind:open size="sm">
+<Modal size="sm" bind:open>
   <svelte:fragment slot="title">비밀번호가 재설정 되었어요</svelte:fragment>
 
   <Button
     slot="action"
-    size="xl"
     class="w-full"
+    size="xl"
     on:click={() => (open = false)}
   >
     로그인하러가기
