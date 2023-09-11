@@ -14,7 +14,7 @@
     _query,
     graphql(`
       fragment SpacePublishPostPage_Header_query on Query {
-        me {
+        me @_required {
           id
 
           profile {

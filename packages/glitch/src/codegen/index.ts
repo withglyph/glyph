@@ -1,9 +1,11 @@
 import { generateClient } from './client';
 import { generateFunctions } from './functions';
 import { generateGQLCodegen } from './gql-codegen';
+import { generateInternalTypes } from './internal-types';
 import { generateMain, generateMainTypes } from './main';
+import { generatePublicTypes } from './public-types';
 import { generateSchemaIntrospection } from './schema-introspection';
-import { generateTypes } from './types';
+import { generateUtility } from './utility';
 import { writeCodegenFile } from './utils';
 import type { GlitchContext } from '../types';
 
@@ -15,7 +17,9 @@ export const codegen = async (context: GlitchContext) => {
       'gql.ts': await generateGQLCodegen(context),
       'introspection.json': generateSchemaIntrospection(context),
       'functions.d.ts': generateFunctions(context),
-      'types.d.ts': generateTypes(context),
+      'public.d.ts': generatePublicTypes(context),
+      'internal.d.ts': generateInternalTypes(context),
+      'utility.d.ts': generateUtility(),
       'client.js': generateClient(),
       'index.d.ts': generateMainTypes(),
       'index.js': generateMain(),

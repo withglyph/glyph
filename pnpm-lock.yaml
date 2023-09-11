@@ -609,6 +609,9 @@ importers:
       '@urql/core':
         specifier: ^4.1.2
         version: 4.1.2(graphql@16.8.0)
+      '@urql/devtools':
+        specifier: ^2.0.3
+        version: 2.0.3(@urql/core@4.1.2)(graphql@16.8.0)
       '@urql/exchange-graphcache':
         specifier: ^6.3.3
         version: 6.3.3(graphql@16.8.0)
@@ -6122,7 +6125,6 @@ packages:
       '@urql/core': 4.1.2(graphql@16.8.0)
       graphql: 16.8.0
       wonka: 6.3.4
-    dev: true
 
   /@urql/exchange-graphcache@6.3.3(graphql@16.8.0):
     resolution: {integrity: sha512-uD8zzNIrxQHYCSgfIwYxzEmU1Ml4nJ6NTKwrDlpKmTLJa3aYuG3AoiO138HZBK1XGJ2QzV5yQPfcZsmbVFH8Yg==}
