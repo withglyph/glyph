@@ -4,7 +4,10 @@ import dayjs from 'dayjs';
 import { FormValidationError } from '$lib/errors';
 import { updateUser } from '$lib/server/analytics';
 import { sendEmail } from '$lib/server/email';
-import { PasswordReset } from '$lib/server/email/templates';
+import {
+  PasswordReset,
+  PasswordResetRequest,
+} from '$lib/server/email/templates';
 import { google } from '$lib/server/external-api';
 import {
   createAccessToken,
@@ -330,7 +333,7 @@ builder.mutationFields((t) => ({
       await sendEmail({
         subject: 'PENXLE 비밀번호 재설정',
         recipient: user.email,
-        template: PasswordReset,
+        template: PasswordResetRequest,
         props: {
           name: user.profile.name,
           url: `${context.url.origin}/reset-password?token=${token}`, // TODO: 비밀번호 재설정 페이지 URL 확정 필요
@@ -365,7 +368,8 @@ builder.mutationFields((t) => ({
         },
       });
 
-      await db.user.update({
+      const user = await db.user.update({
+        include: { profile: true },
         where: { id: request.userId },
         data: {
           password: {
@@ -379,6 +383,15 @@ builder.mutationFields((t) => ({
 
       await db.userPasswordResetRequest.delete({
         where: { id: request.id },
+      });
+
+      await sendEmail({
+        subject: 'PENXLE 비밀번호가 재설정되었어요.',
+        recipient: user.email,
+        template: PasswordReset,
+        props: {
+          name: user.profile.name,
+        },
       });
 
       context.track('user:password-reset:reset');
@@ -412,7 +425,8 @@ builder.mutationFields((t) => ({
   updatePassword: t.withAuth({ auth: true }).boolean({
     args: { input: t.arg({ type: UpdatePasswordInput }) },
     resolve: async (_, { input }, { db, ...context }) => {
-      await db.user.update({
+      const user = await db.user.update({
+        include: { profile: true },
         where: { id: context.session.userId },
         data: {
           password: {
@@ -421,6 +435,15 @@ builder.mutationFields((t) => ({
               hash: await argon2.hash(input.password),
             },
           },
+        },
+      });
+
+      await sendEmail({
+        subject: 'PENXLE 비밀번호가 재설정되었어요.',
+        recipient: user.email,
+        template: PasswordReset,
+        props: {
+          name: user.profile.name,
         },
       });
 
