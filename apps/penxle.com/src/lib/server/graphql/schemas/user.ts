@@ -18,6 +18,7 @@ import {
   RequestPasswordResetInputSchema,
   ResetPasswordInputSchema,
   SignUpInputSchema,
+  UpdatePasswordInputSchema,
   UpdateUserProfileInputSchema,
 } from '$lib/validations';
 import { builder } from '../builder';
@@ -126,6 +127,13 @@ const UpdateUserProfileInput = builder.inputType('UpdateUserProfileInput', {
     name: t.string(),
   }),
   validate: { schema: UpdateUserProfileInputSchema },
+});
+
+const UpdatePasswordInput = builder.inputType('UpdatePasswordInput', {
+  fields: (t) => ({
+    password: t.string(),
+  }),
+  validate: { schema: UpdatePasswordInputSchema },
 });
 
 /**
@@ -398,6 +406,25 @@ builder.mutationFields((t) => ({
       context.track('profile:user:update');
 
       return profile;
+    },
+  }),
+
+  updatePassword: t.withAuth({ auth: true }).boolean({
+    args: { input: t.arg({ type: UpdatePasswordInput }) },
+    resolve: async (_, { input }, { db, ...context }) => {
+      await db.user.update({
+        where: { id: context.session.userId },
+        data: {
+          password: {
+            create: {
+              id: createId(),
+              hash: await argon2.hash(input.password),
+            },
+          },
+        },
+      });
+
+      return true;
     },
   }),
 }));
