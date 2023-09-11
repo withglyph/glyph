@@ -5,7 +5,8 @@
   import type { SpacePublishArtworkPage_PublishButton_space } from '$glitch';
   import type { Artwork } from './types';
 
-  export let _space: SpacePublishArtworkPage_PublishButton_space;
+  let _space: SpacePublishArtworkPage_PublishButton_space;
+  export { _space as $space };
   export let artworks: Artwork[];
 
   const loading = trackable();

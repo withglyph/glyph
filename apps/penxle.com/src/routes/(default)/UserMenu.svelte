@@ -8,7 +8,8 @@
   import GotoSpaceModal from './GotoSpaceModal.svelte';
   import type { DefaultLayout_UserMenu_user } from '$glitch';
 
-  export let _user: DefaultLayout_UserMenu_user;
+  let _user: DefaultLayout_UserMenu_user;
+  export { _user as $user };
 
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLDivElement;
@@ -71,7 +72,7 @@
   type="button"
   on:click={() => (open = true)}
 >
-  <Avatar class="square-8" _profile={$user.profile} />
+  <Avatar class="square-8" $profile={$user.profile} />
 </button>
 
 {#if open}
@@ -90,7 +91,7 @@
     use:portal
   >
     <a class="flex items-center gap-2 px-4 py-2" href="/me/preferences">
-      <Avatar class="square-10" _profile={$user.profile} />
+      <Avatar class="square-10" $profile={$user.profile} />
       <div class="flex flex-col">
         <div class="font-medium">
           {$user.profile.name}
@@ -135,4 +136,4 @@
   </div>
 {/if}
 
-<GotoSpaceModal _user={$user} bind:open={openGotoSpace} />
+<GotoSpaceModal {$user} bind:open={openGotoSpace} />

@@ -19,7 +19,7 @@
   <div class="flex flex-col center gap-4 w-full p-4">
     <div class="grid grid-cols-4 gap-4 w-full">
       {#each $query.sampleImages as image (image.id)}
-        <Image class="w-full aspect-1/1 rounded-xl" _image={image} />
+        <Image class="w-full aspect-1/1 rounded-xl" $image={image} />
       {/each}
     </div>
   </div>

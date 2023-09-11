@@ -7,8 +7,9 @@
     SpacePublishPostPage_Header_space,
   } from '$glitch';
 
-  export let _query: SpacePublishPostPage_Header_query;
-  export let _space: SpacePublishPostPage_Header_space;
+  let _query: SpacePublishPostPage_Header_query;
+  let _space: SpacePublishPostPage_Header_space;
+  export { _query as $query, _space as $space };
 
   $: query = fragment(
     _query,
@@ -44,6 +45,6 @@
     </div>
     <div class="grow" />
     <Button size="md">게시하기</Button>
-    <Avatar class="square-8" _profile={$query.me.profile} />
+    <Avatar class="square-8" $profile={$query.me.profile} />
   </div>
 </div>

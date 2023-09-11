@@ -9,8 +9,9 @@
   } from '$glitch';
   import type { Artwork } from './types';
 
-  export let _query: SpacePublishArtworkPage_Header_query;
-  export let _space: SpacePublishArtworkPage_Header_space;
+  let _query: SpacePublishArtworkPage_Header_query;
+  let _space: SpacePublishArtworkPage_Header_space;
+  export { _query as $query, _space as $space };
   export let artworks: Artwork[];
 
   $: query = fragment(
@@ -47,7 +48,7 @@
       {$space.name}에 새 그림 게시중...
     </div>
     <div class="grow" />
-    <PublishButton _space={$space} bind:artworks />
-    <Avatar class="square-8" _profile={$query.me.profile} />
+    <PublishButton {$space} bind:artworks />
+    <Avatar class="square-8" $profile={$query.me.profile} />
   </div>
 </div>

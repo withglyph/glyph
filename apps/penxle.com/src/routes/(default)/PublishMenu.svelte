@@ -7,7 +7,8 @@
   import PublishModal from './PublishModal.svelte';
   import type { DefaultLayout_PublishMenu_user } from '$glitch';
 
-  export let _user: DefaultLayout_PublishMenu_user;
+  let _user: DefaultLayout_PublishMenu_user;
+  export { _user as $user };
 
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLDivElement;
@@ -142,4 +143,4 @@
 {/if}
 
 <CreateSpaceModal bind:open={openCreateSpace} />
-<PublishModal _user={$user} type={publishType} bind:open={openPublish} />
+<PublishModal {$user} type={publishType} bind:open={openPublish} />

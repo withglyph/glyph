@@ -43,5 +43,5 @@
     스페이스 삭제하기
   </button>
 
-  <DeleteSpaceModal _space={$query.space} bind:open={openDeleteSpace} />
+  <DeleteSpaceModal $space={$query.space} bind:open={openDeleteSpace} />
 {/if}
