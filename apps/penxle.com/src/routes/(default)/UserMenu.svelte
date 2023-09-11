@@ -3,6 +3,7 @@
   import { tick } from 'svelte';
   import { afterNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Avatar } from '$lib/components';
   import { portal } from '$lib/svelte/actions';
   import GotoSpaceModal from './GotoSpaceModal.svelte';
@@ -127,6 +128,8 @@
       type="button"
       on:click={async () => {
         await logout();
+        mixpanel.track('user:logout');
+        mixpanel.reset();
         location.href = '/';
       }}
     >

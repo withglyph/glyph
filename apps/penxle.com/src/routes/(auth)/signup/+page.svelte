@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Helmet, Link } from '@penxle/ui';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
   import { Logo } from '$lib/components/branding';
   import {
@@ -17,12 +18,30 @@
       mutation SignUpPage_SignUp_Mutation($input: SignUpInput!) {
         signUp(input: $input) {
           id
+          email
+
+          profile {
+            id
+            name
+
+            avatar {
+              id
+              url
+            }
+          }
         }
       }
     `),
     schema: SignUpInputSchema,
     refetch: false,
-    onSuccess: () => {
+    onSuccess: (resp) => {
+      mixpanel.identify(resp.id);
+      mixpanel.track('user:signup', { method: 'email' });
+      mixpanel.people.set({
+        $email: resp.email,
+        $name: resp.profile.name,
+        $avatar: resp.profile.avatar.url,
+      });
       location.href = '/';
     },
   });

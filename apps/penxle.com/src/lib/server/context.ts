@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-import { track } from './analytics';
 import { prismaClient } from './database';
 import { decodeAccessToken } from './utils/access-token';
 import type { RequestEvent } from '@sveltejs/kit';
@@ -9,7 +8,6 @@ import type { InteractiveTransactionClient } from './database';
 type DefaultContext = {
   db: InteractiveTransactionClient;
   deviceId: string;
-  track: (eventName: string, properties?: Record<string, unknown>) => void;
 };
 
 export type AuthContext = {
@@ -42,12 +40,6 @@ export const createContext = async (
     ...context.locals,
     db,
     deviceId,
-    track: (eventName, properties) => {
-      track(context, eventName, {
-        $device_id: deviceId,
-        ...properties,
-      });
-    },
   };
 
   const accessToken = context.cookies.get('penxle-at');
@@ -70,14 +62,6 @@ export const createContext = async (
         ctx.session = {
           id: sessionId,
           userId: session.userId,
-        };
-
-        ctx.track = (eventName, properties) => {
-          track(context, eventName, {
-            $device_id: deviceId,
-            $user_id: session.userId,
-            ...properties,
-          });
         };
       }
     }

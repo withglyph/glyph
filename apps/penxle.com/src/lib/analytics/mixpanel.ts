@@ -1,0 +1,13 @@
+import Mixpanel from 'mixpanel-browser';
+import { PUBLIC_MIXPANEL_TOKEN } from '$env/static/public';
+
+export const setupMixpanel = () => {
+  Mixpanel.init(PUBLIC_MIXPANEL_TOKEN, {
+    api_host: 'https://t.pnxl.net',
+    debug: true,
+    ignore_dnt: true,
+    persistence: 'localStorage',
+  });
+};
+
+export { default as mixpanel } from 'mixpanel-browser';

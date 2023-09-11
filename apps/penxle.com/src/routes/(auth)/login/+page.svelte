@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Helmet, Link } from '@penxle/ui';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
   import { Logo } from '$lib/components/branding';
   import { FormField, PasswordInput, TextInput } from '$lib/components/forms';
@@ -17,7 +18,9 @@
     `),
     schema: LoginInputSchema,
     refetch: false,
-    onSuccess: () => {
+    onSuccess: (resp) => {
+      mixpanel.identify(resp.id);
+      mixpanel.track('user:login', { method: 'email' });
       location.href = '/';
     },
   });

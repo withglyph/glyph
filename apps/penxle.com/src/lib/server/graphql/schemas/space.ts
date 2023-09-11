@@ -117,7 +117,7 @@ builder.mutationFields((t) => ({
         where: { id: context.session.userId },
       });
 
-      const space = await db.space.create({
+      return await db.space.create({
         ...query,
         data: {
           id: createId(),
@@ -134,10 +134,6 @@ builder.mutationFields((t) => ({
           },
         },
       });
-
-      context.track('space:create');
-
-      return space;
     },
   }),
 
@@ -145,7 +141,7 @@ builder.mutationFields((t) => ({
     type: 'Space',
     args: { input: t.arg({ type: DeleteSpaceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      const space = await db.space.update({
+      return await db.space.update({
         ...query,
         where: {
           id: input.spaceId,
@@ -156,10 +152,6 @@ builder.mutationFields((t) => ({
         },
         data: { state: 'INACTIVE' },
       });
-
-      context.track('space:delete');
-
-      return space;
     },
   }),
 }));
