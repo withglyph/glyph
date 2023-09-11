@@ -1,10 +1,14 @@
+import { production } from '@penxle/lib/environment';
 import Mixpanel from 'mixpanel-browser';
 import { PUBLIC_MIXPANEL_TOKEN } from '$env/static/public';
 
 export const setupMixpanel = () => {
+  if (!production) {
+    return;
+  }
+
   Mixpanel.init(PUBLIC_MIXPANEL_TOKEN, {
     api_host: 'https://t.pnxl.net',
-    debug: true,
     ignore_dnt: true,
     persistence: 'localStorage',
   });
