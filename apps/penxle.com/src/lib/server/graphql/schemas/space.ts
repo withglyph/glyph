@@ -104,11 +104,11 @@ builder.mutationFields((t) => ({
     type: 'Space',
     args: { input: t.arg({ type: CreateSpaceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      const isSlugExists = await db.space.exists({
+      const isSlugUsed = await db.space.exists({
         where: { slug: input.slug, state: 'ACTIVE' },
       });
 
-      if (isSlugExists) {
+      if (isSlugUsed) {
         throw new FormValidationError('slug', '이미 사용중인 URL이에요.');
       }
 

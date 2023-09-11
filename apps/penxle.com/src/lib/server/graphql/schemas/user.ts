@@ -38,7 +38,7 @@ builder.prismaObject('User', {
       type: ['Space'],
       select: (_, __, nestedSelection) => ({
         spaces: {
-          select: { space: nestedSelection(true) },
+          select: { space: nestedSelection() },
           where: { space: { state: 'ACTIVE' } },
         },
       }),
