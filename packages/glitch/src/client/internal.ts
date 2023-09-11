@@ -1,25 +1,20 @@
 import { browser } from '$app/environment';
 import type { GlitchClient } from '../types';
 
-let client: GlitchClient | undefined;
+let clientPromise: Promise<GlitchClient> | undefined;
 export const getClient = async (): Promise<GlitchClient> => {
   if (!browser) {
-    return await createClient();
+    return await createClient(false);
   }
 
-  if (!client) {
-    client = await createClient();
+  if (!clientPromise) {
+    clientPromise = createClient(true);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return client!;
+  return await clientPromise;
 };
 
-const createClient = async () => {
+const createClient = async (isClient: boolean) => {
   const factory = await import('$glitch/client').then(($) => $.default);
-  return factory();
-};
-
-export const deleteClient = () => {
-  client = undefined;
+  return factory(isClient);
 };

@@ -54,12 +54,10 @@ builder.queryFields((t) => ({
     type: 'Image',
     nullable: true,
     resolve: async (query, _, __, { db }) => {
-      const count = await db.image.count();
-
       return await db.image.findFirst({
         ...query,
-        skip: random(0, count - 1),
-        take: 1,
+        where: { name: { startsWith: 'sample' } },
+        skip: random(0, 99),
         orderBy: { id: 'asc' },
       });
     },
@@ -108,7 +106,7 @@ builder.mutationFields((t) => ({
       const metadata = await getImageMetadata(buffer);
 
       const key = aws.createS3ObjectKey('images');
-      const ext = input.name.split('.').pop() ?? 'unknown';
+      const ext = input.name.split('.').pop() ?? 'unk';
       const path = `${key}.${ext}`;
 
       await aws.s3.send(
@@ -116,6 +114,7 @@ builder.mutationFields((t) => ({
           Bucket: 'penxle-data',
           Key: path,
           Body: buffer,
+          ContentType: object.ContentType ?? `image/${metadata.format}`,
         }),
       );
 

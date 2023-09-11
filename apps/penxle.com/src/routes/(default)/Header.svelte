@@ -13,7 +13,7 @@
     _query,
     graphql(`
       fragment DefaultLayout_Header_query on Query {
-        meOrNull {
+        me {
           id
           ...DefaultLayout_UserMenu_user
           ...DefaultLayout_PublishMenu_user
@@ -33,12 +33,12 @@
 
       <div class="grow" />
 
-      {#if $query.meOrNull}
+      {#if $query.me}
         <div class="ml-8 flex items-center gap-8">
           <div class="i-lc-heart square-5 text-gray-50" />
           <div class="i-lc-bell square-5 text-gray-50" />
-          <UserMenu _user={$query.meOrNull} />
-          <PublishMenu _user={$query.meOrNull} />
+          <UserMenu _user={$query.me} />
+          <PublishMenu _user={$query.me} />
         </div>
       {:else}
         <a class="ml-4 rounded px-4 py-2 font-semibold" href="/login">로그인</a>

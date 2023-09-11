@@ -43,7 +43,11 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
       };
 
       const walkValue = (node: TemplateNode) => {
-        if (node.type === 'Text') {
+        if (node.type === 'Text' && typeof node.data === 'string') {
+          if (node.data.trim().length === 0) {
+            return;
+          }
+
           classesList.push({
             value: node.data as string,
             start: node.start,
@@ -52,6 +56,10 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
         } else if (node.type === 'MustacheTag') {
           traverse(node, ({ value: node }: { value: TemplateNode }) => {
             if (node.type === 'Literal' && typeof node.value === 'string') {
+              if (node.value.trim().length === 0) {
+                return;
+              }
+
               classesList.push({
                 value: node.value,
                 start: node.start + 1,

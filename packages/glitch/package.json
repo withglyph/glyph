@@ -43,6 +43,7 @@
     "@graphql-codegen/typescript-urql-graphcache": "^2.4.5",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@urql/core": "^4.1.2",
+    "@urql/devtools": "^2.0.3",
     "@urql/exchange-graphcache": "^6.3.3",
     "fast-glob": "^3.3.1",
     "graphql": "^16.8.0",

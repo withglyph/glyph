@@ -133,17 +133,7 @@ const UpdateUserProfileInput = builder.inputType('UpdateUserProfileInput', {
  */
 
 builder.queryFields((t) => ({
-  me: t.withAuth({ auth: true }).prismaField({
-    type: 'User',
-    resolve: async (query, _, __, { db, ...context }) => {
-      return await db.user.findUniqueOrThrow({
-        ...query,
-        where: { id: context.session.userId },
-      });
-    },
-  }),
-
-  meOrNull: t.prismaField({
+  me: t.prismaField({
     type: 'User',
     nullable: true,
     resolve: async (query, _, __, { db, ...context }) => {

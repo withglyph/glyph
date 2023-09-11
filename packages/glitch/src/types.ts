@@ -49,7 +49,7 @@ export type GlitchContext = {
 
 export type GlitchClient = {
   client: Client;
-  errorHandler: (error: unknown) => Error;
+  onError: (error: unknown) => Error;
 };
 
 export type QueryStore<D> = Readable<D> & {

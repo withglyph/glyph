@@ -12,6 +12,10 @@
   `);
 </script>
 
+{#if $query.authLayoutBackgroundImage}
+  <Image class="fixed inset-0" _image={$query.authLayoutBackgroundImage} />
+{/if}
+
 <main class="flex m-auto px-4 w-full center sm:px-0">
   {#if $query.authLayoutBackgroundImage}
     <Image

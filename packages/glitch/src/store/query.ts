@@ -1,6 +1,7 @@
 import { createRequest } from '@urql/core';
 import { readable } from 'svelte/store';
 import { filter, map, pipe, subscribe, take, toPromise } from 'wonka';
+import { browser } from '$app/environment';
 import { getClient } from '../client/internal';
 import type { LoadEvent } from '@sveltejs/kit';
 import type { AnyVariables, TypedDocumentNode } from '@urql/core';
@@ -10,12 +11,17 @@ export const createQueryStore = async (
   document: TypedDocumentNode<unknown, AnyVariables>,
   variablesLoader?: (event: LoadEvent) => AnyVariables,
 ) => {
-  const { client, errorHandler } = await getClient();
+  if (browser) {
+    await event.parent();
+  }
+
+  const { client, onError } = await getClient();
 
   const variables = variablesLoader ? variablesLoader(event) : undefined;
   const request = createRequest(document, variables);
   const operation = client.createRequestOperation('query', request, {
     fetch: event.fetch,
+    meta: { source: 'load' },
     requestPolicy: 'network-only',
   });
 
@@ -32,13 +38,13 @@ export const createQueryStore = async (
   }
 
   if (result.error?.graphQLErrors.length) {
-    throw errorHandler(result.error.graphQLErrors[0]);
+    throw onError(result.error.graphQLErrors[0]);
   }
 
   const store = readable(result.data, (set) => {
     const operation = client.createRequestOperation('query', request, {
-      fetch: event.fetch,
-      requestPolicy: 'cache-first',
+      meta: { source: 'store' },
+      requestPolicy: 'cache-only',
     });
 
     const source = client.executeRequestOperation(operation);

@@ -11,7 +11,7 @@ export const createMutationStore = (
   const count = writable(0);
 
   const mutate = async (input?: AnyVariables) => {
-    const { client, errorHandler } = await getClient();
+    const { client, onError } = await getClient();
 
     const request = createRequest(document, input ? { input } : undefined);
     const operation = client.createRequestOperation('mutation', request, {
@@ -33,7 +33,7 @@ export const createMutationStore = (
     }
 
     if (result.error?.graphQLErrors.length) {
-      throw errorHandler(result.error.graphQLErrors[0]);
+      throw onError(result.error.graphQLErrors[0]);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

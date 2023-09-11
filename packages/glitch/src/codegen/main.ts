@@ -3,13 +3,13 @@ import * as AST from '../ast';
 export const generateMainTypes = (): AST.Program => {
   const program = AST.b.program([
     AST.b.exportAllDeclaration(AST.b.stringLiteral('./functions')),
-    AST.b.exportAllDeclaration(AST.b.stringLiteral('./types')),
+    AST.b.exportAllDeclaration(AST.b.stringLiteral('./public')),
     AST.b.exportNamedDeclaration(
       null,
       [
         AST.b.exportSpecifier.from({
           local: AST.b.identifier('GraphCacheConfig'),
-          exported: AST.b.identifier('Cache'),
+          exported: AST.b.identifier('GraphCacheConfig'),
         }),
       ],
       AST.b.stringLiteral('./gql'),

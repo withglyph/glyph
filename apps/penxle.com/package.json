@@ -50,6 +50,7 @@
     "@types/node": "^20.6.0",
     "@types/ua-parser-js": "^0.7.37",
     "@urql/core": "^4.1.2",
+    "@urql/devtools": "^2.0.3",
     "@urql/exchange-graphcache": "^6.3.3",
     "argon2": "^0.31.1",
     "clsx": "^2.0.0",

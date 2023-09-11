@@ -23,7 +23,7 @@ const lambda = new aws.lambda.Function('literoom', {
   runtime: 'nodejs18.x',
   architectures: ['arm64'],
 
-  memorySize: 2048,
+  memorySize: 10_240,
   timeout: 900,
 
   s3Bucket: pkg.bucket,
@@ -56,6 +56,7 @@ const objectLambdaAccessPoint = new awsnative.s3objectlambda.AccessPoint(
       ],
     },
   },
+  { replaceOnChanges: ['objectLambdaConfiguration'] },
 );
 
 new aws.iam.RolePolicy('literoom@lambda', {
