@@ -10,10 +10,10 @@ const sw = self as unknown as ServiceWorkerGlobalScope;
 const cacheKey = `cache-${version}`;
 const assets = [...build, ...files];
 const remoteAssets = [
-  'https://pnxl.net/assets/fonts/SUIT.woff2',
-  'https://pnxl.net/assets/fonts/Pretendard.woff2',
-  'https://pnxl.net/assets/fonts/RIDIBatang.woff2',
-  'https://pnxl.net/assets/fonts/FiraCode.woff2',
+  'https://c.pnxl.net/assets/fonts/SUIT.woff2',
+  'https://c.pnxl.net/assets/fonts/Pretendard.woff2',
+  'https://c.pnxl.net/assets/fonts/RIDIBatang.woff2',
+  'https://c.pnxl.net/assets/fonts/FiraCode.woff2',
 ];
 
 sw.addEventListener('install', (event) => {

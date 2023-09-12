@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'SUIT';
-  src: url('https://pnxl.net/assets/fonts/SUIT.woff2')
+  src: url('https://c.pnxl.net/assets/fonts/SUIT.woff2')
     format('woff2-variations');
   font-style: normal;
   font-weight: 100 900;
@@ -9,7 +9,7 @@
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('https://pnxl.net/assets/fonts/Pretendard.woff2')
+  src: url('https://c.pnxl.net/assets/fonts/Pretendard.woff2')
     format('woff2-variations');
   font-style: normal;
   font-weight: 100 900;
@@ -18,7 +18,7 @@
 
 @font-face {
   font-family: 'RIDIBatang';
-  src: url('https://pnxl.net/assets/fonts/RIDIBatang.woff2')
+  src: url('https://c.pnxl.net/assets/fonts/RIDIBatang.woff2')
     format('woff2-variations');
   font-style: normal;
   font-weight: 400 400;
@@ -27,7 +27,7 @@
 
 @font-face {
   font-family: 'FiraCode';
-  src: url('https://pnxl.net/assets/fonts/FiraCode.woff2')
+  src: url('https://c.pnxl.net/assets/fonts/FiraCode.woff2')
     format('woff2-variations');
   font-style: normal;
   font-weight: 100 900;
