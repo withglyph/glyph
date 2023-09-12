@@ -11,10 +11,12 @@
 
 <Helmet title="계정 탈퇴" />
 
-<div class="space-y-6">
+<div class="space-y-6 w-full max-w-200">
   <h1 class="font-extrabold text-2xl">계정을 탈퇴하시겠어요?</h1>
 
-  <div class="bg-white rounded-2xl border p-8 space-y-8 text-3.75">
+  <div
+    class="bg-white rounded-2xl border border-gray-30 py-8 px-6 sm:px-8 space-y-8 text-3.75"
+  >
     <h2 class="font-extrabold text-lg">
       탈퇴 시 삭제되는 정보들, 꼭 확인해주세요!
     </h2>
@@ -61,7 +63,9 @@
       </p>
     </div>
 
-    <div class="flex gap-5 bg-gray-5 rounded-2xl py-2.5 px-3.5 font-bold">
+    <div
+      class="flex items-center flex-wrap gap-2.5 sm:gap-5 bg-gray-5 rounded-2xl py-2.5 px-3.5 font-bold"
+    >
       <label for="email">탈퇴 계정 이메일</label>
       <input
         name="email"
@@ -74,8 +78,11 @@
   </div>
 
   <div>
-    <Checkbox name="isAgreed" class="text-sm">
-      모든 데이터를 삭제하고 탈퇴하는 것에 동의합니다
+    <Checkbox name="isAgreed" class="text-sm mb-3">
+      모든 데이터를 삭제하고 탈퇴하는 것에 동의합니다. 모든 데이터를 삭제하고
+      탈퇴하는 것에 동의합니다. 모든 데이터를 삭제하고 탈퇴하는 것에 동의합니다.
+      모든 데이터를 삭제하고 탈퇴하는 것에 동의합니다. 모든 데이터를 삭제하고
+      탈퇴하는 것에 동의합니다.
     </Checkbox>
     <Checkbox name="isAgreed" class="text-sm">
       모든 충전금, 수익금을 포기하는 것에 동의합니다.
