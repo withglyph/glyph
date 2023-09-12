@@ -132,12 +132,13 @@ model TagWikiRevision {
 }
 
 model User {
-  id        String    @id
-  email     String    @unique
-  profileId String    @unique @map("profile_id")
-  profile   Profile   @relation(fields: [profileId], references: [id])
-  state     UserState
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  id         String    @id
+  email      String    @unique
+  isVerified Boolean   @default(false) @map("is_verified")
+  profileId  String    @unique @map("profile_id")
+  profile    Profile   @relation(fields: [profileId], references: [id])
+  state      UserState
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   // 주로 쓰이는 릴레이션들
   password           UserPassword?
@@ -158,6 +159,7 @@ model UserEmailVerification {
   id        String                    @id
   userId    String                    @map("user_id")
   user      User                      @relation(fields: [userId], references: [id])
+  email     String? // 특별히 이메일이 다른 경우에만 필요(이메일 변경이라던가)
   token     String                    @unique
   type      UserEmailVerificationType
   createdAt DateTime                  @default(now()) @map("created_at") @db.Timestamptz
@@ -224,6 +226,7 @@ enum SpaceMemberRole {
 
 enum UserEmailVerificationType {
   EMAIL_VERIFY
+  EMAIL_CHANGE
   PASSWORD_RESET
 
   @@map("_user_email_verification_type")
