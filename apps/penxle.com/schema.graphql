@@ -88,6 +88,7 @@ input SignUpInput {
   isAgreed: Boolean!
   name: String!
   password: String!
+  passwordConfirm: String!
 }
 
 type Space {

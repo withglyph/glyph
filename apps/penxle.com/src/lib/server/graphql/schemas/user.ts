@@ -94,6 +94,7 @@ const SignUpInput = builder.inputType('SignUpInput', {
   fields: (t) => ({
     email: t.string(),
     password: t.string(),
+    passwordConfirm: t.string(),
     name: t.string(),
     isAgreed: t.boolean(),
   }),
