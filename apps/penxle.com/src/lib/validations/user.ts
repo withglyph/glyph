@@ -31,7 +31,11 @@ export const UpdateUserProfileInputSchema = z.object({
   name,
 });
 
-export const EmailInputSchema = z.object({
+export const RequestPasswordResetInputSchema = z.object({
+  email,
+});
+
+export const requestEmailUpdateInputSchema = z.object({
   email,
 });
 
@@ -41,5 +45,6 @@ export const ResetPasswordInputSchema = z.object({
 });
 
 export const UpdatePasswordInputSchema = z.object({
-  password,
+  oldPassword: password,
+  newPassword: password,
 });

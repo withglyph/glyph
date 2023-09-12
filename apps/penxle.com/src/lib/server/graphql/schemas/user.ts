@@ -19,8 +19,9 @@ import {
 } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import {
-  EmailInputSchema,
   LoginInputSchema,
+  requestEmailUpdateInputSchema,
+  RequestPasswordResetInputSchema,
   ResetPasswordInputSchema,
   SignUpInputSchema,
   UpdatePasswordInputSchema,
@@ -110,11 +111,21 @@ const IssueSSOAuthorizationUrlInput = builder.inputType(
   },
 );
 
-const EmailInput = builder.inputType('EmailInput', {
+const RequestPasswordResetInput = builder.inputType(
+  'RequestPasswordResetInput',
+  {
+    fields: (t) => ({
+      email: t.string(),
+    }),
+    validate: { schema: RequestPasswordResetInputSchema },
+  },
+);
+
+const requestEmailUpdateInput = builder.inputType('requestEmailUpdateInput', {
   fields: (t) => ({
     email: t.string(),
   }),
-  validate: { schema: EmailInputSchema },
+  validate: { schema: requestEmailUpdateInputSchema },
 });
 
 const ResetPasswordInput = builder.inputType('ResetPasswordInput', {
@@ -125,7 +136,7 @@ const ResetPasswordInput = builder.inputType('ResetPasswordInput', {
   validate: { schema: ResetPasswordInputSchema },
 });
 
-const TokenInput = builder.inputType('TokenInput', {
+const VerifyEmailInput = builder.inputType('TokenInput', {
   fields: (t) => ({
     token: t.string(),
   }),
@@ -140,7 +151,8 @@ const UpdateUserProfileInput = builder.inputType('UpdateUserProfileInput', {
 
 const UpdatePasswordInput = builder.inputType('UpdatePasswordInput', {
   fields: (t) => ({
-    password: t.string(),
+    oldPassword: t.string(),
+    newPassword: t.string(),
   }),
   validate: { schema: UpdatePasswordInputSchema },
 });
@@ -333,7 +345,7 @@ builder.mutationFields((t) => ({
 
   requestPasswordReset: t.prismaField({
     type: 'UserEmailVerification',
-    args: { input: t.arg({ type: EmailInput }) },
+    args: { input: t.arg({ type: RequestPasswordResetInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const user = await db.user.findUnique({
         select: {
@@ -377,9 +389,10 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  resetPassword: t.boolean({
+  resetPassword: t.prismaField({
+    type: 'User',
     args: { input: t.arg({ type: ResetPasswordInput }) },
-    resolve: async (_, { input }, { db }) => {
+    resolve: async (query, _, { input }, { db }) => {
       const request = await db.userEmailVerification.findUniqueOrThrow({
         where: {
           token: input.token,
@@ -391,7 +404,14 @@ builder.mutationFields((t) => ({
       });
 
       const user = await db.user.update({
-        include: { profile: true },
+        ...query,
+        include: {
+          profile: {
+            select: {
+              name: true,
+            },
+          },
+        },
         where: { id: request.userId },
         data: {
           password: {
@@ -416,13 +436,13 @@ builder.mutationFields((t) => ({
         },
       });
 
-      return true;
+      return user;
     },
   }),
 
   requestEmailUpdate: t.withAuth({ auth: true }).prismaField({
     type: 'UserEmailVerification',
-    args: { input: t.arg({ type: EmailInput }) },
+    args: { input: t.arg({ type: requestEmailUpdateInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const isEmailUsed = await db.user.exists({
         where: { email: input.email.toLowerCase() },
@@ -471,9 +491,10 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  verifyEmail: t.withAuth({ auth: true }).boolean({
-    args: { input: t.arg({ type: TokenInput }) },
-    resolve: async (_, { input }, { db }) => {
+  verifyEmail: t.withAuth({ auth: true }).prismaField({
+    type: 'User',
+    args: { input: t.arg({ type: VerifyEmailInput }) },
+    resolve: async (query, _, { input }, { db }) => {
       const request = await db.userEmailVerification.findUniqueOrThrow({
         select: {
           id: true,
@@ -523,18 +544,17 @@ builder.mutationFields((t) => ({
         });
       }
 
-      await db.user.update({
+      await db.userEmailVerification.delete({
+        where: { id: request.id },
+      });
+
+      return await db.user.update({
+        ...query,
         where: { id: request.user.id },
         data: {
           isVerified: true,
         },
       });
-
-      await db.userEmailVerification.delete({
-        where: { id: request.id },
-      });
-
-      return true;
     },
   }),
 
@@ -558,17 +578,44 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  updatePassword: t.withAuth({ auth: true }).boolean({
+  updatePassword: t.withAuth({ auth: true }).prismaField({
+    type: 'User',
     args: { input: t.arg({ type: UpdatePasswordInput }) },
-    resolve: async (_, { input }, { db, ...context }) => {
-      const user = await db.user.update({
-        include: { profile: true },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const user = await db.user.findUniqueOrThrow({
+        ...query,
+        include: {
+          profile: {
+            select: {
+              name: true,
+            },
+          },
+          password: {
+            select: {
+              id: true,
+              hash: true,
+            },
+          },
+        },
+        where: { id: context.session.userId },
+      });
+
+      if (user.password) {
+        if (!(await argon2.verify(user.password.hash, input.oldPassword))) {
+          throw new FormValidationError('oldPassword', '잘못된 비밀번호에요.');
+        }
+        await db.userPassword.delete({
+          where: { id: user.password.id },
+        });
+      }
+
+      await db.user.update({
         where: { id: context.session.userId },
         data: {
           password: {
             create: {
               id: createId(),
-              hash: await argon2.hash(input.password),
+              hash: await argon2.hash(input.newPassword),
             },
           },
         },
@@ -583,7 +630,7 @@ builder.mutationFields((t) => ({
         },
       });
 
-      return true;
+      return user;
     },
   }),
 }));

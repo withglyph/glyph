@@ -12,10 +12,6 @@ input DeleteSpaceInput {
   spaceId: ID!
 }
 
-input EmailInput {
-  email: String!
-}
-
 input FinalizeImageUploadInput {
   key: String!
   name: String!
@@ -49,13 +45,13 @@ type Mutation {
   login(input: LoginInput!): User!
   logout: User!
   prepareImageUpload: PrepareImageUploadPayload!
-  requestEmailUpdate(input: EmailInput!): UserEmailVerification!
-  requestPasswordReset(input: EmailInput!): UserEmailVerification!
-  resetPassword(input: ResetPasswordInput!): Boolean!
+  requestEmailUpdate(input: requestEmailUpdateInput!): UserEmailVerification!
+  requestPasswordReset(input: RequestPasswordResetInput!): UserEmailVerification!
+  resetPassword(input: ResetPasswordInput!): User!
   signUp(input: SignUpInput!): User!
-  updatePassword(input: UpdatePasswordInput!): Boolean!
+  updatePassword(input: UpdatePasswordInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
-  verifyEmail(input: TokenInput!): Boolean!
+  verifyEmail(input: TokenInput!): User!
 }
 
 type PrepareImageUploadPayload {
@@ -76,6 +72,10 @@ type Query {
   sampleImage: Image!
   sampleImages: [Image!]!
   space(slug: String!): Space!
+}
+
+input RequestPasswordResetInput {
+  email: String!
 }
 
 input ResetPasswordInput {
@@ -116,7 +116,8 @@ input TokenInput {
 }
 
 input UpdatePasswordInput {
-  password: String!
+  newPassword: String!
+  oldPassword: String!
 }
 
 input UpdateUserProfileInput {
@@ -137,4 +138,8 @@ type UserEmailVerification {
 enum UserSSOProvider {
   GOOGLE
   NAVER
+}
+
+input requestEmailUpdateInput {
+  email: String!
 }
