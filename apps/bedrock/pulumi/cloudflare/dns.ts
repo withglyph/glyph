@@ -200,10 +200,10 @@ new cloudflare.Record('pool.db.pnxl.co', {
   comment: 'Amazon EC2',
 });
 
-new cloudflare.Record('pnxl.net', {
+new cloudflare.Record('c.pnxl.net', {
   zoneId: zones.pnxl_net.id,
   type: 'CNAME',
-  name: 'pnxl.net',
+  name: 'c.pnxl.net',
   value: 'penxle-data.b-cdn.net',
   comment: 'bunny.net',
 });
