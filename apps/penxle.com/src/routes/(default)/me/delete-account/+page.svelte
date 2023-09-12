@@ -90,12 +90,11 @@
       <Button
         class="w-full"
         size="xl"
-        type="button"
         on:click={() => (confirmModalOpen = true)}
       >
         모든 과정을 동의하고 탈퇴합니다
       </Button>
-      <Button class="w-full mt-3" color="tertiary" size="xl" type="button">
+      <Button class="w-full mt-3" color="tertiary" size="xl">
         탈퇴를 취소할래요
       </Button>
     </div>
