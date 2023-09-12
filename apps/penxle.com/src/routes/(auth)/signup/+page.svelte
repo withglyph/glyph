@@ -13,6 +13,11 @@
   import { SignUpInputSchema } from '$lib/validations';
 
   let value: HTMLInputElement['value'];
+  let isAgreed: boolean;
+  let isAgreed2: boolean;
+  let allAgreed: boolean;
+
+  $: allAgreed = isAgreed && isAgreed2;
 
   const { form } = createMutationForm({
     mutation: graphql(`
@@ -46,6 +51,13 @@
       location.href = '/';
     },
   });
+
+  const toggleAll = () => {
+    allAgreed = !allAgreed;
+
+    isAgreed = allAgreed;
+    isAgreed2 = allAgreed;
+  };
 </script>
 
 <Helmet title="새 계정 만들기" />
@@ -82,13 +94,15 @@
   </div>
 
   <section class="my-4 space-y-3">
-    <Checkbox class="font-bold">약관 전체 동의</Checkbox>
-    <Checkbox name="isAgreed" class="text-sm">
+    <Checkbox class="font-bold" on:change={toggleAll} bind:checked={allAgreed}>
+      약관 전체 동의
+    </Checkbox>
+    <Checkbox name="isAgreed" class="text-sm" bind:checked={isAgreed}>
       <Link href="/" underline>이용약관</Link> 및 <Link href="/" underline>
         개인정보 수집 이용
       </Link> 동의(필수)
     </Checkbox>
-    <Checkbox name="isAgreed2" class="text-sm">
+    <Checkbox name="isAgreed2" class="text-sm" bind:checked={isAgreed2}>
       마케팅 정보 수집 동의(선택)
     </Checkbox>
   </section>
