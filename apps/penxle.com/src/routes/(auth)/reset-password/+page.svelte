@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
   import { FormField, PasswordInput } from '$lib/components/forms';
@@ -51,7 +52,7 @@
     slot="action"
     class="w-full"
     size="xl"
-    on:click={() => (open = false)}
+    on:click={() => goto('/login')}
   >
     로그인하러가기
   </Button>
