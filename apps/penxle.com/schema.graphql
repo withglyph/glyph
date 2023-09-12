@@ -86,8 +86,10 @@ input ResetPasswordInput {
 input SignUpInput {
   email: String!
   isAgreed: Boolean!
+  isMarketingAgreed: Boolean!
   name: String!
   password: String!
+  passwordConfirm: String!
 }
 
 type Space {

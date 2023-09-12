@@ -88,7 +88,7 @@
         개인정보 수집 이용
       </Link> 동의(필수)
     </Checkbox>
-    <Checkbox name="isAgreed" class="text-sm">
+    <Checkbox name="isAgreed2" class="text-sm">
       마케팅 정보 수집 동의(선택)
     </Checkbox>
   </section>

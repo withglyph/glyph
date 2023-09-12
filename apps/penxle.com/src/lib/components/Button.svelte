@@ -1,21 +1,39 @@
-<script lang="ts">
+<script generics="T extends 'button' | 'submit' | 'link' = 'button'" lang="ts">
   import { RingSpinner } from '@penxle/ui/spinners';
   import { clsx } from 'clsx';
   import { getFormContext } from '$lib/form';
 
-  let _class: string | undefined = undefined;
-  let role: 'button' | 'a';
+  type $$Props = {
+    type?: T;
+    class?: string;
+    disabled?: boolean;
+    loading?: boolean;
+    color?: 'primary' | 'secondary' | 'tertiary';
+    variant?: 'text' | 'outlined' | 'contained';
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  } & (T extends 'link' ? { href: string } : unknown);
 
-  export let type: 'button' | 'submit' = 'button';
-  export let href: string | undefined = undefined;
+  type $$Events = T extends 'link' ? unknown : { click: MouseEvent };
+
+  export let type: 'button' | 'submit' | 'link' = 'button';
+
+  let _class: string | undefined = undefined;
+  export { _class as class };
+
   export let disabled = false;
   export let loading = false;
   export let color: 'primary' | 'secondary' | 'tertiary' = 'secondary';
   export let variant: 'text' | 'outlined' | 'contained' = 'contained';
-  export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  export { _class as class };
+  export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
 
-  role = href ? 'a' : 'button';
+  export let href: string | undefined = undefined;
+
+  let element: 'a' | 'button';
+  $: element = type === 'link' ? 'a' : 'button';
+  $: props =
+    type === 'link'
+      ? { href: disabled || showSpinner ? undefined : href }
+      : { type, disabled: disabled || showSpinner };
 
   const { form } = getFormContext();
   const { isSubmitting } = form ?? {};
@@ -24,7 +42,7 @@
 </script>
 
 <svelte:element
-  this={role}
+  this={element}
   class={clsx(
     'relative flex center px-4 py-2 font-bold leading-none transition duration-300 text-center text-3.25',
     disabled && 'text-gray-40 bg-gray-30',
@@ -57,11 +75,10 @@
       'text-gray-90 bg-transparent border border-gray-30 hover:bg-gray-10 active:(bg-gray-10 border-gray-90)',
     _class,
   )}
-  disabled={disabled || showSpinner}
-  {href}
-  {role}
-  {type}
+  role="button"
+  tabindex="-1"
   on:click
+  {...props}
 >
   {#if showSpinner}
     <div class="absolute inset-0 flex center px-4 py-2">

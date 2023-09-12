@@ -38,5 +38,5 @@
     </FormField>
   </form>
 
-  <Button class="w-full" href="/" size="xl">홈으로 가기</Button>
+  <Button class="w-full" href="/" size="xl" type="link">홈으로 가기</Button>
 </Modal>

@@ -47,7 +47,7 @@
 <Modal size="sm" bind:open>
   <svelte:fragment slot="title">비밀번호가 재설정 되었어요</svelte:fragment>
 
-  <Button slot="action" class="w-full" href="/login" size="xl">
+  <Button slot="action" class="w-full" href="/login" size="xl" type="link">
     로그인하러가기
   </Button>
 </Modal>

@@ -65,6 +65,7 @@
   color="tertiary"
   href="/signup"
   size="xl"
+  type="link"
 >
   회원가입
 </Button>
@@ -73,6 +74,7 @@
   class="w-full my-4 text-gray-50"
   href="/user/reset-password"
   size="lg"
+  type="link"
   variant="text"
 >
   계정을 찾을 수 없나요?
