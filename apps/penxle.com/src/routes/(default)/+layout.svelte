@@ -12,10 +12,8 @@
 
 <Header {$query} />
 
-<main class="grow p-4">
-  <div class="mx-auto max-w-screen-lg">
-    <slot />
-  </div>
+<main class="flex grow center m-auto w-full bg-gray-5">
+  <slot />
 </main>
 
 <Footer />

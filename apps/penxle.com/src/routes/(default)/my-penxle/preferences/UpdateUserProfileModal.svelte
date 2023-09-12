@@ -55,7 +55,9 @@
         <div class="flex items-center gap-4">
           <Avatar class="square-24" {$profile} />
           <div class="flex flex-col items-center gap-2">
-            <Button class="text-sm" color="brand">새 아바타 업로드</Button>
+            <Button class="text-sm" color="primary" size="md">
+              새 아바타 업로드
+            </Button>
             <button class="text-sm text-gray-50" type="button">
               아바타 제거
             </button>
@@ -75,7 +77,12 @@
     </div>
   </form>
 
-  <Button slot="action" loading={$isSubmitting} on:click={handleSubmit}>
+  <Button
+    slot="action"
+    loading={$isSubmitting}
+    size="md"
+    on:click={handleSubmit}
+  >
     수정하기
   </Button>
 </Modal>

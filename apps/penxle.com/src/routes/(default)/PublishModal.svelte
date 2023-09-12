@@ -34,7 +34,7 @@
   <div class="flex flex-col">
     {#each $profile.spaces as space (space.id)}
       <a
-        class="group flex items-center gap-2 px-4 py-2 text-left hover:bg-gray-10"
+        class="group flex items-center gap-2 text-left hover:bg-gray-10"
         href={`/${space.slug}/publish/${type}`}
       >
         <div class="flex flex-col">
@@ -49,7 +49,7 @@
     {/each}
 
     <button
-      class="flex items-center gap-2 px-4 py-2 hover:bg-gray-10"
+      class="flex items-center gap-2 pt-2 hover:bg-gray-10"
       type="button"
       on:click={() => {
         open = false;
@@ -65,7 +65,7 @@
     </button>
   </div>
 
-  <Button slot="action" on:click={() => (open = false)}>닫기</Button>
+  <Button slot="action" size="md" on:click={() => (open = false)}>닫기</Button>
 </Modal>
 
 <CreateSpaceModal bind:open={openCreateSpace} />
