@@ -12,6 +12,8 @@
   import { createMutationForm } from '$lib/form';
   import { SignUpInputSchema } from '$lib/validations';
 
+  let value: HTMLInputElement['value'];
+
   const { form } = createMutationForm({
     mutation: graphql(`
       mutation SignUpPage_SignUp_Mutation($input: SignUpInput!) {
@@ -61,8 +63,9 @@
         class="w-full font-bold"
         maxlength={10}
         placeholder="닉네임 입력"
+        bind:value
       >
-        <span slot="right-icon">0 / 10</span>
+        <span slot="right-icon">{value ? value.length : 0} / 10</span>
       </TextInput>
     </FormField>
 
@@ -79,7 +82,7 @@
   </div>
 
   <section class="my-4 space-y-3">
-    <Checkbox name="isAgreed" class="font-bold">약관 전체 동의</Checkbox>
+    <Checkbox class="font-bold">약관 전체 동의</Checkbox>
     <Checkbox name="isAgreed" class="text-sm">
       <Link href="/" underline>이용약관</Link> 및 <Link href="/" underline>
         개인정보 수집 이용

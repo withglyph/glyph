@@ -1,6 +1,7 @@
 <script lang="ts">
   import { graphql } from '$glitch';
   import { Image } from '$lib/components';
+  import Header from './Header.svelte';
 
   $: query = graphql(`
     query AuthLayout_Query {
@@ -15,6 +16,8 @@
 {#if $query.authLayoutBackgroundImage}
   <Image class="fixed inset-0" $image={$query.authLayoutBackgroundImage} />
 {/if}
+
+<Header />
 
 <main class="flex m-auto px-4 w-full center sm:px-0">
   <div
