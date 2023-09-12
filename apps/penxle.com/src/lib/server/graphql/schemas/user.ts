@@ -423,6 +423,14 @@ builder.mutationFields((t) => ({
     type: 'UserEmailVerification',
     args: { input: t.arg({ type: EmailInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
+      const isEmailUsed = await db.user.exists({
+        where: { email: input.email.toLowerCase() },
+      });
+
+      if (isEmailUsed) {
+        throw new FormValidationError('email', '이미 사용중인 이메일이에요.');
+      }
+
       const user = await db.user.findUniqueOrThrow({
         select: {
           id: true,
@@ -497,7 +505,6 @@ builder.mutationFields((t) => ({
         const changeEmail = request.email!.toLowerCase();
 
         await db.user.update({
-          include: { profile: true },
           where: { id: request.user.id },
           data: {
             email: changeEmail,
