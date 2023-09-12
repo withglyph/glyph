@@ -150,7 +150,8 @@ const UpdateUserProfileInput = builder.inputType('UpdateUserProfileInput', {
 
 const UpdatePasswordInput = builder.inputType('UpdatePasswordInput', {
   fields: (t) => ({
-    password: t.string(),
+    oldPassword: t.string(),
+    newPassword: t.string(),
   }),
   validate: { schema: UpdatePasswordInputSchema },
 });
@@ -580,7 +581,7 @@ builder.mutationFields((t) => ({
     type: 'User',
     args: { input: t.arg({ type: UpdatePasswordInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      const user = await db.user.update({
+      const user = await db.user.findUniqueOrThrow({
         ...query,
         include: {
           profile: {
@@ -588,13 +589,32 @@ builder.mutationFields((t) => ({
               name: true,
             },
           },
+          password: {
+            select: {
+              id: true,
+              hash: true,
+            },
+          },
         },
+        where: { id: context.session.userId },
+      });
+
+      if (user.password) {
+        if (!(await argon2.verify(user.password.hash, input.oldPassword))) {
+          throw new FormValidationError('oldPassword', '잘못된 비밀번호에요.');
+        }
+        await db.userPassword.delete({
+          where: { id: user.password.id },
+        });
+      }
+
+      await db.user.update({
         where: { id: context.session.userId },
         data: {
           password: {
             create: {
               id: createId(),
-              hash: await argon2.hash(input.password),
+              hash: await argon2.hash(input.newPassword),
             },
           },
         },
