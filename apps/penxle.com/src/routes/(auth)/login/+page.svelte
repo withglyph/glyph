@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import { goto } from '$app/navigation';
   import Wordmark from '$assets/branding/wordmark.svg?component';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -62,19 +61,19 @@
 <Button
   class="w-full mt-3 max-w-87.5"
   color="tertiary"
+  href="/signup"
   size="xl"
-  type="button"
-  on:click={() => goto('/signup')}
+  type="link"
 >
   회원가입
 </Button>
 
 <Button
   class="w-full my-4 text-gray-50"
+  href="/user/reset-password"
   size="lg"
-  type="button"
+  type="link"
   variant="text"
-  on:click={() => goto('/find-account')}
 >
   계정을 찾을 수 없나요?
 </Button>
