@@ -387,9 +387,10 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  resetPassword: t.boolean({
+  resetPassword: t.prismaField({
+    type: 'User',
     args: { input: t.arg({ type: ResetPasswordInput }) },
-    resolve: async (_, { input }, { db }) => {
+    resolve: async (query, _, { input }, { db }) => {
       const request = await db.userEmailVerification.findUniqueOrThrow({
         where: {
           token: input.token,
@@ -401,7 +402,14 @@ builder.mutationFields((t) => ({
       });
 
       const user = await db.user.update({
-        include: { profile: true },
+        ...query,
+        include: {
+          profile: {
+            select: {
+              name: true,
+            },
+          },
+        },
         where: { id: request.userId },
         data: {
           password: {
@@ -426,7 +434,7 @@ builder.mutationFields((t) => ({
         },
       });
 
-      return true;
+      return user;
     },
   }),
 
@@ -481,9 +489,10 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  verifyEmail: t.withAuth({ auth: true }).boolean({
+  verifyEmail: t.withAuth({ auth: true }).prismaField({
+    type: 'User',
     args: { input: t.arg({ type: VerifyEmailInput }) },
-    resolve: async (_, { input }, { db }) => {
+    resolve: async (query, _, { input }, { db }) => {
       const request = await db.userEmailVerification.findUniqueOrThrow({
         select: {
           id: true,
@@ -533,18 +542,17 @@ builder.mutationFields((t) => ({
         });
       }
 
-      await db.user.update({
+      await db.userEmailVerification.delete({
+        where: { id: request.id },
+      });
+
+      return await db.user.update({
+        ...query,
         where: { id: request.user.id },
         data: {
           isVerified: true,
         },
       });
-
-      await db.userEmailVerification.delete({
-        where: { id: request.id },
-      });
-
-      return true;
     },
   }),
 
@@ -568,11 +576,19 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  updatePassword: t.withAuth({ auth: true }).boolean({
+  updatePassword: t.withAuth({ auth: true }).prismaField({
+    type: 'User',
     args: { input: t.arg({ type: UpdatePasswordInput }) },
-    resolve: async (_, { input }, { db, ...context }) => {
+    resolve: async (query, _, { input }, { db, ...context }) => {
       const user = await db.user.update({
-        include: { profile: true },
+        ...query,
+        include: {
+          profile: {
+            select: {
+              name: true,
+            },
+          },
+        },
         where: { id: context.session.userId },
         data: {
           password: {
@@ -593,7 +609,7 @@ builder.mutationFields((t) => ({
         },
       });
 
-      return true;
+      return user;
     },
   }),
 }));
