@@ -61,7 +61,7 @@ builder.prismaObject('Profile', {
   }),
 });
 
-builder.prismaObject('UserPasswordResetRequest', {
+builder.prismaObject('UserEmailVerification', {
   select: { id: true },
   fields: (t) => ({
     expiresAt: t.expose('expiresAt', {
@@ -310,7 +310,7 @@ builder.mutationFields((t) => ({
   }),
 
   requestPasswordReset: t.prismaField({
-    type: 'UserPasswordResetRequest',
+    type: 'UserEmailVerification',
     args: { input: t.arg({ type: RequestPasswordResetInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const user = await db.user.findUnique({
@@ -340,11 +340,12 @@ builder.mutationFields((t) => ({
         },
       });
 
-      const request = await db.userPasswordResetRequest.create({
+      const request = await db.userEmailVerification.create({
         ...query,
         data: {
           id: createId(),
           userId: user.id,
+          type: 'PASSWORD_RESET',
           token,
           expiresAt: dayjs().add(1, 'hour').toDate(),
         },
@@ -359,9 +360,10 @@ builder.mutationFields((t) => ({
   resetPassword: t.boolean({
     args: { input: t.arg({ type: ResetPasswordInput }) },
     resolve: async (_, { input }, { db, ...context }) => {
-      const request = await db.userPasswordResetRequest.findUniqueOrThrow({
+      const request = await db.userEmailVerification.findUniqueOrThrow({
         where: {
           token: input.token,
+          type: 'PASSWORD_RESET',
           expiresAt: {
             gte: new Date(),
           },
@@ -381,7 +383,7 @@ builder.mutationFields((t) => ({
         },
       });
 
-      await db.userPasswordResetRequest.delete({
+      await db.userEmailVerification.delete({
         where: { id: request.id },
       });
 
