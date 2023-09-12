@@ -2,6 +2,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
@@ -23,8 +24,9 @@
     `),
     schema: CreateSpaceInputSchema,
     onSuccess: async ({ slug }) => {
-      await goto(`/${slug}`);
+      mixpanel.track('space:create');
       toast.success('스페이스를 만들었어요.');
+      await goto(`/${slug}`);
     },
   });
 </script>

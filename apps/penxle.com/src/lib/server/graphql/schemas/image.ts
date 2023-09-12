@@ -18,9 +18,13 @@ export const Image = builder.prismaObject('Image', {
   select: { id: true },
   fields: (t) => ({
     id: t.exposeID('id'),
-    path: t.exposeString('path'),
-    color: t.exposeString('color'),
     placeholder: t.exposeString('placeholder'),
+
+    url: t.field({
+      type: 'String',
+      select: { path: true },
+      resolve: (parent) => `https://pnxl.net/${parent.path}`,
+    }),
   }),
 });
 

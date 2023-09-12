@@ -17,7 +17,7 @@ const createZone = (domain: string) => {
     settings: {
       alwaysUseHttps: 'on',
       automaticHttpsRewrites: 'on',
-      ssl: 'strict',
+      ssl: 'flexible',
 
       earlyHints: 'on',
       zeroRtt: 'on',

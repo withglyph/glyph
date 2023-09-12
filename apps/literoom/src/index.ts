@@ -18,7 +18,7 @@ sharp.concurrency(4);
 export const handler = async (event: Event) => {
   const url = new URL(event.userRequest.url);
 
-  const size = Number(url.searchParams.get('s'));
+  const size = Number(url.searchParams.get('s') ?? 256);
   const quality = Number(url.searchParams.get('q') ?? 75);
 
   if (size <= 0 || quality <= 0 || quality > 100) {
