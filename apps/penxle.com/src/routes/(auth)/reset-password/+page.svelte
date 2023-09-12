@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
   import { FormField, PasswordInput } from '$lib/components/forms';
@@ -48,12 +47,7 @@
 <Modal size="sm" bind:open>
   <svelte:fragment slot="title">비밀번호가 재설정 되었어요</svelte:fragment>
 
-  <Button
-    slot="action"
-    class="w-full"
-    size="xl"
-    on:click={() => goto('/login')}
-  >
+  <Button slot="action" class="w-full" href="/login" size="xl">
     로그인하러가기
   </Button>
 </Modal>

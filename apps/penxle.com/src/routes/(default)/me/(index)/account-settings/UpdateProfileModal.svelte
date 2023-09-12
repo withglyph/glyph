@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
@@ -39,7 +38,5 @@
     </FormField>
   </form>
 
-  <Button class="w-full" size="xl" on:click={() => goto('/')}>
-    홈으로 가기
-  </Button>
+  <Button class="w-full" href="/" size="xl">홈으로 가기</Button>
 </Modal>

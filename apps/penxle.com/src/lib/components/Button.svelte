@@ -3,14 +3,19 @@
   import { clsx } from 'clsx';
   import { getFormContext } from '$lib/form';
 
-  export let type: 'button' | 'submit' = 'button';
   let _class: string | undefined = undefined;
-  export { _class as class };
+  let role: 'button' | 'a';
+
+  export let type: 'button' | 'submit' = 'button';
+  export let href: string | undefined = undefined;
   export let disabled = false;
   export let loading = false;
   export let color: 'primary' | 'secondary' | 'tertiary' = 'secondary';
   export let variant: 'text' | 'outlined' | 'contained' = 'contained';
   export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  export { _class as class };
+
+  role = href ? 'a' : 'button';
 
   const { form } = getFormContext();
   const { isSubmitting } = form ?? {};
@@ -18,7 +23,8 @@
   $: showSpinner = !!(loading || (type === 'submit' && $isSubmitting));
 </script>
 
-<button
+<svelte:element
+  this={role}
   class={clsx(
     'relative flex center px-4 py-2 font-bold leading-none transition duration-300 text-center text-3.25',
     disabled && 'text-gray-40 bg-gray-30',
@@ -52,6 +58,8 @@
     _class,
   )}
   disabled={disabled || showSpinner}
+  {href}
+  {role}
   {type}
   on:click
 >
@@ -63,4 +71,4 @@
   <div class={clsx('contents', showSpinner && 'invisible')}>
     <slot />
   </div>
-</button>
+</svelte:element>
