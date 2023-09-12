@@ -86,12 +86,12 @@ export class Site extends pulumi.ComponentResource {
 
         memorySize: args.resources?.memory ?? 256,
         timeout: 59,
+
         reservedConcurrentExecutions: args.concurrency?.reserved ?? -1,
 
         s3Bucket: pkg.bucket,
         s3Key: pkg.key,
         handler: 'handler.handler',
-
         sourceCodeHash: pkg.metadata.Hash,
 
         publish: true,
@@ -100,6 +100,10 @@ export class Site extends pulumi.ComponentResource {
           variables: {
             HTTP_HOST: domain,
           },
+        },
+
+        tracingConfig: {
+          mode: 'Active',
         },
 
         vpcConfig: {
