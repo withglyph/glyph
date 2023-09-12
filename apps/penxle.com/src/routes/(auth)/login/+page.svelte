@@ -2,6 +2,8 @@
   import { Helmet } from '@penxle/ui';
   import { goto } from '$app/navigation';
   import Wordmark from '$assets/branding/wordmark.svg?component';
+  import Google from '$assets/icons/google.svg?component';
+  import Naver from '$assets/icons/naver.svg?component';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
@@ -78,3 +80,13 @@
 >
   계정을 찾을 수 없나요?
 </Button>
+
+<div class="flex gap-6">
+  <button class="flex center bg-gray-10 square-13.5 rounded-20" type="button">
+    <Google />
+  </button>
+
+  <button class="flex center bg-gray-10 square-13.5 rounded-20" type="button">
+    <Naver />
+  </button>
+</div>
