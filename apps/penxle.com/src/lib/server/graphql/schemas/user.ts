@@ -19,8 +19,9 @@ import {
 } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import {
-  EmailInputSchema,
   LoginInputSchema,
+  requestEmailUpdateInputSchema,
+  RequestPasswordResetInputSchema,
   ResetPasswordInputSchema,
   SignUpInputSchema,
   UpdatePasswordInputSchema,
@@ -109,11 +110,21 @@ const IssueSSOAuthorizationUrlInput = builder.inputType(
   },
 );
 
-const EmailInput = builder.inputType('EmailInput', {
+const RequestPasswordResetInput = builder.inputType(
+  'RequestPasswordResetInput',
+  {
+    fields: (t) => ({
+      email: t.string(),
+    }),
+    validate: { schema: RequestPasswordResetInputSchema },
+  },
+);
+
+const requestEmailUpdateInput = builder.inputType('requestEmailUpdateInput', {
   fields: (t) => ({
     email: t.string(),
   }),
-  validate: { schema: EmailInputSchema },
+  validate: { schema: requestEmailUpdateInputSchema },
 });
 
 const ResetPasswordInput = builder.inputType('ResetPasswordInput', {
@@ -124,7 +135,7 @@ const ResetPasswordInput = builder.inputType('ResetPasswordInput', {
   validate: { schema: ResetPasswordInputSchema },
 });
 
-const TokenInput = builder.inputType('TokenInput', {
+const VerifyEmailInput = builder.inputType('TokenInput', {
   fields: (t) => ({
     token: t.string(),
   }),
@@ -332,7 +343,7 @@ builder.mutationFields((t) => ({
 
   requestPasswordReset: t.prismaField({
     type: 'UserEmailVerification',
-    args: { input: t.arg({ type: EmailInput }) },
+    args: { input: t.arg({ type: RequestPasswordResetInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const user = await db.user.findUnique({
         select: {
@@ -421,7 +432,7 @@ builder.mutationFields((t) => ({
 
   requestEmailUpdate: t.withAuth({ auth: true }).prismaField({
     type: 'UserEmailVerification',
-    args: { input: t.arg({ type: EmailInput }) },
+    args: { input: t.arg({ type: requestEmailUpdateInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const isEmailUsed = await db.user.exists({
         where: { email: input.email.toLowerCase() },
@@ -471,7 +482,7 @@ builder.mutationFields((t) => ({
   }),
 
   verifyEmail: t.withAuth({ auth: true }).boolean({
-    args: { input: t.arg({ type: TokenInput }) },
+    args: { input: t.arg({ type: VerifyEmailInput }) },
     resolve: async (_, { input }, { db }) => {
       const request = await db.userEmailVerification.findUniqueOrThrow({
         select: {
