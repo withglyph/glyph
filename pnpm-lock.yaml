@@ -429,18 +429,15 @@ importers:
       '@tiptap/pm':
         specifier: ^2.1.8
         version: 2.1.8
+      '@types/mixpanel-browser':
+        specifier: ^2.47.1
+        version: 2.47.1
       '@types/node':
         specifier: ^20.6.0
         version: 20.6.0
-      '@types/ua-parser-js':
-        specifier: ^0.7.37
-        version: 0.7.37
       '@urql/core':
         specifier: ^4.1.2
         version: 4.1.2(graphql@16.8.0)
-      '@urql/devtools':
-        specifier: ^2.0.3
-        version: 2.0.3(@urql/core@4.1.2)(graphql@16.8.0)
       '@urql/exchange-graphcache':
         specifier: ^6.3.3
         version: 6.3.3(graphql@16.8.0)
@@ -480,9 +477,9 @@ importers:
       lightningcss:
         specifier: ^1.21.7
         version: 1.21.7
-      mixpanel:
-        specifier: ^0.17.0
-        version: 0.17.0
+      mixpanel-browser:
+        specifier: ^2.47.0
+        version: 2.47.0
       nanoid:
         specifier: ^4.0.2
         version: 4.0.2
@@ -516,9 +513,6 @@ importers:
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
-      ua-parser-js:
-        specifier: ^1.0.35
-        version: 1.0.35
       unocss:
         specifier: ^0.55.7
         version: 0.55.7(postcss@8.4.29)(vite@4.4.9)
@@ -528,9 +522,6 @@ importers:
       winston:
         specifier: ^3.10.0
         version: 3.10.0
-      wonka:
-        specifier: ^6.3.4
-        version: 6.3.4
       zod:
         specifier: ^3.22.2
         version: 3.22.2
@@ -5715,6 +5706,10 @@ packages:
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
     dev: true
 
+  /@types/mixpanel-browser@2.47.1:
+    resolution: {integrity: sha512-4Oif1hbjmStA6KI1OLer19rbKjlPd67ujp5Wipfa7rIskA/lOFZbp6kYsPjXD0f5AiiCQTbf0R/SnnzgOaKrbA==}
+    dev: true
+
   /@types/ms@0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
     dev: true
@@ -5775,10 +5770,6 @@ packages:
     dependencies:
       '@types/node': 20.6.0
     dev: false
-
-  /@types/ua-parser-js@0.7.37:
-    resolution: {integrity: sha512-4sOxS3ZWXC0uHJLYcWAaLMxTvjRX3hT96eF4YWUh1ovTaenvibaZOE5uXtIp4mksKMLRwo7YDiCBCw6vBiUPVg==}
-    dev: true
 
   /@types/unist@2.0.8:
     resolution: {integrity: sha512-d0XxK3YTObnWVp6rZuev3c49+j4Lo8g4L1ZRm9z5L0xpoZycUPshHgczK5gsUMaZOstjVYYi09p5gYvUtfChYw==}
@@ -6125,6 +6116,7 @@ packages:
       '@urql/core': 4.1.2(graphql@16.8.0)
       graphql: 16.8.0
       wonka: 6.3.4
+    dev: false
 
   /@urql/exchange-graphcache@6.3.3(graphql@16.8.0):
     resolution: {integrity: sha512-uD8zzNIrxQHYCSgfIwYxzEmU1Ml4nJ6NTKwrDlpKmTLJa3aYuG3AoiO138HZBK1XGJ2QzV5yQPfcZsmbVFH8Yg==}
@@ -9145,16 +9137,6 @@ packages:
       resolve-alpn: 1.2.1
     dev: true
 
-  /https-proxy-agent@5.0.0:
-    resolution: {integrity: sha512-EkYm5BcKUGiduxzSt3Eppko+PiNWNEpa4ySk9vTC6wDsQJW9rHSa+UhGNJoRYp7bz6Ht1eaRIa6QaJqO5rCFbA==}
-    engines: {node: '>= 6'}
-    dependencies:
-      agent-base: 6.0.2
-      debug: 4.3.4
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /https-proxy-agent@5.0.1:
     resolution: {integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==}
     engines: {node: '>= 6'}
@@ -10755,13 +10737,8 @@ packages:
       minipass: 3.3.6
       yallist: 4.0.0
 
-  /mixpanel@0.17.0:
-    resolution: {integrity: sha512-DY5WeOy/hmkPrNiiZugJpWR0iMuOwuj1a3u0bgwB2eUFRV6oIew/pIahhpawdbNjb+Bye4a8ID3gefeNPvL81g==}
-    engines: {node: '>=10.0'}
-    dependencies:
-      https-proxy-agent: 5.0.0
-    transitivePeerDependencies:
-      - supports-color
+  /mixpanel-browser@2.47.0:
+    resolution: {integrity: sha512-Ldrva0fRBEIFWmEibBQO1PulfpJVF3pf28Guk09lDirDaSQqqU/xs9zQLwN2rL5VwVtsP1aD3JaCgaa98EjojQ==}
     dev: true
 
   /mkdirp-classic@0.5.3:
@@ -13337,6 +13314,7 @@ packages:
 
   /ua-parser-js@1.0.35:
     resolution: {integrity: sha512-fKnGuqmTBnIE+/KXSzCn4db8RTigUzw1AN0DmdU6hJovUTbYJKyqj+8Mt1c4VfRDnOVJnENmfYkIPZ946UrSAA==}
+    dev: false
 
   /uc.micro@1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}

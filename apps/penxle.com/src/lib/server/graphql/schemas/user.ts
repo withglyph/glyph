@@ -2,7 +2,6 @@ import { UserSSOProvider } from '@prisma/client';
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
 import { FormValidationError } from '$lib/errors';
-import { updateUser } from '$lib/server/analytics';
 import { sendEmail } from '$lib/server/email';
 import {
   PasswordReset,
@@ -42,7 +41,7 @@ builder.prismaObject('User', {
       type: ['Space'],
       select: (_, __, nestedSelection) => ({
         spaces: {
-          select: { space: nestedSelection(true) },
+          select: { space: nestedSelection() },
           where: { space: { state: 'ACTIVE' } },
         },
       }),
@@ -168,7 +167,9 @@ builder.mutationFields((t) => ({
   login: t.prismaField({
     type: 'User',
     args: { input: t.arg({ type: LoginInput }) },
-    resolve: async (query, _, { input }, { db, ...context }) => {
+    resolve: async (query, _, { input }, context) => {
+      const db = context.db;
+
       const user = await db.user.findUnique({
         select: { id: true, password: { select: { hash: true } } },
         where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
@@ -195,15 +196,11 @@ builder.mutationFields((t) => ({
       });
 
       const accessToken = await createAccessToken(session.id);
+
+      context.session = { id: session.id, userId: user.id };
       context.cookies.set('penxle-at', accessToken, {
         path: '/',
         maxAge: dayjs.duration(1, 'year').asSeconds(),
-      });
-
-      await updateUser(db, context, user.id);
-      context.track('user:login', {
-        $user_id: user.id,
-        method: 'email',
       });
 
       return await db.user.findUniqueOrThrow({
@@ -223,8 +220,6 @@ builder.mutationFields((t) => ({
 
       context.cookies.delete('penxle-at', { path: '/' });
 
-      context.track('user:logout');
-
       return user;
     },
   }),
@@ -232,7 +227,9 @@ builder.mutationFields((t) => ({
   signUp: t.prismaField({
     type: 'User',
     args: { input: t.arg({ type: SignUpInput }) },
-    resolve: async (query, _, { input }, { db, ...context }) => {
+    resolve: async (query, _, { input }, context) => {
+      const db = context.db;
+
       const isEmailUsed = await db.user.exists({
         where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
       });
@@ -283,15 +280,11 @@ builder.mutationFields((t) => ({
       });
 
       const accessToken = await createAccessToken(session.id);
+
+      context.session = { id: session.id, userId: user.id };
       context.cookies.set('penxle-at', accessToken, {
         path: '/',
         maxAge: dayjs.duration(1, 'year').asSeconds(),
-      });
-
-      await updateUser(db, context, user.id);
-      context.track('user:sign-up', {
-        $user_id: user.id,
-        method: 'email',
       });
 
       return user;
@@ -351,15 +344,13 @@ builder.mutationFields((t) => ({
         },
       });
 
-      context.track('user:password-reset:request');
-
       return request;
     },
   }),
 
   resetPassword: t.boolean({
     args: { input: t.arg({ type: ResetPasswordInput }) },
-    resolve: async (_, { input }, { db, ...context }) => {
+    resolve: async (_, { input }, { db }) => {
       const request = await db.userEmailVerification.findUniqueOrThrow({
         where: {
           token: input.token,
@@ -396,8 +387,6 @@ builder.mutationFields((t) => ({
         },
       });
 
-      context.track('user:password-reset:reset');
-
       return true;
     },
   }),
@@ -417,8 +406,6 @@ builder.mutationFields((t) => ({
           },
         },
       });
-
-      context.track('profile:user:update');
 
       return profile;
     },

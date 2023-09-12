@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import { TextInput } from '$lib/components/forms';
   import { toast } from '$lib/notification';
@@ -67,6 +68,7 @@
     loading={$deleteSpace.inflight}
     on:click={async () => {
       await deleteSpace({ spaceId: $space.id });
+      mixpanel.track('space:delete');
       toast.success('스페이스를 삭제했어요.');
       await goto('/');
     }}

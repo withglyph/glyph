@@ -47,10 +47,9 @@
     "@sveltejs/kit": "^1.24.1",
     "@tiptap/core": "^2.1.8",
     "@tiptap/pm": "^2.1.8",
+    "@types/mixpanel-browser": "^2.47.1",
     "@types/node": "^20.6.0",
-    "@types/ua-parser-js": "^0.7.37",
     "@urql/core": "^4.1.2",
-    "@urql/devtools": "^2.0.3",
     "@urql/exchange-graphcache": "^6.3.3",
     "argon2": "^0.31.1",
     "clsx": "^2.0.0",
@@ -64,7 +63,7 @@
     "jose": "^4.14.6",
     "js-base64": "^3.7.5",
     "lightningcss": "^1.21.7",
-    "mixpanel": "^0.17.0",
+    "mixpanel-browser": "^2.47.0",
     "nanoid": "^4.0.2",
     "prisma": "^5.2.0",
     "prosemirror-utils": "1.2.1-0",
@@ -76,11 +75,9 @@
     "thumbhash": "^0.1.1",
     "tsx": "^3.12.8",
     "typescript": "^5.2.2",
-    "ua-parser-js": "^1.0.35",
     "unocss": "^0.55.7",
     "vite": "^4.4.9",
     "winston": "^3.10.0",
-    "wonka": "^6.3.4",
     "zod": "^3.22.2"
   }
 }

@@ -108,7 +108,32 @@ runcmd:
   tags: { Name: 'tailscale-exit-node-az2' },
 });
 
+const mixpanelProxy = new aws.ec2.Instance('mixpanel-proxy', {
+  ami: 'ami-034bd1a31f7fbf204', // Amazon Linux 2023 AMI 2023.1.20230809.0 arm64 HVM kernel-6.1
+  instanceType: 't4g.nano',
+
+  subnetId: subnets.public.az1.id,
+  vpcSecurityGroupIds: [securityGroups.public.id],
+
+  keyName: keyPair.keyName,
+
+  userDataReplaceOnChange: true,
+  userData: pulumi.interpolate`
+#cloud-config
+packages:
+  - nginx
+runcmd:
+  - [ hostnamectl, hostname, mixpanel-proxy ]
+  - [ curl, -fsSL, https://raw.githubusercontent.com/mixpanel/tracking-proxy/master/nginx.conf, -o, /etc/nginx/nginx.conf ]
+  - [ systemctl, enable, nginx ]
+  - [ systemctl, restart, nginx ]
+`.apply((v) => v.trim()),
+
+  tags: { Name: 'mixpanel-proxy' },
+});
+
 export const instances = {
+  mixpanelProxy,
   rdsPooler,
 };
 

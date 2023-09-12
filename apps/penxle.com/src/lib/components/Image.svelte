@@ -30,8 +30,8 @@
     graphql(`
       fragment Image_image on Image {
         id
-        path
         placeholder
+        url
       }
     `),
   );
@@ -52,7 +52,7 @@
     const size = Math.pow(2, Math.ceil(Math.log2(max)));
 
     src = qs.stringifyUrl({
-      url: `https://pnxl.net/${$image.path}`,
+      url: $image.url,
       query: { s: size, q: quality },
     });
 

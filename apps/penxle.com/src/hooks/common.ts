@@ -1,5 +1,6 @@
+import { production } from '@penxle/lib/environment';
 import * as Sentry from '@sentry/sveltekit';
-import { browser, dev } from '$app/environment';
+import { browser } from '$app/environment';
 import { PUBLIC_SENTRY_DSN } from '$env/static/public';
 import { setupDayjs } from '$lib/datetime';
 import {
@@ -14,22 +15,19 @@ const setupSentry = () => {
   const integrations = [];
 
   if (browser) {
-    integrations.push(new Sentry.Replay({}));
+    // no-op
   } else {
     integrations.push(
-      new Sentry.Integrations.OnUncaughtException({}),
+      new Sentry.Integrations.OnUncaughtException(),
       new Sentry.Integrations.OnUnhandledRejection({ mode: 'strict' }),
       new Sentry.Integrations.LocalVariables({ captureAllExceptions: true }),
     );
   }
 
-  if (!dev) {
+  if (production) {
     Sentry.init({
       dsn: PUBLIC_SENTRY_DSN,
       integrations,
-      tracesSampleRate: 1,
-      replaysSessionSampleRate: 0.1,
-      replaysOnErrorSampleRate: 1,
     });
   }
 };

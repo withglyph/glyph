@@ -1,4 +1,5 @@
 import { isAsyncIterable } from '@envelop/core';
+import * as Sentry from '@sentry/sveltekit';
 import { GraphQLError } from 'graphql';
 import { AppError, GraphQLAppError, UnknownError } from '$lib/errors';
 import type {
@@ -15,9 +16,11 @@ const toGraphQLAppError = (error: unknown): GraphQLAppError => {
     return toGraphQLAppError(error.originalError);
   } else if (error instanceof Error) {
     console.error(error);
+    Sentry.captureException(error);
     return new GraphQLAppError(new UnknownError(error));
   } else {
     console.error(error);
+    Sentry.captureException(error);
     return new GraphQLAppError(new UnknownError());
   }
 };

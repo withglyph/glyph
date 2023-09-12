@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import { error, status } from 'itty-router';
-import { updateUser } from '$lib/server/analytics';
 import { google } from '$lib/server/external-api';
 import {
   createAccessToken,
@@ -100,11 +99,6 @@ auth.get('/auth/google', async (_, { db, ...context }) => {
         maxAge: dayjs.duration(1, 'year').asSeconds(),
       });
 
-      context.track('user:login', {
-        $user_id: sso.userId,
-        method: 'google',
-      });
-
       return status(301, { headers: { Location: '/' } });
     } else {
       // 케이스 2-2: 콜백이 날아온 구글 계정이 아직 사이트에 연동이 안 된 계정인 경우
@@ -162,12 +156,6 @@ auth.get('/auth/google', async (_, { db, ...context }) => {
         await db.image.update({
           where: { id: avatarId },
           data: { userId: user.id },
-        });
-
-        await updateUser(db, context, user.id);
-        context.track('user:sign-up', {
-          $user_id: user.id,
-          method: 'email',
         });
 
         const session = await db.session.create({
