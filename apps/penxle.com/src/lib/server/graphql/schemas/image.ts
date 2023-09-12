@@ -23,7 +23,7 @@ export const Image = builder.prismaObject('Image', {
     url: t.field({
       type: 'String',
       select: { path: true },
-      resolve: (parent) => `https://pnxl.net/${parent.path}`,
+      resolve: (parent) => `https://c.pnxl.net/${parent.path}`,
     }),
   }),
 });
