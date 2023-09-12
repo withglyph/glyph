@@ -1,16 +1,39 @@
-<script lang="ts">
+<script generics="T extends 'button' | 'submit' | 'link' = 'button'" lang="ts">
   import { RingSpinner } from '@penxle/ui/spinners';
   import { clsx } from 'clsx';
   import { getFormContext } from '$lib/form';
 
-  export let type: 'button' | 'submit' = 'button';
+  type $$Props = {
+    type?: T;
+    class?: string;
+    disabled?: boolean;
+    loading?: boolean;
+    color?: 'primary' | 'secondary' | 'tertiary';
+    variant?: 'text' | 'outlined' | 'contained';
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  } & (T extends 'link' ? { href: string } : unknown);
+
+  type $$Events = T extends 'link' ? unknown : { click: MouseEvent };
+
+  export let type: 'button' | 'submit' | 'link' = 'button';
+
   let _class: string | undefined = undefined;
   export { _class as class };
+
   export let disabled = false;
   export let loading = false;
   export let color: 'primary' | 'secondary' | 'tertiary' = 'secondary';
   export let variant: 'text' | 'outlined' | 'contained' = 'contained';
-  export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
+
+  export let href: string | undefined = undefined;
+
+  let element: 'a' | 'button';
+  $: element = type === 'link' ? 'a' : 'button';
+  $: props =
+    type === 'link'
+      ? { href: disabled || showSpinner ? undefined : href }
+      : { type, disabled: disabled || showSpinner };
 
   const { form } = getFormContext();
   const { isSubmitting } = form ?? {};
@@ -18,7 +41,8 @@
   $: showSpinner = !!(loading || (type === 'submit' && $isSubmitting));
 </script>
 
-<button
+<svelte:element
+  this={element}
   class={clsx(
     'relative flex center px-4 py-2 font-bold leading-none transition duration-300 text-center text-3.25',
     disabled && 'text-gray-40 bg-gray-30',
@@ -51,9 +75,10 @@
       'text-gray-90 bg-transparent border border-gray-30 hover:bg-gray-10 active:(bg-gray-10 border-gray-90)',
     _class,
   )}
-  disabled={disabled || showSpinner}
-  {type}
+  role="button"
+  tabindex="-1"
   on:click
+  {...props}
 >
   {#if showSpinner}
     <div class="absolute inset-0 flex center px-4 py-2">
@@ -63,4 +88,4 @@
   <div class={clsx('contents', showSpinner && 'invisible')}>
     <slot />
   </div>
-</button>
+</svelte:element>
