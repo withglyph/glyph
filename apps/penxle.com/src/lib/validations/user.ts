@@ -22,6 +22,7 @@ export const SignUpInputSchema = LoginInputSchema.extend({
   name,
   passwordConfirm: z.string(),
   isAgreed: z.boolean().refine((v) => v, '약관에 동의해주세요'),
+  isMarketingAgreed: z.boolean(),
 }).refine((v) => v.password === v.passwordConfirm, {
   message: '비밀번호가 일치하지 않아요',
   path: ['passwordConfirm'],

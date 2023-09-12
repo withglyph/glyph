@@ -98,6 +98,7 @@ const SignUpInput = builder.inputType('SignUpInput', {
     passwordConfirm: t.string(),
     name: t.string(),
     isAgreed: t.boolean(),
+    isMarketingAgreed: t.boolean(),
   }),
   validate: { schema: SignUpInputSchema },
 });
@@ -285,6 +286,13 @@ builder.mutationFields((t) => ({
               hash: await argon2.hash(input.password),
             },
           },
+          marketingAgreement: input.isMarketingAgreed
+            ? {
+                create: {
+                  id: createId(),
+                },
+              }
+            : undefined,
         },
       });
 
