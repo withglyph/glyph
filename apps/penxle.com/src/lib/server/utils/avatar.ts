@@ -3,7 +3,7 @@ import { createAvatar } from '@dicebear/core';
 import { color } from '@penxle/lib/unocss';
 import { renderAsync } from '@resvg/resvg-js';
 import { nanoid } from 'nanoid';
-import { draw } from 'radash';
+import * as R from 'radash';
 import type { Options } from '@dicebear/core';
 import type { ColorShade } from '@penxle/lib/unocss';
 
@@ -48,7 +48,7 @@ const options: micah.Options & Options = {
 
 export const createRandomAvatar = () => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const bg = draw(backgroundColors)!;
+  const bg = R.draw(backgroundColors)!;
   return createAvatar(micah, {
     seed: nanoid(),
     ...options,

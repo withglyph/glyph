@@ -1,4 +1,4 @@
-import { mapValues, max, range } from 'radash';
+import * as R from 'radash';
 import { getColorIndex } from './color';
 import { COLOR_SIZE, HISTOGRAM_SIZE, MULTIPLIER, RIGHT_SHIFT } from './const';
 import { clamp } from './utils';
@@ -49,7 +49,7 @@ export class VBox {
   }
 
   *range(channel: ColorChannel) {
-    yield* range(this.#min[channel], this.#max[channel]);
+    yield* R.range(this.#min[channel], this.#max[channel]);
   }
 
   split(): [VBox?, VBox?] {
@@ -68,7 +68,7 @@ export class VBox {
     ];
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const axis = max(widths, ([, width]) => width)![0];
+    const axis = R.max(widths, ([, width]) => width)![0];
 
     const aggregate = (axis: ColorChannel) => {
       const others = (['r', 'g', 'b'] as ColorChannel[]).filter(
@@ -96,7 +96,7 @@ export class VBox {
     };
 
     const { total, acc } = aggregate(axis);
-    const lookAHead = mapValues(acc, (value) => total - value);
+    const lookAHead = R.mapValues(acc, (value) => total - value);
 
     const minAxis = this.#min[axis];
     const maxAxis = this.#max[axis];
