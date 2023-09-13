@@ -369,6 +369,9 @@ importers:
       '@floating-ui/dom':
         specifier: ^1.5.1
         version: 1.5.1
+      '@opentelemetry/instrumentation':
+        specifier: ^0.43.0
+        version: 0.43.0(@opentelemetry/api@1.4.1)
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2
@@ -411,6 +414,9 @@ importers:
       '@prisma/client':
         specifier: ^5.2.0
         version: 5.2.0(prisma@5.2.0)
+      '@prisma/instrumentation':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@pulumi/pulumi':
         specifier: ^3.81.0
         version: 3.81.0
@@ -4100,6 +4106,38 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
+  /@opentelemetry/instrumentation@0.41.2(@opentelemetry/api@1.4.1):
+    resolution: {integrity: sha512-rxU72E0pKNH6ae2w5+xgVYZLzc5mlxAbGzF4shxMVK8YC2QQsfN38B2GPbj0jvrKWWNUElfclQ+YTykkNg/grw==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@opentelemetry/api': ^1.3.0
+    dependencies:
+      '@opentelemetry/api': 1.4.1
+      '@types/shimmer': 1.0.2
+      import-in-the-middle: 1.4.2
+      require-in-the-middle: 7.2.0
+      semver: 7.5.4
+      shimmer: 1.2.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /@opentelemetry/instrumentation@0.43.0(@opentelemetry/api@1.4.1):
+    resolution: {integrity: sha512-S1uHE+sxaepgp+t8lvIDuRgyjJWisAb733198kwQTUc9ZtYQ2V2gmyCtR1x21ePGVLoMiX/NWY7WA290hwkjJQ==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@opentelemetry/api': ^1.3.0
+    dependencies:
+      '@opentelemetry/api': 1.4.1
+      '@types/shimmer': 1.0.2
+      import-in-the-middle: 1.4.2
+      require-in-the-middle: 7.2.0
+      semver: 7.5.4
+      shimmer: 1.2.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@opentelemetry/propagator-b3@1.15.2(@opentelemetry/api@1.4.1):
     resolution: {integrity: sha512-ZSrL3DpMEDsjD8dPt9Ze3ue53nEXJt512KyxXlLgLWnSNbe1mrWaXWkh7OLDoVJh9LqFw+tlvAhDVt/x3DaFGg==}
     engines: {node: '>=14'}
@@ -4654,6 +4692,16 @@ packages:
       '@types/cross-spawn': 6.0.2
       cross-spawn: 7.0.3
       kleur: 4.1.5
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /@prisma/instrumentation@5.3.0:
+    resolution: {integrity: sha512-VcAS6AQlLmqpaRgA2Nlm08hgbcS6fXWaTaej70ShoTJsePPEP2jf47wczUnQrygRfhhfu5aqkff/jwZrkkumBA==}
+    dependencies:
+      '@opentelemetry/api': 1.4.1
+      '@opentelemetry/instrumentation': 0.41.2(@opentelemetry/api@1.4.1)
+      '@opentelemetry/sdk-trace-base': 1.15.2(@opentelemetry/api@1.4.1)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5820,6 +5868,10 @@ packages:
   /@types/semver@7.5.1:
     resolution: {integrity: sha512-cJRQXpObxfNKkFAZbJl2yjWtJCqELQIdShsogr1d2MilP8dKD9TE/nEKHkJgUNHdGKCQaf9HbIynuV2csLGVLg==}
     dev: false
+
+  /@types/shimmer@1.0.2:
+    resolution: {integrity: sha512-dKkr1bTxbEsFlh2ARpKzcaAmsYixqt9UyCdoEZk8rHyE4iQYcDCyvSjDSf7JUWJHlJiTtbIoQjxKh6ViywqDAg==}
+    dev: true
 
   /@types/ssri@7.1.1:
     resolution: {integrity: sha512-DPP/jkDaqGiyU75MyMURxLWyYLwKSjnAuGe9ZCsLp9QZOpXmDfuevk769F0BS86TmRuD5krnp06qw9nSoNO+0g==}
@@ -12311,6 +12363,17 @@ packages:
       resolve: 1.22.4
     transitivePeerDependencies:
       - supports-color
+
+  /require-in-the-middle@7.2.0:
+    resolution: {integrity: sha512-3TLx5TGyAY6AOqLBoXmHkNql0HIf2RGbuMgCDT2WO/uGVAPJs6h7Kl+bN6TIZGd9bWhWPwnDnTHGtW8Iu77sdw==}
+    engines: {node: '>=8.6.0'}
+    dependencies:
+      debug: 4.3.4
+      module-details-from-path: 1.0.3
+      resolve: 1.22.4
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
 
   /require-main-filename@2.0.0:
     resolution: {integrity: sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==}
