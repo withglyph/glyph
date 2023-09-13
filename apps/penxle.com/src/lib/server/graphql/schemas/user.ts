@@ -302,6 +302,7 @@ builder.mutationFields((t) => ({
         data: {
           id: createId(),
           userId: user.id,
+          email: user.email,
           type: 'EMAIL_VERIFY',
           token,
           expiresAt: dayjs().add(2, 'day').toDate(),
@@ -310,7 +311,7 @@ builder.mutationFields((t) => ({
 
       await sendEmail({
         subject: 'PENXLE 이메일 인증',
-        recipient: input.email,
+        recipient: user.email,
         template: EmailVerification,
         props: {
           name: profile.name,
@@ -387,6 +388,7 @@ builder.mutationFields((t) => ({
         data: {
           id: createId(),
           userId: user.id,
+          email: user.email,
           type: 'PASSWORD_RESET',
           token,
           expiresAt: dayjs().add(1, 'hour').toDate(),
@@ -652,9 +654,14 @@ builder.mutationFields((t) => ({
           profile: {
             select: { name: true },
           },
+          isVerified: true,
         },
         where: { id: context.session.userId, state: 'ACTIVE' },
       });
+
+      if (user.isVerified) {
+        throw new FormValidationError('email', '이미 인증된 이메일이에요.'); // 지금 생각해보니까 418이 맞는 듯 해요...
+      }
 
       let verification = await db.userEmailVerification.findFirst({
         ...query,
@@ -678,6 +685,7 @@ builder.mutationFields((t) => ({
           data: {
             id: createId(),
             userId: context.session.userId,
+            email: user.email,
             type: 'EMAIL_VERIFY',
             token: createId(),
             expiresAt: dayjs().add(2, 'day').toDate(),
