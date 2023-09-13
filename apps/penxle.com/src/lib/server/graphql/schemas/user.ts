@@ -348,6 +348,7 @@ builder.mutationFields((t) => ({
 
   requestPasswordReset: t.field({
     type: 'Void',
+    nullable: true,
     args: { input: t.arg({ type: RequestPasswordResetInput }) },
     resolve: async (_, { input }, { db, ...context }) => {
       const user = await db.user.findUnique({
