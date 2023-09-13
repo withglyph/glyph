@@ -31,6 +31,15 @@ const lambda = new aws.lambda.Function('literoom', {
   handler: 'index.handler',
 
   sourceCodeHash: pkg.metadata.Hash,
+
+  environment: {
+    variables: {
+      DD_SITE: 'ap1.datadoghq.com',
+      DD_API_KEY: '2c846428492ecb779793fa56a8837950',
+      DD_SERVICE: 'literoom',
+      DD_ENV: 'prod',
+    },
+  },
 });
 
 const accessPoint = new aws.s3.AccessPoint('data', {

@@ -59,6 +59,7 @@ export class Site extends pulumi.ComponentResource {
         }),
         managedPolicyArns: [
           aws.iam.ManagedPolicies.AWSLambdaVPCAccessExecutionRole,
+          aws.iam.ManagedPolicies.AWSXRayDaemonWriteAccess,
         ],
       },
       { parent: this },
@@ -99,7 +100,16 @@ export class Site extends pulumi.ComponentResource {
         environment: {
           variables: {
             HTTP_HOST: domain,
+
+            DD_SITE: 'ap1.datadoghq.com',
+            DD_API_KEY: '2c846428492ecb779793fa56a8837950',
+            DD_SERVICE: args.name,
+            DD_ENV: stack,
           },
+        },
+
+        tracingConfig: {
+          mode: 'Active',
         },
 
         vpcConfig: {
