@@ -32,13 +32,22 @@ const lambda = new aws.lambda.Function('literoom', {
 
   sourceCodeHash: pkg.metadata.Hash,
 
+  layers: [
+    'arn:aws:lambda:ap-northeast-2:464622532012:layer:Datadog-Extension-ARM:48',
+  ],
+
   environment: {
     variables: {
       DD_SITE: 'ap1.datadoghq.com',
-      DD_API_KEY: '2c846428492ecb779793fa56a8837950',
+      DD_API_KEY_SECRET_ARN:
+        'arn:aws:secretsmanager:ap-northeast-2:721144421085:secret:datadog/api-key-cWrlAs',
       DD_SERVICE: 'literoom',
       DD_ENV: 'prod',
     },
+  },
+
+  tracingConfig: {
+    mode: 'Active',
   },
 });
 
@@ -79,6 +88,13 @@ new aws.iam.RolePolicy('literoom@lambda', {
         Effect: 'Allow',
         Action: ['s3-object-lambda:WriteGetObjectResponse'],
         Resource: [objectLambdaAccessPoint.arn],
+      },
+      {
+        Effect: 'Allow',
+        Action: ['secretsmanager:GetSecretValue'],
+        Resource: [
+          'arn:aws:secretsmanager:ap-northeast-2:721144421085:secret:datadog/*',
+        ],
       },
     ],
   },

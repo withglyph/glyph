@@ -1,5 +1,5 @@
 import { S3Client, WriteGetObjectResponseCommand } from '@aws-sdk/client-s3';
-import { withMetrics } from '@penxle/lambda/metrics';
+import { createHandler } from '@penxle/lambda/metrics';
 import sharp from 'sharp';
 
 type Event = {
@@ -16,7 +16,7 @@ type Event = {
 const S3 = new S3Client();
 sharp.concurrency(4);
 
-export const handler = withMetrics(async (event: Event) => {
+export const handler = createHandler(async (event: Event) => {
   const url = new URL(event.userRequest.url);
 
   const size = Number(url.searchParams.get('s') ?? 256);

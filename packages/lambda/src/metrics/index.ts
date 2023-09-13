@@ -1,5 +1,13 @@
+import { datadog } from 'datadog-lambda-js';
 import ddtrace from 'dd-trace';
 
-export const tracer = ddtrace.init();
+export const createHandler = (handler: unknown) => {
+  if (process.env.DD_SITE) {
+    ddtrace.init();
+    return datadog(handler);
+  }
 
-export { datadog as withMetrics } from 'datadog-lambda-js';
+  return handler;
+};
+
+export { default as tracer } from 'dd-trace';

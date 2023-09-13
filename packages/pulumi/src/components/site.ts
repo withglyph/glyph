@@ -76,6 +76,24 @@ export class Site extends pulumi.ComponentResource {
       );
     }
 
+    if (isProd) {
+      new aws.iam.RolePolicy(`${args.name}/dd@lambda`, {
+        role: role.name,
+        policy: {
+          Version: '2012-10-17',
+          Statement: [
+            {
+              Effect: 'Allow',
+              Action: ['secretsmanager:GetSecretValue'],
+              Resource: [
+                'arn:aws:secretsmanager:ap-northeast-2:721144421085:secret:datadog/*',
+              ],
+            },
+          ],
+        },
+      });
+    }
+
     const lambda = new aws.lambda.Function(
       args.name,
       {
@@ -97,14 +115,23 @@ export class Site extends pulumi.ComponentResource {
 
         publish: true,
 
+        layers: isProd
+          ? [
+              'arn:aws:lambda:ap-northeast-2:464622532012:layer:Datadog-Extension-ARM:48',
+            ]
+          : undefined,
+
         environment: {
           variables: {
             HTTP_HOST: domain,
 
-            DD_SITE: 'ap1.datadoghq.com',
-            DD_API_KEY: '2c846428492ecb779793fa56a8837950',
-            DD_SERVICE: args.name,
-            DD_ENV: stack,
+            ...(isProd && {
+              DD_SITE: 'ap1.datadoghq.com',
+              DD_API_KEY_SECRET_ARN:
+                'arn:aws:secretsmanager:ap-northeast-2:721144421085:secret:datadog/api-key-cWrlAs',
+              DD_SERVICE: args.name,
+              DD_ENV: stack,
+            }),
           },
         },
 
