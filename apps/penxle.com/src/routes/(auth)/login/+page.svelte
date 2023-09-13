@@ -82,10 +82,10 @@
 
 <div class="flex gap-6">
   <button class="flex center bg-gray-10 square-13.5 rounded-20" type="button">
-    <Google />
+    <Google class="square-8" />
   </button>
 
   <button class="flex center bg-gray-10 square-13.5 rounded-20" type="button">
-    <Naver />
+    <Naver class="square-6" />
   </button>
 </div>
