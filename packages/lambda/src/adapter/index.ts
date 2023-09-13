@@ -1,10 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { lambdify } from '../cli';
 import type { Adapter } from '@sveltejs/kit';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const lambda = (): Adapter => {
   return {
@@ -16,22 +13,27 @@ export const lambda = (): Adapter => {
       builder.mkdirp(out);
 
       builder.writeServer(out);
-      builder.copy(
-        path.join(__dirname, 'adapter-handler.js'),
-        path.join(out, 'handler.js'),
-        {
-          replace: {
-            '0SERVER': './index.js',
-            '0MANIFEST': './manifest.js',
-          },
-        },
-      );
 
       await fs.appendFile(
         path.join(out, 'manifest.js'),
-        `\n\nexport const prerendered = new Set(${JSON.stringify(
-          builder.prerendered.paths,
-        )});\n`,
+        `
+          export const prerendered = new Set(${JSON.stringify(
+            builder.prerendered.paths,
+          )});
+        `,
+      );
+
+      await fs.writeFile(
+        path.join(out, 'handler.js'),
+        `
+          import path from 'node:path';
+          import { fileURLToPath } from 'node:url';
+          import { createHandler } from '@penxle/lambda/adapter/handler';
+          import { Server } from './index.js';
+          import { manifest, prerendered } from './manifest.js';
+          const basePath = path.dirname(fileURLToPath(import.meta.url));
+          export const handler = await createHandler({ basePath, Server, manifest, prerendered });
+        `,
       );
 
       builder.writeClient(path.join(out, 'public'));

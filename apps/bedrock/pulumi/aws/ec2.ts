@@ -132,6 +132,28 @@ runcmd:
   tags: { Name: 'mixpanel-proxy' },
 });
 
+// new aws.ec2.Instance('datadog-agent', {
+//   ami: 'ami-034bd1a31f7fbf204', // Amazon Linux 2023 AMI 2023.1.20230809.0 arm64 HVM kernel-6.1
+//   instanceType: 't4g.nano',
+
+//   subnetId: subnets.private.az1.id,
+//   vpcSecurityGroupIds: [securityGroups.internal.id],
+
+//   keyName: keyPair.keyName,
+
+//   userDataReplaceOnChange: true,
+//   userData: pulumi.interpolate`
+// #cloud-config
+// runcmd:
+//   - [ hostnamectl, hostname, datadog-agent ]
+//   - [ export, DD_API_KEY=2c846428492ecb779793fa56a8837950 ]
+//   - [ export, DD_SITE=ap1.datadoghq.com ]
+//   - [ sh, -c, curl -fsSL https://s3.amazonaws.com/dd-agent/scripts/install_script_agent7.sh | sh ]
+// `.apply((v) => v.trim()),
+
+//   tags: { Name: 'datadog-agent' },
+// });
+
 export const instances = {
   mixpanelProxy,
   rdsPooler,
