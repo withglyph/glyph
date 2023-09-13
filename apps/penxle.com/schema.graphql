@@ -45,9 +45,9 @@ type Mutation {
   login(input: LoginInput!): User!
   logout: Void
   prepareImageUpload: PrepareImageUploadPayload!
-  requestEmailUpdate(input: requestEmailUpdateInput!): UserEmailVerification!
+  requestEmailUpdate(input: requestEmailUpdateInput!): Void
   requestPasswordReset(input: RequestPasswordResetInput!): Void!
-  resendEmailVerification: UserEmailVerification!
+  resendEmailVerification: Void
   resetPassword(input: ResetPasswordInput!): User!
   signUp(input: SignUpInput!): User!
   updatePassword(input: UpdatePasswordInput!): User!
@@ -127,10 +127,6 @@ type User {
   id: ID!
   profile: Profile!
   spaces: [Space!]!
-}
-
-type UserEmailVerification {
-  expiresAt: DateTime!
 }
 
 enum UserSSOProvider {

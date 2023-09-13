@@ -65,15 +65,6 @@ builder.prismaObject('Profile', {
   }),
 });
 
-builder.prismaObject('UserEmailVerification', {
-  select: { id: true },
-  fields: (t) => ({
-    expiresAt: t.expose('expiresAt', {
-      type: 'DateTime',
-    }),
-  }),
-});
-
 /**
  * * Enums
  */
@@ -439,10 +430,11 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  requestEmailUpdate: t.withAuth({ auth: true }).prismaField({
-    type: 'UserEmailVerification',
+  requestEmailUpdate: t.withAuth({ auth: true }).field({
+    type: 'Void',
+    nullable: true,
     args: { input: t.arg({ type: RequestEmailUpdateInput }) },
-    resolve: async (query, _, { input }, { db, ...context }) => {
+    resolve: async (_, { input }, { db, ...context }) => {
       const isEmailUsed = await db.user.exists({
         where: { email: input.email.toLowerCase() },
       });
@@ -458,8 +450,7 @@ builder.mutationFields((t) => ({
 
       const token = createId();
 
-      const request = await db.userEmailVerification.create({
-        ...query,
+      await db.userEmailVerification.create({
         data: {
           id: createId(),
           userId: user.id,
@@ -480,8 +471,6 @@ builder.mutationFields((t) => ({
           email: input.email,
         },
       });
-
-      return request;
     },
   }),
 
@@ -600,9 +589,10 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  resendEmailVerification: t.withAuth({ auth: true }).prismaField({
-    type: 'UserEmailVerification',
-    resolve: async (query, _, __, { db, ...context }) => {
+  resendEmailVerification: t.withAuth({ auth: true }).field({
+    type: 'Void',
+    nullable: true,
+    resolve: async (_, __, { db, ...context }) => {
       const user = await db.user.findUniqueOrThrow({
         select: {
           id: true,
@@ -618,7 +608,6 @@ builder.mutationFields((t) => ({
       }
 
       let verification = await db.userEmailVerification.findFirst({
-        ...query,
         where: {
           userId: context.session.userId,
         },
@@ -635,7 +624,6 @@ builder.mutationFields((t) => ({
         });
       } else {
         verification = await db.userEmailVerification.create({
-          ...query,
           data: {
             id: createId(),
             userId: context.session.userId,
@@ -656,8 +644,6 @@ builder.mutationFields((t) => ({
           url: `${context.url.origin}/email-verification?token=${verification.token}`, // TODO: 이메일 인증 페이지 URL 확정 필요
         },
       });
-
-      return verification;
     },
   }),
 }));
