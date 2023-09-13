@@ -37,9 +37,7 @@
 
   const logout = graphql(`
     mutation DefaultLayout_UserMenu_Logout_Mutation {
-      logout {
-        id
-      }
+      logout
     }
   `);
 

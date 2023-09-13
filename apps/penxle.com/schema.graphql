@@ -43,10 +43,11 @@ type Mutation {
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   issueSSOAuthorizationUrl(input: IssueSSOAuthorizationUrlInput!): String!
   login(input: LoginInput!): User!
-  logout: User!
+  logout: Void
   prepareImageUpload: PrepareImageUploadPayload!
   requestEmailUpdate(input: requestEmailUpdateInput!): UserEmailVerification!
   requestPasswordReset(input: RequestPasswordResetInput!): UserEmailVerification!
+  resendEmailVerification: UserEmailVerification!
   resetPassword(input: ResetPasswordInput!): User!
   signUp(input: SignUpInput!): User!
   updatePassword(input: UpdatePasswordInput!): User!
@@ -140,6 +141,9 @@ enum UserSSOProvider {
   GOOGLE
   NAVER
 }
+
+"""Represents NULL values"""
+scalar Void
 
 input requestEmailUpdateInput {
   email: String!
