@@ -15,6 +15,7 @@ import {
   createAccessToken,
   createRandomAvatar,
   directUploadImage,
+  mergeQuery,
   renderAvatar,
 } from '$lib/server/utils';
 import { createId } from '$lib/utils';
@@ -272,7 +273,6 @@ builder.mutationFields((t) => ({
       });
 
       const user = await db.user.create({
-        ...query,
         data: {
           id: createId(),
           email: input.email.toLowerCase(),
@@ -337,7 +337,10 @@ builder.mutationFields((t) => ({
         maxAge: dayjs.duration(1, 'year').asSeconds(),
       });
 
-      return user;
+      return await db.user.findUniqueOrThrow({
+        ...query,
+        where: { id: user.id },
+      });
     },
   }),
 
@@ -352,18 +355,12 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  requestPasswordReset: t.prismaField({
-    type: 'UserEmailVerification',
+  requestPasswordReset: t.field({
+    type: 'Void',
     args: { input: t.arg({ type: RequestPasswordResetInput }) },
-    resolve: async (query, _, { input }, { db, ...context }) => {
+    resolve: async (_, { input }, { db, ...context }) => {
       const user = await db.user.findUnique({
-        select: {
-          id: true,
-          email: true,
-          profile: {
-            select: { name: true },
-          },
-        },
+        select: { id: true, email: true, profile: { select: { name: true } } },
         where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
       });
 
@@ -383,8 +380,7 @@ builder.mutationFields((t) => ({
         },
       });
 
-      return await db.userEmailVerification.create({
-        ...query,
+      await db.userEmailVerification.create({
         data: {
           id: createId(),
           userId: user.id,
@@ -416,14 +412,9 @@ builder.mutationFields((t) => ({
       });
 
       const user = await db.user.update({
-        ...query,
-        include: {
-          profile: {
-            select: {
-              name: true,
-            },
-          },
-        },
+        ...mergeQuery(query, {
+          include: { profile: { select: { name: true } } },
+        }),
         where: { id: request.userId },
         data: {
           password: {
@@ -461,12 +452,7 @@ builder.mutationFields((t) => ({
       }
 
       const user = await db.user.findUniqueOrThrow({
-        select: {
-          id: true,
-          profile: {
-            select: { name: true },
-          },
-        },
+        select: { id: true, profile: { select: { name: true } } },
         where: { id: context.session.userId, state: 'ACTIVE' },
       });
 
@@ -504,15 +490,7 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: VerifyEmailInput }) },
     resolve: async (query, _, { input }, { db }) => {
       const request = await db.userEmailVerification.findUniqueOrThrow({
-        include: {
-          user: {
-            include: {
-              profile: {
-                select: { name: true },
-              },
-            },
-          },
-        },
+        include: { user: { include: { profile: { select: { name: true } } } } },
         where: {
           token: input.token,
           expiresAt: {
@@ -581,20 +559,12 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: UpdatePasswordInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const user = await db.user.findUniqueOrThrow({
-        ...query,
-        include: {
-          profile: {
-            select: {
-              name: true,
-            },
+        ...mergeQuery(query, {
+          include: {
+            profile: { select: { name: true } },
+            password: { select: { id: true, hash: true } },
           },
-          password: {
-            select: {
-              id: true,
-              hash: true,
-            },
-          },
-        },
+        }),
         where: { id: context.session.userId },
       });
 
@@ -637,9 +607,7 @@ builder.mutationFields((t) => ({
         select: {
           id: true,
           email: true,
-          profile: {
-            select: { name: true },
-          },
+          profile: { select: { name: true } },
           isVerified: true,
         },
         where: { id: context.session.userId, state: 'ACTIVE' },
