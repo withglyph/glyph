@@ -41,8 +41,14 @@ const lambda = new aws.lambda.Function('literoom', {
       DD_SITE: 'ap1.datadoghq.com',
       DD_API_KEY_SECRET_ARN:
         'arn:aws:secretsmanager:ap-northeast-2:721144421085:secret:datadog/api-key-cWrlAs',
+
       DD_SERVICE: 'literoom',
       DD_ENV: 'prod',
+
+      DD_CAPTURE_LAMBDA_PAYLOAD: 'true',
+      DD_PROFILING_ENABLED: 'true',
+      DD_SERVERLESS_LOGS_ENABLED: 'true',
+      DD_TRACE_ENABLED: 'true',
     },
   },
 

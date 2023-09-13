@@ -77,7 +77,7 @@ export class Site extends pulumi.ComponentResource {
     }
 
     if (isProd) {
-      new aws.iam.RolePolicy(`${args.name}/dd@lambda`, {
+      new aws.iam.RolePolicy(`${args.name}_dd@lambda`, {
         role: role.name,
         policy: {
           Version: '2012-10-17',
@@ -129,8 +129,14 @@ export class Site extends pulumi.ComponentResource {
               DD_SITE: 'ap1.datadoghq.com',
               DD_API_KEY_SECRET_ARN:
                 'arn:aws:secretsmanager:ap-northeast-2:721144421085:secret:datadog/api-key-cWrlAs',
+
               DD_SERVICE: args.name,
               DD_ENV: stack,
+
+              DD_CAPTURE_LAMBDA_PAYLOAD: 'true',
+              DD_PROFILING_ENABLED: 'true',
+              DD_SERVERLESS_LOGS_ENABLED: 'true',
+              DD_TRACE_ENABLED: 'true',
             }),
           },
         },
