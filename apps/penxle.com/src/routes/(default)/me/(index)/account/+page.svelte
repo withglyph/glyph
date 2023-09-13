@@ -40,7 +40,7 @@
         <li>
           <a
             class="flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40"
-            href="/me"
+            href="/me/drawer"
           >
             나의 서랍
           </a>
@@ -48,7 +48,7 @@
         <li>
           <a
             class="flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40"
-            href="/me"
+            href="/me/interest"
           >
             관심 설정
           </a>
@@ -56,7 +56,7 @@
         <li>
           <a
             class="flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40"
-            href="/me"
+            href="/me/activities"
           >
             나의 활동
           </a>
@@ -64,7 +64,7 @@
         <li>
           <a
             class="flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40"
-            href="/me"
+            href="/me/preference"
           >
             필터링 설정
           </a>
@@ -72,7 +72,7 @@
         <li>
           <a
             class="flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40"
-            href="/me"
+            href="/me/notification"
           >
             알림 설정
           </a>
@@ -80,7 +80,7 @@
         <li>
           <a
             class="flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 bg-gray-5"
-            href="/me/account-settings"
+            href="/me/account"
           >
             계정 설정
           </a>
@@ -219,14 +219,5 @@
     </div>
   </div>
 </div>
-
-<!-- <Button
-  color="tertiary"
-  size="md"
-  variant="outlined"
-  on:click={() => (open = true)}
->
-  프로필 수정
-</Button> -->
 
 <UpdateProfileModal bind:open />
