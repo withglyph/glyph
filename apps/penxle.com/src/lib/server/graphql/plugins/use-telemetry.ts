@@ -1,7 +1,7 @@
 import { useOpenTelemetry } from '@envelop/opentelemetry';
-import { tracer } from '@penxle/lambda/metrics';
+import ddtrace from 'dd-trace';
 
-const provider = new tracer.TracerProvider();
+const provider = new ddtrace.TracerProvider();
 provider.register();
 
 export const useTelemetry = () =>
