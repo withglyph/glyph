@@ -26,10 +26,13 @@ export const lambda = (): Adapter => {
       await fs.writeFile(
         path.join(out, 'handler.js'),
         `
+          import path from 'node:path';
+          import { fileURLToPath } from 'node:url';
           import { createHandler } from '@penxle/lambda/adapter/handler';
           import { Server } from './index.js';
           import { manifest, prerendered } from './manifest.js';
-          export const handler = await createHandler({ Server, manifest, prerendered });
+          const basePath = path.dirname(fileURLToPath(import.meta.url));
+          export const handler = await createHandler({ basePath, Server, manifest, prerendered });
         `,
       );
 

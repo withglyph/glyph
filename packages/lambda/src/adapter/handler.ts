@@ -1,6 +1,5 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { installPolyfills } from '@sveltejs/kit/node/polyfills';
 import mime from 'mime-types';
 import { handler, router } from '../http';
@@ -9,19 +8,19 @@ import type { APIGatewayProxyEventV2 } from 'aws-lambda';
 import type { LambdaRequest } from '../http';
 
 type CreateHandlerParams = {
+  basePath: string;
   Server: typeof Server;
   manifest: SSRManifest;
   prerendered: Set<string>;
 };
 
 export const createHandler = async ({
+  basePath,
   Server,
   manifest,
   prerendered,
 }: CreateHandlerParams) => {
   installPolyfills();
-
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
   const server = new Server(manifest);
   await server.init({ env: process.env as Record<string, string> });
@@ -33,9 +32,7 @@ export const createHandler = async ({
       manifest.assets.has(pathname) ||
       pathname.startsWith(manifest.appPath)
     ) {
-      const buffer = await fs.readFile(
-        path.join(__dirname, 'public', pathname),
-      );
+      const buffer = await fs.readFile(path.join(basePath, 'public', pathname));
       const immutable = pathname.startsWith(`${manifest.appPath}/immutable`);
 
       return new Response(buffer, {
@@ -54,8 +51,8 @@ export const createHandler = async ({
 
     if (prerendered.has(pathname)) {
       const candidates = [
-        path.join(__dirname, 'public', `${pathname}.html`),
-        path.join(__dirname, 'public', pathname, 'index.html'),
+        path.join(basePath, 'public', `${pathname}.html`),
+        path.join(basePath, 'public', pathname, 'index.html'),
       ];
 
       for (const candidate of candidates) {
