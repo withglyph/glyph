@@ -20,7 +20,7 @@ import {
 import { createId } from '$lib/utils';
 import {
   LoginInputSchema,
-  requestEmailUpdateInputSchema,
+  RequestEmailUpdateInputSchema,
   RequestPasswordResetInputSchema,
   ResetPasswordInputSchema,
   SignUpInputSchema,
@@ -122,11 +122,11 @@ const RequestPasswordResetInput = builder.inputType(
   },
 );
 
-const requestEmailUpdateInput = builder.inputType('requestEmailUpdateInput', {
+const RequestEmailUpdateInput = builder.inputType('requestEmailUpdateInput', {
   fields: (t) => ({
     email: t.string(),
   }),
-  validate: { schema: requestEmailUpdateInputSchema },
+  validate: { schema: RequestEmailUpdateInputSchema },
 });
 
 const ResetPasswordInput = builder.inputType('ResetPasswordInput', {
@@ -137,7 +137,7 @@ const ResetPasswordInput = builder.inputType('ResetPasswordInput', {
   validate: { schema: ResetPasswordInputSchema },
 });
 
-const VerifyEmailInput = builder.inputType('TokenInput', {
+const VerifyEmailInput = builder.inputType('VerifyEmailInput', {
   fields: (t) => ({
     token: t.string(),
   }),
@@ -286,15 +286,17 @@ builder.mutationFields((t) => ({
               hash: await argon2.hash(input.password),
             },
           },
-          marketingAgreement: input.isMarketingAgreed
-            ? {
-                create: {
-                  id: createId(),
-                },
-              }
-            : undefined,
         },
       });
+
+      if (input.isMarketingAgreed) {
+        await db.userMarketingAgreement.create({
+          data: {
+            id: createId(),
+            userId: user.id,
+          },
+        });
+      }
 
       const token = createId();
 
@@ -303,7 +305,7 @@ builder.mutationFields((t) => ({
           id: createId(),
           userId: user.id,
           email: user.email,
-          type: 'EMAIL_VERIFY',
+          type: 'FIRST_SIGNUP',
           token,
           expiresAt: dayjs().add(2, 'day').toDate(),
         },
@@ -383,7 +385,7 @@ builder.mutationFields((t) => ({
         },
       });
 
-      const request = await db.userEmailVerification.create({
+      return await db.userEmailVerification.create({
         ...query,
         data: {
           id: createId(),
@@ -394,8 +396,6 @@ builder.mutationFields((t) => ({
           expiresAt: dayjs().add(1, 'hour').toDate(),
         },
       });
-
-      return request;
     },
   }),
 
@@ -411,6 +411,10 @@ builder.mutationFields((t) => ({
             gte: new Date(),
           },
         },
+      });
+
+      await db.userEmailVerification.delete({
+        where: { id: request.id },
       });
 
       const user = await db.user.update({
@@ -433,10 +437,6 @@ builder.mutationFields((t) => ({
         },
       });
 
-      await db.userEmailVerification.delete({
-        where: { id: request.id },
-      });
-
       await sendEmail({
         subject: 'PENXLE 비밀번호가 재설정되었어요.',
         recipient: user.email,
@@ -452,7 +452,7 @@ builder.mutationFields((t) => ({
 
   requestEmailUpdate: t.withAuth({ auth: true }).prismaField({
     type: 'UserEmailVerification',
-    args: { input: t.arg({ type: requestEmailUpdateInput }) },
+    args: { input: t.arg({ type: RequestEmailUpdateInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const isEmailUsed = await db.user.exists({
         where: { email: input.email.toLowerCase() },
@@ -501,19 +501,14 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  verifyEmail: t.withAuth({ auth: true }).prismaField({
+  verifyEmail: t.prismaField({
     type: 'User',
     args: { input: t.arg({ type: VerifyEmailInput }) },
     resolve: async (query, _, { input }, { db }) => {
       const request = await db.userEmailVerification.findUniqueOrThrow({
-        select: {
-          id: true,
-          email: true,
-          type: true,
+        include: {
           user: {
-            select: {
-              id: true,
-              email: true,
+            include: {
               profile: {
                 select: { name: true },
               },
@@ -528,18 +523,13 @@ builder.mutationFields((t) => ({
         },
       });
 
-      if (!['EMAIL_CHANGE', 'EMAIL_VERIFY'].includes(request.type)) {
-        throw new FormValidationError('token', '잘못된 토큰이에요.');
-      }
-
       if (request.type === 'EMAIL_CHANGE') {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const changeEmail = request.email!.toLowerCase();
+        const newEmail = request.email.toLowerCase();
 
         await db.user.update({
           where: { id: request.user.id },
           data: {
-            email: changeEmail,
+            email: newEmail,
           },
         });
 
@@ -549,7 +539,7 @@ builder.mutationFields((t) => ({
           template: EmailChangeNotice,
           props: {
             name: request.user.profile.name,
-            email: changeEmail,
+            email: newEmail,
           },
         });
       }
@@ -619,7 +609,16 @@ builder.mutationFields((t) => ({
         });
       }
 
-      await db.user.update({
+      await sendEmail({
+        subject: 'PENXLE 비밀번호가 재설정되었어요.',
+        recipient: user.email,
+        template: PasswordReset,
+        props: {
+          name: user.profile.name,
+        },
+      });
+
+      return await db.user.update({
         where: { id: context.session.userId },
         data: {
           password: {
@@ -630,17 +629,6 @@ builder.mutationFields((t) => ({
           },
         },
       });
-
-      await sendEmail({
-        subject: 'PENXLE 비밀번호가 재설정되었어요.',
-        recipient: user.email,
-        template: PasswordReset,
-        props: {
-          name: user.profile.name,
-        },
-      });
-
-      return user;
     },
   }),
 
@@ -686,7 +674,7 @@ builder.mutationFields((t) => ({
             id: createId(),
             userId: context.session.userId,
             email: user.email,
-            type: 'EMAIL_VERIFY',
+            type: 'FIRST_SIGNUP',
             token: createId(),
             expiresAt: dayjs().add(2, 'day').toDate(),
           },

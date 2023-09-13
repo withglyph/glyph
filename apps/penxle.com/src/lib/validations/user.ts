@@ -36,7 +36,7 @@ export const RequestPasswordResetInputSchema = z.object({
   email,
 });
 
-export const requestEmailUpdateInputSchema = z.object({
+export const RequestEmailUpdateInputSchema = z.object({
   email,
 });
 

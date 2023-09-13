@@ -235,7 +235,7 @@ enum SpaceMemberRole {
 }
 
 enum UserEmailVerificationType {
-  EMAIL_VERIFY
+  FIRST_SIGNUP
   EMAIL_CHANGE
   PASSWORD_RESET
 
