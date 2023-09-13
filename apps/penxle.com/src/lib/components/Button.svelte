@@ -50,7 +50,7 @@
       variant === 'outlined' &&
       'text-gray-40! border-gray-30! bg-transparent!',
     size === 'xs' && 'px-0! py-0! h-5.75 rounded-2xl',
-    size === 'sm' && 'px-0! py-0! h-6.5 rounded-lg',
+    size === 'sm' && 'p-2! h-6.5 rounded-lg',
     size === 'md' && 'text-sm h-9 rounded-2.5',
     size === 'lg' && 'text-base h-10 rounded-xl',
     size === 'xl' && 'text-base h-12.5 rounded-2xl',
