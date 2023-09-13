@@ -641,4 +641,61 @@ builder.mutationFields((t) => ({
       return user;
     },
   }),
+
+  resendEmailVerification: t.withAuth({ auth: true }).prismaField({
+    type: 'UserEmailVerification',
+    resolve: async (query, _, __, { db, ...context }) => {
+      const user = await db.user.findUniqueOrThrow({
+        select: {
+          id: true,
+          email: true,
+          profile: {
+            select: { name: true },
+          },
+        },
+        where: { id: context.session.userId, state: 'ACTIVE' },
+      });
+
+      let verification = await db.userEmailVerification.findFirst({
+        ...query,
+        where: {
+          userId: context.session.userId,
+        },
+      });
+
+      if (verification) {
+        await db.userEmailVerification.update({
+          where: {
+            id: verification.id,
+          },
+          data: {
+            expiresAt: dayjs().add(2, 'day').toDate(),
+          },
+        });
+      } else {
+        verification = await db.userEmailVerification.create({
+          ...query,
+          data: {
+            id: createId(),
+            userId: context.session.userId,
+            type: 'EMAIL_VERIFY',
+            token: createId(),
+            expiresAt: dayjs().add(2, 'day').toDate(),
+          },
+        });
+      }
+
+      await sendEmail({
+        subject: 'PENXLE 이메일 인증',
+        recipient: user.email,
+        template: EmailVerification,
+        props: {
+          name: user.profile.name,
+          url: `${context.url.origin}/email-verification?token=${verification.token}`, // TODO: 이메일 인증 페이지 URL 확정 필요
+        },
+      });
+
+      return verification;
+    },
+  }),
 }));
