@@ -1,12 +1,6 @@
-<svg
-  width="24"
-  height="25"
-  viewBox="0 0 24 25"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
->
+<svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path
-    d="M16.2732 13.5944L7.3756 0.749268H0V24.7493H7.72682V11.9042L16.6244 24.7493H24V0.749268H16.2732V13.5944Z"
+    d="M20.3414 16.0564L9.2195 0H0V30H9.65852V13.9437L20.7805 30H30V0H20.3414V16.0564Z"
     fill="#03CF5D"
   />
 </svg>
