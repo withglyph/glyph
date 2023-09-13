@@ -161,7 +161,7 @@ model UserEmailVerification {
   id        String                    @id
   userId    String                    @map("user_id")
   user      User                      @relation(fields: [userId], references: [id])
-  email     String? // 특별히 이메일이 다른 경우에만 필요(이메일 변경이라던가)
+  email     String
   token     String                    @unique
   type      UserEmailVerificationType
   createdAt DateTime                  @default(now()) @map("created_at") @db.Timestamptz
@@ -236,7 +236,7 @@ enum SpaceMemberRole {
 }
 
 enum UserEmailVerificationType {
-  EMAIL_VERIFY
+  FIRST_SIGNUP
   EMAIL_CHANGE
   PASSWORD_RESET
 
