@@ -1,7 +1,7 @@
 import { UserSSOProvider } from '@prisma/client';
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
-import { FormValidationError } from '$lib/errors';
+import { FormValidationError, UnknownError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
 import {
   EmailChange,
@@ -415,6 +415,7 @@ builder.mutationFields((t) => ({
               hash: await argon2.hash(input.password),
             },
           },
+          isVerified: true,
         },
       });
 
@@ -437,7 +438,10 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: RequestEmailUpdateInput }) },
     resolve: async (_, { input }, { db, ...context }) => {
       const isEmailUsed = await db.user.exists({
-        where: { email: input.email.toLowerCase() },
+        where: {
+          email: input.email.toLowerCase(),
+          state: 'ACTIVE',
+        },
       });
 
       if (isEmailUsed) {
@@ -490,6 +494,17 @@ builder.mutationFields((t) => ({
       });
 
       if (request.type === 'EMAIL_CHANGE') {
+        const isEmailUsed = await db.user.exists({
+          where: {
+            email: request.email,
+            state: 'ACTIVE',
+          },
+        });
+
+        if (isEmailUsed) {
+          throw new UnknownError();
+        }
+
         const newEmail = request.email.toLowerCase();
 
         await db.user.update({
@@ -601,40 +616,23 @@ builder.mutationFields((t) => ({
           profile: { select: { name: true } },
           isVerified: true,
         },
-        where: { id: context.session.userId, state: 'ACTIVE' },
-      });
-
-      if (user.isVerified) {
-        throw new FormValidationError('email', '이미 인증된 이메일이에요.'); // 지금 생각해보니까 418이 맞는 듯 해요...
-      }
-
-      let verification = await db.userEmailVerification.findFirst({
         where: {
-          userId: context.session.userId,
+          id: context.session.userId,
+          state: 'ACTIVE',
+          isVerified: false,
         },
       });
 
-      if (verification) {
-        await db.userEmailVerification.update({
-          where: {
-            id: verification.id,
-          },
-          data: {
-            expiresAt: dayjs().add(2, 'day').toDate(),
-          },
-        });
-      } else {
-        verification = await db.userEmailVerification.create({
-          data: {
-            id: createId(),
-            userId: context.session.userId,
-            email: user.email,
-            type: 'FIRST_SIGNUP',
-            token: createId(),
-            expiresAt: dayjs().add(2, 'day').toDate(),
-          },
-        });
-      }
+      const verification = await db.userEmailVerification.create({
+        data: {
+          id: createId(),
+          userId: context.session.userId,
+          email: user.email,
+          type: 'FIRST_SIGNUP',
+          token: createId(),
+          expiresAt: dayjs().add(2, 'day').toDate(),
+        },
+      });
 
       await sendEmail({
         subject: 'PENXLE 이메일 인증',

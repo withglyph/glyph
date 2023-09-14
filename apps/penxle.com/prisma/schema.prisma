@@ -134,7 +134,7 @@ model TagWikiRevision {
 
 model User {
   id         String    @id
-  email      String    @unique
+  email      String
   isVerified Boolean   @default(false) @map("is_verified")
   profileId  String    @unique @map("profile_id")
   profile    Profile   @relation(fields: [profileId], references: [id])
@@ -154,6 +154,7 @@ model User {
   authoredTagWikiRevisions TagWikiRevision[]
   uploadedImages           Image[]
 
+  @@index([email])
   @@map("users")
 }
 
