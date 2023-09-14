@@ -182,7 +182,7 @@ builder.mutationFields((t) => ({
     resolve: async (query, _, { input }, context) => {
       const db = context.db;
 
-      const user = await db.user.findUnique({
+      const user = await db.user.findFirst({
         select: { id: true, password: { select: { hash: true } } },
         where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
       });
@@ -351,7 +351,7 @@ builder.mutationFields((t) => ({
     nullable: true,
     args: { input: t.arg({ type: RequestPasswordResetInput }) },
     resolve: async (_, { input }, { db, ...context }) => {
-      const user = await db.user.findUnique({
+      const user = await db.user.findFirst({
         select: { id: true, email: true, profile: { select: { name: true } } },
         where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
       });
