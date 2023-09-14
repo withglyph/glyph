@@ -46,7 +46,7 @@ type Mutation {
   logout: Void
   prepareImageUpload: PrepareImageUploadPayload!
   requestEmailUpdate(input: requestEmailUpdateInput!): Void
-  requestPasswordReset(input: RequestPasswordResetInput!): Void!
+  requestPasswordReset(input: RequestPasswordResetInput!): Void
   resendEmailVerification: Void
   resetPassword(input: ResetPasswordInput!): User!
   signUp(input: SignUpInput!): User!
