@@ -19,7 +19,7 @@ export const defineConfig = (config: UserConfig) => {
     },
     ...config,
     server: {
-      host: '127.0.0.1',
+      host: 'localhost',
       strictPort: true,
       ...config.server,
     },
