@@ -11,7 +11,7 @@ export const basicColors = {
 
 export const shadedColors = {
   gray: {
-    5: '#FAFAF9',
+    5: '#F9F9F8',
     10: '#F1F1F0',
     20: '#E7E5E4',
     30: '#D6D3D1',
