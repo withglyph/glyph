@@ -1,7 +1,7 @@
 import { UserSSOProvider } from '@prisma/client';
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
-import { FormValidationError, UnknownError } from '$lib/errors';
+import { FormValidationError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
 import {
   EmailChange,
@@ -502,7 +502,7 @@ builder.mutationFields((t) => ({
         });
 
         if (isEmailUsed) {
-          throw new UnknownError();
+          throw new Error('이미 사용중인 이메일이에요.');
         }
 
         const newEmail = request.email.toLowerCase();
