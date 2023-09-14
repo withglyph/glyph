@@ -1,117 +1,128 @@
 <script lang="ts">
-  import { writable } from '@svelte-kits/store';
-  import { clsx } from 'clsx';
+  import clsx from 'clsx';
   import { onMount } from 'svelte';
-  import { cubicOut } from 'svelte/easing';
-  import { tweened } from 'svelte/motion';
   import { fade } from 'svelte/transition';
-  import { hover } from '$lib/svelte/actions';
+  import { store } from './store';
   import type { Toast } from './store';
 
   export let toast: Toast;
 
-  let el: HTMLDivElement;
-  const hovered = writable(false);
-
-  const top = tweened<number | null>(null, { easing: cubicOut });
-  $: if (toast.mounted) {
-    $top = toast.top;
-  }
-
+  const dismiss = () => store.update((v) => v.filter((t) => t.id !== toast.id));
   onMount(() => {
-    toast.set({
-      mounted: true,
-      top: el.offsetTop,
-      height: el.offsetHeight,
-    });
-
-    let startedTime: number;
-    let lastTickTime: number;
-    let duration = toast.duration;
-
-    const tick = (time: number) => {
-      if (!startedTime && !lastTickTime) {
-        startedTime = time;
-        lastTickTime = time;
-      }
-
-      if ($hovered) {
-        duration += time - lastTickTime;
-      }
-
-      const elapsed = time - startedTime;
-      if (elapsed > duration) {
-        toast.dismiss();
-        return;
-      }
-
-      lastTickTime = time;
-      id = requestAnimationFrame(tick);
-    };
-
-    let id = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(id);
+    const timeout = setTimeout(dismiss, 5000);
+    return () => clearTimeout(timeout);
   });
 </script>
 
 <div
-  bind:this={el}
-  style:position={toast.mounted ? 'absolute' : 'relative'}
-  style:top={`${$top ?? 0}px`}
-  style:right="0px"
-  class={clsx(
-    'max-w-100 min-w-100 border rounded px-4 py-3',
-    toast.type === 'info' && 'border-brand-30 bg-brand-5',
-    toast.type === 'success' && 'border-green-50 bg-green-5',
-    toast.type === 'error' && 'border-red-50 bg-red-5',
-  )}
-  use:hover={hovered}
-  transition:fade={{ duration: 200 }}
+  class="--toast rounded-lg w-96 h-12 flex gap-4 items-center"
+  out:fade={{ duration: 200 }}
 >
-  <div class="w-full flex items-center gap-4">
+  <div
+    class={clsx(
+      '--icon h-full flex center relative overflow-hidden',
+      toast.type === 'success' && 'bg-green-50',
+      toast.type === 'error' && 'bg-red-50',
+    )}
+  >
+    <div class="--progress absolute square-14 top-0 -left-14 bg-black/10" />
     <span
       class={clsx(
-        'square-5',
-        toast.type === 'info' && 'i-lc-info text-brand-50',
-        toast.type === 'success' && 'i-lc-check-circle text-green-50',
-        toast.type === 'error' && 'i-lc-alert-circle text-red-50',
+        'text-white',
+        toast.type === 'success' && 'i-lc-check-circle',
+        toast.type === 'error' && 'i-lc-alert-triangle',
       )}
-    />
-    <div
-      class={clsx(
-        'grow break-all font-semibold',
-        toast.type === 'info' && 'text-brand-70',
-        toast.type === 'success' && 'text-green-90',
-        toast.type === 'error' && 'text-red-70',
-      )}
-    >
-      {#if toast.title}
-        {toast.title}
-      {:else}
-        {toast.message}
-      {/if}
-    </div>
-    <button
-      class={clsx(
-        'i-lc-x square-5',
-        toast.type === 'info' && 'text-brand-50',
-        toast.type === 'success' && 'text-green-50',
-        toast.type === 'error' && 'text-red-50',
-      )}
-      type="button"
-      on:click={toast.dismiss}
     />
   </div>
-  {#if toast.title}
+
+  <div class="flex flex-col gap-1">
     <div
       class={clsx(
-        'break-all px-9 mt-1',
-        toast.type === 'info' && 'text-brand-50',
-        toast.type === 'success' && 'text-green-90',
-        toast.type === 'error' && 'text-red-70',
+        '--title font-extrabold text-xs',
+        toast.type === 'success' && 'text-green-50',
+        toast.type === 'error' && 'text-red-50',
       )}
     >
       {toast.message}
     </div>
-  {/if}
+
+    <div class="--message text-gray-50 text-xs">
+      {toast.message}
+    </div>
+  </div>
 </div>
+
+<style>
+  .--toast {
+    animation: toast 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0s both;
+  }
+
+  .--icon {
+    animation: icon 1s cubic-bezier(0.5, 1, 0.89, 1) 0.6s both;
+  }
+
+  .--title {
+    animation: title 0.3s cubic-bezier(0.5, 1, 0.89, 1) 1.8s both;
+  }
+
+  .--message {
+    animation: message 0.3s cubic-bezier(0.5, 1, 0.89, 1) 2.2s both;
+  }
+
+  .--progress {
+    animation: progress 2.4s linear 2.5s both;
+  }
+
+  @keyframes toast {
+    0% {
+      transform: translateX(calc(-100% - 2rem));
+    }
+
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes icon {
+    0% {
+      --uno: w-full rounded-lg;
+    }
+
+    100% {
+      --uno: w-14 rounded-l-lg;
+    }
+  }
+
+  @keyframes title {
+    0% {
+      opacity: 0;
+      transform: translateX(20%);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translate(0);
+    }
+  }
+
+  @keyframes message {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes progress {
+    /* 0% {
+
+    } */
+
+    100% {
+      left: 0;
+    }
+  }
+</style>
