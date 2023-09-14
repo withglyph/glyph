@@ -1,7 +1,13 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import PencilUnderline from '$assets/icons/pencil-underline.svg?component';
-  import { Badge, Button } from '$lib/components';
+  import { Button } from '$lib/components';
+  import TabContentItem from '$lib/components/TabContentItem.svelte';
+  import TabHead from '$lib/components/TabHead.svelte';
+  import TabHeadItem from '$lib/components/TabHeadItem.svelte';
+  import Reply from './Reply.svelte';
+
+  let activeTabValue = 1;
 </script>
 
 <Helmet title="나의 활동" />
@@ -86,24 +92,36 @@
 
   <div class="w-full max-w-200">
     <h2 class="hidden text-xl font-bold mb-6 sm:block">나의 활동</h2>
-    <div
-      class="bg-white py-8 px-6 space-y-8 text-3.75 sm:(px-8 border border-gray-30 rounded-2xl)"
-    >
-      <div class="flex flex-wrap items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-          <div class="square-12.5 bg-gray-90 rounded-full" />
-          <div>
-            <div class="flex flex-wrap">
-              <span class="text-lg font-extrabold mr-2">닉네임</span>
-              <Badge class="text-xs font-bold" color="red">
-                이메일 인증 필요
-              </Badge>
-            </div>
-            <span class="text-3.75 text-gray-50">kylie@penxle.io</span>
-          </div>
+    <div>
+      <TabHead variant="secondary">
+        <TabHeadItem
+          id={1}
+          {activeTabValue}
+          variant="secondary"
+          on:click={() => (activeTabValue = 1)}
+        >
+          <span>내가 작성한 포스트</span>
+        </TabHeadItem>
+        <TabHeadItem
+          id={2}
+          {activeTabValue}
+          variant="secondary"
+          on:click={() => (activeTabValue = 2)}
+        >
+          <span>내가 작성한 댓글</span>
+        </TabHeadItem>
+      </TabHead>
+      <TabContentItem id={1} {activeTabValue}>
+        <div
+          class="flex items-center gap-2 px-4 h-10 text-lg font-extrabold my-2 sm:my-4"
+        >
+          <h3>작성한 포스트</h3>
+          <span class="text-gray-50">7</span>
         </div>
-        <Button color="tertiary" size="md">프로필 수정</Button>
-      </div>
+      </TabContentItem>
+      <TabContentItem id={2} {activeTabValue}>
+        <Reply />
+      </TabContentItem>
     </div>
   </div>
 </div>
