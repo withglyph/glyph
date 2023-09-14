@@ -1,7 +1,7 @@
 import { UserSSOProvider } from '@prisma/client';
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
-import { FormValidationError, UnknownError } from '$lib/errors';
+import { FormValidationError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
 import {
   EmailChange,
@@ -182,7 +182,7 @@ builder.mutationFields((t) => ({
     resolve: async (query, _, { input }, context) => {
       const db = context.db;
 
-      const user = await db.user.findUnique({
+      const user = await db.user.findFirst({
         select: { id: true, password: { select: { hash: true } } },
         where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
       });
@@ -351,7 +351,7 @@ builder.mutationFields((t) => ({
     nullable: true,
     args: { input: t.arg({ type: RequestPasswordResetInput }) },
     resolve: async (_, { input }, { db, ...context }) => {
-      const user = await db.user.findUnique({
+      const user = await db.user.findFirst({
         select: { id: true, email: true, profile: { select: { name: true } } },
         where: { email: input.email.toLowerCase(), state: 'ACTIVE' },
       });
@@ -502,7 +502,7 @@ builder.mutationFields((t) => ({
         });
 
         if (isEmailUsed) {
-          throw new UnknownError();
+          throw new Error('이미 사용중인 이메일이에요.');
         }
 
         const newEmail = request.email.toLowerCase();
