@@ -76,7 +76,9 @@
         </button>
         <div class="h-2 border-l border-gray-50 mx-1" />
         <div class="flex flex-wrap items-center">
-          <Link class="hover:text-gray-50" href="/help">도움 센터</Link>
+          <Link class="hover:text-gray-50" href="https://help.penxle.com">
+            도움 센터
+          </Link>
           <div class="h-2 border-l border-gray-50 mx-1" />
           <Link class="hover:text-gray-50" href="/blog">펜슬 소식</Link>
           <div class="h-2 border-l border-gray-50 mx-1" />
