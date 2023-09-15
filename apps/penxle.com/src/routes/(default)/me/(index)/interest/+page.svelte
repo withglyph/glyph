@@ -5,7 +5,7 @@
 <Helmet title="관심 설정" />
 
 <div class="w-full max-w-200">
-  <h2 class="hidden text-xl font-bold mb-6 sm:block">관심 설정</h2>
+  <h2 class="text-xl font-bold mb-6 <sm:hidden">관심 설정</h2>
   <div class="flex flex-col gap-2 sm:(flex-row gap-9)">
     <div
       class="bg-white pt-3 pb-5 px-6 space-y-2 text-3.75 sm:(px-8 border border-gray-30 rounded-2xl max-w-50%)"

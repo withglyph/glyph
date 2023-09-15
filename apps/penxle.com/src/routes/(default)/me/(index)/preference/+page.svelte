@@ -7,7 +7,7 @@
 <Helmet title="필터링 설정" />
 
 <div class="w-full max-w-200">
-  <h2 class="hidden text-xl font-bold mb-6 sm:block">필터링 설정</h2>
+  <h2 class="text-xl font-bold mb-6 <sm:hidden">필터링 설정</h2>
   <div
     class="bg-white py-8 px-6 space-y-8 text-3.75 sm:(px-8 border border-gray-30 rounded-2xl)"
   >

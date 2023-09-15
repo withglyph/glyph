@@ -6,11 +6,11 @@
 </script>
 
 <div class="w-full max-w-291.25 flex flex-col sm:m-10">
-  <h1 class="hidden text-xl font-bold mb-5 sm:block">나의 펜슬</h1>
+  <h1 class="text-xl font-bold mb-5 <sm:hidden">나의 펜슬</h1>
   <div class="flex gap-10">
     <aside
       class={clsx(
-        'hidden w-81.25 bg-white border border-gray-30 rounded-2xl px-4 py-10 h-full sm:block',
+        'w-81.25 bg-white border border-gray-30 rounded-2xl px-4 py-10 h-full <sm:hidden',
         $page.url.pathname === '/me' &&
           'block! border-white w-full max-w-screen rounded-0!',
       )}

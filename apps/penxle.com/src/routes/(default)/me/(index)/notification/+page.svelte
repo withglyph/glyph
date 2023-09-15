@@ -6,7 +6,7 @@
 <Helmet title="알림 설정" />
 
 <div class="w-full max-w-200">
-  <h2 class="hidden text-xl font-bold mb-6 sm:block">알림 설정</h2>
+  <h2 class="text-xl font-bold mb-6 <sm:hidden">알림 설정</h2>
   <div class="bg-white sm:(space-y-8 border border-gray-30 rounded-2xl p-8)">
     <div class="hidden justify-end gap-8 text-3.75 text-gray-50 sm:flex">
       <span>웹사이트</span>
@@ -38,11 +38,11 @@
       <div
         class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
       >
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">웹사이트</span>
           <Switch />
         </div>
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">이메일</span>
           <Switch />
         </div>
@@ -64,11 +64,11 @@
       <div
         class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
       >
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">웹사이트</span>
           <Switch />
         </div>
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">이메일</span>
           <Switch />
         </div>
@@ -90,11 +90,11 @@
       <div
         class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
       >
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">웹사이트</span>
           <Switch />
         </div>
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">이메일</span>
           <Switch />
         </div>
@@ -116,11 +116,11 @@
       <div
         class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
       >
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">웹사이트</span>
           <Switch />
         </div>
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">이메일</span>
           <Switch />
         </div>
@@ -142,11 +142,11 @@
       <div
         class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
       >
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">웹사이트</span>
           <Switch />
         </div>
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">이메일</span>
           <Switch />
         </div>
@@ -168,11 +168,11 @@
       <div
         class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
       >
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">웹사이트</span>
           <Switch />
         </div>
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">이메일</span>
           <Switch />
         </div>
@@ -194,11 +194,11 @@
       <div
         class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
       >
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">웹사이트</span>
           <Switch />
         </div>
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">이메일</span>
           <Switch />
         </div>
@@ -220,11 +220,11 @@
       <div
         class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
       >
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">웹사이트</span>
           <Switch />
         </div>
-        <div class="flex justify-between sm:block">
+        <div class="flex justify-between">
           <span class="font-semibold sm:hidden">이메일</span>
           <Switch />
         </div>

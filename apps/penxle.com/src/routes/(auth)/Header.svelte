@@ -9,7 +9,7 @@
 >
   <nav class="flex items-center gap-2">
     <Link href="/">
-      <LogoWhite class="hidden sm:(block! square-6)" />
+      <LogoWhite class="<sm:hidden sm:square-6" />
     </Link>
     <Link href="/">
       <WordmarkWhite class="h-5.5" />

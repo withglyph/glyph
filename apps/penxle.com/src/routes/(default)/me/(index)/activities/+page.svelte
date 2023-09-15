@@ -11,7 +11,7 @@
 <Helmet title="나의 활동" />
 
 <div class="w-full max-w-200">
-  <h2 class="hidden text-xl font-bold mb-6 sm:block">나의 활동</h2>
+  <h2 class="text-xl font-bold mb-6 <sm:hidden">나의 활동</h2>
   <div>
     <TabHead variant="secondary">
       <TabHeadItem
