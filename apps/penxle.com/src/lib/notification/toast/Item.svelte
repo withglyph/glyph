@@ -8,6 +8,7 @@
   export let toast: Toast;
 
   const dismiss = () => store.update((v) => v.filter((t) => t.id !== toast.id));
+
   onMount(() => {
     const timeout = setTimeout(dismiss, 5000);
     return () => clearTimeout(timeout);
@@ -15,12 +16,12 @@
 </script>
 
 <div
-  class="--toast rounded-lg w-96 h-12 flex gap-4 items-center"
+  class="--toast rounded-lg w-96 h-12 flex gap-4 items-center drop-shadow bg-white relative"
   out:fade={{ duration: 200 }}
 >
   <div
     class={clsx(
-      '--icon h-full flex center relative overflow-hidden',
+      '--icon w-full h-full flex center absolute overflow-hidden',
       toast.type === 'success' && 'bg-green-50',
       toast.type === 'error' && 'bg-red-50',
     )}
@@ -35,7 +36,7 @@
     />
   </div>
 
-  <div class="flex flex-col gap-1">
+  <div class="flex flex-col gap-1 absolute left-18">
     <div
       class={clsx(
         '--title font-extrabold text-xs',
@@ -58,19 +59,19 @@
   }
 
   .--icon {
-    animation: icon 1s cubic-bezier(0.5, 1, 0.89, 1) 0.6s both;
+    animation: icon 0.5s cubic-bezier(0.5, 1, 0.89, 1) 0.45s both;
   }
 
   .--title {
-    animation: title 0.3s cubic-bezier(0.5, 1, 0.89, 1) 1.8s both;
+    animation: title 0.3s cubic-bezier(0.5, 1, 0.89, 1) 1s both;
   }
 
   .--message {
-    animation: message 0.3s cubic-bezier(0.5, 1, 0.89, 1) 2.2s both;
+    animation: message 0.3s cubic-bezier(0.5, 1, 0.89, 1) 1.25s both;
   }
 
   .--progress {
-    animation: progress 2.4s linear 2.5s both;
+    animation: progress 3.4s linear 1.5s both;
   }
 
   @keyframes toast {
@@ -117,10 +118,6 @@
   }
 
   @keyframes progress {
-    /* 0% {
-
-    } */
-
     100% {
       left: 0;
     }
