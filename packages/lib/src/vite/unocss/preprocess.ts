@@ -129,16 +129,25 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
       });
 
       const cssAst = csstree.parse(css);
-      csstree.walk(cssAst, {
-        visit: 'ClassSelector',
-        enter(node, item) {
-          item.data = csstree.fromPlainObject({
+
+      csstree.walk(cssAst, function (node, _, list) {
+        if (node.type === 'PseudoClassSelector' && node.name === 'global') {
+          // @ts-expect-error types are wrong
+          return this.skip;
+        }
+
+        if (node.type === 'ClassSelector') {
+          const children = list.copy();
+
+          list.clear();
+          list.push({
             type: 'PseudoClassSelector',
             name: 'global',
-            children: [{ type: 'ClassSelector', name: node.name }],
+            children,
           });
-        },
+        }
       });
+
       const style = csstree.generate(cssAst);
 
       if (ast.css) {
