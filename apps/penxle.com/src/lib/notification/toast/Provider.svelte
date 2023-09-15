@@ -3,7 +3,9 @@
   import { store } from './store';
 </script>
 
-<div class="fixed left-8 bottom-8 z-100 flex flex-col gap-2">
+<div
+  class="fixed left-0 bottom-0 w-100vw px-5 py-4 z-100 space-y-2 pointer-events-none"
+>
   {#each $store as toast (toast.id)}
     <Item {toast} />
   {/each}
