@@ -46,6 +46,7 @@
     "@unocss/preset-icons": "^0.55.7",
     "@unocss/preset-uno": "^0.55.7",
     "browserslist": "^4.21.10",
+    "css-tree": "^2.3.1",
     "lightningcss": "^1.21.7",
     "magic-string": "^0.30.3",
     "object-traversal": "^1.0.1",
@@ -56,6 +57,7 @@
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
     "@sveltejs/kit": "^1.24.1",
+    "@types/css-tree": "^2.3.2",
     "rollup": "^3.29.0",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2"
