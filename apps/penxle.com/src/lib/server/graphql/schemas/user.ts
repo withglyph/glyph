@@ -296,7 +296,7 @@ builder.mutationFields((t) => ({
           email: user.email,
           type: 'FIRST_SIGNUP',
           token,
-          expiresAt: dayjs().add(2, 'day').toDate(),
+          expiresAt: dayjs().add(30, 'day').toDate(),
         },
       });
 
@@ -462,7 +462,7 @@ builder.mutationFields((t) => ({
           type: 'EMAIL_CHANGE',
           email: input.email.toLowerCase(),
           token,
-          expiresAt: dayjs().add(1, 'hour').toDate(),
+          expiresAt: dayjs().add(30, 'day').toDate(),
         },
       });
 
@@ -630,7 +630,7 @@ builder.mutationFields((t) => ({
           email: user.email,
           type: 'FIRST_SIGNUP',
           token: createId(),
-          expiresAt: dayjs().add(2, 'day').toDate(),
+          expiresAt: dayjs().add(30, 'day').toDate(),
         },
       });
 
