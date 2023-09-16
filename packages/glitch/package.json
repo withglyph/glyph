@@ -54,8 +54,8 @@
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "@sveltejs/kit": "^1.24.1",
-    "rollup": "^3.29.0",
+    "@sveltejs/kit": "^1.25.0",
+    "rollup": "^3.29.2",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2",
     "vite": "^4.4.9"
