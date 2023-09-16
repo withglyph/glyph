@@ -8,10 +8,7 @@ export type Toast = {
   duration: number;
 };
 
-type ToastOptions = {
-  title?: string;
-  duration?: number;
-};
+type ToastOptions = Partial<Pick<Toast, 'title' | 'duration'>>;
 
 export const store = writable<Toast[]>([]);
 const append = (toast: Omit<Toast, 'id'>) => {
