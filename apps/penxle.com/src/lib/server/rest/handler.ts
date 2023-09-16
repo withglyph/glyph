@@ -1,13 +1,13 @@
 import { error, json } from 'itty-router';
 import { createContext } from '../context';
 import { createRouter } from './router';
-import { auth } from './routes';
+import { sso } from './routes';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { TransactionClient } from '../database';
 
 const router = createRouter();
 
-router.all('*', auth.handle).all('*', () => error(404));
+router.all('*', sso.handle).all('*', () => error(404));
 
 export const handler = async (event: RequestEvent) => {
   let context;

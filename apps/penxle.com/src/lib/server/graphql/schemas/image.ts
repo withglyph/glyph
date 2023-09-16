@@ -28,8 +28,8 @@ export const Image = builder.prismaObject('Image', {
   }),
 });
 
-const PrepareImageUploadPayload = builder.simpleObject(
-  'PrepareImageUploadPayload',
+const PrepareImageUploadResult = builder.simpleObject(
+  'PrepareImageUploadResult',
   {
     fields: (t) => ({
       key: t.string(),
@@ -74,7 +74,7 @@ builder.queryFields((t) => ({
 
 builder.mutationFields((t) => ({
   prepareImageUpload: t.withAuth({ auth: true }).field({
-    type: PrepareImageUploadPayload,
+    type: PrepareImageUploadResult,
     resolve: async () => {
       const key = aws.createS3ObjectKey('images');
 

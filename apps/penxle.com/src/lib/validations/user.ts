@@ -18,7 +18,7 @@ export const LoginInputSchema = z.object({
   password,
 });
 
-export const SignUpInputSchema = LoginInputSchema.extend({
+export const SignupInputSchema = LoginInputSchema.extend({
   name,
   passwordConfirm: z.string(),
   isAgreed: z.boolean().refine((v) => v, '약관에 동의해주세요'),
@@ -42,7 +42,7 @@ export const RequestEmailUpdateInputSchema = z.object({
 
 export const ResetPasswordInputSchema = z.object({
   password,
-  token: z.string(),
+  code: z.string(),
 });
 
 export const UpdatePasswordInputSchema = z.object({

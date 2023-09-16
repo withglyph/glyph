@@ -26,6 +26,16 @@
       location.href = '/';
     },
   });
+
+  const issueSSOAuthorizationUrl = graphql(`
+    mutation LoginPage_IssueSSOAuthorizationUrl_Mutation(
+      $input: IssueSSOAuthorizationUrlInput!
+    ) {
+      issueSSOAuthorizationUrl(input: $input) {
+        url
+      }
+    }
+  `);
 </script>
 
 <Helmet title="로그인" />
@@ -80,11 +90,31 @@
 </Button>
 
 <div class="flex gap-6">
-  <button class="flex center bg-gray-10 square-13.5 rounded-20" type="button">
+  <button
+    class="flex center bg-gray-10 square-13.5 rounded-20"
+    type="button"
+    on:click={async () => {
+      const { url } = await issueSSOAuthorizationUrl({
+        type: 'AUTH',
+        provider: 'GOOGLE',
+      });
+      location.href = url;
+    }}
+  >
     <Google class="square-8" />
   </button>
 
-  <button class="flex center bg-gray-10 square-13.5 rounded-20" type="button">
+  <button
+    class="flex center bg-gray-10 square-13.5 rounded-20"
+    type="button"
+    on:click={async () => {
+      const { url } = await issueSSOAuthorizationUrl({
+        type: 'AUTH',
+        provider: 'NAVER',
+      });
+      location.href = url;
+    }}
+  >
     <Naver class="square-6" />
   </button>
 </div>

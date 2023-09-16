@@ -133,13 +133,12 @@ model TagWikiRevision {
 }
 
 model User {
-  id         String    @id
-  email      String
-  isVerified Boolean   @default(false) @map("is_verified")
-  profileId  String    @unique @map("profile_id")
-  profile    Profile   @relation(fields: [profileId], references: [id])
-  state      UserState
-  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  id        String    @id
+  email     String
+  profileId String    @unique @map("profile_id")
+  profile   Profile   @relation(fields: [profileId], references: [id])
+  state     UserState
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   // 주로 쓰이는 릴레이션들
   password           UserPassword?
@@ -154,7 +153,7 @@ model User {
   authoredTagWikiRevisions TagWikiRevision[]
   uploadedImages           Image[]
 
-  @@index([email])
+  @@index([email, state])
   @@map("users")
 }
 
@@ -163,7 +162,7 @@ model UserEmailVerification {
   userId    String                    @map("user_id")
   user      User                      @relation(fields: [userId], references: [id])
   email     String
-  token     String                    @unique
+  code      String                    @unique
   type      UserEmailVerificationType
   createdAt DateTime                  @default(now()) @map("created_at") @db.Timestamptz
   expiresAt DateTime                  @map("expires_at") @db.Timestamptz
@@ -237,8 +236,8 @@ enum SpaceMemberRole {
 }
 
 enum UserEmailVerificationType {
-  FIRST_SIGNUP
-  EMAIL_CHANGE
+  USER_ACTIVATION
+  EMAIL_UPDATE
   PASSWORD_RESET
 
   @@map("_user_email_verification_type")
@@ -252,6 +251,7 @@ enum UserSSOProvider {
 }
 
 enum UserState {
+  PROVISIONAL
   ACTIVE
   INACTIVE
 

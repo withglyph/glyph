@@ -25,6 +25,11 @@ type Image {
 
 input IssueSSOAuthorizationUrlInput {
   provider: UserSSOProvider!
+  type: UserSSOAuthorizationType!
+}
+
+type IssueSSOAuthorizationUrlResult {
+  url: String!
 }
 
 """
@@ -41,21 +46,21 @@ type Mutation {
   createSpace(input: CreateSpaceInput!): Space!
   deleteSpace(input: DeleteSpaceInput!): Space!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
-  issueSSOAuthorizationUrl(input: IssueSSOAuthorizationUrlInput!): String!
+  issueSSOAuthorizationUrl(input: IssueSSOAuthorizationUrlInput!): IssueSSOAuthorizationUrlResult!
   login(input: LoginInput!): User!
   logout: Void
-  prepareImageUpload: PrepareImageUploadPayload!
+  prepareImageUpload: PrepareImageUploadResult!
   requestEmailUpdate(input: requestEmailUpdateInput!): Void
   requestPasswordReset(input: RequestPasswordResetInput!): Void
-  resendEmailVerification: Void
+  resendUserActivationEmail: Void
   resetPassword(input: ResetPasswordInput!): User!
-  signUp(input: SignUpInput!): User!
+  signup(input: SignupInput!): User!
   updatePassword(input: UpdatePasswordInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
   verifyEmail(input: VerifyEmailInput!): User!
 }
 
-type PrepareImageUploadPayload {
+type PrepareImageUploadResult {
   key: String!
   presignedUrl: String!
 }
@@ -80,11 +85,11 @@ input RequestPasswordResetInput {
 }
 
 input ResetPasswordInput {
+  code: String!
   password: String!
-  token: String!
 }
 
-input SignUpInput {
+input SignupInput {
   email: String!
   isAgreed: Boolean!
   isMarketingAgreed: Boolean!
@@ -115,7 +120,7 @@ enum SpaceMemberRole {
 
 input UpdatePasswordInput {
   newPassword: String!
-  oldPassword: String!
+  oldPassword: String
 }
 
 input UpdateUserProfileInput {
@@ -129,13 +134,18 @@ type User {
   spaces: [Space!]!
 }
 
+enum UserSSOAuthorizationType {
+  AUTH
+  LINK
+}
+
 enum UserSSOProvider {
   GOOGLE
   NAVER
 }
 
 input VerifyEmailInput {
-  token: String!
+  code: String!
 }
 
 """Represents NULL values"""

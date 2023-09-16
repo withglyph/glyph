@@ -10,14 +10,16 @@ import {
 import { createId } from '$lib/utils';
 import { createRouter } from '../router';
 
-export const auth = createRouter();
+export const sso = createRouter();
 
-auth.get('/auth/google', async (_, { db, ...context }) => {
+sso.get('/sso/google', async (_, { db, ...context }) => {
   const code = context.url.searchParams.get('code');
-  if (!code) {
+  const state = context.url.searchParams.get('state');
+  if (!code || !state) {
     return error(400);
   }
 
+  const payload = JSON.parse(state);
   const googleUser = await google.authorizeUser(context, code);
 
   const sso = await db.userSSO.findUnique({
@@ -31,8 +33,15 @@ auth.get('/auth/google', async (_, { db, ...context }) => {
 
   // 하나의 핸들러로 여러가지 기능을 처리하기에 케이스 분리가 필요함.
 
-  if (context.session) {
-    // 케이스 1: 현재 사이트에 로그인이 되어 있는 상태
+  if (payload.type === 'LINK') {
+    // 케이스 1: 계정 연동중인 경우
+
+    if (!context.session) {
+      // 케이스 1 (fail): 현재 사이트에 로그인이 되어 있지 않은 상태
+      // -> 에러
+
+      return error(400);
+    }
 
     if (sso) {
       // 케이스 1-1: 콜백이 날아온 구글 계정이 이미 사이트의 "누군가에게" 연동이 되어 있는 경우
@@ -42,10 +51,10 @@ auth.get('/auth/google', async (_, { db, ...context }) => {
         // 케이스 1-1-1: 그 "누군가"가 현재 로그인된 본인인 경우
         // -> 이미 로그인도 되어 있고 연동도 되어 있으니 아무것도 하지 않음
 
-        return status(301, { headers: { Location: '/' } });
+        return status(301, { headers: { Location: '/me/account' } });
       } else {
         // 케이스 1-1-2: 그 "누군가"가 현재 로그인된 본인이 아닌 경우
-        // -> 현재 로그인된 세션과 연동된 세션이 다르므로 에러
+        // -> 현재 로그인된 세션과 연동된 계정이 다르므로 에러
 
         return error(400);
       }
@@ -77,12 +86,11 @@ auth.get('/auth/google', async (_, { db, ...context }) => {
           },
         });
 
-        // TODO: 계정 연동 페이지로 리다이렉트 해야 함
-        return status(301, { headers: { Location: '/me/settings' } });
+        return status(301, { headers: { Location: '/me/account' } });
       }
     }
-  } else {
-    // 케이스 2: 현재 사이트에 로그인이 되어 있지 않은 상태
+  } else if (payload.type === 'AUTH') {
+    // 케이스 2: 계정 로그인 혹은 가입중인 경우
 
     if (sso) {
       // 케이스 2-1: 콜백이 날아온 구글 계정이 이미 사이트의 "누군가에게" 연동이 되어 있는 경우
@@ -127,7 +135,7 @@ auth.get('/auth/google', async (_, { db, ...context }) => {
 
         const avatarId = await directUploadImage({
           db,
-          name: 'avatar.png',
+          name: 'google-avatar.jpg',
           buffer: avatarBuffer,
         });
 

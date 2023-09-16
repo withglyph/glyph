@@ -10,7 +10,7 @@
     TextInput,
   } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
-  import { SignUpInputSchema } from '$lib/validations';
+  import { SignupInputSchema } from '$lib/validations';
 
   let value: HTMLInputElement['value'];
   let isAgreed: boolean;
@@ -21,8 +21,8 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation SignUpPage_SignUp_Mutation($input: SignUpInput!) {
-        signUp(input: $input) {
+      mutation SignupPage_Signup_Mutation($input: SignupInput!) {
+        signup(input: $input) {
           id
           email
 
@@ -38,7 +38,7 @@
         }
       }
     `),
-    schema: SignUpInputSchema,
+    schema: SignupInputSchema,
     onSuccess: (resp) => {
       mixpanel.identify(resp.id);
       mixpanel.track('user:signup', { method: 'email' });
@@ -101,7 +101,7 @@
         개인정보 수집 이용
       </Link> 동의(필수)
     </Checkbox>
-    <Checkbox name="isAgreed2" class="text-sm" bind:checked={isAgreed2}>
+    <Checkbox name="isMarketingAgreed" class="text-sm" bind:checked={isAgreed2}>
       마케팅 정보 수집 동의(선택)
     </Checkbox>
   </section>

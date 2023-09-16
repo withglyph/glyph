@@ -9,14 +9,18 @@ const createOAuthClient = (context: { url: URL }) => {
   return new google.auth.OAuth2({
     clientId: PRIVATE_GOOGLE_CLIENT_ID,
     clientSecret: PRIVATE_GOOGLE_CLIENT_SECRET,
-    redirectUri: `${context.url.origin}/api/auth/google`,
+    redirectUri: `${context.url.origin}/api/sso/google`,
   });
 };
 
-export const generateAuthorizationUrl = (context: { url: URL }) => {
+export const generateAuthorizationUrl = (
+  type: string,
+  context: { url: URL },
+) => {
   const client = createOAuthClient(context);
   return client.generateAuthUrl({
     scope: ['email', 'profile'],
+    state: JSON.stringify({ type }),
   });
 };
 
