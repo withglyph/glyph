@@ -8,10 +8,8 @@
 
   export let toast: Toast;
 
-  const duration = toast.type === 'success' ? 5000 : 10_000;
-  const progress = tweened(100, { duration, easing: linear });
-
   const dismiss = () => store.update((v) => v.filter((t) => t.id !== toast.id));
+  const progress = tweened(100, { duration: toast.duration, easing: linear });
 
   $: if ($progress === 0) {
     dismiss();
@@ -45,7 +43,7 @@
   </div>
 
   <div
-    in:slide={{ axis: 'x', delay: 400, duration: 400, easing: expoInOut }}
+    in:slide={{ axis: 'x', duration: 400, delay: 400, easing: expoInOut }}
     out:slide={{ axis: 'x', duration: 400, delay: 200, easing: expoInOut }}
   >
     <div
@@ -54,7 +52,19 @@
       in:fly={{ x: '-0.125rem', duration: 200, delay: 800, easing: sineInOut }}
       out:fly={{ x: '-0.125rem', duration: 200, easing: sineInOut }}
     >
-      <span class="text-sm font-bold line-clamp-1">{toast.message}</span>
+      <div class="flex flex-col">
+        {#if toast.title}
+          <span class="text-xs font-bold line-clamp-1">{toast.title}</span>
+        {/if}
+        <span
+          class={clsx(
+            'line-clamp-1',
+            toast.title ? 'text-xs font-semibold' : 'text-sm font-bold',
+          )}
+        >
+          {toast.message}
+        </span>
+      </div>
       <button class="i-lc-x" type="button" on:click={dismiss} />
     </div>
   </div>

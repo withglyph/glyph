@@ -3,16 +3,24 @@ import { writable } from 'svelte/store';
 export type Toast = {
   id: symbol;
   type: 'success' | 'error';
+  title?: string;
   message: string;
+  duration: number;
+};
+
+type ToastOptions = {
+  title?: string;
+  duration?: number;
 };
 
 export const store = writable<Toast[]>([]);
-const showToast = (type: 'success' | 'error', message: string) => {
-  const id: unique symbol = Symbol();
-  store.update((toasts) => [...toasts, { id, type, message }]);
+const append = (toast: Omit<Toast, 'id'>) => {
+  store.update((toasts) => [...toasts, { id: Symbol(), ...toast }]);
 };
 
 export const toast = {
-  success: (message: string) => showToast('success', message),
-  error: (message: string) => showToast('error', message),
+  success: (message: string, options?: ToastOptions) =>
+    append({ message, type: 'success', duration: 5000, ...options }),
+  error: (message: string, options?: ToastOptions) =>
+    append({ message, type: 'error', duration: 10_000, ...options }),
 };
