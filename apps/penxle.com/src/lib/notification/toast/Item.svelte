@@ -45,18 +45,8 @@
   </div>
 
   <div
-    in:slide={{
-      axis: 'x',
-      delay: 400,
-      duration: 400,
-      easing: expoInOut,
-    }}
-    out:slide={{
-      axis: 'x',
-      duration: 400,
-      delay: 200,
-      easing: expoInOut,
-    }}
+    in:slide={{ axis: 'x', delay: 400, duration: 400, easing: expoInOut }}
+    out:slide={{ axis: 'x', duration: 400, delay: 200, easing: expoInOut }}
   >
     <div
       class="flex items-center gap-4 text-white pl-4 pr-2"
