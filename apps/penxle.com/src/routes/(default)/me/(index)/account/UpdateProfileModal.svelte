@@ -16,7 +16,6 @@
       }
     `),
     schema: LoginInputSchema,
-    refetch: false,
     onSuccess: () => {
       open = false;
     },

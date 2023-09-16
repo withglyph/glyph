@@ -12,7 +12,6 @@ type MutationFormConfig<D, Z extends AnyZodObject> = {
   schema: Z | ZodEffects<Z> | { validate: Z; warn: Z };
   initialValues?: RecursivePartial<TypeOf<Z>>;
   mutation: MutationStore<D, { input: TypeOf<Z> }>;
-  refetch?: boolean;
   onSuccess?: (data: Unwrap<D>) => MaybePromise<void>;
   onError?: (error: AppError) => MaybePromise<void>;
 };

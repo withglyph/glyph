@@ -20,7 +20,6 @@
       }
     `),
     schema: LoginInputSchema,
-    refetch: false,
     onSuccess: (resp) => {
       mixpanel.identify(resp.id);
       mixpanel.track('user:login', { method: 'email' });

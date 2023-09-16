@@ -39,7 +39,6 @@
       }
     `),
     schema: SignUpInputSchema,
-    refetch: false,
     onSuccess: (resp) => {
       mixpanel.identify(resp.id);
       mixpanel.track('user:signup', { method: 'email' });
