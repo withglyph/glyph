@@ -1,5 +1,6 @@
+import './tracing';
+
 import { datadog } from 'datadog-lambda-js';
-import ddtrace from 'dd-trace';
 
 export const createHandler = (handler: unknown) => {
   if (process.env.DD_SITE) {
@@ -9,6 +10,4 @@ export const createHandler = (handler: unknown) => {
   return handler;
 };
 
-export const tracer = ddtrace.init();
-export const provider = new tracer.TracerProvider();
-provider.register();
+export * from './tracing';

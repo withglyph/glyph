@@ -369,9 +369,6 @@ importers:
       '@floating-ui/dom':
         specifier: ^1.5.1
         version: 1.5.1
-      '@opentelemetry/instrumentation':
-        specifier: ^0.43.0
-        version: 0.43.0(@opentelemetry/api@1.4.1)
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2
@@ -414,9 +411,6 @@ importers:
       '@prisma/client':
         specifier: ^5.2.0
         version: 5.2.0(prisma@5.2.0)
-      '@prisma/instrumentation':
-        specifier: ^5.3.0
-        version: 5.3.0
       '@pulumi/pulumi':
         specifier: ^3.81.0
         version: 3.81.0
@@ -664,12 +658,18 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.409.0
         version: 3.409.0
+      '@opentelemetry/instrumentation':
+        specifier: ^0.43.0
+        version: 0.43.0(@opentelemetry/api@1.4.1)
       '@pnpm/find-workspace-dir':
         specifier: ^6.0.2
         version: 6.0.2
       '@pnpm/workspace.find-packages':
         specifier: ^1.0.7
         version: 1.0.7(@pnpm/logger@5.0.0)
+      '@prisma/instrumentation':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@sveltejs/kit':
         specifier: ^1.24.1
         version: 1.24.1(svelte@4.2.0)(vite@4.4.9)
@@ -4120,7 +4120,7 @@ packages:
       shimmer: 1.2.1
     transitivePeerDependencies:
       - supports-color
-    dev: true
+    dev: false
 
   /@opentelemetry/instrumentation@0.43.0(@opentelemetry/api@1.4.1):
     resolution: {integrity: sha512-S1uHE+sxaepgp+t8lvIDuRgyjJWisAb733198kwQTUc9ZtYQ2V2gmyCtR1x21ePGVLoMiX/NWY7WA290hwkjJQ==}
@@ -4136,7 +4136,7 @@ packages:
       shimmer: 1.2.1
     transitivePeerDependencies:
       - supports-color
-    dev: true
+    dev: false
 
   /@opentelemetry/propagator-b3@1.15.2(@opentelemetry/api@1.4.1):
     resolution: {integrity: sha512-ZSrL3DpMEDsjD8dPt9Ze3ue53nEXJt512KyxXlLgLWnSNbe1mrWaXWkh7OLDoVJh9LqFw+tlvAhDVt/x3DaFGg==}
@@ -4704,7 +4704,7 @@ packages:
       '@opentelemetry/sdk-trace-base': 1.15.2(@opentelemetry/api@1.4.1)
     transitivePeerDependencies:
       - supports-color
-    dev: true
+    dev: false
 
   /@prisma/prisma-schema-wasm@4.17.0-26.6b0aef69b7cdfc787f822ecd7cdc76d5f1991584:
     resolution: {integrity: sha512-JFdsnSgBPN8reDTLOI9Vh/6ccCb2aD1LbY/LWQnkcIgNo6IdpzvuM+qRVbBuA6IZP2SdqQI8Lu6RL2P8EFBQUA==}
@@ -5871,7 +5871,7 @@ packages:
 
   /@types/shimmer@1.0.2:
     resolution: {integrity: sha512-dKkr1bTxbEsFlh2ARpKzcaAmsYixqt9UyCdoEZk8rHyE4iQYcDCyvSjDSf7JUWJHlJiTtbIoQjxKh6ViywqDAg==}
-    dev: true
+    dev: false
 
   /@types/ssri@7.1.1:
     resolution: {integrity: sha512-DPP/jkDaqGiyU75MyMURxLWyYLwKSjnAuGe9ZCsLp9QZOpXmDfuevk769F0BS86TmRuD5krnp06qw9nSoNO+0g==}
@@ -12373,7 +12373,7 @@ packages:
       resolve: 1.22.4
     transitivePeerDependencies:
       - supports-color
-    dev: true
+    dev: false
 
   /require-main-filename@2.0.0:
     resolution: {integrity: sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==}
