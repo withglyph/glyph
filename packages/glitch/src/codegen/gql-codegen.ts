@@ -40,7 +40,7 @@ export const generateGQLCodegen = async (context: GlitchContext) => {
       fragmentVariableSuffix: '',
       inlineFragmentTypes: 'mask',
       namingConvention: {
-        typeNames: 'change-case#upperCaseFirst',
+        typeNames: 'change-case-all#upperCaseFirst',
         enumValues: 'keep',
         transformUnderscore: true,
       },
