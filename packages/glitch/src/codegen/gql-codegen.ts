@@ -36,6 +36,7 @@ export const generateGQLCodegen = async (context: GlitchContext) => {
       documentNodeImport: '@penxle/glitch/runtime#TypedDocumentNode',
       documentVariablePrefix: 'DocumentNode_',
       documentVariableSuffix: '',
+      enumsAsTypes: true,
       fragmentVariablePrefix: 'DocumentNode_',
       fragmentVariableSuffix: '',
       inlineFragmentTypes: 'mask',

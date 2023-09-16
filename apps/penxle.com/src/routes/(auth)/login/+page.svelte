@@ -98,6 +98,7 @@
         type: 'AUTH',
         provider: 'GOOGLE',
       });
+
       location.href = url;
     }}
   >
@@ -112,6 +113,7 @@
         type: 'AUTH',
         provider: 'NAVER',
       });
+
       location.href = url;
     }}
   >
