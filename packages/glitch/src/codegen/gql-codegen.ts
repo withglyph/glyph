@@ -26,36 +26,26 @@ export const generateGQLCodegen = async (context: GlitchContext) => {
       urqlGraphcache,
     },
     plugins: [
-      {
-        typescript: {},
-      },
-      {
-        typescriptOperations: {
-          avoidOptionals: true,
-          inlineFragmentTypes: 'mask',
-          namingConvention: 'keep',
-          omitOperationSuffix: true,
-          skipTypename: true,
-        },
-      },
-      {
-        typedDocumentNode: {
-          documentNodeImport: '@penxle/glitch/runtime#TypedDocumentNode',
-          documentVariablePrefix: 'DocumentNode_',
-          documentVariableSuffix: '',
-          fragmentVariablePrefix: 'DocumentNode_',
-          fragmentVariableSuffix: '',
-          namingConvention: 'keep',
-          omitOperationSuffix: true,
-          useTypeImports: true,
-        },
-      },
-      {
-        urqlGraphcache: {
-          useTypeImports: true,
-        },
-      },
+      { typescript: {} },
+      { typescriptOperations: { skipTypename: true } },
+      { typedDocumentNode: {} },
+      { urqlGraphcache: {} },
     ],
-    config: {},
+    config: {
+      avoidOptionals: true,
+      documentNodeImport: '@penxle/glitch/runtime#TypedDocumentNode',
+      documentVariablePrefix: 'DocumentNode_',
+      documentVariableSuffix: '',
+      fragmentVariablePrefix: 'DocumentNode_',
+      fragmentVariableSuffix: '',
+      inlineFragmentTypes: 'mask',
+      namingConvention: {
+        typeNames: 'change-case#upperCaseFirst',
+        enumValues: 'keep',
+        transformUnderscore: true,
+      },
+      omitOperationSuffix: true,
+      useTypeImports: true,
+    },
   });
 };
