@@ -4,11 +4,8 @@ const artifacts = new aws.s3.Bucket('artifacts', {
   bucket: 'penxle-artifacts',
 
   lifecycleRules: [
-    {
-      enabled: true,
-      prefix: 'lambda/',
-      expiration: { days: 7 },
-    },
+    { enabled: true, prefix: 'actions-cache/', expiration: { days: 7 } },
+    { enabled: true, prefix: 'lambda/', expiration: { days: 7 } },
   ],
 });
 
