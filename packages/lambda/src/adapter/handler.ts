@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { installPolyfills } from '@sveltejs/kit/node/polyfills';
@@ -56,7 +57,7 @@ export const createHandler = async ({
       ];
 
       for (const candidate of candidates) {
-        if (!(await fs.stat(candidate).catch(() => null))) {
+        if (!existsSync(candidate)) {
           continue;
         }
 
