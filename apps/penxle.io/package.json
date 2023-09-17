@@ -15,6 +15,7 @@
     "@penxle/lambda": "workspace:^",
     "@penxle/lib": "workspace:^",
     "@penxle/pulumi": "workspace:^",
+    "@penxle/tracing": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@penxle/ui": "workspace:^",
     "@pulumi/pulumi": "^3.83.0",
