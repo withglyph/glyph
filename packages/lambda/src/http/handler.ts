@@ -1,4 +1,4 @@
-import { createHandler } from '../metrics';
+import { createHandler } from '../handler';
 import { createRequest, createResult } from './interop';
 import { router } from './router';
 import type { APIGatewayProxyHandlerV2 } from 'aws-lambda';

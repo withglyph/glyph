@@ -1,21 +1,15 @@
 import { defineConfig } from 'tsup';
 
-export default defineConfig([
-  {
-    entry: {
-      adapter: 'src/adapter/index.ts',
-      http: 'src/http/index.ts',
-      metrics: 'src/metrics/index.ts',
-    },
-    format: 'esm',
-    dts: true,
+export default defineConfig({
+  clean: true,
+  entry: {
+    'adapter': 'src/adapter/index.ts',
+    'action': 'src/action/index.ts',
+    'cli': 'src/cli/index.ts',
+    'adapter-handler': 'src/adapter/handler.ts',
+    'http': 'src/http/index.ts',
+    'handler': 'src/handler/index.ts',
   },
-  {
-    entry: {
-      'action': 'src/action/index.ts',
-      'cli': 'src/cli/index.ts',
-      'adapter-handler': 'src/adapter/handler.ts',
-    },
-    format: 'esm',
-  },
-]);
+  format: 'esm',
+  dts: true,
+});

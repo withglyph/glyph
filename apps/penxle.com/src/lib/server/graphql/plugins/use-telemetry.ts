@@ -1,5 +1,5 @@
 import { useOpenTelemetry } from '@envelop/opentelemetry';
-import { provider } from '@penxle/lambda/metrics';
+import { provider } from '@penxle/tracing';
 
 export const useTelemetry = () =>
   useOpenTelemetry(
