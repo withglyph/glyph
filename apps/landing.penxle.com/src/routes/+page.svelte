@@ -4,7 +4,6 @@
   import confetti from 'canvas-confetti';
   import { clsx } from 'clsx';
   import { fade } from 'svelte/transition';
-  import ComingSoon from '$assets/coming-soon.svg?component';
   import Logo from '$assets/logo.svg?component';
   import Slogan from '$assets/slogan.svg?component';
 
@@ -58,7 +57,7 @@
 
   <div class="flex flex-col center">
     <Logo class="square-100px" />
-    <ComingSoon class="mt-40px h-50px" />
+    <img class="mt-40px h-50px" alt="" src="/assets/coming-soon.webp" />
     <Slogan class="mt-32px h-25px" />
 
     <form
