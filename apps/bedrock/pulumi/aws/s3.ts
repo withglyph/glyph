@@ -1,4 +1,5 @@
 import * as aws from '@pulumi/aws';
+import * as pulumi from '@pulumi/pulumi';
 
 const artifacts = new aws.s3.Bucket('artifacts', {
   bucket: 'penxle-artifacts',
@@ -7,6 +8,21 @@ const artifacts = new aws.s3.Bucket('artifacts', {
     { enabled: true, prefix: 'actions-cache/', expiration: { days: 7 } },
     { enabled: true, prefix: 'lambda/', expiration: { days: 7 } },
   ],
+});
+
+new aws.s3.BucketPolicy('artifacts', {
+  bucket: artifacts.bucket,
+  policy: {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Principal: { Service: 'billingreports.amazonaws.com' },
+        Action: ['s3:GetBucketAcl', 's3:GetBucketPolicy', 's3:PutObject'],
+        Resource: [artifacts.arn, pulumi.interpolate`${artifacts.arn}/*`],
+      },
+    ],
+  },
 });
 
 const data = new aws.s3.Bucket('data', {
