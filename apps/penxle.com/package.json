@@ -57,7 +57,7 @@
     "clsx": "^2.0.0",
     "dayjs": "^1.11.9",
     "felte": "^1.2.12",
-    "googleapis": "^126.0.1",
+    "google-auth-library": "^9.0.0",
     "graphql": "^16.8.0",
     "graphql-scalars": "^1.22.2",
     "graphql-yoga": "^4.0.4",

@@ -1,4 +1,4 @@
-import { google } from 'googleapis';
+import { OAuth2Client } from 'google-auth-library';
 import {
   PRIVATE_GOOGLE_CLIENT_ID,
   PRIVATE_GOOGLE_CLIENT_SECRET,
@@ -6,7 +6,7 @@ import {
 import type { ExternalUser } from './types';
 
 const createOAuthClient = (context: { url: URL }) => {
-  return new google.auth.OAuth2({
+  return new OAuth2Client({
     clientId: PRIVATE_GOOGLE_CLIENT_ID,
     clientSecret: PRIVATE_GOOGLE_CLIENT_SECRET,
     redirectUri: `${context.url.origin}/api/auth/google`,
