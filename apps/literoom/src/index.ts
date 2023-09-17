@@ -1,5 +1,7 @@
+import '@penxle/tracing';
+
 import { S3Client, WriteGetObjectResponseCommand } from '@aws-sdk/client-s3';
-import { createHandler } from '@penxle/lambda/metrics';
+import { createHandler } from '@penxle/lambda/handler';
 import sharp from 'sharp';
 
 type Event = {

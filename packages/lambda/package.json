@@ -11,13 +11,13 @@
     "./adapter/handler": {
       "import": "./dist/adapter-handler.js"
     },
+    "./handler": {
+      "import": "./dist/handler.js",
+      "types": "./dist/handler.d.ts"
+    },
     "./http": {
       "import": "./dist/http.js",
       "types": "./dist/http.d.ts"
-    },
-    "./metrics": {
-      "import": "./dist/metrics.js",
-      "types": "./dist/metrics.d.ts"
     }
   },
   "bin": {
@@ -31,16 +31,11 @@
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@aws-sdk/client-s3": "^3.414.0",
-    "@opentelemetry/auto-instrumentations-node": "^0.39.2",
-    "@opentelemetry/instrumentation": "^0.43.0",
     "@pnpm/find-workspace-dir": "^6.0.2",
     "@pnpm/workspace.find-packages": "^1.0.9",
-    "@prisma/instrumentation": "^5.3.1",
     "@sveltejs/kit": "^1.25.0",
     "@vercel/nft": "^0.24.0",
     "datadog-lambda-js": "^7.98.0",
-    "dd-trace": "^4.15.0",
-    "exit-hook": "^4.0.0",
     "fast-glob": "^3.3.1",
     "fflate": "^0.8.0",
     "itty-router": "^4.0.23",

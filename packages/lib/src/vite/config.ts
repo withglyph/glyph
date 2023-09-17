@@ -23,5 +23,9 @@ export const defineConfig = (config: UserConfig) => {
       strictPort: true,
       ...config.server,
     },
+    ssr: {
+      ...config.ssr,
+      external: ['@penxle/tracing', ...(config.ssr?.external ?? [])],
+    },
   });
 };

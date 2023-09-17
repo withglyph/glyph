@@ -26,6 +26,7 @@ export const lambda = (): Adapter => {
       await fs.writeFile(
         path.join(out, 'handler.js'),
         `
+          import '@penxle/tracing';
           import path from 'node:path';
           import { fileURLToPath } from 'node:url';
           import { createHandler } from '@penxle/lambda/adapter/handler';
