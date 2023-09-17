@@ -11,7 +11,7 @@ type CreateHandlerParams = {
   basePath: string;
   Server: typeof Server;
   manifest: SSRManifest;
-  prerendered: Set<string>;
+  prerendered: Record<string, string>;
 };
 
 export const createHandler = async ({
@@ -40,7 +40,7 @@ export const createHandler = async ({
           'content-type': mime.lookup(pathname) || 'application/octet-stream',
           'cache-control': immutable
             ? 'public, max-age=31536000, immutable'
-            : 'public, max-age=0, must-revalidate',
+            : 'public, max-age=86400, must-revalidate',
         },
       });
     }
@@ -49,26 +49,17 @@ export const createHandler = async ({
   const prerender = async (_: LambdaRequest, event: APIGatewayProxyEventV2) => {
     const pathname = event.rawPath;
 
-    if (prerendered.has(pathname)) {
-      const candidates = [
-        path.join(basePath, 'public', `${pathname}.html`),
-        path.join(basePath, 'public', pathname, 'index.html'),
-      ];
+    if (pathname in prerendered) {
+      const buffer = await fs.readFile(
+        path.join(basePath, 'public', prerendered[pathname]),
+      );
 
-      for (const candidate of candidates) {
-        if (!(await fs.stat(candidate).catch(() => null))) {
-          continue;
-        }
-
-        const buffer = await fs.readFile(candidate);
-
-        return new Response(buffer, {
-          headers: {
-            'content-type': 'text/html',
-            'cache-control': 'public, max-age=0, must-revalidate',
-          },
-        });
-      }
+      return new Response(buffer, {
+        headers: {
+          'content-type': 'text/html',
+          'cache-control': 'public, max-age=60, must-revalidate',
+        },
+      });
     }
   };
 

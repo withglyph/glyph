@@ -58,8 +58,8 @@ export class Site extends pulumi.ComponentResource {
           Service: 'lambda.amazonaws.com',
         }),
         managedPolicyArns: [
-          aws.iam.ManagedPolicies.AWSLambdaVPCAccessExecutionRole,
-          aws.iam.ManagedPolicies.AWSXRayDaemonWriteAccess,
+          aws.iam.ManagedPolicy.AWSLambdaVPCAccessExecutionRole,
+          aws.iam.ManagedPolicy.AWSXRayDaemonWriteAccess,
         ],
       },
       { parent: this },
@@ -103,7 +103,7 @@ export class Site extends pulumi.ComponentResource {
         runtime: 'nodejs18.x',
         architectures: ['arm64'],
 
-        memorySize: args.resources?.memory ?? 256,
+        memorySize: args.resources?.memory ?? 1024,
         timeout: 59,
 
         reservedConcurrentExecutions: args.concurrency?.reserved ?? -1,

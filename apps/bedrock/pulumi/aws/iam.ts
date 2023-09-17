@@ -29,9 +29,7 @@ const ecsExecution = new aws.iam.Role('__execution@ecs', {
   assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
     Service: 'ecs-tasks.amazonaws.com',
   }),
-  managedPolicyArns: [
-    'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
-  ],
+  managedPolicyArns: [aws.iam.ManagedPolicy.AmazonECSTaskExecutionRolePolicy],
 });
 
 new aws.iam.RolePolicy('__execution@ecs', {
@@ -66,6 +64,7 @@ new aws.iam.RolePolicy('datadog-integration', {
           'autoscaling:Describe*',
           'backup:List*',
           'budgets:ViewBudget',
+          'ce:Get*',
           'cloudfront:GetDistributionConfig',
           'cloudfront:ListDistributions',
           'cloudtrail:DescribeTrails',
@@ -76,6 +75,7 @@ new aws.iam.RolePolicy('datadog-integration', {
           'cloudwatch:List*',
           'codedeploy:List*',
           'codedeploy:BatchGet*',
+          'cur:DescribeReportDefinitions',
           'directconnect:Describe*',
           'dynamodb:List*',
           'dynamodb:Describe*',
@@ -129,7 +129,9 @@ new aws.iam.RolePolicy('datadog-integration', {
           's3:GetBucketVersioning',
           's3:GetBucketWebsite',
           's3:GetEncryptionConfiguration',
+          's3:GetObject',
           's3:ListAllMyBuckets',
+          's3:ListBucket',
           's3:PutBucketNotification',
           'ses:Get*',
           'sns:List*',

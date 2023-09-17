@@ -11,7 +11,7 @@ const role = new aws.iam.Role('github-app@lambda', {
   assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
     Service: 'lambda.amazonaws.com',
   }),
-  managedPolicyArns: [aws.iam.ManagedPolicies.AWSLambdaBasicExecutionRole],
+  managedPolicyArns: [aws.iam.ManagedPolicy.AWSLambdaBasicExecutionRole],
 });
 
 new aws.iam.RolePolicy('github-app@lambda', {

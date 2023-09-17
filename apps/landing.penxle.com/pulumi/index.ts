@@ -6,6 +6,10 @@ const site = new penxle.Site('landing.penxle.com', {
   dns: {
     name: 'penxle.com',
   },
+
+  concurrency: {
+    provisioned: 2,
+  },
 });
 
 export const SITE_DOMAIN = site.siteDomain;
