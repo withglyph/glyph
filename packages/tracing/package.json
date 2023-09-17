@@ -11,9 +11,7 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@opentelemetry/auto-instrumentations-node": "^0.39.2",
     "@opentelemetry/instrumentation": "^0.43.0",
-    "@prisma/instrumentation": "^5.3.1",
     "dd-trace": "^4.15.0"
   },
   "devDependencies": {

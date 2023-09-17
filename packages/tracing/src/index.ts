@@ -1,6 +1,5 @@
 import 'dd-trace/init.js';
 
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import ddtrace from 'dd-trace';
 
@@ -10,5 +9,5 @@ provider.register();
 
 registerInstrumentations({
   tracerProvider: provider,
-  instrumentations: [getNodeAutoInstrumentations()],
+  instrumentations: [],
 });
