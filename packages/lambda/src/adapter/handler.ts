@@ -50,7 +50,9 @@ export const createHandler = async ({
     const pathname = event.rawPath;
 
     if (pathname in prerendered) {
-      const buffer = await fs.readFile(prerendered[pathname]);
+      const buffer = await fs.readFile(
+        path.join(basePath, 'public', prerendered[pathname]),
+      );
 
       return new Response(buffer, {
         headers: {
