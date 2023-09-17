@@ -1,5 +1,5 @@
 import { PrismaClient as BasePrismaClient } from '@prisma/client';
-import { dev } from '$app/environment';
+import { building, dev } from '$app/environment';
 import { PRIVATE_DATABASE_URL } from '$env/static/private';
 import { exists, logging, transaction } from './prisma';
 
@@ -14,3 +14,8 @@ export const prismaClient = baseClient.$extends(exists).$extends(transaction);
 
 export type PrismaClient = typeof prismaClient;
 export type { InteractiveTransactionClient, TransactionClient } from './prisma';
+
+if (!dev && !building) {
+  // warm up the database connection
+  await prismaClient.$connect();
+}
