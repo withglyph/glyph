@@ -14,13 +14,14 @@ export const lambda = (): Adapter => {
 
       builder.writeServer(out);
 
+      const prerendered: Record<string, string> = {};
+      for (const [p, { file }] of builder.prerendered.pages.entries()) {
+        prerendered[p] = file;
+      }
+
       await fs.appendFile(
         path.join(out, 'manifest.js'),
-        `
-          export const prerendered = new Set(${JSON.stringify(
-            builder.prerendered.paths,
-          )});
-        `,
+        `export const prerendered = ${JSON.stringify(prerendered)};`,
       );
 
       await fs.writeFile(

@@ -22,9 +22,10 @@ export const createRequest = (event: APIGatewayProxyEventV2): Request => {
   };
 
   if (event.body) {
-    init.body = event.isBase64Encoded
-      ? Buffer.from(event.body, 'base64')
-      : event.body;
+    init.body = Buffer.from(
+      event.body,
+      event.isBase64Encoded ? 'base64' : 'utf8',
+    );
   }
 
   return new Request(url, init);
@@ -32,6 +33,7 @@ export const createRequest = (event: APIGatewayProxyEventV2): Request => {
 
 const textTypes = [
   'text/',
+  'application/graphql-response+json',
   'application/javascript',
   'application/json',
   'application/xml',
@@ -43,13 +45,12 @@ export const createResult = async (
 ): Promise<APIGatewayProxyResultV2> => {
   const contentType = response.headers.get('content-type');
   const isText = textTypes.some((type) => contentType?.startsWith(type));
+  const body = await response.arrayBuffer();
 
   return {
     statusCode: response.status,
     headers: Object.fromEntries(response.headers),
-    body: isText
-      ? await response.text()
-      : Buffer.from(await response.arrayBuffer()).toString('base64'),
+    body: Buffer.from(body).toString(isText ? 'utf8' : 'base64'),
     isBase64Encoded: !isText,
   };
 };

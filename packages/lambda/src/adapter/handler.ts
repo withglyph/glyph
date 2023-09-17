@@ -1,4 +1,3 @@
-import { existsSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { installPolyfills } from '@sveltejs/kit/node/polyfills';
@@ -12,7 +11,7 @@ type CreateHandlerParams = {
   basePath: string;
   Server: typeof Server;
   manifest: SSRManifest;
-  prerendered: Set<string>;
+  prerendered: Record<string, string>;
 };
 
 export const createHandler = async ({
@@ -50,26 +49,15 @@ export const createHandler = async ({
   const prerender = async (_: LambdaRequest, event: APIGatewayProxyEventV2) => {
     const pathname = event.rawPath;
 
-    if (prerendered.has(pathname)) {
-      const candidates = [
-        path.join(basePath, 'public', `${pathname}.html`),
-        path.join(basePath, 'public', pathname, 'index.html'),
-      ];
+    if (pathname in prerendered) {
+      const buffer = await fs.readFile(prerendered[pathname]);
 
-      for (const candidate of candidates) {
-        if (!existsSync(candidate)) {
-          continue;
-        }
-
-        const buffer = await fs.readFile(candidate);
-
-        return new Response(buffer, {
-          headers: {
-            'content-type': 'text/html',
-            'cache-control': 'public, max-age=0, must-revalidate',
-          },
-        });
-      }
+      return new Response(buffer, {
+        headers: {
+          'content-type': 'text/html',
+          'cache-control': 'public, max-age=60, must-revalidate',
+        },
+      });
     }
   };
 
