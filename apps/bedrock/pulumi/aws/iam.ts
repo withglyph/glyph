@@ -29,9 +29,7 @@ const ecsExecution = new aws.iam.Role('__execution@ecs', {
   assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
     Service: 'ecs-tasks.amazonaws.com',
   }),
-  managedPolicyArns: [
-    'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
-  ],
+  managedPolicyArns: [aws.iam.ManagedPolicy.AmazonECSTaskExecutionRolePolicy],
 });
 
 new aws.iam.RolePolicy('__execution@ecs', {

@@ -13,7 +13,7 @@ const role = new aws.iam.Role('literoom@lambda', {
   assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
     Service: 'lambda.amazonaws.com',
   }),
-  managedPolicyArns: [aws.iam.ManagedPolicies.AWSLambdaBasicExecutionRole],
+  managedPolicyArns: [aws.iam.ManagedPolicy.AWSLambdaBasicExecutionRole],
 });
 
 const lambda = new aws.lambda.Function('literoom', {

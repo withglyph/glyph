@@ -58,8 +58,8 @@ export class Site extends pulumi.ComponentResource {
           Service: 'lambda.amazonaws.com',
         }),
         managedPolicyArns: [
-          aws.iam.ManagedPolicies.AWSLambdaVPCAccessExecutionRole,
-          aws.iam.ManagedPolicies.AWSXRayDaemonWriteAccess,
+          aws.iam.ManagedPolicy.AWSLambdaVPCAccessExecutionRole,
+          aws.iam.ManagedPolicy.AWSXRayDaemonWriteAccess,
         ],
       },
       { parent: this },
