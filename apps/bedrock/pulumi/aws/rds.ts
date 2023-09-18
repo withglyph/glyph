@@ -60,5 +60,5 @@ export const rds = {
 };
 
 export const outputs = {
-  AWS_RDS_PENXLE_CONNECTION_URL: pulumi.interpolate`postgresql://root:${password.result}@${cluster.endpoint}/penxle`,
+  AWS_RDS_PENXLE_CONNECTION_URL: pulumi.interpolate`postgresql://root:${password.result}@${cluster.endpoint}`,
 };
