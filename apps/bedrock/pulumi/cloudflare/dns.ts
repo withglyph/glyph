@@ -1,6 +1,7 @@
 import * as cloudflare from '@pulumi/cloudflare';
 import { certificates } from '$aws/acm';
 import { instances } from '$aws/ec2';
+import { elasticache } from '$aws/elasticache';
 import { rds } from '$aws/rds';
 import { awsSesDkimTokens } from '$aws/ses';
 import { zones } from '$cloudflare/zone';
@@ -198,6 +199,14 @@ new cloudflare.Record('pool.db.pnxl.co', {
   name: 'pool.db.pnxl.co',
   value: instances.rdsPooler.privateIp,
   comment: 'Amazon EC2',
+});
+
+new cloudflare.Record('redis.pnxl.co', {
+  zoneId: zones.pnxl_co.id,
+  type: 'CNAME',
+  name: 'redis.pnxl.co',
+  value: elasticache.cluster.primaryEndpointAddress,
+  comment: 'Amazon ElastiCache',
 });
 
 new cloudflare.Record('c.pnxl.net', {

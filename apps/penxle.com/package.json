@@ -61,6 +61,7 @@
     "graphql": "^16.8.0",
     "graphql-scalars": "^1.22.2",
     "graphql-yoga": "^4.0.4",
+    "ioredis": "^5.3.2",
     "itty-router": "^4.0.23",
     "jose": "^4.14.6",
     "js-base64": "^3.7.5",
