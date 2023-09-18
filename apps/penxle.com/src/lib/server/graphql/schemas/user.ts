@@ -54,6 +54,8 @@ builder.prismaObject('User', {
       }),
       resolve: (_, { spaces }) => spaces.map(({ space }) => space),
     }),
+
+    ssos: t.relation('ssos'),
   }),
 });
 
@@ -64,6 +66,14 @@ builder.prismaObject('Profile', {
     name: t.exposeString('name'),
 
     avatar: t.relation('avatar'),
+  }),
+});
+
+builder.prismaObject('UserSSO', {
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    provider: t.expose('provider', { type: UserSSOProvider }),
+    email: t.exposeString('providerEmail'),
   }),
 });
 
