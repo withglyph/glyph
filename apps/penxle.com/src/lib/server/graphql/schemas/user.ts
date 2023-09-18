@@ -37,7 +37,10 @@ import { builder } from '../builder';
  */
 
 builder.prismaObject('User', {
-  select: { id: true },
+  select: {
+    id: true,
+    state: true,
+  },
   fields: (t) => ({
     id: t.exposeID('id'),
     email: t.exposeString('email', { authScopes: (user) => ({ user }) }),
@@ -56,6 +59,9 @@ builder.prismaObject('User', {
     }),
 
     ssos: t.relation('ssos'),
+    isVerified: t.boolean({
+      resolve: (user) => user.state === 'ACTIVE',
+    }),
   }),
 });
 

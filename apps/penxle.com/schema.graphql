@@ -130,6 +130,7 @@ input UpdateUserProfileInput {
 type User {
   email: String!
   id: ID!
+  isVerified: Boolean!
   profile: Profile!
   spaces: [Space!]!
   ssos: [UserSSO!]!
