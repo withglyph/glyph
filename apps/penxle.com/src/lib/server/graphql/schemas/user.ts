@@ -566,6 +566,7 @@ builder.mutationFields((t) => ({
           where: { id: verification.user.id },
           data: {
             email: verification.email,
+            state: 'ACTIVE',
           },
         });
       }
