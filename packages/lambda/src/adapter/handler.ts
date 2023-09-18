@@ -40,7 +40,7 @@ export const createHandler = async ({
           'content-type': mime.lookup(pathname) || 'application/octet-stream',
           'cache-control': immutable
             ? 'public, max-age=31536000, immutable'
-            : 'public, max-age=86400, must-revalidate',
+            : 'public, max-age=0, must-revalidate',
         },
       });
     }
@@ -57,7 +57,7 @@ export const createHandler = async ({
       return new Response(buffer, {
         headers: {
           'content-type': 'text/html',
-          'cache-control': 'public, max-age=60, must-revalidate',
+          'cache-control': 'public, max-age=0, must-revalidate',
         },
       });
     }
