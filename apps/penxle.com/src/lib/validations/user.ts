@@ -46,6 +46,6 @@ export const ResetPasswordInputSchema = z.object({
 });
 
 export const UpdatePasswordInputSchema = z.object({
-  oldPassword: password,
+  oldPassword: password.optional(),
   newPassword: password,
 });
