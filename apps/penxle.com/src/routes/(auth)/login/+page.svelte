@@ -71,7 +71,7 @@
 
 <Button
   class="w-full mt-3 max-w-87.5"
-  color="tertiary"
+  color="secondary"
   href="/signup"
   size="xl"
   type="link"
