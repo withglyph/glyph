@@ -34,7 +34,7 @@
         </div>
       </div>
       <Button
-        color="tertiary"
+        color="secondary"
         size="md"
         on:click={() => (updateProfileOpen = true)}
       >
@@ -72,7 +72,7 @@
           펜슬의 콘텐츠를 이용하려면 본인 인증이 필요해요
         </p>
       </div>
-      <Button color="tertiary" size="md">인증하기</Button>
+      <Button color="secondary" size="md">인증하기</Button>
     </div>
 
     <div class="flex flex-wrap items-center justify-between gap-4">
@@ -112,7 +112,7 @@
           <h3 class="text-lg font-extrabold mr-2">Naver</h3>
         </div>
       </div>
-      <Button color="tertiary" size="md">연동하기</Button>
+      <Button color="secondary" size="md">연동하기</Button>
     </div>
 
     <div class="w-full border-b border-alphagray-15" />
@@ -133,7 +133,7 @@
         <p class="text-3.75 text-gray-50 break-keep">비밀번호를 변경하세요</p>
       </div>
       <Button
-        color="tertiary"
+        color="secondary"
         size="md"
         on:click={() => (updatePasswordOpen = true)}
       >
@@ -148,7 +148,7 @@
           2차 인증을 통해 계정을 더욱 안전하게 관리하세요
         </p>
       </div>
-      <Button color="tertiary" size="md">인증하기</Button>
+      <Button color="secondary" size="md">인증하기</Button>
     </div>
 
     <div class="w-full border-b border-alphagray-15" />

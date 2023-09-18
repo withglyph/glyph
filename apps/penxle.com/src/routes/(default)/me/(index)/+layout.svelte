@@ -25,7 +25,7 @@
           class="w-full flex items-center justify-between gap-2 px-3 py-2.5 bg-gray-10 rounded-2.5"
         >
           <span class="font-bold">1000P</span>
-          <Button color="secondary" size="md">충전하기</Button>
+          <Button size="md">충전하기</Button>
         </div>
         <Button class="w-full" color="tertiary" size="md" variant="outlined">
           <PencilUnderline class="square-5 mr-2" />

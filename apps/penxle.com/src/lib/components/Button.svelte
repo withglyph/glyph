@@ -22,7 +22,7 @@
 
   export let disabled = false;
   export let loading = false;
-  export let color: 'primary' | 'secondary' | 'tertiary' = 'secondary';
+  export let color: 'primary' | 'secondary' | 'tertiary' = 'primary';
   export let variant: 'text' | 'outlined' | 'contained' = 'contained';
   export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
 
@@ -60,15 +60,11 @@
     !disabled &&
       color === 'primary' &&
       variant === 'contained' &&
-      'text-brand-90 bg-brand-50 hover:bg-brand-55 active:bg-brand-55',
+      'text-red-5 bg-gray-90 border border-gray-90 hover:bg-gray-80 active:bg-black',
     !disabled &&
       color === 'secondary' &&
       variant === 'contained' &&
-      'text-red-5 bg-gray-90 hover:bg-gray-80 active:bg-black',
-    !disabled &&
-      color === 'tertiary' &&
-      variant === 'contained' &&
-      'text-gray-90 bg-gray-10 hover:bg-gray-20 active:bg-gray-20',
+      'text-gray-90 bg-gray-10 border border-gray-10 hover:bg-gray-20 active:bg-gray-20',
     !disabled &&
       color === 'tertiary' &&
       variant === 'outlined' &&

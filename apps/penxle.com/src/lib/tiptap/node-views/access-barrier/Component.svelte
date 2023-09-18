@@ -45,7 +45,7 @@
   </p>
 
   <div slot="action" class="flex gap-2">
-    <Button color="tertiary" size="md" on:click={() => (open = false)}>
+    <Button color="secondary" size="md" on:click={() => (open = false)}>
       취소
     </Button>
     <Button
