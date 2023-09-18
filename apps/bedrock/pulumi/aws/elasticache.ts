@@ -1,7 +1,8 @@
 import * as aws from '@pulumi/aws';
+import * as pulumi from '@pulumi/pulumi';
 import { securityGroups, subnets } from '$aws/vpc';
 
-new aws.elasticache.ReplicationGroup('penxle', {
+const cluster = new aws.elasticache.ReplicationGroup('penxle', {
   replicationGroupId: 'penxle',
   description: 'Redis cluster',
 
@@ -21,7 +22,7 @@ new aws.elasticache.ReplicationGroup('penxle', {
   automaticFailoverEnabled: false,
 
   atRestEncryptionEnabled: true,
-  transitEncryptionEnabled: true,
+  transitEncryptionEnabled: false,
 
   snapshotRetentionLimit: 7,
   finalSnapshotIdentifier: 'penxle-final-snapshot',
@@ -31,3 +32,11 @@ new aws.elasticache.ReplicationGroup('penxle', {
 
   applyImmediately: true,
 });
+
+export const elasticache = {
+  cluster,
+};
+
+export const outputs = {
+  AWS_ELASTICACHE_PENXLE_CONNECTION_URL: pulumi.interpolate`redis://${cluster.primaryEndpointAddress}`,
+};
