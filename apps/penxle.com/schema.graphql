@@ -132,6 +132,13 @@ type User {
   id: ID!
   profile: Profile!
   spaces: [Space!]!
+  ssos: [UserSSO!]!
+}
+
+type UserSSO {
+  email: String!
+  id: ID!
+  provider: UserSSOProvider!
 }
 
 enum UserSSOAuthorizationType {

@@ -184,6 +184,7 @@ model UserSSO {
   userId         String          @map("user_id")
   user           User            @relation(fields: [userId], references: [id])
   provider       UserSSOProvider
+  providerEmail  String          @map("provider_email")
   providerUserId String          @map("provider_user_id")
   createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz
 

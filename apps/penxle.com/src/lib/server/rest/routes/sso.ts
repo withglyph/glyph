@@ -81,6 +81,7 @@ sso.get('/sso/google', async (_, { db, ...context }) => {
           data: {
             id: createId(),
             provider: 'GOOGLE',
+            providerEmail: googleUser.email,
             providerUserId: googleUser.id,
             user: { connect: { id: context.session.userId } },
           },
@@ -155,6 +156,7 @@ sso.get('/sso/google', async (_, { db, ...context }) => {
               create: {
                 id: createId(),
                 provider: 'GOOGLE',
+                providerEmail: googleUser.email,
                 providerUserId: googleUser.id,
               },
             },
