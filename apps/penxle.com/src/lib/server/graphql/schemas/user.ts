@@ -399,14 +399,16 @@ builder.mutationFields((t) => ({
         throw new FormValidationError('email', '잘못된 이메일이에요.');
       }
 
+      const expiresAt = dayjs().add(1, 'hour').toDate();
+
       const verification = await db.userEmailVerification.create({
         data: {
           id: createId(),
           userId: user.id,
           email: user.email,
           type: 'PASSWORD_RESET',
-          code: nanoid(),
-          expiresAt: dayjs().add(1, 'hour').toDate(),
+          code: `${nanoid()}.${expiresAt.getTime()}`,
+          expiresAt,
         },
       });
 

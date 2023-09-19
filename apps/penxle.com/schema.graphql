@@ -50,7 +50,7 @@ type Mutation {
   login(input: LoginInput!): User!
   logout: Void
   prepareImageUpload: PrepareImageUploadResult!
-  requestEmailUpdate(input: requestEmailUpdateInput!): Void
+  requestEmailUpdate(input: RequestEmailUpdateInput!): Void
   requestPasswordReset(input: RequestPasswordResetInput!): Void
   resendUserActivationEmail: Void
   resetPassword(input: ResetPasswordInput!): Void
@@ -78,6 +78,10 @@ type Query {
   sampleImage: Image!
   sampleImages: [Image!]!
   space(slug: String!): Space!
+}
+
+input RequestEmailUpdateInput {
+  email: String!
 }
 
 input RequestPasswordResetInput {
@@ -131,10 +135,10 @@ input UpdateUserProfileInput {
 type User {
   email: String!
   id: ID!
-  isVerified: Boolean!
   profile: Profile!
   spaces: [Space!]!
   ssos: [UserSSO!]!
+  state: UserState!
 }
 
 type UserSSO {
@@ -153,13 +157,15 @@ enum UserSSOProvider {
   NAVER
 }
 
+enum UserState {
+  ACTIVE
+  INACTIVE
+  PROVISIONAL
+}
+
 input VerifyEmailInput {
   code: String!
 }
 
 """Represents NULL values"""
 scalar Void
-
-input requestEmailUpdateInput {
-  email: String!
-}
