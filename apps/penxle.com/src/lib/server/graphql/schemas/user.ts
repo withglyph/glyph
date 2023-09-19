@@ -47,6 +47,13 @@ builder.prismaObject('User', {
     profile: t.relation('profile'),
     ssos: t.relation('ssos'),
 
+    isMarketingAgreed: t.boolean({
+      select: {
+        marketingAgreement: true,
+      },
+      resolve: (user) => !!user.marketingAgreement,
+    }),
+
     spaces: t.prismaField({
       type: ['Space'],
       select: (_, __, nestedSelection) => ({
