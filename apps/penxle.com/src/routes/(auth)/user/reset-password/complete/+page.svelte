@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
@@ -8,30 +9,35 @@
   import { ResetPasswordInputSchema } from '$lib/validations';
 
   let open = false;
+  let isExpired = false;
+
+  onMount(() => {
+    const code = $page.url.searchParams.get('code');
+
+    if (code) {
+      const expireDate = new Date(Number(code.split('.')[1]));
+      const now = new Date();
+
+      if (expireDate < now) {
+        isExpired = true;
+      }
+    }
+  });
 
   const { form } = createMutationForm({
     mutation: graphql(`
       mutation ResetPasswordCompletePage_ResetPassword_Mutation(
         $input: ResetPasswordInput!
       ) {
-        resetPassword(input: $input) {
-          id
-          email
-
-          profile {
-            id
-            name
-          }
-        }
+        resetPassword(input: $input)
       }
     `),
     schema: ResetPasswordInputSchema,
     onError: (error) => {
       console.error(error);
     },
-    onSuccess: async (resp) => {
+    onSuccess: () => {
       open = true;
-      console.log(resp);
     },
   });
 </script>
@@ -67,5 +73,19 @@
 
   <Button slot="action" class="w-full" href="/login" size="xl" type="link">
     로그인하러가기
+  </Button>
+</Modal>
+
+<Modal size="sm" bind:open={isExpired}>
+  <svelte:fragment slot="title">링크가 만료되었어요</svelte:fragment>
+
+  <Button
+    slot="action"
+    class="w-full"
+    href="/user/reset-password"
+    size="xl"
+    type="link"
+  >
+    계정찾기로 이동하기
   </Button>
 </Modal>
