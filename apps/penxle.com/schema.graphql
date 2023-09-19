@@ -87,6 +87,7 @@ input RequestPasswordResetInput {
 input ResetPasswordInput {
   code: String!
   password: String!
+  passwordConfirm: String!
 }
 
 input SignupInput {

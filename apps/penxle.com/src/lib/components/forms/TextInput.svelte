@@ -38,6 +38,7 @@
       'left-text' in $$slots ? 'rounded-r' : 'rounded',
     )}
     type="text"
+    on:input
     bind:value
     {...$$restProps}
   />
