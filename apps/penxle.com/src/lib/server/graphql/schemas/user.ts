@@ -1,4 +1,4 @@
-import { UserSSOProvider } from '@prisma/client';
+import { UserSSOProvider, UserState } from '@prisma/client';
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
@@ -58,9 +58,7 @@ builder.prismaObject('User', {
     }),
 
     ssos: t.relation('ssos'),
-    isVerified: t.boolean({
-      resolve: (user) => user.state === 'ACTIVE',
-    }),
+    state: t.expose('state', { type: UserState }),
   }),
 });
 
