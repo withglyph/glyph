@@ -135,6 +135,7 @@ input UpdateUserProfileInput {
 type User {
   email: String!
   id: ID!
+  isMarketingAgreed: Boolean!
   profile: Profile!
   spaces: [Space!]!
   ssos: [UserSSO!]!
