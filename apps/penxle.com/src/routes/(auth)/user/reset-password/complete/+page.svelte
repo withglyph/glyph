@@ -14,15 +14,7 @@
       mutation ResetPasswordCompletePage_ResetPassword_Mutation(
         $input: ResetPasswordInput!
       ) {
-        resetPassword(input: $input) {
-          id
-          email
-
-          profile {
-            id
-            name
-          }
-        }
+        resetPassword(input: $input)
       }
     `),
     schema: ResetPasswordInputSchema,
