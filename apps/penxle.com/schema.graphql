@@ -53,11 +53,11 @@ type Mutation {
   requestEmailUpdate(input: requestEmailUpdateInput!): Void
   requestPasswordReset(input: RequestPasswordResetInput!): Void
   resendUserActivationEmail: Void
-  resetPassword(input: ResetPasswordInput!): User!
+  resetPassword(input: ResetPasswordInput!): Void
   signup(input: SignupInput!): User!
   updatePassword(input: UpdatePasswordInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
-  verifyEmail(input: VerifyEmailInput!): User!
+  verifyEmail(input: VerifyEmailInput!): User
 }
 
 type PrepareImageUploadResult {
