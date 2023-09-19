@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { codegen } from '../codegen';
-import { refreshDocuments } from '../document';
+import { collectDocuments } from '../document';
 import type { GlitchContext } from '../types';
 
 export const glitch = async () => {
@@ -19,6 +19,14 @@ export const glitch = async () => {
     },
   };
 
-  await refreshDocuments(context);
-  await codegen(context);
+  const { success } = await collectDocuments(context);
+  if (!success) {
+    return 1;
+  }
+
+  if (!(await codegen(context))) {
+    return 1;
+  }
+
+  return 0;
 };

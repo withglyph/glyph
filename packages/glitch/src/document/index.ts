@@ -10,7 +10,7 @@ import {
 } from './validate';
 import type { GlitchContext } from '../types';
 
-export const refreshDocuments = async (context: GlitchContext) => {
+export const collectDocuments = async (context: GlitchContext) => {
   const schemaSource = await collectSchemaSource(context);
   const artifactSources = await collectArtifactSources(context);
 
@@ -28,7 +28,10 @@ export const refreshDocuments = async (context: GlitchContext) => {
         console.error(`💥 ${err}`);
       }
 
-      return false;
+      return {
+        success: false,
+        refreshed: false,
+      };
     }
 
     schemaRefreshed = true;
@@ -69,11 +72,17 @@ export const refreshDocuments = async (context: GlitchContext) => {
         console.error(`💥 ${err}`);
       }
 
-      return false;
+      return {
+        success: false,
+        refreshed: false,
+      };
     }
 
     if (!validateDocumentNode(documentNode)) {
-      return false;
+      return {
+        success: false,
+        refreshed: false,
+      };
     }
 
     addedArtifactNames.push(documentNode.definitions[0].name.value);
@@ -112,26 +121,31 @@ export const refreshDocuments = async (context: GlitchContext) => {
       context.artifacts.map(({ documentNode }) => documentNode),
     )
   ) {
-    return false;
+    return {
+      success: false,
+      refreshed: false,
+    };
   }
 
-  // for (const name of removedArtifactNames) {
-  //   if (!addedArtifactNames.includes(name)) {
-  //     console.log(`📋 ${name} 🧹`);
-  //   }
-  // }
+  for (const name of removedArtifactNames) {
+    if (!addedArtifactNames.includes(name)) {
+      console.log(`📋 ${name} 🧹`);
+    }
+  }
 
-  // for (const name of addedArtifactNames) {
-  //   if (removedArtifactNames.includes(name)) {
-  //     console.log(`📋 ${name} 💫`);
-  //   } else {
-  //     console.log(`📋 ${name} ✨`);
-  //   }
-  // }
+  for (const name of addedArtifactNames) {
+    if (removedArtifactNames.includes(name)) {
+      console.log(`📋 ${name} 💫`);
+    } else {
+      console.log(`📋 ${name} ✨`);
+    }
+  }
 
-  return (
-    schemaRefreshed ||
-    removedArtifactNames.length > 0 ||
-    addedArtifactNames.length > 0
-  );
+  return {
+    success: true,
+    refreshed:
+      schemaRefreshed ||
+      removedArtifactNames.length > 0 ||
+      addedArtifactNames.length > 0,
+  };
 };

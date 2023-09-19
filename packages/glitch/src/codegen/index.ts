@@ -30,10 +30,13 @@ export const codegen = async (context: GlitchContext) => {
     } else {
       console.error(`💥 ${err}`);
     }
-    return;
+
+    return false;
   }
 
   for (const [filePath, code] of Object.entries(files)) {
     await writeCodegenFile(context, filePath, code);
   }
+
+  return true;
 };
