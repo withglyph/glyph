@@ -17,7 +17,6 @@ import {
   createAccessToken,
   createRandomAvatar,
   directUploadImage,
-  mergeQuery,
   renderAvatar,
 } from '$lib/server/utils';
 import { createId } from '$lib/utils';
@@ -444,9 +443,7 @@ builder.mutationFields((t) => ({
       });
 
       const user = await db.user.update({
-        ...mergeQuery(query, {
-          include: { profile: { select: { name: true } } },
-        }),
+        include: { profile: { select: { name: true } } },
         where: {
           id: verification.userId,
           state: { in: ['PROVISIONAL', 'ACTIVE'] },
@@ -471,7 +468,10 @@ builder.mutationFields((t) => ({
         },
       });
 
-      return user;
+      return await db.user.findUniqueOrThrow({
+        ...query,
+        where: { id: user.id },
+      });
     },
   }),
 
