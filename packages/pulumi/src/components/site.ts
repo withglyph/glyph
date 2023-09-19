@@ -137,10 +137,8 @@ export class Site extends pulumi.ComponentResource {
               DD_VERSION: 'latest',
 
               DD_CAPTURE_LAMBDA_PAYLOAD: 'true',
+              DD_DBM_PROPAGATION_MODE: 'full',
               DD_LOGS_INJECTION: 'true',
-              DD_PROFILING_ENABLED: 'true',
-              DD_SERVERLESS_LOGS_ENABLED: 'true',
-              DD_TRACE_ENABLED: 'true',
             }),
           },
         },
