@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import { Switch } from '$lib/components/forms';
+  import Notification from './Notification.svelte';
 </script>
 
 <Helmet title="알림 설정" />
@@ -23,212 +24,44 @@
       </div>
     </div>
 
-    <div
-      class="flex flex-col flex-wrap justify-center sm:(flex-row items-center justify-between flex-nowrap)"
-    >
-      <div class="flex items-center justify-between py-4 px-6 sm:p-0">
-        <div>
-          <div class="text-lg font-extrabold">댓글</div>
-          <p class="text-3.75 text-gray-50">
-            내 포스트에 댓글이 달렸을 때 알림을 받습니다.
-          </p>
-        </div>
-        <span class="i-lc-chevron-down sm:hidden" />
-      </div>
-      <div
-        class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
-      >
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">웹사이트</span>
-          <Switch />
-        </div>
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">이메일</span>
-          <Switch />
-        </div>
-      </div>
-    </div>
+    <Notification
+      name="댓글"
+      content="내 포스트에 댓글이 달렸을 때 알림을 받아요."
+    />
 
-    <div
-      class="flex flex-col flex-wrap justify-center sm:(flex-row items-center justify-between flex-nowrap)"
-    >
-      <div class="flex items-center justify-between py-4 px-6 sm:p-0">
-        <div>
-          <div class="text-lg font-extrabold">답글</div>
-          <p class="text-3.75 text-gray-50">
-            댓글에 대댓글이 달렸을 때 알림을 받습니다.
-          </p>
-        </div>
-        <span class="i-lc-chevron-down sm:hidden" />
-      </div>
-      <div
-        class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
-      >
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">웹사이트</span>
-          <Switch />
-        </div>
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">이메일</span>
-          <Switch />
-        </div>
-      </div>
-    </div>
+    <Notification
+      name="답글"
+      content="댓글에 답글이 달렸을 때 알림을 받아요."
+    />
 
-    <div
-      class="flex flex-col flex-wrap justify-center sm:(flex-row items-center justify-between flex-nowrap)"
-    >
-      <div class="flex items-center justify-between py-4 px-6 sm:p-0">
-        <div>
-          <div class="text-lg font-extrabold">스페이스 구독</div>
-          <p class="text-3.75 text-gray-50">
-            스페이스 구독자가 생겼을 때 알림을 받습니다.
-          </p>
-        </div>
-        <span class="i-lc-chevron-down sm:hidden" />
-      </div>
-      <div
-        class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
-      >
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">웹사이트</span>
-          <Switch />
-        </div>
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">이메일</span>
-          <Switch />
-        </div>
-      </div>
-    </div>
+    <Notification
+      name="스페이스 구독"
+      content="스페이스 구독자가 생겼을 때 알림을 받아요."
+    />
 
-    <div
-      class="flex flex-col flex-wrap justify-center sm:(flex-row items-center justify-between flex-nowrap)"
-    >
-      <div class="flex items-center justify-between py-4 px-6 sm:p-0">
-        <div>
-          <div class="text-lg font-extrabold">태그 수정</div>
-          <p class="text-3.75 text-gray-50">
-            내 포스트 태그를 수정했을 때 알림을 받습니다.
-          </p>
-        </div>
-        <span class="i-lc-chevron-down sm:hidden" />
-      </div>
-      <div
-        class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
-      >
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">웹사이트</span>
-          <Switch />
-        </div>
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">이메일</span>
-          <Switch />
-        </div>
-      </div>
-    </div>
+    <Notification
+      name="태그 수정"
+      content="내 포스트 태그를 수정했을 때 알림을 받아요."
+    />
 
-    <div
-      class="flex flex-col flex-wrap justify-center sm:(flex-row items-center justify-between flex-nowrap)"
-    >
-      <div class="flex items-center justify-between py-4 px-6 sm:p-0">
-        <div>
-          <div class="text-lg font-extrabold">조회수</div>
-          <p class="text-3.75 text-gray-50">
-            조회수가 급상승했을 때 알림을 받습니다.
-          </p>
-        </div>
-        <span class="i-lc-chevron-down sm:hidden" />
-      </div>
-      <div
-        class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
-      >
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">웹사이트</span>
-          <Switch />
-        </div>
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">이메일</span>
-          <Switch />
-        </div>
-      </div>
-    </div>
+    <Notification
+      name="조회수"
+      content="조회수가 급상승했을 때 알림을 받아요."
+    />
 
-    <div
-      class="flex flex-col flex-wrap justify-center sm:(flex-row items-center justify-between flex-nowrap)"
-    >
-      <div class="flex items-center justify-between py-4 px-6 sm:p-0">
-        <div>
-          <div class="text-lg font-extrabold">구매</div>
-          <p class="text-3.75 text-gray-50">
-            내 포스트가 구매되었을 때 알림을 받습니다.
-          </p>
-        </div>
-        <span class="i-lc-chevron-down sm:hidden" />
-      </div>
-      <div
-        class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
-      >
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">웹사이트</span>
-          <Switch />
-        </div>
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">이메일</span>
-          <Switch />
-        </div>
-      </div>
-    </div>
+    <Notification
+      name="구매"
+      content="내 포스트가 구매됐을 때 알림을 받아요."
+    />
 
-    <div
-      class="flex flex-col flex-wrap justify-center sm:(flex-row items-center justify-between flex-nowrap)"
-    >
-      <div class="flex items-center justify-between py-4 px-6 sm:p-0">
-        <div>
-          <div class="text-lg font-extrabold">후원</div>
-          <p class="text-3.75 text-gray-50">
-            내 포스트에 후원을 받았을 때 알림을 받습니다.
-          </p>
-        </div>
-        <span class="i-lc-chevron-down sm:hidden" />
-      </div>
-      <div
-        class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
-      >
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">웹사이트</span>
-          <Switch />
-        </div>
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">이메일</span>
-          <Switch />
-        </div>
-      </div>
-    </div>
+    <Notification
+      name="후원"
+      content="내 포스트에 후원을 받았을 때 알림을 받아요."
+    />
 
-    <div
-      class="flex flex-col flex-wrap justify-center sm:(flex-row items-center justify-between flex-nowrap)"
-    >
-      <div class="flex items-center justify-between py-4 px-6 sm:p-0">
-        <div>
-          <div class="text-lg font-extrabold">태그 위키 수정</div>
-          <p class="text-3.75 text-gray-50">
-            내가 작성한 태그가 수정됐을 때 알림을 받습니다.
-          </p>
-        </div>
-        <span class="i-lc-chevron-down sm:hidden" />
-      </div>
-      <div
-        class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:(space-y-0 flex-row items-center p-0 bg-white gap-8)"
-      >
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">웹사이트</span>
-          <Switch />
-        </div>
-        <div class="flex justify-between">
-          <span class="font-semibold sm:hidden">이메일</span>
-          <Switch />
-        </div>
-      </div>
-    </div>
+    <Notification
+      name="태그 위키 수정"
+      content="내가 작성한 태그가 수정됐을 때 알림을 받아요."
+    />
   </div>
 </div>

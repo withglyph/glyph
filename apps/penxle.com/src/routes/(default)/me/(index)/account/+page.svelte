@@ -24,7 +24,7 @@
       <div class="flex items-center gap-3">
         <div class="square-12.5 bg-gray-90 rounded-full" />
         <div>
-          <div class="flex flex-wrap">
+          <div class="flex flex-wrap items-center">
             <span class="text-lg font-extrabold mr-2">닉네임</span>
             <Badge class="text-xs font-bold" color="red">
               이메일 인증 필요
@@ -44,7 +44,7 @@
 
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <div class="flex flex-wrap mb-2">
+        <div class="flex flex-wrap mb-2 items-center">
           <h3 class="text-lg font-extrabold mr-2">이메일 인증</h3>
           <Badge class="text-xs font-bold" color="red">인증 필요</Badge>
         </div>
@@ -63,7 +63,7 @@
 
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <div class="flex flex-wrap mb-2">
+        <div class="flex flex-wrap mb-2 items-center">
           <h3 class="text-lg font-extrabold mr-2">본인 인증</h3>
           <Badge class="text-xs font-bold mr-2" color="red">인증 필요</Badge>
           <Badge class="text-xs font-bold" color="gray">만료됨</Badge>
@@ -77,7 +77,7 @@
 
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <div class="flex flex-wrap mb-2">
+        <div class="flex flex-wrap mb-2 items-center">
           <h3 class="text-lg font-extrabold mr-2">성인 인증</h3>
           <Badge class="text-xs font-bold" color="red">인증 필요</Badge>
         </div>
