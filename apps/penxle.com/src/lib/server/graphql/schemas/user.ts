@@ -438,6 +438,10 @@ builder.mutationFields((t) => ({
         },
       });
 
+      await db.userPassword.delete({
+        where: { userId: verification.userId },
+      });
+
       const user = await db.user.update({
         ...mergeQuery(query, {
           include: { profile: { select: { name: true } } },
