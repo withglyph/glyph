@@ -18,7 +18,7 @@
   "devDependencies": {
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
-    "@pulumi/aws": "^6.1.0",
+    "@pulumi/aws": "^6.2.0",
     "@pulumi/pulumi": "^3.83.0",
     "tsup": "^7.2.0",
     "tsx": "^3.12.10",
