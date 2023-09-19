@@ -40,10 +40,16 @@ export const RequestEmailUpdateInputSchema = z.object({
   email,
 });
 
-export const ResetPasswordInputSchema = z.object({
-  password,
-  code: z.string(),
-});
+export const ResetPasswordInputSchema = z
+  .object({
+    password,
+    passwordConfirm: z.string(),
+    code: z.string(),
+  })
+  .refine((v) => v.password === v.passwordConfirm, {
+    message: '비밀번호가 일치하지 않아요',
+    path: ['passwordConfirm'],
+  });
 
 export const UpdatePasswordInputSchema = z.object({
   oldPassword: password.optional(),

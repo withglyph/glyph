@@ -1,24 +1,37 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
   import { FormField, PasswordInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
-  import { LoginInputSchema } from '$lib/validations';
+  import { ResetPasswordInputSchema } from '$lib/validations';
 
   let open = false;
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation LoginPage_Login_Mutation3($input: LoginInput!) {
-        login(input: $input) {
-          __typename
+      mutation ResetPasswordCompletePage_ResetPassword_Mutation(
+        $input: ResetPasswordInput!
+      ) {
+        resetPassword(input: $input) {
+          id
+          email
+
+          profile {
+            id
+            name
+          }
         }
       }
     `),
-    schema: LoginInputSchema,
-    onSuccess: () => {
+    schema: ResetPasswordInputSchema,
+    onError: (error) => {
+      console.error(error);
+    },
+    onSuccess: async (resp) => {
       open = true;
+      console.log(resp);
     },
   });
 </script>
@@ -38,9 +51,15 @@
     <PasswordInput class="w-full font-bold" placeholder="비밀번호 확인 입력" />
   </FormField>
 
-  <Button class="w-full" size="xl" type="button" on:click={() => (open = true)}>
-    비밀번호 재설정하기
-  </Button>
+  <FormField name="code" label="코드">
+    <PasswordInput
+      class="w-full font-bold"
+      disabled
+      value={$page.url.searchParams.get('code')}
+    />
+  </FormField>
+
+  <Button class="w-full" size="xl" type="submit">비밀번호 재설정하기</Button>
 </form>
 
 <Modal size="sm" bind:open>

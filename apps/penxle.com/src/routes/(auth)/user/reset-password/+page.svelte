@@ -1,28 +1,28 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import clsx from 'clsx';
-  import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { Button } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
-  import { LoginInputSchema } from '$lib/validations';
-  import type { HTMLInputAttributes } from 'svelte/elements';
+  import { RequestPasswordResetInputSchema } from '$lib/validations';
 
-  let value: HTMLInputAttributes['value'];
-  let isSuccessful = true;
+  let isSuccessful = false;
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation LoginPage_Login_Mutation2($input: LoginInput!) {
-        login(input: $input) {
-          __typename
-        }
+      mutation ResetPasswordPage_RequestPasswordReset_Mutation(
+        $input: RequestPasswordResetInput!
+      ) {
+        requestPasswordReset(input: $input)
       }
     `),
-    schema: LoginInputSchema,
-    onSuccess: async () => {
-      await goto('/');
+    schema: RequestPasswordResetInputSchema,
+    onError: (error) => {
+      console.error(error);
+    },
+    onSuccess: () => {
+      isSuccessful = true;
     },
   });
 </script>
@@ -33,7 +33,13 @@
 
 <form class="w-full max-w-87.5 mt-6" use:form>
   <FormField name="email" label="이메일">
-    <TextInput class="w-full font-bold" placeholder="이메일 입력" bind:value />
+    <TextInput
+      class="w-full font-bold"
+      placeholder="이메일 입력"
+      on:input={() => {
+        isSuccessful = false;
+      }}
+    />
   </FormField>
 
   {#if isSuccessful}
@@ -46,7 +52,8 @@
   {/if}
 
   <Button
-    class={clsx(!isSuccessful && 'mt-6', 'w-full')}
+    class={clsx('w-full', !isSuccessful && 'mt-6')}
+    disabled={isSuccessful}
     size="xl"
     type="submit"
   >

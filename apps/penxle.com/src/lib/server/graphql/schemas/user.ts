@@ -157,6 +157,7 @@ const ResetPasswordInput = builder.inputType('ResetPasswordInput', {
   fields: (t) => ({
     code: t.string(),
     password: t.string(),
+    passwordConfirm: t.string(),
   }),
   validate: { schema: ResetPasswordInputSchema },
 });
@@ -418,7 +419,7 @@ builder.mutationFields((t) => ({
         props: {
           name: user.profile.name,
           url: qs.stringifyUrl({
-            url: `${context.url.origin}/user/reset-password`,
+            url: `${context.url.origin}/user/reset-password/complete`,
             query: { code: verification.code },
           }),
         },
