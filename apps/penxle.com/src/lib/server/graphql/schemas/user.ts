@@ -425,10 +425,11 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  resetPassword: t.prismaField({
-    type: 'User',
+  resetPassword: t.field({
+    type: 'Void',
+    nullable: true,
     args: { input: t.arg({ type: ResetPasswordInput }) },
-    resolve: async (query, _, { input }, { db }) => {
+    resolve: async (_, { input }, { db }) => {
       const verification = await db.userEmailVerification.delete({
         where: {
           code: input.code,
@@ -465,11 +466,6 @@ builder.mutationFields((t) => ({
         props: {
           name: user.profile.name,
         },
-      });
-
-      return await db.user.findUniqueOrThrow({
-        ...query,
-        where: { id: user.id },
       });
     },
   }),
@@ -524,6 +520,7 @@ builder.mutationFields((t) => ({
 
   verifyEmail: t.prismaField({
     type: 'User',
+    nullable: true,
     args: { input: t.arg({ type: VerifyEmailInput }) },
     resolve: async (query, _, { input }, { db }) => {
       const verification = await db.userEmailVerification.delete({
