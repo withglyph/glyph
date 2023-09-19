@@ -1,4 +1,4 @@
-import { UserSSOProvider } from '@prisma/client';
+import { UserSSOProvider, UserState } from '@prisma/client';
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
@@ -36,15 +36,16 @@ import { builder } from '../builder';
  */
 
 builder.prismaObject('User', {
-  select: {
-    id: true,
-    state: true,
-  },
+  select: { id: true },
+  authScopes: (user) => ({ user }),
+  grantScopes: () => ['user'],
   fields: (t) => ({
     id: t.exposeID('id'),
-    email: t.exposeString('email', { authScopes: (user) => ({ user }) }),
+    email: t.exposeString('email'),
+    state: t.expose('state', { type: UserState }),
 
     profile: t.relation('profile'),
+    ssos: t.relation('ssos'),
 
     spaces: t.prismaField({
       type: ['Space'],
@@ -55,11 +56,6 @@ builder.prismaObject('User', {
         },
       }),
       resolve: (_, { spaces }) => spaces.map(({ space }) => space),
-    }),
-
-    ssos: t.relation('ssos'),
-    isVerified: t.boolean({
-      resolve: (user) => user.state === 'ACTIVE',
     }),
   }),
 });
@@ -75,6 +71,8 @@ builder.prismaObject('Profile', {
 });
 
 builder.prismaObject('UserSSO', {
+  select: { id: true },
+  authScopes: { $granted: 'user' },
   fields: (t) => ({
     id: t.exposeID('id'),
     provider: t.expose('provider', { type: UserSSOProvider }),
@@ -95,6 +93,7 @@ const IssueSSOAuthorizationUrlResult = builder.simpleObject(
  * * Enums
  */
 
+builder.enumType(UserState, { name: 'UserState' });
 builder.enumType(UserSSOProvider, { name: 'UserSSOProvider' });
 
 const UserSSOAuthorizationType = builder.enumType('UserSSOAuthorizationType', {
@@ -145,7 +144,7 @@ const RequestPasswordResetInput = builder.inputType(
   },
 );
 
-const RequestEmailUpdateInput = builder.inputType('requestEmailUpdateInput', {
+const RequestEmailUpdateInput = builder.inputType('RequestEmailUpdateInput', {
   fields: (t) => ({
     email: t.string(),
   }),
@@ -438,7 +437,7 @@ builder.mutationFields((t) => ({
         },
       });
 
-      await db.userPassword.delete({
+      await db.userPassword.deleteMany({
         where: { userId: verification.userId },
       });
 
