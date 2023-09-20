@@ -9,54 +9,47 @@ import {
 } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { createRouter } from '../router';
-import type { UserSSOProvider } from '@prisma/client';
-import type { Cookies } from '@sveltejs/kit';
-import type { AuthContext } from '$lib/server/context';
+import type { Context } from '$lib/server/context';
 import type { ExternalUser } from '$lib/server/external-api/types';
-import type { InteractiveTransactionClient } from '$lib/server/prisma';
 
 export const sso = createRouter();
+type State = { type: string };
 
 sso.get('/sso/google', async (_, context) => {
   const code = context.url.searchParams.get('code');
-  const state = context.url.searchParams.get('state');
-  if (!code || !state) {
+  if (!code) {
     return error(400);
   }
 
-  const payload = JSON.parse(atob(state));
-  const googleUser = await google.authorizeUser(context, code);
-  return await ssoLogin('GOOGLE', googleUser, payload, context);
+  const externalUser = await google.authorizeUser(context, code);
+  return await handle(context, externalUser);
 });
 
 sso.get('/sso/naver', async (_, context) => {
   const code = context.url.searchParams.get('code');
-  const state = context.url.searchParams.get('state');
-  if (!code || !state) {
+  if (!code) {
     return error(400);
   }
 
-  const payload = JSON.parse(atob(state));
-  const googleUser = await naver.authorizeUser(context, code);
-  return await ssoLogin('NAVER', googleUser, payload, context);
+  const externalUser = await naver.authorizeUser(code);
+  return await handle(context, externalUser);
 });
 
-async function ssoLogin(
-  provider: UserSSOProvider,
+const handle = async (
+  { db, ...context }: Context,
   externalUser: ExternalUser,
-  payload: { type: string },
-  {
-    db,
-    ...context
-  }: {
-    db: InteractiveTransactionClient;
-    cookies: Cookies;
-  } & Partial<AuthContext>,
-) {
+) => {
+  const _state = context.url.searchParams.get('state');
+  if (!_state) {
+    return error(400);
+  }
+
+  const state = JSON.parse(Buffer.from(_state, 'base64').toString()) as State;
+
   const sso = await db.userSSO.findUnique({
     where: {
       provider_providerUserId: {
-        provider,
+        provider: externalUser.provider,
         providerUserId: externalUser.id,
       },
     },
@@ -64,7 +57,7 @@ async function ssoLogin(
 
   // 하나의 핸들러로 여러가지 기능을 처리하기에 케이스 분리가 필요함.
 
-  if (payload.type === 'LINK') {
+  if (state.type === 'LINK') {
     // 케이스 1: 계정 연동중인 경우
 
     if (!context.session) {
@@ -111,17 +104,17 @@ async function ssoLogin(
         await db.userSSO.create({
           data: {
             id: createId(),
-            provider,
+            userId: context.session.userId,
+            provider: externalUser.provider,
             providerEmail: externalUser.email,
             providerUserId: externalUser.id,
-            user: { connect: { id: context.session.userId } },
           },
         });
 
         return status(301, { headers: { Location: '/me/account' } });
       }
     }
-  } else if (payload.type === 'AUTH') {
+  } else if (state.type === 'AUTH') {
     // 케이스 2: 계정 로그인 혹은 가입중인 경우
 
     if (sso) {
@@ -167,7 +160,7 @@ async function ssoLogin(
 
         const avatarId = await directUploadImage({
           db,
-          name: 'sso-avatar.jpg',
+          name: 'sso-avatar',
           buffer: avatarBuffer,
         });
 
@@ -186,7 +179,7 @@ async function ssoLogin(
             ssos: {
               create: {
                 id: createId(),
-                provider,
+                provider: externalUser.provider,
                 providerEmail: externalUser.email,
                 providerUserId: externalUser.id,
               },
@@ -216,4 +209,4 @@ async function ssoLogin(
   }
 
   // 여기까지 오면 안 됨
-}
+};

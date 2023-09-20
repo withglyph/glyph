@@ -3,6 +3,7 @@ import argon2 from 'argon2';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
+import { match } from 'ts-pattern';
 import { FormValidationError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
 import {
@@ -326,7 +327,7 @@ builder.mutationFields((t) => ({
       const randomAvatar = createRandomAvatar();
       const avatarId = await directUploadImage({
         db,
-        name: 'random-avatar.png',
+        name: 'random-avatar',
         buffer: await renderAvatar(randomAvatar),
       });
 
@@ -410,13 +411,14 @@ builder.mutationFields((t) => ({
     type: IssueSSOAuthorizationUrlResult,
     args: { input: t.arg({ type: IssueSSOAuthorizationUrlInput }) },
     resolve: (_, { input }, context) => {
-      if (input.provider === UserSSOProvider.GOOGLE) {
-        return { url: google.generateAuthorizationUrl(input.type, context) };
-      } else if (input.provider === UserSSOProvider.NAVER) {
-        return { url: naver.generateAuthorizationUrl(input.type, context) };
-      } else {
-        throw new Error('Unsupported provider');
-      }
+      const provider = match(input.provider)
+        .with('GOOGLE', () => google)
+        .with('NAVER', () => naver)
+        .exhaustive();
+
+      return {
+        url: provider.generateAuthorizationUrl(context, input.type),
+      };
     },
   }),
 

@@ -98,11 +98,11 @@ export const directUploadImage = async ({
   name,
   buffer,
 }: DirectUploadImageParams) => {
-  const key = aws.createS3ObjectKey('images');
-  const ext = name.split('.').pop() ?? 'unk';
-  const path = `${key}.${ext}`;
-
   const metadata = await getImageMetadata(buffer);
+
+  const key = aws.createS3ObjectKey('images');
+  const ext = metadata.format;
+  const path = `${key}.${ext}`;
 
   await aws.s3.send(
     new PutObjectCommand({

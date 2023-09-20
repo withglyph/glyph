@@ -14,8 +14,8 @@ const createOAuthClient = (context: { url: URL }) => {
 };
 
 export const generateAuthorizationUrl = (
-  type: string,
   context: { url: URL },
+  type: string,
 ) => {
   const client = createOAuthClient(context);
   return client.generateAuthUrl({
@@ -29,10 +29,13 @@ export const authorizeUser = async (
   code: string,
 ): Promise<ExternalUser> => {
   const client = createOAuthClient(context);
-  const { tokens } = await client.getToken({ code });
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const { aud } = await client.getTokenInfo(tokens.access_token!);
+  const { tokens } = await client.getToken({ code });
+  if (!tokens.access_token) {
+    throw new Error('Token validation failed');
+  }
+
+  const { aud } = await client.getTokenInfo(tokens.access_token);
   if (aud !== PRIVATE_GOOGLE_CLIENT_ID) {
     throw new Error('Token validation failed');
   }
@@ -45,6 +48,7 @@ export const authorizeUser = async (
   });
 
   return {
+    provider: 'GOOGLE',
     id: response.data.sub,
     email: response.data.email,
     name: response.data.name,
