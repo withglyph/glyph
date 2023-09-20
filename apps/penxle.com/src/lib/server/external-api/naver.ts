@@ -5,8 +5,8 @@ import {
 import type { ExternalUser } from './types';
 
 export const generateAuthorizationUrl = (
-  type: string,
   context: { url: URL },
+  type: string,
 ) => {
   return (
     `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${PRIVATE_NAVER_CLIENT_ID}&` +
@@ -15,10 +15,7 @@ export const generateAuthorizationUrl = (
   );
 };
 
-export const authorizeUser = async (
-  context: { url: URL },
-  code: string,
-): Promise<ExternalUser> => {
+export const authorizeUser = async (code: string): Promise<ExternalUser> => {
   const tokens = await fetch(
     'https://nid.naver.com/oauth2.0/token?' +
       `grant_type=authorization_code&client_id=${PRIVATE_NAVER_CLIENT_ID}&` +
@@ -40,6 +37,7 @@ export const authorizeUser = async (
     .then((res) => res.response as R);
 
   return {
+    provider: 'NAVER',
     id: response.id,
     email: response.email,
     name: response.nickname,
