@@ -4,7 +4,7 @@
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
-  import { LoginInputSchema } from '$lib/validations';
+  import { UpdateUserProfileInputSchema } from '$lib/validations';
 
   let targetEl: HTMLInputElement;
   let value: HTMLInputElement['value'];
@@ -13,13 +13,15 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation LoginPage_Login_Mutation4($input: LoginInput!) {
-        login(input: $input) {
-          __typename
+      mutation AccountPage_UpdateProfileModal_UpdateUserProfile_Mutation(
+        $input: UpdateUserProfileInput!
+      ) {
+        updateUserProfile(input: $input) {
+          id
         }
       }
     `),
-    schema: LoginInputSchema,
+    schema: UpdateUserProfileInputSchema,
     onSuccess: () => {
       open = false;
     },

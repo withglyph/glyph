@@ -2,7 +2,8 @@
   import { Helmet } from '@penxle/ui';
   import Google from '$assets/icons/google.svg?component';
   import Naver from '$assets/icons/naver.svg?component';
-  import { Badge, Button } from '$lib/components';
+  import { graphql } from '$glitch';
+  import { Avatar, Badge, Button } from '$lib/components';
   import { Switch } from '$lib/components/forms';
   import UpdateEmailModal from './UpdateEmailModal.svelte';
   import UpdatePasswordModal from './UpdatePasswordModal.svelte';
@@ -11,6 +12,62 @@
   let updateEmailOpen = false;
   let updateProfileOpen = false;
   let updatePasswordOpen = false;
+
+  $: query = graphql(`
+    query AccountPage_Query {
+      me @_required {
+        id
+        email
+        state
+
+        marketingAgreement {
+          id
+          createdAt
+        }
+
+        google: sso(provider: GOOGLE) {
+          id
+          email
+        }
+
+        naver: sso(provider: NAVER) {
+          id
+          email
+        }
+
+        profile {
+          id
+          name
+          ...Avatar_profile
+
+          avatar {
+            id
+            url
+          }
+        }
+      }
+    }
+  `);
+
+  const issueSSOAuthorizationUrl = graphql(`
+    mutation LoginPage_IssueSSOAuthorizationUrl_Mutation2(
+      $input: IssueSSOAuthorizationUrlInput!
+    ) {
+      issueSSOAuthorizationUrl(input: $input) {
+        url
+      }
+    }
+  `);
+
+  const updateUserSettings = graphql(`
+    mutation AccountPage_UpdateUserSettings_Mutation(
+      $input: UpdateUserSettingsInput!
+    ) {
+      updateUserSettings(input: $input) {
+        id
+      }
+    }
+  `);
 </script>
 
 <Helmet title="계정 설정" />
@@ -22,15 +79,12 @@
   >
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div class="flex items-center gap-3">
-        <div class="square-12.5 bg-gray-90 rounded-full" />
-        <div>
-          <div class="flex flex-wrap items-center">
-            <span class="text-lg font-extrabold mr-2">닉네임</span>
-            <Badge class="text-xs font-bold" color="red">
-              이메일 인증 필요
-            </Badge>
-          </div>
-          <span class="text-3.75 text-gray-50">kylie@penxle.io</span>
+        <Avatar class="square-12.5" $profile={$query.me.profile} />
+        <div class="flex flex-col flex-wrap">
+          <span class="text-lg font-extrabold mr-2">
+            {$query.me.profile.name}
+          </span>
+          <span class="text-3.75 text-gray-50">{$query.me.email}</span>
         </div>
       </div>
       <Button
@@ -46,10 +100,15 @@
       <div>
         <div class="flex flex-wrap mb-2 items-center">
           <h3 class="text-lg font-extrabold mr-2">이메일 인증</h3>
-          <Badge class="text-xs font-bold" color="red">인증 필요</Badge>
+          {#if $query.me.state === 'PROVISIONAL'}
+            <Badge class="text-xs font-bold" color="red">인증 필요</Badge>
+          {/if}
         </div>
+        <p class="text-3.75 text-gray-50 break-keep">
+          펜슬의 콘텐츠를 이용하려면 이메일 인증이 필요해요
+        </p>
       </div>
-      <div class="flex">
+      <div class="flex gap-2">
         <Button
           color="tertiary"
           size="md"
@@ -58,6 +117,10 @@
         >
           변경하기
         </Button>
+
+        {#if $query.me.state === 'PROVISIONAL'}
+          <Button color="secondary" size="md">인증하기</Button>
+        {/if}
       </div>
     </div>
 
@@ -97,10 +160,31 @@
         </div>
         <div>
           <h3 class="text-lg font-extrabold mr-2">Google</h3>
-          <p class="text-3.75 text-gray-50 break-keep">kylie@penxle.io</p>
+          {#if $query.me.google}
+            <p class="text-3.75 text-gray-50 break-keep">
+              {$query.me.google.email}
+            </p>
+          {/if}
         </div>
       </div>
-      <Button color="tertiary" size="md" variant="outlined">연동 해제</Button>
+      {#if $query.me.google}
+        <Button color="tertiary" size="md" variant="outlined">연동 해제</Button>
+      {:else}
+        <Button
+          color="secondary"
+          size="md"
+          on:click={async () => {
+            const { url } = await issueSSOAuthorizationUrl({
+              type: 'AUTH',
+              provider: 'GOOGLE',
+            });
+
+            location.href = url;
+          }}
+        >
+          연동하기
+        </Button>
+      {/if}
     </div>
 
     <div class="flex flex-wrap items-center justify-between gap-4">
@@ -110,9 +194,18 @@
         </div>
         <div>
           <h3 class="text-lg font-extrabold mr-2">Naver</h3>
+          {#if $query.me.naver}
+            <p class="text-3.75 text-gray-50 break-keep">
+              {$query.me.naver.email}
+            </p>
+          {/if}
         </div>
       </div>
-      <Button color="secondary" size="md">연동하기</Button>
+      {#if $query.me.naver}
+        <Button color="tertiary" size="md" variant="outlined">연동 해제</Button>
+      {:else}
+        <Button color="secondary" size="md">연동하기</Button>
+      {/if}
     </div>
 
     <div class="w-full border-b border-alphagray-15" />
@@ -122,7 +215,14 @@
         <h3 class="text-lg font-extrabold mb-2">마케팅 수신 동의</h3>
         <p class="text-3.75 text-gray-50 break-keep">2023.04.08 승인됨</p>
       </div>
-      <Switch />
+      <Switch
+        checked={!!$query.me.marketingAgreement}
+        on:change={async () =>
+          await updateUserSettings({
+            isMarketingAgreed: true,
+            unlinkSSO: 'GOOGLE',
+          })}
+      />
     </div>
 
     <div class="w-full border-b border-alphagray-15" />

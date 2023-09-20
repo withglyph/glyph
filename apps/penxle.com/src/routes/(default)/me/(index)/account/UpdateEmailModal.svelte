@@ -3,22 +3,24 @@
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
-  import { LoginInputSchema } from '$lib/validations';
+  import { RequestEmailUpdateInputSchema } from '$lib/validations';
 
   export let open = false;
+  let isComplete = false;
   let value: HTMLInputElement['value'];
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation LoginPage_Login_Mutation6($input: LoginInput!) {
-        login(input: $input) {
-          __typename
-        }
+      mutation MeAccountPage_RequestEmailUpdate_Mutation(
+        $input: RequestEmailUpdateInput!
+      ) {
+        requestEmailUpdate(input: $input)
       }
     `),
-    schema: LoginInputSchema,
+    schema: RequestEmailUpdateInputSchema,
     onSuccess: () => {
       open = false;
+      isComplete = true;
     },
   });
 </script>
@@ -30,7 +32,6 @@
     <FormField name="email" label="이메일 주소">
       <TextInput
         class="w-full font-bold"
-        maxlength={10}
         placeholder="이메일 입력"
         bind:value
       />
@@ -38,4 +39,14 @@
 
     <Button class="w-full" size="xl" type="submit">이메일 인증 보내기</Button>
   </form>
+</Modal>
+
+<Modal size="sm" bind:open={isComplete}>
+  <svelte:fragment slot="title">
+    입력하신 이메일로 인증메일을 전송했어요
+  </svelte:fragment>
+
+  <Button class="w-full" size="xl" on:click={() => (isComplete = false)}>
+    확인
+  </Button>
 </Modal>
