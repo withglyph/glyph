@@ -28,6 +28,7 @@ import {
   SignupInputSchema,
   UpdatePasswordInputSchema,
   UpdateUserProfileInputSchema,
+  UpdateUserSettingsInputSchema,
 } from '$lib/validations';
 import { builder } from '../builder';
 
@@ -186,6 +187,13 @@ const UpdatePasswordInput = builder.inputType('UpdatePasswordInput', {
     newPassword: t.string(),
   }),
   validate: { schema: UpdatePasswordInputSchema },
+});
+
+const UpdateUserSettingsInput = builder.inputType('UpdateUserSettingsInput', {
+  fields: (t) => ({
+    isMarketingAgreed: t.boolean({ required: false }),
+  }),
+  validate: { schema: UpdateUserSettingsInputSchema },
 });
 
 /**
@@ -602,6 +610,31 @@ builder.mutationFields((t) => ({
       });
 
       return user.profile;
+    },
+  }),
+
+  updateUserSettings: t.withAuth({ auth: true }).prismaField({
+    type: 'User',
+    args: { input: t.arg({ type: UpdateUserSettingsInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      if (input.isMarketingAgreed != undefined) {
+        await (input.isMarketingAgreed
+          ? db.userMarketingAgreement.upsert({
+              where: { userId: context.session.userId },
+              create: {
+                id: createId(),
+                userId: context.session.userId,
+              },
+              update: {},
+            })
+          : db.userMarketingAgreement.deleteMany({
+              where: { userId: context.session.userId },
+            }));
+      }
+      return await db.user.findUniqueOrThrow({
+        ...query,
+        where: { id: context.session.userId },
+      });
     },
   }),
 

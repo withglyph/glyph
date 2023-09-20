@@ -57,6 +57,7 @@ type Mutation {
   signup(input: SignupInput!): User!
   updatePassword(input: UpdatePasswordInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
+  updateUserSettings(input: UpdateUserSettingsInput!): User!
   verifyEmail(input: VerifyEmailInput!): User
 }
 
@@ -130,6 +131,10 @@ input UpdatePasswordInput {
 
 input UpdateUserProfileInput {
   name: String!
+}
+
+input UpdateUserSettingsInput {
+  isMarketingAgreed: Boolean
 }
 
 type User {

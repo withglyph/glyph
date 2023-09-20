@@ -55,3 +55,7 @@ export const UpdatePasswordInputSchema = z.object({
   oldPassword: password.optional(),
   newPassword: password,
 });
+
+export const UpdateUserSettingsInputSchema = z.object({
+  isMarketingAgreed: z.boolean().optional(),
+});
