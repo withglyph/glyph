@@ -3,21 +3,24 @@
   import { Button, Modal } from '$lib/components';
   import { FormField, PasswordInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
-  import { LoginInputSchema } from '$lib/validations';
+  import { UpdatePasswordInputSchema } from '$lib/validations';
 
   export let open = false;
-
+  let isSuccess = false;
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation LoginPage_Login_Mutation7($input: LoginInput!) {
-        login(input: $input) {
-          __typename
+      mutation MeAccountPage_UpdatePassword_Mutation(
+        $input: UpdatePasswordInput!
+      ) {
+        updatePassword(input: $input) {
+          id
         }
       }
     `),
-    schema: LoginInputSchema,
+    schema: UpdatePasswordInputSchema,
     onSuccess: () => {
       open = false;
+      isSuccess = true;
     },
   });
 </script>
@@ -30,18 +33,18 @@
   </svelte:fragment>
 
   <form class="space-y-4" use:form>
-    <FormField name="oldPassword" label="비밀번호">
+    <FormField name="oldPassword" label="기존 비밀번호">
       <PasswordInput
         class="w-full font-bold"
         placeholder="기존 비밀번호 입력"
       />
     </FormField>
 
-    <FormField name="newPassword" label="비밀번호">
+    <FormField name="newPassword" label="새 비밀번호">
       <PasswordInput class="w-full font-bold" placeholder="새 비밀번호 입력" />
     </FormField>
 
-    <FormField name="newPasswordConfirm" label="비밀번호 확인">
+    <FormField name="newPasswordConfirm" label="새 비밀번호 확인">
       <PasswordInput
         class="w-full font-bold"
         placeholder="새 비밀번호 확인 입력"
@@ -50,4 +53,12 @@
 
     <Button class="w-full" size="xl" type="submit">비밀번호 변경</Button>
   </form>
+</Modal>
+
+<Modal size="sm" bind:open={isSuccess}>
+  <svelte:fragment slot="title">비밀번호 변경에 성공했어요</svelte:fragment>
+
+  <Button class="w-full" size="xl" on:click={() => (isSuccess = false)}>
+    확인
+  </Button>
 </Modal>
