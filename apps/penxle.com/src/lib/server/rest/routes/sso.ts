@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { error, status } from 'itty-router';
-import { google } from '$lib/server/external-api';
+import { google, naver } from '$lib/server/external-api';
 import {
   createAccessToken,
   createRandomAvatar,
@@ -9,24 +9,55 @@ import {
 } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { createRouter } from '../router';
+import type { UserSSOProvider } from '@prisma/client';
+import type { Cookies } from '@sveltejs/kit';
+import type { AuthContext } from '$lib/server/context';
+import type { ExternalUser } from '$lib/server/external-api/types';
+import type { InteractiveTransactionClient } from '$lib/server/prisma';
 
 export const sso = createRouter();
 
-sso.get('/sso/google', async (_, { db, ...context }) => {
+sso.get('/sso/google', async (_, context) => {
   const code = context.url.searchParams.get('code');
   const state = context.url.searchParams.get('state');
   if (!code || !state) {
     return error(400);
   }
 
-  const payload = JSON.parse(state);
+  const payload = JSON.parse(atob(state));
   const googleUser = await google.authorizeUser(context, code);
+  return await ssoLogin('GOOGLE', googleUser, payload, context);
+});
 
+sso.get('/sso/naver', async (_, context) => {
+  const code = context.url.searchParams.get('code');
+  const state = context.url.searchParams.get('state');
+  if (!code || !state) {
+    return error(400);
+  }
+
+  const payload = JSON.parse(atob(state));
+  const googleUser = await naver.authorizeUser(context, code);
+  return await ssoLogin('NAVER', googleUser, payload, context);
+});
+
+async function ssoLogin(
+  provider: UserSSOProvider,
+  externalUser: ExternalUser,
+  payload: { type: string },
+  {
+    db,
+    ...context
+  }: {
+    db: InteractiveTransactionClient;
+    cookies: Cookies;
+  } & Partial<AuthContext>,
+) {
   const sso = await db.userSSO.findUnique({
     where: {
       provider_providerUserId: {
-        provider: 'GOOGLE',
-        providerUserId: googleUser.id,
+        provider,
+        providerUserId: externalUser.id,
       },
     },
   });
@@ -44,7 +75,7 @@ sso.get('/sso/google', async (_, { db, ...context }) => {
     }
 
     if (sso) {
-      // 케이스 1-1: 콜백이 날아온 구글 계정이 이미 사이트의 "누군가에게" 연동이 되어 있는 경우
+      // 케이스 1-1: 콜백이 날아온 계정이 이미 사이트의 "누군가에게" 연동이 되어 있는 경우
 
       // eslint-disable-next-line unicorn/prefer-ternary
       if (sso.userId === context.session.userId) {
@@ -59,30 +90,30 @@ sso.get('/sso/google', async (_, { db, ...context }) => {
         return error(400);
       }
     } else {
-      // 케이스 1-2: 콜백이 날아온 구글 계정이 아직 사이트에 연동이 안 된 계정인 경우
+      // 케이스 1-2: 콜백이 날아온 계정이 아직 사이트에 연동이 안 된 계정인 경우
 
       const isEmailUsedByOtherUser = await db.user.exists({
         where: {
           id: { not: context.session.userId },
-          email: googleUser.email,
+          email: externalUser.email,
         },
       });
 
       if (isEmailUsedByOtherUser) {
-        // 케이스 1-2-1: 콜백이 날아온 구글 계정의 이메일과 같은 이메일의 계정이 이미 사이트에 있고, 그 계정이 현재 로그인된 계정이 아닐 경우
+        // 케이스 1-2-1: 콜백이 날아온 계정의 이메일과 같은 이메일의 계정이 이미 사이트에 있고, 그 계정이 현재 로그인된 계정이 아닐 경우
         // -> 딴 사람이거나 연동 실수를 하고 있는 가능성도 있으니 에러
 
         return error(400);
       } else {
-        // 케이스 1-2-2: 콜백이 날아온 구글 계정의 이메일과 같은 이메일의 계정이 없거나, 있더라도 현재 로그인된 계정인 경우
-        // -> 현재 로그인한 계정에 콜백이 날아온 구글 계정을 연동함
+        // 케이스 1-2-2: 콜백이 날아온 계정의 이메일과 같은 이메일의 계정이 없거나, 있더라도 현재 로그인된 계정인 경우
+        // -> 현재 로그인한 계정에 콜백이 날아온 계정을 연동함
 
         await db.userSSO.create({
           data: {
             id: createId(),
-            provider: 'GOOGLE',
-            providerEmail: googleUser.email,
-            providerUserId: googleUser.id,
+            provider,
+            providerEmail: externalUser.email,
+            providerUserId: externalUser.id,
             user: { connect: { id: context.session.userId } },
           },
         });
@@ -94,7 +125,7 @@ sso.get('/sso/google', async (_, { db, ...context }) => {
     // 케이스 2: 계정 로그인 혹은 가입중인 경우
 
     if (sso) {
-      // 케이스 2-1: 콜백이 날아온 구글 계정이 이미 사이트의 "누군가에게" 연동이 되어 있는 경우
+      // 케이스 2-1: 콜백이 날아온 계정이 이미 사이트의 "누군가에게" 연동이 되어 있는 경우
       // -> 그 "누군가"로 로그인함
 
       const session = await db.session.create({
@@ -110,54 +141,54 @@ sso.get('/sso/google', async (_, { db, ...context }) => {
 
       return status(301, { headers: { Location: '/' } });
     } else {
-      // 케이스 2-2: 콜백이 날아온 구글 계정이 아직 사이트에 연동이 안 된 계정인 경우
+      // 케이스 2-2: 콜백이 날아온 계정이 아직 사이트에 연동이 안 된 계정인 경우
 
       const isEmailExists = await db.user.exists({
         where: {
-          email: googleUser.email,
+          email: externalUser.email,
         },
       });
 
       if (isEmailExists) {
-        // 케이스 2-2-1: 콜백이 날아온 구글 계정의 이메일과 같은 이메일의 계정이 이미 사이트에 있으나, 연동이 안 된 경우
+        // 케이스 2-2-1: 콜백이 날아온 계정의 이메일과 같은 이메일의 계정이 이미 사이트에 있으나, 연동이 안 된 경우
         // -> "아직 연동이 안 되었으니" 로그인해주면 안 됨. 다시 로그인 페이지로 리다이렉트.
 
         // TODO: querystring 같은거 넣어서 로그인 페이지에서 연동 안 된 계정이라고 비밀번호 로그인하라고 알려줘야 할 듯.
         return status(301, { headers: { Location: '/login' } });
       } else {
-        // 케이스 2-2-2: 콜백이 날아온 구글 계정의 이메일이 연동되지 않았고, 같은 이메일의 계정도 사이트에 없는 경우
+        // 케이스 2-2-2: 콜백이 날아온 계정의 이메일이 연동되지 않았고, 같은 이메일의 계정도 사이트에 없는 경우
         // -> 새로 가입함
 
         const avatarBuffer =
-          (await fetch(googleUser.avatarUrl)
+          (await fetch(externalUser.avatarUrl)
             .then((res) => res.arrayBuffer())
             .then((profileArrayBuffer) => Buffer.from(profileArrayBuffer))
-            .catch(() => null)) ?? (await renderAvatar(createRandomAvatar())); // 구글 프로필 사진을 가져오는 데 실패한 경우 (없다던가)
+            .catch(() => null)) ?? (await renderAvatar(createRandomAvatar())); // 프로필 사진을 가져오는 데 실패한 경우 (없다던가)
 
         const avatarId = await directUploadImage({
           db,
-          name: 'google-avatar.jpg',
+          name: 'sso-avatar.jpg',
           buffer: avatarBuffer,
         });
 
         const user = await db.user.create({
           data: {
             id: createId(),
-            email: googleUser.email,
+            email: externalUser.email,
             state: 'ACTIVE',
             profile: {
               create: {
                 id: createId(),
-                name: googleUser.name,
+                name: externalUser.name,
                 avatarId,
               },
             },
             ssos: {
               create: {
                 id: createId(),
-                provider: 'GOOGLE',
-                providerEmail: googleUser.email,
-                providerUserId: googleUser.id,
+                provider,
+                providerEmail: externalUser.email,
+                providerUserId: externalUser.id,
               },
             },
           },
@@ -185,4 +216,4 @@ sso.get('/sso/google', async (_, { db, ...context }) => {
   }
 
   // 여기까지 오면 안 됨
-});
+}

@@ -12,7 +12,7 @@ import {
   PasswordReset,
   PasswordResetRequest,
 } from '$lib/server/email/templates';
-import { google } from '$lib/server/external-api';
+import { google, naver } from '$lib/server/external-api';
 import {
   createAccessToken,
   createRandomAvatar,
@@ -391,6 +391,8 @@ builder.mutationFields((t) => ({
     resolve: (_, { input }, context) => {
       if (input.provider === UserSSOProvider.GOOGLE) {
         return { url: google.generateAuthorizationUrl(input.type, context) };
+      } else if (input.provider === UserSSOProvider.NAVER) {
+        return { url: naver.generateAuthorizationUrl(input.type, context) };
       } else {
         throw new Error('Unsupported provider');
       }

@@ -20,7 +20,7 @@ export const generateAuthorizationUrl = (
   const client = createOAuthClient(context);
   return client.generateAuthUrl({
     scope: ['email', 'profile'],
-    state: JSON.stringify({ type }),
+    state: btoa(JSON.stringify({ type })),
   });
 };
 
