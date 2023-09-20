@@ -181,11 +181,12 @@ model UserMarketingAgreement {
 }
 
 model UserNotificationOptOut {
-  id       String                   @id
-  userId   String                   @map("user_id")
-  user     User                     @relation(fields: [userId], references: [id])
-  category UserNotificationCategory
-  method   UserNotificationMethod
+  id        String                   @id
+  userId    String                   @map("user_id")
+  user      User                     @relation(fields: [userId], references: [id])
+  category  UserNotificationCategory
+  method    UserNotificationMethod
+  createdAt DateTime                 @default(now()) @map("created_at") @db.Timestamptz
 
   @@unique([userId, category, method])
   @@map("user_notification_opt_outs")
