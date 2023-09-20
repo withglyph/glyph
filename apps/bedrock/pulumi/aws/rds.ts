@@ -7,6 +7,14 @@ const password = new random.RandomPassword('penxle@rds', {
   length: 20,
 });
 
+const monitoring = new aws.iam.Role('monitoring@rds', {
+  name: 'monitoring@rds',
+  assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
+    Service: 'monitoring.rds.amazonaws.com',
+  }),
+  managedPolicyArns: [aws.iam.ManagedPolicy.AmazonRDSEnhancedMonitoringRole],
+});
+
 const cluster = new aws.rds.Cluster('penxle', {
   clusterIdentifier: 'penxle',
 
@@ -48,6 +56,8 @@ new aws.rds.ClusterInstance('penxle-1', {
 
   preferredMaintenanceWindow: 'sun:20:00-sun:22:00',
 
+  monitoringInterval: 60,
+  monitoringRoleArn: monitoring.arn,
   performanceInsightsEnabled: true,
 
   promotionTier: 0,
