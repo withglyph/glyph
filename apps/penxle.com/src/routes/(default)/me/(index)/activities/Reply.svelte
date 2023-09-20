@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Reply from '$assets/icons/reply.svg?component';
+  import ReplyFill from '$assets/icons/reply-fill.svg?component';
   import { Button } from '$lib/components';
 </script>
 
@@ -41,7 +41,7 @@
         size="sm"
         variant="outlined"
       >
-        <Reply class="square-4 mr-2" />
+        <ReplyFill class="square-4 mr-2 fill-gray-40" />
         3
       </Button>
     </div>
@@ -65,7 +65,7 @@
         size="sm"
         variant="outlined"
       >
-        <Reply class="square-4 mr-2" />
+        <ReplyFill class="square-4 mr-2 fill-gray-40" />
         0
       </Button>
     </div>

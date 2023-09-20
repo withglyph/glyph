@@ -37,7 +37,7 @@
       class="bg-gray-5 square-80 rounded-6 flex flex-col center w-full"
       type="button"
     >
-      <Camera class="square-10" />
+      <Camera class="square-10 fill-gray-40" />
       <span class="text-gray-50 text-sm font-bold mt-2">
         프로필 사진 업로드
       </span>
