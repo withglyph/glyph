@@ -45,9 +45,9 @@ builder.prismaObject('User', {
 
     profile: t.relation('profile'),
 
-    isMarketingAgreed: t.boolean({
-      select: { marketingAgreement: true },
-      resolve: (user) => !!user.marketingAgreement,
+    marketingAgreement: t.relation('marketingAgreement', {
+      grantScopes: ['$user'],
+      nullable: true,
     }),
 
     spaces: t.prismaField({
@@ -95,6 +95,15 @@ builder.prismaObject('UserSSO', {
     id: t.exposeID('id'),
     provider: t.expose('provider', { type: UserSSOProvider }),
     email: t.exposeString('providerEmail'),
+  }),
+});
+
+builder.prismaObject('UserMarketingAgreement', {
+  select: { id: true },
+  authScopes: { $granted: '$user' },
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    createdAt: t.expose('createdAt', { type: 'DateTime' }),
   }),
 });
 

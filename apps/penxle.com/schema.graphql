@@ -141,11 +141,16 @@ input UpdateUserSettingsInput {
 type User {
   email: String!
   id: ID!
-  isMarketingAgreed: Boolean!
+  marketingAgreement: UserMarketingAgreement
   profile: Profile!
   spaces: [Space!]!
   sso(provider: UserSSOProvider!): UserSSO
   state: UserState!
+}
+
+type UserMarketingAgreement {
+  createdAt: DateTime!
+  id: ID!
 }
 
 type UserSSO {
