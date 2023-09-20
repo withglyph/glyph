@@ -148,6 +148,7 @@ model User {
   tagPreferences     UserTagPreference[]
   emailVerifications UserEmailVerification[]
   marketingAgreement UserMarketingAgreement?
+  notificationOptOut UserNotificationOptOut[]
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
@@ -177,6 +178,17 @@ model UserMarketingAgreement {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("user_marketing_agreements")
+}
+
+model UserNotificationOptOut {
+  id       String                   @id
+  userId   String                   @map("user_id")
+  user     User                     @relation(fields: [userId], references: [id])
+  category UserNotificationCategory
+  method   UserNotificationMethod
+
+  @@unique([userId, category, method])
+  @@map("user_notification_opt_outs")
 }
 
 model UserSSO {
@@ -242,6 +254,27 @@ enum UserEmailVerificationType {
   PASSWORD_RESET
 
   @@map("_user_email_verification_type")
+}
+
+enum UserNotificationCategory {
+  COMMENT
+  REPLY
+  SUBSCRIBE
+  TAG_EDIT
+  TREND
+  PURCHASE
+  DONATE
+  TAG_WIKI_EDIT
+  ALL
+
+  @@map("_user_notification_category")
+}
+
+enum UserNotificationMethod {
+  EMAIL
+  WEBSITE
+
+  @@map("_user_notification_method")
 }
 
 enum UserSSOProvider {
