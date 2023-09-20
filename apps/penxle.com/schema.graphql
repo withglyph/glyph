@@ -135,6 +135,7 @@ input UpdateUserProfileInput {
 
 input UpdateUserSettingsInput {
   isMarketingAgreed: Boolean
+  unlinkSSO: UserSSOProvider
 }
 
 type User {

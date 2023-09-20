@@ -28,7 +28,6 @@ import {
   SignupInputSchema,
   UpdatePasswordInputSchema,
   UpdateUserProfileInputSchema,
-  UpdateUserSettingsInputSchema,
 } from '$lib/validations';
 import { builder } from '../builder';
 
@@ -192,8 +191,8 @@ const UpdatePasswordInput = builder.inputType('UpdatePasswordInput', {
 const UpdateUserSettingsInput = builder.inputType('UpdateUserSettingsInput', {
   fields: (t) => ({
     isMarketingAgreed: t.boolean({ required: false }),
+    unlinkSSO: t.field({ type: UserSSOProvider, required: false }),
   }),
-  validate: { schema: UpdateUserSettingsInputSchema },
 });
 
 /**
@@ -632,6 +631,11 @@ builder.mutationFields((t) => ({
           : db.userMarketingAgreement.deleteMany({
               where: { userId: context.session.userId },
             }));
+      }
+      if (input.unlinkSSO) {
+        await db.userSSO.deleteMany({
+          where: { userId: context.session.userId, provider: input.unlinkSSO },
+        });
       }
       return await db.user.findUniqueOrThrow({
         ...query,
