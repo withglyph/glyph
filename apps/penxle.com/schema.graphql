@@ -55,9 +55,10 @@ type Mutation {
   resendUserActivationEmail: Void
   resetPassword(input: ResetPasswordInput!): Void
   signup(input: SignupInput!): User!
+  unlinkSSO(input: UnlinkSSOInput!): User!
+  updateMarketingAgreement(input: UpdateMarketingAgreementInput!): User!
   updatePassword(input: UpdatePasswordInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
-  updateUserSettings(input: UpdateUserSettingsInput!): User!
   verifyEmail(input: VerifyEmailInput!): User!
 }
 
@@ -124,6 +125,14 @@ enum SpaceMemberRole {
   OWNER
 }
 
+input UnlinkSSOInput {
+  provider: UserSSOProvider!
+}
+
+input UpdateMarketingAgreementInput {
+  isAgreed: Boolean!
+}
+
 input UpdatePasswordInput {
   newPassword: String!
   oldPassword: String
@@ -131,11 +140,6 @@ input UpdatePasswordInput {
 
 input UpdateUserProfileInput {
   name: String!
-}
-
-input UpdateUserSettingsInput {
-  isMarketingAgreed: Boolean
-  unlinkSSO: UserSSOProvider
 }
 
 type User {

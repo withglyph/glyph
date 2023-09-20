@@ -209,10 +209,18 @@ const UpdatePasswordInput = builder.inputType('UpdatePasswordInput', {
   validate: { schema: UpdatePasswordInputSchema },
 });
 
-const UpdateUserSettingsInput = builder.inputType('UpdateUserSettingsInput', {
+const UpdateMarketingAgreementInput = builder.inputType(
+  'UpdateMarketingAgreementInput',
+  {
+    fields: (t) => ({
+      isAgreed: t.boolean(),
+    }),
+  },
+);
+
+const UnlinkSSOInput = builder.inputType('UnlinkSSOInput', {
   fields: (t) => ({
-    isMarketingAgreed: t.boolean({ required: false }),
-    unlinkSSO: t.field({ type: UserSSOProvider, required: false }),
+    provider: t.field({ type: UserSSOProvider }),
   }),
 });
 
@@ -630,29 +638,36 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  updateUserSettings: t.withAuth({ auth: true }).prismaField({
+  updateMarketingAgreement: t.withAuth({ auth: true }).prismaField({
     type: 'User',
-    args: { input: t.arg({ type: UpdateUserSettingsInput }) },
+    args: { input: t.arg({ type: UpdateMarketingAgreementInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      if (input.isMarketingAgreed != undefined) {
-        await (input.isMarketingAgreed
-          ? db.userMarketingAgreement.upsert({
-              where: { userId: context.session.userId },
-              create: {
-                id: createId(),
-                userId: context.session.userId,
-              },
-              update: {},
-            })
-          : db.userMarketingAgreement.deleteMany({
-              where: { userId: context.session.userId },
-            }));
-      }
-      if (input.unlinkSSO) {
-        await db.userSSO.deleteMany({
-          where: { userId: context.session.userId, provider: input.unlinkSSO },
-        });
-      }
+      await (input.isAgreed
+        ? db.userMarketingAgreement.upsert({
+            where: { userId: context.session.userId },
+            create: {
+              id: createId(),
+              userId: context.session.userId,
+            },
+            update: {},
+          })
+        : db.userMarketingAgreement.deleteMany({
+            where: { userId: context.session.userId },
+          }));
+      return await db.user.findUniqueOrThrow({
+        ...query,
+        where: { id: context.session.userId },
+      });
+    },
+  }),
+
+  unlinkSSO: t.withAuth({ auth: true }).prismaField({
+    type: 'User',
+    args: { input: t.arg({ type: UnlinkSSOInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      await db.userSSO.deleteMany({
+        where: { userId: context.session.userId, provider: input.provider },
+      });
       return await db.user.findUniqueOrThrow({
         ...query,
         where: { id: context.session.userId },
