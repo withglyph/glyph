@@ -58,7 +58,7 @@ type Mutation {
   updatePassword(input: UpdatePasswordInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
   updateUserSettings(input: UpdateUserSettingsInput!): User!
-  verifyEmail(input: VerifyEmailInput!): User
+  verifyEmail(input: VerifyEmailInput!): User!
 }
 
 type PrepareImageUploadResult {
@@ -144,7 +144,7 @@ type User {
   isMarketingAgreed: Boolean!
   profile: Profile!
   spaces: [Space!]!
-  ssos: [UserSSO!]!
+  sso(provider: UserSSOProvider!): UserSSO
   state: UserState!
 }
 

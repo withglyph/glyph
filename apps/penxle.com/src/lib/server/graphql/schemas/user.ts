@@ -37,20 +37,16 @@ import { builder } from '../builder';
 
 builder.prismaObject('User', {
   select: { id: true },
-  authScopes: (user) => ({ user }),
-  grantScopes: () => ['user'],
+  authScopes: (user) => ({ user, $granted: '$user' }),
   fields: (t) => ({
     id: t.exposeID('id'),
     email: t.exposeString('email'),
     state: t.expose('state', { type: UserState }),
 
     profile: t.relation('profile'),
-    ssos: t.relation('ssos'),
 
     isMarketingAgreed: t.boolean({
-      select: {
-        marketingAgreement: true,
-      },
+      select: { marketingAgreement: true },
       resolve: (user) => !!user.marketingAgreement,
     }),
 
@@ -63,6 +59,21 @@ builder.prismaObject('User', {
         },
       }),
       resolve: (_, { spaces }) => spaces.map(({ space }) => space),
+    }),
+
+    sso: t.prismaField({
+      type: 'UserSSO',
+      nullable: true,
+      grantScopes: ['$user'],
+      args: { provider: t.arg({ type: UserSSOProvider }) },
+      resolve: async (query, parent, args, { db }) => {
+        return await db.userSSO.findUnique({
+          ...query,
+          where: {
+            userId_provider: { userId: parent.id, provider: args.provider },
+          },
+        });
+      },
     }),
   }),
 });
@@ -79,7 +90,7 @@ builder.prismaObject('Profile', {
 
 builder.prismaObject('UserSSO', {
   select: { id: true },
-  authScopes: { $granted: 'user' },
+  authScopes: { $granted: '$user' },
   fields: (t) => ({
     id: t.exposeID('id'),
     provider: t.expose('provider', { type: UserSSOProvider }),
@@ -223,10 +234,9 @@ builder.queryFields((t) => ({
 builder.mutationFields((t) => ({
   login: t.prismaField({
     type: 'User',
+    grantScopes: ['$user'],
     args: { input: t.arg({ type: LoginInput }) },
-    resolve: async (query, _, { input }, context) => {
-      const db = context.db;
-
+    resolve: async (query, _, { input }, { db, ...context }) => {
       const user = await db.user.findFirst({
         select: { id: true, password: { select: { hash: true } } },
         where: {
@@ -256,8 +266,6 @@ builder.mutationFields((t) => ({
       });
 
       const accessToken = await createAccessToken(session.id);
-
-      context.session = { id: session.id, userId: user.id };
       context.cookies.set('penxle-at', accessToken, {
         path: '/',
         maxAge: dayjs.duration(1, 'year').asSeconds(),
@@ -284,10 +292,9 @@ builder.mutationFields((t) => ({
 
   signup: t.prismaField({
     type: 'User',
+    grantScopes: ['$user'],
     args: { input: t.arg({ type: SignupInput }) },
-    resolve: async (query, _, { input }, context) => {
-      const db = context.db;
-
+    resolve: async (query, _, { input }, { db, ...context }) => {
       const isEmailUsed = await db.user.exists({
         where: {
           email: input.email.toLowerCase(),
@@ -370,8 +377,6 @@ builder.mutationFields((t) => ({
       });
 
       const accessToken = await createAccessToken(session.id);
-
-      context.session = { id: session.id, userId: user.id };
       context.cookies.set('penxle-at', accessToken, {
         path: '/',
         maxAge: dayjs.duration(1, 'year').asSeconds(),
@@ -538,7 +543,7 @@ builder.mutationFields((t) => ({
 
   verifyEmail: t.prismaField({
     type: 'User',
-    nullable: true,
+    grantScopes: ['$user'],
     args: { input: t.arg({ type: VerifyEmailInput }) },
     resolve: async (query, _, { input }, { db }) => {
       const verification = await db.userEmailVerification.delete({
