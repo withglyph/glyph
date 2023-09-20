@@ -14,14 +14,12 @@ const toGraphQLAppError = (error: unknown): GraphQLAppError => {
     return new GraphQLAppError(error);
   } else if (error instanceof GraphQLError && error.originalError) {
     return toGraphQLAppError(error.originalError);
-  } else if (error instanceof Error) {
-    console.error(error);
-    Sentry.captureException(error);
-    return new GraphQLAppError(new UnknownError(error));
   } else {
     console.error(error);
     Sentry.captureException(error);
-    return new GraphQLAppError(new UnknownError());
+    return new GraphQLAppError(
+      new UnknownError(error instanceof Error ? error : undefined),
+    );
   }
 };
 

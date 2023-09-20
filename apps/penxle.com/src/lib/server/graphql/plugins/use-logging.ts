@@ -4,10 +4,8 @@ import type { Context } from '$lib/server/context';
 
 export const useLogging = (): Plugin<Context> => ({
   onExecute: ({ args }) => {
-    logger.info(`${args.operationName}`, {
-      scope: 'graphql',
-      user: args.contextValue.session?.userId,
-      ip: args.contextValue.getClientAddress(),
+    logger.debug({
+      context: 'graphql',
       operation_name: args.operationName,
       variables: args.variableValues,
     });
