@@ -38,7 +38,7 @@ import { builder } from '../builder';
 
 builder.prismaObject('User', {
   select: { id: true },
-  authScopes: { $granted: '$user' },
+  authScopes: (user) => ({ user, $granted: '$user' }),
   fields: (t) => ({
     id: t.exposeID('id'),
     email: t.exposeString('email'),
@@ -215,7 +215,6 @@ builder.queryFields((t) => ({
   me: t.prismaField({
     type: 'User',
     nullable: true,
-    grantScopes: ['$user'],
     resolve: async (query, _, __, { db, ...context }) => {
       if (!context.session) {
         return null;
@@ -238,9 +237,7 @@ builder.mutationFields((t) => ({
     type: 'User',
     grantScopes: ['$user'],
     args: { input: t.arg({ type: LoginInput }) },
-    resolve: async (query, _, { input }, context) => {
-      const db = context.db;
-
+    resolve: async (query, _, { input }, { db, ...context }) => {
       const user = await db.user.findFirst({
         select: { id: true, password: { select: { hash: true } } },
         where: {
@@ -270,8 +267,6 @@ builder.mutationFields((t) => ({
       });
 
       const accessToken = await createAccessToken(session.id);
-
-      context.session = { id: session.id, userId: user.id };
       context.cookies.set('penxle-at', accessToken, {
         path: '/',
         maxAge: dayjs.duration(1, 'year').asSeconds(),
@@ -300,9 +295,7 @@ builder.mutationFields((t) => ({
     type: 'User',
     grantScopes: ['$user'],
     args: { input: t.arg({ type: SignupInput }) },
-    resolve: async (query, _, { input }, context) => {
-      const db = context.db;
-
+    resolve: async (query, _, { input }, { db, ...context }) => {
       const isEmailUsed = await db.user.exists({
         where: {
           email: input.email.toLowerCase(),
@@ -385,8 +378,6 @@ builder.mutationFields((t) => ({
       });
 
       const accessToken = await createAccessToken(session.id);
-
-      context.session = { id: session.id, userId: user.id };
       context.cookies.set('penxle-at', accessToken, {
         path: '/',
         maxAge: dayjs.duration(1, 'year').asSeconds(),
@@ -553,7 +544,6 @@ builder.mutationFields((t) => ({
 
   verifyEmail: t.prismaField({
     type: 'User',
-    nullable: true,
     grantScopes: ['$user'],
     args: { input: t.arg({ type: VerifyEmailInput }) },
     resolve: async (query, _, { input }, { db }) => {
@@ -632,7 +622,6 @@ builder.mutationFields((t) => ({
 
   updateUserSettings: t.withAuth({ auth: true }).prismaField({
     type: 'User',
-    grantScopes: ['$user'],
     args: { input: t.arg({ type: UpdateUserSettingsInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       if (input.isMarketingAgreed != undefined) {
@@ -658,7 +647,6 @@ builder.mutationFields((t) => ({
 
   updatePassword: t.withAuth({ auth: true }).prismaField({
     type: 'User',
-    grantScopes: ['$user'],
     args: { input: t.arg({ type: UpdatePasswordInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const user = await db.user.findUniqueOrThrow({

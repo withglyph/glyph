@@ -58,7 +58,7 @@ type Mutation {
   updatePassword(input: UpdatePasswordInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
   updateUserSettings(input: UpdateUserSettingsInput!): User!
-  verifyEmail(input: VerifyEmailInput!): User
+  verifyEmail(input: VerifyEmailInput!): User!
 }
 
 type PrepareImageUploadResult {
