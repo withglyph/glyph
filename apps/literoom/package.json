@@ -19,7 +19,7 @@
     "@penxle/tsconfig": "workspace:^",
     "@pulumi/aws": "^6.2.0",
     "@pulumi/aws-native": "^0.76.0",
-    "@pulumi/pulumi": "^3.83.0",
+    "@pulumi/pulumi": "^3.84.0",
     "@types/aws-lambda": "^8.10.121",
     "tsup": "^7.2.0",
     "tsx": "^3.12.10",
