@@ -51,7 +51,13 @@ export const ResetPasswordInputSchema = z
     path: ['passwordConfirm'],
   });
 
-export const UpdatePasswordInputSchema = z.object({
-  oldPassword: password.optional(),
-  newPassword: password,
-});
+export const UpdatePasswordInputSchema = z
+  .object({
+    oldPassword: password.optional(),
+    newPassword: password,
+    newPasswordConfirm: z.string(),
+  })
+  .refine((v) => v.newPassword === v.newPasswordConfirm, {
+    message: '비밀번호가 일치하지 않아요',
+    path: ['newPasswordConfirm'],
+  });

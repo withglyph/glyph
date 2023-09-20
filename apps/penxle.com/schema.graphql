@@ -135,6 +135,7 @@ input UpdateMarketingAgreementInput {
 
 input UpdatePasswordInput {
   newPassword: String!
+  newPasswordConfirm: String!
   oldPassword: String
 }
 

@@ -205,6 +205,7 @@ const UpdatePasswordInput = builder.inputType('UpdatePasswordInput', {
   fields: (t) => ({
     oldPassword: t.string({ required: false }),
     newPassword: t.string(),
+    newPasswordConfirm: t.string(),
   }),
   validate: { schema: UpdatePasswordInputSchema },
 });
