@@ -32,7 +32,6 @@ export const generateGQLCodegen = async (context: GlitchContext) => {
       { urqlGraphcache: {} },
     ],
     config: {
-      avoidOptionals: true,
       documentNodeImport: '@penxle/glitch/runtime#TypedDocumentNode',
       documentVariablePrefix: 'DocumentNode_',
       documentVariableSuffix: '',
