@@ -3,11 +3,11 @@
   import { Button, Modal } from '$lib/components';
   import { FormField, PasswordInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
+  import { toast } from '$lib/notification';
   import { UpdatePasswordInputSchema } from '$lib/validations';
   import type { AccountPage_UpdatePasswordModal_user } from '$glitch';
 
   export let open = false;
-  let isSuccess = false;
 
   let _user: AccountPage_UpdatePasswordModal_user;
   export { _user as $user };
@@ -37,9 +37,12 @@
       }
     `),
     schema: UpdatePasswordInputSchema,
+    onError: () => {
+      toast.error('비밀번호 변경에 실패했어요.');
+    },
     onSuccess: () => {
       open = false;
-      isSuccess = true;
+      toast.success('비밀번호 변경에 성공했어요.');
     },
   });
 </script>
@@ -76,12 +79,4 @@
 
     <Button class="w-full" size="xl" type="submit">비밀번호 변경</Button>
   </form>
-</Modal>
-
-<Modal size="sm" bind:open={isSuccess}>
-  <svelte:fragment slot="title">비밀번호 변경에 성공했어요</svelte:fragment>
-
-  <Button class="w-full" size="xl" on:click={() => (isSuccess = false)}>
-    확인
-  </Button>
 </Modal>

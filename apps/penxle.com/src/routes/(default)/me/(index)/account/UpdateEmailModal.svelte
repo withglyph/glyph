@@ -3,10 +3,10 @@
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
+  import { toast } from '$lib/notification';
   import { RequestEmailUpdateInputSchema } from '$lib/validations';
 
   export let open = false;
-  let isComplete = false;
   let value: HTMLInputElement['value'];
 
   const { form } = createMutationForm({
@@ -18,9 +18,12 @@
       }
     `),
     schema: RequestEmailUpdateInputSchema,
+    onError: () => {
+      toast.error('이메일 인증 메일 전송에 실패했어요');
+    },
     onSuccess: () => {
       open = false;
-      isComplete = true;
+      toast.success('입력하신 이메일로 인증메일을 전송했어요');
     },
   });
 </script>
@@ -39,14 +42,4 @@
 
     <Button class="w-full" size="xl" type="submit">이메일 인증 보내기</Button>
   </form>
-</Modal>
-
-<Modal size="sm" bind:open={isComplete}>
-  <svelte:fragment slot="title">
-    입력하신 이메일로 인증메일을 전송했어요
-  </svelte:fragment>
-
-  <Button class="w-full" size="xl" on:click={() => (isComplete = false)}>
-    확인
-  </Button>
 </Modal>
