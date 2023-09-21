@@ -58,7 +58,7 @@
         <button type="button">
           <h3 class="text-lg font-extrabold">민감한 내용(주의요소) 표시</h3>
         </button>
-        <Switch />
+        <Switch checked />
       </div>
       <p class="text-3.75 text-gray-50">
         포스트를 올릴 때 설정한 트리거 태그(유혈, 폭력 등) 여부에 대해 체크한
@@ -66,7 +66,7 @@
       </p>
       <div class="flex items-center gap-3 my-4">
         <p class="text-3.75 font-bold">민감한 내용 사전 블러 처리</p>
-        <Switch />
+        <Switch checked size="sm" />
       </div>
       <div class="text-gray-50 flex items-center gap-1 mb-4">
         <button class="text-3.25 font-bold" type="button">
@@ -97,14 +97,14 @@
         <button type="button">
           <h3 class="text-lg font-extrabold">성인물 표시</h3>
         </button>
-        <Switch />
+        <Switch checked />
       </div>
       <p class="text-3.75 text-gray-50">
         성인물에 해당하는 요소가 포함된 포스트가 노출되지 않습니다.
       </p>
       <div class="flex items-center gap-3 my-4">
         <p class="text-3.75 font-bold">민감한 내용 사전 블러 처리</p>
-        <Switch />
+        <Switch checked size="sm" />
       </div>
     </div>
   </div>

@@ -17,10 +17,10 @@
       class="flex flex-wrap items-center justify-between gap-4 pt-14 py-4 px-6 sm:p-0"
     >
       <div class="text-lg font-extrabold">알림 전체 켜기 / 끄기</div>
-      <Switch class="sm:hidden" />
+      <Switch class="sm:hidden" checked />
       <div class="hidden sm:(flex gap-8)">
-        <Switch />
-        <Switch />
+        <Switch checked />
+        <Switch checked />
       </div>
     </div>
 

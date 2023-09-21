@@ -3,8 +3,10 @@
   import type { HTMLInputAttributes } from 'svelte/elements';
 
   type $$Props = {
-    size: 'sm' | 'lg';
-  } & HTMLInputAttributes;
+    size?: 'sm' | 'lg';
+    checked: HTMLInputAttributes['checked'];
+    class?: HTMLInputAttributes['class'];
+  };
 
   export let checked: HTMLInputAttributes['checked'] = false;
   let _class: HTMLInputAttributes['class'] = undefined;
@@ -20,6 +22,7 @@
     _class,
   )}
   type="checkbox"
+  on:change
   bind:checked
   {...$$restProps}
 />
