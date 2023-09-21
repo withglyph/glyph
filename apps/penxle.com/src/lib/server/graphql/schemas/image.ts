@@ -106,8 +106,8 @@ builder.mutationFields((t) => ({
       );
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const buffer = Buffer.from(await object.Body!.transformToByteArray());
-      const metadata = await getImageMetadata(buffer);
+      const source = await object.Body!.transformToByteArray();
+      const metadata = await getImageMetadata(source);
 
       const key = aws.createS3ObjectKey('images');
       const ext = input.name.split('.').pop() ?? 'unk';
@@ -117,7 +117,7 @@ builder.mutationFields((t) => ({
         new PutObjectCommand({
           Bucket: 'penxle-data',
           Key: path,
-          Body: buffer,
+          Body: source,
           ContentType: object.ContentType ?? `image/${metadata.format}`,
         }),
       );
