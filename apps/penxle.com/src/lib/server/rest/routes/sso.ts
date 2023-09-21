@@ -160,8 +160,8 @@ const handle = async (
 
         const avatarId = await directUploadImage({
           db,
-          name: 'sso-avatar',
-          buffer: avatarBuffer,
+          name: 'avatar',
+          source: avatarBuffer,
         });
 
         const user = await db.user.create({

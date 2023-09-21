@@ -21,9 +21,8 @@ import {
 import { google, naver } from '$lib/server/external-api';
 import {
   createAccessToken,
-  createRandomAvatar,
   directUploadImage,
-  renderAvatar,
+  generateRandomAvatar,
 } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import {
@@ -380,11 +379,10 @@ builder.mutationFields((t) => ({
         throw new FormValidationError('email', '이미 사용중인 이메일이에요.');
       }
 
-      const randomAvatar = createRandomAvatar();
       const avatarId = await directUploadImage({
         db,
-        name: 'random-avatar',
-        buffer: await renderAvatar(randomAvatar),
+        name: 'avatar',
+        source: await generateRandomAvatar(),
       });
 
       const profile = await db.profile.create({

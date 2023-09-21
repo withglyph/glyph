@@ -64,3 +64,8 @@ export const renderAvatar = async (avatar: string) => {
 
   return image.asPng();
 };
+
+export const generateRandomAvatar = async () => {
+  const avatar = createRandomAvatar();
+  return await renderAvatar(avatar);
+};

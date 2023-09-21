@@ -6,8 +6,10 @@ import { createId } from '$lib/utils';
 import { getDominantColor } from './mmcq';
 import type { InteractiveTransactionClient } from '../database';
 
-export const getImageMetadata = async (buffer: Buffer) => {
-  const image = sharp(buffer, { failOn: 'none' })
+type ImageSource = Buffer | ArrayBuffer | Uint8Array;
+
+export const getImageMetadata = async (source: ImageSource) => {
+  const image = sharp(source, { failOn: 'none' })
     .rotate()
     .flatten({ background: '#ffffff' });
 
@@ -90,15 +92,15 @@ type DirectUploadImageParams = {
   db: InteractiveTransactionClient;
   userId?: string;
   name: string;
-  buffer: Buffer;
+  source: ImageSource;
 };
 export const directUploadImage = async ({
   db,
   userId,
   name,
-  buffer,
+  source,
 }: DirectUploadImageParams) => {
-  const metadata = await getImageMetadata(buffer);
+  const metadata = await getImageMetadata(source);
 
   const key = aws.createS3ObjectKey('images');
   const ext = metadata.format;
@@ -108,7 +110,7 @@ export const directUploadImage = async ({
     new PutObjectCommand({
       Bucket: 'penxle-data',
       Key: path,
-      Body: buffer,
+      Body: Buffer.from(source),
       ContentType: `image/${metadata.format}`,
     }),
   );
