@@ -19,6 +19,7 @@
         id
         email
         state
+        ...AccountPage_UpdatePasswordModal_user
 
         marketingAgreement {
           id
@@ -50,7 +51,7 @@
   `);
 
   const issueSSOAuthorizationUrl = graphql(`
-    mutation LoginPage_IssueSSOAuthorizationUrl_Mutation2(
+    mutation AccountPage_IssueSSOAuthorizationUrl_Mutation(
       $input: IssueSSOAuthorizationUrlInput!
     ) {
       issueSSOAuthorizationUrl(input: $input) {
@@ -59,11 +60,11 @@
     }
   `);
 
-  const updateUserSettings = graphql(`
-    mutation AccountPage_UpdateUserSettings_Mutation(
-      $input: UpdateUserSettingsInput!
+  const updateMarketingAgreement = graphql(`
+    mutation AccountPage_UpdateMarketingAgreement_Mutation(
+      $input: UpdateMarketingAgreementInput!
     ) {
-      updateUserSettings(input: $input) {
+      updateMarketingAgreement(input: $input) {
         id
       }
     }
@@ -102,6 +103,8 @@
           <h3 class="text-lg font-extrabold mr-2">이메일 인증</h3>
           {#if $query.me.state === 'PROVISIONAL'}
             <Badge class="text-xs font-bold" color="red">인증 필요</Badge>
+          {:else}
+            <Badge class="text-xs font-bold" color="green">인증 완료</Badge>
           {/if}
         </div>
         <p class="text-3.75 text-gray-50 break-keep">
@@ -218,9 +221,8 @@
       <Switch
         checked={!!$query.me.marketingAgreement}
         on:change={async () =>
-          await updateUserSettings({
-            isMarketingAgreed: true,
-            unlinkSSO: 'GOOGLE',
+          await updateMarketingAgreement({
+            isAgreed: true,
           })}
       />
     </div>
@@ -263,5 +265,5 @@
 </div>
 
 <UpdateEmailModal bind:open={updateEmailOpen} />
-<UpdatePasswordModal bind:open={updatePasswordOpen} />
+<UpdatePasswordModal $user={$query.me} bind:open={updatePasswordOpen} />
 <UpdateProfileModal bind:open={updateProfileOpen} />
