@@ -1,5 +1,6 @@
 import {
   UserNotificationCategory,
+  UserNotificationMethod,
   UserSSOProvider,
   UserState,
 } from '@prisma/client';
@@ -177,6 +178,7 @@ builder.enumType(UserSSOProvider, { name: 'UserSSOProvider' });
 builder.enumType(UserNotificationCategory, {
   name: 'UserNotificationCategory',
 });
+builder.enumType(UserNotificationMethod, { name: 'UserNotificationMethod' });
 
 const UserSSOAuthorizationType = builder.enumType('UserSSOAuthorizationType', {
   values: ['AUTH', 'LINK'],
@@ -278,6 +280,17 @@ const UnlinkSSOInput = builder.inputType('UnlinkSSOInput', {
     provider: t.field({ type: UserSSOProvider }),
   }),
 });
+
+const UpdateNotificationPreferencesInput = builder.inputType(
+  'UpdateNotificationPreferencesInput',
+  {
+    fields: (t) => ({
+      category: t.field({ type: UserNotificationCategory }),
+      method: t.field({ type: UserNotificationMethod }),
+      isEnabled: t.boolean(),
+    }),
+  },
+);
 
 /**
  * * Queries
@@ -812,6 +825,38 @@ builder.mutationFields((t) => ({
           }),
         },
       });
+    },
+  }),
+
+  updateNotificationPreferences: t.withAuth({ auth: true }).field({
+    type: 'Void',
+    nullable: true,
+    args: { input: t.arg({ type: UpdateNotificationPreferencesInput }) },
+    resolve: async (_, { input }, { db, ...context }) => {
+      await (input.isEnabled
+        ? db.userNotificationOptOut.deleteMany({
+            where: {
+              userId: context.session.userId,
+              category: input.category,
+              method: input.method,
+            },
+          })
+        : db.userNotificationOptOut.upsert({
+            where: {
+              userId_category_method: {
+                userId: context.session.userId,
+                category: input.category,
+                method: input.method,
+              },
+            },
+            create: {
+              id: createId(),
+              userId: context.session.userId,
+              category: input.category,
+              method: input.method,
+            },
+            update: {},
+          }));
     },
   }),
 }));

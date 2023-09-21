@@ -57,6 +57,7 @@ type Mutation {
   signup(input: SignupInput!): User!
   unlinkSSO(input: UnlinkSSOInput!): User!
   updateMarketingAgreement(input: UpdateMarketingAgreementInput!): User!
+  updateNotificationPreferences(input: UpdateNotificationPreferencesInput!): Void
   updatePassword(input: UpdatePasswordInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
   verifyEmail(input: VerifyEmailInput!): User!
@@ -133,6 +134,12 @@ input UpdateMarketingAgreementInput {
   isAgreed: Boolean!
 }
 
+input UpdateNotificationPreferencesInput {
+  category: UserNotificationCategory!
+  isEnabled: Boolean!
+  method: UserNotificationMethod!
+}
+
 input UpdatePasswordInput {
   newPassword: String!
   newPasswordConfirm: String!
@@ -170,6 +177,11 @@ enum UserNotificationCategory {
   TAG_EDIT
   TAG_WIKI_EDIT
   TREND
+}
+
+enum UserNotificationMethod {
+  EMAIL
+  WEBSITE
 }
 
 type UserNotificationPreference {
