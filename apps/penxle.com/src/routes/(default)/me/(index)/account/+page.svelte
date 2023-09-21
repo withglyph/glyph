@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import dayjs from 'dayjs';
   import Google from '$assets/icons/google.svg?component';
   import Naver from '$assets/icons/naver.svg?component';
   import { graphql } from '$glitch';
@@ -80,6 +81,14 @@
     mutation AccountPage_UnlinkSSO_Mutation($input: UnlinkSSOInput!) {
       unlinkSSO(input: $input) {
         id
+
+        google: sso(provider: GOOGLE) {
+          id
+        }
+
+        naver: sso(provider: NAVER) {
+          id
+        }
       }
     }
   `);
@@ -267,23 +276,18 @@
         <h3 class="text-lg font-extrabold mb-2">마케팅 수신 동의</h3>
         {#if $query.me.marketingAgreement}
           <p class="text-3.75 text-gray-50 break-keep">
-            {$query.me.marketingAgreement.createdAt.slice(0, 10)} 승인됨
+            {dayjs($query.me.marketingAgreement.createdAt).formatAsDateTime()} 승인됨
           </p>
         {/if}
       </div>
       <Switch
         checked={!!$query.me.marketingAgreement}
         on:change={async () => {
-          await updateMarketingAgreement({
-            isAgreed: !$query.me.marketingAgreement,
-          });
-
-          const now = new Date().toISOString().slice(0, 10);
-          const agreement = $query.me.marketingAgreement ? '승인' : '거부';
-
-          toast.success(`${now} 마케팅 수신이 ${agreement}되었습니다.`, {
-            title: '펜슬컴퍼니',
-          });
+          const isAgreed = !$query.me.marketingAgreement;
+          await updateMarketingAgreement({ isAgreed });
+          toast.success(
+            `마케팅 수신 동의가 ${isAgreed ? '승인' : '거부'} 처리되었어요`,
+          );
         }}
       />
     </div>

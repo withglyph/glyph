@@ -20,7 +20,6 @@
 
         password {
           id
-          createdAt
         }
       }
     `),
@@ -50,7 +49,7 @@
 <Modal size="md" bind:open>
   <svelte:fragment slot="title">새로운 비밀번호를 설정해주세요</svelte:fragment>
   <svelte:fragment slot="subtitle">
-    {#if $user.password?.id}
+    {#if $user.password}
       비밀번호를 재설정하면 현재 사용중인 세션을 제외한 모든 세션에서
       로그아웃되어요.
     {/if}

@@ -45,6 +45,12 @@ export const generateGQLCodegen = async (context: GlitchContext) => {
         transformUnderscore: true,
       },
       omitOperationSuffix: true,
+      scalars: {
+        DateTime: 'string',
+        JSON: 'unknown',
+        Void: { input: 'never', output: 'void' },
+      },
+      strictScalars: true,
       useTypeImports: true,
     },
   });
