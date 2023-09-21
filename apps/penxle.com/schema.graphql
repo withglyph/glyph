@@ -147,6 +147,7 @@ type User {
   email: String!
   id: ID!
   marketingAgreement: UserMarketingAgreement
+  notificationPreferences(category: UserNotificationCategory!): UserNotificationPreference!
   password: UserPassword
   profile: Profile!
   spaces: [Space!]!
@@ -157,6 +158,23 @@ type User {
 type UserMarketingAgreement {
   createdAt: DateTime!
   id: ID!
+}
+
+enum UserNotificationCategory {
+  ALL
+  COMMENT
+  DONATE
+  PURCHASE
+  REPLY
+  SUBSCRIBE
+  TAG_EDIT
+  TAG_WIKI_EDIT
+  TREND
+}
+
+type UserNotificationPreference {
+  email: Boolean!
+  website: Boolean!
 }
 
 type UserPassword {

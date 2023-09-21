@@ -1,8 +1,13 @@
-import { UserSSOProvider, UserState } from '@prisma/client';
+import {
+  UserNotificationCategory,
+  UserSSOProvider,
+  UserState,
+} from '@prisma/client';
 import argon2 from 'argon2';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
+import * as R from 'radash';
 import { match } from 'ts-pattern';
 import { FormValidationError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
@@ -35,6 +40,17 @@ import { builder } from '../builder';
 /**
  * * Types
  */
+
+const UserNotificationPreference = builder.simpleObject(
+  'UserNotificationPreference',
+  {
+    authScopes: { $granted: '$user' },
+    fields: (t) => ({
+      website: t.boolean(),
+      email: t.boolean(),
+    }),
+  },
+);
 
 builder.prismaObject('User', {
   select: { id: true },
@@ -78,6 +94,29 @@ builder.prismaObject('User', {
             userId_provider: { userId: parent.id, provider: args.provider },
           },
         });
+      },
+    }),
+
+    notificationPreferences: t.field({
+      type: UserNotificationPreference,
+      grantScopes: ['$user'],
+      args: { category: t.arg({ type: UserNotificationCategory }) },
+      resolve: async (parent, args, { db }) => {
+        const preferences = await db.userNotificationOptOut.findMany({
+          where: {
+            userId: parent.id,
+            category: args.category,
+          },
+        });
+
+        return R.mapValues(
+          {
+            website: 'WEBSITE',
+            email: 'EMAIL',
+          },
+          (method) =>
+            !preferences.some((preference) => preference.method === method),
+        );
       },
     }),
   }),
@@ -136,6 +175,9 @@ const IssueSSOAuthorizationUrlResult = builder.simpleObject(
 
 builder.enumType(UserState, { name: 'UserState' });
 builder.enumType(UserSSOProvider, { name: 'UserSSOProvider' });
+builder.enumType(UserNotificationCategory, {
+  name: 'UserNotificationCategory',
+});
 
 const UserSSOAuthorizationType = builder.enumType('UserSSOAuthorizationType', {
   values: ['AUTH', 'LINK'],
