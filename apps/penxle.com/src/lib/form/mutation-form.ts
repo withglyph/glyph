@@ -4,15 +4,14 @@ import { AppError, FormValidationError } from '$lib/errors';
 import { toast } from '$lib/notification';
 import { context } from './context';
 import type { AssignableErrors, Extender, RecursivePartial } from '@felte/core';
-import type { AnyZodObject, TypeOf } from 'zod';
+import type { AnyZodObject, TypeOf, ZodEffects } from 'zod';
 import type { MutationStore } from '$glitch';
 import type { MaybePromise, Unwrap } from '$lib/types';
 
 type MutationFormConfig<D, Z extends AnyZodObject> = {
-  schema: Z | { validate: Z; warn: Z };
+  schema: Z | ZodEffects<Z> | { validate: Z; warn: Z };
   initialValues?: RecursivePartial<TypeOf<Z>>;
   mutation: MutationStore<D, { input: TypeOf<Z> }>;
-  refetch?: boolean;
   onSuccess?: (data: Unwrap<D>) => MaybePromise<void>;
   onError?: (error: AppError) => MaybePromise<void>;
 };

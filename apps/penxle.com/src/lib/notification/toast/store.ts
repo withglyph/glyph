@@ -1,72 +1,23 @@
-import { writable } from '@svelte-kits/store';
+import { writable } from 'svelte/store';
 
-type ToastType = 'info' | 'success' | 'error';
-
-export type Toast = ToastOptions & {
+export type Toast = {
   id: symbol;
-
-  type: ToastType;
-  message: string;
-
-  dismiss: () => void;
-  set: (toast: Partial<Omit<Toast, 'id'>>) => void;
-
-  mounted: boolean;
-  top: number;
-  height: number;
-};
-
-type ToastOptions = {
+  type: 'success' | 'error';
   title?: string;
+  message: string;
   duration: number;
 };
 
-type ToastReturn = Pick<Toast, 'dismiss'>;
+type ToastOptions = Partial<Pick<Toast, 'title' | 'duration'>>;
 
-const createToastStore = () => {
-  const { subscribe, update } = writable<Toast[]>([]);
-
-  return {
-    subscribe,
-    toast: (
-      type: ToastType,
-      message: string,
-      options?: Partial<ToastOptions>,
-    ) => {
-      const id = Symbol();
-
-      const toast: Toast = {
-        id,
-
-        message,
-        type,
-        title: options?.title,
-        duration: options?.duration ?? 5000,
-
-        dismiss: () => update((toasts) => toasts.filter((t) => t.id !== id)),
-        set: (toast) =>
-          update((toasts) =>
-            toasts.map((t) => (t.id === id ? { ...t, ...toast } : t)),
-          ),
-
-        mounted: false,
-        top: 0,
-        height: 0,
-      };
-
-      update((toasts) => [toast, ...toasts]);
-
-      return toast as ToastReturn;
-    },
-  };
+export const store = writable<Toast[]>([]);
+const append = (toast: Omit<Toast, 'id'>) => {
+  store.update((toasts) => [...toasts, { id: Symbol(), ...toast }]);
 };
 
-export const store = createToastStore();
 export const toast = {
-  info: (message: string, options?: Partial<ToastOptions>) =>
-    store.toast('info', message, options),
-  success: (message: string, options?: Partial<ToastOptions>) =>
-    store.toast('success', message, options),
-  error: (message: string, options?: Partial<ToastOptions>) =>
-    store.toast('error', message, options),
+  success: (message: string, options?: ToastOptions) =>
+    append({ message, type: 'success', duration: 5000, ...options }),
+  error: (message: string, options?: ToastOptions) =>
+    append({ message, type: 'error', duration: 10_000, ...options }),
 };

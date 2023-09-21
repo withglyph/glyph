@@ -64,7 +64,7 @@
     </button>
   </div>
 
-  <Button slot="action" on:click={() => (open = false)}>닫기</Button>
+  <Button slot="action" size="md" on:click={() => (open = false)}>닫기</Button>
 </Modal>
 
 <CreateSpaceModal bind:open={openCreateSpace} />

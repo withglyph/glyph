@@ -66,6 +66,7 @@
     slot="action"
     disabled={confirm !== $space.slug}
     loading={$deleteSpace.inflight}
+    size="md"
     on:click={async () => {
       await deleteSpace({ spaceId: $space.id });
       mixpanel.track('space:delete');

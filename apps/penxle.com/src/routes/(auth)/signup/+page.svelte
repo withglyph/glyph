@@ -3,7 +3,6 @@
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
-  import { Logo } from '$lib/components/branding';
   import {
     Checkbox,
     FormField,
@@ -11,12 +10,19 @@
     TextInput,
   } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
-  import { SignUpInputSchema } from '$lib/validations';
+  import { SignupInputSchema } from '$lib/validations';
+
+  let value: HTMLInputElement['value'];
+  let isAgreed: boolean;
+  let isAgreed2: boolean;
+  let allAgreed: boolean;
+
+  $: allAgreed = isAgreed && isAgreed2;
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation SignUpPage_SignUp_Mutation($input: SignUpInput!) {
-        signUp(input: $input) {
+      mutation SignupPage_Signup_Mutation($input: SignupInput!) {
+        signup(input: $input) {
           id
           email
 
@@ -32,8 +38,7 @@
         }
       }
     `),
-    schema: SignUpInputSchema,
-    refetch: false,
+    schema: SignupInputSchema,
     onSuccess: (resp) => {
       mixpanel.identify(resp.id);
       mixpanel.track('user:signup', { method: 'email' });
@@ -45,36 +50,61 @@
       location.href = '/';
     },
   });
+
+  const toggleAll = () => {
+    allAgreed = !allAgreed;
+
+    isAgreed = allAgreed;
+    isAgreed2 = allAgreed;
+  };
 </script>
 
 <Helmet title="새 계정 만들기" />
 
-<div class="flex items-center gap-4">
-  <Logo class="square-8" />
-  <div class="h-10 border-x border-gray-90" />
-  <div class="text-2xl font-bold">새 펜슬 계정 만들기</div>
-</div>
+<h1 class="font-bold text-xl w-full max-w-87.5">펜슬 회원가입</h1>
 
-<form class="mt-4 w-80 space-y-4" use:form>
-  <FormField name="email" label="이메일">
-    <TextInput class="w-full" />
-  </FormField>
+<form class="mt-6 w-full max-w-87.5 space-y-4" use:form>
+  <div class="space-y-3">
+    <FormField name="email" label="이메일">
+      <TextInput class="w-full font-bold" placeholder="이메일 입력" />
+    </FormField>
 
-  <FormField name="password" label="비밀번호">
-    <PasswordInput class="w-full" />
-  </FormField>
+    <FormField name="name" label="닉네임">
+      <TextInput
+        class="w-full font-bold"
+        maxlength={10}
+        placeholder="닉네임 입력"
+        bind:value
+      >
+        <span slot="right-icon">{value ? value.length : 0} / 10</span>
+      </TextInput>
+    </FormField>
 
-  <FormField name="name" label="닉네임">
-    <TextInput class="w-full" />
-  </FormField>
+    <FormField name="password" label="비밀번호">
+      <PasswordInput class="w-full font-bold" placeholder="비밀번호 입력" />
+    </FormField>
 
-  <section class="pt-4 space-y-2">
-    <Checkbox name="isAgreed">펜슬 이용약관에 동의합니다.</Checkbox>
-    <Button class="w-full py-4" type="submit">가입하기</Button>
+    <FormField name="passwordConfirm" label="비밀번호 확인">
+      <PasswordInput
+        class="w-full font-bold"
+        placeholder="비밀번호 확인 입력"
+      />
+    </FormField>
+  </div>
+
+  <section class="my-4 space-y-3">
+    <Checkbox class="font-bold" on:change={toggleAll} bind:checked={allAgreed}>
+      약관 전체 동의
+    </Checkbox>
+    <Checkbox name="isAgreed" class="text-sm" bind:checked={isAgreed}>
+      <Link href="/" underline>이용약관</Link> 및 <Link href="/" underline>
+        개인정보 수집 이용
+      </Link> 동의(필수)
+    </Checkbox>
+    <Checkbox name="isMarketingAgreed" class="text-sm" bind:checked={isAgreed2}>
+      마케팅 정보 수집 동의(선택)
+    </Checkbox>
   </section>
-</form>
 
-<div class="mt-2 text-xs text-gray-50">
-  이미 계정이 있으신가요?
-  <Link class="font-bold" colored href="/login" underline>로그인하기</Link>
-</div>
+  <Button class="w-full" size="xl" type="submit">펜슬 회원가입 하기</Button>
+</form>

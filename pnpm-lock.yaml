@@ -525,6 +525,9 @@ importers:
       thumbhash:
         specifier: ^0.1.1
         version: 0.1.1
+      ts-pattern:
+        specifier: ^5.0.5
+        version: 5.0.5
       tsx:
         specifier: ^3.12.10
         version: 3.12.10
@@ -743,6 +746,9 @@ importers:
       browserslist:
         specifier: ^4.21.10
         version: 4.21.10
+      css-tree:
+        specifier: ^2.3.1
+        version: 2.3.1
       lightningcss:
         specifier: ^1.22.0
         version: 1.22.0
@@ -768,6 +774,9 @@ importers:
       '@sveltejs/kit':
         specifier: ^1.25.0
         version: 1.25.0(svelte@4.2.1)(vite@4.4.9)
+      '@types/css-tree':
+        specifier: ^2.3.2
+        version: 2.3.2
       rollup:
         specifier: ^3.29.2
         version: 3.29.2
@@ -5752,6 +5761,10 @@ packages:
     resolution: {integrity: sha512-KuwNhp3eza+Rhu8IFI5HUXRP0LIhqH5cAjubUvGXXthh4YYBuP2ntwEX+Cz8GJoZUHlKo247wPWOfA9LYEq4cw==}
     dependencies:
       '@types/node': 20.6.3
+    dev: true
+
+  /@types/css-tree@2.3.2:
+    resolution: {integrity: sha512-B5nF6h7xxpMLvZ1pzugAYUGj1aw4KgTpXZzOijkDMRzey4SlFi0jVWb3o0SS1CVSxyBciltVgjt67CwrgjmlWA==}
     dev: true
 
   /@types/debug@4.1.8:
@@ -12847,6 +12860,10 @@ packages:
       mkdirp: 0.5.6
       source-map-support: 0.5.21
       yn: 2.0.0
+
+  /ts-pattern@5.0.5:
+    resolution: {integrity: sha512-tL0w8U/pgaacOmkb9fRlYzWEUDCfVjjv9dD4wHTgZ61MjhuMt46VNWTG747NqW6vRzoWIKABVhFSOJ82FvXrfA==}
+    dev: true
 
   /ts-toolbelt@9.6.0:
     resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}

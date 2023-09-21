@@ -26,5 +26,7 @@
 </div>
 
 <div class="fixed top-8 right-8">
-  <Button color="brand" on:click={() => query.refetch()}>refetch</Button>
+  <Button color="primary" size="md" on:click={() => query.refetch()}>
+    refetch
+  </Button>
 </div>

@@ -11,8 +11,8 @@ export const basicColors = {
 
 export const shadedColors = {
   gray: {
-    5: '#FAFAF9',
-    10: '#F4F4F3',
+    5: '#F9F9F8',
+    10: '#F1F1F0',
     20: '#E7E5E4',
     30: '#D6D3D1',
     40: '#A8A29E',
@@ -39,7 +39,7 @@ export const shadedColors = {
   },
   red: {
     5: '#FFF9F8',
-    10: '#FEF1F0',
+    10: '#FEEEED',
     20: '#FDDFDE',
     30: '#FCC8C6',
     40: '#F98B88',
@@ -115,6 +115,25 @@ export const shadedColors = {
     80: '#50301e',
     90: '#362113',
     100: '#170d08',
+  },
+};
+
+export const partialShadedColors = {
+  alphagray: {
+    10: '#0c0a091a',
+    15: '#0c0a0926',
+    30: '#0c0a094d',
+    50: '#0c0a097f',
+    60: '#0c0a0999',
+    80: '#0c0a09cc',
+  },
+  alphawhite: {
+    10: '#fafaf91a',
+    15: '#fafaf926',
+    30: '#fafaf94d',
+    50: '#fafaf97f',
+    60: '#fafaf999',
+    80: '#fafaf9cc',
   },
 };
 

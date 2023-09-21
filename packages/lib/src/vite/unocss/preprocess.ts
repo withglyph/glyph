@@ -1,5 +1,6 @@
 import { loadConfig } from '@unocss/config';
 import { createGenerator } from '@unocss/core';
+import * as csstree from 'css-tree';
 import MagicString from 'magic-string';
 import { traverse } from 'object-traversal';
 import { parse } from 'svelte/compiler';
@@ -127,7 +128,27 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
         minify: true,
       });
 
-      const style = css.replaceAll(/(\.\S+?)({[\S\s]+?})/g, ':global($1)$2');
+      const cssAst = csstree.parse(css);
+
+      csstree.walk(cssAst, function (node, _, list) {
+        if (node.type === 'PseudoClassSelector' && node.name === 'global') {
+          // @ts-expect-error types are wrong
+          return this.skip;
+        }
+
+        if (node.type === 'ClassSelector') {
+          const children = list.copy();
+
+          list.clear();
+          list.push({
+            type: 'PseudoClassSelector',
+            name: 'global',
+            children,
+          });
+        }
+      });
+
+      const style = csstree.generate(cssAst);
 
       if (ast.css) {
         source.appendRight(ast.css.content.end, `\n${style}\n`);

@@ -134,25 +134,63 @@ model TagWikiRevision {
 
 model User {
   id        String    @id
-  email     String    @unique
+  email     String
   profileId String    @unique @map("profile_id")
   profile   Profile   @relation(fields: [profileId], references: [id])
   state     UserState
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   // 주로 쓰이는 릴레이션들
-  password              UserPassword?
-  sessions              Session[]
-  spaces                SpaceMember[]
-  ssos                  UserSSO[]
-  tagPreferences        UserTagPreference[]
-  passwordResetRequests UserPasswordResetRequest[]
+  password                   UserPassword?
+  sessions                   Session[]
+  spaces                     SpaceMember[]
+  ssos                       UserSSO[]
+  tagPreferences             UserTagPreference[]
+  emailVerifications         UserEmailVerification[]
+  marketingAgreement         UserMarketingAgreement?
+  notificationOptOut         UserNotificationOptOut[]
+  contentFilteringPreference UserContentFilteringPreference[]
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
   uploadedImages           Image[]
 
+  @@index([email, state])
   @@map("users")
+}
+
+model UserEmailVerification {
+  id        String                    @id
+  userId    String                    @map("user_id")
+  user      User                      @relation(fields: [userId], references: [id])
+  email     String
+  code      String                    @unique
+  type      UserEmailVerificationType
+  createdAt DateTime                  @default(now()) @map("created_at") @db.Timestamptz
+  expiresAt DateTime                  @map("expires_at") @db.Timestamptz
+
+  @@map("user_email_verifications")
+}
+
+model UserMarketingAgreement {
+  id        String   @id
+  userId    String   @unique @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("user_marketing_agreements")
+}
+
+model UserNotificationOptOut {
+  id        String                   @id
+  userId    String                   @map("user_id")
+  user      User                     @relation(fields: [userId], references: [id])
+  category  UserNotificationCategory
+  method    UserNotificationMethod
+  createdAt DateTime                 @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([userId, category, method])
+  @@map("user_notification_opt_outs")
 }
 
 model UserSSO {
@@ -160,6 +198,7 @@ model UserSSO {
   userId         String          @map("user_id")
   user           User            @relation(fields: [userId], references: [id])
   provider       UserSSOProvider
+  providerEmail  String          @map("provider_email")
   providerUserId String          @map("provider_user_id")
   createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz
 
@@ -178,17 +217,6 @@ model UserPassword {
   @@map("user_passwords")
 }
 
-model UserPasswordResetRequest {
-  id        String   @id
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
-  token     String   @unique
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  expiresAt DateTime @map("expires_at") @db.Timestamptz
-
-  @@map("user_password_reset_requests")
-}
-
 model UserTagPreference {
   id        String         @id
   userId    String         @unique @map("user_id")
@@ -199,6 +227,43 @@ model UserTagPreference {
   createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("user_tag_preferences")
+}
+
+model UserContentFilteringPreference {
+  id        String                   @id
+  userId    String                   @map("user_id")
+  user      User                     @relation(fields: [userId], references: [id])
+  category  ContentFilteringCategory
+  action    ContentFilteringAction
+  createdAt DateTime                 @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([userId, category])
+  @@map("user_content_filtering_preferences")
+}
+
+enum ContentFilteringCategory {
+  ADULT
+  ALL_BUT_ADULT
+  VIOLENCE
+  CRUELTY
+  HORROR
+  GAMBLING
+  TRAUMA
+  CRIME
+  PHOBIA
+  INSULT
+  GROSSNESS
+  OTHER
+
+  @@map("_content_filtering_category")
+}
+
+enum ContentFilteringAction {
+  HIDE
+  WARN
+  EXPOSE
+
+  @@map("_content_filtering_action")
 }
 
 enum PreferenceType {
@@ -222,6 +287,35 @@ enum SpaceMemberRole {
   @@map("_space_member_role")
 }
 
+enum UserEmailVerificationType {
+  USER_ACTIVATION
+  EMAIL_UPDATE
+  PASSWORD_RESET
+
+  @@map("_user_email_verification_type")
+}
+
+enum UserNotificationCategory {
+  COMMENT
+  REPLY
+  SUBSCRIBE
+  TAG_EDIT
+  TREND
+  PURCHASE
+  DONATE
+  TAG_WIKI_EDIT
+  ALL
+
+  @@map("_user_notification_category")
+}
+
+enum UserNotificationMethod {
+  EMAIL
+  WEBSITE
+
+  @@map("_user_notification_method")
+}
+
 enum UserSSOProvider {
   GOOGLE
   NAVER
@@ -230,6 +324,7 @@ enum UserSSOProvider {
 }
 
 enum UserState {
+  PROVISIONAL
   ACTIVE
   INACTIVE
 

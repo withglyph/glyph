@@ -105,6 +105,7 @@ export class Site extends pulumi.ComponentResource {
 
         memorySize: args.resources?.memory ?? 1024,
         timeout: 59,
+
         reservedConcurrentExecutions: isProd
           ? args.concurrency?.reserved ?? -1
           : -1,
@@ -112,7 +113,6 @@ export class Site extends pulumi.ComponentResource {
         s3Bucket: pkg.bucket,
         s3Key: pkg.key,
         handler: 'handler.handler',
-
         sourceCodeHash: pkg.metadata.Hash,
 
         publish: true,

@@ -3,7 +3,7 @@ export const generateUtility = () => {
 export type MakeRequired<T, K extends string> = T & {
   [P in keyof T as P extends (K extends \`\${infer K0}.\${string}\` ? K0 : K)
     ? P
-    : never]: P extends K
+    : never]-?: P extends K
     ? NonNullable<T[P]>
     : MakeRequired<
         T[P],

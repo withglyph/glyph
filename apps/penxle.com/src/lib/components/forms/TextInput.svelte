@@ -32,18 +32,18 @@
     id={name}
     {name}
     class={clsx(
-      'px-4 py-2 border transition enabled:(hover:border-gray-30 focus:border-brand-30 aria-[invalid]:border-red-50) disabled:opacity-50',
       _class,
       'left-icon' in $$slots && 'pl-10',
       'right-icon' in $$slots && 'pr-10',
       'left-text' in $$slots ? 'rounded-r' : 'rounded',
     )}
     type="text"
+    on:input
     bind:value
     {...$$restProps}
   />
   {#if 'right-icon' in $$slots}
-    <div class="absolute inset-y-0 right-4 flex center">
+    <div class="absolute inset-y-0 right-0 flex center">
       <slot name="right-icon" />
     </div>
   {/if}

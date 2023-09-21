@@ -26,36 +26,32 @@ export const generateGQLCodegen = async (context: GlitchContext) => {
       urqlGraphcache,
     },
     plugins: [
-      {
-        typescript: {},
-      },
-      {
-        typescriptOperations: {
-          avoidOptionals: true,
-          inlineFragmentTypes: 'mask',
-          namingConvention: 'keep',
-          omitOperationSuffix: true,
-          skipTypename: true,
-        },
-      },
-      {
-        typedDocumentNode: {
-          documentNodeImport: '@penxle/glitch/runtime#TypedDocumentNode',
-          documentVariablePrefix: 'DocumentNode_',
-          documentVariableSuffix: '',
-          fragmentVariablePrefix: 'DocumentNode_',
-          fragmentVariableSuffix: '',
-          namingConvention: 'keep',
-          omitOperationSuffix: true,
-          useTypeImports: true,
-        },
-      },
-      {
-        urqlGraphcache: {
-          useTypeImports: true,
-        },
-      },
+      { typescript: {} },
+      { typescriptOperations: { skipTypename: true } },
+      { typedDocumentNode: {} },
+      { urqlGraphcache: {} },
     ],
-    config: {},
+    config: {
+      documentNodeImport: '@penxle/glitch/runtime#TypedDocumentNode',
+      documentVariablePrefix: 'DocumentNode_',
+      documentVariableSuffix: '',
+      enumsAsTypes: true,
+      fragmentVariablePrefix: 'DocumentNode_',
+      fragmentVariableSuffix: '',
+      inlineFragmentTypes: 'mask',
+      namingConvention: {
+        typeNames: 'change-case-all#upperCaseFirst',
+        enumValues: 'keep',
+        transformUnderscore: true,
+      },
+      omitOperationSuffix: true,
+      scalars: {
+        DateTime: 'string',
+        JSON: 'unknown',
+        Void: { input: 'never', output: 'void' },
+      },
+      strictScalars: true,
+      useTypeImports: true,
+    },
   });
 };

@@ -130,10 +130,10 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
         return;
       }
 
-      if (
-        transformQuery(filename, program) ||
-        transformMutation(filename, program)
-      ) {
+      const queryTransformed = transformQuery(filename, program);
+      const mutationTransformed = transformMutation(filename, program);
+
+      if (queryTransformed || mutationTransformed) {
         return AST.print(program);
       }
     },

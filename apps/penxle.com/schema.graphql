@@ -1,3 +1,24 @@
+enum ContentFilteringAction {
+  EXPOSE
+  HIDE
+  WARN
+}
+
+enum ContentFilteringCategory {
+  ADULT
+  ALL_BUT_ADULT
+  CRIME
+  CRUELTY
+  GAMBLING
+  GROSSNESS
+  HORROR
+  INSULT
+  OTHER
+  PHOBIA
+  TRAUMA
+  VIOLENCE
+}
+
 input CreateSpaceInput {
   name: String!
   slug: String!
@@ -25,6 +46,11 @@ type Image {
 
 input IssueSSOAuthorizationUrlInput {
   provider: UserSSOProvider!
+  type: UserSSOAuthorizationType!
+}
+
+type IssueSSOAuthorizationUrlResult {
+  url: String!
 }
 
 """
@@ -41,17 +67,24 @@ type Mutation {
   createSpace(input: CreateSpaceInput!): Space!
   deleteSpace(input: DeleteSpaceInput!): Space!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
-  issueSSOAuthorizationUrl(input: IssueSSOAuthorizationUrlInput!): String!
+  issueSSOAuthorizationUrl(input: IssueSSOAuthorizationUrlInput!): IssueSSOAuthorizationUrlResult!
   login(input: LoginInput!): User!
-  logout: User!
-  prepareImageUpload: PrepareImageUploadPayload!
-  requestPasswordReset(input: RequestPasswordResetInput!): UserPasswordResetRequest!
-  resetPassword(input: ResetPasswordInput!): Boolean!
-  signUp(input: SignUpInput!): User!
+  logout: Void
+  prepareImageUpload: PrepareImageUploadResult!
+  requestEmailUpdate(input: RequestEmailUpdateInput!): Void
+  requestPasswordReset(input: RequestPasswordResetInput!): Void
+  resendUserActivationEmail: Void
+  resetPassword(input: ResetPasswordInput!): Void
+  signup(input: SignupInput!): User!
+  unlinkSSO(input: UnlinkSSOInput!): User!
+  updateMarketingAgreement(input: UpdateMarketingAgreementInput!): User!
+  updateNotificationPreferences(input: UpdateNotificationPreferencesInput!): Void
+  updatePassword(input: UpdatePasswordInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
+  verifyEmail(input: VerifyEmailInput!): User!
 }
 
-type PrepareImageUploadPayload {
+type PrepareImageUploadResult {
   key: String!
   presignedUrl: String!
 }
@@ -71,20 +104,27 @@ type Query {
   space(slug: String!): Space!
 }
 
+input RequestEmailUpdateInput {
+  email: String!
+}
+
 input RequestPasswordResetInput {
   email: String!
 }
 
 input ResetPasswordInput {
+  code: String!
   password: String!
-  token: String!
+  passwordConfirm: String!
 }
 
-input SignUpInput {
+input SignupInput {
   email: String!
   isAgreed: Boolean!
+  isMarketingAgreed: Boolean!
   name: String!
   password: String!
+  passwordConfirm: String!
 }
 
 type Space {
@@ -107,22 +147,100 @@ enum SpaceMemberRole {
   OWNER
 }
 
+input UnlinkSSOInput {
+  provider: UserSSOProvider!
+}
+
+input UpdateMarketingAgreementInput {
+  isAgreed: Boolean!
+}
+
+input UpdateNotificationPreferencesInput {
+  category: UserNotificationCategory!
+  isEnabled: Boolean!
+  method: UserNotificationMethod!
+}
+
+input UpdatePasswordInput {
+  newPassword: String!
+  newPasswordConfirm: String!
+  oldPassword: String
+}
+
 input UpdateUserProfileInput {
   name: String!
 }
 
 type User {
+  contentFilteringPreferences(category: ContentFilteringCategory!): ContentFilteringAction!
   email: String!
   id: ID!
+  marketingAgreement: UserMarketingAgreement
+  notificationPreferences(category: UserNotificationCategory!): UserNotificationPreference!
+  password: UserPassword
   profile: Profile!
   spaces: [Space!]!
+  sso(provider: UserSSOProvider!): UserSSO
+  state: UserState!
 }
 
-type UserPasswordResetRequest {
-  expiresAt: DateTime!
+type UserMarketingAgreement {
+  createdAt: DateTime!
+  id: ID!
+}
+
+enum UserNotificationCategory {
+  ALL
+  COMMENT
+  DONATE
+  PURCHASE
+  REPLY
+  SUBSCRIBE
+  TAG_EDIT
+  TAG_WIKI_EDIT
+  TREND
+}
+
+enum UserNotificationMethod {
+  EMAIL
+  WEBSITE
+}
+
+type UserNotificationPreference {
+  email: Boolean!
+  website: Boolean!
+}
+
+type UserPassword {
+  createdAt: DateTime!
+  id: ID!
+}
+
+type UserSSO {
+  email: String!
+  id: ID!
+  provider: UserSSOProvider!
+}
+
+enum UserSSOAuthorizationType {
+  AUTH
+  LINK
 }
 
 enum UserSSOProvider {
   GOOGLE
   NAVER
 }
+
+enum UserState {
+  ACTIVE
+  INACTIVE
+  PROVISIONAL
+}
+
+input VerifyEmailInput {
+  code: String!
+}
+
+"""Represents NULL values"""
+scalar Void

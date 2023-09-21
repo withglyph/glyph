@@ -4,7 +4,7 @@ import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects';
 import ValidationPlugin from '@pothos/plugin-validation';
 import { Prisma, PrismaClient } from '@prisma/client';
-import { GraphQLDateTime, GraphQLJSON } from 'graphql-scalars';
+import { GraphQLDateTime, GraphQLJSON, GraphQLVoid } from 'graphql-scalars';
 import { PermissionDeniedError } from '$lib/errors';
 import type PrismaTypes from '@pothos/plugin-prisma/generated';
 import type { AuthContext, Context } from '../context';
@@ -30,6 +30,8 @@ export const builder = new SchemaBuilder<{
     DateTime: { Input: Date; Output: Date };
     ID: { Input: string; Output: string };
     JSON: { Input: unknown; Output: unknown };
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+    Void: { Input: never; Output: void };
   };
 }>({
   authScopes: (context) => ({
@@ -61,3 +63,4 @@ builder.mutationType();
 
 builder.addScalarType('DateTime', GraphQLDateTime, {});
 builder.addScalarType('JSON', GraphQLJSON, {});
+builder.addScalarType('Void', GraphQLVoid, {});

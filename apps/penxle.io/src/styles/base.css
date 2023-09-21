@@ -62,3 +62,10 @@ ul {
 ::-ms-reveal {
   --uno: hidden;
 }
+
+textarea,
+select,
+input,
+button {
+  --uno: outline-none;
+}

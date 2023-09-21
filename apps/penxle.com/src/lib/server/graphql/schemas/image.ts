@@ -4,7 +4,7 @@ import {
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { random } from 'radash';
+import * as R from 'radash';
 import { aws } from '$lib/server/external-api';
 import { getImageMetadata } from '$lib/server/utils';
 import { createId } from '$lib/utils';
@@ -28,8 +28,8 @@ export const Image = builder.prismaObject('Image', {
   }),
 });
 
-const PrepareImageUploadPayload = builder.simpleObject(
-  'PrepareImageUploadPayload',
+const PrepareImageUploadResult = builder.simpleObject(
+  'PrepareImageUploadResult',
   {
     fields: (t) => ({
       key: t.string(),
@@ -61,7 +61,7 @@ builder.queryFields((t) => ({
       return await db.image.findFirst({
         ...query,
         where: { name: { startsWith: 'sample' } },
-        skip: random(0, 99),
+        skip: R.random(0, 99),
         orderBy: { id: 'asc' },
       });
     },
@@ -74,7 +74,7 @@ builder.queryFields((t) => ({
 
 builder.mutationFields((t) => ({
   prepareImageUpload: t.withAuth({ auth: true }).field({
-    type: PrepareImageUploadPayload,
+    type: PrepareImageUploadResult,
     resolve: async () => {
       const key = aws.createS3ObjectKey('images');
 
@@ -106,8 +106,8 @@ builder.mutationFields((t) => ({
       );
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const buffer = Buffer.from(await object.Body!.transformToByteArray());
-      const metadata = await getImageMetadata(buffer);
+      const source = await object.Body!.transformToByteArray();
+      const metadata = await getImageMetadata(source);
 
       const key = aws.createS3ObjectKey('images');
       const ext = input.name.split('.').pop() ?? 'unk';
@@ -117,7 +117,7 @@ builder.mutationFields((t) => ({
         new PutObjectCommand({
           Bucket: 'penxle-data',
           Key: path,
-          Body: buffer,
+          Body: source,
           ContentType: object.ContentType ?? `image/${metadata.format}`,
         }),
       );
