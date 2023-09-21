@@ -1,3 +1,24 @@
+enum ContentFilteringAction {
+  EXPOSE
+  HIDE
+  WARN
+}
+
+enum ContentFilteringCategory {
+  ADULT
+  ALL_BUT_ADULT
+  CRIME
+  CRUELTY
+  GAMBLING
+  GROSSNESS
+  HORROR
+  INSULT
+  OTHER
+  PHOBIA
+  TRAUMA
+  VIOLENCE
+}
+
 input CreateSpaceInput {
   name: String!
   slug: String!
@@ -151,6 +172,7 @@ input UpdateUserProfileInput {
 }
 
 type User {
+  contentFilteringPreferences(category: ContentFilteringCategory!): ContentFilteringAction!
   email: String!
   id: ID!
   marketingAgreement: UserMarketingAgreement

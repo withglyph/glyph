@@ -141,14 +141,15 @@ model User {
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   // 주로 쓰이는 릴레이션들
-  password           UserPassword?
-  sessions           Session[]
-  spaces             SpaceMember[]
-  ssos               UserSSO[]
-  tagPreferences     UserTagPreference[]
-  emailVerifications UserEmailVerification[]
-  marketingAgreement UserMarketingAgreement?
-  notificationOptOut UserNotificationOptOut[]
+  password                   UserPassword?
+  sessions                   Session[]
+  spaces                     SpaceMember[]
+  ssos                       UserSSO[]
+  tagPreferences             UserTagPreference[]
+  emailVerifications         UserEmailVerification[]
+  marketingAgreement         UserMarketingAgreement?
+  notificationOptOut         UserNotificationOptOut[]
+  contentFilteringPreference UserContentFilteringPreference[]
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
@@ -226,6 +227,43 @@ model UserTagPreference {
   createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("user_tag_preferences")
+}
+
+model UserContentFilteringPreference {
+  id        String                   @id
+  userId    String                   @map("user_id")
+  user      User                     @relation(fields: [userId], references: [id])
+  category  ContentFilteringCategory
+  action    ContentFilteringAction
+  createdAt DateTime                 @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([userId, category])
+  @@map("user_content_filtering_preferences")
+}
+
+enum ContentFilteringCategory {
+  ADULT
+  ALL_BUT_ADULT
+  VIOLENCE
+  CRUELTY
+  HORROR
+  GAMBLING
+  TRAUMA
+  CRIME
+  PHOBIA
+  INSULT
+  GROSSNESS
+  OTHER
+
+  @@map("_content_filtering_category")
+}
+
+enum ContentFilteringAction {
+  HIDE
+  WARN
+  EXPOSE
+
+  @@map("_content_filtering_action")
 }
 
 enum PreferenceType {

@@ -1,4 +1,6 @@
 import {
+  ContentFilteringAction,
+  ContentFilteringCategory,
   UserNotificationCategory,
   UserNotificationMethod,
   UserSSOProvider,
@@ -119,6 +121,23 @@ builder.prismaObject('User', {
         );
       },
     }),
+
+    contentFilteringPreferences: t.field({
+      type: ContentFilteringAction,
+      grantScopes: ['$user'],
+      args: { category: t.arg({ type: ContentFilteringCategory }) },
+      resolve: async (parent, args, { db }) => {
+        const preferences = await db.userContentFilteringPreference.findUnique({
+          where: {
+            userId_category: {
+              userId: parent.id,
+              category: args.category,
+            },
+          },
+        });
+        return preferences?.action ?? ContentFilteringAction.WARN;
+      },
+    }),
   }),
 });
 
@@ -173,6 +192,10 @@ const IssueSSOAuthorizationUrlResult = builder.simpleObject(
  * * Enums
  */
 
+builder.enumType(ContentFilteringAction, { name: 'ContentFilteringAction' });
+builder.enumType(ContentFilteringCategory, {
+  name: 'ContentFilteringCategory',
+});
 builder.enumType(UserState, { name: 'UserState' });
 builder.enumType(UserSSOProvider, { name: 'UserSSOProvider' });
 builder.enumType(UserNotificationCategory, {
