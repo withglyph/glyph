@@ -45,6 +45,10 @@ builder.prismaObject('User', {
     state: t.expose('state', { type: UserState }),
 
     profile: t.relation('profile'),
+    password: t.relation('password', {
+      grantScopes: ['$user'],
+      nullable: true,
+    }),
 
     marketingAgreement: t.relation('marketingAgreement', {
       grantScopes: ['$user'],
@@ -100,6 +104,15 @@ builder.prismaObject('UserSSO', {
 });
 
 builder.prismaObject('UserMarketingAgreement', {
+  select: { id: true },
+  authScopes: { $granted: '$user' },
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    createdAt: t.expose('createdAt', { type: 'DateTime' }),
+  }),
+});
+
+builder.prismaObject('UserPassword', {
   select: { id: true },
   authScopes: { $granted: '$user' },
   fields: (t) => ({

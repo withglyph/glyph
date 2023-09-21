@@ -147,6 +147,7 @@ type User {
   email: String!
   id: ID!
   marketingAgreement: UserMarketingAgreement
+  password: UserPassword
   profile: Profile!
   spaces: [Space!]!
   sso(provider: UserSSOProvider!): UserSSO
@@ -154,6 +155,11 @@ type User {
 }
 
 type UserMarketingAgreement {
+  createdAt: DateTime!
+  id: ID!
+}
+
+type UserPassword {
   createdAt: DateTime!
   id: ID!
 }
