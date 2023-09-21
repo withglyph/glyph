@@ -1,12 +1,13 @@
 <script lang="ts">
-  import Camera from '$assets/icons/camera.svg?component';
+  // import Camera from '$assets/icons/camera.svg?component';
   import { graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
+  import { toast } from '$lib/notification';
   import { UpdateUserProfileInputSchema } from '$lib/validations';
 
-  let targetEl: HTMLInputElement;
+  // let targetEl: HTMLInputElement;
   let value: HTMLInputElement['value'];
 
   export let open = false;
@@ -22,8 +23,12 @@
       }
     `),
     schema: UpdateUserProfileInputSchema,
+    onError: () => {
+      toast.error('프로필 변경에 실패했어요.');
+    },
     onSuccess: () => {
       open = false;
+      toast.success('프로필이 변경되었어요.');
     },
   });
 </script>
@@ -32,16 +37,16 @@
   <svelte:fragment slot="title">프로필 수정</svelte:fragment>
 
   <form use:form>
-    <input bind:this={targetEl} accept="image/*" type="file" />
+    <!-- <input bind:this={targetEl} accept="image/*" type="file" />
     <button
-      class="bg-gray-5 square-80 rounded-6 flex flex-col center w-full"
+      class="bg-gray-5 square-80 rounded-6 flex flex-col center w-full mb-3"
       type="button"
     >
       <Camera class="square-10 fill-gray-40" />
       <span class="text-gray-50 text-sm font-bold mt-2">
         프로필 사진 업로드
       </span>
-    </button>
+    </button> -->
 
     <FormField name="name" label="닉네임">
       <TextInput
