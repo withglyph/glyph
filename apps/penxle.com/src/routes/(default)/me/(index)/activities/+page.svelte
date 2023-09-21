@@ -1,8 +1,6 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import TabContentItem from '$lib/components/TabContentItem.svelte';
-  import TabHead from '$lib/components/TabHead.svelte';
-  import TabHeadItem from '$lib/components/TabHeadItem.svelte';
+  import { TabContentItem, TabHead, TabHeadItem } from '$lib/components';
   import Reply from './Reply.svelte';
 
   let activeTabValue = 1;
