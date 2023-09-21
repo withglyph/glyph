@@ -5,6 +5,7 @@
   import { graphql } from '$glitch';
   import { Avatar, Badge, Button } from '$lib/components';
   import { Switch } from '$lib/components/forms';
+  import { toast } from '$lib/notification';
   import UpdateEmailModal from './UpdateEmailModal.svelte';
   import UpdatePasswordModal from './UpdatePasswordModal.svelte';
   import UpdateProfileModal from './UpdateProfileModal.svelte';
@@ -65,6 +66,19 @@
       $input: UpdateMarketingAgreementInput!
     ) {
       updateMarketingAgreement(input: $input) {
+        id
+
+        marketingAgreement {
+          id
+          createdAt
+        }
+      }
+    }
+  `);
+
+  const unlinkSSO = graphql(`
+    mutation AccountPage_UnlinkSSO_Mutation($input: UnlinkSSOInput!) {
+      unlinkSSO(input: $input) {
         id
       }
     }
@@ -171,14 +185,25 @@
         </div>
       </div>
       {#if $query.me.google}
-        <Button color="tertiary" size="md" variant="outlined">연동 해제</Button>
+        <Button
+          color="tertiary"
+          size="md"
+          variant="outlined"
+          on:click={async () => {
+            await unlinkSSO({
+              provider: 'GOOGLE',
+            });
+          }}
+        >
+          연동 해제
+        </Button>
       {:else}
         <Button
           color="secondary"
           size="md"
           on:click={async () => {
             const { url } = await issueSSOAuthorizationUrl({
-              type: 'AUTH',
+              type: 'LINK',
               provider: 'GOOGLE',
             });
 
@@ -205,9 +230,33 @@
         </div>
       </div>
       {#if $query.me.naver}
-        <Button color="tertiary" size="md" variant="outlined">연동 해제</Button>
+        <Button
+          color="tertiary"
+          size="md"
+          variant="outlined"
+          on:click={async () => {
+            await unlinkSSO({
+              provider: 'NAVER',
+            });
+          }}
+        >
+          연동 해제
+        </Button>
       {:else}
-        <Button color="secondary" size="md">연동하기</Button>
+        <Button
+          color="secondary"
+          size="md"
+          on:click={async () => {
+            const { url } = await issueSSOAuthorizationUrl({
+              type: 'LINK',
+              provider: 'NAVER',
+            });
+
+            location.href = url;
+          }}
+        >
+          연동하기
+        </Button>
       {/if}
     </div>
 
@@ -216,14 +265,26 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h3 class="text-lg font-extrabold mb-2">마케팅 수신 동의</h3>
-        <p class="text-3.75 text-gray-50 break-keep">2023.04.08 승인됨</p>
+        {#if $query.me.marketingAgreement}
+          <p class="text-3.75 text-gray-50 break-keep">
+            {$query.me.marketingAgreement.createdAt.slice(0, 10)} 승인됨
+          </p>
+        {/if}
       </div>
       <Switch
         checked={!!$query.me.marketingAgreement}
-        on:change={async () =>
+        on:change={async () => {
           await updateMarketingAgreement({
-            isAgreed: true,
-          })}
+            isAgreed: !$query.me.marketingAgreement,
+          });
+
+          const now = new Date().toISOString().slice(0, 10);
+          const agreement = $query.me.marketingAgreement ? '승인' : '거부';
+
+          toast.success(`${now} 마케팅 수신이 ${agreement}되었습니다.`, {
+            title: '펜슬컴퍼니',
+          });
+        }}
       />
     </div>
 
