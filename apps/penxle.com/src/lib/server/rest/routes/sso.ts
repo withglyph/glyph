@@ -3,9 +3,8 @@ import { error, status } from 'itty-router';
 import { google, naver } from '$lib/server/external-api';
 import {
   createAccessToken,
-  createRandomAvatar,
   directUploadImage,
-  renderAvatar,
+  generateRandomAvatar,
 } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { createRouter } from '../router';
@@ -152,11 +151,13 @@ const handle = async (
         // 케이스 2-2-2: 콜백이 날아온 계정의 이메일이 연동되지 않았고, 같은 이메일의 계정도 사이트에 없는 경우
         // -> 새로 가입함
 
-        const avatarBuffer =
-          (await fetch(externalUser.avatarUrl)
-            .then((res) => res.arrayBuffer())
-            .then((profileArrayBuffer) => Buffer.from(profileArrayBuffer))
-            .catch(() => null)) ?? (await renderAvatar(createRandomAvatar())); // 프로필 사진을 가져오는 데 실패한 경우 (없다던가)
+        let avatarBuffer: ArrayBuffer;
+        try {
+          const resp = await fetch(externalUser.avatarUrl);
+          avatarBuffer = await resp.arrayBuffer();
+        } catch {
+          avatarBuffer = await generateRandomAvatar();
+        }
 
         const avatarId = await directUploadImage({
           db,
