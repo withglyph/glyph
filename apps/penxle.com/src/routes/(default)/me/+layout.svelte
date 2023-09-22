@@ -19,6 +19,7 @@
           name
 
           ...Avatar_profile
+          ...MeAccountsPage_UpdateProfileModal_profile
         }
       }
     }
@@ -126,4 +127,4 @@
   </div>
 </div>
 
-<UpdateProfileModal bind:open />
+<UpdateProfileModal $profile={$query.me.profile} bind:open />

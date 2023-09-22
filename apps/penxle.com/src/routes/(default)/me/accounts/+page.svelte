@@ -42,6 +42,7 @@
           name
 
           ...Avatar_profile
+          ...MeAccountsPage_UpdateProfileModal_profile
         }
 
         ...MeAccountsPage_UpdatePasswordModal_user
@@ -297,4 +298,4 @@
 
 <UpdateEmailModal bind:open={updateEmailOpen} />
 <UpdatePasswordModal $user={$query.me} bind:open={updatePasswordOpen} />
-<UpdateProfileModal bind:open={updateProfileOpen} />
+<UpdateProfileModal $profile={$query.me.profile} bind:open={updateProfileOpen} />
