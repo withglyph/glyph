@@ -2,12 +2,13 @@ name: Teardown
 
 on:
   pull_request:
-    types: [closed]
+    types: [unlabeled]
 
 jobs:
   teardown:
     name: ${{ matrix.app }}
     runs-on: ubuntu-latest
+    if: github.event.label.name == 'preview'
     strategy:
       fail-fast: false
       matrix:

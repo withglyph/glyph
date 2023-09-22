@@ -1,7 +1,11 @@
 import { octokit } from '../octokit';
 import { webhook } from '../webhook';
 
-webhook.on('pull_request.opened', async (event) => {
+webhook.on('pull_request.labeled', async (event) => {
+  if (event.payload.label.name !== 'preview') {
+    return;
+  }
+
   const sites = [
     'penxle.com',
     'penxle.io',
@@ -31,4 +35,20 @@ ${table.join('\n')}
 `.trim(),
     },
   );
+});
+
+webhook.on('pull_request.closed', async (event) => {
+  if (
+    event.payload.pull_request.labels.some(({ name }) => name === 'preview')
+  ) {
+    await octokit.request(
+      'DELETE /repos/{owner}/{repo}/issues/{issue_number}/labels/{name}',
+      {
+        owner: event.payload.repository.owner.login,
+        repo: event.payload.repository.name,
+        issue_number: event.payload.pull_request.number,
+        name: 'preview',
+      },
+    );
+  }
 });
