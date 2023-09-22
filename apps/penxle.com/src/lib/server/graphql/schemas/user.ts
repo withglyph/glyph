@@ -110,6 +110,12 @@ builder.prismaObject('User', {
             category: args.category,
           },
         });
+        const allMethods = await db.userNotificationOptOut.findMany({
+          where: {
+            userId: parent.id,
+            category: 'ALL',
+          },
+        });
 
         return R.mapValues(
           {
@@ -117,7 +123,8 @@ builder.prismaObject('User', {
             email: 'EMAIL',
           },
           (method) =>
-            !preferences.some((preference) => preference.method === method),
+            !preferences.some((preference) => preference.method === method) &&
+            !allMethods.some((preference) => preference.method === method),
         );
       },
     }),
