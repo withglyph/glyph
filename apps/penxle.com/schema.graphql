@@ -64,6 +64,7 @@ input LoginInput {
 }
 
 type Mutation {
+  UpdateContentFilteringPreference(input: UpdateContentFilteringPreferenceInput!): Void
   createSpace(input: CreateSpaceInput!): Space!
   deleteSpace(input: DeleteSpaceInput!): Space!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
@@ -149,6 +150,11 @@ enum SpaceMemberRole {
 
 input UnlinkSSOInput {
   provider: UserSSOProvider!
+}
+
+input UpdateContentFilteringPreferenceInput {
+  action: ContentFilteringAction!
+  category: ContentFilteringCategory!
 }
 
 input UpdateMarketingAgreementInput {

@@ -304,6 +304,16 @@ const UnlinkSSOInput = builder.inputType('UnlinkSSOInput', {
   }),
 });
 
+const UpdateContentFilteringPreferenceInput = builder.inputType(
+  'UpdateContentFilteringPreferenceInput',
+  {
+    fields: (t) => ({
+      category: t.field({ type: ContentFilteringCategory }),
+      action: t.field({ type: ContentFilteringAction }),
+    }),
+  },
+);
+
 const UpdateNotificationPreferencesInput = builder.inputType(
   'UpdateNotificationPreferencesInput',
   {
@@ -880,6 +890,29 @@ builder.mutationFields((t) => ({
             },
             update: {},
           }));
+    },
+  }),
+
+  UpdateContentFilteringPreference: t.withAuth({ auth: true }).field({
+    type: 'Void',
+    nullable: true,
+    args: { input: t.arg({ type: UpdateContentFilteringPreferenceInput }) },
+    resolve: async (_, { input }, { db, ...context }) => {
+      await db.userContentFilteringPreference.upsert({
+        where: {
+          userId_category: {
+            userId: context.session.userId,
+            category: input.category,
+          },
+        },
+        create: {
+          id: createId(),
+          userId: context.session.userId,
+          category: input.category,
+          action: input.action,
+        },
+        update: { action: input.action },
+      });
     },
   }),
 }));
