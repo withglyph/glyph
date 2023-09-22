@@ -304,6 +304,16 @@ const UnlinkSSOInput = builder.inputType('UnlinkSSOInput', {
   }),
 });
 
+const UpdateContentFilteringPreferenceInput = builder.inputType(
+  'UpdateContentFilteringPreferenceInput',
+  {
+    fields: (t) => ({
+      category: t.field({ type: ContentFilteringCategory }),
+      action: t.field({ type: ContentFilteringAction }),
+    }),
+  },
+);
+
 const UpdateNotificationPreferencesInput = builder.inputType(
   'UpdateNotificationPreferencesInput',
   {
@@ -880,6 +890,32 @@ builder.mutationFields((t) => ({
             },
             update: {},
           }));
+    },
+  }),
+
+  updateContentFilteringPreference: t.withAuth({ auth: true }).prismaField({
+    type: 'User',
+    args: { input: t.arg({ type: UpdateContentFilteringPreferenceInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      await db.userContentFilteringPreference.upsert({
+        where: {
+          userId_category: {
+            userId: context.session.userId,
+            category: input.category,
+          },
+        },
+        create: {
+          id: createId(),
+          userId: context.session.userId,
+          category: input.category,
+          action: input.action,
+        },
+        update: { action: input.action },
+      });
+      return await db.user.findUniqueOrThrow({
+        ...query,
+        where: { id: context.session.userId },
+      });
     },
   }),
 }));
