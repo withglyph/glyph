@@ -2,12 +2,13 @@ name: Preview
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [labeled, synchronize]
 
 jobs:
   deploy:
     name: ${{ matrix.app }}
     runs-on: node18/arm64
+    if: (github.event.action == 'labeled' && github.event.label.name == 'preview') || (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'preview'))
     strategy:
       fail-fast: false
       matrix:
