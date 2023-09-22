@@ -19,6 +19,7 @@
       ) {
         updateUserProfile(input: $input) {
           id
+          name
         }
       }
     `),
