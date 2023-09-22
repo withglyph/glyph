@@ -98,6 +98,7 @@ type Profile {
 
 type Query {
   authLayoutBackgroundImage: Image
+  emailVerification(code: String!): UserEmailVerification!
   me: User
   randomAvatars: [String!]!
   sampleImage: Image!
@@ -188,6 +189,11 @@ type User {
   spaces: [Space!]!
   sso(provider: UserSSOProvider!): UserSSO
   state: UserState!
+}
+
+type UserEmailVerification {
+  expiresAt: DateTime!
+  id: ID!
 }
 
 type UserMarketingAgreement {

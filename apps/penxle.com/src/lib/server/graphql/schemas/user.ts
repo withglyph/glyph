@@ -12,7 +12,7 @@ import { nanoid } from 'nanoid';
 import qs from 'query-string';
 import * as R from 'radash';
 import { match } from 'ts-pattern';
-import { FormValidationError } from '$lib/errors';
+import { FormValidationError, IntentionalError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
 import {
   EmailChange,
@@ -148,6 +148,14 @@ builder.prismaObject('Profile', {
     name: t.exposeString('name'),
 
     avatar: t.relation('avatar'),
+  }),
+});
+
+builder.prismaObject('UserEmailVerification', {
+  select: { id: true },
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    expiresAt: t.expose('expiresAt', { type: 'DateTime' }),
   }),
 });
 
@@ -342,6 +350,21 @@ builder.queryFields((t) => ({
         ...query,
         where: { id: context.session.userId },
       });
+    },
+  }),
+
+  emailVerification: t.prismaField({
+    type: 'UserEmailVerification',
+    args: { code: t.arg({ type: 'String' }) },
+    resolve: async (query, _, { code }, { db }) => {
+      const emailVerification = await db.userEmailVerification.findUnique({
+        ...query,
+        where: { code },
+      });
+      if (!emailVerification || emailVerification.expiresAt < new Date()) {
+        throw new IntentionalError('잘못된 코드에요');
+      }
+      return emailVerification;
     },
   }),
 }));
@@ -547,7 +570,7 @@ builder.mutationFields((t) => ({
           userId: user.id,
           email: user.email,
           type: 'PASSWORD_RESET',
-          code: `${nanoid()}.${expiresAt.getTime()}`,
+          code: nanoid(),
           expiresAt,
         },
       });
