@@ -10,7 +10,6 @@ import argon2 from 'argon2';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
-import * as R from 'radash';
 import { match } from 'ts-pattern';
 import { FormValidationError, IntentionalError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
@@ -58,72 +57,11 @@ builder.prismaObject('User', {
     email: t.exposeString('email'),
     state: t.expose('state', { type: UserState }),
 
+    contentFilterPreferences: t.relation('contentFilterPreferences', { grantScopes: ['$user'] }),
     marketingConsent: t.relation('marketingConsent', { nullable: true, grantScopes: ['$user'] }),
+    notificationPreferences: t.relation('notificationPreferences', { grantScopes: ['$user'] }),
     password: t.relation('password', { nullable: true, grantScopes: ['$user'] }),
     profile: t.relation('profile'),
-
-    contentFilterPreference: t.field({
-      type: UserContentFilterPreference,
-      grantScopes: ['$user'],
-      args: { category: t.arg({ type: ContentFilterCategory }) },
-      resolve: async (parent, args, { db }) => {
-        if (args.category === ContentFilterCategory.ADULT) {
-          const preference = await db.userContentFilterPreference.findUnique({
-            select: { action: true },
-            where: { userId_category: { userId: parent.id, category: args.category } },
-          });
-
-          return preference ?? ({ action: 'WARN' } as const);
-        }
-
-        const all = await db.userContentFilterPreference.findUnique({
-          select: { action: true },
-          where: { userId_category: { userId: parent.id, category: 'ALL_BUT_ADULT' } },
-        });
-
-        if (all?.action === 'HIDE') {
-          return all;
-        }
-
-        const preference = await db.userContentFilterPreference.findUnique({
-          select: { action: true },
-          where: { userId_category: { userId: parent.id, category: args.category } },
-        });
-
-        return preference ?? all ?? ({ action: 'WARN' } as const);
-      },
-    }),
-
-    notificationPreference: t.field({
-      type: UserNotificationPreference,
-      grantScopes: ['$user'],
-      args: { category: t.arg({ type: UserNotificationCategory }) },
-      resolve: async (parent, args, { db }) => {
-        const preferences = await db.userNotificationPreference.findMany({
-          where: {
-            userId: parent.id,
-            category: args.category,
-          },
-        });
-
-        const allMethods = await db.userNotificationPreference.findMany({
-          where: {
-            userId: parent.id,
-            category: 'ALL',
-          },
-        });
-
-        return R.mapValues(
-          {
-            website: 'WEBSITE',
-            email: 'EMAIL',
-          },
-          (method) =>
-            !preferences.some((preference) => preference.method === method) &&
-            !allMethods.some((preference) => preference.method === method),
-        );
-      },
-    }),
 
     singleSignOn: t.prismaField({
       type: 'UserSingleSignOn',
@@ -153,6 +91,15 @@ builder.prismaObject('User', {
   }),
 });
 
+builder.prismaObject('UserContentFilterPreference', {
+  select: { id: true },
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    category: t.expose('category', { type: ContentFilterCategory }),
+    action: t.expose('action', { type: ContentFilterAction }),
+  }),
+});
+
 builder.prismaObject('UserEmailVerification', {
   select: { id: true },
   fields: (t) => ({
@@ -167,6 +114,16 @@ builder.prismaObject('UserMarketingConsent', {
   fields: (t) => ({
     id: t.exposeID('id'),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
+  }),
+});
+
+builder.prismaObject('UserNotificationPreference', {
+  select: { id: true },
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    category: t.expose('category', { type: UserNotificationCategory }),
+    method: t.expose('method', { type: UserNotificationMethod }),
+    opted: t.exposeBoolean('opted'),
   }),
 });
 
@@ -195,21 +152,6 @@ const IssueUserSingleSignOnAuthorizationUrlResult = builder.simpleObject(
     }),
   },
 );
-
-const UserContentFilterPreference = builder.simpleObject('UserContentFilterPreference', {
-  authScopes: { $granted: '$user' },
-  fields: (t) => ({
-    action: t.field({ type: ContentFilterAction }),
-  }),
-});
-
-const UserNotificationPreference = builder.simpleObject('UserNotificationPreference', {
-  authScopes: { $granted: '$user' },
-  fields: (t) => ({
-    website: t.boolean(),
-    email: t.boolean(),
-  }),
-});
 
 /**
  * * Inputs
@@ -288,7 +230,7 @@ const UpdateUserNotificationPreferenceInput = builder.inputType('UpdateUserNotif
   fields: (t) => ({
     category: t.field({ type: UserNotificationCategory }),
     method: t.field({ type: UserNotificationMethod }),
-    enabled: t.boolean(),
+    opted: t.boolean(),
   }),
 });
 
@@ -883,38 +825,44 @@ builder.mutationFields((t) => ({
     type: 'User',
     args: { input: t.arg({ type: UpdateUserNotificationPreferenceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      if (input.enabled) {
-        return await db.user.update({
-          ...query,
-          where: { id: context.session.userId },
+      if (input.category === 'ALL') {
+        await db.userNotificationPreference.updateMany({
+          where: {
+            userId: context.session.userId,
+            method: input.method,
+          },
           data: {
-            notificationPreferences: {
-              delete: {
+            opted: input.opted,
+          },
+        });
+      }
+
+      return await db.user.update({
+        ...query,
+        where: { id: context.session.userId },
+        data: {
+          notificationPreferences: {
+            upsert: {
+              where: {
                 userId_category_method: {
                   userId: context.session.userId,
                   category: input.category,
                   method: input.method,
                 },
               },
-            },
-          },
-        });
-      } else {
-        return await db.user.update({
-          ...query,
-          where: { id: context.session.userId },
-          data: {
-            notificationPreferences: {
               create: {
                 id: createId(),
                 category: input.category,
                 method: input.method,
-                opted: 'OPT_OUT',
+                opted: input.opted,
+              },
+              update: {
+                opted: input.opted,
               },
             },
           },
-        });
-      }
+        },
+      });
     },
   }),
 
@@ -922,15 +870,28 @@ builder.mutationFields((t) => ({
     type: 'User',
     args: { input: t.arg({ type: UpdateUserContentFilterPreferenceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      if (input.category === 'ALL_BUT_ADULT') {
-        await db.userContentFilterPreference.deleteMany({
-          where: {
-            userId: context.session.userId,
-            category: { not: 'ADULT' },
-            action: { not: 'HIDE' },
-          },
-        });
+      if (input.category === 'TRIGGER') {
+        if (input.action === 'HIDE') {
+          await db.userContentFilterPreference.deleteMany({
+            where: {
+              userId: context.session.userId,
+              category: { not: 'ADULT' },
+            },
+          });
+        } else {
+          await db.userContentFilterPreference.updateMany({
+            where: {
+              userId: context.session.userId,
+              category: { not: 'ADULT' },
+              action: { not: 'HIDE' },
+            },
+            data: {
+              action: input.action,
+            },
+          });
+        }
       }
+
       return await db.user.update({
         ...query,
         where: { id: context.session.userId },
@@ -948,7 +909,9 @@ builder.mutationFields((t) => ({
                 category: input.category,
                 action: input.action,
               },
-              update: { action: input.action },
+              update: {
+                action: input.action,
+              },
             },
           },
         },

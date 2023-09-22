@@ -1,0 +1,1 @@
+ALTER TYPE "_content_filter_category" RENAME VALUE 'ALL_BUT_ADULT' TO 'TRIGGER'

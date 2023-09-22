@@ -6,7 +6,6 @@ enum ContentFilterAction {
 
 enum ContentFilterCategory {
   ADULT
-  ALL_BUT_ADULT
   CRIME
   CRUELTY
   GAMBLING
@@ -16,6 +15,7 @@ enum ContentFilterCategory {
   OTHER
   PHOBIA
   TRAUMA
+  TRIGGER
   VIOLENCE
 }
 
@@ -174,8 +174,8 @@ input UpdateUserMarketingConsentInput {
 
 input UpdateUserNotificationPreferenceInput {
   category: UserNotificationCategory!
-  enabled: Boolean!
   method: UserNotificationMethod!
+  opted: Boolean!
 }
 
 input UpdateUserPasswordInput {
@@ -189,11 +189,11 @@ input UpdateUserProfileInput {
 }
 
 type User {
-  contentFilterPreference(category: ContentFilterCategory!): UserContentFilterPreference!
+  contentFilterPreferences: [UserContentFilterPreference!]!
   email: String!
   id: ID!
   marketingConsent: UserMarketingConsent
-  notificationPreference(category: UserNotificationCategory!): UserNotificationPreference!
+  notificationPreferences: [UserNotificationPreference!]!
   password: UserPassword
   profile: Profile!
   singleSignOn(provider: UserSingleSignOnProvider!): UserSingleSignOn
@@ -203,6 +203,8 @@ type User {
 
 type UserContentFilterPreference {
   action: ContentFilterAction!
+  category: ContentFilterCategory!
+  id: ID!
 }
 
 type UserEmailVerification {
@@ -238,14 +240,11 @@ enum UserNotificationMethod {
   WEBSITE
 }
 
-enum UserNotificationOpt {
-  OPT_IN
-  OPT_OUT
-}
-
 type UserNotificationPreference {
-  email: Boolean!
-  website: Boolean!
+  category: UserNotificationCategory!
+  id: ID!
+  method: UserNotificationMethod!
+  opted: Boolean!
 }
 
 type UserPassword {

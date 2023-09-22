@@ -1,19 +1,15 @@
 <script lang="ts">
   import { clsx } from 'clsx';
-  import type { HTMLInputAttributes } from 'svelte/elements';
 
-  type $$Props = {
-    size?: 'sm' | 'lg';
-    checked: HTMLInputAttributes['checked'];
-    class?: HTMLInputAttributes['class'];
-    disabled?: HTMLInputAttributes['disabled'];
+  type $$Events = {
+    change: Event & { currentTarget: HTMLInputElement };
   };
 
   export let size: 'sm' | 'lg' = 'lg';
-  export let checked: HTMLInputAttributes['checked'] = false;
-  let _class: HTMLInputAttributes['class'] = undefined;
+  export let checked = false;
+  let _class: string | undefined = undefined;
   export { _class as class };
-  export let disabled: HTMLInputAttributes['disabled'] = false;
+  export let disabled = false;
 </script>
 
 <input

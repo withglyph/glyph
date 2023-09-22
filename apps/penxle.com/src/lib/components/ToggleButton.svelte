@@ -1,6 +1,10 @@
 <script lang="ts">
   import { clsx } from 'clsx';
 
+  type $$Events = {
+    change: Event & { currentTarget: HTMLInputElement };
+  };
+
   export let name: string | undefined = undefined;
   export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
   export let checked = false;

@@ -1,77 +1,45 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import * as R from 'radash';
   import { graphql } from '$glitch';
   import { Switch } from '$lib/components/forms';
-  import { toast } from '$lib/notification';
-  import Notification from './Notification.svelte';
+  import NotificationSwitch from './NotificationSwitch.svelte';
 
   $: query = graphql(`
     query MeNotificationsPage_Query {
       me @_required {
         id
 
-        all: notificationPreference(category: ALL) {
-          email
-          website
+        notificationPreferences {
+          id
+          category
+          method
+          opted
         }
 
-        comment: notificationPreference(category: COMMENT) {
-          email
-          website
-        }
-
-        reply: notificationPreference(category: REPLY) {
-          email
-          website
-        }
-
-        subscribe: notificationPreference(category: SUBSCRIBE) {
-          email
-          website
-        }
-
-        tagEdit: notificationPreference(category: TAG_EDIT) {
-          email
-          website
-        }
-
-        trend: notificationPreference(category: TREND) {
-          email
-          website
-        }
-
-        purchase: notificationPreference(category: PURCHASE) {
-          email
-          website
-        }
-
-        donate: notificationPreference(category: DONATE) {
-          email
-          website
-        }
-
-        tagWikiEdit: notificationPreference(category: TAG_WIKI_EDIT) {
-          email
-          website
-        }
+        ...MeNotificationsPage_Notification_user
       }
     }
   `);
 
-  const updateNotificationPreferences = graphql(`
+  const updateNotificationPreference = graphql(`
     mutation MeNotificationsPage_UpdateUserNotificationPreference_Mutation(
       $input: UpdateUserNotificationPreferenceInput!
     ) {
       updateUserNotificationPreference(input: $input) {
         id
 
-        all: notificationPreference(category: ALL) {
-          email
-          website
+        notificationPreferences {
+          id
+          category
+          method
+          opted
         }
       }
     }
   `);
+
+  $: preferences = R.group($query.me.notificationPreferences, (v) => v.category);
 </script>
 
 <Helmet title="알림 설정" />
@@ -86,120 +54,100 @@
     <div class="text-lg font-extrabold">알림 켜기 / 끄기</div>
     <Switch
       class="sm:hidden"
-      checked={$query.me.all.email || $query.me.all.website}
-      on:change={async () => {
-        try {
-          await updateNotificationPreferences({
-            category: 'ALL',
-            enabled: !($query.me.all.email || $query.me.all.website),
-            method: 'WEBSITE',
-          });
-          await updateNotificationPreferences({
-            category: 'ALL',
-            enabled: !($query.me.all.email || $query.me.all.website),
-            method: 'EMAIL',
-          });
-          toast.success('알림 설정이 변경되었어요.');
-        } catch {
-          toast.error('알림 설정 변경에 실패했어요.');
-        }
+      checked={preferences.ALL?.some((v) => v.opted) ?? true}
+      on:change={async (e) => {
+        await updateNotificationPreference({
+          category: 'ALL',
+          method: 'WEBSITE',
+          opted: e.currentTarget.checked,
+        });
+
+        await updateNotificationPreference({
+          category: 'ALL',
+          method: 'EMAIL',
+          opted: e.currentTarget.checked,
+        });
       }}
     />
+
     <div class="hidden sm:(flex gap-8)">
       <Switch
-        checked={$query.me.all.website}
-        on:change={async () => {
-          try {
-            await updateNotificationPreferences({
-              category: 'ALL',
-              enabled: !$query.me.all.website,
-              method: 'WEBSITE',
-            });
-            toast.success('알림 설정이 변경되었어요.');
-          } catch {
-            toast.error('알림 설정 변경에 실패했어요.');
-          }
+        checked={preferences.ALL?.find((v) => v.method === 'WEBSITE')?.opted ?? true}
+        on:change={async (e) => {
+          await updateNotificationPreference({
+            category: 'ALL',
+            method: 'WEBSITE',
+            opted: e.currentTarget.checked,
+          });
         }}
       />
+
       <Switch
-        checked={$query.me.all.email}
-        on:change={async () => {
-          try {
-            await updateNotificationPreferences({
-              category: 'ALL',
-              enabled: !$query.me.all.email,
-              method: 'EMAIL',
-            });
-            toast.success('알림 설정이 변경되었어요.');
-          } catch {
-            toast.error('알림 설정 변경에 실패했어요.');
-          }
+        checked={preferences.ALL?.find((v) => v.method === 'EMAIL')?.opted ?? true}
+        on:change={async (e) => {
+          await updateNotificationPreference({
+            category: 'ALL',
+            method: 'EMAIL',
+            opted: e.currentTarget.checked,
+          });
         }}
       />
     </div>
   </div>
 
-  <Notification
-    name="댓글"
-    all={$query.me.all}
-    content="내 포스트에 댓글이 달렸을 때 알림을 받아요."
-    email={$query.me.comment.email}
-    website={$query.me.comment.website}
+  <NotificationSwitch
+    $user={$query.me}
+    category="COMMENT"
+    description="내 포스트에 댓글이 달렸을 때 알림을 받아요."
+    title="댓글"
   />
 
-  <Notification
-    name="답글"
-    all={$query.me.all}
-    content="댓글에 답글이 달렸을 때 알림을 받아요."
-    email={$query.me.reply.email}
-    website={$query.me.reply.website}
+  <NotificationSwitch
+    $user={$query.me}
+    category="REPLY"
+    description="댓글에 답글이 달렸을 때 알림을 받아요."
+    title="답글"
   />
 
-  <Notification
-    name="스페이스 구독"
-    all={$query.me.all}
-    content="스페이스 구독자가 생겼을 때 알림을 받아요."
-    email={$query.me.subscribe.email}
-    website={$query.me.subscribe.website}
+  <NotificationSwitch
+    $user={$query.me}
+    category="SUBSCRIBE"
+    description="스페이스 구독자가 생겼을 때 알림을 받아요."
+    title="스페이스 구독"
   />
 
-  <Notification
-    name="태그 수정"
-    all={$query.me.all}
-    content="내 포스트 태그를 수정했을 때 알림을 받아요."
-    email={$query.me.tagEdit.email}
-    website={$query.me.tagEdit.website}
+  <NotificationSwitch
+    $user={$query.me}
+    category="TAG_EDIT"
+    description="내 포스트 태그를 수정했을 때 알림을 받아요."
+    title="태그 수정"
   />
 
-  <Notification
-    name="조회수"
-    all={$query.me.all}
-    content="조회수가 급상승했을 때 알림을 받아요."
-    email={$query.me.trend.email}
-    website={$query.me.trend.website}
+  <NotificationSwitch
+    $user={$query.me}
+    category="TREND"
+    description="조회수가 급상승했을 때 알림을 받아요."
+    title="조회수"
   />
 
-  <Notification
-    name="구매"
-    all={$query.me.all}
-    content="내 포스트가 구매됐을 때 알림을 받아요."
-    email={$query.me.purchase.email}
-    website={$query.me.purchase.website}
+  <NotificationSwitch
+    $user={$query.me}
+    category="PURCHASE"
+    description="내 포스트가 구매됐을 때 알림을 받아요."
+    title="구매"
   />
 
-  <Notification
-    name="후원"
-    all={$query.me.all}
-    content="내 포스트에 후원을 받았을 때 알림을 받아요."
-    email={$query.me.donate.email}
-    website={$query.me.donate.website}
+  <NotificationSwitch
+    $user={$query.me}
+    category="DONATE"
+    description="내 포스트에 후원을 받았을 때 알림을 받아요."
+    title="후원"
   />
 
-  <Notification
-    name="태그 위키 수정"
-    all={$query.me.all}
-    content="내가 작성한 태그가 수정됐을 때 알림을 받아요."
-    email={$query.me.tagWikiEdit.email}
-    website={$query.me.tagWikiEdit.website}
+  <NotificationSwitch
+    $user={$query.me}
+    category="TAG_WIKI_EDIT"
+    description="내가 작성한 태그가 수정됐을 때 알림을 받아요."
+    title="태그 위키 수정"
   />
 </div>

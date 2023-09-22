@@ -1,11 +1,25 @@
 <script lang="ts">
-  import { graphql } from '$glitch';
+  import * as R from 'radash';
+  import { fragment, graphql } from '$glitch';
   import { ToggleButton } from '$lib/components';
-  import type { ContentFilterAction, ContentFilterCategory } from '$glitch/gql';
+  import type { ContentFilterCategory, MeContentFiltersPage_ContentFilterButton_user } from '$glitch';
 
-  export let action: ContentFilterAction;
-  export let allButAdult: ContentFilterAction;
+  let _user: MeContentFiltersPage_ContentFilterButton_user;
+  export { _user as $user };
   export let category: ContentFilterCategory;
+
+  $: user = fragment(
+    _user,
+    graphql(`
+      fragment MeContentFiltersPage_ContentFilterButton_user on User {
+        contentFilterPreferences {
+          id
+          category
+          action
+        }
+      }
+    `),
+  );
 
   const updateUserContentFilterPreference = graphql(`
     mutation MeContentFiltersPage_ContentFilterButton_UpdateUserContentFilterPreference_Mutation(
@@ -14,56 +28,28 @@
       updateUserContentFilterPreference(input: $input) {
         id
 
-        violence: contentFilterPreference(category: VIOLENCE) {
-          action
-        }
-
-        cruelty: contentFilterPreference(category: CRUELTY) {
-          action
-        }
-
-        horror: contentFilterPreference(category: HORROR) {
-          action
-        }
-
-        crime: contentFilterPreference(category: CRIME) {
-          action
-        }
-
-        trauma: contentFilterPreference(category: TRAUMA) {
-          action
-        }
-
-        gambling: contentFilterPreference(category: GAMBLING) {
-          action
-        }
-
-        phobia: contentFilterPreference(category: PHOBIA) {
-          action
-        }
-
-        insult: contentFilterPreference(category: INSULT) {
-          action
-        }
-
-        grossness: contentFilterPreference(category: GROSSNESS) {
-          action
-        }
-
-        other: contentFilterPreference(category: OTHER) {
+        contentFilterPreferences {
+          id
+          category
           action
         }
       }
     }
   `);
+
+  $: preferences = R.objectify(
+    $user.contentFilterPreferences,
+    (v) => v.category,
+    (v) => v.action,
+  );
 </script>
 
 <ToggleButton
-  checked={action !== 'HIDE'}
+  checked={preferences[category] !== 'HIDE'}
   size="md"
-  on:change={async () => {
+  on:change={async (e) => {
     await updateUserContentFilterPreference({
-      action: action === 'HIDE' ? allButAdult : 'HIDE',
+      action: e.currentTarget.checked ? preferences.TRIGGER ?? 'WARN' : 'HIDE',
       category,
     });
   }}

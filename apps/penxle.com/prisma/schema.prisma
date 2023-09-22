@@ -198,7 +198,7 @@ model UserNotificationPreference {
   user      User                     @relation(fields: [userId], references: [id])
   category  UserNotificationCategory
   method    UserNotificationMethod
-  opted     UserNotificationOpt
+  opted     Boolean
   createdAt DateTime                 @default(now()) @map("created_at") @db.Timestamptz
 
   @@unique([userId, category, method])
@@ -243,7 +243,7 @@ model UserTagPreference {
 
 enum ContentFilterCategory {
   ADULT
-  ALL_BUT_ADULT
+  TRIGGER
   VIOLENCE
   CRUELTY
   HORROR
@@ -314,13 +314,6 @@ enum UserNotificationMethod {
   WEBSITE
 
   @@map("_user_notification_method")
-}
-
-enum UserNotificationOpt {
-  OPT_IN
-  OPT_OUT
-
-  @@map("_user_notification_opt")
 }
 
 enum UserSingleSignOnProvider {
