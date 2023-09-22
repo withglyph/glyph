@@ -1,10 +1,33 @@
 <script lang="ts">
+  import { graphql } from '$glitch';
   import { Switch } from '$lib/components/forms';
+  import { toast } from '$lib/notification';
+  import type { UserNotificationCategory } from '$glitch/gql';
 
   export let name: string;
   export let content: string;
-  export let website = false;
-  export let email = false;
+  export let website: boolean;
+  export let email: boolean;
+
+  const updateNotificationPreferences = graphql(`
+    mutation MeNotificationsPage_Notification_UpdateNotificationPreferences_Mutation(
+      $input: UpdateNotificationPreferencesInput!
+    ) {
+      updateNotificationPreferences(input: $input)
+    }
+  `);
+
+  const category = {
+    '전체': 'ALL',
+    '댓글': 'COMMENT',
+    '답글': 'REPLY',
+    '스페이스 구독': 'SUBSCRIBE',
+    '태그 수정': 'TAG_EDIT',
+    '조회수': 'TREND',
+    '구매': 'PURCHASE',
+    '후원': 'DONATE',
+    '태그 위키 수정': 'TAG_WIKI_EDIT',
+  }[name] as UserNotificationCategory;
 </script>
 
 <div
@@ -24,13 +47,78 @@
   >
     <div class="flex justify-between items-center">
       <span class="font-semibold sm:hidden">웹사이트</span>
-      <Switch class="sm:hidden" size="sm" bind:checked={website} />
-      <Switch class="<sm:hidden" size="lg" bind:checked={website} />
+      <Switch
+        class="sm:hidden"
+        size="sm"
+        bind:checked={website}
+        on:change={async () => {
+          try {
+            await updateNotificationPreferences({
+              category,
+              isEnabled: !website,
+              method: 'WEBSITE',
+            });
+            toast.success('알림 설정 변경에 성공했어요');
+          } catch {
+            toast.error('알림 설정 변경에 실패했어요');
+          }
+        }}
+      />
+      <Switch
+        class="<sm:hidden"
+        size="lg"
+        bind:checked={website}
+        on:change={async () => {
+          try {
+            await updateNotificationPreferences({
+              category,
+              isEnabled: !website,
+              method: 'WEBSITE',
+            });
+            toast.success('알림 설정 변경에 성공했어요');
+          } catch {
+            toast.error('알림 설정 변경에 실패했어요');
+          }
+        }}
+      />
     </div>
     <div class="flex justify-between items-center">
       <span class="font-semibold sm:hidden">이메일</span>
-      <Switch class="sm:hidden" size="sm" bind:checked={email} />
-      <Switch class="<sm:hidden" size="lg" bind:checked={email} />
+      <Switch
+        class="sm:hidden"
+        size="sm"
+        bind:checked={email}
+        on:change={async () => {
+          try {
+            await updateNotificationPreferences({
+              category,
+              isEnabled: !email,
+              method: 'EMAIL',
+            });
+            toast.success('알림 설정 변경에 성공했어요');
+          } catch {
+            toast.error('알림 설정 변경에 실패했어요');
+          }
+        }}
+      />
+      <Switch
+        class="<sm:hidden"
+        disabled={true}
+        size="lg"
+        bind:checked={email}
+        on:change={async () => {
+          try {
+            await updateNotificationPreferences({
+              category,
+              isEnabled: !email,
+              method: 'EMAIL',
+            });
+            toast.success('알림 설정 변경에 성공했어요');
+          } catch {
+            toast.error('알림 설정 변경에 실패했어요');
+          }
+        }}
+      />
     </div>
   </div>
 </div>
