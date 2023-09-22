@@ -79,7 +79,7 @@ type Mutation {
   unlinkSSO(input: UnlinkSSOInput!): User!
   updateContentFilteringPreference(input: UpdateContentFilteringPreferenceInput!): User!
   updateMarketingAgreement(input: UpdateMarketingAgreementInput!): User!
-  updateNotificationPreferences(input: UpdateNotificationPreferencesInput!): Void
+  updateNotificationPreferences(input: UpdateNotificationPreferencesInput!): User!
   updatePassword(input: UpdatePasswordInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
   verifyEmail(input: VerifyEmailInput!): User!

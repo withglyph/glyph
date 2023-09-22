@@ -894,11 +894,10 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  updateNotificationPreferences: t.withAuth({ auth: true }).field({
-    type: 'Void',
-    nullable: true,
+  updateNotificationPreferences: t.withAuth({ auth: true }).prismaField({
+    type: 'User',
     args: { input: t.arg({ type: UpdateNotificationPreferencesInput }) },
-    resolve: async (_, { input }, { db, ...context }) => {
+    resolve: async (query, _, { input }, { db, ...context }) => {
       await (input.isEnabled
         ? db.userNotificationOptOut.deleteMany({
             where: {
@@ -923,6 +922,11 @@ builder.mutationFields((t) => ({
             },
             update: {},
           }));
+
+      return await db.user.findUniqueOrThrow({
+        ...query,
+        where: { id: context.session.userId },
+      });
     },
   }),
 
