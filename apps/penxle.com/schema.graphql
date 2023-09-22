@@ -64,7 +64,6 @@ input LoginInput {
 }
 
 type Mutation {
-  UpdateContentFilteringPreference(input: UpdateContentFilteringPreferenceInput!): Void
   createSpace(input: CreateSpaceInput!): Space!
   deleteSpace(input: DeleteSpaceInput!): Space!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
@@ -78,6 +77,7 @@ type Mutation {
   resetPassword(input: ResetPasswordInput!): Void
   signup(input: SignupInput!): User!
   unlinkSSO(input: UnlinkSSOInput!): User!
+  updateContentFilteringPreference(input: UpdateContentFilteringPreferenceInput!): User!
   updateMarketingAgreement(input: UpdateMarketingAgreementInput!): User!
   updateNotificationPreferences(input: UpdateNotificationPreferencesInput!): Void
   updatePassword(input: UpdatePasswordInput!): User!

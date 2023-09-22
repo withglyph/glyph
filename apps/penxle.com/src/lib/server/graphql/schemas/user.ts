@@ -893,11 +893,10 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  UpdateContentFilteringPreference: t.withAuth({ auth: true }).field({
-    type: 'Void',
-    nullable: true,
+  updateContentFilteringPreference: t.withAuth({ auth: true }).prismaField({
+    type: 'User',
     args: { input: t.arg({ type: UpdateContentFilteringPreferenceInput }) },
-    resolve: async (_, { input }, { db, ...context }) => {
+    resolve: async (query, _, { input }, { db, ...context }) => {
       await db.userContentFilteringPreference.upsert({
         where: {
           userId_category: {
@@ -912,6 +911,10 @@ builder.mutationFields((t) => ({
           action: input.action,
         },
         update: { action: input.action },
+      });
+      return await db.user.findUniqueOrThrow({
+        ...query,
+        where: { id: context.session.userId },
       });
     },
   }),
