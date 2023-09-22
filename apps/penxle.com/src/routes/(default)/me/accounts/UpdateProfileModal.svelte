@@ -14,7 +14,7 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation AccountPage_UpdateProfileModal_UpdateUserProfile_Mutation(
+      mutation MeAccountsPage_UpdateProfileModal_UpdateUserProfile_Mutation(
         $input: UpdateUserProfileInput!
       ) {
         updateUserProfile(input: $input) {
@@ -23,9 +23,6 @@
       }
     `),
     schema: UpdateUserProfileInputSchema,
-    onError: () => {
-      toast.error('프로필 변경에 실패했어요.');
-    },
     onSuccess: () => {
       open = false;
       toast.success('프로필이 변경되었어요.');
