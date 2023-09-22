@@ -6,7 +6,7 @@
   import Notification from './Notification.svelte';
 
   $: query = graphql(`
-    query MeNotifications_Query {
+    query MeNotificationsPage_Query {
       me @_required {
         id
 
