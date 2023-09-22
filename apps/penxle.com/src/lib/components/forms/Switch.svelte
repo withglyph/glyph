@@ -6,21 +6,24 @@
     size?: 'sm' | 'lg';
     checked: HTMLInputAttributes['checked'];
     class?: HTMLInputAttributes['class'];
+    disabled?: HTMLInputAttributes['disabled'];
   };
 
+  export let size: 'sm' | 'lg' = 'lg';
   export let checked: HTMLInputAttributes['checked'] = false;
   let _class: HTMLInputAttributes['class'] = undefined;
   export { _class as class };
-  export let size: 'sm' | 'lg' = 'lg';
+  export let disabled: HTMLInputAttributes['disabled'] = false;
 </script>
 
 <input
   class={clsx(
-    'relative flex items-center aspect-2/1 p-1 rounded-full transition appearance-none bg-gray-20 justify-start cursor-pointer checked:(bg-green-50 justify-end) after:(rounded-full content-empty bg-white aspect-1/1)',
+    'relative flex items-center aspect-2/1 p-1 rounded-full transition appearance-none bg-gray-20 justify-start cursor-pointer checked:(bg-green-50 justify-end) after:(rounded-full content-empty bg-white aspect-1/1) disabled:(bg-gray-20! justify-start! cursor-auto) disabled:after:bg-gray-10',
     size === 'sm' && 'w-7.5 h-4 rounded-6 after:h-150%',
     size === 'lg' && 'w-11 h-6 rounded-9 after:h-full',
     _class,
   )}
+  {disabled}
   type="checkbox"
   on:change
   bind:checked
