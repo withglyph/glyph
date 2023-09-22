@@ -79,7 +79,7 @@ type Mutation {
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
   updateUserContentFilterPreference(input: UpdateUserContentFilterPreferenceInput!): User!
   updateUserMarketingConsent(input: UpdateUserMarketingConsentInput!): User!
-  updateUserNotificationPreference(input: UpdateUserNotificationPreferenceInput!): Void
+  updateUserNotificationPreference(input: UpdateUserNotificationPreferenceInput!): User!
   updateUserPassword(input: UpdateUserPasswordInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
   verifyUserEmail(input: VerifyUserEmailInput!): User!

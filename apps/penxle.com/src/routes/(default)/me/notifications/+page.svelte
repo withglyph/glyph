@@ -62,7 +62,9 @@
     mutation MeNotificationsPage_UpdateUserNotificationPreference_Mutation(
       $input: UpdateUserNotificationPreferenceInput!
     ) {
-      updateUserNotificationPreference(input: $input)
+      updateUserNotificationPreference(input: $input) {
+        id
+      }
     }
   `);
 </script>

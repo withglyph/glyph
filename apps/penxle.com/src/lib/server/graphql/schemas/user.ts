@@ -879,27 +879,39 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  updateUserNotificationPreference: t.withAuth({ user: true }).field({
-    type: 'Void',
-    nullable: true,
+  updateUserNotificationPreference: t.withAuth({ user: true }).prismaField({
+    type: 'User',
     args: { input: t.arg({ type: UpdateUserNotificationPreferenceInput }) },
-    resolve: async (_, { input }, { db, ...context }) => {
+    resolve: async (query, _, { input }, { db, ...context }) => {
       if (input.enabled) {
-        await db.userNotificationPreference.deleteMany({
-          where: {
-            userId: context.session.userId,
-            category: input.category,
-            method: input.method,
+        return await db.user.update({
+          ...query,
+          where: { id: context.session.userId },
+          data: {
+            notificationPreferences: {
+              delete: {
+                userId_category_method: {
+                  userId: context.session.userId,
+                  category: input.category,
+                  method: input.method,
+                },
+              },
+            },
           },
         });
       } else {
-        await db.userNotificationPreference.create({
+        return await db.user.update({
+          ...query,
+          where: { id: context.session.userId },
           data: {
-            id: createId(),
-            userId: context.session.userId,
-            category: input.category,
-            method: input.method,
-            opted: 'OPT_OUT',
+            notificationPreferences: {
+              create: {
+                id: createId(),
+                category: input.category,
+                method: input.method,
+                opted: 'OPT_OUT',
+              },
+            },
           },
         });
       }
