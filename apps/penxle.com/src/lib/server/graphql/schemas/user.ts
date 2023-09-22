@@ -12,7 +12,7 @@ import { nanoid } from 'nanoid';
 import qs from 'query-string';
 import * as R from 'radash';
 import { match } from 'ts-pattern';
-import { FormValidationError } from '$lib/errors';
+import { FormValidationError, IntentionalError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
 import {
   EmailChange,
@@ -42,17 +42,6 @@ import { builder } from '../builder';
 /**
  * * Types
  */
-
-const UserNotificationPreference = builder.simpleObject(
-  'UserNotificationPreference',
-  {
-    authScopes: { $granted: '$user' },
-    fields: (t) => ({
-      website: t.boolean(),
-      email: t.boolean(),
-    }),
-  },
-);
 
 builder.prismaObject('User', {
   select: { id: true },
@@ -151,6 +140,14 @@ builder.prismaObject('Profile', {
   }),
 });
 
+builder.prismaObject('UserEmailVerification', {
+  select: { id: true },
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    expiresAt: t.expose('expiresAt', { type: 'DateTime' }),
+  }),
+});
+
 builder.prismaObject('UserSSO', {
   select: { id: true },
   authScopes: { $granted: '$user' },
@@ -178,6 +175,17 @@ builder.prismaObject('UserPassword', {
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
   }),
 });
+
+const UserNotificationPreference = builder.simpleObject(
+  'UserNotificationPreference',
+  {
+    authScopes: { $granted: '$user' },
+    fields: (t) => ({
+      website: t.boolean(),
+      email: t.boolean(),
+    }),
+  },
+);
 
 const IssueSSOAuthorizationUrlResult = builder.simpleObject(
   'IssueSSOAuthorizationUrlResult',
@@ -304,6 +312,16 @@ const UnlinkSSOInput = builder.inputType('UnlinkSSOInput', {
   }),
 });
 
+const UpdateContentFilteringPreferenceInput = builder.inputType(
+  'UpdateContentFilteringPreferenceInput',
+  {
+    fields: (t) => ({
+      category: t.field({ type: ContentFilteringCategory }),
+      action: t.field({ type: ContentFilteringAction }),
+    }),
+  },
+);
+
 const UpdateNotificationPreferencesInput = builder.inputType(
   'UpdateNotificationPreferencesInput',
   {
@@ -332,6 +350,21 @@ builder.queryFields((t) => ({
         ...query,
         where: { id: context.session.userId },
       });
+    },
+  }),
+
+  emailVerification: t.prismaField({
+    type: 'UserEmailVerification',
+    args: { code: t.arg({ type: 'String' }) },
+    resolve: async (query, _, { code }, { db }) => {
+      const emailVerification = await db.userEmailVerification.findUnique({
+        ...query,
+        where: { code },
+      });
+      if (!emailVerification || emailVerification.expiresAt < new Date()) {
+        throw new IntentionalError('잘못된 코드에요');
+      }
+      return emailVerification;
     },
   }),
 }));
@@ -470,7 +503,10 @@ builder.mutationFields((t) => ({
         template: EmailVerification,
         props: {
           name: profile.name,
-          url: `${context.url.origin}/user/verify-email/${verification.code}`,
+          url: qs.stringifyUrl({
+            url: `${context.url.origin}/user/verify-email`,
+            query: { code: verification.code },
+          }),
         },
       });
 
@@ -537,7 +573,7 @@ builder.mutationFields((t) => ({
           userId: user.id,
           email: user.email,
           type: 'PASSWORD_RESET',
-          code: `${nanoid()}.${expiresAt.getTime()}`,
+          code: nanoid(),
           expiresAt,
         },
       });
@@ -549,7 +585,7 @@ builder.mutationFields((t) => ({
         props: {
           name: user.profile.name,
           url: qs.stringifyUrl({
-            url: `${context.url.origin}/user/reset-password/complete`,
+            url: `${context.url.origin}/user/reset-password`,
             query: { code: verification.code },
           }),
         },
@@ -880,6 +916,32 @@ builder.mutationFields((t) => ({
             },
             update: {},
           }));
+    },
+  }),
+
+  updateContentFilteringPreference: t.withAuth({ auth: true }).prismaField({
+    type: 'User',
+    args: { input: t.arg({ type: UpdateContentFilteringPreferenceInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      await db.userContentFilteringPreference.upsert({
+        where: {
+          userId_category: {
+            userId: context.session.userId,
+            category: input.category,
+          },
+        },
+        create: {
+          id: createId(),
+          userId: context.session.userId,
+          category: input.category,
+          action: input.action,
+        },
+        update: { action: input.action },
+      });
+      return await db.user.findUniqueOrThrow({
+        ...query,
+        where: { id: context.session.userId },
+      });
     },
   }),
 }));

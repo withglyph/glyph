@@ -16,12 +16,11 @@
   let updatePasswordOpen = false;
 
   $: query = graphql(`
-    query AccountPage_Query {
+    query MeAccountsPage_Query {
       me @_required {
         id
         email
         state
-        ...AccountPage_UpdatePasswordModal_user
 
         marketingAgreement {
           id
@@ -41,19 +40,17 @@
         profile {
           id
           name
-          ...Avatar_profile
 
-          avatar {
-            id
-            url
-          }
+          ...Avatar_profile
         }
+
+        ...MeAccountsPage_UpdatePasswordModal_user
       }
     }
   `);
 
   const issueSSOAuthorizationUrl = graphql(`
-    mutation AccountPage_IssueSSOAuthorizationUrl_Mutation(
+    mutation MeAccountsPage_IssueSSOAuthorizationUrl_Mutation(
       $input: IssueSSOAuthorizationUrlInput!
     ) {
       issueSSOAuthorizationUrl(input: $input) {
@@ -63,7 +60,7 @@
   `);
 
   const updateMarketingAgreement = graphql(`
-    mutation AccountPage_UpdateMarketingAgreement_Mutation(
+    mutation MeAccountsPage_UpdateMarketingAgreement_Mutation(
       $input: UpdateMarketingAgreementInput!
     ) {
       updateMarketingAgreement(input: $input) {
@@ -78,7 +75,7 @@
   `);
 
   const unlinkSSO = graphql(`
-    mutation AccountPage_UnlinkSSO_Mutation($input: UnlinkSSOInput!) {
+    mutation MeAccountsPage_UnlinkSSO_Mutation($input: UnlinkSSOInput!) {
       unlinkSSO(input: $input) {
         id
 
@@ -321,7 +318,12 @@
     <div class="w-full border-b border-alphagray-15" />
 
     <div class="flex justify-end">
-      <Button href="/me/delete-account" size="lg" type="link" variant="text">
+      <Button
+        href="/me/accounts/deactivate"
+        size="lg"
+        type="link"
+        variant="text"
+      >
         탈퇴하기
         <span class="i-lc-chevron-right" />
       </Button>

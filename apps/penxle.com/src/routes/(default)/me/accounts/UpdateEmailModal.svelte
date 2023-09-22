@@ -11,16 +11,13 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation MeAccountPage_RequestEmailUpdate_Mutation(
+      mutation MeAccountsPage_RequestEmailUpdate_Mutation(
         $input: RequestEmailUpdateInput!
       ) {
         requestEmailUpdate(input: $input)
       }
     `),
     schema: RequestEmailUpdateInputSchema,
-    onError: () => {
-      toast.error('이메일 인증 메일 전송에 실패했어요');
-    },
     onSuccess: () => {
       open = false;
       toast.success('입력하신 이메일로 인증메일을 전송했어요');

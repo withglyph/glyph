@@ -4,7 +4,7 @@
   import PencilUnderline from '$assets/icons/pencil-underline.svg?component';
   import { graphql } from '$glitch';
   import { Avatar, Button } from '$lib/components';
-  import UpdateProfileModal from './account/UpdateProfileModal.svelte';
+  import UpdateProfileModal from './accounts/UpdateProfileModal.svelte';
 
   let open = false;
 
@@ -17,12 +17,8 @@
         profile {
           id
           name
-          ...Avatar_profile
 
-          avatar {
-            id
-            url
-          }
+          ...Avatar_profile
         }
       }
     }
@@ -69,9 +65,10 @@
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/drawer' && 'bg-gray-5 text-gray-90',
+                $page.url.pathname === '/me/cabinets' &&
+                  'bg-gray-5 text-gray-90',
               )}
-              href="/me/drawer"
+              href="/me/cabinets"
             >
               나의 서랍
             </a>
@@ -80,10 +77,10 @@
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/interest' &&
+                $page.url.pathname === '/me/followings' &&
                   'bg-gray-5 text-gray-90',
               )}
-              href="/me/interest"
+              href="/me/followings"
             >
               관심 설정
             </a>
@@ -104,10 +101,10 @@
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/preference' &&
+                $page.url.pathname === '/me/contentfilters' &&
                   'bg-gray-5 text-gray-90',
               )}
-              href="/me/preference"
+              href="/me/contentfilters"
             >
               필터링 설정
             </a>
@@ -116,10 +113,10 @@
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/notification' &&
+                $page.url.pathname === '/me/notifications' &&
                   'bg-gray-5 text-gray-90',
               )}
-              href="/me/notification"
+              href="/me/notifications"
             >
               알림 설정
             </a>
@@ -128,10 +125,10 @@
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/account' &&
+                $page.url.pathname === '/me/accounts' &&
                   'bg-gray-5 text-gray-90',
               )}
-              href="/me/account"
+              href="/me/accounts"
             >
               계정 설정
             </a>
