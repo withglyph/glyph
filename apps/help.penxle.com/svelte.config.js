@@ -8,7 +8,11 @@ export default {
   extensions: ['.svelte', '.md'],
   preprocess: [
     vitePreprocess(),
-    mdsvex({ extensions: ['.md'], remarkPlugins: [gfm] }),
+    mdsvex({
+      extensions: ['.md'],
+      remarkPlugins: [gfm],
+      smartypants: false,
+    }),
   ],
   kit: {
     adapter: lambda(),
