@@ -25,11 +25,7 @@
 
   & ol,
   & ul {
-    --uno: list-inside pl-1 py-1;
-
-    & p {
-      --uno: inline;
-    }
+    --uno: list-outside pl-8 py-1;
 
     & li {
       --uno: py-0.5;
@@ -37,7 +33,7 @@
 
     & ol,
     & ul {
-      --uno: pl-4;
+      --uno: pl-8;
     }
   }
 
