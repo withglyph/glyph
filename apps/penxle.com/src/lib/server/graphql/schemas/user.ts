@@ -503,7 +503,10 @@ builder.mutationFields((t) => ({
         template: EmailVerification,
         props: {
           name: profile.name,
-          url: `${context.url.origin}/user/verify-email/${verification.code}`,
+          url: qs.stringifyUrl({
+            url: `${context.url.origin}/user/verify-email`,
+            query: { code: verification.code },
+          }),
         },
       });
 
@@ -582,7 +585,7 @@ builder.mutationFields((t) => ({
         props: {
           name: user.profile.name,
           url: qs.stringifyUrl({
-            url: `${context.url.origin}/user/reset-password/complete`,
+            url: `${context.url.origin}/user/reset-password`,
             query: { code: verification.code },
           }),
         },

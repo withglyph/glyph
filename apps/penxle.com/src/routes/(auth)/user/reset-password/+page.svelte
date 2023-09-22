@@ -1,62 +1,82 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import clsx from 'clsx';
+  import { onMount } from 'svelte';
+  import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { Button } from '$lib/components';
-  import { FormField, TextInput } from '$lib/components/forms';
+  import { Button, Modal } from '$lib/components';
+  import { FormField, PasswordInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
-  import { RequestPasswordResetInputSchema } from '$lib/validations';
+  import { ResetPasswordInputSchema } from '$lib/validations';
 
-  let isSuccessful = false;
+  let open = false;
+  let isExpired = false;
+
+  onMount(() => {
+    const code = $page.url.searchParams.get('code');
+
+    if (code) {
+      const expireDate = new Date(Number(code.split('.')[1]));
+      const now = new Date();
+
+      if (expireDate < now) {
+        isExpired = true;
+      }
+    }
+  });
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation ResetPasswordPage_RequestPasswordReset_Mutation(
-        $input: RequestPasswordResetInput!
+      mutation UserResetPasswordPage_ResetPassword_Mutation(
+        $input: ResetPasswordInput!
       ) {
-        requestPasswordReset(input: $input)
+        resetPassword(input: $input)
       }
     `),
-    schema: RequestPasswordResetInputSchema,
-    onError: (error) => {
-      console.error(error);
-    },
+    schema: ResetPasswordInputSchema,
     onSuccess: () => {
-      isSuccessful = true;
+      open = true;
     },
   });
 </script>
 
-<Helmet title="계정 찾기" />
+<Helmet title="비밀번호 재설정" />
 
-<h1 class="font-bold text-xl w-full max-w-87.5">계정 찾기</h1>
+<h1 class="font-bold text-xl w-full max-w-87.5 mb-6">
+  새로운 비밀번호를 설정해 주세요
+</h1>
 
-<form class="w-full max-w-87.5 mt-6" use:form>
-  <FormField name="email" label="이메일">
-    <TextInput
-      class="w-full font-bold"
-      placeholder="이메일 입력"
-      on:input={() => {
-        isSuccessful = false;
-      }}
-    />
+<form class="w-full max-w-87.5 space-y-4" use:form>
+  <input name="code" type="hidden" value={$page.url.searchParams.get('code')} />
+
+  <FormField name="password" label="비밀번호">
+    <PasswordInput class="w-full font-bold" placeholder="비밀번호 입력" />
   </FormField>
 
-  {#if isSuccessful}
-    <div
-      class="h-10 flex gap-2 items-center text-green-50 bg-green-10 py-3 px-4 rounded-2xl font-bold text-3.25 mt-1.5 mb-4"
-    >
-      <span class="i-lc-check-circle-2 w-4 h-4" />
-      이메일로 전송된 로그인 링크를 확인하세요
-    </div>
-  {/if}
+  <FormField name="passwordConfirm" label="비밀번호 확인">
+    <PasswordInput class="w-full font-bold" placeholder="비밀번호 확인 입력" />
+  </FormField>
+
+  <Button class="w-full" size="xl" type="submit">비밀번호 재설정하기</Button>
+</form>
+
+<Modal size="sm" bind:open>
+  <svelte:fragment slot="title">비밀번호가 재설정 되었어요</svelte:fragment>
+
+  <Button slot="action" class="w-full" href="/login" size="xl" type="link">
+    로그인하러가기
+  </Button>
+</Modal>
+
+<Modal size="sm" bind:open={isExpired}>
+  <svelte:fragment slot="title">링크가 만료되었어요</svelte:fragment>
 
   <Button
-    class={clsx('w-full', !isSuccessful && 'mt-6')}
-    disabled={isSuccessful}
+    slot="action"
+    class="w-full"
+    href="/user/reset-password"
     size="xl"
-    type="submit"
+    type="link"
   >
-    계정 찾기
+    계정찾기로 이동하기
   </Button>
-</form>
+</Modal>

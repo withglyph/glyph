@@ -81,7 +81,7 @@
 
 <Button
   class="w-full my-4 text-gray-50"
-  href="/user/reset-password"
+  href="/user/forgot-password"
   size="lg"
   type="link"
   variant="text"
