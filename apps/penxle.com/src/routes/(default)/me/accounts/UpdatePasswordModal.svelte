@@ -5,17 +5,17 @@
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { UpdatePasswordInputSchema } from '$lib/validations';
-  import type { AccountPage_UpdatePasswordModal_user } from '$glitch';
+  import type { MeAccountsPage_UpdatePasswordModal_user } from '$glitch';
 
   export let open = false;
 
-  let _user: AccountPage_UpdatePasswordModal_user;
+  let _user: MeAccountsPage_UpdatePasswordModal_user;
   export { _user as $user };
 
   $: user = fragment(
     _user,
     graphql(`
-      fragment AccountPage_UpdatePasswordModal_user on User {
+      fragment MeAccountsPage_UpdatePasswordModal_user on User {
         id
 
         password {
@@ -36,9 +36,6 @@
       }
     `),
     schema: UpdatePasswordInputSchema,
-    onError: () => {
-      toast.error('비밀번호 변경에 실패했어요.');
-    },
     onSuccess: () => {
       open = false;
       toast.success('비밀번호 변경에 성공했어요.');

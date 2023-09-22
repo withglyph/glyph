@@ -4,7 +4,7 @@
 
   onMount(() => {
     if (window.innerWidth >= 800) {
-      goto('/me/drawer');
+      goto('/me/cabinets');
     }
   });
 </script>
