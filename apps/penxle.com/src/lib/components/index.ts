@@ -7,4 +7,5 @@ export { default as TabContentItem } from './TabContentItem.svelte';
 export { default as TabHead } from './TabHead.svelte';
 export { default as TabHeadItem } from './TabHeadItem.svelte';
 export { default as Tag } from './Tag.svelte';
+export { default as ToggleButton } from './ToggleButton.svelte';
 export { default as Tooltip } from './Tooltip.svelte';
