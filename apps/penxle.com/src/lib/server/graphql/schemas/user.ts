@@ -43,17 +43,6 @@ import { builder } from '../builder';
  * * Types
  */
 
-const UserNotificationPreference = builder.simpleObject(
-  'UserNotificationPreference',
-  {
-    authScopes: { $granted: '$user' },
-    fields: (t) => ({
-      website: t.boolean(),
-      email: t.boolean(),
-    }),
-  },
-);
-
 builder.prismaObject('User', {
   select: { id: true },
   authScopes: (user) => ({ user, $granted: '$user' }),
@@ -186,6 +175,17 @@ builder.prismaObject('UserPassword', {
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
   }),
 });
+
+const UserNotificationPreference = builder.simpleObject(
+  'UserNotificationPreference',
+  {
+    authScopes: { $granted: '$user' },
+    fields: (t) => ({
+      website: t.boolean(),
+      email: t.boolean(),
+    }),
+  },
+);
 
 const IssueSSOAuthorizationUrlResult = builder.simpleObject(
   'IssueSSOAuthorizationUrlResult',
