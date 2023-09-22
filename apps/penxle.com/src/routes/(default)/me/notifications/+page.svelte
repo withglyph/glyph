@@ -95,9 +95,9 @@
               isEnabled: !($query.me.all.email || $query.me.all.website),
               method: 'EMAIL',
             });
-            toast.success('알림 설정 변경에 성공했어요');
+            toast.success('알림 설정이 변경되었어요.');
           } catch {
-            toast.error('알림 설정 변경에 실패했어요');
+            toast.error('알림 설정 변경에 실패했어요.');
           }
         }}
       />
@@ -111,9 +111,9 @@
                 isEnabled: !$query.me.all.website,
                 method: 'WEBSITE',
               });
-              toast.success('알림 설정 변경에 성공했어요');
+              toast.success('알림 설정이 변경되었어요.');
             } catch {
-              toast.error('알림 설정 변경에 실패했어요');
+              toast.error('알림 설정 변경에 실패했어요.');
             }
           }}
         />
@@ -126,9 +126,9 @@
                 isEnabled: !$query.me.all.email,
                 method: 'EMAIL',
               });
-              toast.success('알림 설정 변경에 성공했어요');
+              toast.success('알림 설정이 변경되었어요.');
             } catch {
-              toast.error('알림 설정 변경에 실패했어요');
+              toast.error('알림 설정 변경에 실패했어요.');
             }
           }}
         />
@@ -137,6 +137,7 @@
 
     <Notification
       name="댓글"
+      all={$query.me.all}
       content="내 포스트에 댓글이 달렸을 때 알림을 받아요."
       email={$query.me.comment.email}
       website={$query.me.comment.website}
@@ -144,6 +145,7 @@
 
     <Notification
       name="답글"
+      all={$query.me.all}
       content="댓글에 답글이 달렸을 때 알림을 받아요."
       email={$query.me.reply.email}
       website={$query.me.reply.website}
@@ -151,6 +153,7 @@
 
     <Notification
       name="스페이스 구독"
+      all={$query.me.all}
       content="스페이스 구독자가 생겼을 때 알림을 받아요."
       email={$query.me.subscribe.email}
       website={$query.me.subscribe.website}
@@ -158,6 +161,7 @@
 
     <Notification
       name="태그 수정"
+      all={$query.me.all}
       content="내 포스트 태그를 수정했을 때 알림을 받아요."
       email={$query.me.tagEdit.email}
       website={$query.me.tagEdit.website}
@@ -165,6 +169,7 @@
 
     <Notification
       name="조회수"
+      all={$query.me.all}
       content="조회수가 급상승했을 때 알림을 받아요."
       email={$query.me.trend.email}
       website={$query.me.trend.website}
@@ -172,6 +177,7 @@
 
     <Notification
       name="구매"
+      all={$query.me.all}
       content="내 포스트가 구매됐을 때 알림을 받아요."
       email={$query.me.purchase.email}
       website={$query.me.purchase.website}
@@ -179,6 +185,7 @@
 
     <Notification
       name="후원"
+      all={$query.me.all}
       content="내 포스트에 후원을 받았을 때 알림을 받아요."
       email={$query.me.donate.email}
       website={$query.me.donate.website}
@@ -186,6 +193,7 @@
 
     <Notification
       name="태그 위키 수정"
+      all={$query.me.all}
       content="내가 작성한 태그가 수정됐을 때 알림을 받아요."
       email={$query.me.tagWikiEdit.email}
       website={$query.me.tagWikiEdit.website}

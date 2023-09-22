@@ -8,6 +8,7 @@
   export let content: string;
   export let website: boolean;
   export let email: boolean;
+  export let all: { website: boolean; email: boolean };
 
   const updateNotificationPreferences = graphql(`
     mutation MeNotificationsPage_Notification_UpdateNotificationPreferences_Mutation(
@@ -49,6 +50,7 @@
       <span class="font-semibold sm:hidden">웹사이트</span>
       <Switch
         class="sm:hidden"
+        disabled={!all.website}
         size="sm"
         bind:checked={website}
         on:change={async () => {
@@ -58,14 +60,15 @@
               isEnabled: !website,
               method: 'WEBSITE',
             });
-            toast.success('알림 설정 변경에 성공했어요');
+            toast.success('알림 설정이 변경되었어요.');
           } catch {
-            toast.error('알림 설정 변경에 실패했어요');
+            toast.error('알림 설정 변경에 실패했어요.');
           }
         }}
       />
       <Switch
         class="<sm:hidden"
+        disabled={!all.website}
         size="lg"
         bind:checked={website}
         on:change={async () => {
@@ -75,9 +78,9 @@
               isEnabled: !website,
               method: 'WEBSITE',
             });
-            toast.success('알림 설정 변경에 성공했어요');
+            toast.success('알림 설정이 변경되었어요.');
           } catch {
-            toast.error('알림 설정 변경에 실패했어요');
+            toast.error('알림 설정 변경에 실패했어요.');
           }
         }}
       />
@@ -86,6 +89,7 @@
       <span class="font-semibold sm:hidden">이메일</span>
       <Switch
         class="sm:hidden"
+        disabled={!all.email}
         size="sm"
         bind:checked={email}
         on:change={async () => {
@@ -95,15 +99,15 @@
               isEnabled: !email,
               method: 'EMAIL',
             });
-            toast.success('알림 설정 변경에 성공했어요');
+            toast.success('알림 설정이 변경되었어요.');
           } catch {
-            toast.error('알림 설정 변경에 실패했어요');
+            toast.error('알림 설정 변경에 실패했어요.');
           }
         }}
       />
       <Switch
         class="<sm:hidden"
-        disabled={true}
+        disabled={!all.email}
         size="lg"
         bind:checked={email}
         on:change={async () => {
@@ -113,9 +117,9 @@
               isEnabled: !email,
               method: 'EMAIL',
             });
-            toast.success('알림 설정 변경에 성공했어요');
+            toast.success('알림 설정이 변경되었어요.');
           } catch {
-            toast.error('알림 설정 변경에 실패했어요');
+            toast.error('알림 설정 변경에 실패했어요.');
           }
         }}
       />
