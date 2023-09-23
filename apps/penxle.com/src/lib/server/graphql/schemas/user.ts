@@ -1,9 +1,9 @@
 import {
-  ContentFilteringAction,
-  ContentFilteringCategory,
+  ContentFilterAction,
+  ContentFilterCategory,
   UserNotificationCategory,
   UserNotificationMethod,
-  UserSSOProvider,
+  UserSingleSignOnProvider,
   UserState,
 } from '@prisma/client';
 import argon2 from 'argon2';
@@ -26,76 +26,87 @@ import { createAccessToken, directUploadImage, generateRandomAvatar } from '$lib
 import { createId } from '$lib/utils';
 import {
   LoginInputSchema,
-  RequestEmailUpdateInputSchema,
-  RequestPasswordResetInputSchema,
-  ResetPasswordInputSchema,
-  SignupInputSchema,
-  UpdatePasswordInputSchema,
+  RequestUserEmailUpdateInputSchema,
+  RequestUserPasswordResetInputSchema,
+  ResetUserPasswordInputSchema,
+  SignUpInputSchema,
+  UpdateUserPasswordInputSchema,
   UpdateUserProfileInputSchema,
 } from '$lib/validations';
 import { builder } from '../builder';
+import { UserSingleSignOnAuthorizationType } from '../enums';
 
 /**
  * * Types
  */
 
+builder.prismaObject('Profile', {
+  select: { id: true },
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    name: t.exposeString('name'),
+
+    avatar: t.relation('avatar'),
+  }),
+});
+
 builder.prismaObject('User', {
   select: { id: true },
-  authScopes: (user) => ({ user, $granted: '$user' }),
+  authScopes: (user, context) => user.id === context.session?.userId || { $granted: '$user', staff: true },
   fields: (t) => ({
     id: t.exposeID('id'),
     email: t.exposeString('email'),
     state: t.expose('state', { type: UserState }),
 
+    marketingConsent: t.relation('marketingConsent', { nullable: true, grantScopes: ['$user'] }),
+    password: t.relation('password', { nullable: true, grantScopes: ['$user'] }),
     profile: t.relation('profile'),
-    password: t.relation('password', {
-      grantScopes: ['$user'],
-      nullable: true,
-    }),
 
-    marketingAgreement: t.relation('marketingAgreement', {
+    contentFilterPreference: t.field({
+      type: UserContentFilterPreference,
       grantScopes: ['$user'],
-      nullable: true,
-    }),
+      args: { category: t.arg({ type: ContentFilterCategory }) },
+      resolve: async (parent, args, { db }) => {
+        if (args.category === ContentFilterCategory.ADULT) {
+          const preference = await db.userContentFilterPreference.findUnique({
+            select: { action: true },
+            where: { userId_category: { userId: parent.id, category: args.category } },
+          });
 
-    spaces: t.prismaField({
-      type: ['Space'],
-      select: (_, __, nestedSelection) => ({
-        spaces: {
-          select: { space: nestedSelection() },
-          where: { space: { state: 'ACTIVE' } },
-        },
-      }),
-      resolve: (_, { spaces }) => spaces.map(({ space }) => space),
-    }),
+          return preference ?? ({ action: 'WARN' } as const);
+        }
 
-    sso: t.prismaField({
-      type: 'UserSSO',
-      nullable: true,
-      grantScopes: ['$user'],
-      args: { provider: t.arg({ type: UserSSOProvider }) },
-      resolve: async (query, parent, args, { db }) => {
-        return await db.userSSO.findUnique({
-          ...query,
-          where: {
-            userId_provider: { userId: parent.id, provider: args.provider },
-          },
+        const all = await db.userContentFilterPreference.findUnique({
+          select: { action: true },
+          where: { userId_category: { userId: parent.id, category: 'ALL_BUT_ADULT' } },
         });
+
+        if (all) {
+          return all;
+        }
+
+        const preference = await db.userContentFilterPreference.findUnique({
+          select: { action: true },
+          where: { userId_category: { userId: parent.id, category: args.category } },
+        });
+
+        return preference ?? ({ action: 'WARN' } as const);
       },
     }),
 
-    notificationPreferences: t.field({
+    notificationPreference: t.field({
       type: UserNotificationPreference,
       grantScopes: ['$user'],
       args: { category: t.arg({ type: UserNotificationCategory }) },
       resolve: async (parent, args, { db }) => {
-        const preferences = await db.userNotificationOptOut.findMany({
+        const preferences = await db.userNotificationPreference.findMany({
           where: {
             userId: parent.id,
             category: args.category,
           },
         });
-        const allMethods = await db.userNotificationOptOut.findMany({
+
+        const allMethods = await db.userNotificationPreference.findMany({
           where: {
             userId: parent.id,
             category: 'ALL',
@@ -114,32 +125,31 @@ builder.prismaObject('User', {
       },
     }),
 
-    contentFilteringPreferences: t.field({
-      type: ContentFilteringAction,
+    singleSignOn: t.prismaField({
+      type: 'UserSingleSignOn',
+      nullable: true,
       grantScopes: ['$user'],
-      args: { category: t.arg({ type: ContentFilteringCategory }) },
-      resolve: async (parent, args, { db }) => {
-        const preferences = await db.userContentFilteringPreference.findUnique({
+      args: { provider: t.arg({ type: UserSingleSignOnProvider }) },
+      resolve: async (query, parent, args, { db }) => {
+        return await db.userSingleSignOn.findUnique({
+          ...query,
           where: {
-            userId_category: {
-              userId: parent.id,
-              category: args.category,
-            },
+            userId_provider: { userId: parent.id, provider: args.provider },
           },
         });
-        return preferences?.action ?? ContentFilteringAction.WARN;
       },
     }),
-  }),
-});
 
-builder.prismaObject('Profile', {
-  select: { id: true },
-  fields: (t) => ({
-    id: t.exposeID('id'),
-    name: t.exposeString('name'),
-
-    avatar: t.relation('avatar'),
+    spaces: t.prismaField({
+      type: ['Space'],
+      select: (_, __, nestedSelection) => ({
+        spaces: {
+          select: { space: nestedSelection() },
+          where: { space: { state: 'ACTIVE' } },
+        },
+      }),
+      resolve: (_, { spaces }) => spaces.map(({ space }) => space),
+    }),
   }),
 });
 
@@ -151,17 +161,7 @@ builder.prismaObject('UserEmailVerification', {
   }),
 });
 
-builder.prismaObject('UserSSO', {
-  select: { id: true },
-  authScopes: { $granted: '$user' },
-  fields: (t) => ({
-    id: t.exposeID('id'),
-    provider: t.expose('provider', { type: UserSSOProvider }),
-    email: t.exposeString('providerEmail'),
-  }),
-});
-
-builder.prismaObject('UserMarketingAgreement', {
+builder.prismaObject('UserMarketingConsent', {
   select: { id: true },
   authScopes: { $granted: '$user' },
   fields: (t) => ({
@@ -175,7 +175,31 @@ builder.prismaObject('UserPassword', {
   authScopes: { $granted: '$user' },
   fields: (t) => ({
     id: t.exposeID('id'),
-    createdAt: t.expose('createdAt', { type: 'DateTime' }),
+  }),
+});
+
+builder.prismaObject('UserSingleSignOn', {
+  select: { id: true },
+  authScopes: { $granted: '$user' },
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    providerEmail: t.exposeString('providerEmail'),
+  }),
+});
+
+const IssueUserSingleSignOnAuthorizationUrlResult = builder.simpleObject(
+  'IssueUserSingleSignOnAuthorizationUrlResult',
+  {
+    fields: (t) => ({
+      url: t.string(),
+    }),
+  },
+);
+
+const UserContentFilterPreference = builder.simpleObject('UserContentFilterPreference', {
+  authScopes: { $granted: '$user' },
+  fields: (t) => ({
+    action: t.field({ type: ContentFilterAction }),
   }),
 });
 
@@ -187,29 +211,16 @@ const UserNotificationPreference = builder.simpleObject('UserNotificationPrefere
   }),
 });
 
-const IssueSSOAuthorizationUrlResult = builder.simpleObject('IssueSSOAuthorizationUrlResult', {
-  fields: (t) => ({
-    url: t.string(),
-  }),
-});
-
-/**
- * * Enums
- */
-
-builder.enumType(ContentFilteringAction, { name: 'ContentFilteringAction' });
-builder.enumType(ContentFilteringCategory, { name: 'ContentFilteringCategory' });
-builder.enumType(UserState, { name: 'UserState' });
-builder.enumType(UserSSOProvider, { name: 'UserSSOProvider' });
-builder.enumType(UserNotificationCategory, { name: 'UserNotificationCategory' });
-builder.enumType(UserNotificationMethod, { name: 'UserNotificationMethod' });
-const UserSSOAuthorizationType = builder.enumType('UserSSOAuthorizationType', {
-  values: ['AUTH', 'LINK'],
-});
-
 /**
  * * Inputs
  */
+
+const IssueUserSingleSignOnAuthorizationUrlInput = builder.inputType('IssueUserSingleSignOnAuthorizationUrlInput', {
+  fields: (t) => ({
+    type: t.field({ type: UserSingleSignOnAuthorizationType }),
+    provider: t.field({ type: UserSingleSignOnProvider }),
+  }),
+});
 
 const LoginInput = builder.inputType('LoginInput', {
   fields: (t) => ({
@@ -219,52 +230,75 @@ const LoginInput = builder.inputType('LoginInput', {
   validate: { schema: LoginInputSchema },
 });
 
-const SignupInput = builder.inputType('SignupInput', {
+const RequestUserEmailUpdateInput = builder.inputType('RequestUserEmailUpdateInput', {
+  fields: (t) => ({
+    email: t.string(),
+  }),
+  validate: { schema: RequestUserEmailUpdateInputSchema },
+});
+
+const RequestUserPasswordResetInput = builder.inputType('RequestUserPasswordResetInput', {
+  fields: (t) => ({
+    email: t.string(),
+  }),
+  validate: { schema: RequestUserPasswordResetInputSchema },
+});
+
+const ResetUserPasswordInput = builder.inputType('ResetUserPasswordInput', {
+  fields: (t) => ({
+    code: t.string(),
+    password: t.string(),
+    passwordConfirm: t.string(),
+  }),
+  validate: { schema: ResetUserPasswordInputSchema },
+});
+
+const SignUpInput = builder.inputType('SignUpInput', {
   fields: (t) => ({
     email: t.string(),
     password: t.string(),
     passwordConfirm: t.string(),
     name: t.string(),
-    isAgreed: t.boolean(),
-    isMarketingAgreed: t.boolean(),
+    termsConsent: t.boolean(),
+    marketingConsent: t.boolean(),
   }),
-  validate: { schema: SignupInputSchema },
+  validate: { schema: SignUpInputSchema },
 });
 
-const IssueSSOAuthorizationUrlInput = builder.inputType('IssueSSOAuthorizationUrlInput', {
+const UnlinkUserSingleSignOnInput = builder.inputType('UnlinkUserSingleSignOnInput', {
   fields: (t) => ({
-    type: t.field({ type: UserSSOAuthorizationType }),
-    provider: t.field({ type: UserSSOProvider }),
+    provider: t.field({ type: UserSingleSignOnProvider }),
   }),
 });
 
-const RequestPasswordResetInput = builder.inputType('RequestPasswordResetInput', {
+const UpdateUserContentFilterPreferenceInput = builder.inputType('UpdateUserContentFilterPreferenceInput', {
   fields: (t) => ({
-    email: t.string(),
+    category: t.field({ type: ContentFilterCategory }),
+    action: t.field({ type: ContentFilterAction }),
   }),
-  validate: { schema: RequestPasswordResetInputSchema },
 });
 
-const RequestEmailUpdateInput = builder.inputType('RequestEmailUpdateInput', {
+const UpdateUserMarketingConsentInput = builder.inputType('UpdateUserMarketingConsentInput', {
   fields: (t) => ({
-    email: t.string(),
+    consent: t.boolean(),
   }),
-  validate: { schema: RequestEmailUpdateInputSchema },
 });
 
-const ResetPasswordInput = builder.inputType('ResetPasswordInput', {
+const UpdateUserNotificationPreferenceInput = builder.inputType('UpdateUserNotificationPreferenceInput', {
   fields: (t) => ({
-    code: t.string(),
-    password: t.string(),
-    passwordConfirm: t.string(),
+    category: t.field({ type: UserNotificationCategory }),
+    method: t.field({ type: UserNotificationMethod }),
+    enabled: t.boolean(),
   }),
-  validate: { schema: ResetPasswordInputSchema },
 });
 
-const VerifyEmailInput = builder.inputType('VerifyEmailInput', {
+const UpdateUserPasswordInput = builder.inputType('UpdateUserPasswordInput', {
   fields: (t) => ({
-    code: t.string(),
+    oldPassword: t.string({ required: false }),
+    newPassword: t.string(),
+    newPasswordConfirm: t.string(),
   }),
+  validate: { schema: UpdateUserPasswordInputSchema },
 });
 
 const UpdateUserProfileInput = builder.inputType('UpdateUserProfileInput', {
@@ -274,39 +308,9 @@ const UpdateUserProfileInput = builder.inputType('UpdateUserProfileInput', {
   validate: { schema: UpdateUserProfileInputSchema },
 });
 
-const UpdatePasswordInput = builder.inputType('UpdatePasswordInput', {
+const VerifyUserEmailInput = builder.inputType('VerifyUserEmailInput', {
   fields: (t) => ({
-    oldPassword: t.string({ required: false }),
-    newPassword: t.string(),
-    newPasswordConfirm: t.string(),
-  }),
-  validate: { schema: UpdatePasswordInputSchema },
-});
-
-const UpdateMarketingAgreementInput = builder.inputType('UpdateMarketingAgreementInput', {
-  fields: (t) => ({
-    isAgreed: t.boolean(),
-  }),
-});
-
-const UnlinkSSOInput = builder.inputType('UnlinkSSOInput', {
-  fields: (t) => ({
-    provider: t.field({ type: UserSSOProvider }),
-  }),
-});
-
-const UpdateContentFilteringPreferenceInput = builder.inputType('UpdateContentFilteringPreferenceInput', {
-  fields: (t) => ({
-    category: t.field({ type: ContentFilteringCategory }),
-    action: t.field({ type: ContentFilteringAction }),
-  }),
-});
-
-const UpdateNotificationPreferencesInput = builder.inputType('UpdateNotificationPreferencesInput', {
-  fields: (t) => ({
-    category: t.field({ type: UserNotificationCategory }),
-    method: t.field({ type: UserNotificationMethod }),
-    isEnabled: t.boolean(),
+    code: t.string(),
   }),
 });
 
@@ -330,18 +334,23 @@ builder.queryFields((t) => ({
     },
   }),
 
-  emailVerification: t.prismaField({
+  userEmailVerification: t.prismaField({
     type: 'UserEmailVerification',
     args: { code: t.arg({ type: 'String' }) },
     resolve: async (query, _, { code }, { db }) => {
-      const emailVerification = await db.userEmailVerification.findUnique({
+      const userEmailVerification = await db.userEmailVerification.findUnique({
         ...query,
-        where: { code },
+        where: {
+          code,
+          expiresAt: { gte: new Date() },
+        },
       });
-      if (!emailVerification || emailVerification.expiresAt < new Date()) {
+
+      if (!userEmailVerification) {
         throw new IntentionalError('잘못된 코드에요');
       }
-      return emailVerification;
+
+      return userEmailVerification;
     },
   }),
 }));
@@ -391,22 +400,10 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  logout: t.withAuth({ auth: true }).field({
-    type: 'Void',
-    nullable: true,
-    resolve: async (_, __, { db, ...context }) => {
-      await db.session.delete({
-        where: { id: context.session.id },
-      });
-
-      context.cookies.delete('penxle-at', { path: '/' });
-    },
-  }),
-
-  signup: t.prismaField({
+  signUp: t.prismaField({
     type: 'User',
     grantScopes: ['$user'],
-    args: { input: t.arg({ type: SignupInput }) },
+    args: { input: t.arg({ type: SignUpInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const isEmailUsed = await db.user.exists({
         where: {
@@ -448,8 +445,13 @@ builder.mutationFields((t) => ({
         },
       });
 
-      if (input.isMarketingAgreed) {
-        await db.userMarketingAgreement.create({
+      await db.image.update({
+        where: { id: avatarId },
+        data: { userId: user.id },
+      });
+
+      if (input.marketingConsent) {
+        await db.userMarketingConsent.create({
           data: {
             id: createId(),
             userId: user.id,
@@ -457,14 +459,14 @@ builder.mutationFields((t) => ({
         });
       }
 
-      const verification = await db.userEmailVerification.create({
+      const userEmailVerification = await db.userEmailVerification.create({
         data: {
           id: createId(),
           userId: user.id,
           email: user.email,
           type: 'USER_ACTIVATION',
           code: nanoid(),
-          expiresAt: dayjs().add(30, 'day').toDate(),
+          expiresAt: dayjs().add(30, 'days').toDate(),
         },
       });
 
@@ -476,14 +478,9 @@ builder.mutationFields((t) => ({
           name: profile.name,
           url: qs.stringifyUrl({
             url: `${context.url.origin}/user/verify-email`,
-            query: { code: verification.code },
+            query: { code: userEmailVerification.code },
           }),
         },
-      });
-
-      await db.image.update({
-        where: { id: avatarId },
-        data: { userId: user.id },
       });
 
       const session = await db.session.create({
@@ -504,9 +501,21 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  issueSSOAuthorizationUrl: t.field({
-    type: IssueSSOAuthorizationUrlResult,
-    args: { input: t.arg({ type: IssueSSOAuthorizationUrlInput }) },
+  logout: t.withAuth({ user: true }).field({
+    type: 'Void',
+    nullable: true,
+    resolve: async (_, __, { db, ...context }) => {
+      await db.session.delete({
+        where: { id: context.session.id },
+      });
+
+      context.cookies.delete('penxle-at', { path: '/' });
+    },
+  }),
+
+  issueUserSingleSignOnAuthorizationUrl: t.field({
+    type: IssueUserSingleSignOnAuthorizationUrlResult,
+    args: { input: t.arg({ type: IssueUserSingleSignOnAuthorizationUrlInput }) },
     resolve: (_, { input }, context) => {
       const provider = match(input.provider)
         .with('GOOGLE', () => google)
@@ -519,10 +528,10 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  requestPasswordReset: t.field({
+  requestUserPasswordReset: t.field({
     type: 'Void',
     nullable: true,
-    args: { input: t.arg({ type: RequestPasswordResetInput }) },
+    args: { input: t.arg({ type: RequestUserPasswordResetInput }) },
     resolve: async (_, { input }, { db, ...context }) => {
       const user = await db.user.findFirst({
         select: { id: true, email: true, profile: { select: { name: true } } },
@@ -538,12 +547,12 @@ builder.mutationFields((t) => ({
 
       const expiresAt = dayjs().add(1, 'hour').toDate();
 
-      const verification = await db.userEmailVerification.create({
+      const userEmailVerification = await db.userEmailVerification.create({
         data: {
           id: createId(),
           userId: user.id,
           email: user.email,
-          type: 'PASSWORD_RESET',
+          type: 'USER_PASSWORD_RESET',
           code: nanoid(),
           expiresAt,
         },
@@ -557,34 +566,34 @@ builder.mutationFields((t) => ({
           name: user.profile.name,
           url: qs.stringifyUrl({
             url: `${context.url.origin}/user/reset-password`,
-            query: { code: verification.code },
+            query: { code: userEmailVerification.code },
           }),
         },
       });
     },
   }),
 
-  resetPassword: t.field({
+  resetUserPassword: t.field({
     type: 'Void',
     nullable: true,
-    args: { input: t.arg({ type: ResetPasswordInput }) },
+    args: { input: t.arg({ type: ResetUserPasswordInput }) },
     resolve: async (_, { input }, { db }) => {
-      const verification = await db.userEmailVerification.delete({
+      const userEmailVerification = await db.userEmailVerification.delete({
         where: {
           code: input.code,
-          type: 'PASSWORD_RESET',
+          type: 'USER_PASSWORD_RESET',
           expiresAt: { gte: new Date() },
         },
       });
 
       await db.userPassword.deleteMany({
-        where: { userId: verification.userId },
+        where: { userId: userEmailVerification.userId },
       });
 
       const user = await db.user.update({
         include: { profile: { select: { name: true } } },
         where: {
-          id: verification.userId,
+          id: userEmailVerification.userId,
           state: { in: ['PROVISIONAL', 'ACTIVE'] },
         },
         data: {
@@ -609,10 +618,10 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  requestEmailUpdate: t.withAuth({ auth: true }).field({
+  requestUserEmailUpdate: t.withAuth({ user: true }).field({
     type: 'Void',
     nullable: true,
-    args: { input: t.arg({ type: RequestEmailUpdateInput }) },
+    args: { input: t.arg({ type: RequestUserEmailUpdateInput }) },
     resolve: async (_, { input }, { db, ...context }) => {
       const isEmailUsed = await db.user.exists({
         where: {
@@ -622,7 +631,7 @@ builder.mutationFields((t) => ({
       });
 
       if (isEmailUsed) {
-        throw new FormValidationError('email', '이미 사용중인 이메일이에요.');
+        throw new FormValidationError('email', '이미 사용중인 이메일이에요');
       }
 
       const user = await db.user.findUniqueOrThrow({
@@ -630,14 +639,14 @@ builder.mutationFields((t) => ({
         where: { id: context.session.userId },
       });
 
-      const verification = await db.userEmailVerification.create({
+      const userEmailVerification = await db.userEmailVerification.create({
         data: {
           id: createId(),
           userId: user.id,
-          type: 'EMAIL_UPDATE',
+          type: 'USER_EMAIL_UPDATE',
           email: input.email.toLowerCase(),
           code: nanoid(),
-          expiresAt: dayjs().add(30, 'day').toDate(),
+          expiresAt: dayjs().add(1, 'hour').toDate(),
         },
       });
 
@@ -650,39 +659,39 @@ builder.mutationFields((t) => ({
           email: input.email,
           url: qs.stringifyUrl({
             url: `${context.url.origin}/user/verify-email`,
-            query: { code: verification.code },
+            query: { code: userEmailVerification.code },
           }),
         },
       });
     },
   }),
 
-  verifyEmail: t.prismaField({
+  verifyUserEmail: t.prismaField({
     type: 'User',
     grantScopes: ['$user'],
-    args: { input: t.arg({ type: VerifyEmailInput }) },
+    args: { input: t.arg({ type: VerifyUserEmailInput }) },
     resolve: async (query, _, { input }, { db }) => {
-      const verification = await db.userEmailVerification.delete({
+      const userEmailVerification = await db.userEmailVerification.delete({
         include: { user: { include: { profile: { select: { name: true } } } } },
         where: {
-          type: { in: ['USER_ACTIVATION', 'EMAIL_UPDATE'] },
+          type: { in: ['USER_ACTIVATION', 'USER_EMAIL_UPDATE'] },
           code: input.code,
           expiresAt: { gte: new Date() },
         },
       });
 
-      if (verification.type === 'USER_ACTIVATION') {
+      if (userEmailVerification.type === 'USER_ACTIVATION') {
         return await db.user.update({
           ...query,
-          where: { id: verification.user.id },
+          where: { id: userEmailVerification.user.id },
           data: { state: 'ACTIVE' },
         });
       }
 
-      if (verification.type === 'EMAIL_UPDATE') {
+      if (userEmailVerification.type === 'USER_EMAIL_UPDATE') {
         const isEmailUsed = await db.user.exists({
           where: {
-            email: verification.email,
+            email: userEmailVerification.email,
             state: { in: ['PROVISIONAL', 'ACTIVE'] },
           },
         });
@@ -693,19 +702,19 @@ builder.mutationFields((t) => ({
 
         await sendEmail({
           subject: 'PENXLE 이메일이 변경되었어요.',
-          recipient: verification.user.email,
+          recipient: userEmailVerification.user.email,
           template: EmailChangeNotice,
           props: {
-            name: verification.user.profile.name,
-            email: verification.email,
+            name: userEmailVerification.user.profile.name,
+            email: userEmailVerification.email,
           },
         });
 
         return await db.user.update({
           ...query,
-          where: { id: verification.user.id },
+          where: { id: userEmailVerification.user.id },
           data: {
-            email: verification.email,
+            email: userEmailVerification.email,
             state: 'ACTIVE',
           },
         });
@@ -715,7 +724,7 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  updateUserProfile: t.withAuth({ auth: true }).prismaField({
+  updateUserProfile: t.withAuth({ user: true }).prismaField({
     type: 'Profile',
     args: { input: t.arg({ type: UpdateUserProfileInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
@@ -735,46 +744,60 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  updateMarketingAgreement: t.withAuth({ auth: true }).prismaField({
+  updateUserMarketingConsent: t.withAuth({ user: true }).prismaField({
     type: 'User',
-    args: { input: t.arg({ type: UpdateMarketingAgreementInput }) },
+    args: { input: t.arg({ type: UpdateUserMarketingConsentInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      await (input.isAgreed
-        ? db.userMarketingAgreement.upsert({
-            where: { userId: context.session.userId },
-            create: {
-              id: createId(),
-              userId: context.session.userId,
+      if (input.consent) {
+        return await db.user.update({
+          ...query,
+          where: { id: context.session.userId },
+          data: {
+            marketingConsent: {
+              create: {
+                id: createId(),
+              },
             },
-            update: {},
-          })
-        : db.userMarketingAgreement.deleteMany({
-            where: { userId: context.session.userId },
-          }));
-      return await db.user.findUniqueOrThrow({
-        ...query,
-        where: { id: context.session.userId },
-      });
+          },
+        });
+      } else {
+        return await db.user.update({
+          ...query,
+          where: { id: context.session.userId },
+          data: {
+            marketingConsent: {
+              delete: true,
+            },
+          },
+        });
+      }
     },
   }),
 
-  unlinkSSO: t.withAuth({ auth: true }).prismaField({
+  unlinkUserSingleSignOn: t.withAuth({ user: true }).prismaField({
     type: 'User',
-    args: { input: t.arg({ type: UnlinkSSOInput }) },
+    args: { input: t.arg({ type: UnlinkUserSingleSignOnInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      await db.userSSO.deleteMany({
-        where: { userId: context.session.userId, provider: input.provider },
-      });
-      return await db.user.findUniqueOrThrow({
+      return await db.user.update({
         ...query,
         where: { id: context.session.userId },
+        data: {
+          singleSignOns: {
+            delete: {
+              userId_provider: {
+                userId: context.session.userId,
+                provider: input.provider,
+              },
+            },
+          },
+        },
       });
     },
   }),
 
-  updatePassword: t.withAuth({ auth: true }).prismaField({
+  updateUserPassword: t.withAuth({ user: true }).prismaField({
     type: 'User',
-    args: { input: t.arg({ type: UpdatePasswordInput }) },
+    args: { input: t.arg({ type: UpdateUserPasswordInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const user = await db.user.findUniqueOrThrow({
         include: {
@@ -786,7 +809,7 @@ builder.mutationFields((t) => ({
 
       if (user.password) {
         if (!(await argon2.verify(user.password.hash, input.oldPassword ?? ''))) {
-          throw new FormValidationError('oldPassword', '잘못된 비밀번호에요.');
+          throw new FormValidationError('oldPassword', '잘못된 비밀번호에요');
         }
 
         await db.userPassword.delete({
@@ -795,7 +818,7 @@ builder.mutationFields((t) => ({
       }
 
       await sendEmail({
-        subject: 'PENXLE 비밀번호가 재설정되었어요.',
+        subject: 'PENXLE 비밀번호가 재설정되었어요',
         recipient: user.email,
         template: PasswordReset,
         props: {
@@ -818,7 +841,7 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  resendUserActivationEmail: t.withAuth({ auth: true }).field({
+  resendUserActivationEmail: t.withAuth({ user: true }).field({
     type: 'Void',
     nullable: true,
     resolve: async (_, __, { db, ...context }) => {
@@ -830,14 +853,14 @@ builder.mutationFields((t) => ({
         },
       });
 
-      const verification = await db.userEmailVerification.create({
+      const userEmailVerification = await db.userEmailVerification.create({
         data: {
           id: createId(),
           userId: context.session.userId,
           email: user.email,
           type: 'USER_ACTIVATION',
           code: nanoid(),
-          expiresAt: dayjs().add(30, 'day').toDate(),
+          expiresAt: dayjs().add(30, 'days').toDate(),
         },
       });
 
@@ -849,67 +872,65 @@ builder.mutationFields((t) => ({
           name: user.profile.name,
           url: qs.stringifyUrl({
             url: `${context.url.origin}/user/verify-email`,
-            query: { code: verification.code },
+            query: { code: userEmailVerification.code },
           }),
         },
       });
     },
   }),
 
-  updateNotificationPreferences: t.withAuth({ auth: true }).field({
+  updateUserNotificationPreference: t.withAuth({ user: true }).field({
     type: 'Void',
     nullable: true,
-    args: { input: t.arg({ type: UpdateNotificationPreferencesInput }) },
+    args: { input: t.arg({ type: UpdateUserNotificationPreferenceInput }) },
     resolve: async (_, { input }, { db, ...context }) => {
-      await (input.isEnabled
-        ? db.userNotificationOptOut.deleteMany({
-            where: {
-              userId: context.session.userId,
-              category: input.category,
-              method: input.method,
-            },
-          })
-        : db.userNotificationOptOut.upsert({
-            where: {
-              userId_category_method: {
-                userId: context.session.userId,
-                category: input.category,
-                method: input.method,
-              },
-            },
-            create: {
-              id: createId(),
-              userId: context.session.userId,
-              category: input.category,
-              method: input.method,
-            },
-            update: {},
-          }));
+      if (input.enabled) {
+        await db.userNotificationPreference.deleteMany({
+          where: {
+            userId: context.session.userId,
+            category: input.category,
+            method: input.method,
+          },
+        });
+      } else {
+        await db.userNotificationPreference.create({
+          data: {
+            id: createId(),
+            userId: context.session.userId,
+            category: input.category,
+            method: input.method,
+            opted: 'OPT_OUT',
+          },
+        });
+      }
     },
   }),
 
-  updateContentFilteringPreference: t.withAuth({ auth: true }).prismaField({
+  updateUserContentFilterPreference: t.withAuth({ user: true }).prismaField({
     type: 'User',
-    args: { input: t.arg({ type: UpdateContentFilteringPreferenceInput }) },
+    args: { input: t.arg({ type: UpdateUserContentFilterPreferenceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      await db.userContentFilteringPreference.upsert({
-        where: {
-          userId_category: {
-            userId: context.session.userId,
-            category: input.category,
-          },
-        },
-        create: {
-          id: createId(),
-          userId: context.session.userId,
-          category: input.category,
-          action: input.action,
-        },
-        update: { action: input.action },
-      });
-      return await db.user.findUniqueOrThrow({
+      return await db.user.update({
         ...query,
         where: { id: context.session.userId },
+        data: {
+          contentFilterPreferences: {
+            upsert: {
+              where: {
+                userId_category: {
+                  userId: context.session.userId,
+                  category: input.category,
+                },
+              },
+              create: {
+                id: createId(),
+                category: input.category,
+                action: input.action,
+              },
+              update: { action: input.action },
+            },
+          },
+        },
       });
     },
   }),

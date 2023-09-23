@@ -1,10 +1,10 @@
-enum ContentFilteringAction {
+enum ContentFilterAction {
   EXPOSE
   HIDE
   WARN
 }
 
-enum ContentFilteringCategory {
+enum ContentFilterCategory {
   ADULT
   ALL_BUT_ADULT
   CRIME
@@ -44,12 +44,12 @@ type Image {
   url: String!
 }
 
-input IssueSSOAuthorizationUrlInput {
-  provider: UserSSOProvider!
-  type: UserSSOAuthorizationType!
+input IssueUserSingleSignOnAuthorizationUrlInput {
+  provider: UserSingleSignOnProvider!
+  type: UserSingleSignOnAuthorizationType!
 }
 
-type IssueSSOAuthorizationUrlResult {
+type IssueUserSingleSignOnAuthorizationUrlResult {
   url: String!
 }
 
@@ -67,22 +67,27 @@ type Mutation {
   createSpace(input: CreateSpaceInput!): Space!
   deleteSpace(input: DeleteSpaceInput!): Space!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
-  issueSSOAuthorizationUrl(input: IssueSSOAuthorizationUrlInput!): IssueSSOAuthorizationUrlResult!
+  issueUserSingleSignOnAuthorizationUrl(input: IssueUserSingleSignOnAuthorizationUrlInput!): IssueUserSingleSignOnAuthorizationUrlResult!
   login(input: LoginInput!): User!
   logout: Void
   prepareImageUpload: PrepareImageUploadResult!
-  requestEmailUpdate(input: RequestEmailUpdateInput!): Void
-  requestPasswordReset(input: RequestPasswordResetInput!): Void
+  requestUserEmailUpdate(input: RequestUserEmailUpdateInput!): Void
+  requestUserPasswordReset(input: RequestUserPasswordResetInput!): Void
   resendUserActivationEmail: Void
-  resetPassword(input: ResetPasswordInput!): Void
-  signup(input: SignupInput!): User!
-  unlinkSSO(input: UnlinkSSOInput!): User!
-  updateContentFilteringPreference(input: UpdateContentFilteringPreferenceInput!): User!
-  updateMarketingAgreement(input: UpdateMarketingAgreementInput!): User!
-  updateNotificationPreferences(input: UpdateNotificationPreferencesInput!): Void
-  updatePassword(input: UpdatePasswordInput!): User!
+  resetUserPassword(input: ResetUserPasswordInput!): Void
+  signUp(input: SignUpInput!): User!
+  unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
+  updateUserContentFilterPreference(input: UpdateUserContentFilterPreferenceInput!): User!
+  updateUserMarketingConsent(input: UpdateUserMarketingConsentInput!): User!
+  updateUserNotificationPreference(input: UpdateUserNotificationPreferenceInput!): Void
+  updateUserPassword(input: UpdateUserPasswordInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
-  verifyEmail(input: VerifyEmailInput!): User!
+  verifyUserEmail(input: VerifyUserEmailInput!): User!
+}
+
+enum PreferenceType {
+  FAVORITE
+  MUTE
 }
 
 type PrepareImageUploadResult {
@@ -98,35 +103,35 @@ type Profile {
 
 type Query {
   authLayoutBackgroundImage: Image
-  emailVerification(code: String!): UserEmailVerification!
   me: User
   randomAvatars: [String!]!
   sampleImage: Image!
   sampleImages: [Image!]!
   space(slug: String!): Space!
+  userEmailVerification(code: String!): UserEmailVerification!
 }
 
-input RequestEmailUpdateInput {
+input RequestUserEmailUpdateInput {
   email: String!
 }
 
-input RequestPasswordResetInput {
+input RequestUserPasswordResetInput {
   email: String!
 }
 
-input ResetPasswordInput {
+input ResetUserPasswordInput {
   code: String!
   password: String!
   passwordConfirm: String!
 }
 
-input SignupInput {
+input SignUpInput {
   email: String!
-  isAgreed: Boolean!
-  isMarketingAgreed: Boolean!
+  marketingConsent: Boolean!
   name: String!
   password: String!
   passwordConfirm: String!
+  termsConsent: Boolean!
 }
 
 type Space {
@@ -149,26 +154,31 @@ enum SpaceMemberRole {
   OWNER
 }
 
-input UnlinkSSOInput {
-  provider: UserSSOProvider!
+enum SpaceState {
+  ACTIVE
+  INACTIVE
 }
 
-input UpdateContentFilteringPreferenceInput {
-  action: ContentFilteringAction!
-  category: ContentFilteringCategory!
+input UnlinkUserSingleSignOnInput {
+  provider: UserSingleSignOnProvider!
 }
 
-input UpdateMarketingAgreementInput {
-  isAgreed: Boolean!
+input UpdateUserContentFilterPreferenceInput {
+  action: ContentFilterAction!
+  category: ContentFilterCategory!
 }
 
-input UpdateNotificationPreferencesInput {
+input UpdateUserMarketingConsentInput {
+  consent: Boolean!
+}
+
+input UpdateUserNotificationPreferenceInput {
   category: UserNotificationCategory!
-  isEnabled: Boolean!
+  enabled: Boolean!
   method: UserNotificationMethod!
 }
 
-input UpdatePasswordInput {
+input UpdateUserPasswordInput {
   newPassword: String!
   newPasswordConfirm: String!
   oldPassword: String
@@ -179,16 +189,20 @@ input UpdateUserProfileInput {
 }
 
 type User {
-  contentFilteringPreferences(category: ContentFilteringCategory!): ContentFilteringAction!
+  contentFilterPreference(category: ContentFilterCategory!): UserContentFilterPreference!
   email: String!
   id: ID!
-  marketingAgreement: UserMarketingAgreement
-  notificationPreferences(category: UserNotificationCategory!): UserNotificationPreference!
+  marketingConsent: UserMarketingConsent
+  notificationPreference(category: UserNotificationCategory!): UserNotificationPreference!
   password: UserPassword
   profile: Profile!
+  singleSignOn(provider: UserSingleSignOnProvider!): UserSingleSignOn
   spaces: [Space!]!
-  sso(provider: UserSSOProvider!): UserSSO
   state: UserState!
+}
+
+type UserContentFilterPreference {
+  action: ContentFilterAction!
 }
 
 type UserEmailVerification {
@@ -196,7 +210,13 @@ type UserEmailVerification {
   id: ID!
 }
 
-type UserMarketingAgreement {
+enum UserEmailVerificationKind {
+  USER_ACTIVATION
+  USER_EMAIL_UPDATE
+  USER_PASSWORD_RESET
+}
+
+type UserMarketingConsent {
   createdAt: DateTime!
   id: ID!
 }
@@ -224,22 +244,20 @@ type UserNotificationPreference {
 }
 
 type UserPassword {
-  createdAt: DateTime!
   id: ID!
 }
 
-type UserSSO {
-  email: String!
+type UserSingleSignOn {
   id: ID!
-  provider: UserSSOProvider!
+  providerEmail: String!
 }
 
-enum UserSSOAuthorizationType {
+enum UserSingleSignOnAuthorizationType {
   AUTH
   LINK
 }
 
-enum UserSSOProvider {
+enum UserSingleSignOnProvider {
   GOOGLE
   NAVER
 }
@@ -250,7 +268,7 @@ enum UserState {
   PROVISIONAL
 }
 
-input VerifyEmailInput {
+input VerifyUserEmailInput {
   code: String!
 }
 

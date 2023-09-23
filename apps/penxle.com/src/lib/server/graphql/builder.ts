@@ -7,7 +7,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { GraphQLDateTime, GraphQLJSON, GraphQLVoid } from 'graphql-scalars';
 import { PermissionDeniedError } from '$lib/errors';
 import type PrismaTypes from '@pothos/plugin-prisma/generated';
-import type { AuthContext, Context } from '../context';
+import type { Context, UserContext } from '../context';
 
 // 개발환경에서만 강제로 순환 참조 걸어서 ./schemas/**/* 리로드할 때 HMR이 builder까지 리로드하도록 함
 if (import.meta.hot) {
@@ -16,12 +16,11 @@ if (import.meta.hot) {
 
 export const builder = new SchemaBuilder<{
   AuthContexts: {
-    auth: Context & AuthContext;
+    user: Context & UserContext;
   };
   AuthScopes: {
-    auth: boolean;
     staff: boolean;
-    user: { id: string };
+    user: boolean;
   };
   Context: Context;
   DefaultInputFieldRequiredness: true;
@@ -35,9 +34,8 @@ export const builder = new SchemaBuilder<{
   };
 }>({
   authScopes: (context) => ({
-    auth: !!context.session,
     staff: false,
-    user: ({ id }) => context.session?.userId === id,
+    user: !!context.session,
   }),
   defaultInputFieldRequiredness: true,
   plugins: [PrismaPlugin, ScopeAuthPlugin, SimpleObjectsPlugin, ValidationPlugin],

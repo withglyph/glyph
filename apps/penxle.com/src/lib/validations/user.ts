@@ -15,11 +15,11 @@ export const LoginInputSchema = z.object({
   password,
 });
 
-export const SignupInputSchema = LoginInputSchema.extend({
+export const SignUpInputSchema = LoginInputSchema.extend({
   name,
   passwordConfirm: z.string(),
-  isAgreed: z.boolean().refine((v) => v, '약관에 동의해주세요'),
-  isMarketingAgreed: z.boolean(),
+  termsConsent: z.boolean().refine((v) => v, '약관에 동의해주세요'),
+  marketingConsent: z.boolean(),
 }).refine((v) => v.password === v.passwordConfirm, {
   message: '비밀번호가 일치하지 않아요',
   path: ['passwordConfirm'],
@@ -29,15 +29,15 @@ export const UpdateUserProfileInputSchema = z.object({
   name,
 });
 
-export const RequestPasswordResetInputSchema = z.object({
+export const RequestUserPasswordResetInputSchema = z.object({
   email,
 });
 
-export const RequestEmailUpdateInputSchema = z.object({
+export const RequestUserEmailUpdateInputSchema = z.object({
   email,
 });
 
-export const ResetPasswordInputSchema = z
+export const ResetUserPasswordInputSchema = z
   .object({
     password,
     passwordConfirm: z.string(),
@@ -48,7 +48,7 @@ export const ResetPasswordInputSchema = z
     path: ['passwordConfirm'],
   });
 
-export const UpdatePasswordInputSchema = z
+export const UpdateUserPasswordInputSchema = z
   .object({
     oldPassword: password.optional(),
     newPassword: password,

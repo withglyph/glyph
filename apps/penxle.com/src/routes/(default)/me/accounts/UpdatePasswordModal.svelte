@@ -4,7 +4,7 @@
   import { FormField, PasswordInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
-  import { UpdatePasswordInputSchema } from '$lib/validations';
+  import { UpdateUserPasswordInputSchema } from '$lib/validations';
   import type { MeAccountsPage_UpdatePasswordModal_user } from '$glitch';
 
   export let open = false;
@@ -27,13 +27,13 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation MeAccountPage_UpdatePassword_Mutation($input: UpdatePasswordInput!) {
-        updatePassword(input: $input) {
+      mutation MeAccountsPage_UpdateUserPassword_Mutation($input: UpdateUserPasswordInput!) {
+        updateUserPassword(input: $input) {
           id
         }
       }
     `),
-    schema: UpdatePasswordInputSchema,
+    schema: UpdateUserPasswordInputSchema,
     onSuccess: () => {
       open = false;
       toast.success('비밀번호 변경에 성공했어요.');

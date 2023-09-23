@@ -10,47 +10,47 @@
       me @_required {
         id
 
-        all: notificationPreferences(category: ALL) {
+        all: notificationPreference(category: ALL) {
           email
           website
         }
 
-        comment: notificationPreferences(category: COMMENT) {
+        comment: notificationPreference(category: COMMENT) {
           email
           website
         }
 
-        reply: notificationPreferences(category: REPLY) {
+        reply: notificationPreference(category: REPLY) {
           email
           website
         }
 
-        subscribe: notificationPreferences(category: SUBSCRIBE) {
+        subscribe: notificationPreference(category: SUBSCRIBE) {
           email
           website
         }
 
-        tagEdit: notificationPreferences(category: TAG_EDIT) {
+        tagEdit: notificationPreference(category: TAG_EDIT) {
           email
           website
         }
 
-        trend: notificationPreferences(category: TREND) {
+        trend: notificationPreference(category: TREND) {
           email
           website
         }
 
-        purchase: notificationPreferences(category: PURCHASE) {
+        purchase: notificationPreference(category: PURCHASE) {
           email
           website
         }
 
-        donate: notificationPreferences(category: DONATE) {
+        donate: notificationPreference(category: DONATE) {
           email
           website
         }
 
-        tagWikiEdit: notificationPreferences(category: TAG_WIKI_EDIT) {
+        tagWikiEdit: notificationPreference(category: TAG_WIKI_EDIT) {
           email
           website
         }
@@ -59,8 +59,10 @@
   `);
 
   const updateNotificationPreferences = graphql(`
-    mutation MeNotificationsPage_UpdateNotificationPreferences_Mutation($input: UpdateNotificationPreferencesInput!) {
-      updateNotificationPreferences(input: $input)
+    mutation MeNotificationsPage_UpdateUserNotificationPreference_Mutation(
+      $input: UpdateUserNotificationPreferenceInput!
+    ) {
+      updateUserNotificationPreference(input: $input)
     }
   `);
 </script>
@@ -83,12 +85,12 @@
           try {
             await updateNotificationPreferences({
               category: 'ALL',
-              isEnabled: !($query.me.all.email || $query.me.all.website),
+              enabled: !($query.me.all.email || $query.me.all.website),
               method: 'WEBSITE',
             });
             await updateNotificationPreferences({
               category: 'ALL',
-              isEnabled: !($query.me.all.email || $query.me.all.website),
+              enabled: !($query.me.all.email || $query.me.all.website),
               method: 'EMAIL',
             });
             toast.success('알림 설정이 변경되었어요.');
@@ -104,7 +106,7 @@
             try {
               await updateNotificationPreferences({
                 category: 'ALL',
-                isEnabled: !$query.me.all.website,
+                enabled: !$query.me.all.website,
                 method: 'WEBSITE',
               });
               toast.success('알림 설정이 변경되었어요.');
@@ -119,7 +121,7 @@
             try {
               await updateNotificationPreferences({
                 category: 'ALL',
-                isEnabled: !$query.me.all.email,
+                enabled: !$query.me.all.email,
                 method: 'EMAIL',
               });
               toast.success('알림 설정이 변경되었어요.');

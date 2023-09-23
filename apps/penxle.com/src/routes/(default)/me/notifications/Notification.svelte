@@ -11,10 +11,10 @@
   export let all: { website: boolean; email: boolean };
 
   const updateNotificationPreferences = graphql(`
-    mutation MeNotificationsPage_Notification_UpdateNotificationPreferences_Mutation(
-      $input: UpdateNotificationPreferencesInput!
+    mutation MeNotificationsPage_Notification_UpdateUserNotificationPreference_Mutation(
+      $input: UpdateUserNotificationPreferenceInput!
     ) {
-      updateNotificationPreferences(input: $input)
+      updateUserNotificationPreference(input: $input)
     }
   `);
 
@@ -53,7 +53,7 @@
           try {
             await updateNotificationPreferences({
               category,
-              isEnabled: !website,
+              enabled: !website,
               method: 'WEBSITE',
             });
             toast.success('알림 설정이 변경되었어요.');
@@ -71,7 +71,7 @@
           try {
             await updateNotificationPreferences({
               category,
-              isEnabled: !website,
+              enabled: !website,
               method: 'WEBSITE',
             });
             toast.success('알림 설정이 변경되었어요.');
@@ -92,7 +92,7 @@
           try {
             await updateNotificationPreferences({
               category,
-              isEnabled: !email,
+              enabled: !email,
               method: 'EMAIL',
             });
             toast.success('알림 설정이 변경되었어요.');
@@ -110,7 +110,7 @@
           try {
             await updateNotificationPreferences({
               category,
-              isEnabled: !email,
+              enabled: !email,
               method: 'EMAIL',
             });
             toast.success('알림 설정이 변경되었어요.');

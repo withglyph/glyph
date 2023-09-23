@@ -1,3 +1,4 @@
+import './enums';
 import './image';
 import './playground';
 import './space';

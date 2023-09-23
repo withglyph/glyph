@@ -5,19 +5,12 @@
   import { Button } from '$lib/components';
   import { Checkbox, FormField, PasswordInput, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
-  import { SignupInputSchema } from '$lib/validations';
+  import { SignUpInputSchema } from '$lib/validations';
 
-  let value: HTMLInputElement['value'];
-  let isAgreed: boolean;
-  let isAgreed2: boolean;
-  let allAgreed: boolean;
-
-  $: allAgreed = isAgreed && isAgreed2;
-
-  const { form } = createMutationForm({
+  const { form, data, setFields } = createMutationForm({
     mutation: graphql(`
-      mutation SignupPage_Signup_Mutation($input: SignupInput!) {
-        signup(input: $input) {
+      mutation SignUpPage_SignUp_Mutation($input: SignUpInput!) {
+        signUp(input: $input) {
           id
           email
 
@@ -33,7 +26,8 @@
         }
       }
     `),
-    schema: SignupInputSchema,
+    schema: SignUpInputSchema,
+    initialValues: { name: '' },
     onSuccess: (resp) => {
       mixpanel.identify(resp.id);
       mixpanel.track('user:signup', { method: 'email' });
@@ -46,11 +40,12 @@
     },
   });
 
-  const toggleAll = () => {
-    allAgreed = !allAgreed;
+  $: consentAll = $data.termsConsent && $data.marketingConsent;
 
-    isAgreed = allAgreed;
-    isAgreed2 = allAgreed;
+  const handleConsentAll = (event: Event) => {
+    const { checked } = event.currentTarget as HTMLInputElement;
+    setFields('termsConsent', checked);
+    setFields('marketingConsent', checked);
   };
 </script>
 
@@ -65,8 +60,8 @@
     </FormField>
 
     <FormField name="name" label="닉네임">
-      <TextInput class="w-full font-bold" maxlength={10} placeholder="닉네임 입력" bind:value>
-        <span slot="right-icon">{value ? value.length : 0} / 10</span>
+      <TextInput class="w-full font-bold" maxlength={10} placeholder="닉네임 입력">
+        <span slot="right-icon">{$data.name.length} / 10</span>
       </TextInput>
     </FormField>
 
@@ -80,11 +75,11 @@
   </div>
 
   <section class="my-4 space-y-3">
-    <Checkbox class="font-bold" on:change={toggleAll} bind:checked={allAgreed}>약관 전체 동의</Checkbox>
-    <Checkbox name="isAgreed" class="text-sm" bind:checked={isAgreed}>
+    <Checkbox class="font-bold" checked={consentAll} on:input={handleConsentAll}>약관 전체 동의</Checkbox>
+    <Checkbox name="termsConsent" class="text-sm">
       <Link href="/" underline>이용약관</Link> 및 <Link href="/" underline>개인정보 수집 이용</Link> 동의(필수)
     </Checkbox>
-    <Checkbox name="isMarketingAgreed" class="text-sm" bind:checked={isAgreed2}>마케팅 정보 수집 동의(선택)</Checkbox>
+    <Checkbox name="marketingConsent" class="text-sm">마케팅 정보 수집 동의(선택)</Checkbox>
   </section>
 
   <Button class="w-full" size="xl" type="submit">펜슬 회원가입 하기</Button>

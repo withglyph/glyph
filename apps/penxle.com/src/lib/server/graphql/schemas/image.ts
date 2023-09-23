@@ -66,7 +66,7 @@ builder.queryFields((t) => ({
  */
 
 builder.mutationFields((t) => ({
-  prepareImageUpload: t.withAuth({ auth: true }).field({
+  prepareImageUpload: t.withAuth({ user: true }).field({
     type: PrepareImageUploadResult,
     resolve: async () => {
       const key = aws.createS3ObjectKey('images');
@@ -87,7 +87,7 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  finalizeImageUpload: t.withAuth({ auth: true }).prismaField({
+  finalizeImageUpload: t.withAuth({ user: true }).prismaField({
     type: 'Image',
     args: { input: t.arg({ type: FinalizeImageUploadInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {

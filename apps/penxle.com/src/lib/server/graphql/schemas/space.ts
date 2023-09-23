@@ -49,12 +49,6 @@ builder.prismaObject('SpaceMember', {
 });
 
 /**
- * * Enums
- */
-
-builder.enumType(SpaceMemberRole, { name: 'SpaceMemberRole' });
-
-/**
  * * Inputs
  */
 
@@ -100,7 +94,7 @@ builder.queryFields((t) => ({
  */
 
 builder.mutationFields((t) => ({
-  createSpace: t.withAuth({ auth: true }).prismaField({
+  createSpace: t.withAuth({ user: true }).prismaField({
     type: 'Space',
     args: { input: t.arg({ type: CreateSpaceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
@@ -137,7 +131,7 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  deleteSpace: t.withAuth({ auth: true }).prismaField({
+  deleteSpace: t.withAuth({ user: true }).prismaField({
     type: 'Space',
     args: { input: t.arg({ type: DeleteSpaceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {

@@ -4,9 +4,9 @@
   import { graphql } from '$glitch';
   import { Button } from '$lib/components';
 
-  const verifyEmail = graphql(`
-    mutation UserVerifyEmailPage_VerifyEmail_Mutation($input: VerifyEmailInput!) {
-      verifyEmail(input: $input) {
+  const verifyUserEmail = graphql(`
+    mutation UserVerifyEmailPage_VerifyUserEmail_Mutation($input: VerifyUserEmailInput!) {
+      verifyUserEmail(input: $input) {
         id
       }
     }
@@ -15,7 +15,7 @@
   onMount(async () => {
     const code = $page.url.searchParams.get('code');
     if (code) {
-      await verifyEmail({ code });
+      await verifyUserEmail({ code });
     }
   });
 </script>

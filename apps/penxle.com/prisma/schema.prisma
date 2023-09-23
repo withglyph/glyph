@@ -1,17 +1,16 @@
-generator client {
-  provider = "prisma-client-js"
-  // previewFeatures = ["tracing"]
+datasource db {
+  provider = "postgresql"
+
+  url       = env("PRIVATE_DATABASE_URL")
+  directUrl = env("PRIVATE_DATABASE_DIRECT_URL")
 }
 
 generator pothos {
   provider = "prisma-pothos-types"
 }
 
-datasource db {
-  provider = "postgresql"
-
-  url       = env("PRIVATE_DATABASE_URL")
-  directUrl = env("PRIVATE_DATABASE_DIRECT_URL")
+generator prisma {
+  provider = "prisma-client-js"
 }
 
 model Image {
@@ -33,6 +32,19 @@ model Image {
 
   @@index([id, path, color])
   @@map("images")
+}
+
+model Profile {
+  id        String   @id
+  name      String
+  avatarId  String   @unique @map("avatar_id")
+  avatar    Image    @relation(fields: [avatarId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  spaces SpaceMember[]
+  user   User?
+
+  @@map("profiles")
 }
 
 model Session {
@@ -70,19 +82,6 @@ model SpaceMember {
 
   @@unique([spaceId, userId])
   @@map("space_members")
-}
-
-model Profile {
-  id        String   @id
-  name      String
-  avatarId  String   @unique @map("avatar_id")
-  avatar    Image    @relation(fields: [avatarId], references: [id])
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  spaces SpaceMember[]
-  user   User?
-
-  @@map("profiles")
 }
 
 model Tag {
@@ -141,22 +140,34 @@ model User {
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   // 주로 쓰이는 릴레이션들
-  password                   UserPassword?
-  sessions                   Session[]
-  spaces                     SpaceMember[]
-  ssos                       UserSSO[]
-  tagPreferences             UserTagPreference[]
-  emailVerifications         UserEmailVerification[]
-  marketingAgreement         UserMarketingAgreement?
-  notificationOptOut         UserNotificationOptOut[]
-  contentFilteringPreference UserContentFilteringPreference[]
+  contentFilterPreferences UserContentFilterPreference[]
+  marketingConsent         UserMarketingConsent?
+  notificationPreferences  UserNotificationPreference[]
+  password                 UserPassword?
+  sessions                 Session[]
+  singleSignOns            UserSingleSignOn[]
+  spaces                   SpaceMember[]
+  tagPreferences           UserTagPreference[]
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
+  emailVerifications       UserEmailVerification[]
   uploadedImages           Image[]
 
   @@index([email, state])
   @@map("users")
+}
+
+model UserContentFilterPreference {
+  id        String                @id
+  userId    String                @map("user_id")
+  user      User                  @relation(fields: [userId], references: [id])
+  category  ContentFilterCategory
+  action    ContentFilterAction
+  createdAt DateTime              @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([userId, category])
+  @@map("user_content_filter_preferences")
 }
 
 model UserEmailVerification {
@@ -165,46 +176,33 @@ model UserEmailVerification {
   user      User                      @relation(fields: [userId], references: [id])
   email     String
   code      String                    @unique
-  type      UserEmailVerificationType
+  type      UserEmailVerificationKind
   createdAt DateTime                  @default(now()) @map("created_at") @db.Timestamptz
   expiresAt DateTime                  @map("expires_at") @db.Timestamptz
 
   @@map("user_email_verifications")
 }
 
-model UserMarketingAgreement {
+model UserMarketingConsent {
   id        String   @id
   userId    String   @unique @map("user_id")
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  @@map("user_marketing_agreements")
+  @@map("user_marketing_consents")
 }
 
-model UserNotificationOptOut {
+model UserNotificationPreference {
   id        String                   @id
   userId    String                   @map("user_id")
   user      User                     @relation(fields: [userId], references: [id])
   category  UserNotificationCategory
   method    UserNotificationMethod
+  opted     UserNotificationOpt
   createdAt DateTime                 @default(now()) @map("created_at") @db.Timestamptz
 
   @@unique([userId, category, method])
-  @@map("user_notification_opt_outs")
-}
-
-model UserSSO {
-  id             String          @id
-  userId         String          @map("user_id")
-  user           User            @relation(fields: [userId], references: [id])
-  provider       UserSSOProvider
-  providerEmail  String          @map("provider_email")
-  providerUserId String          @map("provider_user_id")
-  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz
-
-  @@unique([userId, provider])
-  @@unique([provider, providerUserId])
-  @@map("user_ssos")
+  @@map("user_notification_preferences")
 }
 
 model UserPassword {
@@ -215,6 +213,20 @@ model UserPassword {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("user_passwords")
+}
+
+model UserSingleSignOn {
+  id             String                   @id
+  userId         String                   @map("user_id")
+  user           User                     @relation(fields: [userId], references: [id])
+  provider       UserSingleSignOnProvider
+  providerEmail  String                   @map("provider_email")
+  providerUserId String                   @map("provider_user_id")
+  createdAt      DateTime                 @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([userId, provider])
+  @@unique([provider, providerUserId])
+  @@map("user_single_sign_ons")
 }
 
 model UserTagPreference {
@@ -229,19 +241,7 @@ model UserTagPreference {
   @@map("user_tag_preferences")
 }
 
-model UserContentFilteringPreference {
-  id        String                   @id
-  userId    String                   @map("user_id")
-  user      User                     @relation(fields: [userId], references: [id])
-  category  ContentFilteringCategory
-  action    ContentFilteringAction
-  createdAt DateTime                 @default(now()) @map("created_at") @db.Timestamptz
-
-  @@unique([userId, category])
-  @@map("user_content_filtering_preferences")
-}
-
-enum ContentFilteringCategory {
+enum ContentFilterCategory {
   ADULT
   ALL_BUT_ADULT
   VIOLENCE
@@ -255,15 +255,15 @@ enum ContentFilteringCategory {
   GROSSNESS
   OTHER
 
-  @@map("_content_filtering_category")
+  @@map("_content_filter_category")
 }
 
-enum ContentFilteringAction {
+enum ContentFilterAction {
   HIDE
   WARN
   EXPOSE
 
-  @@map("_content_filtering_action")
+  @@map("_content_filter_action")
 }
 
 enum PreferenceType {
@@ -273,13 +273,6 @@ enum PreferenceType {
   @@map("_preference_type")
 }
 
-enum SpaceState {
-  ACTIVE
-  INACTIVE
-
-  @@map("_space_state")
-}
-
 enum SpaceMemberRole {
   OWNER
   MEMBER
@@ -287,12 +280,19 @@ enum SpaceMemberRole {
   @@map("_space_member_role")
 }
 
-enum UserEmailVerificationType {
-  USER_ACTIVATION
-  EMAIL_UPDATE
-  PASSWORD_RESET
+enum SpaceState {
+  ACTIVE
+  INACTIVE
 
-  @@map("_user_email_verification_type")
+  @@map("_space_state")
+}
+
+enum UserEmailVerificationKind {
+  USER_ACTIVATION
+  USER_EMAIL_UPDATE
+  USER_PASSWORD_RESET
+
+  @@map("_user_email_verification_kind")
 }
 
 enum UserNotificationCategory {
@@ -316,11 +316,18 @@ enum UserNotificationMethod {
   @@map("_user_notification_method")
 }
 
-enum UserSSOProvider {
+enum UserNotificationOpt {
+  OPT_IN
+  OPT_OUT
+
+  @@map("_user_notification_opt")
+}
+
+enum UserSingleSignOnProvider {
   GOOGLE
   NAVER
 
-  @@map("_user_sso_provider")
+  @@map("_user_single_sign_on_provider")
 }
 
 enum UserState {

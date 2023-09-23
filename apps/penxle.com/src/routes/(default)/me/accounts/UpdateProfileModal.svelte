@@ -14,7 +14,7 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation MeAccountsPage_UpdateProfileModal_UpdateUserProfile_Mutation($input: UpdateUserProfileInput!) {
+      mutation MeAccountsPage_UpdateUserProfile_Mutation($input: UpdateUserProfileInput!) {
         updateUserProfile(input: $input) {
           id
           name

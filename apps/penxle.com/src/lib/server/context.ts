@@ -10,14 +10,14 @@ type DefaultContext = {
   deviceId: string;
 };
 
-export type AuthContext = {
+export type UserContext = {
   session: {
     id: string;
     userId: string;
   };
 };
 
-export type Context = RequestEvent & App.Locals & DefaultContext & Partial<AuthContext>;
+export type Context = RequestEvent & App.Locals & DefaultContext & Partial<UserContext>;
 
 export const createContext = async (context: RequestEvent): Promise<Context> => {
   const db = await prismaClient.$begin({ isolation: 'RepeatableRead' });

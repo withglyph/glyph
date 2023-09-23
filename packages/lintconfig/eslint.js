@@ -72,6 +72,7 @@ export default [
       'unicorn/catch-error-name': ['error', { name: 'err' }],
       'unicorn/consistent-function-scoping': 'off',
       'unicorn/no-null': 'off',
+      'unicorn/prefer-ternary': ['error', 'only-single-line'],
       'unicorn/prevent-abbreviations': 'off',
       'unicorn/switch-case-braces': 'off',
     },

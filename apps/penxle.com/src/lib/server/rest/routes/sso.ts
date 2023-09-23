@@ -38,7 +38,7 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
 
   const state = JSON.parse(Buffer.from(_state, 'base64').toString()) as State;
 
-  const sso = await db.userSSO.findUnique({
+  const sso = await db.userSingleSignOn.findUnique({
     where: {
       provider_providerUserId: {
         provider: externalUser.provider,
@@ -93,7 +93,7 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
         // 케이스 1-2-2: 콜백이 날아온 계정의 이메일과 같은 이메일의 계정이 없거나, 있더라도 현재 로그인된 계정인 경우
         // -> 현재 로그인한 계정에 콜백이 날아온 계정을 연동함
 
-        await db.userSSO.create({
+        await db.userSingleSignOn.create({
           data: {
             id: createId(),
             userId: context.session.userId,
@@ -170,7 +170,7 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
                 avatarId,
               },
             },
-            ssos: {
+            singleSignOns: {
               create: {
                 id: createId(),
                 provider: externalUser.provider,

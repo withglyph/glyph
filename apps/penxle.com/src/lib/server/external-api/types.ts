@@ -1,7 +1,7 @@
-import type { UserSSOProvider } from '@prisma/client';
+import type { UserSingleSignOnProvider } from '@prisma/client';
 
 export type ExternalUser = {
-  provider: UserSSOProvider;
+  provider: UserSingleSignOnProvider;
   id: string;
   email: string;
   name: string;

@@ -27,9 +27,11 @@
     },
   });
 
-  const issueSSOAuthorizationUrl = graphql(`
-    mutation LoginPage_IssueSSOAuthorizationUrl_Mutation($input: IssueSSOAuthorizationUrlInput!) {
-      issueSSOAuthorizationUrl(input: $input) {
+  const issueUserSingleSignOnAuthorizationUrl = graphql(`
+    mutation LoginPage_IssueUserSingleSignOnAuthorizationUrl_Mutation(
+      $input: IssueUserSingleSignOnAuthorizationUrlInput!
+    ) {
+      issueUserSingleSignOnAuthorizationUrl(input: $input) {
         url
       }
     }
@@ -74,7 +76,7 @@
     class="flex center bg-gray-10 square-13.5 rounded-20"
     type="button"
     on:click={async () => {
-      const { url } = await issueSSOAuthorizationUrl({
+      const { url } = await issueUserSingleSignOnAuthorizationUrl({
         type: 'AUTH',
         provider: 'GOOGLE',
       });
@@ -89,7 +91,7 @@
     class="flex center bg-gray-10 square-13.5 rounded-20"
     type="button"
     on:click={async () => {
-      const { url } = await issueSSOAuthorizationUrl({
+      const { url } = await issueUserSingleSignOnAuthorizationUrl({
         type: 'AUTH',
         provider: 'NAVER',
       });

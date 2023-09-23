@@ -22,19 +22,19 @@
         email
         state
 
-        marketingAgreement {
+        marketingConsent {
           id
           createdAt
         }
 
-        google: sso(provider: GOOGLE) {
+        google: singleSignOn(provider: GOOGLE) {
           id
-          email
+          providerEmail
         }
 
-        naver: sso(provider: NAVER) {
+        naver: singleSignOn(provider: NAVER) {
           id
-          email
+          providerEmail
         }
 
         profile {
@@ -49,20 +49,22 @@
     }
   `);
 
-  const issueSSOAuthorizationUrl = graphql(`
-    mutation MeAccountsPage_IssueSSOAuthorizationUrl_Mutation($input: IssueSSOAuthorizationUrlInput!) {
-      issueSSOAuthorizationUrl(input: $input) {
+  const issueUserSingleSignOnAuthorizationUrl = graphql(`
+    mutation MeAccountsPage_IssueUserSingleSignOnAuthorizationUrl_Mutation(
+      $input: IssueUserSingleSignOnAuthorizationUrlInput!
+    ) {
+      issueUserSingleSignOnAuthorizationUrl(input: $input) {
         url
       }
     }
   `);
 
-  const updateMarketingAgreement = graphql(`
-    mutation MeAccountsPage_UpdateMarketingAgreement_Mutation($input: UpdateMarketingAgreementInput!) {
-      updateMarketingAgreement(input: $input) {
+  const updateUserMarketingConsent = graphql(`
+    mutation MeAccountsPage_UpdateUserMarketingConsent_Mutation($input: UpdateUserMarketingConsentInput!) {
+      updateUserMarketingConsent(input: $input) {
         id
 
-        marketingAgreement {
+        marketingConsent {
           id
           createdAt
         }
@@ -70,16 +72,16 @@
     }
   `);
 
-  const unlinkSSO = graphql(`
-    mutation MeAccountsPage_UnlinkSSO_Mutation($input: UnlinkSSOInput!) {
-      unlinkSSO(input: $input) {
+  const unlinkUserSingleSignOn = graphql(`
+    mutation MeAccountsPage_UnlinkUserSingleSignOn_Mutation($input: UnlinkUserSingleSignOnInput!) {
+      unlinkUserSingleSignOn(input: $input) {
         id
 
-        google: sso(provider: GOOGLE) {
+        google: singleSignOn(provider: GOOGLE) {
           id
         }
 
-        naver: sso(provider: NAVER) {
+        naver: singleSignOn(provider: NAVER) {
           id
         }
       }
@@ -162,7 +164,7 @@
           <h3 class="text-lg font-extrabold mr-2">Google</h3>
           {#if $query.me.google}
             <p class="text-3.75 text-gray-50 break-keep">
-              {$query.me.google.email}
+              {$query.me.google.providerEmail}
             </p>
           {/if}
         </div>
@@ -173,7 +175,7 @@
           size="md"
           variant="outlined"
           on:click={async () => {
-            await unlinkSSO({
+            await unlinkUserSingleSignOn({
               provider: 'GOOGLE',
             });
           }}
@@ -185,7 +187,7 @@
           color="secondary"
           size="md"
           on:click={async () => {
-            const { url } = await issueSSOAuthorizationUrl({
+            const { url } = await issueUserSingleSignOnAuthorizationUrl({
               type: 'LINK',
               provider: 'GOOGLE',
             });
@@ -207,7 +209,7 @@
           <h3 class="text-lg font-extrabold mr-2">Naver</h3>
           {#if $query.me.naver}
             <p class="text-3.75 text-gray-50 break-keep">
-              {$query.me.naver.email}
+              {$query.me.naver.providerEmail}
             </p>
           {/if}
         </div>
@@ -218,7 +220,7 @@
           size="md"
           variant="outlined"
           on:click={async () => {
-            await unlinkSSO({
+            await unlinkUserSingleSignOn({
               provider: 'NAVER',
             });
           }}
@@ -230,7 +232,7 @@
           color="secondary"
           size="md"
           on:click={async () => {
-            const { url } = await issueSSOAuthorizationUrl({
+            const { url } = await issueUserSingleSignOnAuthorizationUrl({
               type: 'LINK',
               provider: 'NAVER',
             });
@@ -248,18 +250,18 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h3 class="text-lg font-extrabold mb-2">마케팅 수신 동의</h3>
-        {#if $query.me.marketingAgreement}
+        {#if $query.me.marketingConsent}
           <p class="text-3.75 text-gray-50 break-keep">
-            {dayjs($query.me.marketingAgreement.createdAt).formatAsDateTime()} 승인됨
+            {dayjs($query.me.marketingConsent.createdAt).formatAsDateTime()} 승인됨
           </p>
         {/if}
       </div>
       <Switch
-        checked={!!$query.me.marketingAgreement}
+        checked={!!$query.me.marketingConsent}
         on:change={async () => {
-          const isAgreed = !$query.me.marketingAgreement;
-          await updateMarketingAgreement({ isAgreed });
-          toast.success(`마케팅 수신 동의가 ${isAgreed ? '승인' : '거부'} 처리되었어요`);
+          const consent = !$query.me.marketingConsent;
+          await updateUserMarketingConsent({ consent });
+          toast.success(`마케팅 수신 동의가 ${consent ? '승인' : '거부'} 처리되었어요`);
         }}
       />
     </div>

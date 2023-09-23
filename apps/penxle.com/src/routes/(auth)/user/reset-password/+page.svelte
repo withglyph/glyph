@@ -6,7 +6,7 @@
   import { Button, Modal } from '$lib/components';
   import { FormField, PasswordInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
-  import { ResetPasswordInputSchema } from '$lib/validations';
+  import { ResetUserPasswordInputSchema } from '$lib/validations';
 
   let open = false;
   let isExpired = false;
@@ -26,11 +26,11 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation UserResetPasswordPage_ResetPassword_Mutation($input: ResetPasswordInput!) {
-        resetPassword(input: $input)
+      mutation UserResetPasswordPage_ResetUserPassword_Mutation($input: ResetUserPasswordInput!) {
+        resetUserPassword(input: $input)
       }
     `),
-    schema: ResetPasswordInputSchema,
+    schema: ResetUserPasswordInputSchema,
     onSuccess: () => {
       open = true;
     },

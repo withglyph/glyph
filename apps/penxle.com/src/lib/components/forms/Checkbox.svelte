@@ -1,14 +1,11 @@
 <script lang="ts">
   import { clsx } from 'clsx';
   import { getFormContext } from '$lib/form';
-  import type { HTMLInputAttributes } from 'svelte/elements';
 
-  export let name: HTMLInputAttributes['name'] = undefined;
-  export let checked: HTMLInputAttributes['checked'] = false;
-  let _class: HTMLInputAttributes['class'] = undefined;
+  export let name: string | undefined = undefined;
+  export let checked = false;
+  let _class: string | undefined = undefined;
   export { _class as class };
-
-  type $$Props = HTMLInputAttributes;
 
   const { field } = getFormContext();
 
