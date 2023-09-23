@@ -17,7 +17,5 @@ export const getWorkspaceDir = async () => {
 };
 
 export const getLambdaSpec = async (projectDir: string) => {
-  return (await import(path.resolve(projectDir, 'lambda.config.js')).then(
-    (m) => m.default,
-  )) as LambdaSpec;
+  return (await import(path.resolve(projectDir, 'lambda.config.js')).then((m) => m.default)) as LambdaSpec;
 };

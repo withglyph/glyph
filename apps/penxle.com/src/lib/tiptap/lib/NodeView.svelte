@@ -6,11 +6,6 @@
   export let as: keyof HTMLElementTagNameMap = 'div';
 </script>
 
-<svelte:element
-  this={as}
-  class={clsx('font-sans', _class)}
-  data-node-view
-  {...$$restProps}
->
+<svelte:element this={as} class={clsx('font-sans', _class)} data-node-view {...$$restProps}>
   <slot />
 </svelte:element>

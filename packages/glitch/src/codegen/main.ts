@@ -38,9 +38,7 @@ export const generateMainTypes = (): AST.Program => {
 };
 
 export const generateMain = (): AST.Program => {
-  const program = AST.b.program([
-    AST.b.exportAllDeclaration(AST.b.stringLiteral('@penxle/glitch/runtime')),
-  ]);
+  const program = AST.b.program([AST.b.exportAllDeclaration(AST.b.stringLiteral('@penxle/glitch/runtime'))]);
 
   return program;
 };

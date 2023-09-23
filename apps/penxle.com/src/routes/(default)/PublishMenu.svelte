@@ -69,11 +69,7 @@
     use:portal
   />
 
-  <div
-    bind:this={menuEl}
-    class="absolute z-50 w-80 flex flex-col border rounded bg-white py-2 shadow"
-    use:portal
-  >
+  <div bind:this={menuEl} class="absolute z-50 w-80 flex flex-col border rounded bg-white py-2 shadow" use:portal>
     <button
       class="group flex items-center gap-4 px-4 py-2 hover:bg-gray-10"
       tabindex="-1"
@@ -84,9 +80,7 @@
         openPublish = true;
       }}
     >
-      <div
-        class="square-12 flex center rounded-xl bg-gray-10 group-hover:bg-gray-20"
-      >
+      <div class="square-12 flex center rounded-xl bg-gray-10 group-hover:bg-gray-20">
         <span class="i-lc-wrap-text square-6 text-gray-50" />
       </div>
       <div class="flex flex-col">
@@ -105,16 +99,12 @@
         openPublish = true;
       }}
     >
-      <div
-        class="square-12 flex center rounded-xl bg-gray-10 group-hover:bg-gray-20"
-      >
+      <div class="square-12 flex center rounded-xl bg-gray-10 group-hover:bg-gray-20">
         <span class="i-lc-image square-6 text-gray-50" />
       </div>
       <div class="flex flex-col">
         <div class="font-bold">그림</div>
-        <div class="text-sm text-gray-50">
-          새로운 그림을 스페이스에 업로드해요.
-        </div>
+        <div class="text-sm text-gray-50">새로운 그림을 스페이스에 업로드해요.</div>
       </div>
     </button>
 
@@ -129,9 +119,7 @@
         openCreateSpace = true;
       }}
     >
-      <div
-        class="square-12 flex center rounded-xl bg-gray-10 group-hover:bg-gray-20"
-      >
+      <div class="square-12 flex center rounded-xl bg-gray-10 group-hover:bg-gray-20">
         <span class="i-lc-box square-6 text-gray-50" />
       </div>
       <div class="flex flex-col">

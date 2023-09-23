@@ -23,12 +23,8 @@
 </script>
 
 <Modal size="md" bind:open>
-  <svelte:fragment slot="title">
-    탈퇴를 진행하실 수 있도록 사용하고 계신 비밀번호를 입력해 주세요
-  </svelte:fragment>
-  <svelte:fragment slot="subtitle">
-    모든 데이터가 삭제되고 복구할 수 없어요
-  </svelte:fragment>
+  <svelte:fragment slot="title">탈퇴를 진행하실 수 있도록 사용하고 계신 비밀번호를 입력해 주세요</svelte:fragment>
+  <svelte:fragment slot="subtitle">모든 데이터가 삭제되고 복구할 수 없어요</svelte:fragment>
 
   <form class="w-full" use:form>
     <div>

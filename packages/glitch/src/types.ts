@@ -12,9 +12,7 @@ export type ValidFragmentDocumentNode = {
   definitions: [graphql.FragmentDefinitionNode & { name: graphql.NameNode }];
 };
 
-export type ValidDocumentNode =
-  | ValidOperationDocumentNode
-  | ValidFragmentDocumentNode;
+export type ValidDocumentNode = ValidOperationDocumentNode | ValidFragmentDocumentNode;
 
 type OperationArtifact = {
   kind: 'query' | 'mutation' | 'subscription';

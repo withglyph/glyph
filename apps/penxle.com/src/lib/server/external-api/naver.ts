@@ -1,13 +1,7 @@
-import {
-  PRIVATE_NAVER_CLIENT_ID,
-  PRIVATE_NAVER_CLIENT_SECRET,
-} from '$env/static/private';
+import { PRIVATE_NAVER_CLIENT_ID, PRIVATE_NAVER_CLIENT_SECRET } from '$env/static/private';
 import type { ExternalUser } from './types';
 
-export const generateAuthorizationUrl = (
-  context: { url: URL },
-  type: string,
-) => {
+export const generateAuthorizationUrl = (context: { url: URL }, type: string) => {
   return (
     `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${PRIVATE_NAVER_CLIENT_ID}&` +
     `redirect_uri=${encodeURIComponent(context.url.origin)}/api/sso/naver&` +

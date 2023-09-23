@@ -31,9 +31,7 @@
   `);
 
   const finalizeImageUpload = graphql(`
-    mutation SpacePublishArtworkPage_PublishButton_FinalizeImageUpload_Mutation(
-      $input: FinalizeImageUploadInput!
-    ) {
+    mutation SpacePublishArtworkPage_PublishButton_FinalizeImageUpload_Mutation($input: FinalizeImageUploadInput!) {
       finalizeImageUpload(input: $input) {
         id
       }
@@ -56,9 +54,7 @@
 
   const doPublish = async () => {
     await loading.track(async () => {
-      const images = await Promise.all(
-        artworks.map(async (v) => doUpload(v.file)),
-      );
+      const images = await Promise.all(artworks.map(async (v) => doUpload(v.file)));
       console.log(images.map((v) => v.id));
     });
   };

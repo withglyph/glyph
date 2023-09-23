@@ -40,12 +40,9 @@ export const HardBreak = Node.create({
             return false;
           }
 
-          const currentMarks =
-            state.storedMarks ?? state.selection.$from.marks();
+          const currentMarks = state.storedMarks ?? state.selection.$from.marks();
 
-          const marks = currentMarks.filter((mark) =>
-            editor.extensionManager.splittableMarks.includes(mark.type.name),
-          );
+          const marks = currentMarks.filter((mark) => editor.extensionManager.splittableMarks.includes(mark.type.name));
 
           return chain()
             .insertContent({ type: this.name })

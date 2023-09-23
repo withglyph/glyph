@@ -2,13 +2,9 @@ import * as jose from 'jose';
 import * as R from 'radash';
 import { PRIVATE_JWK } from '$env/static/private';
 
-const jwk = JSON.parse(
-  Buffer.from(PRIVATE_JWK, 'base64').toString(),
-) as jose.JWK;
+const jwk = JSON.parse(Buffer.from(PRIVATE_JWK, 'base64').toString()) as jose.JWK;
 
-const loadPublicKey = R.memo(async () =>
-  jose.importJWK({ ...jwk, d: undefined }),
-);
+const loadPublicKey = R.memo(async () => jose.importJWK({ ...jwk, d: undefined }));
 const loadPrivateKey = R.memo(async () => jose.importJWK(jwk));
 
 export const createAccessToken = async (sessionId: string) => {

@@ -15,9 +15,7 @@ export const transformLoadPlugin = (context: GlitchContext): Plugin => {
       }
 
       const queries = context.artifacts.filter(
-        (artifact) =>
-          artifact.kind === 'query' &&
-          path.dirname(artifact.filePath) === path.dirname(id),
+        (artifact) => artifact.kind === 'query' && path.dirname(artifact.filePath) === path.dirname(id),
       );
 
       if (queries.length === 0) {
@@ -30,10 +28,7 @@ export const transformLoadPlugin = (context: GlitchContext): Plugin => {
       } catch {
         return;
       }
-      const exportedVariables: Record<
-        string,
-        recast.types.namedTypes.VariableDeclarator
-      > = {};
+      const exportedVariables: Record<string, recast.types.namedTypes.VariableDeclarator> = {};
 
       AST.walk(program, {
         visitExportNamedDeclaration(p) {
@@ -41,10 +36,7 @@ export const transformLoadPlugin = (context: GlitchContext): Plugin => {
 
           if (node.declaration?.type === 'VariableDeclaration') {
             for (const declaration of node.declaration.declarations) {
-              if (
-                declaration.type === 'VariableDeclarator' &&
-                declaration.id.type === 'Identifier'
-              ) {
+              if (declaration.type === 'VariableDeclarator' && declaration.id.type === 'Identifier') {
                 exportedVariables[declaration.id.name] = declaration;
               }
             }
@@ -80,18 +72,13 @@ export const transformLoadPlugin = (context: GlitchContext): Plugin => {
                 AST.b.variableDeclarator(
                   AST.b.identifier(`__glitch_${query.name}`),
                   AST.b.awaitExpression(
-                    AST.b.callExpression(
-                      AST.b.identifier('__glitch.createQueryStore'),
-                      [
-                        AST.b.identifier('event'),
-                        AST.b.identifier(
-                          `__glitch_gql.DocumentNode_${query.name}`,
-                        ),
-                        `_${query.name}Variables` in exportedVariables
-                          ? AST.b.identifier(`_${query.name}Variables`)
-                          : AST.b.identifier('undefined'),
-                      ],
-                    ),
+                    AST.b.callExpression(AST.b.identifier('__glitch.createQueryStore'), [
+                      AST.b.identifier('event'),
+                      AST.b.identifier(`__glitch_gql.DocumentNode_${query.name}`),
+                      `_${query.name}Variables` in exportedVariables
+                        ? AST.b.identifier(`_${query.name}Variables`)
+                        : AST.b.identifier('undefined'),
+                    ]),
                   ),
                 ),
               ]),
@@ -119,9 +106,7 @@ export const transformLoadPlugin = (context: GlitchContext): Plugin => {
                   loaders.map((loader) =>
                     AST.b.spreadProperty(
                       AST.b.awaitExpression(
-                        AST.b.callExpression(AST.b.identifier(loader), [
-                          AST.b.identifier('event'),
-                        ]),
+                        AST.b.callExpression(AST.b.identifier(loader), [AST.b.identifier('event')]),
                       ),
                     ),
                   ),

@@ -1,9 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { json } from '@sveltejs/kit';
-import {
-  PRIVATE_SUPABASE_KEY,
-  PRIVATE_SUPABASE_URL,
-} from '$env/static/private';
+import { PRIVATE_SUPABASE_KEY, PRIVATE_SUPABASE_URL } from '$env/static/private';
 import type { RequestHandler } from './$types';
 
 const supabase = createClient(PRIVATE_SUPABASE_URL, PRIVATE_SUPABASE_KEY, {
@@ -18,9 +15,7 @@ export const POST = (async ({ request }) => {
     return json({ success: false });
   }
 
-  await supabase
-    .from('waitlists')
-    .insert({ phone_number: phoneNumber.replaceAll('-', '') });
+  await supabase.from('waitlists').insert({ phone_number: phoneNumber.replaceAll('-', '') });
 
   return json({ success: true });
 }) satisfies RequestHandler;

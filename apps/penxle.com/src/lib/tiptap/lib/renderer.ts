@@ -17,10 +17,7 @@ export type NodeViewProps = TiptapNodeViewProps & {
 type NodeViewComponent = SvelteComponent<NodeViewProps>;
 export type NodeViewComponentType = ComponentType<NodeViewComponent>;
 
-class SvelteNodeView
-  extends NodeView<NodeViewComponentType>
-  implements ProseMirrorNodeView
-{
+class SvelteNodeView extends NodeView<NodeViewComponentType> implements ProseMirrorNodeView {
   #element: HTMLElement;
   #contentElement: HTMLElement | null = null;
   #component: NodeViewComponent;
@@ -44,8 +41,7 @@ class SvelteNodeView
         selected: false,
         extension: this.extension,
         getPos: () => this.getPos() as number,
-        updateAttributes: (attributes = {}) =>
-          this.updateAttributes(attributes),
+        updateAttributes: (attributes = {}) => this.updateAttributes(attributes),
         deleteNode: () => this.deleteNode(),
 
         onDragStart: (event: DragEvent) => this.onDragStart(event),
@@ -57,9 +53,7 @@ class SvelteNodeView
     }
 
     if (!this.node.isLeaf) {
-      const contentElement = this.#element.querySelector(
-        '[data-node-view-content-editable]',
-      );
+      const contentElement = this.#element.querySelector('[data-node-view-content-editable]');
       if (!contentElement) {
         throw new Error('<NodeViewContentEditable /> not found');
       }

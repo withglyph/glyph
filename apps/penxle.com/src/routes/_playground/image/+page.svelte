@@ -18,7 +18,5 @@
 <div class="flex flex-col gap-4 grow center">
   <Image class="w-1/4 aspect-1/1 rounded-xl" $image={$query.sampleImage} />
 
-  <Button color="primary" size="md" on:click={() => query.refetch()}>
-    refetch
-  </Button>
+  <Button color="primary" size="md" on:click={() => query.refetch()}>refetch</Button>
 </div>

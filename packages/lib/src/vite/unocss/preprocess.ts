@@ -11,9 +11,7 @@ import type { PreprocessorGroup } from 'svelte/compiler';
 import type { TemplateNode } from 'svelte/types/compiler/interfaces';
 
 export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
-  const unoPromise = uno
-    ? new Promise<UnoGenerator>((resolve) => resolve(uno))
-    : _loadUno();
+  const unoPromise = uno ? new Promise<UnoGenerator>((resolve) => resolve(uno)) : _loadUno();
 
   return {
     name: '@penxle/lib/unocss',
@@ -29,11 +27,7 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
 
       const walk = (node: TemplateNode) => {
         traverse(node, ({ value: node }: { value?: TemplateNode }) => {
-          if (
-            node?.value &&
-            node.type === 'Attribute' &&
-            node.name === 'class'
-          ) {
+          if (node?.value && node.type === 'Attribute' && node.name === 'class') {
             for (const value of node.value as (TemplateNode | undefined)[]) {
               if (value) {
                 walkValue(value);
@@ -117,10 +111,7 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
         return;
       }
 
-      uno.config.shortcuts = [
-        ...uno.config.shortcuts,
-        ...Object.entries(shortcutMap),
-      ];
+      uno.config.shortcuts = [...uno.config.shortcuts, ...Object.entries(shortcutMap)];
 
       const { css } = await uno.generate(Object.keys(shortcutMap), {
         preflights: false,

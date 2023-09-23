@@ -12,9 +12,7 @@ export const defineConfig = (config: UserConfig) => {
       transformer: 'lightningcss',
       lightningcss: {
         drafts: { nesting: true },
-        targets: browserslistToTargets(
-          browserslist('> 0.25%, last 2 versions, not dead'),
-        ),
+        targets: browserslistToTargets(browserslist('> 0.25%, last 2 versions, not dead')),
       },
     },
     ...config,

@@ -3,12 +3,7 @@
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
-  import {
-    Checkbox,
-    FormField,
-    PasswordInput,
-    TextInput,
-  } from '$lib/components/forms';
+  import { Checkbox, FormField, PasswordInput, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { SignupInputSchema } from '$lib/validations';
 
@@ -70,12 +65,7 @@
     </FormField>
 
     <FormField name="name" label="닉네임">
-      <TextInput
-        class="w-full font-bold"
-        maxlength={10}
-        placeholder="닉네임 입력"
-        bind:value
-      >
+      <TextInput class="w-full font-bold" maxlength={10} placeholder="닉네임 입력" bind:value>
         <span slot="right-icon">{value ? value.length : 0} / 10</span>
       </TextInput>
     </FormField>
@@ -85,25 +75,16 @@
     </FormField>
 
     <FormField name="passwordConfirm" label="비밀번호 확인">
-      <PasswordInput
-        class="w-full font-bold"
-        placeholder="비밀번호 확인 입력"
-      />
+      <PasswordInput class="w-full font-bold" placeholder="비밀번호 확인 입력" />
     </FormField>
   </div>
 
   <section class="my-4 space-y-3">
-    <Checkbox class="font-bold" on:change={toggleAll} bind:checked={allAgreed}>
-      약관 전체 동의
-    </Checkbox>
+    <Checkbox class="font-bold" on:change={toggleAll} bind:checked={allAgreed}>약관 전체 동의</Checkbox>
     <Checkbox name="isAgreed" class="text-sm" bind:checked={isAgreed}>
-      <Link href="/" underline>이용약관</Link> 및 <Link href="/" underline>
-        개인정보 수집 이용
-      </Link> 동의(필수)
+      <Link href="/" underline>이용약관</Link> 및 <Link href="/" underline>개인정보 수집 이용</Link> 동의(필수)
     </Checkbox>
-    <Checkbox name="isMarketingAgreed" class="text-sm" bind:checked={isAgreed2}>
-      마케팅 정보 수집 동의(선택)
-    </Checkbox>
+    <Checkbox name="isMarketingAgreed" class="text-sm" bind:checked={isAgreed2}>마케팅 정보 수집 동의(선택)</Checkbox>
   </section>
 
   <Button class="w-full" size="xl" type="submit">펜슬 회원가입 하기</Button>

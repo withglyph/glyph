@@ -51,16 +51,7 @@ export default [
         {
           groups: [
             ['^\\u0000'],
-            [
-              '^node:',
-              '^@?\\w',
-              '^',
-              '^\\.',
-              '^node:.*\\u0000$',
-              '^@?\\w.*\\u0000$',
-              '\\u0000$',
-              '^\\..*\\u0000$',
-            ],
+            ['^node:', '^@?\\w', '^', '^\\.', '^node:.*\\u0000$', '^@?\\w.*\\u0000$', '\\u0000$', '^\\..*\\u0000$'],
           ],
         },
       ],
@@ -106,14 +97,8 @@ export default [
       },
     },
     rules: {
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { varsIgnorePattern: '^\\$\\$(Props|Events|Slots)$' },
-      ],
-      'unicorn/filename-case': [
-        'error',
-        { cases: { kebabCase: true, pascalCase: true } },
-      ],
+      '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^\\$\\$(Props|Events|Slots)$' }],
+      'unicorn/filename-case': ['error', { cases: { kebabCase: true, pascalCase: true } }],
       'unicorn/no-useless-undefined': 'off',
     },
   },

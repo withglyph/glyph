@@ -10,10 +10,7 @@ type Parameter = {
   threshold?: number;
 };
 
-export const intersectionObserver: Action<HTMLElement, Parameter> = (
-  element,
-  param,
-) => {
+export const intersectionObserver: Action<HTMLElement, Parameter> = (element, param) => {
   const { handler, once } = param;
 
   const observer = new IntersectionObserver((entries) => {

@@ -29,8 +29,7 @@
     translation = { ...artwork.thumbnail };
   }
 
-  const transform = (t: Translation) =>
-    `translate(${t.translateX * 100}%, ${t.translateY * 100}%)`;
+  const transform = (t: Translation) => `translate(${t.translateX * 100}%, ${t.translateY * 100}%)`;
 
   const move = ({ clientX, clientY }: Point) => {
     if (!origin || !imgEl || !targetEl) {
@@ -101,10 +100,7 @@
 >
   <img
     style:transform={transform(artwork.thumbnail)}
-    class={clsx(
-      'pointer-events-none',
-      naturalWidth > naturalHeight ? 'h-full max-w-none' : 'w-full max-h-none',
-    )}
+    class={clsx('pointer-events-none', naturalWidth > naturalHeight ? 'h-full max-w-none' : 'w-full max-h-none')}
     alt=""
     {src}
     bind:naturalWidth
@@ -121,9 +117,7 @@
         style:transform={transform(translation)}
         class={clsx(
           'select-none cursor-move',
-          naturalWidth > naturalHeight
-            ? 'h-full max-w-none'
-            : 'w-full max-h-none',
+          naturalWidth > naturalHeight ? 'h-full max-w-none' : 'w-full max-h-none',
         )}
         alt=""
         role="presentation"

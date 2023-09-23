@@ -10,11 +10,7 @@
 </script>
 
 <a
-  class={clsx(
-    underline && 'hover:underline underline-offset-2',
-    colored && 'text-gray-80',
-    _class,
-  )}
+  class={clsx(underline && 'hover:underline underline-offset-2', colored && 'text-gray-80', _class)}
   {href}
   {...external && {
     target: '_blank',

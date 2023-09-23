@@ -2,6 +2,7 @@
 // eslint-disable-next-line import/no-default-export
 export default {
   htmlWhitespaceSensitivity: 'ignore',
+  printWidth: 120,
   singleQuote: true,
   quoteProps: 'consistent',
 

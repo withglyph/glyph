@@ -50,20 +50,12 @@
       filterUnits="userSpaceOnUse"
     >
       <feFlood flood-opacity="0" result="BackgroundImageFix" />
-      <feColorMatrix
-        in="SourceAlpha"
-        result="hardAlpha"
-        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-      />
+      <feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
       <feOffset dy="5.68" />
       <feComposite in2="hardAlpha" operator="out" />
       <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
       <feBlend in2="BackgroundImageFix" result="effect1_dropShadow_151_2539" />
-      <feBlend
-        in="SourceGraphic"
-        in2="effect1_dropShadow_151_2539"
-        result="shape"
-      />
+      <feBlend in="SourceGraphic" in2="effect1_dropShadow_151_2539" result="shape" />
     </filter>
   </defs>
 </svg>

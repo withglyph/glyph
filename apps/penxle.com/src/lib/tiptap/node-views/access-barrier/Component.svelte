@@ -17,9 +17,7 @@
   <span class="i-lc-gift square-8" />
   <div class="flex grow flex-col">
     <div class="font-bold">결제 상자</div>
-    <div class="text-sm text-gray-50">
-      이 상자 아래로는 결제를 해야 읽을 수 있어요.
-    </div>
+    <div class="text-sm text-gray-50">이 상자 아래로는 결제를 해야 읽을 수 있어요.</div>
   </div>
   <span class="i-lc-grip-vertical square-6 text-gray-20" />
   <button
@@ -27,16 +25,12 @@
     type="button"
     on:click={() => (open = true)}
   >
-    <span
-      class="i-lc-x square-6 text-gray-20 transition duration-300 group-hover:text-gray-30"
-    />
+    <span class="i-lc-x square-6 text-gray-20 transition duration-300 group-hover:text-gray-30" />
   </button>
 </NodeView>
 
 <Modal bind:open>
-  <svelte:fragment slot="title">
-    정말 결제상자를 삭제하시겠어요?
-  </svelte:fragment>
+  <svelte:fragment slot="title">정말 결제상자를 삭제하시겠어요?</svelte:fragment>
 
   <p>
     결제상자의 위치를 바꾸고 싶다면 드래그해서 옮길 수 있어요.
@@ -45,9 +39,7 @@
   </p>
 
   <div slot="action" class="flex gap-2">
-    <Button color="secondary" size="md" on:click={() => (open = false)}>
-      취소
-    </Button>
+    <Button color="secondary" size="md" on:click={() => (open = false)}>취소</Button>
     <Button
       size="md"
       on:click={() => {

@@ -3,11 +3,7 @@ import path from 'node:path';
 import * as AST from '../ast';
 import type { GlitchContext } from '../types';
 
-export const writeCodegenFile = async (
-  context: GlitchContext,
-  filePath: string,
-  program: AST.Program | string,
-) => {
+export const writeCodegenFile = async (context: GlitchContext, filePath: string, program: AST.Program | string) => {
   const code = typeof program === 'string' ? program : AST.print(program).code;
 
   if (code !== '') {

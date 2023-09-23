@@ -25,9 +25,7 @@
   );
 
   const deleteSpace = graphql(`
-    mutation SpaceDashboardPage_DeleteSpaceModal_DeleteSpace_Mutation(
-      $input: DeleteSpaceInput!
-    ) {
+    mutation SpaceDashboardPage_DeleteSpaceModal_DeleteSpace_Mutation($input: DeleteSpaceInput!) {
       deleteSpace(input: $input) {
         id
       }
@@ -43,9 +41,7 @@
   <br />
   스페이스를 삭제하면 스페이스에 게시되어 있던 모든 컨텐츠와 설정도 같이 삭제돼요.
 
-  <div
-    class="mt-4 flex items-center gap-4 border border-red-50 rounded-lg bg-red-10 px-4 py-2 text-sm text-red-50"
-  >
+  <div class="mt-4 flex items-center gap-4 border border-red-50 rounded-lg bg-red-10 px-4 py-2 text-sm text-red-50">
     <span class="i-lc-alert-triangle" />
     <div>
       한번 삭제된 스페이스는 복구할 수 없어요.

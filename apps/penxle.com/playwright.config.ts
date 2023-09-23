@@ -14,10 +14,7 @@ export default defineConfig({
 
   reporter: process.env.CI
     ? [['dot'], ['github']]
-    : [
-        ['list'],
-        ['html', { outputFolder: './node_modules/.cache/playwright/report' }],
-      ],
+    : [['list'], ['html', { outputFolder: './node_modules/.cache/playwright/report' }]],
   outputDir: './node_modules/.cache/playwright/output',
 
   use: {

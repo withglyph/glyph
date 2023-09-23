@@ -43,13 +43,7 @@
 </script>
 
 <div bind:this={targetEl} tabindex="-1">
-  <ToolbarButton
-    {name}
-    class={_class}
-    {active}
-    {enabled}
-    on:click={() => (open = true)}
-  />
+  <ToolbarButton {name} class={_class} {active} {enabled} on:click={() => (open = true)} />
 </div>
 
 {#if open}
@@ -61,26 +55,15 @@
     on:keypress={null}
     use:portal
   />
-  <div
-    bind:this={menuEl}
-    class="absolute z-50 w-64 flex flex-col border rounded bg-white py-2 shadow"
-    use:portal
-  >
+  <div bind:this={menuEl} class="absolute z-50 w-64 flex flex-col border rounded bg-white py-2 shadow" use:portal>
     <ColorPaletteButton
       class="bg-brand-50"
-      active={editor?.getAttributes('text-color')?.['data-text-color'] ===
-        'text-brand-50'}
-      enabled={editor
-        ?.can()
-        .setTextColor({ 'data-text-color': 'text-brand-50' })}
+      active={editor?.getAttributes('text-color')?.['data-text-color'] === 'text-brand-50'}
+      enabled={editor?.can().setTextColor({ 'data-text-color': 'text-brand-50' })}
       on:click={() => {
         open = false;
 
-        return editor
-          ?.chain()
-          .focus()
-          .setTextColor({ 'data-text-color': 'text-brand-50' })
-          .run();
+        return editor?.chain().focus().setTextColor({ 'data-text-color': 'text-brand-50' }).run();
       }}
     />
 

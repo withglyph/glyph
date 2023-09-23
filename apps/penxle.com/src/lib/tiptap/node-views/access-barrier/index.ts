@@ -49,11 +49,7 @@ export const AccessBarrier = createNodeView(Component, {
             // 있었는데요 없었습니다 (access_barrier 삭제됨)
             // 컴포넌트 핸들러 통해서 직접 삭제하는거 아님
             // history 플러그인 통해서 undo/redo 하는거 아님
-            if (
-              r.deleted &&
-              !child.node.attrs.deleting &&
-              !tr.getMeta('history$')
-            ) {
+            if (r.deleted && !child.node.attrs.deleting && !tr.getMeta('history$')) {
               // 같은 위치에 재생성함
               tr.insert(r.pos, this.type.create());
             }

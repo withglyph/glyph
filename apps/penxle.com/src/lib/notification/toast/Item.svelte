@@ -28,10 +28,7 @@
       toast.type === 'error' && 'bg-red-50',
     )}
   >
-    <div
-      style:transform={`translateX(${$progress}%)`}
-      class="absolute inset-0 bg-black/15"
-    />
+    <div style:transform={`translateX(${$progress}%)`} class="absolute inset-0 bg-black/15" />
 
     <span
       class={clsx(
@@ -56,12 +53,7 @@
         {#if toast.title}
           <span class="text-xs font-bold line-clamp-1">{toast.title}</span>
         {/if}
-        <span
-          class={clsx(
-            'line-clamp-1',
-            toast.title ? 'text-xs font-semibold' : 'text-sm font-bold',
-          )}
-        >
+        <span class={clsx('line-clamp-1', toast.title ? 'text-xs font-semibold' : 'text-sm font-bold')}>
           {toast.message}
         </span>
       </div>

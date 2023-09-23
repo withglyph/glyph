@@ -18,41 +18,34 @@ const lambdaCachePolicy = new aws.cloudfront.CachePolicy('lambda', {
   },
 });
 
-const lambdaOriginRequestPolicy = new aws.cloudfront.OriginRequestPolicy(
-  'lambda',
-  {
-    name: 'LambdaOrigin',
-    comment: 'Origin request policy for Lambda origins',
+const lambdaOriginRequestPolicy = new aws.cloudfront.OriginRequestPolicy('lambda', {
+  name: 'LambdaOrigin',
+  comment: 'Origin request policy for Lambda origins',
 
-    cookiesConfig: { cookieBehavior: 'all' },
-    headersConfig: {
-      headerBehavior: 'allExcept',
-      headers: { items: ['Host'] },
-    },
-    queryStringsConfig: { queryStringBehavior: 'all' },
+  cookiesConfig: { cookieBehavior: 'all' },
+  headersConfig: {
+    headerBehavior: 'allExcept',
+    headers: { items: ['Host'] },
   },
-);
+  queryStringsConfig: { queryStringBehavior: 'all' },
+});
 
-const lambdaResponseHeadersPolicy = new aws.cloudfront.ResponseHeadersPolicy(
-  'lambda',
-  {
-    name: 'LambdaOrigin',
-    comment: 'Response headers policy for Lambda origins',
+const lambdaResponseHeadersPolicy = new aws.cloudfront.ResponseHeadersPolicy('lambda', {
+  name: 'LambdaOrigin',
+  comment: 'Response headers policy for Lambda origins',
 
-    securityHeadersConfig: {
-      strictTransportSecurity: {
-        override: true,
-        accessControlMaxAgeSec: 31_536_000,
-        includeSubdomains: true,
-        preload: true,
-      },
+  securityHeadersConfig: {
+    strictTransportSecurity: {
+      override: true,
+      accessControlMaxAgeSec: 31_536_000,
+      includeSubdomains: true,
+      preload: true,
     },
   },
-);
+});
 
 export const outputs = {
   AWS_CLOUDFRONT_LAMBDA_CACHE_POLICY_ID: lambdaCachePolicy.id,
   AWS_CLOUDFRONT_LAMBDA_ORIGIN_REQUEST_POLICY_ID: lambdaOriginRequestPolicy.id,
-  AWS_CLOUDFRONT_LAMBDA_RESPONSE_HEADERS_POLICY_ID:
-    lambdaResponseHeadersPolicy.id,
+  AWS_CLOUDFRONT_LAMBDA_RESPONSE_HEADERS_POLICY_ID: lambdaResponseHeadersPolicy.id,
 };

@@ -3,10 +3,7 @@ import type { GlitchContext } from '../types';
 
 export const generatePublicTypes = (context: GlitchContext): AST.Program => {
   const program = AST.b.program([
-    AST.b.importDeclaration(
-      [AST.b.importNamespaceSpecifier(AST.b.identifier('gql'))],
-      AST.b.stringLiteral('./gql'),
-    ),
+    AST.b.importDeclaration([AST.b.importNamespaceSpecifier(AST.b.identifier('gql'))], AST.b.stringLiteral('./gql')),
     AST.b.importDeclaration(
       [AST.b.importNamespaceSpecifier(AST.b.identifier('glitch'))],
       AST.b.stringLiteral('@penxle/glitch/runtime'),
@@ -42,11 +39,7 @@ export const generatePublicTypes = (context: GlitchContext): AST.Program => {
                     AST.b.tsTypeLiteral([
                       AST.b.tsPropertySignature(
                         AST.b.identifier(name),
-                        AST.b.tsTypeAnnotation(
-                          AST.b.tsTypeReference(
-                            AST.b.identifier(`gql.${name}`),
-                          ),
-                        ),
+                        AST.b.tsTypeAnnotation(AST.b.tsTypeReference(AST.b.identifier(`gql.${name}`))),
                       ),
                     ]),
                   ),

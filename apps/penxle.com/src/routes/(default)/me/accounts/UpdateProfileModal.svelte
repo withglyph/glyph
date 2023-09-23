@@ -14,9 +14,7 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation MeAccountsPage_UpdateProfileModal_UpdateUserProfile_Mutation(
-        $input: UpdateUserProfileInput!
-      ) {
+      mutation MeAccountsPage_UpdateProfileModal_UpdateUserProfile_Mutation($input: UpdateUserProfileInput!) {
         updateUserProfile(input: $input) {
           id
           name
@@ -47,12 +45,7 @@
     </button> -->
 
     <FormField name="name" label="닉네임">
-      <TextInput
-        class="w-full font-bold"
-        maxlength={10}
-        placeholder="닉네임 입력"
-        bind:value
-      >
+      <TextInput class="w-full font-bold" maxlength={10} placeholder="닉네임 입력" bind:value>
         <span slot="right-icon">{value ? value.length : 0} / 10</span>
       </TextInput>
     </FormField>

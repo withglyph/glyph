@@ -1,11 +1,5 @@
 <script lang="ts">
-  import {
-    arrow,
-    computePosition,
-    flip,
-    offset,
-    shift,
-  } from '@floating-ui/dom';
+  import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom';
   import { writable } from '@svelte-kits/store';
   import { tick } from 'svelte';
   import { scale } from 'svelte/transition';
@@ -25,12 +19,7 @@
 
     const position = await computePosition(targetEl, tooltipEl, {
       placement,
-      middleware: [
-        offset(8),
-        flip(),
-        shift({ padding: 8 }),
-        arrow({ element: arrowEl }),
-      ],
+      middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrowEl })],
     });
 
     Object.assign(tooltipEl.style, {

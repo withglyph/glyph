@@ -22,11 +22,7 @@ import {
   PasswordResetRequest,
 } from '$lib/server/email/templates';
 import { google, naver } from '$lib/server/external-api';
-import {
-  createAccessToken,
-  directUploadImage,
-  generateRandomAvatar,
-} from '$lib/server/utils';
+import { createAccessToken, directUploadImage, generateRandomAvatar } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import {
   LoginInputSchema,
@@ -183,41 +179,30 @@ builder.prismaObject('UserPassword', {
   }),
 });
 
-const UserNotificationPreference = builder.simpleObject(
-  'UserNotificationPreference',
-  {
-    authScopes: { $granted: '$user' },
-    fields: (t) => ({
-      website: t.boolean(),
-      email: t.boolean(),
-    }),
-  },
-);
+const UserNotificationPreference = builder.simpleObject('UserNotificationPreference', {
+  authScopes: { $granted: '$user' },
+  fields: (t) => ({
+    website: t.boolean(),
+    email: t.boolean(),
+  }),
+});
 
-const IssueSSOAuthorizationUrlResult = builder.simpleObject(
-  'IssueSSOAuthorizationUrlResult',
-  {
-    fields: (t) => ({
-      url: t.string(),
-    }),
-  },
-);
+const IssueSSOAuthorizationUrlResult = builder.simpleObject('IssueSSOAuthorizationUrlResult', {
+  fields: (t) => ({
+    url: t.string(),
+  }),
+});
 
 /**
  * * Enums
  */
 
 builder.enumType(ContentFilteringAction, { name: 'ContentFilteringAction' });
-builder.enumType(ContentFilteringCategory, {
-  name: 'ContentFilteringCategory',
-});
+builder.enumType(ContentFilteringCategory, { name: 'ContentFilteringCategory' });
 builder.enumType(UserState, { name: 'UserState' });
 builder.enumType(UserSSOProvider, { name: 'UserSSOProvider' });
-builder.enumType(UserNotificationCategory, {
-  name: 'UserNotificationCategory',
-});
+builder.enumType(UserNotificationCategory, { name: 'UserNotificationCategory' });
 builder.enumType(UserNotificationMethod, { name: 'UserNotificationMethod' });
-
 const UserSSOAuthorizationType = builder.enumType('UserSSOAuthorizationType', {
   values: ['AUTH', 'LINK'],
 });
@@ -246,25 +231,19 @@ const SignupInput = builder.inputType('SignupInput', {
   validate: { schema: SignupInputSchema },
 });
 
-const IssueSSOAuthorizationUrlInput = builder.inputType(
-  'IssueSSOAuthorizationUrlInput',
-  {
-    fields: (t) => ({
-      type: t.field({ type: UserSSOAuthorizationType }),
-      provider: t.field({ type: UserSSOProvider }),
-    }),
-  },
-);
+const IssueSSOAuthorizationUrlInput = builder.inputType('IssueSSOAuthorizationUrlInput', {
+  fields: (t) => ({
+    type: t.field({ type: UserSSOAuthorizationType }),
+    provider: t.field({ type: UserSSOProvider }),
+  }),
+});
 
-const RequestPasswordResetInput = builder.inputType(
-  'RequestPasswordResetInput',
-  {
-    fields: (t) => ({
-      email: t.string(),
-    }),
-    validate: { schema: RequestPasswordResetInputSchema },
-  },
-);
+const RequestPasswordResetInput = builder.inputType('RequestPasswordResetInput', {
+  fields: (t) => ({
+    email: t.string(),
+  }),
+  validate: { schema: RequestPasswordResetInputSchema },
+});
 
 const RequestEmailUpdateInput = builder.inputType('RequestEmailUpdateInput', {
   fields: (t) => ({
@@ -304,14 +283,11 @@ const UpdatePasswordInput = builder.inputType('UpdatePasswordInput', {
   validate: { schema: UpdatePasswordInputSchema },
 });
 
-const UpdateMarketingAgreementInput = builder.inputType(
-  'UpdateMarketingAgreementInput',
-  {
-    fields: (t) => ({
-      isAgreed: t.boolean(),
-    }),
-  },
-);
+const UpdateMarketingAgreementInput = builder.inputType('UpdateMarketingAgreementInput', {
+  fields: (t) => ({
+    isAgreed: t.boolean(),
+  }),
+});
 
 const UnlinkSSOInput = builder.inputType('UnlinkSSOInput', {
   fields: (t) => ({
@@ -319,26 +295,20 @@ const UnlinkSSOInput = builder.inputType('UnlinkSSOInput', {
   }),
 });
 
-const UpdateContentFilteringPreferenceInput = builder.inputType(
-  'UpdateContentFilteringPreferenceInput',
-  {
-    fields: (t) => ({
-      category: t.field({ type: ContentFilteringCategory }),
-      action: t.field({ type: ContentFilteringAction }),
-    }),
-  },
-);
+const UpdateContentFilteringPreferenceInput = builder.inputType('UpdateContentFilteringPreferenceInput', {
+  fields: (t) => ({
+    category: t.field({ type: ContentFilteringCategory }),
+    action: t.field({ type: ContentFilteringAction }),
+  }),
+});
 
-const UpdateNotificationPreferencesInput = builder.inputType(
-  'UpdateNotificationPreferencesInput',
-  {
-    fields: (t) => ({
-      category: t.field({ type: UserNotificationCategory }),
-      method: t.field({ type: UserNotificationMethod }),
-      isEnabled: t.boolean(),
-    }),
-  },
-);
+const UpdateNotificationPreferencesInput = builder.inputType('UpdateNotificationPreferencesInput', {
+  fields: (t) => ({
+    category: t.field({ type: UserNotificationCategory }),
+    method: t.field({ type: UserNotificationMethod }),
+    isEnabled: t.boolean(),
+  }),
+});
 
 /**
  * * Queries
@@ -396,17 +366,11 @@ builder.mutationFields((t) => ({
 
       if (!user?.password) {
         await argon2.hash(input.password);
-        throw new FormValidationError(
-          'password',
-          '잘못된 이메일이거나 비밀번호에요.',
-        );
+        throw new FormValidationError('password', '잘못된 이메일이거나 비밀번호에요.');
       }
 
       if (!(await argon2.verify(user.password.hash, input.password))) {
-        throw new FormValidationError(
-          'password',
-          '잘못된 이메일이거나 비밀번호에요.',
-        );
+        throw new FormValidationError('password', '잘못된 이메일이거나 비밀번호에요.');
       }
 
       const session = await db.session.create({
@@ -821,9 +785,7 @@ builder.mutationFields((t) => ({
       });
 
       if (user.password) {
-        if (
-          !(await argon2.verify(user.password.hash, input.oldPassword ?? ''))
-        ) {
+        if (!(await argon2.verify(user.password.hash, input.oldPassword ?? ''))) {
           throw new FormValidationError('oldPassword', '잘못된 비밀번호에요.');
         }
 

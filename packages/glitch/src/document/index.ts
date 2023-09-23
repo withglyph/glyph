@@ -37,9 +37,7 @@ export const collectDocuments = async (context: GlitchContext) => {
     schemaRefreshed = true;
   }
 
-  const artifactHashes = artifactSources.map(({ filePath, source }) =>
-    hash(filePath + source),
-  );
+  const artifactHashes = artifactSources.map(({ filePath, source }) => hash(filePath + source));
 
   const removedArtifactNames: string[] = [];
   const addedArtifactNames: string[] = [];
@@ -116,11 +114,7 @@ export const collectDocuments = async (context: GlitchContext) => {
     }
   }
 
-  if (
-    !validateDocumentNodes(
-      context.artifacts.map(({ documentNode }) => documentNode),
-    )
-  ) {
+  if (!validateDocumentNodes(context.artifacts.map(({ documentNode }) => documentNode))) {
     return {
       success: false,
       refreshed: false,
@@ -143,9 +137,6 @@ export const collectDocuments = async (context: GlitchContext) => {
 
   return {
     success: true,
-    refreshed:
-      schemaRefreshed ||
-      removedArtifactNames.length > 0 ||
-      addedArtifactNames.length > 0,
+    refreshed: schemaRefreshed || removedArtifactNames.length > 0 || addedArtifactNames.length > 0,
   };
 };

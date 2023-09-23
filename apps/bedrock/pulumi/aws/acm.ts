@@ -26,11 +26,7 @@ const createCloudFrontCertificate = (domain: string) => {
     { provider: usEast1 },
   );
 
-  new aws.acm.CertificateValidation(
-    `cloudfront/${domain}`,
-    { certificateArn: certificate.arn },
-    { provider: usEast1 },
-  );
+  new aws.acm.CertificateValidation(`cloudfront/${domain}`, { certificateArn: certificate.arn }, { provider: usEast1 });
 
   return certificate;
 };
@@ -61,16 +57,10 @@ export const outputs = {
   AWS_ACM_PNXL_NET_CERTIFICATE_ARN: certificates.pnxl_net.arn,
   AWS_ACM_PNXL_SITE_CERTIFICATE_ARN: certificates.pnxl_site.arn,
 
-  AWS_ACM_CLOUDFRONT_PENXLE_COM_CERTIFICATE_ARN:
-    cloudFrontCertificates.penxle_com.arn,
-  AWS_ACM_CLOUDFRONT_PENXLE_IO_CERTIFICATE_ARN:
-    cloudFrontCertificates.penxle_io.arn,
-  AWS_ACM_CLOUDFRONT_PNXL_CC_CERTIFICATE_ARN:
-    cloudFrontCertificates.pnxl_cc.arn,
-  AWS_ACM_CLOUDFRONT_PNXL_CO_CERTIFICATE_ARN:
-    cloudFrontCertificates.pnxl_co.arn,
-  AWS_ACM_CLOUDFRONT_PNXL_NET_CERTIFICATE_ARN:
-    cloudFrontCertificates.pnxl_net.arn,
-  AWS_ACM_CLOUDFRONT_PNXL_SITE_CERTIFICATE_ARN:
-    cloudFrontCertificates.pnxl_site.arn,
+  AWS_ACM_CLOUDFRONT_PENXLE_COM_CERTIFICATE_ARN: cloudFrontCertificates.penxle_com.arn,
+  AWS_ACM_CLOUDFRONT_PENXLE_IO_CERTIFICATE_ARN: cloudFrontCertificates.penxle_io.arn,
+  AWS_ACM_CLOUDFRONT_PNXL_CC_CERTIFICATE_ARN: cloudFrontCertificates.pnxl_cc.arn,
+  AWS_ACM_CLOUDFRONT_PNXL_CO_CERTIFICATE_ARN: cloudFrontCertificates.pnxl_co.arn,
+  AWS_ACM_CLOUDFRONT_PNXL_NET_CERTIFICATE_ARN: cloudFrontCertificates.pnxl_net.arn,
+  AWS_ACM_CLOUDFRONT_PNXL_SITE_CERTIFICATE_ARN: cloudFrontCertificates.pnxl_site.arn,
 };

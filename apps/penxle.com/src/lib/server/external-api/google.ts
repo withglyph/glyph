@@ -1,8 +1,5 @@
 import { OAuth2Client } from 'google-auth-library';
-import {
-  PRIVATE_GOOGLE_CLIENT_ID,
-  PRIVATE_GOOGLE_CLIENT_SECRET,
-} from '$env/static/private';
+import { PRIVATE_GOOGLE_CLIENT_ID, PRIVATE_GOOGLE_CLIENT_SECRET } from '$env/static/private';
 import type { ExternalUser } from './types';
 
 const createOAuthClient = (context: { url: URL }) => {
@@ -13,10 +10,7 @@ const createOAuthClient = (context: { url: URL }) => {
   });
 };
 
-export const generateAuthorizationUrl = (
-  context: { url: URL },
-  type: string,
-) => {
+export const generateAuthorizationUrl = (context: { url: URL }, type: string) => {
   const client = createOAuthClient(context);
   return client.generateAuthUrl({
     scope: ['email', 'profile'],
@@ -24,10 +18,7 @@ export const generateAuthorizationUrl = (
   });
 };
 
-export const authorizeUser = async (
-  context: { url: URL },
-  code: string,
-): Promise<ExternalUser> => {
+export const authorizeUser = async (context: { url: URL }, code: string): Promise<ExternalUser> => {
   const client = createOAuthClient(context);
 
   const { tokens } = await client.getToken({ code });

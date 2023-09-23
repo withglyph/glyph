@@ -25,10 +25,7 @@
 
 <Helmet title={`대시보드 | ${$query.space.name}}`} />
 
-<a
-  class="flex items-center text-sm text-gray-50"
-  href={`/${$query.space.slug}`}
->
+<a class="flex items-center text-sm text-gray-50" href={`/${$query.space.slug}`}>
   {$query.space.name}
   <span class="i-lc-chevron-right" />
 </a>

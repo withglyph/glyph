@@ -7,10 +7,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
       [AST.b.importNamespaceSpecifier(AST.b.identifier('internal'))],
       AST.b.stringLiteral('./internal'),
     ),
-    AST.b.importDeclaration(
-      [AST.b.importNamespaceSpecifier(AST.b.identifier('gql'))],
-      AST.b.stringLiteral('./gql'),
-    ),
+    AST.b.importDeclaration([AST.b.importNamespaceSpecifier(AST.b.identifier('gql'))], AST.b.stringLiteral('./gql')),
     AST.b.importDeclaration(
       [AST.b.importNamespaceSpecifier(AST.b.identifier('glitch'))],
       AST.b.stringLiteral('@penxle/glitch/runtime'),
@@ -27,17 +24,13 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
               [
                 AST.b.identifier.from({
                   name: 'doc',
-                  typeAnnotation: AST.b.tsTypeAnnotation(
-                    AST.b.tsLiteralType(AST.b.stringLiteral(source)),
-                  ),
+                  typeAnnotation: AST.b.tsTypeAnnotation(AST.b.tsLiteralType(AST.b.stringLiteral(source))),
                 }),
               ],
               AST.b.tsTypeAnnotation(
                 AST.b.tsTypeReference(
                   AST.b.identifier('glitch.QueryStore'),
-                  AST.b.tsTypeParameterInstantiation([
-                    AST.b.tsTypeReference(AST.b.identifier(`internal.${name}`)),
-                  ]),
+                  AST.b.tsTypeParameterInstantiation([AST.b.tsTypeReference(AST.b.identifier(`internal.${name}`))]),
                 ),
               ),
             ),
@@ -54,9 +47,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
               [
                 AST.b.identifier.from({
                   name: 'doc',
-                  typeAnnotation: AST.b.tsTypeAnnotation(
-                    AST.b.tsLiteralType(AST.b.stringLiteral(source)),
-                  ),
+                  typeAnnotation: AST.b.tsTypeAnnotation(AST.b.tsLiteralType(AST.b.stringLiteral(source))),
                 }),
               ],
               AST.b.tsTypeAnnotation(
@@ -64,9 +55,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
                   AST.b.identifier('glitch.MutationStore'),
                   AST.b.tsTypeParameterInstantiation([
                     AST.b.tsTypeReference(AST.b.identifier(`internal.${name}`)),
-                    AST.b.tsTypeReference(
-                      AST.b.identifier(`gql.${name}Variables`),
-                    ),
+                    AST.b.tsTypeReference(AST.b.identifier(`gql.${name}Variables`)),
                   ]),
                 ),
               ),
@@ -89,9 +78,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
               [
                 AST.b.identifier.from({
                   name: 'doc',
-                  typeAnnotation: AST.b.tsTypeAnnotation(
-                    AST.b.tsLiteralType(AST.b.stringLiteral(source)),
-                  ),
+                  typeAnnotation: AST.b.tsTypeAnnotation(AST.b.tsLiteralType(AST.b.stringLiteral(source))),
                 }),
               ],
               AST.b.tsTypeAnnotation(
@@ -119,11 +106,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
                           AST.b.tsTypeLiteral([
                             AST.b.tsPropertySignature(
                               AST.b.identifier(name),
-                              AST.b.tsTypeAnnotation(
-                                AST.b.tsTypeReference(
-                                  AST.b.identifier(`gql.${name}`),
-                                ),
-                              ),
+                              AST.b.tsTypeAnnotation(AST.b.tsTypeReference(AST.b.identifier(`gql.${name}`))),
                             ),
                           ]),
                         ),
@@ -138,9 +121,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
                     AST.b.tsTypeLiteral([
                       AST.b.tsPropertySignature(
                         AST.b.stringLiteral(' $fragmentName'),
-                        AST.b.tsTypeAnnotation(
-                          AST.b.tsLiteralType(AST.b.stringLiteral(name)),
-                        ),
+                        AST.b.tsTypeAnnotation(AST.b.tsLiteralType(AST.b.stringLiteral(name))),
                         true,
                       ),
                     ]),
@@ -150,9 +131,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
               AST.b.tsTypeAnnotation(
                 AST.b.tsTypeReference(
                   AST.b.identifier('glitch.FragmentStore'),
-                  AST.b.tsTypeParameterInstantiation([
-                    AST.b.tsTypeReference(AST.b.identifier(`internal.${name}`)),
-                  ]),
+                  AST.b.tsTypeParameterInstantiation([AST.b.tsTypeReference(AST.b.identifier(`internal.${name}`))]),
                 ),
               ),
             ),

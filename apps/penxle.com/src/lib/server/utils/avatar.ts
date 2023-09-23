@@ -7,17 +7,9 @@ import * as R from 'radash';
 import type { Options } from '@dicebear/core';
 import type { ColorShade } from '@penxle/lib/unocss';
 
-const colors = (...colors: ColorShade[]) =>
-  colors.map((v) => color(v).slice(1));
+const colors = (...colors: ColorShade[]) => colors.map((v) => color(v).slice(1));
 
-const backgroundColors = colors(
-  'red-30',
-  'yellow-30',
-  'orange-30',
-  'green-30',
-  'blue-30',
-  'purple-30',
-);
+const backgroundColors = colors('red-30', 'yellow-30', 'orange-30', 'green-30', 'blue-30', 'purple-30');
 
 const options: micah.Options & Options = {
   // 배경 (dicebear 버그로 첫번째 색상이 훨씬 높은 확률로 나오기에 직접 색칠함)

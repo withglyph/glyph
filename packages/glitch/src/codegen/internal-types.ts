@@ -4,10 +4,7 @@ import type { GlitchContext } from '../types';
 
 export const generateInternalTypes = (context: GlitchContext): AST.Program => {
   const program = AST.b.program([
-    AST.b.importDeclaration(
-      [AST.b.importNamespaceSpecifier(AST.b.identifier('gql'))],
-      AST.b.stringLiteral('./gql'),
-    ),
+    AST.b.importDeclaration([AST.b.importNamespaceSpecifier(AST.b.identifier('gql'))], AST.b.stringLiteral('./gql')),
     AST.b.importDeclaration(
       [AST.b.importSpecifier(AST.b.identifier('MakeRequired'))],
       AST.b.stringLiteral('./utility'),
@@ -44,11 +41,7 @@ export const generateInternalTypes = (context: GlitchContext): AST.Program => {
             AST.b.identifier('MakeRequired'),
             AST.b.tsTypeParameterInstantiation([
               AST.b.tsTypeReference(AST.b.identifier(`gql.${name}`)),
-              AST.b.tsUnionType(
-                requiredPath.map((path) =>
-                  AST.b.tsLiteralType(AST.b.stringLiteral(path)),
-                ),
-              ),
+              AST.b.tsUnionType(requiredPath.map((path) => AST.b.tsLiteralType(AST.b.stringLiteral(path)))),
             ]),
           ),
         ),

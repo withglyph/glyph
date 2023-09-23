@@ -31,8 +31,7 @@
     <aside
       class={clsx(
         'w-81.25 bg-white border border-gray-30 rounded-2xl px-4 py-10 h-full <sm:hidden',
-        $page.url.pathname === '/me' &&
-          'block! border-white w-full max-w-screen rounded-0!',
+        $page.url.pathname === '/me' && 'block! border-white w-full max-w-screen rounded-0!',
       )}
     >
       <div class="flex flex-col items-center gap-4 mb-6">
@@ -41,19 +40,11 @@
           <p class="text-xl font-bold mb-2">{$query.me.profile.name}</p>
           <p class="font-semibold text-gray-50">{$query.me.email}</p>
         </div>
-        <div
-          class="w-full flex items-center justify-between gap-2 px-3 py-2.5 bg-gray-10 rounded-2.5"
-        >
+        <div class="w-full flex items-center justify-between gap-2 px-3 py-2.5 bg-gray-10 rounded-2.5">
           <span class="font-bold">1000P</span>
           <Button size="md">충전하기</Button>
         </div>
-        <Button
-          class="w-full"
-          color="tertiary"
-          size="md"
-          variant="outlined"
-          on:click={() => (open = true)}
-        >
+        <Button class="w-full" color="tertiary" size="md" variant="outlined" on:click={() => (open = true)}>
           <PencilUnderline class="square-5 mr-2" />
           프로필 수정
         </Button>
@@ -65,8 +56,7 @@
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/cabinets' &&
-                  'bg-gray-5 text-gray-90',
+                $page.url.pathname === '/me/cabinets' && 'bg-gray-5 text-gray-90',
               )}
               href="/me/cabinets"
             >
@@ -77,8 +67,7 @@
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/followings' &&
-                  'bg-gray-5 text-gray-90',
+                $page.url.pathname === '/me/followings' && 'bg-gray-5 text-gray-90',
               )}
               href="/me/followings"
             >
@@ -89,8 +78,7 @@
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/activities' &&
-                  'bg-gray-5 text-gray-90',
+                $page.url.pathname === '/me/activities' && 'bg-gray-5 text-gray-90',
               )}
               href="/me/activities"
             >
@@ -101,8 +89,7 @@
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/contentfilters' &&
-                  'bg-gray-5 text-gray-90',
+                $page.url.pathname === '/me/contentfilters' && 'bg-gray-5 text-gray-90',
               )}
               href="/me/contentfilters"
             >
@@ -113,8 +100,7 @@
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/notifications' &&
-                  'bg-gray-5 text-gray-90',
+                $page.url.pathname === '/me/notifications' && 'bg-gray-5 text-gray-90',
               )}
               href="/me/notifications"
             >
@@ -125,8 +111,7 @@
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/accounts' &&
-                  'bg-gray-5 text-gray-90',
+                $page.url.pathname === '/me/accounts' && 'bg-gray-5 text-gray-90',
               )}
               href="/me/accounts"
             >

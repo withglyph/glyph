@@ -40,12 +40,7 @@ export const builder = new SchemaBuilder<{
     user: ({ id }) => context.session?.userId === id,
   }),
   defaultInputFieldRequiredness: true,
-  plugins: [
-    PrismaPlugin,
-    ScopeAuthPlugin,
-    SimpleObjectsPlugin,
-    ValidationPlugin,
-  ],
+  plugins: [PrismaPlugin, ScopeAuthPlugin, SimpleObjectsPlugin, ValidationPlugin],
   prisma: {
     // spell-checker:disable-next-line
     dmmf: Prisma.dmmf,

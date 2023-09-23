@@ -16,11 +16,7 @@
 
 {#if enableCoverImage}
   <div class="relative mx-auto w-4xl">
-    <img
-      class="aspect-2/1 w-full rounded object-cover"
-      alt=""
-      src="https://picsum.photos/1200/600"
-    />
+    <img class="aspect-2/1 w-full rounded object-cover" alt="" src="https://picsum.photos/1200/600" />
 
     <button
       class="absolute right-2 top-2 square-8 flex center rounded-full bg-black/25 transition hover:bg-black/50"
@@ -57,10 +53,7 @@
       {/if}
 
       {#if $focusing || $hovered}
-        <div
-          class="absolute flex items-center -top-1 -translate-y-full"
-          transition:fade={{ duration: 100 }}
-        >
+        <div class="absolute flex items-center -top-1 -translate-y-full" transition:fade={{ duration: 100 }}>
           {#if !enableCoverImage}
             <button
               class="flex items-center gap-1 rounded px-1 py-0.5 text-sm text-gray-50 transition hover:bg-gray-10"
@@ -93,8 +86,5 @@
 <!-- <hr class="mb-4 mt-8" /> -->
 
 <div class="mx-auto w-3xl flex grow">
-  <Tiptap
-    class="font-content-sans mt-4 max-w-full grow whitespace-pre-wrap"
-    bind:editor
-  />
+  <Tiptap class="font-content-sans mt-4 max-w-full grow whitespace-pre-wrap" bind:editor />
 </div>

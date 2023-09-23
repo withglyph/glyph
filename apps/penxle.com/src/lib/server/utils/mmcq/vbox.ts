@@ -71,9 +71,7 @@ export class VBox {
     const axis = R.max(widths, ([, width]) => width)![0];
 
     const aggregate = (axis: ColorChannel) => {
-      const others = (['r', 'g', 'b'] as ColorChannel[]).filter(
-        (channel) => channel !== axis,
-      );
+      const others = (['r', 'g', 'b'] as ColorChannel[]).filter((channel) => channel !== axis);
 
       let total = 0;
       const acc: Record<number, number> = {};
@@ -187,9 +185,7 @@ export class VBox {
   get volume(): number {
     if (this.#volume === null) {
       this.#volume =
-        (this.#max.r - this.#min.r + 1) *
-        (this.#max.g - this.#min.g + 1) *
-        (this.#max.b - this.#min.b + 1);
+        (this.#max.r - this.#min.r + 1) * (this.#max.g - this.#min.g + 1) * (this.#max.b - this.#min.b + 1);
     }
 
     return this.#volume;

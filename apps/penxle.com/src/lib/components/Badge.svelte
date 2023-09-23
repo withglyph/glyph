@@ -3,8 +3,7 @@
 
   let _class: string | undefined = undefined;
   export { _class as class };
-  export let color: 'unselect' | 'select' | 'green' | 'red' | 'gray' =
-    'unselect';
+  export let color: 'unselect' | 'select' | 'green' | 'red' | 'gray' = 'unselect';
 </script>
 
 <div

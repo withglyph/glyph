@@ -5,12 +5,8 @@
   let showDisclosure = false;
 </script>
 
-<footer
-  class="border-t border-gray-30 px-4 py-10 text-xs tracking-wider text-gray-50 flex sm:px-7 xl:px-80"
->
-  <div
-    class="mx-auto flex flex-wrap justify-between gap-6 w-105 sm:w-200 lg:w-256"
-  >
+<footer class="border-t border-gray-30 px-4 py-10 text-xs tracking-wider text-gray-50 flex sm:px-7 xl:px-80">
+  <div class="mx-auto flex flex-wrap justify-between gap-6 w-105 sm:w-200 lg:w-256">
     <div>
       <section class="flex items-center justify-between mb-4">
         <Wordmark class="h-4" />
@@ -28,10 +24,7 @@
         <div class="flex flex-wrap items-center">
           <div>사업자등록번호: 610-88-03078</div>
           <div class="h-2 border-l border-gray-50 mx-1" />
-          <Link
-            class="hover:text-gray-50"
-            href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=6108803078"
-          >
+          <Link class="hover:text-gray-50" href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=6108803078">
             통신판매업신고: 2023-서울강남-4541
           </Link>
         </div>
@@ -47,66 +40,37 @@
         <section class="font-light text-gray-30">
           (주)펜슬컴퍼니는 통신판매중개자이며, 통신판매의 당사자가 아닙니다.
           <br />
-          콘텐츠 및 거래에 관한 의무와 책임은 콘텐츠 소유자 및 거래 당사자 각자에게
-          있습니다.
+          콘텐츠 및 거래에 관한 의무와 책임은 콘텐츠 소유자 및 거래 당사자 각자에게 있습니다.
         </section>
       {/if}
 
       <section class="flex flex-wrap items-center mt-6">
-        <Link
-          class="hover:text-gray-50"
-          href="https://help.penxle.com/legal/terms"
-        >
-          이용약관
-        </Link>
+        <Link class="hover:text-gray-50" href="https://help.penxle.com/legal/terms">이용약관</Link>
         <div class="h-2 border-l border-gray-50 mx-1" />
-        <Link
-          class="font-medium hover:text-gray-50"
-          href="https://help.penxle.com/legal/privacy"
-        >
+        <Link class="font-medium hover:text-gray-50" href="https://help.penxle.com/legal/privacy">
           개인정보처리방침
         </Link>
         <div class="h-2 border-l border-gray-50 mx-1" />
-        <button
-          class="hover:text-gray-50"
-          type="button"
-          on:click={() => (showDisclosure = !showDisclosure)}
-        >
+        <button class="hover:text-gray-50" type="button" on:click={() => (showDisclosure = !showDisclosure)}>
           통신판매중개 고지
         </button>
         <div class="h-2 border-l border-gray-50 mx-1" />
         <div class="flex flex-wrap items-center">
-          <Link class="hover:text-gray-50" href="https://help.penxle.com">
-            도움 센터
-          </Link>
+          <Link class="hover:text-gray-50" href="https://help.penxle.com">도움 센터</Link>
           <div class="h-2 border-l border-gray-50 mx-1" />
           <Link class="hover:text-gray-50" href="/blog">펜슬 소식</Link>
           <div class="h-2 border-l border-gray-50 mx-1" />
-          <Link class="hover:text-gray-50" href="https://penxle.io">
-            펜슬컴퍼니 소개
-          </Link>
+          <Link class="hover:text-gray-50" href="https://penxle.io">펜슬컴퍼니 소개</Link>
         </div>
       </section>
     </div>
 
     <div>
       <div class="flex items-center gap-4">
-        <Link
-          class="i-px-logo square-4 hover:text-gray-90"
-          href="/penxle.team"
-        />
-        <Link
-          class="i-lg-twitter square-4 hover:text-[#1DA1F2]"
-          href="https://twitter.com/penxle"
-        />
-        <Link
-          class="i-lg-instagram square-4 hover:text-[#E4405F]"
-          href="https://www.instagram.com/penxle.team/"
-        />
-        <Link
-          class="i-lg-github square-4 hover:text-[#181717]"
-          href="https://github.com/penxle"
-        />
+        <Link class="i-px-logo square-4 hover:text-gray-90" href="/penxle.team" />
+        <Link class="i-lg-twitter square-4 hover:text-[#1DA1F2]" href="https://twitter.com/penxle" />
+        <Link class="i-lg-instagram square-4 hover:text-[#E4405F]" href="https://www.instagram.com/penxle.team/" />
+        <Link class="i-lg-github square-4 hover:text-[#181717]" href="https://github.com/penxle" />
       </div>
     </div>
   </div>

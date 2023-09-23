@@ -6,10 +6,7 @@ import type { GlitchContext } from '../types';
 export const fsPlugin = (context: GlitchContext): Plugin => {
   const shouldDetour = () => {
     const err = new Error('stack');
-    return (
-      err.stack?.includes('create_routes_and_nodes') ||
-      err.stack?.includes('write_all_types')
-    );
+    return err.stack?.includes('create_routes_and_nodes') || err.stack?.includes('write_all_types');
   };
 
   const shouldFake = (p: string) => {
@@ -43,9 +40,7 @@ export const fsPlugin = (context: GlitchContext): Plugin => {
             const fileName = `+${m[1]}.ts`;
             const filePath = path.join(p, fileName);
             if (files.includes(fileName)) {
-              context.state.fakePaths = context.state.fakePaths.filter(
-                (fakePath) => fakePath !== filePath,
-              );
+              context.state.fakePaths = context.state.fakePaths.filter((fakePath) => fakePath !== filePath);
             } else {
               files.push(fileName);
               context.state.fakePaths.push(filePath);
@@ -79,10 +74,7 @@ export const fsPlugin = (context: GlitchContext): Plugin => {
     },
 
     resolveId: (id, importer) => {
-      const filePath = path.join(
-        importer ? path.dirname(importer) : context.root,
-        id,
-      );
+      const filePath = path.join(importer ? path.dirname(importer) : context.root, id);
 
       if (context.state.fakePaths.includes(filePath)) {
         return filePath;

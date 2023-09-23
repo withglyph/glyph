@@ -15,11 +15,7 @@ type SiteArgs = {
 export class Site extends pulumi.ComponentResource {
   public readonly siteDomain: pulumi.Output<string>;
 
-  constructor(
-    name: string,
-    args: SiteArgs,
-    opts?: pulumi.ComponentResourceOptions,
-  ) {
+  constructor(name: string, args: SiteArgs, opts?: pulumi.ComponentResourceOptions) {
     super('penxle:index:Site', name, {}, opts);
 
     const stack = pulumi.getStack();
@@ -31,11 +27,7 @@ export class Site extends pulumi.ComponentResource {
 
     this.siteDomain = pulumi.output(`https://${domain}`);
 
-    const usEast1 = new aws.Provider(
-      'us-east-1',
-      { region: 'us-east-1' },
-      { parent: this },
-    );
+    const usEast1 = new aws.Provider('us-east-1', { region: 'us-east-1' }, { parent: this });
 
     const zone = cloudflare.getZoneOutput(
       { name: isProd ? args.dns.zone ?? args.dns.name : 'pnxl.site' },
@@ -85,9 +77,7 @@ export class Site extends pulumi.ComponentResource {
             {
               Effect: 'Allow',
               Action: ['secretsmanager:GetSecretValue'],
-              Resource: [
-                'arn:aws:secretsmanager:ap-northeast-2:721144421085:secret:datadog/*',
-              ],
+              Resource: ['arn:aws:secretsmanager:ap-northeast-2:721144421085:secret:datadog/*'],
             },
           ],
         },
@@ -106,9 +96,7 @@ export class Site extends pulumi.ComponentResource {
         memorySize: args.resources?.memory ?? 1024,
         timeout: 59,
 
-        reservedConcurrentExecutions: isProd
-          ? args.concurrency?.reserved ?? -1
-          : -1,
+        reservedConcurrentExecutions: isProd ? args.concurrency?.reserved ?? -1 : -1,
 
         s3Bucket: pkg.bucket,
         s3Key: pkg.key,
@@ -117,11 +105,7 @@ export class Site extends pulumi.ComponentResource {
 
         publish: true,
 
-        layers: isProd
-          ? [
-              'arn:aws:lambda:ap-northeast-2:464622532012:layer:Datadog-Extension-ARM:48',
-            ]
-          : undefined,
+        layers: isProd ? ['arn:aws:lambda:ap-northeast-2:464622532012:layer:Datadog-Extension-ARM:48'] : undefined,
 
         environment: {
           variables: {
@@ -129,8 +113,7 @@ export class Site extends pulumi.ComponentResource {
 
             ...(isProd && {
               DD_SITE: 'ap1.datadoghq.com',
-              DD_API_KEY_SECRET_ARN:
-                'arn:aws:secretsmanager:ap-northeast-2:721144421085:secret:datadog/api-key-cWrlAs',
+              DD_API_KEY_SECRET_ARN: 'arn:aws:secretsmanager:ap-northeast-2:721144421085:secret:datadog/api-key-cWrlAs',
 
               DD_SERVICE: args.name,
               DD_ENV: stack,
@@ -148,10 +131,7 @@ export class Site extends pulumi.ComponentResource {
         },
 
         vpcConfig: {
-          subnetIds: [
-            bedrockRef('AWS_VPC_SUBNET_PRIVATE_AZ1_ID'),
-            bedrockRef('AWS_VPC_SUBNET_PRIVATE_AZ2_ID'),
-          ],
+          subnetIds: [bedrockRef('AWS_VPC_SUBNET_PRIVATE_AZ1_ID'), bedrockRef('AWS_VPC_SUBNET_PRIVATE_AZ2_ID')],
           securityGroupIds: [bedrockRef('AWS_VPC_SECURITY_GROUP_INTERNAL_ID')],
         },
       },
@@ -206,9 +186,7 @@ export class Site extends pulumi.ComponentResource {
         origins: [
           {
             originId: 'lambda',
-            domainName: lambdaUrl.functionUrl.apply(
-              (url) => new URL(url).hostname,
-            ),
+            domainName: lambdaUrl.functionUrl.apply((url) => new URL(url).hostname),
             customOriginConfig: {
               httpPort: 80,
               httpsPort: 443,
@@ -224,23 +202,11 @@ export class Site extends pulumi.ComponentResource {
           targetOriginId: 'lambda',
           viewerProtocolPolicy: 'redirect-to-https',
           compress: true,
-          allowedMethods: [
-            'GET',
-            'HEAD',
-            'OPTIONS',
-            'PUT',
-            'POST',
-            'PATCH',
-            'DELETE',
-          ],
+          allowedMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST', 'PATCH', 'DELETE'],
           cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
           cachePolicyId: bedrockRef('AWS_CLOUDFRONT_LAMBDA_CACHE_POLICY_ID'),
-          originRequestPolicyId: bedrockRef(
-            'AWS_CLOUDFRONT_LAMBDA_ORIGIN_REQUEST_POLICY_ID',
-          ),
-          responseHeadersPolicyId: bedrockRef(
-            'AWS_CLOUDFRONT_LAMBDA_RESPONSE_HEADERS_POLICY_ID',
-          ),
+          originRequestPolicyId: bedrockRef('AWS_CLOUDFRONT_LAMBDA_ORIGIN_REQUEST_POLICY_ID'),
+          responseHeadersPolicyId: bedrockRef('AWS_CLOUDFRONT_LAMBDA_RESPONSE_HEADERS_POLICY_ID'),
         },
 
         restrictions: {

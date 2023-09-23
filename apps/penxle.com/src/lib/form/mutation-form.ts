@@ -16,9 +16,7 @@ type MutationFormConfig<D, Z extends AnyZodObject> = {
   onError?: (error: AppError) => MaybePromise<void>;
 };
 
-export const createMutationForm = <D, Z extends AnyZodObject>(
-  config: MutationFormConfig<D, Z>,
-) => {
+export const createMutationForm = <D, Z extends AnyZodObject>(config: MutationFormConfig<D, Z>) => {
   const extend: Extender<TypeOf<Z>>[] = [context()];
   const { schema, mutation, onSuccess, onError, ...rest } = config;
 

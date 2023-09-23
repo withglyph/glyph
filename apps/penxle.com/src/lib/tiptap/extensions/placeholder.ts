@@ -18,10 +18,7 @@ export const Placeholder = Extension.create({
 
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const emptyDocument = doc.type.createAndFill()!;
-            if (
-              doc.sameMarkup(emptyDocument) &&
-              doc.content.findDiffStart(emptyDocument.content) === null
-            ) {
+            if (doc.sameMarkup(emptyDocument) && doc.content.findDiffStart(emptyDocument.content) === null) {
               doc.descendants((node, pos) => {
                 decoration = Decoration.node(pos, pos + node.nodeSize, {
                   'class': 'is-editor-empty',

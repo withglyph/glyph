@@ -5,9 +5,7 @@
   import { Button } from '$lib/components';
 
   const verifyEmail = graphql(`
-    mutation UserVerifyEmailPage_VerifyEmail_Mutation(
-      $input: VerifyEmailInput!
-    ) {
+    mutation UserVerifyEmailPage_VerifyEmail_Mutation($input: VerifyEmailInput!) {
       verifyEmail(input: $input) {
         id
       }

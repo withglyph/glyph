@@ -17,14 +17,9 @@ export type AuthContext = {
   };
 };
 
-export type Context = RequestEvent &
-  App.Locals &
-  DefaultContext &
-  Partial<AuthContext>;
+export type Context = RequestEvent & App.Locals & DefaultContext & Partial<AuthContext>;
 
-export const createContext = async (
-  context: RequestEvent,
-): Promise<Context> => {
+export const createContext = async (context: RequestEvent): Promise<Context> => {
   const db = await prismaClient.$begin({ isolation: 'RepeatableRead' });
   let deviceId = context.cookies.get('penxle-did');
   if (!deviceId) {

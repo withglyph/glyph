@@ -17,9 +17,6 @@ const app = new App({
 
 export const organization = await getEnv('GH_APP_ORGANIZATION');
 
-const { data: installation } = await app.octokit.request(
-  'GET /orgs/{org}/installation',
-  { org: organization },
-);
+const { data: installation } = await app.octokit.request('GET /orgs/{org}/installation', { org: organization });
 
 export const octokit = await app.getInstallationOctokit(installation.id);

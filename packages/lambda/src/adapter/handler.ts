@@ -14,12 +14,7 @@ type CreateHandlerParams = {
   prerendered: Record<string, string>;
 };
 
-export const createHandler = async ({
-  basePath,
-  Server,
-  manifest,
-  prerendered,
-}: CreateHandlerParams) => {
+export const createHandler = async ({ basePath, Server, manifest, prerendered }: CreateHandlerParams) => {
   installPolyfills();
 
   const server = new Server(manifest);
@@ -28,19 +23,14 @@ export const createHandler = async ({
   const assets = async (_: LambdaRequest, event: APIGatewayProxyEventV2) => {
     const pathname = event.rawPath.slice(1);
 
-    if (
-      manifest.assets.has(pathname) ||
-      pathname.startsWith(manifest.appPath)
-    ) {
+    if (manifest.assets.has(pathname) || pathname.startsWith(manifest.appPath)) {
       const buffer = await fs.readFile(path.join(basePath, 'public', pathname));
       const immutable = pathname.startsWith(`${manifest.appPath}/immutable`);
 
       return new Response(buffer, {
         headers: {
           'content-type': mime.lookup(pathname) || 'application/octet-stream',
-          'cache-control': immutable
-            ? 'public, max-age=31536000, immutable'
-            : 'public, max-age=0, must-revalidate',
+          'cache-control': immutable ? 'public, max-age=31536000, immutable' : 'public, max-age=0, must-revalidate',
         },
       });
     }
@@ -50,9 +40,7 @@ export const createHandler = async ({
     const pathname = event.rawPath;
 
     if (pathname in prerendered) {
-      const buffer = await fs.readFile(
-        path.join(basePath, 'public', prerendered[pathname]),
-      );
+      const buffer = await fs.readFile(path.join(basePath, 'public', prerendered[pathname]));
 
       return new Response(buffer, {
         headers: {
@@ -63,16 +51,11 @@ export const createHandler = async ({
     }
   };
 
-  const sveltekit = async (
-    request: LambdaRequest,
-    event: APIGatewayProxyEventV2,
-  ) => {
+  const sveltekit = async (request: LambdaRequest, event: APIGatewayProxyEventV2) => {
     const response = await server.respond(request, {
       getClientAddress: () => {
         const xff = request.headers.get('x-forwarded-for');
-        return xff
-          ? xff.split(',')[0].trim()
-          : event.requestContext.http.sourceIp;
+        return xff ? xff.split(',')[0].trim() : event.requestContext.http.sourceIp;
       },
       platform: { event },
     });

@@ -9,9 +9,7 @@ import type { InteractiveTransactionClient } from '../database';
 type ImageSource = Buffer | ArrayBuffer | Uint8Array;
 
 export const getImageMetadata = async (source: ImageSource) => {
-  const image = sharp(source, { failOn: 'none' })
-    .rotate()
-    .flatten({ background: '#ffffff' });
+  const image = sharp(source, { failOn: 'none' }).rotate().flatten({ background: '#ffffff' });
 
   const metadata = await image.metadata();
 
@@ -71,11 +69,7 @@ export const getImageMetadata = async (source: ImageSource) => {
     return hash;
   };
 
-  const [color, placeholder, hash] = await Promise.all([
-    getColor(),
-    getPlaceholder(),
-    getHash(),
-  ]);
+  const [color, placeholder, hash] = await Promise.all([getColor(), getPlaceholder(), getHash()]);
 
   return {
     format: metadata.format ?? 'unknown',
@@ -94,12 +88,7 @@ type DirectUploadImageParams = {
   name: string;
   source: ImageSource;
 };
-export const directUploadImage = async ({
-  db,
-  userId,
-  name,
-  source,
-}: DirectUploadImageParams) => {
+export const directUploadImage = async ({ db, userId, name, source }: DirectUploadImageParams) => {
   const metadata = await getImageMetadata(source);
 
   const key = aws.createS3ObjectKey('images');

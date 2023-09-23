@@ -66,9 +66,7 @@ export const lambdify = async (spec?: LambdaSpec) => {
   const files = [...new Set(traces)].map((p) => path.join(workspaceDir, p));
 
   if (spec.public) {
-    const publicPaths = await fg(
-      path.join(path.join(projectDir, spec.public), '**/*'),
-    );
+    const publicPaths = await fg(path.join(path.join(projectDir, spec.public), '**/*'));
 
     files.push(...publicPaths);
   }
@@ -92,18 +90,12 @@ export const lambdify = async (spec?: LambdaSpec) => {
 
   for (const entry of spec.entry) {
     const code = `
-      export * from './${path.relative(
-        workspaceDir,
-        path.join(projectDir, entry),
-      )}';
+      export * from './${path.relative(workspaceDir, path.join(projectDir, entry))}';
     `.trim();
     await fs.writeFile(path.join(tmpDir, path.basename(entry)), code);
   }
 
-  await fs.writeFile(
-    path.join(tmpDir, 'package.json'),
-    JSON.stringify({ type: 'module' }),
-  );
+  await fs.writeFile(path.join(tmpDir, 'package.json'), JSON.stringify({ type: 'module' }));
 
   console.debug('Constructing path list...');
 
@@ -145,22 +137,15 @@ export const lambdify = async (spec?: LambdaSpec) => {
     } else if (stat.isFile()) {
       entries[src] = [await fs.readFile(absolute), { attrs: 0o755 << 16 }];
     } else if (stat.isSymbolicLink()) {
-      entries[src] = [
-        fflate.strToU8(await fs.readlink(absolute)),
-        { attrs: (0o120 << 25) | (0o755 << 16) },
-      ];
+      entries[src] = [fflate.strToU8(await fs.readlink(absolute)), { attrs: (0o120 << 25) | (0o755 << 16) }];
     }
   }
 
   const pkg = await new Promise<Uint8Array>((resolve, reject) => {
-    fflate.zip(
-      entries,
-      { os: 3, mtime: '2000-01-01T00:00:00Z' },
-      (err, data) => {
-        if (err) reject(err);
-        else resolve(data);
-      },
-    );
+    fflate.zip(entries, { os: 3, mtime: '2000-01-01T00:00:00Z' }, (err, data) => {
+      if (err) reject(err);
+      else resolve(data);
+    });
   });
 
   await fs.writeFile(path.join(outDir, 'function.zip'), pkg);

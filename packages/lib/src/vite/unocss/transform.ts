@@ -1,9 +1,5 @@
 import MagicString from 'magic-string';
-import type {
-  SourceCodeTransformer,
-  UnocssPluginContext,
-  UnoGenerator,
-} from '@unocss/core';
+import type { SourceCodeTransformer, UnocssPluginContext, UnoGenerator } from '@unocss/core';
 import type { TransformResult } from 'rollup';
 
 const transformIdRE = /\.(css|svelte)($|\?)/;
@@ -18,10 +14,9 @@ export const transformCode = async (
     return;
   }
 
-  const transformers = [
-    transformerEmptyBlock(),
-    ...(uno.config.transformers ?? []),
-  ].filter((transformer) => (transformer.enforce ?? 'default') === enforce);
+  const transformers = [transformerEmptyBlock(), ...(uno.config.transformers ?? [])].filter(
+    (transformer) => (transformer.enforce ?? 'default') === enforce,
+  );
 
   if (transformers.length === 0) {
     return;

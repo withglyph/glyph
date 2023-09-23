@@ -47,8 +47,7 @@
         class={clsx(
           'pointer-events-auto relative max-h-full w-full flex flex-col center rounded-2xl bg-white shadow-xl',
           size === 'sm' && 'p-4 pt-8 max-w-92',
-          size === 'md' &&
-            'p-6 pb-5.5 rounded-b-none sm:(max-w-107.5 rounded-2xl)',
+          size === 'md' && 'p-6 pb-5.5 rounded-b-none sm:(max-w-107.5 rounded-2xl)',
           size === 'lg' && 'p-7 pt-5 rounded-b-none sm:(max-w-187 rounded-2xl)',
         )}
         in:fly={{ y: '10%', duration: 150 }}
@@ -56,33 +55,13 @@
       >
         <div class={clsx('flex flex-col w-full', size === 'sm' && 'max-w-92')}>
           {#if $$slots.title}
-            <div
-              class={clsx(
-                'flex justify-between mb-6',
-                size === 'sm' && 'justify-center!',
-              )}
-            >
-              <div
-                class={clsx(
-                  'flex flex-col break-all',
-                  size !== 'sm' && 'pr-9 mt-4',
-                )}
-              >
-                <h3
-                  class={clsx(
-                    'text-lg font-bold break-keep',
-                    size === 'md' && 'text-xl',
-                  )}
-                >
+            <div class={clsx('flex justify-between mb-6', size === 'sm' && 'justify-center!')}>
+              <div class={clsx('flex flex-col break-all', size !== 'sm' && 'pr-9 mt-4')}>
+                <h3 class={clsx('text-lg font-bold break-keep', size === 'md' && 'text-xl')}>
                   <slot name="title" />
                 </h3>
                 {#if $$slots.subtitle}
-                  <div
-                    class={clsx(
-                      'flex justify-between mt-2 text-gray-50',
-                      size === 'sm' && 'justify-center!',
-                    )}
-                  >
+                  <div class={clsx('flex justify-between mt-2 text-gray-50', size === 'sm' && 'justify-center!')}>
                     <h3 class="text-3.75 font-bold">
                       <slot name="subtitle" />
                     </h3>
@@ -114,9 +93,7 @@
           </div>
 
           {#if $$slots.action}
-            <div
-              class={clsx('flex items-center mt-4xl', size === 'md' && 'mt-4!')}
-            >
+            <div class={clsx('flex items-center mt-4xl', size === 'md' && 'mt-4!')}>
               <slot name="action" />
             </div>
           {/if}

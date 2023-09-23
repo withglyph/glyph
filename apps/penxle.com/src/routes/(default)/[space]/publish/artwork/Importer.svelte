@@ -60,9 +60,7 @@
   }}
   on:dragover|preventDefault={({ dataTransfer }) => {
     if (dataTransfer) {
-      dataTransfer.dropEffect = dataTransfer.types.includes('Files')
-        ? 'copy'
-        : 'none';
+      dataTransfer.dropEffect = dataTransfer.types.includes('Files') ? 'copy' : 'none';
     }
   }}
   on:drop|preventDefault={async ({ dataTransfer }) => {

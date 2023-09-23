@@ -3,10 +3,7 @@
   import { Avatar } from '$lib/components';
   import { Logo } from '$lib/components/branding';
   import PublishButton from './PublishButton.svelte';
-  import type {
-    SpacePublishArtworkPage_Header_query,
-    SpacePublishArtworkPage_Header_space,
-  } from '$glitch';
+  import type { SpacePublishArtworkPage_Header_query, SpacePublishArtworkPage_Header_space } from '$glitch';
   import type { Artwork } from './types';
 
   let _query: SpacePublishArtworkPage_Header_query;

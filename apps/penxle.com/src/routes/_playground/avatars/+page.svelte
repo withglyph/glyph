@@ -16,16 +16,10 @@
   <div class="w-150 flex flex-col center gap-4">
     <div class="grid grid-cols-4 gap-4">
       {#each $query.randomAvatars as avatar (avatar)}
-        <img
-          class="square-full border rounded-full"
-          alt=""
-          src={`data:image/svg+xml;base64,${btoa(avatar)}`}
-        />
+        <img class="square-full border rounded-full" alt="" src={`data:image/svg+xml;base64,${btoa(avatar)}`} />
       {/each}
     </div>
 
-    <Button color="primary" size="md" on:click={() => query.refetch()}>
-      재생성
-    </Button>
+    <Button color="primary" size="md" on:click={() => query.refetch()}>재생성</Button>
   </div>
 </div>

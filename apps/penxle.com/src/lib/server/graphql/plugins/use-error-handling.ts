@@ -2,10 +2,7 @@ import { isAsyncIterable } from '@envelop/core';
 import * as Sentry from '@sentry/sveltekit';
 import { GraphQLError } from 'graphql';
 import { AppError, GraphQLAppError, UnknownError } from '$lib/errors';
-import type {
-  AsyncIterableIteratorOrValue,
-  ExecutionResult,
-} from '@envelop/core';
+import type { AsyncIterableIteratorOrValue, ExecutionResult } from '@envelop/core';
 import type { Plugin } from 'graphql-yoga';
 import type { Context } from '$lib/server/context';
 
@@ -17,9 +14,7 @@ const toGraphQLAppError = (error: unknown): GraphQLAppError => {
   } else {
     console.error(error);
     Sentry.captureException(error);
-    return new GraphQLAppError(
-      new UnknownError(error instanceof Error ? error : undefined),
-    );
+    return new GraphQLAppError(new UnknownError(error instanceof Error ? error : undefined));
   }
 };
 
@@ -29,10 +24,7 @@ const errorHandler = ({ error, setError }: ErrorHandlerPayload) => {
 };
 
 type ResultHandlerPayload<T> = { result: T; setResult: (result: T) => void };
-const _resultHandler = ({
-  result,
-  setResult,
-}: ResultHandlerPayload<ExecutionResult>) => {
+const _resultHandler = ({ result, setResult }: ResultHandlerPayload<ExecutionResult>) => {
   if (result.errors) {
     setResult({
       ...result,
@@ -40,10 +32,7 @@ const _resultHandler = ({
     });
   }
 };
-const resultHandler = ({
-  result,
-  setResult,
-}: ResultHandlerPayload<AsyncIterableIteratorOrValue<ExecutionResult>>) => {
+const resultHandler = ({ result, setResult }: ResultHandlerPayload<AsyncIterableIteratorOrValue<ExecutionResult>>) => {
   if (isAsyncIterable(result)) {
     return {
       onNext: _resultHandler,

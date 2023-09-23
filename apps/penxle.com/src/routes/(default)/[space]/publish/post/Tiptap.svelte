@@ -2,28 +2,10 @@
   import { Editor } from '@tiptap/core';
   import { clsx } from 'clsx';
   import { onDestroy, onMount } from 'svelte';
-  import {
-    DropCursor,
-    GapCursor,
-    History,
-    Placeholder,
-    TextAlign,
-  } from '$lib/tiptap/extensions';
-  import {
-    Bold,
-    Italic,
-    Strike,
-    TextColor,
-    Underline,
-  } from '$lib/tiptap/marks';
+  import { DropCursor, GapCursor, History, Placeholder, TextAlign } from '$lib/tiptap/extensions';
+  import { Bold, Italic, Strike, TextColor, Underline } from '$lib/tiptap/marks';
   import { AccessBarrier } from '$lib/tiptap/node-views';
-  import {
-    Document,
-    HardBreak,
-    Heading,
-    Paragraph,
-    Text,
-  } from '$lib/tiptap/nodes';
+  import { Document, HardBreak, Heading, Paragraph, Text } from '$lib/tiptap/nodes';
   import type { JSONContent } from '@tiptap/core';
 
   let element: HTMLDivElement;

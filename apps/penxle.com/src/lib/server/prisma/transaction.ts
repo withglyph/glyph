@@ -3,23 +3,14 @@ import type { PrismaClient } from '../database';
 
 type BareTransactionClient = Omit<
   PrismaClient,
-  | '$connect'
-  | '$disconnect'
-  | '$on'
-  | '$transaction'
-  | '$begin'
-  | '$use'
-  | '$extends'
+  '$connect' | '$disconnect' | '$on' | '$transaction' | '$begin' | '$use' | '$extends'
 >;
 
 export type TransactionClient = BareTransactionClient & {
   $commit: () => Promise<void>;
   $rollback: () => Promise<void>;
 };
-export type InteractiveTransactionClient = Omit<
-  TransactionClient,
-  '$commit' | '$rollback'
->;
+export type InteractiveTransactionClient = Omit<TransactionClient, '$commit' | '$rollback'>;
 
 type BeginOptions = {
   isolation?: Prisma.TransactionIsolationLevel;

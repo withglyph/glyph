@@ -10,9 +10,7 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
       return false;
     }
 
-    const queries = context.artifacts.filter(
-      (artifact) => artifact.kind === 'query' && artifact.filePath === filename,
-    );
+    const queries = context.artifacts.filter((artifact) => artifact.kind === 'query' && artifact.filePath === filename);
 
     if (queries.length === 0) {
       return false;
@@ -26,10 +24,7 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
         if (
           node.declaration?.type === 'VariableDeclaration' &&
           node.declaration.declarations.some(
-            (d) =>
-              d.type === 'VariableDeclarator' &&
-              d.id.type === 'Identifier' &&
-              d.id.name === 'data',
+            (d) => d.type === 'VariableDeclarator' && d.id.type === 'Identifier' && d.id.name === 'data',
           )
         ) {
           dataProp = true;
@@ -60,9 +55,7 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
     if (!dataProp) {
       program.body.unshift(
         AST.b.exportNamedDeclaration(
-          AST.b.variableDeclaration('let', [
-            AST.b.variableDeclarator(AST.b.identifier('data')),
-          ]),
+          AST.b.variableDeclaration('let', [AST.b.variableDeclarator(AST.b.identifier('data'))]),
         ),
       );
     }
@@ -72,8 +65,7 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
 
   const transformMutation = (filename: string, program: AST.Program) => {
     const mutations = context.artifacts.filter(
-      (artifact) =>
-        artifact.kind === 'mutation' && artifact.filePath === filename,
+      (artifact) => artifact.kind === 'mutation' && artifact.filePath === filename,
     );
 
     if (mutations.length === 0) {
@@ -90,15 +82,11 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
           node.arguments[0].type === 'TemplateLiteral'
         ) {
           const source = node.arguments[0].quasis[0].value.raw;
-          const mutation = mutations.find(
-            (mutation) => mutation.source === source,
-          );
+          const mutation = mutations.find((mutation) => mutation.source === source);
 
           if (mutation) {
             node.arguments[0] = AST.b.stringLiteral('mutation');
-            node.arguments.push(
-              AST.b.identifier(`__glitch_gql.DocumentNode_${mutation.name}`),
-            );
+            node.arguments.push(AST.b.identifier(`__glitch_gql.DocumentNode_${mutation.name}`));
           }
         }
 

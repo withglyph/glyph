@@ -21,9 +21,7 @@ export const load: PageLoad = async ({ params }) => {
 
 export const entries: EntryGenerator = () => {
   const paths = Object.keys(import.meta.glob('$pages/**/*.md'));
-  const slugs = paths.map((path) =>
-    path.replaceAll(/(^\/src\/pages\/|\.md$)/g, ''),
-  );
+  const slugs = paths.map((path) => path.replaceAll(/(^\/src\/pages\/|\.md$)/g, ''));
 
   return slugs.map((slug) => ({ slug }));
 };

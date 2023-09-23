@@ -19,10 +19,7 @@ export const lambda = (): Adapter => {
         prerendered[p] = file;
       }
 
-      await fs.appendFile(
-        path.join(out, 'manifest.js'),
-        `export const prerendered = ${JSON.stringify(prerendered)};`,
-      );
+      await fs.appendFile(path.join(out, 'manifest.js'), `export const prerendered = ${JSON.stringify(prerendered)};`);
 
       await fs.writeFile(
         path.join(out, 'handler.js'),

@@ -59,9 +59,7 @@
   `);
 
   const updateNotificationPreferences = graphql(`
-    mutation MeNotificationsPage_UpdateNotificationPreferences_Mutation(
-      $input: UpdateNotificationPreferencesInput!
-    ) {
+    mutation MeNotificationsPage_UpdateNotificationPreferences_Mutation($input: UpdateNotificationPreferencesInput!) {
       updateNotificationPreferences(input: $input)
     }
   `);
@@ -76,9 +74,7 @@
       <span>웹사이트</span>
       <span>이메일</span>
     </div>
-    <div
-      class="flex flex-wrap items-center justify-between gap-4 pt-14 py-4 px-6 sm:p-0"
-    >
+    <div class="flex flex-wrap items-center justify-between gap-4 pt-14 py-4 px-6 sm:p-0">
       <div class="text-lg font-extrabold">알림 켜기 / 끄기</div>
       <Switch
         class="sm:hidden"

@@ -47,8 +47,7 @@
       return;
     }
 
-    const max =
-      Math.max(domRect.width, domRect.height) * window.devicePixelRatio;
+    const max = Math.max(domRect.width, domRect.height) * window.devicePixelRatio;
     const size = Math.pow(2, Math.ceil(Math.log2(max)));
 
     src = qs.stringifyUrl({
@@ -71,14 +70,7 @@
 >
   <div class="square-full relative">
     {#if visible}
-      <img
-        bind:this={imgEl}
-        style:object-fit={fit}
-        class="square-full"
-        alt=""
-        {src}
-        on:load={() => (loaded = true)}
-      />
+      <img bind:this={imgEl} style:object-fit={fit} class="square-full" alt="" {src} on:load={() => (loaded = true)} />
     {/if}
 
     {#if !loaded}

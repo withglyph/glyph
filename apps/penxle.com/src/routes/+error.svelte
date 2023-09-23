@@ -7,9 +7,7 @@
 
   let open = false;
 
-  $: error = $page.error
-    ? deserializeAppError($page.error)
-    : new UnknownError();
+  $: error = $page.error ? deserializeAppError($page.error) : new UnknownError();
   $: code = error.extra.code ?? $page.status;
 </script>
 
@@ -55,11 +53,7 @@
 
   <div>
     {#if error instanceof UnknownError && error.cause}
-      <button
-        class="cursor-pointer text-sm text-gray-50"
-        type="button"
-        on:click={() => (open = true)}
-      >
+      <button class="cursor-pointer text-sm text-gray-50" type="button" on:click={() => (open = true)}>
         디버깅 정보
       </button>
     {/if}
@@ -75,8 +69,6 @@
       {stack ?? 'Stacktrace not available'}
     </div>
 
-    <Button slot="action" size="md" on:click={() => (open = false)}>
-      닫기
-    </Button>
+    <Button slot="action" size="md" on:click={() => (open = false)}>닫기</Button>
   </Modal>
 {/if}

@@ -33,10 +33,7 @@ export const getOctokit = async () => {
     privateKey,
   });
 
-  const { data: installation } = await app.octokit.request(
-    'GET /orgs/{org}/installation',
-    { org: 'penxle' },
-  );
+  const { data: installation } = await app.octokit.request('GET /orgs/{org}/installation', { org: 'penxle' });
 
   return await app.getInstallationOctokit(installation.id);
 };

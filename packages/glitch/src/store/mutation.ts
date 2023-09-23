@@ -5,9 +5,7 @@ import { getClient } from '../client/internal';
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import type { AnyVariables } from '@urql/core';
 
-export const createMutationStore = (
-  document: TypedDocumentNode<unknown, AnyVariables>,
-) => {
+export const createMutationStore = (document: TypedDocumentNode<unknown, AnyVariables>) => {
   const count = writable(0);
 
   const mutate = async (input?: AnyVariables) => {

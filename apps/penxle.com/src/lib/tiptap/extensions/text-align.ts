@@ -36,9 +36,7 @@ export const TextAlign = Extension.create({
       setTextAlign:
         (alignment) =>
         ({ commands }) => {
-          return ['heading', 'paragraph'].every((type) =>
-            commands.updateAttributes(type, { 'text-align': alignment }),
-          );
+          return ['heading', 'paragraph'].every((type) => commands.updateAttributes(type, { 'text-align': alignment }));
         },
     };
   },

@@ -18,6 +18,5 @@ const append = (toast: Omit<Toast, 'id'>) => {
 export const toast = {
   success: (message: string, options?: ToastOptions) =>
     append({ message, type: 'success', duration: 5000, ...options }),
-  error: (message: string, options?: ToastOptions) =>
-    append({ message, type: 'error', duration: 10_000, ...options }),
+  error: (message: string, options?: ToastOptions) => append({ message, type: 'error', duration: 10_000, ...options }),
 };

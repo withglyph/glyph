@@ -2,12 +2,7 @@ import { lookupCollection } from '@iconify/json';
 import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders';
 import { presetIcons } from '@unocss/preset-icons';
 import { presetUno } from '@unocss/preset-uno';
-import {
-  basicColors,
-  partialShadedColors,
-  shadedColors,
-  specialColors,
-} from './colors';
+import { basicColors, partialShadedColors, shadedColors, specialColors } from './colors';
 import type { Preset } from '@unocss/core';
 import type { Theme } from '@unocss/preset-uno';
 
@@ -18,9 +13,7 @@ export const presetPenxle = (): Preset<Theme> => ({
       collections: {
         lc: async () => lookupCollection('lucide'),
         lg: async () => lookupCollection('simple-icons'),
-        px: FileSystemIconLoader('./src/assets/icons', (s) =>
-          s.replace(/^<svg /, '<svg fill="currentColor" '),
-        ),
+        px: FileSystemIconLoader('./src/assets/icons', (s) => s.replace(/^<svg /, '<svg fill="currentColor" ')),
       },
       extraProperties: {
         'flex': 'none',

@@ -34,6 +34,4 @@ await S3.send(
 );
 
 actions.info('');
-actions.info(
-  `Deployment package uploaded to 's3://penxle-artifacts/${packagePath}'`,
-);
+actions.info(`Deployment package uploaded to 's3://penxle-artifacts/${packagePath}'`);

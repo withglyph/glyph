@@ -64,13 +64,7 @@
   });
 </script>
 
-<button
-  bind:this={targetEl}
-  class="flex center"
-  tabindex="-1"
-  type="button"
-  on:click={() => (open = true)}
->
+<button bind:this={targetEl} class="flex center" tabindex="-1" type="button" on:click={() => (open = true)}>
   <Avatar class="square-8" $profile={$user.profile} />
 </button>
 
@@ -84,11 +78,7 @@
     use:portal
   />
 
-  <div
-    bind:this={menuEl}
-    class="absolute z-50 w-64 flex flex-col border rounded bg-white py-2 shadow"
-    use:portal
-  >
+  <div bind:this={menuEl} class="absolute z-50 w-64 flex flex-col border rounded bg-white py-2 shadow" use:portal>
     <a class="flex items-center gap-2 px-4 py-2" href="/me/preferences">
       <Avatar class="square-10" $profile={$user.profile} />
       <div class="flex flex-col">

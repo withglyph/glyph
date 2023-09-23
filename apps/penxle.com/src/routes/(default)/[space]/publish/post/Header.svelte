@@ -2,10 +2,7 @@
   import { fragment, graphql } from '$glitch';
   import { Avatar, Button } from '$lib/components';
   import { Logo } from '$lib/components/branding';
-  import type {
-    SpacePublishPostPage_Header_query,
-    SpacePublishPostPage_Header_space,
-  } from '$glitch';
+  import type { SpacePublishPostPage_Header_query, SpacePublishPostPage_Header_space } from '$glitch';
 
   let _query: SpacePublishPostPage_Header_query;
   let _space: SpacePublishPostPage_Header_space;

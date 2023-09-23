@@ -7,9 +7,7 @@
 <div class="w-full max-w-200">
   <h2 class="text-xl font-bold mb-6 <sm:hidden">관심 설정</h2>
   <div class="flex flex-col gap-2 sm:(flex-row gap-9)">
-    <div
-      class="bg-white pt-3 pb-5 px-6 space-y-2 text-3.75 sm:(px-8 border border-gray-30 rounded-2xl max-w-50%)"
-    >
+    <div class="bg-white pt-3 pb-5 px-6 space-y-2 text-3.75 sm:(px-8 border border-gray-30 rounded-2xl max-w-50%)">
       <div class="h-10 flex items-center gap-2 text-lg font-extrabold">
         <h3>관심 스페이스</h3>
         <span class="text-gray-50">7</span>
@@ -25,9 +23,7 @@
       </div>
     </div>
 
-    <div
-      class="bg-white pt-3 pb-5 px-6 space-y-2 text-3.75 sm:(px-8 border border-gray-30 rounded-2xl max-w-50%)"
-    >
+    <div class="bg-white pt-3 pb-5 px-6 space-y-2 text-3.75 sm:(px-8 border border-gray-30 rounded-2xl max-w-50%)">
       <div class="h-10 flex items-center gap-2 text-lg font-extrabold">
         <h3>관심 스페이스</h3>
         <span class="text-gray-50">7</span>

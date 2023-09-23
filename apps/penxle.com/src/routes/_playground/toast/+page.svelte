@@ -9,18 +9,11 @@
 <div class="flex flex-col grow center gap-4">
   <div class="flex gap-2 w-1/2">
     <input class="grow border px-4" type="text" bind:value={successMessage} />
-    <Button color="primary" on:click={() => toast.success(successMessage)}>
-      toast.success
-    </Button>
+    <Button color="primary" on:click={() => toast.success(successMessage)}>toast.success</Button>
   </div>
 
   <div class="flex gap-2 w-1/2">
     <input class="grow border px-4" type="text" bind:value={errorMessage} />
-    <Button
-      color="primary"
-      on:click={() => toast.error(errorMessage, { title: '실패!' })}
-    >
-      toast.error
-    </Button>
+    <Button color="primary" on:click={() => toast.error(errorMessage, { title: '실패!' })}>toast.error</Button>
   </div>
 </div>

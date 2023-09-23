@@ -11,9 +11,7 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation UserForgetPasswordPage_RequestPasswordReset_Mutation(
-        $input: RequestPasswordResetInput!
-      ) {
+      mutation UserForgetPasswordPage_RequestPasswordReset_Mutation($input: RequestPasswordResetInput!) {
         requestPasswordReset(input: $input)
       }
     `),
@@ -48,12 +46,5 @@
     </div>
   {/if}
 
-  <Button
-    class={clsx('w-full', !requested && 'mt-6')}
-    disabled={requested}
-    size="xl"
-    type="submit"
-  >
-    계정 찾기
-  </Button>
+  <Button class={clsx('w-full', !requested && 'mt-6')} disabled={requested} size="xl" type="submit">계정 찾기</Button>
 </form>

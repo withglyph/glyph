@@ -1,8 +1,4 @@
-import {
-  DeleteObjectCommand,
-  GetObjectCommand,
-  PutObjectCommand,
-} from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import * as R from 'radash';
 import { aws } from '$lib/server/external-api';
@@ -28,15 +24,12 @@ export const Image = builder.prismaObject('Image', {
   }),
 });
 
-const PrepareImageUploadResult = builder.simpleObject(
-  'PrepareImageUploadResult',
-  {
-    fields: (t) => ({
-      key: t.string(),
-      presignedUrl: t.string(),
-    }),
-  },
-);
+const PrepareImageUploadResult = builder.simpleObject('PrepareImageUploadResult', {
+  fields: (t) => ({
+    key: t.string(),
+    presignedUrl: t.string(),
+  }),
+});
 
 /**
  * * Inputs

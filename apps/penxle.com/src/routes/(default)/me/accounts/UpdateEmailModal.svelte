@@ -11,9 +11,7 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation MeAccountsPage_RequestEmailUpdate_Mutation(
-        $input: RequestEmailUpdateInput!
-      ) {
+      mutation MeAccountsPage_RequestEmailUpdate_Mutation($input: RequestEmailUpdateInput!) {
         requestEmailUpdate(input: $input)
       }
     `),
@@ -30,11 +28,7 @@
 
   <form class="space-y-4" use:form>
     <FormField name="email" label="이메일 주소">
-      <TextInput
-        class="w-full font-bold"
-        placeholder="이메일 입력"
-        bind:value
-      />
+      <TextInput class="w-full font-bold" placeholder="이메일 입력" bind:value />
     </FormField>
 
     <Button class="w-full" size="xl" type="submit">이메일 인증 보내기</Button>

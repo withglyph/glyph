@@ -30,10 +30,7 @@ export class UnknownError extends AppError {
 
     super({
       kind: AppErrorKind.UnknownError,
-      message:
-        !production && cause
-          ? `${cause.name}: ${cause.message}`
-          : '알 수 없는 오류가 발생했어요',
+      message: !production && cause ? `${cause.name}: ${cause.message}` : '알 수 없는 오류가 발생했어요',
       extra: { cause },
     });
 

@@ -50,9 +50,7 @@
   title="함께 그리는 반짝임, PENXLE"
 />
 
-<div
-  class="c flex grow flex-col center items-center justify-between bg-gray-10 p-32px"
->
+<div class="c flex grow flex-col center items-center justify-between bg-gray-10 p-32px">
   <div />
 
   <div class="flex flex-col center">
@@ -60,11 +58,7 @@
     <img class="mt-40px h-50px" alt="" src="/assets/coming-soon.webp" />
     <Slogan class="mt-32px h-25px" />
 
-    <form
-      class="mt-64px flex flex-col center gap-2"
-      method="POST"
-      on:submit|preventDefault={handleSubmit}
-    >
+    <form class="mt-64px flex flex-col center gap-2" method="POST" on:submit|preventDefault={handleSubmit}>
       <div class="flex justify-center gap-4 text-sm">
         <input
           class="w-200px rounded-xl bg-white px-3 py-2.5 text-center font-bold"
@@ -86,19 +80,9 @@
           disabled={status !== 'idle'}
           type="submit"
         >
-          <div
-            class={clsx(
-              'contents',
-              status !== 'idle' && status !== 'invalid' && 'invisible',
-            )}
-          >
-            알림 신청
-          </div>
+          <div class={clsx('contents', status !== 'idle' && status !== 'invalid' && 'invisible')}>알림 신청</div>
           {#if status !== 'idle'}
-            <div
-              class="absolute inset-0 flex center py-2.5"
-              transition:fade={{ duration: 150 }}
-            >
+            <div class="absolute inset-0 flex center py-2.5" transition:fade={{ duration: 150 }}>
               {#if status === 'submitting'}
                 <RingSpinner class="h-full" />
               {:else if status === 'submitted'}
@@ -109,25 +93,14 @@
           {/if}
         </button>
       </div>
-      <div class="text-xs text-gray-50">
-        서비스가 오픈하면 입력하신 휴대전화 번호로 알려드릴게요!
-      </div>
+      <div class="text-xs text-gray-50">서비스가 오픈하면 입력하신 휴대전화 번호로 알려드릴게요!</div>
     </form>
   </div>
 
   <div class="flex gap-8 text-gray-40">
-    <Link
-      class="i-lg-twitter square-5 hover:text-[#1DA1F2]"
-      href="https://twitter.com/penxle"
-    />
-    <Link
-      class="i-lg-instagram square-5 hover:text-[#E4405F]"
-      href="https://www.instagram.com/penxle.team/"
-    />
-    <Link
-      class="i-lg-github square-5 hover:text-[#181717]"
-      href="https://github.com/penxle"
-    />
+    <Link class="i-lg-twitter square-5 hover:text-[#1DA1F2]" href="https://twitter.com/penxle" />
+    <Link class="i-lg-instagram square-5 hover:text-[#E4405F]" href="https://www.instagram.com/penxle.team/" />
+    <Link class="i-lg-github square-5 hover:text-[#181717]" href="https://github.com/penxle" />
   </div>
 </div>
 

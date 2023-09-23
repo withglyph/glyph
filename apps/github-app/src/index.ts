@@ -6,9 +6,7 @@ import type { EmitterWebhookEventName } from '@octokit/webhooks';
 
 router.post('/', async (request) => {
   const id = request.headers.get('x-github-delivery');
-  const name = request.headers.get(
-    'x-github-event',
-  ) as EmitterWebhookEventName | null;
+  const name = request.headers.get('x-github-event') as EmitterWebhookEventName | null;
   const signature = request.headers.get('x-hub-signature-256');
   const payload = await request.text();
 

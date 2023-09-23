@@ -3,10 +3,7 @@
 
   export let title: string;
   export let description: string | undefined = undefined;
-  export let image:
-    | string
-    | { src: string; size: 'small' | 'large' }
-    | undefined = undefined;
+  export let image: string | { src: string; size: 'small' | 'large' } | undefined = undefined;
 
   $: ({
     url: { href },

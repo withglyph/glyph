@@ -11,10 +11,7 @@
 <TextInput type={reveal ? 'text' : 'password'} {...$$restProps}>
   <button
     slot="right-icon"
-    class={clsx(
-      'square-4 text-gray-30 transition hover:text-gray-40',
-      reveal ? 'i-lc-eye-off' : 'i-lc-eye',
-    )}
+    class={clsx('square-4 text-gray-30 transition hover:text-gray-40', reveal ? 'i-lc-eye-off' : 'i-lc-eye')}
     tabindex="-1"
     type="button"
     on:click={() => (reveal = !reveal)}

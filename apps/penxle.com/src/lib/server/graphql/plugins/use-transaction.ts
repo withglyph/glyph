@@ -8,13 +8,10 @@ export const useTransaction = (): Plugin<Context> => {
     onExecute: () => {
       return {
         onExecuteDone: (payload) => {
-          handleStreamOrSingleExecutionResult(
-            payload,
-            async ({ args: { contextValue }, result }) => {
-              const db = contextValue.db as TransactionClient;
-              await (result.errors ? db.$rollback() : db.$commit());
-            },
-          );
+          handleStreamOrSingleExecutionResult(payload, async ({ args: { contextValue }, result }) => {
+            const db = contextValue.db as TransactionClient;
+            await (result.errors ? db.$rollback() : db.$commit());
+          });
         },
       };
     },

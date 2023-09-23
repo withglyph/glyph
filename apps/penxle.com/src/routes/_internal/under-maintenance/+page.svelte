@@ -14,7 +14,5 @@
     잠시 후 다시 시도해주세요!
   </p>
 
-  <Link class="text-sm" colored href="https://twitter.com/penxle" underline>
-    @penxle
-  </Link>
+  <Link class="text-sm" colored href="https://twitter.com/penxle" underline>@penxle</Link>
 </div>

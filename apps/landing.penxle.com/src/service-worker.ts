@@ -31,11 +31,7 @@ sw.addEventListener('activate', (event) => {
   event.waitUntil(
     (async () => {
       const keys = await caches.keys();
-      await Promise.all(
-        keys
-          .filter((key) => key !== cacheKey)
-          .map(async (key) => caches.delete(key)),
-      );
+      await Promise.all(keys.filter((key) => key !== cacheKey).map(async (key) => caches.delete(key)));
     })(),
   );
 });
@@ -47,10 +43,7 @@ sw.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (
-    (url.origin !== sw.location.origin || !assets.includes(url.pathname)) &&
-    !remoteAssets.includes(url.href)
-  ) {
+  if ((url.origin !== sw.location.origin || !assets.includes(url.pathname)) && !remoteAssets.includes(url.href)) {
     return;
   }
 

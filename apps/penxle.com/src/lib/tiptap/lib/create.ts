@@ -5,10 +5,7 @@ import type { NodeViewComponentType } from './renderer';
 
 type CreateNodeViewOptions = NodeConfig;
 
-export const createNodeView = (
-  component: NodeViewComponentType,
-  options: CreateNodeViewOptions,
-) => {
+export const createNodeView = (component: NodeViewComponentType, options: CreateNodeViewOptions) => {
   return Node.create({
     ...options,
 

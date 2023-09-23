@@ -1,11 +1,7 @@
 import dayjs from 'dayjs';
 import { error, status } from 'itty-router';
 import { google, naver } from '$lib/server/external-api';
-import {
-  createAccessToken,
-  directUploadImage,
-  generateRandomAvatar,
-} from '$lib/server/utils';
+import { createAccessToken, directUploadImage, generateRandomAvatar } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { createRouter } from '../router';
 import type { Context } from '$lib/server/context';
@@ -34,10 +30,7 @@ sso.get('/sso/naver', async (_, context) => {
   return await handle(context, externalUser);
 });
 
-const handle = async (
-  { db, ...context }: Context,
-  externalUser: ExternalUser,
-) => {
+const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) => {
   const _state = context.url.searchParams.get('state');
   if (!_state) {
     return error(400);

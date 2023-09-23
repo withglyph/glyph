@@ -46,9 +46,7 @@
         class="i-lc-paintbrush"
         active={editor?.isActive('text-color')}
         {editor}
-        enabled={editor
-          ?.can()
-          .setTextColor({ 'data-text-color': 'text-brand-50' })}
+        enabled={editor?.can().setTextColor({ 'data-text-color': 'text-brand-50' })}
       />
 
       <span class="square-6" />
@@ -58,8 +56,7 @@
         class="i-lc-heading-1"
         active={editor?.isActive('heading', { level: 1 })}
         enabled={editor?.can().toggleHeading({ level: 1 })}
-        on:click={() =>
-          editor?.chain().focus().toggleHeading({ level: 1 }).run()}
+        on:click={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
       />
 
       <ToolbarButton
@@ -67,8 +64,7 @@
         class="i-lc-heading-2"
         active={editor?.isActive('heading', { level: 2 })}
         enabled={editor?.can().toggleHeading({ level: 2 })}
-        on:click={() =>
-          editor?.chain().focus().toggleHeading({ level: 2 }).run()}
+        on:click={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
       />
 
       <ToolbarButton
@@ -76,8 +72,7 @@
         class="i-lc-heading-3"
         active={editor?.isActive('heading', { level: 3 })}
         enabled={editor?.can().toggleHeading({ level: 3 })}
-        on:click={() =>
-          editor?.chain().focus().toggleHeading({ level: 3 }).run()}
+        on:click={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}
       />
 
       <span class="square-6" />

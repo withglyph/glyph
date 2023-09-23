@@ -6,8 +6,7 @@ type WarnOnUnloadOptions = {
 };
 
 export const warnOnUnload = (options?: WarnOnUnloadOptions) => {
-  const message =
-    options?.message ?? '작성된 내용이 사라져요. 정말로 떠나시겠어요?';
+  const message = options?.message ?? '작성된 내용이 사라져요. 정말로 떠나시겠어요?';
 
   beforeNavigate(({ cancel, willUnload }) => {
     // 개발환경에서는 무시 (HMR이 귀찮아짐)

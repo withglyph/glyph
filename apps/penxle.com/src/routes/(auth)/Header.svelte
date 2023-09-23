@@ -4,9 +4,7 @@
   import LogoWhite from '$assets/icons/logo-white.svg?component';
 </script>
 
-<header
-  class="z-10 w-full h-15 border-b border-alphagray-15 px-4 py-2 flex items-center sm:px-5"
->
+<header class="z-10 w-full h-15 border-b border-alphagray-15 px-4 py-2 flex items-center sm:px-5">
   <nav class="flex items-center gap-2">
     <Link href="/">
       <LogoWhite class="<sm:hidden sm:square-6" />

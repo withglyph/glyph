@@ -3,11 +3,7 @@ import path from 'node:path';
 import utils from '@actions/cache/lib/internal/cacheUtils';
 import { extractTar } from '@actions/cache/lib/internal/tar';
 import actions from '@actions/core';
-import {
-  GetObjectCommand,
-  ListObjectsV2Command,
-  S3Client,
-} from '@aws-sdk/client-s3';
+import { GetObjectCommand, ListObjectsV2Command, S3Client } from '@aws-sdk/client-s3';
 
 const S3 = new S3Client();
 
@@ -70,10 +66,7 @@ const main = async () => {
 
   const compressionMethod = await utils.getCompressionMethod();
   const cacheFileName = utils.getCacheFileName(compressionMethod);
-  const archivePath = path.join(
-    await utils.createTempDirectory(),
-    cacheFileName,
-  );
+  const archivePath = path.join(await utils.createTempDirectory(), cacheFileName);
 
   actions.info('Downloading cache...');
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

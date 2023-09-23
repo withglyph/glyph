@@ -13,9 +13,7 @@
 
   const { form, handleSubmit, isSubmitting } = createMutationForm({
     mutation: graphql(`
-      mutation DefaultLayout_CreateSpaceModal_CreateSpace_Mutation(
-        $input: CreateSpaceInput!
-      ) {
+      mutation DefaultLayout_CreateSpaceModal_CreateSpace_Mutation($input: CreateSpaceInput!) {
         createSpace(input: $input) {
           id
           slug
@@ -59,12 +57,5 @@
     </div>
   </form>
 
-  <Button
-    slot="action"
-    loading={$isSubmitting}
-    size="md"
-    on:click={handleSubmit}
-  >
-    만들기
-  </Button>
+  <Button slot="action" loading={$isSubmitting} size="md" on:click={handleSubmit}>만들기</Button>
 </Modal>
