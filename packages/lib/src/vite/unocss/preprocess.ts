@@ -1,5 +1,5 @@
 import { loadConfig } from '@unocss/config';
-import { createGenerator } from '@unocss/core';
+import { createGenerator, expandVariantGroup } from '@unocss/core';
 import * as csstree from 'css-tree';
 import MagicString from 'magic-string';
 import { traverse } from 'object-traversal';
@@ -72,7 +72,7 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
       };
 
       const transformClasses = async (classes: string) => {
-        const list = classes.split(/\s+/);
+        const list = expandVariantGroup(classes).split(/\s+/);
         const knowns = new Set<string>();
         const unknowns = new Set<string>();
 
