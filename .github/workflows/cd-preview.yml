@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    name: ${{ matrix.app }}
+    name: ${{ matrix.app || 'skipped' }}
     runs-on: node18/arm64
     if: (github.event.action == 'labeled' && github.event.label.name == 'preview') || (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'preview'))
     strategy:
