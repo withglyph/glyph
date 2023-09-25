@@ -64,6 +64,11 @@
     ) {
       updateUserNotificationPreference(input: $input) {
         id
+
+        all: notificationPreference(category: ALL) {
+          email
+          website
+        }
       }
     }
   `);

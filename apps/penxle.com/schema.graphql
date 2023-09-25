@@ -238,6 +238,11 @@ enum UserNotificationMethod {
   WEBSITE
 }
 
+enum UserNotificationOpt {
+  OPT_IN
+  OPT_OUT
+}
+
 type UserNotificationPreference {
   email: Boolean!
   website: Boolean!
