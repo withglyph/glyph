@@ -1,11 +1,30 @@
 import * as aws from '@pulumi/aws';
 import { usEast1 } from '$aws/providers';
+import { zones } from '$aws/route53';
 
 const createCertificate = (domain: string) => {
   const certificate = new aws.acm.Certificate(domain, {
     domainName: domain,
     subjectAlternativeNames: [`*.${domain}`],
     validationMethod: 'DNS',
+  });
+
+  certificate.domainValidationOptions.apply((options) => {
+    for (const option of options) {
+      if (option.domainName !== domain) {
+        continue;
+      }
+
+      const name = option.resourceRecordName.slice(0, -1);
+
+      new aws.route53.Record(name, {
+        zoneId: zones[domain.replaceAll('.', '_') as keyof typeof zones].zoneId,
+        type: option.resourceRecordType,
+        name,
+        records: [option.resourceRecordValue.slice(0, -1)],
+        ttl: 300,
+      });
+    }
   });
 
   new aws.acm.CertificateValidation(domain, {
@@ -26,7 +45,7 @@ const createCloudFrontCertificate = (domain: string) => {
     { provider: usEast1 },
   );
 
-  new aws.acm.CertificateValidation(`cloudfront/${domain}`, { certificateArn: certificate.arn }, { provider: usEast1 });
+  new aws.acm.CertificateValidation(`${domain}|cloudfront`, { certificateArn: certificate.arn }, { provider: usEast1 });
 
   return certificate;
 };
