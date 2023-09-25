@@ -88,6 +88,12 @@
       }
     }
   `);
+
+  const resendUserActivationEmail = graphql(`
+    mutation MeAccountsPage_ResendUserActivationEmail_Mutation {
+      resendUserActivationEmail
+    }
+  `);
 </script>
 
 <Helmet title="계정 설정" />
@@ -126,7 +132,20 @@
         </Button>
 
         {#if $query.me.state === 'PROVISIONAL'}
-          <Button color="secondary" size="md">인증하기</Button>
+          <Button
+            color="secondary"
+            size="md"
+            on:click={async () => {
+              try {
+                await resendUserActivationEmail();
+                toast.success('이메일 인증 메일을 보냈어요');
+              } catch {
+                toast.error('이메일 인증 메일을 보내는 중 오류가 발생했어요');
+              }
+            }}
+          >
+            인증하기
+          </Button>
         {/if}
       </div>
     </div>
