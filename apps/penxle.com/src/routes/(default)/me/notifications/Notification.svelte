@@ -10,16 +10,6 @@
   export let email: boolean;
   export let all: { website: boolean; email: boolean };
 
-  const updateNotificationPreferences = graphql(`
-    mutation MeNotificationsPage_Notification_UpdateUserNotificationPreference_Mutation(
-      $input: UpdateUserNotificationPreferenceInput!
-    ) {
-      updateUserNotificationPreference(input: $input) {
-        id
-      }
-    }
-  `);
-
   const category = {
     '전체': 'ALL',
     '댓글': 'COMMENT',
@@ -31,6 +21,56 @@
     '후원': 'DONATE',
     '태그 위키 수정': 'TAG_WIKI_EDIT',
   }[name] as UserNotificationCategory;
+
+  const updateNotificationPreferences = graphql(`
+    mutation MeNotificationsPage_Notification_UpdateUserNotificationPreference_Mutation(
+      $input: UpdateUserNotificationPreferenceInput!
+    ) {
+      updateUserNotificationPreference(input: $input) {
+        id
+
+        comment: notificationPreference(category: COMMENT) {
+          email
+          website
+        }
+
+        reply: notificationPreference(category: REPLY) {
+          email
+          website
+        }
+
+        subscribe: notificationPreference(category: SUBSCRIBE) {
+          email
+          website
+        }
+
+        tagEdit: notificationPreference(category: TAG_EDIT) {
+          email
+          website
+        }
+
+        trend: notificationPreference(category: TREND) {
+          email
+          website
+        }
+
+        purchase: notificationPreference(category: PURCHASE) {
+          email
+          website
+        }
+
+        donate: notificationPreference(category: DONATE) {
+          email
+          website
+        }
+
+        tagWikiEdit: notificationPreference(category: TAG_WIKI_EDIT) {
+          email
+          website
+        }
+      }
+    }
+  `);
 </script>
 
 <div class="flex flex-col flex-wrap justify-center sm:(flex-row items-center justify-between flex-nowrap)">
