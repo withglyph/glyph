@@ -1,5 +1,6 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import clsx from 'clsx';
   import { tick } from 'svelte';
   import { fragment, graphql } from '$glitch';
   import { portal } from '$lib/svelte/actions';
@@ -9,6 +10,8 @@
 
   let _user: DefaultLayout_PublishMenu_user;
   export { _user as $user };
+  let _class: string | undefined;
+  export { _class as class };
 
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLDivElement;
@@ -50,13 +53,15 @@
 
 <button
   bind:this={targetEl}
-  class="relative flex items-center gap-2 rounded-lg from-[#ED4D87] to-[#FF9A61] bg-gradient-to-r px-4 py-2 font-medium text-white transition before:(absolute inset-0 z-1 rounded-inherit bg-black opacity-0 transition content-empty hover:opacity-10)"
-  tabindex="-1"
+  class={clsx(
+    'relative flex items-center gap-2 rounded-lg py-1 px-2 font-bold text-gray-60 transition hover:bg-gray-10',
+    _class,
+  )}
   type="button"
   on:click={() => (open = true)}
 >
-  <span class="i-lc-pencil square-4" />
-  <span class="text-sm">올리기</span>
+  <span class="i-px-pen-fill square-6 fill-gray-60" />
+  <span class="text-sm">포스트 작성하기</span>
 </button>
 
 {#if open}

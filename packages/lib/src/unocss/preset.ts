@@ -57,7 +57,7 @@ export const presetPenxle = (): Preset<Theme> => ({
     breakpoints: {
       sm: '800px',
       lg: '1024px',
-      xl: '1920px',
+      xl: '1600px',
     },
   }),
 });

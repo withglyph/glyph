@@ -1,7 +1,11 @@
 <script lang="ts">
+  import clsx from 'clsx';
   import qs from 'query-string';
   import { afterNavigate, goto } from '$app/navigation';
   import { page } from '$app/stores';
+
+  let _class: string | undefined = undefined;
+  export { _class as class };
 
   let value: string;
   if ($page.url.pathname === '/search') {
@@ -15,19 +19,19 @@
   });
 </script>
 
-<div class="relative">
+<form
+  class={clsx('relative w-full mr-4 h-11', _class)}
+  on:submit|preventDefault={async () => {
+    await goto(qs.stringifyUrl({ url: '/search', query: { q: value } }));
+  }}
+>
   <input
-    class="w-64 rounded-full bg-gray-10 py-2 pl-10 pr-4 text-sm next:focus:text-gray-50"
-    placeholder="펜슬 검색하기"
+    class="transition-width ease-in-out rounded-9 bg-gray-10 py-2 pl-11 pr-4 text-sm border border-gray-10 focus-within:border-gray-40 next:focus:text-gray-50 h-11 <sm:(w-full max-w-80) sm:(w-80 focus-within:w-full!)"
+    placeholder="#검색어를 입력해 태그를 검색해 보세요"
     type="text"
     bind:value
-    on:keydown={async (e) => {
-      if (e.key === 'Enter') {
-        await goto(qs.stringifyUrl({ url: '/search', query: { q: value } }));
-      }
-    }}
   />
   <div class="absolute inset-y-0 left-4 flex center text-gray-30">
-    <span class="i-lc-search square-4 transition" />
+    <span class="i-lc-search square-5 transition" />
   </div>
-</div>
+</form>

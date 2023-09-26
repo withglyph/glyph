@@ -64,8 +64,14 @@
   });
 </script>
 
-<button bind:this={targetEl} class="flex center" tabindex="-1" type="button" on:click={() => (open = true)}>
-  <Avatar class="square-8" $profile={$user.profile} />
+<button
+  bind:this={targetEl}
+  class="flex center square-10 border border-gray-30 rounded-full"
+  tabindex="-1"
+  type="button"
+  on:click={() => (open = true)}
+>
+  <Avatar class="square-9" $profile={$user.profile} />
 </button>
 
 {#if open}

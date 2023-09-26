@@ -23,4 +23,4 @@
   );
 </script>
 
-<Image class={clsx('rounded-full border', _class)} $image={$profile.avatar} />
+<Image class={clsx('rounded-full', _class)} $image={$profile.avatar} />

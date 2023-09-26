@@ -39,8 +39,8 @@
       class={clsx(
         'pointer-events-none absolute inset-0 flex',
         size === 'sm' && 'p-5 center',
-        size === 'md' && 'w-full justify-center items-end sm:(p-6 center)',
-        size === 'lg' && 'w-full justify-center items-end sm:(p-9 center)',
+        size === 'md' && 'w-full justify-center items-end sm:(p-6 center!)',
+        size === 'lg' && 'w-full justify-center items-end sm:(p-9 center!)',
       )}
     >
       <div

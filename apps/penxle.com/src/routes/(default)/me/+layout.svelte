@@ -36,7 +36,9 @@
       )}
     >
       <div class="flex flex-col items-center gap-4 mb-6">
-        <Avatar class="square-20" $profile={$query.me.profile} />
+        <div class="flex center border rounded-full square-21">
+          <Avatar class="square-20" $profile={$query.me.profile} />
+        </div>
         <div class="text-center">
           <p class="text-xl font-bold mb-2">{$query.me.profile.name}</p>
           <p class="font-semibold text-gray-50">{$query.me.email}</p>

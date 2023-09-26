@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
+  import { Helmet, Link } from '@penxle/ui';
   import { page } from '$app/stores';
+  import Logo from '$assets/icons/logo.svg?component';
   import { Button, Modal } from '$lib/components';
-  import { Logo } from '$lib/components/branding';
   import { deserializeAppError, UnknownError } from '$lib/errors';
 
   let open = false;
@@ -13,7 +13,13 @@
 
 <Helmet title="펜슬" />
 
-<Logo class="absolute left-8 top-4 square-8" />
+<header class="z-10 w-full h-15 px-4 py-2 flex items-center sm:px-7.5">
+  <nav>
+    <Link href="/">
+      <Logo class="<sm:hidden sm:square-6" />
+    </Link>
+  </nav>
+</header>
 
 <div class="mx-auto my-12 flex grow flex-col items-center justify-between">
   <div />
