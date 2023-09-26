@@ -1,4 +1,5 @@
 import { generateClient } from './client';
+import { generateEnumTypes } from './enum-types';
 import { generateFunctions } from './functions';
 import { generateGQLCodegen } from './gql-codegen';
 import { generateInternalTypes } from './internal-types';
@@ -15,6 +16,7 @@ export const codegen = async (context: GlitchContext) => {
   try {
     files = {
       'gql.ts': await generateGQLCodegen(context),
+      'enums.d.ts': await generateEnumTypes(context),
       'introspection.json': generateSchemaIntrospection(context),
       'functions.d.ts': generateFunctions(context),
       'public.d.ts': generatePublicTypes(context),

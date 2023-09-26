@@ -3,6 +3,7 @@ import * as AST from '../ast';
 export const generateMainTypes = (): AST.Program => {
   const program = AST.b.program([
     AST.b.exportAllDeclaration(AST.b.stringLiteral('./functions')),
+    AST.b.exportAllDeclaration(AST.b.stringLiteral('./enums')),
     AST.b.exportAllDeclaration(AST.b.stringLiteral('./public')),
     AST.b.exportNamedDeclaration(
       null,
