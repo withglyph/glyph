@@ -55,8 +55,9 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
     if (!context.session) {
       // 케이스 1 (fail): 현재 사이트에 로그인이 되어 있지 않은 상태
       // -> 에러
+      // 일반적인 케이스에서는 세션이 만료되었을때?
 
-      return error(400);
+      return status(303, { headers: { Location: '/login' } });
     }
 
     if (sso) {
@@ -67,44 +68,28 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
         // 케이스 1-1-1: 그 "누군가"가 현재 로그인된 본인인 경우
         // -> 이미 로그인도 되어 있고 연동도 되어 있으니 아무것도 하지 않음
 
-        return status(301, { headers: { Location: '/me/accounts' } });
+        return status(303, { headers: { Location: '/me/accounts' } });
       } else {
         // 케이스 1-1-2: 그 "누군가"가 현재 로그인된 본인이 아닌 경우
         // -> 현재 로그인된 세션과 연동된 계정이 다르므로 에러
 
-        return error(400);
+        return status(303, { headers: { Location: '/me/accounts?message=sso_already_linked_by_other' } });
       }
     } else {
       // 케이스 1-2: 콜백이 날아온 계정이 아직 사이트에 연동이 안 된 계정인 경우
+      // -> 현재 로그인한 계정에 콜백이 날아온 계정을 연동함
 
-      const isEmailUsedByOtherUser = await db.user.exists({
-        where: {
-          id: { not: context.session.userId },
-          email: externalUser.email,
+      await db.userSingleSignOn.create({
+        data: {
+          id: createId(),
+          userId: context.session.userId,
+          provider: externalUser.provider,
+          providerEmail: externalUser.email,
+          providerUserId: externalUser.id,
         },
       });
 
-      if (isEmailUsedByOtherUser) {
-        // 케이스 1-2-1: 콜백이 날아온 계정의 이메일과 같은 이메일의 계정이 이미 사이트에 있고, 그 계정이 현재 로그인된 계정이 아닐 경우
-        // -> 딴 사람이거나 연동 실수를 하고 있는 가능성도 있으니 에러
-
-        return error(400);
-      } else {
-        // 케이스 1-2-2: 콜백이 날아온 계정의 이메일과 같은 이메일의 계정이 없거나, 있더라도 현재 로그인된 계정인 경우
-        // -> 현재 로그인한 계정에 콜백이 날아온 계정을 연동함
-
-        await db.userSingleSignOn.create({
-          data: {
-            id: createId(),
-            userId: context.session.userId,
-            provider: externalUser.provider,
-            providerEmail: externalUser.email,
-            providerUserId: externalUser.id,
-          },
-        });
-
-        return status(301, { headers: { Location: '/me/accounts' } });
-      }
+      return status(303, { headers: { Location: '/me/accounts' } });
     }
   } else if (state.type === 'AUTH') {
     // 케이스 2: 계정 로그인 혹은 가입중인 경우
@@ -124,7 +109,7 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
         maxAge: dayjs.duration(1, 'year').asSeconds(),
       });
 
-      return status(301, { headers: { Location: '/' } });
+      return status(303, { headers: { Location: '/' } });
     } else {
       // 케이스 2-2: 콜백이 날아온 계정이 아직 사이트에 연동이 안 된 계정인 경우
 
@@ -139,7 +124,7 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
         // -> "아직 연동이 안 되었으니" 로그인해주면 안 됨. 다시 로그인 페이지로 리다이렉트.
 
         // TODO: querystring 같은거 넣어서 로그인 페이지에서 연동 안 된 계정이라고 비밀번호 로그인하라고 알려줘야 할 듯.
-        return status(301, { headers: { Location: '/login' } });
+        return status(303, { headers: { Location: '/login?message=sso_link_required' } });
       } else {
         // 케이스 2-2-2: 콜백이 날아온 계정의 이메일이 연동되지 않았고, 같은 이메일의 계정도 사이트에 없는 경우
         // -> 새로 가입함
@@ -197,7 +182,7 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
           maxAge: dayjs.duration(1, 'year').asSeconds(),
         });
 
-        return status(301, { headers: { Location: '/' } });
+        return status(303, { headers: { Location: '/' } });
       }
     }
   }

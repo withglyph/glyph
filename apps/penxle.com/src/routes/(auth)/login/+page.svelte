@@ -1,5 +1,7 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import { browser } from '$app/environment';
+  import { page } from '$app/stores';
   import Wordmark from '$assets/branding/wordmark.svg?component';
   import Google from '$assets/icons/google.svg?component';
   import Naver from '$assets/icons/naver.svg?component';
@@ -9,6 +11,7 @@
   import { Logo } from '$lib/components/branding';
   import { FormField, PasswordInput, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
+  import { toast } from '$lib/notification';
   import { LoginInputSchema } from '$lib/validations';
 
   const { form } = createMutationForm({
@@ -36,6 +39,14 @@
       }
     }
   `);
+
+  if (browser) {
+    switch ($page.url.searchParams.get('message')) {
+      case 'sso_link_required':
+        toast.error('아직 소셜 연동을 하지 않은 계정이에요. 로그인한 뒤 계정 설정에서 연동해주세요.');
+        break;
+    }
+  }
 </script>
 
 <Helmet title="로그인" />
