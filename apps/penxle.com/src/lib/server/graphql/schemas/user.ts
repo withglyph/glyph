@@ -81,7 +81,7 @@ builder.prismaObject('User', {
           where: { userId_category: { userId: parent.id, category: 'ALL_BUT_ADULT' } },
         });
 
-        if (all) {
+        if (all?.action === 'HIDE') {
           return all;
         }
 
@@ -90,7 +90,7 @@ builder.prismaObject('User', {
           where: { userId_category: { userId: parent.id, category: args.category } },
         });
 
-        return preference ?? ({ action: 'WARN' } as const);
+        return preference ?? all ?? ({ action: 'WARN' } as const);
       },
     }),
 
@@ -922,6 +922,15 @@ builder.mutationFields((t) => ({
     type: 'User',
     args: { input: t.arg({ type: UpdateUserContentFilterPreferenceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
+      if (input.category === 'ALL_BUT_ADULT') {
+        await db.userContentFilterPreference.deleteMany({
+          where: {
+            userId: context.session.userId,
+            category: { not: 'ADULT' },
+            action: { not: 'HIDE' },
+          },
+        });
+      }
       return await db.user.update({
         ...query,
         where: { id: context.session.userId },
