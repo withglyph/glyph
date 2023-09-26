@@ -253,7 +253,7 @@
         <h3 class="text-lg font-extrabold mb-2">마케팅 수신 동의</h3>
         {#if $query.me.marketingConsent}
           <p class="text-3.75 text-gray-50 break-keep">
-            {dayjs($query.me.marketingConsent.createdAt).formatAsDateTime()} 승인됨
+            {dayjs($query.me.marketingConsent.createdAt).formatAsDate()} 승인됨
           </p>
         {/if}
       </div>
@@ -262,7 +262,9 @@
         on:change={async () => {
           const consent = !$query.me.marketingConsent;
           await updateUserMarketingConsent({ consent });
-          toast.success(`마케팅 수신 동의가 ${consent ? '승인' : '거부'} 처리되었어요`);
+          toast.success(
+            `펜슬의 마케팅 수신 동의가 ${dayjs().formatAsDate()} ${consent ? '승인' : '거부'} 처리되었어요`,
+          );
         }}
       />
     </div>
