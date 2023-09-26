@@ -1,6 +1,6 @@
 <script lang="ts">
-  import 'virtual:uno.css';
   import '../styles/index.css';
+  import 'virtual:uno.css';
 
   import { AutoUpdater, StackIndicator } from '@penxle/ui';
   import { ToastProvider } from '$lib/notification';

@@ -45,6 +45,7 @@
     "@unocss/core": "^0.56.1",
     "@unocss/preset-icons": "^0.56.1",
     "@unocss/preset-uno": "^0.56.1",
+    "@unocss/vite": "^0.56.4",
     "browserslist": "^4.21.11",
     "css-tree": "^2.3.1",
     "lightningcss": "^1.22.0",

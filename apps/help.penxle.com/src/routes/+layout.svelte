@@ -1,6 +1,6 @@
 <script lang="ts">
-  import 'virtual:uno.css';
   import '../styles/index.css';
+  import 'virtual:uno.css';
 
   import { AutoUpdater, Link, StackIndicator } from '@penxle/ui';
   import Logo from '$assets/branding/logo.svg?component';
