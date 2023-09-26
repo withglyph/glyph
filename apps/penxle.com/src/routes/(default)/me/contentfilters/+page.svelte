@@ -1,7 +1,85 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import { Button } from '$lib/components';
+  import clsx from 'clsx';
+  import { graphql } from '$glitch';
   import { Switch } from '$lib/components/forms';
+  import ContentFilterButton from './ContentFilterButton.svelte';
+
+  let isOpen = true;
+
+  $: query = graphql(`
+    query MeContentFiltersPage_Query {
+      me @_required {
+        id
+
+        allButAdult: contentFilterPreference(category: ALL_BUT_ADULT) {
+          action
+        }
+
+        violence: contentFilterPreference(category: VIOLENCE) {
+          action
+        }
+
+        cruelty: contentFilterPreference(category: CRUELTY) {
+          action
+        }
+
+        horror: contentFilterPreference(category: HORROR) {
+          action
+        }
+
+        crime: contentFilterPreference(category: CRIME) {
+          action
+        }
+
+        trauma: contentFilterPreference(category: TRAUMA) {
+          action
+        }
+
+        gambling: contentFilterPreference(category: GAMBLING) {
+          action
+        }
+
+        phobia: contentFilterPreference(category: PHOBIA) {
+          action
+        }
+
+        insult: contentFilterPreference(category: INSULT) {
+          action
+        }
+
+        grossness: contentFilterPreference(category: GROSSNESS) {
+          action
+        }
+
+        other: contentFilterPreference(category: OTHER) {
+          action
+        }
+
+        adult: contentFilterPreference(category: ADULT) {
+          action
+        }
+      }
+    }
+  `);
+
+  const updateUserContentFilterPreference = graphql(`
+    mutation MeContentFiltersPage_UpdateUserContentFilterPreference_Mutation(
+      $input: UpdateUserContentFilterPreferenceInput!
+    ) {
+      updateUserContentFilterPreference(input: $input) {
+        id
+
+        allButAdult: contentFilterPreference(category: ALL_BUT_ADULT) {
+          action
+        }
+
+        adult: contentFilterPreference(category: ADULT) {
+          action
+        }
+      }
+    }
+  `);
 </script>
 
 <Helmet title="필터링 설정" />
@@ -50,49 +128,153 @@
     <div class="flex items-center justify-between w-full mb-4">
       <button type="button">
         <h3 class="text-lg font-extrabold">민감한 내용(주의요소) 표시</h3>
+        <Switch
+          checked={$query.me.allButAdult.action !== 'HIDE'}
+          on:change={async () => {
+            await updateUserContentFilterPreference({
+              action: $query.me.allButAdult.action === 'HIDE' ? 'WARN' : 'HIDE',
+              category: 'ALL_BUT_ADULT',
+            });
+          }}
+        />
       </button>
-      <Switch checked />
+      <p class="text-3.75 text-gray-50">
+        포스트를 올릴 때 설정한 트리거 태그(유혈, 폭력 등) 여부에 대해 체크한 포스팅이 노출되지 않습니다.
+      </p>
+      {#if $query.me.allButAdult.action !== 'HIDE'}
+        <div class="flex items-center gap-3 my-4">
+          <p class="text-3.75 font-bold">민감한 내용 사전 블러 처리</p>
+          <Switch
+            checked={$query.me.allButAdult.action === 'WARN'}
+            size="sm"
+            on:change={async () => {
+              await updateUserContentFilterPreference({
+                action: $query.me.allButAdult.action === 'WARN' ? 'EXPOSE' : 'WARN',
+                category: 'ALL_BUT_ADULT',
+              });
+            }}
+          />
+        </div>
+        <button
+          class="text-gray-50 flex items-center gap-1 mb-4 w-fit"
+          type="button"
+          on:click={() => {
+            isOpen = !isOpen;
+          }}
+        >
+          <span class="text-3.25 font-bold">표시될 트리거워닝 세부 설정</span>
+          <span class={clsx('i-lc-chevron-down square-3.5 transition', !isOpen && 'rotate-180')} />
+        </button>
+        {#if isOpen}
+          <div class="flex flex-wrap gap-3">
+            <ContentFilterButton
+              action={$query.me.violence.action}
+              allButAdult={$query.me.allButAdult.action}
+              category="VIOLENCE"
+            >
+              폭력성
+            </ContentFilterButton>
+            <ContentFilterButton
+              action={$query.me.cruelty.action}
+              allButAdult={$query.me.allButAdult.action}
+              category="CRUELTY"
+            >
+              잔인성
+            </ContentFilterButton>
+            <ContentFilterButton
+              action={$query.me.horror.action}
+              allButAdult={$query.me.allButAdult.action}
+              category="HORROR"
+            >
+              공포성
+            </ContentFilterButton>
+            <ContentFilterButton
+              action={$query.me.crime.action}
+              allButAdult={$query.me.allButAdult.action}
+              category="CRIME"
+            >
+              약물, 범죄
+            </ContentFilterButton>
+            <ContentFilterButton
+              action={$query.me.trauma.action}
+              allButAdult={$query.me.allButAdult.action}
+              category="TRAUMA"
+            >
+              트라우마
+            </ContentFilterButton>
+            <ContentFilterButton
+              action={$query.me.gambling.action}
+              allButAdult={$query.me.allButAdult.action}
+              category="GAMBLING"
+            >
+              사행성
+            </ContentFilterButton>
+            <ContentFilterButton
+              action={$query.me.phobia.action}
+              allButAdult={$query.me.allButAdult.action}
+              category="PHOBIA"
+            >
+              정신질환, 공포증
+            </ContentFilterButton>
+            <ContentFilterButton
+              action={$query.me.insult.action}
+              allButAdult={$query.me.allButAdult.action}
+              category="INSULT"
+            >
+              언어의 부적절성
+            </ContentFilterButton>
+            <ContentFilterButton
+              action={$query.me.grossness.action}
+              allButAdult={$query.me.allButAdult.action}
+              category="GROSSNESS"
+            >
+              벌레, 징그러움
+            </ContentFilterButton>
+            <ContentFilterButton
+              action={$query.me.other.action}
+              allButAdult={$query.me.allButAdult.action}
+              category="OTHER"
+            >
+              기타
+            </ContentFilterButton>
+          </div>
+        {/if}
+      {/if}
     </div>
-    <p class="text-3.75 text-gray-50">
-      포스트를 올릴 때 설정한 트리거 태그(유혈, 폭력 등) 여부에 대해 체크한 포스팅이 노출되지 않습니다.
-    </p>
-    <div class="flex items-center gap-3 my-4">
-      <p class="text-3.75 font-bold">민감한 내용 사전 블러 처리</p>
-      <Switch checked size="sm" />
-    </div>
-    <div class="text-gray-50 flex items-center gap-1 mb-4">
-      <button class="text-3.25 font-bold" type="button">표시될 트리거워닝 세부 설정</button>
-      <button type="button">
-        <span class="i-lc-chevron-down square-3.5" />
-      </button>
-    </div>
-    <div class="flex flex-wrap gap-3">
-      <Button color="tertiary" size="md" variant="outlined">Button 1</Button>
-      <Button color="tertiary" size="md" variant="outlined">Button 2</Button>
-      <Button color="tertiary" size="md" variant="outlined">Button 3</Button>
-      <Button color="tertiary" size="md" variant="outlined">Button 4</Button>
-      <Button color="tertiary" size="md" variant="outlined">Button 5</Button>
-      <Button color="tertiary" size="md" variant="outlined">Button 6</Button>
-      <Button color="tertiary" size="md" variant="outlined">Button 7</Button>
-      <Button color="tertiary" size="md" variant="outlined">Button 8</Button>
-      <Button color="tertiary" size="md" variant="outlined">Button 9</Button>
-      <Button color="tertiary" size="md" variant="outlined">Button 10</Button>
-    </div>
-  </div>
 
-  <div class="w-full border-b border-alphagray-15" />
+    <div class="w-full border-b border-alphagray-15" />
 
-  <div class="flex flex-col flex-wrap justify-center justify-between">
-    <div class="flex items-center justify-between w-full mb-4">
-      <button type="button">
-        <h3 class="text-lg font-extrabold">성인물 표시</h3>
-      </button>
-      <Switch checked />
-    </div>
-    <p class="text-3.75 text-gray-50">성인물에 해당하는 요소가 포함된 포스트가 노출되지 않습니다.</p>
-    <div class="flex items-center gap-3 my-4">
-      <p class="text-3.75 font-bold">민감한 내용 사전 블러 처리</p>
-      <Switch checked size="sm" />
+    <div class="flex flex-col flex-wrap justify-center justify-between">
+      <div class="flex items-center justify-between w-full mb-4">
+        <button type="button">
+          <h3 class="text-lg font-extrabold">성인물 표시</h3>
+        </button>
+        <Switch
+          checked={$query.me.adult.action !== 'HIDE'}
+          on:change={async () => {
+            await updateUserContentFilterPreference({
+              action: $query.me.adult.action === 'HIDE' ? 'WARN' : 'HIDE',
+              category: 'ADULT',
+            });
+          }}
+        />
+      </div>
+      <p class="text-3.75 text-gray-50">성인물에 해당하는 요소가 포함된 포스트가 노출되지 않습니다.</p>
+      {#if $query.me.adult.action !== 'HIDE'}
+        <div class="flex items-center gap-3 my-4">
+          <p class="text-3.75 font-bold">성인물 블러 처리</p>
+          <Switch
+            checked={$query.me.adult.action === 'WARN'}
+            size="sm"
+            on:change={async () => {
+              await updateUserContentFilterPreference({
+                action: $query.me.adult.action === 'EXPOSE' ? 'WARN' : 'EXPOSE',
+                category: 'ADULT',
+              });
+            }}
+          />
+        </div>
+      {/if}
     </div>
   </div>
 </div>
