@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store';
+import { browser } from '$app/environment';
 
 export type Toast = {
   id: symbol;
@@ -12,6 +13,9 @@ type ToastOptions = Partial<Pick<Toast, 'title' | 'duration'>>;
 
 export const store = writable<Toast[]>([]);
 const append = (toast: Omit<Toast, 'id'>) => {
+  if (!browser) {
+    throw new Error('toast can only be used in browser');
+  }
   store.update((toasts) => [...toasts, { id: Symbol(), ...toast }]);
 };
 
