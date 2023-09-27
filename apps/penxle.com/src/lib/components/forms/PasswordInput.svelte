@@ -5,10 +5,11 @@
 
   type $$Props = ComponentProps<TextInput>;
 
+  let value: $$Props['value'];
   let reveal = false;
 </script>
 
-<TextInput type={reveal ? 'text' : 'password'} {...$$restProps}>
+<TextInput type={reveal ? 'text' : 'password'} {...$$restProps} bind:value>
   <button
     slot="right-icon"
     class={clsx('square-4 text-gray-30 transition hover:text-gray-40', reveal ? 'i-lc-eye-off' : 'i-lc-eye')}

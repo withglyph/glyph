@@ -50,6 +50,7 @@
     "vcpu",
     "vite",
     "wonka",
-    "zstd"
+    "zstd",
+    "zxcvbn"
   ]
 }

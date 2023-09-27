@@ -3,7 +3,7 @@
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
-  import { Checkbox, FormField, PasswordInput, TextInput } from '$lib/components/forms';
+  import { Checkbox, FormField, PasswordStrengthInput, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { SignUpInputSchema } from '$lib/validations';
 
@@ -66,11 +66,11 @@
     </FormField>
 
     <FormField name="password" label="비밀번호">
-      <PasswordInput class="w-full font-bold" placeholder="비밀번호 입력" />
+      <PasswordStrengthInput class="w-full font-bold" placeholder="비밀번호 입력" />
     </FormField>
 
     <FormField name="passwordConfirm" label="비밀번호 확인">
-      <PasswordInput class="w-full font-bold" placeholder="비밀번호 확인 입력" />
+      <PasswordStrengthInput class="w-full font-bold" placeholder="비밀번호 확인 입력" />
     </FormField>
   </div>
 

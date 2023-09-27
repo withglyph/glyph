@@ -34,6 +34,7 @@
     class={clsx(
       _class,
       'left-icon' in $$slots && 'pl-10',
+      'right-label' in $$slots && 'pr-20',
       'right-icon' in $$slots && 'pr-10',
       'left-text' in $$slots ? 'rounded-r' : 'rounded',
     )}
@@ -42,6 +43,11 @@
     bind:value
     {...$$restProps}
   />
+  {#if 'right-label' in $$slots}
+    <div class={clsx('absolute inset-y-0 right-0 flex center', 'right-icon' in $$slots && 'right-6')}>
+      <slot name="right-label" />
+    </div>
+  {/if}
   {#if 'right-icon' in $$slots}
     <div class="absolute inset-y-0 right-0 flex center">
       <slot name="right-icon" />

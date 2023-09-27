@@ -4,7 +4,7 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
-  import { FormField, PasswordInput } from '$lib/components/forms';
+  import { FormField, PasswordStrengthInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { ResetUserPasswordInputSchema } from '$lib/validations';
 
@@ -45,11 +45,11 @@
   <input name="code" type="hidden" value={$page.url.searchParams.get('code')} />
 
   <FormField name="password" label="비밀번호">
-    <PasswordInput class="w-full font-bold" placeholder="비밀번호 입력" />
+    <PasswordStrengthInput class="w-full font-bold" placeholder="비밀번호 입력" />
   </FormField>
 
   <FormField name="passwordConfirm" label="비밀번호 확인">
-    <PasswordInput class="w-full font-bold" placeholder="비밀번호 확인 입력" />
+    <PasswordStrengthInput class="w-full font-bold" placeholder="비밀번호 확인 입력" />
   </FormField>
 
   <Button class="w-full" size="xl" type="submit">비밀번호 재설정하기</Button>
