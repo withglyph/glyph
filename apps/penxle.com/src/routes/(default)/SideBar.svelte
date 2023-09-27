@@ -33,7 +33,7 @@
       transition:fade={{ duration: 150 }}
     />
 
-    <div class={clsx('pointer-events-none absolute flex justify-end top-0 bottom-0 right-0 w-80%')}>
+    <div class={clsx('pointer-events-none absolute flex justify-end top-0 bottom-0 right-0 w-75')}>
       <div
         class={clsx('pointer-events-auto max-h-full w-md flex flex-col bg-white shadow-xl px-2 py-2.5')}
         in:fly={{ x: '10%', duration: 150 }}
