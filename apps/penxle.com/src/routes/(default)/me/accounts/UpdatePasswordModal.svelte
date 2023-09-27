@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fragment, graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
-  import { FormField, PasswordInput, PasswordStrengthInput } from '$lib/components/forms';
+  import { FormField, PasswordInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { UpdateUserPasswordInputSchema } from '$lib/validations';
@@ -57,11 +57,11 @@
     {/if}
 
     <FormField name="newPassword" label="새 비밀번호">
-      <PasswordStrengthInput class="w-full font-bold" placeholder="새 비밀번호 입력" />
+      <PasswordInput class="w-full font-bold" placeholder="새 비밀번호 입력" showStrength />
     </FormField>
 
     <FormField name="newPasswordConfirm" label="새 비밀번호 확인">
-      <PasswordStrengthInput class="w-full font-bold" placeholder="새 비밀번호 확인 입력" />
+      <PasswordInput class="w-full font-bold" placeholder="새 비밀번호 확인 입력" />
     </FormField>
 
     <Button class="w-full" size="xl" type="submit">비밀번호 변경</Button>
