@@ -6,7 +6,7 @@
 </script>
 
 <footer class="border-t border-gray-30 px-4 py-10 text-xs tracking-wider text-gray-50 flex sm:px-7.5">
-  <div class="mx-auto flex flex-wrap justify-between gap-6 w-105 sm:w-200 lg:w-300">
+  <div class="mx-auto flex flex-wrap justify-between gap-6 w-full max-w-300">
     <div>
       <section class="flex items-center justify-between mb-4">
         <Wordmark class="h-4" />
