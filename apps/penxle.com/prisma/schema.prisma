@@ -123,13 +123,15 @@ model SpaceMemberInvitation {
   space          Space                      @relation(fields: [spaceId], references: [id])
   sentUserId     String                     @map("sent_user_id")
   sentUser       User                       @relation(name: "spaceMemberInvitationSent", fields: [sentUserId], references: [id])
-  receivedUserId String                     @map("received_user_id")
-  receivedUser   User                       @relation(name: "spaceMemberInvitationReceived", fields: [receivedUserId], references: [id])
+  receivedUserId String?                    @map("received_user_id")
+  receivedUser   User?                      @relation(name: "spaceMemberInvitationReceived", fields: [receivedUserId], references: [id])
+  receivedEmail  String                     @map("received_email")
+  role           SpaceMemberRole
   state          SpaceMemberInvitationState @default(PENDING)
   createdAt      DateTime                   @default(now()) @map("created_at") @db.Timestamptz
   respondedAt    DateTime?                  @map("responded_at") @db.Timestamptz
 
-  @@unique([spaceId, sentUserId, receivedUserId])
+  @@unique([receivedEmail, spaceId])
   @@map("space_member_invitations")
 }
 
@@ -357,7 +359,6 @@ enum SpaceMemberInvitationState {
 }
 
 enum SpaceMemberRole {
-  OWNER
   ADMIN
   MEMBER
 

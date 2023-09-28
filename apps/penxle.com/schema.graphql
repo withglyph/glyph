@@ -155,14 +155,25 @@ type SpaceMember {
   space: Space!
 }
 
+enum SpaceMemberInvitationState {
+  ACCEPTED
+  IGNORED
+  PENDING
+}
+
 enum SpaceMemberRole {
+  ADMIN
   MEMBER
-  OWNER
 }
 
 enum SpaceState {
   ACTIVE
   INACTIVE
+}
+
+enum SpaceVisibility {
+  PRIVATE
+  PUBLIC
 }
 
 input UnlinkUserSingleSignOnInput {

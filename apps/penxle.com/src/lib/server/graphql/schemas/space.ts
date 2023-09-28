@@ -118,6 +118,7 @@ builder.mutationFields((t) => ({
           name: input.name,
           slug: input.slug,
           state: 'ACTIVE',
+          visibility: 'PUBLIC',
           members: {
             create: {
               id: createId(),
