@@ -11,7 +11,7 @@ CREATE TYPE "_preference_type" AS ENUM ('FAVORITE', 'MUTE');
 CREATE TYPE "_space_member_invite_state" AS ENUM ('PENDING', 'ACCEPTED', 'IGNORED');
 
 -- CreateEnum
-CREATE TYPE "_space_member_role" AS ENUM ('OWNER', 'ADMIN', 'MEMBER');
+CREATE TYPE "_space_member_role" AS ENUM ('ADMIN', 'MEMBER');
 
 -- CreateEnum
 CREATE TYPE "_space_state" AS ENUM ('ACTIVE', 'INACTIVE');

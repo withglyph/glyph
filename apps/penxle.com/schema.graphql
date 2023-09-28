@@ -1,3 +1,9 @@
+input AcceptSpaceMemberInvitationInput {
+  avatarId: ID
+  invitationId: ID!
+  name: String
+}
+
 enum AuthScope {
   STAFF
   USER
@@ -29,6 +35,12 @@ input CreateSpaceInput {
   slug: String!
 }
 
+input CreateSpaceMemberInvitationInput {
+  email: String!
+  role: SpaceMemberRole!
+  spaceId: ID!
+}
+
 input CreateUserInput {
   marketingConsent: Boolean!
   name: String!
@@ -48,6 +60,10 @@ input DeleteSpaceInput {
 input FinalizeImageUploadInput {
   key: String!
   name: String!
+}
+
+input IgnoreSpaceMemberInvitationInput {
+  invitationId: ID!
 }
 
 type Image {
@@ -84,10 +100,13 @@ input LoginUserInput {
 }
 
 type Mutation {
+  acceptSpaceMemberInvitation(input: AcceptSpaceMemberInvitationInput!): SpaceMemberInvitation!
   createSpace(input: CreateSpaceInput!): Space!
+  createSpaceMemberInvitation(input: CreateSpaceMemberInvitationInput!): SpaceMemberInvitation!
   createUser(input: CreateUserInput!): User!
   deleteSpace(input: DeleteSpaceInput!): Space!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
+  ignoreSpaceMemberInvitation(input: IgnoreSpaceMemberInvitationInput!): SpaceMemberInvitation!
   issueUserEmailAuthorizationUrl(input: IssueUserEmailAuthorizationUrlInput!): IssueUserEmailAuthorizationUrlResult!
   issueUserSingleSignOnAuthorizationUrl(input: IssueUserSingleSignOnAuthorizationUrlInput!): IssueUserSingleSignOnAuthorizationUrlResult!
   loginUser(input: LoginUserInput!): UserEmailVerification!
@@ -137,6 +156,7 @@ type Query {
 
 type Space {
   id: ID!
+  invitations: [SpaceMemberInvitation!]!
   meAsMember: SpaceMember
   members: [SpaceMember!]!
   name: String!
@@ -147,6 +167,12 @@ type SpaceMember {
   id: ID!
   profile: Profile!
   role: SpaceMemberRole!
+}
+
+type SpaceMemberInvitation {
+  createdAt: DateTime!
+  id: ID!
+  receivedEmail: String!
   space: Space!
 }
 
@@ -206,6 +232,7 @@ type User {
   marketingConsent: UserMarketingConsent
   notificationPreferences: [UserNotificationPreference!]!
   profile: Profile!
+  receivedSpaceMemberInvitations: [SpaceMemberInvitation!]!
   singleSignOns: [UserSingleSignOn!]!
   spaces: [Space!]!
   state: UserState!

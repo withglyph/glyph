@@ -1,7 +1,8 @@
 import { SpaceMemberRole } from '@prisma/client';
+import * as R from 'radash';
 import { FormValidationError, NotFoundError } from '$lib/errors';
 import { createId } from '$lib/utils';
-import { CreateSpaceInputSchema } from '$lib/validations';
+import { CreateSpaceMemberInvitationSchema, CreateSpaceSchema } from '$lib/validations';
 import { builder } from '../builder';
 
 /**
@@ -10,10 +11,32 @@ import { builder } from '../builder';
 
 builder.prismaObject('Space', {
   select: { id: true },
+  grantScopes: async (space, { db, ...context }) => {
+    if (!context.session) {
+      return [];
+    }
+
+    const member = await db.spaceMember.findUnique({
+      select: { role: true },
+      where: {
+        spaceId_userId: {
+          spaceId: space.id,
+          userId: context.session.userId,
+        },
+      },
+    });
+
+    if (!member) {
+      return [];
+    }
+
+    return R.sift(['$space:member', member.role === 'ADMIN' && '$space:admin']);
+  },
   fields: (t) => ({
     id: t.exposeID('id'),
     slug: t.exposeString('slug'),
     name: t.exposeString('name'),
+
     members: t.relation('members'),
 
     meAsMember: t.prismaField({
@@ -35,6 +58,11 @@ builder.prismaObject('Space', {
         });
       },
     }),
+
+    invitations: t.relation('invitations', {
+      authScopes: { $granted: '$space:admin' },
+      grantScopes: ['$space.member.invitation'],
+    }),
   }),
 });
 
@@ -43,8 +71,20 @@ builder.prismaObject('SpaceMember', {
   fields: (t) => ({
     id: t.exposeID('id'),
     role: t.expose('role', { type: SpaceMemberRole }),
-    space: t.relation('space'),
+
     profile: t.relation('profile'),
+  }),
+});
+
+builder.prismaObject('SpaceMemberInvitation', {
+  select: { id: true },
+  authScopes: { $granted: '$space.member.invitation' },
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    receivedEmail: t.exposeString('receivedEmail'),
+    createdAt: t.expose('createdAt', { type: 'DateTime' }),
+
+    space: t.relation('space'),
   }),
 });
 
@@ -57,12 +97,35 @@ const CreateSpaceInput = builder.inputType('CreateSpaceInput', {
     name: t.string(),
     slug: t.string(),
   }),
-  validate: { schema: CreateSpaceInputSchema },
+  validate: { schema: CreateSpaceSchema },
 });
 
 const DeleteSpaceInput = builder.inputType('DeleteSpaceInput', {
   fields: (t) => ({
     spaceId: t.id(),
+  }),
+});
+
+const CreateSpaceMemberInvitationInput = builder.inputType('CreateSpaceMemberInvitationInput', {
+  fields: (t) => ({
+    spaceId: t.id(),
+    email: t.string(),
+    role: t.field({ type: SpaceMemberRole }),
+  }),
+  validate: { schema: CreateSpaceMemberInvitationSchema },
+});
+
+const AcceptSpaceMemberInvitationInput = builder.inputType('AcceptSpaceMemberInvitationInput', {
+  fields: (t) => ({
+    invitationId: t.id(),
+    name: t.string({ required: false }),
+    avatarId: t.id({ required: false }),
+  }),
+});
+
+const IgnoreSpaceMemberInvitationInput = builder.inputType('IgnoreSpaceMemberInvitationInput', {
+  fields: (t) => ({
+    invitationId: t.id(),
   }),
 });
 
@@ -124,7 +187,7 @@ builder.mutationFields((t) => ({
               id: createId(),
               userId: context.session.userId,
               profileId: user.profileId,
-              role: 'OWNER',
+              role: 'ADMIN',
             },
           },
         },
@@ -141,11 +204,134 @@ builder.mutationFields((t) => ({
         where: {
           id: input.spaceId,
           state: 'ACTIVE',
-          members: {
-            some: { userId: context.session.userId, role: 'OWNER' },
-          },
+          members: { some: { userId: context.session.userId, role: 'ADMIN' } },
         },
         data: { state: 'INACTIVE' },
+      });
+    },
+  }),
+
+  createSpaceMemberInvitation: t.withAuth({ user: true }).prismaField({
+    type: 'SpaceMemberInvitation',
+    args: { input: t.arg({ type: CreateSpaceMemberInvitationInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const member = await db.spaceMember.findUniqueOrThrow({
+        where: {
+          spaceId_userId: {
+            spaceId: input.spaceId,
+            userId: context.session.userId,
+          },
+          role: 'ADMIN',
+        },
+      });
+
+      const targetUser = await db.user.findFirst({
+        where: { email: input.email.toLowerCase() },
+      });
+
+      if (targetUser) {
+        const isAlreadyMember = await db.spaceMember.exists({
+          where: {
+            spaceId: input.spaceId,
+            userId: targetUser.id,
+          },
+        });
+
+        if (isAlreadyMember) {
+          throw new FormValidationError('email', '이미 스페이스에 가입한 사용자에요.');
+        }
+      }
+
+      const isAlreadyInvited = await db.spaceMemberInvitation.exists({
+        where: {
+          spaceId: input.spaceId,
+          receivedEmail: input.email.toLowerCase(),
+          state: { not: 'ACCEPTED' },
+        },
+      });
+
+      if (isAlreadyInvited) {
+        throw new FormValidationError('email', '이미 초대한 사용자에요.');
+      }
+
+      return await db.spaceMemberInvitation.create({
+        ...query,
+        data: {
+          id: createId(),
+          spaceId: input.spaceId,
+          sentUserId: member.userId,
+          receivedUserId: targetUser?.id,
+          receivedEmail: input.email.toLowerCase(),
+          role: input.role,
+          state: 'PENDING',
+        },
+      });
+    },
+  }),
+
+  acceptSpaceMemberInvitation: t.withAuth({ user: true }).prismaField({
+    type: 'SpaceMemberInvitation',
+    args: { input: t.arg({ type: AcceptSpaceMemberInvitationInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const invitation = await db.spaceMemberInvitation.findUniqueOrThrow({
+        include: { space: true },
+        where: {
+          id: input.invitationId,
+          receivedUserId: context.session.userId,
+          state: 'PENDING',
+        },
+      });
+
+      const user = await db.user.findUniqueOrThrow({
+        select: { profile: true },
+        where: { id: context.session.userId },
+      });
+
+      let profileId: string;
+      if (input.name && input.avatarId) {
+        const profile = await db.profile.create({
+          data: {
+            id: createId(),
+            name: input.name,
+            avatarId: input.avatarId,
+          },
+        });
+
+        profileId = profile.id;
+      } else {
+        profileId = user.profile.id;
+      }
+
+      await db.spaceMember.create({
+        data: {
+          id: createId(),
+          spaceId: invitation.spaceId,
+          userId: context.session.userId,
+          profileId,
+          role: invitation.role,
+        },
+      });
+
+      return await db.spaceMemberInvitation.update({
+        ...query,
+        where: { id: invitation.id },
+        data: { state: 'ACCEPTED' },
+      });
+    },
+  }),
+
+  ignoreSpaceMemberInvitation: t.withAuth({ user: true }).prismaField({
+    type: 'SpaceMemberInvitation',
+    args: { input: t.arg({ type: IgnoreSpaceMemberInvitationInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      return await db.spaceMemberInvitation.update({
+        ...query,
+        where: {
+          id: input.invitationId,
+          receivedUserId: context.session.userId,
+          state: 'PENDING',
+        },
+        data: { state: 'IGNORED' },
       });
     },
   }),

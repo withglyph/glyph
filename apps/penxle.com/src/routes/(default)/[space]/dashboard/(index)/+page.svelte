@@ -31,7 +31,7 @@
 </a>
 <div class="text-2xl font-bold">대시보드</div>
 
-{#if $query.space.meAsMember?.role === 'OWNER'}
+{#if $query.space.meAsMember?.role === 'ADMIN'}
   <button
     class="rounded px-4 py-2 font-medium text-red-50 hover:bg-red-5"
     type="button"

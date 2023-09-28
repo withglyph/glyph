@@ -77,6 +77,10 @@ builder.prismaObject('User', {
       }),
       resolve: (_, { spaces }) => spaces.map(({ space }) => space),
     }),
+
+    receivedSpaceMemberInvitations: t.relation('receivedSpaceMemberInvitations', {
+      grantScopes: ['$space.member.invitation'],
+    }),
   }),
 });
 

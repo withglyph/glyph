@@ -1,5 +1,7 @@
+import { SpaceMemberRole } from '@prisma/client';
 import { z } from 'zod';
 import { UNAVAILABLE_SPACE_SLUGS } from '$lib/const';
+import { email } from './common';
 
 const SpaceSlugSchema = z
   .string()
@@ -13,7 +15,13 @@ const SpaceSlugSchema = z
     '사용할 수 없는 URL이에요',
   );
 
-export const CreateSpaceInputSchema = z.object({
+export const CreateSpaceSchema = z.object({
   name: z.string().min(1, '스페이스 이름을 입력해주세요').max(20, '스페이스 이름은 20자를 넘을 수 없어요'),
   slug: SpaceSlugSchema,
+});
+
+export const CreateSpaceMemberInvitationSchema = z.object({
+  spaceId: z.string(),
+  email,
+  role: z.nativeEnum(SpaceMemberRole),
 });

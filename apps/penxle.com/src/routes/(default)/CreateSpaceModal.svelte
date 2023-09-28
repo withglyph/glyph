@@ -7,7 +7,7 @@
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
-  import { CreateSpaceInputSchema } from '$lib/validations';
+  import { CreateSpaceSchema } from '$lib/validations';
 
   export let open = false;
 
@@ -20,7 +20,7 @@
         }
       }
     `),
-    schema: CreateSpaceInputSchema,
+    schema: CreateSpaceSchema,
     onSuccess: async ({ slug }) => {
       mixpanel.track('space:create');
       toast.success('스페이스를 만들었어요.');
