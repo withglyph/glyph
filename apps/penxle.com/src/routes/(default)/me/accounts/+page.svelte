@@ -169,16 +169,6 @@
     <Button color="secondary" size="md">인증하기</Button>
   </div>
 
-  <div class="flex flex-wrap items-center justify-between gap-4">
-    <div>
-      <div class="flex flex-wrap mb-2 items-center">
-        <h3 class="text-lg font-extrabold mr-2">성인 인증</h3>
-        <Badge class="text-xs font-bold" color="red">인증 필요</Badge>
-      </div>
-      <p class="text-3.75 text-gray-50 break-keep">펜슬의 콘텐츠를 이용하려면 성인 인증이 필요해요</p>
-    </div>
-  </div>
-
   <div class="w-full border-b border-alphagray-15" />
 
   <h3 class="text-lg font-extrabold mb-4">연동 관리</h3>
