@@ -484,7 +484,7 @@ builder.mutationFields((t) => ({
       });
 
       if (!user) {
-        throw new FormValidationError('email', '잘못된 이메일이에요.');
+        throw new FormValidationError('email', '등록된 계정을 찾을 수 없어요.');
       }
 
       const expiresAt = dayjs().add(1, 'hour').toDate();
