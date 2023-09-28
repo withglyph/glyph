@@ -359,7 +359,6 @@ enum SpaceMemberInvitationState {
 }
 
 enum SpaceMemberRole {
-  OWNER
   ADMIN
   MEMBER
 
