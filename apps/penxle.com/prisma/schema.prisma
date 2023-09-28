@@ -29,6 +29,7 @@ model Image {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   profileUsingThisAsAvatar Profile?
+  spaceUsingThisAsIcon     Space?
 
   @@index([id, path, color])
   @@map("images")
@@ -57,16 +58,48 @@ model Session {
 }
 
 model Space {
-  id        String     @id
-  slug      String
-  name      String
-  state     SpaceState
-  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  id          String          @id
+  slug        String
+  name        String
+  description String?
+  iconId      String?         @unique @map("icon_id")
+  icon        Image?          @relation(fields: [iconId], references: [id])
+  visibility  SpaceVisibility
+  state       SpaceState
+  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz
 
-  members SpaceMember[]
+  members       SpaceMember[]
+  invitations   SpaceMemberInvitation[]
+  followers     UserSpaceFollowing[]
+  blockedUsers  SpaceUserBlock[]
+  // tags          SpaceTag[]
+  externalLinks SpaceExternalLink[]
 
   @@index([slug, state])
   @@map("spaces")
+}
+
+model SpaceExternalLink {
+  id        String   @id
+  spaceId   String   @map("space_id")
+  space     Space    @relation(fields: [spaceId], references: [id])
+  url       String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("space_external_links")
+}
+
+model SpaceUserBlock {
+  id        String   @id
+  spaceId   String   @map("space_id")
+  space     Space    @relation(fields: [spaceId], references: [id])
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  reason    String?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([spaceId, userId])
+  @@map("space_user_blocks")
 }
 
 model SpaceMember {
@@ -84,6 +117,31 @@ model SpaceMember {
   @@map("space_members")
 }
 
+model SpaceMemberInvitation {
+  id             String                     @id
+  spaceId        String                     @map("space_id")
+  space          Space                      @relation(fields: [spaceId], references: [id])
+  sentUserId     String                     @map("sent_user_id")
+  sentUser       User                       @relation(name: "spaceMemberInvitationSent", fields: [sentUserId], references: [id])
+  receivedUserId String                     @map("received_user_id")
+  receivedUser   User                       @relation(name: "spaceMemberInvitationReceived", fields: [receivedUserId], references: [id])
+  state          SpaceMemberInvitationState @default(PENDING)
+  createdAt      DateTime                   @default(now()) @map("created_at") @db.Timestamptz
+  respondedAt    DateTime?                  @map("responded_at") @db.Timestamptz
+
+  @@unique([spaceId, sentUserId, receivedUserId])
+  @@map("space_member_invitations")
+}
+
+// model SpaceTag {
+//   id        String   @id
+//   spaceId   String   @map("space_id")
+//   space     Space    @relation(fields: [spaceId], references: [id])
+//   tagId     String   @map("tag_id")
+//   tag       Tag      @relation(fields: [tagId], references: [id])
+//   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+// }
+
 model Tag {
   id        String   @id
   name      String   @unique
@@ -93,6 +151,7 @@ model Tag {
   parents         TagHierarchy[]      @relation("parents")
   children        TagHierarchy[]      @relation("children")
   userPreferences UserTagPreference[]
+  // spacesUsingThis SpaceTag[]
 
   @@map("tags")
 }
@@ -140,19 +199,23 @@ model User {
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   // 주로 쓰이는 릴레이션들
-  contentFilterPreferences UserContentFilterPreference[]
-  marketingConsent         UserMarketingConsent?
-  notificationPreferences  UserNotificationPreference[]
-  password                 UserPassword?
-  sessions                 Session[]
-  singleSignOns            UserSingleSignOn[]
-  spaces                   SpaceMember[]
-  tagPreferences           UserTagPreference[]
+  contentFilterPreferences       UserContentFilterPreference[]
+  marketingConsent               UserMarketingConsent?
+  notificationPreferences        UserNotificationPreference[]
+  password                       UserPassword?
+  sessions                       Session[]
+  singleSignOns                  UserSingleSignOn[]
+  spaces                         SpaceMember[]
+  tagPreferences                 UserTagPreference[]
+  sentSpaceMemberInvitations     SpaceMemberInvitation[]       @relation("spaceMemberInvitationSent")
+  receivedSpaceMemberInvitations SpaceMemberInvitation[]       @relation("spaceMemberInvitationReceived")
+  followingSpaces                UserSpaceFollowing[]
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
   emailVerifications       UserEmailVerification[]
   uploadedImages           Image[]
+  spaceBlockedBy           SpaceUserBlock[]
 
   @@index([email, state])
   @@map("users")
@@ -181,6 +244,18 @@ model UserEmailVerification {
   expiresAt DateTime                  @map("expires_at") @db.Timestamptz
 
   @@map("user_email_verifications")
+}
+
+model UserSpaceFollowing {
+  id        String   @id
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  spaceId   String   @map("space_id")
+  space     Space    @relation(fields: [spaceId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([userId, spaceId])
+  @@map("user_space_followings")
 }
 
 model UserMarketingConsent {
@@ -273,8 +348,17 @@ enum PreferenceType {
   @@map("_preference_type")
 }
 
+enum SpaceMemberInvitationState {
+  PENDING
+  ACCEPTED
+  IGNORED
+
+  @@map("_space_member_invite_state")
+}
+
 enum SpaceMemberRole {
   OWNER
+  ADMIN
   MEMBER
 
   @@map("_space_member_role")
@@ -285,6 +369,13 @@ enum SpaceState {
   INACTIVE
 
   @@map("_space_state")
+}
+
+enum SpaceVisibility {
+  PUBLIC
+  PRIVATE
+
+  @@map("_space_visibility")
 }
 
 enum UserEmailVerificationKind {
