@@ -56,16 +56,18 @@
       class="sm:hidden"
       checked={preferences.ALL?.some((v) => v.opted) ?? true}
       on:change={async (e) => {
+        const opted = e.currentTarget.checked;
+
         await updateNotificationPreference({
           category: 'ALL',
           method: 'WEBSITE',
-          opted: e.currentTarget.checked,
+          opted,
         });
 
         await updateNotificationPreference({
           category: 'ALL',
           method: 'EMAIL',
-          opted: e.currentTarget.checked,
+          opted,
         });
       }}
     />
