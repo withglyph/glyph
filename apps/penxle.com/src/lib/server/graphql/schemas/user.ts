@@ -316,12 +316,12 @@ builder.mutationFields((t) => ({
       });
 
       if (!user?.password) {
-        await argon2.hash(input.password);
-        throw new FormValidationError('password', '잘못된 이메일이거나 비밀번호에요.');
+        await argon2.hash(input.password); // Prevent timing attack
+        throw new FormValidationError('password', '이메일 또는 비밀번호를 다시 확인해주세요.');
       }
 
       if (!(await argon2.verify(user.password.hash, input.password))) {
-        throw new FormValidationError('password', '잘못된 이메일이거나 비밀번호에요.');
+        throw new FormValidationError('password', '이메일 또는 비밀번호를 다시 확인해주세요.');
       }
 
       const session = await db.session.create({
