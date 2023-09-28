@@ -30,6 +30,10 @@
       mutation MeAccountsPage_UpdateUserPassword_Mutation($input: UpdateUserPasswordInput!) {
         updateUserPassword(input: $input) {
           id
+
+          password {
+            id
+          }
         }
       }
     `),
