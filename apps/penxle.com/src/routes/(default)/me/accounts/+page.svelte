@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import dayjs from 'dayjs';
-  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import Google from '$assets/icons/google.svg?component';
   import Naver from '$assets/icons/naver.svg?component';
@@ -97,13 +97,13 @@
     }
   `);
 
-  if (browser) {
+  onMount(() => {
     switch ($page.url.searchParams.get('message')) {
       case 'sso_already_linked_by_other':
         toast.error('이 소셜 계정은 이미 다른 펜슬 계정에 연동되어 있어요.');
         break;
     }
-  }
+  });
 </script>
 
 <Helmet title="계정 설정" />
