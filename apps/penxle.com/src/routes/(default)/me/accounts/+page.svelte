@@ -47,6 +47,10 @@
           ...MeAccountsPage_UpdateProfileModal_profile
         }
 
+        password {
+          id
+        }
+
         ...MeAccountsPage_UpdatePasswordModal_user
       }
     }
@@ -288,9 +292,11 @@
   <div class="flex flex-wrap items-center justify-between gap-4">
     <div>
       <h3 class="text-lg font-extrabold mb-2">비밀번호</h3>
-      <p class="text-3.75 text-gray-50 break-keep">비밀번호를 변경하세요</p>
+      <p class="text-3.75 text-gray-50 break-keep">비밀번호를 {$query.me.password ? '변경' : '설정'}하세요</p>
     </div>
-    <Button color="secondary" size="md" on:click={() => (updatePasswordOpen = true)}>변경하기</Button>
+    <Button color="secondary" size="md" on:click={() => (updatePasswordOpen = true)}>
+      {$query.me.password ? '변경' : '설정'}하기
+    </Button>
   </div>
 
   <div class="flex flex-wrap items-center justify-between gap-4">
