@@ -77,7 +77,12 @@
   <section class="my-4 space-y-3">
     <Checkbox class="font-bold" checked={consentAll} on:change={handleConsentAll}>약관 전체 동의</Checkbox>
     <Checkbox name="termsConsent" class="text-sm">
-      <Link href="/" underline>이용약관</Link> 및 <Link href="/" underline>개인정보 수집 이용</Link> 동의(필수)
+      <Link href="https://help.penxle.com/legal/terms" underline>이용약관</Link> 및 <Link
+        href="https://help.penxle.com/legal/privacy"
+        underline
+      >
+        개인정보 수집 이용
+      </Link> 동의(필수)
     </Checkbox>
     <Checkbox name="marketingConsent" class="text-sm">마케팅 정보 수집 동의(선택)</Checkbox>
   </section>
