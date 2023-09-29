@@ -64,9 +64,9 @@
         on:outsideClick={() => (isOpen = false)}
         use:outsideClickEvent
       >
-        <SearchBar class={clsx('<lg:hidden', isOpen && 'block!')} />
+        <SearchBar class={clsx('<sm:hidden', isOpen && 'block!')} />
 
-        <div class={clsx('flex center square-10 lg:hidden', isOpen && 'hidden!')}>
+        <div class={clsx('flex center square-10 sm:hidden', isOpen && 'hidden!')}>
           <button type="button" on:click={() => (isOpen = true)}>
             <span class="i-lc-search square-6 fill-gray-90" />
           </button>
