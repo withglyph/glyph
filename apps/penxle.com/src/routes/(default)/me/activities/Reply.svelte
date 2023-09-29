@@ -14,7 +14,7 @@
 
     <div class="p-2 flex gap-3 bg-gray-5 rounded-2xl">
       <div class="w-14 h-10.5 rounded-3.5 bg-black" />
-      <div>
+      <div class="font-bold text-3.75">
         새 청바지를 샀어요 1화
         <span class="i-lc-chevron-right" />
       </div>
@@ -42,7 +42,7 @@
 
     <div class="p-2 flex gap-3 bg-gray-5 rounded-2xl">
       <div class="w-14 h-10.5 rounded-3.5 bg-black" />
-      <div>
+      <div class="font-bold text-3.75">
         너는 어때
         <span class="i-lc-chevron-right" />
       </div>
