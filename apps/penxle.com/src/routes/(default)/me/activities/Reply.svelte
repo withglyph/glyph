@@ -3,7 +3,7 @@
   import { Button } from '$lib/components';
 </script>
 
-<div class="flex items-center gap-2 px-4 h-10 text-lg font-extrabold my-2 sm:my-4">
+<div class="flex items-center gap-2 h-10 text-lg font-extrabold my-2 sm:my-4">
   <h3>작성한 댓글</h3>
   <span class="text-gray-50">7</span>
 </div>

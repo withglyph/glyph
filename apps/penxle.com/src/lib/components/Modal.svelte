@@ -47,7 +47,7 @@
         class={clsx(
           'pointer-events-auto relative max-h-full w-full flex flex-col center rounded-2xl bg-white shadow-xl',
           size === 'sm' && 'p-4 pt-8 max-w-92',
-          size === 'md' && 'p-6 pb-5.5 rounded-b-none sm:(max-w-107.5 rounded-2xl)',
+          size === 'md' && 'px-6 pt-4 pb-5.5 rounded-b-none sm:(max-w-107.5 rounded-2xl)',
           size === 'lg' && 'p-7 pt-5 rounded-b-none sm:(max-w-187 rounded-2xl)',
         )}
         in:fly={{ y: '10%', duration: 150 }}
@@ -55,22 +55,40 @@
       >
         <div class={clsx('flex flex-col w-full', size === 'sm' && 'max-w-92')}>
           {#if $$slots.title}
-            <div class={clsx('flex justify-between mb-6', size === 'sm' && 'justify-center!')}>
-              <div class={clsx('flex flex-col break-all', size !== 'sm' && 'pr-9 mt-4')}>
-                <h3 class={clsx('text-lg font-bold break-keep', size === 'md' && 'text-xl')}>
+            <div
+              class={clsx(
+                'flex justify-between py-3',
+                size === 'sm' && 'justify-center!',
+                size !== 'sm' && 'pt-4 pb-0',
+              )}
+            >
+              <div class={clsx('flex flex-col break-all', size !== 'sm' && 'pr-9 mt-4 mb-6')}>
+                <h3
+                  class={clsx(
+                    'break-keep',
+                    size === 'sm' && 'text-lg font-extrabold',
+                    size !== 'sm' && 'text-xl font-bold',
+                  )}
+                >
                   <slot name="title" />
                 </h3>
                 {#if $$slots.subtitle}
-                  <div class={clsx('flex justify-between mt-2 text-gray-50', size === 'sm' && 'justify-center!')}>
-                    <h3 class="text-3.75 font-bold">
+                  <div
+                    class={clsx(
+                      'flex justify-between mt-2 text-gray-50',
+                      size === 'sm' && 'justify-center!',
+                      size !== 'sm' && 'text-3.75 font-bold',
+                    )}
+                  >
+                    <h4>
                       <slot name="subtitle" />
-                    </h3>
+                    </h4>
                   </div>
                 {/if}
               </div>
               {#if size !== 'sm'}
                 <button
-                  class="square-7 absolute right-6 flex center rounded text-gray-50 transition hover:(bg-gray-10 text-gray-60)"
+                  class="absolute right-6 z-1 square-7 flex center rounded text-gray-50 transition hover:(bg-gray-10 text-gray-60)"
                   type="button"
                   on:click={() => (open = false)}
                 >
@@ -80,11 +98,11 @@
             </div>
           {:else}
             <button
-              class="absolute right-4 top-4 z-1 square-7 flex center rounded text-gray-50 transition hover:(bg-gray-10 text-gray-60)"
+              class="absolute right-6 z-1 square-7 flex center rounded text-gray-50 transition hover:(bg-gray-10 text-gray-60)"
               type="button"
               on:click={() => (open = false)}
             >
-              <span class="i-lc-x square-5" />
+              <span class="i-lc-x square-6" />
             </button>
           {/if}
 
@@ -93,7 +111,14 @@
           </div>
 
           {#if $$slots.action}
-            <div class={clsx('flex items-center mt-4xl', size === 'md' && 'mt-4!')}>
+            <div
+              class={clsx(
+                'flex items-center',
+                size === 'sm' && 'mt-4xl',
+                size === 'md' && 'mt-6',
+                size === 'lg' && 'mt-4',
+              )}
+            >
               <slot name="action" />
             </div>
           {/if}
