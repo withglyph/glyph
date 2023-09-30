@@ -279,7 +279,9 @@
       on:change={async () => {
         const consent = !$query.me.marketingConsent;
         await updateUserMarketingConsent({ consent });
-        toast.success(`펜슬의 마케팅 수신 동의가 ${dayjs().formatAsDate()} ${consent ? '승인' : '거부'} 처리되었어요`);
+        toast.success(`${dayjs().formatAsDate()} ${consent ? '승인' : '거부'} 처리되었어요`, {
+          title: '펜슬 마케팅 수신 동의',
+        });
       }}
     />
   </div>
