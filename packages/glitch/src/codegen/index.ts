@@ -1,13 +1,13 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import * as AST from '../ast';
+import { generateBaseTypes } from './base';
 import { generateClient } from './client';
-import { generateEnumTypes } from './enum-types';
+import { generateMain, generateMainTypes } from './entrypoint';
+import { generateEnumTypes } from './enums';
+import { generateFragmentTypes } from './fragments';
 import { generateFunctions } from './functions';
-import { generateGQLCodegen } from './gql-codegen';
-import { generateInternalTypes } from './internal-types';
-import { generateMain, generateMainTypes } from './main';
-import { generatePublicTypes } from './public-types';
-import { generateSchemaIntrospection } from './schema-introspection';
-import { generateUtility } from './utility';
-import { writeCodegenFile } from './utils';
+import { generateTypes } from './types';
 import type { GlitchContext } from '../types';
 
 export const codegen = async (context: GlitchContext) => {
@@ -15,13 +15,11 @@ export const codegen = async (context: GlitchContext) => {
 
   try {
     files = {
-      'gql.ts': await generateGQLCodegen(context),
+      'base.ts': await generateBaseTypes(context),
       'enums.d.ts': await generateEnumTypes(context),
-      'introspection.json': generateSchemaIntrospection(context),
       'functions.d.ts': generateFunctions(context),
-      'public.d.ts': generatePublicTypes(context),
-      'internal.d.ts': generateInternalTypes(context),
-      'utility.d.ts': generateUtility(),
+      'fragments.d.ts': generateFragmentTypes(context),
+      'types.d.ts': generateTypes(context),
       'client.js': generateClient(),
       'index.d.ts': generateMainTypes(),
       'index.js': generateMain(),
@@ -36,8 +34,14 @@ export const codegen = async (context: GlitchContext) => {
     return false;
   }
 
-  for (const [filePath, code] of Object.entries(files)) {
-    await writeCodegenFile(context, filePath, code);
+  for (const [filePath, program] of Object.entries(files)) {
+    const code = typeof program === 'string' ? program : AST.print(program).code;
+
+    if (code !== '') {
+      const targetPath = path.join(context.codegenRoot, filePath);
+      await fs.mkdir(path.dirname(targetPath), { recursive: true });
+      await fs.writeFile(targetPath, code);
+    }
   }
 
   return true;

@@ -13,18 +13,12 @@ export const generateEnumTypes = async (context: GlitchContext) => {
   return await codegen({
     filename: 'enums.d.ts',
     schema: context.schema,
-    documents: context.artifacts.map(({ documentNode }) => ({
-      document: documentNode,
-    })),
-    pluginMap: {
-      typescript,
-    },
+    documents: context.artifacts.map(({ documentNode }) => ({ document: documentNode })),
+    pluginMap: { typescript },
     plugins: [{ typescript: {} }],
     config: {
       enumsAsTypes: true,
-      namingConvention: {
-        enumValues: 'keep',
-      },
+      namingConvention: { enumValues: 'keep' },
       onlyEnums: true,
     },
   });

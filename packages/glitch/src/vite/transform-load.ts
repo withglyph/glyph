@@ -55,12 +55,12 @@ export const transformLoadPlugin = (context: GlitchContext): Plugin => {
 
       program.body.push(
         AST.b.importDeclaration(
-          [AST.b.importNamespaceSpecifier(AST.b.identifier('__glitch'))],
-          AST.b.stringLiteral('$glitch'),
+          [AST.b.importSpecifier(AST.b.identifier('createQueryStore'))],
+          AST.b.stringLiteral('@penxle/glitch/runtime'),
         ),
         AST.b.importDeclaration(
-          [AST.b.importNamespaceSpecifier(AST.b.identifier('__glitch_gql'))],
-          AST.b.stringLiteral('$glitch/gql'),
+          [AST.b.importNamespaceSpecifier(AST.b.identifier('__glitch_base'))],
+          AST.b.stringLiteral('$glitch/base'),
         ),
         AST.b.functionDeclaration.from({
           id: AST.b.identifier('__glitch_load'),
@@ -72,9 +72,9 @@ export const transformLoadPlugin = (context: GlitchContext): Plugin => {
                 AST.b.variableDeclarator(
                   AST.b.identifier(`__glitch_${query.name}`),
                   AST.b.awaitExpression(
-                    AST.b.callExpression(AST.b.identifier('__glitch.createQueryStore'), [
+                    AST.b.callExpression(AST.b.identifier('createQueryStore'), [
                       AST.b.identifier('event'),
-                      AST.b.identifier(`__glitch_gql.DocumentNode_${query.name}`),
+                      AST.b.identifier(`__glitch_base.DocumentNode_${query.name}`),
                       `_${query.name}Variables` in exportedVariables
                         ? AST.b.identifier(`_${query.name}Variables`)
                         : AST.b.identifier('undefined'),

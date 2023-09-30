@@ -2,12 +2,12 @@ import graphql from 'graphql';
 import * as AST from '../ast';
 import type { GlitchContext } from '../types';
 
-export const generateInternalTypes = (context: GlitchContext): AST.Program => {
+export const generateTypes = (context: GlitchContext): AST.Program => {
   const program = AST.b.program([
-    AST.b.importDeclaration([AST.b.importNamespaceSpecifier(AST.b.identifier('gql'))], AST.b.stringLiteral('./gql')),
+    AST.b.importDeclaration([AST.b.importNamespaceSpecifier(AST.b.identifier('base'))], AST.b.stringLiteral('./base')),
     AST.b.importDeclaration(
       [AST.b.importSpecifier(AST.b.identifier('MakeRequired'))],
-      AST.b.stringLiteral('./utility'),
+      AST.b.stringLiteral('@penxle/glitch/runtime'),
     ),
   ]);
 
@@ -40,7 +40,7 @@ export const generateInternalTypes = (context: GlitchContext): AST.Program => {
           AST.b.tsTypeReference(
             AST.b.identifier('MakeRequired'),
             AST.b.tsTypeParameterInstantiation([
-              AST.b.tsTypeReference(AST.b.identifier(`gql.${name}`)),
+              AST.b.tsTypeReference(AST.b.identifier(`base.${name}`)),
               AST.b.tsUnionType(requiredPath.map((path) => AST.b.tsLiteralType(AST.b.stringLiteral(path)))),
             ]),
           ),

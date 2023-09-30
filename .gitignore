@@ -2,11 +2,11 @@
 
 node_modules/
 
+.glitch/
 .svelte-kit/
 .turbo/
 
 dist/
-$glitch/
 
 vite.config.ts.timestamp-*
 .env.local

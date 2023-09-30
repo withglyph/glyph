@@ -8,13 +8,13 @@ import type { GlitchContext } from '../types';
 
 disableFragmentWarnings();
 
-export const generateGQLCodegen = async (context: GlitchContext) => {
+export const generateBaseTypes = async (context: GlitchContext) => {
   if (!context.schema) {
     return '';
   }
 
   return await codegen({
-    filename: 'gql.ts',
+    filename: 'base.ts',
     schema: context.schema,
     documents: context.artifacts.map(({ documentNode }) => ({
       document: documentNode,

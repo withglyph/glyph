@@ -86,7 +86,7 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
 
           if (mutation) {
             node.arguments[0] = AST.b.stringLiteral('mutation');
-            node.arguments.push(AST.b.identifier(`__glitch_gql.DocumentNode_${mutation.name}`));
+            node.arguments.push(AST.b.identifier(`__glitch_base_m.DocumentNode_${mutation.name}`));
           }
         }
 
@@ -96,8 +96,49 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
 
     program.body.unshift(
       AST.b.importDeclaration(
-        [AST.b.importNamespaceSpecifier(AST.b.identifier('__glitch_gql'))],
-        AST.b.stringLiteral('$glitch/gql'),
+        [AST.b.importNamespaceSpecifier(AST.b.identifier('__glitch_base_m'))],
+        AST.b.stringLiteral('$glitch/base'),
+      ),
+    );
+
+    return true;
+  };
+
+  const transformFragment = (filename: string, program: AST.Program) => {
+    const fragments = context.artifacts.filter(
+      (artifact) => artifact.kind === 'fragment' && artifact.filePath === filename,
+    );
+
+    if (fragments.length === 0) {
+      return false;
+    }
+
+    AST.walk(program, {
+      visitCallExpression(p) {
+        const { node } = p;
+
+        if (
+          node.callee.type === 'Identifier' &&
+          node.callee.name === 'graphql' &&
+          node.arguments[0].type === 'TemplateLiteral'
+        ) {
+          const source = node.arguments[0].quasis[0].value.raw;
+          const fragment = fragments.find((fragment) => fragment.source === source);
+
+          if (fragment) {
+            node.arguments[0] = AST.b.stringLiteral('fragment');
+            node.arguments.push(AST.b.identifier(`__glitch_base_f.DocumentNode_${fragment.name}`));
+          }
+        }
+
+        this.traverse(p);
+      },
+    });
+
+    program.body.unshift(
+      AST.b.importDeclaration(
+        [AST.b.importNamespaceSpecifier(AST.b.identifier('__glitch_base_f'))],
+        AST.b.stringLiteral('$glitch/base'),
       ),
     );
 
@@ -118,10 +159,11 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
         return;
       }
 
-      const queryTransformed = transformQuery(filename, program);
-      const mutationTransformed = transformMutation(filename, program);
+      const query = transformQuery(filename, program);
+      const mutation = transformMutation(filename, program);
+      const fragment = transformFragment(filename, program);
 
-      if (queryTransformed || mutationTransformed) {
+      if (query || mutation || fragment) {
         return AST.print(program);
       }
     },

@@ -2,6 +2,12 @@ import graphql from 'graphql';
 import type { Client } from '@urql/core';
 import type { Readable } from 'svelte/store';
 
+export type MakeRequired<T, K extends string> = T & {
+  [P in keyof T as P extends (K extends `${infer K0}.${string}` ? K0 : K) ? P : never]-?: P extends K
+    ? NonNullable<T[P]>
+    : MakeRequired<T[P], K extends `${Exclude<P, symbol>}.${infer R}` ? R : never>;
+};
+
 export type ValidOperationDocumentNode = {
   kind: graphql.Kind.DOCUMENT;
   definitions: [graphql.OperationDefinitionNode & { name: graphql.NameNode }];
@@ -38,8 +44,6 @@ export type GlitchContext = {
   artifacts: Artifact[];
 
   state: {
-    fakePaths: string[];
-
     schemaHash: number;
     artifactHashes: number[];
   };

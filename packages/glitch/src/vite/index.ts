@@ -14,8 +14,6 @@ export const glitch = (): Plugin[] => {
     artifacts: [],
 
     state: {
-      fakePaths: [],
-
       schemaHash: 0,
       artifactHashes: [],
     },

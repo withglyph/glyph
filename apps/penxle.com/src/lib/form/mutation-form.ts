@@ -4,8 +4,8 @@ import { AppError, FormValidationError } from '$lib/errors';
 import { toast } from '$lib/notification';
 import { context } from './context';
 import type { AssignableErrors, Extender, RecursivePartial } from '@felte/core';
+import type { MutationStore } from '@penxle/glitch';
 import type { AnyZodObject, TypeOf, ZodEffects } from 'zod';
-import type { MutationStore } from '$glitch';
 import type { MaybePromise, Unwrap } from '$lib/types';
 
 type MutationFormConfig<D, Z extends AnyZodObject> = {

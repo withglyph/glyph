@@ -2,8 +2,7 @@
   import * as R from 'radash';
   import { fragment, graphql } from '$glitch';
   import { Switch } from '$lib/components/forms';
-  import type { MeNotificationsPage_Notification_user } from '$glitch';
-  import type { UserNotificationCategory } from '$glitch/gql';
+  import type { MeNotificationsPage_Notification_user, UserNotificationCategory } from '$glitch';
 
   let _user: MeNotificationsPage_Notification_user;
   export { _user as $user };

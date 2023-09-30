@@ -3,14 +3,18 @@ import type { GlitchContext } from '../types';
 
 export const generateFunctions = (context: GlitchContext): AST.Program => {
   const program = AST.b.program([
+    AST.b.importDeclaration([AST.b.importNamespaceSpecifier(AST.b.identifier('base'))], AST.b.stringLiteral('./base')),
     AST.b.importDeclaration(
-      [AST.b.importNamespaceSpecifier(AST.b.identifier('internal'))],
-      AST.b.stringLiteral('./internal'),
+      [AST.b.importNamespaceSpecifier(AST.b.identifier('types'))],
+      AST.b.stringLiteral('./types'),
     ),
-    AST.b.importDeclaration([AST.b.importNamespaceSpecifier(AST.b.identifier('gql'))], AST.b.stringLiteral('./gql')),
     AST.b.importDeclaration(
-      [AST.b.importNamespaceSpecifier(AST.b.identifier('glitch'))],
-      AST.b.stringLiteral('@penxle/glitch/runtime'),
+      [
+        AST.b.importSpecifier(AST.b.identifier('QueryStore')),
+        AST.b.importSpecifier(AST.b.identifier('MutationStore')),
+        AST.b.importSpecifier(AST.b.identifier('FragmentStore')),
+      ],
+      AST.b.stringLiteral('@penxle/glitch'),
     ),
   ]);
 
@@ -23,14 +27,14 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
               AST.b.identifier('graphql'),
               [
                 AST.b.identifier.from({
-                  name: 'doc',
+                  name: 'document',
                   typeAnnotation: AST.b.tsTypeAnnotation(AST.b.tsLiteralType(AST.b.stringLiteral(source))),
                 }),
               ],
               AST.b.tsTypeAnnotation(
                 AST.b.tsTypeReference(
-                  AST.b.identifier('glitch.QueryStore'),
-                  AST.b.tsTypeParameterInstantiation([AST.b.tsTypeReference(AST.b.identifier(`internal.${name}`))]),
+                  AST.b.identifier('QueryStore'),
+                  AST.b.tsTypeParameterInstantiation([AST.b.tsTypeReference(AST.b.identifier(`types.${name}`))]),
                 ),
               ),
             ),
@@ -46,16 +50,16 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
               AST.b.identifier('graphql'),
               [
                 AST.b.identifier.from({
-                  name: 'doc',
+                  name: 'document',
                   typeAnnotation: AST.b.tsTypeAnnotation(AST.b.tsLiteralType(AST.b.stringLiteral(source))),
                 }),
               ],
               AST.b.tsTypeAnnotation(
                 AST.b.tsTypeReference(
-                  AST.b.identifier('glitch.MutationStore'),
+                  AST.b.identifier('MutationStore'),
                   AST.b.tsTypeParameterInstantiation([
-                    AST.b.tsTypeReference(AST.b.identifier(`internal.${name}`)),
-                    AST.b.tsTypeReference(AST.b.identifier(`gql.${name}Variables`)),
+                    AST.b.tsTypeReference(AST.b.identifier(`types.${name}`)),
+                    AST.b.tsTypeReference(AST.b.identifier(`base.${name}Variables`)),
                   ]),
                 ),
               ),
@@ -77,7 +81,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
               AST.b.identifier('graphql'),
               [
                 AST.b.identifier.from({
-                  name: 'doc',
+                  name: 'document',
                   typeAnnotation: AST.b.tsTypeAnnotation(AST.b.tsLiteralType(AST.b.stringLiteral(source))),
                 }),
               ],
@@ -85,7 +89,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
                 AST.b.tsTypeReference(
                   AST.b.identifier('Pick'),
                   AST.b.tsTypeParameterInstantiation([
-                    AST.b.tsTypeReference(AST.b.identifier(`gql.${name}`)),
+                    AST.b.tsTypeReference(AST.b.identifier(`base.${name}`)),
                     AST.b.tsLiteralType(AST.b.stringLiteral(' $fragmentName')),
                   ]),
                 ),
@@ -97,7 +101,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
               AST.b.identifier('fragment'),
               [
                 AST.b.identifier.from({
-                  name: 'ref',
+                  name: 'reference',
                   typeAnnotation: AST.b.tsTypeAnnotation(
                     AST.b.tsTypeLiteral([
                       AST.b.tsPropertySignature(
@@ -106,7 +110,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
                           AST.b.tsTypeLiteral([
                             AST.b.tsPropertySignature(
                               AST.b.identifier(name),
-                              AST.b.tsTypeAnnotation(AST.b.tsTypeReference(AST.b.identifier(`gql.${name}`))),
+                              AST.b.tsTypeAnnotation(AST.b.tsTypeReference(AST.b.identifier(`base.${name}`))),
                             ),
                           ]),
                         ),
@@ -116,7 +120,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
                   ),
                 }),
                 AST.b.identifier.from({
-                  name: 'doc',
+                  name: 'document',
                   typeAnnotation: AST.b.tsTypeAnnotation(
                     AST.b.tsTypeLiteral([
                       AST.b.tsPropertySignature(
@@ -130,8 +134,8 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
               ],
               AST.b.tsTypeAnnotation(
                 AST.b.tsTypeReference(
-                  AST.b.identifier('glitch.FragmentStore'),
-                  AST.b.tsTypeParameterInstantiation([AST.b.tsTypeReference(AST.b.identifier(`internal.${name}`))]),
+                  AST.b.identifier('FragmentStore'),
+                  AST.b.tsTypeParameterInstantiation([AST.b.tsTypeReference(AST.b.identifier(`types.${name}`))]),
                 ),
               ),
             ),
@@ -149,7 +153,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
         AST.b.identifier('graphql'),
         [
           AST.b.identifier.from({
-            name: 'doc',
+            name: 'document',
             typeAnnotation: AST.b.tsTypeAnnotation(AST.b.tsNeverKeyword()),
           }),
         ],
@@ -161,11 +165,11 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
         AST.b.identifier('fragment'),
         [
           AST.b.identifier.from({
-            name: 'ref',
+            name: 'reference',
             typeAnnotation: AST.b.tsTypeAnnotation(AST.b.tsNeverKeyword()),
           }),
           AST.b.identifier.from({
-            name: 'doc',
+            name: 'document',
             typeAnnotation: AST.b.tsTypeAnnotation(AST.b.tsNeverKeyword()),
           }),
         ],

@@ -1,7 +1,6 @@
 import { createRequest } from '@urql/core';
 import { readable } from 'svelte/store';
 import { filter, map, pipe, subscribe, take, toPromise } from 'wonka';
-import { browser } from '$app/environment';
 import { getClient } from '../client/internal';
 import type { LoadEvent } from '@sveltejs/kit';
 import type { AnyVariables, TypedDocumentNode } from '@urql/core';
@@ -11,10 +10,6 @@ export const createQueryStore = async (
   document: TypedDocumentNode<unknown, AnyVariables>,
   variablesLoader?: (event: LoadEvent) => AnyVariables,
 ) => {
-  if (browser) {
-    await event.parent();
-  }
-
   const { client, onError } = await getClient();
 
   const variables = variablesLoader ? variablesLoader(event) : undefined;

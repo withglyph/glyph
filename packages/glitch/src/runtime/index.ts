@@ -12,14 +12,15 @@ export const graphql = (
     return createMutationStore(document);
   } else if (kind === 'fragment') {
     return null;
+  } else {
+    throw new Error('subscription is not supported yet');
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const fragment = (ref: unknown, _document: never) => {
+export const fragment = (ref: unknown) => {
   return createFragmentStore(ref);
 };
 
 export { createQueryStore } from '../store/query';
-export type * from '../types';
+export type { MakeRequired } from '../types';
 export type { TypedDocumentNode } from '@graphql-typed-document-node/core';
