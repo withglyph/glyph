@@ -69,3 +69,12 @@ input,
 button {
   --uno: outline-none;
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+input[data-com-onepassword-filled] {
+  --uno: transition-colors delay-5000s;
+  -webkit-background-clip: text;
+}
