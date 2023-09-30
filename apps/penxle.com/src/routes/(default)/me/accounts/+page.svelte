@@ -20,6 +20,8 @@
 
   $: query = graphql(`
     query MeAccountsPage_Query {
+      auth(scope: USER)
+
       me @_required {
         id
         email

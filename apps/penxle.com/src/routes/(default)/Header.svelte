@@ -36,6 +36,7 @@
             id
             name
           }
+
           ...DefaultLayout_UserMenu_user
           ...DefaultLayout_PublishMenu_user
           ...DefaultLayout_PublishModal_user

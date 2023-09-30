@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
 import { match } from 'ts-pattern';
-import { FormValidationError, IntentionalError } from '$lib/errors';
+import { FormValidationError, IntentionalError, PermissionDeniedError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
 import {
   EmailChange,
@@ -33,7 +33,7 @@ import {
   UpdateUserProfileInputSchema,
 } from '$lib/validations';
 import { builder } from '../builder';
-import { UserSingleSignOnAuthorizationType } from '../enums';
+import { AuthScope, UserSingleSignOnAuthorizationType } from '../enums';
 
 /**
  * * Types
@@ -248,6 +248,18 @@ const VerifyUserEmailInput = builder.inputType('VerifyUserEmailInput', {
  */
 
 builder.queryFields((t) => ({
+  auth: t.field({
+    type: 'Void',
+    nullable: true,
+    authScopes: (_, args) => ({ [args.scope.toLowerCase()]: true }),
+    args: { scope: t.arg({ type: AuthScope }) },
+    resolve: () => null,
+    unauthorizedError: (_, args) =>
+      match(args.scope)
+        .with('USER', () => new IntentionalError('로그인이 필요해요'))
+        .otherwise(() => new PermissionDeniedError()),
+  }),
+
   me: t.prismaField({
     type: 'User',
     nullable: true,

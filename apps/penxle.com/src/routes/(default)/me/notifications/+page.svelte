@@ -7,6 +7,8 @@
 
   $: query = graphql(`
     query MeNotificationsPage_Query {
+      auth(scope: USER)
+
       me @_required {
         id
 

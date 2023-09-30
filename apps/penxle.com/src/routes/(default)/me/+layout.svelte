@@ -10,6 +10,8 @@
 
   $: query = graphql(`
     query MeLayout_Query {
+      auth(scope: USER)
+
       me @_required {
         id
         email

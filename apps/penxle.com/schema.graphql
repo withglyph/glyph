@@ -1,3 +1,8 @@
+enum AuthScope {
+  STAFF
+  USER
+}
+
 enum ContentFilterAction {
   EXPOSE
   HIDE
@@ -102,6 +107,7 @@ type Profile {
 }
 
 type Query {
+  auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
   me: User
   randomAvatars: [String!]!
