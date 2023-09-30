@@ -28,7 +28,7 @@
           <h3 class="font-extrabold text-lg">수익금 및 정산금</h3>
           <span class="i-lc-chevron-right" />
         </div>
-        <p>포인트 충전을 통해 적립한 포인트는 회원 탈퇴 시 환불이 불가능합니다.</p>
+        <p>포인트 충전을 통해 적립한 포인트는 회원 탈퇴 시 환불이 불가능해요.</p>
         <p>
           또한 환불 신청 후 환불 처리가 완료되기 전 탈퇴하는 경우 포인트 구매 기록을 확인할 수 없으므로 환불할 수 없어요
         </p>
@@ -41,7 +41,7 @@
           <h3 class="font-extrabold text-lg">팀스페이스 포스트 소유권</h3>
           <span class="i-lc-chevron-right" />
         </div>
-        <p>팀 스페이스에서 작성한 게시물들은 삭제되지 않고, 팀 스페이스 소유자에게 소유권이 이전됩니다.</p>
+        <p>팀 스페이스에서 작성한 게시물들은 삭제되지 않고, 팀 스페이스 소유자에게 소유권이 이전되어요.</p>
       </div>
 
       <div class="flex items-center flex-wrap gap-2.5 sm:gap-5 bg-gray-5 rounded-2xl py-2.5 px-3.5 font-bold">
@@ -51,14 +51,12 @@
     </div>
 
     <div>
-      <Checkbox name="isAgreed" class="text-sm mb-3">모든 데이터를 삭제하고 탈퇴하는 것에 동의합니다.</Checkbox>
-      <Checkbox name="isAgreed" class="text-sm">모든 충전금, 수익금을 포기하는 것에 동의합니다.</Checkbox>
+      <Checkbox name="isAgreed" class="text-sm mb-3">모든 데이터를 삭제하고 탈퇴하는 것에 동의해요</Checkbox>
+      <Checkbox name="isAgreed" class="text-sm">모든 충전금, 수익금을 포기하는 것에 동의해요</Checkbox>
     </div>
 
     <div>
-      <Button class="w-full" size="xl" on:click={() => (confirmModalOpen = true)}>
-        모든 과정을 동의하고 탈퇴합니다
-      </Button>
+      <Button class="w-full" size="xl" on:click={() => (confirmModalOpen = true)}>펜슬 탈퇴하기</Button>
       <Button class="w-full mt-3" color="secondary" size="xl">탈퇴를 취소할래요</Button>
     </div>
   </div>

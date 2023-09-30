@@ -20,6 +20,6 @@
   });
 </script>
 
-이메일 인증이 완료되었습니다.
+이메일 인증이 완료되었어요.
 
 <Button class="mt-8 w-full" href="/" size="xl" type="link">확인</Button>
