@@ -89,3 +89,5 @@
 
   <Button class="w-full" size="xl" type="submit">펜슬 회원가입 하기</Button>
 </form>
+
+<Link class="font-bold text-gray-50 mt-4 w-full text-center max-w-87.5" href="/login">돌아가기</Link>

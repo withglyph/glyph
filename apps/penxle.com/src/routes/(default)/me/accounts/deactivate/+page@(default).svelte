@@ -51,8 +51,8 @@
     </div>
 
     <div>
-      <Checkbox name="isAgreed" class="text-sm mb-3">모든 데이터를 삭제하고 탈퇴하는 것에 동의해요</Checkbox>
-      <Checkbox name="isAgreed" class="text-sm">모든 충전금, 수익금을 포기하는 것에 동의해요</Checkbox>
+      <Checkbox class="text-sm mb-3">모든 데이터를 삭제하고 탈퇴하는 것에 동의해요</Checkbox>
+      <Checkbox class="text-sm">모든 충전금, 수익금을 포기하는 것에 동의해요</Checkbox>
     </div>
 
     <div>
