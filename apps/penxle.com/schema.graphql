@@ -196,7 +196,7 @@ type User {
   notificationPreferences: [UserNotificationPreference!]!
   password: UserPassword
   profile: Profile!
-  singleSignOn(provider: UserSingleSignOnProvider!): UserSingleSignOn
+  singleSignOns: [UserSingleSignOn!]!
   spaces: [Space!]!
   state: UserState!
 }
@@ -253,6 +253,7 @@ type UserPassword {
 
 type UserSingleSignOn {
   id: ID!
+  provider: UserSingleSignOnProvider!
   providerEmail: String!
 }
 

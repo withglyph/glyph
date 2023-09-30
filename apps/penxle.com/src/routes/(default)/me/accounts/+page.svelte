@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import dayjs from 'dayjs';
+  import * as R from 'radash';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import Google from '$assets/icons/google.svg?component';
@@ -29,16 +30,6 @@
           createdAt
         }
 
-        google: singleSignOn(provider: GOOGLE) {
-          id
-          providerEmail
-        }
-
-        naver: singleSignOn(provider: NAVER) {
-          id
-          providerEmail
-        }
-
         profile {
           id
           name
@@ -49,6 +40,12 @@
 
         password {
           id
+        }
+
+        singleSignOns {
+          id
+          provider
+          providerEmail
         }
 
         ...MeAccountsPage_UpdatePasswordModal_user
@@ -84,12 +81,10 @@
       unlinkUserSingleSignOn(input: $input) {
         id
 
-        google: singleSignOn(provider: GOOGLE) {
+        singleSignOns {
           id
-        }
-
-        naver: singleSignOn(provider: NAVER) {
-          id
+          provider
+          providerEmail
         }
       }
     }
@@ -100,6 +95,8 @@
       resendUserActivationEmail
     }
   `);
+
+  $: singleSignOns = R.objectify($query.me.singleSignOns, (v) => v.provider);
 
   onMount(() => {
     switch ($page.url.searchParams.get('message')) {
@@ -183,14 +180,14 @@
       </div>
       <div>
         <h3 class="text-lg font-extrabold mr-2">Google</h3>
-        {#if $query.me.google}
+        {#if singleSignOns.GOOGLE}
           <p class="text-3.75 text-gray-50 break-keep">
-            {$query.me.google.providerEmail}
+            {singleSignOns.GOOGLE.providerEmail}
           </p>
         {/if}
       </div>
     </div>
-    {#if $query.me.google}
+    {#if singleSignOns.GOOGLE}
       <Button
         color="tertiary"
         size="md"
@@ -228,14 +225,14 @@
       </div>
       <div>
         <h3 class="text-lg font-extrabold mr-2">Naver</h3>
-        {#if $query.me.naver}
+        {#if singleSignOns.NAVER}
           <p class="text-3.75 text-gray-50 break-keep">
-            {$query.me.naver.providerEmail}
+            {singleSignOns.NAVER.providerEmail}
           </p>
         {/if}
       </div>
     </div>
-    {#if $query.me.naver}
+    {#if singleSignOns.NAVER}
       <Button
         color="tertiary"
         size="md"

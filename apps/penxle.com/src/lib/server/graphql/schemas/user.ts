@@ -62,21 +62,7 @@ builder.prismaObject('User', {
     notificationPreferences: t.relation('notificationPreferences', { grantScopes: ['$user'] }),
     password: t.relation('password', { nullable: true, grantScopes: ['$user'] }),
     profile: t.relation('profile'),
-
-    singleSignOn: t.prismaField({
-      type: 'UserSingleSignOn',
-      nullable: true,
-      grantScopes: ['$user'],
-      args: { provider: t.arg({ type: UserSingleSignOnProvider }) },
-      resolve: async (query, parent, args, { db }) => {
-        return await db.userSingleSignOn.findUnique({
-          ...query,
-          where: {
-            userId_provider: { userId: parent.id, provider: args.provider },
-          },
-        });
-      },
-    }),
+    singleSignOns: t.relation('singleSignOns', { grantScopes: ['$user'] }),
 
     spaces: t.prismaField({
       type: ['Space'],
@@ -140,6 +126,7 @@ builder.prismaObject('UserSingleSignOn', {
   authScopes: { $granted: '$user' },
   fields: (t) => ({
     id: t.exposeID('id'),
+    provider: t.expose('provider', { type: UserSingleSignOnProvider }),
     providerEmail: t.exposeString('providerEmail'),
   }),
 });
