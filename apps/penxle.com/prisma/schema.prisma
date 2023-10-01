@@ -35,6 +35,19 @@ model Image {
   @@map("images")
 }
 
+model ProvisionedUser {
+  id        String                    @id
+  token     String                    @unique
+  email     String
+  provider  UserSingleSignOnProvider?
+  principal String?
+  name      String?
+  avatarUrl String?                   @map("avatar_url")
+  createdAt DateTime                  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("provisioned_users")
+}
+
 model Profile {
   id        String   @id
   name      String
@@ -46,15 +59,6 @@ model Profile {
   user   User?
 
   @@map("profiles")
-}
-
-model Session {
-  id        String   @id
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  @@map("sessions")
 }
 
 model Space {
@@ -98,8 +102,7 @@ model SpaceUserBlock {
   reason    String?
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  @@unique([spaceId, userId])
-  @@map("space_user_blocks")
+  @@map("sessions")
 }
 
 model SpaceMember {
@@ -204,8 +207,7 @@ model User {
   contentFilterPreferences       UserContentFilterPreference[]
   marketingConsent               UserMarketingConsent?
   notificationPreferences        UserNotificationPreference[]
-  password                       UserPassword?
-  sessions                       Session[]
+  sessions                       UserSession[]
   singleSignOns                  UserSingleSignOn[]
   spaces                         SpaceMember[]
   tagPreferences                 UserTagPreference[]
@@ -237,11 +239,12 @@ model UserContentFilterPreference {
 
 model UserEmailVerification {
   id        String                    @id
-  userId    String                    @map("user_id")
-  user      User                      @relation(fields: [userId], references: [id])
+  userId    String?                   @map("user_id")
+  user      User?                     @relation(fields: [userId], references: [id])
   email     String
-  code      String                    @unique
-  type      UserEmailVerificationKind
+  token     String                    @unique
+  code      String?
+  kind      UserEmailVerificationKind
   createdAt DateTime                  @default(now()) @map("created_at") @db.Timestamptz
   expiresAt DateTime                  @map("expires_at") @db.Timestamptz
 
@@ -282,28 +285,27 @@ model UserNotificationPreference {
   @@map("user_notification_preferences")
 }
 
-model UserPassword {
-  id        String   @id
-  userId    String   @unique @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
-  hash      String
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  @@map("user_passwords")
-}
-
 model UserSingleSignOn {
-  id             String                   @id
-  userId         String                   @map("user_id")
-  user           User                     @relation(fields: [userId], references: [id])
-  provider       UserSingleSignOnProvider
-  providerEmail  String                   @map("provider_email")
-  providerUserId String                   @map("provider_user_id")
-  createdAt      DateTime                 @default(now()) @map("created_at") @db.Timestamptz
+  id        String                   @id
+  userId    String                   @map("user_id")
+  user      User                     @relation(fields: [userId], references: [id])
+  provider  UserSingleSignOnProvider
+  principal String                   @map("external_id")
+  email     String
+  createdAt DateTime                 @default(now()) @map("created_at") @db.Timestamptz
 
   @@unique([userId, provider])
-  @@unique([provider, providerUserId])
+  @@unique([provider, principal])
   @@map("user_single_sign_ons")
+}
+
+model UserSession {
+  id        String   @id
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("user_sessions")
 }
 
 model UserTagPreference {
@@ -381,9 +383,8 @@ enum SpaceVisibility {
 }
 
 enum UserEmailVerificationKind {
-  USER_ACTIVATION
+  USER_LOGIN
   USER_EMAIL_UPDATE
-  USER_PASSWORD_RESET
 
   @@map("_user_email_verification_kind")
 }
@@ -417,7 +418,6 @@ enum UserSingleSignOnProvider {
 }
 
 enum UserState {
-  PROVISIONAL
   ACTIVE
   INACTIVE
 

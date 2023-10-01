@@ -29,6 +29,13 @@ input CreateSpaceInput {
   slug: String!
 }
 
+input CreateUserInput {
+  marketingConsent: Boolean!
+  name: String!
+  termsConsent: Boolean!
+  token: String!
+}
+
 """
 A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -49,6 +56,15 @@ type Image {
   url: String!
 }
 
+input IssueUserEmailAuthorizationUrlInput {
+  code: String!
+  email: String!
+}
+
+type IssueUserEmailAuthorizationUrlResult {
+  url: String!
+}
+
 input IssueUserSingleSignOnAuthorizationUrlInput {
   provider: UserSingleSignOnProvider!
   type: UserSingleSignOnAuthorizationType!
@@ -63,31 +79,26 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 """
 scalar JSON
 
-input LoginInput {
+input LoginUserInput {
   email: String!
-  password: String!
 }
 
 type Mutation {
   createSpace(input: CreateSpaceInput!): Space!
+  createUser(input: CreateUserInput!): User!
   deleteSpace(input: DeleteSpaceInput!): Space!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
+  issueUserEmailAuthorizationUrl(input: IssueUserEmailAuthorizationUrlInput!): IssueUserEmailAuthorizationUrlResult!
   issueUserSingleSignOnAuthorizationUrl(input: IssueUserSingleSignOnAuthorizationUrlInput!): IssueUserSingleSignOnAuthorizationUrlResult!
-  login(input: LoginInput!): User!
-  logout: Void
+  loginUser(input: LoginUserInput!): UserEmailVerification!
+  logoutUser: Void
   prepareImageUpload: PrepareImageUploadResult!
-  requestUserEmailUpdate(input: RequestUserEmailUpdateInput!): Void
-  requestUserPasswordReset(input: RequestUserPasswordResetInput!): Void
-  resendUserActivationEmail: Void
-  resetUserPassword(input: ResetUserPasswordInput!): Void
-  signUp(input: SignUpInput!): User!
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
   updateUserContentFilterPreference(input: UpdateUserContentFilterPreferenceInput!): User!
+  updateUserEmail(input: UpdateUserEmailInput!): Void
   updateUserMarketingConsent(input: UpdateUserMarketingConsentInput!): User!
   updateUserNotificationPreference(input: UpdateUserNotificationPreferenceInput!): User!
-  updateUserPassword(input: UpdateUserPasswordInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
-  verifyUserEmail(input: VerifyUserEmailInput!): User!
 }
 
 enum PreferenceType {
@@ -106,38 +117,22 @@ type Profile {
   name: String!
 }
 
+type ProvisionedUser {
+  avatarUrl: String
+  email: String!
+  id: ID!
+  name: String
+}
+
 type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
   me: User
+  provisionedUser(token: String!): ProvisionedUser!
   randomAvatars: [String!]!
   sampleImage: Image!
   sampleImages: [Image!]!
   space(slug: String!): Space!
-  userEmailVerification(code: String!): UserEmailVerification!
-}
-
-input RequestUserEmailUpdateInput {
-  email: String!
-}
-
-input RequestUserPasswordResetInput {
-  email: String!
-}
-
-input ResetUserPasswordInput {
-  code: String!
-  password: String!
-  passwordConfirm: String!
-}
-
-input SignUpInput {
-  email: String!
-  marketingConsent: Boolean!
-  name: String!
-  password: String!
-  passwordConfirm: String!
-  termsConsent: Boolean!
 }
 
 type Space {
@@ -186,6 +181,10 @@ input UpdateUserContentFilterPreferenceInput {
   category: ContentFilterCategory!
 }
 
+input UpdateUserEmailInput {
+  email: String!
+}
+
 input UpdateUserMarketingConsentInput {
   consent: Boolean!
 }
@@ -194,12 +193,6 @@ input UpdateUserNotificationPreferenceInput {
   category: UserNotificationCategory!
   method: UserNotificationMethod!
   opted: Boolean!
-}
-
-input UpdateUserPasswordInput {
-  newPassword: String!
-  newPasswordConfirm: String!
-  oldPassword: String
 }
 
 input UpdateUserProfileInput {
@@ -212,7 +205,6 @@ type User {
   id: ID!
   marketingConsent: UserMarketingConsent
   notificationPreferences: [UserNotificationPreference!]!
-  password: UserPassword
   profile: Profile!
   singleSignOns: [UserSingleSignOn!]!
   spaces: [Space!]!
@@ -226,14 +218,15 @@ type UserContentFilterPreference {
 }
 
 type UserEmailVerification {
+  email: String!
   expiresAt: DateTime!
   id: ID!
+  kind: UserEmailVerificationKind!
 }
 
 enum UserEmailVerificationKind {
-  USER_ACTIVATION
   USER_EMAIL_UPDATE
-  USER_PASSWORD_RESET
+  USER_LOGIN
 }
 
 type UserMarketingConsent {
@@ -265,19 +258,15 @@ type UserNotificationPreference {
   opted: Boolean!
 }
 
-type UserPassword {
-  id: ID!
-}
-
 type UserSingleSignOn {
+  email: String!
   id: ID!
   provider: UserSingleSignOnProvider!
-  providerEmail: String!
 }
 
 enum UserSingleSignOnAuthorizationType {
-  AUTH
   LINK
+  LOGIN
 }
 
 enum UserSingleSignOnProvider {
@@ -288,11 +277,6 @@ enum UserSingleSignOnProvider {
 enum UserState {
   ACTIVE
   INACTIVE
-  PROVISIONAL
-}
-
-input VerifyUserEmailInput {
-  code: String!
 }
 
 """Represents NULL values"""

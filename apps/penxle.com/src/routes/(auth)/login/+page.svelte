@@ -1,32 +1,26 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import { onMount } from 'svelte';
-  import { page } from '$app/stores';
-  import Wordmark from '$assets/branding/wordmark.svg?component';
+  import { goto } from '$app/navigation';
   import Google from '$assets/icons/google.svg?component';
   import Naver from '$assets/icons/naver.svg?component';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
-  import { Logo } from '$lib/components/branding';
-  import { FormField, PasswordInput, TextInput } from '$lib/components/forms';
+  import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
-  import { toast } from '$lib/notification';
-  import { LoginInputSchema } from '$lib/validations';
+  import { LoginUserSchema } from '$lib/validations';
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation LoginPage_Login_Mutation($input: LoginInput!) {
-        login(input: $input) {
+      mutation LoginPage_LoginUser_Mutation($input: LoginUserInput!) {
+        loginUser(input: $input) {
           id
+          email
         }
       }
     `),
-    schema: LoginInputSchema,
-    onSuccess: (resp) => {
-      mixpanel.identify(resp.id);
-      mixpanel.track('user:login', { method: 'email' });
-      location.href = '/';
+    schema: LoginUserSchema,
+    onSuccess: async (resp) => {
+      await goto(`/login/code?email=${resp.email}`);
     },
   });
 
@@ -39,26 +33,14 @@
       }
     }
   `);
-
-  onMount(() => {
-    switch ($page.url.searchParams.get('message')) {
-      case 'sso_link_required':
-        toast.error('아직 소셜 연동을 하지 않은 계정이에요. 로그인한 뒤 계정 설정에서 연동해주세요.');
-        break;
-    }
-  });
 </script>
 
-<Helmet title="로그인" />
+<Helmet title="펜슬 시작하기" />
 
 <div class="flex center flex-col gap-6 mb-6">
-  <div class="flex center">
-    <Logo class="mr-2 square-6" />
-    <Wordmark class="h-5" />
-  </div>
   <div class="flex center flex-col">
-    <h1 class="text-2xl font-extrabold text-center">함께 그리는 반짝임, 펜슬</h1>
-    <h2 class="text-secondary text-3.75 mt-2 font-bold">창작자를 위한 플랫폼, 펜슬과 함께하세요</h2>
+    <h1 class="text-gray-90 text-2xl font-extrabold text-center">함께 그리는 반짝임, 펜슬</h1>
+    <h2 class="text-gray-50 text-3.75 mt-2 font-bold">창작자를 위한 플랫폼, 펜슬과 함께하세요</h2>
   </div>
 </div>
 
@@ -67,35 +49,25 @@
     <FormField name="email" label="이메일">
       <TextInput class="w-full font-bold" placeholder="이메일 입력" />
     </FormField>
-
-    <FormField name="password" label="비밀번호">
-      <PasswordInput class="w-full font-bold" placeholder="비밀번호 입력" />
-    </FormField>
   </div>
 
-  <Button class="w-full mt-3" size="xl" type="submit">로그인</Button>
+  <Button class="w-full mt-3" size="xl" type="submit">펜슬 시작하기</Button>
 </form>
 
-<Button class="w-full mt-3 max-w-87.5" color="secondary" href="/signup" size="xl" type="link">회원가입</Button>
-
-<Button class="w-full my-4 text-secondary" href="/user/forgot-password" size="lg" type="link" variant="text">
-  계정을 찾을 수 없나요?
-</Button>
-
-<div class="flex gap-6">
+<div class="flex gap-6 mt-4">
   <button
     class="flex center bg-surface-primary square-13.5 rounded-20"
     type="button"
     on:click={async () => {
       const { url } = await issueUserSingleSignOnAuthorizationUrl({
-        type: 'AUTH',
+        type: 'LOGIN',
         provider: 'GOOGLE',
       });
 
       location.href = url;
     }}
   >
-    <Google class="square-8" />
+    <Google class="square-6" />
   </button>
 
   <button
@@ -103,7 +75,7 @@
     type="button"
     on:click={async () => {
       const { url } = await issueUserSingleSignOnAuthorizationUrl({
-        type: 'AUTH',
+        type: 'LOGIN',
         provider: 'NAVER',
       });
 

@@ -4,6 +4,6 @@ export const AuthScope = {
 } as const;
 
 export const UserSingleSignOnAuthorizationType = {
-  AUTH: 'AUTH',
   LINK: 'LINK',
+  LOGIN: 'LOGIN',
 } as const;

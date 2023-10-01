@@ -5,7 +5,7 @@
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
-  import { UpdateUserProfileInputSchema } from '$lib/validations';
+  import { UpdateUserProfileSchema } from '$lib/validations';
   import type { MeAccountsPage_UpdateProfileModal_profile } from '$glitch';
 
   let _profile: MeAccountsPage_UpdateProfileModal_profile;
@@ -35,7 +35,7 @@
         }
       }
     `),
-    schema: UpdateUserProfileInputSchema,
+    schema: UpdateUserProfileSchema,
     initialValues: { name: '' },
     onSuccess: () => {
       open = false;

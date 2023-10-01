@@ -1,39 +1,32 @@
 import {
   ContentFilterAction,
   ContentFilterCategory,
+  UserEmailVerificationKind,
   UserNotificationCategory,
   UserNotificationMethod,
   UserSingleSignOnProvider,
   UserState,
 } from '@prisma/client';
-import argon2 from 'argon2';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
+import { random } from 'radash';
 import { match } from 'ts-pattern';
 import { FormValidationError, IntentionalError, PermissionDeniedError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
-import {
-  EmailChange,
-  EmailChangeNotice,
-  EmailVerification,
-  PasswordReset,
-  PasswordResetRequest,
-} from '$lib/server/email/templates';
+import { LoginUser, UpdateUserEmail } from '$lib/server/email/templates';
+import { AuthScope, UserSingleSignOnAuthorizationType } from '$lib/server/enums';
 import { google, naver } from '$lib/server/external-api';
 import { createAccessToken, directUploadImage, generateRandomAvatar } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import {
-  LoginInputSchema,
-  RequestUserEmailUpdateInputSchema,
-  RequestUserPasswordResetInputSchema,
-  ResetUserPasswordInputSchema,
-  SignUpInputSchema,
-  UpdateUserPasswordInputSchema,
-  UpdateUserProfileInputSchema,
+  CreateUserSchema,
+  IssueUserEmailAuthorizationUrlSchema,
+  LoginUserSchema,
+  UpdateUserEmailSchema,
+  UpdateUserProfileSchema,
 } from '$lib/validations';
 import { builder } from '../builder';
-import { AuthScope, UserSingleSignOnAuthorizationType } from '../enums';
 
 /**
  * * Types
@@ -49,6 +42,17 @@ builder.prismaObject('Profile', {
   }),
 });
 
+builder.prismaObject('ProvisionedUser', {
+  select: { id: true },
+  authScopes: { $granted: '$user' },
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    email: t.exposeString('email'),
+    name: t.exposeString('name', { nullable: true }),
+    avatarUrl: t.exposeString('avatarUrl', { nullable: true }),
+  }),
+});
+
 builder.prismaObject('User', {
   select: { id: true },
   authScopes: (user, context) => user.id === context.session?.userId || { $granted: '$user', staff: true },
@@ -60,7 +64,6 @@ builder.prismaObject('User', {
     contentFilterPreferences: t.relation('contentFilterPreferences', { grantScopes: ['$user'] }),
     marketingConsent: t.relation('marketingConsent', { nullable: true, grantScopes: ['$user'] }),
     notificationPreferences: t.relation('notificationPreferences', { grantScopes: ['$user'] }),
-    password: t.relation('password', { nullable: true, grantScopes: ['$user'] }),
     profile: t.relation('profile'),
     singleSignOns: t.relation('singleSignOns', { grantScopes: ['$user'] }),
 
@@ -79,6 +82,7 @@ builder.prismaObject('User', {
 
 builder.prismaObject('UserContentFilterPreference', {
   select: { id: true },
+  authScopes: { $granted: '$user' },
   fields: (t) => ({
     id: t.exposeID('id'),
     category: t.expose('category', { type: ContentFilterCategory }),
@@ -88,8 +92,11 @@ builder.prismaObject('UserContentFilterPreference', {
 
 builder.prismaObject('UserEmailVerification', {
   select: { id: true },
+  authScopes: { $granted: '$user' },
   fields: (t) => ({
     id: t.exposeID('id'),
+    kind: t.expose('kind', { type: UserEmailVerificationKind }),
+    email: t.exposeString('email'),
     expiresAt: t.expose('expiresAt', { type: 'DateTime' }),
   }),
 });
@@ -105,19 +112,12 @@ builder.prismaObject('UserMarketingConsent', {
 
 builder.prismaObject('UserNotificationPreference', {
   select: { id: true },
+  authScopes: { $granted: '$user' },
   fields: (t) => ({
     id: t.exposeID('id'),
     category: t.expose('category', { type: UserNotificationCategory }),
     method: t.expose('method', { type: UserNotificationMethod }),
     opted: t.exposeBoolean('opted'),
-  }),
-});
-
-builder.prismaObject('UserPassword', {
-  select: { id: true },
-  authScopes: { $granted: '$user' },
-  fields: (t) => ({
-    id: t.exposeID('id'),
   }),
 });
 
@@ -127,7 +127,7 @@ builder.prismaObject('UserSingleSignOn', {
   fields: (t) => ({
     id: t.exposeID('id'),
     provider: t.expose('provider', { type: UserSingleSignOnProvider }),
-    providerEmail: t.exposeString('providerEmail'),
+    email: t.exposeString('email'),
   }),
 });
 
@@ -140,6 +140,12 @@ const IssueUserSingleSignOnAuthorizationUrlResult = builder.simpleObject(
   },
 );
 
+const IssueUserEmailAuthorizationUrlResult = builder.simpleObject('IssueUserEmailAuthorizationUrlResult', {
+  fields: (t) => ({
+    url: t.string(),
+  }),
+});
+
 /**
  * * Inputs
  */
@@ -151,47 +157,28 @@ const IssueUserSingleSignOnAuthorizationUrlInput = builder.inputType('IssueUserS
   }),
 });
 
-const LoginInput = builder.inputType('LoginInput', {
-  fields: (t) => ({
-    email: t.string(),
-    password: t.string(),
-  }),
-  validate: { schema: LoginInputSchema },
-});
-
-const RequestUserEmailUpdateInput = builder.inputType('RequestUserEmailUpdateInput', {
+const LoginUserInput = builder.inputType('LoginUserInput', {
   fields: (t) => ({
     email: t.string(),
   }),
-  validate: { schema: RequestUserEmailUpdateInputSchema },
+  validate: { schema: LoginUserSchema },
 });
 
-const RequestUserPasswordResetInput = builder.inputType('RequestUserPasswordResetInput', {
+const CreateUserInput = builder.inputType('CreateUserInput', {
   fields: (t) => ({
-    email: t.string(),
-  }),
-  validate: { schema: RequestUserPasswordResetInputSchema },
-});
-
-const ResetUserPasswordInput = builder.inputType('ResetUserPasswordInput', {
-  fields: (t) => ({
-    code: t.string(),
-    password: t.string(),
-    passwordConfirm: t.string(),
-  }),
-  validate: { schema: ResetUserPasswordInputSchema },
-});
-
-const SignUpInput = builder.inputType('SignUpInput', {
-  fields: (t) => ({
-    email: t.string(),
-    password: t.string(),
-    passwordConfirm: t.string(),
+    token: t.string(),
     name: t.string(),
     termsConsent: t.boolean(),
     marketingConsent: t.boolean(),
   }),
-  validate: { schema: SignUpInputSchema },
+  validate: { schema: CreateUserSchema },
+});
+
+const UpdateUserEmailInput = builder.inputType('UpdateUserEmailInput', {
+  fields: (t) => ({
+    email: t.string(),
+  }),
+  validate: { schema: UpdateUserEmailSchema },
 });
 
 const UnlinkUserSingleSignOnInput = builder.inputType('UnlinkUserSingleSignOnInput', {
@@ -221,26 +208,19 @@ const UpdateUserNotificationPreferenceInput = builder.inputType('UpdateUserNotif
   }),
 });
 
-const UpdateUserPasswordInput = builder.inputType('UpdateUserPasswordInput', {
-  fields: (t) => ({
-    oldPassword: t.string({ required: false }),
-    newPassword: t.string(),
-    newPasswordConfirm: t.string(),
-  }),
-  validate: { schema: UpdateUserPasswordInputSchema },
-});
-
 const UpdateUserProfileInput = builder.inputType('UpdateUserProfileInput', {
   fields: (t) => ({
     name: t.string(),
   }),
-  validate: { schema: UpdateUserProfileInputSchema },
+  validate: { schema: UpdateUserProfileSchema },
 });
 
-const VerifyUserEmailInput = builder.inputType('VerifyUserEmailInput', {
+const IssueUserEmailAuthorizationUrlInput = builder.inputType('IssueUserEmailAuthorizationUrlInput', {
   fields: (t) => ({
+    email: t.string(),
     code: t.string(),
   }),
+  validate: { schema: IssueUserEmailAuthorizationUrlSchema },
 });
 
 /**
@@ -275,23 +255,15 @@ builder.queryFields((t) => ({
     },
   }),
 
-  userEmailVerification: t.prismaField({
-    type: 'UserEmailVerification',
-    args: { code: t.arg({ type: 'String' }) },
-    resolve: async (query, _, { code }, { db }) => {
-      const userEmailVerification = await db.userEmailVerification.findUnique({
+  provisionedUser: t.prismaField({
+    type: 'ProvisionedUser',
+    grantScopes: ['$user'],
+    args: { token: t.arg({ type: 'String' }) },
+    resolve: async (query, _, args, { db }) => {
+      return await db.provisionedUser.findUniqueOrThrow({
         ...query,
-        where: {
-          code,
-          expiresAt: { gte: new Date() },
-        },
+        where: { token: args.token },
       });
-
-      if (!userEmailVerification) {
-        throw new IntentionalError('잘못된 코드에요');
-      }
-
-      return userEmailVerification;
     },
   }),
 }));
@@ -301,60 +273,103 @@ builder.queryFields((t) => ({
  */
 
 builder.mutationFields((t) => ({
-  login: t.prismaField({
-    type: 'User',
+  loginUser: t.prismaField({
+    type: 'UserEmailVerification',
     grantScopes: ['$user'],
-    args: { input: t.arg({ type: LoginInput }) },
-    resolve: async (query, _, { input }, { db, ...context }) => {
-      const user = await db.user.findFirst({
-        select: { id: true, password: { select: { hash: true } } },
+    args: { input: t.arg({ type: LoginUserInput }) },
+    resolve: async (query, __, { input }, { db, ...context }) => {
+      const isEmailExists = await db.user.exists({
         where: {
           email: input.email.toLowerCase(),
-          state: { in: ['PROVISIONAL', 'ACTIVE'] },
+          state: 'ACTIVE',
         },
       });
 
-      if (!user?.password) {
-        await argon2.hash(input.password); // Prevent timing attack
-        throw new FormValidationError('password', '이메일 또는 비밀번호를 다시 확인해주세요.');
-      }
+      const code = random(100_000, 999_999).toString();
+      const token = nanoid();
 
-      if (!(await argon2.verify(user.password.hash, input.password))) {
-        throw new FormValidationError('password', '이메일 또는 비밀번호를 다시 확인해주세요.');
-      }
-
-      const session = await db.session.create({
-        select: { id: true },
-        data: { id: createId(), userId: user.id },
+      await sendEmail({
+        subject: `펜슬 ${isEmailExists ? '로그인' : '가입'}하기`,
+        recipient: input.email,
+        template: LoginUser,
+        props: {
+          action: isEmailExists ? '로그인' : '가입',
+          code,
+          url: qs.stringifyUrl({
+            url: `${context.url.origin}/api/email`,
+            query: { token },
+          }),
+        },
       });
 
-      const accessToken = await createAccessToken(session.id);
-      context.cookies.set('penxle-at', accessToken, {
-        path: '/',
-        maxAge: dayjs.duration(1, 'year').asSeconds(),
-      });
-
-      return await db.user.findUniqueOrThrow({
+      return await db.userEmailVerification.create({
         ...query,
-        where: { id: user.id },
+        data: {
+          id: createId(),
+          kind: 'USER_LOGIN',
+          email: input.email.toLowerCase(),
+          token,
+          code,
+          expiresAt: dayjs().add(1, 'hour').toDate(),
+        },
       });
     },
   }),
 
-  signUp: t.prismaField({
-    type: 'User',
-    grantScopes: ['$user'],
-    args: { input: t.arg({ type: SignUpInput }) },
-    resolve: async (query, _, { input }, { db, ...context }) => {
-      const isEmailUsed = await db.user.exists({
+  logoutUser: t.withAuth({ user: true }).field({
+    type: 'Void',
+    nullable: true,
+    resolve: async (_, __, { db, ...context }) => {
+      await db.userSession.delete({
+        where: { id: context.session.id },
+      });
+
+      context.cookies.delete('penxle-at', { path: '/' });
+    },
+  }),
+
+  issueUserEmailAuthorizationUrl: t.field({
+    type: IssueUserEmailAuthorizationUrlResult,
+    args: { input: t.arg({ type: IssueUserEmailAuthorizationUrlInput }) },
+    resolve: async (_, { input }, { db }) => {
+      const emailVerification = await db.userEmailVerification.findFirst({
         where: {
-          email: input.email.toLowerCase(),
-          state: { in: ['PROVISIONAL', 'ACTIVE'] },
+          email: input.email,
+          kind: 'USER_LOGIN',
+          code: input.code,
         },
       });
 
+      if (!emailVerification) {
+        throw new FormValidationError('code', '올바르지 않은 코드에요.');
+      }
+
+      return {
+        url: qs.stringifyUrl({
+          url: '/api/email',
+          query: { token: emailVerification.token },
+        }),
+      };
+    },
+  }),
+
+  createUser: t.prismaField({
+    type: 'User',
+    grantScopes: ['$user'],
+    args: { input: t.arg({ type: CreateUserInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const provisionedUser = await db.provisionedUser.findUniqueOrThrow({
+        where: { token: input.token },
+      });
+
+      const isEmailUsed = await db.user.exists({
+        where: {
+          email: provisionedUser.email.toLowerCase(),
+          state: 'ACTIVE',
+        },
+      });
       if (isEmailUsed) {
-        throw new FormValidationError('email', '이미 사용중인 이메일이에요.');
+        throw new IntentionalError('이미 가입된 이메일이에요.');
       }
 
       const avatarId = await directUploadImage({
@@ -374,15 +389,9 @@ builder.mutationFields((t) => ({
       const user = await db.user.create({
         data: {
           id: createId(),
-          email: input.email.toLowerCase(),
+          email: provisionedUser.email,
           profileId: profile.id,
-          state: 'PROVISIONAL',
-          password: {
-            create: {
-              id: createId(),
-              hash: await argon2.hash(input.password),
-            },
-          },
+          state: 'ACTIVE',
         },
       });
 
@@ -400,31 +409,23 @@ builder.mutationFields((t) => ({
         });
       }
 
-      const userEmailVerification = await db.userEmailVerification.create({
-        data: {
-          id: createId(),
-          userId: user.id,
-          email: user.email,
-          type: 'USER_ACTIVATION',
-          code: nanoid(),
-          expiresAt: dayjs().add(30, 'days').toDate(),
-        },
+      if (provisionedUser.provider && provisionedUser.principal) {
+        await db.userSingleSignOn.create({
+          data: {
+            id: createId(),
+            userId: user.id,
+            provider: provisionedUser.provider,
+            principal: provisionedUser.principal,
+            email: provisionedUser.email,
+          },
+        });
+      }
+
+      await db.provisionedUser.delete({
+        where: { id: provisionedUser.id },
       });
 
-      await sendEmail({
-        subject: 'PENXLE 이메일 인증',
-        recipient: user.email,
-        template: EmailVerification,
-        props: {
-          name: profile.name,
-          url: qs.stringifyUrl({
-            url: `${context.url.origin}/user/verify-email`,
-            query: { code: userEmailVerification.code },
-          }),
-        },
-      });
-
-      const session = await db.session.create({
+      const session = await db.userSession.create({
         select: { id: true },
         data: { id: createId(), userId: user.id },
       });
@@ -439,18 +440,6 @@ builder.mutationFields((t) => ({
         ...query,
         where: { id: user.id },
       });
-    },
-  }),
-
-  logout: t.withAuth({ user: true }).field({
-    type: 'Void',
-    nullable: true,
-    resolve: async (_, __, { db, ...context }) => {
-      await db.session.delete({
-        where: { id: context.session.id },
-      });
-
-      context.cookies.delete('penxle-at', { path: '/' });
     },
   }),
 
@@ -469,110 +458,20 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  requestUserPasswordReset: t.field({
+  updateUserEmail: t.withAuth({ user: true }).field({
     type: 'Void',
     nullable: true,
-    args: { input: t.arg({ type: RequestUserPasswordResetInput }) },
-    resolve: async (_, { input }, { db, ...context }) => {
-      const user = await db.user.findFirst({
-        select: { id: true, email: true, profile: { select: { name: true } } },
-        where: {
-          email: input.email.toLowerCase(),
-          state: { in: ['PROVISIONAL', 'ACTIVE'] },
-        },
-      });
-
-      if (!user) {
-        throw new FormValidationError('email', '잘못된 이메일이에요.');
-      }
-
-      const expiresAt = dayjs().add(1, 'hour').toDate();
-
-      const userEmailVerification = await db.userEmailVerification.create({
-        data: {
-          id: createId(),
-          userId: user.id,
-          email: user.email,
-          type: 'USER_PASSWORD_RESET',
-          code: nanoid(),
-          expiresAt,
-        },
-      });
-
-      await sendEmail({
-        subject: 'PENXLE 비밀번호 재설정',
-        recipient: user.email,
-        template: PasswordResetRequest,
-        props: {
-          name: user.profile.name,
-          url: qs.stringifyUrl({
-            url: `${context.url.origin}/user/reset-password`,
-            query: { code: userEmailVerification.code },
-          }),
-        },
-      });
-    },
-  }),
-
-  resetUserPassword: t.field({
-    type: 'Void',
-    nullable: true,
-    args: { input: t.arg({ type: ResetUserPasswordInput }) },
-    resolve: async (_, { input }, { db }) => {
-      const userEmailVerification = await db.userEmailVerification.delete({
-        where: {
-          code: input.code,
-          type: 'USER_PASSWORD_RESET',
-          expiresAt: { gte: new Date() },
-        },
-      });
-
-      await db.userPassword.deleteMany({
-        where: { userId: userEmailVerification.userId },
-      });
-
-      const user = await db.user.update({
-        include: { profile: { select: { name: true } } },
-        where: {
-          id: userEmailVerification.userId,
-          state: { in: ['PROVISIONAL', 'ACTIVE'] },
-        },
-        data: {
-          state: 'ACTIVE',
-          password: {
-            create: {
-              id: createId(),
-              hash: await argon2.hash(input.password),
-            },
-          },
-        },
-      });
-
-      await sendEmail({
-        subject: 'PENXLE 비밀번호가 재설정되었어요.',
-        recipient: user.email,
-        template: PasswordReset,
-        props: {
-          name: user.profile.name,
-        },
-      });
-    },
-  }),
-
-  requestUserEmailUpdate: t.withAuth({ user: true }).field({
-    type: 'Void',
-    nullable: true,
-    args: { input: t.arg({ type: RequestUserEmailUpdateInput }) },
+    args: { input: t.arg({ type: UpdateUserEmailInput }) },
     resolve: async (_, { input }, { db, ...context }) => {
       const isEmailUsed = await db.user.exists({
         where: {
           email: input.email.toLowerCase(),
-          state: { in: ['PROVISIONAL', 'ACTIVE'] },
+          state: 'ACTIVE',
         },
       });
 
       if (isEmailUsed) {
-        throw new FormValidationError('email', '이미 사용중인 이메일이에요');
+        return;
       }
 
       const user = await db.user.findUniqueOrThrow({
@@ -580,13 +479,15 @@ builder.mutationFields((t) => ({
         where: { id: context.session.userId },
       });
 
-      const userEmailVerification = await db.userEmailVerification.create({
+      const token = nanoid();
+
+      await db.userEmailVerification.create({
         data: {
           id: createId(),
           userId: user.id,
-          type: 'USER_EMAIL_UPDATE',
+          kind: 'USER_EMAIL_UPDATE',
           email: input.email.toLowerCase(),
-          code: nanoid(),
+          token,
           expiresAt: dayjs().add(1, 'hour').toDate(),
         },
       });
@@ -594,74 +495,16 @@ builder.mutationFields((t) => ({
       await sendEmail({
         subject: 'PENXLE 이메일 변경',
         recipient: input.email,
-        template: EmailChange,
+        template: UpdateUserEmail,
         props: {
           name: user.profile.name,
           email: input.email,
           url: qs.stringifyUrl({
-            url: `${context.url.origin}/user/verify-email`,
-            query: { code: userEmailVerification.code },
+            url: `${context.url.origin}/api/email`,
+            query: { token },
           }),
         },
       });
-    },
-  }),
-
-  verifyUserEmail: t.prismaField({
-    type: 'User',
-    grantScopes: ['$user'],
-    args: { input: t.arg({ type: VerifyUserEmailInput }) },
-    resolve: async (query, _, { input }, { db }) => {
-      const userEmailVerification = await db.userEmailVerification.delete({
-        include: { user: { include: { profile: { select: { name: true } } } } },
-        where: {
-          type: { in: ['USER_ACTIVATION', 'USER_EMAIL_UPDATE'] },
-          code: input.code,
-          expiresAt: { gte: new Date() },
-        },
-      });
-
-      if (userEmailVerification.type === 'USER_ACTIVATION') {
-        return await db.user.update({
-          ...query,
-          where: { id: userEmailVerification.user.id },
-          data: { state: 'ACTIVE' },
-        });
-      }
-
-      if (userEmailVerification.type === 'USER_EMAIL_UPDATE') {
-        const isEmailUsed = await db.user.exists({
-          where: {
-            email: userEmailVerification.email,
-            state: { in: ['PROVISIONAL', 'ACTIVE'] },
-          },
-        });
-
-        if (isEmailUsed) {
-          throw new Error('Email already in use');
-        }
-
-        await sendEmail({
-          subject: 'PENXLE 이메일이 변경되었어요.',
-          recipient: userEmailVerification.user.email,
-          template: EmailChangeNotice,
-          props: {
-            name: userEmailVerification.user.profile.name,
-            email: userEmailVerification.email,
-          },
-        });
-
-        return await db.user.update({
-          ...query,
-          where: { id: userEmailVerification.user.id },
-          data: {
-            email: userEmailVerification.email,
-            state: 'ACTIVE',
-          },
-        });
-      }
-
-      throw new Error('Invalid verification type');
     },
   }),
 
@@ -731,90 +574,6 @@ builder.mutationFields((t) => ({
               },
             },
           },
-        },
-      });
-    },
-  }),
-
-  updateUserPassword: t.withAuth({ user: true }).prismaField({
-    type: 'User',
-    args: { input: t.arg({ type: UpdateUserPasswordInput }) },
-    resolve: async (query, _, { input }, { db, ...context }) => {
-      const user = await db.user.findUniqueOrThrow({
-        include: {
-          profile: { select: { name: true } },
-          password: { select: { id: true, hash: true } },
-        },
-        where: { id: context.session.userId },
-      });
-
-      if (user.password) {
-        if (!(await argon2.verify(user.password.hash, input.oldPassword ?? ''))) {
-          throw new FormValidationError('oldPassword', '잘못된 비밀번호에요');
-        }
-
-        await db.userPassword.delete({
-          where: { id: user.password.id },
-        });
-      }
-
-      await sendEmail({
-        subject: 'PENXLE 비밀번호가 재설정되었어요',
-        recipient: user.email,
-        template: PasswordReset,
-        props: {
-          name: user.profile.name,
-        },
-      });
-
-      return await db.user.update({
-        ...query,
-        where: { id: context.session.userId },
-        data: {
-          password: {
-            create: {
-              id: createId(),
-              hash: await argon2.hash(input.newPassword),
-            },
-          },
-        },
-      });
-    },
-  }),
-
-  resendUserActivationEmail: t.withAuth({ user: true }).field({
-    type: 'Void',
-    nullable: true,
-    resolve: async (_, __, { db, ...context }) => {
-      const user = await db.user.findUniqueOrThrow({
-        include: { profile: { select: { name: true } } },
-        where: {
-          id: context.session.userId,
-          state: 'PROVISIONAL',
-        },
-      });
-
-      const userEmailVerification = await db.userEmailVerification.create({
-        data: {
-          id: createId(),
-          userId: context.session.userId,
-          email: user.email,
-          type: 'USER_ACTIVATION',
-          code: nanoid(),
-          expiresAt: dayjs().add(30, 'days').toDate(),
-        },
-      });
-
-      await sendEmail({
-        subject: 'PENXLE 이메일 인증',
-        recipient: user.email,
-        template: EmailVerification,
-        props: {
-          name: user.profile.name,
-          url: qs.stringifyUrl({
-            url: `${context.url.origin}/user/verify-email`,
-            query: { code: userEmailVerification.code },
-          }),
         },
       });
     },

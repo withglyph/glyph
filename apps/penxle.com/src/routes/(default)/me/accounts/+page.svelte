@@ -8,13 +8,11 @@
   import { Switch } from '$lib/components/forms';
   import { toast } from '$lib/notification';
   import UpdateEmailModal from './UpdateEmailModal.svelte';
-  import UpdatePasswordModal from './UpdatePasswordModal.svelte';
   import UpdateProfileModal from './UpdateProfileModal.svelte';
   import UserSingleSignOn from './UserSingleSignOn.svelte';
 
   let updateEmailOpen = false;
   let updateProfileOpen = false;
-  let updatePasswordOpen = false;
 
   $: query = graphql(`
     query MeAccountsPage_Query {
@@ -38,17 +36,6 @@
           ...MeAccountsPage_UpdateProfileModal_profile
         }
 
-        password {
-          id
-        }
-
-        singleSignOns {
-          id
-          provider
-          providerEmail
-        }
-
-        ...MeAccountsPage_UpdatePasswordModal_user
         ...MeAccountsPage_UserSingleSignOn_user
       }
     }
@@ -64,12 +51,6 @@
           createdAt
         }
       }
-    }
-  `);
-
-  const resendUserActivationEmail = graphql(`
-    mutation MeAccountsPage_ResendUserActivationEmail_Mutation {
-      resendUserActivationEmail
     }
   `);
 
@@ -103,34 +84,12 @@
     <div>
       <div class="flex flex-wrap mb-2 items-center">
         <h3 class="text-lg font-extrabold mr-2">이메일 인증</h3>
-        {#if $query.me.state === 'PROVISIONAL'}
-          <Badge class="text-xs font-bold" color="red">인증 필요</Badge>
-        {:else}
-          <Badge class="text-xs font-bold" color="green">인증 완료</Badge>
-        {/if}
+        <Badge class="text-xs font-bold" color="green">인증 완료</Badge>
       </div>
       <p class="text-3.75 text-secondary break-keep">펜슬의 콘텐츠를 이용하려면 이메일 인증이 필요해요</p>
     </div>
-    <div class="flex gap-2">
-      <Button color="tertiary" size="md" variant="outlined" on:click={() => (updateEmailOpen = true)}>변경하기</Button>
 
-      {#if $query.me.state === 'PROVISIONAL'}
-        <Button
-          color="secondary"
-          size="md"
-          on:click={async () => {
-            try {
-              await resendUserActivationEmail();
-              toast.success('이메일 인증 메일을 보냈어요');
-            } catch {
-              toast.error('이메일 인증 메일을 보내는 중 오류가 발생했어요');
-            }
-          }}
-        >
-          인증하기
-        </Button>
-      {/if}
-    </div>
+    <Button color="tertiary" size="md" variant="outlined" on:click={() => (updateEmailOpen = true)}>변경하기</Button>
   </div>
 
   <div class="flex flex-wrap items-center justify-between gap-4">
@@ -177,17 +136,7 @@
 
   <div class="w-full border-b border-alphagray-15" />
 
-  <div class="flex flex-wrap items-center justify-between gap-4">
-    <div>
-      <h3 class="text-lg font-extrabold mb-2">비밀번호</h3>
-      <p class="text-3.75 text-secondary break-keep">비밀번호를 {$query.me.password ? '변경' : '설정'}하세요</p>
-    </div>
-    <Button color="secondary" size="md" on:click={() => (updatePasswordOpen = true)}>
-      {$query.me.password ? '변경' : '설정'}하기
-    </Button>
-  </div>
-
-  <div class="flex flex-wrap items-center justify-between gap-4">
+  <!-- <div class="flex flex-wrap items-center justify-between gap-4">
     <div>
       <h3 class="text-lg font-extrabold mb-2">2차 인증</h3>
       <p class="text-3.75 text-secondary break-keep">2차 인증을 통해 계정을 더욱 안전하게 관리하세요</p>
@@ -195,7 +144,7 @@
     <Button color="secondary" size="md">인증하기</Button>
   </div>
 
-  <div class="w-full border-b border-alphagray-15" />
+  <div class="w-full border-b border-alphagray-15" /> -->
 
   <div class="flex justify-end">
     <Button href="/me/accounts/deactivate" size="lg" type="link" variant="text">
@@ -206,5 +155,4 @@
 </div>
 
 <UpdateEmailModal bind:open={updateEmailOpen} />
-<UpdatePasswordModal $user={$query.me} bind:open={updatePasswordOpen} />
 <UpdateProfileModal $profile={$query.me.profile} bind:open={updateProfileOpen} />

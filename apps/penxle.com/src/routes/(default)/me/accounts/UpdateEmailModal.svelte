@@ -4,18 +4,18 @@
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
-  import { RequestUserEmailUpdateInputSchema } from '$lib/validations';
+  import { UpdateUserEmailSchema } from '$lib/validations';
 
   export let open = false;
   let value: HTMLInputElement['value'];
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation MeAccountsPage_RequestUserEmailUpdate_Mutation($input: RequestUserEmailUpdateInput!) {
-        requestUserEmailUpdate(input: $input)
+      mutation MeAccountsPage_UpdateUserEmail_Mutation($input: UpdateUserEmailInput!) {
+        updateUserEmail(input: $input)
       }
     `),
-    schema: RequestUserEmailUpdateInputSchema,
+    schema: UpdateUserEmailSchema,
     onSuccess: () => {
       open = false;
       toast.success('입력하신 이메일로 인증메일을 전송했어요');

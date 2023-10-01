@@ -35,9 +35,9 @@
     `),
   );
 
-  const logout = graphql(`
-    mutation DefaultLayout_UserMenu_Logout_Mutation {
-      logout
+  const logoutUser = graphql(`
+    mutation DefaultLayout_UserMenu_LogoutUser_Mutation {
+      logoutUser
     }
   `);
 
@@ -121,7 +121,7 @@
       tabindex="-1"
       type="button"
       on:click={async () => {
-        await logout();
+        await logoutUser();
         mixpanel.track('user:logout');
         mixpanel.reset();
         location.href = '/';

@@ -1,47 +1,61 @@
 <script lang="ts">
   import { Helmet, Link } from '@penxle/ui';
+  import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
-  import { Checkbox, FormField, PasswordInput, TextInput } from '$lib/components/forms';
+  import { Checkbox, FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
-  import { SignUpInputSchema } from '$lib/validations';
+  import { CreateUserSchema } from '$lib/validations';
 
-  const { form, data, setFields } = createMutationForm({
+  $: query = graphql(`
+    query SignupPage_Query($token: String!) {
+      provisionedUser(token: $token) {
+        id
+        name
+        email
+      }
+    }
+  `);
+
+  const { form, data, setFields, setInitialValues } = createMutationForm({
     mutation: graphql(`
-      mutation SignUpPage_SignUp_Mutation($input: SignUpInput!) {
-        signUp(input: $input) {
+      mutation SignupPage_CreateUser_Mutation($input: CreateUserInput!) {
+        createUser(input: $input) {
           id
           email
-
           profile {
-            id
             name
-
             avatar {
-              id
               url
             }
           }
         }
       }
     `),
-    schema: SignUpInputSchema,
+    schema: CreateUserSchema,
     initialValues: { name: '' },
     onSuccess: (resp) => {
       mixpanel.identify(resp.id);
-      mixpanel.track('user:signup', { method: 'email' });
+      mixpanel.track('user:signup');
       mixpanel.people.set({
         $email: resp.email,
         $name: resp.profile.name,
         $avatar: resp.profile.avatar.url,
       });
+
       location.href = '/';
     },
   });
 
-  $: consentAll = $data.termsConsent && $data.marketingConsent;
+  $: setInitialValues({
+    name: $query.provisionedUser.name ?? '',
+    token: $page.url.searchParams.get('token') ?? '',
+    termsConsent: false,
+    marketingConsent: false,
+  });
 
+  $: consentAll = $data.termsConsent && $data.marketingConsent;
   const handleConsentAll = (event: Event) => {
     const { checked } = event.currentTarget as HTMLInputElement;
     setFields('termsConsent', checked);
@@ -49,30 +63,18 @@
   };
 </script>
 
-<Helmet title="새 계정 만들기" />
+<Helmet title="펜슬 시작하기" />
 
 <h1 class="font-bold text-xl w-full max-w-87.5">펜슬 회원가입</h1>
 
 <form class="mt-6 w-full max-w-87.5 space-y-4" use:form>
-  <div class="space-y-3">
-    <FormField name="email" label="이메일">
-      <TextInput class="w-full font-bold" placeholder="이메일 입력" />
-    </FormField>
+  <input name="token" type="hidden" value={$page.url.searchParams.get('token')} />
 
-    <FormField name="name" label="닉네임">
-      <TextInput class="w-full font-bold" maxlength={10} placeholder="닉네임 입력">
-        <span slot="right-icon" class="text-sm text-gray-40">{$data.name.length} / 10</span>
-      </TextInput>
-    </FormField>
-
-    <FormField name="password" label="비밀번호">
-      <PasswordInput class="w-full font-bold" placeholder="비밀번호 입력" showStrength />
-    </FormField>
-
-    <FormField name="passwordConfirm" label="비밀번호 확인">
-      <PasswordInput class="w-full font-bold" placeholder="비밀번호 확인 입력" />
-    </FormField>
-  </div>
+  <FormField name="name" label="닉네임">
+    <TextInput class="w-full font-bold" maxlength={10} placeholder="닉네임 입력">
+      <span slot="right-icon" class="text-sm text-gray-40">{$data.name.length} / 10</span>
+    </TextInput>
+  </FormField>
 
   <section class="my-4 space-y-3">
     <Checkbox class="font-bold" checked={consentAll} on:change={handleConsentAll}>약관 전체 동의</Checkbox>
@@ -86,8 +88,5 @@
     </Checkbox>
     <Checkbox name="marketingConsent" class="text-sm">마케팅 정보 수집 동의(선택)</Checkbox>
   </section>
-
   <Button class="w-full" size="xl" type="submit">펜슬 회원가입 하기</Button>
 </form>
-
-<Link class="font-bold text-gray-50 mt-4 w-full text-center max-w-87.5" href="/login">돌아가기</Link>

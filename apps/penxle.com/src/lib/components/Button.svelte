@@ -11,7 +11,7 @@
     color?: 'primary' | 'secondary' | 'tertiary';
     variant?: 'text' | 'outlined' | 'contained';
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  } & (T extends 'link' ? { href: string } : unknown);
+  } & (T extends 'link' ? { href: string; external?: boolean } : unknown);
 
   type $$Events = T extends 'link' ? unknown : { click: MouseEvent };
 
@@ -27,6 +27,7 @@
   export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
 
   export let href: string | undefined = undefined;
+  export let external = !href?.startsWith('/');
 
   let element: 'a' | 'button';
   $: element = type === 'link' ? 'a' : 'button';
@@ -71,6 +72,10 @@
   role="button"
   tabindex="-1"
   on:click
+  {...external && {
+    target: '_blank',
+    rel: 'noopener noreferrer',
+  }}
   {...props}
 >
   {#if showSpinner}

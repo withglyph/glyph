@@ -8,53 +8,26 @@ const email = z
 
 const name = z.string().min(1, '닉네임을 입력해주세요').max(20, '닉네임은 20자를 넘을 수 없어요');
 
-const password = z.string().min(8, '8자 이상으로 입력해주세요');
-
-export const LoginInputSchema = z.object({
+export const LoginUserSchema = z.object({
   email,
-  password,
 });
 
-export const SignUpInputSchema = LoginInputSchema.extend({
+export const CreateUserSchema = z.object({
+  token: z.string(),
   name,
-  passwordConfirm: z.string(),
   termsConsent: z.boolean().refine((v) => v, '필수 약관에 동의해주세요'),
   marketingConsent: z.boolean(),
-}).refine((v) => v.password === v.passwordConfirm, {
-  message: '비밀번호가 일치하지 않아요',
-  path: ['passwordConfirm'],
 });
 
-export const UpdateUserProfileInputSchema = z.object({
+export const UpdateUserEmailSchema = z.object({
+  email,
+});
+
+export const UpdateUserProfileSchema = z.object({
   name,
 });
 
-export const RequestUserPasswordResetInputSchema = z.object({
+export const IssueUserEmailAuthorizationUrlSchema = z.object({
   email,
+  code: z.string().min(1, '인증 코드를 입력해주세요'),
 });
-
-export const RequestUserEmailUpdateInputSchema = z.object({
-  email,
-});
-
-export const ResetUserPasswordInputSchema = z
-  .object({
-    password,
-    passwordConfirm: z.string(),
-    code: z.string(),
-  })
-  .refine((v) => v.password === v.passwordConfirm, {
-    message: '비밀번호가 일치하지 않아요',
-    path: ['passwordConfirm'],
-  });
-
-export const UpdateUserPasswordInputSchema = z
-  .object({
-    oldPassword: password.optional(),
-    newPassword: password,
-    newPasswordConfirm: z.string(),
-  })
-  .refine((v) => v.newPassword === v.newPasswordConfirm, {
-    message: '비밀번호가 일치하지 않아요',
-    path: ['newPasswordConfirm'],
-  });

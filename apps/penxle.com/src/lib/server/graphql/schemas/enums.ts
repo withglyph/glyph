@@ -1,6 +1,6 @@
 import { $Enums } from '@prisma/client';
+import * as enums from '$lib/server/enums';
 import { builder } from '../builder';
-import * as enums from '../enums';
 
 /**
  * * Enums

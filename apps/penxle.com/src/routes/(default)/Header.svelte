@@ -45,9 +45,9 @@
     `),
   );
 
-  const logout = graphql(`
-    mutation DefaultLayout_Logout_Mutation {
-      logout
+  const logoutUser = graphql(`
+    mutation DefaultLayout_LogoutUser_Mutation {
+      logoutUser
     }
   `);
 </script>
@@ -96,8 +96,8 @@
             <span class="i-lc-chevron-right" />
           </Button>
         {:else}
-          <Button color="tertiary" href="/login" size="md" type="link" variant="outlined">로그인</Button>
-          <Button class="ml-2" href="/signup" size="md" type="link">회원가입</Button>
+          <!-- <Button color="tertiary" href="/login" size="md" type="link" variant="outlined">로그인</Button> -->
+          <Button class="ml-2" href="/login" size="md" type="link">가입/로그인</Button>
         {/if}
       </div>
     </section>
@@ -163,7 +163,7 @@
         class="flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-primary text-disabled"
         type="button"
         on:click={async () => {
-          await logout();
+          await logoutUser();
           mixpanel.track('user:logout');
           mixpanel.reset();
           location.href = '/';
