@@ -49,7 +49,13 @@
           <span class="font-bold">1000P</span>
           <Button size="md">충전하기</Button>
         </div>
-        <Button class="w-full" color="tertiary" size="md" variant="outlined" on:click={() => (open = true)}>
+        <Button
+          class="w-full font-bold text-sm"
+          color="tertiary"
+          size="lg"
+          variant="outlined"
+          on:click={() => (open = true)}
+        >
           <PencilUnderline class="square-5 mr-2" />
           프로필 수정
         </Button>
