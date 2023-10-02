@@ -3,7 +3,6 @@ import { createContext } from '../context';
 import { createRouter } from './router';
 import { email, healthz, sso } from './routes';
 import type { RequestEvent } from '@sveltejs/kit';
-import type { TransactionClient } from '../database';
 
 const router = createRouter();
 
@@ -15,11 +14,11 @@ export const handler = async (event: RequestEvent) => {
     context = await createContext(event);
     const response = await router.handle(event.request, context);
 
-    await (context.db as TransactionClient).$commit();
+    await context.$commit();
     return json(response);
   } catch (err) {
     if (context) {
-      await (context.db as TransactionClient).$rollback();
+      await context.$rollback();
     }
 
     console.error(err);

@@ -3,11 +3,20 @@ import { nanoid } from 'nanoid';
 import { prismaClient } from './database';
 import { decodeAccessToken } from './utils/access-token';
 import type { RequestEvent } from '@sveltejs/kit';
+import type { MaybePromise } from '$lib/types';
 import type { InteractiveTransactionClient } from './database';
+
+type InternalContext = {
+  $commitHooks: (() => MaybePromise<void>)[];
+};
 
 type DefaultContext = {
   db: InteractiveTransactionClient;
   deviceId: string;
+  onCommit: (fn: () => MaybePromise<void>) => void;
+
+  $commit: () => Promise<void>;
+  $rollback: () => Promise<void>;
 };
 
 export type UserContext = {
@@ -30,11 +39,20 @@ export const createContext = async (context: RequestEvent): Promise<Context> => 
     });
   }
 
-  const ctx: Context = {
+  const ctx: Context & InternalContext = {
     ...context,
     ...context.locals,
     db,
     deviceId,
+    $commitHooks: [],
+    onCommit: (fn: () => MaybePromise<void>) => ctx.$commitHooks.push(fn),
+    $commit: async () => {
+      await db.$commit();
+      await Promise.all(ctx.$commitHooks.map((fn) => fn()));
+    },
+    $rollback: async () => {
+      await db.$rollback();
+    },
   };
 
   const accessToken = context.cookies.get('penxle-at');
