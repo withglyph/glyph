@@ -1,11 +1,8 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import dayjs from 'dayjs';
-  import * as R from 'radash';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-  import Google from '$assets/icons/google.svg?component';
-  import Naver from '$assets/icons/naver.svg?component';
   import { graphql } from '$glitch';
   import { Avatar, Badge, Button } from '$lib/components';
   import { Switch } from '$lib/components/forms';
@@ -13,6 +10,7 @@
   import UpdateEmailModal from './UpdateEmailModal.svelte';
   import UpdatePasswordModal from './UpdatePasswordModal.svelte';
   import UpdateProfileModal from './UpdateProfileModal.svelte';
+  import UserSingleSignOn from './UserSingleSignOn.svelte';
 
   let updateEmailOpen = false;
   let updateProfileOpen = false;
@@ -51,16 +49,7 @@
         }
 
         ...MeAccountsPage_UpdatePasswordModal_user
-      }
-    }
-  `);
-
-  const issueUserSingleSignOnAuthorizationUrl = graphql(`
-    mutation MeAccountsPage_IssueUserSingleSignOnAuthorizationUrl_Mutation(
-      $input: IssueUserSingleSignOnAuthorizationUrlInput!
-    ) {
-      issueUserSingleSignOnAuthorizationUrl(input: $input) {
-        url
+        ...MeAccountsPage_UserSingleSignOn_user
       }
     }
   `);
@@ -78,27 +67,11 @@
     }
   `);
 
-  const unlinkUserSingleSignOn = graphql(`
-    mutation MeAccountsPage_UnlinkUserSingleSignOn_Mutation($input: UnlinkUserSingleSignOnInput!) {
-      unlinkUserSingleSignOn(input: $input) {
-        id
-
-        singleSignOns {
-          id
-          provider
-          providerEmail
-        }
-      }
-    }
-  `);
-
   const resendUserActivationEmail = graphql(`
     mutation MeAccountsPage_ResendUserActivationEmail_Mutation {
       resendUserActivationEmail
     }
   `);
-
-  $: singleSignOns = R.objectify($query.me.singleSignOns, (v) => v.provider);
 
   onMount(() => {
     switch ($page.url.searchParams.get('message')) {
@@ -175,95 +148,9 @@
   <div class="w-full border-b border-alphagray-15" />
 
   <h3 class="text-lg font-extrabold mb-4">연동 관리</h3>
-  <div class="flex flex-wrap items-center justify-between gap-4">
-    <div class="flex items-center gap-3">
-      <div class="square-9 flex center">
-        <Google class="square-9" />
-      </div>
-      <div>
-        <h3 class="text-lg font-extrabold mr-2">Google</h3>
-        {#if singleSignOns.GOOGLE}
-          <p class="text-3.75 text-gray-50 break-keep">
-            {singleSignOns.GOOGLE.providerEmail}
-          </p>
-        {/if}
-      </div>
-    </div>
-    {#if singleSignOns.GOOGLE}
-      <Button
-        color="tertiary"
-        size="md"
-        variant="outlined"
-        on:click={async () => {
-          await unlinkUserSingleSignOn({
-            provider: 'GOOGLE',
-          });
-        }}
-      >
-        연동 해제
-      </Button>
-    {:else}
-      <Button
-        color="secondary"
-        size="md"
-        on:click={async () => {
-          const { url } = await issueUserSingleSignOnAuthorizationUrl({
-            type: 'LINK',
-            provider: 'GOOGLE',
-          });
 
-          location.href = url;
-        }}
-      >
-        연동하기
-      </Button>
-    {/if}
-  </div>
-
-  <div class="flex flex-wrap items-center justify-between gap-4">
-    <div class="flex items-center gap-3">
-      <div class="square-9 flex center">
-        <Naver class="square-7.5" />
-      </div>
-      <div>
-        <h3 class="text-lg font-extrabold mr-2">Naver</h3>
-        {#if singleSignOns.NAVER}
-          <p class="text-3.75 text-gray-50 break-keep">
-            {singleSignOns.NAVER.providerEmail}
-          </p>
-        {/if}
-      </div>
-    </div>
-    {#if singleSignOns.NAVER}
-      <Button
-        color="tertiary"
-        size="md"
-        variant="outlined"
-        on:click={async () => {
-          await unlinkUserSingleSignOn({
-            provider: 'NAVER',
-          });
-        }}
-      >
-        연동 해제
-      </Button>
-    {:else}
-      <Button
-        color="secondary"
-        size="md"
-        on:click={async () => {
-          const { url } = await issueUserSingleSignOnAuthorizationUrl({
-            type: 'LINK',
-            provider: 'NAVER',
-          });
-
-          location.href = url;
-        }}
-      >
-        연동하기
-      </Button>
-    {/if}
-  </div>
+  <UserSingleSignOn $user={$query.me} provider="GOOGLE" />
+  <UserSingleSignOn $user={$query.me} provider="NAVER" />
 
   <div class="w-full border-b border-alphagray-15" />
 
