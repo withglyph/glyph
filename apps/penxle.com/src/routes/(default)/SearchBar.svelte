@@ -20,18 +20,18 @@
 </script>
 
 <form
-  class={clsx('relative w-full mr-4 h-11', _class)}
+  class={clsx('relative w-full mr-4 h-10 ', _class)}
   on:submit|preventDefault={async () => {
     await goto(qs.stringifyUrl({ url: '/search', query: { q: value } }));
   }}
 >
   <input
-    class="transition-width ease-in-out rounded-9 bg-gray-10 py-2 pl-11 pr-4 text-sm border border-gray-10 focus-within:border-gray-40 next:focus:text-gray-50 h-11 <sm:(w-full max-w-80) sm:(w-80 focus-within:w-full!)"
+    class="transition-width ease-in-out rounded-9 bg-primary py-2 pl-11 pr-4 text-sm border border-bg-primary focus-within:border-primary next:focus:text-icon-primary h-10 <sm:(w-full max-w-80) sm:(w-80 focus-within:w-full!)"
     placeholder="#검색어를 입력해 태그를 검색해 보세요"
     type="text"
     bind:value
   />
-  <div class="absolute inset-y-0 left-4 flex center text-gray-30">
+  <div class="absolute inset-y-0 left-4 flex center text-secondary">
     <span class="i-lc-search square-5 transition" />
   </div>
 </form>
