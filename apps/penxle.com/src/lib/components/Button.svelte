@@ -57,15 +57,15 @@
     !disabled &&
       color === 'primary' &&
       variant === 'contained' &&
-      'text-red-5 bg-gray-90 border border-gray-90 hover:bg-gray-80 active:bg-black',
+      'text-red-5 bg-gray-90 border border-gray-90 hover:(bg-gray-80 border-gray-80) active:bg-black',
     !disabled &&
       color === 'secondary' &&
       variant === 'contained' &&
-      'text-gray-90 bg-gray-10 border border-gray-10 hover:bg-gray-20 active:bg-gray-20',
+      'text-gray-90 bg-surface-primary border border-surface-primary hover:(bg-surface-secondary border-surface-secondary) active:(bg-surface-secondary border-surface-secondary)',
     !disabled &&
       color === 'tertiary' &&
       variant === 'outlined' &&
-      'text-gray-90 bg-transparent border border-gray-30 hover:bg-gray-10 active:(bg-gray-10 border-gray-90)',
+      'text-gray-90 bg-transparent border border-gray-30 hover:border-gray-40 active:(bg-gray-10 border-gray-90)',
     _class,
   )}
   role="button"
