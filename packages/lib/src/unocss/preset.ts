@@ -2,7 +2,7 @@ import { lookupCollection } from '@iconify/json';
 import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders';
 import { presetIcons } from '@unocss/preset-icons';
 import { presetUno } from '@unocss/preset-uno';
-import { basicColors, partialShadedColors, shadedColors, specialColors } from './colors';
+import { basicColors, designColors, partialShadedColors, shadedColors, specialColors } from './colors';
 import type { Preset } from '@unocss/core';
 import type { Theme } from '@unocss/preset-uno';
 
@@ -45,6 +45,7 @@ export const presetPenxle = (): Preset<Theme> => ({
   shortcuts: [
     [/^square-(.*)$/, ([, c]) => `w-${c} h-${c}`],
     ['center', 'justify-center items-center'],
+    [/^([^-]+)-(primary|secondary|tertiary|disabled|cardprimary)$/, ([, c, d]) => `${c}-${c}-${d}`],
   ],
   extendTheme: (theme) => ({
     ...theme,
@@ -53,6 +54,7 @@ export const presetPenxle = (): Preset<Theme> => ({
       ...basicColors,
       ...shadedColors,
       ...partialShadedColors,
+      ...designColors,
     },
     breakpoints: {
       sm: '800px',

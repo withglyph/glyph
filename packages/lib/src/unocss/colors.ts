@@ -137,6 +137,35 @@ export const partialShadedColors = {
   },
 };
 
+export const designColors = {
+  bg: {
+    primary: '#F9F9F8',
+    cardprimary: '#FFFFFF',
+  },
+  text: {
+    primary: '#1C1917',
+    secondary: '#78716C',
+    disabled: '#A8A29E',
+  },
+  surface: {
+    primary: '#F1F1F0',
+    secondary: '#E7E5E4',
+  },
+  action: {
+    primary: '#F66062',
+  },
+  border: {
+    primary: '#A8A29E',
+    secondary: '#D6D3D1',
+    tertiary: '#1C1917',
+  },
+  icon: {
+    primary: '#1C1917',
+    secondary: '#A8A29E',
+    tertiary: '#D6D3D1',
+  },
+};
+
 type Color = keyof typeof shadedColors;
 type Shade = keyof (typeof shadedColors)[keyof typeof shadedColors];
 
