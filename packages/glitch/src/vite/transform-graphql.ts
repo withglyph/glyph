@@ -16,7 +16,7 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
       return false;
     }
 
-    let dataProp = false;
+    let dataProp: string | null = null;
 
     AST.walk(program, {
       visitExportNamedDeclaration(p) {
@@ -27,11 +27,23 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
             (d) => d.type === 'VariableDeclarator' && d.id.type === 'Identifier' && d.id.name === 'data',
           )
         ) {
-          dataProp = true;
+          dataProp = 'data';
         }
 
         this.traverse(p);
       },
+      visitExportSpecifier(p) {
+        const { node } = p;
+
+        if (node.exported.type === 'Identifier' && node.exported.name === 'data' && node.local?.type === 'Identifier') {
+          dataProp = node.local.name;
+        }
+
+        this.traverse(p);
+      },
+    });
+
+    AST.walk(program, {
       visitCallExpression(p) {
         const { node } = p;
 
@@ -44,7 +56,7 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
           const query = queries.find((query) => query.source === source);
 
           if (query) {
-            p.replace(AST.b.identifier(`data.__glitch_${query.name}`));
+            p.replace(AST.b.identifier(`${dataProp ?? '__data'}.__glitch_${query.name}`));
           }
         }
 
@@ -54,9 +66,10 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
 
     if (!dataProp) {
       program.body.unshift(
-        AST.b.exportNamedDeclaration(
-          AST.b.variableDeclaration('let', [AST.b.variableDeclarator(AST.b.identifier('data'))]),
-        ),
+        AST.b.variableDeclaration('let', [AST.b.variableDeclarator(AST.b.identifier('__data'))]),
+        AST.b.exportNamedDeclaration(null, [
+          AST.b.exportSpecifier.from({ local: AST.b.identifier('__data'), exported: AST.b.identifier('data') }),
+        ]),
       );
     }
 
