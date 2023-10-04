@@ -58,7 +58,7 @@
   </div>
   <div class="flex center flex-col">
     <h1 class="text-gray-90 text-2xl font-extrabold text-center">함께 그리는 반짝임, 펜슬</h1>
-    <h2 class="text-gray-50 text-[15px] mt-2 font-bold">2차창작 펜슬과 함께하세요</h2>
+    <h2 class="text-gray-50 text-[15px] mt-2 font-bold">창작자를 위한 플랫폼, 펜슬과 함께하세요</h2>
   </div>
 </div>
 
@@ -78,7 +78,7 @@
 
 <Button class="w-full mt-3 max-w-87.5" color="secondary" href="/signup" size="xl" type="link">회원가입</Button>
 
-<Button class="w-full my-4 text-gray-50" href="/user/forgot-password" size="lg" type="link" variant="text">
+<Button class="w-full my-4 text-secondary" href="/user/forgot-password" size="lg" type="link" variant="text">
   계정을 찾을 수 없나요?
 </Button>
 

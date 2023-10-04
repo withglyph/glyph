@@ -152,7 +152,7 @@ export const designColors = {
     secondary: '#E7E5E4',
   },
   action: {
-    primary: '#F66062',
+    error: '#F66062',
   },
   border: {
     primary: '#A8A29E',
