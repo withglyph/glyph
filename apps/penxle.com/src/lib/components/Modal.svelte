@@ -45,7 +45,7 @@
     >
       <div
         class={clsx(
-          'pointer-events-auto relative max-h-full w-full flex flex-col center rounded-2xl bg-white shadow-xl',
+          'pointer-events-auto relative max-h-full w-full flex flex-col center rounded-2xl bg-cardprimary shadow-xl',
           size === 'sm' && 'p-4 pt-8 max-w-92',
           size === 'md' && 'px-6 pt-4 pb-5.5 rounded-b-none sm:(max-w-107.5 rounded-2xl)',
           size === 'lg' && 'p-7 pt-5 rounded-b-none sm:(max-w-187 rounded-2xl)',
@@ -62,7 +62,13 @@
                 size !== 'sm' && 'pt-4 pb-0',
               )}
             >
-              <div class={clsx('flex flex-col break-all', size !== 'sm' && 'pr-9 mt-4 mb-6')}>
+              <div
+                class={clsx(
+                  'flex flex-col break-all',
+                  size !== 'sm' && 'pr-9 mt-4 mb-4',
+                  size !== 'sm' && 'text' in $$slots && 'mb-2!',
+                )}
+              >
                 <h3
                   class={clsx(
                     'break-keep',
@@ -75,7 +81,7 @@
                 {#if $$slots.subtitle}
                   <div
                     class={clsx(
-                      'flex justify-between mt-2 text-gray-50',
+                      'flex justify-between mt-2 text-secondary',
                       size === 'sm' && 'justify-center!',
                       size !== 'sm' && 'text-3.75 font-bold',
                     )}
@@ -88,7 +94,7 @@
               </div>
               {#if size !== 'sm'}
                 <button
-                  class="absolute right-6 z-1 square-7 flex center rounded text-gray-50 transition hover:(bg-gray-10 text-gray-60)"
+                  class="absolute right-6 z-1 square-7 flex center rounded text-secondary transition hover:(bg-gray-10 text-gray-60)"
                   type="button"
                   on:click={() => (open = false)}
                 >
@@ -98,7 +104,7 @@
             </div>
           {:else}
             <button
-              class="absolute right-6 z-1 square-7 flex center rounded text-gray-50 transition hover:(bg-gray-10 text-gray-60)"
+              class="absolute right-6 z-1 square-7 flex center rounded text-secondary transition hover:(bg-gray-10 text-gray-60)"
               type="button"
               on:click={() => (open = false)}
             >
@@ -107,6 +113,7 @@
           {/if}
 
           <div class="overflow-x-hidden">
+            <slot name="text" />
             <slot />
           </div>
 

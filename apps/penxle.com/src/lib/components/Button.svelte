@@ -46,14 +46,14 @@
   class={clsx(
     'flex center px-4 py-2 font-bold leading-none transition duration-300 text-center text-3.25',
     showSpinner && 'relative',
-    disabled && 'text-gray-40 bg-gray-30',
-    disabled && variant === 'outlined' && 'text-gray-40! border-gray-30! bg-transparent!',
+    disabled && 'text-disabled bg-gray-30',
+    disabled && variant === 'outlined' && 'text-disabled! border-gray-30! bg-transparent!',
     size === 'xs' && 'px-0! py-0! h-5.75 rounded-2xl',
     size === 'sm' && 'p-2! h-6.5 rounded-lg',
     size === 'md' && 'text-sm h-9 rounded-2.5',
     size === 'lg' && 'text-base h-10 rounded-xl',
     size === 'xl' && 'text-base h-12.5 rounded-2xl',
-    !disabled && variant === 'text' && 'text-gray-90 bg-transparent hover:text-gray-80',
+    !disabled && variant === 'text' && 'text-primary bg-transparent hover:text-gray-80',
     !disabled &&
       color === 'primary' &&
       variant === 'contained' &&
@@ -61,11 +61,11 @@
     !disabled &&
       color === 'secondary' &&
       variant === 'contained' &&
-      'text-gray-90 bg-surface-primary border border-surface-primary hover:(bg-surface-secondary border-surface-secondary) active:(bg-surface-secondary border-surface-secondary)',
+      'text-primary bg-surface-primary border border-surface-primary hover:(bg-surface-secondary border-surface-secondary) active:(bg-surface-secondary border-surface-secondary)',
     !disabled &&
       color === 'tertiary' &&
       variant === 'outlined' &&
-      'text-gray-90 bg-transparent border border-gray-30 hover:border-gray-40 active:(bg-gray-10 border-gray-90)',
+      'text-primary bg-transparent border border-secondary hover:border-primary active:(bg-primary border-tertiary)',
     _class,
   )}
   role="button"

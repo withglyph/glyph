@@ -93,7 +93,7 @@
         <span class="text-lg font-extrabold mr-2">
           {$query.me.profile.name}
         </span>
-        <span class="text-3.75 text-gray-50">{$query.me.email}</span>
+        <span class="text-3.75 text-secondary">{$query.me.email}</span>
       </div>
     </div>
     <Button color="secondary" size="md" on:click={() => (updateProfileOpen = true)}>프로필 수정</Button>
@@ -109,7 +109,7 @@
           <Badge class="text-xs font-bold" color="green">인증 완료</Badge>
         {/if}
       </div>
-      <p class="text-3.75 text-gray-50 break-keep">펜슬의 콘텐츠를 이용하려면 이메일 인증이 필요해요</p>
+      <p class="text-3.75 text-secondary break-keep">펜슬의 콘텐츠를 이용하려면 이메일 인증이 필요해요</p>
     </div>
     <div class="flex gap-2">
       <Button color="tertiary" size="md" variant="outlined" on:click={() => (updateEmailOpen = true)}>변경하기</Button>
@@ -140,7 +140,7 @@
         <Badge class="text-xs font-bold mr-2" color="red">인증 필요</Badge>
         <Badge class="text-xs font-bold" color="gray">만료됨</Badge>
       </div>
-      <p class="text-3.75 text-gray-50 break-keep">펜슬의 콘텐츠를 이용하려면 본인 인증이 필요해요</p>
+      <p class="text-3.75 text-secondary break-keep">펜슬의 콘텐츠를 이용하려면 본인 인증이 필요해요</p>
     </div>
     <Button color="secondary" size="md">인증하기</Button>
   </div>
@@ -158,7 +158,7 @@
     <div>
       <h3 class="text-lg font-extrabold mb-2">마케팅 수신 동의</h3>
       {#if $query.me.marketingConsent}
-        <p class="text-3.75 text-gray-50 break-keep">
+        <p class="text-3.75 text-secondary break-keep">
           {dayjs($query.me.marketingConsent.createdAt).formatAsDate()} 승인됨
         </p>
       {/if}
@@ -180,7 +180,7 @@
   <div class="flex flex-wrap items-center justify-between gap-4">
     <div>
       <h3 class="text-lg font-extrabold mb-2">비밀번호</h3>
-      <p class="text-3.75 text-gray-50 break-keep">비밀번호를 {$query.me.password ? '변경' : '설정'}하세요</p>
+      <p class="text-3.75 text-secondary break-keep">비밀번호를 {$query.me.password ? '변경' : '설정'}하세요</p>
     </div>
     <Button color="secondary" size="md" on:click={() => (updatePasswordOpen = true)}>
       {$query.me.password ? '변경' : '설정'}하기
@@ -190,7 +190,7 @@
   <div class="flex flex-wrap items-center justify-between gap-4">
     <div>
       <h3 class="text-lg font-extrabold mb-2">2차 인증</h3>
-      <p class="text-3.75 text-gray-50 break-keep">2차 인증을 통해 계정을 더욱 안전하게 관리하세요</p>
+      <p class="text-3.75 text-secondary break-keep">2차 인증을 통해 계정을 더욱 안전하게 관리하세요</p>
     </div>
     <Button color="secondary" size="md">인증하기</Button>
   </div>

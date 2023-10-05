@@ -53,7 +53,7 @@
   >
     <div>
       <div class="text-lg font-extrabold">{title}</div>
-      <p class="text-3.75 text-gray-50">
+      <p class="text-3.75 text-secondary">
         {description}
       </p>
     </div>
@@ -61,12 +61,12 @@
   </button>
   <div class="flex flex-col justify-center <sm:hidden">
     <div class="text-lg font-extrabold">{title}</div>
-    <p class="text-3.75 text-gray-50">
+    <p class="text-3.75 text-secondary">
       {description}
     </p>
   </div>
   {#if open}
-    <div class="flex flex-col bg-gray-10 py-4 px-6 space-y-6 sm:hidden">
+    <div class="flex flex-col bg-surface-primary py-4 px-6 space-y-6 sm:hidden">
       <div class="flex justify-between items-center">
         <span class="font-semibold">웹사이트</span>
         <Switch

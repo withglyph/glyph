@@ -5,7 +5,7 @@
   let showDisclosure = false;
 </script>
 
-<footer class="border-t border-gray-30 px-4 py-10 text-xs tracking-wider text-gray-50 flex sm:px-7.5">
+<footer class="border-t border-secondary px-4 py-10 text-xs tracking-wider text-secondary flex sm:px-7.5">
   <div class="mx-auto flex flex-wrap justify-between gap-6 w-full max-w-300">
     <div>
       <section class="flex items-center justify-between mb-4">
@@ -24,7 +24,7 @@
         <div class="flex flex-wrap items-center">
           <div>사업자등록번호: 610-88-03078</div>
           <div class="h-2 border-l border-gray-50 mx-1" />
-          <Link class="hover:text-gray-50" href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=6108803078">
+          <Link class="hover:text-secondary" href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=6108803078">
             통신판매업신고: 2023-서울강남-4541
           </Link>
         </div>
@@ -45,29 +45,29 @@
       {/if}
 
       <section class="flex flex-wrap items-center mt-6">
-        <Link class="hover:text-gray-50" href="https://help.penxle.com/legal/terms">이용약관</Link>
+        <Link class="hover:text-secondary" href="https://help.penxle.com/legal/terms">이용약관</Link>
         <div class="h-2 border-l border-gray-50 mx-1" />
-        <Link class="font-medium hover:text-gray-50" href="https://help.penxle.com/legal/privacy">
+        <Link class="font-medium hover:text-secondary" href="https://help.penxle.com/legal/privacy">
           개인정보처리방침
         </Link>
         <div class="h-2 border-l border-gray-50 mx-1" />
-        <button class="hover:text-gray-50" type="button" on:click={() => (showDisclosure = !showDisclosure)}>
+        <button class="hover:text-secondary" type="button" on:click={() => (showDisclosure = !showDisclosure)}>
           통신판매중개 고지
         </button>
         <div class="h-2 border-l border-gray-50 mx-1" />
         <div class="flex flex-wrap items-center">
-          <Link class="hover:text-gray-50" href="https://help.penxle.com">도움 센터</Link>
+          <Link class="hover:text-secondary" href="https://help.penxle.com">도움 센터</Link>
           <div class="h-2 border-l border-gray-50 mx-1" />
-          <Link class="hover:text-gray-50" href="/blog">펜슬 소식</Link>
+          <Link class="hover:text-secondary" href="/blog">펜슬 소식</Link>
           <div class="h-2 border-l border-gray-50 mx-1" />
-          <Link class="hover:text-gray-50" href="https://penxle.io">펜슬컴퍼니 소개</Link>
+          <Link class="hover:text-secondary" href="https://penxle.io">펜슬컴퍼니 소개</Link>
         </div>
       </section>
     </div>
 
     <div>
       <div class="flex items-center gap-4">
-        <Link class="i-px-logo square-4 hover:text-gray-90" href="/penxle.team" />
+        <Link class="i-px-logo square-4 hover:text-primary" href="/penxle.team" />
         <Link class="i-lg-twitter square-4 hover:text-[#1DA1F2]" href="https://twitter.com/penxle" />
         <Link class="i-lg-instagram square-4 hover:text-[#E4405F]" href="https://www.instagram.com/penxle.team/" />
         <Link class="i-lg-github square-4 hover:text-[#181717]" href="https://github.com/penxle" />

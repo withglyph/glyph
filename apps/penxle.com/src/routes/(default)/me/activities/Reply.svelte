@@ -10,9 +10,9 @@
 
 <div class="space-y-2 sm:space-y-6">
   <div class="bg-white p-6 space-y-2 sm:(border border-gray-30 rounded-2xl)">
-    <span class="text-sm text-gray-50">2023.08.25에 작성된 댓글</span>
+    <span class="text-sm text-secondary">2023.08.25에 작성된 댓글</span>
 
-    <div class="p-2 flex gap-3 bg-gray-5 rounded-2xl">
+    <div class="p-2 flex gap-3 bg-primary rounded-2xl">
       <div class="w-14 h-10.5 rounded-3.5 bg-black" />
       <div class="font-bold text-3.75">
         새 청바지를 샀어요 1화
@@ -30,17 +30,17 @@
       <Button class="text-blue-50 p-0 mt-1" size="md" variant="text">더보기</Button>
     </div>
     <div class="flex justify-end">
-      <Button class="text-3.25 font-bold text-gray-50" color="tertiary" size="sm" variant="outlined">
-        <ReplyFill class="square-4 mr-2 fill-gray-40" />
+      <Button class="text-3.25 font-bold text-secondary" color="tertiary" size="sm" variant="outlined">
+        <ReplyFill class="square-4 mr-2 fill-icon-secondary" />
         3
       </Button>
     </div>
   </div>
 
   <div class="bg-white p-6 space-y-2 sm:(border border-gray-30 rounded-2xl)">
-    <span class="text-sm text-gray-50">2023.08.25에 익명으로 작성된 댓글</span>
+    <span class="text-sm text-secondary">2023.08.25에 익명으로 작성된 댓글</span>
 
-    <div class="p-2 flex gap-3 bg-gray-5 rounded-2xl">
+    <div class="p-2 flex gap-3 bg-primary rounded-2xl">
       <div class="w-14 h-10.5 rounded-3.5 bg-black" />
       <div class="font-bold text-3.75">
         너는 어때
@@ -49,8 +49,8 @@
     </div>
     <div class="text-3.75">말도 안돼 ㅋㅋㅋㅋㅋ 재미없음</div>
     <div class="flex justify-end">
-      <Button class="text-3.25 font-bold text-gray-50" color="tertiary" size="sm" variant="outlined">
-        <ReplyFill class="square-4 mr-2 fill-gray-40" />
+      <Button class="text-3.25 font-bold text-secondary" color="tertiary" size="sm" variant="outlined">
+        <ReplyFill class="square-4 mr-2 fill-icon-secondary" />
         0
       </Button>
     </div>

@@ -71,7 +71,7 @@
     <div>
       <h3 class="text-lg font-extrabold mr-2">{R.capitalize(provider)}</h3>
       {#if singleSignOns[provider]}
-        <p class="text-3.75 text-gray-50 break-keep">
+        <p class="text-3.75 text-secondary break-keep">
           {singleSignOns[provider].providerEmail}
         </p>
       {/if}

@@ -56,7 +56,7 @@ ul {
 }
 
 ::placeholder {
-  --uno: text-gray-40;
+  --uno: text-disabled;
 }
 
 ::-ms-reveal {

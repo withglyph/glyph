@@ -52,7 +52,7 @@
   `);
 </script>
 
-<header class="relative sticky top-0 z-10 border-b bg-white px-4 py-2 sm:px-7.5 h-15.25 flex center">
+<header class="relative sticky top-0 z-10 border-b border-secondary bg-white px-4 py-2 sm:px-7.5 h-15.25 flex center">
   <nav class="w-full max-w-300">
     <section class="flex items-center justify-between">
       <Link class="mr-3.5 flex items-center gap-2 sm:mr-4 transition w-fit" href="/">
@@ -69,7 +69,7 @@
 
         <div class={clsx('flex center square-10 sm:hidden', isOpen && 'hidden!')}>
           <button type="button" on:click={() => (isOpen = true)}>
-            <span class="i-lc-search square-6 fill-gray-90" />
+            <span class="i-lc-search square-6" />
           </button>
         </div>
       </div>
@@ -77,7 +77,7 @@
       <div class="flex sm:hidden grow-0">
         <div class={clsx('flex center square-10')}>
           <button type="button" on:click={() => (isSideBarOpen = true)}>
-            <span class="i-lc-menu square-6 fill-gray-90" />
+            <span class="i-lc-menu square-6" />
           </button>
         </div>
       </div>
@@ -87,7 +87,7 @@
           <PublishMenu class="<lg:hidden" $user={$query.me} />
           <div class="flex center square-10 mx-3">
             <button type="button">
-              <span class="i-px-bell-outline square-6 fill-gray-90" />
+              <span class="i-px-bell-outline square-6" />
             </button>
           </div>
           <UserMenu $user={$query.me} />
@@ -110,14 +110,14 @@
       <p class="font-extrabold text-2xl break-all mt-1 mb-2">
         <mark class="inline-block leading-0 border-b-10">{$query.me.profile.name}님</mark>
       </p>
-      <p class="text-lg font-semibold text-gray-60 mb-4">{$query.me.email}</p>
+      <p class="text-lg font-semibold text-secondary mb-4">{$query.me.email}</p>
       <Button class="w-full" size="xl" on:click={() => (openPublish = true)}>새 포스트 작성하기</Button>
     </div>
     <div class="space-y-1">
       <a
         class={clsx(
-          'flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-gray-5 text-gray-40',
-          $page.url.pathname === '/' && 'bg-gray-5 text-gray-90',
+          'flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-primary text-disabled',
+          $page.url.pathname === '/' && 'bg-primary text-primary',
         )}
         href="/"
       >
@@ -125,8 +125,8 @@
       </a>
       <a
         class={clsx(
-          'flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-gray-5 text-gray-40',
-          $page.url.pathname === '/me' && 'bg-gray-5 text-gray-90',
+          'flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-primary text-disabled',
+          $page.url.pathname === '/me' && 'bg-primary text-primary',
         )}
         href="/me"
       >
@@ -134,8 +134,8 @@
       </a>
       <a
         class={clsx(
-          'flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-gray-5 text-gray-40',
-          $page.url.pathname === '/#' && 'bg-gray-5 text-gray-90',
+          'flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-primary text-disabled',
+          $page.url.pathname === '/#' && 'bg-primary text-primary',
         )}
         href="/#"
       >
@@ -143,8 +143,8 @@
       </a>
       <a
         class={clsx(
-          'flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-gray-5 text-gray-40',
-          $page.url.pathname === '/#' && 'bg-gray-5 text-gray-90',
+          'flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-primary text-disabled',
+          $page.url.pathname === '/#' && 'bg-primary text-primary',
         )}
         href="/#"
       >
@@ -152,15 +152,15 @@
       </a>
       <a
         class={clsx(
-          'flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-gray-5 text-gray-40',
-          $page.url.pathname === '/#' && 'bg-gray-5 text-gray-90',
+          'flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-primary text-disabled',
+          $page.url.pathname === '/#' && 'bg-primary text-primary',
         )}
         href="/#"
       >
         스페이스 설정
       </a>
       <button
-        class="flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-gray-5 text-gray-40"
+        class="flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-primary text-disabled"
         type="button"
         on:click={async () => {
           await logout();
@@ -174,13 +174,13 @@
     </div>
   {:else}
     <a
-      class="flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-gray-5 text-gray-40"
+      class="flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-primary text-disabled"
       href="/login"
     >
       로그인
     </a>
     <a
-      class="flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-gray-5 text-gray-40"
+      class="flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-primary text-disabled"
       href="/signup"
     >
       회원가입

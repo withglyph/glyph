@@ -47,8 +47,8 @@
 <Helmet title="알림 설정" />
 
 <h2 class="text-xl font-bold mb-6 <sm:hidden">알림 설정</h2>
-<div class="bg-white sm:(space-y-8 border border-gray-30 rounded-2xl p-8)">
-  <div class="hidden justify-end gap-8 text-3.75 text-gray-50 sm:flex">
+<div class="bg-white sm:(space-y-8 border border-secondary rounded-2xl p-8)">
+  <div class="hidden justify-end gap-8 text-3.75 text-secondary sm:flex">
     <span>웹사이트</span>
     <span>이메일</span>
   </div>

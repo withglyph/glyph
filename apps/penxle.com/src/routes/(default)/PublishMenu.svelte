@@ -54,7 +54,7 @@
 <button
   bind:this={targetEl}
   class={clsx(
-    'relative flex items-center gap-2 rounded-lg py-1 px-2 font-bold text-gray-60 transition hover:bg-gray-10',
+    'relative flex items-center gap-2 rounded-lg py-1 px-2 font-bold text-gray-60 transition hover:bg-surface-primary',
     _class,
   )}
   type="button"

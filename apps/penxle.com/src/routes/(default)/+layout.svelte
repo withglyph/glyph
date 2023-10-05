@@ -12,7 +12,7 @@
 
 <Header {$query} />
 
-<main class="flex grow items-start justify-center m-auto w-full bg-gray-5">
+<main class="flex grow items-start justify-center m-auto w-full bg-primary">
   <slot />
 </main>
 

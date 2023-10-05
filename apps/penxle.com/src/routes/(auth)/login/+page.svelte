@@ -57,8 +57,8 @@
     <Wordmark class="h-5" />
   </div>
   <div class="flex center flex-col">
-    <h1 class="text-gray-90 text-2xl font-extrabold text-center">함께 그리는 반짝임, 펜슬</h1>
-    <h2 class="text-gray-50 text-[15px] mt-2 font-bold">창작자를 위한 플랫폼, 펜슬과 함께하세요</h2>
+    <h1 class="text-2xl font-extrabold text-center">함께 그리는 반짝임, 펜슬</h1>
+    <h2 class="text-secondary text-3.75 mt-2 font-bold">창작자를 위한 플랫폼, 펜슬과 함께하세요</h2>
   </div>
 </div>
 
@@ -84,7 +84,7 @@
 
 <div class="flex gap-6">
   <button
-    class="flex center bg-gray-10 square-13.5 rounded-20"
+    class="flex center bg-surface-primary square-13.5 rounded-20"
     type="button"
     on:click={async () => {
       const { url } = await issueUserSingleSignOnAuthorizationUrl({
@@ -99,7 +99,7 @@
   </button>
 
   <button
-    class="flex center bg-gray-10 square-13.5 rounded-20"
+    class="flex center bg-surface-primary square-13.5 rounded-20"
     type="button"
     on:click={async () => {
       const { url } = await issueUserSingleSignOnAuthorizationUrl({

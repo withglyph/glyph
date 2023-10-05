@@ -33,19 +33,19 @@
   <div class="sm:(flex gap-10)">
     <aside
       class={clsx(
-        'w-81.5 bg-white border border-gray-30 rounded-2xl px-4 py-10 h-full <sm:hidden',
-        $page.url.pathname === '/me' && 'block! border-white w-full max-w-screen rounded-0!',
+        'w-81.5 bg-cardprimary border border-secondary rounded-2xl px-4 py-10 h-full <sm:hidden',
+        $page.url.pathname === '/me' && 'block! border-bg-cardprimary w-full max-w-screen rounded-0!',
       )}
     >
       <div class="flex flex-col items-center gap-4 mb-6">
-        <div class="flex center border rounded-full square-21">
+        <div class="flex center border border-primary rounded-full square-21">
           <Avatar class="square-20" $profile={$query.me.profile} />
         </div>
         <div class="text-center">
           <p class="text-xl font-bold mb-2">{$query.me.profile.name}</p>
-          <p class="font-semibold text-gray-50">{$query.me.email}</p>
+          <p class="font-semibold text-secondary">{$query.me.email}</p>
         </div>
-        <div class="w-full flex items-center justify-between gap-2 px-3 py-2.5 bg-gray-10 rounded-2.5">
+        <div class="w-full flex items-center justify-between gap-2 px-3 py-2.5 bg-surface-primary rounded-2.5">
           <span class="font-bold">1000P</span>
           <Button size="md">충전하기</Button>
         </div>
@@ -66,8 +66,8 @@
           <li>
             <a
               class={clsx(
-                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/cabinets' && 'bg-gray-5 text-gray-90',
+                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
+                $page.url.pathname === '/me/cabinets' && 'bg-primary text-primary',
               )}
               href="/me/cabinets"
             >
@@ -77,8 +77,8 @@
           <li>
             <a
               class={clsx(
-                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/followings' && 'bg-gray-5 text-gray-90',
+                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
+                $page.url.pathname === '/me/followings' && 'bg-primary text-primary',
               )}
               href="/me/followings"
             >
@@ -88,8 +88,8 @@
           <li>
             <a
               class={clsx(
-                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/activities' && 'bg-gray-5 text-gray-90',
+                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
+                $page.url.pathname === '/me/activities' && 'bg-primary text-primary',
               )}
               href="/me/activities"
             >
@@ -99,8 +99,8 @@
           <li>
             <a
               class={clsx(
-                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/contentfilters' && 'bg-gray-5 text-gray-90',
+                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
+                $page.url.pathname === '/me/contentfilters' && 'bg-primary text-primary',
               )}
               href="/me/contentfilters"
             >
@@ -110,8 +110,8 @@
           <li>
             <a
               class={clsx(
-                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/notifications' && 'bg-gray-5 text-gray-90',
+                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
+                $page.url.pathname === '/me/notifications' && 'bg-primary text-primary',
               )}
               href="/me/notifications"
             >
@@ -121,8 +121,8 @@
           <li>
             <a
               class={clsx(
-                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-gray-5 text-gray-40',
-                $page.url.pathname === '/me/accounts' && 'bg-gray-5 text-gray-90',
+                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
+                $page.url.pathname === '/me/accounts' && 'bg-primary text-primary',
               )}
               href="/me/accounts"
             >
