@@ -1,8 +1,9 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import * as R from 'radash';
+  import ContentFilteringExample from '$assets/images/content-filtering-example.png';
   import { graphql } from '$glitch';
-  import { Button, Modal, Tag } from '$lib/components';
+  import { Button, Modal } from '$lib/components';
   import { Switch } from '$lib/components/forms';
   import ContentFilterButton from './ContentFilterButton.svelte';
 
@@ -197,26 +198,15 @@
 <Modal size="md" bind:open>
   <svelte:fragment slot="title">트리거 태그가 무엇인가요?</svelte:fragment>
 
-  <p slot="text" class="text-sm text-secondary">
+  <p slot="text" class="text-sm text-secondary font-semibold">
     펜슬팀은 원활한 여러분의 창작생활을 위해 다양한 정보를 찾아볼 수 있도록 하고 있어요. 하지만 유혈,폭력,왕따 등의
     누군가에게 예민할 수 있는 민감한 내용의 경우는 아래처럼 블러처리를 하거나 아예 안볼 수 있어요.
   </p>
 
-  <div class="my-2 border rounded-2xl border-secondary py-6 px-4 my-2">
-    <p class="text-lg font-extrabold mb-2">민감한 내용의 게시글</p>
-    <p class="text-secondary">시청에 주의가 필요한 글이에요.</p>
-
-    <!-- 예시 이미지 넣기-->
-    <div class="bg-gray-50 my-4 h-45 text-gray-5 flex flex-col center gap-2.5 rounded-lg backdrop-blur">
-      <span class="i-lc-alert-triangle square-6" />
-      <span>이 글은 시청에 주의가 필요한 글이에요</span>
-    </div>
-    <Tag size="sm">#유혈</Tag>
-    <Tag size="sm">#폭력</Tag>
-    <Tag size="sm">#소설</Tag>
+  <div class="flex center">
+    <img class="my-2 max-h-83" alt="트리거 태그 블러처리 예시" src={ContentFilteringExample} />
   </div>
-
   <span class="text-3.25 text-secondary">트리거 태그 블러처리 예시</span>
 
-  <Button slot="action" class="w-full" size="xl">닫기</Button>
+  <Button slot="action" class="w-full" size="xl" on:click={() => (open = false)}>닫기</Button>
 </Modal>

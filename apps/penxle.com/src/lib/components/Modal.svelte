@@ -69,13 +69,7 @@
                   size !== 'sm' && 'text' in $$slots && 'mb-2!',
                 )}
               >
-                <h3
-                  class={clsx(
-                    'break-keep',
-                    size === 'sm' && 'text-lg font-extrabold',
-                    size !== 'sm' && 'text-xl font-bold',
-                  )}
-                >
+                <h3 class={clsx('break-keep font-extrabold', size === 'sm' && 'text-lg', size !== 'sm' && 'text-xl')}>
                   <slot name="title" />
                 </h3>
                 {#if $$slots.subtitle}
