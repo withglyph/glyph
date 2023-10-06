@@ -46,6 +46,20 @@ export const presetPenxle = (): Preset<Theme> => ({
     [/^square-(.*)$/, ([, c]) => `w-${c} h-${c}`],
     ['center', 'justify-center items-center'],
     [/^([^-]+)-(primary|secondary|tertiary|disabled|cardprimary)$/, ([, c, d]) => `${c}-${c}-${d}`],
+    [
+      /^(title|subtitle|body|bodylong|caption)-(\d+)-(eb|sb|b|m)$/,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      ([, t, d, w]) => {
+        const fontWeight = {
+          eb: 'extrabold',
+          sb: 'semibold',
+          b: 'bold',
+          m: 'medium',
+        }[w];
+
+        return `text-[${d}px] font-${fontWeight}`;
+      },
+    ],
   ],
   extendTheme: (theme) => ({
     ...theme,
