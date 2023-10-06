@@ -1,4 +1,3 @@
-import { SpaceMemberRole } from '@prisma/client';
 import { z } from 'zod';
 import { UNAVAILABLE_SPACE_SLUGS } from '$lib/const';
 import { email } from './common';
@@ -23,5 +22,5 @@ export const CreateSpaceSchema = z.object({
 export const CreateSpaceMemberInvitationSchema = z.object({
   spaceId: z.string(),
   email,
-  role: z.nativeEnum(SpaceMemberRole),
+  role: z.enum(['ADMIN', 'MEMBER']),
 });
