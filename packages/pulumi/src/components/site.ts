@@ -96,7 +96,7 @@ export class Site extends pulumi.ComponentResource {
         s3Bucket: pkg.bucket,
         s3Key: pkg.key,
         handler: 'handler.handler',
-        sourceCodeHash: pkg.metadata.Hash,
+        sourceCodeHash: pkg.metadata.hash,
 
         publish: true,
 

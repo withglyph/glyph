@@ -52,8 +52,7 @@ const lambda = new aws.lambda.Function('github-app', {
   s3Bucket: pkg.bucket,
   s3Key: pkg.key,
   handler: 'index.handler',
-
-  sourceCodeHash: pkg.metadata.Hash,
+  sourceCodeHash: pkg.metadata.hash,
 });
 
 const lambdaUrl = new aws.lambda.FunctionUrl('github-app', {

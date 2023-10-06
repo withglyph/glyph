@@ -29,8 +29,7 @@ const lambda = new aws.lambda.Function('literoom', {
   s3Bucket: pkg.bucket,
   s3Key: pkg.key,
   handler: 'index.handler',
-
-  sourceCodeHash: pkg.metadata.Hash,
+  sourceCodeHash: pkg.metadata.hash,
 
   layers: ['arn:aws:lambda:ap-northeast-2:464622532012:layer:Datadog-Extension-ARM:48'],
 

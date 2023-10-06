@@ -29,7 +29,7 @@ await S3.send(
     Key: packagePath,
     Body: pkg,
     ContentType: 'application/zip',
-    Metadata: { Hash: hash },
+    Metadata: { hash },
   }),
 );
 
