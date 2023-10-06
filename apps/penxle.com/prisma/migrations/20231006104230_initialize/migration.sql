@@ -131,7 +131,7 @@ CREATE TABLE "space_member_invitations" (
     "received_user_id" TEXT,
     "received_email" TEXT NOT NULL,
     "role" "_space_member_role" NOT NULL,
-    "state" "_space_member_invite_state" NOT NULL DEFAULT 'PENDING',
+    "state" "_space_member_invite_state" NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "responded_at" TIMESTAMPTZ,
 

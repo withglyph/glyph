@@ -130,7 +130,7 @@ model SpaceMemberInvitation {
   receivedUser   User?                      @relation(name: "spaceMemberInvitationReceived", fields: [receivedUserId], references: [id])
   receivedEmail  String                     @map("received_email")
   role           SpaceMemberRole
-  state          SpaceMemberInvitationState @default(PENDING)
+  state          SpaceMemberInvitationState
   createdAt      DateTime                   @default(now()) @map("created_at") @db.Timestamptz
   respondedAt    DateTime?                  @map("responded_at") @db.Timestamptz
 
