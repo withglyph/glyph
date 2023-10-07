@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { Button } from '$lib/components';
@@ -20,8 +19,8 @@
       }
     `),
     schema: IssueUserEmailAuthorizationUrlSchema,
-    onSuccess: async (resp) => {
-      await goto(resp.url);
+    onSuccess: (resp) => {
+      location.href = resp.url;
     },
   });
 </script>

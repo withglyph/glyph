@@ -335,7 +335,7 @@ builder.mutationFields((t) => ({
   issueUserEmailAuthorizationUrl: t.field({
     type: IssueUserEmailAuthorizationUrlResult,
     args: { input: t.arg({ type: IssueUserEmailAuthorizationUrlInput }) },
-    resolve: async (_, { input }, { db }) => {
+    resolve: async (_, { input }, { db, ...context }) => {
       const emailVerification = await db.userEmailVerification.findFirst({
         where: {
           email: input.email,
@@ -350,7 +350,7 @@ builder.mutationFields((t) => ({
 
       return {
         url: qs.stringifyUrl({
-          url: '/api/email',
+          url: `${context.url.origin}/api/email`,
           query: { token: emailVerification.token },
         }),
       };
