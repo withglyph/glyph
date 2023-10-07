@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import { TabContentItem, TabHead, TabHeadItem } from '$lib/components';
+  import { TabContentItem, TabHead, TabHeadItem } from '$lib/components/tab';
   import Reply from './Reply.svelte';
 
   let activeTabValue = 1;
@@ -10,7 +10,7 @@
 
 <h2 class="text-xl font-bold mb-6 <sm:hidden">나의 활동</h2>
 <div>
-  <TabHead variant="secondary">
+  <TabHead class="<sm:w-full" variant="secondary">
     <TabHeadItem id={1} {activeTabValue} variant="secondary" on:click={() => (activeTabValue = 1)}>
       <span>내가 작성한 포스트</span>
     </TabHeadItem>
@@ -19,7 +19,7 @@
     </TabHeadItem>
   </TabHead>
   <TabContentItem id={1} {activeTabValue}>
-    <div class="flex items-center gap-2 h-10 text-lg font-extrabold my-2 sm:my-4">
+    <div class="flex items-center gap-2 text-lg font-extrabold <sm:(p-4 bg-cardprimary) sm:(py-3 my-3)">
       <h3>작성한 포스트</h3>
       <span class="text-gray-50">7</span>
     </div>
