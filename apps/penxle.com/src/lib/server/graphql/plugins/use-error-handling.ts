@@ -14,6 +14,7 @@ const toGraphQLAppError = (error: unknown): GraphQLAppError => {
   } else {
     console.error(error);
     Sentry.captureException(error);
+
     return new GraphQLAppError(new UnknownError(error instanceof Error ? error : undefined));
   }
 };

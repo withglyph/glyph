@@ -31,7 +31,7 @@ healthz.get('/healthz', async (_, { db }) => {
   });
 
   return json({
-    _all: Object.values(result).every(Boolean),
+    '*': Object.values(result).every(Boolean),
     ...result,
   });
 });

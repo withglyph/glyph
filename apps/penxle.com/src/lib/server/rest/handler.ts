@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/sveltekit';
 import { error, json } from 'itty-router';
 import { createContext } from '../context';
 import { createRouter } from './router';
@@ -22,6 +23,8 @@ export const handler = async (event: RequestEvent) => {
     }
 
     console.error(err);
+    Sentry.captureException(err);
+
     return error(500);
   }
 };

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { error, status } from 'itty-router';
+import { status } from 'itty-router';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
 import { google, naver } from '$lib/server/external-api';
@@ -15,7 +15,7 @@ type State = { type: string };
 sso.get('/sso/google', async (_, context) => {
   const code = context.url.searchParams.get('code');
   if (!code) {
-    return error(400);
+    throw new Error('code is required');
   }
 
   const externalUser = await google.authorizeUser(context, code);
@@ -25,7 +25,7 @@ sso.get('/sso/google', async (_, context) => {
 sso.get('/sso/naver', async (_, context) => {
   const code = context.url.searchParams.get('code');
   if (!code) {
-    return error(400);
+    throw new Error('code is required');
   }
 
   const externalUser = await naver.authorizeUser(code);
@@ -35,7 +35,7 @@ sso.get('/sso/naver', async (_, context) => {
 const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) => {
   const _state = context.url.searchParams.get('state');
   if (!_state) {
-    return error(400);
+    throw new Error('state is required');
   }
 
   const state = JSON.parse(Buffer.from(_state, 'base64').toString()) as State;
@@ -185,4 +185,5 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
   }
 
   // 여기까지 오면 안 됨
+  throw new Error('should not reach here');
 };

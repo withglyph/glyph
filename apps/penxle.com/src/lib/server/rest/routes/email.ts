@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { error, status } from 'itty-router';
+import { status } from 'itty-router';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
 import { sendEmail } from '$lib/server/email';
@@ -13,7 +13,7 @@ export const email = createRouter();
 email.get('/email', async (_, { db, ...context }) => {
   const token = context.url.searchParams.get('token');
   if (!token) {
-    return error(400);
+    throw new Error('token is required');
   }
 
   const userEmailVerification = await db.userEmailVerification.delete({
@@ -43,11 +43,8 @@ email.get('/email', async (_, { db, ...context }) => {
         path: '/',
         maxAge: dayjs.duration(1, 'year').asSeconds(),
       });
-      return status(303, {
-        headers: {
-          Location: '/',
-        },
-      });
+
+      return status(303, { headers: { Location: '/' } });
     } else {
       const token = nanoid();
 
@@ -77,7 +74,7 @@ email.get('/email', async (_, { db, ...context }) => {
     });
 
     if (isEmailUsed) {
-      return error(400);
+      throw new Error('email is already used');
     }
 
     await db.user.update({
