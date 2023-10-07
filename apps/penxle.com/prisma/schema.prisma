@@ -290,7 +290,7 @@ model UserSingleSignOn {
   userId    String                   @map("user_id")
   user      User                     @relation(fields: [userId], references: [id])
   provider  UserSingleSignOnProvider
-  principal String                   @map("external_id")
+  principal String
   email     String
   createdAt DateTime                 @default(now()) @map("created_at") @db.Timestamptz
 
