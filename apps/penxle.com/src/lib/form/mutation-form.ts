@@ -12,13 +12,14 @@ type MutationFormConfig<D, Z extends AnyZodObject> = {
   mutation: MutationStore<D, { input: TypeOf<Z> }>;
   schema: Z | ZodEffects<Z> | { validate: Z; warn: Z };
   initialValues?: RecursivePartial<TypeOf<Z>>;
+  extra?: () => MaybePromise<RecursivePartial<TypeOf<Z>>>;
   onSuccess?: (data: Unwrap<D>) => MaybePromise<void> | string;
   onError?: (error: AppError) => MaybePromise<void> | string;
 };
 
 export const createMutationForm = <D, Z extends AnyZodObject>(config: MutationFormConfig<D, Z>) => {
   const extend: Extender<TypeOf<Z>>[] = [context()];
-  const { schema, mutation, onSuccess, onError, ...rest } = config;
+  const { schema, mutation, extra, onSuccess, onError, ...rest } = config;
 
   if ('validate' in schema && 'warn' in schema) {
     extend.push(
@@ -33,7 +34,8 @@ export const createMutationForm = <D, Z extends AnyZodObject>(config: MutationFo
     ...rest,
     extend,
     onSubmit: async (values) => {
-      const data = await mutation(values);
+      const ex = await extra?.();
+      const data = await mutation({ ...values, ...ex });
       if (typeof onSuccess === 'string') {
         toast.success(onSuccess);
       } else {
