@@ -7,11 +7,23 @@ import { getDominantColor } from './mmcq';
 import type { InteractiveTransactionClient } from '../database';
 
 type ImageSource = Buffer | ArrayBuffer | Uint8Array;
+export type ImageBounds = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+};
 
-export const getImageMetadata = async (source: ImageSource) => {
-  const image = sharp(source, { failOn: 'none' }).rotate().flatten({ background: '#ffffff' });
+export const finalizeImage = async (source: ImageSource, bounds?: ImageBounds) => {
+  let image = sharp(source, { failOn: 'none' }).rotate().flatten({ background: '#ffffff' });
 
-  const metadata = await image.metadata();
+  if (bounds) {
+    image = image.extract(bounds);
+  }
+
+  const getOutput = async () => {
+    return await image.clone().toBuffer({ resolveWithObject: true });
+  };
 
   const getColor = async () => {
     const buffer = await image.clone().raw().toBuffer();
@@ -69,13 +81,14 @@ export const getImageMetadata = async (source: ImageSource) => {
     return hash;
   };
 
-  const [color, placeholder, hash] = await Promise.all([getColor(), getPlaceholder(), getHash()]);
+  const [output, color, placeholder, hash] = await Promise.all([getOutput(), getColor(), getPlaceholder(), getHash()]);
 
   return {
-    format: metadata.format ?? 'unknown',
-    size: metadata.size ?? 0,
-    width: metadata.width ?? 0,
-    height: metadata.height ?? 0,
+    buffer: output.data,
+    format: output.info.format,
+    size: output.info.size,
+    width: output.info.width,
+    height: output.info.height,
     color,
     placeholder,
     hash,
@@ -89,18 +102,18 @@ type DirectUploadImageParams = {
   source: ImageSource;
 };
 export const directUploadImage = async ({ db, userId, name, source }: DirectUploadImageParams) => {
-  const metadata = await getImageMetadata(source);
+  const res = await finalizeImage(source);
 
   const key = aws.createS3ObjectKey('images');
-  const ext = metadata.format;
+  const ext = res.format;
   const path = `${key}.${ext}`;
 
   await aws.s3.send(
     new PutObjectCommand({
       Bucket: 'penxle-data',
       Key: path,
-      Body: Buffer.from(source),
-      ContentType: `image/${metadata.format}`,
+      Body: res.buffer,
+      ContentType: `image/${res.format}`,
     }),
   );
 
@@ -110,14 +123,14 @@ export const directUploadImage = async ({ db, userId, name, source }: DirectUplo
       id: createId(),
       userId,
       name,
-      format: metadata.format,
-      size: metadata.size,
-      width: metadata.width,
-      height: metadata.height,
+      format: res.format,
+      size: res.size,
+      width: res.width,
+      height: res.height,
       path,
-      color: metadata.color,
-      placeholder: metadata.placeholder,
-      hash: metadata.hash,
+      color: res.color,
+      placeholder: res.placeholder,
+      hash: res.hash,
     },
   });
 

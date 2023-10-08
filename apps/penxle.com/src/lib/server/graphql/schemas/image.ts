@@ -2,9 +2,10 @@ import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from '@aws-sd
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import * as R from 'radash';
 import { aws } from '$lib/server/external-api';
-import { getImageMetadata } from '$lib/server/utils';
+import { finalizeImage } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { builder } from '../builder';
+import type { ImageBounds } from '$lib/server/utils';
 
 /**
  * * Types
@@ -39,6 +40,7 @@ const FinalizeImageUploadInput = builder.inputType('FinalizeImageUploadInput', {
   fields: (t) => ({
     key: t.string(),
     name: t.string(),
+    bounds: t.field({ type: 'JSON', required: false }),
   }),
 });
 
@@ -100,7 +102,7 @@ builder.mutationFields((t) => ({
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const source = await object.Body!.transformToByteArray();
-      const metadata = await getImageMetadata(source);
+      const res = await finalizeImage(source, input.bounds as ImageBounds);
 
       const key = aws.createS3ObjectKey('images');
       const ext = input.name.split('.').pop() ?? 'unk';
@@ -110,8 +112,8 @@ builder.mutationFields((t) => ({
         new PutObjectCommand({
           Bucket: 'penxle-data',
           Key: path,
-          Body: source,
-          ContentType: object.ContentType ?? `image/${metadata.format}`,
+          Body: res.buffer,
+          ContentType: object.ContentType ?? `image/${res.format}`,
         }),
       );
 
@@ -128,14 +130,14 @@ builder.mutationFields((t) => ({
           id: createId(),
           userId: context.session.userId,
           name: input.name,
-          format: metadata.format,
-          size: metadata.size,
-          width: metadata.width,
-          height: metadata.height,
+          format: res.format,
+          size: res.size,
+          width: res.width,
+          height: res.height,
           path,
-          color: metadata.color,
-          placeholder: metadata.placeholder,
-          hash: metadata.hash,
+          color: res.color,
+          placeholder: res.placeholder,
+          hash: res.hash,
         },
       });
     },

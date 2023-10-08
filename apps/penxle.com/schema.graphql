@@ -58,6 +58,7 @@ input DeleteSpaceInput {
 }
 
 input FinalizeImageUploadInput {
+  bounds: JSON
   key: String!
   name: String!
 }
