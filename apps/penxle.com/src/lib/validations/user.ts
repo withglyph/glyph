@@ -19,6 +19,7 @@ export const UpdateUserEmailSchema = z.object({
 });
 
 export const UpdateUserProfileSchema = z.object({
+  avatarId: z.string(),
   name,
 });
 

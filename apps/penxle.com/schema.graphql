@@ -222,6 +222,7 @@ input UpdateUserNotificationPreferenceInput {
 }
 
 input UpdateUserProfileInput {
+  avatarId: ID!
   name: String!
 }
 

@@ -214,6 +214,7 @@ const UpdateUserNotificationPreferenceInput = builder.inputType('UpdateUserNotif
 
 const UpdateUserProfileInput = builder.inputType('UpdateUserProfileInput', {
   fields: (t) => ({
+    avatarId: t.id(),
     name: t.string(),
   }),
   validate: { schema: UpdateUserProfileSchema },
@@ -516,12 +517,21 @@ builder.mutationFields((t) => ({
     type: 'Profile',
     args: { input: t.arg({ type: UpdateUserProfileInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
+      const avatar = await db.image.findUniqueOrThrow({
+        select: { id: true },
+        where: {
+          id: input.avatarId,
+          userId: context.session.userId,
+        },
+      });
+
       const user = await db.user.update({
         select: { profile: query },
         where: { id: context.session.userId },
         data: {
           profile: {
             update: {
+              avatarId: avatar.id,
               name: input.name,
             },
           },
