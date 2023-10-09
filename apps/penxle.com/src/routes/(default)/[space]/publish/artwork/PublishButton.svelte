@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ky from 'ky';
   import { fragment, graphql } from '$glitch';
   import { Button } from '$lib/components';
   import { trackable } from '$lib/svelte/store';
@@ -40,16 +41,8 @@
 
   const doUpload = async (file: File) => {
     const { key, presignedUrl } = await prepareImageUpload();
-
-    await fetch(presignedUrl, {
-      method: 'PUT',
-      body: file,
-    });
-
-    return await finalizeImageUpload({
-      key,
-      name: file.name,
-    });
+    await ky.put(presignedUrl, { body: file });
+    return await finalizeImageUpload({ key, name: file.name });
   };
 
   const doPublish = async () => {

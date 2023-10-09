@@ -25,6 +25,6 @@ export const handler = async (event: RequestEvent) => {
     console.error(err);
     Sentry.captureException(err);
 
-    return error(500);
+    return error(500, String(err));
   }
 };

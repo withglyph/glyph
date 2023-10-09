@@ -14,7 +14,7 @@ export const generateAuthorizationUrl = (context: { url: URL }, type: string) =>
   const client = createOAuthClient(context);
   return client.generateAuthUrl({
     scope: ['email', 'profile'],
-    state: btoa(JSON.stringify({ type })),
+    state: Buffer.from(JSON.stringify({ type })).toString('base64'),
   });
 };
 
@@ -34,15 +34,15 @@ export const authorizeUser = async (context: { url: URL }, code: string): Promis
   client.setCredentials(tokens);
 
   type R = { sub: string; email: string; name: string; picture: string };
-  const response = await client.request<R>({
+  const userinfo = await client.request<R>({
     url: 'https://www.googleapis.com/oauth2/v3/userinfo',
   });
 
   return {
     provider: 'GOOGLE',
-    id: response.data.sub,
-    email: response.data.email,
-    name: response.data.name,
-    avatarUrl: response.data.picture,
+    id: userinfo.data.sub,
+    email: userinfo.data.email,
+    name: userinfo.data.name,
+    avatarUrl: userinfo.data.picture,
   };
 };
