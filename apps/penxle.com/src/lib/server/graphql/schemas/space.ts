@@ -213,6 +213,7 @@ builder.mutationFields((t) => ({
 
   createSpaceMemberInvitation: t.withAuth({ user: true }).prismaField({
     type: 'SpaceMemberInvitation',
+    grantScopes: ['$space.member.invitation'],
     args: { input: t.arg({ type: CreateSpaceMemberInvitationInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const member = await db.spaceMember.findUniqueOrThrow({
@@ -271,6 +272,7 @@ builder.mutationFields((t) => ({
 
   acceptSpaceMemberInvitation: t.withAuth({ user: true }).prismaField({
     type: 'SpaceMemberInvitation',
+    grantScopes: ['$space.member.invitation'],
     args: { input: t.arg({ type: AcceptSpaceMemberInvitationInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const invitation = await db.spaceMemberInvitation.findUniqueOrThrow({
@@ -322,6 +324,7 @@ builder.mutationFields((t) => ({
 
   ignoreSpaceMemberInvitation: t.withAuth({ user: true }).prismaField({
     type: 'SpaceMemberInvitation',
+    grantScopes: ['$space.member.invitation'],
     args: { input: t.arg({ type: IgnoreSpaceMemberInvitationInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       return await db.spaceMemberInvitation.update({
