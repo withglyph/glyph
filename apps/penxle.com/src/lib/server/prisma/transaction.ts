@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import stringHash from '@sindresorhus/string-hash';
 import type { PrismaClient } from '../database';
 
 type BareTransactionClient = Omit<
@@ -9,6 +10,7 @@ type BareTransactionClient = Omit<
 export type TransactionClient = BareTransactionClient & {
   $commit: () => Promise<void>;
   $rollback: () => Promise<void>;
+  $lock: (key: string) => Promise<void>;
 };
 export type InteractiveTransactionClient = Omit<TransactionClient, '$commit' | '$rollback'>;
 
@@ -59,6 +61,13 @@ export const transaction = Prisma.defineExtension({
             }
             case '$rollback': {
               return rollback;
+            }
+            case '$lock': {
+              return async (key: string) => {
+                const k = stringHash(key);
+                // spell-checker:disable-next-line
+                await target.$executeRaw`SELECT pg_advisory_xact_lock(${k})`;
+              };
             }
             default: {
               return target[prop as keyof BareTransactionClient];
