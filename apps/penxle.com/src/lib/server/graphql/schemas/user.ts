@@ -1,6 +1,7 @@
 import {
   ContentFilterAction,
   ContentFilterCategory,
+  SpaceMemberInvitationState,
   UserEmailVerificationKind,
   UserNotificationCategory,
   UserNotificationMethod,
@@ -79,7 +80,9 @@ builder.prismaObject('User', {
     }),
 
     receivedSpaceMemberInvitations: t.relation('receivedSpaceMemberInvitations', {
-      grantScopes: ['$space.member.invitation'],
+      grantScopes: ['$space.member.invitation', '$space.member.invitation.state'],
+      args: { state: t.arg({ type: SpaceMemberInvitationState, required: false }) },
+      query: ({ state }) => ({ where: { state: state ?? undefined } }),
     }),
   }),
 });

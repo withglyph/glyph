@@ -1,4 +1,4 @@
-import { SpaceMemberRole } from '@prisma/client';
+import { SpaceMemberInvitationState, SpaceMemberRole } from '@prisma/client';
 import * as R from 'radash';
 import { FormValidationError, NotFoundError } from '$lib/errors';
 import { createId } from '$lib/utils';
@@ -83,7 +83,14 @@ builder.prismaObject('SpaceMemberInvitation', {
     id: t.exposeID('id'),
     receivedEmail: t.exposeString('receivedEmail'),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
-
+    state: t.field({
+      type: SpaceMemberInvitationState,
+      select: { state: true },
+      authScopes: { $granted: '$space.member.invitation.state' },
+      resolve: (invitation) => invitation.state,
+      unauthorizedResolver: (invitation) =>
+        ['PENDING', 'ACCEPTED'].includes(invitation.state) ? invitation.state : 'PENDING',
+    }),
     space: t.relation('space'),
   }),
 });
@@ -280,7 +287,7 @@ builder.mutationFields((t) => ({
         where: {
           id: input.invitationId,
           receivedUserId: context.session.userId,
-          state: 'PENDING',
+          state: { not: 'ACCEPTED' },
         },
       });
 
@@ -332,7 +339,7 @@ builder.mutationFields((t) => ({
         where: {
           id: input.invitationId,
           receivedUserId: context.session.userId,
-          state: 'PENDING',
+          state: { not: 'ACCEPTED' },
         },
         data: { state: 'IGNORED' },
       });

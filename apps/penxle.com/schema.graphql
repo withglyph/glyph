@@ -175,6 +175,7 @@ type SpaceMemberInvitation {
   id: ID!
   receivedEmail: String!
   space: Space!
+  state: SpaceMemberInvitationState!
 }
 
 enum SpaceMemberInvitationState {
@@ -233,7 +234,7 @@ type User {
   marketingConsent: UserMarketingConsent
   notificationPreferences: [UserNotificationPreference!]!
   profile: Profile!
-  receivedSpaceMemberInvitations: [SpaceMemberInvitation!]!
+  receivedSpaceMemberInvitations(state: SpaceMemberInvitationState): [SpaceMemberInvitation!]!
   singleSignOns: [UserSingleSignOn!]!
   spaces: [Space!]!
   state: UserState!
