@@ -4,7 +4,7 @@
   import PencilUnderline from '$assets/icons/pencil-underline.svg?component';
   import { graphql } from '$glitch';
   import { Avatar, Button } from '$lib/components';
-  import UpdateProfileModal from './accounts/UpdateProfileModal.svelte';
+  import UpdateProfileModal from './settings/UpdateProfileModal.svelte';
 
   let open = false;
 
@@ -21,7 +21,7 @@
           name
 
           ...Avatar_profile
-          ...MeAccountsPage_UpdateProfileModal_profile
+          ...MeSettingsPage_UpdateProfileModal_profile
         }
       }
     }
@@ -78,55 +78,55 @@
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
-                $page.url.pathname === '/me/followings' && 'bg-primary text-primary',
+                $page.url.pathname === '/me/dashboard' && 'bg-primary text-primary',
               )}
-              href="/me/followings"
+              href="/me/dashboard"
             >
-              관심 설정
+              대시보드
             </a>
           </li>
           <li>
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
-                $page.url.pathname === '/me/activities' && 'bg-primary text-primary',
+                $page.url.pathname === '/me/posts' && 'bg-primary text-primary',
               )}
-              href="/me/activities"
+              href="/me/posts"
             >
-              나의 활동
+              포스트 관리
             </a>
           </li>
           <li>
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
-                $page.url.pathname === '/me/contentfilters' && 'bg-primary text-primary',
+                $page.url.pathname === '/me/comments' && 'bg-primary text-primary',
               )}
-              href="/me/contentfilters"
+              href="/me/comments"
             >
-              필터링 설정
+              댓글 관리
             </a>
           </li>
           <li>
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
-                $page.url.pathname === '/me/notifications' && 'bg-primary text-primary',
+                $page.url.pathname === '/me/revenue' && 'bg-primary text-primary',
               )}
-              href="/me/notifications"
+              href="/me/revenue"
             >
-              알림 설정
+              정산/수익
             </a>
           </li>
           <li>
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
-                $page.url.pathname === '/me/accounts' && 'bg-primary text-primary',
+                $page.url.pathname.startsWith('/me/settings') && 'bg-primary text-primary',
               )}
-              href="/me/accounts"
+              href="/me/settings"
             >
-              계정 설정
+              설정
             </a>
           </li>
         </ul>

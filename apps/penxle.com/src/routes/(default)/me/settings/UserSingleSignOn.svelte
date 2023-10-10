@@ -5,9 +5,9 @@
   import { fragment, graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
   import { toast } from '$lib/notification';
-  import type { MeAccountsPage_UserSingleSignOn_user, UserSingleSignOnProvider } from '$glitch';
+  import type { MeSettingsPage_UserSingleSignOn_user, UserSingleSignOnProvider } from '$glitch';
 
-  let _user: MeAccountsPage_UserSingleSignOn_user;
+  let _user: MeSettingsPage_UserSingleSignOn_user;
   export { _user as $user };
 
   export let provider: UserSingleSignOnProvider;
@@ -20,7 +20,7 @@
   $: user = fragment(
     _user,
     graphql(`
-      fragment MeAccountsPage_UserSingleSignOn_user on User {
+      fragment MeSettingsPage_UserSingleSignOn_user on User {
         id
 
         singleSignOns {
@@ -33,7 +33,7 @@
   );
 
   const issueUserSingleSignOnAuthorizationUrl = graphql(`
-    mutation MeAccountsPage_UserSingleSignOn_IssueUserSingleSignOnAuthorizationUrl_Mutation(
+    mutation MeSettingsPage_UserSingleSignOn_IssueUserSingleSignOnAuthorizationUrl_Mutation(
       $input: IssueUserSingleSignOnAuthorizationUrlInput!
     ) {
       issueUserSingleSignOnAuthorizationUrl(input: $input) {
@@ -43,7 +43,7 @@
   `);
 
   const unlinkUserSingleSignOn = graphql(`
-    mutation MeAccountsPage_UserSingleSignOn_UnlinkUserSingleSignOn_Mutation($input: UnlinkUserSingleSignOnInput!) {
+    mutation MeSettingsPage_UserSingleSignOn_UnlinkUserSingleSignOn_Mutation($input: UnlinkUserSingleSignOnInput!) {
       unlinkUserSingleSignOn(input: $input) {
         id
 

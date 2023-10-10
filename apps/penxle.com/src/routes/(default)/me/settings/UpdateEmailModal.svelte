@@ -11,7 +11,7 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation MeAccountsPage_UpdateUserEmail_Mutation($input: UpdateUserEmailInput!) {
+      mutation MeSettingsPage_UpdateUserEmail_Mutation($input: UpdateUserEmailInput!) {
         updateUserEmail(input: $input)
       }
     `),

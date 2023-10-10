@@ -15,7 +15,7 @@
   let updateProfileOpen = false;
 
   $: query = graphql(`
-    query MeAccountsPage_Query {
+    query MeSettingsPage_Query {
       auth(scope: USER)
 
       me @_required {
@@ -33,16 +33,16 @@
           name
 
           ...Avatar_profile
-          ...MeAccountsPage_UpdateProfileModal_profile
+          ...MeSettingsPage_UpdateProfileModal_profile
         }
 
-        ...MeAccountsPage_UserSingleSignOn_user
+        ...MeSettingsPage_UserSingleSignOn_user
       }
     }
   `);
 
   const updateUserMarketingConsent = graphql(`
-    mutation MeAccountsPage_UpdateUserMarketingConsent_Mutation($input: UpdateUserMarketingConsentInput!) {
+    mutation MeSettingsPage_UpdateUserMarketingConsent_Mutation($input: UpdateUserMarketingConsentInput!) {
       updateUserMarketingConsent(input: $input) {
         id
 
@@ -65,8 +65,7 @@
 
 <Helmet title="계정 설정" />
 
-<h2 class="text-xl font-bold mb-6 <sm:hidden">계정 설정</h2>
-<div class="bg-white py-8 px-6 space-y-8 text-3.75 sm:(px-8 border border-gray-30 rounded-2xl)">
+<div class="py-8 px-6 space-y-8 sm:px-8">
   <div class="flex flex-wrap items-center justify-between gap-4">
     <div class="flex items-center gap-3">
       <Avatar class="square-12.5" $profile={$query.me.profile} />
@@ -137,17 +136,17 @@
   <div class="w-full border-b border-alphagray-15" />
 
   <!-- <div class="flex flex-wrap items-center justify-between gap-4">
-    <div>
-      <h3 class="text-lg font-extrabold mb-2">2차 인증</h3>
-      <p class="text-3.75 text-secondary break-keep">2차 인증을 통해 계정을 더욱 안전하게 관리하세요</p>
+      <div>
+        <h3 class="text-lg font-extrabold mb-2">2차 인증</h3>
+        <p class="text-3.75 text-secondary break-keep">2차 인증을 통해 계정을 더욱 안전하게 관리하세요</p>
+      </div>
+      <Button color="secondary" size="md">인증하기</Button>
     </div>
-    <Button color="secondary" size="md">인증하기</Button>
-  </div>
-
-  <div class="w-full border-b border-alphagray-15" /> -->
+  
+    <div class="w-full border-b border-alphagray-15" /> -->
 
   <div class="flex justify-end">
-    <Button href="/me/accounts/deactivate" size="lg" type="link" variant="text">
+    <Button href="/me/settings/deactivate" size="lg" type="link" variant="text">
       탈퇴하기
       <span class="i-lc-chevron-right" />
     </Button>

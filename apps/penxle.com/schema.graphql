@@ -116,11 +116,11 @@ type Mutation {
   ignoreSpaceMemberInvitation(input: IgnoreSpaceMemberInvitationInput!): SpaceMemberInvitation!
   issueUserEmailAuthorizationUrl(input: IssueUserEmailAuthorizationUrlInput!): IssueUserEmailAuthorizationUrlResult!
   issueUserSingleSignOnAuthorizationUrl(input: IssueUserSingleSignOnAuthorizationUrlInput!): IssueUserSingleSignOnAuthorizationUrlResult!
-  leaveSpace(input: LeaveSpaceInput!): Void
+  leaveSpace(input: LeaveSpaceInput!): SpaceMember!
   loginUser(input: LoginUserInput!): UserEmailVerification!
   logoutUser: Void
   prepareImageUpload: PrepareImageUploadResult!
-  removeSpaceMember(input: RemoveSpaceMemberInput!): Void
+  removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
   updateUserContentFilterPreference(input: UpdateUserContentFilterPreferenceInput!): User!
   updateUserEmail(input: UpdateUserEmailInput!): Void

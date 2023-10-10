@@ -2,16 +2,16 @@
   import * as R from 'radash';
   import { fragment, graphql } from '$glitch';
   import { ToggleButton } from '$lib/components';
-  import type { ContentFilterCategory, MeContentFiltersPage_ContentFilterButton_user } from '$glitch';
+  import type { ContentFilterCategory, MeSettingsContentFiltersPage_ContentFilterButton_user } from '$glitch';
 
-  let _user: MeContentFiltersPage_ContentFilterButton_user;
+  let _user: MeSettingsContentFiltersPage_ContentFilterButton_user;
   export { _user as $user };
   export let category: ContentFilterCategory;
 
   $: user = fragment(
     _user,
     graphql(`
-      fragment MeContentFiltersPage_ContentFilterButton_user on User {
+      fragment MeSettingsContentFiltersPage_ContentFilterButton_user on User {
         contentFilterPreferences {
           id
           category
@@ -22,7 +22,7 @@
   );
 
   const updateUserContentFilterPreference = graphql(`
-    mutation MeContentFiltersPage_ContentFilterButton_UpdateUserContentFilterPreference_Mutation(
+    mutation MeSettingsContentFiltersPage_ContentFilterButton_UpdateUserContentFilterPreference_Mutation(
       $input: UpdateUserContentFilterPreferenceInput!
     ) {
       updateUserContentFilterPreference(input: $input) {

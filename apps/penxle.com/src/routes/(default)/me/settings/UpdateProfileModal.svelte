@@ -9,10 +9,10 @@
   import { toast } from '$lib/notification';
   import { trackable } from '$lib/svelte/store';
   import { UpdateUserProfileSchema } from '$lib/validations';
-  import type { MeAccountsPage_UpdateProfileModal_profile } from '$glitch';
+  import type { MeSettingsPage_UpdateProfileModal_profile } from '$glitch';
   import type { Region } from '$lib/components/media';
 
-  let _profile: MeAccountsPage_UpdateProfileModal_profile;
+  let _profile: MeSettingsPage_UpdateProfileModal_profile;
   export { _profile as $profile };
   export let open = false;
 
@@ -26,7 +26,7 @@
   $: profile = fragment(
     _profile,
     graphql(`
-      fragment MeAccountsPage_UpdateProfileModal_profile on Profile {
+      fragment MeSettingsPage_UpdateProfileModal_profile on Profile {
         id
         name
         avatar {
@@ -42,7 +42,7 @@
 
   const { form, data, setInitialValues } = createMutationForm({
     mutation: graphql(`
-      mutation MeAccountsPage_UpdateProfileModal_UpdateUserProfile_Mutation($input: UpdateUserProfileInput!) {
+      mutation MeSettingsPage_UpdateProfileModal_UpdateUserProfile_Mutation($input: UpdateUserProfileInput!) {
         updateUserProfile(input: $input) {
           id
           name
@@ -67,7 +67,7 @@
   });
 
   const prepareImageUpload = graphql(`
-    mutation MeAccountsPage_UpdateProfileModal_PrepareImageUpload_Mutation {
+    mutation MeSettingsPage_UpdateProfileModal_PrepareImageUpload_Mutation {
       prepareImageUpload {
         key
         presignedUrl
@@ -76,7 +76,7 @@
   `);
 
   const finalizeImageUpload = graphql(`
-    mutation MeAccountsPage_UpdateProfileModal_FinalizeImageUpload_Mutation($input: FinalizeImageUploadInput!) {
+    mutation MeSettingsPage_UpdateProfileModal_FinalizeImageUpload_Mutation($input: FinalizeImageUploadInput!) {
       finalizeImageUpload(input: $input) {
         id
         ...Image_image

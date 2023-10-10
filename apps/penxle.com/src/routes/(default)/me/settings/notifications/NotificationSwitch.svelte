@@ -1,10 +1,11 @@
 <script lang="ts">
+  import clsx from 'clsx';
   import * as R from 'radash';
   import { fragment, graphql } from '$glitch';
   import { Switch } from '$lib/components/forms';
-  import type { MeNotificationsPage_Notification_user, UserNotificationCategory } from '$glitch';
+  import type { MeSettingsNotificationsPage_Notification_user, UserNotificationCategory } from '$glitch';
 
-  let _user: MeNotificationsPage_Notification_user;
+  let _user: MeSettingsNotificationsPage_Notification_user;
   export { _user as $user };
   export let title: string;
   export let description: string;
@@ -14,7 +15,7 @@
   $: user = fragment(
     _user,
     graphql(`
-      fragment MeNotificationsPage_Notification_user on User {
+      fragment MeSettingsNotificationsPage_Notification_user on User {
         notificationPreferences {
           id
           category
@@ -26,7 +27,7 @@
   );
 
   const updateNotificationPreference = graphql(`
-    mutation MeNotificationsPage_Notification_UpdateUserNotificationPreference_Mutation(
+    mutation MeSettingsNotificationsPage_Notification_UpdateUserNotificationPreference_Mutation(
       $input: UpdateUserNotificationPreferenceInput!
     ) {
       updateUserNotificationPreference(input: $input) {
@@ -57,7 +58,7 @@
         {description}
       </p>
     </div>
-    <span class="i-lc-chevron-down" />
+    <span class={clsx('i-lc-chevron-down', open && 'transform rotate-180')} />
   </button>
   <div class="flex flex-col justify-center <sm:hidden">
     <div class="text-lg font-extrabold">{title}</div>

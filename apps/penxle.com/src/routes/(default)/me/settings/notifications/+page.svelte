@@ -6,7 +6,7 @@
   import NotificationSwitch from './NotificationSwitch.svelte';
 
   $: query = graphql(`
-    query MeNotificationsPage_Query {
+    query MeSettingsNotificationsPage_Query {
       auth(scope: USER)
 
       me @_required {
@@ -19,13 +19,13 @@
           opted
         }
 
-        ...MeNotificationsPage_Notification_user
+        ...MeSettingsNotificationsPage_Notification_user
       }
     }
   `);
 
   const updateNotificationPreference = graphql(`
-    mutation MeNotificationsPage_UpdateUserNotificationPreference_Mutation(
+    mutation MeSettingsNotificationsPage_UpdateUserNotificationPreference_Mutation(
       $input: UpdateUserNotificationPreferenceInput!
     ) {
       updateUserNotificationPreference(input: $input) {
@@ -46,8 +46,7 @@
 
 <Helmet title="알림 설정" />
 
-<h2 class="text-xl font-bold mb-6 <sm:hidden">알림 설정</h2>
-<div class="bg-white sm:(space-y-8 border border-secondary rounded-2xl p-8)">
+<div class="sm:(space-y-8 p-8)">
   <div class="hidden justify-end gap-8 text-3.75 text-secondary sm:flex">
     <span>웹사이트</span>
     <span>이메일</span>
