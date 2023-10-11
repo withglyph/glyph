@@ -4,13 +4,15 @@
 
   export let name: string;
   export let label: string;
+  let _class: string | undefined = undefined;
+  export { _class as class };
 
   setFormField({
     name,
   });
 </script>
 
-<section>
+<section class={_class}>
   <div
     class="flex flex-col gap-1.5 border border-gray-10 rounded-2xl transition bg-primary pt-3 pb-4 px-3.5 hover:border-secondary focus-within:border-tertiary! [&:has(input[aria-invalid])]:border-action-error disabled:opacity-50"
   >
