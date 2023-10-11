@@ -96,6 +96,10 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 """
 scalar JSON
 
+input LeaveSpaceInput {
+  spaceId: ID!
+}
+
 input LoginUserInput {
   email: String!
 }
@@ -110,9 +114,11 @@ type Mutation {
   ignoreSpaceMemberInvitation(input: IgnoreSpaceMemberInvitationInput!): SpaceMemberInvitation!
   issueUserEmailAuthorizationUrl(input: IssueUserEmailAuthorizationUrlInput!): IssueUserEmailAuthorizationUrlResult!
   issueUserSingleSignOnAuthorizationUrl(input: IssueUserSingleSignOnAuthorizationUrlInput!): IssueUserSingleSignOnAuthorizationUrlResult!
+  leaveSpace(input: LeaveSpaceInput!): Void
   loginUser(input: LoginUserInput!): UserEmailVerification!
   logoutUser: Void
   prepareImageUpload: PrepareImageUploadResult!
+  removeSpaceMember(input: RemoveSpaceMemberInput!): Void
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
   updateUserContentFilterPreference(input: UpdateUserContentFilterPreferenceInput!): User!
   updateUserEmail(input: UpdateUserEmailInput!): Void
@@ -155,6 +161,10 @@ type Query {
   space(slug: String!): Space!
 }
 
+input RemoveSpaceMemberInput {
+  spaceMemberId: ID!
+}
+
 type Space {
   id: ID!
   invitations: [SpaceMemberInvitation!]!
@@ -187,6 +197,11 @@ enum SpaceMemberInvitationState {
 enum SpaceMemberRole {
   ADMIN
   MEMBER
+}
+
+enum SpaceMemberState {
+  ACTIVE
+  INACTIVE
 }
 
 enum SpaceState {

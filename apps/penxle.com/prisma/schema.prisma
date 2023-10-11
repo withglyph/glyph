@@ -106,15 +106,16 @@ model SpaceUserBlock {
 }
 
 model SpaceMember {
-  id        String          @id
-  spaceId   String          @map("space_id")
-  space     Space           @relation(fields: [spaceId], references: [id])
-  userId    String          @map("user_id")
-  user      User            @relation(fields: [userId], references: [id])
-  profileId String          @map("profile_id")
-  profile   Profile         @relation(fields: [profileId], references: [id])
+  id        String           @id
+  spaceId   String           @map("space_id")
+  space     Space            @relation(fields: [spaceId], references: [id])
+  userId    String           @map("user_id")
+  user      User             @relation(fields: [userId], references: [id])
+  profileId String           @map("profile_id")
+  profile   Profile          @relation(fields: [profileId], references: [id])
+  state     SpaceMemberState
   role      SpaceMemberRole
-  createdAt DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz
 
   @@unique([spaceId, userId])
   @@map("space_members")
@@ -134,7 +135,6 @@ model SpaceMemberInvitation {
   createdAt      DateTime                   @default(now()) @map("created_at") @db.Timestamptz
   respondedAt    DateTime?                  @map("responded_at") @db.Timestamptz
 
-  @@unique([receivedEmail, spaceId])
   @@map("space_member_invitations")
 }
 
@@ -365,6 +365,13 @@ enum SpaceMemberRole {
   MEMBER
 
   @@map("_space_member_role")
+}
+
+enum SpaceMemberState {
+  ACTIVE
+  INACTIVE
+
+  @@map("_space_member_state")
 }
 
 enum SpaceState {
