@@ -1,0 +1,262 @@
+<script lang="ts">
+  import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import ky from 'ky';
+  import * as R from 'radash';
+  import { tick } from 'svelte';
+  import { fragment, graphql } from '$glitch';
+  import { Button, Modal } from '$lib/components';
+  import { FormField, Switch, TextInput } from '$lib/components/forms';
+  import Image from '$lib/components/Image.svelte';
+  import { Thumbnailer } from '$lib/components/media';
+  import { createMutationForm } from '$lib/form';
+  import { toast } from '$lib/notification';
+  import { portal } from '$lib/svelte/actions';
+  import { trackable } from '$lib/svelte/store';
+  import { AcceptSpaceMemberInvitationSchema } from '$lib/validations';
+  import type { DefaultLayout_Notification_user } from '$glitch';
+  import type { Region } from '$lib/components/media';
+
+  let _user: DefaultLayout_Notification_user;
+  export { _user as $user };
+  let targetEl: HTMLButtonElement;
+  let menuEl: HTMLDivElement;
+  let open = false;
+  let invitationOpen = false;
+  let invitationId: string;
+  let checked = true;
+
+  let region: Region | undefined = undefined;
+  let file: File | null = null;
+  let fileEl: HTMLInputElement;
+  let openThumbnailer = false;
+  const uploading = trackable();
+
+  $: user = fragment(
+    _user,
+    graphql(`
+      fragment DefaultLayout_Notification_user on User {
+        id
+        profile {
+          id
+          name
+
+          avatar {
+            id
+            ...Image_image
+          }
+        }
+
+        receivedSpaceMemberInvitations {
+          id
+          createdAt
+          state
+
+          space {
+            id
+            slug
+            name
+          }
+        }
+      }
+    `),
+  );
+
+  let avatar: typeof $user.profile.avatar;
+  $: avatar = $user.profile.avatar;
+
+  const { form, data, setInitialValues } = createMutationForm({
+    mutation: graphql(`
+      mutation DefaultLayout_Notification_AcceptSpaceMemberInvitation_Mutation(
+        $input: AcceptSpaceMemberInvitationInput!
+      ) {
+        acceptSpaceMemberInvitation(input: $input) {
+          id
+          state
+        }
+      }
+    `),
+    schema: AcceptSpaceMemberInvitationSchema,
+    initialValues: { profileName: '' },
+    extra: () => ({ profileAvatarId: avatar.id }),
+    onSuccess: () => {
+      toast.success('초대를 수락했어요');
+      invitationOpen = false;
+    },
+  });
+
+  const ignoreSpaceMemberInvitation = graphql(`
+    mutation DefaultLayout_Notification_IgnoreSpaceMemberInvitation_Mutation(
+      $input: IgnoreSpaceMemberInvitationInput!
+    ) {
+      ignoreSpaceMemberInvitation(input: $input) {
+        id
+      }
+    }
+  `);
+
+  const prepareImageUpload = graphql(`
+    mutation DefaultLayout_Notification_PrepareImageUpload_Mutation {
+      prepareImageUpload {
+        key
+        presignedUrl
+      }
+    }
+  `);
+
+  const finalizeImageUpload = graphql(`
+    mutation DefaultLayout_Notification_FinalizeImageUpload_Mutation($input: FinalizeImageUploadInput!) {
+      finalizeImageUpload(input: $input) {
+        id
+        ...Image_image
+      }
+    }
+  `);
+
+  const uploadAvatar = async () => {
+    uploading.track(async () => {
+      if (!file) {
+        return;
+      }
+
+      const { key, presignedUrl } = await prepareImageUpload();
+      await ky.put(presignedUrl, { body: file });
+      avatar = await finalizeImageUpload({ key, name: file.name, bounds: region });
+
+      openThumbnailer = false;
+    });
+  };
+
+  const update = async () => {
+    await tick();
+    const position = await computePosition(targetEl, menuEl, {
+      placement: 'bottom-start',
+      middleware: [offset(4), flip(), shift({ padding: 8 })],
+    });
+    Object.assign(menuEl.style, {
+      left: `${position.x}px`,
+      top: `${position.y}px`,
+    });
+  };
+
+  $: if (open) {
+    void update();
+  }
+
+  $: invitations = R.alphabetical($user.receivedSpaceMemberInvitations, (invitation) => invitation.createdAt, 'desc');
+
+  $: setInitialValues({ profileName: $user.profile.name, profileAvatarId: avatar.id, invitationId });
+</script>
+
+<div class="flex center square-10 mx-3">
+  <button bind:this={targetEl} type="button" on:click={() => (open = true)}>
+    <span class="i-px-bell-outline square-6" />
+  </button>
+</div>
+
+{#if open}
+  <div
+    class="fixed inset-0 z-49"
+    role="button"
+    tabindex="-1"
+    on:click={() => (open = false)}
+    on:keypress={null}
+    use:portal
+  />
+
+  <div bind:this={menuEl} class="absolute z-50 w-80 flex flex-col border rounded bg-white py-2 shadow" use:portal>
+    <ul>
+      {#each invitations as invitation (invitation.space.id)}
+        <li class="flex gap-2">
+          {invitation.space.name} 스페이스에 초대되었어요
+          {#if invitation.state !== 'ACCEPTED'}
+            <Button
+              size="sm"
+              on:click={() => {
+                invitationId = invitation.id;
+                invitationOpen = true;
+              }}
+            >
+              수락
+            </Button>
+            {#if invitation.state !== 'IGNORED'}
+              <Button
+                color="tertiary"
+                size="sm"
+                variant="outlined"
+                on:click={async () => {
+                  try {
+                    await ignoreSpaceMemberInvitation({
+                      invitationId: invitation.id,
+                    });
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+              >
+                무시
+              </Button>
+            {/if}
+          {/if}
+        </li>
+      {/each}
+    </ul>
+  </div>
+{/if}
+
+<Modal bind:open={invitationOpen}>
+  <svelte:fragment slot="title">스페이스 가입</svelte:fragment>
+
+  <div class="flex items-center justify-between pb-2">
+    <p class="body-16-b">스페이스 전용 프로필</p>
+    <Switch {checked} on:change={() => (checked = !checked)} />
+  </div>
+  {#if checked}
+    <p class="text-3.5 text-gray-50">스페이스 내에서만 사용되는 프로필이에요</p>
+  {/if}
+
+  <form class="mt-3" use:form>
+    <input type="hidden" bind:value={invitationId} />
+
+    <input
+      bind:this={fileEl}
+      class="hidden"
+      accept="image/jpeg,image/png"
+      type="file"
+      on:change={(e) => {
+        if (e.currentTarget.files) {
+          file = e.currentTarget.files[0];
+          e.currentTarget.value = '';
+          openThumbnailer = true;
+        }
+      }}
+    />
+
+    <div class="flex gap-3">
+      <button
+        class="bg-primary square-18.5 rounded-xl overflow-hidden grow-0"
+        type="button"
+        on:click={() => fileEl.showPicker()}
+      >
+        <Image class="square-full" $image={avatar} />
+      </button>
+
+      <FormField name="profileName" class="grow" label="스페이스 닉네임">
+        <TextInput maxlength={20} placeholder="닉네임 입력">
+          <span slot="right-icon" class="body-14-sb text-gray-40">{$data.profileName.length} / 20</span>
+        </TextInput>
+      </FormField>
+    </div>
+
+    <Button class="w-full mt-6" size="xl" type="submit">스페이스 가입</Button>
+  </form>
+</Modal>
+
+{#if file}
+  <Modal bind:open={openThumbnailer}>
+    <svelte:fragment slot="title">위치 조정</svelte:fragment>
+
+    <Thumbnailer class="w-full" {file} bind:region />
+
+    <Button slot="action" class="w-full" loading={$uploading} size="xl" on:click={uploadAvatar}>저장</Button>
+  </Modal>
+{/if}

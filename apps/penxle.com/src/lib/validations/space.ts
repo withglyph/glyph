@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { UNAVAILABLE_SPACE_SLUGS } from '$lib/const';
-import { email } from './common';
+import { email, profileName } from './common';
 
 const SpaceSlugSchema = z
   .string()
@@ -23,4 +23,10 @@ export const CreateSpaceMemberInvitationSchema = z.object({
   spaceId: z.string(),
   email,
   role: z.enum(['ADMIN', 'MEMBER']),
+});
+
+export const AcceptSpaceMemberInvitationSchema = z.object({
+  invitationId: z.string(),
+  profileAvatarId: z.string(),
+  profileName,
 });

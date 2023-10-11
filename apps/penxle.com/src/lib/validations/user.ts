@@ -1,7 +1,5 @@
 import { z } from 'zod';
-import { email } from './common';
-
-const name = z.string().min(1, '닉네임을 입력해주세요').max(20, '닉네임은 20자를 넘을 수 없어요');
+import { email, profileName as name } from './common';
 
 export const LoginUserSchema = z.object({
   email,

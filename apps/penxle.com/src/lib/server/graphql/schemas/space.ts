@@ -2,7 +2,11 @@ import { SpaceMemberInvitationState, SpaceMemberRole } from '@prisma/client';
 import * as R from 'radash';
 import { FormValidationError, IntentionalError, NotFoundError } from '$lib/errors';
 import { createId } from '$lib/utils';
-import { CreateSpaceMemberInvitationSchema, CreateSpaceSchema } from '$lib/validations';
+import {
+  AcceptSpaceMemberInvitationSchema,
+  CreateSpaceMemberInvitationSchema,
+  CreateSpaceSchema,
+} from '$lib/validations';
 import { builder } from '../builder';
 
 /**
@@ -134,6 +138,7 @@ const AcceptSpaceMemberInvitationInput = builder.inputType('AcceptSpaceMemberInv
     profileName: t.string({ required: false }),
     profileAvatarId: t.id({ required: false }),
   }),
+  validate: { schema: AcceptSpaceMemberInvitationSchema },
 });
 
 const IgnoreSpaceMemberInvitationInput = builder.inputType('IgnoreSpaceMemberInvitationInput', {

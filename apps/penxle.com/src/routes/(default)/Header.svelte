@@ -8,6 +8,7 @@
   import { fragment, graphql } from '$glitch';
   import { Button } from '$lib/components';
   import { outsideClickEvent } from '$lib/svelte/actions';
+  import Notification from './Notification.svelte';
   import PublishMenu from './PublishMenu.svelte';
   import PublishModal from './PublishModal.svelte';
   import SearchBar from './SearchBar.svelte';
@@ -38,6 +39,7 @@
           }
 
           ...DefaultLayout_UserMenu_user
+          ...DefaultLayout_Notification_user
           ...DefaultLayout_PublishMenu_user
           ...DefaultLayout_PublishModal_user
         }
@@ -85,19 +87,14 @@
       <div class="flex items-center <sm:hidden relative">
         {#if $query.me}
           <PublishMenu class="<lg:hidden" $user={$query.me} />
-          <div class="flex center square-10 mx-3">
-            <button type="button">
-              <span class="i-px-bell-outline square-6" />
-            </button>
-          </div>
+          <Notification $user={$query.me} />
           <UserMenu $user={$query.me} />
           <Button class="<xl:hidden rounded-4.5! absolute -right-34" color="tertiary" size="md" variant="outlined">
             <span class="ml-1">창작자 보드</span>
             <span class="i-lc-chevron-right" />
           </Button>
         {:else}
-          <!-- <Button color="tertiary" href="/login" size="md" type="link" variant="outlined">로그인</Button> -->
-          <Button class="ml-2" href="/login" size="md" type="link">가입/로그인</Button>
+          <Button href="/login" size="md" type="link">펜슬과 함께하기</Button>
         {/if}
       </div>
     </section>
