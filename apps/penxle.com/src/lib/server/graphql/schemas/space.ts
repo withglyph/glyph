@@ -107,6 +107,8 @@ const CreateSpaceInput = builder.inputType('CreateSpaceInput', {
   fields: (t) => ({
     name: t.string(),
     slug: t.string(),
+    profileName: t.string({ required: false }),
+    profileAvatarId: t.id({ required: false }),
   }),
   validate: { schema: CreateSpaceSchema },
 });
@@ -129,8 +131,8 @@ const CreateSpaceMemberInvitationInput = builder.inputType('CreateSpaceMemberInv
 const AcceptSpaceMemberInvitationInput = builder.inputType('AcceptSpaceMemberInvitationInput', {
   fields: (t) => ({
     invitationId: t.id(),
-    name: t.string({ required: false }),
-    avatarId: t.id({ required: false }),
+    profileName: t.string({ required: false }),
+    profileAvatarId: t.id({ required: false }),
   }),
 });
 
@@ -192,10 +194,24 @@ builder.mutationFields((t) => ({
         throw new FormValidationError('slug', '이미 사용중인 URL이에요.');
       }
 
-      const user = await db.user.findUniqueOrThrow({
-        select: { profileId: true },
-        where: { id: context.session.userId },
-      });
+      let profileId: string;
+      if (input.profileName && input.profileAvatarId) {
+        const profile = await db.profile.create({
+          data: {
+            id: createId(),
+            name: input.profileName,
+            avatarId: input.profileAvatarId,
+          },
+        });
+
+        profileId = profile.id;
+      } else {
+        const user = await db.user.findUniqueOrThrow({
+          select: { profileId: true },
+          where: { id: context.session.userId },
+        });
+        profileId = user.profileId;
+      }
 
       return await db.space.create({
         ...query,
@@ -209,7 +225,7 @@ builder.mutationFields((t) => ({
             create: {
               id: createId(),
               userId: context.session.userId,
-              profileId: user.profileId,
+              profileId,
               role: 'ADMIN',
               state: 'ACTIVE',
             },
@@ -316,12 +332,12 @@ builder.mutationFields((t) => ({
       });
 
       let profileId: string;
-      if (input.name && input.avatarId) {
+      if (input.profileName && input.profileAvatarId) {
         const profile = await db.profile.create({
           data: {
             id: createId(),
-            name: input.name,
-            avatarId: input.avatarId,
+            name: input.profileName,
+            avatarId: input.profileAvatarId,
           },
         });
 

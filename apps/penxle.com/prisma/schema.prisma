@@ -28,8 +28,8 @@ model Image {
   hash        String
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  profileUsingThisAsAvatar Profile?
-  spaceUsingThisAsIcon     Space?
+  profilesUsingThisAsAvatar Profile[]
+  spaceUsingThisAsIcon      Space?
 
   @@index([id, path, color])
   @@map("images")
@@ -51,7 +51,7 @@ model ProvisionedUser {
 model Profile {
   id        String   @id
   name      String
-  avatarId  String   @unique @map("avatar_id")
+  avatarId  String   @map("avatar_id")
   avatar    Image    @relation(fields: [avatarId], references: [id])
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 

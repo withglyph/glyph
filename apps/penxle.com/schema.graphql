@@ -1,7 +1,7 @@
 input AcceptSpaceMemberInvitationInput {
-  avatarId: ID
   invitationId: ID!
-  name: String
+  profileAvatarId: ID
+  profileName: String
 }
 
 enum AuthScope {
@@ -32,6 +32,8 @@ enum ContentFilterCategory {
 
 input CreateSpaceInput {
   name: String!
+  profileAvatarId: ID
+  profileName: String
   slug: String!
 }
 
