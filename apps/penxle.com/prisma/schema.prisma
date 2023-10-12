@@ -35,6 +35,53 @@ model Image {
   @@map("images")
 }
 
+model PointBalance {
+  id         String         @id
+  userId     String         @map("user_id")
+  user       User           @relation(fields: [userId], references: [id])
+  purchaseId String?        @map("purchase_id")
+  purchase   PointPurchase? @relation(fields: [purchaseId], references: [id])
+  kind       PointKind
+  initial    Int
+  leftover   Int
+  createdAt  DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  expiresAt  DateTime       @map("expires_at") @db.Timestamptz
+
+  @@index([userId, kind])
+  @@map("point_balances")
+}
+
+model PointPurchase {
+  id            String             @id
+  userId        String             @map("user_id")
+  user          User               @relation(fields: [userId], references: [id])
+  pointAmount   Int                @map("point_amount")
+  paymentAmount Int                @map("payment_amount")
+  paymentMethod PaymentMethod      @map("payment_method")
+  paymentKey    String             @unique @map("payment_key")
+  paymentData   Json               @map("payment_data")
+  state         PointPurchaseState
+  createdAt     DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  expiresAt     DateTime           @map("expires_at") @db.Timestamptz
+  completedAt   DateTime?          @map("completed_at") @db.Timestamptz
+
+  balances PointBalance[]
+
+  @@map("point_purchases")
+}
+
+model PointTransaction {
+  id        String                @id
+  userId    String                @map("user_id")
+  user      User                  @relation(fields: [userId], references: [id])
+  cause     PointTransactionCause
+  amount    Int
+  targetId  String?               @map("target_id")
+  createdAt DateTime              @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("point_transactions")
+}
+
 model ProvisionedUser {
   id        String                    @id
   token     String                    @unique
@@ -207,6 +254,9 @@ model User {
   contentFilterPreferences       UserContentFilterPreference[]
   marketingConsent               UserMarketingConsent?
   notificationPreferences        UserNotificationPreference[]
+  pointBalances                  PointBalance[]
+  pointPurchases                 PointPurchase[]
+  pointTransactions              PointTransaction[]
   sessions                       UserSession[]
   singleSignOns                  UserSingleSignOn[]
   spaces                         SpaceMember[]
@@ -343,6 +393,46 @@ enum ContentFilterAction {
   EXPOSE
 
   @@map("_content_filter_action")
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  BANK_ACCOUNT
+  VIRTUAL_BANK_ACCOUNT
+  PHONE_BILL
+  GIFTCARD_HAPPYMONEY
+  GIFTCARD_CULTURELAND
+  TOSS_PAY
+  PAYPAL
+
+  @@map("_payment_method")
+}
+
+enum PointKind {
+  PAID
+  FREE
+
+  @@map("_point_kind")
+}
+
+enum PointPurchaseState {
+  PENDING
+  COMPLETED
+  UNDONE
+
+  @@map("_point_purchase_state")
+}
+
+enum PointTransactionCause {
+  INTERNAL
+  PURCHASE
+  UNDO_PURCHASE
+  REFUND
+  EXPIRE
+  UNLOCK_CONTENT
+  PATRONIZE
+
+  @@map("_point_transaction_cause")
 }
 
 enum PreferenceType {
