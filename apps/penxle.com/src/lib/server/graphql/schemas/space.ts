@@ -111,6 +111,7 @@ const CreateSpaceInput = builder.inputType('CreateSpaceInput', {
   fields: (t) => ({
     name: t.string(),
     slug: t.string(),
+    isPublic: t.boolean(),
     profileName: t.string({ required: false }),
     profileAvatarId: t.id({ required: false }),
   }),
