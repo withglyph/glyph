@@ -6,30 +6,39 @@
   export let activeTabValue: number | undefined = undefined;
   export let variant: 'primary' | 'secondary' = 'primary';
   export let href: string | undefined = undefined;
+
+  let element: 'a' | 'button';
+  $: element = href ? 'a' : 'button';
+  $: props = element === 'a' ? { href } : { type: 'button' };
 </script>
 
 <li class="grow sm:grow-0" role="presentation">
-  <button
+  <svelte:element
+    this={element}
     id="{id}-tabhead"
     class={clsx(
-      'font-bold w-full grow sm:grow-0',
-      variant === 'primary' && 'text-xl border-b-10 leading-5 transition hover:(text-black border-brand-50)',
+      'block w-full grow sm:grow-0',
+      variant === 'primary' && 'title-20-eb border-b-10 leading-5 transition hover:(text-black border-brand-50)',
       variant === 'primary' && (activeTabValue === id || $page.url.pathname === href) && 'text-black border-brand-50',
       variant === 'primary' &&
         activeTabValue !== id &&
         $page.url.pathname !== href &&
-        'border-transparent text-gray-40',
+        'border-transparent text-disabled',
       variant === 'secondary' &&
-        'bg-white p-4 text-center sm:bg-transparent transition hover:(text-black! border-b-2 border-black!)',
+        'bg-white p-3 text-center sm:bg-transparent transition hover:(text-black! border-b-2 border-black!)',
       variant === 'secondary' &&
         (activeTabValue === id || $page.url.pathname === href) &&
-        'text-black border-b-2 border-black',
-      variant === 'secondary' && activeTabValue !== id && $page.url.pathname !== href && 'border-gray-30 text-gray-40',
+        'text-black body-16-b border-b-2 border-black',
+      variant === 'secondary' &&
+        activeTabValue !== id &&
+        $page.url.pathname !== href &&
+        'border-secondary body-16-sb text-disabled',
     )}
     role="tab"
-    type="button"
+    tabindex="-1"
     on:click
+    {...props}
   >
     <slot />
-  </button>
+  </svelte:element>
 </li>

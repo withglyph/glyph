@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { Button, Tag } from '$lib/components';
   import { TabContentItem, TabHead, TabHeadItem } from '$lib/components/tab';
@@ -91,28 +90,13 @@
     </div>
 
     <TabHead class="w-full" variant="secondary">
-      <TabHeadItem
-        id={1}
-        href="/{$query.space.slug}"
-        variant="secondary"
-        on:click={() => goto(`/${$query.space.slug}`)}
-      >
+      <TabHeadItem id={1} href="/{$query.space.slug}" variant="secondary">
         <span>홈</span>
       </TabHeadItem>
-      <TabHeadItem
-        id={2}
-        href="/{$query.space.slug}/collections"
-        variant="secondary"
-        on:click={() => goto(`/${$query.space.slug}/collections`)}
-      >
+      <TabHeadItem id={2} href="/{$query.space.slug}/collections" variant="secondary">
         <span>컬렉션</span>
       </TabHeadItem>
-      <TabHeadItem
-        id={3}
-        href="/{$query.space.slug}/about"
-        variant="secondary"
-        on:click={() => goto(`/${$query.space.slug}/about`)}
-      >
+      <TabHeadItem id={3} href="/{$query.space.slug}/about" variant="secondary">
         <span>소개</span>
       </TabHeadItem>
     </TabHead>
