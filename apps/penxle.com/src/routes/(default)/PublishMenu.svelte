@@ -28,6 +28,7 @@
       fragment DefaultLayout_PublishMenu_user on User {
         id
         ...DefaultLayout_PublishModal_user
+        ...DefaultLayout_CreateSpaceModal_user
       }
     `),
   );
@@ -135,5 +136,5 @@
   </div>
 {/if}
 
-<CreateSpaceModal bind:open={openCreateSpace} />
+<CreateSpaceModal {$user} bind:open={openCreateSpace} />
 <PublishModal {$user} type={publishType} bind:open={openPublish} />

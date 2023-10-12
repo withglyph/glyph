@@ -12,7 +12,7 @@
 
   let openCreateSpace = false;
 
-  $: profile = fragment(
+  $: user = fragment(
     _user,
     graphql(`
       fragment DefaultLayout_PublishModal_user on User {
@@ -23,6 +23,8 @@
           slug
           name
         }
+
+        ...DefaultLayout_CreateSpaceModal_user
       }
     `),
   );
@@ -32,7 +34,7 @@
   <svelte:fragment slot="title">게시할 스페이스 선택</svelte:fragment>
 
   <div class="flex flex-col">
-    {#each $profile.spaces as space (space.id)}
+    {#each $user.spaces as space (space.id)}
       <a class="group flex items-center gap-2 text-left hover:bg-gray-10" href={`/${space.slug}/publish/${type}`}>
         <div class="flex flex-col">
           <div class="font-medium">{space.name}</div>
@@ -61,4 +63,4 @@
   <Button slot="action" size="md" on:click={() => (open = false)}>닫기</Button>
 </Modal>
 
-<CreateSpaceModal bind:open={openCreateSpace} />
+<CreateSpaceModal {$user} bind:open={openCreateSpace} />

@@ -17,6 +17,9 @@ const SpaceSlugSchema = z
 export const CreateSpaceSchema = z.object({
   name: z.string().min(1, '스페이스 이름을 입력해주세요').max(20, '스페이스 이름은 20자를 넘을 수 없어요'),
   slug: SpaceSlugSchema,
+  isPublic: z.boolean(),
+  profileAvatarId: z.string(),
+  profileName,
 });
 
 export const CreateSpaceMemberInvitationSchema = z.object({

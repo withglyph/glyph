@@ -24,7 +24,7 @@
     </div>
   {/if}
   {#if 'left-text' in $$slots}
-    <div class="border border-r-0 rounded-l bg-gray-10 px-4 py-2 text-gray-40">
+    <div class="body-15-b">
       <slot name="left-text" />
     </div>
   {/if}

@@ -31,6 +31,7 @@ enum ContentFilterCategory {
 }
 
 input CreateSpaceInput {
+  isPublic: Boolean!
   name: String!
   profileAvatarId: ID
   profileName: String
