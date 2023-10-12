@@ -36,7 +36,14 @@
               <Button class="<sm:hidden" href={`/${$query.space.slug}/publish/post`} size="lg" type="link">
                 포스트 작성
               </Button>
-              <Button class="square-12.5 <sm:hidden" color="tertiary" size="lg" variant="outlined">
+              <Button
+                class="square-12.5 <sm:hidden"
+                color="tertiary"
+                href={`/${$query.space.slug}/settings`}
+                size="lg"
+                type="link"
+                variant="outlined"
+              >
                 <span class="i-lc-settings square-6 text-secondary" />
               </Button>
             {:else}
@@ -67,7 +74,14 @@
           <Button class="<sm:w-full" href={`/${$query.space.slug}/publish/post`} size="xl" type="link">
             포스트 작성
           </Button>
-          <Button class="square-12.5" color="tertiary" size="xl" variant="outlined">
+          <Button
+            class="square-12.5"
+            color="tertiary"
+            href={`/${$query.space.slug}/settings`}
+            size="xl"
+            type="link"
+            variant="outlined"
+          >
             <span class="i-lc-settings square-6 text-secondary" />
           </Button>
         {:else}
