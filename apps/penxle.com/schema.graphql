@@ -129,6 +129,18 @@ type Mutation {
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
 }
 
+enum PostState {
+  ACTIVE
+  INACTIVE
+}
+
+enum PostVisibility {
+  MEMBER_ONLY
+  PRIVATE
+  PUBLIC
+  UNPUBLISHED
+}
+
 enum PreferenceType {
   FAVORITE
   MUTE
@@ -177,6 +189,8 @@ type Space {
 }
 
 type SpaceMember {
+  createdAt: DateTime!
+  email: String!
   id: ID!
   profile: Profile!
   role: SpaceMemberRole!
@@ -186,6 +200,7 @@ type SpaceMemberInvitation {
   createdAt: DateTime!
   id: ID!
   receivedEmail: String!
+  respondedAt: DateTime
   space: Space!
   state: SpaceMemberInvitationState!
 }
