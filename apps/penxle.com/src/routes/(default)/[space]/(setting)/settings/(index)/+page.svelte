@@ -1,6 +1,8 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import { onMount } from 'svelte';
   import { graphql } from '$glitch';
+  import { pageSubTitle } from '$lib/stores';
   import DeleteSpaceModal from './DeleteSpaceModal.svelte';
 
   $: query = graphql(`
@@ -21,9 +23,13 @@
   `);
 
   let openDeleteSpace = false;
+
+  onMount(async () => {
+    pageSubTitle.set('스페이스 설정');
+  });
 </script>
 
-<Helmet title={`대시보드 | ${$query.space.name}}`} />
+<Helmet title={`대시보드 | ${$query.space.name}`} />
 
 <a class="flex items-center text-sm text-gray-50" href={`/${$query.space.slug}`}>
   {$query.space.name}
