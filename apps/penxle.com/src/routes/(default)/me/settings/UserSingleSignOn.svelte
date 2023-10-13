@@ -106,14 +106,8 @@
       class="w-full"
       size="xl"
       on:click={async () => {
-        try {
-          await unlinkUserSingleSignOn({
-            provider,
-          });
-          toast.success(`${providerName} 계정 연동이 해제되었어요`);
-        } catch {
-          toast.error(`${providerName} 계정 연동 해제 중 오류가 발생했어요`);
-        }
+        await unlinkUserSingleSignOn({ provider });
+        toast.success(`${providerName} 계정 연동이 해제되었어요`);
         open = false;
       }}
     >

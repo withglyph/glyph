@@ -1,7 +1,6 @@
 import { validator } from '@felte/validator-zod';
 import { createForm } from 'felte';
-import { AppError, FormValidationError } from '$lib/errors';
-import { toast } from '$lib/notification';
+import { FormValidationError } from '$lib/errors';
 import { context } from './context';
 import type { AssignableErrors, Extender, RecursivePartial } from '@felte/core';
 import type { MutationStore } from '@penxle/glitch';
@@ -13,8 +12,8 @@ type MutationFormConfig<D, Z extends AnyZodObject> = {
   schema: Z | ZodEffects<Z> | { validate: Z; warn: Z };
   initialValues?: RecursivePartial<TypeOf<Z>>;
   extra?: () => MaybePromise<RecursivePartial<TypeOf<Z>>>;
-  onSuccess?: (data: Unwrap<D>) => MaybePromise<void> | string;
-  onError?: (error: AppError) => MaybePromise<void> | string;
+  onSuccess?: (data: Unwrap<D>) => MaybePromise<void>;
+  onError?: (error: unknown) => MaybePromise<void>;
 };
 
 export const createMutationForm = <D, Z extends AnyZodObject>(config: MutationFormConfig<D, Z>) => {
@@ -36,31 +35,14 @@ export const createMutationForm = <D, Z extends AnyZodObject>(config: MutationFo
     onSubmit: async (values) => {
       const ex = await extra?.();
       const data = await mutation({ ...values, ...ex });
-      if (typeof onSuccess === 'string') {
-        toast.success(onSuccess);
-      } else {
-        await onSuccess?.(data);
-      }
+      await onSuccess?.(data);
     },
     onError: async (error) => {
       if (error instanceof FormValidationError) {
         return { [error.field]: error.message } as AssignableErrors<TypeOf<Z>>;
-      } else if (error instanceof AppError) {
-        if (onError) {
-          if (typeof onError === 'string') {
-            toast.error(onError);
-          } else {
-            await onError(error);
-          }
-        } else {
-          toast.error(error.message);
-        }
       } else {
-        console.error(error);
-        toast.error('알 수 없는 오류가 발생했어요');
+        await onError?.(error);
       }
-
-      return;
     },
   });
 };

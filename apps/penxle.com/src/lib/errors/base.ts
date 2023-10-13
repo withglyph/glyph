@@ -3,6 +3,7 @@ import type { AppErrorKind } from './errors';
 export type AppErrorExtra = {
   [key: string]: unknown;
   code?: number;
+  internal?: boolean;
 };
 
 export type AppErrorConstructorParams = {

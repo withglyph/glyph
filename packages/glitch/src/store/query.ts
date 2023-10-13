@@ -10,7 +10,7 @@ export const createQueryStore = async (
   document: TypedDocumentNode<unknown, AnyVariables>,
   variablesLoader?: (event: LoadEvent) => AnyVariables,
 ) => {
-  const { client, onError } = await getClient();
+  const { client, transformError } = await getClient();
 
   const variables = variablesLoader ? variablesLoader(event) : undefined;
   const request = createRequest(document, variables);
@@ -33,7 +33,7 @@ export const createQueryStore = async (
   }
 
   if (result.error?.graphQLErrors.length) {
-    throw onError(result.error.graphQLErrors[0]);
+    throw transformError(result.error.graphQLErrors[0]);
   }
 
   const store = readable(result.data, (set) => {

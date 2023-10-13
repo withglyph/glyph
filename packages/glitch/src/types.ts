@@ -51,7 +51,8 @@ export type GlitchContext = {
 
 export type GlitchClient = {
   client: Client;
-  onError: (error: unknown) => Error;
+  transformError: (error: unknown) => Error;
+  onMutationError: (error: Error) => void;
 };
 
 export type QueryStore<D> = Readable<D> & {

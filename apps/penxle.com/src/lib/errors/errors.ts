@@ -74,7 +74,7 @@ export class FormValidationError extends AppError {
     super({
       kind: AppErrorKind.FormValidationError,
       message,
-      extra: { field },
+      extra: { field, internal: true },
     });
 
     this.field = field;

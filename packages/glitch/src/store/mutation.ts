@@ -9,7 +9,7 @@ export const createMutationStore = (document: TypedDocumentNode<unknown, AnyVari
   const count = writable(0);
 
   const mutate = async (input?: AnyVariables) => {
-    const { client, onError } = await getClient();
+    const { client, transformError, onMutationError } = await getClient();
 
     const request = createRequest(document, input ? { input } : undefined);
     const operation = client.createRequestOperation('mutation', request, {
@@ -27,11 +27,15 @@ export const createMutationStore = (document: TypedDocumentNode<unknown, AnyVari
     );
 
     if (result.error?.networkError) {
-      throw result.error.networkError;
+      const err = transformError(result.error.networkError);
+      onMutationError(err);
+      throw err;
     }
 
     if (result.error?.graphQLErrors.length) {
-      throw onError(result.error.graphQLErrors[0]);
+      const err = transformError(result.error.graphQLErrors[0]);
+      onMutationError(err);
+      throw err;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

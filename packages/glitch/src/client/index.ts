@@ -9,10 +9,11 @@ import type { GlitchClient } from '../types';
 type CreateClientParams = {
   url: string;
   cache: CacheExchangeOpts;
-  onError: (error: unknown) => Error;
+  transformError: (error: unknown) => Error;
+  onMutationError: (error: Error) => void;
 };
 
-export const createClient = ({ url, cache, onError }: CreateClientParams) => {
+export const createClient = ({ url, cache, ...rest }: CreateClientParams) => {
   return (isClient: boolean): GlitchClient => {
     const exchanges: Exchange[] = [];
 
@@ -23,11 +24,8 @@ export const createClient = ({ url, cache, onError }: CreateClientParams) => {
     exchanges.push(cacheExchange(cache), fetchExchange);
 
     return {
-      client: new Client({
-        url,
-        exchanges,
-      }),
-      onError,
+      client: new Client({ url, exchanges }),
+      ...rest,
     };
   };
 };
