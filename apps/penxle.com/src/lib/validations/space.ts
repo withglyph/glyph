@@ -27,9 +27,9 @@ export const CreateSpaceSchema = z.object({
 
 export const UpdateSpaceSchema = z.object({
   spaceId: z.string(),
+  iconId: z.string().optional(),
   name: spaceName,
   slug: SpaceSlugSchema,
-  iconId: z.string().optional(),
   description: z.string().max(200, '스페이스 소개는 200자를 넘을 수 없어요').optional(),
 });
 
