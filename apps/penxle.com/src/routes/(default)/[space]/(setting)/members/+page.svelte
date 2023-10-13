@@ -1,17 +1,22 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { graphql } from '$glitch';
   import { Avatar, Button, Modal } from '$lib/components';
   import { DropDown, FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
+  import { pageSubTitle } from '$lib/stores';
   import { CreateSpaceMemberInvitationSchema } from '$lib/validations';
-  import SearchBar from '../../../SearchBar.svelte';
 
   let open = false;
   let leaveSpaceOpen = false;
   let leaveSpaceSuccessOpen = false;
   let removeMemberOpen = false;
   let removeMember: (typeof $query.space.members)[0];
+
+  onMount(async () => {
+    pageSubTitle.set('멤버 관리');
+  });
 
   $: query = graphql(`
     query SpaceSettingMembersPage_Query($slug: String!) {
@@ -28,6 +33,7 @@
         members {
           id
           role
+          email
 
           profile {
             id
@@ -41,6 +47,7 @@
           id
           createdAt
           receivedEmail
+          state
         }
       }
     }
@@ -52,6 +59,8 @@
         createSpaceMemberInvitation(input: $input) {
           id
           receivedEmail
+          state
+
           space {
             id
             slug
@@ -62,7 +71,7 @@
     `),
     schema: CreateSpaceMemberInvitationSchema,
     onSuccess: () => {
-      toast.success('스페이스 초대를 보냈어요');
+      toast.success('초대 링크를 전송했어요');
       open = false;
     },
   });
@@ -84,27 +93,34 @@
   `);
 </script>
 
-<div class="title-24-eb flex gap-4">
+<div class="title-24-eb flex gap-4 mb-6 <sm:hidden">
   <h2>멤버 관리</h2>
   <span class="text-secondary">{$query.space.members.length}</span>
 </div>
 
-<div class="p-4 max-w-200 bg-white border border-secondary rounded-xl">
-  <div class="flex items-center justify-between">
-    <SearchBar class="w-fit!" />
+<div class="px-4 py-6 max-w-218 bg-white border border-secondary rounded-xl sm:px-6">
+  <div class="flex items-center justify-between mb-6 gap-2">
+    <form class="relative h-11.5 w-full max-w-82.5">
+      <input class="rounded-2.5 h-11.5 w-full bg-primary py-1.75 pr-3.5 pl-11 w-full" type="text" />
+      <div class="absolute inset-y-0 left-3.5 flex center text-secondary h-100%">
+        <span class="i-lc-search square-5 transition" />
+      </div>
+    </form>
 
-    <Button size="lg" on:click={() => (open = true)}>멤버 초대</Button>
+    {#if $query.space.meAsMember?.role === 'ADMIN'}
+      <Button size="lg" on:click={() => (open = true)}>멤버 초대</Button>
+    {/if}
   </div>
 
-  <table class="w-full">
-    <tr>
-      <th class="w-50% text-left" scope="col">멤버</th>
-      <th class="w-30% text-left <sm:hidden" scope="col">가입일</th>
-      <th class="w-20% text-left" scope="col">권한</th>
+  <table class="w-full border-spacing-0">
+    <tr class="bg-primary text-secondary body-13-b">
+      <th class="w-50% text-left pl-4 py-2 border border-r-none border-secondary rounded-l-lg" scope="col">멤버</th>
+      <th class="w-30% text-left py-2 border-y border-secondary <xs:hidden" scope="col">가입일</th>
+      <th class="w-20% text-right pr-4 py-2 border border-l-none border-secondary rounded-r-lg" scope="col">권한</th>
     </tr>
     {#each $query.space.members as member (member.id)}
-      <tr>
-        <td class="flex items-center gap-3">
+      <tr class="[&:nth-of-type(2)>*]:border-none">
+        <td class="flex items-center gap-3 py-4 border-t sm:(pl-4)">
           <Avatar class="square-10.5" $profile={member.profile} />
           <div class="flex flex-col gap-1">
             <div class="flex gap-1 body-15-b">
@@ -113,32 +129,71 @@
                 (나)
               {/if}
             </div>
-            <span class="text-secondary">kylie@penxle.io</span>
+            <span class="body-14-m text-secondary">{member.email}</span>
           </div>
         </td>
-        <td class="<sm:hidden">2023.09.19</td>
-        <td>
-          <select
-            value={member.role}
-            on:change={(e) => {
-              if (e.currentTarget.value === 'LEAVE') {
-                leaveSpaceOpen = true;
-              } else if (e.currentTarget.value === 'REMOVE') {
-                removeMemberOpen = true;
-                removeMember = member;
-              }
-            }}
-          >
-            <option value="ADMIN">관리자</option>
-            <option value="MEMBER">창작자</option>
-            {#if $query.space.meAsMember?.id === member.id}
-              <option value="LEAVE">탈퇴하기</option>
-            {:else if $query.space.meAsMember?.role === 'ADMIN'}
-              <option value="REMOVE">내보내기</option>
-            {/if}
-          </select>
+        <td class="body-13-b text-secondary border-t <xs:hidden">2023.09.19</td>
+        <td class="text-right border-t sm:pr-4">
+          {#if $query.space.meAsMember?.role === 'ADMIN'}
+            <select
+              class="body-14-b text-secondary"
+              value={member.role}
+              on:change={(e) => {
+                if (e.currentTarget.value === 'LEAVE') {
+                  leaveSpaceOpen = true;
+                } else if (e.currentTarget.value === 'REMOVE') {
+                  removeMemberOpen = true;
+                  removeMember = member;
+                }
+              }}
+            >
+              <option value="ADMIN">관리자</option>
+              <option value="MEMBER">창작자</option>
+              {#if $query.space.meAsMember?.id !== member.id}
+                <option value="REMOVE">내보내기</option>
+              {:else}
+                <option value="LEAVE">탈퇴하기</option>
+              {/if}
+            </select>
+          {/if}
+          {#if $query.space.meAsMember?.role === 'MEMBER' && $query.space.meAsMember?.id === member.id}
+            <select
+              class="body-14-b text-secondary"
+              value={member.role}
+              on:change={(e) => {
+                if (e.currentTarget.value === 'LEAVE') {
+                  leaveSpaceOpen = true;
+                }
+              }}
+            >
+              <option selected value="LEAVE">탈퇴하기</option>
+            </select>
+          {/if}
         </td>
       </tr>
+    {/each}
+
+    {#each $query.space.invitations as invitation (invitation.id)}
+      {#if invitation.state !== 'ACCEPTED'}
+        <tr class="[&:nth-of-type(2)>*]:border-none">
+          <td class="flex items-center gap-3 py-4 border-t sm:(pl-4)">
+            <div class="square-10.5 rounded-full border border-primary border-dashed" />
+            <div class="flex flex-col gap-1 truncate">
+              <span class="body-15-b text-secondary">{invitation.receivedEmail}</span>
+            </div>
+          </td>
+          <td class="body-13-b text-secondary border-t <xs:hidden">-</td>
+          <td class="text-right border-t sm:pr-4">
+            {#if $query.space.meAsMember?.role === 'ADMIN'}
+              <select class="body-14-b text-secondary">
+                <option value="ADMIN">관리자</option>
+                <option value="MEMBER">창작자</option>
+                <option value="CANCEL">초대 취소</option>
+              </select>
+            {/if}
+          </td>
+        </tr>
+      {/if}
     {/each}
   </table>
 </div>

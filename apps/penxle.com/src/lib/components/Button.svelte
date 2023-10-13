@@ -45,7 +45,7 @@
 <svelte:element
   this={element}
   class={clsx(
-    'flex center px-4 py-2 font-bold leading-none transition duration-300 text-center text-3.25',
+    'flex center px-4 py-2 font-bold leading-none transition duration-300 text-center text-3.25 text-nowrap',
     showSpinner && 'relative',
     disabled && 'text-disabled bg-gray-30',
     disabled && variant === 'outlined' && 'text-disabled! border-gray-30! bg-transparent!',
