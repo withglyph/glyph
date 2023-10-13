@@ -27,6 +27,6 @@ export const CreateSpaceMemberInvitationSchema = z.object({
 
 export const AcceptSpaceMemberInvitationSchema = z.object({
   invitationId: z.string(),
-  profileAvatarId: z.string(),
-  profileName,
+  profileAvatarId: z.string().optional(),
+  profileName: profileName.optional(),
 });

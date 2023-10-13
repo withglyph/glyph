@@ -69,18 +69,53 @@ builder.prismaObject('Space', {
 
     invitations: t.relation('invitations', {
       authScopes: { $granted: '$space:admin' },
+      // @ts-expect-error pothos-prisma가 unauthorizedResolver 리턴값 타입 추론을 잘못하는듯
+      unauthorizedResolver: () => [],
       grantScopes: ['$space.member.invitation'],
     }),
   }),
 });
 
 builder.prismaObject('SpaceMember', {
-  select: { id: true },
+  select: { id: true, spaceId: true },
+  grantScopes: async (member, { db, ...context }) => {
+    if (!context.session) {
+      return [];
+    }
+    const meAsMember = await db.spaceMember.findUnique({
+      select: { role: true },
+      where: {
+        spaceId_userId: {
+          spaceId: member.spaceId,
+          userId: context.session.userId,
+        },
+        state: 'ACTIVE',
+      },
+    });
+
+    if (!meAsMember) {
+      return [];
+    }
+
+    return R.sift(['$space:member', meAsMember.role === 'ADMIN' && '$space:admin']);
+  },
   fields: (t) => ({
     id: t.exposeID('id'),
     role: t.expose('role', { type: SpaceMemberRole }),
-
     profile: t.relation('profile'),
+    createdAt: t.expose('createdAt', { type: 'DateTime' }),
+    email: t.field({
+      type: 'String',
+      authScopes: { $granted: '$space:member' },
+      select: { userId: true },
+      resolve: async (member, _, { db }) => {
+        const user = await db.user.findUniqueOrThrow({
+          select: { email: true },
+          where: { id: member.userId },
+        });
+        return user?.email;
+      },
+    }),
   }),
 });
 
@@ -100,6 +135,10 @@ builder.prismaObject('SpaceMemberInvitation', {
         ['PENDING', 'ACCEPTED'].includes(invitation.state) ? invitation.state : 'PENDING',
     }),
     space: t.relation('space'),
+    respondedAt: t.expose('respondedAt', {
+      type: 'DateTime',
+      nullable: true,
+    }),
   }),
 });
 
@@ -376,7 +415,10 @@ builder.mutationFields((t) => ({
       return await db.spaceMemberInvitation.update({
         ...query,
         where: { id: invitation.id },
-        data: { state: 'ACCEPTED' },
+        data: {
+          state: 'ACCEPTED',
+          respondedAt: new Date(),
+        },
       });
     },
   }),
