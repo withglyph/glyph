@@ -11,5 +11,8 @@ export const updates: GraphCacheConfig['updates'] = {
     deleteSpace: (_, { input }, cache) => {
       cache.invalidate({ __typename: 'Space', id: input.spaceId });
     },
+    removeSpaceMember: (_, { input }, cache) => {
+      cache.invalidate({ __typename: 'SpaceMember', id: input.spaceMemberId });
+    },
   },
 };

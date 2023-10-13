@@ -10,6 +10,8 @@
   let open = false;
   let leaveSpaceOpen = false;
   let leaveSpaceSuccessOpen = false;
+  let removeMemberOpen = false;
+  let removeMember: (typeof $query.space.members)[0];
 
   $: query = graphql(`
     query SpaceSettingMembersPage_Query($slug: String!) {
@@ -72,6 +74,14 @@
       }
     }
   `);
+
+  const removeSpaceMember = graphql(`
+    mutation SpaceSettingMembersPage_RemoveSpaceMember_Mutation($input: RemoveSpaceMemberInput!) {
+      removeSpaceMember(input: $input) {
+        id
+      }
+    }
+  `);
 </script>
 
 <div class="title-24-eb flex gap-4">
@@ -92,14 +102,14 @@
       <th class="w-30% text-left <sm:hidden" scope="col">가입일</th>
       <th class="w-20% text-left" scope="col">권한</th>
     </tr>
-    {#each $query.space.members as members (members.id)}
+    {#each $query.space.members as member (member.id)}
       <tr>
         <td class="flex items-center gap-3">
-          <Avatar class="square-10.5" $profile={members.profile} />
+          <Avatar class="square-10.5" $profile={member.profile} />
           <div class="flex flex-col gap-1">
             <div class="flex gap-1 body-15-b">
-              <span>{members.profile.name}</span>
-              {#if $query.space.meAsMember?.id === members.id}
+              <span>{member.profile.name}</span>
+              {#if $query.space.meAsMember?.id === member.id}
                 (나)
               {/if}
             </div>
@@ -109,16 +119,19 @@
         <td class="<sm:hidden">2023.09.19</td>
         <td>
           <select
-            value={members.role}
+            value={member.role}
             on:change={(e) => {
               if (e.currentTarget.value === 'LEAVE') {
                 leaveSpaceOpen = true;
+              } else if (e.currentTarget.value === 'REMOVE') {
+                removeMemberOpen = true;
+                removeMember = member;
               }
             }}
           >
             <option value="ADMIN">관리자</option>
             <option value="MEMBER">창작자</option>
-            {#if $query.space.meAsMember?.id === members.id}
+            {#if $query.space.meAsMember?.id === member.id}
               <option value="LEAVE">탈퇴하기</option>
             {:else if $query.space.meAsMember?.role === 'ADMIN'}
               <option value="REMOVE">내보내기</option>
@@ -158,7 +171,7 @@
 </Modal>
 
 <Modal size="sm" bind:open={leaveSpaceOpen}>
-  <svelte:fragment slot="title">{$query.space.name}을 탈퇴할까요?</svelte:fragment>
+  <svelte:fragment slot="title">'{$query.space.name}' 을 탈퇴할까요?</svelte:fragment>
 
   <div slot="action" class="flex gap-3 w-full">
     <Button class="w-full" color="secondary" size="xl" on:click={() => (leaveSpaceOpen = false)}>
@@ -186,4 +199,29 @@
   <svelte:fragment slot="title">스페이스 탈퇴가 완료되었어요</svelte:fragment>
 
   <Button href="/" size="xl" type="link">홈으로 가기</Button>
+</Modal>
+
+<Modal size="sm" bind:open={removeMemberOpen}>
+  <svelte:fragment slot="title">'{removeMember.profile.name}' 님을 내보내시겠어요?</svelte:fragment>
+
+  <div slot="action" class="flex gap-3 w-full">
+    <Button class="w-full" color="secondary" size="xl" on:click={() => (leaveSpaceOpen = false)}>
+      다시 생각해보기
+    </Button>
+    <Button
+      class="w-full"
+      size="xl"
+      on:click={async () => {
+        try {
+          await removeSpaceMember({ spaceMemberId: removeMember.id });
+          toast.success(`${removeMember.profile.name}님을 내보냈어요`);
+        } catch {
+          toast.error('오류가 발생했어요');
+        }
+        removeMemberOpen = false;
+      }}
+    >
+      내보내기
+    </Button>
+  </div>
 </Modal>
