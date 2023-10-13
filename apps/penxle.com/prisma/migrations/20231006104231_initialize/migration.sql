@@ -5,6 +5,12 @@ CREATE TYPE "_content_filter_category" AS ENUM ('ADULT', 'TRIGGER', 'VIOLENCE', 
 CREATE TYPE "_content_filter_action" AS ENUM ('HIDE', 'WARN', 'EXPOSE');
 
 -- CreateEnum
+CREATE TYPE "_post_state" AS ENUM ('ACTIVE', 'INACTIVE');
+
+-- CreateEnum
+CREATE TYPE "_post_visibility" AS ENUM ('PUBLIC', 'UNPUBLISHED', 'MEMBER_ONLY', 'PRIVATE');
+
+-- CreateEnum
 CREATE TYPE "_preference_type" AS ENUM ('FAVORITE', 'MUTE');
 
 -- CreateEnum
@@ -12,6 +18,9 @@ CREATE TYPE "_space_member_invite_state" AS ENUM ('PENDING', 'ACCEPTED', 'IGNORE
 
 -- CreateEnum
 CREATE TYPE "_space_member_role" AS ENUM ('ADMIN', 'MEMBER');
+
+-- CreateEnum
+CREATE TYPE "_space_member_state" AS ENUM ('ACTIVE', 'INACTIVE');
 
 -- CreateEnum
 CREATE TYPE "_space_state" AS ENUM ('ACTIVE', 'INACTIVE');
@@ -50,6 +59,32 @@ CREATE TABLE "images" (
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "images_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "posts" (
+    "id" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
+    "space_id" TEXT,
+    "author_id" TEXT NOT NULL,
+    "state" "_post_state" NOT NULL,
+    "visibility" "_post_visibility" NOT NULL,
+    "active_revision_id" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "posts_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "post_revisions" (
+    "id" TEXT NOT NULL,
+    "post_id" TEXT,
+    "title" TEXT NOT NULL,
+    "content" JSONB NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "author_id" TEXT NOT NULL,
+
+    CONSTRAINT "post_revisions_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -117,6 +152,7 @@ CREATE TABLE "space_members" (
     "space_id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
     "profile_id" TEXT NOT NULL,
+    "state" "_space_member_state" NOT NULL,
     "role" "_space_member_role" NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -249,7 +285,7 @@ CREATE TABLE "user_single_sign_ons" (
     "id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
     "provider" "_user_single_sign_on_provider" NOT NULL,
-    "external_id" TEXT NOT NULL,
+    "principal" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -280,10 +316,10 @@ CREATE TABLE "user_tag_preferences" (
 CREATE INDEX "images_id_path_color_idx" ON "images"("id", "path", "color");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "provisioned_users_token_key" ON "provisioned_users"("token");
+CREATE UNIQUE INDEX "posts_slug_space_id_key" ON "posts"("slug", "space_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "profiles_avatar_id_key" ON "profiles"("avatar_id");
+CREATE UNIQUE INDEX "provisioned_users_token_key" ON "provisioned_users"("token");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "spaces_icon_id_key" ON "spaces"("icon_id");
@@ -293,9 +329,6 @@ CREATE INDEX "spaces_slug_state_idx" ON "spaces"("slug", "state");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "space_members_space_id_user_id_key" ON "space_members"("space_id", "user_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "space_member_invitations_received_email_space_id_key" ON "space_member_invitations"("received_email", "space_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "tags_name_key" ON "tags"("name");
@@ -340,7 +373,7 @@ CREATE UNIQUE INDEX "user_notification_preferences_user_id_category_method_key" 
 CREATE UNIQUE INDEX "user_single_sign_ons_user_id_provider_key" ON "user_single_sign_ons"("user_id", "provider");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_single_sign_ons_provider_external_id_key" ON "user_single_sign_ons"("provider", "external_id");
+CREATE UNIQUE INDEX "user_single_sign_ons_provider_principal_key" ON "user_single_sign_ons"("provider", "principal");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_tag_preferences_user_id_key" ON "user_tag_preferences"("user_id");
@@ -350,6 +383,21 @@ CREATE UNIQUE INDEX "user_tag_preferences_tag_id_key" ON "user_tag_preferences"(
 
 -- AddForeignKey
 ALTER TABLE "images" ADD CONSTRAINT "images_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "posts" ADD CONSTRAINT "posts_space_id_fkey" FOREIGN KEY ("space_id") REFERENCES "spaces"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "posts" ADD CONSTRAINT "posts_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "space_members"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "posts" ADD CONSTRAINT "posts_active_revision_id_fkey" FOREIGN KEY ("active_revision_id") REFERENCES "post_revisions"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "post_revisions" ADD CONSTRAINT "post_revisions_post_id_fkey" FOREIGN KEY ("post_id") REFERENCES "posts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "post_revisions" ADD CONSTRAINT "post_revisions_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "profiles" ADD CONSTRAINT "profiles_avatar_id_fkey" FOREIGN KEY ("avatar_id") REFERENCES "images"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -431,3 +479,4 @@ ALTER TABLE "user_tag_preferences" ADD CONSTRAINT "user_tag_preferences_user_id_
 
 -- AddForeignKey
 ALTER TABLE "user_tag_preferences" ADD CONSTRAINT "user_tag_preferences_tag_id_fkey" FOREIGN KEY ("tag_id") REFERENCES "tags"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+

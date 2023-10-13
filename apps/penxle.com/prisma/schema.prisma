@@ -35,6 +35,41 @@ model Image {
   @@map("images")
 }
 
+model Post {
+  id               String         @id
+  permalink        String         @map("permalink")
+  spaceId          String?        @map("space_id")
+  space            Space?         @relation(fields: [spaceId], references: [id])
+  authorId         String         @map("author_id")
+  author           SpaceMember    @relation(fields: [authorId], references: [id])
+  state            PostState
+  visibility       PostVisibility
+  activeRevisionId String         @map("active_revision_id")
+  activeRevision   PostRevision   @relation(name: "activeRevision", fields: [activeRevisionId], references: [id])
+  createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz
+
+  revisions PostRevision[]
+
+  @@unique([permalink, spaceId])
+  @@map("posts")
+}
+
+model PostRevision {
+  id        String   @id
+  postId    String?  @map("post_id")
+  post      Post?    @relation(fields: [postId], references: [id])
+  title     String
+  content   Json
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  authorId  String   @map("author_id")
+  author    User     @relation(fields: [authorId], references: [id])
+
+  // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
+  postsThatUsesThisAsActive Post[] @relation(name: "activeRevision")
+
+  @@map("post_revisions")
+}
+
 model ProvisionedUser {
   id        String                    @id
   token     String                    @unique
@@ -78,6 +113,7 @@ model Space {
   blockedUsers  SpaceUserBlock[]
   // tags          SpaceTag[]
   externalLinks SpaceExternalLink[]
+  posts         Post[]
 
   @@index([slug, state])
   @@map("spaces")
@@ -116,6 +152,8 @@ model SpaceMember {
   state     SpaceMemberState
   role      SpaceMemberRole
   createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz
+
+  posts Post[]
 
   @@unique([spaceId, userId])
   @@map("space_members")
@@ -214,6 +252,7 @@ model User {
   sentSpaceMemberInvitations     SpaceMemberInvitation[]       @relation("spaceMemberInvitationSent")
   receivedSpaceMemberInvitations SpaceMemberInvitation[]       @relation("spaceMemberInvitationReceived")
   followingSpaces                UserSpaceFollowing[]
+  postRevisions                  PostRevision[]
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
@@ -343,6 +382,22 @@ enum ContentFilterAction {
   EXPOSE
 
   @@map("_content_filter_action")
+}
+
+enum PostState {
+  ACTIVE
+  INACTIVE
+
+  @@map("_post_state")
+}
+
+enum PostVisibility {
+  PUBLIC
+  UNPUBLISHED
+  MEMBER_ONLY
+  PRIVATE
+
+  @@map("_post_visibility")
 }
 
 enum PreferenceType {

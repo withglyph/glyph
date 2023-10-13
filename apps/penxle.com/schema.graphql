@@ -30,6 +30,18 @@ enum ContentFilterCategory {
   VIOLENCE
 }
 
+input CreatePostInput {
+  revisionId: ID!
+  spaceId: ID!
+  visibility: PostVisibility! = PUBLIC
+}
+
+input CreateRevisionInput {
+  content: JSON!
+  isDraft: Boolean! = false
+  title: String!
+}
+
 input CreateSpaceInput {
   iconId: ID
   isPublic: Boolean! = true
@@ -110,6 +122,8 @@ input LoginUserInput {
 
 type Mutation {
   acceptSpaceMemberInvitation(input: AcceptSpaceMemberInvitationInput!): SpaceMemberInvitation!
+  createPost(input: CreatePostInput!): Post!
+  createRevision(input: CreateRevisionInput!): PostRevision!
   createSpace(input: CreateSpaceInput!): Space!
   createSpaceMemberInvitation(input: CreateSpaceMemberInvitationInput!): SpaceMemberInvitation!
   createUser(input: CreateUserInput!): User!
@@ -130,6 +144,34 @@ type Mutation {
   updateUserMarketingConsent(input: UpdateUserMarketingConsentInput!): User!
   updateUserNotificationPreference(input: UpdateUserNotificationPreferenceInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
+}
+
+type Post {
+  activeRevision: PostRevision!
+  createdAt: DateTime!
+  id: ID!
+  slug: String!
+  visibility: PostVisibility!
+}
+
+type PostRevision {
+  content: JSON!
+  createdAt: DateTime!
+  id: ID!
+  post: Post!
+  title: String!
+}
+
+enum PostState {
+  ACTIVE
+  INACTIVE
+}
+
+enum PostVisibility {
+  MEMBER_ONLY
+  PRIVATE
+  PUBLIC
+  UNPUBLISHED
 }
 
 enum PreferenceType {

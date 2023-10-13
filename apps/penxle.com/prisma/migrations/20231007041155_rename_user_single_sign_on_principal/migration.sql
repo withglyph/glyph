@@ -1,1 +1,0 @@
-ALTER TABLE "user_single_sign_ons" RENAME COLUMN "external_id" TO "principal";
