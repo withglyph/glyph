@@ -45,7 +45,6 @@
 
         invitations {
           id
-          createdAt
           receivedEmail
           state
         }
