@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { Button, Tag } from '$lib/components';
   import { TabContentItem, TabHead, TabHeadItem } from '$lib/components/tab';
