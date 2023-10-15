@@ -12,7 +12,7 @@
   let menuEl: HTMLDivElement;
 
   let _user: SpaceSettingLayout_SpaceListMenu_user;
-  let open: boolean;
+  let open = false;
   let openCreateSpace = false;
 
   export { _user as $user };
@@ -29,6 +29,8 @@
           slug
           name
         }
+
+        ...DefaultLayout_CreateSpaceModal_user
       }
     `),
   );
@@ -110,4 +112,4 @@
   </div>
 {/if}
 
-<CreateSpaceModal bind:open={openCreateSpace} />
+<CreateSpaceModal {$user} bind:open={openCreateSpace} />
