@@ -35,8 +35,6 @@
           }
         }
       }
-
-      ...DefaultLayout_Header_query
     }
   `);
 </script>

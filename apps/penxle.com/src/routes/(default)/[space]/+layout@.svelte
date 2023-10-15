@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { Button, Tag } from '$lib/components';
   import { TabContentItem, TabHead, TabHeadItem } from '$lib/components/tab';
@@ -104,7 +105,7 @@
         </div>
       </div>
 
-      <TabHead class="w-full" variant="secondary">
+      <TabHead class="border-none" variant="secondary">
         <TabHeadItem id={1} href="/{$query.space.slug}" variant="secondary">
           <span>홈</span>
         </TabHeadItem>

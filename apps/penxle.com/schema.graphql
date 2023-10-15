@@ -130,18 +130,6 @@ type Mutation {
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
 }
 
-enum PostState {
-  ACTIVE
-  INACTIVE
-}
-
-enum PostVisibility {
-  MEMBER_ONLY
-  PRIVATE
-  PUBLIC
-  UNPUBLISHED
-}
-
 enum PreferenceType {
   FAVORITE
   MUTE
