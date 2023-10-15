@@ -18,7 +18,7 @@ import { sendEmail } from '$lib/server/email';
 import { LoginUser, UpdateUserEmail } from '$lib/server/email/templates';
 import { AuthScope, UserSingleSignOnAuthorizationType } from '$lib/server/enums';
 import { google, naver } from '$lib/server/external-api';
-import { createAccessToken, directUploadImage, generateRandomAvatar } from '$lib/server/utils';
+import { createAccessToken, createRandomAvatar, directUploadImage } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import {
   CreateUserSchema,
@@ -386,7 +386,7 @@ builder.mutationFields((t) => ({
       const avatarId = await directUploadImage({
         db,
         name: 'avatar',
-        source: await generateRandomAvatar(),
+        source: await createRandomAvatar(),
       });
 
       const profile = await db.profile.create({

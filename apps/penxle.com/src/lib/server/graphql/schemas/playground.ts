@@ -1,5 +1,5 @@
 import * as R from 'radash';
-import { createRandomAvatar } from '$lib/server/utils';
+import { createRandomAvatar } from '$lib/server/utils/avatar';
 import { builder } from '../builder';
 
 /**
@@ -8,8 +8,9 @@ import { builder } from '../builder';
 
 builder.queryFields((t) => ({
   randomAvatars: t.stringList({
-    resolve: () => {
-      return [...R.range(1, 16)].map(() => createRandomAvatar());
+    resolve: async () => {
+      const buffers = await Promise.all([...R.range(1, 16)].map(() => createRandomAvatar()));
+      return buffers.map((buffer) => buffer.toString('base64'));
     },
   }),
 

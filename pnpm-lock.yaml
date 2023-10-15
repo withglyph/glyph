@@ -351,12 +351,6 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.427.0
         version: 3.427.0
-      '@dicebear/collection':
-        specifier: ^7.0.1
-        version: 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/core':
-        specifier: ^7.0.1
-        version: 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
       '@envelop/core':
         specifier: ^4.0.3
         version: 4.0.3
@@ -450,6 +444,9 @@ importers:
       '@types/node':
         specifier: ^20.8.3
         version: 20.8.3
+      '@types/randomcolor':
+        specifier: ^0.5.7
+        version: 0.5.7
       '@urql/core':
         specifier: ^4.1.3
         version: 4.1.3(graphql@16.8.1)
@@ -531,6 +528,9 @@ importers:
       radash:
         specifier: ^11.0.0
         version: 11.0.0
+      randomcolor:
+        specifier: ^0.6.2
+        version: 0.6.2
       sharp:
         specifier: ^0.32.6
         version: 0.32.6
@@ -2717,328 +2717,6 @@ packages:
   /@datadog/sketches-js@2.1.0:
     resolution: {integrity: sha512-smLocSfrt3s53H/XSVP3/1kP42oqvrkjUPtyaFd1F79ux24oE31BKt+q0c6lsa6hOYrFzsIwyc5GXAI5JmfOew==}
     dev: false
-
-  /@dicebear/adventurer-neutral@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-dZfyaUFS8qQv7Lv+OXNTHVkercDCh+VqGSJU8jIf3FFbtFbFF79FXZJwJ8V3+pr0xKcZWa8i+8hXLtU3gqZ18g==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/adventurer@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-eqbHHAQO8HjG8YNMl8xgklxphC7HvfDtqVr1rkJWP98e7r2AdQpu0cPYIOZPV4uv9gxl1ncaErQjdjvIvFRGiA==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/avataaars-neutral@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-e3XwK3xup4ifJ/BUNjR5rcrw9982SC75UTJlPsKuuOM/Lwx3MtUe3+dqeDSyYbrC7KoWespX70oDZK1+2dBQFw==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/avataaars@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-U7JJLDFJsbVyQl3j1SqtTxi5h+I5JXL8CGfwAOPtQTnk/tKQFXM9WF/zdHegtxbxYAxQaYJtyprdwTJHx5ELnw==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/big-ears-neutral@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-2QK9HVmApoGFLi3ONW9mh0Tk/PPyHx9rvzUvcT5H/mb80ooBqIVMPYYq4rVlGVP6wAtsNHdoxzzlKja0DG+vvQ==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/big-ears@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-ITI0IQCwdn5s5/kUrNdO488TQvZdiCljnzKpqbQ1hqfsxZ0C+eZs+cudZ0bqLftYxM+WBvmaJwrh3pXNAz1h+w==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/big-smile@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-hVAhUMZ0LUhMFvtmUDR8GU7v2ufl5pOcVPiVSC3oV8nyywFp7s1ZqYGhi6rBCEG3qsMR54JfMFWkjV88j4Yrmg==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/bottts-neutral@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-1T1NEKAEvqyGlUprkO1Q1btITZnMBiCP5YeCy6wYyM7qJsPVDSySsjASJ1j/+IZFi8ePgWReFIbigFiHdo7iLA==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/bottts@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-k0adSvnT9+gFDO7/Cmts9TM3CSWYrZrxZe1WpELjTvwe4QOqdn3LgrYR9JXU/2hRz3GaXtP02SHNd85CkadYVw==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/collection@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-Y5xzjU2hiklYUkqsSr5VBpVPG++iUUTm1UDJLPM+iXg3lMF3PQuifXoaAxcuoBvvnKfJKNHf5wP1Bq6nRUl4NA==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/adventurer': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/adventurer-neutral': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/avataaars': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/avataaars-neutral': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/big-ears': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/big-ears-neutral': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/big-smile': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/bottts': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/bottts-neutral': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-      '@dicebear/croodles': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/croodles-neutral': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/fun-emoji': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/icons': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/identicon': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/initials': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/lorelei': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/lorelei-neutral': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/micah': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/miniavs': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/notionists': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/notionists-neutral': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/open-peeps': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/personas': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/pixel-art': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/pixel-art-neutral': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/rings': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/shapes': 7.0.1(@dicebear/core@7.0.1)
-      '@dicebear/thumbs': 7.0.1(@dicebear/core@7.0.1)
-    dev: true
-
-  /@dicebear/converter@7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6):
-    resolution: {integrity: sha512-CEIF6ZKi1FAE9kW10FvuPUjA6HLi+LcuB/GRFct/Bv28llzTel9xwbmfOEa1aIM8Nnp8BuT4U7tBIytksf+ptw==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@resvg/resvg-js': ^2.4.1
-      exiftool-vendored: ^22.0.0
-      sharp: ^0.32.1
-    peerDependenciesMeta:
-      '@resvg/resvg-js':
-        optional: true
-      exiftool-vendored:
-        optional: true
-      sharp:
-        optional: true
-    dependencies:
-      '@resvg/resvg-js': 2.4.1
-      '@types/json-schema': 7.0.13
-      sharp: 0.32.6
-      tmp-promise: 3.0.3
-    dev: true
-
-  /@dicebear/core@7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6):
-    resolution: {integrity: sha512-jaJG693c+myLocgG3kKXdHa+WJ+S6OcD31SEr9Oby7hhOzALQYD+LcJ15oBWwI7SLHJcGPYTOLyx2eDr8YhXCQ==}
-    engines: {node: '>=16.0.0'}
-    dependencies:
-      '@dicebear/converter': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-      '@types/json-schema': 7.0.13
-    transitivePeerDependencies:
-      - '@resvg/resvg-js'
-      - exiftool-vendored
-      - sharp
-    dev: true
-
-  /@dicebear/croodles-neutral@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-u09YylowZcbSAVyKJ4I8BCo1ehluqg3onYCclx++8mOWcEo+XGsGKIeN7osayaflNY/qtA9Jt2JsPgiS8KpQ5A==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/croodles@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-uauBTUvKFvsiaT+LWYKCEboEeOJy2Pk055nsdczi13UgHHfj+Qvy0/ky/uzYn+WC/1gewqQ6w/yS1WfpgPtIpg==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/fun-emoji@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-oJj5sb4rakro4e0lZTCkcKkiClHxDWr6+NWTwoU5L1HYRkXV6ngk4s7xSdOrYBQpYjLhdu+Lpx1VHYNpLUu2vg==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/icons@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-juHS4feScGCz4YdiwjxR60RJ2G7Z6W+tdUqNHN9ufMvY/FpJTfrQvzvrJfJfc84QZwIrqI/96WV3JIBEIO2AwQ==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/identicon@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-9W9pqqhvpMsZmOkjuLwlw0iift56A3VFq7eNpJPB1mm6gytfqgxozgOVLDFgug9VXgUVI2Jrk/XnXGIFVIeVQA==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/initials@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-zCI6fky4odM5ezl/GlhcSdnu+oNfmBbIghFB5NzgB/wV5nHmw2okONRC+Mgmxv8P8EpFb9z5hEOnh8xwW8htow==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/lorelei-neutral@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-4XaqE5v1dhE4TYrKSGG/VNUFqA31ADlqOnr6bd27E5MnaJLlY8ZAm3sue7EI9kEJ/i5KYov+Q4uS7JNDA5+cag==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/lorelei@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-3pyI2JF70PlqZUZEs5pVxmQWDJ2/bWmGG/iFtwsEh9HivtF8Zon4Er0NrsEoiKDvScyY4VGwl4LyUBc8JvNb9w==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/micah@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-zHnEewRaREZGNTqnlZiSoha/wNFxEsVQ3E5QYpe9KB3rcLW4CVUgFAHjb449vniG6NfsAWzyAkOfhy4N6Zzw0g==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/miniavs@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-v0n2JT0N1I7vAGoi4NQ98IKtn4JgjwD2Gkqq7l5QAy0jzl1v289FfTng0cOrthroMGBQ5jPS0wUyI0TluoFZRw==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/notionists-neutral@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-jRA7u2UU1I9EXzqBZL3vwI/V7pdDT60yB3bBjyD5J4TznT7bMwt7qEm1eV31U37mn3H+LTFiPD9/4G6whiU3nQ==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/notionists@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-uEYBywouoUmvWtWARyeqAoQWX1DpvKL33dVxZ5K/ulYd/nXu9WHeFCPaP4tqE5II1XPS4khwneimFN6F1HA5NQ==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/open-peeps@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-z1gXzd7XXLzSZpOrDPZmnJDXySCUEKmunRdRuWBSRrfIcVkgStZM0y8uuSrs3LpR8U2xcNJN9yO2wNRRWKmFEw==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/personas@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-6/nsrN7JIlMqdH7UwhrACVoCEM3IVHkpMq2I0A1JbhmYp240TI8kM5xYSF0KRdOyAPbyDH/TEB8Uld4LKE+3wQ==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/pixel-art-neutral@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-+9RS0ohGDbPu+W2eGGk3LyzvFbM5qsuhCQR4qO7YIcvmODyNFPJ7eW9g/MHFVPLQXq60SCEUF5CEKY0xs4baUQ==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/pixel-art@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-9f17Ze4533CbHp23E+gRSSZdCUAB5/PieRq6/ZtVOnPI/PfglhhKMKSxQIm/H267gE2Y+VVhHpUTwGlbAgh1Lg==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/rings@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-6wsLE4kbkBGeaaEA/afIV0eNYYfIVXo60XgApJA7JdcwyvdTa9LE5Wcp2VBEsZYXdsT9Ml7BC4er/QyMqCayUw==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/shapes@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-/ol+SazDlJYYe5pYaqKcnYDBjux+2Ny57hIrkHhonV0z4ny3Pq6c4Lq+hN3MnTBpKJszCXLrSP3uCbSQpjnkOg==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
-
-  /@dicebear/thumbs@7.0.1(@dicebear/core@7.0.1):
-    resolution: {integrity: sha512-eQYVJ8NN9buPfbd2Va0fY8sHRq9n1d7FJt/dL9xwimRGlpWh9lqS6gcHazuSHhSgnRHsHLANEiyboIcyhWh2Hg==}
-    engines: {node: '>=16.0.0'}
-    peerDependencies:
-      '@dicebear/core': ^7.0.0
-    dependencies:
-      '@dicebear/core': 7.0.1(@resvg/resvg-js@2.4.1)(sharp@0.32.6)
-    dev: true
 
   /@effect/data@0.17.1:
     resolution: {integrity: sha512-QCYkLE5Y5Dm5Yax5R3GmW4ZIgTx7W+kSZ7yq5eqQ/mFWa8i4yxbLuu8cudqzdeZtRtTGZKlhDxfFfgVtMywXJg==}
@@ -5900,6 +5578,7 @@ packages:
 
   /@types/json-schema@7.0.13:
     resolution: {integrity: sha512-RbSSoHliUbnXj3ny0CNFOoxrIDV6SUGyStHsvDqosw6CkdPV8TtWGlfecuK4ToyMEAql6pzNxgCFKanovUzlgQ==}
+    dev: false
 
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
@@ -5960,6 +5639,10 @@ packages:
 
   /@types/pug@2.0.7:
     resolution: {integrity: sha512-I469DU0UXNC1aHepwirWhu9YKg5fkxohZD95Ey/5A7lovC+Siu+MCLffva87lnfThaOrw9Vb1DUN5t55oULAAw==}
+    dev: true
+
+  /@types/randomcolor@0.5.7:
+    resolution: {integrity: sha512-LPcG96dGYRCsXlk1fslUNIg6ebEi+bKNyn84uBL/pu2cRSf5i/djD3ArJZOyzszVMVV/DB87va6pMZP+tRSl/w==}
     dev: true
 
   /@types/semver@7.5.3:
@@ -11892,6 +11575,10 @@ packages:
     engines: {node: '>=14.18.0'}
     dev: true
 
+  /randomcolor@0.6.2:
+    resolution: {integrity: sha512-Mn6TbyYpFgwFuQ8KJKqf3bqqY9O1y37/0jgSK/61PUxV4QfIMv0+K2ioq8DfOjkBslcjwSzRfIDEXfzA9aCx7A==}
+    dev: true
+
   /rc@1.2.8:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
     hasBin: true
@@ -13014,24 +12701,11 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /tmp-promise@3.0.3:
-    resolution: {integrity: sha512-RwM7MoPojPxsOBYnyd2hy0bxtIlVrihNs9pj5SUvY8Zz1sQcQG2tG1hSr8PDxfgEB8RNKDhqbIlroIarSNDNsQ==}
-    dependencies:
-      tmp: 0.2.1
-    dev: true
-
   /tmp@0.0.33:
     resolution: {integrity: sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==}
     engines: {node: '>=0.6.0'}
     dependencies:
       os-tmpdir: 1.0.2
-    dev: true
-
-  /tmp@0.2.1:
-    resolution: {integrity: sha512-76SUhtfqR2Ijn+xllcI5P1oyannHNHByD80W1q447gU3mp9G9PSpGdWmjUOHRDPiHYacIk66W7ubDTuPF3BEtQ==}
-    engines: {node: '>=8.17.0'}
-    dependencies:
-      rimraf: 3.0.2
     dev: true
 
   /to-fast-properties@2.0.0:

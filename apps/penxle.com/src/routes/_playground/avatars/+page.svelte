@@ -15,8 +15,8 @@
 <div class="flex grow center">
   <div class="w-150 flex flex-col center gap-4">
     <div class="grid grid-cols-4 gap-4">
-      {#each $query.randomAvatars as avatar (avatar)}
-        <img class="square-full border rounded-full" alt="" src={`data:image/svg+xml;base64,${btoa(avatar)}`} />
+      {#each $query.randomAvatars as avatar, idx (idx)}
+        <img class="square-full border rounded-full" alt="" src={`data:image/png;base64,${avatar}`} />
       {/each}
     </div>
 
