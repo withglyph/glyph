@@ -2,7 +2,7 @@ FROM --platform=linux/arm64 public.ecr.aws/lambda/nodejs:18
 
 WORKDIR /root
 
-ARG RUNNER_VERSION="2.308.0"
+ARG RUNNER_VERSION="2.310.2"
 ENV RUNNER_ALLOW_RUNASROOT=1
 
 ENV PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin:/root/.pulumi/bin
