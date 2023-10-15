@@ -11,7 +11,7 @@
     "@eslint/eslintrc": "^2.1.2",
     "@eslint/js": "^8.51.0",
     "@prettier/plugin-xml": "^3.2.1",
-    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/eslint-plugin": "^6.8.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",

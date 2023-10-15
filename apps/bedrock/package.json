@@ -7,13 +7,13 @@
   "devDependencies": {
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
-    "@pulumi/aws": "^6.4.0",
+    "@pulumi/aws": "^6.5.0",
     "@pulumi/cloudflare": "^5.12.0",
-    "@pulumi/pulumi": "^3.87.0",
+    "@pulumi/pulumi": "^3.89.0",
     "@pulumi/random": "^4.14.0",
     "@pulumi/tailscale": "^0.13.2",
     "@pulumi/tls": "^4.11.0",
-    "@types/node": "^20.8.3",
+    "@types/node": "^20.8.6",
     "fast-glob": "^3.3.1",
     "tsx": "^3.13.0"
   }
