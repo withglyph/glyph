@@ -4,10 +4,10 @@
   import { Slider } from '$lib/components/forms';
   import { clamp } from '$lib/utils';
   import type { PointerEventHandler } from 'svelte/elements';
-  import type { Region } from './thumbnailer';
+  import type { Bounds } from './thumbnailer';
 
   export let file: File;
-  export let region: Region = { top: 0, left: 0, width: 0, height: 0 };
+  export let bounds: Bounds = { top: 0, left: 0, width: 0, height: 0 };
   export let rounded = false;
   let _class: string | undefined = undefined;
   export { _class as class };
@@ -72,7 +72,7 @@
     translateX = clamp(translateX, -thresholdX, thresholdX);
     translateY = clamp(translateY, -thresholdY, thresholdY);
 
-    region = {
+    bounds = {
       left: Math.round((((thresholdX - translateX) / 100) * naturalWidth) / scale),
       top: Math.round((((thresholdY - translateY) / 100) * naturalHeight) / scale),
       width: Math.round((boxWidth / imgWidth) * naturalWidth),
