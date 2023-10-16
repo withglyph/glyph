@@ -1,11 +1,12 @@
 import { SpaceMemberInvitationState, SpaceMemberRole } from '@prisma/client';
 import * as R from 'radash';
-import { FormValidationError, IntentionalError, NotFoundError } from '$lib/errors';
+import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { createId } from '$lib/utils';
 import {
   AcceptSpaceMemberInvitationSchema,
   CreateSpaceMemberInvitationSchema,
   CreateSpaceSchema,
+  UpdateSpaceSchema,
 } from '$lib/validations';
 import { builder } from '../builder';
 
@@ -41,6 +42,9 @@ builder.prismaObject('Space', {
     id: t.exposeID('id'),
     slug: t.exposeString('slug'),
     name: t.exposeString('name'),
+    description: t.exposeString('description', { nullable: true }),
+    icon: t.relation('icon', { nullable: true }),
+    createdAt: t.expose('createdAt', { type: 'DateTime' }),
 
     members: t.relation('members', {
       query: { where: { state: 'ACTIVE' } },
@@ -150,9 +154,10 @@ const CreateSpaceInput = builder.inputType('CreateSpaceInput', {
   fields: (t) => ({
     name: t.string(),
     slug: t.string(),
-    isPublic: t.boolean(),
+    iconId: t.id({ required: false }),
     profileName: t.string({ required: false }),
     profileAvatarId: t.id({ required: false }),
+    isPublic: t.boolean({ defaultValue: true }),
   }),
   validate: { schema: CreateSpaceSchema },
 });
@@ -161,6 +166,17 @@ const DeleteSpaceInput = builder.inputType('DeleteSpaceInput', {
   fields: (t) => ({
     spaceId: t.id(),
   }),
+});
+
+const UpdateSpaceInput = builder.inputType('UpdateSpaceInput', {
+  fields: (t) => ({
+    spaceId: t.id(),
+    name: t.string(),
+    slug: t.string(),
+    iconId: t.id({ required: false }),
+    description: t.string({ required: false }),
+  }),
+  validate: { schema: UpdateSpaceSchema },
 });
 
 const CreateSpaceMemberInvitationInput = builder.inputType('CreateSpaceMemberInvitationInput', {
@@ -266,6 +282,7 @@ builder.mutationFields((t) => ({
           slug: input.slug,
           state: 'ACTIVE',
           visibility: 'PUBLIC',
+          iconId: input.iconId,
           members: {
             create: {
               id: createId(),
@@ -352,6 +369,39 @@ builder.mutationFields((t) => ({
           receivedEmail: input.email.toLowerCase(),
           role: input.role,
           state: 'PENDING',
+        },
+      });
+    },
+  }),
+
+  updateSpace: t.withAuth({ user: true }).prismaField({
+    type: 'Space',
+    grantScopes: ['$space:admin'],
+    args: { input: t.arg({ type: UpdateSpaceInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const meAsMember = await db.spaceMember.exists({
+        where: {
+          spaceId: input.spaceId,
+          userId: context.session.userId,
+          state: 'ACTIVE',
+          role: 'ADMIN',
+        },
+      });
+      if (!meAsMember) {
+        throw new PermissionDeniedError();
+      }
+
+      return db.space.update({
+        ...query,
+        where: {
+          id: input.spaceId,
+          state: 'ACTIVE',
+        },
+        data: {
+          name: input.name,
+          slug: input.slug,
+          iconId: input.iconId,
+          description: input.description,
         },
       });
     },

@@ -2,6 +2,8 @@ import { z } from 'zod';
 import { UNAVAILABLE_SPACE_SLUGS } from '$lib/const';
 import { email, profileName } from './common';
 
+const spaceName = z.string().min(1, '스페이스 이름을 입력해주세요').max(20, '스페이스 이름은 20자를 넘을 수 없어요');
+
 const SpaceSlugSchema = z
   .string()
   .min(2, '스페이스 URL은 2글자 이상이어야 해요')
@@ -15,11 +17,20 @@ const SpaceSlugSchema = z
   );
 
 export const CreateSpaceSchema = z.object({
-  name: z.string().min(1, '스페이스 이름을 입력해주세요').max(20, '스페이스 이름은 20자를 넘을 수 없어요'),
+  name: spaceName,
   slug: SpaceSlugSchema,
+  iconId: z.string().optional(),
+  profileName: profileName.optional(),
+  profileAvatarId: z.string().optional(),
   isPublic: z.boolean(),
-  profileAvatarId: z.string(),
-  profileName,
+});
+
+export const UpdateSpaceSchema = z.object({
+  spaceId: z.string(),
+  name: spaceName,
+  slug: SpaceSlugSchema,
+  iconId: z.string().optional(),
+  description: z.string().max(200, '스페이스 소개는 200자를 넘을 수 없어요').optional(),
 });
 
 export const CreateSpaceMemberInvitationSchema = z.object({
