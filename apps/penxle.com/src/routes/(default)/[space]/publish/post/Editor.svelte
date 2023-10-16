@@ -5,6 +5,7 @@
   import Tiptap from './Tiptap.svelte';
   import type { Editor } from '@tiptap/core';
 
+  export let title: string | undefined;
   export let editor: Editor | undefined;
 
   let enableSubtitle = false;
@@ -36,6 +37,7 @@
         class="mt-2 w-full text-3xl font-semibold"
         placeholder="제목을 입력하세요."
         type="text"
+        bind:value={title}
         use:focused={focusing}
       />
 
