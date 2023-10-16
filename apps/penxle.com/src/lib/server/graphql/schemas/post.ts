@@ -18,6 +18,7 @@ builder.prismaObject('Post', {
     visibility: t.expose('visibility', { type: PostVisibility }),
     author: t.relation('author'),
     space: t.relation('space'),
+    likeCount: t.relationCount('likes'),
   }),
 });
 
@@ -48,6 +49,18 @@ const CreatePostInput = builder.inputType('CreatePostInput', {
     spaceId: t.id(),
     revisionId: t.id(),
     visibility: t.field({ type: PostVisibility, defaultValue: 'PUBLIC' }),
+  }),
+});
+
+const LikePostInput = builder.inputType('LikePostInput', {
+  fields: (t) => ({
+    postId: t.id(),
+  }),
+});
+
+const UnlikePostInput = builder.inputType('UnlikePostInput', {
+  fields: (t) => ({
+    postId: t.id(),
   }),
 });
 
@@ -147,6 +160,58 @@ builder.mutationFields((t) => ({
           state: 'ACTIVE',
           visibility: input.visibility,
         },
+      });
+    },
+  }),
+  likePost: t.withAuth({ user: true }).prismaField({
+    type: 'Post',
+    args: { input: t.arg({ type: LikePostInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const post = await db.post.findUniqueOrThrow({
+        select: { id: true },
+        where: { id: input.postId },
+      });
+      await db.postLike.upsert({
+        where: {
+          postId_userId: {
+            postId: post.id,
+            userId: context.session.userId,
+          },
+        },
+        update: {},
+        create: {
+          id: createId(),
+          postId: post.id,
+          userId: context.session.userId,
+        },
+      });
+      return db.post.findUniqueOrThrow({
+        ...query,
+        where: { id: post.id },
+      });
+    },
+  }),
+  unlikePost: t.withAuth({ user: true }).prismaField({
+    type: 'Post',
+    args: { input: t.arg({ type: UnlikePostInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const post = await db.post.findUniqueOrThrow({
+        select: { id: true },
+        where: { id: input.postId },
+      });
+      await db.postLike
+        .delete({
+          where: {
+            postId_userId: {
+              postId: post.id,
+              userId: context.session.userId,
+            },
+          },
+        })
+        .catch(() => true); // ignore not found error
+      return db.post.findUniqueOrThrow({
+        ...query,
+        where: { id: post.id },
       });
     },
   }),

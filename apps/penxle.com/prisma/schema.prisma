@@ -49,9 +49,22 @@ model Post {
   createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz
 
   revisions PostRevision[]
+  likes     PostLike[]
 
   @@unique([permalink, spaceId])
   @@map("posts")
+}
+
+model PostLike {
+  id        String   @id
+  postId    String   @map("post_id")
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([postId, userId])
+  @@map("post_likes")
 }
 
 model PostRevision {
@@ -259,6 +272,7 @@ model User {
   emailVerifications       UserEmailVerification[]
   uploadedImages           Image[]
   spaceBlockedBy           SpaceUserBlock[]
+  postLikes                PostLike[]
 
   @@index([email, state])
   @@map("users")
