@@ -71,7 +71,6 @@ builder.queryFields((t) => ({
           state: 'ACTIVE',
         },
       });
-
       const member = context.session
         ? await db.spaceMember.findUnique({
             select: { id: true },
