@@ -31,7 +31,8 @@ enum ContentFilterCategory {
 }
 
 input CreateSpaceInput {
-  isPublic: Boolean!
+  iconId: ID
+  isPublic: Boolean! = true
   name: String!
   profileAvatarId: ID
   profileName: String
@@ -123,23 +124,12 @@ type Mutation {
   prepareImageUpload: PrepareImageUploadResult!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
+  updateSpace(input: UpdateSpaceInput!): Space!
   updateUserContentFilterPreference(input: UpdateUserContentFilterPreferenceInput!): User!
   updateUserEmail(input: UpdateUserEmailInput!): Void
   updateUserMarketingConsent(input: UpdateUserMarketingConsentInput!): User!
   updateUserNotificationPreference(input: UpdateUserNotificationPreferenceInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
-}
-
-enum PostState {
-  ACTIVE
-  INACTIVE
-}
-
-enum PostVisibility {
-  MEMBER_ONLY
-  PRIVATE
-  PUBLIC
-  UNPUBLISHED
 }
 
 enum PreferenceType {
@@ -181,6 +171,9 @@ input RemoveSpaceMemberInput {
 }
 
 type Space {
+  createdAt: DateTime!
+  description: String
+  icon: Image
   id: ID!
   invitations: [SpaceMemberInvitation!]!
   meAsMember: SpaceMember
@@ -234,6 +227,14 @@ enum SpaceVisibility {
 
 input UnlinkUserSingleSignOnInput {
   provider: UserSingleSignOnProvider!
+}
+
+input UpdateSpaceInput {
+  description: String
+  iconId: ID
+  name: String!
+  slug: String!
+  spaceId: ID!
 }
 
 input UpdateUserContentFilterPreferenceInput {
