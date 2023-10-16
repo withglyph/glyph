@@ -20,13 +20,14 @@
     }
   `);
 
+  let title: string | undefined;
   let editor: TiptapEditor | undefined;
 </script>
 
 <Helmet title="새 글 작성하기" />
 
 <main class="flex grow flex-col">
-  <Header {$query} $space={$query.space} />
-  <Editor bind:editor />
+  <Header {$query} $space={$query.space} bind:title bind:editor />
+  <Editor bind:title bind:editor />
   <Toolbar {editor} />
 </main>
