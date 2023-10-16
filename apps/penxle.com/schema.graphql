@@ -148,9 +148,11 @@ type Mutation {
 
 type Post {
   activeRevision: PostRevision!
+  author: SpaceMember!
   createdAt: DateTime!
   id: ID!
-  slug: String!
+  permalink: String!
+  space: Space!
   visibility: PostVisibility!
 }
 
@@ -158,7 +160,6 @@ type PostRevision {
   content: JSON!
   createdAt: DateTime!
   id: ID!
-  post: Post!
   title: String!
 }
 
@@ -201,6 +202,7 @@ type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
   me: User
+  post(permalink: String!): Post!
   provisionedUser(token: String!): ProvisionedUser!
   randomAvatars: [String!]!
   sampleImage: Image!
@@ -221,6 +223,7 @@ type Space {
   meAsMember: SpaceMember
   members: [SpaceMember!]!
   name: String!
+  posts: [Post!]!
   slug: String!
 }
 

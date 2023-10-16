@@ -1,5 +1,6 @@
 import { PostVisibility } from '@prisma/client';
 import { customAlphabet } from 'nanoid';
+import { NotFoundError } from '$lib/errors';
 import { createId } from '$lib/utils';
 import { builder } from '../builder';
 
@@ -15,6 +16,8 @@ builder.prismaObject('Post', {
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
     activeRevision: t.relation('activeRevision'),
     visibility: t.expose('visibility', { type: PostVisibility }),
+    author: t.relation('author'),
+    space: t.relation('space'),
   }),
 });
 
@@ -25,7 +28,6 @@ builder.prismaObject('PostRevision', {
     title: t.exposeString('title'),
     content: t.expose('content', { type: 'JSON' }),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
-    post: t.relation('post'),
   }),
 });
 
@@ -48,6 +50,57 @@ const CreatePostInput = builder.inputType('CreatePostInput', {
     visibility: t.field({ type: PostVisibility, defaultValue: 'PUBLIC' }),
   }),
 });
+
+/**
+ * * Queries
+ */
+
+builder.queryFields((t) => ({
+  post: t.prismaField({
+    type: 'Post',
+    args: { permalink: t.arg.string() },
+    resolve: async (query, _, args, { db, ...context }) => {
+      const post = await db.post.findFirstOrThrow({
+        include: {
+          space: {
+            select: { visibility: true },
+          },
+        },
+        where: {
+          permalink: args.permalink,
+          state: 'ACTIVE',
+        },
+      });
+
+      const member = context.session
+        ? await db.spaceMember.findUnique({
+            select: { id: true },
+            where: {
+              spaceId_userId: {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                spaceId: post.spaceId!,
+                userId: context.session.userId,
+              },
+              state: 'ACTIVE',
+            },
+          })
+        : null;
+
+      if (
+        (post.space?.visibility === 'PRIVATE' && !member) ||
+        (post.visibility === 'MEMBER_ONLY' && !member) ||
+        (post.visibility === 'PRIVATE' && post.authorId !== member?.id)
+      ) {
+        throw new NotFoundError();
+      }
+
+      return await db.post.findUniqueOrThrow({
+        ...query,
+        where: { id: post.id },
+      });
+    },
+  }),
+}));
 
 /**
  * * Mutations
