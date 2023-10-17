@@ -1,5 +1,4 @@
 <script lang="ts">
-  import ky from 'ky';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
@@ -7,13 +6,11 @@
   import { Button, Modal } from '$lib/components';
   import { FormField, Switch, TextInput } from '$lib/components/forms';
   import Image from '$lib/components/Image.svelte';
-  import { Thumbnailer } from '$lib/components/media';
+  import { ThumbnailPicker } from '$lib/components/media';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
-  import { trackable } from '$lib/svelte/store';
   import { CreateSpaceSchema } from '$lib/validations';
   import type { DefaultLayout_CreateSpaceModal_user } from '$glitch';
-  import type { Region } from '$lib/components/media';
 
   let _user: DefaultLayout_CreateSpaceModal_user;
   export { _user as $user };
@@ -40,11 +37,7 @@
 
   export let open = false;
 
-  let region: Region | undefined = undefined;
-  let file: File | null = null;
-  let fileEl: HTMLInputElement;
-  let openThumbnailer = false;
-  const uploading = trackable();
+  let thumbnailPicker: ThumbnailPicker;
 
   let avatar: typeof $user.profile.avatar;
   $: avatar = $user.profile.avatar;
@@ -67,38 +60,6 @@
       await goto(`/${slug}`);
     },
   });
-
-  const prepareImageUpload = graphql(`
-    mutation DefaultLayout_CreateSpaceModal_PrepareImageUpload_Mutation {
-      prepareImageUpload {
-        key
-        presignedUrl
-      }
-    }
-  `);
-
-  const finalizeImageUpload = graphql(`
-    mutation DefaultLayout_CreateSpaceModal_FinalizeImageUpload_Mutation($input: FinalizeImageUploadInput!) {
-      finalizeImageUpload(input: $input) {
-        id
-        ...Image_image
-      }
-    }
-  `);
-
-  const uploadAvatar = async () => {
-    uploading.track(async () => {
-      if (!file) {
-        return;
-      }
-
-      const { key, presignedUrl } = await prepareImageUpload();
-      await ky.put(presignedUrl, { body: file });
-      avatar = await finalizeImageUpload({ key, name: file.name, bounds: region });
-
-      openThumbnailer = false;
-    });
-  };
 
   $: setInitialValues({
     profileName: '',
@@ -151,25 +112,11 @@
       {/if}
     </div>
 
-    <input
-      bind:this={fileEl}
-      class="hidden"
-      accept="image/jpeg,image/png"
-      type="file"
-      on:change={(e) => {
-        if (e.currentTarget.files) {
-          file = e.currentTarget.files[0];
-          e.currentTarget.value = '';
-          openThumbnailer = true;
-        }
-      }}
-    />
-
     <div class="flex gap-3">
       <button
         class="bg-primary square-18.5 rounded-xl overflow-hidden grow-0"
         type="button"
-        on:click={() => fileEl.showPicker()}
+        on:click={() => thumbnailPicker.show()}
       >
         <Image class="square-full" $image={avatar} />
       </button>
@@ -187,12 +134,4 @@
   </Button>
 </Modal>
 
-{#if file}
-  <Modal bind:open={openThumbnailer}>
-    <svelte:fragment slot="title">위치 조정</svelte:fragment>
-
-    <Thumbnailer class="w-full" {file} bind:region />
-
-    <Button slot="action" class="w-full" loading={$uploading} size="xl" on:click={uploadAvatar}>저장</Button>
-  </Modal>
-{/if}
+<ThumbnailPicker bind:this={thumbnailPicker} on:change={(e) => (avatar = e.detail)} />
