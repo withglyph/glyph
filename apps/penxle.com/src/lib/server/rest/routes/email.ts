@@ -95,6 +95,6 @@ email.get('/email', async (_, { db, ...context }) => {
       },
     });
 
-    return status(303, { headers: { Location: '/me/accounts' } });
+    return status(303, { headers: { Location: '/me/settings' } });
   }
 });

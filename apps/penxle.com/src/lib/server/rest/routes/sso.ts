@@ -69,7 +69,7 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
         // 케이스 1-1-1: 그 "누군가"가 현재 로그인된 본인인 경우
         // -> 이미 로그인도 되어 있고 연동도 되어 있으니 아무것도 하지 않음
 
-        return status(303, { headers: { Location: '/me/accounts' } });
+        return status(303, { headers: { Location: '/me/settings' } });
       } else {
         // 케이스 1-1-2: 그 "누군가"가 현재 로그인된 본인이 아닌 경우
         // -> 현재 로그인된 세션과 연동된 계정이 다르므로 에러
@@ -77,7 +77,7 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
         return status(303, {
           headers: {
             Location: qs.stringifyUrl({
-              url: '/me/accounts',
+              url: '/me/settings',
               query: { message: 'sso_already_linked_by_other' },
             }),
           },
@@ -97,7 +97,7 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
         },
       });
 
-      return status(303, { headers: { Location: '/me/accounts' } });
+      return status(303, { headers: { Location: '/me/settings' } });
     }
   } else if (state.type === 'LOGIN') {
     // 케이스 2: 계정 로그인 혹은 가입중인 경우
