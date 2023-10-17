@@ -49,6 +49,7 @@
     "@svelte-kits/store": "^0.1.2",
     "@sveltejs/kit": "^1.26.0",
     "@tiptap/core": "^2.1.12",
+    "@tiptap/html": "^2.1.12",
     "@tiptap/pm": "^2.1.12",
     "@types/mixpanel-browser": "^2.47.4",
     "@types/node": "^20.8.7",
