@@ -37,11 +37,11 @@ model Image {
 
 model Post {
   id               String         @id
-  permalink        String         @map("permalink")
+  permalink        String?        @unique
   spaceId          String?        @map("space_id")
   space            Space?         @relation(fields: [spaceId], references: [id])
-  authorId         String         @map("author_id")
-  author           SpaceMember    @relation(fields: [authorId], references: [id])
+  authorId         String?        @map("author_id")
+  author           SpaceMember?   @relation(fields: [authorId], references: [id])
   state            PostState
   visibility       PostVisibility
   activeRevisionId String         @map("active_revision_id")
@@ -407,9 +407,9 @@ enum PostState {
 
 enum PostVisibility {
   PUBLIC
-  UNPUBLISHED
+  UNLISTED
   MEMBER_ONLY
-  PRIVATE
+  DRAFT
 
   @@map("_post_visibility")
 }

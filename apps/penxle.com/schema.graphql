@@ -31,14 +31,14 @@ enum ContentFilterCategory {
 }
 
 input CreatePostInput {
-  revisionId: ID!
+  postId: ID!
   spaceId: ID!
   visibility: PostVisibility! = PUBLIC
 }
 
 input CreateRevisionInput {
   content: JSON!
-  isDraft: Boolean! = false
+  postId: ID
   title: String!
 }
 
@@ -126,8 +126,7 @@ input LoginUserInput {
 
 type Mutation {
   acceptSpaceMemberInvitation(input: AcceptSpaceMemberInvitationInput!): SpaceMemberInvitation!
-  createPost(input: CreatePostInput!): Post!
-  createRevision(input: CreateRevisionInput!): PostRevision!
+  createRevision(input: CreateRevisionInput!): Post!
   createSpace(input: CreateSpaceInput!): Space!
   createSpaceMemberInvitation(input: CreateSpaceMemberInvitationInput!): SpaceMemberInvitation!
   createUser(input: CreateUserInput!): User!
@@ -141,6 +140,7 @@ type Mutation {
   loginUser(input: LoginUserInput!): UserEmailVerification!
   logoutUser: Void
   prepareImageUpload: PrepareImageUploadResult!
+  publishPost(input: CreatePostInput!): Post!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
   unlikePost(input: UnlikePostInput!): Post!
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
@@ -158,7 +158,7 @@ type Post {
   createdAt: DateTime!
   id: ID!
   likeCount: Int!
-  permalink: String!
+  permalink: String
   space: Space!
   visibility: PostVisibility!
 }
@@ -176,10 +176,10 @@ enum PostState {
 }
 
 enum PostVisibility {
+  DRAFT
   MEMBER_ONLY
-  PRIVATE
   PUBLIC
-  UNPUBLISHED
+  UNLISTED
 }
 
 enum PreferenceType {

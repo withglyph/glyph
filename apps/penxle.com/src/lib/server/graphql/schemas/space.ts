@@ -98,17 +98,9 @@ builder.prismaObject('Space', {
             where: {
               spaceId: space.id,
               state: 'ACTIVE',
-              OR: [
-                {
-                  visibility: {
-                    in: ['PUBLIC', 'UNPUBLISHED', 'MEMBER_ONLY'],
-                  },
-                },
-                {
-                  visibility: 'PRIVATE',
-                  authorId: meAsMember.id,
-                },
-              ],
+              visibility: {
+                in: ['PUBLIC', 'UNLISTED', 'MEMBER_ONLY'],
+              },
             },
           });
         } else {
