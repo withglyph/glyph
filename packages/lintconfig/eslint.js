@@ -56,6 +56,7 @@ export default [
         },
       ],
       'svelte/infinite-reactive-loop': 'error',
+      'svelte/no-at-html-tags': 'off',
       'svelte/no-dupe-on-directives': 'error',
       'svelte/no-dupe-use-directives': 'error',
       'svelte/no-reactive-reassign': 'error',
