@@ -50,7 +50,7 @@
         <Avatar class="square-6 mr-3" $profile={member.profile} />
         <span class="body-14-sb">{member.profile.name}</span>
         {#if member.role === 'ADMIN'}
-          <Badge class="caption-12-b ml-1" color="green">관리자</Badge>
+          <Badge class="ml-1" color="green">관리자</Badge>
         {/if}
       </li>
     {/each}
