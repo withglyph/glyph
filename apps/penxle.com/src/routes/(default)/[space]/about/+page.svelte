@@ -32,7 +32,7 @@
   <p class="bodylong-16-m">{$query.space.description ?? '아직 소개가 없어요.'}</p>
   <p class="bodylong-16-m text-secondary">
     스페이스 개설일 : <time datetime={$query.space.createdAt}>
-      {dayjs($query.space.createdAt).format('YYYY.MM.DD')}
+      {dayjs($query.space.createdAt).formatAsDate()}
     </time>
   </p>
 </section>
