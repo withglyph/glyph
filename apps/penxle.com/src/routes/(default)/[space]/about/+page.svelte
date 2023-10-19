@@ -27,7 +27,7 @@
 
 <Helmet title={`소개 | ${$query.space.name}`} />
 
-<section class="p8 flex flex-col gap-3 mb-xs">
+<section class="p-8 flex flex-col gap-3 mb-xs">
   <h2 class="subtitle-18-eb">스페이스 소개</h2>
   <p class="bodylong-16-m">{$query.space.description ?? '아직 소개가 없습니다.'}</p>
   <p class="bodylong-16-m text-secondary">
@@ -37,7 +37,7 @@
   </p>
 </section>
 
-<section class="p8 flex flex-col gap-3">
+<section class="p-8 flex flex-col gap-3">
   <h2
     class="subtitle-18-eb after:(text-secondary ml-2 content-[attr(data-count)])"
     data-count={$query.space.members.length}
