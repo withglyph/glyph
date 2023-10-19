@@ -8,7 +8,7 @@
 
 <div
   class={clsx(
-    'flex center h-6 p-2.5 rounded text-3.25',
+    'flex center h-6 p-2.5 rounded caption-12-b',
     color === 'unselect' && 'text-gray-5 bg-gray-80',
     color === 'select' && 'border border-gray-30',
     color === 'green' && 'text-green-50 bg-green-10',
