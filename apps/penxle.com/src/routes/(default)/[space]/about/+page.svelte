@@ -48,7 +48,7 @@
     {#each $query.space.members as member (member.id)}
       <li class="inline-flex items-center py-2">
         <Avatar class="square-6 mr-3" $profile={member.profile} />
-        <span class="body-14-sb">{member.profile.name}</span>
+        <span class="body-14-sb truncate">{member.profile.name}</span>
         {#if member.role === 'ADMIN'}
           <Badge class="ml-1" color="green">관리자</Badge>
         {/if}
