@@ -29,7 +29,7 @@
 
 <section class="p-8 flex flex-col gap-3 mb-xs">
   <h2 class="subtitle-18-eb">스페이스 소개</h2>
-  <p class="bodylong-16-m">{$query.space.description ?? '아직 소개가 없습니다.'}</p>
+  <p class="bodylong-16-m">{$query.space.description ?? '아직 소개가 없어요.'}</p>
   <p class="bodylong-16-m text-secondary">
     스페이스 개설일 : <time datetime={$query.space.createdAt}>
       {dayjs($query.space.createdAt).format('YYYY.MM.DD')}
