@@ -39,7 +39,7 @@
 
 <section class="p8 flex flex-col gap-3">
   <h2
-    class="subtitle-18-eb after:text-secondary after:ml-2 after:content-[attr(data-count)]"
+    class="subtitle-18-eb after:(text-secondary ml-2 content-[attr(data-count)])"
     data-count={$query.space.members.length}
   >
     스페이스 멤버
