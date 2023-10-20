@@ -61,6 +61,20 @@ input DeleteSpaceInput {
   spaceId: ID!
 }
 
+input DraftPostInput {
+  content: JSON!
+  discloseStats: Boolean!
+  postId: ID
+  receiveFeedback: Boolean!
+  receivePatronage: Boolean!
+  receiveTagContribution: Boolean!
+  revisionKind: PostRevisionKind!
+  spaceId: ID
+  subtitle: String
+  title: String!
+  visibility: PostVisibility!
+}
+
 input FinalizeImageUploadInput {
   bounds: JSON
   key: String!
@@ -114,6 +128,7 @@ type Mutation {
   createSpaceMemberInvitation(input: CreateSpaceMemberInvitationInput!): SpaceMemberInvitation!
   createUser(input: CreateUserInput!): User!
   deleteSpace(input: DeleteSpaceInput!): Space!
+  draftPost(input: DraftPostInput!): PostDraft!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   ignoreSpaceMemberInvitation(input: IgnoreSpaceMemberInvitationInput!): SpaceMemberInvitation!
   issueUserEmailAuthorizationUrl(input: IssueUserEmailAuthorizationUrlInput!): IssueUserEmailAuthorizationUrlResult!
@@ -122,6 +137,7 @@ type Mutation {
   loginUser(input: LoginUserInput!): UserEmailVerification!
   logoutUser: Void
   prepareImageUpload: PrepareImageUploadResult!
+  publishPost(input: PublishPostInput!): Post!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
   updateSpace(input: UpdateSpaceInput!): Space!
@@ -164,9 +180,43 @@ enum PointTransactionCause {
   UNLOCK_CONTENT
 }
 
+type Post {
+  createdAt: DateTime!
+  id: ID!
+  member: SpaceMember!
+  option: PostOption!
+  permalink: String!
+  revision: PostRevision!
+  space: Space!
+}
+
+type PostDraft {
+  id: ID!
+  post: Post!
+  revision: PostRevision!
+  space: Space
+}
+
 enum PostKind {
   ARTICLE
   GALLERY
+}
+
+type PostOption {
+  id: ID!
+  visibility: PostVisibility!
+}
+
+type PostRevision {
+  content: JSON!
+  coverImage: Image!
+  createdAt: DateTime!
+  id: ID!
+  kind: PostRevisionKind!
+  subtitle: String
+  thumbnail: Image!
+  thumbnailBounds: JSON
+  title: String!
 }
 
 enum PostRevisionKind {
@@ -210,10 +260,15 @@ type ProvisionedUser {
   name: String
 }
 
+input PublishPostInput {
+  postId: ID!
+}
+
 type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
   me: User
+  post(permalink: String!): Post!
   provisionedUser(token: String!): ProvisionedUser!
   randomAvatars: [String!]!
   randomIcons: [String!]!
@@ -235,6 +290,7 @@ type Space {
   meAsMember: SpaceMember
   members: [SpaceMember!]!
   name: String!
+  posts: [Post!]!
   slug: String!
 }
 
