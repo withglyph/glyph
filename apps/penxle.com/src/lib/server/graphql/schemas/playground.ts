@@ -1,5 +1,6 @@
 import * as R from 'radash';
 import { createRandomAvatar } from '$lib/server/utils/avatar';
+import { createRandomIcon } from '$lib/server/utils/icon';
 import { builder } from '../builder';
 
 /**
@@ -10,6 +11,13 @@ builder.queryFields((t) => ({
   randomAvatars: t.stringList({
     resolve: async () => {
       const buffers = await Promise.all([...R.range(1, 16)].map(() => createRandomAvatar()));
+      return buffers.map((buffer) => buffer.toString('base64'));
+    },
+  }),
+
+  randomIcons: t.stringList({
+    resolve: async () => {
+      const buffers = await Promise.all([...R.range(1, 16)].map(() => createRandomIcon()));
       return buffers.map((buffer) => buffer.toString('base64'));
     },
   }),
