@@ -29,7 +29,7 @@ model Image {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   profilesUsingThisAsAvatar Profile[]
-  spaceUsingThisAsIcon      Space?
+  spacesUsingThisAsIcon     Space[]
 
   @@index([id, path, color])
   @@map("images")
@@ -66,8 +66,8 @@ model Space {
   slug        String
   name        String
   description String?
-  iconId      String?         @unique @map("icon_id")
-  icon        Image?          @relation(fields: [iconId], references: [id])
+  iconId      String          @map("icon_id")
+  icon        Image           @relation(fields: [iconId], references: [id])
   visibility  SpaceVisibility
   state       SpaceState
   createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz

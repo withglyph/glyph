@@ -1,6 +1,7 @@
 import { SpaceMemberInvitationState, SpaceMemberRole } from '@prisma/client';
 import * as R from 'radash';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
+import { createRandomIcon, directUploadImage } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import {
   AcceptSpaceMemberInvitationSchema,
@@ -43,7 +44,7 @@ builder.prismaObject('Space', {
     slug: t.exposeString('slug'),
     name: t.exposeString('name'),
     description: t.exposeString('description', { nullable: true }),
-    icon: t.relation('icon', { nullable: true }),
+    icon: t.relation('icon'),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
 
     members: t.relation('members', {
@@ -173,7 +174,7 @@ const UpdateSpaceInput = builder.inputType('UpdateSpaceInput', {
     spaceId: t.id(),
     name: t.string(),
     slug: t.string(),
-    iconId: t.id({ required: false }),
+    iconId: t.id(),
     description: t.string({ required: false }),
   }),
   validate: { schema: UpdateSpaceSchema },
@@ -274,6 +275,16 @@ builder.mutationFields((t) => ({
         profileId = user.profileId;
       }
 
+      let iconId = input.iconId;
+      if (!iconId) {
+        iconId = await directUploadImage({
+          db,
+          userId: context.session.userId,
+          name: 'icon',
+          source: await createRandomIcon(),
+        });
+      }
+
       return await db.space.create({
         ...query,
         data: {
@@ -282,7 +293,7 @@ builder.mutationFields((t) => ({
           slug: input.slug,
           state: 'ACTIVE',
           visibility: 'PUBLIC',
-          iconId: input.iconId,
+          iconId,
           members: {
             create: {
               id: createId(),

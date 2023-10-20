@@ -17,17 +17,13 @@
         slug
         name
 
+        icon {
+          id
+        }
+
         meAsMember {
           id
           role
-
-          profile {
-            id
-
-            avatar {
-              id
-            }
-          }
         }
 
         ...SpaceDashboardPage_DeleteSpaceModal_space
@@ -54,7 +50,7 @@
 
   $: setInitialValues({
     spaceId: $query.space.id,
-    iconId: $query.space.meAsMember?.profile.avatar.id,
+    iconId: $query.space.icon.id,
     name: $query.space.name,
     slug: $query.space.slug,
   });
@@ -64,7 +60,7 @@
 
 <form use:form>
   <input name="spaceId" type="hidden" value={$query.space.id} />
-  <input name="iconId" type="hidden" value={$query.space.meAsMember?.profile.avatar.id} />
+  <input name="iconId" type="hidden" value={$query.space.icon.id} />
 
   <FormField name="name" label="스페이스명">
     <TextInput placeholder="스페이스명을 입력해주세요">
