@@ -28,8 +28,11 @@ model Image {
   hash        String
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  profilesUsingThisAsAvatar Profile[]
-  spacesUsingThisAsIcon     Space[]
+  profilesUsingThisAsAvatar         Profile[]
+  spacesUsingThisAsIcon             Space[]
+  postRevisionsUsingThisAsImage     PostRevisionImage[]
+  postRevisionsUsingThisAsThumbnail PostRevision[]      @relation(name: "post_revision_image_thumbnail")
+  postRevisionsUsingThisAsCover     PostRevision[]      @relation(name: "post_revision_image_cover")
 
   @@index([id, path, color])
   @@map("images")
@@ -82,6 +85,89 @@ model PointTransaction {
   @@map("point_transactions")
 }
 
+model Post {
+  id        String       @id
+  permalink String       @unique
+  spaceId   String?      @map("space_id")
+  space     Space?       @relation(fields: [spaceId], references: [id])
+  memberId  String?      @map("member_id")
+  member    SpaceMember? @relation(fields: [memberId], references: [id])
+  optionId  String       @unique @map("option_id")
+  option    PostOption   @relation(fields: [optionId], references: [id])
+  kind      PostKind
+  state     PostState
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz
+
+  revisions PostRevision[]
+  viewedBy  PostView[]
+
+  @@map("posts")
+}
+
+model PostOption {
+  id                     String                  @id
+  visibility             PostVisibility
+  contentFilters         ContentFilterCategory[] @map("content_filters")
+  discloseStats          Boolean                 @map("disclose_stats")
+  receiveFeedback        Boolean                 @map("receive_feedback")
+  receivePatronage       Boolean                 @map("receive_patronage")
+  receiveTagContribution Boolean                 @map("receive_tag_contribution")
+  createdAt              DateTime                @default(now()) @map("created_at") @db.Timestamptz
+
+  post Post?
+
+  @@map("post_options")
+}
+
+model PostRevision {
+  id              String           @id
+  postId          String           @map("post_id")
+  post            Post             @relation(fields: [postId], references: [id])
+  userId          String           @map("user_id")
+  user            User             @relation(fields: [userId], references: [id])
+  kind            PostRevisionKind
+  thumbnailId     String?          @map("thumbnail_id")
+  thumbnail       Image?           @relation(name: "post_revision_image_thumbnail", fields: [thumbnailId], references: [id])
+  coverImageId    String?          @map("cover_image_id")
+  coverImage      Image?           @relation(name: "post_revision_image_cover", fields: [coverImageId], references: [id])
+  title           String
+  subtitle        String?
+  content         Json
+  thumbnailBounds Json?            @map("thumbnail_bounds")
+  createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz
+
+  images PostRevisionImage[]
+
+  @@map("post_revisions")
+}
+
+model PostRevisionImage {
+  id         String       @id
+  revisionId String       @map("revision_id")
+  revision   PostRevision @relation(fields: [revisionId], references: [id])
+  imageId    String       @map("image_id")
+  image      Image        @relation(fields: [imageId], references: [id])
+  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([revisionId, imageId])
+  @@map("post_revision_images")
+}
+
+model PostView {
+  id        String   @id
+  postId    String   @map("post_id")
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String?  @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id])
+  deviceId  String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  viewedAt  DateTime @default(now()) @map("viewed_at") @db.Timestamptz
+
+  @@unique([userId, postId])
+  @@unique([deviceId, postId])
+  @@map("post_views")
+}
+
 model ProvisionedUser {
   id        String                    @id
   token     String                    @unique
@@ -125,6 +211,7 @@ model Space {
   blockedUsers  SpaceUserBlock[]
   // tags          SpaceTag[]
   externalLinks SpaceExternalLink[]
+  posts         Post[]
 
   @@index([slug, state])
   @@map("spaces")
@@ -163,6 +250,8 @@ model SpaceMember {
   state     SpaceMemberState
   role      SpaceMemberRole
   createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz
+
+  posts Post[]
 
   @@unique([spaceId, userId])
   @@map("space_members")
@@ -264,6 +353,8 @@ model User {
   sentSpaceMemberInvitations     SpaceMemberInvitation[]       @relation("spaceMemberInvitationSent")
   receivedSpaceMemberInvitations SpaceMemberInvitation[]       @relation("spaceMemberInvitationReceived")
   followingSpaces                UserSpaceFollowing[]
+  postRevisions                  PostRevision[]
+  viewedPosts                    PostView[]
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
@@ -433,6 +524,37 @@ enum PointTransactionCause {
   PATRONIZE
 
   @@map("_point_transaction_cause")
+}
+
+enum PostKind {
+  ARTICLE
+  GALLERY
+
+  @@map("_post_kind")
+}
+
+enum PostRevisionKind {
+  AUTO_SAVE
+  MANUAL_SAVE
+  PUBLISHED
+
+  @@map("_post_revision_kind")
+}
+
+enum PostState {
+  DRAFT
+  PUBLISHED
+  DELETED
+
+  @@map("_post_state")
+}
+
+enum PostVisibility {
+  PUBLIC
+  SPACE
+  UNLISTED
+
+  @@map("_post_visibility")
 }
 
 enum PreferenceType {
