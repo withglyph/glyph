@@ -161,6 +161,7 @@ type Query {
   me: User
   provisionedUser(token: String!): ProvisionedUser!
   randomAvatars: [String!]!
+  randomIcons: [String!]!
   sampleImage: Image!
   sampleImages: [Image!]!
   space(slug: String!): Space!
