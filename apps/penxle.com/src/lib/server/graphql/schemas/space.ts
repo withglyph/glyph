@@ -78,6 +78,33 @@ builder.prismaObject('Space', {
       unauthorizedResolver: () => [],
       grantScopes: ['$space.member.invitation'],
     }),
+
+    posts: t.prismaField({
+      type: ['Post'],
+      resolve: async (query, space, _, { db, ...context }) => {
+        const meAsMember = context.session
+          ? await db.spaceMember.findUnique({
+              where: {
+                spaceId_userId: {
+                  spaceId: space.id,
+                  userId: context.session.userId,
+                },
+              },
+            })
+          : null;
+
+        return await db.post.findMany({
+          ...query,
+          where: {
+            spaceId: space.id,
+            state: 'PUBLISHED',
+            option: {
+              visibility: meAsMember ? undefined : 'PUBLIC',
+            },
+          },
+        });
+      },
+    }),
   }),
 });
 

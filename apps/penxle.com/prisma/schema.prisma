@@ -138,6 +138,7 @@ model PostRevision {
 
   images PostRevisionImage[]
 
+  @@index([createdAt])
   @@map("post_revisions")
 }
 
