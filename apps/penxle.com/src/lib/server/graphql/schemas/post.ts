@@ -27,9 +27,25 @@ builder.prismaObject('Post', {
       resolve: (_, { revisions }) => revisions[0],
     }),
 
+    liked: t.boolean({
+      resolve: async (post, _, { db, ...context }) => {
+        if (!context.session) {
+          return false;
+        }
+
+        return await db.postLike.exists({
+          where: {
+            postId: post.id,
+            userId: context.session.userId,
+          },
+        });
+      },
+    }),
+
     member: t.relation('member'),
-    option: t.relation('option'),
     space: t.relation('space'),
+    option: t.relation('option'),
+    likeCount: t.relationCount('likes'),
   }),
 });
 
@@ -125,6 +141,18 @@ const PublishPostInput = builder.inputType('PublishPostInput', {
   }),
 });
 
+const LikePostInput = builder.inputType('LikePostInput', {
+  fields: (t) => ({
+    postId: t.id(),
+  }),
+});
+
+const UnlikePostInput = builder.inputType('UnlikePostInput', {
+  fields: (t) => ({
+    postId: t.id(),
+  }),
+});
+
 /**
  * * Queries
  */
@@ -200,10 +228,7 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: DraftPostInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const meAsMember = await db.spaceMember.findUniqueOrThrow({
-        select: {
-          id: true,
-          role: true,
-        },
+        select: { id: true, role: true },
         where: {
           spaceId_userId: {
             spaceId: input.spaceId,
@@ -214,19 +239,14 @@ builder.mutationFields((t) => ({
 
       if (input.postId) {
         const post = await db.post.findUniqueOrThrow({
-          select: {
-            id: true,
-            userId: true,
-            state: true,
-            spaceId: true,
-          },
-          where: {
-            id: input.postId,
-          },
+          select: { id: true, userId: true, state: true, spaceId: true },
+          where: { id: input.postId },
         });
+
         if (post.userId !== context.session.userId && (post.spaceId !== input.spaceId || meAsMember.role !== 'ADMIN')) {
           throw new NotFoundError();
         }
+
         if (post.state === 'PUBLISHED' && post.spaceId !== input.spaceId) {
           throw new IntentionalError('이미 다른 스페이스에 게시된 글이에요.');
         }
@@ -286,7 +306,6 @@ builder.mutationFields((t) => ({
           userId: context.session.userId,
         },
         orderBy: { createdAt: 'desc' },
-        take: 1,
       });
 
       if (targetRevision.kind === 'PUBLISHED') {
@@ -302,11 +321,49 @@ builder.mutationFields((t) => ({
         ...query,
         where: {
           id: input.postId,
-          member: {
-            userId: context.session.userId,
-          },
+          member: { userId: context.session.userId },
         },
         data: { state: 'PUBLISHED' },
+      });
+    },
+  }),
+
+  likePost: t.withAuth({ user: true }).prismaField({
+    type: 'Post',
+    args: { input: t.arg({ type: LikePostInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      return db.post.update({
+        ...query,
+        where: { id: input.postId },
+        data: {
+          likes: {
+            create: {
+              id: createId(),
+              userId: context.session.userId,
+            },
+          },
+        },
+      });
+    },
+  }),
+
+  unlikePost: t.withAuth({ user: true }).prismaField({
+    type: 'Post',
+    args: { input: t.arg({ type: UnlikePostInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      return db.post.update({
+        ...query,
+        where: { id: input.postId },
+        data: {
+          likes: {
+            delete: {
+              postId_userId: {
+                postId: input.postId,
+                userId: context.session.userId,
+              },
+            },
+          },
+        },
       });
     },
   }),

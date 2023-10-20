@@ -118,6 +118,10 @@ input LeaveSpaceInput {
   spaceId: ID!
 }
 
+input LikePostInput {
+  postId: ID!
+}
+
 input LoginUserInput {
   email: String!
 }
@@ -134,11 +138,13 @@ type Mutation {
   issueUserEmailAuthorizationUrl(input: IssueUserEmailAuthorizationUrlInput!): IssueUserEmailAuthorizationUrlResult!
   issueUserSingleSignOnAuthorizationUrl(input: IssueUserSingleSignOnAuthorizationUrlInput!): IssueUserSingleSignOnAuthorizationUrlResult!
   leaveSpace(input: LeaveSpaceInput!): SpaceMember!
+  likePost(input: LikePostInput!): Post!
   loginUser(input: LoginUserInput!): UserEmailVerification!
   logoutUser: Void
   prepareImageUpload: PrepareImageUploadResult!
   publishPost(input: PublishPostInput!): Post!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
+  unlikePost(input: UnlikePostInput!): Post!
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
   updateSpace(input: UpdateSpaceInput!): Space!
   updateUserContentFilterPreference(input: UpdateUserContentFilterPreferenceInput!): User!
@@ -183,6 +189,8 @@ enum PointTransactionCause {
 type Post {
   createdAt: DateTime!
   id: ID!
+  likeCount: Int!
+  liked: Boolean!
   member: SpaceMember!
   option: PostOption!
   permalink: String!
@@ -337,6 +345,10 @@ enum SpaceState {
 enum SpaceVisibility {
   PRIVATE
   PUBLIC
+}
+
+input UnlikePostInput {
+  postId: ID!
 }
 
 input UnlinkUserSingleSignOnInput {
