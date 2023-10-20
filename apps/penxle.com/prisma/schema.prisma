@@ -100,10 +100,23 @@ model Post {
   state     PostState
   createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz
 
+  likes     PostLike[]
   revisions PostRevision[]
-  viewedBy  PostView[]
+  views     PostView[]
 
   @@map("posts")
+}
+
+model PostLike {
+  id        String   @id
+  postId    String   @map("post_id")
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([postId, userId])
+  @@map("post_likes")
 }
 
 model PostOption {
@@ -374,6 +387,7 @@ model User {
   followingSpaces                UserSpaceFollowing[]
   postRevisions                  PostRevision[]
   viewedPosts                    PostView[]
+  likedPosts                     PostLike[]
   posts                          Post[]
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
