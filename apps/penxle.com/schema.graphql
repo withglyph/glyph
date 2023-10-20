@@ -174,7 +174,7 @@ input RemoveSpaceMemberInput {
 type Space {
   createdAt: DateTime!
   description: String
-  icon: Image
+  icon: Image!
   id: ID!
   invitations: [SpaceMemberInvitation!]!
   meAsMember: SpaceMember
@@ -232,7 +232,7 @@ input UnlinkUserSingleSignOnInput {
 
 input UpdateSpaceInput {
   description: String
-  iconId: ID
+  iconId: ID!
   name: String!
   slug: String!
   spaceId: ID!
