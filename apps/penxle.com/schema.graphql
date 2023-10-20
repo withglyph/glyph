@@ -69,7 +69,7 @@ input DraftPostInput {
   receivePatronage: Boolean!
   receiveTagContribution: Boolean!
   revisionKind: PostRevisionKind!
-  spaceId: ID
+  spaceId: ID!
   subtitle: String
   title: String!
   visibility: PostVisibility!
@@ -194,7 +194,8 @@ type PostDraft {
   id: ID!
   post: Post!
   revision: PostRevision!
-  space: Space
+  revisionInfoList: [PostRevision!]!
+  space: Space!
 }
 
 enum PostKind {
@@ -267,6 +268,7 @@ input PublishPostInput {
 type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
+  draftRevision(revisionId: ID!): PostRevision!
   me: User
   post(permalink: String!): Post!
   provisionedUser(token: String!): ProvisionedUser!
