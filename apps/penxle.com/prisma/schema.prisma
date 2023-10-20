@@ -86,17 +86,19 @@ model PointTransaction {
 }
 
 model Post {
-  id        String       @id
-  permalink String       @unique
-  spaceId   String?      @map("space_id")
-  space     Space?       @relation(fields: [spaceId], references: [id])
-  memberId  String?      @map("member_id")
-  member    SpaceMember? @relation(fields: [memberId], references: [id])
-  optionId  String       @unique @map("option_id")
-  option    PostOption   @relation(fields: [optionId], references: [id])
+  id        String      @id
+  permalink String      @unique
+  spaceId   String      @map("space_id")
+  space     Space       @relation(fields: [spaceId], references: [id])
+  memberId  String      @map("member_id")
+  member    SpaceMember @relation(fields: [memberId], references: [id])
+  userId    String      @map("user_id")
+  user      User        @relation(fields: [userId], references: [id])
+  optionId  String      @unique @map("option_id")
+  option    PostOption  @relation(fields: [optionId], references: [id])
   kind      PostKind
   state     PostState
-  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz
 
   revisions PostRevision[]
   viewedBy  PostView[]
@@ -372,6 +374,7 @@ model User {
   followingSpaces                UserSpaceFollowing[]
   postRevisions                  PostRevision[]
   viewedPosts                    PostView[]
+  posts                          Post[]
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]

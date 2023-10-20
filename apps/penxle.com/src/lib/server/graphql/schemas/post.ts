@@ -1,6 +1,6 @@
 import { PostRevisionKind, PostVisibility } from '@prisma/client';
 import { customAlphabet } from 'nanoid';
-import { NotFoundError, PermissionDeniedError } from '$lib/errors';
+import { IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { createId } from '$lib/utils';
 import { builder } from '../builder';
 
@@ -39,6 +39,14 @@ const PostDraft = builder.prismaObject('Post', {
   fields: (t) => ({
     id: t.exposeID('id'),
 
+    revisionInfoList: t.relation('revisions', {
+      query: {
+        orderBy: {
+          createdAt: 'desc',
+        },
+      },
+    }),
+
     revision: t.prismaField({
       type: 'PostRevision',
       select: (_, __, nestedSelection) => ({
@@ -50,7 +58,7 @@ const PostDraft = builder.prismaObject('Post', {
       resolve: (_, { revisions }) => revisions[0],
     }),
 
-    space: t.relation('space', { nullable: true }),
+    space: t.relation('space'),
 
     post: t.variant('Post'),
   }),
@@ -97,7 +105,7 @@ const DraftPostInput = builder.inputType('DraftPostInput', {
     revisionKind: t.field({ type: PostRevisionKind }),
 
     postId: t.id({ required: false }),
-    spaceId: t.id({ required: false }),
+    spaceId: t.id(),
 
     title: t.string(),
     subtitle: t.string({ required: false }),
@@ -141,14 +149,13 @@ builder.queryFields((t) => ({
         throw new NotFoundError();
       }
 
-      if (post.space?.visibility === 'PRIVATE' || post.option?.visibility === 'SPACE') {
+      if (post.space.visibility === 'PRIVATE' || post.option.visibility === 'SPACE') {
         const member = context.session
           ? await db.spaceMember.findUnique({
               select: { id: true },
               where: {
                 spaceId_userId: {
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  spaceId: post.spaceId!,
+                  spaceId: post.spaceId,
                   userId: context.session.userId,
                 },
                 state: 'ACTIVE',
@@ -167,6 +174,20 @@ builder.queryFields((t) => ({
       });
     },
   }),
+
+  draftRevision: t.withAuth({ user: true }).prismaField({
+    type: 'PostRevision',
+    args: { revisionId: t.arg.id() },
+    resolve: async (query, _, args, { db, ...context }) =>
+      // TODO: 어드민도 접근할 수 있게 권한 체크 추가
+      db.postRevision.findUniqueOrThrow({
+        ...query,
+        where: {
+          id: args.revisionId,
+          userId: context.session.userId,
+        },
+      }),
+  }),
 }));
 
 /**
@@ -178,6 +199,39 @@ builder.mutationFields((t) => ({
     type: PostDraft,
     args: { input: t.arg({ type: DraftPostInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
+      const meAsMember = await db.spaceMember.findUniqueOrThrow({
+        select: {
+          id: true,
+          role: true,
+        },
+        where: {
+          spaceId_userId: {
+            spaceId: input.spaceId,
+            userId: context.session.userId,
+          },
+        },
+      });
+
+      if (input.postId) {
+        const post = await db.post.findUniqueOrThrow({
+          select: {
+            id: true,
+            userId: true,
+            state: true,
+            spaceId: true,
+          },
+          where: {
+            id: input.postId,
+          },
+        });
+        if (post.userId !== context.session.userId && (post.spaceId !== input.spaceId || meAsMember.role !== 'ADMIN')) {
+          throw new NotFoundError();
+        }
+        if (post.state === 'PUBLISHED' && post.spaceId !== input.spaceId) {
+          throw new IntentionalError('이미 다른 스페이스에 게시된 글이에요.');
+        }
+      }
+
       const postId = input.postId ?? createId();
 
       const revision = {
@@ -202,12 +256,18 @@ builder.mutationFields((t) => ({
         create: {
           id: postId,
           permalink: customAlphabet('123456789', 12)(),
+          space: { connect: { id: input.spaceId } },
+          member: { connect: { id: meAsMember.id } },
+          user: { connect: { id: context.session.userId } },
           kind: 'ARTICLE',
           state: 'DRAFT',
           revisions: { create: { id: createId(), ...revision } },
           option: { create: { id: createId(), ...options } },
         },
         update: {
+          space: { connect: { id: input.spaceId } },
+          member: { connect: { id: meAsMember.id } },
+          user: { connect: { id: context.session.userId } },
           revisions: { create: { id: createId(), ...revision } },
           option: { update: { ...options } },
         },
@@ -218,10 +278,34 @@ builder.mutationFields((t) => ({
   publishPost: t.withAuth({ user: true }).prismaField({
     type: 'Post',
     args: { input: t.arg({ type: PublishPostInput }) },
-    resolve: async (query, _, { input }, { db }) => {
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const targetRevision = await db.postRevision.findFirstOrThrow({
+        select: { id: true, kind: true },
+        where: {
+          postId: input.postId,
+          userId: context.session.userId,
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 1,
+      });
+
+      if (targetRevision.kind === 'PUBLISHED') {
+        throw new IntentionalError('이미 게시된 글입니다.');
+      }
+
+      await db.postRevision.update({
+        where: { id: targetRevision.id },
+        data: { kind: 'PUBLISHED' },
+      });
+
       return db.post.update({
         ...query,
-        where: { id: input.postId },
+        where: {
+          id: input.postId,
+          member: {
+            userId: context.session.userId,
+          },
+        },
         data: { state: 'PUBLISHED' },
       });
     },
