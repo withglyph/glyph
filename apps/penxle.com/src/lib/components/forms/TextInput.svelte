@@ -32,6 +32,7 @@
     id={name}
     {name}
     class={clsx(
+      'body-15-b',
       _class,
       'left-icon' in $$slots && 'pl-10',
       'right-label' in $$slots && 'pr-20',

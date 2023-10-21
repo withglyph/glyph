@@ -35,7 +35,7 @@
               class="square-9 flex center rounded-xl transition duration-300 hover:bg-primary sm:hidden"
               type="button"
             >
-              <span class="i-lc-more-vertical square-6 text-icon-secondary" />
+              <span class="i-lc-share square-6 text-icon-secondary" />
             </button>
           </div>
           <div class="flex items-start justify-between w-full">
@@ -68,6 +68,10 @@
             <div class="flex items-center gap-2 <sm:hidden">
               {#if $query.space.meAsMember}
                 <Button href={`/${$query.space.slug}/publish/post`} size="md" type="link">포스트 작성</Button>
+                <Button color="tertiary" size="md" variant="outlined">
+                  <span class="i-lc-share mr-2" />
+                  공유하기
+                </Button>
                 <a
                   class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
                   href={`/${$query.space.slug}/settings`}
@@ -76,10 +80,11 @@
                 </a>
               {:else}
                 <Button class="w-full" size="md">+ 관심</Button>
+                <Button color="tertiary" size="md" variant="outlined">
+                  <span class="i-lc-share mr-2" />
+                  공유하기
+                </Button>
               {/if}
-              <button class="square-9 flex center rounded-xl transition duration-300 hover:bg-primary" type="button">
-                <span class="i-lc-more-vertical square-6 text-icon-secondary" />
-              </button>
             </div>
           </div>
         </div>
