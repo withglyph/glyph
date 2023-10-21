@@ -3,6 +3,7 @@
   import { graphql } from '$glitch';
   import { Avatar, Button, Modal } from '$lib/components';
   import { DropDown, FormField, TextInput } from '$lib/components/forms';
+  import { Table, TableData, TableHead, TableRow } from '$lib/components/table';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { pageSubTitle } from '$lib/stores';
@@ -111,28 +112,29 @@
     {/if}
   </div>
 
-  <table class="w-full border-spacing-0">
-    <tr class="bg-primary text-secondary body-13-b">
-      <th class="w-50% text-left pl-4 py-2 border border-r-none border-secondary rounded-l-lg" scope="col">멤버</th>
-      <th class="w-30% text-left py-2 border-y border-secondary <xs:hidden" scope="col">가입일</th>
-      <th class="w-20% text-right pr-4 py-2 border border-l-none border-secondary rounded-r-lg" scope="col">권한</th>
-    </tr>
+  <Table>
+    <TableRow>
+      <TableHead class="w-50% text-left <xs:w-80%">멤버</TableHead>
+      <TableHead class="w-30% text-left <xs:hidden">가입일</TableHead>
+      <TableHead class="w-20% text-right">권한</TableHead>
+    </TableRow>
+
     {#each $query.space.members as member (member.id)}
-      <tr class="[&:nth-of-type(2)>*]:border-none">
-        <td class="flex items-center gap-3 py-4 border-t sm:(pl-4)">
-          <Avatar class="square-10.5" $profile={member.profile} />
-          <div class="flex flex-col gap-1">
-            <div class="flex gap-1 body-15-b">
-              <span>{member.profile.name}</span>
+      <TableRow>
+        <TableData class="flex items-center gap-3">
+          <Avatar class="square-10.5 grow-0 <xs:square-8" $profile={member.profile} />
+          <div class="flex flex-col gap-1 grow-1 truncate">
+            <div class="flex gap-1 body-15-b truncate">
+              <span class="truncate">{member.profile.name}</span>
               {#if $query.space.meAsMember?.id === member.id}
                 (나)
               {/if}
             </div>
-            <span class="body-14-m text-secondary">{member.email}</span>
+            <span class="body-14-m text-secondary truncate">{member.email}</span>
           </div>
-        </td>
-        <td class="body-13-b text-secondary border-t <xs:hidden">2023.09.19</td>
-        <td class="text-right border-t sm:pr-4">
+        </TableData>
+        <TableData class="body-13-b text-secondary <xs:hidden">2023.09.19</TableData>
+        <TableData class="text-right">
           {#if $query.space.meAsMember?.role === 'ADMIN'}
             <select
               class="body-14-b text-secondary"
@@ -168,21 +170,21 @@
               <option selected value="LEAVE">탈퇴하기</option>
             </select>
           {/if}
-        </td>
-      </tr>
+        </TableData>
+      </TableRow>
     {/each}
 
     {#each $query.space.invitations as invitation (invitation.id)}
       {#if invitation.state !== 'ACCEPTED'}
-        <tr class="[&:nth-of-type(2)>*]:border-none">
-          <td class="flex items-center gap-3 py-4 border-t sm:(pl-4)">
-            <div class="square-10.5 rounded-full border border-primary border-dashed" />
-            <div class="flex flex-col gap-1 truncate">
-              <span class="body-15-b text-secondary">{invitation.receivedEmail}</span>
+        <TableRow>
+          <TableData class="flex items-center gap-3">
+            <div class="square-10.5 rounded-full border border-primary border-dashed grow-0 <xs:square-8" />
+            <div class="flex flex-col gap-1 truncate grow-1">
+              <span class="body-15-b text-secondary truncate">{invitation.receivedEmail}</span>
             </div>
-          </td>
-          <td class="body-13-b text-secondary border-t <xs:hidden">-</td>
-          <td class="text-right border-t sm:pr-4">
+          </TableData>
+          <TableData class="body-13-b text-secondary <xs:hidden">-</TableData>
+          <TableData class="text-right">
             {#if $query.space.meAsMember?.role === 'ADMIN'}
               <select class="body-14-b text-secondary">
                 <option value="ADMIN">관리자</option>
@@ -190,11 +192,11 @@
                 <option value="CANCEL">초대 취소</option>
               </select>
             {/if}
-          </td>
-        </tr>
+          </TableData>
+        </TableRow>
       {/if}
     {/each}
-  </table>
+  </Table>
 </div>
 
 <Modal bind:open>
