@@ -146,6 +146,7 @@ export const designColors = {
     primary: '#1C1917',
     secondary: '#78716C',
     disabled: '#A8A29E',
+    darkprimary: '#FFF9F8',
   },
   surface: {
     primary: '#F1F1F0',

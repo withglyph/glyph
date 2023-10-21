@@ -1,15 +1,16 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
-  import { TextInput } from '$lib/components/forms';
-  import { toast } from '$lib/notification';
+  import { FormField, TextInput } from '$lib/components/forms';
   import type { SpaceDashboardPage_DeleteSpaceModal_space } from '$glitch';
 
   let _space: SpaceDashboardPage_DeleteSpaceModal_space;
   export { _space as $space };
+
   export let open = false;
+  let completeModalOpen = false;
 
   let confirm = '';
 
@@ -34,42 +35,49 @@
 </script>
 
 <Modal bind:open>
-  <svelte:fragment slot="title">스페이스 삭제하기</svelte:fragment>
+  <svelte:fragment slot="title">스페이스를 삭제하시겠어요?</svelte:fragment>
+  <svelte:fragment slot="subtitle">스페이스의 모든 데이터가 삭제되고 복구할 수 없어요</svelte:fragment>
 
-  <span class="font-semibold">{$space.name}</span>
-  스페이스를 삭제해요.
-  <br />
-  스페이스를 삭제하면 스페이스에 게시되어 있던 모든 컨텐츠와 설정도 같이 삭제돼요.
+  <form
+    on:submit|preventDefault={async () => {
+      await deleteSpace({ spaceId: $space.id });
+      mixpanel.track('space:delete');
+      open = false;
+      completeModalOpen = true;
+    }}
+  >
+    <FormField name="slug" class="grow" label="스페이스 고유 url">
+      <TextInput class="w-full" placeholder="URL을 입력해주세요" bind:value={confirm}>
+        <span slot="left-text">{$page.url.host}/</span>
+      </TextInput>
+    </FormField>
 
-  <div class="mt-4 flex items-center gap-4 border border-red-50 rounded-lg bg-red-10 px-4 py-2 text-sm text-red-50">
-    <span class="i-lc-alert-triangle" />
-    <div>
-      한번 삭제된 스페이스는 복구할 수 없어요.
-      <br />
-      신중하게 진행해주세요.
-    </div>
-  </div>
+    <Button
+      class="w-full mt-6 bg-red-50 border-red-50 text-darkprimary hover:(bg-red-60 border-red-60) disabled:(bg-gray-10)"
+      disabled={confirm !== $space.slug}
+      loading={$deleteSpace.inflight}
+      size="xl"
+      type="submit"
+    >
+      스페이스 삭제하기
+    </Button>
+  </form>
+</Modal>
 
-  <div class="mt-4 text-sm">
-    스페이스를 정말로 삭제하려면 <span class="font-bold">
-      {$space.slug}
-    </span>
-    을(를) 입력해주세요:
-    <TextInput class="mt-2 w-full" bind:value={confirm} />
-  </div>
+<Modal open={completeModalOpen} size="sm">
+  <svelte:fragment slot="title">스페이스 삭제가 완료되었어요</svelte:fragment>
+  <svelte:fragment slot="subtitle">함께해줘서 고마웠어요!</svelte:fragment>
 
   <Button
     slot="action"
-    disabled={confirm !== $space.slug}
-    loading={$deleteSpace.inflight}
-    size="md"
-    on:click={async () => {
-      await deleteSpace({ spaceId: $space.id });
-      mixpanel.track('space:delete');
-      toast.success('스페이스를 삭제했어요.');
-      await goto('/');
+    class="w-full"
+    size="xl"
+    on:click={() => {
+      completeModalOpen = false;
+
+      location.href = '/';
     }}
   >
-    삭제하기
+    홈으로 가기
   </Button>
 </Modal>
