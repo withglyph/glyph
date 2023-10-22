@@ -142,6 +142,7 @@ type Mutation {
   loginUser(input: LoginUserInput!): UserEmailVerification!
   logoutUser: Void
   prepareImageUpload: PrepareImageUploadResult!
+  purchasePoint(input: PurchasePointInput!): PointPurchase!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
   revisePost(input: RevisePostInput!): Post!
   unfollowSpace(input: UnfollowSpaceInput!): Space!
@@ -172,8 +173,20 @@ enum PointKind {
   PAID
 }
 
+type PointPurchase {
+  expiresAt: DateTime!
+  id: ID!
+  paymentAmount: Int!
+  paymentData: JSON!
+  paymentMethod: PaymentMethod!
+  paymentResult: JSON
+  pointAmount: Int!
+  state: PointPurchaseState!
+}
+
 enum PointPurchaseState {
   COMPLETED
+  FAILED
   PENDING
   UNDONE
 }
@@ -264,12 +277,18 @@ type ProvisionedUser {
   name: String
 }
 
+input PurchasePointInput {
+  paymentMethod: PaymentMethod!
+  pointAmount: Int!
+}
+
 type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
   draftRevision(revisionId: ID!): PostRevision!
   flash: Flash
   me: User
+  pointPurchase(paymentKey: String!): PointPurchase!
   post(permalink: String!): Post!
   provisionedUser(token: String!): ProvisionedUser!
   randomAvatars: [String!]!

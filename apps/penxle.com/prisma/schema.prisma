@@ -50,7 +50,7 @@ model PointBalance {
   createdAt  DateTime       @default(now()) @map("created_at") @db.Timestamptz
   expiresAt  DateTime       @map("expires_at") @db.Timestamptz
 
-  @@index([userId, kind])
+  @@index([userId, kind, createdAt])
   @@map("point_balances")
 }
 
@@ -63,6 +63,7 @@ model PointPurchase {
   paymentMethod PaymentMethod      @map("payment_method")
   paymentKey    String             @unique @map("payment_key")
   paymentData   Json               @map("payment_data")
+  paymentResult Json?              @map("payment_result")
   state         PointPurchaseState
   createdAt     DateTime           @default(now()) @map("created_at") @db.Timestamptz
   expiresAt     DateTime           @map("expires_at") @db.Timestamptz
@@ -558,6 +559,7 @@ enum PointKind {
 enum PointPurchaseState {
   PENDING
   COMPLETED
+  FAILED
   UNDONE
 
   @@map("_point_purchase_state")
