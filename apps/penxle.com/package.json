@@ -20,6 +20,7 @@
     "@aws-sdk/client-s3": "^3.433.0",
     "@aws-sdk/client-ses": "^3.433.0",
     "@aws-sdk/s3-request-presigner": "^3.433.0",
+    "@channel.io/channel-web-sdk-loader": "^1.1.0",
     "@envelop/core": "^5.0.0",
     "@envelop/graphql-jit": "^8.0.1",
     "@envelop/opentelemetry": "^6.1.0",

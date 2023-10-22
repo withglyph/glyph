@@ -351,6 +351,9 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.433.0
         version: 3.433.0
+      '@channel.io/channel-web-sdk-loader':
+        specifier: ^1.1.0
+        version: 1.1.0
       '@envelop/core':
         specifier: ^5.0.0
         version: 5.0.0
@@ -2381,6 +2384,10 @@ packages:
       '@babel/helper-string-parser': 7.22.5
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
+
+  /@channel.io/channel-web-sdk-loader@1.1.0:
+    resolution: {integrity: sha512-SbJrPEdPvzzZAy26EMaqMC/k3uGAaH9ldmYon56ZgMVVLYDiEgmjnXwGkCBROrx+nE4el1weGPinl2KQbJLCUA==}
+    dev: true
 
   /@cspell/cspell-bundled-dicts@7.3.8:
     resolution: {integrity: sha512-Dj8iSGQyfgIsCjmXk9D/SjV7EpbpQSogeaGcBM66H33pd0GyGmLhn3biRN+vqi/vqWmsp75rT3kd5MKa8X5W9Q==}
@@ -13639,20 +13646,3 @@ packages:
   /zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
     dev: true
-
-time:
-  /@eslint/eslintrc@2.1.2: '2023-08-11T14:50:39.509Z'
-  /@sindresorhus/string-hash@2.0.0: '2021-08-22T20:59:46.856Z'
-  /clsx@2.0.0: '2023-07-15T23:58:53.464Z'
-  /eslint-config-prettier@9.0.0: '2023-08-05T19:09:15.001Z'
-  /eslint-plugin-simple-import-sort@10.0.0: '2023-01-27T21:23:38.907Z'
-  /eslint-plugin-unicorn@48.0.1: '2023-07-25T16:06:04.550Z'
-  /husky@8.0.3: '2023-01-03T08:01:18.807Z'
-  /ignore@5.2.4: '2022-12-19T16:01:43.614Z'
-  /object-traversal@1.0.1: '2022-03-25T23:08:23.037Z'
-  /prettier-plugin-prisma@5.0.0: '2023-07-18T08:15:07.603Z'
-  /prettier-plugin-sh@0.13.1: '2023-07-13T11:27:45.398Z'
-  /prettier-plugin-svelte@3.0.3: '2023-07-27T16:12:25.980Z'
-  /svgo@3.0.2: '2022-11-18T16:47:44.481Z'
-  /syncpack@11.2.1: '2023-08-14T19:41:01.705Z'
-  /tsup@7.2.0: '2023-08-02T15:33:42.639Z'
