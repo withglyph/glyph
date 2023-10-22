@@ -2,6 +2,7 @@ import './enums';
 import './image';
 import './internal';
 import './playground';
+import './point';
 import './post';
 import './space';
 import './user';
