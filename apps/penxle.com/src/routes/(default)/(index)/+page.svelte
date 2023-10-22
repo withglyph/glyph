@@ -1,5 +1,13 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import { graphql } from '$glitch';
+  import { ChannelIOButton } from '$lib/channel.io';
+
+  $: query = graphql(`
+    query IndexPage_Query {
+      ...ChannelIOButton_query
+    }
+  `);
 </script>
 
 <Helmet
@@ -12,3 +20,5 @@
 />
 
 <code>Hello world!</code>
+
+<ChannelIOButton {$query} />

@@ -263,6 +263,7 @@ input UpdateUserProfileInput {
 }
 
 type User {
+  channelIOMemberHash: String!
   contentFilterPreferences: [UserContentFilterPreference!]!
   email: String!
   id: ID!

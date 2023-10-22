@@ -29,6 +29,14 @@ new aws.route53.Record('penxle.com|txt', {
   ttl: 300,
 });
 
+new aws.route53.Record('channel._domainkey.penxle.com', {
+  zoneId: zones.penxle_com.zoneId,
+  type: 'CNAME',
+  name: 'channel._domainkey.penxle.com',
+  records: ['6534d2c4c57e777960a5.dkim.channel.io'],
+  ttl: 300,
+});
+
 new aws.route53.Record('idea.penxle.com', {
   zoneId: zones.penxle_com.zoneId,
   type: 'CNAME',
