@@ -12,7 +12,7 @@
 
   <hr class="mb-4 mt-2" />
 
-  <div class="prose font-content-sans">
+  <div class="prose">
     <svelte:component this={data.content} />
   </div>
 </article>

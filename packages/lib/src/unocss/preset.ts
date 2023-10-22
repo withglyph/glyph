@@ -23,25 +23,7 @@ export const presetPenxle = (): Preset<Theme> => ({
     }),
     presetUno(),
   ],
-  rules: [
-    [
-      'font-sans',
-      {
-        'font-family': 'SUIT, Pretendard',
-        'font-feature-settings': '"ss18"',
-      },
-    ],
-    ['font-mono', { 'font-family': 'FiraCode' }],
-    [
-      'font-content-sans',
-      {
-        'font-family': 'Pretendard',
-        // spell-checker:disable-next-line
-        'font-feature-settings': '"case", "ss06", "calt" 0',
-      },
-    ],
-    ['font-content-serif', { 'font-family': 'RIDIBatang' }],
-  ],
+  rules: [],
   shortcuts: [
     [/^square-(.*)$/, ([, c]) => `w-${c} h-${c}`],
     ['center', 'justify-center items-center'],
@@ -75,6 +57,11 @@ export const presetPenxle = (): Preset<Theme> => ({
       sm: '800px',
       lg: '1024px',
       xl: '1600px',
+    },
+    fontFamily: {
+      sans: 'Pretendard',
+      serif: 'RIDIBatang',
+      mono: 'FiraCode',
     },
   }),
 });
