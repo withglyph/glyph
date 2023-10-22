@@ -1,12 +1,4 @@
 @font-face {
-  font-family: 'SUIT';
-  src: url('https://c.pnxl.net/assets/fonts/SUIT.woff2') format('woff2-variations');
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: block;
-}
-
-@font-face {
   font-family: 'Pretendard';
   src: url('https://c.pnxl.net/assets/fonts/Pretendard.woff2') format('woff2-variations');
   font-style: normal;

@@ -11,6 +11,11 @@
 
 html {
   --uno: leading-normal text-gray-90 font-sans antialiased;
+  font-feature-settings:
+    'calt' 0,
+    'ss01' 1,
+    'ss05' 1,
+    'ss07' 1;
   text-size-adjust: 100%;
 }
 
