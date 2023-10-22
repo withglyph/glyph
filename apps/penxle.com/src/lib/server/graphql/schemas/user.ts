@@ -68,6 +68,17 @@ builder.prismaObject('User', {
     profile: t.relation('profile'),
     singleSignOns: t.relation('singleSignOns', { grantScopes: ['$user'] }),
 
+    point: t.int({
+      resolve: async (user, _, { db }) => {
+        const agg = await db.pointBalance.aggregate({
+          _sum: { leftover: true },
+          where: { userId: user.id },
+        });
+
+        return agg._sum.leftover ?? 0;
+      },
+    }),
+
     spaces: t.prismaField({
       type: ['Space'],
       select: (_, __, nestedSelection) => ({
