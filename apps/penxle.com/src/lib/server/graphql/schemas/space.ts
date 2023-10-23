@@ -123,6 +123,8 @@ builder.prismaObject('Space', {
     }),
 
     visibility: t.expose('visibility', { type: SpaceVisibility }),
+    externalLinks: t.relation('externalLinks'),
+
     muted: t.field({
       type: 'Boolean',
       resolve: async (space, _, { db, ...context }) => {
@@ -207,6 +209,14 @@ builder.prismaObject('SpaceMemberInvitation', {
   }),
 });
 
+builder.prismaObject('SpaceExternalLink', {
+  select: { id: true },
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    url: t.exposeString('url'),
+  }),
+});
+
 /**
  * * Inputs
  */
@@ -236,6 +246,7 @@ const UpdateSpaceInput = builder.inputType('UpdateSpaceInput', {
     slug: t.string(),
     iconId: t.id(),
     description: t.string({ required: false }),
+    externalLinks: t.stringList(),
   }),
   validate: { schema: UpdateSpaceSchema },
 });
@@ -499,6 +510,24 @@ builder.mutationFields((t) => ({
       if (!meAsMember) {
         throw new PermissionDeniedError();
       }
+
+      const isSlugUsed = await db.space.exists({
+        where: { slug: input.slug, state: 'ACTIVE', id: { not: input.spaceId } },
+      });
+      if (isSlugUsed) {
+        throw new IntentionalError('이미 사용중인 URL이에요.');
+      }
+
+      await db.spaceExternalLink.deleteMany({
+        where: { spaceId: input.spaceId },
+      });
+      await db.spaceExternalLink.createMany({
+        data: input.externalLinks.map((url) => ({
+          id: createId(),
+          spaceId: input.spaceId,
+          url,
+        })),
+      });
 
       return db.space.update({
         ...query,

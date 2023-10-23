@@ -31,6 +31,7 @@ export const UpdateSpaceSchema = z.object({
   name: spaceName,
   slug: SpaceSlugSchema,
   description: z.string().max(200, '스페이스 소개는 200자를 넘을 수 없어요').optional(),
+  externalLinks: z.array(z.string().url()),
 });
 
 export const CreateSpaceMemberInvitationSchema = z.object({

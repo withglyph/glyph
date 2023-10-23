@@ -226,6 +226,7 @@ type Post {
   permalink: String!
   revision: PostRevision!
   revisionList: [PostRevision!]!
+  shortlink: String!
   space: Space!
   viewCount: Int!
 }
@@ -340,6 +341,7 @@ input RevisePostInput {
 type Space {
   createdAt: DateTime!
   description: String
+  externalLinks: [SpaceExternalLink!]!
   followed: Boolean!
   icon: Image!
   id: ID!
@@ -351,6 +353,11 @@ type Space {
   posts: [Post!]!
   slug: String!
   visibility: SpaceVisibility!
+}
+
+type SpaceExternalLink {
+  id: ID!
+  url: String!
 }
 
 type SpaceMember {
@@ -428,6 +435,7 @@ input UpdatePostViewInput {
 
 input UpdateSpaceInput {
   description: String
+  externalLinks: [String!]!
   iconId: ID!
   name: String!
   slug: String!
