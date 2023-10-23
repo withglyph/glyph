@@ -8,6 +8,7 @@
     "build": "vite build",
     "codegen": "svelte-kit sync && glitch generate",
     "codegen:prisma": "prisma generate",
+    "db:push": "doppler run -- prisma db push",
     "dev": "doppler run -- vite dev",
     "lint:svelte": "svelte-check --fail-on-warnings",
     "lint:typecheck": "tsc",
