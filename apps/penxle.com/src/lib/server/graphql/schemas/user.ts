@@ -104,6 +104,19 @@ builder.prismaObject('User', {
       resolve: (_, { spaces }) => spaces.map(({ space }) => space),
     }),
 
+    followedSpaces: t.prismaField({
+      type: ['Space'],
+      select: (_, __, nestedSelection) => ({
+        followedSpaces: {
+          select: { space: nestedSelection() },
+          where: {
+            space: { state: 'ACTIVE' },
+          },
+        },
+      }),
+      resolve: (_, { followedSpaces }) => followedSpaces.map(({ space }) => space),
+    }),
+
     receivedSpaceMemberInvitations: t.relation('receivedSpaceMemberInvitations', {
       grantScopes: ['$space.member.invitation', '$space.member.invitation.state'],
       args: { state: t.arg({ type: SpaceMemberInvitationState, required: false }) },

@@ -224,7 +224,7 @@ model Space {
 
   members       SpaceMember[]
   invitations   SpaceMemberInvitation[]
-  followers     UserSpaceFollowing[]
+  followers     SpaceFollow[]
   blockedUsers  SpaceUserBlock[]
   // tags          SpaceTag[]
   externalLinks SpaceExternalLink[]
@@ -243,6 +243,18 @@ model SpaceExternalLink {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("space_external_links")
+}
+
+model SpaceFollow {
+  id        String   @id
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  spaceId   String   @map("space_id")
+  space     Space    @relation(fields: [spaceId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([userId, spaceId])
+  @@map("space_follows")
 }
 
 model SpaceUserBlock {
@@ -384,7 +396,7 @@ model User {
   tagPreferences                 UserTagPreference[]
   sentSpaceMemberInvitations     SpaceMemberInvitation[]       @relation("spaceMemberInvitationSent")
   receivedSpaceMemberInvitations SpaceMemberInvitation[]       @relation("spaceMemberInvitationReceived")
-  followingSpaces                UserSpaceFollowing[]
+  followedSpaces                 SpaceFollow[]
   postRevisions                  PostRevision[]
   viewedPosts                    PostView[]
   likedPosts                     PostLike[]
@@ -425,18 +437,6 @@ model UserEmailVerification {
   expiresAt DateTime                  @map("expires_at") @db.Timestamptz
 
   @@map("user_email_verifications")
-}
-
-model UserSpaceFollowing {
-  id        String   @id
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
-  spaceId   String   @map("space_id")
-  space     Space    @relation(fields: [spaceId], references: [id])
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  @@unique([userId, spaceId])
-  @@map("user_space_followings")
 }
 
 model UserMarketingConsent {

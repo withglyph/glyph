@@ -81,6 +81,10 @@ input FinalizeImageUploadInput {
   name: String!
 }
 
+input FollowSpaceInput {
+  spaceId: ID!
+}
+
 input IgnoreSpaceMemberInvitationInput {
   invitationId: ID!
 }
@@ -134,6 +138,7 @@ type Mutation {
   deleteSpace(input: DeleteSpaceInput!): Space!
   draftPost(input: DraftPostInput!): PostDraft!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
+  followSpace(input: FollowSpaceInput!): Space!
   ignoreSpaceMemberInvitation(input: IgnoreSpaceMemberInvitationInput!): SpaceMemberInvitation!
   issueUserEmailAuthorizationUrl(input: IssueUserEmailAuthorizationUrlInput!): IssueUserEmailAuthorizationUrlResult!
   issueUserSingleSignOnAuthorizationUrl(input: IssueUserSingleSignOnAuthorizationUrlInput!): IssueUserSingleSignOnAuthorizationUrlResult!
@@ -144,6 +149,7 @@ type Mutation {
   prepareImageUpload: PrepareImageUploadResult!
   publishPost(input: PublishPostInput!): Post!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
+  unfollowSpace(input: UnfollowSpaceInput!): Space!
   unlikePost(input: UnlikePostInput!): Post!
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
   updateSpace(input: UpdateSpaceInput!): Space!
@@ -302,6 +308,7 @@ type Space {
   name: String!
   posts: [Post!]!
   slug: String!
+  visibility: SpaceVisibility!
 }
 
 type SpaceMember {
@@ -345,6 +352,10 @@ enum SpaceState {
 enum SpaceVisibility {
   PRIVATE
   PUBLIC
+}
+
+input UnfollowSpaceInput {
+  spaceId: ID!
 }
 
 input UnlikePostInput {
@@ -391,6 +402,7 @@ type User {
   channelIOMemberHash: String!
   contentFilterPreferences: [UserContentFilterPreference!]!
   email: String!
+  followedSpaces: [Space!]!
   id: ID!
   marketingConsent: UserMarketingConsent
   notificationPreferences: [UserNotificationPreference!]!
