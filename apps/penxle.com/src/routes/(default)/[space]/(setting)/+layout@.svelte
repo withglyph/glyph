@@ -3,6 +3,7 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { Avatar, BottomSheet, Button } from '$lib/components';
+  import Image from '$lib/components/Image.svelte';
   import { pageSubTitle } from '$lib/stores';
   import Footer from '../../Footer.svelte';
   import Header from '../../Header.svelte';
@@ -13,16 +14,21 @@
   $: query = graphql(`
     query SpaceSettingsLayout_Query($slug: String!) {
       ...DefaultLayout_Header_query
+      ...SpaceSettingLayout_SpaceListMenu_query
 
       me {
         id
-        ...SpaceSettingLayout_SpaceListMenu_user
       }
 
       space(slug: $slug) {
         id
         slug
         name
+
+        icon {
+          id
+          ...Image_image
+        }
 
         meAsMember {
           id
@@ -53,7 +59,7 @@
 
       <div class="space-y-3 my-5.5">
         {#if $query.me}
-          <SpaceListMenu $user={$query.me} currentSpace={$query.space.name} />
+          <SpaceListMenu {$query} />
         {/if}
 
         <div class="py-2.5 px-2 flex items-center justify-between">
@@ -162,7 +168,8 @@
 
   <div class="bg-primary py-2 px-3 rounded-lg flex items-center justify-between mb-3">
     <div class="flex items-center gap-3">
-      <div class="bg-black square-12 rounded-xl" />
+      <Image class="square-12 rounded-xl" $image={$query.space.icon} />
+      <!-- <div class="bg-black square-12 rounded-xl" /> -->
       <div>
         <p class="body-15-b mb-1">{$query.space.name}</p>
         <div class="flex items-center gap-1 caption-12-m text-secondary">
