@@ -4,33 +4,45 @@
   import { beforeNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { Button } from '$lib/components';
+  import Image from '$lib/components/Image.svelte';
   import { portal } from '$lib/svelte/actions';
   import CreateSpaceModal from '../../CreateSpaceModal.svelte';
-  import type { SpaceSettingLayout_SpaceListMenu_user } from '$glitch';
+  import type { SpaceSettingLayout_SpaceListMenu_query } from '$glitch';
 
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLDivElement;
 
-  let _user: SpaceSettingLayout_SpaceListMenu_user;
+  let _query: SpaceSettingLayout_SpaceListMenu_query;
+  export { _query as $query };
+
   let open = false;
   let openCreateSpace = false;
 
-  export { _user as $user };
-  export let currentSpace: string;
-
-  $: user = fragment(
-    _user,
+  $: query = fragment(
+    _query,
     graphql(`
-      fragment SpaceSettingLayout_SpaceListMenu_user on User {
-        id
+      fragment SpaceSettingLayout_SpaceListMenu_query on Query {
+        me @_required {
+          id
+          ...DefaultLayout_CreateSpaceModal_user
 
-        spaces {
+          spaces {
+            id
+            slug
+            name
+          }
+        }
+
+        space(slug: $slug) {
           id
           slug
           name
-        }
 
-        ...DefaultLayout_CreateSpaceModal_user
+          icon {
+            id
+            ...Image_image
+          }
+        }
       }
     `),
   );
@@ -64,9 +76,9 @@
   type="button"
   on:click={() => (open = !open)}
 >
-  <div class="bg-black square-12 rounded-lg" />
+  <Image class="square-12 rounded-lg" $image={$query.space.icon} />
   <div>
-    <h3 class="body-14-b">{currentSpace}</h3>
+    <h3 class="body-14-b">{$query.space.name}</h3>
     <div class="flex items-center gap-1 caption-12-m text-secondary">
       <span class="block square-1.25 rounded-full bg-green-50" />
       <span>공개중</span>
@@ -90,7 +102,7 @@
     use:portal
   >
     <div class="space-y-3">
-      {#each $user.spaces as space (space.id)}
+      {#each $query.me.spaces as space (space.id)}
         <a class="p-1 flex gap-2 items-center" href={`/${space.slug}/dashboard`}>
           <div class="bg-black square-10.5 rounded-lg" />
           <div>
@@ -112,4 +124,4 @@
   </div>
 {/if}
 
-<CreateSpaceModal {$user} bind:open={openCreateSpace} />
+<CreateSpaceModal $user={$query.me} bind:open={openCreateSpace} />

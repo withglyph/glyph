@@ -1,6 +1,7 @@
 <script lang="ts">
   import { graphql } from '$glitch';
   import { Button, Tag } from '$lib/components';
+  import Image from '$lib/components/Image.svelte';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import Footer from '../Footer.svelte';
   import Header from '../Header.svelte';
@@ -11,6 +12,11 @@
         id
         slug
         name
+
+        icon {
+          id
+          ...Image_image
+        }
 
         meAsMember {
           id
@@ -27,7 +33,7 @@
 <main class="flex flex-col items-center">
   <div class="pt-6 px-4 bg-cardprimary w-full max-w-200 sm:(flex gap-6) sm:mb-8">
     <div class="flex items-start justify-between">
-      <div class="square-15 rounded-2xl bg-black sm:(square-30 rounded-3xl self-center)" />
+      <Image class="square-15 rounded-2xl sm:(square-30 rounded-3xl mr-6)" $image={$query.space.icon} />
       <button class="square-9 flex center rounded-xl transition duration-300 hover:bg-primary sm:hidden" type="button">
         <span class="i-lc-share square-6 text-icon-secondary" />
       </button>
