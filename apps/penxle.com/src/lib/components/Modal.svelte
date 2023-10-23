@@ -58,7 +58,7 @@
             <div
               class={clsx(
                 'flex justify-between py-3',
-                size === 'sm' && 'justify-center!',
+                size === 'sm' && 'justify-center! text-center',
                 size !== 'sm' && 'pt-4 pb-0',
               )}
             >
@@ -76,7 +76,7 @@
                   <div
                     class={clsx(
                       'flex justify-between mt-1 text-secondary body-15-sb',
-                      size === 'sm' && 'justify-center!',
+                      size === 'sm' && 'justify-center! text-center',
                     )}
                   >
                     <h4>
@@ -114,7 +114,7 @@
             <div
               class={clsx(
                 'flex items-center',
-                size === 'sm' && 'mt-4xl',
+                size === 'sm' && 'mt-4',
                 size === 'md' && 'mt-6',
                 size === 'lg' && 'mt-4',
               )}
