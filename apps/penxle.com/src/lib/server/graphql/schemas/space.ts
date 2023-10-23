@@ -1,4 +1,4 @@
-import { SpaceMemberInvitationState, SpaceMemberRole } from '@prisma/client';
+import { SpaceMemberInvitationState, SpaceMemberRole, SpaceVisibility } from '@prisma/client';
 import * as R from 'radash';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { createRandomIcon, directUploadImage } from '$lib/server/utils';
@@ -105,6 +105,8 @@ builder.prismaObject('Space', {
         });
       },
     }),
+
+    visibility: t.expose('visibility', { type: SpaceVisibility }),
   }),
 });
 
@@ -240,6 +242,18 @@ const LeaveSpaceInput = builder.inputType('LeaveSpaceInput', {
 const RemoveSpaceMemberInput = builder.inputType('RemoveSpaceMemberInput', {
   fields: (t) => ({
     spaceMemberId: t.id(),
+  }),
+});
+
+const FollowSpaceInput = builder.inputType('FollowSpaceInput', {
+  fields: (t) => ({
+    spaceId: t.id(),
+  }),
+});
+
+const UnfollowSpaceInput = builder.inputType('UnfollowSpaceInput', {
+  fields: (t) => ({
+    spaceId: t.id(),
   }),
 });
 
@@ -501,6 +515,21 @@ builder.mutationFields((t) => ({
         },
       });
 
+      await db.spaceFollow.upsert({
+        where: {
+          userId_spaceId: {
+            userId: context.session.userId,
+            spaceId: invitation.spaceId,
+          },
+        },
+        create: {
+          id: createId(),
+          userId: context.session.userId,
+          spaceId: invitation.spaceId,
+        },
+        update: {},
+      });
+
       return await db.spaceMemberInvitation.update({
         ...query,
         where: { id: invitation.id },
@@ -534,7 +563,13 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: LeaveSpaceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const meAsMember = await db.spaceMember.findUniqueOrThrow({
-        select: { id: true, role: true },
+        select: {
+          id: true,
+          role: true,
+          space: {
+            select: { visibility: true },
+          },
+        },
         where: {
           spaceId_userId: {
             spaceId: input.spaceId,
@@ -556,6 +591,15 @@ builder.mutationFields((t) => ({
         if (adminCount <= 1) {
           throw new IntentionalError('마지막 관리자는 스페이스를 나갈 수 없어요.');
         }
+      }
+
+      if (meAsMember.space.visibility === 'PRIVATE') {
+        await db.spaceFollow.deleteMany({
+          where: {
+            userId: context.session.userId,
+            spaceId: input.spaceId,
+          },
+        });
       }
 
       return await db.spaceMember.update({
@@ -584,7 +628,13 @@ builder.mutationFields((t) => ({
       });
 
       const meAsMember = await db.spaceMember.findUniqueOrThrow({
-        select: { id: true },
+        select: {
+          id: true,
+          spaceId: true,
+          space: {
+            select: { visibility: true },
+          },
+        },
         where: {
           spaceId_userId: {
             spaceId: kickedMember.spaceId,
@@ -599,6 +649,15 @@ builder.mutationFields((t) => ({
         throw new IntentionalError('자기 자신을 추방할 수 없어요.');
       }
 
+      if (meAsMember.space.visibility === 'PRIVATE') {
+        await db.spaceFollow.deleteMany({
+          where: {
+            userId: context.session.userId,
+            spaceId: meAsMember.spaceId,
+          },
+        });
+      }
+
       return await db.spaceMember.update({
         ...query,
         where: {
@@ -607,6 +666,78 @@ builder.mutationFields((t) => ({
         data: {
           state: 'INACTIVE',
         },
+      });
+    },
+  }),
+
+  followSpace: t.withAuth({ user: true }).prismaField({
+    type: 'Space',
+    args: { input: t.arg({ type: FollowSpaceInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const space = await db.space.findUniqueOrThrow({
+        select: {
+          id: true,
+          visibility: true,
+        },
+        where: {
+          id: input.spaceId,
+          state: 'ACTIVE',
+        },
+      });
+
+      if (space.visibility === 'PRIVATE') {
+        const isMember = await db.spaceMember.exists({
+          where: {
+            userId: context.session.userId,
+            spaceId: space.id,
+          },
+        });
+        if (!isMember) {
+          throw new PermissionDeniedError();
+        }
+      }
+
+      await db.spaceFollow.upsert({
+        where: {
+          userId_spaceId: {
+            userId: context.session.userId,
+            spaceId: space.id,
+          },
+        },
+        create: {
+          id: createId(),
+          userId: context.session.userId,
+          spaceId: input.spaceId,
+        },
+        update: {},
+      });
+
+      return db.space.findUniqueOrThrow({
+        ...query,
+        where: { id: space.id },
+      });
+    },
+  }),
+
+  unfollowSpace: t.withAuth({ user: true }).prismaField({
+    type: 'Space',
+    args: { input: t.arg({ type: UnfollowSpaceInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const space = await db.space.findUniqueOrThrow({
+        select: { id: true },
+        where: { id: input.spaceId },
+      });
+
+      await db.spaceFollow.deleteMany({
+        where: {
+          userId: context.session.userId,
+          spaceId: space.id,
+        },
+      });
+
+      return db.space.findUniqueOrThrow({
+        ...query,
+        where: { id: space.id },
       });
     },
   }),
