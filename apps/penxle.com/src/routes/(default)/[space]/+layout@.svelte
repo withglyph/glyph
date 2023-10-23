@@ -3,15 +3,26 @@
   import { Button, Tag } from '$lib/components';
   import Image from '$lib/components/Image.svelte';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
+  import { toast } from '$lib/notification';
   import Footer from '../Footer.svelte';
   import Header from '../Header.svelte';
+  import LoginRequireModal from '../LoginRequireModal.svelte';
+
+  let moveToLoginOpen = false;
 
   $: query = graphql(`
     query SpaceLayout_Query($slug: String!) {
+      ...DefaultLayout_Header_query
+
+      me {
+        id
+      }
+
       space(slug: $slug) {
         id
         slug
         name
+        followed
 
         icon {
           id
@@ -22,8 +33,24 @@
           id
         }
       }
+    }
+  `);
 
-      ...DefaultLayout_Header_query
+  const followSpace = graphql(`
+    mutation SpaceLayout_FollowSpace_Mutation($input: FollowSpaceInput!) {
+      followSpace(input: $input) {
+        id
+        followed
+      }
+    }
+  `);
+
+  const unfollowSpace = graphql(`
+    mutation SpaceLayout_UnfollowSpace_Mutation($input: UnfollowSpaceInput!) {
+      unfollowSpace(input: $input) {
+        id
+        followed
+      }
     }
   `);
 </script>
@@ -78,7 +105,41 @@
           <span class="i-lc-settings square-6 text-secondary" />
         </a>
       {:else}
-        <Button class="flex-1" size="md">+ 관심</Button>
+        {#if $query.me === null}
+          <Button
+            class="flex-1"
+            size="md"
+            on:click={() => {
+              moveToLoginOpen = true;
+            }}
+          >
+            + 관심
+          </Button>
+        {:else if $query.space.followed}
+          <Button
+            class="flex-1"
+            color="tertiary"
+            size="md"
+            variant="outlined"
+            on:click={async () => {
+              await unfollowSpace({ spaceId: $query.space.id });
+              toast.success('관심 스페이스 해제되었어요');
+            }}
+          >
+            관심 해제
+          </Button>
+        {:else}
+          <Button
+            class="flex-1"
+            size="md"
+            on:click={async () => {
+              await followSpace({ spaceId: $query.space.id });
+              toast.success('관심 스페이스로 등록되었어요');
+            }}
+          >
+            + 관심
+          </Button>
+        {/if}
         <Button color="tertiary" size="md" variant="outlined">
           <span class="i-lc-share mr-2" />
           공유하기
@@ -99,8 +160,40 @@
       >
         <span class="i-lc-settings square-6 text-secondary" />
       </Button>
+    {:else if $query.me === null}
+      <Button
+        class="w-full"
+        size="xl"
+        on:click={() => {
+          moveToLoginOpen = true;
+        }}
+      >
+        관심 스페이스 등록하기
+      </Button>
+    {:else if $query.space.followed}
+      <Button
+        class="w-full"
+        color="tertiary"
+        size="xl"
+        variant="outlined"
+        on:click={async () => {
+          await unfollowSpace({ spaceId: $query.space.id });
+          toast.success('관심 스페이스 해제되었어요');
+        }}
+      >
+        관심 스페이스 해제하기
+      </Button>
     {:else}
-      <Button class="w-full" size="xl">관심 스페이스 등록하기</Button>
+      <Button
+        class="w-full"
+        size="xl"
+        on:click={async () => {
+          await followSpace({ spaceId: $query.space.id });
+          toast.success('관심 스페이스로 등록되었어요');
+        }}
+      >
+        관심 스페이스 등록하기
+      </Button>
     {/if}
   </div>
 
@@ -122,3 +215,5 @@
 </main>
 
 <Footer />
+
+<LoginRequireModal bind:open={moveToLoginOpen} />
