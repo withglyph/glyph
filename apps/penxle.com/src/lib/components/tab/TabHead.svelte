@@ -6,16 +6,14 @@
   export { _class as class };
 </script>
 
-<div>
-  <ul
-    class={clsx(
-      'flex w-fit',
-      variant === 'primary' && 'gap-2',
-      variant === 'secondary' && 'border-b border-secondary',
-      _class,
-    )}
-    role="tablist"
-  >
-    <slot />
-  </ul>
-</div>
+<ul
+  class={clsx(
+    'flex w-fit',
+    variant === 'primary' && 'gap-2',
+    variant === 'secondary' && 'border-b border-secondary',
+    _class,
+  )}
+  role="tablist"
+>
+  <slot />
+</ul>
