@@ -29,6 +29,10 @@
         slug
         name
         description
+        externalLinks {
+          id
+          url
+        }
 
         icon {
           id
@@ -64,6 +68,10 @@
           slug
           name
           description
+          externalLinks {
+            id
+            url
+          }
 
           icon {
             id
@@ -86,6 +94,7 @@
     name: $query.space.name,
     slug: $query.space.slug,
     description: $query.space.description ?? '',
+    externalLinks: $query.space.externalLinks.map((link) => link.url),
   });
 
   let links = [
