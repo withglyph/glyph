@@ -21,7 +21,7 @@
   <textarea
     id={name}
     {name}
-    class={clsx('body-15-b resize-none', _class, 'right-icon' in $$slots && 'mb-4')}
+    class={clsx('body-15-m resize-none', _class, 'right-icon' in $$slots && 'mb-4')}
     on:input
     bind:value
     {...$$restProps}

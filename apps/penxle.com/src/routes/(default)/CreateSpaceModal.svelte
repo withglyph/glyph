@@ -87,14 +87,14 @@
   <form class="space-y-3" use:form>
     <FormField name="name" label="스페이스 이름">
       <TextInput maxlength={20} placeholder="스페이스명">
-        <span slot="right-icon">{$data.name?.length}/20</span>
+        <span slot="right-icon" class="body-14-m text-disabled">{$data.name?.length}/20</span>
       </TextInput>
     </FormField>
 
     <FormField name="slug" label="스페이스 URL">
       <TextInput maxlength={20} placeholder="입력해주세요">
         <span slot="left-text">{$page.url.host}/</span>
-        <span slot="right-icon">{$data.slug?.length}/20</span>
+        <span slot="right-icon" class="body-14-m text-disabled">{$data.slug?.length}/20</span>
       </TextInput>
     </FormField>
 
@@ -123,7 +123,7 @@
 
       <FormField name="profileName" class="grow" label="스페이스 닉네임">
         <TextInput maxlength={20} placeholder="닉네임 입력">
-          <span slot="right-icon" class="body-14-sb text-gray-40">{$data.profileName?.length} / 20</span>
+          <span slot="right-icon" class="body-14-m text-disabled">{$data.profileName?.length} / 20</span>
         </TextInput>
       </FormField>
     </div>

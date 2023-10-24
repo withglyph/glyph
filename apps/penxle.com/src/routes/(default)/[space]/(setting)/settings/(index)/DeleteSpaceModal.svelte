@@ -53,7 +53,7 @@
     </FormField>
 
     <Button
-      class="w-full mt-6 bg-red-50 border-red-50 text-darkprimary hover:(bg-red-60 border-red-60) disabled:(bg-gray-10)"
+      class="w-full mt-6 bg-action-red-primary! border-action-red-primary! text-darkprimary! hover:(bg-action-red-primaryhover! border-action-red-primaryhover!)"
       disabled={confirm !== $space.slug}
       loading={$deleteSpace.inflight}
       size="xl"

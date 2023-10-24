@@ -188,7 +188,7 @@
 
       <FormField name="profileName" class="grow" label="스페이스 닉네임">
         <TextInput maxlength={20} placeholder="닉네임 입력">
-          <span slot="right-icon" class="body-14-sb text-gray-40">{$data.profileName?.length ?? 0} / 20</span>
+          <span slot="right-icon" class="body-14-m text-disabled">{$data.profileName?.length ?? 0} / 20</span>
         </TextInput>
       </FormField>
     </div>

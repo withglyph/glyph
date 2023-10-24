@@ -24,7 +24,7 @@
     </div>
   {/if}
   {#if 'left-text' in $$slots}
-    <div class="body-15-b">
+    <div class="body-15-m">
       <slot name="left-text" />
     </div>
   {/if}
@@ -32,7 +32,7 @@
     id={name}
     {name}
     class={clsx(
-      'body-15-b',
+      'body-15-m',
       _class,
       'left-icon' in $$slots && 'pl-10',
       'right-label' in $$slots && 'pr-20',
