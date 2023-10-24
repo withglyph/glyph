@@ -132,6 +132,61 @@ type Mutation {
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
 }
 
+enum PaymentMethod {
+  BANK_ACCOUNT
+  CREDIT_CARD
+  GIFTCARD_CULTURELAND
+  GIFTCARD_HAPPYMONEY
+  PAYPAL
+  PHONE_BILL
+  TOSS_PAY
+  VIRTUAL_BANK_ACCOUNT
+}
+
+enum PointKind {
+  FREE
+  PAID
+}
+
+enum PointPurchaseState {
+  COMPLETED
+  PENDING
+  UNDONE
+}
+
+enum PointTransactionCause {
+  EXPIRE
+  INTERNAL
+  PATRONIZE
+  PURCHASE
+  REFUND
+  UNDO_PURCHASE
+  UNLOCK_CONTENT
+}
+
+enum PostKind {
+  ARTICLE
+  GALLERY
+}
+
+enum PostRevisionKind {
+  AUTO_SAVE
+  MANUAL_SAVE
+  PUBLISHED
+}
+
+enum PostState {
+  DELETED
+  DRAFT
+  PUBLISHED
+}
+
+enum PostVisibility {
+  PUBLIC
+  SPACE
+  UNLISTED
+}
+
 enum PreferenceType {
   FAVORITE
   MUTE
@@ -269,6 +324,7 @@ type User {
   id: ID!
   marketingConsent: UserMarketingConsent
   notificationPreferences: [UserNotificationPreference!]!
+  point: Int!
   profile: Profile!
   receivedSpaceMemberInvitations(state: SpaceMemberInvitationState): [SpaceMemberInvitation!]!
   singleSignOns: [UserSingleSignOn!]!
