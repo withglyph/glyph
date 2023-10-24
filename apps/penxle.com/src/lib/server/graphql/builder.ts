@@ -6,6 +6,7 @@ import ValidationPlugin from '@pothos/plugin-validation';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { GraphQLDateTime, GraphQLJSON, GraphQLVoid } from 'graphql-scalars';
 import { PermissionDeniedError } from '$lib/errors';
+import { logger } from '../logging';
 import type PrismaTypes from '@pothos/plugin-prisma/generated';
 import type { Context, UserContext } from '../context';
 
@@ -47,7 +48,10 @@ export const builder = new SchemaBuilder<{
   },
   scopeAuthOptions: {
     treatErrorsAsUnauthorized: true,
-    unauthorizedError: () => new PermissionDeniedError(),
+    unauthorizedError: (_, __, ___, result) => {
+      logger.warn(result);
+      return new PermissionDeniedError();
+    },
   },
 });
 
