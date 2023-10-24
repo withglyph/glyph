@@ -47,7 +47,7 @@
   class={clsx(
     'flex center px-4 py-2 font-bold leading-none transition duration-300 text-center text-3.25 text-nowrap',
     showSpinner && 'relative',
-    disabled && 'text-disabled bg-gray-30',
+    disabled && 'text-disabled! bg-gray-30!',
     disabled && variant === 'outlined' && 'text-disabled! border-gray-30! bg-transparent!',
     size === 'xs' && 'px-0! py-0! h-5.75 rounded-2xl',
     size === 'sm' && 'p-2! h-6.5 rounded-lg',
