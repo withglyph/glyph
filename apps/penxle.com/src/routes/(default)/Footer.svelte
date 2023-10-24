@@ -32,7 +32,7 @@
         <div class="flex flex-wrap items-center">
           <div>주소: 서울특별시 강남구 삼성로 212, 1동 908호</div>
           <div class="h-2 border-l border-gray-50 mx-1" />
-          <div>전화: 02-123-4567</div>
+          <div>전화: 070-7580-5205</div>
         </div>
       </section>
 
