@@ -89,10 +89,6 @@
           <PublishMenu class="<lg:hidden" $user={$query.me} />
           <Notification $user={$query.me} />
           <UserMenu $user={$query.me} />
-          <Button class="<xl:hidden rounded-4.5! absolute -right-34" color="tertiary" size="md" variant="outlined">
-            <span class="ml-1">창작자 보드</span>
-            <span class="i-lc-chevron-right" />
-          </Button>
         {:else}
           <Button href="/login" size="md" type="link">펜슬과 함께하기</Button>
         {/if}
@@ -128,15 +124,6 @@
         href="/me"
       >
         나의 펜슬
-      </a>
-      <a
-        class={clsx(
-          'flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-primary text-disabled',
-          $page.url.pathname === '/#' && 'bg-primary text-primary',
-        )}
-        href="/#"
-      >
-        창작자 보드
       </a>
       <a
         class={clsx(
