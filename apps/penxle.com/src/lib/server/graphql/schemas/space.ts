@@ -47,8 +47,19 @@ builder.prismaObject('Space', {
     icon: t.relation('icon'),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
 
-    members: t.relation('members', {
-      query: { where: { state: 'ACTIVE' } },
+    followed: t.boolean({
+      resolve: async (space, _, { db, ...context }) => {
+        if (!context.session) {
+          return false;
+        }
+
+        return await db.spaceFollow.exists({
+          where: {
+            spaceId: space.id,
+            userId: context.session.userId,
+          },
+        });
+      },
     }),
 
     meAsMember: t.prismaField({
@@ -70,6 +81,10 @@ builder.prismaObject('Space', {
           },
         });
       },
+    }),
+
+    members: t.relation('members', {
+      query: { where: { state: 'ACTIVE' } },
     }),
 
     invitations: t.relation('invitations', {
