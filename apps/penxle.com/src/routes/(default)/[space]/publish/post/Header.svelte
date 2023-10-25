@@ -12,6 +12,7 @@
   export { _query as $query, _space as $space };
 
   export let title: string | undefined;
+  export let subtitle: string | undefined;
   export let editor: Editor | undefined;
 
   let draftPostId: string | undefined;
@@ -74,6 +75,7 @@
           spaceId: $space.id,
           postId: draftPostId,
           revisionKind: 'MANUAL_SAVE',
+          subtitle,
           content: editor?.getJSON(),
         });
 
@@ -97,6 +99,7 @@
           spaceId: $space.id,
           postId: draftPostId,
           revisionKind: 'PUBLISHED',
+          subtitle,
           content: editor?.getJSON(),
         });
 
