@@ -300,6 +300,7 @@ input RemoveSpaceMemberInput {
 type Space {
   createdAt: DateTime!
   description: String
+  followed: Boolean!
   icon: Image!
   id: ID!
   invitations: [SpaceMemberInvitation!]!
