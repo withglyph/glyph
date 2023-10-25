@@ -10,7 +10,6 @@ export const useCache = async <T>(key: string, fn: () => Promise<T>, ttl = 60 * 
   }
 
   const value = await fn();
-  // spell-checker:disable-next-line
   await redis.setex(key, ttl, JSON.stringify(value));
 
   return value;

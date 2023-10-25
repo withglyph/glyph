@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
+import { redis } from './cache';
 import { prismaClient } from './database';
 import { decodeAccessToken } from './utils/access-token';
 import type { RequestEvent } from '@sveltejs/kit';
@@ -13,6 +14,7 @@ type InternalContext = {
 type DefaultContext = {
   db: InteractiveTransactionClient;
   deviceId: string;
+  flash: (type: 'success' | 'error', message: string) => Promise<void>;
   onCommit: (fn: () => MaybePromise<void>) => void;
 
   $commit: () => Promise<void>;
@@ -46,6 +48,9 @@ export const createContext = async (context: RequestEvent): Promise<Context> => 
     deviceId,
     $commitHooks: [],
     onCommit: (fn: () => MaybePromise<void>) => ctx.$commitHooks.push(fn),
+    flash: async (type: 'success' | 'error', message: string) => {
+      await redis.setex(`flash:${deviceId}`, 30, JSON.stringify({ type, message }));
+    },
     $commit: async () => {
       await db.$commit();
       await Promise.all(ctx.$commitHooks.map((fn) => fn()));
