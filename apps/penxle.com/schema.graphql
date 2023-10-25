@@ -81,6 +81,11 @@ input FinalizeImageUploadInput {
   name: String!
 }
 
+type Flash {
+  message: String!
+  type: String!
+}
+
 input FollowSpaceInput {
   spaceId: ID!
 }
@@ -283,6 +288,7 @@ type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
   draftRevision(revisionId: ID!): PostRevision!
+  flash: Flash
   me: User
   post(permalink: String!): Post!
   provisionedUser(token: String!): ProvisionedUser!
