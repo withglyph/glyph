@@ -266,7 +266,7 @@ model SpaceUserBlock {
   reason    String?
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  @@map("sessions")
+  @@map("space_user_blocks")
 }
 
 model SpaceMasquerade {
