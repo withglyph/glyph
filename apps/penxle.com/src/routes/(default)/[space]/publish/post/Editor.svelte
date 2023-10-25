@@ -6,6 +6,7 @@
   import type { Editor } from '@tiptap/core';
 
   export let title: string | undefined;
+  export let subtitle: string | undefined;
   export let editor: Editor | undefined;
 
   let enableSubtitle = false;
@@ -46,6 +47,7 @@
           class="mt-2 w-full text-lg"
           placeholder="부제목을 입력하세요."
           type="text"
+          bind:value={subtitle}
           on:keydown={(e) => {
             if (e.key === 'Backspace' && e.currentTarget.value === '') {
               enableSubtitle = false;
