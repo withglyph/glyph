@@ -57,6 +57,10 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTime
 
+input DeletePostInput {
+  postId: ID!
+}
+
 input DeleteSpaceInput {
   spaceId: ID!
 }
@@ -126,6 +130,7 @@ type Mutation {
   createSpace(input: CreateSpaceInput!): Space!
   createSpaceMemberInvitation(input: CreateSpaceMemberInvitationInput!): SpaceMemberInvitation!
   createUser(input: CreateUserInput!): User!
+  deletePost(input: DeletePostInput!): Post!
   deleteSpace(input: DeleteSpaceInput!): Space!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   followSpace(input: FollowSpaceInput!): Space!

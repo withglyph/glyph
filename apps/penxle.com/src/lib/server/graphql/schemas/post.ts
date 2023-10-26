@@ -138,6 +138,12 @@ const RevisePostInput = builder.inputType('RevisePostInput', {
   }),
 });
 
+const DeletePostInput = builder.inputType('DeletePostInput', {
+  fields: (t) => ({
+    postId: t.id(),
+  }),
+});
+
 const LikePostInput = builder.inputType('LikePostInput', {
   fields: (t) => ({
     postId: t.id(),
@@ -291,6 +297,40 @@ builder.mutationFields((t) => ({
           revisions: { create: { id: createId(), ...revision } },
           option: { update: { ...options } },
           state: input.revisionKind === 'PUBLISHED' ? 'PUBLISHED' : undefined,
+        },
+      });
+    },
+  }),
+
+  deletePost: t.withAuth({ user: true }).prismaField({
+    type: 'Post',
+    args: { input: t.arg({ type: DeletePostInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const post = await db.post.findUniqueOrThrow({
+        select: { id: true, userId: true, spaceId: true },
+        where: { id: input.postId },
+      });
+
+      if (post.userId !== context.session.userId) {
+        const meAsMember = await db.spaceMember.findUniqueOrThrow({
+          select: { role: true },
+          where: {
+            spaceId_userId: {
+              spaceId: post.spaceId,
+              userId: context.session.userId,
+            },
+          },
+        });
+        if (meAsMember.role !== 'ADMIN') {
+          throw new PermissionDeniedError();
+        }
+      }
+
+      return await db.post.update({
+        ...query,
+        where: { id: post.id },
+        data: {
+          state: 'DELETED',
         },
       });
     },
