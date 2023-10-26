@@ -126,12 +126,6 @@ const RevisePostInput = builder.inputType('RevisePostInput', {
     subtitle: t.string({ required: false }),
     content: t.field({ type: 'JSON' }),
 
-    visibility: t.field({ type: PostVisibility }),
-    discloseStats: t.boolean(),
-    receiveFeedback: t.boolean(),
-    receivePatronage: t.boolean(),
-    receiveTagContribution: t.boolean(),
-
     thumbnailId: t.id({ required: false }),
     thumbnailBounds: t.field({ type: 'JSON', required: false }),
     coverImageId: t.id({ required: false }),
@@ -141,6 +135,17 @@ const RevisePostInput = builder.inputType('RevisePostInput', {
 const DeletePostInput = builder.inputType('DeletePostInput', {
   fields: (t) => ({
     postId: t.id(),
+  }),
+});
+
+const UpdatePostOptionsInput = builder.inputType('UpdatePostOptionsInput', {
+  fields: (t) => ({
+    postId: t.id(),
+    visibility: t.field({ type: PostVisibility, required: false }),
+    discloseStats: t.boolean({ required: false }),
+    receiveFeedback: t.boolean({ required: false }),
+    receivePatronage: t.boolean({ required: false }),
+    receiveTagContribution: t.boolean({ required: false }),
   }),
 });
 
@@ -268,13 +273,13 @@ builder.mutationFields((t) => ({
         coverImageId: input.coverImageId,
       };
 
-      const options = {
-        visibility: input.visibility,
-        discloseStats: input.discloseStats,
-        receiveFeedback: input.receiveFeedback,
-        receivePatronage: input.receivePatronage,
-        receiveTagContribution: input.receiveTagContribution,
-      };
+      const defaultOptions = {
+        visibility: 'PUBLIC',
+        discloseStats: true,
+        receiveFeedback: true,
+        receivePatronage: true,
+        receiveTagContribution: true,
+      } as const;
 
       return await db.post.upsert({
         ...query,
@@ -288,14 +293,13 @@ builder.mutationFields((t) => ({
           kind: 'ARTICLE',
           state: input.revisionKind === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
           revisions: { create: { id: createId(), ...revision } },
-          option: { create: { id: createId(), ...options } },
+          option: { create: { id: createId(), ...defaultOptions } },
         },
         update: {
           space: { connect: { id: input.spaceId } },
           member: { connect: { id: meAsMember.id } },
           user: { connect: { id: context.session.userId } },
           revisions: { create: { id: createId(), ...revision } },
-          option: { update: { ...options } },
           state: input.revisionKind === 'PUBLISHED' ? 'PUBLISHED' : undefined,
         },
       });
@@ -331,6 +335,47 @@ builder.mutationFields((t) => ({
         where: { id: post.id },
         data: {
           state: 'DELETED',
+        },
+      });
+    },
+  }),
+
+  updatePostOptions: t.withAuth({ user: true }).prismaField({
+    type: 'Post',
+    args: { input: t.arg({ type: UpdatePostOptionsInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const post = await db.post.findUniqueOrThrow({
+        select: { id: true, userId: true, spaceId: true },
+        where: { id: input.postId },
+      });
+
+      if (post.userId !== context.session.userId) {
+        const meAsMember = await db.spaceMember.findUniqueOrThrow({
+          select: { role: true },
+          where: {
+            spaceId_userId: {
+              spaceId: post.spaceId,
+              userId: context.session.userId,
+            },
+          },
+        });
+        if (meAsMember.role !== 'ADMIN') {
+          throw new PermissionDeniedError();
+        }
+      }
+      return await db.post.update({
+        ...query,
+        where: { id: post.id },
+        data: {
+          option: {
+            update: {
+              visibility: input.visibility ?? undefined,
+              discloseStats: input.discloseStats ?? undefined,
+              receiveFeedback: input.receiveFeedback ?? undefined,
+              receivePatronage: input.receivePatronage ?? undefined,
+              receiveTagContribution: input.receiveTagContribution ?? undefined,
+            },
+          },
         },
       });
     },
