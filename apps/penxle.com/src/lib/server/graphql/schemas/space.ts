@@ -224,6 +224,14 @@ const UpdateSpaceInput = builder.inputType('UpdateSpaceInput', {
   validate: { schema: UpdateSpaceSchema },
 });
 
+const UpdateSpaceProfileInput = builder.inputType('UpdateSpaceProfileInput', {
+  fields: (t) => ({
+    spaceId: t.id(),
+    profileName: t.string(),
+    profileAvatarId: t.id(),
+  }),
+});
+
 const CreateSpaceMemberInvitationInput = builder.inputType('CreateSpaceMemberInvitationInput', {
   fields: (t) => ({
     spaceId: t.id(),
@@ -469,6 +477,55 @@ builder.mutationFields((t) => ({
           slug: input.slug,
           iconId: input.iconId,
           description: input.description,
+        },
+      });
+    },
+  }),
+
+  updateSpaceProfile: t.withAuth({ user: true }).prismaField({
+    type: 'SpaceMember',
+    args: { input: t.arg({ type: UpdateSpaceProfileInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const meAsMember = await db.spaceMember.findUnique({
+        select: {
+          id: true,
+          profileId: true,
+          user: {
+            select: { profileId: true },
+          },
+        },
+        where: {
+          spaceId_userId: {
+            spaceId: input.spaceId,
+            userId: context.session.userId,
+          },
+          state: 'ACTIVE',
+        },
+      });
+      if (!meAsMember) {
+        throw new PermissionDeniedError();
+      }
+      return db.spaceMember.update({
+        ...query,
+        where: {
+          id: meAsMember.id,
+        },
+        data: {
+          profile:
+            meAsMember.profileId === meAsMember.user.profileId
+              ? {
+                  create: {
+                    id: createId(),
+                    name: input.profileName,
+                    avatarId: input.profileAvatarId,
+                  },
+                }
+              : {
+                  update: {
+                    name: input.profileName,
+                    avatarId: input.profileAvatarId,
+                  },
+                },
         },
       });
     },
