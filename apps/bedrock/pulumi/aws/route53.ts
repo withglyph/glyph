@@ -16,6 +16,7 @@ export const zones = {
   penxle_io: createZone('penxle.io'),
   pnxl_cc: createZone('pnxl.cc'),
   pnxl_co: createZone('pnxl.co'),
+  pnxl_me: createZone('pnxl.me'),
   pnxl_net: createZone('pnxl.net'),
   pnxl_site: createZone('pnxl.site'),
 };
