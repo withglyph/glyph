@@ -150,6 +150,7 @@ type Mutation {
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
   updatePostOptions(input: UpdatePostOptionsInput!): Post!
   updateSpace(input: UpdateSpaceInput!): Space!
+  updateSpaceProfile(input: UpdateSpaceProfileInput!): SpaceMember!
   updateUserContentFilterPreference(input: UpdateUserContentFilterPreferenceInput!): User!
   updateUserEmail(input: UpdateUserEmailInput!): Void
   updateUserMarketingConsent(input: UpdateUserMarketingConsentInput!): User!
@@ -399,6 +400,12 @@ input UpdateSpaceInput {
   iconId: ID!
   name: String!
   slug: String!
+  spaceId: ID!
+}
+
+input UpdateSpaceProfileInput {
+  profileAvatarId: ID!
+  profileName: String!
   spaceId: ID!
 }
 
