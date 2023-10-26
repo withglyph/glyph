@@ -10,6 +10,28 @@ import { builder } from '../builder';
 
 builder.prismaObject('Post', {
   select: { id: true },
+  grantScopes: async ({ id }, { db, ...context }) => {
+    if (!context.session) {
+      return [];
+    }
+    const post = await db.post.findUniqueOrThrow({
+      select: { userId: true, spaceId: true },
+      where: { id },
+    });
+    if (context.session.userId === post.userId) {
+      return ['$post:edit'];
+    }
+    const member = await db.spaceMember.findUnique({
+      select: { role: true },
+      where: {
+        spaceId_userId: {
+          spaceId: post.spaceId,
+          userId: context.session.userId,
+        },
+      },
+    });
+    return member?.role === 'ADMIN' ? ['$post:edit'] : [];
+  },
   fields: (t) => ({
     id: t.exposeID('id'),
     permalink: t.exposeString('permalink'),
@@ -25,6 +47,14 @@ builder.prismaObject('Post', {
         }),
       }),
       resolve: (_, { revisions }) => revisions[0],
+    }),
+    revisionList: t.relation('revisions', {
+      authScopes: { $granted: '$post:edit' },
+      query: {
+        orderBy: {
+          createdAt: 'desc',
+        },
+      },
     }),
 
     liked: t.boolean({
@@ -46,37 +76,6 @@ builder.prismaObject('Post', {
     space: t.relation('space'),
     option: t.relation('option'),
     likeCount: t.relationCount('likes'),
-  }),
-});
-
-const PostDraft = builder.prismaObject('Post', {
-  select: { id: true },
-  variant: 'PostDraft',
-  fields: (t) => ({
-    id: t.exposeID('id'),
-
-    revisionInfoList: t.relation('revisions', {
-      query: {
-        orderBy: {
-          createdAt: 'desc',
-        },
-      },
-    }),
-
-    revision: t.prismaField({
-      type: 'PostRevision',
-      select: (_, __, nestedSelection) => ({
-        revisions: nestedSelection({
-          orderBy: { createdAt: 'desc' },
-          take: 1,
-        }),
-      }),
-      resolve: (_, { revisions }) => revisions[0],
-    }),
-
-    space: t.relation('space'),
-
-    post: t.variant('Post'),
   }),
 });
 
@@ -116,7 +115,7 @@ builder.prismaObject('PostRevision', {
  * * Inputs
  */
 
-const DraftPostInput = builder.inputType('DraftPostInput', {
+const RevisePostInput = builder.inputType('RevisePostInput', {
   fields: (t) => ({
     revisionKind: t.field({ type: PostRevisionKind }),
 
@@ -132,12 +131,10 @@ const DraftPostInput = builder.inputType('DraftPostInput', {
     receiveFeedback: t.boolean(),
     receivePatronage: t.boolean(),
     receiveTagContribution: t.boolean(),
-  }),
-});
 
-const PublishPostInput = builder.inputType('PublishPostInput', {
-  fields: (t) => ({
-    postId: t.id(),
+    thumbnailId: t.id({ required: false }),
+    thumbnailBounds: t.field({ type: 'JSON', required: false }),
+    coverImageId: t.id({ required: false }),
   }),
 });
 
@@ -223,9 +220,9 @@ builder.queryFields((t) => ({
  */
 
 builder.mutationFields((t) => ({
-  draftPost: t.withAuth({ user: true }).prismaField({
-    type: PostDraft,
-    args: { input: t.arg({ type: DraftPostInput }) },
+  revisePost: t.withAuth({ user: true }).prismaField({
+    type: 'Post',
+    args: { input: t.arg({ type: RevisePostInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const meAsMember = await db.spaceMember.findUniqueOrThrow({
         select: { id: true, role: true },
@@ -260,6 +257,9 @@ builder.mutationFields((t) => ({
         title: input.title,
         subtitle: input.subtitle,
         content: input.content as JSON,
+        thumbnailId: input.thumbnailId,
+        thumbnailBounds: input.thumbnailBounds ?? undefined,
+        coverImageId: input.coverImageId,
       };
 
       const options = {
@@ -280,7 +280,7 @@ builder.mutationFields((t) => ({
           member: { connect: { id: meAsMember.id } },
           user: { connect: { id: context.session.userId } },
           kind: 'ARTICLE',
-          state: 'DRAFT',
+          state: input.revisionKind === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
           revisions: { create: { id: createId(), ...revision } },
           option: { create: { id: createId(), ...options } },
         },
@@ -290,40 +290,8 @@ builder.mutationFields((t) => ({
           user: { connect: { id: context.session.userId } },
           revisions: { create: { id: createId(), ...revision } },
           option: { update: { ...options } },
+          state: input.revisionKind === 'PUBLISHED' ? 'PUBLISHED' : undefined,
         },
-      });
-    },
-  }),
-
-  publishPost: t.withAuth({ user: true }).prismaField({
-    type: 'Post',
-    args: { input: t.arg({ type: PublishPostInput }) },
-    resolve: async (query, _, { input }, { db, ...context }) => {
-      const targetRevision = await db.postRevision.findFirstOrThrow({
-        select: { id: true, kind: true },
-        where: {
-          postId: input.postId,
-          userId: context.session.userId,
-        },
-        orderBy: { createdAt: 'desc' },
-      });
-
-      if (targetRevision.kind === 'PUBLISHED') {
-        throw new IntentionalError('이미 게시된 글입니다.');
-      }
-
-      await db.postRevision.update({
-        where: { id: targetRevision.id },
-        data: { kind: 'PUBLISHED' },
-      });
-
-      return db.post.update({
-        ...query,
-        where: {
-          id: input.postId,
-          member: { userId: context.session.userId },
-        },
-        data: { state: 'PUBLISHED' },
       });
     },
   }),
