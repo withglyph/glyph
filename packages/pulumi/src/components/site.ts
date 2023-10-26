@@ -1,5 +1,4 @@
 import * as aws from '@pulumi/aws';
-import * as cloudflare from '@pulumi/cloudflare';
 import * as pulumi from '@pulumi/pulumi';
 import { bedrockRef } from '../ref';
 
@@ -221,39 +220,26 @@ export class Site extends pulumi.ComponentResource {
       { parent: this },
     );
 
-    if (isProd) {
-      const zone = aws.route53.getZoneOutput({ name: args.dns.zone ?? args.dns.name }, { parent: this });
+    const zone = aws.route53.getZoneOutput(
+      { name: isProd ? args.dns.zone ?? args.dns.name : 'pnxl.site' },
+      { parent: this },
+    );
 
-      new aws.route53.Record(
-        domain,
-        {
-          zoneId: zone.zoneId,
-          name: domain,
-          type: 'A',
-          aliases: [
-            {
-              name: distribution.domainName,
-              zoneId: distribution.hostedZoneId,
-              evaluateTargetHealth: false,
-            },
-          ],
-        },
-        { parent: this },
-      );
-    } else {
-      const zone = cloudflare.getZoneOutput({ name: 'pnxl.site' }, { parent: this });
-
-      new cloudflare.Record(
-        domain,
-        {
-          zoneId: zone.zoneId,
-          type: 'CNAME',
-          name: domain,
-          value: distribution.domainName,
-          comment: 'Amazon CloudFront',
-        },
-        { parent: this },
-      );
-    }
+    new aws.route53.Record(
+      domain,
+      {
+        zoneId: zone.zoneId,
+        name: domain,
+        type: 'A',
+        aliases: [
+          {
+            name: distribution.domainName,
+            zoneId: distribution.hostedZoneId,
+            evaluateTargetHealth: false,
+          },
+        ],
+      },
+      { parent: this },
+    );
   }
 }

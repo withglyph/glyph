@@ -873,9 +873,6 @@ importers:
       '@pulumi/aws':
         specifier: ^6.6.0
         version: 6.6.0
-      '@pulumi/cloudflare':
-        specifier: ^5.13.0
-        version: 5.13.0
       '@pulumi/pulumi':
         specifier: ^3.89.0
         version: 3.89.0
@@ -4481,6 +4478,7 @@ packages:
       '@pulumi/pulumi': 3.89.0
     transitivePeerDependencies:
       - supports-color
+    dev: true
 
   /@pulumi/pulumi@3.89.0:
     resolution: {integrity: sha512-/Ux9Rcj6whMt8oA/COTuVy1J4LM08BZ3ZKHoQqXjthw5N1TaPZFRAMEn1MfVQCFYLSQ87nITRDg9QQQd6Q8k1g==}

@@ -55,6 +55,7 @@ export const certificates = {
   penxle_io: createCertificate('penxle.io'),
   pnxl_cc: createCertificate('pnxl.cc'),
   pnxl_co: createCertificate('pnxl.co'),
+  pnxl_me: createCertificate('pnxl.me'),
   pnxl_net: createCertificate('pnxl.net'),
   pnxl_site: createCertificate('pnxl.site'),
 };
@@ -64,6 +65,7 @@ export const cloudFrontCertificates = {
   penxle_io: createCloudFrontCertificate('penxle.io'),
   pnxl_cc: createCloudFrontCertificate('pnxl.cc'),
   pnxl_co: createCloudFrontCertificate('pnxl.co'),
+  pnxl_me: createCloudFrontCertificate('pnxl.me'),
   pnxl_net: createCloudFrontCertificate('pnxl.net'),
   pnxl_site: createCloudFrontCertificate('pnxl.site'),
 };
@@ -73,6 +75,7 @@ export const outputs = {
   AWS_ACM_PENXLE_IO_CERTIFICATE_ARN: certificates.penxle_io.arn,
   AWS_ACM_PNXL_CC_CERTIFICATE_ARN: certificates.pnxl_cc.arn,
   AWS_ACM_PNXL_CO_CERTIFICATE_ARN: certificates.pnxl_co.arn,
+  AWS_ACM_PNXL_ME_CERTIFICATE_ARN: certificates.pnxl_me.arn,
   AWS_ACM_PNXL_NET_CERTIFICATE_ARN: certificates.pnxl_net.arn,
   AWS_ACM_PNXL_SITE_CERTIFICATE_ARN: certificates.pnxl_site.arn,
 
@@ -80,6 +83,7 @@ export const outputs = {
   AWS_ACM_CLOUDFRONT_PENXLE_IO_CERTIFICATE_ARN: cloudFrontCertificates.penxle_io.arn,
   AWS_ACM_CLOUDFRONT_PNXL_CC_CERTIFICATE_ARN: cloudFrontCertificates.pnxl_cc.arn,
   AWS_ACM_CLOUDFRONT_PNXL_CO_CERTIFICATE_ARN: cloudFrontCertificates.pnxl_co.arn,
+  AWS_ACM_CLOUDFRONT_PNXL_ME_CERTIFICATE_ARN: cloudFrontCertificates.pnxl_me.arn,
   AWS_ACM_CLOUDFRONT_PNXL_NET_CERTIFICATE_ARN: cloudFrontCertificates.pnxl_net.arn,
   AWS_ACM_CLOUDFRONT_PNXL_SITE_CERTIFICATE_ARN: cloudFrontCertificates.pnxl_site.arn,
 };
