@@ -230,6 +230,7 @@ model Space {
   externalLinks SpaceExternalLink[]
   posts         Post[]
   masquerades   SpaceMasquerade[]
+  userMutes     UserSpaceMute[]
 
   @@index([slug, state])
   @@map("spaces")
@@ -401,6 +402,7 @@ model User {
   viewedPosts                    PostView[]
   likedPosts                     PostLike[]
   posts                          Post[]
+  mutedSpaces                    UserSpaceMute[]
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
@@ -482,6 +484,18 @@ model UserSession {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("user_sessions")
+}
+
+model UserSpaceMute {
+  id        String   @id
+  spaceId   String   @map("space_id")
+  space     Space    @relation(fields: [spaceId], references: [id])
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([userId, spaceId])
+  @@map("user_space_mutes")
 }
 
 model UserTagPreference {
