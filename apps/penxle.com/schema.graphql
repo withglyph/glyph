@@ -61,20 +61,6 @@ input DeleteSpaceInput {
   spaceId: ID!
 }
 
-input DraftPostInput {
-  content: JSON!
-  discloseStats: Boolean!
-  postId: ID
-  receiveFeedback: Boolean!
-  receivePatronage: Boolean!
-  receiveTagContribution: Boolean!
-  revisionKind: PostRevisionKind!
-  spaceId: ID!
-  subtitle: String
-  title: String!
-  visibility: PostVisibility!
-}
-
 input FinalizeImageUploadInput {
   bounds: JSON
   key: String!
@@ -136,7 +122,6 @@ type Mutation {
   createSpaceMemberInvitation(input: CreateSpaceMemberInvitationInput!): SpaceMemberInvitation!
   createUser(input: CreateUserInput!): User!
   deleteSpace(input: DeleteSpaceInput!): Space!
-  draftPost(input: DraftPostInput!): PostDraft!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   followSpace(input: FollowSpaceInput!): Space!
   ignoreSpaceMemberInvitation(input: IgnoreSpaceMemberInvitationInput!): SpaceMemberInvitation!
@@ -147,8 +132,8 @@ type Mutation {
   loginUser(input: LoginUserInput!): UserEmailVerification!
   logoutUser: Void
   prepareImageUpload: PrepareImageUploadResult!
-  publishPost(input: PublishPostInput!): Post!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
+  revisePost(input: RevisePostInput!): Post!
   unfollowSpace(input: UnfollowSpaceInput!): Space!
   unlikePost(input: UnlikePostInput!): Post!
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
@@ -201,14 +186,7 @@ type Post {
   option: PostOption!
   permalink: String!
   revision: PostRevision!
-  space: Space!
-}
-
-type PostDraft {
-  id: ID!
-  post: Post!
-  revision: PostRevision!
-  revisionInfoList: [PostRevision!]!
+  revisionList: [PostRevision!]!
   space: Space!
 }
 
@@ -275,10 +253,6 @@ type ProvisionedUser {
   name: String
 }
 
-input PublishPostInput {
-  postId: ID!
-}
-
 type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
@@ -295,6 +269,23 @@ type Query {
 
 input RemoveSpaceMemberInput {
   spaceMemberId: ID!
+}
+
+input RevisePostInput {
+  content: JSON!
+  coverImageId: ID
+  discloseStats: Boolean!
+  postId: ID
+  receiveFeedback: Boolean!
+  receivePatronage: Boolean!
+  receiveTagContribution: Boolean!
+  revisionKind: PostRevisionKind!
+  spaceId: ID!
+  subtitle: String
+  thumbnailBounds: JSON
+  thumbnailId: ID
+  title: String!
+  visibility: PostVisibility!
 }
 
 type Space {
