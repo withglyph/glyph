@@ -147,6 +147,7 @@ type Mutation {
   unfollowSpace(input: UnfollowSpaceInput!): Space!
   unlikePost(input: UnlikePostInput!): Post!
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
+  updatePostOptions(input: UpdatePostOptionsInput!): Post!
   updateSpace(input: UpdateSpaceInput!): Space!
   updateUserContentFilterPreference(input: UpdateUserContentFilterPreferenceInput!): User!
   updateUserEmail(input: UpdateUserEmailInput!): Void
@@ -285,18 +286,13 @@ input RemoveSpaceMemberInput {
 input RevisePostInput {
   content: JSON!
   coverImageId: ID
-  discloseStats: Boolean!
   postId: ID
-  receiveFeedback: Boolean!
-  receivePatronage: Boolean!
-  receiveTagContribution: Boolean!
   revisionKind: PostRevisionKind!
   spaceId: ID!
   subtitle: String
   thumbnailBounds: JSON
   thumbnailId: ID
   title: String!
-  visibility: PostVisibility!
 }
 
 type Space {
@@ -367,6 +363,15 @@ input UnlikePostInput {
 
 input UnlinkUserSingleSignOnInput {
   provider: UserSingleSignOnProvider!
+}
+
+input UpdatePostOptionsInput {
+  discloseStats: Boolean
+  postId: ID!
+  receiveFeedback: Boolean
+  receivePatronage: Boolean
+  receiveTagContribution: Boolean
+  visibility: PostVisibility
 }
 
 input UpdateSpaceInput {
