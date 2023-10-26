@@ -14,5 +14,11 @@ export const updates: GraphCacheConfig['updates'] = {
     removeSpaceMember: (_, { input }, cache) => {
       cache.invalidate({ __typename: 'SpaceMember', id: input.spaceMemberId });
     },
+    followSpace: (_, __, cache) => {
+      cache.invalidate(me(cache), 'followedSpaces');
+    },
+    unfollowSpace: (_, __, cache) => {
+      cache.invalidate(me(cache), 'followedSpaces');
+    },
   },
 };
