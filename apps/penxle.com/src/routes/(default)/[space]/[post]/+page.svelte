@@ -24,6 +24,7 @@
       post(permalink: $permalink) {
         id
         permalink
+        shortlink
         likeCount
         liked
         viewCount
@@ -130,6 +131,19 @@
   onMount(async () => {
     await updatePostView({ postId: $query.post.id });
   });
+
+  const handleShare = () => {
+    const shortLink = `https://pnxl.me/${$query.post.shortlink}`;
+    if (navigator.share) {
+      navigator.share({
+        title: $query.post.revision.title,
+        url: shortLink,
+      });
+    } else {
+      navigator.clipboard.writeText(shortLink);
+      toast.success('링크가 복사되었어요');
+    }
+  };
 </script>
 
 <article class="w-full bg-cardprimary py-7.5 px-4 sm:py-17">
@@ -170,8 +184,8 @@
             </div>
           </div>
 
-          <button class="i-lc-bookmark square-6 <sm:hidden" type="button" />
-          <button class="i-lc-share square-6 <sm:hidden" type="button" />
+          <button class="i-lc-bookmark square-6" type="button" />
+          <button class="i-lc-share square-6" type="button" on:click={handleShare} />
           <button
             bind:this={targetEl}
             class="i-lc-more-vertical square-6 text-icon-secondary"
@@ -279,7 +293,7 @@
 
       <div>
         <button class="i-lc-bookmark square-6 mr-3" type="button" />
-        <button class="i-lc-share square-6" type="button" />
+        <button class="i-lc-share square-6" type="button" on:click={handleShare} />
       </div>
     </div>
 
