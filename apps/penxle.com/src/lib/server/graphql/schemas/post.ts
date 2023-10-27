@@ -3,6 +3,7 @@ import { customAlphabet } from 'nanoid';
 import { IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { createId } from '$lib/utils';
 import { builder } from '../builder';
+import type { JSONContent } from '@tiptap/core';
 
 /**
  * * Types
@@ -100,9 +101,19 @@ builder.prismaObject('PostRevision', {
     content: t.field({
       type: 'JSON',
       select: { content: true },
-      resolve: ({ content }) => {
-        // TODO: 유료분량 처리
-        return content;
+      resolve: (post) => {
+        const postBody = post.content as JSONContent;
+        if (!postBody.content) {
+          return postBody;
+        }
+        const accessBarrierIndex = postBody.content.findIndex((node) => node.type === 'access_barrier');
+        if (accessBarrierIndex !== -1) {
+          return {
+            ...postBody,
+            content: postBody.content.slice(0, accessBarrierIndex),
+          };
+        }
+        return postBody;
       },
     }),
 
