@@ -47,7 +47,7 @@ export const generateBaseTypes = async (context: GlitchContext) => {
       omitOperationSuffix: true,
       scalars: {
         DateTime: 'string',
-        JSON: 'unknown',
+        JSON: 'any',
         Void: { input: 'never', output: 'void' },
       },
       strictScalars: true,

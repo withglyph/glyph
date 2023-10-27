@@ -15,6 +15,7 @@
       me @_required {
         id
         email
+        point
 
         profile {
           id
@@ -46,8 +47,8 @@
           <p class="font-semibold text-secondary">{$query.me.email}</p>
         </div>
         <div class="w-full flex items-center justify-between gap-2 px-3 py-2.5 bg-surface-primary rounded-2.5">
-          <span class="font-bold">1000P</span>
-          <Button size="md">충전하기</Button>
+          <span class="font-bold">{$query.me.point}P</span>
+          <Button href="/point/purchase" size="md" type="link">충전하기</Button>
         </div>
         <Button
           class="w-full font-bold text-sm"

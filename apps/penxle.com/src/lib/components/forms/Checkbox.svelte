@@ -19,7 +19,7 @@
   <input
     id={name}
     {name}
-    class="relative flex center square-4.5 border border-gray-30 rounded cursor-pointer bg-gray-30 appearance-none transition checked:(border-none bg-gray-90) checked:after:(square-4 i-lc-check text-white content-empty) enabled:(aria-[invalid]:border-red-50 hover:border-gray-40!)"
+    class="relative flex center square-4.5 border border-gray-30 rounded cursor-pointer appearance-none transition checked:(border-none bg-gray-90) checked:after:(square-4 i-lc-check text-white content-empty) enabled:(aria-[invalid]:border-red-50 hover:border-gray-40!)"
     type="checkbox"
     on:change
     bind:checked

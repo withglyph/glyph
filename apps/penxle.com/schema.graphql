@@ -279,6 +279,7 @@ type ProvisionedUser {
 
 input PurchasePointInput {
   paymentMethod: PaymentMethod!
+  pointAgreement: Boolean!
   pointAmount: Int!
 }
 

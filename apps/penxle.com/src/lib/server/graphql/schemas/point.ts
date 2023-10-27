@@ -32,6 +32,7 @@ const PurchasePointInput = builder.inputType('PurchasePointInput', {
   fields: (t) => ({
     paymentMethod: t.field({ type: PaymentMethod }),
     pointAmount: t.int(),
+    pointAgreement: t.boolean(),
   }),
 });
 
