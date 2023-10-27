@@ -1,17 +1,34 @@
 <script lang="ts">
+  import dayjs from 'dayjs';
+  import { graphql } from '$glitch';
   import { Modal } from '$lib/components';
   import Button from '$lib/components/Button.svelte';
   import { NodeView } from '$lib/tiptap';
+  import { comma } from '$lib/utils';
   import type { NodeViewProps } from '$lib/tiptap';
 
   type $$Props = NodeViewProps;
   $$restProps;
 
+  export let node: NodeViewProps['node'];
   export let deleteNode: NodeViewProps['deleteNode'] | undefined;
   export let updateAttributes: NodeViewProps['updateAttributes'] | undefined;
   export let editor: NodeViewProps['editor'] | undefined;
 
   let open = false;
+
+  const purchasePost = graphql(`
+    mutation TiptapAccessBarrier_PurchasePost_Mutation($input: PurchasePostInput!) {
+      purchasePost(input: $input) {
+        id
+
+        revision {
+          id
+          content
+        }
+      }
+    }
+  `);
 </script>
 
 {#if editor?.isEditable}
@@ -58,7 +75,7 @@
       </Button>
     </div>
   </Modal>
-{:else}
+{:else if node.attrs.data.purchaseable}
   <NodeView class="rounded-2xl py-6 px-3 bg-gray-5/80 relative">
     <div class="-z-1 text-disabled">
       사랑의 노래하며 가치를 이것이야말로 얼음 끓는 내려온 같으며. 길지 피가 시들어 힘차게 주며, 인간의 보내는 않는
@@ -72,16 +89,38 @@
       class="dash absolute backdrop-blur-3 rounded-2xl top-0 left-0 w-full h-100% flex flex-col center px-3 text-center space-y-2.5"
     >
       <span class="text-secondary body-15-sb">이 글의 다음 내용은 구매 후에 감상할 수 있어요</span>
-      <span class="body-16-eb">5,500P</span>
-      <Button class="w-fit" size="lg" on:click={() => alert(`asdf`)}>유료분량 구매하고 포스트 소장하기</Button>
+      <span class="body-16-eb">{comma(node.attrs.data.pointAmount)} P</span>
+      <Button
+        class="w-fit"
+        size="lg"
+        on:click={async () => {
+          await purchasePost({
+            postId: node.attrs.data.postId,
+            revisionId: node.attrs.data.revisionId,
+          });
+        }}
+      >
+        유료분량 구매하고 포스트 소장하기
+      </Button>
       <!-- prettier-ignore -->
       <p class="body-13-m text-secondary py-0!">
-        글 <mark class="text-blue-50">29,193</mark>자,
-        이미지 <mark class="text-blue-50">5</mark>장,
-        파일 <mark class="text-blue-50">2</mark>개,
-        읽는 시간 약 <mark class="text-blue-50">3</mark>분
+        글 <mark class="text-blue-50">{comma(node.attrs.data.characterCount)}</mark>자,
+        이미지 <mark class="text-blue-50">{comma(node.attrs.data.imageCount)}</mark>장,
+        파일 <mark class="text-blue-50">{comma(node.attrs.data.fileCount)}</mark>개,
+        읽는 시간 약 <mark class="text-blue-50">{comma(node.attrs.data.readingTime)}</mark>분
       </p>
     </div>
+  </NodeView>
+{:else}
+  <NodeView class="flex items-center gap-4 my-4">
+    <div class="border-t grow" />
+    <div class="text-gray-50 text-sm">
+      여기부터 유료 분량
+      {#if node.attrs.data.purchasedAt}
+        ({dayjs(node.attrs.data.purchasedAt).formatAsDate()} 구매함)
+      {/if}
+    </div>
+    <div class="border-t grow" />
   </NodeView>
 {/if}
 
