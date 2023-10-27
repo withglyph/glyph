@@ -87,20 +87,19 @@ model PointTransaction {
 }
 
 model Post {
-  id          String      @id
-  permalink   String      @unique
-  spaceId     String      @map("space_id")
-  space       Space       @relation(fields: [spaceId], references: [id])
-  memberId    String      @map("member_id")
-  member      SpaceMember @relation(fields: [memberId], references: [id])
-  userId      String      @map("user_id")
-  user        User        @relation(fields: [userId], references: [id])
-  optionId    String      @unique @map("option_id")
-  option      PostOption  @relation(fields: [optionId], references: [id])
-  kind        PostKind
-  state       PostState
-  pointAmount Int?        @map("point_amount")
-  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  id        String      @id
+  permalink String      @unique
+  spaceId   String      @map("space_id")
+  space     Space       @relation(fields: [spaceId], references: [id])
+  memberId  String      @map("member_id")
+  member    SpaceMember @relation(fields: [memberId], references: [id])
+  userId    String      @map("user_id")
+  user      User        @relation(fields: [userId], references: [id])
+  optionId  String      @unique @map("option_id")
+  option    PostOption  @relation(fields: [optionId], references: [id])
+  kind      PostKind
+  state     PostState
+  createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz
 
   likes     PostLike[]
   revisions PostRevision[]
@@ -126,6 +125,7 @@ model PostOption {
   id                     String                  @id
   visibility             PostVisibility
   contentFilters         ContentFilterCategory[] @map("content_filters")
+  pointAmount            Int?                    @map("point_amount")
   discloseStats          Boolean                 @map("disclose_stats")
   receiveFeedback        Boolean                 @map("receive_feedback")
   receivePatronage       Boolean                 @map("receive_patronage")
@@ -147,6 +147,7 @@ model PostPurchase {
   user       User         @relation(fields: [userId], references: [id])
   createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz
 
+  @@unique([postId, userId])
   @@map("post_purchases")
 }
 
@@ -164,6 +165,7 @@ model PostRevision {
   title           String
   subtitle        String?
   content         Json
+  paidContent     Json?            @map("paid_content")
   thumbnailBounds Json?            @map("thumbnail_bounds")
   createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz
 

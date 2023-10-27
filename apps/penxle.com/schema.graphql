@@ -149,6 +149,7 @@ type Mutation {
   muteSpace(input: MuteSpaceInput!): Space!
   prepareImageUpload: PrepareImageUploadResult!
   purchasePoint(input: PurchasePointInput!): PointPurchase!
+  purchasePost(input: PurchasePostInput!): Post!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
   revisePost(input: RevisePostInput!): Post!
   unfollowSpace(input: UnfollowSpaceInput!): Space!
@@ -295,6 +296,11 @@ input PurchasePointInput {
   pointAmount: Int!
 }
 
+input PurchasePostInput {
+  postId: ID!
+  revisionId: ID!
+}
+
 type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
@@ -318,6 +324,7 @@ input RemoveSpaceMemberInput {
 input RevisePostInput {
   content: JSON!
   coverImageId: ID
+  pointAmount: Int
   postId: ID
   revisionKind: PostRevisionKind!
   spaceId: ID!

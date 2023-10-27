@@ -1,8 +1,11 @@
 import { PostRevisionKind, PostVisibility } from '@prisma/client';
+import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
-import { IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
+import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
+import { createTiptapDocument, createTiptapNode, deductUserPoint, getUserPoint } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { builder } from '../builder';
+import type { JSONContent } from '@tiptap/core';
 
 /**
  * * Types
@@ -30,7 +33,10 @@ builder.prismaObject('Post', {
         },
       },
     });
-    return member?.role === 'ADMIN' ? ['$post:edit'] : [];
+    if (member?.role === 'ADMIN') {
+      return ['$post:edit'];
+    }
+    return [];
   },
   fields: (t) => ({
     id: t.exposeID('id'),
@@ -48,6 +54,7 @@ builder.prismaObject('Post', {
       }),
       resolve: (_, { revisions }) => revisions[0],
     }),
+
     revisionList: t.relation('revisions', {
       authScopes: { $granted: '$post:edit' },
       query: {
@@ -99,10 +106,86 @@ builder.prismaObject('PostRevision', {
 
     content: t.field({
       type: 'JSON',
-      select: { content: true },
-      resolve: ({ content }) => {
-        // TODO: 유료분량 처리
-        return content;
+      select: {
+        postId: true,
+        content: true,
+        paidContent: true,
+        post: { select: { spaceId: true, option: { select: { pointAmount: true } } } },
+      },
+      resolve: async (revision, _, { db, ...context }) => {
+        const content = revision.content as JSONContent[];
+        const paidContent = revision.paidContent as JSONContent[] | null;
+
+        if (!paidContent) {
+          return createTiptapDocument(content);
+        }
+
+        if (context.session) {
+          const purchase = await db.postPurchase.findUnique({
+            select: { createdAt: true },
+            where: {
+              postId_userId: {
+                postId: revision.postId,
+                userId: context.session.userId,
+              },
+            },
+          });
+
+          if (purchase) {
+            return createTiptapDocument([
+              ...content,
+              createTiptapNode({
+                type: 'access_barrier',
+                attrs: {
+                  data: {
+                    purchaseable: false,
+                    purchasedAt: dayjs(purchase.createdAt).toISOString(),
+                  },
+                },
+              }),
+              ...paidContent,
+            ]);
+          }
+
+          const isMember = await db.spaceMember.exists({
+            where: {
+              spaceId: revision.post.spaceId,
+              userId: context.session.userId,
+            },
+          });
+
+          if (isMember) {
+            return createTiptapDocument([
+              ...content,
+              createTiptapNode({
+                type: 'access_barrier',
+                attrs: { data: { purchaseable: false } },
+              }),
+              ...paidContent,
+            ]);
+          }
+        }
+
+        return createTiptapDocument([
+          ...content,
+          createTiptapNode({
+            type: 'access_barrier',
+            attrs: {
+              data: {
+                purchaseable: true,
+                pointAmount: revision.post.option.pointAmount,
+                loggedIn: !!context.session,
+                currentPoint: context.session ? await getUserPoint({ db, userId: context.session.userId }) : 0,
+                postId: revision.postId,
+                revisionId: revision.id,
+                characterCount: 4242,
+                imageCount: 42,
+                fileCount: 42,
+                readingTime: 42,
+              },
+            },
+          }),
+        ]);
       },
     }),
 
@@ -129,6 +212,8 @@ const RevisePostInput = builder.inputType('RevisePostInput', {
     thumbnailId: t.id({ required: false }),
     thumbnailBounds: t.field({ type: 'JSON', required: false }),
     coverImageId: t.id({ required: false }),
+
+    pointAmount: t.int({ required: false }),
   }),
 });
 
@@ -158,6 +243,13 @@ const LikePostInput = builder.inputType('LikePostInput', {
 const UnlikePostInput = builder.inputType('UnlikePostInput', {
   fields: (t) => ({
     postId: t.id(),
+  }),
+});
+
+const PurchasePostInput = builder.inputType('PurchasePostInput', {
+  fields: (t) => ({
+    postId: t.id(),
+    revisionId: t.id(),
   }),
 });
 
@@ -260,6 +352,15 @@ builder.mutationFields((t) => ({
         }
       }
 
+      const document = (input.content as JSONContent).content;
+      if (!document) {
+        throw new FormValidationError('content', '잘못된 내용이에요');
+      }
+
+      const accessBarrierPosition = document.findIndex((node) => node.type === 'access_barrier');
+      const content = accessBarrierPosition === -1 ? document : document.slice(0, accessBarrierPosition);
+      const paidContent = accessBarrierPosition === -1 ? undefined : document.slice(accessBarrierPosition + 1);
+
       const postId = input.postId ?? createId();
 
       const revision = {
@@ -267,7 +368,8 @@ builder.mutationFields((t) => ({
         kind: input.revisionKind,
         title: input.title,
         subtitle: input.subtitle,
-        content: input.content as JSON,
+        content,
+        paidContent,
         thumbnailId: input.thumbnailId,
         thumbnailBounds: input.thumbnailBounds ?? undefined,
         coverImageId: input.coverImageId,
@@ -279,6 +381,7 @@ builder.mutationFields((t) => ({
         receiveFeedback: true,
         receivePatronage: true,
         receiveTagContribution: true,
+        pointAmount: input.pointAmount,
       } as const;
 
       return await db.post.upsert({
@@ -325,6 +428,7 @@ builder.mutationFields((t) => ({
             },
           },
         });
+
         if (meAsMember.role !== 'ADMIN') {
           throw new PermissionDeniedError();
         }
@@ -359,10 +463,12 @@ builder.mutationFields((t) => ({
             },
           },
         });
+
         if (meAsMember.role !== 'ADMIN') {
           throw new PermissionDeniedError();
         }
       }
+
       return await db.post.update({
         ...query,
         where: { id: post.id },
@@ -417,6 +523,75 @@ builder.mutationFields((t) => ({
             },
           },
         },
+      });
+    },
+  }),
+
+  purchasePost: t.withAuth({ user: true }).prismaField({
+    type: 'Post',
+    args: { input: t.arg({ type: PurchasePostInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const post = await db.post.findUniqueOrThrow({
+        select: {
+          id: true,
+          userId: true,
+          option: {
+            select: {
+              pointAmount: true,
+            },
+          },
+        },
+        where: { id: input.postId },
+      });
+
+      if (post.userId === context.session.userId || post.option.pointAmount === null) {
+        throw new IntentionalError('구매할 수 없는 포스트에요');
+      }
+
+      const isAlreadyPurchased = await db.postPurchase.exists({
+        where: {
+          postId: input.postId,
+          userId: context.session.userId,
+        },
+      });
+
+      if (isAlreadyPurchased) {
+        throw new IntentionalError('이미 구매한 포스트에요');
+      }
+
+      const revision = await db.postRevision.findFirstOrThrow({
+        select: { id: true },
+        where: {
+          postId: post.id,
+          kind: 'PUBLISHED',
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      if (revision.id !== input.revisionId) {
+        throw new IntentionalError('포스트 내용이 변경되었어요. 다시 시도해 주세요');
+      }
+
+      const purchase = await db.postPurchase.create({
+        data: {
+          id: createId(),
+          userId: context.session.userId,
+          postId: input.postId,
+          revisionId: revision.id,
+        },
+      });
+
+      await deductUserPoint({
+        db,
+        userId: context.session.userId,
+        amount: post.option.pointAmount,
+        targetId: purchase.id,
+        cause: 'PURCHASE',
+      });
+
+      return await db.post.findUniqueOrThrow({
+        ...query,
+        where: { id: input.postId },
       });
     },
   }),

@@ -20,6 +20,7 @@ export const AccessBarrier = createNodeView(Component, {
   addAttributes() {
     return {
       deleting: {},
+      data: {},
     };
   },
 

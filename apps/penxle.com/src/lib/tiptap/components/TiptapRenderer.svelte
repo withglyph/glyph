@@ -12,7 +12,9 @@
   export let editor: Editor | undefined = undefined;
 
   let element: HTMLElement;
+
   $: html = generateHTML(content, extensions);
+  $: editor?.commands.setContent(content);
 
   onMount(() => {
     editor = new Editor({
