@@ -8,17 +8,16 @@
   import Footer from '../../Footer.svelte';
   import Header from '../../Header.svelte';
   import SpaceListMenu from './SpaceListMenu.svelte';
+  import UpdateSpaceProfileModal from './UpdateSpaceProfileModal.svelte';
 
   let open = false;
+  let updateSpaceProfileOpen = false;
 
   $: query = graphql(`
     query SpaceSettingsLayout_Query($slug: String!) {
       ...DefaultLayout_Header_query
       ...SpaceSettingLayout_SpaceListMenu_query
-
-      me {
-        id
-      }
+      ...SpaceSettingLayout_UpdateSpaceProfileModal_query
 
       space(slug: $slug) {
         id
@@ -30,7 +29,7 @@
           ...Image_image
         }
 
-        meAsMember {
+        meAsMember @_required {
           id
 
           profile {
@@ -58,9 +57,7 @@
       <h1 class="font-extrabold mt-10">스페이스 관리</h1>
 
       <div class="space-y-3 my-5.5">
-        {#if $query.me}
-          <SpaceListMenu {$query} />
-        {/if}
+        <SpaceListMenu {$query} />
 
         <div class="py-2.5 px-2 flex items-center justify-between">
           {#if $query.space.meAsMember}
@@ -68,7 +65,13 @@
               <Avatar class="square-6! mr-3 grow-0 shrink-0 text-nowrap" $profile={$query.space.meAsMember.profile} />
               <span class="body-14-b truncate grow">{$query.space.meAsMember.profile.name}</span>
             </div>
-            <button class="text-secondary caption-12-m text-nowrap" type="button">수정</button>
+            <button
+              class="text-secondary caption-12-m text-nowrap"
+              type="button"
+              on:click={() => (updateSpaceProfileOpen = true)}
+            >
+              수정
+            </button>
           {/if}
         </div>
 
@@ -169,7 +172,6 @@
   <div class="bg-primary py-2 px-3 rounded-lg flex items-center justify-between mb-3">
     <div class="flex items-center gap-3">
       <Image class="square-12 rounded-xl" $image={$query.space.icon} />
-      <!-- <div class="bg-black square-12 rounded-xl" /> -->
       <div>
         <p class="body-15-b mb-1">{$query.space.name}</p>
         <div class="flex items-center gap-1 caption-12-m text-secondary">
@@ -193,7 +195,13 @@
         <Avatar class="square-6! mr-3 grow-0 shrink-0 text-nowrap" $profile={$query.space.meAsMember.profile} />
         <span class="body-14-b truncate grow">{$query.space.meAsMember.profile.name}</span>
       </div>
-      <button class="text-secondary caption-12-m text-nowrap" type="button">수정</button>
+      <button
+        class="text-secondary caption-12-m text-nowrap"
+        type="button"
+        on:click={() => (updateSpaceProfileOpen = true)}
+      >
+        수정
+      </button>
     {/if}
   </div>
 
@@ -264,3 +272,5 @@
     </ul>
   </nav>
 </BottomSheet>
+
+<UpdateSpaceProfileModal {$query} bind:open={updateSpaceProfileOpen} />
