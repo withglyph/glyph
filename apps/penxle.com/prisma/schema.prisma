@@ -87,23 +87,25 @@ model PointTransaction {
 }
 
 model Post {
-  id        String      @id
-  permalink String      @unique
-  spaceId   String      @map("space_id")
-  space     Space       @relation(fields: [spaceId], references: [id])
-  memberId  String      @map("member_id")
-  member    SpaceMember @relation(fields: [memberId], references: [id])
-  userId    String      @map("user_id")
-  user      User        @relation(fields: [userId], references: [id])
-  optionId  String      @unique @map("option_id")
-  option    PostOption  @relation(fields: [optionId], references: [id])
-  kind      PostKind
-  state     PostState
-  createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  id          String      @id
+  permalink   String      @unique
+  spaceId     String      @map("space_id")
+  space       Space       @relation(fields: [spaceId], references: [id])
+  memberId    String      @map("member_id")
+  member      SpaceMember @relation(fields: [memberId], references: [id])
+  userId      String      @map("user_id")
+  user        User        @relation(fields: [userId], references: [id])
+  optionId    String      @unique @map("option_id")
+  option      PostOption  @relation(fields: [optionId], references: [id])
+  kind        PostKind
+  state       PostState
+  pointAmount Int?        @map("point_amount")
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz
 
   likes     PostLike[]
   revisions PostRevision[]
   views     PostView[]
+  purchases PostPurchase[]
 
   @@map("posts")
 }
@@ -135,6 +137,19 @@ model PostOption {
   @@map("post_options")
 }
 
+model PostPurchase {
+  id         String       @id
+  postId     String       @map("post_id")
+  post       Post         @relation(fields: [postId], references: [id])
+  revisionId String       @map("revision_id")
+  revision   PostRevision @relation(fields: [revisionId], references: [id])
+  userId     String       @map("user_id")
+  user       User         @relation(fields: [userId], references: [id])
+  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("post_purchases")
+}
+
 model PostRevision {
   id              String           @id
   postId          String           @map("post_id")
@@ -152,7 +167,8 @@ model PostRevision {
   thumbnailBounds Json?            @map("thumbnail_bounds")
   createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz
 
-  images PostRevisionImage[]
+  images    PostRevisionImage[]
+  purchases PostPurchase[]
 
   @@index([createdAt])
   @@map("post_revisions")
@@ -404,6 +420,7 @@ model User {
   likedPosts                     PostLike[]
   posts                          Post[]
   mutedSpaces                    UserSpaceMute[]
+  postPurchases                  PostPurchase[]
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
