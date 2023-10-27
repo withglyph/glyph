@@ -44,3 +44,9 @@ export const AcceptSpaceMemberInvitationSchema = z.object({
   profileAvatarId: z.string().optional(),
   profileName: profileName.optional(),
 });
+
+export const UpdateSpaceProfileSchema = z.object({
+  spaceId: z.string(),
+  profileName,
+  profileAvatarId: z.string(),
+});

@@ -71,8 +71,8 @@
   <input name="token" type="hidden" value={$page.url.searchParams.get('token')} />
 
   <FormField name="name" label="닉네임">
-    <TextInput class="w-full font-bold" maxlength={10} placeholder="닉네임 입력">
-      <span slot="right-icon" class="body-14-m text-disabled">{$data.name.length} / 10</span>
+    <TextInput class="w-full font-bold" maxlength={20} placeholder="닉네임 입력">
+      <span slot="right-icon" class="body-14-m text-disabled">{$data.name.length} / 20</span>
     </TextInput>
   </FormField>
 
