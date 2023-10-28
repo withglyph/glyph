@@ -47,15 +47,6 @@
     },
   });
 
-  // const purchasePoint = graphql(`
-  //   mutation PointPurchasePage_PurchasePoint_Mutation($input: PurchasePointInput!) {
-  //     purchasePoint(input: $input) {
-  //       id
-  //       paymentData
-  //     }
-  //   }
-  // `);
-
   const pointAmounts = [1000, 3000, 5000, 10_000, 30_000, 50_000, 100_000];
   const paymentMethods: [PaymentMethod, string][] = [
     ['CREDIT_CARD', '신용카드'],
@@ -98,12 +89,7 @@
           type="button"
           on:click={() => ($data.pointAmount = amount)}
         >
-          <input
-            name={`${amount}`}
-            class="mr-6 square-4 cursor-pointer"
-            checked={$data.pointAmount === amount}
-            type="radio"
-          />
+          <input class="mr-6 square-4 cursor-pointer" checked={$data.pointAmount === amount} type="radio" />
           <label class="grow body-16-b cursor-pointer" for={`${amount}`}>{comma(amount)}P</label>
           <div>{comma(amount)}원</div>
         </button>
