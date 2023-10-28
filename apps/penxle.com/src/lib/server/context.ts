@@ -31,7 +31,7 @@ export type UserContext = {
 export type Context = RequestEvent & App.Locals & DefaultContext & Partial<UserContext>;
 
 export const createContext = async (context: RequestEvent): Promise<Context> => {
-  const db = await prismaClient.$begin({ isolation: 'RepeatableRead' });
+  const db = await prismaClient.$begin({ isolation: 'ReadCommitted' });
   let deviceId = context.cookies.get('penxle-did');
   if (!deviceId) {
     deviceId = nanoid(32);
