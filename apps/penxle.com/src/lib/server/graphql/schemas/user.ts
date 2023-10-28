@@ -20,7 +20,7 @@ import { sendEmail } from '$lib/server/email';
 import { LoginUser, UpdateUserEmail } from '$lib/server/email/templates';
 import { AuthScope, UserSingleSignOnAuthorizationType } from '$lib/server/enums';
 import { google, naver } from '$lib/server/external-api';
-import { createAccessToken, createRandomAvatar, directUploadImage } from '$lib/server/utils';
+import { createAccessToken, createRandomAvatar, directUploadImage, getUserPoint } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import {
   CreateUserSchema,
@@ -72,12 +72,7 @@ builder.prismaObject('User', {
 
     point: t.int({
       resolve: async (user, _, { db }) => {
-        const agg = await db.pointBalance.aggregate({
-          _sum: { leftover: true },
-          where: { userId: user.id },
-        });
-
-        return agg._sum.leftover ?? 0;
+        return getUserPoint({ db, userId: user.id });
       },
     }),
 
