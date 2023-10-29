@@ -18,9 +18,9 @@
     "@penxle/tracing": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@penxle/ui": "workspace:^",
-    "@pulumi/pulumi": "^3.89.0",
-    "@sveltejs/kit": "^1.26.0",
-    "@types/node": "^20.8.7",
+    "@pulumi/pulumi": "^3.91.1",
+    "@sveltejs/kit": "^1.27.2",
+    "@types/node": "^20.8.9",
     "clsx": "^2.0.0",
     "lightningcss": "^1.22.0",
     "mdsvex": "^0.11.0",
@@ -29,7 +29,7 @@
     "svelte-check": "^3.5.2",
     "tsx": "^3.14.0",
     "typescript": "^5.2.2",
-    "unocss": "^0.56.5",
+    "unocss": "^0.57.1",
     "vite": "^4.5.0",
     "vite-plugin-dynamic-import": "^1.5.0"
   }
