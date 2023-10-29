@@ -7,26 +7,36 @@
   type $$Props = NodeViewProps;
   $$restProps;
 
-  export let deleteNode: () => void;
-  export let updateAttributes: (attributes: Record<string, unknown>) => void;
+  export let deleteNode: NodeViewProps['deleteNode'];
+  export let updateAttributes: NodeViewProps['updateAttributes'];
+  export let editor: NodeViewProps['editor'];
 
   let open = false;
+
+  const postId = editor.view.dom.dataset.postId;
+  const revisionId = editor.view.dom.dataset.revisionId;
 </script>
 
-<NodeView class="my-4 flex center gap-4 border px-8 py-4" data-drag-handle>
+<NodeView class="my-4 flex center gap-4 border px-8 py-4" {...editor.isEditable ? { 'data-drag-handle': true } : null}>
   <span class="i-lc-gift square-8" />
+
   <div class="flex grow flex-col">
     <div class="font-bold">결제 상자</div>
     <div class="text-sm text-gray-50">이 상자 아래로는 결제를 해야 읽을 수 있어요.</div>
   </div>
-  <span class="i-lc-grip-vertical square-6 text-gray-20" />
-  <button
-    class="group square-8 flex center rounded transition duration-300 hover:bg-gray-5"
-    type="button"
-    on:click={() => (open = true)}
-  >
-    <span class="i-lc-x square-6 text-gray-20 transition duration-300 group-hover:text-gray-30" />
-  </button>
+
+  {#if editor.isEditable}
+    <span class="i-lc-grip-vertical square-6 text-gray-20" />
+    <button
+      class="group square-8 flex center rounded transition duration-300 hover:bg-gray-5"
+      type="button"
+      on:click={() => (open = true)}
+    >
+      <span class="i-lc-x square-6 text-gray-20 transition duration-300 group-hover:text-gray-30" />
+    </button>
+  {:else}
+    <Button on:click={() => alert(`postId: ${postId}\nrevisionId: ${revisionId}`)}>구매하기</Button>
+  {/if}
 </NodeView>
 
 <Modal bind:open>
