@@ -4,9 +4,9 @@
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
-  import type { SpaceDashboardPage_DeleteSpaceModal_space } from '$glitch';
+  import type { SpaceDashboardSettingsPage_DeleteSpaceModal_space } from '$glitch';
 
-  let _space: SpaceDashboardPage_DeleteSpaceModal_space;
+  let _space: SpaceDashboardSettingsPage_DeleteSpaceModal_space;
   export { _space as $space };
 
   export let open = false;
@@ -17,7 +17,7 @@
   $: space = fragment(
     _space,
     graphql(`
-      fragment SpaceDashboardPage_DeleteSpaceModal_space on Space {
+      fragment SpaceDashboardSettingsPage_DeleteSpaceModal_space on Space {
         id
         slug
         name
@@ -26,7 +26,7 @@
   );
 
   const deleteSpace = graphql(`
-    mutation SpaceDashboardPage_DeleteSpaceModal_DeleteSpace_Mutation($input: DeleteSpaceInput!) {
+    mutation SpaceDashboardSettingsPage_DeleteSpaceModal_DeleteSpace_Mutation($input: DeleteSpaceInput!) {
       deleteSpace(input: $input) {
         id
       }

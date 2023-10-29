@@ -10,7 +10,7 @@
   import { Document, HardBreak, Heading, Paragraph, Text } from '$lib/tiptap/nodes';
 
   $: query = graphql(`
-    query SpacePermalinkPage_Query($permalink: String!) {
+    query SpacePostPage_Query($permalink: String!) {
       post(permalink: $permalink) {
         id
         permalink

@@ -7,12 +7,12 @@
   import Image from '$lib/components/Image.svelte';
   import { portal } from '$lib/svelte/actions';
   import CreateSpaceModal from '../../CreateSpaceModal.svelte';
-  import type { SpaceSettingLayout_SpaceListMenu_query } from '$glitch';
+  import type { SpaceDashboardLayout_SpaceListMenu_query } from '$glitch';
 
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLDivElement;
 
-  let _query: SpaceSettingLayout_SpaceListMenu_query;
+  let _query: SpaceDashboardLayout_SpaceListMenu_query;
   export { _query as $query };
 
   let open = false;
@@ -21,7 +21,7 @@
   $: query = fragment(
     _query,
     graphql(`
-      fragment SpaceSettingLayout_SpaceListMenu_query on Query {
+      fragment SpaceDashboardLayout_SpaceListMenu_query on Query {
         me @_required {
           id
           ...DefaultLayout_CreateSpaceModal_user

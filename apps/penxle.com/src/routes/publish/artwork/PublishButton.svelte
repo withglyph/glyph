@@ -1,26 +1,13 @@
 <script lang="ts">
   import ky from 'ky';
-  import { fragment, graphql } from '$glitch';
+  import { graphql } from '$glitch';
   import { Button } from '$lib/components';
   import { trackable } from '$lib/svelte/store';
-  import type { SpacePublishArtworkPage_PublishButton_space } from '$glitch';
   import type { Artwork } from './types';
 
-  let _space: SpacePublishArtworkPage_PublishButton_space;
-  export { _space as $space };
   export let artworks: Artwork[];
 
   const loading = trackable();
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  $: space = fragment(
-    _space,
-    graphql(`
-      fragment SpacePublishArtworkPage_PublishButton_space on Space {
-        id
-      }
-    `),
-  );
 
   const prepareImageUpload = graphql(`
     mutation SpacePublishArtworkPage_PublishButton_PrepareImageUpload_Mutation {

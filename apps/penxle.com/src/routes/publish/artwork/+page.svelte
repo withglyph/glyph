@@ -9,13 +9,8 @@
   warnOnUnload();
 
   $: query = graphql(`
-    query SpacePublishArtworkPage_Query($slug: String!) {
+    query SpacePublishArtworkPage_Query {
       ...SpacePublishArtworkPage_Header_query
-
-      space(slug: $slug) {
-        id
-        ...SpacePublishArtworkPage_Header_space
-      }
     }
   `);
 
@@ -25,6 +20,6 @@
 <Helmet title="새 그림 업로드하기" />
 
 <main class="flex grow flex-col">
-  <Header {$query} $space={$query.space} bind:artworks />
+  <Header {$query} bind:artworks />
   <Images bind:artworks />
 </main>
