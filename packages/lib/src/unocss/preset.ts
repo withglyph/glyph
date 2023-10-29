@@ -30,7 +30,7 @@ export const presetPenxle = (): Preset<Theme> => ({
     [/^([^-]+)-(primary|secondary|tertiary|disabled|cardprimary|darkprimary)$/, ([, c, d]) => `${c}-${c}-${d}`],
     [
       /^(title|subtitle|body|bodylong|caption)-(\d+)-(eb|sb|b|m)$/,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       ([, t, d, w]) => {
         const fontWeight = {
           eb: 'extrabold',
@@ -38,6 +38,8 @@ export const presetPenxle = (): Preset<Theme> => ({
           b: 'bold',
           m: 'medium',
         }[w];
+
+        if (t === 'bodylong') return `text-[${d}px] font-${fontWeight} leading-[${Number(d) + 10}px]`;
 
         return `text-[${d}px] font-${fontWeight}`;
       },

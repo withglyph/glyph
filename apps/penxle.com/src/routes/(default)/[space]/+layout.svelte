@@ -4,16 +4,12 @@
   import Image from '$lib/components/Image.svelte';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { toast } from '$lib/notification';
-  import Footer from '../Footer.svelte';
-  import Header from '../Header.svelte';
   import LoginRequireModal from '../LoginRequireModal.svelte';
 
   let moveToLoginOpen = false;
 
   $: query = graphql(`
     query SpaceLayout_Query($slug: String!) {
-      ...DefaultLayout_Header_query
-
       me {
         id
       }
@@ -55,9 +51,7 @@
   `);
 </script>
 
-<Header {$query} />
-
-<main class="flex flex-col items-center">
+<main class="flex flex-col items-center w-full bg-cardprimary">
   <div class="pt-6 px-4 bg-cardprimary w-full max-w-200 sm:(flex gap-6) sm:mb-8">
     <div class="flex items-start justify-between">
       <Image class="square-15 rounded-2xl sm:(square-30 rounded-3xl mr-6)" $image={$query.space.icon} />
@@ -213,7 +207,5 @@
 
   <slot />
 </main>
-
-<Footer />
 
 <LoginRequireModal bind:open={moveToLoginOpen} />
