@@ -6,9 +6,9 @@
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { UpdateSpaceProfileSchema } from '$lib/validations';
-  import type { SpaceSettingLayout_UpdateSpaceProfileModal_query } from '$glitch';
+  import type { SpaceDashboardLayout_UpdateSpaceProfileModal_query } from '$glitch';
 
-  let _query: SpaceSettingLayout_UpdateSpaceProfileModal_query;
+  let _query: SpaceDashboardLayout_UpdateSpaceProfileModal_query;
   export { _query as $query };
   export let open = false;
 
@@ -17,7 +17,7 @@
   $: query = fragment(
     _query,
     graphql(`
-      fragment SpaceSettingLayout_UpdateSpaceProfileModal_query on Query {
+      fragment SpaceDashboardLayout_UpdateSpaceProfileModal_query on Query {
         me @_required {
           id
         }

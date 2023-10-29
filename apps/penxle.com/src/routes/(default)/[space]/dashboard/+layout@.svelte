@@ -14,10 +14,10 @@
   let updateSpaceProfileOpen = false;
 
   $: query = graphql(`
-    query SpaceSettingsLayout_Query($slug: String!) {
+    query SpaceDashboardLayout_Query($slug: String!) {
       ...DefaultLayout_Header_query
-      ...SpaceSettingLayout_SpaceListMenu_query
-      ...SpaceSettingLayout_UpdateSpaceProfileModal_query
+      ...SpaceDashboardLayout_SpaceListMenu_query
+      ...SpaceDashboardLayout_UpdateSpaceProfileModal_query
 
       space(slug: $slug) {
         id
@@ -75,14 +75,7 @@
           {/if}
         </div>
 
-        <Button
-          class="w-full"
-          color="tertiary"
-          href={`/${$query.space.slug}/publish/post`}
-          size="xl"
-          type="link"
-          variant="outlined"
-        >
+        <Button class="w-full" color="tertiary" href="/publish" size="xl" type="link" variant="outlined">
           새 포스트 작성하기
         </Button>
       </div>
@@ -105,9 +98,9 @@
             <a
               class={clsx(
                 'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-                $page.url.pathname === `/${$query.space.slug}/members` && 'bg-primary text-primary',
+                $page.url.pathname === `/${$query.space.slug}/dashboard/members` && 'bg-primary text-primary',
               )}
-              href="/{$query.space.slug}/members"
+              href="/{$query.space.slug}/dashboard/members"
             >
               <span class="i-lc-user square-5" />
               멤버 관리
@@ -117,9 +110,9 @@
             <a
               class={clsx(
                 'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-                $page.url.pathname === `/${$query.space.slug}/posts` && 'bg-primary text-primary',
+                $page.url.pathname === `/${$query.space.slug}/dashboard/posts` && 'bg-primary text-primary',
               )}
-              href="/{$query.space.slug}/posts"
+              href="/{$query.space.slug}/dashboard/posts"
             >
               <span class="i-lc-file-text square-5" />
               포스트 관리
@@ -129,9 +122,9 @@
             <a
               class={clsx(
                 'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-                $page.url.pathname === `/${$query.space.slug}/subscribers` && 'bg-primary text-primary',
+                $page.url.pathname === `/${$query.space.slug}/dashboard/subscribers` && 'bg-primary text-primary',
               )}
-              href="/{$query.space.slug}/subscribers"
+              href="/{$query.space.slug}/dashboard/subscribers"
             >
               <span class="i-lc-users square-5" />
               독자 관리
@@ -141,9 +134,9 @@
             <a
               class={clsx(
                 'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-                $page.url.pathname === `/${$query.space.slug}/settings` && 'bg-primary text-primary',
+                $page.url.pathname === `/${$query.space.slug}/dashboard/settings` && 'bg-primary text-primary',
               )}
-              href="/{$query.space.slug}/settings"
+              href="/{$query.space.slug}/dashboard/settings"
             >
               <span class="i-lc-settings square-5" />
               스페이스 설정
@@ -181,12 +174,7 @@
       </div>
     </div>
 
-    <a
-      class="py-1.5 px-3 rounded-12 bg-gray-80 text-gray-5 body-13-m text-nowrap"
-      href={`/${$query.space.slug}/publish/post`}
-    >
-      포스트 작성하기
-    </a>
+    <a class="py-1.5 px-3 rounded-12 bg-gray-80 text-gray-5 body-13-m text-nowrap" href="/publish">포스트 작성하기</a>
   </div>
 
   <div class="py-2.5 px-3 flex items-center justify-between">
@@ -225,9 +213,9 @@
         <a
           class={clsx(
             'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-            $page.url.pathname === `/${$query.space.slug}/members` && 'bg-primary text-primary',
+            $page.url.pathname === `/${$query.space.slug}/dashboard/members` && 'bg-primary text-primary',
           )}
-          href="/{$query.space.slug}/members"
+          href="/{$query.space.slug}/dashboard/members"
         >
           <span class="i-lc-user square-5" />
           멤버 관리
@@ -237,9 +225,9 @@
         <a
           class={clsx(
             'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-            $page.url.pathname === `/${$query.space.slug}/posts` && 'bg-primary text-primary',
+            $page.url.pathname === `/${$query.space.slug}/dashboard/posts` && 'bg-primary text-primary',
           )}
-          href="/{$query.space.slug}/posts"
+          href="/{$query.space.slug}/dashboard/posts"
         >
           <span class="i-lc-file-text square-5" />
           포스트 관리
@@ -249,9 +237,9 @@
         <a
           class={clsx(
             'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-            $page.url.pathname === `/${$query.space.slug}/subscribers` && 'bg-primary text-primary',
+            $page.url.pathname === `/${$query.space.slug}/dashboard/subscribers` && 'bg-primary text-primary',
           )}
-          href="/{$query.space.slug}/subscribers"
+          href="/{$query.space.slug}/dashboard/subscribers"
         >
           <span class="i-lc-users square-5" />
           독자 관리
@@ -261,9 +249,9 @@
         <a
           class={clsx(
             'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-            $page.url.pathname === `/${$query.space.slug}/settings` && 'bg-primary text-primary',
+            $page.url.pathname === `/${$query.space.slug}/dashboard/settings` && 'bg-primary text-primary',
           )}
-          href="/{$query.space.slug}/settings"
+          href="/{$query.space.slug}/dashboard/settings"
         >
           <span class="i-lc-settings square-5" />
           스페이스 설정

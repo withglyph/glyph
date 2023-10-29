@@ -20,7 +20,7 @@
   });
 
   $: query = graphql(`
-    query SpaceSettingMembersPage_Query($slug: String!) {
+    query SpaceDashboardMembersPage_Query($slug: String!) {
       space(slug: $slug) {
         id
         slug
@@ -55,7 +55,9 @@
 
   const { form } = createMutationForm({
     mutation: graphql(`
-      mutation SpaceSettingMembersPage_CreateSpaceMemberInvitation_Mutation($input: CreateSpaceMemberInvitationInput!) {
+      mutation SpaceDashboardMembersPage_CreateSpaceMemberInvitation_Mutation(
+        $input: CreateSpaceMemberInvitationInput!
+      ) {
         createSpaceMemberInvitation(input: $input) {
           id
           receivedEmail
@@ -77,7 +79,7 @@
   });
 
   const leaveSpace = graphql(`
-    mutation SpaceSettingMembersPage_LeaveSpace_Mutation($input: LeaveSpaceInput!) {
+    mutation SpaceDashboardMembersPage_LeaveSpace_Mutation($input: LeaveSpaceInput!) {
       leaveSpace(input: $input) {
         id
       }
@@ -85,7 +87,7 @@
   `);
 
   const removeSpaceMember = graphql(`
-    mutation SpaceSettingMembersPage_RemoveSpaceMember_Mutation($input: RemoveSpaceMemberInput!) {
+    mutation SpaceDashboardMembersPage_RemoveSpaceMember_Mutation($input: RemoveSpaceMemberInput!) {
       removeSpaceMember(input: $input) {
         id
       }

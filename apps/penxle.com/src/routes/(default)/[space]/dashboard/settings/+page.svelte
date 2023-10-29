@@ -23,7 +23,7 @@
   });
 
   $: query = graphql(`
-    query SpaceDashboardPage_Query($slug: String!) {
+    query SpaceDashboardSettingsPage_Query($slug: String!) {
       space(slug: $slug) {
         id
         slug
@@ -48,7 +48,7 @@
           }
         }
 
-        ...SpaceDashboardPage_DeleteSpaceModal_space
+        ...SpaceDashboardSettingsPage_DeleteSpaceModal_space
       }
     }
   `);
@@ -58,7 +58,7 @@
 
   const { form, data, setInitialValues, isSubmitting, handleSubmit } = createMutationForm({
     mutation: graphql(`
-      mutation SpaceSettingsPage_UpdateSpace_Mutation($input: UpdateSpaceInput!) {
+      mutation SpaceDashboardSettingsPage_UpdateSpace_Mutation($input: UpdateSpaceInput!) {
         updateSpace(input: $input) {
           id
           slug
@@ -76,7 +76,7 @@
     extra: () => ({ iconId: icon.id }),
     onSuccess: async () => {
       toast.success('스페이스 설정이 변경되었어요');
-      await goto(`/${$data.slug}/settings`);
+      await goto(`/${$data.slug}/dashboard/settings`);
     },
   });
 

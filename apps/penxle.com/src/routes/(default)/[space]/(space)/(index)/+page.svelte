@@ -6,18 +6,16 @@
       space(slug: $slug) {
         id
         slug
+
         posts {
           id
           permalink
-          option {
-            id
-            visibility
-          }
+          createdAt
+
           revision {
             id
             title
           }
-          createdAt
         }
       }
     }

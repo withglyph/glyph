@@ -4,7 +4,7 @@
   import Image from '$lib/components/Image.svelte';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { toast } from '$lib/notification';
-  import LoginRequireModal from '../LoginRequireModal.svelte';
+  import LoginRequireModal from '../../LoginRequireModal.svelte';
 
   let moveToLoginOpen = false;
 
@@ -87,14 +87,14 @@
     </div>
     <div class="flex self-start items-center gap-2 <sm:hidden">
       {#if $query.space.meAsMember}
-        <Button href={`/${$query.space.slug}/publish/post`} size="md" type="link">포스트 작성</Button>
+        <Button href="/publish" size="md" type="link">포스트 작성</Button>
         <Button color="tertiary" size="md" variant="outlined">
           <span class="i-lc-share mr-2" />
           공유하기
         </Button>
         <a
           class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
-          href={`/${$query.space.slug}/settings`}
+          href={`/${$query.space.slug}/dashboard`}
         >
           <span class="i-lc-settings square-6 text-secondary" />
         </a>
@@ -143,11 +143,11 @@
   </div>
   <div class="flex gap-2 w-full mt-6 mb-3 px-4 sm:hidden">
     {#if $query.space.meAsMember}
-      <Button class="<sm:w-full" href={`/${$query.space.slug}/publish/post`} size="xl" type="link">포스트 작성</Button>
+      <Button class="<sm:w-full" href="/publish" size="xl" type="link">포스트 작성</Button>
       <Button
         class="square-12.5"
         color="tertiary"
-        href={`/${$query.space.slug}/settings`}
+        href={`/${$query.space.slug}/dashboard`}
         size="xl"
         type="link"
         variant="outlined"
