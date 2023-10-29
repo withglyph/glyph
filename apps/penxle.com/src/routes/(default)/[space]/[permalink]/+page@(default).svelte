@@ -8,7 +8,6 @@
   import { Bold, Italic, Strike, TextColor, Underline } from '$lib/tiptap/marks';
   import { AccessBarrier } from '$lib/tiptap/node-views';
   import { Document, HardBreak, Heading, Paragraph, Text } from '$lib/tiptap/nodes';
-  import type { JSONContent } from '@tiptap/core';
 
   $: query = graphql(`
     query SpacePermalinkPage_Query($permalink: String!) {
@@ -45,13 +44,11 @@
   let editor: Editor | undefined;
   let element: HTMLElement;
 
-  $: content = $query.post.revision.content as JSONContent;
-
   onMount(() => {
     editor = new Editor({
-      editable: false,
       element,
-      content,
+      editable: false,
+      content: $query.post.revision.content,
       extensions: [
         // special nodes
         Document,
@@ -80,6 +77,12 @@
         AccessBarrier,
       ],
       injectCSS: false,
+      editorProps: {
+        attributes: {
+          'data-post-id': $query.post.id,
+          'data-revision-id': $query.post.revision.id,
+        },
+      },
     });
   });
 
@@ -104,5 +107,6 @@
       <p>{dayjs($query.post.revision.createdAt).formatAsDate()}</p>
     </div>
   </header>
-  <article bind:this={element} />
+
+  <article bind:this={element} class="contents" />
 </article>

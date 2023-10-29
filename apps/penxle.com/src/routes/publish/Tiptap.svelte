@@ -11,7 +11,7 @@
   let element: HTMLDivElement;
   let _class: string;
   export { _class as class };
-  export let editor: Editor | undefined = undefined;
+  export let editor: Editor | undefined;
   export let value: JSONContent | undefined = undefined;
 
   const placeholder = '내용을 입력하세요.';

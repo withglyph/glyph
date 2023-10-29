@@ -10,25 +10,20 @@
   warnOnUnload();
 
   $: query = graphql(`
-    query SpacePublishPostPage_Query($slug: String!) {
-      ...SpacePublishPostPage_Header_query
-
-      space(slug: $slug) {
-        id
-        ...SpacePublishPostPage_Header_space
-      }
+    query PublishPage_Query {
+      ...PublishPage_Header_query
     }
   `);
 
-  let title: string | undefined;
-  let subtitle: string | undefined;
-  let editor: TiptapEditor | undefined;
+  let title: string;
+  let subtitle: string;
+  let editor: TiptapEditor;
 </script>
 
 <Helmet title="새 글 작성하기" />
 
 <main class="flex grow flex-col">
-  <Header {$query} $space={$query.space} bind:title bind:editor bind:subtitle />
+  <Header {$query} bind:title bind:editor bind:subtitle />
   <Editor bind:title bind:editor bind:subtitle />
   <Toolbar {editor} />
 </main>

@@ -5,9 +5,9 @@
   import Tiptap from './Tiptap.svelte';
   import type { Editor } from '@tiptap/core';
 
-  export let title: string | undefined;
-  export let subtitle: string | undefined;
-  export let editor: Editor | undefined;
+  export let title: string;
+  export let subtitle: string;
+  export let editor: Editor;
 
   let enableSubtitle = false;
   let enableCoverImage = false;
@@ -86,8 +86,6 @@
     </div>
   </div>
 </div>
-
-<!-- <hr class="mb-4 mt-8" /> -->
 
 <div class="mx-auto w-3xl flex grow">
   <Tiptap class="mt-4 max-w-full grow whitespace-pre-wrap" bind:editor />
