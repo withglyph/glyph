@@ -83,6 +83,7 @@ builder.prismaObject('Post', {
     space: t.relation('space'),
     option: t.relation('option'),
     likeCount: t.relationCount('likes'),
+    viewCount: t.relationCount('views'),
   }),
 });
 
@@ -257,6 +258,12 @@ const PurchasePostInput = builder.inputType('PurchasePostInput', {
   fields: (t) => ({
     postId: t.id(),
     revisionId: t.id(),
+  }),
+});
+
+const UpdatePostViewInput = builder.inputType('UpdatePostViewInput', {
+  fields: (t) => ({
+    postId: t.id(),
   }),
 });
 
@@ -604,6 +611,40 @@ builder.mutationFields((t) => ({
         ...query,
         where: { id: input.postId },
       });
+    },
+  }),
+
+  updatePostView: t.field({
+    type: 'Void',
+    nullable: true,
+    args: { input: t.arg({ type: UpdatePostViewInput }) },
+    resolve: async (_, { input }, { db, ...context }) => {
+      const view = await db.postView.findFirst({
+        select: { id: true },
+        where: {
+          postId: input.postId,
+          userId: context.session ? context.session.userId : undefined,
+          deviceId: context.session ? undefined : context.deviceId,
+        },
+      });
+      if (view) {
+        await db.postView.update({
+          where: { id: view.id },
+          data: {
+            deviceId: context.deviceId,
+            viewedAt: new Date(),
+          },
+        });
+      } else {
+        await db.postView.create({
+          data: {
+            id: createId(),
+            postId: input.postId,
+            userId: context.session?.userId,
+            deviceId: context.deviceId,
+          },
+        });
+      }
     },
   }),
 }));
