@@ -122,6 +122,19 @@ builder.prismaObject('User', {
       args: { state: t.arg({ type: SpaceMemberInvitationState, required: false }) },
       query: ({ state }) => ({ where: { state: state ?? undefined } }),
     }),
+
+    mutedSpaces: t.prismaField({
+      type: ['Space'],
+      select: (_, __, nestedSelection) => ({
+        mutedSpaces: {
+          select: { space: nestedSelection() },
+          where: {
+            space: { state: 'ACTIVE' },
+          },
+        },
+      }),
+      resolve: (_, { mutedSpaces }) => mutedSpaces.map(({ space }) => space),
+    }),
   }),
 });
 

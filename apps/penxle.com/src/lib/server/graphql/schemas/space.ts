@@ -122,6 +122,21 @@ builder.prismaObject('Space', {
     }),
 
     visibility: t.expose('visibility', { type: SpaceVisibility }),
+    muted: t.field({
+      type: 'Boolean',
+      resolve: async (space, _, { db, ...context }) => {
+        if (!context.session) {
+          return false;
+        }
+
+        return db.userSpaceMute.exists({
+          where: {
+            userId: context.session.userId,
+            spaceId: space.id,
+          },
+        });
+      },
+    }),
   }),
 });
 
@@ -281,6 +296,18 @@ const FollowSpaceInput = builder.inputType('FollowSpaceInput', {
 });
 
 const UnfollowSpaceInput = builder.inputType('UnfollowSpaceInput', {
+  fields: (t) => ({
+    spaceId: t.id(),
+  }),
+});
+
+const MuteSpaceInput = builder.inputType('MuteSpaceInput', {
+  fields: (t) => ({
+    spaceId: t.id(),
+  }),
+});
+
+const UnmuteSpaceInput = builder.inputType('UnmuteSpaceInput', {
   fields: (t) => ({
     spaceId: t.id(),
   }),
@@ -842,6 +869,48 @@ builder.mutationFields((t) => ({
       return db.space.findUniqueOrThrow({
         ...query,
         where: { id: space.id },
+      });
+    },
+  }),
+
+  muteSpace: t.withAuth({ user: true }).prismaField({
+    type: 'Space',
+    args: { input: t.arg({ type: MuteSpaceInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      await db.userSpaceMute.upsert({
+        where: {
+          userId_spaceId: {
+            userId: context.session.userId,
+            spaceId: input.spaceId,
+          },
+        },
+        create: {
+          id: createId(),
+          userId: context.session.userId,
+          spaceId: input.spaceId,
+        },
+        update: {},
+      });
+      return await db.space.findUniqueOrThrow({
+        ...query,
+        where: { id: input.spaceId },
+      });
+    },
+  }),
+
+  unmuteSpace: t.withAuth({ user: true }).prismaField({
+    type: 'Space',
+    args: { input: t.arg({ type: UnmuteSpaceInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      await db.userSpaceMute.deleteMany({
+        where: {
+          userId: context.session.userId,
+          spaceId: input.spaceId,
+        },
+      });
+      return await db.space.findUniqueOrThrow({
+        ...query,
+        where: { id: input.spaceId },
       });
     },
   }),
