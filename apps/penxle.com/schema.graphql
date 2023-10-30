@@ -146,6 +146,7 @@ type Mutation {
   likePost(input: LikePostInput!): Post!
   loginUser(input: LoginUserInput!): UserEmailVerification!
   logoutUser: Void
+  muteSpace(input: MuteSpaceInput!): Space!
   prepareImageUpload: PrepareImageUploadResult!
   purchasePoint(input: PurchasePointInput!): PointPurchase!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
@@ -153,6 +154,7 @@ type Mutation {
   unfollowSpace(input: UnfollowSpaceInput!): Space!
   unlikePost(input: UnlikePostInput!): Post!
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
+  unmuteSpace(input: UnmuteSpaceInput!): Space!
   updatePostOptions(input: UpdatePostOptionsInput!): Post!
   updateSpace(input: UpdateSpaceInput!): Space!
   updateSpaceProfile(input: UpdateSpaceProfileInput!): SpaceMember!
@@ -161,6 +163,10 @@ type Mutation {
   updateUserMarketingConsent(input: UpdateUserMarketingConsentInput!): User!
   updateUserNotificationPreference(input: UpdateUserNotificationPreferenceInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
+}
+
+input MuteSpaceInput {
+  spaceId: ID!
 }
 
 enum PaymentMethod {
@@ -330,6 +336,7 @@ type Space {
   invitations: [SpaceMemberInvitation!]!
   meAsMember: SpaceMember
   members: [SpaceMember!]!
+  muted: Boolean!
   name: String!
   posts: [Post!]!
   slug: String!
@@ -391,6 +398,10 @@ input UnlinkUserSingleSignOnInput {
   provider: UserSingleSignOnProvider!
 }
 
+input UnmuteSpaceInput {
+  spaceId: ID!
+}
+
 input UpdatePostOptionsInput {
   discloseStats: Boolean
   postId: ID!
@@ -445,6 +456,7 @@ type User {
   followedSpaces: [Space!]!
   id: ID!
   marketingConsent: UserMarketingConsent
+  mutedSpaces: [Space!]!
   notificationPreferences: [UserNotificationPreference!]!
   point: Int!
   profile: Profile!
