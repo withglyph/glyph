@@ -18,22 +18,14 @@ payment.get('/payment/callback', async (_, { db, ...context }) => {
     throw new Error(resp.message);
   }
 
-  const { userId } = await db.pointPurchase.findUniqueOrThrow({
-    select: { userId: true },
-    where: {
-      paymentKey: resp.response.merchant_uid,
-      state: 'PENDING',
-    },
+  let purchase = await db.pointPurchase.findUniqueOrThrow({
+    where: { paymentKey: resp.response.merchant_uid },
   });
 
-  await db.$lock(`USER_POINT_${userId}`);
+  await db.$lock(`USER_POINT_${purchase.userId}`);
 
-  const purchase = await db.pointPurchase.findUniqueOrThrow({
-    select: { id: true, userId: true, pointAmount: true, paymentKey: true },
-    where: {
-      paymentKey: resp.response.merchant_uid,
-      state: 'PENDING',
-    },
+  purchase = await db.pointPurchase.findUniqueOrThrow({
+    where: { paymentKey: resp.response.merchant_uid },
   });
 
   await db.pointPurchase.update({
@@ -41,7 +33,7 @@ payment.get('/payment/callback', async (_, { db, ...context }) => {
     data: { paymentResult: resp.response },
   });
 
-  if (resp.response.status === 'paid') {
+  if (resp.response.status === 'paid' && purchase.state === 'PENDING') {
     await db.pointBalance.create({
       data: {
         id: createId(),
@@ -101,22 +93,14 @@ payment.post('/payment/webhook', async (_, { db, ...context }) => {
     throw new Error(resp.message);
   }
 
-  const { userId } = await db.pointPurchase.findUniqueOrThrow({
-    select: { userId: true },
-    where: {
-      paymentKey: resp.response.merchant_uid,
-      state: 'PENDING',
-    },
+  let purchase = await db.pointPurchase.findUniqueOrThrow({
+    where: { paymentKey: resp.response.merchant_uid },
   });
 
-  await db.$lock(`USER_POINT_${userId}`);
+  await db.$lock(`USER_POINT_${purchase.userId}`);
 
-  const purchase = await db.pointPurchase.findUniqueOrThrow({
-    select: { id: true, userId: true, pointAmount: true },
-    where: {
-      paymentKey: resp.response.merchant_uid,
-      state: 'PENDING',
-    },
+  purchase = await db.pointPurchase.findUniqueOrThrow({
+    where: { paymentKey: resp.response.merchant_uid },
   });
 
   await db.pointPurchase.update({
@@ -124,7 +108,7 @@ payment.post('/payment/webhook', async (_, { db, ...context }) => {
     data: { paymentResult: resp.response },
   });
 
-  if (resp.response.status === 'paid') {
+  if (resp.response.status === 'paid' && purchase.state === 'PENDING') {
     await db.pointBalance.create({
       data: {
         id: createId(),
