@@ -15,6 +15,8 @@
   let _user: DefaultLayout_CreateSpaceModal_user;
   export { _user as $user };
 
+  let useSpaceProfile = true;
+
   $: user = fragment(
     _user,
     graphql(`
@@ -56,7 +58,7 @@
     extra: () => ({ profileAvatarId: avatar.id }),
     onSuccess: async ({ slug }) => {
       mixpanel.track('space:create');
-      toast.success('스페이스를 만들었어요.');
+      toast.success('스페이스를 만들었어요');
       await goto(`/${slug}`);
     },
   });
@@ -69,16 +71,10 @@
     isPublic: true,
   });
 
-  $: useSpaceProfile = $data.profileName !== $user.profile.name || $data.profileAvatarId !== avatar.id;
-
-  const handleCheckedChange = (event: Event) => {
-    const { checked } = event.currentTarget as HTMLInputElement;
-
-    if (!checked) {
-      setFields('profileName', $user.profile.name);
-      setFields('profileAvatarId', $user.profile.avatar.id);
-    }
-  };
+  $: if (!useSpaceProfile) {
+    setFields('profileName', undefined);
+    setFields('profileAvatarId', undefined);
+  }
 </script>
 
 <Modal bind:open>
@@ -105,28 +101,27 @@
       </div>
       <div class="flex items-center justify-between">
         <p class="body-16-b">스페이스 전용 프로필</p>
-        <Switch checked={useSpaceProfile} on:change={handleCheckedChange} />
+        <Switch bind:checked={useSpaceProfile} />
       </div>
-      {#if useSpaceProfile}
-        <p class="text-3.5 text-gray-50">스페이스 내에서만 사용되는 프로필이에요</p>
-      {/if}
     </div>
 
-    <div class="flex gap-3">
-      <button
-        class="bg-primary square-18.5 rounded-xl overflow-hidden grow-0"
-        type="button"
-        on:click={() => thumbnailPicker.show()}
-      >
-        <Image class="square-full" $image={avatar} />
-      </button>
+    {#if useSpaceProfile}
+      <div class="flex gap-3">
+        <button
+          class="bg-primary square-18.5 rounded-xl overflow-hidden grow-0"
+          type="button"
+          on:click={() => thumbnailPicker.show()}
+        >
+          <Image class="square-full" $image={avatar} />
+        </button>
 
-      <FormField name="profileName" class="grow" label="스페이스 닉네임">
-        <TextInput maxlength={20} placeholder="닉네임 입력">
-          <span slot="right-icon" class="body-14-m text-disabled">{$data.profileName?.length} / 20</span>
-        </TextInput>
-      </FormField>
-    </div>
+        <FormField name="profileName" class="grow" label="스페이스 닉네임">
+          <TextInput maxlength={20} placeholder="닉네임 입력">
+            <span slot="right-icon" class="body-14-m text-disabled">{$data.profileName?.length} / 20</span>
+          </TextInput>
+        </FormField>
+      </div>
+    {/if}
   </form>
 
   <Button slot="action" class="w-full" loading={$isSubmitting} size="xl" on:click={handleSubmit}>

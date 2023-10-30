@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fragment, graphql } from '$glitch';
   import { Button, Image, Modal } from '$lib/components';
-  import { FormField, TextInput } from '$lib/components/forms';
+  import { FormField, Switch, TextInput } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
@@ -13,6 +13,7 @@
   export let open = false;
 
   let thumbnailPicker: ThumbnailPicker;
+  let useSpaceProfile = true;
 
   $: query = fragment(
     _query,
@@ -46,12 +47,14 @@
   let avatar: typeof $query.space.meAsMember.profile.avatar;
   $: avatar = $query.space.meAsMember.profile.avatar;
 
-  const { form, data, setInitialValues } = createMutationForm({
+  const { form, handleSubmit, data, setInitialValues } = createMutationForm({
     mutation: graphql(`
       mutation SpaceSettingLayout_UpdateSpaceProfileModal_UpdateSpaceProfile_Mutation(
         $input: UpdateSpaceProfileInput!
       ) {
         updateSpaceProfile(input: $input) {
+          id
+
           profile {
             id
             name
@@ -76,6 +79,23 @@
     profileAvatarId: $query.space.meAsMember.profile.avatar.id,
     spaceId: $query.space.id,
   });
+
+  const deleteSpaceProfile = graphql(`
+    mutation SpaceSettingLayout_UpdateSpaceProfileModal_DeleteSpaceProfile_Mutation($input: DeleteSpaceProfileInput!) {
+      deleteSpaceProfile(input: $input) {
+        id
+
+        profile {
+          id
+          name
+
+          avatar {
+            id
+          }
+        }
+      }
+    }
+  `);
 </script>
 
 <Modal bind:open>
@@ -83,24 +103,42 @@
   <svelte:fragment slot="subtitle">스페이스에서만 보여질 프로필을 설정해요</svelte:fragment>
 
   <form use:form>
-    <button
-      class="bg-primary square-full max-w-95.5 rounded-6 flex flex-col center mb-3 overflow-hidden mx-auto"
-      type="button"
-      on:click={() => thumbnailPicker.show()}
-    >
-      <Image class="square-full" $image={avatar} />
-    </button>
-
-    <FormField name="profileName" label="닉네임">
-      <TextInput class="w-full font-bold" maxlength={20} placeholder="닉네임 입력">
-        <span slot="right-icon" class="body-14-m text-disabled">{$data.profileName?.length ?? 0} / 20</span>
-      </TextInput>
-    </FormField>
-
-    <div class="mt-4 flex gap-3">
-      <Button class="grow-0" color="tertiary" size="xl" variant="outlined">프로필 랜덤</Button>
-      <Button class="grow-1" size="xl" type="submit">프로필 저장하기</Button>
+    <div class="flex items-center justify-between mb-4">
+      <span class="body-16-b">스페이스 전용 프로필</span>
+      <Switch bind:checked={useSpaceProfile} />
     </div>
+    {#if useSpaceProfile}
+      <div class="flex gap-3 w-full">
+        <button
+          class="bg-primary square-19.25 rounded-xl flex center overflow-hidden"
+          type="button"
+          on:click={() => thumbnailPicker.show()}
+        >
+          <Image class="square-full" $image={avatar} />
+        </button>
+
+        <FormField name="profileName" class="grow" label="닉네임">
+          <TextInput maxlength={20} placeholder="닉네임 입력">
+            <span slot="right-icon" class="body-14-m text-disabled">{$data.profileName?.length ?? 0} / 20</span>
+          </TextInput>
+        </FormField>
+      </div>
+    {/if}
+
+    <Button
+      class="mt-4 w-full"
+      size="xl"
+      on:click={async () => {
+        if (useSpaceProfile) {
+          handleSubmit();
+        } else {
+          await deleteSpaceProfile({ spaceId: $query.space.id });
+          open = false;
+        }
+      }}
+    >
+      프로필 저장하기
+    </Button>
   </form>
 </Modal>
 
