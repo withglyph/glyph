@@ -10,7 +10,7 @@
   "dependencies": {
     "@actions/cache": "^3.2.2",
     "@actions/core": "^1.10.1",
-    "@aws-sdk/client-s3": "^3.438.0"
+    "@aws-sdk/client-s3": "^3.433.0"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
