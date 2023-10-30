@@ -232,6 +232,12 @@ const UpdateSpaceProfileInput = builder.inputType('UpdateSpaceProfileInput', {
   }),
 });
 
+const DeleteSpaceProfileInput = builder.inputType('DeleteSpaceProfileInput', {
+  fields: (t) => ({
+    spaceId: t.id(),
+  }),
+});
+
 const CreateSpaceMemberInvitationInput = builder.inputType('CreateSpaceMemberInvitationInput', {
   fields: (t) => ({
     spaceId: t.id(),
@@ -526,6 +532,32 @@ builder.mutationFields((t) => ({
                     avatarId: input.profileAvatarId,
                   },
                 },
+        },
+      });
+    },
+  }),
+
+  deleteSpaceProfile: t.withAuth({ user: true }).prismaField({
+    type: 'SpaceMember',
+    args: { input: t.arg({ type: DeleteSpaceProfileInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const me = await db.user.findUniqueOrThrow({
+        select: { id: true, profileId: true },
+        where: {
+          id: context.session.userId,
+        },
+      });
+      return db.spaceMember.update({
+        ...query,
+        where: {
+          spaceId_userId: {
+            spaceId: input.spaceId,
+            userId: context.session.userId,
+          },
+          state: 'ACTIVE',
+        },
+        data: {
+          profileId: me.profileId,
         },
       });
     },
