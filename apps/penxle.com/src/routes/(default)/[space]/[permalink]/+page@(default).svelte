@@ -15,6 +15,7 @@
         id
         permalink
         likeCount
+        liked
 
         space {
           id
@@ -96,6 +97,26 @@
   onDestroy(() => {
     editor?.destroy();
   });
+
+  const likePost = graphql(`
+    mutation SpacePostPage_LikePostMutation($input: LikePostInput!) {
+      likePost(input: $input) {
+        id
+        liked
+        likeCount
+      }
+    }
+  `);
+
+  const unlikePost = graphql(`
+    mutation SpacePostPage_UnlikePostMutation($input: UnlikePostInput!) {
+      unlikePost(input: $input) {
+        id
+        liked
+        likeCount
+      }
+    }
+  `);
 </script>
 
 <article class="w-full bg-cardprimary py-17">
@@ -165,8 +186,20 @@
     <hr class="w-full border-color-alphagray-10" />
 
     <div class="mt-2! flex items-center justify-between py-2">
-      <Button class="rounded-12! px-3! h-6!" color="tertiary" size="sm" variant="outlined">
-        <i class="i-px-heart square-4 mr-1" />
+      <Button
+        class="rounded-12! px-3! h-6!"
+        color="tertiary"
+        size="sm"
+        variant="outlined"
+        on:click={async () => {
+          await ($query.post.liked ? unlikePost({ postId: $query.post.id }) : likePost({ postId: $query.post.id }));
+        }}
+      >
+        {#if $query.post.liked}
+          <i class="i-px-heart-fill square-4 mr-1 text-red-50" />
+        {:else}
+          <i class="i-px-heart square-4 mr-1" />
+        {/if}
         <span class="body-15-b">{$query.post.likeCount}</span>
       </Button>
 
