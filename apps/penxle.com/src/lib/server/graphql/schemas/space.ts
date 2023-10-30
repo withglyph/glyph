@@ -117,6 +117,7 @@ builder.prismaObject('Space', {
               visibility: meAsMember ? undefined : 'PUBLIC',
             },
           },
+          orderBy: { createdAt: 'desc' },
         });
       },
     }),
