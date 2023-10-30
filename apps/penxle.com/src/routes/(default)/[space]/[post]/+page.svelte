@@ -1,16 +1,29 @@
 <script lang="ts">
+  import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import { Editor } from '@tiptap/core';
   import dayjs from 'dayjs';
-  import { onDestroy, onMount } from 'svelte';
+  import { onDestroy, onMount, tick } from 'svelte';
   import { graphql } from '$glitch';
   import { Avatar, Button, Image, Tag } from '$lib/components';
+  import { toast } from '$lib/notification';
+  import { portal } from '$lib/svelte/actions';
   import { DropCursor, GapCursor, History, Placeholder, TextAlign } from '$lib/tiptap/extensions';
   import { Bold, Italic, Strike, TextColor, Underline } from '$lib/tiptap/marks';
   import { AccessBarrier } from '$lib/tiptap/node-views';
   import { Document, HardBreak, Heading, Paragraph, Text } from '$lib/tiptap/nodes';
+  import LoginRequireModal from '../../LoginRequireModal.svelte';
+
+  let open = false;
+  let targetEl: HTMLButtonElement;
+  let menuEl: HTMLUListElement;
+  let loginRequireOpen = false;
 
   $: query = graphql(`
     query SpacePostPage_Query($permalink: String!) {
+      me {
+        id
+      }
+
       post(permalink: $permalink) {
         id
         permalink
@@ -21,10 +34,15 @@
           id
           name
           description
+          muted
 
           icon {
             id
             ...Image_image
+          }
+
+          meAsMember {
+            id
           }
         }
 
@@ -94,9 +112,23 @@
     });
   });
 
-  onDestroy(() => {
-    editor?.destroy();
-  });
+  const update = async () => {
+    await tick();
+
+    const position = await computePosition(targetEl, menuEl, {
+      placement: 'right',
+      middleware: [offset(4), flip(), shift({ padding: 8 })],
+    });
+
+    Object.assign(menuEl.style, {
+      left: `${position.x}px`,
+      top: `${position.y}px`,
+    });
+  };
+
+  $: if (open) {
+    void update();
+  }
 
   const likePost = graphql(`
     mutation SpacePostPage_LikePostMutation($input: LikePostInput!) {
@@ -117,6 +149,28 @@
       }
     }
   `);
+
+  const muteSpace = graphql(`
+    mutation SpacePostPage_MuteSpaceMutation($input: MuteSpaceInput!) {
+      muteSpace(input: $input) {
+        id
+        muted
+      }
+    }
+  `);
+
+  const unmuteSpace = graphql(`
+    mutation SpacePostPage_UnmuteSpaceMutation($input: UnmuteSpaceInput!) {
+      unmuteSpace(input: $input) {
+        id
+        muted
+      }
+    }
+  `);
+
+  onDestroy(() => {
+    editor?.destroy();
+  });
 </script>
 
 <article class="w-full bg-cardprimary py-17">
@@ -159,7 +213,66 @@
 
           <button class="i-lc-bookmark square-6" type="button" />
           <button class="i-lc-share square-6" type="button" />
-          <button class="i-lc-more-vertical square-6 text-icon-secondary" type="button" />
+          <button
+            bind:this={targetEl}
+            class="i-lc-more-vertical square-6 text-icon-secondary"
+            type="button"
+            on:click={() => (open = true)}
+          />
+
+          {#if open}
+            <div
+              class="fixed inset-0 z-49"
+              role="button"
+              tabindex="-1"
+              on:click={() => (open = false)}
+              on:keypress={null}
+              use:portal
+            />
+
+            <ul
+              bind:this={menuEl}
+              class="absolute z-50 w-64 flex flex-col border rounded bg-white p-2 shadow space-y-1"
+              use:portal
+            >
+              {#if !$query.post.space.meAsMember}
+                {#if $query.post.space.muted}
+                  <li>
+                    <button
+                      class="w-full px-4 py-3 rounded-lg body-14-m text-disabled hover:(body-14-sb text-primary bg-primary)"
+                      type="button"
+                      on:click={async () => {
+                        await unmuteSpace({ spaceId: $query.post.space.id });
+                        toast.success('스페이스 숨기기를 해제했어요');
+                        open = false;
+                      }}
+                    >
+                      스페이스 숨기기 해제
+                    </button>
+                  </li>
+                {:else}
+                  <li>
+                    <button
+                      class="w-full px-4 py-3 rounded-lg body-14-m text-disabled hover:(body-14-sb text-primary bg-primary)"
+                      type="button"
+                      on:click={async () => {
+                        if (!$query.me) {
+                          loginRequireOpen = true;
+                          return;
+                        }
+
+                        await muteSpace({ spaceId: $query.post.space.id });
+                        toast.success('스페이스를 숨겼어요');
+                        open = false;
+                      }}
+                    >
+                      스페이스 숨기기
+                    </button>
+                  </li>
+                {/if}
+              {/if}
+            </ul>
+          {/if}
         </div>
       </div>
     </header>
@@ -224,3 +337,5 @@
     </div>
   </div>
 </article>
+
+<LoginRequireModal bind:open={loginRequireOpen} />
