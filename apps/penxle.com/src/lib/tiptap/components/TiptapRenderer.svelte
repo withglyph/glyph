@@ -34,10 +34,8 @@
   });
 </script>
 
-<div bind:this={element} class="contents">
+<div bind:this={element} class={clsx(...(editor ? [] : ['ProseMirror', _class]))}>
   {#if !editor}
-    <div class={clsx('ProseMirror', _class)}>
-      {@html html}
-    </div>
+    {@html html}
   {/if}
 </div>
