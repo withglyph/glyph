@@ -157,6 +157,7 @@ type Mutation {
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
   unmuteSpace(input: UnmuteSpaceInput!): Space!
   updatePostOptions(input: UpdatePostOptionsInput!): Post!
+  updatePostView(input: UpdatePostViewInput!): Void
   updateSpace(input: UpdateSpaceInput!): Space!
   updateSpaceProfile(input: UpdateSpaceProfileInput!): SpaceMember!
   updateUserContentFilterPreference(input: UpdateUserContentFilterPreferenceInput!): User!
@@ -225,6 +226,7 @@ type Post {
   revision: PostRevision!
   revisionList: [PostRevision!]!
   space: Space!
+  viewCount: Int!
 }
 
 enum PostKind {
@@ -416,6 +418,10 @@ input UpdatePostOptionsInput {
   receivePatronage: Boolean
   receiveTagContribution: Boolean
   visibility: PostVisibility
+}
+
+input UpdatePostViewInput {
+  postId: ID!
 }
 
 input UpdateSpaceInput {
