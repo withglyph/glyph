@@ -106,8 +106,8 @@ builder.prismaObject('PostRevision', {
       },
     }),
 
-    thumbnail: t.relation('thumbnail'),
-    coverImage: t.relation('coverImage'),
+    thumbnail: t.relation('thumbnail', { nullable: true }),
+    coverImage: t.relation('coverImage', { nullable: true }),
   }),
 });
 
