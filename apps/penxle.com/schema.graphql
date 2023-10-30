@@ -65,6 +65,10 @@ input DeleteSpaceInput {
   spaceId: ID!
 }
 
+input DeleteSpaceProfileInput {
+  spaceId: ID!
+}
+
 input FinalizeImageUploadInput {
   bounds: JSON
   key: String!
@@ -132,6 +136,7 @@ type Mutation {
   createUser(input: CreateUserInput!): User!
   deletePost(input: DeletePostInput!): Post!
   deleteSpace(input: DeleteSpaceInput!): Space!
+  deleteSpaceProfile(input: DeleteSpaceProfileInput!): SpaceMember!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   followSpace(input: FollowSpaceInput!): Space!
   ignoreSpaceMemberInvitation(input: IgnoreSpaceMemberInvitationInput!): SpaceMemberInvitation!
