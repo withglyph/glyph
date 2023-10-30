@@ -238,12 +238,12 @@ type PostOption {
 
 type PostRevision {
   content: JSON!
-  coverImage: Image!
+  coverImage: Image
   createdAt: DateTime!
   id: ID!
   kind: PostRevisionKind!
   subtitle: String
-  thumbnail: Image!
+  thumbnail: Image
   thumbnailBounds: JSON
   title: String!
 }
