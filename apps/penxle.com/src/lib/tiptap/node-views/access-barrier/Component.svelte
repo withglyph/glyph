@@ -65,7 +65,7 @@
     </div>
   </Modal>
 {:else}
-  <NodeView class="border rounded-2xl border-dashed py-6 px-3 bg-gray-5/80 relative">
+  <NodeView class="rounded-2xl py-6 px-3 bg-gray-5/80 relative">
     <div class="-z-1 text-disabled">
       사랑의 노래하며 가치를 이것이야말로 얼음 끓는 내려온 같으며. 길지 피가 시들어 힘차게 주며, 인간의 보내는 않는
       그들을 때에. 피다. 그들의 가진 보배를 얼마나 수 약동하다. 두기 구하지 하였으며.
@@ -75,7 +75,7 @@
       약동하다.
     </div>
     <div
-      class="absolute backdrop-blur-3 rounded-2xl top-0 left-0 w-full h-100% flex flex-col center px-3 text-center space-y-2.5"
+      class="dash absolute backdrop-blur-3 rounded-2xl top-0 left-0 w-full h-100% flex flex-col center px-3 text-center space-y-2.5"
     >
       <span class="text-secondary body-15-sb">이 글의 다음 내용은 구매 후에 감상할 수 있어요</span>
       <span class="body-16-eb">5,500P</span>
@@ -92,3 +92,9 @@
     </div>
   </NodeView>
 {/if}
+
+<style>
+  .dash {
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%23A8A29E' stroke-width='2' stroke-dasharray='8%2c 16' stroke-dashoffset='12' stroke-linecap='square'/%3e%3c/svg%3e");
+  }
+</style>
