@@ -123,9 +123,9 @@ model PostLike {
 
 model PostOption {
   id                     String                  @id
+  price                  Int?
   visibility             PostVisibility
   contentFilters         ContentFilterCategory[] @map("content_filters")
-  pointAmount            Int?                    @map("point_amount")
   discloseStats          Boolean                 @map("disclose_stats")
   receiveFeedback        Boolean                 @map("receive_feedback")
   receivePatronage       Boolean                 @map("receive_patronage")

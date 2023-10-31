@@ -16,6 +16,8 @@
   export let updateAttributes: NodeViewProps['updateAttributes'] | undefined;
   export let editor: NodeViewProps['editor'] | undefined;
 
+  $: data = node.attrs.data;
+
   let open = false;
   let loginRequireOpen = false;
   let postPurchaseOpen = false;
@@ -79,7 +81,7 @@
       </Button>
     </div>
   </Modal>
-{:else if node.attrs.data.purchaseable}
+{:else if data.purchasable}
   <NodeView class="rounded-2xl py-6 px-3 bg-gray-5/80 relative">
     <div class="-z-1 text-disabled">
       사랑의 노래하며 가치를 이것이야말로 얼음 끓는 내려온 같으며. 길지 피가 시들어 힘차게 주며, 인간의 보내는 않는
@@ -93,17 +95,17 @@
       class="dash absolute backdrop-blur-3 rounded-2xl top-0 left-0 w-full h-100% flex flex-col center px-3 text-center space-y-2.5"
     >
       <span class="text-secondary body-15-sb">이 글의 다음 내용은 구매 후에 감상할 수 있어요</span>
-      <span class="body-16-eb">{comma(node.attrs.data.pointAmount)}P</span>
+      <span class="body-16-eb">{comma(data.price)}P</span>
       <Button
         class="w-fit"
         size="lg"
         on:click={() => {
-          if (!node.attrs.data.loggedIn) {
+          if (data.point === null) {
             loginRequireOpen = true;
             return;
           }
 
-          if (node.attrs.data.currentPoint < node.attrs.data.pointAmount) {
+          if (data.point < data.price) {
             pointPurchaseOpen = true;
           } else {
             postPurchaseOpen = true;
@@ -114,10 +116,10 @@
       </Button>
       <!-- prettier-ignore -->
       <p class="body-13-m text-secondary py-0!">
-        글 <mark class="text-blue-50">{comma(node.attrs.data.characterCount)}</mark>자,
-        이미지 <mark class="text-blue-50">{comma(node.attrs.data.imageCount)}</mark>장,
-        파일 <mark class="text-blue-50">{comma(node.attrs.data.fileCount)}</mark>개,
-        읽는 시간 약 <mark class="text-blue-50">{comma(node.attrs.data.readingTime)}</mark>분
+        글 <mark class="text-blue-50">{comma(data.counts.characters)}</mark>자,
+        이미지 <mark class="text-blue-50">{comma(data.counts.images)}</mark>장,
+        파일 <mark class="text-blue-50">{comma(data.counts.files)}</mark>개,
+        읽는 시간 약 <mark class="text-blue-50">{comma(Math.ceil(data.counts.characters / 60))}</mark>분
       </p>
     </div>
   </NodeView>
@@ -126,8 +128,8 @@
     <div class="border-t grow" />
     <div class="text-gray-50 text-sm">
       여기부터 유료 분량
-      {#if node.attrs.data.purchasedAt}
-        ({dayjs(node.attrs.data.purchasedAt).formatAsDate()} 구매함)
+      {#if data.purchasedAt}
+        ({dayjs(data.purchasedAt).formatAsDate()} 구매함)
       {/if}
     </div>
     <div class="border-t grow" />
@@ -136,7 +138,7 @@
 
 <Modal size="sm" bind:open={pointPurchaseOpen}>
   <svelte:fragment slot="title">보유중인 포인트가 부족해요</svelte:fragment>
-  <svelte:fragment slot="subtitle">보유중인 포인트 : {comma(node.attrs.data.currentPoint)}P</svelte:fragment>
+  <svelte:fragment slot="subtitle">보유중인 포인트 : {comma(data.point)}P</svelte:fragment>
 
   <div slot="action" class="w-full flex gap-3">
     <Button class="w-full" color="secondary" size="xl" on:click={() => (pointPurchaseOpen = false)}>돌아가기</Button>
@@ -146,11 +148,11 @@
 
 <Modal size="sm" bind:open={postPurchaseOpen}>
   <svelte:fragment slot="title">
-    {comma(node.attrs.data.pointAmount)}P를 사용하여
+    {comma(data.price)}P를 사용하여
     <br />
     포스트를 구매하시겠어요?
   </svelte:fragment>
-  <svelte:fragment slot="subtitle">보유중인 포인트 : {comma(node.attrs.data.currentPoint)}P</svelte:fragment>
+  <svelte:fragment slot="subtitle">보유중인 포인트 : {comma(data.point)}P</svelte:fragment>
 
   <div slot="action" class="w-full flex gap-3">
     <Button class="w-full" color="secondary" size="xl" on:click={() => (postPurchaseOpen = false)}>돌아가기</Button>
@@ -159,9 +161,10 @@
       size="xl"
       on:click={async () => {
         await purchasePost({
-          postId: node.attrs.data.postId,
-          revisionId: node.attrs.data.revisionId,
+          postId: data.postId,
+          revisionId: data.revisionId,
         });
+
         postPurchaseOpen = false;
       }}
     >
