@@ -84,3 +84,11 @@
 .prosemirror-drop-cursor {
   --uno: bg-brand-50;
 }
+
+/*
+  * reset
+*/
+
+.ProseMirror-focused {
+  --uno: outline-none;
+}
