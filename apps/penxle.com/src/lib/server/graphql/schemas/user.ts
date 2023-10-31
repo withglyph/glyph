@@ -130,6 +130,40 @@ builder.prismaObject('User', {
       }),
       resolve: (_, { mutedSpaces }) => mutedSpaces.map(({ space }) => space),
     }),
+
+    recentlyViewedPosts: t.prismaField({
+      type: ['Post'],
+      resolve: async (query, user, _, { db }) => {
+        const postView = await db.postView.findMany({
+          select: { post: query },
+          where: {
+            userId: user.id,
+            post: {
+              state: 'PUBLISHED',
+              AND: [
+                {
+                  OR: [
+                    { option: { visibility: 'PUBLIC' } },
+                    { option: { visibility: 'UNLISTED' } },
+                    {
+                      option: { visibility: 'SPACE' },
+                      space: { members: { some: { userId: user.id } } },
+                    },
+                  ],
+                },
+                {
+                  OR: [
+                    { space: { visibility: 'PUBLIC' } },
+                    { space: { visibility: 'PRIVATE', members: { some: { userId: user.id } } } },
+                  ],
+                },
+              ],
+            },
+          },
+        });
+        return postView.map(({ post }) => post);
+      },
+    }),
   }),
 });
 

@@ -485,6 +485,7 @@ type User {
   point: Int!
   profile: Profile!
   receivedSpaceMemberInvitations(state: SpaceMemberInvitationState): [SpaceMemberInvitation!]!
+  recentlyViewedPosts: [Post!]!
   singleSignOns: [UserSingleSignOn!]!
   spaces: [Space!]!
   state: UserState!
