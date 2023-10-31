@@ -2,7 +2,7 @@
   import { writable } from '@svelte-kits/store';
   import { fade } from 'svelte/transition';
   import { focused, hover } from '$lib/svelte/actions';
-  import Tiptap from './Tiptap.svelte';
+  import { TiptapEditor } from '$lib/tiptap/components';
   import type { Editor } from '@tiptap/core';
 
   export let title: string;
@@ -88,5 +88,5 @@
 </div>
 
 <div class="mx-auto w-3xl flex grow">
-  <Tiptap class="mt-4 max-w-full grow whitespace-pre-wrap" bind:editor />
+  <TiptapEditor class="mt-4 max-w-full grow whitespace-pre-wrap" bind:editor />
 </div>

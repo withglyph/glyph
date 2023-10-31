@@ -22,7 +22,7 @@ export const Placeholder = Extension.create({
               doc.descendants((node, pos) => {
                 decoration = Decoration.node(pos, pos + node.nodeSize, {
                   'class': 'is-editor-empty',
-                  'data-placeholder': '내용을 입력하세요.',
+                  'data-placeholder': '내용을 입력하세요',
                 });
               });
             }
