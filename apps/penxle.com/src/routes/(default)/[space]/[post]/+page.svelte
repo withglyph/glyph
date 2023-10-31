@@ -9,11 +9,13 @@
   import { TiptapRenderer } from '$lib/tiptap/components';
   import { humanizeNumber } from '$lib/utils';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
+  import { TextTip } from './text-tip';
 
   let open = false;
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLUListElement;
   let loginRequireOpen = false;
+  let articleEl: HTMLElement;
 
   $: query = graphql(`
     query SpacePostPage_Query($permalink: String!) {
@@ -128,7 +130,27 @@
   `);
 
   onMount(async () => {
+    const tooltip = new TextTip({
+      scope: articleEl,
+      buttons: [
+        {
+          title: '밑줄',
+          callback: () => {
+            //
+          },
+        },
+        {
+          title: '공유',
+          callback: () => {
+            //
+          },
+        },
+      ],
+    });
+
     await updatePostView({ postId: $query.post.id });
+
+    return tooltip.destroyEvents;
   });
 </script>
 
@@ -236,7 +258,7 @@
       </div>
     </header>
 
-    <article>
+    <article bind:this={articleEl}>
       <TiptapRenderer class="bodylong-16-m" content={$query.post.revision.content} />
     </article>
 
