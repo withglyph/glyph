@@ -7,21 +7,15 @@
   type $$Props = NodeViewProps;
   $$restProps;
 
-  export let deleteNode: NodeViewProps['deleteNode'];
-  export let updateAttributes: NodeViewProps['updateAttributes'];
-  export let editor: NodeViewProps['editor'];
+  export let deleteNode: NodeViewProps['deleteNode'] | undefined;
+  export let updateAttributes: NodeViewProps['updateAttributes'] | undefined;
+  export let editor: NodeViewProps['editor'] | undefined;
 
   let open = false;
-
-  const postId = editor.view.dom.dataset.postId;
-  const revisionId = editor.view.dom.dataset.revisionId;
 </script>
 
-{#if editor.isEditable}
-  <NodeView
-    class="my-4 flex center gap-4 border px-8 py-4"
-    {...editor.isEditable ? { 'data-drag-handle': true } : null}
-  >
+{#if editor?.isEditable}
+  <NodeView class="my-4 flex center gap-4 border px-8 py-4" data-drag-handle>
     <span class="i-lc-gift square-8" />
 
     <div class="flex grow flex-col">
@@ -55,8 +49,8 @@
         on:click={() => {
           open = false;
           setTimeout(() => {
-            updateAttributes({ deleting: true });
-            deleteNode();
+            updateAttributes?.({ deleting: true });
+            deleteNode?.();
           }, 150);
         }}
       >
@@ -79,9 +73,7 @@
     >
       <span class="text-secondary body-15-sb">이 글의 다음 내용은 구매 후에 감상할 수 있어요</span>
       <span class="body-16-eb">5,500P</span>
-      <Button class="w-fit" size="lg" on:click={() => alert(`postId: ${postId}\nrevisionId: ${revisionId}`)}>
-        유료분량 구매하고 포스트 소장하기
-      </Button>
+      <Button class="w-fit" size="lg" on:click={() => alert(`asdf`)}>유료분량 구매하고 포스트 소장하기</Button>
       <!-- prettier-ignore -->
       <p class="body-13-m text-secondary py-0!">
         글 <mark class="text-blue-50">29,193</mark>자,
