@@ -110,7 +110,7 @@ builder.prismaObject('PostRevision', {
         postId: true,
         content: true,
         paidContent: true,
-        post: { select: { spaceId: true, option: { select: { pointAmount: true } } } },
+        post: { select: { spaceId: true, option: { select: { price: true } } } },
       },
       resolve: async (revision, _, { db, ...context }) => {
         const content = revision.content as JSONContent[];
@@ -138,7 +138,11 @@ builder.prismaObject('PostRevision', {
                 type: 'access_barrier',
                 attrs: {
                   data: {
-                    purchaseable: false,
+                    purchasable: false,
+
+                    price: revision.post.option.price,
+                    point: await getUserPoint({ db, userId: context.session.userId }),
+
                     purchasedAt: dayjs(purchase.createdAt).toISOString(),
                   },
                 },
@@ -159,7 +163,7 @@ builder.prismaObject('PostRevision', {
               ...content,
               createTiptapNode({
                 type: 'access_barrier',
-                attrs: { data: { purchaseable: false } },
+                attrs: { data: { purchasable: false } },
               }),
               ...paidContent,
             ]);
@@ -172,16 +176,19 @@ builder.prismaObject('PostRevision', {
             type: 'access_barrier',
             attrs: {
               data: {
-                purchaseable: true,
-                pointAmount: revision.post.option.pointAmount,
-                loggedIn: !!context.session,
-                currentPoint: context.session ? await getUserPoint({ db, userId: context.session.userId }) : 0,
+                purchasable: true,
+
+                price: revision.post.option.price,
+                point: context.session ? await getUserPoint({ db, userId: context.session.userId }) : null,
+
                 postId: revision.postId,
                 revisionId: revision.id,
-                characterCount: 4242,
-                imageCount: 42,
-                fileCount: 42,
-                readingTime: 42,
+
+                counts: {
+                  characters: 42,
+                  images: 42,
+                  files: 42,
+                },
               },
             },
           }),
@@ -535,27 +542,31 @@ builder.mutationFields((t) => ({
         select: {
           id: true,
           userId: true,
-          option: {
-            select: {
-              pointAmount: true,
-            },
-          },
+          spaceId: true,
+          option: { select: { price: true } },
         },
         where: { id: input.postId },
       });
 
-      if (post.userId === context.session.userId || post.option.pointAmount === null) {
+      const isMember = await db.spaceMember.exists({
+        where: {
+          spaceId: post.spaceId,
+          userId: context.session.userId,
+        },
+      });
+
+      if (isMember || !post.option.price) {
         throw new IntentionalError('구매할 수 없는 포스트에요');
       }
 
-      const isAlreadyPurchased = await db.postPurchase.exists({
+      const purchased = await db.postPurchase.exists({
         where: {
           postId: input.postId,
           userId: context.session.userId,
         },
       });
 
-      if (isAlreadyPurchased) {
+      if (purchased) {
         throw new IntentionalError('이미 구매한 포스트에요');
       }
 
@@ -584,9 +595,9 @@ builder.mutationFields((t) => ({
       await deductUserPoint({
         db,
         userId: context.session.userId,
-        amount: post.option.pointAmount,
+        amount: post.option.price,
         targetId: purchase.id,
-        cause: 'PURCHASE',
+        cause: 'UNLOCK_CONTENT',
       });
 
       return await db.post.findUniqueOrThrow({
