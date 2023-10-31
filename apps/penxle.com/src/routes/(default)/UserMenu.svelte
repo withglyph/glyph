@@ -85,7 +85,7 @@
   />
 
   <div bind:this={menuEl} class="absolute z-50 w-64 flex flex-col border rounded bg-white py-2 shadow" use:portal>
-    <a class="flex items-center gap-2 px-4 py-2" href="/me/preferences">
+    <a class="flex items-center gap-2 px-4 py-2" href="/me/cabinets">
       <Avatar class="square-10" $profile={$user.profile} />
       <div class="flex flex-col">
         <div class="font-medium">
