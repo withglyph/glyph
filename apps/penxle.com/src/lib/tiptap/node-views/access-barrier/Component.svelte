@@ -5,6 +5,7 @@
   import Button from '$lib/components/Button.svelte';
   import { NodeView } from '$lib/tiptap';
   import { comma } from '$lib/utils';
+  import LoginRequireModal from '../../../../routes/(default)/LoginRequireModal.svelte';
   import type { NodeViewProps } from '$lib/tiptap';
 
   type $$Props = NodeViewProps;
@@ -16,6 +17,9 @@
   export let editor: NodeViewProps['editor'] | undefined;
 
   let open = false;
+  let loginRequireOpen = false;
+  let postPurchaseOpen = false;
+  let pointPurchaseOpen = false;
 
   const purchasePost = graphql(`
     mutation TiptapAccessBarrier_PurchasePost_Mutation($input: PurchasePostInput!) {
@@ -89,15 +93,21 @@
       class="dash absolute backdrop-blur-3 rounded-2xl top-0 left-0 w-full h-100% flex flex-col center px-3 text-center space-y-2.5"
     >
       <span class="text-secondary body-15-sb">이 글의 다음 내용은 구매 후에 감상할 수 있어요</span>
-      <span class="body-16-eb">{comma(node.attrs.data.pointAmount)} P</span>
+      <span class="body-16-eb">{comma(node.attrs.data.pointAmount)}P</span>
       <Button
         class="w-fit"
         size="lg"
-        on:click={async () => {
-          await purchasePost({
-            postId: node.attrs.data.postId,
-            revisionId: node.attrs.data.revisionId,
-          });
+        on:click={() => {
+          if (!node.attrs.data.loggedIn) {
+            loginRequireOpen = true;
+            return;
+          }
+
+          if (node.attrs.data.currentPoint < node.attrs.data.pointAmount) {
+            pointPurchaseOpen = true;
+          } else {
+            postPurchaseOpen = true;
+          }
         }}
       >
         유료분량 구매하고 포스트 소장하기
@@ -123,6 +133,44 @@
     <div class="border-t grow" />
   </NodeView>
 {/if}
+
+<Modal size="sm" bind:open={pointPurchaseOpen}>
+  <svelte:fragment slot="title">보유중인 포인트가 부족해요</svelte:fragment>
+  <svelte:fragment slot="subtitle">보유중인 포인트 : {comma(node.attrs.data.currentPoint)}P</svelte:fragment>
+
+  <div slot="action" class="w-full flex gap-3">
+    <Button class="w-full" color="secondary" size="xl" on:click={() => (pointPurchaseOpen = false)}>돌아가기</Button>
+    <Button class="w-full" href="/point/purchase" size="xl" type="link">충전하기</Button>
+  </div>
+</Modal>
+
+<Modal size="sm" bind:open={postPurchaseOpen}>
+  <svelte:fragment slot="title">
+    {comma(node.attrs.data.pointAmount)}P를 사용하여
+    <br />
+    포스트를 구매하시겠어요?
+  </svelte:fragment>
+  <svelte:fragment slot="subtitle">보유중인 포인트 : {comma(node.attrs.data.currentPoint)}P</svelte:fragment>
+
+  <div slot="action" class="w-full flex gap-3">
+    <Button class="w-full" color="secondary" size="xl" on:click={() => (postPurchaseOpen = false)}>돌아가기</Button>
+    <Button
+      class="w-full"
+      size="xl"
+      on:click={async () => {
+        await purchasePost({
+          postId: node.attrs.data.postId,
+          revisionId: node.attrs.data.revisionId,
+        });
+        postPurchaseOpen = false;
+      }}
+    >
+      구매하기
+    </Button>
+  </div>
+</Modal>
+
+<LoginRequireModal bind:open={loginRequireOpen} />
 
 <style>
   .dash {
