@@ -1,16 +1,12 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
-  import { Editor } from '@tiptap/core';
   import dayjs from 'dayjs';
-  import { onDestroy, onMount, tick } from 'svelte';
+  import { tick } from 'svelte';
   import { graphql } from '$glitch';
   import { Avatar, Button, Image, Tag } from '$lib/components';
   import { toast } from '$lib/notification';
   import { portal } from '$lib/svelte/actions';
-  import { DropCursor, GapCursor, History, Placeholder, TextAlign } from '$lib/tiptap/extensions';
-  import { Bold, Italic, Strike, TextColor, Underline } from '$lib/tiptap/marks';
-  import { AccessBarrier } from '$lib/tiptap/node-views';
-  import { Document, HardBreak, Heading, Paragraph, Text } from '$lib/tiptap/nodes';
+  import { TiptapRenderer } from '$lib/tiptap/components';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
 
   let open = false;
@@ -67,51 +63,6 @@
     }
   `);
 
-  let editor: Editor | undefined;
-  let element: HTMLElement;
-
-  onMount(() => {
-    editor = new Editor({
-      element,
-      editable: false,
-      content: $query.post.revision.content,
-      extensions: [
-        // special nodes
-        Document,
-        Text,
-
-        // nodes
-        HardBreak,
-        Heading,
-        Paragraph,
-
-        // marks
-        Bold,
-        Italic,
-        Strike,
-        TextColor,
-        Underline,
-
-        // extensions
-        DropCursor,
-        GapCursor,
-        History,
-        Placeholder,
-        TextAlign,
-
-        // node views
-        AccessBarrier,
-      ],
-      injectCSS: false,
-      editorProps: {
-        attributes: {
-          'data-post-id': $query.post.id,
-          'data-revision-id': $query.post.revision.id,
-        },
-      },
-    });
-  });
-
   const update = async () => {
     await tick();
 
@@ -167,10 +118,6 @@
       }
     }
   `);
-
-  onDestroy(() => {
-    editor?.destroy();
-  });
 </script>
 
 <article class="w-full bg-cardprimary py-17">
@@ -277,7 +224,9 @@
       </div>
     </header>
 
-    <article bind:this={element} class="bodylong-16-m" />
+    <article>
+      <TiptapRenderer class="bodylong-16-m" content={$query.post.revision.content} />
+    </article>
 
     <div class="flex gap-2 flex-wrap">
       <Tag size="sm">#일러스트</Tag>
