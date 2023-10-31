@@ -105,6 +105,7 @@ model Post {
   revisions PostRevision[]
   views     PostView[]
   purchases PostPurchase[]
+  reactions PostReaction[]
 
   @@map("posts")
 }
@@ -149,6 +150,19 @@ model PostPurchase {
 
   @@unique([postId, userId])
   @@map("post_purchases")
+}
+
+model PostReaction {
+  id        String   @id
+  postId    String   @map("post_id")
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  emoji     String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([postId, userId, emoji])
+  @@map("post_reactions")
 }
 
 model PostRevision {
@@ -429,6 +443,7 @@ model User {
   uploadedImages           Image[]
   spaceBlockedBy           SpaceUserBlock[]
   spaceMasquerades         SpaceMasquerade[]
+  postReactions            PostReaction[]
 
   @@index([email, state])
   @@map("users")
