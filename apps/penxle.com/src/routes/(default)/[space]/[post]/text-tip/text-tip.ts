@@ -11,7 +11,7 @@ enum IconFormat {
 type Button = {
   title: string;
   icon?: string;
-  callback: () => void;
+  callback: (selection: string) => void;
 };
 
 type Config = {
@@ -37,8 +37,11 @@ export class TextTip {
     theme: 'default',
     mobileOSBehaviour: 'normal',
   };
+  // @ts-expect-error: will be set in _setupScope method
   scopeEl: HTMLElement;
+  // @ts-expect-error: will be set in _setupTooltip method
   tipEl: HTMLElement;
+  // @ts-expect-error: will be set in _setupTooltip method
   tipWidth: number;
   id: number;
   open = false;
@@ -74,7 +77,9 @@ export class TextTip {
 
   _setupScope = () => {
     if (typeof this.config.scope === 'string') {
-      this.scopeEl = document.querySelector(this.config.scope);
+      const node = document.querySelector<HTMLElement>(this.config.scope);
+      if (!node) throw new Error('TextTip: Scope element not found');
+      this.scopeEl = node;
     } else if (this.config.scope instanceof HTMLElement) {
       this.scopeEl = this.config.scope;
     }
@@ -165,15 +170,18 @@ export class TextTip {
 
   _selectionValid = (): boolean => {
     const selection = window.getSelection();
+    if (!selection) return false;
+
     const selStr = selection.toString();
     const selLength = selStr.length;
 
-    if (selLength < this.config.minLength || selLength > this.config.maxLength) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    if (selLength < this.config.minLength! || selLength > this.config.maxLength!) {
       return false;
     }
 
-    const anchorNodeParent = selection.anchorNode.parentElement;
-    const focusNodeParent = selection.focusNode.parentElement;
+    const anchorNodeParent = selection.anchorNode?.parentElement;
+    const focusNodeParent = selection.focusNode?.parentElement;
 
     if (!anchorNodeParent || !focusNodeParent) return false;
 
@@ -186,6 +194,7 @@ export class TextTip {
 
   _updatePosition = () => {
     const selection = window.getSelection();
+    if (!selection) return;
 
     // Allows us to measure where the selection is on the page relative to the viewport
     const range = selection.getRangeAt(0);
@@ -227,8 +236,12 @@ export class TextTip {
     event.stopPropagation();
 
     const btn = event.currentTarget as HTMLElement;
-    const btnIndex = Number.parseInt(btn.dataset.texttipBtnIndex, 10);
+    const { texttipBtnIndex } = btn.dataset;
+    if (!texttipBtnIndex) return;
+
+    const btnIndex = Number.parseInt(texttipBtnIndex, 10);
     const selection = window.getSelection();
+    if (!selection) return;
 
     this.config.buttons[btnIndex].callback(selection.toString());
   };
