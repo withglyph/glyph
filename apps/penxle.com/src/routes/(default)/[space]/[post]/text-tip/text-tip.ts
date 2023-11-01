@@ -160,12 +160,25 @@ export class TextTip {
   };
 
   private onSelectionChanged = () => {
+    if (this.btnClicked()) return;
+
     if (this.selectionValid()) {
       this.updatePosition();
       this.show();
     } else {
       this.hide();
     }
+  };
+
+  private btnClicked = () => {
+    const selection = window.getSelection();
+    if (!selection) return false;
+
+    return (
+      selection.anchorNode &&
+      selection.anchorNode === selection.focusNode &&
+      selection.anchorNode.parentElement?.className === 'texttip__btn'
+    );
   };
 
   private selectionValid = () => {
@@ -232,7 +245,6 @@ export class TextTip {
   };
 
   private onButtonClick = (event: Event) => {
-    event.preventDefault();
     event.stopPropagation();
 
     const btn = event.currentTarget as HTMLElement;
