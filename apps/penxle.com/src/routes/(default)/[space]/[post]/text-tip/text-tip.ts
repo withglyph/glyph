@@ -37,11 +37,11 @@ export class TextTip {
     theme: 'default',
     mobileOSBehaviour: 'normal',
   };
-  // @ts-expect-error: will be set in _setupScope method
+  // @ts-expect-error: will be set in setupScope method
   scopeEl: HTMLElement;
-  // @ts-expect-error: will be set in _setupTooltip method
+  // @ts-expect-error: will be set in setupTooltip method
   tipEl: HTMLElement;
-  // @ts-expect-error: will be set in _setupTooltip method
+  // @ts-expect-error: will be set in setupTooltip method
   tipWidth: number;
   id: number;
   open = false;
@@ -65,17 +65,17 @@ export class TextTip {
     }
 
     this.isMobileOS = /ipad|iphone|ipod|android/i.test(navigator.userAgent);
-    this.id = TextTip._getID();
+    this.id = TextTip.getID();
 
     // Hide on mobile OS's, they have their own conflicting tooltips
     if (this.config.mobileOSBehaviour === 'hide' && this.isMobileOS) return;
 
-    this._setupScope();
-    this._setupTooltip();
-    this._setupEvents();
+    this.setupScope();
+    this.setupTooltip();
+    this.setupEvents();
   }
 
-  _setupScope = () => {
+  private setupScope = () => {
     if (typeof this.config.scope === 'string') {
       const node = document.querySelector<HTMLElement>(this.config.scope);
       if (!node) throw new Error('TextTip: Scope element not found');
@@ -87,7 +87,7 @@ export class TextTip {
     this.scopeEl.dataset.texttipScopeId = this.id.toString();
   };
 
-  _setupTooltip = () => {
+  private setupTooltip = () => {
     const inner = document.createElement('div');
     inner.classList.add('texttip__inner');
 
@@ -143,32 +143,32 @@ export class TextTip {
     this.tipWidth = this.tipEl.offsetWidth;
   };
 
-  _setupEvents = () => {
-    document.addEventListener('selectionchange', this._onSelectionChanged);
+  private setupEvents() {
+    document.addEventListener('selectionchange', this.onSelectionChanged);
 
     for (const btn of this.tipEl.querySelectorAll('.texttip__btn')) {
-      btn.addEventListener('click', this._onButtonClick);
+      btn.addEventListener('click', this.onButtonClick);
     }
-  };
+  }
 
-  destroyEvents = () => {
-    document.removeEventListener('selectionchange', this._onSelectionChanged);
+  public destroyEvents() {
+    document.removeEventListener('selectionchange', this.onSelectionChanged);
 
     for (const btn of this.tipEl.querySelectorAll('.texttip__btn')) {
-      btn.removeEventListener('click', this._onButtonClick);
+      btn.removeEventListener('click', this.onButtonClick);
     }
-  };
+  }
 
-  _onSelectionChanged = () => {
-    if (this._selectionValid()) {
-      this._updatePosition();
-      this._show();
+  private onSelectionChanged = () => {
+    if (this.selectionValid()) {
+      this.updatePosition();
+      this.show();
     } else {
-      this._hide();
+      this.hide();
     }
   };
 
-  _selectionValid = (): boolean => {
+  private selectionValid = () => {
     const selection = window.getSelection();
     if (!selection) return false;
 
@@ -192,7 +192,7 @@ export class TextTip {
     return !!anchorParent && !!focusParent;
   };
 
-  _updatePosition = () => {
+  private updatePosition = () => {
     const selection = window.getSelection();
     if (!selection) return;
 
@@ -231,7 +231,7 @@ export class TextTip {
     this.tipEl.style.bottom = newTipBottom + 'px';
   };
 
-  _onButtonClick = (event: Event) => {
+  private onButtonClick = (event: Event) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -246,7 +246,7 @@ export class TextTip {
     this.config.buttons[btnIndex].callback(selection.toString());
   };
 
-  _show = () => {
+  private show = () => {
     if (this.open) return;
 
     this.open = true;
@@ -257,7 +257,7 @@ export class TextTip {
     if (this.config.on && typeof this.config.on.show === 'function') this.config.on.show();
   };
 
-  _hide = () => {
+  private hide = () => {
     if (!this.open) return;
 
     this.open = false;
@@ -268,5 +268,5 @@ export class TextTip {
     if (this.config.on && typeof this.config.on.hide === 'function') this.config.on.hide();
   };
 
-  static _getID = () => ++TextTip.instanceCount;
+  private static getID = () => ++TextTip.instanceCount;
 }
