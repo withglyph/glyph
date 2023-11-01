@@ -354,6 +354,9 @@ importers:
       '@channel.io/channel-web-sdk-loader':
         specifier: ^1.1.0
         version: 1.1.0
+      '@emoji-mart/data':
+        specifier: ^1.1.2
+        version: 1.1.2
       '@envelop/core':
         specifier: ^5.0.0
         version: 5.0.0
@@ -477,6 +480,9 @@ importers:
       dayjs:
         specifier: ^1.11.10
         version: 1.11.10
+      emoji-mart:
+        specifier: ^5.5.2
+        version: 5.5.2
       felte:
         specifier: ^1.2.12
         version: 1.2.12(svelte@4.2.2)
@@ -2756,6 +2762,10 @@ packages:
       '@effect/data': 0.17.1
       '@effect/io': 0.38.0(@effect/data@0.17.1)
       fast-check: 3.13.2
+    dev: true
+
+  /@emoji-mart/data@1.1.2:
+    resolution: {integrity: sha512-1HP8BxD2azjqWJvxIaWAMyTySeZY0Osr83ukYjltPVkNXeJvTz7yDrPLBtnrD5uqJ3tg4CcLuuBW09wahqL/fg==}
     dev: true
 
   /@envelop/core@5.0.0:
@@ -7712,6 +7722,10 @@ packages:
   /electron-to-chromium@1.4.563:
     resolution: {integrity: sha512-dg5gj5qOgfZNkPNeyKBZQAQitIQ/xwfIDmEQJHCbXaD9ebTZxwJXUsDYcBlAvZGZLi+/354l35J1wkmP6CqYaw==}
     dev: false
+
+  /emoji-mart@5.5.2:
+    resolution: {integrity: sha512-Sqc/nso4cjxhOwWJsp9xkVm8OF5c+mJLZJFoFfzRuKO+yWiN7K8c96xmtughYb0d/fZ8UC6cLIQ/p4BR6Pv3/A==}
+    dev: true
 
   /emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}

@@ -4,6 +4,7 @@
   import { onMount, tick } from 'svelte';
   import { graphql } from '$glitch';
   import { Avatar, Button, Image, Tag } from '$lib/components';
+  import { EmojiPicker } from '$lib/emoji';
   import { toast } from '$lib/notification';
   import { portal } from '$lib/svelte/actions';
   import { TiptapRenderer } from '$lib/tiptap/components';
@@ -264,9 +265,7 @@
       </Button>
     </div>
     <div class="flex items-center gap-2.5 flex-wrap mt-4!">
-      <button class="square-6 flex center rounded-lg border border-secondary hover:border-primary" type="button">
-        <i class="i-lc-plus square-3.5" />
-      </button>
+      <EmojiPicker />
       <span class="h-6">🐱</span>
       <span class="h-6">🤞🏻</span>
     </div>
