@@ -1,15 +1,15 @@
 .texttip {
   position: absolute;
   pointer-events: none;
-  background: #292524;
   transform: translate(-50%, -0.75rem);
   transition: none;
   opacity: 0;
+  --uno: bg-gray-80;
 }
 
 .texttip--theme-default {
   border-radius: 7px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.1);
+  --uno: shadow-md;
   transform: translate(-50%, -2.125rem);
 }
 
@@ -23,7 +23,7 @@
   height: 0;
   border-style: solid;
   border-width: 0.5625rem 0.513rem 0 0.513rem;
-  border-color: #292524 transparent transparent transparent;
+  --uno: border-(transparent t-gray-80);
 }
 
 .texttip--show {
@@ -47,9 +47,7 @@
   position: relative;
   cursor: pointer;
   transition: none;
-  color: #a8a29e;
-
-  font-family: Pretendard;
+  --uno: font-sans color-gray-40;
   font-size: 0.875rem;
   font-weight: 600;
 }
@@ -71,7 +69,7 @@
 }
 
 .texttip--theme-default .texttip__btn.texttip__btn:hover {
-  color: #fafaf9;
+  --uno: text-surface-primary;
 }
 
 .texttip--theme-default.texttip--show .texttip__btn {
