@@ -15,7 +15,7 @@
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLUListElement;
   let loginRequireOpen = false;
-  let articleEl: HTMLElement;
+  let tiptapRendererEl: HTMLElement;
 
   $: query = graphql(`
     query SpacePostPage_Query($permalink: String!) {
@@ -131,7 +131,7 @@
 
   onMount(async () => {
     const tooltip = new TextTip({
-      scope: articleEl,
+      scope: tiptapRendererEl,
       buttons: [
         {
           title: '밑줄',
@@ -258,9 +258,7 @@
       </div>
     </header>
 
-    <article bind:this={articleEl}>
-      <TiptapRenderer class="bodylong-16-m" content={$query.post.revision.content} />
-    </article>
+    <TiptapRenderer class="bodylong-16-m" content={$query.post.revision.content} bind:element={tiptapRendererEl} />
 
     <div class="flex gap-2 flex-wrap">
       <Tag size="sm">#일러스트</Tag>

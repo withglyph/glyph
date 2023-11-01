@@ -11,8 +11,7 @@
   export let content: JSONContent;
   export let editor: Editor | undefined = undefined;
 
-  let element: HTMLElement;
-
+  export let element: HTMLElement | undefined = undefined;
   $: html = generateHTML(content, extensions);
   $: editor?.commands.setContent(content);
 
