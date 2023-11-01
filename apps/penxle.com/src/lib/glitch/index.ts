@@ -3,12 +3,13 @@ import * as Sentry from '@sentry/sveltekit';
 import { AppError, deserializeGraphQLError } from '$lib/errors';
 import { toast } from '$lib/notification';
 import { keys } from './keys';
+import { optimistic } from './optimistic';
 import { updates } from './updates';
 
 // eslint-disable-next-line import/no-default-export
 export default createClient({
   url: '/api/graphql',
-  cache: { keys, updates },
+  cache: { keys, optimistic, updates },
   transformError: deserializeGraphQLError,
   onMutationError: (error) => {
     if (error instanceof AppError) {
