@@ -2,8 +2,8 @@ import { PostRevisionKind, PostVisibility } from '@prisma/client';
 import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
-import { createTiptapDocument, createTiptapNode, deductUserPoint, getUserPoint } from '$lib/server/utils';
-import { createId } from '$lib/utils';
+import { deductUserPoint, getUserPoint } from '$lib/server/utils';
+import { createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
 import { builder } from '../builder';
 import type { JSONContent } from '@tiptap/core';
 
