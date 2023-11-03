@@ -3,7 +3,7 @@ import { ContentFilterCategory, PostRevisionKind, PostVisibility } from '@prisma
 import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
 import * as R from 'radash';
-import emojiData from '$lib/emoji/data.json';
+import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { deductUserPoint, getUserPoint } from '$lib/server/utils';
 import { createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
@@ -770,7 +770,6 @@ builder.mutationFields((t) => ({
     type: 'Post',
     args: { input: t.arg({ type: CreatePostReactionInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      // @ts-expect-error TODO: 타입 정의 넣기
       if (!emojiData.emojis[input.emoji]) {
         throw new IntentionalError('잘못된 이모지에요');
       }

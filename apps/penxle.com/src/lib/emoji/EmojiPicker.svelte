@@ -5,7 +5,7 @@
   import { onMount, tick } from 'svelte';
   import { afterNavigate } from '$app/navigation';
   import { portal } from '$lib/svelte/actions';
-  import data from './data.json';
+  import { emojiData as data } from '.';
   import i18n from './i18n.json';
   import type { Emoji } from '@emoji-mart/data';
 
