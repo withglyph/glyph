@@ -43,6 +43,10 @@
     --uno: text-brand-50;
   }
 
+  & mark[data-type='self'] {
+    --uno: bg-gradient-to-b from-(transparent 60%) to-(brand-50 40%);
+  }
+
   /*
    * extensions
   */

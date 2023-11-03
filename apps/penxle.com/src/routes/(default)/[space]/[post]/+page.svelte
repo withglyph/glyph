@@ -10,10 +10,12 @@
   import { humanizeNumber } from '$lib/utils';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
   import { TextTip } from './text-tip';
+  import type { Editor } from '@tiptap/core';
 
   let open = false;
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLUListElement;
+  let editor: Editor | undefined;
   let loginRequireOpen = false;
   let tiptapRendererEl: HTMLElement;
 
@@ -133,6 +135,18 @@
     const tooltip = new TextTip({
       scope: tiptapRendererEl,
       buttons: [
+        {
+          title: '밑줄',
+          callback: () => {
+            if (!editor) throw new Error('editor is not initialized');
+            const { state } = editor.view;
+            const { empty } = state.selection;
+
+            if (empty) return;
+
+            editor.commands.setHighlight();
+          },
+        },
         {
           title: '공유',
           callback: () => {

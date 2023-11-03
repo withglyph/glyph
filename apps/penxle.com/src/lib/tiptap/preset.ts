@@ -1,5 +1,5 @@
 import { DropCursor, GapCursor, History, Placeholder, TextAlign } from '$lib/tiptap/extensions';
-import { Bold, Italic, Strike, TextColor, Underline } from '$lib/tiptap/marks';
+import { Bold, Highlight, Italic, Strike, TextColor, Underline } from '$lib/tiptap/marks';
 import { AccessBarrier } from '$lib/tiptap/node-views';
 import { Document, HardBreak, Heading, Paragraph, Text } from '$lib/tiptap/nodes';
 
@@ -19,6 +19,7 @@ export const extensions = [
   Strike,
   TextColor,
   Underline,
+  Highlight,
 
   // extensions
   DropCursor,
