@@ -216,6 +216,7 @@ enum PointTransactionCause {
 }
 
 type Post {
+  contentFilters: [ContentFilterCategory!]!
   createdAt: DateTime!
   id: ID!
   likeCount: Int!
@@ -412,6 +413,7 @@ input UnmuteSpaceInput {
 }
 
 input UpdatePostOptionsInput {
+  contentFilters: [ContentFilterCategory!]
   discloseStats: Boolean
   postId: ID!
   receiveFeedback: Boolean

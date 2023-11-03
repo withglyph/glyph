@@ -101,13 +101,25 @@ model Post {
   state     PostState
   createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz
 
-  likes     PostLike[]
-  revisions PostRevision[]
-  views     PostView[]
-  purchases PostPurchase[]
-  reactions PostReaction[]
+  likes          PostLike[]
+  revisions      PostRevision[]
+  views          PostView[]
+  purchases      PostPurchase[]
+  reactions      PostReaction[]
+  contentFilters PostContentFilter[]
 
   @@map("posts")
+}
+
+model PostContentFilter {
+  id        String                @id
+  postId    String                @map("post_id")
+  post      Post                  @relation(fields: [postId], references: [id])
+  category  ContentFilterCategory
+  createdAt DateTime              @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([postId, category])
+  @@map("post_content_filters")
 }
 
 model PostLike {
