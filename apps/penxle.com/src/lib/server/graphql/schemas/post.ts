@@ -1,4 +1,4 @@
-import { PostRevisionKind, PostVisibility } from '@prisma/client';
+import { ContentFilterCategory, PostRevisionKind, PostVisibility } from '@prisma/client';
 import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
@@ -84,6 +84,12 @@ builder.prismaObject('Post', {
     option: t.relation('option'),
     likeCount: t.relationCount('likes'),
     viewCount: t.relationCount('views'),
+
+    contentFilters: t.field({
+      type: [ContentFilterCategory],
+      select: { contentFilters: true },
+      resolve: (post) => post.contentFilters.map((filter) => filter.category),
+    }),
   }),
 });
 
@@ -239,6 +245,8 @@ const UpdatePostOptionsInput = builder.inputType('UpdatePostOptionsInput', {
     receiveFeedback: t.boolean({ required: false }),
     receivePatronage: t.boolean({ required: false }),
     receiveTagContribution: t.boolean({ required: false }),
+
+    contentFilters: t.field({ type: [ContentFilterCategory], required: false }),
   }),
 });
 
@@ -483,6 +491,10 @@ builder.mutationFields((t) => ({
         }
       }
 
+      if (input.contentFilters) {
+        await db.postContentFilter.deleteMany({ where: { postId: post.id } });
+      }
+
       return await db.post.update({
         ...query,
         where: { id: post.id },
@@ -494,6 +506,15 @@ builder.mutationFields((t) => ({
               receiveFeedback: input.receiveFeedback ?? undefined,
               receivePatronage: input.receivePatronage ?? undefined,
               receiveTagContribution: input.receiveTagContribution ?? undefined,
+            },
+          },
+          contentFilters: {
+            createMany: {
+              data:
+                input.contentFilters?.map((category) => ({
+                  id: createId(),
+                  category,
+                })) ?? [],
             },
           },
         },
