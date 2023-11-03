@@ -208,7 +208,7 @@ model PostView {
   post      Post     @relation(fields: [postId], references: [id])
   userId    String?  @map("user_id")
   user      User?    @relation(fields: [userId], references: [id])
-  deviceId  String
+  deviceId  String   @map("device_id")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   viewedAt  DateTime @default(now()) @map("viewed_at") @db.Timestamptz
 
