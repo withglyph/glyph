@@ -1,12 +1,13 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import dayjs from 'dayjs';
-  import { tick } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import { graphql } from '$glitch';
   import { Avatar, Button, Image, Tag } from '$lib/components';
   import { toast } from '$lib/notification';
   import { portal } from '$lib/svelte/actions';
   import { TiptapRenderer } from '$lib/tiptap/components';
+  import { humanizeNumber } from '$lib/utils';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
 
   let open = false;
@@ -25,6 +26,7 @@
         permalink
         likeCount
         liked
+        viewCount
 
         space {
           id
@@ -81,6 +83,12 @@
     void update();
   }
 
+  const updatePostView = graphql(`
+    mutation SpacePostPage_UpdatePostViewMutation($input: UpdatePostViewInput!) {
+      updatePostView(input: $input)
+    }
+  `);
+
   const likePost = graphql(`
     mutation SpacePostPage_LikePostMutation($input: LikePostInput!) {
       likePost(input: $input) {
@@ -118,6 +126,10 @@
       }
     }
   `);
+
+  onMount(async () => {
+    await updatePostView({ postId: $query.post.id });
+  });
 </script>
 
 <article class="w-full bg-cardprimary py-17">
@@ -145,11 +157,11 @@
               <span>{dayjs($query.post.revision.createdAt).formatAsDate()}</span>
               <span class="flex items-center gap-1">
                 <i class="i-lc-eye square-3.75" />
-                1.2천
+                {humanizeNumber($query.post.viewCount)}
               </span>
               <span class="flex items-center gap-1">
                 <i class="i-px-heart square-3.75" />
-                {$query.post.likeCount}
+                {humanizeNumber($query.post.likeCount)}
               </span>
               <span class="flex items-center gap-1">
                 <i class="i-lc-alarm-clock square-3.75" />
