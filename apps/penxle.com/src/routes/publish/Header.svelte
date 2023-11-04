@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { Editor } from '@tiptap/core';
+  import * as R from 'radash';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { Button } from '$lib/components';
   import { Logo } from '$lib/components/branding';
+  import type { JSONContent } from '@tiptap/core';
   import type { PostRevisionKind, PublishPage_Header_query } from '$glitch';
 
   let _query: PublishPage_Header_query;
@@ -11,7 +12,7 @@
 
   export let title: string;
   export let subtitle: string;
-  export let editor: Editor;
+  export let content: JSONContent;
 
   let postId: string | undefined;
   let spaceId: string;
@@ -55,13 +56,21 @@
       title,
       spaceId,
       subtitle,
-      content: editor?.getJSON(),
+      content,
     });
 
     postId = resp.id;
 
     return resp;
   };
+
+  const handler = R.debounce({ delay: 1000 }, async () => {
+    await revise('AUTO_SAVE');
+  });
+
+  $: if (title && content) {
+    handler();
+  }
 </script>
 
 <div class="sticky top-0 z-50 bg-white py-4">

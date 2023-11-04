@@ -8,7 +8,7 @@
 
   let _class: string;
   export { _class as class };
-  export let editor: Editor | undefined;
+  export let editor: Editor | undefined = undefined;
   export let content: JSONContent | undefined = undefined;
 
   let element: HTMLDivElement;
@@ -31,9 +31,11 @@
           }
         },
       },
-      onTransaction: () => {
+      onTransaction: ({ transaction }) => {
         editor = editor;
-        content = editor?.getJSON();
+        if (transaction.docChanged) {
+          content = editor?.getJSON();
+        }
       },
     });
 

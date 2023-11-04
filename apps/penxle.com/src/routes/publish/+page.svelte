@@ -5,7 +5,7 @@
   import Editor from './Editor.svelte';
   import Header from './Header.svelte';
   import Toolbar from './Toolbar.svelte';
-  import type { Editor as TiptapEditor } from '@tiptap/core';
+  import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
 
   warnOnUnload();
 
@@ -18,12 +18,13 @@
   let title: string;
   let subtitle: string;
   let editor: TiptapEditor;
+  let content: JSONContent;
 </script>
 
 <Helmet title="새 글 작성하기" />
 
 <main class="flex grow flex-col">
-  <Header {$query} bind:title bind:editor bind:subtitle />
-  <Editor bind:title bind:editor bind:subtitle />
+  <Header {$query} {content} {subtitle} {title} />
+  <Editor bind:title bind:editor bind:subtitle bind:content />
   <Toolbar {editor} />
 </main>
