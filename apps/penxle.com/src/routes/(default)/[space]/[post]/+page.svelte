@@ -132,17 +132,17 @@
   });
 </script>
 
-<article class="w-full bg-cardprimary py-17">
+<article class="w-full bg-cardprimary py-7.5 px-4 sm:py-17">
   <div class="w-full max-w-187.5 mx-auto space-y-6">
     <header>
       <hgroup class="space-y-4">
-        <h1 class="title-32-eb break-all">{$query.post.revision.title}</h1>
+        <h1 class="title-24-eb break-all sm:title-32-eb">{$query.post.revision.title}</h1>
         {#if $query.post.revision.subtitle}
-          <p class="subtitle-18-sb text-secondary break-all">{$query.post.revision.subtitle}</p>
+          <p class="body-16-sb text-secondary break-all sm:subtitle-18-sb">{$query.post.revision.subtitle}</p>
         {/if}
       </hgroup>
 
-      <div class="border-b w-full flex flex-col mt-6">
+      <div class="border-b border-secondary w-full flex flex-col mt-4.75 sm:mt-6">
         <div class="flex items-center pt-4 pb-5 gap-3">
           <div class="relative">
             <Image class="square-10.5 rounded-3.5" $image={$query.post.space.icon} />
@@ -170,8 +170,8 @@
             </div>
           </div>
 
-          <button class="i-lc-bookmark square-6" type="button" />
-          <button class="i-lc-share square-6" type="button" />
+          <button class="i-lc-bookmark square-6 <sm:hidden" type="button" />
+          <button class="i-lc-share square-6 <sm:hidden" type="button" />
           <button
             bind:this={targetEl}
             class="i-lc-more-vertical square-6 text-icon-secondary"
@@ -286,8 +286,12 @@
     <div class="bg-primary rounded-3xl">
       <div class="flex flex-col w-full center px-4 pb-4 mt-9">
         <Image class="square-15 rounded-2xl -mt-7.5" $image={$query.post.space.icon} />
-        <p class="subtitle-18-eb mt-4">{$query.post.space.name}</p>
-        <p class="body-15-sb text-secondary my-2">{$query.post.space.description}</p>
+        <p class="subtitle-18-eb mt-4 truncate w-full text-center">
+          {$query.post.space.name}
+        </p>
+        <p class="body-15-sb text-secondary my-2 truncate text-center w-full">
+          {$query.post.space.description}
+        </p>
         <Button class="rounded-12!" color="tertiary" size="md" variant="outlined">
           <i class="i-lc-bell square-5" />
           <span class="mx-2">알림받는중</span>
