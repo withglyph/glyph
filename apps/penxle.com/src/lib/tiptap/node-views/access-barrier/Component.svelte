@@ -82,7 +82,7 @@
     </div>
   </Modal>
 {:else if data.purchasable}
-  <NodeView class="rounded-2xl py-6 px-3 bg-gray-5/80 relative">
+  <NodeView class="rounded-2xl py-6 px-3 bg-gray-5/80 relative my-4">
     <div class="-z-1 text-disabled">
       사랑의 노래하며 가치를 이것이야말로 얼음 끓는 내려온 같으며. 길지 피가 시들어 힘차게 주며, 인간의 보내는 않는
       그들을 때에. 피다. 그들의 가진 보배를 얼마나 수 약동하다. 두기 구하지 하였으며.
@@ -125,14 +125,15 @@
   </NodeView>
 {:else}
   <NodeView class="flex items-center gap-4 my-4">
-    <div class="border-t grow" />
-    <div class="text-gray-50 text-sm">
-      여기부터 유료 분량
-      {#if data.purchasedAt}
-        ({dayjs(data.purchasedAt).formatAsDate()} 구매함)
-      {/if}
+    <div class="line grow-3 h-1px mt-1px" />
+    <div>
+      <span class="text-gray-50 caption-12-m py-1 px-1.5 bg-gray-10 rounded-1">
+        {#if data.purchasedAt}
+          {dayjs(data.purchasedAt).formatAsDate()} 결제됨
+        {/if}
+      </span>
     </div>
-    <div class="border-t grow" />
+    <div class="line grow h-1px mt-1px" />
   </NodeView>
 {/if}
 
@@ -178,5 +179,9 @@
 <style>
   .dash {
     background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%23A8A29E' stroke-width='2' stroke-dasharray='8%2c 16' stroke-dashoffset='12' stroke-linecap='square'/%3e%3c/svg%3e");
+  }
+
+  .line {
+    background: repeating-linear-gradient(to right, transparent, transparent 10px, #d6d3d1 10px, #d6d3d1 20px);
   }
 </style>
