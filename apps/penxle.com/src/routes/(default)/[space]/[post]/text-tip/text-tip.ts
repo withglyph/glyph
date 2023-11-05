@@ -143,21 +143,21 @@ export class TextTip {
     this.tipWidth = this.tipEl.offsetWidth;
   };
 
-  private setupEvents() {
+  private setupEvents = () => {
     document.addEventListener('selectionchange', this.onSelectionChanged);
 
     for (const btn of this.tipEl.querySelectorAll('.texttip__btn')) {
       btn.addEventListener('click', this.onButtonClick);
     }
-  }
+  };
 
-  public destroyEvents() {
+  public destroyEvents = () => {
     document.removeEventListener('selectionchange', this.onSelectionChanged);
 
     for (const btn of this.tipEl.querySelectorAll('.texttip__btn')) {
       btn.removeEventListener('click', this.onButtonClick);
     }
-  }
+  };
 
   private onSelectionChanged = () => {
     if (this.btnClicked()) return;
