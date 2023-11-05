@@ -129,7 +129,7 @@
     }
   `);
 
-  onMount(async () => {
+  onMount(() => {
     const tooltip = new TextTip({
       scope: tiptapRendererEl,
       buttons: [
@@ -142,7 +142,7 @@
       ],
     });
 
-    await updatePostView({ postId: $query.post.id });
+    updatePostView({ postId: $query.post.id });
 
     return tooltip.destroyEvents;
   });
