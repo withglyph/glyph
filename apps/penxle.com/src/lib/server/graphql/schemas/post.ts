@@ -1,3 +1,4 @@
+import { init as cuid } from '@paralleldrive/cuid2';
 import { ContentFilterCategory, PostRevisionKind, PostVisibility } from '@prisma/client';
 import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
@@ -41,6 +42,7 @@ builder.prismaObject('Post', {
   fields: (t) => ({
     id: t.exposeID('id'),
     permalink: t.exposeString('permalink'),
+    shortlink: t.exposeString('shortlink'),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
 
     revision: t.prismaField({
@@ -412,6 +414,7 @@ builder.mutationFields((t) => ({
         create: {
           id: postId,
           permalink: customAlphabet('123456789', 12)(),
+          shortlink: cuid({ length: 6 })(),
           space: { connect: { id: input.spaceId } },
           member: { connect: { id: meAsMember.id } },
           user: { connect: { id: context.session.userId } },

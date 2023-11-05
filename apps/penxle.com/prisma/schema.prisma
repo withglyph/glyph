@@ -89,6 +89,7 @@ model PointTransaction {
 model Post {
   id        String      @id
   permalink String      @unique
+  shortlink String      @unique
   spaceId   String      @map("space_id")
   space     Space       @relation(fields: [spaceId], references: [id])
   memberId  String      @map("member_id")

@@ -2,12 +2,12 @@ import * as Sentry from '@sentry/sveltekit';
 import { error, json } from 'itty-router';
 import { createContext } from '../context';
 import { createRouter } from './router';
-import { email, healthz, payment, sso } from './routes';
+import { email, healthz, payment, shortlink, sso } from './routes';
 import type { RequestEvent } from '@sveltejs/kit';
 
 const router = createRouter();
 
-router.all('*', healthz.handle, email.handle, payment.handle, sso.handle, () => error(404));
+router.all('*', healthz.handle, email.handle, payment.handle, shortlink.handle, sso.handle, () => error(404));
 
 export const handler = async (event: RequestEvent) => {
   let context;
