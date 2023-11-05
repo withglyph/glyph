@@ -61,6 +61,10 @@
   padding: 0.5rem 0.5rem 0.5rem 0;
 }
 
+.texttip__btn:first-of-type:last-of-type {
+  padding: 0.5rem;
+}
+
 .texttip--theme-default .texttip__btn {
   transform: translate(0, 1.5em);
 }
