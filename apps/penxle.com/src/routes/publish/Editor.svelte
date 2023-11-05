@@ -1,8 +1,9 @@
 <script lang="ts">
   import { writable } from '@svelte-kits/store';
+  import { isTextSelection } from '@tiptap/core';
   import { fade } from 'svelte/transition';
   import { focused, hover } from '$lib/svelte/actions';
-  import { TiptapEditor } from '$lib/tiptap/components';
+  import { TiptapBubbleMenu, TiptapEditor } from '$lib/tiptap/components';
   import type { Editor, JSONContent } from '@tiptap/core';
 
   export let title: string;
@@ -91,3 +92,11 @@
 <div class="mx-auto w-3xl flex grow">
   <TiptapEditor class="mt-4 max-w-full grow whitespace-pre-wrap" bind:editor bind:content />
 </div>
+
+{#if editor}
+  <TiptapBubbleMenu {editor} when={(view) => isTextSelection(view.state.selection)}>
+    <div class="rounded bg-gray-90 px-4 py-2 text-xs font-semibold text-white">
+      <button class="i-lc-bold" type="button" on:click={() => editor.chain().focus().toggleBold().run()} />
+    </div>
+  </TiptapBubbleMenu>
+{/if}
