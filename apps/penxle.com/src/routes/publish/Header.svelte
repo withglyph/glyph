@@ -13,6 +13,7 @@
   export let title: string;
   export let subtitle: string;
   export let content: JSONContent;
+  export let steps: unknown[];
 
   let postId: string | undefined;
   let spaceId: string;
@@ -57,8 +58,10 @@
       spaceId,
       subtitle,
       content,
+      steps,
     });
 
+    steps = [];
     postId = resp.id;
 
     return resp;

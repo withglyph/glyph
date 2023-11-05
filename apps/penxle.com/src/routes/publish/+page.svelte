@@ -19,12 +19,13 @@
   let subtitle: string;
   let editor: TiptapEditor;
   let content: JSONContent;
+  let steps: unknown[] = [];
 </script>
 
 <Helmet title="새 글 작성하기" />
 
 <main class="flex grow flex-col">
-  <Header {$query} {content} {subtitle} {title} />
-  <Editor bind:title bind:editor bind:subtitle bind:content />
+  <Header {$query} {content} {subtitle} {title} bind:steps />
+  <Editor bind:title bind:editor bind:subtitle bind:content bind:steps />
   <Toolbar {editor} />
 </main>

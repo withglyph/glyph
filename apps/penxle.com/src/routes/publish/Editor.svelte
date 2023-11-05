@@ -9,6 +9,7 @@
   export let subtitle: string;
   export let content: JSONContent;
   export let editor: Editor;
+  export let steps: unknown[];
 
   let enableSubtitle = false;
   let enableCoverImage = false;
@@ -89,5 +90,5 @@
 </div>
 
 <div class="mx-auto w-3xl flex grow">
-  <TiptapEditor class="mt-4 max-w-full grow whitespace-pre-wrap" bind:editor bind:content />
+  <TiptapEditor class="mt-4 max-w-full grow whitespace-pre-wrap" bind:editor bind:content bind:steps />
 </div>

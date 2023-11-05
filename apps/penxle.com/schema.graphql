@@ -359,6 +359,7 @@ input RevisePostInput {
   postId: ID
   revisionKind: PostRevisionKind!
   spaceId: ID!
+  steps: JSON!
   subtitle: String
   thumbnailBounds: JSON
   thumbnailId: ID

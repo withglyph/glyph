@@ -10,6 +10,7 @@
   export { _class as class };
   export let editor: Editor | undefined = undefined;
   export let content: JSONContent | undefined = undefined;
+  export let steps: unknown[] = [];
 
   let element: HTMLDivElement;
 
@@ -32,6 +33,10 @@
         },
       },
       onTransaction: ({ transaction }) => {
+        for (const step of transaction.steps) {
+          steps.push(step.toJSON());
+        }
+
         editor = editor;
         if (transaction.docChanged) {
           content = editor?.getJSON();

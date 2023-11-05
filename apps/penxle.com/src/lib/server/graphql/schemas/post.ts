@@ -1,11 +1,15 @@
 import { init as cuid } from '@paralleldrive/cuid2';
 import { ContentFilterCategory, PostRevisionKind, PostVisibility } from '@prisma/client';
+import { getSchema } from '@tiptap/core';
+import { Node } from '@tiptap/pm/model';
+import { Step, Transform } from '@tiptap/pm/transform';
 import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
 import * as R from 'radash';
 import { emojiData } from '$lib/emoji';
-import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
+import { IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { deductUserPoint, getUserPoint } from '$lib/server/utils';
+import { extensions } from '$lib/tiptap';
 import { createId, createTiptapDocument, createTiptapNode, documentToText } from '$lib/utils';
 import { builder } from '../builder';
 import type { JSONContent } from '@tiptap/core';
@@ -315,6 +319,7 @@ const RevisePostInput = builder.inputType('RevisePostInput', {
     title: t.string(),
     subtitle: t.string({ required: false }),
     content: t.field({ type: 'JSON' }),
+    steps: t.field({ type: 'JSON' }),
 
     thumbnailId: t.id({ required: false }),
     thumbnailBounds: t.field({ type: 'JSON', required: false }),
@@ -466,6 +471,9 @@ builder.mutationFields((t) => ({
         },
       });
 
+      const schema = getSchema(extensions);
+      let document: Node;
+
       if (input.postId) {
         const post = await db.post.findUniqueOrThrow({
           select: { id: true, userId: true, state: true, spaceId: true },
@@ -479,16 +487,33 @@ builder.mutationFields((t) => ({
         if (post.state === 'PUBLISHED' && post.spaceId !== input.spaceId) {
           throw new IntentionalError('이미 다른 스페이스에 게시된 글이에요.');
         }
+
+        const revision = await db.postRevision.findFirstOrThrow({
+          select: { content: true },
+          where: { postId: post.id },
+          orderBy: { createdAt: 'desc' },
+        });
+
+        document = Node.fromJSON(schema, revision.content);
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        document = schema.topNodeType.createAndFill()!;
       }
 
-      const document = (input.content as JSONContent).content;
-      if (!document) {
-        throw new FormValidationError('content', '잘못된 내용이에요');
+      const transform = new Transform(document);
+      for (const step of input.steps as unknown[]) {
+        transform.step(Step.fromJSON(schema, step));
       }
 
-      const accessBarrierPosition = document.findIndex((node) => node.type === 'access_barrier');
-      const content = accessBarrierPosition === -1 ? document : document.slice(0, accessBarrierPosition);
-      const paidContent = accessBarrierPosition === -1 ? undefined : document.slice(accessBarrierPosition + 1);
+      // console.log(JSON.stringify(transform.doc.toJSON()));
+      // console.log(transform.mapping.mapResult(5));
+      // console.log(transform);
+
+      // const accessBarrierPosition = document.findIndex((node) => node.type === 'access_barrier');
+      // const content = accessBarrierPosition === -1 ? document : document.slice(0, accessBarrierPosition);
+      // const paidContent = accessBarrierPosition === -1 ? undefined : document.slice(accessBarrierPosition + 1);
+      const content = transform.doc.toJSON();
+      const paidContent = undefined;
 
       const postId = input.postId ?? createId();
 
