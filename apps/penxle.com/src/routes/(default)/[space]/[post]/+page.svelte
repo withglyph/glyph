@@ -134,12 +134,6 @@
       scope: tiptapRendererEl,
       buttons: [
         {
-          title: '밑줄',
-          callback: () => {
-            //
-          },
-        },
-        {
           title: '공유',
           callback: () => {
             //
