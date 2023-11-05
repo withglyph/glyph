@@ -22,6 +22,7 @@ type Config = {
   buttons: Button[];
   theme?: 'none' | 'default';
   mobileOSBehaviour?: 'hide' | 'normal';
+  manualShow?: boolean;
   on?: {
     show?: () => void;
     hide?: () => void;
@@ -144,7 +145,9 @@ export class TextTip {
   };
 
   private setupEvents = () => {
-    document.addEventListener('selectionchange', this.onSelectionChanged);
+    if (!this.config.manualShow) {
+      document.addEventListener('selectionchange', this.onSelectionChanged);
+    }
 
     for (const btn of this.tipEl.querySelectorAll('.texttip__btn')) {
       btn.addEventListener('click', this.onButtonClick);
@@ -152,7 +155,9 @@ export class TextTip {
   };
 
   public destroyEvents = () => {
-    document.removeEventListener('selectionchange', this.onSelectionChanged);
+    if (!this.config.manualShow) {
+      document.removeEventListener('selectionchange', this.onSelectionChanged);
+    }
 
     for (const btn of this.tipEl.querySelectorAll('.texttip__btn')) {
       btn.removeEventListener('click', this.onButtonClick);
@@ -269,7 +274,7 @@ export class TextTip {
     if (this.config.on && typeof this.config.on.show === 'function') this.config.on.show();
   };
 
-  private hide = () => {
+  public hide = () => {
     if (!this.open) return;
 
     this.open = false;
@@ -281,4 +286,9 @@ export class TextTip {
   };
 
   private static getID = () => ++TextTip.instanceCount;
+
+  public manualShow = () => {
+    this.updatePosition();
+    this.show();
+  };
 }

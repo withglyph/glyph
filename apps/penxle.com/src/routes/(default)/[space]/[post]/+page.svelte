@@ -1,7 +1,8 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { isMarkActive } from '@tiptap/core';
   import dayjs from 'dayjs';
-  import { onMount, tick } from 'svelte';
+  import { onDestroy, onMount, tick } from 'svelte';
   import { graphql } from '$glitch';
   import { Avatar, Button, Image, Tag } from '$lib/components';
   import { toast } from '$lib/notification';
@@ -18,6 +19,8 @@
   let editor: Editor | undefined;
   let loginRequireOpen = false;
   let tiptapRendererEl: HTMLElement;
+  let createHighlightTooltip: TextTip | undefined;
+  let editHighlightTooltip: TextTip | undefined;
 
   $: query = graphql(`
     query SpacePostPage_Query($permalink: String!) {
@@ -132,7 +135,33 @@
   `);
 
   onMount(() => {
-    const tooltip = new TextTip({
+    updatePostView({ postId: $query.post.id });
+  });
+
+  const shareButton = {
+    title: '공유',
+    callback: () => {
+      //
+    },
+  };
+
+  $: if (tiptapRendererEl) {
+    editHighlightTooltip = new TextTip({
+      scope: tiptapRendererEl,
+      manualShow: true,
+      buttons: [
+        {
+          title: '지우기',
+          callback: () => {
+            if (!editor) throw new Error('editor is not initialized');
+            // TODO: 밑줄 지우기
+          },
+        },
+        shareButton,
+      ],
+    });
+
+    createHighlightTooltip = new TextTip({
       scope: tiptapRendererEl,
       buttons: [
         {
@@ -145,20 +174,33 @@
             if (empty) return;
 
             editor.commands.setHighlight();
+            createHighlightTooltip?.hide();
           },
         },
-        {
-          title: '공유',
-          callback: () => {
-            //
-          },
-        },
+        shareButton,
       ],
     });
+  }
 
-    updatePostView({ postId: $query.post.id });
+  function showEditHighlightTooltip({ editor }: { editor: Editor }) {
+    if (!editHighlightTooltip) throw new Error('editHighlightTooltip is not initialized');
 
-    return tooltip.destroyEvents;
+    if (isMarkActive(editor.state, 'highlight')) {
+      editHighlightTooltip.manualShow();
+    } else {
+      editHighlightTooltip.hide();
+    }
+  }
+
+  $: if (editor) {
+    editor.on('selectionUpdate', showEditHighlightTooltip);
+  }
+
+  onDestroy(() => {
+    createHighlightTooltip?.destroyEvents();
+    editHighlightTooltip?.destroyEvents();
+
+    editor?.off('selectionUpdate', showEditHighlightTooltip);
   });
 </script>
 
@@ -266,7 +308,12 @@
       </div>
     </header>
 
-    <TiptapRenderer class="bodylong-16-m" content={$query.post.revision.content} bind:element={tiptapRendererEl} />
+    <TiptapRenderer
+      class="bodylong-16-m"
+      content={$query.post.revision.content}
+      bind:editor
+      bind:element={tiptapRendererEl}
+    />
 
     <div class="flex gap-2 flex-wrap">
       <Tag size="sm">#일러스트</Tag>
