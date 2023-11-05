@@ -8,4 +8,18 @@ const site = new penxle.Site('penxle.io', {
   },
 });
 
+new penxle.Redirect('www.penxle.io', {
+  name: 'www_penxle_io',
+
+  origin: {
+    domain: 'www.penxle.io',
+    zone: 'penxle.io',
+  },
+
+  redirect: {
+    to: 'https://penxle.io',
+    code: 308,
+  },
+});
+
 export const SITE_DOMAIN = site.siteDomain;

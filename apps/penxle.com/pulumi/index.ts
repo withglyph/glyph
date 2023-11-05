@@ -36,4 +36,31 @@ const site = new penxle.Site('penxle.com', {
   },
 });
 
+new penxle.Redirect('www.penxle.com', {
+  name: 'www_penxle_com',
+
+  origin: {
+    domain: 'www.penxle.com',
+    zone: 'penxle.com',
+  },
+
+  redirect: {
+    to: 'https://penxle.com',
+    code: 308,
+  },
+});
+
+new penxle.Redirect('pnxl.me', {
+  name: 'pnxl_me',
+
+  origin: {
+    domain: 'pnxl.me',
+  },
+
+  redirect: {
+    to: 'https://staging.penxle.com/api/shortlink',
+    code: 307,
+  },
+});
+
 export const SITE_DOMAIN = site.siteDomain;
