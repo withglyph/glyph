@@ -14,6 +14,7 @@
   import { TiptapRenderer } from '$lib/tiptap/components';
   import { humanizeNumber } from '$lib/utils';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
+  import { TextTip } from './text-tip';
   import Toolbar from './Toolbar.svelte';
   import type { ContentFilterCategory } from '$glitch';
 
@@ -23,6 +24,7 @@
   let loginRequireOpen = false;
   let emojiOpen = false;
   let password = '';
+  let tiptapRendererEl: HTMLElement;
 
   $: query = graphql(`
     query SpacePostPage_Query($permalink: String!) {
@@ -182,6 +184,22 @@
   onMount(async () => {
     mixpanel.track('post:view', { postId: $query.post.id });
     await updatePostView({ postId: $query.post.id });
+  });
+
+  onMount(() => {
+    const tooltip = new TextTip({
+      scope: tiptapRendererEl,
+      buttons: [
+        {
+          title: '공유',
+          callback: () => {
+            //
+          },
+        },
+      ],
+    });
+
+    return tooltip.destroyEvents;
   });
 
   const handleShare = () => {
