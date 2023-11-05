@@ -154,7 +154,35 @@
           title: '지우기',
           callback: () => {
             if (!editor) throw new Error('editor is not initialized');
-            // TODO: 밑줄 지우기
+
+            const { state } = editor;
+
+            const { highlight } = state.schema.marks;
+
+            const active = isMarkActive(state, highlight);
+            if (!active) throw new Error('highlight is not active');
+
+            let markStart: number | undefined;
+            let markEnd: number | undefined;
+
+            state.doc.descendants((node, pos) => {
+              if (node.marks.some((mark) => mark.type.name === 'highlight')) {
+                if (!markStart) {
+                  markStart = pos;
+                }
+                markEnd = pos + node.nodeSize;
+              }
+            });
+
+            if (markStart && markEnd) {
+              console.debug(markStart, markEnd);
+
+              // Reference source from: @tiptap/core/src/commands/unsetMark.ts#L46-L53
+              state.tr.removeMark(markStart, markEnd, highlight);
+              state.tr.removeStoredMark(highlight);
+            }
+            if (!editHighlightTooltip) throw new Error('editHighlightTooltip is not initialized');
+            editHighlightTooltip.hide();
           },
         },
         shareButton,
