@@ -75,7 +75,7 @@
                 {#if $$slots.subtitle}
                   <div
                     class={clsx(
-                      'flex justify-between mt-1 text-secondary body-15-sb',
+                      'flex justify-between mt-1 text-secondary body-16-m',
                       size === 'sm' && 'justify-center! text-center',
                     )}
                   >
