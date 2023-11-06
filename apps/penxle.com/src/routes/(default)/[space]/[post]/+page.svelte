@@ -1,10 +1,12 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import dayjs from 'dayjs';
+  import { nanoid } from 'nanoid';
   import { onMount, tick } from 'svelte';
   import { graphql } from '$glitch';
   import { Avatar, Button, Image, Tag } from '$lib/components';
   import { EmojiPicker } from '$lib/emoji';
+  import Emoji from '$lib/emoji/Emoji.svelte';
   import { toast } from '$lib/notification';
   import { portal } from '$lib/svelte/actions';
   import { TiptapRenderer } from '$lib/tiptap/components';
@@ -15,6 +17,7 @@
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLUListElement;
   let loginRequireOpen = false;
+  let emojiOpen = false;
 
   $: query = graphql(`
     query SpacePostPage_Query($permalink: String!) {
@@ -29,6 +32,12 @@
         likeCount
         liked
         viewCount
+
+        reactions {
+          id
+          emoji
+          mine
+        }
 
         space {
           id
@@ -64,6 +73,8 @@
           createdAt
         }
       }
+
+      ...EmojiPicker_query
     }
   `);
 
@@ -265,9 +276,25 @@
       </Button>
     </div>
     <div class="flex items-center gap-2.5 flex-wrap mt-4!">
-      <EmojiPicker />
-      <span class="h-6">🐱</span>
-      <span class="h-6">🤞🏻</span>
+      <EmojiPicker {$query} />
+
+      {#each $query.post.reactions.slice(0, 30) as reaction (`${reaction.emoji}-${nanoid()}`)}
+        <Emoji emoji={reaction.emoji} mine={reaction.mine} postId={$query.post.id} />
+      {/each}
+      {#if !emojiOpen && $query.post.reactions.length > 30}
+        <button
+          class="caption-12-m text-secondary rounded-3xl p-1 bg-primary transition hover:bg-surface-secondary"
+          type="button"
+          on:click={() => (emojiOpen = true)}
+        >
+          + {$query.post.reactions.length - 30}
+        </button>
+      {/if}
+      {#if emojiOpen && $query.post.reactions.length > 30}
+        {#each $query.post.reactions.slice(30) as reaction (`${reaction.emoji}-${nanoid()}`)}
+          <Emoji emoji={reaction.emoji} mine={reaction.mine} postId={$query.post.id} />
+        {/each}
+      {/if}
     </div>
 
     <hr class="w-full border-color-alphagray-10" />
