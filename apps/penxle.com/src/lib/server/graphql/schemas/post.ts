@@ -110,7 +110,6 @@ builder.prismaObject('PostRevision', {
     kind: t.expose('kind', { type: PostRevisionKind }),
     title: t.exposeString('title'),
     subtitle: t.exposeString('subtitle', { nullable: true }),
-    thumbnailBounds: t.expose('thumbnailBounds', { type: 'JSON', nullable: true }),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
 
     content: t.field({
@@ -206,7 +205,6 @@ builder.prismaObject('PostRevision', {
     }),
 
     thumbnail: t.relation('thumbnail', { nullable: true }),
-    coverImage: t.relation('coverImage', { nullable: true }),
   }),
 });
 

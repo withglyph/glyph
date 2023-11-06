@@ -31,8 +31,7 @@ model Image {
   profilesUsingThisAsAvatar         Profile[]
   spacesUsingThisAsIcon             Space[]
   postRevisionsUsingThisAsImage     PostRevisionImage[]
-  postRevisionsUsingThisAsThumbnail PostRevision[]      @relation(name: "post_revision_image_thumbnail")
-  postRevisionsUsingThisAsCover     PostRevision[]      @relation(name: "post_revision_image_cover")
+  postRevisionsUsingThisAsThumbnail PostRevisionThumbnail[]
 
   @@index([id, path, color])
   @@map("images")
@@ -179,28 +178,37 @@ model PostReaction {
 }
 
 model PostRevision {
-  id              String           @id
-  postId          String           @map("post_id")
-  post            Post             @relation(fields: [postId], references: [id])
-  userId          String           @map("user_id")
-  user            User             @relation(fields: [userId], references: [id])
-  kind            PostRevisionKind
-  thumbnailId     String?          @map("thumbnail_id")
-  thumbnail       Image?           @relation(name: "post_revision_image_thumbnail", fields: [thumbnailId], references: [id])
-  coverImageId    String?          @map("cover_image_id")
-  coverImage      Image?           @relation(name: "post_revision_image_cover", fields: [coverImageId], references: [id])
-  title           String
-  subtitle        String?
-  content         Json
-  paidContent     Json?            @map("paid_content")
-  thumbnailBounds Json?            @map("thumbnail_bounds")
-  createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  id          String           @id
+  postId      String           @map("post_id")
+  post        Post             @relation(fields: [postId], references: [id])
+  userId      String           @map("user_id")
+  user        User             @relation(fields: [userId], references: [id])
+  kind        PostRevisionKind
+  title       String
+  subtitle    String?
+  content     Json
+  paidContent Json?            @map("paid_content")
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz
 
+  thumbnail PostRevisionThumbnail?
   images    PostRevisionImage[]
   purchases PostPurchase[]
 
   @@index([createdAt])
   @@map("post_revisions")
+}
+
+model PostRevisionThumbnail {
+  id         String       @id
+  revisionId String       @unique @map("revision_id")
+  revision   PostRevision @relation(fields: [revisionId], references: [id])
+  imageId    String       @map("image_id")
+  image      Image        @relation(fields: [imageId], references: [id])
+  bounds     Json
+  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([revisionId, imageId])
+  @@map("post_revision_thumbnails")
 }
 
 model PostRevisionImage {
