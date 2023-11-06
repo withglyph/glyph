@@ -691,28 +691,6 @@ builder.mutationFields((t) => ({
     type: 'User',
     args: { input: t.arg({ type: UpdateUserContentFilterPreferenceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      if (input.category === 'TRIGGER') {
-        if (input.action === 'HIDE') {
-          await db.userContentFilterPreference.deleteMany({
-            where: {
-              userId: context.session.userId,
-              category: { not: 'ADULT' },
-            },
-          });
-        } else {
-          await db.userContentFilterPreference.updateMany({
-            where: {
-              userId: context.session.userId,
-              category: { not: 'ADULT' },
-              action: { not: 'HIDE' },
-            },
-            data: {
-              action: input.action,
-            },
-          });
-        }
-      }
-
       return await db.user.update({
         ...query,
         where: { id: context.session.userId },

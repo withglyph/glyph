@@ -2,6 +2,7 @@ import { init as cuid } from '@paralleldrive/cuid2';
 import { ContentFilterCategory, PostRevisionKind, PostVisibility } from '@prisma/client';
 import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
+import * as R from 'radash';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { deductUserPoint, getUserPoint } from '$lib/server/utils';
 import { createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
@@ -91,6 +92,26 @@ builder.prismaObject('Post', {
       type: [ContentFilterCategory],
       select: { contentFilters: true },
       resolve: (post) => post.contentFilters.map((filter) => filter.category),
+    }),
+
+    blurred: t.boolean({
+      select: { contentFilters: true },
+      resolve: async (post, _, { db, ...context }) => {
+        if (!context.session) {
+          return post.contentFilters.length > 0;
+        }
+
+        const myFilters = R.objectify(
+          await db.userContentFilterPreference.findMany({
+            select: { category: true, action: true },
+            where: { userId: context.session.userId },
+          }),
+          (filter) => filter.category,
+          (filter) => filter.action,
+        );
+
+        return post.contentFilters.some((filter) => myFilters[filter.category] !== 'EXPOSE');
+      },
     }),
   }),
 });
