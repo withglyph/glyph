@@ -226,6 +226,7 @@ type Post {
   permalink: String!
   revision: PostRevision!
   revisionList: [PostRevision!]!
+  shortlink: String!
   space: Space!
   viewCount: Int!
 }
