@@ -45,11 +45,11 @@
 </script>
 
 <ToggleButton
-  checked={preferences[category] !== 'HIDE'}
+  checked={preferences[category] === 'EXPOSE'}
   size="md"
   on:change={async (e) => {
     await updateUserContentFilterPreference({
-      action: e.currentTarget.checked ? preferences.TRIGGER ?? 'WARN' : 'HIDE',
+      action: e.currentTarget.checked ? 'EXPOSE' : 'WARN',
       category,
     });
   }}

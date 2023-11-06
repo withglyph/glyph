@@ -559,7 +559,6 @@ model UserTagPreference {
 
 enum ContentFilterCategory {
   ADULT
-  TRIGGER
   VIOLENCE
   CRUELTY
   HORROR
@@ -575,7 +574,6 @@ enum ContentFilterCategory {
 }
 
 enum ContentFilterAction {
-  HIDE
   WARN
   EXPOSE
 

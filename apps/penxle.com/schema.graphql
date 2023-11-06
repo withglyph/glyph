@@ -216,6 +216,7 @@ enum PointTransactionCause {
 }
 
 type Post {
+  blurred: Boolean!
   contentFilters: [ContentFilterCategory!]!
   createdAt: DateTime!
   id: ID!
