@@ -5,6 +5,7 @@ import './playground';
 import './point';
 import './post';
 import './space';
+import './tag';
 import './user';
 
 import { dev } from '$app/environment';

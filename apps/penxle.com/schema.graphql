@@ -240,6 +240,7 @@ type Post {
   revisionList: [PostRevision!]!
   shortlink: String!
   space: Space!
+  tags: [PostTag!]!
   viewCount: Int!
 }
 
@@ -291,6 +292,12 @@ enum PostState {
   DELETED
   DRAFT
   PUBLISHED
+}
+
+type PostTag {
+  id: ID!
+  pinned: Boolean!
+  tag: Tag!
 }
 
 enum PostVisibility {
@@ -431,6 +438,11 @@ enum SpaceVisibility {
   PUBLIC
 }
 
+type Tag {
+  id: ID!
+  name: String!
+}
+
 input UnfollowSpaceInput {
   spaceId: ID!
 }
@@ -454,6 +466,7 @@ input UpdatePostOptionsInput {
   receiveFeedback: Boolean
   receivePatronage: Boolean
   receiveTagContribution: Boolean
+  tags: [String!]
   visibility: PostVisibility
 }
 

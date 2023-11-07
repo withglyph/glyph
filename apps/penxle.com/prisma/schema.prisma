@@ -107,6 +107,7 @@ model Post {
   purchases      PostPurchase[]
   reactions      PostReaction[]
   contentFilters PostContentFilter[]
+  tags           PostTag[]
 
   @@map("posts")
 }
@@ -221,6 +222,21 @@ model PostRevisionImage {
 
   @@unique([revisionId, imageId])
   @@map("post_revision_images")
+}
+
+model PostTag {
+  id        String   @id
+  postId    String   @map("post_id")
+  post      Post     @relation(fields: [postId], references: [id])
+  tagId     String   @map("tag_id")
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  pinned    Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([postId, tagId])
+  @@map("post_tags")
 }
 
 model PostView {
@@ -390,6 +406,7 @@ model Tag {
   parents         TagHierarchy[]      @relation("parents")
   children        TagHierarchy[]      @relation("children")
   userPreferences UserTagPreference[]
+  posts           PostTag[]
   // spacesUsingThis SpaceTag[]
 
   @@map("tags")
@@ -465,6 +482,7 @@ model User {
   spaceBlockedBy           SpaceUserBlock[]
   spaceMasquerades         SpaceMasquerade[]
   postReactions            PostReaction[]
+  postTags                 PostTag[]
 
   @@index([email, state])
   @@map("users")

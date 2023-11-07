@@ -145,6 +145,8 @@ builder.prismaObject('Post', {
         ];
       },
     }),
+
+    tags: t.relation('tags'),
   }),
 });
 
@@ -366,6 +368,7 @@ const UpdatePostOptionsInput = builder.inputType('UpdatePostOptionsInput', {
     receiveTagContribution: t.boolean({ required: false }),
 
     contentFilters: t.field({ type: [ContentFilterCategory], required: false }),
+    tags: t.stringList({ required: false }),
   }),
 });
 
@@ -629,6 +632,31 @@ builder.mutationFields((t) => ({
         await db.postContentFilter.deleteMany({ where: { postId: post.id } });
       }
 
+      let postTags: { id: string }[] = [];
+
+      if (input.tags) {
+        await db.postTag.deleteMany({
+          where: {
+            postId: post.id,
+            pinned: true,
+          },
+        });
+
+        postTags = await Promise.all(
+          input.tags.map(async (tagName) =>
+            db.tag.upsert({
+              select: { id: true },
+              where: { name: tagName },
+              create: {
+                id: createId(),
+                name: tagName,
+              },
+              update: {},
+            }),
+          ),
+        );
+      }
+
       return await db.post.update({
         ...query,
         where: { id: post.id },
@@ -649,6 +677,16 @@ builder.mutationFields((t) => ({
                   id: createId(),
                   category,
                 })) ?? [],
+            },
+          },
+          tags: {
+            createMany: {
+              data: postTags.map((tag) => ({
+                id: createId(),
+                tagId: tag.id,
+                pinned: true,
+                userId: context.session.userId,
+              })),
             },
           },
         },
