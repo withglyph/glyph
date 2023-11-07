@@ -25,7 +25,7 @@
         $page.url.pathname !== href &&
         'border-transparent text-disabled',
       variant === 'secondary' &&
-        'bg-white p-3 text-center sm:bg-transparent transition hover:(text-black! border-b-2 border-black!)',
+        'bg-white p-3 text-center sm:bg-transparent transition border-b-2 border-white hover:(text-black! border-black!)',
       variant === 'secondary' &&
         (activeTabValue === id || $page.url.pathname === href) &&
         'text-black body-16-b border-b-2 border-black',
