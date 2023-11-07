@@ -136,15 +136,14 @@ model PostLike {
 }
 
 model PostOption {
-  id                     String                  @id
+  id                     String         @id
   price                  Int?
   visibility             PostVisibility
-  contentFilters         ContentFilterCategory[] @map("content_filters")
-  discloseStats          Boolean                 @map("disclose_stats")
-  receiveFeedback        Boolean                 @map("receive_feedback")
-  receivePatronage       Boolean                 @map("receive_patronage")
-  receiveTagContribution Boolean                 @map("receive_tag_contribution")
-  createdAt              DateTime                @default(now()) @map("created_at") @db.Timestamptz
+  discloseStats          Boolean        @map("disclose_stats")
+  receiveFeedback        Boolean        @map("receive_feedback")
+  receivePatronage       Boolean        @map("receive_patronage")
+  receiveTagContribution Boolean        @map("receive_tag_contribution")
+  createdAt              DateTime       @default(now()) @map("created_at") @db.Timestamptz
 
   post Post?
 
