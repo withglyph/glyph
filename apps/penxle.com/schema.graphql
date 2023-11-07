@@ -11,7 +11,6 @@ enum AuthScope {
 
 enum ContentFilterAction {
   EXPOSE
-  HIDE
   WARN
 }
 
@@ -26,7 +25,6 @@ enum ContentFilterCategory {
   OTHER
   PHOBIA
   TRAUMA
-  TRIGGER
   VIOLENCE
 }
 
