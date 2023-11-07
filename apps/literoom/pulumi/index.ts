@@ -55,9 +55,32 @@ const lambda = new aws.lambda.Function('literoom', {
   },
 });
 
+new aws.lambda.Permission('literoom', {
+  function: lambda.name,
+  principal: 'cloudfront.amazonaws.com',
+  action: 'lambda:InvokeFunction',
+});
+
 const accessPoint = new aws.s3.AccessPoint('data', {
   name: 'penxle-data',
   bucket: bedrockRef('AWS_S3_BUCKET_DATA_BUCKET'),
+});
+
+new aws.s3control.AccessPointPolicy('penxle-data', {
+  accessPointArn: accessPoint.arn,
+  policy: accessPoint.arn.apply((v) =>
+    JSON.stringify({
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Effect: 'Allow',
+          Principal: { Service: 'cloudfront.amazonaws.com' },
+          Action: 's3:*',
+          Resource: [v, `${v}/object/*`],
+        },
+      ],
+    }),
+  ),
 });
 
 const objectLambdaAccessPoint = new awsnative.s3objectlambda.AccessPoint(
@@ -80,6 +103,23 @@ const objectLambdaAccessPoint = new awsnative.s3objectlambda.AccessPoint(
   },
   { replaceOnChanges: ['objectLambdaConfiguration'] },
 );
+
+new aws.s3control.ObjectLambdaAccessPointPolicy('penxle-images', {
+  name: 'penxle-images',
+  policy: objectLambdaAccessPoint.arn.apply((v) =>
+    JSON.stringify({
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Effect: 'Allow',
+          Principal: { Service: 'cloudfront.amazonaws.com' },
+          Action: 's3-object-lambda:Get*',
+          Resource: v,
+        },
+      ],
+    }),
+  ),
+});
 
 new aws.iam.RolePolicy('literoom@lambda', {
   name: 'literoom@lambda',

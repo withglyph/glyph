@@ -44,7 +44,7 @@
 <Helmet
   description="새로운 동인 창작 플랫폼 PENXLE이 오픈됐을 때 바로 알림을 받아보세요."
   image={{
-    src: 'https://c.pnxl.net/assets/opengraph/default-cover.png',
+    src: 'https://pnxl.net/assets/opengraph/default-cover.png',
     size: 'large',
   }}
   title="함께 그리는 반짝임, PENXLE"
