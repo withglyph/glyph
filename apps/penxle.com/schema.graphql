@@ -270,7 +270,7 @@ type PostRevision {
   id: ID!
   kind: PostRevisionKind!
   subtitle: String
-  thumbnail: Image
+  thumbnail: PostRevisionThumbnail
   title: String!
 }
 
@@ -278,6 +278,12 @@ enum PostRevisionKind {
   AUTO_SAVE
   MANUAL_SAVE
   PUBLISHED
+}
+
+type PostRevisionThumbnail {
+  bounds: JSON!
+  id: ID!
+  image: Image!
 }
 
 enum PostState {
