@@ -49,7 +49,7 @@
     extra: () => ({ avatarId: avatar.id }),
     onSuccess: () => {
       open = false;
-      toast.success('프로필이 수정되었어요.');
+      toast.success('프로필이 수정되었어요');
     },
   });
 

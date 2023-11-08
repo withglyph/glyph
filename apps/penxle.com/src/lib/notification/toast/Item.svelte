@@ -17,7 +17,7 @@
 </script>
 
 <div
-  class="flex items-center rounded-lg min-w-11 w-fit max-w-full h-11 p-1 bg-gray-80 drop-shadow-lg pointer-events-auto overflow-hidden"
+  class="<sm:hidden flex items-center rounded-lg min-w-11 w-fit max-w-full h-11 p-1 bg-gray-80 drop-shadow-lg pointer-events-auto overflow-hidden"
   in:scale={{ duration: 400, easing: backInOut }}
   out:scale={{ duration: 400, delay: 600, easing: backInOut }}
 >
@@ -60,4 +60,15 @@
       <button class="i-lc-x" type="button" on:click={dismiss} />
     </div>
   </div>
+</div>
+
+<div
+  class="sm:hidden w-fit p-3 bg-alphagray-80 rounded-lg shadow-[0_4px_4px_0_rgba(0,0,0,0.10)]"
+  in:slide={{ axis: 'y', duration: 400, delay: 400, easing: expoInOut }}
+  out:slide={{ axis: 'y', duration: 400, delay: 200, easing: expoInOut }}
+>
+  {#if toast.title}
+    <span class="body-13-b text-darkprimary line-clamp-1">{toast.title}</span>
+  {/if}
+  <span class="body-13-m text-darkprimary line-clamp-1">{toast.message}</span>
 </div>
