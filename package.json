@@ -43,8 +43,14 @@
       "read-package-tree": "*",
       "readdir-scoped-modules": "*"
     },
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "@graphql-codegen/typescript-urql-graphcache>@urql/exchange-graphcache": "*"
+      }
+    },
     "patchedDependencies": {
-      "@vercel/nft@0.24.4": "patches/@vercel__nft@0.24.4.patch"
+      "svelty-picker@5.1.0": "patches/svelty-picker@5.1.0.patch",
+			"@vercel/nft@0.24.4": "patches/@vercel__nft@0.24.4.patch"
     }
   }
 }

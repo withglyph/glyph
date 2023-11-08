@@ -87,6 +87,7 @@
     "xlarge",
     "xvda",
     "zstd",
-    "zxcvbn"
+    "zxcvbn",
+    "svelty"
   ]
 }

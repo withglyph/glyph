@@ -1,0 +1,363 @@
+diff --git a/dist/components/Calendar.svelte b/dist/components/Calendar.svelte
+index 6e0963c4ebaafc989848b6273150ed54fd4dc702..4202b426619051ce7879b5bfffa12138e11bd943 100644
+--- a/dist/components/Calendar.svelte
++++ b/dist/components/Calendar.svelte
+@@ -16,7 +16,7 @@
+   export let endDate = null;
+   export let weekStart = 1;
+   export let initialView = MODE_MONTH;
+-  /** @type {import("../i18n").i18nType} */
++  /** @type {import("$lib/i18n").i18nType} */
+   export let i18n;
+   export let enableTimeToggle = false;
+   export let isRange = false;
+@@ -105,8 +105,8 @@
+   let duration = 400;
+   $: start = viewDelta < 1 ? 1.5 : 0.5;
+   $: end = viewDelta < 1 ? 1 : 1.5;
+-  const TRANSFORM_CONST = 222;
+-  const TRANSFORM_DECADE_UNEVEN = 148;  // in decade view, transform constants values are changing
++  const TRANSFORM_CONST = 120;
++  const TRANSFORM_DECADE_UNEVEN = 80;  // in decade view, transform constants values are changing
+   let transform = TRANSFORM_CONST;  // month +/- constant
+   /** @type {Function|null} */
+   let onMonthTransitionTrigger = null;
+@@ -312,22 +312,31 @@
+ </script>
+ 
+ <div class="sdt-thead-nav">
+-  <button type="button" class="std-btn std-btn-header sdt-toggle-btn" on:click={onSwitchView}>{tableCaption}</button>
+-  {#if enableTimeToggle && dates.length}
+-  <button type="button" class="std-btn std-btn-header icon-btn sdt-time-icon" title={i18n.timeView} on:click={onTimeSwitch} >
+-    <svg class="sdt-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM8 0a8 8 0 100 16A8 8 0 008 0zm.5 4.75a.75.75 0 00-1.5 0v3.5a.75.75 0 00.471.696l2.5 1a.75.75 0 00.557-1.392L8.5 7.742V4.75z"></path></svg>
+-  </button>
+-  {/if}
+-  <button type="button" class="std-btn std-btn-header icon-btn" on:click={() => onTransformChangeMonth(-1)}>
+-    <svg class="sdt-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="24" height="24"><path d="M4.427 9.573l3.396-3.396a.25.25 0 01.354 0l3.396 3.396a.25.25 0 01-.177.427H4.604a.25.25 0 01-.177-.427z"></path></svg>
+-  </button>
+-  <button type="button" class="std-btn std-btn-header icon-btn" on:click={() => onTransformChangeMonth(1)}>
+-    <svg class="sdt-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="24" height="24"><path d="M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z"></path></svg>
+-  </button>
+-  <div class="sdt-nav-btns">
+-  </div>
++  <slot
++    name="header"
++    onSwitchView={onSwitchView}
++    activeDate={activeDate}
++    i18n={i18n}
++    onTimeSwitch={onTimeSwitch}
++    onTransformChangeMonth={onTransformChangeMonth}
++  >
++    <button type="button" class="std-btn std-btn-header sdt-toggle-btn" on:click={onSwitchView}>{tableCaption}</button>
++    {#if enableTimeToggle && dates.length}
++    <button type="button" class="std-btn std-btn-header icon-btn sdt-time-icon" title={i18n.timeView} on:click={onTimeSwitch} >
++      <svg class="sdt-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM8 0a8 8 0 100 16A8 8 0 008 0zm.5 4.75a.75.75 0 00-1.5 0v3.5a.75.75 0 00.471.696l2.5 1a.75.75 0 00.557-1.392L8.5 7.742V4.75z"></path></svg>
++    </button>
++    {/if}
++    <button type="button" class="std-btn std-btn-header icon-btn" on:click={() => onTransformChangeMonth(-1)}>
++      <svg class="sdt-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="24" height="24"><path d="M4.427 9.573l3.396-3.396a.25.25 0 01.354 0l3.396 3.396a.25.25 0 01-.177.427H4.604a.25.25 0 01-.177-.427z"></path></svg>
++    </button>
++    <button type="button" class="std-btn std-btn-header icon-btn" on:click={() => onTransformChangeMonth(1)}>
++      <svg class="sdt-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="24" height="24"><path d="M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z"></path></svg>
++    </button>
++    <div class="sdt-nav-btns">
++    </div>
++  </slot>
+ </div>
+-<div class="sdt-calendar" class:is-grid={viewChanged}>
++<div class="sdt-calendar" class:is-grid={viewChanged} class:is-decade-or-year-mode={currentView === MODE_DECADE || currentView === MODE_YEAR}>
+   {#if currentView === MODE_DECADE}
+   <table class="sdt-table" style="max-height: 221px; height: 221px">
+     <tbody in:swapTransition={{duration: duration, start: start, opacity: 1}} class="sdt-tbody-lg" out:swapTransition|local={{duration, end, start: 1}} on:outroend={onTransitionOut}
+@@ -413,24 +422,39 @@
+ </div>
+ 
+ <style>
+-  td,th {
+-    padding: 0;
+-    border-width: 0;
+-  }
++td,th {
++  border-width: 0;
++}
+ .sdt-cal-td {
++  font-family: SUIT, sans-serif;
++  font-size: 0.8125rem;
++  font-style: normal;
++  font-weight: 700;
++  line-height: normal;
+   padding: 0;
+-  font-size: 90%;
+   text-align: center;
+   /* background-color: var(--sdt-bg-main, #fff); */
+ }
+ .sdt-cal-th {
++  padding: 0.625rem 0;
++	color: #A8A29E;
+   text-align: center;
+-  height: 24px;
++  font-family: Pretendard, sans-serif;
++  font-size: 0.75rem;
++  font-style: normal;
++  font-weight: 500;
++	color: var(--sdt-table-not-current, #A8A29E);
++  line-height: normal;
+ }
+ .sdt-calendar {
+-  height: 221px;
+   overflow: hidden;
+ }
++
++.sdt-calendar.is-decade-or-year-mode {
++  width: 19rem;
++  height: 7.5rem;
++}
++
+ .sdt-calendar.is-grid {
+   display: grid;
+ }
+@@ -444,20 +468,16 @@
+   margin: 0;
+   background-color: var(--sdt-table-bg, transparent);
+ }
+-.sdt-table-height {
+-  height: 222px;
+-}
++
+ .animate-transition {
+   will-change: transform;
+   transition: transform .3s ease;
+ }
+ .not-current {
+-  opacity: 0.3;
+-}
+-.not-current:hover {
+-  opacity: 0.55;
++	font-weight: 400;
++  color: var(--sdt-table-not-current, #A8A29E);
+ }
+-.std-btn {
++.std-btn:not(.not-current) {
+   margin: 0;
+   border: 0;
+   background: transparent;
+@@ -469,9 +489,15 @@
+   box-sizing: border-box;
+   color: var(--sdt-color, initial);
+ }
++
++.sdt-cal-td > .std-btn {
++  height: 2.5rem;
++}
++
+ .sdt-btn-day {
+-  max-height: 32px;
+-  height: 32px;
++  width: 2.5rem;
++  padding: 0.625rem;
++	text-align: center;
+ }
+ .std-btn[disabled] {
+   cursor: not-allowed;
+@@ -505,6 +531,12 @@
+   border-radius: 0;
+ }
+ /* range selection: start */
++.in-range-hover.is-selected:has(+ .in-range-hover) {
++	background: linear-gradient(to left, color-mix(in srgb, transparent 75%, var(--sdt-bg-selected, #286090)) 50%, transparent 50%)
++}
++.in-range-hover.is-selected:not(:has(+ .in-range-hover)) {
++	background: linear-gradient(to right, color-mix(in srgb, transparent 75%, var(--sdt-bg-selected, #286090)) 50%, transparent 50%)
++}
+ .in-range-hover.is-selected:has(+ .in-range-hover) .std-btn {
+   border-top-right-radius: 0;
+   border-bottom-right-radius: 0;
+@@ -515,6 +547,7 @@
+ }
+ .in-range:not(.is-selected) .std-btn:hover {
+   background-color: color-mix(in srgb, var(--sdt-table-data-bg-hover, #eee) 75%, var(--sdt-bg-selected, #286090));
++	color: var(--sdt-color, initial);
+ }
+ /* range selection: end */
+ .in-range + .is-selected .std-btn,
+@@ -526,11 +559,23 @@
+   border-left: 1px solid color-mix(in srgb, white 75%, var(--sdt-table-selected-bg, #286090));
+   margin-left: -1px;
+ }
++
++.is-selected.in-range {
++  background: linear-gradient(to left, color-mix(in srgb, transparent 75%, var(--sdt-bg-selected, #286090)) 50%, transparent 50%)
++}
++
++.in-range + .is-selected {
++  background: linear-gradient(to left, transparent 50%, color-mix(in srgb, transparent 75%, var(--sdt-bg-selected, #286090)) 50%)
++}
++
+ .is-selected .std-btn,
+-.is-selected.in-range .std-btn {
++.is-selected.in-range .std-btn,
++.is-selected.in-range .std-btn.not-current {
+   background-color: var(--sdt-table-selected-bg, #286090);
+   color: var(--sdt-color-selected, var(--sdt-bg-main, #fff));
+-  opacity: 0.9;
++  border-radius: 2rem !important;
++	opacity: initial;
++	font-weight: 700;
+ }
+ .std-btn-header:hover {
+   background-color: var(--sdt-header-btn-bg-hover, #dfdfdf);
+@@ -547,12 +592,10 @@
+ .sdt-tbody-lg {
+   background-color: var(--sdt-bg-main, #fff);
+ }
+-.sdt-tbody-lg .std-btn {
+-  height: 74px;
+-}
++
+ .sdt-thead-nav {
+   display: flex;
+-  margin-bottom: 0.25em;
++  margin-bottom: 1rem !important;
+   align-items: stretch;
+ }
+ .sdt-nav-btns {
+@@ -566,6 +609,7 @@
+   position: relative;
+ }
+ .sdt-today:before {
++  display: none;
+   box-sizing: border-box;
+   position: absolute;
+   content: '';
+diff --git a/dist/components/SveltyPicker.svelte b/dist/components/SveltyPicker.svelte
+index d93c1ebc3dc6fb2e6132fe4457f72a5c7040b336..4d2fc04b2c63263996def83811d07960edb40eb9 100644
+--- a/dist/components/SveltyPicker.svelte
++++ b/dist/components/SveltyPicker.svelte
+@@ -33,6 +33,8 @@
+   export let initialDate = null;
+   /** @type {boolean }*/
+   export let isRange = false;
++  /** @type {boolean }*/
++  export let isPair = true;
+   /** @type {Date | string | null} */
+   export let startDate = null;
+   /** @type {Date | string | null} */
+@@ -78,7 +80,7 @@
+   export let autocommit = config.autocommit;
+   /** @type {boolean} */
+   export let hourOnly = config.hourOnly;
+-  /** @type {import("../i18n").i18nType} */
++  /** @type {import("$lib/i18n").i18nType} */
+   export let i18n = config.i18n;
+   /** ************************************ actions */
+   /** @type {Array<any>|null} */
+@@ -117,7 +119,7 @@
+   let inputActionParams = validatorAction || [];
+   /** @type {Calendar} */
+   let ref_calendar;
+-  $: widgetList = watchIsRange(isRange);
++  $: widgetList = watchIsRange(isRange, isPair);
+   $: resolvedMode = computeResolvedMode(mode, format);
+   $: {
+     if (resolvedMode === 'time' && currentMode !== resolvedMode) {
+@@ -249,10 +251,11 @@
+    * @property {Time?} ref
+    *
+    * @param {boolean} isRange
++   * @param {boolean} isPair
+    * @returns {TimeRef[]}
+   */
+-  function watchIsRange(isRange) {
+-    return isRange ? [{ref: null}, {ref: null}] : [{ref: null}];
++  function watchIsRange(isRange, isPair) {
++    return isRange && isPair ? [{ref: null}, {ref: null}] : [{ref: null}];
+   }
+ 
+   /**
+@@ -648,25 +651,22 @@
+     display: inline;
+   }
+   .std-calendar-wrap {
+-    width: 280px;
++    width: fit-content;
+     background-color: var(--sdt-bg-main, #fff);
+     box-shadow: var(--sdt-wrap-shadow, 0 1px 6px var(--sdt-shadow-color, #ccc));
+     border-radius: var(--sdt-radius, 4px);
+-    padding: 0.5em;
++    padding: 2rem 1rem 1.375rem;
+     color: var(--sdt-color, initial);
+   }
+-  .std-calendar-wrap.is-range-wrap {
+-    width: 560px;
+-  }
+   .sdt-widget-wrap {
+     display: flex;
+     gap: 0.5rem;
+     justify-content: stretch;
+     position: relative;
++    margin-bottom: 1rem;
+   }
+   .sdt-widget {
+     flex: 1;
+-    min-width: 264px;
+   }
+   .value-dirty {
+     color: color-mix(in srgb, black 20%, white);
+@@ -726,9 +726,6 @@
+     background-color: #eee;
+   }
+   @media screen and (max-width: 560px) {
+-    .std-calendar-wrap.std-calendar-wrap.is-range-wrap {
+-      width: 280px;
+-    }
+     .sdt-widget-wrap {
+       flex-wrap: wrap;
+     }
+diff --git a/dist/components/SveltyPicker.svelte.d.ts b/dist/components/SveltyPicker.svelte.d.ts
+index 4a8a4a86adbdf06cc1258b7dad8893aa059beec5..2f99548c4168d1cf5070c0bbdf0cd7ada828d56e 100644
+--- a/dist/components/SveltyPicker.svelte.d.ts
++++ b/dist/components/SveltyPicker.svelte.d.ts
+@@ -24,6 +24,7 @@ export default class SveltyPicker extends SvelteComponentTyped<{
+     endDate?: string | Date;
+     weekStart?: number;
+     isRange?: boolean;
++		isPair?: boolean;
+     i18n?: import("../i18n").i18nType;
+     hourOnly?: boolean;
+     minuteIncrement?: number;
+@@ -73,6 +74,13 @@ export default class SveltyPicker extends SvelteComponentTyped<{
+         onInputFocus: () => void;
+         onInputBlur: () => void;
+     };
++		header: {
++			onSwitchView: () => void;
++			activeDate: Date;
++			i18n: import("../i18n").i18nType;
++			onTimeSwitch: () => void;
++			onTransformChangeMonth: (val: number) => void;
++		};
+     'action-row': {
+         onCancel: () => void;
+         onConfirm: () => void;
+@@ -94,6 +102,7 @@ declare const __propDef: {
+         endDate?: Date | string | null;
+         weekStart?: number;
+         isRange?: boolean;
++				isPair?: boolean;
+         i18n?: import("../i18n").i18nType;
+         hourOnly?: boolean;
+         minuteIncrement?: number;
+@@ -145,6 +154,13 @@ declare const __propDef: {
+             onInputFocus: () => void;
+             onInputBlur: () => void;
+         };
++				header: {
++					onSwitchView: () => void;
++					activeDate: Date;
++					i18n: import("../i18n").i18nType;
++					onTimeSwitch: () => void;
++					onTransformChangeMonth: (val: number) => void;
++				};
+         'action-row': {
+             onCancel: () => void;
+             onConfirm: () => void;
