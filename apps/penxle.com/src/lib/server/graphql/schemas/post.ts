@@ -3,6 +3,7 @@ import { ContentFilterCategory, PostRevisionKind, PostVisibility } from '@prisma
 import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
 import * as R from 'radash';
+import emojiData from '$lib/emoji/data.json';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { deductUserPoint, getUserPoint } from '$lib/server/utils';
 import { createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
@@ -111,6 +112,36 @@ builder.prismaObject('Post', {
         );
 
         return post.contentFilters.some((filter) => myFilters[filter.category] !== 'EXPOSE');
+      },
+    }),
+
+    reactions: t.prismaField({
+      type: ['PostReaction'],
+      resolve: async (query, post, _, { db, ...context }) => {
+        if (!context.session) {
+          return db.postReaction.findMany({
+            ...query,
+            where: { postId: post.id },
+          });
+        }
+        return [
+          ...(await db.postReaction.findMany({
+            ...query,
+            where: {
+              postId: post.id,
+              userId: context.session.userId,
+            },
+            orderBy: { createdAt: 'desc' },
+          })),
+          ...(await db.postReaction.findMany({
+            ...query,
+            where: {
+              postId: post.id,
+              userId: { not: context.session.userId },
+            },
+            orderBy: { createdAt: 'desc' },
+          })),
+        ];
       },
     }),
   }),
@@ -235,6 +266,24 @@ builder.prismaObject('PostRevision', {
   }),
 });
 
+builder.prismaObject('PostReaction', {
+  select: { id: true },
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    emoji: t.exposeString('emoji'),
+    mine: t.boolean({
+      select: { userId: true },
+      resolve: async (reaction, _, { ...context }) => {
+        if (!context.session) {
+          return false;
+        }
+
+        return reaction.userId === context.session.userId;
+      },
+    }),
+  }),
+});
+
 /**
  * * Inputs
  */
@@ -299,6 +348,20 @@ const PurchasePostInput = builder.inputType('PurchasePostInput', {
 const UpdatePostViewInput = builder.inputType('UpdatePostViewInput', {
   fields: (t) => ({
     postId: t.id(),
+  }),
+});
+
+const CreatePostReactionInput = builder.inputType('CreatePostReactionInput', {
+  fields: (t) => ({
+    postId: t.id(),
+    emoji: t.string(),
+  }),
+});
+
+const DeletePostReactionInput = builder.inputType('DeletePostReactionInput', {
+  fields: (t) => ({
+    postId: t.id(),
+    emoji: t.string(),
   }),
 });
 
@@ -700,6 +763,47 @@ builder.mutationFields((t) => ({
           },
         });
       }
+    },
+  }),
+
+  createPostReaction: t.withAuth({ user: true }).prismaField({
+    type: 'Post',
+    args: { input: t.arg({ type: CreatePostReactionInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      // @ts-expect-error TODO: 타입 정의 넣기
+      if (!emojiData.emojis[input.emoji]) {
+        throw new IntentionalError('잘못된 이모지에요');
+      }
+      await db.postReaction.create({
+        data: {
+          id: createId(),
+          userId: context.session.userId,
+          postId: input.postId,
+          emoji: input.emoji,
+        },
+      });
+      return db.post.findUniqueOrThrow({
+        ...query,
+        where: { id: input.postId },
+      });
+    },
+  }),
+
+  deletePostReaction: t.withAuth({ user: true }).prismaField({
+    type: 'Post',
+    args: { input: t.arg({ type: DeletePostReactionInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      await db.postReaction.deleteMany({
+        where: {
+          postId: input.postId,
+          userId: context.session.userId,
+          emoji: input.emoji,
+        },
+      });
+      return db.post.findUniqueOrThrow({
+        ...query,
+        where: { id: input.postId },
+      });
     },
   }),
 }));

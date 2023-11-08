@@ -28,6 +28,11 @@ enum ContentFilterCategory {
   VIOLENCE
 }
 
+input CreatePostReactionInput {
+  emoji: String!
+  postId: ID!
+}
+
 input CreateSpaceInput {
   iconId: ID
   isPublic: Boolean! = true
@@ -56,6 +61,11 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 scalar DateTime
 
 input DeletePostInput {
+  postId: ID!
+}
+
+input DeletePostReactionInput {
+  emoji: String!
   postId: ID!
 }
 
@@ -129,10 +139,12 @@ input LoginUserInput {
 
 type Mutation {
   acceptSpaceMemberInvitation(input: AcceptSpaceMemberInvitationInput!): SpaceMemberInvitation!
+  createPostReaction(input: CreatePostReactionInput!): Post!
   createSpace(input: CreateSpaceInput!): Space!
   createSpaceMemberInvitation(input: CreateSpaceMemberInvitationInput!): SpaceMemberInvitation!
   createUser(input: CreateUserInput!): User!
   deletePost(input: DeletePostInput!): Post!
+  deletePostReaction(input: DeletePostReactionInput!): Post!
   deleteSpace(input: DeleteSpaceInput!): Space!
   deleteSpaceProfile(input: DeleteSpaceProfileInput!): SpaceMember!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
@@ -223,6 +235,7 @@ type Post {
   member: SpaceMember!
   option: PostOption!
   permalink: String!
+  reactions: [PostReaction!]!
   revision: PostRevision!
   revisionList: [PostRevision!]!
   shortlink: String!
@@ -242,6 +255,12 @@ type PostOption {
   receivePatronage: Boolean!
   receiveTagContribution: Boolean!
   visibility: PostVisibility!
+}
+
+type PostReaction {
+  emoji: String!
+  id: ID!
+  mine: Boolean!
 }
 
 type PostRevision {
