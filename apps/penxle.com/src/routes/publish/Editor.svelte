@@ -1,9 +1,11 @@
 <script lang="ts">
+  import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import { writable } from '@svelte-kits/store';
   import { isTextSelection } from '@tiptap/core';
+  import { tick } from 'svelte';
   import { fade } from 'svelte/transition';
-  import { focused, hover } from '$lib/svelte/actions';
-  import { TiptapBubbleMenu, TiptapEditor } from '$lib/tiptap/components';
+  import { focused, hover, portal } from '$lib/svelte/actions';
+  import { TiptapBubbleMenu, TiptapEditor, TiptapFloatingMenu } from '$lib/tiptap/components';
   import type { Editor, JSONContent } from '@tiptap/core';
 
   export let title: string;
@@ -11,11 +13,37 @@
   export let content: JSONContent;
   export let editor: Editor;
 
+  let targetEl: HTMLButtonElement;
+  let menuEl: HTMLDivElement;
+
+  let open = false;
   let enableSubtitle = false;
   let enableCoverImage = false;
 
   const focusing = writable(false);
   const hovered = writable(false);
+
+  const update = async () => {
+    await tick();
+
+    const position = await computePosition(targetEl, menuEl, {
+      placement: 'bottom-end',
+      middleware: [offset(4), flip(), shift({ padding: 8 })],
+    });
+
+    Object.assign(menuEl.style, {
+      left: `${position.x}px`,
+      top: `${position.y}px`,
+    });
+  };
+
+  $: if (open) {
+    void update();
+  }
+
+  $: if (!menuEl) {
+    open = false;
+  }
 </script>
 
 {#if enableCoverImage}
@@ -99,4 +127,39 @@
       <button class="i-lc-bold" type="button" on:click={() => editor.chain().focus().toggleBold().run()} />
     </div>
   </TiptapBubbleMenu>
+
+  <TiptapFloatingMenu {editor}>
+    <button
+      bind:this={targetEl}
+      class="border rounded-full square-10 flex center"
+      type="button"
+      on:click={() => {
+        open = true;
+      }}
+    >
+      <span class="i-lc-plus square-6 text-gray-50" />
+    </button>
+
+    {#if open}
+      <div
+        class="fixed inset-0 z-49"
+        role="button"
+        tabindex="-1"
+        on:click={() => (open = false)}
+        on:keypress={null}
+        use:portal
+      />
+
+      <div
+        bind:this={menuEl}
+        class="absolute rounded bg-white drop-shadow-xl px-4 py-2 text-xs font-semibold z-50"
+        use:portal
+      >
+        <button class="flex gap-2" type="button" on:click={() => editor.chain().focus().setAccessBarrier().run()}>
+          <span class="i-lc-circle-dollar-sign square-4" />
+          결제선 추가
+        </button>
+      </div>
+    {/if}
+  </TiptapFloatingMenu>
 {/if}

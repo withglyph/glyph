@@ -29,7 +29,7 @@ export const AccessBarrier = createNodeView(Component, {
       setAccessBarrier:
         () =>
         ({ tr }) => {
-          tr.insert(tr.selection.$to.end(), this.type.create());
+          tr.replaceSelectionWith(this.type.create());
           return tr.docChanged;
         },
     };
