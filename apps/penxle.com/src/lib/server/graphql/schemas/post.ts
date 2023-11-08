@@ -559,9 +559,18 @@ builder.mutationFields((t) => ({
         where: { id: input.postId },
         data: {
           likes: {
-            create: {
-              id: createId(),
-              userId: context.session.userId,
+            upsert: {
+              where: {
+                postId_userId: {
+                  postId: input.postId,
+                  userId: context.session.userId,
+                },
+              },
+              create: {
+                id: createId(),
+                userId: context.session.userId,
+              },
+              update: {},
             },
           },
         },
@@ -578,11 +587,8 @@ builder.mutationFields((t) => ({
         where: { id: input.postId },
         data: {
           likes: {
-            delete: {
-              postId_userId: {
-                postId: input.postId,
-                userId: context.session.userId,
-              },
+            deleteMany: {
+              userId: context.session.userId,
             },
           },
         },
