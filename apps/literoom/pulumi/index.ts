@@ -1,7 +1,6 @@
 import { bedrockRef } from '@penxle/pulumi';
 import * as aws from '@pulumi/aws';
 import * as awsnative from '@pulumi/aws-native';
-import * as pulumi from '@pulumi/pulumi';
 
 const pkg = aws.s3.getObjectOutput({
   bucket: bedrockRef('AWS_S3_BUCKET_ARTIFACTS_BUCKET'),
@@ -137,30 +136,6 @@ new aws.iam.RolePolicy('literoom@lambda', {
         Effect: 'Allow',
         Action: ['secretsmanager:GetSecretValue'],
         Resource: ['arn:aws:secretsmanager:ap-northeast-2:721144421085:secret:datadog/*'],
-      },
-    ],
-  },
-});
-
-new aws.iam.UserPolicy('bunny.net', {
-  user: bedrockRef('AWS_IAM_USER_BUNNY_NET_NAME'),
-  policy: {
-    Version: '2012-10-17',
-    Statement: [
-      {
-        Effect: 'Allow',
-        Action: ['s3:GetObject'],
-        Resource: pulumi.concat(accessPoint.arn, '/*'),
-      },
-      {
-        Effect: 'Allow',
-        Action: ['s3-object-lambda:GetObject'],
-        Resource: objectLambdaAccessPoint.arn,
-      },
-      {
-        Effect: 'Allow',
-        Action: ['lambda:InvokeFunction'],
-        Resource: [lambda.arn],
       },
     ],
   },

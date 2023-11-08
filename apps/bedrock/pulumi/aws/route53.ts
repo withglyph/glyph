@@ -151,11 +151,3 @@ new aws.route53.Record('pnxl.net', {
     },
   ],
 });
-
-new aws.route53.Record('c.pnxl.net', {
-  zoneId: zones.pnxl_net.zoneId,
-  type: 'CNAME',
-  name: 'c.pnxl.net',
-  records: ['penxle-data.b-cdn.net'],
-  ttl: 300,
-});
