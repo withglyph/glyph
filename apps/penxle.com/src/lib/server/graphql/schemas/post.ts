@@ -272,6 +272,16 @@ builder.prismaObject('PostRevision', {
   }),
 });
 
+builder.prismaObject('PostRevisionThumbnail', {
+  select: { id: true },
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    bounds: t.expose('bounds', { type: 'JSON' }),
+
+    image: t.relation('image'),
+  }),
+});
+
 builder.prismaObject('PostReaction', {
   select: { id: true },
   fields: (t) => ({
