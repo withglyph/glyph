@@ -236,7 +236,11 @@ enum PostKind {
 }
 
 type PostOption {
+  discloseStats: Boolean!
   id: ID!
+  receiveFeedback: Boolean!
+  receivePatronage: Boolean!
+  receiveTagContribution: Boolean!
   visibility: PostVisibility!
 }
 
