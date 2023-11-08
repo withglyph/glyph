@@ -1,0 +1,17 @@
+{
+  "search": "검색",
+  "pick": "이모지 선택하기",
+  "add_custom": "이모지 추가하기",
+  "categories": {
+    "activity": "활동",
+    "custom": "커스텀",
+    "flags": "깃발",
+    "foods": "음식 및 음료",
+    "frequent": "자주 사용된 이모지",
+    "nature": "동물 및 자연",
+    "objects": "사물",
+    "people": "웃는 얼굴 및 사람",
+    "places": "여행 및 장소",
+    "search": "검색 결과"
+  }
+}

@@ -1,0 +1,614 @@
+{
+  "categories": [
+    {
+      "id": "people",
+      "emojis": [
+        "grinning",
+        "laughing",
+        "rolling_on_the_floor_laughing",
+        "wink",
+        "blush",
+        "innocent",
+        "smiling_face_with_3_hearts",
+        "heart_eyes",
+        "star-struck",
+        "kissing_heart",
+        "face_with_hand_over_mouth",
+        "face_with_peeking_eye",
+        "smirk",
+        "flushed",
+        "face_holding_back_tears",
+        "sob",
+        "+1",
+        "clap",
+        "raised_hands",
+        "gift_heart",
+        "sparkling_heart",
+        "heart_on_fire",
+        "heart",
+        "orange_heart",
+        "yellow_heart",
+        "green_heart",
+        "blue_heart",
+        "purple_heart",
+        "brown_heart",
+        "black_heart",
+        "white_heart",
+        "sweat_drops"
+      ]
+    },
+    {
+      "id": "nature",
+      "emojis": ["cat", "hamster", "rabbit", "seedling", "four_leaf_clover"]
+    },
+    {
+      "id": "foods",
+      "emojis": ["grapes", "melon", "banana", "peach", "cherries", "strawberry", "eggplant", "potato"]
+    },
+    {
+      "id": "activity",
+      "emojis": ["sparkles", "frame_with_picture"]
+    },
+    {
+      "id": "objects",
+      "emojis": ["pencil2"]
+    }
+  ],
+  "emojis": {
+    "100": {
+      "id": "100",
+      "name": "hundred points",
+      "keywords": ["100", "full", "hundred", "hundred points", "score", "백점", "백점 표시"],
+      "skins": [{ "unified": "1f4af", "native": "💯" }],
+      "version": 1
+    },
+    "grinning": {
+      "id": "grinning",
+      "name": "grinning face",
+      "emoticons": [":D"],
+      "keywords": [
+        "face",
+        "grin",
+        "grinning face",
+        "smile",
+        "미소",
+        "스마일",
+        "얼굴",
+        "웃음",
+        "활짝 웃는 얼굴",
+        "눈을 크게 뜨고 웃는 얼굴",
+        "입 벌리고 웃는 얼굴"
+      ],
+      "skins": [{ "unified": "1f600", "native": "😀" }],
+      "version": 1
+    },
+    "laughing": {
+      "id": "laughing",
+      "name": "grinning squinting face",
+      "emoticons": [":>", ":->"],
+      "keywords": [
+        "face",
+        "grinning squinting face",
+        "laugh",
+        "mouth",
+        "satisfied",
+        "smile",
+        "눈 감고 미소",
+        "눈 감고 웃는 얼굴",
+        "눈웃음짓는 얼굴",
+        "얼굴",
+        "입 벌리고 미소"
+      ],
+      "skins": [{ "unified": "1f606", "native": "😆" }],
+      "version": 1
+    },
+    "rolling_on_the_floor_laughing": {
+      "id": "rolling_on_the_floor_laughing",
+      "name": "rolling on the floor laughing",
+      "keywords": [
+        "face",
+        "floor",
+        "laugh",
+        "rofl",
+        "rolling",
+        "rolling on the floor laughing",
+        "구르기",
+        "데굴데굴",
+        "바닥",
+        "바닥을 구르며 웃는 얼굴",
+        "웃음"
+      ],
+      "skins": [{ "unified": "1f923", "native": "🤣" }],
+      "version": 3
+    },
+    "wink": {
+      "id": "wink",
+      "name": "winking face",
+      "emoticons": [";)", ";-)"],
+      "keywords": ["face", "wink", "winking face", "얼굴", "윙크", "윙크하는 얼굴"],
+      "skins": [{ "unified": "1f609", "native": "😉" }],
+      "version": 1
+    },
+    "blush": {
+      "id": "blush",
+      "name": "smiling face with smiling eyes",
+      "emoticons": [":)"],
+      "keywords": [
+        "blush",
+        "eye",
+        "face",
+        "smile",
+        "smiling face with smiling eyes",
+        "눈웃음",
+        "미소",
+        "미소 짓는 눈으로 살짝 웃는 얼굴",
+        "스마일",
+        "얼굴",
+        "웃는 얼굴"
+      ],
+      "skins": [{ "unified": "1f60a", "native": "😊" }],
+      "version": 1
+    },
+    "innocent": {
+      "id": "innocent",
+      "name": "smiling face with halo",
+      "keywords": [
+        "angel",
+        "face",
+        "fantasy",
+        "halo",
+        "innocent",
+        "smiling face with halo",
+        "미소",
+        "스마일",
+        "얼굴",
+        "웃는 얼굴",
+        "후광이 비치는 웃는 얼굴",
+        "천사"
+      ],
+      "skins": [{ "unified": "1f607", "native": "😇" }],
+      "version": 1
+    },
+    "smiling_face_with_3_hearts": {
+      "id": "smiling_face_with_3_hearts",
+      "name": "smiling face with hearts",
+      "keywords": [
+        "adore",
+        "crush",
+        "hearts",
+        "in love",
+        "smiling face with hearts",
+        "반한",
+        "사랑에 빠진",
+        "사랑하는",
+        "하트와 함께 웃는 얼굴"
+      ],
+      "skins": [{ "unified": "1f970", "native": "🥰" }],
+      "version": 11
+    },
+    "heart_eyes": {
+      "id": "heart_eyes",
+      "name": "smiling face with heart-eyes",
+      "keywords": [
+        "eye",
+        "face",
+        "love",
+        "smile",
+        "smiling face with heart-eyes",
+        "사랑",
+        "얼굴",
+        "하트",
+        "하트 눈 얼굴",
+        "하트 뿅뿅 얼굴"
+      ],
+      "skins": [{ "unified": "1f60d", "native": "😍" }],
+      "version": 1
+    },
+    "star-struck": {
+      "id": "star-struck",
+      "name": "star-struck",
+      "keywords": ["eyes", "face", "grinning", "star", "star-struck", "반한 얼굴", "별 눈", "별 모양의 눈"],
+      "skins": [{ "unified": "1f929", "native": "🤩" }],
+      "version": 5
+    },
+    "kissing_heart": {
+      "id": "kissing_heart",
+      "name": "face blowing a kiss",
+      "emoticons": [":*", ":-*"],
+      "keywords": [
+        "face",
+        "face blowing a kiss",
+        "kiss",
+        "뽀뽀",
+        "얼굴",
+        "키스",
+        "키스를 날리는 얼굴",
+        "키스를 보내는 얼굴"
+      ],
+      "skins": [{ "unified": "1f618", "native": "😘" }],
+      "version": 1
+    },
+    "face_with_hand_over_mouth": {
+      "id": "face_with_hand_over_mouth",
+      "name": "face with hand over mouth",
+      "keywords": ["face with hand over mouth", "whoops", "손으로 입을 가린 얼굴", "앗"],
+      "skins": [{ "unified": "1f92d", "native": "🤭" }],
+      "version": 5
+    },
+    "face_with_peeking_eye": {
+      "id": "face_with_peeking_eye",
+      "name": "face with peeking eye",
+      "keywords": [
+        "captivated",
+        "face with peeking eye",
+        "peep",
+        "stare",
+        "매료됨",
+        "빤히 쳐다보기",
+        "한쪽 눈을 가리고 훔쳐보는 얼굴",
+        "훔쳐보기"
+      ],
+      "skins": [{ "unified": "1fae3", "native": "🫣" }],
+      "version": 14
+    },
+    "smirk": {
+      "id": "smirk",
+      "name": "smirking face",
+      "keywords": ["face", "smirk", "smirking face", "웃는 얼굴", "히죽거리는 얼굴", "히죽히죽"],
+      "skins": [{ "unified": "1f60f", "native": "😏" }],
+      "version": 1
+    },
+    "flushed": {
+      "id": "flushed",
+      "name": "flushed face",
+      "keywords": ["dazed", "face", "flushed", "달아오른 얼굴", "붉힌 얼굴", "상기된 얼굴", "얼굴", "얼굴 붉힘"],
+      "skins": [{ "unified": "1f633", "native": "😳" }],
+      "version": 1
+    },
+    "face_holding_back_tears": {
+      "id": "face_holding_back_tears",
+      "name": "face holding back tears",
+      "keywords": [
+        "angry",
+        "cry",
+        "face holding back tears",
+        "proud",
+        "resist",
+        "sad",
+        "눈물을 참는 얼굴",
+        "슬픔",
+        "울음",
+        "자랑스러움"
+      ],
+      "skins": [{ "unified": "1f979", "native": "🥹" }],
+      "version": 14
+    },
+    "sob": {
+      "id": "sob",
+      "name": "loudly crying face",
+      "emoticons": [":'("],
+      "keywords": [
+        "cry",
+        "face",
+        "loudly crying face",
+        "sad",
+        "sob",
+        "tear",
+        "눈물",
+        "대성통곡",
+        "얼굴",
+        "엉엉 우는 얼굴"
+      ],
+      "skins": [{ "unified": "1f62d", "native": "😭" }],
+      "version": 1
+    },
+    "gift_heart": {
+      "id": "gift_heart",
+      "name": "heart with ribbon",
+      "keywords": [
+        "heart with ribbon",
+        "ribbon",
+        "valentine",
+        "리본",
+        "리본 달린 하트",
+        "발렌타인 초콜렛 상자",
+        "사랑",
+        "선물 상자",
+        "하트"
+      ],
+      "skins": [{ "unified": "1f49d", "native": "💝" }],
+      "version": 1
+    },
+    "sparkling_heart": {
+      "id": "sparkling_heart",
+      "name": "sparkling heart",
+      "keywords": [
+        "excited",
+        "sparkle",
+        "sparkling heart",
+        "기쁨으로 가득찬 마음",
+        "두근거림",
+        "빛나는 하트",
+        "사랑",
+        "사랑의 기쁨",
+        "설렘"
+      ],
+      "skins": [{ "unified": "1f496", "native": "💖" }],
+      "version": 1
+    },
+    "heart_on_fire": {
+      "id": "heart_on_fire",
+      "name": "heart on fire",
+      "keywords": [
+        "burn",
+        "heart",
+        "heart on fire",
+        "love",
+        "lust",
+        "sacred heart",
+        "마음",
+        "불 난 하트",
+        "불타는 사랑",
+        "사랑",
+        "하트"
+      ],
+      "skins": [{ "unified": "2764-fe0f-200d-1f525", "native": "❤️‍🔥" }],
+      "version": 13.1
+    },
+    "heart": {
+      "id": "heart",
+      "name": "red heart",
+      "emoticons": ["<3"],
+      "keywords": ["heart", "red heart"],
+      "skins": [{ "unified": "2764-fe0f", "native": "❤️" }],
+      "version": 1
+    },
+    "orange_heart": {
+      "id": "orange_heart",
+      "name": "orange heart",
+      "keywords": ["orange", "orange heart"],
+      "skins": [{ "unified": "1f9e1", "native": "🧡" }],
+      "version": 5
+    },
+    "yellow_heart": {
+      "id": "yellow_heart",
+      "name": "yellow heart",
+      "emoticons": ["<3"],
+      "keywords": ["yellow", "yellow heart"],
+      "skins": [{ "unified": "1f49b", "native": "💛" }],
+      "version": 1
+    },
+    "green_heart": {
+      "id": "green_heart",
+      "name": "green heart",
+      "emoticons": ["<3"],
+      "keywords": ["green", "green heart"],
+      "skins": [{ "unified": "1f49a", "native": "💚" }],
+      "version": 1
+    },
+    "blue_heart": {
+      "id": "blue_heart",
+      "name": "blue heart",
+      "emoticons": ["<3"],
+      "keywords": ["blue", "blue heart"],
+      "skins": [{ "unified": "1f499", "native": "💙" }],
+      "version": 1
+    },
+    "purple_heart": {
+      "id": "purple_heart",
+      "name": "purple heart",
+      "emoticons": ["<3"],
+      "keywords": ["purple", "purple heart"],
+      "skins": [{ "unified": "1f49c", "native": "💜" }],
+      "version": 1
+    },
+    "brown_heart": {
+      "id": "brown_heart",
+      "name": "brown heart",
+      "keywords": ["brown", "heart"],
+      "skins": [{ "unified": "1f90e", "native": "🤎" }],
+      "version": 12
+    },
+    "black_heart": {
+      "id": "black_heart",
+      "name": "black heart",
+      "keywords": ["black", "black heart", "evil", "wicked"],
+      "skins": [{ "unified": "1f5a4", "native": "🖤" }],
+      "version": 3
+    },
+    "white_heart": {
+      "id": "white_heart",
+      "name": "white heart",
+      "keywords": ["heart", "white"],
+      "skins": [{ "unified": "1f90d", "native": "🤍" }],
+      "version": 12
+    },
+    "dizzy": {
+      "id": "dizzy",
+      "name": "dizzy",
+      "keywords": ["comic", "dizzy", "star", "띠용", "별", "어지러움", "어질어질"],
+      "skins": [{ "unified": "1f4ab", "native": "💫" }],
+      "version": 1
+    },
+    "sweat_drops": {
+      "id": "sweat_drops",
+      "name": "sweat droplets",
+      "keywords": ["comic", "splashing", "sweat", "sweat droplets", "곤란", "당황", "땀", "삐질삐질"],
+      "skins": [{ "unified": "1f4a6", "native": "💦" }],
+      "version": 1
+    },
+    "+1": {
+      "id": "+1",
+      "name": "thumbs up",
+      "keywords": ["+1", "hand", "thumb", "thumbs up", "up", "따봉", "올린 엄지", "좋아요", "최고", "엄지 척"],
+      "skins": [
+        { "unified": "1f44d", "native": "👍" },
+        { "unified": "1f44d-1f3fb", "native": "👍🏻" },
+        { "unified": "1f44d-1f3fc", "native": "👍🏼" },
+        { "unified": "1f44d-1f3fd", "native": "👍🏽" },
+        { "unified": "1f44d-1f3fe", "native": "👍🏾" },
+        { "unified": "1f44d-1f3ff", "native": "👍🏿" }
+      ],
+      "version": 1
+    },
+    "clap": {
+      "id": "clap",
+      "name": "clapping hands",
+      "keywords": ["clap", "clapping hands", "hand", "박수", "박수 치기", "손뼉", "손뼉 치기"],
+      "skins": [
+        { "unified": "1f44f", "native": "👏" },
+        { "unified": "1f44f-1f3fb", "native": "👏🏻" },
+        { "unified": "1f44f-1f3fc", "native": "👏🏼" },
+        { "unified": "1f44f-1f3fd", "native": "👏🏽" },
+        { "unified": "1f44f-1f3fe", "native": "👏🏾" },
+        { "unified": "1f44f-1f3ff", "native": "👏🏿" }
+      ],
+      "version": 1
+    },
+    "raised_hands": {
+      "id": "raised_hands",
+      "name": "raising hands",
+      "keywords": [
+        "celebration",
+        "gesture",
+        "hand",
+        "hooray",
+        "raised",
+        "raising hands",
+        "두 손을 든 사람",
+        "만세",
+        "만세 하고 있는 사람",
+        "제스처",
+        "하이파이브"
+      ],
+      "skins": [
+        { "unified": "1f64c", "native": "🙌" },
+        { "unified": "1f64c-1f3fb", "native": "🙌🏻" },
+        { "unified": "1f64c-1f3fc", "native": "🙌🏼" },
+        { "unified": "1f64c-1f3fd", "native": "🙌🏽" },
+        { "unified": "1f64c-1f3fe", "native": "🙌🏾" },
+        { "unified": "1f64c-1f3ff", "native": "🙌🏿" }
+      ],
+      "version": 1
+    },
+    "cat": {
+      "id": "cat",
+      "name": "cat face",
+      "keywords": ["cat", "face", "pet", "고양이", "고양이 얼굴", "동물"],
+      "skins": [{ "unified": "1f431", "native": "🐱" }],
+      "version": 1
+    },
+    "hamster": {
+      "id": "hamster",
+      "name": "hamster",
+      "keywords": ["face", "hamster", "pet", "동물", "햄스터", "햄스터 얼굴"],
+      "skins": [{ "unified": "1f439", "native": "🐹" }],
+      "version": 1
+    },
+    "rabbit": {
+      "id": "rabbit",
+      "name": "rabbit face",
+      "keywords": ["bunny", "face", "pet", "rabbit", "동물", "토끼", "토끼 얼굴", "토끼띠"],
+      "skins": [{ "unified": "1f430", "native": "🐰" }],
+      "version": 1
+    },
+    "seedling": {
+      "id": "seedling",
+      "name": "seedling",
+      "keywords": ["seedling", "young", "새싹", "싹이 돋다"],
+      "skins": [{ "unified": "1f331", "native": "🌱" }],
+      "version": 1
+    },
+    "four_leaf_clover": {
+      "id": "four_leaf_clover",
+      "name": "four leaf clover",
+      "keywords": ["4", "clover", "four", "four-leaf clover", "leaf", "네잎클로버", "클로버", "행운"],
+      "skins": [{ "unified": "1f340", "native": "🍀" }],
+      "version": 1
+    },
+    "grapes": {
+      "id": "grapes",
+      "name": "grapes",
+      "keywords": ["fruit", "grape", "grapes", "과일", "포도"],
+      "skins": [{ "unified": "1f347", "native": "🍇" }],
+      "version": 1
+    },
+    "melon": {
+      "id": "melon",
+      "name": "melon",
+      "keywords": ["fruit", "melon", "과일", "멜론", "야채", "채소"],
+      "skins": [{ "unified": "1f348", "native": "🍈" }],
+      "version": 1
+    },
+    "banana": {
+      "id": "banana",
+      "name": "banana",
+      "keywords": ["banana", "fruit", "과일", "바나나"],
+      "skins": [{ "unified": "1f34c", "native": "🍌" }],
+      "version": 1
+    },
+    "peach": {
+      "id": "peach",
+      "name": "peach",
+      "keywords": ["fruit", "peach", "과일", "복숭아"],
+      "skins": [{ "unified": "1f351", "native": "🍑" }],
+      "version": 1
+    },
+    "cherries": {
+      "id": "cherries",
+      "name": "cherries",
+      "keywords": ["berries", "cherries", "cherry", "fruit", "red", "과일", "체리"],
+      "skins": [{ "unified": "1f352", "native": "🍒" }],
+      "version": 1
+    },
+    "strawberry": {
+      "id": "strawberry",
+      "name": "strawberry",
+      "keywords": ["berry", "fruit", "strawberry", "과일", "딸기"],
+      "skins": [{ "unified": "1f353", "native": "🍓" }],
+      "version": 1
+    },
+    "eggplant": {
+      "id": "eggplant",
+      "name": "eggplant",
+      "keywords": ["aubergine", "eggplant", "vegetable", "가지", "야채", "채소"],
+      "skins": [{ "unified": "1f346", "native": "🍆" }],
+      "version": 1
+    },
+    "potato": {
+      "id": "potato",
+      "name": "potato",
+      "keywords": ["food", "potato", "vegetable", "감자", "식품", "채소", "포테이토"],
+      "skins": [{ "unified": "1f954", "native": "🥔" }],
+      "version": 3
+    },
+    "sparkles": {
+      "id": "sparkles",
+      "name": "sparkles",
+      "keywords": ["*", "sparkle", "sparkles", "star", "반짝거림", "반짝반짝", "블링블링", "별"],
+      "skins": [{ "unified": "2728", "native": "✨" }],
+      "version": 1
+    },
+    "frame_with_picture": {
+      "id": "frame_with_picture",
+      "name": "framed picture",
+      "keywords": ["art", "frame", "framed picture", "museum", "painting", "picture", "그림", "박물관", "액자", "작품"],
+      "skins": [{ "unified": "1f5bc-fe0f", "native": "🖼️" }],
+      "version": 1
+    },
+    "pencil2": {
+      "id": "pencil2",
+      "name": "pencil",
+      "keywords": ["pencil", "연필", "펜슬"],
+      "skins": [{ "unified": "270f-fe0f", "native": "✏️" }],
+      "version": 1
+    }
+  },
+  "aliases": {
+    "satisfied": "laughing",
+    "grinning_face_with_star_eyes": "star-struck",
+    "smiling_face_with_smiling_eyes_and_hand_covering_mouth": "face_with_hand_over_mouth",
+    "thumbsup": "+1"
+  },
+  "sheet": { "cols": 61, "rows": 61 }
+}
