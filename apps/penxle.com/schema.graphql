@@ -264,6 +264,7 @@ type PostReaction {
 }
 
 type PostRevision {
+  characterCount: Int!
   content: JSON!
   createdAt: DateTime!
   id: ID!

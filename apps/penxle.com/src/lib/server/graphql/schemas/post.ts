@@ -6,7 +6,7 @@ import * as R from 'radash';
 import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { deductUserPoint, getUserPoint } from '$lib/server/utils';
-import { createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
+import { createId, createTiptapDocument, createTiptapNode, documentToText } from '$lib/utils';
 import { builder } from '../builder';
 import type { JSONContent } from '@tiptap/core';
 
@@ -249,7 +249,7 @@ builder.prismaObject('PostRevision', {
                 revisionId: revision.id,
 
                 counts: {
-                  characters: 42,
+                  characters: documentToText(createTiptapDocument(revision.paidContent as JSONContent[])).length,
                   images: 42,
                   files: 42,
                 },
@@ -258,6 +258,14 @@ builder.prismaObject('PostRevision', {
           }),
         ]);
       },
+    }),
+
+    characterCount: t.field({
+      type: 'Int',
+      select: { content: true, paidContent: true },
+      resolve: (revision) =>
+        documentToText(createTiptapDocument(revision.content as JSONContent[])).length +
+        documentToText(createTiptapDocument(revision.paidContent as JSONContent[])).length,
     }),
 
     thumbnail: t.relation('thumbnail', { nullable: true }),
@@ -269,6 +277,7 @@ builder.prismaObject('PostReaction', {
   fields: (t) => ({
     id: t.exposeID('id'),
     emoji: t.exposeString('emoji'),
+
     mine: t.boolean({
       select: { userId: true },
       resolve: async (reaction, _, { ...context }) => {
