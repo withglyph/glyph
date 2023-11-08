@@ -121,6 +121,10 @@ builder.prismaObject('PostOption', {
   fields: (t) => ({
     id: t.exposeID('id'),
     visibility: t.expose('visibility', { type: PostVisibility }),
+    discloseStats: t.exposeBoolean('discloseStats'),
+    receiveFeedback: t.exposeBoolean('receiveFeedback'),
+    receivePatronage: t.exposeBoolean('receivePatronage'),
+    receiveTagContribution: t.exposeBoolean('receiveTagContribution'),
   }),
 });
 
