@@ -29,6 +29,21 @@ const data = new aws.s3.Bucket('data', {
   bucket: 'penxle-data',
 });
 
+new aws.s3.BucketPolicy('data', {
+  bucket: data.bucket,
+  policy: {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Principal: { Service: 'cloudfront.amazonaws.com' },
+        Action: ['s3:GetObject'],
+        Resource: [pulumi.interpolate`${data.arn}/*`],
+      },
+    ],
+  },
+});
+
 const caches = new aws.s3.Bucket('caches', {
   bucket: 'penxle-caches',
 });

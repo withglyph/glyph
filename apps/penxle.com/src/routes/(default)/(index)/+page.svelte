@@ -16,7 +16,7 @@
 <Helmet
   description="펜슬은 개인 창작자들을 위한 자유롭고 즐거운 창작 공간이에요."
   image={{
-    src: 'https://c.pnxl.net/assets/opengraph/default-cover.png',
+    src: 'https://pnxl.net/assets/opengraph/default-cover.png',
     size: 'large',
   }}
   title="펜슬 - 함께 그리는 반짝임"
@@ -37,12 +37,12 @@
             <img
               class="square-10.5 rounded-xl"
               alt="spaceLogo"
-              src="https://c.pnxl.net/images/23/10/n/nn/nn0f8jh65wx4qv2z.jpg?s=128"
+              src="https://pnxl.net/images/23/10/n/nn/nn0f8jh65wx4qv2z.jpg?s=128"
             />
             <img
               class="square-6 rounded-full absolute border border-bg-primary -right-1 -bottom-1"
               alt="memberProfile"
-              src="https://c.pnxl.net/images/23/10/n/nn/nn0f8jh65wx4qv2z.jpg?s=128"
+              src="https://pnxl.net/images/23/10/n/nn/nn0f8jh65wx4qv2z.jpg?s=128"
             />
           </div>
           <div class="ml-3">
@@ -72,12 +72,12 @@
             <img
               class="square-10.5 rounded-xl"
               alt="spaceLogo2"
-              src="https://c.pnxl.net/images/23/10/b/bp/bp8zhq3ddtxmv36a.png?s=256"
+              src="https://pnxl.net/images/23/10/b/bp/bp8zhq3ddtxmv36a.png?s=256"
             />
             <img
               class="square-6 rounded-full absolute border border-bg-primary -right-1 -bottom-1"
               alt="memberProfile2"
-              src="https://c.pnxl.net/images/23/10/u/uj/ujx4cf6wq2b2ui0p.jpg?s=256"
+              src="https://pnxl.net/images/23/10/u/uj/ujx4cf6wq2b2ui0p.jpg?s=256"
             />
           </div>
           <div class="ml-3">
@@ -96,22 +96,22 @@
               <img
                 class="rounded-lg square-45"
                 alt="postImage1"
-                src="https://c.pnxl.net/images/23/11/y/yi/yi9w61i6mcbvmjtp.jpeg?s=256"
+                src="https://pnxl.net/images/23/11/y/yi/yi9w61i6mcbvmjtp.jpeg?s=256"
               />
               <img
                 class="rounded-lg square-45"
                 alt="postImage2"
-                src="https://c.pnxl.net/images/23/10/u/uj/ujx4cf6wq2b2ui0p.jpg?s=256"
+                src="https://pnxl.net/images/23/10/u/uj/ujx4cf6wq2b2ui0p.jpg?s=256"
               />
               <img
                 class="rounded-lg square-45"
                 alt="postImage3"
-                src="https://c.pnxl.net/images/23/11/d/d4/d4g1ejdvotjme0ru.jpg?s=256"
+                src="https://pnxl.net/images/23/11/d/d4/d4g1ejdvotjme0ru.jpg?s=256"
               />
               <img
                 class="rounded-lg square-45 overflow-hidden object-cover object-left rounded-r-none"
                 alt="postImage4"
-                src="https://c.pnxl.net/images/23/10/o/oy/oy71977pmohjcak0.jpeg?s=256"
+                src="https://pnxl.net/images/23/10/o/oy/oy71977pmohjcak0.jpeg?s=256"
               />
             </div>
             <div>
@@ -131,12 +131,12 @@
             <img
               class="square-10.5 rounded-xl"
               alt="spaceLogo2"
-              src="https://c.pnxl.net/images/23/10/b/bp/bp8zhq3ddtxmv36a.png?s=256"
+              src="https://pnxl.net/images/23/10/b/bp/bp8zhq3ddtxmv36a.png?s=256"
             />
             <img
               class="square-6 rounded-full absolute border border-bg-primary -right-1 -bottom-1"
               alt="memberProfile2"
-              src="https://c.pnxl.net/images/23/10/u/uj/ujx4cf6wq2b2ui0p.jpg?s=256"
+              src="https://pnxl.net/images/23/10/u/uj/ujx4cf6wq2b2ui0p.jpg?s=256"
             />
           </div>
           <div class="ml-3">
@@ -168,7 +168,7 @@
           <img
             class="rounded-lg square-45"
             alt="memberProfile2"
-            src="https://c.pnxl.net/images/23/10/u/uj/ujx4cf6wq2b2ui0p.jpg?s=256"
+            src="https://pnxl.net/images/23/10/u/uj/ujx4cf6wq2b2ui0p.jpg?s=256"
           />
         </div>
       </div>
@@ -185,7 +185,7 @@
         <img
           class="square-10.5 rounded-xl mr-3"
           alt="spaceLogo"
-          src="https://c.pnxl.net/images/23/10/n/nn/nn0f8jh65wx4qv2z.jpg?s=128"
+          src="https://pnxl.net/images/23/10/n/nn/nn0f8jh65wx4qv2z.jpg?s=128"
         />
         <div>
           <p class="body-15-b">test</p>
@@ -201,7 +201,7 @@
         <img
           class="square-10.5 rounded-xl mr-3"
           alt="spaceLogo"
-          src="https://c.pnxl.net/images/23/10/b/bp/bp8zhq3ddtxmv36a.png?s=256"
+          src="https://pnxl.net/images/23/10/b/bp/bp8zhq3ddtxmv36a.png?s=256"
         />
         <div>
           <p class="body-15-b">스페이스</p>
@@ -217,7 +217,7 @@
         <img
           class="square-10.5 rounded-xl mr-3"
           alt="spaceLogo"
-          src="https://c.pnxl.net/images/23/10/b/bp/bp8zhq3ddtxmv36a.png?s=256"
+          src="https://pnxl.net/images/23/10/b/bp/bp8zhq3ddtxmv36a.png?s=256"
         />
         <div>
           <p class="body-15-b">스페이스</p>
@@ -269,7 +269,7 @@
         <img
           class="square-6 rounded-full border border-bg-primary"
           alt="memberProfile"
-          src="https://c.pnxl.net/images/23/10/n/nn/nn0f8jh65wx4qv2z.jpg?s=128"
+          src="https://pnxl.net/images/23/10/n/nn/nn0f8jh65wx4qv2z.jpg?s=128"
         />
         <p class="body-13-sb">test의 포스트</p>
       </div>
@@ -281,7 +281,7 @@
         <img
           class="square-6 rounded-full border border-bg-primary"
           alt="memberProfile"
-          src="https://c.pnxl.net/images/23/10/u/uj/ujx4cf6wq2b2ui0p.jpg?s=256"
+          src="https://pnxl.net/images/23/10/u/uj/ujx4cf6wq2b2ui0p.jpg?s=256"
         />
         <p class="body-13-sb">스페이스의 포스트</p>
       </div>
