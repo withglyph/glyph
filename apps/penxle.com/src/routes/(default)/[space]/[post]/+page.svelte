@@ -1,7 +1,6 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import dayjs from 'dayjs';
-  import { nanoid } from 'nanoid';
   import { onMount, tick } from 'svelte';
   import { graphql } from '$glitch';
   import { Avatar, Button, Image, Tag } from '$lib/components';
@@ -278,22 +277,23 @@
     <div class="flex items-center gap-2.5 flex-wrap mt-4!">
       <EmojiPicker {$query} />
 
-      {#each $query.post.reactions.slice(0, 30) as reaction (`${reaction.emoji}-${nanoid()}`)}
+      {#each $query.post.reactions.slice(0, 30) as reaction (reaction.id)}
         <Emoji emoji={reaction.emoji} mine={reaction.mine} postId={$query.post.id} />
       {/each}
-      {#if !emojiOpen && $query.post.reactions.length > 30}
-        <button
-          class="caption-12-m text-secondary rounded-3xl p-1 bg-primary transition hover:bg-surface-secondary"
-          type="button"
-          on:click={() => (emojiOpen = true)}
-        >
-          + {$query.post.reactions.length - 30}
-        </button>
-      {/if}
-      {#if emojiOpen && $query.post.reactions.length > 30}
-        {#each $query.post.reactions.slice(30) as reaction (`${reaction.emoji}-${nanoid()}`)}
-          <Emoji emoji={reaction.emoji} mine={reaction.mine} postId={$query.post.id} />
-        {/each}
+      {#if $query.post.reactions.length > 30}
+        {#if !emojiOpen}
+          <button
+            class="caption-12-m text-secondary rounded-3xl p-1 bg-primary transition hover:bg-surface-secondary"
+            type="button"
+            on:click={() => (emojiOpen = true)}
+          >
+            + {$query.post.reactions.length - 30}
+          </button>
+        {:else}
+          {#each $query.post.reactions.slice(30) as reaction (reaction.id)}
+            <Emoji emoji={reaction.emoji} mine={reaction.mine} postId={$query.post.id} />
+          {/each}
+        {/if}
       {/if}
     </div>
 

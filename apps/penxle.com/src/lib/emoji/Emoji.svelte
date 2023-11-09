@@ -1,6 +1,5 @@
 <script lang="ts">
   import { graphql } from '$glitch';
-  import { emojiData } from '.';
 
   export let postId: string;
   export let emoji: string;
@@ -23,7 +22,7 @@
 
 {#if mine}
   <button
-    class="bg-primary"
+    class="relative bg-primary p-0.5 square-6 rounded-lg text-center border border-secondary [&>em-emoji]:hover:opacity-30 [&>i]:hover:opacity-100"
     type="button"
     on:click={async () => {
       await deletePostReaction({
@@ -32,8 +31,11 @@
       });
     }}
   >
-    {emojiData.emojis[emoji].skins[0].native}
+    <em-emoji id={emoji} class="square-4.5 text-center" set="twitter" />
+    <i
+      class="i-lc-x square-5 absolute top-50% -translate-y-50% left-50% -translate-x-50% opacity-0 transition select-none"
+    />
   </button>
 {:else}
-  <span>{emojiData.emojis[emoji].skins[0].native}</span>
+  <em-emoji id={emoji} class="square-4.5 text-center" set="twitter" />
 {/if}

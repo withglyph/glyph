@@ -91,6 +91,7 @@
       skinTonePosition: 'none',
       locale: 'kr',
       i18n,
+      set: 'twitter',
       onEmojiSelect: async (emoji: Emoji) => {
         if (!$query.me) {
           loginRequireOpen = true;
