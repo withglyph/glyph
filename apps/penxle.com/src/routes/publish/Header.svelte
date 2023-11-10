@@ -37,9 +37,6 @@
 
   let postId = postOption.postId;
   let hasContentFilter = postOption.contentFilters.length > 0;
-
-  let savedTime: string | undefined = undefined;
-
   let savedTime: string | undefined = undefined;
 
   $: query = fragment(
