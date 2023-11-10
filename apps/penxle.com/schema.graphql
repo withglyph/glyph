@@ -157,6 +157,7 @@ type Mutation {
   loginUser(input: LoginUserInput!): UserEmailVerification!
   logoutUser: Void
   muteSpace(input: MuteSpaceInput!): Space!
+  muteTag(input: MuteTagInput!): Tag!
   prepareImageUpload: PrepareImageUploadResult!
   purchasePoint(input: PurchasePointInput!): PointPurchase!
   purchasePost(input: PurchasePostInput!): Post!
@@ -166,6 +167,7 @@ type Mutation {
   unlikePost(input: UnlikePostInput!): Post!
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
   unmuteSpace(input: UnmuteSpaceInput!): Space!
+  unmuteTag(input: UnmuteTagInput!): Tag!
   updatePostOptions(input: UpdatePostOptionsInput!): Post!
   updatePostView(input: UpdatePostViewInput!): Void
   updateSpace(input: UpdateSpaceInput!): Space!
@@ -179,6 +181,10 @@ type Mutation {
 
 input MuteSpaceInput {
   spaceId: ID!
+}
+
+input MuteTagInput {
+  tagId: ID!
 }
 
 enum PaymentMethod {
@@ -304,11 +310,6 @@ enum PostVisibility {
   PUBLIC
   SPACE
   UNLISTED
-}
-
-enum PreferenceType {
-  FAVORITE
-  MUTE
 }
 
 type PrepareImageUploadResult {
@@ -457,6 +458,10 @@ input UnlinkUserSingleSignOnInput {
 
 input UnmuteSpaceInput {
   spaceId: ID!
+}
+
+input UnmuteTagInput {
+  tagId: ID!
 }
 
 input UpdatePostOptionsInput {

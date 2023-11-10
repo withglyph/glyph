@@ -1,3 +1,4 @@
+import { createId } from '$lib/utils';
 import { builder } from '../builder';
 
 /**
@@ -24,6 +25,18 @@ builder.prismaObject('PostTag', {
  * * Inputs
  */
 
+const MuteTagInput = builder.inputType('MuteTagInput', {
+  fields: (t) => ({
+    tagId: t.id(),
+  }),
+});
+
+const UnmuteTagInput = builder.inputType('UnmuteTagInput', {
+  fields: (t) => ({
+    tagId: t.id(),
+  }),
+});
+
 // const SetPostTagsInput = builder.inputType('SetPostTagsInput', {
 //   fields: (t) => ({
 //     postId: t.id(),
@@ -35,17 +48,65 @@ builder.prismaObject('PostTag', {
  * * Mutations
  */
 
-// builder.mutationFields((t) => ({
-//   setPostTags: t.withAuth({ user: true }).prismaField({
-//     type: 'Tag',
-//     args: { input: t.arg({ type: SetPostTagsInput }) },
-//     resolve: async (query, _, { input }, { db, ...context }) => {
-//       const post = await db.post.findUniqueOrThrow({
-//         where: { id: input.postId },
-//       });
-//       const tag = await db.tag.upsert({
+builder.mutationFields((t) => ({
+  muteTag: t.withAuth({ user: true }).prismaField({
+    type: 'Tag',
+    args: { input: t.arg({ type: MuteTagInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const tag = await db.tag.findUniqueOrThrow({
+        ...query,
+        where: { id: input.tagId },
+      });
 
-//       })
-//     },
-//   })
-// }));
+      await db.userTagMute.upsert({
+        where: {
+          userId_tagId: {
+            userId: context.session.userId,
+            tagId: input.tagId,
+          },
+        },
+        create: {
+          id: createId(),
+          userId: context.session.userId,
+          tagId: input.tagId,
+        },
+        update: {},
+      });
+
+      return tag;
+    },
+  }),
+
+  unmuteTag: t.withAuth({ user: true }).prismaField({
+    type: 'Tag',
+    args: { input: t.arg({ type: UnmuteTagInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const tag = await db.tag.findUniqueOrThrow({
+        ...query,
+        where: { name: input.tagId },
+      });
+
+      await db.userTagMute.deleteMany({
+        where: {
+          userId: context.session.userId,
+          tagId: input.tagId,
+        },
+      });
+
+      return tag;
+    },
+  }),
+
+  // setPostTags: t.withAuth({ user: true }).prismaField({
+  //   type: 'Tag',
+  //   args: { input: t.arg({ type: SetPostTagsInput }) },
+  //   resolve: async (query, _, { input }, { db, ...context }) => {
+  //     const post = await db.post.findUniqueOrThrow({
+  //       where: { id: input.postId },
+  //     });
+  //     const tag = await db.tag.upsert({
+
+  //     })
+  //   },
+  // }),
+}));

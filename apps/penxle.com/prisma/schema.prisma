@@ -402,11 +402,11 @@ model Tag {
   name      String   @unique
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  wiki            TagWiki?
-  parents         TagHierarchy[]      @relation("parents")
-  children        TagHierarchy[]      @relation("children")
-  userPreferences UserTagPreference[]
-  posts           PostTag[]
+  wiki      TagWiki?
+  parents   TagHierarchy[] @relation("parents")
+  children  TagHierarchy[] @relation("children")
+  userMutes UserTagMute[]
+  posts     PostTag[]
   // spacesUsingThis SpaceTag[]
 
   @@map("tags")
@@ -464,7 +464,7 @@ model User {
   sessions                       UserSession[]
   singleSignOns                  UserSingleSignOn[]
   spaces                         SpaceMember[]
-  tagPreferences                 UserTagPreference[]
+  tagMutes                       UserTagMute[]
   sentSpaceMemberInvitations     SpaceMemberInvitation[]       @relation("spaceMemberInvitationSent")
   receivedSpaceMemberInvitations SpaceMemberInvitation[]       @relation("spaceMemberInvitationReceived")
   followedSpaces                 SpaceFollow[]
@@ -571,16 +571,16 @@ model UserSpaceMute {
   @@map("user_space_mutes")
 }
 
-model UserTagPreference {
-  id        String         @id
-  userId    String         @unique @map("user_id")
-  user      User           @relation(fields: [userId], references: [id])
-  tagId     String         @unique @map("tag_id")
-  tag       Tag            @relation(fields: [tagId], references: [id])
-  type      PreferenceType
-  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz
+model UserTagMute {
+  id        String   @id
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  tagId     String   @map("tag_id")
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  @@map("user_tag_preferences")
+  @@unique([userId, tagId])
+  @@map("user_tag_mute")
 }
 
 enum ContentFilterCategory {
