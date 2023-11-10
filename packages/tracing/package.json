@@ -11,12 +11,12 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@opentelemetry/instrumentation": "^0.44.0",
-    "dd-trace": "^4.17.0"
+    "@opentelemetry/instrumentation": "^0.45.1",
+    "dd-trace": "^4.18.0"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "@types/node": "^20.8.7",
+    "@types/node": "^20.9.0",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2"
   }

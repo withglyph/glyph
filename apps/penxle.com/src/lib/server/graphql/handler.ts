@@ -8,7 +8,7 @@ import type { RequestEvent } from '@sveltejs/kit';
 export const handler = createYoga<RequestEvent>({
   schema,
   context: createContext,
-  fetchAPI: globalThis,
+  fetchAPI: { Response },
   graphqlEndpoint: '/api/graphql',
   maskedErrors: false,
   plugins: [useErrorHandling(), useGraphQlJit(), useLogging(), useTelemetry(), useContextFinalizer()],

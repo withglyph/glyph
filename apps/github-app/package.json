@@ -9,8 +9,8 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@aws-sdk/client-ecs": "^3.433.0",
-    "@aws-sdk/client-ssm": "^3.433.0",
+    "@aws-sdk/client-ecs": "^3.445.0",
+    "@aws-sdk/client-ssm": "^3.445.0",
     "@octokit/webhooks": "^12.0.3",
     "@penxle/lambda": "workspace:^",
     "octokit": "^3.1.1"
@@ -18,10 +18,10 @@
   "devDependencies": {
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
-    "@pulumi/aws": "^6.6.0",
-    "@pulumi/pulumi": "^3.89.0",
+    "@pulumi/aws": "^6.8.0",
+    "@pulumi/pulumi": "^3.92.0",
     "tsup": "^7.2.0",
-    "tsx": "^3.14.0",
+    "tsx": "^4.0.0",
     "typescript": "^5.2.2"
   }
 }

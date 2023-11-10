@@ -20,13 +20,13 @@
   },
   "devDependencies": {
     "@penxle/lintconfig": "workspace:^",
-    "cspell": "^7.3.8",
-    "eslint": "^8.52.0",
+    "cspell": "^8.0.0",
+    "eslint": "^8.53.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.0.2",
     "prettier": "^3.0.3",
     "syncpack": "^11.2.1",
-    "tsx": "^3.14.0",
+    "tsx": "^4.0.0",
     "turbo": "^1.10.16",
     "typescript": "^5.2.2"
   },
