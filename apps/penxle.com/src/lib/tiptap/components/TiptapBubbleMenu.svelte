@@ -3,6 +3,7 @@
   import { Editor, isTextSelection, posToDOMRect } from '@tiptap/core';
   import { Plugin, PluginKey } from '@tiptap/pm/state';
   import { EditorView } from '@tiptap/pm/view';
+  import clsx from 'clsx';
   import * as R from 'radash';
   import { onMount, tick } from 'svelte';
   import { portal } from '$lib/svelte/actions';
@@ -10,6 +11,8 @@
   export let key = 'bubble-menu';
   export let editor: Editor;
   export let when: ((view: EditorView) => boolean) | undefined = undefined;
+  let _class: string | undefined = undefined;
+  export { _class as class };
 
   let menuEl: HTMLElement;
   let open = false;
@@ -66,7 +69,7 @@
 {#if open}
   <div
     bind:this={menuEl}
-    class="absolute z-100"
+    class={clsx('absolute z-100', _class)}
     role="menu"
     tabindex="-1"
     on:mousedown={() => (preventUpdate = true)}

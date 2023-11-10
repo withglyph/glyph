@@ -10,8 +10,10 @@
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLDivElement;
   let _class: string | undefined = undefined;
+  let _offset: number | undefined = undefined;
 
   export { _class as class };
+  export { _offset as offset };
   export let placement: Placement = 'bottom-end';
 
   setContext('close', () => (open = false));
@@ -21,7 +23,7 @@
 
     const position = await computePosition(targetEl, menuEl, {
       placement,
-      middleware: [offset(4), flip(), shift({ padding: 8 })],
+      middleware: [offset(_offset ?? 4), flip(), shift({ padding: 8 })],
     });
 
     Object.assign(menuEl.style, {
@@ -39,7 +41,7 @@
   });
 </script>
 
-<button bind:this={targetEl} class={clsx('w-fit', _class)} type="button" on:click={() => (open = true)}>
+<button bind:this={targetEl} class={clsx('w-fit', _class)} type="button" on:click={() => (open = !open)}>
   <slot name="value" />
 </button>
 
