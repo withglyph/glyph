@@ -108,7 +108,7 @@ runcmd:
   tags: { Name: 'tailscale-exit-node-az2' },
 });
 
-const mixpanelProxy = new aws.ec2.Instance('mixpanel-proxy', {
+const mixpanel = new aws.ec2.Instance('mixpanel-proxy', {
   ami: 'ami-034bd1a31f7fbf204', // Amazon Linux 2023 AMI 2023.1.20230809.0 arm64 HVM kernel-6.1
   instanceType: 't4g.nano',
 
@@ -152,7 +152,7 @@ runcmd:
 });
 
 export const instances = {
-  mixpanelProxy,
+  mixpanel,
   rdsPooler,
 };
 

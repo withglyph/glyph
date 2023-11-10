@@ -3,7 +3,7 @@ import { PUBLIC_MIXPANEL_TOKEN } from '$env/static/public';
 
 export const setupMixpanel = () => {
   Mixpanel.init(PUBLIC_MIXPANEL_TOKEN, {
-    api_host: 'https://t.pnxl.net',
+    api_host: 'https://x.pnxl.co',
     ignore_dnt: true,
     persistence: 'localStorage',
   });
