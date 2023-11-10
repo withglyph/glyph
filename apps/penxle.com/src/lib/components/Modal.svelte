@@ -53,7 +53,7 @@
         in:fly={{ y: '10%', duration: 150 }}
         out:fade={{ duration: 150 }}
       >
-        <div class={clsx('flex flex-col w-full', size === 'sm' && 'max-w-92')}>
+        <div class={clsx('content flex flex-col w-full overflow-y-scroll', size === 'sm' && 'max-w-92')}>
           {#if $$slots.title}
             <div
               class={clsx(
@@ -127,3 +127,14 @@
     </div>
   </div>
 {/if}
+
+<style>
+  * {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+
+    & ::-webkit-scrollbar {
+      display: none;
+    }
+  }
+</style>

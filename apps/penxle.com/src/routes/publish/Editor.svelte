@@ -2,9 +2,12 @@
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import { writable } from '@svelte-kits/store';
   import { isTextSelection } from '@tiptap/core';
+  import clsx from 'clsx';
   import { tick } from 'svelte';
-  import { fade } from 'svelte/transition';
-  import { focused, hover, portal } from '$lib/svelte/actions';
+  import { Button } from '$lib/components';
+  import { Menu, MenuItem } from '$lib/components/menu';
+  import { postKind } from '$lib/stores';
+  import { focused, hover } from '$lib/svelte/actions';
   import { TiptapBubbleMenu, TiptapEditor, TiptapFloatingMenu } from '$lib/tiptap/components';
   import type { Editor, JSONContent } from '@tiptap/core';
 
@@ -18,7 +21,6 @@
 
   let open = false;
   let enableSubtitle = false;
-  let enableCoverImage = false;
 
   const focusing = writable(false);
   const hovered = writable(false);
@@ -46,120 +48,313 @@
   }
 </script>
 
-{#if enableCoverImage}
-  <div class="relative mx-auto w-4xl">
-    <img class="aspect-2/1 w-full rounded object-cover" alt="" src="https://picsum.photos/1200/600" />
+<div class="pt-17" use:hover={hovered}>
+  <div class="mx-auto w-full max-w-230">
+    <input
+      class="py-3 w-full title-32-eb border-b"
+      placeholder="제목을 입력하세요"
+      type="text"
+      bind:value={title}
+      use:focused={focusing}
+    />
 
-    <button
-      class="absolute right-2 top-2 square-8 flex center rounded-full bg-black/25 transition hover:bg-black/50"
-      tabindex="-1"
-      type="button"
-      on:click={() => (enableCoverImage = false)}
-    >
-      <span class="i-lc-x square-4 text-white" />
-    </button>
-  </div>
-{/if}
-
-<div class="pt-12" use:hover={hovered}>
-  <div class="mx-auto w-3xl">
-    <div class="relative">
+    {#if enableSubtitle}
       <input
-        class="mt-2 w-full text-3xl font-semibold"
-        placeholder="제목을 입력하세요."
+        class="mt-4 py-3 w-full subtitle-18-b"
+        placeholder="부제목을 입력하세요"
         type="text"
-        bind:value={title}
-        use:focused={focusing}
+        bind:value={subtitle}
+        on:keydown={(e) => {
+          if (e.key === 'Backspace' && e.currentTarget.value === '') {
+            enableSubtitle = false;
+          }
+        }}
       />
-
-      {#if enableSubtitle}
-        <input
-          class="mt-2 w-full text-lg"
-          placeholder="부제목을 입력하세요."
-          type="text"
-          bind:value={subtitle}
-          on:keydown={(e) => {
-            if (e.key === 'Backspace' && e.currentTarget.value === '') {
-              enableSubtitle = false;
-            }
-          }}
-        />
-      {/if}
-
-      {#if $focusing || $hovered}
-        <div class="absolute flex items-center -top-1 -translate-y-full" transition:fade={{ duration: 100 }}>
-          {#if !enableCoverImage}
-            <button
-              class="flex items-center gap-1 rounded px-1 py-0.5 text-sm text-gray-50 transition hover:bg-gray-10"
-              tabindex="-1"
-              type="button"
-              on:click={() => (enableCoverImage = true)}
-            >
-              <span class="i-lc-image" />
-              커버 이미지 추가
-            </button>
-          {/if}
-
-          {#if !enableSubtitle}
-            <button
-              class="flex items-center gap-1 rounded px-1 py-0.5 text-sm text-gray-50 transition hover:bg-gray-10"
-              tabindex="-1"
-              type="button"
-              on:click={() => (enableSubtitle = true)}
-            >
-              <span class="i-lc-corner-down-right" />
-              부제목 추가
-            </button>
-          {/if}
-        </div>
-      {/if}
-    </div>
+    {:else}
+      <label class="body-16-b flex items-center gap-2 mt-4">
+        부제목 추가
+        <button
+          class="flex center p-0.5 border border-secondary rounded-lg square-6"
+          type="button"
+          on:click={() => (enableSubtitle = true)}
+        >
+          <i class="i-lc-plus square-3.5 text-secondary" />
+        </button>
+      </label>
+    {/if}
   </div>
 </div>
 
-<div class="mx-auto w-3xl flex grow">
-  <TiptapEditor class="mt-4 max-w-full grow whitespace-pre-wrap" bind:editor bind:content />
-</div>
+{#if $postKind === 'ARTICLE'}
+  <div class="mx-auto w-full max-w-230 flex grow">
+    <TiptapEditor class="mt-12 max-w-full grow whitespace-pre-wrap" bind:editor bind:content />
+  </div>
 
-{#if editor}
-  <TiptapBubbleMenu {editor} when={(view) => isTextSelection(view.state.selection)}>
-    <div class="rounded bg-gray-90 px-4 py-2 text-xs font-semibold text-white">
-      <button class="i-lc-bold" type="button" on:click={() => editor.chain().focus().toggleBold().run()} />
-    </div>
-  </TiptapBubbleMenu>
-
-  <TiptapFloatingMenu {editor}>
-    <button
-      bind:this={targetEl}
-      class="border rounded-full square-10 flex center"
-      type="button"
-      on:click={() => {
-        open = true;
-      }}
-    >
-      <span class="i-lc-plus square-6 text-gray-50" />
-    </button>
-
-    {#if open}
+  {#if editor}
+    <TiptapBubbleMenu {editor} when={(view) => isTextSelection(view.state.selection)}>
       <div
-        class="fixed inset-0 z-49"
-        role="button"
-        tabindex="-1"
-        on:click={() => (open = false)}
-        on:keypress={null}
-        use:portal
-      />
-
-      <div
-        bind:this={menuEl}
-        class="absolute rounded bg-white drop-shadow-xl px-4 py-2 text-xs font-semibold z-50"
-        use:portal
+        class="bg-cardprimary px-3 py-1 rounded-lg shadow-[0_4px_16px_0_rgba(0,0,0,0.15)] flex items-center gap-1 h-12"
       >
-        <button class="flex gap-2" type="button" on:click={() => editor.chain().focus().setAccessBarrier().run()}>
-          <span class="i-lc-circle-dollar-sign square-4" />
-          결제선 추가
+        <Menu placement="bottom-start">
+          <div slot="value" class="flex items-center gap-2">
+            <div
+              class={`rounded-full square-4.5 bg-${
+                editor.getAttributes('text-color')?.['data-text-color']?.slice(5) ?? 'gray-90'
+              }`}
+            />
+            <i class="i-lc-chevron-down square-6 text-border-secondary" />
+          </div>
+
+          <MenuItem class="flex gap-2.5 items-center" on:click={() => editor?.chain().focus().unsetTextColor().run()}>
+            <div class="flex items-center gap-2 body-14-m text-primary">
+              <div class="bg-gray-90 rounded-full square-4.5" />
+              검정색
+            </div>
+          </MenuItem>
+          <MenuItem
+            class="flex gap-2.5 items-center"
+            on:click={() => editor?.chain().focus().setTextColor({ 'data-text-color': 'text-gray-50' }).run()}
+          >
+            <div class="flex items-center gap-2 body-14-m text-gray-50">
+              <div class="bg-gray-50 rounded-full square-4.5" />
+              회색
+            </div>
+          </MenuItem>
+          <MenuItem
+            class="flex gap-2.5 items-center"
+            on:click={() => editor?.chain().focus().setTextColor({ 'data-text-color': 'text-gray-30' }).run()}
+          >
+            <div class="flex items-center gap-2 body-14-m text-gray-30">
+              <div class="bg-gray-30 rounded-full square-4.5" />
+              회색 2
+            </div>
+          </MenuItem>
+          <MenuItem
+            class="flex gap-2.5 items-center"
+            on:click={() => editor?.chain().focus().setTextColor({ 'data-text-color': 'text-red-60' }).run()}
+          >
+            <div class="flex items-center gap-2 body-14-m text-red-60">
+              <div class="bg-red-60 rounded-full square-4.5" />
+              빨간색
+            </div>
+          </MenuItem>
+          <MenuItem
+            class="flex gap-2.5 items-center"
+            on:click={() => editor?.chain().focus().setTextColor({ 'data-text-color': 'text-blue-60' }).run()}
+          >
+            <div class="flex items-center gap-2 body-14-m text-blue-60">
+              <div class="bg-blue-60 rounded-full square-4.5" />
+              파란색
+            </div>
+          </MenuItem>
+          <MenuItem
+            class="flex gap-2.5 items-center"
+            on:click={() => editor?.chain().focus().setTextColor({ 'data-text-color': 'text-orange-70' }).run()}
+          >
+            <div class="flex items-center gap-2 body-14-m text-orange-70">
+              <div class="bg-orange-70 rounded-full square-4.5" />
+              갈색
+            </div>
+          </MenuItem>
+          <MenuItem
+            class="flex gap-2.5 items-center"
+            on:click={() => editor?.chain().focus().setTextColor({ 'data-text-color': 'text-green-60' }).run()}
+          >
+            <div class="flex items-center gap-2 body-14-m text-green-60">
+              <div class="bg-green-60 rounded-full square-4.5" />
+              초록색
+            </div>
+          </MenuItem>
+          <MenuItem
+            class="flex gap-2.5 items-center"
+            on:click={() => editor?.chain().focus().setTextColor({ 'data-text-color': 'text-purple-60' }).run()}
+          >
+            <div class="flex items-center gap-2 body-14-m text-purple-60">
+              <div class="bg-purple-60 rounded-full square-4.5" />
+              보라색
+            </div>
+          </MenuItem>
+        </Menu>
+
+        <Menu placement="bottom-start">
+          <div slot="value" class="flex items-center gap-2 body-14-m">
+            본문 1
+            <i class="i-lc-chevron-down square-6 text-border-secondary" />
+          </div>
+
+          <MenuItem
+            class="flex items-center justify-between gap-2"
+            on:click={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          >
+            <div class="title-24-b text-primary">제목 1</div>
+            {#if editor.isActive('heading', { level: 1 })}
+              <i class="i-lc-check square-4 text-blue-50" />
+            {/if}
+          </MenuItem>
+          <MenuItem
+            class="flex items-center justify-between gap-2"
+            on:click={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          >
+            <div class="title-20-b text-primary">제목 2</div>
+            {#if editor.isActive('heading', { level: 2 })}
+              <i class="i-lc-check square-4 text-blue-50" />
+            {/if}
+          </MenuItem>
+          <MenuItem
+            class="flex items-center justify-between gap-2"
+            on:click={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          >
+            <div class="subtitle-18-b text-primary">제목 3</div>
+            {#if editor.isActive('heading', { level: 3 })}
+              <i class="i-lc-check square-4 text-blue-50" />
+            {/if}
+          </MenuItem>
+          <MenuItem class="flex items-center justify-between gap-2">
+            <div class="text-primary">본문 1</div>
+            <!-- {#if editor.isActive('heading', { level: 1 })}
+              <i class="i-lc-check square-4 text-blue-50" />
+            {/if} -->
+          </MenuItem>
+          <MenuItem class="flex items-center justify-between gap-2">
+            <div class="body-13-m text-primary">본문 2</div>
+            <!-- {#if editor.isActive('heading', { level: 1 })}
+              <i class="i-lc-check square-4 text-blue-50" />
+            {/if} -->
+          </MenuItem>
+        </Menu>
+
+        <Menu placement="bottom-start">
+          <div slot="value" class="flex items-center gap-2 body-14-m">
+            프리텐다드
+            <i class="i-lc-chevron-down square-6 text-border-secondary" />
+          </div>
+
+          <MenuItem>프리텐다드</MenuItem>
+        </Menu>
+
+        <button class="flex center" type="button" on:click={() => editor.chain().focus().toggleBold().run()}>
+          <i class={clsx('i-lc-bold square-6', editor.isActive('bold') && 'text-blue-50')} />
+        </button>
+        <button class="flex center" type="button" on:click={() => editor.chain().focus().toggleItalic().run()}>
+          <i class={clsx('i-lc-italic square-6', editor.isActive('italic') && 'text-blue-50')} />
+        </button>
+        <button class="flex center" type="button" on:click={() => editor.chain().focus().toggleStrike().run()}>
+          <i class={clsx('i-lc-strikethrough square-6', editor.isActive('strike') && 'text-blue-50')} />
+        </button>
+        <button class="flex center" type="button" on:click={() => editor.chain().focus().toggleUnderline().run()}>
+          <i class={clsx('i-lc-underline square-6', editor.isActive('underline') && 'text-blue-50')} />
+        </button>
+
+        <Menu placement="bottom-start">
+          <div slot="value" class="flex items-center gap-2 body-14-m">
+            <i class="i-lc-align-left square-6" />
+          </div>
+
+          <div class="flex w-full rounded-lg">
+            <button
+              class="flex center hover:(bg-primary text-primary)"
+              type="button"
+              on:click={() => editor.chain().focus().setTextAlign('left').run()}
+            >
+              <i
+                class={clsx('i-lc-align-left square-6', editor.isActive({ 'text-align': 'left' }) && 'text-blue-50')}
+              />
+            </button>
+            <button
+              class="flex center hover:(bg-primary text-primary)"
+              type="button"
+              on:click={() => editor.chain().focus().setTextAlign('center').run()}
+            >
+              <i
+                class={clsx(
+                  'i-lc-align-center square-6',
+                  editor.isActive({ 'text-align': 'center' }) && 'text-blue-50',
+                )}
+              />
+            </button>
+            <button
+              class="flex center hover:(bg-primary text-primary)"
+              type="button"
+              on:click={() => editor.chain().focus().setTextAlign('right').run()}
+            >
+              <i
+                class={clsx('i-lc-align-right square-6', editor.isActive({ 'text-align': 'right' }) && 'text-blue-50')}
+              />
+            </button>
+            <button
+              class="flex center hover:(bg-primary text-primary)"
+              type="button"
+              on:click={() => editor.chain().focus().setTextAlign('justify').run()}
+            >
+              <i
+                class={clsx(
+                  'i-lc-align-justify square-6',
+                  editor.isActive({ 'text-align': 'justify' }) && 'text-blue-50',
+                )}
+              />
+            </button>
+          </div>
+        </Menu>
+
+        <button class="flex items-center gap-2 body-14-m" type="button">
+          <i class="i-lc-link-2 square-6" />
+        </button>
+
+        <button class="flex items-center gap-2 body-14-m" type="button">
+          <i class="i-lc-align-vertical-space-between square-6" />
+        </button>
+
+        <button class="flex items-center gap-2 body-14-m" type="button">
+          <i class="i-lc-align-horizontal-space-between square-6" />
         </button>
       </div>
-    {/if}
-  </TiptapFloatingMenu>
+    </TiptapBubbleMenu>
+
+    <TiptapFloatingMenu {editor}>
+      <Menu placement="left-start">
+        <Button slot="value" class="rounded-full! p-2! bg-white" color="tertiary" size="lg" variant="outlined">
+          <i class="i-lc-plus square-5" />
+        </Button>
+
+        <MenuItem class="flex gap-2.5 items-center" on:click={() => editor.chain().focus().setAccessBarrier().run()}>
+          <span class="p-1 border border-alphagray-15 rounded-lg flex center">
+            <i class="i-lc-circle-dollar-sign square-5" />
+          </span>
+          결제선 추가
+        </MenuItem>
+        <MenuItem class="flex gap-2.5 items-center">
+          <span class="p-1 border border-alphagray-15 rounded-lg flex center">
+            <i class="i-lc-minus square-5" />
+          </span>
+          구분선 추가
+        </MenuItem>
+        <MenuItem class="flex gap-2.5 items-center">
+          <span class="p-1 border border-alphagray-15 rounded-lg flex center">
+            <i class="i-lc-quote square-5" />
+          </span>
+          인용구 추가
+        </MenuItem>
+        <MenuItem class="flex gap-2.5 items-center">
+          <span class="p-1 border border-alphagray-15 rounded-lg flex center">
+            <i class="i-lc-list square-5" />
+          </span>
+          리스트 추가
+        </MenuItem>
+        <MenuItem class="flex gap-2.5 items-center">
+          <span class="p-1 border border-alphagray-15 rounded-lg flex center">
+            <i class="i-lc-image square-5" />
+          </span>
+          이미지
+        </MenuItem>
+        <MenuItem class="flex gap-2.5 items-center">
+          <span class="p-1 border border-alphagray-15 rounded-lg flex center">
+            <i class="i-lc-paperclip square-5" />
+          </span>
+          파일 업로드
+        </MenuItem>
+      </Menu>
+    </TiptapFloatingMenu>
+  {/if}
+{:else}
+  <div class="mx-auto w-full max-w-230 grow bg-primary" />
 {/if}

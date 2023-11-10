@@ -8,15 +8,15 @@
   }
 
   & h1 {
-    --uno: text-2xl font-bold my-4;
+    --uno: title-24-b my-4;
   }
 
   & h2 {
-    --uno: text-xl font-bold my-4;
+    --uno: title-20-b my-4;
   }
 
   & h3 {
-    --uno: text-lg font-bold my-4;
+    --uno: subtitle-18-b my-4;
   }
 
   /*
@@ -39,8 +39,32 @@
     --uno: underline;
   }
 
-  & [data-text-color='text-brand-50'] {
-    --uno: text-brand-50;
+  & [data-text-color='text-gray-50'] {
+    --uno: text-gray-50;
+  }
+
+  & [data-text-color='text-gray-30'] {
+    --uno: text-gray-30;
+  }
+
+  & [data-text-color='text-red-60'] {
+    --uno: text-red-60;
+  }
+
+  & [data-text-color='text-blue-60'] {
+    --uno: text-blue-60;
+  }
+
+  & [data-text-color='text-orange-70'] {
+    --uno: text-orange-70;
+  }
+
+  & [data-text-color='text-green-60'] {
+    --uno: text-green-60;
+  }
+
+  & [data-text-color='text-purple-60'] {
+    --uno: text-purple-60;
   }
 
   /*
