@@ -23,27 +23,13 @@
       mutation SignupPage_CreateUser_Mutation($input: CreateUserInput!) {
         createUser(input: $input) {
           id
-          email
-          profile {
-            name
-            avatar {
-              url
-            }
-          }
         }
       }
     `),
     schema: CreateUserSchema,
     initialValues: { name: '' },
-    onSuccess: (resp) => {
-      mixpanel.identify(resp.id);
+    onSuccess: () => {
       mixpanel.track('user:signup');
-      mixpanel.people.set({
-        $email: resp.email,
-        $name: resp.profile.name,
-        $avatar: resp.profile.avatar.url,
-      });
-
       location.href = '/';
     },
   });

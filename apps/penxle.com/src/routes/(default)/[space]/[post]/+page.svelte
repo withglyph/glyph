@@ -3,6 +3,7 @@
   import dayjs from 'dayjs';
   import { onMount, tick } from 'svelte';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Avatar, Button, Image, Tag } from '$lib/components';
   import { EmojiPicker } from '$lib/emoji';
   import Emoji from '$lib/emoji/Emoji.svelte';
@@ -140,6 +141,7 @@
   `);
 
   onMount(async () => {
+    mixpanel.track('post:view', { postId: $query.post.id });
     await updatePostView({ postId: $query.post.id });
   });
 
