@@ -87,7 +87,7 @@
     handler();
   }
 
-  postKind.set(((browser && localStorage.getItem('postKind')) as PostKind) || 'article');
+  postKind.set(((browser && localStorage.getItem('postKind')) as PostKind) || 'ARTICLE');
 
   postKind.subscribe((type) => {
     if (browser) return (localStorage.postKind = type);
