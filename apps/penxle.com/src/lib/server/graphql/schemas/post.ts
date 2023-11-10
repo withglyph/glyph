@@ -6,7 +6,8 @@ import * as R from 'radash';
 import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { deductUserPoint, getUserPoint } from '$lib/server/utils';
-import { createId, createTiptapDocument, createTiptapNode, documentToText } from '$lib/utils';
+import { revisionContentToText } from '$lib/server/utils/tiptap';
+import { createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
 import { builder } from '../builder';
 import type { JSONContent } from '@tiptap/core';
 
@@ -234,6 +235,11 @@ builder.prismaObject('PostRevision', {
           }
         }
 
+        const paidContentText = await revisionContentToText(
+          `${revision.id}:textPaidContent`,
+          revision.paidContent as JSONContent[],
+        );
+
         return createTiptapDocument([
           ...content,
           createTiptapNode({
@@ -249,7 +255,7 @@ builder.prismaObject('PostRevision', {
                 revisionId: revision.id,
 
                 counts: {
-                  characters: documentToText(createTiptapDocument(revision.paidContent as JSONContent[])).length,
+                  characters: paidContentText.length,
                   images: 42,
                   files: 42,
                 },
@@ -263,9 +269,29 @@ builder.prismaObject('PostRevision', {
     characterCount: t.field({
       type: 'Int',
       select: { content: true, paidContent: true },
-      resolve: (revision) =>
-        documentToText(createTiptapDocument(revision.content as JSONContent[])).length +
-        documentToText(createTiptapDocument(revision.paidContent as JSONContent[])).length,
+      resolve: async (revision) => {
+        const contentText = await revisionContentToText(
+          `${revision.id}:textContent`,
+          revision.content as JSONContent[],
+        );
+        const paidContentText = await revisionContentToText(
+          `${revision.id}:textPaidContent`,
+          revision.paidContent as JSONContent[],
+        );
+        return contentText.length + paidContentText.length;
+      },
+    }),
+
+    previewText: t.field({
+      type: 'String',
+      select: { content: true },
+      resolve: async (revision) => {
+        const contentText = await revisionContentToText(
+          `${revision.id}:textContent`,
+          revision.content as JSONContent[],
+        );
+        return contentText.slice(0, 200);
+      },
     }),
 
     thumbnail: t.relation('thumbnail', { nullable: true }),
