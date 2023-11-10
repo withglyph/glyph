@@ -40,6 +40,8 @@
 
   let savedTime: string | undefined = undefined;
 
+  let savedTime: string | undefined = undefined;
+
   $: query = fragment(
     _query,
     graphql(`
