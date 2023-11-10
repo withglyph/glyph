@@ -1,6 +1,7 @@
 <script lang="ts">
   import { PostKind } from '@prisma/client';
   import clsx from 'clsx';
+  import dayjs from 'dayjs';
   import * as R from 'radash';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
@@ -37,6 +38,8 @@
   let postId = postOption.postId;
   let hasContentFilter = postOption.contentFilters.length > 0;
 
+  let savedTime: string | undefined = undefined;
+
   $: query = fragment(
     _query,
     graphql(`
@@ -66,7 +69,7 @@
   let currentSpace: (typeof $query.me.spaces)[0];
   $: currentSpace = $query.me.spaces[0];
 
-  $: canPublish = !!title;
+  $: canPublish = !!title && !!content;
 
   const { form, setData } = createMutationForm({
     initialValues: { ...postOption, password: hasPassword ? '' : null },
@@ -117,6 +120,11 @@
           id
           slug
         }
+
+        revisionList {
+          id
+          createdAt
+        }
       }
     }
   `);
@@ -138,7 +146,9 @@
   };
 
   const handler = R.debounce({ delay: 1000 }, async () => {
-    await revise('AUTO_SAVE');
+    const resp = await revise('AUTO_SAVE');
+
+    savedTime = resp.revisionList[0].createdAt;
   });
 
   $: if (browser && title && content) {
@@ -207,7 +217,7 @@
       </button>
     </div>
 
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 w-36.5">
       <ToolbarButton
         name="실행 취소"
         class="i-lc-undo-2 square-6!"
@@ -288,7 +298,11 @@
           <mark class="text-blue-50">80</mark>
           자
         </span>
-        <span class="caption-12-m text-disabled">마지막으로 저장된 시간 13:00</span>
+        {#if savedTime}
+          <span class="caption-12-m text-disabled">
+            마지막으로 저장된 시간 <time>{dayjs(savedTime).formatAsTime()}</time>
+          </span>
+        {/if}
       </div>
 
       <div slot="message">
@@ -311,7 +325,11 @@
         loading={$revisePost.inflight}
         size="lg"
         variant="outlined"
-        on:click={() => revise('MANUAL_SAVE')}
+        on:click={async () => {
+          const resp = await revise('MANUAL_SAVE');
+
+          savedTime = resp.revisionList[0].createdAt;
+        }}
       >
         임시저장
       </Button>
