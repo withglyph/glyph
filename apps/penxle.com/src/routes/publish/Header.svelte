@@ -11,7 +11,13 @@
   import { postKind } from '$lib/stores';
   import ToolbarButton from './ToolbarButton.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
-  import type { PostKind, PostRevisionKind, PublishPage_Header_query } from '$glitch';
+  import type {
+    ContentFilterCategory,
+    PostKind,
+    PostRevisionKind,
+    PostVisibility,
+    PublishPage_Header_query,
+  } from '$glitch';
 
   let _query: PublishPage_Header_query;
   export { _query as $query };
@@ -22,6 +28,13 @@
   export let editor: Editor | undefined;
 
   let postId: string | undefined;
+  let hasContentFilter = false;
+  let visibility: PostVisibility = 'PUBLIC';
+  let receiveTagContribution = true;
+  let receiveFeedback = true;
+  let discloseStats = true;
+  let receivePatronage = true;
+  let contentFilters: ContentFilterCategory[] = [];
   let open = false;
 
   $: query = fragment(
@@ -64,6 +77,23 @@
     }
   `);
 
+  const updatePostOptions = graphql(`
+    mutation PublishPage_UpdatePostOptions_Mutation($input: UpdatePostOptionsInput!) {
+      updatePostOptions(input: $input) {
+        id
+
+        option {
+          id
+          discloseStats
+          receiveFeedback
+          receivePatronage
+          receiveTagContribution
+          visibility
+        }
+      }
+    }
+  `);
+
   const revise = async (revisionKind: PostRevisionKind) => {
     const resp = await revisePost({
       postId,
@@ -92,6 +122,17 @@
   postKind.subscribe((type) => {
     if (browser) return (localStorage.postKind = type);
   });
+
+  const checkContentFilter = (e: Event, contentFilter: ContentFilterCategory) => {
+    const { checked } = e.target as HTMLInputElement;
+
+    if (checked) {
+      contentFilters.push(contentFilter);
+    } else {
+      contentFilters.splice(contentFilters.indexOf(contentFilter), 1);
+    }
+    contentFilters = contentFilters;
+  };
 </script>
 
 <header class="sticky top-0 z-50 border-b border-secondary bg-white py-2 px-4 sm:px-7.5 h-15.25 flex center">
@@ -218,20 +259,41 @@
   <svelte:fragment slot="title">포스트 게시 옵션</svelte:fragment>
 
   <div class="space-y-6 mt-2">
-    <div class="flex gap-6">
+    <fieldset class="flex gap-6">
       <div class="flex gap-1.5">
-        <input name="public" class="square-6" checked type="radio" />
+        <input
+          name="public"
+          class="square-6"
+          checked={visibility === 'PUBLIC'}
+          type="radio"
+          value="PUBLIC"
+          on:input={() => (visibility = 'PUBLIC')}
+        />
         <label class="grow body-15-sb" for="public">전체 공개</label>
       </div>
       <div class="flex gap-1.5">
-        <input name="space" class="square-6" checked type="radio" />
+        <input
+          name="space"
+          class="square-6"
+          checked={visibility === 'SPACE'}
+          type="radio"
+          value="SPACE"
+          on:input={() => (visibility = 'SPACE')}
+        />
         <label class="grow body-15-sb" for="space">멤버 공개</label>
       </div>
       <div class="flex gap-1.5">
-        <input name="unlisted" class="square-6" checked type="radio" />
+        <input
+          name="unlisted"
+          class="square-6"
+          checked={visibility === 'UNLISTED'}
+          type="radio"
+          value="UNLISTED"
+          on:input={() => (visibility = 'UNLISTED')}
+        />
         <label class="grow body-15-sb" for="unlisted">링크 공개</label>
       </div>
-    </div>
+    </fieldset>
 
     <div class="flex gap-6 items-center">
       <Checkbox class="body-15-sb">비밀글</Checkbox>
@@ -241,45 +303,75 @@
     <p class="text-secondary">종류 선택</p>
 
     <div class="flex gap-3">
-      <Checkbox class="body-15-sb">트리거 워닝</Checkbox>
-      <Checkbox class="body-15-sb">성인물</Checkbox>
+      <Checkbox class="body-15-sb" checked={hasContentFilter} on:change={() => (hasContentFilter = !hasContentFilter)}>
+        트리거 워닝
+      </Checkbox>
+      <Checkbox class="body-15-sb" on:change={(e) => checkContentFilter(e, 'ADULT')}>성인물</Checkbox>
     </div>
 
-    <div class="grid grid-cols-4 gap-2">
-      <ToggleButton checked size="lg">폭력성</ToggleButton>
-      <ToggleButton checked size="lg">잔인성</ToggleButton>
-      <ToggleButton checked size="lg">공포성</ToggleButton>
-      <ToggleButton checked size="lg">사행성</ToggleButton>
-      <ToggleButton checked size="lg">약물/범죄</ToggleButton>
-      <ToggleButton checked size="lg">정신질환</ToggleButton>
-      <ToggleButton checked size="lg">부적절한 언어</ToggleButton>
-      <ToggleButton checked size="lg">기타</ToggleButton>
-    </div>
+    {#if hasContentFilter}
+      <div class="grid grid-cols-4 gap-2">
+        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'VIOLENCE')}>폭력성</ToggleButton>
+        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'CRUELTY')}>잔인성</ToggleButton>
+        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'HORROR')}>공포성</ToggleButton>
+        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'GAMBLING')}>사행성</ToggleButton>
+        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'CRIME')}>약물/범죄</ToggleButton>
+        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'PHOBIA')}>정신질환</ToggleButton>
+        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'INSULT')}>부적절한 언어</ToggleButton>
+        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'OTHER')}>기타</ToggleButton>
+      </div>
+    {/if}
 
     <p class="text-secondary">세부 설정</p>
 
-    <div class="body-16-b flex gap-6">
+    <fieldset class="body-16-b flex gap-6">
       <span>게시물 태그 수정 및 등록</span>
 
       <div class="flex gap-1.5">
-        <input name="space" class="square-6" checked type="radio" />
-        <label class="grow body-15-sb" for="space">허용</label>
+        <input
+          name="allowTagContribution"
+          class="square-6"
+          checked={receiveTagContribution}
+          type="radio"
+          value={receiveTagContribution}
+          on:input={() => (receiveTagContribution = true)}
+        />
+        <label class="grow body-15-sb" for="allowTagContribution">허용</label>
       </div>
       <div class="flex gap-1.5">
-        <input name="space" class="square-6" checked type="radio" />
+        <input
+          name="space"
+          class="square-6"
+          checked={!receiveTagContribution}
+          type="radio"
+          value={receiveTagContribution}
+          on:input={() => (receiveTagContribution = false)}
+        />
         <label class="grow body-15-sb" for="space">비허용</label>
       </div>
-    </div>
+    </fieldset>
 
     <div class="body-16-b flex gap-6">
       <span>게시글 피드백</span>
 
       <div class="flex gap-1.5">
-        <input name="space" class="square-6" checked type="radio" />
-        <label class="grow body-15-sb" for="space">활성화</label>
+        <input
+          name="receiveFeedback"
+          class="square-6"
+          checked={receiveFeedback}
+          type="radio"
+          on:input={() => (receiveFeedback = true)}
+        />
+        <label class="grow body-15-sb" for="receiveFeedback">활성화</label>
       </div>
       <div class="flex gap-1.5">
-        <input name="space" class="square-6" checked type="radio" />
+        <input
+          name="space"
+          class="square-6"
+          checked={!receiveFeedback}
+          type="radio"
+          on:input={() => (receiveFeedback = false)}
+        />
         <label class="grow body-15-sb" for="space">비활성화</label>
       </div>
     </div>
@@ -288,11 +380,23 @@
       <span>게시글 세부 통계 공개</span>
 
       <div class="flex gap-1.5">
-        <input name="space" class="square-6" checked type="radio" />
-        <label class="grow body-15-sb" for="space">허용</label>
+        <input
+          name="discloseStats"
+          class="square-6"
+          checked={discloseStats}
+          type="radio"
+          on:input={() => (discloseStats = true)}
+        />
+        <label class="grow body-15-sb" for="discloseStats">허용</label>
       </div>
       <div class="flex gap-1.5">
-        <input name="space" class="square-6" checked type="radio" />
+        <input
+          name="space"
+          class="square-6"
+          checked={!discloseStats}
+          type="radio"
+          on:input={() => (discloseStats = false)}
+        />
         <label class="grow body-15-sb" for="space">비허용</label>
       </div>
     </div>
@@ -300,7 +404,9 @@
     <p class="text-secondary">옵션 설정</p>
 
     <div class="flex gap-3">
-      <Checkbox class="body-15-sb">후원 받지 않기</Checkbox>
+      <Checkbox class="body-15-sb" checked={!receivePatronage} on:change={() => (receivePatronage = !receivePatronage)}>
+        후원 받지 않기
+      </Checkbox>
       <Checkbox class="body-15-sb">알림 받지 않기</Checkbox>
     </div>
   </div>
@@ -311,6 +417,17 @@
     size="xl"
     on:click={async () => {
       const resp = await revise('PUBLISHED');
+
+      await updatePostOptions({
+        postId: resp.id,
+        contentFilters,
+        discloseStats,
+        receiveFeedback,
+        receivePatronage,
+        receiveTagContribution,
+        visibility,
+      });
+
       await goto(`/${resp.space.slug}/${resp.permalink}`);
     }}
   >
