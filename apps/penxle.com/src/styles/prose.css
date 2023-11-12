@@ -84,8 +84,76 @@
     --uno: font-mono;
   }
 
-  & [data-text-align='left'] {
-    --uno: text-left;
+  & [data-line-height='3'] {
+    --uno: leading-3;
+  }
+
+  & [data-line-height='4'] {
+    --uno: leading-4;
+  }
+
+  & [data-line-height='5'] {
+    --uno: leading-5;
+  }
+
+  & [data-line-height='6'] {
+    --uno: leading-6;
+  }
+
+  & [data-line-height='7'] {
+    --uno: leading-7;
+  }
+
+  & [data-line-height='8'] {
+    --uno: leading-8;
+  }
+
+  & [data-line-height='9'] {
+    --uno: leading-9;
+  }
+
+  & [data-line-height='10'] {
+    --uno: leading-10;
+  }
+
+  & [data-line-height='none'] {
+    --uno: leading-none;
+  }
+
+  & [data-line-height='tight'] {
+    --uno: leading-tight;
+  }
+
+  & [data-line-height='snug'] {
+    --uno: leading-snug;
+  }
+
+  & [data-line-height='relaxed'] {
+    --uno: leading-relaxed;
+  }
+
+  & [data-line-height='loose'] {
+    --uno: leading-loose;
+  }
+
+  & [data-letter-spacing='tighter'] {
+    --uno: tracking-tighter;
+  }
+
+  & [data-letter-spacing='tight'] {
+    --uno: tracking-tight;
+  }
+
+  & [data-letter-spacing='wide'] {
+    --uno: tracking-wide;
+  }
+
+  & [data-letter-spacing='wider'] {
+    --uno: tracking-wider;
+  }
+
+  & [data-letter-spacing='widest'] {
+    --uno: tracking-widest;
   }
 
   & [data-text-align='center'] {

@@ -1,4 +1,13 @@
-import { DropCursor, FontFamily, GapCursor, History, Placeholder, TextAlign } from '$lib/tiptap/extensions';
+import {
+  DropCursor,
+  FontFamily,
+  GapCursor,
+  History,
+  LetterSpacing,
+  LineHeight,
+  Placeholder,
+  TextAlign,
+} from '$lib/tiptap/extensions';
 import { Bold, Italic, Strike, TextColor, Underline } from '$lib/tiptap/marks';
 import { AccessBarrier } from '$lib/tiptap/node-views';
 import { Document, HardBreak, Heading, Paragraph, Text } from '$lib/tiptap/nodes';
@@ -27,6 +36,8 @@ export const extensions = [
   Placeholder,
   TextAlign,
   FontFamily,
+  LineHeight,
+  LetterSpacing,
 
   // node views
   AccessBarrier,

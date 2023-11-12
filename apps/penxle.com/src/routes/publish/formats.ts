@@ -1,5 +1,8 @@
 import { Heading, Paragraph } from '$lib/tiptap/nodes';
 import type { FontFamily } from '@penxle/lib/unocss';
+import type { Node } from '@tiptap/pm/model';
+import type { Spacing } from '$lib/tiptap/extensions';
+import type { Height } from '$lib/tiptap/extensions/line-height';
 
 export const colors = [
   { label: '검정색', value: null },
@@ -37,3 +40,53 @@ export const fonts = [
   { label: fontFamilyToLocaleString.serif, value: 'serif' },
   { label: fontFamilyToLocaleString.mono, value: 'mono' },
 ] satisfies { label: string; value: FontFamily }[];
+
+const heightToLocaleString = {
+  3: '좁음', // .75
+  none: '없음', // 1
+  tight: '낮음 2', // 1.25
+  snug: '낮음 1', // 1.375
+  normal: '보통', // 1.5
+  relaxed: '높음 1', // 1.625
+  7: '높음 2', // 1.75
+  loose: '높음 3', // 2
+  9: '높음 4', // 2.25
+  10: '높음 5', // 2.5
+} satisfies Record<Height, string>;
+
+export const heights: { label: string; value: Height }[] = [
+  { label: heightToLocaleString[3], value: 3 },
+  { label: heightToLocaleString.none, value: 'none' },
+  { label: heightToLocaleString.tight, value: 'tight' },
+  { label: heightToLocaleString.snug, value: 'snug' },
+  { label: heightToLocaleString.normal, value: 'normal' },
+  { label: heightToLocaleString.relaxed, value: 'relaxed' },
+  { label: heightToLocaleString[7], value: 7 },
+  { label: heightToLocaleString.loose, value: 'loose' },
+  { label: heightToLocaleString[9], value: 9 },
+  { label: heightToLocaleString[10], value: 10 },
+];
+
+const spacingToLocaleString = {
+  tighter: '좁게 2',
+  tight: '좁게 1',
+  normal: '보통',
+  wide: '넓게 1',
+  wider: '넓게 2',
+  widest: '넓게 3',
+} satisfies Record<Spacing, string>;
+
+export const spacing: { label: string; value: Spacing }[] = [
+  { label: spacingToLocaleString.tighter, value: 'tighter' },
+  { label: spacingToLocaleString.tight, value: 'tight' },
+  { label: spacingToLocaleString.normal, value: 'normal' },
+  { label: spacingToLocaleString.wide, value: 'wide' },
+  { label: spacingToLocaleString.wider, value: 'wider' },
+  { label: spacingToLocaleString.widest, value: 'widest' },
+];
+
+export function getLabelFromCurrentNode(currentNode: Node) {
+  return {
+    font: fontFamilyToLocaleString[currentNode?.attrs['font-family']] ?? fontFamilyToLocaleString.sans,
+  };
+}

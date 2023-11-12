@@ -9,7 +9,7 @@
   import { postKind } from '$lib/stores';
   import { focused, hover } from '$lib/svelte/actions';
   import { TiptapBubbleMenu, TiptapEditor, TiptapFloatingMenu } from '$lib/tiptap/components';
-  import { colors, fontFamilyToLocaleString, fonts, heading, texts } from './formats';
+  import { colors, fonts, getLabelFromCurrentNode, heading, heights, spacing, texts } from './formats';
   import type { Editor, JSONContent } from '@tiptap/core';
 
   export let title: string;
@@ -53,7 +53,7 @@
   $: currentNode = editor?.state.selection.$head.parent;
   $: currentTextLabel = `${currentNode?.type.name === heading ? '제목' : '본문'} ${currentNode?.attrs.level ?? 1}`;
 
-  $: currentFontLabel = fontFamilyToLocaleString[currentNode?.attrs['font-family']] ?? fontFamilyToLocaleString.sans;
+  $: label = getLabelFromCurrentNode(currentNode);
 </script>
 
 <div class="pt-17" use:hover={hovered}>
@@ -175,7 +175,7 @@
         placement="bottom-start"
       >
         <svelte:fragment slot="value">
-          {currentFontLabel}
+          {label.font}
           <i class="i-lc-chevron-down square-6 text-border-secondary" />
         </svelte:fragment>
         {#each fonts as font (font.value)}
@@ -286,13 +286,61 @@
         <i class="i-lc-link-2 square-1rem" />
       </button>
 
-      <button class="flex items-center gap-2 body-14-m p-xs hover:(bg-primary rounded-lg)" type="button">
-        <i class="i-lc-align-vertical-space-between square-1rem" />
-      </button>
+      <Menu
+        class="flex items-center p-xs hover:(bg-primary rounded-lg) h-full"
+        offset={menuOffset}
+        placement="bottom-start"
+      >
+        <svelte:fragment slot="value">
+          <i class="i-lc-align-vertical-space-between square-1rem" />
+        </svelte:fragment>
+        {#each heights as height (height.value)}
+          <MenuItem
+            class="flex items-center gap-2 justify-between"
+            on:click={() => {
+              editor.chain().focus().setLineHeight(height.value).run();
+            }}
+          >
+            {height.label}
+            <i
+              class={clsx(
+                'i-lc-check square-4 text-blue-50',
+                !editor.isActive({ 'line-height': height.value }) && 'invisible',
+              )}
+              aria-hidden={!editor.isActive({ 'line-height': height.value })}
+              aria-label="선택됨"
+            />
+          </MenuItem>
+        {/each}
+      </Menu>
 
-      <button class="flex items-center gap-2 body-14-m p-xs hover:(bg-primary rounded-lg)" type="button">
-        <i class="i-lc-align-horizontal-space-between square-1rem" />
-      </button>
+      <Menu
+        class="flex items-center p-xs hover:(bg-primary rounded-lg) h-full"
+        offset={menuOffset}
+        placement="bottom-start"
+      >
+        <svelte:fragment slot="value">
+          <i class="i-lc-align-horizontal-space-between square-1rem" />
+        </svelte:fragment>
+        {#each spacing as space (space.value)}
+          <MenuItem
+            class="flex items-center gap-2 justify-between"
+            on:click={() => {
+              editor.chain().focus().setLetterSpacing(space.value).run();
+            }}
+          >
+            {space.label}
+            <i
+              class={clsx(
+                'i-lc-check square-4 text-blue-50',
+                !editor.isActive({ 'letter-spacing': space.value }) && 'invisible',
+              )}
+              aria-hidden={!editor.isActive({ 'letter-spacing': space.value })}
+              aria-label="선택됨"
+            />
+          </MenuItem>
+        {/each}
+      </Menu>
     </TiptapBubbleMenu>
 
     <TiptapFloatingMenu {editor}>
