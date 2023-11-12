@@ -386,7 +386,7 @@ type Space {
   members: [SpaceMember!]!
   muted: Boolean!
   name: String!
-  posts: [Post!]!
+  posts(mine: Boolean! = false): [Post!]!
   slug: String!
   visibility: SpaceVisibility!
 }

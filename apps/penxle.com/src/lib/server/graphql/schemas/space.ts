@@ -96,7 +96,8 @@ builder.prismaObject('Space', {
 
     posts: t.prismaField({
       type: ['Post'],
-      resolve: async (query, space, _, { db, ...context }) => {
+      args: { mine: t.arg.boolean({ defaultValue: false }) },
+      resolve: async (query, space, input, { db, ...context }) => {
         const meAsMember = context.session
           ? await db.spaceMember.findUnique({
               where: {
@@ -107,12 +108,17 @@ builder.prismaObject('Space', {
               },
             })
           : null;
-
+        if (input.mine && !meAsMember) {
+          return [];
+        }
         return await db.post.findMany({
           ...query,
           where: {
             spaceId: space.id,
             state: 'PUBLISHED',
+            // input.mine이 true인데 meAsMember가 null이면 위에서 return되서 여기까지 안옴
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            memberId: input.mine ? meAsMember!.id : undefined,
             option: {
               visibility: meAsMember ? undefined : 'PUBLIC',
             },
