@@ -341,14 +341,14 @@
       </div>
       <div class="flex gap-1.5">
         <input
-          name="space"
+          name="notAllowTagContribution"
           class="square-6"
           checked={!receiveTagContribution}
           type="radio"
           value={receiveTagContribution}
           on:input={() => (receiveTagContribution = false)}
         />
-        <label class="grow body-15-sb" for="space">비허용</label>
+        <label class="grow body-15-sb" for="notAllowTagContribution">비허용</label>
       </div>
     </fieldset>
 
@@ -367,13 +367,13 @@
       </div>
       <div class="flex gap-1.5">
         <input
-          name="space"
+          name="notReceiveFeedback"
           class="square-6"
           checked={!receiveFeedback}
           type="radio"
           on:input={() => (receiveFeedback = false)}
         />
-        <label class="grow body-15-sb" for="space">비활성화</label>
+        <label class="grow body-15-sb" for="notReceiveFeedback">비활성화</label>
       </div>
     </div>
 
@@ -392,13 +392,13 @@
       </div>
       <div class="flex gap-1.5">
         <input
-          name="space"
+          name="notDiscloseStats"
           class="square-6"
           checked={!discloseStats}
           type="radio"
           on:input={() => (discloseStats = false)}
         />
-        <label class="grow body-15-sb" for="space">비허용</label>
+        <label class="grow body-15-sb" for="notDiscloseStats">비허용</label>
       </div>
     </div>
 
