@@ -9,6 +9,7 @@
   import { postKind } from '$lib/stores';
   import { focused, hover } from '$lib/svelte/actions';
   import { TiptapBubbleMenu, TiptapEditor, TiptapFloatingMenu } from '$lib/tiptap/components';
+  import { colors, fontFamilyToLocaleString, fonts, heading, texts } from './formats';
   import type { Editor, JSONContent } from '@tiptap/core';
 
   export let title: string;
@@ -48,6 +49,11 @@
   }
 
   const menuOffset = 32;
+
+  $: currentNode = editor?.state.selection.$head.parent;
+  $: currentTextLabel = `${currentNode?.type.name === heading ? '제목' : '본문'} ${currentNode?.attrs.level ?? 1}`;
+
+  $: currentFontLabel = fontFamilyToLocaleString[currentNode?.attrs['font-family']] ?? fontFamilyToLocaleString.sans;
 </script>
 
 <div class="pt-17" use:hover={hovered}>
@@ -105,82 +111,33 @@
       >
         <svelte:fragment slot="value">
           <div
-            class={`rounded-full square-4.5 bg-${
-              editor.getAttributes('text-color')?.['data-text-color']?.slice(5) ?? 'gray-90'
-            }`}
+            class={clsx(
+              'rounded-full square-4.5',
+              editor.getAttributes('text-color')?.['data-text-color'],
+              'bg-[currentColor]',
+            )}
           />
           <i class="i-lc-chevron-down square-6 text-border-secondary" />
         </svelte:fragment>
+        {#each colors as color (color.value)}
+          <MenuItem
+            class="flex"
+            on:click={() => {
+              const commands = editor?.chain().focus();
 
-        <MenuItem class="flex gap-2.5 items-center" on:click={() => editor?.chain().focus().unsetTextColor().run()}>
-          <div class="flex items-center gap-2 body-14-m text-primary">
-            <div class="bg-gray-90 rounded-full square-4.5" />
-            검정색
-          </div>
-        </MenuItem>
-        <MenuItem
-          class="flex gap-2.5 items-center"
-          on:click={() => editor?.chain().focus().setTextColor({ 'data-text-color': 'text-gray-50' }).run()}
-        >
-          <div class="flex items-center gap-2 body-14-m text-gray-50">
-            <div class="bg-gray-50 rounded-full square-4.5" />
-            회색
-          </div>
-        </MenuItem>
-        <MenuItem
-          class="flex gap-2.5 items-center"
-          on:click={() => editor?.chain().focus().setTextColor({ 'data-text-color': 'text-gray-30' }).run()}
-        >
-          <div class="flex items-center gap-2 body-14-m text-gray-30">
-            <div class="bg-gray-30 rounded-full square-4.5" />
-            회색 2
-          </div>
-        </MenuItem>
-        <MenuItem
-          class="flex gap-2.5 items-center"
-          on:click={() => editor?.chain().focus().setTextColor({ 'data-text-color': 'text-red-60' }).run()}
-        >
-          <div class="flex items-center gap-2 body-14-m text-red-60">
-            <div class="bg-red-60 rounded-full square-4.5" />
-            빨간색
-          </div>
-        </MenuItem>
-        <MenuItem
-          class="flex gap-2.5 items-center"
-          on:click={() => editor?.chain().focus().setTextColor({ 'data-text-color': 'text-blue-60' }).run()}
-        >
-          <div class="flex items-center gap-2 body-14-m text-blue-60">
-            <div class="bg-blue-60 rounded-full square-4.5" />
-            파란색
-          </div>
-        </MenuItem>
-        <MenuItem
-          class="flex gap-2.5 items-center"
-          on:click={() => editor?.chain().focus().setTextColor({ 'data-text-color': 'text-orange-70' }).run()}
-        >
-          <div class="flex items-center gap-2 body-14-m text-orange-70">
-            <div class="bg-orange-70 rounded-full square-4.5" />
-            갈색
-          </div>
-        </MenuItem>
-        <MenuItem
-          class="flex gap-2.5 items-center"
-          on:click={() => editor?.chain().focus().setTextColor({ 'data-text-color': 'text-green-60' }).run()}
-        >
-          <div class="flex items-center gap-2 body-14-m text-green-60">
-            <div class="bg-green-60 rounded-full square-4.5" />
-            초록색
-          </div>
-        </MenuItem>
-        <MenuItem
-          class="flex gap-2.5 items-center"
-          on:click={() => editor?.chain().focus().setTextColor({ 'data-text-color': 'text-purple-60' }).run()}
-        >
-          <div class="flex items-center gap-2 body-14-m text-purple-60">
-            <div class="bg-purple-60 rounded-full square-4.5" />
-            보라색
-          </div>
-        </MenuItem>
+              if (color.value) {
+                commands.setTextColor({ 'data-text-color': color.value }).run();
+              } else {
+                commands.unsetTextColor().run();
+              }
+            }}
+          >
+            <div class={clsx('inline-flex items-center body-14-m', color.value ?? 'text-primary')}>
+              <i class="bg-[currentColor] rounded-full square-4.5 m-r-0.5rem" />
+              {color.label}
+            </div>
+          </MenuItem>
+        {/each}
       </Menu>
 
       <Menu
@@ -189,62 +146,56 @@
         placement="bottom-start"
       >
         <svelte:fragment slot="value">
-          본문 1
+          {currentTextLabel}
           <i class="i-lc-chevron-down square-6 text-border-secondary" />
         </svelte:fragment>
-
-        <MenuItem
-          class="flex items-center justify-between gap-2"
-          on:click={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        >
-          <div class="title-24-b text-primary">제목 1</div>
-          {#if editor.isActive('heading', { level: 1 })}
-            <i class="i-lc-check square-4 text-blue-50" />
-          {/if}
-        </MenuItem>
-        <MenuItem
-          class="flex items-center justify-between gap-2"
-          on:click={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        >
-          <div class="title-20-b text-primary">제목 2</div>
-          {#if editor.isActive('heading', { level: 2 })}
-            <i class="i-lc-check square-4 text-blue-50" />
-          {/if}
-        </MenuItem>
-        <MenuItem
-          class="flex items-center justify-between gap-2"
-          on:click={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-        >
-          <div class="subtitle-18-b text-primary">제목 3</div>
-          {#if editor.isActive('heading', { level: 3 })}
-            <i class="i-lc-check square-4 text-blue-50" />
-          {/if}
-        </MenuItem>
-        <MenuItem class="flex items-center justify-between gap-2">
-          <div class="text-primary">본문 1</div>
-          <!-- {#if editor.isActive('heading', { level: 1 })}
+        {#each texts as text (`${text.name}-${text.level}}`)}
+          <MenuItem
+            class="flex items-center gap-2"
+            on:click={() => {
+              const commands = editor.chain().focus();
+              if (text.name === heading) {
+                commands.setHeading(text.level).run();
+              } else {
+                commands.setParagraph(text.level).run();
+              }
+            }}
+          >
+            <div class={clsx(text.class, 'text-primary')}>{text.label}</div>
+            {#if editor.isActive(text.name, { level: text.level })}
               <i class="i-lc-check square-4 text-blue-50" />
-            {/if} -->
-        </MenuItem>
-        <MenuItem class="flex items-center justify-between gap-2">
-          <div class="body-13-m text-primary">본문 2</div>
-          <!-- {#if editor.isActive('heading', { level: 1 })}
-              <i class="i-lc-check square-4 text-blue-50" />
-            {/if} -->
-        </MenuItem>
+            {/if}
+          </MenuItem>
+        {/each}
       </Menu>
 
       <Menu
-        class="flex items-center gap-0.25rem body-14-m hover:(bg-primary rounded-lg) h-full"
+        class="flex justify-between items-center gap-0.25rem body-14-m hover:(bg-primary rounded-lg) min-w-6rem h-full"
         offset={menuOffset}
         placement="bottom-start"
       >
         <svelte:fragment slot="value">
-          프리텐다드
-          <i class="i-lc-chevron-down square-0.75rem text-border-secondary" />
+          {currentFontLabel}
+          <i class="i-lc-chevron-down square-6 text-border-secondary" />
         </svelte:fragment>
-
-        <MenuItem>프리텐다드</MenuItem>
+        {#each fonts as font (font.value)}
+          <MenuItem
+            class={clsx('flex items-center gap-2 justify-between', `font-${font.value}`)}
+            on:click={() => {
+              editor.chain().focus().setFontFamily(font.value).run();
+            }}
+          >
+            {font.label}
+            <i
+              class={clsx(
+                'i-lc-check square-4 text-blue-50',
+                !editor.isActive({ 'font-family': font.value }) && 'invisible',
+              )}
+              aria-hidden={!editor.isActive({ 'font-family': font.value })}
+              aria-label="선택됨"
+            />
+          </MenuItem>
+        {/each}
       </Menu>
 
       <button

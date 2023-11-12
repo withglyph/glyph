@@ -3,6 +3,7 @@ import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders';
 import { presetIcons } from '@unocss/preset-icons';
 import { presetUno } from '@unocss/preset-uno';
 import { basicColors, designColors, partialShadedColors, shadedColors, specialColors } from './colors';
+import { fontFamily } from './font-family';
 import type { Preset } from '@unocss/core';
 import type { Theme } from '@unocss/preset-uno';
 
@@ -60,11 +61,7 @@ export const presetPenxle = (): Preset<Theme> => ({
       lg: '1024px',
       xl: '1600px',
     },
-    fontFamily: {
-      sans: 'Pretendard',
-      serif: 'RIDIBatang',
-      mono: 'FiraCode',
-    },
+    fontFamily,
   }),
 });
 

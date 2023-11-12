@@ -6,7 +6,7 @@ declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Commands<ReturnType> {
     heading: {
-      toggleHeading: (attributes: { level: Level }) => ReturnType;
+      setHeading: (level: Level) => ReturnType;
     };
   }
 }
@@ -39,10 +39,11 @@ export const Heading = Node.create({
 
   addCommands() {
     return {
-      toggleHeading:
-        (attributes) =>
-        ({ commands }) => {
-          return commands.toggleNode(this.name, 'paragraph', attributes);
+      setHeading:
+        (level) =>
+        ({ commands, state }) => {
+          const previousAttrs = state.selection.$head.parent.attrs;
+          return commands.setNode(this.name, { ...previousAttrs, level });
         },
     };
   },

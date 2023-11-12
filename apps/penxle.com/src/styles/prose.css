@@ -2,9 +2,14 @@
   /*
    * nodes
   */
+  --uno: body-16-m font-sans;
 
   & p {
     --uno: py-1;
+  }
+
+  & p[data-level='2'] {
+    --uno: body-13-m;
   }
 
   & h1 {
@@ -43,8 +48,8 @@
     --uno: text-gray-50;
   }
 
-  & [data-text-color='text-gray-30'] {
-    --uno: text-gray-30;
+  & [data-text-color='text-gray-40'] {
+    --uno: text-gray-40;
   }
 
   & [data-text-color='text-red-60'] {
@@ -70,6 +75,14 @@
   /*
    * extensions
   */
+
+  & [data-font-family='serif'] {
+    --uno: font-serif;
+  }
+
+  & [data-font-family='mono'] {
+    --uno: font-mono;
+  }
 
   & [data-text-align='left'] {
     --uno: text-left;
