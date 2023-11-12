@@ -180,7 +180,10 @@
         </svelte:fragment>
         {#each fonts as font (font.value)}
           <MenuItem
-            class={clsx('flex items-center gap-2 justify-between', `font-${font.value}`)}
+            class={clsx(
+              'flex items-center gap-2 justify-between',
+              font.value === 'serif' ? 'font-serif' : `font-${font.value}`,
+            )}
             on:click={() => {
               editor.chain().focus().setFontFamily(font.value).run();
             }}
