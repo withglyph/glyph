@@ -143,6 +143,7 @@ model PostOption {
   receiveFeedback        Boolean        @map("receive_feedback")
   receivePatronage       Boolean        @map("receive_patronage")
   receiveTagContribution Boolean        @map("receive_tag_contribution")
+  password               String?
   createdAt              DateTime       @default(now()) @map("created_at") @db.Timestamptz
 
   post Post?

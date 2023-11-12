@@ -166,6 +166,7 @@ type Mutation {
   unfollowSpace(input: UnfollowSpaceInput!): Space!
   unlikePost(input: UnlikePostInput!): Post!
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
+  unlockPasswordedPost(input: UnlockPasswordedPostInput!): Post!
   unmuteSpace(input: UnmuteSpaceInput!): Space!
   unmuteTag(input: UnmuteTagInput!): Tag!
   updatePostOptions(input: UpdatePostOptionsInput!): Post!
@@ -257,6 +258,7 @@ enum PostKind {
 
 type PostOption {
   discloseStats: Boolean!
+  hasPassword: Boolean!
   id: ID!
   receiveFeedback: Boolean!
   receivePatronage: Boolean!
@@ -456,6 +458,11 @@ input UnlinkUserSingleSignOnInput {
   provider: UserSingleSignOnProvider!
 }
 
+input UnlockPasswordedPostInput {
+  password: String!
+  postId: ID!
+}
+
 input UnmuteSpaceInput {
   spaceId: ID!
 }
@@ -467,6 +474,7 @@ input UnmuteTagInput {
 input UpdatePostOptionsInput {
   contentFilters: [ContentFilterCategory!]
   discloseStats: Boolean
+  password: String
   postId: ID!
   receiveFeedback: Boolean
   receivePatronage: Boolean

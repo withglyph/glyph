@@ -21,6 +21,8 @@
     "fira",
     "firacode",
     "healthz",
+    "hget",
+    "hset",
     "iconify",
     "itty",
     "jitconfig",

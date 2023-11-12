@@ -1,10 +1,12 @@
 import { init as cuid } from '@paralleldrive/cuid2';
 import { ContentFilterCategory, PostRevisionKind, PostVisibility } from '@prisma/client';
+import { hash, verify } from 'argon2';
 import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
 import * as R from 'radash';
 import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
+import { redis } from '$lib/server/cache';
 import { deductUserPoint, getUserPoint } from '$lib/server/utils';
 import { revisionContentToText } from '$lib/server/utils/tiptap';
 import { createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
@@ -159,11 +161,55 @@ builder.prismaObject('PostOption', {
     receiveFeedback: t.exposeBoolean('receiveFeedback'),
     receivePatronage: t.exposeBoolean('receivePatronage'),
     receiveTagContribution: t.exposeBoolean('receiveTagContribution'),
+    hasPassword: t.boolean({
+      select: { password: true },
+      resolve: (option) => !!option.password,
+    }),
   }),
 });
 
 builder.prismaObject('PostRevision', {
   select: { id: true },
+  grantScopes: async ({ id }, { db, ...context }) => {
+    const post = await db.post.findFirstOrThrow({
+      select: {
+        spaceId: true,
+        userId: true,
+        option: { select: { password: true } },
+      },
+      where: {
+        revisions: { some: { id } },
+      },
+    });
+
+    if (post.option.password) {
+      if (context.session?.userId === post.userId) {
+        return ['revision:view'];
+      }
+
+      const meAsMember = await db.spaceMember.exists({
+        where: {
+          spaceId: post.spaceId,
+          userId: context.session?.userId,
+          state: 'ACTIVE',
+        },
+      });
+
+      if (meAsMember) {
+        return ['revision:view'];
+      }
+
+      const unlock = await redis.hget(`Post:${id}:passwordUnlock`, context.deviceId);
+
+      if (unlock && dayjs(unlock).isAfter(dayjs())) {
+        return ['revision:view'];
+      }
+
+      return [];
+    }
+
+    return ['revision:view'];
+  },
   fields: (t) => ({
     id: t.exposeID('id'),
     kind: t.expose('kind', { type: PostRevisionKind }),
@@ -173,6 +219,7 @@ builder.prismaObject('PostRevision', {
 
     content: t.field({
       type: 'JSON',
+      authScopes: { $granted: '$revision:view' },
       select: {
         postId: true,
         content: true,
@@ -266,6 +313,8 @@ builder.prismaObject('PostRevision', {
           }),
         ]);
       },
+
+      unauthorizedResolver: () => createTiptapDocument([]),
     }),
 
     characterCount: t.field({
@@ -366,9 +415,9 @@ const UpdatePostOptionsInput = builder.inputType('UpdatePostOptionsInput', {
     receiveFeedback: t.boolean({ required: false }),
     receivePatronage: t.boolean({ required: false }),
     receiveTagContribution: t.boolean({ required: false }),
-
     contentFilters: t.field({ type: [ContentFilterCategory], required: false }),
     tags: t.stringList({ required: false }),
+    password: t.string({ required: false }),
   }),
 });
 
@@ -408,6 +457,13 @@ const DeletePostReactionInput = builder.inputType('DeletePostReactionInput', {
   fields: (t) => ({
     postId: t.id(),
     emoji: t.string(),
+  }),
+});
+
+const UnlockPasswordedPostInput = builder.inputType('UnlockPasswordedPostInput', {
+  fields: (t) => ({
+    postId: t.id(),
+    password: t.string(),
   }),
 });
 
@@ -657,6 +713,11 @@ builder.mutationFields((t) => ({
         );
       }
 
+      const password = input.password ? await hash(input.password) : undefined;
+      if (password) {
+        await redis.del(`Post:${post.id}:passwordUnlock`);
+      }
+
       return await db.post.update({
         ...query,
         where: { id: post.id },
@@ -668,6 +729,7 @@ builder.mutationFields((t) => ({
               receiveFeedback: input.receiveFeedback ?? undefined,
               receivePatronage: input.receivePatronage ?? undefined,
               receiveTagContribution: input.receiveTagContribution ?? undefined,
+              password,
             },
           },
           contentFilters: {
@@ -883,6 +945,36 @@ builder.mutationFields((t) => ({
       return db.post.findUniqueOrThrow({
         ...query,
         where: { id: input.postId },
+      });
+    },
+  }),
+
+  unlockPasswordedPost: t.prismaField({
+    type: 'Post',
+    args: { input: t.arg({ type: UnlockPasswordedPostInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const post = await db.post.findUniqueOrThrow({
+        select: {
+          id: true,
+          option: {
+            select: { password: true },
+          },
+        },
+        where: { id: input.postId },
+      });
+
+      if (post.option.password) {
+        if (!(await verify(post.option.password, input.password))) {
+          throw new FormValidationError('password', '잘못된 비밀번호에요');
+        }
+
+        await redis.hset(`Post:${post.id}:passwordUnlock`, context.deviceId, dayjs().add(1, 'hour').toISOString());
+        await redis.expire(`Post:${post.id}:passwordUnlock`, dayjs.duration(1, 'hour').seconds());
+      }
+
+      return db.post.findUniqueOrThrow({
+        ...query,
+        where: { id: post.id },
       });
     },
   }),
