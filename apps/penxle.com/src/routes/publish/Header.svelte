@@ -26,6 +26,7 @@
   export let subtitle: string;
   export let content: JSONContent;
   export let editor: Editor | undefined;
+  export let tags: string[] = [];
 
   let postId: string | undefined;
   let hasContentFilter = false;
@@ -426,6 +427,7 @@
         receivePatronage,
         receiveTagContribution,
         visibility,
+        tags,
       });
 
       await goto(`/${resp.space.slug}/${resp.permalink}`);

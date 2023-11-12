@@ -6,7 +6,6 @@
   import { warnOnUnload } from '$lib/svelte/lifecycle';
   import Editor from './Editor.svelte';
   import Header from './Header.svelte';
-  // import Toolbar from './Toolbar.svelte';
   import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
 
   warnOnUnload();
@@ -23,24 +22,26 @@
   let content: JSONContent;
 
   let open = false;
-  let tagList: string[] = [];
+  let tags: string[] = [];
   let value = '';
 </script>
 
 <Helmet title="새 글 작성하기" />
 
-<Header {$query} {content} {editor} {subtitle} {title} />
+<Header {$query} {content} {editor} {subtitle} {tags} {title} />
 
 <main class="flex grow flex-col bg-primary">
   <div class="bg-white flex flex-col grow w-full max-w-262 mx-auto border-x border-secondary">
     <Editor bind:title bind:editor bind:subtitle bind:content />
   </div>
-  <!-- <Toolbar {editor} /> -->
 
-  <div class={clsx('fixed w-full z-10 bottom-0')}>
-    <div class={clsx('flex justify-center', !open && 'fixed w-full bottom-0')}>
+  <div class="max-h-full fixed w-full z-1 bottom-0">
+    <div class="flex flex-col items-center">
       <button
-        class="w-16 h-7.5 rounded-1.5 rounded-b-none flex center bg-white w-16 shadow-[0_-6px_13px_0_rgba(0,0,0,0.15)]"
+        class={clsx(
+          'w-16 h-7.5 rounded-1.5 rounded-b-none flex center bg-white shadow-[0px_-4px_16px_-6px_rgba(0,0,0,0.15)]',
+          !open && 'fixed z-1 bottom-10px',
+        )}
         type="button"
         on:click={() => (open = !open)}
       >
@@ -50,17 +51,17 @@
 
     <div
       class={clsx(
-        'bg-white p-4 sm:px-7.5 flex flex-col center shadow-[0_4px_16px_0_rgba(0,0,0,0.15)]',
-        !open && '-mb-100%',
+        'overflow-y-scroll max-h-80vh bg-white shadow-[0_4px_16px_0px_rgba(0,0,0,0.15)] px-4',
+        !open && 'fixed w-full top-[calc(100vh-10px)]',
       )}
     >
-      <div class="w-full max-w-300 flex items-center gap-4 flex-wrap">
+      <div class="w-full max-w-300 flex items-center gap-4 flex-wrap pt-3 pb-4">
         <span class="body-13-b">게시글 태그</span>
 
-        {#each tagList as tag (tag)}
+        {#each tags as tag (tag)}
           <Tag size="sm">
             {tag}
-            <button class="i-lc-trash" type="button" on:click={() => (tagList = tagList.filter((t) => t !== tag))} />
+            <button class="i-lc-trash" type="button" on:click={() => (tags = tags.filter((t) => t !== tag))} />
           </Tag>
         {/each}
 
@@ -73,12 +74,12 @@
             bind:value
             on:keydown={(e) => {
               if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') {
-                if (tagList.includes(value)) return;
+                if (tags.includes(value)) return;
 
                 if (value.replaceAll(' ', '') === '') return;
 
                 if (e.isComposing === false) {
-                  tagList = [...tagList, value.trimStart().trimEnd()];
+                  tags = [...tags, value.replaceAll(' ', '')];
                   value = '';
                 }
               }
@@ -87,7 +88,7 @@
         </label>
       </div>
 
-      <div class="w-full max-w-300 flex items-center gap-4 flex-wrap bg-primary mt-4 p-4 max-h-100 overflow-y-scroll">
+      <div class="w-full max-w-300 flex items-center gap-4 flex-wrap bg-primary p-4">
         <div class="square-21.25 rounded-2xl border border-primary bg-surface-primary" />
       </div>
     </div>

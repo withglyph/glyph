@@ -33,6 +33,16 @@
         liked
         viewCount
 
+        tags {
+          id
+          pinned
+
+          tag {
+            id
+            name
+          }
+        }
+
         reactions {
           id
           emoji
@@ -268,10 +278,11 @@
     </article>
 
     <div class="flex gap-2 flex-wrap">
-      <Tag size="sm">#일러스트</Tag>
-      <Tag size="sm">#만화</Tag>
-      <Tag size="sm">#소설</Tag>
-      <Tag size="sm">#사이트</Tag>
+      {#each $query.post.tags as { tag } (tag.id)}
+        <Tag size="sm">
+          #{tag.name}
+        </Tag>
+      {/each}
       <Button class="rounded-12! px-4!" color="tertiary" size="sm" variant="outlined">
         <i class="i-lc-plus square-4" />
       </Button>
