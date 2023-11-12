@@ -55,7 +55,9 @@
 
   <div class="flex flex-col center">
     <Logo class="square-100px" />
-    <img class="mt-40px h-50px" alt="" src="/assets/coming-soon.webp" />
+
+    <div class="mt-40px font-extrabold text-xl text-gray-50 tracking-widest">2023. 12. 12.</div>
+    <img class="mt-10px h-50px" alt="" src="/assets/coming-soon.webp" />
     <Slogan class="mt-32px h-25px" />
 
     <form class="mt-64px flex flex-col center gap-2" method="POST" on:submit|preventDefault={handleSubmit}>
