@@ -185,6 +185,7 @@ builder.prismaObject('PostRevision', {
   grantScopes: async ({ id }, { db, ...context }) => {
     const post = await db.post.findFirstOrThrow({
       select: {
+        id: true,
         spaceId: true,
         userId: true,
         option: { select: { password: true } },
@@ -211,7 +212,7 @@ builder.prismaObject('PostRevision', {
         return ['$revision:view'];
       }
 
-      const unlock = await redis.hget(`Post:${id}:passwordUnlock`, context.deviceId);
+      const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
 
       if (unlock && dayjs(unlock).isAfter(dayjs())) {
         return ['$revision:view'];
@@ -981,7 +982,7 @@ builder.mutationFields((t) => ({
         }
 
         await redis.hset(`Post:${post.id}:passwordUnlock`, context.deviceId, dayjs().add(1, 'hour').toISOString());
-        await redis.expire(`Post:${post.id}:passwordUnlock`, dayjs.duration(1, 'hour').seconds());
+        await redis.expire(`Post:${post.id}:passwordUnlock`, 60 * 60);
       }
 
       return db.post.findUniqueOrThrow({
