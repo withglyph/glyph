@@ -36,6 +36,8 @@
   let discloseStats = true;
   let receivePatronage = true;
   let contentFilters: ContentFilterCategory[] = [];
+  let usePassword = false;
+  let password = '';
   let open = false;
 
   $: query = fragment(
@@ -297,8 +299,17 @@
     </fieldset>
 
     <div class="flex gap-6 items-center">
-      <Checkbox class="body-15-sb">비밀글</Checkbox>
-      <input class="bg-surface-primary rounded-xl px-3 py-1 body-15-sb h-10" placeholder="비밀번호 입력" type="text" />
+      <Checkbox class="body-15-sb" checked={usePassword} on:change={() => (usePassword = !usePassword)}>
+        비밀글
+      </Checkbox>
+      {#if usePassword}
+        <input
+          class="bg-surface-primary rounded-xl px-3 py-1 body-15-sb h-10"
+          placeholder="비밀번호 입력"
+          type="text"
+          bind:value={password}
+        />
+      {/if}
     </div>
 
     <p class="text-secondary">종류 선택</p>
@@ -428,6 +439,7 @@
         receiveTagContribution,
         visibility,
         tags,
+        password,
       });
 
       await goto(`/${resp.space.slug}/${resp.permalink}`);

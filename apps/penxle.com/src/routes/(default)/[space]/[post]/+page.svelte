@@ -7,6 +7,7 @@
   import { Avatar, Button, Image, Tag } from '$lib/components';
   import { EmojiPicker } from '$lib/emoji';
   import Emoji from '$lib/emoji/Emoji.svelte';
+  import { FormValidationError } from '$lib/errors';
   import { toast } from '$lib/notification';
   import { portal } from '$lib/svelte/actions';
   import { TiptapRenderer } from '$lib/tiptap/components';
@@ -18,6 +19,7 @@
   let menuEl: HTMLUListElement;
   let loginRequireOpen = false;
   let emojiOpen = false;
+  let password = '';
 
   $: query = graphql(`
     query SpacePostPage_Query($permalink: String!) {
@@ -32,6 +34,12 @@
         likeCount
         liked
         viewCount
+        unlocked
+
+        option {
+          id
+          hasPassword
+        }
 
         tags {
           id
@@ -107,13 +115,13 @@
   }
 
   const updatePostView = graphql(`
-    mutation SpacePostPage_UpdatePostViewMutation($input: UpdatePostViewInput!) {
+    mutation SpacePostPage_UpdatePostView_Mutation($input: UpdatePostViewInput!) {
       updatePostView(input: $input)
     }
   `);
 
   const likePost = graphql(`
-    mutation SpacePostPage_LikePostMutation($input: LikePostInput!) {
+    mutation SpacePostPage_LikePost_Mutation($input: LikePostInput!) {
       likePost(input: $input) {
         id
         liked
@@ -123,7 +131,7 @@
   `);
 
   const unlikePost = graphql(`
-    mutation SpacePostPage_UnlikePostMutation($input: UnlikePostInput!) {
+    mutation SpacePostPage_UnlikePost_Mutation($input: UnlikePostInput!) {
       unlikePost(input: $input) {
         id
         liked
@@ -133,7 +141,7 @@
   `);
 
   const muteSpace = graphql(`
-    mutation SpacePostPage_MuteSpaceMutation($input: MuteSpaceInput!) {
+    mutation SpacePostPage_MuteSpace_Mutation($input: MuteSpaceInput!) {
       muteSpace(input: $input) {
         id
         muted
@@ -142,10 +150,24 @@
   `);
 
   const unmuteSpace = graphql(`
-    mutation SpacePostPage_UnmuteSpaceMutation($input: UnmuteSpaceInput!) {
+    mutation SpacePostPage_UnmuteSpace_Mutation($input: UnmuteSpaceInput!) {
       unmuteSpace(input: $input) {
         id
         muted
+      }
+    }
+  `);
+
+  const unlockPasswordedPost = graphql(`
+    mutation SpacePostPage_UnlockPasswordedPost_Mutation($input: UnlockPasswordedPostInput!) {
+      unlockPasswordedPost(input: $input) {
+        id
+        unlocked
+
+        revision {
+          id
+          content
+        }
       }
     }
   `);
@@ -274,7 +296,39 @@
     </header>
 
     <article>
-      <TiptapRenderer class="bodylong-16-m" content={$query.post.revision.content} />
+      {#if $query.post.option.hasPassword}
+        {#if $query.post.space.meAsMember || $query.post.unlocked}
+          <TiptapRenderer class="bodylong-16-m" content={$query.post.revision.content} />
+        {:else}
+          <form
+            class="space-y-4 w-full flex flex-col center"
+            on:submit={async () => {
+              try {
+                await unlockPasswordedPost({
+                  postId: $query.post.id,
+                  password,
+                });
+              } catch (err) {
+                if (err instanceof FormValidationError) toast.error(err.message);
+              }
+            }}
+          >
+            <p class="body-16-eb">비밀번호를 입력해야하는 포스트에요</p>
+            <input
+              class="body-15-m bg-primary rounded-2.5 h-11.5 w-full max-w-83 px-3.5 py-2"
+              placeholder="포스트 비밀번호 입력"
+              type="password"
+              bind:value={password}
+            />
+            <div class="w-full max-w-42">
+              <Button class="w-full" size="lg" type="submit">포스트 보기</Button>
+              <Button class="w-full text-secondary mt-2.5" size="xs" variant="text">피드로 돌아가기</Button>
+            </div>
+          </form>
+        {/if}
+      {:else}
+        <TiptapRenderer class="bodylong-16-m" content={$query.post.revision.content} />
+      {/if}
     </article>
 
     <div class="flex gap-2 flex-wrap">
