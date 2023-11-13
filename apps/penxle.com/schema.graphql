@@ -248,6 +248,7 @@ type Post {
   shortlink: String!
   space: Space!
   tags: [PostTag!]!
+  unlocked: Boolean!
   viewCount: Int!
 }
 

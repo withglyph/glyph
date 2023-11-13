@@ -148,6 +148,18 @@ builder.prismaObject('Post', {
       },
     }),
 
+    unlocked: t.boolean({
+      select: { option: { select: { password: true } } },
+      resolve: async (post, _, context) => {
+        if (!post.option.password) {
+          return true;
+        }
+
+        const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
+        return !!unlock && dayjs(unlock).isAfter(dayjs());
+      },
+    }),
+
     tags: t.relation('tags'),
   }),
 });
