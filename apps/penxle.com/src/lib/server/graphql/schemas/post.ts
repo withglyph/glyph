@@ -196,7 +196,7 @@ builder.prismaObject('PostRevision', {
 
     if (post.option.password) {
       if (context.session?.userId === post.userId) {
-        return ['revision:view'];
+        return ['$revision:view'];
       }
 
       const meAsMember = await db.spaceMember.exists({
@@ -208,19 +208,19 @@ builder.prismaObject('PostRevision', {
       });
 
       if (meAsMember) {
-        return ['revision:view'];
+        return ['$revision:view'];
       }
 
       const unlock = await redis.hget(`Post:${id}:passwordUnlock`, context.deviceId);
 
       if (unlock && dayjs(unlock).isAfter(dayjs())) {
-        return ['revision:view'];
+        return ['$revision:view'];
       }
 
       return [];
     }
 
-    return ['revision:view'];
+    return ['$revision:view'];
   },
   fields: (t) => ({
     id: t.exposeID('id'),
