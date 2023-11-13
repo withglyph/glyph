@@ -196,14 +196,18 @@ builder.prismaObject('PostRevision', {
     });
 
     if (post.option.password) {
-      if (context.session?.userId === post.userId) {
+      if (!context.session) {
+        return [];
+      }
+
+      if (context.session.userId === post.userId) {
         return ['$revision:view'];
       }
 
       const meAsMember = await db.spaceMember.exists({
         where: {
           spaceId: post.spaceId,
-          userId: context.session?.userId,
+          userId: context.session.userId,
           state: 'ACTIVE',
         },
       });
