@@ -5,7 +5,6 @@
   import { onMount, tick } from 'svelte';
   import { afterNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
-  import { portal } from '$lib/svelte/actions';
   import LoginRequireModal from '../../routes/(default)/LoginRequireModal.svelte';
   import i18n from './i18n.json';
   import { emojiData as data } from './index';
@@ -22,6 +21,7 @@
 
   let _query: EmojiPicker_query;
   export { _query as $query };
+  export let variant: 'post' | 'toolbar' = 'post';
 
   $: query = fragment(
     _query,
@@ -107,6 +107,7 @@
       exceptEmojis,
       perLine: 8,
       maxFrequentRows: 3,
+      onClickOutside: () => (open = false),
     });
 
     pickerEl.append(picker);
@@ -121,24 +122,30 @@
   });
 </script>
 
-<button
-  bind:this={targetEl}
-  class="square-6 rounded-lg border border-secondary hover:border-primary flex center p-0.5"
-  type="button"
-  on:click={() => (open = true)}
->
-  <i class="i-lc-plus square-3.5" />
-</button>
-
-{#if open}
-  <div
-    class="fixed inset-0 z-49"
-    role="button"
-    tabindex="-1"
-    on:click={() => (open = false)}
-    on:keypress={null}
-    use:portal
-  />
+{#if variant === 'post'}
+  <button
+    bind:this={targetEl}
+    class="square-6 rounded-lg border border-secondary hover:border-primary flex center p-0.5"
+    type="button"
+    on:click={(e) => {
+      e.stopPropagation();
+      open = true;
+    }}
+  >
+    <i class="i-lc-plus square-3.5" />
+  </button>
+{:else}
+  <button
+    bind:this={targetEl}
+    class="square-5 hover:border-primary flex center p-0.5"
+    type="button"
+    on:click={(e) => {
+      e.stopPropagation();
+      open = true;
+    }}
+  >
+    <i class="i-px-happy text-icon-tertiary square-4" />
+  </button>
 {/if}
 
 <div bind:this={pickerEl} class={clsx('z-50 absolute h-100', !open && 'hidden')} />

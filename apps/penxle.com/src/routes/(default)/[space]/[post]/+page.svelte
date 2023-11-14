@@ -13,6 +13,7 @@
   import { TiptapRenderer } from '$lib/tiptap/components';
   import { humanizeNumber } from '$lib/utils';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
+  import Toolbar from './Toolbar.svelte';
 
   let open = false;
   let targetEl: HTMLButtonElement;
@@ -93,6 +94,7 @@
       }
 
       ...EmojiPicker_query
+      ...Toolbar_query
     }
   `);
 
@@ -411,3 +413,4 @@
 </article>
 
 <LoginRequireModal bind:open={loginRequireOpen} />
+<Toolbar {$query} {handleShare} />
