@@ -10,7 +10,7 @@
   import { focused, hover } from '$lib/svelte/actions';
   import { TiptapBubbleMenu, TiptapEditor, TiptapFloatingMenu } from '$lib/tiptap/components';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
-  import { alignments, colors, fonts, getLabelFromCurrentNode, heading, heights, spacing, texts } from './formats';
+  import { alignments, colors, fonts, getLabelFromCurrentNode, heading, heights, hr, spacing, texts } from './formats';
   import type { Editor, JSONContent } from '@tiptap/core';
 
   export let title: string;
@@ -49,7 +49,8 @@
     open = false;
   }
 
-  const menuOffset = 32;
+  const bubbleMenuOffset = 32;
+  const floatingMenuOffset = 16;
 
   $: currentNode = editor?.state.selection.$head.parent;
   $: currentTextLabel = `${currentNode?.type.name === heading ? '제목' : '본문'} ${currentNode?.attrs.level ?? 1}`;
@@ -142,7 +143,7 @@
     >
       <Menu
         class="flex items-center gap-0.25rem p-(x-0.5rem y-0.75rem) hover:(bg-primary rounded-lg)"
-        offset={menuOffset}
+        offset={bubbleMenuOffset}
         placement="bottom-start"
       >
         <svelte:fragment slot="value">
@@ -178,7 +179,7 @@
 
       <Menu
         class="flex items-center gap-0.25rem body-14-m p-(x-0.5rem y-0.25rem) hover:(bg-primary rounded-lg)"
-        offset={menuOffset}
+        offset={bubbleMenuOffset}
         placement="bottom-start"
       >
         <svelte:fragment slot="value">
@@ -207,7 +208,7 @@
 
       <Menu
         class="flex justify-between items-center gap-0.25rem body-14-m hover:(bg-primary rounded-lg) min-w-6rem h-full"
-        offset={menuOffset}
+        offset={bubbleMenuOffset}
         placement="bottom-start"
       >
         <svelte:fragment slot="value">
@@ -266,7 +267,7 @@
       <Menu
         class="hover:(bg-primary rounded-lg) hover:(bg-primary rounded-lg)"
         alignment="horizontal"
-        offset={menuOffset}
+        offset={bubbleMenuOffset}
         placement="bottom-start"
       >
         <div slot="value" class="flex items-center gap-0.25rem body-14-m p-xs">
@@ -291,7 +292,7 @@
 
       <Menu
         class="flex items-center p-xs hover:(bg-primary rounded-lg) h-full"
-        offset={menuOffset}
+        offset={bubbleMenuOffset}
         placement="bottom-start"
       >
         <svelte:fragment slot="value">
@@ -319,7 +320,7 @@
 
       <Menu
         class="flex items-center p-xs hover:(bg-primary rounded-lg) h-full"
-        offset={menuOffset}
+        offset={bubbleMenuOffset}
         placement="bottom-start"
       >
         <svelte:fragment slot="value">
@@ -358,12 +359,28 @@
           </span>
           결제선 추가
         </MenuItem>
-        <MenuItem class="flex gap-2.5 items-center">
-          <span class="p-1 border border-alphagray-15 rounded-lg flex center">
-            <i class="i-lc-minus square-5" />
-          </span>
-          구분선 추가
-        </MenuItem>
+        <Menu
+          class="flex px-4 py-3 justify-between items-center  gap-2.5 body-14-m hover:(bg-primary rounded-lg) min-w-6rem h-full"
+          offset={floatingMenuOffset}
+          placement="right-start"
+        >
+          <svelte:fragment slot="value">
+            <span class="p-1 border border-alphagray-15 rounded-lg flex center">
+              <i class="i-lc-minus square-5" />
+            </span>
+            구분선 추가
+          </svelte:fragment>
+          {#each hr as kind (kind)}
+            <MenuItem
+              class="flex center gap-2 w-900px"
+              on:click={() => {
+                editor.chain().focus().setHorizontalRule(kind).run();
+              }}
+            >
+              <hr class="w-11rem divider" aria-label={`${kind} 번째 구분선`} data-kind={kind} />
+            </MenuItem>
+          {/each}
+        </Menu>
         <MenuItem class="flex gap-2.5 items-center">
           <span class="p-1 border border-alphagray-15 rounded-lg flex center">
             <i class="i-lc-quote square-5" />
@@ -394,3 +411,38 @@
 {:else}
   <div class="mx-auto w-full max-w-230 grow bg-primary" />
 {/if}
+
+<style>
+  .divider {
+    --uno: bg-no-repeat border-none bg-center;
+
+    &[data-kind='1'] {
+      --uno: bg-gradient-to-r from-([currentColor] 50%) to-(transparent 50%) h-0.0625rem bg-repeat;
+      background-size: 16px 1px;
+    }
+
+    &[data-kind='2'] {
+      --uno: border-(solid [currentColor] 1px);
+    }
+
+    &[data-kind='3'] {
+      --uno: border-(solid [currentColor] 1px) w-7.5rem;
+    }
+
+    &[data-kind='4'] {
+      --uno: bg-[url(/horizontal-rules/4.svg)] h-1.8rem;
+    }
+
+    &[data-kind='5'] {
+      --uno: bg-[url(/horizontal-rules/5.svg)] h-0.875rem;
+    }
+
+    &[data-kind='6'] {
+      --uno: bg-[url(/horizontal-rules/6.svg)] h-0.91027rem;
+    }
+
+    &[data-kind='7'] {
+      --uno: bg-[url(/horizontal-rules/7.svg)] h-1.25rem;
+    }
+  }
+</style>

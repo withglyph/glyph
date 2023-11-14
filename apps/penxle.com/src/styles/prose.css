@@ -24,6 +24,39 @@
     --uno: subtitle-18-b my-4;
   }
 
+  & hr {
+    --uno: bg-no-repeat border-none bg-center m-y-xs;
+  }
+
+  & hr[data-kind='1'] {
+    --uno: bg-gradient-to-r from-([currentColor] 50%) to-(transparent 50%) h-0.0625rem bg-repeat;
+    background-size: 16px 1px;
+  }
+
+  & hr[data-kind='2'] {
+    --uno: border-(solid color-text-primary 1px);
+  }
+
+  & hr[data-kind='3'] {
+    --uno: border-(solid color-text-primary 1px) w-7.5rem;
+  }
+
+  & hr[data-kind='4'] {
+    --uno: bg-[url(/horizontal-rules/4.svg)] h-1.8rem;
+  }
+
+  & hr[data-kind='5'] {
+    --uno: bg-[url(/horizontal-rules/5.svg)] h-0.875rem;
+  }
+
+  & hr[data-kind='6'] {
+    --uno: bg-[url(/horizontal-rules/6.svg)] h-0.91027rem;
+  }
+
+  & hr[data-kind='7'] {
+    --uno: bg-[url(/horizontal-rules/7.svg)] h-1.25rem;
+  }
+
   /*
    * marks
   */

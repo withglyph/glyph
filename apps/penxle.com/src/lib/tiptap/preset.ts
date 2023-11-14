@@ -10,7 +10,7 @@ import {
 } from '$lib/tiptap/extensions';
 import { Bold, Italic, Strike, TextColor, Underline } from '$lib/tiptap/marks';
 import { AccessBarrier, File, Image } from '$lib/tiptap/node-views';
-import { Document, HardBreak, Heading, Paragraph, Text } from '$lib/tiptap/nodes';
+import { Document, HardBreak, Heading, HorizontalRule, Paragraph, Text } from '$lib/tiptap/nodes';
 
 export const extensions = [
   // special nodes
@@ -21,6 +21,7 @@ export const extensions = [
   HardBreak,
   Heading,
   Paragraph,
+  HorizontalRule,
 
   // marks
   Bold,
