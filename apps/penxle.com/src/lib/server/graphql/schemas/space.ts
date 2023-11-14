@@ -341,17 +341,37 @@ builder.queryFields((t) => ({
   space: t.prismaField({
     type: 'Space',
     args: { slug: t.arg.string() },
-    resolve: async (query, _, args, { db }) => {
+    resolve: async (query, _, args, { db, ...context }) => {
       const space = await db.space.findFirst({
-        ...query,
         where: { slug: args.slug, state: 'ACTIVE' },
       });
 
-      if (space) {
-        return space;
-      } else {
+      if (!space) {
         throw new NotFoundError();
       }
+
+      if (space.visibility === 'PRIVATE') {
+        if (!context.session) {
+          throw new PermissionDeniedError();
+        }
+
+        const isMember = await db.spaceMember.exists({
+          where: {
+            spaceId: space.id,
+            userId: context.session.userId,
+            state: 'ACTIVE',
+          },
+        });
+
+        if (!isMember) {
+          throw new PermissionDeniedError();
+        }
+      }
+
+      return db.space.findUniqueOrThrow({
+        ...query,
+        where: { id: space.id },
+      });
     },
   }),
 }));
