@@ -22,6 +22,7 @@ export const collectDocuments = async (context: GlitchContext) => {
       context.schema = graphql.parse(schemaSource);
       context.state.schemaHash = schemaHash;
     } catch (err) {
+      console.error(`💥 GraphQL schema error`);
       if (err instanceof Error) {
         console.error(`💥 ${err.message}`);
       } else {
@@ -64,6 +65,7 @@ export const collectDocuments = async (context: GlitchContext) => {
     try {
       documentNode = graphql.parse(source.source);
     } catch (err) {
+      console.error(`💥 GraphQL document error: ${source.filePath}`);
       if (err instanceof Error) {
         console.error(`💥 ${err.message}`);
       } else {

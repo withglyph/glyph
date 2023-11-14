@@ -453,6 +453,9 @@ importers:
       '@types/node':
         specifier: ^20.9.0
         version: 20.9.0
+      '@types/numeral':
+        specifier: ^2.0.5
+        version: 2.0.5
       '@types/randomcolor':
         specifier: ^0.5.9
         version: 0.5.9
@@ -522,9 +525,15 @@ importers:
       mixpanel-browser:
         specifier: ^2.47.0
         version: 2.47.0
+      mrmime:
+        specifier: ^1.0.1
+        version: 1.0.1
       nanoid:
         specifier: ^5.0.3
         version: 5.0.3
+      numeral:
+        specifier: ^2.0.6
+        version: 2.0.6
       object-traversal:
         specifier: ^1.0.1
         version: 1.0.1
@@ -5691,6 +5700,10 @@ packages:
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
     dev: false
 
+  /@types/numeral@2.0.5:
+    resolution: {integrity: sha512-kH8I7OSSwQu9DS9JYdFWbuvhVzvFRoCPCkGxNwoGgaPeDfEPJlcxNvEOypZhQ3XXHsGbfIuYcxcJxKUfJHnRfw==}
+    dev: true
+
   /@types/object.omit@3.0.3:
     resolution: {integrity: sha512-xrq4bQTBGYY2cw+gV4PzoG2Lv3L0pjZ1uXStRRDQoATOYW1lCsFQHhQ+OkPhIcQoqLjAq7gYif7D14Qaa6Zbew==}
     dev: true
@@ -10732,6 +10745,10 @@ packages:
   /nullthrows@1.1.1:
     resolution: {integrity: sha512-2vPPEi+Z7WqML2jZYddDIfy5Dqb0r2fze2zTxNNknZaFpVHU3mFB3R+DWeJWGVx0ecvttSGlJTI+WG+8Z4cDWw==}
     dev: false
+
+  /numeral@2.0.6:
+    resolution: {integrity: sha512-qaKRmtYPZ5qdw4jWJD6bxEf1FJEqllJrwxCLIm0sQU/A7v2/czigzOb+C2uSiFsa9lBUzeH7M1oK+Q+OLxL3kA==}
+    dev: true
 
   /object-assign@4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}

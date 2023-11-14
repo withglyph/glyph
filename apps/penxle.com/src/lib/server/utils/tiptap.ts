@@ -54,6 +54,31 @@ export const decorateContent = async (
         },
       };
     }
+
+    if (parent && key === 'type' && value === 'file') {
+      if (!parent.attrs.id) {
+        return;
+      }
+
+      const file = await db.file.findUnique({
+        where: { id: parent.attrs.id },
+        select: { id: true, name: true, size: true, path: true },
+      });
+
+      if (!file) {
+        return;
+      }
+
+      parent.attrs = {
+        ...parent.attrs,
+        __data: {
+          id: file.id,
+          name: file.name,
+          size: file.size,
+          url: `https://pnxl.net/${file.path}`,
+        },
+      };
+    }
   });
 
   return content;

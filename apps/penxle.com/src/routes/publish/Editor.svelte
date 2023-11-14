@@ -73,6 +73,23 @@
 
     picker.showPicker();
   };
+
+  const handleInsertFile = () => {
+    const picker = document.createElement('input');
+    picker.type = 'file';
+
+    picker.addEventListener('change', async () => {
+      const file = picker.files?.[0];
+
+      if (!file) {
+        return;
+      }
+
+      editor.chain().focus().setFile(file).run();
+    });
+
+    picker.showPicker();
+  };
 </script>
 
 <div class="pt-17" use:hover={hovered}>
@@ -398,7 +415,7 @@
           </span>
           이미지 업로드
         </MenuItem>
-        <MenuItem class="flex gap-2.5 items-center">
+        <MenuItem class="flex gap-2.5 items-center" on:click={handleInsertFile}>
           <span class="p-1 border border-alphagray-15 rounded-lg flex center">
             <i class="i-lc-paperclip square-5" />
           </span>

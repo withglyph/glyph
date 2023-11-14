@@ -77,6 +77,18 @@ input DeleteSpaceProfileInput {
   spaceId: ID!
 }
 
+type File {
+  id: ID!
+  name: String!
+  size: Int!
+  url: String!
+}
+
+input FinalizeFileUploadInput {
+  key: String!
+  name: String!
+}
+
 input FinalizeImageUploadInput {
   bounds: JSON
   key: String!
@@ -149,6 +161,7 @@ type Mutation {
   deletePostReaction(input: DeletePostReactionInput!): Post!
   deleteSpace(input: DeleteSpaceInput!): Space!
   deleteSpaceProfile(input: DeleteSpaceProfileInput!): SpaceMember!
+  finalizeFileUpload(input: FinalizeFileUploadInput!): File!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   followSpace(input: FollowSpaceInput!): Space!
   ignoreSpaceMemberInvitation(input: IgnoreSpaceMemberInvitationInput!): SpaceMemberInvitation!
@@ -160,6 +173,7 @@ type Mutation {
   logoutUser: Void
   muteSpace(input: MuteSpaceInput!): Space!
   muteTag(input: MuteTagInput!): Tag!
+  prepareFileUpload: PrepareFileUploadResult!
   prepareImageUpload: PrepareImageUploadResult!
   purchasePoint(input: PurchasePointInput!): PointPurchase!
   purchasePost(input: PurchasePostInput!): Post!
@@ -315,6 +329,11 @@ enum PostVisibility {
   PUBLIC
   SPACE
   UNLISTED
+}
+
+type PrepareFileUploadResult {
+  key: String!
+  presignedUrl: String!
 }
 
 type PrepareImageUploadResult {

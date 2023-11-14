@@ -13,6 +13,19 @@ generator prisma {
   provider = "prisma-client-js"
 }
 
+model File {
+  id        String   @id
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  name      String
+  format    String
+  size      Int
+  path      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("files")
+}
+
 model Image {
   id          String   @id
   userId      String?  @map("user_id")
@@ -33,7 +46,6 @@ model Image {
   postRevisionsUsingThisAsImage     PostRevisionImage[]
   postRevisionsUsingThisAsThumbnail PostRevisionThumbnail[]
 
-  @@index([id, path, color])
   @@map("images")
 }
 
@@ -479,6 +491,7 @@ model User {
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
   emailVerifications       UserEmailVerification[]
+  uploadedFiles            File[]
   uploadedImages           Image[]
   spaceBlockedBy           SpaceUserBlock[]
   spaceMasquerades         SpaceMasquerade[]

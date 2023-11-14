@@ -1,4 +1,5 @@
 import './enums';
+import './file';
 import './image';
 import './internal';
 import './playground';
