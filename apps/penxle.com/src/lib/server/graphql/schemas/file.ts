@@ -1,6 +1,6 @@
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import mrmime from 'mrmime';
+import * as mrmime from 'mrmime';
 import { aws } from '$lib/server/external-api';
 import { createId } from '$lib/utils';
 import { builder } from '../builder';
