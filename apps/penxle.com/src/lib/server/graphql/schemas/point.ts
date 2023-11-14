@@ -75,13 +75,13 @@ builder.mutationFields((t) => ({
 
       // spell-checker:disable
       const pgData = match(input.paymentMethod)
-        .with('CREDIT_CARD', () => ({ pg: 'tosspayments.im_penslkokn0', pay_method: 'card' }))
-        .with('BANK_ACCOUNT', () => ({ pg: 'tosspayments.im_penslkokn0', pay_method: 'trans' }))
-        .with('VIRTUAL_BANK_ACCOUNT', () => ({ pg: 'tosspayments.im_penslkokn0', pay_method: 'vbank' }))
-        .with('PHONE_BILL', () => ({ pg: 'tosspayments.im_penslkokn0', pay_method: 'phone' }))
-        .with('GIFTCARD_CULTURELAND', () => ({ pg: 'tosspayments.im_penslkokn0', pay_method: 'cultureland' }))
-        .with('GIFTCARD_HAPPYMONEY', () => ({ pg: 'tosspayments.im_penslkokn0', pay_method: 'happymoney' }))
-        .with('TOSS_PAY', () => ({ pg: 'tosspayments.im_penslkokn0', pay_method: 'tosspay' }))
+        .with('CREDIT_CARD', () => ({ pg: 'tosspayments', pay_method: 'card' }))
+        .with('BANK_ACCOUNT', () => ({ pg: 'tosspayments', pay_method: 'trans' }))
+        .with('VIRTUAL_BANK_ACCOUNT', () => ({ pg: 'tosspayments', pay_method: 'vbank' }))
+        .with('PHONE_BILL', () => ({ pg: 'tosspayments', pay_method: 'phone' }))
+        .with('GIFTCARD_CULTURELAND', () => ({ pg: 'tosspayments', pay_method: 'cultureland' }))
+        .with('GIFTCARD_HAPPYMONEY', () => ({ pg: 'tosspayments', pay_method: 'happymoney' }))
+        .with('TOSS_PAY', () => ({ pg: 'tosspayments', pay_method: 'tosspay' }))
         .with('PAYPAL', () => ({ pg: 'paypal_v2', pay_method: 'paypal' }))
         .exhaustive();
       // spell-checker:enable
