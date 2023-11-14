@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/sveltekit';
-import { error, json } from 'itty-router';
+import { error } from 'itty-router';
 import { createContext } from '../context';
 import { createRouter } from './router';
 import { email, healthz, payment, shortlink, sso } from './routes';
@@ -16,7 +16,7 @@ export const handler = async (event: RequestEvent) => {
     const response = await router.handle(event.request, context);
 
     await context.$commit();
-    return json(response);
+    return response;
   } catch (err) {
     if (context) {
       await context.$rollback();
