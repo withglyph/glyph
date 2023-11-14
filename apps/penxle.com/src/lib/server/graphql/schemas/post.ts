@@ -196,24 +196,22 @@ builder.prismaObject('PostRevision', {
     });
 
     if (post.option.password) {
-      if (!context.session) {
-        return [];
-      }
+      if (context.session) {
+        if (context.session.userId === post.userId) {
+          return ['$revision:view'];
+        }
 
-      if (context.session.userId === post.userId) {
-        return ['$revision:view'];
-      }
+        const meAsMember = await db.spaceMember.exists({
+          where: {
+            spaceId: post.spaceId,
+            userId: context.session.userId,
+            state: 'ACTIVE',
+          },
+        });
 
-      const meAsMember = await db.spaceMember.exists({
-        where: {
-          spaceId: post.spaceId,
-          userId: context.session.userId,
-          state: 'ACTIVE',
-        },
-      });
-
-      if (meAsMember) {
-        return ['$revision:view'];
+        if (meAsMember) {
+          return ['$revision:view'];
+        }
       }
 
       const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
