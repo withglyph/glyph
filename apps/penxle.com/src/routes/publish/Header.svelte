@@ -4,7 +4,7 @@
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
-  import { Button, Image, Modal, ToggleButton } from '$lib/components';
+  import { Button, Image, Modal, ToggleButton, Tooltip } from '$lib/components';
   import { Logo } from '$lib/components/branding';
   import { Checkbox } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
@@ -265,7 +265,7 @@
     <fieldset class="flex gap-6">
       <div class="flex gap-1.5">
         <input
-          name="public"
+          id="public"
           class="square-6"
           checked={visibility === 'PUBLIC'}
           type="radio"
@@ -276,7 +276,7 @@
       </div>
       <div class="flex gap-1.5">
         <input
-          name="space"
+          id="space"
           class="square-6"
           checked={visibility === 'SPACE'}
           type="radio"
@@ -287,7 +287,7 @@
       </div>
       <div class="flex gap-1.5">
         <input
-          name="unlisted"
+          id="unlisted"
           class="square-6"
           checked={visibility === 'UNLISTED'}
           type="radio"
@@ -318,17 +318,24 @@
       <Checkbox class="body-15-sb" checked={hasContentFilter} on:change={() => (hasContentFilter = !hasContentFilter)}>
         트리거 워닝
       </Checkbox>
-      <Checkbox class="body-15-sb" on:change={(e) => checkContentFilter(e, 'ADULT')}>성인물</Checkbox>
+      <div class="flex items-center gap-1">
+        <Checkbox class="body-15-sb" on:change={(e) => checkContentFilter(e, 'ADULT')}>성인물</Checkbox>
+        <Tooltip message="성인 인증을 한 유저에게만 노출돼요" placement="top">
+          <i class="i-lc-help-circle square-4 text-secondary" />
+        </Tooltip>
+      </div>
     </div>
 
     {#if hasContentFilter}
-      <div class="grid grid-cols-4 gap-2">
+      <div class="grid grid-cols-5 gap-2">
         <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'VIOLENCE')}>폭력성</ToggleButton>
+        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'GROSSNESS')}>벌레/징그러움</ToggleButton>
         <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'CRUELTY')}>잔인성</ToggleButton>
         <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'HORROR')}>공포성</ToggleButton>
         <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'GAMBLING')}>사행성</ToggleButton>
         <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'CRIME')}>약물/범죄</ToggleButton>
-        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'PHOBIA')}>정신질환</ToggleButton>
+        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'PHOBIA')}>정신질환/공포증</ToggleButton>
+        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'TRAUMA')}>PTSD/트라우마</ToggleButton>
         <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'INSULT')}>부적절한 언어</ToggleButton>
         <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'OTHER')}>기타</ToggleButton>
       </div>
@@ -337,11 +344,16 @@
     <p class="text-secondary">세부 설정</p>
 
     <fieldset class="body-16-b flex gap-6">
-      <span>게시물 태그 수정 및 등록</span>
+      <div class="flex items-center gap-1">
+        <span>게시물 태그 수정 및 등록</span>
+        <Tooltip message="독자들이 포스트의 태그를 등록하게할지 설정해요" placement="top">
+          <i class="i-lc-help-circle square-4 text-secondary" />
+        </Tooltip>
+      </div>
 
       <div class="flex gap-1.5">
         <input
-          name="allowTagContribution"
+          id="allowTagContribution"
           class="square-6"
           checked={receiveTagContribution}
           type="radio"
@@ -352,7 +364,7 @@
       </div>
       <div class="flex gap-1.5">
         <input
-          name="notAllowTagContribution"
+          id="notAllowTagContribution"
           class="square-6"
           checked={!receiveTagContribution}
           type="radio"
@@ -364,11 +376,16 @@
     </fieldset>
 
     <div class="body-16-b flex gap-6">
-      <span>게시글 피드백</span>
+      <div class="flex items-center gap-1">
+        <span>게시글 피드백</span>
+        <Tooltip message="오래 머문 구간 표시, 가장 많은 밑줄을 친 구간" placement="top">
+          <i class="i-lc-help-circle square-4 text-secondary" />
+        </Tooltip>
+      </div>
 
       <div class="flex gap-1.5">
         <input
-          name="receiveFeedback"
+          id="receiveFeedback"
           class="square-6"
           checked={receiveFeedback}
           type="radio"
@@ -378,7 +395,7 @@
       </div>
       <div class="flex gap-1.5">
         <input
-          name="notReceiveFeedback"
+          id="notReceiveFeedback"
           class="square-6"
           checked={!receiveFeedback}
           type="radio"
@@ -389,11 +406,16 @@
     </div>
 
     <div class="body-16-b flex gap-6">
-      <span>게시글 세부 통계 공개</span>
+      <div class="flex items-center gap-1">
+        <span>게시글 세부 통계 공개</span>
+        <Tooltip message="조회수, 좋아요 등의 공개 여부를 설정해요" placement="top">
+          <i class="i-lc-help-circle square-4 text-secondary" />
+        </Tooltip>
+      </div>
 
       <div class="flex gap-1.5">
         <input
-          name="discloseStats"
+          id="discloseStats"
           class="square-6"
           checked={discloseStats}
           type="radio"
@@ -403,7 +425,7 @@
       </div>
       <div class="flex gap-1.5">
         <input
-          name="notDiscloseStats"
+          id="notDiscloseStats"
           class="square-6"
           checked={!discloseStats}
           type="radio"
@@ -419,7 +441,7 @@
       <Checkbox class="body-15-sb" checked={!receivePatronage} on:change={() => (receivePatronage = !receivePatronage)}>
         후원 받지 않기
       </Checkbox>
-      <Checkbox class="body-15-sb">알림 받지 않기</Checkbox>
+      <!-- <Checkbox class="body-15-sb">알림 받지 않기</Checkbox> -->
     </div>
   </div>
 
