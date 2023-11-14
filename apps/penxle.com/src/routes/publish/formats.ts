@@ -1,7 +1,7 @@
 import { Heading, Paragraph } from '$lib/tiptap/nodes';
 import type { FontFamily } from '@penxle/lib/unocss';
 import type { Node } from '@tiptap/pm/model';
-import type { Spacing } from '$lib/tiptap/extensions';
+import type { Alignment, Spacing } from '$lib/tiptap/extensions';
 import type { Height } from '$lib/tiptap/extensions/line-height';
 
 export const colors = [
@@ -83,6 +83,13 @@ export const spacing: { label: string; value: Spacing }[] = [
   { label: spacingToLocaleString.wide, value: 'wide' },
   { label: spacingToLocaleString.wider, value: 'wider' },
   { label: spacingToLocaleString.widest, value: 'widest' },
+];
+
+export const alignments: { label: string; value: Alignment; class: string }[] = [
+  { label: '왼쪽', value: 'left', class: 'i-lc-align-left' },
+  { label: '중앙', value: 'center', class: 'i-lc-align-center' },
+  { label: '오른쪽', value: 'right', class: 'i-lc-align-right' },
+  { label: '양쪽', value: 'justify', class: 'i-lc-align-justify' },
 ];
 
 export function getLabelFromCurrentNode(currentNode: Node) {

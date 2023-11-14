@@ -16,6 +16,8 @@
   export { _offset as offset };
   export let placement: Placement = 'bottom-end';
 
+  export let alignment: 'horizontal' | 'vertical' = 'vertical';
+
   setContext('close', () => (open = false));
 
   const update = async () => {
@@ -57,7 +59,10 @@
 
   <div
     bind:this={menuEl}
-    class="absolute z-52 bg-cardprimary rounded-lg py-2 px-1 space-y-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.15)]"
+    class={clsx('absolute z-52 bg-cardprimary rounded-lg px-1 space-y-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.15)] flex', {
+      'flex-col py-2': alignment === 'vertical',
+      'flex-row py-1': alignment === 'horizontal',
+    })}
     use:portal
   >
     <slot />

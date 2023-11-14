@@ -1,6 +1,6 @@
 import { Extension } from '@tiptap/core';
 
-type Alignment = 'left' | 'center' | 'right' | 'justify';
+export type Alignment = 'left' | 'center' | 'right' | 'justify';
 
 declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

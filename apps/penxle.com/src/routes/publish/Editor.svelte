@@ -10,7 +10,7 @@
   import { focused, hover } from '$lib/svelte/actions';
   import { TiptapBubbleMenu, TiptapEditor, TiptapFloatingMenu } from '$lib/tiptap/components';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
-  import { colors, fonts, getLabelFromCurrentNode, heading, heights, spacing, texts } from './formats';
+  import { alignments, colors, fonts, getLabelFromCurrentNode, heading, heights, spacing, texts } from './formats';
   import type { Editor, JSONContent } from '@tiptap/core';
 
   export let title: string;
@@ -265,6 +265,7 @@
 
       <Menu
         class="hover:(bg-primary rounded-lg) hover:(bg-primary rounded-lg)"
+        alignment="horizontal"
         offset={menuOffset}
         placement="bottom-start"
       >
@@ -272,50 +273,16 @@
           <i class="i-lc-align-left square-1rem" />
         </div>
 
-        <div class="flex w-full rounded-lg">
+        {#each alignments as alignment (alignment.value)}
           <button
-            class="flex center hover:(bg-primary text-primary)"
+            class="flex center m-none! p-xs hover:(bg-primary) aria-pressed:text-blue-50"
+            aria-pressed={editor.isActive({ 'text-align': alignment.value })}
             type="button"
-            on:click={() => editor.chain().focus().setTextAlign('left').run()}
+            on:click={() => editor.chain().focus().setTextAlign(alignment.value).run()}
           >
-            <i
-              class={clsx('i-lc-align-left square-1rem', editor.isActive({ 'text-align': 'left' }) && 'text-blue-50')}
-            />
+            <i class={clsx(alignment.class, 'square-1rem')} />
           </button>
-          <button
-            class="flex center hover:(bg-primary text-primary)"
-            type="button"
-            on:click={() => editor.chain().focus().setTextAlign('center').run()}
-          >
-            <i
-              class={clsx(
-                'i-lc-align-center square-1rem',
-                editor.isActive({ 'text-align': 'center' }) && 'text-blue-50',
-              )}
-            />
-          </button>
-          <button
-            class="flex center hover:(bg-primary text-primary)"
-            type="button"
-            on:click={() => editor.chain().focus().setTextAlign('right').run()}
-          >
-            <i
-              class={clsx('i-lc-align-right square-1rem', editor.isActive({ 'text-align': 'right' }) && 'text-blue-50')}
-            />
-          </button>
-          <button
-            class="flex center hover:(bg-primary text-primary)"
-            type="button"
-            on:click={() => editor.chain().focus().setTextAlign('justify').run()}
-          >
-            <i
-              class={clsx(
-                'i-lc-align-justify square-1rem',
-                editor.isActive({ 'text-align': 'justify' }) && 'text-blue-50',
-              )}
-            />
-          </button>
-        </div>
+        {/each}
       </Menu>
 
       <button class="flex items-center gap-2 body-14-m p-xs hover:(bg-primary rounded-lg)" type="button">
