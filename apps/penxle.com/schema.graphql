@@ -513,6 +513,7 @@ input UpdateSpaceInput {
   description: String
   externalLinks: [String!]!
   iconId: ID!
+  isPublic: Boolean
   name: String!
   slug: String!
   spaceId: ID!
