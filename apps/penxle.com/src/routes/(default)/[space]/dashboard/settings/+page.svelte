@@ -146,8 +146,8 @@
   <h2>스페이스 설정</h2>
 </div>
 
-<div class="<sm:(px-4 py-6 max-w-218 bg-white border border-secondary rounded-xl)">
-  <form class="sm:(px-4 py-6 max-w-218 bg-white border border-secondary rounded-xl) sm:px-6" use:form>
+<div class="<sm:(px-4 py-6 bg-white border border-secondary rounded-xl) max-w-218">
+  <form class="sm:(p-6 max-w-218 bg-white border border-secondary rounded-xl) sm:px-6" use:form>
     <input name="spaceId" type="hidden" value={$query.space.id} />
 
     <div class="space-y-3">
