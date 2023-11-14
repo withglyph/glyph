@@ -13,7 +13,6 @@
 
   export let node: NodeViewProps['node'];
   export let deleteNode: NodeViewProps['deleteNode'] | undefined;
-  export let updateAttributes: NodeViewProps['updateAttributes'] | undefined;
   export let editor: NodeViewProps['editor'] | undefined;
 
   $: data = node.attrs.data;
@@ -72,7 +71,6 @@
         on:click={() => {
           open = false;
           setTimeout(() => {
-            updateAttributes?.({ deleting: true });
             deleteNode?.();
           }, 150);
         }}
