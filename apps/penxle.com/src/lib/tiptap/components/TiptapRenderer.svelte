@@ -1,16 +1,18 @@
 <script lang="ts">
   import { Editor } from '@tiptap/core';
   import { generateHTML } from '@tiptap/html';
+  import clsx from 'clsx';
   import { onMount } from 'svelte';
   import { extensions } from '$lib/tiptap';
   import type { JSONContent } from '@tiptap/core';
+  import type { HTMLAttributes } from 'svelte/elements';
 
-  let _class: string;
-  export { _class as class };
   export let content: JSONContent;
   export let editor: Editor | undefined = undefined;
 
   let element: HTMLElement;
+
+  type $$Props = HTMLAttributes<HTMLDivElement> & { content: JSONContent; editor?: Editor | undefined };
 
   $: html = generateHTML(content, extensions);
   $: editor?.commands.setContent(content);
@@ -25,6 +27,9 @@
       content,
       extensions,
       injectCSS: false,
+      editorProps: {
+        attributes: { class: $$props.class ?? '' },
+      },
     });
 
     return () => {
@@ -33,12 +38,8 @@
   });
 </script>
 
-<div class={_class}>
-  {#if editor}
-    <div bind:this={element} />
-  {:else}
-    <div class="ProseMirror">
-      {@html html}
-    </div>
+<div bind:this={element} class={clsx(...(editor ? [] : ['ProseMirror', $$props.class]))} {...$$restProps}>
+  {#if !editor}
+    {@html html}
   {/if}
 </div>
