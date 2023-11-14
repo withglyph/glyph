@@ -13,3 +13,9 @@
     stroke-dashoffset: -124px;
   }
 }
+
+@keyframes cursor-blink {
+  to {
+    visibility: hidden;
+  }
+}

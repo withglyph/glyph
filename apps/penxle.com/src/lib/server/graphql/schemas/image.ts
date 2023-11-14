@@ -11,10 +11,12 @@ import type { ImageBounds } from '$lib/server/utils';
  * * Types
  */
 
-export const Image = builder.prismaObject('Image', {
+builder.prismaObject('Image', {
   select: { id: true },
   fields: (t) => ({
     id: t.exposeID('id'),
+    width: t.exposeInt('width'),
+    height: t.exposeInt('height'),
     placeholder: t.exposeString('placeholder'),
 
     url: t.field({
@@ -130,7 +132,7 @@ builder.mutationFields((t) => ({
           id: createId(),
           userId: context.session.userId,
           name: input.name,
-          format: res.format,
+          format: `image/${res.format}`,
           size: res.size,
           width: res.width,
           height: res.height,

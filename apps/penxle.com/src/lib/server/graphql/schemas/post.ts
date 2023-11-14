@@ -8,7 +8,7 @@ import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { redis } from '$lib/server/cache';
 import { deductUserPoint, getUserPoint } from '$lib/server/utils';
-import { revisionContentToText } from '$lib/server/utils/tiptap';
+import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
 import { createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
 import { builder } from '../builder';
 import type { JSONContent } from '@tiptap/core';
@@ -242,8 +242,10 @@ builder.prismaObject('PostRevision', {
         post: { select: { spaceId: true, option: { select: { price: true } } } },
       },
       resolve: async (revision, _, { db, ...context }) => {
-        const content = revision.content as JSONContent[];
-        const paidContent = revision.paidContent as JSONContent[] | null;
+        const content = await decorateContent(db, revision.content as JSONContent[]);
+        const paidContent = revision.paidContent
+          ? await decorateContent(db, revision.paidContent as JSONContent[])
+          : null;
 
         if (!paidContent) {
           return createTiptapDocument(content);
@@ -581,10 +583,12 @@ builder.mutationFields((t) => ({
         }
       }
 
-      const document = (input.content as JSONContent).content;
+      let document = (input.content as JSONContent).content;
       if (!document) {
         throw new FormValidationError('content', '잘못된 내용이에요');
       }
+
+      document = await sanitizeContent(document);
 
       const accessBarrierPosition = document.findIndex((node) => node.type === 'access_barrier');
       const content = accessBarrierPosition === -1 ? document : document.slice(0, accessBarrierPosition);

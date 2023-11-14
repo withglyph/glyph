@@ -7,7 +7,7 @@ export const DropCursor = Extension.create({
   addProseMirrorPlugins() {
     return [
       dropCursor({
-        class: 'prosemirror-drop-cursor',
+        class: 'ProseMirror-dropcursor',
         color: false,
         width: 4,
       }),

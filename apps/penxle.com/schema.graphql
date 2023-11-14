@@ -97,9 +97,11 @@ input IgnoreSpaceMemberInvitationInput {
 }
 
 type Image {
+  height: Int!
   id: ID!
   placeholder: String!
   url: String!
+  width: Int!
 }
 
 input IssueUserEmailAuthorizationUrlInput {

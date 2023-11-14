@@ -9,6 +9,7 @@
   import { postKind } from '$lib/stores';
   import { focused, hover } from '$lib/svelte/actions';
   import { TiptapBubbleMenu, TiptapEditor, TiptapFloatingMenu } from '$lib/tiptap/components';
+  import { isValidImageFile, validImageMimes } from '$lib/utils';
   import { colors, fonts, getLabelFromCurrentNode, heading, heights, spacing, texts } from './formats';
   import type { Editor, JSONContent } from '@tiptap/core';
 
@@ -54,6 +55,24 @@
   $: currentTextLabel = `${currentNode?.type.name === heading ? '제목' : '본문'} ${currentNode?.attrs.level ?? 1}`;
 
   $: label = getLabelFromCurrentNode(currentNode);
+
+  const handleInsertImage = () => {
+    const picker = document.createElement('input');
+    picker.type = 'file';
+    picker.accept = validImageMimes.join(',');
+
+    picker.addEventListener('change', async () => {
+      const file = picker.files?.[0];
+
+      if (!file || !(await isValidImageFile(file))) {
+        return;
+      }
+
+      editor.chain().focus().setImage(file).run();
+    });
+
+    picker.showPicker();
+  };
 </script>
 
 <div class="pt-17" use:hover={hovered}>
@@ -95,7 +114,7 @@
 
 {#if $postKind === 'ARTICLE'}
   <div class="mx-auto w-full max-w-230 flex grow">
-    <TiptapEditor class="mt-12 max-w-full grow whitespace-pre-wrap" bind:editor bind:content />
+    <TiptapEditor class="my-12 max-w-full grow whitespace-pre-wrap" bind:editor bind:content />
   </div>
 
   {#if editor}
@@ -373,11 +392,11 @@
           </span>
           리스트 추가
         </MenuItem>
-        <MenuItem class="flex gap-2.5 items-center">
+        <MenuItem class="flex gap-2.5 items-center" on:click={handleInsertImage}>
           <span class="p-1 border border-alphagray-15 rounded-lg flex center">
             <i class="i-lc-image square-5" />
           </span>
-          이미지
+          이미지 업로드
         </MenuItem>
         <MenuItem class="flex gap-2.5 items-center">
           <span class="p-1 border border-alphagray-15 rounded-lg flex center">

@@ -186,8 +186,17 @@
   * extensions
 */
 
-.prosemirror-drop-cursor {
+.ProseMirror-dropcursor {
   --uno: bg-brand-50;
+}
+
+.ProseMirror-gapcursor {
+  --uno: border-t border-t-black w-full my-1;
+  animation: cursor-blink 1s steps(2, start) infinite;
+}
+
+.ProseMirror-focused .ProseMirror-gapcursor {
+  --uno: block;
 }
 
 /*
@@ -196,4 +205,12 @@
 
 .ProseMirror-focused {
   --uno: outline-none;
+}
+
+.ProseMirror-hideselection {
+  --uno: caret-transparent;
+}
+
+.ProseMirror-hideselection *::selection {
+  --uno: bg-transparent;
 }

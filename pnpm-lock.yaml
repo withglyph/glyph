@@ -525,6 +525,9 @@ importers:
       nanoid:
         specifier: ^5.0.3
         version: 5.0.3
+      object-traversal:
+        specifier: ^1.0.1
+        version: 1.0.1
       pino:
         specifier: ^8.16.1
         version: 8.16.1
@@ -10751,7 +10754,6 @@ packages:
   /object-traversal@1.0.1:
     resolution: {integrity: sha512-aLXtM9kbcG/ePyZfB45B0FrIdu1yy3udQjIVmp2IVl2np52dBK5ZZBhdyUKFT6neCutwDhCW/kQ+e/0K5n/Jhw==}
     engines: {node: '>=10'}
-    dev: false
 
   /object.assign@4.1.4:
     resolution: {integrity: sha512-1mxKf0e58bvyjSCtKYY4sRe9itRk3PJpquJOjeIkz885CczcI4IvJJDLPS72oowuSh+pBxUFROpX+TU++hxhZQ==}

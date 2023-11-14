@@ -9,7 +9,7 @@ import {
   TextAlign,
 } from '$lib/tiptap/extensions';
 import { Bold, Italic, Strike, TextColor, Underline } from '$lib/tiptap/marks';
-import { AccessBarrier } from '$lib/tiptap/node-views';
+import { AccessBarrier, Image } from '$lib/tiptap/node-views';
 import { Document, HardBreak, Heading, Paragraph, Text } from '$lib/tiptap/nodes';
 
 export const extensions = [
@@ -41,4 +41,5 @@ export const extensions = [
 
   // node views
   AccessBarrier,
+  Image,
 ];

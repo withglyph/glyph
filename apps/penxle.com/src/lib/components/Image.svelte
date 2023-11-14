@@ -16,6 +16,7 @@
   export let quality: number | undefined = undefined;
   export let fit: 'cover' | 'contain' = 'cover';
   export let fade = true;
+  export let intrinsic = false;
 
   let imgEl: HTMLImageElement | undefined;
   let domRect: DOMRect | undefined;
@@ -30,6 +31,8 @@
     graphql(`
       fragment Image_image on Image {
         id
+        width
+        height
         placeholder
         url
       }
@@ -61,6 +64,8 @@
 </script>
 
 <div
+  style:width={intrinsic ? `${$image.width}px` : undefined}
+  style:aspect-ratio={intrinsic ? `${$image.width} / ${$image.height}` : undefined}
   class={clsx('overflow-hidden', _class)}
   role="img"
   on:contextmenu|preventDefault
