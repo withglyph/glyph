@@ -1,5 +1,6 @@
 import { SpaceMemberInvitationState, SpaceMemberRole, SpaceVisibility } from '@prisma/client';
 import * as R from 'radash';
+import { match } from 'ts-pattern';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { createRandomIcon, directUploadImage } from '$lib/server/utils';
 import { createId } from '$lib/utils';
@@ -253,6 +254,7 @@ const UpdateSpaceInput = builder.inputType('UpdateSpaceInput', {
     iconId: t.id(),
     description: t.string({ required: false }),
     externalLinks: t.stringList(),
+    isPublic: t.boolean({ required: false }),
   }),
   validate: { schema: UpdateSpaceSchema },
 });
@@ -407,7 +409,7 @@ builder.mutationFields((t) => ({
           name: input.name,
           slug: input.slug,
           state: 'ACTIVE',
-          visibility: 'PUBLIC',
+          visibility: input.isPublic ? 'PUBLIC' : 'PRIVATE',
           iconId,
           members: {
             create: {
@@ -546,6 +548,11 @@ builder.mutationFields((t) => ({
           slug: input.slug,
           iconId: input.iconId,
           description: input.description,
+          visibility: match(input.isPublic)
+            .with(true, () => 'PUBLIC' as const)
+            .with(false, () => 'PRIVATE' as const)
+            // eslint-disable-next-line unicorn/no-useless-undefined
+            .otherwise(() => undefined),
         },
       });
     },
