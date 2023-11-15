@@ -458,7 +458,7 @@
           {$query.post.space.name}
         </p>
         <p class="body-15-sb text-secondary my-2 truncate text-center w-full">
-          {$query.post.space.description}
+          {$query.post.space.description ?? '아직 소개가 없어요'}
         </p>
         <Button class="rounded-12!" color="tertiary" size="md" variant="outlined">
           <i class="i-lc-bell square-5" />
@@ -466,7 +466,6 @@
           <i class="i-lc-chevron-down square-5" />
         </Button>
       </div>
-      <div />
     </div>
   </div>
 </article>
