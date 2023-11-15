@@ -57,6 +57,27 @@
     --uno: bg-[url(/horizontal-rules/7.svg)] h-1.25rem;
   }
 
+  & blockquote {
+    --uno: border-l-0.1875rem border-text-primary pl-0.625rem my-0.34375rem;
+  }
+
+  & blockquote[data-kind='2'] {
+    --uno: border-l-none;
+    &:before {
+      --uno: block content-[url(/blockquotes/carbon.svg)] w-2rem;
+    }
+  }
+
+  & blockquote[data-kind='3'] {
+    --uno: border-l-none;
+    &:before {
+      --uno: block content-[url(/blockquotes/carbon.svg)] w-2rem m-x-auto;
+    }
+    &:after {
+      --uno: block content-[url(/blockquotes/carbon.svg)] w-2rem rotate-180 m-x-auto;
+    }
+  }
+
   /*
    * marks
   */
@@ -189,6 +210,9 @@
     --uno: tracking-widest;
   }
 
+  & [data-text-align='left'] {
+    --uno: text-left;
+  }
   & [data-text-align='center'] {
     --uno: text-center;
   }

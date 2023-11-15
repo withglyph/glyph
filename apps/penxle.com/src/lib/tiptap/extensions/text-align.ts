@@ -20,7 +20,6 @@ export const TextAlign = Extension.create({
         types: ['heading', 'paragraph'],
         attributes: {
           'text-align': {
-            default: 'left',
             parseHTML: (element) => element.dataset.textAlign,
             renderHTML: (attributes) => ({
               'data-text-align': attributes['text-align'] as string,

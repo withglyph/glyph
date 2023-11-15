@@ -10,7 +10,18 @@
   import { focused, hover } from '$lib/svelte/actions';
   import { TiptapBubbleMenu, TiptapEditor, TiptapFloatingMenu } from '$lib/tiptap/components';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
-  import { alignments, colors, fonts, getLabelFromCurrentNode, heading, heights, hr, spacing, texts } from './formats';
+  import {
+    alignments,
+    blockquotes,
+    colors,
+    fonts,
+    getLabelFromCurrentNode,
+    heading,
+    heights,
+    hr,
+    spacing,
+    texts,
+  } from './formats';
   import type { Editor, JSONContent } from '@tiptap/core';
 
   export let title: string;
@@ -377,16 +388,34 @@
                 editor.chain().focus().setHorizontalRule(kind).run();
               }}
             >
-              <hr class="w-11rem divider" aria-label={`${kind} 번째 구분선`} data-kind={kind} />
+              <hr class="w-11rem divider-preview" aria-label={`${kind} 번째 구분선`} data-kind={kind} />
             </MenuItem>
           {/each}
         </Menu>
-        <MenuItem class="flex gap-2.5 items-center">
-          <span class="p-1 border border-alphagray-15 rounded-lg flex center">
-            <i class="i-lc-quote square-5" />
-          </span>
-          인용구 추가
-        </MenuItem>
+        <Menu
+          class="flex px-4 py-3 justify-between items-center  gap-2.5 body-14-m hover:(bg-primary rounded-lg) min-w-6rem h-full"
+          offset={floatingMenuOffset}
+          placement="right-start"
+        >
+          <svelte:fragment slot="value">
+            <span class="p-1 border border-alphagray-15 rounded-lg flex center">
+              <i class="i-lc-quote square-5" />
+            </span>
+            인용구 추가
+          </svelte:fragment>
+          {#each blockquotes as kind (kind)}
+            <MenuItem
+              class="flex center gap-2 w-900px"
+              on:click={() => {
+                editor.chain().focus().setBlockquote(kind).run();
+              }}
+            >
+              <blockquote class="blockquote-preview text-disabled" aria-label={`${kind} 번째 구분선`} data-kind={kind}>
+                내용을 입력해주세요
+              </blockquote>
+            </MenuItem>
+          {/each}
+        </Menu>
         <MenuItem class="flex gap-2.5 items-center">
           <span class="p-1 border border-alphagray-15 rounded-lg flex center">
             <i class="i-lc-list square-5" />
@@ -413,7 +442,7 @@
 {/if}
 
 <style>
-  .divider {
+  .divider-preview {
     --uno: bg-no-repeat border-none bg-center;
 
     &[data-kind='1'] {
@@ -443,6 +472,27 @@
 
     &[data-kind='7'] {
       --uno: bg-[url(/horizontal-rules/7.svg)] h-1.25rem;
+    }
+  }
+
+  .blockquote-preview {
+    --uno: border-l-0.1875rem border-text-primary pl-0.625rem my-0.34375rem;
+
+    &[data-kind='2'] {
+      --uno: border-l-none;
+      &:before {
+        --uno: block content-[url(/blockquotes/carbon.svg)] w-2rem;
+      }
+    }
+
+    &[data-kind='3'] {
+      --uno: border-l-none;
+      &:before {
+        --uno: block content-[url(/blockquotes/carbon.svg)] w-2rem m-x-auto;
+      }
+      &:after {
+        --uno: block content-[url(/blockquotes/carbon.svg)] w-2rem rotate-180 m-x-auto;
+      }
     }
   }
 </style>

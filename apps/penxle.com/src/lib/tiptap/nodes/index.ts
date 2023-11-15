@@ -1,3 +1,4 @@
+export * from './blockquote';
 export * from './document';
 export * from './hard-break';
 export * from './heading';

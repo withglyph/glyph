@@ -3,7 +3,6 @@ import type { FontFamily } from '@penxle/lib/unocss';
 import type { Node } from '@tiptap/pm/model';
 import type { Alignment, Spacing } from '$lib/tiptap/extensions';
 import type { Height } from '$lib/tiptap/extensions/line-height';
-import type { Kind } from '$lib/tiptap/nodes/horizontal-rule';
 
 export const colors = [
   { label: '검정색', value: null },
@@ -93,7 +92,9 @@ export const alignments: { label: string; value: Alignment; class: string }[] = 
   { label: '양쪽', value: 'justify', class: 'i-lc-align-justify' },
 ];
 
-export const hr: Kind[] = [1, 2, 3, 4, 5, 6, 7];
+export const hr = [1, 2, 3, 4, 5, 6, 7] as const;
+
+export const blockquotes = [1, 2, 3] as const;
 
 export function getLabelFromCurrentNode(currentNode: Node) {
   return {
