@@ -5,7 +5,7 @@
   import { scale } from 'svelte/transition';
   import { hover, portal } from '$lib/svelte/actions';
 
-  export let message: string;
+  export let message = '';
   export let placement: 'top' | 'right' | 'bottom' | 'left' = 'bottom';
 
   let targetEl: HTMLDivElement;
@@ -58,12 +58,13 @@
 {#if $hovered}
   <div
     bind:this={tooltipEl}
-    class="absolute z-100 rounded bg-gray-90 px-4 py-2 text-xs font-semibold text-white"
+    class="absolute z-100 rounded px-3 py-2 shadow-[0_2px_10px_0_rgba(0,0,0,0.10)] bg-cardprimary text-primary"
     role="tooltip"
     use:portal
     transition:scale={{ start: 0.9, duration: 200 }}
   >
     {message}
-    <div bind:this={arrowEl} class="absolute square-2 rotate-45 bg-gray-90" />
+    <slot name="message" />
+    <div bind:this={arrowEl} class="absolute square-2 rotate-45 bg-cardprimary" />
   </div>
 {/if}

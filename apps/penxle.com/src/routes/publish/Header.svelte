@@ -217,13 +217,26 @@
       </Menu>
     </div>
 
-    <div class="flex flex-col text-right">
-      <span class="body-15-b">
-        <mark class="text-blue-50">80</mark>
-        자
-      </span>
-      <span class="caption-12-m text-disabled">마지막으로 저장된 시간 13:00</span>
-    </div>
+    <Tooltip>
+      <div class="flex flex-col text-right w-36.5">
+        <span class="body-15-b">
+          <mark class="text-blue-50">80</mark>
+          자
+        </span>
+        <span class="caption-12-m text-disabled">마지막으로 저장된 시간 13:00</span>
+      </div>
+
+      <div slot="message">
+        <div class="caption-12-m">
+          <span class="text-secondary w-17.5 inline-block">공백 미포함</span>
+          <span class="text-rights">80자</span>
+        </div>
+        <div class="caption-12-m">
+          <span class="text-secondary w-17.5 inline-block">공백 포함</span>
+          <span class="text-rights">80자</span>
+        </div>
+      </div>
+    </Tooltip>
 
     <Button
       color="tertiary"
