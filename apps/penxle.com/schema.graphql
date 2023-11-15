@@ -252,6 +252,7 @@ type Post {
   blurred: Boolean!
   contentFilters: [ContentFilterCategory!]!
   createdAt: DateTime!
+  draftRevision(revisionId: ID): PostRevision!
   id: ID!
   likeCount: Int!
   liked: Boolean!

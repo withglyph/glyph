@@ -62,6 +62,20 @@ builder.prismaObject('Post', {
       resolve: (_, { revisions }) => revisions[0],
     }),
 
+    draftRevision: t.prismaField({
+      type: 'PostRevision',
+      authScopes: { $granted: '$post:edit' },
+      args: { revisionId: t.arg.id({ required: false }) },
+      select: ({ revisionId }, __, nestedSelection) => ({
+        revisions: nestedSelection({
+          where: { id: revisionId },
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        }),
+      }),
+      resolve: (_, { revisions }) => revisions[0],
+    }),
+
     revisionList: t.relation('revisions', {
       authScopes: { $granted: '$post:edit' },
       query: {
@@ -508,7 +522,6 @@ builder.queryFields((t) => ({
         },
         where: {
           permalink: args.permalink,
-          state: 'PUBLISHED',
         },
       });
 
@@ -516,7 +529,7 @@ builder.queryFields((t) => ({
         throw new NotFoundError();
       }
 
-      if (post.space.visibility === 'PRIVATE' || post.option.visibility === 'SPACE') {
+      if (post.space.visibility === 'PRIVATE' || post.option.visibility === 'SPACE' || post.state === 'DRAFT') {
         const member = context.session
           ? await db.spaceMember.findUnique({
               select: { id: true },
