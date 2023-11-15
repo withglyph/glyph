@@ -39,6 +39,7 @@
   let usePassword = false;
   let password = '';
   let open = false;
+  let permalink = '';
 
   $: query = fragment(
     _query,
@@ -50,6 +51,7 @@
           spaces {
             id
             name
+            slug
 
             icon {
               id
@@ -108,6 +110,7 @@
     });
 
     postId = resp.id;
+    permalink = resp.permalink;
 
     return resp;
   };
@@ -266,7 +269,9 @@
       </button>
 
       <MenuItem>저장이력</MenuItem>
-      <MenuItem>미리보기</MenuItem>
+      <MenuItem>
+        <a href={`/${currentSpace.slug}/preview/${permalink}`} rel="noopener noreferrer" target="_blank">미리보기</a>
+      </MenuItem>
     </Menu>
   </div>
 </header>
