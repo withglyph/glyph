@@ -29,6 +29,8 @@
         slug
         name
         description
+        visibility
+
         externalLinks {
           id
           url
@@ -68,6 +70,8 @@
           slug
           name
           description
+          visibility
+
           externalLinks {
             id
             url
@@ -95,6 +99,7 @@
     slug: $query.space.slug,
     description: $query.space.description ?? '',
     externalLinks: $query.space.externalLinks.map((link) => link.url),
+    isPublic: $query.space.visibility === 'PUBLIC',
   });
 
   let links = [
@@ -238,7 +243,7 @@
 
     <div class="flex justify-between mt-8 body-16-b">
       <p>스페이스 공개</p>
-      <Switch />
+      <Switch name="isPublic" />
     </div>
 
     <div class="flex justify-between mt-6 body-16-b">

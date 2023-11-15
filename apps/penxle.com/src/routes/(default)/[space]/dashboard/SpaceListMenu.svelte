@@ -30,6 +30,7 @@
             id
             slug
             name
+            visibility
           }
         }
 
@@ -37,6 +38,7 @@
           id
           slug
           name
+          visibility
 
           icon {
             id
@@ -80,8 +82,13 @@
   <div>
     <h3 class="body-14-b">{$query.space.name}</h3>
     <div class="flex items-center gap-1 caption-12-m text-secondary">
-      <span class="block square-1.25 rounded-full bg-green-50" />
-      <span>공개중</span>
+      {#if $query.space.visibility === 'PUBLIC'}
+        <span class="block square-1.25 rounded-full bg-green-50" />
+        <span>공개중</span>
+      {:else}
+        <span class="block square-1.25 rounded-full bg-text-disabled" />
+        <span>비공개중</span>
+      {/if}
     </div>
   </div>
 </button>
@@ -108,8 +115,13 @@
           <div>
             <p class="body-15-b mb-1">{space.name}</p>
             <div class="flex items-center gap-1 caption-12-m text-secondary">
-              <span class="block square-1.25 rounded-full bg-green-50" />
-              <span>공개중</span>
+              {#if space.visibility === 'PUBLIC'}
+                <span class="block square-1.25 rounded-full bg-green-50" />
+                <span>공개중</span>
+              {:else}
+                <span class="block square-1.25 rounded-full bg-text-disabled" />
+                <span>비공개중</span>
+              {/if}
             </div>
           </div>
         </a>

@@ -19,6 +19,7 @@
         slug
         name
         followed
+        visibility
 
         icon {
           id
@@ -61,7 +62,17 @@
     </div>
     <div class="flex-1">
       <div class="my-5 sm:(mt-0 mb-3)">
-        <h1 class="title-20-eb mb-2 sm:(title-24-eb mb-3)">{$query.space.name}</h1>
+        <h1 class="title-20-eb flex items-center gap-1 flex-wrap mb-2 sm:(title-24-eb mb-3)">
+          {$query.space.name}
+
+          {#if $query.space.visibility === 'PRIVATE'}
+            <span class="bg-gray-10 text-secondary rounded-2xl py-1 px-1.5 caption-12-b text-nowrap">
+              비공개
+              <i class="i-px-lock square-3 mb-0.5" />
+            </span>
+          {/if}
+        </h1>
+
         <div class="flex items-center mb-2">
           <span class="text-secondary body-16-sb">관심 독자</span>
           <span class="text-primary ml-2 subtitle-18-b">3</span>
