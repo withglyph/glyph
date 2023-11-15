@@ -188,32 +188,37 @@ builder.prismaObject('PostRevision', {
         id: true,
         spaceId: true,
         userId: true,
-        option: { select: { password: true } },
+        option: { select: { password: true, visibility: true } },
       },
       where: {
         revisions: { some: { id } },
       },
     });
 
-    if (post.option.password) {
-      if (context.session) {
-        if (context.session.userId === post.userId) {
-          return ['$revision:view'];
-        }
-
-        const meAsMember = await db.spaceMember.exists({
-          where: {
-            spaceId: post.spaceId,
-            userId: context.session.userId,
-            state: 'ACTIVE',
-          },
-        });
-
-        if (meAsMember) {
-          return ['$revision:view'];
-        }
+    if (context.session) {
+      if (context.session.userId === post.userId) {
+        return ['$revision:view'];
       }
 
+      const meAsMember = await db.spaceMember.exists({
+        where: {
+          spaceId: post.spaceId,
+          userId: context.session.userId,
+          state: 'ACTIVE',
+        },
+      });
+
+      if (meAsMember) {
+        return ['$revision:view'];
+      }
+    }
+
+    if (post.option.visibility === 'SPACE') {
+      // 스페이스 공개를 볼 수 있는 권한이 있다면 위의 조건문에서 먼저 return됨
+      return [];
+    }
+
+    if (post.option.password) {
       const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
 
       if (unlock && dayjs(unlock).isAfter(dayjs())) {
@@ -336,6 +341,7 @@ builder.prismaObject('PostRevision', {
 
     characterCount: t.field({
       type: 'Int',
+      authScopes: { $granted: '$revision:view' },
       select: { content: true, paidContent: true },
       resolve: async (revision) => {
         const contentText = await revisionContentToText(
@@ -348,6 +354,7 @@ builder.prismaObject('PostRevision', {
         );
         return contentText.length + paidContentText.length;
       },
+      unauthorizedResolver: () => 0,
     }),
 
     previewText: t.field({
@@ -360,6 +367,7 @@ builder.prismaObject('PostRevision', {
         );
         return contentText.slice(0, 200);
       },
+      unauthorizedResolver: () => '',
     }),
 
     thumbnail: t.relation('thumbnail', { nullable: true }),
