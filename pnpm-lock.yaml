@@ -360,9 +360,6 @@ importers:
       '@envelop/core':
         specifier: ^5.0.0
         version: 5.0.0
-      '@envelop/graphql-jit':
-        specifier: ^8.0.1
-        version: 8.0.1(@envelop/core@5.0.0)(graphql@16.8.1)
       '@envelop/opentelemetry':
         specifier: ^6.1.0
         version: 6.1.0(@envelop/core@5.0.0)(graphql@16.8.1)
@@ -2815,20 +2812,6 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /@envelop/graphql-jit@8.0.1(@envelop/core@5.0.0)(graphql@16.8.1):
-    resolution: {integrity: sha512-91AcH3W9qGaY3B2ynCLdAbOzPBqLIcsTOzjFUfbKPBxe4d18qKpgjnBPrZ7s0XcN0DD5SDRq61bkvowg2E2BGQ==}
-    engines: {node: '>=18.0.0'}
-    peerDependencies:
-      '@envelop/core': ^5.0.0
-      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      '@envelop/core': 5.0.0
-      graphql: 16.8.1
-      graphql-jit: 0.8.2(graphql@16.8.1)
-      tslib: 2.6.2
-      value-or-promise: 1.0.12
-    dev: true
-
   /@envelop/on-resolve@4.1.0(@envelop/core@5.0.0)(graphql@16.8.1):
     resolution: {integrity: sha512-2AXxf8jbBIepBUiY0KQtyCO6gnT7LKBEYdaARZBJ7ujy1+iQHQPORKvAwl51kIdD6v5x38eldZnm7A19jFimOg==}
     engines: {node: '>=18.0.0'}
@@ -4758,6 +4741,20 @@ packages:
       picomatch: 2.3.1
     dev: false
 
+  /@rollup/pluginutils@5.0.5:
+    resolution: {integrity: sha512-6aEYR910NyP73oHiJglti74iRyOwgFU4x3meH/H8OJx6Ry0j6cOVZ5X/wTvub7G7Ao6qaHBEaNsV3GLJkSsF+Q==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@types/estree': 1.0.5
+      estree-walker: 2.0.2
+      picomatch: 2.3.1
+    dev: true
+
   /@rollup/pluginutils@5.0.5(rollup@4.3.0):
     resolution: {integrity: sha512-6aEYR910NyP73oHiJglti74iRyOwgFU4x3meH/H8OJx6Ry0j6cOVZ5X/wTvub7G7Ao6qaHBEaNsV3GLJkSsF+Q==}
     engines: {node: '>=14.0.0'}
@@ -4771,6 +4768,7 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
       rollup: 4.3.0
+    dev: false
 
   /@rollup/rollup-android-arm-eabi@4.3.0:
     resolution: {integrity: sha512-/4pns6BYi8MXdwnXM44yoGAcFYVHL/BYlB2q1HXZ6AzH++LaiEVWFpBWQ/glXhbMbv3E3o09igrHFbP/snhAvA==}
@@ -5910,7 +5908,7 @@ packages:
     dependencies:
       '@unocss/core': 0.57.3
       '@unocss/reset': 0.57.3
-      '@unocss/vite': 0.57.3(rollup@4.3.0)(vite@4.5.0)
+      '@unocss/vite': 0.57.3(vite@4.5.0)
       vite: 4.5.0(@types/node@20.9.0)(lightningcss@1.22.1)
     transitivePeerDependencies:
       - rollup
@@ -5922,7 +5920,7 @@ packages:
     hasBin: true
     dependencies:
       '@ampproject/remapping': 2.2.1
-      '@rollup/pluginutils': 5.0.5(rollup@4.3.0)
+      '@rollup/pluginutils': 5.0.5
       '@unocss/config': 0.57.3
       '@unocss/core': 0.57.3
       '@unocss/preset-uno': 0.57.3
@@ -6096,6 +6094,27 @@ packages:
       vite: 4.5.0(@types/node@20.9.0)(lightningcss@1.22.1)
     transitivePeerDependencies:
       - rollup
+    dev: false
+
+  /@unocss/vite@0.57.3(vite@4.5.0):
+    resolution: {integrity: sha512-SX2wtxRFLka0CgMwqokKuhaBUptj8vcpmLObVRRgV+7dSdx6GMbZcjZfQfibMKhJY3d5iSAylcfyW2JqTX2F+g==}
+    peerDependencies:
+      vite: ^2.9.0 || ^3.0.0-0 || ^4.0.0
+    dependencies:
+      '@ampproject/remapping': 2.2.1
+      '@rollup/pluginutils': 5.0.5
+      '@unocss/config': 0.57.3
+      '@unocss/core': 0.57.3
+      '@unocss/inspector': 0.57.3
+      '@unocss/scope': 0.57.3
+      '@unocss/transformer-directives': 0.57.3
+      chokidar: 3.5.3
+      fast-glob: 3.3.2
+      magic-string: 0.30.5
+      vite: 4.5.0(@types/node@20.9.0)(lightningcss@1.22.1)
+    transitivePeerDependencies:
+      - rollup
+    dev: true
 
   /@urql/core@4.1.4(graphql@16.8.1):
     resolution: {integrity: sha512-wFm67yljv4uFAWNtPwcS1NMhF/n+p/68i+kZU6R1dPxhfq2nBW0142p4szeZsBDrtO7pBdOhp7YeSZROFFlXZg==}
@@ -8324,14 +8343,6 @@ packages:
   /fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
 
-  /fast-json-stringify@1.21.0:
-    resolution: {integrity: sha512-xY6gyjmHN3AK1Y15BCbMpeO9+dea5ePVsp3BouHCdukcx0hOHbXwFhRodhcI0NpZIgDChSeAKkHW9YjKvhwKBA==}
-    dependencies:
-      ajv: 6.12.6
-      deepmerge: 4.3.1
-      string-similarity: 4.0.4
-    dev: true
-
   /fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
 
@@ -8578,12 +8589,6 @@ packages:
       - supports-color
     dev: true
 
-  /generate-function@2.3.1:
-    resolution: {integrity: sha512-eeB5GfMNeevm/GRYq20ShmsaGcmI81kIX2K9XQx5miC8KdHaC6Jm0qQ8ZNeGOi7wYB8OsdxKs+Y2oVuTFuVwKQ==}
-    dependencies:
-      is-property: 1.0.2
-    dev: true
-
   /gensequence@6.0.0:
     resolution: {integrity: sha512-8WwuywE9pokJRAcg2QFR/plk3cVPebSUqRPzpGQh3WQ0wIiHAw+HyOQj5IuHyUTQBHpBKFoB2JUMu9zT3vJ16Q==}
     engines: {node: '>=16'}
@@ -8789,21 +8794,6 @@ packages:
 
   /graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
-
-  /graphql-jit@0.8.2(graphql@16.8.1):
-    resolution: {integrity: sha512-P9KtM/UY4JTtHVRqRlZzFXPmDEtps1Bd27Mvj/naQIa5d0j83zPxAx4jewq1wueF3UEZu1JFZwX1XVBBkoo1Mg==}
-    peerDependencies:
-      graphql: '>=15'
-    dependencies:
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
-      fast-json-stringify: 1.21.0
-      generate-function: 2.3.1
-      graphql: 16.8.1
-      json-schema: 0.4.0
-      lodash.memoize: 4.1.2
-      lodash.merge: 4.6.2
-      lodash.mergewith: 4.6.2
-    dev: true
 
   /graphql-scalars@1.22.4(graphql@16.8.1):
     resolution: {integrity: sha512-ILnv7jq5VKHLUyoaTFX7lgYrjCd6vTee9i8/B+D4zJKJT5TguOl0KkpPEbXHjmeor8AZYrVsrYUHdqRBMX1pjA==}
@@ -9287,10 +9277,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /is-property@1.0.2:
-    resolution: {integrity: sha512-Ks/IoX00TtClbGQr4TWXemAnktAQvYB7HzcCxDGqEZU6oCmb2INHuOoKxbtR+HFkmYWBKv/dOZtGRiAjDhj92g==}
-    dev: true
-
   /is-reference@3.0.2:
     resolution: {integrity: sha512-v3rht/LgVcsdZa3O2Nqs+NMowLOxeOm7Ay9+/ARQ2F+qEoANRcqrjAZKGN0v8ymUetZGgkp26LTnGT7H0Qo9Pg==}
     dependencies:
@@ -9486,10 +9472,6 @@ packages:
 
   /json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
-
-  /json-schema@0.4.0:
-    resolution: {integrity: sha512-es94M3nTIfsEPisRafak+HDLfHXnKBhV3vU5eqPcS3flIWqcxJWgXHXiey3YrpaNsanY5ei1VoYEbOzijuq9BA==}
-    dev: true
 
   /json-stable-stringify-without-jsonify@1.0.1:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
@@ -9830,16 +9812,8 @@ packages:
     resolution: {integrity: sha512-N8XRTIMMqqDgSy4VLKPnJ/+hpGZN+PHQiJnSenYqPaVV/NCqEogTnAdZLQiGKhxX+JCs8waWq2t1XHWKOmlY8g==}
     dev: false
 
-  /lodash.memoize@4.1.2:
-    resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==}
-    dev: true
-
   /lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
-
-  /lodash.mergewith@4.6.2:
-    resolution: {integrity: sha512-GK3g5RPZWTRSeLSpgP8Xhra+pnjBC56q9FZYe1d5RN3TJ35dbkGy3YqBSMbyCrlbi+CM9Z3Jk5yTL7RCsqboyQ==}
-    dev: true
 
   /lodash.once@4.1.1:
     resolution: {integrity: sha512-Sb487aTOCr9drQVL8pIxOzVhafOjZN9UU54hiN8PU3uAiSV7lx1yYNpbNmex2PK6dSJoNTSJUUswT651yww3Mg==}
@@ -12395,11 +12369,6 @@ packages:
       strip-ansi: 6.0.1
     dev: false
 
-  /string-similarity@4.0.4:
-    resolution: {integrity: sha512-/q/8Q4Bl4ZKAPjj8WerIBJWALKkaPRfrvhfF8k/B23i4nzrlRj2/go1m90In7nG/3XDSbOo0+pu6RvCTM9RGMQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    dev: true
-
   /string-width@4.2.3:
     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
     engines: {node: '>=8'}
@@ -13262,7 +13231,7 @@ packages:
       '@unocss/transformer-compile-class': 0.57.3
       '@unocss/transformer-directives': 0.57.3
       '@unocss/transformer-variant-group': 0.57.3
-      '@unocss/vite': 0.57.3(rollup@4.3.0)(vite@4.5.0)
+      '@unocss/vite': 0.57.3(vite@4.5.0)
       vite: 4.5.0(@types/node@20.9.0)(lightningcss@1.22.1)
     transitivePeerDependencies:
       - postcss

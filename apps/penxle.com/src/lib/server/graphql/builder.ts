@@ -47,6 +47,7 @@ export const builder = new SchemaBuilder<{
     filterConnectionTotalCount: true,
   },
   scopeAuthOptions: {
+    runScopesOnType: true,
     treatErrorsAsUnauthorized: true,
     unauthorizedError: (_, __, ___, result) => {
       logger.warn(result);
