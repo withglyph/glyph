@@ -357,6 +357,7 @@
     {#if !$query.post.option.hasPassword || $query.post.space.meAsMember || $query.post.unlocked}
       <div class="relative">
         <article
+          bind:this={tiptapRendererEl}
           class={clsx(blurContent && 'filter-blur-4px bg-#f9f9f8 opacity-50 select-none', blurContentBoxHeight)}
           aria-hidden={blurContent}
         >
