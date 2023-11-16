@@ -27,7 +27,7 @@
     const { empty, from, to } = view.state.selection;
     const isEmptyTextBlock = view.state.doc.textBetween(from, to).length === 0 && isTextSelection(view.state.selection);
 
-    if (view.composing || !view.hasFocus() || empty || isEmptyTextBlock || when?.(view) === false) {
+    if (view.composing || empty || isEmptyTextBlock || when?.(view) === false) {
       open = false;
       return;
     }
@@ -66,13 +66,22 @@
   });
 </script>
 
+<svelte:document
+  on:mousedown={() => {
+    if (open) {
+      update.flush(editor.view);
+      open = false;
+    }
+  }}
+/>
+
 {#if open}
   <div
     bind:this={menuEl}
-    class={clsx('absolute z-100', _class)}
+    class={clsx('absolute z-100 select-none', _class)}
     role="menu"
     tabindex="-1"
-    on:mousedown={() => (preventUpdate = true)}
+    on:mousedown|stopPropagation={() => (preventUpdate = true)}
     use:portal
   >
     <slot />
