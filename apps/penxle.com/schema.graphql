@@ -404,6 +404,7 @@ type Space {
   description: String
   externalLinks: [SpaceExternalLink!]!
   followed: Boolean!
+  followerCount: Int!
   icon: Image!
   id: ID!
   invitations: [SpaceMemberInvitation!]!
@@ -411,6 +412,7 @@ type Space {
   members: [SpaceMember!]!
   muted: Boolean!
   name: String!
+  postCount: Int!
   posts(mine: Boolean! = false): [Post!]!
   slug: String!
   visibility: SpaceVisibility!

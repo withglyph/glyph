@@ -147,6 +147,9 @@ builder.prismaObject('Space', {
         });
       },
     }),
+
+    postCount: t.relationCount('posts', { where: { state: 'PUBLISHED' } }),
+    followerCount: t.relationCount('followers', { where: { user: { state: 'ACTIVE' } } }),
   }),
 });
 
