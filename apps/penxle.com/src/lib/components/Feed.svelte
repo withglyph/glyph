@@ -1,8 +1,8 @@
 <script lang="ts">
+  import clsx from 'clsx';
   import dayjs from 'dayjs';
   import { fragment, graphql } from '$glitch';
   import { Avatar, Image, Tag } from '$lib/components';
-  import { TiptapRenderer } from '$lib/tiptap/components';
   import type { Feed_post } from '$glitch';
 
   let _post: Feed_post;
@@ -16,11 +16,21 @@
       fragment Feed_post on Post {
         id
         permalink
+        blurred
+
+        tags {
+          id
+
+          tag {
+            id
+            name
+          }
+        }
 
         revision {
           id
           title
-          content
+          previewText
           createdAt
 
           thumbnail {
@@ -87,18 +97,42 @@
   href={`/${$post.space.slug}/${$post.permalink}`}
 >
   <h2 class="title-20-eb">{$post.revision.title}</h2>
-  <article class="flex gap-xs justify-between <sm:flex-wrap <sm:flex-col">
-    <TiptapRenderer
-      class="flex-grow bodylong-16-m text-secondary overflow-hidden line-clamp-6"
-      content={$post.revision.content}
-    />
-    {#if $post.revision.thumbnail}
-      <Image class="h-11.25rem sm:aspect-square object-cover rounded-lg" $image={$post.revision.thumbnail.image} />
+
+  <div class="relative">
+    <article
+      class={clsx(
+        'flex gap-xs justify-between rounded-lg <sm:(flex-wrap flex-col)',
+        $post.blurred && 'select-none min-h-5.5rem',
+      )}
+    >
+      <p class="flex-grow bodylong-16-m text-secondary overflow-hidden line-clamp-6 whitespace-pre-line">
+        {$post.revision.previewText}
+      </p>
+
+      {#if $post.revision.thumbnail}
+        <Image class="h-11.25rem sm:aspect-square object-cover rounded-lg" $image={$post.revision.thumbnail.image} />
+      {/if}
+    </article>
+
+    {#if $post.blurred}
+      <header
+        class={clsx(
+          'p-4 rounded-3 absolute top-0 h-full w-full left-auto right-auto flex flex-col center gap-2.5 items-center color-gray-5 backdrop-blur-4px bg-alphagray-50',
+        )}
+        role="alert"
+      >
+        <i class="i-px-alert-triangle square-6 block" />
+        <h2 class="body-13-b">이 글은 시청에 주의가 필요한 글이에요</h2>
+      </header>
     {/if}
-  </article>
-  <div>
-    <Tag size="sm">#유료</Tag>
-    <Tag size="sm">#소설</Tag>
-    <Tag size="sm">#사이트</Tag>
+  </div>
+
+  <div class="flex flex-wrap gap-1.5">
+    {#each $post.tags.slice(0, 4) as { tag } (tag.id)}
+      <Tag size="sm">{tag.name}</Tag>
+    {/each}
+    {#if $post.tags.length > 4}
+      <Tag size="sm">+{$post.tags.length - 4}개의 태그</Tag>
+    {/if}
   </div>
 </a>
