@@ -144,7 +144,8 @@ export class TextTip {
   };
 
   private setupEvents = () => {
-    document.addEventListener('selectionchange', this.onSelectionChanged);
+    document.addEventListener('mouseup', this.onSelectionChanged);
+    document.addEventListener('mousedown', this.onSelectionChanged);
 
     for (const btn of this.tipEl.querySelectorAll('.texttip__btn')) {
       btn.addEventListener('click', this.onButtonClick);
@@ -152,7 +153,8 @@ export class TextTip {
   };
 
   public destroyEvents = () => {
-    document.removeEventListener('selectionchange', this.onSelectionChanged);
+    document.removeEventListener('mouseup', this.onSelectionChanged);
+    document.removeEventListener('mousedown', this.onSelectionChanged);
 
     for (const btn of this.tipEl.querySelectorAll('.texttip__btn')) {
       btn.removeEventListener('click', this.onButtonClick);
@@ -160,25 +162,12 @@ export class TextTip {
   };
 
   private onSelectionChanged = () => {
-    if (this.btnClicked()) return;
-
     if (this.selectionValid()) {
       this.updatePosition();
       this.show();
     } else {
       this.hide();
     }
-  };
-
-  private btnClicked = () => {
-    const selection = window.getSelection();
-    if (!selection) return false;
-
-    return (
-      selection.anchorNode &&
-      selection.anchorNode === selection.focusNode &&
-      selection.anchorNode.parentElement?.className === 'texttip__btn'
-    );
   };
 
   private selectionValid = () => {
@@ -210,12 +199,24 @@ export class TextTip {
     if (!selection) return;
 
     // Allows us to measure where the selection is on the page relative to the viewport
-    const range = selection.getRangeAt(0);
+    const range = selection.getRangeAt(0).cloneRange();
 
-    const { top: selTop, left: selLeft, width: selWidth } = range.getBoundingClientRect();
+    range.collapse(false); // collapse the range to its end
+
+    // Insert the dummy node at the end of the range
+    const nodeAtRangeEnd = document.createElement('span');
+    range.insertNode(nodeAtRangeEnd);
+
+    // Get the bounding rectangle of the dummy node
+    const rect = nodeAtRangeEnd.getBoundingClientRect();
+
+    nodeAtRangeEnd.remove();
+    range.detach();
+
+    const { left: selLeft, top: selTop } = rect;
 
     // Middle of selection width
-    let newTipLeft = selLeft + selWidth / 2 - window.scrollX;
+    let newTipLeft = selLeft - window.scrollX;
 
     // Right above selection
     const newTipBottom = window.innerHeight - selTop - window.scrollY;
