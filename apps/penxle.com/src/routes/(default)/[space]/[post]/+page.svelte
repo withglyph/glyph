@@ -1,5 +1,6 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { isTextSelection } from '@tiptap/core';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import { onMount, tick } from 'svelte';
@@ -11,13 +12,15 @@
   import { FormValidationError } from '$lib/errors';
   import { toast } from '$lib/notification';
   import { portal } from '$lib/svelte/actions';
-  import { TiptapRenderer } from '$lib/tiptap/components';
+  import { TiptapBubbleMenu, TiptapRenderer } from '$lib/tiptap/components';
   import { humanizeNumber } from '$lib/utils';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
   import Toolbar from './Toolbar.svelte';
+  import type { Editor } from '@tiptap/core';
   import type { ContentFilterCategory } from '$glitch';
 
   let open = false;
+  let editor: Editor;
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLUListElement;
   let loginRequireOpen = false;
@@ -342,8 +345,16 @@
           class={clsx(blurContent && 'filter-blur-4px bg-#f9f9f8 opacity-50 select-none', blurContentBoxHeight)}
           aria-hidden={blurContent}
         >
-          <TiptapRenderer class="bodylong-16-m" content={$query.post.revision.content} />
+          <TiptapRenderer class="bodylong-16-m" content={$query.post.revision.content} bind:editor />
         </article>
+
+        {#if editor}
+          <TiptapBubbleMenu {editor} when={(view) => isTextSelection(view.state.selection)}>
+            <div class="bg-gray-90 text-sm text-gray-30 rounded-lg p-2">
+              <button type="button">공유</button>
+            </div>
+          </TiptapBubbleMenu>
+        {/if}
 
         {#if blurContent}
           <header
