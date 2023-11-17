@@ -140,6 +140,7 @@ builder.prismaObject('User', {
             userId: user.id,
             post: {
               state: 'PUBLISHED',
+              space: { state: 'ACTIVE' },
               AND: [
                 {
                   OR: [

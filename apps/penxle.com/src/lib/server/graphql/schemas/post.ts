@@ -530,6 +530,10 @@ builder.queryFields((t) => ({
         },
         where: {
           permalink: args.permalink,
+          state: { not: 'DELETED' },
+          space: {
+            state: 'ACTIVE',
+          },
         },
       });
 
