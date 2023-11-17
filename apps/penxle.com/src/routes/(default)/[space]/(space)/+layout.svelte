@@ -52,7 +52,7 @@
   `);
 </script>
 
-<main class="flex flex-col items-center w-full bg-cardprimary">
+<main class="flex flex-col items-center w-full bg-cardprimary grow">
   <div class="pt-6 px-4 bg-cardprimary w-full max-w-200 sm:(flex gap-6) sm:mb-8">
     <div class="flex items-start justify-between">
       <Image class="square-15 rounded-2xl sm:(square-30 rounded-3xl mr-6)" $image={$query.space.icon} />

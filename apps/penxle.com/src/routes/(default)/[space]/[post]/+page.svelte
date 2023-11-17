@@ -221,7 +221,7 @@
   const blurContentBoxHeight = 'min-h-11rem';
 </script>
 
-<article class="w-full bg-cardprimary py-7.5 px-4 sm:py-17">
+<article class="w-full bg-cardprimary py-7.5 px-4 grow sm:py-17">
   <div class="w-full max-w-187.5 mx-auto space-y-6">
     <header>
       <hgroup class="space-y-4">

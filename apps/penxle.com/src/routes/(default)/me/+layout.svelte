@@ -29,7 +29,7 @@
   `);
 </script>
 
-<div class="w-full max-w-300 flex flex-col sm:m-7.5">
+<div class="w-full max-w-300 flex flex-col grow sm:m-7.5">
   <h1 class="text-xl font-bold mb-5 <sm:hidden">나의 펜슬</h1>
   <div class="sm:(flex gap-10)">
     <aside

@@ -29,10 +29,10 @@
 
 <Helmet title={`소개 | ${$query.space.name}`} />
 
-<div class="w-full max-w-200 space-y-2 <sm:bg-surface-primary">
+<div class="w-full max-w-200 space-y-2 <sm:bg-surface-primary grow">
   <section class="p-8 flex flex-col gap-3 bg-cardprimary">
     <h2 class="subtitle-18-eb">스페이스 소개</h2>
-    <p class="bodylong-16-m">{$query.space.description ?? '아직 스페이스 소개가 작성되지 않았어요.'}</p>
+    <p class="bodylong-16-m">{$query.space.description ?? '아직 스페이스 소개가 작성되지 않았어요'}</p>
     <p class="bodylong-16-m text-secondary">
       스페이스 개설일 : <time datetime={$query.space.createdAt}>
         {dayjs($query.space.createdAt).formatAsDate()}

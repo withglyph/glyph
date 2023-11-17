@@ -47,7 +47,7 @@
 
 <Header {$query} />
 
-<main class="flex flex-col justify-center sm:flex-row">
+<main class="flex flex-col justify-center grow sm:flex-row">
   <button class="flex items-center justify-between p-4 sm:hidden" type="button" on:click={() => (open = true)}>
     <h2 class="title-20-eb">{$pageSubTitle}</h2>
     <span class="i-lc-chevron-down square-6" />
