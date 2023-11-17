@@ -30,14 +30,14 @@
         </div>
 
         <div class="flex flex-wrap items-center">
-          <div>주소: 서울특별시 강남구 삼성로 212, 1동 908호</div>
+          <div>주소: 서울특별시 강남구 강남대로100길 14, 6층</div>
           <div class="h-2 border-l border-gray-50 mx-1" />
           <div>전화: 070-7580-5205</div>
         </div>
       </section>
 
       {#if showDisclosure}
-        <section class="font-light text-gray-30">
+        <section class="font-light text-gray-30 mt-6">
           (주)펜슬컴퍼니는 통신판매중개자이며, 통신판매의 당사자가 아닙니다.
           <br />
           콘텐츠 및 거래에 관한 의무와 책임은 콘텐츠 소유자 및 거래 당사자 각자에게 있습니다.
