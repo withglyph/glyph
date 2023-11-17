@@ -145,7 +145,7 @@
   // };
 </script>
 
-<Helmet title="스페이스 설정" />
+<Helmet title={`스페이스 설정 | ${$query.space.name}`} />
 
 <div class="title-24-eb mb-6 <sm:hidden">
   <h2>스페이스 설정</h2>

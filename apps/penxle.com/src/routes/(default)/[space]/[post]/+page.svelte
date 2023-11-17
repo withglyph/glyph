@@ -1,5 +1,6 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { Helmet } from '@penxle/ui';
   import { isTextSelection } from '@tiptap/core';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
@@ -237,6 +238,8 @@
     return content;
   }
 </script>
+
+<Helmet title={$query.post.revision.title} />
 
 <article class="w-full bg-cardprimary py-7.5 px-4 grow sm:py-17">
   <div class="w-full max-w-187.5 mx-auto space-y-6">

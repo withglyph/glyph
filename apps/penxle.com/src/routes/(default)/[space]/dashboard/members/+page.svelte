@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
   import { onMount } from 'svelte';
   import { graphql } from '$glitch';
   import { Avatar, Button, Modal } from '$lib/components';
@@ -94,6 +95,8 @@
     }
   `);
 </script>
+
+<Helmet title={`멤버 관리 | ${$query.space.name}`} />
 
 <div class="title-24-eb flex gap-4 mb-6 <sm:hidden">
   <h2>멤버 관리</h2>
