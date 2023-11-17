@@ -22,6 +22,6 @@
 
 <Helmet title="새 글 작성하기" />
 
-<Header {$query} {content} {editor} {subtitle} {tags} {title} />
+<Header {$query} {content} {editor} postOption={{ tags }} {subtitle} {title} />
 <Editor bind:title bind:editor bind:subtitle bind:content />
 <Footer bind:tags />

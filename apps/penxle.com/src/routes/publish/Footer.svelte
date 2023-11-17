@@ -2,7 +2,7 @@
   import clsx from 'clsx';
   import { Tag } from '$lib/components';
 
-  export let tags: string[];
+  export let tags: string[] = [];
   let open = false;
 </script>
 
