@@ -12,6 +12,7 @@
 
   let file: File | null = null;
   let bounds: Bounds | undefined = undefined;
+  let open = false;
 
   const uploading = trackable();
   const dispatch = createEventDispatcher<{ change: { id: string } }>();
@@ -62,13 +63,18 @@
   type="file"
   on:change={async (e) => {
     const f = e.currentTarget.files?.[0];
-    if (f && (await isValidImageFile(f))) file = f;
-    e.currentTarget.value = '';
+
+    if (f && (await isValidImageFile(f))) {
+      file = f;
+      open = true;
+    }
+
+    fileEl.value = '';
   }}
 />
 
 {#if file}
-  <Modal open size="md">
+  <Modal size="md" bind:open>
     <svelte:fragment slot="title">위치 조정</svelte:fragment>
     <Thumbnailer class="w-full" {file} bind:bounds />
     <Button slot="action" class="w-full mt-4" loading={$uploading} size="xl" on:click={upload}>저장</Button>
