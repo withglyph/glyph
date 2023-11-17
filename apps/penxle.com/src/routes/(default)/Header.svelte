@@ -59,7 +59,7 @@
     <section class="flex items-center justify-between">
       <Link class="mr-3.5 flex items-center gap-2 sm:mr-4 transition w-fit" href="/">
         <Logo class="<sm:square-7.5 sm:square-6" />
-        <Wordmark class="<sm:hidden h-5.25" />
+        <Wordmark class="<sm:hidden h-5.25 color-icon-primary" />
       </Link>
 
       <div

@@ -11,6 +11,7 @@
     color?: 'primary' | 'secondary' | 'tertiary';
     variant?: 'text' | 'outlined' | 'contained';
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    form?: string;
   } & (T extends 'link' ? { href: string; external?: boolean } : unknown);
 
   type $$Events = T extends 'link' ? unknown : { click: MouseEvent };
@@ -26,6 +27,8 @@
   export let variant: 'text' | 'outlined' | 'contained' = 'contained';
   export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
 
+  export let form: string | undefined = undefined;
+
   export let href: string | undefined = undefined;
   export let external = !href?.startsWith('/');
 
@@ -34,10 +37,9 @@
   $: props =
     type === 'link'
       ? { href: disabled || showSpinner ? undefined : href }
-      : { type, disabled: disabled || showSpinner };
+      : { type, disabled: disabled || showSpinner, form };
 
-  const { form } = getFormContext();
-  const { isSubmitting } = form ?? {};
+  const { isSubmitting } = getFormContext().form ?? {};
 
   $: showSpinner = !!(loading || (type === 'submit' && $isSubmitting));
 </script>

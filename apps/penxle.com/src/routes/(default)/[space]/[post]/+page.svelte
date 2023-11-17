@@ -13,19 +13,31 @@
   import { toast } from '$lib/notification';
   import { portal } from '$lib/svelte/actions';
   import { TiptapBubbleMenu, TiptapRenderer } from '$lib/tiptap/components';
-  import { humanizeNumber } from '$lib/utils';
+  import { createTiptapDocument, humanizeNumber } from '$lib/utils';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
+  import ShareContent from './ShareContent/ShareContent.svelte';
   import Toolbar from './Toolbar.svelte';
-  import type { Editor } from '@tiptap/core';
+  import type { Editor, JSONContent } from '@tiptap/core';
+  import type { Fragment } from '@tiptap/pm/model';
   import type { ContentFilterCategory } from '$glitch';
 
-  let open = false;
-  let editor: Editor;
+  let openMenu = false;
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLUListElement;
+  let editor: Editor | undefined;
   let loginRequireOpen = false;
   let emojiOpen = false;
   let password = '';
+
+  let share: { open: boolean; content: JSONContent | null } = {
+    open: false,
+    content: null,
+  };
+
+  function openShareContentModal(content: JSONContent) {
+    share.open = true;
+    share.content = content;
+  }
 
   $: query = graphql(`
     query SpacePostPage_Query($permalink: String!) {
@@ -106,7 +118,7 @@
     }
   `);
 
-  const update = async () => {
+  const updateMenuPosition = async () => {
     await tick();
 
     const position = await computePosition(targetEl, menuEl, {
@@ -120,8 +132,8 @@
     });
   };
 
-  $: if (open) {
-    void update();
+  $: if (openMenu) {
+    void updateMenuPosition();
   }
 
   const updatePostView = graphql(`
@@ -219,6 +231,11 @@
   $: blurContent = $query.post.blurred;
 
   const blurContentBoxHeight = 'min-h-11rem';
+
+  function fragmentToContent(fragment: Fragment) {
+    const content = fragment.toJSON() as JSONContent[];
+    return content;
+  }
 </script>
 
 <article class="w-full bg-cardprimary py-7.5 px-4 grow sm:py-17">
@@ -265,15 +282,15 @@
             bind:this={targetEl}
             class="i-lc-more-vertical square-6 text-icon-secondary"
             type="button"
-            on:click={() => (open = true)}
+            on:click={() => (openMenu = true)}
           />
 
-          {#if open}
+          {#if openMenu}
             <div
               class="fixed inset-0 z-49"
               role="button"
               tabindex="-1"
-              on:click={() => (open = false)}
+              on:click={() => (openMenu = false)}
               on:keypress={null}
               use:portal
             />
@@ -292,7 +309,7 @@
                       on:click={async () => {
                         await unmuteSpace({ spaceId: $query.post.space.id });
                         toast.success('스페이스 숨기기를 해제했어요');
-                        open = false;
+                        openMenu = false;
                       }}
                     >
                       스페이스 숨기기 해제
@@ -311,7 +328,7 @@
 
                         await muteSpace({ spaceId: $query.post.space.id });
                         toast.success('스페이스를 숨겼어요');
-                        open = false;
+                        openMenu = false;
                       }}
                     >
                       스페이스 숨기기
@@ -349,10 +366,32 @@
         </article>
 
         {#if editor}
-          <TiptapBubbleMenu {editor} when={(view) => isTextSelection(view.state.selection)}>
-            <div class="bg-gray-90 text-sm text-gray-30 rounded-lg p-2">
-              <button type="button">공유</button>
-            </div>
+          <TiptapBubbleMenu
+            class="bg-gray-90 text-sm text-gray-30 rounded-lg p-2
+							after:(absolute content-[''] bg-transparent top-110% left-50% translate--50% border-transparent border-t-color-gray-90 border-width-[0.5rem_0.5rem_0])"
+            {editor}
+            when={(view) => isTextSelection(view.state.selection)}
+          >
+            <button
+              type="button"
+              on:click={() => {
+                if (!editor) throw new Error('editor is not initialized');
+
+                const { state } = editor.view;
+                const { from, to } = state.selection;
+
+                const slice = state.doc.slice(from, to);
+
+                const content = fragmentToContent(slice.content);
+
+                content.filter((node) => node.type === 'text' || node.type === 'paragraph');
+                const tiptapDocument = createTiptapDocument(content);
+
+                openShareContentModal(tiptapDocument);
+              }}
+            >
+              공유
+            </button>
           </TiptapBubbleMenu>
         {/if}
 
@@ -483,3 +522,10 @@
 
 <LoginRequireModal bind:open={loginRequireOpen} />
 <Toolbar {$query} {handleShare} />
+<ShareContent
+  spaceIcon={$query.post.space.icon}
+  spaceName={$query.post.space.name}
+  title={$query.post.revision.title}
+  bind:open={share.open}
+  bind:content={share.content}
+/>

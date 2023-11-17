@@ -78,7 +78,7 @@
 {#if open}
   <div
     bind:this={menuEl}
-    class={clsx('absolute z-100 select-none', _class)}
+    class={clsx('absolute z-25 select-none', _class)}
     role="menu"
     tabindex="-1"
     on:mousedown|stopPropagation={() => (preventUpdate = true)}

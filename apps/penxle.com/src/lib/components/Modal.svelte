@@ -45,7 +45,7 @@
     >
       <div
         class={clsx(
-          'pointer-events-auto relative max-h-full w-full flex flex-col center rounded-2xl bg-cardprimary shadow-xl',
+          'pointer-events-auto relative max-h-full w-full flex flex-col center rounded-2xl bg-cardprimary shadow-xl select-text',
           size === 'sm' && 'p-4 pt-8 max-w-92',
           size === 'md' && 'px-6 pt-4 pb-5.5 rounded-b-none sm:(max-w-107.5 rounded-2xl)',
           size === 'lg' && 'p-7 pt-5 rounded-b-none sm:(max-w-187 rounded-2xl)',
@@ -105,10 +105,8 @@
             </button>
           {/if}
 
-          <div class="overflow-x-hidden">
-            <slot name="text" />
-            <slot />
-          </div>
+          <slot name="text" />
+          <slot />
 
           {#if $$slots.action}
             <div

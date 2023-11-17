@@ -17,6 +17,7 @@
   export let fit: 'cover' | 'contain' = 'cover';
   export let fade = true;
   export let intrinsic = false;
+  export let alt: string | undefined = undefined;
 
   let imgEl: HTMLImageElement | undefined;
   let domRect: DOMRect | undefined;
@@ -75,14 +76,14 @@
 >
   <div class="square-full relative">
     {#if visible}
-      <img bind:this={imgEl} style:object-fit={fit} class="square-full" alt="" {src} on:load={() => (loaded = true)} />
+      <img bind:this={imgEl} style:object-fit={fit} class="square-full" {alt} {src} on:load={() => (loaded = true)} />
     {/if}
 
     {#if !loaded}
       <img
         style:object-fit={fit}
         class="absolute top-0 left-0 square-full"
-        alt=""
+        alt="이미지 불러오는 중"
         src={placeholder}
         transition:scale={{
           duration: fade ? 150 : 0,

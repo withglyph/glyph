@@ -2,7 +2,7 @@
   /*
    * nodes
   */
-  --uno: body-16-m font-sans;
+  --uno: font-sans;
 
   & p {
     --uno: py-1;

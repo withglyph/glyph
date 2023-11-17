@@ -9,7 +9,7 @@
   <div class="mx-auto flex flex-wrap justify-between gap-6 w-full max-w-300">
     <div>
       <section class="flex items-center justify-between mb-4">
-        <Wordmark class="h-4" />
+        <Wordmark class="h-4 color-icon-primary" />
       </section>
 
       <section class="space-y-1">
