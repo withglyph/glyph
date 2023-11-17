@@ -1,6 +1,7 @@
 import 'dd-trace/init.js';
 
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
+import { PrismaInstrumentation } from '@prisma/instrumentation';
 import ddtrace from 'dd-trace';
 
 export const tracer = ddtrace;
@@ -9,5 +10,5 @@ provider.register();
 
 registerInstrumentations({
   tracerProvider: provider,
-  instrumentations: [],
+  instrumentations: [new PrismaInstrumentation()],
 });
