@@ -27,11 +27,11 @@ export const CreateSpaceSchema = z.object({
 
 export const UpdateSpaceSchema = z.object({
   spaceId: z.string(),
-  iconId: z.string(),
-  name: spaceName,
-  slug: SpaceSlugSchema,
+  iconId: z.string().optional(),
+  name: spaceName.optional(),
+  slug: SpaceSlugSchema.optional(),
   description: z.string().max(200, '스페이스 소개는 200자를 넘을 수 없어요').optional(),
-  externalLinks: z.array(z.string().url()),
+  externalLinks: z.array(z.string().url()).optional(),
   isPublic: z.boolean().optional(),
 });
 

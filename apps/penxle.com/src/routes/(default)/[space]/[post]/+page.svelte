@@ -1,18 +1,17 @@
 <script lang="ts">
-  import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import { Helmet } from '@penxle/ui';
   import { isTextSelection } from '@tiptap/core';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
-  import { onMount, tick } from 'svelte';
+  import { onMount } from 'svelte';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Avatar, Button, Image, Tag } from '$lib/components';
+  import { Menu, MenuItem } from '$lib/components/menu';
   import { EmojiPicker } from '$lib/emoji';
   import Emoji from '$lib/emoji/Emoji.svelte';
   import { FormValidationError } from '$lib/errors';
   import { toast } from '$lib/notification';
-  import { portal } from '$lib/svelte/actions';
   import { TiptapBubbleMenu, TiptapRenderer } from '$lib/tiptap/components';
   import { createTiptapDocument, humanizeNumber } from '$lib/utils';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
@@ -22,9 +21,6 @@
   import type { Fragment } from '@tiptap/pm/model';
   import type { ContentFilterCategory } from '$glitch';
 
-  let openMenu = false;
-  let targetEl: HTMLButtonElement;
-  let menuEl: HTMLUListElement;
   let editor: Editor | undefined;
   let loginRequireOpen = false;
   let emojiOpen = false;
@@ -54,14 +50,13 @@
         liked
         viewCount
         unlocked
+        contentFilters
+        blurred
 
         option {
           id
           hasPassword
         }
-
-        contentFilters
-        blurred
 
         tags {
           id
@@ -81,9 +76,11 @@
 
         space {
           id
+          slug
           name
           description
           muted
+          followed
 
           icon {
             id
@@ -92,6 +89,7 @@
 
           meAsMember {
             id
+            role
           }
         }
 
@@ -118,24 +116,6 @@
       ...Toolbar_query
     }
   `);
-
-  const updateMenuPosition = async () => {
-    await tick();
-
-    const position = await computePosition(targetEl, menuEl, {
-      placement: 'right',
-      middleware: [offset(4), flip(), shift({ padding: 8 })],
-    });
-
-    Object.assign(menuEl.style, {
-      left: `${position.x}px`,
-      top: `${position.y}px`,
-    });
-  };
-
-  $: if (openMenu) {
-    void updateMenuPosition();
-  }
 
   const updatePostView = graphql(`
     mutation SpacePostPage_UpdatePostView_Mutation($input: UpdatePostViewInput!) {
@@ -191,6 +171,15 @@
           id
           content
         }
+      }
+    }
+  `);
+
+  const followSpace = graphql(`
+    mutation SpacePostPage_FollowSpace_Mutation($input: FollowSpaceInput!) {
+      followSpace(input: $input) {
+        id
+        followed
       }
     }
   `);
@@ -252,95 +241,76 @@
       </hgroup>
 
       <div class="border-b border-secondary w-full flex flex-col mt-4.75 sm:mt-6">
-        <div class="flex items-center pt-4 pb-5 gap-3">
-          <div class="relative">
+        <div class="flex items-start pt-4 pb-5 gap-3">
+          <a class="relative" href={`/${$query.post.space.slug}`}>
             <Image class="square-10.5 rounded-3.5" $image={$query.post.space.icon} />
             <Avatar
               class="square-6 absolute border border-bg-primary -right-1 -bottom-1"
               $profile={$query.post.member.profile}
             />
-          </div>
+          </a>
           <div class="grow-1">
-            <p class="body-15-b">{$query.post.space.name} · {$query.post.member.profile.name}</p>
-            <div class="flex items-center gap-3.5 body-13-m text-secondary">
-              <span>{dayjs($query.post.revision.createdAt).formatAsDate()}</span>
-              <span class="flex items-center gap-1">
-                <i class="i-lc-eye square-3.75" />
-                {humanizeNumber($query.post.viewCount)}
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="i-px-heart square-3.75" />
-                {humanizeNumber($query.post.likeCount)}
-              </span>
-              <span class="flex items-center gap-1">
-                <i class="i-lc-alarm-clock square-3.75" />
-                1분
-              </span>
+            <a class="body-15-b break-all" href={`/${$query.post.space.slug}`}>
+              {$query.post.space.name} · {$query.post.member.profile.name}
+            </a>
+            <div class="flex items-center flex-wrap body-13-m text-secondary">
+              <span class="mr-3.5">{dayjs($query.post.revision.createdAt).formatAsDate()}</span>
+              <div class="flex items-center gap-3.5 body-13-m text-secondary">
+                <span class="flex items-center gap-1">
+                  <i class="i-lc-eye square-3.75" />
+                  {humanizeNumber($query.post.viewCount)}
+                </span>
+                <span class="flex items-center gap-1">
+                  <i class="i-px-heart square-3.75" />
+                  {humanizeNumber($query.post.likeCount)}
+                </span>
+                <span class="flex items-center gap-1">
+                  <i class="i-lc-alarm-clock square-3.75" />
+                  1분
+                </span>
+              </div>
             </div>
           </div>
 
           <button class="i-lc-bookmark square-6" type="button" />
           <button class="i-lc-share square-6" type="button" on:click={handleShare} />
-          <button
-            bind:this={targetEl}
-            class="i-lc-more-vertical square-6 text-icon-secondary"
-            type="button"
-            on:click={() => (openMenu = true)}
-          />
 
-          {#if openMenu}
-            <div
-              class="fixed inset-0 z-49"
-              role="button"
-              tabindex="-1"
-              on:click={() => (openMenu = false)}
-              on:keypress={null}
-              use:portal
-            />
+          <Menu>
+            <button slot="value" class="i-lc-more-vertical square-6 text-icon-secondary" type="button" />
 
-            <ul
-              bind:this={menuEl}
-              class="absolute z-50 w-64 flex flex-col border rounded bg-white p-2 shadow space-y-1"
-              use:portal
-            >
-              {#if !$query.post.space.meAsMember}
-                {#if $query.post.space.muted}
-                  <li>
-                    <button
-                      class="w-full px-4 py-3 rounded-lg body-14-m text-disabled hover:(body-14-sb text-primary bg-primary)"
-                      type="button"
-                      on:click={async () => {
-                        await unmuteSpace({ spaceId: $query.post.space.id });
-                        toast.success('스페이스 숨기기를 해제했어요');
-                        openMenu = false;
-                      }}
-                    >
-                      스페이스 숨기기 해제
-                    </button>
-                  </li>
-                {:else}
-                  <li>
-                    <button
-                      class="w-full px-4 py-3 rounded-lg body-14-m text-disabled hover:(body-14-sb text-primary bg-primary)"
-                      type="button"
-                      on:click={async () => {
-                        if (!$query.me) {
-                          loginRequireOpen = true;
-                          return;
-                        }
+            {#if !$query.post.space.meAsMember}
+              {#if $query.post.space.muted}
+                <MenuItem
+                  on:click={async () => {
+                    await unmuteSpace({ spaceId: $query.post.space.id });
+                    toast.success('스페이스 숨기기를 해제했어요');
+                  }}
+                >
+                  스페이스 숨기기 해제
+                </MenuItem>
+              {:else}
+                <MenuItem
+                  on:click={async () => {
+                    if (!$query.me) {
+                      loginRequireOpen = true;
+                      return;
+                    }
 
-                        await muteSpace({ spaceId: $query.post.space.id });
-                        toast.success('스페이스를 숨겼어요');
-                        openMenu = false;
-                      }}
-                    >
-                      스페이스 숨기기
-                    </button>
-                  </li>
-                {/if}
+                    await muteSpace({ spaceId: $query.post.space.id });
+                    toast.success('스페이스를 숨겼어요');
+                  }}
+                >
+                  스페이스 숨기기
+                </MenuItem>
               {/if}
-            </ul>
-          {/if}
+              <MenuItem>포스트 신고하기</MenuItem>
+            {:else}
+              <MenuItem>수정하기</MenuItem>
+              {#if $query.post.space.meAsMember.role === 'ADMIN'}
+                <MenuItem>삭제하기</MenuItem>
+              {/if}
+            {/if}
+          </Menu>
         </div>
       </div>
     </header>
@@ -518,11 +488,31 @@
         <p class="body-15-sb text-secondary my-2 truncate text-center w-full">
           {$query.post.space.description ?? '아직 소개가 없어요'}
         </p>
-        <Button class="rounded-12!" color="tertiary" size="md" variant="outlined">
-          <i class="i-lc-bell square-5" />
-          <span class="mx-2">알림받는중</span>
-          <i class="i-lc-chevron-down square-5" />
-        </Button>
+        {#if !$query.post.space.meAsMember}
+          {#if $query.post.space.followed}
+            <Button class="rounded-12!" color="tertiary" size="md" variant="outlined">
+              <i class="i-lc-bell square-5" />
+              <span class="mx-2">알림받는중</span>
+              <i class="i-lc-chevron-down square-5" />
+            </Button>
+          {:else}
+            <Button
+              class="rounded-12!"
+              size="md"
+              on:click={async () => {
+                if (!$query.me) {
+                  loginRequireOpen = true;
+                  return;
+                }
+
+                await followSpace({ spaceId: $query.post.space.id });
+                toast.success('관심 스페이스로 등록되었어요');
+              }}
+            >
+              + 관심
+            </Button>
+          {/if}
+        {/if}
       </div>
     </div>
   </div>
