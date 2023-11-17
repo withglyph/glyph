@@ -252,11 +252,11 @@ const DeleteSpaceInput = builder.inputType('DeleteSpaceInput', {
 const UpdateSpaceInput = builder.inputType('UpdateSpaceInput', {
   fields: (t) => ({
     spaceId: t.id(),
-    name: t.string(),
-    slug: t.string(),
-    iconId: t.id(),
+    name: t.string({ required: false }),
+    slug: t.string({ required: false }),
+    iconId: t.id({ required: false }),
     description: t.string({ required: false }),
-    externalLinks: t.stringList(),
+    externalLinks: t.stringList({ required: false }),
     isPublic: t.boolean({ required: false }),
   }),
   validate: { schema: UpdateSpaceSchema },
@@ -538,27 +538,34 @@ builder.mutationFields((t) => ({
           role: 'ADMIN',
         },
       });
+
       if (!meAsMember) {
         throw new PermissionDeniedError();
       }
 
-      const isSlugUsed = await db.space.exists({
-        where: { slug: input.slug, state: 'ACTIVE', id: { not: input.spaceId } },
-      });
-      if (isSlugUsed) {
-        throw new IntentionalError('이미 사용중인 URL이에요.');
+      if (input.slug) {
+        const isSlugUsed = await db.space.exists({
+          where: { slug: input.slug, state: 'ACTIVE', id: { not: input.spaceId } },
+        });
+
+        if (isSlugUsed) {
+          throw new IntentionalError('이미 사용중인 URL이에요.');
+        }
       }
 
-      await db.spaceExternalLink.deleteMany({
-        where: { spaceId: input.spaceId },
-      });
-      await db.spaceExternalLink.createMany({
-        data: input.externalLinks.map((url) => ({
-          id: createId(),
-          spaceId: input.spaceId,
-          url,
-        })),
-      });
+      if (input.externalLinks) {
+        await db.spaceExternalLink.deleteMany({
+          where: { spaceId: input.spaceId },
+        });
+
+        await db.spaceExternalLink.createMany({
+          data: input.externalLinks.map((url) => ({
+            id: createId(),
+            spaceId: input.spaceId,
+            url,
+          })),
+        });
+      }
 
       return db.space.update({
         ...query,
@@ -567,10 +574,10 @@ builder.mutationFields((t) => ({
           state: 'ACTIVE',
         },
         data: {
-          name: input.name,
-          slug: input.slug,
-          iconId: input.iconId,
-          description: input.description,
+          name: input.name ?? undefined,
+          slug: input.slug ?? undefined,
+          iconId: input.iconId ?? undefined,
+          description: input.description ?? undefined,
           visibility: match(input.isPublic)
             .with(true, () => 'PUBLIC' as const)
             .with(false, () => 'PRIVATE' as const)
