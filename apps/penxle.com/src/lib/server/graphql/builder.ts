@@ -39,7 +39,7 @@ export const builder = new SchemaBuilder<{
     user: !!context.session,
   }),
   defaultInputFieldRequiredness: true,
-  plugins: [PrismaPlugin, ScopeAuthPlugin, SimpleObjectsPlugin, ValidationPlugin],
+  plugins: [ScopeAuthPlugin, PrismaPlugin, SimpleObjectsPlugin, ValidationPlugin],
   prisma: {
     // spell-checker:disable-next-line
     dmmf: Prisma.dmmf,
@@ -47,7 +47,6 @@ export const builder = new SchemaBuilder<{
     filterConnectionTotalCount: true,
   },
   scopeAuthOptions: {
-    runScopesOnType: true,
     treatErrorsAsUnauthorized: true,
     unauthorizedError: (_, __, ___, result) => {
       logger.warn(result);
