@@ -92,6 +92,7 @@
 
           meAsMember {
             id
+            role
           }
         }
 
@@ -338,6 +339,16 @@
                     </button>
                   </li>
                 {/if}
+              {/if}
+              {#if $query.post.member.id === $query.me?.id || $query.post.space.meAsMember?.role === 'ADMIN'}
+                <li>
+                  <a
+                    class="flex w-full px-4 py-3 rounded-lg body-14-m text-disabled hover:(body-14-sb text-primary bg-primary)"
+                    href={`/publish/${$query.post.permalink}`}
+                  >
+                    수정하기
+                  </a>
+                </li>
               {/if}
             </ul>
           {/if}
