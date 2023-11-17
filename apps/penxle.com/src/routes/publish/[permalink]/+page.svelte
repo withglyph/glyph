@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import Editor from '../Editor.svelte';
@@ -54,16 +53,16 @@
   let postOption: UpdatePostOptionsInput;
   let permalink: string;
 
-  onMount(() => {
+  $: if (content === undefined) {
     content = $query.post.revision.content;
-  });
+  }
 
   $: title = $query.post.revision.title;
   $: subtitle = $query.post.revision.subtitle ?? null;
-  $: content = $query.post.revision.content;
 
   $: postOption = {
     ...$query.post.option,
+    id: undefined,
     postId: $query.post.id,
     tags: $query.post.tags.map(({ tag }) => tag.name),
     contentFilters: $query.post.contentFilters,

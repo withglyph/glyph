@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { PostKind } from '@prisma/client';
   import clsx from 'clsx';
   import * as R from 'radash';
   import { browser } from '$app/environment';
@@ -14,7 +15,7 @@
   import ToolbarButton from './ToolbarButton.svelte';
   import type { PostRevision } from '@prisma/client';
   import type { Editor, JSONContent } from '@tiptap/core';
-  import type { ContentFilterCategory, PostKind, PostRevisionKind, PublishPage_Header_query } from '$glitch';
+  import type { ContentFilterCategory, PostRevisionKind, PublishPage_Header_query } from '$glitch';
   import type { UpdatePostOptionsInput } from '$lib/validations/post';
 
   let _query: PublishPage_Header_query;
@@ -26,7 +27,9 @@
   export let editor: Editor | undefined;
   export let permalink: string | undefined = undefined;
 
-  let _postOption: Pick<UpdatePostOptionsInput, 'tags'> | UpdatePostOptionsInput;
+  type PostOptionQueryPayload = Omit<UpdatePostOptionsInput, 'password'> & { hasPassword: boolean };
+
+  let _postOption: Pick<PostOptionQueryPayload, 'tags' | 'hasPassword'> | PostOptionQueryPayload;
   export { _postOption as postOption };
 
   const defaultPostOption: Omit<UpdatePostOptionsInput, 'tags'> = {
@@ -36,11 +39,13 @@
     visibility: 'PUBLIC',
   };
 
-  const postOption: UpdatePostOptionsInput = { ...defaultPostOption, ..._postOption };
+  let { hasPassword, ...postOption }: { hasPassword: boolean } & UpdatePostOptionsInput = {
+    ...defaultPostOption,
+    ..._postOption,
+  } satisfies UpdatePostOptionsInput;
 
   let postId = postOption.postId;
   let hasContentFilter = postOption.contentFilters.length > 0;
-  let isPrivatePost = !!postOption.password;
 
   $: query = fragment(
     _query,
@@ -317,15 +322,15 @@
         <div class="flex gap-6 items-center h-10">
           <Checkbox
             class="body-15-sb"
-            checked={isPrivatePost}
+            checked={hasPassword}
             on:change={() => {
-              isPrivatePost = !isPrivatePost;
+              hasPassword = !hasPassword;
               setData(($data) => ({ ...$data, password: null }));
             }}
           >
             비밀글
           </Checkbox>
-          {#if isPrivatePost}
+          {#if hasPassword}
             <input
               name="password"
               class="bg-surface-primary rounded-xl px-3 py-1 body-15-sb h-10"
