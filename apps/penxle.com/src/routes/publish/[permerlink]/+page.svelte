@@ -4,6 +4,7 @@
   import Editor from '../Editor.svelte';
   import Footer from '../Footer.svelte';
   import Header from '../Header.svelte';
+  import type { PostRevision } from '@prisma/client';
   import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
 
   $: query = graphql(`
@@ -32,15 +33,15 @@
   `);
 
   let title: string;
-  let subtitle: string;
+  let subtitle: PostRevision['subtitle'];
   let editor: TiptapEditor;
   let content: JSONContent;
 
   let tags: string[] = [];
 
-  $: title = $query.post?.title;
-  $: subtitle = $query.post?.revision?.subtitle;
-  $: content = $query.post?.revision?.content;
+  $: title = $query.post.revision.title;
+  $: subtitle = $query.post.revision.subtitle ?? null;
+  $: content = $query.post.revision.content;
 </script>
 
 <Helmet title="글 수정하기" />

@@ -22,10 +22,11 @@
     spacing,
     texts,
   } from './formats';
+  import type { PostRevision } from '@prisma/client';
   import type { Editor, JSONContent } from '@tiptap/core';
 
   export let title: string;
-  export let subtitle: string;
+  export let subtitle: PostRevision['subtitle'];
   export let content: JSONContent;
   export let editor: Editor;
 

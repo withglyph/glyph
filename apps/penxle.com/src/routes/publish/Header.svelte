@@ -10,6 +10,7 @@
   import { Menu, MenuItem } from '$lib/components/menu';
   import { postKind } from '$lib/stores';
   import ToolbarButton from './ToolbarButton.svelte';
+  import type { PostRevision } from '@prisma/client';
   import type { Editor, JSONContent } from '@tiptap/core';
   import type {
     ContentFilterCategory,
@@ -23,7 +24,7 @@
   export { _query as $query };
 
   export let title: string;
-  export let subtitle: string;
+  export let subtitle: PostRevision['subtitle'];
   export let content: JSONContent;
   export let editor: Editor | undefined;
   export let tags: string[] = [];
