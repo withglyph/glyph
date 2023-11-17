@@ -4,6 +4,7 @@ import { hash, verify } from 'argon2';
 import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
 import * as R from 'radash';
+import { match, P } from 'ts-pattern';
 import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { redis } from '$lib/server/cache';
@@ -753,8 +754,14 @@ builder.mutationFields((t) => ({
         );
       }
 
-      const password = input.password ? await hash(input.password) : undefined;
-      if (password) {
+      const password = await match(input.password)
+        // eslint-disable-next-line unicorn/no-useless-undefined
+        .with('', () => undefined)
+        .with(P.string, (password) => hash(password))
+        .with(P.nullish, () => null)
+        .exhaustive();
+
+      if (password !== undefined) {
         await redis.del(`Post:${post.id}:passwordUnlock`);
       }
 
