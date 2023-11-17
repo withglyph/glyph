@@ -11,8 +11,6 @@ generator pothos {
 
 generator prisma {
   provider = "prisma-client-js"
-
-  previewFeatures = ["tracing"]
 }
 
 model File {
