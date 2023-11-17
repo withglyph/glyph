@@ -321,10 +321,17 @@ builder.prismaObject('PostRevision', {
           }
         }
 
-        const paidContentText = await revisionContentToText(
-          `${revision.id}:textPaidContent`,
-          revision.paidContent as JSONContent[],
-        );
+        const paidContentText = await revisionContentToText(`${revision.id}:textPaidContent`, paidContent);
+
+        let paidContentImageCount = 0,
+          paidContentFileCount = 0;
+        for (const node of paidContent) {
+          if (node.type === 'image') {
+            paidContentImageCount++;
+          } else if (node.type === 'file') {
+            paidContentFileCount++;
+          }
+        }
 
         return createTiptapDocument([
           ...content,
@@ -342,8 +349,8 @@ builder.prismaObject('PostRevision', {
 
                 counts: {
                   characters: paidContentText.length,
-                  images: 42,
-                  files: 42,
+                  images: paidContentImageCount,
+                  files: paidContentFileCount,
                 },
               },
             },

@@ -28,58 +28,66 @@ export const decorateContent = async (
   db: InteractiveTransactionClient,
   content: JSONContent[],
 ): Promise<JSONContent[]> => {
-  traverse(content, async ({ key, value, parent }) => {
-    if (parent && key === 'type' && value === 'image') {
-      if (!parent.attrs.id) {
-        return;
+  return Promise.all(
+    content.map(async (node) => {
+      if (node.type === 'image') {
+        if (!node.attrs?.id) {
+          return node;
+        }
+
+        const image = await db.image.findUnique({
+          where: { id: node.attrs.id },
+          select: { id: true, width: true, height: true, placeholder: true, path: true },
+        });
+
+        if (!image) {
+          return node;
+        }
+
+        return {
+          ...node,
+          attrs: {
+            ...node.attrs,
+            __data: {
+              id: image.id,
+              width: image.width,
+              height: image.height,
+              placeholder: image.placeholder,
+              url: `https://pnxl.net/${image.path}`,
+            },
+          },
+        };
       }
 
-      const image = await db.image.findUnique({
-        where: { id: parent.attrs.id },
-        select: { id: true, width: true, height: true, placeholder: true, path: true },
-      });
+      if (node.type === 'file') {
+        if (!node.attrs?.id) {
+          return node;
+        }
 
-      if (!image) {
-        return;
+        const file = await db.file.findUnique({
+          where: { id: node.attrs.id },
+          select: { id: true, name: true, size: true, path: true },
+        });
+
+        if (!file) {
+          return node;
+        }
+
+        return {
+          ...node,
+          attrs: {
+            ...node.attrs,
+            __data: {
+              id: file.id,
+              name: file.name,
+              size: file.size,
+              url: `https://pnxl.net/${file.path}`,
+            },
+          },
+        };
       }
 
-      parent.attrs = {
-        ...parent.attrs,
-        __data: {
-          id: image.id,
-          width: image.width,
-          height: image.height,
-          placeholder: image.placeholder,
-          url: `https://pnxl.net/${image.path}`,
-        },
-      };
-    }
-
-    if (parent && key === 'type' && value === 'file') {
-      if (!parent.attrs.id) {
-        return;
-      }
-
-      const file = await db.file.findUnique({
-        where: { id: parent.attrs.id },
-        select: { id: true, name: true, size: true, path: true },
-      });
-
-      if (!file) {
-        return;
-      }
-
-      parent.attrs = {
-        ...parent.attrs,
-        __data: {
-          id: file.id,
-          name: file.name,
-          size: file.size,
-          url: `https://pnxl.net/${file.path}`,
-        },
-      };
-    }
-  });
-
-  return content;
+      return node;
+    }),
+  );
 };
