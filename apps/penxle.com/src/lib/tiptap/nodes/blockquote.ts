@@ -23,7 +23,7 @@ export const inputRegex = /^\s*>\s$/;
 
 export const Blockquote = Node.create<BlockquoteOptions>({
   name: 'blockquote',
-  content: 'block+',
+  content: 'prose+',
   group: 'block',
   defining: true,
 

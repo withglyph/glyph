@@ -13,7 +13,7 @@ declare module '@tiptap/core' {
 
 export const Heading = Node.create({
   name: 'heading',
-  group: 'block',
+  group: 'block prose',
   content: 'text*',
   defining: true,
 

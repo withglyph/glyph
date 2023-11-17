@@ -14,7 +14,7 @@ declare module '@tiptap/core' {
 
 export const Paragraph = Node.create({
   name: 'paragraph',
-  group: 'block',
+  group: 'block prose',
   content: 'inline*',
   priority: 255,
 
