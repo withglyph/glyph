@@ -166,10 +166,10 @@
 <Modal bind:open={invitationOpen}>
   <svelte:fragment slot="title">스페이스 가입</svelte:fragment>
 
-  <div class="flex items-center justify-between pb-2">
+  <Switch name="useSpaceProfile" class="flex items-center justify-between pb-2" bind:checked>
     <p class="body-16-b">스페이스 전용 프로필</p>
-    <Switch {checked} on:change={() => (checked = !checked)} />
-  </div>
+  </Switch>
+
   {#if checked}
     <p class="text-3.5 text-gray-50">스페이스 내에서만 사용되는 프로필이에요</p>
   {/if}

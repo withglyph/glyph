@@ -241,15 +241,13 @@
       </ul>
     </div>
 
-    <div class="flex justify-between mt-8 body-16-b">
+    <Switch name="isPublic" class="flex justify-between mt-8 body-16-b">
       <p>스페이스 공개</p>
-      <Switch name="isPublic" />
-    </div>
+    </Switch>
 
-    <div class="flex justify-between mt-6 body-16-b">
+    <Switch class="flex justify-between mt-6 body-16-b">
       <p>관심 독자 수 공개</p>
-      <Switch />
-    </div>
+    </Switch>
   </form>
 
   <Button class="w-full mt-8 sm:mt-6" loading={$isSubmitting} size="xl" type="submit" on:click={handleSubmit}>

@@ -95,14 +95,13 @@
     </FormField>
 
     <div class="space-y-4 py-2">
-      <div class="flex items-center justify-between">
+      <Switch name="isPublic" class="flex items-center justify-between">
         <p class="body-16-b">스페이스 공개</p>
-        <Switch name="isPublic" />
-      </div>
-      <div class="flex items-center justify-between">
+      </Switch>
+
+      <Switch class="flex items-center justify-between" bind:checked={useSpaceProfile}>
         <p class="body-16-b">스페이스 전용 프로필</p>
-        <Switch bind:checked={useSpaceProfile} />
-      </div>
+      </Switch>
     </div>
 
     {#if useSpaceProfile}
