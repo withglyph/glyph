@@ -487,6 +487,11 @@
         size="sm"
         variant="outlined"
         on:click={async () => {
+          if (!$query.me) {
+            loginRequireOpen = true;
+            return;
+          }
+
           await ($query.post.liked ? unlikePost({ postId: $query.post.id }) : likePost({ postId: $query.post.id }));
         }}
       >

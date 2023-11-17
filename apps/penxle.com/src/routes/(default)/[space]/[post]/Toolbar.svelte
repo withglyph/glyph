@@ -2,11 +2,13 @@
   import clsx from 'clsx';
   import { fragment, graphql } from '$glitch';
   import EmojiPicker from '$lib/emoji/EmojiPicker.svelte';
+  import LoginRequireModal from '../../LoginRequireModal.svelte';
   import type { Toolbar_query } from '$glitch';
 
   let targetEl: HTMLDivElement;
   let prevScrollpos = 0;
   let focusMode = false;
+  let loginRequireOpen = false;
 
   let _query: Toolbar_query;
   export { _query as $query };
@@ -61,6 +63,11 @@
   let timeoutId: NodeJS.Timeout;
 
   const handleLikeClick = async () => {
+    if (!$query.me) {
+      loginRequireOpen = true;
+      return;
+    }
+
     await likePost({ postId: $query.post.id });
 
     for (const child of likeTargetEl.children) {
@@ -160,6 +167,8 @@
     </div>
   </div>
 </div>
+
+<LoginRequireModal bind:open={loginRequireOpen} />
 
 <style>
   .linearGradient {
