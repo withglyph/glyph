@@ -39,8 +39,8 @@
     <div class="flex flex-col items-center">
       <button
         class={clsx(
-          'w-16 h-7.5 rounded-1.5 rounded-b-none flex center bg-white shadow-[0px_-4px_16px_-6px_rgba(0,0,0,0.15)]',
-          !open && 'fixed z-1 bottom-10px',
+          'w-16 h-7.5 rounded-1.5 rounded-b-none flex center bg-white shadow-[0px_-5px_16px_-8px_rgba(0,0,0,0.15)]',
+          !open && 'fixed z-1 bottom-54px',
         )}
         type="button"
         on:click={() => (open = !open)}
@@ -52,7 +52,7 @@
     <div
       class={clsx(
         'overflow-y-scroll max-h-80vh bg-white shadow-[0_4px_16px_0px_rgba(0,0,0,0.15)] px-4',
-        !open && 'fixed w-full top-[calc(100vh-10px)]',
+        !open && 'fixed w-full top-[calc(100vh-54px)]',
       )}
     >
       <div class="w-full max-w-300 flex items-center gap-4 flex-wrap pt-3 pb-4">

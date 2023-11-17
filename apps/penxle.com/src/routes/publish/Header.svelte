@@ -4,9 +4,9 @@
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
-  import { Button, Image, Modal, ToggleButton, Tooltip } from '$lib/components';
+  import { Button, Image, ToggleButton, Tooltip } from '$lib/components';
   import { Logo } from '$lib/components/branding';
-  import { Checkbox } from '$lib/components/forms';
+  import { Checkbox, Switch } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { postKind } from '$lib/stores';
   import ToolbarButton from './ToolbarButton.svelte';
@@ -38,7 +38,6 @@
   let contentFilters: ContentFilterCategory[] = [];
   let usePassword = false;
   let password = '';
-  let open = false;
   let permalink = '';
 
   $: query = fragment(
@@ -241,27 +240,193 @@
       </div>
     </Tooltip>
 
-    <Button
-      color="tertiary"
-      disabled={!canPublish}
-      loading={$revisePost.inflight}
-      size="lg"
-      variant="outlined"
-      on:click={() => revise('MANUAL_SAVE')}
-    >
-      저장 <span class="text-secondary">18</span>
-    </Button>
+    <div class="flex">
+      <Button
+        class="body-15-b disabled:border! border-r-none rounded-r-none peer"
+        color="tertiary"
+        disabled={!canPublish}
+        loading={$revisePost.inflight}
+        size="lg"
+        variant="outlined"
+        on:click={() => revise('MANUAL_SAVE')}
+      >
+        임시저장
+      </Button>
+      <Button
+        class="text-blue-50 body-15-b rounded-l-none peer-enabled:peer-hover:border-l-border-primary"
+        color="tertiary"
+        size="lg"
+        variant="outlined"
+      >
+        18
+      </Button>
+    </div>
 
-    <Button
-      disabled={!canPublish}
-      loading={$revisePost.inflight}
-      size="lg"
-      on:click={async () => {
-        open = true;
-      }}
-    >
-      포스트 게시
-    </Button>
+    <Menu>
+      <Button slot="value" disabled={!canPublish} loading={$revisePost.inflight} size="lg">포스트 게시</Button>
+
+      <MenuItem class="square-6! flex center absolute top-6 right-6 p-0!">
+        <i class="i-lc-x" />
+      </MenuItem>
+
+      <div class="px-3 pt-4 pb-3.5 space-y-4 w-163">
+        <p class="title-20-b">포스트 게시 옵션</p>
+
+        <div>
+          <p class="text-secondary mb-3">공개범위</p>
+
+          <fieldset class="flex gap-6">
+            <div class="flex gap-1.5 items-center">
+              <input
+                id="public"
+                class="square-4.5"
+                checked={visibility === 'PUBLIC'}
+                type="radio"
+                value="PUBLIC"
+                on:input={() => (visibility = 'PUBLIC')}
+              />
+              <label class="grow body-15-sb" for="public">전체 공개</label>
+            </div>
+            <div class="flex gap-1.5 items-center">
+              <input
+                id="space"
+                class="square-4.5"
+                checked={visibility === 'SPACE'}
+                type="radio"
+                value="SPACE"
+                on:input={() => (visibility = 'SPACE')}
+              />
+              <label class="grow body-15-sb flex items-center gap-1" for="space">
+                멤버 공개
+                <Tooltip message="성인 인증을 한 유저에게만 노출돼요" placement="top">
+                  <i class="i-lc-help-circle square-4 text-secondary" />
+                </Tooltip>
+              </label>
+            </div>
+            <div class="flex gap-1.5 items-center">
+              <input
+                id="unlisted"
+                class="square-4.5"
+                checked={visibility === 'UNLISTED'}
+                type="radio"
+                value="UNLISTED"
+                on:input={() => (visibility = 'UNLISTED')}
+              />
+              <label class="grow body-15-sb flex items-center gap-1" for="unlisted">
+                링크 공개
+                <Tooltip message="성인 인증을 한 유저에게만 노출돼요" placement="top">
+                  <i class="i-lc-help-circle square-4 text-secondary" />
+                </Tooltip>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="flex gap-6 items-center h-10">
+          <Checkbox class="body-15-sb" checked={usePassword} on:change={() => (usePassword = !usePassword)}>
+            비밀글
+          </Checkbox>
+          {#if usePassword}
+            <input
+              class="bg-surface-primary rounded-xl px-3 py-1 body-15-sb h-10"
+              placeholder="비밀번호 입력"
+              type="text"
+              bind:value={password}
+            />
+          {/if}
+        </div>
+
+        <p class="text-secondary">종류 선택</p>
+
+        <div class="flex items-center gap-1">
+          <Checkbox class="body-15-sb" on:change={(e) => checkContentFilter(e, 'ADULT')}>성인물</Checkbox>
+          <Tooltip message="성인 인증을 한 유저에게만 노출돼요" placement="top">
+            <i class="i-lc-help-circle square-4 text-secondary" />
+          </Tooltip>
+        </div>
+
+        <Checkbox
+          class="body-15-sb"
+          checked={hasContentFilter}
+          on:change={() => (hasContentFilter = !hasContentFilter)}
+        >
+          트리거 워닝
+        </Checkbox>
+
+        {#if hasContentFilter}
+          <div class="grid grid-cols-5 gap-2">
+            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'VIOLENCE')}>폭력성</ToggleButton>
+            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'GROSSNESS')}>벌레/징그러움</ToggleButton>
+            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'CRUELTY')}>잔인성</ToggleButton>
+            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'HORROR')}>공포성</ToggleButton>
+            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'GAMBLING')}>사행성</ToggleButton>
+            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'CRIME')}>약물/범죄</ToggleButton>
+            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'PHOBIA')}>정신질환/공포증</ToggleButton>
+            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'TRAUMA')}>PTSD/트라우마</ToggleButton>
+            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'INSULT')}>부적절한 언어</ToggleButton>
+            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'OTHER')}>기타</ToggleButton>
+          </div>
+        {/if}
+
+        <p class="text-secondary">세부 설정</p>
+
+        <Switch
+          id="receiveTagContribution"
+          class="flex items-center justify-between"
+          bind:checked={receiveTagContribution}
+        >
+          <div>
+            <p class="body-16-b">게시물 태그 수정 및 등록</p>
+            <p class="body-15-m text-secondary">다른 독자들이 게시물의 태그를 수정할 수 있어요</p>
+          </div>
+        </Switch>
+
+        <Switch id="receiveFeedback" class="flex items-center justify-between" bind:checked={receiveFeedback}>
+          <div>
+            <p class="body-16-b">게시물 피드백</p>
+            <p class="body-15-m text-secondary">가장 오래 머무른 구간, 밑줄, 이모지 등 피드백을 받아요</p>
+          </div>
+        </Switch>
+
+        <Switch name="discloseStats" class="flex items-center justify-between" bind:checked={discloseStats}>
+          <div>
+            <p class="body-16-b">게시물 세부 통계 공개</p>
+            <p class="body-15-m text-secondary">조회수, 좋아요 수를 다른 독자들에게 공개해요</p>
+          </div>
+        </Switch>
+
+        <Switch name="receivePatronage" class="flex items-center justify-between" bind:checked={receivePatronage}>
+          <div>
+            <p class="body-16-b">게시물 창작자 후원</p>
+            <p class="body-15-m text-secondary">다른 독자들이 게시물에 자유롭게 후원을 할 수 있도록 해요</p>
+          </div>
+        </Switch>
+
+        <Button
+          class="w-full"
+          size="xl"
+          on:click={async () => {
+            const resp = await revise('PUBLISHED');
+
+            await updatePostOptions({
+              postId: resp.id,
+              contentFilters,
+              discloseStats,
+              receiveFeedback,
+              receivePatronage,
+              receiveTagContribution,
+              visibility,
+              tags,
+              password,
+            });
+
+            await goto(`/${resp.space.slug}/${resp.permalink}`);
+          }}
+        >
+          게시하기
+        </Button>
+      </div>
+    </Menu>
 
     <Menu placement="bottom-end">
       <button slot="value" class="square-10 p-3 flex center" type="button">
@@ -275,216 +440,3 @@
     </Menu>
   </div>
 </header>
-
-<Modal size="lg" bind:open>
-  <svelte:fragment slot="title">포스트 게시 옵션</svelte:fragment>
-
-  <div class="space-y-6 mt-2">
-    <fieldset class="flex gap-6">
-      <div class="flex gap-1.5">
-        <input
-          id="public"
-          class="square-6"
-          checked={visibility === 'PUBLIC'}
-          type="radio"
-          value="PUBLIC"
-          on:input={() => (visibility = 'PUBLIC')}
-        />
-        <label class="grow body-15-sb" for="public">전체 공개</label>
-      </div>
-      <div class="flex gap-1.5">
-        <input
-          id="space"
-          class="square-6"
-          checked={visibility === 'SPACE'}
-          type="radio"
-          value="SPACE"
-          on:input={() => (visibility = 'SPACE')}
-        />
-        <label class="grow body-15-sb" for="space">멤버 공개</label>
-      </div>
-      <div class="flex gap-1.5">
-        <input
-          id="unlisted"
-          class="square-6"
-          checked={visibility === 'UNLISTED'}
-          type="radio"
-          value="UNLISTED"
-          on:input={() => (visibility = 'UNLISTED')}
-        />
-        <label class="grow body-15-sb" for="unlisted">링크 공개</label>
-      </div>
-    </fieldset>
-
-    <div class="flex gap-6 items-center">
-      <Checkbox class="body-15-sb" checked={usePassword} on:change={() => (usePassword = !usePassword)}>
-        비밀글
-      </Checkbox>
-      {#if usePassword}
-        <input
-          class="bg-surface-primary rounded-xl px-3 py-1 body-15-sb h-10"
-          placeholder="비밀번호 입력"
-          type="text"
-          bind:value={password}
-        />
-      {/if}
-    </div>
-
-    <p class="text-secondary">종류 선택</p>
-
-    <div class="flex gap-3">
-      <Checkbox class="body-15-sb" checked={hasContentFilter} on:change={() => (hasContentFilter = !hasContentFilter)}>
-        트리거 워닝
-      </Checkbox>
-      <div class="flex items-center gap-1">
-        <Checkbox class="body-15-sb" on:change={(e) => checkContentFilter(e, 'ADULT')}>성인물</Checkbox>
-        <Tooltip message="성인 인증을 한 유저에게만 노출돼요" placement="top">
-          <i class="i-lc-help-circle square-4 text-secondary" />
-        </Tooltip>
-      </div>
-    </div>
-
-    {#if hasContentFilter}
-      <div class="grid grid-cols-5 gap-2">
-        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'VIOLENCE')}>폭력성</ToggleButton>
-        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'GROSSNESS')}>벌레/징그러움</ToggleButton>
-        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'CRUELTY')}>잔인성</ToggleButton>
-        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'HORROR')}>공포성</ToggleButton>
-        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'GAMBLING')}>사행성</ToggleButton>
-        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'CRIME')}>약물/범죄</ToggleButton>
-        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'PHOBIA')}>정신질환/공포증</ToggleButton>
-        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'TRAUMA')}>PTSD/트라우마</ToggleButton>
-        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'INSULT')}>부적절한 언어</ToggleButton>
-        <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'OTHER')}>기타</ToggleButton>
-      </div>
-    {/if}
-
-    <p class="text-secondary">세부 설정</p>
-
-    <fieldset class="body-16-b flex gap-6">
-      <div class="flex items-center gap-1">
-        <span>게시물 태그 수정 및 등록</span>
-        <Tooltip message="독자들이 포스트의 태그를 등록하게할지 설정해요" placement="top">
-          <i class="i-lc-help-circle square-4 text-secondary" />
-        </Tooltip>
-      </div>
-
-      <div class="flex gap-1.5">
-        <input
-          id="allowTagContribution"
-          class="square-6"
-          checked={receiveTagContribution}
-          type="radio"
-          value={receiveTagContribution}
-          on:input={() => (receiveTagContribution = true)}
-        />
-        <label class="grow body-15-sb" for="allowTagContribution">허용</label>
-      </div>
-      <div class="flex gap-1.5">
-        <input
-          id="notAllowTagContribution"
-          class="square-6"
-          checked={!receiveTagContribution}
-          type="radio"
-          value={receiveTagContribution}
-          on:input={() => (receiveTagContribution = false)}
-        />
-        <label class="grow body-15-sb" for="notAllowTagContribution">비허용</label>
-      </div>
-    </fieldset>
-
-    <div class="body-16-b flex gap-6">
-      <div class="flex items-center gap-1">
-        <span>게시글 피드백</span>
-        <Tooltip message="오래 머문 구간 표시, 가장 많은 밑줄을 친 구간" placement="top">
-          <i class="i-lc-help-circle square-4 text-secondary" />
-        </Tooltip>
-      </div>
-
-      <div class="flex gap-1.5">
-        <input
-          id="receiveFeedback"
-          class="square-6"
-          checked={receiveFeedback}
-          type="radio"
-          on:input={() => (receiveFeedback = true)}
-        />
-        <label class="grow body-15-sb" for="receiveFeedback">활성화</label>
-      </div>
-      <div class="flex gap-1.5">
-        <input
-          id="notReceiveFeedback"
-          class="square-6"
-          checked={!receiveFeedback}
-          type="radio"
-          on:input={() => (receiveFeedback = false)}
-        />
-        <label class="grow body-15-sb" for="notReceiveFeedback">비활성화</label>
-      </div>
-    </div>
-
-    <div class="body-16-b flex gap-6">
-      <div class="flex items-center gap-1">
-        <span>게시글 세부 통계 공개</span>
-        <Tooltip message="조회수, 좋아요 등의 공개 여부를 설정해요" placement="top">
-          <i class="i-lc-help-circle square-4 text-secondary" />
-        </Tooltip>
-      </div>
-
-      <div class="flex gap-1.5">
-        <input
-          id="discloseStats"
-          class="square-6"
-          checked={discloseStats}
-          type="radio"
-          on:input={() => (discloseStats = true)}
-        />
-        <label class="grow body-15-sb" for="discloseStats">허용</label>
-      </div>
-      <div class="flex gap-1.5">
-        <input
-          id="notDiscloseStats"
-          class="square-6"
-          checked={!discloseStats}
-          type="radio"
-          on:input={() => (discloseStats = false)}
-        />
-        <label class="grow body-15-sb" for="notDiscloseStats">비허용</label>
-      </div>
-    </div>
-
-    <p class="text-secondary">옵션 설정</p>
-
-    <div class="flex gap-3">
-      <Checkbox class="body-15-sb" checked={!receivePatronage} on:change={() => (receivePatronage = !receivePatronage)}>
-        후원 받지 않기
-      </Checkbox>
-      <!-- <Checkbox class="body-15-sb">알림 받지 않기</Checkbox> -->
-    </div>
-  </div>
-
-  <Button
-    slot="action"
-    class="w-full"
-    size="xl"
-    on:click={async () => {
-      const resp = await revise('PUBLISHED');
-
-      await updatePostOptions({
-        postId: resp.id,
-        contentFilters,
-        discloseStats,
-        receiveFeedback,
-        receivePatronage,
-        receiveTagContribution,
-        visibility,
-        tags,
-        password,
-      });
-
-      await goto(`/${resp.space.slug}/${resp.permalink}`);
-    }}
-  >
-    게시하기
-  </Button>
-</Modal>
