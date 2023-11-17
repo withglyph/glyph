@@ -73,15 +73,13 @@
             type="text"
             bind:value
             on:keydown={(e) => {
-              if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') {
-                if (tags.includes(value)) return;
+              if ((e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') && e.isComposing === false) {
+                const newTag = value.replaceAll(' ', '');
 
-                if (value.replaceAll(' ', '') === '') return;
+                if (newTag.replaceAll(' ', '') === '' || tags.includes(newTag)) return;
 
-                if (e.isComposing === false) {
-                  tags = [...tags, value.replaceAll(' ', '')];
-                  value = '';
-                }
+                tags = [...tags, newTag];
+                value = '';
               }
             }}
           />
