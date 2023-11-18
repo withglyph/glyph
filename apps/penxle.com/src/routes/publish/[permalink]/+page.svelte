@@ -14,7 +14,6 @@
 
       post(permalink: $permalink) {
         id
-
         contentFilters
 
         option {
@@ -33,9 +32,11 @@
           title
           subtitle
         }
+
         tags {
           id
           pinned
+
           tag {
             id
             name
@@ -51,19 +52,28 @@
   let content: JSONContent | undefined;
   let postOption: PublishPage_Header_PostOption;
   let permalink: string;
+  let tags: string[];
 
   $: if (content?.content === undefined) {
     content = $query.post.revision.content;
+  }
+
+  $: if (tags === undefined) {
+    tags = $query.post.tags.map(({ tag }) => tag.name);
   }
 
   $: title = $query.post.revision.title;
   $: subtitle = $query.post.revision.subtitle ?? null;
 
   $: postOption = {
-    ...$query.post.option,
-    id: undefined,
+    discloseStats: $query.post.option.discloseStats,
+    hasPassword: $query.post.option.hasPassword,
+    receiveFeedback: $query.post.option.receiveFeedback,
+    receivePatronage: $query.post.option.receivePatronage,
+    receiveTagContribution: $query.post.option.receiveTagContribution,
+    visibility: $query.post.option.visibility,
     postId: $query.post.id,
-    tags: $query.post.tags.map(({ tag }) => tag.name),
+    tags,
     contentFilters: $query.post.contentFilters,
   };
 
@@ -74,4 +84,4 @@
 
 <Header {$query} {content} {editor} {permalink} {postOption} {subtitle} {title} />
 <Editor bind:title bind:editor bind:subtitle bind:content />
-<Footer bind:tags={postOption.tags} />
+<Footer bind:tags />

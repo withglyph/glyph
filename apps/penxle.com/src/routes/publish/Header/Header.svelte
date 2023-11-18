@@ -64,6 +64,7 @@
   let createSpaceOpen = false;
   let currentSpaceOpen = false;
   let currentSpace: (typeof $query.me.spaces)[number];
+
   $: if (currentSpace === undefined) {
     const slug = $page.url.searchParams.get('slug');
     currentSpace = (slug && $query.me.spaces.find((space) => space.slug === slug)) || $query.me.spaces[0];
@@ -71,9 +72,7 @@
 
   $: canPublish = browser && !!title && content?.content;
 
-  const { form, setData } = createMutationForm({
-    initialValues: { ...postOption, password: hasPassword ? '' : null },
-    schema: UpdatePostOptionsInputSchema,
+  const { form, setData, setInitialValues, data } = createMutationForm({
     mutation: graphql(`
       mutation PublishPage_UpdatePostOptions_Mutation($input: UpdatePostOptionsInput!) {
         updatePostOptions(input: $input) {
@@ -91,23 +90,26 @@
           tags {
             id
             pinned
+
             tag {
               id
               name
             }
           }
-
-          revision {
-            id
-            content
-          }
         }
       }
     `),
+    schema: UpdatePostOptionsInputSchema,
     onSuccess: async () => {
       const resp = await revise('PUBLISHED');
+
       await goto(`/${resp.space.slug}/${resp.permalink}`);
     },
+  });
+
+  $: setInitialValues({
+    ...postOption,
+    password: hasPassword ? '' : null,
   });
 
   const revisePost = graphql(`
@@ -338,6 +340,8 @@
       <form class="px-3 pt-4 pb-3.5 space-y-4 w-163" use:form>
         <p class="title-20-b">포스트 게시 옵션</p>
 
+        <input name="postId" type="hidden" bind:value={postId} />
+
         <div>
           <p class="text-secondary mb-3">공개범위</p>
 
@@ -378,14 +382,13 @@
           >
             비밀글
           </Checkbox>
-          {#if hasPassword}
-            <input
-              name="password"
-              class="bg-surface-primary rounded-xl px-3 py-1 body-15-sb h-10"
-              placeholder="비밀번호 입력"
-              type="text"
-            />
-          {/if}
+
+          <input
+            name="password"
+            class={clsx('bg-surface-primary rounded-xl px-3 py-1 body-15-sb h-10', !hasPassword && 'hidden')}
+            placeholder="비밀번호 입력"
+            type="text"
+          />
         </div>
 
         <p class="text-secondary">종류 선택</p>
@@ -408,45 +411,55 @@
           트리거 워닝
         </Checkbox>
 
-        {#if hasContentFilter}
-          <div class="grid grid-cols-5 gap-2">
-            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'VIOLENCE')}>폭력성</ToggleButton>
-            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'GROSSNESS')}>벌레/징그러움</ToggleButton>
-            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'CRUELTY')}>잔인성</ToggleButton>
-            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'HORROR')}>공포성</ToggleButton>
-            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'GAMBLING')}>사행성</ToggleButton>
-            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'CRIME')}>약물/범죄</ToggleButton>
-            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'PHOBIA')}>정신질환/공포증</ToggleButton>
-            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'TRAUMA')}>PTSD/트라우마</ToggleButton>
-            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'INSULT')}>부적절한 언어</ToggleButton>
-            <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'OTHER')}>기타</ToggleButton>
-          </div>
-        {/if}
+        <div class={clsx('grid grid-cols-5 gap-2', !hasContentFilter && 'hidden')}>
+          <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'VIOLENCE')}>폭력성</ToggleButton>
+          <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'GROSSNESS')}>벌레/징그러움</ToggleButton>
+          <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'CRUELTY')}>잔인성</ToggleButton>
+          <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'HORROR')}>공포성</ToggleButton>
+          <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'GAMBLING')}>사행성</ToggleButton>
+          <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'CRIME')}>약물/범죄</ToggleButton>
+          <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'PHOBIA')}>정신질환/공포증</ToggleButton>
+          <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'TRAUMA')}>PTSD/트라우마</ToggleButton>
+          <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'INSULT')}>부적절한 언어</ToggleButton>
+          <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'OTHER')}>기타</ToggleButton>
+        </div>
 
         <p class="text-secondary">세부 설정</p>
 
-        <Switch name="receiveTagContribution" class="flex items-center justify-between">
+        <Switch
+          name="receiveTagContribution"
+          class="flex items-center justify-between"
+          checked={$data.receiveTagContribution ?? true}
+        >
           <div>
             <p class="body-16-b">게시물 태그 수정 및 등록</p>
             <p class="body-15-m text-secondary">다른 독자들이 게시물의 태그를 수정할 수 있어요</p>
           </div>
         </Switch>
 
-        <Switch id="receiveFeedback" name="receiveFeedback" class="flex items-center justify-between">
+        <Switch
+          name="receiveFeedback"
+          class="flex items-center justify-between"
+          checked={$data.receiveFeedback ?? true}
+        >
           <div>
             <p class="body-16-b">게시물 피드백</p>
             <p class="body-15-m text-secondary">가장 오래 머무른 구간, 밑줄, 이모지 등 피드백을 받아요</p>
           </div>
         </Switch>
 
-        <Switch name="discloseStats" class="flex items-center justify-between">
+        <Switch name="discloseStats" class="flex items-center justify-between" checked={$data.discloseStats ?? true}>
           <div>
             <p class="body-16-b">게시물 세부 통계 공개</p>
             <p class="body-15-m text-secondary">조회수, 좋아요 수를 다른 독자들에게 공개해요</p>
           </div>
         </Switch>
 
-        <Switch name="receivePatronage" class="flex items-center justify-between">
+        <Switch
+          name="receivePatronage"
+          class="flex items-center justify-between"
+          checked={$data.receivePatronage ?? true}
+        >
           <div>
             <p class="body-16-b">게시물 창작자 후원</p>
             <p class="body-15-m text-secondary">다른 독자들이 게시물에 자유롭게 후원을 할 수 있도록 해요</p>
