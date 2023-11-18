@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { PostKind } from '@prisma/client';
   import clsx from 'clsx';
   import * as R from 'radash';
   import { browser } from '$app/environment';
@@ -8,37 +9,31 @@
   import { Logo } from '$lib/components/branding';
   import { Checkbox, Switch } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
+  import { createMutationForm } from '$lib/form';
   import { postKind } from '$lib/stores';
+  import { UpdatePostOptionsInputSchema } from '$lib/validations/post';
   import ToolbarButton from './ToolbarButton.svelte';
+  import type { PostRevision } from '@prisma/client';
   import type { Editor, JSONContent } from '@tiptap/core';
-  import type {
-    ContentFilterCategory,
-    PostKind,
-    PostRevisionKind,
-    PostVisibility,
-    PublishPage_Header_query,
-  } from '$glitch';
+  import type { ContentFilterCategory, PostRevisionKind, PublishPage_Header_query } from '$glitch';
+  import type { PublishPage_Header_PostOption } from './types';
 
   let _query: PublishPage_Header_query;
   export { _query as $query };
 
   export let title: string;
-  export let subtitle: string;
+  export let subtitle: PostRevision['subtitle'];
   export let content: JSONContent;
   export let editor: Editor | undefined;
-  export let tags: string[] = [];
+  export let permalink: string | undefined = undefined;
 
-  let postId: string | undefined;
-  let hasContentFilter = false;
-  let visibility: PostVisibility = 'PUBLIC';
-  let receiveTagContribution = true;
-  let receiveFeedback = true;
-  let discloseStats = true;
-  let receivePatronage = true;
-  let contentFilters: ContentFilterCategory[] = [];
-  let usePassword = false;
-  let password = '';
-  let permalink = '';
+  let _postOption: PublishPage_Header_PostOption;
+  export { _postOption as postOption };
+
+  let { hasPassword, ...postOption } = _postOption;
+
+  let postId = postOption.postId;
+  let hasContentFilter = postOption.contentFilters.length > 0;
 
   $: query = fragment(
     _query,
@@ -67,6 +62,45 @@
 
   $: canPublish = !!title;
 
+  const { form, setData } = createMutationForm({
+    initialValues: { ...postOption, password: hasPassword ? '' : null },
+    schema: UpdatePostOptionsInputSchema,
+    mutation: graphql(`
+      mutation PublishPage_UpdatePostOptions_Mutation($input: UpdatePostOptionsInput!) {
+        updatePostOptions(input: $input) {
+          id
+
+          option {
+            id
+            discloseStats
+            receiveFeedback
+            receivePatronage
+            receiveTagContribution
+            visibility
+          }
+
+          tags {
+            id
+            pinned
+            tag {
+              id
+              name
+            }
+          }
+
+          revision {
+            id
+            content
+          }
+        }
+      }
+    `),
+    onSuccess: async () => {
+      const resp = await revise('PUBLISHED');
+      await goto(`/${resp.space.slug}/${resp.permalink}`);
+    },
+  });
+
   const revisePost = graphql(`
     mutation PublishPage_RevisePost_Mutation($input: RevisePostInput!) {
       revisePost(input: $input) {
@@ -76,23 +110,6 @@
         space {
           id
           slug
-        }
-      }
-    }
-  `);
-
-  const updatePostOptions = graphql(`
-    mutation PublishPage_UpdatePostOptions_Mutation($input: UpdatePostOptionsInput!) {
-      updatePostOptions(input: $input) {
-        id
-
-        option {
-          id
-          discloseStats
-          receiveFeedback
-          receivePatronage
-          receiveTagContribution
-          visibility
         }
       }
     }
@@ -118,7 +135,7 @@
     await revise('AUTO_SAVE');
   });
 
-  $: if (title && content) {
+  $: if (browser && title && content) {
     handler();
   }
 
@@ -132,11 +149,13 @@
     const { checked } = e.target as HTMLInputElement;
 
     if (checked) {
-      contentFilters.push(contentFilter);
+      setData(($data) => ({ ...$data, contentFilters: [...$data.contentFilters, contentFilter] }));
     } else {
-      contentFilters.splice(contentFilters.indexOf(contentFilter), 1);
+      setData(($data) => ({
+        ...$data,
+        contentFilters: $data.contentFilters.filter((filter) => filter !== contentFilter),
+      }));
     }
-    contentFilters = contentFilters;
   };
 </script>
 
@@ -269,7 +288,7 @@
         <i class="i-lc-x" />
       </MenuItem>
 
-      <div class="px-3 pt-4 pb-3.5 space-y-4 w-163">
+      <form class="px-3 pt-4 pb-3.5 space-y-4 w-163" use:form>
         <p class="title-20-b">포스트 게시 옵션</p>
 
         <div>
@@ -277,25 +296,11 @@
 
           <fieldset class="flex gap-6">
             <div class="flex gap-1.5 items-center">
-              <input
-                id="public"
-                class="square-4.5"
-                checked={visibility === 'PUBLIC'}
-                type="radio"
-                value="PUBLIC"
-                on:input={() => (visibility = 'PUBLIC')}
-              />
+              <input id="public" name="visibility" class="square-4.5" type="radio" value="PUBLIC" />
               <label class="grow body-15-sb" for="public">전체 공개</label>
             </div>
             <div class="flex gap-1.5 items-center">
-              <input
-                id="space"
-                class="square-4.5"
-                checked={visibility === 'SPACE'}
-                type="radio"
-                value="SPACE"
-                on:input={() => (visibility = 'SPACE')}
-              />
+              <input id="space" name="visibility" class="square-4.5" type="radio" value="SPACE" />
               <label class="grow body-15-sb flex items-center gap-1" for="space">
                 멤버 공개
                 <Tooltip message="성인 인증을 한 유저에게만 노출돼요" placement="top">
@@ -304,14 +309,7 @@
               </label>
             </div>
             <div class="flex gap-1.5 items-center">
-              <input
-                id="unlisted"
-                class="square-4.5"
-                checked={visibility === 'UNLISTED'}
-                type="radio"
-                value="UNLISTED"
-                on:input={() => (visibility = 'UNLISTED')}
-              />
+              <input id="unlisted" name="visibility" class="square-4.5" type="radio" value="UNLISTED" />
               <label class="grow body-15-sb flex items-center gap-1" for="unlisted">
                 링크 공개
                 <Tooltip message="성인 인증을 한 유저에게만 노출돼요" placement="top">
@@ -323,15 +321,22 @@
         </div>
 
         <div class="flex gap-6 items-center h-10">
-          <Checkbox class="body-15-sb" checked={usePassword} on:change={() => (usePassword = !usePassword)}>
+          <Checkbox
+            class="body-15-sb"
+            checked={hasPassword}
+            on:change={() => {
+              hasPassword = !hasPassword;
+              setData(($data) => ({ ...$data, password: null }));
+            }}
+          >
             비밀글
           </Checkbox>
-          {#if usePassword}
+          {#if hasPassword}
             <input
+              name="password"
               class="bg-surface-primary rounded-xl px-3 py-1 body-15-sb h-10"
               placeholder="비밀번호 입력"
               type="text"
-              bind:value={password}
             />
           {/if}
         </div>
@@ -348,7 +353,10 @@
         <Checkbox
           class="body-15-sb"
           checked={hasContentFilter}
-          on:change={() => (hasContentFilter = !hasContentFilter)}
+          on:change={() => {
+            hasContentFilter = !hasContentFilter;
+            setData(($data) => ({ ...$data, contentFilters: [] }));
+          }}
         >
           트리거 워닝
         </Checkbox>
@@ -370,62 +378,36 @@
 
         <p class="text-secondary">세부 설정</p>
 
-        <Switch
-          id="receiveTagContribution"
-          class="flex items-center justify-between"
-          bind:checked={receiveTagContribution}
-        >
+        <Switch name="receiveTagContribution" class="flex items-center justify-between">
           <div>
             <p class="body-16-b">게시물 태그 수정 및 등록</p>
             <p class="body-15-m text-secondary">다른 독자들이 게시물의 태그를 수정할 수 있어요</p>
           </div>
         </Switch>
 
-        <Switch id="receiveFeedback" class="flex items-center justify-between" bind:checked={receiveFeedback}>
+        <Switch id="receiveFeedback" name="receiveFeedback" class="flex items-center justify-between">
           <div>
             <p class="body-16-b">게시물 피드백</p>
             <p class="body-15-m text-secondary">가장 오래 머무른 구간, 밑줄, 이모지 등 피드백을 받아요</p>
           </div>
         </Switch>
 
-        <Switch name="discloseStats" class="flex items-center justify-between" bind:checked={discloseStats}>
+        <Switch name="discloseStats" class="flex items-center justify-between">
           <div>
             <p class="body-16-b">게시물 세부 통계 공개</p>
             <p class="body-15-m text-secondary">조회수, 좋아요 수를 다른 독자들에게 공개해요</p>
           </div>
         </Switch>
 
-        <Switch name="receivePatronage" class="flex items-center justify-between" bind:checked={receivePatronage}>
+        <Switch name="receivePatronage" class="flex items-center justify-between">
           <div>
             <p class="body-16-b">게시물 창작자 후원</p>
             <p class="body-15-m text-secondary">다른 독자들이 게시물에 자유롭게 후원을 할 수 있도록 해요</p>
           </div>
         </Switch>
 
-        <Button
-          class="w-full"
-          size="xl"
-          on:click={async () => {
-            const resp = await revise('PUBLISHED');
-
-            await updatePostOptions({
-              postId: resp.id,
-              contentFilters,
-              discloseStats,
-              receiveFeedback,
-              receivePatronage,
-              receiveTagContribution,
-              visibility,
-              tags,
-              password,
-            });
-
-            await goto(`/${resp.space.slug}/${resp.permalink}`);
-          }}
-        >
-          게시하기
-        </Button>
-      </div>
+        <Button class="w-full" size="xl" type="submit">게시하기</Button>
+      </form>
     </Menu>
 
     <Menu placement="bottom-end">
@@ -435,7 +417,9 @@
 
       <MenuItem>저장이력</MenuItem>
       <MenuItem>
-        <a href={`/${currentSpace.slug}/preview/${permalink}`} rel="noopener noreferrer" target="_blank">미리보기</a>
+        <Button disabled={!!permalink} href={`/${currentSpace.slug}/preview/${permalink}`} type="link" variant="text">
+          미리보기
+        </Button>
       </MenuItem>
     </Menu>
   </div>

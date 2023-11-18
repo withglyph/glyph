@@ -11,6 +11,7 @@ import { redis } from '$lib/server/cache';
 import { deductUserPoint, getUserPoint } from '$lib/server/utils';
 import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
 import { createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
+import { UpdatePostOptionsInputSchema } from '$lib/validations/post';
 import { builder } from '../builder';
 import type { JSONContent } from '@tiptap/core';
 
@@ -462,10 +463,11 @@ const UpdatePostOptionsInput = builder.inputType('UpdatePostOptionsInput', {
     receiveFeedback: t.boolean({ required: false }),
     receivePatronage: t.boolean({ required: false }),
     receiveTagContribution: t.boolean({ required: false }),
-    contentFilters: t.field({ type: [ContentFilterCategory], required: false }),
+    contentFilters: t.field({ type: [ContentFilterCategory], required: true }),
     tags: t.stringList({ required: false }),
     password: t.string({ required: false }),
   }),
+  validate: { schema: UpdatePostOptionsInputSchema },
 });
 
 const LikePostInput = builder.inputType('LikePostInput', {

@@ -20,5 +20,8 @@ export const updates: GraphCacheConfig['updates'] = {
     unfollowSpace: (_, __, cache) => {
       cache.invalidate(me(cache), 'followedSpaces');
     },
+    updatePostOptions: (_, { input }, cache) => {
+      cache.invalidate({ __typename: 'Post', id: input.postId });
+    },
   },
 };

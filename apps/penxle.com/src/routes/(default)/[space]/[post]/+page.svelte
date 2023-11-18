@@ -304,11 +304,9 @@
                 </MenuItem>
               {/if}
               <MenuItem>포스트 신고하기</MenuItem>
-            {:else}
-              <MenuItem>수정하기</MenuItem>
-              {#if $query.post.space.meAsMember.role === 'ADMIN'}
-                <MenuItem>삭제하기</MenuItem>
-              {/if}
+            {:else if $query.post.member.id === $query.me?.id || $query.post.space.meAsMember?.role === 'ADMIN'}
+              <MenuItem href={`/publish/${$query.post.permalink}`} type="link">수정하기</MenuItem>
+              <MenuItem>삭제하기</MenuItem>
             {/if}
           </Menu>
         </div>

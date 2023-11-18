@@ -497,7 +497,7 @@ input UnmuteTagInput {
 }
 
 input UpdatePostOptionsInput {
-  contentFilters: [ContentFilterCategory!]
+  contentFilters: [ContentFilterCategory!]!
   discloseStats: Boolean
   password: String
   postId: ID!
