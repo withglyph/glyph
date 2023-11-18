@@ -4,6 +4,7 @@
   import * as R from 'radash';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
   import { Button, Image, ToggleButton, Tooltip } from '$lib/components';
   import { Logo } from '$lib/components/branding';
@@ -63,9 +64,10 @@
 
   let createSpaceOpen = false;
   let currentSpaceOpen = false;
-  let currentSpace: (typeof $query.me.spaces)[0];
+  let currentSpace: (typeof $query.me.spaces)[number];
   $: if (currentSpace === undefined) {
-    currentSpace = $query.me.spaces[0];
+    const slug = $page.url.searchParams.get('slug');
+    currentSpace = (slug && $query.me.spaces.find((space) => space.slug === slug)) || $query.me.spaces[0];
   }
 
   $: canPublish = browser && !!title && content.content;

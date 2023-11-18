@@ -76,7 +76,14 @@
           {/if}
         </div>
 
-        <Button class="w-full" color="tertiary" href="/publish" size="xl" type="link" variant="outlined">
+        <Button
+          class="w-full"
+          color="tertiary"
+          href={`/publish?slug=${$query.space.slug}`}
+          size="xl"
+          type="link"
+          variant="outlined"
+        >
           새 포스트 작성하기
         </Button>
       </div>
@@ -180,7 +187,12 @@
       </div>
     </div>
 
-    <a class="py-1.5 px-3 rounded-12 bg-gray-80 text-gray-5 body-13-m text-nowrap" href="/publish">포스트 작성하기</a>
+    <a
+      class="py-1.5 px-3 rounded-12 bg-gray-80 text-gray-5 body-13-m text-nowrap"
+      href={`/publish?slug=${$query.space.slug}`}
+    >
+      포스트 작성하기
+    </a>
   </div>
 
   <div class="py-2.5 px-3 flex items-center justify-between">

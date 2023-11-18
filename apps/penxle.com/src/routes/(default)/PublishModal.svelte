@@ -8,7 +8,6 @@
   let _user: DefaultLayout_PublishModal_user;
   export { _user as $user };
   export let open = false;
-  export let type: 'artwork' | 'post';
 
   let openCreateSpace = false;
 
@@ -35,7 +34,7 @@
 
   <div class="flex flex-col">
     {#each $user.spaces as space (space.id)}
-      <a class="group flex items-center gap-2 text-left hover:bg-gray-10" href={`/${space.slug}/publish/${type}`}>
+      <a class="group flex items-center gap-2 text-left hover:bg-gray-10" href={`/publish?slug=${space.slug}`}>
         <div class="flex flex-col">
           <div class="font-medium">{space.name}</div>
           <div class="text-sm text-gray-50">{absolutePath(space.slug)}</div>

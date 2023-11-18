@@ -23,7 +23,6 @@
   let isSideBarOpen = false;
 
   let openPublish = false;
-  let publishType: 'artwork' | 'post';
 
   $: query = fragment(
     _query,
@@ -173,5 +172,5 @@
 </SideBar>
 
 {#if $query.me}
-  <PublishModal $user={$query.me} type={publishType} bind:open={openPublish} />
+  <PublishModal $user={$query.me} bind:open={openPublish} />
 {/if}
