@@ -66,7 +66,7 @@
   let currentSpace: (typeof $query.me.spaces)[0];
   $: currentSpace = $query.me.spaces[0];
 
-  $: canPublish = !!title;
+  $: canPublish = browser && !!title && content;
 
   const { form, setData } = createMutationForm({
     initialValues: { ...postOption, password: hasPassword ? '' : null },
@@ -141,7 +141,7 @@
     await revise('AUTO_SAVE');
   });
 
-  $: if (browser && title && content) {
+  $: if (canPublish) {
     handler();
   }
 
