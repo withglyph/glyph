@@ -4,10 +4,12 @@
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Avatar, Button, Image, Tag } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
+  import Modal from '$lib/components/Modal.svelte';
   import { EmojiPicker } from '$lib/emoji';
   import Emoji from '$lib/emoji/Emoji.svelte';
   import { FormValidationError } from '$lib/errors';
@@ -184,6 +186,16 @@
     }
   `);
 
+  const deletePost = graphql(`
+    mutation SpacePostPage_DeletePost_Mutation($input: DeletePostInput!) {
+      deletePost(input: $input) {
+        id
+      }
+    }
+  `);
+
+  let openDeletePostWarning = false;
+
   onMount(async () => {
     mixpanel.track('post:view', { postId: $query.post.id });
     await updatePostView({ postId: $query.post.id });
@@ -306,7 +318,13 @@
               <MenuItem>포스트 신고하기</MenuItem>
             {:else if $query.post.member.id === $query.me?.id || $query.post.space.meAsMember?.role === 'ADMIN'}
               <MenuItem href={`/publish/${$query.post.permalink}`} type="link">수정하기</MenuItem>
-              <MenuItem>삭제하기</MenuItem>
+              <MenuItem
+                on:click={() => {
+                  openDeletePostWarning = true;
+                }}
+              >
+                삭제하기
+              </MenuItem>
             {/if}
           </Menu>
         </div>
@@ -525,3 +543,21 @@
   bind:open={share.open}
   bind:content={share.content}
 />
+
+<Modal size="sm" bind:open={openDeletePostWarning}>
+  <svelte:fragment slot="title">정말 포스트를 삭제하시겠어요?</svelte:fragment>
+
+  <div slot="action" class="flex gap-2 w-full [&>button]:grow">
+    <Button color="secondary" size="md" on:click={() => (openDeletePostWarning = false)}>취소</Button>
+    <Button
+      size="md"
+      on:click={async () => {
+        await deletePost({ postId: $query.post.id });
+        await goto(`/${$query.post.space.slug}`);
+        toast.success('포스트를 삭제했어요');
+      }}
+    >
+      삭제
+    </Button>
+  </div>
+</Modal>

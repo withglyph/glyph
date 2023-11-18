@@ -23,5 +23,8 @@ export const updates: GraphCacheConfig['updates'] = {
     updatePostOptions: (_, { input }, cache) => {
       cache.invalidate({ __typename: 'Post', id: input.postId });
     },
+    deletePost: (_, { input }, cache) => {
+      cache.invalidate({ __typename: 'Post', id: input.postId });
+    },
   },
 };
