@@ -22,13 +22,12 @@
     spacing,
     texts,
   } from './formats.svelte';
-  import type { PostRevision } from '@prisma/client';
   import type { Editor, JSONContent } from '@tiptap/core';
 
   export let title: string;
-  export let subtitle: PostRevision['subtitle'];
-  export let content: JSONContent;
-  export let editor: Editor;
+  export let subtitle: string | null;
+  export let content: JSONContent | undefined;
+  export let editor: Editor | undefined;
 
   let targetEl: HTMLButtonElement;
   let menuEl: HTMLDivElement;
@@ -79,7 +78,7 @@
         return;
       }
 
-      editor.chain().focus().setImage(file).run();
+      editor?.chain().focus().setImage(file).run();
     });
 
     picker.showPicker();
@@ -96,7 +95,7 @@
         return;
       }
 
-      editor.chain().focus().setFile(file).run();
+      editor?.chain().focus().setFile(file).run();
     });
 
     picker.showPicker();
@@ -138,6 +137,7 @@
           </button>
         </label>
       {/if}
+
       {#if $postKind === 'ARTICLE'}
         <div class="mx-auto w-full max-w-230 flex grow">
           <TiptapEditor class="my-12 max-w-full grow whitespace-pre-wrap" bind:editor bind:content />
@@ -171,9 +171,9 @@
                     const commands = editor?.chain().focus();
 
                     if (color.value) {
-                      commands.setTextColor({ 'data-text-color': color.value }).run();
+                      commands?.setTextColor({ 'data-text-color': color.value }).run();
                     } else {
-                      commands.unsetTextColor().run();
+                      commands?.unsetTextColor().run();
                     }
                   }}
                 >
@@ -198,11 +198,11 @@
                 <MenuItem
                   class="flex items-center gap-2"
                   on:click={() => {
-                    const commands = editor.chain().focus();
+                    const commands = editor?.chain().focus();
                     if (text.name === heading) {
-                      commands.setHeading(text.level).run();
+                      commands?.setHeading(text.level).run();
                     } else {
-                      commands.setParagraph(text.level).run();
+                      commands?.setParagraph(text.level).run();
                     }
                   }}
                 >
@@ -230,7 +230,7 @@
                 <MenuItem
                   class={clsx('flex items-center gap-2 justify-between', font.class)}
                   on:click={() => {
-                    editor.chain().focus().setFontFamily(font.value).run();
+                    editor?.chain().focus().setFontFamily(font.value).run();
                   }}
                 >
                   {font.label}
@@ -249,28 +249,28 @@
             <button
               class="flex center p-xs hover:(bg-primary rounded-lg)"
               type="button"
-              on:click={() => editor.chain().focus().toggleBold().run()}
+              on:click={() => editor?.chain().focus().toggleBold().run()}
             >
               <i class={clsx('i-lc-bold square-1rem', editor.isActive('bold') && 'text-blue-50')} />
             </button>
             <button
               class="flex center p-xs hover:(bg-primary rounded-lg)"
               type="button"
-              on:click={() => editor.chain().focus().toggleItalic().run()}
+              on:click={() => editor?.chain().focus().toggleItalic().run()}
             >
               <i class={clsx('i-lc-italic square-1rem', editor.isActive('italic') && 'text-blue-50')} />
             </button>
             <button
               class="flex center p-xs hover:(bg-primary rounded-lg)"
               type="button"
-              on:click={() => editor.chain().focus().toggleStrike().run()}
+              on:click={() => editor?.chain().focus().toggleStrike().run()}
             >
               <i class={clsx('i-lc-strikethrough square-1rem', editor.isActive('strike') && 'text-blue-50')} />
             </button>
             <button
               class="flex center p-xs hover:(bg-primary rounded-lg)"
               type="button"
-              on:click={() => editor.chain().focus().toggleUnderline().run()}
+              on:click={() => editor?.chain().focus().toggleUnderline().run()}
             >
               <i class={clsx('i-lc-underline square-1rem', editor.isActive('underline') && 'text-blue-50')} />
             </button>
@@ -290,7 +290,7 @@
                   class="flex center m-none! p-xs hover:(bg-primary) aria-pressed:text-blue-50"
                   aria-pressed={editor.isActive({ 'text-align': alignment.value })}
                   type="button"
-                  on:click={() => editor.chain().focus().setTextAlign(alignment.value).run()}
+                  on:click={() => editor?.chain().focus().setTextAlign(alignment.value).run()}
                 >
                   <i class={clsx(alignment.class, 'square-1rem')} />
                 </button>
@@ -313,7 +313,7 @@
                 <MenuItem
                   class="flex items-center gap-2 justify-between"
                   on:click={() => {
-                    editor.chain().focus().setLineHeight(height.value).run();
+                    editor?.chain().focus().setLineHeight(height.value).run();
                   }}
                 >
                   {height.label}
@@ -341,7 +341,7 @@
                 <MenuItem
                   class="flex items-center gap-2 justify-between"
                   on:click={() => {
-                    editor.chain().focus().setLetterSpacing(space.value).run();
+                    editor?.chain().focus().setLetterSpacing(space.value).run();
                   }}
                 >
                   {space.label}
@@ -366,7 +366,7 @@
 
               <MenuItem
                 class="flex gap-2.5 items-center"
-                on:click={() => editor.chain().focus().setAccessBarrier().run()}
+                on:click={() => editor?.chain().focus().setAccessBarrier().run()}
               >
                 <span class="p-1 border border-alphagray-15 rounded-lg flex center">
                   <i class="i-lc-circle-dollar-sign square-5" />
@@ -388,7 +388,7 @@
                   <MenuItem
                     class="flex center gap-2 w-900px"
                     on:click={() => {
-                      editor.chain().focus().setHorizontalRule(kind).run();
+                      editor?.chain().focus().setHorizontalRule(kind).run();
                     }}
                   >
                     <hr class="w-11rem divider-preview" aria-label={`${kind} 번째 구분선`} data-kind={kind} />
@@ -410,7 +410,7 @@
                   <MenuItem
                     class="flex center gap-2 w-900px"
                     on:click={() => {
-                      editor.chain().focus().setBlockquote(kind).run();
+                      editor?.chain().focus().setBlockquote(kind).run();
                     }}
                   >
                     <blockquote

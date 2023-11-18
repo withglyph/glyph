@@ -16,7 +16,6 @@
   import { UpdatePostOptionsInputSchema } from '$lib/validations/post';
   import CreateSpaceModal from '../../(default)/CreateSpaceModal.svelte';
   import ToolbarButton from './ToolbarButton.svelte';
-  import type { PostRevision } from '@prisma/client';
   import type { Editor, JSONContent } from '@tiptap/core';
   import type { ContentFilterCategory, PostRevisionKind, PublishPage_Header_query } from '$glitch';
   import type { PublishPage_Header_PostOption } from '../types';
@@ -25,8 +24,8 @@
   export { _query as $query };
 
   export let title: string;
-  export let subtitle: PostRevision['subtitle'];
-  export let content: JSONContent;
+  export let subtitle: string | null;
+  export let content: JSONContent | undefined;
   export let editor: Editor | undefined;
   export let permalink: string | undefined = undefined;
 
@@ -70,7 +69,7 @@
     currentSpace = (slug && $query.me.spaces.find((space) => space.slug === slug)) || $query.me.spaces[0];
   }
 
-  $: canPublish = browser && !!title && content.content;
+  $: canPublish = browser && !!title && content?.content;
 
   const { form, setData } = createMutationForm({
     initialValues: { ...postOption, password: hasPassword ? '' : null },

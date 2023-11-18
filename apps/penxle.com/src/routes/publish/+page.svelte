@@ -14,9 +14,9 @@
   `);
 
   let title: string;
-  let subtitle: string;
-  let editor: TiptapEditor;
-  let content: JSONContent;
+  let subtitle: string | null = null;
+  let editor: TiptapEditor | undefined;
+  let content: JSONContent | undefined;
 
   let tags: string[] = [];
 

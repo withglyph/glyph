@@ -5,7 +5,6 @@
   import Editor from '../Editor';
   import Footer from '../Footer.svelte';
   import Header from '../Header';
-  import type { PostRevision } from '@prisma/client';
   import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
   import type { PublishPage_Header_PostOption } from '../types';
 
@@ -47,13 +46,13 @@
   `);
 
   let title: string;
-  let subtitle: PostRevision['subtitle'];
-  let editor: TiptapEditor;
-  let content: JSONContent = {};
+  let subtitle: string | null = null;
+  let editor: TiptapEditor | undefined;
+  let content: JSONContent | undefined;
   let postOption: PublishPage_Header_PostOption;
   let permalink: string;
 
-  $: if (content.content === undefined) {
+  $: if (content?.content === undefined) {
     content = $query.post.revision.content;
   }
 

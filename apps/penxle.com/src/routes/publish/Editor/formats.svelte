@@ -97,7 +97,7 @@
 
   export const blockquotes = [1, 2, 3] as const;
 
-  export function getToggledFormat(currentNode: Node) {
+  export function getToggledFormat(currentNode?: Node) {
     const fontName = currentNode?.attrs['font-family'];
     const alignmentName = currentNode?.attrs['text-align'];
 
