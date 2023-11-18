@@ -26,7 +26,7 @@
 
 <Helmet title={`홈 | ${$query.space.name}`} />
 
-<article class="w-full max-w-50rem flex flex-col center py-9 gap-8 grow <sm:(p-0 gap-2 bg-surface-primary)">
+<article class="w-full max-w-50rem flex flex-col justify-center py-9 gap-8 grow <sm:(p-0 gap-2 bg-surface-primary)">
   {#if $query.space.posts.length === 0}
     <div>
       <h2 class="body-15-b text-secondary">아직 스페이스에 업로드된 포스트가 없어요</h2>
