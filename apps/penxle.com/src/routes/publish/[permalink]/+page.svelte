@@ -2,9 +2,9 @@
   import { Helmet } from '@penxle/ui';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import Editor from '../Editor.svelte';
+  import Editor from '../Editor';
   import Footer from '../Footer.svelte';
-  import Header from '../Header.svelte';
+  import Header from '../Header';
   import type { PostRevision } from '@prisma/client';
   import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
   import type { PublishPage_Header_PostOption } from '../types';

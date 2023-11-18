@@ -13,12 +13,12 @@
   import { postKind } from '$lib/stores';
   import { portal } from '$lib/svelte/actions';
   import { UpdatePostOptionsInputSchema } from '$lib/validations/post';
-  import CreateSpaceModal from '../(default)/CreateSpaceModal.svelte';
+  import CreateSpaceModal from '../../(default)/CreateSpaceModal.svelte';
   import ToolbarButton from './ToolbarButton.svelte';
   import type { PostRevision } from '@prisma/client';
   import type { Editor, JSONContent } from '@tiptap/core';
   import type { ContentFilterCategory, PostRevisionKind, PublishPage_Header_query } from '$glitch';
-  import type { PublishPage_Header_PostOption } from './types';
+  import type { PublishPage_Header_PostOption } from '../types';
 
   let _query: PublishPage_Header_query;
   export { _query as $query };
