@@ -30,7 +30,7 @@ const lambda = new aws.lambda.Function('literoom', {
   handler: 'index.handler',
   sourceCodeHash: pkg.metadata.hash,
 
-  layers: ['arn:aws:lambda:ap-northeast-2:464622532012:layer:Datadog-Extension-ARM:48'],
+  layers: ['arn:aws:lambda:ap-northeast-2:464622532012:layer:Datadog-Extension-ARM:50'],
 
   environment: {
     variables: {
@@ -43,9 +43,7 @@ const lambda = new aws.lambda.Function('literoom', {
 
       DD_CAPTURE_LAMBDA_PAYLOAD: 'true',
       DD_LOGS_INJECTION: 'true',
-      DD_PROFILING_ENABLED: 'true',
-      DD_SERVERLESS_LOGS_ENABLED: 'true',
-      DD_TRACE_ENABLED: 'true',
+      DD_TRACE_SAMPLE_RATE: '0.1',
     },
   },
 

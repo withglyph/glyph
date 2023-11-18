@@ -99,7 +99,7 @@ export class Site extends pulumi.ComponentResource {
 
         publish: true,
 
-        layers: isProd ? ['arn:aws:lambda:ap-northeast-2:464622532012:layer:Datadog-Extension-ARM:48'] : undefined,
+        layers: isProd ? ['arn:aws:lambda:ap-northeast-2:464622532012:layer:Datadog-Extension-ARM:50'] : undefined,
 
         environment: {
           variables: {
@@ -116,6 +116,7 @@ export class Site extends pulumi.ComponentResource {
               DD_CAPTURE_LAMBDA_PAYLOAD: 'true',
               DD_DBM_PROPAGATION_MODE: 'full',
               DD_LOGS_INJECTION: 'true',
+              DD_TRACE_SAMPLE_RATE: '0.1',
             }),
           },
         },
