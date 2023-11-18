@@ -97,9 +97,19 @@
 
   export const blockquotes = [1, 2, 3] as const;
 
-  export function getLabelFromCurrentNode(currentNode: Node) {
+  export function getToggledFormat(currentNode: Node) {
+    const fontName = currentNode?.attrs['font-family'];
+    const alignmentName = currentNode?.attrs['text-align'];
+
+    const text = {
+      label: `${currentNode?.type.name === heading ? '제목' : '본문'} ${currentNode?.attrs.level ?? 1}`,
+    };
+    const font = fonts.find((font) => font.value === fontName) ?? alignments[0];
+    const alignment = alignments.find(({ value }) => value === alignmentName) ?? alignments[0];
     return {
-      font: fontFamilyToLocaleString[currentNode?.attrs['font-family']] ?? fontFamilyToLocaleString.sans,
+      text,
+      font,
+      alignment,
     };
   }
 </script>

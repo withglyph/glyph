@@ -15,7 +15,7 @@
     blockquotes,
     colors,
     fonts,
-    getLabelFromCurrentNode,
+    getToggledFormat,
     heading,
     heights,
     hr,
@@ -65,9 +65,7 @@
   const floatingMenuOffset = 16;
 
   $: currentNode = editor?.state.selection.$head.parent;
-  $: currentTextLabel = `${currentNode?.type.name === heading ? '제목' : '본문'} ${currentNode?.attrs.level ?? 1}`;
-
-  $: label = getLabelFromCurrentNode(currentNode);
+  $: toggledFormat = getToggledFormat(currentNode);
 
   const handleInsertImage = () => {
     const picker = document.createElement('input');
@@ -193,7 +191,7 @@
               placement="bottom-start"
             >
               <svelte:fragment slot="value">
-                {currentTextLabel}
+                {toggledFormat.text.label}
                 <i class="i-lc-chevron-down square-6 text-border-secondary" />
               </svelte:fragment>
               {#each texts as text (`${text.name}-${text.level}}`)}
@@ -217,12 +215,15 @@
             </Menu>
 
             <Menu
-              class="flex justify-between items-center gap-0.25rem body-14-m hover:(bg-primary rounded-lg) min-w-6rem h-full"
+              class={clsx(
+                'flex justify-between items-center gap-0.25rem body-14-m hover:(bg-primary rounded-lg) min-w-6rem h-full',
+                toggledFormat.font.class,
+              )}
               offset={bubbleMenuOffset}
               placement="bottom-start"
             >
               <svelte:fragment slot="value">
-                {label.font}
+                {toggledFormat.font.label}
                 <i class="i-lc-chevron-down square-6 text-border-secondary" />
               </svelte:fragment>
               {#each fonts as font (font.value)}
@@ -281,7 +282,7 @@
               placement="bottom-start"
             >
               <div slot="value" class="flex items-center gap-0.25rem body-14-m p-xs">
-                <i class="i-lc-align-left square-1rem" />
+                <i class={clsx(toggledFormat.alignment.class, 'square-1rem')} />
               </div>
 
               {#each alignments as alignment (alignment.value)}
