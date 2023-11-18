@@ -66,7 +66,7 @@
   let currentSpace: (typeof $query.me.spaces)[0];
   $: currentSpace = $query.me.spaces[0];
 
-  $: canPublish = browser && !!title && content;
+  $: canPublish = browser && !!title && content.content;
 
   const { form, setData } = createMutationForm({
     initialValues: { ...postOption, password: hasPassword ? '' : null },
