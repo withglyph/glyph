@@ -64,7 +64,9 @@
   let createSpaceOpen = false;
   let currentSpaceOpen = false;
   let currentSpace: (typeof $query.me.spaces)[0];
-  $: currentSpace = $query.me.spaces[0];
+  $: if (currentSpace === undefined) {
+    currentSpace = $query.me.spaces[0];
+  }
 
   $: canPublish = browser && !!title && content.content;
 
