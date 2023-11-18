@@ -30,9 +30,13 @@
       <span class="body-13-b">게시글 태그</span>
 
       {#each tags as tag (tag)}
-        <Tag class="gap-2" size="sm">
+        <Tag class="gap-2 pointer-events-none" size="sm">
           {tag}
-          <button class="i-lc-trash" type="button" on:click={() => (tags = tags.filter((t) => t !== tag))} />
+          <button
+            class="i-lc-trash pointer-events-auto"
+            type="button"
+            on:click={() => (tags = tags.filter((t) => t !== tag))}
+          />
         </Tag>
       {/each}
 
