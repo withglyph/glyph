@@ -11,7 +11,9 @@
   import { Menu, MenuItem } from '$lib/components/menu';
   import { createMutationForm } from '$lib/form';
   import { postKind } from '$lib/stores';
+  import { portal } from '$lib/svelte/actions';
   import { UpdatePostOptionsInputSchema } from '$lib/validations/post';
+  import CreateSpaceModal from '../(default)/CreateSpaceModal.svelte';
   import ToolbarButton from './ToolbarButton.svelte';
   import type { PostRevision } from '@prisma/client';
   import type { Editor, JSONContent } from '@tiptap/core';
@@ -52,11 +54,15 @@
               ...Image_image
             }
           }
+
+          ...DefaultLayout_CreateSpaceModal_user
         }
       }
     `),
   );
 
+  let createSpaceOpen = false;
+  let currentSpaceOpen = false;
   let currentSpace: (typeof $query.me.spaces)[0];
   $: currentSpace = $query.me.spaces[0];
 
@@ -216,26 +222,64 @@
       />
     </div>
 
-    <div class="grow">
-      <Menu class="mx-auto w-full max-w-92 bg-primary px-4 py-2 rounded-xl flex center gap-2" placement="bottom-end">
-        <div slot="value" class="flex items-center justify-between w-full">
-          <i class="i-lc-menu square-6 text-disabled" />
+    <div class="flex grow justify-center relative">
+      <button
+        class="w-full max-w-92 h-10 px-4 py-2 bg-primary border border-secondary rounded-xl flex gap-2 items-center justify-between w-full relative"
+        type="button"
+        on:click={() => (currentSpaceOpen = !currentSpaceOpen)}
+      >
+        <i class="i-lc-menu square-6 text-disabled absolute" />
 
-          <div class="flex grow center gap-2">
-            <Image class="square-6 rounded-md" $image={currentSpace.icon} />
-            <span class="body-15-b">{currentSpace.name}</span>
-          </div>
+        <div class="flex grow center gap-2">
+          <Image class="square-6 rounded-md" $image={currentSpace.icon} />
+          <span class="body-15-b">{currentSpace.name}</span>
         </div>
+      </button>
 
-        {#each $query.me.spaces as space (space.id)}
-          <MenuItem on:click={() => (currentSpace = space)}>
-            <div class="flex center gap-2">
-              <Image class="square-6 rounded-md" $image={space.icon} />
-              <span class="body-15-b">{space.name}</span>
-            </div>
-          </MenuItem>
-        {/each}
-      </Menu>
+      {#if currentSpaceOpen}
+        <div
+          class="fixed inset-0 z-49"
+          role="button"
+          tabindex="-1"
+          on:click={() => (currentSpaceOpen = false)}
+          on:keypress={null}
+          use:portal
+        />
+
+        <ul
+          class="absolute z-50 top-12 w-full max-w-92 bg-cardprimary rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.15)] py-4 px-3 space-y-3"
+        >
+          {#each $query.me.spaces as space (space.id)}
+            <li>
+              <button
+                class="px-2 py-1 w-full rounded-xl hover:bg-primary"
+                type="button"
+                on:click={() => {
+                  currentSpace = space;
+                  currentSpaceOpen = false;
+                }}
+              >
+                <div class="flex items-center gap-2">
+                  <Image class="square-6 rounded-md" $image={space.icon} />
+                  <span class="body-15-b">{space.name}</span>
+                </div>
+              </button>
+            </li>
+          {/each}
+
+          <hr class="border-alphagray-10" />
+
+          <Button
+            class="body-13-b w-full justify-start!"
+            size="xs"
+            variant="text"
+            on:click={() => (createSpaceOpen = true)}
+          >
+            <i class="i-lc-plus square-3.5 mr-1" />
+            새로운 스페이스 추가하기
+          </Button>
+        </ul>
+      {/if}
     </div>
 
     <Tooltip>
@@ -424,3 +468,5 @@
     </Menu>
   </div>
 </header>
+
+<CreateSpaceModal $user={$query.me} bind:open={createSpaceOpen} />
