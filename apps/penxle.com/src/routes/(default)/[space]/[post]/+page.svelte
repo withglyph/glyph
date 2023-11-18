@@ -190,6 +190,11 @@
     mutation SpacePostPage_DeletePost_Mutation($input: DeletePostInput!) {
       deletePost(input: $input) {
         id
+
+        space {
+          id
+          slug
+        }
       }
     }
   `);
@@ -552,8 +557,8 @@
     <Button
       size="md"
       on:click={async () => {
-        await deletePost({ postId: $query.post.id });
-        await goto(`/${$query.post.space.slug}`);
+        const resp = await deletePost({ postId: $query.post.id });
+        await goto(`/${resp.space.slug}`);
         toast.success('포스트를 삭제했어요');
       }}
     >
