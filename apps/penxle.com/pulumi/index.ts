@@ -14,6 +14,10 @@ const site = new penxle.Site('penxle.com', {
     memory: 2048,
   },
 
+  concurrency: {
+    provisioned: 2,
+  },
+
   iam: {
     policy: {
       Version: '2012-10-17',
