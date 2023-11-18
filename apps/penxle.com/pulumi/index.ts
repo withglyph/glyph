@@ -15,7 +15,8 @@ const site = new penxle.Site('penxle.com', {
   },
 
   concurrency: {
-    provisioned: 2,
+    provisioned: 5,
+    reserved: 100,
   },
 
   iam: {
