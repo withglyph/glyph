@@ -21,7 +21,7 @@
     hr,
     spacing,
     texts,
-  } from './formats';
+  } from './formats.svelte';
   import type { PostRevision } from '@prisma/client';
   import type { Editor, JSONContent } from '@tiptap/core';
 
@@ -227,7 +227,7 @@
               </svelte:fragment>
               {#each fonts as font (font.value)}
                 <MenuItem
-                  class={clsx('flex items-center gap-2 justify-between', `font-${font.value}`)}
+                  class={clsx('flex items-center gap-2 justify-between', font.class)}
                   on:click={() => {
                     editor.chain().focus().setFontFamily(font.value).run();
                   }}
