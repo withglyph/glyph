@@ -18,16 +18,16 @@
     "@penxle/tracing": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@penxle/ui": "workspace:^",
-    "@pulumi/pulumi": "^3.92.0",
-    "@sveltejs/kit": "^1.27.4",
-    "@types/node": "^20.9.0",
+    "@pulumi/pulumi": "^3.94.2",
+    "@sveltejs/kit": "^1.27.6",
+    "@types/node": "^20.9.2",
     "clsx": "^2.0.0",
     "lightningcss": "^1.22.1",
-    "svelte": "^4.2.2",
-    "svelte-check": "^3.5.2",
-    "tsx": "^4.0.0",
+    "svelte": "^4.2.5",
+    "svelte-check": "^3.6.0",
+    "tsx": "^4.1.4",
     "typescript": "^5.2.2",
-    "unocss": "^0.57.3",
+    "unocss": "^0.57.5",
     "vite": "^4.5.0"
   }
 }

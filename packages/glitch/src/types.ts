@@ -65,7 +65,7 @@ export type MutationStore<D, V> = Readable<{
   (V extends Record<string, never>
     ? () => Promise<D[keyof D]>
     : V extends { input: infer I }
-    ? (input: I) => Promise<D[keyof D]>
-    : never);
+      ? (input: I) => Promise<D[keyof D]>
+      : never);
 
 export type FragmentStore<D> = Readable<D>;
