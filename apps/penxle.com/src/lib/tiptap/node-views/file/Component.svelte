@@ -65,6 +65,7 @@
   )}
   as={editor?.isEditable ? undefined : 'a'}
   href={editor?.isEditable ? undefined : node.attrs.__data.url}
+  {...editor?.isEditable && { 'data-drag-handle': true }}
 >
   {@const data = node.attrs.__file ?? node.attrs.__data}
 

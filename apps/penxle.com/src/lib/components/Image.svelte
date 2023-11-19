@@ -17,6 +17,7 @@
   export let fit: 'cover' | 'contain' = 'cover';
   export let fade = true;
   export let intrinsic = false;
+  export let draggable = false;
   export let alt: string | undefined = undefined;
 
   let imgEl: HTMLImageElement | undefined;
@@ -70,7 +71,7 @@
   class={clsx('overflow-hidden', _class)}
   role="img"
   on:contextmenu|preventDefault
-  on:dragstart|preventDefault
+  on:dragstart={draggable ? undefined : (e) => e.preventDefault()}
   use:intersectionObserver={{ once: true, handler: (v) => (visible = v) }}
   use:resizeObserver={({ contentRect }) => (domRect = contentRect)}
 >

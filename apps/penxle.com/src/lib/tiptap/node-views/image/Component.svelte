@@ -59,14 +59,14 @@
 
 <NodeView class="flex center p-4">
   {#if editor?.isEditable}
-    <div class={clsx('relative max-w-full', selected && 'ring-4 ring-brand-50')}>
+    <div class={clsx('relative max-w-full', selected && 'ring-4 ring-brand-50')} data-drag-handle>
       {#if node.attrs.__file}
         <FileImage class="w-full" file={node.attrs.__file} />
         <div class="absolute inset-0 flex center bg-white/50">
           <RingSpinner class="w-8 h-8 text-brand-50" />
         </div>
       {:else if node.attrs.__data}
-        <Image class="max-w-full" $image={node.attrs.__data} intrinsic />
+        <Image class="max-w-full" $image={node.attrs.__data} draggable intrinsic />
       {/if}
     </div>
   {:else}
