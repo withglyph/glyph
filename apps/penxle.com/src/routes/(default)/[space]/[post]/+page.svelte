@@ -322,7 +322,7 @@
               {/if}
               <MenuItem>포스트 신고하기</MenuItem>
             {:else if $query.post.member.id === $query.me?.id || $query.post.space.meAsMember?.role === 'ADMIN'}
-              <MenuItem href={`/publish/${$query.post.permalink}`} type="link">수정하기</MenuItem>
+              <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
               <MenuItem
                 on:click={() => {
                   openDeletePostWarning = true;

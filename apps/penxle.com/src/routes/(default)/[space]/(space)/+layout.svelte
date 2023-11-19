@@ -170,7 +170,7 @@
     </div>
     <div class="flex self-start items-center gap-2 <sm:hidden">
       {#if $query.space.meAsMember}
-        <Button href={`/publish?slug=${$query.space.slug}`} size="md" type="link">포스트 작성</Button>
+        <Button href={`/editor?space=${$query.space.slug}`} size="md" type="link">포스트 작성</Button>
         <Button
           color="tertiary"
           size="md"
@@ -302,7 +302,7 @@
   </div>
   <div class="flex gap-2 w-full mt-6 mb-3 px-4 sm:hidden">
     {#if $query.space.meAsMember}
-      <Button class="<sm:w-full" href={`/publish?slug=${$query.space.slug}`} size="xl" type="link">포스트 작성</Button>
+      <Button class="<sm:w-full" href={`/editor?space=${$query.space.slug}`} size="xl" type="link">포스트 작성</Button>
       <Button
         class="square-12.5"
         color="tertiary"

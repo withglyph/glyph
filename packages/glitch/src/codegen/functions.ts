@@ -140,6 +140,60 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
               ),
             ),
           ),
+          AST.b.exportNamedDeclaration(
+            AST.b.tsDeclareFunction(
+              AST.b.identifier('fragment'),
+              [
+                AST.b.identifier.from({
+                  name: 'reference',
+                  typeAnnotation: AST.b.tsTypeAnnotation(
+                    AST.b.tsUnionType([
+                      AST.b.tsTypeLiteral([
+                        AST.b.tsPropertySignature(
+                          AST.b.stringLiteral(' $fragmentRefs'),
+                          AST.b.tsTypeAnnotation(
+                            AST.b.tsTypeLiteral([
+                              AST.b.tsPropertySignature(
+                                AST.b.identifier(name),
+                                AST.b.tsTypeAnnotation(AST.b.tsTypeReference(AST.b.identifier(`base.${name}`))),
+                              ),
+                            ]),
+                          ),
+                          true,
+                        ),
+                      ]),
+                      AST.b.tsNullKeyword(),
+                    ]),
+                  ),
+                }),
+                AST.b.identifier.from({
+                  name: 'document',
+                  typeAnnotation: AST.b.tsTypeAnnotation(
+                    AST.b.tsTypeLiteral([
+                      AST.b.tsPropertySignature(
+                        AST.b.stringLiteral(' $fragmentName'),
+                        AST.b.tsTypeAnnotation(AST.b.tsLiteralType(AST.b.stringLiteral(name))),
+                        true,
+                      ),
+                    ]),
+                  ),
+                }),
+              ],
+              AST.b.tsTypeAnnotation(
+                AST.b.tsUnionType([
+                  AST.b.tsTypeReference(
+                    AST.b.identifier('FragmentStore'),
+                    AST.b.tsTypeParameterInstantiation([
+                      AST.b.tsUnionType([
+                        AST.b.tsTypeReference(AST.b.identifier(`types.${name}`)),
+                        AST.b.tsNullKeyword(),
+                      ]),
+                    ]),
+                  ),
+                ]),
+              ),
+            ),
+          ),
         );
 
         break;

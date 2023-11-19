@@ -51,14 +51,12 @@
   });
 
   onMount(() => {
-    if (!editor?.isDestroyed) {
-      editor.registerPlugin(
-        new Plugin({
-          key: new PluginKey(key),
-          view: () => ({ update }),
-        }),
-      );
-    }
+    editor.registerPlugin(
+      new Plugin({
+        key: new PluginKey(key),
+        view: () => ({ update }),
+      }),
+    );
 
     return () => {
       editor.unregisterPlugin(key);
@@ -66,14 +64,14 @@
   });
 </script>
 
-<svelte:document
+<!-- <svelte:document
   on:mousedown={() => {
     if (open) {
       update.flush(editor.view);
       open = false;
     }
   }}
-/>
+/> -->
 
 {#if open}
   <div

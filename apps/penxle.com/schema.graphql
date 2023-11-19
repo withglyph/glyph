@@ -254,6 +254,7 @@ type Post {
   createdAt: DateTime!
   draftRevision(revisionId: ID): PostRevision!
   id: ID!
+  kind: PostKind!
   likeCount: Int!
   liked: Boolean!
   member: SpaceMember!
@@ -264,6 +265,7 @@ type Post {
   revisionList: [PostRevision!]!
   shortlink: String!
   space: Space!
+  state: PostState!
   tags: [PostTag!]!
   unlocked: Boolean!
   viewCount: Int!

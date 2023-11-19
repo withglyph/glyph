@@ -1,6 +1,5 @@
 <script lang="ts">
   import clsx from 'clsx';
-  import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -11,9 +10,9 @@
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { CreateSpaceSchema } from '$lib/validations';
-  import type { DefaultLayout_CreateSpaceModal_user } from '$glitch';
+  import type { EditorPage_CreateSpaceModal_user } from '$glitch';
 
-  let _user: DefaultLayout_CreateSpaceModal_user;
+  let _user: EditorPage_CreateSpaceModal_user;
   export { _user as $user };
 
   let useSpaceProfile = true;
@@ -21,7 +20,7 @@
   $: user = fragment(
     _user,
     graphql(`
-      fragment DefaultLayout_CreateSpaceModal_user on User {
+      fragment EditorPage_CreateSpaceModal_user on User {
         id
         email
 
@@ -47,7 +46,7 @@
 
   const { form, handleSubmit, isSubmitting, data, setFields, setInitialValues } = createMutationForm({
     mutation: graphql(`
-      mutation DefaultLayout_CreateSpaceModal_CreateSpace_Mutation($input: CreateSpaceInput!) {
+      mutation EditorPage_CreateSpaceModal_CreateSpace_Mutation($input: CreateSpaceInput!) {
         createSpace(input: $input) {
           id
           slug
@@ -57,10 +56,10 @@
     schema: CreateSpaceSchema,
     initialValues: { profileName: '' },
     extra: () => ({ profileAvatarId: avatar.id }),
-    onSuccess: async ({ slug }) => {
+    onSuccess: async () => {
       mixpanel.track('space:create');
       toast.success('스페이스를 만들었어요');
-      await goto(`/${slug}`);
+      open = false;
     },
   });
 

@@ -23,7 +23,8 @@
   const update = async () => {
     await tick();
 
-    const position = await computePosition(targetEl, menuEl, {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const position = await computePosition(targetEl.firstElementChild!, menuEl, {
       placement,
       middleware: [offset(_offset ?? 4), flip(), shift({ padding: 8 })],
     });
@@ -43,7 +44,7 @@
   });
 </script>
 
-<button bind:this={targetEl} class={clsx('w-fit', _class)} type="button" on:click={() => (open = !open)}>
+<button bind:this={targetEl} class={clsx('contents', _class)} type="button" on:click={() => (open = !open)}>
   <slot name="value" />
 </button>
 

@@ -9,8 +9,6 @@
   import { Button } from '$lib/components';
   import { outsideClickEvent } from '$lib/svelte/actions';
   import Notification from './Notification.svelte';
-  import PublishMenu from './PublishMenu.svelte';
-  import PublishModal from './PublishModal.svelte';
   import SearchBar from './SearchBar.svelte';
   import SideBar from './SideBar.svelte';
   import UserMenu from './UserMenu.svelte';
@@ -21,8 +19,6 @@
 
   let isOpen = false;
   let isSideBarOpen = false;
-
-  let openPublish = false;
 
   $: query = fragment(
     _query,
@@ -39,8 +35,6 @@
 
           ...DefaultLayout_UserMenu_user
           ...DefaultLayout_Notification_user
-          ...DefaultLayout_PublishMenu_user
-          ...DefaultLayout_PublishModal_user
         }
       }
     `),
@@ -85,7 +79,13 @@
 
       <div class="flex items-center <sm:hidden relative">
         {#if $query.me}
-          <PublishMenu class="<lg:hidden" $user={$query.me} />
+          <a
+            class="relative flex items-center gap-2 rounded-lg py-1 px-2 font-bold text-gray-60 transition hover:bg-surface-primary <lg:hidden"
+            href="/editor"
+          >
+            <span class="i-px-pen-fill square-6 fill-gray-60" />
+            <span class="text-sm">포스트 작성하기</span>
+          </a>
           <Notification $user={$query.me} />
           <UserMenu $user={$query.me} />
         {:else}
@@ -103,7 +103,7 @@
         <mark class="inline-block leading-0 border-b-10">{$query.me.profile.name}님</mark>
       </p>
       <p class="text-lg font-semibold text-secondary mb-4">{$query.me.email}</p>
-      <Button class="w-full" size="xl" on:click={() => (openPublish = true)}>새 포스트 작성하기</Button>
+      <Button class="w-full" href="/editor" size="xl" type="link">새 포스트 작성하기</Button>
     </div>
     <div class="space-y-1">
       <a
@@ -170,7 +170,3 @@
     </a>
   {/if}
 </SideBar>
-
-{#if $query.me}
-  <PublishModal $user={$query.me} bind:open={openPublish} />
-{/if}

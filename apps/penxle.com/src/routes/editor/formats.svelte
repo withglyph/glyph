@@ -8,7 +8,7 @@
   export const colors = [
     { label: '검정색', value: null },
     { label: '회색', value: 'text-gray-50' },
-    { label: '회색 2', value: 'text-gray-40' },
+    { label: '연회색', value: 'text-gray-40' },
     { label: '빨간색', value: 'text-red-60' },
     { label: '파란색', value: 'text-blue-60' },
     { label: '갈색', value: 'text-orange-70' },
@@ -43,38 +43,30 @@
   ] satisfies { label: string; value: FontFamily; class: string }[];
 
   const heightToLocaleString = {
-    3: '좁음', // .75
-    none: '없음', // 1
-    tight: '낮음 2', // 1.25
-    snug: '낮음 1', // 1.375
+    none: '매우 좁음', // 1
+    tight: '더 좁음', // 1.25
+    snug: '좁음', // 1.375
     normal: '보통', // 1.5
-    relaxed: '높음 1', // 1.625
-    7: '높음 2', // 1.75
-    loose: '높음 3', // 2
-    9: '높음 4', // 2.25
-    10: '높음 5', // 2.5
+    relaxed: '넓음', // 1.625
+    loose: '매우 넓음', // 2
   } satisfies Record<Height, string>;
 
   export const heights: { label: string; value: Height }[] = [
-    { label: heightToLocaleString[3], value: 3 },
     { label: heightToLocaleString.none, value: 'none' },
     { label: heightToLocaleString.tight, value: 'tight' },
     { label: heightToLocaleString.snug, value: 'snug' },
     { label: heightToLocaleString.normal, value: 'normal' },
     { label: heightToLocaleString.relaxed, value: 'relaxed' },
-    { label: heightToLocaleString[7], value: 7 },
     { label: heightToLocaleString.loose, value: 'loose' },
-    { label: heightToLocaleString[9], value: 9 },
-    { label: heightToLocaleString[10], value: 10 },
   ];
 
   const spacingToLocaleString = {
-    tighter: '좁게 2',
-    tight: '좁게 1',
+    tighter: '더 좁음',
+    tight: '좁게',
     normal: '보통',
-    wide: '넓게 1',
-    wider: '넓게 2',
-    widest: '넓게 3',
+    wide: '넓음',
+    wider: '더 넓음',
+    widest: '매우 넓음',
   } satisfies Record<Spacing, string>;
 
   export const spacing: { label: string; value: Spacing }[] = [

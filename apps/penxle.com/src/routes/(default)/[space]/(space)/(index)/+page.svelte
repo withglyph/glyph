@@ -31,7 +31,7 @@
     <div>
       <h2 class="body-15-b text-secondary">아직 스페이스에 업로드된 포스트가 없어요</h2>
       {#if $query.space.meAsMember}
-        <Button class="mt-5" href={`/publish?slug=${$query.space.slug}`} size="lg" type="link">포스트 작성하기</Button>
+        <Button class="mt-5" href={`/editor?space=${$query.space.slug}`} size="lg" type="link">포스트 작성하기</Button>
       {/if}
     </div>
   {/if}

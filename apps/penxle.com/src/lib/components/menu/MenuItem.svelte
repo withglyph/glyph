@@ -21,14 +21,18 @@
 
   let element: 'a' | 'button';
   $: element = type === 'link' ? 'a' : 'button';
-  $: props = type === 'link' ? { href: disabled || href } : { type, disabled };
+  $: props = type === 'link' ? { href: disabled ? undefined : href } : { type, disabled };
 
   let close = getContext<() => void>('close');
 </script>
 
 <svelte:element
   this={element}
-  class={clsx('body-14-sb text-secondary px-4 py-3 w-full rounded-lg hover:(bg-primary text-primary)', _class)}
+  class={clsx(
+    'body-14-sb text-secondary px-4 py-3 w-full rounded-lg',
+    disabled ? 'cursor-not-allowed' : 'hover:(bg-primary text-primary)',
+    _class,
+  )}
   role="button"
   tabindex="-1"
   type="button"

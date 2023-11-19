@@ -1,7 +1,9 @@
 <script lang="ts">
-  import { PostKind } from '@prisma/client';
+  import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import clsx from 'clsx';
+  import dayjs from 'dayjs';
   import * as R from 'radash';
+  import { tick } from 'svelte';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
@@ -11,36 +13,34 @@
   import { Checkbox, Switch } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { createMutationForm } from '$lib/form';
-  import { postKind } from '$lib/stores';
   import { portal } from '$lib/svelte/actions';
   import { UpdatePostOptionsInputSchema } from '$lib/validations/post';
-  import CreateSpaceModal from '../../(default)/CreateSpaceModal.svelte';
+  import ArticleCharacterCount from './ArticleCharacterCount.svelte';
+  import CreateSpaceModal from './CreateSpaceModal.svelte';
   import ToolbarButton from './ToolbarButton.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
-  import type { ContentFilterCategory, PostRevisionKind, PublishPage_Header_query } from '$glitch';
-  import type { PublishPage_Header_PostOption } from '../types';
+  import type {
+    ContentFilterCategory,
+    EditorPage_Header_post,
+    EditorPage_Header_query,
+    PostKind,
+    PostRevisionKind,
+  } from '$glitch';
 
-  let _query: PublishPage_Header_query;
-  export { _query as $query };
+  let _query: EditorPage_Header_query;
+  let _post: EditorPage_Header_post | null = null;
+  export { _post as $post, _query as $query };
 
+  export let kind: PostKind;
   export let title: string;
   export let subtitle: string | null;
   export let content: JSONContent | undefined;
   export let editor: Editor | undefined;
-  export let permalink: string | undefined = undefined;
-
-  let _postOption: PublishPage_Header_PostOption;
-  export { _postOption as postOption };
-
-  let { hasPassword, ...postOption } = _postOption;
-
-  let postId = postOption.postId;
-  let hasContentFilter = postOption.contentFilters.length > 0;
 
   $: query = fragment(
     _query,
     graphql(`
-      fragment PublishPage_Header_query on Query {
+      fragment EditorPage_Header_query on Query {
         me @_required {
           id
 
@@ -55,26 +55,69 @@
             }
           }
 
-          ...DefaultLayout_CreateSpaceModal_user
+          ...EditorPage_CreateSpaceModal_user
         }
       }
     `),
   );
 
-  let createSpaceOpen = false;
-  let currentSpaceOpen = false;
-  let currentSpace: (typeof $query.me.spaces)[number];
+  $: post = fragment(
+    _post,
+    graphql(`
+      fragment EditorPage_Header_post on Post {
+        id
+        state
+        contentFilters
 
-  $: if (currentSpace === undefined) {
-    const slug = $page.url.searchParams.get('slug');
-    currentSpace = (slug && $query.me.spaces.find((space) => space.slug === slug)) || $query.me.spaces[0];
-  }
+        space {
+          id
+        }
 
-  $: canPublish = browser && !!title && content?.content;
+        option {
+          id
+          discloseStats
+          hasPassword
+          receiveFeedback
+          receivePatronage
+          receiveTagContribution
+          visibility
+        }
 
-  const { form, setData, setInitialValues, data } = createMutationForm({
+        tags {
+          id
+          pinned
+
+          tag {
+            id
+            name
+          }
+        }
+      }
+    `),
+  );
+
+  const revisePost = graphql(`
+    mutation EditorPage_RevisePost_Mutation($input: RevisePostInput!) {
+      revisePost(input: $input) {
+        id
+        permalink
+
+        draftRevision {
+          id
+          createdAt
+        }
+
+        space {
+          id
+          slug
+        }
+      }
+    }
+  `);
+
+  const { form, data, setInitialValues } = createMutationForm({
     mutation: graphql(`
-      mutation PublishPage_UpdatePostOptions_Mutation($input: UpdatePostOptionsInput!) {
+      mutation EditorPage_UpdatePostOptions_Mutation($input: UpdatePostOptionsInput!) {
         updatePostOptions(input: $input) {
           id
 
@@ -101,72 +144,135 @@
     `),
     schema: UpdatePostOptionsInputSchema,
     onSuccess: async () => {
-      const resp = await revise('PUBLISHED');
-
+      const resp = await doRevisePost('PUBLISHED');
       await goto(`/${resp.space.slug}/${resp.permalink}`);
     },
   });
 
-  $: setInitialValues({
-    ...postOption,
-    password: hasPassword ? '' : null,
-  });
-
-  const revisePost = graphql(`
-    mutation PublishPage_RevisePost_Mutation($input: RevisePostInput!) {
-      revisePost(input: $input) {
-        id
-        permalink
-
-        space {
-          id
-          slug
-        }
-      }
-    }
-  `);
-
-  const revise = async (revisionKind: PostRevisionKind) => {
+  const doRevisePost = async (revisionKind: PostRevisionKind) => {
     const resp = await revisePost({
-      postId,
       revisionKind,
+      postId: $data.postId,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      spaceId: selectedSpace!.id,
       title,
-      spaceId: currentSpace.id,
       subtitle,
       content,
     });
 
-    postId = resp.id;
+    $data.postId = resp.id;
     permalink = resp.permalink;
+    revisedAt = resp.draftRevision.createdAt;
 
     return resp;
   };
 
-  const handler = R.debounce({ delay: 1000 }, async () => {
-    await revise('AUTO_SAVE');
-  });
+  const autoSave = R.debounce({ delay: 1000 }, async () => doRevisePost('AUTO_SAVE'));
 
-  $: if (canPublish) {
-    handler();
+  let publishButtonEl: HTMLDivElement;
+  let publishMenuEl: HTMLDivElement;
+
+  let publishMenuOpen = false;
+  let createSpaceOpen = false;
+  let spaceSelectorOpen = false;
+
+  let enablePassword = false;
+  let enableContentFilter = false;
+
+  $: if ($post?.option.hasPassword) {
+    enablePassword = true;
   }
 
-  postKind.set(((browser && localStorage.getItem('postKind')) as PostKind) || 'ARTICLE');
+  $: if ($post?.contentFilters.filter((v) => v !== 'ADULT').length ?? 0 > 0) {
+    enableContentFilter = true;
+  }
 
-  postKind.subscribe((type) => {
-    if (browser) return (localStorage.postKind = type);
-  });
+  let permalink: string | undefined;
+  let selectedSpace: (typeof $query.me.spaces)[number] | undefined;
+  let revisedAt: string | undefined;
+
+  $: if ($query && selectedSpace === undefined) {
+    if ($post) {
+      const id = $post.space.id;
+      selectedSpace = $query.me.spaces.find((space) => space.id === id);
+    } else {
+      const slug = $page.url.searchParams.get('space');
+      selectedSpace = (slug && $query.me.spaces.find((space) => space.slug === slug)) || $query.me.spaces[0];
+    }
+  }
+
+  $: if ($post) {
+    setInitialValues({
+      postId: $post.id,
+      contentFilters: $post.contentFilters,
+      discloseStats: $post.option.discloseStats,
+      receiveFeedback: $post.option.receiveFeedback,
+      receivePatronage: $post.option.receivePatronage,
+      receiveTagContribution: $post.option.receiveTagContribution,
+      password: $post.option.hasPassword ? '' : undefined,
+      tags: $post.tags.map(({ tag }) => tag.name),
+      visibility: $post.option.visibility,
+    });
+  } else {
+    setInitialValues({
+      postId: undefined as unknown as string,
+      contentFilters: [],
+      discloseStats: true,
+      receiveFeedback: true,
+      receivePatronage: true,
+      receiveTagContribution: true,
+      tags: [],
+      visibility: 'PUBLIC',
+    });
+  }
+
+  $: published = $post?.state === 'PUBLISHED';
+  $: canRevise = browser && selectedSpace && !!title && content?.content;
+
+  $: reviseNotAvailableReason = (() => {
+    if (!selectedSpace) {
+      return '게시할 스페이스를 선택해주세요';
+    }
+
+    if (!title) {
+      return '제목을 입력해주세요';
+    }
+
+    if (!content?.content) {
+      return '내용을 입력해주세요';
+    }
+
+    return '';
+  })();
+
+  $: if (canRevise) {
+    autoSave();
+  }
+
+  const update = async () => {
+    await tick();
+
+    const position = await computePosition(publishButtonEl, publishMenuEl, {
+      placement: 'bottom-end',
+      middleware: [offset(4), flip(), shift({ padding: 8 })],
+    });
+
+    Object.assign(publishMenuEl.style, {
+      left: `${position.x}px`,
+      top: `${position.y}px`,
+    });
+  };
+
+  $: if (publishMenuOpen) {
+    void update();
+  }
 
   const checkContentFilter = (e: Event, contentFilter: ContentFilterCategory) => {
     const { checked } = e.target as HTMLInputElement;
 
-    if (checked) {
-      setData(($data) => ({ ...$data, contentFilters: [...$data.contentFilters, contentFilter] }));
-    } else {
-      setData(($data) => ({
-        ...$data,
-        contentFilters: $data.contentFilters.filter((filter) => filter !== contentFilter),
-      }));
-    }
+    $data.contentFilters = checked
+      ? [...$data.contentFilters, contentFilter]
+      : $data.contentFilters.filter((v) => v !== contentFilter);
   };
 </script>
 
@@ -177,20 +283,17 @@
     <div
       class={clsx(
         "bg-surface-primary rounded-3xl h-10 w-fit grid relative grid-cols-2 before:(content-[''] absolute w-50% h-100% left-0 bg-gray-70 rounded-3xl transition-all)",
-        $postKind === 'GALLERY' && 'before:left-50%',
+        kind === 'GALLERY' && 'before:left-50%',
       )}
     >
       <button
         class={clsx(
           'h-10 py-2 px-4 flex items-center gap-2 z-1',
-          $postKind === 'ARTICLE' && 'first:(text-white transition-color) last:(text-gray-70 transition-color)',
-          $postKind === 'GALLERY' && 'first:(text-gray-70 transition-color) last:(text-white transition-color)',
+          kind === 'ARTICLE' && 'first:(text-white transition-color) last:(text-gray-70 transition-color)',
+          kind === 'GALLERY' && 'first:(text-gray-70 transition-color) last:(text-white transition-color)',
         )}
         type="button"
-        on:click={() => {
-          postKind.update(() => 'ARTICLE');
-          localStorage.setItem('postKind', 'ARTICLE');
-        }}
+        on:click={() => (kind = 'ARTICLE')}
       >
         <i class="i-lc-file-text square-5" />
         <span class="body-14-b">글 모드</span>
@@ -198,14 +301,11 @@
       <button
         class={clsx(
           'h-10 py-2 px-4 flex items-center gap-2 z-1',
-          $postKind === 'ARTICLE' && 'first:(text-white transition) last:(text-gray-70 transition)',
-          $postKind === 'GALLERY' && 'first:(text-gray-70 transition) last:(text-white transition)',
+          kind === 'ARTICLE' && 'first:(text-white transition) last:(text-gray-70 transition)',
+          kind === 'GALLERY' && 'first:(text-gray-70 transition) last:(text-white transition)',
         )}
         type="button"
-        on:click={() => {
-          postKind.update(() => 'GALLERY');
-          localStorage.setItem('postKind', 'GALLERY');
-        }}
+        on:click={() => (kind = 'GALLERY')}
       >
         <i class="i-lc-image square-5" />
         <span class="body-14-b">그림 모드</span>
@@ -230,23 +330,38 @@
     <div class="flex grow justify-center relative">
       <button
         class="w-full max-w-92 h-10 px-4 py-2 bg-primary border border-secondary rounded-xl flex gap-2 items-center justify-between w-full relative"
+        disabled={published}
         type="button"
-        on:click={() => (currentSpaceOpen = !currentSpaceOpen)}
+        on:click={() => {
+          if (selectedSpace) {
+            spaceSelectorOpen = !spaceSelectorOpen;
+          } else {
+            createSpaceOpen = true;
+          }
+        }}
       >
-        <i class="i-lc-menu square-6 text-disabled absolute" />
+        {#if selectedSpace}
+          <i class="i-lc-menu square-6 text-disabled absolute" />
 
-        <div class="flex grow center gap-2">
-          <Image class="square-6 rounded-md" $image={currentSpace.icon} />
-          <span class="body-15-b">{currentSpace.name}</span>
-        </div>
+          <div class="flex grow center gap-2">
+            <Image class="square-6 rounded-md" $image={selectedSpace.icon} />
+            <span class="body-15-b">{selectedSpace.name}</span>
+          </div>
+        {:else}
+          <i class="i-lc-plus square-6 text-disabled absolute" />
+
+          <div class="flex grow center gap-2">
+            <span class="body-15-b">눌러서 새 스페이스 만들기</span>
+          </div>
+        {/if}
       </button>
 
-      {#if currentSpaceOpen}
+      {#if spaceSelectorOpen}
         <div
           class="fixed inset-0 z-49"
           role="button"
           tabindex="-1"
-          on:click={() => (currentSpaceOpen = false)}
+          on:click={() => (spaceSelectorOpen = false)}
           on:keypress={null}
           use:portal
         />
@@ -260,8 +375,8 @@
                 class="px-2 py-1 w-full rounded-xl hover:bg-primary"
                 type="button"
                 on:click={() => {
-                  currentSpace = space;
-                  currentSpaceOpen = false;
+                  selectedSpace = space;
+                  spaceSelectorOpen = false;
                 }}
               >
                 <div class="flex items-center gap-2">
@@ -287,60 +402,77 @@
       {/if}
     </div>
 
-    <Tooltip>
-      <div class="flex flex-col text-right w-36.5">
-        <span class="body-15-b">
-          <mark class="text-blue-50">80</mark>
-          자
-        </span>
-        <span class="caption-12-m text-disabled">마지막으로 저장된 시간 13:00</span>
-      </div>
-
-      <div slot="message">
-        <div class="caption-12-m">
-          <span class="text-secondary w-17.5 inline-block">공백 미포함</span>
-          <span class="text-rights">80자</span>
-        </div>
-        <div class="caption-12-m">
-          <span class="text-secondary w-17.5 inline-block">공백 포함</span>
-          <span class="text-rights">80자</span>
-        </div>
-      </div>
-    </Tooltip>
+    <div class="flex flex-col items-end text-right w-36.5">
+      <ArticleCharacterCount {editor} />
+      <span class="caption-12-m text-disabled">
+        {#if revisedAt}
+          {dayjs(revisedAt).formatAsTime()} 저장됨
+        {:else}
+          저장되지 않음
+        {/if}
+      </span>
+    </div>
 
     <div class="flex">
+      <Tooltip class="peer" enabled={!canRevise} message={reviseNotAvailableReason}>
+        <Button
+          class="body-15-b disabled:border! border-r-none rounded-r-none"
+          color="tertiary"
+          disabled={!canRevise}
+          loading={$revisePost.inflight}
+          size="lg"
+          variant="outlined"
+          on:click={() => doRevisePost('MANUAL_SAVE')}
+        >
+          임시저장
+        </Button>
+      </Tooltip>
+
       <Button
-        class="body-15-b disabled:border! border-r-none rounded-r-none peer"
+        class="text-blue-50 body-15-b rounded-l-none peer-[&:has(button:enabled)]:peer-hover:border-l-border-primary"
         color="tertiary"
-        disabled={!canPublish}
-        loading={$revisePost.inflight}
         size="lg"
         variant="outlined"
-        on:click={() => revise('MANUAL_SAVE')}
       >
-        임시저장
-      </Button>
-      <Button
-        class="text-blue-50 body-15-b rounded-l-none peer-enabled:peer-hover:border-l-border-primary"
-        color="tertiary"
-        size="lg"
-        variant="outlined"
-      >
-        18
+        0
       </Button>
     </div>
 
-    <Menu>
-      <Button slot="value" disabled={!canPublish} loading={$revisePost.inflight} size="lg">포스트 게시</Button>
+    <div bind:this={publishButtonEl} class="w-fit">
+      <Tooltip enabled={!canRevise} message={reviseNotAvailableReason}>
+        <Button disabled={!canRevise} size="lg" on:click={() => (publishMenuOpen = true)}>포스트 게시</Button>
+      </Tooltip>
+    </div>
 
-      <MenuItem class="square-6! flex center absolute top-6 right-6 p-0!">
+    {#if publishMenuOpen}
+      <div
+        class="fixed inset-0 z-51"
+        role="button"
+        tabindex="-1"
+        on:click={() => (publishMenuOpen = false)}
+        on:keypress={null}
+        use:portal
+      />
+    {/if}
+
+    <div
+      bind:this={publishMenuEl}
+      class={clsx(
+        'absolute z-52 bg-cardprimary rounded-lg px-1 space-y-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.15)] flex flex-col py-2',
+        !publishMenuOpen && 'hidden!',
+      )}
+      use:portal
+    >
+      <button
+        class="square-6 flex center absolute top-6 right-6 p-0 rounded-full text-secondary hover:(bg-primary text-primary)"
+        type="button"
+        on:click={() => (publishMenuOpen = false)}
+      >
         <i class="i-lc-x" />
-      </MenuItem>
+      </button>
 
       <form class="px-3 pt-4 pb-3.5 space-y-4 w-163" use:form>
         <p class="title-20-b">포스트 게시 옵션</p>
-
-        <input name="postId" type="hidden" bind:value={postId} />
 
         <div>
           <p class="text-secondary mb-3">공개범위</p>
@@ -354,7 +486,7 @@
               <input id="space" name="visibility" class="square-4.5" type="radio" value="SPACE" />
               <label class="grow body-15-sb flex items-center gap-1" for="space">
                 멤버 공개
-                <Tooltip message="성인 인증을 한 유저에게만 노출돼요" placement="top">
+                <Tooltip message="같은 스페이스의 멤버에게만 노출돼요" placement="top">
                   <i class="i-lc-help-circle square-4 text-secondary" />
                 </Tooltip>
               </label>
@@ -363,7 +495,7 @@
               <input id="unlisted" name="visibility" class="square-4.5" type="radio" value="UNLISTED" />
               <label class="grow body-15-sb flex items-center gap-1" for="unlisted">
                 링크 공개
-                <Tooltip message="성인 인증을 한 유저에게만 노출돼요" placement="top">
+                <Tooltip message="링크를 아는 사람에게만 노출돼요" placement="top">
                   <i class="i-lc-help-circle square-4 text-secondary" />
                 </Tooltip>
               </label>
@@ -374,10 +506,12 @@
         <div class="flex gap-6 items-center h-10">
           <Checkbox
             class="body-15-sb"
-            checked={hasPassword}
+            checked={enablePassword}
             on:change={() => {
-              hasPassword = !hasPassword;
-              setData(($data) => ({ ...$data, password: null }));
+              enablePassword = !enablePassword;
+              if (!enablePassword) {
+                $data.password = null;
+              }
             }}
           >
             비밀글
@@ -385,7 +519,7 @@
 
           <input
             name="password"
-            class={clsx('bg-surface-primary rounded-xl px-3 py-1 body-15-sb h-10', !hasPassword && 'hidden')}
+            class={clsx('bg-surface-primary rounded-xl px-3 py-1 body-15-sb h-10', !enablePassword && 'hidden')}
             placeholder="비밀번호 입력"
             type="text"
           />
@@ -402,16 +536,16 @@
 
         <Checkbox
           class="body-15-sb"
-          checked={hasContentFilter}
+          checked={enableContentFilter}
           on:change={() => {
-            hasContentFilter = !hasContentFilter;
-            setData(($data) => ({ ...$data, contentFilters: [] }));
+            enableContentFilter = !enableContentFilter;
+            $data.contentFilters = [];
           }}
         >
-          트리거 워닝
+          민감한 요소
         </Checkbox>
 
-        <div class={clsx('grid grid-cols-5 gap-2', !hasContentFilter && 'hidden')}>
+        <div class={clsx('grid grid-cols-5 gap-2', !enableContentFilter && 'hidden')}>
           <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'VIOLENCE')}>폭력성</ToggleButton>
           <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'GROSSNESS')}>벌레/징그러움</ToggleButton>
           <ToggleButton size="lg" on:change={(e) => checkContentFilter(e, 'CRUELTY')}>잔인성</ToggleButton>
@@ -468,20 +602,22 @@
 
         <Button class="w-full" size="xl" type="submit">게시하기</Button>
       </form>
-    </Menu>
+    </div>
 
-    <Menu placement="bottom-end">
-      <button slot="value" class="square-10 p-3 flex center" type="button">
-        <i class="i-lc-more-vertical square-6" />
-      </button>
+    {#if selectedSpace && permalink}
+      <Menu placement="bottom-end">
+        <button slot="value" class="square-10 p-3 flex center" type="button">
+          <i class="i-lc-more-vertical square-6" />
+        </button>
 
-      <MenuItem>저장이력</MenuItem>
-      <MenuItem>
-        <Button disabled={!!permalink} href={`/${currentSpace.slug}/preview/${permalink}`} type="link" variant="text">
-          미리보기
-        </Button>
-      </MenuItem>
-    </Menu>
+        <MenuItem>저장이력</MenuItem>
+        <MenuItem external href={`/${selectedSpace.slug}/preview/${permalink}`} type="link">미리보기</MenuItem>
+      </Menu>
+    {:else}
+      <div class="square-10 p-3 flex center">
+        <i class="i-lc-more-vertical square-6 text-gray-30" />
+      </div>
+    {/if}
   </div>
 </header>
 

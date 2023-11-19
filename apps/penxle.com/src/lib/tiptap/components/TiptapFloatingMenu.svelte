@@ -47,14 +47,12 @@
   };
 
   onMount(() => {
-    if (!editor?.isDestroyed) {
-      editor.registerPlugin(
-        new Plugin({
-          key: new PluginKey(key),
-          view: () => ({ update }),
-        }),
-      );
-    }
+    editor.registerPlugin(
+      new Plugin({
+        key: new PluginKey(key),
+        view: () => ({ update }),
+      }),
+    );
 
     return () => {
       editor.unregisterPlugin(key);

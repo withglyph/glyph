@@ -1,5 +1,5 @@
 import { init as cuid } from '@paralleldrive/cuid2';
-import { ContentFilterCategory, PostRevisionKind, PostVisibility } from '@prisma/client';
+import { ContentFilterCategory, PostKind, PostRevisionKind, PostState, PostVisibility } from '@prisma/client';
 import { hash, verify } from 'argon2';
 import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
@@ -48,6 +48,8 @@ builder.prismaObject('Post', {
   },
   fields: (t) => ({
     id: t.exposeID('id'),
+    kind: t.expose('kind', { type: PostKind }),
+    state: t.expose('state', { type: PostState }),
     permalink: t.exposeString('permalink'),
     shortlink: t.exposeString('shortlink'),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),

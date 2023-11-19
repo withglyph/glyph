@@ -14,6 +14,7 @@
 
   let _class: $$Props['class'] = undefined;
   export { _class as class };
+  export let checked: boolean | null | undefined = undefined;
 </script>
 
 <label class={clsx(_class)} for={$$restProps['name']}>
@@ -27,6 +28,7 @@
     )}
     type="checkbox"
     on:change
+    bind:checked
     {...$$restProps}
   />
 </label>

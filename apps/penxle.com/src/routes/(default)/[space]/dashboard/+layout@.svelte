@@ -79,7 +79,7 @@
         <Button
           class="w-full"
           color="tertiary"
-          href={`/publish?slug=${$query.space.slug}`}
+          href={`/editor?space=${$query.space.slug}`}
           size="xl"
           type="link"
           variant="outlined"
@@ -189,7 +189,7 @@
 
     <a
       class="py-1.5 px-3 rounded-12 bg-gray-80 text-gray-5 body-13-m text-nowrap"
-      href={`/publish?slug=${$query.space.slug}`}
+      href={`/editor?space=${$query.space.slug}`}
     >
       포스트 작성하기
     </a>
