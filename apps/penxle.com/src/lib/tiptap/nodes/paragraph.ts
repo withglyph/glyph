@@ -32,8 +32,8 @@ export const Paragraph = Node.create({
     return [{ tag: 'p' }];
   },
 
-  renderHTML({ HTMLAttributes }) {
-    return ['p', HTMLAttributes, 0];
+  renderHTML({ node, HTMLAttributes }) {
+    return !this.editor?.isEditable && node.childCount === 0 ? ['p', HTMLAttributes, ['br']] : ['p', HTMLAttributes, 0];
   },
 
   addCommands() {
