@@ -65,7 +65,7 @@
   </script>
 </svelte:head>
 
-<form class="space-y-6 flex flex-col center my-22 w-full max-w-200 mx-4" use:form>
+<form class="space-y-6 flex flex-col center my-9 w-full max-w-200 px-4 sm:my-22" use:form>
   <h1 class="title-20-b w-full">포인트 충전</h1>
 
   <p class="w-full flex items-center gap-2">

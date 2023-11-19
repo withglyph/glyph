@@ -90,7 +90,9 @@
       </TabContentItem>
       <TabContentItem id={3} {activeTabValue}>구매</TabContentItem>
 
-      <Button class="w-full mt-6" size="xl">포스트 더보기</Button>
+      <div class="<sm:px-4">
+        <Button class="w-full mt-6" size="xl">포스트 더보기</Button>
+      </div>
     </div>
   </div>
 </div>

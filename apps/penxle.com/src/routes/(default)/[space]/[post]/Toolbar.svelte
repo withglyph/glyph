@@ -100,7 +100,10 @@
 
 <div
   bind:this={targetEl}
-  class={clsx('fixed z-1 bottom-4 w-full flex center px-4 mr-0 transition-bottom', focusMode && 'justify-end! px-0!')}
+  class={clsx(
+    'fixed z-1 bottom-4 w-full flex center px-4 mr-0 transition-bottom',
+    focusMode && 'sm:(justify-end! px-0!)',
+  )}
 >
   <div
     class={clsx(
