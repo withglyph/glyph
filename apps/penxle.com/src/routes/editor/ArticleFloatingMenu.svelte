@@ -148,19 +148,19 @@
     }
 
     &[data-kind='4'] {
-      --uno: bg-[url(/horizontal-rules/4.svg)] h-1.8rem;
+      --uno: bg-[url(https://staging.penxle.com/horizontal-rules/4.svg)] h-1.8rem;
     }
 
     &[data-kind='5'] {
-      --uno: bg-[url(/horizontal-rules/5.svg)] h-0.875rem;
+      --uno: bg-[url(https://staging.penxle.com/horizontal-rules/5.svg)] h-0.875rem;
     }
 
     &[data-kind='6'] {
-      --uno: bg-[url(/horizontal-rules/6.svg)] h-0.91027rem;
+      --uno: bg-[url(https://staging.penxle.com/horizontal-rules/6.svg)] h-0.91027rem;
     }
 
     &[data-kind='7'] {
-      --uno: bg-[url(/horizontal-rules/7.svg)] h-1.25rem;
+      --uno: bg-[url(https://staging.penxle.com/horizontal-rules/7.svg)] h-1.25rem;
     }
   }
 
@@ -170,17 +170,17 @@
     &[data-kind='2'] {
       --uno: border-l-none;
       &:before {
-        --uno: block content-[url(/blockquotes/carbon.svg)] w-2rem;
+        --uno: block content-[url(https://staging.penxle.com/blockquotes/carbon.svg)] w-2rem;
       }
     }
 
     &[data-kind='3'] {
       --uno: border-l-none;
       &:before {
-        --uno: block content-[url(/blockquotes/carbon.svg)] w-2rem m-x-auto;
+        --uno: block content-[url(https://staging.penxle.com/blockquotes/carbon.svg)] w-2rem m-x-auto;
       }
       &:after {
-        --uno: block content-[url(/blockquotes/carbon.svg)] w-2rem rotate-180 m-x-auto;
+        --uno: block content-[url(https://staging.penxle.com/blockquotes/carbon.svg)] w-2rem rotate-180 m-x-auto;
       }
     }
   }
