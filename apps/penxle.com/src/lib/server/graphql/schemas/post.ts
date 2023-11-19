@@ -637,7 +637,7 @@ builder.mutationFields((t) => ({
         userId: context.session.userId,
         kind: input.revisionKind,
         title: input.title,
-        subtitle: input.subtitle,
+        subtitle: input.subtitle?.length ? input.subtitle : undefined,
         content,
         paidContent,
         thumbnailId: input.thumbnailId,

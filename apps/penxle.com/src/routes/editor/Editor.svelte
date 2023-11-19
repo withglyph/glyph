@@ -9,7 +9,7 @@
   export let content: JSONContent | undefined;
   export let editor: Editor | undefined;
 
-  let enableSubtitle = false;
+  let enableSubtitle = !!subtitle;
 </script>
 
 <main class="flex grow flex-col bg-primary">

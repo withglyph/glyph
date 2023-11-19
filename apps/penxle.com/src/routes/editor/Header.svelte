@@ -36,6 +36,7 @@
   export let subtitle: string | null;
   export let content: JSONContent | undefined;
   export let editor: Editor | undefined;
+  export let tags: string[];
 
   $: query = fragment(
     _query,
@@ -186,6 +187,8 @@
   $: if ($post?.contentFilters.filter((v) => v !== 'ADULT').length ?? 0 > 0) {
     enableContentFilter = true;
   }
+
+  $: $data.tags = tags;
 
   let permalink: string | undefined;
   let selectedSpace: (typeof $query.me.spaces)[number] | undefined;

@@ -55,6 +55,6 @@
 
 <Helmet title="포스트 수정하기" />
 
-<Header $post={$query.post} {$query} {content} {editor} kind={$query.post.kind} {subtitle} {title} />
+<Header $post={$query.post} {$query} {content} {editor} kind={$query.post.kind} {subtitle} {tags} {title} />
 <Editor kind={$query.post.kind} bind:title bind:editor bind:subtitle bind:content />
 <Footer bind:tags />

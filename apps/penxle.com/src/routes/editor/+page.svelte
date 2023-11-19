@@ -24,6 +24,6 @@
 
 <Helmet title="새 포스트 작성하기" />
 
-<Header {$query} {content} {editor} {subtitle} {title} bind:kind />
+<Header {$query} {content} {editor} {subtitle} {tags} {title} bind:kind />
 <Editor {kind} bind:title bind:editor bind:subtitle bind:content />
 <Footer bind:tags />
