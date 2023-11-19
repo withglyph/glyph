@@ -63,16 +63,16 @@
   </FormField>
 
   <section class="my-4 space-y-3">
-    <Checkbox class="font-bold" checked={consentAll} on:change={handleConsentAll}>약관 전체 동의</Checkbox>
+    <Checkbox class="font-bold" checked={consentAll} on:change={handleConsentAll}>전체 동의</Checkbox>
     <Checkbox name="termsConsent" class="text-sm">
       <Link href="https://help.penxle.com/legal/terms" underline>이용약관</Link> 및 <Link
         href="https://help.penxle.com/legal/privacy"
         underline
       >
-        개인정보 수집 이용
-      </Link> 동의(필수)
+        개인정보처리방침
+      </Link>에 동의해요 (필수)
     </Checkbox>
-    <Checkbox name="marketingConsent" class="text-sm">마케팅 정보 수집 동의(선택)</Checkbox>
+    <Checkbox name="marketingConsent" class="text-sm">이벤트 등 펜슬 소식 받아보기 (선택)</Checkbox>
   </section>
   <Button class="w-full" size="xl" type="submit">펜슬 회원가입 하기</Button>
 </form>
