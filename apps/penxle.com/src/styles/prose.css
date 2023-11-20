@@ -25,7 +25,7 @@
   }
 
   & hr {
-    --uno: bg-no-repeat border-none bg-center m-y-xs;
+    --uno: bg-no-repeat border-none bg-center m-y-xs m-x-auto;
   }
 
   & hr[data-kind='1'] {
