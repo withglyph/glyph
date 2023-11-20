@@ -3,6 +3,7 @@
   import { graphql } from '$glitch';
   import { Modal } from '$lib/components';
   import Button from '$lib/components/Button.svelte';
+  import { TextInput } from '$lib/components/forms';
   import { NodeView } from '$lib/tiptap';
   import { comma } from '$lib/utils';
   import LoginRequireModal from '../../../../routes/(default)/LoginRequireModal.svelte';
@@ -12,10 +13,11 @@
   $$restProps;
 
   export let node: NodeViewProps['node'];
-  export let deleteNode: NodeViewProps['deleteNode'] | undefined;
   export let editor: NodeViewProps['editor'] | undefined;
+  export let deleteNode: NodeViewProps['deleteNode'] | undefined;
+  export let updateAttributes: NodeViewProps['updateAttributes'] | undefined;
 
-  $: data = node.attrs.data;
+  $: data = node.attrs.__data;
 
   let open = false;
   let loginRequireOpen = false;
@@ -34,6 +36,15 @@
       }
     }
   `);
+
+  const handlePriceChange = (e: Event) => {
+    const price = Number((e.currentTarget as HTMLInputElement).value);
+    if (Number.isNaN(price)) {
+      return;
+    }
+
+    updateAttributes?.({ price });
+  };
 </script>
 
 {#if editor?.isEditable}
@@ -43,6 +54,16 @@
     <div class="flex grow flex-col">
       <div class="font-bold">결제 상자</div>
       <div class="text-sm text-gray-50">이 상자 아래로는 결제를 해야 읽을 수 있어요.</div>
+
+      <div class="flex gap-2 items-center mt-2">
+        <TextInput
+          class="bg-gray-10 px-3 py-2"
+          inputmode="numeric"
+          value={node.attrs.price}
+          on:input={handlePriceChange}
+        />
+        P
+      </div>
     </div>
 
     <span class="i-lc-grip-vertical square-6 text-gray-20" />
@@ -93,7 +114,7 @@
       class="dash absolute backdrop-blur-3 rounded-2xl top-0 left-0 w-full h-100% flex flex-col center px-3 text-center space-y-2.5"
     >
       <span class="text-secondary body-15-sb">이 글의 다음 내용은 구매 후에 감상할 수 있어요</span>
-      <span class="body-16-eb">{comma(data.price)}P</span>
+      <span class="body-16-eb">{comma(node.attrs.price)}P</span>
       <Button
         class="w-fit"
         size="lg"
@@ -103,7 +124,7 @@
             return;
           }
 
-          if (data.point < data.price) {
+          if (data.point < node.attrs.price) {
             pointPurchaseOpen = true;
           } else {
             postPurchaseOpen = true;
@@ -149,7 +170,7 @@
 
 <Modal size="sm" bind:open={postPurchaseOpen}>
   <svelte:fragment slot="title">
-    {comma(data.price)}P를 사용하여
+    {comma(node.attrs.price)}P를 사용하여
     <br />
     포스트를 구매하시겠어요?
   </svelte:fragment>

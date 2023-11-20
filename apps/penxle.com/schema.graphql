@@ -390,8 +390,6 @@ input RemoveSpaceMemberInput {
 
 input RevisePostInput {
   content: JSON!
-  coverImageId: ID
-  pointAmount: Int
   postId: ID
   revisionKind: PostRevisionKind!
   spaceId: ID!

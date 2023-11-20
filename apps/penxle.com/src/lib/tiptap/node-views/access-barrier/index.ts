@@ -19,7 +19,8 @@ export const AccessBarrier = createNodeView(Component, {
 
   addAttributes() {
     return {
-      data: {},
+      price: {},
+      __data: {},
     };
   },
 

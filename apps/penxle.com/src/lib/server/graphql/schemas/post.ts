@@ -291,12 +291,9 @@ builder.prismaObject('PostRevision', {
               createTiptapNode({
                 type: 'access_barrier',
                 attrs: {
-                  data: {
+                  price: revision.post.option.price,
+                  __data: {
                     purchasable: false,
-
-                    price: revision.post.option.price,
-                    point: await getUserPoint({ db, userId: context.session.userId }),
-
                     purchasedAt: dayjs(purchase.createdAt).toISOString(),
                   },
                 },
@@ -317,7 +314,10 @@ builder.prismaObject('PostRevision', {
               ...content,
               createTiptapNode({
                 type: 'access_barrier',
-                attrs: { data: { purchasable: false } },
+                attrs: {
+                  price: revision.post.option.price,
+                  __data: { purchasable: false },
+                },
               }),
               ...paidContent,
             ]);
@@ -341,10 +341,10 @@ builder.prismaObject('PostRevision', {
           createTiptapNode({
             type: 'access_barrier',
             attrs: {
-              data: {
+              price: revision.post.option.price,
+              __data: {
                 purchasable: true,
 
-                price: revision.post.option.price,
                 point: context.session ? await getUserPoint({ db, userId: context.session.userId }) : null,
 
                 postId: revision.postId,
@@ -445,9 +445,6 @@ const RevisePostInput = builder.inputType('RevisePostInput', {
 
     thumbnailId: t.id({ required: false }),
     thumbnailBounds: t.field({ type: 'JSON', required: false }),
-    coverImageId: t.id({ required: false }),
-
-    pointAmount: t.int({ required: false }),
   }),
 });
 
@@ -628,8 +625,11 @@ builder.mutationFields((t) => ({
       document = await sanitizeContent(document);
 
       const accessBarrierPosition = document.findIndex((node) => node.type === 'access_barrier');
+      const accessBarrier = accessBarrierPosition === -1 ? undefined : document[accessBarrierPosition];
       const content = accessBarrierPosition === -1 ? document : document.slice(0, accessBarrierPosition);
       const paidContent = accessBarrierPosition === -1 ? undefined : document.slice(accessBarrierPosition + 1);
+
+      const price = accessBarrier?.attrs?.price ?? null;
 
       const postId = input.postId ?? createId();
 
@@ -642,7 +642,6 @@ builder.mutationFields((t) => ({
         paidContent,
         thumbnailId: input.thumbnailId,
         thumbnailBounds: input.thumbnailBounds ?? undefined,
-        coverImageId: input.coverImageId,
       };
 
       const defaultOptions = {
@@ -651,7 +650,7 @@ builder.mutationFields((t) => ({
         receiveFeedback: true,
         receivePatronage: true,
         receiveTagContribution: true,
-        pointAmount: input.pointAmount,
+        price,
       } as const;
 
       return await db.post.upsert({
@@ -674,6 +673,7 @@ builder.mutationFields((t) => ({
           member: { connect: { id: meAsMember.id } },
           user: { connect: { id: context.session.userId } },
           revisions: { create: { id: createId(), ...revision } },
+          option: { update: { price } },
           state: input.revisionKind === 'PUBLISHED' ? 'PUBLISHED' : undefined,
         },
       });
