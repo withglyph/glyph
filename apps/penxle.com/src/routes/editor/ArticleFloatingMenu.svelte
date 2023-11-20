@@ -135,16 +135,19 @@
     --uno: bg-no-repeat border-none bg-center;
 
     &[data-kind='1'] {
-      --uno: bg-gradient-to-r from-([currentColor] 50%) to-(transparent 50%) h-0.0625rem bg-repeat;
+      background-image: linear-gradient(to right, currentColor 50%, rgb(255 255 255 / 0) 50%);
+      background-repeat: repeat;
       background-size: 16px 1px;
+      height: 0.0625rem;
     }
 
-    &[data-kind='2'] {
-      --uno: border-(solid [currentColor] 1px);
+    &[data-kind='2'],
+    &[data-kind='3'] {
+      border: solid 1px currentColor;
     }
 
     &[data-kind='3'] {
-      --uno: border-(solid [currentColor] 1px) w-7.5rem;
+      width: 7.5rem;
     }
 
     &[data-kind='4'] {
