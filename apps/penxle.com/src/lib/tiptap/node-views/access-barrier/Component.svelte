@@ -128,6 +128,8 @@
       <span class="text-gray-50 caption-12-m py-1 px-1.5 bg-gray-10 rounded-1">
         {#if data.purchasedAt}
           {dayjs(data.purchasedAt).formatAsDate()} 결제됨
+        {:else}
+          결제선
         {/if}
       </span>
     </div>
