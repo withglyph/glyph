@@ -347,8 +347,8 @@
           <i class="i-lc-menu square-6 text-disabled absolute" />
 
           <div class="flex grow center gap-2">
-            <Image class="square-6 rounded-md" $image={selectedSpace.icon} />
-            <span class="body-15-b">{selectedSpace.name}</span>
+            <Image class="square-6 rounded-md flex-none" $image={selectedSpace.icon} />
+            <span class="body-15-b truncate">{selectedSpace.name}</span>
           </div>
         {:else}
           <i class="i-lc-plus square-6 text-disabled absolute" />
@@ -383,8 +383,8 @@
                 }}
               >
                 <div class="flex items-center gap-2">
-                  <Image class="square-6 rounded-md" $image={space.icon} />
-                  <span class="body-15-b">{space.name}</span>
+                  <Image class="square-6 rounded-md flex-none" $image={space.icon} />
+                  <span class="body-15-b truncate">{space.name}</span>
                 </div>
               </button>
             </li>
@@ -393,7 +393,7 @@
           <hr class="border-alphagray-10" />
 
           <Button
-            class="body-13-b w-full justify-start!"
+            class="body-13-b w-full justify-start! truncate"
             size="xs"
             variant="text"
             on:click={() => (createSpaceOpen = true)}
