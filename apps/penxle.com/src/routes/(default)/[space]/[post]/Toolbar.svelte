@@ -32,6 +32,11 @@
             emoji
             mine
           }
+
+          option {
+            id
+            receiveFeedback
+          }
         }
 
         ...EmojiPicker_query
@@ -139,7 +144,7 @@
           </ul>
         {/if}
 
-        <EmojiPicker {$query} variant="toolbar" />
+        <EmojiPicker {$query} disabled={!$query.post.option.receiveFeedback} variant="toolbar" />
       </div>
 
       <button class="flex center" type="button">

@@ -58,6 +58,7 @@
         option {
           id
           hasPassword
+          receiveFeedback
         }
 
         tags {
@@ -447,7 +448,7 @@
       </Button>
     </div>
     <div class="flex items-center gap-2.5 flex-wrap mt-4!">
-      <EmojiPicker {$query} />
+      <EmojiPicker {$query} disabled={!$query.post.option.receiveFeedback} />
 
       {#each $query.post.reactions.slice(0, 30) as reaction (reaction.id)}
         <Emoji emoji={reaction.emoji} mine={reaction.mine} postId={$query.post.id} />

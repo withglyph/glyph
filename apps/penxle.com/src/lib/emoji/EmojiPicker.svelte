@@ -22,6 +22,7 @@
   let _query: EmojiPicker_query;
   export { _query as $query };
   export let variant: 'post' | 'toolbar' = 'post';
+  export let disabled = false;
 
   $: query = fragment(
     _query,
@@ -45,7 +46,7 @@
   );
 
   let exceptEmojis: (string | undefined)[] = [];
-  $: exceptEmojis = $query.post.reactions.filter((reaction) => reaction.mine).map((reaction) => reaction.emoji);
+  $: exceptEmojis = $query.post.reactions.filter(({ mine }) => mine).map(({ emoji }) => emoji);
 
   const createPostReaction = graphql(`
     mutation EmojiPicker_CreatePostReaction_Mutation($input: CreatePostReactionInput!) {
@@ -79,11 +80,7 @@
     void update();
   }
 
-  afterNavigate(() => {
-    open = false;
-  });
-
-  onMount(async () => {
+  onMount(() => {
     picker = new Picker({
       autoFocus: true,
       data,
@@ -125,7 +122,8 @@
 {#if variant === 'post'}
   <button
     bind:this={targetEl}
-    class="square-6 rounded-lg border border-secondary hover:border-primary flex center p-0.5"
+    class="square-6 rounded-lg border border-secondary hover:border-primary flex center p-0.5 disabled:(text-disabled border-gray-30 cursor-not-allowed)"
+    {disabled}
     type="button"
     on:click={(e) => {
       e.stopPropagation();
@@ -137,7 +135,8 @@
 {:else}
   <button
     bind:this={targetEl}
-    class="square-5 hover:border-primary flex center p-0.5"
+    class="square-5 hover:border-primary flex center p-0.5 disabled:(text-disabled border-gray-30 cursor-not-allowed)"
+    {disabled}
     type="button"
     on:click={(e) => {
       e.stopPropagation();
