@@ -5,7 +5,7 @@
   import Button from '$lib/components/Button.svelte';
   import { TextInput } from '$lib/components/forms';
   import { NodeView } from '$lib/tiptap';
-  import { comma } from '$lib/utils';
+  import { calcurateReadingTime, comma } from '$lib/utils';
   import LoginRequireModal from '../../../../routes/(default)/LoginRequireModal.svelte';
   import type { NodeViewProps } from '$lib/tiptap';
 
@@ -138,7 +138,7 @@
         글 <mark class="text-blue-50">{comma(data.counts.characters)}</mark>자,
         이미지 <mark class="text-blue-50">{comma(data.counts.images)}</mark>장,
         파일 <mark class="text-blue-50">{comma(data.counts.files)}</mark>개,
-        읽는 시간 약 <mark class="text-blue-50">{comma(Math.ceil(data.counts.characters / 60))}</mark>분
+        읽는 시간 약 <mark class="text-blue-50">{calcurateReadingTime(data.counts.characters)}</mark>분
       </p>
     </div>
   </NodeView>

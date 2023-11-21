@@ -23,3 +23,7 @@ export const humanizeNumber = (value: number) => {
 
   return item ? (value / item.value).toFixed(1).replace(rx, '$1') + item.symbol : '0';
 };
+
+export const calcurateReadingTime = (characterCount: number) => {
+  return comma(Math.ceil(characterCount / 700));
+};

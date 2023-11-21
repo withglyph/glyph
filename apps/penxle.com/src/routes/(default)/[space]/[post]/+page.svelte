@@ -15,7 +15,7 @@
   import { FormValidationError } from '$lib/errors';
   import { toast } from '$lib/notification';
   import { TiptapBubbleMenu, TiptapRenderer } from '$lib/tiptap/components';
-  import { createTiptapDocument, humanizeNumber } from '$lib/utils';
+  import { calcurateReadingTime, createTiptapDocument, humanizeNumber } from '$lib/utils';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
   import ShareContent from './ShareContent/ShareContent.svelte';
   import Toolbar from './Toolbar.svelte';
@@ -111,6 +111,7 @@
           title
           subtitle
           content
+          characterCount
           createdAt
         }
       }
@@ -284,7 +285,7 @@
                 </span>
                 <span class="flex items-center gap-1">
                   <i class="i-lc-alarm-clock square-3.75" />
-                  1분
+                  {calcurateReadingTime($query.post.revision.characterCount)}분
                 </span>
               </div>
             </div>
