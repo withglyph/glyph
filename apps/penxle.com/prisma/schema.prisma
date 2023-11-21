@@ -41,10 +41,11 @@ model Image {
   hash        String
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  profilesUsingThisAsAvatar         Profile[]
-  spacesUsingThisAsIcon             Space[]
-  postRevisionsUsingThisAsImage     PostRevisionImage[]
-  postRevisionsUsingThisAsThumbnail PostRevisionThumbnail[]
+  profilesUsingThisAsAvatar               Profile[]
+  spacesUsingThisAsIcon                   Space[]
+  postRevisionsUsingThisAsImage           PostRevisionImage[]
+  postRevisionsUsingThisAsThumbnail       PostRevisionThumbnail[]
+  postRevisionsUsingThisAsThumbnailOrigin PostRevisionThumbnail[] @relation("origin")
 
   @@map("images")
 }
@@ -213,15 +214,16 @@ model PostRevision {
 }
 
 model PostRevisionThumbnail {
-  id         String       @id
-  revisionId String       @unique @map("revision_id")
-  revision   PostRevision @relation(fields: [revisionId], references: [id])
-  imageId    String       @map("image_id")
-  image      Image        @relation(fields: [imageId], references: [id])
-  bounds     Json
-  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  id          String       @id
+  revisionId  String       @unique @map("revision_id")
+  revision    PostRevision @relation(fields: [revisionId], references: [id])
+  thumbnailId String       @map("thumbnail_id")
+  thumbnail   Image        @relation(fields: [thumbnailId], references: [id])
+  originId    String       @map("origin_id")
+  origin      Image        @relation("origin", fields: [originId], references: [id])
+  bounds      Json
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz
 
-  @@unique([revisionId, imageId])
   @@map("post_revision_thumbnails")
 }
 

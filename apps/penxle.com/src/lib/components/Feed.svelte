@@ -36,7 +36,7 @@
           thumbnail {
             id
 
-            image {
+            thumbnail {
               id
               ...Image_image
             }
@@ -110,7 +110,10 @@
       </p>
 
       {#if $post.revision.thumbnail}
-        <Image class="h-11.25rem sm:aspect-square object-cover rounded-lg" $image={$post.revision.thumbnail.image} />
+        <Image
+          class="h-11.25rem sm:aspect-square object-cover rounded-lg"
+          $image={$post.revision.thumbnail.thumbnail}
+        />
       {/if}
     </article>
 

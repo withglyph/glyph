@@ -1,3 +1,4 @@
+import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { init as cuid } from '@paralleldrive/cuid2';
 import { ContentFilterCategory, PostKind, PostRevisionKind, PostState, PostVisibility } from '@prisma/client';
 import { hash, verify } from 'argon2';
@@ -8,12 +9,14 @@ import { match, P } from 'ts-pattern';
 import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { redis } from '$lib/server/cache';
-import { deductUserPoint, getUserPoint } from '$lib/server/utils';
+import { s3 } from '$lib/server/external-api/aws';
+import { deductUserPoint, directUploadImage, getUserPoint } from '$lib/server/utils';
 import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
 import { createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
 import { UpdatePostOptionsInputSchema } from '$lib/validations/post';
 import { builder } from '../builder';
 import type { JSONContent } from '@tiptap/core';
+import type { ImageBounds } from '$lib/server/utils';
 
 /**
  * * Types
@@ -412,8 +415,8 @@ builder.prismaObject('PostRevisionThumbnail', {
   fields: (t) => ({
     id: t.exposeID('id'),
     bounds: t.expose('bounds', { type: 'JSON' }),
-
-    image: t.relation('image'),
+    thumbnail: t.relation('thumbnail'),
+    origin: t.relation('origin'),
   }),
 });
 
@@ -632,6 +635,32 @@ builder.mutationFields((t) => ({
 
       document = await sanitizeContent(document);
 
+      let croppedImageId: string | undefined;
+      if (input.thumbnailId) {
+        const originalImageData = await db.image.findUniqueOrThrow({
+          where: {
+            id: input.thumbnailId,
+            userId: context.session.userId,
+          },
+        });
+
+        const originalImageRequest = await s3.send(
+          new GetObjectCommand({
+            Bucket: 'penxle-data',
+            Key: originalImageData.path,
+          }),
+        );
+
+        croppedImageId = await directUploadImage({
+          db,
+          userId: context.session.userId,
+          name: originalImageData.name,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          source: await originalImageRequest.Body!.transformToByteArray(),
+          bounds: input.thumbnailBounds as ImageBounds,
+        });
+      }
+
       const accessBarrierPosition = document.findIndex((node) => node.type === 'access_barrier');
       const accessBarrier = accessBarrierPosition === -1 ? undefined : document[accessBarrierPosition];
       const content = accessBarrierPosition === -1 ? document : document.slice(0, accessBarrierPosition);
@@ -648,8 +677,17 @@ builder.mutationFields((t) => ({
         subtitle: input.subtitle?.length ? input.subtitle : undefined,
         content,
         paidContent,
-        thumbnailId: input.thumbnailId,
-        thumbnailBounds: input.thumbnailBounds ?? undefined,
+        thumbnail:
+          input.thumbnailId && croppedImageId
+            ? {
+                create: {
+                  id: createId(),
+                  thumbnail: { connect: { id: croppedImageId } },
+                  origin: { connect: { id: input.thumbnailId } },
+                  bounds: input.thumbnailBounds as object,
+                },
+              }
+            : undefined,
       };
 
       const defaultOptions = {

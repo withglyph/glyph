@@ -100,9 +100,10 @@ type DirectUploadImageParams = {
   userId?: string;
   name: string;
   source: ImageSource;
+  bounds?: ImageBounds;
 };
-export const directUploadImage = async ({ db, userId, name, source }: DirectUploadImageParams) => {
-  const res = await finalizeImage(source);
+export const directUploadImage = async ({ db, userId, name, source, bounds }: DirectUploadImageParams) => {
+  const res = await finalizeImage(source, bounds);
 
   const key = aws.createS3ObjectKey('images');
   const ext = res.format;

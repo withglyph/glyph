@@ -313,7 +313,8 @@ enum PostRevisionKind {
 type PostRevisionThumbnail {
   bounds: JSON!
   id: ID!
-  image: Image!
+  origin: Image!
+  thumbnail: Image!
 }
 
 enum PostState {
