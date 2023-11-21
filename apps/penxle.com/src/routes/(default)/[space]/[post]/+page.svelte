@@ -504,13 +504,19 @@
 
     <div class="bg-primary rounded-3xl">
       <div class="flex flex-col w-full center px-4 pb-4 mt-9">
-        <Image class="square-15 rounded-2xl -mt-7.5" $image={$query.post.space.icon} />
-        <p class="subtitle-18-eb mt-4 truncate w-full text-center">
-          {$query.post.space.name}
-        </p>
-        <p class="body-15-sb text-secondary my-2 truncate text-center w-full">
-          {$query.post.space.description ?? '아직 소개가 없어요'}
-        </p>
+        <a href={`/${$query.post.space.slug}`}>
+          <Image class="square-15 rounded-2xl -mt-7.5" $image={$query.post.space.icon} />
+        </a>
+        <a href={`/${$query.post.space.slug}`}>
+          <p class="subtitle-18-eb mt-4 truncate w-full text-center">
+            {$query.post.space.name}
+          </p>
+        </a>
+        <a href={`/${$query.post.space.slug}`}>
+          <p class="body-15-sb text-secondary my-2 truncate text-center w-full">
+            {$query.post.space.description ?? '아직 소개가 없어요'}
+          </p>
+        </a>
         {#if !$query.post.space.meAsMember}
           {#if $query.post.space.followed}
             <Button class="rounded-12!" color="tertiary" size="md" variant="outlined">
