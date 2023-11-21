@@ -138,13 +138,21 @@ builder.prismaObject('Post', {
 
     reactions: t.prismaField({
       type: ['PostReaction'],
+      select: {
+        option: { select: { receiveFeedback: true } },
+      },
       resolve: async (query, post, _, { db, ...context }) => {
+        if (!post.option.receiveFeedback) {
+          return [];
+        }
+
         if (!context.session) {
           return db.postReaction.findMany({
             ...query,
             where: { postId: post.id },
           });
         }
+
         return [
           ...(await db.postReaction.findMany({
             ...query,
@@ -978,6 +986,16 @@ builder.mutationFields((t) => ({
       if (!emojiData.emojis[input.emoji]) {
         throw new IntentionalError('잘못된 이모지에요');
       }
+
+      const post = await db.post.findUniqueOrThrow({
+        select: { id: true, option: true },
+        where: { id: input.postId },
+      });
+
+      if (!post.option.receiveFeedback) {
+        throw new IntentionalError('피드백을 받지 않는 포스트에요');
+      }
+
       await db.postReaction.create({
         data: {
           id: createId(),
@@ -986,6 +1004,7 @@ builder.mutationFields((t) => ({
           emoji: input.emoji,
         },
       });
+
       return db.post.findUniqueOrThrow({
         ...query,
         where: { id: input.postId },
