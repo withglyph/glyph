@@ -1,4 +1,5 @@
 <script lang="ts">
+  import clsx from 'clsx';
   import { fragment, graphql } from '$glitch';
   import { Button, Image, Modal } from '$lib/components';
   import { FormField, Switch, TextInput } from '$lib/components/forms';
@@ -107,23 +108,21 @@
       <span class="body-16-b">스페이스 전용 프로필</span>
     </Switch>
 
-    {#if useSpaceProfile}
-      <div class="flex gap-3 w-full">
-        <button
-          class="bg-primary square-19.25 rounded-xl flex center overflow-hidden"
-          type="button"
-          on:click={() => thumbnailPicker.show()}
-        >
-          <Image class="square-full" $image={avatar} />
-        </button>
+    <div class={clsx('flex gap-3 w-full', !useSpaceProfile && 'hidden!')}>
+      <button
+        class="bg-primary square-19.25 rounded-xl flex center overflow-hidden"
+        type="button"
+        on:click={() => thumbnailPicker.show()}
+      >
+        <Image class="square-full" $image={avatar} />
+      </button>
 
-        <FormField name="profileName" class="grow" label="닉네임">
-          <TextInput maxlength={20} placeholder="닉네임 입력">
-            <span slot="right-icon" class="body-14-m text-disabled">{$data.profileName?.length ?? 0} / 20</span>
-          </TextInput>
-        </FormField>
-      </div>
-    {/if}
+      <FormField name="profileName" class="grow" label="닉네임">
+        <TextInput maxlength={20} placeholder="닉네임 입력">
+          <span slot="right-icon" class="body-14-m text-disabled">{$data.profileName?.length ?? 0} / 20</span>
+        </TextInput>
+      </FormField>
+    </div>
 
     <Button
       class="mt-4 w-full"
