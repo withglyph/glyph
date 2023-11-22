@@ -10,7 +10,7 @@
   import { fragment, graphql } from '$glitch';
   import { Button, Image, ToggleButton, Tooltip } from '$lib/components';
   import { Logo } from '$lib/components/branding';
-  import { Checkbox, Switch } from '$lib/components/forms';
+  import { Checkbox, FormValidationMessage, Switch } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { createMutationForm } from '$lib/form';
   import { portal } from '$lib/svelte/actions';
@@ -523,9 +523,16 @@
           <input
             name="password"
             class={clsx('bg-surface-primary rounded-xl px-3 py-1 body-15-sb h-10', !enablePassword && 'hidden')}
+            pattern="^[!-~]+$"
             placeholder="비밀번호 입력"
             type="text"
           />
+          <FormValidationMessage for="password" let:message>
+            <div class="flex items-center gap-1.5 mt-1.5 text-xs text-red-50">
+              <span class="i-lc-alert-triangle" />
+              {message}
+            </div>
+          </FormValidationMessage>
         </div>
 
         <p class="text-secondary">종류 선택</p>

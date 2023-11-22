@@ -17,7 +17,9 @@ export const UpdatePostOptionsInputSchema = z.object({
     ]),
   ),
   discloseStats: z.boolean().optional(),
-  password: z.union([z.string(), z.null()]).optional(),
+  password: z
+    .union([z.string().regex(/^[!-~]+$/, '영문, 숫자, 키보드 특수문자만 입력할 수 있어요'), z.null()])
+    .optional(),
   postId: z.string(),
   receiveFeedback: z.boolean().optional(),
   receivePatronage: z.boolean().optional(),
