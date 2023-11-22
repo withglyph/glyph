@@ -2,7 +2,7 @@
   /*
    * nodes
   */
-  --uno: font-sans;
+  --uno: font-sans whitespace-pre-wrap break-all;
 
   & p {
     --uno: py-1;

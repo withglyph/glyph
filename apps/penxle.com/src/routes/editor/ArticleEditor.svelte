@@ -9,7 +9,7 @@
 </script>
 
 <div class="mx-auto w-full max-w-230 flex grow">
-  <TiptapEditor class="mt-12 mb-100px max-w-full grow whitespace-pre-wrap" bind:editor bind:content />
+  <TiptapEditor class="mt-12 mb-100px max-w-full grow" bind:editor bind:content />
 </div>
 
 {#if editor}
