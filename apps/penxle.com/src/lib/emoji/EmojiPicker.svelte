@@ -130,7 +130,7 @@
       open = true;
     }}
   >
-    <i class="i-lc-plus square-3.5" />
+    <i class="i-lc-smile-plus square-3.5" />
   </button>
 {:else}
   <button
