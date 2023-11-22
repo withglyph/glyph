@@ -438,6 +438,8 @@
       </form>
     {/if}
 
+    <hr class="w-full border-color-alphagray-10" />
+
     <div class="flex gap-2 flex-wrap">
       {#each $query.post.tags as { tag } (tag.id)}
         <Tag size="sm">
@@ -471,9 +473,7 @@
       {/if}
     </div>
 
-    <hr class="w-full border-color-alphagray-10" />
-
-    <div class="mt-2! flex items-center justify-between py-2">
+    <div class="flex items-center justify-between py-2">
       <Button
         class="rounded-12! px-3! h-6!"
         color="tertiary"
