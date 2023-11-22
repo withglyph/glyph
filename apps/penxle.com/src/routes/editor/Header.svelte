@@ -405,7 +405,7 @@
       {/if}
     </div>
 
-    <div class="flex flex-col items-end text-right w-36.5">
+    <div class="flex flex-col items-end text-right">
       <ArticleCharacterCount {editor} />
       <span class="caption-12-m text-disabled">
         {#if revisedAt}
