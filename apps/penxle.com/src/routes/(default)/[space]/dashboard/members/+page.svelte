@@ -127,7 +127,7 @@
     {#each $query.space.members as member (member.id)}
       <TableRow>
         <TableData class="flex items-center gap-3">
-          <Avatar class="square-10.5 grow-0 <xs:square-8" $profile={member.profile} />
+          <Avatar class="square-10.5 grow-0 flex-none <xs:square-8" $profile={member.profile} />
           <div class="flex flex-col gap-1 grow-1 truncate">
             <div class="flex gap-1 body-15-b truncate">
               <span class="truncate">{member.profile.name}</span>
