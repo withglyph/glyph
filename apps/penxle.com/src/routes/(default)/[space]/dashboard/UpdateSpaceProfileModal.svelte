@@ -104,7 +104,7 @@
   <svelte:fragment slot="subtitle">스페이스에서만 보여질 프로필을 설정해요</svelte:fragment>
 
   <form use:form>
-    <Switch name="useSpaceProfile" class="flex items-center justify-between mb-4" bind:checked={useSpaceProfile}>
+    <Switch class="flex items-center justify-between mb-4" bind:checked={useSpaceProfile}>
       <span class="body-16-b">스페이스 전용 프로필</span>
     </Switch>
 
