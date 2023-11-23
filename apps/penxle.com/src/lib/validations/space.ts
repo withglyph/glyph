@@ -2,7 +2,11 @@ import { z } from 'zod';
 import { UNAVAILABLE_SPACE_SLUGS } from '$lib/const';
 import { email, profileName } from './common';
 
-const spaceName = z.string().min(1, '스페이스 이름을 입력해주세요').max(20, '스페이스 이름은 20자를 넘을 수 없어요');
+const spaceName = z
+  .string()
+  .trim()
+  .min(1, '스페이스 이름을 입력해주세요')
+  .max(20, '스페이스 이름은 20자를 넘을 수 없어요');
 
 const SpaceSlugSchema = z
   .string()
