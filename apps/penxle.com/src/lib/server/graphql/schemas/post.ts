@@ -473,7 +473,7 @@ const UpdatePostOptionsInput = builder.inputType('UpdatePostOptionsInput', {
     receiveFeedback: t.boolean({ required: false }),
     receivePatronage: t.boolean({ required: false }),
     receiveTagContribution: t.boolean({ required: false }),
-    contentFilters: t.field({ type: [ContentFilterCategory], required: true }),
+    contentFilters: t.field({ type: [ContentFilterCategory], required: false }),
     tags: t.stringList({ required: false }),
     password: t.string({ required: false }),
   }),

@@ -274,8 +274,10 @@
     const { checked } = e.target as HTMLInputElement;
 
     $data.contentFilters = checked
-      ? [...$data.contentFilters, contentFilter]
-      : $data.contentFilters.filter((v) => v !== contentFilter);
+      ? $data.contentFilters
+        ? [...$data.contentFilters, contentFilter]
+        : [contentFilter]
+      : $data.contentFilters?.filter((v) => v !== contentFilter);
   };
 </script>
 
@@ -555,7 +557,7 @@
           checked={enableContentFilter}
           on:change={() => {
             enableContentFilter = !enableContentFilter;
-            $data.contentFilters = $data.contentFilters.includes('ADULT') ? ['ADULT'] : [];
+            $data.contentFilters = $data.contentFilters?.includes('ADULT') ? ['ADULT'] : [];
           }}
         >
           민감한 요소

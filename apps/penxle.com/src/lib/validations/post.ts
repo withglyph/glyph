@@ -1,21 +1,23 @@
 import { z } from 'zod';
 
 export const UpdatePostOptionsInputSchema = z.object({
-  contentFilters: z.array(
-    z.enum([
-      'ADULT',
-      'CRIME',
-      'CRUELTY',
-      'GAMBLING',
-      'GROSSNESS',
-      'HORROR',
-      'INSULT',
-      'OTHER',
-      'PHOBIA',
-      'TRAUMA',
-      'VIOLENCE',
-    ]),
-  ),
+  contentFilters: z
+    .array(
+      z.enum([
+        'ADULT',
+        'CRIME',
+        'CRUELTY',
+        'GAMBLING',
+        'GROSSNESS',
+        'HORROR',
+        'INSULT',
+        'OTHER',
+        'PHOBIA',
+        'TRAUMA',
+        'VIOLENCE',
+      ]),
+    )
+    .optional(),
   discloseStats: z.boolean().optional(),
   password: z
     .union([z.string().regex(/^[!-~]*$/, '영문, 숫자, 키보드 특수문자만 입력할 수 있어요'), z.null()])
