@@ -8,7 +8,7 @@
     class?: string;
     disabled?: boolean;
     loading?: boolean;
-    color?: 'primary' | 'secondary' | 'tertiary';
+    color?: 'primary' | 'secondary' | 'tertiary' | 'red';
     variant?: 'text' | 'outlined' | 'contained';
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     form?: string;
@@ -23,7 +23,7 @@
 
   export let disabled = false;
   export let loading = false;
-  export let color: 'primary' | 'secondary' | 'tertiary' = 'primary';
+  export let color: 'primary' | 'secondary' | 'tertiary' | 'red' = 'primary';
   export let variant: 'text' | 'outlined' | 'contained' = 'contained';
   export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
 
@@ -66,6 +66,10 @@
       color === 'secondary' &&
       variant === 'contained' &&
       'text-primary bg-surface-primary border border-surface-primary hover:(bg-surface-secondary border-surface-secondary) active:(bg-surface-secondary border-surface-secondary)',
+    !disabled &&
+      color === 'red' &&
+      variant === 'contained' &&
+      'bg-action-red-primary border-action-red-primary text-darkprimary hover:(bg-action-red-primaryhover border-action-red-primaryhover)',
     !disabled &&
       color === 'tertiary' &&
       variant === 'outlined' &&
