@@ -87,6 +87,7 @@
     "sharp": "^0.32.6",
     "svelte": "^4.2.5",
     "svelte-check": "^3.6.0",
+    "swiper": "^11.0.5",
     "thumbhash": "^0.1.1",
     "ts-pattern": "^5.0.5",
     "tsx": "^4.1.4",

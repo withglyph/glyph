@@ -505,6 +505,9 @@ importers:
       svelte-check:
         specifier: ^3.6.0
         version: 3.6.0(postcss@8.4.31)(svelte@4.2.5)
+      swiper:
+        specifier: ^11.0.5
+        version: 11.0.5
       thumbhash:
         specifier: ^0.1.1
         version: 0.1.1
@@ -12743,6 +12746,11 @@ packages:
     dependencies:
       tslib: 2.5.3
     dev: false
+
+  /swiper@11.0.5:
+    resolution: {integrity: sha512-rhCwupqSyRnWrtNzWzemnBLMoyYuoDgGgspAm/8iBD3jCvAWycPLH4Z3TB0O5520DHLzMx94yUMH/B9Efpa48w==}
+    engines: {node: '>= 4.7.0'}
+    dev: true
 
   /synckit@0.8.5:
     resolution: {integrity: sha512-L1dapNV6vu2s/4Sputv8xGsCdAVlb5nRDMFU/E27D44l5U6cw1g0dGd45uLc+OXjNMmF4ntiMdCimzcjFKQI8Q==}
