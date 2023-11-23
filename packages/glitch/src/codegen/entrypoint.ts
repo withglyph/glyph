@@ -15,6 +15,16 @@ export const generateMainTypes = (): AST.Program => {
       ],
       AST.b.stringLiteral('./base'),
     ),
+    AST.b.exportNamedDeclaration(
+      null,
+      [
+        AST.b.exportSpecifier.from({
+          local: AST.b.identifier('FragmentType'),
+          exported: AST.b.identifier('FragmentType'),
+        }),
+      ],
+      AST.b.stringLiteral('@penxle/glitch/runtime'),
+    ),
   ]);
 
   return program;

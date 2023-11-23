@@ -22,5 +22,5 @@ export const fragment = (ref: unknown) => {
 };
 
 export { createQueryStore } from '../store/query';
-export type { MakeRequired } from '../types';
+export type { FragmentType, MakeRequired } from '../types';
 export type { TypedDocumentNode } from '@graphql-typed-document-node/core';

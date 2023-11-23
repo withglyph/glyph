@@ -8,6 +8,11 @@ export type MakeRequired<T, K extends string> = T & {
     : MakeRequired<T[P], K extends `${Exclude<P, symbol>}.${infer R}` ? R : never>;
 };
 
+export type FragmentType<T extends { ' $fragmentType'?: unknown }> = Omit<
+  NonNullable<T[' $fragmentType']>,
+  ' $fragmentName'
+>;
+
 export type ValidOperationDocumentNode = {
   kind: graphql.Kind.DOCUMENT;
   definitions: [graphql.OperationDefinitionNode & { name: graphql.NameNode }];
