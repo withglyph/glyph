@@ -563,6 +563,7 @@ type User {
   mutedSpaces: [Space!]!
   notificationPreferences: [UserNotificationPreference!]!
   point: Int!
+  posts(state: PostState! = PUBLISHED): [Post!]!
   profile: Profile!
   receivedSpaceMemberInvitations(state: SpaceMemberInvitationState): [SpaceMemberInvitation!]!
   recentlyViewedPosts: [Post!]!

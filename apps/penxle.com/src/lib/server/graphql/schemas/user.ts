@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import {
   ContentFilterAction,
   ContentFilterCategory,
+  PostState,
   SpaceMemberInvitationState,
   UserEmailVerificationKind,
   UserNotificationCategory,
@@ -161,9 +162,18 @@ builder.prismaObject('User', {
               ],
             },
           },
+          orderBy: { createdAt: 'desc' },
         });
         return postView.map(({ post }) => post);
       },
+    }),
+
+    posts: t.relation('posts', {
+      args: { state: t.arg({ type: PostState, defaultValue: 'PUBLISHED' }) },
+      query: ({ state }) => ({
+        where: { state },
+        orderBy: { createdAt: 'desc' },
+      }),
     }),
   }),
 });
