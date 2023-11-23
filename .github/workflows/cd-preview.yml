@@ -7,7 +7,7 @@ on:
 jobs:
   deploy:
     name: ${{ matrix.app }}
-    runs-on: node18/arm64
+    runs-on: ubuntu-latest
     if: (github.event.action == 'labeled' && github.event.label.name == 'preview') || (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'preview'))
     strategy:
       fail-fast: false
