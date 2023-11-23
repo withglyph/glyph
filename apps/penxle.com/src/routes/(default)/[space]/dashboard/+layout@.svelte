@@ -170,11 +170,11 @@
 
   <div class="w-full border-b border-alphagray-10 my-2" />
 
-  <div class="bg-primary py-2 px-3 rounded-lg flex items-center justify-between mb-3">
-    <div class="flex items-center gap-3">
-      <Image class="square-12 rounded-xl" $image={$query.space.icon} />
-      <div>
-        <p class="body-15-b mb-1">{$query.space.name}</p>
+  <div class="bg-primary py-2 px-3 rounded-lg flex items-center justify-between mb-3 truncate gap-1">
+    <div class="flex items-center gap-3 w-full truncate">
+      <Image class="square-12 rounded-xl flex-none" $image={$query.space.icon} />
+      <div class="truncate">
+        <p class="body-15-b mb-1 truncate">{$query.space.name}</p>
         <div class="flex items-center gap-1 caption-12-m text-secondary">
           {#if $query.space.visibility === 'PUBLIC'}
             <span class="block square-1.25 rounded-full bg-green-50" />
@@ -195,7 +195,7 @@
     </a>
   </div>
 
-  <div class="py-2.5 px-3 flex items-center justify-between">
+  <div class="py-2.5 px-3 flex items-center justify-between gap-1">
     {#if $query.space.meAsMember}
       <div class="flex items-center truncate">
         <Avatar class="square-6! mr-3 grow-0 shrink-0 text-nowrap" $profile={$query.space.meAsMember.profile} />

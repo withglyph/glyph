@@ -78,9 +78,9 @@
   type="button"
   on:click={() => (open = !open)}
 >
-  <Image class="square-12 rounded-lg" $image={$query.space.icon} />
-  <div>
-    <h3 class="body-14-b">{$query.space.name}</h3>
+  <Image class="square-12 rounded-lg flex-none" $image={$query.space.icon} />
+  <div class="truncate">
+    <h3 class="body-14-b truncate">{$query.space.name}</h3>
     <div class="flex items-center gap-1 caption-12-m text-secondary">
       {#if $query.space.visibility === 'PUBLIC'}
         <span class="block square-1.25 rounded-full bg-green-50" />
