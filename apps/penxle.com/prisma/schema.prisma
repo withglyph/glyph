@@ -110,7 +110,6 @@ model Post {
   user      User        @relation(fields: [userId], references: [id])
   optionId  String      @unique @map("option_id")
   option    PostOption  @relation(fields: [optionId], references: [id])
-  kind      PostKind
   state     PostState
   createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz
 
@@ -193,17 +192,18 @@ model PostReaction {
 }
 
 model PostRevision {
-  id          String           @id
-  postId      String           @map("post_id")
-  post        Post             @relation(fields: [postId], references: [id])
-  userId      String           @map("user_id")
-  user        User             @relation(fields: [userId], references: [id])
+  id          String                  @id
+  postId      String                  @map("post_id")
+  post        Post                    @relation(fields: [postId], references: [id])
+  userId      String                  @map("user_id")
+  user        User                    @relation(fields: [userId], references: [id])
   kind        PostRevisionKind
+  contentKind PostRevisionContentKind
   title       String
   subtitle    String?
   content     Json
-  paidContent Json?            @map("paid_content")
-  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  paidContent Json?                   @map("paid_content")
+  createdAt   DateTime                @default(now()) @map("created_at") @db.Timestamptz
 
   thumbnail PostRevisionThumbnail?
   images    PostRevisionImage[]
@@ -663,19 +663,19 @@ enum PointTransactionCause {
   @@map("_point_transaction_cause")
 }
 
-enum PostKind {
-  ARTICLE
-  GALLERY
-
-  @@map("_post_kind")
-}
-
 enum PostRevisionKind {
   AUTO_SAVE
   MANUAL_SAVE
   PUBLISHED
 
   @@map("_post_revision_kind")
+}
+
+enum PostRevisionContentKind {
+  ARTICLE
+  GALLERY
+
+  @@map("_post_revision_content_kind")
 }
 
 enum PostState {

@@ -5,7 +5,7 @@
   import Footer from './Footer.svelte';
   import Header from './Header.svelte';
   import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
-  import type { PostKind } from '$glitch';
+  import type { PostRevisionContentKind } from '$glitch';
 
   $: query = graphql(`
     query EditorPage_Query {
@@ -13,7 +13,7 @@
     }
   `);
 
-  let kind: PostKind = 'ARTICLE';
+  let kind: PostRevisionContentKind = 'ARTICLE';
 
   let title: string;
   let subtitle: string | null = null;

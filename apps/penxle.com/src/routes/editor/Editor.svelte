@@ -1,9 +1,9 @@
 <script lang="ts">
   import ArticleEditor from './ArticleEditor.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
-  import type { PostKind } from '$glitch';
+  import type { PostRevisionContentKind } from '$glitch';
 
-  export let kind: PostKind;
+  export let kind: PostRevisionContentKind;
   export let title: string;
   export let subtitle: string | null;
   export let content: JSONContent | undefined;

@@ -12,11 +12,12 @@
 
       post(permalink: $permalink) {
         id
-        kind
         ...EditorPage_Header_post
 
         draftRevision {
           id
+          kind
+          contentKind
           content
           title
           subtitle
@@ -55,6 +56,15 @@
 
 <Helmet title="포스트 수정하기" />
 
-<Header $post={$query.post} {$query} {content} {editor} kind={$query.post.kind} {subtitle} {tags} {title} />
-<Editor kind={$query.post.kind} bind:title bind:editor bind:subtitle bind:content />
+<Header
+  $post={$query.post}
+  {$query}
+  {content}
+  {editor}
+  kind={$query.post.draftRevision.contentKind}
+  {subtitle}
+  {tags}
+  {title}
+/>
+<Editor kind={$query.post.draftRevision.contentKind} bind:title bind:editor bind:subtitle bind:content />
 <Footer bind:tags />

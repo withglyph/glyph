@@ -1,6 +1,12 @@
 import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { init as cuid } from '@paralleldrive/cuid2';
-import { ContentFilterCategory, PostKind, PostRevisionKind, PostState, PostVisibility } from '@prisma/client';
+import {
+  ContentFilterCategory,
+  PostRevisionContentKind,
+  PostRevisionKind,
+  PostState,
+  PostVisibility,
+} from '@prisma/client';
 import { hash, verify } from 'argon2';
 import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
@@ -51,7 +57,6 @@ builder.prismaObject('Post', {
   },
   fields: (t) => ({
     id: t.exposeID('id'),
-    kind: t.expose('kind', { type: PostKind }),
     state: t.expose('state', { type: PostState }),
     permalink: t.exposeString('permalink'),
     shortlink: t.exposeString('shortlink'),
@@ -265,6 +270,7 @@ builder.prismaObject('PostRevision', {
     title: t.exposeString('title'),
     subtitle: t.exposeString('subtitle', { nullable: true }),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
+    contentKind: t.expose('contentKind', { type: PostRevisionContentKind }),
 
     content: t.field({
       type: 'JSON',
@@ -446,6 +452,7 @@ builder.prismaObject('PostReaction', {
 const RevisePostInput = builder.inputType('RevisePostInput', {
   fields: (t) => ({
     revisionKind: t.field({ type: PostRevisionKind }),
+    contentKind: t.field({ type: PostRevisionContentKind, defaultValue: 'ARTICLE' }),
 
     postId: t.id({ required: false }),
     spaceId: t.id(),
@@ -673,6 +680,7 @@ builder.mutationFields((t) => ({
       const revision = {
         userId: context.session.userId,
         kind: input.revisionKind,
+        contentKind: input.contentKind,
         title: input.title,
         subtitle: input.subtitle?.length ? input.subtitle : undefined,
         content,
@@ -709,7 +717,6 @@ builder.mutationFields((t) => ({
           space: { connect: { id: input.spaceId } },
           member: { connect: { id: meAsMember.id } },
           user: { connect: { id: context.session.userId } },
-          kind: 'ARTICLE',
           state: input.revisionKind === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
           revisions: { create: { id: createId(), ...revision } },
           option: { create: { id: createId(), ...defaultOptions } },

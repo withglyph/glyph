@@ -23,7 +23,7 @@
     ContentFilterCategory,
     EditorPage_Header_post,
     EditorPage_Header_query,
-    PostKind,
+    PostRevisionContentKind,
     PostRevisionKind,
   } from '$glitch';
 
@@ -31,7 +31,7 @@
   let _post: EditorPage_Header_post | null = null;
   export { _post as $post, _query as $query };
 
-  export let kind: PostKind;
+  export let kind: PostRevisionContentKind;
   export let title: string;
   export let subtitle: string | null;
   export let content: JSONContent | undefined;

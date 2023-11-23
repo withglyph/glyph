@@ -254,7 +254,6 @@ type Post {
   createdAt: DateTime!
   draftRevision(revisionId: ID): PostRevision!
   id: ID!
-  kind: PostKind!
   likeCount: Int!
   liked: Boolean!
   member: SpaceMember!
@@ -269,11 +268,6 @@ type Post {
   tags: [PostTag!]!
   unlocked: Boolean!
   viewCount: Int!
-}
-
-enum PostKind {
-  ARTICLE
-  GALLERY
 }
 
 type PostOption {
@@ -295,6 +289,7 @@ type PostReaction {
 type PostRevision {
   characterCount: Int!
   content: JSON!
+  contentKind: PostRevisionContentKind!
   createdAt: DateTime!
   id: ID!
   kind: PostRevisionKind!
@@ -302,6 +297,11 @@ type PostRevision {
   subtitle: String
   thumbnail: PostRevisionThumbnail
   title: String!
+}
+
+enum PostRevisionContentKind {
+  ARTICLE
+  GALLERY
 }
 
 enum PostRevisionKind {
@@ -391,6 +391,7 @@ input RemoveSpaceMemberInput {
 
 input RevisePostInput {
   content: JSON!
+  contentKind: PostRevisionContentKind! = ARTICLE
   postId: ID
   revisionKind: PostRevisionKind!
   spaceId: ID!
