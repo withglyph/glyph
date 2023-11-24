@@ -5,7 +5,7 @@ import { aws } from '$lib/server/external-api';
 import { finalizeImage } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { builder } from '../builder';
-import type { ImageBounds } from '$lib/server/utils';
+import type { ImageBounds } from '$lib/utils';
 
 /**
  * * Types

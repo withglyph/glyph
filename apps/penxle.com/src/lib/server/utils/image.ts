@@ -4,15 +4,10 @@ import { rgbaToThumbHash } from 'thumbhash';
 import { aws } from '$lib/server/external-api';
 import { createId } from '$lib/utils';
 import { getDominantColor } from './mmcq';
+import type { ImageBounds } from '$lib/utils';
 import type { InteractiveTransactionClient } from '../database';
 
 type ImageSource = Buffer | ArrayBuffer | Uint8Array;
-export type ImageBounds = {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-};
 
 export const finalizeImage = async (source: ImageSource, bounds?: ImageBounds) => {
   let image = sharp(source, { failOn: 'none' }).rotate().flatten({ background: '#ffffff' });

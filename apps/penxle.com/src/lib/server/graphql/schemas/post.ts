@@ -22,7 +22,7 @@ import { createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
 import { UpdatePostOptionsInputSchema } from '$lib/validations/post';
 import { builder } from '../builder';
 import type { JSONContent } from '@tiptap/core';
-import type { ImageBounds } from '$lib/server/utils';
+import type { ImageBounds } from '$lib/utils';
 
 /**
  * * Types

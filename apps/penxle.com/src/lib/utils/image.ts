@@ -18,3 +18,10 @@ export const isValidImageFile = async (file: File) => {
 
   return true;
 };
+
+export type ImageBounds = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+};

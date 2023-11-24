@@ -6,12 +6,12 @@
   import { trackable } from '$lib/svelte/store';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
   import Thumbnailer from './Thumbnailer.svelte';
-  import type { Bounds } from './thumbnailer';
+  import type { ImageBounds } from '$lib/utils';
 
   let fileEl: HTMLInputElement;
 
   let file: File | null = null;
-  let bounds: Bounds | undefined = undefined;
+  let bounds: ImageBounds | undefined = undefined;
   let open = false;
 
   const uploading = trackable();

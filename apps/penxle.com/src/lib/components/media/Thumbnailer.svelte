@@ -4,10 +4,10 @@
   import { Slider } from '$lib/components/forms';
   import { clamp } from '$lib/utils';
   import type { PointerEventHandler } from 'svelte/elements';
-  import type { Bounds } from './thumbnailer';
+  import type { ImageBounds } from '$lib/utils';
 
   export let file: File;
-  export let bounds: Bounds = { top: 0, left: 0, width: 0, height: 0 };
+  export let bounds: ImageBounds = { top: 0, left: 0, width: 0, height: 0 };
   export let rounded = false;
   let _class: string | undefined = undefined;
   export { _class as class };
