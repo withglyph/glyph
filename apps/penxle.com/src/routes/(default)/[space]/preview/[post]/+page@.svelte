@@ -3,7 +3,7 @@
   import dayjs from 'dayjs';
   import Wordmark from '$assets/icons/wordmark.svg?component';
   import { graphql } from '$glitch';
-  import { Avatar, Button, Image } from '$lib/components';
+  import { Avatar, Button, Image, Tag } from '$lib/components';
   import { Logo } from '$lib/components/branding';
   import { TiptapRenderer } from '$lib/tiptap/components';
   import Footer from '../../../Footer.svelte';
@@ -43,6 +43,16 @@
           subtitle
           content
           createdAt
+        }
+
+        tags {
+          id
+          pinned
+
+          tag {
+            id
+            name
+          }
         }
       }
     }
@@ -156,17 +166,27 @@
         </article>
       </div>
 
-      <Button class="rounded-12! px-4!" color="tertiary" size="sm" variant="outlined">
-        <i class="i-lc-plus square-4" />
-      </Button>
-
-      <button class="square-6 rounded-lg border border-secondary hover:border-primary flex center p-0.5" type="button">
-        <i class="i-lc-plus square-3.5" />
-      </button>
-
       <hr class="w-full border-color-alphagray-10" />
 
-      <div class="mt-2! flex items-center justify-between py-2">
+      <div class="flex gap-2 flex-wrap">
+        {#each $query.post.tags as { tag } (tag.id)}
+          <Tag size="sm">
+            #{tag.name}
+          </Tag>
+        {/each}
+        <Button class="rounded-12! px-4!" color="tertiary" size="sm" variant="outlined">
+          <i class="i-lc-plus square-4" />
+        </Button>
+      </div>
+
+      <button
+        class="square-6 rounded-lg border border-secondary hover:border-primary flex center p-0.5 mt-4!"
+        type="button"
+      >
+        <i class="i-lc-smile-plus square-3.5" />
+      </button>
+
+      <div class="flex items-center justify-between py-2">
         <Button class="rounded-12! px-3! h-6!" color="tertiary" size="sm" variant="outlined">
           <i class="i-px-heart square-4 mr-1" />
 
@@ -188,11 +208,6 @@
           <p class="body-15-sb text-secondary my-2 truncate text-center w-full">
             {$query.post.space.description ?? '아직 소개가 없어요'}
           </p>
-          <Button class="rounded-12!" color="tertiary" size="md" variant="outlined">
-            <i class="i-lc-bell square-5" />
-            <span class="mx-2">알림받는중</span>
-            <i class="i-lc-chevron-down square-5" />
-          </Button>
         </div>
         <div />
       </div>
