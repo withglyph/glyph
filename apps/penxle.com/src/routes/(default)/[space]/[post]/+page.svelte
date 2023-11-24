@@ -306,7 +306,6 @@
 
           <Menu>
             <button slot="value" class="i-lc-more-vertical square-6 text-icon-secondary" type="button" />
-
             {#if !$query.post.space.meAsMember}
               {#if $query.post.space.muted}
                 <MenuItem
@@ -333,15 +332,20 @@
                 </MenuItem>
               {/if}
               <MenuItem>포스트 신고하기</MenuItem>
-            {:else if $query.post.member.id === $query.me?.id || $query.post.space.meAsMember?.role === 'ADMIN'}
-              <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
-              <MenuItem
-                on:click={() => {
-                  openDeletePostWarning = true;
-                }}
-              >
-                삭제하기
-              </MenuItem>
+            {:else}
+              {@const myPost = $query.post.member.id === $query.post.space.meAsMember.id}
+              {#if myPost}
+                <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
+              {/if}
+              {#if myPost || $query.post.space.meAsMember.role === 'ADMIN'}
+                <MenuItem
+                  on:click={() => {
+                    openDeletePostWarning = true;
+                  }}
+                >
+                  삭제하기
+                </MenuItem>
+              {/if}
             {/if}
           </Menu>
         </div>
