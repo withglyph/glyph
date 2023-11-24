@@ -45,6 +45,7 @@
     "@pulumi/pulumi": "^3.94.2",
     "@resvg/resvg-js": "^2.6.0",
     "@sentry/sveltekit": "^7.80.1",
+    "@shopify/draggable": "^1.1.3",
     "@sindresorhus/string-hash": "^2.0.0",
     "@svelte-kits/store": "^0.1.2",
     "@sveltejs/kit": "^1.27.6",

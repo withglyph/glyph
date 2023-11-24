@@ -41,6 +41,8 @@
   let editor: TiptapEditor | undefined;
   let content: JSONContent | undefined;
   let tags: string[];
+  let thumbnailId: string | undefined = undefined;
+  let thumbnailBounds: { top: number; left: number; width: number; height: number } | undefined = undefined;
 
   let initialized = false;
 
@@ -64,7 +66,17 @@
   kind={$query.post.draftRevision.contentKind}
   {subtitle}
   {tags}
+  {thumbnailBounds}
+  {thumbnailId}
   {title}
 />
-<Editor kind={$query.post.draftRevision.contentKind} bind:title bind:editor bind:subtitle bind:content />
-<Footer bind:tags />
+<Editor
+  kind={$query.post.draftRevision.contentKind}
+  bind:title
+  bind:editor
+  bind:subtitle
+  bind:content
+  bind:thumbnailId
+  bind:thumbnailBounds
+/>
+<Footer kind={$query.post.draftRevision.contentKind} bind:content bind:tags />

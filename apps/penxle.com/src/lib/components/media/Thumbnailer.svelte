@@ -6,13 +6,20 @@
   import type { PointerEventHandler } from 'svelte/elements';
   import type { ImageBounds } from '$lib/utils';
 
-  export let file: File;
+  export let file: File | undefined = undefined;
   export let bounds: ImageBounds = { top: 0, left: 0, width: 0, height: 0 };
   export let rounded = false;
   let _class: string | undefined = undefined;
   export { _class as class };
 
-  const src = URL.createObjectURL(file);
+  export let src: string | undefined = undefined;
+
+  $: {
+    if (!file && !src) throw new Error('file or src props required');
+    if (file) {
+      src = URL.createObjectURL(file);
+    }
+  }
 
   let imgEl: HTMLImageElement;
   let boxEl: HTMLDivElement;
@@ -81,7 +88,9 @@
   };
 
   onDestroy(() => {
-    URL.revokeObjectURL(src);
+    if (src?.startsWith('blob:')) {
+      URL.revokeObjectURL(src);
+    }
   });
 </script>
 

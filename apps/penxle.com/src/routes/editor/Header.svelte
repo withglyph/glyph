@@ -37,6 +37,8 @@
   export let content: JSONContent | undefined;
   export let editor: Editor | undefined;
   export let tags: string[];
+  export let thumbnailId: string | undefined;
+  export let thumbnailBounds: { top: number; left: number; width: number; height: number } | undefined;
 
   $: query = fragment(
     _query,
@@ -152,6 +154,7 @@
 
   const doRevisePost = async (revisionKind: PostRevisionKind) => {
     const resp = await revisePost({
+      contentKind: kind,
       revisionKind,
       postId: $data.postId,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -159,6 +162,8 @@
       title,
       subtitle,
       content,
+      thumbnailId,
+      thumbnailBounds,
     });
 
     $data.postId = resp.id;
@@ -408,7 +413,16 @@
     </div>
 
     <div class="flex flex-col items-end text-right">
-      <ArticleCharacterCount {editor} />
+      {#if kind === 'ARTICLE'}
+        <ArticleCharacterCount {editor} />
+      {:else}
+        <div class="body-15-b w-fit">
+          <mark class="text-blue-50">
+            {content?.content?.filter((c) => c.type === 'image').length ?? 0}
+          </mark>
+          장
+        </div>
+      {/if}
       <span class="caption-12-m text-disabled">
         {#if revisedAt}
           {dayjs(revisedAt).formatAsTime()} 저장됨

@@ -1,9 +1,58 @@
 <script lang="ts">
   import clsx from 'clsx';
   import { Tag } from '$lib/components';
+  import type { JSONContent } from '@tiptap/core';
+  import type { PostRevisionContentKind } from '$glitch';
 
   export let tags: string[] = [];
+  export let kind: PostRevisionContentKind;
+  export let content: JSONContent | undefined;
+
   let open = false;
+  let description = '';
+
+  $: if (content?.content) {
+    description = content.content.find((c) => c.type === 'paragraph')?.content?.[0].text ?? '';
+  }
+
+  const createParagraph = (text: string) => {
+    return {
+      type: 'paragraph',
+      attrs: {
+        'text-align': null,
+        'font-family': 'sans',
+        'line-height': 'normal',
+        'letter-spacing': 'normal',
+      },
+      content: [
+        {
+          type: 'text',
+          text,
+        },
+      ],
+    };
+  };
+
+  const handleInputChange = (e: Event) => {
+    const { value } = e.target as HTMLInputElement;
+
+    if (!content) {
+      content = {
+        type: 'document',
+        content: [createParagraph(value)],
+      };
+    } else if (content.content) {
+      if (content.content?.[0].type === 'paragraph') {
+        content.content[0] = createParagraph(value);
+      } else {
+        content.content.unshift(createParagraph(value));
+      }
+
+      if (value === '') {
+        content.content.shift();
+      }
+    }
+  };
 </script>
 
 <div class="max-h-full fixed w-full z-1 bottom-0">
@@ -66,8 +115,18 @@
       </label>
     </div>
 
-    <div class="w-full max-w-300 flex items-center gap-4 flex-wrap bg-primary p-4">
-      <div class="square-21.25 rounded-2xl border border-primary bg-surface-primary" />
+    <div class="w-full max-w-300 flex items-center gap-4 flex-wrap bg-primary p-4 mb-4">
+      {#if kind === 'ARTICLE'}
+        <div class="square-21.25 rounded-2xl border border-primary bg-surface-primary" />
+      {:else}
+        <input
+          class="body-13-b resize-none w-full"
+          placeholder="내용을 입력하세요"
+          type="text"
+          value={description}
+          on:input={handleInputChange}
+        />
+      {/if}
     </div>
   </div>
 </div>

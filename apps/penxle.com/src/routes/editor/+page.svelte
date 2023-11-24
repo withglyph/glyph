@@ -20,10 +20,12 @@
   let editor: TiptapEditor | undefined;
   let content: JSONContent | undefined;
   let tags: string[] = [];
+  let thumbnailId: string | undefined = undefined;
+  let thumbnailBounds: { top: number; left: number; width: number; height: number } | undefined = undefined;
 </script>
 
 <Helmet title="새 포스트 작성하기" />
 
-<Header {$query} {content} {editor} {subtitle} {tags} {title} bind:kind />
-<Editor {kind} bind:title bind:editor bind:subtitle bind:content />
-<Footer bind:tags />
+<Header {$query} {content} {editor} {subtitle} {tags} {thumbnailBounds} {thumbnailId} {title} bind:kind />
+<Editor {kind} bind:title bind:editor bind:subtitle bind:content bind:thumbnailBounds bind:thumbnailId />
+<Footer {kind} bind:tags bind:content />

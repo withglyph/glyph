@@ -113,6 +113,7 @@
           content
           characterCount
           createdAt
+          contentKind
         }
       }
 
