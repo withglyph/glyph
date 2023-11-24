@@ -189,6 +189,15 @@
     }
   `);
 
+  const unfollowSpace = graphql(`
+    mutation SpacePostPage_UnfollowSpace_Mutation($input: UnfollowSpaceInput!) {
+      unfollowSpace(input: $input) {
+        id
+        followed
+      }
+    }
+  `);
+
   const deletePost = graphql(`
     mutation SpacePostPage_DeletePost_Mutation($input: DeletePostInput!) {
       deletePost(input: $input) {
@@ -520,10 +529,22 @@
         </a>
         {#if !$query.post.space.meAsMember}
           {#if $query.post.space.followed}
-            <Button class="rounded-12!" color="tertiary" size="md" variant="outlined">
+            <!-- <Button class="rounded-12!" color="tertiary" size="md" variant="outlined">
               <i class="i-lc-bell square-5" />
               <span class="mx-2">알림받는중</span>
               <i class="i-lc-chevron-down square-5" />
+            </Button> -->
+            <Button
+              class="rounded-12!"
+              color="tertiary"
+              size="md"
+              variant="outlined"
+              on:click={async () => {
+                await unfollowSpace({ spaceId: $query.post.space.id });
+                toast.success('관심 스페이스 해제되었어요');
+              }}
+            >
+              관심 해제
             </Button>
           {:else}
             <Button
