@@ -11,13 +11,19 @@
   let fileEl: HTMLInputElement;
 
   let file: File | null = null;
+  let src: string | null = null;
   let bounds: ImageBounds | undefined = undefined;
   let open = false;
 
   const uploading = trackable();
   const dispatch = createEventDispatcher<{ change: { id: string } }>();
 
-  export const show = () => {
+  export const show = (_src?: string) => {
+    if (_src) {
+      src = _src;
+      open = true;
+      return;
+    }
     fileEl.showPicker();
   };
 
@@ -40,20 +46,24 @@
   `);
 
   const upload = async () => {
-    await uploading.track(async () => {
-      if (!file) {
-        return;
-      }
+    if (file) {
+      await uploading.track(async () => {
+        const { key, presignedUrl } = await prepareImageUpload();
+        /* eslint-disable @typescript-eslint/no-non-null-assertion */
+        await ky.put(presignedUrl, { body: file! });
+        const resp = await finalizeImageUpload({ key, name: file!.name, bounds });
+        /* eslint-enable @typescript-eslint/no-non-null-assertion */
 
-      const { key, presignedUrl } = await prepareImageUpload();
-      await ky.put(presignedUrl, { body: file });
-      const resp = await finalizeImageUpload({ key, name: file.name, bounds });
+        file = null;
 
-      file = null;
-
-      dispatch('change', resp);
-    });
+        dispatch('change', resp);
+      });
+    }
+    open = false;
   };
+
+  let props: { src: string; file?: undefined } | { file: File; src?: undefined } | null;
+  $: props = (src && { src }) || (file && { file });
 </script>
 
 <input
@@ -73,10 +83,14 @@
   }}
 />
 
-{#if file}
+{#if props}
   <Modal size="md" bind:open>
-    <svelte:fragment slot="title">위치 조정</svelte:fragment>
-    <Thumbnailer class="w-full" {file} bind:bounds />
-    <Button slot="action" class="w-full mt-4" loading={$uploading} size="xl" on:click={upload}>저장</Button>
+    <svelte:fragment slot="title">
+      <slot name="title">위치 조정</slot>
+    </svelte:fragment>
+    <Thumbnailer class="w-full" {...props} bind:bounds />
+    <Button slot="action" class="w-full mt-4" loading={$uploading} size="xl" on:click={upload}>
+      <slot name="save">저장</slot>
+    </Button>
   </Modal>
 {/if}
