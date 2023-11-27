@@ -5,6 +5,7 @@
   import Footer from '../Footer.svelte';
   import Header from '../Header.svelte';
   import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
+  import type { PostRevisionContentKind } from '$glitch';
 
   $: query = graphql(`
     query EditorPermalinkPage_Query($permalink: String!) {
@@ -43,6 +44,7 @@
   let tags: string[];
   let thumbnailId: string | undefined = undefined;
   let thumbnailBounds: { top: number; left: number; width: number; height: number } | undefined = undefined;
+  let kind: PostRevisionContentKind;
 
   let initialized = false;
 
@@ -53,6 +55,7 @@
     subtitle = $query.post.draftRevision.subtitle ?? null;
     content = $query.post.draftRevision.content;
     tags = $query.post.tags.map(({ tag }) => tag.name);
+    kind = $query.post.draftRevision.contentKind;
   }
 </script>
 
@@ -63,20 +66,12 @@
   {$query}
   {content}
   {editor}
-  kind={$query.post.draftRevision.contentKind}
   {subtitle}
   {tags}
   {thumbnailBounds}
   {thumbnailId}
   {title}
+  bind:kind
 />
-<Editor
-  kind={$query.post.draftRevision.contentKind}
-  bind:title
-  bind:editor
-  bind:subtitle
-  bind:content
-  bind:thumbnailId
-  bind:thumbnailBounds
-/>
-<Footer kind={$query.post.draftRevision.contentKind} bind:content bind:tags />
+<Editor {kind} bind:title bind:editor bind:subtitle bind:content bind:thumbnailId bind:thumbnailBounds />
+<Footer {kind} bind:content bind:tags />
