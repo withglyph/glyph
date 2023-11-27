@@ -3,12 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "main": "pulumi/index.ts",
   "devDependencies": {
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@pulumi/aws": "^6.9.0",
     "@pulumi/cloudflare": "^5.15.0",
+    "@pulumi/kubernetes": "^4.5.4",
     "@pulumi/pulumi": "^3.94.2",
     "@pulumi/random": "^4.14.0",
     "@pulumi/tailscale": "^0.13.3",

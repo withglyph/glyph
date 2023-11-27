@@ -11,6 +11,7 @@ new tailscale.Acl('penxle.io', {
 
     tagOwners: {
       'tag:bedrock': ['autogroup:admin'],
+      'tag:github-actions': ['autogroup:admin'],
     },
   }),
 });

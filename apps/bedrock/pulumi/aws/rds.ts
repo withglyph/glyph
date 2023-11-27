@@ -44,7 +44,7 @@ const cluster = new aws.rds.Cluster('penxle', {
   applyImmediately: true,
 });
 
-new aws.rds.ClusterInstance('penxle-1', {
+const instance = new aws.rds.ClusterInstance('penxle-1', {
   clusterIdentifier: cluster.id,
   identifier: 'penxle-1',
 
@@ -67,6 +67,7 @@ new aws.rds.ClusterInstance('penxle-1', {
 
 export const rds = {
   cluster,
+  instance,
 };
 
 export const outputs = {

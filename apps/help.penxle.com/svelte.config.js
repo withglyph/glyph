@@ -1,4 +1,4 @@
-import { lambda } from '@penxle/lambda/adapter';
+import { docker } from '@penxle/adapter-docker';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 import { mdsvex } from 'mdsvex';
 import gfm from 'remark-gfm';
@@ -15,7 +15,7 @@ export default {
     }),
   ],
   kit: {
-    adapter: lambda(),
+    adapter: docker(),
     alias: {
       $assets: './src/assets',
       $pages: './src/pages',

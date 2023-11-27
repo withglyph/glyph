@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "main": "pulumi/index.ts",
   "scripts": {
     "build": "svelte-kit sync && vite build",
     "codegen": "svelte-kit sync",
@@ -12,7 +11,7 @@
     "lint:typecheck": "tsc"
   },
   "devDependencies": {
-    "@penxle/lambda": "workspace:^",
+    "@penxle/adapter-docker": "workspace:^",
     "@penxle/lib": "workspace:^",
     "@penxle/pulumi": "workspace:^",
     "@penxle/tracing": "workspace:^",

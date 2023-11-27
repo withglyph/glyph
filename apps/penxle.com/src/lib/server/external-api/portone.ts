@@ -1,12 +1,12 @@
 import got from 'got';
-import { PRIVATE_PORTONE_API_KEY, PRIVATE_PORTONE_API_SECRET } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 const getAccessToken = async () => {
   const resp = await got
     .post('https://api.iamport.kr/users/getToken', {
       json: {
-        imp_key: PRIVATE_PORTONE_API_KEY,
-        imp_secret: PRIVATE_PORTONE_API_SECRET,
+        imp_key: env.PRIVATE_PORTONE_API_KEY,
+        imp_secret: env.PRIVATE_PORTONE_API_SECRET,
       },
     })
     .json<{ response: { access_token: string } }>();

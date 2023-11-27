@@ -11,7 +11,10 @@ const publicAz1Subnet = new aws.ec2.Subnet('public-az1', {
   availabilityZone: 'ap-northeast-2a',
   cidrBlock: '10.0.100.0/22',
   mapPublicIpOnLaunch: true,
-  tags: { Name: 'public-az1' },
+  tags: {
+    'Name': 'public-az1',
+    'kubernetes.io/role/elb': '1',
+  },
 });
 
 const publicAz2Subnet = new aws.ec2.Subnet('public-az2', {
@@ -19,21 +22,30 @@ const publicAz2Subnet = new aws.ec2.Subnet('public-az2', {
   availabilityZone: 'ap-northeast-2b',
   cidrBlock: '10.0.104.0/22',
   mapPublicIpOnLaunch: true,
-  tags: { Name: 'public-az2' },
+  tags: {
+    'Name': 'public-az2',
+    'kubernetes.io/role/elb': '1',
+  },
 });
 
 const privateAz1Subnet = new aws.ec2.Subnet('private-az1', {
   vpcId: vpc.id,
   availabilityZone: 'ap-northeast-2a',
   cidrBlock: '10.0.200.0/22',
-  tags: { Name: 'private-az1' },
+  tags: {
+    'Name': 'private-az1',
+    'kubernetes.io/role/internal-elb': '1',
+  },
 });
 
 const privateAz2Subnet = new aws.ec2.Subnet('private-az2', {
   vpcId: vpc.id,
   availabilityZone: 'ap-northeast-2b',
   cidrBlock: '10.0.204.0/22',
-  tags: { Name: 'private-az2' },
+  tags: {
+    'Name': 'private-az2',
+    'kubernetes.io/role/internal-elb': '1',
+  },
 });
 
 const publicRouteTable = new aws.ec2.RouteTable('public', {
@@ -105,23 +117,8 @@ const publicSecurityGroup = new aws.ec2.SecurityGroup('public', {
   description: 'Open to the world',
   vpcId: vpc.id,
 
-  ingress: [
-    {
-      protocol: 'all',
-      fromPort: 0,
-      toPort: 0,
-      cidrBlocks: ['0.0.0.0/0'],
-    },
-  ],
-
-  egress: [
-    {
-      protocol: '-1',
-      fromPort: 0,
-      toPort: 0,
-      cidrBlocks: ['0.0.0.0/0'],
-    },
-  ],
+  ingress: [{ protocol: 'all', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
+  egress: [{ protocol: 'all', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
 
   tags: { Name: 'public' },
 });
@@ -131,14 +128,7 @@ const privateSecurityGroup = new aws.ec2.SecurityGroup('private', {
   description: 'Not open to the world',
   vpcId: vpc.id,
 
-  egress: [
-    {
-      protocol: '-1',
-      fromPort: 0,
-      toPort: 0,
-      cidrBlocks: ['0.0.0.0/0'],
-    },
-  ],
+  egress: [{ protocol: 'all', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
 
   tags: { Name: 'private' },
 });
@@ -148,25 +138,44 @@ const internalSecurityGroup = new aws.ec2.SecurityGroup('internal', {
   description: 'Connection between services',
   vpcId: vpc.id,
 
-  ingress: [
-    {
-      protocol: 'all',
-      fromPort: 0,
-      toPort: 0,
-      self: true,
-    },
-  ],
-
-  egress: [
-    {
-      protocol: '-1',
-      fromPort: 0,
-      toPort: 0,
-      cidrBlocks: ['0.0.0.0/0'],
-    },
-  ],
+  ingress: [{ protocol: 'all', fromPort: 0, toPort: 0, self: true }],
+  egress: [{ protocol: 'all', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
 
   tags: { Name: 'internal' },
+});
+
+const tailnetSecurityGroup = new aws.ec2.SecurityGroup('tailnet', {
+  name: 'tailnet',
+  description: 'Connection from Tailscale VPN',
+  vpcId: vpc.id,
+
+  egress: [{ protocol: 'all', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
+
+  tags: { Name: 'tailnet' },
+});
+
+const albSecurityGroup = new aws.ec2.SecurityGroup('alb', {
+  name: 'alb',
+  description: 'Security group for Application Load Balancer',
+  vpcId: vpc.id,
+
+  egress: [{ protocol: 'all', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
+
+  tags: { Name: 'alb' },
+});
+
+const publicWebSecurityGroup = new aws.ec2.SecurityGroup('public-web', {
+  name: 'public-web',
+  description: 'Security group for public websites',
+  vpcId: vpc.id,
+
+  ingress: [
+    { protocol: 'tcp', fromPort: 80, toPort: 80, cidrBlocks: ['0.0.0.0/0'] },
+    { protocol: 'tcp', fromPort: 443, toPort: 443, cidrBlocks: ['0.0.0.0/0'] },
+  ],
+  egress: [{ protocol: 'all', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
+
+  tags: { Name: 'public-web' },
 });
 
 export { vpc };
@@ -180,6 +189,9 @@ export const securityGroups = {
   public: publicSecurityGroup,
   private: privateSecurityGroup,
   internal: internalSecurityGroup,
+  tailnet: tailnetSecurityGroup,
+  alb: albSecurityGroup,
+  publicWeb: publicWebSecurityGroup,
 };
 
 export const outputs = {

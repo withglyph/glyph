@@ -1,6 +1,6 @@
 import got from 'got';
 import qs from 'query-string';
-import { PRIVATE_NAVER_CLIENT_ID, PRIVATE_NAVER_CLIENT_SECRET } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import type { ExternalUser } from './types';
 
 export const generateAuthorizationUrl = (context: { url: URL }, type: string) => {
@@ -8,7 +8,7 @@ export const generateAuthorizationUrl = (context: { url: URL }, type: string) =>
     url: 'https://nid.naver.com/oauth2.0/authorize',
     query: {
       response_type: 'code',
-      client_id: PRIVATE_NAVER_CLIENT_ID,
+      client_id: env.PRIVATE_NAVER_CLIENT_ID,
       redirect_uri: `${context.url.origin}/api/sso/naver`,
       state: Buffer.from(JSON.stringify({ type })).toString('base64'),
     },
@@ -21,8 +21,8 @@ export const authorizeUser = async (code: string): Promise<ExternalUser> => {
       url: 'https://nid.naver.com/oauth2.0/token',
       query: {
         grant_type: 'authorization_code',
-        client_id: PRIVATE_NAVER_CLIENT_ID,
-        client_secret: PRIVATE_NAVER_CLIENT_SECRET,
+        client_id: env.PRIVATE_NAVER_CLIENT_ID,
+        client_secret: env.PRIVATE_NAVER_CLIENT_SECRET,
         code,
       },
     }),

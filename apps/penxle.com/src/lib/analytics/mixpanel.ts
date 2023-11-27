@@ -1,8 +1,8 @@
 import Mixpanel from 'mixpanel-browser';
-import { PUBLIC_MIXPANEL_TOKEN } from '$env/static/public';
+import { env } from '$env/dynamic/public';
 
 export const setupMixpanel = () => {
-  Mixpanel.init(PUBLIC_MIXPANEL_TOKEN, {
+  Mixpanel.init(env.PUBLIC_MIXPANEL_TOKEN, {
     api_host: 'https://x.pnxl.co',
     ignore_dnt: true,
     persistence: 'localStorage',

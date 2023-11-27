@@ -1,17 +1,17 @@
 import * as jose from 'jose';
 import * as R from 'radash';
-import { PRIVATE_JWK } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
-const jwk = JSON.parse(Buffer.from(PRIVATE_JWK, 'base64').toString()) as jose.JWK;
+const loadJwk = R.memo(() => JSON.parse(Buffer.from(env.PRIVATE_JWK, 'base64').toString()) as jose.JWK);
 
-const loadPublicKey = R.memo(async () => jose.importJWK({ ...jwk, d: undefined }));
-const loadPrivateKey = R.memo(async () => jose.importJWK(jwk));
+const loadPublicKey = R.memo(async () => jose.importJWK({ ...loadJwk(), d: undefined }));
+const loadPrivateKey = R.memo(async () => jose.importJWK(loadJwk()));
 
 export const createAccessToken = async (sessionId: string) => {
   const key = await loadPrivateKey();
   return await new jose.SignJWT({})
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    .setProtectedHeader({ alg: jwk.alg! })
+    .setProtectedHeader({ alg: loadJwk().alg! })
     .setJti(sessionId)
     .sign(key);
 };

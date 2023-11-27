@@ -2,21 +2,20 @@ import { bedrockRef } from '@penxle/pulumi';
 import * as penxle from '@penxle/pulumi/components';
 import * as pulumi from '@pulumi/pulumi';
 
+const config = new pulumi.Config('penxle');
+
 const site = new penxle.Site('penxle.com', {
   name: 'penxle-com',
+  domainName: 'staging.penxle.com',
 
-  dns: {
-    name: 'staging.penxle.com',
-    zone: 'penxle.com',
+  image: {
+    name: '721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/penxle.com',
+    digest: config.require('image.digest'),
   },
 
   resources: {
-    memory: 2048,
-  },
-
-  concurrency: {
-    provisioned: 5,
-    reserved: 100,
+    cpu: '500m',
+    memory: '500Mi',
   },
 
   iam: {
@@ -39,33 +38,10 @@ const site = new penxle.Site('penxle.com', {
       ],
     },
   },
-});
 
-new penxle.Redirect('www.penxle.com', {
-  name: 'www_penxle_com',
-
-  origin: {
-    domain: 'www.penxle.com',
-    zone: 'penxle.com',
-  },
-
-  redirect: {
-    to: 'https://penxle.com',
-    code: 308,
+  secret: {
+    project: 'penxle-com',
   },
 });
 
-new penxle.Redirect('pnxl.me', {
-  name: 'pnxl_me',
-
-  origin: {
-    domain: 'pnxl.me',
-  },
-
-  redirect: {
-    to: 'https://staging.penxle.com/api/shortlink',
-    code: 307,
-  },
-});
-
-export const SITE_DOMAIN = site.siteDomain;
+export const SITE_URL = site.url;

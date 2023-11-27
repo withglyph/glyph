@@ -1,11 +1,11 @@
-import { lambda } from '@penxle/lambda/adapter';
+import { docker } from '@penxle/adapter-docker';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */
 export default {
   preprocess: vitePreprocess(),
   kit: {
-    adapter: lambda(),
+    adapter: docker(),
     alias: { $assets: './src/assets' },
     env: {
       publicPrefix: 'PUBLIC_',

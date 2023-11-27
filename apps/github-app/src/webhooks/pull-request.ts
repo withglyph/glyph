@@ -9,7 +9,7 @@ webhook.on('pull_request.labeled', async (event) => {
   const sites = ['penxle.com', 'penxle.io', 'help.penxle.com', 'landing.penxle.com'];
 
   const table = sites.map((site) => {
-    const subdomain = `pr-${event.payload.pull_request.number}--${site.replaceAll('.', '-')}`;
+    const subdomain = `${site.replaceAll('.', '-')}-pr-${event.payload.pull_request.number}`;
     return `| ${site} | https://${subdomain}.pnxl.site |`;
   });
 

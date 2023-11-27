@@ -1,11 +1,11 @@
 import { OAuth2Client } from 'google-auth-library';
-import { PRIVATE_GOOGLE_CLIENT_ID, PRIVATE_GOOGLE_CLIENT_SECRET } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import type { ExternalUser } from './types';
 
 const createOAuthClient = (context: { url: URL }) => {
   return new OAuth2Client({
-    clientId: PRIVATE_GOOGLE_CLIENT_ID,
-    clientSecret: PRIVATE_GOOGLE_CLIENT_SECRET,
+    clientId: env.PRIVATE_GOOGLE_CLIENT_ID,
+    clientSecret: env.PRIVATE_GOOGLE_CLIENT_SECRET,
     redirectUri: `${context.url.origin}/api/sso/google`,
   });
 };
@@ -27,7 +27,7 @@ export const authorizeUser = async (context: { url: URL }, code: string): Promis
   }
 
   const { aud } = await client.getTokenInfo(tokens.access_token);
-  if (aud !== PRIVATE_GOOGLE_CLIENT_ID) {
+  if (aud !== env.PRIVATE_GOOGLE_CLIENT_ID) {
     throw new Error('Token validation failed');
   }
 

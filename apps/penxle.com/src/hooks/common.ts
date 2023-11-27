@@ -1,7 +1,7 @@
 import { production } from '@penxle/lib/environment';
 import * as Sentry from '@sentry/sveltekit';
 import { browser } from '$app/environment';
-import { PUBLIC_SENTRY_DSN } from '$env/static/public';
+import { env } from '$env/dynamic/public';
 import { setupDayjs } from '$lib/datetime';
 import { AppError, NotFoundError, serializeAppError, UnknownError } from '$lib/errors';
 import type { HandleClientError, HandleServerError } from '@sveltejs/kit';
@@ -21,7 +21,7 @@ const setupSentry = () => {
 
   if (production) {
     Sentry.init({
-      dsn: PUBLIC_SENTRY_DSN,
+      dsn: env.PUBLIC_SENTRY_DSN,
       integrations,
     });
   }

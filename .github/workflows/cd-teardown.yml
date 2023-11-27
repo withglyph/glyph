@@ -9,6 +9,7 @@ jobs:
     name: ${{ matrix.app }}
     runs-on: ubuntu-latest
     if: github.event.label.name == 'preview'
+
     strategy:
       fail-fast: false
       matrix:
@@ -17,14 +18,13 @@ jobs:
           - penxle.io
           - help.penxle.com
           - landing.penxle.com
+
     concurrency:
       group: pr-${{ github.event.pull_request.number }}/${{ matrix.app }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Setup Pulumi
-        uses: pulumi/actions@v4
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
@@ -33,13 +33,22 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
+      - name: Connect tailnet
+        uses: tailscale/github-action@v2
+        with:
+          oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}
+          tags: tag:github-actions
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name penxle
+
       - name: Destroy infrastructure
-        run: |
-          cd apps/${{ matrix.app }}
-          pulumi config refresh --force --stack $STACK
-          pulumi destroy --skip-preview --stack $STACK
-          pulumi stack rm --yes --stack $STACK
+        uses: pulumi/actions@v4
+        with:
+          command: destroy
+          work-dir: apps/${{ matrix.app }}
+          stack-name: penxle/pr-${{ github.event.pull_request.number }}
+          remove: true
         env:
-          STACK: penxle/pr-${{ github.event.pull_request.number }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

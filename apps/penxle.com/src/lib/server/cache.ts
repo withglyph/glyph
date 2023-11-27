@@ -1,7 +1,7 @@
 import Redis from 'ioredis';
-import { PRIVATE_REDIS_URL } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
-export const redis = new Redis(PRIVATE_REDIS_URL);
+export const redis = new Redis(env.PRIVATE_REDIS_URL);
 
 export const useCache = async <T>(key: string, fn: () => Promise<T>, ttl = 60 * 5) => {
   const r = await redis.get(key);

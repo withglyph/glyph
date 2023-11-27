@@ -15,7 +15,7 @@ import { nanoid } from 'nanoid';
 import qs from 'query-string';
 import { random } from 'radash';
 import { match } from 'ts-pattern';
-import { PRIVATE_CHANNEL_IO_SECRET_KEY } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { FormValidationError, IntentionalError, PermissionDeniedError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
 import { LoginUser, UpdateUserEmail } from '$lib/server/email/templates';
@@ -80,7 +80,7 @@ builder.prismaObject('User', {
     channelIOMemberHash: t.string({
       resolve: (user) => {
         return crypto
-          .createHmac('sha256', Buffer.from(PRIVATE_CHANNEL_IO_SECRET_KEY, 'hex'))
+          .createHmac('sha256', Buffer.from(env.PRIVATE_CHANNEL_IO_SECRET_KEY, 'hex'))
           .update(user.id)
           .digest('hex');
       },

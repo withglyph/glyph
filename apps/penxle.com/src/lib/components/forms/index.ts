@@ -2,7 +2,6 @@ export { default as Checkbox } from './Checkbox.svelte';
 export { default as DropDown } from './DropDown.svelte';
 export { default as FormField } from './FormField.svelte';
 export { default as FormValidationMessage } from './FormValidationMessage.svelte';
-export { default as PasswordInput } from './PasswordInput.svelte';
 export { default as Select } from './Select.svelte';
 export { default as SelectDivider } from './SelectDivider.svelte';
 export { default as SelectOption } from './SelectOption.svelte';

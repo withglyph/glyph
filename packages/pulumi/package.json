@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@pulumi/aws": "^6.9.0",
+    "@pulumi/kubernetes": "^4.5.4",
     "@pulumi/pulumi": "^3.94.2",
     "fast-glob": "^3.3.2"
   },

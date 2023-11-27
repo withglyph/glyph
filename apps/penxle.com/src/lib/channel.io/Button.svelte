@@ -2,7 +2,7 @@
   import * as ChannelService from '@channel.io/channel-web-sdk-loader';
   import { onDestroy } from 'svelte';
   import { browser } from '$app/environment';
-  import { PUBLIC_CHANNEL_IO_PLUGIN_KEY } from '$env/static/public';
+  import { env } from '$env/dynamic/public';
   import { fragment, graphql } from '$glitch';
   import type { ChannelIOButton_query } from '$glitch';
 
@@ -35,7 +35,7 @@
   $: if (browser && $query) {
     if ($query.me) {
       ChannelService.boot({
-        pluginKey: PUBLIC_CHANNEL_IO_PLUGIN_KEY,
+        pluginKey: env.PUBLIC_CHANNEL_IO_PLUGIN_KEY,
         memberId: $query.me.id,
         memberHash: $query.me.channelIOMemberHash,
         profile: {
@@ -46,7 +46,7 @@
       });
     } else {
       ChannelService.boot({
-        pluginKey: PUBLIC_CHANNEL_IO_PLUGIN_KEY,
+        pluginKey: env.PUBLIC_CHANNEL_IO_PLUGIN_KEY,
       });
     }
 

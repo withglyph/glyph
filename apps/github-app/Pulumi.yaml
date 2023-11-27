@@ -2,4 +2,4 @@ name: github-app
 runtime:
   name: nodejs
   options:
-    nodeargs: --loader=tsx --no-warnings
+    nodeargs: --import=tsx

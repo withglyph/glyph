@@ -8,67 +8,93 @@ on:
 jobs:
   deploy:
     name: ${{ matrix.app }}
-    runs-on: node18/arm64
+    runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
         app:
-          - github-app
-          - literoom
           - penxle.com
           - penxle.io
           - help.penxle.com
           - landing.penxle.com
+
     concurrency:
       group: production/${{ matrix.app }}
+
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Cache pnpm store
-        uses: ./apps/actions-cache
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Generate image metadata
+        id: meta
+        uses: docker/metadata-action@v5
         with:
-          path: /pnpm-store
-          key: pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            pnpm-store-
+          images: 721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/${{ matrix.app }}
+          tags: type=raw,value=latest
+
+      - name: Build image
+        uses: docker/build-push-action@v5
+        id: build
+        with:
+          push: true
+          context: .
+          target: runner
+          build-args: |
+            APP=${{ matrix.app }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/${{ matrix.app }}:cache
+          cache-to: type=registry,ref=721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/${{ matrix.app }}:cache,mode=max,image-manifest=true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Setup doppler project
-        run: doppler setup --no-interactive
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
-          DOPPLER_CONFIG: prod
-
-      - name: Build app
-        run: doppler run -- pnpm exec turbo run build
+      - name: Run code generation
         working-directory: apps/${{ matrix.app }}
-        env:
-          TURBO_TEAM: penxle
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
-          PUBLIC_PULUMI_STACK: prod
+        run: pnpm exec turbo run codegen
 
-      - name: Upload lambda function
-        uses: ./packages/lambda
+      - name: Connect tailnet
+        uses: tailscale/github-action@v2
         with:
-          app: ${{ matrix.app }}
-          stack: prod
+          oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}
+          tags: tag:github-actions
 
-      - name: Deploy infrastructure
-        working-directory: apps/${{ matrix.app }}
-        run: |
-          pulumi up --skip-preview --stack $STACK
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name penxle
+
+      - name: Apply infrastructure
+        uses: pulumi/actions@v4
+        with:
+          command: up
+          work-dir: apps/${{ matrix.app }}
+          stack-name: penxle/prod
+          config-map: |
+            { "penxle:image.digest": { "value": "${{ steps.build.outputs.digest }}" } }
         env:
-          STACK: penxle/prod
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

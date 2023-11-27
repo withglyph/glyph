@@ -1,5 +1,6 @@
 name: penxle.com
+main: pulumi/index.ts
 runtime:
   name: nodejs
   options:
-    nodeargs: --loader=tsx --no-warnings
+    nodeargs: --import=tsx

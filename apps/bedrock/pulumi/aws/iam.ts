@@ -130,6 +130,36 @@ new aws.iam.RolePolicy('datadog-integration', {
   },
 });
 
+const dopplerIntegration = new aws.iam.Role('doppler-integration', {
+  name: 'doppler-integration',
+  assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
+    AWS: '299900769157',
+  }),
+});
+
+new aws.iam.RolePolicy('doppler-integration', {
+  role: dopplerIntegration.name,
+  policy: {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Action: [
+          'secretsmanager:GetSecretValue',
+          'secretsmanager:DescribeSecret',
+          'secretsmanager:PutSecretValue',
+          'secretsmanager:CreateSecret',
+          'secretsmanager:DeleteSecret',
+          'secretsmanager:TagResource',
+          'secretsmanager:UpdateSecret',
+        ],
+        Resource: '*',
+      },
+    ],
+  },
+});
+
 export const outputs = {
   AWS_IAM_ROLE_ECS_EXECUTION_ARN: ecsExecution.arn,
+  AWS_IAM_ROLE_DOPPLER_INTEGRATION_ARN: dopplerIntegration.arn,
 };

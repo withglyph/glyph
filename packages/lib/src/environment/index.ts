@@ -1,4 +1,4 @@
-import { PUBLIC_PULUMI_STACK } from '$env/static/public';
+import { env } from '$env/dynamic/public';
 
-export const stack = PUBLIC_PULUMI_STACK;
+export const stack = env.PUBLIC_PULUMI_STACK;
 export const production = stack === 'prod';

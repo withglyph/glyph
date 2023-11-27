@@ -1,7 +1,6 @@
 // spell-checker:words amazonses aspmx
 
 import * as aws from '@pulumi/aws';
-import { alb } from '$aws/alb';
 import { distributions } from '$aws/cloudfront';
 import { instances } from '$aws/ec2';
 import { elasticache } from '$aws/elasticache';
@@ -124,19 +123,6 @@ new aws.route53.Record('redis.pnxl.co', {
   name: 'redis.pnxl.co',
   records: [elasticache.cluster.primaryEndpointAddress],
   ttl: 300,
-});
-
-new aws.route53.Record('x.pnxl.co', {
-  zoneId: zones.pnxl_co.zoneId,
-  type: 'A',
-  name: 'x.pnxl.co',
-  aliases: [
-    {
-      name: alb.mixpanel.dnsName,
-      zoneId: alb.mixpanel.zoneId,
-      evaluateTargetHealth: false,
-    },
-  ],
 });
 
 new aws.route53.Record('pnxl.net', {
