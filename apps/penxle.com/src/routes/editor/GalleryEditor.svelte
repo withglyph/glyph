@@ -368,7 +368,7 @@
       {/each}
     {/if}
 
-    {#if content?.content && content.content.length > 1}
+    {#if content?.content?.some(({ type }) => type === 'image')}
       <button class="square-54.5 flex center bg-primary" type="button" on:click={() => fileEl.showPicker()}>
         <i class="i-lc-plus square-6 text-secondary" />
       </button>
