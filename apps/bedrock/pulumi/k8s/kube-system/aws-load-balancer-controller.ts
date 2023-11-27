@@ -267,8 +267,6 @@ new k8s.helm.v3.Release(
       },
 
       enableBackendSecurityGroup: false,
-
-      defaultTargetType: 'ip',
       defaultSSLPolicy: 'ELBSecurityPolicy-TLS13-1-2-2021-06',
     },
   },

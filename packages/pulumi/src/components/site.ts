@@ -96,7 +96,10 @@ export class Site extends pulumi.ComponentResource {
                 {
                   name: 'app',
                   image: pulumi.interpolate`${args.image.name}@${args.image.digest}`,
-                  env: [{ name: 'HTTP_HOST', value: domainName }],
+                  env: [
+                    { name: 'HTTP_HOST', value: domainName },
+                    { name: 'PUBLIC_PULUMI_STACK', value: stack },
+                  ],
                   ...(secret && { envFrom: [{ secretRef: { name: secret.metadata.name } }] }),
                   resources: {
                     requests: { cpu: args.resources.cpu },
@@ -124,17 +127,32 @@ export class Site extends pulumi.ComponentResource {
             kind: deployment.kind,
             name: deployment.metadata.name,
           },
-          minReplicas: 1,
+          minReplicas: 2,
           maxReplicas: 100,
           metrics: [
             {
               type: 'Resource',
               resource: {
                 name: 'cpu',
-                target: { type: 'Utilization', averageUtilization: 80 },
+                target: { type: 'Utilization', averageUtilization: 50 },
               },
             },
           ],
+        },
+      },
+      { parent: this },
+    );
+
+    new k8s.policy.v1.PodDisruptionBudget(
+      name,
+      {
+        metadata: {
+          name: resourceName,
+          namespace,
+        },
+        spec: {
+          selector: { matchLabels: labels },
+          minAvailable: 1,
         },
       },
       { parent: this },
@@ -148,7 +166,7 @@ export class Site extends pulumi.ComponentResource {
           namespace,
         },
         spec: {
-          clusterIP: 'None',
+          type: 'NodePort',
           selector: labels,
           ports: [{ port: 3000 }],
         },
@@ -216,84 +234,5 @@ export class Site extends pulumi.ComponentResource {
       },
       { parent: this },
     );
-
-    // const usEast1 = new aws.Provider('us-east-1', { region: 'us-east-1' }, { parent: this });
-
-    // const cloudfrontCertificate = aws.acm.getCertificateOutput(
-    //   { domain: isProd ? args.dns.zone ?? args.dns.name : 'pnxl.site' },
-    //   { parent: this, provider: usEast1 },
-    // );
-
-    // const distribution = new aws.cloudfront.Distribution(
-    //   domain,
-    //   {
-    //     enabled: true,
-    //     aliases: [domain],
-    //     httpVersion: 'http2and3',
-
-    //     origins: [
-    //       {
-    //         originId: 'lambda',
-    //         domainName: lambdaUrl.functionUrl.apply((url) => new URL(url).hostname),
-    //         customOriginConfig: {
-    //           httpPort: 80,
-    //           httpsPort: 443,
-    //           originReadTimeout: 60,
-    //           originKeepaliveTimeout: 60,
-    //           originProtocolPolicy: 'https-only',
-    //           originSslProtocols: ['TLSv1.2'],
-    //         },
-    //       },
-    //     ],
-
-    //     defaultCacheBehavior: {
-    //       targetOriginId: 'lambda',
-    //       viewerProtocolPolicy: 'redirect-to-https',
-    //       compress: true,
-    //       allowedMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST', 'PATCH', 'DELETE'],
-    //       cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
-    //       cachePolicyId: bedrockRef('AWS_CLOUDFRONT_LAMBDA_CACHE_POLICY_ID'),
-    //       originRequestPolicyId: bedrockRef('AWS_CLOUDFRONT_LAMBDA_ORIGIN_REQUEST_POLICY_ID'),
-    //       responseHeadersPolicyId: bedrockRef('AWS_CLOUDFRONT_LAMBDA_RESPONSE_HEADERS_POLICY_ID'),
-    //     },
-
-    //     restrictions: {
-    //       geoRestriction: {
-    //         restrictionType: 'none',
-    //       },
-    //     },
-
-    //     viewerCertificate: {
-    //       acmCertificateArn: cloudfrontCertificate.arn,
-    //       sslSupportMethod: 'sni-only',
-    //       minimumProtocolVersion: 'TLSv1.2_2021',
-    //     },
-
-    //     waitForDeployment: false,
-    //   },
-    //   { parent: this },
-    // );
-
-    // const zone = aws.route53.getZoneOutput(
-    //   { name: isProd ? args.dns.zone ?? args.dns.name : 'pnxl.site' },
-    //   { parent: this },
-    // );
-
-    // new aws.route53.Record(
-    //   domain,
-    //   {
-    //     zoneId: zone.zoneId,
-    //     name: domain,
-    //     type: 'A',
-    //     aliases: [
-    //       {
-    //         name: distribution.domainName,
-    //         zoneId: distribution.hostedZoneId,
-    //         evaluateTargetHealth: false,
-    //       },
-    //     ],
-    //   },
-    //   { parent: this },
-    // );
   }
 }

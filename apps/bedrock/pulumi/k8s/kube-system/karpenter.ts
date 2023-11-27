@@ -203,7 +203,7 @@ new k8s.apiextensions.CustomResource('default', {
           { key: 'kubernetes.io/os', operator: 'In', values: ['linux'] },
           { key: 'karpenter.sh/capacity-type', operator: 'In', values: ['spot'] },
           { key: 'karpenter.k8s.aws/instance-category', operator: 'In', values: ['c', 'm', 'r'] },
-          { key: 'karpenter.k8s.aws/instance-generation', operator: 'Gt', values: ['2'] },
+          { key: 'karpenter.k8s.aws/instance-generation', operator: 'Gt', values: ['5'] },
         ],
       },
     },
