@@ -233,13 +233,13 @@
 
   const filterToLocaleString: Record<ContentFilterCategory, string> = {
     ADULT: '😳 18세 이상 성인이 관람 가능한 포스트에요',
-    CRIME: '🧪 약물/범죄 에 관련된 내용',
+    CRIME: '🧪 약물/범죄에 관련된 내용',
     CRUELTY: '🔪 다소 잔인한 내용',
     GAMBLING: '🤑 사행성 등 도박에 관련이 있는 내용',
-    GROSSNESS: '벌래/징그러운 내용',
+    GROSSNESS: '🕷 벌레/징그러움 등 혐오감을 일으키는 내용',
     HORROR: '☠️ 공포성 내용',
     INSULT: '🤬 부적절한 언어',
-    OTHER: '🤔 기타 내용',
+    OTHER: '❗ 기타 내용',
     PHOBIA: '😱 정신질환/공포증에 해당하는 내용',
     TRAUMA: '👻 PTSD/트라우마를 일으킬 수 있는 내용',
     VIOLENCE: '🔫 폭력성에 해당하는 내용',
