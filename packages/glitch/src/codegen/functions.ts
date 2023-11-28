@@ -75,6 +75,29 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
         break;
       }
       case 'fragment': {
+        const refTypeLiteral = AST.b.tsTypeLiteral([
+          AST.b.tsPropertySignature(
+            AST.b.stringLiteral(' $fragmentRefs'),
+            AST.b.tsTypeAnnotation(
+              AST.b.tsTypeLiteral([
+                AST.b.tsPropertySignature(
+                  AST.b.identifier(name),
+                  AST.b.tsTypeAnnotation(AST.b.tsTypeReference(AST.b.identifier(`base.${name}`))),
+                ),
+              ]),
+            ),
+            true,
+          ),
+        ]);
+
+        const docTypeLiteral = AST.b.tsTypeLiteral([
+          AST.b.tsPropertySignature(
+            AST.b.stringLiteral(' $fragmentName'),
+            AST.b.tsTypeAnnotation(AST.b.tsLiteralType(AST.b.stringLiteral(name))),
+            true,
+          ),
+        ]);
+
         program.body.push(
           AST.b.exportNamedDeclaration(
             AST.b.tsDeclareFunction(
@@ -102,34 +125,11 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
               [
                 AST.b.identifier.from({
                   name: 'reference',
-                  typeAnnotation: AST.b.tsTypeAnnotation(
-                    AST.b.tsTypeLiteral([
-                      AST.b.tsPropertySignature(
-                        AST.b.stringLiteral(' $fragmentRefs'),
-                        AST.b.tsTypeAnnotation(
-                          AST.b.tsTypeLiteral([
-                            AST.b.tsPropertySignature(
-                              AST.b.identifier(name),
-                              AST.b.tsTypeAnnotation(AST.b.tsTypeReference(AST.b.identifier(`base.${name}`))),
-                            ),
-                          ]),
-                        ),
-                        true,
-                      ),
-                    ]),
-                  ),
+                  typeAnnotation: AST.b.tsTypeAnnotation(refTypeLiteral),
                 }),
                 AST.b.identifier.from({
                   name: 'document',
-                  typeAnnotation: AST.b.tsTypeAnnotation(
-                    AST.b.tsTypeLiteral([
-                      AST.b.tsPropertySignature(
-                        AST.b.stringLiteral(' $fragmentName'),
-                        AST.b.tsTypeAnnotation(AST.b.tsLiteralType(AST.b.stringLiteral(name))),
-                        true,
-                      ),
-                    ]),
-                  ),
+                  typeAnnotation: AST.b.tsTypeAnnotation(docTypeLiteral),
                 }),
               ],
               AST.b.tsTypeAnnotation(
@@ -146,37 +146,11 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
               [
                 AST.b.identifier.from({
                   name: 'reference',
-                  typeAnnotation: AST.b.tsTypeAnnotation(
-                    AST.b.tsUnionType([
-                      AST.b.tsTypeLiteral([
-                        AST.b.tsPropertySignature(
-                          AST.b.stringLiteral(' $fragmentRefs'),
-                          AST.b.tsTypeAnnotation(
-                            AST.b.tsTypeLiteral([
-                              AST.b.tsPropertySignature(
-                                AST.b.identifier(name),
-                                AST.b.tsTypeAnnotation(AST.b.tsTypeReference(AST.b.identifier(`base.${name}`))),
-                              ),
-                            ]),
-                          ),
-                          true,
-                        ),
-                      ]),
-                      AST.b.tsNullKeyword(),
-                    ]),
-                  ),
+                  typeAnnotation: AST.b.tsTypeAnnotation(AST.b.tsUnionType([refTypeLiteral, AST.b.tsNullKeyword()])),
                 }),
                 AST.b.identifier.from({
                   name: 'document',
-                  typeAnnotation: AST.b.tsTypeAnnotation(
-                    AST.b.tsTypeLiteral([
-                      AST.b.tsPropertySignature(
-                        AST.b.stringLiteral(' $fragmentName'),
-                        AST.b.tsTypeAnnotation(AST.b.tsLiteralType(AST.b.stringLiteral(name))),
-                        true,
-                      ),
-                    ]),
-                  ),
+                  typeAnnotation: AST.b.tsTypeAnnotation(docTypeLiteral),
                 }),
               ],
               AST.b.tsTypeAnnotation(
@@ -191,6 +165,29 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
                     ]),
                   ),
                 ]),
+              ),
+            ),
+          ),
+          AST.b.exportNamedDeclaration(
+            AST.b.tsDeclareFunction(
+              AST.b.identifier('fragment'),
+              [
+                AST.b.identifier.from({
+                  name: 'reference',
+                  typeAnnotation: AST.b.tsTypeAnnotation(AST.b.tsArrayType(refTypeLiteral)),
+                }),
+                AST.b.identifier.from({
+                  name: 'document',
+                  typeAnnotation: AST.b.tsTypeAnnotation(docTypeLiteral),
+                }),
+              ],
+              AST.b.tsTypeAnnotation(
+                AST.b.tsTypeReference(
+                  AST.b.identifier('FragmentStore'),
+                  AST.b.tsTypeParameterInstantiation([
+                    AST.b.tsArrayType(AST.b.tsTypeReference(AST.b.identifier(`types.${name}`))),
+                  ]),
+                ),
               ),
             ),
           ),
