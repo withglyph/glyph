@@ -327,7 +327,7 @@
           </div>
         {:else if node.type === 'access_barrier'}
           <div
-            class="square-54.5 flex flex-col justify-center bg-cardprimary border border-secondary rounded-lg p-4 relative cursor-grab item"
+            class="square-54.5 flex flex-col justify-center bg-cardprimary border border-secondary rounded-lg p-4 relative cursor-grab select-none item"
           >
             <i class="i-lc-circle-dollar-sign square-6" />
             <p class="body-16-b mt-3 mb-1">결제 상자</p>
@@ -337,13 +337,13 @@
 
             <div class="bg-primary rounded-lg flex items-center justify-between py-2 px-4 mt-4 gap-2">
               <input
-                class="body-16-b w-full price"
+                class="body-16-b flex-1 min-w-0"
                 inputmode="numeric"
                 type="text"
                 value={price}
                 on:input={handlePriceChange}
               />
-              <span class="text-disabled text-nowrap">포인트</span>
+              <span class="text-disabled">포인트</span>
             </div>
 
             {#if description}
