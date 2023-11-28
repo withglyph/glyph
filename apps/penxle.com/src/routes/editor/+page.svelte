@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import { graphql } from '$glitch';
+  import { BaseLayout } from '$lib/layouts';
   import Editor from './Editor.svelte';
   import Footer from './Footer.svelte';
   import Header from './Header.svelte';
@@ -9,6 +10,7 @@
 
   $: query = graphql(`
     query EditorPage_Query {
+      ...BaseLayout_query
       ...EditorPage_Header_query
     }
   `);
@@ -26,6 +28,8 @@
 
 <Helmet title="새 포스트 작성하기" />
 
-<Header {$query} {content} {editor} {subtitle} {tags} {thumbnailBounds} {thumbnailId} {title} bind:kind />
-<Editor {kind} bind:title bind:editor bind:subtitle bind:content bind:thumbnailBounds bind:thumbnailId />
-<Footer {kind} bind:tags bind:content />
+<BaseLayout {$query}>
+  <Header {$query} {content} {editor} {subtitle} {tags} {thumbnailBounds} {thumbnailId} {title} bind:kind />
+  <Editor {kind} bind:title bind:editor bind:subtitle bind:content bind:thumbnailBounds bind:thumbnailId />
+  <Footer {kind} bind:tags bind:content />
+</BaseLayout>

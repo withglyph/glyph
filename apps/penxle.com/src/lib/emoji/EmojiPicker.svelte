@@ -5,7 +5,7 @@
   import { onMount, tick } from 'svelte';
   import { afterNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
-  import LoginRequireModal from '../../routes/(default)/LoginRequireModal.svelte';
+  import { openLoginRequiredModal } from '$lib/stores';
   import i18n from './i18n.json';
   import { emojiData as data } from './index';
   import type { Emoji } from '@emoji-mart/data';
@@ -14,7 +14,6 @@
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let picker: any;
   let open = false;
-  let loginRequireOpen = false;
 
   let targetEl: HTMLButtonElement;
   let pickerEl: HTMLDivElement;
@@ -91,7 +90,7 @@
       set: 'twitter',
       onEmojiSelect: async (emoji: Emoji) => {
         if (!$query.me) {
-          loginRequireOpen = true;
+          $openLoginRequiredModal = true;
           return;
         }
         open = false;
@@ -148,8 +147,6 @@
 {/if}
 
 <div bind:this={pickerEl} class={clsx('z-50 absolute h-100', !open && 'hidden')} />
-
-<LoginRequireModal bind:open={loginRequireOpen} />
 
 <style>
   :global(em-emoji-picker) {

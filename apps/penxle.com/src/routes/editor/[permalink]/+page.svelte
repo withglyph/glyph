@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import { graphql } from '$glitch';
+  import { BaseLayout } from '$lib/layouts';
   import Editor from '../Editor.svelte';
   import Footer from '../Footer.svelte';
   import Header from '../Header.svelte';
@@ -9,6 +10,7 @@
 
   $: query = graphql(`
     query EditorPermalinkPage_Query($permalink: String!) {
+      ...BaseLayout_query
       ...EditorPage_Header_query
 
       post(permalink: $permalink) {
@@ -61,17 +63,19 @@
 
 <Helmet title="포스트 수정하기" />
 
-<Header
-  $post={$query.post}
-  {$query}
-  {content}
-  {editor}
-  {subtitle}
-  {tags}
-  {thumbnailBounds}
-  {thumbnailId}
-  {title}
-  bind:kind
-/>
-<Editor {kind} bind:title bind:editor bind:subtitle bind:content bind:thumbnailId bind:thumbnailBounds />
-<Footer {kind} bind:content bind:tags />
+<BaseLayout {$query}>
+  <Header
+    $post={$query.post}
+    {$query}
+    {content}
+    {editor}
+    {subtitle}
+    {tags}
+    {thumbnailBounds}
+    {thumbnailId}
+    {title}
+    bind:kind
+  />
+  <Editor {kind} bind:title bind:editor bind:subtitle bind:content bind:thumbnailId bind:thumbnailBounds />
+  <Footer {kind} bind:content bind:tags />
+</BaseLayout>

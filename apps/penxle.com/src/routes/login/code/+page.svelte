@@ -1,0 +1,79 @@
+<script lang="ts">
+  import { page } from '$app/stores';
+  import { graphql } from '$glitch';
+  import { Button } from '$lib/components';
+  import { FormField, TextInput } from '$lib/components/forms';
+  import { createMutationForm } from '$lib/form';
+  import { AuthLayout } from '$lib/layouts';
+  import { IssueUserEmailAuthorizationUrlSchema } from '$lib/validations';
+
+  $: query = graphql(`
+    query LoginCodePage_Query {
+      ...AuthLayout_query
+    }
+  `);
+
+  $: email = $page.url.searchParams.get('email');
+
+  let useCode = false;
+
+  const { form } = createMutationForm({
+    mutation: graphql(`
+      mutation LoginCodePage_IssueUserEmailAuthorizationUrl_Mutation($input: IssueUserEmailAuthorizationUrlInput!) {
+        issueUserEmailAuthorizationUrl(input: $input) {
+          url
+        }
+      }
+    `),
+    schema: IssueUserEmailAuthorizationUrlSchema,
+    onSuccess: (resp) => {
+      location.href = resp.url;
+    },
+  });
+</script>
+
+<AuthLayout {$query}>
+  <div class="bg-green-50 rounded-full flex center square-16">
+    <span class="i-lc-mail-check text-white square-6" />
+  </div>
+
+  {#if useCode}
+    <div class="text-center mt-4 text-sm">
+      {email}로 전송된 코드를 입력해주세요.
+    </div>
+
+    <form class="w-full max-w-87.5 mt-4" use:form>
+      <input name="email" type="hidden" value={email} />
+
+      <div class="space-y-3">
+        <FormField name="code" label="코드">
+          <TextInput class="w-full font-bold" inputmode="numeric" placeholder="코드 입력" />
+        </FormField>
+      </div>
+
+      <Button class="w-full mt-3" size="xl" type="submit">펜슬 시작하기</Button>
+    </form>
+  {:else}
+    <div class="text-center mt-4 text-sm">
+      {email} 으로 펜슬 로그인 링크를 보냈어요!
+      <br />
+      메일을 열어 링크를 클릭하면 로그인이 완료돼요.
+    </div>
+
+    <Button class="w-full gap-2 mt-4" external={false} href="https://mail.naver.com" type="link">
+      <span class="i-lg-naver" />
+      네이버 메일 열기
+    </Button>
+
+    <Button class="w-full gap-2 mt-2" external={false} href="https://gmail.com" type="link">
+      <span class="i-lg-google" />
+      지메일 열기
+    </Button>
+
+    <button class="mt-4 text-sm text-gray-50" type="button" on:click={() => (useCode = true)}>
+      대신 코드 입력하기
+    </button>
+  {/if}
+
+  <a class="mt-4 text-sm text-gray-50" href="/login">이 이메일이 아닌가요?</a>
+</AuthLayout>

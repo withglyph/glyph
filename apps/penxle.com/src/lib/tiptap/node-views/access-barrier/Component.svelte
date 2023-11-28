@@ -4,9 +4,9 @@
   import { Modal } from '$lib/components';
   import Button from '$lib/components/Button.svelte';
   import { TextInput } from '$lib/components/forms';
+  import { openLoginRequiredModal } from '$lib/stores';
   import { NodeView } from '$lib/tiptap';
   import { calcurateReadingTime, comma } from '$lib/utils';
-  import LoginRequireModal from '../../../../routes/(default)/LoginRequireModal.svelte';
   import type { NodeViewProps } from '$lib/tiptap';
 
   type $$Props = NodeViewProps;
@@ -20,7 +20,6 @@
   $: data = node.attrs.__data;
 
   let open = false;
-  let loginRequireOpen = false;
   let postPurchaseOpen = false;
   let pointPurchaseOpen = false;
 
@@ -120,7 +119,7 @@
         size="lg"
         on:click={() => {
           if (data.point === null) {
-            loginRequireOpen = true;
+            $openLoginRequiredModal = true;
             return;
           }
 
@@ -194,8 +193,6 @@
     </Button>
   </div>
 </Modal>
-
-<LoginRequireModal bind:open={loginRequireOpen} />
 
 <style>
   .dash {
