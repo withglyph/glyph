@@ -18,9 +18,10 @@
 
   export let alignment: 'horizontal' | 'vertical' = 'vertical';
 
+  export let preventClose = false;
   export let disabled = false;
 
-  setContext('close', () => (open = false));
+  setContext('close', preventClose ? undefined : () => (open = false));
 
   const update = async () => {
     await tick();

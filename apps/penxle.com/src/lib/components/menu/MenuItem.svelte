@@ -25,7 +25,7 @@
   $: props =
     (type === 'link' && { href: disabled || href }) || (type === 'button' && { type: 'button', disabled }) || {};
 
-  let close = getContext<() => void>('close');
+  let close = getContext<undefined | (() => void)>('close');
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
