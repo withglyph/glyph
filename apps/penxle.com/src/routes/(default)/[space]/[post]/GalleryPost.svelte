@@ -10,7 +10,7 @@
   import LoginRequireModal from '../../LoginRequireModal.svelte';
   import type { JSONContent } from '@tiptap/core';
   import type { SwiperContainer, SwiperSlide } from 'swiper/element-bundle';
-  import type { SpacePostPage_GalleryPost_query } from '$glitch';
+  import type { FragmentType, Post_postRevision, SpacePostPage_GalleryPost_query } from '$glitch';
 
   let loginRequireOpen = false;
   let pointPurchaseOpen = false;
@@ -25,6 +25,8 @@
   let _query: SpacePostPage_GalleryPost_query;
   export { _query as $query };
 
+  export let revision: FragmentType<Post_postRevision>;
+
   $: query = fragment(
     _query,
     graphql(`
@@ -35,16 +37,6 @@
 
         post(permalink: $permalink) {
           id
-
-          revision {
-            id
-            title
-            subtitle
-            content
-            characterCount
-            createdAt
-            contentKind
-          }
         }
       }
     `),
@@ -88,13 +80,11 @@
     }
   `);
 
-  $: data = $query.post.revision.content.content.find((c: JSONContent) => c.type === 'access_barrier');
+  $: data = revision.content.content.find((c: JSONContent) => c.type === 'access_barrier');
 
-  $: accessBarrierIndex = $query.post.revision.content.content.findIndex(
-    (c: JSONContent) => c.type === 'access_barrier',
-  );
+  $: accessBarrierIndex = revision.content.content.findIndex((c: JSONContent) => c.type === 'access_barrier');
 
-  $: images = $query.post.revision.content.content.filter((c: JSONContent) => {
+  $: images = revision.content.content.filter((c: JSONContent) => {
     if (c.type === 'access_barrier' && !c.attrs?.__data.purchasable) return false;
 
     return c;
@@ -161,7 +151,7 @@
             class="opacity-0 absolute top-50% left-2 square-10 rounded-6 bg-alphagray-50 flex center p-3 transition sm:left-5"
             type="button"
             on:click={() => {
-              if (swiperEl.swiper.clickedIndex === $query.post.revision.content.length - 1) {
+              if (swiperEl.swiper.clickedIndex === revision.content.length - 1) {
                 swiperEl.swiper.slideTo(swiperEl.swiper.clickedIndex, 500);
               } else {
                 swiperEl.swiper.slidePrev(500);
@@ -189,9 +179,9 @@
 
   <div bind:this={swiperPaginationElem} class="w-full flex center" />
 
-  {#if $query.post.revision.content.content?.[0].type === 'paragraph'}
+  {#if revision.content.content?.[0].type === 'paragraph'}
     <p class="bodylong-16-m whitespace-pre-wrap break-all mt-6 select-none">
-      {$query.post.revision.content.content[0].content[0].text ?? ''}
+      {revision.content.content[0].content[0].text ?? ''}
     </p>
   {/if}
 </div>
@@ -224,7 +214,7 @@
       on:click={async () => {
         await purchasePost({
           postId: $query.post.id,
-          revisionId: $query.post.revision.id,
+          revisionId: revision.id,
         });
 
         swiperEl.swiper.update();
