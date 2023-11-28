@@ -695,6 +695,7 @@ input UpdateUserProfileInput {
 }
 
 type User {
+  availableProfitAmount: Int!
   bookmarks: [BookmarkGroup!]!
   channelIOMemberHash: String!
   contentFilterPreferences: [UserContentFilterPreference!]!
@@ -712,6 +713,7 @@ type User {
   point: Int!
   posts(state: PostState! = PUBLISHED): [Post!]!
   profile: Profile!
+  profits(state: UserProfitState): [UserProfit!]!
   purchasedPosts: [Post!]!
   receivedSpaceMemberInvitations(state: SpaceMemberInvitationState): [SpaceMemberInvitation!]!
   recentlyViewedPosts: [Post!]!
@@ -770,6 +772,19 @@ type UserNotificationPreference {
 type UserPersonalIdentity {
   createdAt: DateTime!
   id: ID!
+}
+
+type UserProfit {
+  amount: Int!
+  createdAt: DateTime!
+  id: ID!
+  post: Post!
+}
+
+enum UserProfitState {
+  CANCELED
+  PAID_OUT
+  WAITING_PAYOUT
 }
 
 type UserSingleSignOn {

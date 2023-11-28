@@ -10,10 +10,12 @@ import { internalSchema } from './internal';
 import { playgroundSchema } from './playground';
 import { pointSchema } from './point';
 import { postSchema } from './post';
+import { profitSchema } from './profit';
 import { searchSchema } from './search';
 import { spaceSchema } from './space';
 import { tagSchema } from './tag';
 import { userSchema } from './user';
+
 
 const builder = createBuilder();
 addSchema(builder, [
@@ -27,6 +29,7 @@ addSchema(builder, [
   playgroundSchema,
   pointSchema,
   postSchema,
+  profitSchema,
   searchSchema,
   spaceSchema,
   tagSchema,

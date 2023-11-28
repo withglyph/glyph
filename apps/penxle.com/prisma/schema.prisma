@@ -181,6 +181,8 @@ model PostPurchase {
   user       User         @relation(fields: [userId], references: [id])
   createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz
 
+  profits UserProfit[]
+
   @@unique([postId, userId])
   @@map("post_purchases")
 }
@@ -538,6 +540,7 @@ model User {
   mutedSpaces                    UserSpaceMute[]
   postPurchases                  PostPurchase[]
   followedTags                   TagFollow[]
+  profits                        UserProfit[]
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
@@ -612,6 +615,19 @@ model UserPersonalIdentity {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("user_personal_identities")
+}
+
+model UserProfit {
+  id         String          @id
+  userId     String          @map("user_id")
+  user       User            @relation(fields: [userId], references: [id])
+  purchaseId String?         @map("purchase_id")
+  purchase   PostPurchase?   @relation(fields: [purchaseId], references: [id])
+  amount     Int
+  state      UserProfitState
+  createdAt  DateTime        @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("user_profits")
 }
 
 model UserSingleSignOn {
@@ -833,6 +849,12 @@ enum UserNotificationMethod {
   WEBSITE
 
   @@map("_user_notification_method")
+}
+
+enum UserProfitState {
+  WAITING_PAYOUT
+  PAID_OUT
+  CANCELED
 }
 
 enum UserSingleSignOnProvider {

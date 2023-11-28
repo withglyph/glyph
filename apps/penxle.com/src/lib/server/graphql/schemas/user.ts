@@ -7,6 +7,7 @@ import {
   UserEmailVerificationKind,
   UserNotificationCategory,
   UserNotificationMethod,
+  UserProfitState,
   UserSingleSignOnProvider,
   UserState,
 } from '@prisma/client';
@@ -240,6 +241,21 @@ export const userSchema = defineSchema((builder) => {
         }),
 
         resolve: (_, { followedTags }) => followedTags.map(({ tag }) => tag),
+      }),
+
+      availableProfitAmount: t.field({
+        type: 'Int',
+        resolve: async (user, _, { db }) => {
+          const amount = await db.userProfit.aggregate({
+            _sum: { amount: true },
+            where: {
+              userId: user.id,
+              state: 'WAITING_PAYOUT',
+            },
+          });
+  
+          return amount._sum.amount ?? 0;
+        },
       }),
     }),
   });

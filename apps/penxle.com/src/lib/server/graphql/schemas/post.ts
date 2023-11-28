@@ -1140,6 +1140,16 @@ export const postSchema = defineSchema((builder) => {
           cause: 'UNLOCK_CONTENT',
         });
 
+        await db.userProfit.create({
+          data: {
+            id: createId(),
+            userId: post.userId,
+            amount: post.publishedRevision.price,
+            state: 'WAITING_PAYOUT',
+            purchaseId: purchase.id,
+          },
+        });
+
         return await db.post.findUniqueOrThrow({
           ...query,
           where: { id: input.postId },
