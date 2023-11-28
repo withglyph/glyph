@@ -147,6 +147,7 @@ builder.prismaObject('Post', {
     reactions: t.prismaField({
       type: ['PostReaction'],
       select: {
+        id: true,
         option: { select: { receiveFeedback: true } },
       },
       resolve: async (query, post, _, { db, ...context }) => {
