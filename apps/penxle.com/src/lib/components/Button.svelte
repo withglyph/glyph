@@ -4,15 +4,17 @@
   import { getFormContext } from '$lib/form';
 
   type $$Props = {
-    type?: T;
-    class?: string;
-    disabled?: boolean;
-    loading?: boolean;
-    color?: 'primary' | 'secondary' | 'tertiary' | 'red';
-    variant?: 'text' | 'outlined' | 'contained';
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-    form?: string;
-  } & (T extends 'link' ? { href: string; external?: boolean } : unknown);
+    'type'?: T;
+    'class'?: string;
+    'disabled'?: boolean;
+    'loading'?: boolean;
+    'color'?: 'primary' | 'secondary' | 'tertiary' | 'red';
+    'variant'?: 'text' | 'outlined' | 'contained';
+    'size'?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    'form'?: string;
+    'aria-hidden'?: boolean;
+  } & (T extends 'link' ? { href: string; external?: boolean } : unknown) &
+    (T extends 'button' ? { 'aria-pressed'?: boolean } : unknown);
 
   type $$Events = T extends 'link' ? unknown : { click: MouseEvent };
 
@@ -84,6 +86,7 @@
     rel: 'noopener noreferrer',
   }}
   {...props}
+  {...$$restProps}
 >
   {#if showSpinner}
     <div class="absolute inset-0 flex center px-4 py-2">

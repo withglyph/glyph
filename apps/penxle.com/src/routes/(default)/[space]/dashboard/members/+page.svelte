@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { graphql } from '$glitch';
   import { Avatar, Button, Modal } from '$lib/components';
-  import { DropDown, FormField, TextInput } from '$lib/components/forms';
+  import { DropDown, FormField, PopupSearch, TextInput } from '$lib/components/forms';
   import { Table, TableData, TableHead, TableRow } from '$lib/components/table';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
@@ -105,12 +105,7 @@
 
 <div class="px-4 py-6 max-w-218 bg-white border border-secondary rounded-xl sm:px-6">
   <div class="flex items-center justify-between mb-6 gap-2">
-    <form class="relative h-11.5 w-full max-w-82.5">
-      <input class="rounded-2.5 h-11.5 w-full bg-primary py-1.75 pr-3.5 pl-11 w-full" type="text" />
-      <div class="absolute inset-y-0 left-3.5 flex center text-secondary h-100%">
-        <span class="i-lc-search square-5 transition" />
-      </div>
-    </form>
+    <PopupSearch />
 
     {#if $query.space.meAsMember?.role === 'ADMIN'}
       <Button size="lg" on:click={() => (open = true)}>멤버 초대</Button>

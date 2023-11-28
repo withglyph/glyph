@@ -6,6 +6,8 @@
 
   export let open: boolean;
   export let size: 'sm' | 'md' | 'lg' = 'md';
+  let _class: string | undefined = undefined;
+  export { _class as class };
 
   beforeNavigate(() => {
     open = false;
@@ -53,7 +55,7 @@
         in:fly={{ y: '10%', duration: 150 }}
         out:fade={{ duration: 150 }}
       >
-        <div class={clsx('content flex flex-col w-full overflow-y-scroll', size === 'sm' && 'max-w-92')}>
+        <div class={clsx('content flex flex-col w-full overflow-y-scroll', size === 'sm' && 'max-w-92', _class)}>
           {#if $$slots.title}
             <div
               class={clsx(

@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { pageSubTitle } from '$lib/stores';
-
-  onMount(async () => {
-    pageSubTitle.set('포스트 관리');
-  });
+  import { Button } from '$lib/components';
+  import { PopupSearch } from '$lib/components/forms';
 </script>
 
-포스트 관리 - 컬렉션 관리 탭
+<div class="flex justify-between gap-2">
+  <PopupSearch />
+  <div class="flex gap-2">
+    <Button size="md">새 컬렉션 생성</Button>
+  </div>
+</div>

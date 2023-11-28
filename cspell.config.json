@@ -2,7 +2,7 @@
   "allowCompoundWords": true,
   "enableFiletypes": ["*"],
   "enableGlobDot": true,
-  "ignorePaths": [".git", ".gitignore", ".vscode", "pnpm-lock.yaml", "*.sql", "CODEOWNERS"],
+  "ignorePaths": [".git", ".gitignore", ".vscode", "pnpm-lock.yaml", "*.sql", "CODEOWNERS", "patches"],
   "numSuggestions": 0,
   "useGitignore": true,
   "words": [
@@ -27,6 +27,7 @@
     "itty",
     "karpenter",
     "lambdify",
+    "liink",
     "lucide",
     "mdsvex",
     "mmcq",
@@ -63,6 +64,7 @@
     "vite",
     "wonka",
     "xvda",
-    "zstd"
+    "zstd",
+    "zxcvbn"
   ]
 }

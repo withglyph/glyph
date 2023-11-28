@@ -18,6 +18,8 @@
 
   export let alignment: 'horizontal' | 'vertical' = 'vertical';
 
+  export let disabled = false;
+
   setContext('close', () => (open = false));
 
   const update = async () => {
@@ -44,7 +46,7 @@
   });
 </script>
 
-<button bind:this={targetEl} class={clsx('contents', _class)} type="button" on:click={() => (open = !open)}>
+<button bind:this={targetEl} class={clsx('contents', _class)} {disabled} type="button" on:click={() => (open = !open)}>
   <slot name="value" />
 </button>
 

@@ -2,11 +2,14 @@
   import { clsx } from 'clsx';
   import { getFormContext } from '$lib/form';
   import FormValidationMessage from './FormValidationMessage.svelte';
+  import type { HTMLInputAttributes } from 'svelte/elements';
 
-  export let name: string | undefined = undefined;
-  export let checked = false;
-  let _class: string | undefined = undefined;
+  export let name: string | null | undefined = undefined;
+  export let checked: boolean | null | undefined = false;
+  let _class: string | null | undefined = undefined;
   export { _class as class };
+
+  type $$Props = HTMLInputAttributes;
 
   const { field } = getFormContext();
 
@@ -26,7 +29,7 @@
       bind:checked
       {...$$restProps}
     />
-    <span class="text-gray-90 cursor-pointer">
+    <span class="slot text-gray-90 cursor-pointer">
       <slot />
     </span>
   </label>
