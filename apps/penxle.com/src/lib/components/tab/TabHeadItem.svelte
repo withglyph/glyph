@@ -1,10 +1,11 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import { getContext } from 'svelte';
   import { page } from '$app/stores';
 
   export let id: number;
   export let activeTabValue: number | undefined = undefined;
-  export let variant: 'primary' | 'secondary' = 'primary';
+  export let variant: 'primary' | 'secondary' = getContext('variant');
   export let href: string | undefined = undefined;
 
   let element: 'a' | 'button';

@@ -22,8 +22,8 @@
   <h1 class="title-20-eb">포스트 관리</h1>
   <div>
     <TabHead class="border-none" variant="secondary">
-      <TabHeadItem id={0} href="/{$query.space.slug}/dashboard/posts" variant="secondary">포스트</TabHeadItem>
-      <!-- <TabHeadItem id={1} href="/{$query.space.slug}/dashboard/posts/collections" variant="secondary">
+      <TabHeadItem id={0} href="/{$query.space.slug}/dashboard/posts">포스트</TabHeadItem>
+      <!-- <TabHeadItem id={1} href="/{$query.space.slug}/dashboard/posts/collections">
         컬렉션
       </TabHeadItem> -->
     </TabHead>
