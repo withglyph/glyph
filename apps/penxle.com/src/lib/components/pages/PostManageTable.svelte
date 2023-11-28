@@ -304,17 +304,15 @@
             </svelte:fragment>
 
             {#each visibilityOptions as visibilityOption (visibilityOption.value)}
-              <MenuItem>
-                <Button
-                  aria-pressed={post.option.visibility === visibilityOption.value}
-                  on:click={() =>
-                    updateVisibility({
-                      postId: post.id,
-                      visibility: visibilityOption.value,
-                    })}
-                >
-                  {visibilityOption.label}
-                </Button>
+              <MenuItem
+                aria-pressed={post.option.visibility === visibilityOption.value}
+                on:click={() =>
+                  updateVisibility({
+                    postId: post.id,
+                    visibility: visibilityOption.value,
+                  })}
+              >
+                {visibilityOption.label}
               </MenuItem>
             {/each}
           </Menu>
@@ -372,7 +370,7 @@
       </Menu>
       <Menu offset={16} placement="top">
         <Button slot="value" color="secondary" size="md">포스트 옵션 설정</Button>
-        <MenuItem>
+        <MenuItem type="div">
           <Switch
             class="flex gap-0.63rem body-14-m items-center justify-between"
             checked={receiveFeedback}
@@ -385,7 +383,7 @@
             피드백
           </Switch>
         </MenuItem>
-        <MenuItem>
+        <MenuItem type="div">
           <Switch
             class="flex gap-0.63rem body-14-m items-center justify-between"
             checked={receiveTagContribution}
@@ -398,7 +396,7 @@
             태그 수정
           </Switch>
         </MenuItem>
-        <MenuItem>
+        <MenuItem type="div">
           <Switch
             class="flex gap-0.63rem body-14-m items-center justify-between"
             checked={discloseStats}

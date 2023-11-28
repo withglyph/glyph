@@ -1,4 +1,4 @@
-<script generics="T extends 'button' | 'submit' | 'link' = 'button'" lang="ts">
+<script generics="T extends 'button' | 'div' | 'link' = 'button'" lang="ts">
   import { clsx } from 'clsx';
   import { getContext } from 'svelte';
 
@@ -6,11 +6,12 @@
     type?: T;
     class?: string;
     disabled?: boolean;
-  } & (T extends 'link' ? { href: string; external?: boolean } : unknown);
+  } & (T extends 'link' ? { href: string; external?: boolean } : unknown) &
+    (T extends 'button' ? { 'aria-pressed'?: boolean } : unknown);
 
   type $$Events = T extends 'link' ? unknown : { click: MouseEvent };
 
-  export let type: 'button' | 'submit' | 'link' = 'button';
+  export let type: 'button' | 'div' | 'link' = 'button';
 
   let _class: string | undefined = undefined;
   export { _class as class };
@@ -19,13 +20,15 @@
   export let href: string | undefined = undefined;
   export let external = !href?.startsWith('/');
 
-  let element: 'a' | 'button';
-  $: element = type === 'link' ? 'a' : 'button';
-  $: props = type === 'link' ? { href: disabled ? undefined : href } : { type, disabled };
+  let element: 'a' | 'button' | 'div';
+  $: element = type === 'link' ? 'a' : type;
+  $: props =
+    (type === 'link' && { href: disabled || href }) || (type === 'button' && { type: 'button', disabled }) || {};
 
   let close = getContext<() => void>('close');
 </script>
 
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <svelte:element
   this={element}
   class={clsx(
@@ -33,9 +36,6 @@
     disabled ? 'cursor-not-allowed' : 'hover:(bg-primary text-primary)',
     _class,
   )}
-  role="button"
-  tabindex="-1"
-  type="button"
   on:click
   on:click={close}
   {...external && {

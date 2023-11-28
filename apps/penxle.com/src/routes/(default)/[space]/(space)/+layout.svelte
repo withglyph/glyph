@@ -198,25 +198,22 @@
               <span class="i-lc-more-vertical square-6 text-secondary" />
             </button>
 
-            <MenuItem>
-              <button
-                type="button"
-                on:click={async () => {
-                  await updateSpace({
-                    spaceId: $query.space.id,
-                    isPublic: $query.space.visibility === 'PUBLIC' ? false : true,
-                  });
+            <MenuItem
+              on:click={async () => {
+                await updateSpace({
+                  spaceId: $query.space.id,
+                  isPublic: $query.space.visibility === 'PUBLIC' ? false : true,
+                });
 
-                  toast.success(`${$query.space.visibility === 'PUBLIC' ? '공개' : '비공개'} 스페이스로 변경되었어요`);
-                  menuOpen = false;
-                }}
-              >
-                {#if $query.space.visibility === 'PUBLIC'}
-                  비공개 스페이스로 변경
-                {:else}
-                  공개 스페이스로 변경
-                {/if}
-              </button>
+                toast.success(`${$query.space.visibility === 'PUBLIC' ? '공개' : '비공개'} 스페이스로 변경되었어요`);
+                menuOpen = false;
+              }}
+            >
+              {#if $query.space.visibility === 'PUBLIC'}
+                비공개 스페이스로 변경
+              {:else}
+                공개 스페이스로 변경
+              {/if}
             </MenuItem>
           </Menu>
         {/if}
