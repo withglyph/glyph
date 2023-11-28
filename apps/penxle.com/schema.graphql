@@ -202,6 +202,7 @@ type Mutation {
   purchasePoint(input: PurchasePointInput!): PointPurchase!
   purchasePost(input: PurchasePostInput!): Post!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
+  restorePostRevision(input: RestorePostRevisionInput!): PostRevision!
   revisePost(input: RevisePostInput!): Post!
   reviseTagWiki(input: ReviseTagWikiInput!): TagWiki!
   setParentTag(input: SetParentTagInput!): Tag!
@@ -425,6 +426,10 @@ type Query {
 
 input RemoveSpaceMemberInput {
   spaceMemberId: ID!
+}
+
+input RestorePostRevisionInput {
+  revisionId: ID!
 }
 
 input RevisePostInput {

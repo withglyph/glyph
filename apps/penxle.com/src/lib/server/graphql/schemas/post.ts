@@ -550,6 +550,12 @@ const UnlockPasswordedPostInput = builder.inputType('UnlockPasswordedPostInput',
   }),
 });
 
+const RestorePostRevisionInput = builder.inputType('RestorePostRevisionInput', {
+  fields: (t) => ({
+    revisionId: t.id(),
+  }),
+});
+
 /**
  * * Queries
  */
@@ -1193,6 +1199,65 @@ builder.mutationFields((t) => ({
       return db.post.findUniqueOrThrow({
         ...query,
         where: { id: post.id },
+      });
+    },
+  }),
+
+  restorePostRevision: t.withAuth({ user: true }).prismaField({
+    type: 'PostRevision',
+    args: { input: t.arg({ type: RestorePostRevisionInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const targetRevision = await db.postRevision.findUniqueOrThrow({
+        where: {
+          id: input.revisionId,
+          post: {
+            OR: [
+              { userId: context.session.userId },
+              {
+                space: {
+                  members: {
+                    some: {
+                      userId: context.session.userId,
+                      role: 'ADMIN',
+                      state: 'ACTIVE',
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+        include: { thumbnail: true, images: true },
+      });
+
+      return await db.postRevision.create({
+        ...query,
+        data: {
+          ...R.omit(targetRevision, ['createdAt']),
+          id: createId(),
+          content: targetRevision.content as object,
+          paidContent: targetRevision.paidContent ?? undefined,
+          userId: context.session.userId,
+          kind: 'AUTO_SAVE',
+          thumbnail: targetRevision.thumbnail
+            ? {
+                create: {
+                  ...R.omit(targetRevision.thumbnail, ['revisionId']),
+                  id: createId(),
+                  bounds: targetRevision.thumbnail.bounds as object,
+                  createdAt: undefined,
+                },
+              }
+            : undefined,
+          images: {
+            createMany: {
+              data: targetRevision.images.map((image) => ({
+                ...R.omit(image, ['revisionId']),
+                id: createId(),
+              })),
+            },
+          },
+        },
       });
     },
   }),
