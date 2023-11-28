@@ -48,6 +48,8 @@ const createRepository = (name: string) => {
   return new Repository(name, { name });
 };
 
+createRepository('pgbouncer');
+
 createRepository('penxle.com');
 createRepository('penxle.io');
 createRepository('help.penxle.com');

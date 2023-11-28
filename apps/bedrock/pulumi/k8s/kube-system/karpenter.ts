@@ -1,6 +1,6 @@
 import * as aws from '@pulumi/aws';
 import * as k8s from '@pulumi/kubernetes';
-import { cluster, fargate, nodeSecurityGroup, oidcProvider } from '$aws/eks';
+import { cluster, fargate, oidcProvider } from '$aws/eks';
 import { securityGroups, subnets } from '$aws/vpc';
 
 const karpenterRole = new aws.iam.Role('karpenter@eks', {
@@ -159,7 +159,7 @@ const nodeClass = new k8s.apiextensions.CustomResource('default', {
     role: nodeRole.name,
 
     subnetSelectorTerms: [{ id: subnets.private.az1.id }, { id: subnets.private.az2.id }],
-    securityGroupSelectorTerms: [{ id: nodeSecurityGroup.id }, { id: securityGroups.internal.id }],
+    securityGroupSelectorTerms: [{ id: securityGroups.internal.id }],
 
     blockDeviceMappings: [
       {

@@ -1,6 +1,6 @@
 import * as aws from '@pulumi/aws';
 import * as tls from '@pulumi/tls';
-import { securityGroups, subnets, vpc } from '$aws/vpc';
+import { securityGroups, subnets } from '$aws/vpc';
 
 const clusterRole = new aws.iam.Role('cluster@eks', {
   name: 'cluster@eks',
@@ -18,39 +18,6 @@ const fargateRole = new aws.iam.Role('fargate@eks', {
   managedPolicyArns: [aws.iam.ManagedPolicy.AmazonEKSFargatePodExecutionRolePolicy],
 });
 
-const clusterSecurityGroup = new aws.ec2.SecurityGroup('cluster@eks', {
-  name: 'cluster@eks',
-  description: 'EKS cluster',
-  vpcId: vpc.id,
-
-  ingress: [
-    { protocol: '-1', fromPort: 0, toPort: 0, self: true },
-    { protocol: '-1', fromPort: 0, toPort: 0, securityGroups: [securityGroups.tailnet.id] },
-  ],
-  egress: [{ protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
-
-  tags: { Name: 'cluster@eks' },
-});
-
-export const nodeSecurityGroup = new aws.ec2.SecurityGroup('node@eks', {
-  name: 'node@eks',
-  description: 'EKS nodes',
-  vpcId: vpc.id,
-
-  ingress: [
-    { protocol: '-1', fromPort: 0, toPort: 0, self: true },
-    {
-      protocol: '-1',
-      fromPort: 0,
-      toPort: 0,
-      securityGroups: [clusterSecurityGroup.id, securityGroups.tailnet.id, securityGroups.alb.id],
-    },
-  ],
-  egress: [{ protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
-
-  tags: { Name: 'node@eks' },
-});
-
 export const cluster = new aws.eks.Cluster('penxle', {
   name: 'penxle',
 
@@ -58,7 +25,7 @@ export const cluster = new aws.eks.Cluster('penxle', {
 
   vpcConfig: {
     subnetIds: [subnets.public.az1.id, subnets.public.az2.id, subnets.private.az1.id, subnets.private.az2.id],
-    securityGroupIds: [clusterSecurityGroup.id, nodeSecurityGroup.id],
+    securityGroupIds: [securityGroups.internal.id],
     endpointPublicAccess: false,
     endpointPrivateAccess: true,
   },

@@ -2,7 +2,6 @@
 
 import * as aws from '@pulumi/aws';
 import { distributions } from '$aws/cloudfront';
-import { instances } from '$aws/ec2';
 import { elasticache } from '$aws/elasticache';
 import { rds } from '$aws/rds';
 
@@ -98,22 +97,6 @@ new aws.route53.Record('db.pnxl.co', {
   type: 'CNAME',
   name: 'db.pnxl.co',
   records: [rds.cluster.endpoint],
-  ttl: 300,
-});
-
-new aws.route53.Record('reader.db.pnxl.co', {
-  zoneId: zones.pnxl_co.zoneId,
-  type: 'CNAME',
-  name: 'reader.db.pnxl.co',
-  records: [rds.cluster.readerEndpoint],
-  ttl: 300,
-});
-
-new aws.route53.Record('pool.db.pnxl.co', {
-  zoneId: zones.pnxl_co.zoneId,
-  type: 'A',
-  name: 'pool.db.pnxl.co',
-  records: [instances.rdsPooler.privateIp],
   ttl: 300,
 });
 

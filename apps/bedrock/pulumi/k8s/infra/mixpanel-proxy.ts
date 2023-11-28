@@ -93,7 +93,7 @@ const service = new k8s.core.v1.Service('mixpanel-proxy@infra', {
     namespace: namespace.metadata.name,
   },
   spec: {
-    clusterIP: 'None',
+    type: 'NodePort',
     selector: { app: 'mixpanel-proxy' },
     ports: [{ port: 80 }],
   },
@@ -106,7 +106,7 @@ new k8s.networking.v1.Ingress('mixpanel-proxy@infra', {
     annotations: {
       'alb.ingress.kubernetes.io/scheme': 'internet-facing',
       'alb.ingress.kubernetes.io/listen-ports': JSON.stringify([{ HTTP: 80, HTTPS: 443 }]),
-      'alb.ingress.kubernetes.io/security-groups': 'alb, public-web',
+      'alb.ingress.kubernetes.io/security-groups': 'internal, public-web',
       'alb.ingress.kubernetes.io/ssl-redirect': '443',
     },
   },

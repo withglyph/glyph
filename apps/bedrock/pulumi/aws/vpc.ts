@@ -112,25 +112,14 @@ new aws.ec2.RouteTableAssociation('private-az2', {
   }).id,
 });
 
-const publicSecurityGroup = new aws.ec2.SecurityGroup('public', {
-  name: 'public',
-  description: 'Open to the world',
+const tailnetSecurityGroup = new aws.ec2.SecurityGroup('tailnet', {
+  name: 'tailnet',
+  description: 'Connection from Tailscale VPN',
   vpcId: vpc.id,
 
-  ingress: [{ protocol: 'all', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
-  egress: [{ protocol: 'all', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
+  egress: [{ protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
 
-  tags: { Name: 'public' },
-});
-
-const privateSecurityGroup = new aws.ec2.SecurityGroup('private', {
-  name: 'private',
-  description: 'Not open to the world',
-  vpcId: vpc.id,
-
-  egress: [{ protocol: 'all', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
-
-  tags: { Name: 'private' },
+  tags: { Name: 'tailnet' },
 });
 
 const internalSecurityGroup = new aws.ec2.SecurityGroup('internal', {
@@ -138,33 +127,16 @@ const internalSecurityGroup = new aws.ec2.SecurityGroup('internal', {
   description: 'Connection between services',
   vpcId: vpc.id,
 
-  ingress: [{ protocol: 'all', fromPort: 0, toPort: 0, self: true }],
-  egress: [{ protocol: 'all', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
+  ingress: [
+    { protocol: '-1', fromPort: 0, toPort: 0, self: true },
+    { protocol: '-1', fromPort: 0, toPort: 0, securityGroups: [tailnetSecurityGroup.id] },
+  ],
+  egress: [{ protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
 
   tags: { Name: 'internal' },
 });
 
-const tailnetSecurityGroup = new aws.ec2.SecurityGroup('tailnet', {
-  name: 'tailnet',
-  description: 'Connection from Tailscale VPN',
-  vpcId: vpc.id,
-
-  egress: [{ protocol: 'all', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
-
-  tags: { Name: 'tailnet' },
-});
-
-const albSecurityGroup = new aws.ec2.SecurityGroup('alb', {
-  name: 'alb',
-  description: 'Security group for Application Load Balancer',
-  vpcId: vpc.id,
-
-  egress: [{ protocol: 'all', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
-
-  tags: { Name: 'alb' },
-});
-
-const publicWebSecurityGroup = new aws.ec2.SecurityGroup('public-web', {
+new aws.ec2.SecurityGroup('public-web', {
   name: 'public-web',
   description: 'Security group for public websites',
   vpcId: vpc.id,
@@ -173,7 +145,7 @@ const publicWebSecurityGroup = new aws.ec2.SecurityGroup('public-web', {
     { protocol: 'tcp', fromPort: 80, toPort: 80, cidrBlocks: ['0.0.0.0/0'] },
     { protocol: 'tcp', fromPort: 443, toPort: 443, cidrBlocks: ['0.0.0.0/0'] },
   ],
-  egress: [{ protocol: 'all', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
+  egress: [{ protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
 
   tags: { Name: 'public-web' },
 });
@@ -186,12 +158,8 @@ export const subnets = {
 };
 
 export const securityGroups = {
-  public: publicSecurityGroup,
-  private: privateSecurityGroup,
   internal: internalSecurityGroup,
   tailnet: tailnetSecurityGroup,
-  alb: albSecurityGroup,
-  publicWeb: publicWebSecurityGroup,
 };
 
 export const outputs = {
@@ -200,7 +168,5 @@ export const outputs = {
   AWS_VPC_SUBNET_PUBLIC_AZ2_ID: publicAz2Subnet.id,
   AWS_VPC_SUBNET_PRIVATE_AZ1_ID: privateAz1Subnet.id,
   AWS_VPC_SUBNET_PRIVATE_AZ2_ID: privateAz2Subnet.id,
-  AWS_VPC_SECURITY_GROUP_PUBLIC_ID: publicSecurityGroup.id,
-  AWS_VPC_SECURITY_GROUP_PRIVATE_ID: privateSecurityGroup.id,
   AWS_VPC_SECURITY_GROUP_INTERNAL_ID: internalSecurityGroup.id,
 };
