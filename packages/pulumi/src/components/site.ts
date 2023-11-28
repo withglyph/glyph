@@ -40,6 +40,12 @@ export class Site extends pulumi.ComponentResource {
     const domainName = isProd ? args.domainName : pulumi.interpolate`${args.name}-${stack}.pnxl.site`;
     this.url = pulumi.output(pulumi.interpolate`https://${domainName}`);
 
+    const provider = new k8s.Provider(
+      'yaml',
+      { renderYamlToDirectory: pulumi.interpolate`manifests/${resourceName}` },
+      { parent: this },
+    );
+
     const namespace = isProd ? 'prod' : 'preview';
 
     let secret;
@@ -56,7 +62,10 @@ export class Site extends pulumi.ComponentResource {
             config: isProd ? 'prod' : 'preview',
           },
         },
-        { parent: this },
+        {
+          parent: this,
+          provider,
+        },
       );
     }
 
@@ -73,15 +82,40 @@ export class Site extends pulumi.ComponentResource {
             policy: args.iam.policy,
           },
         },
-        { parent: this },
+        {
+          parent: this,
+          provider,
+        },
       );
     }
 
     const labels = { app: resourceName };
 
-    const deployment = new k8s.apps.v1.Deployment(
+    const service = new k8s.core.v1.Service(
       name,
       {
+        metadata: {
+          name: resourceName,
+          namespace,
+        },
+        spec: {
+          type: 'NodePort',
+          selector: labels,
+          ports: [{ port: 3000 }],
+        },
+      },
+      {
+        parent: this,
+        provider,
+      },
+    );
+
+    const rollout = new k8s.apiextensions.CustomResource(
+      name,
+      {
+        apiVersion: 'argoproj.io/v1alpha1',
+        kind: 'Rollout',
+
         metadata: {
           name: resourceName,
           namespace,
@@ -109,9 +143,17 @@ export class Site extends pulumi.ComponentResource {
               ],
             },
           },
+          strategy: {
+            blueGreen: {
+              activeService: service.metadata.name,
+            },
+          },
         },
       },
-      { parent: this },
+      {
+        parent: this,
+        provider,
+      },
     );
 
     new k8s.autoscaling.v2.HorizontalPodAutoscaler(
@@ -123,9 +165,9 @@ export class Site extends pulumi.ComponentResource {
         },
         spec: {
           scaleTargetRef: {
-            apiVersion: deployment.apiVersion,
-            kind: deployment.kind,
-            name: deployment.metadata.name,
+            apiVersion: rollout.apiVersion,
+            kind: rollout.kind,
+            name: rollout.metadata.name,
           },
           minReplicas: 2,
           maxReplicas: 100,
@@ -140,7 +182,10 @@ export class Site extends pulumi.ComponentResource {
           ],
         },
       },
-      { parent: this },
+      {
+        parent: this,
+        provider,
+      },
     );
 
     new k8s.policy.v1.PodDisruptionBudget(
@@ -155,23 +200,10 @@ export class Site extends pulumi.ComponentResource {
           minAvailable: 1,
         },
       },
-      { parent: this },
-    );
-
-    const service = new k8s.core.v1.Service(
-      name,
       {
-        metadata: {
-          name: resourceName,
-          namespace,
-        },
-        spec: {
-          type: 'NodePort',
-          selector: labels,
-          ports: [{ port: 3000 }],
-        },
+        parent: this,
+        provider,
       },
-      { parent: this },
     );
 
     new k8s.networking.v1.Ingress(
@@ -232,7 +264,10 @@ export class Site extends pulumi.ComponentResource {
           ],
         },
       },
-      { parent: this },
+      {
+        parent: this,
+        provider,
+      },
     );
   }
 }

@@ -23,8 +23,24 @@ jobs:
       group: pr-${{ github.event.pull_request.number }}/${{ matrix.app }}
 
     steps:
+      - name: Issue GitHub App token
+        uses: actions/create-github-app-token@v1
+        id: gh-token
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          owner: penxle
+          repositories: manifests
+
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Checkout manifests repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.gh-token.outputs.token }}
+          repository: penxle/manifests
+          path: apps/${{ matrix.app }}/pulumi/manifests
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -78,16 +94,6 @@ jobs:
         working-directory: apps/${{ matrix.app }}
         run: pnpm exec turbo run codegen
 
-      - name: Connect tailnet
-        uses: tailscale/github-action@v2
-        with:
-          oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}
-          tags: tag:github-actions
-
-      - name: Update kubeconfig
-        run: aws eks update-kubeconfig --name penxle
-
       - name: Apply infrastructure
         uses: pulumi/actions@v4
         with:
@@ -95,7 +101,23 @@ jobs:
           work-dir: apps/${{ matrix.app }}
           stack-name: penxle/pr-${{ github.event.pull_request.number }}
           upsert: true
+          refresh: true
           config-map: |
             { "penxle:image.digest": { "value": "${{ steps.build.outputs.digest }}" } }
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_K8S_DELETE_UNREACHABLE: 'true'
+
+      - name: Update manifests
+        working-directory: apps/${{ matrix.app }}/pulumi/manifests
+        run: |
+          git config user.name "penxle[bot]"
+          git config user.email "142828998+penxle[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Manifest update for https://github.com/penxle/penxle/commit/${{ github.event.pull_request.head.sha }}"
+          git push origin HEAD:$BRANCH
+          gh pr create --head $BRANCH --title "Manifest update for ${{ matrix.app }}/pr-${{ github.event.pull_request.number }}" --body "This PR was automatically created by penxle/penxle."
+          gh pr merge $BRANCH --rebase --auto --delete-branch
+        env:
+          BRANCH: ${{ matrix.app }}/pr-${{ github.event.pull_request.number }}/${{ github.run_id}}/${{ github.run_attempt }}
+          GITHUB_TOKEN: ${{ steps.gh-token.outputs.token }}

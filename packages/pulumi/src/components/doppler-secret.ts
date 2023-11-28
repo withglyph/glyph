@@ -70,7 +70,7 @@ export class DopplerSecret extends pulumi.ComponentResource {
         },
 
         spec: {
-          refreshInterval: '5m',
+          refreshInterval: '1m',
 
           secretStoreRef: {
             kind: store.kind,
