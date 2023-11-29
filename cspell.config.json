@@ -8,6 +8,7 @@
   "words": [
     "amazonses",
     "apne",
+    "argoproj",
     "awscli",
     "brotli",
     "buildx",
@@ -54,6 +55,7 @@
     "sindresorhus",
     "ssos",
     "timestamptz",
+    "tini",
     "tsup",
     "turborepo",
     "unfollow",

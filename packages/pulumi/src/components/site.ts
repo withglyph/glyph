@@ -79,12 +79,39 @@ export class Site extends pulumi.ComponentResource {
 
     const labels = { app: resourceName };
 
-    const deployment = new k8s.apps.v1.Deployment(
+    const service = new k8s.core.v1.Service(
       name,
       {
         metadata: {
           name: resourceName,
           namespace,
+          annotations: {
+            'pulumi.com/skipAwait': 'true',
+          },
+        },
+        spec: {
+          type: 'NodePort',
+          selector: labels,
+          ports: [{ port: 3000 }],
+        },
+      },
+      { parent: this },
+    );
+
+    const rollout = new k8s.apiextensions.CustomResource(
+      name,
+      {
+        apiVersion: 'argoproj.io/v1alpha1',
+        kind: 'Rollout',
+
+        metadata: {
+          name: resourceName,
+          namespace,
+          ...(isProd && {
+            annotations: {
+              'notifications.argoproj.io/subscribe.on-rollout-completed.slack': 'activities',
+            },
+          }),
         },
         spec: {
           selector: { matchLabels: labels },
@@ -109,6 +136,11 @@ export class Site extends pulumi.ComponentResource {
               ],
             },
           },
+          strategy: {
+            blueGreen: {
+              activeService: service.metadata.name,
+            },
+          },
         },
       },
       { parent: this },
@@ -123,9 +155,9 @@ export class Site extends pulumi.ComponentResource {
         },
         spec: {
           scaleTargetRef: {
-            apiVersion: deployment.apiVersion,
-            kind: deployment.kind,
-            name: deployment.metadata.name,
+            apiVersion: rollout.apiVersion,
+            kind: rollout.kind,
+            name: rollout.metadata.name,
           },
           minReplicas: 2,
           maxReplicas: 100,
@@ -153,22 +185,6 @@ export class Site extends pulumi.ComponentResource {
         spec: {
           selector: { matchLabels: labels },
           minAvailable: 1,
-        },
-      },
-      { parent: this },
-    );
-
-    const service = new k8s.core.v1.Service(
-      name,
-      {
-        metadata: {
-          name: resourceName,
-          namespace,
-        },
-        spec: {
-          type: 'NodePort',
-          selector: labels,
-          ports: [{ port: 3000 }],
         },
       },
       { parent: this },

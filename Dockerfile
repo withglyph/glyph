@@ -4,6 +4,7 @@ RUN apk add --no-cache \
   g++ \
   make \
   python3 \
+  tini \
   && rm -rf /var/cache/apk/*
 
 ENV PNPM_HOME=/pnpm
@@ -52,4 +53,5 @@ WORKDIR /app
 ARG APP
 COPY --from=build /app/apps/${APP}/dist/ .
 
+ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["node", "index.js"]
