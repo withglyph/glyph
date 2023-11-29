@@ -7,7 +7,7 @@
   import { Button, Image } from '$lib/components';
   import Modal from '$lib/components/Modal.svelte';
   import { comma } from '$lib/utils';
-  import LoginRequireModal from '../../LoginRequireModal.svelte';
+  import LoginRequireModal from '../LoginRequireModal.svelte';
   import type { JSONContent } from '@tiptap/core';
   import type { SwiperContainer, SwiperSlide } from 'swiper/element-bundle';
   import type { FragmentType, Post_postRevision, SpacePostPage_GalleryPost_query } from '$glitch';

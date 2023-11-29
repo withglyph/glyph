@@ -15,9 +15,9 @@
   import { TiptapBubbleMenu, TiptapRenderer } from '$lib/tiptap/components';
   import { calcurateReadingTime, createTiptapDocument, humanizeNumber } from '$lib/utils';
   import LoginRequireModal from '../LoginRequireModal.svelte';
-  import GalleryPost from './[post]/GalleryPost.svelte';
-  import ShareContent from './[post]/ShareContent/ShareContent.svelte';
-  import Toolbar from './[post]/Toolbar.svelte';
+  import GalleryPost from './GalleryPost.svelte';
+  import ShareContent from './ShareContent/ShareContent.svelte';
+  import Toolbar from './Toolbar.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
   import type { Fragment } from '@tiptap/pm/model';
   import type { ContentFilterCategory, Post_postRevision, Post_query } from '$glitch';
