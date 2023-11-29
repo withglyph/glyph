@@ -6,8 +6,10 @@
   import { Button, Modal } from '$lib/components';
   import { Switch } from '$lib/components/forms';
   import ContentFilterButton from './ContentFilterButton.svelte';
+  import MutedSpaceModal from './MutedSpaceModal.svelte';
 
   let open = false;
+  let mutedSpaceOpen = false;
 
   $: query = graphql(`
     query MeSettingsContentFiltersPage_Query {
@@ -23,6 +25,7 @@
         }
 
         ...MeSettingsContentFiltersPage_ContentFilterButton_user
+        ...MeSettingsContentFiltersPage_MutedSpaceModal_user
       }
     }
   `);
@@ -53,7 +56,7 @@
 <Helmet title="필터링 설정" />
 
 <div class="py-8 px-6 space-y-8 sm:px-8">
-  <button type="button">
+  <button type="button" on:click={() => (mutedSpaceOpen = true)}>
     <div class="flex items-center gap-1 w-full mb-2">
       <h3 class="text-lg font-extrabold">숨긴 스페이스</h3>
       <span class="i-lc-chevron-right square-6 text-secondary" />
@@ -147,3 +150,5 @@
 
   <Button slot="action" class="w-full" size="xl" on:click={() => (open = false)}>닫기</Button>
 </Modal>
+
+<MutedSpaceModal $user={$query.me} bind:open={mutedSpaceOpen} />
