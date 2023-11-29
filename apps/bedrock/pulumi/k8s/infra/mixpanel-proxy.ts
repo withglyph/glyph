@@ -104,10 +104,10 @@ new k8s.networking.v1.Ingress('mixpanel-proxy@infra', {
     name: 'mixpanel-proxy',
     namespace: namespace.metadata.name,
     annotations: {
-      'alb.ingress.kubernetes.io/scheme': 'internet-facing',
-      'alb.ingress.kubernetes.io/listen-ports': JSON.stringify([{ HTTP: 80, HTTPS: 443 }]),
-      'alb.ingress.kubernetes.io/security-groups': 'internal, public-web',
-      'alb.ingress.kubernetes.io/ssl-redirect': '443',
+      'alb.ingress.kubernetes.io/group.name': 'public-alb',
+      'alb.ingress.kubernetes.io/listen-ports': JSON.stringify([{ HTTPS: 443 }]),
+      'alb.ingress.kubernetes.io/healthcheck-path': '/healthz',
+      'pulumi.com/skipAwait': 'true',
     },
   },
   spec: {

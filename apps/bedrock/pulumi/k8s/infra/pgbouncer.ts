@@ -112,8 +112,10 @@ new k8s.core.v1.Service('pgbouncer@infra', {
     name: 'pgbouncer',
     namespace: namespace.metadata.name,
     annotations: {
+      'service.beta.kubernetes.io/aws-load-balancer-name': 'pgbouncer',
       'service.beta.kubernetes.io/aws-load-balancer-security-groups': 'internal',
       'external-dns.alpha.kubernetes.io/hostname': 'pool.db.pnxl.co',
+      'pulumi.com/skipAwait': 'true',
     },
   },
   spec: {
