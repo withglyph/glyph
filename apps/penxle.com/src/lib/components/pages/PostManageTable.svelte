@@ -345,7 +345,7 @@
               openDeletePostWaring = true;
             }}
           >
-            <i class="i-px-trash square-4 text-secondary hover:text-action-red-primary" />
+            <i class="i-lc-trash-2 square-4 text-secondary hover:text-action-red-primary" />
           </Button>
         </div>
       </TableData>
