@@ -1,12 +1,13 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import { onMount } from 'svelte';
-  // import { flip } from 'svelte/animate';
+  import { nanoid } from 'nanoid';
+  import { onDestroy, onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { Button } from '$lib/components';
   import { FormField, Switch, TextArea, TextInput } from '$lib/components/forms';
+  import FormValidationMessage from '$lib/components/forms/FormValidationMessage.svelte';
   import Image from '$lib/components/Image.svelte';
   import { ThumbnailPicker } from '$lib/components/media';
   import { createMutationForm } from '$lib/form';
@@ -14,12 +15,49 @@
   import { pageSubTitle } from '$lib/stores';
   import { UpdateSpaceSchema } from '$lib/validations';
   import DeleteSpaceModal from './DeleteSpaceModal.svelte';
+  import type { Sortable } from '@shopify/draggable';
 
-  let openDeleteSpace = false;
   let thumbnailPicker: ThumbnailPicker;
+  let openDeleteSpace = false;
+  let links: { id: string; url: string }[] = [{ id: nanoid(), url: '' }];
+  let sortable: Sortable;
 
-  onMount(() => {
+  onMount(async () => {
     pageSubTitle.set('스페이스 설정');
+
+    links = $query.space.externalLinks.length === 0 ? [{ id: nanoid(), url: '' }] : $query.space.externalLinks;
+
+    const { Sortable, Plugins } = await import('@shopify/draggable');
+
+    sortable = new Sortable(document.querySelectorAll('.externalLinks'), {
+      draggable: 'li',
+      handle: '.linkHandle',
+      sortAnimation: {
+        duration: 300,
+        easingFunction: 'ease-in-out',
+      },
+      plugins: [Plugins.SortAnimation],
+    });
+
+    sortable.on('sortable:stop', ({ newIndex, oldIndex }) => {
+      const draggedItem = links[oldIndex];
+      if (oldIndex > newIndex) {
+        links = [
+          ...links.slice(0, newIndex),
+          draggedItem,
+          ...links.slice(newIndex, oldIndex),
+          ...links.slice(oldIndex + 1),
+        ];
+      } else {
+        links = [
+          ...links.slice(0, oldIndex),
+          ...links.slice(oldIndex + 1, newIndex + 1),
+          draggedItem,
+          ...links.slice(newIndex + 1),
+        ];
+      }
+      links = links;
+    });
   });
 
   $: query = graphql(`
@@ -85,7 +123,10 @@
       }
     `),
     schema: UpdateSpaceSchema,
-    extra: () => ({ iconId: icon.id }),
+    extra: () => ({
+      iconId: icon.id,
+      externalLinks: links.map(({ url }) => url),
+    }),
     onSuccess: async () => {
       toast.success('스페이스 설정이 변경되었어요');
       await goto(`/${$data.slug}/dashboard/settings`);
@@ -98,51 +139,15 @@
     name: $query.space.name,
     slug: $query.space.slug,
     description: $query.space.description ?? '',
-    externalLinks: $query.space.externalLinks.map((link) => link.url),
+    externalLinks: $query.space.externalLinks.map(({ url }) => url),
     isPublic: $query.space.visibility === 'PUBLIC',
   });
 
-  let links = [
-    { id: 1, url: '첫번째' },
-    { id: 2, url: '두번째' },
-    { id: 3, url: '세번째' },
-  ];
-
-  // let draggedItem: { id: number; url: string } | null = null;
-
-  // const onDragStart = (dataTransfer: DataTransfer | null, link: { id: number; url: string }) => {
-  //   if (dataTransfer) {
-  //     dataTransfer.setData('text/plain', link.url);
-  //     draggedItem = link;
-  //   }
-  // };
-
-  // const onDrop = (link: { id: number; url: string }) => {
-  //   if (!draggedItem) return;
-
-  //   if (draggedItem === link) return;
-
-  //   const indexDragged = links.findIndex((i) => i == draggedItem);
-  //   const indexTarget = links.findIndex((i) => i == link);
-
-  //   if (indexDragged > indexTarget) {
-  //     links = [
-  //       ...links.slice(0, indexTarget),
-  //       draggedItem,
-  //       ...links.slice(indexTarget, indexDragged),
-  //       ...links.slice(indexDragged + 1),
-  //     ];
-  //   } else {
-  //     links = [
-  //       ...links.slice(0, indexDragged),
-  //       ...links.slice(indexDragged + 1, indexTarget + 1),
-  //       draggedItem,
-  //       ...links.slice(indexTarget + 1),
-  //     ];
-  //   }
-
-  //   draggedItem = null;
-  // };
+  onDestroy(() => {
+    if (sortable) {
+      sortable.destroy();
+    }
+  });
 </script>
 
 <Helmet title={`스페이스 설정 | ${$query.space.name}`} />
@@ -152,7 +157,7 @@
 </div>
 
 <div class="<sm:(px-4 py-6 bg-white border border-secondary rounded-xl) max-w-218">
-  <form class="sm:(p-6 max-w-218 bg-white border border-secondary rounded-xl) sm:px-6" use:form>
+  <form class="sm:(p-6 max-w-218 bg-white border border-secondary rounded-xl)" use:form>
     <input name="spaceId" type="hidden" value={$query.space.id} />
 
     <div class="space-y-3">
@@ -188,44 +193,37 @@
         </TextInput>
       </FormField>
 
-      <p class="body-14-b flex items-center justify-end gap-1">
-        링크 추가
-        <button
-          class="border border-secondary square-6 bg-white text-secondary rounded-lg flex center"
-          type="button"
-          on:click={() => {
-            links.push({ id: links.length + 1, url: '' });
-            links = links;
-          }}
-        >
-          <i class="i-lc-plus" />
-        </button>
-      </p>
-
-      <ul class="space-y-3">
-        <!-- {#each links as link, idx (link)}
-          <li
-            class="flex items-start gap-3"
-            draggable="true"
-            on:dragstart={({ dataTransfer }) => onDragStart(dataTransfer, link)}
-            on:dragover|preventDefault={() => null}
-            on:drop|preventDefault={() => onDrop(link)}
-            animate:flip={{ duration: 500 }}
+      <div class="flex items-center justify-end">
+        <label class="body-14-b flex items-center justify-end gap-1 w-fit">
+          링크 추가
+          <button
+            class="border border-secondary square-6 bg-white text-secondary rounded-lg flex center"
+            type="button"
+            on:click={() => {
+              links.push({ id: nanoid(), url: '' });
+              links = links;
+            }}
           >
+            <i class="i-lc-plus" />
+          </button>
+        </label>
+      </div>
+
+      <ul class="externalLinks space-y-3">
+        {#each links as { url, id }, index (id)}
+          <li class="flex items-start gap-3">
             <div>
               <button
                 class="square-6 p-0.5 border border-secondary rounded-lg flex center mb-1 transition cursor-move hover:border-primary"
                 type="button"
-                on:dragstart={({ dataTransfer }) => onDragStart(dataTransfer, link)}
-                on:dragover|preventDefault={() => null}
               >
-                <i class="i-lc-menu square-3.5 text-icon-secondary" />
+                <i class="linkHandle i-lc-menu square-3.5 text-icon-secondary" />
               </button>
               <button
                 class="square-6 p-0.5 border border-secondary rounded-lg flex center transition hover:border-primary"
                 type="button"
                 on:click={() => {
-                  links = links.filter((l) => l.id !== link.id);
+                  links = links.filter((_, i) => i !== index);
                   links = links;
                 }}
               >
@@ -233,11 +231,23 @@
               </button>
             </div>
 
-            <FormField name={`url${idx + 1}`} class="grow" label={`URL ${idx + 1}`}>
-              <TextInput class="w-full" placeholder="URL을 입력해주세요" bind:value={link.url} />
-            </FormField>
+            <div
+              class="w-full flex flex-col gap-1.5 border border-gray-5 rounded-2xl transition bg-primary pt-3 pb-4 px-3.5 hover:border-secondary focus-within:border-tertiary! [&:has(textarea[aria-invalid])]:border-action-error disabled:opacity-50"
+            >
+              <label class="body-13-b" for={`url${index + 1}`}>{`URL ${index + 1}`}</label>
+              <TextInput
+                id={`externalLinks[${index}]`}
+                name={`externalLinks[${index}]`}
+                class="w-full"
+                autocomplete="on"
+                placeholder="URL을 입력해주세요"
+                type="url"
+                bind:value={url}
+              />
+              <FormValidationMessage for={`externalLinks[${index}]`} />
+            </div>
           </li>
-        {/each} -->
+        {/each}
       </ul>
     </div>
 
@@ -250,15 +260,17 @@
     </Switch>
   </form>
 
-  <Button class="w-full mt-8 sm:mt-6" loading={$isSubmitting} size="xl" type="submit" on:click={handleSubmit}>
-    설정 저장하기
-  </Button>
-
-  {#if $query.space.meAsMember?.role === 'ADMIN'}
-    <Button class="w-full bodylong-16-m! mt-4" size="sm" variant="text" on:click={() => (openDeleteSpace = true)}>
-      스페이스 삭제
+  <div>
+    <Button class="w-full mt-8 sm:mt-6" loading={$isSubmitting} size="xl" type="submit" on:click={handleSubmit}>
+      설정 저장하기
     </Button>
-  {/if}
+
+    {#if $query.space.meAsMember?.role === 'ADMIN'}
+      <Button class="w-full bodylong-16-m! mt-4" size="sm" variant="text" on:click={() => (openDeleteSpace = true)}>
+        스페이스 삭제
+      </Button>
+    {/if}
+  </div>
 </div>
 
 <DeleteSpaceModal $space={$query.space} bind:open={openDeleteSpace} />
