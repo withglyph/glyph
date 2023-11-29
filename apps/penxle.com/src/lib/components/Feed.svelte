@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Link } from '@penxle/ui';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import { fragment, graphql } from '$glitch';
@@ -9,6 +10,7 @@
   export { _post as $post };
 
   export let showSpaceInfo = false;
+  export let purchasedPost: string | undefined = undefined;
 
   $: post = fragment(
     _post,
@@ -17,6 +19,7 @@
         id
         permalink
         blurred
+        purchasedAt
 
         tags {
           id
@@ -79,12 +82,22 @@
     </div>
     <div class="grow flex flex-col">
       <p class="mb-0.5 body-15-b sm:hidden">{$post.space.name} · {$post.member.profile.name}</p>
+
       <p class="mb-0.5 body-15-b <sm:hidden">
         {$post.member.profile.name}님이 {$post.space.name}에
         <mark class="text-purple-50">유료글</mark>
         을 게시했어요
       </p>
-      <time class="body-13-m text-secondary">{dayjs($post.revision.createdAt).formatAsDate()}</time>
+      {#if purchasedPost}
+        <Link
+          class="text-secondary body-13-m underline underline-offset-2 hover:text-gray-60"
+          href={`/${$post.space.slug}/purchased/${purchasedPost}`}
+        >
+          {dayjs($post.purchasedAt).formatAsDate()}에 결제된 글 보기
+        </Link>
+      {:else}
+        <time class="body-13-m text-secondary">{dayjs($post.revision.createdAt).formatAsDate()}</time>
+      {/if}
     </div>
     <button type="button">
       <i class="i-lc-more-vertical square-6 text-secondary" />
@@ -111,7 +124,7 @@
 
       {#if $post.revision.thumbnail}
         <Image
-          class="h-11.25rem sm:aspect-square object-cover rounded-lg"
+          class="h-11.25rem sm:aspect-square object-cover rounded-lg flex-none"
           $image={$post.revision.thumbnail.thumbnail}
         />
       {/if}

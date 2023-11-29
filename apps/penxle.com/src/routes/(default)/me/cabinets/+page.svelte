@@ -28,6 +28,13 @@
           ...Feed_post
         }
 
+        purchasedPosts {
+          id
+          permalink
+
+          ...Feed_post
+        }
+
         ...MeCabinetsPage_FollowSpaceModal_user
       }
     }
@@ -99,7 +106,15 @@
           {/each}
         </ul>
       </TabContentItem>
-      <TabContentItem id={3} {activeTabValue}>구매</TabContentItem>
+      <TabContentItem id={3} {activeTabValue}>
+        <ul class="space-y-11.5">
+          {#each $query.me.purchasedPosts as post (post.id)}
+            <li>
+              <Feed $post={post} purchasedPost={post.permalink} showSpaceInfo />
+            </li>
+          {/each}
+        </ul>
+      </TabContentItem>
 
       <div class="<sm:px-4">
         <Button class="w-full mt-6" size="xl">포스트 더보기</Button>
