@@ -9,71 +9,69 @@
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Table, TableData, TableHead, TableRow } from '$lib/components/table';
   import { toast } from '$lib/notification';
-  import type { PostManageTable_Space_query, PostManageTable_SpaceMember } from '$glitch';
+  import type { PostManageTable_Post_query, PostManageTable_SpaceMember } from '$glitch';
   import type { UpdatePostOptionsInput } from '$lib/validations/post';
 
   export let type: T;
-  export let _query: PostManageTable_Space_query;
+  export let _posts: PostManageTable_Post_query[];
   export let _spaceMember: PostManageTable_SpaceMember | null = null;
 
-  type $$Props = { type: typeof type; $query: typeof _query } & (T extends 'space'
+  type $$Props = { type: typeof type; $posts: typeof _posts } & (T extends 'space'
     ? { $spaceMember: typeof _spaceMember }
     : unknown);
-  export { _query as $query, _spaceMember as $spaceMember };
+  export { _posts as $posts, _spaceMember as $spaceMember };
 
-  $: query = fragment(
-    _query,
+  $: posts = fragment(
+    _posts,
     graphql(`
-      fragment PostManageTable_Space_query on Space {
-        posts @_required {
+      fragment PostManageTable_Post_query on Post {
+        id
+        permalink
+        createdAt
+
+        tags {
           id
-          permalink
-          createdAt
 
-          tags {
-            id
-
-            tag {
-              id
-              name
-            }
-          }
-
-          space {
+          tag {
             id
             name
           }
+        }
 
-          member {
+        space {
+          id
+          name
+        }
+
+        member {
+          id
+
+          profile {
             id
-
-            profile {
-              id
-              name
-              ...Avatar_profile
-            }
+            name
+            ...Avatar_profile
           }
+        }
 
-          option {
-            id
-            receiveFeedback
-            receiveTagContribution
-            discloseStats
-            visibility
-          }
+        option {
+          id
+          receiveFeedback
+          receiveTagContribution
+          discloseStats
+          visibility
+        }
 
-          revision {
+        revision {
+          id
+          title
+          createdAt
+
+          thumbnail {
             id
-            title
-            createdAt
 
             thumbnail {
               id
-
-              thumbnail {
-                id
-                ...Image_image
-              }
+              ...Image_image
             }
           }
         }
@@ -92,7 +90,10 @@
   );
 
   function hasPermissionToUpdatePost(memberId: string) {
-    if (!$spaceMember) return false;
+    if (type === 'me') return true;
+
+    if (!$spaceMember) throw new Error('스페이스 관리 페이지에서는 "$spaceMember" prop 가 필수에요');
+
     return memberId === $spaceMember.id || $spaceMember.role === 'ADMIN';
   }
 
@@ -100,7 +101,7 @@
   $: selectedPostCount = selectedPostIds.size;
   $: _selectedPostIds = [...selectedPostIds.values()];
 
-  $: selectedPosts = $query.posts.filter((post) => _selectedPostIds.includes(post.id));
+  $: selectedPosts = $posts.filter((post) => _selectedPostIds.includes(post.id));
   $: selectedOwnPosts = type === 'me' || selectedPosts.every((post) => post.member.id === $spaceMember?.id);
 
   let receiveFeedback = false;
@@ -195,11 +196,11 @@
     const { checked } = event.target;
 
     if (checked) {
-      for (const post of $query.posts ?? []) {
+      for (const post of $posts ?? []) {
         selectedPostIds.add(post.id);
       }
     } else {
-      for (const post of $query.posts ?? []) {
+      for (const post of $posts ?? []) {
         selectedPostIds.delete(post.id);
       }
     }
@@ -231,7 +232,7 @@
     <!-- 모바일 화면 너비에서 마지막에 빈 테이블 헤드 요소가 없으면 테이블 헤더 오른쪽이 잘리는 문제가 있어서 추가했습니다. -->
     <TableHead class="w-0" />
   </TableRow>
-  {#each $query.posts as post (post.id)}
+  {#each $posts as post (post.id)}
     <TableRow
       class="rounded-2 [&[aria-selected='true']]:bg-primary border-solid border-b border-alphagray-10 last:border-b-0 [&>td>div]:(items-center <sm:justify-end)"
       aria-selected={selectedPostIds.has('post.id')}

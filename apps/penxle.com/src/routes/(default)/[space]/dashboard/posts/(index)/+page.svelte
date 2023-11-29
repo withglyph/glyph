@@ -9,10 +9,14 @@
         id
 
         meAsMember {
+          id
           ...PostManageTable_SpaceMember
         }
 
-        ...PostManageTable_Space_query
+        posts {
+          id
+          ...PostManageTable_Post_query
+        }
       }
     }
   `);
@@ -25,5 +29,5 @@
 </div>
 
 {#if $query.space && $query.space.meAsMember}
-  <PostManageTable $query={$query.space} $spaceMember={$query.space.meAsMember} type="space" />
+  <PostManageTable $posts={$query.space.posts} $spaceMember={$query.space.meAsMember} type="space" />
 {/if}
