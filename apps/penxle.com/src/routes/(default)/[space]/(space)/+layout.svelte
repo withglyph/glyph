@@ -12,6 +12,7 @@
   let moveToLoginOpen = false;
   let menuOpen = false;
   let linkOpen = false;
+  let revealMutedSpace = false;
 
   $: query = graphql(`
     query SpaceLayout_Query($slug: String!) {
@@ -361,7 +362,16 @@
 
   <hr class="w-full border-color-alphagray-10" />
 
-  <slot />
+  {#if $query.space.muted && !revealMutedSpace}
+    <div class="w-full min-h-11rem max-w-50rem flex flex-col center grow body-15-sb text-secondary">
+      <p>내가 숨긴 스페이스에요</p>
+      <p>내용을 보시겠어요?</p>
+      <p>(스페이스 숨김은 유지돼요)</p>
+      <Button class="w-fit mt-5" size="xl" on:click={() => (revealMutedSpace = true)}>내용 보기</Button>
+    </div>
+  {:else}
+    <slot />
+  {/if}
 </main>
 
 <LoginRequireModal bind:open={moveToLoginOpen} />
