@@ -102,7 +102,7 @@
 
     <div class={clsx('flex gap-3', !useSpaceProfile && 'hidden!')}>
       <button
-        class="bg-primary square-18.5 rounded-xl overflow-hidden grow-0"
+        class="bg-primary square-18.5 rounded-xl overflow-hidden shrink-0"
         type="button"
         on:click={() => thumbnailPicker.show()}
       >
