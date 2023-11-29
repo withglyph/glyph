@@ -212,6 +212,17 @@ builder.prismaObject('User', {
         return likes.map(({ post }) => post);
       },
     }),
+
+    purchasedPosts: t.prismaField({
+      type: ['Post'],
+      select: (_, __, nestedSelection) => ({
+        postPurchases: {
+          select: { post: nestedSelection() },
+          orderBy: { createdAt: 'desc' },
+        },
+      }),
+      resolve: (_, { postPurchases }) => postPurchases.map(({ post }) => post),
+    }),
   }),
 });
 

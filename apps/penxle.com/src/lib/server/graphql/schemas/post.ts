@@ -29,18 +29,20 @@ import type { ImageBounds } from '$lib/utils';
  */
 
 builder.prismaObject('Post', {
-  select: { id: true },
-  grantScopes: async ({ id }, { db, ...context }) => {
-    if (!context.session) {
+  select: { id: true, userId: true, spaceId: true, state: true },
+  grantScopes: async (post, { db, ...context }) => {
+    if (post.state !== 'PUBLISHED') {
       return [];
     }
-    const post = await db.post.findUniqueOrThrow({
-      select: { userId: true, spaceId: true },
-      where: { id },
-    });
-    if (context.session.userId === post.userId) {
-      return ['$post:edit'];
+
+    if (!context.session) {
+      return ['$post:view'];
     }
+
+    if (context.session.userId === post.userId) {
+      return ['$post:view', '$post:edit'];
+    }
+
     const member = await db.spaceMember.findUnique({
       select: { role: true },
       where: {
@@ -48,12 +50,13 @@ builder.prismaObject('Post', {
           spaceId: post.spaceId,
           userId: context.session.userId,
         },
+        state: 'ACTIVE',
       },
     });
     if (member?.role === 'ADMIN') {
-      return ['$post:edit'];
+      return ['$post:view', '$post:edit'];
     }
-    return [];
+    return ['$post:view'];
   },
   fields: (t) => ({
     id: t.exposeID('id'),
@@ -64,6 +67,7 @@ builder.prismaObject('Post', {
 
     revision: t.prismaField({
       type: 'PostRevision',
+      authScopes: { $granted: '$post:view' },
       select: (_, __, nestedSelection) => ({
         revisions: nestedSelection({
           where: { kind: 'PUBLISHED' },
@@ -82,6 +86,21 @@ builder.prismaObject('Post', {
         revisions: nestedSelection({
           where: { id: revisionId },
           orderBy: { createdAt: 'desc' },
+          take: 1,
+        }),
+      }),
+      resolve: (_, { revisions }) => revisions[0],
+    }),
+
+    purchasedRevision: t.withAuth({ user: true }).prismaField({
+      type: 'PostRevision',
+      select: (_, context, nestedSelection) => ({
+        revisions: nestedSelection({
+          where: {
+            purchases: {
+              some: { userId: context.session.userId },
+            },
+          },
           take: 1,
         }),
       }),
