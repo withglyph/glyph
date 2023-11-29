@@ -41,6 +41,7 @@
         space {
           id
           name
+          slug
         }
 
         member {
@@ -222,9 +223,10 @@
 
 <Table class="text-left border-separate border-spacing-y-0.125rem">
   <TableRow>
-    <TableHead>
-      <Checkbox class="gap-3" on:change={handleSelectAllPost}>포스트</Checkbox>
+    <TableHead class="w-2.5rem">
+      <Checkbox class="gap-3" on:change={handleSelectAllPost} />
     </TableHead>
+    <TableHead>포스트</TableHead>
     <TableHead class="<sm:hidden">작성자</TableHead>
     <TableHead class="min-w-10rem <sm:hidden">태그</TableHead>
     <TableHead class="<sm:(text-right p-r-1.3rem)">공개옵션</TableHead>
@@ -238,11 +240,14 @@
       aria-selected={selectedPostIds.has('post.id')}
     >
       <TableData>
-        <Checkbox
-          class="[&>_.slot]:(flex gap-xs)"
-          checked={selectedPostIds.has(post.id)}
-          value={post.id}
-          on:change={handleSelectPost}
+        <Checkbox checked={selectedPostIds.has(post.id)} value={post.id} on:change={handleSelectPost} />
+      </TableData>
+      <TableData class="p-l-none!">
+        <a
+          class="flex justify-start gap-xs"
+          href={`/${post.space.slug}/${post.permalink}`}
+          rel="noopener noreferrer"
+          target="_blank"
         >
           {#if post.revision.thumbnail}
             <Image class="square-2.625rem rounded-2 min-w-1rem" $image={post.revision.thumbnail.thumbnail} />
@@ -257,7 +262,7 @@
               {dayjs(post.createdAt).formatAsDate()}
             </dd>
           </dl>
-        </Checkbox>
+        </a>
       </TableData>
       <TableData class="<sm:hidden">
         <div class="flex gap-1">
