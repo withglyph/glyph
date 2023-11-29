@@ -69,7 +69,7 @@
   <div class="bg-white py-4 sm:(border border-secondary rounded-2xl)">
     <p class="title-20-b px-4 sm:px-8">포스트 목록</p>
 
-    <TabHead class="w-full px-4 mt-4 mb-6 sticky top-15.25 bg-white z-10 sm:px-8">
+    <TabHead class="w-full px-4 mt-4 mb-6 sticky top-15.25 bg-white z-10 sm:px-8" variant="secondary">
       <TabHeadItem id={1} {activeTabValue} on:click={() => (activeTabValue = 1)}>좋아요</TabHeadItem>
       <TabHeadItem id={2} {activeTabValue} on:click={() => (activeTabValue = 2)}>최근</TabHeadItem>
       <TabHeadItem id={3} {activeTabValue} on:click={() => (activeTabValue = 3)}>구매</TabHeadItem>
