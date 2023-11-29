@@ -249,7 +249,7 @@
           target="_blank"
         >
           {#if post.revision.thumbnail}
-            <Image class="square-2.625rem rounded-2" $image={post.revision.thumbnail.thumbnail} />
+            <Image class="square-2.625rem flex-shrink-0 rounded-2" $image={post.revision.thumbnail.thumbnail} />
           {/if}
           <dl class="truncate [&>dt]:truncate">
             <dt class="body-15-b">
