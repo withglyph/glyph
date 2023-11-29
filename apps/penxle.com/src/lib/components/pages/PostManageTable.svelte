@@ -225,10 +225,10 @@
     <TableHead class="w-2.5rem">
       <Checkbox class="gap-3" on:change={handleSelectAllPost} />
     </TableHead>
-    <TableHead>포스트</TableHead>
+    <TableHead class="<sm:p-l-0.25rem">포스트</TableHead>
     <TableHead class="<sm:hidden">작성자</TableHead>
     <TableHead class="min-w-10rem <sm:hidden">태그</TableHead>
-    <TableHead class="<sm:(text-right p-r-1.3rem)">공개옵션</TableHead>
+    <TableHead class="<sm:(p-r-1.3rem w-5.25rem)">공개옵션</TableHead>
     <TableHead class="<sm:hidden">관리</TableHead>
     <!-- 모바일 화면 너비에서 마지막에 빈 테이블 헤드 요소가 없으면 테이블 헤더 오른쪽이 잘리는 문제가 있어서 추가했습니다. -->
     <TableHead class="w-0" />
@@ -238,10 +238,10 @@
       class="rounded-2 [&[aria-selected='true']]:bg-primary border-solid border-b border-alphagray-10 last:border-b-0 [&>td>div]:(items-center <sm:justify-end)"
       aria-selected={selectedPostIds.has('post.id')}
     >
-      <TableData>
+      <TableData class="p-r-none!">
         <Checkbox checked={selectedPostIds.has(post.id)} value={post.id} on:change={handleSelectPost} />
       </TableData>
-      <TableData class="p-l-none!">
+      <TableData>
         <a
           class="flex justify-start gap-xs"
           href={`/${post.space.slug}/${post.permalink}`}
