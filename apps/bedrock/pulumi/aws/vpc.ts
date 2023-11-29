@@ -117,6 +117,7 @@ const tailnetSecurityGroup = new aws.ec2.SecurityGroup('tailnet', {
   description: 'Connection from Tailscale VPN',
   vpcId: vpc.id,
 
+  ingress: [{ protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
   egress: [{ protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
 
   tags: { Name: 'tailnet' },

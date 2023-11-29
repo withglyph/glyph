@@ -25,8 +25,10 @@ new aws.ec2.Instance('tailnet-vpc-router', {
 
   instanceType: 't4g.nano',
 
-  subnetId: subnets.private.az1.id,
+  subnetId: subnets.public.az1.id,
   vpcSecurityGroupIds: [securityGroups.tailnet.id],
+
+  sourceDestCheck: false,
 
   userDataReplaceOnChange: true,
   userData: pulumi.interpolate`
