@@ -18,4 +18,20 @@ const site = new penxle.Site('penxle.io', {
   },
 });
 
+if (pulumi.getStack() === 'prod') {
+  new penxle.Redirect('www.penxle.io', {
+    name: 'www-penxle-io',
+
+    from: {
+      host: 'www.penxle.io',
+    },
+
+    to: {
+      host: 'penxle.io',
+    },
+
+    code: 301,
+  });
+}
+
 export const SITE_URL = site.url;

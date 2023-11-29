@@ -44,4 +44,35 @@ const site = new penxle.Site('penxle.com', {
   },
 });
 
+if (pulumi.getStack() === 'prod') {
+  new penxle.Redirect('www.penxle.com', {
+    name: 'www-penxle-com',
+
+    from: {
+      host: 'www.penxle.com',
+    },
+
+    to: {
+      host: 'penxle.com',
+    },
+
+    code: 301,
+  });
+
+  new penxle.Redirect('pnxl.me', {
+    name: 'pnxl-me',
+
+    from: {
+      host: 'pnxl.me',
+    },
+
+    to: {
+      host: 'penxle.com',
+      path: '/s/#{path}',
+    },
+
+    code: 302,
+  });
+}
+
 export const SITE_URL = site.url;
