@@ -30,8 +30,13 @@ healthz.get('/healthz', async (_, { db }) => {
     redis: checkRedis(),
   });
 
-  return json({
-    '*': Object.values(result).every(Boolean),
-    ...result,
-  });
+  const every = Object.values(result).every(Boolean);
+
+  return json(
+    {
+      '*': every,
+      ...result,
+    },
+    { status: every ? 200 : 500 },
+  );
 });

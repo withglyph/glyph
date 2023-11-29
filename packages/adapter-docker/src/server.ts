@@ -17,6 +17,16 @@ export const serve = async ({ basePath, Server, manifest, prerendered }: CreateH
   const server = new Server(manifest);
   await server.init({ env: process.env as Record<string, string> });
 
+  const healthz = eventHandler(async (event) => {
+    if (event.path === '/healthz') {
+      setHeaders(event, {
+        'content-type': 'application/json',
+        'cache-control': 'public, max-age=0, must-revalidate',
+      });
+      return { '*': true };
+    }
+  });
+
   const assets = eventHandler(async (event) => {
     const pathname = event.path.slice(1);
 
@@ -70,6 +80,6 @@ export const serve = async ({ basePath, Server, manifest, prerendered }: CreateH
     await setResponse(event.node.res, response);
   });
 
-  const app = createApp().use([assets, prerender, sveltekit]);
+  const app = createApp().use([healthz, assets, prerender, sveltekit]);
   createServer(toNodeListener(app)).listen(3000);
 };

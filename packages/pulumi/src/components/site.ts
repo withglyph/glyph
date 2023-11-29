@@ -132,6 +132,18 @@ export class Site extends pulumi.ComponentResource {
                     requests: { cpu: args.resources.cpu },
                     limits: { memory: args.resources.memory },
                   },
+                  livenessProbe: {
+                    httpGet: { path: '/healthz', port: 3000 },
+                    initialDelaySeconds: 5,
+                    periodSeconds: 10,
+                    failureThreshold: 3,
+                  },
+                  readinessProbe: {
+                    httpGet: { path: '/api/healthz', port: 3000 },
+                    initialDelaySeconds: 10,
+                    periodSeconds: 20,
+                    failureThreshold: 3,
+                  },
                 },
               ],
             },
@@ -202,6 +214,7 @@ export class Site extends pulumi.ComponentResource {
             'alb.ingress.kubernetes.io/security-groups': 'internal, public-web',
             'alb.ingress.kubernetes.io/ssl-redirect': '443',
             ...(!isProd && { 'alb.ingress.kubernetes.io/group.name': 'penxle-preview' }),
+            'alb.ingress.kubernetes.io/healthcheck-path': '/api/healthz',
             // 'alb.ingress.kubernetes.io/actions.www-redirect': JSON.stringify({
             //   Type: 'redirect',
             //   RedirectConfig: { Host: 'staging2.penxle.com', Port: '443', Protocol: 'HTTPS', StatusCode: 'HTTP_302' },
