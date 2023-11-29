@@ -259,6 +259,7 @@ type Post {
   member: SpaceMember!
   option: PostOption!
   permalink: String!
+  purchasedAt: DateTime
   purchasedRevision: PostRevision!
   reactions: [PostReaction!]!
   revision: PostRevision!

@@ -215,6 +215,29 @@ builder.prismaObject('Post', {
     }),
 
     tags: t.relation('tags'),
+
+    purchasedAt: t.field({
+      type: 'DateTime',
+      nullable: true,
+      select: (_, context) => ({
+        purchases: context.session
+          ? {
+              where: {
+                userId: context.session?.userId,
+              },
+              take: 1,
+            }
+          : undefined,
+      }),
+
+      resolve: ({ purchases }, _, context) => {
+        if (!context.session) {
+          return null;
+        }
+
+        return purchases[0]?.createdAt ?? null;
+      },
+    }),
   }),
 });
 
