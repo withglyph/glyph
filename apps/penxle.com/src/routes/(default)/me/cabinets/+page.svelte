@@ -18,6 +18,11 @@
           id
         }
 
+        likedPosts {
+          id
+          ...Feed_post
+        }
+
         recentlyViewedPosts {
           id
           ...Feed_post
@@ -76,7 +81,15 @@
     </TabHead>
 
     <div class="sm:px-8">
-      <TabContentItem id={1} {activeTabValue}>좋아요</TabContentItem>
+      <TabContentItem id={1} {activeTabValue}>
+        <ul class="space-y-11.5">
+          {#each $query.me.likedPosts as post (post.id)}
+            <li>
+              <Feed $post={post} showSpaceInfo />
+            </li>
+          {/each}
+        </ul>
+      </TabContentItem>
       <TabContentItem id={2} {activeTabValue}>
         <ul class="space-y-11.5">
           {#each $query.me.recentlyViewedPosts as post (post.id)}
