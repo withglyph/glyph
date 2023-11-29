@@ -17,6 +17,7 @@
   import { TiptapBubbleMenu, TiptapRenderer } from '$lib/tiptap/components';
   import { calcurateReadingTime, createTiptapDocument, humanizeNumber } from '$lib/utils';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
+  import GalleryPost from './GalleryPost.svelte';
   import ShareContent from './ShareContent/ShareContent.svelte';
   import Toolbar from './Toolbar.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
@@ -119,6 +120,7 @@
 
       ...EmojiPicker_query
       ...Toolbar_query
+      ...SpacePostPage_GalleryPost_query
     }
   `);
 
@@ -293,10 +295,12 @@
                   <i class="i-px-heart square-3.75" />
                   {humanizeNumber($query.post.likeCount)}
                 </span>
-                <span class="flex items-center gap-1">
-                  <i class="i-lc-alarm-clock square-3.75" />
-                  {calcurateReadingTime($query.post.revision.characterCount)}분
-                </span>
+                {#if $query.post.revision.contentKind === 'ARTICLE'}
+                  <span class="flex items-center gap-1">
+                    <i class="i-lc-alarm-clock square-3.75" />
+                    {calcurateReadingTime($query.post.revision.characterCount)}분
+                  </span>
+                {/if}
               </div>
             </div>
           </div>
@@ -368,12 +372,16 @@
 
     {#if !$query.post.option.hasPassword || $query.post.space.meAsMember || $query.post.unlocked}
       <div class="relative">
-        <article
-          class={clsx(blurContent && 'filter-blur-4px bg-#f9f9f8 opacity-50 select-none', blurContentBoxHeight)}
-          aria-hidden={blurContent}
-        >
-          <TiptapRenderer class="bodylong-16-m" content={$query.post.revision.content} bind:editor />
-        </article>
+        {#if $query.post.revision.contentKind === 'ARTICLE'}
+          <article
+            class={clsx(blurContent && 'filter-blur-4px bg-#f9f9f8 opacity-50 select-none', blurContentBoxHeight)}
+            aria-hidden={blurContent}
+          >
+            <TiptapRenderer class="bodylong-16-m" content={$query.post.revision.content} bind:editor />
+          </article>
+        {:else}
+          <GalleryPost {$query} />
+        {/if}
 
         {#if editor}
           <TiptapBubbleMenu
@@ -573,8 +581,11 @@
   </div>
 </article>
 
+{#if $query.post.revision.contentKind === 'ARTICLE'}
+  <Toolbar {$query} {handleShare} />
+{/if}
+
 <LoginRequireModal bind:open={loginRequireOpen} />
-<Toolbar {$query} {handleShare} />
 <ShareContent
   spaceIcon={$query.post.space.icon}
   spaceName={$query.post.space.name}
