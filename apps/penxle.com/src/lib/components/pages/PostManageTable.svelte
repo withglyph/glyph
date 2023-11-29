@@ -2,7 +2,6 @@
   import { PostVisibility } from '@prisma/client';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
-  import Logo from '$assets/icons/logo.svg?component';
   import { fragment, graphql } from '$glitch';
   import { Avatar, Badge, Button, Image, Modal, Tag, Tooltip } from '$lib/components';
   import { Checkbox, Switch } from '$lib/components/forms';
@@ -250,9 +249,7 @@
           target="_blank"
         >
           {#if post.revision.thumbnail}
-            <Image class="square-2.625rem rounded-2 min-w-1rem" $image={post.revision.thumbnail.thumbnail} />
-          {:else}
-            <Logo class="square-2.625rem min-w-1rem" />
+            <Image class="square-2.625rem rounded-2" $image={post.revision.thumbnail.thumbnail} />
           {/if}
           <dl class="truncate [&>dt]:truncate">
             <dt class="body-15-b">
