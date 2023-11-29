@@ -2,7 +2,7 @@
   import clsx from 'clsx';
   import { fragment, graphql } from '$glitch';
   import EmojiPicker from '$lib/emoji/EmojiPicker.svelte';
-  import LoginRequireModal from '../../LoginRequireModal.svelte';
+  import LoginRequireModal from '../LoginRequireModal.svelte';
   import type { Toolbar_query } from '$glitch';
 
   let targetEl: HTMLDivElement;
