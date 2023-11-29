@@ -31,6 +31,11 @@
             slug
             name
             visibility
+
+            icon {
+              id
+              ...Image_image
+            }
           }
         }
 
@@ -110,10 +115,10 @@
   >
     <div class="space-y-3">
       {#each $query.me.spaces as space (space.id)}
-        <a class="p-1 flex gap-2 items-center" href={`/${space.slug}/dashboard`}>
-          <div class="bg-black square-10.5 rounded-lg" />
-          <div>
-            <p class="body-15-b mb-1">{space.name}</p>
+        <a class="p-1 flex gap-2 items-center rounded-xl hover:bg-primary" href={`/${space.slug}/dashboard`}>
+          <Image class="square-10.5 rounded-lg flex-none" $image={space.icon} />
+          <div class="truncate">
+            <p class="body-15-b mb-1 truncate">{space.name}</p>
             <div class="flex items-center gap-1 caption-12-m text-secondary">
               {#if space.visibility === 'PUBLIC'}
                 <span class="block square-1.25 rounded-full bg-green-50" />
