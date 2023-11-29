@@ -560,6 +560,7 @@ type User {
   email: String!
   followedSpaces: [Space!]!
   id: ID!
+  likedPosts: [Post!]!
   marketingConsent: UserMarketingConsent
   mutedSpaces: [Space!]!
   notificationPreferences: [UserNotificationPreference!]!

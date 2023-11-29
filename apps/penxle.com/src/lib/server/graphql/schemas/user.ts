@@ -175,6 +175,43 @@ builder.prismaObject('User', {
         orderBy: { createdAt: 'desc' },
       }),
     }),
+
+    likedPosts: t.prismaField({
+      type: ['Post'],
+      resolve: async (query, user, _, { db }) => {
+        const likes = await db.postLike.findMany({
+          select: { post: query },
+          where: {
+            userId: user.id,
+            post: {
+              state: 'PUBLISHED',
+              space: { state: 'ACTIVE' },
+              AND: [
+                {
+                  OR: [
+                    { option: { visibility: 'PUBLIC' } },
+                    { option: { visibility: 'UNLISTED' } },
+                    {
+                      option: { visibility: 'SPACE' },
+                      space: { members: { some: { userId: user.id } } },
+                    },
+                  ],
+                },
+                {
+                  OR: [
+                    { space: { visibility: 'PUBLIC' } },
+                    { space: { visibility: 'PRIVATE', members: { some: { userId: user.id } } } },
+                  ],
+                },
+              ],
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        });
+
+        return likes.map(({ post }) => post);
+      },
+    }),
   }),
 });
 
