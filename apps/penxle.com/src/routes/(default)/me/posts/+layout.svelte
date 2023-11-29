@@ -20,7 +20,7 @@
   });
 </script>
 
-<section class="flex flex-col gap-4 px-6 py-8 rounded-xl bg-white border border-secondary">
+<section class="flex flex-col gap-4 px-6 py-8 <sm:(m-x-5 m-y-4) rounded-xl bg-white border border-secondary">
   <h1 class="title-20-eb">
     포스트 <span class="text-secondary m-l-0.25rem">{$query.me.posts.length}</span>
   </h1>
