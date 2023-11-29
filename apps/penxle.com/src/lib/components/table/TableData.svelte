@@ -5,6 +5,6 @@
   export { _class as class };
 </script>
 
-<td class={clsx('py-4 border-t first-of-type:pl-4 last-of-type:pr-4 truncate whitespace-nowrap', _class)}>
+<td class={clsx('py-4 border-t pl-4 last-of-type:pr-4 truncate whitespace-nowrap', _class)}>
   <slot />
 </td>
