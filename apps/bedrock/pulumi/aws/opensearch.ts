@@ -33,7 +33,30 @@ const domain = new aws.opensearch.Domain('penxle', {
     customEndpointEnabled: true,
     customEndpoint: 'search.pnxl.co',
     customEndpointCertificateArn: certificates.pnxl_co.arn,
+    enforceHttps: true,
   },
+
+  encryptAtRest: { enabled: true },
+  nodeToNodeEncryption: { enabled: true },
+});
+
+new aws.opensearch.DomainPolicy('penxle', {
+  domainName: domain.domainName,
+  accessPolicies: domain.arn.apply((arn) =>
+    JSON.stringify({
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Effect: 'Allow',
+          Principal: {
+            AWS: '*',
+          },
+          Action: ['es:*'],
+          Resource: `${arn}/*`,
+        },
+      ],
+    }),
+  ),
 });
 
 export const opensearch = {
