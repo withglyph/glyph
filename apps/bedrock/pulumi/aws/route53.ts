@@ -3,6 +3,7 @@
 import * as aws from '@pulumi/aws';
 import { distributions } from '$aws/cloudfront';
 import { elasticache } from '$aws/elasticache';
+import { opensearch } from '$aws/opensearch';
 import { rds } from '$aws/rds';
 
 const createZone = (domain: string) => {
@@ -105,6 +106,14 @@ new aws.route53.Record('redis.pnxl.co', {
   type: 'CNAME',
   name: 'redis.pnxl.co',
   records: [elasticache.cluster.primaryEndpointAddress],
+  ttl: 300,
+});
+
+new aws.route53.Record('search.pnxl.co', {
+  zoneId: zones.pnxl_co.zoneId,
+  type: 'CNAME',
+  name: 'search.pnxl.co',
+  records: [opensearch.domain.endpoint],
   ttl: 300,
 });
 
