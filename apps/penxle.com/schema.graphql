@@ -388,6 +388,10 @@ type Query {
   provisionedUser(token: String!): ProvisionedUser!
   randomAvatars: [String!]!
   randomIcons: [String!]!
+  recentlyCreatedTags: [Tag!]!
+  recentlyPublishedSpaces: [Space!]!
+  recentlyPurchasedPosts: [Post!]!
+  recentlyUsedTags: [Tag!]!
   recommendFeed(dateBefore: String): [Post!]!
   sampleImage: Image!
   sampleImages: [Image!]!

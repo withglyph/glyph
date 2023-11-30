@@ -425,6 +425,7 @@ model Tag {
   followers TagFollow[]
   // spacesUsingThis SpaceTag[]
 
+  @@index(createdAt)
   @@map("tags")
 }
 

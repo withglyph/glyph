@@ -128,4 +128,115 @@ builder.queryFields((t) => ({
       });
     },
   }),
+
+  recentlyCreatedTags: t.prismaField({
+    type: ['Tag'],
+    resolve: async (query, _, __, { db, ...context }) => {
+      return db.tag.findMany({
+        ...query,
+        where: {
+          userMutes: context.session ? { none: { userId: context.session.userId } } : undefined,
+        },
+
+        orderBy: { createdAt: 'desc' },
+        take: 20,
+      });
+    },
+  }),
+
+  recentlyUsedTags: t.prismaField({
+    type: ['Tag'],
+    resolve: async (query, _, __, { db, ...context }) => {
+      const postTags = await db.postTag.findMany({
+        select: { tag: query },
+        where: {
+          tag: context.session
+            ? {
+                userMutes: { none: { userId: context.session.userId } },
+              }
+            : undefined,
+        },
+
+        distinct: ['tagId'],
+        orderBy: { createdAt: 'desc' },
+        take: 20,
+      });
+
+      return postTags.map(({ tag }) => tag);
+    },
+  }),
+
+  recentlyPurchasedPosts: t.prismaField({
+    type: ['Post'],
+    resolve: async (query, _, __, { db, ...context }) => {
+      const postPurchases = await db.postPurchase.findMany({
+        select: { post: query },
+        where: {
+          post: {
+            state: 'PUBLISHED',
+            option: { visibility: 'PUBLIC', password: null },
+            space: {
+              state: 'ACTIVE',
+              userMutes: context.session
+                ? {
+                    none: { userId: context.session.userId },
+                  }
+                : undefined,
+            },
+            tags: context.session
+              ? {
+                  none: {
+                    tag: {
+                      userMutes: { some: { userId: context.session.userId } },
+                    },
+                  },
+                }
+              : undefined,
+          },
+        },
+
+        distinct: ['postId'],
+        orderBy: { createdAt: 'desc' },
+        take: 10,
+      });
+
+      return postPurchases.map(({ post }) => post);
+    },
+  }),
+
+  recentlyPublishedSpaces: t.prismaField({
+    type: ['Space'],
+    resolve: async (query, _, __, { db, ...context }) => {
+      const posts = await db.post.findMany({
+        select: { space: query },
+        where: {
+          state: 'PUBLISHED',
+          option: { visibility: 'PUBLIC', password: null },
+          space: {
+            state: 'ACTIVE',
+            userMutes: context.session
+              ? {
+                  none: { userId: context.session.userId },
+                }
+              : undefined,
+          },
+          tags: context.session
+            ? {
+                none: {
+                  tag: {
+                    userMutes: { some: { userId: context.session.userId } },
+                  },
+                },
+              }
+            : undefined,
+        },
+
+        take: 5,
+        distinct: ['spaceId'],
+        orderBy: { createdAt: 'desc' },
+      });
+
+      return posts.map(({ space }) => space);
+    },
+  }),
 }));
