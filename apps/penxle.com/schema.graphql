@@ -104,6 +104,10 @@ input FollowSpaceInput {
   spaceId: ID!
 }
 
+input FollowTagInput {
+  tagId: ID!
+}
+
 input IgnoreSpaceMemberInvitationInput {
   invitationId: ID!
 }
@@ -164,6 +168,7 @@ type Mutation {
   finalizeFileUpload(input: FinalizeFileUploadInput!): File!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   followSpace(input: FollowSpaceInput!): Space!
+  followTag(input: FollowTagInput!): Tag!
   ignoreSpaceMemberInvitation(input: IgnoreSpaceMemberInvitationInput!): SpaceMemberInvitation!
   issueUserEmailAuthorizationUrl(input: IssueUserEmailAuthorizationUrlInput!): IssueUserEmailAuthorizationUrlResult!
   issueUserSingleSignOnAuthorizationUrl(input: IssueUserSingleSignOnAuthorizationUrlInput!): IssueUserSingleSignOnAuthorizationUrlResult!
@@ -180,6 +185,7 @@ type Mutation {
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
   revisePost(input: RevisePostInput!): Post!
   unfollowSpace(input: UnfollowSpaceInput!): Space!
+  unfollowTag(input: UnfollowTagInput!): Tag!
   unlikePost(input: UnlikePostInput!): Post!
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
   unlockPasswordedPost(input: UnlockPasswordedPostInput!): Post!
@@ -479,6 +485,10 @@ input UnfollowSpaceInput {
   spaceId: ID!
 }
 
+input UnfollowTagInput {
+  tagId: ID!
+}
+
 input UnlikePostInput {
   postId: ID!
 }
@@ -561,10 +571,12 @@ type User {
   contentFilterPreferences: [UserContentFilterPreference!]!
   email: String!
   followedSpaces: [Space!]!
+  followedTags: [Tag!]!
   id: ID!
   likedPosts: [Post!]!
   marketingConsent: UserMarketingConsent
   mutedSpaces: [Space!]!
+  mutedTags: [Tag!]!
   notificationPreferences: [UserNotificationPreference!]!
   point: Int!
   posts(state: PostState! = PUBLISHED): [Post!]!

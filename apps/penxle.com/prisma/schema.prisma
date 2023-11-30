@@ -422,9 +422,22 @@ model Tag {
   children  TagHierarchy[] @relation("children")
   userMutes UserTagMute[]
   posts     PostTag[]
+  followers TagFollow[]
   // spacesUsingThis SpaceTag[]
 
   @@map("tags")
+}
+
+model TagFollow {
+  id        String   @id
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  tagId     String   @map("tag_id")
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([userId, tagId])
+  @@map("tag_follows")
 }
 
 model TagHierarchy {
@@ -489,6 +502,7 @@ model User {
   posts                          Post[]
   mutedSpaces                    UserSpaceMute[]
   postPurchases                  PostPurchase[]
+  followedTags                   TagFollow[]
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]

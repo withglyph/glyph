@@ -37,6 +37,18 @@ const UnmuteTagInput = builder.inputType('UnmuteTagInput', {
   }),
 });
 
+const FollowTagInput = builder.inputType('FollowTagInput', {
+  fields: (t) => ({
+    tagId: t.id(),
+  }),
+});
+
+const UnfollowTagInput = builder.inputType('UnfollowTagInput', {
+  fields: (t) => ({
+    tagId: t.id(),
+  }),
+});
+
 // const SetPostTagsInput = builder.inputType('SetPostTagsInput', {
 //   fields: (t) => ({
 //     postId: t.id(),
@@ -83,7 +95,7 @@ builder.mutationFields((t) => ({
     resolve: async (query, _, { input }, { db, ...context }) => {
       const tag = await db.tag.findUniqueOrThrow({
         ...query,
-        where: { name: input.tagId },
+        where: { id: input.tagId },
       });
 
       await db.userTagMute.deleteMany({
@@ -94,6 +106,50 @@ builder.mutationFields((t) => ({
       });
 
       return tag;
+    },
+  }),
+
+  followTag: t.withAuth({ user: true }).prismaField({
+    type: 'Tag',
+    args: { input: t.arg({ type: FollowTagInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      await db.tagFollow.upsert({
+        where: {
+          userId_tagId: {
+            userId: context.session.userId,
+            tagId: input.tagId,
+          },
+        },
+        create: {
+          id: createId(),
+          userId: context.session.userId,
+          tagId: input.tagId,
+        },
+        update: {},
+      });
+
+      return db.tag.findUniqueOrThrow({
+        ...query,
+        where: { id: input.tagId },
+      });
+    },
+  }),
+
+  unfollowTag: t.withAuth({ user: true }).prismaField({
+    type: 'Tag',
+    args: { input: t.arg({ type: UnfollowTagInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      await db.tagFollow.deleteMany({
+        where: {
+          userId: context.session.userId,
+          tagId: input.tagId,
+        },
+      });
+
+      return db.tag.findUniqueOrThrow({
+        ...query,
+        where: { id: input.tagId },
+      });
     },
   }),
 

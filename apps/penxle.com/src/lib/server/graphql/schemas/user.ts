@@ -132,6 +132,16 @@ builder.prismaObject('User', {
       resolve: (_, { mutedSpaces }) => mutedSpaces.map(({ space }) => space),
     }),
 
+    mutedTags: t.prismaField({
+      type: ['Tag'],
+      select: (_, __, nestedSelection) => ({
+        tagMutes: {
+          select: { tag: nestedSelection() },
+        },
+      }),
+      resolve: (_, { tagMutes }) => tagMutes.map(({ tag }) => tag),
+    }),
+
     recentlyViewedPosts: t.prismaField({
       type: ['Post'],
       resolve: async (query, user, _, { db }) => {
@@ -222,6 +232,17 @@ builder.prismaObject('User', {
         },
       }),
       resolve: (_, { postPurchases }) => postPurchases.map(({ post }) => post),
+    }),
+
+    followedTags: t.prismaField({
+      type: ['Tag'],
+      select: (_, __, nestedSelection) => ({
+        followedTags: {
+          select: { tag: nestedSelection() },
+        },
+      }),
+
+      resolve: (_, { followedTags }) => followedTags.map(({ tag }) => tag),
     }),
   }),
 });
