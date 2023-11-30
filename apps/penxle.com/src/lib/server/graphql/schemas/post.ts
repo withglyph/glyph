@@ -31,16 +31,16 @@ import type { ImageBounds } from '$lib/utils';
 builder.prismaObject('Post', {
   select: { id: true, userId: true, spaceId: true, state: true },
   grantScopes: async (post, { db, ...context }) => {
+    if (context.session?.userId === post.userId) {
+      return ['$post:view', '$post:edit'];
+    }
+
     if (post.state !== 'PUBLISHED') {
       return [];
     }
 
     if (!context.session) {
       return ['$post:view'];
-    }
-
-    if (context.session.userId === post.userId) {
-      return ['$post:view', '$post:edit'];
     }
 
     const member = await db.spaceMember.findUnique({
