@@ -20,7 +20,7 @@ const lambda = new aws.lambda.Function('literoom', {
   role: role.arn,
 
   runtime: 'nodejs18.x',
-  architectures: ['arm64'],
+  architectures: ['x86_64'],
 
   memorySize: 10_240,
   timeout: 900,

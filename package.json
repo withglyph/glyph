@@ -26,9 +26,9 @@
     "lint-staged": "^15.1.0",
     "prettier": "^3.1.0",
     "syncpack": "^11.2.1",
-    "tsx": "^4.1.4",
+    "tsx": "^4.6.1",
     "turbo": "^1.10.16",
-    "typescript": "^5.2.2"
+    "typescript": "^5.3.2"
   },
   "engines": {
     "node": "^18 || ^20",
@@ -40,16 +40,11 @@
       "@babel/plugin-proposal-object-rest-spread": "*",
       "@opentelemetry/api-metrics": "*",
       "debuglog": "*",
-      "querystring": "*",
-      "readdir-scoped-modules": "*",
       "read-package-tree": "*",
-      "uuid": "*",
-      "vm2": "*"
+      "readdir-scoped-modules": "*"
     },
-    "peerDependencyRules": {
-      "allowedVersions": {
-        "@graphql-codegen/typescript-urql-graphcache>@urql/exchange-graphcache": "*"
-      }
+    "patchedDependencies": {
+      "@vercel/nft@0.24.3": "patches/@vercel__nft@0.24.3.patch"
     }
   }
 }

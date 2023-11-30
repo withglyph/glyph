@@ -44,7 +44,7 @@ const lambda = new aws.lambda.Function('github-app', {
   role: role.arn,
 
   runtime: 'nodejs18.x',
-  architectures: ['arm64'],
+  architectures: ['x86_64'],
 
   memorySize: 512,
   timeout: 900,

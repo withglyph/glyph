@@ -12,12 +12,12 @@
   },
   "dependencies": {
     "@opentelemetry/instrumentation": "^0.45.1",
-    "dd-trace": "^4.19.0"
+    "dd-trace": "^4.20.0"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "@types/node": "^20.9.2",
-    "tsup": "^8.0.0",
-    "typescript": "^5.2.2"
+    "@types/node": "^20.10.1",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.2"
   }
 }
