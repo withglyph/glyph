@@ -1,6 +1,6 @@
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
-import { securityGroups, subnets, vpc } from '$aws/vpc';
+import { securityGroups, subnets } from '$aws/vpc';
 
 const domain = new aws.opensearch.Domain('penxle', {
   engineVersion: 'OpenSearch_2.11',
@@ -18,9 +18,8 @@ const domain = new aws.opensearch.Domain('penxle', {
   },
 
   vpcOptions: {
-    vpcId: vpc.id,
+    subnetIds: [subnets.private.az1.id],
     securityGroupIds: [securityGroups.internal.id],
-    subnetIds: [subnets.private.az1.id, subnets.private.az2.id],
   },
 
   offPeakWindowOptions: {
