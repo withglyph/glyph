@@ -1,6 +1,7 @@
 <script lang="ts">
   import clsx from 'clsx';
   import { fragment, graphql } from '$glitch';
+  import { Tooltip } from '$lib/components';
   import EmojiPicker from '$lib/emoji/EmojiPicker.svelte';
   import LoginRequireModal from '../LoginRequireModal.svelte';
   import type { Toolbar_query } from '$glitch';
@@ -144,7 +145,13 @@
           </ul>
         {/if}
 
-        <EmojiPicker {$query} disabled={!$query.post.option.receiveFeedback} variant="toolbar" />
+        <Tooltip
+          enabled={!$query.post.option.receiveFeedback}
+          message="피드백 받기를 설정하지 않은 포스트에요"
+          placement="top"
+        >
+          <EmojiPicker {$query} disabled={!$query.post.option.receiveFeedback} variant="toolbar" />
+        </Tooltip>
       </div>
 
       <button class="flex center" type="button">

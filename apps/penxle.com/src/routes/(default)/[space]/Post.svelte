@@ -5,7 +5,7 @@
   import dayjs from 'dayjs';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
-  import { Avatar, Button, Image, Tag } from '$lib/components';
+  import { Avatar, Button, Image, Tag, Tooltip } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import Modal from '$lib/components/Modal.svelte';
   import { EmojiPicker } from '$lib/emoji';
@@ -499,7 +499,13 @@
           <i class="i-lc-smile-plus square-3.5" />
         </button>
       {:else}
-        <EmojiPicker {$query} disabled={!$query.post.option.receiveFeedback} />
+        <Tooltip
+          enabled={!$query.post.option.receiveFeedback}
+          message="피드백 받기를 설정하지 않은 포스트에요"
+          placement="top"
+        >
+          <EmojiPicker {$query} disabled={!$query.post.option.receiveFeedback} />
+        </Tooltip>
       {/if}
 
       {#each $query.post.reactions.slice(0, 30) as reaction (reaction.id)}
