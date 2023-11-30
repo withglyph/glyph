@@ -388,9 +388,12 @@ type Query {
   provisionedUser(token: String!): ProvisionedUser!
   randomAvatars: [String!]!
   randomIcons: [String!]!
+  recommendFeed(dateBefore: String): [Post!]!
   sampleImage: Image!
   sampleImages: [Image!]!
   space(slug: String!): Space!
+  spaceFeed(dateBefore: String): [Post!]!
+  tagFeed(dateBefore: String): [Post!]!
 }
 
 input RemoveSpaceMemberInput {

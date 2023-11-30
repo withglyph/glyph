@@ -1,4 +1,5 @@
 import './enums';
+import './feed';
 import './file';
 import './image';
 import './internal';
