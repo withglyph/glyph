@@ -213,10 +213,6 @@ export class Site extends pulumi.ComponentResource {
             'alb.ingress.kubernetes.io/listen-ports': JSON.stringify([{ HTTPS: 443 }]),
             'alb.ingress.kubernetes.io/healthcheck-path': '/api/healthz',
             'pulumi.com/skipAwait': 'true',
-            // 'alb.ingress.kubernetes.io/actions.www-redirect': JSON.stringify({
-            //   Type: 'redirect',
-            //   RedirectConfig: { Host: 'staging2.penxle.com', Port: '443', Protocol: 'HTTPS', StatusCode: 'HTTP_302' },
-            // }),
           },
         },
         spec: {
@@ -239,23 +235,6 @@ export class Site extends pulumi.ComponentResource {
                 ],
               },
             },
-            // {
-            //   host: 'staging2.pnxl.co',
-            //   http: {
-            //     paths: [
-            //       {
-            //         path: '/',
-            //         pathType: 'Prefix',
-            //         backend: {
-            //           service: {
-            //             name: 'www-redirect',
-            //             port: { name: 'use-annotation' },
-            //           },
-            //         },
-            //       },
-            //     ],
-            //   },
-            // },
           ],
         },
       },

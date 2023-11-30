@@ -3,12 +3,13 @@ import * as pulumi from '@pulumi/pulumi';
 import * as tls from '@pulumi/tls';
 import { securityGroups, subnets, vpc } from '$aws/vpc';
 import { tailnet } from '$tailscale/key';
+import { zones } from './route53';
 
 const privateKey = new tls.PrivateKey('penxle@ec2/key-pair', {
   algorithm: 'ED25519',
 });
 
-new aws.ec2.KeyPair('penxle', {
+const keypair = new aws.ec2.KeyPair('penxle', {
   keyName: 'penxle',
   publicKey: privateKey.publicKeyOpenssh,
 });
@@ -44,6 +45,42 @@ runcmd:
 `.apply((v) => v.trim()),
 
   tags: { Name: 'tailnet-vpc-router' },
+});
+
+const pgbouncer = new aws.ec2.Instance('pgbouncer', {
+  ami: aws.ec2.getAmiOutput({
+    owners: ['amazon'],
+    filters: [
+      { name: 'name', values: ['al2023-ami-minimal-*'] },
+      { name: 'architecture', values: ['arm64'] },
+    ],
+    mostRecent: true,
+  }).id,
+
+  instanceType: 'c7g.large',
+
+  subnetId: subnets.private.az1.id,
+  vpcSecurityGroupIds: [securityGroups.internal.id],
+
+  sourceDestCheck: false,
+
+  keyName: keypair.keyName,
+  userDataReplaceOnChange: true,
+  userData: pulumi.interpolate`
+#cloud-config
+runcmd:
+  - [ hostnamectl, hostname, pgbouncer ]
+`.apply((v) => v.trim()),
+
+  tags: { Name: 'pgbouncer' },
+});
+
+new aws.route53.Record('pool.db.pnxl.co', {
+  zoneId: zones.pnxl_co.zoneId,
+  name: 'pool.db.pnxl.co',
+  type: 'A',
+  records: [pgbouncer.privateIp],
+  ttl: 300,
 });
 
 export const outputs = {
