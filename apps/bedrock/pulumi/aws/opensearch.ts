@@ -59,6 +59,11 @@ new aws.opensearch.DomainPolicy('penxle', {
   ),
 });
 
+new aws.opensearch.PackageAssociation('analysis-nori@penxle', {
+  domainName: domain.domainName,
+  packageId: 'G248827013',
+});
+
 export const opensearch = {
   domain,
 };
