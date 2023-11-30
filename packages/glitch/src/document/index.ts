@@ -1,3 +1,5 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import graphql from 'graphql';
 import { collectArtifactSources } from './artifact';
 import { hash } from './hash';
@@ -38,7 +40,23 @@ export const collectDocuments = async (context: GlitchContext) => {
     schemaRefreshed = true;
   }
 
-  const artifactHashes = artifactSources.map(({ filePath, source }) => hash(filePath + source));
+  const artifactHashes = artifactSources.map(({ filePath, source }) => hash(filePath + source)).sort((a, b) => a - b);
+
+  const totalHash = hash(schemaHash + artifactHashes.join(''));
+  try {
+    const fsHash = await fs.readFile(path.join(context.codegenRoot, '.hash'), 'utf8');
+    if (String(totalHash) === fsHash) {
+      return {
+        success: true,
+        refreshed: false,
+      };
+    }
+  } catch {
+    // noop
+  } finally {
+    await fs.mkdir(context.codegenRoot, { recursive: true });
+    await fs.writeFile(path.join(context.codegenRoot, '.hash'), String(totalHash));
+  }
 
   const removedArtifactNames: string[] = [];
   const addedArtifactNames: string[] = [];
