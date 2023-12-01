@@ -323,10 +323,10 @@
           <button class="i-lc-share square-6" type="button" on:click={handleShare} />
 
           {#if preview}
-            <button class="i-lc-more-vertical square-6 text-icon-secondary" type="button" />
+            <button class="i-lc-more-vertical square-6 text-icon-primary" type="button" />
           {:else}
             <Menu>
-              <span slot="value" class="i-lc-more-vertical square-6 text-icon-secondary" />
+              <span slot="value" class="i-lc-more-vertical square-6 text-icon-primary" />
               {#if !$query.post.space.meAsMember}
                 {#if $query.post.space.muted}
                   <MenuItem
