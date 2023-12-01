@@ -7,19 +7,24 @@
   import type { Placement } from '@floating-ui/dom';
 
   let open = false;
-  let targetEl: HTMLButtonElement;
+  let targetEl: HTMLElement;
   let menuEl: HTMLDivElement;
   let _class: string | undefined = undefined;
   let _offset: number | undefined = undefined;
 
   export { _class as class };
   export { _offset as offset };
+
+  export let as: 'button' | 'div' = 'button';
+
   export let placement: Placement = 'bottom-end';
 
   export let alignment: 'horizontal' | 'vertical' = 'vertical';
 
   export let preventClose = false;
   export let disabled = false;
+
+  let props = as === 'button' ? { type: 'button', disabled } : { tabindex: -1 };
 
   setContext('close', preventClose ? undefined : () => (open = false));
 
@@ -45,11 +50,24 @@
   afterNavigate(() => {
     open = false;
   });
+
+  function toggleOpen() {
+    open = !open;
+  }
 </script>
 
-<button bind:this={targetEl} class={clsx('contents', _class)} {disabled} type="button" on:click={() => (open = !open)}>
+<!-- eslint-disable-next-line svelte/valid-compile -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<svelte:element
+  this={as}
+  bind:this={targetEl}
+  class={_class}
+  on:click={toggleOpen}
+  on:keypress={as === 'div' ? toggleOpen : null}
+  {...props}
+>
   <slot name="value" />
-</button>
+</svelte:element>
 
 {#if open}
   <div

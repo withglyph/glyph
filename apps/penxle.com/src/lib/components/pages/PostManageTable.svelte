@@ -365,13 +365,13 @@
   </span>
   {#if selectedOwnPosts || $spaceMember?.role === 'ADMIN'}
     <div class="flex gap-4 <sm:(flex-col [&>*]:w-full)">
-      <Menu offset={16} placement="top">
+      <Menu as="div" offset={16} placement="top">
         <Button slot="value" color="secondary" size="md">공개범위 설정</Button>
         <MenuItem on:click={() => updateVisibilities('PUBLIC')}>전체 공개</MenuItem>
         <MenuItem on:click={() => updateVisibilities('UNLISTED')}>링크 공개</MenuItem>
         <MenuItem on:click={() => updateVisibilities('SPACE')}>멤버 공개</MenuItem>
       </Menu>
-      <Menu offset={16} placement="top">
+      <Menu as="div" offset={16} placement="top">
         <Button slot="value" color="secondary" size="md">포스트 옵션 설정</Button>
         <MenuItem type="div">
           <Switch

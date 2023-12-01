@@ -47,7 +47,7 @@
 </script>
 
 <TiptapFloatingMenu {editor}>
-  <Menu offset={16} placement="left-start">
+  <Menu as="div" offset={16} placement="left-start">
     <Button slot="value" class="rounded-full! p-2! bg-white" color="tertiary" size="lg" variant="outlined">
       <i class="i-lc-plus square-5" />
     </Button>

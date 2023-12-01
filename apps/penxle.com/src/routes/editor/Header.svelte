@@ -697,10 +697,8 @@
     </div>
 
     {#if selectedSpace && permalink}
-      <Menu placement="bottom-end">
-        <button slot="value" class="square-10 p-3 flex center" type="button">
-          <i class="i-lc-more-vertical square-6" />
-        </button>
+      <Menu class="p-3 flex center" placement="bottom-end">
+        <i slot="value" class="i-lc-more-vertical square-6" />
 
         <MenuItem>저장이력</MenuItem>
         <MenuItem external href={`/${selectedSpace.slug}/preview/${permalink}`} type="link">미리보기</MenuItem>

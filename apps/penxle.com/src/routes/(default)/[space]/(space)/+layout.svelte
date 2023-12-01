@@ -190,14 +190,10 @@
           <span class="i-lc-settings square-6 text-secondary" />
         </a>
         {#if $query.space.meAsMember.role === 'ADMIN'}
-          <Menu>
-            <button
-              slot="value"
-              class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
-              type="button"
-            >
-              <span class="i-lc-more-vertical square-6 text-secondary" />
-            </button>
+          <Menu
+            class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
+          >
+            <span slot="value" class="i-lc-more-vertical square-6 text-secondary" />
 
             <MenuItem
               on:click={async () => {
@@ -265,14 +261,10 @@
           <span class="i-lc-share mr-2" />
           공유하기
         </Button>
-        <Menu>
-          <button
-            slot="value"
-            class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
-            type="button"
-          >
-            <span class="i-lc-more-vertical square-6 text-secondary" />
-          </button>
+        <Menu
+          class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
+        >
+          <span slot="value" class="i-lc-more-vertical square-6 text-secondary" />
 
           {#if $query.space.muted}
             <MenuItem
