@@ -158,7 +158,7 @@
       {offset}
       placement="bottom-start"
     >
-      <i class={clsx(toggledFormat.alignment.class, 'square-1rem')} />
+      <i slot="value" class={clsx(toggledFormat.alignment.class, 'square-1rem')} />
 
       {#each alignments as alignment (alignment.value)}
         <button
