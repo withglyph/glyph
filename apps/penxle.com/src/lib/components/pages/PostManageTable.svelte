@@ -296,15 +296,15 @@
       <TableData class="overflow-visible!">
         <div class="flex gap-0.125rem">
           <Menu
-            class="flex items-center body-13-b [&>i]:text-icon-secondary disabled:[&>i.i-lc-chevron-down]:hidden "
+            class="disabled:[&>i.i-lc-chevron-down]:hidden "
             disabled={!hasPermissionToUpdatePost(post.member.id)}
             placement="bottom-end"
           >
-            <svelte:fragment slot="value">
+            <span slot="value" class="flex items-center body-13-b [&>i]:text-icon-secondary">
               <i class={clsx(visibilityToIcon[post.option.visibility], 'square-4 m-r-0.15rem')} />
               {visibilityToLocaleString[post.option.visibility]}
               <i class="i-lc-chevron-down square-4" />
-            </svelte:fragment>
+            </span>
 
             {#each visibilityOptions as visibilityOption (visibilityOption.value)}
               <MenuItem
