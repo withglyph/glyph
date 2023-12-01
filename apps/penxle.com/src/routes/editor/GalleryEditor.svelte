@@ -5,8 +5,8 @@
   import { createEventDispatcher, onDestroy, onMount } from 'svelte';
   import Cutting from '$assets/icons/cutting.svg?component';
   import { graphql } from '$glitch';
-  import { Button, Image, Modal } from '$lib/components';
-  import Thumbnailer from '$lib/components/media/Thumbnailer.svelte';
+  import { Button, Image } from '$lib/components';
+  import { ThumbnailPicker } from '$lib/components/media';
   import { portal } from '$lib/svelte/actions';
   import { trackable } from '$lib/svelte/store';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
@@ -24,15 +24,13 @@
     };
   };
 
-  export let open = false;
   export let thumbnailBounds: ImageBounds | undefined = undefined;
   export let thumbnailId: string | undefined = undefined;
   export let content: JSONContent | undefined;
 
-  let boundsDraft = thumbnailBounds;
+  let thumbnailPicker: ThumbnailPicker;
   let previewOpen = false;
   let preview: Image_image | null = null;
-  let thumbnailUrl: string;
   let changeIndex = -1;
   let price = 0;
   let description: JSONContent | undefined = undefined;
@@ -70,7 +68,6 @@
 
       if (thumbnail) {
         thumbnailId = thumbnail.id;
-        thumbnailUrl = thumbnail.url;
         thumbnailBounds = {
           left: 0,
           top: 0,
@@ -282,9 +279,18 @@
                     class="h-9 w-33.5 body-14-b text-center bg-alphagray-50 rounded-2.5 text-darkprimary"
                     type="button"
                     on:click={() => {
-                      open = true;
                       thumbnailId = node.attrs?.__data.id;
-                      thumbnailUrl = node.attrs?.__data.url;
+
+                      // Hack: node.attrs.__data 내 url 프로퍼티를 타입 안전하게 참조하기 위해 타입 가드를 추가했습니다.
+                      if (
+                        !node.attrs ||
+                        !('__data' in node.attrs) ||
+                        !('url' in node.attrs.__data) ||
+                        typeof node.attrs.__data.url !== 'string'
+                      )
+                        throw new Error('node.attrs.__data 내 url 프로퍼티 참조에 실패했어요');
+
+                      thumbnailPicker.show(node.attrs.__data.url);
                     }}
                   >
                     대표사진 설정
@@ -442,18 +448,7 @@
   </div>
 {/if}
 
-<Modal size="md" bind:open>
-  <svelte:fragment slot="title">대표이미지 설정</svelte:fragment>
-  <form
-    on:submit|preventDefault={() => {
-      thumbnailBounds = boundsDraft;
-      open = false;
-    }}
-  >
-    {#if thumbnailId}
-      <Thumbnailer class="w-full" src={thumbnailUrl} bind:bounds={boundsDraft} />
-
-      <Button class="w-full mt-4" size="xl" type="submit">자르기</Button>
-    {/if}
-  </form>
-</Modal>
+<ThumbnailPicker bind:this={thumbnailPicker} bind:bounds={thumbnailBounds}>
+  <svelte:fragment slot="title">대표 이미지 설정</svelte:fragment>
+  <svelte:fragment slot="save">자르기</svelte:fragment>
+</ThumbnailPicker>
