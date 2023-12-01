@@ -93,7 +93,7 @@
                   type="button"
                   on:click={() => (open = false)}
                 >
-                  <span class="i-lc-x square-6" />
+                  <i class="i-lc-x square-6" />
                 </button>
               {/if}
             </div>
@@ -103,7 +103,7 @@
               type="button"
               on:click={() => (open = false)}
             >
-              <span class="i-lc-x square-6" />
+              <i class="i-lc-x square-6" />
             </button>
           {/if}
 

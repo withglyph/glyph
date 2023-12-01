@@ -69,7 +69,7 @@
       on:input={(e) => (query = e.currentTarget.value.trim())}
     />
     <div class="absolute inset-y-0 left-3.5 flex center text-secondary h-100%">
-      <span class="i-lc-search square-5 transition" />
+      <i class="i-lc-search square-5 transition" />
     </div>
   </form>
 

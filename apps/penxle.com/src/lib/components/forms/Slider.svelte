@@ -54,7 +54,7 @@
 {#if name}
   <FormValidationMessage for={name} let:message>
     <div class="flex items-center gap-1.5 mt-1.5 text-xs text-red-50">
-      <span class="i-lc-alert-triangle" />
+      <i class="i-lc-alert-triangle" />
       {message}
     </div>
   </FormValidationMessage>

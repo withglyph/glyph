@@ -326,7 +326,7 @@
             <button class="i-lc-more-vertical square-6 text-icon-primary" type="button" />
           {:else}
             <Menu>
-              <span slot="value" class="i-lc-more-vertical square-6 text-icon-primary" />
+              <i slot="value" class="i-lc-more-vertical square-6 text-icon-primary" />
               {#if !$query.post.space.meAsMember}
                 {#if $query.post.space.muted}
                   <MenuItem

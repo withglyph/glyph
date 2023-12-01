@@ -20,6 +20,6 @@
     {...$$restProps}
   />
   <div class="absolute inset-y-0 left-3.5 flex center text-secondary h-100%">
-    <span class="i-lc-search square-5 transition" aria-label="검색 아이콘" />
+    <i class="i-lc-search square-5 transition" aria-label="검색 아이콘" />
   </div>
 </form>

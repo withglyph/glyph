@@ -53,7 +53,7 @@
       }}
     >
       <div class="square-10 flex center border border-gray-40 rounded-full border-dashed">
-        <span class="i-lc-plus square-5 text-gray-40" />
+        <i class="i-lc-plus square-5 text-gray-40" />
       </div>
       <div class="text-gray-40">새 스페이스 만들기</div>
     </button>

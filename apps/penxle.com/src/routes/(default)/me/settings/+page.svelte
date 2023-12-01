@@ -148,7 +148,7 @@
   <div class="flex justify-end">
     <Button href="/me/settings/deactivate" size="lg" type="link" variant="text">
       탈퇴하기
-      <span class="i-lc-chevron-right" />
+      <i class="i-lc-chevron-right" />
     </Button>
   </div>
 </div>

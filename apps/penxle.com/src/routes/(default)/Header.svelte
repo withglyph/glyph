@@ -64,7 +64,7 @@
 
         <div class={clsx('flex center square-10 sm:hidden', isOpen && 'hidden!')}>
           <button type="button" on:click={() => (isOpen = true)}>
-            <span class="i-lc-search square-6" />
+            <i class="i-lc-search square-6" />
           </button>
         </div>
       </div>
@@ -72,7 +72,7 @@
       <div class="flex sm:hidden grow-0">
         <div class={clsx('flex center square-10')}>
           <button type="button" on:click={() => (isSideBarOpen = true)}>
-            <span class="i-lc-menu square-6" />
+            <i class="i-lc-menu square-6" />
           </button>
         </div>
       </div>
@@ -83,7 +83,7 @@
             class="relative flex items-center gap-2 rounded-lg py-1 px-2 font-bold text-gray-60 transition hover:bg-surface-primary <lg:hidden"
             href="/editor"
           >
-            <span class="i-px-pen-fill square-6 fill-gray-60" />
+            <i class="i-px-pen-fill square-6 fill-gray-60" />
             <span class="text-sm">포스트 작성하기</span>
           </a>
           <Notification $user={$query.me} />

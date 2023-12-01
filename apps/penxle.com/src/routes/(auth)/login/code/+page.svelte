@@ -26,7 +26,7 @@
 </script>
 
 <div class="bg-green-50 rounded-full flex center square-16">
-  <span class="i-lc-mail-check text-white square-6" />
+  <i class="i-lc-mail-check text-white square-6" />
 </div>
 
 {#if useCode}
@@ -53,12 +53,12 @@
   </div>
 
   <Button class="w-full gap-2 mt-4" external={false} href="https://mail.naver.com" type="link">
-    <span class="i-lg-naver" />
+    <i class="i-lg-naver" />
     네이버 메일 열기
   </Button>
 
   <Button class="w-full gap-2 mt-2" external={false} href="https://gmail.com" type="link">
-    <span class="i-lg-google" />
+    <i class="i-lg-google" />
     지메일 열기
   </Button>
 

@@ -20,7 +20,7 @@
         <div class="w-14 h-10.5 rounded-2 bg-black" />
         <div class="flex items-center body-15-b">
           새 청바지를 샀어요 1화
-          <span class="i-lc-chevron-right" />
+          <i class="i-lc-chevron-right" />
         </div>
       </div>
       <div class="bodylong-16-m">
@@ -35,7 +35,7 @@
       </div>
       <div class="flex justify-end">
         <Button class="text-3.25 font-bold text-secondary" color="tertiary" size="sm" variant="outlined">
-          <span class="i-px-reply-fill square-4 mr-2 text-icon-secondary" />
+          <i class="i-px-reply-fill square-4 mr-2 text-icon-secondary" />
           3
         </Button>
       </div>
@@ -53,13 +53,13 @@
 
         <div class="flex items-center body-15-b">
           너는 어때
-          <span class="i-lc-chevron-right" />
+          <i class="i-lc-chevron-right" />
         </div>
       </div>
       <div class="bodylong-16-m">말도 안돼 ㅋㅋㅋㅋㅋ 재미없음</div>
       <div class="flex justify-end">
         <Button class="text-3.25 font-bold text-secondary" color="tertiary" size="sm" variant="outlined">
-          <span class="i-px-reply-fill square-4 mr-2 text-icon-secondary" />
+          <i class="i-px-reply-fill square-4 mr-2 text-icon-secondary" />
           0
         </Button>
       </div>

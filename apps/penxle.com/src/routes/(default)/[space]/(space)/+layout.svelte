@@ -108,7 +108,7 @@
             handleShare($query.space.name, `${location.origin}/${$query.space.slug}`);
           }}
         >
-          <span class="i-lc-share square-6 text-icon-secondary" />
+          <i class="i-lc-share square-6 text-icon-secondary" />
         </button>
         <button
           class="square-9 flex center rounded-xl transition duration-300 hover:bg-primary sm:hidden"
@@ -117,7 +117,7 @@
             menuOpen = true;
           }}
         >
-          <span class="i-lc-more-vertical square-6 text-icon-secondary" />
+          <i class="i-lc-more-vertical square-6 text-icon-secondary" />
         </button>
       </div>
     </div>
@@ -180,20 +180,20 @@
             handleShare($query.space.name, `${location.origin}/${$query.space.slug}`);
           }}
         >
-          <span class="i-lc-share mr-2" />
+          <i class="i-lc-share mr-2" />
           공유하기
         </Button>
         <a
           class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
           href={`/${$query.space.slug}/dashboard`}
         >
-          <span class="i-lc-settings square-6 text-secondary" />
+          <i class="i-lc-settings square-6 text-secondary" />
         </a>
         {#if $query.space.meAsMember.role === 'ADMIN'}
           <Menu
             class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
           >
-            <span slot="value" class="i-lc-more-vertical square-6 text-secondary" />
+            <i slot="value" class="i-lc-more-vertical square-6 text-secondary" />
 
             <MenuItem
               on:click={async () => {
@@ -258,13 +258,13 @@
             handleShare($query.space.name, `${location.origin}/${$query.space.slug}`);
           }}
         >
-          <span class="i-lc-share mr-2" />
+          <i class="i-lc-share mr-2" />
           공유하기
         </Button>
         <Menu
           class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
         >
-          <span slot="value" class="i-lc-more-vertical square-6 text-secondary" />
+          <i slot="value" class="i-lc-more-vertical square-6 text-secondary" />
 
           {#if $query.space.muted}
             <MenuItem
@@ -301,7 +301,7 @@
         type="link"
         variant="outlined"
       >
-        <span class="i-lc-settings square-6 text-secondary" />
+        <i class="i-lc-settings square-6 text-secondary" />
       </Button>
     {:else if $query.me === null}
       <Button

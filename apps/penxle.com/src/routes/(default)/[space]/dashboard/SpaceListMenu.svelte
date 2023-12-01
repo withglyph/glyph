@@ -135,7 +135,7 @@
     <div class="w-full border-b border-alphagray-10 my-3" />
 
     <Button size="xs" variant="text" on:click={() => (openCreateSpace = true)}>
-      <span class="i-lc-plus square-3.5 mr-1" />
+      <i class="i-lc-plus square-3.5 mr-1" />
       스페이스 만들기
     </Button>
   </div>

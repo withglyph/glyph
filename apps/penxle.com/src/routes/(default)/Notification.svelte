@@ -109,7 +109,7 @@
 
 <div class="flex center square-10 mx-3">
   <button bind:this={targetEl} type="button" on:click={() => (open = true)}>
-    <span class="i-px-bell-outline square-6" />
+    <i class="i-px-bell-outline square-6" />
   </button>
 </div>
 

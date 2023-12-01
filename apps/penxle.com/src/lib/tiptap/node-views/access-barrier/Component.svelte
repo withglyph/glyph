@@ -49,7 +49,7 @@
 
 {#if editor?.isEditable}
   <NodeView class="my-4 flex center gap-4 border px-8 py-4" data-drag-handle>
-    <span class="i-lc-gift square-8" />
+    <i class="i-lc-gift square-8" />
 
     <div class="flex grow flex-col">
       <div class="font-bold">결제 상자</div>
@@ -66,13 +66,13 @@
       </div>
     </div>
 
-    <span class="i-lc-grip-vertical square-6 text-gray-20" />
+    <i class="i-lc-grip-vertical square-6 text-gray-20" />
     <button
       class="group square-8 flex center rounded transition duration-300 hover:bg-gray-5"
       type="button"
       on:click={() => (open = true)}
     >
-      <span class="i-lc-x square-6 text-gray-20 transition duration-300 group-hover:text-gray-30" />
+      <i class="i-lc-x square-6 text-gray-20 transition duration-300 group-hover:text-gray-30" />
     </button>
   </NodeView>
 

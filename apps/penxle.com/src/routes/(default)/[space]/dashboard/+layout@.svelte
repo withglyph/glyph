@@ -50,7 +50,7 @@
 <main class="flex flex-col justify-center grow sm:flex-row">
   <button class="flex items-center justify-between p-4 sm:hidden" type="button" on:click={() => (open = true)}>
     <h2 class="title-20-eb">{$pageSubTitle}</h2>
-    <span class="i-lc-chevron-down square-6" />
+    <i class="i-lc-chevron-down square-6" />
   </button>
 
   <aside class="grow pr-4 flex flex-col items-end <sm:hidden w-52">
@@ -98,7 +98,7 @@
               )}
               href="/{$query.space.slug}/dashboard"
             >
-              <span class="i-lc-home square-5" />
+              <i class="i-lc-home square-5" />
               대시보드
             </a>
           </li>
@@ -110,7 +110,7 @@
               )}
               href="/{$query.space.slug}/dashboard/members"
             >
-              <span class="i-lc-user square-5" />
+              <i class="i-lc-user square-5" />
               멤버 관리
             </a>
           </li>
@@ -122,7 +122,7 @@
               )}
               href="/{$query.space.slug}/dashboard/posts"
             >
-              <span class="i-lc-file-text square-5" />
+              <i class="i-lc-file-text square-5" />
               포스트 관리
             </a>
           </li>
@@ -134,7 +134,7 @@
               )}
               href="/{$query.space.slug}/dashboard/subscribers"
             >
-              <span class="i-lc-users square-5" />
+              <i class="i-lc-users square-5" />
               독자 관리
             </a>
           </li>
@@ -146,7 +146,7 @@
               )}
               href="/{$query.space.slug}/dashboard/settings"
             >
-              <span class="i-lc-settings square-5" />
+              <i class="i-lc-settings square-5" />
               스페이스 설정
             </a>
           </li>
@@ -164,7 +164,7 @@
 
 <BottomSheet bind:open>
   <div class="flex w-full gap-2 items-center">
-    <div class="i-px-logo square-6 rounded-lg" />
+    <i class="i-px-logo square-6 rounded-lg" />
     <span class="font-extrabold">스페이스 관리</span>
   </div>
 
@@ -223,7 +223,7 @@
           )}
           href="/{$query.space.slug}/dashboard"
         >
-          <span class="i-lc-home square-5" />
+          <i class="i-lc-home square-5" />
           대시보드
         </a>
       </li>
@@ -235,7 +235,7 @@
           )}
           href="/{$query.space.slug}/dashboard/members"
         >
-          <span class="i-lc-user square-5" />
+          <i class="i-lc-user square-5" />
           멤버 관리
         </a>
       </li>
@@ -247,7 +247,7 @@
           )}
           href="/{$query.space.slug}/dashboard/posts"
         >
-          <span class="i-lc-file-text square-5" />
+          <i class="i-lc-file-text square-5" />
           포스트 관리
         </a>
       </li>
@@ -259,7 +259,7 @@
           )}
           href="/{$query.space.slug}/dashboard/subscribers"
         >
-          <span class="i-lc-users square-5" />
+          <i class="i-lc-users square-5" />
           독자 관리
         </a>
       </li>
@@ -271,7 +271,7 @@
           )}
           href="/{$query.space.slug}/dashboard/settings"
         >
-          <span class="i-lc-settings square-5" />
+          <i class="i-lc-settings square-5" />
           스페이스 설정
         </a>
       </li>

@@ -59,7 +59,7 @@
   <button type="button" on:click={() => (mutedSpaceOpen = true)}>
     <div class="flex items-center gap-1 w-full mb-2">
       <h3 class="text-lg font-extrabold">숨긴 스페이스</h3>
-      <span class="i-lc-chevron-right square-6 text-secondary" />
+      <i class="i-lc-chevron-right square-6 text-secondary" />
     </div>
     <p class="text-secondary">스페이스를 숨기기 할 경우 해당 스페이스가 올린 포스트는 내 피드에 올라오지 않아요.</p>
     <p class="text-secondary">
@@ -72,7 +72,7 @@
   <button type="button">
     <div class="flex items-center gap-1 w-full mb-2">
       <h3 class="text-lg font-extrabold">숨긴 태그</h3>
-      <span class="i-lc-chevron-right square-6 text-secondary" />
+      <i class="i-lc-chevron-right square-6 text-secondary" />
     </div>
     <p class="text-secondary">태그를 숨기기 처리할 경우 해당 태그가 속해있는 포스트가 내 피드에 보이지 않아요.</p>
     <p class="text-secondary">

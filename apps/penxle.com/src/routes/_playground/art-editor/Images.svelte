@@ -16,7 +16,7 @@
         type="button"
         on:click={() => (artworks = artworks.filter((v) => v.id !== artwork.id))}
       >
-        <span class="i-lc-x square-6 text-white" />
+        <i class="i-lc-x square-6 text-white" />
       </button>
       <Thumbnail bind:artwork />
     </div>
@@ -24,7 +24,7 @@
 
   <div class="square-80 flex-none border-4 rounded border-dashed">
     <label class="square-full flex cursor-pointer center bg-white text-sm transition hover:bg-gray-5" for="file">
-      <span class="i-lc-plus-circle square-8 text-gray-30" />
+      <i class="i-lc-plus-circle square-8 text-gray-30" />
     </label>
   </div>
 </div>

@@ -32,6 +32,6 @@
     bind:value
   />
   <div class="absolute inset-y-0 left-4 flex center text-secondary">
-    <span class="i-lc-search square-5 transition" />
+    <i class="i-lc-search square-5 transition" />
   </div>
 </form>

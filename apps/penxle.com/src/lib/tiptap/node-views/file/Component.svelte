@@ -69,7 +69,7 @@
 >
   {@const data = node.attrs.__file ?? node.attrs.__data}
 
-  <span class="i-lc-file" />
+  <i class="i-lc-file" />
   <div class="font-bold">{data.name}</div>
   <div class="text-sm text-gray-50">{numeral(data.size).format('0b')}</div>
 

@@ -30,7 +30,7 @@
       <div>
         <div class="flex items-center justify-between mb-2">
           <h3 class="font-extrabold text-lg">수익금 및 정산금</h3>
-          <span class="i-lc-chevron-right text-secondary square-6" />
+          <i class="i-lc-chevron-right text-secondary square-6" />
         </div>
         <p class="text-secondary">포인트 충전을 통해 적립한 포인트는 회원 탈퇴 시 환불이 불가능해요.</p>
         <p class="text-secondary">
@@ -45,7 +45,7 @@
       <div>
         <div class="flex items-center justify-between mb-2">
           <h3 class="font-extrabold text-lg">팀스페이스 포스트 소유권</h3>
-          <span class="i-lc-chevron-right text-secondary square-6" />
+          <i class="i-lc-chevron-right text-secondary square-6" />
         </div>
         <p class="text-secondary">
           팀 스페이스에서 작성한 게시물들은 삭제되지 않고, 팀 스페이스 소유자에게 소유권이 이전되어요.

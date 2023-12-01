@@ -88,7 +88,7 @@
               {#if status === 'submitting'}
                 <RingSpinner class="h-full" />
               {:else if status === 'submitted'}
-                <div class="i-lc-check-circle" />
+                <i class="i-lc-check-circle" />
                 <div class="ml-1">신청 완료</div>
               {/if}
             </div>

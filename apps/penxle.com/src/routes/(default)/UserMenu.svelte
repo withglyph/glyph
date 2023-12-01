@@ -104,7 +104,7 @@
         openGotoSpace = true;
       }}
     >
-      <span class="i-lc-box" />
+      <i class="i-lc-box" />
       내 스페이스
     </button>
 
@@ -112,7 +112,7 @@
       class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-50 hover:(bg-gray-10 text-gray-70)"
       href="/me/settings"
     >
-      <span class="i-lc-settings" />
+      <i class="i-lc-settings" />
       설정
     </a>
 
@@ -127,7 +127,7 @@
         location.href = '/';
       }}
     >
-      <span class="i-lc-log-out" />
+      <i class="i-lc-log-out" />
       로그아웃
     </button>
   </div>
