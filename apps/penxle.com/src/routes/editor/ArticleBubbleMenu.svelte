@@ -153,14 +153,12 @@
 
   <Tooltip message="정렬" placement="top">
     <Menu
-      class="hover:(bg-primary rounded-lg) hover:(bg-primary rounded-lg)"
+      class="flex items-center gap-0.25rem p-xs hover:(bg-primary rounded-lg) hover:(bg-primary rounded-lg)"
       alignment="horizontal"
       {offset}
       placement="bottom-start"
     >
-      <div slot="value" class="flex items-center gap-0.25rem body-14-m p-xs">
-        <i class={clsx(toggledFormat.alignment.class, 'square-1rem')} />
-      </div>
+      <i class={clsx(toggledFormat.alignment.class, 'square-1rem')} />
 
       {#each alignments as alignment (alignment.value)}
         <button
@@ -182,10 +180,8 @@
   </Tooltip>
 
   <Tooltip message="행간" placement="top">
-    <Menu class="flex items-center body-14-m p-xs hover:(bg-primary rounded-lg)" {offset} placement="bottom-start">
-      <div slot="value">
-        <i class="i-lc-unfold-vertical square-1rem" />
-      </div>
+    <Menu class="flex items-center p-xs hover:(bg-primary rounded-lg)" {offset} placement="bottom-start">
+      <i slot="value" class="i-lc-unfold-vertical square-1rem" />
 
       {#each heights as height (height.value)}
         <MenuItem
@@ -210,9 +206,7 @@
 
   <Tooltip message="자간" placement="top">
     <Menu class="flex items-center p-xs body-14-m hover:(bg-primary rounded-lg)" {offset} placement="bottom-start">
-      <div slot="value">
-        <i class="i-lc-unfold-horizontal square-1rem" />
-      </div>
+      <i slot="value" class="i-lc-unfold-horizontal square-1rem" />
 
       {#each spacing as space (space.value)}
         <MenuItem
