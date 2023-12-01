@@ -7,6 +7,7 @@
   import { Button } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
+  import { toast } from '$lib/notification';
   import { comma } from '$lib/utils';
   import { PurchasePointSchema } from '$lib/validations';
   import type { PaymentMethod } from '$glitch';
@@ -39,6 +40,11 @@
       // @ts-expect-error portone
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       IMP.request_pay(resp.paymentData, async (resp: any) => {
+        if (resp.error_msg) {
+          toast.error(resp.error_msg);
+          return;
+        }
+
         location.href = qs.stringifyUrl({
           url: '/api/payment/callback',
           query: { imp_uid: resp.imp_uid },
