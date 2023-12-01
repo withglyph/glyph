@@ -6,6 +6,7 @@
   import Header from './Header.svelte';
   import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
   import type { PostRevisionContentKind } from '$glitch';
+  import type { ImageBounds } from '$lib/utils';
 
   $: query = graphql(`
     query EditorPage_Query {
@@ -21,7 +22,7 @@
   let content: JSONContent | undefined;
   let tags: string[] = [];
   let thumbnailId: string | undefined = undefined;
-  let thumbnailBounds: { top: number; left: number; width: number; height: number } | undefined = undefined;
+  let thumbnailBounds: ImageBounds | undefined = undefined;
 </script>
 
 <Helmet title="새 포스트 작성하기" />

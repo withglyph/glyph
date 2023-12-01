@@ -76,6 +76,10 @@
           top: 0,
           width: thumbnail.width,
           height: thumbnail.height,
+
+          translateX: 0,
+          translateY: 0,
+          scale: 1,
         };
       }
     }
@@ -131,6 +135,10 @@
         top: 0,
         width: validFiles[0].attrs.__data.width,
         height: validFiles[0].attrs.__data.height,
+
+        translateX: 0,
+        translateY: 0,
+        scale: 1,
       };
     }
   };

@@ -12,7 +12,7 @@
 
   let file: File | null = null;
   let src: string | null = null;
-  let bounds: ImageBounds | undefined = undefined;
+  export let bounds: ImageBounds | undefined = undefined;
   let open = false;
 
   const uploading = trackable();

@@ -3,6 +3,7 @@
   import GalleryEditor from './GalleryEditor.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
   import type { PostRevisionContentKind } from '$glitch';
+  import type { ImageBounds } from '$lib/utils';
 
   export let kind: PostRevisionContentKind;
   export let title: string;
@@ -10,7 +11,7 @@
   export let content: JSONContent | undefined;
   export let editor: Editor | undefined;
   export let thumbnailId: string | undefined;
-  export let thumbnailBounds: { top: number; left: number; width: number; height: number } | undefined;
+  export let thumbnailBounds: ImageBounds | undefined;
 
   let enableSubtitle = !!subtitle;
 </script>

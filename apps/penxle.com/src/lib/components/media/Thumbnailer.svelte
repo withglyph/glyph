@@ -7,7 +7,7 @@
   import type { ImageBounds } from '$lib/utils';
 
   export let file: File | undefined = undefined;
-  export let bounds: ImageBounds = { top: 0, left: 0, width: 0, height: 0 };
+  export let bounds: ImageBounds | undefined = undefined;
   export let rounded = false;
   let _class: string | undefined = undefined;
   export { _class as class };
@@ -27,9 +27,9 @@
   let naturalWidth: number;
   let naturalHeight: number;
 
-  let translateX = 0;
-  let translateY = 0;
-  let scale = 1;
+  let translateX = bounds?.translateX ?? 0;
+  let translateY = bounds?.translateY ?? 0;
+  let scale = bounds?.scale ?? 1;
   $: transform = `translate(${translateX}%, ${translateY}%) scale(${scale})`;
 
   let originX: number | null = null;
@@ -84,6 +84,10 @@
       top: Math.round((((thresholdY - translateY) / 100) * naturalHeight) / scale),
       width: Math.round((boxWidth / imgWidth) * naturalWidth),
       height: Math.round((boxHeight / imgHeight) * naturalHeight),
+
+      translateX,
+      translateY,
+      scale,
     };
   };
 

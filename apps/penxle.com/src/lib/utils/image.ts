@@ -24,4 +24,8 @@ export type ImageBounds = {
   top: number;
   width: number;
   height: number;
+
+  translateX: number;
+  translateY: number;
+  scale: number;
 };
