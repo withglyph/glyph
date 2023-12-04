@@ -89,7 +89,7 @@
       </div>
 
       <nav class="w-full mb-10">
-        <ul class="body-16-b text-disabled">
+        <ul class="body-16-b text-disabled space-y-1">
           <li>
             <a
               class={clsx(

@@ -63,7 +63,7 @@
       </div>
 
       <nav>
-        <ul>
+        <ul class="space-y-1">
           <li>
             <a
               class={clsx(
