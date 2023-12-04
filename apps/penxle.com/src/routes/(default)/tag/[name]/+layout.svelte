@@ -4,17 +4,44 @@
   import { Button } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
+  import { toast } from '$lib/notification';
+  import LoginRequireModal from '../../LoginRequireModal.svelte';
+
+  let loginRequireOpen = false;
 
   $: query = graphql(`
     query TagLayout_Query($name: String!) {
+      me {
+        id
+      }
+
       tag(name: $name) {
         id
         name
+        followed
 
         parents {
           id
           name
         }
+      }
+    }
+  `);
+
+  const followTag = graphql(`
+    mutation TagLayout_FollowTag_Mutation($input: FollowTagInput!) {
+      followTag(input: $input) {
+        id
+        followed
+      }
+    }
+  `);
+
+  const unfollowTag = graphql(`
+    mutation TagLayout_UnfollowTag_Mutation($input: UnfollowTagInput!) {
+      unfollowTag(input: $input) {
+        id
+        followed
       }
     }
   `);
@@ -34,7 +61,33 @@
         <p class="body-13-m text-disabled mt-2">2023.07.27 03:55에 크**님이 마지막으로 수정함</p>
       </div>
       <div class="flex items-center gap-2">
-        <Button size="lg">+ 관심</Button>
+        {#if $query.tag.followed}
+          <Button
+            color="secondary"
+            size="lg"
+            on:click={async () => {
+              await unfollowTag({ tagId: $query.tag.id });
+              toast.success('관심 태그 해제되었어요');
+            }}
+          >
+            관심 해제
+          </Button>
+        {:else}
+          <Button
+            size="lg"
+            on:click={async () => {
+              if (!$query.me) {
+                loginRequireOpen = true;
+                return;
+              }
+
+              await followTag({ tagId: $query.tag.id });
+              toast.success('관심 태그에 추가했어요');
+            }}
+          >
+            + 관심
+          </Button>
+        {/if}
 
         <Menu placement="bottom-start">
           <button slot="value" class="i-lc-more-vertical square-6 text-disabled" type="button" />
@@ -56,3 +109,5 @@
     <slot />
   </div>
 </div>
+
+<LoginRequireModal bind:open={loginRequireOpen} />
