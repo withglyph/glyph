@@ -101,7 +101,7 @@
             const { value } = e.currentTarget;
 
             if (tags.includes(value)) return;
-            const escapedValue = value.replaceAll(' ', '');
+            const escapedValue = value.trim().replaceAll(' ', '_');
 
             if (escapedValue.length === 0) return;
 
