@@ -1,18 +1,6 @@
 setup:
-  - project: literoom
-    config: prod
-    path: apps/literoom
-
   - project: penxle-com
     path: apps/penxle.com
-    config: dev
-
-  - project: penxle-io
-    path: apps/penxle.io
-    config: dev
-
-  - project: help-penxle-com
-    path: apps/help.penxle.com
     config: dev
 
   - project: landing-penxle-com
