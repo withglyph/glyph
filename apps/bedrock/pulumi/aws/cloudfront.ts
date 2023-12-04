@@ -37,9 +37,9 @@ const originAccessControl = new aws.cloudfront.OriginAccessControl('s3', {
   signingProtocol: 'sigv4',
 });
 
-const lambdaCachePolicy = new aws.cloudfront.CachePolicy('lambda', {
-  name: 'LambdaOrigin',
-  comment: 'Cache policy for Lambda origins',
+const dynamicCachePolicy = new aws.cloudfront.CachePolicy('dynamic', {
+  name: 'DynamicContents',
+  comment: 'Cache policy for dynamic contents',
 
   minTtl: 0,
   defaultTtl: 0,
@@ -55,18 +55,18 @@ const lambdaCachePolicy = new aws.cloudfront.CachePolicy('lambda', {
   },
 });
 
-const lambdaOriginRequestPolicy = new aws.cloudfront.OriginRequestPolicy('lambda', {
-  name: 'LambdaOrigin',
-  comment: 'Origin request policy for Lambda origins',
+const dynamicOriginRequestPolicy = new aws.cloudfront.OriginRequestPolicy('dynamic', {
+  name: 'DynamicContents',
+  comment: 'Origin request policy for dynamic contents',
 
   cookiesConfig: { cookieBehavior: 'all' },
-  headersConfig: { headerBehavior: 'allExcept', headers: { items: ['Host'] } },
+  headersConfig: { headerBehavior: 'allViewer' },
   queryStringsConfig: { queryStringBehavior: 'all' },
 });
 
-const lambdaResponseHeadersPolicy = new aws.cloudfront.ResponseHeadersPolicy('lambda', {
-  name: 'LambdaOrigin',
-  comment: 'Response headers policy for Lambda origins',
+const dynamicResponseHeadersPolicy = new aws.cloudfront.ResponseHeadersPolicy('dynamic', {
+  name: 'DynamicContents',
+  comment: 'Response headers policy for dynamic contents',
 
   securityHeadersConfig: {
     strictTransportSecurity: {
@@ -201,8 +201,7 @@ export const outputs = {
   AWS_ACM_CLOUDFRONT_PNXL_NET_CERTIFICATE_ARN: certificates.pnxl_net.arn,
   AWS_ACM_CLOUDFRONT_PNXL_SITE_CERTIFICATE_ARN: certificates.pnxl_site.arn,
 
-  AWS_CLOUDFRONT_ORIGIN_ACCESS_CONTROL_ID: originAccessControl.id,
-  AWS_CLOUDFRONT_LAMBDA_CACHE_POLICY_ID: lambdaCachePolicy.id,
-  AWS_CLOUDFRONT_LAMBDA_ORIGIN_REQUEST_POLICY_ID: lambdaOriginRequestPolicy.id,
-  AWS_CLOUDFRONT_LAMBDA_RESPONSE_HEADERS_POLICY_ID: lambdaResponseHeadersPolicy.id,
+  AWS_CLOUDFRONT_DYNAMIC_CACHE_POLICY_ID: dynamicCachePolicy.id,
+  AWS_CLOUDFRONT_DYNAMIC_ORIGIN_REQUEST_POLICY_ID: dynamicOriginRequestPolicy.id,
+  AWS_CLOUDFRONT_DYNAMIC_RESPONSE_HEADERS_POLICY_ID: dynamicResponseHeadersPolicy.id,
 };

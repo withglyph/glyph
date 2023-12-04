@@ -1,6 +1,7 @@
 import * as aws from '@pulumi/aws';
 import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
+import { bedrockRef } from '../ref';
 import { DopplerSecret } from './doppler-secret';
 import { IAMServiceAccount } from './iam-service-account';
 
@@ -202,7 +203,7 @@ export class Site extends pulumi.ComponentResource {
       { parent: this },
     );
 
-    new k8s.networking.v1.Ingress(
+    const ingress = new k8s.networking.v1.Ingress(
       name,
       {
         metadata: {
@@ -212,7 +213,7 @@ export class Site extends pulumi.ComponentResource {
             'alb.ingress.kubernetes.io/group.name': 'public-alb',
             'alb.ingress.kubernetes.io/listen-ports': JSON.stringify([{ HTTPS: 443 }]),
             'alb.ingress.kubernetes.io/healthcheck-path': '/api/healthz',
-            'pulumi.com/skipAwait': 'true',
+            ...(isProd && { 'external-dns.alpha.kubernetes.io/ingress-hostname-source': 'annotation-only' }),
           },
         },
         spec: {
@@ -240,5 +241,83 @@ export class Site extends pulumi.ComponentResource {
       },
       { parent: this },
     );
+
+    if (isProd) {
+      const domainZone = pulumi.output(domainName).apply((domainName) => domainName.split('.').slice(-2).join('.'));
+      const zone = aws.route53.getZoneOutput({ name: domainZone });
+
+      const distribution = new aws.cloudfront.Distribution(
+        name,
+        {
+          enabled: true,
+          aliases: [domainName],
+          httpVersion: 'http2and3',
+
+          origins: [
+            {
+              originId: 'alb',
+              domainName: ingress.status.loadBalancer.ingress[0].hostname,
+              customOriginConfig: {
+                httpPort: 80,
+                httpsPort: 443,
+                originProtocolPolicy: 'https-only',
+                originSslProtocols: ['TLSv1.2'],
+                originReadTimeout: 60,
+                originKeepaliveTimeout: 60,
+              },
+              originShield: {
+                enabled: true,
+                originShieldRegion: 'ap-northeast-2',
+              },
+            },
+          ],
+
+          defaultCacheBehavior: {
+            targetOriginId: 'alb',
+            compress: true,
+            viewerProtocolPolicy: 'redirect-to-https',
+            allowedMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST', 'PATCH', 'DELETE'],
+            cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
+            cachePolicyId: bedrockRef('AWS_CLOUDFRONT_DYNAMIC_CACHE_POLICY_ID'),
+            originRequestPolicyId: bedrockRef('AWS_CLOUDFRONT_DYNAMIC_ORIGIN_REQUEST_POLICY_ID'),
+            responseHeadersPolicyId: bedrockRef('AWS_CLOUDFRONT_DYNAMIC_RESPONSE_HEADERS_POLICY_ID'),
+          },
+
+          restrictions: {
+            geoRestriction: {
+              restrictionType: 'none',
+            },
+          },
+
+          viewerCertificate: {
+            acmCertificateArn: bedrockRef(
+              pulumi.interpolate`AWS_ACM_CLOUDFRONT_${domainZone.apply((v) =>
+                v.replaceAll('.', '_').toUpperCase(),
+              )}_CERTIFICATE_ARN`,
+            ),
+            sslSupportMethod: 'sni-only',
+            minimumProtocolVersion: 'TLSv1.2_2021',
+          },
+        },
+        { parent: this },
+      );
+
+      new aws.route53.Record(
+        name,
+        {
+          name: domainName,
+          type: 'A',
+          zoneId: zone.zoneId,
+          aliases: [
+            {
+              name: distribution.domainName,
+              zoneId: distribution.hostedZoneId,
+              evaluateTargetHealth: false,
+            },
+          ],
+        },
+        { parent: this },
+      );
+    }
   }
 }
