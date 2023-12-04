@@ -7,9 +7,11 @@
   import { Switch } from '$lib/components/forms';
   import ContentFilterButton from './ContentFilterButton.svelte';
   import MutedSpaceModal from './MutedSpaceModal.svelte';
+  import MutedTagModal from './MutedTagModal.svelte';
 
   let open = false;
   let mutedSpaceOpen = false;
+  let mutedTagOpen = false;
 
   $: query = graphql(`
     query MeSettingsContentFiltersPage_Query {
@@ -26,6 +28,7 @@
 
         ...MeSettingsContentFiltersPage_ContentFilterButton_user
         ...MeSettingsContentFiltersPage_MutedSpaceModal_user
+        ...MeSettingsContentFiltersPage_MutedTagModal_user
       }
     }
   `);
@@ -69,7 +72,7 @@
 
   <div class="w-full border-b border-alphagray-10" />
 
-  <button type="button">
+  <button type="button" on:click={() => (mutedTagOpen = true)}>
     <div class="flex items-center gap-1 w-full mb-2">
       <h3 class="text-lg font-extrabold">숨긴 태그</h3>
       <i class="i-lc-chevron-right square-6 text-secondary" />
@@ -152,3 +155,4 @@
 </Modal>
 
 <MutedSpaceModal $user={$query.me} bind:open={mutedSpaceOpen} />
+<MutedTagModal $user={$query.me} bind:open={mutedTagOpen} />
