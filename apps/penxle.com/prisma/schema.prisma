@@ -13,6 +13,30 @@ generator prisma {
   provider = "prisma-client-js"
 }
 
+model BookmarkGroup {
+  id        String   @id
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  name      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  posts BookmarkGroupPost[]
+
+  @@map("bookmarks")
+}
+
+model BookmarkGroupPost {
+  id              String        @id
+  bookmarkGroupId String        @map("bookmark_id")
+  bookmarkGroup   BookmarkGroup @relation(fields: [bookmarkGroupId], references: [id])
+  postId          String        @map("post_id")
+  post            Post          @relation(fields: [postId], references: [id])
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([bookmarkGroupId, postId])
+  @@map("bookmark_posts")
+}
+
 model File {
   id        String   @id
   userId    String   @map("user_id")
@@ -120,6 +144,7 @@ model Post {
   reactions      PostReaction[]
   contentFilters PostContentFilter[]
   tags           PostTag[]
+  bookmarks      BookmarkGroupPost[]
 
   @@map("posts")
 }
@@ -514,6 +539,7 @@ model User {
   spaceMasquerades         SpaceMasquerade[]
   postReactions            PostReaction[]
   postTags                 PostTag[]
+  bookmarks                BookmarkGroup[]
 
   @@index([email, state])
   @@map("users")
