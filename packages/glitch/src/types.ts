@@ -39,6 +39,7 @@ export type Artifact = {
   name: string;
   filePath: string;
   source: string;
+  hash: number;
 } & (OperationArtifact | FragmentArtifact);
 
 export type GlitchContext = {
@@ -49,8 +50,9 @@ export type GlitchContext = {
   artifacts: Artifact[];
 
   state: {
+    version: number;
     schemaHash: number;
-    artifactHashes: number[];
+    artifactHashes: Record<string, number>;
   };
 };
 

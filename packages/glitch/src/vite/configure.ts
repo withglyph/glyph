@@ -15,6 +15,13 @@ export const configurePlugin = (context: GlitchContext): Plugin => {
       await fs.mkdir(context.codegenRoot, { recursive: true });
 
       config.server.fs.allow.push(context.codegenRoot);
+
+      try {
+        const state = await fs.readFile(path.join(context.codegenRoot, 'state.json'), 'utf8');
+        context.state = JSON.parse(state);
+      } catch {
+        // noop
+      }
     },
   };
 };

@@ -1,3 +1,4 @@
+import { version } from '../version';
 import { codegenPlugin } from './codegen';
 import { configurePlugin } from './configure';
 import { transformGraphQLPlugin } from './transform-graphql';
@@ -14,8 +15,9 @@ export const glitch = (): Plugin[] => {
     artifacts: [],
 
     state: {
+      version,
       schemaHash: 0,
-      artifactHashes: [],
+      artifactHashes: {},
     },
   };
 

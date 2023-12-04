@@ -7,7 +7,7 @@ disableFragmentWarnings();
 
 export const generateEnumTypes = async (context: GlitchContext) => {
   if (!context.schema) {
-    return '';
+    throw new Error('No schema');
   }
 
   return await codegen({

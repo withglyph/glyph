@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import path from 'node:path';
 import fg from 'fast-glob';
 import { preprocess } from 'svelte/compiler';
 import * as AST from '../ast';
@@ -8,7 +9,7 @@ export const collectArtifactSources = async (context: GlitchContext) => {
   const sources: { filePath: string; source: string }[] = [];
 
   const filePaths = await fg('**/*.svelte', {
-    cwd: context.root,
+    cwd: path.join(context.root, 'src'),
     absolute: true,
     ignore: ['node_modules'],
   });

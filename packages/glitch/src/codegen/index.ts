@@ -44,5 +44,8 @@ export const codegen = async (context: GlitchContext) => {
     }
   }
 
+  await fs.mkdir(context.codegenRoot, { recursive: true });
+  await fs.writeFile(path.join(context.codegenRoot, 'state.json'), JSON.stringify(context.state, null, 2));
+
   return true;
 };

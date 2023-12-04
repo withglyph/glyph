@@ -48,6 +48,7 @@
     "fast-glob": "^3.3.2",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
+    "radash": "^11.0.0",
     "recast": "^0.23.4",
     "svelte": "^4.2.8",
     "wonka": "^6.3.4"

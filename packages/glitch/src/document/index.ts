@@ -1,144 +1,178 @@
+import fs from 'node:fs/promises';
 import graphql from 'graphql';
+import { version } from '../version';
 import { collectArtifactSources } from './artifact';
 import { hash } from './hash';
 import { collectSchemaSource } from './schema';
-import {
-  isFragmentDocumentNode,
-  isOperationDocumentNode,
-  validateDocumentNode,
-  validateDocumentNodes,
-} from './validate';
-import type { GlitchContext } from '../types';
+import type {
+  Artifact,
+  GlitchContext,
+  ValidDocumentNode,
+  ValidFragmentDocumentNode,
+  ValidOperationDocumentNode,
+} from '../types';
 
-export const collectDocuments = async (context: GlitchContext) => {
+export const collectDocuments = async (context: GlitchContext): Promise<{ success: boolean; refreshed: boolean }> => {
   const schemaSource = await collectSchemaSource(context);
   const artifactSources = await collectArtifactSources(context);
 
-  const schemaHash = hash(schemaSource);
-  let schemaRefreshed = false;
-
-  if (schemaHash !== context.state.schemaHash) {
-    try {
-      context.schema = graphql.parse(schemaSource);
-      context.state.schemaHash = schemaHash;
-    } catch (err) {
-      console.error(`💥 GraphQL schema error`);
-      if (err instanceof Error) {
-        console.error(`💥 ${err.message}`);
-      } else {
-        console.error(`💥 ${err}`);
-      }
-
-      return {
-        success: false,
-        refreshed: false,
-      };
+  try {
+    context.schema = graphql.parse(schemaSource);
+  } catch (err) {
+    console.error(`💥 GraphQL schema error`);
+    if (err instanceof Error) {
+      console.error(`💥 ${err.message}`);
+    } else {
+      console.error(`💥 ${err}`);
     }
 
-    schemaRefreshed = true;
-  }
-
-  const artifactHashes = artifactSources.map(({ filePath, source }) => hash(filePath + source));
-
-  const removedArtifactNames: string[] = [];
-  const addedArtifactNames: string[] = [];
-
-  for (const [i, artifactHash] of context.state.artifactHashes.entries()) {
-    if (artifactHashes.includes(artifactHash)) {
-      continue;
-    }
-
-    removedArtifactNames.push(context.artifacts[i].name);
-
-    context.artifacts.splice(i, 1);
-    context.state.artifactHashes.splice(i, 1);
-  }
-
-  for (const [i, artifactHash] of artifactHashes.entries()) {
-    if (context.state.artifactHashes.includes(artifactHash)) {
-      continue;
-    }
-
-    const source = artifactSources[i];
-
-    let documentNode;
-    try {
-      documentNode = graphql.parse(source.source);
-    } catch (err) {
-      console.error(`💥 GraphQL document error: ${source.filePath}`);
-      if (err instanceof Error) {
-        console.error(`💥 ${err.message}`);
-      } else {
-        console.error(`💥 ${err}`);
-      }
-
-      return {
-        success: false,
-        refreshed: false,
-      };
-    }
-
-    if (!validateDocumentNode(documentNode)) {
-      return {
-        success: false,
-        refreshed: false,
-      };
-    }
-
-    addedArtifactNames.push(documentNode.definitions[0].name.value);
-
-    context.state.artifactHashes.push(artifactHash);
-
-    if (isOperationDocumentNode(documentNode)) {
-      const definition = documentNode.definitions[0];
-
-      context.artifacts.push({
-        kind: definition.operation,
-        name: definition.name.value,
-
-        filePath: source.filePath,
-        source: source.source,
-
-        documentNode,
-      });
-    } else if (isFragmentDocumentNode(documentNode)) {
-      const definition = documentNode.definitions[0];
-
-      context.artifacts.push({
-        kind: 'fragment',
-        name: definition.name.value,
-
-        filePath: source.filePath,
-        source: source.source,
-
-        documentNode,
-      });
-    }
-  }
-
-  if (!validateDocumentNodes(context.artifacts.map(({ documentNode }) => documentNode))) {
     return {
       success: false,
       refreshed: false,
     };
   }
 
-  for (const name of removedArtifactNames) {
-    if (!addedArtifactNames.includes(name)) {
-      console.log(`📋 ${name} 🧹`);
+  const schemaHash = hash(schemaSource);
+  const schemaRefreshed = schemaHash !== context.state.schemaHash;
+  context.state.schemaHash = schemaHash;
+
+  const oldArtifactHashes = { ...context.state.artifactHashes };
+  const newArtifactHashes: Record<string, number> = {};
+
+  let errored = false;
+  const artifacts: Artifact[] = [];
+
+  for (const { filePath, source } of artifactSources) {
+    try {
+      const documentNode = graphql.parse(source);
+
+      if (documentNode.definitions.length !== 1) {
+        throw new Error('Document must have only one definition');
+      }
+
+      const definition = documentNode.definitions[0];
+      if (definition.kind !== 'OperationDefinition' && definition.kind !== 'FragmentDefinition') {
+        throw new Error('Document must be an operation or fragment');
+      }
+
+      if (!definition.name) {
+        throw new Error('Document must have a name');
+      }
+
+      const validDocumentNode = documentNode as ValidDocumentNode;
+      const artifactHash = hash(source);
+
+      if (isOperationDocumentNode(validDocumentNode)) {
+        const definition = validDocumentNode.definitions[0];
+
+        if (definition.operation === 'query') {
+          const isRoute = /\+(page|layout)(@.*)?\.svelte$/.test(filePath);
+
+          if (isRoute) {
+            try {
+              await fs.stat(filePath.replace(/(@.*)?\.svelte$/, '.ts'));
+            } catch {
+              throw new Error('Query document within route file must have a accompanying .ts file');
+            }
+          } else {
+            throw new Error('Query document must be in a route file');
+          }
+        }
+
+        artifacts.push({
+          kind: definition.operation,
+          name: definition.name.value,
+
+          filePath,
+          source,
+          hash: artifactHash,
+
+          documentNode: validDocumentNode,
+        });
+      } else if (isFragmentDocumentNode(validDocumentNode)) {
+        const definition = validDocumentNode.definitions[0];
+
+        artifacts.push({
+          kind: 'fragment',
+          name: definition.name.value,
+
+          filePath,
+          source,
+          hash: artifactHash,
+
+          documentNode: validDocumentNode,
+        });
+      }
+
+      newArtifactHashes[definition.name.value] = artifactHash;
+    } catch (err) {
+      errored = true;
+      console.error(`💥 GraphQL document error: ${err}`);
+      console.error(`💥 - Path: ${filePath}`);
     }
   }
 
-  for (const name of addedArtifactNames) {
-    if (removedArtifactNames.includes(name)) {
-      console.log(`📋 ${name} 💫`);
+  if (errored) {
+    return {
+      success: false,
+      refreshed: false,
+    };
+  }
+
+  const names = artifacts.map(({ name }) => name);
+  const duplicates = names.filter((name, index) => names.indexOf(name) !== index);
+
+  if (duplicates.length > 0) {
+    console.error('💥 Documents must have unique names');
+    for (const name of duplicates) {
+      console.error(`💥 - Multiple occurrence of ${name} on following paths:`);
+      for (const artifact of artifacts.filter((artifact) => artifact.name === name)) {
+        console.error(`💥   - ${artifact.filePath}`);
+      }
+    }
+
+    return {
+      success: false,
+      refreshed: false,
+    };
+  }
+
+  let artifactRefreshed = false;
+
+  for (const [artifactName, oldArtifactHash] of Object.entries(oldArtifactHashes)) {
+    if (newArtifactHashes[artifactName]) {
+      if (newArtifactHashes[artifactName] !== oldArtifactHash) {
+        artifactRefreshed = true;
+        console.log(`📋 ${artifactName} 💫`);
+      }
     } else {
-      console.log(`📋 ${name} ✨`);
+      artifactRefreshed = true;
+      console.log(`📋 ${artifactName} 🧹`);
     }
   }
+
+  for (const artifactName of Object.keys(newArtifactHashes)) {
+    if (!oldArtifactHashes[artifactName]) {
+      artifactRefreshed = true;
+      console.log(`📋 ${artifactName} ✨`);
+    }
+  }
+
+  context.artifacts = artifacts;
+  context.state.artifactHashes = newArtifactHashes;
+
+  const versionMismatch = context.state.version !== version;
 
   return {
     success: true,
-    refreshed: schemaRefreshed || removedArtifactNames.length > 0 || addedArtifactNames.length > 0,
+    refreshed: schemaRefreshed || artifactRefreshed || versionMismatch,
   };
+};
+
+const isOperationDocumentNode = (documentNode: ValidDocumentNode): documentNode is ValidOperationDocumentNode => {
+  return documentNode.definitions[0].kind === 'OperationDefinition';
+};
+
+const isFragmentDocumentNode = (documentNode: ValidDocumentNode): documentNode is ValidFragmentDocumentNode => {
+  return documentNode.definitions[0].kind === 'FragmentDefinition';
 };
