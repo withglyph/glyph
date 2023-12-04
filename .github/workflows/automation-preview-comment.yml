@@ -1,0 +1,30 @@
+name: Comment on preview
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  add-comment:
+    runs-on: ubuntu-latest
+    if: github.event.action == 'labeled' && github.event.label.name == 'preview'
+
+    steps:
+      - uses: actions/create-github-app-token@v1
+        id: gh-token
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - uses: actions-ecosystem/action-create-comment@v1
+        with:
+          github_token: ${{ steps.gh-token.outputs.token }}
+          body: |
+            배포가 끝나면 아래 주소에서 프리뷰를 확인할 수 있어요.
+
+            | 프로젝트 | 프리뷰 URL |
+            | --- | --- |
+            | penxle.com | https://penxle-com-pr-${{ github.event.pull_request.number }}.pnxl.site |
+            | penxle.io | https://penxle-io-pr-${{ github.event.pull_request.number }}.pnxl.site |
+            | help.penxle.com | https://help-penxle-com-pr-${{ github.event.pull_request.number }}.pnxl.site |
+            | landing.penxle.com | https://landing-penxle-com-pr-${{ github.event.pull_request.number }}.pnxl.site |

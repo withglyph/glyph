@@ -1,0 +1,21 @@
+name: Cleanup preview label
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  remove-label:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/create-github-app-token@v1
+        id: gh-token
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          github_token: ${{ steps.gh-token.outputs.token }}
+          labels: preview
