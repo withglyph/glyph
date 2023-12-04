@@ -284,6 +284,18 @@
         : [contentFilter]
       : $data.contentFilters?.filter((v) => v !== contentFilter);
   };
+
+  const changeMode = (mode: PostRevisionContentKind) => {
+    if (kind === mode) {
+      return;
+    }
+
+    kind = mode;
+
+    if (content?.content) {
+      content.content = content.content.filter((c) => c.type === 'image' || c.type === 'access_barrier');
+    }
+  };
 </script>
 
 <header class="sticky top-0 z-50 border-b border-secondary bg-white py-2 px-4 sm:px-7.5 h-15.25 flex center">
@@ -303,7 +315,7 @@
           kind === 'GALLERY' && 'first:(text-gray-70 transition-color) last:(text-white transition-color)',
         )}
         type="button"
-        on:click={() => (kind = 'ARTICLE')}
+        on:click={() => changeMode('ARTICLE')}
       >
         <i class="i-lc-file-text square-5" />
         <span class="body-14-b">글 모드</span>
@@ -315,7 +327,7 @@
           kind === 'GALLERY' && 'first:(text-gray-70 transition) last:(text-white transition)',
         )}
         type="button"
-        on:click={() => (kind = 'GALLERY')}
+        on:click={() => changeMode('GALLERY')}
       >
         <i class="i-lc-image square-5" />
         <span class="body-14-b">그림 모드</span>

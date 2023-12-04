@@ -59,9 +59,6 @@
 
   $: if (content?.content) {
     description = content.content.find((c) => c.type === 'paragraph');
-    const contents = content.content.filter((c) => c.type === 'image' || c.type === 'access_barrier');
-
-    content.content = description ? [description, ...contents] : contents;
 
     if (!thumbnailId) {
       const thumbnail = content.content.find((c) => c.type === 'image')?.attrs?.__data;

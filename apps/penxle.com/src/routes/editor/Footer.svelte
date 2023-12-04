@@ -9,11 +9,6 @@
   export let content: JSONContent | undefined;
 
   let open = false;
-  let description = '';
-
-  $: if (content?.content) {
-    description = content.content.find((c) => c.type === 'paragraph')?.content?.[0].text ?? '';
-  }
 
   const createParagraph = (text: string) => {
     return {
@@ -42,7 +37,7 @@
         content: [createParagraph(value)],
       };
     } else if (content.content) {
-      if (content.content?.[0].type === 'paragraph') {
+      if (content.content?.[0]?.type === 'paragraph') {
         content.content[0] = createParagraph(value);
       } else {
         content.content.unshift(createParagraph(value));
@@ -123,7 +118,6 @@
           class="body-13-b resize-none w-full"
           placeholder="내용을 입력하세요"
           type="text"
-          value={description}
           on:input={handleInputChange}
         />
       {/if}
