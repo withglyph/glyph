@@ -63,6 +63,32 @@ builder.prismaObject('Tag', {
 
       resolve: (_, { posts }) => posts.map(({ post }) => post),
     }),
+
+    followed: t.field({
+      type: 'Boolean',
+      select: (_, context) => ({
+        followers: {
+          select: { userId: true },
+          where: { userId: context.session?.userId },
+          take: 1,
+        },
+      }),
+
+      resolve: ({ followers }, _, context) => !!context.session && followers.length > 0,
+    }),
+
+    muted: t.field({
+      type: 'Boolean',
+      select: (_, context) => ({
+        userMutes: {
+          select: { userId: true },
+          where: { userId: context.session?.userId },
+          take: 1,
+        },
+      }),
+
+      resolve: ({ userMutes }, _, context) => !!context.session && userMutes.length > 0,
+    }),
   }),
 });
 

@@ -519,7 +519,9 @@ enum SpaceVisibility {
 }
 
 type Tag {
+  followed: Boolean!
   id: ID!
+  muted: Boolean!
   name: String!
   parents: [Tag!]!
   posts(dateBefore: String): [Post!]!
