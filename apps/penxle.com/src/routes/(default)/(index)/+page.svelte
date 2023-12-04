@@ -1,14 +1,62 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
+  import { Helmet, Link } from '@penxle/ui';
   import { graphql } from '$glitch';
   import { ChannelIOButton } from '$lib/channel.io';
-  import { Tag } from '$lib/components';
-  import { TabHeadItem } from '$lib/components/tab';
-  import TabHead from '$lib/components/tab/TabHead.svelte';
+  import { Image, Tag } from '$lib/components';
+  import { TabHead, TabHeadItem } from '$lib/components/tab';
+  import { toast } from '$lib/notification';
+  import LoginRequireModal from '../LoginRequireModal.svelte';
+
+  let loginRequireOpen = false;
 
   $: query = graphql(`
     query IndexPage_Query {
       ...ChannelIOButton_query
+
+      me {
+        id
+      }
+
+      recentlyCreatedTags {
+        id
+        name
+      }
+
+      recentlyUsedTags {
+        id
+        name
+      }
+
+      recentlyPublishedSpaces {
+        id
+        slug
+        name
+        description
+        followed
+
+        icon {
+          id
+          ...Image_image
+        }
+      }
+    }
+  `);
+
+  const followSpace = graphql(`
+    mutation IndexPage_FollowSpace_Mutation($input: FollowSpaceInput!) {
+      followSpace(input: $input) {
+        id
+        followed
+      }
+    }
+  `);
+
+  const unfollowSpace = graphql(`
+    mutation IndexPage_UnfollowSpace_Mutation($input: UnfollowSpaceInput!) {
+      unfollowSpace(input: $input) {
+        id
+        followed
+      }
     }
   `);
 </script>
@@ -181,68 +229,54 @@
     <div>
       <p class="body-15-b mb-4">✨ 최근 게시물을 게시한 스페이스</p>
 
-      <div class="flex items-center justify-between p-2 hover:bg-surface-primary rounded-lg">
-        <div class="flex">
-          <img
-            class="square-10.5 rounded-xl mr-3"
-            alt="spaceLogo"
-            src="https://pnxl.net/images/23/10/n/nn/nn0f8jh65wx4qv2z.jpg?s=128"
-          />
-          <div>
-            <p class="body-15-b">test</p>
-            <p class="body-13-m text-secondary">스페이스 설명</p>
-          </div>
+      {#each $query.recentlyPublishedSpaces as space (space.id)}
+        <div class="flex items-center justify-between p-2 hover:bg-surface-primary rounded-lg truncate gap-3">
+          <Link class="flex grow truncate" href={`/${space.slug}`}>
+            <Image class="square-10.5 rounded-xl mr-3 flex-none" $image={space.icon} />
+            <div class="grow basis-0 truncate">
+              <p class="body-15-b truncate">{space.name}</p>
+              <p class="body-13-m text-secondary truncate">{space.description ?? ''}</p>
+            </div>
+          </Link>
+
+          {#if space.followed}
+            <button
+              class="bg-gray-80 py-2 px-3 rounded-12 body-13-m text-gray-5"
+              type="button"
+              on:click={async () => {
+                await unfollowSpace({ spaceId: space.id });
+                toast.success('관심 스페이스 해제되었어요');
+              }}
+            >
+              관심 해제
+            </button>
+          {:else}
+            <button
+              class="bg-gray-80 py-2 px-3 rounded-12 body-13-m text-gray-5"
+              type="button"
+              on:click={async () => {
+                if (!$query.me) {
+                  loginRequireOpen = true;
+                  return;
+                }
+                await followSpace({ spaceId: space.id });
+                toast.success('관심 스페이스로 등록되었어요');
+              }}
+            >
+              + 관심
+            </button>
+          {/if}
         </div>
-
-        <div class="bg-gray-80 py-2 px-3 rounded-12 body-13-m text-gray-5">+관심</div>
-      </div>
-
-      <div class="flex items-center justify-between p-2 hover:bg-surface-primary rounded-lg">
-        <div class="flex">
-          <img
-            class="square-10.5 rounded-xl mr-3"
-            alt="spaceLogo"
-            src="https://pnxl.net/images/23/10/b/bp/bp8zhq3ddtxmv36a.png?s=256"
-          />
-          <div>
-            <p class="body-15-b">스페이스</p>
-            <p class="body-13-m text-secondary">스페이스 설명</p>
-          </div>
-        </div>
-
-        <div class="bg-gray-80 py-2 px-3 rounded-12 body-13-m text-gray-5">+관심</div>
-      </div>
-
-      <div class="flex items-center justify-between p-2 hover:bg-surface-primary rounded-lg">
-        <div class="flex">
-          <img
-            class="square-10.5 rounded-xl mr-3"
-            alt="spaceLogo"
-            src="https://pnxl.net/images/23/10/b/bp/bp8zhq3ddtxmv36a.png?s=256"
-          />
-          <div>
-            <p class="body-15-b">스페이스</p>
-            <p class="body-13-m text-secondary">스페이스 설명</p>
-          </div>
-        </div>
-
-        <div class="bg-gray-80 py-2 px-3 rounded-12 body-13-m text-gray-5">+관심</div>
-      </div>
+      {/each}
     </div>
 
     <div>
       <p class="body-15-b mb-4">🔥 최근 사용된 태그</p>
 
       <div class="flex flex-wrap gap-2">
-        <Tag size="sm">#일러스트</Tag>
-        <Tag size="sm">#만화</Tag>
-        <Tag size="sm">#소설</Tag>
-        <Tag size="sm">#사이트</Tag>
-        <Tag size="sm">#너의이름은</Tag>
-        <Tag size="sm">#미소의세상</Tag>
-        <Tag size="sm">#그림</Tag>
-        <Tag size="sm">#원신</Tag>
-        <Tag size="sm">#붕괴</Tag>
+        {#each $query.recentlyUsedTags as tag (tag.id)}
+          <Tag size="sm">#{tag.name}</Tag>
+        {/each}
       </div>
     </div>
 
@@ -250,15 +284,9 @@
       <p class="body-15-b mb-4">👋🏻 새로 추가된 태그</p>
 
       <div class="flex flex-wrap gap-2">
-        <Tag size="sm">#새로운태그</Tag>
-        <Tag size="sm">#만화</Tag>
-        <Tag size="sm">#너의이름은</Tag>
-        <Tag size="sm">#소설</Tag>
-        <Tag size="sm">#사이트</Tag>
-        <Tag size="sm">#붕괴</Tag>
-        <Tag size="sm">#그림</Tag>
-        <Tag size="sm">#미소의세상</Tag>
-        <Tag size="sm">#원신</Tag>
+        {#each $query.recentlyCreatedTags as tag (tag.id)}
+          <Tag size="sm">#{tag.name}</Tag>
+        {/each}
       </div>
     </div>
 
@@ -293,3 +321,4 @@
 </div>
 
 <ChannelIOButton {$query} />
+<LoginRequireModal bind:open={loginRequireOpen} />
