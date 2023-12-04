@@ -1,3 +1,4 @@
+import './bookmark';
 import './enums';
 import './feed';
 import './file';

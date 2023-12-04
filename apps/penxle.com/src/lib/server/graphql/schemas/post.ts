@@ -214,6 +214,26 @@ builder.prismaObject('Post', {
       },
     }),
 
+    bookmarked: t.boolean({
+      select: (_, { ...context }) => {
+        if (!context.session) {
+          return {};
+        }
+
+        return {
+          bookmarks: {
+            where: {
+              bookmark: { userId: context.session?.userId },
+            },
+          },
+        };
+      },
+
+      resolve: (post) => {
+        return post.bookmarks?.length > 0;
+      },
+    }),
+
     tags: t.relation('tags'),
 
     purchasedAt: t.field({

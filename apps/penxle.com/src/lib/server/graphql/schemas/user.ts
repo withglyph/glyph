@@ -70,6 +70,7 @@ builder.prismaObject('User', {
     notificationPreferences: t.relation('notificationPreferences', { grantScopes: ['$user'] }),
     profile: t.relation('profile'),
     singleSignOns: t.relation('singleSignOns', { grantScopes: ['$user'] }),
+    bookmarks: t.relation('bookmarks'),
 
     point: t.int({
       resolve: async (user, _, { db }) => {

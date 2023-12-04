@@ -9,6 +9,23 @@ enum AuthScope {
   USER
 }
 
+type BookmarkGroup {
+  id: ID!
+  name: String!
+  postCount: Int!
+  posts: [BookmarkGroupPost!]!
+}
+
+type BookmarkGroupPost {
+  createdAt: DateTime!
+  id: ID!
+  post: Post!
+}
+
+input BookmarkPostInput {
+  postId: ID!
+}
+
 enum ContentFilterAction {
   EXPOSE
   WARN
@@ -157,6 +174,7 @@ input LoginUserInput {
 
 type Mutation {
   acceptSpaceMemberInvitation(input: AcceptSpaceMemberInvitationInput!): SpaceMemberInvitation!
+  bookmarkPost(input: BookmarkPostInput!): BookmarkGroup!
   createPostReaction(input: CreatePostReactionInput!): Post!
   createSpace(input: CreateSpaceInput!): Space!
   createSpaceMemberInvitation(input: CreateSpaceMemberInvitationInput!): SpaceMemberInvitation!
@@ -184,6 +202,7 @@ type Mutation {
   purchasePost(input: PurchasePostInput!): Post!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
   revisePost(input: RevisePostInput!): Post!
+  unbookmarkPost(input: UnbookmarkPostInput!): BookmarkGroup!
   unfollowSpace(input: UnfollowSpaceInput!): Space!
   unfollowTag(input: UnfollowTagInput!): Tag!
   unlikePost(input: UnlikePostInput!): Post!
@@ -256,6 +275,7 @@ enum PointTransactionCause {
 
 type Post {
   blurred: Boolean!
+  bookmarked: Boolean!
   contentFilters: [ContentFilterCategory!]!
   createdAt: DateTime!
   draftRevision(revisionId: ID): PostRevision!
@@ -489,6 +509,10 @@ type Tag {
   name: String!
 }
 
+input UnbookmarkPostInput {
+  bookmarkPostId: ID!
+}
+
 input UnfollowSpaceInput {
   spaceId: ID!
 }
@@ -575,6 +599,7 @@ input UpdateUserProfileInput {
 }
 
 type User {
+  bookmarks: [BookmarkGroup!]!
   channelIOMemberHash: String!
   contentFilterPreferences: [UserContentFilterPreference!]!
   email: String!
