@@ -1,4 +1,5 @@
 import * as aws from '@pulumi/aws';
+import * as tls from '@pulumi/tls';
 
 const datadogIntegration = new aws.iam.Role('integration@datadog', {
   name: 'integration@datadog',
@@ -102,6 +103,58 @@ new aws.iam.RolePolicy('integration@datadog', {
           'xray:GetTraceSummaries',
         ],
         Effect: 'Allow',
+        Resource: '*',
+      },
+    ],
+  },
+});
+
+const githubActionsCertificate = tls.getCertificateOutput({
+  url: 'https://token.actions.githubusercontent.com',
+});
+
+const githubActionsOidcProvider = new aws.iam.OpenIdConnectProvider('actions@github', {
+  url: 'https://token.actions.githubusercontent.com',
+  clientIdLists: ['sts.amazonaws.com'],
+  thumbprintLists: [githubActionsCertificate.certificates[0].sha1Fingerprint],
+});
+
+const githubActionsRole = new aws.iam.Role('actions@github', {
+  name: 'actions@github',
+  assumeRolePolicy: {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Principal: { Federated: githubActionsOidcProvider.arn },
+        Action: 'sts:AssumeRoleWithWebIdentity',
+        Condition: {
+          StringLike: {
+            'token.actions.githubusercontent.com:sub': 'repo:penxle/*',
+          },
+          StringEquals: {
+            'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
+          },
+        },
+      },
+    ],
+  },
+});
+
+new aws.iam.RolePolicy('actions@github', {
+  role: githubActionsRole.name,
+  policy: {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Action: [
+          '*',
+          // 'ecr:GetAuthorizationToken',
+          // 'cloudfront:CreateDistribution',
+          // 'cloudfront:DeleteDistribution',
+          // 'cloudfront:GetDistribution',
+        ],
         Resource: '*',
       },
     ],
