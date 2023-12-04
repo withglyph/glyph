@@ -197,7 +197,7 @@ export class Site extends pulumi.ComponentResource {
         },
         spec: {
           selector: { matchLabels: labels },
-          minAvailable: 1,
+          minAvailable: '50%',
         },
       },
       { parent: this },
