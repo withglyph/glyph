@@ -1,35 +1,13 @@
 import * as aws from '@pulumi/aws';
 
-const ecsExecution = new aws.iam.Role('__execution@ecs', {
-  name: '__execution@ecs',
-  assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
-    Service: 'ecs-tasks.amazonaws.com',
-  }),
-  managedPolicyArns: [aws.iam.ManagedPolicy.AmazonECSTaskExecutionRolePolicy],
-});
-
-new aws.iam.RolePolicy('__execution@ecs', {
-  role: ecsExecution.name,
-  policy: {
-    Version: '2012-10-17',
-    Statement: [
-      {
-        Effect: 'Allow',
-        Action: ['logs:CreateLogGroup'],
-        Resource: '*',
-      },
-    ],
-  },
-});
-
-const datadogIntegration = new aws.iam.Role('datadog-integration', {
-  name: 'datadog-integration',
+const datadogIntegration = new aws.iam.Role('integration@datadog', {
+  name: 'integration@datadog',
   assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
     AWS: '417141415827',
   }),
 });
 
-new aws.iam.RolePolicy('datadog-integration', {
+new aws.iam.RolePolicy('integration@datadog', {
   role: datadogIntegration.name,
   policy: {
     Version: '2012-10-17',
@@ -129,37 +107,3 @@ new aws.iam.RolePolicy('datadog-integration', {
     ],
   },
 });
-
-const dopplerIntegration = new aws.iam.Role('doppler-integration', {
-  name: 'doppler-integration',
-  assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
-    AWS: '299900769157',
-  }),
-});
-
-new aws.iam.RolePolicy('doppler-integration', {
-  role: dopplerIntegration.name,
-  policy: {
-    Version: '2012-10-17',
-    Statement: [
-      {
-        Effect: 'Allow',
-        Action: [
-          'secretsmanager:GetSecretValue',
-          'secretsmanager:DescribeSecret',
-          'secretsmanager:PutSecretValue',
-          'secretsmanager:CreateSecret',
-          'secretsmanager:DeleteSecret',
-          'secretsmanager:TagResource',
-          'secretsmanager:UpdateSecret',
-        ],
-        Resource: '*',
-      },
-    ],
-  },
-});
-
-export const outputs = {
-  AWS_IAM_ROLE_ECS_EXECUTION_ARN: ecsExecution.arn,
-  AWS_IAM_ROLE_DOPPLER_INTEGRATION_ARN: dopplerIntegration.arn,
-};
