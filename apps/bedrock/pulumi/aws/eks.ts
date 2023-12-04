@@ -72,16 +72,6 @@ new aws.eks.Addon('vpc-cni', {
   }).version,
 });
 
-new aws.eks.Addon('aws-ebs-csi-driver', {
-  clusterName: cluster.name,
-  addonName: 'aws-ebs-csi-driver',
-  addonVersion: aws.eks.getAddonVersionOutput({
-    addonName: 'aws-ebs-csi-driver',
-    kubernetesVersion: cluster.version,
-    mostRecent: true,
-  }).version,
-});
-
 export const fargate = new aws.eks.FargateProfile('karpenter', {
   fargateProfileName: 'karpenter',
 
