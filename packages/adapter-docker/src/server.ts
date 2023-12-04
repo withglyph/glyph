@@ -32,10 +32,14 @@ export const serve = async ({ basePath, Server, manifest, prerendered }: CreateH
 
     if (manifest.assets.has(pathname) || pathname.startsWith(manifest.appPath)) {
       const immutable = pathname.startsWith(`${manifest.appPath}/immutable`);
-      const stream = fs.createReadStream(path.join(basePath, 'public', pathname));
+      const filePath = path.join(basePath, 'public', pathname);
+
+      const size = fs.statSync(filePath).size;
+      const stream = fs.createReadStream(filePath);
 
       setHeaders(event, {
         'content-type': mrmime.lookup(pathname) || 'application/octet-stream',
+        'content-length': size,
         'cache-control': immutable ? 'public, max-age=31536000, immutable' : 'public, max-age=0, must-revalidate',
       });
       await sendStream(event, stream);
@@ -46,10 +50,14 @@ export const serve = async ({ basePath, Server, manifest, prerendered }: CreateH
     const pathname = event.path;
 
     if (pathname in prerendered) {
-      const stream = fs.createReadStream(path.join(basePath, 'public', prerendered[pathname]));
+      const filePath = path.join(basePath, 'public', prerendered[pathname]);
+
+      const size = fs.statSync(filePath).size;
+      const stream = fs.createReadStream(filePath);
 
       setHeaders(event, {
         'content-type': 'text/html',
+        'content-length': size,
         'cache-control': 'public, max-age=0, must-revalidate',
       });
       await sendStream(event, stream);
