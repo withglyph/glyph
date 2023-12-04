@@ -174,7 +174,7 @@ input LoginUserInput {
 
 type Mutation {
   acceptSpaceMemberInvitation(input: AcceptSpaceMemberInvitationInput!): SpaceMemberInvitation!
-  bookmarkPost(input: BookmarkPostInput!): BookmarkGroup!
+  bookmarkPost(input: BookmarkPostInput!): Post!
   createPostReaction(input: CreatePostReactionInput!): Post!
   createSpace(input: CreateSpaceInput!): Space!
   createSpaceMemberInvitation(input: CreateSpaceMemberInvitationInput!): SpaceMemberInvitation!
@@ -202,7 +202,7 @@ type Mutation {
   purchasePost(input: PurchasePostInput!): Post!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
   revisePost(input: RevisePostInput!): Post!
-  unbookmarkPost(input: UnbookmarkPostInput!): BookmarkGroup!
+  unbookmarkPost(input: UnbookmarkPostInput!): Post!
   unfollowSpace(input: UnfollowSpaceInput!): Space!
   unfollowTag(input: UnfollowTagInput!): Tag!
   unlikePost(input: UnlikePostInput!): Post!
