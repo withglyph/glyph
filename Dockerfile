@@ -2,6 +2,7 @@ FROM public.ecr.aws/docker/library/node:20-slim AS base
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
+    libvips \
     openssl \
     tini \
   && rm -rf /var/lib/apt/lists/*
@@ -31,11 +32,15 @@ RUN turbo prune --docker @penxle/${APP}
 FROM build-base AS deps
 WORKDIR /app
 
+COPY --from=source /app/out/json/pnpm-lock.yaml .
+COPY --from=source /app/out/json/patches/ ./patches
+RUN pnpm fetch
+
 COPY --from=source /app/out/json/ .
 RUN mkdir -p packages/glitch/bin packages/lambda/bin \
   && touch packages/glitch/bin/index.js packages/lambda/bin/index.js
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --offline
 
 # ---
 

@@ -9,20 +9,20 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.454.0",
+    "@aws-sdk/client-s3": "^3.462.0",
     "@penxle/lambda": "workspace:^",
     "@penxle/tracing": "workspace:^",
-    "sharp": "^0.32.6"
+    "sharp": "^0.33.0"
   },
   "devDependencies": {
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
-    "@pulumi/aws": "^6.9.0",
-    "@pulumi/aws-native": "^0.85.0",
+    "@pulumi/aws": "^6.12.1",
+    "@pulumi/aws-native": "^0.88.0",
     "@pulumi/pulumi": "^3.94.2",
-    "@types/aws-lambda": "^8.10.126",
-    "tsup": "^8.0.0",
-    "tsx": "^4.1.4",
-    "typescript": "^5.2.2"
+    "@types/aws-lambda": "^8.10.130",
+    "tsup": "^8.0.1",
+    "tsx": "^4.6.1",
+    "typescript": "^5.3.2"
   }
 }
