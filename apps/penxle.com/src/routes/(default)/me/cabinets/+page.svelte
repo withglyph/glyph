@@ -4,8 +4,10 @@
   import { Button, Feed } from '$lib/components';
   import { TabContentItem, TabHead, TabHeadItem } from '$lib/components/tab';
   import FollowSpaceModal from './FollowSpaceModal.svelte';
+  import FollowTagModal from './FollowTagModal.svelte';
 
   let followingSpaceOpen = false;
+  let followingTagOpen = false;
 
   $: query = graphql(`
     query MeCabinetsPage_Query {
@@ -35,7 +37,12 @@
           ...Feed_post
         }
 
+        followedTags {
+          id
+        }
+
         ...MeCabinetsPage_FollowSpaceModal_user
+        ...MeCabinetsPage_FollowTagModal_user
       }
     }
   `);
@@ -57,14 +64,14 @@
       <div class="title-20-eb mb-2 sm:title-24-eb">{$query.me.followedSpaces.length}</div>
       <div class="body-13-m text-secondary sm:body-16-m">관심 스페이스</div>
     </button>
-    <div class="flex flex-col center grow basis-0">
-      <div class="title-20-eb mb-2 sm:title-24-eb">29</div>
+    <button class="flex flex-col center grow basis-0" type="button" on:click={() => (followingTagOpen = true)}>
+      <div class="title-20-eb mb-2 sm:title-24-eb">{$query.me.followedTags.length}</div>
       <div class="body-13-m text-secondary sm:body-16-m">관심 태그</div>
-    </div>
-    <div class="flex flex-col center grow basis-0">
+    </button>
+    <!-- <div class="flex flex-col center grow basis-0 border-l">
       <div class="title-20-eb mb-2 sm:title-24-eb">300</div>
       <div class="body-13-m text-secondary sm:body-16-m">관심 그룹</div>
-    </div>
+    </div> -->
   </div>
 
   <div class="bg-white p-4 sm:(border border-secondary rounded-2xl px-8)">
@@ -124,3 +131,4 @@
 </div>
 
 <FollowSpaceModal $user={$query.me} bind:open={followingSpaceOpen} />
+<FollowTagModal $user={$query.me} bind:open={followingTagOpen} />
