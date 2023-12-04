@@ -3,7 +3,6 @@
   import clsx from 'clsx';
   import qs from 'query-string';
   import Paypal from '$assets/icons/paypal.svg?component';
-  import Toss from '$assets/icons/toss.svg?component';
   import { graphql } from '$glitch';
   import { Button } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
@@ -59,10 +58,10 @@
     ['CREDIT_CARD', '신용카드'],
     ['BANK_ACCOUNT', '계좌이체'],
     ['VIRTUAL_BANK_ACCOUNT', '가상계좌'],
-    ['GIFTCARD_CULTURELAND', '문화상품권'],
-    ['GIFTCARD_HAPPYMONEY', '해피머니'],
     ['PHONE_BILL', '휴대폰결제'],
-    ['TOSS_PAY', '토스페이'],
+    ['GIFTCARD_CULTURELAND', '문화상품권'],
+    ['GIFTCARD_SMARTCULTURE', '스마트문화상품권'],
+    ['GIFTCARD_BOOKNLIFE', '도서문화상품권'],
     ['PAYPAL', '페이팔'],
   ];
 </script>
@@ -115,9 +114,7 @@
         variant="outlined"
         on:click={() => ($data.paymentMethod = method)}
       >
-        {#if method === 'TOSS_PAY'}
-          <Toss class="h-5" />
-        {:else if method === 'PAYPAL'}
+        {#if method === 'PAYPAL'}
           <Paypal class="h-5" />
         {:else}
           {name}

@@ -70,24 +70,23 @@ builder.mutationFields((t) => ({
         where: { id: context.session.userId },
       });
 
-      const paymentKey = `PXP${input.pointAmount}${customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ')(8)}`;
+      const paymentKey = `PX${input.pointAmount / 1000}${customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ')(12)}`;
       const paymentAmount = input.pointAmount;
 
-      // spell-checker:disable
       const pgData = match(input.paymentMethod)
         .with('CREDIT_CARD', () => ({ pg: 'tosspayments', pay_method: 'card' }))
         .with('BANK_ACCOUNT', () => ({ pg: 'tosspayments', pay_method: 'trans' }))
         .with('VIRTUAL_BANK_ACCOUNT', () => ({ pg: 'tosspayments', pay_method: 'vbank' }))
         .with('PHONE_BILL', () => ({ pg: 'tosspayments', pay_method: 'phone' }))
         .with('GIFTCARD_CULTURELAND', () => ({ pg: 'tosspayments', pay_method: 'cultureland' }))
-        .with('GIFTCARD_HAPPYMONEY', () => ({ pg: 'tosspayments', pay_method: 'happymoney' }))
-        .with('TOSS_PAY', () => ({ pg: 'tosspayments', pay_method: 'tosspay' }))
+        .with('GIFTCARD_SMARTCULTURE', () => ({ pg: 'tosspayments', pay_method: 'smartculture' }))
+        .with('GIFTCARD_BOOKNLIFE', () => ({ pg: 'tosspayments', pay_method: 'booknlife' }))
         .with('PAYPAL', () => ({ pg: 'paypal_v2', pay_method: 'paypal' }))
         .exhaustive();
-      // spell-checker:enable
 
       const paymentData = {
         ...pgData,
+
         merchant_uid: paymentKey,
         name: `펜슬 ${input.pointAmount} P`,
         amount: paymentAmount,
