@@ -67,8 +67,8 @@ if (pulumi.getStack() === 'prod') {
     },
 
     to: {
-      host: 'penxle.com',
-      path: '/s/#{path}',
+      host: 'staging.penxle.com',
+      path: '/api/shortlink/#{path}',
     },
 
     code: 302,
