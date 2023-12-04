@@ -490,13 +490,14 @@ model TagWiki {
 
 model TagWikiRevision {
   id        String   @id
-  tagWikiId String   @unique @map("tag_wiki_id")
+  tagWikiId String   @map("tag_wiki_id")
   tagWiki   TagWiki  @relation(fields: [tagWikiId], references: [id])
-  userId    String   @unique @map("user_id")
+  userId    String   @map("user_id")
   user      User     @relation(fields: [userId], references: [id])
   content   String
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
+  @@index([createdAt])
   @@map("tag_wiki_revisions")
 }
 

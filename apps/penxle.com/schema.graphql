@@ -202,6 +202,8 @@ type Mutation {
   purchasePost(input: PurchasePostInput!): Post!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
   revisePost(input: RevisePostInput!): Post!
+  reviseTagWiki(input: ReviseTagWikiInput!): TagWiki!
+  setParentTag(input: SetParentTagInput!): Tag!
   unbookmarkPost(input: UnbookmarkPostInput!): Post!
   unfollowSpace(input: UnfollowSpaceInput!): Space!
   unfollowTag(input: UnfollowTagInput!): Tag!
@@ -210,6 +212,7 @@ type Mutation {
   unlockPasswordedPost(input: UnlockPasswordedPostInput!): Post!
   unmuteSpace(input: UnmuteSpaceInput!): Space!
   unmuteTag(input: UnmuteTagInput!): Tag!
+  unsetParentTag(input: UnsetParentTagInput!): Tag!
   updatePostOptions(input: UpdatePostOptionsInput!): Post!
   updatePostView(input: UpdatePostViewInput!): Post!
   updateSpace(input: UpdateSpaceInput!): Space!
@@ -418,6 +421,7 @@ type Query {
   sampleImages: [Image!]!
   space(slug: String!): Space!
   spaceFeed(dateBefore: String): [Post!]!
+  tag(name: String!): Tag!
   tagFeed(dateBefore: String): [Post!]!
 }
 
@@ -435,6 +439,16 @@ input RevisePostInput {
   thumbnailBounds: JSON
   thumbnailId: ID
   title: String!
+}
+
+input ReviseTagWikiInput {
+  content: String!
+  tagId: ID!
+}
+
+input SetParentTagInput {
+  parentTagId: ID!
+  tagId: ID!
 }
 
 type Space {
@@ -507,6 +521,20 @@ enum SpaceVisibility {
 type Tag {
   id: ID!
   name: String!
+  parents: [Tag!]!
+  posts(dateBefore: String): [Post!]!
+  wiki: TagWiki
+}
+
+type TagWiki {
+  id: ID!
+  lastRevision: TagWikiRevision!
+}
+
+type TagWikiRevision {
+  content: String!
+  createdAt: DateTime!
+  id: ID!
 }
 
 input UnbookmarkPostInput {
@@ -539,6 +567,11 @@ input UnmuteSpaceInput {
 }
 
 input UnmuteTagInput {
+  tagId: ID!
+}
+
+input UnsetParentTagInput {
+  parentTagId: ID!
   tagId: ID!
 }
 
