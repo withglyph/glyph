@@ -25,7 +25,7 @@ export const createNodeView = (component: NodeViewComponentType, options: Create
           selected: false,
         });
 
-        return ['node-view', { html }];
+        return ['node-view', { html, style: 'white-space: normal;' }];
       }
     },
 
