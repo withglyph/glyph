@@ -4,7 +4,7 @@
   import qs from 'query-string';
   import Paypal from '$assets/icons/paypal.svg?component';
   import { graphql } from '$glitch';
-  import { Button } from '$lib/components';
+  import { Button, Modal } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
@@ -34,12 +34,8 @@
     `),
     schema: PurchasePointSchema,
     onSuccess: (resp) => {
-      // @ts-expect-error portone
-      IMP.init('imp72534540');
-
-      // @ts-expect-error portone
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      IMP.request_pay(resp.paymentData, async (resp: any) => {
+      const callback = async (resp: any) => {
         if (resp.error_msg) {
           toast.error(resp.error_msg);
           return;
@@ -49,9 +45,23 @@
           url: '/api/payment/callback',
           query: { imp_uid: resp.imp_uid },
         });
-      });
+      };
+
+      // @ts-expect-error portone
+      IMP.init('imp72534540');
+
+      if (resp.paymentData.pg === 'paypal_v2') {
+        paypalOpen = true;
+        // @ts-expect-error portone
+        IMP.loadUI('paypal-spb', resp.paymentData, callback);
+      } else {
+        // @ts-expect-error portone
+        IMP.request_pay(resp.paymentData, callback);
+      }
     },
   });
+
+  let paypalOpen = false;
 
   const pointAmounts = [1000, 3000, 5000, 10_000, 30_000, 50_000, 100_000];
   const paymentMethods: [PaymentMethod, string][] = [
@@ -171,3 +181,7 @@
     <span class="title-20-b">{comma($query.me.point + ($data.pointAmount ?? 0))}P</span>
   </p>
 </form>
+
+<Modal bind:open={paypalOpen}>
+  <div class="portone-ui-container" data-portone-ui-type="paypal-spb"></div>
+</Modal>

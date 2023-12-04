@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { status } from 'itty-router';
 import qs from 'query-string';
-import { getPayment } from '$lib/server/external-api/portone';
+import { portone } from '$lib/server/external-api';
 import { createId } from '$lib/utils';
 import { createRouter } from '../router';
 
@@ -13,7 +13,7 @@ payment.get('/payment/callback', async (_, { db, ...context }) => {
     throw new Error('imp_uid is missing');
   }
 
-  const resp = await getPayment(uid);
+  const resp = await portone.getPayment(uid);
   if (resp.code !== 0) {
     throw new Error(resp.message);
   }
@@ -88,7 +88,7 @@ payment.get('/payment/callback', async (_, { db, ...context }) => {
 payment.post('/payment/webhook', async (_, { db, ...context }) => {
   const payload = await context.request.json();
 
-  const resp = await getPayment(payload.imp_uid);
+  const resp = await portone.getPayment(payload.imp_uid);
   if (resp.code !== 0) {
     throw new Error(resp.message);
   }

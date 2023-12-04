@@ -14,7 +14,7 @@ const getAccessToken = async () => {
   return resp.response.access_token;
 };
 
-type RegisterPaymentAmountParams = { paymentKey: string; paymentAmount: number };
+type RegisterPaymentAmountParams = { paymentKey: string; paymentAmount: number | string };
 export const registerPaymentAmount = async ({ paymentKey, paymentAmount }: RegisterPaymentAmountParams) => {
   await got.post({
     url: 'https://api.iamport.kr/payments/prepare',

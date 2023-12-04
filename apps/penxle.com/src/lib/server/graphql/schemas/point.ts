@@ -1,8 +1,9 @@
 import { PaymentMethod, PointPurchaseState } from '@prisma/client';
 import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
+import numeral from 'numeral';
 import { match } from 'ts-pattern';
-import { registerPaymentAmount } from '$lib/server/external-api/portone';
+import { exim, portone } from '$lib/server/external-api';
 import { createId } from '$lib/utils';
 import { builder } from '../builder';
 
@@ -73,7 +74,7 @@ builder.mutationFields((t) => ({
       const paymentKey = `PX${input.pointAmount / 1000}${customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ')(12)}`;
       const paymentAmount = input.pointAmount;
 
-      const pgData = match(input.paymentMethod)
+      const pgData = await match(input.paymentMethod)
         .with('CREDIT_CARD', () => ({ pg: 'tosspayments', pay_method: 'card' }))
         .with('BANK_ACCOUNT', () => ({ pg: 'tosspayments', pay_method: 'trans' }))
         .with('VIRTUAL_BANK_ACCOUNT', () => ({ pg: 'tosspayments', pay_method: 'vbank' }))
@@ -81,12 +82,14 @@ builder.mutationFields((t) => ({
         .with('GIFTCARD_CULTURELAND', () => ({ pg: 'tosspayments', pay_method: 'cultureland' }))
         .with('GIFTCARD_SMARTCULTURE', () => ({ pg: 'tosspayments', pay_method: 'smartculture' }))
         .with('GIFTCARD_BOOKNLIFE', () => ({ pg: 'tosspayments', pay_method: 'booknlife' }))
-        .with('PAYPAL', () => ({ pg: 'paypal_v2', pay_method: 'paypal' }))
+        .with('PAYPAL', async () => ({
+          pg: 'paypal_v2',
+          pay_method: 'paypal',
+          amount: numeral(paymentAmount / (await exim.getUSDExchangeRate())).format('0.00'),
+        }))
         .exhaustive();
 
       const paymentData = {
-        ...pgData,
-
         merchant_uid: paymentKey,
         name: `펜슬 ${input.pointAmount} P`,
         amount: paymentAmount,
@@ -94,9 +97,11 @@ builder.mutationFields((t) => ({
 
         notice_url: `${context.url.origin}/api/payment/webhook`,
         m_redirect_url: `${context.url.origin}/api/payment/callback`,
+
+        ...pgData,
       };
 
-      await registerPaymentAmount({ paymentKey, paymentAmount: input.pointAmount });
+      await portone.registerPaymentAmount({ paymentKey, paymentAmount: paymentData.amount });
 
       return await db.pointPurchase.create({
         ...query,
