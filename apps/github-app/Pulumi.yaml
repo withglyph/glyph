@@ -1,5 +1,0 @@
-name: github-app
-runtime:
-  name: nodejs
-  options:
-    nodeargs: --import=tsx

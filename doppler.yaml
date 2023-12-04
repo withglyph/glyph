@@ -1,8 +1,4 @@
 setup:
-  - project: github-app
-    config: prod
-    path: apps/github-app
-
   - project: literoom
     config: prod
     path: apps/literoom

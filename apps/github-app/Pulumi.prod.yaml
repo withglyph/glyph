@@ -1,5 +1,0 @@
-config:
-  aws:defaultTags:
-    tags:
-      pulumi.penxle.io/project: github-app
-      pulumi.penxle.io/stack: prod
