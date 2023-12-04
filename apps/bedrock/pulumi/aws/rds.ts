@@ -20,7 +20,7 @@ const cluster = new aws.rds.Cluster('penxle', {
 
   engine: 'aurora-postgresql',
   engineMode: 'provisioned',
-  engineVersion: '15.3',
+  engineVersion: '15.4',
 
   dbSubnetGroupName: new aws.rds.SubnetGroup('private', {
     name: 'private',

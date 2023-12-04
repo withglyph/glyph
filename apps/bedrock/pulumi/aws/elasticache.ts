@@ -7,7 +7,7 @@ const cluster = new aws.elasticache.ReplicationGroup('penxle', {
   description: 'Redis cluster',
 
   engine: 'redis',
-  engineVersion: '7.0',
+  engineVersion: '7.1',
 
   nodeType: 'cache.t4g.micro',
   numCacheClusters: 1,
