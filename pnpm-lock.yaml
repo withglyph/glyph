@@ -55,9 +55,6 @@ importers:
       '@pulumi/aws':
         specifier: ^6.12.1
         version: 6.12.1
-      '@pulumi/cloudflare':
-        specifier: ^5.16.0
-        version: 5.16.0
       '@pulumi/kubernetes':
         specifier: ^4.5.5
         version: 4.5.5
@@ -4364,14 +4361,6 @@ packages:
       resolve: 1.22.8
     transitivePeerDependencies:
       - supports-color
-
-  /@pulumi/cloudflare@5.16.0:
-    resolution: {integrity: sha512-7FjJIpsGz9lv+o+nNnbV8UOUXAF248LHCILmExxIfVTblwbp0Mb8Ri68rLOK9qpVPOIwkj2QBorLiZ6Y4anHSg==}
-    dependencies:
-      '@pulumi/pulumi': 3.94.2
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
 
   /@pulumi/kubernetes@4.5.5:
     resolution: {integrity: sha512-Jjh1QgLL1eH4PUKN+BmvcvqY5PTW36e+XEBOFy4lPFD3YqcV3cHTsmlEiYvMXZyzsYmur/K+V+POFXK0W8ai2g==}

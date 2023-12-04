@@ -7,7 +7,6 @@
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@pulumi/aws": "^6.12.1",
-    "@pulumi/cloudflare": "^5.16.0",
     "@pulumi/kubernetes": "^4.5.5",
     "@pulumi/pulumi": "^3.94.2",
     "@pulumi/random": "^4.14.0",
