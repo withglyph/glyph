@@ -44,7 +44,7 @@
     "@graphql-typed-document-node/core": "^3.2.0",
     "@urql/core": "^4.2.0",
     "@urql/devtools": "^2.0.3",
-    "@urql/exchange-graphcache": "^6.3.3",
+    "@urql/exchange-graphcache": "^6.4.0",
     "fast-glob": "^3.3.2",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
