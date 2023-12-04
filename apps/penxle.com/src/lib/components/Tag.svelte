@@ -2,21 +2,30 @@
   import clsx from 'clsx';
 
   export let size: 'sm' | 'lg' = 'lg';
-  export let state: 'default' | 'select' = 'default';
   let _class: string | undefined = undefined;
   export { _class as class };
+
+  export let as: 'a' | 'label' = 'a';
+  export let checked = false;
+  export let name: string | undefined = undefined;
 </script>
 
-<button
+<svelte:element
+  this={as}
+  id={name}
   class={clsx(
-    'rounded-8 bg-gray-10 transition border border-gray-10 font-bold flex items-center hover:(bg-gray-20 border-gray-20)',
+    'rounded-8 cursor-pointer bg-gray-10 transition duration-300 border border-gray-10 font-bold flex items-center hover:(bg-gray-20 border-gray-20)',
+    checked && 'border-gray-90!',
     size === 'sm' && 'px-3 h-6.5 text-3.25',
     size === 'lg' && 'py-1 px-4 h-8 text-3.75',
-    state === 'select' && 'border-gray-90',
     _class,
   )}
-  type="button"
-  on:click
+  role="button"
+  tabindex="-1"
+  {...$$restProps}
 >
+  {#if as === 'label'}
+    <input class="hidden" aria-checked={checked} type="checkbox" on:change bind:checked />
+  {/if}
   <slot />
-</button>
+</svelte:element>

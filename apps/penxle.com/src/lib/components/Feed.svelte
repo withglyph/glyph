@@ -105,50 +105,49 @@
   </div>
 {/if}
 
-<a
-  class="flex flex-col gap-2 w-full py-3 px-6 bg-cardprimary sm:(py-6 border border-secondary rounded-2xl)"
-  href={`/${$post.space.slug}/${$post.permalink}`}
->
-  <h2 class="title-20-eb">{$post.revision.title}</h2>
+<div class="flex flex-col gap-2 w-full bg-cardprimary sm:(border border-secondary rounded-2xl)">
+  <a class="pt-3 px-6 sm:pt-6" href={`/${$post.space.slug}/${$post.permalink}`}>
+    <h2 class="title-20-eb">{$post.revision.title}</h2>
 
-  <div class="relative">
-    <article
-      class={clsx(
-        'flex gap-xs justify-between rounded-lg <sm:(flex-wrap flex-col)',
-        $post.blurred && 'select-none min-h-5.5rem',
-      )}
-    >
-      <p class="flex-grow bodylong-16-m text-secondary overflow-hidden line-clamp-6 whitespace-pre-line">
-        {$post.revision.previewText}
-      </p>
-
-      {#if $post.revision.thumbnail}
-        <Image
-          class="h-11.25rem sm:aspect-square object-cover rounded-lg flex-none"
-          $image={$post.revision.thumbnail.thumbnail}
-        />
-      {/if}
-    </article>
-
-    {#if $post.blurred}
-      <header
+    <div class="relative">
+      <article
         class={clsx(
-          'p-4 rounded-3 absolute top-0 h-full w-full left-auto right-auto flex flex-col center gap-2.5 items-center color-gray-5 backdrop-blur-4px bg-alphagray-50',
+          'flex gap-xs justify-between rounded-lg <sm:(flex-wrap flex-col)',
+          $post.blurred && 'select-none min-h-5.5rem',
         )}
-        role="alert"
       >
-        <i class="i-px-alert-triangle square-6 block" />
-        <h2 class="body-13-b">이 글은 시청에 주의가 필요한 글이에요</h2>
-      </header>
-    {/if}
-  </div>
+        <p class="flex-grow bodylong-16-m text-secondary overflow-hidden line-clamp-6 whitespace-pre-line">
+          {$post.revision.previewText}
+        </p>
 
-  <div class="flex flex-wrap gap-1.5">
+        {#if $post.revision.thumbnail}
+          <Image
+            class="h-11.25rem sm:aspect-square object-cover rounded-lg flex-none"
+            $image={$post.revision.thumbnail.thumbnail}
+          />
+        {/if}
+      </article>
+
+      {#if $post.blurred}
+        <header
+          class={clsx(
+            'p-4 rounded-3 absolute top-0 h-full w-full left-auto right-auto flex flex-col center gap-2.5 items-center color-gray-5 backdrop-blur-4px bg-alphagray-50',
+          )}
+          role="alert"
+        >
+          <i class="i-px-alert-triangle square-6 block" />
+          <h2 class="body-13-b">이 글은 시청에 주의가 필요한 글이에요</h2>
+        </header>
+      {/if}
+    </div>
+  </a>
+
+  <div class="flex flex-wrap gap-1.5 pb-3 px-6 sm:pb-6">
     {#each $post.tags.slice(0, 4) as { tag } (tag.id)}
-      <Tag size="sm">{tag.name}</Tag>
+      <Tag href={`tag/${tag.id}`} size="sm">{tag.name}</Tag>
     {/each}
     {#if $post.tags.length > 4}
       <Tag size="sm">+{$post.tags.length - 4}개의 태그</Tag>
     {/if}
   </div>
-</a>
+</div>
