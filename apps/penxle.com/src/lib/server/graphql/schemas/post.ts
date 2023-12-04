@@ -1033,11 +1033,10 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  updatePostView: t.field({
-    type: 'Void',
-    nullable: true,
+  updatePostView: t.prismaField({
+    type: 'Post',
     args: { input: t.arg({ type: UpdatePostViewInput }) },
-    resolve: async (_, { input }, { db, ...context }) => {
+    resolve: async (query, _, { input }, { db, ...context }) => {
       const view = await db.postView.findFirst({
         select: { id: true },
         where: {
@@ -1064,6 +1063,11 @@ builder.mutationFields((t) => ({
           },
         });
       }
+
+      return db.post.findUniqueOrThrow({
+        ...query,
+        where: { id: input.postId },
+      });
     },
   }),
 

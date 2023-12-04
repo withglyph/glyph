@@ -25,7 +25,10 @@
 
   const updatePostView = graphql(`
     mutation SpacePostPage_UpdatePostView_Mutation($input: UpdatePostViewInput!) {
-      updatePostView(input: $input)
+      updatePostView(input: $input) {
+        id
+        viewCount
+      }
     }
   `);
 

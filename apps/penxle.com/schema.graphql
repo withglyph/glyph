@@ -192,7 +192,7 @@ type Mutation {
   unmuteSpace(input: UnmuteSpaceInput!): Space!
   unmuteTag(input: UnmuteTagInput!): Tag!
   updatePostOptions(input: UpdatePostOptionsInput!): Post!
-  updatePostView(input: UpdatePostViewInput!): Void
+  updatePostView(input: UpdatePostViewInput!): Post!
   updateSpace(input: UpdateSpaceInput!): Space!
   updateSpaceProfile(input: UpdateSpaceProfileInput!): SpaceMember!
   updateUserContentFilterPreference(input: UpdateUserContentFilterPreferenceInput!): User!
