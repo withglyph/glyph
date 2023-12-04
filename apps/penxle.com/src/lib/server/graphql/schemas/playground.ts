@@ -8,6 +8,11 @@ import { builder } from '../builder';
  */
 
 builder.queryFields((t) => ({
+  hello: t.string({
+    args: { name: t.arg.string() },
+    resolve: (_, args) => `Hello, ${args.name}`,
+  }),
+
   randomAvatars: t.stringList({
     resolve: async () => {
       const buffers = await Promise.all([...R.range(1, 16)].map(() => createRandomAvatar()));

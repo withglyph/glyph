@@ -15,7 +15,10 @@ export const transformLoadPlugin = (context: GlitchContext): Plugin => {
       }
 
       const queries = context.artifacts.filter(
-        (artifact) => artifact.kind === 'query' && path.dirname(artifact.filePath) === path.dirname(id),
+        (artifact) =>
+          artifact.kind === 'query' &&
+          artifact.type === 'automatic' &&
+          path.dirname(artifact.filePath) === path.dirname(id),
       );
 
       if (queries.length === 0) {

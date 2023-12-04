@@ -36,6 +36,7 @@ type FragmentArtifact = {
 };
 
 export type Artifact = {
+  type: 'automatic' | 'manual';
   name: string;
   filePath: string;
   source: string;
@@ -62,8 +63,12 @@ export type GlitchClient = {
   onMutationError: (error: Error) => void;
 };
 
-export type QueryStore<D> = Readable<D> & {
-  refetch: () => void;
+export type QueryStore<D, V> = Readable<D> & {
+  refetch: V extends Record<string, never>
+    ? () => Promise<void>
+    : D extends undefined
+      ? (variables: V) => Promise<void>
+      : (variables?: V) => Promise<void>;
 };
 
 export type MutationStore<D, V> = Readable<{

@@ -64,23 +64,30 @@ export const collectDocuments = async (context: GlitchContext): Promise<{ succes
 
       if (isOperationDocumentNode(validDocumentNode)) {
         const definition = validDocumentNode.definitions[0];
+        let isManual = false;
 
         if (definition.operation === 'query') {
           const isRoute = /\+(page|layout)(@.*)?\.svelte$/.test(filePath);
+          isManual = definition.directives?.some((directive) => directive.name.value === '_manual') ?? false;
 
-          if (isRoute) {
-            try {
-              await fs.stat(filePath.replace(/(@.*)?\.svelte$/, '.ts'));
-            } catch {
-              throw new Error('Query document within route file must have a accompanying .ts file');
+          if (!isManual) {
+            if (isRoute) {
+              try {
+                await fs.stat(filePath.replace(/(@.*)?\.svelte$/, '.ts'));
+              } catch {
+                throw new Error(
+                  'Query document within route file without @_manual directive must have a accompanying .ts file',
+                );
+              }
+            } else {
+              throw new Error('Query document must be in a route file or have a @_manual directive');
             }
-          } else {
-            throw new Error('Query document must be in a route file');
           }
         }
 
         artifacts.push({
           kind: definition.operation,
+          type: isManual ? 'manual' : 'automatic',
           name: definition.name.value,
 
           filePath,
@@ -94,6 +101,7 @@ export const collectDocuments = async (context: GlitchContext): Promise<{ succes
 
         artifacts.push({
           kind: 'fragment',
+          type: 'automatic',
           name: definition.name.value,
 
           filePath,

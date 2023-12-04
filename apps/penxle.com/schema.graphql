@@ -382,6 +382,7 @@ type Query {
   authLayoutBackgroundImage: Image
   draftRevision(revisionId: ID!): PostRevision!
   flash: Flash
+  hello(name: String!): String!
   me: User
   pointPurchase(paymentKey: String!): PointPurchase!
   post(permalink: String!): Post!

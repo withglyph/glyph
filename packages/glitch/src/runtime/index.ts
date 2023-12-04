@@ -21,6 +21,6 @@ export const fragment = (ref: unknown) => {
   return createFragmentStore(ref);
 };
 
-export { createQueryStore } from '../store/query';
+export { createManualQueryStore, createQueryStore } from '../store/query';
 export type { FragmentType, MakeRequired } from '../types';
 export type { TypedDocumentNode } from '@graphql-typed-document-node/core';

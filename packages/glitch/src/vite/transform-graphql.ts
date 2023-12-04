@@ -5,12 +5,14 @@ import type { Plugin } from 'vite';
 import type { GlitchContext } from '../types';
 
 export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
-  const transformQuery = (filename: string, program: AST.Program) => {
+  const transformAutomaticQuery = (filename: string, program: AST.Program) => {
     if (!/^\+(page|layout)/.test(path.basename(filename))) {
       return false;
     }
 
-    const queries = context.artifacts.filter((artifact) => artifact.kind === 'query' && artifact.filePath === filename);
+    const queries = context.artifacts.filter(
+      (artifact) => artifact.kind === 'query' && artifact.type === 'automatic' && artifact.filePath === filename,
+    );
 
     if (queries.length === 0) {
       return false;
@@ -72,6 +74,54 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
         ]),
       );
     }
+
+    return true;
+  };
+
+  const transformManualQuery = (filename: string, program: AST.Program) => {
+    const queries = context.artifacts.filter(
+      (artifact) => artifact.kind === 'query' && artifact.type === 'manual' && artifact.filePath === filename,
+    );
+
+    if (queries.length === 0) {
+      return false;
+    }
+
+    program.body.unshift(
+      AST.b.importDeclaration(
+        [AST.b.importSpecifier(AST.b.identifier('createManualQueryStore'))],
+        AST.b.stringLiteral('@penxle/glitch/runtime'),
+      ),
+      AST.b.importDeclaration(
+        [AST.b.importNamespaceSpecifier(AST.b.identifier('__glitch_base'))],
+        AST.b.stringLiteral('$glitch/base'),
+      ),
+    );
+
+    AST.walk(program, {
+      visitCallExpression(p) {
+        const { node } = p;
+
+        if (
+          node.callee.type === 'Identifier' &&
+          node.callee.name === 'graphql' &&
+          node.arguments[0].type === 'TemplateLiteral'
+        ) {
+          const source = node.arguments[0].quasis[0].value.raw;
+          const query = queries.find((query) => query.source === source);
+
+          if (query) {
+            p.replace(
+              AST.b.callExpression(AST.b.identifier('createManualQueryStore'), [
+                AST.b.identifier(`__glitch_base.DocumentNode_${query.name}`),
+              ]),
+            );
+          }
+        }
+
+        this.traverse(p);
+      },
+    });
 
     return true;
   };
@@ -172,11 +222,12 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
         return;
       }
 
-      const query = transformQuery(filename, program);
+      const automaticQuery = transformAutomaticQuery(filename, program);
+      const manualQuery = transformManualQuery(filename, program);
       const mutation = transformMutation(filename, program);
       const fragment = transformFragment(filename, program);
 
-      if (query || mutation || fragment) {
+      if (automaticQuery || manualQuery || mutation || fragment) {
         return AST.print(program);
       }
     },

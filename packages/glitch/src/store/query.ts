@@ -1,9 +1,10 @@
 import { createRequest } from '@urql/core';
 import { readable } from 'svelte/store';
-import { filter, map, pipe, subscribe, take, toPromise } from 'wonka';
+import { filter, makeSubject, map, pipe, share, subscribe, switchAll, switchMap, take, toPromise } from 'wonka';
 import { getClient } from '../client/internal';
 import type { LoadEvent } from '@sveltejs/kit';
-import type { AnyVariables, TypedDocumentNode } from '@urql/core';
+import type { AnyVariables, GraphQLRequest, OperationResult, TypedDocumentNode } from '@urql/core';
+import type { Source } from 'wonka';
 
 export const createQueryStore = async (
   event: LoadEvent,
@@ -20,9 +21,8 @@ export const createQueryStore = async (
     requestPolicy: 'network-only',
   });
 
-  const source = client.executeRequestOperation(operation);
   const result = await pipe(
-    source,
+    client.executeRequestOperation(operation),
     filter(({ stale }) => !stale),
     take(1),
     toPromise,
@@ -36,15 +36,65 @@ export const createQueryStore = async (
     throw transformError(result.error.graphQLErrors[0]);
   }
 
-  const store = readable(result.data, (set) => {
-    const operation = client.createRequestOperation('query', request, {
-      meta: { source: 'store' },
-      requestPolicy: 'cache-only',
-    });
+  const { source, next } = makeSubject<GraphQLRequest>();
 
-    const source = client.executeRequestOperation(operation);
+  const store = readable(result.data, (set) => {
     const { unsubscribe } = pipe(
       source,
+      switchMap((request) => {
+        const operation = client.createRequestOperation('query', request, {
+          meta: { source: 'store' },
+          requestPolicy: 'cache-only',
+        });
+
+        return client.executeRequestOperation(operation);
+      }),
+      map(({ data }) => data),
+      subscribe(set),
+    );
+
+    next(request);
+
+    return unsubscribe;
+  });
+
+  const obj = {
+    refetch: async (newVariables?: AnyVariables) => {
+      const request = createRequest(document, newVariables ?? variables);
+      const operation = client.createRequestOperation('query', request, {
+        meta: { source: 'store' },
+        requestPolicy: 'network-only',
+      });
+
+      const result = await pipe(
+        client.executeRequestOperation(operation),
+        filter(({ stale }) => !stale),
+        take(1),
+        toPromise,
+      );
+
+      if (result.error?.networkError) {
+        throw result.error.networkError;
+      }
+
+      if (result.error?.graphQLErrors.length) {
+        throw transformError(result.error.graphQLErrors[0]);
+      }
+
+      next(request);
+    },
+  };
+
+  return Object.assign(store, obj);
+};
+
+export const createManualQueryStore = (document: TypedDocumentNode<unknown, AnyVariables>) => {
+  const { source, next } = makeSubject<Source<OperationResult>>();
+
+  const store = readable<unknown>(undefined, (set) => {
+    const { unsubscribe } = pipe(
+      source,
+      switchAll,
       map(({ data }) => data),
       subscribe(set),
     );
@@ -53,8 +103,33 @@ export const createQueryStore = async (
   });
 
   const obj = {
-    refetch: () => {
-      client.reexecuteOperation(operation);
+    refetch: async (variables?: AnyVariables) => {
+      const { client, transformError } = await getClient();
+
+      const request = createRequest(document, variables);
+      const operation = client.createRequestOperation('query', request, {
+        meta: { source: 'store' },
+        requestPolicy: 'network-only',
+      });
+
+      const source = pipe(client.executeRequestOperation(operation), share);
+
+      const result = await pipe(
+        source,
+        filter(({ stale }) => !stale),
+        take(1),
+        toPromise,
+      );
+
+      if (result.error?.networkError) {
+        throw result.error.networkError;
+      }
+
+      if (result.error?.graphQLErrors.length) {
+        throw transformError(result.error.graphQLErrors[0]);
+      }
+
+      next(source);
     },
   };
 

@@ -18,7 +18,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
     ),
   ]);
 
-  for (const { kind, name, source } of context.artifacts) {
+  for (const { kind, type, name, source } of context.artifacts) {
     switch (kind) {
       case 'query': {
         program.body.push(
@@ -34,7 +34,13 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
               AST.b.tsTypeAnnotation(
                 AST.b.tsTypeReference(
                   AST.b.identifier('QueryStore'),
-                  AST.b.tsTypeParameterInstantiation([AST.b.tsTypeReference(AST.b.identifier(`types.${name}`))]),
+                  AST.b.tsTypeParameterInstantiation([
+                    AST.b.tsUnionType([
+                      AST.b.tsTypeReference(AST.b.identifier(`types.${name}`)),
+                      ...(type === 'manual' ? [AST.b.tsUndefinedKeyword()] : []),
+                    ]),
+                    AST.b.tsTypeReference(AST.b.identifier(`base.${name}Variables`)),
+                  ]),
                 ),
               ),
             ),
