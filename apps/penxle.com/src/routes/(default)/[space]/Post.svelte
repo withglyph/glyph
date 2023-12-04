@@ -132,6 +132,16 @@
         characterCount
         createdAt
         contentKind
+        previewText
+
+        thumbnail {
+          id
+
+          thumbnail {
+            id
+            url
+          }
+        }
       }
     `),
   );
@@ -268,7 +278,11 @@
   }
 </script>
 
-<Helmet title={$postRevision.title} />
+<Helmet
+  description={$postRevision.previewText}
+  image={$postRevision.thumbnail?.thumbnail.url ?? 'https://pnxl.net/assets/opengraph/default-cover.png'}
+  title={$postRevision.title}
+/>
 
 <article class={clsx('w-full bg-cardprimary py-7.5 px-4 grow sm:py-17', _class)}>
   <div class="w-full max-w-187.5 mx-auto space-y-6">
