@@ -19,6 +19,7 @@
         id
         name
         followed
+        muted
 
         parents {
           id
@@ -42,6 +43,24 @@
       unfollowTag(input: $input) {
         id
         followed
+      }
+    }
+  `);
+
+  const muteTag = graphql(`
+    mutation TagLayout_MuteTag_Mutation($input: MuteTagInput!) {
+      muteTag(input: $input) {
+        id
+        muted
+      }
+    }
+  `);
+
+  const unmuteTag = graphql(`
+    mutation TagLayout_UnmuteTag_Mutation($input: UnmuteTagInput!) {
+      unmuteTag(input: $input) {
+        id
+        muted
       }
     }
   `);
@@ -92,7 +111,30 @@
         <Menu placement="bottom-start">
           <button slot="value" class="i-lc-more-vertical square-6 text-disabled" type="button" />
 
-          <MenuItem>태그 안보기</MenuItem>
+          {#if $query.tag.muted}
+            <MenuItem
+              on:click={async () => {
+                await unmuteTag({ tagId: $query.tag.id });
+                toast.success('태그 숨기기 해제되었어요');
+              }}
+            >
+              태그 안보기 해제
+            </MenuItem>
+          {:else}
+            <MenuItem
+              on:click={async () => {
+                if (!$query.me) {
+                  loginRequireOpen = true;
+                  return;
+                }
+
+                await muteTag({ tagId: $query.tag.id });
+                toast.success('태그를 숨겼어요');
+              }}
+            >
+              태그 안보기
+            </MenuItem>
+          {/if}
           <MenuItem>태그 신고</MenuItem>
         </Menu>
       </div>
