@@ -107,7 +107,7 @@
         >
           <input class="mr-6 square-4 cursor-pointer" checked={$data.pointAmount === amount} type="radio" />
           <label class="grow body-16-b cursor-pointer" for={`${amount}`}>{comma(amount)}P</label>
-          <div>{comma(amount)}원</div>
+          <div>{comma(amount * 1.1)}원</div>
         </button>
       {/each}
     </div>

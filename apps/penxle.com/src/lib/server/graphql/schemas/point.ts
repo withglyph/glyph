@@ -72,7 +72,7 @@ builder.mutationFields((t) => ({
       });
 
       const paymentKey = `PX${input.pointAmount / 1000}${customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ')(12)}`;
-      const paymentAmount = input.pointAmount;
+      const paymentAmount = input.pointAmount * 1.1;
 
       const pgData = await match(input.paymentMethod)
         .with('CREDIT_CARD', () => ({ pg: 'tosspayments', pay_method: 'card' }))
