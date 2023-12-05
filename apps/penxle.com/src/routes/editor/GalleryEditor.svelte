@@ -176,6 +176,10 @@
       plugins: [Plugins.SortAnimation],
     });
 
+    sortable.on('sortable:start', ({ dragEvent }) => {
+      dragEvent.source.style.opacity = '0.7';
+    });
+
     sortable.on('sortable:stop', ({ newIndex, oldIndex }) => {
       let newIdx = newIndex;
       let oldIdx = oldIndex;
