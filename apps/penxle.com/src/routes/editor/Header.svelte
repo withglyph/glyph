@@ -155,6 +155,7 @@
       thumbnailBounds,
     });
 
+    postId = resp.id;
     permalink = resp.permalink;
     revisedAt = resp.draftRevision.createdAt;
     $data.revisionId = resp.draftRevision.id;
@@ -219,7 +220,10 @@
     });
   }
 
-  $: postId = $post?.id;
+  $: if ($post) {
+    postId = $post.id;
+  }
+
   $: published = $post?.state === 'PUBLISHED';
   $: canRevise = browser && selectedSpace && !!title && content?.content;
 
