@@ -2,16 +2,25 @@ import dayjs from 'dayjs';
 import { traverse } from 'object-traversal';
 import { createTiptapDocument, documentToText } from '$lib/utils';
 import { useCache } from '../cache';
+import type { JsonValue } from '@prisma/client/runtime/library';
 import type { JSONContent } from '@tiptap/core';
 import type { InteractiveTransactionClient } from '../prisma';
 
-export const revisionContentToText = async (id: string, revisionContent: JSONContent[]): Promise<string> => {
-  // PostRevision의 Content는 Immutable하니까 캐싱 좀 길어도 괜찮을 듯
-  return await useCache(
-    `PostRevision:${id}`,
-    async () => documentToText(createTiptapDocument(revisionContent)),
-    dayjs.duration(1, 'year').asSeconds(),
-  );
+type RevisionContent = {
+  id: string;
+  data: JSONContent[] | JsonValue;
+};
+
+export const revisionContentToText = async (revisionContent: RevisionContent): Promise<string> => {
+  if (revisionContent.data) {
+    // PostRevision의 Content는 Immutable하니까 캐싱 좀 길어도 괜찮을 듯
+    return await useCache(
+      `PostRevisionContent:${revisionContent.id}`,
+      async () => documentToText(createTiptapDocument(revisionContent.data as JSONContent[])),
+      dayjs.duration(1, 'year').asSeconds(),
+    );
+  }
+  return '';
 };
 
 export const sanitizeContent = async (content: JSONContent[]): Promise<JSONContent[]> => {

@@ -9,7 +9,7 @@
   import { Table, TableData, TableHead, TableRow } from '$lib/components/table';
   import { toast } from '$lib/notification';
   import type { PostManageTable_Post_query, PostManageTable_SpaceMember } from '$glitch';
-  import type { UpdatePostOptionsInput } from '$lib/validations/post';
+  import type { PublishPostInput } from '$lib/validations/post';
 
   export let type: T;
   export let _posts: PostManageTable_Post_query[];
@@ -26,16 +26,12 @@
       fragment PostManageTable_Post_query on Post {
         id
         permalink
+        receiveFeedback
+        receiveTagContribution
+        discloseStats
+        visibility
         createdAt
-
-        tags {
-          id
-
-          tag {
-            id
-            name
-          }
-        }
+        publishedAt
 
         space {
           id
@@ -53,26 +49,18 @@
           }
         }
 
-        option {
-          id
-          receiveFeedback
-          receiveTagContribution
-          discloseStats
-          visibility
-        }
-
-        revision {
+        publishedRevision @_required {
           id
           title
           createdAt
 
-          thumbnail {
+          tags {
             id
+            name
+          }
 
-            thumbnail {
-              id
-              ...Image_image
-            }
+          croppedThumbnail {
+            ...Image_image
           }
         }
       }
@@ -113,9 +101,9 @@
   let deletePostIds: string[] | null = null;
 
   function resetPostOptions() {
-    receiveFeedback = selectedPosts.every((post) => post.option.receiveFeedback);
-    receiveTagContribution = selectedPosts.every((post) => post.option.receiveTagContribution);
-    discloseStats = selectedPosts.every((post) => post.option.discloseStats);
+    receiveFeedback = selectedPosts.every((post) => post.receiveFeedback);
+    receiveTagContribution = selectedPosts.every((post) => post.receiveTagContribution);
+    discloseStats = selectedPosts.every((post) => post.discloseStats);
   }
 
   $: if (selectedPostIds.size > 0) {
@@ -143,10 +131,7 @@
     mutation SpaceSettingPostsPage_UpdateVisibility_Mutation($input: UpdatePostOptionsInput!) {
       updatePostOptions(input: $input) {
         id
-        option {
-          id
-          visibility
-        }
+        visibility
       }
     }
   `);
@@ -159,18 +144,15 @@
     mutation SpaceSettingPostsPage_UpdatePostOptions_Mutation($input: UpdatePostOptionsInput!) {
       updatePostOptions(input: $input) {
         id
-        option {
-          id
-          receiveFeedback
-          receiveTagContribution
-          discloseStats
-        }
+        receiveFeedback
+        receiveTagContribution
+        discloseStats
       }
     }
   `);
 
   function updatePostsOptions(
-    input: Pick<UpdatePostOptionsInput, 'receiveFeedback' | 'receiveTagContribution' | 'discloseStats'>,
+    input: Partial<Pick<PublishPostInput, 'receiveFeedback' | 'receiveTagContribution' | 'discloseStats'>>,
   ) {
     return Promise.all(_selectedPostIds.map((postId) => updatePostOptions({ postId, ...input })));
   }
@@ -248,15 +230,15 @@
           rel="noopener noreferrer"
           target="_blank"
         >
-          {#if post.revision.thumbnail}
-            <Image class="square-2.625rem flex-shrink-0 rounded-2" $image={post.revision.thumbnail.thumbnail} />
+          {#if post.publishedRevision.croppedThumbnail}
+            <Image class="square-2.625rem flex-shrink-0 rounded-2" $image={post.publishedRevision.croppedThumbnail} />
           {/if}
           <dl class="truncate [&>dt]:truncate">
             <dt class="body-15-b">
-              {post.revision.title}
+              {post.publishedRevision.title}
             </dt>
             <dd class="body-13-m text-secondary">
-              {dayjs(post.createdAt).formatAsDate()}
+              {dayjs(post.publishedAt).formatAsDate()}
             </dd>
           </dl>
         </a>
@@ -277,18 +259,18 @@
       </TableData>
       <TableData class="<sm:hidden">
         <div class="flex gap-1">
-          {#each post.tags.slice(0, 3) as tag (tag.id)}
-            <Tag size="sm">{tag.tag.name}</Tag>
+          {#each post.publishedRevision.tags.slice(0, 3) as tag (tag.id)}
+            <Tag size="sm">{tag.name}</Tag>
           {/each}
-          {#if post.tags.length > 2}
+          {#if post.publishedRevision.tags.length > 2}
             <Tooltip
-              message={post.tags
+              message={post.publishedRevision.tags
                 .slice(2)
-                .map((tag) => tag.tag.name)
+                .map((tag) => tag.name)
                 .join(', ')}
               placement="top"
             >
-              <span class="body-13-b">+{post.tags.length - 2}</span>
+              <span class="body-13-b">+{post.publishedRevision.tags.length - 2}</span>
             </Tooltip>
           {/if}
         </div>
@@ -301,14 +283,14 @@
             placement="bottom-end"
           >
             <span slot="value" class="flex items-center body-13-b [&>i]:text-icon-secondary">
-              <i class={clsx(visibilityToIcon[post.option.visibility], 'square-4 m-r-0.15rem')} />
-              {visibilityToLocaleString[post.option.visibility]}
+              <i class={clsx(visibilityToIcon[post.visibility], 'square-4 m-r-0.15rem')} />
+              {visibilityToLocaleString[post.visibility]}
               <i class="i-lc-chevron-down square-4" />
             </span>
 
             {#each visibilityOptions as visibilityOption (visibilityOption.value)}
               <MenuItem
-                aria-pressed={post.option.visibility === visibilityOption.value}
+                aria-pressed={post.visibility === visibilityOption.value}
                 on:click={() =>
                   updateVisibility({
                     postId: post.id,

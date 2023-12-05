@@ -127,9 +127,7 @@ builder.mutationFields((t) => ({
         select: {
           spaceId: true,
           state: true,
-          option: {
-            select: { visibility: true },
-          },
+          visibility: true,
         },
         where: {
           id: input.postId,
@@ -142,7 +140,7 @@ builder.mutationFields((t) => ({
         throw new NotFoundError();
       }
 
-      if (post.option.visibility === 'SPACE') {
+      if (post.visibility === 'SPACE') {
         const meAsMember = await db.spaceMember.exists({
           where: {
             spaceId: post.spaceId,

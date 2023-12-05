@@ -13,7 +13,7 @@
       post(permalink: $permalink) {
         id
 
-        revision {
+        publishedRevision @_required {
           id
           ...Post_postRevision
         }
@@ -38,4 +38,4 @@
   });
 </script>
 
-<Post $postRevision={$query.post.revision} {$query} />
+<Post $postRevision={$query.post.publishedRevision} {$query} />

@@ -72,7 +72,7 @@
       purchasePost(input: $input) {
         id
 
-        revision {
+        publishedRevision {
           id
           content
         }

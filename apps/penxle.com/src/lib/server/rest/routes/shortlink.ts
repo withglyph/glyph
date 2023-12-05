@@ -1,4 +1,5 @@
 import { status } from 'itty-router';
+import { base36To10 } from '$lib/utils';
 import { createRouter } from '../router';
 import type { IRequest } from 'itty-router';
 
@@ -10,9 +11,11 @@ shortlink.get('/shortlink/:shortlink', async (request, { db }) => {
     throw new Error('link is required');
   }
 
+  const permalink = base36To10(shortlink);
+
   const post = await db.post.findUnique({
-    select: { permalink: true, space: { select: { slug: true } } },
-    where: { shortlink },
+    select: { space: { select: { slug: true } } },
+    where: { permalink },
   });
 
   if (!post) {
@@ -21,7 +24,7 @@ shortlink.get('/shortlink/:shortlink', async (request, { db }) => {
 
   return status(307, {
     headers: {
-      Location: `/${post.space.slug}/${post.permalink}`,
+      Location: `/${post.space.slug}/${permalink}`,
     },
   });
 });

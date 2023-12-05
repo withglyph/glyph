@@ -14,7 +14,7 @@
   import { Menu, MenuItem } from '$lib/components/menu';
   import { createMutationForm } from '$lib/form';
   import { portal } from '$lib/svelte/actions';
-  import { UpdatePostOptionsInputSchema } from '$lib/validations/post';
+  import { PublishPostInputSchema } from '$lib/validations/post';
   import ArticleCharacterCount from './ArticleCharacterCount.svelte';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
   import ToolbarButton from './ToolbarButton.svelte';
@@ -39,6 +39,8 @@
   export let tags: string[];
   export let thumbnailId: string | undefined;
   export let thumbnailBounds: { top: number; left: number; width: number; height: number } | undefined;
+
+  let postId: string | undefined;
 
   $: query = fragment(
     _query,
@@ -71,30 +73,25 @@
         id
         state
         contentFilters
+        discloseStats
+        hasPassword
+        receiveFeedback
+        receivePatronage
+        receiveTagContribution
+        visibility
 
         space {
           id
         }
 
-        option {
+        draftRevision {
           id
-          discloseStats
-          hasPassword
-          receiveFeedback
-          receivePatronage
-          receiveTagContribution
-          visibility
         }
 
-        tags {
-          id
-          pinned
-
-          tag {
-            id
-            name
-          }
-        }
+        # tags {
+        #   id
+        #   name
+        # }
       }
     `),
   );
@@ -120,34 +117,25 @@
 
   const { form, data, setInitialValues } = createMutationForm({
     mutation: graphql(`
-      mutation EditorPage_UpdatePostOptions_Mutation($input: UpdatePostOptionsInput!) {
-        updatePostOptions(input: $input) {
+      mutation EditorPage_PublishPost_Mutation($input: PublishPostInput!) {
+        publishPost(input: $input) {
           id
+          permalink
+          discloseStats
+          receiveFeedback
+          receivePatronage
+          receiveTagContribution
+          visibility
 
-          option {
+          space {
             id
-            discloseStats
-            receiveFeedback
-            receivePatronage
-            receiveTagContribution
-            visibility
-          }
-
-          tags {
-            id
-            pinned
-
-            tag {
-              id
-              name
-            }
+            slug
           }
         }
       }
     `),
-    schema: UpdatePostOptionsInputSchema,
-    onSuccess: async () => {
-      const resp = await doRevisePost('PUBLISHED');
+    schema: PublishPostInputSchema,
+    onSuccess: async (resp) => {
       await goto(`/${resp.space.slug}/${resp.permalink}`);
     },
   });
@@ -156,9 +144,10 @@
     const resp = await revisePost({
       contentKind: kind,
       revisionKind,
-      postId: $data.postId,
+      postId,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       spaceId: selectedSpace!.id,
+      tags,
       title,
       subtitle,
       content,
@@ -166,9 +155,9 @@
       thumbnailBounds,
     });
 
-    $data.postId = resp.id;
     permalink = resp.permalink;
     revisedAt = resp.draftRevision.createdAt;
+    $data.revisionId = resp.draftRevision.id;
 
     return resp;
   };
@@ -185,15 +174,13 @@
   let enablePassword = false;
   let enableContentFilter = false;
 
-  $: if ($post?.option.hasPassword) {
+  $: if ($post?.hasPassword) {
     enablePassword = true;
   }
 
   $: if ($post?.contentFilters.filter((v) => v !== 'ADULT').length ?? 0 > 0) {
     enableContentFilter = true;
   }
-
-  $: $data.tags = tags;
 
   let permalink: string | undefined;
   let selectedSpace: (typeof $query.me.spaces)[number] | undefined;
@@ -211,29 +198,28 @@
 
   $: if ($post) {
     setInitialValues({
-      postId: $post.id,
+      revisionId: $post.draftRevision?.id,
       contentFilters: $post.contentFilters,
-      discloseStats: $post.option.discloseStats,
-      receiveFeedback: $post.option.receiveFeedback,
-      receivePatronage: $post.option.receivePatronage,
-      receiveTagContribution: $post.option.receiveTagContribution,
-      password: $post.option.hasPassword ? '' : undefined,
-      tags: $post.tags.map(({ tag }) => tag.name),
-      visibility: $post.option.visibility,
+      discloseStats: $post.discloseStats,
+      receiveFeedback: $post.receiveFeedback,
+      receivePatronage: $post.receivePatronage,
+      receiveTagContribution: $post.receiveTagContribution,
+      password: $post.hasPassword ? '' : undefined,
+      visibility: $post.visibility,
     });
   } else {
     setInitialValues({
-      postId: undefined as unknown as string,
+      revisionId: '',
       contentFilters: [],
       discloseStats: true,
       receiveFeedback: true,
       receivePatronage: true,
       receiveTagContribution: true,
-      tags: [],
       visibility: 'PUBLIC',
     });
   }
 
+  $: postId = $post?.id;
   $: published = $post?.state === 'PUBLISHED';
   $: canRevise = browser && selectedSpace && !!title && content?.content;
 

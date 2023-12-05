@@ -1,3 +1,4 @@
+import { webcrypto } from 'node:crypto';
 import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { init as cuid } from '@paralleldrive/cuid2';
 import {
@@ -9,7 +10,6 @@ import {
 } from '@prisma/client';
 import { hash, verify } from 'argon2';
 import dayjs from 'dayjs';
-import { customAlphabet } from 'nanoid';
 import * as R from 'radash';
 import { match, P } from 'ts-pattern';
 import { emojiData } from '$lib/emoji';
@@ -18,8 +18,7 @@ import { redis } from '$lib/server/cache';
 import { s3 } from '$lib/server/external-api/aws';
 import { deductUserPoint, directUploadImage, getUserPoint } from '$lib/server/utils';
 import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
-import { createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
-import { UpdatePostOptionsInputSchema } from '$lib/validations/post';
+import { base36To10, createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
 import { builder } from '../builder';
 import type { JSONContent } from '@tiptap/core';
 import type { ImageBounds } from '$lib/utils';
@@ -29,53 +28,120 @@ import type { ImageBounds } from '$lib/utils';
  */
 
 builder.prismaObject('Post', {
-  select: { id: true, userId: true, spaceId: true, state: true },
+  select: { id: true, userId: true, spaceId: true, state: true, visibility: true, password: true },
   grantScopes: async (post, { db, ...context }) => {
+    // 글 관리 권한이 있는지 체크
     if (context.session?.userId === post.userId) {
       return ['$post:view', '$post:edit'];
     }
 
-    if (post.state !== 'PUBLISHED') {
-      return [];
-    }
+    const member = context.session
+      ? await db.spaceMember.findUnique({
+          select: { role: true },
+          where: {
+            spaceId_userId: {
+              spaceId: post.spaceId,
+              userId: context.session.userId,
+            },
+            state: 'ACTIVE',
+          },
+        })
+      : null;
 
-    if (!context.session) {
-      return ['$post:view'];
-    }
-
-    const member = await db.spaceMember.findUnique({
-      select: { role: true },
-      where: {
-        spaceId_userId: {
-          spaceId: post.spaceId,
-          userId: context.session.userId,
-        },
-        state: 'ACTIVE',
-      },
-    });
     if (member?.role === 'ADMIN') {
       return ['$post:view', '$post:edit'];
     }
+
+    // 이 이하부터 글 관리 권한 없음
+    // 글을 볼 권한이 없는지 체크
+
+    if (post.state !== 'PUBLISHED' || (post.visibility === 'SPACE' && member?.role !== 'MEMBER')) {
+      return [];
+    }
+
+    if (post.password) {
+      const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
+      if (!unlock || dayjs().isAfter(dayjs(unlock))) {
+        return [];
+      }
+    }
+
     return ['$post:view'];
   },
   fields: (t) => ({
     id: t.exposeID('id'),
     state: t.expose('state', { type: PostState }),
-    permalink: t.exposeString('permalink'),
-    shortlink: t.exposeString('shortlink'),
-    createdAt: t.expose('createdAt', { type: 'DateTime' }),
 
-    revision: t.prismaField({
-      type: 'PostRevision',
+    permalink: t.exposeString('permalink'),
+    shortlink: t.field({
+      type: 'String',
+      select: { permalink: true },
+      resolve: ({ permalink }) => BigInt(permalink).toString(36),
+    }),
+
+    createdAt: t.expose('createdAt', { type: 'DateTime' }),
+    publishedAt: t.expose('publishedAt', { type: 'DateTime', nullable: true }),
+
+    member: t.relation('member'),
+    space: t.relation('space'),
+    likeCount: t.relationCount('likes'),
+    viewCount: t.relationCount('views'),
+
+    visibility: t.expose('visibility', { type: PostVisibility }),
+    discloseStats: t.exposeBoolean('discloseStats'),
+    receiveFeedback: t.exposeBoolean('receiveFeedback'),
+    receivePatronage: t.exposeBoolean('receivePatronage'),
+    receiveTagContribution: t.exposeBoolean('receiveTagContribution'),
+
+    hasPassword: t.boolean({
+      select: { password: true },
+      resolve: (post) => !!post.password,
+    }),
+
+    unlocked: t.boolean({
+      select: { id: true, password: true },
+      resolve: async (post, _, context) => {
+        if (!post.password) {
+          return true;
+        }
+
+        const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
+        return !!unlock && dayjs(unlock).isAfter(dayjs());
+      },
+    }),
+
+    contentFilters: t.expose('contentFilters', { type: [ContentFilterCategory] }),
+    blurred: t.boolean({
+      select: { contentFilters: true },
+      resolve: async (post, _, { db, ...context }) => {
+        if (!context.session) {
+          return post.contentFilters.length > 0;
+        }
+
+        const myFilters = R.objectify(
+          await db.userContentFilterPreference.findMany({
+            select: { category: true, action: true },
+            where: { userId: context.session.userId },
+          }),
+          (filter) => filter.category,
+          (filter) => filter.action,
+        );
+
+        return post.contentFilters.some((filter) => myFilters[filter] !== 'EXPOSE');
+      },
+    }),
+
+    publishedRevision: t.relation('publishedRevision', {
       authScopes: { $granted: '$post:view' },
-      select: (_, __, nestedSelection) => ({
-        revisions: nestedSelection({
-          where: { kind: 'PUBLISHED' },
-          orderBy: { createdAt: 'desc' },
-          take: 1,
-        }),
-      }),
-      resolve: (_, { revisions }) => revisions[0],
+      nullable: true,
+      unauthorizedResolver: () => null,
+    }),
+
+    revisions: t.relation('revisions', {
+      authScopes: { $granted: '$post:edit' },
+      query: {
+        orderBy: { createdAt: 'desc' },
+      },
     }),
 
     draftRevision: t.prismaField({
@@ -90,30 +156,6 @@ builder.prismaObject('Post', {
         }),
       }),
       resolve: (_, { revisions }) => revisions[0],
-    }),
-
-    purchasedRevision: t.withAuth({ user: true }).prismaField({
-      type: 'PostRevision',
-      select: (_, context, nestedSelection) => ({
-        revisions: nestedSelection({
-          where: {
-            purchases: {
-              some: { userId: context.session.userId },
-            },
-          },
-          take: 1,
-        }),
-      }),
-      resolve: (_, { revisions }) => revisions[0],
-    }),
-
-    revisionList: t.relation('revisions', {
-      authScopes: { $granted: '$post:edit' },
-      query: {
-        orderBy: {
-          createdAt: 'desc',
-        },
-      },
     }),
 
     liked: t.boolean({
@@ -131,46 +173,14 @@ builder.prismaObject('Post', {
       },
     }),
 
-    member: t.relation('member'),
-    space: t.relation('space'),
-    option: t.relation('option'),
-    likeCount: t.relationCount('likes'),
-    viewCount: t.relationCount('views'),
-
-    contentFilters: t.field({
-      type: [ContentFilterCategory],
-      select: { contentFilters: true },
-      resolve: (post) => post.contentFilters.map((filter) => filter.category),
-    }),
-
-    blurred: t.boolean({
-      select: { contentFilters: true },
-      resolve: async (post, _, { db, ...context }) => {
-        if (!context.session) {
-          return post.contentFilters.length > 0;
-        }
-
-        const myFilters = R.objectify(
-          await db.userContentFilterPreference.findMany({
-            select: { category: true, action: true },
-            where: { userId: context.session.userId },
-          }),
-          (filter) => filter.category,
-          (filter) => filter.action,
-        );
-
-        return post.contentFilters.some((filter) => myFilters[filter.category] !== 'EXPOSE');
-      },
-    }),
-
     reactions: t.prismaField({
       type: ['PostReaction'],
       select: {
         id: true,
-        option: { select: { receiveFeedback: true } },
+        receiveFeedback: true,
       },
       resolve: async (query, post, _, { db, ...context }) => {
-        if (!post.option.receiveFeedback) {
+        if (!post.receiveFeedback) {
           return [];
         }
 
@@ -202,18 +212,6 @@ builder.prismaObject('Post', {
       },
     }),
 
-    unlocked: t.boolean({
-      select: { option: { select: { password: true } } },
-      resolve: async (post, _, context) => {
-        if (!post.option.password) {
-          return true;
-        }
-
-        const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
-        return !!unlock && dayjs(unlock).isAfter(dayjs());
-      },
-    }),
-
     bookmarked: t.boolean({
       select: (_, { ...context }) => {
         if (!context.session) {
@@ -233,8 +231,6 @@ builder.prismaObject('Post', {
         return post.bookmarks?.length > 0;
       },
     }),
-
-    tags: t.relation('tags'),
 
     purchasedAt: t.field({
       type: 'DateTime',
@@ -258,100 +254,71 @@ builder.prismaObject('Post', {
         return purchases[0]?.createdAt ?? null;
       },
     }),
-  }),
-});
 
-builder.prismaObject('PostOption', {
-  select: { id: true },
-  fields: (t) => ({
-    id: t.exposeID('id'),
-    visibility: t.expose('visibility', { type: PostVisibility }),
-    discloseStats: t.exposeBoolean('discloseStats'),
-    receiveFeedback: t.exposeBoolean('receiveFeedback'),
-    receivePatronage: t.exposeBoolean('receivePatronage'),
-    receiveTagContribution: t.exposeBoolean('receiveTagContribution'),
-    hasPassword: t.boolean({
-      select: { password: true },
-      resolve: (option) => !!option.password,
+    //// deprecated
+
+    purchasedRevision: t.withAuth({ user: true }).prismaField({
+      type: 'PostRevision',
+      deprecationReason: 'Use PostPurchase.revision instead',
+      nullable: true,
+      select: (_, context, nestedSelection) => ({
+        revisions: nestedSelection({
+          where: {
+            purchases: {
+              some: { userId: context.session.userId },
+            },
+          },
+          take: 1,
+        }),
+      }),
+
+      resolve: (_, { revisions }) => revisions[0],
     }),
   }),
 });
 
 builder.prismaObject('PostRevision', {
   select: { id: true },
-  grantScopes: async ({ id }, { db, ...context }) => {
-    const post = await db.post.findFirstOrThrow({
-      select: {
-        id: true,
-        spaceId: true,
-        userId: true,
-        option: { select: { password: true, visibility: true } },
-      },
-      where: {
-        revisions: { some: { id } },
-      },
-    });
-
-    if (context.session) {
-      if (context.session.userId === post.userId) {
-        return ['$revision:view'];
-      }
-
-      const meAsMember = await db.spaceMember.exists({
-        where: {
-          spaceId: post.spaceId,
-          userId: context.session.userId,
-          state: 'ACTIVE',
-        },
-      });
-
-      if (meAsMember) {
-        return ['$revision:view'];
-      }
-    }
-
-    if (post.option.visibility === 'SPACE') {
-      // 스페이스 공개를 볼 수 있는 권한이 있다면 위의 조건문에서 먼저 return됨
-      return [];
-    }
-
-    if (post.option.password) {
-      const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
-
-      if (unlock && dayjs(unlock).isAfter(dayjs())) {
-        return ['$revision:view'];
-      }
-
-      return [];
-    }
-
-    return ['$revision:view'];
-  },
   fields: (t) => ({
     id: t.exposeID('id'),
     kind: t.expose('kind', { type: PostRevisionKind }),
     title: t.exposeString('title'),
     subtitle: t.exposeString('subtitle', { nullable: true }),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
+    updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
+    originalThumbnail: t.relation('originalThumbnail', { nullable: true }),
+    croppedThumbnail: t.relation('croppedThumbnail', { nullable: true }),
+    thumbnailBounds: t.expose('thumbnailBounds', { type: 'JSON', nullable: true }),
+
+    tags: t.prismaField({
+      type: ['Tag'],
+      select: (_, __, nestedSelection) => ({
+        tags: {
+          select: { tag: nestedSelection() },
+        },
+      }),
+
+      resolve: (_, { tags }) => tags.map(({ tag }) => tag),
+    }),
+
     contentKind: t.expose('contentKind', { type: PostRevisionContentKind }),
 
     content: t.field({
       type: 'JSON',
-      authScopes: { $granted: '$revision:view' },
       select: {
-        postId: true,
-        content: true,
+        freeContent: true,
         paidContent: true,
-        post: { select: { spaceId: true, option: { select: { price: true } } } },
+        price: true,
+        post: { select: { id: true, spaceId: true } },
       },
       resolve: async (revision, _, { db, ...context }) => {
-        const content = await decorateContent(db, revision.content as JSONContent[]);
+        const freeContent = await decorateContent(db, revision.freeContent.data as JSONContent[]);
         const paidContent = revision.paidContent
-          ? await decorateContent(db, revision.paidContent as JSONContent[])
+          ? await decorateContent(db, revision.paidContent.data as JSONContent[])
           : null;
 
         if (!paidContent) {
-          return createTiptapDocument(content);
+          return createTiptapDocument(freeContent);
         }
 
         if (context.session) {
@@ -359,7 +326,7 @@ builder.prismaObject('PostRevision', {
             select: { createdAt: true },
             where: {
               postId_userId: {
-                postId: revision.postId,
+                postId: revision.post.id,
                 userId: context.session.userId,
               },
             },
@@ -367,11 +334,11 @@ builder.prismaObject('PostRevision', {
 
           if (purchase) {
             return createTiptapDocument([
-              ...content,
+              ...freeContent,
               createTiptapNode({
                 type: 'access_barrier',
                 attrs: {
-                  price: revision.post.option.price,
+                  price: revision.price,
                   __data: {
                     purchasable: false,
                     purchasedAt: dayjs(purchase.createdAt).toISOString(),
@@ -391,11 +358,11 @@ builder.prismaObject('PostRevision', {
 
           if (isMember) {
             return createTiptapDocument([
-              ...content,
+              ...freeContent,
               createTiptapNode({
                 type: 'access_barrier',
                 attrs: {
-                  price: revision.post.option.price,
+                  price: revision.price,
                   __data: { purchasable: false },
                 },
               }),
@@ -404,7 +371,7 @@ builder.prismaObject('PostRevision', {
           }
         }
 
-        const paidContentText = await revisionContentToText(`${revision.id}:textPaidContent`, paidContent);
+        const paidContentText = await revisionContentToText(revision.paidContent);
 
         let paidContentImageCount = 0,
           paidContentFileCount = 0;
@@ -417,17 +384,17 @@ builder.prismaObject('PostRevision', {
         }
 
         return createTiptapDocument([
-          ...content,
+          ...freeContent,
           createTiptapNode({
             type: 'access_barrier',
             attrs: {
-              price: revision.post.option.price,
+              price: revision.price,
               __data: {
                 purchasable: true,
 
                 point: context.session ? await getUserPoint({ db, userId: context.session.userId }) : null,
 
-                postId: revision.postId,
+                postId: revision.post.id,
                 revisionId: revision.id,
 
                 counts: {
@@ -446,46 +413,22 @@ builder.prismaObject('PostRevision', {
 
     characterCount: t.field({
       type: 'Int',
-      authScopes: { $granted: '$revision:view' },
-      select: { content: true, paidContent: true },
+      select: { freeContent: true, paidContent: true },
       resolve: async (revision) => {
-        const contentText = await revisionContentToText(
-          `${revision.id}:textContent`,
-          revision.content as JSONContent[],
-        );
-        const paidContentText = await revisionContentToText(
-          `${revision.id}:textPaidContent`,
-          revision.paidContent as JSONContent[],
-        );
+        const contentText = await revisionContentToText(revision.freeContent);
+        const paidContentText = revision.paidContent ? await revisionContentToText(revision.paidContent) : '';
         return contentText.length + paidContentText.length;
       },
-      unauthorizedResolver: () => 0,
     }),
 
     previewText: t.field({
       type: 'String',
-      select: { content: true },
+      select: { freeContent: true },
       resolve: async (revision) => {
-        const contentText = await revisionContentToText(
-          `${revision.id}:textContent`,
-          revision.content as JSONContent[],
-        );
+        const contentText = await revisionContentToText(revision.freeContent);
         return contentText.slice(0, 200);
       },
-      unauthorizedResolver: () => '',
     }),
-
-    thumbnail: t.relation('thumbnail', { nullable: true }),
-  }),
-});
-
-builder.prismaObject('PostRevisionThumbnail', {
-  select: { id: true },
-  fields: (t) => ({
-    id: t.exposeID('id'),
-    bounds: t.expose('bounds', { type: 'JSON' }),
-    thumbnail: t.relation('thumbnail'),
-    origin: t.relation('origin'),
   }),
 });
 
@@ -526,12 +469,20 @@ const RevisePostInput = builder.inputType('RevisePostInput', {
 
     thumbnailId: t.id({ required: false }),
     thumbnailBounds: t.field({ type: 'JSON', required: false }),
+    tags: t.stringList({ defaultValue: [] }),
   }),
 });
 
-const DeletePostInput = builder.inputType('DeletePostInput', {
+const PublishPostInput = builder.inputType('PublishPostInput', {
   fields: (t) => ({
-    postId: t.id(),
+    revisionId: t.id(),
+    visibility: t.field({ type: PostVisibility }),
+    discloseStats: t.boolean(),
+    receiveFeedback: t.boolean(),
+    receivePatronage: t.boolean(),
+    receiveTagContribution: t.boolean(),
+    contentFilters: t.field({ type: [ContentFilterCategory] }),
+    password: t.string({ required: false }),
   }),
 });
 
@@ -544,10 +495,13 @@ const UpdatePostOptionsInput = builder.inputType('UpdatePostOptionsInput', {
     receivePatronage: t.boolean({ required: false }),
     receiveTagContribution: t.boolean({ required: false }),
     contentFilters: t.field({ type: [ContentFilterCategory], required: false }),
-    tags: t.stringList({ required: false }),
-    password: t.string({ required: false }),
   }),
-  validate: { schema: UpdatePostOptionsInputSchema },
+});
+
+const DeletePostInput = builder.inputType('DeletePostInput', {
+  fields: (t) => ({
+    postId: t.id(),
+  }),
 });
 
 const LikePostInput = builder.inputType('LikePostInput', {
@@ -606,9 +560,12 @@ builder.queryFields((t) => ({
     args: { permalink: t.arg.string() },
     resolve: async (query, _, args, { db, ...context }) => {
       const post = await db.post.findUnique({
-        include: {
-          option: { select: { visibility: true } },
-          space: { select: { visibility: true } },
+        select: {
+          id: true,
+          state: true,
+          visibility: true,
+          userId: true,
+          space: { select: { id: true, visibility: true } },
         },
         where: {
           permalink: args.permalink,
@@ -623,13 +580,13 @@ builder.queryFields((t) => ({
         throw new NotFoundError();
       }
 
-      if (post.space.visibility === 'PRIVATE' || post.option.visibility === 'SPACE' || post.state === 'DRAFT') {
+      if (post.space.visibility === 'PRIVATE' || post.state === 'DRAFT' || post.visibility === 'SPACE') {
         const member = context.session
           ? await db.spaceMember.findUnique({
-              select: { id: true },
+              select: { role: true },
               where: {
                 spaceId_userId: {
-                  spaceId: post.spaceId,
+                  spaceId: post.space.id,
                   userId: context.session.userId,
                 },
                 state: 'ACTIVE',
@@ -637,7 +594,7 @@ builder.queryFields((t) => ({
             })
           : null;
 
-        if (!member) {
+        if (!member || (post.state === 'DRAFT' && member.role !== 'ADMIN' && post.userId !== context.session?.userId)) {
           throw new PermissionDeniedError();
         }
       }
@@ -649,19 +606,19 @@ builder.queryFields((t) => ({
     },
   }),
 
-  draftRevision: t.withAuth({ user: true }).prismaField({
-    type: 'PostRevision',
-    args: { revisionId: t.arg.id() },
-    resolve: async (query, _, args, { db, ...context }) =>
-      // TODO: 어드민도 접근할 수 있게 권한 체크 추가
-      db.postRevision.findUniqueOrThrow({
-        ...query,
-        where: {
-          id: args.revisionId,
-          userId: context.session.userId,
-        },
-      }),
-  }),
+  // draftRevision: t.withAuth({ user: true }).prismaField({
+  //   type: 'PostRevision',
+  //   args: { revisionId: t.arg.id() },
+  //   resolve: async (query, _, args, { db, ...context }) =>
+  //     // TODO: 어드민도 접근할 수 있게 권한 체크 추가
+  //     db.postRevision.findUniqueOrThrow({
+  //       ...query,
+  //       where: {
+  //         id: args.revisionId,
+  //         userId: context.session.userId,
+  //       },
+  //     }),
+  // }),
 }));
 
 /**
@@ -703,94 +660,272 @@ builder.mutationFields((t) => ({
         throw new FormValidationError('content', '잘못된 내용이에요');
       }
 
+      const lastRevision = input.postId
+        ? await db.postRevision.findFirst({
+            where: { postId: input.postId },
+            orderBy: { createdAt: 'desc' },
+          })
+        : undefined;
+
       document = await sanitizeContent(document);
 
       let croppedImageId: string | undefined;
       if (input.thumbnailId) {
-        const originalImageData = await db.image.findUniqueOrThrow({
-          where: {
-            id: input.thumbnailId,
+        if (input.thumbnailBounds) {
+          const originalImageData = await db.image.findUniqueOrThrow({
+            where: {
+              id: input.thumbnailId,
+              userId: context.session.userId,
+            },
+          });
+
+          const originalImageRequest = await s3.send(
+            new GetObjectCommand({
+              Bucket: 'penxle-data',
+              Key: originalImageData.path,
+            }),
+          );
+
+          croppedImageId = await directUploadImage({
+            db,
             userId: context.session.userId,
-          },
-        });
-
-        const originalImageRequest = await s3.send(
-          new GetObjectCommand({
-            Bucket: 'penxle-data',
-            Key: originalImageData.path,
-          }),
-        );
-
-        croppedImageId = await directUploadImage({
-          db,
-          userId: context.session.userId,
-          name: originalImageData.name,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          source: await originalImageRequest.Body!.transformToByteArray(),
-          bounds: input.thumbnailBounds as ImageBounds,
-        });
+            name: originalImageData.name,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            source: await originalImageRequest.Body!.transformToByteArray(),
+            bounds: input.thumbnailBounds as ImageBounds,
+          });
+        } else {
+          croppedImageId = lastRevision?.croppedThumbnailId ?? undefined;
+        }
       }
 
       const accessBarrierPosition = document.findIndex((node) => node.type === 'access_barrier');
       const accessBarrier = accessBarrierPosition === -1 ? undefined : document[accessBarrierPosition];
-      const content = accessBarrierPosition === -1 ? document : document.slice(0, accessBarrierPosition);
-      const paidContent = accessBarrierPosition === -1 ? undefined : document.slice(accessBarrierPosition + 1);
+      const freeContentData = accessBarrierPosition === -1 ? document : document.slice(0, accessBarrierPosition);
+      const paidContentData = accessBarrierPosition === -1 ? undefined : document.slice(accessBarrierPosition + 1);
+      const freeContentHash = Buffer.from(
+        await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(freeContentData))),
+      ).toString('hex');
+      const paidContentHash = paidContentData
+        ? Buffer.from(
+            await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(paidContentData))),
+          ).toString('hex')
+        : undefined;
 
-      const price = accessBarrier?.attrs?.price ?? null;
+      const freeContent = await db.postRevisionContent.upsert({
+        where: { hash: freeContentHash },
+        create: {
+          id: createId(),
+          hash: freeContentHash,
+          data: freeContentData,
+        },
+        update: {},
+      });
+
+      const paidContent = paidContentData
+        ? await db.postRevisionContent.upsert({
+            where: { hash: paidContentHash },
+            create: {
+              id: createId(),
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              hash: paidContentHash!,
+              data: paidContentData,
+            },
+            update: {},
+          })
+        : undefined;
+
+      const price: number | undefined = accessBarrier?.attrs?.price;
 
       const postId = input.postId ?? createId();
 
-      const revision = {
+      const postTags = await Promise.all(
+        (input.tags ?? []).map((tagName) =>
+          db.tag.upsert({
+            select: { id: true },
+            where: { name: tagName },
+            create: {
+              id: createId(),
+              name: tagName,
+            },
+            update: {},
+          }),
+        ),
+      );
+
+      const revisionData = {
         userId: context.session.userId,
         kind: input.revisionKind,
         contentKind: input.contentKind,
         title: input.title,
         subtitle: input.subtitle?.length ? input.subtitle : undefined,
-        content,
-        paidContent,
-        thumbnail:
-          input.thumbnailId && croppedImageId
-            ? {
-                create: {
-                  id: createId(),
-                  thumbnail: { connect: { id: croppedImageId } },
-                  origin: { connect: { id: input.thumbnailId } },
-                  bounds: input.thumbnailBounds as object,
-                },
-              }
-            : undefined,
+        freeContentId: freeContent.id,
+        paidContentId: paidContent?.id,
+        tags: {
+          createMany: {
+            data: postTags.map((tag) => ({
+              id: createId(),
+              tagId: tag.id,
+            })),
+          },
+        },
+        price,
+        originalThumbnailId: input.thumbnailId,
+        croppedThumbnailId: croppedImageId,
+        thumbnailBounds: input.thumbnailBounds,
       };
 
-      const defaultOptions = {
-        visibility: 'PUBLIC',
-        discloseStats: true,
-        receiveFeedback: true,
-        receivePatronage: true,
-        receiveTagContribution: true,
-        price,
-      } as const;
+      /// 여기까지 데이터 가공 단계
+      /// 여기부터 포스트 생성/수정 단계
 
-      return await db.post.upsert({
+      // 1. 일단 포스트가 없었다면 생성
+      if (!input.postId) {
+        await db.post.create({
+          data: {
+            id: postId,
+            permalink: base36To10(cuid({ length: 6 })()),
+            spaceId: input.spaceId,
+            memberId: meAsMember.id,
+            userId: context.session.userId,
+            state: 'DRAFT',
+            visibility: 'SPACE',
+            discloseStats: true,
+            receiveFeedback: true,
+            receivePatronage: true,
+            receiveTagContribution: true,
+            contentFilters: [],
+          },
+        });
+      }
+
+      // 2. 리비전 생성/재사용
+
+      let revisionId = createId();
+
+      if (
+        lastRevision &&
+        lastRevision.kind === 'AUTO_SAVE' &&
+        dayjs(lastRevision.createdAt).add(5, 'minutes').isAfter(dayjs())
+      ) {
+        await db.postRevision.update({
+          where: { id: lastRevision.id },
+          data: {
+            ...revisionData,
+            tags: {
+              deleteMany: {},
+              createMany: revisionData.tags.createMany,
+            },
+            updatedAt: new Date(),
+          },
+        });
+        revisionId = lastRevision.id;
+      } else {
+        await db.postRevision.create({
+          data: {
+            id: revisionId,
+            postId,
+            ...revisionData,
+          },
+        });
+      }
+
+      /// 여기까지 포스트 생성/수정 단계
+
+      return await db.post.findUniqueOrThrow({
         ...query,
         where: { id: postId },
-        create: {
-          id: postId,
-          permalink: customAlphabet('123456789', 12)(),
-          shortlink: cuid({ length: 6 })(),
-          space: { connect: { id: input.spaceId } },
-          member: { connect: { id: meAsMember.id } },
-          user: { connect: { id: context.session.userId } },
-          state: input.revisionKind === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
-          revisions: { create: { id: createId(), ...revision } },
-          option: { create: { id: createId(), ...defaultOptions } },
+      });
+    },
+  }),
+
+  publishPost: t.withAuth({ user: true }).prismaField({
+    type: 'Post',
+    args: { input: t.arg({ type: PublishPostInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const revision = await db.postRevision.update({
+        select: { id: true, userId: true, post: { select: { id: true, publishedAt: true } } },
+        where: {
+          id: input.revisionId,
+          post: {
+            state: { not: 'DELETED' },
+          },
         },
-        update: {
-          space: { connect: { id: input.spaceId } },
-          member: { connect: { id: meAsMember.id } },
-          user: { connect: { id: context.session.userId } },
-          revisions: { create: { id: createId(), ...revision } },
-          option: { update: { price } },
-          state: input.revisionKind === 'PUBLISHED' ? 'PUBLISHED' : undefined,
+        data: { kind: 'PUBLISHED' },
+      });
+
+      if (revision.userId !== context.session.userId) {
+        const meAsMember = await db.spaceMember.findUniqueOrThrow({
+          select: { role: true },
+          where: {
+            spaceId_userId: {
+              spaceId: revision.post.id,
+              userId: context.session.userId,
+            },
+            state: 'ACTIVE',
+          },
+        });
+
+        if (meAsMember.role !== 'ADMIN') {
+          throw new PermissionDeniedError();
+        }
+      }
+
+      const password = await match(input.password)
+        // eslint-disable-next-line unicorn/no-useless-undefined
+        .with('', () => undefined)
+        .with(P.string, (password) => hash(password))
+        .with(P.nullish, () => null)
+        .exhaustive();
+
+      await db.postRevision.updateMany({
+        where: {
+          postId: revision.post.id,
+          kind: 'PUBLISHED',
+          id: { not: revision.id },
+        },
+        data: { kind: 'ARCHIVED' },
+      });
+
+      return await db.post.update({
+        ...query,
+        where: { id: revision.post.id },
+        data: {
+          state: 'PUBLISHED',
+          publishedAt: revision.post.publishedAt ?? new Date(),
+          publishedRevisionId: revision.id,
+          visibility: input.visibility,
+          discloseStats: input.discloseStats,
+          receiveFeedback: input.receiveFeedback,
+          receivePatronage: input.receivePatronage,
+          receiveTagContribution: input.receiveTagContribution,
+          contentFilters: input.contentFilters,
+          password,
+        },
+      });
+    },
+  }),
+
+  updatePostOptions: t.withAuth({ user: true }).prismaField({
+    type: 'Post',
+    args: { input: t.arg({ type: UpdatePostOptionsInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      return db.post.update({
+        ...query,
+        where: {
+          id: input.postId,
+          OR: [
+            { userId: context.session.userId },
+            { space: { members: { some: { userId: context.session.userId, role: 'ADMIN', state: 'ACTIVE' } } } },
+          ],
+        },
+
+        data: {
+          visibility: input.visibility ?? undefined,
+          discloseStats: input.discloseStats ?? undefined,
+          receiveFeedback: input.receiveFeedback ?? undefined,
+          receivePatronage: input.receivePatronage ?? undefined,
+          receiveTagContribution: input.receiveTagContribution ?? undefined,
+          contentFilters: input.contentFilters ?? undefined,
         },
       });
     },
@@ -826,109 +961,7 @@ builder.mutationFields((t) => ({
         where: { id: post.id },
         data: {
           state: 'DELETED',
-        },
-      });
-    },
-  }),
-
-  updatePostOptions: t.withAuth({ user: true }).prismaField({
-    type: 'Post',
-    args: { input: t.arg({ type: UpdatePostOptionsInput }) },
-    resolve: async (query, _, { input }, { db, ...context }) => {
-      const post = await db.post.findUniqueOrThrow({
-        select: { id: true, userId: true, spaceId: true },
-        where: { id: input.postId },
-      });
-
-      if (post.userId !== context.session.userId) {
-        const meAsMember = await db.spaceMember.findUniqueOrThrow({
-          select: { role: true },
-          where: {
-            spaceId_userId: {
-              spaceId: post.spaceId,
-              userId: context.session.userId,
-            },
-          },
-        });
-
-        if (meAsMember.role !== 'ADMIN') {
-          throw new PermissionDeniedError();
-        }
-      }
-
-      if (input.contentFilters) {
-        await db.postContentFilter.deleteMany({ where: { postId: post.id } });
-      }
-
-      let postTags: { id: string }[] = [];
-
-      if (input.tags) {
-        await db.postTag.deleteMany({
-          where: {
-            postId: post.id,
-            pinned: true,
-          },
-        });
-
-        postTags = await Promise.all(
-          input.tags.map(async (tagName) =>
-            db.tag.upsert({
-              select: { id: true },
-              where: { name: tagName },
-              create: {
-                id: createId(),
-                name: tagName,
-              },
-              update: {},
-            }),
-          ),
-        );
-      }
-
-      const password = await match(input.password)
-        // eslint-disable-next-line unicorn/no-useless-undefined
-        .with('', () => undefined)
-        .with(P.string, (password) => hash(password))
-        .with(P.nullish, () => null)
-        .exhaustive();
-
-      if (password !== undefined) {
-        await redis.del(`Post:${post.id}:passwordUnlock`);
-      }
-
-      return await db.post.update({
-        ...query,
-        where: { id: post.id },
-        data: {
-          option: {
-            update: {
-              visibility: input.visibility ?? undefined,
-              discloseStats: input.discloseStats ?? undefined,
-              receiveFeedback: input.receiveFeedback ?? undefined,
-              receivePatronage: input.receivePatronage ?? undefined,
-              receiveTagContribution: input.receiveTagContribution ?? undefined,
-              password,
-            },
-          },
-          contentFilters: {
-            createMany: {
-              data:
-                input.contentFilters?.map((category) => ({
-                  id: createId(),
-                  category,
-                })) ?? [],
-            },
-          },
-          tags: {
-            createMany: {
-              data: postTags.map((tag) => ({
-                id: createId(),
-                tagId: tag.id,
-                pinned: true,
-                userId: context.session.userId,
-              })),
-            },
-          },
+          publishedRevision: { update: { kind: 'ARCHIVED' } },
         },
       });
     },
@@ -989,7 +1022,7 @@ builder.mutationFields((t) => ({
           id: true,
           userId: true,
           spaceId: true,
-          option: { select: { price: true } },
+          publishedRevision: { select: { id: true, price: true } },
         },
         where: { id: input.postId },
       });
@@ -1001,7 +1034,7 @@ builder.mutationFields((t) => ({
         },
       });
 
-      if (isMember || !post.option.price) {
+      if (isMember || !post.publishedRevision?.price) {
         throw new IntentionalError('구매할 수 없는 포스트에요');
       }
 
@@ -1016,16 +1049,7 @@ builder.mutationFields((t) => ({
         throw new IntentionalError('이미 구매한 포스트에요');
       }
 
-      const revision = await db.postRevision.findFirstOrThrow({
-        select: { id: true },
-        where: {
-          postId: post.id,
-          kind: 'PUBLISHED',
-        },
-        orderBy: { createdAt: 'desc' },
-      });
-
-      if (revision.id !== input.revisionId) {
+      if (post.publishedRevision.id !== input.revisionId) {
         throw new IntentionalError('포스트 내용이 변경되었어요. 다시 시도해 주세요');
       }
 
@@ -1034,14 +1058,14 @@ builder.mutationFields((t) => ({
           id: createId(),
           userId: context.session.userId,
           postId: input.postId,
-          revisionId: revision.id,
+          revisionId: post.publishedRevision.id,
         },
       });
 
       await deductUserPoint({
         db,
         userId: context.session.userId,
-        amount: post.option.price,
+        amount: post.publishedRevision.price,
         targetId: purchase.id,
         cause: 'UNLOCK_CONTENT',
       });
@@ -1100,11 +1124,14 @@ builder.mutationFields((t) => ({
       }
 
       const post = await db.post.findUniqueOrThrow({
-        select: { id: true, option: true },
+        select: {
+          id: true,
+          receiveFeedback: true,
+        },
         where: { id: input.postId },
       });
 
-      if (!post.option.receiveFeedback) {
+      if (!post.receiveFeedback) {
         throw new IntentionalError('피드백을 받지 않는 포스트에요');
       }
 
@@ -1149,15 +1176,13 @@ builder.mutationFields((t) => ({
       const post = await db.post.findUniqueOrThrow({
         select: {
           id: true,
-          option: {
-            select: { password: true },
-          },
+          password: true,
         },
         where: { id: input.postId },
       });
 
-      if (post.option.password) {
-        if (!(await verify(post.option.password, input.password))) {
+      if (post.password) {
+        if (!(await verify(post.password, input.password))) {
           throw new FormValidationError('password', '잘못된 비밀번호에요');
         }
 

@@ -120,11 +120,9 @@ builder.prismaObject('Space', {
             // input.mine이 true인데 meAsMember가 null이면 위에서 return되서 여기까지 안옴
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             memberId: input.mine ? meAsMember!.id : undefined,
-            option: {
-              visibility: meAsMember ? undefined : 'PUBLIC',
-            },
+            visibility: meAsMember ? undefined : 'PUBLIC',
           },
-          orderBy: { createdAt: 'desc' },
+          orderBy: { publishedAt: 'desc' },
         });
       },
     }),

@@ -27,16 +27,12 @@
           id
           likeCount
           liked
+          receiveFeedback
 
           reactions {
             id
             emoji
             mine
-          }
-
-          option {
-            id
-            receiveFeedback
           }
         }
 
@@ -146,11 +142,11 @@
         {/if}
 
         <Tooltip
-          enabled={!$query.post.option.receiveFeedback}
+          enabled={!$query.post.receiveFeedback}
           message="피드백 받기를 설정하지 않은 포스트에요"
           placement="top"
         >
-          <EmojiPicker {$query} disabled={!$query.post.option.receiveFeedback} variant="toolbar" />
+          <EmojiPicker {$query} disabled={!$query.post.receiveFeedback} variant="toolbar" />
         </Tooltip>
       </div>
 

@@ -152,23 +152,16 @@ builder.prismaObject('User', {
             userId: user.id,
             post: {
               state: 'PUBLISHED',
-              space: { state: 'ACTIVE' },
-              AND: [
+              space: {
+                state: 'ACTIVE',
+                OR: [{ visibility: 'PUBLIC' }, { visibility: 'PRIVATE', members: { some: { userId: user.id } } }],
+              },
+              OR: [
+                { visibility: 'PUBLIC' },
+                { visibility: 'UNLISTED' },
                 {
-                  OR: [
-                    { option: { visibility: 'PUBLIC' } },
-                    { option: { visibility: 'UNLISTED' } },
-                    {
-                      option: { visibility: 'SPACE' },
-                      space: { members: { some: { userId: user.id } } },
-                    },
-                  ],
-                },
-                {
-                  OR: [
-                    { space: { visibility: 'PUBLIC' } },
-                    { space: { visibility: 'PRIVATE', members: { some: { userId: user.id } } } },
-                  ],
+                  visibility: 'SPACE',
+                  space: { members: { some: { userId: user.id } } },
                 },
               ],
             },
@@ -196,23 +189,16 @@ builder.prismaObject('User', {
             userId: user.id,
             post: {
               state: 'PUBLISHED',
-              space: { state: 'ACTIVE' },
-              AND: [
+              space: {
+                state: 'ACTIVE',
+                OR: [{ visibility: 'PUBLIC' }, { visibility: 'PRIVATE', members: { some: { userId: user.id } } }],
+              },
+              OR: [
+                { visibility: 'PUBLIC' },
+                { visibility: 'UNLISTED' },
                 {
-                  OR: [
-                    { option: { visibility: 'PUBLIC' } },
-                    { option: { visibility: 'UNLISTED' } },
-                    {
-                      option: { visibility: 'SPACE' },
-                      space: { members: { some: { userId: user.id } } },
-                    },
-                  ],
-                },
-                {
-                  OR: [
-                    { space: { visibility: 'PUBLIC' } },
-                    { space: { visibility: 'PRIVATE', members: { some: { userId: user.id } } } },
-                  ],
+                  visibility: 'SPACE',
+                  space: { members: { some: { userId: user.id } } },
                 },
               ],
             },

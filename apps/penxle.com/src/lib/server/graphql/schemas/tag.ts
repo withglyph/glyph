@@ -29,20 +29,10 @@ builder.prismaObject('Tag', {
       select: (input, context, nestedSelection) => {
         const dateBefore = input.dateBefore ? dayjs(input.dateBefore).toDate() : undefined;
         return {
-          posts: {
-            select: { post: nestedSelection() },
+          postRevisions: {
+            select: { revision: { select: { post: nestedSelection() } } },
             where: {
-              post: {
-                createdAt: dateBefore ? { lt: dateBefore } : undefined,
-                option: { visibility: 'PUBLIC', password: null },
-                space: {
-                  state: 'ACTIVE',
-                  userMutes: context.session
-                    ? {
-                        none: { userId: context.session.userId },
-                      }
-                    : undefined,
-                },
+              revision: {
                 tags: context.session
                   ? {
                       none: {
@@ -54,14 +44,28 @@ builder.prismaObject('Tag', {
                       },
                     }
                   : undefined,
+                post: {
+                  publishedAt: dateBefore ? { lt: dateBefore } : undefined,
+                  visibility: 'PUBLIC',
+                  password: null,
+                  space: {
+                    state: 'ACTIVE',
+                    userMutes: context.session
+                      ? {
+                          none: { userId: context.session.userId },
+                        }
+                      : undefined,
+                  },
+                },
               },
             },
-            orderBy: { post: { createdAt: 'desc' } },
+
+            orderBy: { revision: { post: { publishedAt: 'desc' } } },
           },
         };
       },
 
-      resolve: (_, { posts }) => posts.map(({ post }) => post),
+      resolve: (_, { postRevisions }) => postRevisions.map(({ revision }) => revision.post),
     }),
 
     followed: t.field({
@@ -116,14 +120,6 @@ builder.prismaObject('TagWikiRevision', {
     id: t.exposeID('id'),
     content: t.exposeString('content'),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
-  }),
-});
-
-builder.prismaObject('PostTag', {
-  fields: (t) => ({
-    id: t.exposeID('id'),
-    tag: t.relation('tag'),
-    pinned: t.exposeBoolean('pinned'),
   }),
 });
 

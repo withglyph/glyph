@@ -198,6 +198,7 @@ type Mutation {
   muteTag(input: MuteTagInput!): Tag!
   prepareFileUpload: PrepareFileUploadResult!
   prepareImageUpload: PrepareImageUploadResult!
+  publishPost(input: PublishPostInput!): Post!
   purchasePoint(input: PurchasePointInput!): PointPurchase!
   purchasePost(input: PurchasePostInput!): Post!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
@@ -281,33 +282,28 @@ type Post {
   bookmarked: Boolean!
   contentFilters: [ContentFilterCategory!]!
   createdAt: DateTime!
+  discloseStats: Boolean!
   draftRevision(revisionId: ID): PostRevision!
+  hasPassword: Boolean!
   id: ID!
   likeCount: Int!
   liked: Boolean!
   member: SpaceMember!
-  option: PostOption!
   permalink: String!
+  publishedAt: DateTime
+  publishedRevision: PostRevision
   purchasedAt: DateTime
-  purchasedRevision: PostRevision!
+  purchasedRevision: PostRevision @deprecated(reason: "Use PostPurchase.revision instead")
   reactions: [PostReaction!]!
-  revision: PostRevision!
-  revisionList: [PostRevision!]!
-  shortlink: String!
-  space: Space!
-  state: PostState!
-  tags: [PostTag!]!
-  unlocked: Boolean!
-  viewCount: Int!
-}
-
-type PostOption {
-  discloseStats: Boolean!
-  hasPassword: Boolean!
-  id: ID!
   receiveFeedback: Boolean!
   receivePatronage: Boolean!
   receiveTagContribution: Boolean!
+  revisions: [PostRevision!]!
+  shortlink: String!
+  space: Space!
+  state: PostState!
+  unlocked: Boolean!
+  viewCount: Int!
   visibility: PostVisibility!
 }
 
@@ -322,12 +318,16 @@ type PostRevision {
   content: JSON!
   contentKind: PostRevisionContentKind!
   createdAt: DateTime!
+  croppedThumbnail: Image
   id: ID!
   kind: PostRevisionKind!
+  originalThumbnail: Image
   previewText: String!
   subtitle: String
-  thumbnail: PostRevisionThumbnail
+  tags: [Tag!]!
+  thumbnailBounds: JSON
   title: String!
+  updatedAt: DateTime!
 }
 
 enum PostRevisionContentKind {
@@ -336,28 +336,16 @@ enum PostRevisionContentKind {
 }
 
 enum PostRevisionKind {
+  ARCHIVED
   AUTO_SAVE
   MANUAL_SAVE
   PUBLISHED
-}
-
-type PostRevisionThumbnail {
-  bounds: JSON!
-  id: ID!
-  origin: Image!
-  thumbnail: Image!
 }
 
 enum PostState {
   DELETED
   DRAFT
   PUBLISHED
-}
-
-type PostTag {
-  id: ID!
-  pinned: Boolean!
-  tag: Tag!
 }
 
 enum PostVisibility {
@@ -389,6 +377,17 @@ type ProvisionedUser {
   name: String
 }
 
+input PublishPostInput {
+  contentFilters: [ContentFilterCategory!]!
+  discloseStats: Boolean!
+  password: String
+  receiveFeedback: Boolean!
+  receivePatronage: Boolean!
+  receiveTagContribution: Boolean!
+  revisionId: ID!
+  visibility: PostVisibility!
+}
+
 input PurchasePointInput {
   paymentMethod: PaymentMethod!
   pointAgreement: Boolean!
@@ -403,7 +402,6 @@ input PurchasePostInput {
 type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
-  draftRevision(revisionId: ID!): PostRevision!
   flash: Flash
   hello(name: String!): String!
   me: User
@@ -436,6 +434,7 @@ input RevisePostInput {
   revisionKind: PostRevisionKind!
   spaceId: ID!
   subtitle: String
+  tags: [String!]! = []
   thumbnailBounds: JSON
   thumbnailId: ID
   title: String!
@@ -580,12 +579,10 @@ input UnsetParentTagInput {
 input UpdatePostOptionsInput {
   contentFilters: [ContentFilterCategory!]
   discloseStats: Boolean
-  password: String
   postId: ID!
   receiveFeedback: Boolean
   receivePatronage: Boolean
   receiveTagContribution: Boolean
-  tags: [String!]
   visibility: PostVisibility
 }
 

@@ -23,13 +23,8 @@
           content
           title
           subtitle
-        }
 
-        tags {
-          id
-          pinned
-
-          tag {
+          tags {
             id
             name
           }
@@ -55,7 +50,7 @@
     title = $query.post.draftRevision.title;
     subtitle = $query.post.draftRevision.subtitle ?? null;
     content = $query.post.draftRevision.content;
-    tags = $query.post.tags.map(({ tag }) => tag.name);
+    tags = $query.post.draftRevision.tags.map((tag) => tag.name);
     kind = $query.post.draftRevision.contentKind;
   }
 </script>

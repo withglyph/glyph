@@ -1,4 +1,5 @@
 const nf = new Intl.NumberFormat('en-US');
+const base36Characters = '0123456789abcdefghijklmnopqrstuvwxyz';
 
 export const clamp = (value: number, min: number, max: number) => {
   return Math.min(Math.max(value, min), max);
@@ -26,4 +27,13 @@ export const humanizeNumber = (value: number) => {
 
 export const calcurateReadingTime = (characterCount: number) => {
   return comma(Math.ceil(characterCount / 700));
+};
+
+export const base36To10 = (value: string) => {
+  let result = 0n;
+  for (const digit of value) {
+    result = result * 36n + BigInt(base36Characters.indexOf(digit));
+  }
+
+  return result.toString();
 };

@@ -20,29 +20,22 @@
         permalink
         blurred
         purchasedAt
+        publishedAt
 
-        tags {
-          id
-
-          tag {
-            id
-            name
-          }
-        }
-
-        revision {
+        publishedRevision @_required {
           id
           title
           previewText
           createdAt
 
-          thumbnail {
+          croppedThumbnail {
             id
+            ...Image_image
+          }
 
-            thumbnail {
-              id
-              ...Image_image
-            }
+          tags {
+            id
+            name
           }
         }
 
@@ -96,7 +89,7 @@
           {dayjs($post.purchasedAt).formatAsDate()}에 결제된 글 보기
         </Link>
       {:else}
-        <time class="body-13-m text-secondary">{dayjs($post.revision.createdAt).formatAsDate()}</time>
+        <time class="body-13-m text-secondary">{dayjs($post.publishedAt).formatAsDate()}</time>
       {/if}
     </div>
     <button type="button">
@@ -107,7 +100,7 @@
 
 <div class="flex flex-col gap-2 w-full bg-cardprimary sm:(border border-secondary rounded-2xl)">
   <a class="pt-3 px-6 sm:pt-6" href={`/${$post.space.slug}/${$post.permalink}`}>
-    <h2 class="title-20-eb">{$post.revision.title}</h2>
+    <h2 class="title-20-eb">{$post.publishedRevision.title}</h2>
 
     <div class="relative">
       <article
@@ -117,13 +110,13 @@
         )}
       >
         <p class="grow bodylong-16-m text-secondary break-all line-clamp-6 whitespace-pre-line">
-          {$post.revision.previewText}
+          {$post.publishedRevision.previewText}
         </p>
 
-        {#if $post.revision.thumbnail}
+        {#if $post.publishedRevision.croppedThumbnail}
           <Image
             class="h-11.25rem sm:aspect-square object-cover rounded-lg flex-none"
-            $image={$post.revision.thumbnail.thumbnail}
+            $image={$post.publishedRevision.croppedThumbnail}
           />
         {/if}
       </article>
@@ -143,11 +136,11 @@
   </a>
 
   <div class="flex flex-wrap gap-1.5 pb-3 px-6 sm:pb-6">
-    {#each $post.tags.slice(0, 4) as { tag } (tag.id)}
+    {#each $post.publishedRevision.tags.slice(0, 4) as tag (tag.id)}
       <Tag href={`tag/${tag.name}`} size="sm">#{tag.name}</Tag>
     {/each}
-    {#if $post.tags.length > 4}
-      <Tag size="sm">+{$post.tags.length - 4}개의 태그</Tag>
+    {#if $post.publishedRevision.tags.length > 4}
+      <Tag size="sm">+{$post.publishedRevision.tags.length - 4}개의 태그</Tag>
     {/if}
   </div>
 </div>

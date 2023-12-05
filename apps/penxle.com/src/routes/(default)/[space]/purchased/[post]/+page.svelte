@@ -7,7 +7,7 @@
       post(permalink: $permalink) {
         id
 
-        purchasedRevision {
+        purchasedRevision @_required {
           id
           ...Post_postRevision
         }

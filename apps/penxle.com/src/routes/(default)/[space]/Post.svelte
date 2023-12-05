@@ -61,22 +61,8 @@
           unlocked
           contentFilters
           blurred
-
-          option {
-            id
-            hasPassword
-            receiveFeedback
-          }
-
-          tags {
-            id
-            pinned
-
-            tag {
-              id
-              name
-            }
-          }
+          hasPassword
+          receiveFeedback
 
           reactions {
             id
@@ -124,7 +110,7 @@
   $: postRevision = fragment(
     _postRevision,
     graphql(`
-      fragment Post_postRevision on PostRevision {
+      fragment Post_postRevision on PostRevision @_required {
         id
         title
         subtitle
@@ -134,13 +120,14 @@
         contentKind
         previewText
 
-        thumbnail {
+        croppedThumbnail {
           id
+          url
+        }
 
-          thumbnail {
-            id
-            url
-          }
+        tags {
+          id
+          name
         }
       }
     `),
@@ -200,7 +187,7 @@
         id
         unlocked
 
-        revision {
+        publishedRevision {
           id
           content
         }
@@ -280,7 +267,7 @@
 
 <Helmet
   description={$postRevision.previewText}
-  image={$postRevision.thumbnail?.thumbnail.url ?? 'https://pnxl.net/assets/opengraph/default-cover.png'}
+  image={$postRevision.croppedThumbnail?.url ?? 'https://pnxl.net/assets/opengraph/default-cover.png'}
   title={$postRevision.title}
 />
 
@@ -402,7 +389,7 @@
       </div>
     {/if}
 
-    {#if !$query.post.option.hasPassword || $query.post.space.meAsMember || $query.post.unlocked}
+    {#if !$query.post.hasPassword || $query.post.space.meAsMember || $query.post.unlocked}
       <div class="relative">
         {#if $postRevision.contentKind === 'ARTICLE'}
           <article
@@ -495,7 +482,7 @@
     <hr class="w-full border-color-alphagray-10" />
 
     <div class="flex gap-2 flex-wrap">
-      {#each $query.post.tags as { tag } (tag.id)}
+      {#each $postRevision.tags as tag (tag.id)}
         <Tag size="sm">
           #{tag.name}
         </Tag>
@@ -514,11 +501,11 @@
         </button>
       {:else}
         <Tooltip
-          enabled={!$query.post.option.receiveFeedback}
+          enabled={!$query.post.receiveFeedback}
           message="피드백 받기를 설정하지 않은 포스트에요"
           placement="top"
         >
-          <EmojiPicker {$query} disabled={!$query.post.option.receiveFeedback} />
+          <EmojiPicker {$query} disabled={!$query.post.receiveFeedback} />
         </Tooltip>
       {/if}
 

@@ -65,11 +65,10 @@ model Image {
   hash        String
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  profilesUsingThisAsAvatar               Profile[]
-  spacesUsingThisAsIcon                   Space[]
-  postRevisionsUsingThisAsImage           PostRevisionImage[]
-  postRevisionsUsingThisAsThumbnail       PostRevisionThumbnail[]
-  postRevisionsUsingThisAsThumbnailOrigin PostRevisionThumbnail[] @relation("origin")
+  profilesUsingThisAsAvatar                 Profile[]
+  spacesUsingThisAsIcon                     Space[]
+  postRevisionsUsingThisAsCroppedThumbnail  PostRevision[]
+  postRevisionsUsingThisAsOriginalThumbnail PostRevision[] @relation("origin")
 
   @@map("images")
 }
@@ -123,41 +122,36 @@ model PointTransaction {
 }
 
 model Post {
-  id        String      @id
-  permalink String      @unique
-  shortlink String      @unique
-  spaceId   String      @map("space_id")
-  space     Space       @relation(fields: [spaceId], references: [id])
-  memberId  String      @map("member_id")
-  member    SpaceMember @relation(fields: [memberId], references: [id])
-  userId    String      @map("user_id")
-  user      User        @relation(fields: [userId], references: [id])
-  optionId  String      @unique @map("option_id")
-  option    PostOption  @relation(fields: [optionId], references: [id])
-  state     PostState
-  createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  id                  String        @id
+  permalink           String        @unique
+  spaceId             String        @map("space_id")
+  space               Space         @relation(fields: [spaceId], references: [id])
+  memberId            String        @map("member_id")
+  member              SpaceMember   @relation(fields: [memberId], references: [id])
+  userId              String        @map("user_id")
+  user                User          @relation(fields: [userId], references: [id])
+  publishedRevisionId String?       @map("published_revision_id")
+  publishedRevision   PostRevision? @relation(name: "published_revision", fields: [publishedRevisionId], references: [id])
 
-  likes          PostLike[]
-  revisions      PostRevision[]
-  views          PostView[]
-  purchases      PostPurchase[]
-  reactions      PostReaction[]
-  contentFilters PostContentFilter[]
-  tags           PostTag[]
-  bookmarks      BookmarkGroupPost[]
+  state                  PostState
+  contentFilters         ContentFilterCategory[] @map("content_filters")
+  visibility             PostVisibility
+  discloseStats          Boolean                 @map("disclose_stats")
+  receiveFeedback        Boolean                 @map("receive_feedback")
+  receivePatronage       Boolean                 @map("receive_patronage")
+  receiveTagContribution Boolean                 @map("receive_tag_contribution")
+  password               String?
+  createdAt              DateTime                @default(now()) @map("created_at") @db.Timestamptz
+  publishedAt            DateTime?               @map("published_at") @db.Timestamptz
+
+  likes     PostLike[]
+  revisions PostRevision[]
+  views     PostView[]
+  purchases PostPurchase[]
+  reactions PostReaction[]
+  bookmarks BookmarkGroupPost[]
 
   @@map("posts")
-}
-
-model PostContentFilter {
-  id        String                @id
-  postId    String                @map("post_id")
-  post      Post                  @relation(fields: [postId], references: [id])
-  category  ContentFilterCategory
-  createdAt DateTime              @default(now()) @map("created_at") @db.Timestamptz
-
-  @@unique([postId, category])
-  @@map("post_content_filters")
 }
 
 model PostLike {
@@ -170,22 +164,6 @@ model PostLike {
 
   @@unique([postId, userId])
   @@map("post_likes")
-}
-
-model PostOption {
-  id                     String         @id
-  price                  Int?
-  visibility             PostVisibility
-  discloseStats          Boolean        @map("disclose_stats")
-  receiveFeedback        Boolean        @map("receive_feedback")
-  receivePatronage       Boolean        @map("receive_patronage")
-  receiveTagContribution Boolean        @map("receive_tag_contribution")
-  password               String?
-  createdAt              DateTime       @default(now()) @map("created_at") @db.Timestamptz
-
-  post Post?
-
-  @@map("post_options")
 }
 
 model PostPurchase {
@@ -217,66 +195,61 @@ model PostReaction {
 }
 
 model PostRevision {
-  id          String                  @id
-  postId      String                  @map("post_id")
-  post        Post                    @relation(fields: [postId], references: [id])
-  userId      String                  @map("user_id")
-  user        User                    @relation(fields: [userId], references: [id])
-  kind        PostRevisionKind
-  contentKind PostRevisionContentKind
-  title       String
-  subtitle    String?
-  content     Json
-  paidContent Json?                   @map("paid_content")
-  createdAt   DateTime                @default(now()) @map("created_at") @db.Timestamptz
+  id            String               @id
+  postId        String               @map("post_id")
+  post          Post                 @relation(fields: [postId], references: [id])
+  userId        String               @map("user_id")
+  user          User                 @relation(fields: [userId], references: [id])
+  freeContentId String               @map("free_content_id")
+  freeContent   PostRevisionContent  @relation(name: "free_content", fields: [freeContentId], references: [id])
+  paidContentId String?              @map("paid_content_id")
+  paidContent   PostRevisionContent? @relation(name: "paid_content", fields: [paidContentId], references: [id])
 
-  thumbnail PostRevisionThumbnail?
-  images    PostRevisionImage[]
-  purchases PostPurchase[]
+  contentKind PostRevisionContentKind
+  price       Int?
+
+  croppedThumbnailId  String? @map("cropped_thumbnail_id")
+  croppedThumbnail    Image?  @relation(fields: [croppedThumbnailId], references: [id])
+  originalThumbnailId String? @map("original_thumbnail_id")
+  originalThumbnail   Image?  @relation("origin", fields: [originalThumbnailId], references: [id])
+  thumbnailBounds     Json?
+
+  kind      PostRevisionKind
+  title     String
+  subtitle  String?
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime         @default(now()) @map("updated_at") @db.Timestamptz
+
+  purchases                         PostPurchase[]
+  tags                              PostRevisionTag[]
+  postsUsingThisAsPublishedRevision Post[]            @relation(name: "published_revision")
 
   @@index([createdAt])
   @@map("post_revisions")
 }
 
-model PostRevisionThumbnail {
-  id          String       @id
-  revisionId  String       @unique @map("revision_id")
-  revision    PostRevision @relation(fields: [revisionId], references: [id])
-  thumbnailId String       @map("thumbnail_id")
-  thumbnail   Image        @relation(fields: [thumbnailId], references: [id])
-  originId    String       @map("origin_id")
-  origin      Image        @relation("origin", fields: [originId], references: [id])
-  bounds      Json
-  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz
+model PostRevisionContent {
+  id        String   @id
+  hash      String   @unique
+  data      Json
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  @@map("post_revision_thumbnails")
+  revisionsUsingThisAsFreeContent PostRevision[] @relation("free_content")
+  revisionsUsingThisAsPaidContent PostRevision[] @relation("paid_content")
+
+  @@map("post_revision_contents")
 }
 
-model PostRevisionImage {
+model PostRevisionTag {
   id         String       @id
   revisionId String       @map("revision_id")
   revision   PostRevision @relation(fields: [revisionId], references: [id])
-  imageId    String       @map("image_id")
-  image      Image        @relation(fields: [imageId], references: [id])
+  tagId      String       @map("tag_id")
+  tag        Tag          @relation(fields: [tagId], references: [id])
   createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz
 
-  @@unique([revisionId, imageId])
-  @@map("post_revision_images")
-}
-
-model PostTag {
-  id        String   @id
-  postId    String   @map("post_id")
-  post      Post     @relation(fields: [postId], references: [id])
-  tagId     String   @map("tag_id")
-  tag       Tag      @relation(fields: [tagId], references: [id])
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
-  pinned    Boolean  @default(false)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  @@unique([postId, tagId])
-  @@map("post_tags")
+  @@unique([revisionId, tagId])
+  @@map("post_revision_tags")
 }
 
 model PostView {
@@ -442,12 +415,12 @@ model Tag {
   name      String   @unique
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  wiki      TagWiki?
-  parents   TagHierarchy[] @relation("parents")
-  children  TagHierarchy[] @relation("children")
-  userMutes UserTagMute[]
-  posts     PostTag[]
-  followers TagFollow[]
+  wiki          TagWiki?
+  parents       TagHierarchy[]    @relation("parents")
+  children      TagHierarchy[]    @relation("children")
+  userMutes     UserTagMute[]
+  postRevisions PostRevisionTag[]
+  followers     TagFollow[]
   // spacesUsingThis SpaceTag[]
 
   @@index(createdAt)
@@ -539,7 +512,6 @@ model User {
   spaceBlockedBy           SpaceUserBlock[]
   spaceMasquerades         SpaceMasquerade[]
   postReactions            PostReaction[]
-  postTags                 PostTag[]
   bookmarks                BookmarkGroup[]
 
   @@index([email, state])
@@ -709,6 +681,7 @@ enum PostRevisionKind {
   AUTO_SAVE
   MANUAL_SAVE
   PUBLISHED
+  ARCHIVED
 
   @@map("_post_revision_kind")
 }

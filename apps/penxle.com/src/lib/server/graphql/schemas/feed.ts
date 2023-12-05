@@ -14,15 +14,25 @@ builder.queryFields((t) => ({
 
       return db.post.findMany({
         ...query,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { publishedAt: 'desc' },
         where: {
           state: 'PUBLISHED',
           createdAt: dateBefore?.isValid() ? { lt: dateBefore.toDate() } : undefined,
-          option: { visibility: 'PUBLIC', password: null },
+          visibility: 'PUBLIC',
+          password: null,
           space: {
             state: 'ACTIVE',
             userMutes: {
               none: { userId: context.session.userId },
+            },
+          },
+          publishedRevision: {
+            tags: {
+              none: {
+                tag: {
+                  userMutes: { some: { userId: context.session.userId } },
+                },
+              },
             },
           },
           OR: [
@@ -34,24 +44,19 @@ builder.queryFields((t) => ({
               },
             },
             {
-              tags: {
-                some: {
-                  tag: {
-                    followers: {
-                      some: { userId: context.session.userId },
+              publishedRevision: {
+                tags: {
+                  some: {
+                    tag: {
+                      followers: {
+                        some: { userId: context.session.userId },
+                      },
                     },
                   },
                 },
               },
             },
           ],
-          tags: {
-            none: {
-              tag: {
-                userMutes: { some: { userId: context.session.userId } },
-              },
-            },
-          },
         },
       });
     },
@@ -65,29 +70,32 @@ builder.queryFields((t) => ({
 
       return db.post.findMany({
         ...query,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { publishedAt: 'desc' },
         where: {
           state: 'PUBLISHED',
           createdAt: dateBefore?.isValid() ? { lt: dateBefore.toDate() } : undefined,
-          option: { visibility: 'PUBLIC', password: null },
+          visibility: 'PUBLIC',
+          password: null,
+          publishedRevision: {
+            tags: {
+              some: {
+                tag: {
+                  followers: {
+                    some: { userId: context.session.userId },
+                  },
+                },
+              },
+              none: {
+                tag: {
+                  userMutes: { some: { userId: context.session.userId } },
+                },
+              },
+            },
+          },
           space: {
             state: 'ACTIVE',
             userMutes: {
               none: { userId: context.session.userId },
-            },
-          },
-          tags: {
-            some: {
-              tag: {
-                followers: {
-                  some: { userId: context.session.userId },
-                },
-              },
-            },
-            none: {
-              tag: {
-                userMutes: { some: { userId: context.session.userId } },
-              },
             },
           },
         },
@@ -103,11 +111,21 @@ builder.queryFields((t) => ({
 
       return db.post.findMany({
         ...query,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { publishedAt: 'desc' },
         where: {
           state: 'PUBLISHED',
           createdAt: dateBefore?.isValid() ? { lt: dateBefore.toDate() } : undefined,
-          option: { visibility: 'PUBLIC', password: null },
+          visibility: 'PUBLIC',
+          password: null,
+          publishedRevision: {
+            tags: {
+              none: {
+                tag: {
+                  userMutes: { some: { userId: context.session.userId } },
+                },
+              },
+            },
+          },
           space: {
             state: 'ACTIVE',
             userMutes: {
@@ -115,13 +133,6 @@ builder.queryFields((t) => ({
             },
             followers: {
               some: { userId: context.session.userId },
-            },
-          },
-          tags: {
-            none: {
-              tag: {
-                userMutes: { some: { userId: context.session.userId } },
-              },
             },
           },
         },
@@ -147,7 +158,7 @@ builder.queryFields((t) => ({
   recentlyUsedTags: t.prismaField({
     type: ['Tag'],
     resolve: async (query, _, __, { db, ...context }) => {
-      const postTags = await db.postTag.findMany({
+      const postTags = await db.postRevisionTag.findMany({
         select: { tag: query },
         where: {
           tag: context.session
@@ -155,6 +166,7 @@ builder.queryFields((t) => ({
                 userMutes: { none: { userId: context.session.userId } },
               }
             : undefined,
+          revision: { kind: 'PUBLISHED' },
         },
 
         distinct: ['tagId'],
@@ -174,7 +186,19 @@ builder.queryFields((t) => ({
         where: {
           post: {
             state: 'PUBLISHED',
-            option: { visibility: 'PUBLIC', password: null },
+            visibility: 'PUBLIC',
+            password: null,
+            publishedRevision: {
+              tags: context.session
+                ? {
+                    none: {
+                      tag: {
+                        userMutes: { some: { userId: context.session.userId } },
+                      },
+                    },
+                  }
+                : undefined,
+            },
             space: {
               state: 'ACTIVE',
               userMutes: context.session
@@ -183,15 +207,6 @@ builder.queryFields((t) => ({
                   }
                 : undefined,
             },
-            tags: context.session
-              ? {
-                  none: {
-                    tag: {
-                      userMutes: { some: { userId: context.session.userId } },
-                    },
-                  },
-                }
-              : undefined,
           },
         },
 
@@ -211,7 +226,19 @@ builder.queryFields((t) => ({
         select: { space: query },
         where: {
           state: 'PUBLISHED',
-          option: { visibility: 'PUBLIC', password: null },
+          visibility: 'PUBLIC',
+          password: null,
+          publishedRevision: {
+            tags: context.session
+              ? {
+                  none: {
+                    tag: {
+                      userMutes: { some: { userId: context.session.userId } },
+                    },
+                  },
+                }
+              : undefined,
+          },
           space: {
             state: 'ACTIVE',
             userMutes: context.session
@@ -220,20 +247,11 @@ builder.queryFields((t) => ({
                 }
               : undefined,
           },
-          tags: context.session
-            ? {
-                none: {
-                  tag: {
-                    userMutes: { some: { userId: context.session.userId } },
-                  },
-                },
-              }
-            : undefined,
         },
 
         take: 5,
         distinct: ['spaceId'],
-        orderBy: { createdAt: 'desc' },
+        orderBy: { publishedAt: 'desc' },
       });
 
       return posts.map(({ space }) => space);
