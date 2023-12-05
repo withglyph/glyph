@@ -5,6 +5,7 @@ import {
   History,
   LetterSpacing,
   LineHeight,
+  Link,
   Placeholder,
   TextAlign,
 } from '$lib/tiptap/extensions';
@@ -31,6 +32,7 @@ export const extensions = [
   Strike,
   TextColor,
   Underline,
+  Link,
 
   // extensions
   DropCursor,

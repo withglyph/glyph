@@ -11,6 +11,7 @@
   let menuEl: HTMLDivElement;
   let _class: string | undefined = undefined;
   let _offset: number | undefined = undefined;
+  export let padding = true;
 
   export { _class as class };
   export { _offset as offset };
@@ -81,10 +82,14 @@
 
   <div
     bind:this={menuEl}
-    class={clsx('absolute z-52 bg-cardprimary rounded-lg px-1 space-y-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.15)] flex', {
-      'flex-col py-2': alignment === 'vertical',
-      'flex-row py-1': alignment === 'horizontal',
-    })}
+    class={clsx(
+      'absolute z-52 bg-cardprimary rounded-lg px-1 space-y-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.15)] flex',
+      {
+        'flex-col py-2': alignment === 'vertical',
+        'flex-row py-1': alignment === 'horizontal',
+      },
+      !padding && 'p-none!',
+    )}
     use:portal
   >
     <slot />

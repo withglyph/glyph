@@ -92,6 +92,10 @@
    * marks
   */
 
+  & a {
+    --uno: underline text-disabled;
+  }
+
   & b {
     --uno: font-bold;
   }

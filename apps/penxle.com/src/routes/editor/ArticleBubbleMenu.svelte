@@ -174,9 +174,45 @@
   </Tooltip>
 
   <Tooltip message="링크" placement="top">
-    <button class="flex items-center gap-2 body-14-m p-xs hover:(bg-primary rounded-lg)" type="button">
-      <i class="i-lc-link-2 square-1rem" />
-    </button>
+    <Menu class="flex items-center gap-2 body-14-m p-xs hover:(bg-primary rounded-lg)" {offset} padding={false}>
+      <i slot="value" class="i-lc-link-2 square-1rem" />
+      <MenuItem type="div">
+        <form
+          class="flex"
+          on:submit|preventDefault={(event) => {
+            if (!event.target) throw new Error('event.target is null');
+            if (!(event.target instanceof HTMLFormElement))
+              throw new Error('Fail to access event.target as HTMLFromElement');
+            if (!('url' in event.target && event.target.url instanceof HTMLInputElement))
+              throw new Error('Fail to access input element');
+
+            const href = event.target.url.value;
+            editor.chain().focus().setLink({ href }).run();
+            // 메뉴 닫기
+            event.target.click();
+          }}
+        >
+          <input
+            name="url"
+            class="flex-grow body-13-m text-secondary"
+            autocomplete="on"
+            placeholder="예) https://penxle.com"
+            required
+            type="url"
+            on:click|stopPropagation
+          />
+          <Tooltip message="적용하기">
+            <button
+              class="text-secondary hover:text-primary active:text-primary"
+              type="submit"
+              on:click|stopPropagation
+            >
+              <i class="i-lc-check" />
+            </button>
+          </Tooltip>
+        </form>
+      </MenuItem>
+    </Menu>
   </Tooltip>
 
   <Tooltip message="행간" placement="top">
