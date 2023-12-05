@@ -34,6 +34,7 @@
   let changeIndex = -1;
   let price = 0;
   let description: JSONContent | undefined = undefined;
+  let dragging: EventTarget | null = null;
 
   const prepareImageUpload = graphql(`
     mutation Editor_PrepareImageUpload_Mutation {
@@ -213,7 +214,7 @@
 
 <div
   class={clsx(
-    'mt-8 mb-100px mx-auto w-full flex flex-col max-w-225 grow',
+    'mt-8 mb-100px mx-auto w-full flex flex-col max-w-225 grow rounded-xl',
     (!content?.content ||
       content?.content.length === 0 ||
       (content?.content.length === 1 && content?.content[0].type === 'paragraph')) &&
@@ -233,7 +234,26 @@
   />
 
   {#if !content?.content || content?.content.length === 0 || (content?.content.length === 1 && content?.content[0].type === 'paragraph')}
-    <div class="w-full flex flex-col center grow space-y-2.5">
+    <div
+      class={clsx('w-full flex flex-col center grow space-y-2.5 rounded-xl', dragging && 'bg-gray-30')}
+      role="button"
+      tabindex="-1"
+      on:dragenter|preventDefault|stopPropagation={({ target, dataTransfer }) => {
+        if (dataTransfer?.types.includes('Files')) dragging = target;
+      }}
+      on:dragover|preventDefault|stopPropagation={({ dataTransfer }) => {
+        if (dataTransfer) {
+          dataTransfer.dropEffect = dataTransfer.types.includes('Files') ? 'copy' : 'none';
+        }
+      }}
+      on:drop|preventDefault|stopPropagation={async ({ dataTransfer }) => {
+        dragging = null;
+        await addFiles(dataTransfer?.files);
+      }}
+      on:dragleave|preventDefault|stopPropagation={({ target }) => {
+        if (target === dragging) dragging = null;
+      }}
+    >
       <p class="body-16-eb">이미지를 드래그하거나 업로드 해주세요</p>
       <p class="body-14-m text-secondary">최대 50장까지 업로드 할 수 있어요 (장 당 100MB)</p>
 
