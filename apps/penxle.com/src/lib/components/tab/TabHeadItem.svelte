@@ -20,19 +20,21 @@
     class={clsx(
       'block w-full grow sm:grow-0',
       variant === 'primary' && 'title-20-eb border-b-10 leading-5 transition hover:(text-black border-brand-50)',
-      variant === 'primary' && (activeTabValue === id || $page.url.pathname === href) && 'text-black border-brand-50',
+      variant === 'primary' &&
+        (activeTabValue === id || decodeURI($page.url.pathname) === href) &&
+        'text-black border-brand-50',
       variant === 'primary' &&
         activeTabValue !== id &&
-        $page.url.pathname !== href &&
+        decodeURI($page.url.pathname) !== href &&
         'border-transparent text-disabled',
       variant === 'secondary' &&
         'bg-white p-3 text-center sm:bg-transparent transition border-b-2 border-white hover:(text-black! border-black!)',
       variant === 'secondary' &&
-        (activeTabValue === id || $page.url.pathname === href) &&
+        (activeTabValue === id || decodeURI($page.url.pathname) === href) &&
         'text-black body-16-b border-b-2 border-black!',
       variant === 'secondary' &&
         activeTabValue !== id &&
-        $page.url.pathname !== href &&
+        decodeURI($page.url.pathname) !== href &&
         'border-secondary body-16-sb text-disabled',
     )}
     role="tab"
