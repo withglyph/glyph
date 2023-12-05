@@ -71,7 +71,7 @@ builder.mutationFields((t) => ({
         where: { id: context.session.userId },
       });
 
-      const paymentKey = `PX${input.pointAmount / 1000}${customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ')(12)}`;
+      const paymentKey = `PX${input.pointAmount}${customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ')(8)}`;
       const paymentAmount = input.pointAmount * 1.1;
 
       const pgData = await match(input.paymentMethod)
