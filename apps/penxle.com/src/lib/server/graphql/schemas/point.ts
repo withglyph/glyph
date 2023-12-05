@@ -73,11 +73,16 @@ builder.mutationFields((t) => ({
 
       const paymentKey = `PX${input.pointAmount}${customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ')(8)}`;
       const paymentAmount = input.pointAmount * 1.1;
+      const expiresAt = dayjs().add(1, 'hour');
 
       const pgData = await match(input.paymentMethod)
         .with('CREDIT_CARD', () => ({ pg: 'tosspayments', pay_method: 'card' }))
         .with('BANK_ACCOUNT', () => ({ pg: 'tosspayments', pay_method: 'trans' }))
-        .with('VIRTUAL_BANK_ACCOUNT', () => ({ pg: 'tosspayments', pay_method: 'vbank' }))
+        .with('VIRTUAL_BANK_ACCOUNT', () => ({
+          pg: 'tosspayments',
+          pay_method: 'vbank',
+          vbank_due: expiresAt.kst().format('YYYY-MM-DD HH:mm:ss'),
+        }))
         .with('PHONE_BILL', () => ({ pg: 'tosspayments', pay_method: 'phone' }))
         .with('GIFTCARD_CULTURELAND', () => ({ pg: 'tosspayments', pay_method: 'cultureland' }))
         .with('GIFTCARD_SMARTCULTURE', () => ({ pg: 'tosspayments', pay_method: 'smartculture' }))
@@ -114,7 +119,7 @@ builder.mutationFields((t) => ({
           paymentKey,
           paymentData,
           state: 'PENDING',
-          expiresAt: dayjs().add(1, 'hour').toDate(),
+          expiresAt: expiresAt.toDate(),
         },
       });
     },
