@@ -116,7 +116,7 @@
           $post.blurred && 'select-none min-h-5.5rem',
         )}
       >
-        <p class="flex-grow bodylong-16-m text-secondary overflow-hidden line-clamp-6 whitespace-pre-line">
+        <p class="grow bodylong-16-m text-secondary break-all line-clamp-6 whitespace-pre-line">
           {$post.revision.previewText}
         </p>
 
