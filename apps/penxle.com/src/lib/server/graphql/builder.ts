@@ -29,7 +29,8 @@ export const builder = new SchemaBuilder<{
   Scalars: {
     DateTime: { Input: Date; Output: Date };
     ID: { Input: string; Output: string };
-    JSON: { Input: unknown; Output: unknown };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    JSON: { Input: any; Output: unknown };
     // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
     Void: { Input: never; Output: void };
   };
