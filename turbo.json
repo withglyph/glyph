@@ -6,8 +6,11 @@
       "env": ["PRIVATE_*", "PUBLIC_*"],
       "outputs": [".lambda/**", ".svelte-kit/**", "dist/**"]
     },
+    "codegen:ephemeral": {
+      "cache": false
+    },
     "codegen": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "codegen:ephemeral"],
       "dotEnv": [".env"],
       "outputs": [".svelte-kit/**", ".glitch/**"]
     },
