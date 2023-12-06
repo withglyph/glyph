@@ -58,6 +58,8 @@ jobs:
           target: runner
           build-args: |
             APP=${{ matrix.app }}
+            TURBO_TEAM=${{ vars.TURBO_TEAM }}
+            TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/${{ matrix.app }}:cache
@@ -80,6 +82,9 @@ jobs:
       - name: Run code generation
         working-directory: apps/${{ matrix.app }}
         run: pnpm exec turbo run codegen
+        env:
+          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
 
       - name: Connect tailnet
         uses: tailscale/github-action@v2

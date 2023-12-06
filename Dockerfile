@@ -51,6 +51,10 @@ COPY --from=deps /app/ .
 COPY --from=source /app/out/full/ .
 
 ARG APP
+ARG TURBO_TEAM
+ARG TURBO_TOKEN
+ENV TURBO_TEAM=${TURBO_TEAM}
+ENV TURBO_TOKEN=${TURBO_TOKEN}
 RUN turbo build --filter=@penxle/${APP}...
 
 # ---
