@@ -1,6 +1,7 @@
-import { Client, fetchExchange } from '@urql/core';
+import { Client } from '@urql/core';
 import { devtoolsExchange } from '@urql/devtools';
 import { cacheExchange } from '@urql/exchange-graphcache';
+import { fetchExchange } from './exchanges/fetch';
 import { refetchExchange, signalRefetch } from './exchanges/refetch';
 import type { Exchange } from '@urql/core';
 import type { CacheExchangeOpts } from '@urql/exchange-graphcache';

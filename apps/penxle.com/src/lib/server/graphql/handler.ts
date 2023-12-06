@@ -9,6 +9,7 @@ export const handler = createYoga<RequestEvent>({
   context: createContext,
   fetchAPI: { Response },
   graphqlEndpoint: '/api/graphql',
+  batching: true,
   maskedErrors: false,
   plugins: [useErrorHandling(), useLogging(), useTelemetry(), useContextFinalizer()],
 });
