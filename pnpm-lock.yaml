@@ -333,7 +333,7 @@ importers:
         specifier: ^2.6.0
         version: 2.6.0
       '@sentry/cli':
-        specifier: ^2.22.2
+        specifier: 2.22.2
         version: 2.22.2
       '@sentry/sveltekit':
         specifier: ^7.84.0
