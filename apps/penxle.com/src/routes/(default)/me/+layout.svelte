@@ -101,17 +101,6 @@
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
-                $page.url.pathname === '/me/comments' && 'bg-primary text-primary',
-              )}
-              href="/me/comments"
-            >
-              댓글 관리
-            </a>
-          </li>
-          <li>
-            <a
-              class={clsx(
-                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
                 $page.url.pathname === '/me/revenue' && 'bg-primary text-primary',
               )}
               href="/me/revenue"
