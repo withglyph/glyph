@@ -221,7 +221,7 @@ builder.prismaObject('Post', {
         return {
           bookmarks: {
             where: {
-              bookmark: { userId: context.session?.userId },
+              bookmarkGroup: { userId: context.session?.userId },
             },
           },
         };
