@@ -8,6 +8,7 @@
 
   let followingSpaceOpen = false;
   let followingTagOpen = false;
+  let scrollTopEl: HTMLButtonElement;
 
   $: query = graphql(`
     query MeCabinetsPage_Query {
@@ -50,6 +51,12 @@
   let activeTabValue = 1;
 </script>
 
+<svelte:window
+  on:scroll={({ currentTarget }) => {
+    scrollTopEl.style.display = currentTarget.scrollY > 200 ? 'flex' : 'none';
+  }}
+/>
+
 <Helmet title="나의 서랍" />
 
 <h1 class="title-20-eb mb-6 <sm:hidden">나의 서랍</h1>
@@ -88,7 +95,7 @@
   <div class="bg-white py-4 sm:(border border-secondary rounded-2xl)">
     <p class="title-20-b px-4 sm:px-8">포스트 목록</p>
 
-    <TabHead class="w-full px-4 mt-4 mb-6 sticky top-15.25 bg-white z-10 sm:px-8" variant="secondary">
+    <TabHead class="w-full px-4 mt-4 mb-6 sm:px-8" variant="secondary">
       <TabHeadItem id={1} {activeTabValue} on:click={() => (activeTabValue = 1)}>좋아요</TabHeadItem>
       <TabHeadItem id={2} {activeTabValue} on:click={() => (activeTabValue = 2)}>최근</TabHeadItem>
       <TabHeadItem id={3} {activeTabValue} on:click={() => (activeTabValue = 3)}>구매</TabHeadItem>
@@ -129,6 +136,17 @@
     </div>
   </div>
 </div>
+
+<button
+  bind:this={scrollTopEl}
+  class="fixed right-6 bottom-6 square-12.5 rounded-full bg-alphagray-50 center hidden"
+  type="button"
+  on:click={() => {
+    scrollTo({ top: 0, behavior: 'smooth' });
+  }}
+>
+  <i class="i-lc-arrow-up square-5 text-darkprimary" />
+</button>
 
 <FollowSpaceModal $user={$query.me} bind:open={followingSpaceOpen} />
 <FollowTagModal $user={$query.me} bind:open={followingTagOpen} />
