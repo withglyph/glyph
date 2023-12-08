@@ -54,6 +54,22 @@
     }
   `);
 
+  const setThumbnail = (thumbnail: Image) => {
+    if (content?.content) {
+      thumbnailId = thumbnail.attrs.__data.id;
+      thumbnailBounds = {
+        left: 0,
+        top: 0,
+        width: thumbnail.attrs.__data.width,
+        height: thumbnail.attrs.__data.height,
+
+        translateX: 0,
+        translateY: 0,
+        scale: 1,
+      };
+    }
+  };
+
   const uploading = trackable();
   let fileEl: HTMLInputElement;
   const dispatch = createEventDispatcher<{ change: { id: string } }>();
@@ -65,17 +81,7 @@
       const thumbnail = content.content.find((c) => c.type === 'image')?.attrs?.__data;
 
       if (thumbnail) {
-        thumbnailId = thumbnail.id;
-        thumbnailBounds = {
-          left: 0,
-          top: 0,
-          width: thumbnail.width,
-          height: thumbnail.height,
-
-          translateX: 0,
-          translateY: 0,
-          scale: 1,
-        };
+        setThumbnail(thumbnail);
       }
     }
 
@@ -185,11 +191,21 @@
       let oldIdx = oldIndex;
 
       if (content?.content) {
+        const d = description ? 1 : 0;
+
         if (description) {
           oldIdx += 1;
           newIdx += 1;
         }
+
+        const thumbnailIdx = content.content.findIndex((c) => c.type === 'image' && c.attrs?.id === thumbnailId);
+        const changeThumbnail =
+          (oldIdx === thumbnailIdx && newIdx >= accessBarrierIndex && oldIdx < accessBarrierIndex) ||
+          (accessBarrierIndex === oldIdx && accessBarrierIndex > newIdx && newIdx <= thumbnailIdx) ||
+          (accessBarrierIndex === oldIdx && oldIndex === 0 && newIndex > 0);
+
         const draggedItem = content.content[oldIdx];
+
         if (oldIdx > newIdx) {
           content.content = [
             ...content.content.slice(0, newIdx),
@@ -204,6 +220,10 @@
             draggedItem,
             ...content.content.slice(newIdx + 1),
           ];
+        }
+
+        if (changeThumbnail && content.content[0 + d].type === 'image') {
+          setThumbnail(content.content[0 + d] as Image);
         }
       }
     });
