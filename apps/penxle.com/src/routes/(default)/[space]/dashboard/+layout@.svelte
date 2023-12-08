@@ -53,8 +53,8 @@
     <i class="i-lc-chevron-down square-6" />
   </button>
 
-  <aside class="grow pr-4 flex flex-col items-end <sm:hidden w-52">
-    <div class="w-full max-w-52">
+  <aside class="flex justify-end <sm:hidden max-w-21.1875rem w-full">
+    <div class="w-52 p-x-4">
       <h1 class="font-extrabold mt-10">스페이스 관리</h1>
 
       <div class="space-y-3 my-5.5">
@@ -155,8 +155,10 @@
     </div>
   </aside>
 
-  <div class="bg-primary grow-2 py-5 px-4 sm:(py-10 px-11)">
-    <slot />
+  <div class="bg-primary flex-1 py-5 px-4 sm:(py-10 px-11)">
+    <div class="max-w-218 w-full">
+      <slot />
+    </div>
   </div>
 </main>
 

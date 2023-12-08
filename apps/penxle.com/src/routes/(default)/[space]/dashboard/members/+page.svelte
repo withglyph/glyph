@@ -103,7 +103,7 @@
   <span class="text-secondary">{$query.space.members.length}</span>
 </div>
 
-<div class="px-4 py-6 max-w-218 bg-white border border-secondary rounded-xl sm:px-6">
+<div class="px-4 py-6 bg-white border border-secondary rounded-xl sm:px-6">
   <div class="flex items-center justify-between mb-6 gap-2">
     <PopupSearch />
 
