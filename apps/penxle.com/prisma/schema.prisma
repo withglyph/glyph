@@ -11,6 +11,8 @@ generator pothos {
 
 generator prisma {
   provider = "prisma-client-js"
+
+  previewFeatures = ["nativeDistinct", "relationJoins"]
 }
 
 model BookmarkGroup {
