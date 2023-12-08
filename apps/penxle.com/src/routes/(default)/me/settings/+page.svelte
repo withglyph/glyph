@@ -1,6 +1,8 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import dayjs from 'dayjs';
+  import { nanoid } from 'nanoid';
+  import qs from 'query-string';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
@@ -24,6 +26,11 @@
         state
 
         marketingConsent {
+          id
+          createdAt
+        }
+
+        personalIdentity {
           id
           createdAt
         }
@@ -54,6 +61,32 @@
     }
   `);
 
+  const handleUserIdentityVerification = () => {
+    // @ts-expect-error portone
+    IMP.init('imp72534540');
+
+    // @ts-expect-error portone
+    IMP.certification(
+      {
+        merchant_uid: nanoid(),
+        company: 'PENXLE',
+        m_redirect_url: `${$page.url.origin}/api/identification/callback`,
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      async (resp: any) => {
+        if (resp.error_msg) {
+          toast.error(resp.error_msg);
+          return;
+        }
+
+        location.href = qs.stringifyUrl({
+          url: '/api/identification/callback',
+          query: { imp_uid: resp.imp_uid },
+        });
+      },
+    );
+  };
+
   onMount(() => {
     switch ($page.url.searchParams.get('message')) {
       case 'sso_already_linked_by_other':
@@ -62,6 +95,11 @@
     }
   });
 </script>
+
+<svelte:head>
+  <script src="https://cdn.iamport.kr/v1/iamport.js">
+  </script>
+</svelte:head>
 
 <Helmet title="계정 설정" />
 
@@ -95,12 +133,24 @@
     <div>
       <div class="flex flex-wrap mb-2 items-center">
         <h3 class="text-lg font-extrabold mr-2">본인 인증</h3>
-        <Badge class="text-xs font-bold mr-2" color="red">인증 필요</Badge>
-        <Badge class="text-xs font-bold" color="gray">만료됨</Badge>
+        {#if $query.me.personalIdentity}
+          <Badge class="text-xs font-bold" color="green">인증 완료</Badge>
+        {:else}
+          <Badge class="text-xs font-bold" color="red">인증 필요</Badge>
+        {/if}
+        <!-- <Badge class="text-xs font-bold ml-2" color="gray">만료됨</Badge> -->
       </div>
-      <p class="text-3.75 text-secondary break-keep">펜슬의 콘텐츠를 이용하려면 본인 인증이 필요해요</p>
+      <p class="text-3.75 text-secondary break-keep">
+        {#if $query.me.personalIdentity}
+          {dayjs($query.me.personalIdentity.createdAt).formatAsDate()} 에 인증을 진행했어요
+        {:else}
+          펜슬의 콘텐츠를 이용하려면 본인 인증이 필요해요
+        {/if}
+      </p>
     </div>
-    <Button color="secondary" size="md">인증하기</Button>
+    {#if !$query.me.personalIdentity}
+      <Button color="secondary" size="md" on:click={handleUserIdentityVerification}>인증하기</Button>
+    {/if}
   </div>
 
   <div class="w-full border-b border-alphagray-15" />

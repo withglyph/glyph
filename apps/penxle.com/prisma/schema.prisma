@@ -487,6 +487,7 @@ model User {
   contentFilterPreferences       UserContentFilterPreference[]
   marketingConsent               UserMarketingConsent?
   notificationPreferences        UserNotificationPreference[]
+  personalIdentity               UserPersonalIdentity?
   pointBalances                  PointBalance[]
   pointPurchases                 PointPurchase[]
   pointTransactions              PointTransaction[]
@@ -565,6 +566,19 @@ model UserNotificationPreference {
 
   @@unique([userId, category, method])
   @@map("user_notification_preferences")
+}
+
+model UserPersonalIdentity {
+  id          String   @id
+  userId      String   @unique @map("user_id")
+  user        User     @relation(fields: [userId], references: [id])
+  name        String
+  birthday    DateTime @db.Timestamptz
+  phoneNumber String   @map("phone_number")
+  ci          String
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("user_personal_identities")
 }
 
 model UserSingleSignOn {

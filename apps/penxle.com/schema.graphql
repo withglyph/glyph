@@ -648,6 +648,7 @@ type User {
   mutedSpaces: [Space!]!
   mutedTags: [Tag!]!
   notificationPreferences: [UserNotificationPreference!]!
+  personalIdentity: UserPersonalIdentity
   point: Int!
   posts(state: PostState! = PUBLISHED): [Post!]!
   profile: Profile!
@@ -704,6 +705,11 @@ type UserNotificationPreference {
   id: ID!
   method: UserNotificationMethod!
   opted: Boolean!
+}
+
+type UserPersonalIdentity {
+  createdAt: DateTime!
+  id: ID!
 }
 
 type UserSingleSignOn {

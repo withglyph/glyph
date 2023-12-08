@@ -68,6 +68,7 @@ builder.prismaObject('User', {
     contentFilterPreferences: t.relation('contentFilterPreferences', { grantScopes: ['$user'] }),
     marketingConsent: t.relation('marketingConsent', { nullable: true, grantScopes: ['$user'] }),
     notificationPreferences: t.relation('notificationPreferences', { grantScopes: ['$user'] }),
+    personalIdentity: t.relation('personalIdentity', { nullable: true, grantScopes: ['$user'] }),
     profile: t.relation('profile'),
     singleSignOns: t.relation('singleSignOns', { grantScopes: ['$user'] }),
     bookmarks: t.relation('bookmarks'),
@@ -272,6 +273,15 @@ builder.prismaObject('UserNotificationPreference', {
     category: t.expose('category', { type: UserNotificationCategory }),
     method: t.expose('method', { type: UserNotificationMethod }),
     opted: t.exposeBoolean('opted'),
+  }),
+});
+
+builder.prismaObject('UserPersonalIdentity', {
+  select: { id: true },
+  authScopes: { $granted: '$user' },
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    createdAt: t.expose('createdAt', { type: 'DateTime' }),
   }),
 });
 

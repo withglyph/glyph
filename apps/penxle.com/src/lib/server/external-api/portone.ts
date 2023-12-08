@@ -37,3 +37,15 @@ export const getPayment = async (uid: string) => {
 
   return resp;
 };
+
+export const getCertification = async (uid: string) => {
+  const resp = await got
+    .get({
+      url: `https://api.iamport.kr/certifications/${uid}`,
+      headers: { Authorization: await getAccessToken() },
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .json<any>();
+
+  return resp;
+};
