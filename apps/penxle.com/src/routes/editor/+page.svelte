@@ -29,4 +29,4 @@
 
 <Header {$query} {content} {editor} {subtitle} {tags} {thumbnailBounds} {thumbnailId} {title} bind:kind />
 <Editor {kind} bind:title bind:editor bind:subtitle bind:content bind:thumbnailBounds bind:thumbnailId />
-<Footer {kind} bind:tags bind:content />
+<Footer {kind} bind:content bind:tags bind:thumbnailBounds bind:thumbnailId />

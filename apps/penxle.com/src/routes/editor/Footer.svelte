@@ -1,12 +1,17 @@
 <script lang="ts">
   import clsx from 'clsx';
-  import { Tag } from '$lib/components';
+  import { Badge, Image, Tag } from '$lib/components';
+  import { ThumbnailPicker } from '$lib/components/media';
   import type { JSONContent } from '@tiptap/core';
-  import type { PostRevisionContentKind } from '$glitch';
+  import type { Image_image, PostRevisionContentKind } from '$glitch';
+  import type { ImageBounds } from '$lib/utils';
 
   export let tags: string[] = [];
   export let kind: PostRevisionContentKind;
   export let content: JSONContent | undefined;
+
+  export let thumbnailBounds: ImageBounds | undefined;
+  export let thumbnailId: string | undefined;
 
   let open = false;
 
@@ -48,9 +53,24 @@
       }
     }
   };
+
+  let imageAttrs: { id: string; __data: Image_image }[] = [];
+
+  $: if (content?.content) {
+    imageAttrs = content.content
+      .filter(({ type, attrs }) => type === 'image' && attrs?.id)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .map(({ attrs }) => (attrs as NonNullable<typeof imageAttrs>[number])!);
+  }
+
+  $: if (thumbnailId === undefined) {
+    thumbnailBounds = undefined;
+  }
+
+  let thumbnailPicker: ThumbnailPicker;
 </script>
 
-<div class="max-h-full fixed w-full z-1 bottom-0">
+<footer class="max-h-full fixed w-full z-1 bottom-0">
   <div class="flex flex-col items-center">
     <button
       class={clsx(
@@ -112,7 +132,51 @@
 
     <div class="w-full max-w-300 flex items-center gap-4 flex-wrap bg-primary p-4 mb-4">
       {#if kind === 'ARTICLE'}
-        <div class="square-21.25 rounded-2xl border border-primary bg-surface-primary" />
+        <fieldset class="p-x-4 p-y-4 w-full flex gap-2xl items-center flex-wrap bg-primary">
+          <legend class="sr-only">썸네일 설정</legend>
+
+          <button
+            class="square-5.3125rem rounded-1rem p-1rem border-(primary 0.0625rem) bg-surface-primary aria-pressed:bg-surface-secondary"
+            aria-pressed={!thumbnailId}
+            type="button"
+            on:click={() => {
+              thumbnailId = undefined;
+            }}
+          >
+            <svg viewBox="0 0 62 62" xmlns="http://www.w3.org/2000/svg">
+              <title>썸네일 선택 안함 아이콘</title>
+              <path d="M1 1.25024L60.5 60.7502" stroke="#A8A29E" stroke-width="2" />
+              <path d="M60.5 1.25024L0.999997 60.7502" stroke="#A8A29E" stroke-width="2" />
+            </svg>
+          </button>
+
+          {#if imageAttrs}
+            {#each imageAttrs as imageAttr (imageAttr.id)}
+              <button
+                class="relative overflow-hidden rounded-1rem aria-pressed:(ring-3 ring-green-50) group"
+                aria-pressed={imageAttr.id === thumbnailId}
+                data-value={imageAttr.id}
+                type="button"
+                on:click={() => {
+                  thumbnailId = imageAttr.id;
+
+                  // Hack: imageAttr.__data 내 url 프로퍼티를 타입 안전하게 참조하기 위해 타입 가드를 추가했습니다.
+                  if (!('url' in imageAttr.__data) || typeof imageAttr.__data.url !== 'string')
+                    throw new Error('imageAttr.__data 내 url 프로퍼티 참조에 실패했어요');
+
+                  thumbnailPicker.show(imageAttr.__data.url);
+                }}
+              >
+                <Image class="square-5.3125rem" $image={imageAttr.__data} />
+                <Badge
+                  class="absolute group-[[aria-pressed='true']]:visible invisible bottom-0.63rem right-0.5rem rounded-3.13rem"
+                >
+                  대표
+                </Badge>
+              </button>
+            {/each}
+          {/if}
+        </fieldset>
       {:else}
         <input
           class="body-13-b resize-none w-full"
@@ -123,4 +187,9 @@
       {/if}
     </div>
   </div>
-</div>
+</footer>
+
+<ThumbnailPicker bind:this={thumbnailPicker} bind:bounds={thumbnailBounds}>
+  <svelte:fragment slot="title">대표 이미지 설정</svelte:fragment>
+  <svelte:fragment slot="save">자르기</svelte:fragment>
+</ThumbnailPicker>

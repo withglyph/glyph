@@ -26,6 +26,7 @@
     PostRevisionContentKind,
     PostRevisionKind,
   } from '$glitch';
+  import type { ImageBounds } from '$lib/utils';
 
   let _query: EditorPage_Header_query;
   let _post: EditorPage_Header_post | null = null;
@@ -38,7 +39,7 @@
   export let editor: Editor | undefined;
   export let tags: string[];
   export let thumbnailId: string | undefined;
-  export let thumbnailBounds: { top: number; left: number; width: number; height: number } | undefined;
+  export let thumbnailBounds: ImageBounds | undefined;
 
   let postId: string | undefined;
 
@@ -225,7 +226,8 @@
   }
 
   $: published = $post?.state === 'PUBLISHED';
-  $: canRevise = browser && selectedSpace && !!title && content?.content;
+  $: _hasContent = selectedSpace && !!title && content?.content;
+  $: canRevise = browser && _hasContent && (thumbnailId || !thumbnailId) && (thumbnailBounds || !thumbnailBounds);
 
   $: reviseNotAvailableReason = (() => {
     if (!selectedSpace) {

@@ -1,7 +1,10 @@
 <script lang="ts">
   import { clsx } from 'clsx';
+  import type { HTMLAttributes } from 'svelte/elements';
 
-  let _class: string | undefined = undefined;
+  type $$Props = HTMLAttributes<HTMLDivElement> & { color?: typeof color };
+
+  let _class: $$Props['class'] = undefined;
   export { _class as class };
   export let color: 'unselect' | 'select' | 'green' | 'red' | 'gray' = 'unselect';
 </script>
@@ -16,6 +19,7 @@
     color === 'gray' && 'text-gray-50 bg-gray-10',
     _class,
   )}
+  {...$$restProps}
 >
   <slot />
 </div>

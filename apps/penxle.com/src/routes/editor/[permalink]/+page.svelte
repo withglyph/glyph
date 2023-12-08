@@ -23,6 +23,12 @@
           content
           title
           subtitle
+          thumbnailBounds
+
+          originalThumbnail {
+            id
+            ...Image_image
+          }
 
           tags {
             id
@@ -52,6 +58,8 @@
     content = $query.post.draftRevision.content;
     tags = $query.post.draftRevision.tags.map((tag) => tag.name);
     kind = $query.post.draftRevision.contentKind;
+    thumbnailBounds = $query.post.draftRevision.thumbnailBounds;
+    thumbnailId = $query.post.draftRevision.originalThumbnail?.id;
   }
 </script>
 
@@ -70,4 +78,4 @@
   bind:kind
 />
 <Editor {kind} bind:title bind:editor bind:subtitle bind:content bind:thumbnailId bind:thumbnailBounds />
-<Footer {kind} bind:content bind:tags />
+<Footer {kind} bind:content bind:tags bind:thumbnailBounds bind:thumbnailId />
