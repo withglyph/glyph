@@ -81,6 +81,7 @@
     )}
     $postRevision={$query.post.draftRevision}
     {$query}
+    {mode}
     preview
   />
 </main>

@@ -33,6 +33,7 @@
   $: element = preview ? 'div' : 'a';
 
   export let preview = false;
+  export let mode: 'desktop' | 'mobile' | null = null;
 
   let _class: string | undefined = undefined;
   export { _class as class };
@@ -399,7 +400,7 @@
             <TiptapRenderer class="bodylong-16-m" content={$postRevision.content} bind:editor />
           </article>
         {:else}
-          <GalleryPost {$query} revision={$postRevision} />
+          <GalleryPost {$query} {mode} revision={$postRevision} />
         {/if}
 
         {#if editor && !preview}

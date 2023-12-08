@@ -1,6 +1,7 @@
 <script lang="ts">
   import 'swiper/css';
 
+  import clsx from 'clsx';
   import { onMount } from 'svelte';
   import { register } from 'swiper/element/bundle';
   import { fragment, graphql } from '$glitch';
@@ -26,6 +27,7 @@
   export { _query as $query };
 
   export let revision: FragmentType<Post_postRevision>;
+  export let mode: 'desktop' | 'mobile' | null = null;
 
   $: query = fragment(
     _query,
@@ -94,19 +96,28 @@
 <div class="max-w-187.5">
   <swiper-container
     bind:this={swiperEl}
-    class="square-[calc(100vw-32px)] max-w-187.5 max-h-187.5 rounded-xl mb-4"
+    class={clsx(
+      'square-[calc(100vw-32px)] max-w-187.5 max-h-187.5 rounded-xl mb-4',
+      mode === 'mobile' && 'max-w-368px! max-h-368px!',
+    )}
     init="false"
   >
     {#each images as node, index (index)}
       {#if node.type !== 'paragraph'}
         <swiper-slide
           bind:this={swiperSlideEl}
-          class="square-[calc(100vw-32px)] max-w-187.5 max-h-187.5 relative [&>button]:hover:opacity-100 rounded-xl"
+          class={clsx(
+            'square-[calc(100vw-32px)] max-w-187.5 max-h-187.5 relative [&>button]:hover:opacity-100 rounded-xl',
+            mode === 'mobile' && 'max-w-368px! max-h-368px!',
+          )}
         >
           {#if node.type === 'image'}
             <div class="relative">
               <Image
-                class="square-[calc(100vw-32px)] max-w-187.5 max-h-187.5 bg-black rounded-xl select-none"
+                class={clsx(
+                  'square-[calc(100vw-32px)] max-w-187.5 max-h-187.5 bg-black rounded-xl select-none',
+                  mode === 'mobile' && 'max-w-368px! max-h-368px!',
+                )}
                 $image={node.attrs.__data}
                 fit="contain"
               />
@@ -120,7 +131,12 @@
               {/if}
             </div>
           {:else if node.type === 'access_barrier' && node.attrs.__data.purchasable}
-            <div class="flex center square-[calc(100vw-32px)] max-w-187.5 max-h-187.5 rounded-xl bg-gray-80 px-10">
+            <div
+              class={clsx(
+                'flex center square-[calc(100vw-32px)] max-w-187.5 max-h-187.5 rounded-xl bg-gray-80 px-10',
+                mode === 'mobile' && 'max-w-368px! max-h-368px!',
+              )}
+            >
               <div class="flex flex-col w-full max-w-100 center space-y-2.5 bg-primary rounded-2xl py-8 px-2.5">
                 <p class="body-15-sb text-secondary">
                   이 뒤에 {node.attrs.__data.counts.images}개의 사진이 더 있어요!
