@@ -13,7 +13,12 @@
   let file: File | null = null;
   let src: string | null = null;
   export let bounds: ImageBounds | undefined = undefined;
+  let draftBounds = bounds;
   let open = false;
+
+  $: if (!open) {
+    draftBounds = bounds;
+  }
 
   const uploading = trackable();
   const dispatch = createEventDispatcher<{ change: { id: string } }>();
@@ -51,7 +56,7 @@
         const { key, presignedUrl } = await prepareImageUpload();
         /* eslint-disable @typescript-eslint/no-non-null-assertion */
         await ky.put(presignedUrl, { body: file! });
-        const resp = await finalizeImageUpload({ key, name: file!.name, bounds });
+        const resp = await finalizeImageUpload({ key, name: file!.name, bounds: draftBounds });
         /* eslint-enable @typescript-eslint/no-non-null-assertion */
 
         file = null;
@@ -59,6 +64,8 @@
         dispatch('change', resp);
       });
     }
+
+    bounds = draftBounds;
     open = false;
   };
 
@@ -88,7 +95,7 @@
     <svelte:fragment slot="title">
       <slot name="title">위치 조정</slot>
     </svelte:fragment>
-    <Thumbnailer class="w-full" {...props} bind:bounds />
+    <Thumbnailer class="w-full" {...props} bind:bounds={draftBounds} />
     <Button slot="action" class="w-full mt-4" loading={$uploading} size="xl" on:click={upload}>
       <slot name="save">저장</slot>
     </Button>
