@@ -414,7 +414,7 @@ type Query {
   recentlyPublishedSpaces: [Space!]!
   recentlyPurchasedPosts: [Post!]!
   recentlyUsedTags: [Tag!]!
-  recommendFeed(dateBefore: String): [Post!]!
+  recommendFeed: [Post!]!
   sampleImage: Image!
   sampleImages: [Image!]!
   space(slug: String!): Space!
@@ -467,6 +467,11 @@ type Space {
   posts(mine: Boolean! = false): [Post!]!
   slug: String!
   visibility: SpaceVisibility!
+}
+
+enum SpaceCollectionState {
+  ACTIVE
+  INACTIVE
 }
 
 type SpaceExternalLink {

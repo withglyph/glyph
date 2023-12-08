@@ -6,58 +6,38 @@ import { builder } from '../builder';
  */
 
 builder.queryFields((t) => ({
-  recommendFeed: t.withAuth({ user: true }).prismaField({
+  recommendFeed: t.prismaField({
     type: ['Post'],
-    args: { dateBefore: t.arg.string({ required: false }) },
     resolve: async (query, _, input, { db, ...context }) => {
-      const dateBefore = input.dateBefore ? dayjs(input.dateBefore) : undefined;
-
       return db.post.findMany({
         ...query,
-        orderBy: { publishedAt: 'desc' },
         where: {
           state: 'PUBLISHED',
-          createdAt: dateBefore?.isValid() ? { lt: dateBefore.toDate() } : undefined,
           visibility: 'PUBLIC',
           password: null,
           space: {
             state: 'ACTIVE',
-            userMutes: {
-              none: { userId: context.session.userId },
-            },
+            userMutes: context.session
+              ? {
+                  none: { userId: context.session.userId },
+                }
+              : undefined,
           },
-          publishedRevision: {
-            tags: {
-              none: {
-                tag: {
-                  userMutes: { some: { userId: context.session.userId } },
-                },
-              },
-            },
-          },
-          OR: [
-            {
-              space: {
-                followers: {
-                  some: { userId: context.session.userId },
-                },
-              },
-            },
-            {
-              publishedRevision: {
+          publishedRevision: context.session
+            ? {
                 tags: {
-                  some: {
+                  none: {
                     tag: {
-                      followers: {
-                        some: { userId: context.session.userId },
-                      },
+                      userMutes: { some: { userId: context.session.userId } },
                     },
                   },
                 },
-              },
-            },
-          ],
+              }
+            : undefined,
         },
+
+        orderBy: { views: { _count: 'desc' } },
+        take: 20,
       });
     },
   }),
@@ -70,7 +50,6 @@ builder.queryFields((t) => ({
 
       return db.post.findMany({
         ...query,
-        orderBy: { publishedAt: 'desc' },
         where: {
           state: 'PUBLISHED',
           createdAt: dateBefore?.isValid() ? { lt: dateBefore.toDate() } : undefined,
@@ -99,6 +78,9 @@ builder.queryFields((t) => ({
             },
           },
         },
+
+        orderBy: { publishedAt: 'desc' },
+        take: 20,
       });
     },
   }),
@@ -111,7 +93,6 @@ builder.queryFields((t) => ({
 
       return db.post.findMany({
         ...query,
-        orderBy: { publishedAt: 'desc' },
         where: {
           state: 'PUBLISHED',
           createdAt: dateBefore?.isValid() ? { lt: dateBefore.toDate() } : undefined,
@@ -136,6 +117,9 @@ builder.queryFields((t) => ({
             },
           },
         },
+
+        orderBy: { publishedAt: 'desc' },
+        take: 20,
       });
     },
   }),
@@ -201,6 +185,7 @@ builder.queryFields((t) => ({
             },
             space: {
               state: 'ACTIVE',
+              visibility: 'PUBLIC',
               userMutes: context.session
                 ? {
                     none: { userId: context.session.userId },
@@ -241,6 +226,7 @@ builder.queryFields((t) => ({
           },
           space: {
             state: 'ACTIVE',
+            visibility: 'PUBLIC',
             userMutes: context.session
               ? {
                   none: { userId: context.session.userId },
