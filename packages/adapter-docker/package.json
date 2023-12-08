@@ -26,9 +26,9 @@
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "@sveltejs/kit": "^1.27.6",
-    "@types/node": "^20.10.3",
+    "@sveltejs/kit": "^1.27.7",
+    "@types/node": "^20.10.4",
     "tsup": "^8.0.1",
-    "typescript": "^5.3.2"
+    "typescript": "^5.3.3"
   }
 }
