@@ -55,7 +55,6 @@ jobs:
         with:
           push: true
           context: .
-          target: runner
           build-args: |
             APP=${{ matrix.app }}
             TURBO_TEAM=${{ vars.TURBO_TEAM }}
@@ -64,6 +63,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/${{ matrix.app }}:cache
           cache-to: type=registry,ref=721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/${{ matrix.app }}:cache,mode=max,image-manifest=true
+          provenance: false
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
