@@ -10,8 +10,8 @@
   let prevScrollpos = 0;
   let focusMode = false;
   let loginRequireOpen = false;
-  let likeTargetEl: HTMLButtonElement;
-  let bookmarkTargetEl: HTMLButtonElement;
+  let likeAnimate = false;
+  let bookmarkAnimate = false;
 
   let _query: Toolbar_query;
   export { _query as $query };
@@ -95,54 +95,28 @@
     }
   `);
 
-  let timeoutId: NodeJS.Timeout;
-
-  const handleLikeClick = async () => {
+  const toggleLike = () => {
     if (!$query.me) {
       loginRequireOpen = true;
       return;
     }
 
-    await likePost({ postId: $query.post.id });
+    likeAnimate = !$query.post.liked;
 
-    for (const child of likeTargetEl.children) {
-      child.classList.add('like');
-    }
-
-    timeoutId = setTimeout(() => {
-      for (const child of likeTargetEl.children) {
-        child.classList.remove('like');
-      }
-    }, 600);
+    return $query.post.liked ? unlikePost({ postId: $query.post.id }) : likePost({ postId: $query.post.id });
   };
 
-  const handleUnlikeClick = async () => {
-    await clearTimeout(timeoutId);
-    await unlikePost({ postId: $query.post.id });
-  };
-
-  const handleBookmarkClick = async () => {
+  const toggleBookmark = () => {
     if (!$query.me) {
       loginRequireOpen = true;
       return;
     }
 
-    await bookmarkPost({ postId: $query.post.id });
+    bookmarkAnimate = $query.post.bookmarkGroups.length <= 0;
 
-    for (const child of bookmarkTargetEl.children) {
-      child.classList.add('bookmark');
-    }
-
-    timeoutId = setTimeout(() => {
-      for (const child of bookmarkTargetEl.children) {
-        child.classList.remove('bookmark');
-      }
-    }, 600);
-  };
-
-  const handleUnbookmarkClick = async () => {
-    await clearTimeout(timeoutId);
-    await unbookmarkPost({ bookmarkId: $query.post.bookmarkGroups[0].id, postId: $query.post.id });
+    return $query.post.bookmarkGroups.length > 0
+      ? unbookmarkPost({ bookmarkId: $query.post.bookmarkGroups[0].id, postId: $query.post.id })
+      : bookmarkPost({ postId: $query.post.id });
   };
 </script>
 
@@ -207,36 +181,32 @@
         </Tooltip>
       </div>
 
-      {#if $query.post.bookmarkGroups.length}
-        <button
-          bind:this={bookmarkTargetEl}
-          class="relative flex center"
-          type="button"
-          on:click={handleUnbookmarkClick}
-        >
-          <i class="bookmarkLinearGradient i-px-bookmark-fill square-5" />
-          <i
-            class="bookmarkLinearGradient bookmarkAnimation1 absolute -top-0.25 left-4.5 hidden i-px-star rotate-45 square-2"
-          />
-          <i class="bookmarkLinearGradient bookmarkAnimation2 absolute -top-1.25 -left-1 hidden i-px-star square-2" />
-        </button>
-      {:else}
-        <button class="flex center" type="button" on:click={handleBookmarkClick}>
-          <i class="i-px-bookmark-fill square-5 bg-[#5C5755]" />
-        </button>
-      {/if}
+      <button
+        class="relative flex center"
+        aria-pressed={$query.post.bookmarkGroups.length > 0}
+        data-animate={bookmarkAnimate}
+        type="button"
+        on:click={toggleBookmark}
+      >
+        <i class="bg-[#5C5755] bookmarkLinearGradient i-px-bookmark-fill square-5" />
+        <i
+          class="bookmarkLinearGradient bookmarkAnimation1 absolute -top-0.25 left-4.5 hidden i-px-star rotate-45 square-2"
+        />
+        <i class="bookmarkLinearGradient bookmarkAnimation2 absolute -top-1.25 -left-1 hidden i-px-star square-2" />
+      </button>
 
-      {#if $query.post.liked}
-        <button bind:this={likeTargetEl} class="relative flex center" type="button" on:click={handleUnlikeClick}>
-          <i class="likeLinearGradient i-px-heart-fill square-5" />
-          <i class="heartAnimation1 absolute top-0 left-0 hidden i-px-heart-fill square-2.5 bg-red-50" />
-          <i class="heartAnimation2 absolute top-0 left-0 hidden i-px-heart-fill square-2.5 bg-red-50" />
-        </button>
-      {:else}
-        <button class="flex center relative" type="button" on:click={handleLikeClick}>
-          <i class="i-px-heart-fill square-5 bg-[#5C5755]" />
-        </button>
-      {/if}
+      <button
+        class="relative flex center group"
+        aria-pressed={$query.post.liked}
+        data-animate={likeAnimate}
+        type="button"
+        on:click={toggleLike}
+      >
+        <i class="bg-[#5C5755] likeLinearGradient i-px-heart-fill square-5" />
+        <i class="heartAnimation1 absolute top-0 left-0 hidden i-px-heart-fill square-2.5 bg-red-50" />
+        <i class="heartAnimation2 absolute top-0 left-0 hidden i-px-heart-fill square-2.5 bg-red-50" />
+      </button>
+
       <button
         class={clsx(
           'flex center px-2 h-8 gap-1 rounded-xl text-disabled border border-alphawhite-15',
@@ -255,50 +225,51 @@
 <LoginRequireModal bind:open={loginRequireOpen} />
 
 <style>
-  .bookmarkLinearGradient {
-    background: #fcd242;
-    background: linear-gradient(30deg, #fcd242 50%, #ffffff 100%);
-    -webkit-text-fill-color: transparent;
+  button[aria-pressed='true'] {
+    & .bookmarkLinearGradient {
+      background: #fcd242;
+      background: linear-gradient(30deg, #fcd242 50%, #ffffff 100%);
+      -webkit-text-fill-color: transparent;
+    }
+
+    & .likeLinearGradient {
+      background: #f66062;
+      background: linear-gradient(30deg, #f66062 30%, #f87a7c 66%, #fa9e9f 78%, #fbb7b8 85%, #ffffff 100%);
+      -webkit-text-fill-color: transparent;
+    }
   }
 
-  .bookmarkLinearGradient.bookmark {
-    animation: heartPulse 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  button[data-animate='true'][aria-pressed='true'] .bookmarkLinearGradient {
+    animation: heartPulse 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
     border-color: currentColor;
     filter: grayscale(0);
   }
 
-  .likeLinearGradient {
-    background: #f66062;
-    background: linear-gradient(30deg, #f66062 30%, #f87a7c 66%, #fa9e9f 78%, #fbb7b8 85%, #ffffff 100%);
-    -webkit-text-fill-color: transparent;
-  }
-
-  .likeLinearGradient.like {
-    animation: heartPulse 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  button[data-animate='true'][aria-pressed='true'] .likeLinearGradient {
+    animation: heartPulse 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
     border-color: currentColor;
     filter: grayscale(0);
   }
 
-  .heartAnimation1.like {
+  button[data-animate='true'][aria-pressed='true'] .heartAnimation1 {
     display: block;
-    animation: heartFloatMain-1 100ms cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    animation: heartFloat1 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
   }
 
-  .heartAnimation2.like {
+  button[data-animate='true'][aria-pressed='true'] .heartAnimation2 {
     display: block;
-    animation: heartFloatMain-2 200ms 100ms cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    animation: heartFloat2 800ms 200ms cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
   }
 
-  .bookmarkAnimation1.bookmark {
+  button[data-animate='true'][aria-pressed='true'] .bookmarkAnimation1 {
     display: block;
-    animation: bookmarkAnimation1 100ms cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    animation: starFloat 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
   }
 
-  .bookmarkAnimation2.bookmark {
+  button[data-animate='true'][aria-pressed='true'] .bookmarkAnimation2 {
     display: block;
-    animation: bookmarkAnimation1 200ms 100ms cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    animation: starFloat 800ms 200ms cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
   }
-
   @keyframes heartPulse {
     0% {
       transform: scale(1);
@@ -308,34 +279,45 @@
     }
   }
 
-  @keyframes heartFloatMain-1 {
+  @keyframes heartFloat1 {
     0% {
       visibility: hidden;
       transform: translate(0) rotate(0);
     }
-    100% {
+    50% {
       visibility: visible;
-      transform: translate(-10px, -9px) rotate(-55deg);
+      transform: translate(1px, -14px) rotate(-15deg);
+    }
+    100% {
+      visibility: hidden;
+      transform: translate(0) rotate(0);
     }
   }
 
-  @keyframes heartFloatMain-2 {
+  @keyframes heartFloat2 {
     0% {
-      opacity: 0;
+      visibility: hidden;
       transform: translate(0) rotate(0) scale(0);
     }
+    50% {
+      visibility: visible;
+      transform: translate(3px, -22px) rotate(15deg) scale(1);
+    }
     100% {
-      opacity: 0.9;
-      transform: translate(-3px, -22px) rotate(25deg) scale(1);
+      visibility: hidden;
+      transform: translate(0) rotate(0) scale(0);
     }
   }
 
-  @keyframes bookmarkAnimation1 {
+  @keyframes starFloat {
     0% {
       visibility: hidden;
     }
-    100% {
+    50% {
       visibility: visible;
+    }
+    100% {
+      visibility: hidden;
     }
   }
 </style>
