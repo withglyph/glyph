@@ -2,8 +2,14 @@ FROM public.ecr.aws/docker/library/node:20-slim AS base
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
+    automake \
+    cmake \
+    g++ \
+    libtool \
     libvips \
+    make \
     openssl \
+    python3 \
     tini \
   && rm -rf /var/lib/apt/lists/*
 

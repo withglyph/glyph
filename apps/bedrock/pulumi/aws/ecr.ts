@@ -48,6 +48,7 @@ const createRepository = (name: string) => {
   return new Repository(name, { name });
 };
 
+createRepository('literoom');
 createRepository('penxle.com');
 createRepository('penxle.io');
 createRepository('help.penxle.com');

@@ -3,6 +3,7 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: {
     index: 'src/index.ts',
+    deps: 'src/deps/index.ts',
     environment: 'src/environment/index.ts',
     unocss: 'src/unocss/index.ts',
     vite: 'src/vite/index.ts',

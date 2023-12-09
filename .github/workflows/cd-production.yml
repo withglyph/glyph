@@ -22,6 +22,7 @@ jobs:
           - penxle.io
           - help.penxle.com
           - landing.penxle.com
+          - literoom
 
     concurrency:
       group: production/${{ matrix.app }}

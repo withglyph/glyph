@@ -1,10 +1,11 @@
 import { bedrockRef } from '@penxle/pulumi';
 import * as aws from '@pulumi/aws';
 import * as awsnative from '@pulumi/aws-native';
+import * as pulumi from '@pulumi/pulumi';
 
-const pkg = aws.s3.getObjectOutput({
-  bucket: bedrockRef('AWS_S3_BUCKET_ARTIFACTS_BUCKET'),
-  key: `lambda/prod--literoom.zip`,
+const image = aws.ecr.getImageOutput({
+  repositoryName: 'literoom',
+  imageTag: 'latest',
 });
 
 const role = new aws.iam.Role('literoom@lambda', {
@@ -19,37 +20,14 @@ const lambda = new aws.lambda.Function('literoom', {
   name: 'literoom',
   role: role.arn,
 
-  runtime: 'nodejs18.x',
+  packageType: 'Image',
   architectures: ['x86_64'],
 
   memorySize: 10_240,
   timeout: 900,
 
-  s3Bucket: pkg.bucket,
-  s3Key: pkg.key,
-  handler: 'index.handler',
-  sourceCodeHash: pkg.metadata.hash,
-
-  layers: ['arn:aws:lambda:ap-northeast-2:464622532012:layer:Datadog-Extension-ARM:50'],
-
-  environment: {
-    variables: {
-      DD_SITE: 'ap1.datadoghq.com',
-      DD_API_KEY_SECRET_ARN: 'arn:aws:secretsmanager:ap-northeast-2:721144421085:secret:datadog/api-key-cWrlAs',
-
-      DD_SERVICE: 'literoom',
-      DD_ENV: 'prod',
-      DD_VERSION: 'latest',
-
-      DD_CAPTURE_LAMBDA_PAYLOAD: 'true',
-      DD_LOGS_INJECTION: 'true',
-      DD_TRACE_SAMPLE_RATE: '0.1',
-    },
-  },
-
-  tracingConfig: {
-    mode: 'Active',
-  },
+  imageUri: pulumi.interpolate`${image.registryId}.dkr.ecr.ap-northeast-2.amazonaws.com/${image.repositoryName}:latest`,
+  sourceCodeHash: image.imageDigest.apply((v) => v.split(':')[1]),
 });
 
 new aws.lambda.Permission('literoom', {
@@ -129,11 +107,6 @@ new aws.iam.RolePolicy('literoom@lambda', {
         Effect: 'Allow',
         Action: ['s3-object-lambda:WriteGetObjectResponse'],
         Resource: [objectLambdaAccessPoint.arn],
-      },
-      {
-        Effect: 'Allow',
-        Action: ['secretsmanager:GetSecretValue'],
-        Resource: ['arn:aws:secretsmanager:ap-northeast-2:721144421085:secret:datadog/*'],
       },
     ],
   },

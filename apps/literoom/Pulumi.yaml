@@ -1,4 +1,5 @@
 name: literoom
+main: pulumi/index.ts
 runtime:
   name: nodejs
   options:
