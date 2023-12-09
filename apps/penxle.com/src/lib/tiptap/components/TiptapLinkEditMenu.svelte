@@ -28,12 +28,14 @@
 
     const { from, to, empty } = view.state.selection;
 
-    open = editor.isActive('link') && empty;
-
-    if (open) {
-      href = editor.getAttributes('link').href;
+    if (!editor.isActive('link') || !empty) {
+      open = false;
+      return;
     }
 
+    href = editor.getAttributes('link').href;
+
+    open = true;
     await tick();
 
     const targetEl = {
