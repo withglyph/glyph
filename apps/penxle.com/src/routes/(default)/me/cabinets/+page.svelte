@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
+  import { Helmet, Link } from '@penxle/ui';
   import { graphql } from '$glitch';
-  import { Button, Feed } from '$lib/components';
+  import { Button, Feed, GridImage } from '$lib/components';
   import { TabContentItem, TabHead, TabHeadItem } from '$lib/components/tab';
   import FollowSpaceModal from './FollowSpaceModal.svelte';
   import FollowTagModal from './FollowTagModal.svelte';
@@ -40,6 +40,11 @@
 
         followedTags {
           id
+        }
+
+        bookmarks {
+          id
+          postCount
         }
 
         ...MeCabinetsPage_FollowSpaceModal_user
@@ -81,15 +86,27 @@
     </div> -->
   </div>
 
-  <div class="bg-white p-4 sm:(border border-secondary rounded-2xl px-8)">
-    <button class="w-full flex items-center justify-between" type="button">
+  <div class="bg-white p-4 space-y-2 sm:(border border-secondary rounded-2xl px-8 pb-6 space-y-6)">
+    <div class="w-full flex items-center justify-between">
       <div>
         <span class="subtitle-18-eb sm:title-20-b">북마크</span>
-        <span class="subtitle-18-eb ml-2 text-secondary">7</span>
+        <!-- <span class="subtitle-18-eb ml-2 text-secondary">7</span> -->
       </div>
 
-      <i class="i-lc-chevron-down square-6" />
-    </button>
+      <!-- <i class="i-lc-chevron-down square-6" /> -->
+    </div>
+
+    {#if $query.me.bookmarks.length === 0 || $query.me.bookmarks[0].postCount === 0}
+      <p class="body-15-b text-secondary text-center py-2">아직 북마크가 없어요</p>
+    {:else}
+      {#each $query.me.bookmarks as bookmark (bookmark.id)}
+        <Link class="inline-block" href="/me/cabinets/bookmark">
+          <GridImage class="square-42 rounded-lg bg-black" images={[]} />
+          <p class="body-15-b mt-2 mb-1">북마크</p>
+          <p class="body-13-m text-secondary">{bookmark.postCount}개의 포스트</p>
+        </Link>
+      {/each}
+    {/if}
   </div>
 
   <div class="bg-white py-4 sm:(border border-secondary rounded-2xl)">
