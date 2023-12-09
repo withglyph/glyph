@@ -12,6 +12,7 @@
   export let editor: Editor | undefined;
   export let thumbnailId: string | undefined;
   export let thumbnailBounds: ImageBounds | undefined;
+  export let handleKeyDown: (() => void) | undefined = undefined;
 
   let enableSubtitle = !!subtitle;
 </script>
@@ -19,7 +20,13 @@
 <main class="flex grow flex-col bg-primary">
   <div class="bg-white flex flex-col grow w-full max-w-262 mx-auto border-x border-secondary pt-17">
     <div class="mx-auto w-full max-w-225 flex flex-col grow">
-      <input class="py-3 w-full title-32-eb border-b" placeholder="제목을 입력하세요" type="text" bind:value={title} />
+      <input
+        class="py-3 w-full title-32-eb border-b"
+        placeholder="제목을 입력하세요"
+        type="text"
+        bind:value={title}
+        on:keydown={handleKeyDown}
+      />
 
       {#if enableSubtitle}
         <input
@@ -30,6 +37,9 @@
           on:keydown={(e) => {
             if (e.key === 'Backspace' && e.currentTarget.value === '') {
               enableSubtitle = false;
+            }
+            if (handleKeyDown) {
+              handleKeyDown();
             }
           }}
         />
@@ -47,7 +57,7 @@
       {/if}
 
       {#if kind === 'ARTICLE'}
-        <ArticleEditor bind:editor bind:content />
+        <ArticleEditor {handleKeyDown} bind:editor bind:content />
       {:else}
         <GalleryEditor bind:content bind:thumbnailId bind:thumbnailBounds />
       {/if}

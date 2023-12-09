@@ -17,12 +17,14 @@
   import { PublishPostInputSchema } from '$lib/validations/post';
   import ArticleCharacterCount from './ArticleCharacterCount.svelte';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
+  import RevisionListModal from './RevisionListModal.svelte';
   import ToolbarButton from './ToolbarButton.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
   import type {
     ContentFilterCategory,
     EditorPage_Header_post,
     EditorPage_Header_query,
+    EditorPage_RevisionListModal_Post,
     PostRevisionContentKind,
     PostRevisionKind,
   } from '$glitch';
@@ -31,7 +33,10 @@
   let _query: EditorPage_Header_query;
   let _post: EditorPage_Header_post | null = null;
   export { _post as $post, _query as $query };
+  let draftPost: EditorPage_RevisionListModal_Post | null = null;
 
+  export let restored: boolean;
+  export let resetRestored: () => void;
   export let kind: PostRevisionContentKind;
   export let title: string;
   export let subtitle: string | null;
@@ -87,12 +92,13 @@
 
         draftRevision {
           id
+          tags {
+            id
+            name
+          }
         }
 
-        # tags {
-        #   id
-        #   name
-        # }
+        ...EditorPage_RevisionListModal_Post
       }
     `),
   );
@@ -112,6 +118,8 @@
           id
           slug
         }
+
+        ...EditorPage_RevisionListModal_Post
       }
     }
   `);
@@ -161,6 +169,8 @@
     revisedAt = resp.draftRevision.createdAt;
     $data.revisionId = resp.draftRevision.id;
 
+    draftPost = resp;
+
     return resp;
   };
 
@@ -172,6 +182,7 @@
   let publishMenuOpen = false;
   let createSpaceOpen = false;
   let spaceSelectorOpen = false;
+  let revisionListOpen = false;
 
   let enablePassword = false;
   let enableContentFilter = false;
@@ -227,7 +238,8 @@
 
   $: published = $post?.state === 'PUBLISHED';
   $: _hasContent = selectedSpace && !!title && content?.content;
-  $: canRevise = browser && _hasContent && (thumbnailId || !thumbnailId) && (thumbnailBounds || !thumbnailBounds);
+  $: canPublish = browser && _hasContent && (thumbnailId || !thumbnailId) && (thumbnailBounds || !thumbnailBounds);
+  $: canRevise = canPublish && !restored;
 
   $: reviseNotAvailableReason = (() => {
     if (!selectedSpace) {
@@ -391,6 +403,7 @@
                 on:click={() => {
                   selectedSpace = space;
                   spaceSelectorOpen = false;
+                  resetRestored();
                 }}
               >
                 <div class="flex items-center gap-2">
@@ -462,8 +475,8 @@
     </div>
 
     <div bind:this={publishButtonEl} class="w-fit">
-      <Tooltip enabled={!canRevise} message={reviseNotAvailableReason}>
-        <Button disabled={!canRevise} size="lg" on:click={() => (publishMenuOpen = true)}>포스트 게시</Button>
+      <Tooltip enabled={!canPublish} message={reviseNotAvailableReason}>
+        <Button disabled={!canPublish} size="lg" on:click={() => (publishMenuOpen = true)}>포스트 게시</Button>
       </Tooltip>
     </div>
 
@@ -703,8 +716,13 @@
     {#if selectedSpace && permalink}
       <Menu class="p-3 flex center" placement="bottom-end">
         <i slot="value" class="i-lc-more-vertical square-6" />
-
-        <MenuItem>저장이력</MenuItem>
+        <MenuItem
+          on:click={() => {
+            revisionListOpen = true;
+          }}
+        >
+          저장이력
+        </MenuItem>
         <MenuItem external href={`/${selectedSpace.slug}/preview/${permalink}`} type="link">미리보기</MenuItem>
       </Menu>
     {:else}
@@ -716,3 +734,9 @@
 </header>
 
 <CreateSpaceModal $user={$query.me} bind:open={createSpaceOpen} />
+
+{#if $post}
+  <RevisionListModal {$post} bind:open={revisionListOpen} />
+{:else if draftPost}
+  <RevisionListModal $post={draftPost} bind:open={revisionListOpen} />
+{/if}

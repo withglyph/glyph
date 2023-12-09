@@ -13,6 +13,8 @@
 
   let element: HTMLDivElement;
 
+  export let handleKeyDown: (() => void) | undefined = undefined;
+
   onMount(() => {
     editor = new Editor({
       element,
@@ -24,6 +26,9 @@
         scrollMargin: { top: 100, bottom: 100, left: 0, right: 0 },
         scrollThreshold: { top: 100, bottom: 100, left: 0, right: 0 },
         handleKeyDown: (_, event) => {
+          if (handleKeyDown) {
+            handleKeyDown();
+          }
           // 맥 구름입력기에서 엔터키 입력시 마지막 글자 잘리는 문제 workaround
           if (editor && event.key === 'Enter') {
             const s = editor.view.state.selection;

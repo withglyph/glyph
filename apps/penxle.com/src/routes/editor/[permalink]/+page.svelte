@@ -1,5 +1,7 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import { onDestroy, setContext } from 'svelte';
+  import { writable } from 'svelte/store';
   import { graphql } from '$glitch';
   import Editor from '../Editor.svelte';
   import Footer from '../Footer.svelte';
@@ -7,6 +9,7 @@
   import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
   import type { PostRevisionContentKind } from '$glitch';
   import type { ImageBounds } from '$lib/utils';
+  import type { RestoredRevision } from '../restore-revision';
 
   $: query = graphql(`
     query EditorPermalinkPage_Query($permalink: String!) {
@@ -50,6 +53,27 @@
 
   let initialized = false;
 
+  let restoredRevision = writable<RestoredRevision>(null);
+  const resetRestored = () => {
+    restoredRevision.set(null);
+  };
+  setContext('restoredRevision', restoredRevision);
+
+  const unsubscriber = restoredRevision.subscribe((revision) => {
+    if (revision === null) return;
+    if (!editor) throw new Error('editor is not initialize');
+
+    title = revision.title;
+    subtitle = revision.subtitle ?? null;
+    editor.commands.setContent(revision.content);
+    kind = revision.contentKind;
+    tags = revision.tags.map(({ name }) => name);
+  });
+
+  onDestroy(() => {
+    unsubscriber();
+  });
+
   $: if (!initialized) {
     initialized = true;
 
@@ -70,6 +94,8 @@
   {$query}
   {content}
   {editor}
+  {resetRestored}
+  restored={$restoredRevision !== null}
   {subtitle}
   {tags}
   {thumbnailBounds}
@@ -77,5 +103,14 @@
   {title}
   bind:kind
 />
-<Editor {kind} bind:title bind:editor bind:subtitle bind:content bind:thumbnailId bind:thumbnailBounds />
+<Editor
+  handleKeyDown={resetRestored}
+  {kind}
+  bind:title
+  bind:editor
+  bind:subtitle
+  bind:content
+  bind:thumbnailId
+  bind:thumbnailBounds
+/>
 <Footer {kind} bind:content bind:tags bind:thumbnailBounds bind:thumbnailId />

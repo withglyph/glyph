@@ -7,10 +7,11 @@
 
   export let content: JSONContent | undefined;
   export let editor: Editor | undefined;
+  export let handleKeyDown: (() => void) | undefined = undefined;
 </script>
 
 <div class="mx-auto w-full max-w-230 flex grow">
-  <TiptapEditor class="mt-12 mb-100px max-w-full grow" bind:editor bind:content />
+  <TiptapEditor class="mt-12 mb-100px max-w-full grow" {handleKeyDown} bind:editor bind:content />
 </div>
 
 {#if editor}
