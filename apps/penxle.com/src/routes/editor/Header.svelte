@@ -206,7 +206,7 @@
     }
   }
 
-  $: permalink = ($post || draftPost)?.draftRevision;
+  $: permalink = ($post || draftPost)?.permalink;
 
   $: if ($post) {
     setInitialValues({
