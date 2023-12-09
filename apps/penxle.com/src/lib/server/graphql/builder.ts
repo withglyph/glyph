@@ -5,13 +5,14 @@ import SimpleObjectsPlugin from '@pothos/plugin-simple-objects';
 import ValidationPlugin from '@pothos/plugin-validation';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { GraphQLDateTime, GraphQLJSON, GraphQLVoid } from 'graphql-scalars';
+import { dev } from '$app/environment';
 import { PermissionDeniedError } from '$lib/errors';
 import { logger } from '../logging';
 import type PrismaTypes from '@pothos/plugin-prisma/generated';
 import type { Context, UserContext } from '../context';
 
 // 개발환경에서만 강제로 순환 참조 걸어서 ./schemas/**/* 리로드할 때 HMR이 builder까지 리로드하도록 함
-if (import.meta.hot) {
+if (dev) {
   import('./schemas');
 }
 
@@ -59,6 +60,6 @@ export const builder = new SchemaBuilder<{
 builder.queryType();
 builder.mutationType();
 
-builder.addScalarType('DateTime', GraphQLDateTime, {});
-builder.addScalarType('JSON', GraphQLJSON, {});
-builder.addScalarType('Void', GraphQLVoid, {});
+builder.addScalarType('DateTime', GraphQLDateTime);
+builder.addScalarType('JSON', GraphQLJSON);
+builder.addScalarType('Void', GraphQLVoid);

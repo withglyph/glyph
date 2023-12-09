@@ -1,5 +1,5 @@
-import './bookmark';
 import './enums';
+import './bookmark';
 import './feed';
 import './file';
 import './image';
