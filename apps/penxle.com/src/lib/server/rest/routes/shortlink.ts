@@ -14,7 +14,7 @@ shortlink.get('/shortlink/:shortlink', async (request, { db }) => {
   const permalink = base36To10(shortlink);
 
   const post = await db.post.findUnique({
-    select: { space: { select: { slug: true } } },
+    include: { space: true },
     where: { permalink },
   });
 

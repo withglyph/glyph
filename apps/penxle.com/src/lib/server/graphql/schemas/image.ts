@@ -12,7 +12,6 @@ import type { ImageBounds } from '$lib/utils';
  */
 
 builder.prismaObject('Image', {
-  select: { id: true },
   fields: (t) => ({
     id: t.exposeID('id'),
     width: t.exposeInt('width'),
@@ -21,7 +20,6 @@ builder.prismaObject('Image', {
 
     url: t.field({
       type: 'String',
-      select: { path: true },
       resolve: (parent) => `https://pnxl.net/${parent.path}`,
     }),
   }),

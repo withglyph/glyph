@@ -7,7 +7,6 @@ import { builder } from '../builder';
  */
 
 builder.prismaObject('Tag', {
-  select: { id: true },
   fields: (t) => ({
     id: t.exposeID('id'),
     name: t.exposeString('name'),
@@ -16,9 +15,7 @@ builder.prismaObject('Tag', {
     parents: t.prismaField({
       type: ['Tag'],
       select: (_, __, nestedSelection) => ({
-        parents: {
-          select: { parentTag: nestedSelection() },
-        },
+        parents: { include: { parentTag: nestedSelection() } },
       }),
       resolve: (_, { parents }) => parents.map(({ parentTag }) => parentTag),
     }),
@@ -30,7 +27,7 @@ builder.prismaObject('Tag', {
         const dateBefore = input.dateBefore ? dayjs(input.dateBefore).toDate() : undefined;
         return {
           postRevisions: {
-            select: { revision: { select: { post: nestedSelection() } } },
+            include: { revision: { include: { post: nestedSelection() } } },
             where: {
               revision: {
                 tags: context.session
@@ -72,7 +69,6 @@ builder.prismaObject('Tag', {
       type: 'Boolean',
       select: (_, context) => ({
         followers: {
-          select: { userId: true },
           where: { userId: context.session?.userId },
           take: 1,
         },
@@ -85,7 +81,6 @@ builder.prismaObject('Tag', {
       type: 'Boolean',
       select: (_, context) => ({
         userMutes: {
-          select: { userId: true },
           where: { userId: context.session?.userId },
           take: 1,
         },
@@ -97,7 +92,6 @@ builder.prismaObject('Tag', {
 });
 
 builder.prismaObject('TagWiki', {
-  select: { id: true },
   fields: (t) => ({
     id: t.exposeID('id'),
     lastRevision: t.prismaField({
@@ -115,7 +109,6 @@ builder.prismaObject('TagWiki', {
 });
 
 builder.prismaObject('TagWikiRevision', {
-  select: { id: true },
   fields: (t) => ({
     id: t.exposeID('id'),
     content: t.exposeString('content'),

@@ -107,7 +107,6 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
       // -> 그 "누군가"로 로그인함
 
       const session = await db.userSession.create({
-        select: { id: true },
         data: { id: createId(), userId: sso.userId },
       });
 
@@ -143,7 +142,6 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
         });
 
         const session = await db.userSession.create({
-          select: { id: true },
           data: { id: createId(), userId: user.id },
         });
 

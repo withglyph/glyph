@@ -143,7 +143,7 @@ builder.queryFields((t) => ({
     type: ['Tag'],
     resolve: async (query, _, __, { db, ...context }) => {
       const postTags = await db.postRevisionTag.findMany({
-        select: { tag: query },
+        include: { tag: query },
         where: {
           tag: context.session
             ? {
@@ -166,7 +166,7 @@ builder.queryFields((t) => ({
     type: ['Post'],
     resolve: async (query, _, __, { db, ...context }) => {
       const postPurchases = await db.postPurchase.findMany({
-        select: { post: query },
+        include: { post: query },
         where: {
           post: {
             state: 'PUBLISHED',
@@ -208,7 +208,7 @@ builder.queryFields((t) => ({
     type: ['Space'],
     resolve: async (query, _, __, { db, ...context }) => {
       const posts = await db.post.findMany({
-        select: { space: query },
+        include: { space: query },
         where: {
           state: 'PUBLISHED',
           visibility: 'PUBLIC',

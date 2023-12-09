@@ -10,7 +10,6 @@ import { builder } from '../builder';
  */
 
 builder.prismaObject('File', {
-  select: { id: true },
   fields: (t) => ({
     id: t.exposeID('id'),
     name: t.exposeString('name'),
@@ -18,7 +17,6 @@ builder.prismaObject('File', {
 
     url: t.field({
       type: 'String',
-      select: { path: true },
       resolve: (parent) => `https://pnxl.net/${parent.path}`,
     }),
   }),

@@ -72,7 +72,6 @@ export const createContext = async (context: RequestEvent): Promise<Context> => 
 
     if (sessionId) {
       const session = await db.userSession.findUnique({
-        select: { userId: true },
         where: { id: sessionId },
       });
 

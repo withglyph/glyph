@@ -17,14 +17,12 @@ import { builder } from '../builder';
  */
 
 builder.prismaObject('Space', {
-  select: { id: true },
   grantScopes: async (space, { db, ...context }) => {
     if (!context.session) {
       return [];
     }
 
     const member = await db.spaceMember.findUnique({
-      select: { role: true },
       where: {
         spaceId_userId: {
           spaceId: space.id,
@@ -152,13 +150,12 @@ builder.prismaObject('Space', {
 });
 
 builder.prismaObject('SpaceMember', {
-  select: { id: true, spaceId: true },
   grantScopes: async (member, { db, ...context }) => {
     if (!context.session) {
       return [];
     }
+
     const meAsMember = await db.spaceMember.findUnique({
-      select: { role: true },
       where: {
         spaceId_userId: {
           spaceId: member.spaceId,
@@ -179,15 +176,13 @@ builder.prismaObject('SpaceMember', {
     role: t.expose('role', { type: SpaceMemberRole }),
     profile: t.relation('profile'),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
-    email: t.field({
-      type: 'String',
+    email: t.string({
       authScopes: { $granted: '$space:member' },
-      select: { userId: true },
       resolve: async (member, _, { db }) => {
         const user = await db.user.findUniqueOrThrow({
-          select: { email: true },
           where: { id: member.userId },
         });
+
         return user?.email;
       },
     }),
@@ -195,7 +190,6 @@ builder.prismaObject('SpaceMember', {
 });
 
 builder.prismaObject('SpaceMemberInvitation', {
-  select: { id: true },
   authScopes: { $granted: '$space.member.invitation' },
   fields: (t) => ({
     id: t.exposeID('id'),
@@ -203,7 +197,6 @@ builder.prismaObject('SpaceMemberInvitation', {
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
     state: t.field({
       type: SpaceMemberInvitationState,
-      select: { state: true },
       authScopes: { $granted: '$space.member.invitation.state' },
       resolve: (invitation) => invitation.state,
       unauthorizedResolver: (invitation) =>
@@ -218,7 +211,6 @@ builder.prismaObject('SpaceMemberInvitation', {
 });
 
 builder.prismaObject('SpaceExternalLink', {
-  select: { id: true },
   fields: (t) => ({
     id: t.exposeID('id'),
     url: t.exposeString('url'),
@@ -407,9 +399,9 @@ builder.mutationFields((t) => ({
         profileId = profile.id;
       } else {
         const user = await db.user.findUniqueOrThrow({
-          select: { profileId: true },
           where: { id: context.session.userId },
         });
+
         profileId = user.profileId;
       }
 
@@ -591,13 +583,7 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: UpdateSpaceProfileInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const meAsMember = await db.spaceMember.findUnique({
-        select: {
-          id: true,
-          profileId: true,
-          user: {
-            select: { profileId: true },
-          },
-        },
+        include: { user: true },
         where: {
           spaceId_userId: {
             spaceId: input.spaceId,
@@ -606,9 +592,11 @@ builder.mutationFields((t) => ({
           state: 'ACTIVE',
         },
       });
+
       if (!meAsMember) {
         throw new PermissionDeniedError();
       }
+
       return db.spaceMember.update({
         ...query,
         where: {
@@ -640,11 +628,11 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: DeleteSpaceProfileInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const me = await db.user.findUniqueOrThrow({
-        select: { id: true, profileId: true },
         where: {
           id: context.session.userId,
         },
       });
+
       return db.spaceMember.update({
         ...query,
         where: {
@@ -676,7 +664,7 @@ builder.mutationFields((t) => ({
       });
 
       const user = await db.user.findUniqueOrThrow({
-        select: { profile: true },
+        include: { profile: true },
         where: { id: context.session.userId },
       });
 
@@ -765,13 +753,7 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: LeaveSpaceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const meAsMember = await db.spaceMember.findUniqueOrThrow({
-        select: {
-          id: true,
-          role: true,
-          space: {
-            select: { visibility: true },
-          },
-        },
+        include: { space: true },
         where: {
           spaceId_userId: {
             spaceId: input.spaceId,
@@ -822,7 +804,6 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: RemoveSpaceMemberInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const kickedMember = await db.spaceMember.findUniqueOrThrow({
-        select: { id: true, spaceId: true },
         where: {
           id: input.spaceMemberId,
           state: 'ACTIVE',
@@ -830,13 +811,7 @@ builder.mutationFields((t) => ({
       });
 
       const meAsMember = await db.spaceMember.findUniqueOrThrow({
-        select: {
-          id: true,
-          spaceId: true,
-          space: {
-            select: { visibility: true },
-          },
-        },
+        include: { space: true },
         where: {
           spaceId_userId: {
             spaceId: kickedMember.spaceId,
@@ -877,10 +852,6 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: FollowSpaceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const space = await db.space.findUniqueOrThrow({
-        select: {
-          id: true,
-          visibility: true,
-        },
         where: {
           id: input.spaceId,
           state: 'ACTIVE',
@@ -926,7 +897,6 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: UnfollowSpaceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const space = await db.space.findUniqueOrThrow({
-        select: { id: true },
         where: { id: input.spaceId },
       });
 

@@ -12,7 +12,6 @@ import { builder } from '../builder';
  */
 
 builder.prismaObject('PointPurchase', {
-  select: { id: true },
   fields: (t) => ({
     id: t.exposeID('id'),
     pointAmount: t.exposeInt('pointAmount'),
@@ -67,7 +66,6 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: PurchasePointInput }) },
     resolve: async (query, __, { input }, { db, ...context }) => {
       const user = await db.user.findUniqueOrThrow({
-        select: { email: true },
         where: { id: context.session.userId },
       });
 

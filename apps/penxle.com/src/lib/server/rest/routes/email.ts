@@ -17,7 +17,7 @@ email.get('/email', async (_, { db, ...context }) => {
   }
 
   const userEmailVerification = await db.userEmailVerification.delete({
-    include: { user: { include: { profile: { select: { name: true } } } } },
+    include: { user: { include: { profile: true } } },
     where: {
       token,
       expiresAt: { gte: new Date() },
@@ -34,7 +34,6 @@ email.get('/email', async (_, { db, ...context }) => {
 
     if (user) {
       const session = await db.userSession.create({
-        select: { id: true },
         data: { id: createId(), userId: user.id },
       });
 

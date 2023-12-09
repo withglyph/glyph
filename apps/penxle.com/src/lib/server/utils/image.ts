@@ -114,7 +114,6 @@ export const directUploadImage = async ({ db, userId, name, source, bounds }: Di
   );
 
   const image = await db.image.create({
-    select: { id: true },
     data: {
       id: createId(),
       userId,

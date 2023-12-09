@@ -28,7 +28,6 @@ import type { ImageBounds } from '$lib/utils';
  */
 
 builder.prismaObject('Post', {
-  select: { id: true, userId: true, spaceId: true, state: true, visibility: true, password: true },
   grantScopes: async (post, { db, ...context }) => {
     // 글 관리 권한이 있는지 체크
     if (context.session?.userId === post.userId) {
@@ -37,7 +36,6 @@ builder.prismaObject('Post', {
 
     const member = context.session
       ? await db.spaceMember.findUnique({
-          select: { role: true },
           where: {
             spaceId_userId: {
               spaceId: post.spaceId,
@@ -75,7 +73,6 @@ builder.prismaObject('Post', {
     permalink: t.exposeString('permalink'),
     shortlink: t.field({
       type: 'String',
-      select: { permalink: true },
       resolve: ({ permalink }) => BigInt(permalink).toString(36),
     }),
 
@@ -94,12 +91,10 @@ builder.prismaObject('Post', {
     receiveTagContribution: t.exposeBoolean('receiveTagContribution'),
 
     hasPassword: t.boolean({
-      select: { password: true },
       resolve: (post) => !!post.password,
     }),
 
     unlocked: t.boolean({
-      select: { id: true, password: true },
       resolve: async (post, _, context) => {
         if (!post.password) {
           return true;
@@ -112,17 +107,20 @@ builder.prismaObject('Post', {
 
     contentFilters: t.expose('contentFilters', { type: [ContentFilterCategory] }),
     blurred: t.boolean({
-      select: { contentFilters: true },
       resolve: async (post, _, { db, ...context }) => {
         if (!context.session) {
           return post.contentFilters.length > 0;
         }
 
         const myFilters = R.objectify(
-          await db.userContentFilterPreference.findMany({
-            select: { category: true, action: true },
-            where: { userId: context.session.userId },
-          }),
+          // await db.userContentFilterPreference.findMany({
+          //   where: { userId: context.session.userId },
+          // }),
+          await db.user
+            .findUniqueOrThrow({
+              where: { id: context.session.userId },
+            })
+            .contentFilterPreferences(),
           (filter) => filter.category,
           (filter) => filter.action,
         );
@@ -175,10 +173,6 @@ builder.prismaObject('Post', {
 
     reactions: t.prismaField({
       type: ['PostReaction'],
-      select: {
-        id: true,
-        receiveFeedback: true,
-      },
       resolve: async (query, post, _, { db, ...context }) => {
         if (!post.receiveFeedback) {
           return [];
@@ -278,7 +272,6 @@ builder.prismaObject('Post', {
 });
 
 builder.prismaObject('PostRevision', {
-  select: { id: true },
   fields: (t) => ({
     id: t.exposeID('id'),
     kind: t.expose('kind', { type: PostRevisionKind }),
@@ -294,7 +287,7 @@ builder.prismaObject('PostRevision', {
       type: ['Tag'],
       select: (_, __, nestedSelection) => ({
         tags: {
-          select: { tag: nestedSelection() },
+          include: { tag: nestedSelection() },
         },
       }),
 
@@ -305,12 +298,7 @@ builder.prismaObject('PostRevision', {
 
     content: t.field({
       type: 'JSON',
-      select: {
-        freeContent: true,
-        paidContent: true,
-        price: true,
-        post: { select: { id: true, spaceId: true } },
-      },
+      select: { post: true, freeContent: true, paidContent: true },
       resolve: async (revision, _, { db, ...context }) => {
         const freeContent = await decorateContent(db, revision.freeContent.data as JSONContent[]);
         const paidContent = revision.paidContent
@@ -323,7 +311,6 @@ builder.prismaObject('PostRevision', {
 
         if (context.session) {
           const purchase = await db.postPurchase.findUnique({
-            select: { createdAt: true },
             where: {
               postId_userId: {
                 postId: revision.post.id,
@@ -433,13 +420,11 @@ builder.prismaObject('PostRevision', {
 });
 
 builder.prismaObject('PostReaction', {
-  select: { id: true },
   fields: (t) => ({
     id: t.exposeID('id'),
     emoji: t.exposeString('emoji'),
 
     mine: t.boolean({
-      select: { userId: true },
       resolve: async (reaction, _, { ...context }) => {
         if (!context.session) {
           return false;
@@ -560,13 +545,7 @@ builder.queryFields((t) => ({
     args: { permalink: t.arg.string() },
     resolve: async (query, _, args, { db, ...context }) => {
       const post = await db.post.findUnique({
-        select: {
-          id: true,
-          state: true,
-          visibility: true,
-          userId: true,
-          space: { select: { id: true, visibility: true } },
-        },
+        include: { space: true },
         where: {
           permalink: args.permalink,
           state: { not: 'DELETED' },
@@ -583,7 +562,6 @@ builder.queryFields((t) => ({
       if (post.space.visibility === 'PRIVATE' || post.state === 'DRAFT' || post.visibility === 'SPACE') {
         const member = context.session
           ? await db.spaceMember.findUnique({
-              select: { role: true },
               where: {
                 spaceId_userId: {
                   spaceId: post.space.id,
@@ -631,7 +609,6 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: RevisePostInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const meAsMember = await db.spaceMember.findUniqueOrThrow({
-        select: { id: true, role: true },
         where: {
           spaceId_userId: {
             spaceId: input.spaceId,
@@ -642,7 +619,6 @@ builder.mutationFields((t) => ({
 
       if (input.postId) {
         const post = await db.post.findUniqueOrThrow({
-          select: { id: true, userId: true, state: true, spaceId: true },
           where: { id: input.postId },
         });
 
@@ -742,7 +718,6 @@ builder.mutationFields((t) => ({
       const postTags = await Promise.all(
         (input.tags ?? []).map((tagName) =>
           db.tag.upsert({
-            select: { id: true },
             where: { name: tagName },
             create: {
               id: createId(),
@@ -843,7 +818,7 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: PublishPostInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const revision = await db.postRevision.update({
-        select: { id: true, userId: true, post: { select: { id: true, publishedAt: true } } },
+        include: { post: true },
         where: {
           id: input.revisionId,
           post: {
@@ -855,7 +830,6 @@ builder.mutationFields((t) => ({
 
       if (revision.userId !== context.session.userId) {
         const meAsMember = await db.spaceMember.findUniqueOrThrow({
-          select: { role: true },
           where: {
             spaceId_userId: {
               spaceId: revision.post.id,
@@ -936,13 +910,11 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: DeletePostInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const post = await db.post.findUniqueOrThrow({
-        select: { id: true, userId: true, spaceId: true },
         where: { id: input.postId },
       });
 
       if (post.userId !== context.session.userId) {
         const meAsMember = await db.spaceMember.findUniqueOrThrow({
-          select: { role: true },
           where: {
             spaceId_userId: {
               spaceId: post.spaceId,
@@ -1018,12 +990,7 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: PurchasePostInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const post = await db.post.findUniqueOrThrow({
-        select: {
-          id: true,
-          userId: true,
-          spaceId: true,
-          publishedRevision: { select: { id: true, price: true } },
-        },
+        include: { publishedRevision: true },
         where: { id: input.postId },
       });
 
@@ -1082,13 +1049,13 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: UpdatePostViewInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const view = await db.postView.findFirst({
-        select: { id: true },
         where: {
           postId: input.postId,
           userId: context.session ? context.session.userId : undefined,
           deviceId: context.session ? undefined : context.deviceId,
         },
       });
+
       if (view) {
         await db.postView.update({
           where: { id: view.id },
@@ -1124,10 +1091,6 @@ builder.mutationFields((t) => ({
       }
 
       const post = await db.post.findUniqueOrThrow({
-        select: {
-          id: true,
-          receiveFeedback: true,
-        },
         where: { id: input.postId },
       });
 
@@ -1174,10 +1137,6 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: UnlockPasswordedPostInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const post = await db.post.findUniqueOrThrow({
-        select: {
-          id: true,
-          password: true,
-        },
         where: { id: input.postId },
       });
 

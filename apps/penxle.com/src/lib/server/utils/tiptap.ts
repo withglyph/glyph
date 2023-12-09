@@ -45,8 +45,8 @@ export const decorateContent = async (
         }
 
         const image = await db.image.findUnique({
-          where: { id: node.attrs.id },
           select: { id: true, width: true, height: true, placeholder: true, path: true },
+          where: { id: node.attrs.id },
         });
 
         if (!image) {
@@ -74,8 +74,8 @@ export const decorateContent = async (
         }
 
         const file = await db.file.findUnique({
-          where: { id: node.attrs.id },
           select: { id: true, name: true, size: true, path: true },
+          where: { id: node.attrs.id },
         });
 
         if (!file) {

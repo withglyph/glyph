@@ -30,7 +30,6 @@ export const deductUserPoint = async ({ db, userId, amount, targetId, cause }: D
   await db.$lock(`USER_POINT_${userId}`);
 
   const pointBalances = await db.pointBalance.findMany({
-    select: { id: true, leftover: true },
     where: {
       userId,
       expiresAt: { gt: new Date() },

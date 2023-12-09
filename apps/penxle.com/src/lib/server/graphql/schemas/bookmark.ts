@@ -7,7 +7,6 @@ import { builder } from '../builder';
  */
 
 builder.prismaObject('BookmarkGroup', {
-  select: { id: true },
   fields: (t) => ({
     id: t.exposeID('id'),
     name: t.exposeString('name'),
@@ -124,11 +123,6 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: BookmarkPostInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const post = await db.post.findUnique({
-        select: {
-          spaceId: true,
-          state: true,
-          visibility: true,
-        },
         where: {
           id: input.postId,
           state: 'PUBLISHED',
@@ -156,13 +150,11 @@ builder.mutationFields((t) => ({
 
       const defaultBookmarkGroup =
         (await db.bookmarkGroup.findFirst({
-          select: { id: true },
           where: {
             userId: context.session.userId,
           },
         })) ??
         (await db.bookmarkGroup.create({
-          select: { id: true },
           data: {
             id: createId(),
             name: '북마크',
@@ -171,7 +163,7 @@ builder.mutationFields((t) => ({
         }));
 
       const bookmarkGroupPost = await db.bookmarkGroupPost.upsert({
-        select: { post: query },
+        include: { post: query },
         where: {
           bookmarkGroupId_postId: {
             bookmarkGroupId: defaultBookmarkGroup.id,
@@ -196,7 +188,7 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: UnbookmarkPostInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const bookmarkPost = await db.bookmarkGroupPost.delete({
-        select: { bookmarkGroupId: true, post: query },
+        include: { post: query },
         where: {
           id: input.bookmarkPostId,
           bookmarkGroup: {

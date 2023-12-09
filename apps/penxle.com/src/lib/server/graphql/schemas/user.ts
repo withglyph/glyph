@@ -37,7 +37,6 @@ import { builder } from '../builder';
  */
 
 builder.prismaObject('Profile', {
-  select: { id: true },
   fields: (t) => ({
     id: t.exposeID('id'),
     name: t.exposeString('name'),
@@ -47,7 +46,6 @@ builder.prismaObject('Profile', {
 });
 
 builder.prismaObject('ProvisionedUser', {
-  select: { id: true },
   authScopes: { $granted: '$user' },
   fields: (t) => ({
     id: t.exposeID('id'),
@@ -58,7 +56,6 @@ builder.prismaObject('ProvisionedUser', {
 });
 
 builder.prismaObject('User', {
-  select: { id: true },
   authScopes: (user, context) => user.id === context.session?.userId || { $granted: '$user', staff: true },
   fields: (t) => ({
     id: t.exposeID('id'),
@@ -92,7 +89,7 @@ builder.prismaObject('User', {
       type: ['Space'],
       select: (_, __, nestedSelection) => ({
         spaces: {
-          select: { space: nestedSelection() },
+          include: { space: nestedSelection() },
           where: {
             state: 'ACTIVE',
             space: { state: 'ACTIVE' },
@@ -106,7 +103,7 @@ builder.prismaObject('User', {
       type: ['Space'],
       select: (_, __, nestedSelection) => ({
         followedSpaces: {
-          select: { space: nestedSelection() },
+          include: { space: nestedSelection() },
           where: {
             space: { state: 'ACTIVE' },
           },
@@ -125,7 +122,7 @@ builder.prismaObject('User', {
       type: ['Space'],
       select: (_, __, nestedSelection) => ({
         mutedSpaces: {
-          select: { space: nestedSelection() },
+          include: { space: nestedSelection() },
           where: {
             space: { state: 'ACTIVE' },
           },
@@ -138,7 +135,7 @@ builder.prismaObject('User', {
       type: ['Tag'],
       select: (_, __, nestedSelection) => ({
         tagMutes: {
-          select: { tag: nestedSelection() },
+          include: { tag: nestedSelection() },
         },
       }),
       resolve: (_, { tagMutes }) => tagMutes.map(({ tag }) => tag),
@@ -148,7 +145,7 @@ builder.prismaObject('User', {
       type: ['Post'],
       resolve: async (query, user, _, { db }) => {
         const postView = await db.postView.findMany({
-          select: { post: query },
+          include: { post: query },
           where: {
             userId: user.id,
             post: {
@@ -185,7 +182,7 @@ builder.prismaObject('User', {
       type: ['Post'],
       resolve: async (query, user, _, { db }) => {
         const likes = await db.postLike.findMany({
-          select: { post: query },
+          include: { post: query },
           where: {
             userId: user.id,
             post: {
@@ -215,7 +212,7 @@ builder.prismaObject('User', {
       type: ['Post'],
       select: (_, __, nestedSelection) => ({
         postPurchases: {
-          select: { post: nestedSelection() },
+          include: { post: nestedSelection() },
           orderBy: { createdAt: 'desc' },
         },
       }),
@@ -226,7 +223,7 @@ builder.prismaObject('User', {
       type: ['Tag'],
       select: (_, __, nestedSelection) => ({
         followedTags: {
-          select: { tag: nestedSelection() },
+          include: { tag: nestedSelection() },
         },
       }),
 
@@ -236,7 +233,6 @@ builder.prismaObject('User', {
 });
 
 builder.prismaObject('UserContentFilterPreference', {
-  select: { id: true },
   authScopes: { $granted: '$user' },
   fields: (t) => ({
     id: t.exposeID('id'),
@@ -246,7 +242,6 @@ builder.prismaObject('UserContentFilterPreference', {
 });
 
 builder.prismaObject('UserEmailVerification', {
-  select: { id: true },
   authScopes: { $granted: '$user' },
   fields: (t) => ({
     id: t.exposeID('id'),
@@ -257,7 +252,6 @@ builder.prismaObject('UserEmailVerification', {
 });
 
 builder.prismaObject('UserMarketingConsent', {
-  select: { id: true },
   authScopes: { $granted: '$user' },
   fields: (t) => ({
     id: t.exposeID('id'),
@@ -266,7 +260,6 @@ builder.prismaObject('UserMarketingConsent', {
 });
 
 builder.prismaObject('UserNotificationPreference', {
-  select: { id: true },
   authScopes: { $granted: '$user' },
   fields: (t) => ({
     id: t.exposeID('id'),
@@ -277,7 +270,6 @@ builder.prismaObject('UserNotificationPreference', {
 });
 
 builder.prismaObject('UserPersonalIdentity', {
-  select: { id: true },
   authScopes: { $granted: '$user' },
   fields: (t) => ({
     id: t.exposeID('id'),
@@ -286,7 +278,6 @@ builder.prismaObject('UserPersonalIdentity', {
 });
 
 builder.prismaObject('UserSingleSignOn', {
-  select: { id: true },
   authScopes: { $granted: '$user' },
   fields: (t) => ({
     id: t.exposeID('id'),
@@ -591,7 +582,6 @@ builder.mutationFields((t) => ({
       });
 
       const session = await db.userSession.create({
-        select: { id: true },
         data: { id: createId(), userId: user.id },
       });
 
@@ -640,7 +630,7 @@ builder.mutationFields((t) => ({
       }
 
       const user = await db.user.findUniqueOrThrow({
-        select: { id: true, profile: { select: { name: true } } },
+        include: { profile: true },
         where: { id: context.session.userId },
       });
 
@@ -678,7 +668,6 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: UpdateUserProfileInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const avatar = await db.image.findUniqueOrThrow({
-        select: { id: true },
         where: {
           id: input.avatarId,
           userId: context.session.userId,
@@ -686,7 +675,7 @@ builder.mutationFields((t) => ({
       });
 
       const user = await db.user.update({
-        select: { profile: query },
+        include: { profile: query },
         where: { id: context.session.userId },
         data: {
           profile: {

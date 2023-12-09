@@ -14,8 +14,8 @@ frill.get('/frill', async (_, { db, ...context }) => {
   }
 
   const user = await db.user.findUniqueOrThrow({
+    include: { profile: true },
     where: { id: context.session.userId },
-    include: { profile: { select: { name: true } } },
   });
 
   const ssoToken = await new SignJWT({
