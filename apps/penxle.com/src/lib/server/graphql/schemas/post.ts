@@ -482,7 +482,7 @@ builder.prismaObject('PostRevision', {
       select: { freeContent: true },
       resolve: async (revision) => {
         const contentText = await revisionContentToText(revision.freeContent);
-        return contentText.slice(0, 200);
+        return contentText.slice(0, 200).replaceAll(/\s+/g, ' ');
       },
 
       unauthorizedResolver: () => '',
