@@ -17,6 +17,7 @@ type BookmarkGroup {
 }
 
 type BookmarkGroupPost {
+  bookmarkGroup: BookmarkGroup!
   createdAt: DateTime!
   id: ID!
   post: Post!
@@ -279,7 +280,8 @@ enum PointTransactionCause {
 
 type Post {
   blurred: Boolean!
-  bookmarked: Boolean!
+  bookmarkGroups: [BookmarkGroup!]!
+  bookmarked: Boolean! @deprecated(reason: "Use bookmarkGroups instead")
   contentFilters: [ContentFilterCategory!]!
   createdAt: DateTime!
   discloseStats: Boolean!
@@ -539,7 +541,8 @@ type TagWikiRevision {
 }
 
 input UnbookmarkPostInput {
-  bookmarkPostId: ID!
+  bookmarkId: ID!
+  postId: ID!
 }
 
 input UnfollowSpaceInput {

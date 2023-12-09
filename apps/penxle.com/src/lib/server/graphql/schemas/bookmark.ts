@@ -28,6 +28,7 @@ builder.prismaObject('BookmarkGroupPost', {
   fields: (t) => ({
     id: t.exposeID('id'),
     post: t.relation('post'),
+    bookmarkGroup: t.relation('bookmarkGroup'),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
   }),
 });
@@ -64,7 +65,8 @@ const BookmarkPostInput = builder.inputType('BookmarkPostInput', {
 
 const UnbookmarkPostInput = builder.inputType('UnbookmarkPostInput', {
   fields: (t) => ({
-    bookmarkPostId: t.id(),
+    bookmarkId: t.id(),
+    postId: t.id(),
   }),
 });
 
@@ -192,10 +194,11 @@ builder.mutationFields((t) => ({
       const bookmarkPost = await db.bookmarkGroupPost.delete({
         include: { post: query },
         where: {
-          id: input.bookmarkPostId,
-          bookmarkGroup: {
-            userId: context.session.userId,
+          bookmarkGroupId_postId: {
+            bookmarkGroupId: input.bookmarkId,
+            postId: input.postId,
           },
+          bookmarkGroup: { userId: context.session.userId },
         },
       });
 

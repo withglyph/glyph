@@ -209,6 +209,7 @@ builder.prismaObject('Post', {
     }),
 
     bookmarked: t.boolean({
+      deprecationReason: 'Use bookmarkGroups instead',
       select: (_, { ...context }) => {
         if (!context.session) {
           return {};
@@ -226,6 +227,29 @@ builder.prismaObject('Post', {
       resolve: (post) => {
         return post.bookmarks?.length > 0;
       },
+    }),
+
+    bookmarkGroups: t.prismaField({
+      type: ['BookmarkGroup'],
+      resolve: (query, post, __, { db, ...context }) => {
+        if (!context.session) {
+          return [];
+        }
+
+        return db.bookmarkGroup.findMany({
+          ...query,
+          where: {
+            userId: context.session.userId,
+            posts: {
+              some: {
+                postId: post.id,
+              },
+            },
+          },
+        });
+      },
+
+      unauthorizedResolver: () => [],
     }),
 
     purchasedAt: t.field({
