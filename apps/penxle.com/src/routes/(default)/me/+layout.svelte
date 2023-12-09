@@ -123,7 +123,7 @@
       </nav>
     </aside>
 
-    <div class="w-full max-w-208">
+    <div class="w-full max-w-208 overflow-auto">
       <slot />
     </div>
   </div>

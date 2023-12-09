@@ -155,7 +155,7 @@
     </div>
   </aside>
 
-  <div class="bg-primary flex-1 py-5 px-4 sm:(py-10 px-11)">
+  <div class="bg-primary flex-1 py-5 px-4 sm:(py-10 px-11) overflow-auto">
     <div class="max-w-218 w-full">
       <slot />
     </div>

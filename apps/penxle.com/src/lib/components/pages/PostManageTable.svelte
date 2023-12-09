@@ -202,139 +202,141 @@
   }
 </script>
 
-<Table class="text-left border-separate border-spacing-y-0.125rem">
-  <TableRow>
-    <TableHead class="w-2.5rem">
-      <Checkbox class="gap-3" on:change={handleSelectAllPost} />
-    </TableHead>
-    <TableHead class="<sm:p-l-0.25rem">포스트</TableHead>
-    <TableHead class="<sm:hidden">작성자</TableHead>
-    <TableHead class="min-w-10rem <sm:hidden">태그</TableHead>
-    <TableHead class="<sm:(p-r-1.3rem w-5.25rem)">공개옵션</TableHead>
-    <TableHead class="<sm:hidden">관리</TableHead>
-    <!-- 모바일 화면 너비에서 마지막에 빈 테이블 헤드 요소가 없으면 테이블 헤더 오른쪽이 잘리는 문제가 있어서 추가했습니다. -->
-    <TableHead class="w-0" />
-  </TableRow>
-  {#each $posts as post (post.id)}
-    <TableRow
-      class="rounded-2 [&[aria-selected='true']]:bg-primary border-solid border-b border-alphagray-10 last:border-b-0 [&>td>div]:(items-center <sm:justify-end)"
-      aria-selected={selectedPostIds.has('post.id')}
-    >
-      <TableData class="p-r-none!">
-        <Checkbox checked={selectedPostIds.has(post.id)} value={post.id} on:change={handleSelectPost} />
-      </TableData>
-      <TableData>
-        <a
-          class="flex justify-start gap-xs"
-          href={`/${post.space.slug}/${post.permalink}`}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          {#if post.publishedRevision.croppedThumbnail}
-            <Image class="square-2.625rem flex-shrink-0 rounded-2" $image={post.publishedRevision.croppedThumbnail} />
-          {/if}
-          <dl class="truncate [&>dt]:truncate">
-            <dt class="body-15-b">
-              {post.publishedRevision.title}
-            </dt>
-            <dd class="body-13-m text-secondary">
-              {dayjs(post.publishedAt).formatAsDate()}
-            </dd>
-          </dl>
-        </a>
-      </TableData>
-      <TableData class="<sm:hidden">
-        <div class="flex gap-1">
-          {#if type === 'space'}
-            <Avatar class="square-5" $profile={post.member.profile} />
-            <span class="body-13-b">{post.member.profile.name}</span>
-            {#if post.member.id === $spaceMember?.id}
-              <Badge class="w-fit px-2 py-1" color="green">나</Badge>
-            {/if}
-          {:else if type === 'me'}
-            <Avatar class="square-5" $profile={post.member.profile} />
-            <span class="body-13-b">{post.space.name}</span>
-          {/if}
-        </div>
-      </TableData>
-      <TableData class="<sm:hidden">
-        <div class="flex gap-1">
-          {#each post.publishedRevision.tags.slice(0, 3) as tag (tag.id)}
-            <Tag size="sm">{tag.name}</Tag>
-          {/each}
-          {#if post.publishedRevision.tags.length > 2}
-            <Tooltip
-              message={post.publishedRevision.tags
-                .slice(2)
-                .map((tag) => tag.name)
-                .join(', ')}
-              placement="top"
-            >
-              <span class="body-13-b">+{post.publishedRevision.tags.length - 2}</span>
-            </Tooltip>
-          {/if}
-        </div>
-      </TableData>
-      <TableData class="overflow-visible!">
-        <div class="flex gap-0.125rem">
-          <Menu
-            class="disabled:[&>i.i-lc-chevron-down]:hidden "
-            disabled={!hasPermissionToUpdatePost(post.member.id)}
-            placement="bottom-end"
-          >
-            <span slot="value" class="flex items-center body-13-b [&>i]:text-icon-secondary">
-              <i class={clsx(visibilityToIcon[post.visibility], 'square-4 m-r-0.15rem')} />
-              {visibilityToLocaleString[post.visibility]}
-              <i class="i-lc-chevron-down square-4" />
-            </span>
-
-            {#each visibilityOptions as visibilityOption (visibilityOption.value)}
-              <MenuItem
-                aria-pressed={post.visibility === visibilityOption.value}
-                on:click={() =>
-                  updateVisibility({
-                    postId: post.id,
-                    visibility: visibilityOption.value,
-                  })}
-              >
-                {visibilityOption.label}
-              </MenuItem>
-            {/each}
-          </Menu>
-        </div>
-      </TableData>
-      <TableData class="<sm:hidden">
-        <div class={clsx('flex gap-2')} hidden={!hasPermissionToUpdatePost(post.member.id)}>
-          <Button
-            class="disabled:invisible"
-            color="tertiary"
-            disabled={type === 'space' && post.member.id !== $spaceMember?.id}
-            external
-            href={`/editor/${post.permalink}`}
-            size="sm"
-            type="link"
-            variant="outlined"
-          >
-            수정
-          </Button>
-          <Button
-            class="p-none! disabled:invisible"
-            disabled={type === 'space' && (post.member.id !== $spaceMember?.id || $spaceMember?.role !== 'ADMIN')}
-            size="sm"
-            variant="text"
-            on:click={() => {
-              deletePostId = post.id;
-              openDeletePostWaring = true;
-            }}
-          >
-            <i class="i-lc-trash-2 square-4 text-secondary hover:text-action-red-primary" />
-          </Button>
-        </div>
-      </TableData>
-      <TableData></TableData>
+<div class="overflow-auto">
+  <Table class="text-left border-separate border-spacing-y-0.125rem">
+    <TableRow>
+      <TableHead class="w-2.5rem">
+        <Checkbox class="gap-3" on:change={handleSelectAllPost} />
+      </TableHead>
+      <TableHead class="<sm:p-l-0.25rem">포스트</TableHead>
+      <TableHead class="<sm:hidden">작성자</TableHead>
+      <TableHead class="min-w-10rem <sm:hidden">태그</TableHead>
+      <TableHead class="<sm:(p-r-1.3rem w-5.25rem)">공개옵션</TableHead>
+      <TableHead class="<sm:hidden">관리</TableHead>
+      <!-- 모바일 화면 너비에서 마지막에 빈 테이블 헤드 요소가 없으면 테이블 헤더 오른쪽이 잘리는 문제가 있어서 추가했습니다. -->
+      <TableHead class="w-0" />
     </TableRow>
-  {/each}
-</Table>
+    {#each $posts as post (post.id)}
+      <TableRow
+        class="rounded-2 [&[aria-selected='true']]:bg-primary border-solid border-b border-alphagray-10 last:border-b-0 [&>td>div]:(items-center <sm:justify-end)"
+        aria-selected={selectedPostIds.has('post.id')}
+      >
+        <TableData class="p-r-none!">
+          <Checkbox checked={selectedPostIds.has(post.id)} value={post.id} on:change={handleSelectPost} />
+        </TableData>
+        <TableData>
+          <a
+            class="flex justify-start gap-xs"
+            href={`/${post.space.slug}/${post.permalink}`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {#if post.publishedRevision.croppedThumbnail}
+              <Image class="square-2.625rem flex-shrink-0 rounded-2" $image={post.publishedRevision.croppedThumbnail} />
+            {/if}
+            <dl class="truncate [&>dt]:truncate">
+              <dt class="body-15-b">
+                {post.publishedRevision.title}
+              </dt>
+              <dd class="body-13-m text-secondary">
+                {dayjs(post.publishedAt).formatAsDate()}
+              </dd>
+            </dl>
+          </a>
+        </TableData>
+        <TableData class="<sm:hidden">
+          <div class="flex gap-1">
+            {#if type === 'space'}
+              <Avatar class="square-5" $profile={post.member.profile} />
+              <span class="body-13-b">{post.member.profile.name}</span>
+              {#if post.member.id === $spaceMember?.id}
+                <Badge class="w-fit px-2 py-1" color="green">나</Badge>
+              {/if}
+            {:else if type === 'me'}
+              <Avatar class="square-5" $profile={post.member.profile} />
+              <span class="body-13-b">{post.space.name}</span>
+            {/if}
+          </div>
+        </TableData>
+        <TableData class="<sm:hidden">
+          <div class="flex gap-1">
+            {#each post.publishedRevision.tags.slice(0, 3) as tag (tag.id)}
+              <Tag size="sm">{tag.name}</Tag>
+            {/each}
+            {#if post.publishedRevision.tags.length > 2}
+              <Tooltip
+                message={post.publishedRevision.tags
+                  .slice(2)
+                  .map((tag) => tag.name)
+                  .join(', ')}
+                placement="top"
+              >
+                <span class="body-13-b">+{post.publishedRevision.tags.length - 2}</span>
+              </Tooltip>
+            {/if}
+          </div>
+        </TableData>
+        <TableData class="overflow-visible!">
+          <div class="flex gap-0.125rem">
+            <Menu
+              class="disabled:[&>i.i-lc-chevron-down]:hidden "
+              disabled={!hasPermissionToUpdatePost(post.member.id)}
+              placement="bottom-end"
+            >
+              <span slot="value" class="flex items-center body-13-b [&>i]:text-icon-secondary">
+                <i class={clsx(visibilityToIcon[post.visibility], 'square-4 m-r-0.15rem')} />
+                {visibilityToLocaleString[post.visibility]}
+                <i class="i-lc-chevron-down square-4" />
+              </span>
+
+              {#each visibilityOptions as visibilityOption (visibilityOption.value)}
+                <MenuItem
+                  aria-pressed={post.visibility === visibilityOption.value}
+                  on:click={() =>
+                    updateVisibility({
+                      postId: post.id,
+                      visibility: visibilityOption.value,
+                    })}
+                >
+                  {visibilityOption.label}
+                </MenuItem>
+              {/each}
+            </Menu>
+          </div>
+        </TableData>
+        <TableData class="<sm:hidden">
+          <div class={clsx('flex gap-2')} hidden={!hasPermissionToUpdatePost(post.member.id)}>
+            <Button
+              class="disabled:invisible"
+              color="tertiary"
+              disabled={type === 'space' && post.member.id !== $spaceMember?.id}
+              external
+              href={`/editor/${post.permalink}`}
+              size="sm"
+              type="link"
+              variant="outlined"
+            >
+              수정
+            </Button>
+            <Button
+              class="p-none! disabled:invisible"
+              disabled={type === 'space' && (post.member.id !== $spaceMember?.id || $spaceMember?.role !== 'ADMIN')}
+              size="sm"
+              variant="text"
+              on:click={() => {
+                deletePostId = post.id;
+                openDeletePostWaring = true;
+              }}
+            >
+              <i class="i-lc-trash-2 square-4 text-secondary hover:text-action-red-primary" />
+            </Button>
+          </div>
+        </TableData>
+        <TableData></TableData>
+      </TableRow>
+    {/each}
+  </Table>
+</div>
 
 <div
   class={clsx(
