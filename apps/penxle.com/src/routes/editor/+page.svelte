@@ -28,10 +28,9 @@
   let thumbnailBounds: ImageBounds | undefined = undefined;
 
   let restoredRevision = writable<RestoredRevision>(null);
-  const resetRestored = () => {
-    restoredRevision.set(null);
-  };
   setContext('restoredRevision', restoredRevision);
+
+  const autoSaveCount = writable(0);
 
   const unsubscriber = restoredRevision.subscribe((revision) => {
     if (revision === null) return;
@@ -42,6 +41,8 @@
     editor.commands.setContent(revision.content);
     kind = revision.contentKind;
     tags = revision.tags.map(({ name }) => name);
+
+    $autoSaveCount += 1;
   });
 
   onDestroy(() => {
@@ -53,10 +54,9 @@
 
 <Header
   {$query}
+  {autoSaveCount}
   {content}
   {editor}
-  {resetRestored}
-  restored={$restoredRevision !== null}
   {subtitle}
   {tags}
   {thumbnailBounds}
@@ -65,7 +65,7 @@
   bind:kind
 />
 <Editor
-  handleKeyDown={resetRestored}
+  {autoSaveCount}
   {kind}
   bind:title
   bind:editor
@@ -74,4 +74,4 @@
   bind:thumbnailBounds
   bind:thumbnailId
 />
-<Footer {kind} bind:content bind:tags bind:thumbnailBounds bind:thumbnailId />
+<Footer {autoSaveCount} {kind} bind:content bind:tags bind:thumbnailBounds bind:thumbnailId />

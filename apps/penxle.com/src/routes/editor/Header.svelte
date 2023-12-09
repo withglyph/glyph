@@ -3,7 +3,7 @@
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import * as R from 'radash';
-  import { tick } from 'svelte';
+  import { onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
@@ -20,6 +20,7 @@
   import RevisionListModal from './RevisionListModal.svelte';
   import ToolbarButton from './ToolbarButton.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
+  import type { Writable } from 'svelte/store';
   import type {
     ContentFilterCategory,
     EditorPage_Header_post,
@@ -35,8 +36,7 @@
   export { _post as $post, _query as $query };
   let draftPost: EditorPage_RevisionListModal_Post | null = null;
 
-  export let restored: boolean;
-  export let resetRestored: () => void;
+  export let autoSaveCount: Writable<number>;
   export let kind: PostRevisionContentKind;
   export let title: string;
   export let subtitle: string | null;
@@ -174,8 +174,6 @@
     return resp;
   };
 
-  const autoSave = R.debounce({ delay: 1000 }, async () => doRevisePost('AUTO_SAVE'));
-
   let publishButtonEl: HTMLDivElement;
   let publishMenuEl: HTMLDivElement;
 
@@ -195,7 +193,7 @@
     enableContentFilter = true;
   }
 
-  let permalink: string | undefined;
+  export let permalink: string | undefined = undefined;
   let selectedSpace: (typeof $query.me.spaces)[number] | undefined;
   let revisedAt: string | undefined;
 
@@ -237,9 +235,17 @@
   }
 
   $: published = $post?.state === 'PUBLISHED';
-  $: _hasContent = selectedSpace && !!title && content?.content;
-  $: canPublish = browser && _hasContent && (thumbnailId || !thumbnailId) && (thumbnailBounds || !thumbnailBounds);
-  $: canRevise = canPublish && !restored;
+  $: _hasContent = !!selectedSpace && !!title && !!content?.content;
+  $: canRevise = browser && _hasContent && (!!thumbnailId || !thumbnailId) && (!!thumbnailBounds || !thumbnailBounds);
+
+  const autoSave = R.debounce({ delay: 1000 }, async () => doRevisePost('AUTO_SAVE'));
+  const unsubscriber = autoSaveCount.subscribe(() => {
+    if (canRevise) {
+      autoSave();
+    }
+  });
+
+  onDestroy(unsubscriber);
 
   $: reviseNotAvailableReason = (() => {
     if (!selectedSpace) {
@@ -256,10 +262,6 @@
 
     return '';
   })();
-
-  $: if (canRevise) {
-    autoSave();
-  }
 
   const update = async () => {
     await tick();
@@ -403,7 +405,7 @@
                 on:click={() => {
                   selectedSpace = space;
                   spaceSelectorOpen = false;
-                  resetRestored();
+                  $autoSaveCount += 1;
                 }}
               >
                 <div class="flex items-center gap-2">
@@ -475,8 +477,8 @@
     </div>
 
     <div bind:this={publishButtonEl} class="w-fit">
-      <Tooltip enabled={!canPublish} message={reviseNotAvailableReason}>
-        <Button disabled={!canPublish} size="lg" on:click={() => (publishMenuOpen = true)}>포스트 게시</Button>
+      <Tooltip enabled={!canRevise} message={reviseNotAvailableReason}>
+        <Button disabled={!canRevise} size="lg" on:click={() => (publishMenuOpen = true)}>포스트 게시</Button>
       </Tooltip>
     </div>
 

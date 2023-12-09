@@ -2,6 +2,7 @@
   import { Helmet } from '@penxle/ui';
   import { onDestroy, setContext } from 'svelte';
   import { writable } from 'svelte/store';
+  import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import Editor from '../Editor.svelte';
   import Footer from '../Footer.svelte';
@@ -42,6 +43,8 @@
     }
   `);
 
+  let permalink = $page.params.permalink;
+
   let title: string;
   let subtitle: string | null = null;
   let editor: TiptapEditor | undefined;
@@ -54,10 +57,9 @@
   let initialized = false;
 
   let restoredRevision = writable<RestoredRevision>(null);
-  const resetRestored = () => {
-    restoredRevision.set(null);
-  };
   setContext('restoredRevision', restoredRevision);
+
+  const autoSaveCount = writable(0);
 
   const unsubscriber = restoredRevision.subscribe((revision) => {
     if (revision === null) return;
@@ -68,6 +70,8 @@
     editor.commands.setContent(revision.content);
     kind = revision.contentKind;
     tags = revision.tags.map(({ name }) => name);
+
+    $autoSaveCount += 1;
   });
 
   onDestroy(() => {
@@ -92,10 +96,10 @@
 <Header
   $post={$query.post}
   {$query}
+  {autoSaveCount}
   {content}
   {editor}
-  {resetRestored}
-  restored={$restoredRevision !== null}
+  {permalink}
   {subtitle}
   {tags}
   {thumbnailBounds}
@@ -104,7 +108,7 @@
   bind:kind
 />
 <Editor
-  handleKeyDown={resetRestored}
+  {autoSaveCount}
   {kind}
   bind:title
   bind:editor
@@ -113,4 +117,4 @@
   bind:thumbnailId
   bind:thumbnailBounds
 />
-<Footer {kind} bind:content bind:tags bind:thumbnailBounds bind:thumbnailId />
+<Footer {autoSaveCount} {kind} bind:content bind:tags bind:thumbnailBounds bind:thumbnailId />

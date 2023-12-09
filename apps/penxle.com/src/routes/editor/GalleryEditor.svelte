@@ -36,6 +36,8 @@
   let description: JSONContent | undefined = undefined;
   let dragging: EventTarget | null = null;
 
+  export let onChange: () => void;
+
   const prepareImageUpload = graphql(`
     mutation Editor_PrepareImageUpload_Mutation {
       prepareImageUpload {
@@ -142,6 +144,8 @@
         scale: 1,
       };
     }
+
+    onChange();
   };
 
   $: accessBarrierIndex = content?.content?.findIndex((c) => c.type === 'access_barrier') ?? -1;
@@ -165,6 +169,8 @@
         (c) => c.type === 'access_barrier',
       );
     }
+
+    onChange();
   };
 
   let sortable: Sortable;
@@ -357,6 +363,7 @@
                 if (content?.content) {
                   content.content =
                     content.content.length === 1 ? undefined : content.content.filter((c) => c !== node);
+                  onChange();
                 }
               }}
             >
@@ -414,6 +421,7 @@
               type="button"
               on:click={() => {
                 if (content?.content) content.content = content.content.filter((c) => c.type !== 'access_barrier');
+                onChange();
               }}
             >
               <i class="i-lc-x text-white square-3.5" />
@@ -449,6 +457,7 @@
                   },
                 ];
               }
+              onChange();
             }}
           >
             결제상자 추가

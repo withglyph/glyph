@@ -2,9 +2,11 @@
   import ArticleEditor from './ArticleEditor.svelte';
   import GalleryEditor from './GalleryEditor.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
+  import type { Writable } from 'svelte/store';
   import type { PostRevisionContentKind } from '$glitch';
   import type { ImageBounds } from '$lib/utils';
 
+  export let autoSaveCount: Writable<number>;
   export let kind: PostRevisionContentKind;
   export let title: string;
   export let subtitle: string | null;
@@ -12,9 +14,12 @@
   export let editor: Editor | undefined;
   export let thumbnailId: string | undefined;
   export let thumbnailBounds: ImageBounds | undefined;
-  export let handleKeyDown: (() => void) | undefined = undefined;
 
   let enableSubtitle = !!subtitle;
+
+  function autoSave() {
+    $autoSaveCount += 1;
+  }
 </script>
 
 <main class="flex grow flex-col bg-primary">
@@ -25,7 +30,7 @@
         placeholder="제목을 입력하세요"
         type="text"
         bind:value={title}
-        on:keydown={handleKeyDown}
+        on:keydown={autoSave}
       />
 
       {#if enableSubtitle}
@@ -38,10 +43,8 @@
             if (e.key === 'Backspace' && e.currentTarget.value === '') {
               enableSubtitle = false;
             }
-            if (handleKeyDown) {
-              handleKeyDown();
-            }
           }}
+          on:keydown={autoSave}
         />
       {:else}
         <label class="body-16-b flex items-center gap-2 mt-4">
@@ -57,9 +60,9 @@
       {/if}
 
       {#if kind === 'ARTICLE'}
-        <ArticleEditor {handleKeyDown} bind:editor bind:content />
+        <ArticleEditor onChange={autoSave} bind:editor bind:content />
       {:else}
-        <GalleryEditor bind:content bind:thumbnailId bind:thumbnailBounds />
+        <GalleryEditor onChange={autoSave} bind:content bind:thumbnailId bind:thumbnailBounds />
       {/if}
     </div>
   </div>

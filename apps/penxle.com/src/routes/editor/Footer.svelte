@@ -2,10 +2,13 @@
   import clsx from 'clsx';
   import { Badge, Image, Tag } from '$lib/components';
   import { ThumbnailPicker } from '$lib/components/media';
+  import type { Writable } from '@svelte-kits/store';
   import type { JSONContent } from '@tiptap/core';
+  import type { KeyboardEventHandler } from 'svelte/elements';
   import type { Image_image, PostRevisionContentKind } from '$glitch';
   import type { ImageBounds } from '$lib/utils';
 
+  export let autoSaveCount: Writable<number>;
   export let tags: string[] = [];
   export let kind: PostRevisionContentKind;
   export let content: JSONContent | undefined;
@@ -33,7 +36,26 @@
     };
   };
 
-  const handleInputChange = (e: Event) => {
+  const handleTagInputChange: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key !== ' ' && e.key !== 'Spacebar' && e.key !== 'Enter') return;
+
+    const { value } = e.currentTarget;
+
+    if (tags.includes(value)) return;
+    const escapedValue = value.trim().replaceAll(' ', '_');
+
+    if (escapedValue.length === 0) return;
+
+    if (e.isComposing === false) {
+      tags.push(escapedValue);
+      tags = tags;
+      e.currentTarget.value = '';
+    }
+
+    $autoSaveCount += 1;
+  };
+
+  const handleImageCaptionInputChange = (e: Event) => {
     const { value } = e.target as HTMLInputElement;
 
     if (!content) {
@@ -52,6 +74,8 @@
         content.content.shift();
       }
     }
+
+    $autoSaveCount += 1;
   };
 
   let imageAttrs: { id: string; __data: Image_image }[] = [];
@@ -110,22 +134,7 @@
           maxlength={50}
           placeholder="게시글에 추가될 태그를 입력하세요"
           type="text"
-          on:keydown={(e) => {
-            if (e.key !== ' ' && e.key !== 'Spacebar' && e.key !== 'Enter') return;
-
-            const { value } = e.currentTarget;
-
-            if (tags.includes(value)) return;
-            const escapedValue = value.trim().replaceAll(' ', '_');
-
-            if (escapedValue.length === 0) return;
-
-            if (e.isComposing === false) {
-              tags.push(escapedValue);
-              tags = tags;
-              e.currentTarget.value = '';
-            }
-          }}
+          on:keydown={handleTagInputChange}
         />
       </label>
     </div>
@@ -182,7 +191,7 @@
           class="body-13-b resize-none w-full"
           placeholder="내용을 입력하세요"
           type="text"
-          on:input={handleInputChange}
+          on:input={handleImageCaptionInputChange}
         />
       {/if}
     </div>
