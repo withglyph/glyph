@@ -143,7 +143,7 @@
       open = true;
     }}
   >
-    <i class="i-px-happy text-icon-tertiary square-4" />
+    <i class="i-px-happy bg-[#5C5755] square-4" />
   </button>
 {/if}
 

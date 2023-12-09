@@ -50,6 +50,10 @@
       fragment Post_query on Query {
         me {
           id
+
+          bookmarks {
+            id
+          }
         }
 
         post(permalink: $permalink) {
@@ -64,6 +68,10 @@
           blurred
           hasPassword
           receiveFeedback
+
+          bookmarkGroups {
+            id
+          }
 
           reactions {
             id
@@ -227,6 +235,30 @@
     }
   `);
 
+  const bookmarkPost = graphql(`
+    mutation Post_BookmarkPost_Mutation($input: BookmarkPostInput!) {
+      bookmarkPost(input: $input) {
+        id
+
+        bookmarkGroups {
+          id
+        }
+      }
+    }
+  `);
+
+  const unbookmarkPost = graphql(`
+    mutation Post_UnbookmarkPost_Mutation($input: UnbookmarkPostInput!) {
+      unbookmarkPost(input: $input) {
+        id
+
+        bookmarkGroups {
+          id
+        }
+      }
+    }
+  `);
+
   const handleShare = () => {
     if (preview) return;
 
@@ -321,7 +353,33 @@
             </div>
           </div>
 
-          <button class="i-lc-bookmark square-6" type="button" />
+          {#if $query.post.bookmarkGroups.length}
+            <button
+              class="i-px-bookmark-fill square-6 bg-yellow-50"
+              type="button"
+              on:click={async () => {
+                await unbookmarkPost({ bookmarkId: $query.post.bookmarkGroups[0].id, postId: $query.post.id });
+                toast.success('북마크에서 삭제했어요');
+              }}
+            />
+          {:else}
+            <button
+              class="i-px-bookmark-outline square-6"
+              type="button"
+              on:click={async () => {
+                if (preview) return;
+
+                if (!$query.me) {
+                  loginRequireOpen = true;
+                  return;
+                }
+
+                await bookmarkPost({ postId: $query.post.id });
+                toast.success('북마크에 저장되었어요');
+              }}
+            />
+          {/if}
+
           <button class="i-lc-share square-6" type="button" on:click={handleShare} />
 
           {#if preview}
@@ -556,7 +614,27 @@
       </Button>
 
       <div>
-        <button class="i-lc-bookmark square-6 mr-3" type="button" />
+        {#if $query.post.bookmarkGroups.length}
+          <button
+            class="i-px-bookmark-fill square-6 mr-3 bg-yellow-50"
+            type="button"
+            on:click={async () => {
+              await unbookmarkPost({ bookmarkId: $query.post.bookmarkGroups[0].id, postId: $query.post.id });
+              toast.success('북마크에서 삭제했어요');
+            }}
+          />
+        {:else}
+          <button
+            class="i-px-bookmark-outline square-6 mr-3"
+            type="button"
+            on:click={async () => {
+              if (preview) return;
+
+              await bookmarkPost({ postId: $query.post.id });
+              toast.success('북마크에 저장되었어요');
+            }}
+          />
+        {/if}
         <button class="i-lc-share square-6" type="button" on:click={handleShare} />
       </div>
     </div>
