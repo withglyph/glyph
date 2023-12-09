@@ -25,7 +25,6 @@
     ContentFilterCategory,
     EditorPage_Header_post,
     EditorPage_Header_query,
-    EditorPage_RevisionListModal_Post,
     PostRevisionContentKind,
     PostRevisionKind,
   } from '$glitch';
@@ -34,7 +33,7 @@
   let _query: EditorPage_Header_query;
   let _post: EditorPage_Header_post | null = null;
   export { _post as $post, _query as $query };
-  let draftPost: EditorPage_RevisionListModal_Post | null = null;
+  let draftPost: Awaited<ReturnType<typeof revisePost>> | null = null;
 
   export let autoSaveCount: Writable<number>;
   export let kind: PostRevisionContentKind;
@@ -77,6 +76,7 @@
     graphql(`
       fragment EditorPage_Header_post on Post {
         id
+        permalink
         state
         contentFilters
         discloseStats
@@ -165,7 +165,7 @@
     });
 
     postId = resp.id;
-    permalink = resp.permalink;
+
     revisedAt = resp.draftRevision.createdAt;
     $data.revisionId = resp.draftRevision.id;
 
@@ -193,7 +193,6 @@
     enableContentFilter = true;
   }
 
-  export let permalink: string | undefined = undefined;
   let selectedSpace: (typeof $query.me.spaces)[number] | undefined;
   let revisedAt: string | undefined;
 
@@ -206,6 +205,8 @@
       selectedSpace = (slug && $query.me.spaces.find((space) => space.slug === slug)) || $query.me.spaces[0];
     }
   }
+
+  $: permalink = ($post || draftPost)?.draftRevision;
 
   $: if ($post) {
     setInitialValues({
@@ -715,23 +716,18 @@
       </form>
     </div>
 
-    {#if selectedSpace && permalink}
-      <Menu class="p-3 flex center" placement="bottom-end">
-        <i slot="value" class="i-lc-more-vertical square-6" />
-        <MenuItem
-          on:click={() => {
-            revisionListOpen = true;
-          }}
-        >
-          저장이력
-        </MenuItem>
-        <MenuItem external href={`/${selectedSpace.slug}/preview/${permalink}`} type="link">미리보기</MenuItem>
-      </Menu>
-    {:else}
-      <div class="square-10 p-3 flex center">
-        <i class="i-lc-more-vertical square-6 text-gray-30" />
-      </div>
-    {/if}
+    <Menu class="p-3 flex center disabled:text-disabled" disabled={!permalink} placement="bottom-end">
+      <i slot="value" class="i-lc-more-vertical square-6" aria-label="더보기" />
+      <MenuItem
+        on:click={() => {
+          revisionListOpen = true;
+        }}
+      >
+        저장이력
+      </MenuItem>
+
+      <MenuItem external href={`/${selectedSpace?.slug}/preview/${permalink}`} type="link">미리보기</MenuItem>
+    </Menu>
   </div>
 </header>
 

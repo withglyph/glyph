@@ -2,7 +2,6 @@
   import { Helmet } from '@penxle/ui';
   import { onDestroy, setContext } from 'svelte';
   import { writable } from 'svelte/store';
-  import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import Editor from '../Editor.svelte';
   import Footer from '../Footer.svelte';
@@ -42,8 +41,6 @@
       }
     }
   `);
-
-  let permalink = $page.params.permalink;
 
   let title: string;
   let subtitle: string | null = null;
@@ -99,7 +96,6 @@
   {autoSaveCount}
   {content}
   {editor}
-  {permalink}
   {subtitle}
   {tags}
   {thumbnailBounds}

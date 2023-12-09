@@ -25,7 +25,7 @@
   export let preventClose = false;
   export let disabled = false;
 
-  let props = as === 'button' ? { type: 'button', disabled } : { tabindex: -1 };
+  $: props = as === 'button' ? { type: 'button', disabled } : { tabindex: -1 };
 
   setContext('close', preventClose ? undefined : () => (open = false));
 
