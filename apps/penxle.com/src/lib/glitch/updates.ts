@@ -38,5 +38,8 @@ export const updates: GraphCacheConfig['updates'] = {
     unfollowTag: (_, __, cache) => {
       cache.invalidate(me(cache), 'followedTags');
     },
+    unbookmarkPost: (_, __, cache) => {
+      cache.invalidate(me(cache), 'bookmarks');
+    },
   },
 };
