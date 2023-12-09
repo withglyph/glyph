@@ -469,11 +469,6 @@ type Space {
   visibility: SpaceVisibility!
 }
 
-enum SpaceCollectionState {
-  ACTIVE
-  INACTIVE
-}
-
 type SpaceExternalLink {
   id: ID!
   url: String!
@@ -582,7 +577,6 @@ input UnsetParentTagInput {
 }
 
 input UpdatePostOptionsInput {
-  contentFilters: [ContentFilterCategory!]
   discloseStats: Boolean
   postId: ID!
   receiveFeedback: Boolean

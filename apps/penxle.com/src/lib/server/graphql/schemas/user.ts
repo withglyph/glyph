@@ -802,6 +802,15 @@ builder.mutationFields((t) => ({
     type: 'User',
     args: { input: t.arg({ type: UpdateUserContentFilterPreferenceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
+      if (input.category === 'ADULT' && input.action === 'EXPOSE') {
+        const identity = await db.userPersonalIdentity.findUnique({
+          where: { userId: context.session.userId },
+        });
+
+        if (!identity || !isAdulthood(identity.birthday)) {
+          throw new IntentionalError('성인인증이 필요해요.');
+        }
+      }
       return await db.user.update({
         ...query,
         where: { id: context.session.userId },

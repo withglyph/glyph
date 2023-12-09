@@ -16,7 +16,7 @@ import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { redis } from '$lib/server/cache';
 import { s3 } from '$lib/server/external-api/aws';
-import { deductUserPoint, directUploadImage, getUserPoint } from '$lib/server/utils';
+import { deductUserPoint, directUploadImage, getUserPoint, isAdulthood } from '$lib/server/utils';
 import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
 import { base36To10, createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
 import { builder } from '../builder';
@@ -274,6 +274,27 @@ builder.prismaObject('Post', {
 });
 
 builder.prismaObject('PostRevision', {
+  grantScopes: async (revision, { db, ...context }) => {
+    const post = await db.post.findUniqueOrThrow({
+      where: { id: revision.postId },
+    });
+
+    if (post.contentFilters.includes('ADULT')) {
+      if (!context.session) {
+        return [];
+      }
+
+      const identity = await db.userPersonalIdentity.findUnique({
+        where: { userId: context.session.userId },
+      });
+
+      if (!identity || !isAdulthood(identity.birthday)) {
+        return [];
+      }
+    }
+
+    return ['$postRevision:view'];
+  },
   fields: (t) => ({
     id: t.exposeID('id'),
     kind: t.expose('kind', { type: PostRevisionKind }),
@@ -281,9 +302,25 @@ builder.prismaObject('PostRevision', {
     subtitle: t.exposeString('subtitle', { nullable: true }),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
-    originalThumbnail: t.relation('originalThumbnail', { nullable: true }),
-    croppedThumbnail: t.relation('croppedThumbnail', { nullable: true }),
-    thumbnailBounds: t.expose('thumbnailBounds', { type: 'JSON', nullable: true }),
+
+    originalThumbnail: t.relation('originalThumbnail', {
+      nullable: true,
+      authScopes: { $granted: '$postRevision:view' },
+      unauthorizedResolver: () => null,
+    }),
+
+    croppedThumbnail: t.relation('croppedThumbnail', {
+      nullable: true,
+      authScopes: { $granted: '$postRevision:view' },
+      unauthorizedResolver: () => null,
+    }),
+
+    thumbnailBounds: t.expose('thumbnailBounds', {
+      type: 'JSON',
+      nullable: true,
+      authScopes: { $granted: '$postRevision:view' },
+      unauthorizedResolver: () => null,
+    }),
 
     tags: t.prismaField({
       type: ['Tag'],
@@ -300,6 +337,7 @@ builder.prismaObject('PostRevision', {
 
     content: t.field({
       type: 'JSON',
+      authScopes: { $granted: '$postRevision:view' },
       select: { post: true, freeContent: true, paidContent: true },
       resolve: async (revision, _, { db, ...context }) => {
         const freeContent = await decorateContent(db, revision.freeContent.data as JSONContent[]);
@@ -404,12 +442,15 @@ builder.prismaObject('PostRevision', {
 
     characterCount: t.field({
       type: 'Int',
+      authScopes: { $granted: '$postRevision:view' },
       select: { freeContent: true, paidContent: true },
       resolve: async (revision) => {
         const contentText = await revisionContentToText(revision.freeContent);
         const paidContentText = revision.paidContent ? await revisionContentToText(revision.paidContent) : '';
         return contentText.length + paidContentText.length;
       },
+
+      unauthorizedResolver: () => 0,
     }),
 
     previewText: t.field({
@@ -419,6 +460,8 @@ builder.prismaObject('PostRevision', {
         const contentText = await revisionContentToText(revision.freeContent);
         return contentText.slice(0, 200);
       },
+
+      unauthorizedResolver: () => '',
     }),
   }),
 });
@@ -483,7 +526,6 @@ const UpdatePostOptionsInput = builder.inputType('UpdatePostOptionsInput', {
     receiveFeedback: t.boolean({ required: false }),
     receivePatronage: t.boolean({ required: false }),
     receiveTagContribution: t.boolean({ required: false }),
-    contentFilters: t.field({ type: [ContentFilterCategory], required: false }),
   }),
 });
 
@@ -848,6 +890,16 @@ builder.mutationFields((t) => ({
         }
       }
 
+      if (input.contentFilters.includes('ADULT')) {
+        const identity = await db.userPersonalIdentity.findUnique({
+          where: { userId: context.session.userId },
+        });
+
+        if (!identity || !isAdulthood(identity.birthday)) {
+          throw new IntentionalError('성인인증을 하지 않으면 성인 컨텐츠를 게시할 수 없어요');
+        }
+      }
+
       const password = await match(input.password)
         // eslint-disable-next-line unicorn/no-useless-undefined
         .with('', () => undefined)
@@ -903,7 +955,6 @@ builder.mutationFields((t) => ({
           receiveFeedback: input.receiveFeedback ?? undefined,
           receivePatronage: input.receivePatronage ?? undefined,
           receiveTagContribution: input.receiveTagContribution ?? undefined,
-          contentFilters: input.contentFilters ?? undefined,
         },
       });
     },
