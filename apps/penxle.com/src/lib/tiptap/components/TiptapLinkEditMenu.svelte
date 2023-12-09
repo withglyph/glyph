@@ -26,9 +26,9 @@
       return;
     }
 
-    const { from, to } = view.state.selection;
+    const { from, to, empty } = view.state.selection;
 
-    open = editor.isActive('link');
+    open = editor.isActive('link') && empty;
 
     if (open) {
       href = editor.getAttributes('link').href;
