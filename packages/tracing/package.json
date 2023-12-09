@@ -11,8 +11,14 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@opentelemetry/instrumentation": "^0.45.1",
-    "dd-trace": "^4.20.0"
+    "@opentelemetry/exporter-metrics-otlp-grpc": "^0.45.1",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.45.1",
+    "@opentelemetry/resources": "^1.18.1",
+    "@opentelemetry/sdk-metrics": "^1.18.1",
+    "@opentelemetry/sdk-node": "^0.45.1",
+    "@opentelemetry/sdk-trace-node": "^1.18.1",
+    "@opentelemetry/semantic-conventions": "^1.18.1",
+    "@prisma/instrumentation": "^5.6.0"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",

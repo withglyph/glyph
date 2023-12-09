@@ -45,6 +45,8 @@
     "oidc",
     "oidcs",
     "onwarn",
+    "otel",
+    "otlp",
     "outroend",
     "penxle",
     "pgbouncer",

@@ -54,6 +54,15 @@ new k8s.apiextensions.CustomResource('datadog', {
       prometheusScrape: {
         enabled: true,
       },
+      otlp: {
+        receiver: {
+          protocols: {
+            grpc: {
+              enabled: true,
+            },
+          },
+        },
+      },
     },
   },
 });

@@ -34,6 +34,7 @@ export class Site extends pulumi.ComponentResource {
   constructor(name: string, args: SiteArgs, opts?: pulumi.ComponentResourceOptions) {
     super('penxle:index:Site', name, {}, opts);
 
+    const project = pulumi.getProject();
     const stack = pulumi.getStack();
     const isProd = stack === 'prod';
 
@@ -126,7 +127,10 @@ export class Site extends pulumi.ComponentResource {
                   image: pulumi.interpolate`${args.image.name}@${args.image.digest}`,
                   env: [
                     { name: 'HTTP_HOST', value: domainName },
+                    { name: 'PUBLIC_PULUMI_PROJECT', value: project },
                     { name: 'PUBLIC_PULUMI_STACK', value: stack },
+                    { name: 'HOST_IP', valueFrom: { fieldRef: { fieldPath: 'status.hostIP' } } },
+                    { name: 'OTEL_EXPORTER_OTLP_ENDPOINT', value: 'http://$(HOST_IP):4317' },
                   ],
                   ...(secret && { envFrom: [{ secretRef: { name: secret.metadata.name } }] }),
                   resources: {

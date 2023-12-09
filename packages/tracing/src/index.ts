@@ -1,13 +1,26 @@
-import 'dd-trace/init.js';
+import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
+import { Resource } from '@opentelemetry/resources';
+import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-node';
+import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { PrismaInstrumentation } from '@prisma/instrumentation';
 
-import { registerInstrumentations } from '@opentelemetry/instrumentation';
-import ddtrace from 'dd-trace';
+const sdk = new NodeSDK({
+  resource: new Resource({
+    [SemanticResourceAttributes.SERVICE_NAME]: process.env.PUBLIC_PULUMI_PROJECT,
+    [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.PUBLIC_PULUMI_STACK,
+  }),
 
-export const tracer = ddtrace;
-export const provider = new tracer.TracerProvider();
-provider.register();
+  sampler: new TraceIdRatioBasedSampler(1),
 
-registerInstrumentations({
-  tracerProvider: provider,
-  instrumentations: [],
+  traceExporter: new OTLPTraceExporter(),
+  metricReader: new PeriodicExportingMetricReader({
+    exporter: new OTLPMetricExporter(),
+  }),
+
+  instrumentations: [new PrismaInstrumentation()],
 });
+
+sdk.start();

@@ -34,7 +34,7 @@ export const docker = (): Adapter => {
       await fs.writeFile(
         path.join(tmp, 'server.js'),
         `
-          // import '@penxle/tracing';
+          import '@penxle/tracing';
           import { serve as serveInternal } from '@penxle/adapter-docker/server';
           import { Server } from './index.js';
           import { manifest, prerendered } from './manifest.js';
