@@ -643,6 +643,7 @@ type User {
   followedSpaces: [Space!]!
   followedTags: [Tag!]!
   id: ID!
+  isAdulthood: Boolean!
   likedPosts: [Post!]!
   marketingConsent: UserMarketingConsent
   mutedSpaces: [Space!]!

@@ -21,7 +21,7 @@ import { sendEmail } from '$lib/server/email';
 import { LoginUser, UpdateUserEmail } from '$lib/server/email/templates';
 import { AuthScope, UserSingleSignOnAuthorizationType } from '$lib/server/enums';
 import { google, naver } from '$lib/server/external-api';
-import { createAccessToken, createRandomAvatar, directUploadImage, getUserPoint } from '$lib/server/utils';
+import { createAccessToken, createRandomAvatar, directUploadImage, getUserPoint, isAdulthood } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import {
   CreateUserSchema,
@@ -69,6 +69,17 @@ builder.prismaObject('User', {
     profile: t.relation('profile'),
     singleSignOns: t.relation('singleSignOns', { grantScopes: ['$user'] }),
     bookmarks: t.relation('bookmarks'),
+
+    isAdulthood: t.boolean({
+      select: { personalIdentity: { select: { birthday: true } } },
+      resolve: (user) => {
+        if (!user.personalIdentity) {
+          return false;
+        }
+
+        return isAdulthood(user.personalIdentity.birthday);
+      },
+    }),
 
     point: t.int({
       resolve: async (user, _, { db }) => {
