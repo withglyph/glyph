@@ -133,7 +133,7 @@
 
       <div class="flex flex-wrap gap-2">
         {#each $query.recentlyUsedTags as tag (tag.id)}
-          <Tag size="sm">#{tag.name}</Tag>
+          <Tag href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
         {/each}
       </div>
     </div>
@@ -143,7 +143,7 @@
 
       <div class="flex flex-wrap gap-2">
         {#each $query.recentlyCreatedTags as tag (tag.id)}
-          <Tag size="sm">#{tag.name}</Tag>
+          <Tag href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
         {/each}
       </div>
     </div>
