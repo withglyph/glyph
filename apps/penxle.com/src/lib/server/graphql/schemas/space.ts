@@ -52,10 +52,12 @@ builder.prismaObject('Space', {
           return false;
         }
 
-        return await db.spaceFollow.exists({
+        return await db.spaceFollow.existsUnique({
           where: {
-            spaceId: space.id,
-            userId: context.session.userId,
+            userId_spaceId: {
+              userId: context.session.userId,
+              spaceId: space.id,
+            },
           },
         });
       },
@@ -135,10 +137,12 @@ builder.prismaObject('Space', {
           return false;
         }
 
-        return db.userSpaceMute.exists({
+        return db.userSpaceMute.existsUnique({
           where: {
-            userId: context.session.userId,
-            spaceId: space.id,
+            userId_spaceId: {
+              userId: context.session.userId,
+              spaceId: space.id,
+            },
           },
         });
       },
@@ -348,10 +352,12 @@ builder.queryFields((t) => ({
           throw new PermissionDeniedError();
         }
 
-        const isMember = await db.spaceMember.exists({
+        const isMember = await db.spaceMember.existsUnique({
           where: {
-            spaceId: space.id,
-            userId: context.session.userId,
+            spaceId_userId: {
+              spaceId: space.id,
+              userId: context.session.userId,
+            },
             state: 'ACTIVE',
           },
         });
@@ -475,10 +481,12 @@ builder.mutationFields((t) => ({
       });
 
       if (targetUser) {
-        const isAlreadyMember = await db.spaceMember.exists({
+        const isAlreadyMember = await db.spaceMember.existsUnique({
           where: {
-            spaceId: input.spaceId,
-            userId: targetUser.id,
+            spaceId_userId: {
+              spaceId: input.spaceId,
+              userId: targetUser.id,
+            },
             state: 'ACTIVE',
           },
         });
@@ -520,10 +528,12 @@ builder.mutationFields((t) => ({
     grantScopes: ['$space:admin'],
     args: { input: t.arg({ type: UpdateSpaceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      const meAsMember = await db.spaceMember.exists({
+      const meAsMember = await db.spaceMember.existsUnique({
         where: {
-          spaceId: input.spaceId,
-          userId: context.session.userId,
+          spaceId_userId: {
+            spaceId: input.spaceId,
+            userId: context.session.userId,
+          },
           state: 'ACTIVE',
           role: 'ADMIN',
         },
@@ -859,10 +869,12 @@ builder.mutationFields((t) => ({
       });
 
       if (space.visibility === 'PRIVATE') {
-        const isMember = await db.spaceMember.exists({
+        const isMember = await db.spaceMember.existsUnique({
           where: {
-            userId: context.session.userId,
-            spaceId: space.id,
+            spaceId_userId: {
+              userId: context.session.userId,
+              spaceId: space.id,
+            },
           },
         });
         if (!isMember) {

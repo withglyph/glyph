@@ -162,10 +162,12 @@ builder.prismaObject('Post', {
           return false;
         }
 
-        return await db.postLike.exists({
+        return await db.postLike.existsUnique({
           where: {
-            postId: post.id,
-            userId: context.session.userId,
+            postId_userId: {
+              postId: post.id,
+              userId: context.session.userId,
+            },
           },
         });
       },
@@ -336,10 +338,12 @@ builder.prismaObject('PostRevision', {
             ]);
           }
 
-          const isMember = await db.spaceMember.exists({
+          const isMember = await db.spaceMember.existsUnique({
             where: {
-              spaceId: revision.post.spaceId,
-              userId: context.session.userId,
+              spaceId_userId: {
+                spaceId: revision.post.spaceId,
+                userId: context.session.userId,
+              },
             },
           });
 
@@ -994,10 +998,12 @@ builder.mutationFields((t) => ({
         where: { id: input.postId },
       });
 
-      const isMember = await db.spaceMember.exists({
+      const isMember = await db.spaceMember.existsUnique({
         where: {
-          spaceId: post.spaceId,
-          userId: context.session.userId,
+          spaceId_userId: {
+            spaceId: post.spaceId,
+            userId: context.session.userId,
+          },
         },
       });
 
@@ -1005,10 +1011,12 @@ builder.mutationFields((t) => ({
         throw new IntentionalError('구매할 수 없는 포스트에요');
       }
 
-      const purchased = await db.postPurchase.exists({
+      const purchased = await db.postPurchase.existsUnique({
         where: {
-          postId: input.postId,
-          userId: context.session.userId,
+          postId_userId: {
+            postId: input.postId,
+            userId: context.session.userId,
+          },
         },
       });
 

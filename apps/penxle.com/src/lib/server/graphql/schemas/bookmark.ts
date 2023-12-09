@@ -135,10 +135,12 @@ builder.mutationFields((t) => ({
       }
 
       if (post.visibility === 'SPACE') {
-        const meAsMember = await db.spaceMember.exists({
+        const meAsMember = await db.spaceMember.existsUnique({
           where: {
-            spaceId: post.spaceId,
-            userId: context.session.userId,
+            spaceId_userId: {
+              spaceId: post.spaceId,
+              userId: context.session.userId,
+            },
             state: 'ACTIVE',
           },
         });
