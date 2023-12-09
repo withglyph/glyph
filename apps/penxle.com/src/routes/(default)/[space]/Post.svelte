@@ -275,7 +275,7 @@
   };
 
   const filterToLocaleString: Record<ContentFilterCategory, string> = {
-    ADULT: '😳 18세 이상 성인이 관람 가능한 포스트에요',
+    ADULT: '😳 18세 이상 성인이 관람 가능한 포스트예요',
     CRIME: '🧪 약물/범죄에 관련된 내용',
     CRUELTY: '🔪 다소 잔인한 내용',
     GAMBLING: '🤑 사행성 등 도박에 관련이 있는 내용',
@@ -524,7 +524,7 @@
           }
         }}
       >
-        <p class="body-16-eb">비밀번호를 입력해야하는 포스트에요</p>
+        <p class="body-16-eb">비밀번호를 입력해야하는 포스트예요</p>
         <input
           class="body-15-m bg-primary rounded-2.5 h-11.5 w-full max-w-83 px-3.5 py-2"
           placeholder="포스트 비밀번호 입력"
@@ -561,7 +561,7 @@
       {:else}
         <Tooltip
           enabled={!$query.post.receiveFeedback}
-          message="피드백 받기를 설정하지 않은 포스트에요"
+          message="피드백 받기를 설정하지 않은 포스트예요"
           placement="top"
         >
           <EmojiPicker {$query} disabled={!$query.post.receiveFeedback} />

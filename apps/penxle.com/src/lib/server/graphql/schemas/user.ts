@@ -508,7 +508,7 @@ builder.mutationFields((t) => ({
       });
 
       if (!emailVerification) {
-        throw new FormValidationError('code', '올바르지 않은 코드에요.');
+        throw new FormValidationError('code', '올바르지 않은 코드예요.');
       }
 
       return {

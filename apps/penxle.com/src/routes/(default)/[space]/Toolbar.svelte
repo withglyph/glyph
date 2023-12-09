@@ -174,7 +174,7 @@
 
         <Tooltip
           enabled={!$query.post.receiveFeedback}
-          message="피드백 받기를 설정하지 않은 포스트에요"
+          message="피드백 받기를 설정하지 않은 포스트예요"
           placement="top"
         >
           <EmojiPicker {$query} disabled={!$query.post.receiveFeedback} variant="toolbar" />
