@@ -65,10 +65,10 @@ export type GlitchClient = {
 
 export type QueryStore<D, V> = Readable<D> & {
   refetch: V extends Record<string, never>
-    ? () => Promise<void>
+    ? () => Promise<NonNullable<D>>
     : D extends undefined
-      ? (variables: V) => Promise<void>
-      : (variables?: V) => Promise<void>;
+      ? (variables: V) => Promise<NonNullable<D>>
+      : (variables?: V) => Promise<D>;
 };
 
 export type MutationStore<D, V> = Readable<{

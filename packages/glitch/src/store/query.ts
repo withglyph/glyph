@@ -82,6 +82,8 @@ export const createQueryStore = async (
       }
 
       next(request);
+
+      return result.data;
     },
   };
 
@@ -130,6 +132,8 @@ export const createManualQueryStore = (document: TypedDocumentNode<unknown, AnyV
       }
 
       next(source);
+
+      return result.data;
     },
   };
 
