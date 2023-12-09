@@ -341,22 +341,22 @@
 <div
   class={clsx(
     selectedPostCount > 0 ? 'visible opacity-100 translate-y-0' : 'invisible opacity-0 translate-y-1rem',
-    'self-center flex flex-wrap gap-4 items-center px-6 py-2 flex-wrap sticky bottom-1rem bg-white rounded-2xl shadow-[0_0.25rem_1rem_0_rgba(0,0,0,0.15)] transition-all-300',
+    'self-center flex justify-center flex-wrap gap-4 items-center px-6 py-2 flex-wrap sticky bottom-1rem bg-white rounded-2xl shadow-[0_0.25rem_1rem_0_rgba(0,0,0,0.15)] transition-all-300',
   )}
 >
   <span class="body-15-b" aria-live="polite">
     {selectedPostCount}개의 포스트 선택됨
   </span>
   {#if selectedOwnPosts || $spaceMember?.role === 'ADMIN'}
-    <div class="flex gap-4">
+    <div class="flex gap-4 flex-wrap justify-center">
       <Menu class="<sm:hidden" as="div" offset={16} placement="top">
-        <Button slot="value" color="secondary" size="md">공개범위 설정</Button>
+        <Button slot="value" class="whitespace-nowrap" color="secondary" size="md">공개범위 설정</Button>
         <MenuItem on:click={() => updateVisibilities('PUBLIC')}>전체 공개</MenuItem>
         <MenuItem on:click={() => updateVisibilities('UNLISTED')}>링크 공개</MenuItem>
         <MenuItem on:click={() => updateVisibilities('SPACE')}>멤버 공개</MenuItem>
       </Menu>
       <Menu class="<sm:hidden" as="div" offset={16} placement="top">
-        <Button slot="value" color="secondary" size="md">포스트 옵션 설정</Button>
+        <Button slot="value" class="whitespace-nowrap" color="secondary" size="md">포스트 옵션 설정</Button>
         <MenuItem type="div">
           <Switch
             class="flex gap-0.63rem body-14-m items-center justify-between"
@@ -398,10 +398,10 @@
         </MenuItem>
       </Menu>
       <Tooltip message="컬렉션 기능은 아직 준비중이에요">
-        <Button color="secondary" disabled size="md">컬렉션 추가</Button>
+        <Button class="whitespace-nowrap" color="secondary" disabled size="md">컬렉션 추가</Button>
       </Tooltip>
       <Button
-        class="<sm:hidden"
+        class="<sm:hidden whitespace-nowrap"
         color="red"
         size="md"
         on:click={() => {
