@@ -25,6 +25,18 @@ builder.queryFields((t) => ({
       query: t.arg.string(),
     },
     resolve: async (query, _, args, { db, ...context }) => {
+      const mutedTags = context.session
+        ? await db.userTagMute.findMany({
+            where: { userId: context.session.userId },
+          })
+        : [];
+
+      const mutedSpaces = context.session
+        ? await db.userSpaceMute.findMany({
+            where: { userId: context.session.userId },
+          })
+        : [];
+
       const searchResult = await openSearch.search({
         index: 'posts',
         body: {
@@ -43,6 +55,18 @@ builder.queryFields((t) => ({
                   },
                 },
               ],
+              must_not: R.sift([
+                mutedTags.length > 0
+                  ? {
+                      terms: { ['tags.id']: mutedTags.map(({ tagId }) => tagId) },
+                    }
+                  : undefined,
+                mutedSpaces.length > 0
+                  ? {
+                      terms: { spaceId: mutedSpaces.map(({ spaceId }) => spaceId) },
+                    }
+                  : undefined,
+              ]),
             },
           },
         },
@@ -59,16 +83,6 @@ builder.queryFields((t) => ({
             space: {
               state: 'ACTIVE',
               visibility: 'PUBLIC',
-              userMutes: context.session ? { none: { userId: context.session.userId } } : undefined,
-            },
-            publishedRevision: {
-              tags: {
-                none: {
-                  tag: {
-                    userMutes: context.session ? { some: { userId: context.session.userId } } : undefined,
-                  },
-                },
-              },
             },
           },
         }),

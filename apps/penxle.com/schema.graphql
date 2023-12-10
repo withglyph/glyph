@@ -233,6 +233,7 @@ type Mutation {
   updatePostView(input: UpdatePostViewInput!): Post!
   updateSpace(input: UpdateSpaceInput!): Space!
   updateSpaceCollection(input: UpdateCollectionInput!): SpaceCollection!
+  updateSpaceMemberRole(input: UpdateSpaceMemberRoleInput!): SpaceMember!
   updateSpaceProfile(input: UpdateSpaceProfileInput!): SpaceMember!
   updateUserContentFilterPreference(input: UpdateUserContentFilterPreferenceInput!): User!
   updateUserEmail(input: UpdateUserEmailInput!): Void
@@ -654,6 +655,11 @@ input UpdateSpaceInput {
   name: String
   slug: String
   spaceId: ID!
+}
+
+input UpdateSpaceMemberRoleInput {
+  role: SpaceMemberRole!
+  spaceMemberId: ID!
 }
 
 input UpdateSpaceProfileInput {
