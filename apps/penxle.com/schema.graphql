@@ -510,7 +510,7 @@ type SpaceCollection {
   id: ID!
   name: String!
   posts: [Post!]!
-  thumbnail: Image!
+  thumbnail: Image
 }
 
 type SpaceCollectionPost {

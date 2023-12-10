@@ -12,7 +12,7 @@ export const collectionSchema = defineSchema((builder) => {
     fields: (t) => ({
       id: t.exposeID('id'),
       name: t.exposeString('name'),
-      thumbnail: t.relation('thumbnail'),
+      thumbnail: t.relation('thumbnail', { nullable: true }),
       count: t.relationCount('posts'),
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
 
@@ -360,7 +360,7 @@ export const collectionSchema = defineSchema((builder) => {
           },
           data: {
             name: input.name,
-            thumbnailId: input.thumbnailId,
+            thumbnailId: input.thumbnailId ?? null,
           },
         });
       },
