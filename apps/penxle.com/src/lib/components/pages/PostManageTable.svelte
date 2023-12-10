@@ -80,7 +80,7 @@
   function hasPermissionToUpdatePost(memberId: string) {
     if (type === 'me') return true;
 
-    if (!$spaceMember) throw new Error('스페이스 관리 페이지에서는 "$spaceMember" prop 가 필수에요');
+    if (!$spaceMember) throw new Error('스페이스 관리 페이지에서는 "$spaceMember" prop 가 필수예요');
 
     return memberId === $spaceMember.id || $spaceMember.role === 'ADMIN';
   }
@@ -443,7 +443,7 @@
         } else if (deletePostIds) {
           await deletePosts(deletePostIds);
         } else {
-          throw new Error('기대하지 않은 경우에요');
+          throw new Error('기대하지 않은 경우예요');
         }
 
         openDeletePostWaring = false;

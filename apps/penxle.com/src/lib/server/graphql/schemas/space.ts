@@ -492,7 +492,7 @@ builder.mutationFields((t) => ({
         });
 
         if (isAlreadyMember) {
-          throw new FormValidationError('email', '이미 스페이스에 가입한 사용자에요.');
+          throw new FormValidationError('email', '이미 스페이스에 가입한 사용자예요.');
         }
       }
 
@@ -505,7 +505,7 @@ builder.mutationFields((t) => ({
       });
 
       if (isAlreadyInvited) {
-        throw new FormValidationError('email', '이미 초대한 사용자에요.');
+        throw new FormValidationError('email', '이미 초대한 사용자예요.');
       }
 
       return await db.spaceMemberInvitation.create({

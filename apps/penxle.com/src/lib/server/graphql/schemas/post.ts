@@ -1083,7 +1083,7 @@ builder.mutationFields((t) => ({
       });
 
       if (isMember || !post.publishedRevision?.price) {
-        throw new IntentionalError('구매할 수 없는 포스트에요');
+        throw new IntentionalError('구매할 수 없는 포스트예요');
       }
 
       const purchased = await db.postPurchase.existsUnique({
@@ -1096,7 +1096,7 @@ builder.mutationFields((t) => ({
       });
 
       if (purchased) {
-        throw new IntentionalError('이미 구매한 포스트에요');
+        throw new IntentionalError('이미 구매한 포스트예요');
       }
 
       if (post.publishedRevision.id !== input.revisionId) {
@@ -1170,7 +1170,7 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: CreatePostReactionInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       if (!emojiData.emojis[input.emoji]) {
-        throw new IntentionalError('잘못된 이모지에요');
+        throw new IntentionalError('잘못된 이모지예요');
       }
 
       const post = await db.post.findUniqueOrThrow({
@@ -1178,7 +1178,7 @@ builder.mutationFields((t) => ({
       });
 
       if (!post.receiveFeedback) {
-        throw new IntentionalError('피드백을 받지 않는 포스트에요');
+        throw new IntentionalError('피드백을 받지 않는 포스트예요');
       }
 
       await db.postReaction.create({
@@ -1225,7 +1225,7 @@ builder.mutationFields((t) => ({
 
       if (post.password) {
         if (!(await verify(post.password, input.password))) {
-          throw new FormValidationError('password', '잘못된 비밀번호에요');
+          throw new FormValidationError('password', '잘못된 비밀번호예요');
         }
 
         await redis.hset(`Post:${post.id}:passwordUnlock`, context.deviceId, dayjs().add(1, 'hour').toISOString());
