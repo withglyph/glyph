@@ -293,10 +293,6 @@
   };
 
   const changeMode = (mode: PostRevisionContentKind) => {
-    if (kind === mode) {
-      return;
-    }
-
     kind = mode;
 
     if (content?.content) {
@@ -316,11 +312,9 @@
       )}
     >
       <button
-        class={clsx(
-          'h-10 py-2 px-4 flex items-center gap-2 z-1',
-          kind === 'ARTICLE' && 'first:(text-white transition-color) last:(text-gray-70 transition-color)',
-          kind === 'GALLERY' && 'first:(text-gray-70 transition-color) last:(text-white transition-color)',
-        )}
+        class="h-10 py-2 px-4 flex items-center gap-2 z-1 text-gray-70 aria-pressed:text-white transition-color"
+        aria-pressed={kind === 'ARTICLE'}
+        disabled={kind === 'ARTICLE'}
         type="button"
         on:click={() => changeMode('ARTICLE')}
       >
@@ -328,11 +322,9 @@
         <span class="body-14-b">글 모드</span>
       </button>
       <button
-        class={clsx(
-          'h-10 py-2 px-4 flex items-center gap-2 z-1',
-          kind === 'ARTICLE' && 'first:(text-white transition) last:(text-gray-70 transition)',
-          kind === 'GALLERY' && 'first:(text-gray-70 transition) last:(text-white transition)',
-        )}
+        class="h-10 py-2 px-4 flex items-center gap-2 z-1 text-gray-70 aria-pressed:text-white transition-color"
+        aria-pressed={kind === 'GALLERY'}
+        disabled={kind === 'GALLERY'}
         type="button"
         on:click={() => changeMode('GALLERY')}
       >
