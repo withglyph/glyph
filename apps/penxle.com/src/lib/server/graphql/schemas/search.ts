@@ -92,4 +92,58 @@ builder.queryFields((t) => ({
       return R.sift(hits.map((hit) => posts[hit._id]));
     },
   }),
+
+  searchSpace: t.prismaField({
+    type: ['Space'],
+    args: {
+      query: t.arg.string(),
+    },
+    resolve: async (query, _, args, { db, ...context }) => {
+      const mutedSpaces = context.session
+        ? await db.userSpaceMute.findMany({
+            where: { userId: context.session.userId },
+          })
+        : [];
+
+      const searchResult = await openSearch.search({
+        index: 'spaces',
+        body: {
+          query: {
+            bool: {
+              should: [{ match_phrase: { name: args.query } }],
+              must: [
+                {
+                  multi_match: {
+                    query: args.query,
+                    fields: ['name'],
+                  },
+                },
+              ],
+              must_not: R.sift([
+                mutedSpaces.length > 0
+                  ? {
+                      ids: { values: mutedSpaces.map(({ spaceId }) => spaceId) },
+                    }
+                  : undefined,
+              ]),
+            },
+          },
+        },
+      });
+
+      const hits: SearchHits[] = searchResult.body.hits.hits;
+      const resultIds = hits.map((hit) => hit._id);
+      const spaces = R.objectify(
+        await db.space.findMany({
+          ...query,
+          where: {
+            id: { in: resultIds },
+          },
+        }),
+        (space) => space.id,
+      );
+
+      return R.sift(hits.map((hit) => spaces[hit._id]));
+    },
+  }),
 }));

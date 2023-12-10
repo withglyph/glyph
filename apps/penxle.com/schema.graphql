@@ -437,6 +437,7 @@ type Query {
   sampleImage: Image!
   sampleImages: [Image!]!
   searchPost(query: String!): [Post!]!
+  searchSpace(query: String!): [Space!]!
   space(slug: String!): Space!
   spaceFeed(dateBefore: String): [Post!]!
   tag(name: String!): Tag!

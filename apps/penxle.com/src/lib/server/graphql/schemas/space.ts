@@ -3,6 +3,7 @@ import * as R from 'radash';
 import { match } from 'ts-pattern';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { createRandomIcon, directUploadImage } from '$lib/server/utils';
+import { indexSpace } from '$lib/server/utils/search';
 import { createId } from '$lib/utils';
 import {
   AcceptSpaceMemberInvitationSchema,
@@ -432,10 +433,11 @@ builder.mutationFields((t) => ({
         });
       }
 
-      return await db.space.create({
+      const spaceId = createId();
+      const space = await db.space.create({
         ...query,
         data: {
-          id: createId(),
+          id: spaceId,
           name: input.name,
           slug: input.slug,
           state: 'ACTIVE',
@@ -452,6 +454,9 @@ builder.mutationFields((t) => ({
           },
         },
       });
+
+      await indexSpace({ db, spaceId });
+      return space;
     },
   }),
 
@@ -459,7 +464,7 @@ builder.mutationFields((t) => ({
     type: 'Space',
     args: { input: t.arg({ type: DeleteSpaceInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      return await db.space.update({
+      const space = await db.space.update({
         ...query,
         where: {
           id: input.spaceId,
@@ -468,6 +473,9 @@ builder.mutationFields((t) => ({
         },
         data: { state: 'INACTIVE' },
       });
+
+      await indexSpace({ db, spaceId: input.spaceId });
+      return space;
     },
   }),
 
@@ -578,7 +586,7 @@ builder.mutationFields((t) => ({
         });
       }
 
-      return db.space.update({
+      const space = await db.space.update({
         ...query,
         where: {
           id: input.spaceId,
@@ -595,6 +603,9 @@ builder.mutationFields((t) => ({
             .otherwise(() => undefined),
         },
       });
+
+      await indexSpace({ db, spaceId: input.spaceId });
+      return space;
     },
   }),
 

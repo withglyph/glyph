@@ -21,7 +21,7 @@ export const indexPost = async ({ db, postId }: IndexPostParams) => {
   });
 
   if (post.publishedRevision) {
-    if (post.visibility === 'PUBLIC' && post.password === null) {
+    if (post.publishedRevision.kind === 'PUBLISHED' && post.visibility === 'PUBLIC' && post.password === null) {
       await openSearch.index({
         index: 'posts',
         id: post.id,
@@ -39,5 +39,26 @@ export const indexPost = async ({ db, postId }: IndexPostParams) => {
         id: post.id,
       });
     }
+  }
+};
+
+export const indexSpace = async ({ db, spaceId }: { db: InteractiveTransactionClient; spaceId: string }) => {
+  const space = await db.space.findUniqueOrThrow({
+    where: { id: spaceId },
+  });
+
+  if (space.state === 'ACTIVE' && space.visibility === 'PUBLIC') {
+    await openSearch.index({
+      index: 'spaces',
+      id: space.id,
+      body: {
+        name: space.name,
+      },
+    });
+  } else {
+    await openSearch.delete({
+      index: 'spaces',
+      id: space.id,
+    });
   }
 };
