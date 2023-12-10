@@ -6,7 +6,7 @@
 
   let _class: $$Props['class'] = undefined;
   export { _class as class };
-  export let color: 'unselect' | 'select' | 'green' | 'red' | 'gray' = 'unselect';
+  export let color: 'unselect' | 'select' | 'green' | 'red' | 'gray' | 'purple' | 'orange' = 'unselect';
 </script>
 
 <div
@@ -17,6 +17,8 @@
     color === 'green' && 'text-green-50 bg-green-10',
     color === 'red' && 'text-red-50 bg-red-10',
     color === 'gray' && 'text-gray-50 bg-gray-10',
+    color === 'purple' && 'text-purple-50 bg-purple-10',
+    color === 'orange' && 'text-orange-50 bg-orange-10',
     _class,
   )}
   {...$$restProps}

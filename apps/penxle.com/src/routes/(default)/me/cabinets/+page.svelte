@@ -123,7 +123,7 @@
         <ul class="space-y-11.5">
           {#each $query.me.likedPosts as post (post.id)}
             <li>
-              <Feed $post={post} showSpaceInfo />
+              <Feed $post={post} />
             </li>
           {/each}
         </ul>
@@ -132,7 +132,7 @@
         <ul class="space-y-11.5">
           {#each $query.me.recentlyViewedPosts as post (post.id)}
             <li>
-              <Feed $post={post} showSpaceInfo />
+              <Feed $post={post} />
             </li>
           {/each}
         </ul>
@@ -141,7 +141,7 @@
         <ul class="space-y-11.5">
           {#each $query.me.purchasedPosts as post (post.id)}
             <li>
-              <Feed $post={post} purchasedPost={post.permalink} showSpaceInfo />
+              <Feed $post={post} purchasedPost={post.permalink} />
             </li>
           {/each}
         </ul>

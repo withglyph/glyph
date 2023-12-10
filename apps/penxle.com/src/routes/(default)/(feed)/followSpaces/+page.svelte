@@ -12,8 +12,10 @@
   `);
 </script>
 
+<h1 class="title-24-b w-fit border-b-10 leading-3 border-brand-50 mb-8 mt-3">관심 스페이스</h1>
+
 {#if $query.spaceFeed.length === 0}
-  <div>
+  <div class="flex flex-col center grow max-h-120">
     <p class="body-15-b text-center">
       관심 스페이스가 없어요
       <br />
@@ -23,5 +25,5 @@
 {/if}
 
 {#each $query.spaceFeed as post (post.id)}
-  <Feed $post={post} showSpaceInfo />
+  <Feed class="mb-8" $post={post} showSpaceInfoMessage />
 {/each}

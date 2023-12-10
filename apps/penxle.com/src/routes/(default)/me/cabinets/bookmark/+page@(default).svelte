@@ -38,7 +38,7 @@
 
   <div class="mt-9 space-y-11.5">
     {#each $query.me.bookmarks[0].posts as { post } (post.id)}
-      <Feed $post={post} showSpaceInfo />
+      <Feed $post={post} showSpaceInfoMessage />
     {/each}
   </div>
 </div>

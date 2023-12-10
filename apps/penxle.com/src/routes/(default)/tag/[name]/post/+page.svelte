@@ -17,5 +17,5 @@
 </script>
 
 {#each $query.tag.posts as post (post.id)}
-  <Feed $post={post} showSpaceInfo />
+  <Feed $post={post} />
 {/each}
