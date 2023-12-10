@@ -325,6 +325,7 @@ type PostRevision {
   kind: PostRevisionKind!
   originalThumbnail: Image
   previewText: String!
+  price: Int
   subtitle: String
   tags: [Tag!]!
   thumbnailBounds: JSON
@@ -469,6 +470,11 @@ type Space {
   posts(mine: Boolean! = false): [Post!]!
   slug: String!
   visibility: SpaceVisibility!
+}
+
+enum SpaceCollectionState {
+  ACTIVE
+  INACTIVE
 }
 
 type SpaceExternalLink {

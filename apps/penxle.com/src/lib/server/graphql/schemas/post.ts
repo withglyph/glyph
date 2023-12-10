@@ -324,6 +324,7 @@ builder.prismaObject('PostRevision', {
     kind: t.expose('kind', { type: PostRevisionKind }),
     title: t.exposeString('title'),
     subtitle: t.exposeString('subtitle', { nullable: true }),
+    price: t.exposeInt('price', { nullable: true }),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
 
