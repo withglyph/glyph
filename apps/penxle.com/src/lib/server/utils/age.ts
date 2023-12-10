@@ -1,6 +1,10 @@
 import dayjs from 'dayjs';
 
-export const isAdulthood = (birthday: Date) => {
+export const isAdulthood = (birthday?: Date) => {
+  if (!birthday) {
+    return false;
+  }
+
   const birthYear = dayjs(birthday).kst().year();
   const currentYear = dayjs.kst().year();
 

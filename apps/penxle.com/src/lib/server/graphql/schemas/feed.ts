@@ -8,13 +8,18 @@ import { builder } from '../builder';
 builder.queryFields((t) => ({
   recommendFeed: t.prismaField({
     type: ['Post'],
-    resolve: async (query, _, input, { db, ...context }) => {
+    resolve: async (query, _, __, { db, ...context }) => {
+      // const identity = context.session ? await db.userPersonalIdentity.findUniqueOrThrow({
+      //   where: { userId: context.session.userId },
+      // }) : null;
+
       return db.post.findMany({
         ...query,
         where: {
           state: 'PUBLISHED',
           visibility: 'PUBLIC',
           password: null,
+          //NOT: isAdulthood(identity?.birthday) ? undefined : { contentFilters: { has: 'ADULT' } },
           space: {
             state: 'ACTIVE',
             userMutes: context.session
