@@ -17,6 +17,7 @@ import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedE
 import { redis } from '$lib/server/cache';
 import { s3 } from '$lib/server/external-api/aws';
 import { deductUserPoint, directUploadImage, getUserPoint, isAdulthood } from '$lib/server/utils';
+import { indexPost } from '$lib/server/utils/search';
 import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
 import { base36To10, createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
 import { builder } from '../builder';
@@ -889,7 +890,7 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: PublishPostInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
       const revision = await db.postRevision.update({
-        include: { post: true },
+        include: { post: true, tags: { include: { tag: true } } },
         where: {
           id: input.revisionId,
           post: {
@@ -926,8 +927,7 @@ builder.mutationFields((t) => ({
       }
 
       const password = await match(input.password)
-        // eslint-disable-next-line unicorn/no-useless-undefined
-        .with('', () => undefined)
+        .with('', () => revision.post.password)
         .with(P.string, (password) => hash(password))
         .with(P.nullish, () => null)
         .exhaustive();
@@ -941,7 +941,7 @@ builder.mutationFields((t) => ({
         data: { kind: 'ARCHIVED' },
       });
 
-      return await db.post.update({
+      const post = await db.post.update({
         ...query,
         where: { id: revision.post.id },
         data: {
@@ -957,6 +957,9 @@ builder.mutationFields((t) => ({
           password,
         },
       });
+
+      await indexPost({ db, postId: revision.post.id });
+      return post;
     },
   }),
 
@@ -964,8 +967,8 @@ builder.mutationFields((t) => ({
     type: 'Post',
     args: { input: t.arg({ type: UpdatePostOptionsInput }) },
     resolve: async (query, _, { input }, { db, ...context }) => {
-      return db.post.update({
-        ...query,
+      const post = await db.post.update({
+        select: { id: true, password: true },
         where: {
           id: input.postId,
           OR: [
@@ -981,6 +984,15 @@ builder.mutationFields((t) => ({
           receivePatronage: input.receivePatronage ?? undefined,
           receiveTagContribution: input.receiveTagContribution ?? undefined,
         },
+      });
+
+      if (input.visibility) {
+        await indexPost({ db, postId: post.id });
+      }
+
+      return db.post.findUniqueOrThrow({
+        ...query,
+        where: { id: post.id },
       });
     },
   }),

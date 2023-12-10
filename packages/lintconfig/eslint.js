@@ -73,6 +73,7 @@ export default [
       'unicorn/catch-error-name': ['error', { name: 'err' }],
       'unicorn/consistent-function-scoping': 'off',
       'unicorn/no-null': 'off',
+      'unicorn/no-useless-undefined': 'off',
       'unicorn/prefer-ternary': ['error', 'only-single-line'],
       'unicorn/prevent-abbreviations': 'off',
       'unicorn/switch-case-braces': 'off',
@@ -101,7 +102,6 @@ export default [
     rules: {
       '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^\\$\\$(Props|Events|Slots)$' }],
       'unicorn/filename-case': ['error', { cases: { kebabCase: true, pascalCase: true } }],
-      'unicorn/no-useless-undefined': 'off',
     },
   },
   ...compat.extends('prettier'),

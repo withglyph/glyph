@@ -420,6 +420,7 @@ type Query {
   recommendFeed: [Post!]!
   sampleImage: Image!
   sampleImages: [Image!]!
+  searchPost(query: String!): [Post!]!
   space(slug: String!): Space!
   spaceFeed(dateBefore: String): [Post!]!
   tag(name: String!): Tag!

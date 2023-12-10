@@ -581,7 +581,6 @@ builder.mutationFields((t) => ({
           visibility: match(input.isPublic)
             .with(true, () => 'PUBLIC' as const)
             .with(false, () => 'PRIVATE' as const)
-            // eslint-disable-next-line unicorn/no-useless-undefined
             .otherwise(() => undefined),
         },
       });

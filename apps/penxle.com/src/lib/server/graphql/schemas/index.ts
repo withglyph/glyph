@@ -7,6 +7,7 @@ import './internal';
 import './playground';
 import './point';
 import './post';
+import './search';
 import './space';
 import './tag';
 import './user';
