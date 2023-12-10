@@ -1,5 +1,6 @@
-import './enums';
 import './bookmark';
+import './collection';
+import './enums';
 import './feed';
 import './file';
 import './image';

@@ -148,6 +148,10 @@ builder.prismaObject('Space', {
       },
     }),
 
+    collections: t.relation('collections', {
+      query: { where: { state: 'ACTIVE' } },
+    }),
+
     postCount: t.relationCount('posts', { where: { state: 'PUBLISHED' } }),
     followerCount: t.relationCount('followers', { where: { user: { state: 'ACTIVE' } } }),
   }),

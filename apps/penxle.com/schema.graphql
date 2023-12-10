@@ -52,6 +52,11 @@ input CreatePostReactionInput {
   postId: ID!
 }
 
+input CreateSpaceCollectionInput {
+  name: String!
+  spaceId: ID!
+}
+
 input CreateSpaceInput {
   iconId: ID
   isPublic: Boolean! = true
@@ -86,6 +91,10 @@ input DeletePostInput {
 input DeletePostReactionInput {
   emoji: String!
   postId: ID!
+}
+
+input DeleteSpaceCollectionInput {
+  collectionId: ID!
 }
 
 input DeleteSpaceInput {
@@ -179,11 +188,13 @@ type Mutation {
   bookmarkPost(input: BookmarkPostInput!): Post!
   createPostReaction(input: CreatePostReactionInput!): Post!
   createSpace(input: CreateSpaceInput!): Space!
+  createSpaceCollection(input: CreateSpaceCollectionInput!): SpaceCollection!
   createSpaceMemberInvitation(input: CreateSpaceMemberInvitationInput!): SpaceMemberInvitation!
   createUser(input: CreateUserInput!): User!
   deletePost(input: DeletePostInput!): Post!
   deletePostReaction(input: DeletePostReactionInput!): Post!
   deleteSpace(input: DeleteSpaceInput!): Space!
+  deleteSpaceCollection(input: DeleteSpaceCollectionInput!): SpaceCollection!
   deleteSpaceProfile(input: DeleteSpaceProfileInput!): SpaceMember!
   finalizeFileUpload(input: FinalizeFileUploadInput!): File!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
@@ -204,6 +215,7 @@ type Mutation {
   purchasePoint(input: PurchasePointInput!): PointPurchase!
   purchasePost(input: PurchasePostInput!): Post!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
+  reorderSpaceCollection(input: ReorderSpaceCollectionInput!): SpaceCollection!
   revisePost(input: RevisePostInput!): Post!
   reviseTagWiki(input: ReviseTagWikiInput!): TagWiki!
   setParentTag(input: SetParentTagInput!): Tag!
@@ -216,9 +228,11 @@ type Mutation {
   unmuteSpace(input: UnmuteSpaceInput!): Space!
   unmuteTag(input: UnmuteTagInput!): Tag!
   unsetParentTag(input: UnsetParentTagInput!): Tag!
+  updatePostCollection(input: UpdatePostCollectionInput!): Post!
   updatePostOptions(input: UpdatePostOptionsInput!): Post!
   updatePostView(input: UpdatePostViewInput!): Post!
   updateSpace(input: UpdateSpaceInput!): Space!
+  updateSpaceCollection(input: UpdateCollectionInput!): SpaceCollection!
   updateSpaceProfile(input: UpdateSpaceProfileInput!): SpaceMember!
   updateUserContentFilterPreference(input: UpdateUserContentFilterPreferenceInput!): User!
   updateUserEmail(input: UpdateUserEmailInput!): Void
@@ -432,6 +446,12 @@ input RemoveSpaceMemberInput {
   spaceMemberId: ID!
 }
 
+input ReorderSpaceCollectionInput {
+  collectionId: ID!
+  order: Int!
+  postId: ID!
+}
+
 input RevisePostInput {
   content: JSON!
   contentKind: PostRevisionContentKind! = ARTICLE
@@ -456,6 +476,7 @@ input SetParentTagInput {
 }
 
 type Space {
+  collections: [SpaceCollection!]!
   createdAt: DateTime!
   description: String
   externalLinks: [SpaceExternalLink!]!
@@ -472,6 +493,20 @@ type Space {
   posts(mine: Boolean! = false): [Post!]!
   slug: String!
   visibility: SpaceVisibility!
+}
+
+type SpaceCollection {
+  count: Int!
+  id: ID!
+  name: String!
+  posts: [Post!]!
+  thumbnail: Image!
+}
+
+type SpaceCollectionPost {
+  id: ID!
+  order: Int!
+  post: Post!
 }
 
 enum SpaceCollectionState {
@@ -585,6 +620,17 @@ input UnmuteTagInput {
 input UnsetParentTagInput {
   parentTagId: ID!
   tagId: ID!
+}
+
+input UpdateCollectionInput {
+  collectionId: ID!
+  name: String!
+  thumbnailId: ID
+}
+
+input UpdatePostCollectionInput {
+  collectionId: ID
+  postId: ID!
 }
 
 input UpdatePostOptionsInput {

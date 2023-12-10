@@ -70,7 +70,8 @@ model Image {
   profilesUsingThisAsAvatar                 Profile[]
   spacesUsingThisAsIcon                     Space[]
   postRevisionsUsingThisAsCroppedThumbnail  PostRevision[]
-  postRevisionsUsingThisAsOriginalThumbnail PostRevision[] @relation("origin")
+  postRevisionsUsingThisAsOriginalThumbnail PostRevision[]    @relation("origin")
+  spaceCollectionUsingThisAsThumbnail       SpaceCollection[]
 
   @@map("images")
 }
@@ -146,12 +147,13 @@ model Post {
   createdAt              DateTime                @default(now()) @map("created_at") @db.Timestamptz
   publishedAt            DateTime?               @map("published_at") @db.Timestamptz
 
-  likes     PostLike[]
-  revisions PostRevision[]
-  views     PostView[]
-  purchases PostPurchase[]
-  reactions PostReaction[]
-  bookmarks BookmarkGroupPost[]
+  likes          PostLike[]
+  revisions      PostRevision[]
+  views          PostView[]
+  purchases      PostPurchase[]
+  reactions      PostReaction[]
+  bookmarks      BookmarkGroupPost[]
+  collectionPost SpaceCollectionPost?
 
   @@index([publishedAt])
   @@map("posts")
@@ -316,9 +318,38 @@ model Space {
   posts         Post[]
   masquerades   SpaceMasquerade[]
   userMutes     UserSpaceMute[]
+  collections   SpaceCollection[]
 
   @@index([slug, state])
   @@map("spaces")
+}
+
+model SpaceCollection {
+  id          String               @id
+  spaceId     String               @map("space_id")
+  space       Space                @relation(fields: [spaceId], references: [id])
+  thumbnailId String?              @map("thumbnail_id")
+  thumbnail   Image?               @relation(fields: [thumbnailId], references: [id])
+  name        String
+  state       SpaceCollectionState
+  createdAt   DateTime             @default(now()) @map("created_at") @db.Timestamptz
+
+  posts SpaceCollectionPost[]
+
+  @@map("space_collections")
+}
+
+model SpaceCollectionPost {
+  id           String          @id
+  collectionId String          @map("collection_id")
+  collection   SpaceCollection @relation(fields: [collectionId], references: [id])
+  postId       String          @unique @map("post_id")
+  post         Post            @relation(fields: [postId], references: [id])
+  order        Int
+  createdAt    DateTime        @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([collectionId, order])
+  @@map("space_collection_posts")
 }
 
 model SpaceExternalLink {
@@ -731,6 +762,13 @@ enum PreferenceType {
   MUTE
 
   @@map("_preference_type")
+}
+
+enum SpaceCollectionState {
+  ACTIVE
+  INACTIVE
+
+  @@map("_space_collection_state")
 }
 
 enum SpaceMemberInvitationState {
