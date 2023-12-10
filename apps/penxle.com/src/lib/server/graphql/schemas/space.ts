@@ -2,8 +2,7 @@ import { SpaceMemberInvitationState, SpaceMemberRole, SpaceVisibility } from '@p
 import * as R from 'radash';
 import { match } from 'ts-pattern';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
-import { createRandomIcon, directUploadImage } from '$lib/server/utils';
-import { indexSpace } from '$lib/server/utils/search';
+import { createRandomIcon, directUploadImage, indexSpace } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import {
   AcceptSpaceMemberInvitationSchema,

@@ -1,5 +1,6 @@
 import * as R from 'radash';
 import { openSearch } from '$lib/server/search';
+import { disassembleHangulString } from '$lib/utils';
 import { builder } from '../builder';
 
 type SearchHits = {
@@ -19,7 +20,7 @@ type SearchHits = {
  */
 
 builder.queryFields((t) => ({
-  searchPost: t.prismaField({
+  searchPosts: t.prismaField({
     type: ['Post'],
     args: {
       query: t.arg.string(),
@@ -93,7 +94,7 @@ builder.queryFields((t) => ({
     },
   }),
 
-  searchSpace: t.prismaField({
+  searchSpaces: t.prismaField({
     type: ['Space'],
     args: {
       query: t.arg.string(),
@@ -144,6 +145,44 @@ builder.queryFields((t) => ({
       );
 
       return R.sift(hits.map((hit) => spaces[hit._id]));
+    },
+  }),
+
+  searchTags: t.prismaField({
+    type: ['Tag'],
+    args: { query: t.arg.string() },
+    resolve: async (query, _, args, { db }) => {
+      const searchResult = await openSearch.search({
+        index: 'tags',
+        body: {
+          query: {
+            bool: {
+              should: [
+                { match_phrase: { 'name.raw': args.query } },
+                {
+                  match_phrase: /^[ㄱ-ㅎ]+$/.test(args.query)
+                    ? { 'name.initial': args.query }
+                    : { 'name.disassembled': disassembleHangulString(args.query) },
+                },
+              ],
+            },
+          },
+        },
+      });
+
+      const hits: SearchHits[] = searchResult.body.hits.hits;
+      const resultIds = hits.map((hit) => hit._id);
+      const tags = R.objectify(
+        await db.tag.findMany({
+          ...query,
+          where: {
+            id: { in: resultIds },
+          },
+        }),
+        (tag) => tag.id,
+      );
+
+      return R.sift(hits.map((hit) => tags[hit._id]));
     },
   }),
 }));

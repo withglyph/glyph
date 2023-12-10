@@ -1,3 +1,4 @@
+import { disassembleHangulString, InitialHangulString } from '$lib/utils';
 import { openSearch } from '../search';
 import type { InteractiveTransactionClient } from '../database';
 
@@ -42,7 +43,12 @@ export const indexPost = async ({ db, postId }: IndexPostParams) => {
   }
 };
 
-export const indexSpace = async ({ db, spaceId }: { db: InteractiveTransactionClient; spaceId: string }) => {
+type IndexSpaceParams = {
+  db: InteractiveTransactionClient;
+  spaceId: string;
+};
+
+export const indexSpace = async ({ db, spaceId }: IndexSpaceParams) => {
   const space = await db.space.findUniqueOrThrow({
     where: { id: spaceId },
   });
@@ -61,4 +67,29 @@ export const indexSpace = async ({ db, spaceId }: { db: InteractiveTransactionCl
       id: space.id,
     });
   }
+};
+
+type IndexTagParams = {
+  tags: {
+    id: string;
+    name: string;
+  }[];
+};
+
+export const indexTags = async ({ tags }: IndexTagParams) => {
+  if (tags.length === 0) return;
+
+  const disassembledTags = tags.map(({ id, name }) => ({
+    id,
+    name: {
+      raw: name,
+      disassembled: disassembleHangulString(name),
+      initial: InitialHangulString(name) || null,
+    },
+  }));
+
+  await openSearch.bulk({
+    index: 'tags',
+    body: disassembledTags.flatMap((tag) => [{ index: { _id: tag.id } }, { name: tag.name }]),
+  });
 };

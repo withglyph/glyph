@@ -16,8 +16,7 @@ import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { redis } from '$lib/server/cache';
 import { s3 } from '$lib/server/external-api/aws';
-import { deductUserPoint, directUploadImage, getUserPoint, isAdulthood } from '$lib/server/utils';
-import { indexPost } from '$lib/server/utils/search';
+import { deductUserPoint, directUploadImage, getUserPoint, indexPost, indexTags, isAdulthood } from '$lib/server/utils';
 import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
 import { base36To10, createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
 import { builder } from '../builder';
@@ -959,6 +958,7 @@ builder.mutationFields((t) => ({
       });
 
       await indexPost({ db, postId: revision.post.id });
+      await indexTags({ tags: revision.tags.map(({ tag }) => tag) });
       return post;
     },
   }),
