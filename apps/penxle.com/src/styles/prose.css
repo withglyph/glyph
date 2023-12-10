@@ -65,7 +65,7 @@
   }
 
   & blockquote {
-    --uno: border-l-0.1875rem border-text-primary pl-0.625rem my-0.34375rem;
+    --uno: border-l-0.1875rem border-text-primary pl-0.625rem my-0.34375rem p-r-6;
   }
 
   & blockquote[data-kind='2'] {
@@ -77,7 +77,7 @@
   }
 
   & blockquote[data-kind='3'] {
-    --uno: border-l-none;
+    --uno: border-l-none p-r-none;
     &:before {
       --uno: block w-2rem m-x-auto;
       content: url(https://staging.penxle.com/blockquotes/carbon.svg);
