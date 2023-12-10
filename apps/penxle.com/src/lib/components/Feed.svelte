@@ -22,6 +22,7 @@
         blurred
         publishedAt
         contentFilters
+        hasPassword
 
         publishedRevision @_required {
           id
@@ -174,6 +175,9 @@
         {#if !$post.contentFilters.includes('ADULT')}
           <Badge class="w-fit mb-1" color="orange">트리거 주의</Badge>
         {/if}
+      {/if}
+      {#if $post.hasPassword}
+        <Badge class="w-fit mb-1" color="gray">비밀글</Badge>
       {/if}
     </div>
     <h2 class="title-20-b mb-2">{$post.publishedRevision.title}</h2>
