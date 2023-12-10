@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-  import { Heading, Paragraph } from '$lib/tiptap/nodes';
+  import { BulletList, Heading, OrderedList, Paragraph } from '$lib/tiptap/nodes';
   import type { FontFamily } from '@penxle/lib/unocss';
   import type { Node } from '@tiptap/pm/model';
   import type { Alignment, Spacing } from '$lib/tiptap/extensions';
@@ -83,6 +83,11 @@
     { label: '중앙', value: 'center', class: 'i-lc-align-center' },
     { label: '오른쪽', value: 'right', class: 'i-lc-align-right' },
     { label: '양쪽', value: 'justify', class: 'i-lc-align-justify' },
+  ];
+
+  export const list = [
+    { name: BulletList.name, label: '불릿 리스트' },
+    { name: OrderedList.name, label: '숫자 리스트' },
   ];
 
   export const hr = [1, 2, 3, 4, 5, 6, 7] as const;

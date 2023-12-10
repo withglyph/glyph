@@ -88,6 +88,25 @@
     }
   }
 
+  & ul,
+  ol {
+    list-style-position: outside;
+    white-space: pre-wrap;
+    margin-left: 1.25rem;
+  }
+
+  & ul {
+    list-style-type: disc;
+  }
+
+  & ol {
+    list-style-type: decimal;
+  }
+
+  & li > p:first-child {
+    display: inline;
+  }
+
   /*
    * marks
   */

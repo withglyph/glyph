@@ -107,12 +107,37 @@
       {/each}
     </Menu>
 
-    <MenuItem class="flex gap-2.5 items-center">
-      <span class="p-1 border border-alphagray-15 rounded-lg flex center">
-        <i class="i-lc-list square-5" />
-      </span>
-      리스트 추가
-    </MenuItem>
+    <Menu {offset} placement="right-start">
+      <div
+        slot="value"
+        class="flex items-center gap-2.5 body-14-sb text-secondary px-4 py-3 w-full rounded-lg hover:(bg-primary text-primary)"
+      >
+        <span class="p-1 border border-alphagray-15 rounded-lg flex center">
+          <i class="i-lc-list square-5" />
+        </span>
+        리스트 추가
+      </div>
+
+      <MenuItem
+        class="flex items-center gap-2 w-900px"
+        on:click={() => {
+          editor.chain().focus().toggleBulletList().run();
+        }}
+      >
+        <i class="i-lc-list square-5" aria-label="순서 없는 리스트" />
+        순서 없는 리스트
+      </MenuItem>
+
+      <MenuItem
+        class="flex items-center gap-2"
+        on:click={() => {
+          editor.chain().focus().toggleOrderedList().run();
+        }}
+      >
+        <i class="i-lc-list-ordered square-5" aria-label="번호 매겨진 리스트" />
+        번호 매겨진 리스트
+      </MenuItem>
+    </Menu>
 
     <MenuItem class="flex gap-2.5 items-center" on:click={handleInsertImage}>
       <span class="p-1 border border-alphagray-15 rounded-lg flex center">
