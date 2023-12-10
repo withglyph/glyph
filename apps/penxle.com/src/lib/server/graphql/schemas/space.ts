@@ -334,6 +334,13 @@ const UnmuteSpaceInput = builder.inputType('UnmuteSpaceInput', {
   }),
 });
 
+const UpdateSpaceMemberRoleInput = builder.inputType('UpdateSpaceMemberRoleInput', {
+  fields: (t) => ({
+    spaceMemberId: t.id(),
+    role: t.field({ type: SpaceMemberRole }),
+  }),
+});
+
 /**
  * * Queries
  */
@@ -855,6 +862,51 @@ builder.mutationFields((t) => ({
         },
         data: {
           state: 'INACTIVE',
+        },
+      });
+    },
+  }),
+
+  updateSpaceMemberRole: t.withAuth({ user: true }).prismaField({
+    type: 'SpaceMember',
+    args: { input: t.arg({ type: UpdateSpaceMemberRoleInput }) },
+    resolve: async (query, _, { input }, { db, ...context }) => {
+      const targetMember = await db.spaceMember.findUniqueOrThrow({
+        where: {
+          id: input.spaceMemberId,
+          state: 'ACTIVE',
+        },
+      });
+
+      const meAsMember = await db.spaceMember.findFirstOrThrow({
+        where: {
+          spaceId: targetMember.spaceId,
+          userId: context.session.userId,
+          role: 'ADMIN',
+          state: 'ACTIVE',
+        },
+      });
+
+      if (meAsMember.id === targetMember.id && input.role !== 'ADMIN') {
+        const adminCount = await db.spaceMember.count({
+          where: {
+            spaceId: targetMember.spaceId,
+            role: 'ADMIN',
+            state: 'ACTIVE',
+          },
+        });
+        if (adminCount <= 1) {
+          throw new IntentionalError('마지막 관리자는 권한을 변경할 수 없어요.');
+        }
+      }
+
+      return await db.spaceMember.update({
+        ...query,
+        where: {
+          id: targetMember.id,
+        },
+        data: {
+          role: input.role,
         },
       });
     },
