@@ -242,15 +242,7 @@
   });
 </script>
 
-<div
-  class={clsx(
-    'mt-8 mb-100px mx-auto w-full flex flex-col max-w-225 grow rounded-xl',
-    (!content?.content ||
-      content?.content.length === 0 ||
-      (content?.content.length === 1 && content?.content[0].type === 'paragraph')) &&
-      'bg-primary',
-  )}
->
+<div class="mt-8 mb-100px mx-auto w-full flex flex-col max-w-225 grow rounded-xl">
   <input
     bind:this={fileEl}
     class="hidden"
@@ -265,7 +257,7 @@
 
   {#if !content?.content || content?.content.length === 0 || (content?.content.length === 1 && content?.content[0].type === 'paragraph')}
     <div
-      class={clsx('w-full flex flex-col center grow space-y-2.5 rounded-xl', dragging && 'bg-gray-30')}
+      class={clsx('w-full flex flex-col center grow space-y-2.5 rounded-xl transition', dragging && 'bg-primary')}
       role="button"
       tabindex="-1"
       on:dragenter|preventDefault|stopPropagation={({ target, dataTransfer }) => {
@@ -397,7 +389,7 @@
               결제 상자를 옮기면 이후 분량부터 결제를 통해 감상할 수 있어요
             </p>
 
-            <div class="bg-primary rounded-lg flex items-center justify-between py-2 px-4 mt-4 gap-2">
+            <div class="rounded-lg flex items-center justify-between py-2 px-4 mt-4 gap-2">
               <input
                 class="body-16-b flex-1 min-w-0"
                 inputmode="numeric"
