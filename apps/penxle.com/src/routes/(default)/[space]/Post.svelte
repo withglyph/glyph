@@ -290,8 +290,6 @@
 
   $: blurContent = $query.post.blurred;
 
-  const blurContentBoxHeight = 'min-h-11rem';
-
   function fragmentToContent(fragment: Fragment) {
     const content = fragment.toJSON() as JSONContent[];
     return content;
@@ -451,12 +449,26 @@
     {#if !$query.post.hasPassword || $query.post.space.meAsMember || $query.post.unlocked}
       <div class="relative">
         {#if $postRevision.contentKind === 'ARTICLE'}
-          <article
-            class={clsx(blurContent && 'filter-blur-4px bg-#f9f9f8 opacity-50 select-none', blurContentBoxHeight)}
-            aria-hidden={blurContent}
-          >
-            <TiptapRenderer class="bodylong-16-m" content={$postRevision.content} bind:editor />
-          </article>
+          {#if blurContent}
+            <header class="py-6 px-3 rounded-3 w-full flex flex-col items-center bg-primary" role="alert">
+              <i class="i-px-alert-triangle square-6 mb-2 color-text-secondary" />
+              <h2 class="body-16-eb">포스트에 민감한 내용이 포함되어 있어요</h2>
+              <p class="body-13-m my-2.5 text-secondary">트리거 워닝 or 성인물 내용이 포함되어 있어요.</p>
+              <Button
+                class="rounded-xl"
+                size="sm"
+                on:click={() => {
+                  blurContent = false;
+                }}
+              >
+                내용 표시하기
+              </Button>
+            </header>
+          {:else}
+            <article>
+              <TiptapRenderer class="bodylong-16-m" content={$postRevision.content} bind:editor />
+            </article>
+          {/if}
         {:else}
           <GalleryPost {$query} {mode} revision={$postRevision} />
         {/if}
@@ -489,25 +501,6 @@
               공유
             </button>
           </TiptapBubbleMenu>
-        {/if}
-
-        {#if blurContent}
-          <header
-            class="p-4 rounded-3 absolute top-6 w-full left-auto right-auto flex flex-col items-center"
-            role="alert"
-          >
-            <i class="i-px-alert-triangle square-6 block mb-2 color-text-secondary" />
-            <h2 class="body-16-eb">포스트에 민감한 내용이 포함되어 있어요</h2>
-            <p class="body-13-m m-0.62rem text-secondary">트리거 워닝 or 성인물 내용이 포함되어 있어요.</p>
-            <Button
-              size="sm"
-              on:click={() => {
-                blurContent = false;
-              }}
-            >
-              내용 표시하기
-            </Button>
-          </header>
         {/if}
       </div>
     {:else}

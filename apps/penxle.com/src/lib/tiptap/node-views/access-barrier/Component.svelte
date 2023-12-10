@@ -111,7 +111,7 @@
       약동하다.
     </div>
     <div
-      class="dash absolute backdrop-blur-3 rounded-2xl top-0 left-0 w-full h-100% flex flex-col center px-3 text-center space-y-2.5"
+      class="dash absolute rounded-2xl top-0 left-0 w-full h-100% flex flex-col center px-3 text-center space-y-2.5 bg-primary"
     >
       <span class="text-secondary body-15-sb">이 글의 다음 내용은 구매 후에 감상할 수 있어요</span>
       <span class="body-16-eb">{comma(node.attrs.price)}P</span>

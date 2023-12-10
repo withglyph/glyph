@@ -4,7 +4,7 @@
   import { fragment, graphql } from '$glitch';
   import { Avatar, Badge, Image, Tag } from '$lib/components';
   import { toast } from '$lib/notification';
-  import type { Feed_post } from '$glitch';
+  import type { ContentFilterCategory, Feed_post } from '$glitch';
 
   let _post: Feed_post;
   export { _post as $post };
@@ -21,6 +21,7 @@
         permalink
         blurred
         publishedAt
+        contentFilters
 
         publishedRevision @_required {
           id
@@ -100,6 +101,20 @@
       toast.success('북마크에 저장되었어요');
     }
   };
+
+  const filterToLocaleString: Record<ContentFilterCategory, string> = {
+    ADULT: '성인물',
+    CRIME: '약물, 범죄',
+    CRUELTY: '잔인성',
+    GAMBLING: '사행성',
+    GROSSNESS: '벌레, 징그러움',
+    HORROR: '공포성',
+    INSULT: '언어의 부적절성',
+    OTHER: '기타',
+    PHOBIA: '정신질환, 공포증',
+    TRAUMA: '트라우마',
+    VIOLENCE: '폭력성',
+  };
 </script>
 
 {#if showSpaceInfoMessage}
@@ -150,42 +165,66 @@
   <a class="pt-3 px-6 sm:pt-4" href={`/${$post.space.slug}/${$post.permalink}`}>
     <div class="flex gap-1 flex-wrap">
       {#if $post.publishedRevision.price}
-        <Badge class="w-fit" color="purple">유료</Badge>
+        <Badge class="w-fit mb-1" color="purple">유료</Badge>
       {/if}
-      {#if $post.blurred}
-        <Badge class="w-fit" color="orange">트리거 주의</Badge>
+      {#if $post.contentFilters.length > 0}
+        {#if $post.contentFilters.includes('ADULT')}
+          <Badge class="w-fit mb-1" color="red">성인물</Badge>
+        {/if}
+        {#if !$post.contentFilters.includes('ADULT')}
+          <Badge class="w-fit mb-1" color="orange">트리거 주의</Badge>
+        {/if}
       {/if}
     </div>
-    <h2 class="title-20-b mt-1">{$post.publishedRevision.title}</h2>
+    <h2 class="title-20-b mb-2">{$post.publishedRevision.title}</h2>
 
     <div class="relative">
       <article
         class={clsx(
           'flex gap-xs justify-between rounded-lg <sm:(flex-wrap flex-col)',
-          $post.blurred && 'select-none min-h-5.5rem',
+          $post.blurred && 'select-none min-h-33',
         )}
       >
-        <p class="grow body-14-m text-secondary break-all line-clamp-6 whitespace-pre-line">
-          {$post.publishedRevision.previewText}
-        </p>
+        {#if $post.blurred}
+          <header
+            class="p-4 rounded-2xl absolute top-0 h-full w-full left-auto right-auto flex flex-col center gap-2.5 items-center bg-primary text-secondary border border-secondary text-center"
+            role="alert"
+          >
+            <i class="i-px-alert-triangle square-6" />
+            <h2 class="body-14-sb">
+              포스트에 민감한 내용이 포함되어 있어요
+              <br />
+              감상에 유의해주세요
+            </h2>
 
-        {#if $post.publishedRevision.croppedThumbnail}
-          <Image
-            class="square-30 rounded-md flex-none sm:aspect-square"
-            $image={$post.publishedRevision.croppedThumbnail}
-          />
+            <div class="flex flex-wrap gap-2.5">
+              <span
+                class="px-3 border border-secondary rounded-lg bg-surface-primary text-primary body-13-m h-6 flex items-center"
+              >
+                {filterToLocaleString[$post.contentFilters[0]]}
+              </span>
+              {#if $post.contentFilters.length > 1}
+                <span
+                  class="px-3 border border-secondary rounded-lg bg-surface-primary text-primary body-13-m h-6 flex items-center"
+                >
+                  그 외 태그 {$post.contentFilters.length - 1}개
+                </span>
+              {/if}
+            </div>
+          </header>
+        {:else}
+          <p class="grow body-14-m text-secondary break-all line-clamp-6 whitespace-pre-line">
+            {$post.publishedRevision.previewText}
+          </p>
+
+          {#if $post.publishedRevision.croppedThumbnail}
+            <Image
+              class="square-30 rounded-md flex-none sm:aspect-square"
+              $image={$post.publishedRevision.croppedThumbnail}
+            />
+          {/if}
         {/if}
       </article>
-
-      {#if $post.blurred}
-        <header
-          class="p-4 rounded-3 absolute top-0 h-full w-full left-auto right-auto flex flex-col center gap-2.5 items-center color-gray-5 backdrop-blur-4px bg-alphagray-50"
-          role="alert"
-        >
-          <i class="i-px-alert-triangle square-6 block" />
-          <h2 class="body-13-b">이 글은 시청에 주의가 필요한 글이에요</h2>
-        </header>
-      {/if}
     </div>
   </a>
 
