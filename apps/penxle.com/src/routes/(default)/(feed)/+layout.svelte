@@ -1,18 +1,13 @@
 <script lang="ts">
   import { Helmet, Link } from '@penxle/ui';
-  import clsx from 'clsx';
-  import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { ChannelIOButton } from '$lib/channel.io';
   import { Image, Tag } from '$lib/components';
+  import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { toast } from '$lib/notification';
   import LoginRequireModal from '../LoginRequireModal.svelte';
-  import FollowSpaceModal from '../me/cabinets/FollowSpaceModal.svelte';
-  import FollowTagModal from '../me/cabinets/FollowTagModal.svelte';
 
   let loginRequireOpen = false;
-  let followingSpaceOpen = false;
-  let followingTagOpen = false;
 
   $: query = graphql(`
     query FeedLayout_Query {
@@ -82,74 +77,37 @@
   title="펜슬 - 함께 그리는 반짝임"
 />
 
-<div class="grid gap-7.5 grid-cols-[2.5fr_7fr_3fr] mt-20 max-w-300 mx-10">
-  <div>
-    <div class="bg-white py-4 px-2 rounded-2xl border border-secondary flex flex-col sticky top-88px">
-      <a
-        class={clsx(
-          'py-3 px-2 subtitle-18-b text-secondary rounded-lg hover:(text-primary bg-primary)',
-          $page.url.pathname === '/' && 'text-primary!',
-        )}
-        href="/"
-      >
-        추천 게시물
-      </a>
-      <div class="flex items-center justify-between py-3 px-2 rounded-lg hover:(text-primary bg-primary)">
-        <svelte:element
-          this={$query.me ? 'a' : 'button'}
-          class={clsx('subtitle-18-b text-secondary grow', $page.url.pathname === '/followTags' && 'text-primary!')}
-          href={$query.me ? '/followTags' : undefined}
-          role="button"
-          tabindex="-1"
-          on:click={() => {
-            if (!$query.me) {
-              loginRequireOpen = true;
-            }
-          }}
+<div class="grid gap-7.5 grid-cols-[7fr_3fr] mt-8 max-w-300 mx-10">
+  <div class="flex flex-col w-full">
+    <TabHead class="mb-8 gap-3!">
+      <TabHeadItem id={1} class="title-24-b! leading-3!" href="/">추천 게시물</TabHeadItem>
+      {#if $query.me}
+        <TabHeadItem id={2} class="title-24-b! leading-3!" href="/followTags">관심 태그</TabHeadItem>
+        <TabHeadItem id={3} class="title-24-b! leading-3!" href="/followSpaces">관심 스페이스</TabHeadItem>
+      {:else}
+        <button
+          class="title-24-b w-fit border-b-10 leading-3 border-brand-50"
+          type="button"
+          on:click={() => (loginRequireOpen = true)}
         >
           관심 태그
-        </svelte:element>
-        {#if $query.me}
-          <button
-            class="i-lc-settings color-icon-tertiary square-4"
-            type="button"
-            on:click={() => (followingTagOpen = true)}
-          />
-        {/if}
-      </div>
-      <div class="flex items-center justify-between py-3 px-2 rounded-lg hover:(text-primary bg-primary)">
-        <svelte:element
-          this={$query.me ? 'a' : 'button'}
-          class={clsx('subtitle-18-b text-secondary', $page.url.pathname === '/followSpaces' && 'text-primary!')}
-          href={$query.me ? '/followSpaces' : undefined}
-          role="button"
-          tabindex="-1"
-          on:click={() => {
-            if (!$query.me) {
-              loginRequireOpen = true;
-            }
-          }}
+        </button>
+        <button
+          class="title-24-b w-fit border-b-10 leading-3 border-brand-50"
+          type="button"
+          on:click={() => (loginRequireOpen = true)}
         >
           관심 스페이스
-        </svelte:element>
-        {#if $query.me}
-          <button
-            class="i-lc-settings color-icon-tertiary square-4"
-            type="button"
-            on:click={() => (followingSpaceOpen = true)}
-          />
-        {/if}
-      </div>
-    </div>
-  </div>
+        </button>
+      {/if}
+    </TabHead>
 
-  <div class="flex flex-col w-full max-w-185">
     <slot />
   </div>
 
   <div class="space-y-10">
     <div>
-      <p class="body-15-b mb-4">✨ 최근 게시물을 게시한 스페이스</p>
+      <p class="body-16-b mb-4">✨ 최근 게시물을 게시한 스페이스</p>
 
       <div class="px-1 py-2 bg-cardprimary border border-secondary rounded-2xl space-y-1">
         {#each $query.recentlyPublishedSpaces as space (space.id)}
@@ -200,7 +158,7 @@
     </div>
 
     <div>
-      <p class="body-15-b mb-4">🔥 최근 사용된 태그</p>
+      <p class="body-16-b mb-4">🔥 최근 사용된 태그</p>
 
       <div class="flex flex-wrap gap-2 bg-cardprimary border border-secondary rounded-2xl px-3 py-4">
         {#each $query.recentlyUsedTags as tag (tag.id)}
@@ -210,7 +168,7 @@
     </div>
 
     <div class="sticky top-88px mb-4">
-      <p class="body-15-b mb-4">👋🏻 새로 추가된 태그</p>
+      <p class="body-16-b mb-4">👋🏻 새로 추가된 태그</p>
 
       <div class="flex flex-wrap gap-2 bg-cardprimary border border-secondary rounded-2xl px-3 py-4 mb-4">
         {#each $query.recentlyCreatedTags as tag (tag.id)}
@@ -220,7 +178,7 @@
     </div>
 
     <!-- <div class="sticky top-88px">
-      <p class="body-15-b mb-4">💰 오늘의 유료글</p>
+      <p class="body-16-b mb-4">💰 오늘의 유료글</p>
 
       <div class="py-2 px-1 bg-cardprimary border border-secondary rounded-2xl mb-4">
         <div class="p-2 rounded-lg transition hover:bg-primary">
@@ -241,8 +199,3 @@
 
 <ChannelIOButton {$query} />
 <LoginRequireModal bind:open={loginRequireOpen} />
-
-{#if $query.me}
-  <FollowSpaceModal $user={$query.me} bind:open={followingSpaceOpen} />
-  <FollowTagModal $user={$query.me} bind:open={followingTagOpen} />
-{/if}

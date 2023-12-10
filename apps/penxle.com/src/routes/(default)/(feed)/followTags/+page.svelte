@@ -37,8 +37,6 @@
   `);
 </script>
 
-<h1 class="title-24-b w-fit border-b-10 leading-3 border-brand-50 mb-8 mt-3">관심 태그</h1>
-
 {#if $query.tagFeed.length === 0}
   <div class="flex flex-col center grow max-h-120">
     <p class="body-15-b text-center">

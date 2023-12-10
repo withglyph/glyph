@@ -8,6 +8,9 @@
   export let variant: 'primary' | 'secondary' = getContext('variant');
   export let href: string | undefined = undefined;
 
+  let _class: string | undefined = undefined;
+  export { _class as class };
+
   let element: 'a' | 'button';
   $: element = href ? 'a' : 'button';
   $: props = element === 'a' ? { href } : { type: 'button' };
@@ -36,6 +39,7 @@
         activeTabValue !== id &&
         decodeURI($page.url.pathname) !== href &&
         'border-secondary body-16-sb text-disabled',
+      _class,
     )}
     role="tab"
     tabindex="-1"
