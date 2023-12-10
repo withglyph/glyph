@@ -45,6 +45,11 @@
         bookmarks {
           id
           postCount
+
+          thumbnails {
+            id
+            ...Image_image
+          }
         }
 
         ...MeCabinetsPage_FollowSpaceModal_user
@@ -101,7 +106,19 @@
     {:else}
       {#each $query.me.bookmarks as bookmark (bookmark.id)}
         <Link class="inline-block" href="/me/cabinets/bookmark">
-          <GridImage class="square-42 rounded-lg bg-black" images={[]} />
+          {#if bookmark.thumbnails.length > 0}
+            <GridImage class="square-37 sm:square-42 rounded-lg border border-secondary" images={bookmark.thumbnails} />
+          {:else}
+            <div class="square-37 sm:square-42 rounded-lg border border-secondary center">
+              <svg class="rounded-lg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <rect fill="#0c0a091a" height="24" width="24" />
+                <path
+                  d="M7.36 3.86c2.3 5.04.42 10.01-.1 11.36-.08.23-.13.36-.11.36a15.7 15.7 0 0 1 9.45 4.6l-1.58-2.74L13 14.07a1.1 1.1 0 1 1 .53-.35l3.53 6.11c-1.4-4.68.63-10.12.63-10.12-6.15-.67-10.33-5.85-10.33-5.85Z"
+                  fill="#FAFAF9"
+                />
+              </svg>
+            </div>
+          {/if}
           <p class="body-15-b mt-2 mb-1">북마크</p>
           <p class="body-13-m text-secondary">{bookmark.postCount}개의 포스트</p>
         </Link>

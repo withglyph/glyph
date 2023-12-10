@@ -18,6 +18,17 @@
   )}
 >
   {#each images.slice(0, 4) as image, idx (idx)}
-    <Image class={clsx('grid', images.length === 3 && 'last-of-type:col-span-full')} $image={image} />
+    <Image
+      class={clsx(
+        'grid',
+        images.length === 1 && 'rounded-lg',
+        images.length === 2 && 'first-of-type:rounded-l-lg last-of-type:rounded-r-lg',
+        images.length === 3 &&
+          'first-of-type:rounded-lt-lg even:rounded-rt-lg last-of-type:(col-span-full rounded-b-lg)',
+        images.length === 4 &&
+          'first-of-type:(rounded-lt-lg rounded-lb-none) even:rounded-rt-lg odd:rounded-lb-lg last-of-type:(rounded-rb-lg rounded-rt-none)',
+      )}
+      $image={image}
+    />
   {/each}
 </div>
