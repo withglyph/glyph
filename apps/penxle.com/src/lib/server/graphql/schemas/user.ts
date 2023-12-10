@@ -16,7 +16,7 @@ import qs from 'query-string';
 import { random } from 'radash';
 import { match } from 'ts-pattern';
 import { env } from '$env/dynamic/private';
-import { FormValidationError, IntentionalError, PermissionDeniedError } from '$lib/errors';
+import { IntentionalError, PermissionDeniedError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
 import { LoginUser, UpdateUserEmail } from '$lib/server/email/templates';
 import { AuthScope, UserSingleSignOnAuthorizationType } from '$lib/server/enums';
@@ -508,7 +508,7 @@ builder.mutationFields((t) => ({
       });
 
       if (!emailVerification) {
-        throw new FormValidationError('code', '올바르지 않은 코드예요.');
+        throw new IntentionalError('올바르지 않은 코드예요.');
       }
 
       return {

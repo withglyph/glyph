@@ -2,7 +2,7 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { Button } from '$lib/components';
-  import { FormField, TextInput } from '$lib/components/forms';
+  import { DigitsInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { IssueUserEmailAuthorizationUrlSchema } from '$lib/validations';
 
@@ -37,10 +37,8 @@
   <form class="w-full max-w-87.5 mt-4" use:form>
     <input name="email" type="hidden" value={email} />
 
-    <div class="space-y-3">
-      <FormField name="code" label="코드">
-        <TextInput class="w-full font-bold" inputmode="numeric" placeholder="코드 입력" />
-      </FormField>
+    <div class="space-y-3 flex justify-center">
+      <DigitsInput name="code" />
     </div>
 
     <Button class="w-full mt-3" size="xl" type="submit">펜슬 시작하기</Button>

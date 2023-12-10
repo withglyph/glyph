@@ -1,4 +1,5 @@
 export { default as Checkbox } from './Checkbox.svelte';
+export { default as DigitsInput } from './DigitsInput.svelte';
 export { default as DropDown } from './DropDown.svelte';
 export { default as FormField } from './FormField.svelte';
 export { default as FormValidationMessage } from './FormValidationMessage.svelte';
