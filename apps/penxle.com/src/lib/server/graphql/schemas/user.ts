@@ -25,6 +25,7 @@ import { createAccessToken, createRandomAvatar, directUploadImage, getUserPoint,
 import { createId } from '$lib/utils';
 import {
   CreateUserSchema,
+  DeleteUserSchema,
   IssueUserEmailAuthorizationUrlSchema,
   LoginUserSchema,
   UpdateUserEmailSchema,
@@ -389,6 +390,13 @@ export const userSchema = defineSchema((builder) => {
       code: t.string(),
     }),
     validate: { schema: IssueUserEmailAuthorizationUrlSchema },
+  });
+
+  const DeleteUserInput = builder.inputType('DeleteUserInput', {
+    fields: (t) => ({
+      email: t.string(),
+    }),
+    validate: { schema: DeleteUserSchema },
   });
 
   /**
@@ -836,6 +844,29 @@ export const userSchema = defineSchema((builder) => {
             },
           },
         });
+      },
+    }),
+
+    deleteUser: t.withAuth({ user: true }).field({
+      type: 'Void',
+      args: { input: t.arg({ type: DeleteUserInput }) },
+      resolve: async (_, { input }, { db, ...context }) => {
+        const user = await db.user.findUniqueOrThrow({
+          where: { id: context.session.userId },
+        });
+
+        if (user.email !== input.email) {
+          throw new IntentionalError('이메일이 일치하지 않아요.');
+        }
+
+        await db.user.update({
+          where: { id: context.session.userId },
+          data: {
+            state: 'INACTIVE',
+          },
+        });
+
+        context.cookies.delete('penxle-at', { path: '/' });
       },
     }),
   }));

@@ -25,3 +25,7 @@ export const IssueUserEmailAuthorizationUrlSchema = z.object({
   email,
   code: z.string().min(1, '인증 코드를 입력해주세요'),
 });
+
+export const DeleteUserSchema = z.object({
+  email,
+});

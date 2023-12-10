@@ -105,6 +105,10 @@ input DeleteSpaceProfileInput {
   spaceId: ID!
 }
 
+input DeleteUserInput {
+  email: String!
+}
+
 type File {
   id: ID!
   name: String!
@@ -196,6 +200,7 @@ type Mutation {
   deleteSpace(input: DeleteSpaceInput!): Space!
   deleteSpaceCollection(input: DeleteSpaceCollectionInput!): SpaceCollection!
   deleteSpaceProfile(input: DeleteSpaceProfileInput!): SpaceMember!
+  deleteUser(input: DeleteUserInput!): Void!
   finalizeFileUpload(input: FinalizeFileUploadInput!): File!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   followSpace(input: FollowSpaceInput!): Space!
