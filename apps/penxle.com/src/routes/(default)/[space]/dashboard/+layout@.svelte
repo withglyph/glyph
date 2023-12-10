@@ -2,9 +2,9 @@
   import clsx from 'clsx';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { Avatar, BottomSheet, Button } from '$lib/components';
-  import Image from '$lib/components/Image.svelte';
+  import { Avatar, BottomSheet, Button, Image } from '$lib/components';
   import { pageSubTitle } from '$lib/stores';
+  import ComingSoonModal from '../../ComingSoonModal.svelte';
   import Footer from '../../Footer.svelte';
   import Header from '../../Header.svelte';
   import SpaceListMenu from './SpaceListMenu.svelte';
@@ -12,6 +12,7 @@
 
   let open = false;
   let updateSpaceProfileOpen = false;
+  let comingSoonOpen = false;
 
   $: query = graphql(`
     query SpaceDashboardLayout_Query($slug: String!) {
@@ -91,28 +92,30 @@
       <nav class="w-full mb-10">
         <ul class="body-16-b text-disabled space-y-1">
           <li>
-            <a
+            <button
               class={clsx(
                 'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
                 $page.url.pathname === `/${$query.space.slug}/dashboard` && 'bg-primary text-primary',
               )}
-              href="/{$query.space.slug}/dashboard"
+              type="button"
+              on:click={() => (comingSoonOpen = true)}
             >
               <i class="i-lc-home square-5" />
               대시보드
-            </a>
+            </button>
           </li>
           <li>
-            <a
+            <button
               class={clsx(
                 'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
                 $page.url.pathname === `/${$query.space.slug}/dashboard/members` && 'bg-primary text-primary',
               )}
-              href="/{$query.space.slug}/dashboard/members"
+              type="button"
+              on:click={() => (comingSoonOpen = true)}
             >
               <i class="i-lc-user square-5" />
               멤버 관리
-            </a>
+            </button>
           </li>
           <li>
             <a
@@ -127,16 +130,17 @@
             </a>
           </li>
           <li>
-            <a
+            <button
               class={clsx(
                 'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
                 $page.url.pathname === `/${$query.space.slug}/dashboard/subscribers` && 'bg-primary text-primary',
               )}
-              href="/{$query.space.slug}/dashboard/subscribers"
+              type="button"
+              on:click={() => (comingSoonOpen = true)}
             >
               <i class="i-lc-users square-5" />
               독자 관리
-            </a>
+            </button>
           </li>
           <li>
             <a
@@ -218,28 +222,30 @@
   <nav class="w-full">
     <ul class="body-16-b text-disabled">
       <li>
-        <a
+        <button
           class={clsx(
             'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
             $page.url.pathname === `/${$query.space.slug}/dashboard` && 'bg-primary text-primary',
           )}
-          href="/{$query.space.slug}/dashboard"
+          type="button"
+          on:click={() => (comingSoonOpen = true)}
         >
           <i class="i-lc-home square-5" />
           대시보드
-        </a>
+        </button>
       </li>
       <li>
-        <a
+        <button
           class={clsx(
             'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
             $page.url.pathname === `/${$query.space.slug}/dashboard/members` && 'bg-primary text-primary',
           )}
-          href="/{$query.space.slug}/dashboard/members"
+          type="button"
+          on:click={() => (comingSoonOpen = true)}
         >
           <i class="i-lc-user square-5" />
           멤버 관리
-        </a>
+        </button>
       </li>
       <li>
         <a
@@ -254,16 +260,17 @@
         </a>
       </li>
       <li>
-        <a
+        <button
           class={clsx(
             'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
             $page.url.pathname === `/${$query.space.slug}/dashboard/subscribers` && 'bg-primary text-primary',
           )}
-          href="/{$query.space.slug}/dashboard/subscribers"
+          type="button"
+          on:click={() => (comingSoonOpen = true)}
         >
           <i class="i-lc-users square-5" />
           독자 관리
-        </a>
+        </button>
       </li>
       <li>
         <a
@@ -282,3 +289,4 @@
 </BottomSheet>
 
 <UpdateSpaceProfileModal {$query} bind:open={updateSpaceProfileOpen} />
+<ComingSoonModal bind:open={comingSoonOpen} />

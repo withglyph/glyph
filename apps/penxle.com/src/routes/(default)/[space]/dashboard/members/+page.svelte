@@ -107,9 +107,9 @@
   <div class="flex items-center justify-between mb-6 gap-2">
     <PopupSearch />
 
-    {#if $query.space.meAsMember?.role === 'ADMIN'}
+    <!-- {#if $query.space.meAsMember?.role === 'ADMIN'}
       <Button size="lg" on:click={() => (open = true)}>멤버 초대</Button>
-    {/if}
+    {/if} -->
   </div>
 
   <Table>

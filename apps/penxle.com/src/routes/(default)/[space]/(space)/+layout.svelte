@@ -185,7 +185,7 @@
         </Button>
         <a
           class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
-          href={`/${$query.space.slug}/dashboard`}
+          href={`/${$query.space.slug}/dashboard/settings`}
         >
           <i class="i-lc-settings square-6 text-secondary" />
         </a>
@@ -296,7 +296,7 @@
       <Button
         class="square-12.5"
         color="tertiary"
-        href={`/${$query.space.slug}/dashboard`}
+        href={`/${$query.space.slug}/dashboard/settings`}
         size="xl"
         type="link"
         variant="outlined"

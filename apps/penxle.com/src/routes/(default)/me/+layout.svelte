@@ -4,9 +4,11 @@
   import PencilUnderline from '$assets/icons/pencil-underline.svg?component';
   import { graphql } from '$glitch';
   import { Avatar, Button } from '$lib/components';
+  import ComingSoonModal from '../ComingSoonModal.svelte';
   import UpdateProfileModal from './settings/UpdateProfileModal.svelte';
 
   let open = false;
+  let comingSoonOpen = false;
 
   $: query = graphql(`
     query MeLayout_Query {
@@ -76,15 +78,16 @@
             </a>
           </li>
           <li>
-            <a
+            <button
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
                 $page.url.pathname === '/me/dashboard' && 'bg-primary text-primary',
               )}
-              href="/me/dashboard"
+              type="button"
+              on:click={() => (comingSoonOpen = true)}
             >
               대시보드
-            </a>
+            </button>
           </li>
           <li>
             <a
@@ -98,15 +101,16 @@
             </a>
           </li>
           <li>
-            <a
+            <button
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
                 $page.url.pathname === '/me/revenue' && 'bg-primary text-primary',
               )}
-              href="/me/revenue"
+              type="button"
+              on:click={() => (comingSoonOpen = true)}
             >
               정산/수익
-            </a>
+            </button>
           </li>
           <li>
             <a
@@ -130,3 +134,4 @@
 </div>
 
 <UpdateProfileModal $profile={$query.me.profile} bind:open />
+<ComingSoonModal bind:open={comingSoonOpen} />
