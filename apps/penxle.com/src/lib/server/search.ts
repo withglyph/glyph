@@ -1,6 +1,6 @@
 import { Client } from '@opensearch-project/opensearch';
-import { PRIVATE_OPENSEARCH_URL } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 export const openSearch = new Client({
-  node: PRIVATE_OPENSEARCH_URL,
+  node: env.PRIVATE_OPENSEARCH_URL || 'http://localhost:9200',
 });
