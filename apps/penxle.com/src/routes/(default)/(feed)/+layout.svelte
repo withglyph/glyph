@@ -46,6 +46,10 @@
           id
           ...Image_image
         }
+
+        meAsMember {
+          id
+        }
       }
     }
   `);
@@ -159,35 +163,36 @@
                 <p class="body-13-m text-secondary truncate">{space.description ?? ''}</p>
               </div>
             </Link>
-
-            {#if space.followed}
-              <button
-                class="py-1.5 px-2 rounded-12 body-13-m border border-secondary flex items-center gap-1"
-                type="button"
-                on:click={async () => {
-                  await unfollowSpace({ spaceId: space.id });
-                  toast.success('관심 스페이스 해제되었어요');
-                }}
-              >
-                <i class="i-lc-check" />
-                관심
-              </button>
-            {:else}
-              <button
-                class="bg-gray-80 border border-gray-80 py-1.5 px-2 rounded-12 body-13-m text-gray-5"
-                type="button"
-                on:click={async () => {
-                  if (!$query.me) {
-                    loginRequireOpen = true;
-                    return;
-                  }
-                  await followSpace({ spaceId: space.id });
-                  toast.success('관심 스페이스로 등록되었어요');
-                }}
-              >
-                <i class="i-lc-plus" />
-                관심
-              </button>
+            {#if !space.meAsMember}
+              {#if space.followed}
+                <button
+                  class="py-1.5 px-2 rounded-12 body-13-m border border-secondary flex items-center gap-1"
+                  type="button"
+                  on:click={async () => {
+                    await unfollowSpace({ spaceId: space.id });
+                    toast.success('관심 스페이스 해제되었어요');
+                  }}
+                >
+                  <i class="i-lc-check" />
+                  관심
+                </button>
+              {:else}
+                <button
+                  class="bg-gray-80 border border-gray-80 py-1.5 px-2 rounded-12 body-13-m text-gray-5"
+                  type="button"
+                  on:click={async () => {
+                    if (!$query.me) {
+                      loginRequireOpen = true;
+                      return;
+                    }
+                    await followSpace({ spaceId: space.id });
+                    toast.success('관심 스페이스로 등록되었어요');
+                  }}
+                >
+                  <i class="i-lc-plus" />
+                  관심
+                </button>
+              {/if}
             {/if}
           </div>
         {/each}
