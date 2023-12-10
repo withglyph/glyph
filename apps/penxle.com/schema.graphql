@@ -303,6 +303,7 @@ type Post {
   blurred: Boolean!
   bookmarkGroups: [BookmarkGroup!]!
   bookmarked: Boolean! @deprecated(reason: "Use bookmarkGroups instead")
+  collection: SpaceCollection
   contentFilters: [ContentFilterCategory!]!
   createdAt: DateTime!
   discloseStats: Boolean!
@@ -505,6 +506,7 @@ type Space {
 
 type SpaceCollection {
   count: Int!
+  createdAt: DateTime!
   id: ID!
   name: String!
   posts: [Post!]!

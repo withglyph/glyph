@@ -253,6 +253,26 @@ export const postSchema = defineSchema((builder) => {
         unauthorizedResolver: () => [],
       }),
 
+      collection: t.prismaField({
+        type: 'SpaceCollection',
+        nullable: true,
+        select: (_, __, nestedSelection) => ({
+          collectionPost: {
+            select: {
+              collection: nestedSelection(),
+            },
+          },
+        }),
+
+        resolve: (_, { collectionPost }) => {
+          if (!collectionPost || collectionPost.collection.state !== 'ACTIVE') {
+            return null;
+          }
+
+          return collectionPost.collection;
+        },
+      }),
+
       purchasedAt: t.field({
         type: 'DateTime',
         nullable: true,

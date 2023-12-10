@@ -14,6 +14,7 @@ export const collectionSchema = defineSchema((builder) => {
       name: t.exposeString('name'),
       thumbnail: t.relation('thumbnail'),
       count: t.relationCount('posts'),
+      createdAt: t.expose('createdAt', { type: 'DateTime' }),
 
       posts: t.prismaField({
         type: ['Post'],
