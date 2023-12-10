@@ -119,16 +119,16 @@
 </script>
 
 {#if showSpaceInfoMessage}
-  <div class="mt-2 flex items-center gap-3 pl-6 pr-3 mb-4 sm:p-0">
+  <div class="mt-2 flex items-center gap-3 mb-4 truncate">
     <a class="relative" href={`/${$post.space.slug}`}>
-      <Image class="square-10.5 rounded-3.5" $image={$post.space.icon} />
+      <Image class="square-10.5 rounded-3.5 flex-none" $image={$post.space.icon} />
       <Avatar
-        class="square-6 absolute border border-bg-primary -right-1 -bottom-1 <sm:hidden"
+        class="square-6 absolute border border-bg-primary -right-1 -bottom-1 flex-none"
         $profile={$post.member.profile}
       />
     </a>
-    <a class="grow flex flex-col" href={`/${$post.space.slug}`}>
-      <p class="mb-0.5 body-15-b sm:hidden">{$post.space.name} · {$post.member.profile.name}</p>
+    <a class="w-full flex flex-col truncate" href={`/${$post.space.slug}`}>
+      <p class="mb-0.5 body-15-b truncate sm:hidden">{$post.space.name} · {$post.member.profile.name}</p>
 
       <p class="mb-0.5 body-15-b <sm:hidden">
         {$post.member.profile.name}님이 {$post.space.name}에
@@ -138,6 +138,7 @@
         {/if}
         게시했어요
       </p>
+
       <time class="body-13-m text-secondary">{dayjs($post.publishedAt).fromNow()}</time>
     </a>
     <button type="button" on:click={toggleBookmark}>
@@ -158,7 +159,7 @@
 
 <div
   class={clsx(
-    'flex flex-col space-y-2 w-full bg-cardprimary sm:(border border-secondary rounded-2xl transition hover:(border-tertiary shadow-[0_4px_16px_0_rgba(0,0,0,0.25)]))',
+    'flex flex-col space-y-2 w-full bg-cardprimary border border-secondary rounded-2xl transition hover:(border-tertiary shadow-[0_4px_16px_0_rgba(0,0,0,0.25)])',
     $post.publishedRevision.tags.length === 0 && showSpaceInfoMessage && 'pb-3 sm:pb-4',
     _class,
   )}
@@ -180,26 +181,23 @@
         <Badge class="w-fit mb-1" color="gray">비밀글</Badge>
       {/if}
     </div>
-    <h2 class="title-20-b mb-2">{$post.publishedRevision.title}</h2>
+    <h2 class="title-20-b mb-2 truncate">{$post.publishedRevision.title}</h2>
 
-    <div class="relative">
+    <div>
       <article
-        class={clsx(
-          'flex gap-xs justify-between rounded-lg <sm:(flex-wrap flex-col)',
-          $post.blurred && 'select-none min-h-33',
-        )}
+        class={clsx('flex gap-xs justify-between rounded-lg <sm:(flex-wrap flex-col)', $post.blurred && 'min-h-33')}
       >
         {#if $post.blurred}
           <header
-            class="p-4 rounded-2xl absolute top-0 h-full w-full left-auto right-auto flex flex-col center gap-2.5 items-center bg-primary text-secondary border border-secondary text-center"
+            class="p-4 rounded-2xl h-full w-full flex flex-col center gap-2.5 items-center bg-primary text-secondary border border-secondary"
             role="alert"
           >
             <i class="i-px-alert-triangle square-6" />
-            <h2 class="body-14-sb">
+            <p class="body-14-sb text-center">
               포스트에 민감한 내용이 포함되어 있어요
               <br />
               감상에 유의해주세요
-            </h2>
+            </p>
 
             <div class="flex flex-wrap gap-2.5">
               <span
@@ -217,7 +215,7 @@
             </div>
           </header>
         {:else}
-          <p class="grow body-14-m text-secondary break-all line-clamp-6 whitespace-pre-line">
+          <p class="grow body-15-sb text-secondary break-all line-clamp-4 whitespace-pre-line">
             {$post.publishedRevision.previewText}
           </p>
 

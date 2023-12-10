@@ -10,6 +10,7 @@
   import LoginRequireModal from '../LoginRequireModal.svelte';
 
   let loginRequireOpen = false;
+  let mobileScrollTabEl: HTMLElement;
 
   $: query = graphql(`
     query FeedLayout_Query {
@@ -80,26 +81,64 @@
   title="펜슬 - 함께 그리는 반짝임"
 />
 
+<svelte:window
+  on:scroll={({ currentTarget }) => {
+    if (currentTarget.scrollY > 70 && currentTarget.innerWidth < 800) {
+      mobileScrollTabEl.style.display = 'block';
+      mobileScrollTabEl.style.position = 'sticky';
+    } else {
+      mobileScrollTabEl.style.display = 'none';
+    }
+  }}
+/>
+
 <Header {$query} />
 
-<main class="flex flex-col grow items-center justify-start mx-auto w-full h-full bg-primary backgroundGrid">
-  <div class="grid gap-7.5 grid-cols-[7fr_3fr] mt-8 max-w-300 mx-10">
-    <div class="flex flex-col w-full">
-      <TabHead class="mb-8 gap-3!">
-        <TabHeadItem id={1} class="title-24-b! leading-3!" href="/">추천 게시물</TabHeadItem>
+<div bind:this={mobileScrollTabEl} class="hidden top-61px z-1">
+  <TabHead class="w-full bg-cardprimary" variant="secondary">
+    <TabHeadItem id={1} href="/">추천 게시물</TabHeadItem>
+    {#if $query.me}
+      <TabHeadItem id={2} href="/followTags">관심 태그</TabHeadItem>
+      <TabHeadItem id={3} href="/followSpaces">관심 스페이스</TabHeadItem>
+    {:else}
+      <button
+        class="grow text-center body-16-b border-b-2 border-transparent transition hover:border-black"
+        type="button"
+        on:click={() => (loginRequireOpen = true)}
+      >
+        관심 태그
+      </button>
+      <button
+        class="grow text-center body-16-b border-b-2 border-transparent transition hover:border-black"
+        type="button"
+        on:click={() => (loginRequireOpen = true)}
+      >
+        관심 스페이스
+      </button>
+    {/if}
+  </TabHead>
+</div>
+
+<main class="flex flex-col grow items-center justify-start mx-auto w-full h-full truncate sm:bg-primary backgroundGrid">
+  <div class="grid mt-8 max-w-300 px-4 <sm:w-full sm:(p-0 gap-7.5 grid-cols-[7fr_3fr] mx-10)">
+    <div class="flex flex-col w-full truncate">
+      <TabHead class="mb-8 gap-3! mt-3">
+        <TabHeadItem id={1} class="title-20-b! sm:title-24-b! leading-3!" href="/">추천 게시물</TabHeadItem>
         {#if $query.me}
-          <TabHeadItem id={2} class="title-24-b! leading-3!" href="/followTags">관심 태그</TabHeadItem>
-          <TabHeadItem id={3} class="title-24-b! leading-3!" href="/followSpaces">관심 스페이스</TabHeadItem>
+          <TabHeadItem id={2} class="title-20-b! sm:title-24-b! leading-3!" href="/followTags">관심 태그</TabHeadItem>
+          <TabHeadItem id={3} class="title-20-b! sm:title-24-b! leading-3!" href="/followSpaces">
+            관심 스페이스
+          </TabHeadItem>
         {:else}
           <button
-            class="title-24-b w-fit border-b-10 leading-3 border-brand-50"
+            class="title-20-b w-fit border-b-10 leading-3 border-transparent transition hover:border-brand-50 sm:title-24-b"
             type="button"
             on:click={() => (loginRequireOpen = true)}
           >
             관심 태그
           </button>
           <button
-            class="title-24-b w-fit border-b-10 leading-3 border-brand-50"
+            class="title-20-b w-fit border-b-10 leading-3 border-transparent transition hover:border-brand-50 sm:title-24-b"
             type="button"
             on:click={() => (loginRequireOpen = true)}
           >
@@ -111,7 +150,7 @@
       <slot />
     </div>
 
-    <div class="space-y-10">
+    <div class="<sm:hidden space-y-10">
       <div>
         <p class="body-16-b mb-4">✨ 최근 게시물을 게시한 스페이스</p>
 
@@ -211,8 +250,10 @@
 
 <style>
   .backgroundGrid {
-    background-size: 33px 33px;
-    background-image: linear-gradient(to right, #f1f1f0 1px, transparent 1px),
-      linear-gradient(to bottom, #f1f1f0 1px, transparent 1px);
+    @media (min-width: 800px) {
+      background-size: 33px 33px;
+      background-image: linear-gradient(to right, #f1f1f0 1px, transparent 1px),
+        linear-gradient(to bottom, #f1f1f0 1px, transparent 1px);
+    }
   }
 </style>
