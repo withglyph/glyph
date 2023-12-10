@@ -21,6 +21,33 @@ builder.prismaObject('BookmarkGroup', {
         },
       },
     }),
+
+    thumbnails: t.prismaField({
+      type: ['Image'],
+      resolve: async (query, bookmarkGroup, _, { db }) => {
+        return db.image.findMany({
+          ...query,
+          where: {
+            postRevisionsUsingThisAsCroppedThumbnail: {
+              some: {
+                kind: 'PUBLISHED',
+                post: {
+                  state: 'PUBLISHED',
+                  space: { state: 'ACTIVE' },
+                  bookmarks: {
+                    some: {
+                      bookmarkGroupId: bookmarkGroup.id,
+                    },
+                  },
+                },
+              },
+            },
+          },
+
+          take: 4,
+        });
+      },
+    }),
   }),
 });
 
