@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Link } from '@penxle/ui';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import { fragment, graphql } from '$glitch';
@@ -11,7 +10,6 @@
   export { _post as $post };
 
   export let showSpaceInfoMessage = false;
-  export let purchasedPost: string | undefined = undefined;
   let _class: string | undefined = undefined;
   export { _class as class };
 
@@ -22,7 +20,6 @@
         id
         permalink
         blurred
-        purchasedAt
         publishedAt
 
         publishedRevision @_required {
@@ -125,16 +122,7 @@
         {/if}
         게시했어요
       </p>
-      {#if purchasedPost}
-        <Link
-          class="text-secondary body-13-m underline underline-offset-2 hover:text-gray-60"
-          href={`/${$post.space.slug}/purchased/${purchasedPost}`}
-        >
-          {dayjs($post.purchasedAt).formatAsDate()}에 결제된 글 보기
-        </Link>
-      {:else}
-        <time class="body-13-m text-secondary">{dayjs($post.publishedAt).fromNow()}</time>
-      {/if}
+      <time class="body-13-m text-secondary">{dayjs($post.publishedAt).fromNow()}</time>
     </a>
     <button type="button" on:click={toggleBookmark}>
       <i

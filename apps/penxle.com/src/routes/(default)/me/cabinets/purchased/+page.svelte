@@ -1,0 +1,59 @@
+<script lang="ts">
+  import dayjs from 'dayjs';
+  import { graphql } from '$glitch';
+  import { Image } from '$lib/components';
+
+  $: query = graphql(`
+    query MeCabinetsPurchasedPage_Query {
+      auth(scope: USER)
+
+      me @_required {
+        id
+
+        purchasedPosts {
+          id
+          permalink
+          purchasedAt
+
+          space {
+            id
+            slug
+
+            icon {
+              id
+              ...Image_image
+            }
+          }
+        }
+      }
+    }
+  `);
+</script>
+
+{#if $query.me.purchasedPosts?.length === 0}
+  <p class="text-secondary text-center body-15-b py-10">구매한 포스트가 없어요</p>
+{/if}
+
+{#each $query.me.purchasedPosts as post (post.id)}
+  <li>
+    <div class="flex items-center justify-between gap-3 body-14-m text-secondary mb-2">
+      <p>
+        <time>{dayjs(post.purchasedAt).formatAsDate()}</time>
+        <span class="before:(content-['|'] mx-1)">결제됨</span>
+      </p>
+      <a class="text-right" href={`/${post.space.slug}/purchased/${post.permalink}`}>구매버전 보기</a>
+    </div>
+
+    <a
+      class="border border-secondary rounded-2xl py-3 px-4 flex items-center gap-4"
+      href={`/${post.space.slug}/${post.permalink}`}
+    >
+      <Image class="square-12.5 rounded-xl flex-none" $image={post.space.icon} />
+
+      <div class="truncate">
+        <p class="body-16-eb truncate">포스트 제목</p>
+        <p class="body-14-m text-secondary truncate">스페이스명 · 작성자</p>
+      </div>
+    </a>
+  </li>
+{/each}
