@@ -4,6 +4,7 @@
   import dayjs from 'dayjs';
   import * as R from 'radash';
   import { onDestroy, tick } from 'svelte';
+  import { slide } from 'svelte/transition';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
@@ -393,6 +394,7 @@
 
         <ul
           class="absolute z-50 top-12 w-full max-w-92 bg-cardprimary rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.15)] py-4 px-3 space-y-3"
+          transition:slide={{ axis: 'y', duration: 250 }}
         >
           {#each $query.me.spaces as space (space.id)}
             <li>
