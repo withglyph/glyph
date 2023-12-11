@@ -158,16 +158,16 @@
       focusMode && 'sm:(p-0! square-12! rounded-r-none)',
     )}
   >
-    <button
+    <!-- <button
       class={clsx(
         "before:(content-[''] flex center h-6 w-1 mx-4 bg-gray-50 rounded-full) h-full w-full <sm:hidden",
         !focusMode && 'hidden',
       )}
       type="button"
       on:click={() => (focusMode = false)}
-    />
+    /> -->
 
-    <div class={clsx('flex items-center justify-between', focusMode && 'sm:hidden!')}>
+    <div class={clsx('h-8 flex items-center justify-between', focusMode && 'sm:hidden!')}>
       <button class="flex center" type="button" on:click={handleShare}>
         <i class="i-lc-share square-5 bg-[#5C5755]" />
       </button>
@@ -221,7 +221,7 @@
         <i class="heartAnimation2 absolute top-0 left-0 hidden i-px-heart-fill square-2.5 bg-red-50" />
       </button>
 
-      <button
+      <!-- <button
         class={clsx(
           'flex center px-2 h-8 gap-1 rounded-xl text-disabled border border-alphawhite-15',
           focusMode && 'border-green-50! bg-green-50 bg-opacity-10 text-green-50',
@@ -231,7 +231,7 @@
       >
         <i class="i-lc-file-text square-5" />
         <span class="caption-12-b">집중모드</span>
-      </button>
+      </button> -->
     </div>
   </div>
 </div>
