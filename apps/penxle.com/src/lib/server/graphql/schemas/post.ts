@@ -1052,7 +1052,7 @@ export const postSchema = defineSchema((builder) => {
           where: { id: post.id },
           data: {
             state: 'DELETED',
-            publishedRevision: { update: { kind: 'ARCHIVED' } },
+            publishedRevision: post.publishedRevisionId ? { update: { kind: 'ARCHIVED' } } : undefined,
           },
         });
       },
