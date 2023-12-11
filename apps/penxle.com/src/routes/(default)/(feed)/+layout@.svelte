@@ -124,22 +124,20 @@
   <div class="grid mt-8 max-w-300 px-4 <sm:w-full sm:(p-0 gap-7.5 grid-cols-[7fr_3fr] mx-10)">
     <div class="flex flex-col w-full truncate">
       <TabHead class="mb-8 gap-3! mt-3">
-        <TabHeadItem id={1} class="title-20-b! sm:title-24-b! leading-3!" href="/">추천 게시물</TabHeadItem>
+        <TabHeadItem id={1} class="title-20-b! leading-3!" href="/">추천 게시물</TabHeadItem>
         {#if $query.me}
-          <TabHeadItem id={2} class="title-20-b! sm:title-24-b! leading-3!" href="/followTags">관심 태그</TabHeadItem>
-          <TabHeadItem id={3} class="title-20-b! sm:title-24-b! leading-3!" href="/followSpaces">
-            관심 스페이스
-          </TabHeadItem>
+          <TabHeadItem id={2} class="title-20-b! leading-3!" href="/followTags">관심 태그</TabHeadItem>
+          <TabHeadItem id={3} class="title-20-b! leading-3!" href="/followSpaces">관심 스페이스</TabHeadItem>
         {:else}
           <button
-            class="title-20-b w-fit border-b-10 leading-3 border-transparent transition hover:border-brand-50 sm:title-24-b"
+            class="title-20-b w-fit border-b-10 leading-3 border-transparent transition hover:border-brand-50"
             type="button"
             on:click={() => (loginRequireOpen = true)}
           >
             관심 태그
           </button>
           <button
-            class="title-20-b w-fit border-b-10 leading-3 border-transparent transition hover:border-brand-50 sm:title-24-b"
+            class="title-20-b w-fit border-b-10 leading-3 border-transparent transition hover:border-brand-50"
             type="button"
             on:click={() => (loginRequireOpen = true)}
           >
