@@ -4,6 +4,7 @@
   import PencilUnderline from '$assets/icons/pencil-underline.svg?component';
   import { graphql } from '$glitch';
   import { Avatar, Button } from '$lib/components';
+  import { comma } from '$lib/utils';
   import ComingSoonModal from '../ComingSoonModal.svelte';
   import UpdateProfileModal from './settings/UpdateProfileModal.svelte';
 
@@ -49,7 +50,7 @@
           <p class="font-semibold text-secondary">{$query.me.email}</p>
         </div>
         <div class="w-full flex items-center justify-between gap-2 px-3 py-2.5 bg-surface-primary rounded-2.5">
-          <span class="font-bold">{$query.me.point}P</span>
+          <span class="font-bold">{comma($query.me.point)}P</span>
           <Button href="/point/purchase" size="md" type="link">충전하기</Button>
         </div>
         <Button
