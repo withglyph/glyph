@@ -14,6 +14,7 @@
   export let spaceId: string;
 
   let thumbnail: (Image_image & { id: string }) | null = null;
+  let name = '';
 
   const createSpaceCollection = graphql(`
     mutation CreateCollectionModal_CreateSpaceCollection_Mutation($input: CreateSpaceCollectionInput!) {
@@ -41,7 +42,7 @@
       const defaultName = '';
       const createdCollection = await createSpaceCollection({ spaceId, name: defaultName });
 
-      return { collectionId: createdCollection.id };
+      return { thumbnailId: thumbnail?.id, collectionId: createdCollection.id, name: name.trim() || '이름없음' };
     },
     initialValues: {
       collectionId: '',
@@ -77,7 +78,7 @@
     </button>
     <div id="upload-restriction" class="body-13-m text-disabled m-y-xs">파일 용량 1MB이하 / JPG만 업로드 가능</div>
     <FormField name="name" label="컬렉션명">
-      <TextInput class="w-full" maxlength={20} placeholder="이름" required />
+      <TextInput class="w-full" maxlength={20} placeholder="이름" required bind:value={name} />
     </FormField>
     <Button class="w-full m-t-6" loading={$isSubmitting} size="xl" type="submit">컬렉션 생성하기</Button>
   </form>

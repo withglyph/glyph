@@ -33,6 +33,8 @@
   let thumbnail: typeof $collection.thumbnail;
   $: thumbnail = $collection.thumbnail;
 
+  let name = $collection.name;
+
   const { form, setInitialValues, isSubmitting } = createMutationForm({
     mutation: graphql(`
       mutation UpdateSpaceCollectionModal_UpdateSpaceCollection_Mutation($input: UpdateSpaceCollectionInput!) {
@@ -46,7 +48,8 @@
       }
     `),
     schema: UpdateSpaceCollectionSchema,
-    extra: () => ({ thumbnailId: thumbnail?.id }),
+
+    extra: () => ({ thumbnailId: thumbnail?.id, name: name.trim() || '이름없음' }),
     onSuccess: () => {
       open = false;
       toast.success('썸네일이 수정되었어요');
@@ -79,7 +82,7 @@
     </button>
     <div id="upload-restriction" class="body-13-m text-disabled m-y-xs">파일 용량 1MB이하 / JPG만 업로드 가능</div>
     <FormField name="name" label="컬렉션명">
-      <TextInput class="w-full font-bold" maxlength={20} required />
+      <TextInput class="w-full font-bold" maxlength={20} required bind:value={name} />
     </FormField>
     <Button class="w-full m-t-6" loading={$isSubmitting} size="xl" type="submit">컬렉션 수정하기</Button>
   </form>
