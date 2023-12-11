@@ -501,6 +501,7 @@ export const postSchema = defineSchema((builder) => {
 
       previewText: t.field({
         type: 'String',
+        authScopes: { $granted: '$postRevision:view' },
         select: { freeContent: true },
         resolve: async (revision) => {
           const contentText = await revisionContentToText(revision.freeContent);
