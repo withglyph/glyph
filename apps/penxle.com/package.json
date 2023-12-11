@@ -104,8 +104,5 @@
     "unocss": "^0.58.0",
     "vite": "^4.5.1",
     "zod": "^3.22.4"
-  },
-  "prisma": {
-    "seed": "tsx prisma/seeds"
   }
 }

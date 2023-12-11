@@ -29,6 +29,10 @@ new k8s.core.v1.Service('dbm', {
                   port: 5432,
                   username: 'datadog',
                   password,
+                  // spell-checker:disable
+                  dbname: 'penxle',
+                  dbstrict: true,
+                  // spell-checker:enable
                 },
               ],
             },
