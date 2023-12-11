@@ -329,7 +329,7 @@
   };
 </script>
 
-<header class="sticky top-0 z-50 border-b border-secondary bg-white py-2 px-4 sm:px-7.5 h-15.25 flex center">
+<header class="sticky top-0 z-50 border-b border-secondary bg-white py-2 px-4 sm:px-7.5 h-15.25 flex center <sm:hidden">
   <div class="w-full max-w-300 flex items-center gap-2">
     <Logo class="square-6" />
 

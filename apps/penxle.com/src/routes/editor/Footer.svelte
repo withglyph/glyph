@@ -115,7 +115,7 @@
 <footer
   id="footer"
   style={typeof containerElHeight === 'number' ? `--height: ${-1 * containerElHeight + tagFirstLineHeight}px` : null}
-  class="fixed w-full z-1 bottom-[var(--height,100%)] transition-transform-250 motion-reduce:transition-none motion-reduce:hover:transform-none data-[expanded=true]:translate-y-[var(--height)]"
+  class="fixed w-full z-1 bottom-[var(--height,100%)] transition-transform-250 motion-reduce:transition-none motion-reduce:hover:transform-none data-[expanded=true]:translate-y-[var(--height)] <sm:hidden"
   data-expanded={open}
 >
   <button
