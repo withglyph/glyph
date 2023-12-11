@@ -122,6 +122,16 @@ export const spaceSchema = defineSchema((builder) => {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               memberId: input.mine ? meAsMember!.id : undefined,
               visibility: meAsMember ? undefined : 'PUBLIC',
+              publishedRevision:
+                context.session && !meAsMember
+                  ? {
+                      tags: {
+                        none: {
+                          tag: { userMutes: { some: { userId: context.session.userId } } },
+                        },
+                      },
+                    }
+                  : undefined,
             },
             orderBy: { publishedAt: 'desc' },
           });
