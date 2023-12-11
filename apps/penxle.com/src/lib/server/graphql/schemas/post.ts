@@ -780,6 +780,7 @@ export const postSchema = defineSchema((builder) => {
         const accessBarrier = accessBarrierPosition === -1 ? undefined : document[accessBarrierPosition];
         const freeContentData = accessBarrierPosition === -1 ? document : document.slice(0, accessBarrierPosition);
         const paidContentData = accessBarrierPosition === -1 ? undefined : document.slice(accessBarrierPosition + 1);
+
         const freeContentHash = Buffer.from(
           await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(freeContentData))),
         ).toString('hex');
@@ -836,7 +837,7 @@ export const postSchema = defineSchema((builder) => {
           title: input.title,
           subtitle: input.subtitle?.length ? input.subtitle : undefined,
           freeContentId: freeContent.id,
-          paidContentId: paidContent?.id,
+          paidContentId: paidContent?.id ?? null,
           tags: {
             createMany: {
               data: postTags.map((tag) => ({
