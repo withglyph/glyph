@@ -489,8 +489,13 @@
       </Tooltip>
 
       <Button
-        class="text-blue-50 body-15-b rounded-l-none peer-[&:has(button:enabled)]:peer-hover:border-l-border-primary"
+        class={clsx(
+          'text-blue-50 body-15-b rounded-l-none peer-[&:has(button:enabled)]:peer-hover:(border-l! border-l-border-primary)',
+          $query.me.posts.length === 0 &&
+            'border-l! peer-[&:has(button:enabled)]:peer-hover:(border-l-border-primary!)',
+        )}
         color="tertiary"
+        disabled={$query.me.posts.length === 0}
         size="lg"
         variant="outlined"
         on:click={() => (draftListOpen = true)}
