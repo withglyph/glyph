@@ -149,7 +149,7 @@
       <slot />
     </div>
 
-    <div class="<sm:hidden space-y-10">
+    <div class="<sm:hidden space-y-10 max-w-80">
       <div>
         <p class="body-16-b mb-4">✨ 최근 게시물을 게시한 스페이스</p>
 
@@ -206,7 +206,7 @@
       <div>
         <p class="body-16-b mb-4">🔥 최근 사용된 태그</p>
 
-        <div class="flex flex-wrap gap-2 bg-cardprimary border border-secondary rounded-2xl px-3 py-4">
+        <div class="flex flex-wrap gap-2 bg-cardprimary border border-secondary rounded-2xl px-3 py-4 truncate">
           {#each $query.recentlyUsedTags as tag (tag.id)}
             <Tag href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
           {/each}
@@ -216,7 +216,7 @@
       <div class="sticky top-88px mb-4">
         <p class="body-16-b mb-4">👋🏻 새로 추가된 태그</p>
 
-        <div class="flex flex-wrap gap-2 bg-cardprimary border border-secondary rounded-2xl px-3 py-4 mb-4">
+        <div class="flex flex-wrap gap-2 bg-cardprimary border border-secondary rounded-2xl px-3 py-4 mb-4 truncate">
           {#each $query.recentlyCreatedTags as tag (tag.id)}
             <Tag href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
           {/each}
