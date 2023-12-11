@@ -163,11 +163,5 @@
     >
       로그인
     </a>
-    <a
-      class="flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-primary text-disabled"
-      href="/signup"
-    >
-      회원가입
-    </a>
   {/if}
 </SideBar>
