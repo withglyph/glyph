@@ -1,20 +1,30 @@
+import { ContentFilterCategory } from '@prisma/client';
 import * as R from 'radash';
+import { match } from 'ts-pattern';
 import { openSearch } from '$lib/server/search';
 import { disassembleHangulString } from '$lib/utils';
 import { defineSchema } from '../builder';
 
-export const searchSchema = defineSchema((builder) => {
-  type SearchHits = {
-    _id: string;
-    _score: number;
-    _source: {
-      id: string;
-      title: string;
-      subtitle?: string;
-      spaceId: string;
-      tags: string[];
-    };
+type SearchHits = {
+  _id: string;
+  _score: number;
+  _source: {
+    id: string;
+    title: string;
+    subtitle?: string;
+    spaceId: string;
+    tags: string[];
   };
+};
+
+export const searchSchema = defineSchema((builder) => {
+  /**
+   * * Types
+   */
+
+  const OrderByKind = builder.enumType('OrderByKind', {
+    values: ['ACCURACY', 'LATEST'],
+  });
 
   /**
    * * Queries
@@ -25,6 +35,11 @@ export const searchSchema = defineSchema((builder) => {
       type: ['Post'],
       args: {
         query: t.arg.string(),
+        includeTags: t.arg.stringList({ defaultValue: [] }),
+        excludeTags: t.arg.stringList({ defaultValue: [] }),
+        adultFilter: t.arg.boolean({ required: false }),
+        excludeContentFilters: t.arg({ type: [ContentFilterCategory], required: false }),
+        orderBy: t.arg({ type: OrderByKind, defaultValue: 'ACCURACY' }),
       },
       resolve: async (query, _, args, { db, ...context }) => {
         const mutedTags = context.session
@@ -49,6 +64,7 @@ export const searchSchema = defineSchema((builder) => {
                   { match_phrase: { subtitle: args.query } },
                   { match: { tags: args.query } },
                 ],
+
                 must: [
                   {
                     multi_match: {
@@ -57,20 +73,45 @@ export const searchSchema = defineSchema((builder) => {
                     },
                   },
                 ],
-                must_not: R.sift([
-                  mutedTags.length > 0
-                    ? {
-                        terms: { ['tags.id']: mutedTags.map(({ tagId }) => tagId) },
-                      }
-                    : undefined,
-                  mutedSpaces.length > 0
-                    ? {
-                        terms: { spaceId: mutedSpaces.map(({ spaceId }) => spaceId) },
-                      }
-                    : undefined,
-                ]),
+
+                filter: {
+                  bool: {
+                    must: R.sift([
+                      args.adultFilter === true ? { term: { contentFilters: 'ADULT' } } : undefined,
+                      ...args.includeTags.map((tag) => ({
+                        term: { ['tags.nameRaw']: tag },
+                      })),
+                    ]),
+                    must_not: R.sift([
+                      mutedTags.length > 0
+                        ? {
+                            terms: { ['tags.id']: mutedTags.map(({ tagId }) => tagId) },
+                          }
+                        : undefined,
+                      mutedSpaces.length > 0
+                        ? {
+                            terms: { spaceId: mutedSpaces.map(({ spaceId }) => spaceId) },
+                          }
+                        : undefined,
+                      args.excludeTags.length > 0
+                        ? {
+                            terms: { ['tags.nameRaw']: args.excludeTags },
+                          }
+                        : undefined,
+                      args.adultFilter === false ? { term: { contentFilters: 'ADULT' } } : undefined,
+                      args.excludeContentFilters?.length ?? 0 > 0
+                        ? { terms: { contentFilters: args.excludeContentFilters } }
+                        : undefined,
+                    ]),
+                  },
+                },
               },
             },
+
+            sort: match(args.orderBy)
+              .with('ACCURACY', () => ['_score'])
+              .with('LATEST', () => [{ publishedAt: 'desc' }])
+              .otherwise(() => []),
           },
         });
 

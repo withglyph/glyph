@@ -255,6 +255,11 @@ input MuteTagInput {
   tagId: ID!
 }
 
+enum OrderByKind {
+  ACCURACY
+  LATEST
+}
+
 enum PaymentMethod {
   BANK_ACCOUNT
   CREDIT_CARD
@@ -442,7 +447,7 @@ type Query {
   recommendFeed: [Post!]!
   sampleImage: Image!
   sampleImages: [Image!]!
-  searchPosts(query: String!): [Post!]!
+  searchPosts(adultFilter: Boolean, excludeContentFilters: [ContentFilterCategory!], excludeTags: [String!]! = [], includeTags: [String!]! = [], orderBy: OrderByKind! = ACCURACY, query: String!): [Post!]!
   searchSpaces(query: String!): [Space!]!
   searchTags(query: String!): [Tag!]!
   space(slug: String!): Space!

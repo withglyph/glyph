@@ -53,9 +53,11 @@ await createIndex('posts', {
         properties: {
           id: { type: 'keyword' },
           name: { type: 'text', analyzer: 'nori' },
+          nameRaw: { type: 'keyword' },
         },
       },
       spaceId: { type: 'keyword' },
+      contentFilters: { type: 'keyword' },
       publishedAt: { type: 'date', format: 'epoch_millis' },
     },
   },

@@ -30,7 +30,8 @@ export const indexPost = async ({ db, postId }: IndexPostParams) => {
           title: post.publishedRevision.title,
           subtitle: post.publishedRevision.subtitle,
           publishedAt: post.publishedAt?.getTime() ?? Date.now(),
-          tags: post.publishedRevision.tags.map(({ tag }) => ({ id: tag.id, name: tag.name })),
+          tags: post.publishedRevision.tags.map(({ tag }) => ({ id: tag.id, name: tag.name, nameRaw: tag.name })),
+          contentFilters: post.contentFilters,
           spaceId: post.spaceId,
         },
       });
