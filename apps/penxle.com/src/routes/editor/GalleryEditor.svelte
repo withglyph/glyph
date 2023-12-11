@@ -80,7 +80,7 @@
     description = content.content.find((c) => c.type === 'paragraph');
 
     if (!thumbnailId) {
-      const thumbnail = content.content.find((c) => c.type === 'image')?.attrs?.__data;
+      const thumbnail = content.content.find((c) => c.type === 'image') as Image;
 
       if (thumbnail) {
         setThumbnail(thumbnail);
@@ -115,6 +115,10 @@
           dispatch('change', resp);
         });
       }
+    }
+
+    if (validFiles.length === 0) {
+      return;
     }
 
     if (content?.content) {
