@@ -4,6 +4,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Tooltip } from '$lib/components';
   import EmojiPicker from '$lib/emoji/EmojiPicker.svelte';
+  import { toast } from '$lib/notification';
   import LoginRequireModal from '../LoginRequireModal.svelte';
   import type { Toolbar_query } from '$glitch';
 
@@ -124,9 +125,11 @@
     if ($query.post.bookmarkGroups.length > 0) {
       unbookmarkPost({ bookmarkId: $query.post.bookmarkGroups[0].id, postId: $query.post.id });
       mixpanel.track('post:unbookmark', { postId: $query.post.id, via: 'toolbar' });
+      toast.success('북마크에서 삭제했어요');
     } else {
       bookmarkPost({ postId: $query.post.id });
       mixpanel.track('post:bookmark', { postId: $query.post.id, via: 'toolbar' });
+      toast.success('북마크에 저장되었어요');
     }
   };
 </script>
