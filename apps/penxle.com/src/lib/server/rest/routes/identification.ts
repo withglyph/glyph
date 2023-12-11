@@ -22,6 +22,20 @@ identification.get('/identification/callback', async (_, { db, ...context }) => 
   }
 
   if (resp.response.certified) {
+    const existingCi = await db.userPersonalIdentity.findFirst({
+      where: {
+        ci: resp.response.unique_key,
+        user: { state: 'ACTIVE' },
+      },
+    });
+
+    if (existingCi) {
+      await (existingCi.userId === context.session.userId
+        ? context.flash('error', '이미 본인인증이 완료되었어요')
+        : context.flash('error', '이미 인증된 다른 계정이 있어요'));
+      return status(303, { headers: { Location: '/me/settings' } });
+    }
+
     await db.userPersonalIdentity.create({
       data: {
         id: createId(),
