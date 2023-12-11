@@ -3,7 +3,7 @@
   import { isTextSelection } from '@tiptap/core';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
-  import { goto } from '$app/navigation';
+  import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Avatar, Button, Image, Tag, Tooltip } from '$lib/components';
@@ -142,6 +142,14 @@
       }
     `),
   );
+
+  $: if (blurContent) {
+    blurContent = $query.post.blurred;
+  }
+
+  afterNavigate(() => {
+    blurContent = $query.post.blurred;
+  });
 
   let share: { open: boolean; content: JSONContent | null } = {
     open: false,
@@ -288,8 +296,6 @@
     TRAUMA: '👻 PTSD/트라우마를 일으킬 수 있는 내용',
     VIOLENCE: '🔫 폭력성에 해당하는 내용',
   };
-
-  $: blurContent = $query.post.blurred;
 
   function fragmentToContent(fragment: Fragment) {
     const content = fragment.toJSON() as JSONContent[];
