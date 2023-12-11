@@ -1,5 +1,18 @@
 import { z } from 'zod';
 
+export const RevisePostInputSchema = z.object({
+  revisionKind: z.enum(['AUTO_SAVE', 'MANUAL_SAVE']),
+  contentKind: z.enum(['ARTICLE', 'GALLERY']),
+  postId: z.string().optional(),
+  spaceId: z.string(),
+  title: z.string(),
+  subtitle: z.string().nullable().optional(),
+  content: z.any(),
+  thumbnailId: z.string().optional(),
+  thumbnailBounds: z.any().optional(),
+  tags: z.array(z.string().regex(new RegExp(/^[\p{L}\d_]+$/u, 'u'), '태그에 허용되지 않는 문자예요')),
+});
+
 export const PublishPostInputSchema = z.object({
   contentFilters: z.array(
     z.enum([
