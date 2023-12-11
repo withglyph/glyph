@@ -864,6 +864,7 @@ export const userSchema = defineSchema((builder) => {
           where: {
             userId: context.session.userId,
             state: 'ACTIVE',
+            space: { state: 'ACTIVE' },
           },
         });
 

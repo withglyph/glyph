@@ -481,7 +481,29 @@ export const spaceSchema = defineSchema((builder) => {
             state: 'ACTIVE',
             members: { some: { userId: context.session.userId, role: 'ADMIN' } },
           },
-          data: { state: 'INACTIVE' },
+          data: {
+            state: 'INACTIVE',
+            members: {
+              updateMany: {
+                where: { state: 'ACTIVE' },
+                data: { state: 'INACTIVE' },
+              },
+            },
+            posts: {
+              updateMany: {
+                where: { state: 'PUBLISHED' },
+                data: { state: 'DELETED' },
+              },
+            },
+          },
+        });
+
+        await db.postRevision.updateMany({
+          where: {
+            post: { spaceId: input.spaceId },
+            kind: 'PUBLISHED',
+          },
+          data: { kind: 'ARCHIVED' },
         });
 
         await indexSpace({ db, spaceId: input.spaceId });
