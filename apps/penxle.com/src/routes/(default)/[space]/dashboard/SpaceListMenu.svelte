@@ -115,7 +115,7 @@
   >
     <div class="space-y-3">
       {#each $query.me.spaces as space (space.id)}
-        <a class="p-1 flex gap-2 items-center rounded-xl hover:bg-primary" href={`/${space.slug}/dashboard`}>
+        <a class="p-1 flex gap-2 items-center rounded-xl hover:bg-primary" href={`/${space.slug}/dashboard/settings`}>
           <Image class="square-10.5 rounded-lg flex-none" $image={space.icon} />
           <div class="truncate">
             <p class="body-15-b mb-1 truncate">{space.name}</p>
