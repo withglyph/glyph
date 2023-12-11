@@ -962,7 +962,7 @@ export const postSchema = defineSchema((builder) => {
           if (
             revision.contentKind === 'GALLERY' &&
             ((revision.freeContent.data as JSONContent[]).length === 0 ||
-              ((revision.paidContent?.data as JSONContent[])?.length ?? 0 === 0))
+              ((revision.paidContent?.data as JSONContent[])?.length ?? 0) === 0)
           ) {
             throw new IntentionalError('결제 상자 위치가 잘못되었어요');
           }
