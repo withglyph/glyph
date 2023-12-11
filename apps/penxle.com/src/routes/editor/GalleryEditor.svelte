@@ -1,15 +1,18 @@
 <script lang="ts">
+  import { RingSpinner } from '@penxle/ui/spinners';
   import clsx from 'clsx';
   import ky from 'ky';
+  import { nanoid } from 'nanoid';
   import * as R from 'radash';
-  import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import Cutting from '$assets/icons/cutting.svg?component';
   import { graphql } from '$glitch';
   import { Button, Image } from '$lib/components';
   import { ThumbnailPicker } from '$lib/components/media';
+  import { toast } from '$lib/notification';
   import { portal } from '$lib/svelte/actions';
-  import { trackable } from '$lib/svelte/store';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
+  import FileImage from './FileImage.svelte';
   import type { Sortable } from '@shopify/draggable';
   import type { JSONContent } from '@tiptap/core';
   import type { FragmentType, Image_image } from '$glitch';
@@ -51,6 +54,8 @@
     mutation Editor_FinalizeImageUpload_Mutation($input: FinalizeImageUploadInput!) {
       finalizeImageUpload(input: $input) {
         id
+        width
+        height
         ...Image_image
       }
     }
@@ -72,9 +77,7 @@
     }
   };
 
-  const uploading = trackable();
   let fileEl: HTMLInputElement;
-  const dispatch = createEventDispatcher<{ change: { id: string } }>();
 
   $: if (content?.content) {
     description = content.content.find((c) => c.type === 'paragraph');
@@ -95,58 +98,96 @@
       return;
     }
 
-    const validFiles: Image[] = [];
+    const uploadingImages: { id: string; file: File }[] = [];
 
     for (const file of newFiles) {
-      if (await isValidImageFile(file)) {
-        await uploading.track(async () => {
-          const { key, presignedUrl } = await prepareImageUpload();
+      try {
+        if (await isValidImageFile(file)) {
+          const id = nanoid();
+          uploadingImages.push({ id, file });
 
-          await ky.put(presignedUrl, { body: file });
-          const resp = await finalizeImageUpload({ key, name: file.name });
+          if (content.content) {
+            if (changeIndex !== -1) {
+              content.content[changeIndex] = {
+                type: 'uploading_image',
+                attrs: {
+                  id: nanoid,
+                  __file: file,
+                },
+              };
 
-          validFiles.push({
+              changeIndex = -1;
+              fileEl.multiple = true;
+              return;
+            }
+
+            content.content = [
+              ...content.content,
+              {
+                type: 'uploading_image',
+                attrs: {
+                  id,
+                  __file: file,
+                },
+              },
+            ];
+          } else {
+            content = {
+              type: 'document',
+              content: [
+                {
+                  type: 'uploading_image',
+                  attrs: {
+                    id,
+                    __file: file,
+                  },
+                },
+              ],
+            };
+          }
+        } else {
+          toast.error(`${file.name} 파일은 업로드 할 수 없어요`);
+        }
+      } catch {
+        toast.error(`${file.name} 파일 업로드에 실패했어요`);
+      }
+    }
+
+    for (const { id, file } of uploadingImages) {
+      try {
+        const { key, presignedUrl } = await prepareImageUpload();
+        await ky.put(presignedUrl, { body: file });
+        const resp = await finalizeImageUpload({ key, name: file.name });
+
+        content.content = R.replace(
+          content.content ?? [],
+          {
             type: 'image',
             attrs: {
               id: resp.id,
-              __data: resp as FragmentType<Image_image>,
+              __data: resp,
             },
-          });
-          dispatch('change', resp);
-        });
+          },
+          (c) => c.type === 'uploading_image' && c.attrs?.id === id,
+        );
+
+        if (content.content.filter((c) => c.type === 'image').length === 1) {
+          thumbnailId = resp.id;
+          thumbnailBounds = {
+            left: 0,
+            top: 0,
+            width: resp.width,
+            height: resp.height,
+
+            translateX: 0,
+            translateY: 0,
+            scale: 1,
+          };
+        }
+      } catch {
+        toast.error(`${file.name} 파일 업로드에 실패했어요`);
+        content.content = content.content?.filter((c) => c.attrs?.id !== id);
       }
-    }
-
-    if (validFiles.length === 0) {
-      return;
-    }
-
-    if (content?.content) {
-      if (changeIndex !== -1) {
-        content.content[changeIndex] = validFiles[0];
-        changeIndex = -1;
-        fileEl.multiple = true;
-        return;
-      }
-
-      content.content = [...content.content, ...validFiles];
-    } else {
-      content = {
-        type: 'document',
-        content: validFiles,
-      };
-
-      thumbnailId = validFiles[0].attrs.__data.id;
-      thumbnailBounds = {
-        left: 0,
-        top: 0,
-        width: validFiles[0].attrs.__data.width,
-        height: validFiles[0].attrs.__data.height,
-
-        translateX: 0,
-        translateY: 0,
-        scale: 1,
-      };
     }
 
     onChange();
@@ -289,7 +330,7 @@
 
   <div class="flex flex-wrap gap-2 gallery">
     {#if content?.content}
-      {#each content.content as node, idx (node.attrs?.id ?? node.type)}
+      {#each content.content as node, idx (node.attrs?.id ?? idx)}
         {#if node.type === 'image'}
           <div class="relative w-fit item">
             <div class="relative square-54.5 [&>div]:hover:flex! cursor-grab">
@@ -383,6 +424,15 @@
               </div>
             {/if}
           </div>
+        {:else if node.type === 'uploading_image'}
+          <div class="relative w-fit item">
+            <div class="relative square-54.5 [&>div]:hover:flex! cursor-grab">
+              <FileImage class="square-full rounded-lg object-cover" file={node.attrs?.__file} />
+              <div class="absolute inset-0 flex center bg-white/50">
+                <RingSpinner class="w-8 h-8 text-brand-50" />
+              </div>
+            </div>
+          </div>
         {:else if node.type === 'access_barrier'}
           <div
             class="square-54.5 flex flex-col justify-center bg-cardprimary border border-secondary rounded-lg p-4 relative cursor-grab select-none item"
@@ -427,7 +477,7 @@
       {/each}
     {/if}
 
-    {#if content?.content?.some(({ type }) => type === 'image')}
+    {#if content?.content?.some(({ type }) => type === 'image' || type === 'uploading_image')}
       <button class="square-54.5 flex center bg-primary" type="button" on:click={() => fileEl.showPicker()}>
         <i class="i-lc-plus square-6 text-secondary" />
       </button>
