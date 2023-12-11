@@ -9,6 +9,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
   import { outsideClickEvent } from '$lib/svelte/actions';
+  import GotoSpaceModal from './GotoSpaceModal.svelte';
   import Notification from './Notification.svelte';
   import SearchBar from './SearchBar.svelte';
   import SideBar from './SideBar.svelte';
@@ -19,7 +20,8 @@
   export { _query as $query };
 
   let isOpen = false;
-  let isSideBarOpen = false;
+  let sideBarOpen = false;
+  let openGotoSpace = false;
 
   $: query = fragment(
     _query,
@@ -34,6 +36,7 @@
             name
           }
 
+          ...DefaultLayout_GotoSpaceModal_user
           ...DefaultLayout_UserMenu_user
           ...DefaultLayout_Notification_user
         }
@@ -72,7 +75,7 @@
 
       <div class="flex sm:hidden grow-0">
         <div class={clsx('flex center square-10')}>
-          <button type="button" on:click={() => (isSideBarOpen = true)}>
+          <button type="button" on:click={() => (sideBarOpen = true)}>
             <i class="i-lc-menu square-6" />
           </button>
         </div>
@@ -97,7 +100,7 @@
   </nav>
 </header>
 
-<SideBar bind:open={isSideBarOpen}>
+<SideBar bind:open={sideBarOpen}>
   {#if $query.me}
     <div class="my-4 px-3">
       <p class="font-extrabold text-2xl break-all mt-1 mb-2">
@@ -128,21 +131,22 @@
       <a
         class={clsx(
           'flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-primary text-disabled',
-          $page.url.pathname === '/#' && 'bg-primary text-primary',
+          $page.url.pathname === '/point/purchase' && 'bg-primary text-primary',
         )}
-        href="/#"
+        href="/point/purchase"
       >
         포인트
       </a>
-      <a
-        class={clsx(
-          'flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-primary text-disabled',
-          $page.url.pathname === '/#' && 'bg-primary text-primary',
-        )}
-        href="/#"
+      <button
+        class="flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-primary text-disabled"
+        type="button"
+        on:click={() => {
+          sideBarOpen = false;
+          openGotoSpace = true;
+        }}
       >
-        스페이스 설정
-      </a>
+        스페이스
+      </button>
       <button
         class="flex items-center w-full inline-block px-4 py-3 h-15 font-bold rounded-2 transition hover:bg-primary text-disabled"
         type="button"
@@ -165,3 +169,7 @@
     </a>
   {/if}
 </SideBar>
+
+{#if $query.me}
+  <GotoSpaceModal $user={$query.me} bind:open={openGotoSpace} />
+{/if}
