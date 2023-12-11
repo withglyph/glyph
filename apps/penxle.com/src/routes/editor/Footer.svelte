@@ -11,7 +11,7 @@
   export let autoSaveCount: Writable<number>;
   export let tags: string[] = [];
   export let kind: PostRevisionContentKind;
-  export let content: JSONContent | undefined;
+  export let content: JSONContent;
 
   export let thumbnailBounds: ImageBounds | undefined;
   export let thumbnailId: string | undefined;

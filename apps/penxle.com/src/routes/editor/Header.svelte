@@ -40,7 +40,7 @@
   export let kind: PostRevisionContentKind;
   export let title: string;
   export let subtitle: string | null;
-  export let content: JSONContent | undefined;
+  export let content: JSONContent;
   export let editor: Editor | undefined;
   export let tags: string[];
   export let thumbnailId: string | undefined;
@@ -240,8 +240,8 @@
   }
 
   $: published = $post?.state === 'PUBLISHED';
-  $: _hasContent = !!selectedSpace && !!title && !!content?.content;
-  $: canRevise = browser && _hasContent && (!!thumbnailId || !thumbnailId) && (!!thumbnailBounds || !thumbnailBounds);
+  $: canRevise = browser && !!selectedSpace;
+  $: canPublish = canRevise && title.trim().length > 0;
 
   const autoSave = R.debounce({ delay: 1000 }, async () => doRevisePost('AUTO_SAVE'));
   const unsubscriber = autoSaveCount.subscribe(() => {
@@ -474,8 +474,8 @@
     </div>
 
     <div bind:this={publishButtonEl} class="w-fit">
-      <Tooltip enabled={!canRevise} message={reviseNotAvailableReason}>
-        <Button disabled={!canRevise} size="lg" on:click={() => (publishMenuOpen = true)}>포스트 게시</Button>
+      <Tooltip enabled={!canPublish} message={reviseNotAvailableReason}>
+        <Button disabled={!canPublish} size="lg" on:click={() => (publishMenuOpen = true)}>포스트 게시</Button>
       </Tooltip>
     </div>
 

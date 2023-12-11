@@ -3,10 +3,11 @@
   import { onDestroy, setContext } from 'svelte';
   import { writable } from 'svelte/store';
   import { graphql } from '$glitch';
+  import { createTiptapDocument } from '$lib/utils';
   import Editor from './Editor.svelte';
   import Footer from './Footer.svelte';
   import Header from './Header.svelte';
-  import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
+  import type { Editor as TiptapEditor } from '@tiptap/core';
   import type { PostRevisionContentKind } from '$glitch';
   import type { ImageBounds } from '$lib/utils';
   import type { RestoredRevision } from './restore-revision';
@@ -19,10 +20,10 @@
 
   let kind: PostRevisionContentKind = 'ARTICLE';
 
-  let title: string;
+  let title = '';
   let subtitle: string | null = null;
   let editor: TiptapEditor | undefined;
-  let content: JSONContent | undefined;
+  let content = createTiptapDocument([{ type: 'paragraph' }]);
   let tags: string[] = [];
   let thumbnailId: string | undefined = undefined;
   let thumbnailBounds: ImageBounds | undefined = undefined;

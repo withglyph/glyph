@@ -10,7 +10,7 @@
   export let kind: PostRevisionContentKind;
   export let title: string;
   export let subtitle: string | null;
-  export let content: JSONContent | undefined;
+  export let content: JSONContent;
   export let editor: Editor | undefined;
   export let thumbnailId: string | undefined;
   export let thumbnailBounds: ImageBounds | undefined;

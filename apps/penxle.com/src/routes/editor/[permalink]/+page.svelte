@@ -45,7 +45,7 @@
   let title: string;
   let subtitle: string | null = null;
   let editor: TiptapEditor | undefined;
-  let content: JSONContent | undefined;
+  let content: JSONContent;
   let tags: string[];
   let thumbnailId: string | undefined = undefined;
   let thumbnailBounds: ImageBounds | undefined = undefined;

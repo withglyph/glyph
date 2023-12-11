@@ -26,7 +26,7 @@
 
   export let thumbnailBounds: ImageBounds | undefined = undefined;
   export let thumbnailId: string | undefined = undefined;
-  export let content: JSONContent | undefined;
+  export let content: JSONContent;
 
   let thumbnailPicker: ThumbnailPicker;
   let previewOpen = false;
