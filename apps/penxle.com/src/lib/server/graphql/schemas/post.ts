@@ -916,7 +916,7 @@ export const postSchema = defineSchema((builder) => {
       args: { input: t.arg({ type: PublishPostInput }) },
       resolve: async (query, _, { input }, { db, ...context }) => {
         const revision = await db.postRevision.update({
-          include: { post: true, tags: { include: { tag: true } } },
+          include: { post: true, tags: { include: { tag: true } }, freeContent: true, paidContent: true },
           where: {
             id: input.revisionId,
             post: {
@@ -949,6 +949,19 @@ export const postSchema = defineSchema((builder) => {
 
           if (!identity || !isAdulthood(identity.birthday)) {
             throw new IntentionalError('성인인증을 하지 않으면 성인 컨텐츠를 게시할 수 없어요');
+          }
+        }
+
+        if (revision.price !== null) {
+          if (revision.price <= 0 || revision.price > 1_000_000 || revision.price % 100 !== 0) {
+            throw new IntentionalError('잘못된 가격이에요');
+          }
+          if (
+            revision.contentKind === 'GALLERY' &&
+            ((revision.freeContent.data as JSONContent[]).length === 0 ||
+              ((revision.paidContent?.data as JSONContent[])?.length ?? 0 === 0))
+          ) {
+            throw new IntentionalError('결제 상자 위치가 잘못되었어요');
           }
         }
 
