@@ -67,7 +67,12 @@
   );
 </script>
 
-<article class={clsx('w-full border border-secondary rounded-2xl py-4 px-6 bg-cardprimary max-w-50rem', _class)}>
+<article
+  class={clsx(
+    'w-full border border-secondary rounded-2xl py-4 px-6 bg-cardprimary max-w-50rem sm:(border border-secondary rounded-2xl transition hover:(border-tertiary shadow-[0_4px_16px_0_rgba(0,0,0,0.25)])',
+    _class,
+  )}
+>
   <a class="space-y-2" href={`/${$post.space.slug}/${$post.permalink}`}>
     <div class="truncate flex items-center gap-3">
       <h2 class="title-20-b truncate grow">{$post.publishedRevision?.title}</h2>
