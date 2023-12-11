@@ -48,10 +48,10 @@
     </div>
   {/if}
 
-  <ul class="space-y-8">
+  <ul class="space-y-8 <sm:space-y-2">
     {#each $query.space.posts as post (post.id)}
       <li>
-        <Feed $post={post} />
+        <Feed class="<sm:(border-none rounded-none)" $post={post} />
       </li>
     {/each}
   </ul>
