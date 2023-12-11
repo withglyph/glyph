@@ -10,11 +10,12 @@
   import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Image, ToggleButton, Tooltip } from '$lib/components';
+  import { Button, Image, Modal, ToggleButton, Tooltip } from '$lib/components';
   import { Logo } from '$lib/components/branding';
   import { Checkbox, FormValidationMessage, Switch } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { createMutationForm } from '$lib/form';
+  import { toast } from '$lib/notification';
   import { portal } from '$lib/svelte/actions';
   import { PublishPostInputSchema } from '$lib/validations/post';
   import ArticleCharacterCount from './ArticleCharacterCount.svelte';
@@ -67,6 +68,17 @@
             }
           }
 
+          posts(state: DRAFT) {
+            id
+            permalink
+
+            draftRevision {
+              id
+              title
+              updatedAt
+            }
+          }
+
           ...EditorPage_CreateSpaceModal_user
         }
       }
@@ -104,6 +116,14 @@
       }
     `),
   );
+
+  const deletePost = graphql(`
+    mutation EditorPage_DeletePost_Mutation($input: DeletePostInput!) {
+      deletePost(input: $input) {
+        id
+      }
+    }
+  `);
 
   const revisePost = graphql(`
     mutation EditorPage_RevisePost_Mutation($input: RevisePostInput!) {
@@ -186,6 +206,9 @@
   let createSpaceOpen = false;
   let spaceSelectorOpen = false;
   let revisionListOpen = false;
+  let draftListOpen = false;
+  let deleteDraftPostOpen = false;
+  let deletePostId: string | undefined;
 
   let enablePassword = false;
   let enableContentFilter = false;
@@ -470,8 +493,9 @@
         color="tertiary"
         size="lg"
         variant="outlined"
+        on:click={() => (draftListOpen = true)}
       >
-        0
+        {$query.me.posts?.length ?? 0}
       </Button>
     </div>
 
@@ -736,3 +760,56 @@
 {:else if draftPost}
   <RevisionListModal $post={draftPost} bind:open={revisionListOpen} />
 {/if}
+
+<Modal bind:open={draftListOpen}>
+  <svelte:fragment slot="title">임시저장된 글</svelte:fragment>
+  <svelte:fragment slot="subtitle">{$query.me.posts?.length ?? 0}개의 포스트</svelte:fragment>
+
+  {#each $query.me.posts as post (post.id)}
+    <div class="py-3 border-t border-secondary flex items-center justify-between gap-2 [&>button]:hover:block">
+      <button
+        class="truncate w-full"
+        type="button"
+        on:click={async () => {
+          draftListOpen = false;
+          window.location.href = `/editor/${post.permalink}`;
+        }}
+      >
+        <p class="body-16-b mb-1 truncate">{post.draftRevision.title}</p>
+        <time class="body-13-m text-secondary">{dayjs(post.draftRevision.updatedAt).formatAsDate()}</time>
+      </button>
+      <button
+        class="i-lc-trash hidden square-5 color-text-disabled"
+        type="button"
+        on:click={() => {
+          deleteDraftPostOpen = true;
+          deletePostId = post.id;
+        }}
+      />
+    </div>
+  {/each}
+</Modal>
+
+<Modal size="sm" bind:open={deleteDraftPostOpen}>
+  <svelte:fragment slot="title">임시저장글을 삭제할까요?</svelte:fragment>
+
+  <div slot="action" class="flex gap-3 w-full">
+    <Button class="w-full" color="secondary" size="xl" on:click={() => (deleteDraftPostOpen = false)}>닫기</Button>
+    <Button
+      class="w-full"
+      size="xl"
+      on:click={async () => {
+        if (deletePostId) {
+          if (postId === deletePostId) {
+            await goto('/editor');
+          }
+          await deletePost({ postId: deletePostId });
+          mixpanel.track('post:delete', { postId: deletePostId, via: 'editor' });
+          toast.success('임시저장 포스트를 삭제했어요');
+        }
+      }}
+    >
+      삭제
+    </Button>
+  </div>
+</Modal>
