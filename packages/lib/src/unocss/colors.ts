@@ -160,7 +160,7 @@ export const designColors = {
   },
   border: {
     primary: '#A8A29E',
-    secondary: '#D6D3D1',
+    secondary: '#E7E5E4',
     tertiary: '#1C1917',
   },
   icon: {
