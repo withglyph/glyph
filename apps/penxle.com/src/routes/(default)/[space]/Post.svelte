@@ -547,7 +547,7 @@
 
     <div class="flex gap-2 flex-wrap">
       {#each $postRevision.tags as tag (tag.id)}
-        <Tag size="sm">
+        <Tag href={preview ? undefined : `/tag/${tag.name}`} size="sm">
           #{tag.name}
         </Tag>
       {/each}
