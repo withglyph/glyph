@@ -589,7 +589,7 @@ type Tag {
   muted: Boolean!
   name: String!
   parents: [Tag!]!
-  posts(dateBefore: String): [Post!]!
+  posts: [Post!]!
   wiki: TagWiki
 }
 
@@ -643,12 +643,6 @@ input UnsetParentTagInput {
   tagId: ID!
 }
 
-input UpdateSpaceCollectionInput {
-  collectionId: ID!
-  name: String!
-  thumbnailId: ID
-}
-
 input UpdatePostCollectionInput {
   collectionId: ID
   postId: ID!
@@ -665,6 +659,12 @@ input UpdatePostOptionsInput {
 
 input UpdatePostViewInput {
   postId: ID!
+}
+
+input UpdateSpaceCollectionInput {
+  collectionId: ID!
+  name: String!
+  thumbnailId: ID
 }
 
 input UpdateSpaceInput {
