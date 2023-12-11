@@ -97,7 +97,7 @@ export const collectionSchema = defineSchema((builder) => {
     }),
   });
 
-  const UpdateCollectionInput = builder.inputType('UpdateCollectionInput', {
+  const UpdateSpaceCollectionInput = builder.inputType('UpdateSpaceCollectionInput', {
     fields: (t) => ({
       collectionId: t.id(),
       name: t.string(),
@@ -402,7 +402,7 @@ export const collectionSchema = defineSchema((builder) => {
 
     updateSpaceCollection: t.withAuth({ user: true }).prismaField({
       type: 'SpaceCollection',
-      args: { input: t.arg({ type: UpdateCollectionInput }) },
+      args: { input: t.arg({ type: UpdateSpaceCollectionInput }) },
       resolve: async (query, _, { input }, { db, ...context }) => {
         const meAsMember = await db.spaceMember.exists({
           where: {

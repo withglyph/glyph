@@ -26,7 +26,7 @@
 
   const { form, isSubmitting } = createMutationForm({
     mutation: graphql(`
-      mutation CreateSpaceCollectionModal_UpdateSpaceCollection_Mutation($input: UpdateCollectionInput!) {
+      mutation CreateSpaceCollectionModal_UpdateSpaceCollection_Mutation($input: UpdateSpaceCollectionInput!) {
         updateSpaceCollection(input: $input) {
           id
           name

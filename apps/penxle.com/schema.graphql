@@ -238,7 +238,7 @@ type Mutation {
   updatePostOptions(input: UpdatePostOptionsInput!): Post!
   updatePostView(input: UpdatePostViewInput!): Post!
   updateSpace(input: UpdateSpaceInput!): Space!
-  updateSpaceCollection(input: UpdateCollectionInput!): SpaceCollection!
+  updateSpaceCollection(input: UpdateSpaceCollectionInput!): SpaceCollection!
   updateSpaceMemberRole(input: UpdateSpaceMemberRoleInput!): SpaceMember!
   updateSpaceProfile(input: UpdateSpaceProfileInput!): SpaceMember!
   updateUserContentFilterPreference(input: UpdateUserContentFilterPreferenceInput!): User!
@@ -643,7 +643,7 @@ input UnsetParentTagInput {
   tagId: ID!
 }
 
-input UpdateCollectionInput {
+input UpdateSpaceCollectionInput {
   collectionId: ID!
   name: String!
   thumbnailId: ID
