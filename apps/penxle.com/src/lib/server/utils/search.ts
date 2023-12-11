@@ -36,10 +36,14 @@ export const indexPost = async ({ db, postId }: IndexPostParams) => {
         },
       });
     } else {
-      await openSearch.delete({
-        index: 'posts',
-        id: post.id,
-      });
+      try {
+        await openSearch.delete({
+          index: 'posts',
+          id: post.id,
+        });
+      } catch {
+        /* empty */
+      }
     }
   }
 };
@@ -63,10 +67,14 @@ export const indexSpace = async ({ db, spaceId }: IndexSpaceParams) => {
       },
     });
   } else {
-    await openSearch.delete({
-      index: 'spaces',
-      id: space.id,
-    });
+    try {
+      await openSearch.delete({
+        index: 'spaces',
+        id: space.id,
+      });
+    } catch {
+      /* empty */
+    }
   }
 };
 
