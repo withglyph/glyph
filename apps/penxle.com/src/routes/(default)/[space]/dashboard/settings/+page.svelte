@@ -174,8 +174,8 @@
       </div>
 
       <FormField name="description" label="스페이스 소개">
-        <TextArea class="w-full" maxlength={2000} placeholder="스페이스 설명을 입력해주세요">
-          <span slot="right-icon" class="body-14-sb text-disabled">{$data.description?.length ?? 0}/2,000</span>
+        <TextArea class="w-full" maxlength={200} placeholder="스페이스 설명을 입력해주세요">
+          <span slot="right-icon" class="body-14-sb text-disabled">{$data.description?.length ?? 0}/200</span>
         </TextArea>
       </FormField>
 
