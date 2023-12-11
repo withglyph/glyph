@@ -1,6 +1,7 @@
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import * as R from 'radash';
+import { useCache } from '$lib/server/cache';
 import { aws } from '$lib/server/external-api';
 import { finalizeImage } from '$lib/server/utils';
 import { createId } from '$lib/utils';
@@ -54,11 +55,36 @@ export const imageSchema = defineSchema((builder) => {
       type: 'Image',
       nullable: true,
       resolve: async (query, _, __, { db }) => {
-        return await db.image.findFirst({
+        const id = await useCache(
+          'authLayoutBackgroundImage',
+          async () => {
+            const post = await db.post.findUnique({
+              include: { publishedRevision: { include: { freeContent: true } } },
+              where: { id: 'authlayout_bg' },
+            });
+
+            if (!post?.publishedRevision) {
+              return null;
+            }
+
+            const content = post.publishedRevision.freeContent.data;
+
+            const ids = (content as { type: string; attrs: Record<string, unknown> }[])
+              .filter(({ type }) => type === 'image')
+              .map(({ attrs }) => attrs.id as string);
+
+            return R.draw(ids);
+          },
+          10,
+        );
+
+        if (!id) {
+          return null;
+        }
+
+        return await db.image.findUnique({
           ...query,
-          where: { name: { startsWith: 'sample' } },
-          skip: R.random(0, 99),
-          orderBy: { id: 'asc' },
+          where: { id },
         });
       },
     }),
