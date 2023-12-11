@@ -220,10 +220,11 @@ type Mutation {
   purchasePoint(input: PurchasePointInput!): PointPurchase!
   purchasePost(input: PurchasePostInput!): Post!
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
-  reorderSpaceCollection(input: ReorderSpaceCollectionInput!): SpaceCollection!
+  reorderSpaceCollection(input: ReorderSpaceCollectionInput!): SpaceCollection! @deprecated(reason: "Use setSpaceCollectionPost instead")
   revisePost(input: RevisePostInput!): Post!
   reviseTagWiki(input: ReviseTagWikiInput!): TagWiki!
   setParentTag(input: SetParentTagInput!): Tag!
+  setSpaceCollectionPosts(input: SetSpaceCollectionPostsInput!): SpaceCollection!
   unbookmarkPost(input: UnbookmarkPostInput!): Post!
   unfollowSpace(input: UnfollowSpaceInput!): Space!
   unfollowTag(input: UnfollowTagInput!): Tag!
@@ -233,7 +234,7 @@ type Mutation {
   unmuteSpace(input: UnmuteSpaceInput!): Space!
   unmuteTag(input: UnmuteTagInput!): Tag!
   unsetParentTag(input: UnsetParentTagInput!): Tag!
-  updatePostCollection(input: UpdatePostCollectionInput!): Post!
+  updatePostCollection(input: UpdatePostCollectionInput!): Post! @deprecated(reason: "Use setSpaceCollectionPost instead")
   updatePostOptions(input: UpdatePostOptionsInput!): Post!
   updatePostView(input: UpdatePostViewInput!): Post!
   updateSpace(input: UpdateSpaceInput!): Space!
@@ -487,6 +488,11 @@ input ReviseTagWikiInput {
 input SetParentTagInput {
   parentTagId: ID!
   tagId: ID!
+}
+
+input SetSpaceCollectionPostsInput {
+  collectionId: ID!
+  postIds: [ID!]!
 }
 
 type Space {

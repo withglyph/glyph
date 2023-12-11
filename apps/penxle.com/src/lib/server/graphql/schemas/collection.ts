@@ -74,6 +74,13 @@ export const collectionSchema = defineSchema((builder) => {
     }),
   });
 
+  const SetSpaceCollectionPostsInput = builder.inputType('SetSpaceCollectionPostsInput', {
+    fields: (t) => ({
+      collectionId: t.id(),
+      postIds: t.idList(),
+    }),
+  });
+
   const UpdatePostCollectionInput = builder.inputType('UpdatePostCollectionInput', {
     fields: (t) => ({
       collectionId: t.id({ required: false }),
@@ -154,7 +161,62 @@ export const collectionSchema = defineSchema((builder) => {
       },
     }),
 
+    setSpaceCollectionPosts: t.withAuth({ user: true }).prismaField({
+      type: 'SpaceCollection',
+      args: { input: t.arg({ type: SetSpaceCollectionPostsInput }) },
+      resolve: async (query, _, { input }, { db, ...context }) => {
+        const meAsMember = await db.spaceMember.findFirst({
+          where: {
+            space: {
+              collections: {
+                some: {
+                  id: input.collectionId,
+                  state: 'ACTIVE',
+                },
+              },
+            },
+            userId: context.session.userId,
+            state: 'ACTIVE',
+          },
+        });
+
+        if (!meAsMember) {
+          throw new PermissionDeniedError();
+        }
+
+        const notMyPosts = await db.post.exists({
+          where: {
+            id: { in: input.postIds },
+            spaceId: { not: meAsMember.spaceId },
+          },
+        });
+
+        if (notMyPosts) {
+          throw new PermissionDeniedError();
+        }
+
+        await db.spaceCollectionPost.deleteMany({
+          where: { collectionId: input.collectionId },
+        });
+
+        await db.spaceCollectionPost.createMany({
+          data: input.postIds.map((postId, order) => ({
+            id: createId(),
+            collectionId: input.collectionId,
+            postId,
+            order,
+          })),
+        });
+
+        return db.spaceCollection.findUniqueOrThrow({
+          ...query,
+          where: { id: input.collectionId },
+        });
+      },
+    }),
+
     updatePostCollection: t.withAuth({ user: true }).prismaField({
+      deprecationReason: 'Use setSpaceCollectionPost instead',
       type: 'Post',
       args: { input: t.arg({ type: UpdatePostCollectionInput }) },
       resolve: async (query, _, { input }, { db, ...context }) => {
@@ -242,6 +304,7 @@ export const collectionSchema = defineSchema((builder) => {
     }),
 
     reorderSpaceCollection: t.withAuth({ user: true }).prismaField({
+      deprecationReason: 'Use setSpaceCollectionPost instead',
       type: 'SpaceCollection',
       args: { input: t.arg({ type: ReorderSpaceCollectionInput }) },
       resolve: async (query, _, { input }, { db, ...context }) => {
