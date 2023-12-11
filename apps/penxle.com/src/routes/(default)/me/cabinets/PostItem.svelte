@@ -16,6 +16,7 @@
 
         publishedRevision @_required {
           id
+          title
           price
           previewText
 
@@ -65,7 +66,7 @@
     <div class="flex justify-between gap-4">
       <div>
         <p class="body-15-sb text-secondary">{$post.space.name} · {$post.member.profile.name}</p>
-        <p class="title-20-b">제목</p>
+        <p class="title-20-b">{$post.publishedRevision.title}</p>
         <p class="body-14-m text-secondary break-all line-clamp-2 whitespace-pre-line">
           {$post.publishedRevision?.previewText}
         </p>
