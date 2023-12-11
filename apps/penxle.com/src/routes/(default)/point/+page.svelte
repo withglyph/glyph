@@ -25,15 +25,15 @@
         <p class="title-24-b">{comma($query.me.point)}P</p>
       </div>
       <div class="mt-4 flex p-0 flex-col gap-4">
-        <div class="flex p-0 gap-1">
-          <div class="flex-[1_0_0] text-secondary font-500 lh-5.5">유료 포인트</div>
-          <div class="flex-[1_0_0] text-primary text-right font-500 lh-5.5">
+        <div class="flex p-0 gap-1 justify-between">
+          <div class="text-secondary body-14-m">유료 포인트</div>
+          <div class="text-primary body-14-m">
             {comma($query.me.point)}P
           </div>
         </div>
-        <div class="flex p-0 gap-1">
-          <div class="flex-[1_0_0] text-secondary font-500 lh-5.5">무료 포인트</div>
-          <div class="flex-[1_0_0] text-primary text-right font-500 lh-5.5">
+        <div class="flex p-0 gap-1 justify-between">
+          <div class="text-secondary body-14-m">무료 포인트</div>
+          <div class="text-primary body-14-m">
             {comma(0)}P
           </div>
         </div>
