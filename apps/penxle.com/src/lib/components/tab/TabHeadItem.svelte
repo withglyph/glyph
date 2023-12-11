@@ -33,11 +33,15 @@
       variant === 'secondary' &&
         'bg-white p-3 text-center sm:bg-transparent transition border-b-2 border-white hover:(text-black! border-black!)',
       variant === 'secondary' &&
-        (activeTabValue === id || decodeURI($page.url.pathname) === href) &&
+        (activeTabValue === id ||
+          ($page.url.search === ''
+            ? decodeURI($page.url.pathname)
+            : decodeURI($page.url.pathname + $page.url.search)) === href) &&
         'text-black body-16-b border-b-2 border-black!',
       variant === 'secondary' &&
         activeTabValue !== id &&
-        decodeURI($page.url.pathname) !== href &&
+        ($page.url.search === '' ? decodeURI($page.url.pathname) : decodeURI($page.url.pathname + $page.url.search)) !==
+          href &&
         'border-secondary body-16-sb text-disabled',
       _class,
     )}
