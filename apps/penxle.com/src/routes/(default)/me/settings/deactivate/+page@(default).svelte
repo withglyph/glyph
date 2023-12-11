@@ -1,12 +1,22 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import { graphql } from '$glitch';
   import { Button } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
-  import CompleteModal from './CompleteModal.svelte';
   import ConfirmModal from './ConfirmModal.svelte';
 
   let confirmModalOpen = false;
-  let completeModalOpen = false;
+
+  $: query = graphql(`
+    query MeSettingsDeactivatePage_Query {
+      auth(scope: USER)
+
+      me @_required {
+        id
+        email
+      }
+    }
+  `);
 </script>
 
 <Helmet title="계정 탈퇴" />
@@ -54,7 +64,7 @@
 
       <div class="flex items-center flex-wrap gap-2.5 sm:gap-5 bg-primary rounded-2xl py-2.5 px-3.5 font-bold">
         <label for="email">탈퇴 계정 이메일</label>
-        <input name="email" class="text-secondary" disabled type="email" value="kylie@penxle.io" />
+        <input name="email" class="text-secondary" disabled type="email" value={$query.me.email} />
       </div>
     </div>
 
@@ -71,4 +81,3 @@
 </div>
 
 <ConfirmModal bind:open={confirmModalOpen} />
-<CompleteModal bind:open={completeModalOpen} />

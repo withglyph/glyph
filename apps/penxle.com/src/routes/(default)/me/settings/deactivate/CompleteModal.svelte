@@ -2,6 +2,17 @@
   import { Button, Modal } from '$lib/components';
 
   export let open = false;
+
+  let modalOpened = false;
+
+  $: if (open && !modalOpened) {
+    modalOpened = true;
+  }
+
+  $: if (!open && modalOpened) {
+    modalOpened = false;
+    window.location.href = '/';
+  }
 </script>
 
 <Modal size="sm" bind:open>

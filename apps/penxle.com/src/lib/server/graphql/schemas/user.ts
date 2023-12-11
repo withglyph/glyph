@@ -849,6 +849,7 @@ export const userSchema = defineSchema((builder) => {
 
     deleteUser: t.withAuth({ user: true }).field({
       type: 'Void',
+      nullable: true,
       args: { input: t.arg({ type: DeleteUserInput }) },
       resolve: async (_, { input }, { db, ...context }) => {
         const user = await db.user.findUniqueOrThrow({
@@ -859,10 +860,24 @@ export const userSchema = defineSchema((builder) => {
           throw new IntentionalError('이메일이 일치하지 않아요.');
         }
 
+        const spaceMembers = await db.spaceMember.exists({
+          where: {
+            userId: context.session.userId,
+            state: 'ACTIVE',
+          },
+        });
+
+        if (spaceMembers) {
+          throw new IntentionalError('아직 속해있는 스페이스가 있어요');
+        }
+
         await db.user.update({
           where: { id: context.session.userId },
           data: {
             state: 'INACTIVE',
+            singleSignOns: {
+              deleteMany: {},
+            },
           },
         });
 
