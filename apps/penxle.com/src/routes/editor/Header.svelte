@@ -811,6 +811,7 @@
           await deletePost({ postId: deletePostId });
           mixpanel.track('post:delete', { postId: deletePostId, via: 'editor' });
           toast.success('임시저장 포스트를 삭제했어요');
+          deleteDraftPostOpen = false;
         }
       }}
     >
