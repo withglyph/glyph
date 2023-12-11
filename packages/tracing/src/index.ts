@@ -5,7 +5,7 @@ import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-node';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
-import { PrismaInstrumentation } from '@prisma/instrumentation';
+import Prisma from '@prisma/instrumentation';
 
 const sdk = new NodeSDK({
   resource: new Resource({
@@ -20,7 +20,7 @@ const sdk = new NodeSDK({
     exporter: new OTLPMetricExporter(),
   }),
 
-  instrumentations: [new PrismaInstrumentation()],
+  instrumentations: [new Prisma.PrismaInstrumentation()],
 });
 
 sdk.start();
