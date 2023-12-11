@@ -29,7 +29,7 @@
       class="border border-secondary bg-cardprimary flex flex-col items-center rounded-xl py-2 px-2.5 w-full max-w-33.75 h-auto transition hover:(border-tertiary shadow-[0_4px_16px_0_rgba(0,0,0,0.25)]) sm:truncate"
       href={`/${post.space.slug}`}
     >
-      <Image class="<sm:square-29 rounded-xl mb-2" $image={post.space.icon} />
+      <Image class="<sm:square-29 sm:square-full aspect-1/1 rounded-xl mb-2" $image={post.space.icon} />
       <p class="w-full body-16-b truncate">{post.space.name}</p>
     </a>
   {/each}
