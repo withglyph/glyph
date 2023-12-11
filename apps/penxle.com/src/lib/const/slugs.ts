@@ -6,8 +6,10 @@ export const UNAVAILABLE_SPACE_SLUGS = {
     'api',
     'login',
     'me',
+    'point',
     'search',
     'signup',
+    'tag',
 
     // static urls
     '_app',
