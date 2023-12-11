@@ -199,6 +199,10 @@ export const collectionSchema = defineSchema((builder) => {
           where: { collectionId: input.collectionId },
         });
 
+        await db.spaceCollectionPost.deleteMany({
+          where: { postId: { in: input.postIds } },
+        });
+
         await db.spaceCollectionPost.createMany({
           data: input.postIds.map((postId, order) => ({
             id: createId(),
