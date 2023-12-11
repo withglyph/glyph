@@ -1,16 +1,28 @@
 <script lang="ts">
-  import { page } from '$app/stores';
+  // import { page } from '$app/stores';
   import { Button } from '$lib/components';
+  import ComingSoonModal from '../../../ComingSoonModal.svelte';
+
+  let comingSoonOpen = false;
 </script>
 
 <div class="flex justify-between items-center">
   <p class="title-20-b">내용</p>
-  <Button
+  <!-- <Button
     class="flex gap-1 px-2! h-6.5! rounded-2xl!"
     color="tertiary"
     href={`/tag/${$page.params.id}/edit`}
     type="link"
     variant="outlined"
+  >
+    <span class="body-13-b">편집</span>
+    <i class="i-px-pencil-underline square-4" />
+  </Button> -->
+  <Button
+    class="flex gap-1 px-2! h-6.5! rounded-2xl!"
+    color="tertiary"
+    variant="outlined"
+    on:click={() => (comingSoonOpen = true)}
   >
     <span class="body-13-b">편집</span>
     <i class="i-px-pencil-underline square-4" />
@@ -71,3 +83,5 @@
     </p>
   </div> -->
 </div>
+
+<ComingSoonModal bind:open={comingSoonOpen} />
