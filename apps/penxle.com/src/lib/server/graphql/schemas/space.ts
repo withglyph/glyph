@@ -107,12 +107,15 @@ export const spaceSchema = defineSchema((builder) => {
                     spaceId: space.id,
                     userId: context.session.userId,
                   },
+                  state: 'ACTIVE',
                 },
               })
             : null;
+
           if (input.mine && !meAsMember) {
             return [];
           }
+
           return await db.post.findMany({
             ...query,
             where: {
