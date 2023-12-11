@@ -31,6 +31,93 @@ export const searchSchema = defineSchema((builder) => {
    */
 
   builder.queryFields((t) => ({
+    recommendFeed: t.prismaField({
+      type: ['Post'],
+      resolve: async (query, _, __, { db, ...context }) => {
+        const [mutedTags, mutedSpaces] = await Promise.all([
+          context.session
+            ? await db.userTagMute.findMany({
+                where: { userId: context.session.userId },
+              })
+            : [],
+          context.session
+            ? await db.userSpaceMute.findMany({
+                where: { userId: context.session.userId },
+              })
+            : [],
+        ]);
+
+        const recentlyViewedPosts = await db.postView.findMany({
+          include: { post: { include: { publishedRevision: { include: { tags: true } } } } },
+          where: context.session ? { userId: context.session.userId } : { deviceId: context.deviceId },
+          take: 20,
+        });
+
+        const followingTags = context.session
+          ? await db.tagFollow.findMany({ where: { userId: context.session.userId }, take: 50 })
+          : [];
+
+        const tagIds = R.sift([
+          ...recentlyViewedPosts.flatMap(({ post }) => post.publishedRevision?.tags.map(({ tagId }) => tagId)),
+          ...followingTags.map(({ tagId }) => tagId),
+        ]);
+
+        const searchResult = await openSearch.search({
+          index: 'posts',
+          body: {
+            query: {
+              bool: {
+                should: [{ terms: { 'tags.id': tagIds } }],
+
+                filter: {
+                  bool: {
+                    must_not: R.sift([
+                      mutedTags.length > 0
+                        ? {
+                            terms: { ['tags.id']: mutedTags.map(({ tagId }) => tagId) },
+                          }
+                        : undefined,
+                      mutedSpaces.length > 0
+                        ? {
+                            terms: { spaceId: mutedSpaces.map(({ spaceId }) => spaceId) },
+                          }
+                        : undefined,
+                      recentlyViewedPosts.length > 0
+                        ? {
+                            ids: { values: recentlyViewedPosts.map(({ postId }) => postId) },
+                          }
+                        : undefined,
+                    ]),
+                  },
+                },
+              },
+            },
+
+            size: 20,
+          },
+        });
+
+        const hits: SearchHits[] = searchResult.body.hits.hits;
+        const resultIds = hits.map((hit) => hit._id);
+        const posts = R.objectify(
+          await db.post.findMany({
+            ...query,
+            where: {
+              id: { in: resultIds },
+              state: 'PUBLISHED',
+              space: {
+                state: 'ACTIVE',
+                visibility: 'PUBLIC',
+              },
+            },
+          }),
+          (post) => post.id,
+        );
+
+        return R.sift(hits.map((hit) => posts[hit._id]));
+      },
+    }),
+
     searchPosts: t.prismaField({
       type: ['Post'],
       args: {
@@ -62,14 +149,14 @@ export const searchSchema = defineSchema((builder) => {
                 should: [
                   { match_phrase: { title: args.query } },
                   { match_phrase: { subtitle: args.query } },
-                  { match: { tags: args.query } },
+                  { match: { 'tags.name': args.query } },
                 ],
 
                 must: [
                   {
                     multi_match: {
                       query: args.query,
-                      fields: ['title', 'subtitle', 'tags'],
+                      fields: ['title', 'subtitle', 'tags.name'],
                     },
                   },
                 ],
@@ -162,13 +249,17 @@ export const searchSchema = defineSchema((builder) => {
                     },
                   },
                 ],
-                must_not: R.sift([
-                  mutedSpaces.length > 0
-                    ? {
-                        ids: { values: mutedSpaces.map(({ spaceId }) => spaceId) },
-                      }
-                    : undefined,
-                ]),
+                filter: {
+                  bool: {
+                    must_not: R.sift([
+                      mutedSpaces.length > 0
+                        ? {
+                            ids: { values: mutedSpaces.map(({ spaceId }) => spaceId) },
+                          }
+                        : undefined,
+                    ]),
+                  },
+                },
               },
             },
           },
@@ -193,7 +284,13 @@ export const searchSchema = defineSchema((builder) => {
     searchTags: t.prismaField({
       type: ['Tag'],
       args: { query: t.arg.string() },
-      resolve: async (query, _, args, { db }) => {
+      resolve: async (query, _, args, { db, ...context }) => {
+        const mutedTags = context.session
+          ? await db.userTagMute.findMany({
+              where: { userId: context.session.userId },
+            })
+          : [];
+
         const searchResult = await openSearch.search({
           index: 'tags',
           body: {
@@ -207,6 +304,13 @@ export const searchSchema = defineSchema((builder) => {
                       : { 'name.disassembled': disassembleHangulString(args.query) },
                   },
                 ],
+                filter: {
+                  bool: {
+                    must_not: {
+                      ids: { values: mutedTags.map(({ tagId }) => tagId) },
+                    },
+                  },
+                },
               },
             },
           },
