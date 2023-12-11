@@ -47,48 +47,29 @@ export const searchSchema = defineSchema((builder) => {
             : [],
         ]);
 
-        const recentlyViewedPosts = await db.postView.findMany({
-          include: { post: { include: { publishedRevision: { include: { tags: true } } } } },
-          where: context.session ? { userId: context.session.userId } : { deviceId: context.deviceId },
-          take: 20,
-        });
-
-        const followingTags = context.session
-          ? await db.tagFollow.findMany({ where: { userId: context.session.userId }, take: 50 })
-          : [];
-
-        const tagIds = R.sift([
-          ...recentlyViewedPosts.flatMap(({ post }) => post.publishedRevision?.tags.map(({ tagId }) => tagId)),
-          ...followingTags.map(({ tagId }) => tagId),
+        const muteTerms = R.sift([
+          mutedTags.length > 0
+            ? {
+                terms: { ['tags.id']: mutedTags.map(({ tagId }) => tagId) },
+              }
+            : undefined,
+          mutedSpaces.length > 0
+            ? {
+                terms: { spaceId: mutedSpaces.map(({ spaceId }) => spaceId) },
+              }
+            : undefined,
         ]);
 
         const searchResult = await openSearch.search({
           index: 'posts',
           body: {
             query: {
-              bool: {
-                should: [{ terms: { 'tags.id': tagIds } }],
+              must_not: muteTerms.length > 0 ? muteTerms : undefined,
 
-                filter: {
-                  bool: {
-                    must_not: R.sift([
-                      mutedTags.length > 0
-                        ? {
-                            terms: { ['tags.id']: mutedTags.map(({ tagId }) => tagId) },
-                          }
-                        : undefined,
-                      mutedSpaces.length > 0
-                        ? {
-                            terms: { spaceId: mutedSpaces.map(({ spaceId }) => spaceId) },
-                          }
-                        : undefined,
-                      recentlyViewedPosts.length > 0
-                        ? {
-                            ids: { values: recentlyViewedPosts.map(({ postId }) => postId) },
-                          }
-                        : undefined,
-                    ]),
-                  },
+              function_score: {
+                random_score: {
+                  seed: Date.now(),
+                  field: '_seq_no',
                 },
               },
             },
