@@ -48,7 +48,7 @@
     </div>
   {/if}
 
-  <ul class="space-y-8 <sm:space-y-2">
+  <ul class="w-full space-y-8 <sm:space-y-2">
     {#each $query.space.posts as post (post.id)}
       <li>
         <Feed class="<sm:(border-none rounded-none)" $post={post} />
