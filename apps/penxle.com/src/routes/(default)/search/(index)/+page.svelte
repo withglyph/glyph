@@ -59,19 +59,19 @@
 
 <Helmet title="{$page.url.searchParams.get('q')} - 검색" />
 
-<div class="body-14-m text-secondary py-1 px-3 rounded-lg bg-surface-primary mt-3">
+<div class="body-14-m text-secondary py-1 px-3 rounded-lg bg-surface-primary mt-3 <sm:mx-4">
   🔍 약 {$query.searchPosts.length ?? 0}개의 검색결과가 있어요!
 </div>
 
-<TabHead class="mt-9 mb-4 w-full" variant="secondary">
+<TabHead class="mt-9 mb-4 w-full <sm:(sticky top-61px z-1)" variant="secondary">
   <TabHeadItem id={0} href={`/search?q=${$page.url.searchParams.get('q')}`}>전체</TabHeadItem>
   <TabHeadItem id={1} href={`/search/post?q=${$page.url.searchParams.get('q')}`}>포스트</TabHeadItem>
   <TabHeadItem id={2} href={`/search/space?q=${$page.url.searchParams.get('q')}`}>스페이스</TabHeadItem>
   <TabHeadItem id={3} href={`/search/tag?q=${$page.url.searchParams.get('q')}`}>태그</TabHeadItem>
 </TabHead>
 
-<div class="my-9 flex gap-9">
-  <div class="grow w-50%">
+<div class="my-9 flex gap-9 <sm:flex-col">
+  <div class="grow w-50% <sm:(w-full px-4)">
     <a class="inline-block title-20-b mb-4" href={`/search/space?q=${$page.url.searchParams.get('q')}`}>
       스페이스 <i class="i-lc-chevron-right square-6 text-secondary" />
     </a>
@@ -126,7 +126,7 @@
     {/if}
   </div>
 
-  <div class="grow w-50%">
+  <div class="grow w-50% <sm:(w-full px-4)">
     <a class="inline-block title-20-b mb-4" href={`/search/tag?q=${$page.url.searchParams.get('q')}`}>
       태그 <i class="i-lc-chevron-right square-6 text-secondary" />
     </a>
@@ -136,7 +136,7 @@
     {:else}
       <div class="flex flex-wrap gap-3">
         {#each $query.searchTags.slice(0, 6) as tag (tag.id)}
-          <Tag href={`tag/${tag.name}`} size="lg">#{tag.name}</Tag>
+          <Tag href={`/tag/${tag.name}`} size="lg">#{tag.name}</Tag>
         {/each}
       </div>
     {/if}
@@ -144,22 +144,23 @@
 </div>
 
 <div>
-  <a class="title-20-b" href={`/search/post?q=${$page.url.searchParams.get('q')}`}>
+  <a class="title-20-b px-4" href={`/search/post?q=${$page.url.searchParams.get('q')}`}>
     포스트 <i class="i-lc-chevron-right square-6 text-secondary" />
   </a>
 
-  <div class="flex gap-3 my-4">
+  <!-- <div class="flex gap-3 my-4">
     <button class="py-2 px-4 border rounded-8 body-15-sb text-blue-50 bg-blue-10 border-blue-50" type="button">
       글
     </button>
     <button class="py-2 px-4 border rounded-8 body-15-sb border-secondary" type="button">그림</button>
-  </div>
+  </div> -->
+
   {#if $query.searchPosts.length === 0}
     <div class="text-secondary body-15-b text-center flex center min-h-50">검색 결과가 없어요</div>
   {:else}
-    <div class="space-y-4">
+    <div class="<sm:bg-primary">
       {#each $query.searchPosts as post (post.id)}
-        <Feed $post={post} />
+        <Feed class="mt-4" $post={post} />
       {/each}
     </div>
   {/if}

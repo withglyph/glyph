@@ -162,12 +162,12 @@
 
 <div
   class={clsx(
-    'flex flex-col space-y-2 w-full bg-cardprimary border border-secondary rounded-2xl transition hover:(border-tertiary shadow-[0_4px_16px_0_rgba(0,0,0,0.25)])',
-    $post.publishedRevision.tags.length === 0 && showSpaceInfoMessage && 'pb-3 sm:pb-4',
+    'flex flex-col space-y-2 w-full bg-cardprimary sm:(border border-secondary rounded-2xl transition hover:(border-tertiary shadow-[0_4px_16px_0_rgba(0,0,0,0.25)]))',
+    $post.publishedRevision.tags.length === 0 && showSpaceInfoMessage && 'pb-4',
     _class,
   )}
 >
-  <a class="pt-3 px-6 sm:pt-4" href={`/${$post.space.slug}/${$post.permalink}`}>
+  <a class="px-6 pt-4" href={`/${$post.space.slug}/${$post.permalink}`}>
     <div class="flex gap-1 flex-wrap">
       {#if $post.publishedRevision.price}
         <Badge class="w-fit mb-1" color="purple">유료</Badge>
@@ -184,7 +184,7 @@
         <Badge class="w-fit mb-1" color="gray">비밀글</Badge>
       {/if}
     </div>
-    <h2 class="title-20-b mb-2 truncate">{$post.publishedRevision.title}</h2>
+    <h2 class="title-18-b mb-2 truncate sm:title-20-b">{$post.publishedRevision.title}</h2>
 
     <div>
       <article
@@ -234,7 +234,7 @@
   </a>
 
   {#if $post.publishedRevision.tags.length > 0}
-    <div class={clsx('flex flex-wrap gap-1.5 px-6', showSpaceInfoMessage && 'pb-3 sm:pb-4')}>
+    <div class={clsx('flex flex-wrap gap-1.5 px-6', showSpaceInfoMessage && 'pb-4')}>
       {#each $post.publishedRevision.tags.slice(0, 4) as tag (tag.id)}
         <Tag href={`tag/${tag.name}`} size="sm">#{tag.name}</Tag>
       {/each}
@@ -245,10 +245,7 @@
   {/if}
 
   {#if !showSpaceInfoMessage}
-    <a
-      class="flex items-center pb-3 px-6 pt-4 space-x-3 truncate sm:pb-4"
-      href={`/${$post.space.slug}/${$post.permalink}`}
-    >
+    <a class="flex items-center px-6 pt-4 space-x-3 truncate pb-4" href={`/${$post.space.slug}/${$post.permalink}`}>
       <Image class="square-6 rounded-lg flex-none" $image={$post.space.icon} />
       <p class="body-15-sb grow truncate">{$post.space.name} · {$post.member.profile.name}</p>
       <time class="body-14-m text-secondary">{dayjs($post.publishedAt).fromNow()}</time>
