@@ -107,10 +107,13 @@
   $: setInitialValues({ profileName: $user.profile.name, profileAvatarId: avatar.id, invitationId });
 </script>
 
-<div class="flex center square-10 mx-3">
-  <button bind:this={targetEl} type="button" on:click={() => (open = true)}>
-    <i class="i-px-bell-outline square-6" />
-  </button>
+<div class="flex center square-10 mx-3 rounded-full transition hover:bg-surface-primary">
+  <button
+    bind:this={targetEl}
+    class="i-px-bell-fill square-6 color-text-secondary"
+    type="button"
+    on:click={() => (open = true)}
+  />
 </div>
 
 {#if open}

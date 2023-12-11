@@ -3,6 +3,7 @@
   import clsx from 'clsx';
   import { page } from '$app/stores';
   import Logo from '$assets/icons/logo.svg?component';
+  import PenFancy from '$assets/icons/pen-fancy.svg?component';
   import Wordmark from '$assets/icons/wordmark.svg?component';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -80,11 +81,11 @@
       <div class="flex items-center <sm:hidden relative">
         {#if $query.me}
           <a
-            class="relative flex items-center gap-2 rounded-lg py-1 px-2 font-bold text-gray-60 transition hover:bg-surface-primary <lg:hidden"
+            class="relative flex items-center gap-2 rounded-lg py-1 pr-2 pl-1 transition hover:bg-surface-primary <lg:hidden"
             href="/editor"
           >
-            <i class="i-px-pen-fill square-6 fill-gray-60" />
-            <span class="text-sm">포스트 작성하기</span>
+            <PenFancy class="square-8 mb-1" />
+            <span class="subtitle-17-b text-gray-70">포스트 작성하기</span>
           </a>
           <Notification $user={$query.me} />
           <UserMenu $user={$query.me} />
