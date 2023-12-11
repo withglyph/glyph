@@ -35,7 +35,7 @@
   {/each}
 </div>
 
-<h1 class="title-20-b sm:title-24-b w-fit border-b-10 leading-3 border-brand-50 my-8">둘러보기</h1>
+<h1 class="title-20-b w-fit border-b-10 leading-3 border-brand-50 my-8">둘러보기</h1>
 
 <div class="grow gap-4 mb-8 sm:columns-2">
   {#each $query.recommendFeed as post (post.id)}
