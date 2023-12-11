@@ -8,6 +8,9 @@
   export { _class as class };
 
   type $$Props = HTMLInputAttributes;
+  type $$Events = {
+    input: Parameters<NonNullable<HTMLInputAttributes['on:input']>>[0];
+  };
 </script>
 
 <form class={clsx('relative h-11.5 max-w-82.5', _class)}>

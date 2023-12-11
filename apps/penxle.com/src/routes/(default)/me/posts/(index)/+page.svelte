@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { graphql } from '$glitch';
-  import { PostManageTable } from '$lib/components/pages';
+  import { PostManageTable } from '$lib/components/pages/posts';
   import { pageSubTitle } from '$lib/stores';
 
   onMount(async () => {

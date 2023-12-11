@@ -9,17 +9,20 @@
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Table, TableData, TableHead, TableRow } from '$lib/components/table';
   import { toast } from '$lib/notification';
-  import type { PostManageTable_Post_query, PostManageTable_SpaceMember } from '$glitch';
+  import type { PostManageTable_Collection, PostManageTable_Post_query, PostManageTable_SpaceMember } from '$glitch';
   import type { PublishPostInput } from '$lib/validations/post';
 
+  const toolbarMenuOffset = 16;
+
   export let type: T;
-  export let _posts: PostManageTable_Post_query[];
-  export let _spaceMember: PostManageTable_SpaceMember | null = null;
+  let _posts: PostManageTable_Post_query[];
+  let _spaceMember: PostManageTable_SpaceMember | null = null;
+  let _collections: PostManageTable_Collection[] = [];
 
   type $$Props = { type: typeof type; $posts: typeof _posts } & (T extends 'space'
-    ? { $spaceMember: typeof _spaceMember }
+    ? { $spaceMember: typeof _spaceMember; $collections: typeof _collections }
     : unknown);
-  export { _posts as $posts, _spaceMember as $spaceMember };
+  export { _collections as $collections, _posts as $posts, _spaceMember as $spaceMember };
 
   $: posts = fragment(
     _posts,
@@ -33,6 +36,10 @@
         visibility
         createdAt
         publishedAt
+
+        collection {
+          id
+        }
 
         space {
           id
@@ -78,6 +85,16 @@
     `),
   );
 
+  $: collections = fragment(
+    _collections,
+    graphql(`
+      fragment PostManageTable_Collection on SpaceCollection {
+        id
+        name
+      }
+    `),
+  );
+
   function hasPermissionToUpdatePost(memberId: string) {
     if (type === 'me') return true;
 
@@ -101,6 +118,9 @@
   let deletePostId: string | null = null;
   let deletePostIds: string[] | null = null;
 
+  let openCreateCollection = false;
+  let selectedCollectionId: string | null = null;
+
   function resetPostOptions() {
     receiveFeedback = selectedPosts.every((post) => post.receiveFeedback);
     receiveTagContribution = selectedPosts.every((post) => post.receiveTagContribution);
@@ -109,6 +129,19 @@
 
   $: if (selectedPostIds.size > 0) {
     resetPostOptions();
+  }
+
+  function resetSelectedCollectionId() {
+    const baseCollectionId = selectedPosts[0].collection?.id;
+
+    selectedCollectionId =
+      baseCollectionId && selectedPosts.every((post) => post.collection?.id === baseCollectionId)
+        ? baseCollectionId
+        : null;
+  }
+
+  if (selectedPostIds.size > 0) {
+    resetSelectedCollectionId();
   }
 
   const visibilityToLocaleString = {
@@ -216,6 +249,23 @@
 
     selectedPostIds = selectedPostIds;
   }
+
+  const createSpaceCollection = graphql(`
+    mutation PostManageTable_CreateSpaceCollection_Mutation($input: CreateSpaceCollectionInput!) {
+      createSpaceCollection(input: $input) {
+        id
+        name
+      }
+    }
+  `);
+
+  const setSpaceCollectionPosts = graphql(`
+    mutation PostManageTable_SetSpaceCollectionPosts_Mutation($input: SetSpaceCollectionPostsInput!) {
+      setSpaceCollectionPosts(input: $input) {
+        id
+      }
+    }
+  `);
 </script>
 
 <div class="overflow-auto">
@@ -234,7 +284,7 @@
     </TableRow>
     {#each $posts as post (post.id)}
       <TableRow
-        class="rounded-2 [&[aria-selected='true']]:bg-primary border-solid border-b border-alphagray-10 last:border-b-0 [&>td>div]:(items-center <sm:justify-end)"
+        class="rounded-2 [&[aria-selected='true']]:bg-primary border-solid border-b border-alphagray-10 last:border-b-0 [&>td>div]:(items-center <sm:justify-end) aria-selected:bg-primary"
         aria-selected={selectedPostIds.has('post.id')}
       >
         <TableData class="p-r-none!">
@@ -363,15 +413,15 @@
   <span class="body-15-b" aria-live="polite">
     {selectedPostCount}개의 포스트 선택됨
   </span>
-  {#if selectedOwnPosts || $spaceMember?.role === 'ADMIN'}
-    <div class="flex gap-4 flex-wrap justify-center">
-      <Menu class="<sm:hidden" as="div" offset={16} placement="top">
+  <div class="flex gap-4 flex-wrap justify-center">
+    {#if selectedOwnPosts || $spaceMember?.role === 'ADMIN'}
+      <Menu class="<sm:hidden" as="div" offset={toolbarMenuOffset} placement="top">
         <Button slot="value" class="whitespace-nowrap" color="secondary" size="md">공개범위 설정</Button>
         <MenuItem on:click={() => updateVisibilities('PUBLIC')}>전체 공개</MenuItem>
         <MenuItem on:click={() => updateVisibilities('UNLISTED')}>링크 공개</MenuItem>
         <MenuItem on:click={() => updateVisibilities('SPACE')}>멤버 공개</MenuItem>
       </Menu>
-      <Menu class="<sm:hidden" as="div" offset={16} placement="top">
+      <Menu class="<sm:hidden" as="div" offset={toolbarMenuOffset} placement="top">
         <Button slot="value" class="whitespace-nowrap" color="secondary" size="md">포스트 옵션 설정</Button>
         <MenuItem type="div">
           <Switch
@@ -413,9 +463,34 @@
           </Switch>
         </MenuItem>
       </Menu>
-      <Tooltip message="컬렉션 기능은 아직 준비중이에요">
-        <Button class="whitespace-nowrap" color="secondary" disabled size="md">컬렉션 추가</Button>
-      </Tooltip>
+    {/if}
+    {#if type === 'space'}
+      <Menu as="div" offset={toolbarMenuOffset}>
+        <Button slot="value" class="whitespace-nowrap" color="secondary" size="md">컬렉션 추가</Button>
+        {#each $collections as collection (collection.id)}
+          <MenuItem
+            class="flex gap-0.62rem group"
+            aria-pressed={selectedCollectionId === collection.id}
+            on:click={async () => {
+              await setSpaceCollectionPosts({
+                collectionId: collection.id,
+                postIds: selectedPosts.map((post) => post.id),
+              });
+
+              toast.success('컬렉션에 추가했어요');
+            }}
+          >
+            {collection.name}
+            <i class="i-lc-check square-4 color-green-50 invisible group-aria-pressed:visible" aria-label="선택됨" />
+          </MenuItem>
+        {/each}
+        <MenuItem class="flex items-center gap-0.62rem" on:click={() => (openCreateCollection = true)}>
+          <i class="i-lc-plus square-4 text-secondary" />
+          새로 만들기
+        </MenuItem>
+      </Menu>
+    {/if}
+    {#if selectedOwnPosts || $spaceMember?.role === 'ADMIN'}
       <Button
         class="<sm:hidden whitespace-nowrap"
         color="red"
@@ -427,12 +502,8 @@
       >
         삭제하기
       </Button>
-    </div>
-  {:else}
-    <Tooltip message="컬렉션 기능은 아직 준비중이에요">
-      <Button disabled>컬렉션 추가</Button>
-    </Tooltip>
-  {/if}
+    {/if}
+  </div>
 </div>
 
 <Modal size="sm" bind:open={openDeletePostWaring}>
@@ -473,4 +544,55 @@
       삭제
     </Button>
   </div>
+</Modal>
+
+<Modal size="md" bind:open={openCreateCollection}>
+  <svelte:fragment slot="title">
+    <form
+      id="create-collection"
+      on:submit|preventDefault={async (event) => {
+        if (
+          !(event.target instanceof HTMLFormElement) ||
+          !('collectionName' in event.target) ||
+          !(event.target.collectionName instanceof HTMLInputElement)
+        )
+          throw new Error('기대하지 않은 경우입니다.');
+
+        const name = event.target.collectionName.value;
+
+        const { id: collectionId } = await createSpaceCollection({ name, spaceId: selectedPosts[0].space.id });
+        await setSpaceCollectionPosts({ collectionId, postIds: selectedPosts.map((post) => post.id) });
+
+        toast.success('새 컬렉션을 생성했어요');
+        openCreateCollection = false;
+      }}
+    >
+      <input
+        name="collectionName"
+        class="title_20_b w-[fit-content] text-primary disabled:text-disabled"
+        maxlength="10"
+        placeholder="컬렉션명"
+        type="text"
+      />
+    </form>
+  </svelte:fragment>
+  <svelte:fragment slot="subtitle">컬렉션에 노출되는 포스트를 관리하세요</svelte:fragment>
+  <ul class="max-h-110 overflow-y-auto">
+    {#each selectedPosts as post (post.id)}
+      <li class="flex gap-xs items-center">
+        {#if post.publishedRevision.croppedThumbnail}
+          <Image class="square-15 flex-shrink-0 rounded-2" $image={post.publishedRevision.croppedThumbnail} />
+        {/if}
+        <dl class="truncate [&>dt]:truncate">
+          <dt class="body-15-b">
+            {post.publishedRevision.title}
+          </dt>
+          <dd class="body-13-m text-secondary">
+            {dayjs(post.publishedAt).formatAsDate()}
+          </dd>
+        </dl>
+      </li>
+    {/each}
+  </ul>
+  <Button class="w-full" form="create-collection" size="lg" type="submit">컬렉션 생성하기</Button>
 </Modal>

@@ -1,5 +1,6 @@
 import { FormValidationError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { createId } from '$lib/utils';
+import { UpdateSpaceCollectionSchema } from '$lib/validations';
 import { defineSchema } from '../builder';
 
 export const collectionSchema = defineSchema((builder) => {
@@ -102,6 +103,7 @@ export const collectionSchema = defineSchema((builder) => {
       name: t.string(),
       thumbnailId: t.id({ required: false }),
     }),
+    validate: { schema: UpdateSpaceCollectionSchema },
   });
 
   /**

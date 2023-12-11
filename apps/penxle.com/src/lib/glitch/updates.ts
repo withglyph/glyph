@@ -41,5 +41,14 @@ export const updates: GraphCacheConfig['updates'] = {
     unbookmarkPost: (_, __, cache) => {
       cache.invalidate(me(cache), 'bookmarks');
     },
+    createSpaceCollection: (_, { input }, cache) => {
+      cache.invalidate({ __typename: 'Space', id: input.spaceId });
+    },
+    deleteSpaceCollection: (_, { input }, cache) => {
+      cache.invalidate({ __typename: 'SpaceCollection', id: input.collectionId });
+    },
+    setSpaceCollectionPosts: (_, { input }, cache) => {
+      cache.invalidate({ __typename: 'SpaceCollection', id: input.collectionId });
+    },
   },
 };

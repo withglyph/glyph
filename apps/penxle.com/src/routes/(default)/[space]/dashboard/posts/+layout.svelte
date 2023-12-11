@@ -14,7 +14,7 @@
   <div>
     <TabHead class="border-none" variant="secondary">
       <TabHeadItem id={0} href="/{$page.params.space}/dashboard/posts">포스트</TabHeadItem>
-      <!-- <TabHeadItem id={1} href="/{$page.params.space}/dashboard/posts/collections">컬렉션</TabHeadItem> -->
+      <TabHeadItem id={1} href="/{$page.params.space}/dashboard/posts/collections">컬렉션</TabHeadItem>
     </TabHead>
     <hr class="w-full border-color-alphagray-10" />
   </div>

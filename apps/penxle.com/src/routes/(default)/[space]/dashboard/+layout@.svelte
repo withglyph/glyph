@@ -2,7 +2,7 @@
   import clsx from 'clsx';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { Avatar, BottomSheet, Button, Image } from '$lib/components';
+  import { Avatar, BottomSheet, Button, Image, Tooltip } from '$lib/components';
   import { pageSubTitle } from '$lib/stores';
   import ComingSoonModal from '../../ComingSoonModal.svelte';
   import Footer from '../../Footer.svelte';
@@ -92,17 +92,19 @@
       <nav class="w-full mb-10">
         <ul class="body-16-b text-disabled space-y-1">
           <li>
-            <button
-              class={clsx(
-                'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-                $page.url.pathname === `/${$query.space.slug}/dashboard` && 'bg-primary text-primary',
-              )}
-              type="button"
-              on:click={() => (comingSoonOpen = true)}
-            >
-              <i class="i-lc-home square-5" />
-              대시보드
-            </button>
+            <Tooltip message="준비중인 기능이에요">
+              <button
+                class={clsx(
+                  'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
+                  $page.url.pathname === `/${$query.space.slug}/dashboard` && 'bg-primary text-primary',
+                )}
+                disabled
+                type="button"
+              >
+                <i class="i-lc-home square-5" />
+                대시보드
+              </button>
+            </Tooltip>
           </li>
           <li>
             <button

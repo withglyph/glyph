@@ -1,12 +1,16 @@
 <script lang="ts">
   import { graphql } from '$glitch';
   import { Button } from '$lib/components';
-  import { PostManageTable } from '$lib/components/pages';
+  import { PostManageTable } from '$lib/components/pages/posts';
 
   $: query = graphql(`
     query SpaceSettingPostsPage_Query($slug: String!) {
       space(slug: $slug) {
         id
+
+        collections {
+          ...PostManageTable_Collection
+        }
 
         meAsMember {
           id
@@ -29,5 +33,10 @@
 </div>
 
 {#if $query.space && $query.space.meAsMember}
-  <PostManageTable $posts={$query.space.posts} $spaceMember={$query.space.meAsMember} type="space" />
+  <PostManageTable
+    $collections={$query.space.collections}
+    $posts={$query.space.posts}
+    $spaceMember={$query.space.meAsMember}
+    type="space"
+  />
 {/if}
