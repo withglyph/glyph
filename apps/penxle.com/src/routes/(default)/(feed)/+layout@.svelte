@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Helmet, Link } from '@penxle/ui';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { ChannelIOButton } from '$lib/channel.io';
   import { Image, Tag } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
@@ -173,6 +174,7 @@
                     type="button"
                     on:click={async () => {
                       await unfollowSpace({ spaceId: space.id });
+                      mixpanel.track('space:unfollow', { spaceId: space.id, via: 'feed' });
                       toast.success('관심 스페이스 해제되었어요');
                     }}
                   >
@@ -189,6 +191,7 @@
                         return;
                       }
                       await followSpace({ spaceId: space.id });
+                      mixpanel.track('space:follow', { spaceId: space.id, via: 'feed' });
                       toast.success('관심 스페이스로 등록되었어요');
                     }}
                   >

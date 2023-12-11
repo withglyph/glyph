@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
   import { DigitsInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
@@ -20,6 +21,7 @@
     `),
     schema: IssueUserEmailAuthorizationUrlSchema,
     onSuccess: (resp) => {
+      mixpanel.track('user:login:success', { method: 'email:code' });
       location.href = resp.url;
     },
   });

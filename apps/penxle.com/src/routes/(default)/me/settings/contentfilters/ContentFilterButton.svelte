@@ -1,6 +1,7 @@
 <script lang="ts">
   import * as R from 'radash';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { ToggleButton } from '$lib/components';
   import type { ContentFilterCategory, MeSettingsContentFiltersPage_ContentFilterButton_user } from '$glitch';
 
@@ -48,10 +49,10 @@
   checked={preferences[category] === 'EXPOSE'}
   size="md"
   on:change={async (e) => {
-    await updateUserContentFilterPreference({
-      action: e.currentTarget.checked ? 'EXPOSE' : 'WARN',
-      category,
-    });
+    const action = e.currentTarget.checked ? 'EXPOSE' : 'WARN';
+
+    await updateUserContentFilterPreference({ category, action });
+    mixpanel.track('user:content-filter-preference:update', { category, action });
   }}
 >
   <slot />

@@ -5,6 +5,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
   import { FormField, Switch, TextArea, TextInput } from '$lib/components/forms';
   import FormValidationMessage from '$lib/components/forms/FormValidationMessage.svelte';
@@ -128,6 +129,7 @@
       externalLinks: links.map(({ url }) => url),
     }),
     onSuccess: async () => {
+      mixpanel.track('space:update', { spaceId: $query.space.id });
       toast.success('스페이스 설정이 변경되었어요');
       await goto(`/${$data.slug}/dashboard/settings`);
     },

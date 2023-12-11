@@ -2,6 +2,7 @@
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Avatar, Badge, Image, Tag } from '$lib/components';
   import { toast } from '$lib/notification';
   import type { ContentFilterCategory, Feed_post } from '$glitch';
@@ -96,9 +97,11 @@
   const toggleBookmark = async () => {
     if ($post.bookmarkGroups.length > 0) {
       await unbookmarkPost({ bookmarkId: $post.bookmarkGroups[0].id, postId: $post.id });
+      mixpanel.track('post:unbookmark', { postId: $post.id, via: 'feed' });
       toast.success('북마크에서 삭제했어요');
     } else {
       await bookmarkPost({ postId: $post.id });
+      mixpanel.track('post:bookmark', { postId: $post.id, via: 'feed' });
       toast.success('북마크에 저장되었어요');
     }
   };

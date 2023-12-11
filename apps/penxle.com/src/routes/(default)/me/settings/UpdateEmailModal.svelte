@@ -1,5 +1,6 @@
 <script lang="ts">
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
@@ -17,6 +18,7 @@
     `),
     schema: UpdateUserEmailSchema,
     onSuccess: () => {
+      mixpanel.track('user:email:update:start');
       open = false;
       toast.success('입력하신 이메일로 인증메일을 전송했어요');
     },

@@ -57,7 +57,7 @@
     initialValues: { profileName: '' },
     extra: () => ({ profileAvatarId: avatar.id }),
     onSuccess: async () => {
-      mixpanel.track('space:create');
+      mixpanel.track('space:create', { useSpaceProfile, via: 'editor' });
       toast.success('스페이스를 만들었어요');
       open = false;
     },

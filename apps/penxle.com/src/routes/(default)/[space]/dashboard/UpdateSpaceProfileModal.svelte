@@ -1,6 +1,7 @@
 <script lang="ts">
   import clsx from 'clsx';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button, Image, Modal } from '$lib/components';
   import { FormField, Switch, TextInput } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
@@ -71,6 +72,7 @@
     extra: () => ({ profileAvatarId: avatar.id }),
     onSuccess: () => {
       open = false;
+      mixpanel.track('space:profile:update', { spaceId: $query.space.id });
       toast.success('프로필이 수정되었어요');
     },
   });
@@ -132,6 +134,7 @@
           handleSubmit();
         } else {
           await deleteSpaceProfile({ spaceId: $query.space.id });
+          mixpanel.track('space:profile:delete', { spaceId: $query.space.id });
           open = false;
         }
       }}

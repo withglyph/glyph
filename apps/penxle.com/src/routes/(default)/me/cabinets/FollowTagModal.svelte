@@ -1,5 +1,6 @@
 <script lang="ts">
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button, Modal, Tag } from '$lib/components';
   import { toast } from '$lib/notification';
   import type { MeCabinetsPage_FollowTagModal_user } from '$glitch';
@@ -34,6 +35,7 @@
   `);
 
   const unfollowTags = () => {
+    mixpanel.track('tag:unfollow', { via: 'cabinet' });
     return Promise.all(tags.map(({ id }) => unfollowTag({ tagId: id })));
   };
 

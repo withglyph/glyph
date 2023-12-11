@@ -1,5 +1,6 @@
 <script lang="ts">
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button, Modal, Tag } from '$lib/components';
   import { toast } from '$lib/notification';
   import type { MeSettingsContentFiltersPage_MutedTagModal_user } from '$glitch';
@@ -34,6 +35,7 @@
   `);
 
   const unmuteTags = () => {
+    mixpanel.track('tag:unmute', { via: 'content-filters' });
     return Promise.all(tags.map(({ id }) => unmuteTag({ tagId: id })));
   };
 

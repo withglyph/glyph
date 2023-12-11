@@ -6,6 +6,7 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Avatar, Badge, Button } from '$lib/components';
   import { Switch } from '$lib/components/forms';
   import { toast } from '$lib/notification';
@@ -62,6 +63,8 @@
   `);
 
   const handleUserIdentityVerification = () => {
+    mixpanel.track('user:personal-identity-verification:start');
+
     // @ts-expect-error portone
     IMP.init('imp72534540');
 
@@ -176,6 +179,7 @@
       on:change={async () => {
         const consent = !$query.me.marketingConsent;
         await updateUserMarketingConsent({ consent });
+        mixpanel.track('user:marketing_consent:update', { consent });
         toast.success(`${dayjs().formatAsDate()} ${consent ? '승인' : '거부'} 처리되었어요`, {
           title: '펜슬 마케팅 수신 동의',
         });

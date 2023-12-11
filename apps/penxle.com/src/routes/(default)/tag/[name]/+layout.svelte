@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
@@ -86,6 +87,7 @@
             size="lg"
             on:click={async () => {
               await unfollowTag({ tagId: $query.tag.id });
+              mixpanel.track('tag:unfollow', { tagId: $query.tag.id, via: 'tag' });
               toast.success('관심 태그 해제되었어요');
             }}
           >
@@ -101,6 +103,7 @@
               }
 
               await followTag({ tagId: $query.tag.id });
+              mixpanel.track('tag:follow', { tagId: $query.tag.id, via: 'tag' });
               toast.success('관심 태그에 추가했어요');
             }}
           >
@@ -115,6 +118,7 @@
             <MenuItem
               on:click={async () => {
                 await unmuteTag({ tagId: $query.tag.id });
+                mixpanel.track('tag:unmute', { tagId: $query.tag.id, via: 'tag' });
                 toast.success('태그 숨기기 해제되었어요');
               }}
             >
@@ -129,6 +133,7 @@
                 }
 
                 await muteTag({ tagId: $query.tag.id });
+                mixpanel.track('tag:mute', { tagId: $query.tag.id, via: 'tag' });
                 toast.success('태그를 숨겼어요');
               }}
             >

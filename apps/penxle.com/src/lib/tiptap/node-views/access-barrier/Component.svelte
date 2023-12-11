@@ -1,6 +1,7 @@
 <script lang="ts">
   import dayjs from 'dayjs';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Modal } from '$lib/components';
   import Button from '$lib/components/Button.svelte';
   import { TextInput } from '$lib/components/forms';
@@ -186,6 +187,8 @@
           postId: data.postId,
           revisionId: data.revisionId,
         });
+
+        mixpanel.track('post:purchase', { postId: data.postId, kind: 'article', price: node.attrs.price });
 
         postPurchaseOpen = false;
       }}

@@ -41,7 +41,7 @@
   <form
     on:submit|preventDefault={async () => {
       await deleteSpace({ spaceId: $space.id });
-      mixpanel.track('space:delete');
+      mixpanel.track('space:delete', { spaceId: $space.id });
       open = false;
       completeModalOpen = true;
     }}

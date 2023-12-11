@@ -3,6 +3,7 @@
   import * as R from 'radash';
   import ContentFilteringExample from '$assets/images/content-filtering-example.png';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import { Switch } from '$lib/components/forms';
   import ContentFilterButton from './ContentFilterButton.svelte';
@@ -92,10 +93,11 @@
       <Switch
         checked={preferences.ADULT === 'EXPOSE'}
         on:change={async (e) => {
-          await updateUserContentFilterPreference({
-            category: 'ADULT',
-            action: e.currentTarget.checked ? 'EXPOSE' : 'WARN',
-          });
+          const category = 'ADULT';
+          const action = e.currentTarget.checked ? 'EXPOSE' : 'WARN';
+
+          await updateUserContentFilterPreference({ category, action });
+          mixpanel.track('user:content-filter-preference:update', { category, action });
         }}
       />
     </div>

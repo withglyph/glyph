@@ -5,6 +5,7 @@
   import { onMount, tick } from 'svelte';
   import { afterNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import LoginRequireModal from '../../routes/(default)/LoginRequireModal.svelte';
   import i18n from './i18n.json';
   import { emojiData as data } from './index';
@@ -100,6 +101,8 @@
           postId: $query.post.id,
           emoji: emoji.id,
         });
+
+        mixpanel.track('post:reaction:create', { postId: $query.post.id, emoji: emoji.id, via: variant });
       },
       exceptEmojis,
       perLine: 8,

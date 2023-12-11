@@ -2,6 +2,7 @@
   import clsx from 'clsx';
   import * as R from 'radash';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Switch } from '$lib/components/forms';
   import type { MeSettingsNotificationsPage_Notification_user, UserNotificationCategory } from '$glitch';
 
@@ -75,11 +76,11 @@
           disabled={preferences.ALL?.find((v) => v.method === 'WEBSITE')?.opted === false}
           size="sm"
           on:change={async (e) => {
-            await updateNotificationPreference({
-              category,
-              method: 'WEBSITE',
-              opted: e.currentTarget.checked,
-            });
+            const method = 'WEBSITE';
+            const opted = e.currentTarget.checked;
+
+            await updateNotificationPreference({ category, method, opted });
+            mixpanel.track('user:notification-preference:update', { category, method, opted });
           }}
         />
       </div>
@@ -91,11 +92,11 @@
           disabled={preferences.ALL?.find((v) => v.method === 'EMAIL')?.opted === false}
           size="sm"
           on:change={async (e) => {
-            await updateNotificationPreference({
-              category,
-              method: 'EMAIL',
-              opted: e.currentTarget.checked,
-            });
+            const method = 'EMAIL';
+            const opted = e.currentTarget.checked;
+
+            await updateNotificationPreference({ category, method, opted });
+            mixpanel.track('user:notification-preference:update', { category, method, opted });
           }}
         />
       </div>
@@ -107,11 +108,11 @@
       disabled={preferences.ALL?.find((v) => v.method === 'WEBSITE')?.opted === false}
       size="lg"
       on:change={async (e) => {
-        await updateNotificationPreference({
-          category,
-          method: 'WEBSITE',
-          opted: e.currentTarget.checked,
-        });
+        const method = 'WEBSITE';
+        const opted = e.currentTarget.checked;
+
+        await updateNotificationPreference({ category, method, opted });
+        mixpanel.track('user:notification-preference:update', { category, method, opted });
       }}
     />
 
@@ -120,11 +121,11 @@
       disabled={preferences.ALL?.find((v) => v.method === 'EMAIL')?.opted === false}
       size="lg"
       on:change={async (e) => {
-        await updateNotificationPreference({
-          category,
-          method: 'EMAIL',
-          opted: e.currentTarget.checked,
-        });
+        const method = 'EMAIL';
+        const opted = e.currentTarget.checked;
+
+        await updateNotificationPreference({ category, method, opted });
+        mixpanel.track('user:notification-preference:update', { category, method, opted });
       }}
     />
   </div>

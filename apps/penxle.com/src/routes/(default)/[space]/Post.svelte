@@ -5,6 +5,7 @@
   import dayjs from 'dayjs';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Avatar, Button, Image, Tag, Tooltip } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import Modal from '$lib/components/Modal.svelte';
@@ -357,6 +358,7 @@
               type="button"
               on:click={async () => {
                 await unbookmarkPost({ bookmarkId: $query.post.bookmarkGroups[0].id, postId: $query.post.id });
+                mixpanel.track('post:unbookmark', { postId: $query.post.id, via: 'post' });
                 toast.success('북마크에서 삭제했어요');
               }}
             />
@@ -373,6 +375,7 @@
                 }
 
                 await bookmarkPost({ postId: $query.post.id });
+                mixpanel.track('post:bookmark', { postId: $query.post.id, via: 'post' });
                 toast.success('북마크에 저장되었어요');
               }}
             />
@@ -390,6 +393,7 @@
                   <MenuItem
                     on:click={async () => {
                       await unmuteSpace({ spaceId: $query.post.space.id });
+                      mixpanel.track('space:unmute', { spaceId: $query.post.space.id, via: 'post' });
                       toast.success('스페이스 숨기기를 해제했어요');
                     }}
                   >
@@ -404,6 +408,7 @@
                       }
 
                       await muteSpace({ spaceId: $query.post.space.id });
+                      mixpanel.track('space:mute', { spaceId: $query.post.space.id, via: 'post' });
                       toast.success('스페이스를 숨겼어요');
                     }}
                   >
@@ -512,6 +517,7 @@
               postId: $query.post.id,
               password,
             });
+            mixpanel.track('post:unlock', { postId: $query.post.id });
           } catch (err) {
             if (err instanceof FormValidationError) toast.error(err.message);
           }
@@ -595,7 +601,13 @@
             return;
           }
 
-          await ($query.post.liked ? unlikePost({ postId: $query.post.id }) : likePost({ postId: $query.post.id }));
+          if ($query.post.liked) {
+            await unlikePost({ postId: $query.post.id });
+            mixpanel.track('post:unlike', { postId: $query.post.id, via: 'post' });
+          } else {
+            await likePost({ postId: $query.post.id });
+            mixpanel.track('post:like', { postId: $query.post.id, via: 'post' });
+          }
         }}
       >
         {#if $query.post.liked}
@@ -613,6 +625,7 @@
             type="button"
             on:click={async () => {
               await unbookmarkPost({ bookmarkId: $query.post.bookmarkGroups[0].id, postId: $query.post.id });
+              mixpanel.track('post:unbookmark', { postId: $query.post.id, via: 'post' });
               toast.success('북마크에서 삭제했어요');
             }}
           />
@@ -624,6 +637,7 @@
               if (preview) return;
 
               await bookmarkPost({ postId: $query.post.id });
+              mixpanel.track('post:bookmark', { postId: $query.post.id, via: 'post' });
               toast.success('북마크에 저장되었어요');
             }}
           />
@@ -663,6 +677,7 @@
               variant="outlined"
               on:click={async () => {
                 await unfollowSpace({ spaceId: $query.post.space.id });
+                mixpanel.track('space:unfollow', { spaceId: $query.post.space.id, via: 'post' });
                 toast.success('관심 스페이스 해제되었어요');
               }}
             >
@@ -679,6 +694,7 @@
                 }
 
                 await followSpace({ spaceId: $query.post.space.id });
+                mixpanel.track('space:follow', { spaceId: $query.post.space.id, via: 'post' });
                 toast.success('관심 스페이스로 등록되었어요');
               }}
             >
@@ -714,6 +730,7 @@
       size="md"
       on:click={async () => {
         const resp = await deletePost({ postId: $query.post.id });
+        mixpanel.track('post:delete', { postId: $query.post.id, via: 'post' });
         await goto(`/${resp.space.slug}`);
         toast.success('포스트를 삭제했어요');
       }}

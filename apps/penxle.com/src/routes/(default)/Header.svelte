@@ -1,11 +1,11 @@
 <script lang="ts">
   import { Link } from '@penxle/ui';
   import clsx from 'clsx';
-  import mixpanel from 'mixpanel-browser';
   import { page } from '$app/stores';
   import Logo from '$assets/icons/logo.svg?component';
   import Wordmark from '$assets/icons/wordmark.svg?component';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
   import { outsideClickEvent } from '$lib/svelte/actions';
   import Notification from './Notification.svelte';

@@ -3,6 +3,7 @@
   import Google from '$assets/icons/google.svg?component';
   import Naver from '$assets/icons/naver.svg?component';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import { toast } from '$lib/notification';
   import type { MeSettingsPage_UserSingleSignOn_user, UserSingleSignOnProvider } from '$glitch';
@@ -89,6 +90,7 @@
           provider,
         });
 
+        mixpanel.track('user:single-sign-on:link:start', { provider });
         location.href = url;
       }}
     >
@@ -107,6 +109,7 @@
       size="xl"
       on:click={async () => {
         await unlinkUserSingleSignOn({ provider });
+        mixpanel.track('user:single-sign-on:unlink', { provider });
         toast.success(`${providerName} 계정 연동이 해제되었어요`);
         open = false;
       }}

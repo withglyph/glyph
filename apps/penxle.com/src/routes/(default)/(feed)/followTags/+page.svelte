@@ -1,5 +1,6 @@
 <script lang="ts">
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Feed, Tag } from '$lib/components';
   import { toast } from '$lib/notification';
 
@@ -52,6 +53,7 @@
             type="button"
             on:click={async () => {
               await unfollowTag({ tagId: tag.id });
+              mixpanel.track('tag:unfollow', { tagId: tag.id, via: 'feed' });
               toast.success('관심 태그 해제되었어요');
             }}
           >
@@ -64,6 +66,7 @@
             type="button"
             on:click={async () => {
               await followTag({ tagId: tag.id });
+              mixpanel.track('tag:follow', { tagId: tag.id, via: 'feed' });
               toast.success('관심 태그에 추가했어요');
             }}
           >

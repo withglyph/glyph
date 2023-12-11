@@ -3,6 +3,7 @@
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Avatar, Badge, Button, Image, Modal, Tag, Tooltip } from '$lib/components';
   import { Checkbox, Switch } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
@@ -137,6 +138,11 @@
   `);
 
   function updateVisibilities(visibility: PostVisibility) {
+    if (type === 'space') {
+      mixpanel.track('space:dashboard:posts:update:visibility', { spaceId: $posts[0].space.id });
+    } else {
+      mixpanel.track('me:posts:update:visibility');
+    }
     return Promise.all(_selectedPostIds.map((postId) => updateVisibility({ postId, visibility })));
   }
 
@@ -154,6 +160,11 @@
   function updatePostsOptions(
     input: Partial<Pick<PublishPostInput, 'receiveFeedback' | 'receiveTagContribution' | 'discloseStats'>>,
   ) {
+    if (type === 'space') {
+      mixpanel.track('space:dashboard:posts:update:options', { spaceId: $posts[0].space.id });
+    } else {
+      mixpanel.track('me:posts:update:options');
+    }
     return Promise.all(_selectedPostIds.map((postId) => updatePostOptions({ postId, ...input })));
   }
 
@@ -169,6 +180,11 @@
     selectedPostIds.clear();
     selectedPostIds = selectedPostIds;
 
+    if (type === 'space') {
+      mixpanel.track('space:dashboard:posts:delete', { spaceId: $posts[0].space.id });
+    } else {
+      mixpanel.track('me:posts:delete');
+    }
     return Promise.all(postIds.map((postId) => deletePost({ postId })));
   }
 

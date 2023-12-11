@@ -1,6 +1,7 @@
 <script lang="ts">
   import clsx from 'clsx';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Tooltip } from '$lib/components';
   import EmojiPicker from '$lib/emoji/EmojiPicker.svelte';
   import LoginRequireModal from '../LoginRequireModal.svelte';
@@ -95,7 +96,7 @@
     }
   `);
 
-  const toggleLike = () => {
+  const toggleLike = async () => {
     if (!$query.me) {
       loginRequireOpen = true;
       return;
@@ -103,10 +104,16 @@
 
     likeAnimate = !$query.post.liked;
 
-    return $query.post.liked ? unlikePost({ postId: $query.post.id }) : likePost({ postId: $query.post.id });
+    if ($query.post.liked) {
+      await unlikePost({ postId: $query.post.id });
+      mixpanel.track('post:unlike', { postId: $query.post.id, via: 'toolbar' });
+    } else {
+      await likePost({ postId: $query.post.id });
+      mixpanel.track('post:like', { postId: $query.post.id, via: 'toolbar' });
+    }
   };
 
-  const toggleBookmark = () => {
+  const toggleBookmark = async () => {
     if (!$query.me) {
       loginRequireOpen = true;
       return;
@@ -114,9 +121,13 @@
 
     bookmarkAnimate = $query.post.bookmarkGroups.length <= 0;
 
-    return $query.post.bookmarkGroups.length > 0
-      ? unbookmarkPost({ bookmarkId: $query.post.bookmarkGroups[0].id, postId: $query.post.id })
-      : bookmarkPost({ postId: $query.post.id });
+    if ($query.post.bookmarkGroups.length > 0) {
+      unbookmarkPost({ bookmarkId: $query.post.bookmarkGroups[0].id, postId: $query.post.id });
+      mixpanel.track('post:unbookmark', { postId: $query.post.id, via: 'toolbar' });
+    } else {
+      bookmarkPost({ postId: $query.post.id });
+      mixpanel.track('post:bookmark', { postId: $query.post.id, via: 'toolbar' });
+    }
   };
 </script>
 

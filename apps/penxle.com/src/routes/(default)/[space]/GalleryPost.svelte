@@ -5,6 +5,7 @@
   import { onMount } from 'svelte';
   import { register } from 'swiper/element/bundle';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button, Image } from '$lib/components';
   import Modal from '$lib/components/Modal.svelte';
   import { comma } from '$lib/utils';
@@ -232,6 +233,8 @@
           postId: $query.post.id,
           revisionId: revision.id,
         });
+
+        mixpanel.track('post:purchase', { postId: $query.post.id, kind: 'gallery', price: data.attrs.price });
 
         swiperEl.swiper.update();
         postPurchaseOpen = false;

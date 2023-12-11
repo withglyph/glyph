@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Link } from '@penxle/ui';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { BottomSheet, Button, Modal, Tag } from '$lib/components';
   import Image from '$lib/components/Image.svelte';
   import { Menu, MenuItem } from '$lib/components/menu';
@@ -233,6 +234,7 @@
             variant="outlined"
             on:click={async () => {
               await unfollowSpace({ spaceId: $query.space.id });
+              mixpanel.track('space:unfollow', { spaceId: $query.space.id, via: 'space' });
               toast.success('관심 스페이스 해제되었어요');
             }}
           >
@@ -244,6 +246,7 @@
             size="md"
             on:click={async () => {
               await followSpace({ spaceId: $query.space.id });
+              mixpanel.track('space:follow', { spaceId: $query.space.id, via: 'space' });
               toast.success('관심 스페이스로 등록되었어요');
             }}
           >
@@ -270,6 +273,7 @@
             <MenuItem
               on:click={async () => {
                 await unmuteSpace({ spaceId: $query.space.id });
+                mixpanel.track('space:unmute', { spaceId: $query.space.id, via: 'space' });
                 toast.success('스페이스 숨기기 해제되었어요');
               }}
             >
@@ -279,6 +283,7 @@
             <MenuItem
               on:click={async () => {
                 await muteSpace({ spaceId: $query.space.id });
+                mixpanel.track('space:mute', { spaceId: $query.space.id, via: 'space' });
                 toast.success('스페이스를 숨겼어요');
               }}
             >
@@ -321,6 +326,7 @@
         variant="outlined"
         on:click={async () => {
           await unfollowSpace({ spaceId: $query.space.id });
+          mixpanel.track('space:unfollow', { spaceId: $query.space.id, via: 'space' });
           toast.success('관심 스페이스 해제되었어요');
         }}
       >
@@ -332,6 +338,7 @@
         size="xl"
         on:click={async () => {
           await followSpace({ spaceId: $query.space.id });
+          mixpanel.track('space:follow', { spaceId: $query.space.id, via: 'space' });
           toast.success('관심 스페이스로 등록되었어요');
         }}
       >
@@ -408,6 +415,7 @@
           type="button"
           on:click={async () => {
             await unmuteSpace({ spaceId: $query.space.id });
+            mixpanel.track('space:unmute', { spaceId: $query.space.id, via: 'space' });
             toast.success('스페이스 숨기기 해제되었어요');
           }}
         >
@@ -419,6 +427,7 @@
           type="button"
           on:click={async () => {
             await muteSpace({ spaceId: $query.space.id });
+            mixpanel.track('space:mute', { spaceId: $query.space.id, via: 'space' });
             toast.success('스페이스를 숨겼어요');
           }}
         >

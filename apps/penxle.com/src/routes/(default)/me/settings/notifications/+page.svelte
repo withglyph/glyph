@@ -2,6 +2,7 @@
   import { Helmet } from '@penxle/ui';
   import * as R from 'radash';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Switch } from '$lib/components/forms';
   import NotificationSwitch from './NotificationSwitch.svelte';
 
@@ -70,6 +71,9 @@
           method: 'EMAIL',
           opted,
         });
+
+        mixpanel.track('user:notification-preference:update', { category: 'ALL', method: 'WEBSITE', opted });
+        mixpanel.track('user:notification-preference:update', { category: 'ALL', method: 'EMAIL', opted });
       }}
     />
 
@@ -77,22 +81,24 @@
       <Switch
         checked={preferences.ALL?.find((v) => v.method === 'WEBSITE')?.opted ?? true}
         on:change={async (e) => {
-          await updateNotificationPreference({
-            category: 'ALL',
-            method: 'WEBSITE',
-            opted: e.currentTarget.checked,
-          });
+          const category = 'ALL';
+          const method = 'WEBSITE';
+          const opted = e.currentTarget.checked;
+
+          await updateNotificationPreference({ category, method, opted });
+          mixpanel.track('user:notification-preference:update', { category, method, opted });
         }}
       />
 
       <Switch
         checked={preferences.ALL?.find((v) => v.method === 'EMAIL')?.opted ?? true}
         on:change={async (e) => {
-          await updateNotificationPreference({
-            category: 'ALL',
-            method: 'EMAIL',
-            opted: e.currentTarget.checked,
-          });
+          const category = 'ALL';
+          const method = 'EMAIL';
+          const opted = e.currentTarget.checked;
+
+          await updateNotificationPreference({ category, method, opted });
+          mixpanel.track('user:notification-preference:update', { category, method, opted });
         }}
       />
     </div>

@@ -29,7 +29,7 @@
     schema: CreateUserSchema,
     initialValues: { name: '' },
     onSuccess: () => {
-      mixpanel.track('user:signup');
+      mixpanel.track('user:signup:success');
       location.href = '/';
     },
   });

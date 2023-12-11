@@ -4,6 +4,7 @@
   import Google from '$assets/icons/google.svg?component';
   import Naver from '$assets/icons/naver.svg?component';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
@@ -20,6 +21,7 @@
     `),
     schema: LoginUserSchema,
     onSuccess: async (resp) => {
+      mixpanel.track('user:login:start', { method: 'email' });
       await goto(`/login/code?email=${resp.email}`);
     },
   });
@@ -64,6 +66,7 @@
         provider: 'GOOGLE',
       });
 
+      mixpanel.track('user:login:start', { method: 'google' });
       location.href = url;
     }}
   >
@@ -79,6 +82,7 @@
         provider: 'NAVER',
       });
 
+      mixpanel.track('user:login:start', { method: 'naver' });
       location.href = url;
     }}
   >

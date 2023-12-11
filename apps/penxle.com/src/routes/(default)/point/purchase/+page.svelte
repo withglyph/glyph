@@ -4,6 +4,7 @@
   import qs from 'query-string';
   import Paypal from '$assets/icons/paypal.svg?component';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
@@ -34,6 +35,11 @@
     `),
     schema: PurchasePointSchema,
     onSuccess: (resp) => {
+      mixpanel.track('point:purchase:start', {
+        paymentMethod: $data.paymentMethod,
+        pointAmount: $data.pointAmount,
+      });
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const callback = async (resp: any) => {
         if (resp.error_msg) {

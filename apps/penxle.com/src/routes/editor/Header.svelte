@@ -8,6 +8,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button, Image, ToggleButton, Tooltip } from '$lib/components';
   import { Logo } from '$lib/components/branding';
   import { Checkbox, FormValidationMessage, Switch } from '$lib/components/forms';
@@ -145,6 +146,7 @@
     `),
     schema: PublishPostInputSchema,
     onSuccess: async (resp) => {
+      mixpanel.track('post:publish', { postId: resp.id });
       await goto(`/${resp.space.slug}/${resp.permalink}`);
     },
   });
@@ -163,6 +165,8 @@
       thumbnailId,
       thumbnailBounds,
     });
+
+    mixpanel.track('post:revise', { postId: resp.id, revisionKind });
 
     postId = resp.id;
 

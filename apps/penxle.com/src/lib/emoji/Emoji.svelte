@@ -1,5 +1,6 @@
 <script lang="ts">
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
 
   export let postId: string;
   export let emoji: string;
@@ -29,6 +30,7 @@
         postId,
         emoji,
       });
+      mixpanel.track('post:reaction:delete', { postId, emoji });
     }}
   >
     <em-emoji id={emoji} class="square-4.5 text-center" set="twitter" />

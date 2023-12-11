@@ -1,5 +1,6 @@
 <script lang="ts">
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import Image from '$lib/components/Image.svelte';
   import { toast } from '$lib/notification';
@@ -90,7 +91,8 @@
             size="md"
             variant="outlined"
             on:click={async () => {
-              unfollowSpace({ spaceId: space.id });
+              await unfollowSpace({ spaceId: space.id });
+              mixpanel.track('space:unfollow', { spaceId: space.id, via: 'cabinet' });
               toast.success('관심 스페이스 해제되었어요');
             }}
           >
@@ -102,6 +104,7 @@
             size="md"
             on:click={async () => {
               await followSpace({ spaceId: space.id });
+              mixpanel.track('space:follow', { spaceId: space.id, via: 'cabinet' });
               toast.success('관심 스페이스로 등록되었어요');
             }}
           >
