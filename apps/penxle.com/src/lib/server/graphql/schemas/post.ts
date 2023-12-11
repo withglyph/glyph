@@ -809,7 +809,7 @@ export const postSchema = defineSchema((builder) => {
             })
           : undefined;
 
-        const price: number | undefined = accessBarrier?.attrs?.price;
+        const price: number | null = accessBarrier?.attrs?.price ?? null;
 
         const postId = input.postId ?? createId();
 
