@@ -118,7 +118,7 @@ export const directUploadImage = async ({ db, userId, name, source, bounds }: Di
       id: createId(),
       userId,
       name,
-      format: res.format,
+      format: `image/${res.format}`,
       size: res.size,
       width: res.width,
       height: res.height,
