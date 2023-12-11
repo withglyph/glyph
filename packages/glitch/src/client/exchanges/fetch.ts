@@ -4,7 +4,23 @@ import DataLoader from 'dataloader';
 import { filter, fromPromise, merge, mergeMap, pipe, tap } from 'wonka';
 import type { Exchange, Operation, OperationResult } from '@urql/core';
 
+const createScheduler = () => {
+  const callbacks: (() => void)[] = [];
+
+  return {
+    schedule: (cb: () => void) => callbacks.push(cb),
+    dispatch: () => {
+      while (callbacks.length > 0) {
+        callbacks.shift()?.();
+      }
+    },
+  };
+};
+
 export const fetchExchange: Exchange = ({ forward, dispatchDebug }) => {
+  const { schedule, dispatch } = createScheduler();
+  let isHydration = true;
+
   const dataLoader = new DataLoader<Operation, OperationResult>(
     async (operations) => {
       const fetch = operations[0].context.fetch ?? globalThis.fetch;
@@ -56,8 +72,8 @@ export const fetchExchange: Exchange = ({ forward, dispatchDebug }) => {
       return results;
     },
     {
-      batchScheduleFn: (cb) => setTimeout(cb, 10),
-      cacheMap: null,
+      batchScheduleFn: schedule,
+      cache: false,
     },
   );
 
@@ -72,7 +88,15 @@ export const fetchExchange: Exchange = ({ forward, dispatchDebug }) => {
           operation,
         }),
       ),
-      mergeMap((operation) => fromPromise(dataLoader.load(operation))),
+      mergeMap((operation) => {
+        const source = fromPromise(dataLoader.load(operation));
+        if (isHydration) {
+          dispatch();
+        } else {
+          setTimeout(dispatch, 10);
+        }
+        return source;
+      }),
       tap(({ operation }) =>
         dispatchDebug({
           type: 'dataloader',
@@ -80,6 +104,7 @@ export const fetchExchange: Exchange = ({ forward, dispatchDebug }) => {
           operation,
         }),
       ),
+      tap(() => (isHydration = false)),
     );
 
     const forward$ = pipe(
