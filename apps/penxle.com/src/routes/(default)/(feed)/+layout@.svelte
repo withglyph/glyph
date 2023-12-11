@@ -208,7 +208,7 @@
 
         <div class="flex flex-wrap gap-2 bg-cardprimary border border-secondary rounded-2xl px-3 py-4 truncate">
           {#each $query.recentlyUsedTags as tag (tag.id)}
-            <Tag href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
+            <Tag class="max-w-65" href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
           {/each}
         </div>
       </div>
@@ -218,7 +218,7 @@
 
         <div class="flex flex-wrap gap-2 bg-cardprimary border border-secondary rounded-2xl px-3 py-4 mb-4 truncate">
           {#each $query.recentlyCreatedTags as tag (tag.id)}
-            <Tag href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
+            <Tag class="max-w-65" href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
           {/each}
         </div>
       </div>

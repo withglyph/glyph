@@ -327,7 +327,7 @@
         <TableData class="<sm:hidden">
           <div class="flex gap-1">
             {#each post.publishedRevision.tags.slice(0, 3) as tag (tag.id)}
-              <Tag size="sm">{tag.name}</Tag>
+              <Tag class="max-w-65" size="sm">{tag.name}</Tag>
             {/each}
             {#if post.publishedRevision.tags.length > 2}
               <Tooltip

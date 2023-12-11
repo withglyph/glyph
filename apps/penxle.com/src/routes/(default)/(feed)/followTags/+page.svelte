@@ -1,7 +1,7 @@
 <script lang="ts">
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Feed, Tag } from '$lib/components';
+  import { Feed } from '$lib/components';
   import { toast } from '$lib/notification';
 
   $: query = graphql(`
@@ -80,7 +80,7 @@
 {/if}
 
 {#each $query.tagFeed as post (post.id)}
-  <Tag class="w-fit mb-2" href="tag/태그">#태그</Tag>
+  <!-- <Tag class="w-fit mb-2" href="tag/태그">#태그</Tag> -->
 
   <Feed class="mb-4 will-change-transform inline-flex" $post={post} />
 {/each}
