@@ -8,8 +8,8 @@ const domain = new aws.opensearch.Domain('penxle', {
   domainName: 'penxle',
 
   clusterConfig: {
-    instanceType: 't3.small.search',
-    instanceCount: 1,
+    instanceType: 'r6g.large.search',
+    instanceCount: 2,
   },
 
   ebsOptions: {
@@ -38,6 +38,7 @@ const domain = new aws.opensearch.Domain('penxle', {
 
   encryptAtRest: { enabled: true },
   nodeToNodeEncryption: { enabled: true },
+  softwareUpdateOptions: { autoSoftwareUpdateEnabled: true },
 });
 
 new aws.opensearch.DomainPolicy('penxle', {
