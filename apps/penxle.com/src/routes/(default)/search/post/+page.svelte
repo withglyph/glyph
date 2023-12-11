@@ -6,8 +6,22 @@
   import { TabHead, TabHeadItem } from '$lib/components/tab';
 
   $: query = graphql(`
-    query SearchPostPage_Query($query: String!) {
-      searchPosts(query: $query) {
+    query SearchPostPage_Query(
+      $query: String!
+      $includeTags: [String!]! = []
+      $excludeTags: [String!]! = []
+      $adultFilter: Boolean
+      $excludeContentFilters: [ContentFilterCategory!]
+      $orderBy: OrderByKind!
+    ) {
+      searchPosts(
+        query: $query
+        includeTags: $includeTags
+        excludeTags: $excludeTags
+        adultFilter: $adultFilter
+        excludeContentFilters: $excludeContentFilters
+        orderBy: $orderBy
+      ) {
         id
         ...Feed_post
       }
