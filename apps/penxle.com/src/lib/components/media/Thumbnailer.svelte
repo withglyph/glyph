@@ -13,6 +13,7 @@
   export { _class as class };
 
   export let src: string | undefined = undefined;
+  export let ratio: 'square' | 'rectangle' = 'square';
 
   $: {
     if (!file && !src) throw new Error('file or src props required');
@@ -99,7 +100,9 @@
 </script>
 
 <div class={_class}>
-  <div class="relative overflow-hidden p-8 flex center aspect-1/1 w-full">
+  <div
+    class={clsx('relative overflow-hidden p-8 flex center w-full', ratio === 'square' ? 'aspect-1/1' : 'aspect-3/4')}
+  >
     <img
       bind:this={imgEl}
       style:transform

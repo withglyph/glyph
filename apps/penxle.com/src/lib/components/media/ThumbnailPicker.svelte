@@ -16,6 +16,8 @@
   let draftBounds = bounds;
   let open = false;
 
+  export let ratio: 'square' | 'rectangle' = 'square';
+
   $: if (!open) {
     draftBounds = bounds;
   }
@@ -95,7 +97,7 @@
     <svelte:fragment slot="title">
       <slot name="title">위치 조정</slot>
     </svelte:fragment>
-    <Thumbnailer class="w-full" {...props} bind:bounds={draftBounds} />
+    <Thumbnailer class="w-full" {...props} {ratio} bind:bounds={draftBounds} />
     <Button slot="action" class="w-full mt-4" loading={$uploading} size="xl" on:click={upload}>
       <slot name="save">저장</slot>
     </Button>
