@@ -2,7 +2,7 @@
   import { Link } from '@penxle/ui';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { BottomSheet, Button, Modal, Tag } from '$lib/components';
+  import { BottomSheet, Button, Modal } from '$lib/components';
   import Image from '$lib/components/Image.svelte';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
@@ -154,20 +154,6 @@
             </button>
           </div>
         {/if}
-      </div>
-      <div class="flex flex-wrap gap-2 hidden">
-        <Tag>#태그</Tag>
-        <Tag>#태그</Tag>
-        <Tag>#태그</Tag>
-        <Tag>#태그</Tag>
-        <Tag>#태그</Tag>
-      </div>
-      <div class="flex flex-wrap gap-2 hidden">
-        <Tag size="sm">#태그</Tag>
-        <Tag size="sm">#태그</Tag>
-        <Tag size="sm">#태그</Tag>
-        <Tag size="sm">#태그</Tag>
-        <Tag size="sm">#태그</Tag>
       </div>
     </div>
     <div class="flex self-start items-center gap-2 <sm:hidden">
