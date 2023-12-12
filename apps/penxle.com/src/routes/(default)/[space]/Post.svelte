@@ -158,7 +158,7 @@
     blurContent = $query.post.blurred;
   });
 
-  $: if (!$query.me || !$query.me.personalIdentity || !$query.me.isAdulthood) {
+  $: if ($query.post.contentFilters.includes('ADULT') && (!$query.me?.personalIdentity || !$query.me?.isAdulthood)) {
     adultOpen = true;
   }
 
