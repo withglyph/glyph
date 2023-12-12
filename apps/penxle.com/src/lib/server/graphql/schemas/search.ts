@@ -64,13 +64,20 @@ export const searchSchema = defineSchema((builder) => {
           index: 'posts',
           body: {
             query: {
-              must_not: muteTerms.length > 0 ? muteTerms : undefined,
-
               function_score: {
-                random_score: {
-                  seed: Date.now(),
-                  field: '_seq_no',
-                },
+                query:
+                  muteTerms.length > 0
+                    ? {
+                        bool: {
+                          filter: {
+                            bool: {
+                              must_not: muteTerms,
+                            },
+                          },
+                        },
+                      }
+                    : undefined,
+                random_score: {},
               },
             },
 
