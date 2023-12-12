@@ -6,7 +6,7 @@ const config = new pulumi.Config('penxle');
 
 const site = new penxle.Site('penxle.com', {
   name: 'penxle-com',
-  domainName: 'staging.penxle.com',
+  domainName: 'penxle.com',
 
   image: {
     name: '721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/penxle.com',
@@ -72,7 +72,7 @@ if (pulumi.getStack() === 'prod') {
     },
 
     to: {
-      host: 'staging.penxle.com',
+      host: 'penxle.com',
       path: '/api/shortlink/#{path}',
     },
 
