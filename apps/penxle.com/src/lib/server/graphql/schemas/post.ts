@@ -340,7 +340,7 @@ export const postSchema = defineSchema((builder) => {
         }
       }
 
-      if (post.password) {
+      if (post.password && post.userId !== context.session?.userId) {
         const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
         if (!unlock || dayjs().isAfter(dayjs(unlock))) {
           return [];
