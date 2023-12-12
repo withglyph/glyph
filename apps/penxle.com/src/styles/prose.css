@@ -5,7 +5,7 @@
   --uno: font-sans whitespace-pre-wrap break-all;
 
   & p {
-    --uno: py-1;
+    --uno: py-0.5;
   }
 
   & p[data-level='2'] {
