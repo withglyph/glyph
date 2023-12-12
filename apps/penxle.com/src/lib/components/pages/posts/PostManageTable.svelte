@@ -421,7 +421,7 @@
         <MenuItem on:click={() => updateVisibilities('UNLISTED')}>링크 공개</MenuItem>
         <MenuItem on:click={() => updateVisibilities('SPACE')}>멤버 공개</MenuItem>
       </Menu>
-      <Menu class="<sm:hidden" as="div" offset={toolbarMenuOffset} placement="top">
+      <Menu class="<sm:hidden" as="div" offset={toolbarMenuOffset} placement="top" preventClose>
         <Button slot="value" class="whitespace-nowrap" color="secondary" size="md">포스트 옵션 설정</Button>
         <MenuItem type="div">
           <Switch
