@@ -95,6 +95,7 @@
 
   let containerEl: HTMLElement | undefined;
   let containerElHeight: number | null = null;
+  let tagContainerEl: HTMLElement | undefined;
 
   let thumbnailMenu: HTMLElement | undefined;
   let captionInput: HTMLElement | undefined;
@@ -110,6 +111,10 @@
   }
 
   const tagFirstLineHeight = 54;
+
+  $: if (tags && tagContainerEl && tagContainerEl.getBoundingClientRect().height > tagFirstLineHeight) {
+    open = true;
+  }
 </script>
 
 <footer
@@ -129,7 +134,7 @@
   </button>
   <div bind:this={containerEl} class="w-full bg-white shadow-[0_4px_16px_0px_rgba(0,0,0,0.15)]">
     <article class="m-x-auto max-w-300 px-4 p-b-4">
-      <section class="flex items-center gap-4 flex-wrap pt-3 pb-4">
+      <section bind:this={tagContainerEl} class="flex items-center gap-4 flex-wrap pt-3 pb-4">
         <span class="body-13-b">게시글 태그</span>
 
         {#each tags as tag (tag)}
