@@ -107,3 +107,4 @@ jobs:
             { "penxle:image.digest": { "value": "${{ steps.build.outputs.digest }}" } }
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_K8S_ENABLE_PATCH_FORCE: 'true'
