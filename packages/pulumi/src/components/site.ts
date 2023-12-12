@@ -19,6 +19,12 @@ type SiteArgs = {
     memory: pulumi.Input<string>;
   };
 
+  autoscale?: {
+    minCount?: pulumi.Input<number>;
+    maxCount?: pulumi.Input<number>;
+    averageCpuUtilization?: pulumi.Input<number>;
+  };
+
   iam?: {
     policy: pulumi.Input<aws.iam.PolicyDocument>;
   };
@@ -176,14 +182,17 @@ export class Site extends pulumi.ComponentResource {
             kind: rollout.kind,
             name: rollout.metadata.name,
           },
-          minReplicas: 2,
-          maxReplicas: 100,
+          minReplicas: args.autoscale?.maxCount ?? 2,
+          maxReplicas: args.autoscale?.maxCount ?? 10,
           metrics: [
             {
               type: 'Resource',
               resource: {
                 name: 'cpu',
-                target: { type: 'Utilization', averageUtilization: 50 },
+                target: {
+                  type: 'Utilization',
+                  averageUtilization: args.autoscale?.averageCpuUtilization ?? 50,
+                },
               },
             },
           ],

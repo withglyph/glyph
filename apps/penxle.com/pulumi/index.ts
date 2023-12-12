@@ -14,8 +14,13 @@ const site = new penxle.Site('penxle.com', {
   },
 
   resources: {
-    cpu: '500m',
-    memory: '500Mi',
+    cpu: '1000m',
+    memory: '2000Mi',
+  },
+
+  autoscale: {
+    minCount: 20,
+    maxCount: 200,
   },
 
   iam: {
