@@ -47,8 +47,10 @@
 
 <section class="flex flex-col items-center w-full bg-cardprimary grow">
   <header
-    style={`background-image: url(${collection?.thumbnail?.url})`}
-    class="w-full h-12.875rem p-x-6 p-y-6 bg-gradient-to-b from-black to-black flex justify-center items-end text-darkprimary bg-cover bg-center bg-no-repeat"
+    style={typeof collection?.thumbnail?.url === 'string'
+      ? `background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.8)), url(${collection.thumbnail.url})`
+      : ''}
+    class="w-full h-12.875rem p-x-6 p-y-6 flex justify-center items-end text-darkprimary bg-(cover center no-repeat alphagray-50)"
   >
     <div class="max-w-75rem flex-1">
       <h1 class="title-20-b m-b-2">{collection?.name}</h1>
