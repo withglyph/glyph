@@ -68,81 +68,82 @@
   </div>
 </div>
 
-<Table class="text-left border-separate border-spacing-y-0.125rem">
-  <TableRow>
-    <TableHead>컬렉션</TableHead>
-    <TableHead class="<sm:hidden">생성일</TableHead>
-    <TableHead>관리</TableHead>
-  </TableRow>
-  <colgroup>
-    <col class="w-50%" span="1" />
-    <col class="w-15% <sm:hidden" span="1" />
-    <col class="w-15% <sm:w-35%" span="1" />
-  </colgroup>
-  {#each $query.space.collections as collection (collection.id)}
+<div class="overflow-y-auto">
+  <Table class="text-left border-separate border-spacing-y-0.125rem">
     <TableRow>
-      <TableData>
-        <a class="flex gap-xs" href={`/${$query.space.slug}/collections/${collection.id}`}>
-          {#if collection.thumbnail}
-            <Image class="w-6rem h-7.5rem rounded-2" $image={collection.thumbnail} />
-          {/if}
-          <dl class="truncate [&>dt]:truncate">
-            <dt class="body-15-b m-b-1">
-              {collection.name}
-            </dt>
-            <dd class="body-13-b text-secondary">{collection.count}개의 포스트</dd>
-          </dl>
-        </a>
-      </TableData>
-      <TableData class="body-13-b text-disabled <sm:hidden">{dayjs(collection.createdAt).formatAsDate()}</TableData>
-      <TableData>
-        <div class="flex gap-2">
-          <Button
-            class="<sm:hidden disabled:invisible"
-            color="tertiary"
-            disabled={collection.posts.length === 0}
-            size="sm"
-            variant="outlined"
-            on:click={() => {
-              selectedCollectionId = collection.id;
-              openPostManageModal = true;
-            }}
-          >
-            포스트 관리
-          </Button>
-          <Button
-            color="tertiary"
-            size="sm"
-            variant="outlined"
-            on:click={() => {
-              selectedCollectionId = collection.id;
-              openUpdateCollectionModal = true;
-            }}
-          >
-            <span class="<sm:hidden">컬렉션</span>
-            관리
-          </Button>
-          <Button
-            class="p-none! disabled:invisible"
-            loading={deleting}
-            size="sm"
-            variant="text"
-            on:click={async () => {
-              deleting = true;
-              await deleteSpaceCollection({ collectionId: collection.id });
-              deleting = false;
-
-              toast.success('컬렉션을 삭제했어요');
-            }}
-          >
-            <i class="i-lc-trash-2 square-4 text-secondary hover:text-action-red-primary" />
-          </Button>
-        </div>
-      </TableData>
+      <TableHead>컬렉션</TableHead>
+      <TableHead class="<sm:hidden">생성일</TableHead>
+      <TableHead>관리</TableHead>
     </TableRow>
-  {/each}
-</Table>
+    <colgroup>
+      <col class="w-50%" span="1" />
+      <col class="w-15% <sm:hidden" span="1" />
+      <col class="w-15% <sm:w-35%" span="1" />
+    </colgroup>
+    {#each $query.space.collections as collection (collection.id)}
+      <TableRow>
+        <TableData>
+          <a class="flex gap-xs" href={`/${$query.space.slug}/collections/${collection.id}`}>
+            {#if collection.thumbnail}
+              <Image class="w-6rem h-7.5rem rounded-2" $image={collection.thumbnail} />
+            {/if}
+            <dl class="truncate [&>dt]:truncate">
+              <dt class="body-15-b m-b-1">
+                {collection.name}
+              </dt>
+              <dd class="body-13-b text-secondary">{collection.count}개의 포스트</dd>
+            </dl>
+          </a>
+        </TableData>
+        <TableData class="body-13-b text-disabled <sm:hidden">{dayjs(collection.createdAt).formatAsDate()}</TableData>
+        <TableData>
+          <div class="flex gap-2">
+            <Button
+              class="<sm:hidden disabled:invisible"
+              color="tertiary"
+              disabled={collection.posts.length === 0}
+              size="sm"
+              variant="outlined"
+              on:click={() => {
+                selectedCollectionId = collection.id;
+                openPostManageModal = true;
+              }}
+            >
+              포스트 관리
+            </Button>
+            <Button
+              color="tertiary"
+              size="sm"
+              variant="outlined"
+              on:click={() => {
+                selectedCollectionId = collection.id;
+                openUpdateCollectionModal = true;
+              }}
+            >
+              <span class="<sm:hidden">컬렉션</span>
+              관리
+            </Button>
+            <Button
+              class="p-none! disabled:invisible"
+              loading={deleting}
+              size="sm"
+              variant="text"
+              on:click={async () => {
+                deleting = true;
+                await deleteSpaceCollection({ collectionId: collection.id });
+                deleting = false;
 
+                toast.success('컬렉션을 삭제했어요');
+              }}
+            >
+              <i class="i-lc-trash-2 square-4 text-secondary hover:text-action-red-primary" />
+            </Button>
+          </div>
+        </TableData>
+      </TableRow>
+    {/each}
+  </Table>
+</div>
 <CreateCollectionModal spaceId={$query.space.id} bind:open={openCreateCollectionModal} />
 {#if selectedCollection}
   <Modal size="lg" bind:open={openPostManageModal}>
