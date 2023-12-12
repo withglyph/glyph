@@ -71,10 +71,6 @@
 
     const file = dataurl2file(dataUrl, `${title}.png`);
 
-    if (navigator.share) {
-      navigator.share({ title, text: '밑줄 공유', files: [file] });
-      return;
-    }
     if (typeof ClipboardItem === 'undefined') {
       const link = document.createElement('a');
       link.download = `${title}.png`;
