@@ -126,7 +126,7 @@
     schema: UpdateSpaceSchema,
     extra: () => ({
       iconId: icon.id,
-      externalLinks: links.map(({ url }) => url),
+      externalLinks: links.map(({ url }) => url).filter((url) => url.trim()),
     }),
     onSuccess: async () => {
       mixpanel.track('space:update', { spaceId: $query.space.id });
