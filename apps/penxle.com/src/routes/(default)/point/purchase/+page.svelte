@@ -5,7 +5,7 @@
   import Paypal from '$assets/icons/paypal.svg?component';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Modal } from '$lib/components';
+  import { Button, Modal, Tooltip } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
@@ -80,6 +80,13 @@
     ['GIFTCARD_BOOKNLIFE', '도서문화상품권'],
     ['PAYPAL', '페이팔'],
   ];
+
+  const disabledPaymentMethods = new Set([
+    'PHONE_BILL',
+    'GIFTCARD_CULTURELAND',
+    'GIFTCARD_SMARTCULTURE',
+    'GIFTCARD_BOOKNLIFE',
+  ]);
 </script>
 
 <svelte:head>
@@ -121,21 +128,27 @@
 
   <p class="w-full">결제수단</p>
 
-  <div class="grid grid-cols-4 gap-4 w-full">
+  <div class="grid grid-cols-3 gap-2 sm:(grid-cols-4 gap-4) w-full">
     {#each paymentMethods as [method, name] (method)}
-      <Button
-        class={clsx($data.paymentMethod === method && 'bg-surface-primary! border-tertiary')}
-        color="tertiary"
-        size="xl"
-        variant="outlined"
-        on:click={() => ($data.paymentMethod = method)}
-      >
-        {#if method === 'PAYPAL'}
-          <Paypal class="h-5" />
-        {:else}
-          {name}
-        {/if}
-      </Button>
+      <Tooltip enabled={disabledPaymentMethods.has(method)} message="아직 준비 중이에요">
+        <Button
+          class={clsx(
+            'disabled:border w-full',
+            $data.paymentMethod === method && 'bg-surface-primary! border-tertiary',
+          )}
+          color="tertiary"
+          disabled={disabledPaymentMethods.has(method)}
+          size="xl"
+          variant="outlined"
+          on:click={() => ($data.paymentMethod = method)}
+        >
+          {#if method === 'PAYPAL'}
+            <Paypal class="h-5" />
+          {:else}
+            {name}
+          {/if}
+        </Button>
+      </Tooltip>
     {/each}
   </div>
 
