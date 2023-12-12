@@ -1,8 +1,10 @@
 <script lang="ts">
+  import dayjs from 'dayjs';
   import { graphql } from '$glitch';
   import { Button } from '$lib/components';
-  import PopupSearch from '$lib/components/forms/PopupSearch.svelte';
+  // import PopupSearch from '$lib/components/forms/PopupSearch.svelte';
   import { comma } from '$lib/utils';
+  import type { PointTransactionCause } from '$glitch';
 
   $: query = graphql(`
     query PointPage_Query {
@@ -11,12 +13,43 @@
       me @_required {
         id
         point
+
+        points {
+          id
+          amount
+          cause
+          createdAt
+
+          post {
+            id
+
+            publishedRevision {
+              id
+              title
+            }
+          }
+        }
       }
     }
   `);
+
+  const pointTransactionCause: Record<PointTransactionCause, string> = {
+    EXPIRE: '만료',
+    INTERNAL: '시스템',
+    PATRONIZE: '후원',
+    PURCHASE: '충전',
+    REFUND: '환불',
+    UNDO_PURCHASE: '결제 취소',
+    UNLOCK_CONTENT: '구매',
+  };
+
+  let purchased = (cause: PointTransactionCause) => {
+    const causes = ['INTERNAL', 'PURCHASE', 'PATRONIZE', 'REFUND', 'UNDO_PURCHASE'];
+    return causes.includes(cause);
+  };
 </script>
 
-<div class="w-full max-w-300 flex flex-col sm:m-7.5">
+<div class="w-full max-w-315 flex flex-col sm:p-7.5">
   <h1 class="text-xl font-bold mb-5 <sm:hidden">포인트</h1>
   <div class="sm:(flex gap-10)">
     <aside class="w-81.5 bg-cardprimary border border-secondary rounded-2xl px-4 py-6 h-full <sm:hidden">
@@ -44,88 +77,65 @@
     <div class="w-full max-w-208">
       <h2 class="text-black text-xl font-bold">이용 내역</h2>
       <div class="mt-4 flex p-6 flex-col gap-6 border-rd-3 border-1 border-solid border-secondary bg-white">
-        <div class="flex flex-col gap-4">
-          <PopupSearch class="" placeholder="검색어를 입력하세요" />
-          <div class="flex gap-2">
-            <!-- Chips 컴포넌트 -->
-            <div
-              class="flex px-2 py-1.5 items-center border-1 border-#D6D3D1 border-rd-12 bg-#292524 body-13-m text-gray-5"
-            >
-              전체
-            </div>
-            <div class="flex px-2 py-1.5 items-center border-1 border-#D6D3D1 border-rd-12 bg-white body-13-m">
-              구매
-            </div>
-            <div class="flex px-2 py-1.5 items-center border-1 border-#D6D3D1 border-rd-12 bg-white body-13-m">
-              충전
-            </div>
-            <div class="flex px-2 py-1.5 items-center border-1 border-#D6D3D1 border-rd-12 bg-white body-13-m">
-              결제/후원
-            </div>
+        {#if $query.me.points.length === 0}
+          <div class="body-15-b grow text-center flex flex-col center">
+            포인트 내역이 없어요.
+            <br />
+            포인트를 충전해보세요!
+
+            <Button class="w-fit mt-4" href="/point/purchase" size="lg" type="link">포인트 충전하기</Button>
           </div>
+        {:else}
           <div class="flex flex-col gap-4">
-            <div class="flex flex-col gap-1">
-              <div class="text-secondary body-13-m pb-3 border-b-1 border-solid border-alphagray-10">2023.08.01</div>
-              <div class="flex flex-col gap-1">
-                <div class="flex p-xs flex-col gap-3">
-                  <div class="flex gap-4 items-center justify-between">
-                    <div class="flex gap-6 align-top">
-                      <div class="text-secondary body-13-m">12:01</div>
-                      <div class="flex flex-col gap-2 flex-1">
-                        <div class="text-secondary body-13-m">구매</div>
-                        <div class="text-primary body-16-sb">작품명이 기입됩니다</div>
-                      </div>
-                    </div>
-                    <div class="text-secondary body-16-b flex items-center">- 1,000</div>
-                  </div>
-                </div>
-                <hr class="border-t-0 border-b-1 border-alphagray-10" />
-                <div class="flex p-xs flex-col gap-3">
-                  <div class="flex gap-4 items-center justify-between">
-                    <div class="flex gap-6">
-                      <div class="text-secondary body-13-m">12:01</div>
-                      <div class="flex flex-col gap-2 flex-1">
-                        <div class="text-secondary body-13-m">충전</div>
-                        <div class="text-primary body-16-sb">신한카드 3560</div>
-                      </div>
-                    </div>
-                    <div class="text-green-50 body-16-b flex items-center">+ 1,000</div>
-                  </div>
-                </div>
+            <!-- <PopupSearch class="" placeholder="검색어를 입력하세요" /> -->
+            <div class="flex gap-2">
+              <!-- Chips 컴포넌트 -->
+              <!-- <div
+                class="flex px-2 py-1.5 items-center border-1 border-#D6D3D1 border-rd-12 bg-#292524 body-13-m text-gray-5"
+              >
+                전체
               </div>
+              <div class="flex px-2 py-1.5 items-center border-1 border-#D6D3D1 border-rd-12 bg-white body-13-m">
+                구매
+              </div>
+              <div class="flex px-2 py-1.5 items-center border-1 border-#D6D3D1 border-rd-12 bg-white body-13-m">
+                충전
+              </div>
+              <div class="flex px-2 py-1.5 items-center border-1 border-#D6D3D1 border-rd-12 bg-white body-13-m">
+                결제/후원
+              </div> -->
             </div>
-            <div class="flex flex-col gap-1">
-              <div class="text-secondary body-13-m pb-3 border-b-1 border-solid border-alphagray-10">2023.08.01</div>
-              <div class="flex flex-col gap-1">
-                <div class="flex p-xs flex-col gap-3">
-                  <div class="flex gap-4 items-center justify-between">
-                    <div class="flex gap-6 align-top self-stretch">
-                      <div class="text-secondary body-13-m">12:01</div>
-                      <div class="flex flex-col gap-2 flex-1">
-                        <div class="text-secondary body-13-m">구매</div>
-                        <div class="text-primary body-16-sb">작품명이 기입됩니다</div>
+            <div class="flex flex-col gap-4">
+              {#each $query.me.points as point (point.id)}
+                <div class="flex flex-col gap-1">
+                  <div class="text-secondary body-13-m pb-3 border-b-1 border-solid border-alphagray-10">
+                    {dayjs(point.createdAt).formatAsDate()}
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <div class="flex p-xs flex-col gap-3">
+                      <div class="flex gap-4 items-center justify-between">
+                        <div class="flex gap-6 align-top">
+                          <div class="text-secondary body-13-m">{dayjs(point.createdAt).formatAsTime()}</div>
+                          <div class="flex flex-col gap-2 flex-1">
+                            <div class="text-secondary body-13-m">{pointTransactionCause[point.cause]}</div>
+                            {#if point.cause === 'UNLOCK_CONTENT'}
+                              <div class="text-primary body-16-sb">{point.post?.publishedRevision?.title}</div>
+                            {/if}
+                          </div>
+                        </div>
+                        {#if purchased(point.cause)}
+                          <div class="text-green-50 body-16-b flex items-center">+{comma(point.amount)}</div>
+                        {:else}
+                          <div class="text-secondary body-16-b flex items-center">{comma(point.amount)}</div>
+                        {/if}
                       </div>
                     </div>
-                    <div class="text-secondary body-16-b flex items-center">- 1,000</div>
                   </div>
                 </div>
-                <hr class="border-t-0 border-b-1 border-alphagray-10" />
-                <div class="flex p-xs flex-col gap-3">
-                  <div class="flex gap-4 items-center justify-between">
-                    <div class="flex gap-6 align-top self-stretch">
-                      <div class="text-secondary body-13-m">12:01</div>
-                      <div class="flex flex-col gap-2 flex-1">
-                        <div class="text-secondary body-13-m">구매</div>
-                        <div class="text-primary body-16-sb">작품명이 기입됩니다</div>
-                      </div>
-                    </div>
-                    <div class="text-secondary body-16-b flex items-center">- 1,000</div>
-                  </div>
-                </div>
-              </div>
+              {/each}
             </div>
           </div>
-        </div>
+        {/if}
         <!-- TODO: Pagination -->
       </div>
     </div>
