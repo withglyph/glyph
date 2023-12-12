@@ -30,6 +30,7 @@
   let openDeletePostWarning = false;
   let blurContent = true;
   let element: 'a' | 'div';
+  let adultOpen = false;
 
   $: element = preview ? 'div' : 'a';
 
@@ -51,6 +52,11 @@
       fragment Post_query on Query {
         me {
           id
+          isAdulthood
+
+          personalIdentity {
+            id
+          }
 
           bookmarks {
             id
@@ -151,6 +157,10 @@
   afterNavigate(() => {
     blurContent = $query.post.blurred;
   });
+
+  $: if (!$query.me || !$query.me.personalIdentity || !$query.me.isAdulthood) {
+    adultOpen = true;
+  }
 
   let share: { open: boolean; content: JSONContent | null } = {
     open: false,
@@ -462,29 +472,31 @@
 
     {#if !$query.post.hasPassword || $query.post.space.meAsMember || $query.post.unlocked}
       <div class="relative">
-        {#if $postRevision.contentKind === 'ARTICLE'}
-          {#if blurContent}
-            <header class="py-6 px-3 rounded-3 w-full flex flex-col items-center bg-primary" role="alert">
-              <i class="i-px-alert-triangle square-6 mb-2 color-text-secondary" />
-              <h2 class="body-16-eb">포스트에 민감한 내용이 포함되어 있어요</h2>
-              <p class="body-13-m my-2.5 text-secondary">트리거 워닝 or 성인물 내용이 포함되어 있어요.</p>
-              <Button
-                class="rounded-xl"
-                size="sm"
-                on:click={() => {
-                  blurContent = false;
-                }}
-              >
-                내용 표시하기
-              </Button>
-            </header>
+        {#if $query.me?.personalIdentity || !$query.me?.isAdulthood}
+          {#if $postRevision.contentKind === 'ARTICLE'}
+            {#if blurContent}
+              <header class="py-6 px-3 rounded-3 w-full flex flex-col items-center bg-primary" role="alert">
+                <i class="i-px-alert-triangle square-6 mb-2 color-text-secondary" />
+                <h2 class="body-16-eb">포스트에 민감한 내용이 포함되어 있어요</h2>
+                <p class="body-13-m my-2.5 text-secondary">트리거 워닝 or 성인물 내용이 포함되어 있어요.</p>
+                <Button
+                  class="rounded-xl"
+                  size="sm"
+                  on:click={() => {
+                    blurContent = false;
+                  }}
+                >
+                  내용 표시하기
+                </Button>
+              </header>
+            {:else}
+              <article>
+                <TiptapRenderer class="bodylong-16-m" content={$postRevision.content} bind:editor />
+              </article>
+            {/if}
           {:else}
-            <article>
-              <TiptapRenderer class="bodylong-16-m" content={$postRevision.content} bind:editor />
-            </article>
+            <GalleryPost {$query} {mode} revision={$postRevision} />
           {/if}
-        {:else}
-          <GalleryPost {$query} {mode} revision={$postRevision} />
         {/if}
 
         {#if editor && !preview}
@@ -754,4 +766,40 @@
       삭제
     </Button>
   </div>
+</Modal>
+
+<Modal size="sm" bind:open={adultOpen}>
+  <svelte:fragment slot="title">성인 인증이 필요한 포스트예요</svelte:fragment>
+  <svelte:fragment slot="subtitle">
+    {!$query.me?.personalIdentity && '성인 인증을 하고 더 다양한 포스트를 감상해보세요!'}
+  </svelte:fragment>
+
+  <Button
+    slot="action"
+    class="w-full"
+    size="xl"
+    on:click={async () => {
+      if (!$query.me) {
+        adultOpen = false;
+        loginRequireOpen = true;
+        return;
+      }
+
+      if (!$query.me?.personalIdentity) {
+        await goto('/me/settings');
+        return;
+      }
+
+      if (!$query.me.isAdulthood) {
+        history.back();
+        return;
+      }
+    }}
+  >
+    {#if !$query.me?.personalIdentity}
+      성인 인증하기
+    {:else}
+      뒤로 가기
+    {/if}
+  </Button>
 </Modal>
