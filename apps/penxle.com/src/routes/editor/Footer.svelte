@@ -148,7 +148,10 @@
             <button
               class="i-lc-trash pointer-events-auto"
               type="button"
-              on:click={() => (tags = tags.filter((t) => t !== tag))}
+              on:click={() => {
+                tags = tags.filter((t) => t !== tag);
+                $autoSaveCount += 1;
+              }}
             />
           </Tag>
         {/each}
