@@ -18,10 +18,25 @@
           space {
             id
             slug
+            name
 
             icon {
               id
               ...Image_image
+            }
+          }
+
+          purchasedRevision {
+            id
+            title
+          }
+
+          member {
+            id
+
+            profile {
+              id
+              name
             }
           }
         }
@@ -51,8 +66,8 @@
       <Image class="square-12.5 rounded-xl flex-none" $image={post.space.icon} />
 
       <div class="truncate">
-        <p class="body-16-eb truncate">포스트 제목</p>
-        <p class="body-14-m text-secondary truncate">스페이스명 · 작성자</p>
+        <p class="body-16-eb truncate">{post.purchasedRevision?.title}</p>
+        <p class="body-14-m text-secondary truncate">{post.space.name} · {post.member.profile.name}</p>
       </div>
     </a>
   </li>
