@@ -85,7 +85,7 @@
       <div class="flex items-center <sm:hidden relative">
         {#if $query.me}
           <a
-            class="relative flex items-center gap-2 rounded-lg py-1 pr-2 pl-1 transition hover:bg-surface-primary <lg:hidden"
+            class="relative flex items-center gap-2 rounded-lg py-1 pr-2 pl-1 m-r-2 transition hover:bg-surface-primary <lg:hidden"
             href="/editor"
           >
             <PenFancy class="square-8 mb-1" />
