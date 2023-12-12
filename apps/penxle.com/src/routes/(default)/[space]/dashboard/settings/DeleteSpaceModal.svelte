@@ -39,8 +39,8 @@
   <svelte:fragment slot="subtitle">스페이스의 모든 데이터가 삭제되고 복구할 수 없어요</svelte:fragment>
 
   <form
-    on:submit|preventDefault={async () => {
-      await deleteSpace({ spaceId: $space.id });
+    on:submit|preventDefault={() => {
+      deleteSpace({ spaceId: $space.id });
       mixpanel.track('space:delete', { spaceId: $space.id });
       open = false;
       completeModalOpen = true;
