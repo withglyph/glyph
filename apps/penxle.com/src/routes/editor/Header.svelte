@@ -377,7 +377,10 @@
         aria-pressed={kind === 'ARTICLE'}
         disabled={kind === 'ARTICLE'}
         type="button"
-        on:click={() => changeMode('ARTICLE')}
+        on:click={() => {
+          changeMode('ARTICLE');
+          $autoSaveCount += 1;
+        }}
       >
         <i class="i-lc-file-text square-5" />
         <span class="body-14-b">글 모드</span>
@@ -387,7 +390,10 @@
         aria-pressed={kind === 'GALLERY'}
         disabled={kind === 'GALLERY'}
         type="button"
-        on:click={() => changeMode('GALLERY')}
+        on:click={() => {
+          changeMode('GALLERY');
+          $autoSaveCount += 1;
+        }}
       >
         <i class="i-lc-image square-5" />
         <span class="body-14-b">그림 모드</span>
