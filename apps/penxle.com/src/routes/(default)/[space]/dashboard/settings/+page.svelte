@@ -170,7 +170,7 @@
             </TextInput>
           </FormField>
         </div>
-        <p class="body-13-m text-disabled mt-2">파일 용량 1MB이하 / JPG만 업로드 가능</p>
+        <p class="body-13-m text-disabled mt-2">JPG, PNG 업로드 가능</p>
       </div>
 
       <FormField name="description" label="스페이스 소개">

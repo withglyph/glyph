@@ -126,7 +126,6 @@
         <h3 class="text-lg font-extrabold mr-2">이메일 인증</h3>
         <Badge class="text-xs font-bold" color="green">인증 완료</Badge>
       </div>
-      <p class="text-3.75 text-secondary break-keep">펜슬의 콘텐츠를 이용하려면 이메일 인증이 필요해요</p>
     </div>
 
     <Button color="tertiary" size="md" variant="outlined" on:click={() => (updateEmailOpen = true)}>변경하기</Button>
@@ -147,7 +146,7 @@
         {#if $query.me.personalIdentity}
           {dayjs($query.me.personalIdentity.createdAt).formatAsDate()} 에 인증을 진행했어요
         {:else}
-          펜슬의 콘텐츠를 이용하려면 본인 인증이 필요해요
+          성인물 등 특정 콘텐츠를 이용하려면 본인 인증이 필요해요
         {/if}
       </p>
     </div>
@@ -167,7 +166,7 @@
 
   <div class="flex flex-wrap items-center justify-between gap-4">
     <div>
-      <h3 class="text-lg font-extrabold mb-2">마케팅 수신 동의</h3>
+      <h3 class="text-lg font-extrabold mb-2">이벤트 등 펜슬 소식 받아보기</h3>
       {#if $query.me.marketingConsent}
         <p class="text-3.75 text-secondary break-keep">
           {dayjs($query.me.marketingConsent.createdAt).formatAsDate()} 승인됨

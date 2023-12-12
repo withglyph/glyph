@@ -19,7 +19,7 @@
 </script>
 
 {#if $query.me.recentlyViewedPosts?.length === 0}
-  <p class="text-secondary text-center body-15-b py-10">최근 본 포스트가 없어요</p>
+  <p class="text-secondary text-center body-15-b py-10">아직 최근 본 포스트가 없어요</p>
 {/if}
 
 {#each $query.me.recentlyViewedPosts as post (post.id)}

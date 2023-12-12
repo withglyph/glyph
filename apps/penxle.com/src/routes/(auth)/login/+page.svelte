@@ -42,7 +42,7 @@
 <div class="flex center flex-col gap-6 mb-6">
   <div class="flex center flex-col">
     <h1 class="text-gray-90 text-2xl font-extrabold text-center">함께 그리는 반짝임, 펜슬</h1>
-    <h2 class="text-gray-50 text-3.75 mt-2 font-bold">창작자를 위한 플랫폼, 펜슬과 함께하세요</h2>
+    <h2 class="text-gray-50 text-3.75 mt-2 font-bold">이메일을 통해 펜슬에 가입하거나 로그인할 수 있어요</h2>
   </div>
 </div>
 

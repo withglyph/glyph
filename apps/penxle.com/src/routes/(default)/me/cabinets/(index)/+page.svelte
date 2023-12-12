@@ -19,7 +19,7 @@
 </script>
 
 {#if $query.me.likedPosts?.length === 0}
-  <p class="text-secondary text-center body-15-b py-10">좋아요한 포스트가 없어요</p>
+  <p class="text-secondary text-center body-15-b py-10">아직 좋아요한 포스트가 없어요</p>
 {/if}
 
 {#each $query.me.likedPosts as post (post.id)}

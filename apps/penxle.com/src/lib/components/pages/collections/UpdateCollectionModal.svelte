@@ -77,7 +77,7 @@
         <i class="i-px-camera square-6 text-darkprimary" />
       </div>
     </button>
-    <div id="upload-restriction" class="body-13-m text-disabled m-y-xs">파일 용량 1MB이하 / JPG만 업로드 가능</div>
+    <div id="upload-restriction" class="body-13-m text-disabled m-y-xs">JPG, PNG 업로드 가능</div>
     <FormField name="name" label="컬렉션명">
       <TextInput class="w-full font-bold" maxlength={20} required />
     </FormField>

@@ -460,7 +460,7 @@
       <div class="p-4 rounded-3 border-(0.08333333rem solid border-secondary)" role="alert">
         <div class="mb-xs inline-flex items-center gap-1 body-14-b">
           <i class="i-px-alert-triangle square-4" />
-          <span>포스트에 민감한 내용이 포함되어 있어요 감상에 유의해주세요</span>
+          <span>포스트에 민감한 내용이 포함되어 있어요</span>
         </div>
         <ul class="body-14-m">
           {#each $query.post.contentFilters as filter (filter)}
@@ -478,7 +478,7 @@
               <header class="py-6 px-3 rounded-3 w-full flex flex-col items-center bg-primary" role="alert">
                 <i class="i-px-alert-triangle square-6 mb-2 color-text-secondary" />
                 <h2 class="body-16-eb">포스트에 민감한 내용이 포함되어 있어요</h2>
-                <p class="body-13-m my-2.5 text-secondary">트리거 워닝 or 성인물 내용이 포함되어 있어요.</p>
+                <p class="body-13-m my-2.5 text-secondary">읽기 전 주의해주세요</p>
                 <Button
                   class="rounded-xl"
                   size="sm"

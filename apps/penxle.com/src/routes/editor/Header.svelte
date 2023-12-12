@@ -660,7 +660,7 @@
             $data.contentFilters = $data.contentFilters?.includes('ADULT') ? ['ADULT'] : [];
           }}
         >
-          민감한 요소
+          트리거 주의
         </Checkbox>
 
         <div class={clsx('grid grid-cols-5 gap-2', !enableContentFilter && 'hidden')}>

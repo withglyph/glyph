@@ -183,11 +183,7 @@
             role="alert"
           >
             <i class="i-px-alert-triangle square-6" />
-            <p class="body-14-sb text-center">
-              포스트에 민감한 내용이 포함되어 있어요
-              <br />
-              감상에 유의해주세요
-            </p>
+            <p class="body-14-sb text-center">포스트에 민감한 내용이 포함되어 있어요</p>
 
             <div class="flex flex-wrap gap-2.5">
               <span
