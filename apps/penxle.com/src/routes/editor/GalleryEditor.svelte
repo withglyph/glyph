@@ -192,8 +192,6 @@
         content.content = content.content?.filter((c) => c.attrs?.id !== id);
       }
     }
-
-    onChange();
   };
 
   $: accessBarrierIndex = content?.content?.findIndex((c) => c.type === 'access_barrier') ?? -1;
@@ -279,6 +277,8 @@
         if (changeThumbnail && content.content[0 + d].type === 'image') {
           setThumbnail(content.content[0 + d] as Image);
         }
+
+        onChange();
       }
     });
   });
@@ -299,6 +299,7 @@
     type="file"
     on:change={async ({ currentTarget }) => {
       await addFiles(currentTarget.files);
+      onChange();
       fileEl.value = '';
     }}
   />
@@ -319,6 +320,7 @@
       on:drop|preventDefault|stopPropagation={async ({ dataTransfer }) => {
         dragging = null;
         await addFiles(dataTransfer?.files);
+        onChange();
       }}
       on:dragleave|preventDefault|stopPropagation={({ target }) => {
         if (target === dragging) dragging = null;
