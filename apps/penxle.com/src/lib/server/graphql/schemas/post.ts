@@ -67,13 +67,6 @@ export const postSchema = defineSchema((builder) => {
         return [];
       }
 
-      if (post.password) {
-        const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
-        if (!unlock || dayjs().isAfter(dayjs(unlock))) {
-          return [];
-        }
-      }
-
       return ['$post:view'];
     },
     fields: (t) => ({
@@ -343,6 +336,13 @@ export const postSchema = defineSchema((builder) => {
         });
 
         if (!identity || !isAdulthood(identity.birthday)) {
+          return [];
+        }
+      }
+
+      if (post.password) {
+        const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
+        if (!unlock || dayjs().isAfter(dayjs(unlock))) {
           return [];
         }
       }
