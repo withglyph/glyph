@@ -274,8 +274,14 @@
       <TableHead class="w-2.5rem">
         <Checkbox on:change={handleSelectAllPost} />
       </TableHead>
-      <TableHead class="sm:max-w-14rem">포스트</TableHead>
-      <TableHead class="<sm:hidden max-w-10rem">작성자</TableHead>
+      <TableHead class="sm:max-w-14rem">제목</TableHead>
+      <TableHead class="<sm:hidden max-w-10rem">
+        {#if type === 'space'}
+          작성자
+        {:else}
+          스페이스
+        {/if}
+      </TableHead>
       <TableHead class="w-12rem <sm:hidden">태그</TableHead>
       <TableHead class="<sm:w-5.25rem">공개옵션</TableHead>
       <TableHead class="<sm:hidden">관리</TableHead>
