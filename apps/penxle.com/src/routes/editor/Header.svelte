@@ -391,8 +391,12 @@
         disabled={kind === 'GALLERY'}
         type="button"
         on:click={() => {
-          changeMode('GALLERY');
-          $autoSaveCount += 1;
+          const message = '그림 모드로 전환하면 그림을 제외한 나머지 내용은 사라져요. 그래도 전환하시겠어요?';
+
+          if (confirm(message)) {
+            changeMode('GALLERY');
+            $autoSaveCount += 1;
+          }
         }}
       >
         <i class="i-lc-image square-5" />
