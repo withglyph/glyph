@@ -155,14 +155,14 @@
           </div>
         {/if}
       </div>
-      <div class="flex flex-wrap gap-2 sm:hidden">
+      <div class="flex flex-wrap gap-2 hidden">
         <Tag>#태그</Tag>
         <Tag>#태그</Tag>
         <Tag>#태그</Tag>
         <Tag>#태그</Tag>
         <Tag>#태그</Tag>
       </div>
-      <div class="flex flex-wrap gap-2 <sm:hidden">
+      <div class="flex flex-wrap gap-2 hidden">
         <Tag size="sm">#태그</Tag>
         <Tag size="sm">#태그</Tag>
         <Tag size="sm">#태그</Tag>
