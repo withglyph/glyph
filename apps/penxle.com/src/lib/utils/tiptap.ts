@@ -14,3 +14,12 @@ export const documentToText = (document: JSONContent): string => {
     },
   });
 };
+export const validateTiptapDocument = (document: JSONContent) => {
+  try {
+    const schema = getSchema(extensions);
+    Node.fromJSON(schema, document).check();
+    return true;
+  } catch {
+    return false;
+  }
+};

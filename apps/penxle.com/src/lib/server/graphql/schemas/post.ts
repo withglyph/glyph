@@ -18,7 +18,7 @@ import { redis } from '$lib/server/cache';
 import { s3 } from '$lib/server/external-api/aws';
 import { deductUserPoint, directUploadImage, getUserPoint, indexPost, indexTags, isAdulthood } from '$lib/server/utils';
 import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
-import { base36To10, createId, createTiptapDocument, createTiptapNode } from '$lib/utils';
+import { base36To10, createId, createTiptapDocument, createTiptapNode, validateTiptapDocument } from '$lib/utils';
 import { RevisePostInputSchema } from '$lib/validations/post';
 import { defineSchema } from '../builder';
 import type { JSONContent } from '@tiptap/core';
@@ -733,7 +733,8 @@ export const postSchema = defineSchema((builder) => {
         }
 
         let document = (input.content as JSONContent).content;
-        if (!document) {
+
+        if (!document || !validateTiptapDocument(input.content)) {
           throw new FormValidationError('content', '잘못된 내용이에요');
         }
 

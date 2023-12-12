@@ -21,6 +21,7 @@
   import ArticleCharacterCount from './ArticleCharacterCount.svelte';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
   import RevisionListModal from './RevisionListModal.svelte';
+  import { preventRevise } from './store';
   import ToolbarButton from './ToolbarButton.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
   import type { Writable } from 'svelte/store';
@@ -173,6 +174,10 @@
   });
 
   const doRevisePost = async (revisionKind: PostRevisionKind) => {
+    if (!canRevise) {
+      return;
+    }
+
     const resp = await revisePost({
       contentKind: kind,
       revisionKind,
@@ -264,7 +269,7 @@
   }
 
   $: published = $post?.state === 'PUBLISHED';
-  $: canRevise = browser && !!selectedSpace;
+  $: canRevise = browser && !!selectedSpace && !$preventRevise;
   $: canPublish = canRevise && title.trim().length > 0;
 
   const autoSave = R.debounce({ delay: 1000 }, async () => doRevisePost('AUTO_SAVE'));

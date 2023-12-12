@@ -13,6 +13,7 @@
   import { portal } from '$lib/svelte/actions';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
   import FileImage from './FileImage.svelte';
+  import { preventRevise } from './store';
   import type { Sortable } from '@shopify/draggable';
   import type { JSONContent } from '@tiptap/core';
   import type { FragmentType, Image_image } from '$glitch';
@@ -40,6 +41,8 @@
   let dragging: EventTarget | null = null;
 
   export let onChange: () => void;
+
+  $: $preventRevise = !!content.content?.find((c) => c.type === 'uploading_image');
 
   const prepareImageUpload = graphql(`
     mutation Editor_PrepareImageUpload_Mutation {
