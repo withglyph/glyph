@@ -24,6 +24,7 @@
         contentFilters
         hasPassword
         viewCount
+        discloseStats
 
         publishedRevision @_required {
           id
@@ -94,7 +95,12 @@
         {/if}
       </div>
     </div>
-    <p class="body-13-m text-secondary">{$post.member.profile.name} · 조회수 {humanizeNumber($post.viewCount)}</p>
+    <p class="body-13-m text-secondary">
+      {$post.member.profile.name}
+      {#if $post.discloseStats}
+        · 조회수 {humanizeNumber($post.viewCount)}
+      {/if}
+    </p>
 
     <article
       class={clsx('flex gap-xs justify-between rounded-lg <sm:(flex-wrap flex-col)', $post.blurred && 'min-h-33')}

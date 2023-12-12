@@ -69,6 +69,7 @@
           blurred
           hasPassword
           receiveFeedback
+          discloseStats
 
           bookmarkGroups {
             id
@@ -340,14 +341,16 @@
             <div class="flex items-center flex-wrap body-13-m text-secondary">
               <span class="mr-3.5">{dayjs($postRevision.createdAt).formatAsDate()}</span>
               <div class="flex items-center gap-3.5 body-13-m text-secondary">
-                <span class="flex items-center gap-1">
-                  <i class="i-lc-eye square-3.75" />
-                  {humanizeNumber($query.post.viewCount)}
-                </span>
-                <span class="flex items-center gap-1">
-                  <i class="i-px-heart square-3.75" />
-                  {humanizeNumber($query.post.likeCount)}
-                </span>
+                {#if $query.post.discloseStats}
+                  <span class="flex items-center gap-1">
+                    <i class="i-lc-eye square-3.75" />
+                    {humanizeNumber($query.post.viewCount)}
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <i class="i-px-heart square-3.75" />
+                    {humanizeNumber($query.post.likeCount)}
+                  </span>
+                {/if}
                 {#if $postRevision.contentKind === 'ARTICLE'}
                   <span class="flex items-center gap-1">
                     <i class="i-lc-alarm-clock square-3.75" />
@@ -617,11 +620,13 @@
         }}
       >
         {#if $query.post.liked}
-          <i class="i-px-heart-fill square-4 mr-1 text-red-50" />
+          <i class="i-px-heart-fill square-4 text-red-50" />
         {:else}
-          <i class="i-px-heart square-4 mr-1" />
+          <i class="i-px-heart square-4" />
         {/if}
-        <span class="body-15-b">{$query.post.likeCount}</span>
+        {#if $query.post.discloseStats}
+          <span class="body-15-b ml-1">{$query.post.likeCount}</span>
+        {/if}
       </Button>
 
       <div>
