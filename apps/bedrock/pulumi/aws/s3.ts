@@ -30,12 +30,7 @@ const uploads = new aws.s3.Bucket('uploads', {
     {
       allowedHeaders: ['*'],
       allowedMethods: ['PUT'],
-      allowedOrigins: [
-        'https://staging.penxle.com',
-        'https://penxle.com',
-        'https://*.pnxl.site',
-        'http://localhost:4000',
-      ],
+      allowedOrigins: ['https://penxle.com', 'https://*.pnxl.site', 'http://localhost:4000'],
     },
   ],
 });

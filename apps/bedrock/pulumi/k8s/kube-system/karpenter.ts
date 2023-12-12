@@ -209,8 +209,8 @@ new k8s.apiextensions.CustomResource('default', {
     },
 
     limits: {
-      cpu: 1000,
-      memory: '1000Gi',
+      cpu: 1_000_000,
+      memory: '1000000Gi',
     },
 
     disruption: {
