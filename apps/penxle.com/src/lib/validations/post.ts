@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { tagPattern } from '$lib/const/post';
 
 export const RevisePostInputSchema = z.object({
   revisionKind: z.enum(['AUTO_SAVE', 'MANUAL_SAVE']),
@@ -10,7 +11,7 @@ export const RevisePostInputSchema = z.object({
   content: z.any(),
   thumbnailId: z.string().optional(),
   thumbnailBounds: z.any().optional(),
-  tags: z.array(z.string().regex(new RegExp(/^[\p{L}\d_]+$/u, 'u'), '태그에 허용되지 않는 문자예요')),
+  tags: z.array(z.string().regex(new RegExp(tagPattern, 'u'), '태그에 허용되지 않는 문자예요')),
 });
 
 export const PublishPostInputSchema = z.object({

@@ -2,6 +2,7 @@
   import clsx from 'clsx';
   import { Badge, Image, Tag } from '$lib/components';
   import { ThumbnailPicker } from '$lib/components/media';
+  import { tagPattern } from '$lib/const/post';
   import { toast } from '$lib/notification';
   import type { Writable } from '@svelte-kits/store';
   import type { JSONContent } from '@tiptap/core';
@@ -44,6 +45,11 @@
 
     if (tags.includes(value)) {
       toast.error('중복된 태그를 입력했어요');
+      return;
+    }
+
+    if (!tagPattern.test(value)) {
+      toast.error('허용되지 않은 문자를 태그로 입력했어요');
       return;
     }
 
