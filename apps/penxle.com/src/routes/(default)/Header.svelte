@@ -7,7 +7,7 @@
   import Wordmark from '$assets/icons/wordmark.svg?component';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button } from '$lib/components';
+  import { Button, Modal } from '$lib/components';
   import { outsideClickEvent } from '$lib/svelte/actions';
   import GotoSpaceModal from './GotoSpaceModal.svelte';
   import Notification from './Notification.svelte';
@@ -22,6 +22,7 @@
   let isOpen = false;
   let sideBarOpen = false;
   let openGotoSpace = false;
+  let comingSoonOpen = false;
 
   $: query = fragment(
     _query,
@@ -107,7 +108,7 @@
         <mark class="inline-block leading-0 border-b-10">{$query.me.profile.name}님</mark>
       </p>
       <p class="text-lg font-semibold text-secondary mb-4">{$query.me.email}</p>
-      <Button class="w-full" href="/editor" size="xl" type="link">새 포스트 작성하기</Button>
+      <Button class="w-full" size="xl" on:click={() => (comingSoonOpen = true)}>새 포스트 작성하기</Button>
     </div>
     <div class="space-y-1">
       <a
@@ -173,3 +174,10 @@
 {#if $query.me}
   <GotoSpaceModal $user={$query.me} bind:open={openGotoSpace} />
 {/if}
+
+<Modal size="sm" bind:open={comingSoonOpen}>
+  <svelte:fragment slot="title">준비중인 기능이에요</svelte:fragment>
+  <svelte:fragment slot="subtitle">모바일 에디터는 아직 준비 중이에요. 조금만 기다려주세요!</svelte:fragment>
+
+  <Button slot="action" class="w-full" size="xl" on:click={() => (comingSoonOpen = false)}>닫기</Button>
+</Modal>
