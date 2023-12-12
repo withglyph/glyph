@@ -148,8 +148,6 @@
               ],
             };
           }
-        } else {
-          toast.error(`${file.name} 파일은 업로드 할 수 없어요`);
         }
       } catch {
         toast.error(`${file.name} 파일 업로드에 실패했어요`);
