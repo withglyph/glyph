@@ -27,5 +27,7 @@
   {#if as === 'label'}
     <input class="hidden" aria-checked={checked} type="checkbox" on:change bind:checked />
   {/if}
-  <slot />
+  <span class="align-text-top">
+    <slot />
+  </span>
 </svelte:element>
