@@ -1,15 +1,10 @@
-<script lang="ts">
-  import randomColor from 'randomcolor';
-
-  const backgroundColor = randomColor({
-    luminosity: 'light',
-  });
-</script>
-
-<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-  <rect fill={backgroundColor} height="24" width="24" />
-  <path
-    d="M7.36 3.86c2.3 5.04.42 10.01-.1 11.36-.08.23-.13.36-.11.36a15.7 15.7 0 0 1 9.45 4.6l-1.58-2.74L13 14.07a1.1 1.1 0 1 1 .53-.35l3.53 6.11c-1.4-4.68.63-10.12.63-10.12-6.15-.67-10.33-5.85-10.33-5.85Z"
-    fill="#FAFAF9"
-  />
+<svg fill="none" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <g clip-path="url(#a)">
+    <path d="M0 0h512v512H0z" fill="#F9F9F8" />
+    <path
+      d="M157.06 82.35c48.93 107.6 8.81 213.55-2.1 242.37-1.87 4.93-2.88 7.6-2.44 7.64a335.06 335.06 0 0 1 201.54 98.02l-33.64-58.27-43.1-72.01a23.55 23.55 0 1 1 11.38-7.33l75.24 130.31c-29.75-99.88 13.44-215.97 13.44-215.97C246.27 192.86 157.06 82.35 157.06 82.35Z"
+      fill="#E7E5E4"
+    />
+  </g>
+  <defs><clipPath id="a"><path d="M0 0h512v512H0z" fill="#fff" /></clipPath></defs>
 </svg>
