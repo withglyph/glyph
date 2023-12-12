@@ -9,7 +9,7 @@ const cluster = new aws.elasticache.ReplicationGroup('penxle', {
   engine: 'redis',
   engineVersion: '7.1',
 
-  nodeType: 'cache.t4g.micro',
+  nodeType: 'cache.r6g.large',
   numCacheClusters: 1,
 
   subnetGroupName: new aws.elasticache.SubnetGroup('private', {
