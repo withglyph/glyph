@@ -61,14 +61,14 @@
       <div class="space-y-3 my-5.5">
         <SpaceListMenu {$query} />
 
-        <div class="py-2.5 px-2 flex items-center justify-between">
+        <div class="py-2.5 px-2 flex items-center justify-between gap-1">
           {#if $query.space.meAsMember}
             <div class="flex items-center truncate">
               <Avatar class="square-6! mr-3 grow-0 shrink-0 text-nowrap" $profile={$query.space.meAsMember.profile} />
               <span class="body-14-b truncate grow">{$query.space.meAsMember.profile.name}</span>
             </div>
             <button
-              class="text-secondary caption-12-m text-nowrap"
+              class="shrink-0 text-secondary caption-12-m"
               type="button"
               on:click={() => (updateSpaceProfileOpen = true)}
             >

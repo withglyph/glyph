@@ -104,9 +104,11 @@
             </div>
           </div>
           {#if registeredPostIds.has(post.id)}
-            <Button color="tertiary" size="md" variant="outlined" on:click={() => removePost(post.id)}>해제</Button>
+            <Button class="shrink-0" color="tertiary" size="md" variant="outlined" on:click={() => removePost(post.id)}>
+              해제
+            </Button>
           {:else}
-            <Button color="secondary" size="md" on:click={() => registerPost(post.id)}>추가</Button>
+            <Button class="shrink-0" color="secondary" size="md" on:click={() => registerPost(post.id)}>추가</Button>
           {/if}
         </li>
       {/each}
