@@ -110,6 +110,14 @@
 
     <a
       class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-50 hover:(bg-gray-10 text-gray-70)"
+      href="/point"
+    >
+      <i class="i-lc-badge-dollar-sign" />
+      포인트
+    </a>
+
+    <a
+      class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-50 hover:(bg-gray-10 text-gray-70)"
       href="/me/settings"
     >
       <i class="i-lc-settings" />
