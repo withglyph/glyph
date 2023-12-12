@@ -300,6 +300,7 @@ type PointTransaction {
   cause: PointTransactionCause!
   createdAt: DateTime!
   id: ID!
+  post: Post
 }
 
 enum PointTransactionCause {
@@ -479,6 +480,7 @@ type Revenue {
   createdAt: DateTime!
   id: ID!
   kind: RevenueKind!
+  post: Post
   state: RevenueState!
 }
 

@@ -31,6 +31,20 @@ export const pointSchema = defineSchema((builder) => {
       amount: t.exposeInt('amount'),
       cause: t.expose('cause', { type: PointTransactionCause }),
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
+
+      post: t.prismaField({
+        type: 'Post',
+        nullable: true,
+        resolve: async (query, { targetId }, __, { db }) => {
+          if (!targetId) return null;
+
+          const postPurchase = await db.postPurchase.findUnique({
+            select: { post: query },
+            where: { id: targetId },
+          });
+          return postPurchase?.post;
+        },
+      }),
     }),
   });
 
