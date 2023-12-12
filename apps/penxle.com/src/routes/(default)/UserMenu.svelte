@@ -1,5 +1,6 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { Link } from '@penxle/ui';
   import { tick } from 'svelte';
   import { afterNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
@@ -123,6 +124,14 @@
       <i class="i-lc-settings" />
       설정
     </a>
+
+    <Link
+      class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-50 hover:(bg-gray-10 text-gray-70)"
+      href="https://idea.penxle.com"
+    >
+      <i class="i-lc-lightbulb" />
+      펜슬 피드백하기
+    </Link>
 
     <button
       class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-50 hover:(bg-gray-10 text-gray-70)"
