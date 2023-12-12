@@ -10,7 +10,7 @@
   import { Button, Modal } from '$lib/components';
   import { outsideClickEvent } from '$lib/svelte/actions';
   import GotoSpaceModal from './GotoSpaceModal.svelte';
-  import Notification from './Notification.svelte';
+  // import Notification from './Notification.svelte';
   import SearchBar from './SearchBar.svelte';
   import SideBar from './SideBar.svelte';
   import UserMenu from './UserMenu.svelte';
@@ -91,7 +91,7 @@
             <PenFancy class="square-8 mb-1" />
             <span class="subtitle-17-b text-gray-70">포스트 작성하기</span>
           </a>
-          <Notification $user={$query.me} />
+          <!-- <Notification $user={$query.me} /> -->
           <UserMenu $user={$query.me} />
         {:else}
           <Button href="/login" size="md" type="link">펜슬과 함께하기</Button>
