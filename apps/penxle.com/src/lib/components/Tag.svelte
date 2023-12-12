@@ -14,7 +14,7 @@
   this={as}
   id={name}
   class={clsx(
-    'rounded-8 cursor-pointer bg-gray-10 transition duration-300 border border-gray-10 flex items-center truncate hover:(bg-gray-20 border-gray-20)',
+    'rounded-8 cursor-pointer bg-gray-10 transition duration-300 border border-gray-10 inline-block truncate hover:(bg-gray-20 border-gray-20)',
     checked && 'border-gray-90!',
     size === 'sm' && 'px-3 h-6.5 body-13-m',
     size === 'lg' && 'py-1 px-4 h-8 body-16-sb',
