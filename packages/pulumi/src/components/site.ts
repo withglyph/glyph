@@ -182,7 +182,7 @@ export class Site extends pulumi.ComponentResource {
             kind: rollout.kind,
             name: rollout.metadata.name,
           },
-          minReplicas: args.autoscale?.maxCount ?? 2,
+          minReplicas: args.autoscale?.minCount ?? 2,
           maxReplicas: args.autoscale?.maxCount ?? 10,
           metrics: [
             {
