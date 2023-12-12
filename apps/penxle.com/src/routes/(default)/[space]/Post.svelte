@@ -647,6 +647,11 @@
             on:click={async () => {
               if (preview) return;
 
+              if (!$query.me) {
+                loginRequireOpen = true;
+                return;
+              }
+
               await bookmarkPost({ postId: $query.post.id });
               mixpanel.track('post:bookmark', { postId: $query.post.id, via: 'post' });
               toast.success('북마크에 저장되었어요');
