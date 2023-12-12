@@ -53,6 +53,7 @@
     class="w-full h-12.875rem p-x-6 p-y-6 flex justify-center items-end text-darkprimary bg-(cover center no-repeat alphagray-50)"
   >
     <div class="max-w-75rem flex-1">
+      <a class="body-14-sb" href="/{$query.space?.slug}">{$query.space.name}</a>
       <h1 class="title-20-b m-b-2">{collection?.name}</h1>
       <div class="max-w-75rem w-full self-center flex justify-between items-center flex-wrap gap-1">
         <p class="body-14-m">
