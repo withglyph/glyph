@@ -191,6 +191,7 @@ export const userSchema = defineSchema((builder) => {
               },
             },
             orderBy: { createdAt: 'desc' },
+            take: 100,
           });
           return postView.map(({ post }) => post);
         },
