@@ -3,10 +3,10 @@
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import * as R from 'radash';
-  import { onDestroy, tick } from 'svelte';
+  import { onDestroy, onMount, tick } from 'svelte';
   import { slide } from 'svelte/transition';
   import { browser } from '$app/environment';
-  import { goto } from '$app/navigation';
+  import { beforeNavigate, goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -50,6 +50,7 @@
   export let thumbnailBounds: ImageBounds | undefined;
 
   let postId: string | undefined;
+  let warnUnload = false;
 
   $: query = fragment(
     _query,
@@ -118,6 +119,28 @@
     `),
   );
 
+  beforeNavigate(({ cancel, willUnload }) => {
+    const message = '작성 중인 포스트가 있어요. 정말 나가시겠어요?';
+
+    if (warnUnload) {
+      if (willUnload) {
+        cancel();
+        return;
+      }
+
+      if (!confirm(message)) {
+        cancel();
+        return;
+      }
+    }
+  });
+
+  onMount(() => {
+    if (window.innerWidth < 800) {
+      warnUnload = false;
+    }
+  });
+
   const deletePost = graphql(`
     mutation EditorPage_DeletePost_Mutation($input: DeletePostInput!) {
       deletePost(input: $input) {
@@ -168,6 +191,7 @@
     `),
     schema: PublishPostInputSchema,
     onSuccess: async (resp) => {
+      warnUnload = false;
       mixpanel.track('post:publish', { postId: resp.id });
       await goto(`/${resp.space.slug}/${resp.permalink}`);
     },
@@ -271,6 +295,10 @@
   $: published = $post?.state === 'PUBLISHED';
   $: canRevise = browser && !!selectedSpace && !$preventRevise;
   $: canPublish = canRevise && title.trim().length > 0;
+
+  $: if (canRevise) {
+    warnUnload = true;
+  }
 
   const autoSave = R.debounce({ delay: 1000 }, async () => doRevisePost('AUTO_SAVE'));
   const unsubscriber = autoSaveCount.subscribe(() => {

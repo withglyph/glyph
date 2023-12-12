@@ -3,7 +3,6 @@
   import { onDestroy, setContext } from 'svelte';
   import { writable } from 'svelte/store';
   import { graphql } from '$glitch';
-  import { warnOnUnload } from '$lib/svelte/lifecycle';
   import { createTiptapDocument } from '$lib/utils';
   import Editor from './Editor.svelte';
   import Footer from './Footer.svelte';
@@ -12,8 +11,6 @@
   import type { PostRevisionContentKind } from '$glitch';
   import type { ImageBounds } from '$lib/utils';
   import type { RestoredRevision } from './restore-revision';
-
-  warnOnUnload();
 
   $: query = graphql(`
     query EditorPage_Query {
