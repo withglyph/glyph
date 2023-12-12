@@ -2,6 +2,7 @@
   import clsx from 'clsx';
   import { Badge, Image, Tag } from '$lib/components';
   import { ThumbnailPicker } from '$lib/components/media';
+  import { toast } from '$lib/notification';
   import type { Writable } from '@svelte-kits/store';
   import type { JSONContent } from '@tiptap/core';
   import type { KeyboardEventHandler } from 'svelte/elements';
@@ -41,7 +42,11 @@
 
     const { value } = e.currentTarget;
 
-    if (tags.includes(value)) return;
+    if (tags.includes(value)) {
+      toast.error('중복된 태그를 입력했어요');
+      return;
+    }
+
     const escapedValue = value.trim().replaceAll(' ', '_');
 
     if (escapedValue.length === 0) return;
