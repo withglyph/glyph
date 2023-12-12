@@ -1,14 +1,14 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  // import { nanoid } from 'nanoid';
-  import { onMount } from 'svelte';
+  import { nanoid } from 'nanoid';
+  import { onDestroy, onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
   import { FormField, Switch, TextArea, TextInput } from '$lib/components/forms';
-  // import FormValidationMessage from '$lib/components/forms/FormValidationMessage.svelte';
+  import FormValidationMessage from '$lib/components/forms/FormValidationMessage.svelte';
   import Image from '$lib/components/Image.svelte';
   import { ThumbnailPicker } from '$lib/components/media';
   import { createMutationForm } from '$lib/form';
@@ -16,48 +16,49 @@
   import { pageSubTitle } from '$lib/stores';
   import { UpdateSpaceSchema } from '$lib/validations';
   import DeleteSpaceModal from './DeleteSpaceModal.svelte';
+  import type { Sortable } from '@shopify/draggable';
 
   let thumbnailPicker: ThumbnailPicker;
   let openDeleteSpace = false;
-  // let links: { id: string; url: string }[] = [{ id: nanoid(), url: '' }];
-  // let sortable: Sortable;
+  let links: { id: string; url: string }[] = [{ id: nanoid(), url: '' }];
+  let sortable: Sortable;
 
   onMount(async () => {
     pageSubTitle.set('스페이스 설정');
 
-    // links = $query.space.externalLinks.length === 0 ? [{ id: nanoid(), url: '' }] : $query.space.externalLinks;
+    links = $query.space.externalLinks.length === 0 ? [{ id: nanoid(), url: '' }] : $query.space.externalLinks;
 
-    // const { Sortable, Plugins } = await import('@shopify/draggable');
+    const { Sortable, Plugins } = await import('@shopify/draggable');
 
-    // sortable = new Sortable(document.querySelectorAll('.externalLinks'), {
-    //   draggable: 'li',
-    //   handle: '.linkHandle',
-    //   sortAnimation: {
-    //     duration: 300,
-    //     easingFunction: 'ease-in-out',
-    //   },
-    //   plugins: [Plugins.SortAnimation],
-    // });
+    sortable = new Sortable(document.querySelectorAll('.externalLinks'), {
+      draggable: 'li',
+      handle: '.linkHandle',
+      sortAnimation: {
+        duration: 300,
+        easingFunction: 'ease-in-out',
+      },
+      plugins: [Plugins.SortAnimation],
+    });
 
-    // sortable.on('sortable:stop', ({ newIndex, oldIndex }) => {
-    //   const draggedItem = links[oldIndex];
-    //   if (oldIndex > newIndex) {
-    //     links = [
-    //       ...links.slice(0, newIndex),
-    //       draggedItem,
-    //       ...links.slice(newIndex, oldIndex),
-    //       ...links.slice(oldIndex + 1),
-    //     ];
-    //   } else {
-    //     links = [
-    //       ...links.slice(0, oldIndex),
-    //       ...links.slice(oldIndex + 1, newIndex + 1),
-    //       draggedItem,
-    //       ...links.slice(newIndex + 1),
-    //     ];
-    //   }
-    //   links = links;
-    // });
+    sortable.on('sortable:stop', ({ newIndex, oldIndex }) => {
+      const draggedItem = links[oldIndex];
+      if (oldIndex > newIndex) {
+        links = [
+          ...links.slice(0, newIndex),
+          draggedItem,
+          ...links.slice(newIndex, oldIndex),
+          ...links.slice(oldIndex + 1),
+        ];
+      } else {
+        links = [
+          ...links.slice(0, oldIndex),
+          ...links.slice(oldIndex + 1, newIndex + 1),
+          draggedItem,
+          ...links.slice(newIndex + 1),
+        ];
+      }
+      links = links;
+    });
   });
 
   $: query = graphql(`
@@ -125,6 +126,7 @@
     schema: UpdateSpaceSchema,
     extra: () => ({
       iconId: icon.id,
+      externalLinks: links.map(({ url }) => url),
     }),
     onSuccess: async () => {
       mixpanel.track('space:update', { spaceId: $query.space.id });
@@ -139,7 +141,14 @@
     name: $query.space.name,
     slug: $query.space.slug,
     description: $query.space.description ?? '',
+    externalLinks: $query.space.externalLinks.map(({ url }) => url),
     isPublic: $query.space.visibility === 'PUBLIC',
+  });
+
+  onDestroy(() => {
+    if (sortable) {
+      sortable.destroy();
+    }
   });
 </script>
 
@@ -186,7 +195,7 @@
         </TextInput>
       </FormField>
 
-      <!-- <div class="flex items-center justify-end">
+      <div class="flex items-center justify-end">
         <label class="body-14-b flex items-center justify-end gap-1 w-fit">
           링크 추가
           <button
@@ -200,9 +209,9 @@
             <i class="i-lc-plus" />
           </button>
         </label>
-      </div> -->
+      </div>
 
-      <!-- <ul class="externalLinks space-y-3">
+      <ul class="externalLinks space-y-3">
         {#each links as { url, id }, index (id)}
           <li class="flex items-start gap-3">
             <div>
@@ -241,16 +250,16 @@
             </div>
           </li>
         {/each}
-      </ul> -->
+      </ul>
     </div>
 
     <Switch name="isPublic" class="flex justify-between mt-8 body-16-b">
       <p>스페이스 공개</p>
     </Switch>
 
-    <!-- <Switch class="flex justify-between mt-6 body-16-b">
+    <Switch class="flex justify-between mt-6 body-16-b">
       <p>관심 독자 수 공개</p>
-    </Switch> -->
+    </Switch>
   </form>
 
   <div>
