@@ -11,7 +11,6 @@
   import LoginRequireModal from '../LoginRequireModal.svelte';
 
   let loginRequireOpen = false;
-  let mobileScrollTabEl: HTMLElement;
 
   $: query = graphql(`
     query FeedLayout_Query {
@@ -82,69 +81,37 @@
   title="펜슬 - 함께 그리는 반짝임"
 />
 
-<svelte:window
-  on:scroll={({ currentTarget }) => {
-    if (currentTarget.scrollY > 70 && currentTarget.innerWidth < 800) {
-      mobileScrollTabEl.style.display = 'block';
-      mobileScrollTabEl.style.position = 'sticky';
-    } else {
-      mobileScrollTabEl.style.display = 'none';
-    }
-  }}
-/>
-
 <Header {$query} />
 
-<div bind:this={mobileScrollTabEl} class="hidden top-61px z-1">
-  <TabHead class="w-full bg-cardprimary" variant="secondary">
-    <TabHeadItem id={1} href="/">추천 게시물</TabHeadItem>
-    {#if $query.me}
-      <TabHeadItem id={2} href="/followTags">관심 태그</TabHeadItem>
-      <TabHeadItem id={3} href="/followSpaces">관심 스페이스</TabHeadItem>
-    {:else}
-      <button
-        class="grow text-center body-16-b border-b-2 border-transparent transition hover:border-black"
-        type="button"
-        on:click={() => (loginRequireOpen = true)}
-      >
-        관심 태그
-      </button>
-      <button
-        class="grow text-center body-16-b border-b-2 border-transparent transition hover:border-black"
-        type="button"
-        on:click={() => (loginRequireOpen = true)}
-      >
-        관심 스페이스
-      </button>
-    {/if}
-  </TabHead>
-</div>
-
-<main class="flex flex-col grow items-center justify-start mx-auto w-full h-full truncate sm:bg-primary backgroundGrid">
-  <div class="grid mt-8 max-w-300 px-4 <sm:w-full sm:(p-0 gap-7.5 grid-cols-[7fr_3fr] mx-10)">
+<main
+  class="flex flex-col grow items-center justify-start w-full h-full truncate sm:(bg-primary mx-auto) backgroundGrid <sm:(bg-primary)"
+>
+  <div class="grid max-w-300 <sm:w-full sm:(p-0 gap-7.5 grid-cols-[7fr_3fr] mx-10 mt-8 px-4)">
     <div class="flex flex-col w-full truncate">
-      <TabHead class="mb-8 gap-3! mt-3">
-        <TabHeadItem id={1} class="title-20-b! leading-3!" href="/">추천 게시물</TabHeadItem>
-        {#if $query.me}
-          <TabHeadItem id={2} class="title-20-b! leading-3!" href="/followTags">관심 태그</TabHeadItem>
-          <TabHeadItem id={3} class="title-20-b! leading-3!" href="/followSpaces">관심 스페이스</TabHeadItem>
-        {:else}
-          <button
-            class="title-20-b w-fit border-b-10 leading-3 border-transparent transition hover:border-brand-50"
-            type="button"
-            on:click={() => (loginRequireOpen = true)}
-          >
-            관심 태그
-          </button>
-          <button
-            class="title-20-b w-fit border-b-10 leading-3 border-transparent transition hover:border-brand-50"
-            type="button"
-            on:click={() => (loginRequireOpen = true)}
-          >
-            관심 스페이스
-          </button>
-        {/if}
-      </TabHead>
+      <div class="<sm:(pt-6 px-4 bg-cardprimary border-b border-secondary sticky top-0)">
+        <TabHead class="gap-3! <sm:(bg-cardprimary pb-4) sm:(mb-8 mt-3)">
+          <TabHeadItem id={1} class="title-20-b! leading-3!" href="/">추천 게시물</TabHeadItem>
+          {#if $query.me}
+            <TabHeadItem id={2} class="title-20-b! leading-3!" href="/followTags">관심 태그</TabHeadItem>
+            <TabHeadItem id={3} class="title-20-b! leading-3!" href="/followSpaces">관심 스페이스</TabHeadItem>
+          {:else}
+            <button
+              class="title-20-b w-fit border-b-10 leading-3 border-transparent transition hover:border-brand-50"
+              type="button"
+              on:click={() => (loginRequireOpen = true)}
+            >
+              관심 태그
+            </button>
+            <button
+              class="title-20-b w-fit border-b-10 leading-3 border-transparent transition hover:border-brand-50"
+              type="button"
+              on:click={() => (loginRequireOpen = true)}
+            >
+              관심 스페이스
+            </button>
+          {/if}
+        </TabHead>
+      </div>
 
       <slot />
     </div>

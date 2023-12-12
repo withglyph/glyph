@@ -39,7 +39,7 @@
 </script>
 
 {#if $query.tagFeed.length === 0}
-  <div class="flex flex-col center grow max-h-120">
+  <div class="flex flex-col center grow sm:max-h-120">
     <p class="body-15-b text-center">
       관심 태그가 추가되어있지 않아
       <br />
