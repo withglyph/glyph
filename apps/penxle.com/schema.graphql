@@ -295,6 +295,13 @@ enum PointPurchaseState {
   UNDONE
 }
 
+type PointTransaction {
+  amount: Int!
+  cause: PointTransactionCause!
+  createdAt: DateTime!
+  id: ID!
+}
+
 enum PointTransactionCause {
   EXPIRE
   INTERNAL
@@ -465,6 +472,25 @@ input ReorderSpaceCollectionInput {
   collectionId: ID!
   order: Int!
   postId: ID!
+}
+
+type Revenue {
+  amount: Int!
+  createdAt: DateTime!
+  id: ID!
+  kind: RevenueKind!
+  state: RevenueState!
+}
+
+enum RevenueKind {
+  POST_PATRONAGE
+  POST_PURCHASE
+}
+
+enum RevenueState {
+  INVOICED
+  PAID
+  PENDING
 }
 
 input RevisePostInput {
@@ -728,11 +754,14 @@ type User {
   notificationPreferences: [UserNotificationPreference!]!
   personalIdentity: UserPersonalIdentity
   point: Int!
+  points: [PointTransaction!]!
   posts(state: PostState! = PUBLISHED): [Post!]!
   profile: Profile!
   purchasedPosts: [Post!]!
   receivedSpaceMemberInvitations(state: SpaceMemberInvitationState): [SpaceMemberInvitation!]!
   recentlyViewedPosts: [Post!]!
+  revenue: Int!
+  revenues: [Revenue!]!
   singleSignOns: [UserSingleSignOn!]!
   spaces: [Space!]!
   state: UserState!

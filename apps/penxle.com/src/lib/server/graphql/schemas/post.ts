@@ -16,7 +16,15 @@ import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { redis } from '$lib/server/cache';
 import { s3 } from '$lib/server/external-api/aws';
-import { deductUserPoint, directUploadImage, getUserPoint, indexPost, indexTags, isAdulthood } from '$lib/server/utils';
+import {
+  createRevenue,
+  deductUserPoint,
+  directUploadImage,
+  getUserPoint,
+  indexPost,
+  indexTags,
+  isAdulthood,
+} from '$lib/server/utils';
 import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
 import { base36To10, createId, createTiptapDocument, createTiptapNode, validateTiptapDocument } from '$lib/utils';
 import { RevisePostInputSchema } from '$lib/validations/post';
@@ -1176,6 +1184,14 @@ export const postSchema = defineSchema((builder) => {
           amount: post.publishedRevision.price,
           targetId: purchase.id,
           cause: 'UNLOCK_CONTENT',
+        });
+
+        await createRevenue({
+          db,
+          userId: post.userId,
+          amount: post.publishedRevision.price,
+          targetId: purchase.id,
+          kind: 'POST_PURCHASE',
         });
 
         return await db.post.findUniqueOrThrow({

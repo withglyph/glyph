@@ -10,6 +10,7 @@ import { internalSchema } from './internal';
 import { playgroundSchema } from './playground';
 import { pointSchema } from './point';
 import { postSchema } from './post';
+import { revenueSchema } from './revenue';
 import { searchSchema } from './search';
 import { spaceSchema } from './space';
 import { tagSchema } from './tag';
@@ -27,6 +28,7 @@ addSchema(builder, [
   playgroundSchema,
   pointSchema,
   postSchema,
+  revenueSchema,
   searchSchema,
   spaceSchema,
   tagSchema,

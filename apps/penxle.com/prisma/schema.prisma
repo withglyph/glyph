@@ -298,6 +298,19 @@ model Profile {
   @@map("profiles")
 }
 
+model Revenue {
+  id        String       @id
+  userId    String       @map("user_id")
+  user      User         @relation(fields: [userId], references: [id])
+  targetId  String?      @map("target_id")
+  state     RevenueState
+  kind      RevenueKind
+  amount    Int
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("revenues")
+}
+
 model Space {
   id          String          @id
   slug        String
@@ -538,6 +551,7 @@ model User {
   mutedSpaces                    UserSpaceMute[]
   postPurchases                  PostPurchase[]
   followedTags                   TagFollow[]
+  revenues                       Revenue[]
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
@@ -762,6 +776,21 @@ enum PreferenceType {
   MUTE
 
   @@map("_preference_type")
+}
+
+enum RevenueKind {
+  POST_PURCHASE
+  POST_PATRONAGE
+
+  @@map("_revenue_kind")
+}
+
+enum RevenueState {
+  PENDING
+  INVOICED
+  PAID
+
+  @@map("_revenue_state")
 }
 
 enum SpaceCollectionState {

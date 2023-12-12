@@ -21,7 +21,14 @@ import { sendEmail } from '$lib/server/email';
 import { LoginUser, UpdateUserEmail } from '$lib/server/email/templates';
 import { AuthScope, UserSingleSignOnAuthorizationType } from '$lib/server/enums';
 import { google, naver } from '$lib/server/external-api';
-import { createAccessToken, createRandomAvatar, directUploadImage, getUserPoint, isAdulthood } from '$lib/server/utils';
+import {
+  createAccessToken,
+  createRandomAvatar,
+  directUploadImage,
+  getUserPoint,
+  getUserRevenue,
+  isAdulthood,
+} from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import {
   CreateUserSchema,
@@ -86,6 +93,12 @@ export const userSchema = defineSchema((builder) => {
       point: t.int({
         resolve: async (user, _, { db }) => {
           return getUserPoint({ db, userId: user.id });
+        },
+      }),
+
+      points: t.relation('pointTransactions', {
+        query: {
+          orderBy: { createdAt: 'desc' },
         },
       }),
 
@@ -241,6 +254,19 @@ export const userSchema = defineSchema((builder) => {
         }),
 
         resolve: (_, { followedTags }) => followedTags.map(({ tag }) => tag),
+      }),
+
+      revenue: t.field({
+        type: 'Int',
+        resolve: async (user, _, { db }) => {
+          return getUserRevenue({ db, userId: user.id });
+        },
+      }),
+
+      revenues: t.relation('revenues', {
+        query: {
+          orderBy: { createdAt: 'desc' },
+        },
       }),
     }),
   });

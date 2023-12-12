@@ -1,4 +1,4 @@
-import { PaymentMethod, PointPurchaseState } from '@prisma/client';
+import { PaymentMethod, PointPurchaseState, PointTransactionCause } from '@prisma/client';
 import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
 import numeral from 'numeral';
@@ -22,6 +22,15 @@ export const pointSchema = defineSchema((builder) => {
       paymentResult: t.expose('paymentResult', { type: 'JSON', nullable: true }),
       state: t.expose('state', { type: PointPurchaseState }),
       expiresAt: t.expose('expiresAt', { type: 'DateTime' }),
+    }),
+  });
+
+  builder.prismaObject('PointTransaction', {
+    fields: (t) => ({
+      id: t.exposeID('id'),
+      amount: t.exposeInt('amount'),
+      cause: t.expose('cause', { type: PointTransactionCause }),
+      createdAt: t.expose('createdAt', { type: 'DateTime' }),
     }),
   });
 
