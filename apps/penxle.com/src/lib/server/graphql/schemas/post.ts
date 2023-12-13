@@ -984,6 +984,10 @@ export const postSchema = defineSchema((builder) => {
           .with(P.nullish, () => null)
           .exhaustive();
 
+        if (input.password) {
+          await redis.del(`Post:${revision.post.id}:passwordUnlock`);
+        }
+
         await db.postRevision.updateMany({
           where: {
             postId: revision.post.id,
