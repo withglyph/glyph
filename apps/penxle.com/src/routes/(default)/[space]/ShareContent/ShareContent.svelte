@@ -67,27 +67,29 @@
   async function onSubmit(event: Event) {
     event.preventDefault();
 
-    const dataUrl = await htmlToImage.toPng(captureEl);
+    const canvas = await htmlToImage.toCanvas(captureEl);
+    const dataUrl = canvas.toDataURL();
 
     const file = dataurl2file(dataUrl, `${title}.png`);
 
-    if (typeof ClipboardItem === 'undefined') {
-      const link = document.createElement('a');
-      link.download = `${title}.png`;
-      link.href = dataUrl;
-      link.click();
-      toast.success('이미지가 다운로드되었어요');
+    if (navigator.share) {
+      navigator.share({ title, text: '밑줄 공유', files: [file] });
       return;
     }
-    navigator.clipboard.write([new ClipboardItem({ 'image/png': file })]);
-    toast.success('클립보드에 이미지가 복사되었어요');
+
+    const link = document.createElement('a');
+    link.download = `${title}.png`;
+    link.href = dataUrl;
+    link.click();
+    toast.success('이미지가 다운로드되었어요');
+    return;
   }
 </script>
 
 <Modal size="md" bind:open>
   <svelte:fragment slot="title">밑줄 공유</svelte:fragment>
   <svelte:fragment slot="subtitle">포스트에서 인상깊었던 내용을 공유할 수 있어요</svelte:fragment>
-  <form id="share-content-as-image" class="flex flex-col items-center" on:submit={onSubmit}>
+  <form class="flex flex-col items-center" on:submit={onSubmit}>
     <article
       bind:this={captureEl}
       class={clsx(
@@ -130,8 +132,8 @@
       options={backgroundColorClassnames}
       bind:value={backgroundColorClassname}
     />
+    <Button class="flex-grow" size="xl" type="submit">공유하기</Button>
   </form>
-  <Button slot="action" class="flex-grow" form="share-content-as-image" size="xl" type="submit">공유하기</Button>
 </Modal>
 
 <style>
