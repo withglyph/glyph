@@ -134,17 +134,14 @@ export const searchSchema = defineSchema((builder) => {
           body: {
             query: {
               bool: {
-                should: [
-                  { match_phrase: { title: args.query } },
-                  { match_phrase: { subtitle: args.query } },
-                  { match: { 'tags.name': args.query } },
-                ],
+                should: [{ term: { 'tags.nameRaw': args.query } }],
 
                 must: [
                   {
                     multi_match: {
                       query: args.query,
                       fields: ['title', 'subtitle', 'tags.name'],
+                      type: 'phrase_prefix',
                     },
                   },
                 ],
