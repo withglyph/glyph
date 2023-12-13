@@ -78,7 +78,7 @@
     {#each mutedSpaces.filter((space) => space.name.includes(query)) as space (space.id)}
       <li class="flex items-center justify-between">
         <div class="flex gap-2 items-center truncate mr-2">
-          <Image class="square-10.5 rounded-lg grow-0 shrink-0" $image={space.icon} />
+          <Image class="square-10.5 rounded-lg grow-0 shrink-0 border border-secondary" $image={space.icon} />
           <div class="truncate">
             <p class="body-15-b truncate grow">{space.name}</p>
             <p class="body-13-m text-secondary truncate">{space.description ?? ''}</p>

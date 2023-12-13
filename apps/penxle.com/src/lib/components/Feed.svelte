@@ -111,7 +111,7 @@
 {#if showSpaceInfoMessage}
   <div class="mt-2 flex items-center gap-3 mb-4 truncate">
     <a class="relative" href={`/${$post.space.slug}`}>
-      <Image class="square-10.5 rounded-3.5 flex-none" $image={$post.space.icon} />
+      <Image class="square-10.5 rounded-3.5 flex-none border border-secondary" $image={$post.space.icon} />
       <Avatar
         class="square-6 absolute border border-bg-primary -right-1 -bottom-1 flex-none"
         $profile={$post.member.profile}
@@ -229,7 +229,7 @@
 
   {#if !showSpaceInfoMessage}
     <a class="flex items-center px-6 pt-4 space-x-3 truncate pb-4" href={`/${$post.space.slug}/${$post.permalink}`}>
-      <Image class="square-6 rounded-lg flex-none" $image={$post.space.icon} />
+      <Image class="square-6 rounded-lg flex-none border border-secondary" $image={$post.space.icon} />
       <p class="body-15-sb grow truncate">{$post.space.name} · {$post.member.profile.name}</p>
       <time class="body-14-m text-secondary">{dayjs($post.publishedAt).fromNow()}</time>
     </a>

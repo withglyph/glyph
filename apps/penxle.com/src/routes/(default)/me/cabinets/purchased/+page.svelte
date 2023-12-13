@@ -63,7 +63,7 @@
       class="border border-secondary rounded-2xl py-3 px-4 flex items-center gap-4"
       href={`/${post.space.slug}/${post.permalink}`}
     >
-      <Image class="square-12.5 rounded-xl flex-none" $image={post.space.icon} />
+      <Image class="square-12.5 rounded-xl flex-none border border-secondary" $image={post.space.icon} />
 
       <div class="truncate">
         <p class="body-16-eb truncate">{post.purchasedRevision?.title}</p>

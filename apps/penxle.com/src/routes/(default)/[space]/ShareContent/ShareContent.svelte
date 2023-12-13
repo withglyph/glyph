@@ -105,7 +105,11 @@
       <header class={('header' in color && color.header) || color.body}>
         <h1 class="body-16-b mb-xs">{title}</h1>
         <div class="flex gap-2 items-center">
-          <Image class="square-6 rounded-0.31581rem" $image={spaceIcon} alt="스페이스 프로필 이미지" />
+          <Image
+            class="square-6 rounded-0.31581rem border-0.5 border-alphagray-30"
+            $image={spaceIcon}
+            alt="스페이스 프로필 이미지"
+          />
           <span class="body-14-sb">{spaceName}</span>
         </div>
         <div

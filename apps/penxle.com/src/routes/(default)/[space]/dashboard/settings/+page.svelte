@@ -157,7 +157,7 @@
       <div>
         <div class="flex gap-3 items-center w-full">
           <button
-            class="bg-primary square-19 rounded-xl overflow-hidden grow-0 shrink-0"
+            class="bg-primary square-19 rounded-xl overflow-hidden grow-0 shrink-0 border border-secondary"
             type="button"
             on:click={() => thumbnailPicker.show()}
           >

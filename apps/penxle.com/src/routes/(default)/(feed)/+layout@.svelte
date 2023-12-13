@@ -126,7 +126,7 @@
               class="flex items-center justify-between p-2 transition hover:bg-surface-primary rounded-lg truncate gap-3"
             >
               <Link class="flex grow truncate" href={`/${space.slug}`}>
-                <Image class="square-10.5 rounded-xl mr-3 flex-none" $image={space.icon} />
+                <Image class="square-10.5 rounded-xl mr-3 flex-none border border-secondary" $image={space.icon} />
                 <div class="grow basis-0 truncate">
                   <p class="body-15-b truncate">{space.name}</p>
                   <p class="body-13-m text-secondary truncate">{space.description ?? ''}</p>

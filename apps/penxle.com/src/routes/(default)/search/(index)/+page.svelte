@@ -83,7 +83,7 @@
         {#each $query.searchSpaces.slice(0, 2) as space (space.id)}
           <div class="p-1 rounded-lg hover:bg-surface-primary flex items-center gap-4">
             <a href={`/${space.slug}`}>
-              <Image class="square-15 rounded-5" $image={space.icon} />
+              <Image class="square-15 rounded-5 border border-secondary" $image={space.icon} />
             </a>
 
             <a class="flex flex-col gap-1 grow" href={`/${space.slug}`}>

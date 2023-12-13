@@ -180,7 +180,7 @@
 
   <div class="bg-primary py-2 px-3 rounded-lg flex items-center justify-between mb-3 truncate gap-1">
     <div class="flex items-center gap-3 w-full truncate">
-      <Image class="square-12 rounded-xl flex-none" $image={$query.space.icon} />
+      <Image class="square-12 rounded-xl flex-none border border-secondary" $image={$query.space.icon} />
       <div class="truncate">
         <p class="body-15-b mb-1 truncate">{$query.space.name}</p>
         <div class="flex items-center gap-1 caption-12-m text-secondary">

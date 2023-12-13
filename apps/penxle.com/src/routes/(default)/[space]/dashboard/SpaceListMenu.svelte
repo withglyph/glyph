@@ -83,7 +83,7 @@
   type="button"
   on:click={() => (open = !open)}
 >
-  <Image class="square-12 rounded-lg flex-none" $image={$query.space.icon} />
+  <Image class="square-12 rounded-lg flex-none border border-secondary" $image={$query.space.icon} />
   <div class="truncate">
     <h3 class="body-14-b truncate">{$query.space.name}</h3>
     <div class="flex items-center gap-1 caption-12-m text-secondary">
@@ -116,7 +116,7 @@
     <div class="space-y-3">
       {#each $query.me.spaces as space (space.id)}
         <a class="p-1 flex gap-2 items-center rounded-xl hover:bg-primary" href={`/${space.slug}/dashboard/settings`}>
-          <Image class="square-10.5 rounded-lg flex-none" $image={space.icon} />
+          <Image class="square-10.5 rounded-lg flex-none border border-secondary" $image={space.icon} />
           <div class="truncate">
             <p class="body-15-b mb-1 truncate">{space.name}</p>
             <div class="flex items-center gap-1 caption-12-m text-secondary">

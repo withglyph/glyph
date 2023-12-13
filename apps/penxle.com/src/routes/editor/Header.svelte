@@ -436,7 +436,7 @@
           <i class="i-lc-menu square-6 text-disabled absolute" />
 
           <div class="flex grow center gap-2">
-            <Image class="square-6 rounded-md flex-none" $image={selectedSpace.icon} />
+            <Image class="square-6 rounded-md flex-none border border-secondary" $image={selectedSpace.icon} />
             <span class="body-15-b truncate">{selectedSpace.name}</span>
           </div>
         {:else}
@@ -474,7 +474,7 @@
                 }}
               >
                 <div class="flex items-center gap-2">
-                  <Image class="square-6 rounded-md flex-none" $image={space.icon} />
+                  <Image class="square-6 rounded-md flex-none border border-secondary" $image={space.icon} />
                   <span class="body-15-b truncate">{space.name}</span>
                 </div>
               </button>

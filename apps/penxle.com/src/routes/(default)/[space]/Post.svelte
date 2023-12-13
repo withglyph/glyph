@@ -333,7 +333,7 @@
       <div class="border-b border-secondary w-full flex flex-col mt-4.75 sm:mt-6">
         <div class="flex items-start pt-4 pb-5 gap-3">
           <svelte:element this={element} class="relative" href={preview ? undefined : `/${$query.post.space.slug}`}>
-            <Image class="square-10.5 rounded-3.5" $image={$query.post.space.icon} />
+            <Image class="square-10.5 rounded-3.5 border border-secondary" $image={$query.post.space.icon} />
             <Avatar
               class="square-6 absolute border border-bg-primary -right-1 -bottom-1"
               $profile={$query.post.member.profile}
@@ -677,7 +677,7 @@
     <div class="bg-primary rounded-3xl">
       <div class="flex flex-col w-full center px-4 pb-4 mt-9">
         <svelte:element this={element} href={preview ? undefined : `/${$query.post.space.slug}`}>
-          <Image class="square-15 rounded-2xl -mt-7.5" $image={$query.post.space.icon} />
+          <Image class="square-15 rounded-2xl -mt-7.5 border border-secondary" $image={$query.post.space.icon} />
         </svelte:element>
 
         <svelte:element this={element} href={preview ? undefined : `/${$query.post.space.slug}`}>
