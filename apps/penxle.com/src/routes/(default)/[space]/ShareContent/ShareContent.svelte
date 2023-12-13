@@ -6,7 +6,6 @@
   import { Button, Image, Modal } from '$lib/components';
   import { toast } from '$lib/notification';
   import { TiptapRenderer } from '$lib/tiptap/components';
-  import { dataurl2file } from '$lib/utils';
   import ColorPicker from './ColorPicker.svelte';
   import type { JSONContent } from '@tiptap/core';
   import type { Image_image } from '$glitch';
@@ -69,18 +68,12 @@
 
     const dataUrl = await htmlToImage.toPng(captureEl);
 
-    const file = dataurl2file(dataUrl, `${title}.png`);
-
-    if (typeof ClipboardItem === 'undefined') {
-      const link = document.createElement('a');
-      link.download = `${title}.png`;
-      link.href = dataUrl;
-      link.click();
-      toast.success('이미지가 다운로드되었어요');
-      return;
-    }
-    navigator.clipboard.write([new ClipboardItem({ 'image/png': file })]);
-    toast.success('클립보드에 이미지가 복사되었어요');
+    const link = document.createElement('a');
+    link.download = `${title}.png`;
+    link.href = dataUrl;
+    link.click();
+    toast.success('이미지가 다운로드되었어요');
+    return;
   }
 </script>
 
