@@ -11,7 +11,7 @@ export const RevisePostInputSchema = z.object({
   content: z.any(),
   thumbnailId: z.string().optional(),
   thumbnailBounds: z.any().optional(),
-  tags: z.array(z.string().regex(new RegExp(tagPattern, 'u'), '태그에 허용되지 않는 문자예요')),
+  tags: z.array(z.string().regex(new RegExp(tagPattern, 'u'), '태그에 허용되지 않는 문자예요').trim()),
 });
 
 export const PublishPostInputSchema = z.object({
