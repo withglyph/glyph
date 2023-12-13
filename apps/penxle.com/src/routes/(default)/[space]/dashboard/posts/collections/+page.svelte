@@ -74,9 +74,9 @@
       <TableHead>관리</TableHead>
     </TableRow>
     <colgroup>
-      <col class="w-50%" span="1" />
-      <col class="w-15% <sm:hidden" span="1" />
-      <col class="w-15% <sm:w-35%" span="1" />
+      <col span="1" />
+      <col class="w-8rem <sm:hidden" span="1" />
+      <col class="w-11.5rem <sm:w-5rem" span="1" />
     </colgroup>
     {#each $query.space.collections as collection (collection.id)}
       <TableRow>
@@ -97,6 +97,7 @@
         <TableData>
           <div class="flex gap-2">
             <Button
+              class="<sm:hidden"
               color="tertiary"
               size="sm"
               variant="outlined"
