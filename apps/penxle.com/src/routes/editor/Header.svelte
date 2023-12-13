@@ -789,6 +789,7 @@
     <Menu class="p-3 flex center disabled:text-disabled" disabled={!permalink} placement="bottom-end">
       <i slot="value" class="i-lc-more-vertical square-6" aria-label="더보기" />
       <MenuItem
+        class="body-14-m! text-primary!"
         on:click={() => {
           revisionListOpen = true;
         }}
@@ -796,7 +797,21 @@
         저장이력
       </MenuItem>
 
-      <MenuItem external href={`/${selectedSpace?.slug}/preview/${permalink}`} type="link">미리보기</MenuItem>
+      <MenuItem
+        class="body-14-m! text-primary!"
+        external
+        href={`/${selectedSpace?.slug}/preview/${permalink}`}
+        type="link"
+      >
+        미리보기
+      </MenuItem>
+
+      <hr class="border-alphagray-10" />
+
+      <div class="flex items-center gap-2 body-14-m px-4 py-3 rounded-lg hover:bg-primary">
+        <label class="cursor-pointer" for="textIndent">문단 들여쓰기</label>
+        <Checkbox name="textIndent" checked={true} on:change />
+      </div>
     </Menu>
   </div>
 </header>
