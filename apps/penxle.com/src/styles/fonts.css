@@ -1,5 +1,5 @@
 @font-face {
-  font-family: 'Pretendard';
+  font-family: 'PNXL_Pretendard';
   src: url('https://pnxl.net/assets/fonts/Pretendard.woff2') format('woff2-variations');
   font-style: normal;
   font-weight: 100 900;
@@ -7,7 +7,7 @@
 }
 
 @font-face {
-  font-family: 'RIDIBatang';
+  font-family: 'PNXL_RIDIBatang';
   src: url('https://pnxl.net/assets/fonts/RIDIBatang.woff2') format('woff2-variations');
   font-style: normal;
   font-weight: 400 400;
@@ -15,7 +15,31 @@
 }
 
 @font-face {
-  font-family: 'FiraCode';
+  font-family: 'PNXL_KoPubWorldBatang';
+  src: url('https://pnxl.net/assets/fonts/KoPubWorldBatang.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'PNXL_NanumMyeongjo';
+  src: url('https://pnxl.net/assets/fonts/NanumMyeongjo.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'PNXL_NanumMyeongjo';
+  src: url('https://pnxl.net/assets/fonts/NanumMyeongjoBold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'PNXL_FiraCode';
   src: url('https://pnxl.net/assets/fonts/FiraCode.woff2') format('woff2-variations');
   font-style: normal;
   font-weight: 100 900;

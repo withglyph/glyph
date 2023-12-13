@@ -33,12 +33,16 @@
   export const fontFamilyToLocaleString: Record<string, string> = {
     sans: '프리텐다드',
     serif: '리디바탕',
+    serif2: 'KoPubWorld 바탕',
+    serif3: '나눔명조',
     mono: 'Fira Code',
   } satisfies Record<FontFamily, string>;
 
   export const fonts = [
     { label: fontFamilyToLocaleString.sans, value: 'sans', class: 'font-sans' },
     { label: fontFamilyToLocaleString.serif, value: 'serif', class: 'font-serif' },
+    { label: fontFamilyToLocaleString.serif2, value: 'serif2', class: 'font-serif2' },
+    { label: fontFamilyToLocaleString.serif3, value: 'serif3', class: 'font-serif3' },
     { label: fontFamilyToLocaleString.mono, value: 'mono', class: 'font-mono' },
   ] satisfies { label: string; value: FontFamily; class: string }[];
 

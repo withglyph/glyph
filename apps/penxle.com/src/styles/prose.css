@@ -175,6 +175,14 @@
     --uno: font-serif;
   }
 
+  & [data-font-family='serif2'] {
+    --uno: font-serif2;
+  }
+
+  & [data-font-family='serif3'] {
+    --uno: font-serif3;
+  }
+
   & [data-font-family='mono'] {
     --uno: font-mono;
   }
