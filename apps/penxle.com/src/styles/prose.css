@@ -8,6 +8,14 @@
     --uno: py-0.5;
   }
 
+  & p[data-font-family='sans'] {
+    --uno: leading-7;
+  }
+
+  & p[data-font-family='serif'] {
+    --uno: leading-7.5;
+  }
+
   & p[data-level='2'] {
     --uno: body-13-m;
   }
