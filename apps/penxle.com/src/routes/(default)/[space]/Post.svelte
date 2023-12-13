@@ -680,13 +680,21 @@
           <Image class="square-15 rounded-2xl -mt-7.5 border border-secondary" $image={$query.post.space.icon} />
         </svelte:element>
 
-        <svelte:element this={element} href={preview ? undefined : `/${$query.post.space.slug}`}>
+        <svelte:element
+          this={element}
+          class="truncate w-full"
+          href={preview ? undefined : `/${$query.post.space.slug}`}
+        >
           <p class="subtitle-18-eb mt-4 truncate w-full text-center">
             {$query.post.space.name}
           </p>
         </svelte:element>
-        <svelte:element this={element} href={preview ? undefined : `/${$query.post.space.slug}`}>
-          <p class="body-15-sb text-secondary my-2 truncate text-center w-full">
+        <svelte:element
+          this={element}
+          class="w-full whitespace-pre-wrap"
+          href={preview ? undefined : `/${$query.post.space.slug}`}
+        >
+          <p class="body-15-sb text-secondary my-2 break-all text-center w-full">
             {$query.post.space.description ?? '아직 소개가 없어요'}
           </p>
         </svelte:element>
