@@ -83,13 +83,13 @@
         <TableData>
           <a class="flex gap-xs" href={`/${$query.space.slug}/collections/${collection.id}`}>
             {#if collection.thumbnail}
-              <Image class="w-6rem h-7.5rem rounded-2" $image={collection.thumbnail} />
+              <Image class="w-6rem h-7.5rem rounded-2 shrink-0" $image={collection.thumbnail} />
             {/if}
             <dl class="truncate [&>dt]:truncate">
               <dt class="body-15-b m-b-1">
                 {collection.name}
               </dt>
-              <dd class="body-13-b text-secondary">{collection.count}개의 포스트</dd>
+              <dd class="body-13-b text-secondary whitespace-pre-wrap break-keep">{collection.count}개의 포스트</dd>
             </dl>
           </a>
         </TableData>
