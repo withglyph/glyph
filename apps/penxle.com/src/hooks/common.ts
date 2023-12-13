@@ -32,7 +32,7 @@ export const setupGlobals = () => {
   setupDayjs();
 };
 
-const _handleError = (({ error, event }) => {
+export const handleError = (({ error, event }) => {
   if (event.route.id === null) {
     return serializeAppError(new NotFoundError());
   } else if (error instanceof AppError) {
@@ -48,5 +48,3 @@ const _handleError = (({ error, event }) => {
     );
   }
 }) satisfies HandleServerError & HandleClientError;
-
-export const handleError = Sentry.handleErrorWithSentry(_handleError);
