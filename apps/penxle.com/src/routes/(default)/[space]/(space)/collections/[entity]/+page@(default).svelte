@@ -3,8 +3,8 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { Button, Image } from '$lib/components';
+  import { ManageCollectionModal } from '$lib/components/pages/collections';
   import Feed from '../../Feed.svelte';
-  import ManageCollectionModal from './ManageCollectionModal.svelte';
 
   let openPostManageCollectionModal = false;
 
@@ -14,6 +14,12 @@
         id
         slug
         name
+
+        posts {
+          id
+
+          ...SpaceCollectionsEnitityPage_ManageCollectionModal_post
+        }
 
         collections {
           id
@@ -61,18 +67,29 @@
           {collection?.count}개의 포스트
         </p>
         {#if $query.space.meAsMember}
-          <Button
-            class="flex gap-1 text-darkprimary! disabled:invisible"
-            color="tertiary"
-            disabled={collection && collection.count === 0}
-            size="sm"
-            variant="outlined"
-            on:click={() => {
-              openPostManageCollectionModal = true;
-            }}
-          >
-            포스트 관리 <i class="i-lc-settings" />
-          </Button>
+          <div class="flex flex-wrap gap-2" role="group">
+            <Button
+              class="flex gap-1 text-darkprimary! disabled:invisible"
+              color="tertiary"
+              size="sm"
+              variant="outlined"
+              on:click={() => {
+                openPostManageCollectionModal = true;
+              }}
+            >
+              포스트 관리 <i class="i-lc-list" />
+            </Button>
+            <Button
+              class="flex gap-1 text-darkprimary! disabled:invisible"
+              color="tertiary"
+              href="/{$query.space.slug}/dashboard/posts/collections"
+              size="sm"
+              type="link"
+              variant="outlined"
+            >
+              컬렉션 관리 <i class="i-lc-settings" />
+            </Button>
+          </div>
         {/if}
       </div>
     </div>
@@ -119,5 +136,9 @@
 </section>
 
 {#if collection}
-  <ManageCollectionModal $collection={collection} bind:open={openPostManageCollectionModal} />
+  <ManageCollectionModal
+    $collection={collection}
+    $posts={$query.space.posts}
+    bind:open={openPostManageCollectionModal}
+  />
 {/if}

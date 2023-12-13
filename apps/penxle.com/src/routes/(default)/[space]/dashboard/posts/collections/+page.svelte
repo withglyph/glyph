@@ -1,13 +1,16 @@
 <script lang="ts">
   import dayjs from 'dayjs';
   import { graphql } from '$glitch';
-  import { Button, Image, Modal } from '$lib/components';
-  import { CreateCollectionModal, UpdateCollectionModal } from '$lib/components/pages/collections';
-  import { PostManageTable } from '$lib/components/pages/posts';
+  import { Button, Image } from '$lib/components';
+  import {
+    CreateCollectionModal,
+    ManageCollectionModal,
+    UpdateCollectionModal,
+  } from '$lib/components/pages/collections';
   import { Table, TableData, TableHead, TableRow } from '$lib/components/table';
   import { toast } from '$lib/notification';
 
-  let openPostManageModal = false;
+  let openManageCollectionModal = false;
   let openCreateCollectionModal = false;
   let openUpdateCollectionModal = false;
 
@@ -23,6 +26,10 @@
           ...PostManageTable_SpaceMember
         }
 
+        posts {
+          ...SpaceCollectionsEnitityPage_ManageCollectionModal_post
+        }
+
         collections {
           id
 
@@ -34,12 +41,8 @@
             ...Image_image
           }
 
-          posts {
-            ...PostManageTable_Post_query
-          }
-
-          ...PostManageTable_Collection
           ...UpdateCollectionModal_Collection_query
+          ...SpaceCollectionsEnitityPage_ManageCollectionModal_collection
         }
       }
     }
@@ -53,13 +56,8 @@
     }
   `);
 
-  let selectedCollectionId: string | null = null;
   let selectedCollection: (typeof $query.space.collections)[number] | null = null;
   let deleting = false;
-
-  $: if (selectedCollectionId) {
-    selectedCollection = $query.space.collections.find((collection) => collection.id === selectedCollectionId) ?? null;
-  }
 </script>
 
 <div class="flex justify-between gap-2">
@@ -99,14 +97,12 @@
         <TableData>
           <div class="flex gap-2">
             <Button
-              class="<sm:hidden disabled:invisible"
               color="tertiary"
-              disabled={collection.posts.length === 0}
               size="sm"
               variant="outlined"
               on:click={() => {
-                selectedCollectionId = collection.id;
-                openPostManageModal = true;
+                selectedCollection = collection;
+                openManageCollectionModal = true;
               }}
             >
               포스트 관리
@@ -116,11 +112,11 @@
               size="sm"
               variant="outlined"
               on:click={() => {
-                selectedCollectionId = collection.id;
+                selectedCollection = collection;
                 openUpdateCollectionModal = true;
               }}
             >
-              <span class="<sm:hidden">컬렉션</span>
+              <span class="<sm:hidden sm:m-r-0.5">컬렉션</span>
               관리
             </Button>
             <Button
@@ -146,14 +142,10 @@
 </div>
 <CreateCollectionModal spaceId={$query.space.id} bind:open={openCreateCollectionModal} />
 {#if selectedCollection}
-  <Modal size="lg" bind:open={openPostManageModal}>
-    <svelte:fragment slot="title">포스트 관리</svelte:fragment>
-    <PostManageTable
-      $collections={$query.space.collections}
-      $posts={selectedCollection.posts}
-      $spaceMember={$query.space.meAsMember ?? null}
-      type="space"
-    />
-  </Modal>
+  <ManageCollectionModal
+    $collection={selectedCollection}
+    $posts={$query.space.posts}
+    bind:open={openManageCollectionModal}
+  />
   <UpdateCollectionModal $collection={selectedCollection} bind:open={openUpdateCollectionModal} />
 {/if}

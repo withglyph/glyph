@@ -1,5 +1,6 @@
 <script lang="ts">
   import dayjs from 'dayjs';
+  import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
   import { PopupSearch } from '$lib/components/forms';
@@ -7,22 +8,45 @@
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { SetSpaceCollectionPostSchema } from '$lib/validations';
-  import type { SpaceCollectionsEnitityPage_ManageCollectionModal_collection } from '$glitch';
+  import type {
+    SpaceCollectionsEnitityPage_ManageCollectionModal_collection,
+    SpaceCollectionsEnitityPage_ManageCollectionModal_post,
+  } from '$glitch';
+
+  $: slug = $page.params.space;
 
   let _collection: SpaceCollectionsEnitityPage_ManageCollectionModal_collection;
-  export { _collection as $collection };
+  let _posts: SpaceCollectionsEnitityPage_ManageCollectionModal_post[];
+  export { _collection as $collection, _posts as $posts };
   export let open = false;
 
-  let registeredPostIds: Set<string>;
   let query = '';
 
-  const initializeRegisteredPosts = () => {
-    registeredPostIds = new Set($collection.posts.map(({ id }) => id));
-  };
+  $: posts = fragment(
+    _posts,
+    graphql(`
+      fragment SpaceCollectionsEnitityPage_ManageCollectionModal_post on Post {
+        id
 
-  $: if (open) {
-    initializeRegisteredPosts();
-  }
+        permalink
+
+        collection {
+          id
+        }
+
+        publishedAt
+
+        publishedRevision @_required {
+          id
+          title
+
+          croppedThumbnail {
+            ...Image_image
+          }
+        }
+      }
+    `),
+  );
 
   $: collection = fragment(
     _collection,
@@ -37,21 +61,19 @@
         }
         posts {
           id
-
-          publishedAt
-
-          publishedRevision @_required {
-            id
-            title
-
-            croppedThumbnail {
-              ...Image_image
-            }
-          }
         }
       }
     `),
   );
+
+  let registeredPostIds: Set<string>;
+  const initializeRegisteredPosts = () => {
+    registeredPostIds = new Set($collection.posts.map(({ id }) => id));
+  };
+
+  $: if (open) {
+    initializeRegisteredPosts();
+  }
 
   const { form, setInitialValues, isSubmitting } = createMutationForm({
     mutation: graphql(`
@@ -85,14 +107,23 @@
 
 <Modal size="md" bind:open>
   <svelte:fragment slot="title">{$collection.name}</svelte:fragment>
-  <svelte:fragment slot="subtitle">컬렉션에 노출되는 포스트를 관리하세요</svelte:fragment>
+  <svelte:fragment slot="subtitle">
+    컬렉션에 노출되는 포스트를 관리하세요
+    <br />
+    한 포스트 당 한 컬렉션에만 속할 수 있어요
+  </svelte:fragment>
 
   <PopupSearch class="max-w-full! m-b-4" on:input={(e) => (query = e.currentTarget.value.trim())} />
   <form use:form>
     <ul class="space-y-4 max-h-27.5rem overflow-y-auto">
-      {#each $collection.posts.filter((post) => post.publishedRevision?.title.includes(query)) as post (post.id)}
+      {#each $posts.filter((post) => {
+        const searchResult = post.publishedRevision?.title.includes(query);
+        const isInOtherCollection = !!post.collection && post.collection.id !== $collection.id;
+
+        return searchResult && !isInOtherCollection;
+      }) as post (post.id)}
         <li class="flex items-center justify-between">
-          <div class="flex gap-2 items-center truncate mr-2">
+          <a class="flex gap-2 items-center truncate mr-2" href="/{slug}/{post.permalink}">
             {#if post.publishedRevision?.croppedThumbnail}
               <Image class="square-10.5 rounded-lg grow-0 shrink-0" $image={post.publishedRevision.croppedThumbnail} />
             {/if}
@@ -102,7 +133,7 @@
                 {dayjs(post.publishedAt).formatAsDate()}
               </time>
             </div>
-          </div>
+          </a>
           {#if registeredPostIds.has(post.id)}
             <Button class="shrink-0" color="tertiary" size="md" variant="outlined" on:click={() => removePost(post.id)}>
               해제
@@ -114,8 +145,17 @@
       {/each}
     </ul>
     <div class="flex w-full gap-xs m-t-6">
-      <Button class="flex-1" loading={$isSubmitting} type="submit">저장하기</Button>
-      <Button color="tertiary" variant="outlined">닫기</Button>
+      <Button class="flex-1" loading={$isSubmitting} size="xl" type="submit">저장하기</Button>
+      <Button
+        color="tertiary"
+        size="xl"
+        variant="outlined"
+        on:click={() => {
+          open = false;
+        }}
+      >
+        닫기
+      </Button>
     </div>
   </form>
 </Modal>
