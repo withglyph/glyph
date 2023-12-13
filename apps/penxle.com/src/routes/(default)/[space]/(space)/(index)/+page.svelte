@@ -30,7 +30,7 @@
 
 <article
   class={clsx(
-    'w-full min-h-11rem max-w-50rem flex flex-col items-center py-9 grow <sm:(p-0 gap-2 bg-surface-primary)',
+    'w-full min-h-11rem max-w-50rem flex flex-col items-center py-6.5 grow <sm:(p-0 gap-2 bg-surface-primary)',
     $query.space.posts.length === 0 && 'center',
   )}
 >
@@ -38,21 +38,16 @@
     <div class="flex flex-col center">
       <h2 class="body-15-b text-secondary">아직 스페이스에 업로드된 포스트가 없어요</h2>
       {#if $query.space.meAsMember}
-        <Button class="mt-5 sm:hidden" href={`/editor?space=${$query.space.slug}`} size="lg" type="link">
-          포스트 작성하기
-        </Button>
-        <Button class="mt-5 <sm:hidden" href={`/editor?space=${$query.space.slug}`} size="xl" type="link">
-          포스트 작성하기
-        </Button>
+        <Button class="mt-5" href={`/editor?space=${$query.space.slug}`} size="lg" type="link">포스트 작성하기</Button>
       {/if}
     </div>
+  {:else}
+    <ul class="w-full space-y-4 <sm:space-y-2">
+      {#each $query.space.posts as post (post.id)}
+        <li>
+          <Feed class="<sm:(border-none rounded-none)" $post={post} />
+        </li>
+      {/each}
+    </ul>
   {/if}
-
-  <ul class="w-full space-y-8 <sm:space-y-2">
-    {#each $query.space.posts as post (post.id)}
-      <li>
-        <Feed class="<sm:(border-none rounded-none)" $post={post} />
-      </li>
-    {/each}
-  </ul>
 </article>

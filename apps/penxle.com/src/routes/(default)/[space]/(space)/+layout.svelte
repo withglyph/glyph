@@ -2,8 +2,7 @@
   import { Link } from '@penxle/ui';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { BottomSheet, Button, Modal } from '$lib/components';
-  import Image from '$lib/components/Image.svelte';
+  import { BottomSheet, Button, Image, Modal } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { toast } from '$lib/notification';
@@ -86,21 +85,15 @@
       }
     }
   `);
-
-  const updateSpace = graphql(`
-    mutation SpaceLayout_UpdateSpace_Mutation($input: UpdateSpaceInput!) {
-      updateSpace(input: $input) {
-        id
-        visibility
-      }
-    }
-  `);
 </script>
 
 <main class="flex flex-col items-center w-full bg-cardprimary grow">
-  <div class="pt-6 px-4 bg-cardprimary w-full max-w-200 sm:(flex gap-6 mb-8)">
+  <div class="pt-6 px-4 bg-cardprimary w-full max-w-200 sm:(flex mb-8)">
     <div class="flex items-start justify-between">
-      <Image class="square-15 rounded-2xl sm:(square-30 rounded-3xl mr-6)" $image={$query.space.icon} />
+      <Image
+        class="square-15 rounded-2xl border border-secondary sm:(square-30 rounded-3xl mr-6)"
+        $image={$query.space.icon}
+      />
       <div class="flex">
         <button
           class="square-9 flex center rounded-xl transition duration-300 hover:bg-primary sm:hidden"
@@ -111,20 +104,22 @@
         >
           <i class="i-lc-share square-6 text-icon-secondary" />
         </button>
-        <button
-          class="square-9 flex center rounded-xl transition duration-300 hover:bg-primary sm:hidden"
-          type="button"
-          on:click={() => {
-            menuOpen = true;
-          }}
-        >
-          <i class="i-lc-more-vertical square-6 text-icon-secondary" />
-        </button>
+        {#if !$query.space.meAsMember}
+          <button
+            class="square-9 flex center rounded-xl transition duration-300 hover:bg-primary sm:hidden"
+            type="button"
+            on:click={() => {
+              menuOpen = true;
+            }}
+          >
+            <i class="i-lc-more-vertical square-6 text-icon-secondary" />
+          </button>
+        {/if}
       </div>
     </div>
-    <div class="flex-1">
-      <div class="my-5 sm:(mt-0 mb-3)">
-        <h1 class="title-20-eb flex items-center gap-1 flex-wrap mb-2 sm:(title-24-eb mb-3)">
+    <div class="flex-1 sm:mr-6">
+      <div class="mt-5 truncate sm:(mt-0 mb-3)">
+        <h1 class="title-20-eb flex items-center gap-1 flex-wrap mb-2 truncate sm:(title-24-eb mb-3)">
           {$query.space.name}
 
           {#if $query.space.visibility === 'PRIVATE'}
@@ -176,31 +171,6 @@
         >
           <i class="i-lc-settings square-6 text-secondary" />
         </a>
-        {#if $query.space.meAsMember.role === 'ADMIN'}
-          <Menu
-            class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
-          >
-            <i slot="value" class="i-lc-more-vertical square-6 text-secondary" />
-
-            <MenuItem
-              on:click={async () => {
-                await updateSpace({
-                  spaceId: $query.space.id,
-                  isPublic: $query.space.visibility === 'PUBLIC' ? false : true,
-                });
-
-                toast.success(`${$query.space.visibility === 'PUBLIC' ? '공개' : '비공개'} 스페이스로 변경되었어요`);
-                menuOpen = false;
-              }}
-            >
-              {#if $query.space.visibility === 'PUBLIC'}
-                비공개 스페이스로 변경
-              {:else}
-                공개 스페이스로 변경
-              {/if}
-            </MenuItem>
-          </Menu>
-        {/if}
       {:else}
         {#if $query.me === null}
           <Button
@@ -250,34 +220,36 @@
           <i class="i-lc-share mr-2" />
           공유하기
         </Button>
-        <Menu
-          class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
-        >
-          <i slot="value" class="i-lc-more-vertical square-6 text-secondary" />
+        {#if !$query.space.meAsMember}
+          <Menu
+            class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
+          >
+            <i slot="value" class="i-lc-more-vertical square-6 text-secondary" />
 
-          {#if $query.space.muted}
-            <MenuItem
-              on:click={async () => {
-                await unmuteSpace({ spaceId: $query.space.id });
-                mixpanel.track('space:unmute', { spaceId: $query.space.id, via: 'space' });
-                toast.success('스페이스 숨기기 해제되었어요');
-              }}
-            >
-              스페이스 숨기기 해제
-            </MenuItem>
-          {:else}
-            <MenuItem
-              on:click={async () => {
-                await muteSpace({ spaceId: $query.space.id });
-                mixpanel.track('space:mute', { spaceId: $query.space.id, via: 'space' });
-                toast.success('스페이스를 숨겼어요');
-              }}
-            >
-              스페이스 숨기기
-            </MenuItem>
-          {/if}
-          <MenuItem>스페이스 신고하기</MenuItem>
-        </Menu>
+            {#if $query.space.muted}
+              <MenuItem
+                on:click={async () => {
+                  await unmuteSpace({ spaceId: $query.space.id });
+                  mixpanel.track('space:unmute', { spaceId: $query.space.id, via: 'space' });
+                  toast.success('스페이스 숨기기 해제되었어요');
+                }}
+              >
+                스페이스 숨기기 해제
+              </MenuItem>
+            {:else}
+              <MenuItem
+                on:click={async () => {
+                  await muteSpace({ spaceId: $query.space.id });
+                  mixpanel.track('space:mute', { spaceId: $query.space.id, via: 'space' });
+                  toast.success('스페이스를 숨겼어요');
+                }}
+              >
+                스페이스 숨기기
+              </MenuItem>
+            {/if}
+            <MenuItem>스페이스 신고하기</MenuItem>
+          </Menu>
+        {/if}
       {/if}
     </div>
   </div>
@@ -352,7 +324,7 @@
       <p>내가 숨긴 스페이스예요</p>
       <p>내용을 보시겠어요?</p>
       <p>(스페이스 숨김은 유지돼요)</p>
-      <Button class="w-fit mt-5" size="xl" on:click={() => (revealMutedSpace = true)}>내용 보기</Button>
+      <Button class="w-fit mt-5" size="lg" on:click={() => (revealMutedSpace = true)}>내용 보기</Button>
     </div>
   {:else}
     <slot />
@@ -365,66 +337,35 @@
   <div class="body-15-b py-2 text-center">더보기</div>
 
   <div class="mt-2">
-    {#if $query.space.meAsMember?.role === 'ADMIN'}
-      <button
-        class="w-full px-3 h-14 text-secondary text-center body-16-sb rounded-2xl hover:bg-primary"
-        type="button"
-        on:click={() => {
-          handleShare($query.space.name, `${location.origin}/${$query.space.slug}`);
-        }}
-      >
-        스페이스 공유하기
-      </button>
+    {#if $query.space.muted}
       <button
         class="w-full px-3 h-14 text-secondary text-center body-16-sb rounded-2xl hover:bg-primary"
         type="button"
         on:click={async () => {
-          await updateSpace({
-            spaceId: $query.space.id,
-            isPublic: $query.space.visibility === 'PUBLIC' ? false : true,
-          });
-
-          toast.success(`${$query.space.visibility === 'PUBLIC' ? '공개' : '비공개'} 스페이스로 변경되었어요`);
-          menuOpen = false;
+          await unmuteSpace({ spaceId: $query.space.id });
+          mixpanel.track('space:unmute', { spaceId: $query.space.id, via: 'space' });
+          toast.success('스페이스 숨기기 해제되었어요');
         }}
       >
-        {#if $query.space.visibility === 'PUBLIC'}
-          비공개 스페이스로 변경
-        {:else}
-          공개 스페이스로 변경
-        {/if}
+        스페이스 숨기기 해제
       </button>
     {:else}
-      {#if $query.space.muted}
-        <button
-          class="w-full px-3 h-14 text-secondary text-center body-16-sb rounded-2xl hover:bg-primary"
-          type="button"
-          on:click={async () => {
-            await unmuteSpace({ spaceId: $query.space.id });
-            mixpanel.track('space:unmute', { spaceId: $query.space.id, via: 'space' });
-            toast.success('스페이스 숨기기 해제되었어요');
-          }}
-        >
-          스페이스 숨기기 해제
-        </button>
-      {:else}
-        <button
-          class="w-full px-3 h-14 text-secondary text-center body-16-sb rounded-2xl hover:bg-primary"
-          type="button"
-          on:click={async () => {
-            await muteSpace({ spaceId: $query.space.id });
-            mixpanel.track('space:mute', { spaceId: $query.space.id, via: 'space' });
-            toast.success('스페이스를 숨겼어요');
-          }}
-        >
-          스페이스 숨기기
-        </button>
-      {/if}
-
-      <button class="w-full px-3 h-14 text-secondary text-center body-16-sb rounded-2xl hover:bg-primary" type="button">
-        스페이스 신고하기
+      <button
+        class="w-full px-3 h-14 text-secondary text-center body-16-sb rounded-2xl hover:bg-primary"
+        type="button"
+        on:click={async () => {
+          await muteSpace({ spaceId: $query.space.id });
+          mixpanel.track('space:mute', { spaceId: $query.space.id, via: 'space' });
+          toast.success('스페이스를 숨겼어요');
+        }}
+      >
+        스페이스 숨기기
       </button>
     {/if}
+
+    <button class="w-full px-3 h-14 text-secondary text-center body-16-sb rounded-2xl hover:bg-primary" type="button">
+      스페이스 신고하기
+    </button>
   </div>
 </BottomSheet>
 

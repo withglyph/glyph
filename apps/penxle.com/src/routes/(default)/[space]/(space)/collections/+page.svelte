@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import clsx from 'clsx';
   import { graphql } from '$glitch';
   import { Button, Image } from '$lib/components';
   import { CreateCollectionModal } from '$lib/components/pages/collections';
@@ -33,7 +34,12 @@
 
 <Helmet title={`컬렉션 | ${$query.space.name}`} />
 
-<div class="m-y-6 min-h-11rem w-full max-w-50rem flex flex-col gap-xs">
+<div
+  class={clsx(
+    'min-h-11rem w-full max-w-50rem flex flex-col grow gap-xs <sm:(p-0 gap-2 bg-surface-primary) sm:py-4',
+    $query.space.collections.length === 0 && 'center',
+  )}
+>
   {#if $query.space.collections.length > 0}
     <ul class="space-y-1">
       {#each $query.space.collections as collection (collection.id)}
@@ -53,19 +59,25 @@
         </li>
       {/each}
     </ul>
+
+    {#if $query.space.meAsMember}
+      <Button
+        class="flex gap-2"
+        color="tertiary"
+        size="lg"
+        variant="outlined"
+        on:click={() => (openCreateCollectionModal = true)}
+      >
+        새 컬렉션 추가하기 <i class="i-lc-plus square-5" />
+      </Button>
+    {/if}
   {:else}
-    <p class="body-15-b text-secondary">아직 스페이스에 업로드된 컬렉션이 없어요</p>
-  {/if}
-  {#if $query.space.meAsMember}
-    <Button
-      class="flex gap-2"
-      color="tertiary"
-      size="lg"
-      variant="outlined"
-      on:click={() => (openCreateCollectionModal = true)}
-    >
-      새 컬렉션 추가하기 <i class="i-lc-plus square-5" />
-    </Button>
+    <div class="flex flex-col center">
+      <p class="body-15-b text-secondary">아직 스페이스에 업로드된 컬렉션이 없어요</p>
+      {#if $query.space.meAsMember}
+        <Button class="mt-5" size="lg" on:click={() => (openCreateCollectionModal = true)}>컬렉션 생성하기</Button>
+      {/if}
+    </div>
   {/if}
 </div>
 
