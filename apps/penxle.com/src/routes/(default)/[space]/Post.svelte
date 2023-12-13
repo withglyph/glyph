@@ -136,6 +136,7 @@
         createdAt
         contentKind
         previewText
+        autoIndent
 
         croppedThumbnail {
           id
@@ -491,7 +492,12 @@
               </header>
             {:else}
               <article>
-                <TiptapRenderer class="bodylong-16-m" content={$postRevision.content} bind:editor />
+                <TiptapRenderer
+                  class="bodylong-16-m"
+                  autoIndent={$postRevision.autoIndent}
+                  content={$postRevision.content}
+                  bind:editor
+                />
               </article>
             {/if}
           {:else}

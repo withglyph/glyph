@@ -27,6 +27,7 @@
   let tags: string[] = [];
   let thumbnailId: string | undefined = undefined;
   let thumbnailBounds: ImageBounds | undefined = undefined;
+  let autoIndent = true;
 
   let restoredRevision = writable<RestoredRevision>(null);
   setContext('restoredRevision', restoredRevision);
@@ -63,9 +64,11 @@
   {thumbnailBounds}
   {thumbnailId}
   {title}
+  bind:autoIndent
   bind:kind
 />
 <Editor
+  {autoIndent}
   {autoSaveCount}
   {kind}
   bind:title

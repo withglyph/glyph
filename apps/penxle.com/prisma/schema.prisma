@@ -210,6 +210,8 @@ model PostRevision {
   paidContentId String?              @map("paid_content_id")
   paidContent   PostRevisionContent? @relation(name: "paid_content", fields: [paidContentId], references: [id])
 
+  autoIndent Boolean @default(true) @map("auto_indent")
+
   contentKind PostRevisionContentKind
   price       Int?
 

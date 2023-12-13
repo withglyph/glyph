@@ -48,6 +48,7 @@
   export let tags: string[];
   export let thumbnailId: string | undefined;
   export let thumbnailBounds: ImageBounds | undefined;
+  export let autoIndent: boolean;
 
   let postId: string | undefined;
   let warnUnload = false;
@@ -108,6 +109,7 @@
 
         draftRevision {
           id
+
           tags {
             id
             name
@@ -214,6 +216,7 @@
       content,
       thumbnailId,
       thumbnailBounds,
+      autoIndent,
     });
 
     mixpanel.track('post:revise', { postId: resp.id, revisionKind });
@@ -809,8 +812,8 @@
       <hr class="border-alphagray-10" />
 
       <div class="flex items-center gap-2 body-14-m px-4 py-3 rounded-lg hover:bg-primary">
-        <label class="cursor-pointer" for="textIndent">문단 들여쓰기</label>
-        <Checkbox name="textIndent" checked={true} on:change />
+        <label class="cursor-pointer" for="autoIndent">문단 들여쓰기</label>
+        <Checkbox name="autoIndent" bind:checked={autoIndent} on:change={() => ($autoSaveCount += 1)} />
       </div>
     </Menu>
   </div>

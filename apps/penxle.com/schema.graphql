@@ -352,6 +352,7 @@ type PostReaction {
 }
 
 type PostRevision {
+  autoIndent: Boolean!
   characterCount: Int!
   content: JSON!
   contentKind: PostRevisionContentKind!
@@ -496,6 +497,7 @@ enum RevenueState {
 }
 
 input RevisePostInput {
+  autoIndent: Boolean! = true
   content: JSON!
   contentKind: PostRevisionContentKind! = ARTICLE
   postId: ID

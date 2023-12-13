@@ -7,11 +7,12 @@
 
   export let content: JSONContent | undefined;
   export let editor: Editor | undefined;
+  export let autoIndent: boolean;
   export let onChange: () => void;
 </script>
 
 <div class="mx-auto w-full max-w-230 flex grow">
-  <TiptapEditor class="mt-12 mb-100px max-w-full grow" {onChange} bind:editor bind:content />
+  <TiptapEditor class="mt-12 mb-100px max-w-full grow" {autoIndent} {onChange} bind:editor bind:content />
 </div>
 
 {#if editor}

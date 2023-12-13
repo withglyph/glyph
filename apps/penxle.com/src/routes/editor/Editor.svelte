@@ -15,6 +15,7 @@
   export let editor: Editor | undefined;
   export let thumbnailId: string | undefined;
   export let thumbnailBounds: ImageBounds | undefined;
+  export let autoIndent: boolean;
 
   let enableSubtitle = !!subtitle;
 
@@ -71,7 +72,7 @@
       {/if}
 
       {#if kind === 'ARTICLE'}
-        <ArticleEditor onChange={autoSave} bind:editor bind:content />
+        <ArticleEditor {autoIndent} onChange={autoSave} bind:editor bind:content />
       {:else}
         <GalleryEditor onChange={autoSave} bind:content bind:thumbnailId bind:thumbnailBounds />
       {/if}

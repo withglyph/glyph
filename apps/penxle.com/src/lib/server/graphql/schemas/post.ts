@@ -355,6 +355,7 @@ export const postSchema = defineSchema((builder) => {
       title: t.exposeString('title'),
       subtitle: t.exposeString('subtitle', { nullable: true }),
       price: t.exposeInt('price', { nullable: true }),
+      autoIndent: t.exposeBoolean('autoIndent'),
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
       updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
 
@@ -558,6 +559,8 @@ export const postSchema = defineSchema((builder) => {
       thumbnailId: t.id({ required: false }),
       thumbnailBounds: t.field({ type: 'JSON', required: false }),
       tags: t.stringList({ defaultValue: [] }),
+
+      autoIndent: t.boolean({ defaultValue: true }),
     }),
     validate: { schema: RevisePostInputSchema },
   });
@@ -859,6 +862,7 @@ export const postSchema = defineSchema((builder) => {
           originalThumbnailId: input.thumbnailId,
           croppedThumbnailId: croppedImageId,
           thumbnailBounds: input.thumbnailBounds,
+          autoIndent: input.autoIndent,
         };
 
         /// 여기까지 데이터 가공 단계

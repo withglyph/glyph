@@ -26,6 +26,7 @@
           content
           title
           subtitle
+          autoIndent
           thumbnailBounds
 
           originalThumbnail {
@@ -50,6 +51,7 @@
   let thumbnailId: string | undefined = undefined;
   let thumbnailBounds: ImageBounds | undefined = undefined;
   let kind: PostRevisionContentKind;
+  let autoIndent: boolean;
 
   let initialized = false;
 
@@ -85,6 +87,7 @@
     kind = $query.post.draftRevision.contentKind;
     thumbnailBounds = $query.post.draftRevision.thumbnailBounds;
     thumbnailId = $query.post.draftRevision.originalThumbnail?.id;
+    autoIndent = $query.post.draftRevision.autoIndent;
   }
 </script>
 
@@ -101,9 +104,11 @@
   {thumbnailBounds}
   {thumbnailId}
   {title}
+  bind:autoIndent
   bind:kind
 />
 <Editor
+  {autoIndent}
   {autoSaveCount}
   {kind}
   bind:title

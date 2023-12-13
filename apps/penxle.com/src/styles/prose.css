@@ -280,3 +280,13 @@
 .ProseMirror-hideselection *::selection {
   --uno: bg-transparent;
 }
+
+/*
+  * tiptap custom
+*/
+
+.tiptap-autoindent {
+  & p {
+    text-indent: 1rem;
+  }
+}

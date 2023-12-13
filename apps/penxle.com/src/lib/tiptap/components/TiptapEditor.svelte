@@ -10,6 +10,7 @@
   export { _class as class };
   export let editor: Editor | undefined = undefined;
   export let content: JSONContent | undefined = undefined;
+  export let autoIndent = false;
 
   let element: HTMLDivElement;
 
@@ -50,7 +51,7 @@
   });
 </script>
 
-<div bind:this={element} class="contents">
+<div bind:this={element} class={clsx('contents', autoIndent && 'tiptap-autoindent')}>
   {#if !editor}
     <div class={clsx('ProseMirror', _class)}>
       <p class="is-editor-empty" data-placeholder="내용을 입력하세요" />
