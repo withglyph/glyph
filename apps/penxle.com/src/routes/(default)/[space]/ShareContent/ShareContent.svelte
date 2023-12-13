@@ -1,6 +1,7 @@
 <script lang="ts">
   import clsx from 'clsx';
   import * as htmlToImage from 'html-to-image';
+  import { browser } from '$app/environment';
   import Logo from '$assets/branding/logo-chalk-transparent.svg?component';
   import Wordmark from '$assets/branding/wordmark.svg?component';
   import { Button, Image, Modal } from '$lib/components';
@@ -64,12 +65,22 @@
 
   $: color = textColorFromBackgroundColor[backgroundColorClassname];
 
+  $: if (browser && open && content) {
+    htmlToImage.toCanvas(captureEl);
+  }
+
   async function onSubmit(event: Event) {
     event.preventDefault();
 
-    const dataUrl = await htmlToImage.toPng(captureEl);
+    const canvas = await htmlToImage.toCanvas(captureEl);
+    const dataUrl = canvas.toDataURL();
 
     const file = dataurl2file(dataUrl, `${title}.png`);
+
+    if (navigator.share) {
+      navigator.share({ title, text: '밑줄 공유', files: [file] });
+      return;
+    }
 
     if (typeof ClipboardItem === 'undefined') {
       const link = document.createElement('a');
