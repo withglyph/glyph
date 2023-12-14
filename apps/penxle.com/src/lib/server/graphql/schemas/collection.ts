@@ -1,6 +1,6 @@
 import { FormValidationError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { createId } from '$lib/utils';
-import { UpdateSpaceCollectionSchema } from '$lib/validations';
+import { CreateSpaceCollectionSchema, UpdateSpaceCollectionSchema } from '$lib/validations';
 import { defineSchema } from '../builder';
 
 export const collectionSchema = defineSchema((builder) => {
@@ -67,6 +67,7 @@ export const collectionSchema = defineSchema((builder) => {
       spaceId: t.id(),
       name: t.string(),
     }),
+    validate: { schema: CreateSpaceCollectionSchema },
   });
 
   const DeleteSpaceCollectionInput = builder.inputType('DeleteSpaceCollectionInput', {
