@@ -38,7 +38,14 @@
   });
 </script>
 
-<div bind:this={element} class={clsx(_class, autoIndent && 'tiptap-autoindent')}>
+<div
+  bind:this={element}
+  class={clsx(_class, autoIndent && 'tiptap-autoindent')}
+  role="article"
+  on:copy|capture|preventDefault
+  on:cut|capture|preventDefault
+  on:contextmenu|capture|preventDefault
+>
   {#if !loaded}
     <div class="ProseMirror">
       {@html html}
