@@ -183,9 +183,9 @@
             role="alert"
           >
             <i class="i-px-alert-triangle square-6" />
-            <p class="body-14-sb text-center">포스트에 민감한 내용이 포함되어 있어요</p>
+            <p class="body-14-sb text-center whitespace-pre-wrap">포스트에 민감한 내용이 포함되어 있어요</p>
 
-            <div class="flex flex-wrap gap-2.5">
+            <div class="flex flex-wrap gap-2.5 center">
               <span
                 class="px-3 border border-secondary rounded-lg bg-surface-primary text-primary body-13-m h-6 flex items-center"
               >
