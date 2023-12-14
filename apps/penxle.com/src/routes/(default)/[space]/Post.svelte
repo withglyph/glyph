@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import { isTextSelection } from '@tiptap/core';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import { afterNavigate, goto } from '$app/navigation';
@@ -13,10 +12,11 @@
   import Emoji from '$lib/emoji/Emoji.svelte';
   import { FormValidationError } from '$lib/errors';
   import { toast } from '$lib/notification';
-  import { TiptapBubbleMenu, TiptapRenderer } from '$lib/tiptap/components';
+  import { TiptapRenderer } from '$lib/tiptap/components';
   import { calcurateReadingTime, createTiptapDocument, humanizeNumber } from '$lib/utils';
   import LoginRequireModal from '../LoginRequireModal.svelte';
   import GalleryPost from './GalleryPost.svelte';
+  import SelectionBubbleMenu from './SelectionBubbleMenu.svelte';
   import ShareContent from './ShareContent/ShareContent.svelte';
   import Toolbar from './Toolbar.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
@@ -506,13 +506,9 @@
         {/if}
 
         {#if editor && !preview}
-          <TiptapBubbleMenu
-            class="bg-gray-90 text-sm text-gray-30 rounded-lg p-2
-                              after:(absolute content-[''] bg-transparent top-110% left-50% translate--50% border-transparent border-t-color-gray-90 border-width-[0.5rem_0.5rem_0])"
-            {editor}
-            when={(view) => isTextSelection(view.state.selection)}
-          >
+          <SelectionBubbleMenu class="flex" {editor}>
             <button
+              class="shrink-0"
               type="button"
               on:click={() => {
                 if (!editor) throw new Error('editor is not initialized');
@@ -532,7 +528,7 @@
             >
               공유
             </button>
-          </TiptapBubbleMenu>
+          </SelectionBubbleMenu>
         {/if}
       </div>
     {:else}
