@@ -1,8 +1,8 @@
 <script lang="ts">
   import { TiptapEditor } from '$lib/tiptap/components';
-  import TiptapLinkEditMenu from '$lib/tiptap/components/TiptapLinkEditMenu.svelte';
   import ArticleBubbleMenu from './ArticleBubbleMenu.svelte';
   import ArticleFloatingMenu from './ArticleFloatingMenu.svelte';
+  import ArticleLinkEditMenu from './ArticleLinkEditMenu.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
 
   export let content: JSONContent | undefined;
@@ -18,5 +18,5 @@
 {#if editor}
   <ArticleBubbleMenu {editor} />
   <ArticleFloatingMenu {editor} />
-  <TiptapLinkEditMenu {editor} />
+  <ArticleLinkEditMenu {editor} />
 {/if}
