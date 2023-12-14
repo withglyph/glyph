@@ -141,6 +141,15 @@ export const feedSchema = defineSchema((builder) => {
           ...query,
           where: {
             userMutes: context.session ? { none: { userId: context.session.userId } } : undefined,
+            postRevisions: {
+              some: {
+                revision: {
+                  post: {
+                    contentFilters: { isEmpty: true },
+                  },
+                },
+              },
+            },
           },
 
           orderBy: { createdAt: 'desc' },
@@ -160,7 +169,12 @@ export const feedSchema = defineSchema((builder) => {
                   userMutes: { none: { userId: context.session.userId } },
                 }
               : undefined,
-            revision: { kind: 'PUBLISHED' },
+            revision: {
+              kind: 'PUBLISHED',
+              post: {
+                contentFilters: { isEmpty: true },
+              },
+            },
           },
 
           distinct: ['tagId'],
