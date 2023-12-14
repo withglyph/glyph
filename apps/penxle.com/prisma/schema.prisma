@@ -172,14 +172,15 @@ model PostLike {
 }
 
 model PostPurchase {
-  id         String       @id
-  postId     String       @map("post_id")
-  post       Post         @relation(fields: [postId], references: [id])
-  revisionId String       @map("revision_id")
-  revision   PostRevision @relation(fields: [revisionId], references: [id])
-  userId     String       @map("user_id")
-  user       User         @relation(fields: [userId], references: [id])
-  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  id          String       @id
+  postId      String       @map("post_id")
+  post        Post         @relation(fields: [postId], references: [id])
+  revisionId  String       @map("revision_id")
+  revision    PostRevision @relation(fields: [revisionId], references: [id])
+  userId      String       @map("user_id")
+  user        User         @relation(fields: [userId], references: [id])
+  pointAmount Int          @default(0) @map("point_amount")
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz
 
   @@unique([postId, userId])
   @@map("post_purchases")

@@ -1183,6 +1183,7 @@ export const postSchema = defineSchema((builder) => {
             userId: context.session.userId,
             postId: input.postId,
             revisionId: post.publishedRevision.id,
+            pointAmount: post.publishedRevision.price,
           },
         });
 
