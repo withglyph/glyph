@@ -11,20 +11,16 @@ export const feedSchema = defineSchema((builder) => {
     recommendFeed: t.prismaField({
       type: ['Post'],
       resolve: async (query, _, __, { db, ...context }) => {
-        // const identity = context.session ? await db.userPersonalIdentity.findUniqueOrThrow({
-        //   where: { userId: context.session.userId },
-        // }) : null;
-
         const posts = await db.post.findMany({
           ...query,
           where: {
             state: 'PUBLISHED',
             visibility: 'PUBLIC',
             password: null,
-            //NOT: isAdulthood(identity?.birthday) ? undefined : { contentFilters: { has: 'ADULT' } },
             contentFilters: { isEmpty: true },
             space: {
               state: 'ACTIVE',
+              visibility: 'PUBLIC',
               userMutes: context.session
                 ? {
                     none: { userId: context.session.userId },
