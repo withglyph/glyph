@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import * as R from 'radash';
 import { defineSchema } from '../builder';
 
 export const feedSchema = defineSchema((builder) => {
@@ -7,46 +8,49 @@ export const feedSchema = defineSchema((builder) => {
    */
 
   builder.queryFields((t) => ({
-    // recommendFeed: t.prismaField({
-    //   type: ['Post'],
-    //   resolve: async (query, _, __, { db, ...context }) => {
-    //     // const identity = context.session ? await db.userPersonalIdentity.findUniqueOrThrow({
-    //     //   where: { userId: context.session.userId },
-    //     // }) : null;
+    recommendFeed: t.prismaField({
+      type: ['Post'],
+      resolve: async (query, _, __, { db, ...context }) => {
+        // const identity = context.session ? await db.userPersonalIdentity.findUniqueOrThrow({
+        //   where: { userId: context.session.userId },
+        // }) : null;
 
-    //     return db.post.findMany({
-    //       ...query,
-    //       where: {
-    //         state: 'PUBLISHED',
-    //         visibility: 'PUBLIC',
-    //         password: null,
-    //         //NOT: isAdulthood(identity?.birthday) ? undefined : { contentFilters: { has: 'ADULT' } },
-    //         space: {
-    //           state: 'ACTIVE',
-    //           userMutes: context.session
-    //             ? {
-    //                 none: { userId: context.session.userId },
-    //               }
-    //             : undefined,
-    //         },
-    //         publishedRevision: context.session
-    //           ? {
-    //               tags: {
-    //                 none: {
-    //                   tag: {
-    //                     userMutes: { some: { userId: context.session.userId } },
-    //                   },
-    //                 },
-    //               },
-    //             }
-    //           : undefined,
-    //       },
+        const posts = await db.post.findMany({
+          ...query,
+          where: {
+            state: 'PUBLISHED',
+            visibility: 'PUBLIC',
+            password: null,
+            //NOT: isAdulthood(identity?.birthday) ? undefined : { contentFilters: { has: 'ADULT' } },
+            contentFilters: { isEmpty: true },
+            space: {
+              state: 'ACTIVE',
+              userMutes: context.session
+                ? {
+                    none: { userId: context.session.userId },
+                  }
+                : undefined,
+            },
+            publishedRevision: context.session
+              ? {
+                  tags: {
+                    none: {
+                      tag: {
+                        userMutes: { some: { userId: context.session.userId } },
+                      },
+                    },
+                  },
+                }
+              : undefined,
+          },
 
-    //       orderBy: { views: { _count: 'desc' } },
-    //       take: 20,
-    //     });
-    //   },
-    // }),
+          orderBy: { publishedAt: 'desc' },
+          take: 50,
+        });
+
+        return R.shuffle(posts).slice(0, 20);
+      },
+    }),
 
     tagFeed: t.withAuth({ user: true }).prismaField({
       type: ['Post'],

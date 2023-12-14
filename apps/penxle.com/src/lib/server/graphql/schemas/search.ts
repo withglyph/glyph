@@ -31,80 +31,81 @@ export const searchSchema = defineSchema((builder) => {
    */
 
   builder.queryFields((t) => ({
-    recommendFeed: t.prismaField({
-      type: ['Post'],
-      resolve: async (query, _, __, { db, ...context }) => {
-        const [mutedTags, mutedSpaces] = await Promise.all([
-          context.session
-            ? await db.userTagMute.findMany({
-                where: { userId: context.session.userId },
-              })
-            : [],
-          context.session
-            ? await db.userSpaceMute.findMany({
-                where: { userId: context.session.userId },
-              })
-            : [],
-        ]);
+    // recommendFeed: t.prismaField({
+    //   type: ['Post'],
+    //   resolve: async (query, _, __, { db, ...context }) => {
+    //     const [mutedTags, mutedSpaces] = await Promise.all([
+    //       context.session
+    //         ? await db.userTagMute.findMany({
+    //             where: { userId: context.session.userId },
+    //           })
+    //         : [],
+    //       context.session
+    //         ? await db.userSpaceMute.findMany({
+    //             where: { userId: context.session.userId },
+    //           })
+    //         : [],
+    //     ]);
 
-        const muteTerms = R.sift([
-          mutedTags.length > 0
-            ? {
-                terms: { ['tags.id']: mutedTags.map(({ tagId }) => tagId) },
-              }
-            : undefined,
-          mutedSpaces.length > 0
-            ? {
-                terms: { spaceId: mutedSpaces.map(({ spaceId }) => spaceId) },
-              }
-            : undefined,
-        ]);
+    //     const muteTerms = R.sift([
+    //       mutedTags.length > 0
+    //         ? {
+    //             terms: { ['tags.id']: mutedTags.map(({ tagId }) => tagId) },
+    //           }
+    //         : undefined,
+    //       mutedSpaces.length > 0
+    //         ? {
+    //             terms: { spaceId: mutedSpaces.map(({ spaceId }) => spaceId) },
+    //           }
+    //         : undefined,
+    //     ]);
 
-        const searchResult = await openSearch.search({
-          index: 'posts',
-          body: {
-            query: {
-              function_score: {
-                query:
-                  muteTerms.length > 0
-                    ? {
-                        bool: {
-                          filter: {
-                            bool: {
-                              must_not: muteTerms,
-                            },
-                          },
-                        },
-                      }
-                    : undefined,
-                random_score: {},
-              },
-            },
+    //     const searchResult = await openSearch.search({
+    //       index: 'posts',
+    //       body: {
+    //         query: {
+    //           function_score: {
+    //             query: {
+    //               ...(muteTerms.length > 0
+    //                 ? {
+    //                     bool: {
+    //                       filter: {
+    //                         bool: {
+    //                           must_not: muteTerms,
+    //                         },
+    //                       },
+    //                     },
+    //                   }
+    //                 : undefined),
+    //             },
+    //             random_score: {},
+    //           },
+    //         },
 
-            size: 20,
-          },
-        });
+    //         size: 50,
+    //       },
+    //     });
 
-        const hits: SearchHits[] = searchResult.body.hits.hits;
-        const resultIds = hits.map((hit) => hit._id);
-        const posts = R.objectify(
-          await db.post.findMany({
-            ...query,
-            where: {
-              id: { in: resultIds },
-              state: 'PUBLISHED',
-              space: {
-                state: 'ACTIVE',
-                visibility: 'PUBLIC',
-              },
-            },
-          }),
-          (post) => post.id,
-        );
+    //     const hits: SearchHits[] = searchResult.body.hits.hits;
+    //     const resultIds = hits.map((hit) => hit._id);
+    //     const posts = R.objectify(
+    //       await db.post.findMany({
+    //         ...query,
+    //         where: {
+    //           id: { in: resultIds },
+    //           state: 'PUBLISHED',
+    //           space: {
+    //             state: 'ACTIVE',
+    //             visibility: 'PUBLIC',
+    //           },
+    //         },
+    //       }),
+    //       (post) => post.id,
+    //     );
 
-        return R.sift(hits.map((hit) => posts[hit._id]));
-      },
-    }),
+    //     return R.sift(hits.map((hit) => posts[hit._id]));
+    //   },
+    // }),
 
     searchPosts: t.prismaField({
       type: ['Post'],
