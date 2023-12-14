@@ -1,12 +1,13 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
-  import { Editor, isTextSelection, posToDOMRect } from '@tiptap/core';
+  import { Editor, posToDOMRect } from '@tiptap/core';
   import { Plugin, PluginKey } from '@tiptap/pm/state';
   import { EditorView } from '@tiptap/pm/view';
   import clsx from 'clsx';
   import * as R from 'radash';
   import { onMount, tick } from 'svelte';
   import { portal } from '$lib/svelte/actions';
+  import { isEmptyTextBlock } from '$lib/utils';
 
   export let key = 'bubble-menu';
   export let editor: Editor;
@@ -24,10 +25,9 @@
       return;
     }
 
-    const { empty, from, to } = view.state.selection;
-    const isEmptyTextBlock = view.state.doc.textBetween(from, to).length === 0 && isTextSelection(view.state.selection);
+    const { empty, from, to, $anchor } = view.state.selection;
 
-    if (view.composing || empty || isEmptyTextBlock || when?.(view) === false) {
+    if (view.composing || empty || isEmptyTextBlock($anchor.parent) || when?.(view) === false) {
       open = false;
       return;
     }

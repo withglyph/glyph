@@ -5,6 +5,7 @@
   import { EditorView } from '@tiptap/pm/view';
   import { onMount, tick } from 'svelte';
   import { portal } from '$lib/svelte/actions';
+  import { isEmptyTextBlock } from '$lib/utils';
 
   export let key = 'floating-menu';
   export let editor: Editor;
@@ -21,9 +22,14 @@
     }
 
     const { $anchor, empty, from, to } = view.state.selection;
-    const isEmptyTextBlock = $anchor.parent.isTextblock && !$anchor.parent.textContent;
 
-    if (!view.hasFocus() || !empty || !isEmptyTextBlock || $anchor.depth !== 1 || when?.(view) === false) {
+    if (
+      !view.hasFocus() ||
+      !empty ||
+      !isEmptyTextBlock($anchor.parent) ||
+      $anchor.depth !== 1 ||
+      when?.(view) === false
+    ) {
       open = false;
       return;
     }

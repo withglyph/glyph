@@ -23,3 +23,5 @@ export const validateTiptapDocument = (document: JSONContent) => {
     return false;
   }
 };
+
+export const isEmptyTextBlock = (node: Node) => node.isTextblock && node.textContent.trim().length === 0;

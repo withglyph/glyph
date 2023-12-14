@@ -7,6 +7,7 @@
   import * as R from 'radash';
   import { onMount, tick } from 'svelte';
   import { portal } from '$lib/svelte/actions';
+  import { isEmptyTextBlock } from '$lib/utils';
 
   let key = 'share-bubble-menu';
   export let editor: Editor;
@@ -24,11 +25,9 @@
       return;
     }
 
-    const { empty, from, to } = view.state.selection;
+    const { empty, to, $anchor } = view.state.selection;
 
-    const isEmptyTextBlock = view.state.doc.textBetween(from, to).length === 0 && isTextSelection(view.state.selection);
-
-    if (empty || isEmptyTextBlock || isTextSelection(view.state.selection) === false) {
+    if (empty || isEmptyTextBlock($anchor.parent) || isTextSelection(view.state.selection) === false) {
       open = false;
       return;
     }
