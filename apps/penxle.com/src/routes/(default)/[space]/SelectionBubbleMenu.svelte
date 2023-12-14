@@ -1,6 +1,6 @@
 <script lang="ts">
   import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom';
-  import { Editor, isTextSelection, posToDOMRect } from '@tiptap/core';
+  import { Editor, isiOS, isTextSelection, posToDOMRect } from '@tiptap/core';
   import { Plugin, PluginKey } from '@tiptap/pm/state';
   import { EditorView } from '@tiptap/pm/view';
   import clsx from 'clsx';
@@ -43,6 +43,11 @@
       placement: 'right',
       middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrowEl })],
     });
+
+    if (position.placement !== 'right' && isiOS()) {
+      open = false;
+      return;
+    }
 
     Object.assign(menuEl.style, {
       left: `${position.x}px`,
