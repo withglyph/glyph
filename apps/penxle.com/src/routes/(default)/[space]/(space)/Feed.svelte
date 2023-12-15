@@ -70,7 +70,7 @@
 
 <article
   class={clsx(
-    'w-full border border-secondary rounded-2xl py-4 px-6 bg-cardprimary max-w-50rem sm:(border border-secondary rounded-2xl transition hover:(border-tertiary shadow-[0_4px_16px_0_rgba(0,0,0,0.25)])',
+    'w-full border border-secondary rounded-2xl py-4 px-6 bg-cardprimary max-w-50rem sm:(border border-secondary rounded-2xl transition hover:(border-tertiary shadow-[0_4px_16px_0_rgba(0,0,0,0.25)]))',
     _class,
   )}
 >
