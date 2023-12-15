@@ -38,7 +38,7 @@
     `),
     schema: UpdateSpaceCollectionSchema,
     extra: async () => {
-      const defaultName = '';
+      const defaultName = '_';
       const createdCollection = await createSpaceCollection({ spaceId, name: defaultName });
 
       return { collectionId: createdCollection.id };
