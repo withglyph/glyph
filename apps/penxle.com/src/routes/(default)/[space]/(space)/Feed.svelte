@@ -146,7 +146,7 @@
     {#if $post.publishedRevision?.tags}
       <div class="flex gap-1.5 flex-wrap">
         {#each $post.publishedRevision.tags.slice(0, 4) as tag (tag.id)}
-          <Tag href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
+          <Tag class="max-w-65" href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
         {/each}
         {#if $post.publishedRevision.tags.length > 4}
           <Tag size="sm">+{$post.publishedRevision.tags.length - 4}개의 태그</Tag>
