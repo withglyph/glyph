@@ -51,7 +51,7 @@
 
 <Helmet title={`${collection?.name} | 컬렉션 | ${$query.space.name}`} />
 
-<section class="flex flex-col items-center w-full bg-cardprimary grow">
+<section class="flex flex-col items-center w-full sm:bg-cardprimary grow">
   <header
     style={typeof collection?.thumbnail?.url === 'string'
       ? `background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.8)), url(${collection.thumbnail.url})`
@@ -95,9 +95,9 @@
     </div>
   </header>
 
-  <article class="w-full p-x-6 self-center">
-    <div class="max-w-75rem m-x-auto w-full flex gap-8 m-t-2.25rem">
-      <ul class="sm:max-w-[calc(100%-18.4375rem)] flex-1 space-y-8">
+  <article class="sm:p-x-6">
+    <div class="max-w-75rem m-x-auto w-full flex gap-8 sm:m-t-2.25rem">
+      <ul class="sm:max-w-[calc(100%-18.4375rem)] flex-1 space-y-8 <sm:space-y-2">
         {#if collection}
           {#each collection.posts as post (post.id)}
             <li><Feed $post={post} /></li>

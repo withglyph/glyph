@@ -45,7 +45,7 @@
       {#each $query.space.collections as collection (collection.id)}
         <li>
           <a
-            class="flex gap-xs p-2 rounded-0.75rem hover:bg-primary focus:bg-primary"
+            class="flex gap-xs p-2 bg-cardprimary sm:(rounded-0.75rem hover:bg-primary focus:bg-primary)"
             href={`/${$query.space.slug}/collections/${collection.id}`}
           >
             {#if collection.thumbnail}
