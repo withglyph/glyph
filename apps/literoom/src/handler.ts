@@ -64,7 +64,7 @@ export const handler = async (event: Event) => {
 
   const output = await image
     .flatten({ background: { r: 255, g: 255, b: 255 } })
-    .webp({ lossless: true })
+    .webp({ quality: 90 })
     .toBuffer();
 
   const finished = performance.now();
