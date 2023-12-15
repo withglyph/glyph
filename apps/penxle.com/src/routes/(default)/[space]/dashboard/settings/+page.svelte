@@ -8,7 +8,6 @@
   import { mixpanel } from '$lib/analytics';
   import { Button } from '$lib/components';
   import { FormField, Switch, TextArea, TextInput } from '$lib/components/forms';
-  import FormValidationMessage from '$lib/components/forms/FormValidationMessage.svelte';
   import Image from '$lib/components/Image.svelte';
   import { ThumbnailPicker } from '$lib/components/media';
   import { createMutationForm } from '$lib/form';
@@ -101,7 +100,7 @@
   let icon: typeof $query.space.icon;
   $: icon = $query.space.icon;
 
-  const { form, data, setInitialValues, isSubmitting, handleSubmit } = createMutationForm({
+  const { form, data, errors, setInitialValues, isSubmitting, handleSubmit } = createMutationForm({
     mutation: graphql(`
       mutation SpaceDashboardSettingsPage_UpdateSpace_Mutation($input: UpdateSpaceInput!) {
         updateSpace(input: $input) {
@@ -150,6 +149,12 @@
       sortable.destroy();
     }
   });
+
+  $: externalLinkError = isSubmitting && $errors.externalLinks?.find((externalLink) => externalLink !== null);
+
+  $: if (typeof externalLinkError === 'string') {
+    toast.error(externalLinkError);
+  }
 </script>
 
 <Helmet title={`스페이스 설정 | ${$query.space.name}`} />
@@ -237,16 +242,14 @@
               class="w-full flex flex-col gap-1.5 border border-gray-5 rounded-2xl transition bg-primary pt-3 pb-4 px-3.5 hover:border-secondary focus-within:border-tertiary! [&:has(textarea[aria-invalid])]:border-action-error disabled:opacity-50"
             >
               <label class="body-13-b" for={`url${index + 1}`}>{`URL ${index + 1}`}</label>
+
               <TextInput
-                id={`externalLinks[${index}]`}
-                name={`externalLinks[${index}]`}
-                class="w-full"
+                name={`externalLinks.${index}`}
                 autocomplete="on"
                 placeholder="URL을 입력해주세요"
                 type="url"
                 bind:value={url}
               />
-              <FormValidationMessage for={`externalLinks[${index}]`} />
             </div>
           </li>
         {/each}
