@@ -64,7 +64,7 @@ export const handler = async (event: Event) => {
 
   const output = await image
     .flatten({ background: { r: 255, g: 255, b: 255 } })
-    .avif({ lossless: true })
+    .webp({ lossless: true })
     .toBuffer();
 
   const finished = performance.now();
@@ -74,7 +74,7 @@ export const handler = async (event: Event) => {
       RequestRoute: event.getObjectContext.outputRoute,
       RequestToken: event.getObjectContext.outputToken,
       Body: output,
-      ContentType: 'image/avif',
+      ContentType: 'image/webp',
       CacheControl: 'public, max-age=31536000, immutable',
       Metadata: {
         Elapsed: String((finished - started).toFixed(2)),
