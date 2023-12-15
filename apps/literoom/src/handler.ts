@@ -19,9 +19,8 @@ export const handler = async (event: Event) => {
   const url = new URL(event.userRequest.url);
 
   const size = Number(url.searchParams.get('s')) || null;
-  const quality = Number(url.searchParams.get('q') ?? 75);
 
-  if ((size !== null && size <= 0) || quality <= 0 || quality > 100) {
+  if (size !== null && size <= 0) {
     await S3.send(
       new WriteGetObjectResponseCommand({
         RequestRoute: event.getObjectContext.outputRoute,
@@ -65,7 +64,7 @@ export const handler = async (event: Event) => {
 
   const output = await image
     .flatten({ background: { r: 255, g: 255, b: 255 } })
-    .webp({ quality })
+    .avif({ lossless: true })
     .toBuffer();
 
   const finished = performance.now();
@@ -75,7 +74,7 @@ export const handler = async (event: Event) => {
       RequestRoute: event.getObjectContext.outputRoute,
       RequestToken: event.getObjectContext.outputToken,
       Body: output,
-      ContentType: 'image/webp',
+      ContentType: 'image/avif',
       CacheControl: 'public, max-age=31536000, immutable',
       Metadata: {
         Elapsed: String((finished - started).toFixed(2)),
