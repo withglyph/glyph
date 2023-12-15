@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getValue } from 'felte';
   import { getFormContext } from '$lib/form';
 
   let errorFor: string;
@@ -11,9 +12,9 @@
   }
 
   $: store = type === 'error' ? form.errors : form.warnings;
-  $: message = $store[errorFor]?.[0];
+  $: message = getValue($store, errorFor);
 </script>
 
-{#if message}
+{#if typeof message === 'string'}
   <slot {message} />
 {/if}
