@@ -143,69 +143,6 @@ importers:
         specifier: ^1.5.0
         version: 1.5.0
 
-  apps/landing.penxle.com:
-    devDependencies:
-      '@penxle/adapter-docker':
-        specifier: workspace:^
-        version: link:../../packages/adapter-docker
-      '@penxle/lib':
-        specifier: workspace:^
-        version: link:../../packages/lib
-      '@penxle/pulumi':
-        specifier: workspace:^
-        version: link:../../packages/pulumi
-      '@penxle/tracing':
-        specifier: workspace:^
-        version: link:../../packages/tracing
-      '@penxle/tsconfig':
-        specifier: workspace:^
-        version: link:../../packages/tsconfig
-      '@penxle/ui':
-        specifier: workspace:^
-        version: link:../../packages/ui
-      '@pulumi/pulumi':
-        specifier: ^3.96.2
-        version: 3.96.2
-      '@supabase/supabase-js':
-        specifier: ^2.39.0
-        version: 2.39.0
-      '@sveltejs/kit':
-        specifier: ^1.28.0
-        version: 1.28.0(svelte@4.2.8)(vite@4.5.1)
-      '@types/canvas-confetti':
-        specifier: ^1.6.4
-        version: 1.6.4
-      '@types/node':
-        specifier: ^20.10.4
-        version: 20.10.4
-      canvas-confetti:
-        specifier: ^1.9.2
-        version: 1.9.2
-      clsx:
-        specifier: ^2.0.0
-        version: 2.0.0
-      lightningcss:
-        specifier: ^1.22.1
-        version: 1.22.1
-      svelte:
-        specifier: ^4.2.8
-        version: 4.2.8
-      svelte-check:
-        specifier: ^3.6.2
-        version: 3.6.2(@babel/core@7.23.5)(postcss@8.4.32)(svelte@4.2.8)
-      tsx:
-        specifier: ^4.6.2
-        version: 4.6.2
-      typescript:
-        specifier: ^5.3.3
-        version: 5.3.3
-      unocss:
-        specifier: ^0.58.0
-        version: 0.58.0(postcss@8.4.32)(vite@4.5.1)
-      vite:
-        specifier: ^4.5.1
-        version: 4.5.1(@types/node@20.10.4)(lightningcss@1.22.1)
-
   apps/literoom:
     dependencies:
       '@aws-sdk/client-s3':
@@ -5233,63 +5170,6 @@ packages:
       '@smithy/types': 2.7.0
       tslib: 2.6.2
 
-  /@supabase/functions-js@2.1.5:
-    resolution: {integrity: sha512-BNzC5XhCzzCaggJ8s53DP+WeHHGT/NfTsx2wUSSGKR2/ikLFQTBCDzMvGz/PxYMqRko/LwncQtKXGOYp1PkPaw==}
-    dependencies:
-      '@supabase/node-fetch': 2.6.15
-    dev: true
-
-  /@supabase/gotrue-js@2.60.1:
-    resolution: {integrity: sha512-dM28NhyPS5NLWpJbVokxGbuEMmMK2K+EBXYlNU2NEYzp1BrkdxetNh8ucslMbKauJ93XAEhbMCQHSO9fZ2E+DQ==}
-    dependencies:
-      '@supabase/node-fetch': 2.6.15
-    dev: true
-
-  /@supabase/node-fetch@2.6.15:
-    resolution: {integrity: sha512-1ibVeYUacxWYi9i0cf5efil6adJ9WRyZBLivgjs+AUpewx1F3xPi7gLgaASI2SmIQxPoCEjAsLAzKPgMJVgOUQ==}
-    engines: {node: 4.x || >=6.0.0}
-    dependencies:
-      whatwg-url: 5.0.0
-    dev: true
-
-  /@supabase/postgrest-js@1.9.0:
-    resolution: {integrity: sha512-axP6cU69jDrLbfihJKQ6vU27tklD0gzb9idkMN363MtTXeJVt5DQNT3JnJ58JVNBdL74hgm26rAsFNvHk+tnSw==}
-    dependencies:
-      '@supabase/node-fetch': 2.6.15
-    dev: true
-
-  /@supabase/realtime-js@2.9.0:
-    resolution: {integrity: sha512-e/SI+/eqFJorAKAgVAwKQ9hSDQSBp86Yh7XbQmfJJ90LEfpM52HlTfJt/03lcepRu6BmH5h1uYn1b4zta7ghdw==}
-    dependencies:
-      '@supabase/node-fetch': 2.6.15
-      '@types/phoenix': 1.6.4
-      '@types/websocket': 1.0.10
-      ws: 8.15.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: true
-
-  /@supabase/storage-js@2.5.5:
-    resolution: {integrity: sha512-OpLoDRjFwClwc2cjTJZG8XviTiQH4Ik8sCiMK5v7et0MDu2QlXjCAW3ljxJB5+z/KazdMOTnySi+hysxWUPu3w==}
-    dependencies:
-      '@supabase/node-fetch': 2.6.15
-    dev: true
-
-  /@supabase/supabase-js@2.39.0:
-    resolution: {integrity: sha512-cYfnwWRW5rYBbPT/BNIejtRT9ULdD9PnIExQV28PZpqcqm3PLwS4f3pY7WGB01Da63VYdvktZPKuYvreqsj/Zg==}
-    dependencies:
-      '@supabase/functions-js': 2.1.5
-      '@supabase/gotrue-js': 2.60.1
-      '@supabase/node-fetch': 2.6.15
-      '@supabase/postgrest-js': 1.9.0
-      '@supabase/realtime-js': 2.9.0
-      '@supabase/storage-js': 2.5.5
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: true
-
   /@svelte-kits/store@0.1.2(@sveltejs/kit@1.28.0)(svelte@4.2.8):
     resolution: {integrity: sha512-1Gd0ifou2qx66wra4Y3IcShtAEOVh3f/zfziWwn0MVdEwiHWTvtkzcg6kumHJsBl5OudeKQWRFU9F+G1nO97Kw==}
     peerDependencies:
@@ -5423,10 +5303,6 @@ packages:
     engines: {node: '>=10.13.0'}
     dev: false
 
-  /@types/canvas-confetti@1.6.4:
-    resolution: {integrity: sha512-fNyZ/Fdw/Y92X0vv7B+BD6ysHL4xVU5dJcgzgxLdGbn8O3PezZNIJpml44lKM0nsGur+o/6+NZbZeNTt00U1uA==}
-    dev: true
-
   /@types/cookie@0.5.4:
     resolution: {integrity: sha512-7z/eR6O859gyWIAjuvBWFzNURmf2oPBmJlfVWkwehU5nzIyjwBsTh7WMmEEV4JFnHuQ3ex4oyTvfKzcyJVDBNA==}
     dev: true
@@ -5509,10 +5385,6 @@ packages:
     resolution: {integrity: sha512-5PjwB0uP2XDp3nt5u5NJAG2DORHIRClPzWT/TTZhJ2Ekwe8M5bA9tvPdi9NO/n2uvu2/ictat8kgqvLfcIE1SA==}
     dev: true
 
-  /@types/phoenix@1.6.4:
-    resolution: {integrity: sha512-B34A7uot1Cv0XtaHRYDATltAdKx0BvVKNgYNqE4WjtPUa4VQJM7kxeXcVKaH+KS+kCmZ+6w+QaUdcljiheiBJA==}
-    dev: true
-
   /@types/pug@2.0.10:
     resolution: {integrity: sha512-Sk/uYFOBAB7mb74XcpizmH0KOR2Pv3D2Hmrh1Dmy5BmK3MpdSa5kqZcg6EKBdklU0bFXX9gCfzvpnyUehrPIuA==}
     dev: true
@@ -5542,12 +5414,6 @@ packages:
 
   /@types/unist@3.0.2:
     resolution: {integrity: sha512-dqId9J8K/vGi5Zr7oo212BGii5m3q5Hxlkwy3WpYuKPklmBEvsbMYYyLxAQpSffdLl/gdW0XUpKWFvYmyoWCoQ==}
-    dev: true
-
-  /@types/websocket@1.0.10:
-    resolution: {integrity: sha512-svjGZvPB7EzuYS94cI7a+qhwgGU1y89wUgjT6E2wVUfmAGIvRfT7obBvRtnhXCSsoMdlG4gBFGE7MfkIXZLoww==}
-    dependencies:
-      '@types/node': 20.10.4
     dev: true
 
   /@typescript-eslint/eslint-plugin@6.13.2(@typescript-eslint/parser@6.13.2)(eslint@8.55.0)(typescript@5.3.3):
@@ -6530,10 +6396,6 @@ packages:
 
   /caniuse-lite@1.0.30001568:
     resolution: {integrity: sha512-vSUkH84HontZJ88MiNrOau1EBrCqEQYgkC5gIySiDlpsm8sGVrhU7Kx4V6h0tnqaHzIHZv08HlJIwPbL4XL9+A==}
-
-  /canvas-confetti@1.9.2:
-    resolution: {integrity: sha512-6Xi7aHHzKwxZsem4mCKoqP6YwUG3HamaHHAlz1hTNQPCqXhARFpSXnkC9TWlahHY5CG6hSL5XexNjxK8irVErg==}
-    dev: true
 
   /capital-case@1.0.4:
     resolution: {integrity: sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==}
@@ -12880,19 +12742,6 @@ packages:
       is-typedarray: 1.0.0
       signal-exit: 3.0.7
       typedarray-to-buffer: 3.1.5
-    dev: true
-
-  /ws@8.15.0:
-    resolution: {integrity: sha512-H/Z3H55mrcrgjFwI+5jKavgXvwQLtfPCUEp6pi35VhoB0pfcHnSoyuTzkBEZpzq49g1193CUEwIvmsjcotenYw==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
     dev: true
 
   /xdg-basedir@5.1.0:
