@@ -2,7 +2,7 @@
   import clsx from 'clsx';
   import { fade, fly } from 'svelte/transition';
   import { beforeNavigate } from '$app/navigation';
-  import { portal } from '$lib/svelte/actions';
+  import { portal, scrollLock } from '$lib/svelte/actions';
 
   export let open: boolean;
   export let size: 'sm' | 'md' | 'lg' = 'md';
@@ -15,16 +15,6 @@
 </script>
 
 <svelte:window on:keydown={(e) => e.key === 'Escape' && (open = false)} />
-<svelte:head>
-  {#if open}
-    <style>
-      body {
-        overflow: hidden;
-        user-select: none;
-      }
-    </style>
-  {/if}
-</svelte:head>
 
 {#if open}
   <div class="fixed inset-0 z-50" use:portal>
@@ -52,6 +42,7 @@
           size === 'md' && 'px-6 pt-4 pb-5.5 rounded-b-none sm:(max-w-107.5 rounded-2xl)',
           size === 'lg' && 'p-7 pt-5 rounded-b-none sm:(max-w-187 rounded-2xl)',
         )}
+        use:scrollLock
         in:fly={{ y: '10%', duration: 150 }}
         out:fade={{ duration: 150 }}
       >
