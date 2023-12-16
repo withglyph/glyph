@@ -1,5 +1,5 @@
+import type { Writable } from '@svelte-kits/store';
 import type { Action } from 'svelte/action';
-import type { Writable } from 'svelte/store';
 
 type Parameter = Writable<boolean>;
 

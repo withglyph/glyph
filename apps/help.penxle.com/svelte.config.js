@@ -1,5 +1,5 @@
 import { docker } from '@penxle/adapter-docker';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { vitePreprocess } from '@sveltejs/kit/vite';
 import { mdsvex } from 'mdsvex';
 import gfm from 'remark-gfm';
 

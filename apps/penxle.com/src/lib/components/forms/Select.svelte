@@ -1,8 +1,8 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { writable } from '@svelte-kits/store';
   import clsx from 'clsx';
   import { setContext, tick } from 'svelte';
-  import { writable } from 'svelte/store';
   import { afterNavigate } from '$app/navigation';
   import { portal } from '$lib/svelte/actions';
   import type { Placement } from '@floating-ui/dom';

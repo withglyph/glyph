@@ -1,4 +1,4 @@
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { vitePreprocess } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */
 export default {
