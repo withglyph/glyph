@@ -52,4 +52,3 @@ createRepository('literoom');
 createRepository('penxle.com');
 createRepository('penxle.io');
 createRepository('help.penxle.com');
-createRepository('landing.penxle.com');

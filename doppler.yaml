@@ -2,7 +2,3 @@ setup:
   - project: penxle-com
     path: apps/penxle.com
     config: dev
-
-  - project: landing-penxle-com
-    path: apps/landing.penxle.com
-    config: dev

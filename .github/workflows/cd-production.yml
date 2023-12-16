@@ -21,7 +21,6 @@ jobs:
           - penxle.com
           - penxle.io
           - help.penxle.com
-          - landing.penxle.com
           - literoom
 
     concurrency:

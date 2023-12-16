@@ -21,7 +21,6 @@ jobs:
           - penxle.com
           - penxle.io
           - help.penxle.com
-          - landing.penxle.com
 
     concurrency:
       group: pr-${{ github.event.pull_request.number }}/${{ matrix.app }}

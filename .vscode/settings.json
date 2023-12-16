@@ -13,5 +13,5 @@
   "svelte.plugin.svelte.defaultScriptLanguage": "ts",
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "unocss.root": ["apps/penxle.com", "apps/penxle.io", "apps/help.penxle.com", "apps/landing.penxle.com"]
+  "unocss.root": ["apps/penxle.com", "apps/penxle.io", "apps/help.penxle.com"]
 }

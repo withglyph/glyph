@@ -27,4 +27,3 @@ jobs:
             | penxle.com | https://penxle-com-pr-${{ github.event.pull_request.number }}.pnxl.site |
             | penxle.io | https://penxle-io-pr-${{ github.event.pull_request.number }}.pnxl.site |
             | help.penxle.com | https://help-penxle-com-pr-${{ github.event.pull_request.number }}.pnxl.site |
-            | landing.penxle.com | https://landing-penxle-com-pr-${{ github.event.pull_request.number }}.pnxl.site |
