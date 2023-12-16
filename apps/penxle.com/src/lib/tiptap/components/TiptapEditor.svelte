@@ -51,7 +51,13 @@
   });
 </script>
 
-<div bind:this={element} class={clsx('contents', autoIndent && 'tiptap-autoindent')}>
+<div
+  bind:this={element}
+  class={clsx('contents', autoIndent && 'tiptap-autoindent')}
+  autocapitalize="off"
+  autocorrect="off"
+  spellcheck="false"
+>
   {#if !editor}
     <div class={clsx('ProseMirror', _class)}>
       <p class="is-editor-empty" data-placeholder="내용을 입력하세요" />
