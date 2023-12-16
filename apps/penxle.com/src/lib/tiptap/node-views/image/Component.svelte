@@ -5,6 +5,7 @@
   import { onMount } from 'svelte';
   import { graphql } from '$glitch';
   import { Image } from '$lib/components';
+  import { portal, scrollLock } from '$lib/svelte/actions';
   import { NodeView } from '$lib/tiptap';
   import FileImage from './FileImage.svelte';
   import type { NodeViewProps } from '$lib/tiptap';
@@ -17,6 +18,8 @@
   export let selected: NodeViewProps['selected'] | undefined;
   // export let deleteNode: NodeViewProps['deleteNode'] | undefined;
   export let updateAttributes: NodeViewProps['updateAttributes'] | undefined;
+
+  let open = false;
 
   const prepareImageUpload = graphql(`
     mutation TiptapImage_PrepareImageUpload_Mutation {
@@ -70,6 +73,16 @@
       {/if}
     </div>
   {:else}
-    <Image class="max-w-full" $image={node.attrs.__data} intrinsic />
+    <div class="contents" role="presentation" on:click={() => (open = true)}>
+      <Image class="max-w-full" $image={node.attrs.__data} intrinsic />
+    </div>
+    {#if open}
+      <div class="fixed inset-0 mx-4 z-999" role="presentation" on:click={() => (open = false)} use:portal>
+        <div class="fixed inset-0 bg-black/50" />
+        <div class="flex center w-full h-full overflow-scroll" use:scrollLock>
+          <Image class="w-full" $image={node.attrs.__data} />
+        </div>
+      </div>
+    {/if}
   {/if}
 </NodeView>

@@ -6,10 +6,11 @@
   import { register } from 'swiper/element/bundle';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Image } from '$lib/components';
+  import { Button } from '$lib/components';
   import Modal from '$lib/components/Modal.svelte';
   import { comma } from '$lib/utils';
   import LoginRequireModal from '../LoginRequireModal.svelte';
+  import GalleryPostImage from './GalleryPostImage.svelte';
   import type { JSONContent } from '@tiptap/core';
   import type { SwiperContainer, SwiperSlide } from 'swiper/element-bundle';
   import type { FragmentType, Post_postRevision, SpacePostPage_GalleryPost_query } from '$glitch';
@@ -114,14 +115,7 @@
         >
           {#if node.type === 'image'}
             <div class="relative">
-              <Image
-                class={clsx(
-                  'square-[calc(100vw-32px)] max-w-187.5 max-h-187.5 bg-black rounded-xl select-none',
-                  mode === 'mobile' && 'max-w-368px! max-h-368px!',
-                )}
-                $image={node.attrs.__data}
-                fit="contain"
-              />
+              <GalleryPostImage image={node.attrs.__data} {mode} />
 
               {#if accessBarrierIndex !== -1 && index > accessBarrierIndex}
                 <p
