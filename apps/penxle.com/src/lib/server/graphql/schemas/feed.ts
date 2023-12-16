@@ -140,8 +140,17 @@ export const feedSchema = defineSchema((builder) => {
             postRevisions: {
               some: {
                 revision: {
+                  kind: 'PUBLISHED',
                   post: {
+                    state: 'PUBLISHED',
+                    visibility: 'PUBLIC',
+                    password: null,
                     contentFilters: { isEmpty: true },
+                    space: {
+                      state: 'ACTIVE',
+                      visibility: 'PUBLIC',
+                      userMutes: context.session ? { none: { userId: context.session.userId } } : undefined,
+                    },
                   },
                 },
               },
@@ -168,7 +177,15 @@ export const feedSchema = defineSchema((builder) => {
             revision: {
               kind: 'PUBLISHED',
               post: {
+                state: 'PUBLISHED',
+                visibility: 'PUBLIC',
+                password: null,
                 contentFilters: { isEmpty: true },
+                space: {
+                  state: 'ACTIVE',
+                  visibility: 'PUBLIC',
+                  userMutes: context.session ? { none: { userId: context.session.userId } } : undefined,
+                },
               },
             },
           },
