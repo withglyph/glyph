@@ -1,7 +1,7 @@
 <script lang="ts">
   import { computePosition, flip, offset, shift } from '@floating-ui/dom';
   import clsx from 'clsx';
-  import { init, Picker } from 'emoji-mart';
+  import * as EmojiMart from 'emoji-mart';
   import { onMount, tick } from 'svelte';
   import { afterNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
@@ -82,7 +82,7 @@
   }
 
   onMount(() => {
-    picker = new Picker({
+    picker = new EmojiMart.Picker({
       autoFocus: true,
       data,
       previewPosition: 'none',
@@ -114,7 +114,7 @@
   });
 
   $: if (picker) {
-    init({ data, i18n, exceptEmojis });
+    EmojiMart.init({ data, i18n, exceptEmojis });
   }
 
   afterNavigate(() => {

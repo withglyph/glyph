@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import type { Writable } from '@svelte-kits/store';
+  import type { Writable } from 'svelte/store';
 
   export let value: string;
 

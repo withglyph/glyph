@@ -1,7 +1,7 @@
 <script lang="ts">
   import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom';
-  import { writable } from '@svelte-kits/store';
   import { tick } from 'svelte';
+  import { writable } from 'svelte/store';
   import { scale } from 'svelte/transition';
   import { hover, portal } from '$lib/svelte/actions';
 

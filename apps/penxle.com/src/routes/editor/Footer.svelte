@@ -4,9 +4,9 @@
   import { ThumbnailPicker } from '$lib/components/media';
   import { tagPattern } from '$lib/const/post';
   import { toast } from '$lib/notification';
-  import type { Writable } from '@svelte-kits/store';
   import type { JSONContent } from '@tiptap/core';
   import type { KeyboardEventHandler } from 'svelte/elements';
+  import type { Writable } from 'svelte/store';
   import type { Image_image, PostRevisionContentKind } from '$glitch';
   import type { ImageBounds } from '$lib/utils';
 
