@@ -5,7 +5,7 @@
   import * as R from 'radash';
   import { onDestroy, onMount, tick } from 'svelte';
   import { slide } from 'svelte/transition';
-  import { browser } from '$app/environment';
+  import { browser, dev } from '$app/environment';
   import { beforeNavigate, goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
@@ -125,6 +125,10 @@
     const message = '작성 중인 포스트가 있어요. 정말 나가시겠어요?';
 
     if (warnUnload) {
+      if (dev) {
+        return;
+      }
+
       if (willUnload) {
         cancel();
         return;
