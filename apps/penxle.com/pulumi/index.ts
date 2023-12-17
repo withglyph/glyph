@@ -19,8 +19,8 @@ const site = new penxle.Site('penxle.com', {
   },
 
   autoscale: {
-    minCount: 5,
-    maxCount: 50,
+    minCount: 2,
+    maxCount: 20,
   },
 
   iam: {
