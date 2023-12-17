@@ -104,7 +104,7 @@ export const fetchExchange: Exchange = ({ forward, dispatchDebug }) => {
           operation,
         }),
       ),
-      tap(() => (isHydration = false)),
+      tap(() => setTimeout(() => (isHydration = false), 1000)),
     );
 
     const forward$ = pipe(
