@@ -8,7 +8,7 @@ const domain = new aws.opensearch.Domain('penxle', {
   domainName: 'penxle',
 
   clusterConfig: {
-    instanceType: 'r6g.2xlarge.search',
+    instanceType: 'r6g.large.search',
     instanceCount: 1,
   },
 
