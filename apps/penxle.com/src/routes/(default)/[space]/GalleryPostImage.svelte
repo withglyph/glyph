@@ -22,10 +22,14 @@
 </div>
 
 {#if open}
-  <div class="fixed inset-0 mx-4 z-999" role="presentation" on:click={() => (open = false)} use:portal>
+  <div
+    class="fixed inset-0 m-4 z-999 flex center"
+    role="presentation"
+    on:click={() => (open = false)}
+    use:portal
+    use:scrollLock
+  >
     <div class="fixed inset-0 bg-black/50" />
-    <div class="flex center w-full h-full overflow-scroll" use:scrollLock>
-      <Image class="w-full" $image={image} />
-    </div>
+    <Image class="max-w-full max-h-full overflow-scroll" $image={image} />
   </div>
 {/if}
