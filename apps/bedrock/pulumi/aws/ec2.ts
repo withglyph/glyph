@@ -14,25 +14,27 @@ const keypair = new aws.ec2.KeyPair('penxle', {
   publicKey: privateKey.publicKeyOpenssh,
 });
 
-new aws.ec2.Instance('tailnet-vpc-router', {
-  ami: aws.ec2.getAmiOutput({
-    owners: ['amazon'],
-    filters: [
-      { name: 'name', values: ['al2023-ami-minimal-*'] },
-      { name: 'architecture', values: ['arm64'] },
-    ],
-    mostRecent: true,
-  }).id,
+new aws.ec2.Instance(
+  'tailnet-vpc-router',
+  {
+    ami: aws.ec2.getAmiOutput({
+      owners: ['amazon'],
+      filters: [
+        { name: 'name', values: ['al2023-ami-minimal-*'] },
+        { name: 'architecture', values: ['arm64'] },
+      ],
+      mostRecent: true,
+    }).id,
 
-  instanceType: 't4g.nano',
+    instanceType: 't4g.nano',
 
-  subnetId: subnets.public.az1.id,
-  vpcSecurityGroupIds: [securityGroups.tailnet.id],
+    subnetId: subnets.public.az1.id,
+    vpcSecurityGroupIds: [securityGroups.tailnet.id],
 
-  sourceDestCheck: false,
+    sourceDestCheck: false,
 
-  userDataReplaceOnChange: true,
-  userData: pulumi.interpolate`
+    userDataReplaceOnChange: true,
+    userData: pulumi.interpolate`
 #cloud-config
 runcmd:
   - [ hostnamectl, hostname, tailnet-vpc-router ]
@@ -44,36 +46,42 @@ runcmd:
   - [ tailscale, set, --hostname=awsvpc-router ]
 `.apply((v) => v.trim()),
 
-  tags: { Name: 'tailnet-vpc-router' },
-});
+    tags: { Name: 'tailnet-vpc-router' },
+  },
+  { ignoreChanges: ['ami'] },
+);
 
-const pgbouncer = new aws.ec2.Instance('pgbouncer', {
-  ami: aws.ec2.getAmiOutput({
-    owners: ['amazon'],
-    filters: [
-      { name: 'name', values: ['al2023-ami-minimal-*'] },
-      { name: 'architecture', values: ['arm64'] },
-    ],
-    mostRecent: true,
-  }).id,
+const pgbouncer = new aws.ec2.Instance(
+  'pgbouncer',
+  {
+    ami: aws.ec2.getAmiOutput({
+      owners: ['amazon'],
+      filters: [
+        { name: 'name', values: ['al2023-ami-minimal-*'] },
+        { name: 'architecture', values: ['arm64'] },
+      ],
+      mostRecent: true,
+    }).id,
 
-  instanceType: 'c7g.large',
+    instanceType: 'c7g.large',
 
-  subnetId: subnets.private.az1.id,
-  vpcSecurityGroupIds: [securityGroups.internal.id],
+    subnetId: subnets.private.az1.id,
+    vpcSecurityGroupIds: [securityGroups.internal.id],
 
-  sourceDestCheck: false,
+    sourceDestCheck: false,
 
-  keyName: keypair.keyName,
-  userDataReplaceOnChange: true,
-  userData: pulumi.interpolate`
+    keyName: keypair.keyName,
+    userDataReplaceOnChange: true,
+    userData: pulumi.interpolate`
 #cloud-config
 runcmd:
   - [ hostnamectl, hostname, pgbouncer ]
 `.apply((v) => v.trim()),
 
-  tags: { Name: 'pgbouncer' },
-});
+    tags: { Name: 'pgbouncer' },
+  },
+  { ignoreChanges: ['ami'] },
+);
 
 new aws.route53.Record('pool.db.pnxl.co', {
   zoneId: zones.pnxl_co.zoneId,
