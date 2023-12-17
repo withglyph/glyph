@@ -9,6 +9,7 @@
   "eslint.format.enable": true,
   "eslint.experimental.useFlatConfig": true,
   "eslint.validate": ["javascript", "typescript", "svelte"],
+  "prettier.documentSelectors": ["**/*"],
   "svelte.enable-ts-plugin": true,
   "svelte.plugin.svelte.defaultScriptLanguage": "ts",
   "typescript.tsdk": "node_modules/typescript/lib",
