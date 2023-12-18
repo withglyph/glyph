@@ -457,7 +457,7 @@ type Query {
   recommendFeed: [Post!]!
   sampleImage: Image!
   sampleImages: [Image!]!
-  searchPosts(adultFilter: Boolean, excludeContentFilters: [ContentFilterCategory!], excludeTags: [String!]! = [], includeTags: [String!]! = [], orderBy: OrderByKind! = ACCURACY, query: String!): [Post!]!
+  searchPosts(adultFilter: Boolean, excludeContentFilters: [ContentFilterCategory!], excludeTags: [String!]! = [], includeTags: [String!]! = [], orderBy: OrderByKind! = ACCURACY, page: Int! = 1, query: String!): [Post!]!
   searchSpaces(query: String!): [Space!]!
   searchTags(query: String!): [Tag!]!
   space(slug: String!): Space!

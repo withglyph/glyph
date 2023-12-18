@@ -116,6 +116,7 @@ export const searchSchema = defineSchema((builder) => {
         adultFilter: t.arg.boolean({ required: false }),
         excludeContentFilters: t.arg({ type: [ContentFilterCategory], required: false }),
         orderBy: t.arg({ type: OrderByKind, defaultValue: 'ACCURACY' }),
+        page: t.arg.int({ defaultValue: 1 }),
       },
       resolve: async (query, _, args, { db, ...context }) => {
         const mutedTags = context.session
@@ -181,6 +182,8 @@ export const searchSchema = defineSchema((builder) => {
               },
             },
 
+            size: 10,
+            from: (args.page - 1) * 10,
             sort: match(args.orderBy)
               .with('ACCURACY', () => ['_score'])
               .with('LATEST', () => [{ publishedAt: 'desc' }])
