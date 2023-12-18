@@ -298,6 +298,72 @@ export const postSchema = defineSchema((builder) => {
         },
       }),
 
+      previousPost: t.prismaField({
+        type: 'Post',
+        nullable: true,
+        resolve: async (query, post, _, { db, ...context }) => {
+          if (!post.publishedAt) {
+            return null;
+          }
+
+          const meAsMember = context.session
+            ? await db.spaceMember.findUnique({
+                where: {
+                  spaceId_userId: {
+                    spaceId: post.spaceId,
+                    userId: context.session.userId,
+                  },
+                  state: 'ACTIVE',
+                },
+              })
+            : null;
+
+          return db.post.findFirst({
+            ...query,
+            where: {
+              spaceId: post.spaceId,
+              state: 'PUBLISHED',
+              publishedAt: { lt: post.publishedAt },
+              visibility: meAsMember ? undefined : 'PUBLIC',
+            },
+            orderBy: { publishedAt: 'desc' },
+          });
+        },
+      }),
+
+      nextPost: t.prismaField({
+        type: 'Post',
+        nullable: true,
+        resolve: async (query, post, _, { db, ...context }) => {
+          if (!post.publishedAt) {
+            return null;
+          }
+
+          const meAsMember = context.session
+            ? await db.spaceMember.findUnique({
+                where: {
+                  spaceId_userId: {
+                    spaceId: post.spaceId,
+                    userId: context.session.userId,
+                  },
+                  state: 'ACTIVE',
+                },
+              })
+            : null;
+
+          return await db.post.findFirst({
+            ...query,
+            where: {
+              spaceId: post.spaceId,
+              state: 'PUBLISHED',
+              publishedAt: { gt: post.publishedAt },
+              visibility: meAsMember ? undefined : 'PUBLIC',
+            },
+            orderBy: { publishedAt: 'asc' },
+          });
+        },
+      }),
+
       //// deprecated
 
       purchasedRevision: t.withAuth({ user: true }).prismaField({

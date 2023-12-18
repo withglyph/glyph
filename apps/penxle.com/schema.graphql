@@ -327,7 +327,9 @@ type Post {
   likeCount: Int!
   liked: Boolean!
   member: SpaceMember!
+  nextPost: Post
   permalink: String!
+  previousPost: Post
   publishedAt: DateTime
   publishedRevision: PostRevision
   purchasedAt: DateTime
