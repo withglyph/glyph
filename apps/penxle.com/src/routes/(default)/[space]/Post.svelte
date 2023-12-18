@@ -6,6 +6,7 @@
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Avatar, Button, Image, Tag, Tooltip } from '$lib/components';
+  // import Feed from '$lib/components/Feed.svelte';
   import { Menu, MenuItem } from '$lib/components/menu';
   import Modal from '$lib/components/Modal.svelte';
   import { EmojiPicker } from '$lib/emoji';
@@ -76,6 +77,26 @@
           hasPassword
           receiveFeedback
           discloseStats
+
+          previousPost {
+            id
+            permalink
+
+            publishedRevision @_required {
+              id
+              title
+            }
+          }
+
+          nextPost {
+            id
+            permalink
+
+            publishedRevision @_required {
+              id
+              title
+            }
+          }
 
           bookmarkGroups {
             id
@@ -676,18 +697,18 @@
       </div>
     </div>
 
-    <div class="bg-primary rounded-3xl">
-      <div class="flex flex-col w-full center px-4 pb-4 mt-9">
-        <svelte:element this={element} href={preview ? undefined : `/${$query.post.space.slug}`}>
-          <Image class="square-15 rounded-2xl -mt-7.5 border border-secondary" $image={$query.post.space.icon} />
-        </svelte:element>
+    <div class="bg-primary rounded-2xl flex py-4 px-6 items-center gap-4">
+      <svelte:element this={element} href={preview ? undefined : `/${$query.post.space.slug}`}>
+        <Image class="square-16 rounded-2xl border border-secondary" $image={$query.post.space.icon} />
+      </svelte:element>
 
+      <div class="grow truncate">
         <svelte:element
           this={element}
           class="truncate w-full"
           href={preview ? undefined : `/${$query.post.space.slug}`}
         >
-          <p class="subtitle-18-eb mt-4 truncate w-full text-center">
+          <p class="body-15-b truncate w-full">
             {$query.post.space.name}
           </p>
         </svelte:element>
@@ -696,52 +717,94 @@
           class="w-full whitespace-pre-wrap"
           href={preview ? undefined : `/${$query.post.space.slug}`}
         >
-          <p class="body-15-sb text-secondary my-2 break-all text-center w-full">
+          <p class="body-14-m text-secondary mt-2 break-all w-full">
             {$query.post.space.description ?? '아직 소개가 없어요'}
           </p>
         </svelte:element>
+      </div>
 
-        {#if !$query.post.space.meAsMember}
-          {#if $query.post.space.followed}
-            <!-- <Button class="rounded-12!" color="tertiary" size="md" variant="outlined">
+      {#if !$query.post.space.meAsMember}
+        {#if $query.post.space.followed}
+          <!-- <Button class="rounded-12!" color="tertiary" size="md" variant="outlined">
                 <i class="i-lc-bell square-5" />
                 <span class="mx-2">알림받는중</span>
                 <i class="i-lc-chevron-down square-5" />
               </Button> -->
-            <Button
-              class="rounded-12!"
-              color="tertiary"
-              size="md"
-              variant="outlined"
-              on:click={async () => {
-                await unfollowSpace({ spaceId: $query.post.space.id });
-                mixpanel.track('space:unfollow', { spaceId: $query.post.space.id, via: 'post' });
-                toast.success('관심 스페이스 해제되었어요');
-              }}
-            >
-              관심 해제
-            </Button>
-          {:else}
-            <Button
-              class="rounded-12!"
-              size="md"
-              on:click={async () => {
-                if (!$query.me) {
-                  loginRequireOpen = true;
-                  return;
-                }
+          <Button
+            color="tertiary"
+            size="md"
+            variant="outlined"
+            on:click={async () => {
+              await unfollowSpace({ spaceId: $query.post.space.id });
+              mixpanel.track('space:unfollow', { spaceId: $query.post.space.id, via: 'post' });
+              toast.success('관심 스페이스 해제되었어요');
+            }}
+          >
+            관심 해제
+          </Button>
+        {:else}
+          <Button
+            size="md"
+            on:click={async () => {
+              if (!$query.me) {
+                loginRequireOpen = true;
+                return;
+              }
 
-                await followSpace({ spaceId: $query.post.space.id });
-                mixpanel.track('space:follow', { spaceId: $query.post.space.id, via: 'post' });
-                toast.success('관심 스페이스로 등록되었어요');
-              }}
-            >
-              + 관심
-            </Button>
-          {/if}
+              await followSpace({ spaceId: $query.post.space.id });
+              mixpanel.track('space:follow', { spaceId: $query.post.space.id, via: 'post' });
+              toast.success('관심 스페이스로 등록되었어요');
+            }}
+          >
+            관심
+          </Button>
         {/if}
-      </div>
+      {/if}
     </div>
+
+    <div class="space-y-3">
+      <!-- <p class="body-16-b">컬렉션명</p>
+
+      <div class="p-2 flex gap-3">
+        <div class="bg-black w-24 h-30 rounded-lg flex-none" />
+
+        <div class="truncate">
+          <p class="body-16-b mb-1 truncate">컬렉션명</p>
+          <p class="body-14-m text-secondary truncate">8개의 포스트</p>
+        </div>
+      </div> -->
+
+      {#if $query.post.previousPost || $query.post.nextPost}
+        <div class="border border-secondary rounded-xl px-4 py-3">
+          {#if $query.post.nextPost}
+            <a
+              class="body-16-b flex items-center gap-4 truncate rounded-xl p-2 transition hover:bg-primary"
+              href={`/${$query.post.space.slug}/${$query.post.nextPost.permalink}`}
+            >
+              <span>다음글</span>
+              <p class="truncate">{$query.post.nextPost.publishedRevision.title}</p>
+            </a>
+          {/if}
+          {#if $query.post.previousPost}
+            <a
+              class="body-16-b flex items-center gap-4 truncate rounded-xl p-2 transition hover:bg-primary"
+              href={`/${$query.post.space.slug}/${$query.post.previousPost.permalink}`}
+            >
+              <span>이전글</span>
+              <p class="truncate">{$query.post.previousPost.publishedRevision.title}</p>
+            </a>
+          {/if}
+        </div>
+      {/if}
+    </div>
+
+    <!-- <div>
+      <p class="title-20-b mb-4">추천글</p>
+
+      <div class="grow gap-4 mb-4 sm:columns-2">
+        <Feed class="mb-4 inline-block break-inside-avoid" $post />
+      </div>
+    </div> -->
   </div>
 </article>
 
