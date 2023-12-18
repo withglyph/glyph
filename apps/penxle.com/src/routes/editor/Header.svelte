@@ -835,7 +835,7 @@
   <svelte:fragment slot="title">임시저장된 글</svelte:fragment>
   <svelte:fragment slot="subtitle">{$query.me.posts?.length ?? 0}개의 포스트</svelte:fragment>
 
-  <ul class="overflow-y-auto max-h-27.5rem">
+  <ul class="sm:(overflow-y-auto max-h-27.5rem)">
     {#each $query.me.posts as post (post.id)}
       <li class="py-3 border-t border-secondary flex items-center justify-between gap-2 [&>button]:hover:block">
         <button

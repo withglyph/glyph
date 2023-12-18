@@ -584,7 +584,7 @@
     </form>
   </svelte:fragment>
   <svelte:fragment slot="subtitle">컬렉션에 노출되는 포스트를 관리하세요</svelte:fragment>
-  <ul class="max-h-110 overflow-y-auto">
+  <ul class="sm:(max-h-110 overflow-y-auto)">
     {#each selectedPosts as post (post.id)}
       <li class="flex gap-xs items-center">
         {#if post.publishedRevision.croppedThumbnail}
