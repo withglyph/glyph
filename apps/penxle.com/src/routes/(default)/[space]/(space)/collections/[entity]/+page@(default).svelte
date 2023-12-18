@@ -17,6 +17,9 @@
 
         posts {
           id
+          collection {
+            id
+          }
 
           ...SpaceCollectionsEnitityPage_ManageCollectionModal_post
         }
@@ -95,15 +98,29 @@
     </div>
   </header>
 
-  <article class="sm:p-x-6 w-full">
-    <div class="max-w-75rem m-x-auto w-full flex gap-8 sm:m-t-2.25rem">
-      <ul class="sm:max-w-[calc(100%-18.4375rem)] flex-1 space-y-8 <sm:space-y-2">
-        {#if collection}
+  <article class="sm:p-x-6 w-full flex flex-1">
+    <div class="max-w-75rem m-x-auto w-full flex gap-8 sm:m-y-2.25rem <sm:flex-col">
+      {#if collection?.count}
+        <ul class="sm:max-w-[calc(100%-18.4375rem)] <sm:space-y-2 flex-1 space-y-8">
           {#each collection.posts as post (post.id)}
             <li><Feed $post={post} /></li>
           {/each}
-        {/if}
-      </ul>
+        </ul>
+      {:else}
+        <section class="sm:max-w-[calc(100%-18.4375rem)] <sm:min-h-20rem flex flex-col center flex-1 space-y-8">
+          <div class="body-15-sb text-center break-keep">아직 컬렉션에 추가된 포스트가 없어요</div>
+          {#if $query.space.meAsMember && !$query.space.posts.every((post) => post.collection?.id)}
+            <Button
+              size="lg"
+              on:click={() => {
+                openPostManageCollectionModal = true;
+              }}
+            >
+              포스트 추가하기
+            </Button>
+          {/if}
+        </section>
+      {/if}
 
       {#if $query.space.collections.length > 1}
         <aside class="<sm:hidden">
