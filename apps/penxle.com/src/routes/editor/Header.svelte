@@ -835,31 +835,33 @@
   <svelte:fragment slot="title">임시저장된 글</svelte:fragment>
   <svelte:fragment slot="subtitle">{$query.me.posts?.length ?? 0}개의 포스트</svelte:fragment>
 
-  {#each $query.me.posts as post (post.id)}
-    <div class="py-3 border-t border-secondary flex items-center justify-between gap-2 [&>button]:hover:block">
-      <button
-        class="truncate w-full"
-        type="button"
-        on:click={async () => {
-          draftListOpen = false;
-          window.location.href = `/editor/${post.permalink}`;
-        }}
-      >
-        <p class={clsx('body-16-b mb-1 truncate', post.draftRevision.title.trim().length === 0 && 'text-secondary')}>
-          {post.draftRevision.title.trim().length === 0 ? '(제목 없음)' : post.draftRevision.title}
-        </p>
-        <time class="body-13-m text-secondary">{dayjs(post.draftRevision.updatedAt).formatAsDate()}</time>
-      </button>
-      <button
-        class="i-lc-trash hidden square-5 color-text-disabled"
-        type="button"
-        on:click={() => {
-          deleteDraftPostOpen = true;
-          deletePostId = post.id;
-        }}
-      />
-    </div>
-  {/each}
+  <ul class="overflow-y-auto max-h-27.5rem">
+    {#each $query.me.posts as post (post.id)}
+      <li class="py-3 border-t border-secondary flex items-center justify-between gap-2 [&>button]:hover:block">
+        <button
+          class="truncate w-full"
+          type="button"
+          on:click={async () => {
+            draftListOpen = false;
+            window.location.href = `/editor/${post.permalink}`;
+          }}
+        >
+          <p class={clsx('body-16-b mb-1 truncate', post.draftRevision.title.trim().length === 0 && 'text-secondary')}>
+            {post.draftRevision.title.trim().length === 0 ? '(제목 없음)' : post.draftRevision.title}
+          </p>
+          <time class="body-13-m text-secondary">{dayjs(post.draftRevision.updatedAt).formatAsDate()}</time>
+        </button>
+        <button
+          class="i-lc-trash hidden square-5 color-text-disabled"
+          type="button"
+          on:click={() => {
+            deleteDraftPostOpen = true;
+            deletePostId = post.id;
+          }}
+        />
+      </li>
+    {/each}
+  </ul>
 </Modal>
 
 <Modal size="sm" bind:open={deleteDraftPostOpen}>

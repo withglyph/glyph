@@ -46,22 +46,13 @@
         in:fly={{ y: '10%', duration: 150 }}
         out:fade={{ duration: 150 }}
       >
-        <div
-          class={clsx(
-            'content flex flex-col w-full overflow-y-scroll',
-            size === 'sm' && 'max-w-92',
-            $$slots.title && size !== 'sm' && 'pt-20',
-            $$slots.title && $$slots.subtitle && size !== 'sm' && 'pt-27',
-            _class,
-          )}
-        >
+        <div class={clsx('content flex flex-col w-full overflow-y-scroll', size === 'sm' && 'max-w-92', _class)}>
           {#if $$slots.title}
             <div
               class={clsx(
                 'flex justify-between py-3',
                 size === 'sm' && 'justify-center! text-center',
-                size !== 'sm' && 'pt-8 pb-0 px-6 absolute top-0 left-0 w-full bg-cardprimary rounded-t-2xl z-1',
-                size === 'lg' && 'px-7',
+                size !== 'sm' && 'pt-4 pb-0',
               )}
             >
               <div
