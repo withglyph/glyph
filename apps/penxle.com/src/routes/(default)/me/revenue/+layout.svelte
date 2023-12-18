@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components';
+  import { graphql } from '$glitch';
+  // import { Button } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { pageSubTitle } from '$lib/stores';
   import { comma } from '$lib/utils';
@@ -8,16 +9,27 @@
   onMount(async () => {
     pageSubTitle.set('수익/정산');
   });
+
+  $: query = graphql(`
+    query RevenueLayout_Query {
+      auth(scope: USER)
+
+      me @_required {
+        id
+        revenue
+      }
+    }
+  `);
 </script>
 
-<h1 class="title-20-b">수익/정산</h1>
+<h1 class="title-20-b <sm:(px-5 pt-4)">수익/정산</h1>
 
-<div class="mt-6 flex items-center gap-6">
+<!-- <div class="mt-6 flex items-center gap-6">
   <div class="text-black body-16-m">카카오뱅크 3333-02-5063260</div>
   <Button color="tertiary" size="sm" variant="outlined">출금계좌 변경</Button>
-</div>
+</div> -->
 
-<div class="mt-6 flex flex-col py-4 bg-white border border-secondary rounded-2xl">
+<div class="mt-6 flex flex-col py-4 bg-white border border-secondary rounded-2xl <sm:mx-5">
   <div class="flex flex-col gap-2 px-8 pt-2">
     <hr class="border-t-0 border-b-1 border-alphagray-10" />
     <div class="flex gap-2 py-2">
@@ -43,13 +55,13 @@
     <hr class="border-t-0 border-b-1 border-alphagray-10" />
     <div class="flex gap-2 py-2">
       <div class="subtitle-18-eb flex-1">정산 가능</div>
-      <div class="subtitle-18-eb">{comma(1234)}원</div>
-      <Button size="sm">받기</Button>
+      <div class="subtitle-18-eb">{comma($query.me.revenue)}원</div>
+      <!-- <Button size="sm">받기</Button> -->
     </div>
   </div>
 </div>
 
-<div class="mt-6 flex flex-col gap-4 py-8 bg-white border border-secondary rounded-2xl">
+<div class="mt-6 flex flex-col gap-4 py-8 bg-white border border-secondary rounded-2xl <sm:(mx-5 mb-4)">
   <h2 class="title-20-b px-6">수익/정산 내역</h2>
   <TabHead class="w-full px-6" variant="secondary">
     <TabHeadItem id={1} href="/me/revenue">수익</TabHeadItem>

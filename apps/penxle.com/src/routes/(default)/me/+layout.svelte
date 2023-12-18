@@ -102,16 +102,15 @@
             </a>
           </li>
           <li>
-            <button
+            <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
-                $page.url.pathname === '/me/revenue' && 'bg-primary text-primary',
+                $page.url.pathname.startsWith('/me/revenue') && 'bg-primary text-primary',
               )}
-              type="button"
-              on:click={() => (comingSoonOpen = true)}
+              href="/me/revenue"
             >
               정산/수익
-            </button>
+            </a>
           </li>
           <li>
             <a
