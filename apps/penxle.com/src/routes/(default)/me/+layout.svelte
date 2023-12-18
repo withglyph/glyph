@@ -71,7 +71,7 @@
             <a
               class={clsx(
                 'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
-                $page.url.pathname === '/me/cabinets' && 'bg-primary text-primary',
+                $page.url.pathname.startsWith('/me/cabinets') && 'bg-primary text-primary',
               )}
               href="/me/cabinets"
             >
