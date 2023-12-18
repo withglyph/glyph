@@ -78,6 +78,17 @@
           receiveFeedback
           discloseStats
 
+          collection {
+            id
+            name
+            count
+
+            thumbnail {
+              id
+              ...Image_image
+            }
+          }
+
           previousPost {
             id
             permalink
@@ -763,16 +774,23 @@
     </div>
 
     <div class="space-y-3">
-      <!-- <p class="body-16-b">컬렉션명</p>
+      {#if $query.post.collection}
+        <p class="body-16-b">컬렉션명</p>
 
-      <div class="p-2 flex gap-3">
-        <div class="bg-black w-24 h-30 rounded-lg flex-none" />
+        <a
+          class="p-2 flex gap-3 my-3 rounded-xl transition hover:bg-primary"
+          href={`/${$query.post.space.slug}/collections/${$query.post.collection.id}`}
+        >
+          {#if $query.post.collection.thumbnail}
+            <Image class="w-24 h-30 rounded-lg flex-none" $image={$query.post.collection.thumbnail} />
+          {/if}
 
-        <div class="truncate">
-          <p class="body-16-b mb-1 truncate">컬렉션명</p>
-          <p class="body-14-m text-secondary truncate">8개의 포스트</p>
-        </div>
-      </div> -->
+          <div class="truncate">
+            <p class="body-16-b mb-1 truncate">{$query.post.collection.name}</p>
+            <p class="body-14-m text-secondary truncate">{$query.post.collection.count}개의 포스트</p>
+          </div>
+        </a>
+      {/if}
 
       {#if $query.post.previousPost || $query.post.nextPost}
         <div class="border border-secondary rounded-xl px-4 py-3">
