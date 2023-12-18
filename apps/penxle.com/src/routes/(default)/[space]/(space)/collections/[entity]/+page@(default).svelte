@@ -1,19 +1,28 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import mixpanel from 'mixpanel-browser';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { Button, Image } from '$lib/components';
   import { ManageCollectionModal } from '$lib/components/pages/collections';
+  import { toast } from '$lib/notification';
+  import LoginRequireModal from '../../../../LoginRequireModal.svelte';
   import Feed from '../../Feed.svelte';
 
   let openPostManageCollectionModal = false;
+  let loginRequireOpen = false;
 
   $: query = graphql(`
     query SpaceCollectionsEnitityPage_Query($slug: String!) {
+      me {
+        id
+      }
+
       space(slug: $slug) {
         id
         slug
         name
+        followed
 
         posts {
           id
@@ -23,6 +32,12 @@
 
           ...SpaceCollectionsEnitityPage_ManageCollectionModal_post
         }
+
+        icon {
+          ...Image_image
+        }
+
+        description
 
         collections {
           id
@@ -50,6 +65,24 @@
   `);
   $: collectionId = $page.params.entity;
   $: collection = $query.space.collections.find(({ id }) => id === collectionId);
+
+  const followSpace = graphql(`
+    mutation SpaceCollectionPage_FollowSpace_Mutation($input: FollowSpaceInput!) {
+      followSpace(input: $input) {
+        id
+        followed
+      }
+    }
+  `);
+
+  const unfollowSpace = graphql(`
+    mutation SpaceCollectionPage_UnfollowSpace_Mutation($input: UnfollowSpaceInput!) {
+      unfollowSpace(input: $input) {
+        id
+        followed
+      }
+    }
+  `);
 </script>
 
 <Helmet title={`${collection?.name} | 컬렉션 | ${$query.space.name}`} />
@@ -99,7 +132,7 @@
   </header>
 
   <article class="sm:p-x-6 w-full flex flex-1">
-    <div class="max-w-75rem m-x-auto w-full flex gap-8 sm:m-y-2.25rem <sm:flex-col">
+    <div class="max-w-75rem m-x-auto w-full flex sm:(m-y-2.25rem gap-8) <sm:(flex-col gap-2)">
       {#if collection?.count}
         <ul class="sm:max-w-[calc(100%-18.4375rem)] <sm:space-y-2 flex-1 space-y-8">
           {#each collection.posts as post (post.id)}
@@ -122,32 +155,82 @@
         </section>
       {/if}
 
-      {#if $query.space.collections.length > 1}
-        <aside class="<sm:hidden">
-          <h2 class="body-14-b m-b-2">이 스페이스의 다른 컬렉션</h2>
+      <aside class="max-w-18.4375rem <sm:max-w-initial w-full">
+        <section class="flex sm:flex-col p-6 <sm:(p-y-4 gap-4) sm:(bg-primary rounded-4 m-b-4) bg-cardprimary center">
+          <Image class="square-3.75rem <sm:square-4rem rounded-4 sm:m-b-4 shrink-0" $image={$query.space.icon} />
+          <hgroup class="sm:(text-center w-full m-b-2) flex-1 break-keep">
+            <a class="flex sm:center m-b-2" href="/{$query.space?.slug}">
+              <h2 class="subtitle-18-eb <sm:body-15-b leading-5">
+                {$query.space.name}
+              </h2>
+              <i class="i-lc-chevron-right text-icon-secondary square-5 <sm:hidden" />
+            </a>
+            <p class="body-15-sb <sm:body-14-m text-secondary whitespace-pre-wrap">
+              {$query.space.description}
+            </p>
+          </hgroup>
+          {#if !$query.space.meAsMember}
+            {#if $query.space.followed}
+              <Button
+                class="rounded-12! shrink-0"
+                color="tertiary"
+                size="md"
+                variant="outlined"
+                on:click={async () => {
+                  await unfollowSpace({ spaceId: $query.space.id });
+                  mixpanel.track('space:unfollow', { spaceId: $query.space.id, via: 'collection' });
+                  toast.success('관심 스페이스 해제되었어요');
+                }}
+              >
+                관심 해제
+              </Button>
+            {:else}
+              <Button
+                class="rounded-12! shrink-0"
+                size="md"
+                on:click={async () => {
+                  if (!$query.me) {
+                    loginRequireOpen = true;
+                    return;
+                  }
 
-          <ul class="w-18.4375rem space-y-1">
-            {#each $query.space.collections as collection (collection.id)}
-              {#if collection.id !== collectionId}
-                <li>
-                  <a
-                    class="flex gap-xs p-2 hover:bg-primary focus:bg-primary rounded-3"
-                    href={`/${$query.space.slug}/collections/${collection.id}`}
-                  >
-                    {#if collection.thumbnail}
-                      <Image class="w-6rem h-7.5rem rounded-2" $image={collection.thumbnail} />
-                    {/if}
-                    <dl class="p-y-2">
-                      <dt class="body-16-b m-b-1">{collection.name}</dt>
-                      <dd class="body-14-m text-secondary">{collection.count}개의 포스트</dd>
-                    </dl>
-                  </a>
-                </li>
-              {/if}
-            {/each}
-          </ul>
-        </aside>
-      {/if}
+                  await followSpace({ spaceId: $query.space.id });
+                  mixpanel.track('space:follow', { spaceId: $query.space.id, via: 'collection' });
+                  toast.success('관심 스페이스로 등록되었어요');
+                }}
+              >
+                + 관심
+              </Button>
+            {/if}
+          {/if}
+        </section>
+        <section class="<sm:(bg-cardprimary p-y-2 p-x-4 m-t-2)">
+          {#if $query.space.collections.length > 1}
+            <h2 class="body-14-b m-b-2 <sm:m-b-3">이 스페이스의 다른 컬렉션</h2>
+
+            <ul class="sm:space-y-1 <sm:(flex gap-xs overflow-x-auto)">
+              {#each $query.space.collections as collection (collection.id)}
+                {#if collection.id !== collectionId}
+                  <li>
+                    <a
+                      class="flex <sm:(flex-col w-7.5rem) gap-xs p-2 sm:(hover:bg-primary focus:bg-primary) rounded-3 <sm:rounded-none"
+                      href={`/${$query.space.slug}/collections/${collection.id}`}
+                    >
+                      {#if collection.thumbnail}
+                        <Image class="w-6rem h-7.5rem rounded-2" $image={collection.thumbnail} />
+                      {/if}
+                      <dl class="p-y-2">
+                        <dt class="body-16-b m-b-1">{collection.name}</dt>
+                        <dd class="body-14-m text-secondary">{collection.count}개의 포스트</dd>
+                      </dl>
+                    </a>
+                  </li>
+                {/if}
+              {/each}
+            </ul>
+          {/if}
+        </section>
+      </aside>
     </div>
   </article>
 </section>
@@ -159,3 +242,5 @@
     bind:open={openPostManageCollectionModal}
   />
 {/if}
+
+<LoginRequireModal bind:open={loginRequireOpen} />
