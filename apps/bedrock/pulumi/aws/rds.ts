@@ -1,6 +1,7 @@
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
+import { zones } from '$aws/route53';
 import { securityGroups, subnets } from '$aws/vpc';
 
 const password = new random.RandomPassword('penxle@rds', {
@@ -65,8 +66,15 @@ const instance = new aws.rds.ClusterInstance('penxle-1', {
   applyImmediately: true,
 });
 
+new aws.route53.Record('db.pnxl.co', {
+  zoneId: zones.pnxl_co.zoneId,
+  type: 'CNAME',
+  name: 'db.pnxl.co',
+  records: [cluster.endpoint],
+  ttl: 300,
+});
+
 export const rds = {
-  cluster,
   instance,
 };
 

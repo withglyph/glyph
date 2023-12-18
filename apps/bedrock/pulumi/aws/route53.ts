@@ -1,10 +1,6 @@
 // spell-checker:words amazonses aspmx
 
 import * as aws from '@pulumi/aws';
-import { distributions } from '$aws/cloudfront';
-import { elasticache } from '$aws/elasticache';
-import { opensearch } from '$aws/opensearch';
-import { rds } from '$aws/rds';
 
 const createZone = (domain: string) => {
   return new aws.route53.Zone(domain, {
@@ -91,41 +87,4 @@ new aws.route53.Record('penxle.io|txt', {
   name: 'penxle.io',
   records: ['v=spf1 include:_spf.google.com ~all'],
   ttl: 300,
-});
-
-new aws.route53.Record('db.pnxl.co', {
-  zoneId: zones.pnxl_co.zoneId,
-  type: 'CNAME',
-  name: 'db.pnxl.co',
-  records: [rds.cluster.endpoint],
-  ttl: 300,
-});
-
-new aws.route53.Record('redis.pnxl.co', {
-  zoneId: zones.pnxl_co.zoneId,
-  type: 'CNAME',
-  name: 'redis.pnxl.co',
-  records: [elasticache.cluster.primaryEndpointAddress],
-  ttl: 300,
-});
-
-new aws.route53.Record('search.pnxl.co', {
-  zoneId: zones.pnxl_co.zoneId,
-  type: 'CNAME',
-  name: 'search.pnxl.co',
-  records: [opensearch.domain.endpoint],
-  ttl: 300,
-});
-
-new aws.route53.Record('pnxl.net', {
-  zoneId: zones.pnxl_net.zoneId,
-  type: 'A',
-  name: 'pnxl.net',
-  aliases: [
-    {
-      name: distributions.pnxl_net.domainName,
-      zoneId: distributions.pnxl_net.hostedZoneId,
-      evaluateTargetHealth: false,
-    },
-  ],
 });

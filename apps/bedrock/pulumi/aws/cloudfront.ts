@@ -1,5 +1,6 @@
 import * as aws from '@pulumi/aws';
-import { usEast1 } from './providers';
+import { usEast1 } from '$aws/providers';
+import { zones } from '$aws/route53';
 
 const createCertificate = (domain: string) => {
   const certificate = new aws.acm.Certificate(
@@ -188,9 +189,18 @@ const pnxlNet = new aws.cloudfront.Distribution('pnxl.net', {
   waitForDeployment: false,
 });
 
-export const distributions = {
-  pnxl_net: pnxlNet,
-};
+new aws.route53.Record('pnxl.net', {
+  zoneId: zones.pnxl_net.zoneId,
+  type: 'A',
+  name: 'pnxl.net',
+  aliases: [
+    {
+      name: pnxlNet.domainName,
+      zoneId: pnxlNet.hostedZoneId,
+      evaluateTargetHealth: false,
+    },
+  ],
+});
 
 export const outputs = {
   AWS_ACM_CLOUDFRONT_PENXLE_COM_CERTIFICATE_ARN: certificates.penxle_com.arn,

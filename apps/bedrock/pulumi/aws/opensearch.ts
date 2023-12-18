@@ -1,6 +1,7 @@
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 import { certificates } from '$aws/acm';
+import { zones } from '$aws/route53';
 import { securityGroups, subnets } from '$aws/vpc';
 
 const domain = new aws.opensearch.Domain('penxle', {
@@ -65,9 +66,13 @@ new aws.opensearch.PackageAssociation('analysis-nori@penxle', {
   packageId: 'G248827013',
 });
 
-export const opensearch = {
-  domain,
-};
+new aws.route53.Record('search.pnxl.co', {
+  zoneId: zones.pnxl_co.zoneId,
+  type: 'CNAME',
+  name: 'search.pnxl.co',
+  records: [domain.endpoint],
+  ttl: 300,
+});
 
 export const outputs = {
   AWS_OPENSEARCH_PENXLE_CONNECTION_URL: pulumi.interpolate`https://${domain.endpoint}`,

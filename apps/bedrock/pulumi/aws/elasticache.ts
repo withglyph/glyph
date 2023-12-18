@@ -1,5 +1,6 @@
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
+import { zones } from '$aws/route53';
 import { securityGroups, subnets } from '$aws/vpc';
 
 const cluster = new aws.elasticache.ReplicationGroup('penxle', {
@@ -33,9 +34,13 @@ const cluster = new aws.elasticache.ReplicationGroup('penxle', {
   applyImmediately: true,
 });
 
-export const elasticache = {
-  cluster,
-};
+new aws.route53.Record('redis.pnxl.co', {
+  zoneId: zones.pnxl_co.zoneId,
+  type: 'CNAME',
+  name: 'redis.pnxl.co',
+  records: [cluster.primaryEndpointAddress],
+  ttl: 300,
+});
 
 export const outputs = {
   AWS_ELASTICACHE_PENXLE_CONNECTION_URL: pulumi.interpolate`redis://${cluster.primaryEndpointAddress}`,
