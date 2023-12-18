@@ -75,8 +75,8 @@
     </aside>
 
     <div class="w-full max-w-208">
-      <h2 class="text-black text-xl font-bold">이용 내역</h2>
-      <div class="mt-4 flex p-6 flex-col gap-6 border-rd-3 border-1 border-solid border-secondary bg-white">
+      <h2 class="text-black text-xl font-bold <sm:(mx-5 mt-4)">이용 내역</h2>
+      <div class="mt-4 flex p-6 flex-col gap-6 rounded-xl border border-secondary bg-white <sm:(mx-5 mb-4)">
         {#if $query.me.points.length === 0}
           <div class="body-15-b grow text-center flex flex-col center">
             포인트 내역이 없어요.
@@ -116,13 +116,16 @@
                       <div class="flex gap-4 items-center justify-between">
                         <div class="flex gap-6 align-top">
                           <div class="text-secondary body-13-m">{dayjs(point.createdAt).formatAsTime()}</div>
-                          <div class="flex flex-col gap-2 flex-1">
+                          <div class="flex flex-col gap-2 flex-1 w-full">
                             <div class="text-secondary body-13-m">{pointTransactionCause[point.cause]}</div>
                             {#if point.cause === 'UNLOCK_CONTENT'}
-                              <div class="text-primary body-16-sb">{point.post?.publishedRevision?.title}</div>
+                              <div class="text-primary body-16-sb whitespace-pre-wrap break-all">
+                                {point.post?.publishedRevision?.title}
+                              </div>
                             {/if}
                           </div>
                         </div>
+
                         {#if purchased(point.cause)}
                           <div class="text-green-50 body-16-b flex items-center">+{comma(point.amount)}</div>
                         {:else}
