@@ -128,8 +128,8 @@
               <Image class="square-10.5 rounded-lg grow-0 shrink-0" $image={post.publishedRevision.croppedThumbnail} />
             {/if}
             <div class="truncate">
-              <p class="body-15-b truncate grow">{post.publishedRevision?.title}</p>
-              <time class="body-13-m text-secondary truncate" datetime={post.publishedAt}>
+              <p class="body-17-b truncate grow">{post.publishedRevision?.title}</p>
+              <time class="body-15-m text-secondary truncate" datetime={post.publishedAt}>
                 {dayjs(post.publishedAt).formatAsDate()}
               </time>
             </div>
