@@ -5,11 +5,11 @@
   import { EditorView } from '@tiptap/pm/view';
   import { onMount, tick } from 'svelte';
   import { portal } from '$lib/svelte/actions';
-  import { isEmptyTextBlock } from '$lib/utils';
 
   export let key = 'floating-menu';
   export let editor: Editor;
   export let when: ((view: EditorView) => boolean) | undefined = undefined;
+  export let leftOffset = 0;
 
   let menuEl: HTMLElement;
   let open = false;
@@ -21,15 +21,9 @@
       return;
     }
 
-    const { $anchor, empty, from, to } = view.state.selection;
+    const { from, to } = view.state.selection;
 
-    if (
-      !view.hasFocus() ||
-      !empty ||
-      !isEmptyTextBlock($anchor.parent) ||
-      $anchor.depth !== 1 ||
-      when?.(view) === false
-    ) {
+    if (!view.hasFocus() || when?.(view) === false) {
       open = false;
       return;
     }
@@ -46,8 +40,10 @@
       middleware: [offset(8), flip(), shift({ padding: 8 })],
     });
 
+    const { left } = editor.view.dom.getBoundingClientRect();
+
     Object.assign(menuEl.style, {
-      left: `${position.x}px`,
+      left: `${left - leftOffset}px`,
       top: `${position.y}px`,
     });
   };

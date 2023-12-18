@@ -46,7 +46,7 @@
   };
 </script>
 
-<TiptapFloatingMenu {editor}>
+<TiptapFloatingMenu {editor} leftOffset={48}>
   <Menu as="div" offset={16} placement="left-start">
     <Button slot="value" class="rounded-full! p-2! bg-white" color="tertiary" size="lg" variant="outlined">
       <i class="i-lc-plus square-5" />
@@ -82,16 +82,22 @@
       {/each}
     </Menu>
 
-    <Menu {offset} placement="right-start">
-      <div
+    <Menu as="button" {offset} placement="right-start">
+      <button
         slot="value"
         class="flex items-center gap-2.5 body-14-sb text-secondary px-4 py-3 w-full rounded-lg hover:(bg-primary text-primary)"
+        type="button"
+        on:click={() => {
+          if (editor.isActive('blockquote')) {
+            editor.chain().focus().unsetBlockquote().run();
+          }
+        }}
       >
         <span class="p-1 border border-alphagray-15 rounded-lg flex center">
           <i class="i-lc-quote square-5" />
         </span>
-        인용구 추가
-      </div>
+        인용구
+      </button>
 
       {#each blockquotes as kind (kind)}
         <MenuItem
