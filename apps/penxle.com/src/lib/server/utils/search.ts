@@ -1,6 +1,9 @@
+import { Prisma, PrismaClient } from '@prisma/client';
+import * as R from 'radash';
+import { indexName, openSearch } from '$lib/server/search';
 import { disassembleHangulString, InitialHangulString } from '$lib/utils';
-import { indexName, openSearch } from '../search';
-import type { InteractiveTransactionClient } from '../database';
+import type { ApiResponse } from '@opensearch-project/opensearch';
+import type { InteractiveTransactionClient } from '$lib/server/database';
 
 type IndexPostParams = {
   db: InteractiveTransactionClient;
@@ -101,4 +104,34 @@ export const indexTags = async ({ tags }: IndexTagParams) => {
     index: indexName('tags'),
     body: disassembledTags.flatMap((tag) => [{ index: { _id: tag.id } }, { name: tag.name }]),
   });
+};
+
+type SearchResultToPrismaDataParams<T extends Uncapitalize<Prisma.ModelName>> = {
+  searchResult: ApiResponse;
+  db: InteractiveTransactionClient;
+  tableName: T;
+  queryArgs: Prisma.Args<PrismaClient[T], 'findMany'>;
+};
+
+export const searchResultToPrismaData = async <T extends Uncapitalize<Prisma.ModelName>>({
+  searchResult,
+  db,
+  tableName,
+  queryArgs,
+}: SearchResultToPrismaDataParams<T>): Promise<Prisma.Result<PrismaClient[T], typeof queryArgs, 'findMany'>> => {
+  const ids: string[] = searchResult.body.hits.hits.map((hit: { _id: string }) => hit._id);
+
+  // @ts-expect-error 중간에 임시로 id만 있는 객체로 캐스팅
+  const prismaData: { id: string }[] = await db[tableName].findMany({
+    ...queryArgs,
+    where: {
+      ...queryArgs.where,
+      id: { in: ids },
+    },
+  });
+
+  const posts = R.objectify(prismaData, (post) => post.id);
+
+  // @ts-expect-error id만 있는 객체를 다시 원본 객체로 캐스팅 (함수 리턴 시그니처에 정의되어 있음)
+  return R.sift(ids.map((id) => posts[id]));
 };

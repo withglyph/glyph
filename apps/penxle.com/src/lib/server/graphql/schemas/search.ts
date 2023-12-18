@@ -2,20 +2,10 @@ import { ContentFilterCategory } from '@prisma/client';
 import * as R from 'radash';
 import { match } from 'ts-pattern';
 import { indexName, openSearch } from '$lib/server/search';
+import { searchResultToPrismaData } from '$lib/server/utils';
 import { disassembleHangulString } from '$lib/utils';
 import { defineSchema } from '../builder';
-
-type SearchHits = {
-  _id: string;
-  _score: number;
-  _source: {
-    id: string;
-    title: string;
-    subtitle?: string;
-    spaceId: string;
-    tags: string[];
-  };
-};
+import type { ApiResponse } from '@opensearch-project/opensearch';
 
 export const searchSchema = defineSchema((builder) => {
   /**
@@ -27,33 +17,35 @@ export const searchSchema = defineSchema((builder) => {
   });
 
   class SearchResult {
-    count!: number;
-    postIds!: string[];
+    result!: ApiResponse;
   }
 
   builder.objectType(SearchResult, {
     name: 'SearchResult',
     fields: (t) => ({
-      count: t.exposeInt('count'),
+      count: t.field({
+        type: 'Int',
+        resolve: ({ result }) => result.body.hits.total.value ?? 0,
+      }),
+
       posts: t.prismaField({
         type: ['Post'],
-        resolve: async (query, { postIds }, __, { db }) => {
-          const posts = R.objectify(
-            await db.post.findMany({
+        resolve: async (query, { result }, __, { db }) => {
+          return await searchResultToPrismaData({
+            searchResult: result,
+            db,
+            tableName: 'post',
+            queryArgs: {
               ...query,
               where: {
-                id: { in: postIds },
                 state: 'PUBLISHED',
                 space: {
                   state: 'ACTIVE',
                   visibility: 'PUBLIC',
                 },
               },
-            }),
-            (post) => post.id,
-          );
-
-          return R.sift(postIds.map((postId) => posts[postId]));
+            },
+          });
         },
       }),
     }),
@@ -148,13 +140,7 @@ export const searchSchema = defineSchema((builder) => {
           },
         });
 
-        const hits: SearchHits[] = searchResult.body.hits.hits;
-        const resultIds = hits.map((hit) => hit._id);
-
-        return {
-          count: searchResult.body.hits.total.value,
-          postIds: resultIds,
-        };
+        return { result: searchResult };
       },
     }),
 
@@ -200,19 +186,12 @@ export const searchSchema = defineSchema((builder) => {
           },
         });
 
-        const hits: SearchHits[] = searchResult.body.hits.hits;
-        const resultIds = hits.map((hit) => hit._id);
-        const spaces = R.objectify(
-          await db.space.findMany({
-            ...query,
-            where: {
-              id: { in: resultIds },
-            },
-          }),
-          (space) => space.id,
-        );
-
-        return R.sift(hits.map((hit) => spaces[hit._id]));
+        return searchResultToPrismaData({
+          searchResult,
+          db,
+          tableName: 'space',
+          queryArgs: query,
+        });
       },
     }),
 
@@ -251,19 +230,12 @@ export const searchSchema = defineSchema((builder) => {
           },
         });
 
-        const hits: SearchHits[] = searchResult.body.hits.hits;
-        const resultIds = hits.map((hit) => hit._id);
-        const tags = R.objectify(
-          await db.tag.findMany({
-            ...query,
-            where: {
-              id: { in: resultIds },
-            },
-          }),
-          (tag) => tag.id,
-        );
-
-        return R.sift(hits.map((hit) => tags[hit._id]));
+        return searchResultToPrismaData({
+          searchResult,
+          db,
+          tableName: 'tag',
+          queryArgs: query,
+        });
       },
     }),
   }));

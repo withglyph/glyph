@@ -16,14 +16,18 @@ import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { redis } from '$lib/server/cache';
 import { s3 } from '$lib/server/external-api/aws';
+import { indexName, openSearch } from '$lib/server/search';
 import {
   createRevenue,
   deductUserPoint,
   directUploadImage,
+  getMutedSpaceIds,
+  getMutedTagIds,
   getUserPoint,
   indexPost,
   indexTags,
   isAdulthood,
+  searchResultToPrismaData,
 } from '$lib/server/utils';
 import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
 import { base36To10, createId, createTiptapDocument, createTiptapNode, validateTiptapDocument } from '$lib/utils';
@@ -355,6 +359,63 @@ export const postSchema = defineSchema((builder) => {
               visibility: meAsMember ? undefined : 'PUBLIC',
             },
             orderBy: { publishedAt: 'asc' },
+          });
+        },
+      }),
+
+      recommendedPosts: t.prismaField({
+        type: ['Post'],
+        select: { publishedRevision: true },
+        resolve: async (query, post, _, { db, ...context }) => {
+          if (!post.publishedRevision) {
+            return [];
+          }
+
+          const [postTagIds, mutedTagIds, mutedSpaceIds] = await Promise.all([
+            db.postRevisionTag
+              .findMany({
+                where: { revisionId: post.publishedRevision.id },
+              })
+              .then((tags) => tags.map(({ tagId }) => tagId)),
+            getMutedTagIds({ db, userId: context.session?.userId }),
+            getMutedSpaceIds({ db, userId: context.session?.userId }),
+          ]);
+
+          const searchResult = await openSearch.search({
+            index: indexName('posts'),
+            body: {
+              query: {
+                bool: {
+                  should: [{ terms: { 'tags.id': postTagIds } }, { terms: { spaceId: post.spaceId } }],
+                  filter: {
+                    bool: {
+                      must_not: R.sift([
+                        mutedTagIds.length > 0 ? { terms: { 'tags.id': mutedTagIds } } : undefined,
+                        mutedSpaceIds.length > 0 ? { terms: { spaceId: mutedSpaceIds } } : undefined,
+                      ]),
+                    },
+                  },
+                },
+              },
+
+              size: 10,
+            },
+          });
+
+          return searchResultToPrismaData({
+            searchResult,
+            db,
+            tableName: 'post',
+            queryArgs: {
+              ...query,
+              where: {
+                state: 'PUBLISHED',
+                space: {
+                  state: 'ACTIVE',
+                  visibility: 'PUBLIC',
+                },
+              },
+            },
           });
         },
       }),
