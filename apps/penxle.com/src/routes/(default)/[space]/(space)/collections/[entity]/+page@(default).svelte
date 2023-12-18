@@ -95,7 +95,7 @@
     </div>
   </header>
 
-  <article class="sm:p-x-6">
+  <article class="sm:p-x-6 w-full">
     <div class="max-w-75rem m-x-auto w-full flex gap-8 sm:m-t-2.25rem">
       <ul class="sm:max-w-[calc(100%-18.4375rem)] flex-1 space-y-8 <sm:space-y-2">
         {#if collection}
