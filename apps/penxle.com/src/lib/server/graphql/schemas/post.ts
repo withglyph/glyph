@@ -930,7 +930,15 @@ export const postSchema = defineSchema((builder) => {
         /// 여기부터 포스트 생성/수정 단계
 
         // 1. 일단 포스트가 없었다면 생성
-        if (!input.postId) {
+        if (input.postId) {
+          await db.post.update({
+            where: { id: input.postId },
+            data: {
+              spaceId: input.spaceId,
+              memberId: meAsMember.id,
+            },
+          });
+        } else {
           await db.post.create({
             data: {
               id: postId,
@@ -939,7 +947,7 @@ export const postSchema = defineSchema((builder) => {
               memberId: meAsMember.id,
               userId: context.session.userId,
               state: 'DRAFT',
-              visibility: 'SPACE',
+              visibility: 'PUBLIC',
               discloseStats: true,
               receiveFeedback: true,
               receivePatronage: true,
