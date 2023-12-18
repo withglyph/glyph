@@ -260,18 +260,13 @@ export const postSchema = defineSchema((builder) => {
         nullable: true,
         select: (_, __, nestedSelection) => ({
           collectionPost: {
-            select: {
-              collection: nestedSelection(),
-            },
+            where: { collection: { state: 'ACTIVE' } },
+            select: { collection: nestedSelection() },
           },
         }),
 
         resolve: (_, { collectionPost }) => {
-          if (!collectionPost || collectionPost.collection.state !== 'ACTIVE') {
-            return null;
-          }
-
-          return collectionPost.collection;
+          return collectionPost ? collectionPost.collection : null;
         },
       }),
 
