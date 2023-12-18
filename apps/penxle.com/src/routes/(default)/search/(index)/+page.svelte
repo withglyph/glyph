@@ -6,9 +6,16 @@
   import { Feed, Image, Tag } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { toast } from '$lib/notification';
+  import LoginRequireModal from '../../LoginRequireModal.svelte';
+
+  let loginRequireOpen = false;
 
   $: query = graphql(`
     query SearchPage_Query($query: String!) {
+      me {
+        id
+      }
+
       searchPosts(query: $query) {
         count
 
@@ -114,6 +121,11 @@
                   class="py-1.5 px-2 rounded-12 bg-gray-90 text-gray-5 body-13-m flex items-center gap-1"
                   type="button"
                   on:click={async () => {
+                    if (!$query.me) {
+                      loginRequireOpen = true;
+                      return;
+                    }
+
                     await followSpace({ spaceId: space.id });
                     mixpanel.track('space:follow', { spaceId: space.id, via: 'search' });
                     toast.success('관심 스페이스로 등록되었어요');
@@ -169,3 +181,5 @@
     </div>
   {/if}
 </div>
+
+<LoginRequireModal bind:open={loginRequireOpen} />
