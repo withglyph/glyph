@@ -36,9 +36,9 @@
 <div class="my-7 w-full max-w-200">
   <p class="subtitle-18-eb">{$query.me.bookmarks[0].postCount}개의 포스트</p>
 
-  <div class="mt-9 space-y-11.5">
+  <div class="mt-9">
     {#each $query.me.bookmarks[0].posts as { post } (post.id)}
-      <Feed $post={post} showSpaceInfoMessage />
+      <Feed class="mb-11.5 last-of-type:mb-0" $post={post} showSpaceInfoMessage />
     {/each}
   </div>
 </div>
