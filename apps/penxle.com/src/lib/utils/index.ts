@@ -1,5 +1,6 @@
 export * from './async';
 export * from './color';
+export * from './device';
 export * from './file';
 export * from './hangul';
 export * from './id';

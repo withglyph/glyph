@@ -6,8 +6,9 @@
   import clsx from 'clsx';
   import * as R from 'radash';
   import { onMount, tick } from 'svelte';
+  import { browser } from '$app/environment';
   import { portal } from '$lib/svelte/actions';
-  import { isEmptyTextBlock } from '$lib/utils';
+  import { isEmptyTextBlock, isMobile } from '$lib/utils';
 
   let key = 'share-bubble-menu';
   export let editor: Editor;
@@ -18,6 +19,12 @@
   let arrowEl: HTMLElement;
   let open = false;
   let preventUpdate = false;
+
+  let mobile: boolean | undefined;
+
+  $: if (browser) {
+    mobile = isMobile();
+  }
 
   const update = R.debounce({ delay: 150 }, async (view: EditorView) => {
     if (preventUpdate) {
@@ -40,7 +47,7 @@
     };
 
     const position = await computePosition(targetEl, menuEl, {
-      placement: 'right',
+      placement: mobile ? 'right' : 'bottom',
       middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrowEl })],
     });
 
