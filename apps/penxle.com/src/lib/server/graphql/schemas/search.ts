@@ -26,6 +26,39 @@ export const searchSchema = defineSchema((builder) => {
     values: ['ACCURACY', 'LATEST'],
   });
 
+  class SearchResult {
+    count!: number;
+    postIds!: string[];
+  }
+
+  builder.objectType(SearchResult, {
+    name: 'SearchResult',
+    fields: (t) => ({
+      count: t.exposeInt('count'),
+      posts: t.prismaField({
+        type: ['Post'],
+        resolve: async (query, { postIds }, __, { db }) => {
+          const posts = R.objectify(
+            await db.post.findMany({
+              ...query,
+              where: {
+                id: { in: postIds },
+                state: 'PUBLISHED',
+                space: {
+                  state: 'ACTIVE',
+                  visibility: 'PUBLIC',
+                },
+              },
+            }),
+            (post) => post.id,
+          );
+
+          return R.sift(postIds.map((postId) => posts[postId]));
+        },
+      }),
+    }),
+  });
+
   /**
    * * Queries
    */
@@ -107,8 +140,8 @@ export const searchSchema = defineSchema((builder) => {
     //   },
     // }),
 
-    searchPosts: t.prismaField({
-      type: ['Post'],
+    searchPosts: t.field({
+      type: SearchResult,
       args: {
         query: t.arg.string(),
         includeTags: t.arg.stringList({ defaultValue: [] }),
@@ -118,7 +151,7 @@ export const searchSchema = defineSchema((builder) => {
         orderBy: t.arg({ type: OrderByKind, defaultValue: 'ACCURACY' }),
         page: t.arg.int({ defaultValue: 1 }),
       },
-      resolve: async (query, _, args, { db, ...context }) => {
+      resolve: async (_, args, { db, ...context }) => {
         const mutedTags = context.session
           ? await db.userTagMute.findMany({
               where: { userId: context.session.userId },
@@ -193,22 +226,11 @@ export const searchSchema = defineSchema((builder) => {
 
         const hits: SearchHits[] = searchResult.body.hits.hits;
         const resultIds = hits.map((hit) => hit._id);
-        const posts = R.objectify(
-          await db.post.findMany({
-            ...query,
-            where: {
-              id: { in: resultIds },
-              state: 'PUBLISHED',
-              space: {
-                state: 'ACTIVE',
-                visibility: 'PUBLIC',
-              },
-            },
-          }),
-          (post) => post.id,
-        );
 
-        return R.sift(hits.map((hit) => posts[hit._id]));
+        return {
+          count: searchResult.body.hits.total.value,
+          postIds: resultIds,
+        };
       },
     }),
 

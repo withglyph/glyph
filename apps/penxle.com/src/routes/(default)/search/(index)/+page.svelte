@@ -10,8 +10,12 @@
   $: query = graphql(`
     query SearchPage_Query($query: String!) {
       searchPosts(query: $query) {
-        id
-        ...Feed_post
+        count
+
+        posts {
+          id
+          ...Feed_post
+        }
       }
 
       searchSpaces(query: $query) {
@@ -60,7 +64,7 @@
 <Helmet title="{$page.url.searchParams.get('q')} - 검색" />
 
 <div class="body-14-m text-secondary py-1 px-3 rounded-lg bg-surface-primary mt-3 <sm:mx-4">
-  🔍 약 {$query.searchPosts.length ?? 0}개의 검색결과가 있어요!
+  🔍 약 {$query.searchPosts.count}개의 검색결과가 있어요!
 </div>
 
 <TabHead class="mt-9 mb-4 w-full <sm:(sticky top-61px z-1)" variant="secondary">
@@ -155,11 +159,11 @@
     <button class="py-2 px-4 border rounded-8 body-15-sb border-secondary" type="button">그림</button>
   </div> -->
 
-  {#if $query.searchPosts.length === 0}
+  {#if $query.searchPosts.posts.length === 0}
     <div class="text-secondary body-15-b text-center flex center min-h-50">검색 결과가 없어요</div>
   {:else}
     <div class="<sm:bg-primary">
-      {#each $query.searchPosts as post (post.id)}
+      {#each $query.searchPosts.posts as post (post.id)}
         <Feed class="mt-4" $post={post} />
       {/each}
     </div>
