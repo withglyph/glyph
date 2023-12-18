@@ -1,25 +1,26 @@
 import { OAuth2Client } from 'google-auth-library';
 import { env } from '$env/dynamic/private';
+import type { RequestEvent } from '@sveltejs/kit';
 import type { ExternalUser } from './types';
 
-const createOAuthClient = (context: { url: URL }) => {
+const createOAuthClient = (event: RequestEvent) => {
   return new OAuth2Client({
     clientId: env.PRIVATE_GOOGLE_CLIENT_ID,
     clientSecret: env.PRIVATE_GOOGLE_CLIENT_SECRET,
-    redirectUri: `${context.url.origin}/api/sso/google`,
+    redirectUri: `${event.url.origin}/api/sso/google`,
   });
 };
 
-export const generateAuthorizationUrl = (context: { url: URL }, type: string) => {
-  const client = createOAuthClient(context);
+export const generateAuthorizationUrl = (event: RequestEvent, type: string) => {
+  const client = createOAuthClient(event);
   return client.generateAuthUrl({
     scope: ['email', 'profile'],
     state: Buffer.from(JSON.stringify({ type })).toString('base64'),
   });
 };
 
-export const authorizeUser = async (context: { url: URL }, code: string): Promise<ExternalUser> => {
-  const client = createOAuthClient(context);
+export const authorizeUser = async (event: RequestEvent, code: string): Promise<ExternalUser> => {
+  const client = createOAuthClient(event);
 
   const { tokens } = await client.getToken({ code });
   if (!tokens.access_token) {

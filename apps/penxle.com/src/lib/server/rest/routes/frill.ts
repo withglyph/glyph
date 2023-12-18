@@ -29,7 +29,7 @@ frill.get('/frill', async (_, { db, ...context }) => {
   return status(303, {
     headers: {
       Location: qs.stringifyUrl({
-        url: context.url.searchParams.get('redirect') || 'https://penxle.frill.co',
+        url: context.event.url.searchParams.get('redirect') || 'https://penxle.frill.co',
         query: { ssoToken },
       }),
     },

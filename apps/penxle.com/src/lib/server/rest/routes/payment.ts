@@ -8,7 +8,7 @@ import { createRouter } from '../router';
 export const payment = createRouter();
 
 payment.get('/payment/callback', async (_, { db, ...context }) => {
-  const uid = context.url.searchParams.get('imp_uid');
+  const uid = context.event.url.searchParams.get('imp_uid');
   if (!uid) {
     throw new Error('imp_uid is missing');
   }
@@ -86,7 +86,7 @@ payment.get('/payment/callback', async (_, { db, ...context }) => {
 });
 
 payment.post('/payment/webhook', async (_, { db, ...context }) => {
-  const payload = await context.request.json();
+  const payload = await context.event.request.json();
 
   const resp = await portone.getPayment(payload.imp_uid);
   if (resp.code !== 0) {

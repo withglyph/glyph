@@ -122,8 +122,8 @@ export const pointSchema = defineSchema((builder) => {
           amount: paymentAmount,
           buyer_email: user.email,
 
-          notice_url: `${context.url.origin}/api/payment/webhook`,
-          m_redirect_url: `${context.url.origin}/api/payment/callback`,
+          notice_url: `${context.event.url.origin}/api/payment/webhook`,
+          m_redirect_url: `${context.event.url.origin}/api/payment/callback`,
 
           ...pgData,
         };

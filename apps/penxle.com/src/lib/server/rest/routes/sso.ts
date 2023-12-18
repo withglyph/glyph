@@ -13,17 +13,17 @@ export const sso = createRouter();
 type State = { type: string };
 
 sso.get('/sso/google', async (_, context) => {
-  const code = context.url.searchParams.get('code');
+  const code = context.event.url.searchParams.get('code');
   if (!code) {
     throw new Error('code is required');
   }
 
-  const externalUser = await google.authorizeUser(context, code);
+  const externalUser = await google.authorizeUser(context.event, code);
   return await handle(context, externalUser);
 });
 
 sso.get('/sso/naver', async (_, context) => {
-  const code = context.url.searchParams.get('code');
+  const code = context.event.url.searchParams.get('code');
   if (!code) {
     throw new Error('code is required');
   }
@@ -33,7 +33,7 @@ sso.get('/sso/naver', async (_, context) => {
 });
 
 const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) => {
-  const _state = context.url.searchParams.get('state');
+  const _state = context.event.url.searchParams.get('state');
   if (!_state) {
     throw new Error('state is required');
   }
@@ -111,7 +111,7 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
       });
 
       const accessToken = await createAccessToken(session.id);
-      context.cookies.set('penxle-at', accessToken, {
+      context.event.cookies.set('penxle-at', accessToken, {
         path: '/',
         maxAge: dayjs.duration(1, 'year').asSeconds(),
       });
@@ -146,7 +146,7 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
         });
 
         const accessToken = await createAccessToken(session.id);
-        context.cookies.set('penxle-at', accessToken, {
+        context.event.cookies.set('penxle-at', accessToken, {
           path: '/',
           maxAge: dayjs.duration(1, 'year').asSeconds(),
         });

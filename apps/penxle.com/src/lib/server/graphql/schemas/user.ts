@@ -499,7 +499,7 @@ export const userSchema = defineSchema((builder) => {
             action: isEmailExists ? '로그인' : '가입',
             code,
             url: qs.stringifyUrl({
-              url: `${context.url.origin}/api/email`,
+              url: `${context.event.url.origin}/api/email`,
               query: { token },
             }),
           },
@@ -527,7 +527,7 @@ export const userSchema = defineSchema((builder) => {
           where: { id: context.session.id },
         });
 
-        context.cookies.delete('penxle-at', { path: '/' });
+        context.event.cookies.delete('penxle-at', { path: '/' });
       },
     }),
 
@@ -549,7 +549,7 @@ export const userSchema = defineSchema((builder) => {
 
         return {
           url: qs.stringifyUrl({
-            url: `${context.url.origin}/api/email`,
+            url: `${context.event.url.origin}/api/email`,
             query: { token: emailVerification.token },
           }),
         };
@@ -633,7 +633,7 @@ export const userSchema = defineSchema((builder) => {
         });
 
         const accessToken = await createAccessToken(session.id);
-        context.cookies.set('penxle-at', accessToken, {
+        context.event.cookies.set('penxle-at', accessToken, {
           path: '/',
           maxAge: dayjs.duration(1, 'year').asSeconds(),
         });
@@ -655,7 +655,7 @@ export const userSchema = defineSchema((builder) => {
           .exhaustive();
 
         return {
-          url: provider.generateAuthorizationUrl(context, input.type),
+          url: provider.generateAuthorizationUrl(context.event, input.type),
         };
       },
     }),
@@ -702,7 +702,7 @@ export const userSchema = defineSchema((builder) => {
             name: user.profile.name,
             email: input.email,
             url: qs.stringifyUrl({
-              url: `${context.url.origin}/api/email`,
+              url: `${context.event.url.origin}/api/email`,
               query: { token },
             }),
           },
@@ -909,7 +909,7 @@ export const userSchema = defineSchema((builder) => {
           },
         });
 
-        context.cookies.delete('penxle-at', { path: '/' });
+        context.event.cookies.delete('penxle-at', { path: '/' });
       },
     }),
   }));

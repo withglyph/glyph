@@ -7,7 +7,7 @@ import { createRouter } from '../router';
 export const identification = createRouter();
 
 identification.get('/identification/callback', async (_, { db, ...context }) => {
-  const uid = context.url.searchParams.get('imp_uid');
+  const uid = context.event.url.searchParams.get('imp_uid');
   if (!uid) {
     throw new Error('imp_uid is missing');
   }

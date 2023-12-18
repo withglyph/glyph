@@ -12,13 +12,16 @@ type InternalContext = {
 };
 
 type DefaultContext = {
-  db: InteractiveTransactionClient;
-  deviceId: string;
-  flash: (type: 'success' | 'error', message: string) => Promise<void>;
-  onCommit: (fn: () => MaybePromise<void>) => void;
+  event: RequestEvent;
 
+  deviceId: string;
+
+  flash: (type: 'success' | 'error', message: string) => Promise<void>;
+
+  db: InteractiveTransactionClient;
   $commit: () => Promise<void>;
   $rollback: () => Promise<void>;
+  onCommit: (fn: () => MaybePromise<void>) => void;
 };
 
 export type UserContext = {
@@ -28,22 +31,21 @@ export type UserContext = {
   };
 };
 
-export type Context = RequestEvent & App.Locals & DefaultContext & Partial<UserContext>;
+export type Context = DefaultContext & Partial<UserContext>;
 
-export const createContext = async (context: RequestEvent): Promise<Context> => {
+export const createContext = async (event: RequestEvent): Promise<Context> => {
   const db = await prismaClient.$begin({ isolation: 'ReadCommitted' });
-  let deviceId = context.cookies.get('penxle-did');
+  let deviceId = event.cookies.get('penxle-did');
   if (!deviceId) {
     deviceId = nanoid(32);
-    context.cookies.set('penxle-did', deviceId, {
+    event.cookies.set('penxle-did', deviceId, {
       path: '/',
       maxAge: dayjs.duration(1, 'year').asSeconds(),
     });
   }
 
   const ctx: Context & InternalContext = {
-    ...context,
-    ...context.locals,
+    event,
     db,
     deviceId,
     $commitHooks: [],
@@ -60,7 +62,7 @@ export const createContext = async (context: RequestEvent): Promise<Context> => 
     },
   };
 
-  const accessToken = context.cookies.get('penxle-at');
+  const accessToken = event.cookies.get('penxle-at');
   if (accessToken) {
     let sessionId: string | undefined;
 

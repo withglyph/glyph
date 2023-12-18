@@ -11,7 +11,7 @@ import { createRouter } from '../router';
 export const email = createRouter();
 
 email.get('/email', async (_, { db, ...context }) => {
-  const token = context.url.searchParams.get('token');
+  const token = context.event.url.searchParams.get('token');
   if (!token) {
     throw new Error('token is required');
   }
@@ -38,7 +38,7 @@ email.get('/email', async (_, { db, ...context }) => {
       });
 
       const accessToken = await createAccessToken(session.id);
-      context.cookies.set('penxle-at', accessToken, {
+      context.event.cookies.set('penxle-at', accessToken, {
         path: '/',
         maxAge: dayjs.duration(1, 'year').asSeconds(),
       });
