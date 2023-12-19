@@ -313,8 +313,6 @@
   `);
 
   const handleShare = () => {
-    if (preview) return;
-
     const shortLink = `https://pnxl.me/${$query.post.shortlink}`;
     if (navigator.share) {
       navigator.share({
@@ -417,10 +415,9 @@
           {:else}
             <button
               class="i-px-bookmark-outline square-6"
+              disabled={preview}
               type="button"
               on:click={async () => {
-                if (preview) return;
-
                 if (!$query.me) {
                   loginRequireOpen = true;
                   return;
@@ -433,58 +430,54 @@
             />
           {/if}
 
-          <button class="i-lc-share square-6" type="button" on:click={handleShare} />
+          <button class="i-lc-share square-6" disabled={preview} type="button" on:click={handleShare} />
 
-          {#if preview}
-            <button class="i-lc-more-vertical square-6 text-icon-primary" type="button" />
-          {:else}
-            <Menu>
-              <i slot="value" class="i-lc-more-vertical square-6 text-icon-primary" />
-              {#if !$query.post.space.meAsMember}
-                {#if $query.post.space.muted}
-                  <MenuItem
-                    on:click={async () => {
-                      await unmuteSpace({ spaceId: $query.post.space.id });
-                      mixpanel.track('space:unmute', { spaceId: $query.post.space.id, via: 'post' });
-                      toast.success('스페이스 숨기기를 해제했어요');
-                    }}
-                  >
-                    스페이스 숨기기 해제
-                  </MenuItem>
-                {:else}
-                  <MenuItem
-                    on:click={async () => {
-                      if (!$query.me) {
-                        loginRequireOpen = true;
-                        return;
-                      }
-
-                      await muteSpace({ spaceId: $query.post.space.id });
-                      mixpanel.track('space:mute', { spaceId: $query.post.space.id, via: 'post' });
-                      toast.success('스페이스를 숨겼어요');
-                    }}
-                  >
-                    스페이스 숨기기
-                  </MenuItem>
-                {/if}
-                <MenuItem>포스트 신고하기</MenuItem>
+          <Menu disabled={preview}>
+            <i slot="value" class="i-lc-more-vertical square-6 text-icon-primary" />
+            {#if !$query.post.space.meAsMember}
+              {#if $query.post.space.muted}
+                <MenuItem
+                  on:click={async () => {
+                    await unmuteSpace({ spaceId: $query.post.space.id });
+                    mixpanel.track('space:unmute', { spaceId: $query.post.space.id, via: 'post' });
+                    toast.success('스페이스 숨기기를 해제했어요');
+                  }}
+                >
+                  스페이스 숨기기 해제
+                </MenuItem>
               {:else}
-                {@const myPost = $query.post.member.id === $query.post.space.meAsMember.id}
-                {#if myPost}
-                  <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
-                {/if}
-                {#if myPost || $query.post.space.meAsMember.role === 'ADMIN'}
-                  <MenuItem
-                    on:click={() => {
-                      openDeletePostWarning = true;
-                    }}
-                  >
-                    삭제하기
-                  </MenuItem>
-                {/if}
+                <MenuItem
+                  on:click={async () => {
+                    if (!$query.me) {
+                      loginRequireOpen = true;
+                      return;
+                    }
+
+                    await muteSpace({ spaceId: $query.post.space.id });
+                    mixpanel.track('space:mute', { spaceId: $query.post.space.id, via: 'post' });
+                    toast.success('스페이스를 숨겼어요');
+                  }}
+                >
+                  스페이스 숨기기
+                </MenuItem>
               {/if}
-            </Menu>
-          {/if}
+              <MenuItem>포스트 신고하기</MenuItem>
+            {:else}
+              {@const myPost = $query.post.member.id === $query.post.space.meAsMember.id}
+              {#if myPost}
+                <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
+              {/if}
+              {#if myPost || $query.post.space.meAsMember.role === 'ADMIN'}
+                <MenuItem
+                  on:click={() => {
+                    openDeletePostWarning = true;
+                  }}
+                >
+                  삭제하기
+                </MenuItem>
+              {/if}
+            {/if}
+          </Menu>
         </div>
       </div>
     </header>
@@ -646,11 +639,10 @@
       <Button
         class="rounded-12! px-3! h-6!"
         color="tertiary"
+        disabled={preview}
         size="sm"
         variant="outlined"
         on:click={async () => {
-          if (preview) return;
-
           if (!$query.me) {
             loginRequireOpen = true;
             return;
@@ -689,10 +681,9 @@
         {:else}
           <button
             class="i-px-bookmark-outline square-6 mr-3"
+            disabled={preview}
             type="button"
             on:click={async () => {
-              if (preview) return;
-
               if (!$query.me) {
                 loginRequireOpen = true;
                 return;
