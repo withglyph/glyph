@@ -205,16 +205,14 @@
   });
 
   const doRevisePost = async (revisionKind: PostRevisionKind) => {
-    if (!canRevise) {
-      return;
-    }
+    if (!canRevise) return;
+    if (!selectedSpaceId) throw new Error('selectedSpaceId 값이 비어 있습니다');
 
     const resp = await revisePost({
       contentKind: kind,
       revisionKind,
       postId,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      spaceId: selectedSpace!.id,
+      spaceId: selectedSpaceId,
       tags,
       title,
       subtitle,
@@ -317,7 +315,7 @@
   }
 
   $: published = $post?.state === 'PUBLISHED';
-  $: canRevise = browser && !!selectedSpace && !$preventRevise;
+  $: canRevise = browser && !!selectedSpaceId && !$preventRevise;
   $: canPublish = canRevise && title.trim().length > 0;
 
   $: if (canRevise) {
