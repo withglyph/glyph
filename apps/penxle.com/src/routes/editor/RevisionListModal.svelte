@@ -64,6 +64,8 @@
 
   $: selectedRevisionId = $post.revisions[0].id;
   $: disabled = $post.revisions.length === 1;
+
+  $: previewSource = `/${$post.space.slug}/preview/${$post.permalink}/`;
 </script>
 
 <Modal size="lg" bind:open>
@@ -72,7 +74,7 @@
   <article class="flex gap-xs h-32rem">
     <iframe
       class="w-28.625rem"
-      src={`/${$post.space.slug}/preview/${$post.permalink}/?${queryString.stringify({
+      src={`${previewSource}?${queryString.stringify({
         revisionId: selectedRevisionId,
         hideHeader: true,
       })}`}
@@ -126,6 +128,13 @@
                 }}
               >
                 복원하기
+              </MenuItem>
+              <MenuItem
+                external
+                href={`${previewSource}?${queryString.stringify({ revisionId: revision.id })}`}
+                type="link"
+              >
+                새 창으로 보기
               </MenuItem>
             </Menu>
           </li>
