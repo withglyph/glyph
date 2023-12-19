@@ -1,3 +1,5 @@
+import { argv } from 'node:process';
+import ReadLine from 'node:readline';
 import { Client } from '@opensearch-project/opensearch';
 
 export const openSearch = new Client({
@@ -6,7 +8,27 @@ export const openSearch = new Client({
 
 const version = Date.now();
 
+const wait = (message) => {
+  const rl = ReadLine.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  return new Promise((resolve) => {
+    rl.question(message, (answer) => {
+      rl.close();
+      resolve(answer);
+    });
+  });
+};
+
 const createIndex = async (name, indexBody) => {
+  if (argv[2] === 'dev') {
+    name = `${name}-dev`;
+  }
+
+  await wait(`Create/Update index ${name} (y/n)? `);
+
   await openSearch.indices.create({
     index: `${name}-${version}`,
     body: indexBody,
@@ -24,8 +46,6 @@ const createIndex = async (name, indexBody) => {
             dest: { index: `${name}-${version}` },
           },
         });
-
-        await openSearch.indices.delete({ index: alias });
       }),
     );
   } catch {

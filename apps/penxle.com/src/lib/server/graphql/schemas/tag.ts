@@ -1,5 +1,5 @@
 import * as R from 'radash';
-import { openSearch } from '$lib/server/search';
+import { indexName, openSearch } from '$lib/server/search';
 import { createId } from '$lib/utils';
 import { defineSchema } from '../builder';
 
@@ -51,7 +51,7 @@ export const tagSchema = defineSchema((builder) => {
           ]);
 
           const searchResult = await openSearch.search({
-            index: 'posts',
+            index: indexName('posts'),
             body: {
               query: {
                 bool: {

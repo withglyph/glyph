@@ -1,5 +1,5 @@
 import { disassembleHangulString, InitialHangulString } from '$lib/utils';
-import { openSearch } from '../search';
+import { indexName, openSearch } from '../search';
 import type { InteractiveTransactionClient } from '../database';
 
 type IndexPostParams = {
@@ -24,7 +24,7 @@ export const indexPost = async ({ db, postId }: IndexPostParams) => {
   if (post.publishedRevision) {
     if (post.publishedRevision.kind === 'PUBLISHED' && post.visibility === 'PUBLIC' && post.password === null) {
       await openSearch.index({
-        index: 'posts',
+        index: indexName('posts'),
         id: post.id,
         body: {
           title: post.publishedRevision.title,
@@ -38,7 +38,7 @@ export const indexPost = async ({ db, postId }: IndexPostParams) => {
     } else {
       try {
         await openSearch.delete({
-          index: 'posts',
+          index: indexName('posts'),
           id: post.id,
         });
       } catch {
@@ -60,7 +60,7 @@ export const indexSpace = async ({ db, spaceId }: IndexSpaceParams) => {
 
   if (space.state === 'ACTIVE' && space.visibility === 'PUBLIC') {
     await openSearch.index({
-      index: 'spaces',
+      index: indexName('spaces'),
       id: space.id,
       body: {
         name: space.name,
@@ -69,7 +69,7 @@ export const indexSpace = async ({ db, spaceId }: IndexSpaceParams) => {
   } else {
     try {
       await openSearch.delete({
-        index: 'spaces',
+        index: indexName('spaces'),
         id: space.id,
       });
     } catch {
@@ -98,7 +98,7 @@ export const indexTags = async ({ tags }: IndexTagParams) => {
   }));
 
   await openSearch.bulk({
-    index: 'tags',
+    index: indexName('tags'),
     body: disassembledTags.flatMap((tag) => [{ index: { _id: tag.id } }, { name: tag.name }]),
   });
 };
