@@ -29,7 +29,8 @@
     "@pulumi/aws": "^6.13.2",
     "@pulumi/kubernetes": "^4.5.5",
     "@pulumi/pulumi": "^3.96.2",
-    "fast-glob": "^3.3.2"
+    "fast-glob": "^3.3.2",
+    "ts-pattern": "^5.0.6"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",

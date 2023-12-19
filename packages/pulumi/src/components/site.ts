@@ -1,6 +1,7 @@
 import * as aws from '@pulumi/aws';
 import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
+import { match } from 'ts-pattern';
 import { bedrockRef } from '../ref';
 import { DopplerSecret } from './doppler-secret';
 import { IAMServiceAccount } from './iam-service-account';
@@ -42,13 +43,26 @@ export class Site extends pulumi.ComponentResource {
 
     const project = pulumi.getProject();
     const stack = pulumi.getStack();
+
     const isProd = stack === 'prod';
+    const isStaging = stack === 'staging';
 
-    const resourceName = isProd ? args.name : pulumi.interpolate`${args.name}-${stack}`;
-    const domainName = isProd ? args.domainName : pulumi.interpolate`${args.name}-${stack}.pnxl.site`;
+    const resourceName = match(stack)
+      .with('prod', () => args.name)
+      .with('staging', () => args.name)
+      .otherwise(() => pulumi.interpolate`${args.name}-${stack}`);
+
+    const domainName = match(stack)
+      .with('prod', () => args.domainName)
+      .with('staging', () => pulumi.interpolate`${args.name}.pnxl.site`)
+      .otherwise(() => pulumi.interpolate`${args.name}-${stack}.pnxl.site`);
+
+    const namespace = match(stack)
+      .with('prod', () => 'prod')
+      .with('staging', () => 'staging')
+      .otherwise(() => 'preview');
+
     this.url = pulumi.output(pulumi.interpolate`https://${domainName}`);
-
-    const namespace = isProd ? 'prod' : 'preview';
 
     let secret;
     if (args.secret) {
@@ -61,7 +75,7 @@ export class Site extends pulumi.ComponentResource {
           },
           spec: {
             project: args.secret.project,
-            config: isProd ? 'prod' : 'preview',
+            config: isProd || isStaging ? 'prod' : 'preview',
           },
         },
         { parent: this },

@@ -1,9 +1,9 @@
-name: Production
+name: Staging
 
 on:
   push:
     branches:
-      - release
+      - main
 
 permissions:
   contents: read
@@ -21,10 +21,9 @@ jobs:
           - penxle.com
           - penxle.io
           - help.penxle.com
-          - literoom
 
     concurrency:
-      group: production/${{ matrix.app }}
+      group: staging/${{ matrix.app }}
 
     steps:
       - name: Checkout repository
@@ -47,7 +46,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: 721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/${{ matrix.app }}
-          tags: type=raw,value=latest
+          tags: type=raw,value=staging
 
       - name: Build image
         uses: docker/build-push-action@v5
@@ -101,7 +100,7 @@ jobs:
         with:
           command: up
           work-dir: apps/${{ matrix.app }}
-          stack-name: penxle/prod
+          stack-name: penxle/staging
           config-map: |
             { "penxle:image.digest": { "value": "${{ steps.build.outputs.digest }}" } }
         env:
