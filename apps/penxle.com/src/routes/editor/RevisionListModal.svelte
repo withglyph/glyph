@@ -8,7 +8,7 @@
   import { toast } from '$lib/notification';
   import type { Writable } from 'svelte/store';
   import type { EditorPage_RevisionListModal_Post } from '$glitch';
-  import type { RestoredRevision } from './restore-revision';
+  import type { RestoredRevision } from './types/restore-revision';
 
   export let open: boolean;
 

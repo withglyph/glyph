@@ -33,7 +33,7 @@
     PostRevisionKind,
   } from '$glitch';
   import type { ImageBounds } from '$lib/utils';
-  import type { SwitchSpace } from './switch-space';
+  import type { SwitchSpace } from './types/switch-space';
 
   let _query: EditorPage_Header_query;
   let _post: EditorPage_Header_post | null = null;

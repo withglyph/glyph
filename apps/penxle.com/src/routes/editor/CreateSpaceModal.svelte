@@ -11,7 +11,7 @@
   import { toast } from '$lib/notification';
   import { CreateSpaceSchema } from '$lib/validations';
   import type { EditorPage_CreateSpaceModal_user } from '$glitch';
-  import type { SwitchSpace } from './switch-space';
+  import type { SwitchSpace } from './types/switch-space';
 
   let _user: EditorPage_CreateSpaceModal_user;
   export { _user as $user };

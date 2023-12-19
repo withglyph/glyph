@@ -9,7 +9,7 @@
   import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
   import type { PostRevisionContentKind } from '$glitch';
   import type { ImageBounds } from '$lib/utils';
-  import type { RestoredRevision } from '../restore-revision';
+  import type { RestoredRevision } from '../types/restore-revision';
 
   $: query = graphql(`
     query EditorPermalinkPage_Query($permalink: String!) {
