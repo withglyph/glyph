@@ -33,6 +33,7 @@
     PostRevisionKind,
   } from '$glitch';
   import type { ImageBounds } from '$lib/utils';
+  import type { SwitchSpace } from './switch-space';
 
   let _query: EditorPage_Header_query;
   let _post: EditorPage_Header_post | null = null;
@@ -238,6 +239,7 @@
   let publishButtonEl: HTMLDivElement;
   let publishMenuEl: HTMLDivElement;
 
+  let revisedAt: string | undefined;
   let publishMenuOpen = false;
   let createSpaceOpen = false;
   let spaceSelectorOpen = false;
@@ -257,17 +259,33 @@
     enableContentFilter = true;
   }
 
-  let selectedSpace: (typeof $query.me.spaces)[number] | undefined;
-  let revisedAt: string | undefined;
+  let selectedSpaceId: string | undefined;
 
-  $: if ($query && selectedSpace === undefined) {
-    if ($post) {
-      const id = $post.space.id;
-      selectedSpace = $query.me.spaces.find((space) => space.id === id);
-    } else {
-      const slug = $page.url.searchParams.get('space');
-      selectedSpace = (slug && $query.me.spaces.find((space) => space.slug === slug)) || $query.me.spaces[0];
+  $: if ($query && !$post && !selectedSpaceId && $query.me.spaces.length > 0) {
+    selectedSpaceId = $query.me.spaces[0].id;
+  }
+  $: if ($post && !selectedSpaceId) {
+    selectedSpaceId = $post.space.id;
+  }
+
+  $: selectedSpace = $query.me.spaces.find((space) => space.id === selectedSpaceId);
+
+  const switchSpace: SwitchSpace = ({ id, emitSave = false }) => {
+    selectedSpaceId = id;
+    spaceSelectorOpen = false;
+
+    if (emitSave) {
+      $autoSaveCount += 1;
     }
+  };
+
+  $: slug = $page.url.searchParams.get('space');
+
+  $: if (slug) {
+    const space = $query.me.spaces.find((space) => space.slug === slug);
+    if (!space) throw new Error('글을 작성하고자 하는 스페이스 정보를 찾지 못했어요');
+
+    switchSpace({ id: space.id });
   }
 
   $: permalink = ($post || draftPost)?.permalink;
@@ -475,9 +493,7 @@
                 class="px-2 py-1 w-full rounded-xl hover:bg-primary"
                 type="button"
                 on:click={() => {
-                  selectedSpace = space;
-                  spaceSelectorOpen = false;
-                  $autoSaveCount += 1;
+                  switchSpace({ id: space.id, emitSave: true });
                 }}
               >
                 <div class="flex items-center gap-2">
@@ -823,7 +839,7 @@
   </div>
 </header>
 
-<CreateSpaceModal $user={$query.me} bind:open={createSpaceOpen} />
+<CreateSpaceModal $user={$query.me} {switchSpace} bind:open={createSpaceOpen} />
 
 {#if $post}
   <RevisionListModal {$post} bind:open={revisionListOpen} />

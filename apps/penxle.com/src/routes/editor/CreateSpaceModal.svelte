@@ -11,9 +11,12 @@
   import { toast } from '$lib/notification';
   import { CreateSpaceSchema } from '$lib/validations';
   import type { EditorPage_CreateSpaceModal_user } from '$glitch';
+  import type { SwitchSpace } from './switch-space';
 
   let _user: EditorPage_CreateSpaceModal_user;
   export { _user as $user };
+
+  export let switchSpace: SwitchSpace;
 
   let useSpaceProfile = true;
 
@@ -56,7 +59,8 @@
     schema: CreateSpaceSchema,
     initialValues: { profileName: '' },
     extra: () => ({ profileAvatarId: avatar.id }),
-    onSuccess: async () => {
+    onSuccess: async ({ id }) => {
+      switchSpace({ id, emitSave: true });
       mixpanel.track('space:create', { useSpaceProfile, via: 'editor' });
       toast.success('스페이스를 만들었어요');
       open = false;
