@@ -166,7 +166,7 @@
               <i class="i-lc-chevron-right text-icon-secondary square-5 <sm:hidden" />
             </a>
             <p class="body-15-sb <sm:body-14-m text-secondary whitespace-pre-wrap">
-              {$query.space.description}
+              {$query.space.description ?? ''}
             </p>
           </hgroup>
           {#if !$query.space.meAsMember}
