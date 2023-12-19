@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { Button } from '$lib/components';
   import ArticleEditor from './ArticleEditor.svelte';
   import GalleryEditor from './GalleryEditor.svelte';
@@ -22,6 +23,21 @@
   function autoSave() {
     $autoSaveCount += 1;
   }
+
+  onMount(() => {
+    const saveEventHandler = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+        event.preventDefault();
+        autoSave();
+      }
+    };
+
+    document.addEventListener('keydown', saveEventHandler);
+
+    return () => {
+      document.removeEventListener('keydown', saveEventHandler);
+    };
+  });
 </script>
 
 <div class="grow body-16-b flex center text-center bg-surface-primary px-5 sm:hidden">
