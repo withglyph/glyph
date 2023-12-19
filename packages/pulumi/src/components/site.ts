@@ -8,7 +8,11 @@ import { IAMServiceAccount } from './iam-service-account';
 
 type SiteArgs = {
   name: pulumi.Input<string>;
-  domainName: pulumi.Input<string>;
+
+  domain: {
+    production: pulumi.Input<string>;
+    staging: pulumi.Input<string>;
+  };
 
   image: {
     name: pulumi.Input<string>;
@@ -53,8 +57,8 @@ export class Site extends pulumi.ComponentResource {
       .otherwise(() => pulumi.interpolate`${args.name}-${stack}`);
 
     const domainName = match(stack)
-      .with('prod', () => args.domainName)
-      .with('staging', () => pulumi.interpolate`${args.name}.pnxl.site`)
+      .with('prod', () => args.domain.production)
+      .with('staging', () => args.domain.staging)
       .otherwise(() => pulumi.interpolate`${args.name}-${stack}.pnxl.site`);
 
     const namespace = match(stack)
@@ -136,6 +140,7 @@ export class Site extends pulumi.ComponentResource {
           }),
         },
         spec: {
+          ...(!isProd && { replicas: 1 }),
           selector: { matchLabels: labels },
           template: {
             metadata: { labels },
@@ -183,52 +188,54 @@ export class Site extends pulumi.ComponentResource {
       { parent: this },
     );
 
-    new k8s.autoscaling.v2.HorizontalPodAutoscaler(
-      name,
-      {
-        metadata: {
-          name: resourceName,
-          namespace,
-        },
-        spec: {
-          scaleTargetRef: {
-            apiVersion: rollout.apiVersion,
-            kind: rollout.kind,
-            name: rollout.metadata.name,
+    if (isProd) {
+      new k8s.autoscaling.v2.HorizontalPodAutoscaler(
+        name,
+        {
+          metadata: {
+            name: resourceName,
+            namespace,
           },
-          minReplicas: args.autoscale?.minCount ?? 2,
-          maxReplicas: args.autoscale?.maxCount ?? 10,
-          metrics: [
-            {
-              type: 'Resource',
-              resource: {
-                name: 'cpu',
-                target: {
-                  type: 'Utilization',
-                  averageUtilization: args.autoscale?.averageCpuUtilization ?? 50,
+          spec: {
+            scaleTargetRef: {
+              apiVersion: rollout.apiVersion,
+              kind: rollout.kind,
+              name: rollout.metadata.name,
+            },
+            minReplicas: args.autoscale?.minCount ?? 2,
+            maxReplicas: args.autoscale?.maxCount ?? 10,
+            metrics: [
+              {
+                type: 'Resource',
+                resource: {
+                  name: 'cpu',
+                  target: {
+                    type: 'Utilization',
+                    averageUtilization: args.autoscale?.averageCpuUtilization ?? 50,
+                  },
                 },
               },
-            },
-          ],
+            ],
+          },
         },
-      },
-      { parent: this },
-    );
+        { parent: this },
+      );
 
-    new k8s.policy.v1.PodDisruptionBudget(
-      name,
-      {
-        metadata: {
-          name: resourceName,
-          namespace,
+      new k8s.policy.v1.PodDisruptionBudget(
+        name,
+        {
+          metadata: {
+            name: resourceName,
+            namespace,
+          },
+          spec: {
+            selector: { matchLabels: labels },
+            minAvailable: '50%',
+          },
         },
-        spec: {
-          selector: { matchLabels: labels },
-          minAvailable: '50%',
-        },
-      },
-      { parent: this },
-    );
+        { parent: this },
+      );
+    }
 
     const ingress = new k8s.networking.v1.Ingress(
       name,

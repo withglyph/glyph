@@ -4,8 +4,12 @@ import * as pulumi from '@pulumi/pulumi';
 const config = new pulumi.Config('penxle');
 
 const site = new penxle.Site('help.penxle.com', {
-  name: 'help-penxle-com',
-  domainName: 'help.penxle.com',
+  name: 'help',
+
+  domain: {
+    production: 'help.penxle.com',
+    staging: 'staging-help.penxle.com',
+  },
 
   image: {
     name: '721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/help.penxle.com',
