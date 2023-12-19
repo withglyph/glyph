@@ -8,6 +8,7 @@
     "prisma.prisma",
     "rohit-gohri.format-code-action",
     "streetsidesoftware.code-spell-checker",
-    "svelte.svelte-vscode"
+    "svelte.svelte-vscode",
+    "EditorConfig.EditorConfig"
   ]
 }
