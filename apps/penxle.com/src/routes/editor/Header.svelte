@@ -267,6 +267,14 @@
   $: if ($post && !selectedSpaceId) {
     selectedSpaceId = $post.space.id;
   }
+  $: slug = $page.url.searchParams.get('space');
+
+  $: if (slug) {
+    const space = $query.me.spaces.find((space) => space.slug === slug);
+    if (!space) throw new Error('글을 작성하고자 하는 스페이스 정보를 찾지 못했어요');
+
+    selectedSpaceId = space.id;
+  }
 
   $: selectedSpace = $query.me.spaces.find((space) => space.id === selectedSpaceId);
 
@@ -278,15 +286,6 @@
       $autoSaveCount += 1;
     }
   };
-
-  $: slug = $page.url.searchParams.get('space');
-
-  $: if (slug) {
-    const space = $query.me.spaces.find((space) => space.slug === slug);
-    if (!space) throw new Error('글을 작성하고자 하는 스페이스 정보를 찾지 못했어요');
-
-    switchSpace({ id: space.id });
-  }
 
   $: permalink = ($post || draftPost)?.permalink;
 
