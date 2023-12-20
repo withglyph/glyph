@@ -49,47 +49,51 @@
 </script>
 
 {#if editor?.isEditable}
-  <NodeView class="my-4 flex center gap-4 border px-8 py-4" data-drag-handle>
-    <i class="i-lc-gift square-8" />
+  <NodeView class="my-4 flex center gap-4 border border-secondary rounded-xl p-4" data-drag-handle>
+    <div class="flex grow gap-4">
+      <i class="i-lc-circle-dollar-sign square-6" />
 
-    <div class="flex grow flex-col">
-      <div class="font-bold">결제 상자</div>
-      <div class="text-sm text-gray-50">이 상자 아래로는 결제를 해야 읽을 수 있어요.</div>
+      <div class="flex grow flex-col">
+        <div class="body-16-b">결제 상자를 옮겨 유료분량을 만들어 보세요</div>
+        <div class="body-13-m text-secondary mt-1">이 상자의 이후 지점부터 결제를 통해 감상할 수 있어요</div>
 
-      <div class="flex gap-2 items-center mt-2">
-        <TextInput
-          class="bg-gray-10 px-3 py-2"
-          inputmode="numeric"
-          value={node.attrs.price}
-          on:input={handlePriceChange}
-        />
-        P
+        <div class="flex gap-2 items-center mt-4">
+          <TextInput
+            class="bg-primary pl-4 py-2 body-16-b rounded-lg"
+            inputmode="numeric"
+            value={node.attrs.price}
+            on:input={handlePriceChange}
+          >
+            <span slot="right-label" class="pr-4 bodylong-16-m text-disabled">포인트</span>
+          </TextInput>
+        </div>
       </div>
     </div>
 
-    <i class="i-lc-grip-vertical square-6 text-gray-20" />
+    <i class="i-lc-grip-vertical square-5 color-icon-secondary" />
     <button
-      class="group square-8 flex center rounded transition duration-300 hover:bg-gray-5"
+      class="square-8 flex center rounded transition duration-300 hover:bg-gray-5 [&>i]:hover:color-gray-50"
       type="button"
       on:click={() => (open = true)}
     >
-      <i class="i-lc-x square-6 text-gray-20 transition duration-300 group-hover:text-gray-30" />
+      <i class="i-lc-trash-2 square-5 color-icon-secondary transition duration-300" />
     </button>
   </NodeView>
 
   <Modal bind:open>
     <svelte:fragment slot="title">정말 결제상자를 삭제하시겠어요?</svelte:fragment>
 
-    <p>
+    <p class="bodylong-16-m text-secondary">
       결제상자의 위치를 바꾸고 싶다면 드래그해서 옮길 수 있어요
       <br />
       삭제한 결제상자는 언제든 메뉴에서 다시 추가할 수 있어요
     </p>
 
-    <div slot="action" class="flex gap-2">
-      <Button color="secondary" size="md" on:click={() => (open = false)}>취소</Button>
+    <div slot="action" class="flex gap-2 w-full">
+      <Button class="w-full" color="secondary" size="xl" on:click={() => (open = false)}>취소</Button>
       <Button
-        size="md"
+        class="w-full"
+        size="xl"
         on:click={() => {
           open = false;
           setTimeout(() => {
