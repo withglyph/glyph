@@ -428,7 +428,13 @@
         <MenuItem on:click={() => updateVisibilities('UNLISTED')}>링크 공개</MenuItem>
         <MenuItem on:click={() => updateVisibilities('SPACE')}>멤버 공개</MenuItem>
       </Menu>
-      <Menu class="<sm:hidden" as="div" offset={toolbarMenuOffset} placement="top" preventClose>
+      <Menu
+        class={clsx(type === 'space' && '<sm:hidden')}
+        as="div"
+        offset={toolbarMenuOffset}
+        placement="top"
+        preventClose
+      >
         <Button slot="value" class="whitespace-nowrap" color="secondary" size="md">포스트 옵션 설정</Button>
         <MenuItem type="div">
           <Switch
@@ -499,7 +505,7 @@
     {/if}
     {#if selectedOwnPosts || $spaceMember?.role === 'ADMIN'}
       <Button
-        class="<sm:hidden whitespace-nowrap"
+        class="whitespace-nowrap <sm:hidden"
         color="red"
         size="md"
         on:click={() => {
@@ -508,6 +514,17 @@
         }}
       >
         삭제하기
+      </Button>
+      <Button
+        class={clsx('whitespace-nowrap sm:hidden', type === 'me' && '<sm:block')}
+        color="red"
+        size="md"
+        on:click={() => {
+          deletePostIds = _selectedPostIds;
+          openDeletePostWaring = true;
+        }}
+      >
+        삭제
       </Button>
     {/if}
   </div>
