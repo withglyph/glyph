@@ -130,6 +130,10 @@
         return;
       }
 
+      if ($autoSaveCount === 0) {
+        return;
+      }
+
       if (willUnload) {
         cancel();
         return;
