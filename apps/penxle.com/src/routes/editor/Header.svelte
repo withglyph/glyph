@@ -459,7 +459,9 @@
         }}
       >
         {#if selectedSpace}
-          <i class="i-lc-menu square-6 text-disabled absolute" />
+          {#if !published}
+            <i class="i-lc-menu square-6 text-disabled absolute" />
+          {/if}
 
           <div class="flex grow center gap-2">
             <Image class="square-6 rounded-md flex-none border border-secondary" $image={selectedSpace.icon} />
