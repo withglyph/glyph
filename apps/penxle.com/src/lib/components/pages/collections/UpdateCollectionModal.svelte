@@ -49,7 +49,7 @@
     extra: () => ({ thumbnailId: thumbnail?.id }),
     onSuccess: () => {
       open = false;
-      toast.success('썸네일이 수정되었어요');
+      toast.success('컬렉션이 수정되었어요');
     },
   });
 

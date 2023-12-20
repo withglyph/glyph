@@ -49,7 +49,7 @@
     onSuccess: () => {
       open = false;
       thumbnail = null;
-      toast.success('썸네일이 생성되었어요');
+      toast.success('컬렉션이 생성되었어요');
     },
   });
 </script>
