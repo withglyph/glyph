@@ -325,18 +325,21 @@
     }
   };
 
-  const filterToLocaleString: Record<ContentFilterCategory, string> = {
-    ADULT: '😳 18세 이상 성인이 관람 가능한 포스트예요',
-    CRIME: '🧪 약물/범죄에 관련된 내용',
-    CRUELTY: '🔪 다소 잔인한 내용',
-    GAMBLING: '🤑 사행성 등 도박에 관련이 있는 내용',
-    GROSSNESS: '🕷 벌레/징그러움 등 혐오감을 일으키는 내용',
-    HORROR: '☠️ 공포성 내용',
-    INSULT: '🤬 부적절한 언어',
-    OTHER: '❗ 열람에 주의가 필요한 기타 내용',
-    PHOBIA: '😱 정신질환/공포증에 해당하는 내용',
-    TRAUMA: '👻 PTSD/트라우마를 일으킬 수 있는 내용',
-    VIOLENCE: '🔫 폭력성에 해당하는 내용',
+  const filterToLocaleString: Record<ContentFilterCategory, { short: string; long: string }> = {
+    ADULT: { short: '😳 선정성', long: '😳 18세 이상 성인이 관람 가능한 포스트예요' },
+    CRIME: { short: '🧪 약물/범죄', long: '🧪 약물/범죄에 관련된 내용' },
+    CRUELTY: { short: '🔪 다소 잔인함', long: '🔪 다소 잔인한 내용' },
+    GAMBLING: { short: '🤑 사행성', long: '🤑 사행성 등 도박에 관련이 있는 내용' },
+    GROSSNESS: {
+      short: '🕷 벌레/징그러움 등으로 인한 혐오감',
+      long: '🕷 벌레/징그러움 등 혐오감을 일으키는 내용',
+    },
+    HORROR: { short: '☠️ 공포성 내용', long: '☠️ 공포성 내용' },
+    INSULT: { short: '🤬 부적절한 언어', long: '🤬 부적절한 언어' },
+    OTHER: { short: '❗ 기타 내용으로 주의가 필요함', long: '❗ 열람에 주의가 필요한 기타 내용' },
+    PHOBIA: { short: '😱 정신질환/공포증', long: '😱 정신질환/공포증에 해당하는 내용' },
+    TRAUMA: { short: '👻 PTSD/트라우마', long: '👻 PTSD/트라우마를 일으킬 수 있는 내용' },
+    VIOLENCE: { short: '🔫 폭력성', long: '🔫 폭력성에 해당하는 내용' },
   };
 
   function fragmentToContent(fragment: Fragment) {
@@ -482,7 +485,7 @@
       </div>
     </header>
 
-    {#if $query.post.contentFilters.length > 0}
+    {#if $query.post.contentFilters.length > 0 && !blurContent}
       <div class="p-4 rounded-3 border-(0.08333333rem solid border-secondary)" role="alert">
         <div class="mb-xs inline-flex items-center gap-1 body-14-b">
           <i class="i-px-alert-triangle square-4" />
@@ -490,7 +493,7 @@
         </div>
         <ul class="body-14-m">
           {#each $query.post.contentFilters as filter (filter)}
-            <li class="mb-xs last:mb-none">{filterToLocaleString[filter]}</li>
+            <li class="mb-xs last:mb-none">{filterToLocaleString[filter].long}</li>
           {/each}
         </ul>
       </div>
@@ -501,12 +504,21 @@
         {#if $query.me?.personalIdentity || !$query.me?.isAdulthood}
           {#if $postRevision.contentKind === 'ARTICLE'}
             {#if blurContent}
-              <header class="py-6 px-3 rounded-3 w-full flex flex-col items-center bg-primary" role="alert">
-                <i class="i-px-alert-triangle square-6 mb-2 color-text-secondary" />
-                <h2 class="body-16-eb">포스트에 민감한 내용이 포함되어 있어요</h2>
-                <p class="body-13-m my-2.5 text-secondary">읽기 전 주의해주세요</p>
+              <header
+                class="py-6 px-3 rounded-3 w-full flex flex-col gap-0.625rem items-center bg-primary"
+                role="alert"
+              >
+                <div class="flex flex-col gap-2 items-center">
+                  <i class="i-px-alert-triangle square-6 color-text-secondary" />
+                  <h2 class="body-16-eb text-center break-keep">포스트에 민감한 내용이 포함되어 있어요</h2>
+                </div>
+                <ul class="flex gap-0.625rem flex-wrap justify-center max-w-26rem">
+                  {#each $query.post.contentFilters as filter (filter)}
+                    <Tag as="div" size="sm">{filterToLocaleString[filter].short}</Tag>
+                  {/each}
+                </ul>
                 <Button
-                  class="rounded-xl"
+                  class="rounded-xl m-t-3"
                   size="sm"
                   on:click={() => {
                     blurContent = false;
