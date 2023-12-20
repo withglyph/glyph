@@ -576,7 +576,14 @@
         const name = event.target.collectionName.value;
 
         const { id: collectionId } = await createSpaceCollection({ name, spaceId: selectedPosts[0].space.id });
-        await setSpaceCollectionPosts({ collectionId, postIds: selectedPosts.map((post) => post.id) });
+        const postIds = selectedPosts.map((post) => post.id);
+        await setSpaceCollectionPosts({ collectionId, postIds });
+
+        mixpanel.track('space:collection:create', {
+          spaceId: selectedPosts[0].id,
+          collectionId,
+          postIds,
+        });
 
         toast.success('새 컬렉션을 생성했어요');
         openCreateCollection = false;

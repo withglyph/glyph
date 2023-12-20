@@ -1,5 +1,6 @@
 <script lang="ts">
   import dayjs from 'dayjs';
+  import mixpanel from 'mixpanel-browser';
   import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
@@ -19,6 +20,7 @@
   let _posts: SpaceCollectionsEnitityPage_ManageCollectionModal_post[];
   export { _collection as $collection, _posts as $posts };
   export let open = false;
+  export let spaceId: string;
 
   let query = '';
 
@@ -87,8 +89,13 @@
     `),
     extra: () => ({ postIds: [...registeredPostIds.values()] }),
     schema: SetSpaceCollectionPostSchema,
-    onSuccess: () => {
+    onSuccess: ({ id }) => {
       open = false;
+      mixpanel.track('space:collection:update', {
+        spaceId,
+        collectionId: id,
+        postIds: [...registeredPostIds.values()],
+      });
       toast.success('컬렉션에 등록된 포스트 목록을 수정되었어요');
     },
   });

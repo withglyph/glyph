@@ -146,7 +146,12 @@
   <ManageCollectionModal
     $collection={selectedCollection}
     $posts={$query.space.posts}
+    spaceId={$query.space.id}
     bind:open={openManageCollectionModal}
   />
-  <UpdateCollectionModal $collection={selectedCollection} bind:open={openUpdateCollectionModal} />
+  <UpdateCollectionModal
+    $collection={selectedCollection}
+    spaceId={$query.space.id}
+    bind:open={openUpdateCollectionModal}
+  />
 {/if}

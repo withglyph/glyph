@@ -246,6 +246,7 @@
   <ManageCollectionModal
     $collection={collection}
     $posts={$query.space.posts}
+    spaceId={$query.space.id}
     bind:open={openPostManageCollectionModal}
   />
 {/if}

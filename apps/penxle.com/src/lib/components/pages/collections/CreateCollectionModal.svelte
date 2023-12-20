@@ -1,5 +1,6 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import mixpanel from 'mixpanel-browser';
   import { graphql } from '$glitch';
   import { Button, Image, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
@@ -46,9 +47,10 @@
     initialValues: {
       collectionId: '',
     },
-    onSuccess: () => {
+    onSuccess: ({ id }) => {
       open = false;
       thumbnail = null;
+      mixpanel.track('space:collection:create', { spaceId, collectionId: id });
       toast.success('컬렉션이 생성되었어요');
     },
   });

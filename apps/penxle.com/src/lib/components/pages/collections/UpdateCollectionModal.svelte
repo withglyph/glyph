@@ -1,5 +1,6 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import mixpanel from 'mixpanel-browser';
   import { fragment, graphql } from '$glitch';
   import { Button, Image, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
@@ -11,6 +12,7 @@
 
   let thumbnailPicker: ThumbnailPicker;
   export let open = false;
+  export let spaceId: string;
 
   let _collection: UpdateCollectionModal_Collection_query;
 
@@ -47,8 +49,9 @@
     `),
     schema: UpdateSpaceCollectionSchema,
     extra: () => ({ thumbnailId: thumbnail?.id }),
-    onSuccess: () => {
+    onSuccess: ({ id }) => {
       open = false;
+      mixpanel.track('space:collection:update', { spaceId, collectionId: id });
       toast.success('컬렉션이 수정되었어요');
     },
   });
