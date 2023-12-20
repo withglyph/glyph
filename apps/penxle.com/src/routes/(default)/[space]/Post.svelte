@@ -649,7 +649,7 @@
 
     <div class="flex items-center justify-between py-2">
       <Button
-        class="rounded-12! px-3! h-6!"
+        class="rounded-12! px-3.75! h-8! py-1.25! w-16"
         color="tertiary"
         disabled={preview}
         size="sm"
