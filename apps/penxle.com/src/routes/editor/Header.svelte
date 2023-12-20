@@ -252,6 +252,7 @@
 
   let enablePassword = false;
   let enableContentFilter = false;
+  let changePassword = false;
 
   $: if ($post?.hasPassword) {
     enablePassword = true;
@@ -638,7 +639,7 @@
           </fieldset>
         </div>
 
-        <div class="flex gap-6 items-center h-10">
+        <div class="flex items-center h-10">
           <Checkbox
             class="body-15-sb"
             checked={enablePassword}
@@ -647,14 +648,28 @@
               if (!enablePassword) {
                 $data.password = null;
               }
+              changePassword = true;
             }}
           >
             비밀글
           </Checkbox>
 
+          {#if enablePassword && !changePassword && $post}
+            <button
+              class="body-15-sb text-disabled p-1 rounded-1 ml-1 hover:bg-primary"
+              type="button"
+              on:click={() => (changePassword = true)}
+            >
+              변경하기
+            </button>
+          {/if}
+
           <input
             name="password"
-            class={clsx('bg-surface-primary rounded-xl px-3 py-1 body-15-sb h-10', !enablePassword && 'hidden')}
+            class={clsx(
+              'bg-surface-primary rounded-xl px-3 py-1 body-15-sb h-10 ml-6',
+              (!enablePassword || ($post && enablePassword && !changePassword)) && 'hidden!',
+            )}
             pattern="^[!-~]+$"
             placeholder="비밀번호 입력"
             type="text"
