@@ -157,7 +157,12 @@
 
       <aside class="max-w-18.4375rem <sm:max-w-initial w-full">
         <section class="flex sm:flex-col p-6 <sm:(p-y-4 gap-4) sm:(bg-primary rounded-4 m-b-4) bg-cardprimary center">
-          <Image class="square-3.75rem <sm:square-4rem rounded-4 sm:m-b-4 shrink-0" $image={$query.space.icon} />
+          <a href="/{$query.space?.slug}">
+            <Image
+              class="square-4rem rounded-4 shrink-0 border border-secondary sm:(m-b-4 square-3.75rem)"
+              $image={$query.space.icon}
+            />
+          </a>
           <hgroup class="sm:(text-center w-full m-b-2) flex-1 break-keep">
             <a class="flex sm:center m-b-2" href="/{$query.space?.slug}">
               <h2 class="subtitle-18-eb <sm:body-15-b leading-5">
@@ -165,9 +170,11 @@
               </h2>
               <i class="i-lc-chevron-right text-icon-secondary square-5 <sm:hidden" />
             </a>
-            <p class="body-15-sb <sm:body-14-m text-secondary whitespace-pre-wrap">
-              {$query.space.description ?? ''}
-            </p>
+            <a href="/{$query.space?.slug}">
+              <p class="body-15-sb <sm:body-14-m text-secondary whitespace-pre-wrap">
+                {$query.space.description ?? '아직 소개가 없어요'}
+              </p>
+            </a>
           </hgroup>
           {#if !$query.space.meAsMember}
             {#if $query.space.followed}
