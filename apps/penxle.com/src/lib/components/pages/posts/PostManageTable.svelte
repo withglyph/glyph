@@ -505,7 +505,7 @@
     {/if}
     {#if selectedOwnPosts || $spaceMember?.role === 'ADMIN'}
       <Button
-        class="whitespace-nowrap <sm:hidden"
+        class={clsx('whitespace-nowrap', type === 'space' && '<sm:hidden')}
         color="red"
         size="md"
         on:click={() => {
@@ -514,17 +514,6 @@
         }}
       >
         삭제하기
-      </Button>
-      <Button
-        class={clsx('whitespace-nowrap sm:hidden', type === 'me' && '<sm:block')}
-        color="red"
-        size="md"
-        on:click={() => {
-          deletePostIds = _selectedPostIds;
-          openDeletePostWaring = true;
-        }}
-      >
-        삭제
       </Button>
     {/if}
   </div>
