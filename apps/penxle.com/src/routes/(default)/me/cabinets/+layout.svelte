@@ -116,7 +116,7 @@
       <TabHeadItem id={3} href="/me/cabinets/purchased">구매</TabHeadItem>
     </TabHead>
 
-    <div class="sm:px-8">
+    <div class="px-4 sm:px-8">
       <ul class="space-y-6">
         <slot />
       </ul>
