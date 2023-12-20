@@ -149,7 +149,7 @@
 
 <div
   class={clsx(
-    'flex flex-col space-y-2 w-full bg-cardprimary sm:(border border-secondary rounded-2xl transition hover:(border-tertiary shadow-[0_4px_16px_0_rgba(0,0,0,0.25)]))',
+    'flex flex-col w-full bg-cardprimary sm:(border border-secondary rounded-2xl transition hover:(border-tertiary shadow-[0_4px_16px_0_rgba(0,0,0,0.25)]))',
     $post.publishedRevision.tags.length === 0 && showSpaceInfoMessage && 'pb-4',
     _class,
   )}
@@ -171,7 +171,7 @@
         <Badge class="w-fit mb-1" color="gray">비밀글</Badge>
       {/if}
     </div>
-    <h2 class="title-18-b mb-2 truncate sm:title-20-b">{$post.publishedRevision.title}</h2>
+    <h2 class="title-18-b mb-1 truncate sm:title-20-b">{$post.publishedRevision.title}</h2>
 
     <div>
       <article
@@ -201,7 +201,7 @@
             </div>
           </header>
         {:else}
-          <p class="grow body-15-sb text-secondary break-all line-clamp-4 whitespace-pre-line">
+          <p class="grow body-16-m text-secondary break-all line-clamp-4 whitespace-pre-line">
             {$post.publishedRevision.previewText}
           </p>
 
@@ -217,7 +217,7 @@
   </a>
 
   {#if $post.publishedRevision.tags.length > 0}
-    <div class={clsx('flex flex-wrap gap-1.5 px-6', showSpaceInfoMessage && 'pb-4')}>
+    <div class={clsx('flex flex-wrap gap-1.5 px-6 mt-2', showSpaceInfoMessage && 'pb-4')}>
       {#each $post.publishedRevision.tags.slice(0, 4) as tag (tag.id)}
         <Tag class="max-w-65" href={`tag/${tag.name}`} size="sm">#{tag.name}</Tag>
       {/each}
@@ -231,7 +231,7 @@
     <a class="flex items-center px-6 pt-4 space-x-3 truncate pb-4" href={`/${$post.space.slug}/${$post.permalink}`}>
       <Image class="square-6 rounded-lg flex-none border border-secondary" $image={$post.space.icon} />
       <p class="body-15-sb grow truncate">{$post.space.name} · {$post.member.profile.name}</p>
-      <time class="body-14-m text-secondary">{dayjs($post.publishedAt).fromNow()}</time>
+      <time class="body-13-m text-secondary">{dayjs($post.publishedAt).fromNow()}</time>
     </a>
   {/if}
 </div>
