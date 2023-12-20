@@ -43,6 +43,14 @@ new aws.route53.Record('idea.penxle.com', {
   ttl: 300,
 });
 
+new aws.route53.Record('feedback.penxle.com', {
+  zoneId: zones.penxle_com.zoneId,
+  type: 'CNAME',
+  name: 'feedback.penxle.com',
+  records: ['cname.nolt.io'],
+  ttl: 300,
+});
+
 new aws.route53.Record('mail.penxle.com|mx', {
   zoneId: zones.penxle_com.zoneId,
   type: 'MX',

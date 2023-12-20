@@ -127,7 +127,7 @@
 
     <Link
       class="flex select-none items-center justify-stretch gap-2 rounded px-4 py-2 text-gray-50 hover:(bg-gray-10 text-gray-70)"
-      href="https://idea.penxle.com"
+      href="https://penxle.nolt.io"
     >
       <i class="i-lc-lightbulb" />
       펜슬 피드백하기

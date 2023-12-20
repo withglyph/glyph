@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/sveltekit';
 import { error } from 'itty-router';
 import { createContext } from '../context';
 import { createRouter } from './router';
-import { email, frill, healthz, identification, payment, shortlink, sso } from './routes';
+import { email, healthz, identification, nolt, payment, shortlink, sso } from './routes';
 import type { RequestEvent } from '@sveltejs/kit';
 
 const router = createRouter();
@@ -11,8 +11,8 @@ router.all(
   '*',
   healthz.handle,
   email.handle,
-  frill.handle,
   identification.handle,
+  nolt.handle,
   payment.handle,
   shortlink.handle,
   sso.handle,

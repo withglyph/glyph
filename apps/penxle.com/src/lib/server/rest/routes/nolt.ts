@@ -4,17 +4,17 @@ import qs from 'query-string';
 import { env } from '$env/dynamic/private';
 import { createRouter } from '../router';
 
-export const frill = createRouter();
+export const nolt = createRouter();
 
-const key = new TextEncoder().encode(env.PRIVATE_FRILL_SSO_KEY);
+const key = new TextEncoder().encode(env.PRIVATE_NOLT_SSO_SECRET_KEY);
 
-frill.get('/frill', async (_, { db, ...context }) => {
+nolt.get('/nolt', async (_, { db, ...context }) => {
   if (!context.session) {
     return status(303, { headers: { Location: '/login' } });
   }
 
   const user = await db.user.findUniqueOrThrow({
-    include: { profile: true },
+    include: { profile: { include: { avatar: true } } },
     where: { id: context.session.userId },
   });
 
@@ -22,6 +22,7 @@ frill.get('/frill', async (_, { db, ...context }) => {
     id: user.id,
     email: user.email,
     name: user.profile.name,
+    imageUrl: `https://pnxl.net/${user.profile.avatar.path}`,
   })
     .setProtectedHeader({ alg: 'HS256' })
     .sign(key);
@@ -29,8 +30,8 @@ frill.get('/frill', async (_, { db, ...context }) => {
   return status(303, {
     headers: {
       Location: qs.stringifyUrl({
-        url: context.event.url.searchParams.get('redirect') || 'https://penxle.frill.co',
-        query: { ssoToken },
+        url: `https://penxle.nolt.io/sso/${ssoToken}`,
+        query: { returnUrl: context.event.url.searchParams.get('returnUrl') },
       }),
     },
   });
