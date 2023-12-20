@@ -2,7 +2,7 @@
   import { Helmet } from '@penxle/ui';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { Feed } from '$lib/components';
+  import { PostCard } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
 
   $: query = graphql(`
@@ -53,7 +53,7 @@
 {:else}
   <div class="<sm:bg-primary">
     {#each $query.searchPosts.posts as post (post.id)}
-      <Feed class="mt-4" $post={post} />
+      <PostCard class="mt-4" $post={post} />
     {/each}
   </div>
 {/if}

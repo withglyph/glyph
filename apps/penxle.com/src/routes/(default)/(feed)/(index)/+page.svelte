@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as R from 'radash';
   import { graphql } from '$glitch';
-  import { Feed, Image } from '$lib/components';
+  import { Image, PostCard } from '$lib/components';
 
   $: query = graphql(`
     query FeedIndexPage_Query {
@@ -43,6 +43,6 @@
 
 <div class="grow gap-4 mb-4 sm:columns-2">
   {#each $query.recommendFeed as post (post.id)}
-    <Feed class="mb-4 inline-block break-inside-avoid col-w-50%" $post={post} />
+    <PostCard class="mb-4 inline-block break-inside-avoid col-w-50%" $post={post} />
   {/each}
 </div>

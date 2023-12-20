@@ -3,7 +3,7 @@
   import mixpanel from 'mixpanel-browser';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { Feed, Image, Tag } from '$lib/components';
+  import { Image, PostCard, Tag } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { toast } from '$lib/notification';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
@@ -176,7 +176,7 @@
   {:else}
     <div class="<sm:bg-primary">
       {#each $query.searchPosts.posts as post (post.id)}
-        <Feed class="mt-4" $post={post} />
+        <PostCard class="mt-4" $post={post} />
       {/each}
     </div>
   {/if}

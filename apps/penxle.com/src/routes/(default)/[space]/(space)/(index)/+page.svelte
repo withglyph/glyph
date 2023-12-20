@@ -2,8 +2,7 @@
   import { Helmet } from '@penxle/ui';
   import clsx from 'clsx';
   import { graphql } from '$glitch';
-  import { Button } from '$lib/components';
-  import Feed from '../Feed.svelte';
+  import { Button, SpacePostCard } from '$lib/components';
 
   $: query = graphql(`
     query SpacePage_Query($slug: String!) {
@@ -45,7 +44,7 @@
     <ul class="w-full space-y-4 <sm:space-y-2">
       {#each $query.space.posts as post (post.id)}
         <li>
-          <Feed $post={post} />
+          <SpacePostCard $post={post} />
         </li>
       {/each}
     </ul>

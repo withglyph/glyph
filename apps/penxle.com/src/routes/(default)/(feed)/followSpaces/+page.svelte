@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Link } from '@penxle/ui';
   import { graphql } from '$glitch';
-  import { Feed } from '$lib/components';
+  import { PostCard } from '$lib/components';
 
   $: query = graphql(`
     query FeedFollowSpacesPage_Query {
@@ -32,5 +32,5 @@
 {/if}
 
 {#each $query.spaceFeed as post (post.id)}
-  <Feed class="mb-8" $post={post} showSpaceInfoMessage />
+  <PostCard class="mb-8" $post={post} showSpaceInfoMessage />
 {/each}

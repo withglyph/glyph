@@ -1,6 +1,6 @@
 <script lang="ts">
   import { graphql } from '$glitch';
-  import { Feed } from '$lib/components';
+  import { PostCard } from '$lib/components';
 
   $: query = graphql(`
     query MeCabinetsBookmarkPage_Query {
@@ -38,7 +38,7 @@
 
   <div class="mt-9">
     {#each $query.me.bookmarks[0].posts as { post } (post.id)}
-      <Feed class="mb-11.5 last-of-type:mb-0" $post={post} showSpaceInfoMessage />
+      <PostCard class="mb-11.5 last-of-type:mb-0" $post={post} showSpaceInfoMessage />
     {/each}
   </div>
 </div>

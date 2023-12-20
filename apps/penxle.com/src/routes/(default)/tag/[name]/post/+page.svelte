@@ -1,6 +1,6 @@
 <script lang="ts">
   import { graphql } from '$glitch';
-  import { Feed } from '$lib/components';
+  import { PostCard } from '$lib/components';
 
   $: query = graphql(`
     query TagPostPage_Query($name: String!) {
@@ -17,5 +17,5 @@
 </script>
 
 {#each $query.tag.posts as post (post.id)}
-  <Feed $post={post} />
+  <PostCard $post={post} />
 {/each}

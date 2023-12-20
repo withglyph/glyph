@@ -3,11 +3,10 @@
   import mixpanel from 'mixpanel-browser';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { Button, Image } from '$lib/components';
+  import { Button, Image, SpacePostCard } from '$lib/components';
   import { ManageCollectionModal } from '$lib/components/pages/collections';
   import { toast } from '$lib/notification';
   import LoginRequireModal from '../../../../LoginRequireModal.svelte';
-  import Feed from '../../Feed.svelte';
 
   let openPostManageCollectionModal = false;
   let loginRequireOpen = false;
@@ -136,7 +135,7 @@
       {#if collection?.count}
         <ul class="sm:max-w-[calc(100%-18.4375rem)] <sm:space-y-2 flex-1 space-y-8">
           {#each collection.posts as post (post.id)}
-            <li><Feed $post={post} /></li>
+            <li><SpacePostCard $post={post} /></li>
           {/each}
         </ul>
       {:else}
