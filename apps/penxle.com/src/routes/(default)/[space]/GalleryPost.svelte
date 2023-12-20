@@ -162,7 +162,7 @@
             class="opacity-0 absolute top-50% left-2 square-10 rounded-6 bg-alphagray-50 flex center p-3 transition sm:left-5"
             type="button"
             on:click={() => {
-              if (swiperEl.swiper.clickedIndex === revision.content.length - 1) {
+              if (swiperEl.swiper.clickedIndex === images.length - 1) {
                 swiperEl.swiper.slideTo(swiperEl.swiper.clickedIndex, 500);
               } else {
                 swiperEl.swiper.slidePrev(500);
