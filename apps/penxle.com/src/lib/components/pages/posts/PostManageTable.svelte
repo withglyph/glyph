@@ -201,7 +201,7 @@
     return Promise.all(_selectedPostIds.map((postId) => updatePostOptions({ postId, ...input })));
   }
 
-  const deletePost = graphql(`
+  const _deletePost = graphql(`
     mutation SpaceSettingPostsPage_DeletePost_Mutation($input: DeletePostInput!) {
       deletePost(input: $input) {
         id
@@ -209,16 +209,18 @@
     }
   `);
 
-  async function deletePosts(postIds: string[]) {
+  async function deletePost(props: { postId: string } | { postIds: string[] }) {
+    const postIds = 'postId' in props ? [props.postId] : props.postIds;
+    await Promise.all(postIds.map((postId) => _deletePost({ postId })));
+
     selectedPostIds.clear();
     selectedPostIds = selectedPostIds;
 
     if (type === 'space') {
-      mixpanel.track('space:dashboard:posts:delete', { spaceId: $posts[0].space.id });
+      mixpanel.track('space:dashboard:posts:delete', { spaceId: $posts[0].space.id, postIds });
     } else {
-      mixpanel.track('me:posts:delete');
+      mixpanel.track('me:posts:delete', { postIds });
     }
-    return Promise.all(postIds.map((postId) => deletePost({ postId })));
   }
 
   function handleSelectAllPost(event: Event) {
@@ -541,7 +543,7 @@
         if (deletePostId) {
           await deletePost({ postId: deletePostId });
         } else if (deletePostIds) {
-          await deletePosts(deletePostIds);
+          await deletePost({ postIds: deletePostIds });
         } else {
           throw new Error('기대하지 않은 경우예요');
         }
