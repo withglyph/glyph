@@ -95,7 +95,7 @@
         {/if}
       </div>
     </div>
-    <p class="body-13-m text-secondary">
+    <p class="body-13-m m-t-1! text-secondary">
       {$post.member.profile.name}
       {#if $post.discloseStats}
         · 조회수 {humanizeNumber($post.viewCount)}
@@ -129,7 +129,7 @@
           </div>
         </header>
       {:else}
-        <p class="grow body-15-sb text-secondary break-all line-clamp-4 whitespace-pre-line">
+        <p class="grow bodylong-16-m text-secondary break-all line-clamp-4 whitespace-pre-line">
           {$post.publishedRevision.previewText}
         </p>
 
