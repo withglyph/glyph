@@ -84,9 +84,9 @@
 <Header {$query} />
 
 <main
-  class="flex flex-col grow items-center justify-start w-full h-full truncate sm:(bg-primary mx-auto) backgroundGrid <sm:(bg-primary)"
+  class="flex flex-col grow items-center justify-start w-full h-full truncate sm:(bg-primary mx-auto px-7.5) backgroundGrid <sm:(bg-primary)"
 >
-  <div class="grid max-w-300 <sm:w-full sm:(p-0 gap-7.5 grid-cols-[7fr_3fr] mx-10 mt-8 px-4)">
+  <div class="grid w-full max-w-300 sm:(p-0 gap-7.5 grid-cols-[8fr_2fr] mt-8) lg:grid-cols-[7.5fr_2.5fr]">
     <div class="flex flex-col w-full truncate">
       <div class="<sm:(pt-6 px-4 bg-cardprimary border-b border-secondary sticky top-0)">
         <TabHead class="gap-3! <sm:(bg-cardprimary pb-4) sm:(mb-8 mt-3)">
@@ -116,7 +116,7 @@
       <slot />
     </div>
 
-    <div class="<sm:hidden space-y-10 max-w-80">
+    <div class="<sm:hidden space-y-10 sm:max-w-60 lg:max-w-80">
       <div>
         <p class="body-16-b mb-4">✨ 최근 게시물을 게시한 스페이스</p>
 
