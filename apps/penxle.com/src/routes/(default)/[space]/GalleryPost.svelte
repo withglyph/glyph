@@ -159,7 +159,10 @@
           {/if}
           <button
             bind:this={swiperPrevElem}
-            class="opacity-0 absolute top-50% left-2 square-10 rounded-6 bg-alphagray-50 flex center p-3 transition sm:left-5"
+            class={clsx(
+              'opacity-0 absolute top-50% left-2 square-10 rounded-6 bg-alphagray-50 flex center p-3 transition sm:left-5',
+              index === 0 && 'hidden!',
+            )}
             type="button"
             on:click={() => {
               if (swiperEl.swiper.clickedIndex === images.length - 1) {
@@ -174,7 +177,10 @@
           </button>
           <button
             bind:this={swiperNextElem}
-            class="opacity-0 absolute top-50% right-2 square-10 rounded-6 bg-alphagray-50 flex center p-3 transition sm:right-5"
+            class={clsx(
+              'opacity-0 absolute top-50% right-2 square-10 rounded-6 bg-alphagray-50 flex center p-3 transition sm:right-5',
+              index === images.length - 1 && 'hidden!',
+            )}
             type="button"
             on:click={() => {
               swiperEl.swiper.slideNext(500);
