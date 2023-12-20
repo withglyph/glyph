@@ -27,7 +27,7 @@
 </script>
 
 <div class="flex justify-between gap-2 flex-wrap flex-items-end">
-  <div class="flex gap-2 <sm:hidden">
+  <div class="flex gap-2">
     <Button class="flex-1" href="/me/posts" size="md" type="link">내 포스트 관리하기</Button>
   </div>
 </div>
