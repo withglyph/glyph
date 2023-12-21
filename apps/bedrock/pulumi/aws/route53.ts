@@ -47,7 +47,7 @@ new aws.route53.Record('feedback.penxle.com', {
   zoneId: zones.penxle_com.zoneId,
   type: 'CNAME',
   name: 'feedback.penxle.com',
-  records: ['cname.nolt.io'],
+  records: ['custom-domain.nolt.io'],
   ttl: 300,
 });
 
