@@ -60,7 +60,7 @@
 
 <NodeView
   class={clsx(
-    'flex gap-2 items-center m-4 px-8 py-4 border relative w-full',
+    'flex gap-2 items-center m-4 px-8 py-4 border relative grow',
     editor?.isEditable && selected && 'ring-4 ring-brand-50',
   )}
   as={editor?.isEditable ? undefined : 'a'}
