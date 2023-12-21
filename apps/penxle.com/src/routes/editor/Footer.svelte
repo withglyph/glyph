@@ -164,7 +164,7 @@
 
         <label class="flex items-center px-3 bg-primary rounded-8 body-13-b before:(content-['#'] mr-1)">
           <input
-            class="body-13-b h-6.5"
+            class="body-13-m h-6.5"
             maxlength={50}
             placeholder="게시글에 추가될 태그를 입력하세요"
             type="text"
