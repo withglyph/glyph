@@ -1,13 +1,13 @@
 <script lang="ts">
   import { Link } from '@penxle/ui';
-  import Wordmark from '$assets/branding/wordmark.svg?component';
+  import CompanyLogo from '$assets/branding/company-logo.svg?component';
 </script>
 
 <footer class="border-t border-secondary px-4 py-10 text-xs tracking-wider text-secondary flex sm:px-7.5">
   <div class="mx-auto flex flex-wrap justify-between gap-6 w-full max-w-300">
     <div>
       <section class="flex items-center justify-between mb-4">
-        <Wordmark class="h-4 color-icon-primary" />
+        <CompanyLogo class="h-16 color-icon-primary" />
       </section>
 
       <section class="space-y-1">
@@ -34,7 +34,7 @@
         </div>
       </section>
 
-      <section class="flex flex-wrap items-center mt-6">
+      <section class="flex flex-wrap items-center mt-4">
         <Link class="hover:text-secondary" href="https://help.penxle.com/legal/terms">이용약관</Link>
         <div class="h-2 border-l border-gray-50 mx-1" />
         <Link class="font-medium hover:text-secondary" href="https://help.penxle.com/legal/privacy">
