@@ -118,7 +118,7 @@
 
     <div class="<sm:hidden space-y-10 sm:max-w-60 lg:max-w-80">
       <div>
-        <p class="body-16-b mb-4">✨ 최근 게시물을 게시한 스페이스</p>
+        <p class="body-16-b mb-2">✨ 최근 게시물을 게시한 스페이스</p>
 
         <div class="px-1 py-2 bg-cardprimary border border-secondary rounded-2xl space-y-1">
           {#each $query.recentlyPublishedSpaces as space (space.id)}
@@ -171,7 +171,7 @@
       </div>
 
       <div>
-        <p class="body-16-b mb-4">🔥 최근 사용된 태그</p>
+        <p class="body-16-b mb-2">🔥 최근 사용된 태그</p>
 
         <div class="flex flex-wrap gap-2 bg-cardprimary border border-secondary rounded-2xl px-3 py-4 truncate">
           {#each $query.recentlyUsedTags as tag (tag.id)}
@@ -181,7 +181,7 @@
       </div>
 
       <div class="sticky top-88px mb-4">
-        <p class="body-16-b mb-4">👋🏻 새로 추가된 태그</p>
+        <p class="body-16-b mb-2">👋🏻 새로 추가된 태그</p>
 
         <div class="flex flex-wrap gap-2 bg-cardprimary border border-secondary rounded-2xl px-3 py-4 mb-4 truncate">
           {#each $query.recentlyCreatedTags as tag (tag.id)}
