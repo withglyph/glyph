@@ -104,7 +104,7 @@
           {#if $$slots.action}
             <div
               class={clsx(
-                'flex items-center',
+                'flex items-center justify-end',
                 size === 'sm' && 'mt-4',
                 size === 'md' && 'mt-6',
                 size === 'lg' && 'mt-4',
