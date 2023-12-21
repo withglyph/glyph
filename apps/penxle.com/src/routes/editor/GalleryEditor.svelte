@@ -16,6 +16,7 @@
   import { preventRevise } from './store';
   import type { Sortable } from '@shopify/draggable';
   import type { JSONContent } from '@tiptap/core';
+  import type { FormEventHandler } from 'svelte/elements';
   import type { FragmentType, Image_image } from '$glitch';
   import type { Nullable } from '$lib/types';
   import type { ImageBounds } from '$lib/utils';
@@ -194,8 +195,8 @@
 
   $: accessBarrierIndex = content?.content?.findIndex((c) => c.type === 'access_barrier') ?? -1;
 
-  const handlePriceChange = (e: Event) => {
-    const newPrice = Number((e.currentTarget as HTMLInputElement).value);
+  const handlePriceChange: FormEventHandler<HTMLInputElement> = (event) => {
+    const newPrice = Number(event.currentTarget.value.replaceAll(',', ''));
     if (Number.isNaN(newPrice)) {
       return;
     }
@@ -451,7 +452,7 @@
                 class="body-16-b flex-1 min-w-0"
                 inputmode="numeric"
                 type="text"
-                value={price}
+                value={price.toLocaleString()}
                 on:input={handlePriceChange}
               />
               <span class="text-disabled">포인트</span>

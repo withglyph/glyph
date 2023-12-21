@@ -8,6 +8,7 @@
   import { NodeView } from '$lib/tiptap';
   import { calcurateReadingTime, comma } from '$lib/utils';
   import LoginRequireModal from '../../../../routes/(default)/LoginRequireModal.svelte';
+  import type { FormEventHandler } from 'svelte/elements';
   import type { NodeViewProps } from '$lib/tiptap';
 
   type $$Props = NodeViewProps;
@@ -19,6 +20,7 @@
   export let updateAttributes: NodeViewProps['updateAttributes'] | undefined;
 
   $: data = node.attrs.__data;
+  $: price = node.attrs.price as number | undefined;
 
   let open = false;
   let loginRequireOpen = false;
@@ -38,8 +40,8 @@
     }
   `);
 
-  const handlePriceChange = (e: Event) => {
-    const price = Number((e.currentTarget as HTMLInputElement).value);
+  const handlePriceChange: FormEventHandler<HTMLInputElement> = (event) => {
+    const price = Number(event.currentTarget.value.replaceAll(',', ''));
     if (Number.isNaN(price)) {
       return;
     }
@@ -61,7 +63,7 @@
           <TextInput
             class="bg-primary pl-4 py-2 body-16-b rounded-lg"
             inputmode="numeric"
-            value={node.attrs.price}
+            value={price?.toLocaleString()}
             on:input={handlePriceChange}
           >
             <span slot="right-label" class="pr-4 bodylong-16-m text-disabled">포인트</span>

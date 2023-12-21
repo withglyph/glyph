@@ -9,6 +9,9 @@
   export { _class as class };
 
   type $$Props = HTMLInputAttributes;
+  type $$Events = {
+    input: Event & { currentTarget: HTMLInputElement };
+  };
 
   const { field } = getFormContext();
 
