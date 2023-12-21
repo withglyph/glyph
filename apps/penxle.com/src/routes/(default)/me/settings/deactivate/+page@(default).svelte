@@ -3,6 +3,7 @@
   import { graphql } from '$glitch';
   import { Button } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
+  import { comma } from '$lib/utils';
   import ConfirmModal from './ConfirmModal.svelte';
 
   let confirmModalOpen = false;
@@ -14,6 +15,7 @@
       me @_required {
         id
         email
+        revenue
       }
     }
   `);
@@ -49,7 +51,7 @@
         <p class="text-secondary">
           아직 정산하지 않았거나 자동 출금 신청하지 않은 수익 역시 회원 탈퇴 즉시 소멸되며 복구할 수 없어요
         </p>
-        <span class="text-red-50">현재 남아있는 수익금 금액 : 30,000원</span>
+        <span class="text-red-50">현재 남아있는 수익금 금액 : {comma($query.me.revenue)}원</span>
       </div>
 
       <div>
