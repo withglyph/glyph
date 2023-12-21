@@ -851,9 +851,9 @@
     <Button
       size="md"
       on:click={async () => {
-        const resp = await deletePost({ postId: $query.post.id });
+        await goto(`/${$query.post.space.slug}`);
+        await deletePost({ postId: $query.post.id });
         mixpanel.track('post:delete', { postId: $query.post.id, via: 'post' });
-        await goto(`/${resp.space.slug}`);
         toast.success('포스트를 삭제했어요');
       }}
     >
