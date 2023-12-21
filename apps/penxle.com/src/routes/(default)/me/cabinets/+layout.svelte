@@ -117,7 +117,7 @@
     </TabHead>
 
     <div class="px-4 sm:px-8">
-      <ul class="space-y-6">
+      <ul class="space-y-xs">
         <slot />
       </ul>
 
