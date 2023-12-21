@@ -65,6 +65,7 @@
             id
             name
             slug
+            visibility
 
             icon {
               id
@@ -609,6 +610,15 @@
 
       <form class="px-3 pt-4 pb-3.5 space-y-4 w-163" use:form>
         <p class="title-20-b">포스트 게시 옵션</p>
+
+        {#if selectedSpace?.visibility === 'PRIVATE'}
+          <div class="bg-primary p-4 rounded-2xl flex items-center gap-2">
+            <i class="i-px-alert-triangle color-action-red-primary square-4" />
+            <p class="text-secondary body-13-b">
+              현재 비공개 스페이스로 지정되어있어 스페이스 멤버 외에는 글을 볼 수 없어요
+            </p>
+          </div>
+        {/if}
 
         <div>
           <p class="text-secondary mb-3">공개범위</p>
