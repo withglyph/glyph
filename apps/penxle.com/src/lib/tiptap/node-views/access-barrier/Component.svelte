@@ -60,6 +60,7 @@
         <div class="flex gap-2 items-center mt-4">
           <TextInput
             class="bg-primary pl-4 py-2 body-16-b rounded-lg"
+            aria-describedby="price-description"
             inputmode="numeric"
             value={node.attrs.price}
             on:input={handlePriceChange}
@@ -67,6 +68,7 @@
             <span slot="right-label" class="pr-4 bodylong-16-m text-disabled">포인트</span>
           </TextInput>
         </div>
+        <div id="price-description" class="body-13-m text-secondary mt-1">100 포인트 단위로만 발행이 가능해요</div>
       </div>
     </div>
 

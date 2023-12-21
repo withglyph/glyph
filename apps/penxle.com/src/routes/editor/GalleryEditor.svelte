@@ -449,6 +449,7 @@
             <div class="rounded-lg flex items-center justify-between py-2 px-4 mt-4 gap-2">
               <input
                 class="body-16-b flex-1 min-w-0"
+                aria-describedby="price-description"
                 inputmode="numeric"
                 type="text"
                 value={price}
@@ -457,12 +458,12 @@
               <span class="text-disabled">포인트</span>
             </div>
 
-            {#if description}
-              {#if accessBarrierIndex === content.content.length - 1 || accessBarrierIndex === 1}
-                <p class="mt-3 body-13-m text-red-50">이 위치에서는 사용할 수 없어요</p>
-              {/if}
-            {:else if accessBarrierIndex === content.content.length - 1 || accessBarrierIndex === 0}
+            {#if (description && accessBarrierIndex === 1) || accessBarrierIndex === 0 || accessBarrierIndex === content.content.length - 1}
               <p class="mt-3 body-13-m text-red-50">이 위치에서는 사용할 수 없어요</p>
+            {:else}
+              <div id="price-description" class="mt-3 body-13-m text-secondary" aria-live="polite">
+                100 포인트 단위로만 발행 가능해요
+              </div>
             {/if}
 
             <button
