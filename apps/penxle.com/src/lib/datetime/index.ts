@@ -21,7 +21,7 @@ export const setupDayjs = () => {
     relativeTime: {
       future: 'in %s',
       past: '%s 전',
-      s: '1초',
+      s: '%d초',
       m: '1분',
       mm: '%d분',
       h: '1시간',
