@@ -1,14 +1,37 @@
 <script lang="ts">
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { PostCard } from '$lib/components';
+  import { PostCard, Tag } from '$lib/components';
   import { toast } from '$lib/notification';
+
+  type Tag = {
+    id: string;
+    name: string;
+  };
 
   $: query = graphql(`
     query FeedFollowTagsPage_Query {
+      me @_required {
+        id
+
+        followedTags {
+          id
+          name
+        }
+      }
+
       tagFeed {
         id
         ...Feed_post
+
+        publishedRevision @_required {
+          id
+
+          tags {
+            id
+            name
+          }
+        }
       }
 
       recentlyUsedTags {
@@ -36,6 +59,14 @@
       }
     }
   `);
+
+  const getFollowedTags = (tags: Tag[] | undefined) => {
+    const followedTags = new Set<string>($query.me.followedTags.map((tag: Tag) => tag.name));
+    const postTags = new Set<string>(tags?.map((tag: Tag) => tag.name));
+
+    const intersection = new Set([...followedTags].filter((x) => postTags.has(x)));
+    return [...intersection];
+  };
 </script>
 
 {#if $query.tagFeed.length === 0}
@@ -79,8 +110,16 @@
   </div>
 {/if}
 
-{#each $query.tagFeed as post (post.id)}
-  <!-- <Tag class="w-fit mb-2" href="tag/태그">#태그</Tag> -->
+<ul>
+  {#each $query.tagFeed as post (post.id)}
+    <li class="mb-4 <sm:first-of-type:mt-4">
+      <div class="flex items-center flex-wrap gap-2 mb-4 truncate <sm:mx-2">
+        {#each getFollowedTags(post.publishedRevision?.tags) as tag (tag)}
+          <Tag href="/tag/{tag}">#{tag}</Tag>
+        {/each}
+      </div>
 
-  <PostCard class="mb-4 will-change-transform inline-flex" $post={post} />
-{/each}
+      <PostCard $post={post} />
+    </li>
+  {/each}
+</ul>
