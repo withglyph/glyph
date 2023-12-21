@@ -40,10 +40,10 @@
       </div>
 
       <div>
-        <div class="flex items-center justify-between mb-2">
+        <a class="flex items-center justify-between mb-2" href="/me/revenue">
           <h3 class="font-extrabold text-lg">수익금 및 정산금</h3>
           <i class="i-lc-chevron-right text-secondary square-6" />
-        </div>
+        </a>
         <p class="text-secondary">포인트 충전을 통해 적립한 포인트는 회원 탈퇴 시 환불이 불가능합니다.</p>
         <p class="text-secondary">
           또한 환불 신청 후 환불 처리가 완료되기 전 탈퇴하는 경우 포인트 구매 기록을 확인할 수 없으므로 환불할 수
@@ -53,16 +53,6 @@
           아직 정산하지 않았거나 자동 출금 신청하지 않은 수익 역시 회원 탈퇴 즉시 소멸되며 복구할 수 없습니다.
         </p>
         <span class="text-red-50">현재 남아있는 수익금 금액 : {comma($query.me.revenue)}원</span>
-      </div>
-
-      <div>
-        <div class="flex items-center justify-between mb-2">
-          <h3 class="font-extrabold text-lg">팀스페이스 포스트 소유권</h3>
-          <i class="i-lc-chevron-right text-secondary square-6" />
-        </div>
-        <p class="text-secondary">
-          팀 스페이스에서 작성한 게시물들은 삭제되지 않고, 팀 스페이스 소유자에게 소유권이 이전되어요.
-        </p>
       </div>
 
       <div class="flex items-center flex-wrap gap-2.5 sm:gap-5 bg-primary rounded-2xl py-2.5 px-3.5 font-bold">
