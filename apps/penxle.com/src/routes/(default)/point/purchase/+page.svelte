@@ -120,7 +120,7 @@
         >
           <input class="mr-6 square-4 cursor-pointer" checked={$data.pointAmount === amount} type="radio" />
           <label class="grow body-16-b cursor-pointer" for={`${amount}`}>{comma(amount)}P</label>
-          <div>{comma(amount * 1.1)}원</div>
+          <div>{comma(amount)}원</div>
         </button>
       {/each}
     </div>
@@ -158,6 +158,7 @@
       <span>결제 전 확인해주세요!</span>
     </p>
     <div class="mt-2 text-secondary body-13-m">
+      <p>- 모든 금액은 부가가치세 제외 금액입니다. 결제 진행시 부가가치세 10%가 부과되어 결제됩니다.</p>
       <p>
         - 충전한 포인트 전액 결제 취소는 포인트를 구매한 뒤 사용한 이력이 없고 결제 후 7일 이내에 결제 취소한 경우에
         가능합니다.
@@ -169,8 +170,7 @@
       <p>
         - 잔여 포인트는 충전한 포인트의 잔액이 80% 이하일 때에 한해 환불 신청이 가능하며, 잔액의 10% 또는 1,000원 중 큰
         금액을 환급 수수료로 제외하고 환불해드립니다. 포인트 잔액이 1,000원 이하이면 환불이 불가능합니다. 환불은
-        <Link class="underline" href="https://help.penxle.com/">펜슬 도움 센터</Link>
-        를 통해 신청할 수 있습니다.
+        <Link class="underline" href="https://help.penxle.com/">펜슬 도움 센터</Link>를 통해 신청할 수 있습니다.
       </p>
       <p>- 무료로 지급받은 포인트는 환불받을 수 없으며, 지급일로부터 1년이 되는 시점에 소멸됩니다.</p>
       <p>
@@ -183,8 +183,7 @@
       </p>
       <p>
         - 자세한 내용은 서비스 이용 전 동의하신
-        <Link class="underline" href="https://help.penxle.com/legal/terms">이용약관</Link>
-        을 참조해주시기 바랍니다.
+        <Link class="underline" href="https://help.penxle.com/legal/terms">이용약관</Link>을 참조해주시기 바랍니다.
       </p>
     </div>
   </div>
