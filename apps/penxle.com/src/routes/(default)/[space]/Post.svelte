@@ -77,6 +77,7 @@
           hasPassword
           receiveFeedback
           discloseStats
+          publishedAt
 
           collection {
             id
@@ -383,7 +384,7 @@
               {$query.post.space.name} · {$query.post.member.profile.name}
             </svelte:element>
             <div class="flex items-center flex-wrap body-13-m text-secondary">
-              <span class="mr-3.5">{dayjs($postRevision.createdAt).formatAsDate()}</span>
+              <span class="mr-3.5">{dayjs($query.post.publishedAt).formatAsDate()}</span>
               <div class="flex items-center gap-3.5 body-13-m text-secondary">
                 {#if $query.post.discloseStats}
                   <span class="flex items-center gap-1">
