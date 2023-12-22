@@ -1,28 +1,22 @@
-import { production } from '@penxle/lib/environment';
 import * as Sentry from '@sentry/sveltekit';
-import { browser } from '$app/environment';
+import { browser, dev } from '$app/environment';
 import { env } from '$env/dynamic/public';
 import { setupDayjs } from '$lib/datetime';
-import { AppError, NotFoundError, serializeAppError, UnknownError } from '$lib/errors';
+import { AppError, NotFoundError, UnknownError } from '$lib/errors';
 import type { HandleClientError, HandleServerError } from '@sveltejs/kit';
 
 const setupSentry = () => {
-  const integrations = [];
-
-  if (browser) {
-    // no-op
-  } else {
-    integrations.push(
-      new Sentry.Integrations.OnUncaughtException(),
-      new Sentry.Integrations.OnUnhandledRejection({ mode: 'strict' }),
-      new Sentry.Integrations.LocalVariables({ captureAllExceptions: true }),
-    );
-  }
-
-  if (production) {
+  if (!dev) {
     Sentry.init({
       dsn: env.PUBLIC_SENTRY_DSN,
-      integrations,
+      environment: env.PUBLIC_PULUMI_STACK,
+      defaultIntegrations: false,
+      integrations: browser
+        ? [new Sentry.Integrations.GlobalHandlers()]
+        : [
+            new Sentry.Integrations.OnUnhandledRejection({ mode: 'strict' }),
+            new Sentry.Integrations.OnUncaughtException(),
+          ],
     });
   }
 };
@@ -33,18 +27,15 @@ export const setupGlobals = () => {
 };
 
 export const handleError = (({ error, event }) => {
+  let err;
+
   if (event.route.id === null) {
-    return serializeAppError(new NotFoundError());
+    err = new NotFoundError();
   } else if (error instanceof AppError) {
-    return serializeAppError(error);
-  } else if (error instanceof Error) {
-    return serializeAppError(new UnknownError(error));
+    err = error;
   } else {
-    return serializeAppError(
-      new UnknownError({
-        name: 'UnknownError (inferred)',
-        message: JSON.stringify(error),
-      }),
-    );
+    err = new UnknownError(error);
   }
+
+  return err.serialize();
 }) satisfies HandleServerError & HandleClientError;

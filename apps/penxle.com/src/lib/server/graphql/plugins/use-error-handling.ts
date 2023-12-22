@@ -1,10 +1,23 @@
 import { isAsyncIterable } from '@envelop/core';
-import * as Sentry from '@sentry/sveltekit';
 import { GraphQLError } from 'graphql';
-import { AppError, GraphQLAppError, UnknownError } from '$lib/errors';
+import { AppError, UnknownError } from '$lib/errors';
 import type { AsyncIterableIteratorOrValue, ExecutionResult } from '@envelop/core';
 import type { Plugin } from 'graphql-yoga';
+import type { PortableAppError } from '$lib/errors';
 import type { Context } from '$lib/server/context';
+
+class GraphQLAppError extends GraphQLError implements PortableAppError {
+  public override readonly extensions: PortableAppError['extensions'];
+
+  constructor(error: AppError) {
+    const err = error.serialize();
+
+    super(err.message);
+
+    this.name = 'GraphQLAppError';
+    this.extensions = err.extensions;
+  }
+}
 
 const toGraphQLAppError = (error: unknown): GraphQLAppError => {
   if (error instanceof AppError) {
@@ -12,10 +25,7 @@ const toGraphQLAppError = (error: unknown): GraphQLAppError => {
   } else if (error instanceof GraphQLError && error.originalError) {
     return toGraphQLAppError(error.originalError);
   } else {
-    console.error(error);
-    Sentry.captureException(error);
-
-    return new GraphQLAppError(new UnknownError(error instanceof Error ? error : undefined));
+    return toGraphQLAppError(new UnknownError(error));
   }
 };
 
@@ -25,21 +35,20 @@ const errorHandler = ({ error, setError }: ErrorHandlerPayload) => {
 };
 
 type ResultHandlerPayload<T> = { result: T; setResult: (result: T) => void };
-const _resultHandler = ({ result, setResult }: ResultHandlerPayload<ExecutionResult>) => {
-  if (result.errors) {
-    setResult({
-      ...result,
-      errors: result.errors.map((error) => toGraphQLAppError(error)),
-    });
-  }
-};
 const resultHandler = ({ result, setResult }: ResultHandlerPayload<AsyncIterableIteratorOrValue<ExecutionResult>>) => {
+  const handler = ({ result, setResult }: ResultHandlerPayload<ExecutionResult>) => {
+    if (result.errors) {
+      setResult({
+        ...result,
+        errors: result.errors.map((error) => toGraphQLAppError(error)),
+      });
+    }
+  };
+
   if (isAsyncIterable(result)) {
-    return {
-      onNext: _resultHandler,
-    };
+    return { onNext: handler };
   } else {
-    _resultHandler({ result, setResult });
+    handler({ result, setResult });
     return;
   }
 };

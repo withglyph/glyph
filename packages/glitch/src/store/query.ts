@@ -29,7 +29,7 @@ export const createQueryStore = async (
   );
 
   if (result.error?.networkError) {
-    throw result.error.networkError;
+    throw transformError(result.error.networkError);
   }
 
   if (result.error?.graphQLErrors.length) {
@@ -74,7 +74,7 @@ export const createQueryStore = async (
       );
 
       if (result.error?.networkError) {
-        throw result.error.networkError;
+        throw transformError(result.error.networkError);
       }
 
       if (result.error?.graphQLErrors.length) {
@@ -124,7 +124,7 @@ export const createManualQueryStore = (document: TypedDocumentNode<unknown, AnyV
       );
 
       if (result.error?.networkError) {
-        throw result.error.networkError;
+        throw transformError(result.error.networkError);
       }
 
       if (result.error?.graphQLErrors.length) {

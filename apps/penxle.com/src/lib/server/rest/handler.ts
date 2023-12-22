@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/sveltekit';
 import { error } from 'itty-router';
 import { createContext } from '../context';
 import { createRouter } from './router';
@@ -32,9 +31,6 @@ export const handler = async (event: RequestEvent) => {
       await context.$rollback();
     }
 
-    console.error(err);
-    Sentry.captureException(err);
-
-    return error(500, String(err));
+    throw err;
   }
 };

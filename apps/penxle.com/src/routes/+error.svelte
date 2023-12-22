@@ -3,11 +3,11 @@
   import { page } from '$app/stores';
   import Logo from '$assets/icons/logo.svg?component';
   import { Button, Modal } from '$lib/components';
-  import { deserializeAppError, UnknownError } from '$lib/errors';
+  import { AppError, UnknownError } from '$lib/errors';
 
   let open = false;
 
-  $: error = $page.error ? deserializeAppError($page.error) : new UnknownError();
+  $: error = $page.error ? AppError.deserialize($page.error) : new UnknownError('Really unknown error');
   $: code = error.extra.code ?? $page.status;
 </script>
 
@@ -57,11 +57,15 @@
     </a>
   </section>
 
-  <div>
+  <div class="flex flex-col gap-2 center">
     {#if error instanceof UnknownError && error.cause}
       <button class="cursor-pointer text-sm text-gray-50" type="button" on:click={() => (open = true)}>
         디버깅 정보
       </button>
+    {:else}
+      <span class="text-sm text-gray-50">
+        추적 ID: {error.extra.id ?? 'N/A'}
+      </span>
     {/if}
   </div>
 </div>

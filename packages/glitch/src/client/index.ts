@@ -7,15 +7,15 @@ import type { Exchange } from '@urql/core';
 import type { CacheExchangeOpts } from '@urql/exchange-graphcache';
 import type { GlitchClient } from '../types';
 
-type CreateClientParams = {
+type CreateClientParams<E> = {
   url: string;
   cache: CacheExchangeOpts;
-  transformError: (error: unknown) => Error;
-  onMutationError: (error: Error) => void;
+  transformError: (error: unknown) => E;
+  onMutationError: (error: E) => void;
 };
 
-export const createClient = ({ url, cache, ...rest }: CreateClientParams) => {
-  return (isClient: boolean): GlitchClient => {
+export const createClient = <E>({ url, cache, ...rest }: CreateClientParams<E>) => {
+  return (isClient: boolean): GlitchClient<E> => {
     const exchanges: Exchange[] = [];
 
     if (isClient) {
