@@ -56,13 +56,19 @@
   <div class="bg-white flex py-3 sm:(border border-secondary rounded-2xl)">
     <button
       class="flex flex-col center grow basis-0 border-r"
+      disabled={$query.me.followedSpaces.length === 0}
       type="button"
       on:click={() => (followingSpaceOpen = true)}
     >
       <div class="title-20-b mb-2 sm:title-24-b">{$query.me.followedSpaces.length}</div>
       <div class="body-13-m text-secondary sm:body-16-m">관심 스페이스</div>
     </button>
-    <button class="flex flex-col center grow basis-0" type="button" on:click={() => (followingTagOpen = true)}>
+    <button
+      class="flex flex-col center grow basis-0"
+      disabled={$query.me.followedTags.length === 0}
+      type="button"
+      on:click={() => (followingTagOpen = true)}
+    >
       <div class="title-20-b mb-2 sm:title-24-b">{$query.me.followedTags.length}</div>
       <div class="body-13-m text-secondary sm:body-16-m">관심 태그</div>
     </button>
