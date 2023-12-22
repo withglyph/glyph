@@ -76,8 +76,14 @@ export const serve = async ({ basePath, Server, manifest, prerendered }: CreateH
     const response = await server.respond(request, {
       getClientAddress: () => {
         const xff = request.headers.get('x-forwarded-for');
-        const addresses = xff ? xff.split(',') : [];
-        return (addresses.length > 0 ? addresses.at(-1) : event.context.clientAddress) ?? '';
+        const hop = Number(process.env.HTTP_XFF_HOP) || 0;
+
+        if (xff && hop > 0) {
+          const addresses = xff.split(',');
+          return addresses.at(-hop)?.trim() ?? '';
+        }
+
+        return event.context.clientAddress ?? '';
       },
     });
 

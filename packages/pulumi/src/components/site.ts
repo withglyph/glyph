@@ -152,6 +152,7 @@ export class Site extends pulumi.ComponentResource {
                   image: pulumi.interpolate`${args.image.name}@${args.image.digest}`,
                   env: [
                     { name: 'HTTP_HOST', value: domainName },
+                    { name: 'HTTP_XFF_HOP', value: isProd ? '2' : '1' },
                     { name: 'PUBLIC_PULUMI_PROJECT', value: project },
                     { name: 'PUBLIC_PULUMI_STACK', value: stack },
                     { name: 'HOST_IP', valueFrom: { fieldRef: { fieldPath: 'status.hostIP' } } },
