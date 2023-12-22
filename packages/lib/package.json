@@ -42,8 +42,8 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@iconify/json": "^2.2.155",
-    "@iconify/utils": "^2.1.12",
+    "@iconify/json": "^2.2.160",
+    "@iconify/utils": "^2.1.13",
     "@pnpm/find-workspace-dir": "^6.0.2",
     "@sindresorhus/string-hash": "^2.0.0",
     "@unocss/config": "^0.58.0",
@@ -65,7 +65,7 @@
     "@penxle/tsconfig": "workspace:^",
     "@sveltejs/kit": "^1.28.0",
     "@types/css-tree": "^2.3.4",
-    "rollup": "^4.8.0",
+    "rollup": "^4.9.1",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3"
   },
