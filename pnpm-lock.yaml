@@ -183,6 +183,36 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
 
+  apps/nocooc:
+    devDependencies:
+      '@penxle/lib':
+        specifier: workspace:^
+        version: link:../../packages/lib
+      '@penxle/pulumi':
+        specifier: workspace:^
+        version: link:../../packages/pulumi
+      '@penxle/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
+      '@pulumi/aws':
+        specifier: ^6.15.0
+        version: 6.15.0
+      '@pulumi/kubernetes':
+        specifier: ^4.5.6
+        version: 4.5.6
+      '@pulumi/pulumi':
+        specifier: ^3.99.0
+        version: 3.99.0
+      tsup:
+        specifier: ^8.0.1
+        version: 8.0.1(typescript@5.3.3)
+      tsx:
+        specifier: ^4.7.0
+        version: 4.7.0
+      typescript:
+        specifier: ^5.3.3
+        version: 5.3.3
+
   apps/penxle.com:
     devDependencies:
       '@aws-sdk/client-s3':
@@ -3921,18 +3951,6 @@ packages:
       '@opentelemetry/sdk-trace-base': 1.19.0(@opentelemetry/api@1.7.0)
     dev: false
 
-  /@opentelemetry/exporter-zipkin@1.18.1(@opentelemetry/api@1.7.0):
-    resolution: {integrity: sha512-RmoWVFXFhvIh3q4szUe8I+/vxuMR0HNsOm39zNxnWJcK7JDwnPra9cLY/M78u6bTgB6Fte8GKgU128vvDzz0Iw==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.0.0
-    dependencies:
-      '@opentelemetry/api': 1.7.0
-      '@opentelemetry/core': 1.18.1(@opentelemetry/api@1.7.0)
-      '@opentelemetry/resources': 1.18.1(@opentelemetry/api@1.7.0)
-      '@opentelemetry/sdk-trace-base': 1.18.1(@opentelemetry/api@1.7.0)
-      '@opentelemetry/semantic-conventions': 1.18.1
-
   /@opentelemetry/exporter-zipkin@1.19.0(@opentelemetry/api@1.7.0):
     resolution: {integrity: sha512-TY1fy4JiOBN5a8T9fknqTMcz0DXIeFBr6sklaLCgwtj+G699a5R4CekNwpeM7DHSwC44UMX7gljO2I6dYsTS3A==}
     engines: {node: '>=14'}
@@ -3944,7 +3962,6 @@ packages:
       '@opentelemetry/resources': 1.19.0(@opentelemetry/api@1.7.0)
       '@opentelemetry/sdk-trace-base': 1.19.0(@opentelemetry/api@1.7.0)
       '@opentelemetry/semantic-conventions': 1.19.0
-    dev: false
 
   /@opentelemetry/instrumentation-grpc@0.32.0(@opentelemetry/api@1.7.0):
     resolution: {integrity: sha512-Az6wdkPx/Mi26lT9LKFV6GhCA9prwQFPz5eCNSExTnSP49YhQ7XCjzPd2POPeLKt84ICitrBMdE1mj0zbPdLAQ==}
@@ -4494,11 +4511,11 @@ packages:
       '@grpc/grpc-js': 1.9.6
       '@logdna/tail-file': 2.2.0
       '@opentelemetry/api': 1.7.0
-      '@opentelemetry/exporter-zipkin': 1.18.1(@opentelemetry/api@1.7.0)
+      '@opentelemetry/exporter-zipkin': 1.19.0(@opentelemetry/api@1.7.0)
       '@opentelemetry/instrumentation': 0.32.0(@opentelemetry/api@1.7.0)
       '@opentelemetry/instrumentation-grpc': 0.32.0(@opentelemetry/api@1.7.0)
       '@opentelemetry/resources': 1.19.0(@opentelemetry/api@1.7.0)
-      '@opentelemetry/sdk-trace-base': 1.18.1(@opentelemetry/api@1.7.0)
+      '@opentelemetry/sdk-trace-base': 1.19.0(@opentelemetry/api@1.7.0)
       '@opentelemetry/sdk-trace-node': 1.19.0(@opentelemetry/api@1.7.0)
       '@opentelemetry/semantic-conventions': 1.19.0
       '@pulumi/query': 0.3.0

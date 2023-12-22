@@ -22,6 +22,7 @@ jobs:
           - penxle.io
           - help.penxle.com
           - literoom
+          - nocooc
 
     concurrency:
       group: production/${{ matrix.app }}

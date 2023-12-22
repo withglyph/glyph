@@ -151,6 +151,17 @@ new aws.ec2.SecurityGroup('public-web', {
   tags: { Name: 'public-web' },
 });
 
+new aws.ec2.SecurityGroup('public-nlb', {
+  name: 'public-nlb',
+  description: 'Security group for public NLBs',
+  vpcId: vpc.id,
+
+  ingress: [{ protocol: 'tcp', fromPort: 2266, toPort: 2266, cidrBlocks: ['0.0.0.0/0'] }],
+  egress: [{ protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
+
+  tags: { Name: 'public-nlb' },
+});
+
 export { vpc };
 
 export const subnets = {

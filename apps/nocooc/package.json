@@ -1,0 +1,21 @@
+{
+  "name": "@penxle/nocooc",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "lint:typecheck": "tsc"
+  },
+  "devDependencies": {
+    "@penxle/lib": "workspace:^",
+    "@penxle/pulumi": "workspace:^",
+    "@penxle/tsconfig": "workspace:^",
+    "@pulumi/aws": "^6.15.0",
+    "@pulumi/kubernetes": "^4.5.6",
+    "@pulumi/pulumi": "^3.99.0",
+    "tsup": "^8.0.1",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
