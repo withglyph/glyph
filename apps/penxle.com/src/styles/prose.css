@@ -2,18 +2,10 @@
   /*
    * nodes
   */
-  --uno: font-sans whitespace-pre-wrap break-all;
+  --uno: whitespace-pre-wrap break-all;
 
   & p {
     --uno: py-0.5;
-  }
-
-  & p[data-font-family='sans'] {
-    --uno: leading-7;
-  }
-
-  & p[data-font-family='serif'] {
-    --uno: leading-7.5;
   }
 
   & p[data-level='2'] {
@@ -171,6 +163,10 @@
    * extensions
   */
 
+  & [data-font-family='sans'] {
+    --uno: font-sans;
+  }
+
   & [data-font-family='serif'] {
     --uno: font-serif;
   }
@@ -188,23 +184,53 @@
   }
 
   & [data-line-height='none'] {
-    --uno: leading-none;
+    --uno: leading-4;
   }
 
   & [data-line-height='tight'] {
-    --uno: leading-tight;
+    --uno: leading-5;
   }
 
   & [data-line-height='snug'] {
-    --uno: leading-snug;
+    --uno: leading-6;
+  }
+
+  & [data-line-height='normal'] {
+    --uno: leading-7;
   }
 
   & [data-line-height='relaxed'] {
-    --uno: leading-relaxed;
+    --uno: leading-8;
   }
 
   & [data-line-height='loose'] {
-    --uno: leading-loose;
+    --uno: leading-9;
+  }
+
+  & [data-font-family^='serif'] {
+    &[data-line-height='none'] {
+      --uno: leading-4.5;
+    }
+
+    &[data-line-height='tight'] {
+      --uno: leading-5.5;
+    }
+
+    &[data-line-height='snug'] {
+      --uno: leading-6.5;
+    }
+
+    &[data-line-height='normal'] {
+      --uno: leading-7.5;
+    }
+
+    &[data-line-height='relaxed'] {
+      --uno: leading-8.5;
+    }
+
+    &[data-line-height='loose'] {
+      --uno: leading-9.5;
+    }
   }
 
   & [data-letter-spacing='tighter'] {
