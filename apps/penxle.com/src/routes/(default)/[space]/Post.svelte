@@ -77,6 +77,7 @@
           hasPassword
           receiveFeedback
           discloseStats
+          protectContent
           publishedAt
 
           collection {
@@ -347,6 +348,13 @@
     const content = fragment.toJSON() as JSONContent[];
     return content;
   }
+
+  const handleContentProtection = (e: Event) => {
+    if ($query.post.protectContent) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
 </script>
 
 <Helmet
@@ -529,7 +537,11 @@
                 </Button>
               </header>
             {:else}
-              <article>
+              <article
+                on:copy|capture={handleContentProtection}
+                on:cut|capture={handleContentProtection}
+                on:contextmenu|capture={handleContentProtection}
+              >
                 <TiptapRenderer
                   class="bodylong-16-m"
                   autoIndent={$postRevision.autoIndent}

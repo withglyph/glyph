@@ -39,6 +39,7 @@ export const PublishPostInputSchema = z.object({
   receiveFeedback: z.boolean(),
   receivePatronage: z.boolean(),
   receiveTagContribution: z.boolean(),
+  protectContent: z.boolean(),
   visibility: z.enum(['PUBLIC', 'SPACE', 'UNLISTED']),
 });
 

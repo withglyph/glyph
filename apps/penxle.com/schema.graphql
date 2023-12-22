@@ -330,6 +330,7 @@ type Post {
   nextPost: Post
   permalink: String!
   previousPost: Post
+  protectContent: Boolean!
   publishedAt: DateTime
   publishedRevision: PostRevision
   purchasedAt: DateTime
@@ -423,6 +424,7 @@ input PublishPostInput {
   contentFilters: [ContentFilterCategory!]!
   discloseStats: Boolean!
   password: String
+  protectContent: Boolean = true
   receiveFeedback: Boolean!
   receivePatronage: Boolean!
   receiveTagContribution: Boolean!

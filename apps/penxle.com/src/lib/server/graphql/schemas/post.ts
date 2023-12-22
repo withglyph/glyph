@@ -92,6 +92,7 @@ export const postSchema = defineSchema((builder) => {
       receiveFeedback: t.exposeBoolean('receiveFeedback'),
       receivePatronage: t.exposeBoolean('receivePatronage'),
       receiveTagContribution: t.exposeBoolean('receiveTagContribution'),
+      protectContent: t.exposeBoolean('protectContent'),
 
       hasPassword: t.boolean({
         resolve: (post) => !!post.password,
@@ -634,6 +635,7 @@ export const postSchema = defineSchema((builder) => {
       receiveFeedback: t.boolean(),
       receivePatronage: t.boolean(),
       receiveTagContribution: t.boolean(),
+      protectContent: t.boolean({ required: false, defaultValue: true }),
       contentFilters: t.field({ type: [ContentFilterCategory] }),
       password: t.string({ required: false }),
     }),
@@ -952,6 +954,7 @@ export const postSchema = defineSchema((builder) => {
               receiveFeedback: true,
               receivePatronage: true,
               receiveTagContribution: true,
+              protectContent: true,
               contentFilters: [],
             },
           });
@@ -1082,6 +1085,7 @@ export const postSchema = defineSchema((builder) => {
             receiveFeedback: input.receiveFeedback,
             receivePatronage: input.receivePatronage,
             receiveTagContribution: input.receiveTagContribution,
+            protectContent: input.protectContent ?? true,
             contentFilters: input.contentFilters,
             password,
           },

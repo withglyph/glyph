@@ -103,6 +103,7 @@
         receiveFeedback
         receivePatronage
         receiveTagContribution
+        protectContent
         visibility
 
         space {
@@ -192,6 +193,7 @@
           receiveFeedback
           receivePatronage
           receiveTagContribution
+          protectContent
           visibility
 
           space {
@@ -302,6 +304,7 @@
       receivePatronage: $post.receivePatronage,
       receiveTagContribution: $post.receiveTagContribution,
       password: $post.hasPassword ? '' : undefined,
+      protectContent: $post.protectContent,
       visibility: $post.visibility,
     });
   } else {
@@ -312,6 +315,7 @@
       receiveFeedback: true,
       receivePatronage: true,
       receiveTagContribution: true,
+      protectContent: true,
       visibility: 'PUBLIC',
     });
   }
@@ -830,6 +834,13 @@
           <div>
             <p class="body-16-b">게시물 창작자 후원</p>
             <p class="body-15-m text-secondary">다른 독자들이 게시물에 자유롭게 후원을 할 수 있도록 해요</p>
+          </div>
+        </Switch>
+
+        <Switch name="protectContent" class="flex items-center justify-between" checked={$data.protectContent ?? true}>
+          <div>
+            <p class="body-16-b">게시물 내용 보호</p>
+            <p class="body-15-m text-secondary">게시물의 내용을 우클릭하거나 복사할 수 없도록 해요</p>
           </div>
         </Switch>
 

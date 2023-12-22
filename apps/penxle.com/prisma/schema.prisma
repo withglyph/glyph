@@ -143,6 +143,7 @@ model Post {
   receiveFeedback        Boolean                 @map("receive_feedback")
   receivePatronage       Boolean                 @map("receive_patronage")
   receiveTagContribution Boolean                 @map("receive_tag_contribution")
+  protectContent         Boolean                 @default(true) @map("protect_content")
   password               String?
   createdAt              DateTime                @default(now()) @map("created_at") @db.Timestamptz
   publishedAt            DateTime?               @map("published_at") @db.Timestamptz
