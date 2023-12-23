@@ -3,7 +3,7 @@ import { dev } from '$app/environment';
 import { env } from '$env/dynamic/private';
 
 export const elasticSearch = new Client({
-  cloud: { id: env.PRIVATE_ELASTICSEARCH_CLOUD_ID },
+  cloud: { id: env.PRIVATE_ELASTICSEARCH_CLOUD_ID || ':' },
   auth: { apiKey: env.PRIVATE_ELASTICSEARCH_API_KEY },
 });
 
