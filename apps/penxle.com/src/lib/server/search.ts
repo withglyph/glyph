@@ -1,9 +1,10 @@
-import { Client } from '@opensearch-project/opensearch';
+import { Client } from '@elastic/elasticsearch';
 import { dev } from '$app/environment';
 import { env } from '$env/dynamic/private';
 
-export const openSearch = new Client({
-  node: env.PRIVATE_OPENSEARCH_URL || 'http://localhost:9200',
+export const elasticSearch = new Client({
+  cloud: { id: env.PRIVATE_ELASTICSEARCH_CLOUD_ID },
+  auth: { apiKey: env.PRIVATE_ELASTICSEARCH_API_KEY },
 });
 
 export const indexName = (name: string) => {

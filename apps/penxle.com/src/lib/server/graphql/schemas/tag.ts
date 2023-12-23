@@ -1,19 +1,7 @@
-import * as R from 'radash';
-import { indexName, openSearch } from '$lib/server/search';
+import { elasticSearch, indexName } from '$lib/server/search';
+import { makeQueryContainers, searchResultToPrismaData } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { defineSchema } from '../builder';
-
-type SearchHits = {
-  _id: string;
-  _score: number;
-  _source: {
-    id: string;
-    title: string;
-    subtitle?: string;
-    spaceId: string;
-    tags: string[];
-  };
-};
 
 export const tagSchema = defineSchema((builder) => {
   /**
@@ -50,53 +38,50 @@ export const tagSchema = defineSchema((builder) => {
               : [],
           ]);
 
-          const searchResult = await openSearch.search({
+          const searchResult = await elasticSearch.search({
             index: indexName('posts'),
-            body: {
-              query: {
-                bool: {
-                  filter: {
-                    bool: {
-                      must: [{ term: { 'tags.id': tag.id } }],
-                      must_not: R.sift([
-                        mutedTags.length > 0
-                          ? {
-                              terms: { ['tags.id']: mutedTags.map(({ tagId }) => tagId) },
-                            }
-                          : undefined,
-                        mutedSpaces.length > 0
-                          ? {
-                              terms: { spaceId: mutedSpaces.map(({ spaceId }) => spaceId) },
-                            }
-                          : undefined,
-                      ]),
-                    },
+            query: {
+              bool: {
+                filter: {
+                  bool: {
+                    must: [{ term: { 'tags.id': tag.id } }],
+                    must_not: makeQueryContainers([
+                      {
+                        query: {
+                          terms: { ['tags.id']: mutedTags.map(({ tagId }) => tagId) },
+                        },
+                        condition: mutedTags.length > 0,
+                      },
+                      {
+                        query: {
+                          terms: { spaceId: mutedSpaces.map(({ spaceId }) => spaceId) },
+                        },
+                        condition: mutedSpaces.length > 0,
+                      },
+                    ]),
                   },
                 },
               },
-
-              sort: [{ publishedAt: 'desc' }],
             },
+
+            sort: [{ publishedAt: 'desc' }],
           });
 
-          const hits: SearchHits[] = searchResult.body.hits.hits;
-          const resultIds = hits.map((hit) => hit._id);
-          const posts = R.objectify(
-            await db.post.findMany({
+          return searchResultToPrismaData({
+            searchResult,
+            db,
+            tableName: 'post',
+            queryArgs: {
               ...query,
               where: {
-                id: { in: resultIds },
                 state: 'PUBLISHED',
                 space: {
                   state: 'ACTIVE',
                   visibility: 'PUBLIC',
                 },
               },
-            }),
-            (post) => post.id,
-          );
-
-          return R.sift(hits.map((hit) => posts[hit._id]));
+            },
+          });
         },
       }),
 

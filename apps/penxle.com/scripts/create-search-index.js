@@ -1,9 +1,10 @@
 import { argv } from 'node:process';
 import ReadLine from 'node:readline';
-import { Client } from '@opensearch-project/opensearch';
+import { Client } from '@elastic/elasticsearch';
 
-export const openSearch = new Client({
-  node: process.env.PRIVATE_OPENSEARCH_URL,
+export const elasticSearch = new Client({
+  cloud: { id: process.env.PRIVATE_ELASTICSEARCH_CLOUD_ID },
+  auth: { apiKey: process.env.PRIVATE_ELASTICSEARCH_API_KEY },
 });
 
 const version = Date.now();
@@ -29,39 +30,40 @@ const createIndex = async (name, indexBody) => {
 
   await wait(`Create/Update index ${name} (y/n)? `);
 
-  await openSearch.indices.create({
+  await elasticSearch.indices.create({
     index: `${name}-${version}`,
-    body: indexBody,
+    ...indexBody,
   });
 
   try {
-    const getAliasRequest = await openSearch.indices.getAlias({ name });
-    const aliases = Object.keys(getAliasRequest.body);
+    const getAliasRequest = await elasticSearch.indices.getAlias({ name });
+    const originalIndices = Object.keys(getAliasRequest);
 
     await Promise.all(
-      aliases.map(async (alias) => {
-        await openSearch.reindex({
-          body: {
-            source: { index: alias },
-            dest: { index: `${name}-${version}` },
-          },
+      originalIndices.map(async (originalIndex) => {
+        await elasticSearch.reindex({
+          source: { index: originalIndex },
+          dest: { index: `${name}-${version}` },
         });
+
+        await elasticSearch.indices.delete({ index: originalIndex });
       }),
     );
-  } catch {
-    /* empty */
+  } catch (err) {
+    console.warn(err);
   }
 
-  await openSearch.indices.putAlias({
+  await elasticSearch.indices.putAlias({
     index: `${name}-${version}`,
     name,
+    is_write_index: true,
   });
 };
 
 await createIndex('posts', {
   settings: {
     index: {
-      number_of_shards: 12,
+      number_of_shards: 6,
       number_of_replicas: 0,
     },
   },
@@ -86,7 +88,7 @@ await createIndex('posts', {
 await createIndex('spaces', {
   settings: {
     index: {
-      number_of_shards: 12,
+      number_of_shards: 6,
       number_of_replicas: 0,
     },
   },
@@ -100,7 +102,7 @@ await createIndex('spaces', {
 await createIndex('tags', {
   settings: {
     index: {
-      number_of_shards: 12,
+      number_of_shards: 6,
       number_of_replicas: 0,
       analysis: {
         analyzer: {

@@ -16,14 +16,18 @@ import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { redis } from '$lib/server/cache';
 import { s3 } from '$lib/server/external-api/aws';
+import { elasticSearch, indexName } from '$lib/server/search';
 import {
   createRevenue,
   deductUserPoint,
   directUploadImage,
+  getMutedSpaceIds,
+  getMutedTagIds,
   getUserPoint,
   indexPost,
-  indexTags,
   isAdulthood,
+  makeQueryContainers,
+  searchResultToPrismaData,
 } from '$lib/server/utils';
 import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
 import { base36To10, createId, createTiptapDocument, createTiptapNode, validateTiptapDocument } from '$lib/utils';
@@ -356,6 +360,71 @@ export const postSchema = defineSchema((builder) => {
               visibility: meAsMember ? undefined : 'PUBLIC',
             },
             orderBy: { publishedAt: 'asc' },
+          });
+        },
+      }),
+
+      recommendedPosts: t.prismaField({
+        type: ['Post'],
+        select: { publishedRevision: true },
+        resolve: async (query, post, _, { db, ...context }) => {
+          if (!post.publishedRevision) {
+            return [];
+          }
+
+          const [postTagIds, mutedTagIds, mutedSpaceIds] = await Promise.all([
+            db.postRevisionTag
+              .findMany({
+                where: { revisionId: post.publishedRevision.id },
+              })
+              .then((tags) => tags.map(({ tagId }) => tagId)),
+            getMutedTagIds({ db, userId: context.session?.userId }),
+            getMutedSpaceIds({ db, userId: context.session?.userId }),
+          ]);
+
+          const searchResult = await elasticSearch.search({
+            index: indexName('posts'),
+            query: {
+              bool: {
+                should: [{ terms: { 'tags.id': postTagIds } }, { terms: { spaceId: post.spaceId } }],
+                filter: {
+                  bool: {
+                    must_not: makeQueryContainers([
+                      {
+                        query: {
+                          terms: { ['tags.id']: mutedTagIds },
+                        },
+                        condition: mutedTagIds.length > 0,
+                      },
+                      {
+                        query: {
+                          terms: { spaceId: mutedSpaceIds },
+                        },
+                        condition: mutedSpaceIds.length > 0,
+                      },
+                    ]),
+                  },
+                },
+              },
+            },
+
+            size: 10,
+          });
+
+          return searchResultToPrismaData({
+            searchResult,
+            db,
+            tableName: 'post',
+            queryArgs: {
+              ...query,
+              where: {
+                state: 'PUBLISHED',
+                space: {
+                  state: 'ACTIVE',
+                  visibility: 'PUBLIC',
+                },
+              },
+            },
           });
         },
       }),
@@ -1074,7 +1143,13 @@ export const postSchema = defineSchema((builder) => {
         });
 
         const post = await db.post.update({
-          ...query,
+          include: {
+            publishedRevision: {
+              include: {
+                tags: { include: { tag: true } },
+              },
+            },
+          },
           where: { id: revision.post.id },
           data: {
             state: 'PUBLISHED',
@@ -1091,9 +1166,11 @@ export const postSchema = defineSchema((builder) => {
           },
         });
 
-        await indexPost({ db, postId: revision.post.id });
-        await indexTags({ tags: revision.tags.map(({ tag }) => tag) });
-        return post;
+        await indexPost(post);
+        return db.post.findUniqueOrThrow({
+          ...query,
+          where: { id: post.id },
+        });
       },
     }),
 
@@ -1102,7 +1179,13 @@ export const postSchema = defineSchema((builder) => {
       args: { input: t.arg({ type: UpdatePostOptionsInput }) },
       resolve: async (query, _, { input }, { db, ...context }) => {
         const post = await db.post.update({
-          select: { id: true, password: true },
+          include: {
+            publishedRevision: {
+              include: {
+                tags: { include: { tag: true } },
+              },
+            },
+          },
           where: {
             id: input.postId,
             OR: [
@@ -1120,9 +1203,7 @@ export const postSchema = defineSchema((builder) => {
           },
         });
 
-        if (input.visibility) {
-          await indexPost({ db, postId: post.id });
-        }
+        await indexPost(post);
 
         return db.post.findUniqueOrThrow({
           ...query,

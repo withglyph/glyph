@@ -339,6 +339,7 @@ type Post {
   receiveFeedback: Boolean!
   receivePatronage: Boolean!
   receiveTagContribution: Boolean!
+  recommendedPosts: [Post!]!
   revisions: [PostRevision!]!
   shortlink: String!
   space: Space!

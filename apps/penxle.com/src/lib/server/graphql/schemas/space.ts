@@ -448,7 +448,6 @@ export const spaceSchema = defineSchema((builder) => {
 
         const spaceId = createId();
         const space = await db.space.create({
-          ...query,
           data: {
             id: spaceId,
             name: input.name,
@@ -468,8 +467,11 @@ export const spaceSchema = defineSchema((builder) => {
           },
         });
 
-        await indexSpace({ db, spaceId });
-        return space;
+        await indexSpace(space);
+        return db.space.findUniqueOrThrow({
+          ...query,
+          where: { id: spaceId },
+        });
       },
     }),
 
@@ -478,7 +480,6 @@ export const spaceSchema = defineSchema((builder) => {
       args: { input: t.arg({ type: DeleteSpaceInput }) },
       resolve: async (query, _, { input }, { db, ...context }) => {
         const space = await db.space.update({
-          ...query,
           where: {
             id: input.spaceId,
             state: 'ACTIVE',
@@ -509,8 +510,11 @@ export const spaceSchema = defineSchema((builder) => {
           data: { kind: 'ARCHIVED' },
         });
 
-        await indexSpace({ db, spaceId: input.spaceId });
-        return space;
+        await indexSpace(space);
+        return db.space.findUniqueOrThrow({
+          ...query,
+          where: { id: space.id },
+        });
       },
     }),
 
@@ -622,7 +626,6 @@ export const spaceSchema = defineSchema((builder) => {
         }
 
         const space = await db.space.update({
-          ...query,
           where: {
             id: input.spaceId,
             state: 'ACTIVE',
@@ -639,8 +642,11 @@ export const spaceSchema = defineSchema((builder) => {
           },
         });
 
-        await indexSpace({ db, spaceId: input.spaceId });
-        return space;
+        await indexSpace(space);
+        return db.space.findUniqueOrThrow({
+          ...query,
+          where: { id: space.id },
+        });
       },
     }),
 

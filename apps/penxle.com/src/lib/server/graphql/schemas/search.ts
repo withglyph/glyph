@@ -1,21 +1,10 @@
 import { ContentFilterCategory } from '@prisma/client';
-import * as R from 'radash';
 import { match } from 'ts-pattern';
-import { indexName, openSearch } from '$lib/server/search';
+import { elasticSearch, indexName } from '$lib/server/search';
+import { makeQueryContainers, searchResultToPrismaData } from '$lib/server/utils';
 import { disassembleHangulString } from '$lib/utils';
 import { defineSchema } from '../builder';
-
-type SearchHits = {
-  _id: string;
-  _score: number;
-  _source: {
-    id: string;
-    title: string;
-    subtitle?: string;
-    spaceId: string;
-    tags: string[];
-  };
-};
+import type { SearchResponse } from '$lib/server/utils';
 
 export const searchSchema = defineSchema((builder) => {
   /**
@@ -27,33 +16,40 @@ export const searchSchema = defineSchema((builder) => {
   });
 
   class SearchResult {
-    count!: number;
-    postIds!: string[];
+    result!: SearchResponse;
   }
 
   builder.objectType(SearchResult, {
     name: 'SearchResult',
     fields: (t) => ({
-      count: t.exposeInt('count'),
+      count: t.field({
+        type: 'Int',
+        resolve: ({ result }) => {
+          const total = result.hits.total;
+          if (typeof total === 'number') return total;
+          return total?.value ?? 0;
+        },
+      }),
+
       posts: t.prismaField({
         type: ['Post'],
-        resolve: async (query, { postIds }, __, { db }) => {
-          const posts = R.objectify(
-            await db.post.findMany({
+        resolve: async (query, { result }, __, { db }) => {
+          return searchResultToPrismaData({
+            searchResult: result,
+            db,
+            tableName: 'post',
+            queryArgs: {
               ...query,
               where: {
-                id: { in: postIds },
                 state: 'PUBLISHED',
+                visibility: 'PUBLIC',
                 space: {
                   state: 'ACTIVE',
                   visibility: 'PUBLIC',
                 },
               },
-            }),
-            (post) => post.id,
-          );
-
-          return R.sift(postIds.map((postId) => posts[postId]));
+            },
+          });
         },
       }),
     }),
@@ -88,73 +84,77 @@ export const searchSchema = defineSchema((builder) => {
             })
           : [];
 
-        const searchResult = await openSearch.search({
+        const searchResult = await elasticSearch.search({
           index: indexName('posts'),
-          body: {
-            query: {
-              bool: {
-                should: [{ term: { 'tags.nameRaw': args.query } }],
+          query: {
+            bool: {
+              should: [{ term: { 'tags.nameRaw': args.query } }],
 
-                must: [
-                  {
-                    multi_match: {
-                      query: args.query,
-                      fields: ['title', 'subtitle', 'tags.name'],
-                      type: 'phrase_prefix',
+              must: [
+                {
+                  multi_match: {
+                    query: args.query,
+                    fields: ['title', 'subtitle', 'tags.name'],
+                    type: 'phrase_prefix',
+                  },
+                },
+              ],
+
+              filter: {
+                bool: {
+                  must: makeQueryContainers([
+                    { query: { term: { contentFilters: 'ADULT' } }, condition: args.adultFilter === true },
+                    ...args.includeTags.map((tag) => ({
+                      query: { term: { ['tags.nameRaw']: tag } },
+                    })),
+                  ]),
+
+                  must_not: makeQueryContainers([
+                    {
+                      query: {
+                        terms: { ['tags.id']: mutedTags.map(({ tagId }) => tagId) },
+                      },
+                      condition: mutedTags.length > 0,
                     },
-                  },
-                ],
-
-                filter: {
-                  bool: {
-                    must: R.sift([
-                      args.adultFilter === true ? { term: { contentFilters: 'ADULT' } } : undefined,
-                      ...args.includeTags.map((tag) => ({
-                        term: { ['tags.nameRaw']: tag },
-                      })),
-                    ]),
-                    must_not: R.sift([
-                      mutedTags.length > 0
-                        ? {
-                            terms: { ['tags.id']: mutedTags.map(({ tagId }) => tagId) },
-                          }
-                        : undefined,
-                      mutedSpaces.length > 0
-                        ? {
-                            terms: { spaceId: mutedSpaces.map(({ spaceId }) => spaceId) },
-                          }
-                        : undefined,
-                      args.excludeTags.length > 0
-                        ? {
-                            terms: { ['tags.nameRaw']: args.excludeTags },
-                          }
-                        : undefined,
-                      args.adultFilter === false ? { term: { contentFilters: 'ADULT' } } : undefined,
-                      args.excludeContentFilters?.length ?? 0 > 0
-                        ? { terms: { contentFilters: args.excludeContentFilters } }
-                        : undefined,
-                    ]),
-                  },
+                    {
+                      query: {
+                        terms: { spaceId: mutedSpaces.map(({ spaceId }) => spaceId) },
+                      },
+                      condition: mutedSpaces.length > 0,
+                    },
+                    {
+                      query: {
+                        terms: { ['tags.nameRaw']: args.excludeTags },
+                      },
+                      condition: args.excludeTags.length > 0,
+                    },
+                    {
+                      query: {
+                        term: { contentFilters: 'ADULT' },
+                      },
+                      condition: args.adultFilter === false,
+                    },
+                    {
+                      query: {
+                        terms: { contentFilters: args.excludeContentFilters ?? [] },
+                      },
+                      condition: (args.excludeContentFilters?.length ?? 0) > 0,
+                    },
+                  ]),
                 },
               },
             },
-
-            size: 10,
-            from: (args.page - 1) * 10,
-            sort: match(args.orderBy)
-              .with('ACCURACY', () => ['_score'])
-              .with('LATEST', () => [{ publishedAt: 'desc' }])
-              .otherwise(() => []),
           },
+
+          size: 10,
+          from: (args.page - 1) * 10,
+          sort: match(args.orderBy)
+            .with('ACCURACY', () => ['_score'])
+            .with('LATEST', () => [{ publishedAt: 'desc' as const }])
+            .otherwise(() => undefined),
         });
 
-        const hits: SearchHits[] = searchResult.body.hits.hits;
-        const resultIds = hits.map((hit) => hit._id);
-
-        return {
-          count: searchResult.body.hits.total.value,
-          postIds: resultIds,
-        };
+        return { result: searchResult };
       },
     }),
 
@@ -170,49 +170,47 @@ export const searchSchema = defineSchema((builder) => {
             })
           : [];
 
-        const searchResult = await openSearch.search({
+        const searchResult = await elasticSearch.search({
           index: indexName('spaces'),
-          body: {
-            query: {
-              bool: {
-                should: [{ match_phrase: { name: args.query } }],
-                must: [
-                  {
-                    multi_match: {
-                      query: args.query,
-                      fields: ['name'],
+          query: {
+            bool: {
+              should: [{ match_phrase: { name: args.query } }],
+              must: [
+                {
+                  multi_match: {
+                    query: args.query,
+                    fields: ['name'],
+                  },
+                },
+              ],
+              filter: {
+                bool: {
+                  must_not: makeQueryContainers([
+                    {
+                      query: {
+                        ids: { values: mutedSpaces.map(({ spaceId }) => spaceId) },
+                      },
+                      condition: mutedSpaces.length > 0,
                     },
-                  },
-                ],
-                filter: {
-                  bool: {
-                    must_not: R.sift([
-                      mutedSpaces.length > 0
-                        ? {
-                            ids: { values: mutedSpaces.map(({ spaceId }) => spaceId) },
-                          }
-                        : undefined,
-                    ]),
-                  },
+                  ]),
                 },
               },
             },
           },
         });
 
-        const hits: SearchHits[] = searchResult.body.hits.hits;
-        const resultIds = hits.map((hit) => hit._id);
-        const spaces = R.objectify(
-          await db.space.findMany({
+        return searchResultToPrismaData({
+          searchResult,
+          db,
+          tableName: 'space',
+          queryArgs: {
             ...query,
             where: {
-              id: { in: resultIds },
+              state: 'ACTIVE',
+              visibility: 'PUBLIC',
             },
-          }),
-          (space) => space.id,
-        );
-
-        return R.sift(hits.map((hit) => spaces[hit._id]));
+          },
+        });
       },
     }),
 
@@ -226,24 +224,22 @@ export const searchSchema = defineSchema((builder) => {
             })
           : [];
 
-        const searchResult = await openSearch.search({
+        const searchResult = await elasticSearch.search({
           index: indexName('tags'),
-          body: {
-            query: {
-              bool: {
-                should: [
-                  { match_phrase: { 'name.raw': args.query } },
-                  {
-                    match_phrase: /^[ㄱ-ㅎ]+$/.test(args.query)
-                      ? { 'name.initial': args.query }
-                      : { 'name.disassembled': disassembleHangulString(args.query) },
-                  },
-                ],
-                filter: {
-                  bool: {
-                    must_not: {
-                      ids: { values: mutedTags.map(({ tagId }) => tagId) },
-                    },
+          query: {
+            bool: {
+              should: [
+                { match_phrase: { 'name.raw': args.query } },
+                {
+                  match_phrase: /^[ㄱ-ㅎ]+$/.test(args.query)
+                    ? { 'name.initial': args.query }
+                    : { 'name.disassembled': disassembleHangulString(args.query) },
+                },
+              ],
+              filter: {
+                bool: {
+                  must_not: {
+                    ids: { values: mutedTags.map(({ tagId }) => tagId) },
                   },
                 },
               },
@@ -251,19 +247,12 @@ export const searchSchema = defineSchema((builder) => {
           },
         });
 
-        const hits: SearchHits[] = searchResult.body.hits.hits;
-        const resultIds = hits.map((hit) => hit._id);
-        const tags = R.objectify(
-          await db.tag.findMany({
-            ...query,
-            where: {
-              id: { in: resultIds },
-            },
-          }),
-          (tag) => tag.id,
-        );
-
-        return R.sift(hits.map((hit) => tags[hit._id]));
+        return searchResultToPrismaData({
+          searchResult,
+          db,
+          tableName: 'tag',
+          queryArgs: query,
+        });
       },
     }),
   }));
