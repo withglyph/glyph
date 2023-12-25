@@ -30,7 +30,7 @@ nolt.get('/nolt', async (_, { db, ...context }) => {
   return status(303, {
     headers: {
       Location: qs.stringifyUrl({
-        url: `https://penxle.nolt.io/sso/${ssoToken}`,
+        url: `https://feedback.penxle.com/sso/${ssoToken}`,
         query: { returnUrl: context.event.url.searchParams.get('returnUrl') },
       }),
     },
