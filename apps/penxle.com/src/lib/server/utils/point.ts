@@ -9,7 +9,11 @@ type GetUserPointParams = {
 export const getUserPoint = async ({ db, userId }: GetUserPointParams) => {
   const agg = await db.pointBalance.aggregate({
     _sum: { leftover: true },
-    where: { userId },
+    where: {
+      userId,
+      leftover: { gt: 0 },
+      expiresAt: { gt: new Date() },
+    },
   });
 
   return agg._sum.leftover ?? 0;
@@ -32,13 +36,14 @@ export const deductUserPoint = async ({ db, userId, amount, targetId, cause }: D
   const pointBalances = await db.pointBalance.findMany({
     where: {
       userId,
+      leftover: { gt: 0 },
       expiresAt: { gt: new Date() },
     },
     orderBy: [{ expiresAt: 'asc' }, { kind: 'asc' }],
   });
 
   let targetAmount = amount;
-  const pointQueries: Promise<unknown>[] = [];
+  const changes: { id: string; leftover: number }[] = [];
 
   for (const pointBalance of pointBalances) {
     if (targetAmount === 0) {
@@ -48,23 +53,22 @@ export const deductUserPoint = async ({ db, userId, amount, targetId, cause }: D
     const leftover = Math.max(pointBalance.leftover - targetAmount, 0);
     targetAmount -= pointBalance.leftover - leftover;
 
-    pointQueries.push(
-      leftover === 0
-        ? db.pointBalance.delete({
-            where: { id: pointBalance.id },
-          })
-        : db.pointBalance.update({
-            where: { id: pointBalance.id },
-            data: { leftover },
-          }),
-    );
+    changes.push({
+      id: pointBalance.id,
+      leftover,
+    });
   }
 
   if (targetAmount !== 0) {
     throw new Error('insufficient point');
   }
 
-  await Promise.all(pointQueries);
+  for (const { id, leftover } of changes) {
+    await db.pointBalance.update({
+      where: { id },
+      data: { leftover },
+    });
+  }
 
   await db.pointTransaction.create({
     data: {
