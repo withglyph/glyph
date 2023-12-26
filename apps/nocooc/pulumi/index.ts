@@ -1,3 +1,4 @@
+import * as penxle from '@penxle/pulumi/components';
 import * as aws from '@pulumi/aws';
 import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
@@ -17,6 +18,82 @@ const eip2 = new aws.ec2.Eip('public-nlb@az2', {
   tags: { Name: 'public-nlb@az2' },
 });
 
+const sqs = new aws.sqs.Queue('nocooc', {
+  name: 'nocooc',
+
+  visibilityTimeoutSeconds: 600,
+  messageRetentionSeconds: 14 * 24 * 60 * 60, // 14 days
+});
+
+const role = new aws.iam.Role('nocooc@lambda', {
+  name: 'nocooc@lambda',
+  assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
+    Service: 'lambda.amazonaws.com',
+  }),
+  managedPolicyArns: [aws.iam.ManagedPolicy.AWSLambdaBasicExecutionRole],
+});
+
+new aws.iam.RolePolicy('nocooc@lambda', {
+  name: 'nocooc@lambda',
+  role: role.name,
+
+  policy: {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Action: ['sqs:ReceiveMessage', 'sqs:DeleteMessage', 'sqs:GetQueueAttributes'],
+        Resource: [sqs.arn],
+      },
+    ],
+  },
+});
+
+const lambda = new aws.lambda.Function('nocooc', {
+  name: 'nocooc',
+  role: role.arn,
+
+  packageType: 'Image',
+  architectures: ['x86_64'],
+
+  memorySize: 256,
+  timeout: 60,
+
+  imageUri: pulumi.interpolate`${image.registryId}.dkr.ecr.ap-northeast-2.amazonaws.com/${image.repositoryName}@${image.imageDigest}`,
+  sourceCodeHash: image.imageDigest.apply((v) => v.split(':')[1]),
+
+  environment: {
+    variables: {
+      MODE: 'consumer',
+    },
+  },
+});
+
+new aws.lambda.EventSourceMapping('nocooc', {
+  functionName: lambda.name,
+  eventSourceArn: sqs.arn,
+  batchSize: 1,
+});
+
+const serviceAccount = new penxle.IAMServiceAccount('nocooc', {
+  metadata: {
+    name: 'nocooc',
+    namespace: 'prod',
+  },
+  spec: {
+    policy: {
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Effect: 'Allow',
+          Action: ['sqs:SendMessage'],
+          Resource: [sqs.arn],
+        },
+      ],
+    },
+  },
+});
+
 new k8s.apps.v1.Deployment('nocooc', {
   metadata: {
     name: 'nocooc',
@@ -28,6 +105,7 @@ new k8s.apps.v1.Deployment('nocooc', {
     template: {
       metadata: { labels },
       spec: {
+        serviceAccountName: serviceAccount.metadata.name,
         containers: [
           {
             name: 'app',
@@ -36,6 +114,10 @@ new k8s.apps.v1.Deployment('nocooc', {
               requests: { cpu: '100m' },
               limits: { memory: '100Mi' },
             },
+            env: [
+              { name: 'SQS_URL', value: sqs.url },
+              { name: 'MODE', value: 'relay' },
+            ],
             livenessProbe: {
               tcpSocket: { port: 2266 },
               initialDelaySeconds: 5,
