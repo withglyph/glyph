@@ -46,7 +46,7 @@
             }
           }}
         >
-          <div class={clsx('inline-flex items-center body-14-m', color.value ?? 'text-primary')}>
+          <div class={clsx('inline-flex items-center body-14-m', color.display ?? color.value ?? 'text-primary')}>
             <i class="bg-[currentColor] rounded-full square-4.5 m-r-0.5rem" />
             {color.label}
           </div>

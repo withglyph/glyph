@@ -14,6 +14,7 @@
     { label: '갈색', value: 'text-orange-70' },
     { label: '초록색', value: 'text-green-60' },
     { label: '보라색', value: 'text-purple-60' },
+    { label: '흰색', value: 'text-white', display: 'text-gray-20' },
   ];
 
   export const heading = Heading.name as 'heading';

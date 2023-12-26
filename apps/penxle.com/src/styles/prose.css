@@ -159,6 +159,10 @@
     --uno: text-purple-60;
   }
 
+  & [data-text-color='text-white'] {
+    --uno: text-white;
+  }
+
   /*
    * extensions
   */
