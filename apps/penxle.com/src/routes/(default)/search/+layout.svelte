@@ -407,7 +407,11 @@
 </div>
 
 <Modal bind:open={filterOpen}>
-  <div class="mt-8">
+  <svelte:fragment slot="title">검색 필터</svelte:fragment>
+
+  <hr class="w-full border-color-alphagray-10 mb-2" />
+
+  <div class="overflow-y-auto">
     <button
       class="w-full flex items-center justify-between py-3 gap-2.5"
       type="button"
@@ -433,7 +437,6 @@
             }
 
             includeValue = '';
-            addSearchOption();
           }}
         >
           <input
@@ -454,7 +457,6 @@
               size="sm"
               on:change={() => {
                 includeTags = includeTags.filter((t) => t !== tag);
-                addSearchOption();
               }}
             >
               #{tag}
@@ -476,7 +478,6 @@
             }
 
             excludeValue = '';
-            addSearchOption();
           }}
         >
           <input
@@ -497,7 +498,6 @@
               size="sm"
               on:change={() => {
                 excludeTags = excludeTags.filter((t) => t !== tag);
-                addSearchOption();
               }}
             >
               #{tag}
@@ -525,7 +525,6 @@
           checked={adultFilter === null}
           on:change={() => {
             adultFilter = null;
-            addSearchOption();
           }}
         >
           성인물 포함
@@ -535,7 +534,6 @@
           checked={adultFilter === false}
           on:change={() => {
             adultFilter = false;
-            addSearchOption();
           }}
         >
           성인물 제외
@@ -545,7 +543,6 @@
           checked={adultFilter === true}
           on:change={() => {
             adultFilter = true;
-            addSearchOption();
           }}
         >
           성인물만
@@ -573,7 +570,6 @@
             excludeContentFilters = excludeContentFilters?.includes('GROSSNESS')
               ? excludeContentFilters.filter((f) => f !== 'GROSSNESS')
               : [...excludeContentFilters, 'GROSSNESS'];
-            addSearchOption();
           }}
         >
           벌레/징그러움
@@ -585,7 +581,6 @@
             excludeContentFilters = excludeContentFilters?.includes('VIOLENCE')
               ? excludeContentFilters.filter((f) => f !== 'VIOLENCE')
               : [...excludeContentFilters, 'VIOLENCE'];
-            addSearchOption();
           }}
         >
           폭력성
@@ -597,7 +592,6 @@
             excludeContentFilters = excludeContentFilters?.includes('CRIME')
               ? excludeContentFilters.filter((f) => f !== 'CRIME')
               : [...excludeContentFilters, 'CRIME'];
-            addSearchOption();
           }}
         >
           약물/범죄
@@ -609,7 +603,6 @@
             excludeContentFilters = excludeContentFilters?.includes('CRUELTY')
               ? excludeContentFilters.filter((f) => f !== 'CRUELTY')
               : [...excludeContentFilters, 'CRUELTY'];
-            addSearchOption();
           }}
         >
           잔인성
@@ -621,7 +614,6 @@
             excludeContentFilters = excludeContentFilters?.includes('PHOBIA')
               ? excludeContentFilters.filter((f) => f !== 'PHOBIA')
               : [...excludeContentFilters, 'PHOBIA'];
-            addSearchOption();
           }}
         >
           정신질환/공포증
@@ -633,7 +625,6 @@
             excludeContentFilters = excludeContentFilters?.includes('GAMBLING')
               ? excludeContentFilters.filter((f) => f !== 'GAMBLING')
               : [...excludeContentFilters, 'GAMBLING'];
-            addSearchOption();
           }}
         >
           사행성
@@ -645,7 +636,6 @@
             excludeContentFilters = excludeContentFilters?.includes('TRAUMA')
               ? excludeContentFilters.filter((f) => f !== 'TRAUMA')
               : [...excludeContentFilters, 'TRAUMA'];
-            addSearchOption();
           }}
         >
           PTSD/트라우마
@@ -657,7 +647,6 @@
             excludeContentFilters = excludeContentFilters?.includes('HORROR')
               ? excludeContentFilters.filter((f) => f !== 'HORROR')
               : [...excludeContentFilters, 'HORROR'];
-            addSearchOption();
           }}
         >
           공포성
@@ -669,7 +658,6 @@
             excludeContentFilters = excludeContentFilters?.includes('INSULT')
               ? excludeContentFilters.filter((f) => f !== 'INSULT')
               : [...excludeContentFilters, 'INSULT'];
-            addSearchOption();
           }}
         >
           부적절한 언어
@@ -681,12 +669,41 @@
             excludeContentFilters = excludeContentFilters?.includes('OTHER')
               ? excludeContentFilters.filter((f) => f !== 'OTHER')
               : [...excludeContentFilters, 'OTHER'];
-            addSearchOption();
           }}
         >
           기타
         </Checkbox>
       </div>
     {/if}
+
+    <div class="flex gap-3 mt-4">
+      <Button
+        class="grow"
+        color="tertiary"
+        size="xl"
+        variant="outlined"
+        on:click={() => {
+          includeTags = [];
+          excludeTags = [];
+          includeValue = '';
+          excludeValue = '';
+          adultFilter = null;
+          excludeContentFilters = [];
+          orderBy = 'LATEST';
+        }}
+      >
+        초기화
+      </Button>
+      <Button
+        class="grow-3"
+        size="xl"
+        on:click={() => {
+          filterOpen = false;
+          addSearchOption();
+        }}
+      >
+        결과보기
+      </Button>
+    </div>
   </div>
 </Modal>
