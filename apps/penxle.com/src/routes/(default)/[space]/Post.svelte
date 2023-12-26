@@ -760,6 +760,7 @@
                 <i class="i-lc-chevron-down square-5" />
               </Button> -->
           <Button
+            class="shrink-0"
             color="tertiary"
             size="md"
             variant="outlined"
@@ -773,6 +774,7 @@
           </Button>
         {:else}
           <Button
+            class="shrink-0"
             size="md"
             on:click={async () => {
               if (!$query.me) {
