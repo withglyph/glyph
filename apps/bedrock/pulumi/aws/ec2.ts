@@ -33,7 +33,6 @@ new aws.ec2.Instance(
 
     sourceDestCheck: false,
 
-    userDataReplaceOnChange: true,
     userData: pulumi.interpolate`
 #cloud-config
 runcmd:
@@ -71,7 +70,6 @@ const pgbouncer = new aws.ec2.Instance(
     sourceDestCheck: false,
 
     keyName: keypair.keyName,
-    userDataReplaceOnChange: true,
     userData: pulumi.interpolate`
 #cloud-config
 runcmd:

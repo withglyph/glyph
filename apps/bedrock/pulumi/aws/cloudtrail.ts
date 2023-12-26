@@ -22,6 +22,37 @@ const policy = new aws.s3.BucketPolicy('cloudtrail', {
   },
 });
 
+const accessAnalyzer = new aws.iam.Role('access-analyzer@aws', {
+  name: 'access-analyzer@aws',
+  assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
+    Service: 'access-analyzer.amazonaws.com',
+  }),
+});
+
+new aws.iam.RolePolicy('access-analyzer@aws', {
+  role: accessAnalyzer.name,
+  policy: {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Action: 'cloudtrail:GetTrail',
+        Resource: '*',
+      },
+      {
+        Effect: 'Allow',
+        Action: ['iam:GenerateServiceLastAccessedDetails', 'iam:GetServiceLastAccessedDetails'],
+        Resource: '*',
+      },
+      {
+        Effect: 'Allow',
+        Action: ['s3:GetObject', 's3:ListBucket'],
+        Resource: [bucket.arn, pulumi.interpolate`${bucket.arn}/*`],
+      },
+    ],
+  },
+});
+
 new aws.cloudtrail.Trail(
   'management-events',
   {
