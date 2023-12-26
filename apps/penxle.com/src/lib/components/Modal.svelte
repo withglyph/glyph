@@ -46,7 +46,10 @@
         in:fly={{ y: '10%', duration: 150 }}
         out:fade={{ duration: 150 }}
       >
-        <div class={clsx('content flex flex-col w-full overflow-y-scroll', size === 'sm' && 'max-w-92', _class)}>
+        <div
+          class={clsx('content flex flex-col w-full overflow-y-auto', size === 'sm' && 'max-w-92', _class)}
+          data-scroll-lock-ignore
+        >
           {#if $$slots.title}
             <div
               class={clsx(
