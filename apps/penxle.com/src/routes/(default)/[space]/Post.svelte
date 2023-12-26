@@ -605,7 +605,9 @@
         />
         <div class="w-full max-w-42">
           <Button class="w-full" size="lg" type="submit">포스트 보기</Button>
-          <Button class="w-full text-secondary mt-2.5" size="xs" variant="text">피드로 돌아가기</Button>
+          <Button class="w-full text-secondary mt-2.5" href="/" size="xs" type="link" variant="text">
+            피드로 돌아가기
+          </Button>
         </div>
       </form>
     {/if}
