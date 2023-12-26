@@ -9,6 +9,7 @@ export const _SearchPostPage_QueryVariables = (event: PageLoadEvent) => {
     event.url.searchParams.get('adult') === '' ? null : JSON.parse(event.url.searchParams.get('adult') as string);
   let excludeContentFilters: ContentFilterCategory[] = [];
   let orderBy: OrderByKind = 'ACCURACY';
+  let currentPage = 1;
 
   if (qs.parseUrl(event.url.search)?.query) {
     const parsedURL = qs.parseUrl(event.url.search).query;
@@ -38,6 +39,8 @@ export const _SearchPostPage_QueryVariables = (event: PageLoadEvent) => {
     }
 
     orderBy = parsedURL.order_by === 'LATEST' ? 'LATEST' : 'ACCURACY';
+
+    currentPage = parsedURL.page ? Number(parsedURL.page) : 1;
   }
 
   return {
@@ -47,5 +50,6 @@ export const _SearchPostPage_QueryVariables = (event: PageLoadEvent) => {
     adultFilter,
     excludeContentFilters,
     orderBy,
+    page: currentPage,
   };
 };

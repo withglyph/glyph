@@ -67,6 +67,7 @@
           adult: adultFilter,
           exclude_triggers: excludeContentFilters,
           order_by: orderBy,
+          page: 1,
         },
       },
       {
@@ -80,7 +81,7 @@
 <Helmet title="{$page.url.searchParams.get('q')} - 검색" />
 
 <div class="grid max-w-300 <sm:(w-full bg-cardprimary py-5) sm:(grid-cols-[2fr_7fr] mx-10 gap-11.5 my-9.5)">
-  <aside class="<sm:hidden">
+  <aside class="min-w-38 <sm:hidden">
     <div class="bg-cardprimary border border-secondary rounded-2xl px-3 py-4">
       <button
         class="w-full flex items-center justify-between py-3 gap-2.5"
@@ -367,7 +368,7 @@
     </div>
   </aside>
 
-  <div class="w-full sm:max-w-185">
+  <div class="sm:max-w-185">
     <div class="flex items-center justify-between w-full <sm:px-4">
       <h1 class="title-24-eb grow">'{$page.url.searchParams.get('q')}' 검색결과</h1>
 
