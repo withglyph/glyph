@@ -852,13 +852,15 @@
   <Toolbar {$query} {handleShare} />
 {/if}
 
-<ShareContent
-  spaceIcon={$query.post.space.icon}
-  spaceName={$query.post.space.name}
-  title={$postRevision.title}
-  bind:open={share.open}
-  bind:content={share.content}
-/>
+{#if share.open}
+  <ShareContent
+    spaceIcon={$query.post.space.icon}
+    spaceName={$query.post.space.name}
+    title={$postRevision.title}
+    bind:content={share.content}
+    bind:open={share.open}
+  />
+{/if}
 
 <Modal size="sm" bind:open={openDeletePostWarning}>
   <svelte:fragment slot="title">정말 포스트를 삭제하시겠어요?</svelte:fragment>

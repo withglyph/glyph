@@ -1,7 +1,7 @@
 <script lang="ts">
   import clsx from 'clsx';
   import * as htmlToImage from 'html-to-image';
-  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
   import Logo from '$assets/branding/logo-chalk-transparent.svg?component';
   import Wordmark from '$assets/branding/wordmark.svg?component';
   import { Button, Image, Modal } from '$lib/components';
@@ -65,9 +65,11 @@
 
   $: color = textColorFromBackgroundColor[backgroundColorClassname];
 
-  $: if (browser && open && content) {
+  onMount(() => {
+    // ref PR: #830
+    // Safari 환경에서 두번째 호출 이후에야 이미지 변환이 제대로 작동해서 마운트 직후 한번 실행하도록 했습니다.
     htmlToImage.toCanvas(captureEl);
-  }
+  });
 
   async function onSubmit(event: Event) {
     event.preventDefault();
