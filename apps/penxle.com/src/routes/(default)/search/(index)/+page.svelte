@@ -97,15 +97,19 @@
               <Image class="square-15 rounded-5 border border-secondary" $image={space.icon} />
             </a>
 
-            <a class="flex flex-col gap-1 grow" href={`/${space.slug}`}>
-              <p class="body-15-b">{space.name}</p>
-              <p class="body-14-m text-secondary">{space.description ?? ''}</p>
+            <a class="flex flex-col gap-1 grow truncate" href={`/${space.slug}`}>
+              <p class="body-15-b whitespace-pre-line line-clamp-1 break-all">
+                {space.name}
+              </p>
+              <p class="body-14-m text-secondary whitespace-pre-line line-clamp-2 break-all">
+                {space.description ?? ''}
+              </p>
             </a>
 
             {#if !space.meAsMember}
               {#if space.followed}
                 <button
-                  class="py-1.5 px-2 rounded-12 border border-secondary body-13-m flex items-center gap-1"
+                  class="py-1.5 px-2 rounded-12 border border-secondary body-13-m flex items-center gap-1 shrink-0"
                   type="button"
                   on:click={async () => {
                     await unfollowSpace({ spaceId: space.id });
@@ -118,7 +122,7 @@
                 </button>
               {:else}
                 <button
-                  class="py-1.5 px-2 rounded-12 bg-gray-90 text-gray-5 body-13-m flex items-center gap-1"
+                  class="py-1.5 px-2 rounded-12 bg-gray-90 text-gray-5 body-13-m flex items-center gap-1 shrink-0"
                   type="button"
                   on:click={async () => {
                     if (!$query.me) {
@@ -160,7 +164,7 @@
 </div>
 
 <div>
-  <a class="title-20-b px-4" href={`/search/post?q=${$page.url.searchParams.get('q')}`}>
+  <a class="title-20-b <sm:px-4" href={`/search/post?q=${$page.url.searchParams.get('q')}`}>
     포스트 <i class="i-lc-chevron-right square-6 text-secondary" />
   </a>
 
