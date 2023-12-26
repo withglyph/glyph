@@ -115,7 +115,7 @@
   🔍 약 {$query.searchPosts.count}개의 검색결과가 있어요!
 </div>
 
-<TabHead class="mt-9 mb-4 w-full <sm:(sticky top-61px z-1)" variant="secondary">
+<TabHead class="mt-9 w-full <sm:(sticky top-61px z-1) sm:mb-4" variant="secondary">
   <TabHeadItem id={0} href={`/search?q=${$page.url.searchParams.get('q')}`}>전체</TabHeadItem>
   <TabHeadItem id={1} class="text-black! border-black!" href={`/search/post?q=${$page.url.searchParams.get('q')}`}>
     포스트
@@ -129,9 +129,9 @@
 {:else}
   <div class="<sm:bg-primary">
     {#each $query.searchPosts.posts as post (post.id)}
-      <PostCard class="mt-4" $post={post} />
+      <PostCard class="mt-4 first:mt-0" $post={post} />
     {/each}
-    <div class="flex center mt-9 gap-1">
+    <div class="flex center mt-9 gap-1 pb-4">
       <button
         class="square-7 flex center disabled:(text-disabled cursor-not-allowed)"
         disabled={currentPage <= 10}
