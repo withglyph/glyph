@@ -1149,6 +1149,7 @@ export const postSchema = defineSchema((builder) => {
                 tags: { include: { tag: true } },
               },
             },
+            space: true,
           },
           where: { id: revision.post.id },
           data: {
@@ -1185,6 +1186,7 @@ export const postSchema = defineSchema((builder) => {
                 tags: { include: { tag: true } },
               },
             },
+            space: true,
           },
           where: {
             id: input.postId,

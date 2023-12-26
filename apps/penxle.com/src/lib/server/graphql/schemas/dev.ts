@@ -32,6 +32,7 @@ export const devSchema = defineSchema((builder) => {
                   },
                 },
               },
+              space: true,
             },
           });
 

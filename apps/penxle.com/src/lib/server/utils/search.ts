@@ -12,7 +12,13 @@ type IndexPostParam = Prisma.PostGetPayload<{
     password: true;
     publishedAt: true;
     contentFilters: true;
-    spaceId: true;
+    space: {
+      select: {
+        id: true;
+        state: true;
+        visibility: true;
+      };
+    };
     publishedRevision: {
       select: {
         kind: true;
@@ -35,7 +41,13 @@ type IndexPostParam = Prisma.PostGetPayload<{
 
 export const indexPost = async (post: IndexPostParam) => {
   if (post.publishedRevision) {
-    if (post.publishedRevision.kind === 'PUBLISHED' && post.visibility === 'PUBLIC' && post.password === null) {
+    if (
+      post.publishedRevision.kind === 'PUBLISHED' &&
+      post.visibility === 'PUBLIC' &&
+      post.password === null &&
+      post.space.state === 'ACTIVE' &&
+      post.space.visibility === 'PUBLIC'
+    ) {
       await elasticSearch.index({
         index: indexName('posts'),
         id: post.id,
@@ -45,7 +57,7 @@ export const indexPost = async (post: IndexPostParam) => {
           publishedAt: post.publishedAt?.getTime() ?? Date.now(),
           tags: post.publishedRevision.tags.map(({ tag }) => ({ id: tag.id, name: tag.name, nameRaw: tag.name })),
           contentFilters: post.contentFilters,
-          spaceId: post.spaceId,
+          spaceId: post.space.id,
         },
       });
 
@@ -60,6 +72,33 @@ export const indexPost = async (post: IndexPostParam) => {
         /* empty */
       }
     }
+  }
+};
+
+type IndexPostByQueryParams = {
+  db: InteractiveTransactionClient;
+  where: Prisma.PostWhereInput;
+};
+
+export const indexPostByQuery = async ({ db, where }: IndexPostByQueryParams) => {
+  const posts = await db.post.findMany({
+    where,
+    include: {
+      publishedRevision: {
+        include: {
+          tags: {
+            include: {
+              tag: true,
+            },
+          },
+        },
+      },
+      space: true,
+    },
+  });
+
+  for (const post of posts) {
+    await indexPost(post);
   }
 };
 

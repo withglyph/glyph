@@ -2,7 +2,7 @@ import { SpaceMemberInvitationState, SpaceMemberRole, SpaceVisibility } from '@p
 import * as R from 'radash';
 import { match } from 'ts-pattern';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
-import { createRandomIcon, directUploadImage, indexSpace } from '$lib/server/utils';
+import { createRandomIcon, directUploadImage, indexPostByQuery, indexSpace } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import {
   AcceptSpaceMemberInvitationSchema,
@@ -511,6 +511,11 @@ export const spaceSchema = defineSchema((builder) => {
         });
 
         await indexSpace(space);
+        await indexPostByQuery({
+          db,
+          where: { spaceId: input.spaceId },
+        });
+
         return db.space.findUniqueOrThrow({
           ...query,
           where: { id: space.id },
@@ -643,6 +648,11 @@ export const spaceSchema = defineSchema((builder) => {
         });
 
         await indexSpace(space);
+        await indexPostByQuery({
+          db,
+          where: { spaceId: input.spaceId },
+        });
+
         return db.space.findUniqueOrThrow({
           ...query,
           where: { id: space.id },
