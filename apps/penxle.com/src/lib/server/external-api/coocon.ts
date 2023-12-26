@@ -19,7 +19,7 @@ const getTxId = async () => {
 type GetAccountHolderNameParams = { bankCode: string; accountNumber: string };
 export const getAccountHolderName = async ({ bankCode, accountNumber }: GetAccountHolderNameParams) => {
   const buffer = await got({
-    url: 'https://dev2.coocon.co.kr:8443/sol/gateway/acctnm_rcms_wapi.jsp',
+    url: 'https://gw.coocon.co.kr/sol/gateway/acctnm_rcms_wapi.jsp',
     method: 'POST',
     json: {
       SECR_KEY: env.PRIVATE_COOCON_RCMS_KEY,
@@ -37,10 +37,10 @@ export const getAccountHolderName = async ({ bankCode, accountNumber }: GetAccou
   const resp = JSON.parse(iconv.decode(buffer, 'euc-kr'));
 
   if (resp.RSLT_CD !== '000') {
-    throw new Error(resp.RSLT_MSG);
+    throw new Error(`[${resp.RSLT_CD}] ${resp.RSLT_MSG}`);
   }
 
-  return resp.ACCT_NM;
+  return resp.RESP_DATA[0].ACCT_NM as string;
 };
 
 type TransferOutParams = { bankCode: string; accountNumber: string; amount: number; memo: string };
@@ -48,7 +48,7 @@ export const transferOut = async ({ bankCode, accountNumber, amount, memo }: Tra
   const txId = await getTxId();
 
   const buffer = await got({
-    url: 'https://dev2.coocon.co.kr:8443/sol/gateway/webilling_wapi.jsp',
+    url: 'https://gw.coocon.co.kr/sol/gateway/webilling_wapi.jsp',
     method: 'POST',
     json: {
       SECR_KEY: env.PRIVATE_COOCON_BILLING_KEY,
@@ -80,7 +80,7 @@ export const transferOut = async ({ bankCode, accountNumber, amount, memo }: Tra
     resp.RSLT_CD !== '9980' &&
     resp.RSLT_CD !== '9999'
   ) {
-    throw new Error(resp.RSLT_MSG);
+    throw new Error(`[${resp.RSLT_CD}] ${resp.RSLT_MSG}`);
   }
 
   return {
@@ -91,7 +91,7 @@ export const transferOut = async ({ bankCode, accountNumber, amount, memo }: Tra
 type VerifyTransferOutParams = { txId: string };
 export const verifyTransferOut = async ({ txId }: VerifyTransferOutParams) => {
   const buffer = await got({
-    url: 'https://dev2.coocon.co.kr:8443/sol/gateway/webilling_wapi.jsp',
+    url: 'https://gw.coocon.co.kr/sol/gateway/webilling_wapi.jsp',
     method: 'POST',
     json: {
       SECR_KEY: env.PRIVATE_COOCON_BILLING_KEY,
@@ -111,7 +111,7 @@ export const verifyTransferOut = async ({ txId }: VerifyTransferOutParams) => {
   const resp = JSON.parse(iconv.decode(buffer, 'euc-kr'));
 
   if (resp.RSLT_CD !== '000') {
-    throw new Error(resp.RSLT_MSG);
+    throw new Error(`[${resp.RSLT_CD}] ${resp.RSLT_MSG}`);
   }
 
   return {
@@ -122,7 +122,7 @@ export const verifyTransferOut = async ({ txId }: VerifyTransferOutParams) => {
 
 export const getAccountBalance = async () => {
   const buffer = await got({
-    url: 'https://dev2.coocon.co.kr:8443/sol/gateway/webilling_wapi.jsp',
+    url: 'https://gw.coocon.co.kr/sol/gateway/webilling_wapi.jsp',
     method: 'POST',
     json: {
       SECR_KEY: env.PRIVATE_COOCON_BILLING_KEY,
@@ -141,8 +141,38 @@ export const getAccountBalance = async () => {
   const resp = JSON.parse(iconv.decode(buffer, 'euc-kr'));
 
   if (resp.RSLT_CD !== '000') {
-    throw new Error(resp.RSLT_MSG);
+    throw new Error(`[${resp.RSLT_CD}] ${resp.RSLT_MSG}`);
   }
 
   return Number(resp.BAL_AMT);
+};
+
+type VerifyResidentRegistrationNumberParams = { name: string; residentRegistrationNumber: string; issuedAt: string };
+export const verifyResidentRegistrationNumber = async ({
+  name,
+  residentRegistrationNumber,
+  issuedAt,
+}: VerifyResidentRegistrationNumberParams) => {
+  const resp = await got({
+    url: 'https://sgw.coocon.co.kr/sol/gateway/scrap_wapi_std.jsp',
+    method: 'POST',
+    json: {
+      API_KEY: env.PRIVATE_COOCON_SCRAPE_KEY,
+      API_ID: '1320',
+      BANKCD: '104',
+      NAME: name,
+      REGNO: residentRegistrationNumber,
+      ISSUE_DATE: issuedAt,
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }).json<any>();
+
+  if (resp.RESULT_CD !== '00000000') {
+    throw new Error(`[${resp.RESULT_CD}] ${resp.RESULT_MG}`);
+  }
+
+  return {
+    success: resp.AGREEMENT === 'Y',
+    reason: resp.DISAGREEMENT_REASON as string,
+  };
 };
