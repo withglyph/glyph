@@ -1,9 +1,12 @@
-import { run } from 'aws-lambda-ric';
-import { handler } from './consumer';
-import { startServer } from './relay';
+import net from 'node:net';
+import { handle } from './handler';
 
-if (process.env.MODE === 'relay') {
-  startServer();
-} else if (process.env.MODE === 'consumer') {
-  await run(handler);
-}
+const server = net.createServer((socket) => {
+  socket.on('data', (data) => {
+    handle(data);
+  });
+});
+
+server.listen(2266, '0.0.0.0', () => {
+  console.log(`Server started on port 2266`);
+});
