@@ -3,6 +3,24 @@ import * as pulumi from '@pulumi/pulumi';
 import * as tls from '@pulumi/tls';
 import { buckets } from './s3';
 
+const admin = new aws.iam.Group('admin', {
+  name: 'admin',
+});
+
+new aws.iam.GroupPolicy('admin', {
+  group: admin.name,
+  policy: {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Action: ['*'],
+        Resource: ['*'],
+      },
+    ],
+  },
+});
+
 const team = new aws.iam.Group('team', {
   name: 'team',
 });
