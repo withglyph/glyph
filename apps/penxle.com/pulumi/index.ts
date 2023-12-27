@@ -33,11 +33,16 @@ const site = new penxle.Site('penxle.com', {
       Statement: [
         {
           Effect: 'Allow',
-          Action: ['s3:GetObject', 's3:PutObject', 's3:DeleteObject'],
+          Action: ['s3:GetObject', 's3:PutObject'],
           Resource: [
             pulumi.concat(bedrockRef('AWS_S3_BUCKET_DATA_ARN'), '/*'),
             pulumi.concat(bedrockRef('AWS_S3_BUCKET_UPLOADS_ARN'), '/*'),
           ],
+        },
+        {
+          Effect: 'Allow',
+          Action: ['s3:DeleteObject'],
+          Resource: [pulumi.concat(bedrockRef('AWS_S3_BUCKET_UPLOADS_ARN'), '/*')],
         },
         {
           Effect: 'Allow',
