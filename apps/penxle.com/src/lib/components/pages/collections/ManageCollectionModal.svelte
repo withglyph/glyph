@@ -4,7 +4,7 @@
   import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
-  import { PopupSearch } from '$lib/components/forms';
+  import { Editable, PopupSearch } from '$lib/components/forms';
   import Image from '$lib/components/Image.svelte';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
@@ -68,6 +68,16 @@
     `),
   );
 
+  let name: string | null = null;
+
+  $: if (open) {
+    name = null;
+  }
+
+  $: if (name === null) {
+    name = $collection.name;
+  }
+
   let registeredPostIds: Set<string>;
   const initializeRegisteredPosts = () => {
     registeredPostIds = new Set($collection.posts.map(({ id }) => id));
@@ -76,6 +86,15 @@
   $: if (open) {
     initializeRegisteredPosts();
   }
+
+  const updateSpaceCollection = graphql(`
+    mutation ManageSpaceCollectionModal_UpdateSpaceCollection_Mutation($input: UpdateSpaceCollectionInput!) {
+      updateSpaceCollection(input: $input) {
+        id
+        name
+      }
+    }
+  `);
 
   const { form, setInitialValues, isSubmitting } = createMutationForm({
     mutation: graphql(`
@@ -87,7 +106,19 @@
         }
       }
     `),
-    extra: () => ({ postIds: [...registeredPostIds.values()] }),
+    extra: async () => {
+      const trimmedName = name?.trim();
+
+      if (trimmedName && trimmedName.length > 0 && trimmedName !== $collection.name) {
+        await updateSpaceCollection({
+          collectionId: $collection.id,
+          name: trimmedName,
+          thumbnailId: $collection.thumbnail?.id,
+        });
+      }
+
+      return { postIds: [...registeredPostIds.values()] };
+    },
     schema: SetSpaceCollectionPostSchema,
     onSuccess: () => {
       open = false;
@@ -113,7 +144,14 @@
 </script>
 
 <Modal size="md" bind:open>
-  <svelte:fragment slot="title">{$collection.name}</svelte:fragment>
+  <svelte:fragment slot="title">
+    <Editable
+      maxlength={20}
+      placeholder="컬렉션명"
+      bind:value={name}
+      on:input={(e) => (name = e.currentTarget.value)}
+    />
+  </svelte:fragment>
   <svelte:fragment slot="subtitle">
     컬렉션에 노출되는 포스트를 관리하세요
     <br />

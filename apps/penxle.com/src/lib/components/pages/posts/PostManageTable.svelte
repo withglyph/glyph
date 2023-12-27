@@ -5,7 +5,7 @@
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Avatar, Badge, Button, Image, Modal, Tag, Tooltip } from '$lib/components';
-  import { Checkbox, Switch } from '$lib/components/forms';
+  import { Checkbox, Editable, Switch } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Table, TableData, TableHead, TableRow } from '$lib/components/table';
   import { toast } from '$lib/notification';
@@ -118,6 +118,7 @@
   let deletePostId: string | null = null;
   let deletePostIds: string[] | null = null;
 
+  let createingCollection = false;
   let openCreateCollection = false;
   let selectedCollectionId: string | null = null;
 
@@ -565,6 +566,7 @@
   <svelte:fragment slot="title">
     <form
       id="create-collection"
+      class="w-[fit-content]"
       on:submit|preventDefault={async (event) => {
         if (
           !(event.target instanceof HTMLFormElement) ||
@@ -573,8 +575,9 @@
         )
           throw new Error('기대하지 않은 경우입니다.');
 
-        const name = event.target.collectionName.value;
+        const name = event.target.collectionName.value.trim() || '새 컬렉션';
 
+        createingCollection = true;
         const { id: collectionId } = await createSpaceCollection({ name, spaceId: selectedPosts[0].space.id });
         const postIds = selectedPosts.map((post) => post.id);
         await setSpaceCollectionPosts({ collectionId, postIds });
@@ -587,15 +590,10 @@
 
         toast.success('새 컬렉션을 생성했어요');
         openCreateCollection = false;
+        createingCollection = false;
       }}
     >
-      <input
-        name="collectionName"
-        class="title_20_b w-[fit-content] text-primary disabled:text-disabled"
-        maxlength="10"
-        placeholder="컬렉션명"
-        type="text"
-      />
+      <Editable name="collectionName" maxlength={20} placeholder="컬렉션명" type="text" />
     </form>
   </svelte:fragment>
   <svelte:fragment slot="subtitle">컬렉션에 노출되는 포스트를 관리하세요</svelte:fragment>
@@ -616,5 +614,7 @@
       </li>
     {/each}
   </ul>
-  <Button class="w-full" form="create-collection" size="lg" type="submit">컬렉션 생성하기</Button>
+  <Button slot="action" class="w-full" form="create-collection" loading={createingCollection} size="lg" type="submit">
+    컬렉션 생성하기
+  </Button>
 </Modal>
