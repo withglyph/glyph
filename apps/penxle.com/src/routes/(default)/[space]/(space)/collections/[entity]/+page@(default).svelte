@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import clsx from 'clsx';
   import mixpanel from 'mixpanel-browser';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
@@ -10,6 +11,9 @@
 
   let openPostManageCollectionModal = false;
   let loginRequireOpen = false;
+
+  let prevScrollpos = 0;
+  let bottomNavShow = true;
 
   $: query = graphql(`
     query SpaceCollectionsEnitityPage_Query($slug: String!) {
@@ -86,7 +90,37 @@
 
 <Helmet title={`${collection?.name} | 컬렉션 | ${$query.space.name}`} />
 
-<section class="flex flex-col items-center w-full sm:bg-cardprimary grow">
+<svelte:window
+  on:scroll={(e) => {
+    if (e.currentTarget.innerWidth <= 800) {
+      const currentScrollPos = e.currentTarget.scrollY;
+
+      bottomNavShow = prevScrollpos > currentScrollPos;
+      prevScrollpos = currentScrollPos;
+    }
+  }}
+/>
+
+{#if $query.space.meAsMember}
+  <div
+    class={clsx(
+      'sm:hidden fixed p-y-0.62rem p-x-4 w-full transition-bottom bg-white z-1',
+      bottomNavShow ? ' bottom-0' : 'bottom--5rem',
+    )}
+  >
+    <Button
+      class="w-full"
+      size="xl"
+      on:click={() => {
+        openPostManageCollectionModal = true;
+      }}
+    >
+      포스트 관리
+    </Button>
+  </div>
+{/if}
+
+<section class="flex flex-col items-center w-full sm:bg-cardprimary <sm:bg-surface-primary grow">
   <header
     style={typeof collection?.thumbnail?.url === 'string'
       ? `background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.8)), url(${collection.thumbnail.url})`
@@ -155,7 +189,7 @@
       {/if}
 
       <aside class="max-w-18.4375rem <sm:max-w-initial w-full">
-        <section class="flex sm:flex-col p-6 <sm:(p-y-4 gap-4) sm:(bg-primary rounded-4 m-b-4) bg-cardprimary center">
+        <section class="flex sm:flex-col p-6 <sm:(p-y-4 gap-4) sm:(bg-primary rounded-4 m-b-4) bg-primary center">
           <a href="/{$query.space?.slug}">
             <Image
               class="square-4rem rounded-4 shrink-0 border border-secondary sm:(m-b-4 square-3.75rem)"
@@ -210,7 +244,7 @@
             {/if}
           {/if}
         </section>
-        <section class="<sm:(bg-cardprimary p-y-2 p-x-4 m-t-2)">
+        <section class="<sm:(bg-primary p-y-2 p-x-4 m-t-2)">
           {#if $query.space.collections.length > 1}
             <h2 class="body-14-b m-b-2 <sm:m-b-3">이 스페이스의 다른 컬렉션</h2>
 
@@ -226,7 +260,9 @@
                         <Image class="w-6rem h-7.5rem rounded-2" $image={collection.thumbnail} />
                       {/if}
                       <dl class="p-y-2">
-                        <dt class="body-16-b m-b-1">{collection.name}</dt>
+                        <dt class="body-16-b m-b-1 <sm:(line-clamp-2 min-w-0)">
+                          {collection.name}
+                        </dt>
                         <dd class="body-14-m text-secondary">{collection.count}개의 포스트</dd>
                       </dl>
                     </a>
