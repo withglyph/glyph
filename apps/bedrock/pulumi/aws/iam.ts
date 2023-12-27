@@ -1,5 +1,48 @@
 import * as aws from '@pulumi/aws';
+import * as pulumi from '@pulumi/pulumi';
 import * as tls from '@pulumi/tls';
+import { buckets } from './s3';
+
+const team = new aws.iam.Group('team', {
+  name: 'team',
+});
+
+new aws.iam.GroupPolicy('team', {
+  group: team.name,
+  policy: {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Action: [
+          'iam:GetUser',
+          'iam:ChangePassword',
+          'iam:GetAccessKeyLastUsed',
+          'iam:ListAccessKeys',
+          'iam:CreateAccessKey',
+          'iam:UpdateAccessKey',
+          'iam:DeleteAccessKey',
+        ],
+        Resource: 'arn:aws:iam::*:user/${aws:username}',
+      },
+      {
+        Effect: 'Allow',
+        Action: ['s3:GetObject', 's3:PutObject'],
+        Resource: [pulumi.concat(buckets.data.arn, '/*'), pulumi.concat(buckets.uploads.arn, '/*')],
+      },
+      {
+        Effect: 'Allow',
+        Action: ['s3:DeleteObject'],
+        Resource: [pulumi.concat(buckets.uploads.arn, '/*')],
+      },
+      {
+        Effect: 'Allow',
+        Action: ['ses:SendEmail'],
+        Resource: ['*'],
+      },
+    ],
+  },
+});
 
 const datadogIntegration = new aws.iam.Role('integration@datadog', {
   name: 'integration@datadog',
