@@ -60,6 +60,13 @@ declare module '@tiptap/core' {
         rel?: string | null;
         class?: string | null;
       }) => ReturnType;
+
+      updateLink: (attributes: {
+        href: string;
+        target?: string | null;
+        rel?: string | null;
+        class?: string | null;
+      }) => ReturnType;
       /**
        * Unset a link mark
        */
@@ -148,6 +155,12 @@ export const Link = Mark.create<LinkOptions>({
             .toggleMark(this.name, attributes, { extendEmptyMarkRange: true })
             .setMeta('preventAutolink', true)
             .run();
+        },
+
+      updateLink:
+        (attributes) =>
+        ({ chain }) => {
+          return chain().extendMarkRange(this.name).updateAttributes(this.name, attributes).run();
         },
 
       unsetLink:

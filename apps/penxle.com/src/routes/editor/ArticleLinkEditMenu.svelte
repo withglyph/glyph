@@ -92,7 +92,7 @@
     on:submit|preventDefault={() => {
       const command = editor.chain().focus();
       if (trimmedHref.length > 0) {
-        command.setLink({ href: trimmedHref }).run();
+        command.updateLink({ href: trimmedHref }).run();
       } else {
         command.unsetLink().run();
       }
