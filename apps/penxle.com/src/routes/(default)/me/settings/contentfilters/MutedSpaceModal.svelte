@@ -74,7 +74,7 @@
     </div>
   </form>
 
-  <ul class="space-y-4">
+  <ul class="space-y-4 max-h-15rem overflow-y-auto">
     {#each mutedSpaces.filter((space) => space.name.includes(query)) as space (space.id)}
       <li class="flex items-center justify-between">
         <div class="flex gap-2 items-center truncate mr-2">

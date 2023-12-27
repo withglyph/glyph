@@ -61,7 +61,7 @@
     </div>
   </form>
 
-  <ul class="flex flex-wrap gap-2.5">
+  <ul class="flex flex-wrap gap-2.5 max-h-15rem overflow-y-auto">
     {#each $user.mutedTags.filter((tag) => tag.name.includes(query)) as tag (tag.id)}
       <Tag as="label" checked={tags.includes(tag)} on:change={(e) => handleChange(e, tag)}>{tag.name}</Tag>
     {/each}

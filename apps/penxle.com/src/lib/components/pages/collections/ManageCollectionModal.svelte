@@ -160,7 +160,7 @@
 
   <PopupSearch class="max-w-full! m-b-4" on:input={(e) => (query = e.currentTarget.value.trim())} />
   <form use:form>
-    <ul class="space-y-4 sm:(max-h-27.5rem overflow-y-auto)">
+    <ul class="space-y-4 max-h-15rem overflow-y-auto">
       {#each $posts.filter((post) => {
         const searchResult = post.publishedRevision?.title.includes(query);
         const isInOtherCollection = !!post.collection && post.collection.id !== $collection.id;
