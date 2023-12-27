@@ -89,11 +89,11 @@
     `),
     extra: () => ({ postIds: [...registeredPostIds.values()] }),
     schema: SetSpaceCollectionPostSchema,
-    onSuccess: ({ id }) => {
+    onSuccess: () => {
       open = false;
       mixpanel.track('space:collection:update', {
         spaceId,
-        collectionId: id,
+        collectionId: $collection.id,
         postIds: [...registeredPostIds.values()],
       });
       toast.success('컬렉션에 등록된 포스트 목록을 수정되었어요');
