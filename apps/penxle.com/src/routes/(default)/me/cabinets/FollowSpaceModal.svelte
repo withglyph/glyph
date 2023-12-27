@@ -87,6 +87,7 @@
         </div>
         {#if $user.followedSpaces.find((follow) => follow.id === space.id)}
           <Button
+            class="shrink-0"
             color="tertiary"
             size="md"
             variant="outlined"
@@ -100,6 +101,7 @@
           </Button>
         {:else}
           <Button
+            class="shrink-0"
             color="secondary"
             size="md"
             on:click={async () => {
