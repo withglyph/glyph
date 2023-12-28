@@ -16,6 +16,10 @@
 
   let thumbnail: (Image_image & { id: string }) | null = null;
 
+  $: if (open) {
+    thumbnail = null;
+  }
+
   const createSpaceCollection = graphql(`
     mutation CreateCollectionModal_CreateSpaceCollection_Mutation($input: CreateSpaceCollectionInput!) {
       createSpaceCollection(input: $input) {
@@ -49,7 +53,6 @@
     },
     onSuccess: ({ id }) => {
       open = false;
-      thumbnail = null;
       mixpanel.track('space:collection:create', { spaceId, collectionId: id });
       toast.success('컬렉션이 생성되었어요');
     },
