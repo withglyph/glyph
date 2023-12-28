@@ -11,17 +11,27 @@
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { CreateSpaceSchema } from '$lib/validations';
-  import type { DefaultLayout_CreateSpaceModal_user } from '$glitch';
+  import type { CreateSpaceModal_user } from '$glitch';
+  import type { SwitchSpace } from '../editor/types/switch-space';
 
-  let _user: DefaultLayout_CreateSpaceModal_user;
+  let _user: CreateSpaceModal_user;
   export { _user as $user };
 
   let useSpaceProfile = true;
+  let thumbnailPicker: ThumbnailPicker;
+
+  export let switchSpace: SwitchSpace | undefined = undefined;
+  export let open = false;
+  export let via: 'user-menu' | 'space-list-menu' | 'editor' = 'user-menu';
+
+  $: if (switchSpace) {
+    via = 'editor';
+  }
 
   $: user = fragment(
     _user,
     graphql(`
-      fragment DefaultLayout_CreateSpaceModal_user on User {
+      fragment CreateSpaceModal_user on User {
         id
         email
 
@@ -38,16 +48,12 @@
     `),
   );
 
-  export let open = false;
-
-  let thumbnailPicker: ThumbnailPicker;
-
   let avatar: typeof $user.profile.avatar;
   $: avatar = $user.profile.avatar;
 
   const { form, handleSubmit, isSubmitting, data, setFields, setInitialValues } = createMutationForm({
     mutation: graphql(`
-      mutation DefaultLayout_CreateSpaceModal_CreateSpace_Mutation($input: CreateSpaceInput!) {
+      mutation CreateSpaceModal_CreateSpace_Mutation($input: CreateSpaceInput!) {
         createSpace(input: $input) {
           id
           slug
@@ -57,12 +63,26 @@
     schema: CreateSpaceSchema,
     initialValues: { profileName: '' },
     extra: () => ({ profileAvatarId: avatar.id }),
-    onSuccess: async ({ slug }) => {
-      mixpanel.track('space:create', { useSpaceProfile, via: 'user-menu' });
+    onSuccess: async ({ id, slug }) => {
+      if (via === 'editor' && switchSpace) {
+        switchSpace({ id, emitSave: true });
+      }
+
+      mixpanel.track('space:create', { useSpaceProfile, via });
       toast.success('스페이스를 만들었어요');
-      await goto(`/${slug}`);
+      open = false;
+
+      if (via === 'user-menu') {
+        await goto(`/${slug}`);
+      } else if (via === 'space-list-menu') {
+        await goto(`/${slug}/dashboard/settings`);
+      }
     },
   });
+
+  $: if (open) {
+    useSpaceProfile = true;
+  }
 
   $: setInitialValues({
     profileName: '',
