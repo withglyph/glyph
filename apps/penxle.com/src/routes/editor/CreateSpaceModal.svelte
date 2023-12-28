@@ -47,6 +47,10 @@
   let avatar: typeof $user.profile.avatar;
   $: avatar = $user.profile.avatar;
 
+  $: if (open) {
+    useSpaceProfile = true;
+  }
+
   const { form, handleSubmit, isSubmitting, data, setFields, setInitialValues } = createMutationForm({
     mutation: graphql(`
       mutation EditorPage_CreateSpaceModal_CreateSpace_Mutation($input: CreateSpaceInput!) {
