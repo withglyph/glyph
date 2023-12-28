@@ -28,7 +28,7 @@
           }
         }
 
-        ...DefaultLayout_CreateSpaceModal_user
+        ...CreateSpaceModal_user
       }
     `),
   );

@@ -18,8 +18,8 @@
   import { toast } from '$lib/notification';
   import { portal } from '$lib/svelte/actions';
   import { PublishPostInputSchema } from '$lib/validations/post';
+  import CreateSpaceModal from '../(default)/CreateSpaceModal.svelte';
   import ArticleCharacterCount from './ArticleCharacterCount.svelte';
-  import CreateSpaceModal from './CreateSpaceModal.svelte';
   import RevisionListModal from './RevisionListModal.svelte';
   import { preventRevise } from './store';
   import ToolbarButton from './ToolbarButton.svelte';
@@ -84,7 +84,7 @@
             }
           }
 
-          ...EditorPage_CreateSpaceModal_user
+          ...CreateSpaceModal_user
         }
       }
     `),

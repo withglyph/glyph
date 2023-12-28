@@ -24,7 +24,7 @@
       fragment SpaceDashboardLayout_SpaceListMenu_query on Query {
         me @_required {
           id
-          ...DefaultLayout_CreateSpaceModal_user
+          ...CreateSpaceModal_user
 
           spaces {
             id
@@ -141,4 +141,4 @@
   </div>
 {/if}
 
-<CreateSpaceModal $user={$query.me} bind:open={openCreateSpace} />
+<CreateSpaceModal $user={$query.me} via="space-list-menu" bind:open={openCreateSpace} />
