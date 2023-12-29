@@ -183,6 +183,25 @@ const round = (L0: number, L1: number, R0: number, R1: number, K0: number, K1: n
   return [L0 ^ T0, L1 ^ T1];
 };
 
+export const encrypt = (buffer: Buffer) => {
+  for (let i = 0; i < buffer.length; i += 16) {
+    let L0 = buffer.readInt32BE(i);
+    let L1 = buffer.readInt32BE(i + 4);
+    let R0 = buffer.readInt32BE(i + 8);
+    let R1 = buffer.readInt32BE(i + 12);
+
+    for (let i = 0; i < 32; i += 4) {
+      [L0, L1] = round(L0, L1, R0, R1, K[i + 0], K[i + 1]);
+      [R0, R1] = round(R0, R1, L0, L1, K[i + 2], K[i + 3]);
+    }
+
+    buffer.writeInt32BE(R0, i);
+    buffer.writeInt32BE(R1, i + 4);
+    buffer.writeInt32BE(L0, i + 8);
+    buffer.writeInt32BE(L1, i + 12);
+  }
+};
+
 export const decrypt = (buffer: Buffer) => {
   for (let i = 0; i < buffer.length; i += 16) {
     let L0 = buffer.readInt32BE(i);
@@ -190,9 +209,9 @@ export const decrypt = (buffer: Buffer) => {
     let R0 = buffer.readInt32BE(i + 8);
     let R1 = buffer.readInt32BE(i + 12);
 
-    for (let i = 32; i > 0; i -= 4) {
-      [L0, L1] = round(L0, L1, R0, R1, K[i - 2], K[i - 1]);
-      [R0, R1] = round(R0, R1, L0, L1, K[i - 4], K[i - 3]);
+    for (let i = 31; i > 0; i -= 4) {
+      [L0, L1] = round(L0, L1, R0, R1, K[i - 1], K[i - 0]);
+      [R0, R1] = round(R0, R1, L0, L1, K[i - 3], K[i - 2]);
     }
 
     buffer.writeInt32BE(R0, i);

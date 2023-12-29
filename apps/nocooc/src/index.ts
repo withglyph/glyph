@@ -3,7 +3,19 @@ import { handle } from './handler';
 
 const server = net.createServer((socket) => {
   socket.on('data', (data) => {
-    handle(data);
+    handle(data)
+      .then((data) => {
+        if (data) {
+          socket.write(data, (err) => {
+            if (err) {
+              console.error(err);
+            }
+          });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   });
 });
 

@@ -1,4 +1,4 @@
-// import * as penxle from '@penxle/pulumi/components';
+import * as penxle from '@penxle/pulumi/components';
 import * as aws from '@pulumi/aws';
 import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
@@ -18,24 +18,24 @@ const eip2 = new aws.ec2.Eip('public-nlb@az2', {
   tags: { Name: 'public-nlb@az2' },
 });
 
-// const serviceAccount = new penxle.IAMServiceAccount('nocooc', {
-//   metadata: {
-//     name: 'nocooc',
-//     namespace: 'prod',
-//   },
-//   spec: {
-//     policy: {
-//       Version: '2012-10-17',
-//       Statement: [
-//         {
-//           Effect: 'Allow',
-//           Action: ['sqs:SendMessage'],
-//           Resource: ['*'],
-//         },
-//       ],
-//     },
-//   },
-// });
+const serviceAccount = new penxle.IAMServiceAccount('nocooc', {
+  metadata: {
+    name: 'nocooc',
+    namespace: 'prod',
+  },
+  spec: {
+    policy: {
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Effect: 'Allow',
+          Action: ['dynamodb:PutItem'],
+          Resource: ['*'],
+        },
+      ],
+    },
+  },
+});
 
 new k8s.apps.v1.Deployment('nocooc', {
   metadata: {
@@ -48,7 +48,7 @@ new k8s.apps.v1.Deployment('nocooc', {
     template: {
       metadata: { labels },
       spec: {
-        // serviceAccountName: serviceAccount.metadata.name,
+        serviceAccountName: serviceAccount.metadata.name,
         containers: [
           {
             name: 'app',

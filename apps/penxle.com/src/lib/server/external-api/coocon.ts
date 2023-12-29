@@ -83,9 +83,7 @@ export const transferOut = async ({ bankCode, accountNumber, amount, memo }: Tra
     throw new Error(`[${resp.RSLT_CD}] ${resp.RSLT_MSG}`);
   }
 
-  return {
-    txId,
-  };
+  return txId;
 };
 
 type VerifyTransferOutParams = { txId: string };
@@ -114,10 +112,7 @@ export const verifyTransferOut = async ({ txId }: VerifyTransferOutParams) => {
     throw new Error(`[${resp.RSLT_CD}] ${resp.RSLT_MSG}`);
   }
 
-  return {
-    success: resp.ORG_RSPS_CD === '0000',
-    amount: Number(resp.TRSC_AMT),
-  };
+  return resp.RSPS_CD.trim() === '000';
 };
 
 export const getAccountBalance = async () => {
