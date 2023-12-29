@@ -148,17 +148,11 @@
 <div
   bind:this={targetEl}
   class={clsx(
-    'fixed z-1 bottom-4 w-full flex center px-4 mr-0 transition-bottom',
-    focusMode && 'sm:(justify-end! px-0!)',
+    'py-2 px-6 w-full max-w-107 bg-gray-80 rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.15)] fixed bottom-4 z-1 transition-bottom',
+    focusMode && 'sm:(p-0! square-12! rounded-r-none)',
   )}
 >
-  <div
-    class={clsx(
-      'py-2 px-6 w-full max-w-107 bg-gray-80 rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.15)]',
-      focusMode && 'sm:(p-0! square-12! rounded-r-none)',
-    )}
-  >
-    <!-- <button
+  <!-- <button
       class={clsx(
         "before:(content-[''] flex center h-6 w-1 mx-4 bg-gray-50 rounded-full) h-full w-full <sm:hidden",
         !focusMode && 'hidden',
@@ -167,61 +161,57 @@
       on:click={() => (focusMode = false)}
     /> -->
 
-    <div class={clsx('h-8 flex items-center justify-between', focusMode && 'sm:hidden!')}>
-      <button class="flex center" type="button" on:click={handleShare}>
-        <i class="i-lc-share square-5 bg-[#5C5755]" />
-      </button>
+  <div class={clsx('h-8 flex items-center justify-between', focusMode && 'sm:hidden!')}>
+    <button class="flex center" type="button" on:click={handleShare}>
+      <i class="i-lc-share square-5 bg-[#5C5755]" />
+    </button>
 
-      <div class="flex gap-2 items-center justify-between h-8 px-2 border border-alphawhite-15 rounded-xl <sm:hidden">
-        {#if $query.post.reactions.length > 0}
-          <ul class="flex center relative w-11">
-            {#each $query.post.reactions.slice(0, 4) as reaction, idx (reaction.id)}
-              <em-emoji
-                id={reaction.emoji}
-                style:left={`${idx * 10}px`}
-                class="square-4.5 text-center absolute top-50% -translate-y-50%"
-                set="twitter"
-              />
-            {/each}
-          </ul>
-        {/if}
+    <div class="flex gap-2 items-center justify-between h-8 px-2 border border-alphawhite-15 rounded-xl <sm:hidden">
+      {#if $query.post.reactions.length > 0}
+        <ul class="flex center relative w-11">
+          {#each $query.post.reactions.slice(0, 4) as reaction, idx (reaction.id)}
+            <em-emoji
+              id={reaction.emoji}
+              style:left={`${idx * 10}px`}
+              class="square-4.5 text-center absolute top-50% -translate-y-50%"
+              set="twitter"
+            />
+          {/each}
+        </ul>
+      {/if}
 
-        <Tooltip
-          enabled={!$query.post.receiveFeedback}
-          message="피드백 받기를 설정하지 않은 포스트예요"
-          placement="top"
-        >
-          <EmojiPicker {$query} disabled={!$query.post.receiveFeedback} variant="toolbar" />
-        </Tooltip>
-      </div>
+      <Tooltip enabled={!$query.post.receiveFeedback} message="피드백 받기를 설정하지 않은 포스트예요" placement="top">
+        <EmojiPicker {$query} disabled={!$query.post.receiveFeedback} variant="toolbar" />
+      </Tooltip>
+    </div>
 
-      <button
-        class="relative flex center"
-        aria-pressed={$query.post.bookmarkGroups.length > 0}
-        data-animate={bookmarkAnimate}
-        type="button"
-        on:click={toggleBookmark}
-      >
-        <i class="bg-[#5C5755] bookmarkLinearGradient i-px-bookmark-fill square-5" />
-        <i
-          class="bookmarkLinearGradient bookmarkAnimation1 absolute -top-0.25 left-4.5 hidden i-px-star rotate-45 square-2"
-        />
-        <i class="bookmarkLinearGradient bookmarkAnimation2 absolute -top-1.25 -left-1 hidden i-px-star square-2" />
-      </button>
+    <button
+      class="relative flex center"
+      aria-pressed={$query.post.bookmarkGroups.length > 0}
+      data-animate={bookmarkAnimate}
+      type="button"
+      on:click={toggleBookmark}
+    >
+      <i class="bg-[#5C5755] bookmarkLinearGradient i-px-bookmark-fill square-5" />
+      <i
+        class="bookmarkLinearGradient bookmarkAnimation1 absolute -top-0.25 left-4.5 hidden i-px-star rotate-45 square-2"
+      />
+      <i class="bookmarkLinearGradient bookmarkAnimation2 absolute -top-1.25 -left-1 hidden i-px-star square-2" />
+    </button>
 
-      <button
-        class="relative flex center group"
-        aria-pressed={$query.post.liked}
-        data-animate={likeAnimate}
-        type="button"
-        on:click={toggleLike}
-      >
-        <i class="bg-[#5C5755] likeLinearGradient i-px-heart-fill square-5" />
-        <i class="heartAnimation1 absolute top-0 left-0 hidden i-px-heart-fill square-2.5 bg-red-50" />
-        <i class="heartAnimation2 absolute top-0 left-0 hidden i-px-heart-fill square-2.5 bg-red-50" />
-      </button>
+    <button
+      class="relative flex center group"
+      aria-pressed={$query.post.liked}
+      data-animate={likeAnimate}
+      type="button"
+      on:click={toggleLike}
+    >
+      <i class="bg-[#5C5755] likeLinearGradient i-px-heart-fill square-5" />
+      <i class="heartAnimation1 absolute top-0 left-0 hidden i-px-heart-fill square-2.5 bg-red-50" />
+      <i class="heartAnimation2 absolute top-0 left-0 hidden i-px-heart-fill square-2.5 bg-red-50" />
+    </button>
 
-      <!-- <button
+    <!-- <button
         class={clsx(
           'flex center px-2 h-8 gap-1 rounded-xl text-disabled border border-alphawhite-15',
           focusMode && 'border-green-50! bg-green-50 bg-opacity-10 text-green-50',
@@ -232,7 +222,6 @@
         <i class="i-lc-file-text square-5" />
         <span class="caption-12-b">집중모드</span>
       </button> -->
-    </div>
   </div>
 </div>
 
