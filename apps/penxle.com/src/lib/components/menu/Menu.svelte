@@ -6,7 +6,7 @@
   import { portal } from '$lib/svelte/actions';
   import type { Placement } from '@floating-ui/dom';
 
-  let open = false;
+  export let open = false;
   let targetEl: HTMLElement;
   let menuEl: HTMLDivElement;
   let _class: string | undefined = undefined;

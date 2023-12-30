@@ -88,7 +88,7 @@
 {#if open}
   <form
     bind:this={menuEl}
-    class="absolute flex items-center z-25 select-none bg-cardprimary body-13-m text-secondary rounded-lg p-x-xs p-y-2 shadow-[0_2px_10px_0_rgba(0,0,0,0.10)]"
+    class="absolute flex gap-2 items-center z-25 select-none bg-cardprimary body-13-m text-secondary rounded-lg p-x-xs p-y-2 shadow-[0_2px_10px_0_rgba(0,0,0,0.10)]"
     on:submit|preventDefault={() => {
       const command = editor.chain().focus();
       if (trimmedHref.length > 0) {
@@ -99,9 +99,9 @@
     }}
     use:portal
   >
+    <span class="invisible min-w-8.25rem max-w-20rem text-clip overflow-hidden whitespace-nowrap">{href}</span>
     <input
-      style={`width: ${(href ?? '').length * 0.5}rem`}
-      class="min-w-8.25rem"
+      class="absolute left-xs w-full max-w-20rem"
       size={href?.length}
       type="url"
       on:mousedown|stopPropagation={() => (preventUpdate = true)}

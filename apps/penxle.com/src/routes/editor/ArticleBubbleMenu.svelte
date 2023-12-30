@@ -9,6 +9,13 @@
 
   export let editor: Editor;
 
+  let href = '';
+  let linkButtonOpen = false;
+
+  $: if (linkButtonOpen) {
+    href = '';
+  }
+
   const offset = 32;
 
   $: currentNode = editor.state.selection.$head.parent;
@@ -174,11 +181,16 @@
   </Tooltip>
 
   <Tooltip message="링크" placement="top">
-    <Menu class="flex items-center gap-2 body-14-m p-xs hover:(bg-primary rounded-lg)" {offset} padding={false}>
+    <Menu
+      class="flex items-center gap-2 body-14-m p-xs hover:(bg-primary rounded-lg)"
+      {offset}
+      padding={false}
+      bind:open={linkButtonOpen}
+    >
       <i slot="value" class="i-lc-link-2 square-1rem" />
       <MenuItem type="div">
         <form
-          class="flex"
+          class="flex relative gap-2 body-13-m text-secondary"
           on:submit|preventDefault={(event) => {
             if (!event.target) throw new Error('event.target is null');
             if (!(event.target instanceof HTMLFormElement))
@@ -192,21 +204,23 @@
             event.target.click();
           }}
         >
+          <span class="invisible flex-grow min-w-8.25rem max-w-20rem text-clip overflow-hidden whitespace-nowrap">
+            {href}
+          </span>
           <input
             name="url"
-            class="flex-grow body-13-m text-secondary"
+            class="absolute w-full max-w-20rem"
             autocomplete="on"
             placeholder="예) https://penxle.com"
             required
             type="url"
             on:click|stopPropagation
+            on:input={(event) => {
+              href = event.currentTarget.value;
+            }}
           />
           <Tooltip message="적용하기">
-            <button
-              class="text-secondary hover:text-primary active:text-primary"
-              type="submit"
-              on:click|stopPropagation
-            >
+            <button class="hover:text-primary active:text-primary" type="submit" on:click|stopPropagation>
               <i class="i-lc-check" />
             </button>
           </Tooltip>
