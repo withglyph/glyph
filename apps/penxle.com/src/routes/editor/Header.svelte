@@ -183,7 +183,7 @@
     }
   `);
 
-  const { form, data, setInitialValues } = createMutationForm({
+  const { form, data, setInitialValues, handleSubmit } = createMutationForm({
     mutation: graphql(`
       mutation EditorPage_PublishPost_Mutation($input: PublishPostInput!) {
         publishPost(input: $input) {
@@ -844,7 +844,17 @@
           </div>
         </Switch>
 
-        <Button class="w-full" size="xl" type="submit">게시하기</Button>
+        <Button
+          class="w-full"
+          size="xl"
+          type="submit"
+          on:click={async () => {
+            await doRevisePost('AUTO_SAVE');
+            handleSubmit();
+          }}
+        >
+          게시하기
+        </Button>
       </form>
     </div>
 
