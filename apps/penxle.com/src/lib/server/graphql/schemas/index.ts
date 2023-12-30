@@ -2,6 +2,7 @@ import { dev } from '$app/environment';
 import { addSchema, createBuilder } from '../builder';
 import { bookmarkSchema } from './bookmark';
 import { collectionSchema } from './collection';
+import { devSchema } from './dev';
 import { enumsSchema } from './enums';
 import { feedSchema } from './feed';
 import { fileSchema } from './file';
@@ -20,6 +21,7 @@ const builder = createBuilder();
 addSchema(builder, [
   bookmarkSchema,
   collectionSchema,
+  devSchema,
   enumsSchema,
   feedSchema,
   fileSchema,

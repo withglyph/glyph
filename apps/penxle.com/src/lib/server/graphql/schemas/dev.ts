@@ -13,6 +13,7 @@ export const devSchema = defineSchema((builder) => {
   builder.mutationFields((t) => ({
     reindexSearch: t.field({
       type: 'Void',
+      nullable: true,
       resolve: async (_, __, { db }) => {
         if (!dev) {
           throw new IntentionalError('This mutation is only available in development mode.');

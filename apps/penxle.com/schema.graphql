@@ -219,6 +219,7 @@ type Mutation {
   publishPost(input: PublishPostInput!): Post!
   purchasePoint(input: PurchasePointInput!): PointPurchase!
   purchasePost(input: PurchasePostInput!): Post!
+  reindexSearch: Void
   removeSpaceMember(input: RemoveSpaceMemberInput!): SpaceMember
   reorderSpaceCollection(input: ReorderSpaceCollectionInput!): SpaceCollection! @deprecated(reason: "Use setSpaceCollectionPost instead")
   revisePost(input: RevisePostInput!): Post!
