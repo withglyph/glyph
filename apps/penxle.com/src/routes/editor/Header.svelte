@@ -376,7 +376,7 @@
   }
 
   const checkContentFilter = (e: Event, contentFilter: ContentFilterCategory) => {
-    const { checked } = e.target as HTMLInputElement;
+    const { checked } = e.currentTarget as HTMLInputElement;
 
     $data.contentFilters = checked
       ? $data.contentFilters

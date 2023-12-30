@@ -192,16 +192,12 @@
         <form
           class="flex relative gap-2 body-13-m text-secondary"
           on:submit|preventDefault={(event) => {
-            if (!event.target) throw new Error('event.target is null');
-            if (!(event.target instanceof HTMLFormElement))
-              throw new Error('Fail to access event.target as HTMLFromElement');
-            if (!('url' in event.target && event.target.url instanceof HTMLInputElement))
-              throw new Error('Fail to access input element');
+            if (!(event.currentTarget.url instanceof HTMLInputElement)) throw new Error('Fail to access input element');
 
-            const href = event.target.url.value;
+            const href = event.currentTarget.url.value;
             editor.chain().focus().setLink({ href }).run();
             // 메뉴 닫기
-            event.target.click();
+            event.currentTarget.click();
           }}
         >
           <span class="invisible flex-grow min-w-8.25rem max-w-20rem text-clip overflow-hidden whitespace-nowrap">

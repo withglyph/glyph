@@ -1,5 +1,6 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import type { ChangeEventHandler } from 'svelte/elements';
 
   export let label: string;
   export let options: readonly string[] = [];
@@ -9,11 +10,11 @@
 
   export let value: string | undefined = undefined;
 
-  function onPickerItemChange(event: Event) {
-    if (event.target instanceof HTMLInputElement && event.target.checked) {
-      value = event.target.value;
+  const onPickerItemChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    if (event.currentTarget.checked) {
+      value = event.currentTarget.value;
     }
-  }
+  };
 </script>
 
 <fieldset class={clsx(_class)}>

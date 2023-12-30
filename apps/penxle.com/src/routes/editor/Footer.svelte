@@ -67,7 +67,7 @@
   };
 
   const handleImageCaptionInputChange = (e: Event) => {
-    const { value } = e.target as HTMLInputElement;
+    const { value } = e.currentTarget as HTMLInputElement;
 
     if (!content) {
       content = {

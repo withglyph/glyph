@@ -225,9 +225,10 @@
   }
 
   function handleSelectAllPost(event: Event) {
-    if (!(event.target instanceof HTMLInputElement)) throw new Error('event.target is not HTMLInputElement');
+    if (!(event.currentTarget instanceof HTMLInputElement))
+      throw new Error('event.currentTarget is not HTMLInputElement');
 
-    const { checked } = event.target;
+    const { checked } = event.currentTarget;
 
     if (checked) {
       for (const post of $posts ?? []) {
@@ -241,9 +242,10 @@
     selectedPostIds = selectedPostIds;
   }
   function handleSelectPost(event: Event) {
-    if (!(event.target instanceof HTMLInputElement)) throw new Error('event.target is not HTMLInputElement');
+    if (!(event.currentTarget instanceof HTMLInputElement))
+      throw new Error('event.currentTarget is not HTMLInputElement');
 
-    const { checked, value } = event.target;
+    const { checked, value } = event.currentTarget;
     if (checked) {
       selectedPostIds.add(value);
     } else {
@@ -568,14 +570,10 @@
       id="create-collection"
       class="w-[fit-content]"
       on:submit|preventDefault={async (event) => {
-        if (
-          !(event.target instanceof HTMLFormElement) ||
-          !('collectionName' in event.target) ||
-          !(event.target.collectionName instanceof HTMLInputElement)
-        )
+        if (!(event.currentTarget.collectionName instanceof HTMLInputElement))
           throw new Error('기대하지 않은 경우입니다.');
 
-        const name = event.target.collectionName.value.trim() || '새 컬렉션';
+        const name = event.currentTarget.collectionName.value.trim() || '새 컬렉션';
 
         createingCollection = true;
         const { id: collectionId } = await createSpaceCollection({ name, spaceId: selectedPosts[0].space.id });
