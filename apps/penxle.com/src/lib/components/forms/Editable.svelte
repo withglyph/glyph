@@ -7,6 +7,7 @@
   type $$Props = HTMLInputAttributes & { value?: typeof value };
   type $$Events = {
     input: Parameters<NonNullable<HTMLInputAttributes['on:input']>>[0];
+    blur: Parameters<NonNullable<HTMLInputAttributes['on:blur']>>[0];
   };
 
   let editing = false;
@@ -34,6 +35,7 @@
       editing = false;
     }}
     bind:value
+    on:blur
   />
   <button
     class={clsx('i-px-edit-2-outline square-6 text-secondary disabled:text-disabled', editing && 'hidden')}

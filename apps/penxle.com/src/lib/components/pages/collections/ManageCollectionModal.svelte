@@ -68,6 +68,7 @@
     `),
   );
 
+  let submitButtonEl: HTMLButtonElement;
   let name: string | null = null;
 
   $: if (open) {
@@ -106,19 +107,7 @@
         }
       }
     `),
-    extra: async () => {
-      const trimmedName = name?.trim();
-
-      if (trimmedName && trimmedName.length > 0 && trimmedName !== $collection.name) {
-        await updateSpaceCollection({
-          collectionId: $collection.id,
-          name: trimmedName,
-          thumbnailId: $collection.thumbnail?.id,
-        });
-      }
-
-      return { postIds: [...registeredPostIds.values()] };
-    },
+    extra: async () => ({ postIds: [...registeredPostIds.values()] }),
     schema: SetSpaceCollectionPostSchema,
     onSuccess: () => {
       open = false;
@@ -145,12 +134,35 @@
 
 <Modal size="md" bind:open>
   <svelte:fragment slot="title">
-    <Editable
-      maxlength={20}
-      placeholder="컬렉션명"
-      bind:value={name}
-      on:input={(e) => (name = e.currentTarget.value)}
-    />
+    <form
+      on:submit|preventDefault={async (e) => {
+        if (name && name.length > 0 && name !== $collection.name) {
+          await updateSpaceCollection({
+            collectionId: $collection.id,
+            name,
+            thumbnailId: $collection.thumbnail?.id,
+          });
+          toast.success('컬렉션 이름이 변경되었어요');
+        }
+
+        // @ts-expect-error: currentTarget.name except HTMLInputElement
+        if (!('_name' in e.target && e.target._name instanceof HTMLInputElement))
+          throw new Error('Fail to access input element');
+
+        e.target._name.blur();
+      }}
+    >
+      <Editable
+        name="_name"
+        maxlength={20}
+        placeholder="컬렉션명"
+        bind:value={name}
+        on:blur={() => {
+          submitButtonEl.click();
+        }}
+      />
+      <button bind:this={submitButtonEl} class="hidden" type="submit" />
+    </form>
   </svelte:fragment>
   <svelte:fragment slot="subtitle">
     컬렉션에 노출되는 포스트를 관리하세요
