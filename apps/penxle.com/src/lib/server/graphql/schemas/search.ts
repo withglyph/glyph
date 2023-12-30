@@ -227,6 +227,7 @@ export const searchSchema = defineSchema((builder) => {
 
         const searchResult = await elasticSearch.search({
           index: indexName('tags'),
+          min_score: 0.01,
           query: {
             bool: {
               should: [
