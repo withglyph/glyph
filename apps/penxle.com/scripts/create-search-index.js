@@ -41,11 +41,6 @@ const createIndex = async (name, indexBody) => {
 
     await Promise.all(
       originalIndices.map(async (originalIndex) => {
-        await elasticSearch.reindex({
-          source: { index: originalIndex },
-          dest: { index: `${name}-${version}` },
-        });
-
         await elasticSearch.indices.delete({ index: originalIndex });
       }),
     );
@@ -66,15 +61,31 @@ await createIndex('posts', {
       number_of_shards: 6,
       number_of_replicas: 0,
     },
+    analysis: {
+      analyzer: {
+        ngram_23: {
+          type: 'custom',
+          tokenizer: 'ngram_23',
+          filter: ['lowercase'],
+        },
+      },
+      tokenizer: {
+        ngram_23: {
+          type: 'ngram',
+          min_gram: 2,
+          max_gram: 3,
+        },
+      },
+    },
   },
   mappings: {
     properties: {
-      title: { type: 'text', analyzer: 'nori' },
-      subtitle: { type: 'text', analyzer: 'nori' },
+      title: { type: 'text', analyzer: 'ngram_23' },
+      subtitle: { type: 'text', analyzer: 'ngram_23' },
       tags: {
         properties: {
           id: { type: 'keyword' },
-          name: { type: 'text', analyzer: 'nori' },
+          name: { type: 'text', analyzer: 'ngram_23' },
           nameRaw: { type: 'keyword' },
         },
       },
@@ -91,10 +102,26 @@ await createIndex('spaces', {
       number_of_shards: 6,
       number_of_replicas: 0,
     },
+    analysis: {
+      analyzer: {
+        ngram_23: {
+          type: 'custom',
+          tokenizer: 'ngram_23',
+          filter: ['lowercase'],
+        },
+      },
+      tokenizer: {
+        ngram_23: {
+          type: 'ngram',
+          min_gram: 2,
+          max_gram: 3,
+        },
+      },
+    },
   },
   mappings: {
     properties: {
-      name: { type: 'text', analyzer: 'nori' },
+      name: { type: 'text', analyzer: 'ngram_23' },
     },
   },
 });

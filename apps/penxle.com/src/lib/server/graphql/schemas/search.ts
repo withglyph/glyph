@@ -180,6 +180,7 @@ export const searchSchema = defineSchema((builder) => {
                   multi_match: {
                     query: args.query,
                     fields: ['name'],
+                    type: 'phrase_prefix',
                   },
                 },
               ],
@@ -229,7 +230,7 @@ export const searchSchema = defineSchema((builder) => {
           query: {
             bool: {
               should: [
-                { match_phrase: { 'name.raw': args.query } },
+                { match_phrase: { 'name.raw^2': args.query } },
                 {
                   match_phrase: /^[ㄱ-ㅎ]+$/.test(args.query)
                     ? { 'name.initial': args.query }
