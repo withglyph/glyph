@@ -1,7 +1,6 @@
 <script lang="ts">
   import * as ChannelService from '@channel.io/channel-web-sdk-loader';
-  import { onDestroy } from 'svelte';
-  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
   import { env } from '$env/dynamic/public';
   import { fragment, graphql } from '$glitch';
   import type { ChannelIOButton_query } from '$glitch';
@@ -32,7 +31,7 @@
     `),
   );
 
-  $: if (browser && $query) {
+  onMount(() => {
     if ($query.me) {
       ChannelService.boot({
         pluginKey: env.PUBLIC_CHANNEL_IO_PLUGIN_KEY,
@@ -50,12 +49,8 @@
       });
     }
 
-    ChannelService.showChannelButton();
-  }
-
-  onDestroy(() => {
-    if (browser) {
-      ChannelService.hideChannelButton();
-    }
+    return () => {
+      ChannelService.shutdown();
+    };
   });
 </script>
