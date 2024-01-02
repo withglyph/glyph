@@ -348,13 +348,6 @@
     const content = fragment.toJSON() as JSONContent[];
     return content;
   }
-
-  const handleContentProtection = (e: Event) => {
-    if ($query.post.protectContent) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
 </script>
 
 <Helmet
@@ -537,18 +530,13 @@
                 </Button>
               </header>
             {:else}
-              <article
-                on:copy|capture={handleContentProtection}
-                on:cut|capture={handleContentProtection}
-                on:contextmenu|capture={handleContentProtection}
-              >
-                <TiptapRenderer
-                  class="bodylong-16-m"
-                  autoIndent={$postRevision.autoIndent}
-                  content={$postRevision.content}
-                  bind:editor
-                />
-              </article>
+              <TiptapRenderer
+                class="bodylong-16-m"
+                autoIndent={$postRevision.autoIndent}
+                content={$postRevision.content}
+                protectContent={$query.post.protectContent}
+                bind:editor
+              />
             {/if}
           {:else}
             <GalleryPost {$query} {mode} revision={$postRevision} />
@@ -854,6 +842,7 @@
 
 {#if share.open}
   <ShareContent
+    protectContent={$query.post.protectContent}
     spaceIcon={$query.post.space.icon}
     spaceName={$query.post.space.name}
     title={$postRevision.title}

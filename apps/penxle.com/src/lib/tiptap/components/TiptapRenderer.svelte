@@ -13,6 +13,14 @@
   export let editor: Editor | undefined = undefined;
   export let autoIndent = false;
 
+  export let protectContent = false;
+  const handleContentProtection = (e: Event) => {
+    if (protectContent) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   let element: HTMLElement;
   let loaded = false;
 
@@ -38,10 +46,16 @@
   });
 </script>
 
-<div bind:this={element} class={clsx(_class, autoIndent && 'tiptap-autoindent')}>
+<article
+  bind:this={element}
+  class={clsx(_class, autoIndent && 'tiptap-autoindent')}
+  on:copy|capture={handleContentProtection}
+  on:cut|capture={handleContentProtection}
+  on:contextmenu|capture={handleContentProtection}
+>
   {#if !loaded}
     <div class="ProseMirror">
       {@html html}
     </div>
   {/if}
-</div>
+</article>

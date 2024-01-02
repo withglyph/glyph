@@ -19,6 +19,8 @@
   export let spaceName: string;
   export let spaceIcon: Image_image;
 
+  export let protectContent: boolean;
+
   let captureEl: HTMLElement;
 
   const backgroundColorClassnames = [
@@ -113,6 +115,7 @@
         <TiptapRenderer
           class="font-(size-1.5625rem 600) [&_.ProseMirror]:(line-height-152% overflow-hidden line-clamp-7) flex-grow"
           {content}
+          {protectContent}
         />
       {/if}
       <header class={('header' in color && color.header) || color.body}>
