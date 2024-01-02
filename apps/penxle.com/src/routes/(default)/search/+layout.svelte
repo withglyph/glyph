@@ -2,62 +2,37 @@
   import { Helmet } from '@penxle/ui';
   import clsx from 'clsx';
   import qs from 'query-string';
-  import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { Button, Modal, Tag } from '$lib/components';
   import { Checkbox, Radio } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
-  import type { ContentFilterCategory, OrderByKind } from '$glitch';
+  import { filterToLocaleString } from '$lib/const/feed';
+  import { initSearchFilter } from './util';
+  import type { ContentFilterCategory } from '$glitch';
 
   let showTagOption = true;
   let showAdultOption = true;
   let showTriggerOption = true;
   let filterOpen = false;
-
-  let includeTags: string[] = [];
-  let excludeTags: string[] = [];
   let includeValue = '';
   let excludeValue = '';
-  let adultFilter: boolean | null = null;
-  let excludeContentFilters: ContentFilterCategory[] = [];
-  let orderBy: OrderByKind = 'LATEST';
+  let { includeTags, excludeTags, adultFilter, excludeContentFilters, orderBy } = initSearchFilter($page.url.search);
 
-  $: orderByText = orderBy === 'LATEST' ? '최신순' : '정확도순';
+  const contentFilters: ContentFilterCategory[] = [
+    'GROSSNESS',
+    'VIOLENCE',
+    'CRIME',
+    'CRUELTY',
+    'PHOBIA',
+    'GAMBLING',
+    'TRAUMA',
+    'HORROR',
+    'INSULT',
+    'OTHER',
+  ];
 
-  $: if (qs.parseUrl($page.url.search)?.query) {
-    const parsedURL = qs.parseUrl($page.url.search).query;
-
-    if (parsedURL.include_tags) {
-      if (typeof parsedURL.include_tags === 'string') {
-        includeTags = [parsedURL.include_tags];
-      } else if (typeof parsedURL.include_tags === 'object') {
-        includeTags = parsedURL.include_tags as string[];
-      }
-    }
-
-    if (parsedURL.exclude_tags) {
-      if (typeof parsedURL.exclude_tags === 'string') {
-        excludeTags = [parsedURL.exclude_tags];
-      } else if (typeof parsedURL.exclude_tags === 'object') {
-        excludeTags = parsedURL.exclude_tags as string[];
-      }
-    }
-
-    adultFilter = parsedURL.adult ? JSON.parse(parsedURL.adult.toString()) : null;
-
-    if (parsedURL.exclude_triggers) {
-      if (typeof parsedURL.exclude_triggers === 'string') {
-        excludeContentFilters = [parsedURL.exclude_triggers] as ContentFilterCategory[];
-      } else if (typeof parsedURL.exclude_triggers === 'object') {
-        excludeContentFilters = parsedURL.exclude_triggers as ContentFilterCategory[];
-      }
-    }
-
-    orderBy = parsedURL.order_by === 'LATEST' ? 'LATEST' : 'ACCURACY';
-  }
-
-  const addSearchOption = async () => {
-    const url = qs.stringifyUrl(
+  const updateSearchFilter = () => {
+    const stringifiedURL = qs.stringifyUrl(
       {
         url: '/search/post',
         query: {
@@ -74,7 +49,8 @@
         skipNull: false,
       },
     );
-    await goto(url);
+
+    location.href = stringifiedURL;
   };
 </script>
 
@@ -103,12 +79,12 @@
 
               if (escapedValue.length === 0) return;
 
+              includeValue = '';
+
               if (!includeTags.includes(escapedValue)) {
                 includeTags = [...includeTags, escapedValue];
+                updateSearchFilter();
               }
-
-              includeValue = '';
-              addSearchOption();
             }}
           >
             <input
@@ -124,12 +100,13 @@
           <div class="flex flex-wrap gap-1.5">
             {#each includeTags as tag (tag)}
               <Tag
-                class="w-fit"
+                class="w-fit cursor-pointer"
                 as="label"
                 size="sm"
                 on:change={() => {
                   includeTags = includeTags.filter((t) => t !== tag);
-                  addSearchOption();
+
+                  updateSearchFilter();
                 }}
               >
                 #{tag}
@@ -151,7 +128,7 @@
               }
 
               excludeValue = '';
-              addSearchOption();
+              updateSearchFilter();
             }}
           >
             <input
@@ -167,12 +144,12 @@
           <div class="flex flex-wrap gap-1.5 mt-3">
             {#each excludeTags as tag (tag)}
               <Tag
-                class="w-fit"
+                class="w-fit cursor-pointer"
                 as="label"
                 size="sm"
                 on:change={() => {
                   excludeTags = excludeTags.filter((t) => t !== tag);
-                  addSearchOption();
+                  updateSearchFilter();
                 }}
               >
                 #{tag}
@@ -200,7 +177,7 @@
             checked={adultFilter === null}
             on:change={() => {
               adultFilter = null;
-              addSearchOption();
+              updateSearchFilter();
             }}
           >
             성인물 포함
@@ -210,7 +187,7 @@
             checked={adultFilter === false}
             on:change={() => {
               adultFilter = false;
-              addSearchOption();
+              updateSearchFilter();
             }}
           >
             성인물 제외
@@ -220,7 +197,7 @@
             checked={adultFilter === true}
             on:change={() => {
               adultFilter = true;
-              addSearchOption();
+              updateSearchFilter();
             }}
           >
             성인물만
@@ -243,126 +220,21 @@
 
       {#if showTriggerOption}
         <div class="flex flex-wrap gap-3">
-          <Checkbox
-            class="body-14-m"
-            checked={!excludeContentFilters?.includes('GROSSNESS')}
-            on:change={() => {
-              excludeContentFilters = excludeContentFilters?.includes('GROSSNESS')
-                ? excludeContentFilters.filter((f) => f !== 'GROSSNESS')
-                : [...excludeContentFilters, 'GROSSNESS'];
-              addSearchOption();
-            }}
-          >
-            벌레/징그러움
-          </Checkbox>
-          <Checkbox
-            class="body-14-m"
-            checked={!excludeContentFilters?.includes('VIOLENCE')}
-            on:change={() => {
-              excludeContentFilters = excludeContentFilters?.includes('VIOLENCE')
-                ? excludeContentFilters.filter((f) => f !== 'VIOLENCE')
-                : [...excludeContentFilters, 'VIOLENCE'];
-              addSearchOption();
-            }}
-          >
-            폭력성
-          </Checkbox>
-          <Checkbox
-            class="body-14-m"
-            checked={!excludeContentFilters?.includes('CRIME')}
-            on:change={() => {
-              excludeContentFilters = excludeContentFilters?.includes('CRIME')
-                ? excludeContentFilters.filter((f) => f !== 'CRIME')
-                : [...excludeContentFilters, 'CRIME'];
-              addSearchOption();
-            }}
-          >
-            약물/범죄
-          </Checkbox>
-          <Checkbox
-            class="body-14-m"
-            checked={!excludeContentFilters?.includes('CRUELTY')}
-            on:change={() => {
-              excludeContentFilters = excludeContentFilters?.includes('CRUELTY')
-                ? excludeContentFilters.filter((f) => f !== 'CRUELTY')
-                : [...excludeContentFilters, 'CRUELTY'];
-              addSearchOption();
-            }}
-          >
-            잔인성
-          </Checkbox>
-          <Checkbox
-            class="body-14-m"
-            checked={!excludeContentFilters?.includes('PHOBIA')}
-            on:change={() => {
-              excludeContentFilters = excludeContentFilters?.includes('PHOBIA')
-                ? excludeContentFilters.filter((f) => f !== 'PHOBIA')
-                : [...excludeContentFilters, 'PHOBIA'];
-              addSearchOption();
-            }}
-          >
-            정신질환/공포증
-          </Checkbox>
-          <Checkbox
-            class="body-14-m"
-            checked={!excludeContentFilters?.includes('GAMBLING')}
-            on:change={() => {
-              excludeContentFilters = excludeContentFilters?.includes('GAMBLING')
-                ? excludeContentFilters.filter((f) => f !== 'GAMBLING')
-                : [...excludeContentFilters, 'GAMBLING'];
-              addSearchOption();
-            }}
-          >
-            사행성
-          </Checkbox>
-          <Checkbox
-            class="body-14-m"
-            checked={!excludeContentFilters?.includes('TRAUMA')}
-            on:change={() => {
-              excludeContentFilters = excludeContentFilters?.includes('TRAUMA')
-                ? excludeContentFilters.filter((f) => f !== 'TRAUMA')
-                : [...excludeContentFilters, 'TRAUMA'];
-              addSearchOption();
-            }}
-          >
-            PTSD/트라우마
-          </Checkbox>
-          <Checkbox
-            class="body-14-m"
-            checked={!excludeContentFilters?.includes('HORROR')}
-            on:change={() => {
-              excludeContentFilters = excludeContentFilters?.includes('HORROR')
-                ? excludeContentFilters.filter((f) => f !== 'HORROR')
-                : [...excludeContentFilters, 'HORROR'];
-              addSearchOption();
-            }}
-          >
-            공포성
-          </Checkbox>
-          <Checkbox
-            class="body-14-m"
-            checked={!excludeContentFilters?.includes('INSULT')}
-            on:change={() => {
-              excludeContentFilters = excludeContentFilters?.includes('INSULT')
-                ? excludeContentFilters.filter((f) => f !== 'INSULT')
-                : [...excludeContentFilters, 'INSULT'];
-              addSearchOption();
-            }}
-          >
-            부적절한 언어
-          </Checkbox>
-          <Checkbox
-            class="body-14-m"
-            checked={!excludeContentFilters?.includes('OTHER')}
-            on:change={() => {
-              excludeContentFilters = excludeContentFilters?.includes('OTHER')
-                ? excludeContentFilters.filter((f) => f !== 'OTHER')
-                : [...excludeContentFilters, 'OTHER'];
-              addSearchOption();
-            }}
-          >
-            기타
-          </Checkbox>
+          {#each contentFilters as contentFilter (contentFilter)}
+            <Checkbox
+              class="body-14-m"
+              checked={!excludeContentFilters.includes(contentFilter)}
+              on:change={() => {
+                excludeContentFilters = excludeContentFilters.includes(contentFilter)
+                  ? excludeContentFilters.filter((f) => f !== contentFilter)
+                  : [...excludeContentFilters, contentFilter];
+
+                updateSearchFilter();
+              }}
+            >
+              {filterToLocaleString[contentFilter]}
+            </Checkbox>
+          {/each}
         </div>
       {/if}
     </div>
@@ -379,14 +251,14 @@
 
       <Menu class="<sm:hidden" placement="bottom">
         <Button slot="value" color="tertiary" size="md" variant="outlined">
-          {orderByText}
+          {orderBy === 'LATEST' ? '최신순' : '정확도순'}
           <i class="i-lc-chevron-down square-5" />
         </Button>
 
         <MenuItem
           on:click={() => {
             orderBy = 'LATEST';
-            addSearchOption();
+            updateSearchFilter();
           }}
         >
           최신순
@@ -394,7 +266,7 @@
         <MenuItem
           on:click={() => {
             orderBy = 'ACCURACY';
-            addSearchOption();
+            updateSearchFilter();
           }}
         >
           정확도순
@@ -563,116 +435,19 @@
 
     {#if showTriggerOption}
       <div class="flex flex-wrap gap-3">
-        <Checkbox
-          class="body-14-m"
-          checked={!excludeContentFilters?.includes('GROSSNESS')}
-          on:change={() => {
-            excludeContentFilters = excludeContentFilters?.includes('GROSSNESS')
-              ? excludeContentFilters.filter((f) => f !== 'GROSSNESS')
-              : [...excludeContentFilters, 'GROSSNESS'];
-          }}
-        >
-          벌레/징그러움
-        </Checkbox>
-        <Checkbox
-          class="body-14-m"
-          checked={!excludeContentFilters?.includes('VIOLENCE')}
-          on:change={() => {
-            excludeContentFilters = excludeContentFilters?.includes('VIOLENCE')
-              ? excludeContentFilters.filter((f) => f !== 'VIOLENCE')
-              : [...excludeContentFilters, 'VIOLENCE'];
-          }}
-        >
-          폭력성
-        </Checkbox>
-        <Checkbox
-          class="body-14-m"
-          checked={!excludeContentFilters?.includes('CRIME')}
-          on:change={() => {
-            excludeContentFilters = excludeContentFilters?.includes('CRIME')
-              ? excludeContentFilters.filter((f) => f !== 'CRIME')
-              : [...excludeContentFilters, 'CRIME'];
-          }}
-        >
-          약물/범죄
-        </Checkbox>
-        <Checkbox
-          class="body-14-m"
-          checked={!excludeContentFilters?.includes('CRUELTY')}
-          on:change={() => {
-            excludeContentFilters = excludeContentFilters?.includes('CRUELTY')
-              ? excludeContentFilters.filter((f) => f !== 'CRUELTY')
-              : [...excludeContentFilters, 'CRUELTY'];
-          }}
-        >
-          잔인성
-        </Checkbox>
-        <Checkbox
-          class="body-14-m"
-          checked={!excludeContentFilters?.includes('PHOBIA')}
-          on:change={() => {
-            excludeContentFilters = excludeContentFilters?.includes('PHOBIA')
-              ? excludeContentFilters.filter((f) => f !== 'PHOBIA')
-              : [...excludeContentFilters, 'PHOBIA'];
-          }}
-        >
-          정신질환/공포증
-        </Checkbox>
-        <Checkbox
-          class="body-14-m"
-          checked={!excludeContentFilters?.includes('GAMBLING')}
-          on:change={() => {
-            excludeContentFilters = excludeContentFilters?.includes('GAMBLING')
-              ? excludeContentFilters.filter((f) => f !== 'GAMBLING')
-              : [...excludeContentFilters, 'GAMBLING'];
-          }}
-        >
-          사행성
-        </Checkbox>
-        <Checkbox
-          class="body-14-m"
-          checked={!excludeContentFilters?.includes('TRAUMA')}
-          on:change={() => {
-            excludeContentFilters = excludeContentFilters?.includes('TRAUMA')
-              ? excludeContentFilters.filter((f) => f !== 'TRAUMA')
-              : [...excludeContentFilters, 'TRAUMA'];
-          }}
-        >
-          PTSD/트라우마
-        </Checkbox>
-        <Checkbox
-          class="body-14-m"
-          checked={!excludeContentFilters?.includes('HORROR')}
-          on:change={() => {
-            excludeContentFilters = excludeContentFilters?.includes('HORROR')
-              ? excludeContentFilters.filter((f) => f !== 'HORROR')
-              : [...excludeContentFilters, 'HORROR'];
-          }}
-        >
-          공포성
-        </Checkbox>
-        <Checkbox
-          class="body-14-m"
-          checked={!excludeContentFilters?.includes('INSULT')}
-          on:change={() => {
-            excludeContentFilters = excludeContentFilters?.includes('INSULT')
-              ? excludeContentFilters.filter((f) => f !== 'INSULT')
-              : [...excludeContentFilters, 'INSULT'];
-          }}
-        >
-          부적절한 언어
-        </Checkbox>
-        <Checkbox
-          class="body-14-m"
-          checked={!excludeContentFilters?.includes('OTHER')}
-          on:change={() => {
-            excludeContentFilters = excludeContentFilters?.includes('OTHER')
-              ? excludeContentFilters.filter((f) => f !== 'OTHER')
-              : [...excludeContentFilters, 'OTHER'];
-          }}
-        >
-          기타
-        </Checkbox>
+        {#each contentFilters as contentFilter (contentFilter)}
+          <Checkbox
+            class="body-14-m"
+            checked={!excludeContentFilters.includes(contentFilter)}
+            on:change={() => {
+              excludeContentFilters = excludeContentFilters.includes(contentFilter)
+                ? excludeContentFilters.filter((f) => f !== contentFilter)
+                : [...excludeContentFilters, contentFilter];
+            }}
+          >
+            {filterToLocaleString[contentFilter]}
+          </Checkbox>
+        {/each}
       </div>
     {/if}
 
@@ -683,10 +458,10 @@
         size="xl"
         variant="outlined"
         on:click={() => {
-          includeTags = [];
-          excludeTags = [];
           includeValue = '';
           excludeValue = '';
+          includeTags = [];
+          excludeTags = [];
           adultFilter = null;
           excludeContentFilters = [];
           orderBy = 'LATEST';
@@ -699,7 +474,7 @@
         size="xl"
         on:click={() => {
           filterOpen = false;
-          addSearchOption();
+          updateSearchFilter();
         }}
       >
         결과보기

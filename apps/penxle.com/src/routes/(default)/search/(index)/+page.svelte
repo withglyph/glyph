@@ -68,7 +68,7 @@
   `);
 </script>
 
-<Helmet title="{$page.url.searchParams.get('q')} - 검색" />
+<Helmet title="{$page.url.searchParams.get('q')} - 펜슬 검색결과" />
 
 <div class="body-14-m text-secondary py-1 px-3 rounded-lg bg-surface-primary mt-3 <sm:mx-4">
   🔍 약 {$query.searchPosts.count}개의 검색결과가 있어요!
@@ -83,9 +83,16 @@
 
 <div class="my-9 flex gap-9 <sm:flex-col">
   <div class="grow w-50% <sm:(w-full px-4)">
-    <a class="inline-block title-20-b mb-4" href={`/search/space?q=${$page.url.searchParams.get('q')}`}>
-      스페이스 <i class="i-lc-chevron-right square-6 text-secondary" />
-    </a>
+    <svelte:element
+      this={$query.searchSpaces.length === 0 ? 'h2' : 'a'}
+      class="flex title-20-b mb-4 items-center"
+      href={$query.searchSpaces.length === 0 ? undefined : `/search/space?q=${$page.url.searchParams.get('q')}`}
+    >
+      스페이스
+      {#if $query.searchSpaces.length > 0}
+        <i class="i-lc-chevron-right square-6 text-secondary" />
+      {/if}
+    </svelte:element>
 
     {#if $query.searchSpaces.length === 0}
       <div class="text-secondary body-15-b text-center flex center min-h-50">검색 결과가 없어요</div>
@@ -147,9 +154,16 @@
   </div>
 
   <div class="grow w-50% <sm:(w-full px-4)">
-    <a class="inline-block title-20-b mb-4" href={`/search/tag?q=${$page.url.searchParams.get('q')}`}>
-      태그 <i class="i-lc-chevron-right square-6 text-secondary" />
-    </a>
+    <svelte:element
+      this={$query.searchTags.length === 0 ? 'h2' : 'a'}
+      class="flex title-20-b mb-4 items-center"
+      href={$query.searchTags.length === 0 ? undefined : `/search/tag?q=${$page.url.searchParams.get('q')}`}
+    >
+      태그
+      {#if $query.searchTags.length > 0}
+        <i class="i-lc-chevron-right square-6 text-secondary" />
+      {/if}
+    </svelte:element>
 
     {#if $query.searchTags.length === 0}
       <div class="text-secondary body-15-b text-center flex center min-h-50">검색 결과가 없어요</div>
@@ -164,18 +178,18 @@
 </div>
 
 <div>
-  <a class="title-20-b <sm:px-4" href={`/search/post?q=${$page.url.searchParams.get('q')}`}>
-    포스트 <i class="i-lc-chevron-right square-6 text-secondary" />
-  </a>
+  <svelte:element
+    this={$query.searchPosts.count === 0 ? 'h2' : 'a'}
+    class="title-20-b <sm:px-4"
+    href={$query.searchPosts.count === 0 ? undefined : `/search/post?q=${$page.url.searchParams.get('q')}`}
+  >
+    포스트
+    {#if $query.searchPosts.count > 0}
+      <i class="i-lc-chevron-right square-6 text-secondary" />
+    {/if}
+  </svelte:element>
 
-  <!-- <div class="flex gap-3 my-4">
-    <button class="py-2 px-4 border rounded-8 body-15-sb text-blue-50 bg-blue-10 border-blue-50" type="button">
-      글
-    </button>
-    <button class="py-2 px-4 border rounded-8 body-15-sb border-secondary" type="button">그림</button>
-  </div> -->
-
-  {#if $query.searchPosts.posts.length === 0}
+  {#if $query.searchPosts.count === 0}
     <div class="text-secondary body-15-b text-center flex center min-h-50">검색 결과가 없어요</div>
   {:else}
     <div class="<sm:bg-primary">
