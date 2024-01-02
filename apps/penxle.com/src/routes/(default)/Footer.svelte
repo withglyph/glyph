@@ -30,7 +30,7 @@
         <div class="flex flex-wrap items-center">
           <div>주소: 서울특별시 강남구 강남대로100길 14, 6층</div>
           <div class="h-2 border-l border-gray-50 mx-1" />
-          <div>전화: 070-7580-5205</div>
+          <div>전화: 02-565-7695</div>
         </div>
       </section>
 
