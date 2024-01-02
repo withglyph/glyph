@@ -1,5 +1,4 @@
 <script generics="T extends 'space' | 'me'" lang="ts">
-  import { PostVisibility } from '@prisma/client';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import { fragment, graphql } from '$glitch';
@@ -10,7 +9,12 @@
   import { Table, TableData, TableHead, TableRow } from '$lib/components/table';
   import { toast } from '$lib/notification';
   import type { ChangeEventHandler } from 'svelte/elements';
-  import type { PostManageTable_Collection, PostManageTable_Post_query, PostManageTable_SpaceMember } from '$glitch';
+  import type {
+    PostManageTable_Collection,
+    PostManageTable_Post_query,
+    PostManageTable_SpaceMember,
+    PostVisibility,
+  } from '$glitch';
   import type { PublishPostInput } from '$lib/validations/post';
 
   const toolbarMenuOffset = 16;

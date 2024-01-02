@@ -1,4 +1,4 @@
-import type { ContentFilterCategory } from '@prisma/client';
+import type { ContentFilterCategory } from '$glitch';
 
 export const filterToLocaleString: Record<ContentFilterCategory, string> = {
   ADULT: '성인물',

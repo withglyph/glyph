@@ -1,5 +1,5 @@
-import type { PostRevisionContentKind, PostRevisionKind, Tag } from '@prisma/client';
 import type { JSONContent } from '@tiptap/core';
+import type { PostRevisionContentKind, PostRevisionKind } from '$glitch';
 
 export type RestoredRevision = {
   id: string;
@@ -8,5 +8,5 @@ export type RestoredRevision = {
   content: JSONContent;
   title: string;
   subtitle?: string | null | undefined;
-  tags: Pick<Tag, 'id' | 'name'>[];
+  tags: { id: string; name: string }[];
 } | null;
