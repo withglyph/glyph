@@ -10,6 +10,9 @@
   export { _class as class };
 
   type $$Props = HTMLInputAttributes;
+  type $$Events = {
+    change: Parameters<NonNullable<HTMLInputAttributes['on:change']>>[0];
+  };
 
   const { field } = getFormContext();
 

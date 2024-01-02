@@ -9,6 +9,7 @@
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Table, TableData, TableHead, TableRow } from '$lib/components/table';
   import { toast } from '$lib/notification';
+  import type { ChangeEventHandler } from 'svelte/elements';
   import type { PostManageTable_Collection, PostManageTable_Post_query, PostManageTable_SpaceMember } from '$glitch';
   import type { PublishPostInput } from '$lib/validations/post';
 
@@ -224,10 +225,7 @@
     }
   }
 
-  function handleSelectAllPost(event: Event) {
-    if (!(event.currentTarget instanceof HTMLInputElement))
-      throw new Error('event.currentTarget is not HTMLInputElement');
-
+  const handleSelectAllPost: ChangeEventHandler<HTMLInputElement> = (event) => {
     const { checked } = event.currentTarget;
 
     if (checked) {
@@ -240,11 +238,8 @@
       }
     }
     selectedPostIds = selectedPostIds;
-  }
-  function handleSelectPost(event: Event) {
-    if (!(event.currentTarget instanceof HTMLInputElement))
-      throw new Error('event.currentTarget is not HTMLInputElement');
-
+  };
+  const handleSelectPost: ChangeEventHandler<HTMLInputElement> = (event) => {
     const { checked, value } = event.currentTarget;
     if (checked) {
       selectedPostIds.add(value);
@@ -253,7 +248,7 @@
     }
 
     selectedPostIds = selectedPostIds;
-  }
+  };
 
   const createSpaceCollection = graphql(`
     mutation PostManageTable_CreateSpaceCollection_Mutation($input: CreateSpaceCollectionInput!) {

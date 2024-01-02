@@ -3,6 +3,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal, Tag } from '$lib/components';
   import { toast } from '$lib/notification';
+  import type { ChangeEventHandler } from 'svelte/elements';
   import type { MeSettingsContentFiltersPage_MutedTagModal_user } from '$glitch';
 
   let _user: MeSettingsContentFiltersPage_MutedTagModal_user;
@@ -39,8 +40,8 @@
     return Promise.all(tags.map(({ id }) => unmuteTag({ tagId: id })));
   };
 
-  const handleChange = (e: Event, tag: (typeof $user.mutedTags)[0]) => {
-    const { checked } = e.currentTarget as HTMLInputElement;
+  const handleChange = (e: Parameters<ChangeEventHandler<HTMLInputElement>>[0], tag: (typeof $user.mutedTags)[0]) => {
+    const { checked } = e.currentTarget;
 
     tags = checked ? [...tags, tag] : tags.filter((t) => t.id !== tag.id);
   };

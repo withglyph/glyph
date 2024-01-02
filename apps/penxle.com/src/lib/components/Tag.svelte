@@ -1,5 +1,6 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import type { HTMLInputAttributes } from 'svelte/elements';
 
   export let size: 'sm' | 'lg' = 'lg';
   let _class: string | undefined = undefined;
@@ -8,6 +9,10 @@
   export let as: 'div' | 'a' | 'label' = 'a';
   export let checked = false;
   export let name: string | undefined = undefined;
+
+  type $$Events = {
+    change: Parameters<NonNullable<HTMLInputAttributes['on:change']>>[0];
+  };
 </script>
 
 <svelte:element

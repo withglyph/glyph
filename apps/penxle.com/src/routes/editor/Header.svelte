@@ -24,6 +24,7 @@
   import { preventRevise } from './store';
   import ToolbarButton from './ToolbarButton.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
+  import type { ChangeEventHandler } from 'svelte/elements';
   import type { Writable } from 'svelte/store';
   import type {
     ContentFilterCategory,
@@ -375,8 +376,11 @@
     void update();
   }
 
-  const checkContentFilter = (e: Event, contentFilter: ContentFilterCategory) => {
-    const { checked } = e.currentTarget as HTMLInputElement;
+  const checkContentFilter = (
+    e: Parameters<ChangeEventHandler<HTMLInputElement>>[0],
+    contentFilter: ContentFilterCategory,
+  ) => {
+    const { checked } = e.currentTarget;
 
     $data.contentFilters = checked
       ? $data.contentFilters

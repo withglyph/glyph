@@ -3,6 +3,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal, Tag } from '$lib/components';
   import { toast } from '$lib/notification';
+  import type { ChangeEventHandler } from 'svelte/elements';
   import type { MeCabinetsPage_FollowTagModal_user } from '$glitch';
 
   let _user: MeCabinetsPage_FollowTagModal_user;
@@ -38,8 +39,11 @@
     return Promise.all(tags.map(({ id }) => unfollowTag({ tagId: id })));
   };
 
-  const handleChange = (e: Event, tag: (typeof $user.followedTags)[0]) => {
-    const { checked } = e.currentTarget as HTMLInputElement;
+  const handleChange = (
+    e: Parameters<ChangeEventHandler<HTMLInputElement>>[0],
+    tag: (typeof $user.followedTags)[0],
+  ) => {
+    const { checked } = e.currentTarget;
 
     tags = checked ? [...tags, tag] : tags.filter((t) => t.id !== tag.id);
   };

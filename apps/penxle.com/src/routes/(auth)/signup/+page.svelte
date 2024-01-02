@@ -7,6 +7,7 @@
   import { Checkbox, FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { CreateUserSchema } from '$lib/validations';
+  import type { ChangeEventHandler } from 'svelte/elements';
 
   $: query = graphql(`
     query SignupPage_Query($token: String!) {
@@ -42,8 +43,8 @@
   });
 
   $: consentAll = $data.termsConsent && $data.marketingConsent;
-  const handleConsentAll = (event: Event) => {
-    const { checked } = event.currentTarget as HTMLInputElement;
+  const handleConsentAll: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const { checked } = event.currentTarget;
     setFields('termsConsent', checked);
     setFields('marketingConsent', checked);
   };

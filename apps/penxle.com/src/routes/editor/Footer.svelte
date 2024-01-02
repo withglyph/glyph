@@ -6,7 +6,7 @@
   import { toast } from '$lib/notification';
   import type { Writable } from '@svelte-kits/store';
   import type { JSONContent } from '@tiptap/core';
-  import type { KeyboardEventHandler } from 'svelte/elements';
+  import type { ChangeEventHandler, KeyboardEventHandler } from 'svelte/elements';
   import type { Image_image, PostRevisionContentKind } from '$glitch';
   import type { ImageBounds } from '$lib/utils';
 
@@ -66,8 +66,8 @@
     $autoSaveCount += 1;
   };
 
-  const handleImageCaptionInputChange = (e: Event) => {
-    const { value } = e.currentTarget as HTMLInputElement;
+  const handleImageCaptionInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    const { value } = e.currentTarget;
 
     if (!content) {
       content = {
