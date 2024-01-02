@@ -1243,6 +1243,7 @@ export const postSchema = defineSchema((builder) => {
           data: {
             state: 'DELETED',
             publishedRevision: post.publishedRevisionId ? { update: { kind: 'ARCHIVED' } } : undefined,
+            collectionPost: { delete: true },
           },
         });
       },
