@@ -1,4 +1,4 @@
-name: nocooc
+name: cashflow
 main: pulumi/index.ts
 runtime:
   name: nodejs

@@ -48,8 +48,8 @@ const createRepository = (name: string) => {
   return new Repository(name, { name });
 };
 
+createRepository('cashflow');
 createRepository('literoom');
-createRepository('nocooc');
 
 createRepository('penxle.com');
 createRepository('penxle.io');

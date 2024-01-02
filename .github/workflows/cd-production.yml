@@ -21,8 +21,8 @@ jobs:
           - penxle.com
           - penxle.io
           - help.penxle.com
+          - cashflow
           - literoom
-          - nocooc
 
     concurrency:
       group: production/${{ matrix.app }}

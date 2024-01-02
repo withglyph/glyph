@@ -3,10 +3,10 @@ import * as aws from '@pulumi/aws';
 import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
 
-const labels = { app: 'nocooc' };
+const labels = { app: 'cashflow' };
 
 const image = aws.ecr.getImageOutput({
-  repositoryName: 'nocooc',
+  repositoryName: 'cashflow',
   imageTag: 'latest',
 });
 
@@ -18,9 +18,20 @@ const eip2 = new aws.ec2.Eip('public-nlb@az2', {
   tags: { Name: 'public-nlb@az2' },
 });
 
-const serviceAccount = new penxle.IAMServiceAccount('nocooc', {
+const secret = new penxle.DopplerSecret('cashflow', {
   metadata: {
-    name: 'nocooc',
+    name: 'cashflow',
+    namespace: 'prod',
+  },
+  spec: {
+    project: 'cashflow',
+    config: 'prod',
+  },
+});
+
+const serviceAccount = new penxle.IAMServiceAccount('cashflow', {
+  metadata: {
+    name: 'cashflow',
     namespace: 'prod',
   },
   spec: {
@@ -37,9 +48,9 @@ const serviceAccount = new penxle.IAMServiceAccount('nocooc', {
   },
 });
 
-new k8s.apps.v1.Deployment('nocooc', {
+new k8s.apps.v1.Deployment('cashflow', {
   metadata: {
-    name: 'nocooc',
+    name: 'cashflow',
     namespace: 'prod',
   },
   spec: {
@@ -53,6 +64,7 @@ new k8s.apps.v1.Deployment('nocooc', {
           {
             name: 'app',
             image: pulumi.interpolate`${image.registryId}.dkr.ecr.ap-northeast-2.amazonaws.com/${image.repositoryName}@${image.imageDigest}`,
+            envFrom: [{ secretRef: { name: secret.metadata.name } }],
             resources: {
               requests: { cpu: '100m' },
               limits: { memory: '100Mi' },
@@ -74,9 +86,9 @@ new k8s.apps.v1.Deployment('nocooc', {
   },
 });
 
-new k8s.policy.v1.PodDisruptionBudget('nocooc', {
+new k8s.policy.v1.PodDisruptionBudget('cashflow', {
   metadata: {
-    name: 'nocooc',
+    name: 'cashflow',
     namespace: 'prod',
   },
   spec: {
@@ -85,9 +97,9 @@ new k8s.policy.v1.PodDisruptionBudget('nocooc', {
   },
 });
 
-new k8s.core.v1.Service('nocooc', {
+new k8s.core.v1.Service('cashflow', {
   metadata: {
-    name: 'nocooc',
+    name: 'cashflow',
     namespace: 'prod',
     annotations: {
       'service.beta.kubernetes.io/aws-load-balancer-name': 'public-nlb',
