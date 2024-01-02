@@ -79,6 +79,7 @@ export const feedSchema = defineSchema((builder) => {
             },
             space: {
               state: 'ACTIVE',
+              visibility: 'PUBLIC',
               userMutes: {
                 none: { userId: context.session.userId },
               },
