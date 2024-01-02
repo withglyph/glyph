@@ -179,7 +179,7 @@
   </svelte:fragment>
 
   <PopupSearch
-    class={clsx('max-w-full! m-b-4', $posts.length === 0 && 'hidden')}
+    class={clsx('m-b-4', $posts.length === 0 && 'hidden')}
     on:input={(e) => (query = e.currentTarget.value.trim())}
   />
   <form use:form>

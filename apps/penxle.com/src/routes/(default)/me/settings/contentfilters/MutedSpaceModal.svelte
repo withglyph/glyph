@@ -3,6 +3,7 @@
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button, Image, Modal } from '$lib/components';
+  import { PopupSearch } from '$lib/components/forms';
   import { toast } from '$lib/notification';
   import type { MeSettingsContentFiltersPage_MutedSpaceModal_user } from '$glitch';
 
@@ -66,16 +67,10 @@
 <Modal size="md" bind:open>
   <svelte:fragment slot="title">숨긴 스페이스</svelte:fragment>
 
-  <form class={clsx('relative h-11.5 w-full mb-4', mutedSpaces?.length === 0 && 'hidden')} on:submit|preventDefault>
-    <input
-      class="rounded-2.5 h-11.5 w-full bg-primary py-1.75 pr-3.5 pl-11 w-full border border-bg-primary transition focus-within:border-tertiary!"
-      type="text"
-      on:input={(e) => (query = e.currentTarget.value.trim())}
-    />
-    <div class="absolute inset-y-0 left-3.5 flex center text-secondary h-100%">
-      <i class="i-lc-search square-5 transition" />
-    </div>
-  </form>
+  <PopupSearch
+    class={clsx('mb-4', mutedSpaces?.length === 0 && 'hidden')}
+    on:input={(event) => (query = event.currentTarget.value.trim())}
+  />
 
   <ul
     class={clsx(

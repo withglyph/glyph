@@ -105,7 +105,7 @@
 
 <div class="px-4 py-6 bg-white border border-secondary rounded-xl sm:px-6">
   <div class="flex items-center justify-between mb-6 gap-2">
-    <PopupSearch />
+    <PopupSearch class="max-w-82.5" />
 
     <!-- {#if $query.space.meAsMember?.role === 'ADMIN'}
       <Button size="lg" on:click={() => (open = true)}>멤버 초대</Button>

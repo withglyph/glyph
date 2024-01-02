@@ -13,11 +13,11 @@
   };
 </script>
 
-<form class={clsx('relative h-11.5 max-w-82.5', _class)}>
+<form class={clsx('relative h-11.5', _class)} on:submit|preventDefault>
   <input
     {name}
-    class="rounded-2.5 h-11.5 w-full bg-primary py-1.75 pr-3.5 pl-11"
-    type="text"
+    class="rounded-2.5 h-11.5 w-full bg-primary py-1.75 pr-3.5 pl-11 border border-bg-primary transition focus-within:border-tertiary"
+    type="search"
     bind:value
     on:input
     {...$$restProps}
