@@ -1237,13 +1237,16 @@ export const postSchema = defineSchema((builder) => {
           }
         }
 
+        await db.spaceCollectionPost.deleteMany({
+          where: { postId: post.id },
+        });
+
         return await db.post.update({
           ...query,
           where: { id: post.id },
           data: {
             state: 'DELETED',
             publishedRevision: post.publishedRevisionId ? { update: { kind: 'ARCHIVED' } } : undefined,
-            collectionPost: { delete: true },
           },
         });
       },
