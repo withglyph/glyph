@@ -45,10 +45,6 @@
   `);
 </script>
 
-{#if $query.me.purchasedPosts?.length === 0}
-  <p class="text-secondary text-center body-15-b py-10">아직 구매한 포스트가 없어요</p>
-{/if}
-
 {#each $query.me.purchasedPosts as post (post.id)}
   <li>
     <div class="flex items-center justify-between gap-3 body-14-m text-secondary mb-2">
@@ -71,4 +67,6 @@
       </div>
     </a>
   </li>
+{:else}
+  <p class="text-secondary text-center body-16-m py-10">구매한 포스트가 없어요</p>
 {/each}

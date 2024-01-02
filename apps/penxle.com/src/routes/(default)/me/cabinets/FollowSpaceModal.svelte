@@ -1,4 +1,5 @@
 <script lang="ts">
+  import clsx from 'clsx';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
@@ -10,7 +11,7 @@
   export { _user as $user };
   export let open = false;
 
-  let followedSpaces: typeof $user.followedSpaces;
+  let followedSpaces: typeof $user.followedSpaces | undefined;
   let query = '';
 
   const setSpaces = () => {
@@ -59,12 +60,14 @@
       }
     }
   `);
+
+  $: filteredSpaces = followedSpaces?.filter((space) => space.name.includes(query));
 </script>
 
 <Modal size="md" bind:open>
   <svelte:fragment slot="title">관심 스페이스</svelte:fragment>
 
-  <form class="relative h-11.5 w-full mb-4" on:submit|preventDefault>
+  <form class={clsx('relative h-11.5 w-full mb-4', followedSpaces?.length === 0 && 'hidden')} on:submit|preventDefault>
     <input
       class="rounded-2.5 h-11.5 w-full bg-primary py-1.75 pr-3.5 pl-11 w-full border border-bg-primary transition focus-within:border-tertiary!"
       type="text"
@@ -75,8 +78,13 @@
     </div>
   </form>
 
-  <ul class="space-y-4">
-    {#each followedSpaces.filter((space) => space.name.includes(query)) as space (space.id)}
+  <ul
+    class={clsx(
+      'flex flex-col gap-4 min-h-10rem max-h-15rem overflow-y-auto',
+      filteredSpaces?.length === 0 && 'justify-center',
+    )}
+  >
+    {#each filteredSpaces ?? [] as space (space.id)}
       <li class="flex items-center justify-between">
         <div class="flex gap-2 items-center truncate mr-2">
           <Image class="square-10.5 rounded-lg grow-0 shrink-0 border border-secondary" $image={space.icon} />
@@ -114,6 +122,12 @@
           </Button>
         {/if}
       </li>
+    {:else}
+      <article class="text-secondary body-16-m text-center break-keep">
+        {#if followedSpaces}
+          {followedSpaces.length === 0 ? '아직 추가된 관심 스페이스가 없어요' : '일치하는 검색 결과가 없어요'}
+        {/if}
+      </article>
     {/each}
   </ul>
 </Modal>

@@ -89,7 +89,7 @@
     </div>
 
     {#if $query.me.bookmarks.length === 0 || $query.me.bookmarks[0].postCount === 0}
-      <p class="body-15-b text-secondary text-center py-2">아직 북마크가 없어요</p>
+      <p class="body-16-m text-secondary text-center py-2">아직 북마크가 없어요</p>
     {:else}
       {#each $query.me.bookmarks as bookmark (bookmark.id)}
         <Link class="inline-block" href="/me/cabinets/bookmark">

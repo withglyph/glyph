@@ -1,4 +1,5 @@
 <script lang="ts">
+  import clsx from 'clsx';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal, Tag } from '$lib/components';
@@ -51,7 +52,7 @@
   <svelte:fragment slot="title">숨긴 태그</svelte:fragment>
   <svelte:fragment slot="subtitle">태그를 선택하면 해제할 수 있어요</svelte:fragment>
 
-  <form class="relative h-11.5 w-full mb-4" on:submit|preventDefault>
+  <form class={clsx('relative h-11.5 w-full mb-4', $user.mutedTags.length === 0 && 'hidden')} on:submit|preventDefault>
     <input
       class="rounded-2.5 h-11.5 w-full bg-primary py-1.75 pr-3.5 pl-11 w-full border border-bg-primary transition focus-within:border-tertiary!"
       type="text"
@@ -62,9 +63,15 @@
     </div>
   </form>
 
-  <ul class="flex flex-wrap gap-2.5 max-h-15rem overflow-y-auto">
+  <ul class="flex flex-wrap gap-2.5 min-h-10rem max-h-15rem overflow-y-auto">
     {#each $user.mutedTags.filter((tag) => tag.name.includes(query)) as tag (tag.id)}
-      <Tag as="label" checked={tags.includes(tag)} on:change={(e) => handleChange(e, tag)}>{tag.name}</Tag>
+      <Tag class="h-fit" as="label" checked={tags.includes(tag)} on:change={(e) => handleChange(e, tag)}>
+        {tag.name}
+      </Tag>
+    {:else}
+      <article class="text-secondary body-16-m self-center m-x-auto break-keep">
+        {$user.mutedTags.length === 0 ? '숨긴 태그가 없어요' : '일치하는 검색 결과가 없어요'}
+      </article>
     {/each}
   </ul>
 

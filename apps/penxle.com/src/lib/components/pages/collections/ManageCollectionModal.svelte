@@ -1,4 +1,5 @@
 <script lang="ts">
+  import clsx from 'clsx';
   import dayjs from 'dayjs';
   import mixpanel from 'mixpanel-browser';
   import { page } from '$app/stores';
@@ -130,6 +131,13 @@
     registeredPostIds.delete(postId);
     registeredPostIds = registeredPostIds;
   };
+
+  $: filteredPosts = $posts.filter((post) => {
+    const searchResult = post.publishedRevision?.title.includes(query);
+    const isInOtherCollection = !!post.collection && post.collection.id !== $collection.id;
+
+    return searchResult && !isInOtherCollection;
+  });
 </script>
 
 <Modal size="md" bind:open>
@@ -170,15 +178,18 @@
     한 포스트 당 한 컬렉션에만 속할 수 있어요
   </svelte:fragment>
 
-  <PopupSearch class="max-w-full! m-b-4" on:input={(e) => (query = e.currentTarget.value.trim())} />
+  <PopupSearch
+    class={clsx('max-w-full! m-b-4', $posts.length === 0 && 'hidden')}
+    on:input={(e) => (query = e.currentTarget.value.trim())}
+  />
   <form use:form>
-    <ul class="space-y-4 max-h-15rem overflow-y-auto">
-      {#each $posts.filter((post) => {
-        const searchResult = post.publishedRevision?.title.includes(query);
-        const isInOtherCollection = !!post.collection && post.collection.id !== $collection.id;
-
-        return searchResult && !isInOtherCollection;
-      }) as post (post.id)}
+    <ul
+      class={clsx(
+        'flex flex-col gap-4 min-h-10rem max-h-15rem overflow-y-auto',
+        filteredPosts.length === 0 && 'justify-center',
+      )}
+    >
+      {#each filteredPosts as post (post.id)}
         <li class="flex items-center justify-between">
           <a class="flex gap-2 items-center truncate mr-2" href="/{slug}/{post.permalink}">
             {#if post.publishedRevision?.croppedThumbnail}
@@ -199,10 +210,16 @@
             <Button class="shrink-0" color="secondary" size="md" on:click={() => registerPost(post.id)}>추가</Button>
           {/if}
         </li>
+      {:else}
+        <article class="flex flex-col text-secondary body-16-m self-center break-keep">
+          {$posts.length === 0 ? '아직 스페이스에 업로드된 포스트가 없어요' : '일치하는 검색 결과가 없어요'}
+        </article>
       {/each}
     </ul>
     <div class="flex w-full gap-xs m-t-6">
-      <Button class="flex-1" loading={$isSubmitting} size="xl" type="submit">저장하기</Button>
+      <Button class="flex-1" disabled={$posts.length === 0} loading={$isSubmitting} size="xl" type="submit">
+        저장하기
+      </Button>
       <Button
         color="tertiary"
         size="xl"
