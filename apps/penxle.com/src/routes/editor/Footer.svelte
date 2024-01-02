@@ -135,7 +135,7 @@
   data-expanded={open}
 >
   <button
-    class="w-16 h-7.5 absolute top--7.5 rounded-1.5 left-50% translate-x-50% rounded-b-none flex center bg-white shadow-[0px_-5px_16px_-8px_rgba(0,0,0,0.15)]"
+    class="w-16 h-7.5 absolute top--7.5 rounded-1.5 left-50% -translate-x-50% rounded-b-none flex center bg-white shadow-[0px_-5px_16px_-8px_rgba(0,0,0,0.15)]"
     aria-controls="footer"
     aria-expanded={open}
     type="button"
