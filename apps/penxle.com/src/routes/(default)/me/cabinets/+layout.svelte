@@ -53,29 +53,31 @@
 <h1 class="title-20-eb mb-6 <sm:hidden">나의 서랍</h1>
 
 <div class="space-y-2 sm:space-y-6">
-  <div class="bg-white flex py-3 sm:(border border-secondary rounded-2xl)">
-    <button
-      class="flex flex-col center grow basis-0 border-r"
-      disabled={$query.me.followedSpaces.length === 0}
-      type="button"
-      on:click={() => (followingSpaceOpen = true)}
-    >
-      <div class="title-20-b mb-2 sm:title-24-b">{$query.me.followedSpaces.length}</div>
-      <div class="body-13-m text-secondary sm:body-16-m">관심 스페이스</div>
-    </button>
-    <button
-      class="flex flex-col center grow basis-0"
-      disabled={$query.me.followedTags.length === 0}
-      type="button"
-      on:click={() => (followingTagOpen = true)}
-    >
-      <div class="title-20-b mb-2 sm:title-24-b">{$query.me.followedTags.length}</div>
-      <div class="body-13-m text-secondary sm:body-16-m">관심 태그</div>
-    </button>
-    <!-- <div class="flex flex-col center grow basis-0 border-l">
-      <div class="title-20-b mb-2 sm:title-24-b">300</div>
-      <div class="body-13-m text-secondary sm:body-16-m">관심 그룹</div>
-    </div> -->
+  <div class="bg-white p-x-8 <sm:p-x-5 p-y-4 sm:(border border-secondary rounded-2xl)">
+    <h2 class="title-20-b m-b-4 <sm:hidden">내 관심 관리</h2>
+    <div class="flex" role="group">
+      <button
+        class="flex flex-col center flex-1 m-x-2 p-y-2 rounded-2 hover:bg-primary focus:bg-primary"
+        type="button"
+        on:click={() => (followingSpaceOpen = true)}
+      >
+        <div class="title-20-b mb-2 sm:title-24-b">{$query.me.followedSpaces.length}</div>
+        <div class="body-13-m text-secondary sm:body-16-m">관심 스페이스</div>
+      </button>
+      <hr class="b-(r text-coloralphagray10) h-5rem h-full self-center" />
+      <button
+        class="flex flex-col center flex-1 m-x-2 p-y-2 rounded-2 hover:bg-primary focus:bg-primary"
+        type="button"
+        on:click={() => (followingTagOpen = true)}
+      >
+        <div class="title-20-b mb-2 sm:title-24-b">{$query.me.followedTags.length}</div>
+        <div class="body-13-m text-secondary sm:body-16-m">관심 태그</div>
+      </button>
+      <!-- <div class="flex flex-col center flex-1 border-l rounded-2 hover:bg-primary focus:bg-primary">
+        <div class="title-20-b mb-2 sm:title-24-b">300</div>
+        <div class="body-13-m text-secondary sm:body-16-m">관심 그룹</div>
+      </div> -->
+    </div>
   </div>
 
   <div class="bg-white p-4 space-y-2 sm:(border border-secondary rounded-2xl px-8 pb-6 space-y-6)">
