@@ -1,22 +1,24 @@
 <script lang="ts">
-  import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { flip, offset, shift } from '@floating-ui/dom';
   import { Editor, isiOS, isTextSelection, posToDOMRect } from '@tiptap/core';
   import { Plugin, PluginKey } from '@tiptap/pm/state';
   import { EditorView } from '@tiptap/pm/view';
   import clsx from 'clsx';
   import * as R from 'radash';
   import { onMount, tick } from 'svelte';
+  import { writable } from 'svelte/store';
   import { browser } from '$app/environment';
   import { portal } from '$lib/svelte/actions';
+  import { arrow, createFloatingActions } from '$lib/svelte-floating-ui';
   import { isEmptyTextBlock, isMobile } from '$lib/utils';
+  import type { VirtualElement } from '@floating-ui/dom';
 
   let key = 'share-bubble-menu';
   export let editor: Editor;
   let _class: string | undefined = undefined;
   export { _class as class };
 
-  let menuEl: HTMLElement;
-  let arrowEl: HTMLElement;
+  const arrowRef = writable<HTMLElement | null>(null);
   let open = false;
   let preventUpdate = false;
 
@@ -25,6 +27,35 @@
   $: if (browser) {
     mobile = isMobile();
   }
+
+  const [floatingRef, floatingContent, updatePosition] = createFloatingActions({
+    strategy: 'absolute',
+    middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrowRef })],
+    onComputed({ placement, middlewareData }) {
+      if (placement !== 'right' && isiOS()) {
+        open = false;
+      }
+
+      if (!middlewareData.arrow) throw new Error('arrow middleware is not registered');
+
+      const { x, y } = middlewareData.arrow;
+      const staticSide = {
+        top: 'bottom',
+        right: 'left',
+        bottom: 'top',
+        left: 'right',
+      }[placement.split('-')[0]];
+
+      if (!staticSide) throw new Error('invalid placement');
+      if (!$arrowRef) return;
+
+      Object.assign($arrowRef.style, {
+        left: x == null ? '' : `${x}px`,
+        top: y == null ? '' : `${y}px`,
+        [staticSide]: '-0.25rem',
+      });
+    },
+  });
 
   const update = R.debounce({ delay: 150 }, async (view: EditorView) => {
     if (preventUpdate) {
@@ -42,42 +73,12 @@
     open = true;
     await tick();
 
-    const targetEl = {
+    const targetEl: VirtualElement = {
       getBoundingClientRect: () => posToDOMRect(view, to, to),
     };
+    floatingRef(targetEl);
 
-    const position = await computePosition(targetEl, menuEl, {
-      placement: mobile ? 'right' : 'bottom',
-      middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrowEl })],
-    });
-
-    if (position.placement !== 'right' && isiOS()) {
-      open = false;
-      return;
-    }
-
-    Object.assign(menuEl.style, {
-      left: `${position.x}px`,
-      top: `${position.y}px`,
-    });
-
-    if (position.middlewareData.arrow) {
-      const { x, y } = position.middlewareData.arrow;
-
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const staticSide = {
-        top: 'bottom',
-        right: 'left',
-        bottom: 'top',
-        left: 'right',
-      }[position.placement.split('-')[0]]!;
-
-      Object.assign(arrowEl.style, {
-        left: x === undefined ? '' : `${x}px`,
-        top: y === undefined ? '' : `${y}px`,
-        [staticSide]: '-0.25rem',
-      });
-    }
+    updatePosition({ placement: mobile ? 'right' : 'bottom' });
   });
 
   onMount(() => {
@@ -109,14 +110,14 @@
 
 {#if open}
   <div
-    bind:this={menuEl}
-    class={clsx('absolute z-1 select-none bg-gray-90 text-sm text-gray-30 rounded-lg p-2', _class)}
+    class={clsx('z-1 select-none bg-gray-90 text-sm text-gray-30 rounded-lg p-2', _class)}
     role="menu"
     tabindex="-1"
     on:mousedown|stopPropagation={() => (preventUpdate = true)}
+    use:floatingContent
     use:portal
   >
     <slot />
-    <div bind:this={arrowEl} class="absolute square-2 rotate-45 bg-gray-90" />
+    <div bind:this={$arrowRef} class="absolute square-2 rotate-45 bg-gray-90" />
   </div>
 {/if}
