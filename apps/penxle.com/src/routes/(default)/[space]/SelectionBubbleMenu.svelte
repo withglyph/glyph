@@ -8,6 +8,7 @@
   import { onMount, tick } from 'svelte';
   import { browser } from '$app/environment';
   import { portal } from '$lib/svelte/actions';
+  import { computeArrowPosition } from '$lib/svelte-floating-ui';
   import { isEmptyTextBlock, isMobile } from '$lib/utils';
 
   let key = 'share-bubble-menu';
@@ -61,23 +62,7 @@
       top: `${position.y}px`,
     });
 
-    if (position.middlewareData.arrow) {
-      const { x, y } = position.middlewareData.arrow;
-
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const staticSide = {
-        top: 'bottom',
-        right: 'left',
-        bottom: 'top',
-        left: 'right',
-      }[position.placement.split('-')[0]]!;
-
-      Object.assign(arrowEl.style, {
-        left: x === undefined ? '' : `${x}px`,
-        top: y === undefined ? '' : `${y}px`,
-        [staticSide]: '-0.25rem',
-      });
-    }
+    Object.assign(arrowEl.style, computeArrowPosition(position));
   });
 
   onMount(() => {
