@@ -27,6 +27,7 @@
     "@envelop/opentelemetry": "^6.1.0",
     "@felte/core": "^1.4.1",
     "@felte/validator-zod": "^1.0.17",
+    "@floating-ui/core": "^1.5.0",
     "@floating-ui/dom": "^1.5.4",
     "@opentelemetry/api": "^1.7.0",
     "@paralleldrive/cuid2": "^2.2.2",
