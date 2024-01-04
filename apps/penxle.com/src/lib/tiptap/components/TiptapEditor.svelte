@@ -1,10 +1,12 @@
 <script lang="ts">
   import { Editor } from '@tiptap/core';
+  import { Fragment, Node, Slice } from '@tiptap/pm/model';
   import { clsx } from 'clsx';
   import { onMount } from 'svelte';
   import { dev } from '$app/environment';
   import { extensions } from '$lib/tiptap';
   import type { JSONContent } from '@tiptap/core';
+  import type { EditorProps } from '@tiptap/pm/view';
 
   let _class: string;
   export { _class as class };
@@ -16,6 +18,21 @@
 
   export let onChange: (() => void) | undefined = undefined;
 
+  const clipboardTextParser: EditorProps['clipboardTextParser'] = (text, context) => {
+    const lines = text.split(/\r\n?|\n/);
+
+    const nodes = lines.map((line) => {
+      const content: JSONContent = {
+        type: 'paragraph',
+        ...(line.length > 0 ? { content: [{ type: 'text', text: line }] } : {}),
+      };
+      return Node.fromJSON(context.doc.type.schema, content);
+    });
+
+    const fragment = Fragment.fromArray(nodes);
+    return Slice.maxOpen(fragment);
+  };
+
   onMount(() => {
     editor = new Editor({
       element,
@@ -23,6 +40,7 @@
       extensions,
       injectCSS: false,
       editorProps: {
+        clipboardTextParser,
         attributes: { class: _class },
         scrollMargin: { top: 100, bottom: 100, left: 0, right: 0 },
         scrollThreshold: { top: 100, bottom: 100, left: 0, right: 0 },
