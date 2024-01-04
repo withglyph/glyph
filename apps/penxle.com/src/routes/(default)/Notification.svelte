@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { flip, offset, shift } from '@floating-ui/dom';
   import * as R from 'radash';
   import { tick } from 'svelte';
   import { fragment, graphql } from '$glitch';
@@ -10,13 +10,12 @@
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { portal } from '$lib/svelte/actions';
+  import { createFloatingActions } from '$lib/svelte-floating-ui';
   import { AcceptSpaceMemberInvitationSchema } from '$lib/validations';
   import type { DefaultLayout_Notification_user } from '$glitch';
 
   let _user: DefaultLayout_Notification_user;
   export { _user as $user };
-  let targetEl: HTMLButtonElement;
-  let menuEl: HTMLDivElement;
   let open = false;
   let invitationOpen = false;
   let invitationId: string;
@@ -86,20 +85,15 @@
     }
   `);
 
-  const update = async () => {
-    await tick();
-    const position = await computePosition(targetEl, menuEl, {
-      placement: 'bottom-start',
-      middleware: [offset(4), flip(), shift({ padding: 8 })],
-    });
-    Object.assign(menuEl.style, {
-      left: `${position.x}px`,
-      top: `${position.y}px`,
-    });
-  };
+  const [floatingRef, floatingContent, update] = createFloatingActions({
+    strategy: 'absolute',
+    placement: 'bottom-start',
+    middleware: [offset(4), flip(), shift({ padding: 8 })],
+  });
 
   $: if (open) {
-    void update();
+    // eslint-disable-next-line unicorn/prefer-top-level-await
+    void tick().then(() => update());
   }
 
   $: invitations = R.alphabetical($user.receivedSpaceMemberInvitations, (invitation) => invitation.createdAt, 'desc');
@@ -109,10 +103,10 @@
 
 <div class="flex center square-10 mx-3 rounded-full transition hover:bg-surface-primary">
   <button
-    bind:this={targetEl}
     class="i-px-bell-fill square-6 color-text-secondary"
     type="button"
     on:click={() => (open = true)}
+    use:floatingRef
   />
 </div>
 
@@ -126,7 +120,7 @@
     use:portal
   />
 
-  <div bind:this={menuEl} class="absolute z-50 w-80 flex flex-col border rounded bg-white py-2 shadow" use:portal>
+  <div class="z-50 w-80 flex flex-col border rounded bg-white py-2 shadow" use:floatingContent use:portal>
     <ul>
       {#each invitations as invitation (invitation.space.id)}
         <li class="flex gap-2">

@@ -1,16 +1,14 @@
 <script lang="ts">
-  import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { flip, offset, shift } from '@floating-ui/dom';
   import { tick } from 'svelte';
   import { beforeNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { Button } from '$lib/components';
   import Image from '$lib/components/Image.svelte';
   import { portal } from '$lib/svelte/actions';
+  import { createFloatingActions } from '$lib/svelte-floating-ui';
   import CreateSpaceModal from '../../CreateSpaceModal.svelte';
   import type { SpaceDashboardLayout_SpaceListMenu_query } from '$glitch';
-
-  let targetEl: HTMLButtonElement;
-  let menuEl: HTMLDivElement;
 
   let _query: SpaceDashboardLayout_SpaceListMenu_query;
   export { _query as $query };
@@ -54,22 +52,15 @@
     `),
   );
 
-  const update = async () => {
-    await tick();
-
-    const position = await computePosition(targetEl, menuEl, {
-      placement: 'left-start',
-      middleware: [offset(16), flip(), shift({ padding: 8 })],
-    });
-
-    Object.assign(menuEl.style, {
-      left: `${position.x}px`,
-      top: `${position.y}px`,
-    });
-  };
+  const [floatingRef, floatingContent, update] = createFloatingActions({
+    strategy: 'absolute',
+    placement: 'left-start',
+    middleware: [offset(16), flip(), shift({ padding: 8 })],
+  });
 
   $: if (open) {
-    void update();
+    // eslint-disable-next-line unicorn/prefer-top-level-await
+    void tick().then(() => update());
   }
 
   beforeNavigate(() => {
@@ -78,10 +69,10 @@
 </script>
 
 <button
-  bind:this={targetEl}
   class="flex items-center gap-3 bg-primary rounded-lg p-2 w-full"
   type="button"
   on:click={() => (open = !open)}
+  use:floatingRef
 >
   <Image class="square-12 rounded-lg flex-none border border-secondary" $image={$query.space.icon} />
   <div class="truncate">
@@ -109,8 +100,8 @@
   />
 
   <div
-    bind:this={menuEl}
-    class="absolute z-50 w-52 py-4 px-3 rounded-2xl shadow-[0_4px_4px_0px_rgba(0,0,0,0.10)] bg-cardprimary"
+    class="z-50 w-52 py-4 px-3 rounded-2xl shadow-[0_4px_4px_0px_rgba(0,0,0,0.10)] bg-cardprimary"
+    use:floatingContent
     use:portal
   >
     <div class="space-y-3">

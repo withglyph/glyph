@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { flip, offset, shift } from '@floating-ui/dom';
   import { Link } from '@penxle/ui';
   import { tick } from 'svelte';
   import { afterNavigate } from '$app/navigation';
@@ -7,14 +7,12 @@
   import { mixpanel } from '$lib/analytics';
   import { Avatar } from '$lib/components';
   import { portal } from '$lib/svelte/actions';
+  import { createFloatingActions } from '$lib/svelte-floating-ui';
   import GotoSpaceModal from './GotoSpaceModal.svelte';
   import type { DefaultLayout_UserMenu_user } from '$glitch';
 
   let _user: DefaultLayout_UserMenu_user;
   export { _user as $user };
-
-  let targetEl: HTMLButtonElement;
-  let menuEl: HTMLDivElement;
 
   let open = false;
   let openGotoSpace = false;
@@ -42,22 +40,15 @@
     }
   `);
 
-  const update = async () => {
-    await tick();
-
-    const position = await computePosition(targetEl, menuEl, {
-      placement: 'bottom-end',
-      middleware: [offset(4), flip(), shift({ padding: 8 })],
-    });
-
-    Object.assign(menuEl.style, {
-      left: `${position.x}px`,
-      top: `${position.y}px`,
-    });
-  };
+  const [floatingRef, floatingContent, update] = createFloatingActions({
+    strategy: 'absolute',
+    placement: 'bottom-end',
+    middleware: [offset(4), flip(), shift({ padding: 8 })],
+  });
 
   $: if (open) {
-    void update();
+    // eslint-disable-next-line unicorn/prefer-top-level-await
+    void tick().then(() => update());
   }
 
   afterNavigate(() => {
@@ -66,11 +57,11 @@
 </script>
 
 <button
-  bind:this={targetEl}
   class="flex center square-10 border border-gray-30 rounded-full"
   tabindex="-1"
   type="button"
   on:click={() => (open = true)}
+  use:floatingRef
 >
   <Avatar class="square-9" $profile={$user.profile} />
 </button>
@@ -85,7 +76,7 @@
     use:portal
   />
 
-  <div bind:this={menuEl} class="absolute z-50 w-64 flex flex-col border rounded bg-white py-2 shadow" use:portal>
+  <div class="z-50 w-64 flex flex-col border rounded bg-white py-2 shadow" use:floatingContent use:portal>
     <a class="flex items-center gap-2 px-4 py-2" href="/me/cabinets">
       <Avatar class="square-10" $profile={$user.profile} />
       <div class="flex flex-col">
