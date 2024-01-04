@@ -131,36 +131,44 @@
     --uno: underline;
   }
 
-  & [data-text-color='text-gray-50'] {
-    --uno: text-gray-50;
+  & [data-text-color='text-gray-50'],
+  & [data-text-color='text-post-gray'] {
+    --uno: text-post-gray;
   }
 
-  & [data-text-color='text-gray-40'] {
-    --uno: text-gray-40;
+  & [data-text-color='text-gray-40'],
+  [data-text-color='text-post-gray2'] {
+    --uno: text-post-gray2;
   }
 
-  & [data-text-color='text-red-60'] {
-    --uno: text-red-60;
+  & [data-text-color='text-red-60'],
+  & [data-text-color='text-post-red'] {
+    --uno: text-post-red;
   }
 
-  & [data-text-color='text-blue-60'] {
-    --uno: text-blue-60;
+  & [data-text-color='text-blue-60'],
+  & [data-text-color='text-post-blue'] {
+    --uno: text-post-blue;
   }
 
-  & [data-text-color='text-orange-70'] {
-    --uno: text-orange-70;
+  & [data-text-color='text-orange-70'],
+  & [data-text-color='text-post-brown'] {
+    --uno: text-post-brown;
   }
 
-  & [data-text-color='text-green-60'] {
-    --uno: text-green-60;
+  & [data-text-color='text-green-60'],
+  & [data-text-color='text-post-green'] {
+    --uno: text-post-green;
   }
 
-  & [data-text-color='text-purple-60'] {
-    --uno: text-purple-60;
+  & [data-text-color='text-purple-60'],
+  & [data-text-color='text-post-purple'] {
+    --uno: text-post-purple;
   }
 
-  & [data-text-color='text-white'] {
-    --uno: text-white;
+  & [data-text-color='text-white'],
+  & [data-text-color='text-post-white'] {
+    --uno: text-post-white;
   }
 
   /*

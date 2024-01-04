@@ -148,6 +148,16 @@ export const designColors = {
     disabled: '#A8A29E',
     darkprimary: '#FFF9F8',
   },
+  post: {
+    gray: shadedColors.gray[50],
+    gray2: shadedColors.gray[40],
+    red: '#EA4335',
+    blue: '#4285F4',
+    brown: shadedColors.orange[60],
+    green: '#00C75E',
+    purple: '#9747FF',
+    white: basicColors.white,
+  },
   surface: {
     primary: '#F1F1F0',
     secondary: '#E7E5E4',

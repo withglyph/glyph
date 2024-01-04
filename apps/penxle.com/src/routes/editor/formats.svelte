@@ -7,14 +7,14 @@
 
   export const colors = [
     { label: '검정색', value: null },
-    { label: '회색', value: 'text-gray-50' },
-    { label: '연회색', value: 'text-gray-40' },
-    { label: '빨간색', value: 'text-red-60' },
-    { label: '파란색', value: 'text-blue-60' },
-    { label: '갈색', value: 'text-orange-70' },
-    { label: '초록색', value: 'text-green-60' },
-    { label: '보라색', value: 'text-purple-60' },
-    { label: '흰색', value: 'text-white', display: 'text-gray-20' },
+    { label: '회색', value: 'text-post-gray' },
+    { label: '연회색', value: 'text-post-gray2' },
+    { label: '빨간색', value: 'text-post-red' },
+    { label: '파란색', value: 'text-post-blue' },
+    { label: '갈색', value: 'text-post-brown' },
+    { label: '초록색', value: 'text-post-green' },
+    { label: '보라색', value: 'text-post-purple' },
+    { label: '흰색', value: 'text-post-white', display: 'text-gray-20' },
   ];
 
   export const heading = Heading.name as 'heading';
