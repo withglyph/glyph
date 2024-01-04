@@ -31,9 +31,11 @@
 
         followedSpaces {
           id
+          slug
           name
           description
           followed
+          visibility
 
           icon {
             id
@@ -81,13 +83,27 @@
   >
     {#each filteredSpaces ?? [] as space (space.id)}
       <li class="flex items-center justify-between">
-        <div class="flex gap-2 items-center truncate mr-2">
-          <Image class="square-10.5 rounded-lg grow-0 shrink-0 border border-secondary" $image={space.icon} />
+        <svelte:element
+          this={space.visibility === 'PRIVATE' ? 'div' : 'a'}
+          class="flex gap-2 truncate mr-2 grow"
+          href={space.visibility === 'PRIVATE' ? undefined : `/${space.slug}`}
+        >
+          <Image class="square-10.5 rounded-lg flex-none border border-secondary" $image={space.icon} />
           <div class="truncate">
-            <p class="body-15-b truncate grow">{space.name}</p>
+            <div class="flex items-center gap-1">
+              <p class="body-15-b truncate">
+                {space.name}
+              </p>
+              {#if space.visibility === 'PRIVATE'}
+                <span class="bg-primary text-secondary rounded-full px-1 caption-12-b text-nowrap">
+                  비공개
+                  <i class="i-px-lock square-3 mb-0.5" />
+                </span>
+              {/if}
+            </div>
             <p class="body-13-m text-secondary truncate">{space.description ?? ''}</p>
           </div>
-        </div>
+        </svelte:element>
         {#if $user.followedSpaces.find((follow) => follow.id === space.id)}
           <Button
             class="shrink-0"
