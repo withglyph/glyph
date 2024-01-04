@@ -83,7 +83,7 @@
   <div class="bg-white p-4 space-y-2 sm:(border border-secondary rounded-2xl px-8 pb-6 space-y-6)">
     <div class="w-full flex items-center justify-between">
       <div>
-        <span class="subtitle-18-eb sm:title-20-b">북마크</span>
+        <h2 class="title-20-b <sm:title-18-eb">북마크</h2>
         <!-- <span class="subtitle-18-eb ml-2 text-secondary">7</span> -->
       </div>
 
@@ -116,7 +116,7 @@
   </div>
 
   <div class="bg-white py-4 sm:(border border-secondary rounded-2xl)">
-    <p class="title-20-b px-4 sm:px-8">포스트 목록</p>
+    <h2 class="title-20-b px-4 sm:px-8">포스트 목록</h2>
 
     <TabHead class="w-full px-4 mt-4 mb-6 sm:px-8" variant="secondary">
       <TabHeadItem id={1} href="/me/cabinets">좋아요</TabHeadItem>
