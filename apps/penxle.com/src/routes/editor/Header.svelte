@@ -12,7 +12,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Button, Image, Modal, ToggleButton, Tooltip } from '$lib/components';
   import { Logo } from '$lib/components/branding';
-  import { Checkbox, FormValidationMessage, Switch } from '$lib/components/forms';
+  import { Checkbox, FormValidationMessage, Radio, Switch } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
@@ -632,28 +632,19 @@
           <p class="text-secondary mb-3">공개범위</p>
 
           <fieldset class="flex gap-6">
-            <div class="flex gap-1.5 items-center">
-              <input id="public" name="visibility" class="square-4.5" type="radio" value="PUBLIC" />
-              <label class="grow body-15-sb" for="public">전체 공개</label>
-            </div>
-            <div class="flex gap-1.5 items-center">
-              <input id="space" name="visibility" class="square-4.5" type="radio" value="SPACE" />
-              <label class="grow body-15-sb flex items-center gap-1" for="space">
-                멤버 공개
-                <Tooltip message="같은 스페이스의 멤버에게만 노출돼요" placement="top">
-                  <i class="i-lc-help-circle square-4 text-secondary" />
-                </Tooltip>
-              </label>
-            </div>
-            <div class="flex gap-1.5 items-center">
-              <input id="unlisted" name="visibility" class="square-4.5" type="radio" value="UNLISTED" />
-              <label class="grow body-15-sb flex items-center gap-1" for="unlisted">
-                링크 공개
-                <Tooltip message="링크를 아는 사람에게만 노출돼요" placement="top">
-                  <i class="i-lc-help-circle square-4 text-secondary" />
-                </Tooltip>
-              </label>
-            </div>
+            <Radio name="visibility" class="gap-1.5 body-15-sb" value="PUBLIC">전체 공개</Radio>
+            <Radio name="visibility" class="gap-1.5 body-15-sb" value="SPACE">
+              멤버 공개
+              <Tooltip message="같은 스페이스의 멤버에게만 노출돼요" placement="top">
+                <i class="i-lc-help-circle square-4 text-secondary" />
+              </Tooltip>
+            </Radio>
+            <Radio name="visibility" class="gap-1.5 body-15-sb" value="UNLISTED">
+              링크 공개
+              <Tooltip message="링크를 아는 사람에게만 노출돼요" placement="top">
+                <i class="i-lc-help-circle square-4 text-secondary" />
+              </Tooltip>
+            </Radio>
           </fieldset>
         </div>
 

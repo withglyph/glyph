@@ -6,7 +6,7 @@
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
-  import { Checkbox } from '$lib/components/forms';
+  import { Checkbox, Radio } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { comma } from '$lib/utils';
@@ -103,18 +103,21 @@
         <div>금액</div>
       </div>
       {#each pointAmounts as amount (amount)}
-        <button
+        <Radio
           class={clsx(
-            'flex items-center p-4 border-t hover:bg-primary first-of-type:border-0',
+            'p-4 border-t hover:bg-primary first-of-type:border-0 gap-6 grow cursor-pointer',
             $data.pointAmount === amount && 'bg-primary',
           )}
-          type="button"
-          on:click={() => ($data.pointAmount = amount)}
+          checked={$data.pointAmount === amount}
+          on:change={() => {
+            $data.pointAmount = amount;
+          }}
         >
-          <input class="mr-6 square-4 cursor-pointer" checked={$data.pointAmount === amount} type="radio" />
-          <label class="grow body-16-b cursor-pointer" for={`${amount}`}>{comma(amount)}P</label>
-          <div>{comma(amount)}원</div>
-        </button>
+          <div class="flex items-center justify-between w-full">
+            <p class="body-16-b">{comma(amount)}P</p>
+            <p>{comma(amount)}원</p>
+          </div>
+        </Radio>
       {/each}
     </div>
   </div>

@@ -3,6 +3,7 @@
   import { onMount } from 'svelte';
   import { graphql } from '$glitch';
   import { Button } from '$lib/components';
+  import { Radio } from '$lib/components/forms';
   import { toast } from '$lib/notification';
   import { comma } from '$lib/utils';
   import type { PaymentMethod } from '$glitch';
@@ -67,13 +68,12 @@
       <div class="space-y-3 my-6">
         <div class="bg-white border border-secondary rounded-2xl p-4">
           <p class="text-secondary mb-2">충전 상품</p>
-          <div class=" w-full flex items-center p-4 rounded-lg hover:bg-primary bg-primary">
-            <input name={`${$query.pointPurchase.pointAmount}`} class="mr-6 square-4" checked type="radio" />
-            <label class="grow body-16-b" for={`${$query.pointPurchase.pointAmount}`}>
-              {comma($query.pointPurchase.pointAmount)}P
-            </label>
-            <div>{comma($query.pointPurchase.paymentAmount)}원</div>
-          </div>
+          <Radio class="p-4 border-t bg-primary first-of-type:border-0 gap-6 grow rounded-lg" checked>
+            <div class="flex items-center justify-between w-full">
+              <p class="body-16-b">{comma($query.pointPurchase.pointAmount)}P</p>
+              <p>{comma($query.pointPurchase.paymentAmount)}원</p>
+            </div>
+          </Radio>
         </div>
 
         <div class="bg-white border border-secondary rounded-2xl p-4 space-y-4">
