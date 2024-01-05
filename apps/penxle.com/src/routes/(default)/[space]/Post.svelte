@@ -876,32 +876,46 @@
     {!$query.me?.personalIdentity && '성인 인증을 하고 더 다양한 포스트를 감상해보세요!'}
   </svelte:fragment>
 
-  <Button
-    slot="action"
-    class="w-full"
-    size="xl"
-    on:click={async () => {
-      if (!$query.me) {
-        adultOpen = false;
-        loginRequireOpen = true;
-        return;
-      }
-
-      if (!$query.me?.personalIdentity) {
-        await goto('/me/settings');
-        return;
-      }
-
-      if (!$query.me.isAdulthood) {
-        history.back();
-        return;
-      }
-    }}
-  >
-    {#if !$query.me?.personalIdentity}
-      성인 인증하기
-    {:else}
-      뒤로 가기
+  <div slot="action" class="flex gap-3 w-full">
+    {#if !$query.me || !$query.me.personalIdentity}
+      <Button
+        class="w-full"
+        color="secondary"
+        size="xl"
+        on:click={() => {
+          history.back();
+        }}
+      >
+        뒤로 가기
+      </Button>
     {/if}
-  </Button>
+
+    <Button
+      class="w-full"
+      size="xl"
+      on:click={async () => {
+        if (!$query.me) {
+          adultOpen = false;
+          loginRequireOpen = true;
+          return;
+        }
+
+        if (!$query.me.personalIdentity) {
+          await goto('/me/settings');
+          return;
+        }
+
+        if (!$query.me.isAdulthood) {
+          history.back();
+          return;
+        }
+      }}
+    >
+      {#if !$query.me?.personalIdentity}
+        성인 인증하기
+      {:else}
+        뒤로 가기
+      {/if}
+    </Button>
+  </div>
 </Modal>
