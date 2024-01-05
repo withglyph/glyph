@@ -6,7 +6,7 @@
   import { toast } from '$lib/notification';
   import type { Writable } from '@svelte-kits/store';
   import type { JSONContent } from '@tiptap/core';
-  import type { ChangeEventHandler, KeyboardEventHandler } from 'svelte/elements';
+  import type { ChangeEventHandler, EventHandler } from 'svelte/elements';
   import type { Image_image, PostRevisionContentKind } from '$glitch';
   import type { ImageBounds } from '$lib/utils';
 
@@ -38,10 +38,10 @@
     };
   };
 
-  const handleTagInputChange: KeyboardEventHandler<HTMLInputElement> = (e) => {
-    if (e.key !== ' ' && e.key !== 'Spacebar' && e.key !== 'Enter') return;
+  const onTagSubmit: EventHandler<SubmitEvent, HTMLFormElement> = (e) => {
+    if (!(e.currentTarget.tag instanceof HTMLInputElement)) throw new Error('Fail to reference tag input element');
 
-    const { value } = e.currentTarget;
+    const { value } = e.currentTarget.tag;
 
     if (tags.includes(value)) {
       toast.error('중복된 태그를 입력했어요');
@@ -57,11 +57,9 @@
 
     if (escapedValue.length === 0) return;
 
-    if (e.isComposing === false) {
-      tags.push(escapedValue);
-      tags = tags;
-      e.currentTarget.value = '';
-    }
+    tags.push(escapedValue);
+    tags = tags;
+    e.currentTarget.tag.value = '';
 
     $autoSaveCount += 1;
   };
@@ -163,13 +161,15 @@
         {/each}
 
         <label class="flex items-center px-3 bg-primary rounded-8 body-13-b before:(content-['#'] mr-1)">
-          <input
-            class="body-13-m h-6.5"
-            maxlength={50}
-            placeholder="게시글에 추가될 태그를 입력하세요"
-            type="text"
-            on:keydown={handleTagInputChange}
-          />
+          <form on:submit|preventDefault={onTagSubmit}>
+            <input
+              name="tag"
+              class="body-13-m h-6.5"
+              maxlength={50}
+              placeholder="게시글에 추가될 태그를 입력하세요"
+              type="text"
+            />
+          </form>
         </label>
       </section>
 
