@@ -11,7 +11,7 @@
 
   let useCode = false;
 
-  const { form } = createMutationForm({
+  const { form, handleSubmit } = createMutationForm({
     mutation: graphql(`
       mutation LoginCodePage_IssueUserEmailAuthorizationUrl_Mutation($input: IssueUserEmailAuthorizationUrlInput!) {
         issueUserEmailAuthorizationUrl(input: $input) {
@@ -40,7 +40,16 @@
     <input name="email" type="hidden" value={email} />
 
     <div class="space-y-3 flex justify-center">
-      <DigitsInput name="code" />
+      <DigitsInput
+        name="code"
+        on:input={({ currentTarget }) => {
+          if (!currentTarget) throw new Error('currentTarget is null');
+
+          if (currentTarget.value.length === currentTarget.maxLength) {
+            handleSubmit();
+          }
+        }}
+      />
     </div>
 
     <Button class="w-full mt-3" size="xl" type="submit">펜슬 시작하기</Button>
