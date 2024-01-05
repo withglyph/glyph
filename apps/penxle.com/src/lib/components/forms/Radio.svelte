@@ -20,7 +20,7 @@
   <input
     id={name}
     {name}
-    class="inline-block square-4.5 cursor-pointer appearance-none relative border border-primary rounded-full checked:border-tertiary checked:before:(absolute block content-[''] square-2.5 rounded-full bg-gray-90 top-50% left-50% -translate-50%)"
+    class="inline-block square-4.5 cursor-pointer appearance-none relative border border-primary rounded-full flex-none checked:border-tertiary checked:before:(absolute block content-[''] square-2.5 rounded-full bg-gray-90 top-50% left-50% -translate-50%)"
     type="radio"
     on:change
     {...$$restProps}
