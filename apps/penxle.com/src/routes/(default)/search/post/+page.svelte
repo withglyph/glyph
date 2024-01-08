@@ -1,10 +1,9 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import clsx from 'clsx';
   import qs from 'query-string';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { PostCard } from '$lib/components';
+  import { Pagination, PostCard } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { initSearchFilter } from '../util';
 
@@ -43,13 +42,10 @@
     adultFilter,
     excludeContentFilters,
     orderBy,
-    page: currentPage,
+    page: initialIndex,
   } = initSearchFilter($page.url.search);
-  let pagination = Math.ceil(currentPage / 10);
 
-  $: totalPage = Math.ceil($query.searchPosts.count / 10);
-
-  const updateSearchFilter = () => {
+  const updateSearchFilter = (currentPage: number) => {
     const stringifiedURL = qs.stringifyUrl(
       {
         url: '/search/post',
@@ -94,49 +90,6 @@
     {#each $query.searchPosts.posts as post (post.id)}
       <PostCard class="mt-4 first:mt-0" $post={post} />
     {/each}
-    <div class="flex center mt-9 gap-1 pb-4">
-      <button
-        class="square-7 flex center disabled:(text-disabled cursor-not-allowed)"
-        disabled={currentPage <= 10}
-        type="button"
-        on:click={() => {
-          currentPage = (pagination - 1) * 10;
-          pagination -= 1;
-
-          updateSearchFilter();
-        }}
-      >
-        <i class="i-lc-chevron-left square-3.5" />
-      </button>
-      {#each Array.from({ length: totalPage - (pagination - 1) * 10 > 10 ? 10 : totalPage - (pagination - 1) * 10 }, (_, i) => (pagination - 1) * 10 + (i + 1)) as pageNum (pageNum)}
-        <button
-          class={clsx(
-            'square-8 p-2 rounded-lg border border-alphagray-10 flex center body-13-b transition hover:(bg-gray-90 text-darkprimary)',
-            currentPage === pageNum && 'bg-gray-90! text-darkprimary!',
-          )}
-          type="button"
-          on:click={() => {
-            currentPage = pageNum;
-
-            updateSearchFilter();
-          }}
-        >
-          {pageNum}
-        </button>
-      {/each}
-      <button
-        class="square-7 flex center disabled:(text-disabled cursor-not-allowed)"
-        disabled={totalPage <= 10 || pagination === Math.ceil(totalPage / 10)}
-        type="button"
-        on:click={() => {
-          pagination = Math.ceil((currentPage + 10) / 10);
-          currentPage = (pagination - 1) * 10 + 1;
-
-          updateSearchFilter();
-        }}
-      >
-        <i class="i-lc-chevron-right square-3.5" />
-      </button>
-    </div>
+    <Pagination count={$query.searchPosts.count} {initialIndex} onChange={updateSearchFilter} />
   </div>
 {/if}

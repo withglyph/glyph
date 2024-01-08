@@ -6,6 +6,7 @@ export { default as Floating } from './Floating.svelte';
 export { default as GridImage } from './GridImage.svelte';
 export { default as Image } from './Image.svelte';
 export { default as Modal } from './Modal.svelte';
+export { default as Pagination } from './Pagination.svelte';
 export { default as PostCard } from './PostCard.svelte';
 export { default as SpacePostCard } from './SpacePostCard.svelte';
 export { default as Tag } from './Tag.svelte';
