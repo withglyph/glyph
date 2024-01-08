@@ -20,14 +20,14 @@
   },
   "dependencies": {
     "@pnpm/find-workspace-dir": "^6.0.2",
-    "@vercel/nft": "^0.24.4",
+    "@vercel/nft": "^0.26.2",
     "h3": "^1.9.0",
     "mrmime": "^2.0.0"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "@sveltejs/kit": "^1.28.0",
-    "@types/node": "^20.10.5",
+    "@sveltejs/kit": "^1.30.3",
+    "@types/node": "^20.10.6",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3"
   }

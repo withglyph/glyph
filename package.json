@@ -20,14 +20,14 @@
   },
   "devDependencies": {
     "@penxle/lintconfig": "workspace:^",
-    "cspell": "^8.2.1",
+    "cspell": "^8.3.2",
     "eslint": "^8.56.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
     "prettier": "^3.1.1",
-    "syncpack": "^11.2.1",
+    "syncpack": "^12.3.0",
     "tsx": "^4.7.0",
-    "turbo": "^1.11.2",
+    "turbo": "^1.11.3",
     "typescript": "^5.3.3"
   },
   "engines": {
@@ -41,10 +41,11 @@
       "@opentelemetry/api-metrics": "*",
       "debuglog": "*",
       "read-package-tree": "*",
-      "readdir-scoped-modules": "*"
+      "readdir-scoped-modules": "*",
+      "string-similarity": "*"
     },
     "patchedDependencies": {
-      "@vercel/nft@0.24.4": "patches/@vercel__nft@0.24.4.patch"
+      "@vercel/nft@0.26.2": "patches/@vercel__nft@0.26.2.patch"
     }
   }
 }

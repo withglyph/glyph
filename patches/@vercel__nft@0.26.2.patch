@@ -1,0 +1,16 @@
+diff --git a/out/utils/special-cases.js b/out/utils/special-cases.js
+index 0abcaa2ad356a32ad579091955628c66ce2184b3..0106b5b6595283277814a3bab3e01da3c75be4ab 100644
+--- a/out/utils/special-cases.js
++++ b/out/utils/special-cases.js
+@@ -20,6 +20,11 @@ const specialCases = {
+             emitAssetDirectory((0, path_1.resolve)((0, path_1.dirname)(id), 'lib', 'binding'));
+         }
+     },
++    'aws-lambda-ric'({ id, emitAssetDirectory }) {
++        if (id.endsWith('aws-lambda-ric/dist/index.mjs')) {
++            emitAssetDirectory((0, path_1.resolve)(id, '../'));
++        }
++    }, 
+     'bull'({ id, emitAssetDirectory }) {
+         if (id.endsWith('bull/lib/commands/index.js')) {
+             emitAssetDirectory((0, path_1.resolve)((0, path_1.dirname)(id)));

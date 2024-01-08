@@ -40,7 +40,7 @@
     "@graphql-codegen/typed-document-node": "^5.0.1",
     "@graphql-codegen/typescript": "^4.0.1",
     "@graphql-codegen/typescript-operations": "^4.0.1",
-    "@graphql-codegen/typescript-urql-graphcache": "^3.0.0",
+    "@graphql-codegen/typescript-urql-graphcache": "^3.1.0",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@urql/core": "^4.2.2",
     "@urql/devtools": "^2.0.3",
@@ -56,8 +56,8 @@
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "@sveltejs/kit": "^1.28.0",
-    "rollup": "^4.9.1",
+    "@sveltejs/kit": "^1.30.3",
+    "rollup": "^4.9.4",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3",
     "vite": "^4.5.1"
