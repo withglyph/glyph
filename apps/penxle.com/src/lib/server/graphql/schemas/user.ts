@@ -265,9 +265,15 @@ export const userSchema = defineSchema((builder) => {
       }),
 
       revenues: t.relation('revenues', {
-        query: {
-          orderBy: { createdAt: 'desc' },
+        args: {
+          page: t.arg({ type: 'Int', defaultValue: 1 }),
+          take: t.arg({ type: 'Int', defaultValue: 10 }),
         },
+        query: ({ page, take }) => ({
+          orderBy: { createdAt: 'desc' },
+          take,
+          skip: (page - 1) * take,
+        }),
       }),
     }),
   });

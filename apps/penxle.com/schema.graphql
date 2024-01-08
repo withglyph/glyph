@@ -776,7 +776,7 @@ type User {
   receivedSpaceMemberInvitations(state: SpaceMemberInvitationState): [SpaceMemberInvitation!]!
   recentlyViewedPosts: [Post!]!
   revenue: Int!
-  revenues: [Revenue!]!
+  revenues(page: Int! = 1, take: Int! = 10): [Revenue!]!
   singleSignOns: [UserSingleSignOn!]!
   spaces: [Space!]!
   state: UserState!
