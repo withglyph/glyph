@@ -42,6 +42,7 @@
     <div class="space-y-3 flex justify-center">
       <DigitsInput
         name="code"
+        maxlength={6}
         on:input={({ currentTarget }) => {
           if (!currentTarget) throw new Error('currentTarget is null');
 

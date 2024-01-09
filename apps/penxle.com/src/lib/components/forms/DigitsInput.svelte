@@ -5,10 +5,13 @@
 
   export let name: HTMLInputAttributes['name'] = undefined;
   export let value: HTMLInputAttributes['value'] = undefined;
+  export let maxlength: number;
   let _class: HTMLInputAttributes['class'] = undefined;
   export { _class as class };
 
-  type $$Props = HTMLInputAttributes;
+  type $$Props = Omit<HTMLInputAttributes, 'maxlength'> & {
+    maxlength: number;
+  };
   type $$Events = {
     input: Parameters<NonNullable<HTMLInputAttributes['on:input']>>[0];
   };
@@ -20,14 +23,12 @@
   }
 
   $: value = value?.replaceAll(/\D/g, '');
-
-  const length = 6;
 </script>
 
 <div class={clsx('relative overflow-clip', _class)}>
   <div class="flex justify-center items-center gap-2" role="presentation">
     <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
-    {#each Array.from({ length }) as _, i (i)}
+    {#each Array.from({ length: maxlength }) as _, i (i)}
       <div class="square-10 border border-rd-2.5 border-alphagray-10"></div>
     {/each}
   </div>
@@ -44,7 +45,7 @@
     )}
     autocomplete="one-time-code"
     inputmode="numeric"
-    maxlength={length}
+    {maxlength}
     pattern="\d*"
     type="text"
     on:input
