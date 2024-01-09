@@ -10,8 +10,9 @@
   $: email = $page.url.searchParams.get('email');
 
   let useCode = false;
+  let hiddenSubmitInputEl: HTMLInputElement | null = null;
 
-  const { form, handleSubmit } = createMutationForm({
+  const { form } = createMutationForm({
     mutation: graphql(`
       mutation LoginCodePage_IssueUserEmailAuthorizationUrl_Mutation($input: IssueUserEmailAuthorizationUrlInput!) {
         issueUserEmailAuthorizationUrl(input: $input) {
@@ -45,14 +46,17 @@
         maxlength={6}
         on:input={({ currentTarget }) => {
           if (!currentTarget) throw new Error('currentTarget is null');
+          if (!hiddenSubmitInputEl) throw new Error('hiddenSubmitInputEl is null');
 
           if (currentTarget.value.length === currentTarget.maxLength) {
-            handleSubmit();
+            console.log('submit');
+            hiddenSubmitInputEl.click();
           }
         }}
       />
     </div>
 
+    <input bind:this={hiddenSubmitInputEl} class="hidden" type="submit" />
     <Button class="w-full mt-3" size="xl" type="submit">펜슬 시작하기</Button>
   </form>
 {:else}
