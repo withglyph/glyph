@@ -150,7 +150,7 @@ export const designColors = {
   },
   post: {
     gray: shadedColors.gray[50],
-    gray2: shadedColors.gray[40],
+    lightgray: shadedColors.gray[40],
     red: '#EA4335',
     blue: '#4285F4',
     brown: shadedColors.orange[60],

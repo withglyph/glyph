@@ -8,7 +8,7 @@
   export const colors = [
     { label: '검정색', value: null },
     { label: '회색', value: 'text-post-gray' },
-    { label: '연회색', value: 'text-post-gray2' },
+    { label: '연회색', value: 'text-post-lightgray' },
     { label: '빨간색', value: 'text-post-red' },
     { label: '파란색', value: 'text-post-blue' },
     { label: '갈색', value: 'text-post-brown' },

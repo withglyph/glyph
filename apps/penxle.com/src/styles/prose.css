@@ -137,8 +137,9 @@
   }
 
   & [data-text-color='text-gray-40'],
-  [data-text-color='text-post-gray2'] {
-    --uno: text-post-gray2;
+  & [data-text-color='text-post-gray2'],
+  & [data-text-color='text-post-lightgray'] {
+    --uno: color-post-lightgray;
   }
 
   & [data-text-color='text-red-60'],
