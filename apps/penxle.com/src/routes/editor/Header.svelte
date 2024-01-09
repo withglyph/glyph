@@ -184,7 +184,7 @@
     }
   `);
 
-  const { form, data, setInitialValues, handleSubmit } = createMutationForm({
+  const { form, data, setInitialValues } = createMutationForm({
     mutation: graphql(`
       mutation EditorPage_PublishPost_Mutation($input: PublishPostInput!) {
         publishPost(input: $input) {
@@ -205,6 +205,10 @@
       }
     `),
     schema: PublishPostInputSchema,
+    extra: async () => {
+      await doRevisePost('AUTO_SAVE');
+      return {};
+    },
     onSuccess: async (resp) => {
       warnUnload = false;
       mixpanel.track('post:publish', { postId: resp.id });
@@ -839,17 +843,7 @@
           </div>
         </Switch>
 
-        <Button
-          class="w-full"
-          size="xl"
-          type="submit"
-          on:click={async () => {
-            await doRevisePost('AUTO_SAVE');
-            handleSubmit();
-          }}
-        >
-          게시하기
-        </Button>
+        <Button class="w-full" size="xl" type="submit">게시하기</Button>
       </form>
     </div>
 
