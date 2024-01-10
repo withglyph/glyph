@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/sveltekit';
 import { match } from 'ts-pattern';
 import { z } from 'zod';
+import { dev } from '$app/environment';
 
 enum AppErrorKind {
   UnknownError = 'UnknownError',
@@ -68,7 +69,10 @@ export abstract class AppError extends Error {
       } = r.data;
 
       return match(kind)
-        .with(AppErrorKind.UnknownError, () => new UnknownError(extra.cause, extra.id as string))
+        .with(
+          AppErrorKind.UnknownError,
+          () => new UnknownError(extra.cause as unknown | undefined, extra.id as string | undefined),
+        )
         .with(AppErrorKind.IntentionalError, () => new IntentionalError(message))
         .with(AppErrorKind.PermissionDeniedError, () => new PermissionDeniedError())
         .with(AppErrorKind.NotFoundError, () => new NotFoundError())
@@ -88,25 +92,34 @@ const ErrorLikeSchema = z.object({
 });
 
 export class UnknownError extends AppError {
-  public override readonly cause: ErrorLike;
-  public readonly id: string;
+  public override readonly cause?: ErrorLike;
+  public readonly id?: string;
 
-  constructor(cause: unknown, id?: string) {
-    const r = ErrorLikeSchema.safeParse(cause);
-    const c = r.success ? r.data : new Error(String(cause));
+  constructor(cause?: unknown, id?: string) {
+    if (dev && cause) {
+      const r = ErrorLikeSchema.safeParse(cause);
+      const c = r.success ? r.data : new Error(String(cause));
 
-    if (!id) {
-      id = Sentry.captureException(cause);
+      super({
+        kind: AppErrorKind.UnknownError,
+        message: `${c.name}: ${c.message}`,
+        extra: { cause: c },
+      });
+
+      this.cause = c;
+    } else {
+      if (cause && !id) {
+        id = Sentry.captureException(cause);
+      }
+
+      super({
+        kind: AppErrorKind.UnknownError,
+        message: `알 수 없는 오류가 발생했어요`,
+        extra: { id },
+      });
+
+      this.id = id;
     }
-
-    super({
-      kind: AppErrorKind.UnknownError,
-      message: `${c.name}: ${c.message}`,
-      extra: { id, cause: c },
-    });
-
-    this.id = id;
-    this.cause = c;
   }
 }
 

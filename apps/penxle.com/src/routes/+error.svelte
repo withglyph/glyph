@@ -62,9 +62,9 @@
       <button class="cursor-pointer text-sm text-gray-50" type="button" on:click={() => (open = true)}>
         디버깅 정보
       </button>
-    {:else}
+    {:else if error.extra.id}
       <span class="text-sm text-gray-50">
-        추적 ID: {error.extra.id ?? 'N/A'}
+        추적 ID: {error.extra.id}
       </span>
     {/if}
   </div>
