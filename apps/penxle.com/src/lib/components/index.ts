@@ -11,3 +11,4 @@ export { default as SpacePostCard } from './SpacePostCard.svelte';
 export { default as Tag } from './Tag.svelte';
 export { default as ToggleButton } from './ToggleButton.svelte';
 export { default as Tooltip } from './Tooltip.svelte';
+export { default as Transition } from './Transition.svelte';

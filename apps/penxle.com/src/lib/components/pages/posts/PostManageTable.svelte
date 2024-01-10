@@ -4,7 +4,7 @@
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Avatar, Badge, Button, Image, Modal, Tag, Tooltip } from '$lib/components';
-  import { Checkbox, Editable, Switch } from '$lib/components/forms';
+  import { Checkbox, Editable, Select, Switch } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Table, TableData, TableHead, TableRow } from '$lib/components/table';
   import { toast } from '$lib/notification';
@@ -359,30 +359,25 @@
           </TableData>
           <TableData class="overflow-visible!">
             <div class="flex gap-0.125rem">
-              <Menu
-                class="disabled:[&>i.i-lc-chevron-down]:hidden "
+              <Select
+                class="disabled:invisible"
                 disabled={!hasPermissionToUpdatePost(post.member.id)}
-                placement="bottom-end"
+                initialValue={post.visibility}
+                onSelected={(visibility) => {
+                  updateVisibility({
+                    postId: post.id,
+                    visibility,
+                  });
+                }}
+                options={visibilityOptions}
+                placement="bottom"
               >
-                <span slot="value" class="flex items-center body-13-b [&>i]:text-icon-secondary">
+                <div slot="button" class="flex items-center body-13-b [&>i]:text-icon-secondary">
                   <i class={clsx(visibilityToIcon[post.visibility], 'square-4 m-r-0.15rem')} />
                   {visibilityToLocaleString[post.visibility]}
                   <i class="i-lc-chevron-down square-4" />
-                </span>
-
-                {#each visibilityOptions as visibilityOption (visibilityOption.value)}
-                  <MenuItem
-                    aria-pressed={post.visibility === visibilityOption.value}
-                    on:click={() =>
-                      updateVisibility({
-                        postId: post.id,
-                        visibility: visibilityOption.value,
-                      })}
-                  >
-                    {visibilityOption.label}
-                  </MenuItem>
-                {/each}
-              </Menu>
+                </div>
+              </Select>
             </div>
           </TableData>
           <TableData class="<sm:hidden">

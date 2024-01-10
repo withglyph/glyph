@@ -477,6 +477,9 @@ importers:
       svelte-check:
         specifier: ^3.6.2
         version: 3.6.2(@babel/core@7.23.7)(postcss@8.4.33)(svelte@4.2.8)
+      svelte-headlessui:
+        specifier: ^0.0.33
+        version: 0.0.33
       swiper:
         specifier: ^11.0.5
         version: 11.0.5
@@ -12646,6 +12649,10 @@ packages:
       postcss-scss: 4.0.9(postcss@8.4.33)
       svelte: 4.2.8
     dev: false
+
+  /svelte-headlessui@0.0.33:
+    resolution: {integrity: sha512-GYEkYtXLrF1Yqyea7K6U63HMhNtZG9YSFwhedlQ8DpYsHmHztwSTZaLlEJIoygeyIKCSDmgomSTai7t8fj2yIw==}
+    dev: true
 
   /svelte-hmr@0.15.3(svelte@4.2.8):
     resolution: {integrity: sha512-41snaPswvSf8TJUhlkoJBekRrABDXDMdpNpT2tfHIv4JuhgvHqLMhEPGtaQn0BmbNSTkuz2Ed20DF2eHw0SmBQ==}
