@@ -72,6 +72,7 @@ await createIndex('posts', {
       tokenizer: {
         ngram_23: {
           type: 'ngram',
+          token_chars: ['letter', 'digit'],
           min_gram: 2,
           max_gram: 3,
         },
@@ -113,6 +114,7 @@ await createIndex('spaces', {
       tokenizer: {
         ngram_23: {
           type: 'ngram',
+          token_chars: ['letter', 'digit'],
           min_gram: 2,
           max_gram: 3,
         },
@@ -142,6 +144,7 @@ await createIndex('tags', {
         tokenizer: {
           ngram_23: {
             type: 'ngram',
+            token_chars: ['letter', 'digit'],
             min_gram: 2,
             max_gram: 3,
           },
