@@ -14,7 +14,7 @@
 
 <section class={_class}>
   <div
-    class="flex flex-col gap-1.5 border border-gray-5 rounded-2xl transition bg-primary pt-3 pb-4 px-3.5 hover:border-secondary focus-within:border-tertiary! [&:has(input[aria-invalid])]:border-action-error [&:has(textarea[aria-invalid])]:border-action-error disabled:opacity-50"
+    class="flex flex-col gap-1.5 border border-gray-5 rounded-2xl transition bg-primary pt-3 pb-4 px-3.5 hover:border-secondary focus-within:border-tertiary! [&:has(input[aria-invalid])]:border-action-red-primary [&:has(textarea[aria-invalid])]:border-action-red-primary disabled:opacity-50"
   >
     <label class="body-14-sb" for={name}>{label}</label>
     <slot />
