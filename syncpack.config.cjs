@@ -5,11 +5,6 @@ module.exports = {
   semverGroups: [
     {
       packages: ['**'],
-      dependencies: ['@sentry/cli'],
-      range: '',
-    },
-    {
-      packages: ['**'],
       dependencies: ['**'],
       range: '^',
     },

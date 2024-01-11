@@ -1,7 +1,8 @@
-import * as Sentry from '@sentry/sveltekit';
+import * as SentryBrowser from '@sentry/browser';
+import * as SentryNode from '@sentry/node';
 import { match } from 'ts-pattern';
 import { z } from 'zod';
-import { dev } from '$app/environment';
+import { browser, dev } from '$app/environment';
 
 enum AppErrorKind {
   UnknownError = 'UnknownError',
@@ -109,7 +110,8 @@ export class UnknownError extends AppError {
       this.cause = c;
     } else {
       if (cause && !id) {
-        id = Sentry.captureException(cause);
+        const sentry = browser ? SentryBrowser : SentryNode;
+        id = sentry.captureException(cause);
       }
 
       super({
