@@ -103,6 +103,8 @@ jobs:
           command: up
           work-dir: apps/${{ matrix.app }}
           stack-name: penxle/prod
+          refresh: true
+          upsert: true
           config-map: |
             { "penxle:image.digest": { "value": "${{ steps.build.outputs.digest }}" } }
         env:

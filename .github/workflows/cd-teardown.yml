@@ -51,6 +51,7 @@ jobs:
           command: destroy
           work-dir: apps/${{ matrix.app }}
           stack-name: penxle/pr-${{ github.event.pull_request.number }}
+          refresh: true
           remove: true
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

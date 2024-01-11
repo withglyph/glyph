@@ -101,6 +101,7 @@ jobs:
           command: up
           work-dir: apps/${{ matrix.app }}
           stack-name: penxle/pr-${{ github.event.pull_request.number }}
+          refresh: true
           upsert: true
           config-map: |
             { "penxle:image.digest": { "value": "${{ steps.build.outputs.digest }}" } }
