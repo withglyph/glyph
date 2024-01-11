@@ -123,7 +123,6 @@ export const unoPreprocess = (uno?: UnoGenerator): PreprocessorGroup => {
 
       csstree.walk(cssAst, function (node, _, list) {
         if (node.type === 'PseudoClassSelector' && node.name === 'global') {
-          // @ts-expect-error types are wrong
           return this.skip;
         }
 
