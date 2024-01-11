@@ -42,7 +42,7 @@
     adultFilter,
     excludeContentFilters,
     orderBy,
-    page: initialIndex,
+    page: initialPage,
   } = initSearchFilter($page.url.search);
 
   const updateSearchFilter = (currentPage: number) => {
@@ -90,6 +90,6 @@
     {#each $query.searchPosts.posts as post (post.id)}
       <PostCard class="mt-4 first:mt-0" $post={post} />
     {/each}
-    <Pagination count={$query.searchPosts.count} {initialIndex} onChange={updateSearchFilter} />
+    <Pagination {initialPage} onChange={updateSearchFilter} totalItems={$query.searchPosts.count} />
   </div>
 {/if}
