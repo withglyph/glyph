@@ -18,11 +18,11 @@
     "@opentelemetry/sdk-node": "^0.46.0",
     "@opentelemetry/sdk-trace-node": "^1.19.0",
     "@opentelemetry/semantic-conventions": "^1.19.0",
-    "@prisma/instrumentation": "^5.7.1"
+    "@prisma/instrumentation": "^5.8.0"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "@types/node": "^20.10.6",
+    "@types/node": "^20.11.0",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3"
   }
