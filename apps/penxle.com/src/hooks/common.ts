@@ -1,6 +1,5 @@
-import * as SentryBrowser from '@sentry/browser';
-import * as SentryNode from '@sentry/node';
-import { browser, dev } from '$app/environment';
+import * as Sentry from '@sentry/sveltekit';
+import { dev } from '$app/environment';
 import { env } from '$env/dynamic/public';
 import { setupDayjs } from '$lib/datetime';
 import { AppError, NotFoundError, UnknownError } from '$lib/errors';
@@ -8,8 +7,7 @@ import type { HandleClientError, HandleServerError } from '@sveltejs/kit';
 
 const setupSentry = () => {
   if (!dev) {
-    const sentry = browser ? SentryBrowser : SentryNode;
-    sentry.init({
+    Sentry.init({
       dsn: env.PUBLIC_SENTRY_DSN,
       environment: env.PUBLIC_PULUMI_STACK,
     });
