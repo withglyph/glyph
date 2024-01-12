@@ -62,7 +62,18 @@ export const postSchema = defineSchema((builder) => {
       // 글을 볼 권한이 없는지 체크
 
       if (post.state !== 'PUBLISHED' || (post.visibility === 'SPACE' && member?.role !== 'MEMBER')) {
-        return [];
+        const purchase = context.session
+          ? await db.postPurchase.exists({
+              where: {
+                postId: post.id,
+                userId: context.session.userId,
+              },
+            })
+          : false;
+
+        if (!purchase) {
+          return [];
+        }
       }
 
       return ['$post:view'];
@@ -780,7 +791,6 @@ export const postSchema = defineSchema((builder) => {
           include: { space: true },
           where: {
             permalink: args.permalink,
-            state: { not: 'DELETED' },
             space: {
               state: 'ACTIVE',
             },
@@ -791,24 +801,40 @@ export const postSchema = defineSchema((builder) => {
           throw new NotFoundError();
         }
 
-        if (post.space.visibility === 'PRIVATE' || post.state === 'DRAFT' || post.visibility === 'SPACE') {
-          const member = context.session
-            ? await db.spaceMember.findUnique({
-                where: {
-                  spaceId_userId: {
-                    spaceId: post.space.id,
-                    userId: context.session.userId,
-                  },
-                  state: 'ACTIVE',
-                },
-              })
-            : null;
+        if (
+          post.space.visibility === 'PRIVATE' ||
+          post.state === 'DRAFT' ||
+          post.visibility === 'SPACE' ||
+          post.state === 'DELETED'
+        ) {
+          if (!context.session) {
+            throw new PermissionDeniedError();
+          }
+
+          const member = await db.spaceMember.findUnique({
+            where: {
+              spaceId_userId: {
+                spaceId: post.space.id,
+                userId: context.session.userId,
+              },
+              state: 'ACTIVE',
+            },
+          });
 
           if (
             !member ||
             (post.state === 'DRAFT' && member.role !== 'ADMIN' && post.userId !== context.session?.userId)
           ) {
-            throw new PermissionDeniedError();
+            const purchase = await db.postPurchase.exists({
+              where: {
+                postId: post.id,
+                userId: context.session.userId,
+              },
+            });
+
+            if (!purchase) {
+              throw new PermissionDeniedError();
+            }
           }
         }
 
