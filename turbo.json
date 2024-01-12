@@ -4,15 +4,15 @@
     "build": {
       "dependsOn": ["codegen", "^build"],
       "env": ["PRIVATE_*", "PUBLIC_*"],
-      "outputs": [".lambda/**", ".svelte-kit/**", "dist/**"]
+      "outputs": ["dist/**"]
     },
     "codegen:ephemeral": {
       "cache": false
     },
     "codegen": {
-      "dependsOn": ["^build", "codegen:ephemeral"],
+      "dependsOn": ["^build"],
       "dotEnv": [".env"],
-      "outputs": [".svelte-kit/**", ".glitch/**"]
+      "outputs": [".svelte-kit/**", ".glitch/**", ".prisma/**"]
     },
     "dev": {
       "cache": false,

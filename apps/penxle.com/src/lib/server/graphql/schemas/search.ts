@@ -1,8 +1,8 @@
-import { ContentFilterCategory } from '@prisma/client';
 import { match } from 'ts-pattern';
 import { elasticSearch, indexName } from '$lib/server/search';
 import { makeQueryContainers, searchResultToPrismaData } from '$lib/server/utils';
 import { disassembleHangulString } from '$lib/utils';
+import { PrismaEnums } from '$prisma';
 import { defineSchema } from '../builder';
 import type { SearchResponse } from '$lib/server/utils';
 
@@ -67,7 +67,7 @@ export const searchSchema = defineSchema((builder) => {
         includeTags: t.arg.stringList({ defaultValue: [] }),
         excludeTags: t.arg.stringList({ defaultValue: [] }),
         adultFilter: t.arg.boolean({ required: false }),
-        excludeContentFilters: t.arg({ type: [ContentFilterCategory], required: false }),
+        excludeContentFilters: t.arg({ type: [PrismaEnums.ContentFilterCategory], required: false }),
         orderBy: t.arg({ type: OrderByKind, defaultValue: 'ACCURACY' }),
         page: t.arg.int({ defaultValue: 1 }),
       },

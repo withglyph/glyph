@@ -1,5 +1,5 @@
-import { Prisma } from '@prisma/client';
 import stringHash from '@sindresorhus/string-hash';
+import { Prisma } from '$prisma';
 import type { PrismaClient } from '../database';
 
 type BareTransactionClient = Omit<

@@ -9,6 +9,7 @@ export default {
     alias: {
       $assets: './src/assets',
       $glitch: './.glitch',
+      $prisma: './prisma',
     },
     env: {
       publicPrefix: 'PUBLIC_',

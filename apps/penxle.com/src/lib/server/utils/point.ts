@@ -1,5 +1,5 @@
 import { createId } from '$lib/utils';
-import type { PointTransactionCause } from '@prisma/client';
+import type { PrismaEnums } from '$prisma';
 import type { InteractiveTransactionClient } from '../database';
 
 type GetUserPointParams = {
@@ -23,7 +23,7 @@ type DeductPointParams = {
   db: InteractiveTransactionClient;
   userId: string;
   amount: number;
-  cause: PointTransactionCause;
+  cause: PrismaEnums.PointTransactionCause;
   targetId?: string;
 };
 export const deductUserPoint = async ({ db, userId, amount, targetId, cause }: DeductPointParams) => {

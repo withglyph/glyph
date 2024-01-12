@@ -32,7 +32,7 @@ export const serve = async ({ basePath, Server, manifest, prerendered }: CreateH
 
     if (manifest.assets.has(pathname) || pathname.startsWith(manifest.appPath)) {
       const immutable = pathname.startsWith(`${manifest.appPath}/immutable`);
-      const filePath = path.join(basePath, 'public', pathname);
+      const filePath = path.join(basePath, 'client', pathname);
 
       const size = fs.statSync(filePath).size;
       const stream = fs.createReadStream(filePath);
@@ -50,7 +50,7 @@ export const serve = async ({ basePath, Server, manifest, prerendered }: CreateH
     const pathname = event.path;
 
     if (pathname in prerendered) {
-      const filePath = path.join(basePath, 'public', prerendered[pathname]);
+      const filePath = path.join(basePath, 'client', prerendered[pathname]);
 
       const size = fs.statSync(filePath).size;
       const stream = fs.createReadStream(filePath);

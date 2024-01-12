@@ -2,13 +2,13 @@ import dayjs from 'dayjs';
 import { traverse } from 'object-traversal';
 import { createTiptapDocument, documentToText } from '$lib/utils';
 import { useCache } from '../cache';
-import type { JsonValue } from '@prisma/client/runtime/library';
 import type { JSONContent } from '@tiptap/core';
+import type { Prisma } from '$prisma';
 import type { InteractiveTransactionClient } from '../prisma';
 
 type RevisionContent = {
   id: string;
-  data: JSONContent[] | JsonValue;
+  data: JSONContent[] | Prisma.JsonValue;
 };
 
 export const revisionContentToText = async (revisionContent: RevisionContent): Promise<string> => {

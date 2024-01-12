@@ -3,6 +3,7 @@
 node_modules/
 
 .glitch/
+.prisma/
 .svelte-kit/
 .turbo/
 

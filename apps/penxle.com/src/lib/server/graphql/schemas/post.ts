@@ -1,13 +1,6 @@
 import { webcrypto } from 'node:crypto';
 import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { init as cuid } from '@paralleldrive/cuid2';
-import {
-  ContentFilterCategory,
-  PostRevisionContentKind,
-  PostRevisionKind,
-  PostState,
-  PostVisibility,
-} from '@prisma/client';
 import { hash, verify } from 'argon2';
 import dayjs from 'dayjs';
 import * as R from 'radash';
@@ -32,6 +25,7 @@ import {
 import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
 import { base36To10, createId, createTiptapDocument, createTiptapNode, validateTiptapDocument } from '$lib/utils';
 import { RevisePostInputSchema } from '$lib/validations/post';
+import { PrismaEnums } from '$prisma';
 import { defineSchema } from '../builder';
 import type { JSONContent } from '@tiptap/core';
 import type { ImageBounds } from '$lib/utils';
@@ -75,7 +69,7 @@ export const postSchema = defineSchema((builder) => {
     },
     fields: (t) => ({
       id: t.exposeID('id'),
-      state: t.expose('state', { type: PostState }),
+      state: t.expose('state', { type: PrismaEnums.PostState }),
 
       permalink: t.exposeString('permalink'),
       shortlink: t.field({
@@ -91,7 +85,7 @@ export const postSchema = defineSchema((builder) => {
       likeCount: t.relationCount('likes'),
       viewCount: t.relationCount('views'),
 
-      visibility: t.expose('visibility', { type: PostVisibility }),
+      visibility: t.expose('visibility', { type: PrismaEnums.PostVisibility }),
       discloseStats: t.exposeBoolean('discloseStats'),
       receiveFeedback: t.exposeBoolean('receiveFeedback'),
       receivePatronage: t.exposeBoolean('receivePatronage'),
@@ -113,7 +107,7 @@ export const postSchema = defineSchema((builder) => {
         },
       }),
 
-      contentFilters: t.expose('contentFilters', { type: [ContentFilterCategory] }),
+      contentFilters: t.expose('contentFilters', { type: [PrismaEnums.ContentFilterCategory] }),
       blurred: t.boolean({
         resolve: async (post, _, { db, ...context }) => {
           if (!context.session) {
@@ -482,7 +476,7 @@ export const postSchema = defineSchema((builder) => {
     },
     fields: (t) => ({
       id: t.exposeID('id'),
-      kind: t.expose('kind', { type: PostRevisionKind }),
+      kind: t.expose('kind', { type: PrismaEnums.PostRevisionKind }),
       title: t.exposeString('title'),
       subtitle: t.exposeString('subtitle', { nullable: true }),
       price: t.exposeInt('price', { nullable: true }),
@@ -520,7 +514,7 @@ export const postSchema = defineSchema((builder) => {
         resolve: (_, { tags }) => tags.map(({ tag }) => tag),
       }),
 
-      contentKind: t.expose('contentKind', { type: PostRevisionContentKind }),
+      contentKind: t.expose('contentKind', { type: PrismaEnums.PostRevisionContentKind }),
 
       content: t.field({
         type: 'JSON',
@@ -677,8 +671,8 @@ export const postSchema = defineSchema((builder) => {
 
   const RevisePostInput = builder.inputType('RevisePostInput', {
     fields: (t) => ({
-      revisionKind: t.field({ type: PostRevisionKind }),
-      contentKind: t.field({ type: PostRevisionContentKind, defaultValue: 'ARTICLE' }),
+      revisionKind: t.field({ type: PrismaEnums.PostRevisionKind }),
+      contentKind: t.field({ type: PrismaEnums.PostRevisionContentKind, defaultValue: 'ARTICLE' }),
 
       postId: t.id({ required: false }),
       spaceId: t.id(),
@@ -699,13 +693,13 @@ export const postSchema = defineSchema((builder) => {
   const PublishPostInput = builder.inputType('PublishPostInput', {
     fields: (t) => ({
       revisionId: t.id(),
-      visibility: t.field({ type: PostVisibility }),
+      visibility: t.field({ type: PrismaEnums.PostVisibility }),
       discloseStats: t.boolean(),
       receiveFeedback: t.boolean(),
       receivePatronage: t.boolean(),
       receiveTagContribution: t.boolean(),
       protectContent: t.boolean({ required: false, defaultValue: true }),
-      contentFilters: t.field({ type: [ContentFilterCategory] }),
+      contentFilters: t.field({ type: [PrismaEnums.ContentFilterCategory] }),
       password: t.string({ required: false }),
     }),
   });
@@ -713,7 +707,7 @@ export const postSchema = defineSchema((builder) => {
   const UpdatePostOptionsInput = builder.inputType('UpdatePostOptionsInput', {
     fields: (t) => ({
       postId: t.id(),
-      visibility: t.field({ type: PostVisibility, required: false }),
+      visibility: t.field({ type: PrismaEnums.PostVisibility, required: false }),
       discloseStats: t.boolean({ required: false }),
       receiveFeedback: t.boolean({ required: false }),
       receivePatronage: t.boolean({ required: false }),

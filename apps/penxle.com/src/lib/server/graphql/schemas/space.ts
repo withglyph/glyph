@@ -1,4 +1,3 @@
-import { SpaceMemberInvitationState, SpaceMemberRole, SpaceVisibility } from '@prisma/client';
 import * as R from 'radash';
 import { match } from 'ts-pattern';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
@@ -10,6 +9,7 @@ import {
   CreateSpaceSchema,
   UpdateSpaceSchema,
 } from '$lib/validations';
+import { PrismaEnums } from '$prisma';
 import { defineSchema } from '../builder';
 
 export const spaceSchema = defineSchema((builder) => {
@@ -141,7 +141,7 @@ export const spaceSchema = defineSchema((builder) => {
         },
       }),
 
-      visibility: t.expose('visibility', { type: SpaceVisibility }),
+      visibility: t.expose('visibility', { type: PrismaEnums.SpaceVisibility }),
       externalLinks: t.relation('externalLinks'),
 
       muted: t.field({
@@ -195,7 +195,7 @@ export const spaceSchema = defineSchema((builder) => {
     },
     fields: (t) => ({
       id: t.exposeID('id'),
-      role: t.expose('role', { type: SpaceMemberRole }),
+      role: t.expose('role', { type: PrismaEnums.SpaceMemberRole }),
       profile: t.relation('profile'),
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
       email: t.string({
@@ -218,7 +218,7 @@ export const spaceSchema = defineSchema((builder) => {
       receivedEmail: t.exposeString('receivedEmail'),
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
       state: t.field({
-        type: SpaceMemberInvitationState,
+        type: PrismaEnums.SpaceMemberInvitationState,
         authScopes: { $granted: '$space.member.invitation.state' },
         resolve: (invitation) => invitation.state,
         unauthorizedResolver: (invitation) =>
@@ -292,7 +292,7 @@ export const spaceSchema = defineSchema((builder) => {
     fields: (t) => ({
       spaceId: t.id(),
       email: t.string(),
-      role: t.field({ type: SpaceMemberRole }),
+      role: t.field({ type: PrismaEnums.SpaceMemberRole }),
     }),
     validate: { schema: CreateSpaceMemberInvitationSchema },
   });
@@ -351,7 +351,7 @@ export const spaceSchema = defineSchema((builder) => {
   const UpdateSpaceMemberRoleInput = builder.inputType('UpdateSpaceMemberRoleInput', {
     fields: (t) => ({
       spaceMemberId: t.id(),
-      role: t.field({ type: SpaceMemberRole }),
+      role: t.field({ type: PrismaEnums.SpaceMemberRole }),
     }),
   });
 

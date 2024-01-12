@@ -6,10 +6,10 @@ import SimpleObjectsPlugin from '@pothos/plugin-simple-objects';
 import TracingPlugin, { isRootField } from '@pothos/plugin-tracing';
 import ValidationPlugin from '@pothos/plugin-validation';
 import { createOpenTelemetryWrapper } from '@pothos/tracing-opentelemetry';
-import { Prisma, PrismaClient } from '@prisma/client';
 import { GraphQLDateTime, GraphQLJSON, GraphQLVoid } from 'graphql-scalars';
 import { PermissionDeniedError } from '$lib/errors';
-import type PrismaTypes from '@pothos/plugin-prisma/generated';
+import { Prisma, PrismaClient } from '$prisma';
+import type { PrismaPothosTypes } from '$prisma';
 import type { Context, UserContext } from '../context';
 
 const tracer = trace.getTracer('graphql');
@@ -30,7 +30,7 @@ export const createBuilder = () => {
     };
     Context: Context;
     DefaultInputFieldRequiredness: true;
-    PrismaTypes: PrismaTypes;
+    PrismaTypes: PrismaPothosTypes;
     Scalars: {
       DateTime: { Input: Date; Output: Date };
       ID: { Input: string; Output: string };

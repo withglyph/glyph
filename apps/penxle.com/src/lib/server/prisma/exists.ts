@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from '$prisma';
 
 export const exists = Prisma.defineExtension({
   name: 'exists',

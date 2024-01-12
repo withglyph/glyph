@@ -1,10 +1,10 @@
-import { PaymentMethod, PointPurchaseState, PointTransactionCause } from '@prisma/client';
 import dayjs from 'dayjs';
 import { customAlphabet } from 'nanoid';
 import numeral from 'numeral';
 import { match } from 'ts-pattern';
 import { exim, portone } from '$lib/server/external-api';
 import { createId } from '$lib/utils';
+import { PrismaEnums } from '$prisma';
 import { defineSchema } from '../builder';
 
 export const pointSchema = defineSchema((builder) => {
@@ -17,10 +17,10 @@ export const pointSchema = defineSchema((builder) => {
       id: t.exposeID('id'),
       pointAmount: t.exposeInt('pointAmount'),
       paymentAmount: t.exposeInt('paymentAmount'),
-      paymentMethod: t.expose('paymentMethod', { type: PaymentMethod }),
+      paymentMethod: t.expose('paymentMethod', { type: PrismaEnums.PaymentMethod }),
       paymentData: t.expose('paymentData', { type: 'JSON' }),
       paymentResult: t.expose('paymentResult', { type: 'JSON', nullable: true }),
-      state: t.expose('state', { type: PointPurchaseState }),
+      state: t.expose('state', { type: PrismaEnums.PointPurchaseState }),
       expiresAt: t.expose('expiresAt', { type: 'DateTime' }),
     }),
   });
@@ -29,7 +29,7 @@ export const pointSchema = defineSchema((builder) => {
     fields: (t) => ({
       id: t.exposeID('id'),
       amount: t.exposeInt('amount'),
-      cause: t.expose('cause', { type: PointTransactionCause }),
+      cause: t.expose('cause', { type: PrismaEnums.PointTransactionCause }),
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
 
       post: t.prismaField({
@@ -54,7 +54,7 @@ export const pointSchema = defineSchema((builder) => {
 
   const PurchasePointInput = builder.inputType('PurchasePointInput', {
     fields: (t) => ({
-      paymentMethod: t.field({ type: PaymentMethod }),
+      paymentMethod: t.field({ type: PrismaEnums.PaymentMethod }),
       pointAmount: t.int(),
       pointAgreement: t.boolean(),
     }),

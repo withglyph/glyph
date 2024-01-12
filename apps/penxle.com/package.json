@@ -3,10 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "vite build",
-    "codegen": "svelte-kit sync && glitch generate",
-    "codegen:ephemeral": "prisma generate",
+    "codegen": "svelte-kit sync && glitch generate && prisma generate",
     "db:push": "doppler run -- prisma db push",
     "dev": "doppler run -- vite dev",
     "lint:svelte": "svelte-check --fail-on-warnings",
@@ -15,7 +17,7 @@
     "migrate:new": "doppler run -- prisma migrate dev --create-only",
     "test": "playwright test"
   },
-  "devDependencies": {
+  "dependencies": {
     "@aws-sdk/client-s3": "^3.489.0",
     "@aws-sdk/client-ses": "^3.489.0",
     "@aws-sdk/s3-request-presigner": "^3.489.0",
@@ -33,11 +35,8 @@
     "@penxle/adapter-docker": "workspace:^",
     "@penxle/glitch": "workspace:^",
     "@penxle/lib": "workspace:^",
-    "@penxle/pulumi": "workspace:^",
     "@penxle/tracing": "workspace:^",
-    "@penxle/tsconfig": "workspace:^",
     "@penxle/ui": "workspace:^",
-    "@playwright/test": "^1.40.1",
     "@pothos/core": "^3.41.0",
     "@pothos/plugin-prisma": "^3.63.1",
     "@pothos/plugin-scope-auth": "^3.20.0",
@@ -46,7 +45,6 @@
     "@pothos/plugin-validation": "^3.10.1",
     "@pothos/tracing-opentelemetry": "^0.6.9",
     "@prisma/client": "^5.8.0",
-    "@pulumi/pulumi": "^3.101.1",
     "@resvg/resvg-js": "^2.6.0",
     "@sentry/sveltekit": "^7.93.0",
     "@shopify/draggable": "^1.1.3",
@@ -56,11 +54,6 @@
     "@tiptap/core": "^2.1.15",
     "@tiptap/html": "^2.1.15",
     "@tiptap/pm": "^2.1.15",
-    "@types/body-scroll-lock": "^3.1.2",
-    "@types/mixpanel-browser": "^2.48.1",
-    "@types/node": "^20.11.0",
-    "@types/numeral": "^2.0.5",
-    "@types/randomcolor": "^0.5.9",
     "@urql/core": "^4.2.2",
     "@urql/exchange-graphcache": "^6.4.0",
     "argon2": "^0.31.2",
@@ -96,15 +89,26 @@
     "randomcolor": "^0.6.2",
     "sharp": "^0.33.1",
     "svelte": "^4.2.8",
-    "svelte-check": "^3.6.2",
     "swiper": "^11.0.5",
     "thumbhash": "^0.1.1",
     "ts-pattern": "^5.0.6",
+    "xmlbuilder2": "^3.1.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@penxle/pulumi": "workspace:^",
+    "@penxle/tsconfig": "workspace:^",
+    "@playwright/test": "^1.40.1",
+    "@pulumi/pulumi": "^3.101.1",
+    "@types/body-scroll-lock": "^3.1.2",
+    "@types/mixpanel-browser": "^2.48.1",
+    "@types/node": "^20.11.0",
+    "@types/numeral": "^2.0.5",
+    "@types/randomcolor": "^0.5.9",
+    "svelte-check": "^3.6.2",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "unocss": "^0.58.3",
-    "vite": "^4.5.1",
-    "xmlbuilder2": "^3.1.1",
-    "zod": "^3.22.4"
+    "vite": "^4.5.1"
   }
 }

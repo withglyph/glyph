@@ -1,5 +1,5 @@
 import { createId } from '$lib/utils';
-import type { RevenueKind } from '@prisma/client';
+import type { PrismaEnums } from '$prisma';
 import type { InteractiveTransactionClient } from '../prisma';
 
 type GetUserRevenueParams = {
@@ -23,7 +23,7 @@ type CreateRevenueParams = {
   userId: string;
   targetId: string;
   amount: number;
-  kind: RevenueKind;
+  kind: PrismaEnums.RevenueKind;
 };
 export const createRevenue = async ({ db, userId, targetId, amount, kind }: CreateRevenueParams) => {
   if (amount <= 0) {

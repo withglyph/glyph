@@ -7,10 +7,12 @@ datasource db {
 
 generator pothos {
   provider = "prisma-pothos-types"
+  output   = "../.prisma/pothos.d.ts"
 }
 
 generator prisma {
   provider = "prisma-client-js"
+  output   = "../.prisma"
 
   previewFeatures = ["metrics", "tracing"]
 }

@@ -1,7 +1,7 @@
-import type { UserSingleSignOnProvider } from '@prisma/client';
+import type { PrismaEnums } from '$prisma';
 
 export type ExternalUser = {
-  provider: UserSingleSignOnProvider;
+  provider: PrismaEnums.UserSingleSignOnProvider;
   id: string;
   email: string;
   name: string;

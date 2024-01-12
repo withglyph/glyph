@@ -1,4 +1,4 @@
-import { RevenueKind, RevenueState } from '@prisma/client';
+import { PrismaEnums } from '$prisma';
 import { defineSchema } from '../builder';
 
 export const revenueSchema = defineSchema((builder) => {
@@ -10,8 +10,8 @@ export const revenueSchema = defineSchema((builder) => {
     fields: (t) => ({
       id: t.exposeID('id'),
       amount: t.exposeInt('amount'),
-      kind: t.expose('kind', { type: RevenueKind }),
-      state: t.expose('state', { type: RevenueState }),
+      kind: t.expose('kind', { type: PrismaEnums.RevenueKind }),
+      state: t.expose('state', { type: PrismaEnums.RevenueState }),
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
 
       post: t.prismaField({

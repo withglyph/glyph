@@ -1,7 +1,7 @@
-import { Prisma, PrismaClient } from '@prisma/client';
 import * as R from 'radash';
 import { elasticSearch, indexName } from '$lib/server/search';
 import { disassembleHangulString, InitialHangulString } from '$lib/utils';
+import { Prisma, PrismaClient } from '$prisma';
 import type { estypes } from '@elastic/elasticsearch';
 import type { InteractiveTransactionClient } from '$lib/server/database';
 

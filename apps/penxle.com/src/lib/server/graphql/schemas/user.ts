@@ -1,15 +1,4 @@
 import crypto from 'node:crypto';
-import {
-  ContentFilterAction,
-  ContentFilterCategory,
-  PostState,
-  SpaceMemberInvitationState,
-  UserEmailVerificationKind,
-  UserNotificationCategory,
-  UserNotificationMethod,
-  UserSingleSignOnProvider,
-  UserState,
-} from '@prisma/client';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
@@ -38,6 +27,7 @@ import {
   UpdateUserEmailSchema,
   UpdateUserProfileSchema,
 } from '$lib/validations';
+import { PrismaEnums } from '$prisma';
 import { defineSchema } from '../builder';
 
 export const userSchema = defineSchema((builder) => {
@@ -69,7 +59,7 @@ export const userSchema = defineSchema((builder) => {
     fields: (t) => ({
       id: t.exposeID('id'),
       email: t.exposeString('email'),
-      state: t.expose('state', { type: UserState }),
+      state: t.expose('state', { type: PrismaEnums.UserState }),
 
       contentFilterPreferences: t.relation('contentFilterPreferences', { grantScopes: ['$user'] }),
       marketingConsent: t.relation('marketingConsent', { nullable: true, grantScopes: ['$user'] }),
@@ -140,7 +130,7 @@ export const userSchema = defineSchema((builder) => {
 
       receivedSpaceMemberInvitations: t.relation('receivedSpaceMemberInvitations', {
         grantScopes: ['$space.member.invitation', '$space.member.invitation.state'],
-        args: { state: t.arg({ type: SpaceMemberInvitationState, required: false }) },
+        args: { state: t.arg({ type: PrismaEnums.SpaceMemberInvitationState, required: false }) },
         query: ({ state }) => ({ where: { state: state ?? undefined } }),
       }),
 
@@ -198,7 +188,7 @@ export const userSchema = defineSchema((builder) => {
       }),
 
       posts: t.relation('posts', {
-        args: { state: t.arg({ type: PostState, defaultValue: 'PUBLISHED' }) },
+        args: { state: t.arg({ type: PrismaEnums.PostState, defaultValue: 'PUBLISHED' }) },
         query: ({ state }) => ({
           where: { state },
           orderBy: { createdAt: 'desc' },
@@ -282,8 +272,8 @@ export const userSchema = defineSchema((builder) => {
     authScopes: { $granted: '$user' },
     fields: (t) => ({
       id: t.exposeID('id'),
-      category: t.expose('category', { type: ContentFilterCategory }),
-      action: t.expose('action', { type: ContentFilterAction }),
+      category: t.expose('category', { type: PrismaEnums.ContentFilterCategory }),
+      action: t.expose('action', { type: PrismaEnums.ContentFilterAction }),
     }),
   });
 
@@ -291,7 +281,7 @@ export const userSchema = defineSchema((builder) => {
     authScopes: { $granted: '$user' },
     fields: (t) => ({
       id: t.exposeID('id'),
-      kind: t.expose('kind', { type: UserEmailVerificationKind }),
+      kind: t.expose('kind', { type: PrismaEnums.UserEmailVerificationKind }),
       email: t.exposeString('email'),
       expiresAt: t.expose('expiresAt', { type: 'DateTime' }),
     }),
@@ -309,8 +299,8 @@ export const userSchema = defineSchema((builder) => {
     authScopes: { $granted: '$user' },
     fields: (t) => ({
       id: t.exposeID('id'),
-      category: t.expose('category', { type: UserNotificationCategory }),
-      method: t.expose('method', { type: UserNotificationMethod }),
+      category: t.expose('category', { type: PrismaEnums.UserNotificationCategory }),
+      method: t.expose('method', { type: PrismaEnums.UserNotificationMethod }),
       opted: t.exposeBoolean('opted'),
     }),
   });
@@ -327,7 +317,7 @@ export const userSchema = defineSchema((builder) => {
     authScopes: { $granted: '$user' },
     fields: (t) => ({
       id: t.exposeID('id'),
-      provider: t.expose('provider', { type: UserSingleSignOnProvider }),
+      provider: t.expose('provider', { type: PrismaEnums.UserSingleSignOnProvider }),
       email: t.exposeString('email'),
     }),
   });
@@ -354,7 +344,7 @@ export const userSchema = defineSchema((builder) => {
   const IssueUserSingleSignOnAuthorizationUrlInput = builder.inputType('IssueUserSingleSignOnAuthorizationUrlInput', {
     fields: (t) => ({
       type: t.field({ type: UserSingleSignOnAuthorizationType }),
-      provider: t.field({ type: UserSingleSignOnProvider }),
+      provider: t.field({ type: PrismaEnums.UserSingleSignOnProvider }),
     }),
   });
 
@@ -384,14 +374,14 @@ export const userSchema = defineSchema((builder) => {
 
   const UnlinkUserSingleSignOnInput = builder.inputType('UnlinkUserSingleSignOnInput', {
     fields: (t) => ({
-      provider: t.field({ type: UserSingleSignOnProvider }),
+      provider: t.field({ type: PrismaEnums.UserSingleSignOnProvider }),
     }),
   });
 
   const UpdateUserContentFilterPreferenceInput = builder.inputType('UpdateUserContentFilterPreferenceInput', {
     fields: (t) => ({
-      category: t.field({ type: ContentFilterCategory }),
-      action: t.field({ type: ContentFilterAction }),
+      category: t.field({ type: PrismaEnums.ContentFilterCategory }),
+      action: t.field({ type: PrismaEnums.ContentFilterAction }),
     }),
   });
 
@@ -403,8 +393,8 @@ export const userSchema = defineSchema((builder) => {
 
   const UpdateUserNotificationPreferenceInput = builder.inputType('UpdateUserNotificationPreferenceInput', {
     fields: (t) => ({
-      category: t.field({ type: UserNotificationCategory }),
-      method: t.field({ type: UserNotificationMethod }),
+      category: t.field({ type: PrismaEnums.UserNotificationCategory }),
+      method: t.field({ type: PrismaEnums.UserNotificationMethod }),
       opted: t.boolean(),
     }),
   });

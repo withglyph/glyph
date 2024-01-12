@@ -1,6 +1,6 @@
-import { PrismaClient as BasePrismaClient } from '@prisma/client';
 import { building, dev } from '$app/environment';
 import { env } from '$env/dynamic/private';
+import { PrismaClient as BasePrismaClient } from '$prisma';
 import { exists, logging, transaction } from './prisma';
 
 const baseClient = new BasePrismaClient({
