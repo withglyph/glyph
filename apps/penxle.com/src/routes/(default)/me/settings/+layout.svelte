@@ -7,9 +7,9 @@
   <h2 class="title-20-eb mt-8 mb-4 <sm:hidden px-8">설정</h2>
 
   <TabHead class="w-full sm:px-8" variant="secondary">
-    <TabHeadItem id={1} href="/me/settings">계정</TabHeadItem>
-    <TabHeadItem id={2} href="/me/settings/notifications">알림</TabHeadItem>
-    <TabHeadItem id={3} href="/me/settings/contentfilters">필터링</TabHeadItem>
+    <TabHeadItem id={1} pathname="/me/settings">계정</TabHeadItem>
+    <TabHeadItem id={2} pathname="/me/settings/notifications">알림</TabHeadItem>
+    <TabHeadItem id={3} pathname="/me/settings/contentfilters">필터링</TabHeadItem>
   </TabHead>
 
   <slot />

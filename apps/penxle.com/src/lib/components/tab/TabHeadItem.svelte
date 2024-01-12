@@ -6,14 +6,17 @@
   export let id: number;
   export let activeTabValue: number | undefined = undefined;
   export let variant: 'primary' | 'secondary' = getContext('variant');
-  export let href: string | undefined = undefined;
+  export let pathname: string | undefined = undefined;
 
   let _class: string | undefined = undefined;
   export { _class as class };
 
   let element: 'a' | 'button';
-  $: element = href ? 'a' : 'button';
-  $: props = element === 'a' ? { href } : { type: 'button' };
+  $: element = pathname ? 'a' : 'button';
+  $: props = element === 'a' ? { href: pathname + $page.url.search } : { type: 'button' };
+
+  $: pathnameRegex = pathname ? new RegExp(`^${pathname}/?$`) : null;
+  $: selected = activeTabValue === id || pathnameRegex?.test($page.url.pathname);
 </script>
 
 <li class="grow sm:grow-0" role="presentation">
@@ -22,29 +25,13 @@
     id="{id}-tabhead"
     class={clsx(
       'block w-full grow sm:grow-0',
-      variant === 'primary' && 'title-20-eb border-b-10 leading-5 transition hover:(text-black border-brand-50)',
       variant === 'primary' &&
-        (activeTabValue === id || decodeURI($page.url.pathname) === href) &&
-        'text-black border-brand-50',
-      variant === 'primary' &&
-        activeTabValue !== id &&
-        decodeURI($page.url.pathname) !== href &&
-        'border-transparent text-disabled',
+        'title-20-eb border-b-10 leading-5 transition border-transparent text-disabled hover:(text-black border-brand-50) aria-selected:(text-black border-brand-50)',
       variant === 'secondary' &&
-        'bg-white p-3 text-center sm:bg-transparent transition border-b-2 border-white hover:(text-black! border-black!)',
-      variant === 'secondary' &&
-        (activeTabValue === id ||
-          ($page.url.search === ''
-            ? decodeURI($page.url.pathname)
-            : decodeURI($page.url.pathname + $page.url.search)) === href) &&
-        'text-black body-16-b border-b-2 border-black!',
-      variant === 'secondary' &&
-        activeTabValue !== id &&
-        ($page.url.search === '' ? decodeURI($page.url.pathname) : decodeURI($page.url.pathname + $page.url.search)) !==
-          href &&
-        'border-secondary body-16-sb text-disabled',
+        'bg-white p-3 text-center sm:bg-transparent transition border-b-2 border-white body-16-sb text-disabled hover:(text-black border-black) aria-selected:(text-black font-bold border-b-2 border-black)',
       _class,
     )}
+    aria-selected={selected}
     role="tab"
     tabindex="-1"
     on:click

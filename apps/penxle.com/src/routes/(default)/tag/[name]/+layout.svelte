@@ -148,8 +148,8 @@
 
   <div class="py-4 px-6 rounded-xl bg-cardprimary space-y-4 -mt-3 grow">
     <TabHead class="w-full" variant="secondary">
-      <TabHeadItem id={1} href={`/tag/${$page.params.name}`}>위키</TabHeadItem>
-      <TabHeadItem id={2} href={`/tag/${$page.params.name}/post`}>포스트</TabHeadItem>
+      <TabHeadItem id={1} pathname={`/tag/${$page.params.name}`}>위키</TabHeadItem>
+      <TabHeadItem id={2} pathname={`/tag/${$page.params.name}/post`}>포스트</TabHeadItem>
       <!-- <TabHeadItem id={3}>스페이스</TabHeadItem> -->
     </TabHead>
 

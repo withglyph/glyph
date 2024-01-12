@@ -306,13 +306,13 @@
   </div>
 
   <TabHead class="w-full max-w-200 border-none" variant="secondary">
-    <TabHeadItem id={1} href="/{$query.space.slug}">
+    <TabHeadItem id={1} pathname="/{$query.space.slug}">
       <span>홈</span>
     </TabHeadItem>
-    <TabHeadItem id={2} href="/{$query.space.slug}/collections">
+    <TabHeadItem id={2} pathname="/{$query.space.slug}/collections">
       <span>컬렉션</span>
     </TabHeadItem>
-    <TabHeadItem id={3} href="/{$query.space.slug}/about">
+    <TabHeadItem id={3} pathname="/{$query.space.slug}/about">
       <span>소개</span>
     </TabHeadItem>
   </TabHead>

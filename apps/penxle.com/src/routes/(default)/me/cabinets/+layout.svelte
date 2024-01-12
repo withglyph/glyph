@@ -119,9 +119,9 @@
     <h2 class="title-20-b px-4 sm:px-8">포스트 목록</h2>
 
     <TabHead class="w-full px-4 mt-4 mb-6 sm:px-8" variant="secondary">
-      <TabHeadItem id={1} href="/me/cabinets">좋아요</TabHeadItem>
-      <TabHeadItem id={2} href="/me/cabinets/recent">최근</TabHeadItem>
-      <TabHeadItem id={3} href="/me/cabinets/purchased">구매</TabHeadItem>
+      <TabHeadItem id={1} pathname="/me/cabinets">좋아요</TabHeadItem>
+      <TabHeadItem id={2} pathname="/me/cabinets/recent">최근</TabHeadItem>
+      <TabHeadItem id={3} pathname="/me/cabinets/purchased">구매</TabHeadItem>
     </TabHead>
 
     <div class="px-4 sm:px-8">

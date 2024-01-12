@@ -75,12 +75,10 @@
 </div>
 
 <TabHead class="mt-9 w-full <sm:(sticky top-61px z-1) sm:mb-4" variant="secondary">
-  <TabHeadItem id={0} href={`/search?q=${$page.url.searchParams.get('q')}`}>전체</TabHeadItem>
-  <TabHeadItem id={1} class="text-black! border-black!" href={`/search/post?q=${$page.url.searchParams.get('q')}`}>
-    포스트
-  </TabHeadItem>
-  <TabHeadItem id={2} href={`/search/space?q=${$page.url.searchParams.get('q')}`}>스페이스</TabHeadItem>
-  <TabHeadItem id={3} href={`/search/tag?q=${$page.url.searchParams.get('q')}`}>태그</TabHeadItem>
+  <TabHeadItem id={0} pathname="/search">전체</TabHeadItem>
+  <TabHeadItem id={1} class="text-black! border-black!" pathname="/search/post">포스트</TabHeadItem>
+  <TabHeadItem id={2} pathname="/search/space">스페이스</TabHeadItem>
+  <TabHeadItem id={3} pathname="/search/tag">태그</TabHeadItem>
 </TabHead>
 
 {#if $query.searchPosts.count === 0}

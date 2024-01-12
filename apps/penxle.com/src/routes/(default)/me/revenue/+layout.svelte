@@ -63,8 +63,8 @@
 <div class="mt-6 flex flex-col gap-4 py-8 bg-white border border-secondary rounded-2xl <sm:(mx-5 mb-4)">
   <h2 class="title-20-b px-6">수익/정산 내역</h2>
   <TabHead class="w-full px-6" variant="secondary">
-    <TabHeadItem id={1} href="/me/revenue">수익</TabHeadItem>
-    <TabHeadItem id={2} href="/me/revenue/settlement">정산</TabHeadItem>
+    <TabHeadItem id={1} pathname="/me/revenue">수익</TabHeadItem>
+    <TabHeadItem id={2} pathname="/me/revenue/settlement">정산</TabHeadItem>
   </TabHead>
   <div class="px-6">
     <slot />

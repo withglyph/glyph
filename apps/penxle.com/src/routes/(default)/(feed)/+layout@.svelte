@@ -90,10 +90,10 @@
     <div class="flex flex-col w-full truncate">
       <div class="<sm:(pt-6 px-4 bg-cardprimary border-b border-secondary sticky top-0)">
         <TabHead class="gap-3! <sm:(bg-cardprimary pb-4) sm:(mb-8 mt-3)">
-          <TabHeadItem id={1} class="title-20-b! leading-3!" href="/">추천 게시물</TabHeadItem>
+          <TabHeadItem id={1} class="title-20-b! leading-3!" pathname="/">추천 게시물</TabHeadItem>
           {#if $query.me}
-            <TabHeadItem id={2} class="title-20-b! leading-3!" href="/followTags">관심 태그</TabHeadItem>
-            <TabHeadItem id={3} class="title-20-b! leading-3!" href="/followSpaces">관심 스페이스</TabHeadItem>
+            <TabHeadItem id={2} class="title-20-b! leading-3!" pathname="/followTags">관심 태그</TabHeadItem>
+            <TabHeadItem id={3} class="title-20-b! leading-3!" pathname="/followSpaces">관심 스페이스</TabHeadItem>
           {:else}
             <button
               class="title-20-b w-fit border-b-10 leading-3 border-transparent transition hover:border-brand-50"
