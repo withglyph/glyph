@@ -5,6 +5,7 @@
   import { onMount } from 'svelte';
   import { dev } from '$app/environment';
   import { extensions } from '$lib/tiptap';
+  import { transformToTiptapImages } from '$lib/utils';
   import type { JSONContent } from '@tiptap/core';
   import type { EditorProps } from '@tiptap/pm/view';
 
@@ -50,6 +51,18 @@
             const s = editor.view.state.selection;
             editor.commands.setTextSelection(s.to);
           }
+        },
+        handleDrop(view, event, slice, moved) {
+          if (moved || event.dataTransfer === null || event.dataTransfer.files.length === 0) return false;
+
+          const files = [...event.dataTransfer.files];
+
+          transformToTiptapImages(files).then((images) => {
+            if (!editor) throw new Error('editor is undefined');
+            editor.chain().focus().insertContent(images, { updateSelection: true }).run();
+          });
+
+          return true;
         },
       },
       onTransaction: ({ transaction }) => {

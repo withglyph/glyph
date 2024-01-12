@@ -2,7 +2,7 @@
   import { Button } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { TiptapFloatingMenu } from '$lib/tiptap/components';
-  import { isValidImageFile, validImageMimes } from '$lib/utils';
+  import { transformToTiptapImages, validImageMimes } from '$lib/utils';
   import { blockquotes, hr } from './formats.svelte';
   import type { Editor } from '@tiptap/core';
 
@@ -14,15 +14,14 @@
     const picker = document.createElement('input');
     picker.type = 'file';
     picker.accept = validImageMimes.join(',');
+    picker.multiple = true;
 
     picker.addEventListener('change', async () => {
-      const file = picker.files?.[0];
+      const files = [...(picker.files ?? [])];
 
-      if (!file || !(await isValidImageFile(file))) {
-        return;
-      }
+      const images = await transformToTiptapImages(files);
 
-      editor.chain().focus().setImage(file).run();
+      editor.chain().focus().insertContent(images, { updateSelection: true }).run();
     });
 
     picker.showPicker();
