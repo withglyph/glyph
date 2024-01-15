@@ -31,7 +31,7 @@ export const decryptAES = async (encrypted: string, nonce: string) => {
   const decrypted = await webcrypto.subtle.decrypt(
     { name: 'AES-GCM', iv: nonceByteArray },
     key,
-    Uint8Array.from(atob(encrypted), (c) => c.codePointAt(0) ?? 0),
+    Buffer.from(encrypted, 'base64'),
   );
 
   return new TextDecoder().decode(decrypted);
