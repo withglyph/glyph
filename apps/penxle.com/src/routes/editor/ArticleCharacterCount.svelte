@@ -4,7 +4,7 @@
   import { writable } from 'svelte/store';
   import { scale } from 'svelte/transition';
   import { hover, portal } from '$lib/svelte/actions';
-  import { arrow, createFloatingActions } from '$lib/svelte-floating-ui';
+  import { arrow, computeArrowPosition, createFloatingActions } from '$lib/svelte-floating-ui';
   import type { Editor } from '@tiptap/core';
 
   export let editor: Editor | undefined;
@@ -16,25 +16,10 @@
     strategy: 'absolute',
     placement: 'bottom',
     middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrowRef })],
-    onComputed({ placement, middlewareData }) {
-      if (!middlewareData.arrow) throw new Error('arrow middleware is not registered');
-
-      const { x, y } = middlewareData.arrow;
-      const staticSide = {
-        top: 'bottom',
-        right: 'left',
-        bottom: 'top',
-        left: 'right',
-      }[placement.split('-')[0]];
-
-      if (!staticSide) throw new Error('invalid placement');
-      if (!$arrowRef) return;
-
-      Object.assign($arrowRef.style, {
-        left: x == null ? '' : `${x}px`,
-        top: y == null ? '' : `${y}px`,
-        [staticSide]: '-0.25rem',
-      });
+    onComputed(position) {
+      if ($arrowRef) {
+        Object.assign($arrowRef.style, computeArrowPosition(position));
+      }
     },
   });
 

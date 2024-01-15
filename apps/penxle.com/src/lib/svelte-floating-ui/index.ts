@@ -140,3 +140,23 @@ export function arrow(options: ArrowOptions): Middleware {
     },
   };
 }
+
+export function computeArrowPosition({ placement, middlewareData }: ComputePositionReturn, offset = '-0.25rem') {
+  if (!middlewareData.arrow) throw new Error('arrow middleware is not registered');
+
+  const { x, y } = middlewareData.arrow;
+  const staticSide = {
+    top: 'bottom',
+    right: 'left',
+    bottom: 'top',
+    left: 'right',
+  }[placement.split('-')[0]];
+
+  if (!staticSide) throw new Error('invalid placement');
+
+  return {
+    left: x == null ? '' : `${x}px`,
+    top: y == null ? '' : `${y}px`,
+    [staticSide]: offset,
+  };
+}

@@ -8,7 +8,7 @@
   import { writable } from 'svelte/store';
   import { Tooltip } from '$lib/components';
   import { portal } from '$lib/svelte/actions';
-  import { arrow, createFloatingActions } from '$lib/svelte-floating-ui';
+  import { arrow, computeArrowPosition, createFloatingActions } from '$lib/svelte-floating-ui';
   import type { VirtualElement } from '@floating-ui/dom';
 
   const key = 'link-edit-menu';
@@ -26,25 +26,10 @@
     strategy: 'absolute',
     placement: 'top',
     middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrowRef })],
-    onComputed({ placement, middlewareData }) {
-      if (!middlewareData.arrow) throw new Error('arrow middleware is not registered');
-
-      const { x, y } = middlewareData.arrow;
-      const staticSide = {
-        top: 'bottom',
-        right: 'left',
-        bottom: 'top',
-        left: 'right',
-      }[placement.split('-')[0]];
-
-      if (!staticSide) throw new Error('invalid placement');
-      if (!$arrowRef) return;
-
-      Object.assign($arrowRef.style, {
-        left: x == null ? '' : `${x}px`,
-        top: y == null ? '' : `${y}px`,
-        [staticSide]: '-0.25rem',
-      });
+    onComputed(position) {
+      if ($arrowRef) {
+        Object.assign($arrowRef.style, computeArrowPosition(position));
+      }
     },
   });
 
