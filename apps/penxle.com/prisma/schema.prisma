@@ -543,7 +543,9 @@ model User {
   pointBalances                  PointBalance[]
   pointPurchases                 PointPurchase[]
   pointTransactions              PointTransaction[]
+  revenues                       Revenue[]
   sessions                       UserSession[]
+  settlementIdentity             UserSettlementIdentity?
   singleSignOns                  UserSingleSignOn[]
   spaces                         SpaceMember[]
   tagMutes                       UserTagMute[]
@@ -557,7 +559,6 @@ model User {
   mutedSpaces                    UserSpaceMute[]
   postPurchases                  PostPurchase[]
   followedTags                   TagFollow[]
-  revenues                       Revenue[]
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
@@ -632,6 +633,19 @@ model UserPersonalIdentity {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("user_personal_identities")
+}
+
+model UserSettlementIdentity {
+  id                                       String @id
+  userId                                   String @unique @map("user_id")
+  user                                     User   @relation(fields: [userId], references: [id])
+  residentRegistrationNumberHash           String @unique @map("resident_registration_number_hash")
+  encryptedResidentRegistrationNumber      String @map("encrypted_resident_registration_number")
+  encryptedResidentRegistrationNumberNonce String @map("encrypted_resident_registration_number_nonce")
+  bankCode                                 String @map("bank_code")
+  bankAccountNumber                        String @map("bank_account_number")
+
+  @@map("user_settlement_identities")
 }
 
 model UserSingleSignOn {

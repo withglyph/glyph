@@ -1,4 +1,4 @@
-import crypto from 'node:crypto';
+import crypto, { webcrypto } from 'node:crypto';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
@@ -9,11 +9,13 @@ import { IntentionalError, PermissionDeniedError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
 import { LoginUser, UpdateUserEmail } from '$lib/server/email/templates';
 import { AuthScope, UserSingleSignOnAuthorizationType } from '$lib/server/enums';
-import { google, naver } from '$lib/server/external-api';
+import { coocon, google, naver } from '$lib/server/external-api';
 import {
   createAccessToken,
   createRandomAvatar,
+  decryptAES,
   directUploadImage,
+  encryptAES,
   getUserPoint,
   getUserRevenue,
   isAdulthood,
@@ -26,6 +28,7 @@ import {
   LoginUserSchema,
   UpdateUserEmailSchema,
   UpdateUserProfileSchema,
+  VerifySettlementIdentitySchema,
 } from '$lib/validations';
 import { PrismaEnums } from '$prisma';
 import { defineSchema } from '../builder';
@@ -309,6 +312,8 @@ export const userSchema = defineSchema((builder) => {
     authScopes: { $granted: '$user' },
     fields: (t) => ({
       id: t.exposeID('id'),
+      name: t.exposeString('name'),
+      birthday: t.expose('birthday', { type: 'DateTime' }),
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
     }),
   });
@@ -319,6 +324,15 @@ export const userSchema = defineSchema((builder) => {
       id: t.exposeID('id'),
       provider: t.expose('provider', { type: PrismaEnums.UserSingleSignOnProvider }),
       email: t.exposeString('email'),
+    }),
+  });
+
+  builder.prismaObject('UserSettlementIdentity', {
+    authScopes: { $granted: '$user' },
+    fields: (t) => ({
+      id: t.exposeID('id'),
+      bankCode: t.exposeString('bankCode'),
+      bankAccountNumber: t.exposeString('bankAccountNumber'),
     }),
   });
 
@@ -420,6 +434,16 @@ export const userSchema = defineSchema((builder) => {
       email: t.string(),
     }),
     validate: { schema: DeleteUserSchema },
+  });
+
+  const VerifySettlementIdentityInput = builder.inputType('VerifySettlementIdentityInput', {
+    fields: (t) => ({
+      residentRegistrationNumberBack: t.string(),
+      idCardIssuedDate: t.string(),
+      bankCode: t.string(),
+      bankAccountNumber: t.string(),
+    }),
+    validate: { schema: VerifySettlementIdentitySchema },
   });
 
   /**
@@ -906,6 +930,93 @@ export const userSchema = defineSchema((builder) => {
         });
 
         context.event.cookies.delete('penxle-at', { path: '/' });
+      },
+    }),
+
+    verifySettlementIdentity: t.withAuth({ user: true }).prismaField({
+      type: 'User',
+      args: { input: t.arg({ type: VerifySettlementIdentityInput }) },
+      resolve: async (query, _, { input }, { db, session }) => {
+        const personalIdentity = await db.userPersonalIdentity.findUnique({
+          where: { userId: session.userId },
+        });
+
+        if (!personalIdentity) {
+          throw new IntentionalError('먼저 본인인증을 해주세요');
+        }
+
+        const residentRegistrationNumber = `${dayjs(personalIdentity.birthday).kst().format('YYMMDD')}${
+          input.residentRegistrationNumberBack
+        }`;
+
+        const rrnVerification = await coocon.verifyResidentRegistrationNumber({
+          name: personalIdentity.name,
+          residentRegistrationNumber,
+          issuedDate: input.idCardIssuedDate,
+        });
+
+        if (!rrnVerification.success) {
+          throw new IntentionalError('주민등록증 인증에 실패했어요');
+        }
+
+        const accountHolderName = await coocon.getAccountHolderName({
+          bankCode: input.bankCode,
+          accountNumber: input.bankAccountNumber,
+        });
+
+        if (
+          personalIdentity.name
+            .replaceAll(' ', '')
+            .toLowerCase()
+            .startsWith(accountHolderName.replaceAll(' ', '').toLowerCase())
+        ) {
+          throw new IntentionalError('예금주가 일치하지 않아요');
+        }
+
+        const settlementIdentity = await db.userSettlementIdentity.findUnique({
+          where: { userId: session.userId },
+        });
+
+        if (settlementIdentity) {
+          const previousRRN = await decryptAES(
+            settlementIdentity.encryptedResidentRegistrationNumber,
+            settlementIdentity.encryptedResidentRegistrationNumberNonce,
+          );
+          if (previousRRN !== residentRegistrationNumber) {
+            throw new IntentionalError('주민등록번호를 변경한 경우에는 문의를 남겨주세요');
+          }
+
+          await db.userSettlementIdentity.update({
+            where: { userId: session.userId },
+            data: {
+              bankCode: input.bankCode,
+              bankAccountNumber: input.bankAccountNumber,
+            },
+          });
+        } else {
+          const { encrypted, nonce } = await encryptAES(residentRegistrationNumber);
+          await db.userSettlementIdentity.create({
+            data: {
+              id: createId(),
+              userId: session.userId,
+              encryptedResidentRegistrationNumber: encrypted,
+              encryptedResidentRegistrationNumberNonce: nonce,
+              residentRegistrationNumberHash: Buffer.from(
+                await webcrypto.subtle.digest(
+                  'SHA-256',
+                  new TextEncoder().encode(`penxle_rrn_hash_${residentRegistrationNumber}`),
+                ),
+              ).toString('hex'),
+              bankCode: input.bankCode,
+              bankAccountNumber: input.bankAccountNumber,
+            },
+          });
+        }
+
+        return await db.user.findUniqueOrThrow({
+          ...query,
+          where: { id: session.userId },
+        });
       },
     }),
   }));

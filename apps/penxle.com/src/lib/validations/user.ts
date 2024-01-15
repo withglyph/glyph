@@ -29,3 +29,20 @@ export const IssueUserEmailAuthorizationUrlSchema = z.object({
 export const DeleteUserSchema = z.object({
   email,
 });
+
+export const VerifySettlementIdentitySchema = z.object({
+  residentRegistrationNumberBack: z
+    .string()
+    .trim()
+    .regex(/^\d{7}$/),
+  idCardIssuedDate: z
+    .string()
+    .trim()
+    .regex(/^(\d{4})\.?(0?\d|1[0-2])\.?(0?[1-9]|[12]\d|3[01])$/)
+    .transform((v) => v.replaceAll('.', '')),
+  bankCode: z.string().regex(/^\d{3}$/),
+  bankAccountNumber: z
+    .string()
+    .regex(/^(?:\d+-)*\d+$/)
+    .transform((v) => v.replaceAll('-', '')),
+});

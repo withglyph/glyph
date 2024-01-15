@@ -247,6 +247,7 @@ type Mutation {
   updateUserMarketingConsent(input: UpdateUserMarketingConsentInput!): User!
   updateUserNotificationPreference(input: UpdateUserNotificationPreferenceInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
+  verifySettlementIdentity(input: VerifySettlementIdentityInput!): User!
 }
 
 input MuteSpaceInput {
@@ -830,7 +831,15 @@ type UserNotificationPreference {
 }
 
 type UserPersonalIdentity {
+  birthday: DateTime!
   createdAt: DateTime!
+  id: ID!
+  name: String!
+}
+
+type UserSettlementIdentity {
+  bankAccountNumber: String!
+  bankCode: String!
   id: ID!
 }
 
@@ -853,6 +862,13 @@ enum UserSingleSignOnProvider {
 enum UserState {
   ACTIVE
   INACTIVE
+}
+
+input VerifySettlementIdentityInput {
+  bankAccountNumber: String!
+  bankCode: String!
+  idCardIssuedDate: String!
+  residentRegistrationNumberBack: String!
 }
 
 """Represents NULL values"""

@@ -142,11 +142,11 @@ export const getAccountBalance = async () => {
   return Number(resp.BAL_AMT);
 };
 
-type VerifyResidentRegistrationNumberParams = { name: string; residentRegistrationNumber: string; issuedAt: string };
+type VerifyResidentRegistrationNumberParams = { name: string; residentRegistrationNumber: string; issuedDate: string };
 export const verifyResidentRegistrationNumber = async ({
   name,
   residentRegistrationNumber,
-  issuedAt,
+  issuedDate,
 }: VerifyResidentRegistrationNumberParams) => {
   const resp = await got({
     url: 'https://sgw.coocon.co.kr/sol/gateway/scrap_wapi_std.jsp',
@@ -157,7 +157,7 @@ export const verifyResidentRegistrationNumber = async ({
       BANKCD: '104',
       NAME: name,
       REGNO: residentRegistrationNumber,
-      ISSUE_DATE: issuedAt,
+      ISSUE_DATE: issuedDate,
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }).json<any>();
