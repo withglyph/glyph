@@ -104,7 +104,6 @@ export const feedSchema = defineSchema((builder) => {
             state: 'PUBLISHED',
             createdAt: dateBefore?.isValid() ? { lt: dateBefore.toDate() } : undefined,
             visibility: 'PUBLIC',
-            password: null,
             publishedRevision: {
               tags: {
                 none: {
@@ -116,6 +115,7 @@ export const feedSchema = defineSchema((builder) => {
             },
             space: {
               state: 'ACTIVE',
+              visibility: 'PUBLIC',
               userMutes: {
                 none: { userId: context.session.userId },
               },
