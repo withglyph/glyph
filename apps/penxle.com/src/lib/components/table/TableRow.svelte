@@ -10,9 +10,6 @@
   type $$Props = HTMLTableRowElement;
 </script>
 
-<tr
-  class={clsx('truncate first-of-type:(bg-primary text-secondary body-13-b) [&:nth-of-type(2)>*]:border-none', _class)}
-  {...$$restProps}
->
+<tr class={clsx('truncate [&>td]:(border-b last-of-type:border-b-none)', _class)} {...$$restProps}>
   <slot />
 </tr>

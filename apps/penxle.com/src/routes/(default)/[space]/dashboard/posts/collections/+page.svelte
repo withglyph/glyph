@@ -7,7 +7,7 @@
     ManageCollectionModal,
     UpdateCollectionModal,
   } from '$lib/components/pages/collections';
-  import { Table, TableData, TableHead, TableRow } from '$lib/components/table';
+  import { Table, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
   import { toast } from '$lib/notification';
 
   let openManageCollectionModal = false;
@@ -68,11 +68,13 @@
 
 <div class="overflow-y-auto">
   <Table class="text-left border-separate border-spacing-y-0.125rem">
-    <TableRow>
-      <TableHead>컬렉션</TableHead>
-      <TableHead class="<sm:hidden">생성일</TableHead>
-      <TableHead>관리</TableHead>
-    </TableRow>
+    <TableHeader>
+      <TableRow>
+        <TableHead>컬렉션</TableHead>
+        <TableHead class="<sm:hidden">생성일</TableHead>
+        <TableHead>관리</TableHead>
+      </TableRow>
+    </TableHeader>
     <colgroup>
       <col span="1" />
       <col class="w-8rem <sm:hidden" span="1" />

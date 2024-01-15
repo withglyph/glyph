@@ -6,7 +6,7 @@
   import { Avatar, Badge, Button, Image, Modal, Tag, Tooltip } from '$lib/components';
   import { Checkbox, Editable, Switch } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
-  import { Table, TableData, TableHead, TableRow } from '$lib/components/table';
+  import { Table, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
   import { toast } from '$lib/notification';
   import type { ChangeEventHandler } from 'svelte/elements';
   import type {
@@ -275,24 +275,26 @@
 <div class="overflow-auto">
   {#if $posts.length > 0}
     <Table class="text-left border-separate border-spacing-y-0.125rem">
-      <TableRow>
-        <TableHead class="w-2.5rem">
-          <Checkbox on:change={handleSelectAllPost} />
-        </TableHead>
-        <TableHead class="sm:max-w-14rem">제목</TableHead>
-        <TableHead class="<sm:hidden max-w-10rem">
-          {#if type === 'space'}
-            작성자
-          {:else}
-            스페이스
-          {/if}
-        </TableHead>
-        <TableHead class="w-12rem <sm:hidden">태그</TableHead>
-        <TableHead class="<sm:w-5.25rem">공개옵션</TableHead>
-        <TableHead class="<sm:hidden">관리</TableHead>
-        <!-- 모바일 화면 너비에서 마지막에 빈 테이블 헤드 요소가 없으면 테이블 헤더 오른쪽이 잘리는 문제가 있어서 추가했습니다. -->
-        <TableHead class="w-0" />
-      </TableRow>
+      <TableHeader>
+        <TableRow>
+          <TableHead class="w-2.5rem">
+            <Checkbox on:change={handleSelectAllPost} />
+          </TableHead>
+          <TableHead class="sm:max-w-14rem">제목</TableHead>
+          <TableHead class="<sm:hidden max-w-10rem">
+            {#if type === 'space'}
+              작성자
+            {:else}
+              스페이스
+            {/if}
+          </TableHead>
+          <TableHead class="w-12rem <sm:hidden">태그</TableHead>
+          <TableHead class="<sm:w-5.25rem">공개옵션</TableHead>
+          <TableHead class="<sm:hidden">관리</TableHead>
+          <!-- 모바일 화면 너비에서 마지막에 빈 테이블 헤드 요소가 없으면 테이블 헤더 오른쪽이 잘리는 문제가 있어서 추가했습니다. -->
+          <TableHead class="w-0" />
+        </TableRow>
+      </TableHeader>
 
       {#each $posts as post (post.id)}
         <TableRow

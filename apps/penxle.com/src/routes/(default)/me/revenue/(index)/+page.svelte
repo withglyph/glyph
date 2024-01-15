@@ -3,7 +3,7 @@
   import { graphql } from '$glitch';
   import { Button } from '$lib/components';
   // import { PopupSearch } from '$lib/components/forms';
-  import { Table, TableData, TableHead, TableRow } from '$lib/components/table';
+  import { Table, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
   import { comma } from '$lib/utils';
 
   $: query = graphql(`
@@ -45,11 +45,13 @@
     </div>
   </div>
   <Table class="mt-4 text-left border-separate border-spacing-y-0.5">
-    <TableRow>
-      <TableHead class="w-50%">포스트명</TableHead>
-      <TableHead class="w-30%">수익 발생일</TableHead>
-      <TableHead class="text-right w-20%">수익금</TableHead>
-    </TableRow>
+    <TableHeader>
+      <TableRow>
+        <TableHead class="w-50%">포스트명</TableHead>
+        <TableHead class="w-30%">수익 발생일</TableHead>
+        <TableHead class="text-right w-20%">수익금</TableHead>
+      </TableRow>
+    </TableHeader>
     {#each $query.me.revenues as revenue (revenue.id)}
       <TableRow>
         <TableData>

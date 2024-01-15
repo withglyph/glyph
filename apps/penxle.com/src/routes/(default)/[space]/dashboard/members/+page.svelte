@@ -4,7 +4,7 @@
   import { graphql } from '$glitch';
   import { Avatar, Button, Modal } from '$lib/components';
   import { DropDown, FormField, PopupSearch, TextInput } from '$lib/components/forms';
-  import { Table, TableData, TableHead, TableRow } from '$lib/components/table';
+  import { Table, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { pageSubTitle } from '$lib/stores';
@@ -113,11 +113,13 @@
   </div>
 
   <Table>
-    <TableRow>
-      <TableHead class="w-50% text-left <xs:w-80%">멤버</TableHead>
-      <TableHead class="w-30% text-left <xs:hidden">가입일</TableHead>
-      <TableHead class="w-20% text-right">권한</TableHead>
-    </TableRow>
+    <TableHeader>
+      <TableRow>
+        <TableHead class="w-50% text-left <xs:w-80%">멤버</TableHead>
+        <TableHead class="w-30% text-left <xs:hidden">가입일</TableHead>
+        <TableHead class="w-20% text-right">권한</TableHead>
+      </TableRow>
+    </TableHeader>
 
     {#each $query.space.members as member (member.id)}
       <TableRow>

@@ -5,6 +5,6 @@
   export { _class as class };
 </script>
 
-<td class={clsx('py-4 first-of-type:pl-4 pr-4 truncate whitespace-nowrap', _class)}>
+<thead class={clsx('[&>tr]:(bg-primary text-secondary body-13-b)', _class)}>
   <slot />
-</td>
+</thead>
