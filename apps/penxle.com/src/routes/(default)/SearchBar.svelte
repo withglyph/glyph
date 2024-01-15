@@ -7,15 +7,20 @@
   let _class: string | undefined = undefined;
   export { _class as class };
 
-  let value: string;
-  if ($page.url.pathname === '/search') {
-    value = $page.url.searchParams.get('q') ?? '';
-  }
+  let value = ($page.url.pathname === '/search' && $page.url.searchParams.get('q')) || '';
 
   afterNavigate(({ from, to }) => {
     if (!from || !to) return;
 
-    if (from.url.pathname.startsWith('/search') && !to.url.pathname.startsWith('/search')) {
+    const fromStartsWithSearch = from.url.pathname.startsWith('/search');
+    const toStartsWithSearch = to.url.pathname.startsWith('/search');
+
+    if (!fromStartsWithSearch && toStartsWithSearch) {
+      value = to.url.searchParams.get('q') ?? '';
+      return;
+    }
+
+    if (fromStartsWithSearch && !toStartsWithSearch) {
       value = '';
     }
   });
