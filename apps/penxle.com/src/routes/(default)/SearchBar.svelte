@@ -35,7 +35,7 @@
   <input
     class="transition-all rounded-9 bg-primary py-2 pl-11 pr-4 text-sm border border-bg-primary focus-within:border-primary next:focus:text-icon-primary w-full"
     placeholder="검색어를 입력하세요"
-    type="text"
+    type="search"
     bind:value
   />
   <div class="absolute inset-y-0 left-4 flex center text-secondary">
