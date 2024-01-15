@@ -57,7 +57,7 @@
 <Helmet title="{$page.url.searchParams.get('q')} - 검색" />
 
 <div class="max-w-300 grow <sm:(w-full bg-cardprimary pt-5) sm:(grid grid-cols-[2fr_7fr] mx-10 gap-11.5 my-9.5)">
-  <aside class="min-w-38 <sm:hidden">
+  <aside class="min-w-38 max-w-61 <sm:hidden">
     <div class="bg-cardprimary border border-secondary rounded-2xl px-3 py-4">
       <button
         class="w-full flex items-center justify-between py-3 gap-2.5"
