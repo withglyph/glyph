@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { flip, offset, shift } from '@floating-ui/dom';
   import { Editor, posToDOMRect } from '@tiptap/core';
   import { Plugin, PluginKey } from '@tiptap/pm/state';
   import { EditorView } from '@tiptap/pm/view';
@@ -7,7 +7,9 @@
   import * as R from 'radash';
   import { onMount, tick } from 'svelte';
   import { portal } from '$lib/svelte/actions';
+  import { createFloatingActions } from '$lib/svelte-floating-ui';
   import { isEmptyTextBlock } from '$lib/utils';
+  import type { VirtualElement } from '@floating-ui/dom';
 
   export let key = 'bubble-menu';
   export let editor: Editor;
@@ -15,9 +17,14 @@
   let _class: string | undefined = undefined;
   export { _class as class };
 
-  let menuEl: HTMLElement;
   let open = false;
   let preventUpdate = false;
+
+  const [floatingRef, floatingContent] = createFloatingActions({
+    strategy: 'absolute',
+    placement: 'top',
+    middleware: [offset(8), flip(), shift({ padding: 8 })],
+  });
 
   const update = R.debounce({ delay: 150 }, async (view: EditorView) => {
     if (preventUpdate) {
@@ -35,19 +42,11 @@
     open = true;
     await tick();
 
-    const targetEl = {
+    const targetEl: VirtualElement = {
       getBoundingClientRect: () => posToDOMRect(view, from, to),
     };
 
-    const position = await computePosition(targetEl, menuEl, {
-      placement: 'top',
-      middleware: [offset(8), flip(), shift({ padding: 8 })],
-    });
-
-    Object.assign(menuEl.style, {
-      left: `${position.x}px`,
-      top: `${position.y}px`,
-    });
+    floatingRef(targetEl);
   });
 
   onMount(() => {
@@ -75,11 +74,11 @@
 
 {#if open}
   <div
-    bind:this={menuEl}
-    class={clsx('absolute z-25 select-none', _class)}
+    class={clsx('z-25 select-none', _class)}
     role="menu"
     tabindex="-1"
     on:mousedown|stopPropagation={() => (preventUpdate = true)}
+    use:floatingContent
     use:portal
   >
     <slot />

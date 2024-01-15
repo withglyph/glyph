@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { flip, offset, shift } from '@floating-ui/dom';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import * as R from 'radash';
-  import { onDestroy, onMount, tick } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { slide } from 'svelte/transition';
   import { browser, dev } from '$app/environment';
   import { beforeNavigate, goto } from '$app/navigation';
@@ -17,6 +17,7 @@
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { portal } from '$lib/svelte/actions';
+  import { createFloatingActions } from '$lib/svelte-floating-ui';
   import { PublishPostInputSchema } from '$lib/validations/post';
   import CreateSpaceModal from '../(default)/CreateSpaceModal.svelte';
   import ArticleCharacterCount from './ArticleCharacterCount.svelte';
@@ -246,9 +247,6 @@
     return resp;
   };
 
-  let publishButtonEl: HTMLDivElement;
-  let publishMenuEl: HTMLDivElement;
-
   let revisedAt: string | undefined;
   let publishMenuOpen = false;
   let createSpaceOpen = false;
@@ -362,19 +360,11 @@
     return '';
   })();
 
-  const update = async () => {
-    await tick();
-
-    const position = await computePosition(publishButtonEl, publishMenuEl, {
-      placement: 'bottom-end',
-      middleware: [offset(4), flip(), shift({ padding: 8 })],
-    });
-
-    Object.assign(publishMenuEl.style, {
-      left: `${position.x}px`,
-      top: `${position.y}px`,
-    });
-  };
+  const [floatingRef, floatingContent, update] = createFloatingActions({
+    strategy: 'absolute',
+    placement: 'bottom-end',
+    middleware: [offset(4), flip(), shift({ padding: 8 })],
+  });
 
   $: if (publishMenuOpen) {
     void update();
@@ -587,7 +577,7 @@
       </Button>
     </div>
 
-    <div bind:this={publishButtonEl} class="w-fit">
+    <div class="w-fit" use:floatingRef>
       <Tooltip enabled={!canPublish} message={reviseNotAvailableReason}>
         <Button disabled={!canPublish} size="lg" on:click={() => (publishMenuOpen = true)}>포스트 게시</Button>
       </Tooltip>
@@ -605,11 +595,11 @@
     {/if}
 
     <div
-      bind:this={publishMenuEl}
       class={clsx(
-        'absolute z-52 bg-cardprimary rounded-lg px-1 space-y-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.15)] flex flex-col py-2',
+        'z-52 bg-cardprimary rounded-lg px-1 space-y-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.15)] flex flex-col py-2',
         !publishMenuOpen && 'hidden!',
       )}
+      use:floatingContent
       use:portal
     >
       <button

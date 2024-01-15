@@ -1,15 +1,14 @@
 <script lang="ts">
-  import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { flip, offset, shift } from '@floating-ui/dom';
   import clsx from 'clsx';
   import { setContext, tick } from 'svelte';
   import { writable } from 'svelte/store';
   import { afterNavigate } from '$app/navigation';
   import { portal } from '$lib/svelte/actions';
+  import { createFloatingActions } from '$lib/svelte-floating-ui';
   import type { Placement } from '@floating-ui/dom';
 
   let open = false;
-  let targetEl: HTMLButtonElement;
-  let menuEl: HTMLUListElement;
   let _class: string | undefined = undefined;
 
   export { _class as class };
@@ -25,22 +24,15 @@
   setContext('currentText', text);
   setContext('close', () => (open = false));
 
-  const update = async () => {
-    await tick();
-
-    const position = await computePosition(targetEl, menuEl, {
-      placement,
-      middleware: [offset(4), flip(), shift({ padding: 8 })],
-    });
-
-    Object.assign(menuEl.style, {
-      left: `${position.x}px`,
-      top: `${position.y}px`,
-    });
-  };
+  const [floatingRef, floatingContent, update] = createFloatingActions({
+    strategy: 'absolute',
+    placement,
+    middleware: [offset(4), flip(), shift({ padding: 8 })],
+  });
 
   $: if (open) {
-    void update();
+    // eslint-disable-next-line unicorn/prefer-top-level-await
+    void tick().then(() => update());
   }
 
   afterNavigate(() => {
@@ -51,12 +43,12 @@
 <input id={name} {name} type="hidden" bind:value={$value} />
 
 <button
-  bind:this={targetEl}
   class={clsx('w-fit', _class)}
   role="listbox"
   tabindex={0}
   type="button"
   on:click={() => (open = true)}
+  use:floatingRef
 >
   {$text}
 </button>
@@ -72,8 +64,8 @@
   />
 
   <ul
-    bind:this={menuEl}
-    class="absolute z-52 bg-cardprimary rounded-lg py-2 px-1 space-y-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.15)]"
+    class="z-52 bg-cardprimary rounded-lg py-2 px-1 space-y-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.15)]"
+    use:floatingContent
     use:portal
   >
     <slot />

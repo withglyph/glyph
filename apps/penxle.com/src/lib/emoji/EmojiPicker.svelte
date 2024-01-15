@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { flip, offset, shift } from '@floating-ui/dom';
   import clsx from 'clsx';
   import * as EmojiMart from 'emoji-mart';
   import { onMount, tick } from 'svelte';
   import { afterNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
+  import { createFloatingActions } from '$lib/svelte-floating-ui';
   import LoginRequireModal from '../../routes/(default)/LoginRequireModal.svelte';
   import i18n from './i18n.json';
   import { emojiData as data } from './index';
@@ -17,7 +18,6 @@
   let open = false;
   let loginRequireOpen = false;
 
-  let targetEl: HTMLButtonElement;
   let pickerEl: HTMLDivElement;
 
   let _query: EmojiPicker_query;
@@ -63,22 +63,15 @@
     }
   `);
 
-  const update = async () => {
-    await tick();
-
-    const position = await computePosition(targetEl, pickerEl, {
-      placement: 'top-start',
-      middleware: [offset(4), flip(), shift({ padding: 8 })],
-    });
-
-    Object.assign(pickerEl.style, {
-      left: `${position.x}px`,
-      top: `${position.y}px`,
-    });
-  };
+  const [floatingRef, floatingContent, update] = createFloatingActions({
+    strategy: 'absolute',
+    placement: 'bottom-start',
+    middleware: [offset(4), flip(), shift({ padding: 8 })],
+  });
 
   $: if (open) {
-    void update();
+    // eslint-disable-next-line unicorn/prefer-top-level-await
+    void tick().then(() => update());
   }
 
   onMount(() => {
@@ -124,7 +117,6 @@
 
 {#if variant === 'post'}
   <button
-    bind:this={targetEl}
     class="square-6 rounded-lg border border-secondary hover:border-primary flex center p-0.5 disabled:(text-disabled border-gray-30 cursor-not-allowed)"
     {disabled}
     type="button"
@@ -132,12 +124,12 @@
       e.stopPropagation();
       open = true;
     }}
+    use:floatingRef
   >
     <i class="i-lc-smile-plus square-3.5" />
   </button>
 {:else}
   <button
-    bind:this={targetEl}
     class="square-5 hover:border-primary flex center p-0.5 disabled:(text-disabled border-gray-30 cursor-not-allowed)"
     {disabled}
     type="button"
@@ -145,12 +137,13 @@
       e.stopPropagation();
       open = true;
     }}
+    use:floatingRef
   >
     <i class="i-px-happy bg-[#5C5755] square-4" />
   </button>
 {/if}
 
-<div bind:this={pickerEl} class={clsx('z-50 absolute h-100', !open && 'hidden')} />
+<div bind:this={pickerEl} class={clsx('z-50 h-100', !open && 'hidden')} use:floatingContent />
 
 <LoginRequireModal bind:open={loginRequireOpen} />
 

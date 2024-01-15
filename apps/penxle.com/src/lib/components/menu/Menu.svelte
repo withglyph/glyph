@@ -1,14 +1,13 @@
 <script lang="ts">
-  import { computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { flip, offset, shift } from '@floating-ui/dom';
   import clsx from 'clsx';
   import { setContext, tick } from 'svelte';
   import { afterNavigate } from '$app/navigation';
   import { portal } from '$lib/svelte/actions';
+  import { createFloatingActions } from '$lib/svelte-floating-ui';
   import type { Placement } from '@floating-ui/dom';
 
   export let open = false;
-  let targetEl: HTMLElement;
-  let menuEl: HTMLDivElement;
   let _class: string | undefined = undefined;
   let _offset: number | undefined = undefined;
   export let padding = true;
@@ -29,23 +28,15 @@
 
   setContext('close', preventClose ? undefined : () => (open = false));
 
-  const update = async () => {
-    await tick();
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const position = await computePosition(targetEl.firstElementChild!, menuEl, {
-      placement,
-      middleware: [offset(_offset ?? 4), flip(), shift({ padding: 8 })],
-    });
-
-    Object.assign(menuEl.style, {
-      left: `${position.x}px`,
-      top: `${position.y}px`,
-    });
-  };
+  const [floatingRef, floatingContent, update] = createFloatingActions({
+    strategy: 'absolute',
+    placement,
+    middleware: [offset(_offset ?? 4), flip(), shift({ padding: 8 })],
+  });
 
   $: if (open) {
-    void update();
+    // eslint-disable-next-line unicorn/prefer-top-level-await
+    void tick().then(() => update());
   }
 
   afterNavigate(() => {
@@ -61,10 +52,10 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <svelte:element
   this={as}
-  bind:this={targetEl}
   class={_class}
   on:click={toggleOpen}
   on:keypress={as === 'div' ? toggleOpen : null}
+  use:floatingRef
   {...props}
 >
   <slot name="value" />
@@ -81,15 +72,15 @@
   />
 
   <div
-    bind:this={menuEl}
     class={clsx(
-      'absolute z-52 bg-cardprimary rounded-lg px-1 space-y-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.15)] flex',
+      'z-52 bg-cardprimary rounded-lg px-1 space-y-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.15)] flex',
       {
         'flex-col py-2': alignment === 'vertical',
         'flex-row py-1': alignment === 'horizontal',
       },
       !padding && 'p-none!',
     )}
+    use:floatingContent
     use:portal
   >
     <slot />

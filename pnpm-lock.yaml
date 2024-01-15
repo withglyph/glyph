@@ -268,6 +268,9 @@ importers:
       '@felte/validator-zod':
         specifier: ^1.0.17
         version: 1.0.17(zod@3.22.4)
+      '@floating-ui/core':
+        specifier: ^1.5.0
+        version: 1.5.3
       '@floating-ui/dom':
         specifier: ^1.5.4
         version: 1.5.4

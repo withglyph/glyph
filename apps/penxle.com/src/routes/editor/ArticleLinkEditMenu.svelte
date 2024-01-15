@@ -1,12 +1,15 @@
 <script lang="ts">
-  import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import { flip, offset, shift } from '@floating-ui/dom';
   import { Editor, posToDOMRect } from '@tiptap/core';
   import { Plugin, PluginKey } from '@tiptap/pm/state';
   import { EditorView } from '@tiptap/pm/view';
   import * as R from 'radash';
   import { onMount, tick } from 'svelte';
+  import { writable } from 'svelte/store';
   import { Tooltip } from '$lib/components';
   import { portal } from '$lib/svelte/actions';
+  import { arrow, createFloatingActions } from '$lib/svelte-floating-ui';
+  import type { VirtualElement } from '@floating-ui/dom';
 
   const key = 'link-edit-menu';
 
@@ -14,11 +17,36 @@
   let href: string | undefined;
   $: trimmedHref = (href ?? '').trim();
 
-  let menuEl: HTMLElement;
   let open = false;
   let preventUpdate = false;
 
-  let arrowEl: HTMLDivElement;
+  const arrowRef = writable<HTMLElement | null>(null);
+
+  const [floatingRef, floatingContent] = createFloatingActions({
+    strategy: 'absolute',
+    placement: 'top',
+    middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrowRef })],
+    onComputed({ placement, middlewareData }) {
+      if (!middlewareData.arrow) throw new Error('arrow middleware is not registered');
+
+      const { x, y } = middlewareData.arrow;
+      const staticSide = {
+        top: 'bottom',
+        right: 'left',
+        bottom: 'top',
+        left: 'right',
+      }[placement.split('-')[0]];
+
+      if (!staticSide) throw new Error('invalid placement');
+      if (!$arrowRef) return;
+
+      Object.assign($arrowRef.style, {
+        left: x == null ? '' : `${x}px`,
+        top: y == null ? '' : `${y}px`,
+        [staticSide]: '-0.25rem',
+      });
+    },
+  });
 
   const update = R.debounce({ delay: 150 }, async (view: EditorView) => {
     if (preventUpdate) {
@@ -38,37 +66,11 @@
     open = true;
     await tick();
 
-    const targetEl = {
+    const targetEl: VirtualElement = {
       getBoundingClientRect: () => posToDOMRect(view, from, to),
     };
 
-    const position = await computePosition(targetEl, menuEl, {
-      placement: 'top',
-      middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrowEl })],
-    });
-
-    Object.assign(menuEl.style, {
-      left: `${position.x}px`,
-      top: `${position.y}px`,
-    });
-
-    if (position.middlewareData.arrow) {
-      const { x, y } = position.middlewareData.arrow;
-
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const staticSide = {
-        top: 'bottom',
-        right: 'left',
-        bottom: 'top',
-        left: 'right',
-      }[position.placement.split('-')[0]]!;
-
-      Object.assign(arrowEl.style, {
-        left: x === undefined ? '' : `${x}px`,
-        top: y === undefined ? '' : `${y}px`,
-        [staticSide]: '-0.25rem',
-      });
-    }
+    floatingRef(targetEl);
   });
 
   onMount(() => {
@@ -87,7 +89,6 @@
 
 {#if open}
   <form
-    bind:this={menuEl}
     class="absolute flex gap-2 items-center z-25 select-none bg-cardprimary body-13-m text-secondary rounded-lg p-x-xs p-y-2 shadow-[0_2px_10px_0_rgba(0,0,0,0.10)]"
     on:submit|preventDefault={() => {
       const command = editor.chain().focus();
@@ -97,6 +98,7 @@
         command.unsetLink().run();
       }
     }}
+    use:floatingContent
     use:portal
   >
     <span class="invisible min-w-8.25rem max-w-20rem text-clip overflow-hidden whitespace-nowrap">{href}</span>
@@ -115,6 +117,6 @@
         />
       </button>
     </Tooltip>
-    <div bind:this={arrowEl} class="absolute square-2 rotate-45 bg-cardprimary" />
+    <div bind:this={$arrowRef} class="absolute square-2 rotate-45 bg-cardprimary" />
   </form>
 {/if}
