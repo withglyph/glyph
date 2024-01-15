@@ -15,7 +15,7 @@ export const load: PageLoad = async ({ params }) => {
       meta: post.metadata,
     };
   } catch {
-    throw error(404);
+    error(404);
   }
 };
 

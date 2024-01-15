@@ -24,7 +24,7 @@
     "eslint": "^8.56.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
-    "prettier": "^3.1.1",
+    "prettier": "^3.2.2",
     "syncpack": "^12.3.0",
     "tsx": "^4.7.0",
     "turbo": "^1.11.3",

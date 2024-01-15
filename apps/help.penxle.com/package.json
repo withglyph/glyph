@@ -17,9 +17,9 @@
     "@penxle/adapter-docker": "workspace:^",
     "@penxle/lib": "workspace:^",
     "@penxle/ui": "workspace:^",
-    "@sveltejs/kit": "^1.30.3",
+    "@sveltejs/kit": "^2.3.2",
     "clsx": "^2.1.0",
-    "lightningcss": "^1.22.1",
+    "lightningcss": "^1.23.0",
     "mdsvex": "^0.11.0",
     "remark-gfm": "^4.0.0",
     "svelte": "^4.2.8"
@@ -29,12 +29,13 @@
     "@penxle/tracing": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@pulumi/pulumi": "^3.101.1",
+    "@sveltejs/vite-plugin-svelte": "^3.0.1",
     "@types/node": "^20.11.0",
-    "svelte-check": "^3.6.2",
+    "svelte-check": "^3.6.3",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "unocss": "^0.58.3",
-    "vite": "^4.5.1",
+    "vite": "^5.0.11",
     "vite-plugin-dynamic-import": "^1.5.0"
   }
 }

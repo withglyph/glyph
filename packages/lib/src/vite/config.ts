@@ -11,7 +11,6 @@ export const defineConfig = (config: UserConfig) => {
     css: {
       transformer: 'lightningcss',
       lightningcss: {
-        drafts: { nesting: true },
         targets: browserslistToTargets(browserslist('> 0.25%, last 2 versions, not dead')),
       },
     },
