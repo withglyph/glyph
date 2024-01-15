@@ -923,6 +923,9 @@ export const userSchema = defineSchema((builder) => {
           where: { id: context.session.userId },
           data: {
             state: 'INACTIVE',
+            sessions: {
+              deleteMany: {},
+            },
             singleSignOns: {
               deleteMany: {},
             },
