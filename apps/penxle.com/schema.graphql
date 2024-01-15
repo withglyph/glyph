@@ -837,6 +837,11 @@ type UserPersonalIdentity {
   name: String!
 }
 
+enum UserRole {
+  ADMIN
+  USER
+}
+
 type UserSettlementIdentity {
   bankAccountNumber: String!
   bankCode: String!
