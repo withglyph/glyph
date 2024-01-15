@@ -1,11 +1,9 @@
 import * as k8s from '@pulumi/kubernetes';
 
-new k8s.helm.v3.Release('external-secrets', {
-  name: 'external-secrets',
-  namespace: 'kube-system',
-
+new k8s.helm.v3.Chart('external-secrets', {
   chart: 'external-secrets',
-  repositoryOpts: {
+  namespace: 'kube-system',
+  fetchOpts: {
     repo: 'https://charts.external-secrets.io',
   },
 });

@@ -1,9 +1,7 @@
 import * as k8s from '@pulumi/kubernetes';
 
-new k8s.helm.v3.Release('metrics-server', {
-  name: 'metrics-server',
-  namespace: 'kube-system',
-
+new k8s.helm.v3.Chart('metrics-server', {
   chart: 'metrics-server',
-  repositoryOpts: { repo: 'https://kubernetes-sigs.github.io/metrics-server' },
+  namespace: 'kube-system',
+  fetchOpts: { repo: 'https://kubernetes-sigs.github.io/metrics-server' },
 });

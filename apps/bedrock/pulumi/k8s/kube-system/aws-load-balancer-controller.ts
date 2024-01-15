@@ -247,28 +247,23 @@ const serviceAccount = new k8s.core.v1.ServiceAccount('aws-load-balancer-control
   },
 });
 
-new k8s.helm.v3.Release(
-  'aws-load-balancer-controller',
-  {
-    name: 'aws-load-balancer-controller',
-    namespace: 'kube-system',
+new k8s.helm.v3.Chart('aws-load-balancer-controller', {
+  chart: 'aws-load-balancer-controller',
+  namespace: 'kube-system',
+  fetchOpts: { repo: 'https://aws.github.io/eks-charts' },
 
-    chart: 'aws-load-balancer-controller',
-    repositoryOpts: { repo: 'https://aws.github.io/eks-charts' },
+  values: {
+    region: 'ap-northeast-2',
+    vpcId: vpc.id,
 
-    values: {
-      region: 'ap-northeast-2',
-      vpcId: vpc.id,
-
-      clusterName: cluster.name,
-      serviceAccount: {
-        create: false,
-        name: serviceAccount.metadata.name,
-      },
-
-      enableBackendSecurityGroup: false,
-      defaultSSLPolicy: 'ELBSecurityPolicy-TLS13-1-2-2021-06',
+    clusterName: cluster.name,
+    serviceAccount: {
+      create: false,
+      name: serviceAccount.metadata.name,
     },
+
+    enableCertManager: true,
+    enableBackendSecurityGroup: false,
+    defaultSSLPolicy: 'ELBSecurityPolicy-TLS13-1-2-2021-06',
   },
-  { ignoreChanges: ['checksum'] },
-);
+});

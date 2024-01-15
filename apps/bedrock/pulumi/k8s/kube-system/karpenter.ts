@@ -1,6 +1,6 @@
 import * as aws from '@pulumi/aws';
 import * as k8s from '@pulumi/kubernetes';
-import { cluster, fargate, oidcProvider } from '$aws/eks';
+import { cluster, oidcProvider } from '$aws/eks';
 import { securityGroups, subnets } from '$aws/vpc';
 
 const karpenterRole = new aws.iam.Role('karpenter@eks', {
@@ -114,37 +114,29 @@ const serviceAccount = new k8s.core.v1.ServiceAccount('karpenter', {
   },
 });
 
-new k8s.helm.v3.Release(
-  'karpenter',
-  {
-    name: 'karpenter',
-    namespace: 'kube-system',
+new k8s.helm.v3.Chart('karpenter', {
+  chart: 'oci://public.ecr.aws/karpenter/karpenter',
+  namespace: 'kube-system',
+  fetchOpts: {
+    version: 'v0.33.1',
+  },
 
-    chart: 'oci://public.ecr.aws/karpenter/karpenter',
-    version: 'v0.32.2',
+  values: {
+    serviceAccount: {
+      create: false,
+      name: serviceAccount.metadata.name,
+    },
 
-    values: {
-      serviceAccount: {
-        create: false,
-        name: serviceAccount.metadata.name,
-      },
+    podLabels: {
+      app: 'karpenter',
+    },
 
-      podLabels: {
-        app: 'karpenter',
-      },
-
-      settings: {
-        clusterName: cluster.name,
-        // interruptionQueue: cluster.name,
-
-        featureGates: {
-          drift: true,
-        },
-      },
+    settings: {
+      clusterName: cluster.name,
+      // interruptionQueue: cluster.name,
     },
   },
-  { dependsOn: fargate },
-);
+});
 
 const nodeClass = new k8s.apiextensions.CustomResource('default', {
   apiVersion: 'karpenter.k8s.aws/v1beta1',

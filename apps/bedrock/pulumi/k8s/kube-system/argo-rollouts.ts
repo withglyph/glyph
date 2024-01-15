@@ -1,11 +1,9 @@
 import * as k8s from '@pulumi/kubernetes';
 
-new k8s.helm.v3.Release('argo-rollouts', {
-  name: 'argo-rollouts',
-  namespace: 'kube-system',
-
+new k8s.helm.v3.Chart('argo-rollouts', {
   chart: 'argo-rollouts',
-  repositoryOpts: {
+  namespace: 'kube-system',
+  fetchOpts: {
     repo: 'https://argoproj.github.io/argo-helm',
   },
 

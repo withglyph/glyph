@@ -51,12 +51,10 @@ const serviceAccount = new k8s.core.v1.ServiceAccount('external-dns', {
   },
 });
 
-new k8s.helm.v3.Release('external-dns', {
-  name: 'external-dns',
-  namespace: 'kube-system',
-
+new k8s.helm.v3.Chart('external-dns', {
   chart: 'external-dns',
-  repositoryOpts: { repo: 'https://kubernetes-sigs.github.io/external-dns' },
+  namespace: 'kube-system',
+  fetchOpts: { repo: 'https://kubernetes-sigs.github.io/external-dns' },
 
   values: {
     serviceAccount: {
