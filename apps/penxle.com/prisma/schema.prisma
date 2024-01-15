@@ -533,6 +533,7 @@ model User {
   profileId String    @unique @map("profile_id")
   profile   Profile   @relation(fields: [profileId], references: [id])
   state     UserState
+  role      UserRole  @default(USER)
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   // 주로 쓰이는 릴레이션들
@@ -889,6 +890,13 @@ enum UserSingleSignOnProvider {
   NAVER
 
   @@map("_user_single_sign_on_provider")
+}
+
+enum UserRole {
+  ADMIN
+  USER
+
+  @@map("_user_role")
 }
 
 enum UserState {

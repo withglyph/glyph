@@ -614,6 +614,7 @@ export const userSchema = defineSchema((builder) => {
             id: createId(),
             email: provisionedUser.email,
             profileId: profile.id,
+            role: 'USER',
             state: 'ACTIVE',
           },
         });

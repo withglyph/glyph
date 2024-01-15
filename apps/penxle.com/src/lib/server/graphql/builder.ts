@@ -22,10 +22,11 @@ type Builder = ReturnType<typeof createBuilder>;
 export const createBuilder = () => {
   const builder = new SchemaBuilder<{
     AuthContexts: {
+      admin: Context & UserContext;
       user: Context & UserContext;
     };
     AuthScopes: {
-      staff: boolean;
+      admin: boolean;
       user: boolean;
     };
     Context: Context;
@@ -41,7 +42,7 @@ export const createBuilder = () => {
     };
   }>({
     authScopes: (context) => ({
-      staff: false,
+      admin: context.session?.role === 'ADMIN',
       user: !!context.session,
     }),
     defaultInputFieldRequiredness: true,

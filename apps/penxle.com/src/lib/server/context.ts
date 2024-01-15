@@ -5,6 +5,7 @@ import { prismaClient } from './database';
 import { decodeAccessToken } from './utils/access-token';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { MaybePromise } from '$lib/types';
+import type { PrismaEnums } from '$prisma';
 import type { InteractiveTransactionClient } from './database';
 
 type InternalContext = {
@@ -28,6 +29,7 @@ export type UserContext = {
   session: {
     id: string;
     userId: string;
+    role: PrismaEnums.UserRole;
   };
 };
 
@@ -74,6 +76,7 @@ export const createContext = async (event: RequestEvent): Promise<Context> => {
 
     if (sessionId) {
       const session = await db.userSession.findUnique({
+        include: { user: true },
         where: {
           id: sessionId,
           user: {
@@ -86,6 +89,7 @@ export const createContext = async (event: RequestEvent): Promise<Context> => {
         ctx.session = {
           id: sessionId,
           userId: session.userId,
+          role: session.user.role,
         };
       }
     }
