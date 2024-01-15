@@ -13,7 +13,9 @@
   }
 
   afterNavigate(({ from, to }) => {
-    if (from?.url.pathname === '/search' && to?.url.pathname !== '/search') {
+    if (!from || !to) return;
+
+    if (from.url.pathname.startsWith('/search') && !to.url.pathname.startsWith('/search')) {
       value = '';
     }
   });
