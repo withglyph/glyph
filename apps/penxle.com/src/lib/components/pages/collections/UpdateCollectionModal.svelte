@@ -63,7 +63,7 @@
   <svelte:fragment slot="title">컬렉션 관리</svelte:fragment>
   <form use:form>
     <button
-      class="bg-primary w-20.8125rem h-26rem rounded-6 flex flex-col center overflow-hidden mx-auto relative group"
+      class="bg-primary w-full aspect-3/4 rounded-6 flex flex-col center overflow-hidden mx-auto relative group"
       aria-describedby="upload-restriction"
       type="button"
       on:click={() => thumbnailPicker.show()}
