@@ -242,15 +242,21 @@
 
   <div class="sm:max-w-185">
     <div class="flex items-center justify-between w-full <sm:px-4">
-      <h1 class="title-24-eb grow">'{$page.url.searchParams.get('q')}' 검색결과</h1>
+      <h1 class="title-24-eb grow">검색결과</h1>
 
-      <Button class="sm:hidden mx-1" color="tertiary" size="md" variant="outlined" on:click={() => (filterOpen = true)}>
+      <Button
+        class="sm:hidden mx-1 shrink-0"
+        color="tertiary"
+        size="md"
+        variant="outlined"
+        on:click={() => (filterOpen = true)}
+      >
         <i class="i-lc-list-filter square-5" />
         필터
       </Button>
 
-      <Menu placement="bottom">
-        <Button slot="value" color="tertiary" size="md" variant="outlined">
+      <Menu as="div" placement="bottom">
+        <Button slot="value" class="shrink-0" color="tertiary" size="md" variant="outlined">
           {orderBy === 'LATEST' ? '최신순' : '정확도순'}
           <i class="i-lc-chevron-down square-5" />
         </Button>

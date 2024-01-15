@@ -56,8 +56,8 @@
 
 <Helmet title="{$page.url.searchParams.get('q')} - 펜슬 검색결과" />
 
-<div class="body-14-m text-secondary py-1 px-3 rounded-lg bg-surface-primary mt-3 <sm:mx-4">
-  🔍 약 {$query.searchSpaces.length ?? 0}개의 검색결과가 있어요!
+<div class="body-14-m text-secondary mt-3 <sm:m-l-4">
+  약 {$query.searchSpaces.length ?? 0}개의 검색결과가 있어요!
 </div>
 
 <TabHead class="mt-9 mb-4 w-full <sm:(sticky top-61px z-1)" variant="secondary">

@@ -8,7 +8,6 @@
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
-  import { outsideClickEvent } from '$lib/svelte/actions';
   import GotoSpaceModal from './GotoSpaceModal.svelte';
   // import Notification from './Notification.svelte';
   import SearchBar from './SearchBar.svelte';
@@ -19,7 +18,6 @@
   let _query: DefaultLayout_Header_query;
   export { _query as $query };
 
-  let isOpen = false;
   let sideBarOpen = false;
   let openGotoSpace = false;
   let comingSoonOpen = false;
@@ -60,42 +58,32 @@
         <Wordmark class="<sm:hidden h-5.25 color-icon-primary" />
       </Link>
 
-      <div
-        class={clsx('flex items-center grow justify-end', isOpen && 'justify-between')}
-        on:outsideClick={() => (isOpen = false)}
-        use:outsideClickEvent
-      >
-        <SearchBar class={clsx('<sm:hidden', isOpen && 'block!')} />
+      <div class="flex flex-1 items-center justify-between">
+        <SearchBar class="flex-1 max-w-80 <sm:focus-within:max-w-full peer" />
 
-        <div class={clsx('flex center square-10 sm:hidden', isOpen && 'hidden!')}>
-          <button type="button" on:click={() => (isOpen = true)}>
-            <i class="i-lc-search square-6" />
-          </button>
+        <div class="flex sm:hidden grow-0 peer-focus-within:hidden">
+          <div class={clsx('flex center square-10')}>
+            <button type="button" on:click={() => (sideBarOpen = true)}>
+              <i class="i-lc-menu square-6" />
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div class="flex sm:hidden grow-0">
-        <div class={clsx('flex center square-10')}>
-          <button type="button" on:click={() => (sideBarOpen = true)}>
-            <i class="i-lc-menu square-6" />
-          </button>
+        <div class="flex items-center <sm:hidden relative">
+          {#if $query.me}
+            <a
+              class="relative flex items-center gap-2 rounded-lg py-1 pr-2 pl-1 m-r-2 transition hover:bg-surface-primary <sm:hidden"
+              href="/editor"
+            >
+              <PenFancy class="square-8 mb-1" />
+              <span class="subtitle-17-b text-gray-70">포스트 작성하기</span>
+            </a>
+            <!-- <Notification $user={$query.me} /> -->
+            <UserMenu $user={$query.me} />
+          {:else}
+            <Button href="/login" size="md" type="link">펜슬과 함께하기</Button>
+          {/if}
         </div>
-      </div>
-
-      <div class="flex items-center <sm:hidden relative">
-        {#if $query.me}
-          <a
-            class="relative flex items-center gap-2 rounded-lg py-1 pr-2 pl-1 m-r-2 transition hover:bg-surface-primary <sm:hidden"
-            href="/editor"
-          >
-            <PenFancy class="square-8 mb-1" />
-            <span class="subtitle-17-b text-gray-70">포스트 작성하기</span>
-          </a>
-          <!-- <Notification $user={$query.me} /> -->
-          <UserMenu $user={$query.me} />
-        {:else}
-          <Button href="/login" size="md" type="link">펜슬과 함께하기</Button>
-        {/if}
       </div>
     </section>
   </nav>

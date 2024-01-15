@@ -27,14 +27,14 @@
 </script>
 
 <form
-  class={clsx('relative w-full mr-4 h-10 ', _class)}
+  class={clsx('relative', _class)}
   on:submit|preventDefault={async () => {
     await goto(qs.stringifyUrl({ url: '/search', query: { q: value } }));
   }}
 >
   <input
-    class="transition-width ease-in-out rounded-9 bg-primary py-2 pl-11 pr-4 text-sm border border-bg-primary focus-within:border-primary next:focus:text-icon-primary h-10 <sm:(w-full max-w-80) sm:(w-80 focus-within:w-full!)"
-    placeholder="#검색어를 입력해 태그를 검색해 보세요"
+    class="transition-all rounded-9 bg-primary py-2 pl-11 pr-4 text-sm border border-bg-primary focus-within:border-primary next:focus:text-icon-primary w-full"
+    placeholder="검색어를 입력하세요"
     type="text"
     bind:value
   />
