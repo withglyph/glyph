@@ -5,7 +5,7 @@ import { useContextFinalizer, useErrorHandling, useLogging, useTelemetry } from 
 import { schema } from './schemas';
 import type { RequestEvent } from '@sveltejs/kit';
 
-export const handler = createYoga<RequestEvent>({
+const yoga = createYoga<RequestEvent>({
   schema,
   context: createContext,
   fetchAPI: { Response },
@@ -14,3 +14,7 @@ export const handler = createYoga<RequestEvent>({
   maskedErrors: false,
   plugins: [useGraphQlJit(), useErrorHandling(), useLogging(), useTelemetry(), useContextFinalizer()],
 });
+
+export const handler = async (event: RequestEvent) => {
+  return await yoga.handleRequest(event.request, event);
+};
