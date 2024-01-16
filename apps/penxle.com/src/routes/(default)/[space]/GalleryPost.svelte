@@ -196,7 +196,7 @@
 
   <div bind:this={swiperPaginationElem} class="w-full flex center" />
 
-  {#if revision.content.content?.[0].type === 'paragraph'}
+  {#if revision.content.content?.[0]?.type === 'paragraph'}
     <p class="bodylong-16-m whitespace-pre-wrap break-all mt-6 select-none">
       {revision.content.content[0].content[0].text ?? ''}
     </p>
