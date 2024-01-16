@@ -171,3 +171,42 @@ export const verifyResidentRegistrationNumber = async ({
     reason: resp.DISAGREEMENT_REASON as string,
   };
 };
+
+type VerifyPassportNumberParams = {
+  name: string;
+  passportNumber: string;
+  birthday: string;
+  issuedDate: string;
+  expirationDate: string;
+};
+export const verifyPassportNumber = async ({
+  name,
+  birthday,
+  passportNumber,
+  issuedDate,
+  expirationDate,
+}: VerifyPassportNumberParams) => {
+  const resp = await got({
+    url: 'https://sgw.coocon.co.kr/sol/gateway/gateway.jsp',
+    method: 'POST',
+    json: {
+      API_KEY: env.PRIVATE_COOCON_GATEWAY_KEY,
+      API_ID: '1620',
+      NAME: name,
+      PASSPORT_NUM: passportNumber,
+      BIRTHDATE: birthday,
+      ISSUED_DATE: issuedDate,
+      EXPIRATION_DATE: expirationDate,
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }).json<any>();
+
+  if (resp.RESULT_CD !== '00000000') {
+    throw new Error(`[${resp.RESULT_CD}] ${resp.RESULT_MG}`);
+  }
+
+  return {
+    success: resp.RESULT_YN === 'Y' && resp.RESULT_YN_INFO === '유효한 여권',
+    reason: resp.RESULT_YN_INFO as string,
+  };
+};
