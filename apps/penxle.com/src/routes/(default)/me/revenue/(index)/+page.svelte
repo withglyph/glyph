@@ -1,19 +1,21 @@
 <script lang="ts">
   import dayjs from 'dayjs';
+  import qs from 'query-string';
+  import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { Button } from '$lib/components';
+  import { Button, Pagination } from '$lib/components';
   // import { PopupSearch } from '$lib/components/forms';
   import { Table, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
   import { comma } from '$lib/utils';
 
   $: query = graphql(`
-    query RevenuePage_Query {
+    query MeRevenuePage_Query($page: Int! = 1, $take: Int! = 10) {
       auth(scope: USER)
 
       me @_required {
         id
 
-        revenues {
+        revenues(page: $page, take: $take) {
           id
           amount
           createdAt
@@ -35,6 +37,19 @@
       }
     }
   `);
+
+  let initialPage = Number($page.url.searchParams.get('page')) || 1;
+
+  const updatePage = () => {
+    const stringifiedURL = qs.stringifyUrl({
+      url: '/me/revenue',
+      query: {
+        page: initialPage,
+      },
+    });
+
+    location.href = stringifiedURL;
+  };
 </script>
 
 {#if $query.me.revenues.length > 0}
@@ -71,8 +86,8 @@
       </TableRow>
     {/each}
   </Table>
+
+  <Pagination {initialPage} onChange={updatePage} totalItems={$query.me.revenues.length} />
 {:else}
   <div class="text-center body-16-m py-10 text-secondary">아직 수익 내역이 없어요</div>
 {/if}
-
-<!-- TODO: Pagination -->
