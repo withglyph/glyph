@@ -14,9 +14,9 @@
   let _class: string | undefined = undefined;
   export { _image as $image, _class as class };
   export let quality: number | undefined = undefined;
-  export let fit: 'cover' | 'contain' = 'cover';
   export let fade = true;
   export let intrinsic = false;
+  export let fit: 'cover' | 'contain' | null = intrinsic ? null : 'cover';
   export let draggable = false;
   export let alt: string | undefined = undefined;
 
@@ -67,7 +67,7 @@
 
 <div
   style:width={intrinsic ? `${$image.width}px` : undefined}
-  style:aspect-ratio={intrinsic ? `${$image.width} / ${$image.height}` : undefined}
+  style:aspect-ratio={intrinsic && !visible ? `${$image.width} / ${$image.height}` : undefined}
   class={clsx('overflow-hidden', _class)}
   role="img"
   on:contextmenu|preventDefault
@@ -77,7 +77,14 @@
 >
   <div class="square-full relative">
     {#if visible}
-      <img bind:this={imgEl} style:object-fit={fit} class="square-full" {alt} {src} on:load={() => (loaded = true)} />
+      <img
+        bind:this={imgEl}
+        style:object-fit={fit}
+        class={intrinsic ? 'w-full' : 'square-full'}
+        {alt}
+        {src}
+        on:load={() => (loaded = true)}
+      />
     {/if}
 
     {#if !loaded}
