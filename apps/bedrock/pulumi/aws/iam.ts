@@ -1,6 +1,5 @@
 import * as aws from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
-import * as tls from '@pulumi/tls';
 import { buckets } from './s3';
 
 const admin = new aws.iam.Group('admin', {
@@ -170,14 +169,10 @@ new aws.iam.RolePolicy('integration@datadog', {
   },
 });
 
-const githubActionsCertificate = tls.getCertificateOutput({
-  url: 'https://token.actions.githubusercontent.com',
-});
-
 const githubActionsOidcProvider = new aws.iam.OpenIdConnectProvider('actions@github', {
   url: 'https://token.actions.githubusercontent.com',
   clientIdLists: ['sts.amazonaws.com'],
-  thumbprintLists: [githubActionsCertificate.certificates[0].sha1Fingerprint],
+  thumbprintLists: ['ffffffffffffffffffffffffffffffffffffffff'],
 });
 
 const githubActionsRole = new aws.iam.Role('actions@github', {
@@ -209,35 +204,7 @@ new aws.iam.RolePolicy('actions@github', {
     Statement: [
       {
         Effect: 'Allow',
-        Action: [
-          'ecr:BatchCheckLayerAvailability',
-          'ecr:BatchGetImage',
-          'ecr:CompleteLayerUpload',
-          'ecr:DescribeImages',
-          'ecr:GetAuthorizationToken',
-          'ecr:GetDownloadUrlForLayer',
-          'ecr:InitiateLayerUpload',
-          'ecr:PutImage',
-          'ecr:UploadLayerPart',
-          'eks:DescribeCluster',
-          'iam:CreateRole',
-          'iam:DeleteRole',
-          'iam:DeleteRolePolicy',
-          'iam:DetachRolePolicy',
-          'iam:GetRole',
-          'iam:GetRolePolicy',
-          'iam:ListAttachedRolePolicies',
-          'iam:ListInstanceProfilesForRole',
-          'iam:ListRolePolicies',
-          'iam:PutRolePolicy',
-          'lambda:GetFunction',
-          'lambda:ListVersionsByFunction',
-          'lambda:UpdateFunctionCode',
-          'route53:GetHostedZone',
-          'route53:ListHostedZones',
-          'route53:ListTagsForResource',
-          'sts:GetCallerIdentity',
-        ],
+        Action: '*',
         Resource: '*',
       },
     ],
