@@ -60,6 +60,7 @@ jobs:
             APP=${{ matrix.app }}
             TURBO_TEAM=${{ vars.TURBO_TEAM }}
             TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
+            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/${{ matrix.app }}:cache

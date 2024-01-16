@@ -120,7 +120,10 @@ export const transformLoadPlugin = (context: GlitchContext): Plugin => {
         ),
       );
 
-      return AST.print(program);
+      return {
+        code: AST.print(program).code,
+        map: { mappings: '' },
+      };
     },
   };
 };
