@@ -274,6 +274,7 @@ model PostView {
   viewedAt  DateTime @default(now()) @map("viewed_at") @db.Timestamptz
 
   @@unique([userId, postId])
+  @@index([viewedAt])
   @@map("post_views")
 }
 

@@ -377,7 +377,7 @@ export const postSchema = defineSchema((builder) => {
             return [];
           }
 
-          const [postTagIds, mutedTagIds, mutedSpaceIds] = await Promise.all([
+          const [postTagIds, mutedTagIds, mutedSpaceIds, recentlyViewedPostIds] = await Promise.all([
             db.postRevisionTag
               .findMany({
                 where: { revisionId: post.publishedRevision.id },
@@ -385,31 +385,42 @@ export const postSchema = defineSchema((builder) => {
               .then((tags) => tags.map(({ tagId }) => tagId)),
             getMutedTagIds({ db, userId: context.session?.userId }),
             getMutedSpaceIds({ db, userId: context.session?.userId }),
+            context.session
+              ? db.postView
+                  .findMany({
+                    where: { userId: context.session?.userId },
+                    orderBy: { viewedAt: 'desc' },
+                    take: 100,
+                  })
+                  .then((views) => views.map(({ postId }) => postId))
+              : [],
           ]);
 
           const searchResult = await elasticSearch.search({
             index: indexName('posts'),
             query: {
               bool: {
-                should: [{ terms: { 'tags.id': postTagIds } }, { terms: { spaceId: post.spaceId } }],
-                filter: {
-                  bool: {
-                    must_not: makeQueryContainers([
-                      {
-                        query: {
-                          terms: { ['tags.id']: mutedTagIds },
-                        },
-                        condition: mutedTagIds.length > 0,
-                      },
-                      {
-                        query: {
-                          terms: { spaceId: mutedSpaceIds },
-                        },
-                        condition: mutedSpaceIds.length > 0,
-                      },
-                    ]),
+                should: [{ terms: { 'tags.id': postTagIds } }, { term: { ['spaceId']: post.spaceId } }],
+                must_not: makeQueryContainers([
+                  {
+                    query: {
+                      terms: { ['tags.id']: mutedTagIds },
+                    },
+                    condition: mutedTagIds.length > 0,
                   },
-                },
+                  {
+                    query: {
+                      terms: { spaceId: mutedSpaceIds },
+                    },
+                    condition: mutedSpaceIds.length > 0,
+                  },
+                  {
+                    query: {
+                      terms: { id: recentlyViewedPostIds },
+                    },
+                    condition: recentlyViewedPostIds.length > 0,
+                  },
+                ]),
               },
             },
 
