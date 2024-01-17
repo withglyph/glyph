@@ -550,6 +550,7 @@ type Space {
   meAsMember: SpaceMember
   members: [SpaceMember!]!
   muted: Boolean!
+  myMasquerade: SpaceMasquerade
   name: String!
   postCount: Int!
   posts(mine: Boolean! = false): [Post!]!
@@ -580,6 +581,11 @@ enum SpaceCollectionState {
 type SpaceExternalLink {
   id: ID!
   url: String!
+}
+
+type SpaceMasquerade {
+  id: ID!
+  profile: Profile!
 }
 
 type SpaceMember {

@@ -297,9 +297,9 @@ model Profile {
   avatar    Image    @relation(fields: [avatarId], references: [id])
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  spaceMasquerade SpaceMasquerade?
-  spaceMembers    SpaceMember[]
-  user            User?
+  spaceMasquerades SpaceMasquerade[]
+  spaceMembers     SpaceMember[]
+  user             User?
 
   @@map("profiles")
 }
@@ -411,7 +411,7 @@ model SpaceMasquerade {
   space     Space    @relation(fields: [spaceId], references: [id])
   userId    String   @map("user_id")
   user      User     @relation(fields: [userId], references: [id])
-  profileId String   @unique @map("profile_id")
+  profileId String   @map("profile_id")
   profile   Profile  @relation(fields: [profileId], references: [id])
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 

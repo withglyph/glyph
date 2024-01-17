@@ -168,6 +168,28 @@ export const spaceSchema = defineSchema((builder) => {
 
       postCount: t.relationCount('posts', { where: { state: 'PUBLISHED' } }),
       followerCount: t.relationCount('followers', { where: { user: { state: 'ACTIVE' } } }),
+
+      myMasquerade: t.prismaField({
+        type: 'SpaceMasquerade',
+        nullable: true,
+        select: (_, context, nestedSelection) => {
+          if (context.session) {
+            return {
+              masquerades: nestedSelection({
+                where: { userId: context.session.userId },
+              }),
+            };
+          }
+          return {};
+        },
+        resolve: async (_, space, __, context) => {
+          if (!context.session) {
+            return null;
+          }
+
+          return space.masquerades[0];
+        },
+      }),
     }),
   });
 
@@ -236,6 +258,13 @@ export const spaceSchema = defineSchema((builder) => {
     fields: (t) => ({
       id: t.exposeID('id'),
       url: t.exposeString('url'),
+    }),
+  });
+
+  builder.prismaObject('SpaceMasquerade', {
+    fields: (t) => ({
+      id: t.exposeID('id'),
+      profile: t.relation('profile'),
     }),
   });
 

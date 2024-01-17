@@ -4,6 +4,7 @@ export * from './age';
 export * from './avatar';
 export * from './icon';
 export * from './image';
+export * from './masquerade';
 export * from './mute';
 export * from './point';
 export * from './revenue';
