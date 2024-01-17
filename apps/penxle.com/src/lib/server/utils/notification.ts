@@ -4,6 +4,26 @@ import { PrismaEnums } from '$prisma';
 import type { Notification } from '$lib/utils';
 import type { InteractiveTransactionClient } from '../prisma';
 
+type PurchaseNotification = {
+  category: 'PURCHASE';
+  actorId: string;
+  data: {
+    postId: string;
+  };
+};
+
+type SubscribeNotification = {
+  category: 'SUBSCRIBE';
+  actorId: string;
+  data: {
+    spaceId: string;
+  };
+};
+
+export type Notification = (PurchaseNotification | SubscribeNotification) & {
+  userId: string;
+};
+
 type CheckNotificationPreferencesParams = {
   db: InteractiveTransactionClient;
   userId: string;
