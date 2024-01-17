@@ -617,7 +617,7 @@ model UserNotification {
   id        String                   @id
   userId    String                   @map("user_id")
   user      User                     @relation(fields: [userId], references: [id])
-  actorId   String?                  @map("profile_id")
+  actorId   String?                  @map("actor_id")
   actor     Profile?                 @relation(fields: [actorId], references: [id])
   category  UserNotificationCategory
   state     UserNotificationState
