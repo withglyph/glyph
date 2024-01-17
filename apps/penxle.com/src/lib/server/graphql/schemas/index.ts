@@ -8,6 +8,7 @@ import { feedSchema } from './feed';
 import { fileSchema } from './file';
 import { imageSchema } from './image';
 import { internalSchema } from './internal';
+import { notificationSchema } from './notification';
 import { playgroundSchema } from './playground';
 import { pointSchema } from './point';
 import { postSchema } from './post';
@@ -27,6 +28,7 @@ addSchema(builder, [
   fileSchema,
   imageSchema,
   internalSchema,
+  notificationSchema,
   playgroundSchema,
   pointSchema,
   postSchema,

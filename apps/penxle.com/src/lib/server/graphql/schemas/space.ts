@@ -1,7 +1,14 @@
 import * as R from 'radash';
 import { match } from 'ts-pattern';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
-import { createRandomIcon, directUploadImage, indexPostByQuery, indexSpace } from '$lib/server/utils';
+import {
+  createNotification,
+  createRandomIcon,
+  directUploadImage,
+  indexPostByQuery,
+  indexSpace,
+  makeMasquerade,
+} from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import {
   AcceptSpaceMemberInvitationSchema,
@@ -1008,6 +1015,9 @@ export const spaceSchema = defineSchema((builder) => {
       args: { input: t.arg({ type: FollowSpaceInput }) },
       resolve: async (query, _, { input }, { db, ...context }) => {
         const space = await db.space.findUniqueOrThrow({
+          include: {
+            members: true,
+          },
           where: {
             id: input.spaceId,
             state: 'ACTIVE',
@@ -1042,6 +1052,25 @@ export const spaceSchema = defineSchema((builder) => {
           },
           update: {},
         });
+
+        const masquerade = await makeMasquerade({
+          db,
+          spaceId: space.id,
+          userId: context.session.userId,
+        });
+
+        await Promise.all(
+          space.members.map((member) =>
+            createNotification({
+              db,
+              userId: member.userId,
+              category: 'SUBSCRIBE',
+              actorId: masquerade.profileId,
+              data: { spaceId: space.id },
+              origin: context.event.url.origin,
+            }),
+          ),
+        );
 
         return db.space.findUniqueOrThrow({
           ...query,

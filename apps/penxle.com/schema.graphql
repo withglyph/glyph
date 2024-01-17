@@ -187,6 +187,10 @@ input LoginUserInput {
   email: String!
 }
 
+input MarkNotificationAsReadInput {
+  notificationId: ID!
+}
+
 type Mutation {
   acceptSpaceMemberInvitation(input: AcceptSpaceMemberInvitationInput!): SpaceMemberInvitation!
   bookmarkPost(input: BookmarkPostInput!): Post!
@@ -212,6 +216,7 @@ type Mutation {
   likePost(input: LikePostInput!): Post!
   loginUser(input: LoginUserInput!): UserEmailVerification!
   logoutUser: Void
+  markNotificationAsRead(input: MarkNotificationAsReadInput!): UserNotification!
   muteSpace(input: MuteSpaceInput!): Space!
   muteTag(input: MuteTagInput!): Tag!
   prepareFileUpload: PrepareFileUploadResult!
@@ -773,6 +778,7 @@ type User {
   mutedSpaces: [Space!]!
   mutedTags: [Tag!]!
   notificationPreferences: [UserNotificationPreference!]!
+  notifications(category: UserNotificationCategory, unreadOnly: Boolean! = false): [UserNotification!]!
   personalIdentity: UserPersonalIdentity
   point: Int!
   points: [PointTransaction!]!
@@ -811,6 +817,16 @@ type UserMarketingConsent {
   id: ID!
 }
 
+type UserNotification {
+  category: UserNotificationCategory!
+  createdAt: DateTime!
+  data: JSON!
+  id: ID!
+  profile: Profile!
+  state: UserNotificationState!
+  user: User!
+}
+
 enum UserNotificationCategory {
   ALL
   COMMENT
@@ -833,6 +849,11 @@ type UserNotificationPreference {
   id: ID!
   method: UserNotificationMethod!
   opted: Boolean!
+}
+
+enum UserNotificationState {
+  READ
+  UNREAD
 }
 
 type UserPersonalIdentity {

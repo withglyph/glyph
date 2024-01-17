@@ -6,6 +6,7 @@ export * from './icon';
 export * from './image';
 export * from './masquerade';
 export * from './mute';
+export * from './notification';
 export * from './point';
 export * from './revenue';
 export * from './search';

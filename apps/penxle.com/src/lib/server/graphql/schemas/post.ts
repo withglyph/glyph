@@ -11,6 +11,7 @@ import { redis } from '$lib/server/cache';
 import { s3 } from '$lib/server/external-api/aws';
 import { elasticSearch, indexName } from '$lib/server/search';
 import {
+  createNotification,
   createRevenue,
   deductUserPoint,
   directUploadImage,
@@ -19,6 +20,7 @@ import {
   getUserPoint,
   indexPost,
   isAdulthood,
+  makeMasquerade,
   makeQueryContainers,
   searchResultToPrismaData,
 } from '$lib/server/utils';
@@ -1334,14 +1336,14 @@ export const postSchema = defineSchema((builder) => {
       args: { input: t.arg({ type: PurchasePostInput }) },
       resolve: async (query, _, { input }, { db, ...context }) => {
         const post = await db.post.findUniqueOrThrow({
-          include: { publishedRevision: true },
+          include: { space: true, publishedRevision: true },
           where: { id: input.postId },
         });
 
         const isMember = await db.spaceMember.existsUnique({
           where: {
             spaceId_userId: {
-              spaceId: post.spaceId,
+              spaceId: post.space.id,
               userId: context.session.userId,
             },
           },
@@ -1392,6 +1394,21 @@ export const postSchema = defineSchema((builder) => {
           amount: post.publishedRevision.price,
           targetId: purchase.id,
           kind: 'POST_PURCHASE',
+        });
+
+        const masquerade = await makeMasquerade({
+          db,
+          userId: context.session.userId,
+          spaceId: post.space.id,
+        });
+
+        await createNotification({
+          db,
+          userId: post.userId,
+          category: 'PURCHASE',
+          actorId: masquerade.profileId,
+          data: { postId: post.id },
+          origin: context.event.url.origin,
         });
 
         return await db.post.findUniqueOrThrow({

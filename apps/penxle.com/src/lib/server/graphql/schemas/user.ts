@@ -258,6 +258,20 @@ export const userSchema = defineSchema((builder) => {
           skip: (page - 1) * take,
         }),
       }),
+
+      notifications: t.relation('notifications', {
+        args: {
+          unreadOnly: t.arg.boolean({ defaultValue: false }),
+          category: t.arg({ type: PrismaEnums.UserNotificationCategory, required: false }),
+        },
+        query: (input) => ({
+          where: {
+            state: input.unreadOnly ? 'UNREAD' : undefined,
+            category: input.category ?? undefined,
+          },
+          orderBy: { createdAt: 'desc' },
+        }),
+      }),
     }),
   });
 

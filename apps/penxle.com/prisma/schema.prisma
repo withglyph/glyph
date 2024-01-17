@@ -301,6 +301,7 @@ model Profile {
   spaceMasquerades SpaceMasquerade[]
   spaceMembers     SpaceMember[]
   user             User?
+  notifications    UserNotification[]
 
   @@map("profiles")
 }
@@ -541,6 +542,7 @@ model User {
   contentFilterPreferences       UserContentFilterPreference[]
   marketingConsent               UserMarketingConsent?
   notificationPreferences        UserNotificationPreference[]
+  notifications                  UserNotification[]
   personalIdentity               UserPersonalIdentity?
   pointBalances                  PointBalance[]
   pointPurchases                 PointPurchase[]
@@ -609,6 +611,21 @@ model UserMarketingConsent {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("user_marketing_consents")
+}
+
+model UserNotification {
+  id        String                   @id
+  userId    String                   @map("user_id")
+  user      User                     @relation(fields: [userId], references: [id])
+  actorId   String?                  @map("profile_id")
+  actor     Profile?                 @relation(fields: [actorId], references: [id])
+  category  UserNotificationCategory
+  state     UserNotificationState
+  data      Json?
+  createdAt DateTime                 @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([createdAt])
+  @@map("user_notifications")
 }
 
 model UserNotificationPreference {
@@ -877,6 +894,13 @@ enum UserNotificationCategory {
   ALL
 
   @@map("_user_notification_category")
+}
+
+enum UserNotificationState {
+  UNREAD
+  READ
+
+  @@map("_user_notification_state")
 }
 
 enum UserNotificationMethod {
