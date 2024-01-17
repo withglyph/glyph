@@ -1,10 +1,9 @@
-import crypto, { webcrypto } from 'node:crypto';
+import { webcrypto } from 'node:crypto';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
 import { random } from 'radash';
 import { match } from 'ts-pattern';
-import { env } from '$env/dynamic/private';
 import { IntentionalError, PermissionDeniedError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
 import { LoginUser, UpdateUserEmail } from '$lib/server/email/templates';
@@ -92,15 +91,6 @@ export const userSchema = defineSchema((builder) => {
       points: t.relation('pointTransactions', {
         query: {
           orderBy: { createdAt: 'desc' },
-        },
-      }),
-
-      channelIOMemberHash: t.string({
-        resolve: (user) => {
-          return crypto
-            .createHmac('sha256', Buffer.from(env.PRIVATE_CHANNEL_IO_SECRET_KEY, 'hex'))
-            .update(user.id)
-            .digest('hex');
         },
       }),
 

@@ -2,7 +2,6 @@
   import { Helmet, Link } from '@penxle/ui';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { ChannelIOButton } from '$lib/channel.io';
   import { Image, Tag } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { toast } from '$lib/notification';
@@ -15,7 +14,6 @@
   $: query = graphql(`
     query FeedLayout_Query {
       ...DefaultLayout_Header_query
-      ...ChannelIOButton_query
 
       me {
         id
@@ -213,7 +211,6 @@
 
 <Footer />
 
-<ChannelIOButton {$query} />
 <LoginRequireModal bind:open={loginRequireOpen} />
 
 <style>

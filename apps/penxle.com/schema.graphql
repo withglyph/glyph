@@ -762,7 +762,6 @@ input UpdateUserProfileInput {
 
 type User {
   bookmarks: [BookmarkGroup!]!
-  channelIOMemberHash: String!
   contentFilterPreferences: [UserContentFilterPreference!]!
   email: String!
   followedSpaces: [Space!]!
