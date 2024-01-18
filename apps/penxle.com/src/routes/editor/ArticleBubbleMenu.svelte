@@ -1,6 +1,7 @@
 <script lang="ts">
   import { isTextSelection } from '@tiptap/core';
   import clsx from 'clsx';
+  import { tick } from 'svelte';
   import { Tooltip } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { TiptapBubbleMenu } from '$lib/tiptap/components';
@@ -9,11 +10,18 @@
 
   export let editor: Editor;
 
+  let linkInputEl: HTMLInputElement | null = null;
+
   let href = '';
   let linkButtonOpen = false;
 
   $: if (linkButtonOpen) {
     href = '';
+
+    // eslint-disable-next-line unicorn/prefer-top-level-await
+    void tick().then(() => {
+      linkInputEl?.focus();
+    });
   }
 
   const offset = 32;
@@ -204,6 +212,7 @@
             {href}
           </span>
           <input
+            bind:this={linkInputEl}
             name="url"
             class="absolute w-full max-w-20rem"
             autocomplete="on"
