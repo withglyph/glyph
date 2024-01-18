@@ -1,3 +1,4 @@
+import { match } from 'ts-pattern';
 import { PrismaEnums } from '$prisma';
 import { defineSchema } from '../builder';
 
@@ -6,7 +7,7 @@ export const notificationSchema = defineSchema((builder) => {
    * * Types
    */
 
-  builder.prismaObject('UserNotification', {
+  const UserNotification = builder.prismaInterface('UserNotification', {
     fields: (t) => ({
       id: t.exposeID('id'),
       user: t.relation('user'),
@@ -15,6 +16,50 @@ export const notificationSchema = defineSchema((builder) => {
       actor: t.relation('actor'),
       data: t.expose('data', { type: 'JSON' }),
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
+    }),
+
+    resolveType: (notification) =>
+      match(notification.category)
+        .with('PURCHASE', () => 'PurchaseNotification')
+        .with('SUBSCRIBE', () => 'SubscribeNotification')
+        .run(),
+  });
+
+  builder.prismaObject('UserNotification', {
+    variant: 'PurchaseNotification',
+    interfaces: [UserNotification],
+    fields: (t) => ({
+      post: t.prismaField({
+        type: 'Post',
+        resolve: (query, notification, _, { db }) => {
+          const data = notification.data as { postId: string };
+          return db.post.findUniqueOrThrow({
+            ...query,
+            where: {
+              id: data.postId,
+            },
+          });
+        },
+      }),
+    }),
+  });
+
+  builder.prismaObject('UserNotification', {
+    variant: 'SubscribeNotification',
+    interfaces: [UserNotification],
+    fields: (t) => ({
+      space: t.prismaField({
+        type: 'Space',
+        resolve: (query, notification, _, { db }) => {
+          const data = notification.data as { spaceId: string };
+          return db.space.findUniqueOrThrow({
+            ...query,
+            where: {
+              id: data.spaceId,
+            },
+          });
+        },
+      }),
     }),
   });
 

@@ -440,6 +440,17 @@ input PublishPostInput {
   visibility: PostVisibility!
 }
 
+type PurchaseNotification implements UserNotification {
+  actor: Profile!
+  category: UserNotificationCategory!
+  createdAt: DateTime!
+  data: JSON!
+  id: ID!
+  post: Post!
+  state: UserNotificationState!
+  user: User!
+}
+
 input PurchasePointInput {
   paymentMethod: PaymentMethod!
   pointAgreement: Boolean!
@@ -636,6 +647,17 @@ enum SpaceVisibility {
   PUBLIC
 }
 
+type SubscribeNotification implements UserNotification {
+  actor: Profile!
+  category: UserNotificationCategory!
+  createdAt: DateTime!
+  data: JSON!
+  id: ID!
+  space: Space!
+  state: UserNotificationState!
+  user: User!
+}
+
 type Tag {
   followed: Boolean!
   id: ID!
@@ -817,12 +839,12 @@ type UserMarketingConsent {
   id: ID!
 }
 
-type UserNotification {
+interface UserNotification {
+  actor: Profile!
   category: UserNotificationCategory!
   createdAt: DateTime!
   data: JSON!
   id: ID!
-  profile: Profile!
   state: UserNotificationState!
   user: User!
 }
