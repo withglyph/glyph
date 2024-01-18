@@ -1,8 +1,7 @@
 import { createId } from '@felte/core';
 import * as R from 'radash';
 import { PrismaEnums } from '$prisma';
-import { sendEmail } from '../email';
-import { Purchase, Subscribe } from '../email/templates/notification';
+import type { Notification } from '$lib/utils';
 import type { InteractiveTransactionClient } from '../prisma';
 
 type CheckNotificationPreferencesParams = {
@@ -36,12 +35,8 @@ export const checkNotificationPreferences = async ({
   );
 };
 
-type CreateNotificationParams = {
+type CreateNotificationParams = Notification & {
   db: InteractiveTransactionClient;
-  userId: string;
-  category: PrismaEnums.UserNotificationCategory;
-  actorId?: string;
-  data?: Record<string, unknown>;
   origin: string;
 };
 
@@ -62,53 +57,52 @@ export const createNotification = async ({ db, userId, category, actorId, data }
   }
 
   // 이메일 알림 일단 비활성화
-  // eslint-disable-next-line no-constant-condition
-  if (preferences.EMAIL && false) {
-    const user = await db.user.findUniqueOrThrow({
-      where: { id: userId },
-    });
+  // if (preferences.EMAIL) {
+  //   const user = await db.user.findUniqueOrThrow({
+  //     where: { id: userId },
+  //   });
 
-    const actor = actorId
-      ? await db.profile.findUniqueOrThrow({
-          where: { id: actorId },
-        })
-      : null;
+  //   const actor = actorId
+  //     ? await db.profile.findUniqueOrThrow({
+  //         where: { id: actorId },
+  //       })
+  //     : null;
 
-    switch (category) {
-      case 'SUBSCRIBE': {
-        const space = await db.space.findUniqueOrThrow({
-          where: { id: data?.spaceId as string },
-        });
+  //   switch (category) {
+  //     case 'SUBSCRIBE': {
+  //       const space = await db.space.findUniqueOrThrow({
+  //         where: { id: data?.spaceId as string },
+  //       });
 
-        await sendEmail({
-          subject: `[펜슬] ${actor?.name}님이 ${space.name} 스페이스를 관심 추가했어요`,
-          recipient: user.email,
-          template: Subscribe,
-          props: {
-            profileName: actor?.name as string,
-            spaceName: space.name as string,
-            spaceURL: `${origin}/${space.slug}`,
-          },
-        });
-        break;
-      }
-      case 'PURCHASE': {
-        const post = await db.post.findUniqueOrThrow({
-          where: { id: data?.postId as string },
-          include: { publishedRevision: true },
-        });
+  //       await sendEmail({
+  //         subject: `[펜슬] ${actor?.name}님이 ${space.name} 스페이스를 관심 추가했어요`,
+  //         recipient: user.email,
+  //         template: Subscribe,
+  //         props: {
+  //           profileName: actor?.name as string,
+  //           spaceName: space.name as string,
+  //           spaceURL: `${origin}/${space.slug}`,
+  //         },
+  //       });
+  //       break;
+  //     }
+  //     case 'PURCHASE': {
+  //       const post = await db.post.findUniqueOrThrow({
+  //         where: { id: data?.postId as string },
+  //         include: { publishedRevision: true },
+  //       });
 
-        await sendEmail({
-          subject: `[펜슬] ${actor?.name}님이 ${post.publishedRevision?.title} 포스트를 구매했어요`,
-          recipient: user.email,
-          template: Purchase,
-          props: {
-            profileName: actor?.name as string,
-            postTitle: post.publishedRevision?.title as string,
-            postURL: `https://pnxl.me/${BigInt(post.permalink).toString(36)}`,
-          },
-        });
-      }
-    }
-  }
+  //       await sendEmail({
+  //         subject: `[펜슬] ${actor?.name}님이 ${post.publishedRevision?.title} 포스트를 구매했어요`,
+  //         recipient: user.email,
+  //         template: Purchase,
+  //         props: {
+  //           profileName: actor?.name as string,
+  //           postTitle: post.publishedRevision?.title as string,
+  //           postURL: `https://pnxl.me/${BigInt(post.permalink).toString(36)}`,
+  //         },
+  //       });
+  //     }
+  //   }
+  // }
 };

@@ -1,7 +1,7 @@
 import { error } from 'itty-router';
 import { createContext } from '../context';
 import { createRouter } from './router';
-import { email, healthz, identification, nolt, payment, shortlink, sso } from './routes';
+import { email, healthz, identification, nolt, notification, payment, shortlink, sso } from './routes';
 import type { RequestEvent } from '@sveltejs/kit';
 
 const router = createRouter();
@@ -12,6 +12,7 @@ router.all(
   email.handle,
   identification.handle,
   nolt.handle,
+  notification.handle,
   payment.handle,
   shortlink.handle,
   sso.handle,
