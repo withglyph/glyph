@@ -1084,6 +1084,7 @@ export const spaceSchema = defineSchema((builder) => {
       args: { input: t.arg({ type: UnfollowSpaceInput }) },
       resolve: async (query, _, { input }, { db, ...context }) => {
         const space = await db.space.findUniqueOrThrow({
+          include: { members: true },
           where: { id: input.spaceId },
         });
 
@@ -1091,6 +1092,20 @@ export const spaceSchema = defineSchema((builder) => {
           where: {
             userId: context.session.userId,
             spaceId: space.id,
+          },
+        });
+
+        const masquerade = await makeMasquerade({
+          db,
+          spaceId: space.id,
+          userId: context.session.userId,
+        });
+
+        await db.userNotification.deleteMany({
+          where: {
+            userId: { in: space.members.map((member) => member.userId) },
+            category: 'SUBSCRIBE',
+            actorId: masquerade.profileId,
           },
         });
 
