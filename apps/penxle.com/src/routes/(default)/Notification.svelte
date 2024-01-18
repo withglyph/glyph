@@ -1,11 +1,15 @@
 <script lang="ts">
   import { flip, offset, shift } from '@floating-ui/dom';
-  import * as R from 'radash';
+  import clsx from 'clsx';
+  import dayjs from 'dayjs';
+  import ky from 'ky';
+  // import * as R from 'radash';
   import { tick } from 'svelte';
+  import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
-  import { Button, Modal } from '$lib/components';
+  import { mixpanel } from '$lib/analytics';
+  import { Button, Image, Modal } from '$lib/components';
   import { FormField, Switch, TextInput } from '$lib/components/forms';
-  import Image from '$lib/components/Image.svelte';
   import { ThumbnailPicker } from '$lib/components/media';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
@@ -16,6 +20,7 @@
 
   let _user: DefaultLayout_Notification_user;
   export { _user as $user };
+
   let open = false;
   let invitationOpen = false;
   let invitationId: string;
@@ -27,6 +32,7 @@
     graphql(`
       fragment DefaultLayout_Notification_user on User {
         id
+
         profile {
           id
           name
@@ -37,17 +43,53 @@
           }
         }
 
-        receivedSpaceMemberInvitations {
+        notifications {
+          __typename
           id
-          createdAt
+          category
+          data
           state
+          createdAt
 
-          space {
+          actor {
             id
-            slug
             name
           }
+
+          ... on SubscribeNotification {
+            id
+
+            space {
+              id
+              name
+            }
+          }
+
+          ... on PurchaseNotification {
+            id
+
+            post {
+              id
+
+              publishedRevision {
+                id
+                title
+              }
+            }
+          }
         }
+
+        # receivedSpaceMemberInvitations {
+        #   id
+        #   createdAt
+        #   state
+
+        #   space {
+        #     id
+        #     slug
+        #     name
+        #   }
+        # }
       }
     `),
   );
@@ -75,19 +117,19 @@
     },
   });
 
-  const ignoreSpaceMemberInvitation = graphql(`
-    mutation DefaultLayout_Notification_IgnoreSpaceMemberInvitation_Mutation(
-      $input: IgnoreSpaceMemberInvitationInput!
-    ) {
-      ignoreSpaceMemberInvitation(input: $input) {
-        id
-      }
-    }
-  `);
+  // const ignoreSpaceMemberInvitation = graphql(`
+  //   mutation DefaultLayout_Notification_IgnoreSpaceMemberInvitation_Mutation(
+  //     $input: IgnoreSpaceMemberInvitationInput!
+  //   ) {
+  //     ignoreSpaceMemberInvitation(input: $input) {
+  //       id
+  //     }
+  //   }
+  // `);
 
   const [floatingRef, floatingContent, update] = createFloatingActions({
     strategy: 'absolute',
-    placement: 'bottom-start',
+    placement: 'bottom-end',
     middleware: [offset(4), flip(), shift({ padding: 8 })],
   });
 
@@ -96,18 +138,56 @@
     void tick().then(() => update());
   }
 
-  $: invitations = R.alphabetical($user.receivedSpaceMemberInvitations, (invitation) => invitation.createdAt, 'desc');
+  // $: invitations = R.alphabetical($user.receivedSpaceMemberInvitations, (invitation) => invitation.createdAt, 'desc');
 
   $: setInitialValues({ profileName: $user.profile.name, profileAvatarId: avatar.id, invitationId });
+
+  const markNotificationAsRead = graphql(`
+    mutation DefaultLayout_Notification_MarkNotificationAsRead_Mutation($input: MarkNotificationAsReadInput!) {
+      markNotificationAsRead(input: $input) {
+        id
+        state
+      }
+    }
+  `);
+
+  $: checkUnreadNotification = $user.notifications.find((notification) => notification.state === 'UNREAD');
+  $: unreadNotifications = $user.notifications.filter((notification) => notification.state === 'UNREAD');
+
+  const readAllNotifications = () => {
+    mixpanel.track('user:notification-state:read', { via: 'notification-popup' });
+    return Promise.all(unreadNotifications.map(({ id }) => markNotificationAsRead({ notificationId: id })));
+  };
+
+  const redirect = async (notification: (typeof $user.notifications)[0]) => {
+    if (notification.state === 'UNREAD') {
+      await markNotificationAsRead({ notificationId: notification.id });
+      mixpanel.track('user:notification-state:read', { via: 'notification-popup' });
+    }
+
+    const resp = await ky.get(`/api/notification/${notification.id}`);
+    await goto(resp.url);
+  };
 </script>
 
-<div class="flex center square-10 mx-3 rounded-full transition hover:bg-surface-primary">
+<div class="flex center mx-3 relative">
+  <a class="square-10 rounded-full square-10 flex center sm:hidden" href="/me/notifications">
+    <i class="i-px-bell-fill square-5 color-text-secondary" />
+  </a>
+
   <button
-    class="i-px-bell-fill square-6 color-text-secondary"
+    class="square-10 rounded-full flex center transition color-text-secondary hover:bg-surface-primary aria-pressed:(bg-yellow-10 color-yellow-50!) <sm:hidden"
+    aria-pressed={open}
     type="button"
     on:click={() => (open = true)}
     use:floatingRef
-  />
+  >
+    <i class="i-px-bell-fill square-5" />
+  </button>
+
+  {#if checkUnreadNotification}
+    <span class="square-2 rounded-full absolute top-1 right-1 bg-red-50" />
+  {/if}
 </div>
 
 {#if open}
@@ -120,9 +200,69 @@
     use:portal
   />
 
-  <div class="z-50 w-80 flex flex-col border rounded bg-white py-2 shadow" use:floatingContent use:portal>
-    <ul>
-      {#each invitations as invitation (invitation.space.id)}
+  <div
+    class="absolute z-50 w-full max-w-95 flex flex-col rounded-2xl bg-cardprimary p-4 shadow-[0_2px_10px_0_rgba(0,0,0,0.10)]"
+    use:floatingContent
+    use:portal
+  >
+    <div class="flex items-center justify-between">
+      <p class="subtitle-18-b">알림</p>
+      <a
+        class="rounded-full square-6.5 flex center transition hover:bg-primary"
+        href="/me/settings/notifications"
+        on:click={() => (open = false)}
+      >
+        <i class="i-lc-settings color-icon-secondary square-5" />
+      </a>
+    </div>
+
+    <hr class="w-full border-color-alphagray-10 my-4" />
+
+    <ul class="space-y-3 max-h-110 overflow-y-auto min-h-30">
+      {#each $user.notifications.slice(0, 20) as notification (notification.id)}
+        <li>
+          <button
+            class={clsx(
+              'border border-secondary rounded-2xl bg-primary p-4 w-full flex gap-3 items-start hover:bg-surface-primary transition',
+              notification.state === 'UNREAD' && 'border-yellow-30! bg-yellow-10! hover:bg-yellow-20!',
+            )}
+            type="button"
+            on:click={() => redirect(notification)}
+          >
+            <svg class="rounded-lg flex-none square-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <rect fill="#0c0a091a" height="24" width="24" />
+              <path
+                d="M7.36 3.86c2.3 5.04.42 10.01-.1 11.36-.08.23-.13.36-.11.36a15.7 15.7 0 0 1 9.45 4.6l-1.58-2.74L13 14.07a1.1 1.1 0 1 1 .53-.35l3.53 6.11c-1.4-4.68.63-10.12.63-10.12-6.15-.67-10.33-5.85-10.33-5.85Z"
+                fill="#FAFAF9"
+              />
+            </svg>
+
+            <div class="space-y-1">
+              <div>
+                {#if notification.__typename === 'SubscribeNotification'}
+                  <p class="body-15-b">{notification.space.name}에 새로운 구독자가 생겼어요!</p>
+                  <p class="body-14-m text-secondary">{notification.actor.name}님을 환영해요!</p>
+                {:else if notification.category === 'TREND'}
+                  <p class="body-15-b">포스트 조회수가 급상승하고 있어요!</p>
+                {:else if notification.__typename === 'PurchaseNotification'}
+                  <p class="body-15-b">{notification.post.publishedRevision?.title} 포스트를 구매했어요!</p>
+                {/if}
+              </div>
+              <time class="body-13-m text-disabled">{dayjs(notification.createdAt).formatAsDateTime()}</time>
+            </div>
+          </button>
+        </li>
+      {:else}
+        <p class="text-center text-secondary body-14-b">알림이 없어요</p>
+      {/each}
+
+      {#if $user.notifications.length > 20}
+        <Button class="body-15-b text-disabled" href="/me/notifications" size="sm" type="link" variant="text">
+          알림 더보기
+        </Button>
+      {/if}
+
+      <!-- {#each invitations as invitation (invitation.space.id)}
         <li class="flex gap-2">
           {invitation.space.name} 스페이스에 초대되었어요
           {#if invitation.state !== 'ACCEPTED'}
@@ -155,8 +295,14 @@
             {/if}
           {/if}
         </li>
-      {/each}
+      {/each} -->
     </ul>
+
+    {#if $user.notifications.length > 0}
+      <div class="flex justify-end mt-2">
+        <Button size="md" on:click={async () => await readAllNotifications()}>모두 읽음</Button>
+      </div>
+    {/if}
   </div>
 {/if}
 

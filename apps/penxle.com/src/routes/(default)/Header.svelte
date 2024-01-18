@@ -9,7 +9,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import GotoSpaceModal from './GotoSpaceModal.svelte';
-  // import Notification from './Notification.svelte';
+  import Notification from './Notification.svelte';
   import SearchBar from './SearchBar.svelte';
   import SideBar from './SideBar.svelte';
   import UserMenu from './UserMenu.svelte';
@@ -62,6 +62,9 @@
         <SearchBar class="flex-1 max-w-80 <sm:focus-within:max-w-full peer" />
 
         <div class="flex sm:hidden grow-0 peer-focus-within:hidden">
+          {#if $query.me}
+            <Notification $user={$query.me} />
+          {/if}
           <div class={clsx('flex center square-10')}>
             <button type="button" on:click={() => (sideBarOpen = true)}>
               <i class="i-lc-menu square-6" />
@@ -72,13 +75,13 @@
         <div class="flex items-center <sm:hidden relative">
           {#if $query.me}
             <a
-              class="relative flex items-center gap-2 rounded-lg py-1 pr-2 pl-1 m-r-2 transition hover:bg-surface-primary <sm:hidden"
+              class="relative flex items-center gap-2 rounded-lg py-1 pr-2 pl-1 transition hover:bg-surface-primary <sm:hidden"
               href="/editor"
             >
               <PenFancy class="square-8 mb-1" />
               <span class="subtitle-17-b text-gray-70">포스트 작성하기</span>
             </a>
-            <!-- <Notification $user={$query.me} /> -->
+            <Notification $user={$query.me} />
             <UserMenu $user={$query.me} />
           {:else}
             <Button href="/login" size="md" type="link">펜슬과 함께하기</Button>
