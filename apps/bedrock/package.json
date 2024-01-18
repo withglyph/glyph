@@ -7,12 +7,12 @@
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@pulumi/aws": "^6.18.0",
-    "@pulumi/kubernetes": "^4.5.6",
+    "@pulumi/kubernetes": "^4.7.0",
     "@pulumi/pulumi": "^3.101.1",
     "@pulumi/random": "^4.15.0",
     "@pulumi/tailscale": "^0.13.4",
     "@pulumi/tls": "^5.0.0",
-    "@types/node": "^20.11.0",
+    "@types/node": "^20.11.5",
     "fast-glob": "^3.3.2",
     "tsx": "^4.7.0"
   }
