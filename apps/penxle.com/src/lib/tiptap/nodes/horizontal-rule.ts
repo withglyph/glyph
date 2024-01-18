@@ -1,10 +1,6 @@
 import { mergeAttributes, Node } from '@tiptap/core';
 import { NodeSelection, TextSelection } from '@tiptap/pm/state';
 
-export type HorizontalRuleOptions = {
-  HTMLAttributes: Record<string, unknown>;
-};
-
 export type Kind = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 type Attributes = { kind: Kind };
 
@@ -20,7 +16,7 @@ declare module '@tiptap/core' {
   }
 }
 
-export const HorizontalRule = Node.create<HorizontalRuleOptions>({
+export const HorizontalRule = Node.create({
   name: 'horizontalRule',
 
   addOptions() {

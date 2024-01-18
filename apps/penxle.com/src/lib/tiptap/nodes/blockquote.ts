@@ -2,12 +2,6 @@ import { Node } from '@tiptap/core';
 
 type Kind = 1 | 2 | 3;
 
-export type BlockquoteOptions = {
-  kinds: Kind[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  HTMLAttributes: Record<string, any>;
-};
-
 declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Commands<ReturnType> {
@@ -21,7 +15,7 @@ declare module '@tiptap/core' {
 
 export const inputRegex = /^\s*>\s$/;
 
-export const Blockquote = Node.create<BlockquoteOptions>({
+export const Blockquote = Node.create({
   name: 'blockquote',
   content: 'prose+',
   group: 'block',
