@@ -7,7 +7,7 @@ import * as R from 'radash';
 import { match, P } from 'ts-pattern';
 import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
-import { redis } from '$lib/server/cache';
+import { redis, useCache } from '$lib/server/cache';
 import { s3 } from '$lib/server/external-api/aws';
 import { elasticSearch, indexName } from '$lib/server/search';
 import {
@@ -96,7 +96,11 @@ export const postSchema = defineSchema((builder) => {
       member: t.relation('member'),
       space: t.relation('space'),
       likeCount: t.relationCount('likes'),
-      viewCount: t.relationCount('views'),
+
+      viewCount: t.int({
+        resolve: (post, _, { db }) =>
+          useCache(`Post:${post.id}:viewCount`, () => db.postView.count({ where: { postId: post.id } }), 600),
+      }),
 
       visibility: t.expose('visibility', { type: PrismaEnums.PostVisibility }),
       discloseStats: t.exposeBoolean('discloseStats'),
@@ -1447,6 +1451,11 @@ export const postSchema = defineSchema((builder) => {
               deviceId: context.deviceId,
             },
           });
+
+          const viewCount = await redis.get(`Post:${input.postId}:viewCount`);
+          if (viewCount) {
+            await redis.incr(`Post:${input.postId}:viewCount`);
+          }
         }
 
         return db.post.findUniqueOrThrow({
