@@ -5,8 +5,7 @@
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Avatar, Button, Image, Tag, Tooltip } from '$lib/components';
-  // import Feed from '$lib/components/Feed.svelte';
+  import { Avatar, Button, Image, SpacePostCard, Tag, Tooltip } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import Modal from '$lib/components/Modal.svelte';
   import { EmojiPicker } from '$lib/emoji';
@@ -79,6 +78,11 @@
           discloseStats
           protectContent
           publishedAt
+
+          recommendedPosts {
+            id
+            ...SpaceFeed_post
+          }
 
           collection {
             id
@@ -824,13 +828,17 @@
       {/if}
     </div>
 
-    <!-- <div>
-      <p class="title-20-b mb-4">추천글</p>
+    {#if $query.post.recommendedPosts.length > 0}
+      <div>
+        <p class="title-20-b mb-4">추천글</p>
 
-      <div class="grow gap-4 mb-4 sm:columns-2">
-        <Feed class="mb-4 inline-block break-inside-avoid" $post />
+        <div class="grow gap-4 sm:columns-2 <sm:(bg-surface-primary -mx-4)">
+          {#each $query.post.recommendedPosts as post (post.id)}
+            <SpacePostCard class="mb-2 inline-block break-inside-avoid sm:mb-4" $post={post} />
+          {/each}
+        </div>
       </div>
-    </div> -->
+    {/if}
   </div>
 </article>
 
