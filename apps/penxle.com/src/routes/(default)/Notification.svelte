@@ -229,23 +229,20 @@
             type="button"
             on:click={() => redirect(notification)}
           >
-            <svg class="rounded-lg flex-none square-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <rect fill="#0c0a091a" height="24" width="24" />
-              <path
-                d="M7.36 3.86c2.3 5.04.42 10.01-.1 11.36-.08.23-.13.36-.11.36a15.7 15.7 0 0 1 9.45 4.6l-1.58-2.74L13 14.07a1.1 1.1 0 1 1 .53-.35l3.53 6.11c-1.4-4.68.63-10.12.63-10.12-6.15-.67-10.33-5.85-10.33-5.85Z"
-                fill="#FAFAF9"
-              />
-            </svg>
-
             <div class="space-y-1">
               <div>
                 {#if notification.__typename === 'SubscribeNotification'}
-                  <p class="body-15-b">{notification.space.name}에 새로운 구독자가 생겼어요!</p>
-                  <p class="body-14-m text-secondary">{notification.actor.name}님을 환영해요!</p>
+                  <p class="body-15-b">
+                    {notification.actor.name}님이 {notification.space.name.length > 10
+                      ? `${notification.space.name.slice(0, 10)}...`
+                      : notification.space.name} 스페이스를 구독했어요
+                  </p>
                 {:else if notification.category === 'TREND'}
-                  <p class="body-15-b">포스트 조회수가 급상승하고 있어요!</p>
+                  <p class="body-15-b">포스트 조회수가 급상승하고 있어요</p>
                 {:else if notification.__typename === 'PurchaseNotification'}
-                  <p class="body-15-b">{notification.post.publishedRevision?.title} 포스트를 구매했어요!</p>
+                  <p class="body-15-b">
+                    {notification.actor.name}님이 {notification.post.publishedRevision?.title} 포스트를 구매했어요
+                  </p>
                 {/if}
               </div>
               <time class="body-13-m text-disabled">{dayjs(notification.createdAt).formatAsDateTime()}</time>
