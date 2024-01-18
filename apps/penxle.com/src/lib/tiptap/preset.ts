@@ -5,11 +5,10 @@ import {
   History,
   LetterSpacing,
   LineHeight,
-  Link,
   Placeholder,
   TextAlign,
 } from '$lib/tiptap/extensions';
-import { Bold, Italic, Strike, TextColor, Underline } from '$lib/tiptap/marks';
+import { Bold, Italic, Link, Strike, TextColor, Underline } from '$lib/tiptap/marks';
 import { AccessBarrier, File, Image } from '$lib/tiptap/node-views';
 import {
   BulletList,
