@@ -398,8 +398,8 @@ export const postSchema = defineSchema((builder) => {
                     orderBy: { viewedAt: 'desc' },
                     take: 100,
                   })
-                  .then((views) => views.map(({ postId }) => postId))
-              : [],
+                  .then((views) => [...views.map(({ postId }) => postId), post.id])
+              : [post.id],
           ]);
 
           const searchResult = await elasticSearch.search({
@@ -424,7 +424,6 @@ export const postSchema = defineSchema((builder) => {
                     query: {
                       terms: { id: recentlyViewedPostIds },
                     },
-                    condition: recentlyViewedPostIds.length > 0,
                   },
                 ]),
               },
