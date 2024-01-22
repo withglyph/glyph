@@ -1,4 +1,4 @@
-import { Node } from '@tiptap/core';
+import { mergeAttributes, Node } from '@tiptap/core';
 
 declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -19,7 +19,7 @@ export const OrderedList = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['ol', HTMLAttributes, 0];
+    return ['ol', mergeAttributes(HTMLAttributes, { class: 'list-outside list-decimal ml-1.25rem' }), 0];
   },
 
   addCommands() {

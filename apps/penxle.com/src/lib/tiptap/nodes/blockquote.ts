@@ -1,13 +1,17 @@
 import { Node } from '@tiptap/core';
+import clsx from 'clsx';
+import { closest } from '$lib/utils';
+import { values } from '../values';
 
-type Kind = 1 | 2 | 3;
+const blockquotes = values.blockquote.map(({ value }) => value);
+type Blockquote = (typeof blockquotes)[number];
 
 declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Commands<ReturnType> {
-    blockQuote: {
-      setBlockquote: (kind: Kind) => ReturnType;
-      toggleBlockquote: (kind: Kind) => ReturnType;
+    blockquote: {
+      setBlockquote: (kind: Blockquote) => ReturnType;
+      toggleBlockquote: (kind: Blockquote) => ReturnType;
       unsetBlockquote: () => ReturnType;
     };
   }
@@ -17,20 +21,32 @@ export const inputRegex = /^\s*>\s$/;
 
 export const Blockquote = Node.create({
   name: 'blockquote',
-  content: 'prose+',
   group: 'block',
+  content: 'paragraph+',
   defining: true,
 
   addAttributes() {
     return {
       kind: {
-        default: 1,
-        parseHTML: (element) => element.dataset.kind,
-        renderHTML: (attributes: { kind: Kind }) => {
-          const align = attributes.kind === 3 ? { 'data-text-align': 'center' } : {};
+        isRequired: true,
+        parseHTML: (element) => {
+          if (element.dataset.kind === undefined) {
+            return 1;
+          }
 
-          return { 'data-kind': attributes.kind.toString(), ...align };
+          const blockquote = Number.parseInt(element.dataset.kind);
+          return closest(blockquote, blockquotes);
         },
+        renderHTML: ({ kind }) => ({
+          'class': clsx(
+            'border-text-primary pl-0.625rem my-0.34375rem',
+            kind === 1 && 'border-l-0.1875rem pr-6',
+            kind === 2 && 'pr-6 before:(block w-2rem content-[url(/blockquotes/carbon.svg)])',
+            kind === 3 &&
+              'text-center before:(block w-2rem mx-auto content-[url(/blockquotes/carbon.svg)]) after:(block w-2rem rotate-180 mx-auto content-[url(/blockquotes/carbon.svg)])',
+          ),
+          'data-kind': kind,
+        }),
       },
     };
   },
@@ -60,12 +76,6 @@ export const Blockquote = Node.create({
         ({ commands }) => {
           return commands.lift(this.name);
         },
-    };
-  },
-
-  addKeyboardShortcuts() {
-    return {
-      'Mod-Shift-b': () => this.editor.commands.toggleBlockquote(1),
     };
   },
 });

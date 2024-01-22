@@ -5,7 +5,7 @@
   import { Tooltip } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { TiptapBubbleMenu } from '$lib/tiptap/components';
-  import { alignments, colors, fonts, getToggledFormat, heading, heights, spacing, texts } from './formats.svelte';
+  import { values } from '$lib/tiptap/values';
   import type { Editor } from '@tiptap/core';
 
   export let editor: Editor;
@@ -25,9 +25,6 @@
   }
 
   const offset = 32;
-
-  $: currentNode = editor.state.selection.$head.parent;
-  $: toggledFormat = getToggledFormat(currentNode);
 </script>
 
 <TiptapBubbleMenu
@@ -39,29 +36,24 @@
     <Menu {offset} placement="bottom-start">
       <div slot="value" class="flex items-center gap-0.25rem">
         <div
-          class={clsx(
-            'rounded-full square-4.5',
-            editor.getAttributes('text-color')?.['data-text-color'],
-            'bg-[currentColor]',
-          )}
+          style:color={editor.getAttributes('font_color').fontColor ?? values.color[0].value}
+          class={clsx('rounded-full square-4.5', 'bg-[currentColor]')}
         />
         <i class="i-lc-chevron-down square-6 text-border-secondary" />
       </div>
 
-      {#each colors as color (color.value)}
+      {#each values.color as color (color.value)}
         <MenuItem
           class="flex"
           on:click={() => {
-            const commands = editor.chain().focus();
-
-            if (color.value) {
-              commands.setTextColor({ 'data-text-color': color.value }).run();
+            if (color.value === values.color[0].value) {
+              editor.chain().focus().unsetFontColor().run();
             } else {
-              commands.unsetTextColor().run();
+              editor.chain().focus().setFontColor(color.value).run();
             }
           }}
         >
-          <div class={clsx('inline-flex items-center body-14-m', color.display ?? color.value ?? 'text-primary')}>
+          <div style:color={color.value} class={clsx('inline-flex items-center body-14-m')}>
             <i class="bg-[currentColor] rounded-full square-4.5 m-r-0.5rem" />
             {color.label}
           </div>
@@ -70,55 +62,62 @@
     </Menu>
   </Tooltip>
 
-  <Tooltip class="flex center px-1 h-full hover:(bg-primary rounded-lg)" message="문단" placement="top">
-    <Menu {offset} placement="bottom-start">
-      <div slot="value" class="flex center body-14-m gap-1">
-        {toggledFormat.text.label}
-        <i class="i-lc-chevron-down square-6 text-border-secondary" />
-      </div>
+  <Tooltip message="글자 크기" placement="top">
+    <Menu class="flex items-center p-xs hover:(bg-primary rounded-lg)" {offset} placement="bottom-start">
+      <i slot="value" class="i-lc-a-large-small square-1rem" />
 
-      {#each texts as text (`${text.name}-${text.level}}`)}
+      {#each values.fontSize as fontSize (fontSize.value)}
         <MenuItem
-          class="flex items-center gap-2"
+          class="flex items-center gap-2 justify-between"
           on:click={() => {
-            const commands = editor.chain().focus();
-            if (text.name === heading) {
-              commands.setHeading(text.level).run();
+            if (fontSize.value === 16) {
+              editor.chain().focus().unsetFontSize().run();
             } else {
-              commands.setParagraph(text.level).run();
+              editor.chain().focus().setFontSize(fontSize.value).run();
             }
           }}
         >
-          <div class={clsx(text.class, 'text-primary')}>{text.label}</div>
-          {#if editor.isActive(text.name, { level: text.level })}
-            <i class="i-lc-check square-4 text-blue-50" />
-          {/if}
+          {fontSize.label}
+          <i
+            class={clsx(
+              'i-lc-check square-4 text-blue-50',
+              !editor.isActive({ fontSize: fontSize.value }) && 'invisible',
+            )}
+            aria-hidden={!editor.isActive({ fontSize: fontSize.value })}
+            aria-label="선택됨"
+          />
         </MenuItem>
       {/each}
     </Menu>
   </Tooltip>
 
   <Tooltip class="flex center px-1 h-full hover:(bg-primary rounded-lg)" message="폰트" placement="top">
-    <Menu class={clsx('body-14-m', toggledFormat.font.class)} {offset} placement="bottom-start">
+    <Menu class={clsx('body-14-m')} {offset} placement="bottom-start">
       <div slot="value" class="flex center gap-1">
-        {toggledFormat.font.label}
+        {editor.getAttributes('font_family').fontFamily ?? values.fontFamily[0].label}
         <i class="i-lc-chevron-down square-6 text-border-secondary" />
       </div>
 
-      {#each fonts as font (font.value)}
+      {#each values.fontFamily as font (font.value)}
         <MenuItem
-          class={clsx('flex items-center gap-2 justify-between', font.class)}
+          class={clsx('flex items-center gap-2 justify-between')}
           on:click={() => {
-            editor.chain().focus().setFontFamily(font.value).run();
+            if (font.value === values.fontFamily[0].value) {
+              editor.chain().focus().unsetFontFamily().run();
+            } else {
+              editor.chain().focus().setFontFamily(font.value).run();
+            }
           }}
         >
-          {font.label}
+          <span style:font-family={font.value}>
+            {font.label}
+          </span>
           <i
             class={clsx(
               'i-lc-check square-4 text-blue-50',
-              !editor.isActive({ 'font-family': font.value }) && 'invisible',
+              !editor.isActive({ fontFamily: font.value }) && 'invisible',
             )}
-            aria-hidden={!editor.isActive({ 'font-family': font.value })}
+            aria-hidden={!editor.isActive({ fontFamily: font.value })}
             aria-label="선택됨"
           />
         </MenuItem>
@@ -173,16 +172,23 @@
       {offset}
       placement="bottom-start"
     >
-      <i slot="value" class={clsx(toggledFormat.alignment.class, 'square-1rem')} />
+      <i
+        slot="value"
+        class={clsx(
+          values.textAlign.find(({ value }) => value === editor.getAttributes('text_align').textAlign) ??
+            values.textAlign[0].icon,
+          'square-1rem',
+        )}
+      />
 
-      {#each alignments as alignment (alignment.value)}
+      {#each values.textAlign as textAlign (textAlign.value)}
         <button
           class="flex center m-none! p-xs hover:(bg-primary) aria-pressed:text-blue-50"
-          aria-pressed={editor.isActive({ 'text-align': alignment.value })}
+          aria-pressed={editor.isActive({ text_align: textAlign.value })}
           type="button"
-          on:click={() => editor.chain().focus().setTextAlign(alignment.value).run()}
+          on:click={() => editor.chain().focus().setParagraphTextAlign(textAlign.value).run()}
         >
-          <i class={clsx(alignment.class, 'square-1rem')} />
+          <i class={clsx(textAlign.icon, 'square-1rem')} />
         </button>
       {/each}
     </Menu>
@@ -239,20 +245,20 @@
     <Menu class="flex items-center p-xs hover:(bg-primary rounded-lg)" {offset} placement="bottom-start">
       <i slot="value" class="i-lc-unfold-vertical square-1rem" />
 
-      {#each heights as height (height.value)}
+      {#each values.lineHeight as lineHeight (lineHeight.value)}
         <MenuItem
           class="flex items-center gap-2 justify-between"
           on:click={() => {
-            editor.chain().focus().setLineHeight(height.value).run();
+            editor.chain().focus().setParagraphLineHeight(lineHeight.value).run();
           }}
         >
-          {height.label}
+          {lineHeight.label}
           <i
             class={clsx(
               'i-lc-check square-4 text-blue-50',
-              !editor.isActive({ 'line-height': height.value }) && 'invisible',
+              !editor.isActive({ lineHeight: lineHeight.value }) && 'invisible',
             )}
-            aria-hidden={!editor.isActive({ 'line-height': height.value })}
+            aria-hidden={!editor.isActive({ lineHeight: lineHeight.value })}
             aria-label="선택됨"
           />
         </MenuItem>
@@ -264,20 +270,20 @@
     <Menu class="flex items-center p-xs body-14-m hover:(bg-primary rounded-lg)" {offset} placement="bottom-start">
       <i slot="value" class="i-lc-unfold-horizontal square-1rem" />
 
-      {#each spacing as space (space.value)}
+      {#each values.letterSpacing as letterSpacing (letterSpacing.value)}
         <MenuItem
           class="flex items-center gap-2 justify-between"
           on:click={() => {
-            editor.chain().focus().setLetterSpacing(space.value).run();
+            editor.chain().focus().setParagraphLetterSpacing(letterSpacing.value).run();
           }}
         >
-          {space.label}
+          {letterSpacing.label}
           <i
             class={clsx(
               'i-lc-check square-4 text-blue-50',
-              !editor.isActive({ 'letter-spacing': space.value }) && 'invisible',
+              !editor.isActive({ letterSpacing: letterSpacing.value }) && 'invisible',
             )}
-            aria-hidden={!editor.isActive({ 'letter-spacing': space.value })}
+            aria-hidden={!editor.isActive({ letterSpacing: letterSpacing.value })}
             aria-label="선택됨"
           />
         </MenuItem>

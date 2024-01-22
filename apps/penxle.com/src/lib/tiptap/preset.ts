@@ -1,21 +1,20 @@
 import { production } from '@penxle/lib/environment';
+import { DropCursor, GapCursor, History, Placeholder } from '$lib/tiptap/extensions';
 import {
-  DropCursor,
-  FontFamily,
-  GapCursor,
-  History,
-  LetterSpacing,
-  LineHeight,
-  Placeholder,
-  TextAlign,
-} from '$lib/tiptap/extensions';
-import { Bold, Italic, Link, Strike, TextColor, Underline } from '$lib/tiptap/marks';
+  LegacyFontFamily,
+  LegacyHeading,
+  LegacyHorizontalRule,
+  LegacyLetterSpacing,
+  LegacyLineHeight,
+  LegacyTextAlign,
+  LegacyTextColor,
+} from '$lib/tiptap/legacies';
+import { Bold, FontColor, FontFamily, FontSize, Italic, Link, Strike, Underline } from '$lib/tiptap/marks';
 import { AccessBarrier, Embed, File, Image } from '$lib/tiptap/node-views';
 import {
   BulletList,
   Document,
   HardBreak,
-  Heading,
   HorizontalRule,
   ListItem,
   OrderedList,
@@ -31,9 +30,10 @@ export const extensions = [
 
   // nodes
   HardBreak,
-  Heading,
+  LegacyHeading,
   Paragraph,
   HorizontalRule,
+  LegacyHorizontalRule,
   Blockquote,
   ListItem,
   BulletList,
@@ -41,9 +41,11 @@ export const extensions = [
 
   // marks
   Bold,
+  FontColor,
+  FontFamily,
+  FontSize,
   Italic,
   Strike,
-  TextColor,
   Underline,
   Link,
 
@@ -52,14 +54,17 @@ export const extensions = [
   GapCursor,
   History,
   Placeholder,
-  TextAlign,
-  FontFamily,
-  LineHeight,
-  LetterSpacing,
 
   // node views
   AccessBarrier,
   ...(production ? [] : [Embed]),
   File,
   Image,
+
+  // legacies
+  LegacyTextColor,
+  LegacyTextAlign,
+  LegacyFontFamily,
+  LegacyLineHeight,
+  LegacyLetterSpacing,
 ];
