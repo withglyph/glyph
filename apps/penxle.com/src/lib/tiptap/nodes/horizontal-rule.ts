@@ -1,92 +1,71 @@
-import { mergeAttributes, Node } from '@tiptap/core';
-import { NodeSelection, TextSelection } from '@tiptap/pm/state';
+import { Node } from '@tiptap/core';
+import clsx from 'clsx';
+import { closest } from '$lib/utils';
+import { values } from '../values';
 
-export type Kind = 1 | 2 | 3 | 4 | 5 | 6 | 7;
-type Attributes = { kind: Kind };
+const horizontalRules = values.horizontalRule.map(({ value }) => value);
+type HorizontalRule = (typeof horizontalRules)[number];
 
 declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Commands<ReturnType> {
     horizontalRule: {
-      /**
-       * Add a horizontal rule
-       */
-      setHorizontalRule: (kind: Kind) => ReturnType;
+      setHorizontalRule: (kind: HorizontalRule) => ReturnType;
     };
   }
 }
 
 export const HorizontalRule = Node.create({
-  name: 'horizontalRule',
-
-  addOptions() {
-    return {
-      HTMLAttributes: {},
-    };
-  },
+  name: 'horizontal_rule',
+  group: 'block',
 
   addAttributes() {
     return {
       kind: {
-        default: 1,
-        parseHTML: (element) => element.dataset.kind && Number.parseInt(element.dataset.kind, 10),
-        renderHTML: (attributes: Attributes) => ({ 'data-kind': attributes.kind.toString() }),
+        isRequired: true,
+        parseHTML: (element) => {
+          if (element.dataset.kind === undefined) {
+            return 1;
+          }
+
+          const horizontalRule = Number.parseInt(element.dataset.kind);
+          return closest(horizontalRule, horizontalRules);
+        },
+        renderHTML: ({ kind }) => ({
+          'class': clsx(
+            'bg-no-repeat border-none bg-center m-y-xs m-x-auto',
+            kind === 1 && 'h-0.0625rem bg-repeat!',
+            kind === 2 && 'border-1 border-solid border-current',
+            kind === 3 && 'border-1 border-solid border-current w-7.5rem',
+            kind === 4 && 'h-1.8rem bg-[url(/horizontal-rules/4.svg)]',
+            kind === 5 && 'h-0.875rem bg-[url(/horizontal-rules/5.svg)]',
+            kind === 6 && 'h-0.91027rem bg-[url(/horizontal-rules/6.svg)]',
+            kind === 7 && 'h-1.25rem bg-[url(/horizontal-rules/7.svg)]',
+          ),
+          'style':
+            kind === 1
+              ? 'background-size: 16px 1px; background-image: linear-gradient(to right, currentColor 50%, rgb(255 255 255 / 0) 50%);'
+              : undefined,
+          'data-kind': kind,
+        }),
       },
     };
   },
-
-  group: 'block',
 
   parseHTML() {
     return [{ tag: 'hr' }];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['hr', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)];
+    return ['hr', HTMLAttributes];
   },
 
   addCommands() {
     return {
       setHorizontalRule:
         (kind) =>
-        ({ chain }) => {
-          const currentChain = chain();
-
-          currentChain.insertContent({ type: this.name, attrs: { kind } });
-
-          return (
-            currentChain
-              // set cursor after horizontal rule
-              .command(({ tr, dispatch }) => {
-                if (dispatch) {
-                  const { $to } = tr.selection;
-                  const posAfter = $to.end();
-
-                  if ($to.nodeAfter) {
-                    if ($to.nodeAfter.isTextblock) {
-                      tr.setSelection(TextSelection.create(tr.doc, $to.pos + 1));
-                    } else if ($to.nodeAfter.isBlock) {
-                      tr.setSelection(NodeSelection.create(tr.doc, $to.pos));
-                    } else {
-                      tr.setSelection(TextSelection.create(tr.doc, $to.pos));
-                    }
-                  } else {
-                    // add node after horizontal rule if it’s the end of the document
-                    const node = $to.parent.type.contentMatch.defaultType?.create();
-
-                    if (node) {
-                      tr.insert(posAfter, node);
-                      tr.setSelection(TextSelection.create(tr.doc, posAfter + 1));
-                    }
-                  }
-
-                  tr.scrollIntoView();
-                }
-
-                return true;
-              })
-              .run()
-          );
+        ({ commands }) => {
+          return commands.insertContent({ type: this.name, attrs: { kind } });
         },
     };
   },

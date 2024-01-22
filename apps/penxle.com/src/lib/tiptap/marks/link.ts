@@ -1,4 +1,11 @@
-import { combineTransactionSteps, findChildrenInRange, getChangedRanges, getMarksBetween, Mark } from '@tiptap/core';
+import {
+  combineTransactionSteps,
+  findChildrenInRange,
+  getChangedRanges,
+  getMarksBetween,
+  Mark,
+  mergeAttributes,
+} from '@tiptap/core';
 import { Plugin } from '@tiptap/pm/state';
 import { find } from 'linkifyjs';
 
@@ -30,7 +37,15 @@ export const Link = Mark.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['a', { target: '_blank', rel: 'noreferrer nofollow', ...HTMLAttributes }, 0];
+    return [
+      'a',
+      mergeAttributes(HTMLAttributes, {
+        class: 'text-disabled underline',
+        target: '_blank',
+        rel: 'noreferrer nofollow',
+      }),
+      0,
+    ];
   },
 
   addCommands() {
