@@ -191,6 +191,7 @@
   <Tooltip message="링크" placement="top">
     <Menu
       class="flex items-center gap-2 body-14-m p-xs hover:(bg-primary rounded-lg)"
+      disabled={editor.isActive('link')}
       {offset}
       padding={false}
       bind:open={linkButtonOpen}
@@ -203,7 +204,7 @@
             if (!(event.currentTarget.url instanceof HTMLInputElement)) throw new Error('Fail to access input element');
 
             const href = event.currentTarget.url.value;
-            editor.chain().focus().setLink({ href }).run();
+            editor.chain().focus().setLink(href).run();
             // 메뉴 닫기
             event.currentTarget.click();
           }}

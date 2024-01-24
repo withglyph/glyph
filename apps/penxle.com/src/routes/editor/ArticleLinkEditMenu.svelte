@@ -78,7 +78,7 @@
     on:submit|preventDefault={() => {
       const command = editor.chain().focus();
       if (trimmedHref.length > 0) {
-        command.updateLink({ href: trimmedHref }).run();
+        command.updateLink(trimmedHref).run();
       } else {
         command.unsetLink().run();
       }
@@ -89,6 +89,7 @@
     <span class="invisible min-w-8.25rem max-w-20rem text-clip overflow-hidden whitespace-nowrap">{href}</span>
     <input
       class="absolute left-xs w-full max-w-20rem"
+      readonly={editor.isActive('link', { auto: true })}
       size={href?.length}
       type="url"
       on:mousedown|stopPropagation={() => (preventUpdate = true)}
