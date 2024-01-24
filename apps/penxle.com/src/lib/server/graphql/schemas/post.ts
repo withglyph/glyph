@@ -1086,6 +1086,25 @@ export const postSchema = defineSchema((builder) => {
             },
           });
           revisionId = lastRevision.id;
+
+          // dangling PostContent 삭제
+          await db.postRevisionContent.deleteMany({
+            where: {
+              id: lastRevision.freeContentId,
+              revisionsUsingThisAsFreeContent: { none: {} },
+              revisionsUsingThisAsPaidContent: { none: {} },
+            },
+          });
+
+          if (lastRevision.paidContentId) {
+            await db.postRevisionContent.deleteMany({
+              where: {
+                id: lastRevision.paidContentId,
+                revisionsUsingThisAsFreeContent: { none: {} },
+                revisionsUsingThisAsPaidContent: { none: {} },
+              },
+            });
+          }
         } else {
           await db.postRevision.create({
             data: {
