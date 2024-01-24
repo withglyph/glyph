@@ -9,7 +9,7 @@ import {
   TextAlign,
 } from '$lib/tiptap/extensions';
 import { Bold, Italic, Link, Strike, TextColor, Underline } from '$lib/tiptap/marks';
-import { AccessBarrier, File, Image } from '$lib/tiptap/node-views';
+import { AccessBarrier, Embed, File, Image } from '$lib/tiptap/node-views';
 import {
   BulletList,
   Document,
@@ -58,6 +58,7 @@ export const extensions = [
 
   // node views
   AccessBarrier,
+  Embed,
   File,
   Image,
 ];

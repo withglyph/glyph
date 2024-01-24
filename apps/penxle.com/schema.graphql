@@ -109,6 +109,16 @@ input DeleteUserInput {
   email: String!
 }
 
+type Embed {
+  description: String
+  html: String
+  id: ID!
+  thumbnailUrl: String
+  title: String
+  type: String!
+  url: String!
+}
+
 type File {
   id: ID!
   name: String!
@@ -234,6 +244,7 @@ type Mutation {
   unbookmarkPost(input: UnbookmarkPostInput!): Post!
   unfollowSpace(input: UnfollowSpaceInput!): Space!
   unfollowTag(input: UnfollowTagInput!): Tag!
+  unfurlEmbed(input: UnfurlEmbedInput!): Embed
   unlikePost(input: UnlikePostInput!): Post!
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
   unlockPasswordedPost(input: UnlockPasswordedPostInput!): Post!
@@ -690,6 +701,10 @@ input UnfollowSpaceInput {
 
 input UnfollowTagInput {
   tagId: ID!
+}
+
+input UnfurlEmbedInput {
+  url: String!
 }
 
 input UnlikePostInput {

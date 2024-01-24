@@ -41,6 +41,19 @@ model BookmarkGroupPost {
   @@map("bookmark_posts")
 }
 
+model Embed {
+  id           String   @id
+  type         String
+  url          String   @unique
+  title        String?
+  description  String?
+  thumbnailUrl String?  @map("thumbnail_url")
+  html         String?
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("embeds")
+}
+
 model File {
   id        String   @id
   userId    String   @map("user_id")

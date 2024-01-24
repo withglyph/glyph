@@ -12,9 +12,13 @@ const interpolateQuery = (query: string, params: unknown[]) => {
 };
 
 export const logging = (e: Prisma.QueryEvent) => {
-  logger.trace({
-    context: 'database',
-    query: interpolateQuery(e.query, JSON.parse(e.params)),
-    duration: e.duration,
-  });
+  try {
+    logger.trace({
+      context: 'database',
+      query: interpolateQuery(e.query, JSON.parse(e.params)),
+      duration: e.duration,
+    });
+  } catch {
+    // pass
+  }
 };

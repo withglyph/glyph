@@ -1,4 +1,4 @@
-.ProseMirror {
+.ProseMirror:not(:has(.tiptap-embedded)) {
   /*
    * nodes
   */

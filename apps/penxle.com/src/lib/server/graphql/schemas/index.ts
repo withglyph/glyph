@@ -3,6 +3,7 @@ import { addSchema, createBuilder } from '../builder';
 import { bookmarkSchema } from './bookmark';
 import { collectionSchema } from './collection';
 import { devSchema } from './dev';
+import { embedSchema } from './embed';
 import { enumsSchema } from './enums';
 import { feedSchema } from './feed';
 import { fileSchema } from './file';
@@ -23,6 +24,7 @@ addSchema(builder, [
   bookmarkSchema,
   collectionSchema,
   devSchema,
+  embedSchema,
   enumsSchema,
   feedSchema,
   fileSchema,

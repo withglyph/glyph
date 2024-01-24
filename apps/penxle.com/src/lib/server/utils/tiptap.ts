@@ -96,6 +96,35 @@ export const decorateContent = async (
         };
       }
 
+      if (node.type === 'embed') {
+        if (!node.attrs?.url) {
+          return node;
+        }
+
+        const embed = await db.embed.findUnique({
+          select: { type: true, title: true, description: true, thumbnailUrl: true, html: true },
+          where: { url: node.attrs.url },
+        });
+
+        if (!embed) {
+          return node;
+        }
+
+        return {
+          ...node,
+          attrs: {
+            ...node.attrs,
+            __data: {
+              type: embed.type,
+              title: embed.title,
+              description: embed.description,
+              thumbnailUrl: embed.thumbnailUrl,
+              html: embed.html,
+            },
+          },
+        };
+      }
+
       return node;
     }),
   );
