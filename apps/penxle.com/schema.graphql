@@ -901,6 +901,11 @@ type UserPersonalIdentity {
   name: String!
 }
 
+enum UserPersonalIdentityKind {
+  PASSPORT
+  PHONE
+}
+
 enum UserRole {
   ADMIN
   USER
