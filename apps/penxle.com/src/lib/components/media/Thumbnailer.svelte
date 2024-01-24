@@ -107,10 +107,10 @@
       bind:this={imgEl}
       style:transform
       class={clsx(
-        'max-w-none cursor-move touch-none',
+        'max-w-none cursor-move touch-none object-contain',
         naturalWidth > naturalHeight && 'h-full',
         naturalWidth < naturalHeight && 'w-full',
-        naturalWidth === naturalHeight && 'w-full h-full',
+        naturalWidth === naturalHeight && 'h-full',
         (!naturalWidth || !naturalHeight) && 'hidden',
       )}
       alt=""
