@@ -15,10 +15,15 @@
   export let bounds: ImageBounds | undefined = undefined;
   let draftBounds = bounds;
   let open = false;
+  export let keepBoundsWhenClosed = false;
 
   export let ratio: 'square' | 'rectangle' = 'square';
 
   $: if (!open) {
+    if (!keepBoundsWhenClosed) {
+      bounds = undefined;
+    }
+
     draftBounds = bounds;
   }
 

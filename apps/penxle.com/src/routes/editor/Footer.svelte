@@ -234,7 +234,7 @@
   </div>
 </footer>
 
-<ThumbnailPicker bind:this={thumbnailPicker} bind:bounds={thumbnailBounds}>
+<ThumbnailPicker bind:this={thumbnailPicker} keepBoundsWhenClosed bind:bounds={thumbnailBounds}>
   <svelte:fragment slot="title">대표 이미지 설정</svelte:fragment>
   <svelte:fragment slot="save">
     <button type="button" on:click={() => ($autoSaveCount += 1)}>자르기</button>
