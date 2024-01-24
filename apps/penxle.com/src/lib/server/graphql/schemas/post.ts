@@ -422,7 +422,7 @@ export const postSchema = defineSchema((builder) => {
                   },
                   {
                     query: {
-                      terms: { id: recentlyViewedPostIds },
+                      ids: { values: recentlyViewedPostIds },
                     },
                   },
                 ]),
