@@ -27,6 +27,7 @@ import {
   LoginUserSchema,
   UpdateUserEmailSchema,
   UpdateUserProfileSchema,
+  VerifyPassportIdentitySchema,
   VerifySettlementIdentitySchema,
 } from '$lib/validations';
 import { PrismaEnums } from '$prisma';
@@ -448,6 +449,17 @@ export const userSchema = defineSchema((builder) => {
       bankAccountNumber: t.string(),
     }),
     validate: { schema: VerifySettlementIdentitySchema },
+  });
+
+  const VerifyPassportIdentityInput = builder.inputType('VerifyPassportIdentityInput', {
+    fields: (t) => ({
+      name: t.string(),
+      birthday: t.string(),
+      passportNumber: t.string(),
+      issuedDate: t.string(),
+      expirationDate: t.string(),
+    }),
+    validate: { schema: VerifyPassportIdentitySchema },
   });
 
   /**
@@ -1024,6 +1036,48 @@ export const userSchema = defineSchema((builder) => {
         return await db.user.findUniqueOrThrow({
           ...query,
           where: { id: session.userId },
+        });
+      },
+    }),
+
+    verifyPassportIdentity: t.withAuth({ user: true }).prismaField({
+      type: 'User',
+      args: { input: t.arg({ type: VerifyPassportIdentityInput }) },
+      resolve: async (query, _, { input }, { db, ...context }) => {
+        const personalIdentity = await db.userPersonalIdentity.exists({
+          where: { userId: context.session.userId },
+        });
+
+        if (personalIdentity) {
+          throw new IntentionalError('이미 본인인증된 계정이에요');
+        }
+
+        const passportVerification = await coocon.verifyPassportNumber({
+          name: input.name,
+          birthday: input.birthday,
+          passportNumber: input.passportNumber,
+          issuedDate: input.issuedDate,
+          expirationDate: input.expirationDate,
+        });
+
+        if (!passportVerification.success) {
+          throw new IntentionalError('여권 인증에 실패했어요');
+        }
+
+        await db.userPersonalIdentity.create({
+          data: {
+            id: createId(),
+            userId: context.session.userId,
+            kind: 'PASSPORT',
+            name: input.name,
+            birthday: dayjs.kst(input.birthday, 'YYYYMMDD').utc().toDate(),
+            ci: input.passportNumber,
+          },
+        });
+
+        return db.user.findUniqueOrThrow({
+          ...query,
+          where: { id: context.session.userId },
         });
       },
     }),

@@ -655,14 +655,15 @@ model UserNotificationPreference {
 }
 
 model UserPersonalIdentity {
-  id          String   @id
-  userId      String   @unique @map("user_id")
-  user        User     @relation(fields: [userId], references: [id])
+  id          String                   @id
+  userId      String                   @unique @map("user_id")
+  user        User                     @relation(fields: [userId], references: [id])
+  kind        UserPersonalIdentityKind @default(PHONE)
   name        String
-  birthday    DateTime @db.Timestamptz
-  phoneNumber String   @map("phone_number")
+  birthday    DateTime                 @db.Timestamptz
+  phoneNumber String?                  @map("phone_number")
   ci          String
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdAt   DateTime                 @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("user_personal_identities")
 }
@@ -921,6 +922,13 @@ enum UserNotificationMethod {
   WEBSITE
 
   @@map("_user_notification_method")
+}
+
+enum UserPersonalIdentityKind {
+  PHONE
+  PASSPORT
+
+  @@map("_user_personal_identity_kind")
 }
 
 enum UserSingleSignOnProvider {

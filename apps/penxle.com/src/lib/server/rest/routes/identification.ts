@@ -40,6 +40,7 @@ identification.get('/identification/callback', async (_, { db, ...context }) => 
       data: {
         id: createId(),
         userId: context.session.userId,
+        kind: 'PHONE',
         name: resp.response.name,
         birthday: dayjs.kst(resp.response.birthday, 'YYYY-MM-DD').utc().toDate(),
         phoneNumber: resp.response.phone,

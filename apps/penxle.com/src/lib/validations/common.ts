@@ -7,3 +7,9 @@ export const email = z
   .email('잘못된 이메일 형식이에요');
 
 export const profileName = z.string().trim().min(1, '닉네임을 입력해주세요').max(20, '닉네임은 20자를 넘을 수 없어요');
+
+export const YYYYMMDD = z
+  .string()
+  .trim()
+  .regex(/^(\d{4})\.?(0?\d|1[0-2])\.?(0?[1-9]|[12]\d|3[01])$/)
+  .transform((v) => v.replaceAll('.', ''));

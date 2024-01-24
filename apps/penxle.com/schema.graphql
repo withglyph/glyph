@@ -263,6 +263,7 @@ type Mutation {
   updateUserMarketingConsent(input: UpdateUserMarketingConsentInput!): User!
   updateUserNotificationPreference(input: UpdateUserNotificationPreferenceInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
+  verifyPassportIdentity(input: VerifyPassportIdentityInput!): User!
   verifySettlementIdentity(input: VerifySettlementIdentityInput!): User!
 }
 
@@ -930,6 +931,14 @@ enum UserSingleSignOnProvider {
 enum UserState {
   ACTIVE
   INACTIVE
+}
+
+input VerifyPassportIdentityInput {
+  birthday: String!
+  expirationDate: String!
+  issuedDate: String!
+  name: String!
+  passportNumber: String!
 }
 
 input VerifySettlementIdentityInput {

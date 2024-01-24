@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { email, profileName as name } from './common';
+import { email, profileName as name, YYYYMMDD } from './common';
 
 export const LoginUserSchema = z.object({
   email,
@@ -35,14 +35,18 @@ export const VerifySettlementIdentitySchema = z.object({
     .string()
     .trim()
     .regex(/^\d{7}$/),
-  idCardIssuedDate: z
-    .string()
-    .trim()
-    .regex(/^(\d{4})\.?(0?\d|1[0-2])\.?(0?[1-9]|[12]\d|3[01])$/)
-    .transform((v) => v.replaceAll('.', '')),
+  idCardIssuedDate: YYYYMMDD,
   bankCode: z.string().regex(/^\d{3}$/),
   bankAccountNumber: z
     .string()
     .regex(/^(?:\d+-)*\d+$/)
     .transform((v) => v.replaceAll('-', '')),
+});
+
+export const VerifyPassportIdentitySchema = z.object({
+  name: z.string().trim(),
+  birthday: YYYYMMDD,
+  issuedDate: YYYYMMDD,
+  expirationDate: YYYYMMDD,
+  passportNumber: z.string().trim(),
 });
