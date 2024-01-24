@@ -13,9 +13,11 @@
   import UpdateEmailModal from './UpdateEmailModal.svelte';
   import UpdateProfileModal from './UpdateProfileModal.svelte';
   import UserSingleSignOn from './UserSingleSignOn.svelte';
+  import VerifyPassportIdentityModal from './VerifyPassportIdentityModal.svelte';
 
   let updateEmailOpen = false;
   let updateProfileOpen = false;
+  let verifyPassportIdentityOpen = false;
 
   $: query = graphql(`
     query MeSettingsPage_Query {
@@ -151,7 +153,12 @@
       </p>
     </div>
     {#if !$query.me.personalIdentity}
-      <Button color="secondary" size="md" on:click={handleUserIdentityVerification}>인증하기</Button>
+      <div class="flex gap-2">
+        <Button color="secondary" size="md" on:click={handleUserIdentityVerification}>SMS 인증</Button>
+        <Button color="tertiary" size="md" variant="outlined" on:click={() => (verifyPassportIdentityOpen = true)}>
+          여권 인증
+        </Button>
+      </div>
     {/if}
   </div>
 
@@ -208,3 +215,4 @@
 
 <UpdateEmailModal bind:open={updateEmailOpen} />
 <UpdateProfileModal $profile={$query.me.profile} bind:open={updateProfileOpen} />
+<VerifyPassportIdentityModal bind:open={verifyPassportIdentityOpen} />

@@ -44,9 +44,9 @@ export const VerifySettlementIdentitySchema = z.object({
 });
 
 export const VerifyPassportIdentitySchema = z.object({
-  name: z.string().trim(),
+  name: z.string().trim().min(1, '이름을 입력해주세요'),
   birthday: YYYYMMDD,
   issuedDate: YYYYMMDD,
   expirationDate: YYYYMMDD,
-  passportNumber: z.string().trim(),
+  passportNumber: z.string().trim().min(1, '여권 번호를 입력해주세요'),
 });
