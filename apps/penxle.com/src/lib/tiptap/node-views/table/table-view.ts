@@ -4,8 +4,8 @@ import type { NodeView } from '@tiptap/pm/view';
 
 export function updateColumns(
   node: ProseMirrorNode,
-  colgroup: Element,
-  table: Element,
+  colgroup: HTMLTableColElement,
+  table: HTMLTableElement,
   cellMinWidth: number,
   overrideCol?: number,
   overrideValue?: unknown,
@@ -15,7 +15,7 @@ export function updateColumns(
   let nextDOM = colgroup.firstChild;
   const row = node.firstChild;
 
-  for (let i = 0, col = 0; i < row.childCount; i += 1) {
+  for (let i = 0, col = 0; row && i < row.childCount; i += 1) {
     const { colspan, colwidth } = row.child(i).attrs;
 
     for (let j = 0; j < colspan; j += 1, col += 1) {
@@ -28,7 +28,7 @@ export function updateColumns(
         fixedWidth = false;
       }
 
-      if (nextDOM) {
+      if (nextDOM instanceof HTMLElement) {
         if (nextDOM.style.width !== cssWidth) {
           nextDOM.style.width = cssWidth;
         }
@@ -63,11 +63,11 @@ export class TableView implements NodeView {
 
   dom: Element;
 
-  table: Element;
+  table: HTMLTableElement;
 
-  colgroup: Element;
+  colgroup: HTMLTableColElement;
 
-  contentDOM: Element;
+  contentDOM: HTMLTableSectionElement;
 
   constructor(node: ProseMirrorNode, cellMinWidth: number) {
     this.node = node;

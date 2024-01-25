@@ -23,16 +23,15 @@ import { TableView } from './table-view';
 import { createColGroup } from './utilities/create-col-group';
 import { createTable } from './utilities/create-table';
 import { deleteTableWhenAllCellsSelected } from './utilities/delete-table-when-all-cells-selected';
-import type { ParentConfig } from '@tiptap/core';
 import type { DOMOutputSpec } from '@tiptap/pm/model';
-import type { NodeView } from '@tiptap/pm/view';
+import type { ColumnResizingOptions } from '@tiptap/pm/tables';
 
 export type TableOptions = {
   HTMLAttributes: Record<string, unknown>;
   resizable: boolean;
   handleWidth: number;
   cellMinWidth: number;
-  View: NodeView;
+  View: ColumnResizingOptions['View'];
   lastColumnResizable: boolean;
   allowTableNodeSelection: boolean;
 };
@@ -62,20 +61,6 @@ declare module '@tiptap/core' {
       setCellSelection: (position: { anchorCell: number; headCell?: number }) => ReturnType;
     };
   }
-
-  type NodeConfig<Options, Storage> = {
-    /**
-     * Table Role
-     */
-    tableRole?:
-      | string
-      | ((this: {
-          name: string;
-          options: Options;
-          storage: Storage;
-          parent: ParentConfig<NodeConfig<Options>>['tableRole'];
-        }) => string);
-  };
 }
 
 export const Table = Node.create<TableOptions>({
@@ -87,7 +72,6 @@ export const Table = Node.create<TableOptions>({
       resizable: true,
       handleWidth: 5,
       cellMinWidth: 25,
-      // TODO: fix
       View: TableView,
       lastColumnResizable: true,
       allowTableNodeSelection: false,
@@ -277,10 +261,8 @@ export const Table = Node.create<TableOptions>({
             columnResizing({
               handleWidth: this.options.handleWidth,
               cellMinWidth: this.options.cellMinWidth,
-              // @ts-expect-error (incorrect type)
               View: this.options.View,
               // TODO: PR for @types/prosemirror-tables
-              // @ts-expect-error (incorrect type)
               lastColumnResizable: this.options.lastColumnResizable,
             }),
           ]
