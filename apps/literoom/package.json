@@ -11,7 +11,7 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.490.0",
+    "@aws-sdk/client-s3": "^3.499.0",
     "aws-lambda-ric": "^3.1.0",
     "sharp": "^0.33.2"
   },
@@ -19,9 +19,9 @@
     "@penxle/lib": "workspace:^",
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
-    "@pulumi/aws": "^6.18.0",
+    "@pulumi/aws": "^6.18.2",
     "@pulumi/aws-native": "^0.94.0",
-    "@pulumi/pulumi": "^3.101.1",
+    "@pulumi/pulumi": "^3.103.0",
     "tsup": "^8.0.1",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3"

@@ -29,9 +29,9 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@pulumi/aws": "^6.18.0",
-    "@pulumi/kubernetes": "^4.7.0",
-    "@pulumi/pulumi": "^3.101.1",
+    "@pulumi/aws": "^6.18.2",
+    "@pulumi/kubernetes": "^4.7.1",
+    "@pulumi/pulumi": "^3.103.0",
     "fast-glob": "^3.3.2",
     "ts-pattern": "^5.0.6"
   },
