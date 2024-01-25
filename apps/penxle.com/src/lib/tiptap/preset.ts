@@ -1,4 +1,3 @@
-import { production } from '@penxle/lib/environment';
 import {
   DropCursor,
   FontFamily,
@@ -59,7 +58,7 @@ export const extensions = [
 
   // node views
   AccessBarrier,
-  ...(production ? [] : [Embed]),
+  Embed,
   File,
   Image,
 ];
