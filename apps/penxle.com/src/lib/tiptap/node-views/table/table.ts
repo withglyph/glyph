@@ -27,7 +27,6 @@ import type { DOMOutputSpec } from '@tiptap/pm/model';
 import type { ColumnResizingOptions } from '@tiptap/pm/tables';
 
 export type TableOptions = {
-  HTMLAttributes: Record<string, unknown>;
   resizable: boolean;
   handleWidth: number;
   cellMinWidth: number;
@@ -95,7 +94,8 @@ export const Table = Node.create<TableOptions>({
 
     const table: DOMOutputSpec = [
       'table',
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+      mergeAttributes(HTMLAttributes, {
+        class: 'w-full border-collapse m-none overflow-hidden table-fixed border-(1px solid black)',
         style: tableWidth ? `width: ${tableWidth}` : `minWidth: ${tableMinWidth}`,
       }),
       colgroup,

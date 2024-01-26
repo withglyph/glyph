@@ -44,6 +44,12 @@ export const TableCell = Node.create<TableCellOptions>({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['td', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+    return [
+      'td',
+      mergeAttributes(HTMLAttributes, {
+        class: 'relative vertical-top min-w-1em px-3 py-5 border-(1px solid block)',
+      }),
+      0,
+    ];
   },
 });
