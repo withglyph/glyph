@@ -1,0 +1,37 @@
+export const resolve = async (specifier, context, nextResolve) => {
+  if (specifier.startsWith('$')) {
+    return {
+      url: `virtual://${specifier}`,
+      shortCircuit: true,
+    };
+  }
+
+  return nextResolve(specifier, context);
+};
+
+export const load = (url, context, nextLoad) => {
+  if (url.startsWith('virtual://')) {
+    const mod = url.replace(/^virtual:\/\//, '');
+    let source;
+
+    switch (mod) {
+      case '$env/dynamic/public':
+      case '$env/dynamic/private':
+        source = `export const env = process.env;`;
+        break;
+      case '$app/environment':
+        source = `export const building = false; export const dev = true; export const browser = false;`;
+        break;
+      default:
+        throw new Error(`Unknown virtual module: ${mod}`);
+    }
+
+    return {
+      format: 'module',
+      source,
+      shortCircuit: true,
+    };
+  }
+
+  return nextLoad(url, context);
+};

@@ -15,6 +15,7 @@
     "lint:typecheck": "tsc",
     "migrate": "doppler run -- prisma migrate dev",
     "migrate:new": "doppler run -- prisma migrate dev --create-only",
+    "run:script": "doppler run -- tsx --import ./scripts/loader/register.js",
     "test": "playwright test"
   },
   "dependencies": {

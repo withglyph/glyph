@@ -24,7 +24,7 @@ export default {
     typescript: {
       config: (config) => ({
         ...config,
-        include: [...config.include, '../pulumi/**/*.ts'],
+        include: [...config.include, '../pulumi/**/*.ts', '../scripts/**/*.ts'],
       }),
     },
     version: { pollInterval: 60 * 1000 },
