@@ -158,6 +158,7 @@
       </span>
       파일 업로드
     </MenuItem>
+    <Button size="xs" on:click={() => editor.commands.insertTable()}>표 추가</Button>
   </Menu>
 </TiptapFloatingMenu>
 

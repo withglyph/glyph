@@ -8,3 +8,6 @@ export * from './list-item';
 export * from './ordered-list';
 export * from './paragraph';
 export * from './text';
+export * from '@tiptap/extension-table-cell';
+export * from '@tiptap/extension-table-header';
+export * from '@tiptap/extension-table-row';
