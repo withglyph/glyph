@@ -18,7 +18,7 @@ shortlink.get('/shortlink/:shortlink', async (request, { db }) => {
     where: { permalink },
   });
 
-  if (!post) {
+  if (!post || !post.space) {
     return status(307, { headers: { Location: `/404` } });
   }
 

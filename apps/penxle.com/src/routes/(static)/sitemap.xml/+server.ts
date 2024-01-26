@@ -30,7 +30,9 @@ export const GET: RequestHandler = async (event) => {
     return [
       ...predefined,
       ...spaces.map(({ slug }) => `/${slug}`),
-      ...posts.map(({ permalink, space: { slug } }) => `/${slug}/${permalink}`),
+      // Where의 posts.space 조건에 의해 space가 null일 수 없음
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      ...posts.map(({ permalink, space }) => `/${space!.slug}/${permalink}`),
     ];
   });
 
