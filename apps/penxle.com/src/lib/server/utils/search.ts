@@ -45,8 +45,8 @@ export const indexPost = async (post: IndexPostParam) => {
       post.publishedRevision.kind === 'PUBLISHED' &&
       post.visibility === 'PUBLIC' &&
       post.password === null &&
-      post.space.state === 'ACTIVE' &&
-      post.space.visibility === 'PUBLIC'
+      post.space?.state === 'ACTIVE' &&
+      post.space?.visibility === 'PUBLIC'
     ) {
       await elasticSearch.index({
         index: indexName('posts'),

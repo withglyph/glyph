@@ -204,6 +204,7 @@ input MarkNotificationAsReadInput {
 type Mutation {
   acceptSpaceMemberInvitation(input: AcceptSpaceMemberInvitationInput!): SpaceMemberInvitation!
   bookmarkPost(input: BookmarkPostInput!): Post!
+  createPost: Post!
   createPostReaction(input: CreatePostReactionInput!): Post!
   createSpace(input: CreateSpaceInput!): Space!
   createSpaceCollection(input: CreateSpaceCollectionInput!): SpaceCollection!
@@ -333,20 +334,24 @@ enum PointTransactionCause {
 }
 
 type Post {
+  ageRating: PostAgeRating!
   blurred: Boolean!
   bookmarkGroups: [BookmarkGroup!]!
   bookmarked: Boolean! @deprecated(reason: "Use bookmarkGroups instead")
+  category: PostCategory!
   collection: SpaceCollection
   contentFilters: [ContentFilterCategory!]!
   createdAt: DateTime!
   discloseStats: Boolean!
-  draftRevision(revisionId: ID): PostRevision!
+  draftRevision(revisionId: ID): PostRevision
+  externalSearchable: Boolean!
   hasPassword: Boolean!
   id: ID!
   likeCount: Int!
   liked: Boolean!
-  member: SpaceMember!
+  member: SpaceMember
   nextPost: Post
+  pairs: [PostPair!]!
   permalink: String!
   previousPost: Post
   protectContent: Boolean!
@@ -361,8 +366,9 @@ type Post {
   recommendedPosts: [Post!]!
   revisions: [PostRevision!]!
   shortlink: String!
-  space: Space!
+  space: Space
   state: PostState!
+  tags: [Tag!]!
   unlocked: Boolean!
   viewCount: Int!
   visibility: PostVisibility!
@@ -372,6 +378,13 @@ enum PostAgeRating {
   ALL
   R15
   R19
+}
+
+enum PostCategory {
+  FANFICTION
+  NONFICTION
+  ORIGINAL
+  OTHER
 }
 
 enum PostPair {
@@ -400,10 +413,12 @@ type PostRevision {
   id: ID!
   kind: PostRevisionKind!
   originalThumbnail: Image
+  paragraphIndent: Int!
+  paragraphSpacing: Int!
   previewText: String!
   price: Int
   subtitle: String
-  tags: [Tag!]!
+  tags: [Tag!]! @deprecated(reason: "Use Post.tags instead")
   thumbnailBounds: JSON
   title: String!
   updatedAt: DateTime!
@@ -465,14 +480,21 @@ type ProvisionedUser {
 }
 
 input PublishPostInput {
-  contentFilters: [ContentFilterCategory!]!
+  ageRating: PostAgeRating! = ALL
+  category: PostCategory!
+  collectionId: ID
   discloseStats: Boolean!
+  externalSearchable: Boolean! = true
+  pairs: [PostPair!]! = []
   password: String
   protectContent: Boolean = true
   receiveFeedback: Boolean!
   receivePatronage: Boolean!
   receiveTagContribution: Boolean!
   revisionId: ID!
+  spaceId: ID!
+  tags: [TagInput!]! = []
+  thumbnailId: ID
   visibility: PostVisibility!
 }
 
@@ -556,16 +578,13 @@ enum RevenueState {
 }
 
 input RevisePostInput {
-  autoIndent: Boolean! = true
   content: JSON!
   contentKind: PostRevisionContentKind! = ARTICLE
-  postId: ID
+  paragraphIndent: Int!
+  paragraphSpacing: Int!
+  postId: ID!
   revisionKind: PostRevisionKind!
-  spaceId: ID!
   subtitle: String
-  tags: [String!]! = []
-  thumbnailBounds: JSON
-  thumbnailId: ID
   title: String!
 }
 
@@ -702,6 +721,11 @@ type Tag {
   parents: [Tag!]!
   posts: [Post!]!
   wiki: TagWiki
+}
+
+input TagInput {
+  kind: PostTagKind!
+  name: String!
 }
 
 type TagWiki {

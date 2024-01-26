@@ -160,7 +160,7 @@ export const bookmarkSchema = defineSchema((builder) => {
           },
         });
 
-        if (!post) {
+        if (!post || !post.spaceId) {
           throw new NotFoundError();
         }
 

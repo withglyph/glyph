@@ -29,6 +29,10 @@ notification.get('/notification/:notificationId', async (request, { db }) => {
             where: { id: data.postId },
           });
 
+          if (!post.space) {
+            return `/404`;
+          }
+
           return `/${post.space.slug}/${post.permalink}`;
         })
         .with({ category: 'SUBSCRIBE' }, async ({ data }) => {

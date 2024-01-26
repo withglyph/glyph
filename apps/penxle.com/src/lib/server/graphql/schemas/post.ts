@@ -1,5 +1,3 @@
-import { webcrypto } from 'node:crypto';
-import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { init as cuid } from '@paralleldrive/cuid2';
 import { hash, verify } from 'argon2';
 import dayjs from 'dayjs';
@@ -8,30 +6,29 @@ import { match, P } from 'ts-pattern';
 import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { redis, useCache } from '$lib/server/cache';
-import { s3 } from '$lib/server/external-api/aws';
 import { elasticSearch, indexName } from '$lib/server/search';
 import {
   createNotification,
   createRevenue,
   deductUserPoint,
-  directUploadImage,
   getMutedSpaceIds,
   getMutedTagIds,
   getUserPoint,
   indexPost,
   isAdulthood,
+  isGte15,
   Loader,
   makeMasquerade,
   makeQueryContainers,
+  revisePostContent,
   searchResultToPrismaData,
 } from '$lib/server/utils';
 import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
 import { base36To10, createId, createTiptapDocument, createTiptapNode, validateTiptapDocument } from '$lib/utils';
-import { RevisePostInputSchema } from '$lib/validations/post';
+import { PublishPostInputSchema, RevisePostInputSchema } from '$lib/validations/post';
 import { PrismaEnums } from '$prisma';
 import { defineSchema } from '../builder';
 import type { JSONContent } from '@tiptap/core';
-import type { ImageBounds } from '$lib/utils';
 
 export const postSchema = defineSchema((builder) => {
   /**
@@ -85,8 +82,8 @@ export const postSchema = defineSchema((builder) => {
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
       publishedAt: t.expose('publishedAt', { type: 'DateTime', nullable: true }),
 
-      member: t.relation('member'),
-      space: t.relation('space'),
+      member: t.relation('member', { nullable: true }),
+      space: t.relation('space', { nullable: true }),
       likeCount: t.relationCount('likes'),
 
       viewCount: t.int({
@@ -95,6 +92,10 @@ export const postSchema = defineSchema((builder) => {
       }),
 
       visibility: t.expose('visibility', { type: PrismaEnums.PostVisibility }),
+      ageRating: t.expose('ageRating', { type: PrismaEnums.PostAgeRating }),
+      externalSearchable: t.exposeBoolean('externalSearchable'),
+      category: t.expose('category', { type: PrismaEnums.PostCategory }),
+      pairs: t.expose('pairs', { type: [PrismaEnums.PostPair] }),
       discloseStats: t.exposeBoolean('discloseStats'),
       receiveFeedback: t.exposeBoolean('receiveFeedback'),
       receivePatronage: t.exposeBoolean('receivePatronage'),
@@ -148,6 +149,7 @@ export const postSchema = defineSchema((builder) => {
 
       revisions: t.relation('revisions', {
         authScopes: { $granted: '$post:edit' },
+        grantScopes: ['$postRevision:edit'],
         query: {
           orderBy: { createdAt: 'desc' },
         },
@@ -156,6 +158,8 @@ export const postSchema = defineSchema((builder) => {
       draftRevision: t.prismaField({
         type: 'PostRevision',
         authScopes: { $granted: '$post:edit' },
+        grantScopes: ['$postRevision:edit'],
+        nullable: true,
         args: { revisionId: t.arg.id({ required: false }) },
         select: ({ revisionId }, __, nestedSelection) => ({
           revisions: nestedSelection({
@@ -301,6 +305,17 @@ export const postSchema = defineSchema((builder) => {
         },
       }),
 
+      tags: t.prismaField({
+        type: ['Tag'],
+        select: (_, __, nestedSelection) => ({
+          tags: {
+            include: { tag: nestedSelection() },
+          },
+        }),
+
+        resolve: (_, { tags }) => tags.map(({ tag }) => tag),
+      }),
+
       previousPost: t.prismaField({
         type: 'Post',
         nullable: true,
@@ -358,9 +373,9 @@ export const postSchema = defineSchema((builder) => {
           }
 
           const [postTagIds, mutedTagIds, mutedSpaceIds, recentlyViewedPostIds] = await Promise.all([
-            db.postRevisionTag
+            db.postTag
               .findMany({
-                where: { revisionId: post.publishedRevision.id },
+                where: { postId: post.id },
               })
               .then((tags) => tags.map(({ tagId }) => tagId)),
             getMutedTagIds({ db, userId: context.session?.userId }),
@@ -485,6 +500,9 @@ export const postSchema = defineSchema((builder) => {
       subtitle: t.exposeString('subtitle', { nullable: true }),
       price: t.exposeInt('price', { nullable: true }),
       autoIndent: t.exposeBoolean('autoIndent'),
+      paragraphIndent: t.exposeInt('paragraphIndent'),
+      paragraphSpacing: t.exposeInt('paragraphSpacing'),
+
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
       updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
 
@@ -509,6 +527,7 @@ export const postSchema = defineSchema((builder) => {
 
       tags: t.prismaField({
         type: ['Tag'],
+        deprecationReason: 'Use Post.tags instead',
         select: (_, __, nestedSelection) => ({
           tags: {
             include: { tag: nestedSelection() },
@@ -522,7 +541,7 @@ export const postSchema = defineSchema((builder) => {
 
       editableContent: t.field({
         type: 'JSON',
-        authScopes: { $granted: '$postRevision:view' },
+        authScopes: { $granted: '$postRevision:edit' },
         select: { freeContent: true, paidContent: true },
         resolve: async (revision, _, { db }) => {
           const freeContent = await decorateContent(db, revision.freeContent.data as JSONContent[]);
@@ -552,43 +571,11 @@ export const postSchema = defineSchema((builder) => {
             return createTiptapDocument(freeContent);
           }
 
+          // 유료분이 있음 - 유료분을 볼 수 있는 경우는?
+
           if (context.session) {
-            const purchase = await db.postPurchase.findUnique({
-              where: {
-                postId_userId: {
-                  postId: revision.post.id,
-                  userId: context.session.userId,
-                },
-              },
-            });
-
-            if (purchase) {
-              return createTiptapDocument([
-                ...freeContent,
-                createTiptapNode({
-                  type: 'access_barrier',
-                  attrs: {
-                    price: revision.price,
-                    __data: {
-                      purchasable: false,
-                      purchasedAt: dayjs(purchase.createdAt).toISOString(),
-                    },
-                  },
-                }),
-                ...paidContent,
-              ]);
-            }
-
-            const isMember = await db.spaceMember.existsUnique({
-              where: {
-                spaceId_userId: {
-                  spaceId: revision.post.spaceId,
-                  userId: context.session.userId,
-                },
-              },
-            });
-
-            if (isMember) {
+            if (context.session.userId === revision.post.userId) {
+              // 1. 글 작성자 자신
               return createTiptapDocument([
                 ...freeContent,
                 createTiptapNode({
@@ -600,6 +587,59 @@ export const postSchema = defineSchema((builder) => {
                 }),
                 ...paidContent,
               ]);
+            }
+
+            if (revision.post.spaceId) {
+              const purchase = await db.postPurchase.findUnique({
+                where: {
+                  postId_userId: {
+                    postId: revision.post.id,
+                    userId: context.session.userId,
+                  },
+                },
+              });
+
+              if (purchase) {
+                // 2. 구매한 경우
+                return createTiptapDocument([
+                  ...freeContent,
+                  createTiptapNode({
+                    type: 'access_barrier',
+                    attrs: {
+                      price: revision.price,
+                      __data: {
+                        purchasable: false,
+                        purchasedAt: dayjs(purchase.createdAt).toISOString(),
+                      },
+                    },
+                  }),
+                  ...paidContent,
+                ]);
+              }
+
+              const isMember = await db.spaceMember.existsUnique({
+                where: {
+                  spaceId_userId: {
+                    spaceId: revision.post.spaceId,
+                    userId: context.session.userId,
+                  },
+                },
+              });
+
+              if (isMember) {
+                // 3. 해당 스페이스의 멤버인 경우
+                return createTiptapDocument([
+                  ...freeContent,
+                  createTiptapNode({
+                    type: 'access_barrier',
+                    attrs: {
+                      price: revision.price,
+                      __data: { purchasable: false },
+                    },
+                  }),
+                  ...paidContent,
+                ]);
+              }
             }
           }
 
@@ -691,23 +731,26 @@ export const postSchema = defineSchema((builder) => {
    * * Inputs
    */
 
+  const TagInput = builder.inputType('TagInput', {
+    fields: (t) => ({
+      name: t.string(),
+      kind: t.field({ type: PrismaEnums.PostTagKind }),
+    }),
+  });
+
   const RevisePostInput = builder.inputType('RevisePostInput', {
     fields: (t) => ({
       revisionKind: t.field({ type: PrismaEnums.PostRevisionKind }),
       contentKind: t.field({ type: PrismaEnums.PostRevisionContentKind, defaultValue: 'ARTICLE' }),
 
-      postId: t.id({ required: false }),
-      spaceId: t.id(),
+      postId: t.id(),
 
       title: t.string(),
       subtitle: t.string({ required: false }),
       content: t.field({ type: 'JSON' }),
 
-      thumbnailId: t.id({ required: false }),
-      thumbnailBounds: t.field({ type: 'JSON', required: false }),
-      tags: t.stringList({ defaultValue: [] }),
-
-      autoIndent: t.boolean({ defaultValue: true }),
+      paragraphIndent: t.int(),
+      paragraphSpacing: t.int(),
     }),
     validate: { schema: RevisePostInputSchema },
   });
@@ -715,15 +758,23 @@ export const postSchema = defineSchema((builder) => {
   const PublishPostInput = builder.inputType('PublishPostInput', {
     fields: (t) => ({
       revisionId: t.id(),
+      spaceId: t.id(),
+      collectionId: t.id({ required: false }),
+      thumbnailId: t.id({ required: false }),
       visibility: t.field({ type: PrismaEnums.PostVisibility }),
+      password: t.string({ required: false }),
+      ageRating: t.field({ type: PrismaEnums.PostAgeRating, defaultValue: 'ALL' }),
+      externalSearchable: t.boolean({ defaultValue: true }),
       discloseStats: t.boolean(),
       receiveFeedback: t.boolean(),
       receivePatronage: t.boolean(),
       receiveTagContribution: t.boolean(),
       protectContent: t.boolean({ required: false, defaultValue: true }),
-      contentFilters: t.field({ type: [PrismaEnums.ContentFilterCategory] }),
-      password: t.string({ required: false }),
+      category: t.field({ type: PrismaEnums.PostCategory }),
+      pairs: t.field({ type: [PrismaEnums.PostPair], defaultValue: [] }),
+      tags: t.field({ type: [TagInput], defaultValue: [] }),
     }),
+    validate: { schema: PublishPostInputSchema },
   });
 
   const UpdatePostOptionsInput = builder.inputType('UpdatePostOptionsInput', {
@@ -813,7 +864,7 @@ export const postSchema = defineSchema((builder) => {
         }
 
         if (
-          post.space.visibility === 'PRIVATE' ||
+          post.space?.visibility === 'PRIVATE' ||
           post.state === 'DRAFT' ||
           post.visibility === 'SPACE' ||
           post.state === 'DELETED'
@@ -822,15 +873,17 @@ export const postSchema = defineSchema((builder) => {
             throw new PermissionDeniedError();
           }
 
-          const member = await db.spaceMember.findUnique({
-            where: {
-              spaceId_userId: {
-                spaceId: post.space.id,
-                userId: context.session.userId,
-              },
-              state: 'ACTIVE',
-            },
-          });
+          const member = post.space
+            ? await db.spaceMember.findUnique({
+                where: {
+                  spaceId_userId: {
+                    spaceId: post.space.id,
+                    userId: context.session.userId,
+                  },
+                  state: 'ACTIVE',
+                },
+              })
+            : null;
 
           if (
             !member ||
@@ -876,33 +929,74 @@ export const postSchema = defineSchema((builder) => {
    */
 
   builder.mutationFields((t) => ({
+    createPost: t.withAuth({ user: true }).prismaField({
+      type: 'Post',
+      resolve: async (query, _, __, { db, ...context }) => {
+        let permalink: string;
+
+        for (;;) {
+          permalink = base36To10(cuid({ length: 6 })());
+          const exists = await db.post.exists({ where: { permalink } });
+          if (!exists) {
+            break;
+          }
+        }
+
+        const emptyContent = await revisePostContent({ db, contentData: [createTiptapNode({ type: 'paragraph' })] });
+
+        return await db.post.create({
+          ...query,
+          data: {
+            id: createId(),
+            permalink,
+            userId: context.session.userId,
+            state: 'DRAFT',
+            visibility: 'PUBLIC',
+            discloseStats: true,
+            receiveFeedback: true,
+            receivePatronage: true,
+            receiveTagContribution: true,
+            protectContent: true,
+            contentFilters: [],
+            revisions: {
+              create: {
+                id: createId(),
+                userId: context.session.userId,
+                kind: 'AUTO_SAVE',
+                freeContentId: emptyContent.id,
+                contentKind: 'ARTICLE',
+                title: '',
+              },
+            },
+          },
+        });
+      },
+    }),
+
     revisePost: t.withAuth({ user: true }).prismaField({
       type: 'Post',
       args: { input: t.arg({ type: RevisePostInput }) },
       resolve: async (query, _, { input }, { db, ...context }) => {
-        const meAsMember = await db.spaceMember.findUniqueOrThrow({
-          where: {
-            spaceId_userId: {
-              spaceId: input.spaceId,
-              userId: context.session.userId,
-            },
-          },
+        const post = await db.post.findUniqueOrThrow({
+          where: { id: input.postId },
         });
 
-        if (input.postId) {
-          const post = await db.post.findUniqueOrThrow({
-            where: { id: input.postId },
-          });
-
-          if (
-            post.userId !== context.session.userId &&
-            (post.spaceId !== input.spaceId || meAsMember.role !== 'ADMIN')
-          ) {
+        if (post.userId !== context.session.userId) {
+          if (!post.spaceId) {
             throw new NotFoundError();
           }
 
-          if (post.state === 'PUBLISHED' && post.spaceId !== input.spaceId) {
-            throw new IntentionalError('이미 다른 스페이스에 게시된 글이에요.');
+          const meAsMember = await db.spaceMember.findUniqueOrThrow({
+            where: {
+              spaceId_userId: {
+                spaceId: post.spaceId,
+                userId: context.session.userId,
+              },
+            },
+          });
+
+          if (meAsMember.role !== 'ADMIN') {
+            throw new NotFoundError();
           }
         }
 
@@ -921,36 +1015,6 @@ export const postSchema = defineSchema((builder) => {
 
         document = await sanitizeContent(document);
 
-        let croppedImageId: string | undefined;
-        if (input.thumbnailId) {
-          if (input.thumbnailBounds) {
-            const originalImageData = await db.image.findUniqueOrThrow({
-              where: {
-                id: input.thumbnailId,
-                userId: context.session.userId,
-              },
-            });
-
-            const originalImageRequest = await s3.send(
-              new GetObjectCommand({
-                Bucket: 'penxle-data',
-                Key: originalImageData.path,
-              }),
-            );
-
-            croppedImageId = await directUploadImage({
-              db,
-              userId: context.session.userId,
-              name: originalImageData.name,
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              source: await originalImageRequest.Body!.transformToByteArray(),
-              bounds: input.thumbnailBounds as ImageBounds,
-            });
-          } else {
-            croppedImageId = lastRevision?.croppedThumbnailId ?? undefined;
-          }
-        }
-
         const accessBarrierPosition = document.findIndex((node) => node.type === 'access_barrier');
         const accessBarrier =
           accessBarrierPosition === -1 || accessBarrierPosition === document.length - 1
@@ -962,54 +1026,9 @@ export const postSchema = defineSchema((builder) => {
             ? undefined
             : document.slice(accessBarrierPosition + 1);
 
-        const freeContentHash = Buffer.from(
-          await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(freeContentData))),
-        ).toString('hex');
-        const paidContentHash = paidContentData
-          ? Buffer.from(
-              await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(paidContentData))),
-            ).toString('hex')
-          : undefined;
-
-        const freeContent = await db.postRevisionContent.upsert({
-          where: { hash: freeContentHash },
-          create: {
-            id: createId(),
-            hash: freeContentHash,
-            data: freeContentData,
-          },
-          update: {},
-        });
-
-        const paidContent = paidContentData
-          ? await db.postRevisionContent.upsert({
-              where: { hash: paidContentHash },
-              create: {
-                id: createId(),
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                hash: paidContentHash!,
-                data: paidContentData,
-              },
-              update: {},
-            })
-          : undefined;
-
+        const freeContent = await revisePostContent({ db, contentData: freeContentData });
+        const paidContent = paidContentData ? await revisePostContent({ db, contentData: paidContentData }) : null;
         const price: number | null = accessBarrier?.attrs?.price ?? null;
-
-        const postId = input.postId ?? createId();
-
-        const postTags = await Promise.all(
-          (input.tags ?? []).map((tagName) =>
-            db.tag.upsert({
-              where: { name: tagName },
-              create: {
-                id: createId(),
-                name: tagName,
-              },
-              update: {},
-            }),
-          ),
-        );
 
         const revisionData = {
           userId: context.session.userId,
@@ -1019,52 +1038,13 @@ export const postSchema = defineSchema((builder) => {
           subtitle: input.subtitle?.length ? input.subtitle : undefined,
           freeContentId: freeContent.id,
           paidContentId: paidContent?.id ?? null,
-          tags: {
-            createMany: {
-              data: postTags.map((tag) => ({
-                id: createId(),
-                tagId: tag.id,
-              })),
-            },
-          },
           price,
-          originalThumbnailId: input.thumbnailId,
-          croppedThumbnailId: croppedImageId,
-          thumbnailBounds: input.thumbnailBounds,
-          autoIndent: input.autoIndent,
+          paragraphIndent: input.paragraphIndent,
+          paragraphSpacing: input.paragraphSpacing,
         };
 
         /// 여기까지 데이터 가공 단계
-        /// 여기부터 포스트 생성/수정 단계
-
-        // 1. 일단 포스트가 없었다면 생성
-        if (input.postId) {
-          await db.post.update({
-            where: { id: input.postId },
-            data: {
-              spaceId: input.spaceId,
-              memberId: meAsMember.id,
-            },
-          });
-        } else {
-          await db.post.create({
-            data: {
-              id: postId,
-              permalink: base36To10(cuid({ length: 6 })()),
-              spaceId: input.spaceId,
-              memberId: meAsMember.id,
-              userId: context.session.userId,
-              state: 'DRAFT',
-              visibility: 'PUBLIC',
-              discloseStats: true,
-              receiveFeedback: true,
-              receivePatronage: true,
-              receiveTagContribution: true,
-              protectContent: true,
-              contentFilters: [],
-            },
-          });
-        }
+        /// 여기부터 포스트 수정 단계
 
         // 2. 리비전 생성/재사용
 
@@ -1079,10 +1059,6 @@ export const postSchema = defineSchema((builder) => {
             where: { id: lastRevision.id },
             data: {
               ...revisionData,
-              tags: {
-                deleteMany: {},
-                createMany: revisionData.tags.createMany,
-              },
               updatedAt: new Date(),
             },
           });
@@ -1110,7 +1086,7 @@ export const postSchema = defineSchema((builder) => {
           await db.postRevision.create({
             data: {
               id: revisionId,
-              postId,
+              postId: input.postId,
               ...revisionData,
             },
           });
@@ -1120,7 +1096,7 @@ export const postSchema = defineSchema((builder) => {
 
         return await db.post.findUniqueOrThrow({
           ...query,
-          where: { id: postId },
+          where: { id: input.postId },
         });
       },
     }),
@@ -1140,29 +1116,35 @@ export const postSchema = defineSchema((builder) => {
           data: { kind: 'PUBLISHED' },
         });
 
-        if (revision.userId !== context.session.userId) {
-          const meAsMember = await db.spaceMember.findUniqueOrThrow({
-            where: {
-              spaceId_userId: {
-                spaceId: revision.post.id,
-                userId: context.session.userId,
-              },
-              state: 'ACTIVE',
-            },
-          });
-
-          if (meAsMember.role !== 'ADMIN') {
-            throw new PermissionDeniedError();
-          }
+        if (revision.post.spaceId && revision.post.spaceId !== input.spaceId) {
+          throw new IntentionalError('발행된 포스트의 스페이스를 변경할 수 없어요');
         }
 
-        if (input.contentFilters.includes('ADULT')) {
+        const meAsMember = await db.spaceMember.findUnique({
+          where: {
+            spaceId_userId: {
+              spaceId: input.spaceId,
+              userId: context.session.userId,
+            },
+            state: 'ACTIVE',
+          },
+        });
+
+        if (!meAsMember || (revision.userId !== context.session.userId && meAsMember.role !== 'ADMIN')) {
+          throw new PermissionDeniedError();
+        }
+
+        if (input.ageRating !== 'ALL') {
           const identity = await db.userPersonalIdentity.findUnique({
             where: { userId: context.session.userId },
           });
 
-          if (!identity || !isAdulthood(identity.birthday)) {
-            throw new IntentionalError('성인인증을 하지 않으면 성인 컨텐츠를 게시할 수 없어요');
+          if (
+            !identity ||
+            (input.ageRating === 'R19' && !isAdulthood(identity.birthday)) ||
+            (input.ageRating === 'R15' && !isGte15(identity.birthday))
+          ) {
+            throw new IntentionalError('본인인증을 하지 않으면 연령 제한 컨텐츠를 게시할 수 없어요');
           }
         }
 
@@ -1189,6 +1171,19 @@ export const postSchema = defineSchema((builder) => {
           await redis.del(`Post:${revision.post.id}:passwordUnlock`);
         }
 
+        const postTags = await Promise.all(
+          (input.tags ?? []).map((tag) =>
+            db.tag.upsert({
+              where: { name: tag.name },
+              create: {
+                id: createId(),
+                name: tag.name,
+              },
+              update: {},
+            }),
+          ),
+        );
+
         await db.postRevision.updateMany({
           where: {
             postId: revision.post.id,
@@ -1206,22 +1201,75 @@ export const postSchema = defineSchema((builder) => {
               },
             },
             space: true,
+            collectionPost: true,
           },
           where: { id: revision.post.id },
           data: {
+            spaceId: input.spaceId,
+            memberId: meAsMember.id,
             state: 'PUBLISHED',
             publishedAt: revision.post.publishedAt ?? new Date(),
             publishedRevisionId: revision.id,
             visibility: input.visibility,
+            ageRating: input.ageRating,
+            externalSearchable: input.externalSearchable,
             discloseStats: input.discloseStats,
             receiveFeedback: input.receiveFeedback,
             receivePatronage: input.receivePatronage,
             receiveTagContribution: input.receiveTagContribution,
             protectContent: input.protectContent ?? true,
-            contentFilters: input.contentFilters,
             password,
+            category: input.category,
+            pairs: input.pairs,
+            tags: {
+              deleteMany: {},
+              createMany: {
+                data: input.tags.map(({ name, kind }) => ({
+                  id: createId(),
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  tagId: postTags.find((tag) => tag.name === name)!.id,
+                  kind,
+                })),
+              },
+            },
           },
         });
+
+        if (input.collectionId && post.collectionPost?.collectionId !== input.collectionId) {
+          if (post.collectionPost) {
+            await db.spaceCollectionPost.delete({
+              where: {
+                postId: post.id,
+              },
+            });
+          }
+
+          const targetCollectionAggregation = await db.spaceCollectionPost.aggregate({
+            where: {
+              collectionId: input.collectionId,
+            },
+            _max: {
+              order: true,
+            },
+          });
+
+          const order = targetCollectionAggregation._max.order ?? -1;
+
+          await db.spaceCollectionPost.create({
+            data: {
+              id: createId(),
+              postId: post.id,
+              collectionId: input.collectionId,
+              order: order + 1,
+            },
+          });
+        } else {
+          await db.spaceCollectionPost.deleteMany({
+            where: {
+              postId: post.id,
+            },
+          });
+        }
 
         await indexPost(post);
         return db.post.findUniqueOrThrow({
@@ -1279,16 +1327,18 @@ export const postSchema = defineSchema((builder) => {
         });
 
         if (post.userId !== context.session.userId) {
-          const meAsMember = await db.spaceMember.findUniqueOrThrow({
-            where: {
-              spaceId_userId: {
-                spaceId: post.spaceId,
-                userId: context.session.userId,
-              },
-            },
-          });
+          const meAsMember = post.spaceId
+            ? await db.spaceMember.findUnique({
+                where: {
+                  spaceId_userId: {
+                    spaceId: post.spaceId,
+                    userId: context.session.userId,
+                  },
+                },
+              })
+            : null;
 
-          if (meAsMember.role !== 'ADMIN') {
+          if (meAsMember?.role !== 'ADMIN') {
             throw new PermissionDeniedError();
           }
         }
@@ -1363,6 +1413,10 @@ export const postSchema = defineSchema((builder) => {
           where: { id: input.postId },
         });
 
+        if (!post.space || !post.publishedRevision?.price) {
+          throw new IntentionalError('구매할 수 없는 포스트예요');
+        }
+
         const isMember = await db.spaceMember.existsUnique({
           where: {
             spaceId_userId: {
@@ -1372,8 +1426,8 @@ export const postSchema = defineSchema((builder) => {
           },
         });
 
-        if (isMember || !post.publishedRevision?.price) {
-          throw new IntentionalError('구매할 수 없는 포스트예요');
+        if (isMember) {
+          throw new IntentionalError('자신이 속한 스페이스의 포스트는 구매할 수 없어요');
         }
 
         const purchased = await db.postPurchase.existsUnique({
