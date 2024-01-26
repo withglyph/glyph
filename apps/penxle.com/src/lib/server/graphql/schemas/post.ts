@@ -1020,10 +1020,7 @@ export const postSchema = defineSchema((builder) => {
             ? undefined
             : document[accessBarrierPosition];
         const freeContentData = accessBarrierPosition === -1 ? document : document.slice(0, accessBarrierPosition);
-        const paidContentData =
-          accessBarrierPosition === -1 || accessBarrierPosition === document.length - 1
-            ? undefined
-            : document.slice(accessBarrierPosition + 1);
+        const paidContentData = accessBarrierPosition === -1 ? undefined : document.slice(accessBarrierPosition + 1);
 
         const freeContent = await revisePostContent({ db, contentData: freeContentData });
         const paidContent = paidContentData ? await revisePostContent({ db, contentData: paidContentData }) : null;
