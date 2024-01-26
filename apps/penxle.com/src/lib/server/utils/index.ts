@@ -4,6 +4,7 @@ export * from './age';
 export * from './avatar';
 export * from './icon';
 export * from './image';
+export * as Loader from './loader';
 export * from './masquerade';
 export * from './mute';
 export * from './notification';

@@ -20,6 +20,7 @@ import {
   getUserPoint,
   indexPost,
   isAdulthood,
+  Loader,
   makeMasquerade,
   makeQueryContainers,
   searchResultToPrismaData,
@@ -44,17 +45,8 @@ export const postSchema = defineSchema((builder) => {
         return ['$post:view', '$post:edit'];
       }
 
-      const member = context.session
-        ? await db.spaceMember.findUnique({
-            where: {
-              spaceId_userId: {
-                spaceId: post.spaceId,
-                userId: context.session.userId,
-              },
-              state: 'ACTIVE',
-            },
-          })
-        : null;
+      const spaceMemberLoader = Loader.spaceMember({ db, context });
+      const member = await spaceMemberLoader.load(post.spaceId);
 
       if (member?.role === 'ADMIN') {
         return ['$post:view', '$post:edit'];
@@ -317,17 +309,8 @@ export const postSchema = defineSchema((builder) => {
             return null;
           }
 
-          const meAsMember = context.session
-            ? await db.spaceMember.findUnique({
-                where: {
-                  spaceId_userId: {
-                    spaceId: post.spaceId,
-                    userId: context.session.userId,
-                  },
-                  state: 'ACTIVE',
-                },
-              })
-            : null;
+          const spaceMemberLoader = Loader.spaceMember({ db, context });
+          const meAsMember = await spaceMemberLoader.load(post.spaceId);
 
           return db.post.findFirst({
             ...query,
@@ -350,17 +333,8 @@ export const postSchema = defineSchema((builder) => {
             return null;
           }
 
-          const meAsMember = context.session
-            ? await db.spaceMember.findUnique({
-                where: {
-                  spaceId_userId: {
-                    spaceId: post.spaceId,
-                    userId: context.session.userId,
-                  },
-                  state: 'ACTIVE',
-                },
-              })
-            : null;
+          const spaceMemberLoader = Loader.spaceMember({ db, context });
+          const meAsMember = await spaceMemberLoader.load(post.spaceId);
 
           return await db.post.findFirst({
             ...query,

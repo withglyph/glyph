@@ -7,6 +7,7 @@ import {
   directUploadImage,
   indexPostByQuery,
   indexSpace,
+  Loader,
   makeMasquerade,
 } from '$lib/server/utils';
 import { createId } from '$lib/utils';
@@ -30,15 +31,8 @@ export const spaceSchema = defineSchema((builder) => {
         return [];
       }
 
-      const member = await db.spaceMember.findUnique({
-        where: {
-          spaceId_userId: {
-            spaceId: space.id,
-            userId: context.session.userId,
-          },
-          state: 'ACTIVE',
-        },
-      });
+      const spaceMemberLoader = Loader.spaceMember({ db, context });
+      const member = await spaceMemberLoader.load(space.id);
 
       if (!member) {
         return [];
@@ -206,15 +200,8 @@ export const spaceSchema = defineSchema((builder) => {
         return [];
       }
 
-      const meAsMember = await db.spaceMember.findUnique({
-        where: {
-          spaceId_userId: {
-            spaceId: member.spaceId,
-            userId: context.session.userId,
-          },
-          state: 'ACTIVE',
-        },
-      });
+      const spaceMemberLoader = Loader.spaceMember({ db, context });
+      const meAsMember = await spaceMemberLoader.load(member.spaceId);
 
       if (!meAsMember) {
         return [];

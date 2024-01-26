@@ -1,3 +1,4 @@
+import DataLoader from 'dataloader';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { redis } from './cache';
@@ -10,6 +11,7 @@ import type { InteractiveTransactionClient } from './database';
 
 type InternalContext = {
   $commitHooks: (() => MaybePromise<void>)[];
+  $dataLoaders: Record<string, DataLoader<unknown, unknown>>;
 };
 
 type DefaultContext = {
@@ -23,6 +25,11 @@ type DefaultContext = {
   $commit: () => Promise<void>;
   $rollback: () => Promise<void>;
   onCommit: (fn: () => MaybePromise<void>) => void;
+
+  dataLoader: <idType, dataType>(
+    name: string,
+    loader: DataLoader.BatchLoadFn<idType, dataType>,
+  ) => DataLoader<idType, dataType>;
 };
 
 export type UserContext = {
@@ -61,6 +68,13 @@ export const createContext = async (event: RequestEvent): Promise<Context> => {
     },
     $rollback: async () => {
       await db.$rollback();
+    },
+    $dataLoaders: {},
+    dataLoader: <idType, dataType>(name: string, loader: DataLoader.BatchLoadFn<idType, dataType>) => {
+      if (!ctx.$dataLoaders[name]) {
+        ctx.$dataLoaders[name] = new DataLoader(loader);
+      }
+      return ctx.$dataLoaders[name] as DataLoader<idType, dataType>;
     },
   };
 

@@ -355,6 +355,9 @@ importers:
       clsx:
         specifier: ^2.1.0
         version: 2.1.0
+      dataloader:
+        specifier: ^2.2.2
+        version: 2.2.2
       dayjs:
         specifier: ^1.11.10
         version: 1.11.10
