@@ -10,7 +10,7 @@ import {
   LegacyTextColor,
 } from '$lib/tiptap/legacies';
 import { Bold, FontColor, FontFamily, FontSize, Italic, Link, Strike, Underline } from '$lib/tiptap/marks';
-import { AccessBarrier, Embed, File, Image } from '$lib/tiptap/node-views';
+import { AccessBarrier, Embed, File, Image, Table } from '$lib/tiptap/node-views';
 import {
   BulletList,
   Document,
@@ -19,6 +19,9 @@ import {
   ListItem,
   OrderedList,
   Paragraph,
+  TableCell,
+  TableHeader,
+  TableRow,
   Text,
 } from '$lib/tiptap/nodes';
 import { Blockquote } from './nodes/blockquote';
@@ -38,6 +41,9 @@ export const extensions = [
   ListItem,
   BulletList,
   OrderedList,
+  TableCell,
+  TableHeader,
+  TableRow,
 
   // marks
   Bold,
@@ -60,6 +66,7 @@ export const extensions = [
   ...(production ? [] : [Embed]),
   File,
   Image,
+  Table,
 
   // legacies
   LegacyTextColor,
