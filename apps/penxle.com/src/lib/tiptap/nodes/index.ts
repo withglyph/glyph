@@ -6,4 +6,7 @@ export * from './horizontal-rule';
 export * from './list-item';
 export * from './ordered-list';
 export * from './paragraph';
+export * from './table-cell';
+export * from './table-header';
+export * from './table-row';
 export * from './text';
