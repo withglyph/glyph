@@ -1,16 +1,7 @@
 import { mergeAttributes, Node } from '@tiptap/core';
 
-export type TableHeaderOptions = {
-  HTMLAttributes: Record<string, unknown>;
-};
 export const TableHeader = Node.create<TableHeaderOptions>({
   name: 'tableHeader',
-
-  addOptions() {
-    return {
-      HTMLAttributes: {},
-    };
-  },
 
   content: 'block+',
 
@@ -43,6 +34,12 @@ export const TableHeader = Node.create<TableHeaderOptions>({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['th', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+    return [
+      'th',
+      mergeAttributes(HTMLAttributes, {
+        class: 'relative vertical-top min-w-1em px-3 py-5 border-(1px solid block) bg-primary font-bold',
+      }),
+      0,
+    ];
   },
 });
