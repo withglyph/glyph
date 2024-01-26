@@ -6,12 +6,12 @@
 
   export let id: number;
   export let activeTabValue: number | undefined = undefined;
-  export let variant: 'primary' | 'secondary' = getContext('variant');
   export let pathname: string | undefined = undefined;
 
   let _class: string | undefined = undefined;
   export { _class as class };
 
+  let variant = getContext<Writable<'primary' | 'secondary'>>('variant');
   let search = getContext<Writable<string | undefined>>('search');
 
   let element: 'a' | 'button';
@@ -33,9 +33,9 @@
     id="{id}-tabhead"
     class={clsx(
       'block w-full grow sm:grow-0',
-      variant === 'primary' &&
+      $variant === 'primary' &&
         'title-20-eb border-b-10 leading-5 transition border-transparent text-disabled hover:(text-black border-brand-50) aria-selected:(text-black border-brand-50)',
-      variant === 'secondary' &&
+      $variant === 'secondary' &&
         'bg-white p-3 text-center sm:bg-transparent transition border-b-2 border-white body-16-sb text-disabled hover:(text-black border-black) aria-selected:(text-black font-bold border-b-2 border-black)',
       _class,
     )}
