@@ -19,6 +19,8 @@ import {
   toggleHeader,
   toggleHeaderCell,
 } from '@tiptap/pm/tables';
+import { SvelteNodeViewRenderer } from '$lib/tiptap/lib/renderer';
+import Component from './Component.svelte';
 import { TableView } from './table-view';
 import { createColGroup } from './utilities/create-col-group';
 import { createTable } from './utilities/create-table';
@@ -283,5 +285,9 @@ export const Table = Node.create<TableOptions>({
     return {
       tableRole: callOrReturn(getExtensionField(extension, 'tableRole', context)),
     };
+  },
+
+  addNodeView() {
+    return SvelteNodeViewRenderer(Component);
   },
 });
