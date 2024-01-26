@@ -6,7 +6,9 @@ type LoaderParams = {
   db: InteractiveTransactionClient;
 };
 
-export const spaceMember = ({ db, context }: LoaderParams & { context: Pick<Context, 'session'> }) =>
+type SessionContext = { context: Pick<Context, 'session'> };
+
+export const spaceMember = ({ db, context }: LoaderParams & SessionContext) =>
   context.dataLoader('spaceMember', async (spaceIds) => {
     if (!context.session) return spaceIds.map(() => null);
     const spaceMembers = await db.spaceMember.findMany({
@@ -18,4 +20,13 @@ export const spaceMember = ({ db, context }: LoaderParams & { context: Pick<Cont
     });
 
     return spaceIds.map((spaceId) => spaceMembers.find((member) => member.spaceId === spaceId));
+  });
+
+export const post = ({ db, context }: LoaderParams) =>
+  context.dataLoader('post', async (postIds) => {
+    const posts = await db.post.findMany({
+      where: { id: { in: postIds as string[] } },
+    });
+
+    return postIds.map((postId) => posts.find((post) => post.id === postId));
   });

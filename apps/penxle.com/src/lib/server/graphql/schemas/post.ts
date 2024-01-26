@@ -448,9 +448,12 @@ export const postSchema = defineSchema((builder) => {
 
   builder.prismaObject('PostRevision', {
     grantScopes: async (revision, { db, ...context }) => {
-      const post = await db.post.findUniqueOrThrow({
-        where: { id: revision.postId },
-      });
+      const postLoader = Loader.post({ db, context });
+      const post = await postLoader.load(revision.postId);
+
+      if (!post) {
+        return [];
+      }
 
       if (post.contentFilters.includes('ADULT')) {
         if (!context.session) {
