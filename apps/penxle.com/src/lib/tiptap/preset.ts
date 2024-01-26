@@ -68,5 +68,5 @@ export const extensions = [
   ...(production ? [] : [Embed]),
   File,
   Image,
-  Table,
+  Table.configure({ resizable: true }),
 ];
