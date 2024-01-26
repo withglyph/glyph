@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 
-export const isAdulthood = (birthday?: Date) => {
+export const getKoreanAge = (birthday?: Date) => {
   if (!birthday) {
-    return false;
+    return 0;
   }
 
   const birthYear = dayjs(birthday).kst().year();
@@ -10,5 +10,13 @@ export const isAdulthood = (birthday?: Date) => {
 
   const koreanAge = currentYear - birthYear + 1;
 
-  return koreanAge >= 20;
+  return koreanAge;
+};
+
+export const isAdulthood = (birthday?: Date) => {
+  return getKoreanAge(birthday) >= 20;
+};
+
+export const isGte15 = (birthday?: Date) => {
+  return getKoreanAge(birthday) >= 15;
 };

@@ -9,10 +9,10 @@ export const getTagUsageCount = ({ tagId, db }: GetTagUsageCountParams) => {
   return useCache(
     `Tag:${tagId}:usageCount`,
     async () =>
-      db.postRevisionTag.count({
+      db.postTag.count({
         where: {
           tagId,
-          revision: { kind: 'PUBLISHED' },
+          post: { state: 'PUBLISHED' },
         },
       }),
     60 * 60,

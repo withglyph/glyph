@@ -61,19 +61,17 @@ export const feedSchema = defineSchema((builder) => {
             createdAt: dateBefore?.isValid() ? { lt: dateBefore.toDate() } : undefined,
             visibility: 'PUBLIC',
             password: null,
-            publishedRevision: {
-              tags: {
-                some: {
-                  tag: {
-                    followers: {
-                      some: { userId: context.session.userId },
-                    },
+            tags: {
+              some: {
+                tag: {
+                  followers: {
+                    some: { userId: context.session.userId },
                   },
                 },
-                none: {
-                  tag: {
-                    userMutes: { some: { userId: context.session.userId } },
-                  },
+              },
+              none: {
+                tag: {
+                  userMutes: { some: { userId: context.session.userId } },
                 },
               },
             },
@@ -104,12 +102,10 @@ export const feedSchema = defineSchema((builder) => {
             state: 'PUBLISHED',
             createdAt: dateBefore?.isValid() ? { lt: dateBefore.toDate() } : undefined,
             visibility: 'PUBLIC',
-            publishedRevision: {
-              tags: {
-                none: {
-                  tag: {
-                    userMutes: { some: { userId: context.session.userId } },
-                  },
+            tags: {
+              none: {
+                tag: {
+                  userMutes: { some: { userId: context.session.userId } },
                 },
               },
             },
@@ -138,20 +134,17 @@ export const feedSchema = defineSchema((builder) => {
           ...query,
           where: {
             userMutes: context.session ? { none: { userId: context.session.userId } } : undefined,
-            postRevisions: {
+            posts: {
               some: {
-                revision: {
-                  kind: 'PUBLISHED',
-                  post: {
-                    state: 'PUBLISHED',
+                post: {
+                  state: 'PUBLISHED',
+                  visibility: 'PUBLIC',
+                  password: null,
+                  contentFilters: { isEmpty: true },
+                  space: {
+                    state: 'ACTIVE',
                     visibility: 'PUBLIC',
-                    password: null,
-                    contentFilters: { isEmpty: true },
-                    space: {
-                      state: 'ACTIVE',
-                      visibility: 'PUBLIC',
-                      userMutes: context.session ? { none: { userId: context.session.userId } } : undefined,
-                    },
+                    userMutes: context.session ? { none: { userId: context.session.userId } } : undefined,
                   },
                 },
               },
@@ -167,7 +160,7 @@ export const feedSchema = defineSchema((builder) => {
     recentlyUsedTags: t.prismaField({
       type: ['Tag'],
       resolve: async (query, _, __, { db, ...context }) => {
-        const postTags = await db.postRevisionTag.findMany({
+        const postTags = await db.postTag.findMany({
           include: { tag: query },
           where: {
             tag: context.session
@@ -175,18 +168,15 @@ export const feedSchema = defineSchema((builder) => {
                   userMutes: { none: { userId: context.session.userId } },
                 }
               : undefined,
-            revision: {
-              kind: 'PUBLISHED',
-              post: {
-                state: 'PUBLISHED',
+            post: {
+              state: 'PUBLISHED',
+              visibility: 'PUBLIC',
+              password: null,
+              contentFilters: { isEmpty: true },
+              space: {
+                state: 'ACTIVE',
                 visibility: 'PUBLIC',
-                password: null,
-                contentFilters: { isEmpty: true },
-                space: {
-                  state: 'ACTIVE',
-                  visibility: 'PUBLIC',
-                  userMutes: context.session ? { none: { userId: context.session.userId } } : undefined,
-                },
+                userMutes: context.session ? { none: { userId: context.session.userId } } : undefined,
               },
             },
           },
@@ -210,17 +200,15 @@ export const feedSchema = defineSchema((builder) => {
               state: 'PUBLISHED',
               visibility: 'PUBLIC',
               password: null,
-              publishedRevision: {
-                tags: context.session
-                  ? {
-                      none: {
-                        tag: {
-                          userMutes: { some: { userId: context.session.userId } },
-                        },
+              tags: context.session
+                ? {
+                    none: {
+                      tag: {
+                        userMutes: { some: { userId: context.session.userId } },
                       },
-                    }
-                  : undefined,
-              },
+                    },
+                  }
+                : undefined,
               space: {
                 state: 'ACTIVE',
                 visibility: 'PUBLIC',
@@ -251,17 +239,15 @@ export const feedSchema = defineSchema((builder) => {
             state: 'PUBLISHED',
             visibility: 'PUBLIC',
             password: null,
-            publishedRevision: {
-              tags: context.session
-                ? {
-                    none: {
-                      tag: {
-                        userMutes: { some: { userId: context.session.userId } },
-                      },
+            tags: context.session
+              ? {
+                  none: {
+                    tag: {
+                      userMutes: { some: { userId: context.session.userId } },
                     },
-                  }
-                : undefined,
-            },
+                  },
+                }
+              : undefined,
             space: {
               state: 'ACTIVE',
               visibility: 'PUBLIC',
@@ -278,7 +264,9 @@ export const feedSchema = defineSchema((builder) => {
           orderBy: { publishedAt: 'desc' },
         });
 
-        return posts.map(({ space }) => space);
+        // Where 조건에 의해 space가 null일 수 없음
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return posts.map(({ space }) => space!);
       },
     }),
   }));

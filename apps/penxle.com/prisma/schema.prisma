@@ -143,10 +143,10 @@ model PointTransaction {
 model Post {
   id                  String        @id
   permalink           String        @unique
-  spaceId             String        @map("space_id")
-  space               Space         @relation(fields: [spaceId], references: [id])
-  memberId            String        @map("member_id")
-  member              SpaceMember   @relation(fields: [memberId], references: [id])
+  spaceId             String?       @map("space_id")
+  space               Space?        @relation(fields: [spaceId], references: [id], onDelete: Restrict)
+  memberId            String?       @map("member_id")
+  member              SpaceMember?  @relation(fields: [memberId], references: [id], onDelete: Restrict)
   userId              String        @map("user_id")
   user                User          @relation(fields: [userId], references: [id])
   publishedRevisionId String?       @map("published_revision_id")
@@ -168,7 +168,8 @@ model Post {
   receiveTagContribution Boolean @map("receive_tag_contribution")
   protectContent         Boolean @default(true) @map("protect_content")
 
-  pairs PostPair[] @default([])
+  category PostCategory @default(OTHER)
+  pairs    PostPair[]   @default([])
 
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
   publishedAt DateTime? @map("published_at") @db.Timestamptz
@@ -826,6 +827,15 @@ enum PostAgeRating {
   R19
 
   @@map("_post_age_rating")
+}
+
+enum PostCategory {
+  ORIGINAL
+  FANFICTION
+  NONFICTION
+  OTHER
+
+  @@map("_post_category")
 }
 
 enum PostPair {
