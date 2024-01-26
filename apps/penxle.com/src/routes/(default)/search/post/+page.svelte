@@ -66,6 +66,8 @@
 
     location.href = stringifiedURL;
   };
+
+  $: search = `?q=${$page.url.searchParams.get('q')}`;
 </script>
 
 <Helmet title="{$page.url.searchParams.get('q')} - 펜슬 검색결과" />
@@ -74,7 +76,7 @@
   약 {$query.searchPosts.count}개의 검색결과가 있어요!
 </div>
 
-<TabHead class="mt-9 w-full <sm:(sticky top-61px z-1) sm:mb-4" variant="secondary">
+<TabHead class="mt-9 w-full <sm:(sticky top-61px z-1) sm:mb-4" {search} variant="secondary">
   <TabHeadItem id={0} pathname="/search">전체</TabHeadItem>
   <TabHeadItem id={1} class="text-black! border-black!" pathname="/search/post">포스트</TabHeadItem>
   <TabHeadItem id={2} pathname="/search/space">스페이스</TabHeadItem>

@@ -2,6 +2,7 @@
   import clsx from 'clsx';
   import { getContext } from 'svelte';
   import { page } from '$app/stores';
+  import type { Writable } from 'svelte/store';
 
   export let id: number;
   export let activeTabValue: number | undefined = undefined;
@@ -11,9 +12,16 @@
   let _class: string | undefined = undefined;
   export { _class as class };
 
+  let search = getContext<Writable<string | undefined>>('search');
+
   let element: 'a' | 'button';
   $: element = pathname ? 'a' : 'button';
-  $: props = element === 'a' ? { href: pathname + $page.url.search } : { type: 'button' };
+  $: props =
+    element === 'a'
+      ? {
+          href: pathname && pathname + ($search ?? ''),
+        }
+      : { type: 'button' };
 
   $: pathnameRegex = pathname ? new RegExp(`^${pathname}/?$`) : null;
   $: selected = activeTabValue === id || pathnameRegex?.test($page.url.pathname);

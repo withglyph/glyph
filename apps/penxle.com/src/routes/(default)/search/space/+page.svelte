@@ -52,6 +52,8 @@
       }
     }
   `);
+
+  $: search = `?q=${$page.url.searchParams.get('q')}`;
 </script>
 
 <Helmet title="{$page.url.searchParams.get('q')} - 펜슬 검색결과" />
@@ -60,7 +62,7 @@
   약 {$query.searchSpaces.length ?? 0}개의 검색결과가 있어요!
 </div>
 
-<TabHead class="mt-9 mb-4 w-full <sm:(sticky top-61px z-1)" variant="secondary">
+<TabHead class="mt-9 mb-4 w-full <sm:(sticky top-61px z-1)" {search} variant="secondary">
   <TabHeadItem id={0} pathname="/search">전체</TabHeadItem>
   <TabHeadItem id={1} pathname="/search/post">포스트</TabHeadItem>
   <TabHeadItem id={2} pathname="/search/space">스페이스</TabHeadItem>
