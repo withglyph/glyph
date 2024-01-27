@@ -1,19 +1,19 @@
 // https://github.com/fedorovvvv/svelte-floating-ui/blob/a331210/src/lib/index.ts
 
-import { arrow as arrowCore } from '@floating-ui/core';
-import { autoUpdate as _autoUpdate, computePosition } from '@floating-ui/dom';
+import { arrow as arrowCore, autoUpdate as _autoUpdate, computePosition } from '@floating-ui/dom';
 import { onDestroy, tick } from 'svelte';
 import { get } from 'svelte/store';
 import type {
+  AutoUpdateOptions,
   ComputePositionConfig,
   ComputePositionReturn,
   FloatingElement,
   Middleware,
+  MiddlewareState,
   Padding,
   ReferenceElement,
   VirtualElement,
-} from '@floating-ui/core';
-import type { AutoUpdateOptions, MiddlewareState } from '@floating-ui/dom';
+} from '@floating-ui/dom';
 import type { Readable, Writable } from 'svelte/store';
 
 export type ComputeConfig = Partial<ComputePositionConfig> & {

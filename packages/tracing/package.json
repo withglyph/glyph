@@ -14,18 +14,18 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@opentelemetry/exporter-metrics-otlp-grpc": "^0.47.0",
-    "@opentelemetry/exporter-trace-otlp-grpc": "^0.47.0",
-    "@opentelemetry/resources": "^1.20.0",
-    "@opentelemetry/sdk-metrics": "^1.20.0",
-    "@opentelemetry/sdk-node": "^0.47.0",
-    "@opentelemetry/sdk-trace-node": "^1.20.0",
-    "@opentelemetry/semantic-conventions": "^1.20.0",
+    "@opentelemetry/exporter-metrics-otlp-grpc": "^0.48.0",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.48.0",
+    "@opentelemetry/resources": "^1.21.0",
+    "@opentelemetry/sdk-metrics": "^1.21.0",
+    "@opentelemetry/sdk-node": "^0.48.0",
+    "@opentelemetry/sdk-trace-node": "^1.21.0",
+    "@opentelemetry/semantic-conventions": "^1.21.0",
     "@prisma/instrumentation": "^5.8.1"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "@types/node": "^20.11.6",
+    "@types/node": "^20.11.7",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3"
   }
