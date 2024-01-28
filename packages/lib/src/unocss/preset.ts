@@ -15,7 +15,6 @@ export const presetPenxle = (): Preset<Theme> => ({
         lc: async () => lookupCollection('lucide'),
         lg: async () => lookupCollection('simple-icons'),
         px: FileSystemIconLoader('./src/assets/icons'),
-        editor: FileSystemIconLoader('./src/assets/editor-icons'),
       },
       extraProperties: {
         'flex': 'none',

@@ -182,7 +182,7 @@
             class="p-4 rounded-2xl h-full w-full flex flex-col center gap-2.5 items-center bg-primary text-secondary border border-secondary"
             role="alert"
           >
-            <i class="i-px-alert-triangle square-6" />
+            <i class="i-px-alert-triangle-solid square-6" />
             <p class="body-14-sb text-center whitespace-pre-wrap">포스트에 민감한 내용이 포함되어 있어요</p>
 
             <div class="flex flex-wrap gap-2.5 center">

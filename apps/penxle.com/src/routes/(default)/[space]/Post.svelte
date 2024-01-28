@@ -494,7 +494,7 @@
     {#if $query.post.contentFilters.length > 0 && !blurContent}
       <div class="p-4 rounded-3 border-(0.08333333rem solid border-secondary)" role="alert">
         <div class="mb-xs inline-flex items-center gap-1 body-14-b">
-          <i class="i-px-alert-triangle square-4" />
+          <i class="i-px-alert-triangle-solid square-4" />
           <span>포스트에 민감한 내용이 포함되어 있어요</span>
         </div>
         <ul class="body-14-m">
@@ -515,7 +515,7 @@
                 role="alert"
               >
                 <div class="flex flex-col gap-2 items-center">
-                  <i class="i-px-alert-triangle square-6 color-text-secondary" />
+                  <i class="i-px-alert-triangle-solid square-6 color-text-secondary" />
                   <h2 class="body-16-eb text-center break-keep">포스트에 민감한 내용이 포함되어 있어요</h2>
                 </div>
                 <ul class="flex gap-0.625rem flex-wrap justify-center max-w-26rem">

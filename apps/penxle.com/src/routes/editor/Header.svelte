@@ -615,7 +615,7 @@
 
         {#if selectedSpace?.visibility === 'PRIVATE'}
           <div class="bg-primary p-4 rounded-2xl flex items-center gap-2">
-            <i class="i-px-alert-triangle color-action-red-primary square-4" />
+            <i class="i-px-alert-triangle-solid color-action-red-primary square-4" />
             <p class="text-secondary body-13-b">
               현재 비공개 스페이스로 지정되어있어 스페이스 멤버 외에는 글을 볼 수 없어요
             </p>
