@@ -3,6 +3,7 @@
   import ArticleBubbleMenu from './ArticleBubbleMenu.svelte';
   import ArticleFloatingMenu from './ArticleFloatingMenu.svelte';
   import ArticleLinkEditMenu from './ArticleLinkEditMenu.svelte';
+  import ArticleRubyEditMenu from './ArticleRubyEditMenu.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
 
   export let content: JSONContent | undefined;
@@ -19,4 +20,5 @@
   <ArticleBubbleMenu {editor} />
   <ArticleFloatingMenu {editor} />
   <ArticleLinkEditMenu {editor} />
+  <ArticleRubyEditMenu {editor} />
 {/if}

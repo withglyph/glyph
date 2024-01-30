@@ -9,7 +9,7 @@ import {
   LegacyTextAlign,
   LegacyTextColor,
 } from '$lib/tiptap/legacies';
-import { Bold, FontColor, FontFamily, FontSize, Italic, Link, Strike, Underline } from '$lib/tiptap/marks';
+import { Bold, FontColor, FontFamily, FontSize, Italic, Link, Ruby, Strike, Underline } from '$lib/tiptap/marks';
 import { AccessBarrier, Embed, File, Image } from '$lib/tiptap/node-views';
 import {
   BulletList,
@@ -48,6 +48,7 @@ export const extensions = [
   Strike,
   Underline,
   Link,
+  Ruby,
 
   // extensions
   DropCursor,

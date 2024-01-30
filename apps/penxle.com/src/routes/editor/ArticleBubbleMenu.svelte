@@ -24,6 +24,13 @@
     });
   }
 
+  let rubyText = '';
+  let rubyButtonOpen = false;
+
+  $: if (rubyButtonOpen) {
+    rubyText = '';
+  }
+
   const offset = 32;
 </script>
 
@@ -230,6 +237,50 @@
             on:click|stopPropagation
             on:input={(event) => {
               href = event.currentTarget.value;
+            }}
+          />
+          <Tooltip message="적용하기">
+            <button class="hover:text-primary active:text-primary" type="submit" on:click|stopPropagation>
+              <i class="i-lc-check" />
+            </button>
+          </Tooltip>
+        </form>
+      </MenuItem>
+    </Menu>
+  </Tooltip>
+
+  <Tooltip message="루비" placement="top">
+    <Menu
+      class="flex items-center gap-2 body-14-m p-xs hover:(bg-primary rounded-lg)"
+      {offset}
+      padding={false}
+      bind:open={rubyButtonOpen}
+    >
+      <i slot="value" class="i-lc-gem square-1rem" />
+      <MenuItem type="div">
+        <form
+          class="flex relative gap-2 body-13-m text-secondary"
+          on:submit|preventDefault={(event) => {
+            if (!(event.currentTarget.rubyText instanceof HTMLInputElement))
+              throw new Error('Fail to access input element');
+
+            const rubyText = event.currentTarget.rubyText.value.trim();
+            editor.chain().focus().setRuby(rubyText).run();
+            // 메뉴 닫기
+            event.currentTarget.click();
+          }}
+        >
+          <span class="invisible flex-grow min-w-8.25rem max-w-20rem text-clip overflow-hidden whitespace-nowrap">
+            {rubyText}
+          </span>
+          <input
+            name="rubyText"
+            class="absolute w-full max-w-20rem"
+            required
+            type="text"
+            on:click|stopPropagation
+            on:input={(event) => {
+              rubyText = event.currentTarget.value;
             }}
           />
           <Tooltip message="적용하기">
