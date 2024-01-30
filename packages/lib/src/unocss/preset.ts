@@ -45,6 +45,20 @@ export const presetPenxle = (): Preset<Theme> => ({
         return `text-[${d}px] font-${fontWeight}`;
       },
     ],
+    [
+      /^(text)-(\d+)-(b|sb|m|r)$/,
+      // eslint-disable-next-line unicorn/no-unreadable-array-destructuring
+      ([, , d, w]) => {
+        const fontWeight = {
+          sb: 'semibold',
+          b: 'bold',
+          m: 'medium',
+          r: 'regular',
+        }[w];
+
+        return `text-[${d}px] font-${fontWeight}`;
+      },
+    ],
   ],
   extendTheme: (theme) => ({
     ...theme,
