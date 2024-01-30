@@ -13,6 +13,8 @@ export const values = {
 
   fontFamily: [
     { label: '프리텐다드', value: 'Pretendard' },
+    { label: '나눔바른고딕', value: 'NanumBarunGothic' },
+    { label: 'KoPubWorld 돋움', value: 'KoPubWorldDotum' },
     { label: '리디바탕', value: 'RIDIBatang' },
     { label: 'KoPubWorld 바탕', value: 'KoPubWorldBatang' },
     { label: '나눔명조', value: 'NanumMyeongjo' },
