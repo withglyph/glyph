@@ -10,7 +10,7 @@
 }
 
 html {
-  --uno: leading-normal text-gray-90 font-sans antialiased;
+  --uno: leading-normal text-gray-950 font-sans antialiased;
   font-feature-settings:
     'calt' 0,
     'ss01' 1,
