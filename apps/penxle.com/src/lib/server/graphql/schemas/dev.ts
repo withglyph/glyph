@@ -24,15 +24,12 @@ export const devSchema = defineSchema((builder) => {
             skip: i * BATCH_SIZE,
             take: BATCH_SIZE,
             include: {
-              publishedRevision: {
+              tags: {
                 include: {
-                  tags: {
-                    include: {
-                      tag: true,
-                    },
-                  },
+                  tag: true,
                 },
               },
+              publishedRevision: true,
               space: true,
             },
           });

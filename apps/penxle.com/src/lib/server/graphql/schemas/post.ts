@@ -96,6 +96,7 @@ export const postSchema = defineSchema((builder) => {
       externalSearchable: t.exposeBoolean('externalSearchable'),
       category: t.expose('category', { type: PrismaEnums.PostCategory }),
       pairs: t.expose('pairs', { type: [PrismaEnums.PostPair] }),
+      tags: t.relation('tags'),
       discloseStats: t.exposeBoolean('discloseStats'),
       receiveFeedback: t.exposeBoolean('receiveFeedback'),
       receivePatronage: t.exposeBoolean('receivePatronage'),
@@ -309,17 +310,6 @@ export const postSchema = defineSchema((builder) => {
 
           return purchases[0]?.createdAt ?? null;
         },
-      }),
-
-      tags: t.prismaField({
-        type: ['Tag'],
-        select: (_, __, nestedSelection) => ({
-          tags: {
-            include: { tag: nestedSelection() },
-          },
-        }),
-
-        resolve: (_, { tags }) => tags.map(({ tag }) => tag),
       }),
 
       previousPost: t.prismaField({
@@ -1115,7 +1105,7 @@ export const postSchema = defineSchema((builder) => {
       args: { input: t.arg({ type: PublishPostInput }) },
       resolve: async (query, _, { input }, { db, ...context }) => {
         const revision = await db.postRevision.update({
-          include: { post: true, tags: { include: { tag: true } }, freeContent: true, paidContent: true },
+          include: { post: true, freeContent: true, paidContent: true },
           where: {
             id: input.revisionId,
             post: {
@@ -1204,11 +1194,8 @@ export const postSchema = defineSchema((builder) => {
 
         const post = await db.post.update({
           include: {
-            publishedRevision: {
-              include: {
-                tags: { include: { tag: true } },
-              },
-            },
+            tags: { include: { tag: true } },
+            publishedRevision: true,
             space: true,
             collectionPost: true,
           },
@@ -1296,11 +1283,8 @@ export const postSchema = defineSchema((builder) => {
       resolve: async (query, _, { input }, { db, ...context }) => {
         const post = await db.post.update({
           include: {
-            publishedRevision: {
-              include: {
-                tags: { include: { tag: true } },
-              },
-            },
+            tags: { include: { tag: true } },
+            publishedRevision: true,
             space: true,
           },
           where: {
