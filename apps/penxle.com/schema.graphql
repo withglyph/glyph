@@ -368,7 +368,7 @@ type Post {
   shortlink: String!
   space: Space
   state: PostState!
-  tags: [Tag!]!
+  tags: [PostTag!]!
   thumbnail: Image
   unlocked: Boolean!
   viewCount: Int!
@@ -441,6 +441,13 @@ enum PostState {
   DELETED
   DRAFT
   PUBLISHED
+}
+
+type PostTag {
+  id: ID!
+  kind: PostTagKind!
+  post: Post!
+  tag: Tag!
 }
 
 enum PostTagKind {

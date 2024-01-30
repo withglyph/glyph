@@ -88,6 +88,7 @@ await createIndex('posts', {
           id: { type: 'keyword' },
           name: { type: 'text', analyzer: 'ngram_23' },
           nameRaw: { type: 'keyword' },
+          kind: { type: 'keyword' },
         },
       },
       spaceId: { type: 'keyword' },
