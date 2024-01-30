@@ -2,8 +2,8 @@
   import { Button } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { TiptapFloatingMenu } from '$lib/tiptap/components';
+  import { values } from '$lib/tiptap/values';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
-  import { blockquotes, hr } from './formats.svelte';
   import type { Editor } from '@tiptap/core';
 
   export let editor: Editor;
@@ -70,14 +70,14 @@
         구분선 추가
       </div>
 
-      {#each hr as kind (kind)}
+      {#each values.horizontalRule as hr (hr.value)}
         <MenuItem
           class="flex center gap-2 w-900px"
           on:click={() => {
-            editor.chain().focus().setHorizontalRule(kind).run();
+            editor.chain().focus().setHorizontalRule(hr.value).run();
           }}
         >
-          <hr class="w-11rem divider-preview" aria-label={`${kind} 번째 구분선`} data-kind={kind} />
+          <hr class="w-11rem divider-preview" aria-label={`${hr.value} 번째 구분선`} data-kind={hr.value} />
         </MenuItem>
       {/each}
     </Menu>
@@ -99,14 +99,18 @@
         인용구
       </button>
 
-      {#each blockquotes as kind (kind)}
+      {#each values.blockquote as blockquote (blockquote.value)}
         <MenuItem
           class="flex center gap-2 w-900px"
           on:click={() => {
-            editor.chain().focus().setBlockquote(kind).run();
+            editor.chain().focus().setBlockquote(blockquote.value).run();
           }}
         >
-          <blockquote class="blockquote-preview text-disabled" aria-label={`${kind} 번째 구분선`} data-kind={kind}>
+          <blockquote
+            class="blockquote-preview text-disabled"
+            aria-label={`${blockquote.value} 번째 구분선`}
+            data-kind={blockquote.value}
+          >
             내용을 입력해주세요
           </blockquote>
         </MenuItem>

@@ -2,7 +2,6 @@ export * from './blockquote';
 export * from './bullet-list';
 export * from './document';
 export * from './hard-break';
-export * from './heading';
 export * from './horizontal-rule';
 export * from './list-item';
 export * from './ordered-list';

@@ -60,7 +60,7 @@
   <script async src="https://cdn.iframe.ly/embed.js"></script>
 </svelte:head>
 
-<NodeView class="tiptap-embedded">
+<NodeView>
   {#if node.attrs.__data}
     {#if node.attrs.__data.html}
       <div class="w-full">

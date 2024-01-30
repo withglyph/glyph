@@ -1,4 +1,4 @@
-import { Node } from '@tiptap/core';
+import { mergeAttributes, Node } from '@tiptap/core';
 
 declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -19,7 +19,7 @@ export const BulletList = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['ul', HTMLAttributes, 0];
+    return ['ul', mergeAttributes(HTMLAttributes, { class: 'list-outside list-disc ml-1.25rem' }), 0];
   },
 
   addCommands() {

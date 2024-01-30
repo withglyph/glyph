@@ -24,7 +24,7 @@ export const revisionContentToText = async (revisionContent: RevisionContent): P
 };
 
 export const sanitizeContent = async (content: JSONContent[]): Promise<JSONContent[]> => {
-  traverse(content, async ({ key, value, parent }) => {
+  traverse(content, ({ key, value, parent }) => {
     if (parent && key === 'attrs' && typeof value === 'object') {
       parent.attrs = Object.fromEntries(Object.entries(value).filter(([key]) => !key.startsWith('__')));
     }

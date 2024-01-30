@@ -1,4 +1,4 @@
-import { Mark } from '@tiptap/core';
+import { Mark, mergeAttributes } from '@tiptap/core';
 
 declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -16,8 +16,8 @@ export const Italic = Mark.create({
     return [{ tag: 'i' }];
   },
 
-  renderHTML() {
-    return ['i', 0];
+  renderHTML({ HTMLAttributes }) {
+    return ['i', mergeAttributes(HTMLAttributes, { class: 'font-italic' }), 0];
   },
 
   addCommands() {
