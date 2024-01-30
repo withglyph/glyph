@@ -22,13 +22,13 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "h3": "^1.9.0",
+    "h3": "^1.10.1",
     "mrmime": "^2.0.0"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "@sveltejs/kit": "^2.4.3",
-    "@types/node": "^20.11.6",
+    "@sveltejs/kit": "^2.5.0",
+    "@types/node": "^20.11.10",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3"
   }

@@ -8,11 +8,11 @@
     "@penxle/tsconfig": "workspace:^",
     "@pulumi/aws": "^6.18.2",
     "@pulumi/kubernetes": "^4.7.1",
-    "@pulumi/pulumi": "^3.103.0",
+    "@pulumi/pulumi": "^3.103.1",
     "@pulumi/random": "^4.15.1",
     "@pulumi/tailscale": "^0.13.4",
     "@pulumi/tls": "^5.0.0",
-    "@types/node": "^20.11.6",
+    "@types/node": "^20.11.10",
     "fast-glob": "^3.3.2",
     "tsx": "^4.7.0"
   }
