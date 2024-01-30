@@ -16,12 +16,21 @@ export const shadedColors = {
     20: '#E7E5E4',
     30: '#D6D3D1',
     40: '#A8A29E',
-    50: '#78716C',
+    50: '#FAFAFA',
     60: '#57534E',
     70: '#44403C',
     80: '#292524',
     90: '#1C1917',
-    100: '#0C0A09',
+    100: '#F4F4F5',
+    200: '#E4E4E7',
+    300: '#D4D4D8',
+    400: '#A1A1AA',
+    500: '#71717A',
+    600: '#52525B',
+    700: '#3F3F46',
+    800: '#27272A',
+    900: '#18181B',
+    950: '#09090B',
   },
   brand: {
     5: '#FFFEF6',
@@ -116,6 +125,19 @@ export const shadedColors = {
     90: '#362113',
     100: '#170d08',
   },
+  teal: {
+    50: '#F0FDFA',
+    100: '#CCFBF1',
+    200: '#99F6E4',
+    300: '#5EEAD4',
+    400: '#2DD4BF',
+    500: '#14B8A6',
+    600: '#0D9488',
+    700: '#0F766E',
+    800: '#115E59',
+    900: '#134E4A',
+    950: '#042F2E',
+  },
 };
 
 export const partialShadedColors = {
@@ -177,6 +199,17 @@ export const designColors = {
     primary: '#1C1917',
     secondary: '#A8A29E',
     tertiary: '#D6D3D1',
+  },
+  error: {
+    50: '#FFCECE',
+    600: '#DC2626',
+  },
+  positive: {
+    50: '#D7FBE3',
+    600: '#16A34A',
+  },
+  hyperlink: {
+    600: '#2563EB',
   },
 };
 
