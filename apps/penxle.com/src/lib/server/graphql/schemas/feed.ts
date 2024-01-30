@@ -27,13 +27,11 @@ export const feedSchema = defineSchema((builder) => {
                   }
                 : undefined,
             },
-            publishedRevision: context.session
+            tags: context.session
               ? {
-                  tags: {
-                    none: {
-                      tag: {
-                        userMutes: { some: { userId: context.session.userId } },
-                      },
+                  none: {
+                    tag: {
+                      userMutes: { some: { userId: context.session.userId } },
                     },
                   },
                 }

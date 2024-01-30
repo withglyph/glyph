@@ -1,6 +1,7 @@
 import { elasticSearch, indexName } from '$lib/server/search';
 import { makeQueryContainers, searchResultToPrismaData } from '$lib/server/utils';
 import { createId } from '$lib/utils';
+import { PrismaEnums } from '$prisma';
 import { defineSchema } from '../builder';
 
 export const tagSchema = defineSchema((builder) => {
@@ -108,6 +109,15 @@ export const tagSchema = defineSchema((builder) => {
 
         resolve: ({ userMutes }, _, context) => !!context.session && userMutes.length > 0,
       }),
+    }),
+  });
+
+  builder.prismaObject('PostTag', {
+    fields: (t) => ({
+      id: t.exposeID('id'),
+      post: t.relation('post'),
+      tag: t.relation('tag'),
+      kind: t.expose('kind', { type: PrismaEnums.PostTagKind }),
     }),
   });
 
