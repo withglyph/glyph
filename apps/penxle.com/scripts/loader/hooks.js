@@ -22,6 +22,9 @@ export const load = (url, context, nextLoad) => {
       case '$app/environment':
         source = `export const building = false; export const dev = true; export const browser = false;`;
         break;
+      case '$app/stores':
+        source = `export const page = {};`;
+        break;
       default:
         throw new Error(`Unknown virtual module: ${mod}`);
     }
@@ -29,6 +32,14 @@ export const load = (url, context, nextLoad) => {
     return {
       format: 'module',
       source,
+      shortCircuit: true,
+    };
+  }
+
+  if (url.endsWith('.svelte')) {
+    return {
+      format: 'module',
+      source: 'export default {};',
       shortCircuit: true,
     };
   }
