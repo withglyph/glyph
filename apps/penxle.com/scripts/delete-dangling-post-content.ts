@@ -16,13 +16,16 @@ prismaClient.postRevisionContent
 
 console.log('Start to delete dangling PostContent...');
 
+await prismaClient.$executeRawUnsafe('set session_replication_role = replica');
+
 for (let i = 0; ; i++) {
   const danglingContents = await prismaClient.postRevisionContent.findMany({
+    select: { id: true },
     where: {
       revisionsUsingThisAsFreeContent: { none: {} },
       revisionsUsingThisAsPaidContent: { none: {} },
     },
-    take: 1000,
+    take: 100,
   });
 
   await prismaClient.postRevisionContent.deleteMany({
@@ -31,6 +34,8 @@ for (let i = 0; ; i++) {
     },
   });
 
-  console.log(`Deleted ${i * 1000 + danglingContents.length}/${danglingContentCount ?? '??'} PostContent`);
-  if (danglingContents.length < 1000) break;
+  console.log(`Deleted ${i * 100 + danglingContents.length}/${danglingContentCount ?? '??'} PostContent`);
+  if (danglingContents.length < 100) break;
 }
+
+await prismaClient.$executeRawUnsafe('set session_replication_role = DEFAULT');
