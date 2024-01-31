@@ -24,6 +24,7 @@
   import PublishMenu from './PublishMenu.svelte';
   import RevisionListModal from './RevisionListModal.svelte';
   import { preventRevise } from './store';
+  import ToolbarButtonTooltip from './ToolbarButtonTooltip.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
   import type { Writable } from 'svelte/store';
   import type {
@@ -479,7 +480,7 @@
           </div>
         </Tooltip>
 
-        <Tooltip message="폰트" offset={tooltipOffset}>
+        <ToolbarButtonTooltip message="폰트">
           <Menu class="h-8.5" offset={menuOffset} placement="bottom-start" rounded={false} bind:open={fontFamilyOpen}>
             <div slot="value" class="flex items-center gap-1 whitespace-nowrap h-full hover:(bg-gray-100 rounded)">
               <div>
@@ -514,9 +515,9 @@
               </MenuItem>
             {/each}
           </Menu>
-        </Tooltip>
+        </ToolbarButtonTooltip>
 
-        <Tooltip message="글자 크기" offset={tooltipOffset} placement="bottom">
+        <ToolbarButtonTooltip message="글자 크기">
           <Menu
             class="flex items-center h-8.5"
             menuClass="max-h-60 overflow-y-auto"
@@ -556,11 +557,11 @@
               </MenuItem>
             {/each}
           </Menu>
-        </Tooltip>
+        </ToolbarButtonTooltip>
       </div>
 
       <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
-        <Tooltip message="굵게" offset={tooltipOffset} placement="bottom">
+        <ToolbarButtonTooltip message="굵게">
           <button
             class="flex center square-8.5 hover:(bg-gray-100 rounded)"
             type="button"
@@ -568,9 +569,9 @@
           >
             <i class={clsx('i-tb-bold square-6', editor?.isActive('bold') && 'text-teal-500')} />
           </button>
-        </Tooltip>
+        </ToolbarButtonTooltip>
 
-        <Tooltip message="기울임" offset={tooltipOffset} placement="bottom">
+        <ToolbarButtonTooltip message="기울임">
           <button
             class="flex center square-8.5 hover:(bg-gray-100 rounded)"
             type="button"
@@ -578,9 +579,9 @@
           >
             <i class={clsx('i-tb-italic square-6', editor?.isActive('italic') && 'text-teal-500')} />
           </button>
-        </Tooltip>
+        </ToolbarButtonTooltip>
 
-        <Tooltip message="취소선" offset={tooltipOffset}>
+        <ToolbarButtonTooltip message="취소선">
           <button
             class="flex center square-8.5 hover:(bg-gray-100 rounded)"
             type="button"
@@ -588,9 +589,9 @@
           >
             <i class={clsx('i-tb-strikethrough square-6', editor?.isActive('strike') && 'text-teal-500')} />
           </button>
-        </Tooltip>
+        </ToolbarButtonTooltip>
 
-        <Tooltip message="밑줄" offset={tooltipOffset}>
+        <ToolbarButtonTooltip message="밑줄">
           <button
             class="flex center square-8.5 hover:(bg-gray-100 rounded)"
             type="button"
@@ -598,9 +599,9 @@
           >
             <i class={clsx('i-tb-underline square-6', editor?.isActive('underline') && 'text-teal-500')} />
           </button>
-        </Tooltip>
+        </ToolbarButtonTooltip>
 
-        <Tooltip message="루비" offset={tooltipOffset}>
+        <ToolbarButtonTooltip message="루비">
           <Menu
             class="flex center gap-2 square-8.5 hover:(bg-gray-100 rounded)"
             offset={menuOffset}
@@ -643,11 +644,11 @@
               </form>
             </MenuItem>
           </Menu>
-        </Tooltip>
+        </ToolbarButtonTooltip>
       </div>
 
       <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
-        <Tooltip message="정렬" offset={tooltipOffset}>
+        <ToolbarButtonTooltip message="정렬">
           <Menu
             class="flex center gap-0.25rem square-8.5 hover:(bg-gray-100 rounded) hover:(bg-gray-100 rounded)"
             offset={menuOffset}
@@ -674,9 +675,9 @@
               </button>
             {/each}
           </Menu>
-        </Tooltip>
+        </ToolbarButtonTooltip>
 
-        <Tooltip message="행간" offset={tooltipOffset}>
+        <ToolbarButtonTooltip message="행간">
           <Menu
             class="flex center square-8.5 hover:(bg-gray-100 rounded)"
             offset={menuOffset}
@@ -704,9 +705,9 @@
               </MenuItem>
             {/each}
           </Menu>
-        </Tooltip>
+        </ToolbarButtonTooltip>
 
-        <Tooltip message="자간" offset={tooltipOffset}>
+        <ToolbarButtonTooltip message="자간">
           <Menu
             class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
             offset={menuOffset}
@@ -734,11 +735,11 @@
               </MenuItem>
             {/each}
           </Menu>
-        </Tooltip>
+        </ToolbarButtonTooltip>
       </div>
 
       <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
-        <Tooltip message="리스트" offset={tooltipOffset}>
+        <ToolbarButtonTooltip message="리스트">
           <Menu
             class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
             offset={menuOffset}
@@ -763,9 +764,9 @@
               <i class="i-tb-list-numbers square-6" aria-label="번호 매겨진 리스트" />
             </MenuItem>
           </Menu>
-        </Tooltip>
+        </ToolbarButtonTooltip>
 
-        <Tooltip message="구분선" offset={tooltipOffset}>
+        <ToolbarButtonTooltip message="구분선">
           <Menu
             class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
             offset={menuOffset}
@@ -785,9 +786,9 @@
               </MenuItem>
             {/each}
           </Menu>
-        </Tooltip>
+        </ToolbarButtonTooltip>
 
-        <Tooltip message="인용구" offset={tooltipOffset}>
+        <ToolbarButtonTooltip message="인용구">
           <Menu
             class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
             as="button"
@@ -814,23 +815,23 @@
               </MenuItem>
             {/each}
           </Menu>
-        </Tooltip>
+        </ToolbarButtonTooltip>
       </div>
 
       <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
-        <Tooltip message="이미지" offset={tooltipOffset}>
+        <ToolbarButtonTooltip message="이미지">
           <button class="flex center square-8.5 hover:(bg-gray-100 rounded)" type="button" on:click={handleInsertImage}>
             <i class="i-tb-photo square-6" />
           </button>
-        </Tooltip>
+        </ToolbarButtonTooltip>
 
-        <Tooltip message="파일" offset={tooltipOffset}>
+        <ToolbarButtonTooltip message="파일">
           <button class="flex center square-8.5 hover:(bg-gray-100 rounded)" type="button" on:click={handleInsertFile}>
             <i class="i-tb-folder square-6" />
           </button>
-        </Tooltip>
+        </ToolbarButtonTooltip>
 
-        <Tooltip message="링크" offset={tooltipOffset}>
+        <ToolbarButtonTooltip message="링크">
           <Menu
             class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
             disabled={editor?.isActive('link')}
@@ -876,32 +877,34 @@
               </form>
             </MenuItem>
           </Menu>
-        </Tooltip>
+        </ToolbarButtonTooltip>
       </div>
 
-      <Menu offset={menuOffset} placement="bottom-start" rounded={false} bind:open={postSettingOpen}>
-        <div slot="value" class="flex center square-8.5">
-          <i class="i-tb-settings square-6" />
-        </div>
+      <ToolbarButtonTooltip message="본문 설정">
+        <Menu offset={menuOffset} placement="bottom-start" rounded={false} bind:open={postSettingOpen}>
+          <div slot="value" class="flex center square-8.5">
+            <i class="i-tb-settings square-6" />
+          </div>
 
-        <Menu offset={16} placement="right-start">
-          <div slot="value" class="px-3.5 py-3 text-14-r w-full rounded-2">문단 들여쓰기</div>
+          <Menu offset={16} placement="right-start">
+            <div slot="value" class="px-3.5 py-3 text-14-r w-full rounded-2">문단 들여쓰기</div>
 
-          <MenuItem on:click={() => (postSettingOpen = false)}>0.5줄</MenuItem>
-          <MenuItem on:click={() => (postSettingOpen = false)}>1줄</MenuItem>
-          <MenuItem on:click={() => (postSettingOpen = false)}>2줄</MenuItem>
-          <MenuItem on:click={() => (postSettingOpen = false)}>없음</MenuItem>
+            <MenuItem on:click={() => (postSettingOpen = false)}>0.5줄</MenuItem>
+            <MenuItem on:click={() => (postSettingOpen = false)}>1줄</MenuItem>
+            <MenuItem on:click={() => (postSettingOpen = false)}>2줄</MenuItem>
+            <MenuItem on:click={() => (postSettingOpen = false)}>없음</MenuItem>
+          </Menu>
+
+          <Menu offset={16} placement="right-start">
+            <div slot="value" class="px-3.5 py-3 text-14-r w-full rounded-2">문단 사이간격</div>
+
+            <MenuItem on:click={() => (postSettingOpen = false)}>0.5줄</MenuItem>
+            <MenuItem on:click={() => (postSettingOpen = false)}>1줄</MenuItem>
+            <MenuItem on:click={() => (postSettingOpen = false)}>2줄</MenuItem>
+            <MenuItem on:click={() => (postSettingOpen = false)}>없음</MenuItem>
+          </Menu>
         </Menu>
-
-        <Menu offset={16} placement="right-start">
-          <div slot="value" class="px-3.5 py-3 text-14-r w-full rounded-2">문단 사이간격</div>
-
-          <MenuItem on:click={() => (postSettingOpen = false)}>0.5줄</MenuItem>
-          <MenuItem on:click={() => (postSettingOpen = false)}>1줄</MenuItem>
-          <MenuItem on:click={() => (postSettingOpen = false)}>2줄</MenuItem>
-          <MenuItem on:click={() => (postSettingOpen = false)}>없음</MenuItem>
-        </Menu>
-      </Menu>
+      </ToolbarButtonTooltip>
     </div>
   </div>
 </header>
