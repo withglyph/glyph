@@ -1,4 +1,5 @@
 import { lookupCollection } from '@iconify/json';
+import { IconSet } from '@iconify/tools';
 import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders';
 import { presetIcons } from '@unocss/preset-icons';
 import { presetUno } from '@unocss/preset-uno';
@@ -12,6 +13,21 @@ export const presetPenxle = (): Preset<Theme> => ({
   presets: [
     presetIcons({
       collections: {
+        tb: async () => {
+          const collection = await lookupCollection('tabler');
+          const iconSet = new IconSet(collection);
+
+          iconSet.forEachSync((icon) => {
+            const svg = iconSet.toSVG(icon);
+            if (svg) {
+              const newBody = svg.toString().replaceAll('stroke-width="2"', 'stroke-width="1.5"');
+              svg.load(newBody);
+              iconSet.fromSVG(icon, svg);
+            }
+          });
+
+          return iconSet.export();
+        },
         lc: async () => lookupCollection('lucide'),
         lg: async () => lookupCollection('simple-icons'),
         px: FileSystemIconLoader('./src/assets/icons', (s) => s.replace(/^<svg /, '<svg fill="currentColor" ')),
