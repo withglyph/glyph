@@ -1,5 +1,6 @@
 import * as R from 'radash';
 import { elasticSearch, indexName } from '$lib/server/search';
+import { getTagUsageCount } from '$lib/server/utils';
 import { disassembleHangulString, InitialHangulString } from '$lib/utils';
 import { Prisma, PrismaClient } from '$prisma';
 import type { estypes } from '@elastic/elasticsearch';
@@ -140,14 +141,17 @@ type IndexTagsParam = Prisma.TagGetPayload<{
 export const indexTags = async (tags: IndexTagsParam) => {
   if (tags.length === 0) return;
 
-  const disassembledTags = tags.map(({ id, name }) => ({
-    id,
-    name: {
-      raw: name,
-      disassembled: disassembleHangulString(name),
-      initial: InitialHangulString(name) || null,
-    },
-  }));
+  const disassembledTags = await Promise.all(
+    tags.map(async ({ id, name }) => ({
+      id,
+      name: {
+        raw: name,
+        disassembled: disassembleHangulString(name),
+        initial: InitialHangulString(name) || null,
+      },
+      usageCount: await getTagUsageCount(id),
+    })),
+  );
 
   await elasticSearch.bulk({
     index: indexName('tags'),
