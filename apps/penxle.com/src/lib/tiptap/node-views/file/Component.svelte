@@ -6,6 +6,7 @@
   import { onMount } from 'svelte';
   import { graphql } from '$glitch';
   import { NodeView } from '$lib/tiptap';
+  import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
   import type { NodeViewProps } from '$lib/tiptap';
 
   type $$Props = NodeViewProps;
@@ -13,9 +14,10 @@
 
   export let node: NodeViewProps['node'];
   export let editor: NodeViewProps['editor'] | undefined;
-  export let selected: NodeViewProps['selected'] | undefined;
-  // export let deleteNode: NodeViewProps['deleteNode'] | undefined;
-  export let updateAttributes: NodeViewProps['updateAttributes'] | undefined;
+  export let selected: NodeViewProps['selected'];
+  export let deleteNode: NodeViewProps['deleteNode'];
+  export let updateAttributes: NodeViewProps['updateAttributes'];
+  export let getPos: NodeViewProps['getPos'];
 
   const prepareFileUpload = graphql(`
     mutation TiptapFile_PrepareFileUpload_Mutation {
@@ -44,7 +46,7 @@
     await ky.put(presignedUrl, { body: file });
     const resp = await finalizeFileUpload({ key, name: file.name });
 
-    updateAttributes?.({
+    updateAttributes({
       id: resp.id,
       __data: resp,
       __file: undefined,
@@ -58,24 +60,42 @@
   });
 </script>
 
-<NodeView
-  class={clsx(
-    'flex gap-2 items-center m-4 px-8 py-4 border relative grow',
-    editor?.isEditable && selected && 'ring-4 ring-brand-50',
-  )}
-  as={editor?.isEditable ? undefined : 'a'}
-  href={editor?.isEditable ? undefined : node.attrs.__data.url}
-  {...editor?.isEditable && { 'data-drag-handle': true }}
->
+<NodeView class="flex center py-4px" data-drag-handle draggable>
   {@const data = node.attrs.__file ?? node.attrs.__data}
 
-  <i class="i-lc-file" />
-  <div class="font-bold">{data.name}</div>
-  <div class="text-sm text-gray-60">{numeral(data.size).format('0b')}</div>
-
-  {#if !node.attrs.id}
-    <div class="absolute inset-0 flex center bg-white/50">
-      <RingSpinner class="w-8 h-8 text-brand-50" />
+  <svelte:element
+    this={editor?.isEditable ? 'div' : 'a'}
+    class={clsx(
+      'relative w-400px p-12px border border-gray-300 rounded-4px flex pointer-events-auto',
+      selected && 'ring-2 ring-teal-500',
+    )}
+    href={editor?.isEditable ? undefined : data.url}
+  >
+    <div class="flex gap-8px items-center grow">
+      <div class="flex gap-6px items-center">
+        <i class="i-tb-folder text-gray-300 square-18px" />
+        <div class="text-14-r">{data.name}</div>
+      </div>
+      <div class="w-1px h-12px bg-gray-300" />
+      <div class="text-14-r text-gray-400">{numeral(data.size).format('0b')}</div>
     </div>
-  {/if}
+
+    <div class="p-4px rounded-4px transition hover:bg-gray-100">
+      <i class="block i-tb-grip-vertical square-18px text-gray-600" />
+    </div>
+
+    {#if !node.attrs.id}
+      <div class="absolute inset-0 flex center bg-white/50">
+        <RingSpinner class="w-8 h-8 text-teal-500" />
+      </div>
+    {/if}
+  </svelte:element>
 </NodeView>
+
+{#if editor && selected}
+  <TiptapNodeViewBubbleMenu {editor} {getPos} {node}>
+    <button class="p-4px rounded-2px transition hover:bg-gray-100" type="button" on:click={() => deleteNode()}>
+      <i class="i-tb-trash text-gray-600 square-18px block" />
+    </button>
+  </TiptapNodeViewBubbleMenu>
+{/if}
