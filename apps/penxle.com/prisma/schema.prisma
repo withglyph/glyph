@@ -84,6 +84,7 @@ model Image {
 
   profilesUsingThisAsAvatar                 Profile[]
   spacesUsingThisAsIcon                     Space[]
+  postsUsingThisAsThumbnail                 Post[]
   postRevisionsUsingThisAsCroppedThumbnail  PostRevision[]
   postRevisionsUsingThisAsOriginalThumbnail PostRevision[]    @relation("origin")
   spaceCollectionUsingThisAsThumbnail       SpaceCollection[]
@@ -151,17 +152,28 @@ model Post {
   publishedRevisionId String?       @map("published_revision_id")
   publishedRevision   PostRevision? @relation(name: "published_revision", fields: [publishedRevisionId], references: [id])
 
-  state                  PostState
-  contentFilters         ContentFilterCategory[] @map("content_filters")
-  visibility             PostVisibility
-  discloseStats          Boolean                 @map("disclose_stats")
-  receiveFeedback        Boolean                 @map("receive_feedback")
-  receivePatronage       Boolean                 @map("receive_patronage")
-  receiveTagContribution Boolean                 @map("receive_tag_contribution")
-  protectContent         Boolean                 @default(true) @map("protect_content")
-  password               String?
-  createdAt              DateTime                @default(now()) @map("created_at") @db.Timestamptz
-  publishedAt            DateTime?               @map("published_at") @db.Timestamptz
+  state PostState
+
+  thumbnailId String? @map("thumbnail_id")
+  thumbnail   Image?  @relation(fields: [thumbnailId], references: [id])
+
+  visibility         PostVisibility
+  password           String?
+  ageRating          PostAgeRating  @default(ALL) @map("age_rating")
+  externalSearchable Boolean        @default(true) @map("external_searchable")
+
+  discloseStats          Boolean @map("disclose_stats")
+  receiveFeedback        Boolean @map("receive_feedback")
+  receivePatronage       Boolean @map("receive_patronage")
+  receiveTagContribution Boolean @map("receive_tag_contribution")
+  protectContent         Boolean @default(true) @map("protect_content")
+
+  pairs PostPair[] @default([])
+
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  publishedAt DateTime? @map("published_at") @db.Timestamptz
+
+  contentFilters ContentFilterCategory[] @map("content_filters")
 
   likes          PostLike[]
   revisions      PostRevision[]
@@ -170,6 +182,7 @@ model Post {
   reactions      PostReaction[]
   bookmarks      BookmarkGroupPost[]
   collectionPost SpaceCollectionPost?
+  tags           PostTag[]
 
   @@index([publishedAt])
   @@map("posts")
@@ -227,7 +240,9 @@ model PostRevision {
   paidContentId String?              @map("paid_content_id")
   paidContent   PostRevisionContent? @relation(name: "paid_content", fields: [paidContentId], references: [id])
 
-  autoIndent Boolean @default(true) @map("auto_indent")
+  autoIndent       Boolean @default(true) @map("auto_indent")
+  paragraphIndent  Int     @default(100) @map("paragraph_indent")
+  paragraphSpacing Int     @default(100) @map("paragraph_spacing")
 
   contentKind PostRevisionContentKind
   price       Int?
@@ -274,6 +289,19 @@ model PostRevisionTag {
 
   @@unique([revisionId, tagId])
   @@map("post_revision_tags")
+}
+
+model PostTag {
+  id        String      @id
+  postId    String      @map("post_id")
+  post      Post        @relation(fields: [postId], references: [id])
+  tagId     String      @map("tag_id")
+  tag       Tag         @relation(fields: [tagId], references: [id])
+  kind      PostTagKind
+  createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([postId, tagId, kind])
+  @@map("post_tags")
 }
 
 model PostView {
@@ -489,7 +517,7 @@ model Tag {
   userMutes     UserTagMute[]
   postRevisions PostRevisionTag[]
   followers     TagFollow[]
-  // spacesUsingThis SpaceTag[]
+  posts         PostTag[]
 
   @@index(createdAt)
   @@map("tags")
@@ -792,6 +820,25 @@ enum PointTransactionCause {
   @@map("_point_transaction_cause")
 }
 
+enum PostAgeRating {
+  ALL
+  R15
+  R19
+
+  @@map("_post_age_rating")
+}
+
+enum PostPair {
+  BL
+  GL
+  HL
+  MULTIPLE
+  NONCP
+  OTHER
+
+  @@map("_post_pair")
+}
+
 enum PostRevisionKind {
   AUTO_SAVE
   MANUAL_SAVE
@@ -814,6 +861,16 @@ enum PostState {
   DELETED
 
   @@map("_post_state")
+}
+
+enum PostTagKind {
+  TITLE
+  COUPLING
+  CHARACTER
+  TRIGGER
+  EXTRA
+
+  @@map("_post_tag_kind")
 }
 
 enum PostVisibility {
