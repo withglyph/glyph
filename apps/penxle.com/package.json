@@ -109,6 +109,7 @@
     "@types/node": "^20.11.10",
     "@types/numeral": "^2.0.5",
     "@types/randomcolor": "^0.5.9",
+    "color": "^4.2.3",
     "svelte-check": "^3.6.3",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
