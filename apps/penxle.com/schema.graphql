@@ -368,6 +368,21 @@ type Post {
   visibility: PostVisibility!
 }
 
+enum PostAgeRating {
+  ALL
+  R15
+  R19
+}
+
+enum PostPair {
+  BL
+  GL
+  HL
+  MULTIPLE
+  NONCP
+  OTHER
+}
+
 type PostReaction {
   emoji: String!
   id: ID!
@@ -409,6 +424,14 @@ enum PostState {
   DELETED
   DRAFT
   PUBLISHED
+}
+
+enum PostTagKind {
+  CHARACTER
+  COUPLING
+  EXTRA
+  TITLE
+  TRIGGER
 }
 
 enum PostVisibility {
