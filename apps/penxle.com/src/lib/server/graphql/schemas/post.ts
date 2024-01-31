@@ -102,6 +102,12 @@ export const postSchema = defineSchema((builder) => {
       receiveTagContribution: t.exposeBoolean('receiveTagContribution'),
       protectContent: t.exposeBoolean('protectContent'),
 
+      thumbnail: t.relation('thumbnail', {
+        authScopes: { $granted: '$post:view' },
+        nullable: true,
+        unauthorizedResolver: () => null,
+      }),
+
       hasPassword: t.boolean({
         resolve: (post) => !!post.password,
       }),
@@ -508,18 +514,21 @@ export const postSchema = defineSchema((builder) => {
 
       originalThumbnail: t.relation('originalThumbnail', {
         nullable: true,
+        deprecationReason: 'Use Post.thumbnail instead',
         authScopes: { $granted: '$postRevision:view' },
         unauthorizedResolver: () => null,
       }),
 
       croppedThumbnail: t.relation('croppedThumbnail', {
         nullable: true,
+        deprecationReason: 'Use Post.thumbnail instead',
         authScopes: { $granted: '$postRevision:view' },
         unauthorizedResolver: () => null,
       }),
 
       thumbnailBounds: t.expose('thumbnailBounds', {
         type: 'JSON',
+        deprecationReason: 'Deleted',
         nullable: true,
         authScopes: { $granted: '$postRevision:view' },
         unauthorizedResolver: () => null,
@@ -1212,11 +1221,13 @@ export const postSchema = defineSchema((builder) => {
             publishedRevisionId: revision.id,
             visibility: input.visibility,
             ageRating: input.ageRating,
+            thumbnailId: input.thumbnailId ?? null,
             externalSearchable: input.externalSearchable,
             discloseStats: input.discloseStats,
             receiveFeedback: input.receiveFeedback,
             receivePatronage: input.receivePatronage,
             receiveTagContribution: input.receiveTagContribution,
+            // TODO: required 만들기
             protectContent: input.protectContent ?? true,
             password,
             category: input.category,

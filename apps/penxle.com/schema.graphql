@@ -369,6 +369,7 @@ type Post {
   space: Space
   state: PostState!
   tags: [Tag!]!
+  thumbnail: Image
   unlocked: Boolean!
   viewCount: Int!
   visibility: PostVisibility!
@@ -408,18 +409,18 @@ type PostRevision {
   content: JSON!
   contentKind: PostRevisionContentKind!
   createdAt: DateTime!
-  croppedThumbnail: Image
+  croppedThumbnail: Image @deprecated(reason: "Use Post.thumbnail instead")
   editableContent: JSON!
   id: ID!
   kind: PostRevisionKind!
-  originalThumbnail: Image
+  originalThumbnail: Image @deprecated(reason: "Use Post.thumbnail instead")
   paragraphIndent: Int!
   paragraphSpacing: Int!
   previewText: String!
   price: Int
   subtitle: String
   tags: [Tag!]! @deprecated(reason: "Use Post.tags instead")
-  thumbnailBounds: JSON
+  thumbnailBounds: JSON @deprecated(reason: "Deleted")
   title: String!
   updatedAt: DateTime!
 }
