@@ -23,13 +23,9 @@
   --uno: bg-teal-500;
 }
 
-.ProseMirror-gapcursor {
-  --uno: border-t border-t-black w-full my-1;
-  animation: cursor-blink 1s steps(2, start) infinite;
-}
-
 .ProseMirror-focused .ProseMirror-gapcursor {
-  --uno: block;
+  --uno: border-l border-l-black w-0 h-20px my-1;
+  animation: cursor-blink 1s steps(2, start) infinite;
 }
 
 /*
