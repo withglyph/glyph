@@ -3,15 +3,6 @@ import * as linkifyjs from 'linkifyjs';
 import { createNodeView } from '../../lib';
 import Component from './Component.svelte';
 
-declare module '@tiptap/core' {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  interface Commands<ReturnType> {
-    embed: {
-      setEmbed: (url: string) => ReturnType;
-    };
-  }
-}
-
 export const Embed = createNodeView(Component, {
   name: 'embed',
   group: 'block',
@@ -20,18 +11,8 @@ export const Embed = createNodeView(Component, {
   addAttributes() {
     return {
       url: { isRequired: true },
+      mode: { default: 'opengraph' },
       __data: {},
-    };
-  },
-
-  addCommands() {
-    return {
-      setEmbed:
-        (url) =>
-        ({ tr }) => {
-          tr.replaceSelectionWith(this.type.create({ url }));
-          return tr.docChanged;
-        },
     };
   },
 
