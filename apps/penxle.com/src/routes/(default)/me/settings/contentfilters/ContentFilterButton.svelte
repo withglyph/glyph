@@ -47,7 +47,6 @@
 
 <ToggleButton
   checked={preferences[category] === 'EXPOSE'}
-  size="md"
   on:change={async (e) => {
     const action = e.currentTarget.checked ? 'EXPOSE' : 'WARN';
 

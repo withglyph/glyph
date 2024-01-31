@@ -7,7 +7,7 @@
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Image, Tooltip } from '$lib/components';
+  import { Image, ToggleButton, Tooltip } from '$lib/components';
   import { Checkbox, FormValidationMessage, Switch } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { portal } from '$lib/svelte/actions';
@@ -529,6 +529,13 @@
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
             </Tooltip>
           </p>
+
+          <div class="grid grid-cols-4 gap-0.5625rem">
+            <ToggleButton>오리지널</ToggleButton>
+            <ToggleButton>2차창작</ToggleButton>
+            <ToggleButton>비문학</ToggleButton>
+            <ToggleButton>기타</ToggleButton>
+          </div>
         </div>
 
         <div>
@@ -538,6 +545,14 @@
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
             </Tooltip>
           </p>
+
+          <div class="grid grid-cols-4 gap-0.5625rem">
+            <ToggleButton>BL</ToggleButton>
+            <ToggleButton>GL</ToggleButton>
+            <ToggleButton>HL</ToggleButton>
+            <ToggleButton>Non-CP</ToggleButton>
+            <ToggleButton>그 외</ToggleButton>
+          </div>
         </div>
 
         <div>
@@ -806,79 +821,6 @@
     >
       트리거 주의
     </Checkbox>
-
-    <div class={clsx('grid grid-cols-5 gap-2', !enableContentFilter && 'hidden')}>
-      <ToggleButton
-        checked={$data.contentFilters?.includes('VIOLENCE')}
-        size="lg"
-        on:change={(e) => checkContentFilter(e, 'VIOLENCE')}
-      >
-        폭력성
-      </ToggleButton>
-      <ToggleButton
-        checked={$data.contentFilters?.includes('GROSSNESS')}
-        size="lg"
-        on:change={(e) => checkContentFilter(e, 'GROSSNESS')}
-      >
-        벌레/징그러움
-      </ToggleButton>
-      <ToggleButton
-        checked={$data.contentFilters?.includes('CRUELTY')}
-        size="lg"
-        on:change={(e) => checkContentFilter(e, 'CRUELTY')}
-      >
-        잔인성
-      </ToggleButton>
-      <ToggleButton
-        checked={$data.contentFilters?.includes('HORROR')}
-        size="lg"
-        on:change={(e) => checkContentFilter(e, 'HORROR')}
-      >
-        공포성
-      </ToggleButton>
-      <ToggleButton
-        checked={$data.contentFilters?.includes('GAMBLING')}
-        size="lg"
-        on:change={(e) => checkContentFilter(e, 'GAMBLING')}
-      >
-        사행성
-      </ToggleButton>
-      <ToggleButton
-        checked={$data.contentFilters?.includes('CRIME')}
-        size="lg"
-        on:change={(e) => checkContentFilter(e, 'CRIME')}
-      >
-        약물/범죄
-      </ToggleButton>
-      <ToggleButton
-        checked={$data.contentFilters?.includes('PHOBIA')}
-        size="lg"
-        on:change={(e) => checkContentFilter(e, 'PHOBIA')}
-      >
-        정신질환/공포증
-      </ToggleButton>
-      <ToggleButton
-        checked={$data.contentFilters?.includes('TRAUMA')}
-        size="lg"
-        on:change={(e) => checkContentFilter(e, 'TRAUMA')}
-      >
-        PTSD/트라우마
-      </ToggleButton>
-      <ToggleButton
-        checked={$data.contentFilters?.includes('INSULT')}
-        size="lg"
-        on:change={(e) => checkContentFilter(e, 'INSULT')}
-      >
-        부적절한 언어
-      </ToggleButton>
-      <ToggleButton
-        checked={$data.contentFilters?.includes('OTHER')}
-        size="lg"
-        on:change={(e) => checkContentFilter(e, 'OTHER')}
-      >
-        기타
-      </ToggleButton>
-    </div>
 
     <p class="text-secondary">세부 설정</p>
 
