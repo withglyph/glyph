@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <circle
+    cx="12"
+    cy="12"
+    r="9"
+    fill="none"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+  />
+  <path
+    fill="none"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="1.5"
+    d="M16 4h0c0 1.1-.9 2-2 2h-.5c-.8 0-1.5.7-1.5 1.5V8c0 .6-.4 1-1 1h0c-.6 0-1 .4-1 1v1c0 1.1.9 2 2 2h2c1.1 0 2 .9 2 2h0c0 1.1.9 2 2 2h1m-8 4v-2.5c0-.8-.7-1.5-1.5-1.5h0c-.8 0-1.5-.7-1.5-1.5h0c0-.3-.1-.7-.3-.9L3.5 9.5"
+  />
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path
+    fill="none"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="1.5"
+    d="M20 20h0M4 20h0m4 0h0m4 0h0m4 0h0m4-16h0M4 4h0m4 0h0m4 0h0m4 0h0M7.5 9c0-.3.1-.5.3-.7.2-.2.4-.3.7-.3H15c.3 0 .5.1.7.3.2.2.3.4.3.7v6c0 .3-.1.5-.3.7-.2.2-.4.3-.7.3H8.5c-.3 0-.5-.1-.7-.3-.2-.2-.3-.4-.3-.7V9z"
+  />
+</svg>
