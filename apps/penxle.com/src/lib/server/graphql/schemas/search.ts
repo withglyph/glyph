@@ -257,5 +257,54 @@ export const searchSchema = defineSchema((builder) => {
         });
       },
     }),
+
+    autoCompleteTags: t.prismaField({
+      type: ['Tag'],
+      args: { query: t.arg.string(), kind: t.arg({ type: PrismaEnums.PostTagKind }) },
+      resolve: async (query, _, args, { db, ...context }) => {
+        const mutedTags = context.session
+          ? await db.userTagMute.findMany({
+              where: { userId: context.session.userId },
+            })
+          : [];
+
+        const searchResult = await elasticSearch.search({
+          index: indexName('tags'),
+          min_score: 0.01,
+          query: {
+            bool: {
+              should: [
+                { match_phrase: { 'name.raw^2': args.query } },
+                {
+                  match_phrase: /^[ㄱ-ㅎ]+$/.test(args.query)
+                    ? { 'name.initial': args.query }
+                    : { 'name.disassembled': disassembleHangulString(args.query) },
+                },
+                {
+                  rank_feature: {
+                    field: `usageCount.${args.kind}`,
+                    saturation: { pivot: 10 },
+                  },
+                },
+              ],
+              filter: {
+                bool: {
+                  must_not: {
+                    ids: { values: mutedTags.map(({ tagId }) => tagId) },
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        return searchResultToPrismaData({
+          searchResult,
+          db,
+          tableName: 'tag',
+          queryArgs: query,
+        });
+      },
+    }),
   }));
 });

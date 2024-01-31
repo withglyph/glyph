@@ -162,6 +162,7 @@ await createIndex('tags', {
           initial: { type: 'text', analyzer: 'ngram_23' }, // 초성
         },
       },
+      usageCount: { type: 'rank_features' },
     },
   },
 });

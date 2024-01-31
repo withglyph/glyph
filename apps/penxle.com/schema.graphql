@@ -531,6 +531,7 @@ input PurchasePostInput {
 type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
+  autoCompleteTags(kind: PostTagKind!, query: String!): [Tag!]!
   flash: Flash
   hello(name: String!): String!
   me: User
@@ -728,12 +729,21 @@ type Tag {
   name: String!
   parents: [Tag!]!
   posts: [Post!]!
+  usageCount: TagUsageCount!
   wiki: TagWiki
 }
 
 input TagInput {
   kind: PostTagKind!
   name: String!
+}
+
+type TagUsageCount {
+  CHARACTER: Int!
+  COUPLING: Int!
+  EXTRA: Int!
+  TITLE: Int!
+  TRIGGER: Int!
 }
 
 type TagWiki {
