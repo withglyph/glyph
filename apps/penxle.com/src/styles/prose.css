@@ -20,7 +20,7 @@
 */
 
 .ProseMirror-dropcursor {
-  --uno: bg-brand-50;
+  --uno: bg-teal-500;
 }
 
 .ProseMirror-gapcursor {

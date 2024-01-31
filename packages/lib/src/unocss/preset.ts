@@ -69,7 +69,7 @@ export const presetPenxle = (): Preset<Theme> => ({
           sb: 'semibold',
           b: 'bold',
           m: 'medium',
-          r: 'regular',
+          r: 'normal',
         }[w];
 
         return `text-[${d}px] font-${fontWeight}`;
