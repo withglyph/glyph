@@ -4,7 +4,9 @@
   & li > p:first-child {
     display: inline;
   }
+}
 
+.tiptap-editor {
   & p.is-editor-empty:first-child::before {
     --uno: text-gray-40 h-0 pointer-events-none float-left;
     content: attr(data-placeholder);

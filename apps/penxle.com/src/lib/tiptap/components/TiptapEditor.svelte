@@ -71,7 +71,7 @@
 
 <div
   bind:this={element}
-  class={clsx('contents', autoIndent && 'tiptap-autoindent')}
+  class={clsx('contents tiptap-editor', autoIndent && 'tiptap-autoindent')}
   autocapitalize="off"
   autocorrect="off"
   spellcheck="false"

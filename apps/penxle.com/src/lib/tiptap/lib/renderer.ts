@@ -121,13 +121,13 @@ class SvelteNodeView extends NodeView<NodeViewComponentType> implements ProseMir
   }
 
   selectNode() {
-    if (this.node.type.spec.selectable !== false) {
+    if (this.editor.isEditable && this.node.type.spec.selectable !== false) {
       this.#component.$set({ selected: true });
     }
   }
 
   deselectNode() {
-    if (this.node.type.spec.selectable !== false) {
+    if (this.editor.isEditable && this.node.type.spec.selectable !== false) {
       this.#component.$set({ selected: false });
     }
   }
@@ -142,6 +142,7 @@ class SvelteNodeView extends NodeView<NodeViewComponentType> implements ProseMir
   #createElement() {
     const element = document.createElement(this.node.isInline ? 'span' : 'div');
     element.style.whiteSpace = 'normal';
+    element.style.pointerEvents = 'none';
     return element;
   }
 }
