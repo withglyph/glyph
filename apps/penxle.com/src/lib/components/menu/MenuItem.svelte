@@ -32,8 +32,8 @@
 <svelte:element
   this={element}
   class={clsx(
-    'body-14-sb text-secondary px-4 py-3 w-full rounded-lg',
-    disabled ? 'cursor-not-allowed' : 'hover:(bg-primary text-primary)',
+    'text-14-r px-3.5 py-3 w-full rounded-2',
+    disabled ? 'cursor-not-allowed' : 'hover:(bg-teal-50 text-teal-600)',
     _class,
   )}
   on:click

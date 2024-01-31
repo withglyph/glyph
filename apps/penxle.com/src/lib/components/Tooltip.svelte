@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { offset } from '@floating-ui/dom';
   import { tick } from 'svelte';
   import { writable } from 'svelte/store';
   import { scale } from 'svelte/transition';
@@ -8,6 +9,9 @@
 
   let _class: string | undefined = undefined;
   export { _class as class };
+  let _offset: number | undefined = undefined;
+  export { _offset as offset };
+
   export let enabled = true;
   export let message: string;
   export let placement: Placement = 'bottom';
@@ -18,7 +22,7 @@
   const [floatingRef, floatingContent, update] = createFloatingActions({
     strategy: 'absolute',
     placement,
-    middleware: [arrow({ element: arrowRef })],
+    middleware: [offset(_offset ?? 0), arrow({ element: arrowRef })],
     onComputed(position) {
       if ($arrowRef) {
         Object.assign($arrowRef.style, computeArrowPosition(position));

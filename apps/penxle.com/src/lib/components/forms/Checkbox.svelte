@@ -26,20 +26,20 @@
     <input
       id={name}
       {name}
-      class="relative flex center square-4.5 shrink-0 border border-gray-30 rounded cursor-pointer appearance-none transition checked:(border-none bg-gray-90) checked:after:(square-4 i-lc-check text-white content-empty) enabled:(aria-[invalid]:border-red-50 hover:border-gray-40!)"
+      class="relative flex center square-4.5 shrink-0 border border-gray-300 rounded-0.75 cursor-pointer appearance-none transition checked:(border-none bg-teal-500) checked:after:(square-3.5 i-tb-check text-white content-empty) enabled:(aria-[invalid]:border-red-50 hover:border-gray-300!)"
       type="checkbox"
       on:change
       bind:checked
       {...$$restProps}
     />
-    <span class="slot text-gray-90 cursor-pointer">
+    <span class="slot cursor-pointer">
       <slot />
     </span>
   </label>
   {#if name}
     <FormValidationMessage for={name} let:message>
-      <div class="flex items-center gap-1.5 mt-1.5 text-xs text-red-50">
-        <i class="i-lc-alert-triangle" />
+      <div class="flex items-center gap-1.5 mt-1.5 text-11-r text-gray-400">
+        <i class="i-tb-alert-triangle-filled text-error-900" />
         {message}
       </div>
     </FormValidationMessage>

@@ -202,11 +202,11 @@ export const designColors = {
   },
   error: {
     50: '#FFCECE',
-    600: '#DC2626',
+    900: '#DC2626',
   },
   positive: {
     50: '#D7FBE3',
-    600: '#16A34A',
+    900: '#16A34A',
   },
   hyperlink: {
     600: '#2563EB',

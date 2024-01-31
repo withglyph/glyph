@@ -1,6 +1,6 @@
 export const values = {
   color: [
-    { label: '검정색', value: '#1c1917' },
+    { label: '검정색', value: '#09090b' },
     { label: '회색', value: '#78716c' },
     { label: '연회색', value: '#a8a29e' },
     { label: '빨간색', value: '#ea4335' },
@@ -58,10 +58,10 @@ export const values = {
   ],
 
   textAlign: [
-    { label: '왼쪽', value: 'left', icon: 'i-lc-align-left' },
-    { label: '중앙', value: 'center', icon: 'i-lc-align-center' },
-    { label: '오른쪽', value: 'right', icon: 'i-lc-align-right' },
-    { label: '양쪽', value: 'justify', icon: 'i-lc-align-justify' },
+    { label: '왼쪽', value: 'left', icon: 'i-tb-align-left' },
+    { label: '중앙', value: 'center', icon: 'i-tb-align-center' },
+    { label: '오른쪽', value: 'right', icon: 'i-tb-align-right' },
+    { label: '양쪽', value: 'justify', icon: 'i-tb-align-justified' },
   ],
 
   horizontalRule: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }, { value: 6 }, { value: 7 }],

@@ -2,23 +2,15 @@
   import { onMount } from 'svelte';
   import { Button } from '$lib/components';
   import ArticleEditor from './ArticleEditor.svelte';
-  import GalleryEditor from './GalleryEditor.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
   import type { Writable } from 'svelte/store';
-  import type { PostRevisionContentKind } from '$glitch';
-  import type { ImageBounds } from '$lib/utils';
 
   export let autoSaveCount: Writable<number>;
-  export let kind: PostRevisionContentKind;
   export let title: string;
   export let subtitle: string | null;
   export let content: JSONContent;
   export let editor: Editor | undefined;
-  export let thumbnailId: string | undefined;
-  export let thumbnailBounds: ImageBounds | undefined;
   export let autoIndent: boolean;
-
-  let enableSubtitle = !!subtitle;
 
   function autoSave() {
     $autoSaveCount += 1;
@@ -50,48 +42,26 @@
   </div>
 </div>
 
-<main class="flex grow flex-col bg-primary <sm:hidden">
-  <div class="bg-white flex flex-col grow w-full max-w-262 mx-auto border-x border-secondary pt-17">
-    <div class="mx-auto w-full max-w-225 flex flex-col grow">
+<main class="flex grow flex-col bg-gray-50 <sm:hidden">
+  <div class="bg-white flex flex-col grow w-full max-w-270 mx-auto pt-17 grow">
+    <div class="mx-15 pb-5 mb-5 border-b border-gray-200">
       <input
-        class="py-3 w-full title-32-eb border-b"
+        class="w-full text-28-sb"
         placeholder="제목을 입력하세요"
         type="text"
         bind:value={title}
         on:keydown={autoSave}
       />
 
-      {#if enableSubtitle}
-        <input
-          class="mt-4 py-3 w-full subtitle-18-b"
-          placeholder="부제목을 입력하세요"
-          type="text"
-          bind:value={subtitle}
-          on:keydown={(e) => {
-            if (e.key === 'Backspace' && e.currentTarget.value === '') {
-              enableSubtitle = false;
-            }
-          }}
-          on:keydown={autoSave}
-        />
-      {:else}
-        <label class="body-16-b flex items-center gap-2 mt-4">
-          부제목 추가
-          <button
-            class="flex center p-0.5 border border-secondary rounded-lg square-6"
-            type="button"
-            on:click={() => (enableSubtitle = true)}
-          >
-            <i class="i-lc-plus square-3.5 text-secondary" />
-          </button>
-        </label>
-      {/if}
-
-      {#if kind === 'ARTICLE'}
-        <ArticleEditor {autoIndent} onChange={autoSave} bind:editor bind:content />
-      {:else}
-        <GalleryEditor onChange={autoSave} bind:content bind:thumbnailId bind:thumbnailBounds />
-      {/if}
+      <input
+        class="mt-1 w-full text-16-r"
+        placeholder="부제목을 입력해주세요"
+        type="text"
+        bind:value={subtitle}
+        on:keydown={autoSave}
+      />
     </div>
+
+    <ArticleEditor {autoIndent} onChange={autoSave} bind:editor bind:content />
   </div>
 </main>

@@ -24,6 +24,9 @@
   export let preventClose = false;
   export let disabled = false;
 
+  export let rounded = true;
+  export let menuClass: string | undefined = undefined;
+
   $: props = as === 'button' ? { type: 'button', disabled } : { tabindex: -1 };
 
   setContext('close', preventClose ? undefined : () => (open = false));
@@ -73,12 +76,14 @@
 
   <div
     class={clsx(
-      'z-52 bg-cardprimary rounded-lg px-1 space-y-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.15)] flex',
+      'z-52 bg-cardprimary rounded-lg px-2.5 space-y-1 shadow-[0px_5px_22px_0px_rgba(0,0,0,0.06)] flex border border-gray-200',
       {
-        'flex-col py-2': alignment === 'vertical',
+        'flex-col py-2.5': alignment === 'vertical',
         'flex-row py-1': alignment === 'horizontal',
       },
       !padding && 'p-none!',
+      !rounded && 'rounded-t-none!',
+      menuClass,
     )}
     use:floatingContent
     use:portal

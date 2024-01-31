@@ -12,6 +12,8 @@
   let gradientSliderInputEl: HTMLInputElement | undefined;
 
   export let hex = '#FF0000';
+  export let onChange: () => void;
+
   let rgb = Color(hex).rgb();
 
   $: hex = rgb.hex().toString();
@@ -84,6 +86,8 @@
     if (history.includes(hex)) return;
 
     history = [hex, ...history.slice(0, 4)];
+
+    onChange();
   };
 
   onMount(() => {
@@ -117,7 +121,9 @@
   $: paddedHistory = [...history, ...Array.from({ length: 5 - history.length }).fill(null)] as (null | string)[];
 </script>
 
-<div class="flex flex-col w-12rem border-(1px gray-200) rounded-b-2 shadow-[0px_5px_22px_0px_rgba(0,0,0,0.06)]">
+<div
+  class="flex flex-col w-12rem border-(1px gray-200) rounded-b-2 shadow-[0px_5px_22px_0px_rgba(0,0,0,0.06)] bg-white"
+>
   <div class="p-xs">
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <form

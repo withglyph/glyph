@@ -4,7 +4,6 @@
   import { writable } from 'svelte/store';
   import { graphql } from '$glitch';
   import Editor from '../Editor.svelte';
-  import Footer from '../Footer.svelte';
   import Header from '../Header.svelte';
   import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
   import type { PostRevisionContentKind } from '$glitch';
@@ -107,15 +106,4 @@
   bind:autoIndent
   bind:kind
 />
-<Editor
-  {autoIndent}
-  {autoSaveCount}
-  {kind}
-  bind:title
-  bind:editor
-  bind:subtitle
-  bind:content
-  bind:thumbnailId
-  bind:thumbnailBounds
-/>
-<Footer {autoSaveCount} {kind} bind:content bind:tags bind:thumbnailBounds bind:thumbnailId />
+<Editor {autoIndent} {autoSaveCount} bind:title bind:editor bind:subtitle bind:content />

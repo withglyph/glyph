@@ -14,8 +14,8 @@
 
   const [floatingRef, floatingContent, update] = createFloatingActions({
     strategy: 'absolute',
-    placement: 'bottom',
-    middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrowRef })],
+    placement: 'bottom-start',
+    middleware: [offset(32), flip(), shift({ padding: 8 }), arrow({ element: arrowRef })],
     onComputed(position) {
       if ($arrowRef) {
         Object.assign($arrowRef.style, computeArrowPosition(position));
@@ -34,28 +34,27 @@
   $: countWithoutWhitespace = text?.replaceAll(/\s/g, '').length ?? 0;
 </script>
 
-<div class="body-15-b w-fit" use:floatingRef use:hover={hovered}>
-  <mark class="text-blue-50">{countWithWhitespace}</mark>
-  자
+<div class="text-11-m w-fit" use:floatingRef use:hover={hovered}>
+  {countWithWhitespace}자
 </div>
 
 {#if $hovered}
   <div
-    class="z-100 rounded px-3 py-2 shadow-[0_2px_10px_0_rgba(0,0,0,0.10)] bg-cardprimary text-primary"
+    class="z-100 rounded px-4 py-3 bg-gray-950 text-gray-300"
     role="tooltip"
     use:floatingContent
     use:portal
     transition:scale={{ start: 0.9, duration: 200 }}
   >
-    <div class="caption-12-m">
-      <span class="text-secondary w-17.5 inline-block">공백 미포함</span>
-      <span class="text-rights">{countWithoutWhitespace}자</span>
+    <div class="text-12-r">
+      <span class="text-gray-300 w-15 inline-block">공백 미포함</span>
+      <span class="text-right text-12-m text-white">{countWithoutWhitespace}자</span>
     </div>
-    <div class="caption-12-m">
-      <span class="text-secondary w-17.5 inline-block">공백 포함</span>
-      <span class="text-rights">{countWithWhitespace}자</span>
+    <div class="text-12-r">
+      <span class="text-gray-300 w-15 inline-block">공백 포함</span>
+      <span class="text-right text-12-m text-white">{countWithWhitespace}자</span>
     </div>
 
-    <div bind:this={$arrowRef} class="absolute square-2 rotate-45 bg-cardprimary" />
+    <div bind:this={$arrowRef} class="absolute square-2 rotate-45 bg-gray-950" />
   </div>
 {/if}

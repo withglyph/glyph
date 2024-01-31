@@ -1,41 +1,38 @@
 <script lang="ts">
   import { flip, offset, shift } from '@floating-ui/dom';
+  import { Link } from '@penxle/ui';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import * as R from 'radash';
-  import { onDestroy, onMount } from 'svelte';
-  import { slide } from 'svelte/transition';
+  import { onDestroy, onMount, tick } from 'svelte';
   import { browser, dev } from '$app/environment';
-  import { beforeNavigate, goto } from '$app/navigation';
+  import { beforeNavigate } from '$app/navigation';
   import { page } from '$app/stores';
+  import Wordmark from '$assets/icons/wordmark.svg?component';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Image, Modal, ToggleButton, Tooltip } from '$lib/components';
+  import { Tooltip } from '$lib/components';
   import { Logo } from '$lib/components/branding';
-  import { Checkbox, FormValidationMessage, Radio, Switch } from '$lib/components/forms';
+  import ColorPicker from '$lib/components/ColorPicker.svelte';
   import { Menu, MenuItem } from '$lib/components/menu';
-  import { createMutationForm } from '$lib/form';
-  import { toast } from '$lib/notification';
   import { portal } from '$lib/svelte/actions';
   import { createFloatingActions } from '$lib/svelte-floating-ui';
-  import { PublishPostInputSchema } from '$lib/validations/post';
-  import CreateSpaceModal from '../(default)/CreateSpaceModal.svelte';
+  import { values } from '$lib/tiptap/values';
+  import { isValidImageFile, validImageMimes } from '$lib/utils';
   import ArticleCharacterCount from './ArticleCharacterCount.svelte';
+  import DraftPostModal from './DraftPostModal.svelte';
+  import PublishMenu from './PublishMenu.svelte';
   import RevisionListModal from './RevisionListModal.svelte';
   import { preventRevise } from './store';
-  import ToolbarButton from './ToolbarButton.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
-  import type { ChangeEventHandler } from 'svelte/elements';
   import type { Writable } from 'svelte/store';
   import type {
-    ContentFilterCategory,
     EditorPage_Header_post,
     EditorPage_Header_query,
     PostRevisionContentKind,
     PostRevisionKind,
   } from '$glitch';
   import type { ImageBounds } from '$lib/utils';
-  import type { SwitchSpace } from './types/switch-space';
 
   let _query: EditorPage_Header_query;
   let _post: EditorPage_Header_post | null = null;
@@ -77,17 +74,13 @@
 
           posts(state: DRAFT) {
             id
-            permalink
-
-            draftRevision {
-              id
-              title
-              updatedAt
-            }
           }
 
+          ...EditorPage_DraftPostModal_user
           ...CreateSpaceModal_user
         }
+
+        ...EditorPage_PublishMenu_query
       }
     `),
   );
@@ -121,6 +114,7 @@
           }
         }
 
+        ...EditorPage_PublishMenu_post
         ...EditorPage_RevisionListModal_Post
       }
     `),
@@ -156,14 +150,6 @@
     }
   });
 
-  const deletePost = graphql(`
-    mutation EditorPage_DeletePost_Mutation($input: DeletePostInput!) {
-      deletePost(input: $input) {
-        id
-      }
-    }
-  `);
-
   const revisePost = graphql(`
     mutation EditorPage_RevisePost_Mutation($input: RevisePostInput!) {
       revisePost(input: $input) {
@@ -172,6 +158,7 @@
 
         draftRevision {
           id
+          kind
           createdAt
         }
 
@@ -185,37 +172,7 @@
     }
   `);
 
-  const { form, data, setInitialValues } = createMutationForm({
-    mutation: graphql(`
-      mutation EditorPage_PublishPost_Mutation($input: PublishPostInput!) {
-        publishPost(input: $input) {
-          id
-          permalink
-          discloseStats
-          receiveFeedback
-          receivePatronage
-          receiveTagContribution
-          protectContent
-          visibility
-
-          space {
-            id
-            slug
-          }
-        }
-      }
-    `),
-    schema: PublishPostInputSchema,
-    extra: async () => {
-      await doRevisePost('AUTO_SAVE');
-      return {};
-    },
-    onSuccess: async (resp) => {
-      warnUnload = false;
-      mixpanel.track('post:publish', { postId: resp.id });
-      await goto(`/${resp.space.slug}/${resp.permalink}`);
-    },
-  });
+  let reviseKind: PostRevisionKind | undefined;
 
   const doRevisePost = async (revisionKind: PostRevisionKind) => {
     if (!canRevise) return;
@@ -240,7 +197,8 @@
     postId = resp.id;
 
     revisedAt = resp.draftRevision.createdAt;
-    $data.revisionId = resp.draftRevision.id;
+    reviseKind = resp.draftRevision.kind;
+    // $data.revisionId = resp.draftRevision.id;
 
     draftPost = resp;
 
@@ -248,25 +206,21 @@
   };
 
   let revisedAt: string | undefined;
+  // let reviseKind: PostRevisionKind | undefined;
   let publishMenuOpen = false;
-  let createSpaceOpen = false;
-  let spaceSelectorOpen = false;
   let revisionListOpen = false;
   let draftListOpen = false;
-  let deleteDraftPostOpen = false;
-  let deletePostId: string | undefined;
 
-  let enablePassword = false;
-  let enableContentFilter = false;
-  let changePassword = false;
+  // let enablePassword = false;
+  // let enableContentFilter = false;
 
-  $: if ($post?.hasPassword) {
-    enablePassword = true;
-  }
+  // $: if ($post?.hasPassword) {
+  //   enablePassword = true;
+  // }
 
-  $: if ($post?.contentFilters.filter((v) => v !== 'ADULT').length ?? 0 > 0) {
-    enableContentFilter = true;
-  }
+  // $: if ($post?.contentFilters.filter((v) => v !== 'ADULT').length ?? 0 > 0) {
+  //   enableContentFilter = true;
+  // }
 
   let selectedSpaceId: string | undefined;
 
@@ -287,49 +241,14 @@
 
   $: selectedSpace = $query.me.spaces.find((space) => space.id === selectedSpaceId);
 
-  const switchSpace: SwitchSpace = ({ id, emitSave = false }) => {
-    selectedSpaceId = id;
-    spaceSelectorOpen = false;
-
-    if (emitSave) {
-      $autoSaveCount += 1;
-    }
-  };
-
   $: permalink = ($post || draftPost)?.permalink;
-
-  $: if ($post) {
-    setInitialValues({
-      revisionId: $post.draftRevision?.id,
-      contentFilters: $post.contentFilters,
-      discloseStats: $post.discloseStats,
-      receiveFeedback: $post.receiveFeedback,
-      receivePatronage: $post.receivePatronage,
-      receiveTagContribution: $post.receiveTagContribution,
-      password: $post.hasPassword ? '' : undefined,
-      protectContent: $post.protectContent,
-      visibility: $post.visibility,
-    });
-  } else {
-    setInitialValues({
-      revisionId: '',
-      contentFilters: [],
-      discloseStats: true,
-      receiveFeedback: true,
-      receivePatronage: true,
-      receiveTagContribution: true,
-      protectContent: true,
-      visibility: 'PUBLIC',
-    });
-  }
 
   $: if ($post) {
     postId = $post.id;
   }
 
-  $: published = $post?.state === 'PUBLISHED';
   $: canRevise = browser && !!selectedSpaceId && !$preventRevise;
-  $: canPublish = canRevise && title.trim().length > 0;
+  // $: canPublish = canRevise && title.trim().length > 0;
 
   $: if (canRevise) {
     warnUnload = true;
@@ -345,10 +264,6 @@
   onDestroy(unsubscriber);
 
   $: reviseNotAvailableReason = (() => {
-    if (!selectedSpace) {
-      return '게시할 스페이스를 선택해주세요';
-    }
-
     if (!title) {
       return '제목을 입력해주세요';
     }
@@ -360,514 +275,638 @@
     return '';
   })();
 
+  const handleInsertImage = () => {
+    const picker = document.createElement('input');
+    picker.type = 'file';
+    picker.accept = validImageMimes.join(',');
+
+    picker.addEventListener('change', async () => {
+      const file = picker.files?.[0];
+
+      if (!file || !(await isValidImageFile(file))) {
+        return;
+      }
+
+      editor?.chain().focus().setImage(file).run();
+    });
+
+    picker.showPicker();
+  };
+
+  const handleInsertFile = () => {
+    const picker = document.createElement('input');
+    picker.type = 'file';
+
+    picker.addEventListener('change', async () => {
+      const file = picker.files?.[0];
+
+      if (!file) {
+        return;
+      }
+
+      editor?.chain().focus().setFile(file).run();
+    });
+
+    picker.showPicker();
+  };
+
+  let menuOffset = 11;
+  let tooltipOffset = 12;
+
+  let linkInputEl: HTMLInputElement | null = null;
+
+  let href = '';
+  let linkButtonOpen = false;
+
+  $: if (linkButtonOpen) {
+    href = '';
+
+    // eslint-disable-next-line unicorn/prefer-top-level-await
+    void tick().then(() => {
+      linkInputEl?.focus();
+    });
+  }
+
+  let rubyText = '';
+  let rubyButtonOpen = false;
+  let hex = '#000000';
+
+  $: if (rubyButtonOpen) {
+    rubyText = '';
+  }
+
+  let fontColorOpen = false;
+  let fontFamilyOpen = false;
+  let fontSizeOpen = false;
+  let postSettingOpen = false;
+  let colorPickerOpen = false;
+
   const [floatingRef, floatingContent, update] = createFloatingActions({
     strategy: 'absolute',
     placement: 'bottom-end',
-    middleware: [offset(4), flip(), shift({ padding: 8 })],
+    middleware: [offset(18), flip(), shift({ padding: 8 })],
   });
 
-  $: if (publishMenuOpen) {
+  $: if (colorPickerOpen) {
     void update();
   }
-
-  const checkContentFilter = (
-    e: Parameters<ChangeEventHandler<HTMLInputElement>>[0],
-    contentFilter: ContentFilterCategory,
-  ) => {
-    const { checked } = e.currentTarget;
-
-    $data.contentFilters = checked
-      ? $data.contentFilters
-        ? [...$data.contentFilters, contentFilter]
-        : [contentFilter]
-      : $data.contentFilters?.filter((v) => v !== contentFilter);
-  };
-
-  const changeMode = (mode: PostRevisionContentKind) => {
-    kind = mode;
-
-    if (content?.content) {
-      content.content = content.content.filter((c) => c.type === 'image' || c.type === 'access_barrier');
-    }
-  };
 </script>
 
-<header class="sticky top-0 z-50 border-b border-secondary bg-white py-2 px-4 sm:px-7.5 h-15.25 flex center <sm:hidden">
-  <div class="w-full max-w-300 flex items-center gap-2">
-    <Logo class="square-6" />
+<header class="sticky top-0 z-50 bg-white <sm:hidden">
+  <div class="w-full flex items-center justify-between border-b border-gray-200 h-14 pl-7 pr-5">
+    <Link class="flex items-center gap-2" href="/">
+      <Logo class="square-6" />
+      <Wordmark class="h-5.25 color-icon-primary" />
+    </Link>
 
-    <div
-      class={clsx(
-        "bg-surface-primary rounded-3xl h-10 w-fit grid relative grid-cols-2 before:(content-[''] absolute w-50% h-100% left-0 bg-gray-70 rounded-3xl transition-all)",
-        kind === 'GALLERY' && 'before:left-50%',
-      )}
-    >
-      <button
-        class="h-10 py-2 px-4 flex items-center gap-2 z-1 text-gray-70 aria-pressed:text-white transition-color"
-        aria-pressed={kind === 'ARTICLE'}
-        disabled={kind === 'ARTICLE'}
-        type="button"
-        on:click={() => {
-          changeMode('ARTICLE');
-          $autoSaveCount += 1;
-        }}
-      >
-        <i class="i-lc-file-text square-5" />
-        <span class="body-14-b">글 모드</span>
-      </button>
-      <button
-        class="h-10 py-2 px-4 flex items-center gap-2 z-1 text-gray-70 aria-pressed:text-white transition-color"
-        aria-pressed={kind === 'GALLERY'}
-        disabled={kind === 'GALLERY'}
-        type="button"
-        on:click={() => {
-          const message = '그림 모드로 전환하면 그림을 제외한 나머지 내용은 사라져요. 그래도 전환하시겠어요?';
-
-          if (confirm(message)) {
-            changeMode('GALLERY');
-            $autoSaveCount += 1;
-          }
-        }}
-      >
-        <i class="i-lc-image square-5" />
-        <span class="body-14-b">그림 모드</span>
-      </button>
-    </div>
-
-    <div class="flex items-center gap-2">
-      <ToolbarButton
-        name="실행 취소"
-        class="i-lc-undo-2 square-6!"
-        enabled={editor?.can().undo()}
-        on:click={() => editor?.chain().focus().undo().run()}
-      />
-      <ToolbarButton
-        name="다시 실행"
-        class="i-lc-redo-2 square-6!"
-        enabled={editor?.can().redo()}
-        on:click={() => editor?.chain().focus().redo().run()}
-      />
-    </div>
-
-    <div class="flex grow justify-center relative">
-      <button
-        class="w-full max-w-92 h-10 px-4 py-2 bg-primary border border-secondary rounded-xl flex gap-2 items-center justify-between w-full relative"
-        disabled={published}
-        type="button"
-        on:click={() => {
-          if (selectedSpace) {
-            spaceSelectorOpen = !spaceSelectorOpen;
-          } else {
-            createSpaceOpen = true;
-          }
-        }}
-      >
-        {#if selectedSpace}
-          {#if !published}
-            <i class="i-lc-menu square-6 text-disabled absolute" />
-          {/if}
-
-          <div class="flex grow center gap-2">
-            <Image class="square-6 rounded-md flex-none border border-secondary" $image={selectedSpace.icon} />
-            <span class="body-15-b truncate">{selectedSpace.name}</span>
-          </div>
-        {:else}
-          <i class="i-lc-plus square-6 text-disabled absolute" />
-
-          <div class="flex grow center gap-2">
-            <span class="body-15-b">눌러서 새 스페이스 만들기</span>
-          </div>
-        {/if}
-      </button>
-
-      {#if spaceSelectorOpen}
-        <div
-          class="fixed inset-0 z-49"
-          role="button"
-          tabindex="-1"
-          on:click={() => (spaceSelectorOpen = false)}
-          on:keypress={null}
-          use:portal
-        />
-
-        <ul
-          class="absolute z-50 top-12 w-full max-w-92 bg-cardprimary rounded-2xl shadow-[0_4px_16px_0_rgba(0,0,0,0.15)] py-4 px-3 space-y-3"
-          transition:slide={{ axis: 'y', duration: 250 }}
-        >
-          {#each $query.me.spaces as space (space.id)}
-            <li>
-              <button
-                class="px-2 py-1 w-full rounded-xl hover:bg-primary"
-                type="button"
-                on:click={() => {
-                  switchSpace({ id: space.id, emitSave: true });
-                }}
-              >
-                <div class="flex items-center gap-2">
-                  <Image class="square-6 rounded-md flex-none border border-secondary" $image={space.icon} />
-                  <span class="body-15-b truncate">{space.name}</span>
-                </div>
-              </button>
-            </li>
-          {/each}
-
-          <hr class="border-alphagray-10" />
-
-          <Button
-            class="body-13-b w-full justify-start! truncate"
-            size="xs"
-            variant="text"
-            on:click={() => (createSpaceOpen = true)}
-          >
-            <i class="i-lc-plus square-3.5 mr-1" />
-            새로운 스페이스 추가하기
-          </Button>
-        </ul>
-      {/if}
-    </div>
-
-    <div class="flex flex-col items-end text-right">
-      {#if kind === 'ARTICLE'}
+    <div class="flex items-end justify-end flex-1">
+      <div class="flex flex-col items-end text-right mr-3">
         <ArticleCharacterCount {editor} />
-      {:else}
-        <div class="body-15-b w-fit">
-          <mark class="text-blue-50">
-            {content?.content?.filter((c) => c.type === 'image').length ?? 0}
-          </mark>
-          장
-        </div>
-      {/if}
-      <span class="caption-12-m text-disabled">
-        {#if revisedAt}
-          {dayjs(revisedAt).formatAsTime()} 저장됨
+
+        {#if $revisePost.inflight}
+          <span class="text-10-r text-gray-400">{dayjs(revisedAt).formatAsTime()} 저장중</span>
+        {:else if revisedAt && reviseKind === 'AUTO_SAVE'}
+          <span class="text-10-r text-gray-400">{dayjs(revisedAt).formatAsTime()} 저장됨</span>
+        {:else if revisedAt && reviseKind === 'MANUAL_SAVE'}
+          <span class="text-10-sb text-teal-500">{dayjs(revisedAt).formatAsTime()} 저장됨</span>
         {:else}
-          저장되지 않음
+          <span class="text-10-r text-error-900">저장되지 않음</span>
         {/if}
-      </span>
-    </div>
+      </div>
 
-    <div class="flex">
-      <Tooltip class="peer" enabled={!canRevise} message={reviseNotAvailableReason}>
-        <Button
-          class="body-15-b disabled:border! border-r-none rounded-r-none"
-          color="tertiary"
-          disabled={!canRevise}
-          loading={$revisePost.inflight}
-          size="lg"
-          variant="outlined"
-          on:click={() => doRevisePost('MANUAL_SAVE')}
+      <div class="flex items-center border border-gray-200 rounded py-2.5 px-3.5 mr-2 leading-none! text-14-m">
+        <Tooltip enabled={!canRevise} message={reviseNotAvailableReason}>
+          <button
+            class="after:(content-empty border-r border-gray-300 h-4 ml-2) leading-none!"
+            disabled={!canRevise}
+            type="button"
+            on:click={() => doRevisePost('MANUAL_SAVE')}
+          >
+            저장
+          </button>
+        </Tooltip>
+
+        <button
+          class="text-14-sb text-gray-400 pl-2 leading-none!"
+          disabled={$query.me.posts.length === 0}
+          type="button"
+          on:click={() => (draftListOpen = true)}
         >
-          임시저장
-        </Button>
-      </Tooltip>
+          {$query.me.posts?.length ?? 0}
+        </button>
+      </div>
 
-      <Button
-        class={clsx(
-          'text-blue-50 body-15-b rounded-l-none peer-[&:has(button:enabled)]:peer-hover:(border-l! border-l-border-primary)',
-          $query.me.posts.length === 0 &&
-            'border-l! peer-[&:has(button:enabled)]:peer-hover:(border-l-border-primary!)',
-        )}
-        color="tertiary"
-        disabled={$query.me.posts.length === 0}
-        size="lg"
-        variant="outlined"
-        on:click={() => (draftListOpen = true)}
-      >
-        {$query.me.posts?.length ?? 0}
-      </Button>
-    </div>
-
-    <div class="w-fit" use:floatingRef>
-      <Tooltip enabled={!canPublish} message={reviseNotAvailableReason}>
-        <Button disabled={!canPublish} size="lg" on:click={() => (publishMenuOpen = true)}>포스트 게시</Button>
-      </Tooltip>
-    </div>
-
-    {#if publishMenuOpen}
-      <div
-        class="fixed inset-0 z-51"
-        role="button"
-        tabindex="-1"
-        on:click={() => (publishMenuOpen = false)}
-        on:keypress={null}
-        use:portal
+      <PublishMenu
+        {$post}
+        {$query}
+        {autoIndent}
+        {autoSaveCount}
+        {content}
+        {draftPost}
+        {kind}
+        open={publishMenuOpen}
+        {postId}
+        {revisedAt}
+        {subtitle}
+        {tags}
+        {thumbnailBounds}
+        {thumbnailId}
+        {title}
+        {warnUnload}
       />
-    {/if}
 
-    <div
-      class={clsx(
-        'z-52 bg-cardprimary rounded-lg px-1 space-y-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.15)] flex flex-col py-2',
-        !publishMenuOpen && 'hidden!',
-      )}
-      use:floatingContent
-      use:portal
-    >
-      <button
-        class="square-6 flex center absolute top-6 right-6 p-0 rounded-full text-secondary hover:(bg-primary text-primary)"
-        type="button"
-        on:click={() => (publishMenuOpen = false)}
-      >
-        <i class="i-lc-x" />
-      </button>
+      <Menu class="flex center" disabled={!permalink} offset={menuOffset} placement="bottom-end" rounded={false}>
+        <i slot="value" class="i-tb-dots-vertical square-6" aria-label="더보기" />
 
-      <form class="px-3 pt-4 pb-3.5 space-y-4 w-163" use:form>
-        <p class="title-20-b">포스트 게시 옵션</p>
-
-        {#if selectedSpace?.visibility === 'PRIVATE'}
-          <div class="bg-primary p-4 rounded-2xl flex items-center gap-2">
-            <i class="i-px-alert-triangle color-action-red-primary square-4" />
-            <p class="text-secondary body-13-b">
-              현재 비공개 스페이스로 지정되어있어 스페이스 멤버 외에는 글을 볼 수 없어요
-            </p>
-          </div>
-        {/if}
-
-        <div>
-          <p class="text-secondary mb-3">공개범위</p>
-
-          <fieldset class="flex gap-6">
-            <Radio name="visibility" class="gap-1.5 body-15-sb" value="PUBLIC">전체 공개</Radio>
-            <Radio name="visibility" class="gap-1.5 body-15-sb" value="SPACE">
-              멤버 공개
-              <Tooltip message="같은 스페이스의 멤버에게만 노출돼요" placement="top">
-                <i class="i-lc-help-circle square-4 text-secondary" />
-              </Tooltip>
-            </Radio>
-            <Radio name="visibility" class="gap-1.5 body-15-sb" value="UNLISTED">
-              링크 공개
-              <Tooltip message="링크를 아는 사람에게만 노출돼요" placement="top">
-                <i class="i-lc-help-circle square-4 text-secondary" />
-              </Tooltip>
-            </Radio>
-          </fieldset>
-        </div>
-
-        <div class="flex items-center h-10">
-          <Checkbox
-            class="body-15-sb"
-            checked={enablePassword}
-            on:change={() => {
-              enablePassword = !enablePassword;
-              if (!enablePassword) {
-                $data.password = null;
-              }
-              changePassword = true;
-            }}
-          >
-            비밀글
-          </Checkbox>
-
-          {#if enablePassword && !changePassword && $post}
-            <button
-              class="body-15-sb text-disabled p-1 rounded-1 ml-1 hover:bg-primary"
-              type="button"
-              on:click={() => (changePassword = true)}
-            >
-              변경하기
-            </button>
-          {/if}
-
-          <input
-            name="password"
-            class={clsx(
-              'bg-surface-primary rounded-xl px-3 py-1 body-15-sb h-10 ml-6',
-              (!enablePassword || ($post && enablePassword && !changePassword)) && 'hidden!',
-            )}
-            pattern="^[!-~]+$"
-            placeholder="비밀번호 입력"
-            type="text"
-          />
-          <FormValidationMessage for="password" let:message>
-            <div class="flex items-center gap-1.5 text-xs text-red-50">
-              <i class="i-lc-alert-triangle" />
-              {message}
-            </div>
-          </FormValidationMessage>
-        </div>
-
-        <p class="text-secondary">종류 선택</p>
-
-        <div class="flex items-center gap-1">
-          <Checkbox
-            class="body-15-sb"
-            checked={$data.contentFilters?.includes('ADULT')}
-            on:change={(e) => checkContentFilter(e, 'ADULT')}
-          >
-            성인물
-          </Checkbox>
-          <Tooltip message="성인 인증을 한 유저에게만 노출돼요" placement="top">
-            <i class="i-lc-help-circle square-4 text-secondary" />
-          </Tooltip>
-        </div>
-
-        <Checkbox
-          class="body-15-sb"
-          checked={enableContentFilter}
-          on:change={() => {
-            enableContentFilter = !enableContentFilter;
-            $data.contentFilters = $data.contentFilters?.includes('ADULT') ? ['ADULT'] : [];
+        <MenuItem
+          on:click={() => {
+            revisionListOpen = true;
           }}
         >
-          트리거 주의
-        </Checkbox>
+          저장이력
+        </MenuItem>
 
-        <div class={clsx('grid grid-cols-5 gap-2', !enableContentFilter && 'hidden')}>
-          <ToggleButton
-            checked={$data.contentFilters?.includes('VIOLENCE')}
-            size="lg"
-            on:change={(e) => checkContentFilter(e, 'VIOLENCE')}
+        <MenuItem external href={`/${selectedSpace?.slug}/preview/${permalink}`} type="link">미리보기</MenuItem>
+
+        <!-- <hr class="border-alphagray-10" />
+
+        <div class="flex items-center gap-2 body-14-m px-4 py-3 rounded-lg hover:bg-primary">
+          <label class="cursor-pointer" for="autoIndent">문단 들여쓰기</label>
+          <Checkbox name="autoIndent" bind:checked={autoIndent} on:change={() => ($autoSaveCount += 1)} />
+        </div> -->
+      </Menu>
+    </div>
+  </div>
+  <div class="flex items-center border-b border-gray-200 h-14 px-6">
+    <div class="flex items-center pointer-events-auto">
+      <div class="flex center space-x-3 h-8.5 after:(content-empty border-r border-gray-300 h-4 mx-3)">
+        <Tooltip class="flex center" message="글자 색" offset={tooltipOffset}>
+          <button
+            class="flex items-center gap-1 h-full hover:(bg-gray-100 rounded)"
+            type="button"
+            on:click={() => (colorPickerOpen = true)}
+            use:floatingRef
           >
-            폭력성
-          </ToggleButton>
-          <ToggleButton
-            checked={$data.contentFilters?.includes('GROSSNESS')}
-            size="lg"
-            on:change={(e) => checkContentFilter(e, 'GROSSNESS')}
+            <div
+              style:color={editor?.getAttributes('font_color').fontColor ?? values.color[0].value}
+              class="rounded-full square-4.5 bg-[currentColor]"
+            />
+            <i class={clsx('i-tb-chevron-down square-4.5 text-gray-300', fontColorOpen && 'rotate-180')} />
+          </button>
+
+          {#if colorPickerOpen}
+            <div
+              class="fixed inset-0 z-51"
+              role="button"
+              tabindex="-1"
+              on:click={() => (colorPickerOpen = false)}
+              on:keypress={null}
+              use:portal
+            />
+          {/if}
+
+          <div class={clsx('z-52', !colorPickerOpen && 'hidden')} use:floatingContent use:portal>
+            <ColorPicker
+              onChange={() => {
+                if (hex === values.color[0].value.toUpperCase()) {
+                  editor?.chain().focus().unsetFontColor().run();
+                } else {
+                  editor?.chain().focus().setFontColor(hex).run();
+                }
+              }}
+              bind:hex
+            />
+          </div>
+        </Tooltip>
+
+        <Tooltip message="폰트" offset={tooltipOffset}>
+          <Menu class="h-8.5" offset={menuOffset} placement="bottom-start" rounded={false} bind:open={fontFamilyOpen}>
+            <div slot="value" class="flex items-center gap-1 whitespace-nowrap h-full hover:(bg-gray-100 rounded)">
+              <div>
+                {values.fontFamily.find(({ value }) => editor?.getAttributes('font_family').fontFamily === value)
+                  ?.label ?? values.fontFamily[0].label}
+              </div>
+              <i class={clsx('i-tb-chevron-down square-4.5 text-gray-300', fontFamilyOpen && 'rotate-180')} />
+            </div>
+
+            {#each values.fontFamily as font (font.value)}
+              <MenuItem
+                class={clsx('flex items-center gap-2 justify-between')}
+                on:click={() => {
+                  if (font.value === values.fontFamily[0].value) {
+                    editor?.chain().focus().unsetFontFamily().run();
+                  } else {
+                    editor?.chain().focus().setFontFamily(font.value).run();
+                  }
+                }}
+              >
+                <span style:font-family={`PNXL_${font.value}`}>
+                  {font.label}
+                </span>
+                <i
+                  class={clsx(
+                    'i-tb-check square-5 text-teal-500',
+                    !editor?.isActive({ fontFamily: font.value }) && 'invisible',
+                  )}
+                  aria-hidden={!editor?.isActive({ fontFamily: font.value })}
+                  aria-label="선택됨"
+                />
+              </MenuItem>
+            {/each}
+          </Menu>
+        </Tooltip>
+
+        <Tooltip message="글자 크기" offset={tooltipOffset} placement="bottom">
+          <Menu
+            class="flex items-center h-8.5"
+            menuClass="max-h-60 overflow-y-auto"
+            offset={menuOffset}
+            placement="bottom-start"
+            rounded={false}
+            bind:open={fontSizeOpen}
           >
-            벌레/징그러움
-          </ToggleButton>
-          <ToggleButton
-            checked={$data.contentFilters?.includes('CRUELTY')}
-            size="lg"
-            on:change={(e) => checkContentFilter(e, 'CRUELTY')}
+            <div slot="value" class="flex center gap-1 h-full hover:(bg-gray-100 rounded)">
+              {values.fontSize.find(({ value }) => editor?.getAttributes('font_size').fontSize === value)?.label ??
+                values.fontSize[4].label}
+              <i class={clsx('i-tb-chevron-down square-4.5 text-gray-300', fontSizeOpen && 'rotate-180')} />
+            </div>
+
+            {#each values.fontSize as fontSize (fontSize.value)}
+              <MenuItem
+                class="flex items-center gap-2 justify-between"
+                on:click={() => {
+                  if (!editor) return;
+
+                  if (fontSize.value === 16) {
+                    editor.chain().focus().unsetFontSize().run();
+                  } else {
+                    editor.chain().focus().setFontSize(fontSize.value).run();
+                  }
+                }}
+              >
+                {fontSize.label}
+                <i
+                  class={clsx(
+                    'i-tb-check square-5 text-teal-500',
+                    !editor?.isActive({ fontSize: fontSize.value }) && 'invisible',
+                  )}
+                  aria-hidden={!editor?.isActive({ fontSize: fontSize.value })}
+                  aria-label="선택됨"
+                />
+              </MenuItem>
+            {/each}
+          </Menu>
+        </Tooltip>
+      </div>
+
+      <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
+        <Tooltip message="굵게" offset={tooltipOffset} placement="bottom">
+          <button
+            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            type="button"
+            on:click={() => editor?.chain().focus().toggleBold().run()}
           >
-            잔인성
-          </ToggleButton>
-          <ToggleButton
-            checked={$data.contentFilters?.includes('HORROR')}
-            size="lg"
-            on:change={(e) => checkContentFilter(e, 'HORROR')}
+            <i class={clsx('i-tb-bold square-6', editor?.isActive('bold') && 'text-teal-500')} />
+          </button>
+        </Tooltip>
+
+        <Tooltip message="기울임" offset={tooltipOffset} placement="bottom">
+          <button
+            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            type="button"
+            on:click={() => editor?.chain().focus().toggleItalic().run()}
           >
-            공포성
-          </ToggleButton>
-          <ToggleButton
-            checked={$data.contentFilters?.includes('GAMBLING')}
-            size="lg"
-            on:change={(e) => checkContentFilter(e, 'GAMBLING')}
+            <i class={clsx('i-tb-italic square-6', editor?.isActive('italic') && 'text-teal-500')} />
+          </button>
+        </Tooltip>
+
+        <Tooltip message="취소선" offset={tooltipOffset}>
+          <button
+            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            type="button"
+            on:click={() => editor?.chain().focus().toggleStrike().run()}
           >
-            사행성
-          </ToggleButton>
-          <ToggleButton
-            checked={$data.contentFilters?.includes('CRIME')}
-            size="lg"
-            on:change={(e) => checkContentFilter(e, 'CRIME')}
+            <i class={clsx('i-tb-strikethrough square-6', editor?.isActive('strike') && 'text-teal-500')} />
+          </button>
+        </Tooltip>
+
+        <Tooltip message="밑줄" offset={tooltipOffset}>
+          <button
+            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            type="button"
+            on:click={() => editor?.chain().focus().toggleUnderline().run()}
           >
-            약물/범죄
-          </ToggleButton>
-          <ToggleButton
-            checked={$data.contentFilters?.includes('PHOBIA')}
-            size="lg"
-            on:change={(e) => checkContentFilter(e, 'PHOBIA')}
+            <i class={clsx('i-tb-underline square-6', editor?.isActive('underline') && 'text-teal-500')} />
+          </button>
+        </Tooltip>
+
+        <Tooltip message="루비" offset={tooltipOffset}>
+          <Menu
+            class="flex center gap-2 square-8.5 hover:(bg-gray-100 rounded)"
+            offset={menuOffset}
+            padding={false}
+            bind:open={rubyButtonOpen}
           >
-            정신질환/공포증
-          </ToggleButton>
-          <ToggleButton
-            checked={$data.contentFilters?.includes('TRAUMA')}
-            size="lg"
-            on:change={(e) => checkContentFilter(e, 'TRAUMA')}
+            <i slot="value" class="i-px-ruby square-6" />
+
+            <MenuItem type="div">
+              <form
+                class="flex relative gap-2 body-13-m text-secondary"
+                on:submit|preventDefault={(event) => {
+                  if (!(event.currentTarget.rubyText instanceof HTMLInputElement))
+                    throw new Error('Fail to access input element');
+
+                  const rubyText = event.currentTarget.rubyText.value.trim();
+                  editor?.chain().focus().setRuby(rubyText).run();
+                  // 메뉴 닫기
+                  event.currentTarget.click();
+                }}
+              >
+                <span class="invisible flex-grow min-w-8.25rem max-w-20rem text-clip overflow-hidden whitespace-nowrap">
+                  {rubyText}
+                </span>
+                <input
+                  name="rubyText"
+                  class="absolute w-full max-w-20rem"
+                  required
+                  type="text"
+                  on:click|stopPropagation
+                  on:input={(event) => {
+                    rubyText = event.currentTarget.value;
+                  }}
+                />
+                <Tooltip message="적용하기">
+                  <button class="hover:text-primary active:text-primary" type="submit" on:click|stopPropagation>
+                    <i class="i-tb-check" />
+                  </button>
+                </Tooltip>
+              </form>
+            </MenuItem>
+          </Menu>
+        </Tooltip>
+      </div>
+
+      <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
+        <Tooltip message="정렬" offset={tooltipOffset}>
+          <Menu
+            class="flex center gap-0.25rem square-8.5 hover:(bg-gray-100 rounded) hover:(bg-gray-100 rounded)"
+            offset={menuOffset}
+            placement="bottom-start"
+            rounded={false}
           >
-            PTSD/트라우마
-          </ToggleButton>
-          <ToggleButton
-            checked={$data.contentFilters?.includes('INSULT')}
-            size="lg"
-            on:change={(e) => checkContentFilter(e, 'INSULT')}
+            <i
+              slot="value"
+              class={clsx(
+                values.textAlign.find(({ value }) => value === editor?.getAttributes('paragraph').textAlign)?.icon ??
+                  values.textAlign[0].icon,
+                'square-6',
+              )}
+            />
+
+            {#each values.textAlign as textAlign (textAlign.value)}
+              <button
+                class="flex center square-8.5 hover:(bg-primary) aria-pressed:text-teal-500"
+                aria-pressed={editor?.isActive({ textAlign: textAlign.value })}
+                type="button"
+                on:click={() => editor?.chain().focus().setParagraphTextAlign(textAlign.value).run()}
+              >
+                <i class={clsx(textAlign.icon, 'square-6')} />
+              </button>
+            {/each}
+          </Menu>
+        </Tooltip>
+
+        <Tooltip message="행간" offset={tooltipOffset}>
+          <Menu
+            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            offset={menuOffset}
+            placement="bottom-start"
+            rounded={false}
           >
-            부적절한 언어
-          </ToggleButton>
-          <ToggleButton
-            checked={$data.contentFilters?.includes('OTHER')}
-            size="lg"
-            on:change={(e) => checkContentFilter(e, 'OTHER')}
+            <i slot="value" class="i-px-line-height square-6" />
+
+            {#each values.lineHeight as lineHeight (lineHeight.value)}
+              <MenuItem
+                class="flex items-center gap-2 justify-between"
+                on:click={() => {
+                  editor?.chain().focus().setParagraphLineHeight(lineHeight.value).run();
+                }}
+              >
+                {lineHeight.label}
+                <i
+                  class={clsx(
+                    'i-tb-check square-5 text-teal-500',
+                    !editor?.isActive({ lineHeight: lineHeight.value }) && 'invisible',
+                  )}
+                  aria-hidden={!editor?.isActive({ lineHeight: lineHeight.value })}
+                  aria-label="선택됨"
+                />
+              </MenuItem>
+            {/each}
+          </Menu>
+        </Tooltip>
+
+        <Tooltip message="자간" offset={tooltipOffset}>
+          <Menu
+            class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
+            offset={menuOffset}
+            placement="bottom-start"
+            rounded={false}
           >
-            기타
-          </ToggleButton>
+            <i slot="value" class="i-px-letter-space square-6" />
+
+            {#each values.letterSpacing as letterSpacing (letterSpacing.value)}
+              <MenuItem
+                class="flex items-center gap-2 justify-between"
+                on:click={() => {
+                  editor?.chain().focus().setParagraphLetterSpacing(letterSpacing.value).run();
+                }}
+              >
+                {letterSpacing.label}
+                <i
+                  class={clsx(
+                    'i-tb-check square-5 text-teal-500',
+                    !editor?.isActive({ letterSpacing: letterSpacing.value }) && 'invisible',
+                  )}
+                  aria-hidden={!editor?.isActive({ letterSpacing: letterSpacing.value })}
+                  aria-label="선택됨"
+                />
+              </MenuItem>
+            {/each}
+          </Menu>
+        </Tooltip>
+      </div>
+
+      <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
+        <Tooltip message="리스트" offset={tooltipOffset}>
+          <Menu
+            class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
+            offset={menuOffset}
+            placement="bottom"
+            rounded={false}
+          >
+            <i slot="value" class="i-tb-list square-6" />
+
+            <MenuItem
+              on:click={() => {
+                editor?.chain().focus().toggleBulletList().run();
+              }}
+            >
+              <i class="i-tb-list square-6" aria-label="순서 없는 리스트" />
+            </MenuItem>
+
+            <MenuItem
+              on:click={() => {
+                editor?.chain().focus().toggleOrderedList().run();
+              }}
+            >
+              <i class="i-tb-list-numbers square-6" aria-label="번호 매겨진 리스트" />
+            </MenuItem>
+          </Menu>
+        </Tooltip>
+
+        <Tooltip message="구분선" offset={tooltipOffset}>
+          <Menu
+            class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
+            offset={menuOffset}
+            placement="bottom"
+            rounded={false}
+          >
+            <i slot="value" class="i-tb-minus square-6" />
+
+            {#each values.horizontalRule as hr (hr.value)}
+              <MenuItem
+                class="flex center gap-2 w-900px"
+                on:click={() => {
+                  editor?.chain().focus().setHorizontalRule(hr.value).run();
+                }}
+              >
+                <hr class="w-11rem divider-preview" aria-label={`${hr.value}번째 구분선`} data-kind={hr.value} />
+              </MenuItem>
+            {/each}
+          </Menu>
+        </Tooltip>
+
+        <Tooltip message="인용구" offset={tooltipOffset}>
+          <Menu
+            class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
+            as="button"
+            offset={menuOffset}
+            placement="bottom"
+            rounded={false}
+          >
+            <i slot="value" class="i-tb-quote square-6" />
+
+            {#each values.blockquote as blockquote (blockquote.value)}
+              <MenuItem
+                class="flex center gap-2 w-900px"
+                on:click={() => {
+                  editor?.chain().focus().setBlockquote(blockquote.value).run();
+                }}
+              >
+                <blockquote
+                  class="blockquote-preview text-disabled"
+                  aria-label={`${blockquote.value}번째 인용구`}
+                  data-kind={blockquote.value}
+                >
+                  내용을 입력해주세요
+                </blockquote>
+              </MenuItem>
+            {/each}
+          </Menu>
+        </Tooltip>
+      </div>
+
+      <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
+        <Tooltip message="이미지" offset={tooltipOffset}>
+          <button class="flex center square-8.5 hover:(bg-gray-100 rounded)" type="button" on:click={handleInsertImage}>
+            <i class="i-tb-photo square-6" />
+          </button>
+        </Tooltip>
+
+        <Tooltip message="파일" offset={tooltipOffset}>
+          <button class="flex center square-8.5 hover:(bg-gray-100 rounded)" type="button" on:click={handleInsertFile}>
+            <i class="i-tb-folder square-6" />
+          </button>
+        </Tooltip>
+
+        <Tooltip message="링크" offset={tooltipOffset}>
+          <Menu
+            class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
+            disabled={editor?.isActive('link')}
+            offset={menuOffset}
+            padding={false}
+            bind:open={linkButtonOpen}
+          >
+            <i slot="value" class="i-tb-link square-6" />
+            <MenuItem type="div">
+              <form
+                class="flex relative gap-2 body-13-m text-secondary"
+                on:submit|preventDefault={(event) => {
+                  if (!(event.currentTarget.url instanceof HTMLInputElement))
+                    throw new Error('Fail to access input element');
+
+                  const href = event.currentTarget.url.value;
+                  editor?.chain().focus().setLink(href).run();
+                  // 메뉴 닫기
+                  event.currentTarget.click();
+                }}
+              >
+                <span class="invisible flex-grow min-w-8.25rem max-w-20rem text-clip overflow-hidden whitespace-nowrap">
+                  {href}
+                </span>
+                <input
+                  bind:this={linkInputEl}
+                  name="url"
+                  class="absolute w-full max-w-20rem"
+                  autocomplete="on"
+                  placeholder="예) https://penxle.com"
+                  required
+                  type="url"
+                  on:click|stopPropagation
+                  on:input={(event) => {
+                    href = event.currentTarget.value;
+                  }}
+                />
+                <Tooltip message="적용하기">
+                  <button class="hover:text-primary active:text-primary" type="submit" on:click|stopPropagation>
+                    <i class="i-lc-check" />
+                  </button>
+                </Tooltip>
+              </form>
+            </MenuItem>
+          </Menu>
+        </Tooltip>
+      </div>
+
+      <Menu offset={menuOffset} placement="bottom-start" rounded={false} bind:open={postSettingOpen}>
+        <div slot="value" class="flex center square-8.5">
+          <i class="i-tb-settings square-6" />
         </div>
 
-        <p class="text-secondary">세부 설정</p>
+        <Menu offset={16} placement="right-start">
+          <div slot="value" class="px-3.5 py-3 text-14-r w-full rounded-2">문단 들여쓰기</div>
 
-        <Switch
-          name="receiveTagContribution"
-          class="flex items-center justify-between"
-          checked={$data.receiveTagContribution ?? true}
-        >
-          <div>
-            <p class="body-16-b">게시물 태그 수정 및 등록</p>
-            <p class="body-15-m text-secondary">다른 독자들이 게시물의 태그를 수정할 수 있어요</p>
-          </div>
-        </Switch>
+          <MenuItem on:click={() => (postSettingOpen = false)}>0.5줄</MenuItem>
+          <MenuItem on:click={() => (postSettingOpen = false)}>1줄</MenuItem>
+          <MenuItem on:click={() => (postSettingOpen = false)}>2줄</MenuItem>
+          <MenuItem on:click={() => (postSettingOpen = false)}>없음</MenuItem>
+        </Menu>
 
-        <Switch
-          name="receiveFeedback"
-          class="flex items-center justify-between"
-          checked={$data.receiveFeedback ?? true}
-        >
-          <div>
-            <p class="body-16-b">게시물 피드백</p>
-            <p class="body-15-m text-secondary">가장 오래 머무른 구간, 밑줄, 이모지 등 피드백을 받아요</p>
-          </div>
-        </Switch>
+        <Menu offset={16} placement="right-start">
+          <div slot="value" class="px-3.5 py-3 text-14-r w-full rounded-2">문단 사이간격</div>
 
-        <Switch name="discloseStats" class="flex items-center justify-between" checked={$data.discloseStats ?? true}>
-          <div>
-            <p class="body-16-b">게시물 세부 통계 공개</p>
-            <p class="body-15-m text-secondary">조회수, 좋아요 수를 다른 독자들에게 공개해요</p>
-          </div>
-        </Switch>
-
-        <Switch
-          name="receivePatronage"
-          class="flex items-center justify-between"
-          checked={$data.receivePatronage ?? true}
-        >
-          <div>
-            <p class="body-16-b">게시물 창작자 후원</p>
-            <p class="body-15-m text-secondary">다른 독자들이 게시물에 자유롭게 후원을 할 수 있도록 해요</p>
-          </div>
-        </Switch>
-
-        <Switch name="protectContent" class="flex items-center justify-between" checked={$data.protectContent ?? true}>
-          <div>
-            <p class="body-16-b">게시물 내용 보호</p>
-            <p class="body-15-m text-secondary">게시물의 내용을 우클릭하거나 복사할 수 없도록 해요</p>
-          </div>
-        </Switch>
-
-        <Button class="w-full" size="xl" type="submit">게시하기</Button>
-      </form>
+          <MenuItem on:click={() => (postSettingOpen = false)}>0.5줄</MenuItem>
+          <MenuItem on:click={() => (postSettingOpen = false)}>1줄</MenuItem>
+          <MenuItem on:click={() => (postSettingOpen = false)}>2줄</MenuItem>
+          <MenuItem on:click={() => (postSettingOpen = false)}>없음</MenuItem>
+        </Menu>
+      </Menu>
     </div>
-
-    <Menu class="p-3 flex center disabled:text-disabled" disabled={!permalink} placement="bottom-end">
-      <i slot="value" class="i-lc-more-vertical square-6" aria-label="더보기" />
-      <MenuItem
-        class="body-14-m! text-primary!"
-        on:click={() => {
-          revisionListOpen = true;
-        }}
-      >
-        저장이력
-      </MenuItem>
-
-      <MenuItem
-        class="body-14-m! text-primary!"
-        external
-        href={`/${selectedSpace?.slug}/preview/${permalink}`}
-        type="link"
-      >
-        미리보기
-      </MenuItem>
-
-      <hr class="border-alphagray-10" />
-
-      <div class="flex items-center gap-2 body-14-m px-4 py-3 rounded-lg hover:bg-primary">
-        <label class="cursor-pointer" for="autoIndent">문단 들여쓰기</label>
-        <Checkbox name="autoIndent" bind:checked={autoIndent} on:change={() => ($autoSaveCount += 1)} />
-      </div>
-    </Menu>
   </div>
 </header>
 
-<CreateSpaceModal $user={$query.me} {switchSpace} bind:open={createSpaceOpen} />
+<DraftPostModal $user={$query.me} bind:open={draftListOpen} />
 
 {#if $post}
   <RevisionListModal {$post} bind:open={revisionListOpen} />
@@ -875,60 +914,68 @@
   <RevisionListModal $post={draftPost} bind:open={revisionListOpen} />
 {/if}
 
-<Modal bind:open={draftListOpen}>
-  <svelte:fragment slot="title">임시저장된 글</svelte:fragment>
-  <svelte:fragment slot="subtitle">{$query.me.posts?.length ?? 0}개의 포스트</svelte:fragment>
+<style>
+  .divider-preview {
+    --uno: bg-no-repeat border-none bg-center;
 
-  <ul class="sm:(overflow-y-auto max-h-15rem)">
-    {#each $query.me.posts as post (post.id)}
-      <li class="py-3 border-t border-secondary flex items-center justify-between gap-2 [&>button]:hover:block">
-        <button
-          class="truncate w-full"
-          type="button"
-          on:click={async () => {
-            draftListOpen = false;
-            window.location.href = `/editor/${post.permalink}`;
-          }}
-        >
-          <p class={clsx('body-16-b mb-1 truncate', post.draftRevision.title.trim().length === 0 && 'text-secondary')}>
-            {post.draftRevision.title.trim().length === 0 ? '(제목 없음)' : post.draftRevision.title}
-          </p>
-          <time class="body-13-m text-secondary">{dayjs(post.draftRevision.updatedAt).formatAsDate()}</time>
-        </button>
-        <button
-          class="i-lc-trash hidden square-5 color-text-disabled"
-          type="button"
-          on:click={() => {
-            deleteDraftPostOpen = true;
-            deletePostId = post.id;
-          }}
-        />
-      </li>
-    {/each}
-  </ul>
-</Modal>
+    &[data-kind='1'] {
+      background-image: linear-gradient(to right, currentColor 50%, rgb(255 255 255 / 0) 50%);
+      background-repeat: repeat;
+      background-size: 16px 1px;
+      height: 0.0625rem;
+    }
 
-<Modal size="sm" bind:open={deleteDraftPostOpen}>
-  <svelte:fragment slot="title">임시저장글을 삭제할까요?</svelte:fragment>
+    &[data-kind='2'],
+    &[data-kind='3'] {
+      border: solid 1px currentColor;
+    }
 
-  <div slot="action" class="flex gap-3 w-full">
-    <Button class="w-full" color="secondary" size="xl" on:click={() => (deleteDraftPostOpen = false)}>닫기</Button>
-    <Button
-      class="w-full"
-      size="xl"
-      on:click={async () => {
-        if (deletePostId) {
-          if (postId === deletePostId) {
-            await goto('/editor');
-          }
-          await deletePost({ postId: deletePostId });
-          mixpanel.track('post:delete', { postId: deletePostId, via: 'editor' });
-          toast.success('임시저장 포스트를 삭제했어요');
-          deleteDraftPostOpen = false;
-        }
-      }}
-    >
-      삭제
-    </Button>
-  </div>
-</Modal>
+    &[data-kind='3'] {
+      width: 7.5rem;
+    }
+
+    &[data-kind='4'] {
+      --uno: h-1.8rem;
+      background-image: url(https://penxle.com/horizontal-rules/4.svg);
+    }
+
+    &[data-kind='5'] {
+      --uno: h-0.875rem;
+      background-image: url(https://penxle.com/horizontal-rules/5.svg);
+    }
+
+    &[data-kind='6'] {
+      --uno: h-0.91027rem;
+      background-image: url(https://penxle.com/horizontal-rules/6.svg);
+    }
+
+    &[data-kind='7'] {
+      --uno: h-1.25rem;
+      background-image: url(https://penxle.com/horizontal-rules/7.svg);
+    }
+  }
+
+  .blockquote-preview {
+    --uno: border-l-0.1875rem border-text-primary pl-0.625rem my-0.34375rem;
+
+    &[data-kind='2'] {
+      --uno: border-l-none;
+      &:before {
+        --uno: block w-2rem;
+        content: url(https://penxle.com/blockquotes/carbon.svg);
+      }
+    }
+
+    &[data-kind='3'] {
+      --uno: border-l-none;
+      &:before {
+        --uno: block w-2rem m-x-auto;
+        content: url(https://penxle.com/blockquotes/carbon.svg);
+      }
+      &:after {
+        --uno: block w-2rem rotate-180 m-x-auto;
+        content: url(https://penxle.com/blockquotes/carbon.svg);
+      }
+    }
+  }
+</style>

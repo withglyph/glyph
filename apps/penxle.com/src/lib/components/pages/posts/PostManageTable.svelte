@@ -157,7 +157,7 @@
   };
 
   const visibilityToIcon = {
-    PUBLIC: 'i-px-global',
+    PUBLIC: 'i-px-globe-solid',
     SPACE: 'i-px-people',
     UNLISTED: 'i-px-liink',
   };
