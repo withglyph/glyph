@@ -10,10 +10,7 @@ import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
 import type { NodeView as ProseMirrorNodeView } from '@tiptap/pm/view';
 import type { ComponentType, SvelteComponent } from 'svelte';
 
-export type NodeViewProps = TiptapNodeViewProps & {
-  onDragStart: (event: DragEvent) => void;
-};
-
+export type NodeViewProps = TiptapNodeViewProps;
 type NodeViewComponent = SvelteComponent<NodeViewProps>;
 export type NodeViewComponentType = ComponentType<NodeViewComponent>;
 
@@ -23,6 +20,8 @@ class SvelteNodeView extends NodeView<NodeViewComponentType> implements ProseMir
   #component: NodeViewComponent;
 
   #handleSelectionUpdate: () => void;
+  #handleTransaction: () => void;
+  #onDragStart: (event: DragEvent) => void;
 
   constructor(
     component: NodeViewComponentType,
@@ -30,6 +29,23 @@ class SvelteNodeView extends NodeView<NodeViewComponentType> implements ProseMir
     options?: Partial<NodeViewRendererOptions>,
   ) {
     super(component, props, options);
+
+    this.#onDragStart = (event: DragEvent) => {
+      this.onDragStart(event);
+
+      const img = document.createElement('img');
+      img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+      document.body.append(img);
+
+      event.dataTransfer?.setDragImage(img, 0, 0);
+
+      setTimeout(() => {
+        img.remove();
+      }, 0);
+    };
+
+    const context = new Map();
+    context.set('onDragStart', (event: DragEvent) => this.#onDragStart(event));
 
     this.#element = this.#createElement();
     this.#component = new this.component({
@@ -44,9 +60,8 @@ class SvelteNodeView extends NodeView<NodeViewComponentType> implements ProseMir
         getPos: () => this.getPos() as number,
         updateAttributes: (attributes = {}) => this.updateAttributes(attributes),
         deleteNode: () => this.deleteNode(),
-
-        onDragStart: (event: DragEvent) => this.onDragStart(event),
       },
+      context,
     });
 
     if (!this.#element.firstElementChild?.hasAttribute('data-node-view')) {
@@ -75,7 +90,12 @@ class SvelteNodeView extends NodeView<NodeViewComponentType> implements ProseMir
       }
     };
 
+    this.#handleTransaction = () => {
+      this.#component.$set({ editor: this.editor });
+    };
+
     this.editor.on('selectionUpdate', this.#handleSelectionUpdate);
+    this.editor.on('transaction', this.#handleTransaction);
   }
 
   override get dom() {
@@ -114,6 +134,7 @@ class SvelteNodeView extends NodeView<NodeViewComponentType> implements ProseMir
 
   destroy() {
     this.editor.off('selectionUpdate', this.#handleSelectionUpdate);
+    this.editor.off('transaction', this.#handleTransaction);
     this.#component.$destroy();
     this.#contentElement = null;
   }
