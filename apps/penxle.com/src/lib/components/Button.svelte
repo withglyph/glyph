@@ -63,7 +63,7 @@
     !disabled &&
       color === 'primary' &&
       variant === 'contained' &&
-      'text-red-5 bg-gray-80 border border-gray-80 hover:(bg-gray-100 border-gray-100) active:bg-black',
+      'text-red-5 bg-gray-80 border border-gray-80 hover:(bg-gray-950 border-gray-950) active:bg-black',
     !disabled &&
       color === 'secondary' &&
       variant === 'contained' &&

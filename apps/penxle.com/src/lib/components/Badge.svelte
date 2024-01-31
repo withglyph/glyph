@@ -16,7 +16,7 @@
     color === 'select' && 'border border-gray-30',
     color === 'green' && 'text-green-50 bg-green-10',
     color === 'red' && 'text-red-50 bg-red-10',
-    color === 'gray' && 'text-gray-50 bg-gray-10',
+    color === 'gray' && 'text-gray-60 bg-gray-10',
     color === 'purple' && 'text-purple-50 bg-purple-10',
     color === 'orange' && 'text-orange-50 bg-orange-10',
     _class,

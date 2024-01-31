@@ -71,7 +71,7 @@
 
   <i class="i-lc-file" />
   <div class="font-bold">{data.name}</div>
-  <div class="text-sm text-gray-50">{numeral(data.size).format('0b')}</div>
+  <div class="text-sm text-gray-60">{numeral(data.size).format('0b')}</div>
 
   {#if !node.attrs.id}
     <div class="absolute inset-0 flex center bg-white/50">

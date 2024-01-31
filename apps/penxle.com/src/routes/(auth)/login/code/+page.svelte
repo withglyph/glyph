@@ -62,7 +62,7 @@
     지메일 열기
   </Button>
 
-  <button class="mt-4 text-sm text-gray-50" type="button" on:click={() => (useCode = true)}>대신 코드 입력하기</button>
+  <button class="mt-4 text-sm text-gray-60" type="button" on:click={() => (useCode = true)}>대신 코드 입력하기</button>
 {/if}
 
-<a class="mt-4 text-sm text-gray-50" href="/login">이 이메일이 아닌가요?</a>
+<a class="mt-4 text-sm text-gray-60" href="/login">이 이메일이 아닌가요?</a>

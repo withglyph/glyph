@@ -75,12 +75,12 @@
         {/if}
         <div class="grow p-4">
           <div class="font-bold">{node.attrs.__data.title}</div>
-          <div class="text-sm text-gray-50">{node.attrs.__data.description}</div>
+          <div class="text-sm text-gray-60">{node.attrs.__data.description}</div>
         </div>
       </Link>
     {/if}
   {:else}
-    <p class="flex gap-2 items-center text-gray-50 py-1">
+    <p class="flex gap-2 items-center text-gray-60 py-1">
       {node.attrs.url}
       <RingSpinner class="square-4" />
     </p>

@@ -38,7 +38,7 @@
   <div class="absolute h-2 w-full pointer-events-none">
     <button
       style:left={p}
-      class="absolute square-4 bg-gray-50 rounded-full top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-auto touch-none"
+      class="absolute square-4 bg-gray-60 rounded-full top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-auto touch-none"
       type="button"
       on:dragstart|preventDefault
       on:pointerdown={(e) => e.currentTarget.setPointerCapture(e.pointerId)}

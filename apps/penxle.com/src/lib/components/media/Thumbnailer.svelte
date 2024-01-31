@@ -142,8 +142,8 @@
   </div>
 
   <div class="flex gap-4 items-center mt-4 mx-4">
-    <i class="i-lc-zoom-out text-gray-50 square-5" />
+    <i class="i-lc-zoom-out text-gray-60 square-5" />
     <Slider class="w-full" max={8} min={1} bind:value={scale} />
-    <i class="i-lc-zoom-in text-gray-50 square-5" />
+    <i class="i-lc-zoom-in text-gray-60 square-5" />
   </div>
 </div>

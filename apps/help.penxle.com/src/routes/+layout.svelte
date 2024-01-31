@@ -13,7 +13,7 @@
         <Logo class="square-8" />
       </Link>
 
-      <div class="mx-4 h-8 border-l border-l-gray-50" />
+      <div class="mx-4 h-8 border-l border-l-gray-60" />
 
       <Link class="select-none text-lg font-bold" href="/">도움 센터</Link>
     </div>

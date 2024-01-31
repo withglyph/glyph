@@ -311,7 +311,7 @@
   </Switch>
 
   {#if checked}
-    <p class="text-3.5 text-gray-50">스페이스 내에서만 사용되는 프로필이에요</p>
+    <p class="text-3.5 text-gray-60">스페이스 내에서만 사용되는 프로필이에요</p>
   {/if}
 
   <form class="mt-3" use:form>

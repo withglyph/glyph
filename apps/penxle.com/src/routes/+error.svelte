@@ -39,7 +39,7 @@
       {/if}
     </h2>
 
-    <p class="mt-4 text-sm text-gray-50">
+    <p class="mt-4 text-sm text-gray-60">
       {#if code === 404}
         페이지를 찾을 수가 없었어요.
         <br />
@@ -59,11 +59,11 @@
 
   <div class="flex flex-col gap-2 center">
     {#if error instanceof UnknownError && error.cause}
-      <button class="cursor-pointer text-sm text-gray-50" type="button" on:click={() => (open = true)}>
+      <button class="cursor-pointer text-sm text-gray-60" type="button" on:click={() => (open = true)}>
         디버깅 정보
       </button>
     {:else if error.extra.id}
-      <span class="text-sm text-gray-50">
+      <span class="text-sm text-gray-60">
         추적 ID: {error.extra.id}
       </span>
     {/if}

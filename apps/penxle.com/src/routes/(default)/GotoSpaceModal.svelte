@@ -43,10 +43,10 @@
         <Image class="square-10 rounded-lg border" $image={space.icon} />
         <div class="flex flex-col">
           <div class="font-medium">{space.name}</div>
-          <div class="text-sm text-gray-50">{absolutePath(space.slug)}</div>
+          <div class="text-sm text-gray-60">{absolutePath(space.slug)}</div>
         </div>
         <div class="grow" />
-        <div class="hidden text-sm text-gray-50 group-hover:block">바로가기</div>
+        <div class="hidden text-sm text-gray-60 group-hover:block">바로가기</div>
       </a>
     {/each}
 
