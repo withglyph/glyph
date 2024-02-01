@@ -12,7 +12,10 @@ export const maintenance = (async ({ event, resolve }) => {
 
   const flag = await redis.get('under-maintenance');
   if (flag) {
-    return await event.fetch('/_internal/under-maintenance');
+    const isAllowedIP = await redis.get(`under-maintenance:allowed-ip:${event.getClientAddress()}`);
+    if (!isAllowedIP) {
+      return await event.fetch('/_internal/under-maintenance');
+    }
   }
 
   return await resolve(event);
