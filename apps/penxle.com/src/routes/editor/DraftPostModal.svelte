@@ -60,8 +60,12 @@
             window.location.href = `/editor/${post.permalink}`;
           }}
         >
-          <p class={clsx('body-16-b mb-1 truncate', post.draftRevision?.title.trim().length === 0 && 'text-secondary')}>
-            {post.draftRevision?.title.trim().length === 0 ? '(제목 없음)' : post.draftRevision?.title}
+          <p
+            class={clsx('body-16-b mb-1 truncate', post.draftRevision?.title?.trim().length === 0 && 'text-secondary')}
+          >
+            {post.draftRevision?.title?.trim().length === 0
+              ? '(제목 없음)'
+              : post.draftRevision?.title ?? '(제목 없음)'}
           </p>
           <time class="body-13-m text-secondary">{dayjs(post.draftRevision?.updatedAt).formatAsDate()}</time>
         </button>

@@ -7,7 +7,7 @@ export type RestoredRevision =
       contentKind: PostRevisionContentKind;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       content: any;
-      title: string;
+      title?: string | null | undefined;
       subtitle?: string | null | undefined;
     }
   | null

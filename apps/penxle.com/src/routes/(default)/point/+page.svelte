@@ -120,7 +120,7 @@
                             <div class="text-secondary body-13-m">{pointTransactionCause[point.cause]}</div>
                             {#if point.cause === 'UNLOCK_CONTENT'}
                               <div class="text-primary body-16-sb whitespace-pre-wrap break-all">
-                                {point.post?.publishedRevision?.title}
+                                {point.post?.publishedRevision?.title ?? '(제목 없음)'}
                               </div>
                             {/if}
                           </div>

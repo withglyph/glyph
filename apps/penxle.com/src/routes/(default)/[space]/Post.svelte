@@ -327,7 +327,7 @@
     const shortLink = `https://pnxl.me/${$query.post.shortlink}`;
     if (navigator.share) {
       navigator.share({
-        title: $postRevision.title,
+        title: $postRevision.title ?? '(제목 없음)',
         url: shortLink,
       });
     } else {
@@ -362,14 +362,14 @@
 <Helmet
   description={$postRevision.previewText}
   image={$query.post.thumbnail?.url ?? 'https://pnxl.net/assets/opengraph/default-cover.png'}
-  title={$postRevision.title}
+  title={$postRevision.title ?? '(제목 없음)'}
 />
 
 <article class={clsx('w-full bg-cardprimary py-7.5 px-4 grow sm:py-17', _class)}>
   <div class="w-full max-w-187.5 mx-auto space-y-6">
     <header>
       <hgroup class="space-y-4">
-        <h1 class="title-24-eb break-all sm:title-32-eb">{$postRevision.title}</h1>
+        <h1 class="title-24-eb break-all sm:title-32-eb">{$postRevision.title ?? '(제목 없음)'}</h1>
         {#if $postRevision.subtitle}
           <p class="body-16-sb text-secondary break-all sm:subtitle-18-sb">{$postRevision.subtitle}</p>
         {/if}
@@ -847,7 +847,7 @@
               href={`/${$query.post.space?.slug}/${$query.post.nextPost.permalink}`}
             >
               <span>다음글</span>
-              <p class="truncate">{$query.post.nextPost.publishedRevision.title}</p>
+              <p class="truncate">{$query.post.nextPost.publishedRevision.title ?? '(제목 없음)'}</p>
             </a>
           {/if}
           {#if $query.post.previousPost}
@@ -856,7 +856,7 @@
               href={`/${$query.post.space?.slug}/${$query.post.previousPost.permalink}`}
             >
               <span>이전글</span>
-              <p class="truncate">{$query.post.previousPost.publishedRevision.title}</p>
+              <p class="truncate">{$query.post.previousPost.publishedRevision.title ?? '(제목 없음)'}</p>
             </a>
           {/if}
         </div>
@@ -888,7 +888,7 @@
     protectContent={$query.post.protectContent}
     spaceIcon={$query.post.space.icon}
     spaceName={$query.post.space.name}
-    title={$postRevision.title}
+    title={$postRevision.title ?? '(제목 없음)'}
     bind:content={share.content}
     bind:open={share.open}
   />

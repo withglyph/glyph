@@ -64,7 +64,7 @@
       {/if}
 
       <div class="truncate">
-        <p class="body-16-eb truncate">{post.purchasedRevision?.title}</p>
+        <p class="body-16-eb truncate">{post.purchasedRevision?.title ?? '(제목 없음)'}</p>
         <p class="body-14-m text-secondary truncate">{post.space?.name} · {post.member?.profile.name}</p>
       </div>
     </a>

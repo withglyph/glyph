@@ -6,7 +6,7 @@
   import type { Writable } from 'svelte/store';
 
   export let autoSaveCount: Writable<number>;
-  export let title: string;
+  export let title: string | null;
   export let subtitle: string | null;
   export let content: JSONContent;
   export let editor: Editor | undefined;
@@ -18,6 +18,8 @@
   }
 
   onMount(() => {
+    autoSave();
+
     const saveEventHandler = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key === 's') {
         event.preventDefault();

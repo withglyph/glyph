@@ -321,7 +321,7 @@
               {/if}
               <dl class="truncate [&>dt]:truncate">
                 <dt class="body-15-b">
-                  {post.publishedRevision.title}
+                  {post.publishedRevision.title ?? '(제목 없음)'}
                 </dt>
                 <dd class="body-13-m text-secondary">
                   {dayjs(post.publishedAt).formatAsDate()}
@@ -622,7 +622,7 @@
         {/if}
         <dl class="truncate [&>dt]:truncate">
           <dt class="body-15-b">
-            {post.publishedRevision.title}
+            {post.publishedRevision.title ?? '(제목 없음)'}
           </dt>
           <dd class="body-13-m text-secondary">
             {dayjs(post.publishedAt).formatAsDate()}

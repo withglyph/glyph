@@ -501,7 +501,7 @@ export const postSchema = defineSchema((builder) => {
     fields: (t) => ({
       id: t.exposeID('id'),
       kind: t.expose('kind', { type: PrismaEnums.PostRevisionKind }),
-      title: t.exposeString('title'),
+      title: t.exposeString('title', { nullable: true }),
       subtitle: t.exposeString('subtitle', { nullable: true }),
       price: t.exposeInt('price', { nullable: true }),
       autoIndent: t.exposeBoolean('autoIndent'),
@@ -753,7 +753,7 @@ export const postSchema = defineSchema((builder) => {
 
       postId: t.id(),
 
-      title: t.string(),
+      title: t.string({ required: false }),
       subtitle: t.string({ required: false }),
       content: t.field({ type: 'JSON' }),
 
@@ -1038,8 +1038,8 @@ export const postSchema = defineSchema((builder) => {
           userId: context.session.userId,
           kind: input.revisionKind,
           contentKind: input.contentKind,
-          title: input.title,
-          subtitle: input.subtitle?.length ? input.subtitle : undefined,
+          title: input.title?.length ? input.title : null,
+          subtitle: input.subtitle?.length ? input.subtitle : null,
           freeContentId: freeContent.id,
           paidContentId: paidContent?.id ?? null,
           price,

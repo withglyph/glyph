@@ -72,7 +72,7 @@
         <TableData>
           <div class="flex flex-col gap-1 truncate max-w-97">
             <div class="text-primary subtitle-16-b truncate sm:subtitle-18-b">
-              {revenue.post?.publishedRevision?.title}
+              {revenue.post?.publishedRevision?.title ?? '(제목 없음)'}
             </div>
             <div class="text-secondary body-13-m truncate">{revenue.post?.space?.name}</div>
           </div>

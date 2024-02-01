@@ -133,7 +133,7 @@
   };
 
   $: filteredPosts = $posts.filter((post) => {
-    const searchResult = post.publishedRevision?.title.includes(query);
+    const searchResult = post.publishedRevision?.title?.includes(query);
     const isInOtherCollection = !!post.collection && post.collection.id !== $collection.id;
 
     return searchResult && !isInOtherCollection;
@@ -196,7 +196,7 @@
               <Image class="square-10.5 rounded-lg grow-0 shrink-0" $image={post.thumbnail} />
             {/if}
             <div class="truncate">
-              <p class="body-17-b truncate grow">{post.publishedRevision?.title}</p>
+              <p class="body-17-b truncate grow">{post.publishedRevision?.title ?? '(제목 없음)'}</p>
               <time class="body-15-m text-secondary truncate" datetime={post.publishedAt}>
                 {dayjs(post.publishedAt).formatAsDate()}
               </time>

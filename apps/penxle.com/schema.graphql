@@ -421,7 +421,7 @@ type PostRevision {
   subtitle: String
   tags: [Tag!]! @deprecated(reason: "Use Post.tags instead")
   thumbnailBounds: JSON @deprecated(reason: "Deleted")
-  title: String!
+  title: String
   updatedAt: DateTime!
 }
 
@@ -594,7 +594,7 @@ input RevisePostInput {
   postId: ID!
   revisionKind: PostRevisionKind!
   subtitle: String
-  title: String!
+  title: String
 }
 
 input ReviseTagWikiInput {

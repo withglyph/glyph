@@ -70,7 +70,7 @@
     <div class="flex justify-between gap-4">
       <div>
         <p class="body-15-sb text-secondary">{$post.space.name} · {$post.member.profile.name}</p>
-        <p class="title-20-b">{$post.publishedRevision.title}</p>
+        <p class="title-20-b">{$post.publishedRevision.title ?? '(제목 없음)'}</p>
         <p class="body-14-m text-secondary break-all line-clamp-2 whitespace-pre-line">
           {$post.publishedRevision?.previewText}
         </p>

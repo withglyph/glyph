@@ -27,12 +27,10 @@
 
   export let open = false;
   export let warnUnload = false;
-  export let postId: string;
   export let revisedAt: string | undefined = undefined;
-  export let draftPost: Awaited<ReturnType<typeof revisePost>> | null = null;
 
   export let autoSaveCount: Writable<number>;
-  export let title: string;
+  export let title: string | null;
   export let subtitle: string | null;
   export let content: JSONContent;
   export let paragraphIndent: number;
@@ -77,7 +75,7 @@
   export { _query as $query };
 
   $: canRevise = browser && !$preventRevise;
-  $: canPublish = canRevise && title.trim().length > 0;
+  $: canPublish = canRevise;
 
   $: query = fragment(
     _query,
@@ -186,7 +184,7 @@
     const resp = await revisePost({
       revisionKind,
       contentKind: 'ARTICLE',
-      postId,
+      postId: $post.id,
       title,
       subtitle,
       content,
@@ -196,12 +194,8 @@
 
     mixpanel.track('post:revise', { postId: resp.id, revisionKind });
 
-    postId = resp.id;
-
     revisedAt = resp.draftRevision?.createdAt;
     $data.revisionId = resp.draftRevision.id;
-
-    draftPost = resp;
 
     return resp;
   };
@@ -242,18 +236,6 @@
   $: if ($post?.hasPassword) {
     enablePassword = true;
   }
-
-  $: reviseNotAvailableReason = (() => {
-    if (!title) {
-      return '제목을 입력해주세요';
-    }
-
-    if (!content?.content) {
-      return '내용을 입력해주세요';
-    }
-
-    return '';
-  })();
 
   let selectedSpaceId: string | undefined = undefined;
 
@@ -303,16 +285,14 @@
 </script>
 
 <div class="w-fit" use:floatingRef>
-  <Tooltip enabled={!canPublish} message={reviseNotAvailableReason}>
-    <button
-      class="bg-gray-950 text-white px-3 py-2.5 rounded text-14-m mr-3 leading-none border border-gray-950"
-      disabled={!canPublish}
-      type="button"
-      on:click={() => (open = true)}
-    >
-      포스트 게시
-    </button>
-  </Tooltip>
+  <button
+    class="bg-gray-950 text-white px-3 py-2.5 rounded text-14-m mr-3 leading-none border border-gray-950"
+    disabled={!canPublish}
+    type="button"
+    on:click={() => (open = true)}
+  >
+    포스트 게시
+  </button>
 </div>
 
 {#if open}

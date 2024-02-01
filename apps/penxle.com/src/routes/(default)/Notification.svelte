@@ -241,7 +241,8 @@
                   <p class="body-15-b">포스트 조회수가 급상승하고 있어요</p>
                 {:else if notification.__typename === 'PurchaseNotification'}
                   <p class="body-15-b">
-                    {notification.actor.name}님이 {notification.post.publishedRevision?.title} 포스트를 구매했어요
+                    {notification.actor.name}님이 {notification.post.publishedRevision?.title ?? '(제목 없음)'} 포스트를
+                    구매했어요
                   </p>
                 {/if}
               </div>

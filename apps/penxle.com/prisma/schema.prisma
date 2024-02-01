@@ -255,7 +255,7 @@ model PostRevision {
   thumbnailBounds     Json?
 
   kind      PostRevisionKind
-  title     String
+  title     String?
   subtitle  String?
   createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime         @default(now()) @map("updated_at") @db.Timestamptz

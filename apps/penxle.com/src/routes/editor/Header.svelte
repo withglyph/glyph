@@ -7,7 +7,6 @@
   import { onDestroy, onMount, tick } from 'svelte';
   import { browser, dev } from '$app/environment';
   import { beforeNavigate } from '$app/navigation';
-  import { page } from '$app/stores';
   import Wordmark from '$assets/icons/wordmark.svg?component';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -30,19 +29,17 @@
   import type { EditorPage_Header_post, EditorPage_Header_query, PostRevisionKind } from '$glitch';
 
   let _query: EditorPage_Header_query;
-  let _post: EditorPage_Header_post | null = null;
+  let _post: EditorPage_Header_post;
   export { _post as $post, _query as $query };
-  let draftPost: Awaited<ReturnType<typeof revisePost>> | null = null;
 
   export let autoSaveCount: Writable<number>;
-  export let title: string;
+  export let title: string | null;
   export let subtitle: string | null;
   export let content: JSONContent;
   export let editor: Editor | undefined;
   export let paragraphIndent: number;
   export let paragraphSpacing: number;
 
-  let postId: string;
   let warnUnload = false;
 
   $: query = fragment(
@@ -142,7 +139,7 @@
         draftRevision @_required {
           id
           kind
-          createdAt
+          updatedAt
         }
 
         space {
@@ -159,12 +156,11 @@
 
   const doRevisePost = async (revisionKind: PostRevisionKind) => {
     if (!canRevise) return;
-    if (!selectedSpaceId) throw new Error('selectedSpaceId 값이 비어 있습니다');
 
     const resp = await revisePost({
       revisionKind,
       contentKind: 'ARTICLE',
-      postId,
+      postId: $post.id,
       title,
       subtitle,
       content,
@@ -174,13 +170,8 @@
 
     mixpanel.track('post:revise', { postId: resp.id, revisionKind });
 
-    postId = resp.id;
-
-    revisedAt = resp.draftRevision?.createdAt;
+    revisedAt = resp.draftRevision?.updatedAt;
     reviseKind = resp.draftRevision?.kind;
-    // $data.revisionId = resp.draftRevision.id;
-
-    draftPost = resp;
 
     return resp;
   };
@@ -201,30 +192,9 @@
   //   enableContentFilter = true;
   // }
 
-  let selectedSpaceId: string | undefined;
+  $: permalink = $post.permalink;
 
-  $: slug = $page.url.searchParams.get('space');
-  $: if ($query && !$post && !selectedSpaceId && $query.me.spaces.length > 0) {
-    if (slug) {
-      const space = $query.me.spaces.find((space) => space.slug === slug);
-      if (!space) throw new Error('글을 작성하고자 하는 스페이스 정보를 찾지 못했어요');
-
-      selectedSpaceId = space.id;
-    } else {
-      selectedSpaceId = $query.me.spaces[0].id;
-    }
-  }
-  $: if ($post && !selectedSpaceId) {
-    selectedSpaceId = $post?.space?.id;
-  }
-
-  $: permalink = ($post || draftPost)?.permalink;
-
-  $: if ($post) {
-    postId = $post.id;
-  }
-
-  $: canRevise = browser && !!selectedSpaceId && !$preventRevise;
+  $: canRevise = browser && !$preventRevise;
   // $: canPublish = canRevise && title.trim().length > 0;
 
   $: if (canRevise) {
@@ -239,18 +209,6 @@
   });
 
   onDestroy(unsubscriber);
-
-  $: reviseNotAvailableReason = (() => {
-    if (!title) {
-      return '제목을 입력해주세요';
-    }
-
-    if (!content?.content) {
-      return '내용을 입력해주세요';
-    }
-
-    return '';
-  })();
 
   const handleInsertImage = () => {
     const picker = document.createElement('input');
@@ -350,21 +308,19 @@
         {:else if revisedAt && reviseKind === 'MANUAL_SAVE'}
           <span class="text-10-sb text-teal-500">{dayjs(revisedAt).formatAsTime()} 저장됨</span>
         {:else}
-          <span class="text-10-r text-error-900">저장되지 않음</span>
+          <span class="text-10-r text-gray-400">{dayjs().formatAsTime()} 저장중</span>
         {/if}
       </div>
 
       <div class="flex items-center border border-gray-200 rounded py-2.5 px-3.5 mr-2 leading-none! text-14-m">
-        <Tooltip enabled={!canRevise} message={reviseNotAvailableReason}>
-          <button
-            class="after:(content-empty border-r border-gray-300 h-4 ml-2) leading-none!"
-            disabled={!canRevise}
-            type="button"
-            on:click={() => doRevisePost('MANUAL_SAVE')}
-          >
-            저장
-          </button>
-        </Tooltip>
+        <button
+          class="after:(content-empty border-r border-gray-300 h-4 ml-2) leading-none!"
+          disabled={!canRevise}
+          type="button"
+          on:click={() => doRevisePost('MANUAL_SAVE')}
+        >
+          저장
+        </button>
 
         <button
           class="text-14-sb text-gray-400 pl-2 leading-none!"
@@ -382,8 +338,6 @@
           {$query}
           {autoSaveCount}
           {content}
-          {draftPost}
-          {postId}
           {revisedAt}
           {subtitle}
           {title}
@@ -968,12 +922,7 @@
 </header>
 
 <DraftPostModal $user={$query.me} bind:open={draftListOpen} />
-
-{#if $post}
-  <RevisionListModal {$post} bind:open={revisionListOpen} />
-{:else if draftPost}
-  <RevisionListModal $post={draftPost} bind:open={revisionListOpen} />
-{/if}
+<RevisionListModal {$post} bind:open={revisionListOpen} />
 
 <style>
   .divider-preview {

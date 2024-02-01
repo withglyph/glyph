@@ -5,7 +5,7 @@ export const RevisePostInputSchema = z.object({
   revisionKind: z.enum(['AUTO_SAVE', 'MANUAL_SAVE']),
   contentKind: z.enum(['ARTICLE', 'GALLERY']),
   postId: z.string(),
-  title: z.string(),
+  title: z.string().nullable().optional(),
   subtitle: z.string().nullable().optional(),
   content: z.any(),
   paragraphIndent: z.number().int(),

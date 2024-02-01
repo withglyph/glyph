@@ -80,7 +80,7 @@
 >
   <a class="space-y-2" href={`/${$post.space.slug}/${$post.permalink}`}>
     <div class="truncate flex items-center gap-3">
-      <h2 class="title-20-b truncate grow">{$post.publishedRevision?.title}</h2>
+      <h2 class="title-20-b truncate grow">{$post.publishedRevision?.title ?? '(제목 없음)'}</h2>
 
       <div class="flex gap-1">
         {#if $post.publishedRevision?.price}

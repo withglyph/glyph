@@ -28,7 +28,7 @@
     }
   `);
 
-  let title: string;
+  let title: string | null = null;
   let subtitle: string | null = null;
   let editor: TiptapEditor | undefined;
   let content: JSONContent;
@@ -46,7 +46,7 @@
     if (!revision) return;
     if (!editor) throw new Error('editor is not initialize');
 
-    title = revision.title;
+    title = revision.title ?? null;
     subtitle = revision.subtitle ?? null;
     editor.commands.setContent(revision.content);
 
@@ -60,7 +60,7 @@
   $: if (!initialized) {
     initialized = true;
 
-    title = $query.post.draftRevision.title;
+    title = $query.post.draftRevision.title ?? null;
     subtitle = $query.post.draftRevision.subtitle ?? null;
     content = $query.post.draftRevision.editableContent;
     paragraphIndent = $query.post.draftRevision.paragraphIndent;

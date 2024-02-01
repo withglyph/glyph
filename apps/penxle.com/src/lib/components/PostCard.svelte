@@ -175,7 +175,7 @@
         <Badge class="w-fit mb-1" color="gray">비밀글</Badge>
       {/if}
     </div>
-    <h2 class="title-18-b mb-1 truncate sm:title-20-b">{$post.publishedRevision.title}</h2>
+    <h2 class="title-18-b mb-1 truncate sm:title-20-b">{$post.publishedRevision.title ?? '(제목 없음)'}</h2>
 
     <div>
       <article
