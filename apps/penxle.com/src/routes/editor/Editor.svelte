@@ -50,6 +50,7 @@
     <div class="mx-15 pb-5 mb-5 border-b border-gray-200">
       <input
         class="w-full text-28-sb"
+        maxlength="100"
         placeholder="제목을 입력하세요"
         type="text"
         bind:value={title}
@@ -58,6 +59,7 @@
 
       <input
         class="mt-1 w-full text-16-r"
+        maxlength="100"
         placeholder="부제목을 입력해주세요"
         type="text"
         bind:value={subtitle}
