@@ -1,15 +1,21 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { argv } from 'node:process';
 import ReadLine from 'node:readline';
 import { Client } from '@elastic/elasticsearch';
+import { prismaClient } from '$lib/server/database';
+import { indexPost, indexSpace } from '$lib/server/utils';
+import type { IndicesCreateRequest } from '@elastic/elasticsearch/lib/api/types';
 
 export const elasticSearch = new Client({
-  cloud: { id: process.env.PRIVATE_ELASTICSEARCH_CLOUD_ID },
-  auth: { apiKey: process.env.PRIVATE_ELASTICSEARCH_API_KEY },
+  cloud: { id: process.env.PRIVATE_ELASTICSEARCH_CLOUD_ID! },
+  auth: { apiKey: process.env.PRIVATE_ELASTICSEARCH_API_KEY! },
 });
 
 const version = Date.now();
+const BATCH_SIZE = 100;
+const env = argv[2] === 'dev' ? 'dev' : 'prod';
 
-const wait = (message) => {
+const wait = (message: string) => {
   const rl = ReadLine.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -23,16 +29,16 @@ const wait = (message) => {
   });
 };
 
-const createIndex = async (name, indexBody) => {
-  if (argv[2] === 'dev') {
+await wait(`Create/Update index for ${env} (y/n)? `);
+
+const createIndex = async (name: string, indexBody: Omit<IndicesCreateRequest, 'index'>) => {
+  if (env === 'dev') {
     name = `${name}-dev`;
   }
 
-  await wait(`Create/Update index ${name} (y/n)? `);
-
   await elasticSearch.indices.create({
-    index: `${name}-${version}`,
     ...indexBody,
+    index: `${name}-${version}`,
   });
 
   try {
@@ -166,3 +172,36 @@ await createIndex('tags', {
     },
   },
 });
+
+for (let i = 0; ; i++) {
+  const posts = await prismaClient.post.findMany({
+    skip: i * BATCH_SIZE,
+    take: BATCH_SIZE,
+    include: {
+      tags: {
+        include: {
+          tag: true,
+        },
+      },
+      publishedRevision: true,
+      space: true,
+    },
+  });
+
+  if (posts.length === 0) break;
+  for (const post of posts) indexPost(post);
+
+  console.log(`Reindexed ${i * BATCH_SIZE + posts.length} posts.`);
+}
+
+for (let i = 0; ; i++) {
+  const spaces = await prismaClient.space.findMany({
+    skip: i * BATCH_SIZE,
+    take: BATCH_SIZE,
+  });
+
+  if (spaces.length === 0) break;
+  for (const space of spaces) indexSpace(space);
+
+  console.log(`Reindexed ${i * BATCH_SIZE + spaces.length} spaces.`);
+}
