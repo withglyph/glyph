@@ -1159,17 +1159,14 @@ export const postSchema = defineSchema((builder) => {
 
         if (revision.paidContent) {
           if (revision.price === null) {
-            const allContent = await revisePostContent({
-              db,
-              contentData: [
-                ...(revision.freeContent.data as JSONContent[]),
-                ...(revision.paidContent.data as JSONContent[]),
-              ],
-            });
-            await db.postRevision.update({
-              where: { id: input.revisionId },
-              data: { freeContentId: allContent.id, paidContentId: null },
-            });
+            if ((revision.paidContent.data as JSONContent[] | undefined)?.length === 0) {
+              await db.postRevision.update({
+                where: { id: input.revisionId },
+                data: { paidContentId: null },
+              });
+            } else {
+              throw new IntentionalError('가격을 설정해주세요');
+            }
           } else {
             if (revision.price <= 0 || revision.price > 1_000_000 || revision.price % 100 !== 0) {
               throw new IntentionalError('잘못된 가격이에요');
