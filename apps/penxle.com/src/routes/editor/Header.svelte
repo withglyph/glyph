@@ -246,7 +246,6 @@
   };
 
   let menuOffset = 11;
-  let tooltipOffset = 12;
 
   let linkInputEl: HTMLInputElement | null = null;
 
@@ -368,9 +367,9 @@
   <div class="flex items-center border-b border-gray-200 h-14 px-6">
     <div class="flex items-center pointer-events-auto">
       <div class="flex center space-x-3 h-8.5 after:(content-empty border-r border-gray-300 h-4 mx-3)">
-        <Tooltip class="flex center" message="글자 색" offset={tooltipOffset}>
+        <ToolbarButtonTooltip message="글자 색">
           <button
-            class="flex items-center gap-1 h-full hover:(bg-gray-100 rounded)"
+            class="flex items-center pl-4px pr-2px gap-1 h-8.5 hover:(bg-gray-100 rounded)"
             type="button"
             on:click={() => (colorPickerOpen = true)}
             use:floatingRef
@@ -405,11 +404,14 @@
               bind:hex
             />
           </div>
-        </Tooltip>
+        </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="폰트">
-          <Menu class="h-8.5" offset={menuOffset} placement="bottom-start" rounded={false} bind:open={fontFamilyOpen}>
-            <div slot="value" class="flex items-center gap-1 whitespace-nowrap h-full hover:(bg-gray-100 rounded)">
+          <Menu class="h-8.5" offset={menuOffset} placement="bottom" rounded={false} bind:open={fontFamilyOpen}>
+            <div
+              slot="value"
+              class="flex pl-4px pr-2px items-center gap-1 whitespace-nowrap h-full hover:(bg-gray-100 rounded)"
+            >
               <div>
                 {values.fontFamily.find(({ value }) => editor?.getAttributes('font_family').fontFamily === value)
                   ?.label ?? values.fontFamily[0].label}
@@ -449,11 +451,11 @@
             class="flex items-center h-8.5"
             menuClass="max-h-60 overflow-y-auto"
             offset={menuOffset}
-            placement="bottom-start"
+            placement="bottom"
             rounded={false}
             bind:open={fontSizeOpen}
           >
-            <div slot="value" class="flex center gap-1 h-full hover:(bg-gray-100 rounded)">
+            <div slot="value" class="flex center pl-4px pr-2px gap-1 h-full hover:(bg-gray-100 rounded)">
               {values.fontSize.find(({ value }) => editor?.getAttributes('font_size').fontSize === value)?.label ??
                 values.fontSize[4].label}
               <i class={clsx('i-tb-chevron-down square-4.5 text-gray-300', fontSizeOpen && 'rotate-180')} />
@@ -579,7 +581,7 @@
           <Menu
             class="flex center gap-0.25rem square-8.5 hover:(bg-gray-100 rounded) hover:(bg-gray-100 rounded)"
             offset={menuOffset}
-            placement="bottom-start"
+            placement="bottom"
             rounded={false}
           >
             <i
@@ -608,7 +610,7 @@
           <Menu
             class="flex center square-8.5 hover:(bg-gray-100 rounded)"
             offset={menuOffset}
-            placement="bottom-start"
+            placement="bottom"
             rounded={false}
           >
             <i slot="value" class="i-px-line-height square-6" />
@@ -638,7 +640,7 @@
           <Menu
             class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
             offset={menuOffset}
-            placement="bottom-start"
+            placement="bottom"
             rounded={false}
           >
             <i slot="value" class="i-px-letter-space square-6" />
@@ -808,7 +810,7 @@
       </div>
 
       <ToolbarButtonTooltip message="본문 설정">
-        <Menu offset={menuOffset} placement="bottom-start" rounded={false} bind:open={postSettingOpen}>
+        <Menu offset={menuOffset} placement="bottom" rounded={false} bind:open={postSettingOpen}>
           <div slot="value" class="flex center square-8.5">
             <i class="i-tb-settings square-6" />
           </div>
