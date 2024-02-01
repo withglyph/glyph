@@ -1,7 +1,6 @@
 <script lang="ts">
   import { flip, offset, shift } from '@floating-ui/dom';
   import clsx from 'clsx';
-  // import * as R from 'radash';
   import { slide } from 'svelte/transition';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
@@ -9,16 +8,15 @@
   import { mixpanel } from '$lib/analytics';
   import { Image, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { Checkbox, FormValidationMessage, Switch } from '$lib/components/forms';
+  import ThumbnailPicker from '$lib/components/media/ThumbnailPicker.svelte';
   import { createMutationForm } from '$lib/form';
-  import { outsideClickEvent, portal } from '$lib/svelte/actions';
+  import { portal } from '$lib/svelte/actions';
   import { createFloatingActions } from '$lib/svelte-floating-ui';
   import { PublishPostInputSchema } from '$lib/validations/post';
   import CreateSpaceModal from '../(default)/CreateSpaceModal.svelte';
-  // import Chip from './Chip.svelte';
   import PublishMenuSearch from './PublishMenuSearch.svelte';
   import RadioGroup from './RadioGroup.svelte';
   import { preventRevise } from './store';
-  import ThumbnailPicker from './ThumbnailPicker.svelte';
   import type { JSONContent } from '@tiptap/core';
   import type { ChangeEventHandler } from 'svelte/elements';
   import type { Writable } from 'svelte/store';
@@ -59,7 +57,11 @@
     schema: PublishPostInputSchema,
     extra: async () => {
       await doRevisePost('AUTO_SAVE');
-      return { spaceId: selectedSpaceId, collectionId: selectedCollectionId, thumbnailId };
+      return {
+        spaceId: selectedSpaceId,
+        collectionId: selectedCollectionId,
+        thumbnailId: thumbnail ? thumbnail.id : undefined,
+      };
     },
     onSuccess: async (resp) => {
       warnUnload = false;
@@ -135,6 +137,11 @@
         category
         pairs
         externalSearchable
+
+        thumbnail {
+          id
+          ...Image_image
+        }
 
         space {
           id
@@ -212,9 +219,9 @@
 
   $: setInitialValues({
     revisionId: $post.draftRevision.id,
-    spaceId: '',
+    spaceId: $post.space ? $post.space.id : '',
     collectionId: undefined,
-    thumbnailId: undefined,
+    thumbnailId: $post.thumbnail?.id,
     visibility: $post.visibility,
     password: $post.hasPassword ? '' : undefined,
     ageRating: 'ALL',
@@ -226,12 +233,11 @@
     protectContent: $post.protectContent,
     category: $post.category,
     pairs: $post.pairs ?? [],
-    tags: [],
+    tags: $post.tags.map((t) => ({ name: t.tag.name, kind: t.kind })),
   });
 
   let enablePassword = false;
   let createSpaceOpen = false;
-  let titleSearchOpen = false;
 
   $: if ($post?.hasPassword) {
     enablePassword = true;
@@ -265,15 +271,12 @@
   let characterQuery = '';
   let couplingQuery = '';
   let triggerQuery = '';
-  let otherTagQuery = '';
+  let extraQuery = '';
 
   let thumbnailPicker: ThumbnailPicker;
-  let thumbnailId: string | undefined = undefined;
 
-  // type Tag = {
-  //   name: string;
-  //   kind: string;
-  // };
+  let thumbnail: typeof $post.thumbnail | undefined = undefined;
+  $: thumbnail = $post.thumbnail;
 
   const checkPair = (e: Parameters<ChangeEventHandler<HTMLInputElement>>[0], pair: PostPair) => {
     const { checked } = e.currentTarget;
@@ -281,7 +284,9 @@
     $data.pairs = checked ? ($data.pairs ? [...$data.pairs, pair] : [pair]) : $data.pairs?.filter((v) => v !== pair);
   };
 
-  $: console.log($data);
+  $: if ($post.space) {
+    selectedSpaceId = $post.space.id;
+  }
 </script>
 
 <div class="w-fit" use:floatingRef>
@@ -326,7 +331,7 @@
         type="button"
         on:click={() => (tabIndex = 0)}
       >
-        {#if thumbnailId}
+        {#if thumbnail}
           <i class="i-px2-checkmark square-6 text-teal-500" />
         {:else}
           <i class="i-px2-checkmark square-6 text-gray-300" />
@@ -338,7 +343,7 @@
         type="button"
         on:click={() => (tabIndex = 1)}
       >
-        {#if selectedSpaceId}
+        {#if selectedSpaceId || $post.space}
           <i class="i-px2-checkmark square-6 text-teal-500" />
         {:else}
           <i class="i-px2-dot square-6 text-pink-500" />
@@ -350,8 +355,7 @@
         type="button"
         on:click={() => (tabIndex = 2)}
       >
-        <!-- 태그 설정했을 때 -->
-        {#if true}
+        {#if $data.tags?.length > 0}
           <i class="i-px2-checkmark square-6 text-teal-500" />
         {:else}
           <i class="i-px2-checkmark square-6 text-gray-300" />
@@ -376,20 +380,18 @@
       </button>
     </div>
 
-    <form class="w-96 pt-5 px-6 h-108 overflow-y-auto" use:form>
-      <input name="spaceId" type="hidden" bind:value={selectedSpaceId} />
-      <input name="collectionId" type="hidden" bind:value={selectedCollectionId} />
-      <input name="thumbnailId" type="hidden" bind:value={thumbnailId} />
+    <form class="w-96 py-5 px-6 h-108 overflow-y-auto" use:form>
+      <input name="thumbnailId" type="hidden" value={thumbnail?.id} />
 
       <div class={clsx('space-y-4 hidden', tabIndex === 0 && 'block!')}>
         <p class="text-18-m mb-3">썸네일</p>
 
-        {#if thumbnailId}
+        {#if thumbnail}
           <div class="border border-gray-200 px-4 py-3.5 rounded flex items-center justify-between">
-            <div class="bg-#d9d9d9 square-15 rounded-sm" />
+            <Image class="bg-#d9d9d9 square-15 rounded-sm" $image={thumbnail} />
 
             <div class="flex items-center gap-1.5">
-              <button type="button" on:click={() => (thumbnailId = undefined)}>
+              <button type="button" on:click={() => (thumbnail = undefined)}>
                 <i class="i-tb-trash square-6" />
               </button>
 
@@ -419,121 +421,135 @@
       </div>
 
       <div class={clsx('space-y-4 hidden', tabIndex === 1 && 'block!')}>
-        <p class="text-18-m mb-3">스페이스</p>
+        <div>
+          <p class="text-18-m mb-3">스페이스</p>
 
-        <div class="py-2.5 px-4 mb-4 rounded-md relative bg-white border border-gray-200 hover:bg-gray-50">
-          <button
-            class="flex items-center justify-between w-full"
-            type="button"
-            on:click={() => (spaceSelectorOpen = true)}
+          <div
+            class="py-2.5 px-4 mb-4 rounded-md relative bg-white border border-gray-200 hover:bg-gray-50 has-[:disabled]:bg-gray-50"
           >
-            {#if selectedSpace}
-              <div class="flex items-center gap-1.5">
-                <Image class="square-5.5 rounded-sm flex-none" $image={selectedSpace.icon} />
-                <span class="text-12-r truncate">{selectedSpace.name}</span>
-              </div>
-            {:else}
-              <span class="text-gray-500 text-13-r">스페이스를 선택해주세요</span>
-            {/if}
-
-            <p class="flex center square-6"><i class="i-tb-caret-up-filled square-3.5" /></p>
-          </button>
-
-          {#if spaceSelectorOpen}
-            <div
-              class="fixed inset-0 z-57"
-              role="button"
-              tabindex="-1"
-              on:click={() => (spaceSelectorOpen = false)}
-              on:keypress={null}
-            />
-
-            <ul
-              class="absolute z-59 top-45px left-0 w-full rounded-b-md bg-white border border-gray-200"
-              transition:slide={{ axis: 'y', duration: 250 }}
+            <Tooltip
+              enabled={!!$post.space}
+              message="이미 게시한 포스트는 스페이스를 바꿀 수 없어요"
+              offset={16}
+              placement="top"
             >
-              {#each $query.me.spaces as space (space.id)}
-                <li class="border-b border-gray-200">
-                  <button
-                    class="px-4 py-3 w-full hover:(bg-teal-50 text-teal-700) flex justify-between items-center"
-                    type="button"
-                    on:click={() => {
-                      switchSpace({ id: space.id, emitSave: true });
-                    }}
-                  >
-                    <div class="flex items-center gap-1.5">
-                      <Image class="square-5.5 rounded-sm flex-none" $image={space.icon} />
-                      <span class="text-12-r truncate">{space.name}</span>
-                    </div>
+              <button
+                class="flex items-center justify-between w-full"
+                disabled={!!$post.space}
+                type="button"
+                on:click={() => (spaceSelectorOpen = true)}
+              >
+                {#if selectedSpace}
+                  <div class="flex items-center gap-1.5">
+                    <Image class="square-5.5 rounded-sm flex-none" $image={selectedSpace.icon} />
+                    <span class="text-12-r truncate">{selectedSpace.name}</span>
+                  </div>
+                {:else}
+                  <span class="text-gray-500 text-13-r">스페이스를 선택해주세요</span>
+                {/if}
+
+                <p class="flex center square-6"><i class="i-tb-caret-up-filled square-3.5" /></p>
+              </button>
+            </Tooltip>
+
+            {#if spaceSelectorOpen}
+              <div
+                class="fixed inset-0 z-57"
+                role="button"
+                tabindex="-1"
+                on:click={() => (spaceSelectorOpen = false)}
+                on:keypress={null}
+              />
+
+              <ul
+                class="absolute z-59 top-45px left-0 w-full rounded-b-md bg-white border border-gray-200"
+                transition:slide={{ axis: 'y', duration: 250 }}
+              >
+                {#each $query.me.spaces as space (space.id)}
+                  <li class="border-b border-gray-200">
+                    <button
+                      class="px-4 py-3 w-full hover:(bg-teal-50 text-teal-700) flex justify-between items-center"
+                      type="button"
+                      on:click={() => {
+                        switchSpace({ id: space.id, emitSave: true });
+                      }}
+                    >
+                      <div class="flex items-center gap-1.5">
+                        <Image class="square-5.5 rounded-sm flex-none" $image={space.icon} />
+                        <span class="text-12-r truncate">{space.name}</span>
+                      </div>
+                    </button>
+                  </li>
+                {/each}
+                <li>
+                  <button class="text-13-r px-4 py-3" type="button" on:click={() => (createSpaceOpen = true)}>
+                    <i class="i-tb-plus square-3.5 m-1.5" />
+                    새로운 스페이스 추가하기
                   </button>
                 </li>
-              {/each}
-              <li>
-                <button class="text-13-r px-4 py-3" type="button" on:click={() => (createSpaceOpen = true)}>
-                  <i class="i-tb-plus square-3.5 m-1.5" />
-                  새로운 스페이스 추가하기
-                </button>
-              </li>
-            </ul>
-          {/if}
+              </ul>
+            {/if}
+          </div>
         </div>
 
-        <p class="text-18-m mb-3 pt-5">컬렉션</p>
+        <div>
+          <p class="text-18-m mb-3 pt-5">컬렉션</p>
 
-        <div
-          class="py-2.5 px-4 mb-4 rounded-md relative bg-white border border-gray-200 hover:bg-gray-50 has-[:disabled]:bg-gray-50"
-        >
-          <button
-            class="flex items-center justify-between w-full"
-            disabled={!selectedSpace}
-            type="button"
-            on:click={() => (collectionSelectorOpen = true)}
+          <div
+            class="py-2.5 px-4 mb-4 rounded-md relative bg-white border border-gray-200 hover:bg-gray-50 has-[:disabled]:bg-gray-50"
           >
-            {#if selectedCollection}
-              <div class="flex items-center gap-1.5">
-                {#if selectedCollection.thumbnail}
-                  <Image class="square-5.5 rounded-sm flex-none" $image={selectedCollection.thumbnail} />
-                {/if}
-                <span class="text-12-r truncate">{selectedCollection.name}</span>
-              </div>
-            {:else}
-              <span class="text-gray-500 text-13-r">컬렉션을 선택해주세요</span>
-            {/if}
-
-            <p class="flex center square-6"><i class="i-tb-caret-up-filled square-3.5" /></p>
-          </button>
-
-          {#if collectionSelectorOpen && selectedSpace?.collections && selectedSpace.collections.length > 0}
-            <div
-              class="fixed inset-0 z-57"
-              role="button"
-              tabindex="-1"
-              on:click={() => (collectionSelectorOpen = false)}
-              on:keypress={null}
-            />
-
-            <ul
-              class="absolute z-59 top-45px left-0 w-full rounded-b-md bg-white border border-gray-200"
-              transition:slide={{ axis: 'y', duration: 250 }}
+            <button
+              class="flex items-center justify-between w-full"
+              disabled={!selectedSpace}
+              type="button"
+              on:click={() => (collectionSelectorOpen = true)}
             >
-              {#each selectedSpace?.collections as collection (collection.id)}
-                <li class="border-b border-gray-200">
-                  <button
-                    class="px-4 py-3 w-full hover:(bg-teal-50 text-teal-700) flex justify-between items-center"
-                    type="button"
-                    on:click={() => {
-                      selectedCollectionId = collection.id;
-                      collectionSelectorOpen = false;
-                    }}
-                  >
-                    <div class="flex items-center gap-1.5">
-                      <span class="text-12-r truncate">{collection.name}</span>
-                    </div>
-                  </button>
-                </li>
-              {/each}
-            </ul>
-          {/if}
+              {#if selectedCollection}
+                <div class="flex items-center gap-1.5">
+                  {#if selectedCollection.thumbnail}
+                    <Image class="square-5.5 rounded-sm flex-none" $image={selectedCollection.thumbnail} />
+                  {/if}
+                  <span class="text-12-r truncate">{selectedCollection.name}</span>
+                </div>
+              {:else}
+                <span class="text-gray-500 text-13-r">컬렉션을 선택해주세요</span>
+              {/if}
+
+              <p class="flex center square-6"><i class="i-tb-caret-up-filled square-3.5" /></p>
+            </button>
+
+            {#if collectionSelectorOpen && selectedSpace?.collections && selectedSpace.collections.length > 0}
+              <div
+                class="fixed inset-0 z-57"
+                role="button"
+                tabindex="-1"
+                on:click={() => (collectionSelectorOpen = false)}
+                on:keypress={null}
+              />
+
+              <ul
+                class="absolute z-59 top-45px left-0 w-full rounded-b-md bg-white border border-gray-200"
+                transition:slide={{ axis: 'y', duration: 250 }}
+              >
+                {#each selectedSpace?.collections as collection (collection.id)}
+                  <li class="border-b border-gray-200">
+                    <button
+                      class="px-4 py-3 w-full hover:(bg-teal-50 text-teal-700) flex justify-between items-center"
+                      type="button"
+                      on:click={() => {
+                        selectedCollectionId = collection.id;
+                        collectionSelectorOpen = false;
+                      }}
+                    >
+                      <div class="flex items-center gap-1.5">
+                        <span class="text-12-r truncate">{collection.name}</span>
+                      </div>
+                    </button>
+                  </li>
+                {/each}
+              </ul>
+            {/if}
+          </div>
         </div>
       </div>
 
@@ -575,118 +591,45 @@
           </div>
         </div>
 
-        <div>
-          <p class="text-18-m mb-3 flex gap-1.5 pt-5">
-            <span>작품</span>
-            <Tooltip class="flex center" message="작품" placement="top">
-              <i class="i-tb-alert-circle square-3.5 text-gray-400" />
-            </Tooltip>
-          </p>
+        <PublishMenuSearch
+          kind="TITLE"
+          label="작품"
+          placeholder="작품명"
+          bind:tags={$data.tags}
+          bind:query={titleQuery}
+        />
 
-          <form
-            class="relative"
-            on:submit|preventDefault
-            on:outsideClick={() => (titleSearchOpen = false)}
-            use:outsideClickEvent
-          >
-            <input
-              class="rounded-1.5 bg-gray-50 py-2.5 pl-4 pr-11 text-14-r border border-gray-200 w-full"
-              placeholder=""
-              type="search"
-              on:input={() => (titleSearchOpen = true)}
-              bind:value={titleQuery}
-            />
-            <div class="absolute inset-y-0 right-4 flex center text-gray-700">
-              <i class="i-tb-search square-4" />
-            </div>
+        <PublishMenuSearch
+          kind="CHARACTER"
+          label="캐릭터"
+          placeholder="캐릭터 이름"
+          bind:tags={$data.tags}
+          bind:query={characterQuery}
+        />
 
-            {#if titleSearchOpen}
-              <ul class="absolute left-0 w-full bg-white border border-gray-200 rounded-b-1.5 z-1">
-                <li class="hover:bg-gray-100 last-of-type:rounded-b-1.5">
-                  <button
-                    class="py-2 px-1.5 w-full"
-                    type="button"
-                    on:click={() => {
-                      titleSearchOpen = false;
-                      titleQuery = '';
-                    }}
-                  >
-                    <i class="i-tb-search square-3 text-gray-400 m-1.5" />
-                    <span class="text-12-r">검색 결과</span>
-                  </button>
-                </li>
-              </ul>
-            {/if}
-          </form>
+        <PublishMenuSearch
+          kind="COUPLING"
+          label="커플링"
+          placeholder="예) AA*BB"
+          bind:tags={$data.tags}
+          bind:query={couplingQuery}
+        />
 
-          <!-- {#if postTags?.TITLE}
-            <ul>
-              {#each postTags.TITLE as tag (tag.name)}
-                <Chip>{tag.kind}</Chip>
-              {/each}
-            </ul>
-          {/if} -->
-        </div>
+        <PublishMenuSearch
+          kind="TRIGGER"
+          label="트리거 주의"
+          placeholder="트리거 항목"
+          bind:tags={$data.tags}
+          bind:query={triggerQuery}
+        />
 
-        <div>
-          <p class="text-18-m mb-3 flex gap-1.5 pt-5">
-            <span>캐릭터</span>
-            <Tooltip class="flex center" message="캐릭터" placement="top">
-              <i class="i-tb-alert-circle square-3.5 text-gray-400" />
-            </Tooltip>
-          </p>
-
-          <PublishMenuSearch
-            onClick={(q) => console.log(q)}
-            bind:query={characterQuery}
-            on:submit={() => console.log(characterQuery)}
-          />
-        </div>
-
-        <div>
-          <p class="text-18-m mb-3 flex gap-1.5 pt-5">
-            <span>커플링</span>
-            <Tooltip class="flex center" message="커플링" placement="top">
-              <i class="i-tb-alert-circle square-3.5 text-gray-400" />
-            </Tooltip>
-          </p>
-
-          <PublishMenuSearch
-            onClick={(q) => console.log(q)}
-            bind:query={couplingQuery}
-            on:submit={() => console.log(couplingQuery)}
-          />
-        </div>
-
-        <div>
-          <p class="text-18-m mb-3 flex gap-1.5 pt-5">
-            <span>트리거 주의</span>
-            <Tooltip class="flex center" message="트리거 주의" placement="top">
-              <i class="i-tb-alert-circle square-3.5 text-gray-400" />
-            </Tooltip>
-          </p>
-
-          <PublishMenuSearch
-            onClick={(q) => console.log(q)}
-            bind:query={triggerQuery}
-            on:submit={() => console.log(triggerQuery)}
-          />
-        </div>
-
-        <div class="pb-5">
-          <p class="text-18-m mb-3 flex gap-1.5 pt-5">
-            <span>추가 태그</span>
-            <Tooltip class="flex center" message="추가 태그" placement="top">
-              <i class="i-tb-alert-circle square-3.5 text-gray-400" />
-            </Tooltip>
-          </p>
-
-          <PublishMenuSearch
-            onClick={(q) => console.log(q)}
-            bind:query={otherTagQuery}
-            on:submit={() => console.log(otherTagQuery)}
-          />
-        </div>
+        <PublishMenuSearch
+          kind="EXTRA"
+          label="추가 태그"
+          placeholder="추가 태그"
+          bind:tags={$data.tags}
+          bind:query={extraQuery}
+        />
       </div>
 
       <div class={clsx('space-y-4 hidden', tabIndex === 3 && 'block!')}>
@@ -759,7 +702,7 @@
           />
         </div>
 
-        <div>
+        <div class="mb-1">
           <p class="text-18-m mb-3 flex gap-1.5 pt-5">
             <span>검색 공개</span>
             <Tooltip class="flex center" message="검색 공개">
@@ -843,4 +786,4 @@
   <CreateSpaceModal $user={$query.me} {switchSpace} bind:open={createSpaceOpen} />
 {/if}
 
-<ThumbnailPicker bind:this={thumbnailPicker} keepBoundsWhenClosed on:change={(e) => (thumbnailId = e.detail.id)} />
+<ThumbnailPicker bind:this={thumbnailPicker} keepBoundsWhenClosed on:change={(e) => (thumbnail = e.detail)} />
