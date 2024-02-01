@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Link } from '@penxle/ui';
+  import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { BottomSheet, Button, Image, Modal } from '$lib/components';
@@ -85,6 +86,15 @@
       }
     }
   `);
+
+  const createPost = graphql(`
+    mutation SpaceLayout_CreatePost_Mutation($input: CreatePostInput!) {
+      createPost(input: $input) {
+        id
+        permalink
+      }
+    }
+  `);
 </script>
 
 <main class="flex flex-col items-center w-full bg-cardprimary grow">
@@ -153,7 +163,16 @@
     </div>
     <div class="flex self-start items-center gap-2 <sm:hidden">
       {#if $query.space.meAsMember}
-        <Button href={`/editor?space=${$query.space.slug}`} size="md" type="link">포스트 작성</Button>
+        <Button
+          size="md"
+          on:click={async () => {
+            const { permalink } = await createPost({ spaceId: $query.space.id });
+            mixpanel.track('post:create', { via: 'space' });
+            await goto(`/editor/${permalink}`);
+          }}
+        >
+          포스트 작성
+        </Button>
         <Button
           color="tertiary"
           size="md"
@@ -255,7 +274,17 @@
   </div>
   <div class="flex gap-2 w-full mt-6 mb-3 px-4 sm:hidden">
     {#if $query.space.meAsMember}
-      <Button class="<sm:w-full" href={`/editor?space=${$query.space.slug}`} size="xl" type="link">포스트 작성</Button>
+      <Button
+        class="<sm:w-full"
+        size="xl"
+        on:click={async () => {
+          const { permalink } = await createPost({ spaceId: $query.space.id });
+          mixpanel.track('post:create', { via: 'space' });
+          await goto(`/editor/${permalink}`);
+        }}
+      >
+        포스트 작성
+      </Button>
       <Button
         class="square-12.5"
         color="tertiary"

@@ -88,7 +88,7 @@
               class="relative flex items-center gap-2 rounded-lg py-1 pr-2 pl-1 transition hover:bg-surface-primary <sm:hidden"
               type="button"
               on:click={async () => {
-                const { permalink } = await createPost({});
+                const { permalink } = await createPost({ spaceId: undefined });
                 mixpanel.track('post:create', { via: 'feed' });
                 await goto(`/editor/${permalink}`);
               }}

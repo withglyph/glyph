@@ -1,7 +1,9 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Avatar, BottomSheet, Button, Image, Tooltip } from '$lib/components';
   import { pageSubTitle } from '$lib/stores';
   import ComingSoonModal from '../../ComingSoonModal.svelte';
@@ -44,6 +46,15 @@
       }
     }
   `);
+
+  const createPost = graphql(`
+    mutation SpaceDashboardLayout_CreatePost_Mutation($input: CreatePostInput!) {
+      createPost(input: $input) {
+        id
+        permalink
+      }
+    }
+  `);
 </script>
 
 <Header {$query} />
@@ -80,10 +91,13 @@
         <Button
           class="w-full"
           color="tertiary"
-          href={`/editor?space=${$query.space.slug}`}
           size="xl"
-          type="link"
           variant="outlined"
+          on:click={async () => {
+            const { permalink } = await createPost({ spaceId: $query.space.id });
+            mixpanel.track('post:create', { via: 'space-dashboard' });
+            await goto(`/editor/${permalink}`);
+          }}
         >
           새 포스트 작성하기
         </Button>

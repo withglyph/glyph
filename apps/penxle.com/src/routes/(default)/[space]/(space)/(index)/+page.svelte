@@ -1,7 +1,9 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import clsx from 'clsx';
+  import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Button, SpacePostCard } from '$lib/components';
 
   $: query = graphql(`
@@ -23,6 +25,15 @@
       }
     }
   `);
+
+  const createPost = graphql(`
+    mutation SpacePage_CreatePost_Mutation($input: CreatePostInput!) {
+      createPost(input: $input) {
+        id
+        permalink
+      }
+    }
+  `);
 </script>
 
 <Helmet title={`홈 | ${$query.space.name}`} />
@@ -37,7 +48,17 @@
     <div class="flex flex-col center">
       <h2 class="body-15-b text-secondary">아직 스페이스에 업로드된 포스트가 없어요</h2>
       {#if $query.space.meAsMember}
-        <Button class="mt-5" href={`/editor?space=${$query.space.slug}`} size="lg" type="link">포스트 작성하기</Button>
+        <Button
+          class="mt-5"
+          size="lg"
+          on:click={async () => {
+            const { permalink } = await createPost({ spaceId: $query.space.id });
+            mixpanel.track('post:create', { via: 'space' });
+            await goto(`/editor/${permalink}`);
+          }}
+        >
+          포스트 작성하기
+        </Button>
       {/if}
     </div>
   {:else}
