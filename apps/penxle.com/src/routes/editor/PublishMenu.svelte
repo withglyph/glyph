@@ -332,24 +332,24 @@
         type="button"
         on:click={() => (tabIndex = 0)}
       >
-        {#if thumbnail}
+        {#if selectedSpaceId || $post.space}
           <i class="i-px2-checkmark square-6 text-teal-500" />
         {:else}
-          <i class="i-px2-checkmark square-6 text-gray-300" />
+          <i class="i-px2-dot square-6 text-pink-500" />
         {/if}
-        <span class="py-2 px-1 w-full">썸네일</span>
+        <span class="py-2 px-1 w-full">발행</span>
       </button>
       <button
         class={clsx('mx-2 py-1 text-13-r flex items-center rounded hover:bg-gray-50', tabIndex === 1 && 'bg-gray-50')}
         type="button"
         on:click={() => (tabIndex = 1)}
       >
-        {#if selectedSpaceId || $post.space}
+        {#if thumbnail}
           <i class="i-px2-checkmark square-6 text-teal-500" />
         {:else}
-          <i class="i-px2-dot square-6 text-pink-500" />
+          <i class="i-px2-checkmark square-6 text-gray-300" />
         {/if}
-        <span class="py-2 px-1 w-full">스페이스/컬렉션</span>
+        <span class="py-2 px-1 w-full">태그</span>
       </button>
       <button
         class={clsx('mx-2 py-1 text-13-r flex items-center rounded hover:bg-gray-50', tabIndex === 2 && 'bg-gray-50')}
@@ -361,7 +361,7 @@
         {:else}
           <i class="i-px2-checkmark square-6 text-gray-300" />
         {/if}
-        <span class="py-2 px-1 w-full">태그</span>
+        <span class="py-2 px-1 w-full">썸네일</span>
       </button>
       <button
         class={clsx('mx-2 py-1 text-13-r flex items-center rounded hover:bg-gray-50', tabIndex === 3 && 'bg-gray-50')}
@@ -369,7 +369,7 @@
         on:click={() => (tabIndex = 3)}
       >
         <i class="i-px2-checkmark square-6 text-teal-500" />
-        <span class="py-2 px-1 w-full">범위 설정</span>
+        <span class="py-2 px-1 w-full">대상 독자</span>
       </button>
       <button
         class={clsx('mx-2 py-1 text-13-r flex items-center rounded hover:bg-gray-50', tabIndex === 4 && 'bg-gray-50')}
@@ -377,7 +377,7 @@
         on:click={() => (tabIndex = 4)}
       >
         <i class="i-px2-checkmark square-6 text-teal-500" />
-        <span class="py-2 px-1 w-full">게시물 옵션</span>
+        <span class="py-2 px-1 w-full">세부 옵션</span>
       </button>
     </div>
 
@@ -385,43 +385,6 @@
       <input name="thumbnailId" type="hidden" value={thumbnail?.id} />
 
       <div class={clsx('space-y-4 hidden', tabIndex === 0 && 'block!')}>
-        <p class="text-18-m mb-3">썸네일</p>
-
-        {#if thumbnail}
-          <div class="border border-gray-200 px-4 py-3.5 rounded flex items-center justify-between">
-            <Image class="bg-#d9d9d9 square-15 rounded-sm" $image={thumbnail} />
-
-            <div class="flex items-center gap-1.5">
-              <button type="button" on:click={() => (thumbnail = undefined)}>
-                <i class="i-tb-trash square-6" />
-              </button>
-
-              <button
-                class="w-13.5 border border-gray-200 px-3 py-1 rounded-sm text-11-sb text-gray-400 text-center"
-                type="button"
-                on:click={() => thumbnailPicker.show()}
-              >
-                변경
-              </button>
-            </div>
-          </div>
-        {:else}
-          <button
-            class="flex items-center justify-between py-3 px-4 border border-dashed border-gray-200 rounded w-full"
-            type="button"
-            on:click={() => thumbnailPicker.show()}
-          >
-            <div class="flex items-center gap-1.5">
-              <i class="i-tb-photo-up square-4.5 text-gray-300" />
-              <span class="text-14-r">썸네일 이미지를 업로드해주세요</span>
-            </div>
-
-            <div class="text-11-sb text-white bg-teal-500 rounded-sm py-1 px-3">업로드</div>
-          </button>
-        {/if}
-      </div>
-
-      <div class={clsx('space-y-4 hidden', tabIndex === 1 && 'block!')}>
         <div>
           <p class="text-18-m mb-3">스페이스</p>
 
@@ -554,7 +517,7 @@
         </div>
       </div>
 
-      <div class={clsx('space-y-4 hidden', tabIndex === 2 && 'block!')}>
+      <div class={clsx('space-y-4 hidden', tabIndex === 1 && 'block!')}>
         <div>
           <p class="text-18-m mb-3 flex gap-1.5">
             <span>카테고리</span>
@@ -631,6 +594,43 @@
           bind:tags={$data.tags}
           bind:query={extraQuery}
         />
+      </div>
+
+      <div class={clsx('space-y-4 hidden', tabIndex === 2 && 'block!')}>
+        <p class="text-18-m mb-3">썸네일</p>
+
+        {#if thumbnail}
+          <div class="border border-gray-200 px-4 py-3.5 rounded flex items-center justify-between">
+            <Image class="bg-#d9d9d9 square-15 rounded-sm" $image={thumbnail} />
+
+            <div class="flex items-center gap-1.5">
+              <button type="button" on:click={() => (thumbnail = undefined)}>
+                <i class="i-tb-trash square-6" />
+              </button>
+
+              <button
+                class="w-13.5 border border-gray-200 px-3 py-1 rounded-sm text-11-sb text-gray-400 text-center"
+                type="button"
+                on:click={() => thumbnailPicker.show()}
+              >
+                변경
+              </button>
+            </div>
+          </div>
+        {:else}
+          <button
+            class="flex items-center justify-between py-3 px-4 border border-dashed border-gray-200 rounded w-full"
+            type="button"
+            on:click={() => thumbnailPicker.show()}
+          >
+            <div class="flex items-center gap-1.5">
+              <i class="i-tb-photo-up square-4.5 text-gray-300" />
+              <span class="text-14-r">썸네일 이미지를 업로드해주세요</span>
+            </div>
+
+            <div class="text-11-sb text-white bg-teal-500 rounded-sm py-1 px-3">업로드</div>
+          </button>
+        {/if}
       </div>
 
       <div class={clsx('space-y-4 hidden', tabIndex === 3 && 'block!')}>
