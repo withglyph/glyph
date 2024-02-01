@@ -6,6 +6,10 @@ export const maintenance = (async ({ event, resolve }) => {
     return await resolve(event);
   }
 
+  if (event.route.id?.startsWith('/api/') && event.route.id !== '/api/graphql') {
+    return await resolve(event);
+  }
+
   const flag = await redis.get('under-maintenance');
   if (flag) {
     return await event.fetch('/_internal/under-maintenance');
