@@ -854,53 +854,49 @@ export const postSchema = defineSchema((builder) => {
       resolve: async (query, _, args, { db, ...context }) => {
         const post = await db.post.findUnique({
           include: { space: true },
-          where: {
-            permalink: args.permalink,
-            space: {
-              state: 'ACTIVE',
-            },
-          },
+          where: { permalink: args.permalink },
         });
 
         if (!post) {
           throw new NotFoundError();
         }
 
-        if (
-          post.space?.visibility === 'PRIVATE' ||
-          post.state === 'DRAFT' ||
-          post.visibility === 'SPACE' ||
-          post.state === 'DELETED'
-        ) {
-          if (!context.session) {
-            throw new PermissionDeniedError();
+        if (post.userId !== context.session?.userId) {
+          if (!post.space) {
+            throw new NotFoundError();
           }
-
-          const member = post.space
-            ? await db.spaceMember.findUnique({
-                where: {
-                  spaceId_userId: {
-                    spaceId: post.space.id,
-                    userId: context.session.userId,
-                  },
-                  state: 'ACTIVE',
-                },
-              })
-            : null;
-
           if (
-            !member ||
-            (post.state === 'DRAFT' && member.role !== 'ADMIN' && post.userId !== context.session?.userId)
+            post.space.state === 'INACTIVE' ||
+            post.space.visibility === 'PRIVATE' ||
+            post.state === 'DRAFT' ||
+            post.visibility === 'SPACE' ||
+            post.state === 'DELETED'
           ) {
-            const purchase = await db.postPurchase.exists({
+            if (!context.session) {
+              throw new PermissionDeniedError();
+            }
+
+            const member = await db.spaceMember.findUnique({
               where: {
-                postId: post.id,
-                userId: context.session.userId,
+                spaceId_userId: {
+                  spaceId: post.space.id,
+                  userId: context.session.userId,
+                },
+                state: 'ACTIVE',
               },
             });
 
-            if (!purchase) {
-              throw new PermissionDeniedError();
+            if (!member || (post.state === 'DRAFT' && member.role !== 'ADMIN')) {
+              const purchase = await db.postPurchase.exists({
+                where: {
+                  postId: post.id,
+                  userId: context.session.userId,
+                },
+              });
+
+              if (!purchase) {
+                throw new PermissionDeniedError();
+              }
             }
           }
         }
