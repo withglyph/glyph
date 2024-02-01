@@ -772,14 +772,17 @@
     </form>
   </div>
 
-  <div class="text-right px-6 py-5 border-t border-gray-200">
-    <button
-      class="w-30 py-3 px-6 bg-gray-950 text-white text-14-m rounded-1.5 text-center"
-      type="button"
-      on:click={handleSubmit}
-    >
-      게시
-    </button>
+  <div class="flex justify-end px-6 py-5 border-t border-gray-200">
+    <Tooltip enabled={!selectedSpaceId} message="게시할 스페이스를 선택해주세요" offset={12} placement="top">
+      <button
+        class="w-30 py-3 px-6 bg-gray-950 text-white text-14-m rounded-1.5 text-center"
+        disabled={!selectedSpaceId}
+        type="button"
+        on:click={handleSubmit}
+      >
+        게시
+      </button>
+    </Tooltip>
   </div>
 </div>
 
