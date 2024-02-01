@@ -126,6 +126,11 @@ export const postSchema = defineSchema((builder) => {
 
       contentFilters: t.expose('contentFilters', { type: [PrismaEnums.ContentFilterCategory] }),
       blurred: t.boolean({
+        select: {
+          tags: {
+            where: { kind: 'TRIGGER' },
+          },
+        },
         resolve: async (post, _, { db, ...context }) => {
           if (!context.session) {
             return post.contentFilters.length > 0;
@@ -144,7 +149,7 @@ export const postSchema = defineSchema((builder) => {
             (filter) => filter.action,
           );
 
-          return post.contentFilters.some((filter) => myFilters[filter] !== 'EXPOSE');
+          return post.tags.length > 0 || post.contentFilters.some((filter) => myFilters[filter] !== 'EXPOSE');
         },
       }),
 

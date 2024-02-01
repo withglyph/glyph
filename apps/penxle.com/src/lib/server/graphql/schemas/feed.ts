@@ -17,7 +17,7 @@ export const feedSchema = defineSchema((builder) => {
             state: 'PUBLISHED',
             visibility: 'PUBLIC',
             password: null,
-            contentFilters: { isEmpty: true },
+            ageRating: 'ALL',
             space: {
               state: 'ACTIVE',
               visibility: 'PUBLIC',
@@ -138,7 +138,7 @@ export const feedSchema = defineSchema((builder) => {
                   state: 'PUBLISHED',
                   visibility: 'PUBLIC',
                   password: null,
-                  contentFilters: { isEmpty: true },
+                  ageRating: 'ALL',
                   space: {
                     state: 'ACTIVE',
                     visibility: 'PUBLIC',
@@ -170,7 +170,7 @@ export const feedSchema = defineSchema((builder) => {
               state: 'PUBLISHED',
               visibility: 'PUBLIC',
               password: null,
-              contentFilters: { isEmpty: true },
+              ageRating: 'ALL',
               space: {
                 state: 'ACTIVE',
                 visibility: 'PUBLIC',

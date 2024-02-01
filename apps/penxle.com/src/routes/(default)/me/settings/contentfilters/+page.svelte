@@ -6,7 +6,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import { Switch } from '$lib/components/forms';
-  import ContentFilterButton from './ContentFilterButton.svelte';
+  // import ContentFilterButton from './ContentFilterButton.svelte';
   import MutedSpaceModal from './MutedSpaceModal.svelte';
   import MutedTagModal from './MutedTagModal.svelte';
 
@@ -109,13 +109,13 @@
     </p>
   </div>
 
-  <div class="w-full border-b border-alphagray-10" />
+  <!-- <div class="w-full border-b border-alphagray-10" />
 
   <div class="flex flex-col flex-wrap">
     <div class="flex items-center justify-between w-full mb-2">
       <div class="flex items-center gap-1">
         <h3 class="text-lg font-extrabold">트리거 주의 쿠션 비활성화</h3>
-        <!-- <button class="i-lc-help-circle square-4.5 text-secondary" type="button" on:click={() => (open = true)} /> -->
+        <button class="i-lc-help-circle square-4.5 text-secondary" type="button" on:click={() => (open = true)} />
       </div>
     </div>
 
@@ -137,7 +137,7 @@
       <ContentFilterButton $user={$query.me} category="GROSSNESS">벌레, 징그러움</ContentFilterButton>
       <ContentFilterButton $user={$query.me} category="OTHER">기타</ContentFilterButton>
     </div>
-  </div>
+  </div> -->
 </div>
 
 <Modal size="md" bind:open>

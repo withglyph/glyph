@@ -12,7 +12,7 @@ type IndexPostParam = Prisma.PostGetPayload<{
     visibility: true;
     password: true;
     publishedAt: true;
-    contentFilters: true;
+    ageRating: true;
     space: {
       select: {
         id: true;
@@ -58,7 +58,7 @@ export const indexPost = async (post: IndexPostParam) => {
           subtitle: post.publishedRevision.subtitle,
           publishedAt: post.publishedAt?.getTime() ?? Date.now(),
           tags: post.tags.map(({ kind, tag }) => ({ id: tag.id, name: tag.name, nameRaw: tag.name, kind })),
-          contentFilters: post.contentFilters,
+          ageRating: post.ageRating,
           spaceId: post.space.id,
         },
       });

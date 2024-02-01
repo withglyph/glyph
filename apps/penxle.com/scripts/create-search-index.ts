@@ -98,7 +98,7 @@ await createIndex('posts', {
         },
       },
       spaceId: { type: 'keyword' },
-      contentFilters: { type: 'keyword' },
+      ageRating: { type: 'keyword' },
       publishedAt: { type: 'date', format: 'epoch_millis' },
     },
   },

@@ -205,7 +205,7 @@
         </fieldset>
       {/if}
 
-      <hr class="w-full border-color-alphagray-10 my-4" />
+      <!-- <hr class="w-full border-color-alphagray-10 my-4" />
 
       <button
         class="w-full flex items-center justify-between py-3 gap-2.5"
@@ -236,7 +236,7 @@
             </Checkbox>
           {/each}
         </div>
-      {/if}
+      {/if} -->
     </div>
   </aside>
 

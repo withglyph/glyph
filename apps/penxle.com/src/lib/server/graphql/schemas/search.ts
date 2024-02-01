@@ -103,7 +103,7 @@ export const searchSchema = defineSchema((builder) => {
               filter: {
                 bool: {
                   must: makeQueryContainers([
-                    { query: { term: { contentFilters: 'ADULT' } }, condition: args.adultFilter === true },
+                    { query: { term: { ageRating: 'R19' } }, condition: args.adultFilter === true },
                     ...args.includeTags.map((tag) => ({
                       query: { term: { ['tags.nameRaw']: tag } },
                     })),
@@ -130,15 +130,9 @@ export const searchSchema = defineSchema((builder) => {
                     },
                     {
                       query: {
-                        term: { contentFilters: 'ADULT' },
+                        term: { ageRating: 'R19' },
                       },
                       condition: args.adultFilter === false,
-                    },
-                    {
-                      query: {
-                        terms: { contentFilters: args.excludeContentFilters ?? [] },
-                      },
-                      condition: (args.excludeContentFilters?.length ?? 0) > 0,
                     },
                   ]),
                 },
