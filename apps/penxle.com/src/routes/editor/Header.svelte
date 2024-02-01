@@ -139,7 +139,7 @@
         id
         permalink
 
-        draftRevision {
+        draftRevision @_required {
           id
           kind
           createdAt

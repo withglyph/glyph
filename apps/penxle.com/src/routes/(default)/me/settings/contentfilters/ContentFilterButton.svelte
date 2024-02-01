@@ -47,6 +47,7 @@
 
 <ToggleButton
   checked={preferences[category] === 'EXPOSE'}
+  bind:group={category}
   on:change={async (e) => {
     const action = e.currentTarget.checked ? 'EXPOSE' : 'WARN';
 

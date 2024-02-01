@@ -28,7 +28,7 @@
               title
             }
 
-            space {
+            space @_required {
               id
               name
             }
@@ -74,7 +74,7 @@
             <div class="text-primary subtitle-16-b truncate sm:subtitle-18-b">
               {revenue.post?.publishedRevision?.title}
             </div>
-            <div class="text-secondary body-13-m truncate">{revenue.post?.space.name}</div>
+            <div class="text-secondary body-13-m truncate">{revenue.post?.space?.name}</div>
           </div>
         </TableData>
         <TableData class="text-secondary body-14-m">{dayjs(revenue.createdAt).formatAsDateTime()}</TableData>

@@ -79,6 +79,20 @@
           protectContent
           publishedAt
 
+          tags {
+            id
+
+            tag {
+              id
+              name
+            }
+          }
+
+          thumbnail {
+            id
+            url
+          }
+
           recommendedPosts {
             id
             ...SpaceFeed_post
@@ -174,17 +188,8 @@
         createdAt
         contentKind
         previewText
-        autoIndent
-
-        croppedThumbnail {
-          id
-          url
-        }
-
-        tags {
-          id
-          name
-        }
+        paragraphIndent
+        paragraphSpacing
       }
     `),
   );
@@ -356,7 +361,7 @@
 
 <Helmet
   description={$postRevision.previewText}
-  image={$postRevision.croppedThumbnail?.url ?? 'https://pnxl.net/assets/opengraph/default-cover.png'}
+  image={$query.post.thumbnail?.url ?? 'https://pnxl.net/assets/opengraph/default-cover.png'}
   title={$postRevision.title}
 />
 
@@ -372,21 +377,34 @@
 
       <div class="border-b border-secondary w-full flex flex-col mt-4.75 sm:mt-6">
         <div class="flex items-start pt-4 pb-5 gap-3">
-          <svelte:element this={element} class="relative" href={preview ? undefined : `/${$query.post.space.slug}`}>
-            <Image class="square-10.5 rounded-3.5 border border-secondary" $image={$query.post.space.icon} />
-            <Avatar
-              class="square-6 absolute border border-bg-primary -right-1 -bottom-1"
-              $profile={$query.post.member.profile}
-            />
+          <svelte:element
+            this={element}
+            class="relative"
+            href={preview || !$query.post.space ? undefined : `/${$query.post.space.slug}`}
+          >
+            {#if $query.post.space && $query.post.member}
+              <Image class="square-10.5 rounded-3.5 border border-secondary" $image={$query.post.space.icon} />
+              <Avatar
+                class="square-6 absolute border border-bg-primary -right-1 -bottom-1"
+                $profile={$query.post.member.profile}
+              />
+            {:else}
+              <div class="square-10.5 rounded-3.5 border border-secondary" />
+              <div class="square-6 absolute border border-bg-primary -right-1 -bottom-1" />
+            {/if}
           </svelte:element>
 
           <div class="grow-1">
             <svelte:element
               this={element}
               class="body-15-b break-all"
-              href={preview ? undefined : `/${$query.post.space.slug}`}
+              href={preview || !$query.post.space ? undefined : `/${$query.post.space.slug}`}
             >
-              {$query.post.space.name} · {$query.post.member.profile.name}
+              {#if $query.post.space && $query.post.member}
+                {$query.post.space.name} · {$query.post.member.profile.name}
+              {:else}
+                스페이스 이름 · 작성자
+              {/if}
             </svelte:element>
             <div class="flex items-center flex-wrap body-13-m text-secondary">
               <span class="mr-3.5">{dayjs($query.post.publishedAt ?? $postRevision.createdAt).formatAsDate()}</span>
@@ -443,10 +461,12 @@
 
           <Menu disabled={preview}>
             <i slot="value" class="i-lc-more-vertical square-6 text-icon-primary" />
-            {#if !$query.post.space.meAsMember}
-              {#if $query.post.space.muted}
+            {#if !$query.post.space?.meAsMember}
+              {#if $query.post.space?.muted}
                 <MenuItem
                   on:click={async () => {
+                    if (!$query.post.space) return;
+
                     await unmuteSpace({ spaceId: $query.post.space.id });
                     mixpanel.track('space:unmute', { spaceId: $query.post.space.id, via: 'post' });
                     toast.success('스페이스 숨기기를 해제했어요');
@@ -457,6 +477,8 @@
               {:else}
                 <MenuItem
                   on:click={async () => {
+                    if (!$query.post.space) return;
+
                     if (!$query.me) {
                       loginRequireOpen = true;
                       return;
@@ -472,11 +494,11 @@
               {/if}
               <MenuItem>포스트 신고하기</MenuItem>
             {:else}
-              {@const myPost = $query.post.member.id === $query.post.space.meAsMember.id}
+              {@const myPost = $query.post.member?.id === $query.post.space?.meAsMember.id}
               {#if myPost}
                 <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
               {/if}
-              {#if myPost || $query.post.space.meAsMember.role === 'ADMIN'}
+              {#if myPost || $query.post.space?.meAsMember.role === 'ADMIN'}
                 <MenuItem
                   on:click={() => {
                     openDeletePostWarning = true;
@@ -505,7 +527,7 @@
       </div>
     {/if}
 
-    {#if !$query.post.hasPassword || $query.post.space.meAsMember || $query.post.unlocked}
+    {#if !$query.post.hasPassword || $query.post.space?.meAsMember || $query.post.unlocked}
       <div class="relative">
         {#if $query.me?.personalIdentity || !$query.me?.isAdulthood}
           {#if $postRevision.contentKind === 'ARTICLE'}
@@ -535,8 +557,10 @@
               </header>
             {:else}
               <TiptapRenderer
-                class=""
+                class="bodylong-16-m"
                 content={$postRevision.content}
+                paragraphIndent={$postRevision.paragraphIndent}
+                paragraphSpacing={$postRevision.paragraphSpacing}
                 protectContent={$query.post.protectContent}
                 bind:editor
               />
@@ -606,7 +630,7 @@
     <hr class="w-full border-color-alphagray-10" />
 
     <div class="flex gap-2 flex-wrap">
-      {#each $postRevision.tags as tag (tag.id)}
+      {#each $query.post.tags as { tag } (tag.id)}
         <Tag href={preview ? undefined : `/tag/${tag.name}`} size="sm">
           #{tag.name}
         </Tag>
@@ -718,33 +742,41 @@
     </div>
 
     <div class="bg-primary rounded-2xl flex py-4 px-6 items-center gap-4">
-      <svelte:element this={element} href={preview ? undefined : `/${$query.post.space.slug}`}>
-        <Image class="square-16 rounded-2xl border border-secondary" $image={$query.post.space.icon} />
+      <svelte:element this={element} href={preview || !$query.post.space ? undefined : `/${$query.post.space.slug}`}>
+        {#if $query.post.space}
+          <Image class="square-16 rounded-2xl border border-secondary" $image={$query.post.space.icon} />
+        {:else}
+          <div class="square-16 rounded-2xl border border-secondary" />
+        {/if}
       </svelte:element>
 
       <div class="grow truncate">
         <svelte:element
           this={element}
           class="truncate w-full"
-          href={preview ? undefined : `/${$query.post.space.slug}`}
+          href={preview || !$query.post.space ? undefined : `/${$query.post.space.slug}`}
         >
           <p class="body-15-b truncate w-full">
-            {$query.post.space.name}
+            {#if $query.post.space}
+              {$query.post.space.name}
+            {:else}
+              스페이스 이름
+            {/if}
           </p>
         </svelte:element>
         <svelte:element
           this={element}
           class="w-full whitespace-pre-wrap"
-          href={preview ? undefined : `/${$query.post.space.slug}`}
+          href={preview || !$query.post.space ? undefined : `/${$query.post.space.slug}`}
         >
           <p class="body-14-m text-secondary mt-2 break-all w-full">
-            {$query.post.space.description ?? '아직 소개가 없어요'}
+            {$query.post.space?.description ?? '아직 소개가 없어요'}
           </p>
         </svelte:element>
       </div>
 
-      {#if !$query.post.space.meAsMember}
-        {#if $query.post.space.followed}
+      {#if !$query.post.space?.meAsMember}
+        {#if $query.post.space?.followed}
           <!-- <Button class="rounded-12!" color="tertiary" size="md" variant="outlined">
                 <i class="i-lc-bell square-5" />
                 <span class="mx-2">알림받는중</span>
@@ -756,6 +788,8 @@
             size="md"
             variant="outlined"
             on:click={async () => {
+              if (!$query.post.space) return;
+
               await unfollowSpace({ spaceId: $query.post.space.id });
               mixpanel.track('space:unfollow', { spaceId: $query.post.space.id, via: 'post' });
               toast.success('관심 스페이스 해제되었어요');
@@ -768,6 +802,8 @@
             class="shrink-0"
             size="md"
             on:click={async () => {
+              if (!$query.post.space) return;
+
               if (!$query.me) {
                 loginRequireOpen = true;
                 return;
@@ -790,7 +826,7 @@
 
         <a
           class="p-2 flex gap-3 my-3 rounded-xl transition hover:bg-primary"
-          href={`/${$query.post.space.slug}/collections/${$query.post.collection.id}`}
+          href={`/${$query.post.space?.slug}/collections/${$query.post.collection.id}`}
         >
           {#if $query.post.collection.thumbnail}
             <Image class="w-24 h-30 rounded-lg flex-none" $image={$query.post.collection.thumbnail} />
@@ -808,7 +844,7 @@
           {#if $query.post.nextPost}
             <a
               class="body-16-b flex items-center gap-4 truncate rounded-xl p-2 transition hover:bg-primary"
-              href={`/${$query.post.space.slug}/${$query.post.nextPost.permalink}`}
+              href={`/${$query.post.space?.slug}/${$query.post.nextPost.permalink}`}
             >
               <span>다음글</span>
               <p class="truncate">{$query.post.nextPost.publishedRevision.title}</p>
@@ -817,7 +853,7 @@
           {#if $query.post.previousPost}
             <a
               class="body-16-b flex items-center gap-4 truncate rounded-xl p-2 transition hover:bg-primary"
-              href={`/${$query.post.space.slug}/${$query.post.previousPost.permalink}`}
+              href={`/${$query.post.space?.slug}/${$query.post.previousPost.permalink}`}
             >
               <span>이전글</span>
               <p class="truncate">{$query.post.previousPost.publishedRevision.title}</p>
@@ -847,7 +883,7 @@
   <Toolbar {$query} {handleShare} />
 {/if}
 
-{#if share.open}
+{#if share.open && $query.post.space}
   <ShareContent
     protectContent={$query.post.protectContent}
     spaceIcon={$query.post.space.icon}
@@ -866,7 +902,7 @@
     <Button
       size="md"
       on:click={async () => {
-        await goto(`/${$query.post.space.slug}`);
+        await goto(`/${$query.post.space?.slug}`);
         await deletePost({ postId: $query.post.id });
         mixpanel.track('post:delete', { postId: $query.post.id, via: 'post' });
         toast.success('포스트를 삭제했어요');

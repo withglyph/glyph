@@ -17,7 +17,7 @@
       post(permalink: $permalink) {
         id
 
-        draftRevision(revisionId: $revisionId) {
+        draftRevision(revisionId: $revisionId) @_required {
           id
           ...Post_postRevision
         }

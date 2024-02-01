@@ -26,7 +26,7 @@
           id
           permalink
 
-          draftRevision {
+          draftRevision @_required {
             id
             title
             updatedAt
@@ -60,10 +60,10 @@
             window.location.href = `/editor/${post.permalink}`;
           }}
         >
-          <p class={clsx('body-16-b mb-1 truncate', post.draftRevision.title.trim().length === 0 && 'text-secondary')}>
-            {post.draftRevision.title.trim().length === 0 ? '(제목 없음)' : post.draftRevision.title}
+          <p class={clsx('body-16-b mb-1 truncate', post.draftRevision?.title.trim().length === 0 && 'text-secondary')}>
+            {post.draftRevision?.title.trim().length === 0 ? '(제목 없음)' : post.draftRevision?.title}
           </p>
-          <time class="body-13-m text-secondary">{dayjs(post.draftRevision.updatedAt).formatAsDate()}</time>
+          <time class="body-13-m text-secondary">{dayjs(post.draftRevision?.updatedAt).formatAsDate()}</time>
         </button>
         <button
           class="i-lc-trash hidden square-5 color-text-disabled"

@@ -26,24 +26,28 @@
         contentFilters
         hasPassword
 
-        publishedRevision @_required {
+        tags {
           id
-          title
-          previewText
-          price
 
-          croppedThumbnail {
-            id
-            ...Image_image
-          }
-
-          tags {
+          tag {
             id
             name
           }
         }
 
-        space {
+        thumbnail {
+          id
+          ...Image_image
+        }
+
+        publishedRevision @_required {
+          id
+          title
+          previewText
+          price
+        }
+
+        space @_required {
           id
           slug
           name
@@ -54,7 +58,7 @@
           }
         }
 
-        member {
+        member @_required {
           id
 
           profile {
@@ -150,7 +154,7 @@
 <div
   class={clsx(
     'flex flex-col w-full bg-cardprimary sm:(border border-secondary rounded-2xl transition hover:(border-tertiary shadow-[0_4px_16px_0_rgba(0,0,0,0.25)]))',
-    $post.publishedRevision.tags.length === 0 && showSpaceInfoMessage && 'pb-4',
+    $post.tags.length === 0 && showSpaceInfoMessage && 'pb-4',
     _class,
   )}
 >
@@ -205,24 +209,21 @@
             {$post.publishedRevision.previewText}
           </p>
 
-          {#if $post.publishedRevision.croppedThumbnail}
-            <Image
-              class="square-30 rounded-md flex-none sm:aspect-square"
-              $image={$post.publishedRevision.croppedThumbnail}
-            />
+          {#if $post.thumbnail}
+            <Image class="square-30 rounded-md flex-none sm:aspect-square" $image={$post.thumbnail} />
           {/if}
         {/if}
       </article>
     </div>
   </a>
 
-  {#if $post.publishedRevision.tags.length > 0}
+  {#if $post.tags.length > 0}
     <div class={clsx('flex flex-wrap gap-1.5 px-6 mt-2', showSpaceInfoMessage && 'pb-4')}>
-      {#each $post.publishedRevision.tags.slice(0, 4) as tag (tag.id)}
+      {#each $post.tags.slice(0, 4) as { tag } (tag.id)}
         <Tag class="max-w-65" href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
       {/each}
-      {#if $post.publishedRevision.tags.length > 4}
-        <Tag size="sm">+{$post.publishedRevision.tags.length - 4}개의 태그</Tag>
+      {#if $post.tags.length > 4}
+        <Tag size="sm">+{$post.tags.length - 4}개의 태그</Tag>
       {/if}
     </div>
   {/if}
