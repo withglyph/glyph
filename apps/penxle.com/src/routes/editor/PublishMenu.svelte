@@ -162,6 +162,10 @@
           id
         }
 
+        collection {
+          id
+        }
+
         ...EditorPage_RevisionListModal_Post
       }
     `),
@@ -221,7 +225,7 @@
   $: setInitialValues({
     revisionId: $post.draftRevision.id,
     spaceId: $post.space ? $post.space.id : '',
-    collectionId: undefined,
+    collectionId: $post.collection ? $post.collection.id : undefined,
     thumbnailId: $post.thumbnail?.id,
     visibility: $post.visibility,
     password: $post.hasPassword ? '' : undefined,
@@ -287,6 +291,10 @@
 
   $: if ($post.space) {
     selectedSpaceId = $post.space.id;
+  }
+
+  $: if ($post?.collection) {
+    selectedCollectionId = $post.collection.id;
   }
 </script>
 
