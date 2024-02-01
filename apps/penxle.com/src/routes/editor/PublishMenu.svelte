@@ -788,10 +788,20 @@
           </p>
 
           <SegmentButtonGroup>
-            <ToggleButton checked={$data.externalSearchable} type="radio" bind:group={$data.externalSearchable}>
+            <ToggleButton
+              checked={$data.externalSearchable}
+              on:change={(event) => {
+                $data.externalSearchable = event.currentTarget.checked;
+              }}
+            >
               외부검색허용
             </ToggleButton>
-            <ToggleButton checked={!$data.externalSearchable} type="radio" bind:group={$data.externalSearchable}>
+            <ToggleButton
+              checked={!$data.externalSearchable}
+              on:change={(event) => {
+                $data.externalSearchable = !event.currentTarget.checked;
+              }}
+            >
               비허용
             </ToggleButton>
           </SegmentButtonGroup>
