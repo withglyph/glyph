@@ -3,50 +3,46 @@
   import 'virtual:uno.css';
 
   import { AutoUpdater, StackIndicator } from '@penxle/ui';
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
-  import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
-  import { toast, ToastProvider } from '$lib/notification';
+  import { ToastProvider } from '$lib/notification';
 
-  $: query = graphql(`
-    query RootLayout_Query {
-      me {
-        id
-        email
+  // $: query = graphql(`
+  //   query RootLayout_Query {
+  //     me {
+  //       id
+  //       email
 
-        profile {
-          id
-          name
+  //       profile {
+  //         id
+  //         name
 
-          avatar {
-            id
-            url
-          }
-        }
-      }
+  //         avatar {
+  //           id
+  //           url
+  //         }
+  //       }
+  //     }
 
-      flash {
-        type
-        message
-      }
-    }
-  `);
+  //     flash {
+  //       type
+  //       message
+  //     }
+  //   }
+  // `);
 
-  $: if (browser && $query.me) {
-    mixpanel.identify($query.me.id);
-    mixpanel.people.set({
-      $email: $query.me.email,
-      $name: $query.me.profile.name,
-      $avatar: $query.me.profile.avatar.url,
-    });
-  }
+  // $: if (browser && $query.me) {
+  //   mixpanel.identify($query.me.id);
+  //   mixpanel.people.set({
+  //     $email: $query.me.email,
+  //     $name: $query.me.profile.name,
+  //     $avatar: $query.me.profile.avatar.url,
+  //   });
+  // }
 
-  onMount(() => {
-    if ($query.flash) {
-      toast[$query.flash.type as 'success' | 'error']($query.flash.message);
-    }
-  });
+  // onMount(() => {
+  //   if ($query.flash) {
+  //     toast[$query.flash.type as 'success' | 'error']($query.flash.message);
+  //   }
+  // });
 </script>
 
 <svelte:head>
