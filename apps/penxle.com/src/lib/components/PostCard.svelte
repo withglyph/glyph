@@ -4,7 +4,6 @@
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Avatar, Badge, Image, Tag } from '$lib/components';
-  import { filterToLocaleString } from '$lib/const/feed';
   import { toast } from '$lib/notification';
   import type { Feed_post } from '$glitch';
 
@@ -25,9 +24,11 @@
         publishedAt
         contentFilters
         hasPassword
+        ageRating
 
         tags {
           id
+          kind
 
           tag {
             id
@@ -110,6 +111,8 @@
       toast.success('북마크에 저장되었어요');
     }
   };
+
+  $: triggerTags = $post.tags.filter(({ kind }) => kind === 'TRIGGER');
 </script>
 
 {#if showSpaceInfoMessage}
@@ -163,13 +166,11 @@
       {#if $post.publishedRevision.price}
         <Badge class="w-fit mb-1" color="purple">유료</Badge>
       {/if}
-      {#if $post.contentFilters.length > 0}
-        {#if $post.contentFilters.includes('ADULT')}
-          <Badge class="w-fit mb-1" color="red">성인물</Badge>
-        {/if}
-        {#if !$post.contentFilters.includes('ADULT')}
-          <Badge class="w-fit mb-1" color="orange">트리거 주의</Badge>
-        {/if}
+      {#if $post.ageRating === 'R19'}
+        <Badge class="w-fit mb-1" color="red">성인물</Badge>
+      {/if}
+      {#if triggerTags.length > 0}
+        <Badge class="w-fit mb-1" color="orange">트리거 주의</Badge>
       {/if}
       {#if $post.hasPassword}
         <Badge class="w-fit mb-1" color="gray">비밀글</Badge>
@@ -189,20 +190,22 @@
             <i class="i-px-alert-triangle square-6" />
             <p class="body-14-sb text-center whitespace-pre-wrap">포스트에 민감한 내용이 포함되어 있어요</p>
 
-            <div class="flex flex-wrap gap-2.5 center">
-              <span
-                class="px-3 border border-secondary rounded-lg bg-surface-primary text-primary body-13-m h-6 flex items-center"
-              >
-                {filterToLocaleString[$post.contentFilters[0]]}
-              </span>
-              {#if $post.contentFilters.length > 1}
+            {#if triggerTags.length > 0}
+              <div class="flex flex-wrap gap-2.5 center">
                 <span
                   class="px-3 border border-secondary rounded-lg bg-surface-primary text-primary body-13-m h-6 flex items-center"
                 >
-                  그 외 태그 {$post.contentFilters.length - 1}개
+                  {triggerTags[0].tag.name.replaceAll('_', ' ')}
                 </span>
-              {/if}
-            </div>
+                {#if triggerTags.length > 1}
+                  <span
+                    class="px-3 border border-secondary rounded-lg bg-surface-primary text-primary body-13-m h-6 flex items-center"
+                  >
+                    그 외 태그 {triggerTags.length - 1}개
+                  </span>
+                {/if}
+              </div>
+            {/if}
           </header>
         {:else}
           <p class="grow body-16-m text-secondary break-all line-clamp-4 whitespace-pre-line">
