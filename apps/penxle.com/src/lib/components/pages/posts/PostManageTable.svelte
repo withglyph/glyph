@@ -60,13 +60,13 @@
           id
         }
 
-        space @required {
+        space @_required {
           id
           name
           slug
         }
 
-        member @required {
+        member @_required {
           id
 
           profile {
