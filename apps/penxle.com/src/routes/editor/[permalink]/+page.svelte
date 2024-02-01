@@ -22,7 +22,7 @@
           id
           kind
           contentKind
-          content
+          editableContent
           title
           subtitle
           autoIndent
@@ -81,7 +81,7 @@
 
     title = $query.post.draftRevision.title;
     subtitle = $query.post.draftRevision.subtitle ?? null;
-    content = $query.post.draftRevision.content;
+    content = $query.post.draftRevision.editableContent;
     tags = $query.post.draftRevision.tags.map((tag) => tag.name);
     kind = $query.post.draftRevision.contentKind;
     thumbnailBounds = $query.post.draftRevision.thumbnailBounds;

@@ -52,13 +52,6 @@
       <i class="i-lc-plus square-5" />
     </Button>
 
-    <MenuItem class="flex gap-2.5 items-center" on:click={() => editor.chain().focus().setAccessBarrier().run()}>
-      <span class="p-1 border border-alphagray-15 rounded-lg flex center">
-        <i class="i-lc-circle-dollar-sign square-5" />
-      </span>
-      결제선 추가
-    </MenuItem>
-
     <Menu {offset} placement="right-start">
       <div
         slot="value"

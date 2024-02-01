@@ -9,29 +9,30 @@ export const Placeholder = Extension.create({
     return [
       new Plugin({
         props: {
-          decorations: ({ doc }) => {
+          decorations: ({ doc, schema }) => {
             if (!this.editor.isEditable) {
-              return null;
+              return;
             }
-
-            let decoration: Decoration | null = null;
 
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const emptyDocument = doc.type.createAndFill()!;
-            if (doc.sameMarkup(emptyDocument) && doc.content.findDiffStart(emptyDocument.content) === null) {
-              doc.descendants((node, pos) => {
-                decoration = Decoration.node(pos, pos + node.nodeSize, {
-                  'class': 'is-editor-empty',
+            const emptyDocument = doc.type.createAndFill(null, [
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              schema.nodes.paragraph.createAndFill()!,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              schema.nodes.access_barrier.createAndFill()!,
+            ])!;
+            if (
+              doc.sameMarkup(emptyDocument) &&
+              doc.content.findDiffStart(emptyDocument.content) === null &&
+              doc.firstChild
+            ) {
+              return DecorationSet.create(doc, [
+                Decoration.node(0, doc.firstChild.nodeSize, {
+                  'class': 'before:(content-[attr(data-placeholder)] text-gray-400 h-0 pointer-events-none float-left)',
                   'data-placeholder': '내용을 입력하세요',
-                });
-              });
+                }),
+              ]);
             }
-
-            if (!decoration) {
-              return null;
-            }
-
-            return DecorationSet.create(doc, [decoration]);
           },
         },
       }),

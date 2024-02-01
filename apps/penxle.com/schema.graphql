@@ -396,6 +396,7 @@ type PostRevision {
   contentKind: PostRevisionContentKind!
   createdAt: DateTime!
   croppedThumbnail: Image
+  editableContent: JSON!
   id: ID!
   kind: PostRevisionKind!
   originalThumbnail: Image

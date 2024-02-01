@@ -535,7 +535,7 @@
               </header>
             {:else}
               <TiptapRenderer
-                class="bodylong-16-m"
+                class=""
                 autoIndent={$postRevision.autoIndent}
                 content={$postRevision.content}
                 protectContent={$query.post.protectContent}

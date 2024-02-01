@@ -1,12 +1,13 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import { getSchema } from '@tiptap/core';
   import { onDestroy, setContext } from 'svelte';
   import { writable } from 'svelte/store';
   import { graphql } from '$glitch';
-  import { createTiptapDocument } from '$lib/utils';
+  import { extensions } from '$lib/tiptap';
   import Editor from './Editor.svelte';
   import Header from './Header.svelte';
-  import type { Editor as TiptapEditor } from '@tiptap/core';
+  import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
   import type { PostRevisionContentKind } from '$glitch';
   import type { ImageBounds } from '$lib/utils';
   import type { RestoredRevision } from './types/restore-revision';
@@ -17,12 +18,17 @@
     }
   `);
 
+  const schema = getSchema(extensions);
+
   let kind: PostRevisionContentKind = 'ARTICLE';
 
   let title = '';
   let subtitle: string | null = null;
   let editor: TiptapEditor | undefined;
-  let content = createTiptapDocument([{ type: 'paragraph' }]);
+  let content: JSONContent = schema.nodes.document
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    .createAndFill(null, [schema.nodes.paragraph.createAndFill()!, schema.nodes.access_barrier.createAndFill()!])
+    ?.toJSON();
   let tags: string[] = [];
   let thumbnailId: string | undefined = undefined;
   let thumbnailBounds: ImageBounds | undefined = undefined;

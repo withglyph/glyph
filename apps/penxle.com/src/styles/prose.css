@@ -54,4 +54,8 @@
   & p {
     text-indent: 1rem;
   }
+
+  & .ProseMirror-gapcursor {
+    --uno: ml-1rem;
+  }
 }

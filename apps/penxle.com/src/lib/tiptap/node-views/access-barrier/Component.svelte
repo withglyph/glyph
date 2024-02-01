@@ -1,31 +1,41 @@
 <script lang="ts">
+  import { validator } from '@felte/validator-zod';
+  import { offset } from '@floating-ui/dom';
+  import clsx from 'clsx';
   import dayjs from 'dayjs';
+  import { createForm } from 'felte';
+  import { tick } from 'svelte';
+  import { z } from 'zod';
+  import { afterNavigate } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Modal } from '$lib/components';
   import Button from '$lib/components/Button.svelte';
-  import { TextInput } from '$lib/components/forms';
+  import { portal } from '$lib/svelte/actions';
+  import { createFloatingActions } from '$lib/svelte-floating-ui';
   import { NodeView } from '$lib/tiptap';
   import { calcurateReadingTime, comma } from '$lib/utils';
   import LoginRequireModal from '../../../../routes/(default)/LoginRequireModal.svelte';
-  import type { FormEventHandler } from 'svelte/elements';
   import type { NodeViewProps } from '$lib/tiptap';
 
   type $$Props = NodeViewProps;
   $$restProps;
 
   export let node: NodeViewProps['node'];
+  export let getPos: NodeViewProps['getPos'];
+  export let selected: NodeViewProps['selected'];
   export let editor: NodeViewProps['editor'] | undefined;
-  export let deleteNode: NodeViewProps['deleteNode'] | undefined;
-  export let updateAttributes: NodeViewProps['updateAttributes'] | undefined;
+  export let updateAttributes: NodeViewProps['updateAttributes'];
 
-  $: data = node.attrs.__data;
-  $: price = node.attrs.price as number | undefined;
+  $: isLastChild = editor?.state.doc.lastChild?.eq(node) ?? false;
+  $: setInitialValues({ price: node.attrs.price ?? 0 });
 
-  let open = false;
+  let priceOpen = false;
   let loginRequireOpen = false;
   let postPurchaseOpen = false;
   let pointPurchaseOpen = false;
+
+  let priceInputEl: HTMLInputElement | undefined;
 
   const purchasePost = graphql(`
     mutation TiptapAccessBarrier_PurchasePost_Mutation($input: PurchasePostInput!) {
@@ -40,178 +50,296 @@
     }
   `);
 
-  const handlePriceChange: FormEventHandler<HTMLInputElement> = (event) => {
-    const price = Number(event.currentTarget.value.replaceAll(',', ''));
-    if (Number.isNaN(price)) {
-      return;
-    }
+  const [floatingRef, floatingContent, update] = createFloatingActions({
+    strategy: 'absolute',
+    placement: 'bottom',
+    middleware: [offset(8)],
+  });
 
-    updateAttributes?.({ price });
-  };
+  const { form, errors, data, setFields, setInitialValues } = createForm({
+    initialValues: { price: 0 },
+    extend: [
+      validator({
+        schema: z.object({
+          price: z.number().int().min(100).max(1_000_000).multipleOf(100),
+        }),
+      }),
+    ],
+    onSubmit: (values) => {
+      updateAttributes({ price: values.price });
+      priceOpen = false;
+    },
+  });
+
+  $: if (priceOpen) {
+    // eslint-disable-next-line unicorn/prefer-top-level-await
+    void tick().then(() => {
+      update();
+      priceInputEl?.focus();
+    });
+  }
+
+  afterNavigate(() => {
+    priceOpen = false;
+  });
 </script>
 
 {#if editor?.isEditable}
-  <NodeView class="my-4 flex center gap-4 border border-secondary rounded-xl p-4" data-drag-handle>
-    <div class="flex grow gap-4">
-      <i class="i-lc-circle-dollar-sign square-6" />
+  <NodeView
+    class={clsx('flex justify-end relative py-8px rounded-6px pointer-events-auto', selected && 'ring-2 ring-teal-500')}
+    data-drag-handle
+    draggable
+  >
+    <div class="absolute inset-0 flex center">
+      <div class="line w-full h-1.5px text-gray-300"></div>
+    </div>
 
-      <div class="flex grow flex-col">
-        <div class="body-16-b">결제 상자를 옮겨 유료분량을 만들어 보세요</div>
-        <div class="body-13-m text-secondary mt-1">이 상자의 이후 지점부터 결제를 통해 감상할 수 있어요</div>
-
-        <div class="flex gap-2 items-center mt-4">
-          <TextInput
-            class="bg-primary pl-4 py-2 body-16-b rounded-lg"
-            inputmode="numeric"
-            value={price?.toLocaleString()}
-            on:input={handlePriceChange}
-          >
-            <span slot="right-label" class="pr-4 bodylong-16-m text-disabled">포인트</span>
-          </TextInput>
-        </div>
+    <div
+      class="relative rounded-6px p-8px border border-gray-200 flex gap-8px center w-fit mr-20px bg-white text-gray-600 shadow-[0_2px_10px_0] shadow-black/4"
+    >
+      {#if isLastChild}
+        <button
+          class="text-14px font-medium px-6px py-4px rounded-4px transition hover:bg-gray-100"
+          type="button"
+          on:click={() =>
+            editor
+              ?.chain()
+              .insertContentAt(getPos() + node.nodeSize, { type: 'paragraph' })
+              .focus()
+              .run()}
+        >
+          여기서부터 유료 분량 만들기
+        </button>
+      {:else}
+        <div class="text-14px font-medium px-6px py-4px">여기서부터 유료 분량</div>
+        <div class="w-1px h-14px bg-gray-200" />
+        <button
+          class={clsx(
+            'flex center gap-4px text-14-m px-6px py-4px rounded-4px transition hover:bg-gray-100',
+            priceOpen && 'bg-gray-100',
+            node.attrs.price ? 'text-teal-600' : 'text-error-600',
+          )}
+          type="button"
+          on:click={() => (priceOpen = true)}
+          use:floatingRef
+        >
+          {#if node.attrs.price}
+            {comma(node.attrs.price)} P
+          {:else}
+            <i class="i-tb-alert-triangle square-16px" />
+            가격설정
+          {/if}
+        </button>
+        <div class="w-1px h-14px bg-gray-200" />
+        <button
+          class="text-14px font-medium px-6px py-4px rounded-4px transition hover:bg-gray-100"
+          type="button"
+          on:click={() =>
+            editor
+              ?.chain()
+              .cut({ from: getPos(), to: getPos() + node.nodeSize }, editor.state.doc.content.size)
+              .run()}
+        >
+          해제
+        </button>
+      {/if}
+      <div class="w-1px h-14px bg-gray-200" />
+      <div class="flex-none p-4px rounded-4px transition hover:bg-gray-100">
+        <i class="i-tb-grip-vertical block square-18px" />
       </div>
     </div>
 
-    <i class="i-lc-grip-vertical square-5 color-icon-secondary" />
-    <button
-      class="square-8 flex center rounded transition duration-300 hover:bg-gray-5 [&>i]:hover:color-gray-50"
-      type="button"
-      on:click={() => (open = true)}
+    {#if priceOpen}
+      <div
+        class="fixed inset-0 z-51"
+        role="button"
+        tabindex="-1"
+        on:click={() => (priceOpen = false)}
+        on:keypress={null}
+        use:portal
+      />
+
+      <div
+        class="z-52 bg-white border border-gray-200 flex flex-col gap-6px px-10px pt-8px pb-10px rounded-b-6px"
+        use:floatingContent
+        use:portal
+      >
+        <form class="contents" use:form>
+          <div class="relative">
+            <input
+              bind:this={priceInputEl}
+              class={clsx(
+                'border pl-12px pr-24px py-10px rounded-4px text-16-r w-110px',
+                $errors.price ? 'border-error-600 bg-error-50' : 'border-gray-200 bg-white',
+              )}
+              inputmode="numeric"
+              pattern="[0-9]*"
+              placeholder="1,000"
+              type="text"
+              value={$data.price ? comma($data.price) : ''}
+              on:input={(event) => {
+                const value = event.currentTarget.value.replaceAll(/\D/g, '');
+                event.currentTarget.value = value;
+                setFields('price', Number(value), true);
+              }}
+            />
+            <span class="absolute inset-y-0 right-0 flex center pr-12px text-16-r">P</span>
+          </div>
+
+          <button class="bg-teal-600 px-16px py-10px flex center text-14-sb text-white rounded-4px" type="submit">
+            설정
+          </button>
+        </form>
+      </div>
+    {/if}
+  </NodeView>
+{:else if node.attrs.__data.purchasable}
+  <NodeView class="flex center py-8px">
+    <div
+      class="pointer-events-auto border border-gray-300 rounded-6px px-24px py-20px flex flex-col gap-24px w-full max-w-500px"
     >
-      <i class="i-lc-trash-2 square-5 color-icon-secondary transition duration-300" />
-    </button>
+      <div class="text-16-r text-gray-700">
+        다음 내용을 감상해보시겠어요?
+        <br />
+        구매한 포스트는 영구 소장이 가능해요.
+      </div>
+
+      <div class="flex flex-col gap-8px">
+        <div class="flex items-center">
+          <span class="text-24-sb grow">{comma(node.attrs.price)}P</span>
+          <button
+            class="flex center w-100px px-12px py-8.5px bg-gray-950 text-white rounded-4px text-13-sb"
+            type="button"
+            on:click={() => {
+              if (node.attrs.__data.point === null) {
+                loginRequireOpen = true;
+                return;
+              }
+
+              if (node.attrs.__data.point < node.attrs.price) {
+                pointPurchaseOpen = true;
+              } else {
+                postPurchaseOpen = true;
+              }
+            }}
+          >
+            구매하기
+          </button>
+        </div>
+
+        <div class="w-full h-1px bg-gray-200" />
+
+        <div class="flex items-center gap-8px">
+          <div class="flex items-center gap-4px">
+            <i class="i-tb-text-recognition square-16px text-gray-400" />
+            <span class="text-14-r text-gray-600">
+              {comma(node.attrs.__data.counts.characters)}자
+            </span>
+          </div>
+
+          {#if node.attrs.__data.counts.images}
+            <div class="flex items-center gap-4px">
+              <i class="i-tb-photo square-16px text-gray-400" />
+              <span class="text-14-r text-gray-600">
+                {comma(node.attrs.__data.counts.images)}개
+              </span>
+            </div>
+          {/if}
+
+          {#if node.attrs.__data.counts.files}
+            <div class="flex items-center gap-4px">
+              <i class="i-tb-folder square-16px text-gray-400" />
+              <span class="text-14-r text-gray-600">
+                {comma(node.attrs.__data.counts.files)}개
+              </span>
+            </div>
+          {/if}
+
+          <div class="flex items-center gap-4px">
+            <i class="i-tb-clock-hour-4 square-16px text-gray-400" />
+            <span class="text-14-r text-gray-600">
+              {calcurateReadingTime(node.attrs.__data.counts.characters)}분
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   </NodeView>
 
-  <Modal bind:open>
-    <svelte:fragment slot="title">정말 결제상자를 삭제하시겠어요?</svelte:fragment>
+  <Modal size="sm" bind:open={pointPurchaseOpen}>
+    <svelte:fragment slot="title">보유중인 포인트가 부족해요</svelte:fragment>
+    <svelte:fragment slot="subtitle">보유중인 포인트 : {comma(node.attrs.__data.point)}P</svelte:fragment>
 
-    <p class="bodylong-16-m text-secondary">
-      결제상자의 위치를 바꾸고 싶다면 드래그해서 옮길 수 있어요
+    <div slot="action" class="w-full flex gap-3">
+      <Button class="w-full" color="secondary" size="xl" on:click={() => (pointPurchaseOpen = false)}>돌아가기</Button>
+      <Button class="w-full" href="/point/purchase" size="xl" type="link">충전하기</Button>
+    </div>
+  </Modal>
+
+  <Modal size="sm" bind:open={postPurchaseOpen}>
+    <svelte:fragment slot="title">
+      {comma(node.attrs.price)}P를 사용하여
       <br />
-      삭제한 결제상자는 언제든 메뉴에서 다시 추가할 수 있어요
-    </p>
+      포스트를 구매하시겠어요?
+    </svelte:fragment>
+    <svelte:fragment slot="subtitle">보유중인 포인트 : {comma(node.attrs.__data.point)}P</svelte:fragment>
 
-    <div slot="action" class="flex gap-2 w-full">
-      <Button class="w-full" color="secondary" size="xl" on:click={() => (open = false)}>취소</Button>
+    <div slot="action" class="w-full flex gap-3">
+      <Button class="w-full" color="secondary" size="xl" on:click={() => (postPurchaseOpen = false)}>돌아가기</Button>
       <Button
         class="w-full"
         size="xl"
-        on:click={() => {
-          open = false;
-          setTimeout(() => {
-            deleteNode?.();
-          }, 150);
+        on:click={async () => {
+          await purchasePost({
+            postId: node.attrs.__data.postId,
+            revisionId: node.attrs.__data.revisionId,
+          });
+
+          mixpanel.track('post:purchase', {
+            postId: node.attrs.__data.postId,
+            kind: 'article',
+            price: node.attrs.price,
+          });
+
+          postPurchaseOpen = false;
         }}
       >
-        삭제
+        구매하기
       </Button>
     </div>
   </Modal>
-{:else if data.purchasable}
-  <NodeView class="rounded-2xl py-6 px-3 bg-gray-5/80 relative my-4">
-    <div class="-z-1 text-disabled">
-      사랑의 노래하며 가치를 이것이야말로 얼음 끓는 내려온 같으며. 길지 피가 시들어 힘차게 주며, 인간의 보내는 않는
-      그들을 때에. 피다. 그들의 가진 보배를 얼마나 수 약동하다. 두기 구하지 하였으며.
-      <br />
-      <br />
-      얼음과 할지니, 날카로우나 없는 그러므로 봄바람이다. 곳으로 미묘한 웅대한 예수는 품었기 낙원을 청춘 것이다. 끝까지 소담스러운
-      약동하다.
-    </div>
-    <div
-      class="dash absolute rounded-2xl top-0 left-0 w-full h-100% flex flex-col center px-3 text-center space-y-2.5 bg-primary"
-    >
-      <span class="text-secondary body-15-sb">이 글의 다음 내용은 구매 후에 감상할 수 있어요</span>
-      <span class="body-16-eb">{comma(node.attrs.price)}P</span>
-      <Button
-        class="w-fit"
-        size="lg"
-        on:click={() => {
-          if (data.point === null) {
-            loginRequireOpen = true;
-            return;
-          }
 
-          if (data.point < node.attrs.price) {
-            pointPurchaseOpen = true;
-          } else {
-            postPurchaseOpen = true;
-          }
-        }}
-      >
-        유료분량 구매하고 포스트 소장하기
-      </Button>
-      <!-- prettier-ignore -->
-      <p class="body-13-m text-secondary py-0!">
-        글 <mark class="text-blue-50">{comma(data.counts.characters)}</mark>자,
-        이미지 <mark class="text-blue-50">{comma(data.counts.images)}</mark>장,
-        파일 <mark class="text-blue-50">{comma(data.counts.files)}</mark>개,
-        읽는 시간 약 <mark class="text-blue-50">{calcurateReadingTime(data.counts.characters)}</mark>분
-      </p>
-    </div>
-  </NodeView>
+  <LoginRequireModal bind:open={loginRequireOpen} />
 {:else}
-  <NodeView class="flex items-center gap-4 my-4">
-    <div class="line grow h-1px mt-1px" />
-    <div>
-      <span class="text-gray-50 caption-12-m py-1 px-1.5 bg-gray-10 rounded-1">
-        {#if data.purchasedAt}
-          {dayjs(data.purchasedAt).formatAsDate()} 결제됨
-        {:else}
-          결제선
-        {/if}
-      </span>
+  <NodeView
+    class={clsx('flex justify-end relative py-8px rounded-6px pointer-events-auto', selected && 'ring-2 ring-teal-500')}
+    data-drag-handle
+    draggable
+  >
+    <div class="absolute inset-0 flex center">
+      <div class="line w-full h-1.5px text-gray-300"></div>
     </div>
-    <div class="line grow h-1px mt-1px" />
+
+    <div
+      class="relative rounded-6px p-8px border border-gray-200 flex gap-8px center w-fit mr-20px bg-white text-gray-600 shadow-[0_2px_10px_0] shadow-black/4"
+    >
+      <div class="text-14-m px-6px py-4px">이 지점부터 유료 분량이 시작됩니다</div>
+      <div class="w-1px h-14px bg-gray-200" />
+      <div class="flex center text-14-m text-teal-600 px-6px py-4px">
+        {comma(node.attrs.price)}P
+      </div>
+
+      {#if node.attrs.__data.purchasedAt}
+        <div class="absolute top-0 right-0 -translate-y-full text-13-r text-gray-400 pb-4px">
+          {dayjs(node.attrs.__data.purchasedAt).formatAsDate()} (결제 완료)
+        </div>
+      {/if}
+    </div>
   </NodeView>
 {/if}
 
-<Modal size="sm" bind:open={pointPurchaseOpen}>
-  <svelte:fragment slot="title">보유중인 포인트가 부족해요</svelte:fragment>
-  <svelte:fragment slot="subtitle">보유중인 포인트 : {comma(data.point)}P</svelte:fragment>
-
-  <div slot="action" class="w-full flex gap-3">
-    <Button class="w-full" color="secondary" size="xl" on:click={() => (pointPurchaseOpen = false)}>돌아가기</Button>
-    <Button class="w-full" href="/point/purchase" size="xl" type="link">충전하기</Button>
-  </div>
-</Modal>
-
-<Modal size="sm" bind:open={postPurchaseOpen}>
-  <svelte:fragment slot="title">
-    {comma(node.attrs.price)}P를 사용하여
-    <br />
-    포스트를 구매하시겠어요?
-  </svelte:fragment>
-  <svelte:fragment slot="subtitle">보유중인 포인트 : {comma(data.point)}P</svelte:fragment>
-
-  <div slot="action" class="w-full flex gap-3">
-    <Button class="w-full" color="secondary" size="xl" on:click={() => (postPurchaseOpen = false)}>돌아가기</Button>
-    <Button
-      class="w-full"
-      size="xl"
-      on:click={async () => {
-        await purchasePost({
-          postId: data.postId,
-          revisionId: data.revisionId,
-        });
-
-        mixpanel.track('post:purchase', { postId: data.postId, kind: 'article', price: node.attrs.price });
-
-        postPurchaseOpen = false;
-      }}
-    >
-      구매하기
-    </Button>
-  </div>
-</Modal>
-
-<LoginRequireModal bind:open={loginRequireOpen} />
-
 <style>
-  .dash {
-    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%23A8A29E' stroke-width='2' stroke-dasharray='8%2c 16' stroke-dashoffset='12' stroke-linecap='square'/%3e%3c/svg%3e");
-  }
-
   .line {
-    background: repeating-linear-gradient(to right, transparent, transparent 10px, #d6d3d1 10px, #d6d3d1 20px);
+    background: repeating-linear-gradient(to right, transparent 0 4px, currentColor 4px 8px);
   }
 </style>

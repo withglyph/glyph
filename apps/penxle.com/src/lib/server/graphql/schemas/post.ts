@@ -520,6 +520,24 @@ export const postSchema = defineSchema((builder) => {
 
       contentKind: t.expose('contentKind', { type: PrismaEnums.PostRevisionContentKind }),
 
+      editableContent: t.field({
+        type: 'JSON',
+        authScopes: { $granted: '$postRevision:view' },
+        select: { freeContent: true, paidContent: true },
+        resolve: async (revision, _, { db }) => {
+          const freeContent = await decorateContent(db, revision.freeContent.data as JSONContent[]);
+          const paidContent = revision.paidContent
+            ? await decorateContent(db, revision.paidContent.data as JSONContent[])
+            : null;
+
+          return createTiptapDocument([
+            ...freeContent,
+            createTiptapNode({ type: 'access_barrier' }),
+            ...(paidContent ?? []),
+          ]);
+        },
+      }),
+
       content: t.field({
         type: 'JSON',
         authScopes: { $granted: '$postRevision:view' },
@@ -934,9 +952,15 @@ export const postSchema = defineSchema((builder) => {
         }
 
         const accessBarrierPosition = document.findIndex((node) => node.type === 'access_barrier');
-        const accessBarrier = accessBarrierPosition === -1 ? undefined : document[accessBarrierPosition];
+        const accessBarrier =
+          accessBarrierPosition === -1 || accessBarrierPosition === document.length - 1
+            ? undefined
+            : document[accessBarrierPosition];
         const freeContentData = accessBarrierPosition === -1 ? document : document.slice(0, accessBarrierPosition);
-        const paidContentData = accessBarrierPosition === -1 ? undefined : document.slice(accessBarrierPosition + 1);
+        const paidContentData =
+          accessBarrierPosition === -1 || accessBarrierPosition === document.length - 1
+            ? undefined
+            : document.slice(accessBarrierPosition + 1);
 
         const freeContentHash = Buffer.from(
           await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(freeContentData))),
