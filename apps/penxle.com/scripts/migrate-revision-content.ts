@@ -1,4 +1,3 @@
-import { webcrypto } from 'node:crypto';
 import { getSchema, Node } from '@tiptap/core';
 import { traverse } from 'object-traversal';
 import { prismaClient } from '$lib/server/database';
@@ -105,6 +104,11 @@ while (true) {
         return;
       }
 
+      if (key === 'type' && value === 'uploading_image') {
+        parent.type = 'paragraph';
+        parent.attrs = { letterSpacing: 0, lineHeight: 1.6, textAlign: 'left' };
+      }
+
       // `letter_spacing`, `line_height`, `text_align` 익스텐션을 deprecate하고 `paragraph`의 attribute로 옮김 (`heading`이 사라져서 `paragraph`에만 적용하면 됨)
       if (key === 'type' && (value === 'paragraph' || value === 'heading') && parent.attrs) {
         const letterSpacing = parent.attrs['letter-spacing'];
@@ -187,20 +191,24 @@ while (true) {
       }
     });
 
+    if (content.length === 0) {
+      content.push({ type: 'paragraph', attrs: { letterSpacing: 0, lineHeight: 1.6, textAlign: 'left' } });
+    }
+
     try {
       const node = schema.nodeFromJSON(createTiptapDocument(content));
       node.check();
       const data = node.toJSON().content;
 
-      const hash = Buffer.from(
-        await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(data))),
-      ).toString('hex');
+      // const hash = Buffer.from(
+      //   await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(data))),
+      // ).toString('hex');
 
       queries.push(
         prismaClient.postRevisionContent.update({
           select: { id: true },
           where: { id: revisionContent.id },
-          data: { data, hash },
+          data: { data, hash: revisionContent.id },
         }),
       );
     } catch (err) {
