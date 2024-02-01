@@ -137,6 +137,7 @@
         category
         pairs
         externalSearchable
+        ageRating
 
         thumbnail {
           id
@@ -224,7 +225,7 @@
     thumbnailId: $post.thumbnail?.id,
     visibility: $post.visibility,
     password: $post.hasPassword ? '' : undefined,
-    ageRating: 'ALL',
+    ageRating: $post.ageRating,
     externalSearchable: $post.externalSearchable,
     discloseStats: $post.discloseStats,
     receiveFeedback: $post.receiveFeedback,

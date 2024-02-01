@@ -19,7 +19,7 @@
   export let label: string;
 
   let postTags: TagInput[] | undefined = [];
-  let open = false;
+  // let open = false;
 
   $: postTags = R.group(tags, (tag) => tag.kind)[kind];
 </script>
@@ -51,24 +51,24 @@
 
       tags = [...tags, { kind, name: escapedValue }];
 
-      open = false;
+      // open = false;
       query = '';
     }}
-    on:outsideClick={() => (open = false)}
     use:outsideClickEvent
   >
+    <!-- on:outsideClick={() => (open = false)} -->
     <input
       class="rounded-1.5 bg-gray-50 py-2.5 pl-4 pr-11 text-14-r border border-gray-200 w-full"
       {placeholder}
       type="search"
-      on:input={() => (open = true)}
       bind:value={query}
     />
+    <!-- on:input={() => (open = true)} -->
     <div class="absolute inset-y-0 right-4 flex center text-gray-700">
       <i class="i-tb-search square-4" />
     </div>
 
-    {#if open}
+    <!-- {#if open}
       <ul class="absolute left-0 w-full bg-white border border-gray-200 rounded-b-1.5 z-1">
         <li class="hover:bg-gray-100 last-of-type:rounded-b-1.5">
           <button
@@ -84,7 +84,7 @@
           </button>
         </li>
       </ul>
-    {/if}
+    {/if} -->
   </form>
 
   {#if postTags}
