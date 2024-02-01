@@ -341,7 +341,7 @@
           {revisedAt}
           {subtitle}
           {title}
-          {warnUnload}
+          bind:warnUnload
           bind:paragraphIndent
           bind:paragraphSpacing
           bind:open={publishMenuOpen}
