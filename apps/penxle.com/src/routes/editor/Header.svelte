@@ -827,34 +827,7 @@
             </button>
 
             <MenuItem
-              on:click={() => {
-                postSettingOpen = false;
-                paragraphIndentOpen = false;
-                paragraphIndentOpen = false;
-                paragraphIndent = 50;
-              }}
-            >
-              0.5줄
-            </MenuItem>
-            <MenuItem
-              on:click={() => {
-                postSettingOpen = false;
-                paragraphIndentOpen = false;
-                paragraphIndent = 100;
-              }}
-            >
-              1줄
-            </MenuItem>
-            <MenuItem
-              on:click={() => {
-                postSettingOpen = false;
-                paragraphIndentOpen = false;
-                paragraphIndent = 200;
-              }}
-            >
-              2줄
-            </MenuItem>
-            <MenuItem
+              class="flex items-center gap-2 justify-between"
               on:click={() => {
                 postSettingOpen = false;
                 paragraphIndentOpen = false;
@@ -862,6 +835,60 @@
               }}
             >
               없음
+              <i
+                class={clsx('i-tb-check square-5 text-teal-500', paragraphIndent !== 0 && 'invisible')}
+                aria-hidden={paragraphIndent !== 0}
+                aria-label="선택됨"
+              />
+            </MenuItem>
+
+            <MenuItem
+              class="flex items-center gap-2 justify-between"
+              on:click={() => {
+                postSettingOpen = false;
+                paragraphIndentOpen = false;
+                paragraphIndentOpen = false;
+                paragraphIndent = 50;
+              }}
+            >
+              0.5칸
+              <i
+                class={clsx('i-tb-check square-5 text-teal-500', paragraphIndent !== 50 && 'invisible')}
+                aria-hidden={paragraphIndent !== 50}
+                aria-label="선택됨"
+              />
+            </MenuItem>
+
+            <MenuItem
+              class="flex items-center gap-2 justify-between"
+              on:click={() => {
+                postSettingOpen = false;
+                paragraphIndentOpen = false;
+                paragraphIndent = 100;
+              }}
+            >
+              1칸
+              <i
+                class={clsx('i-tb-check square-5 text-teal-500', paragraphIndent !== 100 && 'invisible')}
+                aria-hidden={paragraphIndent !== 100}
+                aria-label="선택됨"
+              />
+            </MenuItem>
+
+            <MenuItem
+              class="flex items-center gap-2 justify-between"
+              on:click={() => {
+                postSettingOpen = false;
+                paragraphIndentOpen = false;
+                paragraphIndent = 200;
+              }}
+            >
+              2칸
+              <i
+                class={clsx('i-tb-check square-5 text-teal-500', paragraphIndent !== 200 && 'invisible')}
+                aria-hidden={paragraphIndent !== 200}
+                aria-label="선택됨"
+              />
             </MenuItem>
           </Menu>
 
@@ -879,33 +906,7 @@
             </button>
 
             <MenuItem
-              on:click={() => {
-                postSettingOpen = false;
-                paragraphSpacingOpen = false;
-                paragraphSpacing = 50;
-              }}
-            >
-              0.5줄
-            </MenuItem>
-            <MenuItem
-              on:click={() => {
-                postSettingOpen = false;
-                paragraphSpacingOpen = false;
-                paragraphSpacing = 100;
-              }}
-            >
-              1줄
-            </MenuItem>
-            <MenuItem
-              on:click={() => {
-                postSettingOpen = false;
-                paragraphSpacingOpen = false;
-                paragraphSpacing = 200;
-              }}
-            >
-              2줄
-            </MenuItem>
-            <MenuItem
+              class="flex items-center gap-2 justify-between"
               on:click={() => {
                 postSettingOpen = false;
                 paragraphSpacingOpen = false;
@@ -913,6 +914,59 @@
               }}
             >
               없음
+              <i
+                class={clsx('i-tb-check square-5 text-teal-500', paragraphSpacing !== 0 && 'invisible')}
+                aria-hidden={paragraphSpacing !== 0}
+                aria-label="선택됨"
+              />
+            </MenuItem>
+
+            <MenuItem
+              class="flex items-center gap-2 justify-between"
+              on:click={() => {
+                postSettingOpen = false;
+                paragraphSpacingOpen = false;
+                paragraphSpacing = 50;
+              }}
+            >
+              0.5줄
+              <i
+                class={clsx('i-tb-check square-5 text-teal-500', paragraphSpacing !== 50 && 'invisible')}
+                aria-hidden={paragraphSpacing !== 50}
+                aria-label="선택됨"
+              />
+            </MenuItem>
+
+            <MenuItem
+              class="flex items-center gap-2 justify-between"
+              on:click={() => {
+                postSettingOpen = false;
+                paragraphSpacingOpen = false;
+                paragraphSpacing = 100;
+              }}
+            >
+              1줄
+              <i
+                class={clsx('i-tb-check square-5 text-teal-500', paragraphSpacing !== 100 && 'invisible')}
+                aria-hidden={paragraphSpacing !== 100}
+                aria-label="선택됨"
+              />
+            </MenuItem>
+
+            <MenuItem
+              class="flex items-center gap-2 justify-between"
+              on:click={() => {
+                postSettingOpen = false;
+                paragraphSpacingOpen = false;
+                paragraphSpacing = 200;
+              }}
+            >
+              2줄
+              <i
+                class={clsx('i-tb-check square-5 text-teal-500', paragraphSpacing !== 200 && 'invisible')}
+                aria-hidden={paragraphSpacing !== 200}
+                aria-label="선택됨"
+              />
             </MenuItem>
           </Menu>
         </Menu>
