@@ -6,9 +6,11 @@
     change: Event & { currentTarget: HTMLInputElement };
   };
 
-  type $$Props = HTMLInputAttributes;
+  type $$Props = HTMLInputAttributes & { group: unknown };
 
-  export let checked: $$Props['checked'] = false;
+  export let checked: $$Props['checked'] = undefined;
+  export let group: $$Props['group'] = undefined;
+
   let _class: $$Props['class'] = undefined;
   export { _class as class };
 </script>
@@ -25,6 +27,7 @@
     type="checkbox"
     on:change
     bind:checked
+    bind:group
     {...$$restProps}
   />
   <slot />

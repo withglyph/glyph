@@ -7,7 +7,7 @@
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Image, ToggleButton, Tooltip } from '$lib/components';
+  import { Image, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { Checkbox, FormValidationMessage, Switch } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { portal } from '$lib/svelte/actions';
@@ -305,6 +305,8 @@
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let selectedCollection: any | undefined = undefined;
+
+  let category: 'ORIGINAL' | 'FANFICTION' | 'NONFICTION' | 'OTHER' = 'ORIGINAL';
 </script>
 
 <div class="w-fit" use:floatingRef>
@@ -530,12 +532,12 @@
             </Tooltip>
           </p>
 
-          <div class="grid grid-cols-4 gap-0.5625rem">
-            <ToggleButton>오리지널</ToggleButton>
-            <ToggleButton>2차창작</ToggleButton>
-            <ToggleButton>비문학</ToggleButton>
-            <ToggleButton>기타</ToggleButton>
-          </div>
+          <SegmentButtonGroup>
+            <ToggleButton type="radio" value="ORIGINAL" bind:group={category}>오리지널</ToggleButton>
+            <ToggleButton type="radio" value="FANFICTION" bind:group={category}>2차창작</ToggleButton>
+            <ToggleButton type="radio" value="NONFICTION" bind:group={category}>비문학</ToggleButton>
+            <ToggleButton type="radio" value="OTHER" bind:group={category}>기타</ToggleButton>
+          </SegmentButtonGroup>
         </div>
 
         <div>
