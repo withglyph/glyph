@@ -1,4 +1,3 @@
-import { production } from '@penxle/lib/environment';
 import { DropCursor, GapCursor, History, Placeholder } from '$lib/tiptap/extensions';
 import { Bold, FontColor, FontFamily, FontSize, Italic, Link, Ruby, Strike, Underline } from '$lib/tiptap/marks';
 import { AccessBarrier, Embed, File, Image } from '$lib/tiptap/node-views';
@@ -47,7 +46,7 @@ export const extensions = [
 
   // node views
   AccessBarrier,
-  ...(production ? [] : [Embed]),
+  Embed,
   File,
   Image,
 ];
