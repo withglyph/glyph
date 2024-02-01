@@ -56,8 +56,9 @@
     `),
     schema: PublishPostInputSchema,
     extra: async () => {
-      await doRevisePost('AUTO_SAVE');
+      const resp = await doRevisePost('AUTO_SAVE');
       return {
+        revisionId: resp?.draftRevision.id,
         spaceId: selectedSpaceId,
         collectionId: selectedCollectionId,
         thumbnailId: thumbnail ? thumbnail.id : undefined,
@@ -179,7 +180,7 @@
 
         draftRevision @_required {
           id
-          createdAt
+          updatedAt
         }
 
         space {
@@ -206,7 +207,7 @@
 
     mixpanel.track('post:revise', { postId: resp.id, revisionKind });
 
-    revisedAt = resp.draftRevision?.createdAt;
+    revisedAt = resp.draftRevision.updatedAt;
     $data.revisionId = resp.draftRevision.id;
 
     return resp;
