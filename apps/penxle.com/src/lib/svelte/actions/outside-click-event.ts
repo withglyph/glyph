@@ -6,8 +6,12 @@ type Attributes = {
 
 export const outsideClickEvent: Action<HTMLElement, undefined, Attributes> = (element) => {
   const handler = (event: MouseEvent) => {
-    if (!element.contains(event.target as Node)) {
-      element.dispatchEvent(new CustomEvent('outsideClick'));
+    try {
+      if (!element.contains(event.target as Node)) {
+        element.dispatchEvent(new CustomEvent('outsideClick'));
+      }
+    } catch {
+      // skip
     }
   };
 
