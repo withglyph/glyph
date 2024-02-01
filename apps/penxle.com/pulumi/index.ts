@@ -10,6 +10,7 @@ const site = new penxle.Site('penxle.com', {
   domain: {
     production: 'penxle.com',
     staging: 'staging.penxle.com',
+    dev: 'dev.penxle.com',
   },
 
   image: {

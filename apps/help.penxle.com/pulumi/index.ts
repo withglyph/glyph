@@ -8,7 +8,6 @@ const site = new penxle.Site('help.penxle.com', {
 
   domain: {
     production: 'help.penxle.com',
-    staging: 'staging-help.penxle.com',
   },
 
   image: {

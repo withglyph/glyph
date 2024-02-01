@@ -11,7 +11,8 @@ type SiteArgs = {
 
   domain: {
     production: pulumi.Input<string>;
-    staging: pulumi.Input<string>;
+    staging?: pulumi.Input<string>;
+    dev?: pulumi.Input<string>;
   };
 
   image: {
@@ -54,16 +55,19 @@ export class Site extends pulumi.ComponentResource {
     const resourceName = match(stack)
       .with('prod', () => args.name)
       .with('staging', () => args.name)
+      .with('dev', () => args.name)
       .otherwise(() => pulumi.interpolate`${args.name}-${stack}`);
 
     const domainName = match(stack)
       .with('prod', () => args.domain.production)
-      .with('staging', () => args.domain.staging)
+      .with('staging', () => args.domain.staging ?? pulumi.interpolate`${args.name}-stg.pnxl.site`)
+      .with('dev', () => args.domain.dev ?? pulumi.interpolate`${args.name}-dev.pnxl.site`)
       .otherwise(() => pulumi.interpolate`${args.name}-${stack}.pnxl.site`);
 
     const namespace = match(stack)
       .with('prod', () => 'prod')
       .with('staging', () => 'staging')
+      .with('dev', () => 'dev')
       .otherwise(() => 'preview');
 
     this.url = pulumi.output(pulumi.interpolate`https://${domainName}`);

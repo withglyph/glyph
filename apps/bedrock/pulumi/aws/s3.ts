@@ -33,6 +33,7 @@ const uploads = new aws.s3.Bucket('uploads', {
       allowedOrigins: [
         'https://penxle.com',
         'https://staging.penxle.com',
+        'https://dev.penxle.com',
         'https://*.pnxl.site',
         'http://localhost:4000',
       ],
