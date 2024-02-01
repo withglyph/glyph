@@ -712,8 +712,47 @@
           </Menu>
         </ToolbarButtonTooltip>
       </div>
+      <div class="flex center space-x-1 lg:hidden after:(content-empty border-r border-gray-300 h-4 mx-3)">
+        <ToolbarButtonTooltip message="삽입">
+          <Menu
+            class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
+            offset={menuOffset}
+            placement="bottom"
+            rounded={false}
+          >
+            <i slot="value" class="i-tb-plus square-6" />
 
-      <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
+            <ToolbarButtonTooltip message="리스트">
+              <Menu
+                class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
+                offset={menuOffset}
+                placement="right-start"
+                rounded={false}
+              >
+                <i slot="value" class="i-tb-list square-6" />
+
+                <MenuItem
+                  on:click={() => {
+                    editor?.chain().focus().toggleBulletList().run();
+                  }}
+                >
+                  <i class="i-tb-list square-6" aria-label="순서 없는 리스트" />
+                </MenuItem>
+
+                <MenuItem
+                  on:click={() => {
+                    editor?.chain().focus().toggleOrderedList().run();
+                  }}
+                >
+                  <i class="i-tb-list-numbers square-6" aria-label="번호 매겨진 리스트" />
+                </MenuItem>
+              </Menu>
+            </ToolbarButtonTooltip>
+          </Menu>
+        </ToolbarButtonTooltip>
+      </div>
+
+      <div class="flex center space-x-1 <lg:hidden after:(content-empty border-r border-gray-300 h-4 mx-3)">
         <ToolbarButtonTooltip message="리스트">
           <Menu
             class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
@@ -793,7 +832,7 @@
         </ToolbarButtonTooltip>
       </div>
 
-      <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
+      <div class="flex center space-x-1 <lg:hidden after:(content-empty border-r border-gray-300 h-4 mx-3)">
         <ToolbarButtonTooltip message="이미지">
           <button class="flex center square-8.5 hover:(bg-gray-100 rounded)" type="button" on:click={handleInsertImage}>
             <i class="i-tb-photo square-6" />
