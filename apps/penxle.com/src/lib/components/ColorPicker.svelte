@@ -1,7 +1,7 @@
 <script lang="ts">
   import clsx from 'clsx';
   import Color from 'color';
-  import { onMount, tick } from 'svelte';
+  import { createEventDispatcher, onMount, tick } from 'svelte';
 
   let colorBlock: HTMLCanvasElement;
   let colorCtx: CanvasRenderingContext2D | null;
@@ -11,12 +11,18 @@
   let hexInputEl: HTMLInputElement | undefined;
   let gradientSliderInputEl: HTMLInputElement | undefined;
 
-  export let hex = '#FF0000';
-  export let onChange: () => void;
+  export let hex = '#000000';
+  let initialize = false;
+  const dispatch = createEventDispatcher<{ input: { hex: string } }>();
 
   let rgb = Color(hex).rgb();
 
   $: hex = rgb.hex().toString();
+  $: if (initialize) {
+    dispatch('input', { hex });
+  } else {
+    initialize = true;
+  }
   $: if (hexInputEl) {
     hexInputEl.value = hex;
   }
@@ -86,8 +92,6 @@
     if (history.includes(hex)) return;
 
     history = [hex, ...history.slice(0, 4)];
-
-    onChange();
   };
 
   onMount(() => {

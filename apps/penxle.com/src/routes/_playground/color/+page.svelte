@@ -4,4 +4,4 @@
   let hex = '#FF0000';
 </script>
 
-<ColorPicker onChange={() => console.log(hex)} bind:hex />
+<ColorPicker on:input={(event) => console.log(event.detail.hex)} bind:hex />

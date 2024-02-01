@@ -263,7 +263,6 @@
 
   let rubyText = '';
   let rubyButtonOpen = false;
-  let hex = '#000000';
 
   $: if (rubyButtonOpen) {
     rubyText = '';
@@ -394,14 +393,14 @@
 
           <div class={clsx('z-52', !colorPickerOpen && 'hidden')} use:floatingContent use:portal>
             <ColorPicker
-              onChange={() => {
+              on:input={(event) => {
+                const { hex } = event.detail;
                 if (hex === values.color[0].value.toUpperCase()) {
                   editor?.chain().focus().unsetFontColor().run();
                 } else {
                   editor?.chain().focus().setFontColor(hex).run();
                 }
               }}
-              bind:hex
             />
           </div>
         </ToolbarButtonTooltip>
