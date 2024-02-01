@@ -197,7 +197,7 @@
       bind:this={gradientSliderInputEl}
       style={`--thumb-color: ${rgb.toString()}`}
       class="appearance-none rounded-0.125rem w-full h-2 gradient-slider m-b-xs"
-      max="360"
+      max="300"
       min="0"
       type="range"
       on:change={(event) => {
@@ -286,7 +286,15 @@
 
 <style>
   .gradient-slider {
-    background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+    background: linear-gradient(
+      to right,
+      hsl(0, 100%, 50%) 0%,
+      hsl(60, 100%, 50%) 20%,
+      hsl(120, 100%, 50%) 40%,
+      hsl(180, 100%, 50%) 60%,
+      hsl(240, 100%, 50%) 80%,
+      hsl(300, 100%, 50%) 100%
+    );
     &::-webkit-slider-thumb {
       -webkit-appearance: none;
     }
