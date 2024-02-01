@@ -75,7 +75,7 @@
       {/if}
     </div>
   {:else if node.attrs.__data}
-    <div class="contents" role="presentation" on:click={() => (open = true)}>
+    <div class="contents pointer-events-auto" role="presentation" on:click={() => (open = true)}>
       <Image class="max-w-full" $image={node.attrs.__data} intrinsic />
     </div>
 
