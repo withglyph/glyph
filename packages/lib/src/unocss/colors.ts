@@ -138,6 +138,9 @@ export const shadedColors = {
     900: '#134E4A',
     950: '#042F2E',
   },
+  pink: {
+    500: '#EB4899',
+  },
 };
 
 export const partialShadedColors = {

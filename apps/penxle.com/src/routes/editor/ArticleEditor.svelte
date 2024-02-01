@@ -6,12 +6,20 @@
 
   export let content: JSONContent | undefined;
   export let editor: Editor | undefined;
-  export let autoIndent: boolean;
+  export let paragraphIndent: number;
+  export let paragraphSpacing: number;
   export let onChange: () => void;
 </script>
 
 <div class="px-15 w-full flex grow">
-  <TiptapEditor class="mb-100px max-w-full grow" {autoIndent} {onChange} bind:editor bind:content />
+  <TiptapEditor
+    class="mb-100px max-w-full grow"
+    {onChange}
+    {paragraphIndent}
+    {paragraphSpacing}
+    bind:editor
+    bind:content
+  />
 </div>
 
 {#if editor}

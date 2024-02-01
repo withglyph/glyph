@@ -6,8 +6,6 @@
   import Editor from '../Editor.svelte';
   import Header from '../Header.svelte';
   import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core';
-  import type { PostRevisionContentKind } from '$glitch';
-  import type { ImageBounds } from '$lib/utils';
   import type { RestoredRevision } from '../types/restore-revision';
 
   $: query = graphql(`
@@ -18,25 +16,13 @@
         id
         ...EditorPage_Header_post
 
-        draftRevision {
+        draftRevision @_required {
           id
-          kind
-          contentKind
-          editableContent
           title
           subtitle
-          autoIndent
-          thumbnailBounds
-
-          originalThumbnail {
-            id
-            ...Image_image
-          }
-
-          tags {
-            id
-            name
-          }
+          content
+          paragraphIndent
+          paragraphSpacing
         }
       }
     }
@@ -46,11 +32,8 @@
   let subtitle: string | null = null;
   let editor: TiptapEditor | undefined;
   let content: JSONContent;
-  let tags: string[];
-  let thumbnailId: string | undefined = undefined;
-  let thumbnailBounds: ImageBounds | undefined = undefined;
-  let kind: PostRevisionContentKind;
-  let autoIndent: boolean;
+  let paragraphIndent: number;
+  let paragraphSpacing: number;
 
   let initialized = false;
 
@@ -60,14 +43,12 @@
   const autoSaveCount = writable(0);
 
   const unsubscriber = restoredRevision.subscribe((revision) => {
-    if (revision === null) return;
+    if (!revision) return;
     if (!editor) throw new Error('editor is not initialize');
 
     title = revision.title;
     subtitle = revision.subtitle ?? null;
     editor.commands.setContent(revision.content);
-    kind = revision.contentKind;
-    tags = revision.tags.map(({ name }) => name);
 
     $autoSaveCount += 1;
   });
@@ -81,12 +62,9 @@
 
     title = $query.post.draftRevision.title;
     subtitle = $query.post.draftRevision.subtitle ?? null;
-    content = $query.post.draftRevision.editableContent;
-    tags = $query.post.draftRevision.tags.map((tag) => tag.name);
-    kind = $query.post.draftRevision.contentKind;
-    thumbnailBounds = $query.post.draftRevision.thumbnailBounds;
-    thumbnailId = $query.post.draftRevision.originalThumbnail?.id;
-    autoIndent = $query.post.draftRevision.autoIndent;
+    content = $query.post.draftRevision.content;
+    paragraphIndent = $query.post.draftRevision.paragraphIndent;
+    paragraphSpacing = $query.post.draftRevision.paragraphSpacing;
   }
 </script>
 
@@ -99,11 +77,8 @@
   {content}
   {editor}
   {subtitle}
-  {tags}
-  {thumbnailBounds}
-  {thumbnailId}
   {title}
-  bind:autoIndent
-  bind:kind
+  bind:paragraphIndent
+  bind:paragraphSpacing
 />
-<Editor {autoIndent} {autoSaveCount} bind:title bind:editor bind:subtitle bind:content />
+<Editor {autoSaveCount} {paragraphIndent} {paragraphSpacing} bind:title bind:editor bind:subtitle bind:content />

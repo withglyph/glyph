@@ -536,7 +536,6 @@
             {:else}
               <TiptapRenderer
                 class=""
-                autoIndent={$postRevision.autoIndent}
                 content={$postRevision.content}
                 protectContent={$query.post.protectContent}
                 bind:editor

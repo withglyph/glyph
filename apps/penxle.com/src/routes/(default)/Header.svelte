@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Link } from '@penxle/ui';
   import clsx from 'clsx';
+  import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import Logo from '$assets/icons/logo.svg?component';
   import PenFancy from '$assets/icons/pen-fancy.svg?component';
@@ -43,6 +44,15 @@
     `),
   );
 
+  const createPost = graphql(`
+    mutation DefaultLayout_CreatePost_Mutation {
+      createPost {
+        id
+        permalink
+      }
+    }
+  `);
+
   const logoutUser = graphql(`
     mutation DefaultLayout_LogoutUser_Mutation {
       logoutUser
@@ -74,13 +84,18 @@
 
         <div class="flex items-center <sm:hidden relative">
           {#if $query.me}
-            <a
+            <button
               class="relative flex items-center gap-2 rounded-lg py-1 pr-2 pl-1 transition hover:bg-surface-primary <sm:hidden"
-              href="/editor"
+              type="button"
+              on:click={async () => {
+                const { permalink } = await createPost();
+                mixpanel.track('post:create', { via: 'feed' });
+                await goto(`/editor/${permalink}`);
+              }}
             >
               <PenFancy class="square-8 mb-1" />
               <span class="subtitle-17-b text-gray-70">포스트 작성하기</span>
-            </a>
+            </button>
             <Notification $user={$query.me} />
             <UserMenu $user={$query.me} />
           {:else}

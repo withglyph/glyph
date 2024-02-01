@@ -12,7 +12,8 @@
   export { _class as class };
   export let editor: Editor | undefined = undefined;
   export let content: JSONContent | undefined = undefined;
-  export let autoIndent = false;
+  export let paragraphIndent: number | undefined = undefined;
+  export let paragraphSpacing: number | undefined = undefined;
 
   let element: HTMLDivElement;
 
@@ -71,9 +72,11 @@
 
 <div
   bind:this={element}
-  class={clsx('contents tiptap-editor', autoIndent && 'tiptap-autoindent')}
+  class="contents tiptap-editor"
   autocapitalize="off"
   autocorrect="off"
+  data-indent={paragraphIndent}
+  data-spacing={paragraphSpacing}
   spellcheck="false"
 >
   {#if !editor}
