@@ -77,11 +77,15 @@
         <div class="text-14-r line-clamp-1">{data.name}</div>
       </div>
       <div class="w-1px h-12px bg-gray-300" />
-      <div class="text-14-r text-gray-400">{numeral(data.size).format('0b')}</div>
+      <div class="text-14-r text-gray-400 flex-none">{numeral(data.size).format('0b')}</div>
     </div>
 
     <div class="p-4px rounded-4px transition hover:bg-gray-100">
-      <i class="block i-tb-grip-vertical square-18px text-gray-600" />
+      {#if editor?.isEditable}
+        <i class="block i-tb-grip-vertical square-18px text-gray-600" />
+      {:else}
+        <i class="block i-tb-download square-18px text-gray-600" />
+      {/if}
     </div>
 
     {#if !node.attrs.id}
