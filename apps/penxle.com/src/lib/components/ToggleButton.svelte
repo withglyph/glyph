@@ -6,7 +6,7 @@
     change: Event & { currentTarget: HTMLInputElement };
   };
 
-  type $$Props = HTMLInputAttributes & { group: unknown };
+  type $$Props = HTMLInputAttributes & { group?: unknown };
 
   export let checked: $$Props['checked'] = undefined;
   export let group: $$Props['group'] = undefined;

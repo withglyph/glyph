@@ -567,33 +567,10 @@
           </p>
 
           <SegmentButtonGroup>
-            <ToggleButton
-              checked={$data.category === 'ORIGINAL'}
-              type="radio"
-              value="ORIGINAL"
-              bind:group={$data.category}
-            >
-              오리지널
-            </ToggleButton>
-            <ToggleButton
-              checked={$data.category === 'FANFICTION'}
-              type="radio"
-              value="FANFICTION"
-              bind:group={$data.category}
-            >
-              2차창작
-            </ToggleButton>
-            <ToggleButton
-              checked={$data.category === 'NONFICTION'}
-              type="radio"
-              value="NONFICTION"
-              bind:group={$data.category}
-            >
-              비문학
-            </ToggleButton>
-            <ToggleButton checked={$data.category === 'OTHER'} type="radio" value="OTHER" bind:group={$data.category}>
-              기타
-            </ToggleButton>
+            <ToggleButton name="category" type="radio" value="ORIGINAL">오리지널</ToggleButton>
+            <ToggleButton name="category" type="radio" value="FANFICTION">2차창작</ToggleButton>
+            <ToggleButton name="category" type="radio" value="NONFICTION">비문학</ToggleButton>
+            <ToggleButton name="category" type="radio" value="OTHER">기타</ToggleButton>
           </SegmentButtonGroup>
         </div>
 
@@ -606,39 +583,13 @@
           </p>
 
           <div class="grid grid-cols-4 gap-0.5625rem">
-            <ToggleButton
-              checked={$data.pairs?.includes('BL')}
-              bind:group={$data.pairs}
-              on:change={(e) => checkPair(e, 'BL')}
-            >
-              BL
-            </ToggleButton>
-            <ToggleButton
-              checked={$data.pairs?.includes('GL')}
-              bind:group={$data.pairs}
-              on:change={(e) => checkPair(e, 'GL')}
-            >
-              GL
-            </ToggleButton>
-            <ToggleButton
-              checked={$data.pairs?.includes('HL')}
-              bind:group={$data.pairs}
-              on:change={(e) => checkPair(e, 'HL')}
-            >
-              HL
-            </ToggleButton>
-            <ToggleButton
-              checked={$data.pairs?.includes('NONCP')}
-              bind:group={$data.pairs}
-              on:change={(e) => checkPair(e, 'NONCP')}
-            >
+            <ToggleButton checked={$data.pairs?.includes('BL')} on:change={(e) => checkPair(e, 'BL')}>BL</ToggleButton>
+            <ToggleButton checked={$data.pairs?.includes('GL')} on:change={(e) => checkPair(e, 'GL')}>GL</ToggleButton>
+            <ToggleButton checked={$data.pairs?.includes('HL')} on:change={(e) => checkPair(e, 'HL')}>HL</ToggleButton>
+            <ToggleButton checked={$data.pairs?.includes('NONCP')} on:change={(e) => checkPair(e, 'NONCP')}>
               Non-CP
             </ToggleButton>
-            <ToggleButton
-              checked={$data.pairs?.includes('OTHER')}
-              bind:group={$data.pairs}
-              on:change={(e) => checkPair(e, 'OTHER')}
-            >
+            <ToggleButton checked={$data.pairs?.includes('OTHER')} on:change={(e) => checkPair(e, 'OTHER')}>
               그 외
             </ToggleButton>
           </div>
