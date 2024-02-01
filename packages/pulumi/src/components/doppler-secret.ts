@@ -31,7 +31,7 @@ export class DopplerSecret extends pulumi.ComponentResource {
         kind: 'ClusterSecretStore',
 
         metadata: {
-          name: args.metadata.name,
+          name: pulumi.interpolate`${args.metadata.name}-${args.metadata.namespace}`,
         },
 
         spec: {
