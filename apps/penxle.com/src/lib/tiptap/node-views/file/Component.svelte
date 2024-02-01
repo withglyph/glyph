@@ -74,7 +74,7 @@
     <div class="flex gap-8px items-center grow">
       <div class="flex gap-6px items-center">
         <i class="i-tb-folder text-gray-300 square-18px" />
-        <div class="text-14-r">{data.name}</div>
+        <div class="text-14-r line-clamp-1">{data.name}</div>
       </div>
       <div class="w-1px h-12px bg-gray-300" />
       <div class="text-14-r text-gray-400">{numeral(data.size).format('0b')}</div>
