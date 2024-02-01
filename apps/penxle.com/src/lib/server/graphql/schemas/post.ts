@@ -1028,12 +1028,9 @@ export const postSchema = defineSchema((builder) => {
         document = await sanitizeContent(document);
 
         const accessBarrierPosition = document.findIndex((node) => node.type === 'access_barrier');
-        const accessBarrier =
-          accessBarrierPosition === -1 || accessBarrierPosition === document.length - 1
-            ? undefined
-            : document[accessBarrierPosition];
-        const freeContentData = accessBarrier ? document : document.slice(0, accessBarrierPosition);
-        const paidContentData = accessBarrier ? undefined : document.slice(accessBarrierPosition + 1);
+        const accessBarrier = accessBarrierPosition === -1 ? undefined : document[accessBarrierPosition];
+        const freeContentData = accessBarrier ? document.slice(0, accessBarrierPosition) : document;
+        const paidContentData = accessBarrier ? document.slice(accessBarrierPosition + 1) : null;
 
         const freeContent = await revisePostContent({ db, contentData: freeContentData });
         const paidContent =
@@ -1160,16 +1157,30 @@ export const postSchema = defineSchema((builder) => {
           }
         }
 
-        if (revision.paidContentId) {
-          if (!revision.price || revision.price <= 0 || revision.price > 1_000_000 || revision.price % 100 !== 0) {
-            throw new IntentionalError('잘못된 가격이에요');
-          }
-          if (
-            revision.contentKind === 'GALLERY' &&
-            ((revision.freeContent.data as JSONContent[]).length === 0 ||
-              ((revision.paidContent?.data as JSONContent[])?.length ?? 0) === 0)
-          ) {
-            throw new IntentionalError('결제 상자 위치가 잘못되었어요');
+        if (revision.paidContent) {
+          if (revision.price === null) {
+            const allContent = await revisePostContent({
+              db,
+              contentData: [
+                ...(revision.freeContent.data as JSONContent[]),
+                ...(revision.paidContent.data as JSONContent[]),
+              ],
+            });
+            await db.postRevision.update({
+              where: { id: input.revisionId },
+              data: { freeContentId: allContent.id, paidContentId: null },
+            });
+          } else {
+            if (revision.price <= 0 || revision.price > 1_000_000 || revision.price % 100 !== 0) {
+              throw new IntentionalError('잘못된 가격이에요');
+            }
+            if (
+              revision.contentKind === 'GALLERY' &&
+              ((revision.freeContent.data as JSONContent[]).length === 0 ||
+                ((revision.paidContent?.data as JSONContent[])?.length ?? 0) === 0)
+            ) {
+              throw new IntentionalError('결제 상자 위치가 잘못되었어요');
+            }
           }
         }
 
