@@ -503,6 +503,20 @@
                 class="absolute z-59 top-45px left-0 w-full rounded-b-md bg-white border border-gray-200"
                 transition:slide={{ axis: 'y', duration: 250 }}
               >
+                <li class="border-b border-gray-200">
+                  <button
+                    class="px-4 py-3 w-full hover:(bg-teal-50 text-teal-700) flex justify-between items-center"
+                    type="button"
+                    on:click={() => {
+                      selectedCollectionId = undefined;
+                      collectionSelectorOpen = false;
+                    }}
+                  >
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-12-r truncate">선택 안함</span>
+                    </div>
+                  </button>
+                </li>
                 {#each selectedSpace?.collections as collection (collection.id)}
                   <li class="border-b border-gray-200">
                     <button
