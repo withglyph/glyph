@@ -64,9 +64,9 @@
       on:input={() => (open = true)}
       bind:value={query}
     />
-    <div class="absolute inset-y-0 right-4 flex center text-gray-700">
+    <!-- <div class="absolute inset-y-0 right-4 flex center text-gray-700">
       <i class="i-tb-search square-4" />
-    </div>
+    </div> -->
 
     {#if open}
       <ul class="absolute left-0 w-full bg-white border border-gray-200 rounded-b-1.5 z-1">
