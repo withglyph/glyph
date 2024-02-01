@@ -544,9 +544,9 @@
         <div>
           <p class="text-18-m mb-3 flex gap-1.5">
             <span>카테고리</span>
-            <Tooltip class="flex center" message="카테고리" placement="top">
+            <!-- <Tooltip class="flex center" message="카테고리" placement="top">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
-            </Tooltip>
+            </Tooltip> -->
           </p>
 
           <SegmentButtonGroup>
@@ -560,7 +560,7 @@
         <div>
           <p class="text-18-m mb-3 flex gap-1.5 pt-5">
             <span>페어</span>
-            <Tooltip class="flex center" message="페어" placement="top">
+            <Tooltip class="flex center" message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
             </Tooltip>
           </p>
@@ -581,7 +581,8 @@
         <PublishMenuSearch
           kind="TITLE"
           label="작품"
-          placeholder="작품명"
+          placeholder="예) 마법소녀_펜슬이"
+          tooltip="여러 명칭을 쓸 수 있어요"
           bind:tags={$data.tags}
           bind:query={titleQuery}
         />
@@ -589,7 +590,8 @@
         <PublishMenuSearch
           kind="CHARACTER"
           label="캐릭터"
-          placeholder="캐릭터 이름"
+          placeholder="예) 펜슬이"
+          tooltip="등장 캐릭터가 너무 많다면 주연만 써도 좋아요"
           bind:tags={$data.tags}
           bind:query={characterQuery}
         />
@@ -597,7 +599,8 @@
         <PublishMenuSearch
           kind="COUPLING"
           label="커플링"
-          placeholder="예) AA*BB"
+          placeholder="예) AAxBB"
+          tooltip="커플링명은 자주 쓰이는 이름으로 하면 좋아요"
           bind:tags={$data.tags}
           bind:query={couplingQuery}
         />
@@ -605,7 +608,8 @@
         <PublishMenuSearch
           kind="TRIGGER"
           label="트리거 주의"
-          placeholder="트리거 항목"
+          placeholder="예) 스포일러, 폭력성 등"
+          tooltip="이 포스트를 독자들이 볼 때 주의해야 할 사항을 입력해주세요"
           bind:tags={$data.tags}
           bind:query={triggerQuery}
         />
@@ -614,6 +618,7 @@
           kind="EXTRA"
           label="추가 태그"
           placeholder="추가 태그"
+          tooltip="위 분류에 속하지 않지만 추가적으로 넣고 싶은 태그를 입력해주세요"
           bind:tags={$data.tags}
           bind:query={extraQuery}
         />
@@ -673,7 +678,7 @@
         <div>
           <p class="text-18-m mb-3 flex gap-1.5 pt-5">
             <span>비밀글</span>
-            <Tooltip class="flex center" message="비밀글">
+            <Tooltip class="flex center" message="설정하면 비밀번호를 입력한 독자만 내용을 열람할 수 있어요">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
             </Tooltip>
           </p>
@@ -711,7 +716,10 @@
         <div>
           <p class="text-18-m mb-3 flex gap-1.5 pt-5">
             <span>콘텐츠 등급</span>
-            <Tooltip class="flex center" message="콘텐츠 등급">
+            <Tooltip
+              class="flex center"
+              message="연령 제한을 설정하면 본인인증이 완료된 해당 나이 이상의 독자만 내용을 열람할 수 있어요"
+            >
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
             </Tooltip>
           </p>

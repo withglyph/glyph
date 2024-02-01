@@ -17,6 +17,7 @@
   export let tags: TagInput[] = [];
   export let kind: PostTagKind;
   export let label: string;
+  export let tooltip: string = label;
 
   let postTags: TagInput[] | undefined = [];
   // let open = false;
@@ -27,7 +28,7 @@
 <div>
   <p class="text-18-m mb-3 flex gap-1.5 pt-5">
     <span>{label}</span>
-    <Tooltip class="flex center" message={label} placement="top">
+    <Tooltip class="flex center" message={tooltip} placement="top">
       <i class="i-tb-alert-circle square-3.5 text-gray-400" />
     </Tooltip>
   </p>
