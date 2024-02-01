@@ -14,30 +14,34 @@
         blurred
         permalink
 
-        publishedRevision @_required {
+        tags {
           id
-          title
-          price
-          previewText
 
-          croppedThumbnail {
-            id
-            ...Image_image
-          }
-
-          tags {
+          tag {
             id
             name
           }
         }
 
-        space {
+        thumbnail {
+          id
+          ...Image_image
+        }
+
+        publishedRevision @_required {
+          id
+          title
+          price
+          previewText
+        }
+
+        space @_required {
           id
           name
           slug
         }
 
-        member {
+        member @_required {
           id
 
           profile {
@@ -71,21 +75,21 @@
           {$post.publishedRevision?.previewText}
         </p>
       </div>
-      {#if $post.publishedRevision?.croppedThumbnail}
+      {#if $post.thumbnail}
         <Image
           class="h-20 w-25 rounded-5 flex-none border border-secondary sm:aspect-square"
-          $image={$post.publishedRevision?.croppedThumbnail}
+          $image={$post.thumbnail}
         />
       {/if}
     </div>
   </a>
-  {#if $post.publishedRevision?.tags}
+  {#if $post.tags}
     <div class="flex flex-wrap gap-1.5 mt-2">
-      {#each $post.publishedRevision?.tags.slice(0, 4) as tag (tag.id)}
+      {#each $post.tags.slice(0, 4) as { tag } (tag.id)}
         <Tag href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
       {/each}
-      {#if $post.publishedRevision?.tags.length > 4}
-        <Tag size="sm">+{$post.publishedRevision?.tags.length - 4}개의 태그</Tag>
+      {#if $post.tags.length > 4}
+        <Tag size="sm">+{$post.tags.length - 4}개의 태그</Tag>
       {/if}
     </div>
   {/if}

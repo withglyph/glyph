@@ -4,43 +4,38 @@ import { tagPattern } from '$lib/const/post';
 export const RevisePostInputSchema = z.object({
   revisionKind: z.enum(['AUTO_SAVE', 'MANUAL_SAVE']),
   contentKind: z.enum(['ARTICLE', 'GALLERY']),
-  postId: z.string().optional(),
-  spaceId: z.string(),
+  postId: z.string(),
   title: z.string(),
   subtitle: z.string().nullable().optional(),
   content: z.any(),
-  thumbnailId: z.string().optional(),
-  thumbnailBounds: z.any().optional(),
-  tags: z.array(z.string().regex(new RegExp(tagPattern, 'u'), '태그에 허용되지 않는 문자예요').trim()),
-  autoIndent: z.boolean(),
+  paragraphIndent: z.number().int(),
+  paragraphSpacing: z.number().int(),
 });
 
 export const PublishPostInputSchema = z.object({
-  contentFilters: z.array(
-    z.enum([
-      'ADULT',
-      'CRIME',
-      'CRUELTY',
-      'GAMBLING',
-      'GROSSNESS',
-      'HORROR',
-      'INSULT',
-      'OTHER',
-      'PHOBIA',
-      'TRAUMA',
-      'VIOLENCE',
-    ]),
-  ),
-  discloseStats: z.boolean(),
+  revisionId: z.string(),
+  spaceId: z.string(),
+  collectionId: z.string().optional(),
+  thumbnailId: z.string().optional(),
+  visibility: z.enum(['PUBLIC', 'SPACE', 'UNLISTED']),
   password: z
     .union([z.string().regex(/^[!-~]*$/, '영문, 숫자, 키보드 특수문자만 입력할 수 있어요'), z.null()])
     .optional(),
-  revisionId: z.string(),
+  ageRating: z.enum(['ALL', 'R15', 'R19']),
+  externalSearchable: z.boolean(),
+  discloseStats: z.boolean(),
   receiveFeedback: z.boolean(),
   receivePatronage: z.boolean(),
   receiveTagContribution: z.boolean(),
   protectContent: z.boolean(),
-  visibility: z.enum(['PUBLIC', 'SPACE', 'UNLISTED']),
+  category: z.enum(['ORIGINAL', 'FANFICTION', 'NONFICTION', 'OTHER']),
+  pairs: z.array(z.enum(['BL', 'GL', 'HL', 'MULTIPLE', 'NONCP', 'OTHER'])),
+  tags: z.array(
+    z.object({
+      name: z.string().regex(new RegExp(tagPattern, 'u'), '태그에 허용되지 않는 문자예요').trim(),
+      kind: z.enum(['TITLE', 'COUPLING', 'CHARACTER', 'TRIGGER', 'EXTRA']),
+    }),
+  ),
 });
 
 export type PublishPostInput = z.infer<typeof PublishPostInputSchema>;

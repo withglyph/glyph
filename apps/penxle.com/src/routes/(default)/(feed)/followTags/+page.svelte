@@ -5,8 +5,10 @@
   import { toast } from '$lib/notification';
 
   type Tag = {
-    id: string;
-    name: string;
+    tag: {
+      id: string;
+      name: string;
+    };
   };
 
   $: query = graphql(`
@@ -24,10 +26,10 @@
         id
         ...Feed_post
 
-        publishedRevision @_required {
+        tags {
           id
 
-          tags {
+          tag {
             id
             name
           }
@@ -61,8 +63,8 @@
   `);
 
   const getFollowedTags = (tags: Tag[] | undefined) => {
-    const followedTags = new Set<string>($query.me.followedTags.map((tag: Tag) => tag.name));
-    const postTags = new Set<string>(tags?.map((tag: Tag) => tag.name));
+    const followedTags = new Set<string>($query.me.followedTags.map((tag) => tag.name));
+    const postTags = new Set<string>(tags?.map((tag: Tag) => tag.tag.name));
 
     const intersection = new Set([...followedTags].filter((x) => postTags.has(x)));
     return [...intersection];
@@ -114,7 +116,7 @@
   {#each $query.tagFeed as post (post.id)}
     <li class="mb-4 <sm:first-of-type:mt-4">
       <div class="flex items-center flex-wrap gap-2 mb-4 truncate <sm:mx-2">
-        {#each getFollowedTags(post.publishedRevision?.tags) as tag (tag)}
+        {#each getFollowedTags(post.tags) as tag (tag)}
           <Tag href="/tag/{tag}">#{tag}</Tag>
         {/each}
       </div>

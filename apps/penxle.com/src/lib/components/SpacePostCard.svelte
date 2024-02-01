@@ -26,24 +26,28 @@
         viewCount
         discloseStats
 
-        publishedRevision @_required {
+        tags {
           id
-          title
-          previewText
-          price
 
-          croppedThumbnail {
-            id
-            ...Image_image
-          }
-
-          tags {
+          tag {
             id
             name
           }
         }
 
-        space {
+        thumbnail {
+          id
+          ...Image_image
+        }
+
+        publishedRevision @_required {
+          id
+          title
+          previewText
+          price
+        }
+
+        space @_required {
           id
           slug
           name
@@ -54,7 +58,7 @@
           }
         }
 
-        member {
+        member @_required {
           id
 
           profile {
@@ -133,23 +137,20 @@
           {$post.publishedRevision.previewText}
         </p>
 
-        {#if $post.publishedRevision.croppedThumbnail}
-          <Image
-            class="square-30 rounded-md flex-none sm:aspect-square"
-            $image={$post.publishedRevision.croppedThumbnail}
-          />
+        {#if $post.thumbnail}
+          <Image class="square-30 rounded-md flex-none sm:aspect-square" $image={$post.thumbnail} />
         {/if}
       {/if}
     </article>
   </a>
   <div class="flex justify-between items-center gap-3 mt-2">
-    {#if $post.publishedRevision?.tags}
+    {#if $post.tags}
       <div class="flex gap-1.5 flex-wrap">
-        {#each $post.publishedRevision.tags.slice(0, 4) as tag (tag.id)}
+        {#each $post.tags.slice(0, 4) as { tag } (tag.id)}
           <Tag class="max-w-65" href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
         {/each}
-        {#if $post.publishedRevision.tags.length > 4}
-          <Tag size="sm">+{$post.publishedRevision.tags.length - 4}개의 태그</Tag>
+        {#if $post.tags.length > 4}
+          <Tag size="sm">+{$post.tags.length - 4}개의 태그</Tag>
         {/if}
       </div>
     {/if}

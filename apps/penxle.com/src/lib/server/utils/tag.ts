@@ -1,20 +1,27 @@
+import * as R from 'radash';
 import { useCache } from '../cache';
-import type { InteractiveTransactionClient } from '../prisma';
+import { prismaClient } from '../database';
 
-type GetTagUsageCountParams = {
-  tagId: string;
-  db: InteractiveTransactionClient;
-};
-export const getTagUsageCount = ({ tagId, db }: GetTagUsageCountParams) => {
+export const getTagUsageCount = (tagId: string) => {
   return useCache(
     `Tag:${tagId}:usageCount`,
     async () =>
-      db.postRevisionTag.count({
-        where: {
-          tagId,
-          revision: { kind: 'PUBLISHED' },
-        },
-      }),
+      prismaClient.postTag
+        .groupBy({
+          by: ['kind'],
+          where: {
+            tagId,
+            post: { state: 'PUBLISHED' },
+          },
+          _count: true,
+        })
+        .then((result) =>
+          R.objectify(
+            result,
+            (r) => r.kind,
+            (r) => r._count,
+          ),
+        ),
     60 * 60,
   );
 };

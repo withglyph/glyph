@@ -88,6 +88,7 @@ await createIndex('posts', {
           id: { type: 'keyword' },
           name: { type: 'text', analyzer: 'ngram_23' },
           nameRaw: { type: 'keyword' },
+          kind: { type: 'keyword' },
         },
       },
       spaceId: { type: 'keyword' },
@@ -161,6 +162,7 @@ await createIndex('tags', {
           initial: { type: 'text', analyzer: 'ngram_23' }, // 초성
         },
       },
+      usageCount: { type: 'rank_features' },
     },
   },
 });

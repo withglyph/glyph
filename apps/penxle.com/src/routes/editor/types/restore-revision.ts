@@ -1,12 +1,14 @@
-import type { JSONContent } from '@tiptap/core';
 import type { PostRevisionContentKind, PostRevisionKind } from '$glitch';
 
-export type RestoredRevision = {
-  id: string;
-  kind: PostRevisionKind;
-  contentKind: PostRevisionContentKind;
-  content: JSONContent;
-  title: string;
-  subtitle?: string | null | undefined;
-  tags: { id: string; name: string }[];
-} | null;
+export type RestoredRevision =
+  | {
+      id: string;
+      kind: PostRevisionKind;
+      contentKind: PostRevisionContentKind;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      content: any;
+      title: string;
+      subtitle?: string | null | undefined;
+    }
+  | null
+  | undefined;

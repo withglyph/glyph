@@ -15,7 +15,7 @@
           permalink
           purchasedAt
 
-          space {
+          space @_required {
             id
             slug
             name
@@ -31,7 +31,7 @@
             title
           }
 
-          member {
+          member @_required {
             id
 
             profile {
@@ -52,18 +52,20 @@
         <time>{dayjs(post.purchasedAt).formatAsDate()}</time>
         <span class="before:(content-['|'] mx-1)">결제됨</span>
       </p>
-      <a class="text-right" href={`/${post.space.slug}/purchased/${post.permalink}`}>구매버전 보기</a>
+      <a class="text-right" href={`/${post.space?.slug}/purchased/${post.permalink}`}>구매버전 보기</a>
     </div>
 
     <a
       class="border border-secondary rounded-2xl py-3 px-4 flex items-center gap-4"
-      href={`/${post.space.slug}/${post.permalink}`}
+      href={`/${post.space?.slug}/${post.permalink}`}
     >
-      <Image class="square-12.5 rounded-xl flex-none border border-secondary" $image={post.space.icon} />
+      {#if post.space}
+        <Image class="square-12.5 rounded-xl flex-none border border-secondary" $image={post.space.icon} />
+      {/if}
 
       <div class="truncate">
         <p class="body-16-eb truncate">{post.purchasedRevision?.title}</p>
-        <p class="body-14-m text-secondary truncate">{post.space.name} · {post.member.profile.name}</p>
+        <p class="body-14-m text-secondary truncate">{post.space?.name} · {post.member?.profile.name}</p>
       </div>
     </a>
   </li>

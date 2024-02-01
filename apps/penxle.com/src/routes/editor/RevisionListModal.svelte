@@ -22,7 +22,7 @@
         id
         permalink
 
-        space {
+        space @_required {
           id
           slug
         }
@@ -48,11 +48,6 @@
           content
           title
           subtitle
-
-          tags {
-            id
-            name
-          }
         }
       }
     }

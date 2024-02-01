@@ -1,5 +1,6 @@
 import * as R from 'radash';
 import { elasticSearch, indexName } from '$lib/server/search';
+import { getTagUsageCount } from '$lib/server/utils';
 import { disassembleHangulString, InitialHangulString } from '$lib/utils';
 import { Prisma, PrismaClient } from '$prisma';
 import type { estypes } from '@elastic/elasticsearch';
@@ -19,21 +20,22 @@ type IndexPostParam = Prisma.PostGetPayload<{
         visibility: true;
       };
     };
+    tags: {
+      select: {
+        kind: true;
+        tag: {
+          select: {
+            id: true;
+            name: true;
+          };
+        };
+      };
+    };
     publishedRevision: {
       select: {
         kind: true;
         title: true;
         subtitle: true;
-        tags: {
-          select: {
-            tag: {
-              select: {
-                id: true;
-                name: true;
-              };
-            };
-          };
-        };
       };
     };
   };
@@ -45,8 +47,8 @@ export const indexPost = async (post: IndexPostParam) => {
       post.publishedRevision.kind === 'PUBLISHED' &&
       post.visibility === 'PUBLIC' &&
       post.password === null &&
-      post.space.state === 'ACTIVE' &&
-      post.space.visibility === 'PUBLIC'
+      post.space?.state === 'ACTIVE' &&
+      post.space?.visibility === 'PUBLIC'
     ) {
       await elasticSearch.index({
         index: indexName('posts'),
@@ -55,13 +57,13 @@ export const indexPost = async (post: IndexPostParam) => {
           title: post.publishedRevision.title,
           subtitle: post.publishedRevision.subtitle,
           publishedAt: post.publishedAt?.getTime() ?? Date.now(),
-          tags: post.publishedRevision.tags.map(({ tag }) => ({ id: tag.id, name: tag.name, nameRaw: tag.name })),
+          tags: post.tags.map(({ kind, tag }) => ({ id: tag.id, name: tag.name, nameRaw: tag.name, kind })),
           contentFilters: post.contentFilters,
           spaceId: post.space.id,
         },
       });
 
-      indexTags(post.publishedRevision.tags.map(({ tag }) => ({ id: tag.id, name: tag.name })));
+      indexTags(post.tags.map(({ tag }) => ({ id: tag.id, name: tag.name })));
     } else {
       try {
         await elasticSearch.delete({
@@ -84,15 +86,12 @@ export const indexPostByQuery = async ({ db, where }: IndexPostByQueryParams) =>
   const posts = await db.post.findMany({
     where,
     include: {
-      publishedRevision: {
+      tags: {
         include: {
-          tags: {
-            include: {
-              tag: true,
-            },
-          },
+          tag: true,
         },
       },
+      publishedRevision: true,
       space: true,
     },
   });
@@ -142,14 +141,17 @@ type IndexTagsParam = Prisma.TagGetPayload<{
 export const indexTags = async (tags: IndexTagsParam) => {
   if (tags.length === 0) return;
 
-  const disassembledTags = tags.map(({ id, name }) => ({
-    id,
-    name: {
-      raw: name,
-      disassembled: disassembleHangulString(name),
-      initial: InitialHangulString(name) || null,
-    },
-  }));
+  const disassembledTags = await Promise.all(
+    tags.map(async ({ id, name }) => ({
+      id,
+      name: {
+        raw: name,
+        disassembled: disassembleHangulString(name),
+        initial: InitialHangulString(name) || null,
+      },
+      usageCount: await getTagUsageCount(id),
+    })),
+  );
 
   await elasticSearch.bulk({
     index: indexName('tags'),

@@ -9,5 +9,7 @@ export * from './masquerade';
 export * from './mute';
 export * from './notification';
 export * from './point';
+export * from './post';
 export * from './revenue';
 export * from './search';
+export * from './tag';

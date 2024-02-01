@@ -1,6 +1,7 @@
 import { elasticSearch, indexName } from '$lib/server/search';
-import { makeQueryContainers, searchResultToPrismaData } from '$lib/server/utils';
+import { getTagUsageCount, makeQueryContainers, searchResultToPrismaData } from '$lib/server/utils';
 import { createId } from '$lib/utils';
+import { PrismaEnums } from '$prisma';
 import { defineSchema } from '../builder';
 
 export const tagSchema = defineSchema((builder) => {
@@ -8,11 +9,34 @@ export const tagSchema = defineSchema((builder) => {
    * * Types
    */
 
+  class TagUsageCount {
+    TITLE?: number;
+    COUPLING?: number;
+    CHARACTER?: number;
+    TRIGGER?: number;
+    EXTRA?: number;
+  }
+
+  builder.objectType(TagUsageCount, {
+    name: 'TagUsageCount',
+    fields: (t) => ({
+      TITLE: t.int({ resolve: ({ TITLE }) => TITLE ?? 0 }),
+      COUPLING: t.int({ resolve: ({ COUPLING }) => COUPLING ?? 0 }),
+      CHARACTER: t.int({ resolve: ({ CHARACTER }) => CHARACTER ?? 0 }),
+      TRIGGER: t.int({ resolve: ({ TRIGGER }) => TRIGGER ?? 0 }),
+      EXTRA: t.int({ resolve: ({ EXTRA }) => EXTRA ?? 0 }),
+    }),
+  });
+
   builder.prismaObject('Tag', {
     fields: (t) => ({
       id: t.exposeID('id'),
       name: t.exposeString('name'),
       wiki: t.relation('wiki', { nullable: true }),
+      usageCount: t.field({
+        type: TagUsageCount,
+        resolve: (tag) => getTagUsageCount(tag.id),
+      }),
 
       parents: t.prismaField({
         type: ['Tag'],
@@ -108,6 +132,15 @@ export const tagSchema = defineSchema((builder) => {
 
         resolve: ({ userMutes }, _, context) => !!context.session && userMutes.length > 0,
       }),
+    }),
+  });
+
+  builder.prismaObject('PostTag', {
+    fields: (t) => ({
+      id: t.exposeID('id'),
+      post: t.relation('post'),
+      tag: t.relation('tag'),
+      kind: t.expose('kind', { type: PrismaEnums.PostTagKind }),
     }),
   });
 

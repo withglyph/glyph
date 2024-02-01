@@ -30,22 +30,21 @@
     graphql(`
       fragment SpaceCollectionsEnitityPage_ManageCollectionModal_post on Post {
         id
-
         permalink
+        publishedAt
 
         collection {
           id
         }
 
-        publishedAt
+        thumbnail {
+          id
+          ...Image_image
+        }
 
         publishedRevision @_required {
           id
           title
-
-          croppedThumbnail {
-            ...Image_image
-          }
         }
       }
     `),
@@ -57,11 +56,12 @@
       fragment SpaceCollectionsEnitityPage_ManageCollectionModal_collection on SpaceCollection {
         id
         name
+
         thumbnail {
           id
-
           ...Image_image
         }
+
         posts {
           id
         }
@@ -192,8 +192,8 @@
       {#each filteredPosts as post (post.id)}
         <li class="flex items-center justify-between">
           <a class="flex gap-2 items-center truncate mr-2" href="/{slug}/{post.permalink}">
-            {#if post.publishedRevision?.croppedThumbnail}
-              <Image class="square-10.5 rounded-lg grow-0 shrink-0" $image={post.publishedRevision.croppedThumbnail} />
+            {#if post.thumbnail}
+              <Image class="square-10.5 rounded-lg grow-0 shrink-0" $image={post.thumbnail} />
             {/if}
             <div class="truncate">
               <p class="body-17-b truncate grow">{post.publishedRevision?.title}</p>

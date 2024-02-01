@@ -29,16 +29,13 @@ export const bookmarkSchema = defineSchema((builder) => {
           return db.image.findMany({
             ...query,
             where: {
-              postRevisionsUsingThisAsCroppedThumbnail: {
+              postsUsingThisAsThumbnail: {
                 some: {
-                  kind: 'PUBLISHED',
-                  post: {
-                    state: 'PUBLISHED',
-                    space: { state: 'ACTIVE' },
-                    bookmarks: {
-                      some: {
-                        bookmarkGroupId: bookmarkGroup.id,
-                      },
+                  state: 'PUBLISHED',
+                  space: { state: 'ACTIVE' },
+                  bookmarks: {
+                    some: {
+                      bookmarkGroupId: bookmarkGroup.id,
                     },
                   },
                 },
@@ -160,7 +157,7 @@ export const bookmarkSchema = defineSchema((builder) => {
           },
         });
 
-        if (!post) {
+        if (!post || !post.spaceId) {
           throw new NotFoundError();
         }
 
