@@ -3,8 +3,8 @@
   import Wordmark from '$assets/icons/wordmark.svg?component';
   import { graphql } from '$glitch';
   import { Logo } from '$lib/components/branding';
-  import Footer from '../../../Footer.svelte';
-  import Post from '../../Post.svelte';
+  import Post from '../../../(default)/[space]/Post.svelte';
+  import Footer from '../../../(default)/Footer.svelte';
 
   let mode: 'desktop' | 'mobile' = 'desktop';
 
@@ -13,7 +13,7 @@
   $: hideHeader = $page.url.searchParams.get('hideHeader') === 'true';
 
   $: query = graphql(`
-    query SpacePreviewPostPage_Query($permalink: String!, $revisionId: ID) {
+    query EditorPermalinkPreviewPage_Query($permalink: String!, $revisionId: ID) {
       post(permalink: $permalink) {
         id
 

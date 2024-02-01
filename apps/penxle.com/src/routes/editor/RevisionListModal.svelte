@@ -1,6 +1,6 @@
 <script lang="ts">
   import dayjs from 'dayjs';
-  import queryString from 'query-string';
+  import qs from 'query-string';
   import { getContext } from 'svelte';
   import { fragment, graphql } from '$glitch';
   import { Badge, Modal } from '$lib/components';
@@ -21,11 +21,6 @@
       fragment EditorPage_RevisionListModal_Post on Post {
         id
         permalink
-
-        space @_required {
-          id
-          slug
-        }
 
         revisions {
           id
@@ -60,7 +55,7 @@
   $: selectedRevisionId = $post.revisions[0].id;
   $: disabled = $post.revisions.length === 1;
 
-  $: previewSource = `/${$post.space.slug}/preview/${$post.permalink}/`;
+  $: previewSource = `/editor/${$post.permalink}/preview`;
 </script>
 
 <Modal size="lg" bind:open>
@@ -69,10 +64,13 @@
   <article class="flex gap-xs h-32rem">
     <iframe
       class="w-28.625rem"
-      src={`${previewSource}?${queryString.stringify({
-        revisionId: selectedRevisionId,
-        hideHeader: true,
-      })}`}
+      src={qs.stringifyUrl({
+        url: previewSource,
+        query: {
+          revisionId: selectedRevisionId,
+          hideHeader: true,
+        },
+      })}
       title="미리보기"
     />
     <aside class="flex-grow">
@@ -126,7 +124,12 @@
               </MenuItem>
               <MenuItem
                 external
-                href={`${previewSource}?${queryString.stringify({ revisionId: revision.id })}`}
+                href={qs.stringifyUrl({
+                  url: previewSource,
+                  query: {
+                    revisionId: selectedRevisionId,
+                  },
+                })}
                 type="link"
               >
                 새 창으로 보기

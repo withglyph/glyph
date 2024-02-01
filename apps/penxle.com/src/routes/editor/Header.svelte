@@ -218,8 +218,6 @@
     selectedSpaceId = $post?.space?.id;
   }
 
-  $: selectedSpace = $query.me.spaces.find((space) => space.id === selectedSpaceId);
-
   $: permalink = ($post || draftPost)?.permalink;
 
   $: if ($post) {
@@ -409,7 +407,7 @@
           저장이력
         </MenuItem>
 
-        <MenuItem external href={`/${selectedSpace?.slug}/preview/${permalink}`} type="link">미리보기</MenuItem>
+        <MenuItem external href={`/editor/${permalink}/preview`} type="link">미리보기</MenuItem>
       </Menu>
     </div>
   </div>
