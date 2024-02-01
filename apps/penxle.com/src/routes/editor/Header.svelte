@@ -4,13 +4,12 @@
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import * as R from 'radash';
-  import { onDestroy, onMount, tick } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { browser, dev } from '$app/environment';
   import { beforeNavigate } from '$app/navigation';
   import Wordmark from '$assets/icons/wordmark.svg?component';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Tooltip } from '$lib/components';
   import { Logo } from '$lib/components/branding';
   import ColorPicker from '$lib/components/ColorPicker.svelte';
   import { Menu, MenuItem } from '$lib/components/menu';
@@ -246,27 +245,6 @@
   };
 
   let menuOffset = 11;
-
-  let linkInputEl: HTMLInputElement | null = null;
-
-  let href = '';
-  let linkButtonOpen = false;
-
-  $: if (linkButtonOpen) {
-    href = '';
-
-    // eslint-disable-next-line unicorn/prefer-top-level-await
-    void tick().then(() => {
-      linkInputEl?.focus();
-    });
-  }
-
-  let rubyText = '';
-  let rubyButtonOpen = false;
-
-  $: if (rubyButtonOpen) {
-    rubyText = '';
-  }
 
   let fontColorOpen = false;
   let fontFamilyOpen = false;
@@ -530,48 +508,14 @@
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="루비">
-          <Menu
-            class="flex center gap-2 square-8.5 hover:(bg-gray-100 rounded)"
-            offset={menuOffset}
-            padding={false}
-            bind:open={rubyButtonOpen}
+          <button
+            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            disabled={editor?.isActive('ruby') || editor?.state.selection.empty}
+            type="button"
+            on:click={() => editor?.chain().focus().setRuby('').run()}
           >
-            <i slot="value" class="i-px-ruby square-6" />
-
-            <MenuItem type="div">
-              <form
-                class="flex relative gap-2 body-13-m text-secondary"
-                on:submit|preventDefault={(event) => {
-                  if (!(event.currentTarget.rubyText instanceof HTMLInputElement))
-                    throw new Error('Fail to access input element');
-
-                  const rubyText = event.currentTarget.rubyText.value.trim();
-                  editor?.chain().focus().setRuby(rubyText).run();
-                  // 메뉴 닫기
-                  event.currentTarget.click();
-                }}
-              >
-                <span class="invisible flex-grow min-w-8.25rem max-w-20rem text-clip overflow-hidden whitespace-nowrap">
-                  {rubyText}
-                </span>
-                <input
-                  name="rubyText"
-                  class="absolute w-full max-w-20rem"
-                  required
-                  type="text"
-                  on:click|stopPropagation
-                  on:input={(event) => {
-                    rubyText = event.currentTarget.value;
-                  }}
-                />
-                <Tooltip message="적용하기">
-                  <button class="hover:text-primary active:text-primary" type="submit" on:click|stopPropagation>
-                    <i class="i-tb-check" />
-                  </button>
-                </Tooltip>
-              </form>
-            </MenuItem>
-          </Menu>
+            <i class="i-px2-ruby square-6" />
+          </button>
         </ToolbarButtonTooltip>
       </div>
 
@@ -760,51 +704,14 @@
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="링크">
-          <Menu
-            class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
-            disabled={editor?.isActive('link')}
-            offset={menuOffset}
-            padding={false}
-            bind:open={linkButtonOpen}
+          <button
+            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            disabled={editor?.isActive('link') || editor?.state.selection.empty}
+            type="button"
+            on:click={() => editor?.chain().focus().setLink('').run()}
           >
-            <i slot="value" class="i-tb-link square-6" />
-            <MenuItem type="div">
-              <form
-                class="flex relative gap-2 body-13-m text-secondary"
-                on:submit|preventDefault={(event) => {
-                  if (!(event.currentTarget.url instanceof HTMLInputElement))
-                    throw new Error('Fail to access input element');
-
-                  const href = event.currentTarget.url.value;
-                  editor?.chain().focus().setLink(href).run();
-                  // 메뉴 닫기
-                  event.currentTarget.click();
-                }}
-              >
-                <span class="invisible flex-grow min-w-8.25rem max-w-20rem text-clip overflow-hidden whitespace-nowrap">
-                  {href}
-                </span>
-                <input
-                  bind:this={linkInputEl}
-                  name="url"
-                  class="absolute w-full max-w-20rem"
-                  autocomplete="on"
-                  placeholder="예) https://penxle.com"
-                  required
-                  type="url"
-                  on:click|stopPropagation
-                  on:input={(event) => {
-                    href = event.currentTarget.value;
-                  }}
-                />
-                <Tooltip message="적용하기">
-                  <button class="hover:text-primary active:text-primary" type="submit" on:click|stopPropagation>
-                    <i class="i-lc-check" />
-                  </button>
-                </Tooltip>
-              </form>
-            </MenuItem>
-          </Menu>
+            <i class="i-tb-link square-6" />
+          </button>
         </ToolbarButtonTooltip>
       </div>
 

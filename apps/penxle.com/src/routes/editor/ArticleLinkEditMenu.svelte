@@ -39,9 +39,9 @@
       return;
     }
 
-    const { from, to, empty } = view.state.selection;
+    const { from, to } = view.state.selection;
 
-    if (!editor.isActive('link') || !empty) {
+    if (!editor.isActive('link')) {
       open = false;
       return;
     }
