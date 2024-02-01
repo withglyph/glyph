@@ -1,7 +1,7 @@
 <script lang="ts">
   import { flip, offset, shift } from '@floating-ui/dom';
   import clsx from 'clsx';
-  // import type { ChangeEventHandler } from 'svelte/elements';
+  import * as R from 'radash';
   import { slide } from 'svelte/transition';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
@@ -14,38 +14,30 @@
   import { createFloatingActions } from '$lib/svelte-floating-ui';
   import { PublishPostInputSchema } from '$lib/validations/post';
   import CreateSpaceModal from '../(default)/CreateSpaceModal.svelte';
-  import PublishMenuRadioGroup from './PublishMenuRadioGroup.svelte';
+  import Chip from './Chip.svelte';
+  import PublishMenuSearch from './PublishMenuSearch.svelte';
+  import RadioGroup from './RadioGroup.svelte';
   import { preventRevise } from './store';
+  import ThumbnailPicker from './ThumbnailPicker.svelte';
   import type { JSONContent } from '@tiptap/core';
   import type { Writable } from 'svelte/store';
-  import type {
-    // ContentFilterCategory,
-    EditorPage_PublishMenu_post,
-    EditorPage_PublishMenu_query,
-    PostRevisionContentKind,
-    PostRevisionKind,
-  } from '$glitch';
-  import type { ImageBounds } from '$lib/utils';
+  import type { EditorPage_PublishMenu_post, EditorPage_PublishMenu_query, PostRevisionKind } from '$glitch';
   import type { SwitchSpace } from './types/switch-space';
 
   export let open = false;
   export let warnUnload = false;
-  export let postId: string | undefined = undefined;
+  export let postId: string;
   export let revisedAt: string | undefined = undefined;
   export let draftPost: Awaited<ReturnType<typeof revisePost>> | null = null;
 
   export let autoSaveCount: Writable<number>;
-  export let kind: PostRevisionContentKind;
   export let title: string;
   export let subtitle: string | null;
   export let content: JSONContent;
-  export let tags: string[];
-  export let thumbnailId: string | undefined;
-  export let thumbnailBounds: ImageBounds | undefined;
-  export let autoIndent: boolean;
+  export let paragraphIndent: number;
+  export let paragraphSpacing: number;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { form, data, setInitialValues } = createMutationForm({
+  const { form, data, setInitialValues, handleSubmit } = createMutationForm({
     mutation: graphql(`
       mutation EditorPage_PublishMenu_PublishPost_Mutation($input: PublishPostInput!) {
         publishPost(input: $input) {
@@ -58,7 +50,7 @@
           protectContent
           visibility
 
-          space {
+          space @_required {
             id
             slug
           }
@@ -68,7 +60,7 @@
     schema: PublishPostInputSchema,
     extra: async () => {
       await doRevisePost('AUTO_SAVE');
-      return {};
+      return { spaceId: selectedSpaceId, collectionId: selectedCollectionId, thumbnailId };
     },
     onSuccess: async (resp) => {
       warnUnload = false;
@@ -77,7 +69,7 @@
     },
   });
 
-  let _post: EditorPage_PublishMenu_post | null;
+  let _post: EditorPage_PublishMenu_post;
   export { _post as $post };
 
   let _query: EditorPage_PublishMenu_query;
@@ -141,18 +133,20 @@
         receiveTagContribution
         protectContent
         visibility
+        category
+        pairs
 
         space {
           id
         }
 
-        draftRevision {
+        tags {
           id
+          name
+        }
 
-          tags {
-            id
-            name
-          }
+        draftRevision @_required {
+          id
         }
 
         ...EditorPage_RevisionListModal_Post
@@ -183,24 +177,21 @@
     if (!canRevise) return;
 
     const resp = await revisePost({
-      contentKind: kind,
       revisionKind,
+      contentKind: 'ARTICLE',
       postId,
-      spaceId: '', // TODO: 삭제
-      tags,
       title,
       subtitle,
       content,
-      thumbnailId,
-      thumbnailBounds,
-      autoIndent,
+      paragraphIndent,
+      paragraphSpacing,
     });
 
     mixpanel.track('post:revise', { postId: resp.id, revisionKind });
 
     postId = resp.id;
 
-    revisedAt = resp.draftRevision.createdAt;
+    revisedAt = resp.draftRevision?.createdAt;
     // reviseKind = resp.draftRevision.
     // $data.revisionId = resp.draftRevision.id;
 
@@ -232,30 +223,24 @@
   //     : $data.contentFilters?.filter((v) => v !== contentFilter);
   // };
 
-  $: if ($post) {
-    setInitialValues({
-      revisionId: $post.draftRevision?.id,
-      contentFilters: $post.contentFilters,
-      discloseStats: $post.discloseStats,
-      receiveFeedback: $post.receiveFeedback,
-      receivePatronage: $post.receivePatronage,
-      receiveTagContribution: $post.receiveTagContribution,
-      password: $post.hasPassword ? '' : undefined,
-      protectContent: $post.protectContent,
-      visibility: $post.visibility,
-    });
-  } else {
-    setInitialValues({
-      revisionId: '',
-      contentFilters: [],
-      discloseStats: true,
-      receiveFeedback: true,
-      receivePatronage: true,
-      receiveTagContribution: true,
-      protectContent: true,
-      visibility: 'PUBLIC',
-    });
-  }
+  $: setInitialValues({
+    revisionId: $post.draftRevision.id,
+    spaceId: '',
+    collectionId: undefined,
+    thumbnailId: undefined,
+    visibility: $post.visibility,
+    password: $post.hasPassword ? '' : undefined,
+    ageRating: 'ALL',
+    externalSearchable: true,
+    discloseStats: $post.discloseStats,
+    receiveFeedback: $post.receiveFeedback,
+    receivePatronage: $post.receivePatronage,
+    receiveTagContribution: $post.receiveTagContribution,
+    protectContent: $post.protectContent,
+    category: $post.category,
+    pairs: $post.pairs,
+    tags: [],
+  });
 
   let enablePassword = false;
   // let enableContentFilter = false;
@@ -293,8 +278,10 @@
 
   const switchSpace: SwitchSpace = ({ id, emitSave = false }) => {
     selectedSpaceId = id;
+    selectedCollectionId = undefined;
     spaceSelectorOpen = false;
-    selectedCollection = undefined;
+
+    $data.spaceId = selectedSpaceId;
 
     if (emitSave) {
       $autoSaveCount += 1;
@@ -303,8 +290,49 @@
 
   let tabIndex = 0;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let selectedCollection: any | undefined = undefined;
+  let selectedCollectionId: string | undefined = undefined;
+
+  $: selectedCollection = selectedSpace?.collections.find((collection) => collection.id === selectedCollectionId);
+  $: console.log(selectedCollection);
+
+  let titleQuery = '';
+  let characterQuery = '';
+  let couplingQuery = '';
+  let triggerQuery = '';
+  let otherTagQuery = '';
+
+  let thumbnailPicker: ThumbnailPicker;
+  let thumbnailId: string | undefined = undefined;
+
+  const tmpTags = [
+    {
+      name: '작품명',
+      kind: 'TITLE',
+    },
+    {
+      name: '캐릭터',
+      kind: 'CHARACTER',
+    },
+    {
+      name: '커플링',
+      kind: 'COUPLING',
+    },
+    {
+      name: '폭력성',
+      kind: 'TRIGGER',
+    },
+    {
+      name: '범죄',
+      kind: 'TRIGGER',
+    },
+  ];
+
+  // let { TITLE, CHARACTER, COUPLING, TRIGGER, OTHER } = R.objectify(tmpTags, (tag) => tag.kind);
+
+  $: postTags = R.group(tmpTags, (tag) => tag.kind);
+  $: console.log(postTags);
+
+  /** postTags.TITLE -> {name: string; kind: string;}[]*/
 </script>
 
 <div class="w-fit" use:floatingRef>
@@ -322,7 +350,7 @@
 
 {#if open}
   <div
-    class="fixed inset-0 z-51"
+    class="fixed inset-0 z-49"
     role="button"
     tabindex="-1"
     on:click={() => (open = false)}
@@ -333,7 +361,7 @@
 
 <div
   class={clsx(
-    'bg-white shadow-[0px_5px_22px_0px_rgba(0,0,0,0.06)] border border-gray-200 border-t-none z-55 rounded-b-lg',
+    'bg-white shadow-[0px_5px_22px_0px_rgba(0,0,0,0.06)] border border-gray-200 border-t-none z-50 rounded-b-lg',
     !open && 'hidden!',
   )}
   use:floatingContent
@@ -345,54 +373,105 @@
   </div>
 
   <div class="flex">
-    <div class="w-52 py-2 flex flex-col border-r border-gray-200">
-      <button class="px-2 py-0.5 text-13-sb" type="button" on:click={() => (tabIndex = 0)}>
-        <span class="inline-block rounded py-2 px-1 hover:bg-gray-50 w-full">썸네일</span>
+    <div class="w-52 flex flex-col border-r border-gray-200 gap-1.5 py-1.5">
+      <button
+        class={clsx('mx-2 py-1 text-13-r flex items-center rounded hover:bg-gray-50', tabIndex === 0 && 'bg-gray-50')}
+        type="button"
+        on:click={() => (tabIndex = 0)}
+      >
+        {#if thumbnailId}
+          <i class="i-px2-checkmark square-6 text-teal-500" />
+        {:else}
+          <i class="i-px2-checkmark square-6 text-gray-300" />
+        {/if}
+        <span class="py-2 px-1 w-full">썸네일</span>
       </button>
-      <button class="px-2 py-0.5 text-13-sb" type="button" on:click={() => (tabIndex = 1)}>
-        <span class="inline-block rounded py-2 px-1 hover:bg-gray-50 w-full">스페이스/컬렉션</span>
+      <button
+        class={clsx('mx-2 py-1 text-13-r flex items-center rounded hover:bg-gray-50', tabIndex === 1 && 'bg-gray-50')}
+        type="button"
+        on:click={() => (tabIndex = 1)}
+      >
+        {#if selectedSpaceId}
+          <i class="i-px2-checkmark square-6 text-teal-500" />
+        {:else}
+          <i class="i-px2-dot square-6 text-pink-500" />
+        {/if}
+        <span class="py-2 px-1 w-full">스페이스/컬렉션</span>
       </button>
-      <button class="px-2 py-0.5 text-13-sb" type="button" on:click={() => (tabIndex = 2)}>
-        <span class="inline-block rounded py-2 px-1 hover:bg-gray-50 w-full">태그</span>
+      <button
+        class={clsx('mx-2 py-1 text-13-r flex items-center rounded hover:bg-gray-50', tabIndex === 2 && 'bg-gray-50')}
+        type="button"
+        on:click={() => (tabIndex = 2)}
+      >
+        <!-- 태그 설정했을 때 -->
+        {#if true}
+          <i class="i-px2-checkmark square-6 text-teal-500" />
+        {:else}
+          <i class="i-px2-checkmark square-6 text-gray-300" />
+        {/if}
+        <span class="py-2 px-1 w-full">태그</span>
       </button>
-      <button class="px-2 py-0.5 text-13-sb" type="button" on:click={() => (tabIndex = 3)}>
-        <span class="inline-block rounded py-2 px-1 hover:bg-gray-50 w-full">범위설정</span>
+      <button
+        class={clsx('mx-2 py-1 text-13-r flex items-center rounded hover:bg-gray-50', tabIndex === 3 && 'bg-gray-50')}
+        type="button"
+        on:click={() => (tabIndex = 3)}
+      >
+        <i class="i-px2-checkmark square-6 text-teal-500" />
+        <span class="py-2 px-1 w-full">범위 설정</span>
       </button>
-      <button class="px-2 py-0.5 text-13-sb" type="button" on:click={() => (tabIndex = 4)}>
-        <span class="inline-block rounded py-2 px-1 hover:bg-gray-50 w-full">게시물 옵션</span>
+      <button
+        class={clsx('mx-2 py-1 text-13-r flex items-center rounded hover:bg-gray-50', tabIndex === 4 && 'bg-gray-50')}
+        type="button"
+        on:click={() => (tabIndex = 4)}
+      >
+        <i class="i-px2-checkmark square-6 text-teal-500" />
+        <span class="py-2 px-1 w-full">게시물 옵션</span>
       </button>
     </div>
 
-    <div class="w-96 pt-5 px-6 h-108 overflow-y-auto">
-      {#if tabIndex === 0}
+    <form class="w-96 pt-5 px-6 h-108 overflow-y-auto" use:form>
+      <input name="spaceId" type="hidden" bind:value={selectedSpaceId} />
+      <input name="collectionId" type="hidden" bind:value={selectedCollectionId} />
+      <input name="thumbnailId" type="hidden" bind:value={thumbnailId} />
+
+      <div class={clsx('space-y-4 hidden', tabIndex === 0 && 'block!')}>
         <p class="text-18-m mb-3">썸네일</p>
 
-        <div class="flex items-center justify-between py-3 px-4 border border-dashed border-gray-200 rounded">
-          <div class="flex items-center gap-1.5">
-            <i class="i-tb-photo-up square-4.5 text-gray-300" />
-            <span class="text-14-r">썸네일 이미지를 업로드해주세요</span>
+        {#if thumbnailId}
+          <div class="border border-gray-200 px-4 py-3.5 rounded flex items-center justify-between">
+            <div class="bg-#d9d9d9 square-15 rounded-sm" />
+
+            <div class="flex items-center gap-1.5">
+              <button type="button" on:click={() => (thumbnailId = undefined)}>
+                <i class="i-tb-trash square-6" />
+              </button>
+
+              <button
+                class="w-13.5 border border-gray-200 px-3 py-1 rounded-sm text-11-sb text-gray-400 text-center"
+                type="button"
+                on:click={() => thumbnailPicker.show()}
+              >
+                변경
+              </button>
+            </div>
           </div>
+        {:else}
+          <button
+            class="flex items-center justify-between py-3 px-4 border border-dashed border-gray-200 rounded w-full"
+            type="button"
+            on:click={() => thumbnailPicker.show()}
+          >
+            <div class="flex items-center gap-1.5">
+              <i class="i-tb-photo-up square-4.5 text-gray-300" />
+              <span class="text-14-r">썸네일 이미지를 업로드해주세요</span>
+            </div>
 
-          <button class="text-11-sb text-white bg-teal-500 rounded-sm py-1 px-3" type="button">업로드</button>
-        </div>
+            <div class="text-11-sb text-white bg-teal-500 rounded-sm py-1 px-3">업로드</div>
+          </button>
+        {/if}
+      </div>
 
-        <div class="border border-gray-200 px-4 py-3.5 rounded flex items-center justify-between">
-          <div class="bg-#d9d9d9 square-15 rounded-sm" />
-
-          <div class="flex items-center gap-1.5">
-            <button type="button">
-              <i class="i-tb-trash square-6" />
-            </button>
-
-            <button
-              class="w-13.5 border border-gray-200 px-3 py-1 rounded-sm text-11-sb text-gray-400 text-center"
-              type="button"
-            >
-              변경
-            </button>
-          </div>
-        </div>
-      {:else if tabIndex === 1}
+      <div class={clsx('space-y-4 hidden', tabIndex === 1 && 'block!')}>
         <p class="text-18-m mb-3">스페이스</p>
 
         <div class="py-2.5 px-4 mb-4 rounded-md relative bg-white border border-gray-200 hover:bg-gray-50">
@@ -438,12 +517,6 @@
                     <div class="flex items-center gap-1.5">
                       <Image class="square-5.5 rounded-sm flex-none" $image={space.icon} />
                       <span class="text-12-r truncate">{space.name}</span>
-                    </div>
-
-                    <div
-                      class="text-center py-1 px-3 rounded-sm border text-11-sb border-gray-200 text-gray-400 w-13.5 hover:(text-white bg-teal-500)"
-                    >
-                      선택
                     </div>
                   </button>
                 </li>
@@ -502,18 +575,12 @@
                     class="px-4 py-3 w-full hover:(bg-teal-50 text-teal-700) flex justify-between items-center"
                     type="button"
                     on:click={() => {
-                      selectedCollection = collection;
+                      selectedCollectionId = collection.id;
                       collectionSelectorOpen = false;
                     }}
                   >
                     <div class="flex items-center gap-1.5">
                       <span class="text-12-r truncate">{collection.name}</span>
-                    </div>
-
-                    <div
-                      class="py-1 px-3 text-center rounded-sm border text-11-sb border-gray-200 text-gray-400 w-13.5 hover:(text-white bg-teal-500)"
-                    >
-                      선택
                     </div>
                   </button>
                 </li>
@@ -521,11 +588,13 @@
             </ul>
           {/if}
         </div>
-      {:else if tabIndex === 2}
+      </div>
+
+      <div class={clsx('space-y-4 hidden', tabIndex === 2 && 'block!')}>
         <div>
           <p class="text-18-m mb-3 flex gap-1.5">
             <span>카테고리</span>
-            <Tooltip class="flex center" message="카테고리">
+            <Tooltip class="flex center" message="카테고리" placement="top">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
             </Tooltip>
           </p>
@@ -541,7 +610,7 @@
         <div>
           <p class="text-18-m mb-3 flex gap-1.5 pt-5">
             <span>페어</span>
-            <Tooltip class="flex center" message="페어">
+            <Tooltip class="flex center" message="페어" placement="top">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
             </Tooltip>
           </p>
@@ -558,58 +627,98 @@
         <div>
           <p class="text-18-m mb-3 flex gap-1.5 pt-5">
             <span>작품</span>
-            <Tooltip class="flex center" message="작품">
+            <Tooltip class="flex center" message="작품" placement="top">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
             </Tooltip>
           </p>
+
+          <PublishMenuSearch
+            onClick={(q) => console.log(q)}
+            bind:query={titleQuery}
+            on:submit={() => console.log(titleQuery)}
+          />
+
+          {#if postTags?.TITLE}
+            <ul>
+              {#each postTags.TITLE as tag (tag.name)}
+                <Chip>{tag.kind}</Chip>
+              {/each}
+            </ul>
+          {/if}
         </div>
 
         <div>
           <p class="text-18-m mb-3 flex gap-1.5 pt-5">
             <span>캐릭터</span>
-            <Tooltip class="flex center" message="캐릭터">
+            <Tooltip class="flex center" message="캐릭터" placement="top">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
             </Tooltip>
           </p>
+
+          <PublishMenuSearch
+            onClick={(q) => console.log(q)}
+            bind:query={characterQuery}
+            on:submit={() => console.log(characterQuery)}
+          />
         </div>
 
         <div>
           <p class="text-18-m mb-3 flex gap-1.5 pt-5">
             <span>커플링</span>
-            <Tooltip class="flex center" message="커플링">
+            <Tooltip class="flex center" message="커플링" placement="top">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
             </Tooltip>
           </p>
+
+          <PublishMenuSearch
+            onClick={(q) => console.log(q)}
+            bind:query={couplingQuery}
+            on:submit={() => console.log(couplingQuery)}
+          />
         </div>
 
         <div>
           <p class="text-18-m mb-3 flex gap-1.5 pt-5">
             <span>트리거 주의</span>
-            <Tooltip class="flex center" message="트리거 주의">
+            <Tooltip class="flex center" message="트리거 주의" placement="top">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
             </Tooltip>
           </p>
+
+          <PublishMenuSearch
+            onClick={(q) => console.log(q)}
+            bind:query={triggerQuery}
+            on:submit={() => console.log(triggerQuery)}
+          />
         </div>
 
-        <div>
+        <div class="pb-5">
           <p class="text-18-m mb-3 flex gap-1.5 pt-5">
             <span>추가 태그</span>
-            <Tooltip class="flex center" message="추가 태그">
+            <Tooltip class="flex center" message="추가 태그" placement="top">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
             </Tooltip>
           </p>
+
+          <PublishMenuSearch
+            onClick={(q) => console.log(q)}
+            bind:query={otherTagQuery}
+            on:submit={() => console.log(otherTagQuery)}
+          />
         </div>
-      {:else if tabIndex === 3}
+      </div>
+
+      <div class={clsx('space-y-4 hidden', tabIndex === 3 && 'block!')}>
         <div>
           <p class="text-18-m mb-3 flex gap-1.5">공개범위</p>
         </div>
 
-        <PublishMenuRadioGroup
+        <RadioGroup
           name="visibility"
           items={[
-            { label: '전체 공개', value: 'PUBLIC', icon: 'i-px-globe-outline' },
-            { label: '링크 공개', value: 'UNLISTED', icon: 'i-tb-link' },
-            { label: '멤버 공개', value: 'SPACE', icon: 'i-tb-users' },
+            { label: '전체 공개', value: 'PUBLIC', icon: 'i-px2-globe', checked: $data.visibility === 'PUBLIC' },
+            { label: '링크 공개', value: 'UNLISTED', icon: 'i-tb-link', checked: $data.visibility === 'UNLISTED' },
+            { label: '멤버 공개', value: 'SPACE', icon: 'i-tb-users', checked: $data.visibility === 'SPACE' },
           ]}
         />
 
@@ -622,7 +731,7 @@
           </p>
 
           <Checkbox
-            class="mb-3"
+            class="mb-3 text-14-r"
             on:change={() => {
               enablePassword = !enablePassword;
               if (!enablePassword) {
@@ -652,7 +761,21 @@
         </div>
 
         <div>
-          <p class="text-18-m mb-3 flex gap-1.5 pt-5">콘텐츠 등급</p>
+          <p class="text-18-m mb-3 flex gap-1.5 pt-5">
+            <span>콘텐츠 등급</span>
+            <Tooltip class="flex center" message="콘텐츠 등급">
+              <i class="i-tb-alert-circle square-3.5 text-gray-400" />
+            </Tooltip>
+          </p>
+
+          <RadioGroup
+            name="ageRating"
+            items={[
+              { label: '모든 연령', value: 'ALL', icon: 'i-px2-rating-all', checked: $data.ageRating === 'ALL' },
+              { label: '15세 이상', value: 'R15', icon: 'i-px2-rating-15-plus', checked: $data.ageRating === 'R15' },
+              { label: '성인물', value: 'R19', icon: 'i-tb-rating-18-plus', checked: $data.ageRating === 'R19' },
+            ]}
+          />
         </div>
 
         <div>
@@ -663,54 +786,56 @@
             </Tooltip>
           </p>
         </div>
-      {:else if tabIndex === 4}
-        <div class="space-y-4">
-          <Switch
-            name="receiveFeedback"
-            class="flex items-center justify-between"
-            checked={$data.receiveFeedback ?? true}
-          >
-            <div>
-              <p class="text-14-m">피드백</p>
-              <p class="text-11-r text-gray-700 mt-1">가장 오래 머무른 구간, 밑줄, 이모지 등 피드백을 받아요</p>
-            </div>
-          </Switch>
+      </div>
 
-          <Switch name="discloseStats" class="flex items-center justify-between" checked={$data.discloseStats ?? true}>
-            <div>
-              <p class="text-14-m">게시물 세부 공개</p>
-              <p class="text-11-r text-gray-700 mt-1">독자에게 좋아요, 조회수를 공유해요</p>
-            </div>
-          </Switch>
+      <div class={clsx('space-y-4 hidden', tabIndex === 4 && 'block!')}>
+        <Switch
+          name="receiveFeedback"
+          class="flex items-center justify-between"
+          checked={$data.receiveFeedback ?? true}
+        >
+          <div>
+            <p class="text-14-m">피드백</p>
+            <p class="text-11-r text-gray-700 mt-1">가장 오래 머무른 구간, 밑줄, 이모지 등 피드백을 받아요</p>
+          </div>
+        </Switch>
 
-          <Switch
-            name="receivePatronage"
-            class="flex items-center justify-between"
-            checked={$data.receivePatronage ?? true}
-          >
-            <div>
-              <p class="text-14-m">창작자 후원</p>
-              <p class="text-11-r text-gray-700 mt-1">독자들이 게시물에 자유롭게 후원할 수 있어요</p>
-            </div>
-          </Switch>
+        <Switch name="discloseStats" class="flex items-center justify-between" checked={$data.discloseStats ?? true}>
+          <div>
+            <p class="text-14-m">게시물 세부 공개</p>
+            <p class="text-11-r text-gray-700 mt-1">독자에게 좋아요, 조회수를 공유해요</p>
+          </div>
+        </Switch>
 
-          <Switch
-            name="protectContent"
-            class="flex items-center justify-between"
-            checked={$data.protectContent ?? true}
-          >
-            <div>
-              <p class="text-14-m">게시물 내용 보호</p>
-              <p class="text-11-r text-gray-700 mt-1">게시물의 내용을 보호하기 위해 우클릭 또는 복사를 제한해요</p>
-            </div>
-          </Switch>
-        </div>
-      {/if}
-    </div>
+        <Switch
+          name="receivePatronage"
+          class="flex items-center justify-between"
+          checked={$data.receivePatronage ?? true}
+        >
+          <div>
+            <p class="text-14-m">창작자 후원</p>
+            <p class="text-11-r text-gray-700 mt-1">독자들이 게시물에 자유롭게 후원할 수 있어요</p>
+          </div>
+        </Switch>
+
+        <Switch name="protectContent" class="flex items-center justify-between" checked={$data.protectContent ?? true}>
+          <div>
+            <p class="text-14-m">게시물 내용 보호</p>
+            <p class="text-11-r text-gray-700 mt-1">게시물의 내용을 보호하기 위해 우클릭 또는 복사를 제한해요</p>
+          </div>
+        </Switch>
+      </div>
+    </form>
   </div>
 
   <div class="text-right px-6 py-5 border-t border-gray-200">
-    <button class="w-30 py-3 px-6 bg-gray-950 text-white text-14-m rounded-1.5 text-center" type="button">게시</button>
+    <button
+      class="w-30 py-3 px-6 bg-gray-950 text-white text-14-m rounded-1.5 text-center"
+      type="button"
+      on:click={handleSubmit}
+    >
+      게시
+    </button>
   </div>
 </div>
 
@@ -870,3 +995,4 @@
 {#if $query}
   <CreateSpaceModal $user={$query.me} {switchSpace} bind:open={createSpaceOpen} />
 {/if}
+<ThumbnailPicker bind:this={thumbnailPicker} keepBoundsWhenClosed on:change={(e) => (thumbnailId = e.detail.id)} />

@@ -15,7 +15,7 @@
 
 <label
   class={clsx(
-    'relative inline-flex p-x-0.875rem p-y-0.375rem text-12-sb transition-colors justify-center whitespace-nowrap rounded-0.375rem border-(1px gray-200) bg-gray-50 focus:(border-teal-500 color-teal-700) has-[:checked]:(border-teal-500 color-teal-700 bg-teal-50)',
+    'relative inline-flex p-x-0.875rem p-y-0.375rem text-12-sb transition-colors justify-center whitespace-nowrap rounded-0.375rem border-(1px gray-200) bg-gray-50 focus:(border-teal-500 color-teal-700) has-[:checked]:(border-teal-500 color-teal-700 bg-teal-50) cursor-pointer',
     _class,
   )}
 >

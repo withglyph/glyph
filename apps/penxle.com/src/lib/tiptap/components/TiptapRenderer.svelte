@@ -1,7 +1,6 @@
 <script lang="ts">
   import { Editor } from '@tiptap/core';
   import { generateHTML } from '@tiptap/html';
-  import clsx from 'clsx';
   import { onMount } from 'svelte';
   import { extensions } from '$lib/tiptap';
   import type { JSONContent } from '@tiptap/core';
@@ -11,7 +10,8 @@
 
   export let content: JSONContent;
   export let editor: Editor | undefined = undefined;
-  export let autoIndent = false;
+  export let paragraphIndent: number | undefined = undefined;
+  export let paragraphSpacing: number | undefined = undefined;
 
   export let protectContent = false;
   const handleContentProtection = (e: Event) => {
@@ -48,7 +48,9 @@
 
 <article
   bind:this={element}
-  class={clsx(_class, autoIndent && 'tiptap-autoindent')}
+  class={_class}
+  data-indent={paragraphIndent}
+  data-spacing={paragraphSpacing}
   on:copy|capture={handleContentProtection}
   on:cut|capture={handleContentProtection}
   on:contextmenu|capture={handleContentProtection}

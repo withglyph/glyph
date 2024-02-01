@@ -17,6 +17,54 @@
   }
 }
 
+& [data-indent='0'] {
+  & p {
+    --uno: indent-0;
+  }
+}
+
+& [data-indent='50'] {
+  & p {
+    --uno: indent-0.5rem;
+  }
+}
+
+& [data-indent='100'] {
+  & p {
+    --uno: indent-1rem;
+  }
+}
+
+& [data-indent='200'] {
+  & p {
+    --uno: indent-2rem;
+  }
+}
+
+& [data-spacing='0'] {
+  & p {
+    --uno: mb-0;
+  }
+}
+
+& [data-spacing='50'] {
+  & p {
+    --uno: mb-0.5rem;
+  }
+}
+
+& [data-spacing='100'] {
+  & p {
+    --uno: mb-1rem;
+  }
+}
+
+& [data-spacing='200'] {
+  & p {
+    --uno: mb-2rem;
+  }
+}
+
 /*
   * extensions
 */
@@ -44,18 +92,4 @@
 
 .ProseMirror-hideselection *::selection {
   --uno: bg-transparent;
-}
-
-/*
-  * tiptap custom
-*/
-
-.tiptap-autoindent {
-  & p {
-    text-indent: 1rem;
-  }
-
-  & .ProseMirror-gapcursor {
-    --uno: ml-1rem;
-  }
 }

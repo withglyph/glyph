@@ -10,7 +10,8 @@
   export let subtitle: string | null;
   export let content: JSONContent;
   export let editor: Editor | undefined;
-  export let autoIndent: boolean;
+  export let paragraphIndent: number;
+  export let paragraphSpacing: number;
 
   function autoSave() {
     $autoSaveCount += 1;
@@ -62,6 +63,6 @@
       />
     </div>
 
-    <ArticleEditor {autoIndent} onChange={autoSave} bind:editor bind:content />
+    <ArticleEditor onChange={autoSave} {paragraphIndent} {paragraphSpacing} bind:editor bind:content />
   </div>
 </main>

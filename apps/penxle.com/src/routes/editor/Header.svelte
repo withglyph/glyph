@@ -27,13 +27,7 @@
   import ToolbarButtonTooltip from './ToolbarButtonTooltip.svelte';
   import type { Editor, JSONContent } from '@tiptap/core';
   import type { Writable } from 'svelte/store';
-  import type {
-    EditorPage_Header_post,
-    EditorPage_Header_query,
-    PostRevisionContentKind,
-    PostRevisionKind,
-  } from '$glitch';
-  import type { ImageBounds } from '$lib/utils';
+  import type { EditorPage_Header_post, EditorPage_Header_query, PostRevisionKind } from '$glitch';
 
   let _query: EditorPage_Header_query;
   let _post: EditorPage_Header_post | null = null;
@@ -41,17 +35,14 @@
   let draftPost: Awaited<ReturnType<typeof revisePost>> | null = null;
 
   export let autoSaveCount: Writable<number>;
-  export let kind: PostRevisionContentKind;
   export let title: string;
   export let subtitle: string | null;
   export let content: JSONContent;
   export let editor: Editor | undefined;
-  export let tags: string[];
-  export let thumbnailId: string | undefined;
-  export let thumbnailBounds: ImageBounds | undefined;
-  export let autoIndent: boolean;
+  export let paragraphIndent: number;
+  export let paragraphSpacing: number;
 
-  let postId: string | undefined;
+  let postId: string;
   let warnUnload = false;
 
   $: query = fragment(
@@ -104,15 +95,6 @@
 
         space {
           id
-        }
-
-        draftRevision {
-          id
-
-          tags {
-            id
-            name
-          }
         }
 
         ...EditorPage_PublishMenu_post
@@ -180,25 +162,22 @@
     if (!selectedSpaceId) throw new Error('selectedSpaceId 값이 비어 있습니다');
 
     const resp = await revisePost({
-      contentKind: kind,
       revisionKind,
+      contentKind: 'ARTICLE',
       postId,
-      spaceId: selectedSpaceId,
-      tags,
       title,
       subtitle,
       content,
-      thumbnailId,
-      thumbnailBounds,
-      autoIndent,
+      paragraphIndent,
+      paragraphSpacing,
     });
 
     mixpanel.track('post:revise', { postId: resp.id, revisionKind });
 
     postId = resp.id;
 
-    revisedAt = resp.draftRevision.createdAt;
-    reviseKind = resp.draftRevision.kind;
+    revisedAt = resp.draftRevision?.createdAt;
+    reviseKind = resp.draftRevision?.kind;
     // $data.revisionId = resp.draftRevision.id;
 
     draftPost = resp;
@@ -207,7 +186,6 @@
   };
 
   let revisedAt: string | undefined;
-  // let reviseKind: PostRevisionKind | undefined;
   let publishMenuOpen = false;
   let revisionListOpen = false;
   let draftListOpen = false;
@@ -237,7 +215,7 @@
     }
   }
   $: if ($post && !selectedSpaceId) {
-    selectedSpaceId = $post.space.id;
+    selectedSpaceId = $post?.space?.id;
   }
 
   $: selectedSpace = $query.me.spaces.find((space) => space.id === selectedSpaceId);
@@ -351,6 +329,9 @@
   $: if (colorPickerOpen) {
     void update();
   }
+
+  let paragraphIndentOpen = false;
+  let paragraphSpacingOpen = false;
 </script>
 
 <header class="sticky top-0 z-50 bg-white <sm:hidden">
@@ -397,27 +378,28 @@
         </button>
       </div>
 
-      <PublishMenu
-        {$post}
-        {$query}
-        {autoIndent}
-        {autoSaveCount}
-        {content}
-        {draftPost}
-        {kind}
-        open={publishMenuOpen}
-        {postId}
-        {revisedAt}
-        {subtitle}
-        {tags}
-        {thumbnailBounds}
-        {thumbnailId}
-        {title}
-        {warnUnload}
-      />
+      {#if $post}
+        <PublishMenu
+          {$post}
+          {$query}
+          {autoSaveCount}
+          {content}
+          {draftPost}
+          {postId}
+          {revisedAt}
+          {subtitle}
+          {title}
+          {warnUnload}
+          bind:paragraphIndent
+          bind:paragraphSpacing
+          bind:open={publishMenuOpen}
+        />
+      {/if}
 
       <Menu class="flex center" disabled={!permalink} offset={menuOffset} placement="bottom-end" rounded={false}>
-        <i slot="value" class="i-tb-dots-vertical square-6" aria-label="더보기" />
+        <div slot="value" class="h-9 flex center">
+          <i class="i-tb-dots-vertical square-6" aria-label="더보기" />
+        </div>
 
         <MenuItem
           on:click={() => {
@@ -428,13 +410,6 @@
         </MenuItem>
 
         <MenuItem external href={`/${selectedSpace?.slug}/preview/${permalink}`} type="link">미리보기</MenuItem>
-
-        <!-- <hr class="border-alphagray-10" />
-
-        <div class="flex items-center gap-2 body-14-m px-4 py-3 rounded-lg hover:bg-primary">
-          <label class="cursor-pointer" for="autoIndent">문단 들여쓰기</label>
-          <Checkbox name="autoIndent" bind:checked={autoIndent} on:change={() => ($autoSaveCount += 1)} />
-        </div> -->
       </Menu>
     </div>
   </div>
@@ -886,22 +861,107 @@
             <i class="i-tb-settings square-6" />
           </div>
 
-          <Menu offset={16} placement="right-start">
-            <div slot="value" class="px-3.5 py-3 text-14-r w-full rounded-2">문단 들여쓰기</div>
+          <Menu offset={16} placement="right-start" bind:open={paragraphIndentOpen}>
+            <button
+              slot="value"
+              class="px-3.5 py-3 text-14-r w-full rounded-2 hover:(bg-teal-50 text-teal-600)"
+              type="button"
+              on:mouseenter={() => {
+                paragraphIndentOpen = true;
+                paragraphSpacingOpen = false;
+              }}
+            >
+              문단 들여쓰기
+            </button>
 
-            <MenuItem on:click={() => (postSettingOpen = false)}>0.5줄</MenuItem>
-            <MenuItem on:click={() => (postSettingOpen = false)}>1줄</MenuItem>
-            <MenuItem on:click={() => (postSettingOpen = false)}>2줄</MenuItem>
-            <MenuItem on:click={() => (postSettingOpen = false)}>없음</MenuItem>
+            <MenuItem
+              on:click={() => {
+                postSettingOpen = false;
+                paragraphIndentOpen = false;
+                paragraphIndentOpen = false;
+                paragraphIndent = 50;
+              }}
+            >
+              0.5줄
+            </MenuItem>
+            <MenuItem
+              on:click={() => {
+                postSettingOpen = false;
+                paragraphIndentOpen = false;
+                paragraphIndent = 100;
+              }}
+            >
+              1줄
+            </MenuItem>
+            <MenuItem
+              on:click={() => {
+                postSettingOpen = false;
+                paragraphIndentOpen = false;
+                paragraphIndent = 200;
+              }}
+            >
+              2줄
+            </MenuItem>
+            <MenuItem
+              on:click={() => {
+                postSettingOpen = false;
+                paragraphIndentOpen = false;
+                paragraphIndent = 0;
+              }}
+            >
+              없음
+            </MenuItem>
           </Menu>
 
-          <Menu offset={16} placement="right-start">
-            <div slot="value" class="px-3.5 py-3 text-14-r w-full rounded-2">문단 사이간격</div>
+          <Menu offset={16} placement="right-start" bind:open={paragraphSpacingOpen}>
+            <button
+              slot="value"
+              class="px-3.5 py-3 text-14-r w-full rounded-2 hover:(bg-teal-50 text-teal-600)"
+              type="button"
+              on:mouseenter={() => {
+                paragraphIndentOpen = false;
+                paragraphSpacingOpen = true;
+              }}
+            >
+              문단 사이간격
+            </button>
 
-            <MenuItem on:click={() => (postSettingOpen = false)}>0.5줄</MenuItem>
-            <MenuItem on:click={() => (postSettingOpen = false)}>1줄</MenuItem>
-            <MenuItem on:click={() => (postSettingOpen = false)}>2줄</MenuItem>
-            <MenuItem on:click={() => (postSettingOpen = false)}>없음</MenuItem>
+            <MenuItem
+              on:click={() => {
+                postSettingOpen = false;
+                paragraphSpacingOpen = false;
+                paragraphSpacing = 50;
+              }}
+            >
+              0.5줄
+            </MenuItem>
+            <MenuItem
+              on:click={() => {
+                postSettingOpen = false;
+                paragraphSpacingOpen = false;
+                paragraphSpacing = 100;
+              }}
+            >
+              1줄
+            </MenuItem>
+            <MenuItem
+              on:click={() => {
+                postSettingOpen = false;
+                paragraphSpacingOpen = false;
+                paragraphSpacing = 200;
+              }}
+            >
+              2줄
+            </MenuItem>
+            <MenuItem
+              on:click={() => {
+                postSettingOpen = false;
+                paragraphSpacingOpen = false;
+                paragraphSpacing = 0;
+              }}
+            >
+              없음
+            </MenuItem>
           </Menu>
         </Menu>
       </ToolbarButtonTooltip>
