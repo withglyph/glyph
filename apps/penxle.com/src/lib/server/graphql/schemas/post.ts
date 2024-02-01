@@ -1024,11 +1024,14 @@ export const postSchema = defineSchema((builder) => {
           accessBarrierPosition === -1 || accessBarrierPosition === document.length - 1
             ? undefined
             : document[accessBarrierPosition];
-        const freeContentData = accessBarrierPosition === -1 ? document : document.slice(0, accessBarrierPosition);
-        const paidContentData = accessBarrierPosition === -1 ? undefined : document.slice(accessBarrierPosition + 1);
+        const freeContentData = accessBarrier ? document : document.slice(0, accessBarrierPosition);
+        const paidContentData = accessBarrier ? undefined : document.slice(accessBarrierPosition + 1);
 
         const freeContent = await revisePostContent({ db, contentData: freeContentData });
-        const paidContent = paidContentData ? await revisePostContent({ db, contentData: paidContentData }) : null;
+        const paidContent =
+          paidContentData && paidContentData.length > 0
+            ? await revisePostContent({ db, contentData: paidContentData })
+            : null;
         const price: number | null = accessBarrier?.attrs?.price ?? null;
 
         const revisionData = {
@@ -1149,8 +1152,8 @@ export const postSchema = defineSchema((builder) => {
           }
         }
 
-        if (revision.price !== null) {
-          if (revision.price <= 0 || revision.price > 1_000_000 || revision.price % 100 !== 0) {
+        if (revision.paidContentId) {
+          if (!revision.price || revision.price <= 0 || revision.price > 1_000_000 || revision.price % 100 !== 0) {
             throw new IntentionalError('잘못된 가격이에요');
           }
           if (
