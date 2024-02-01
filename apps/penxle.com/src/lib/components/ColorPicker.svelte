@@ -200,12 +200,12 @@
       max="360"
       min="0"
       type="range"
-      on:input={(event) => {
+      on:change={(event) => {
         const hue = event.currentTarget.valueAsNumber;
 
         updateColor(Color.hsl(hue, 100, 50));
+        updateHistory();
       }}
-      on:change={updateHistory}
     />
 
     <form
