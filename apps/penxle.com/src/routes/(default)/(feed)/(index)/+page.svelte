@@ -1,7 +1,7 @@
 <script lang="ts">
-  // import * as R from 'radash';
+  import * as R from 'radash';
   import { graphql } from '$glitch';
-  import { /**Image,*/ PostCard } from '$lib/components';
+  import { Image, PostCard } from '$lib/components';
 
   $: query = graphql(`
     query FeedIndexPage_Query {
@@ -22,10 +22,13 @@
       }
     }
   `);
+
+  // @ts-expect-error TODO: fix this
+  $: posts = R.unique($query.recommendFeed, (post) => post.space.id).slice(0, 5);
 </script>
 
-<!-- <div class="flex gap-4 <sm:(overflow-x-scroll px-4 mt-6)">
-  {#each R.unique($query.recommendFeed, (post) => post.space.id).slice(0, 5) as post (post.id)}
+<div class="flex gap-4 <sm:(overflow-x-scroll px-4 mt-6)">
+  {#each posts as post (post.id)}
     <a
       class="border border-secondary bg-cardprimary flex flex-col items-center rounded-xl py-2 px-2.5 w-full max-w-33.75 h-auto transition hover:(border-tertiary shadow-[0_4px_16px_0_rgba(0,0,0,0.25)]) sm:truncate"
       href={`/${post.space?.slug}`}
@@ -39,7 +42,7 @@
       <p class="w-full body-16-b truncate">{post.space?.name}</p>
     </a>
   {/each}
-</div> -->
+</div>
 
 <h1 class="title-20-b w-fit border-b-10 leading-3 border-brand-50 my-8 <sm:mx-4">둘러보기</h1>
 
