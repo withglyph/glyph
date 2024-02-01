@@ -1,13 +1,13 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import { building, dev } from '$app/environment';
 import { setupGlobals } from './common';
-import { logging, maintenance } from './handles';
+import { logging } from './handles';
 
 export { handleError } from './common';
 
 setupGlobals();
 
-export const handle = sequence(logging, maintenance);
+export const handle = sequence(logging);
 
 // warm up the server handlers
 if (!dev && !building) {
