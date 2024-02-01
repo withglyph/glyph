@@ -706,7 +706,7 @@
         <div class="mb-1">
           <p class="text-18-m mb-3 flex gap-1.5 pt-5">
             <span>검색 공개</span>
-            <Tooltip class="flex center" message="검색 공개">
+            <Tooltip class="flex center" message="외부 검색엔진에서 이 포스트를 검색할 수 있을지 설정해요">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
             </Tooltip>
           </p>
@@ -718,7 +718,7 @@
                 $data.externalSearchable = event.currentTarget.checked;
               }}
             >
-              외부검색허용
+              외부 검색 허용
             </ToggleButton>
             <ToggleButton
               checked={!$data.externalSearchable}
@@ -726,7 +726,7 @@
                 $data.externalSearchable = !event.currentTarget.checked;
               }}
             >
-              비허용
+              외부 검색 비허용
             </ToggleButton>
           </SegmentButtonGroup>
         </div>
