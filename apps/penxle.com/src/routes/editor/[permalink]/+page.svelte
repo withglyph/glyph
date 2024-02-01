@@ -20,7 +20,7 @@
           id
           title
           subtitle
-          content
+          editableContent
           paragraphIndent
           paragraphSpacing
         }
@@ -62,7 +62,7 @@
 
     title = $query.post.draftRevision.title;
     subtitle = $query.post.draftRevision.subtitle ?? null;
-    content = $query.post.draftRevision.content;
+    content = $query.post.draftRevision.editableContent;
     paragraphIndent = $query.post.draftRevision.paragraphIndent;
     paragraphSpacing = $query.post.draftRevision.paragraphSpacing;
   }

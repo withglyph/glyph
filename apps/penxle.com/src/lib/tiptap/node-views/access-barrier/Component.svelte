@@ -117,7 +117,7 @@
           class={clsx(
             'flex center gap-4px text-14-m px-6px py-4px rounded-4px transition hover:bg-gray-100',
             priceOpen && 'bg-gray-100',
-            node.attrs.price ? 'text-teal-600' : 'text-error-600',
+            node.attrs.price ? 'text-teal-600' : 'text-error-900',
           )}
           type="button"
           on:click={() => (priceOpen = true)}
@@ -170,7 +170,7 @@
               bind:this={priceInputEl}
               class={clsx(
                 'border pl-12px pr-24px py-10px rounded-4px text-16-r w-110px',
-                $errors.price ? 'border-error-600 bg-error-50' : 'border-gray-200 bg-white',
+                $errors.price ? 'border-error-900 bg-error-50' : 'border-gray-200 bg-white',
               )}
               inputmode="numeric"
               pattern="[0-9]*"
