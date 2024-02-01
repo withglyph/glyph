@@ -550,7 +550,7 @@ export const postSchema = defineSchema((builder) => {
       editableContent: t.field({
         type: 'JSON',
         authScopes: { $granted: '$postRevision:edit' },
-        select: { freeContent: true, paidContent: true },
+        select: { price: true, freeContent: true, paidContent: true },
         resolve: async (revision, _, { db }) => {
           const freeContent = await decorateContent(db, revision.freeContent.data as JSONContent[]);
           const paidContent = revision.paidContent
@@ -559,7 +559,7 @@ export const postSchema = defineSchema((builder) => {
 
           return createTiptapDocument([
             ...freeContent,
-            createTiptapNode({ type: 'access_barrier' }),
+            createTiptapNode({ type: 'access_barrier', attrs: { price: revision.price } }),
             ...(paidContent ?? []),
           ]);
         },
