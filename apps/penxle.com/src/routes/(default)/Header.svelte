@@ -45,8 +45,8 @@
   );
 
   const createPost = graphql(`
-    mutation DefaultLayout_CreatePost_Mutation {
-      createPost {
+    mutation DefaultLayout_CreatePost_Mutation($input: CreatePostInput!) {
+      createPost(input: $input) {
         id
         permalink
       }
@@ -88,7 +88,7 @@
               class="relative flex items-center gap-2 rounded-lg py-1 pr-2 pl-1 transition hover:bg-surface-primary <sm:hidden"
               type="button"
               on:click={async () => {
-                const { permalink } = await createPost();
+                const { permalink } = await createPost({});
                 mixpanel.track('post:create', { via: 'feed' });
                 await goto(`/editor/${permalink}`);
               }}

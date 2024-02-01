@@ -47,6 +47,10 @@ enum ContentFilterCategory {
   VIOLENCE
 }
 
+input CreatePostInput {
+  spaceId: ID
+}
+
 input CreatePostReactionInput {
   emoji: String!
   postId: ID!
@@ -204,7 +208,7 @@ input MarkNotificationAsReadInput {
 type Mutation {
   acceptSpaceMemberInvitation(input: AcceptSpaceMemberInvitationInput!): SpaceMemberInvitation!
   bookmarkPost(input: BookmarkPostInput!): Post!
-  createPost: Post!
+  createPost(input: CreatePostInput!): Post!
   createPostReaction(input: CreatePostReactionInput!): Post!
   createSpace(input: CreateSpaceInput!): Space!
   createSpaceCollection(input: CreateSpaceCollectionInput!): SpaceCollection!

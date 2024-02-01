@@ -746,6 +746,12 @@ export const postSchema = defineSchema((builder) => {
     }),
   });
 
+  const CreatePostInput = builder.inputType('CreatePostInput', {
+    fields: (t) => ({
+      spaceId: t.id({ required: false }),
+    }),
+  });
+
   const RevisePostInput = builder.inputType('RevisePostInput', {
     fields: (t) => ({
       revisionKind: t.field({ type: PrismaEnums.PostRevisionKind }),
@@ -935,7 +941,8 @@ export const postSchema = defineSchema((builder) => {
   builder.mutationFields((t) => ({
     createPost: t.withAuth({ user: true }).prismaField({
       type: 'Post',
-      resolve: async (query, _, __, { db, ...context }) => {
+      args: { input: t.arg({ type: CreatePostInput }) },
+      resolve: async (query, _, { input }, { db, ...context }) => {
         let permalink: string;
 
         for (;;) {
@@ -954,6 +961,7 @@ export const postSchema = defineSchema((builder) => {
             id: createId(),
             permalink,
             userId: context.session.userId,
+            spaceId: input.spaceId,
             state: 'DRAFT',
             visibility: 'PUBLIC',
             discloseStats: true,
