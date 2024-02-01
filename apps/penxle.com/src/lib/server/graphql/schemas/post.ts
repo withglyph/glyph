@@ -1125,7 +1125,7 @@ export const postSchema = defineSchema((builder) => {
           data: { kind: 'PUBLISHED' },
         });
 
-        if (revision.post.spaceId && revision.post.spaceId !== input.spaceId) {
+        if (revision.post.state === 'PUBLISHED' && revision.post.spaceId && revision.post.spaceId !== input.spaceId) {
           throw new IntentionalError('발행된 포스트의 스페이스를 변경할 수 없어요');
         }
 
