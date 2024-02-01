@@ -466,7 +466,7 @@ export const postSchema = defineSchema((builder) => {
         return [];
       }
 
-      if (post.contentFilters.includes('ADULT')) {
+      if (post.ageRating !== 'ALL') {
         if (!context.session) {
           return [];
         }
@@ -475,7 +475,11 @@ export const postSchema = defineSchema((builder) => {
           where: { userId: context.session.userId },
         });
 
-        if (!identity || !isAdulthood(identity.birthday)) {
+        if (
+          !identity ||
+          (post.ageRating === 'R19' && !isAdulthood(identity.birthday)) ||
+          (post.ageRating === 'R15' && !isGte15(identity.birthday))
+        ) {
           return [];
         }
       }
