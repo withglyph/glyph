@@ -286,6 +286,8 @@
 
   let paragraphIndentOpen = false;
   let paragraphSpacingOpen = false;
+
+  $: currentColor = (editor?.getAttributes('font_color').fontColor as string | undefined) ?? values.color[0].value;
 </script>
 
 <header class="sticky top-0 z-50 bg-white <sm:hidden">
@@ -373,10 +375,7 @@
             on:click={() => (colorPickerOpen = true)}
             use:floatingRef
           >
-            <div
-              style:color={editor?.getAttributes('font_color').fontColor ?? values.color[0].value}
-              class="rounded-full square-4.5 bg-[currentColor]"
-            />
+            <div style:color={currentColor} class="rounded-full square-4.5 bg-[currentColor]" />
             <i class={clsx('i-tb-chevron-down square-4.5 text-gray-300', fontColorOpen && 'rotate-180')} />
           </button>
 
@@ -393,6 +392,7 @@
 
           <div class={clsx('z-52', !colorPickerOpen && 'hidden')} use:floatingContent use:portal>
             <ColorPicker
+              hex={currentColor}
               on:input={(event) => {
                 const { hex } = event.detail;
                 if (hex === values.color[0].value.toUpperCase()) {
