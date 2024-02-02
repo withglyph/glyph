@@ -1,4 +1,4 @@
-import { mergeAttributes, Node } from '@tiptap/core';
+import { Node } from '@tiptap/core';
 import clsx from 'clsx';
 import { values } from '$lib/tiptap/values';
 import { closest } from '$lib/utils';
@@ -83,11 +83,7 @@ export const Paragraph = Node.create({
   },
 
   renderHTML({ node, HTMLAttributes }) {
-    return [
-      'p',
-      mergeAttributes(HTMLAttributes, { class: 'py-0.5' }),
-      !this.editor?.isEditable && node.childCount === 0 ? ['br'] : 0,
-    ];
+    return ['p', HTMLAttributes, !this.editor?.isEditable && node.childCount === 0 ? ['br'] : 0];
   },
 
   addCommands() {
