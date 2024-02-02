@@ -533,7 +533,7 @@
               </header>
             {:else}
               <TiptapRenderer
-                class="bodylong-16-m"
+                class=""
                 content={$postRevision.content}
                 paragraphIndent={$postRevision.paragraphIndent}
                 paragraphSpacing={$postRevision.paragraphSpacing}
