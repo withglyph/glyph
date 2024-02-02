@@ -25,7 +25,6 @@
   let loaded = false;
 
   $: html = generateHTML(content, extensions);
-  $: editor?.commands.setContent(content);
 
   onMount(() => {
     editor = new Editor({

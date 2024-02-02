@@ -532,14 +532,16 @@
                 </Button>
               </header>
             {:else}
-              <TiptapRenderer
-                class=""
-                content={$postRevision.content}
-                paragraphIndent={$postRevision.paragraphIndent}
-                paragraphSpacing={$postRevision.paragraphSpacing}
-                protectContent={$query.post.protectContent}
-                bind:editor
-              />
+              {#key $postRevision.content}
+                <TiptapRenderer
+                  class=""
+                  content={$postRevision.content}
+                  paragraphIndent={$postRevision.paragraphIndent}
+                  paragraphSpacing={$postRevision.paragraphSpacing}
+                  protectContent={$query.post.protectContent}
+                  bind:editor
+                />
+              {/key}
             {/if}
           {:else}
             <GalleryPost {$query} {mode} revision={$postRevision} />
