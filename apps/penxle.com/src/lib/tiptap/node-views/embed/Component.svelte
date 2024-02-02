@@ -83,7 +83,7 @@
         selected && 'ring-2 ring-teal-500',
       )}
     >
-      <div class="pointer-events-none">
+      <div class={clsx('contents', editor?.isEditable && 'pointer-events-none')}>
         {@html node.attrs.__data.html}
       </div>
     </div>
