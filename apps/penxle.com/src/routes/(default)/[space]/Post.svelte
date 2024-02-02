@@ -2,6 +2,7 @@
   import { Helmet } from '@penxle/ui';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
+  import stringify from 'fast-json-stable-stringify';
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -535,7 +536,7 @@
                 </Button>
               </header>
             {:else}
-              {#key $postRevision.content}
+              {#key stringify($postRevision.content)}
                 <TiptapRenderer
                   class=""
                   content={$postRevision.content}

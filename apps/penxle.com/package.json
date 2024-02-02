@@ -63,6 +63,7 @@
     "dataloader": "^2.2.2",
     "dayjs": "^1.11.10",
     "emoji-mart": "^5.5.2",
+    "fast-json-stable-stringify": "^2.1.0",
     "felte": "^1.2.14",
     "google-auth-library": "^9.6.1",
     "got": "^14.1.0",
