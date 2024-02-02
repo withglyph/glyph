@@ -12,6 +12,12 @@
         id
         name
         slug
+        description
+
+        icon {
+          id
+          url
+        }
 
         meAsMember {
           id
@@ -36,7 +42,11 @@
   `);
 </script>
 
-<Helmet title={`홈 | ${$query.space.name}`} />
+<Helmet
+  description={$query.space.description ?? '펜슬 스페이스'}
+  image={{ src: $query.space.icon.url, size: 'small' }}
+  title={`홈 | ${$query.space.name}`}
+/>
 
 <article
   class={clsx(

@@ -348,7 +348,10 @@
 
 <Helmet
   description={$postRevision.previewText}
-  image={$query.post.thumbnail?.url ?? 'https://pnxl.net/assets/opengraph/default-cover.png'}
+  image={{
+    src: $query.post.thumbnail?.url ?? 'https://pnxl.net/assets/opengraph/default-cover.png',
+    size: 'large',
+  }}
   title={$postRevision.title ?? '(제목 없음)'}
 />
 
