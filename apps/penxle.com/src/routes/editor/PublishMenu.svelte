@@ -421,7 +421,11 @@
                   <span class="text-gray-500 text-13-r">스페이스를 선택해주세요</span>
                 {/if}
 
-                <p class="flex center square-6"><i class="i-tb-caret-up-filled square-3.5" /></p>
+                <p class="flex center square-6">
+                  <i
+                    class={clsx('square-3.5', spaceSelectorOpen ? 'i-tb-caret-up-filled' : 'i-tb-caret-down-filled')}
+                  />
+                </p>
               </button>
             </Tooltip>
 
@@ -488,7 +492,11 @@
                 <span class="text-gray-500 text-13-r">컬렉션을 선택해주세요</span>
               {/if}
 
-              <p class="flex center square-6"><i class="i-tb-caret-up-filled square-3.5" /></p>
+              <p class="flex center square-6">
+                <i
+                  class={clsx('square-3.5', collectionSelectorOpen ? 'i-tb-caret-up-filled' : 'i-tb-caret-down-filled')}
+                />
+              </p>
             </button>
 
             {#if collectionSelectorOpen && selectedSpace?.collections && selectedSpace.collections.length > 0}
