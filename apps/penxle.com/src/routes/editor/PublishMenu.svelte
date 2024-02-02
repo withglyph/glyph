@@ -359,7 +359,7 @@
         type="button"
         on:click={() => (tabIndex = 1)}
       >
-        {#if thumbnail}
+        {#if $data.tags?.length > 0}
           <i class="i-px2-checkmark square-6 text-teal-500" />
         {:else}
           <i class="i-px2-checkmark square-6 text-gray-300" />
@@ -371,7 +371,7 @@
         type="button"
         on:click={() => (tabIndex = 2)}
       >
-        {#if $data.tags?.length > 0}
+        {#if currentThumbnail}
           <i class="i-px2-checkmark square-6 text-teal-500" />
         {:else}
           <i class="i-px2-checkmark square-6 text-gray-300" />
