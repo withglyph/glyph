@@ -20,7 +20,13 @@
   import type { JSONContent } from '@tiptap/core';
   import type { ChangeEventHandler } from 'svelte/elements';
   import type { Writable } from 'svelte/store';
-  import type { EditorPage_PublishMenu_post, EditorPage_PublishMenu_query, PostPair, PostRevisionKind } from '$glitch';
+  import type {
+    EditorPage_PublishMenu_post,
+    EditorPage_PublishMenu_query,
+    Image_image,
+    PostPair,
+    PostRevisionKind,
+  } from '$glitch';
   import type { SwitchSpace } from './types/switch-space';
 
   export let open = false;
@@ -61,7 +67,7 @@
         revisionId: resp?.draftRevision.id,
         spaceId: selectedSpaceId,
         collectionId: selectedCollectionId,
-        thumbnailId: thumbnail ? thumbnail.id : undefined,
+        thumbnailId: currentThumbnail?.id,
       };
     },
     onSuccess: async (resp) => {
@@ -281,8 +287,8 @@
 
   let thumbnailPicker: ThumbnailPicker;
 
-  let thumbnail: typeof $post.thumbnail | undefined = undefined;
-  $: thumbnail = $post.thumbnail;
+  let thumbnail: ({ id: string } & Image_image) | null | undefined = undefined;
+  $: currentThumbnail = thumbnail === undefined ? $post.thumbnail : thumbnail;
 
   const checkPair = (e: Parameters<ChangeEventHandler<HTMLInputElement>>[0], pair: PostPair) => {
     const { checked } = e.currentTarget;
@@ -391,7 +397,7 @@
     </div>
 
     <form class="w-96 py-5 px-6 h-108 overflow-y-auto" use:form>
-      <input name="thumbnailId" type="hidden" value={thumbnail?.id} />
+      <input name="thumbnailId" type="hidden" value={currentThumbnail?.id} />
 
       <div class={clsx('space-y-4 hidden', tabIndex === 0 && 'block!')}>
         <div>
@@ -637,12 +643,12 @@
       <div class={clsx('space-y-4 hidden', tabIndex === 2 && 'block!')}>
         <p class="text-18-m mb-3">썸네일</p>
 
-        {#if thumbnail}
+        {#if currentThumbnail}
           <div class="border border-gray-200 px-4 py-3.5 rounded flex items-center justify-between">
-            <Image class="bg-#d9d9d9 square-15 rounded-sm" $image={thumbnail} />
+            <Image class="bg-#d9d9d9 square-15 rounded-sm" $image={currentThumbnail} />
 
             <div class="flex items-center gap-1.5">
-              <button type="button" on:click={() => (thumbnail = undefined)}>
+              <button type="button" on:click={() => (thumbnail = null)}>
                 <i class="i-tb-trash square-6" />
               </button>
 
