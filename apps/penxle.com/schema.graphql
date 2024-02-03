@@ -592,7 +592,6 @@ enum RevenueState {
 
 input RevisePostInput {
   content: JSON!
-  contentKind: PostRevisionContentKind! = ARTICLE
   paragraphIndent: Int!
   paragraphSpacing: Int!
   postId: ID!

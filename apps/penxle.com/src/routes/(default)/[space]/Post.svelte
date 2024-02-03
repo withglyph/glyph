@@ -14,14 +14,10 @@
   import { FormValidationError } from '$lib/errors';
   import { toast } from '$lib/notification';
   import { TiptapRenderer } from '$lib/tiptap/components';
-  import { calcurateReadingTime, createTiptapDocument, humanizeNumber } from '$lib/utils';
+  import { calcurateReadingTime, humanizeNumber } from '$lib/utils';
   import LoginRequireModal from '../LoginRequireModal.svelte';
-  import GalleryPost from './GalleryPost.svelte';
-  import SelectionBubbleMenu from './SelectionBubbleMenu.svelte';
-  import ShareContent from './ShareContent/ShareContent.svelte';
   import Toolbar from './Toolbar.svelte';
-  import type { Editor, JSONContent } from '@tiptap/core';
-  import type { Fragment } from '@tiptap/pm/model';
+  import type { Editor } from '@tiptap/core';
   import type { Post_postRevision, Post_query } from '$glitch';
 
   let editor: Editor | undefined;
@@ -36,7 +32,6 @@
   $: element = preview ? 'div' : 'a';
 
   export let preview = false;
-  export let mode: 'desktop' | 'mobile' | null = null;
 
   let _class: string | undefined = undefined;
   export { _class as class };
@@ -174,7 +169,6 @@
 
         ...EmojiPicker_query
         ...Toolbar_query
-        ...SpacePostPage_GalleryPost_query
       }
     `),
   );
@@ -207,16 +201,6 @@
 
   $: if ($query.post.contentFilters.includes('ADULT') && (!$query.me?.personalIdentity || !$query.me?.isAdulthood)) {
     adultOpen = true;
-  }
-
-  let share: { open: boolean; content: JSONContent | null } = {
-    open: false,
-    content: null,
-  };
-
-  function openShareContentModal(content: JSONContent) {
-    share.open = true;
-    share.content = content;
   }
 
   const likePost = graphql(`
@@ -338,11 +322,6 @@
       toast.success('링크가 복사되었어요');
     }
   };
-
-  function fragmentToContent(fragment: Fragment) {
-    const content = fragment.toJSON() as JSONContent[];
-    return content;
-  }
 
   $: triggerTags = $query.post.tags.filter(({ kind }) => kind === 'TRIGGER');
 </script>
@@ -507,52 +486,47 @@
     {#if !$query.post.hasPassword || $query.post.space?.meAsMember || $query.post.unlocked}
       <div class="relative">
         {#if $query.me?.personalIdentity || !$query.me?.isAdulthood}
-          {#if $postRevision.contentKind === 'ARTICLE'}
-            {#if blurContent}
-              <header
-                class="py-6 px-3 rounded-3 w-full flex flex-col gap-0.625rem items-center bg-primary"
-                role="alert"
+          {#if blurContent}
+            <header class="py-6 px-3 rounded-3 w-full flex flex-col gap-0.625rem items-center bg-primary" role="alert">
+              <div class="flex flex-col gap-2 items-center">
+                <i class="i-px-alert-triangle square-6 color-text-secondary" />
+                <h2 class="body-16-eb text-center break-keep">포스트에 민감한 내용이 포함되어 있어요</h2>
+              </div>
+              <ul class="flex gap-0.625rem flex-wrap justify-center max-w-26rem">
+                {#if $query.post.ageRating === 'R19'}
+                  <Tag as="div" size="sm">😳 성인물</Tag>
+                {/if}
+                {#each triggerTags as triggerTag (triggerTag.id)}
+                  <Tag as="div" size="sm">{triggerTag.tag.name.replaceAll('_', ' ')}</Tag>
+                {/each}
+              </ul>
+              <Button
+                class="rounded-xl m-t-3"
+                size="sm"
+                on:click={() => {
+                  blurContent = false;
+                }}
               >
-                <div class="flex flex-col gap-2 items-center">
-                  <i class="i-px-alert-triangle square-6 color-text-secondary" />
-                  <h2 class="body-16-eb text-center break-keep">포스트에 민감한 내용이 포함되어 있어요</h2>
-                </div>
-                <ul class="flex gap-0.625rem flex-wrap justify-center max-w-26rem">
-                  {#if $query.post.ageRating === 'R19'}
-                    <Tag as="div" size="sm">😳 성인물</Tag>
-                  {/if}
-                  {#each triggerTags as triggerTag (triggerTag.id)}
-                    <Tag as="div" size="sm">{triggerTag.tag.name.replaceAll('_', ' ')}</Tag>
-                  {/each}
-                </ul>
-                <Button
-                  class="rounded-xl m-t-3"
-                  size="sm"
-                  on:click={() => {
-                    blurContent = false;
-                  }}
-                >
-                  내용 표시하기
-                </Button>
-              </header>
-            {:else}
-              {#key stringify($postRevision.content)}
-                <TiptapRenderer
-                  class=""
-                  content={$postRevision.content}
-                  paragraphIndent={$postRevision.paragraphIndent}
-                  paragraphSpacing={$postRevision.paragraphSpacing}
-                  protectContent={$query.post.protectContent}
-                  bind:editor
-                />
-              {/key}
-            {/if}
+                내용 표시하기
+              </Button>
+            </header>
           {:else}
-            <GalleryPost {$query} {mode} revision={$postRevision} />
+            {#key stringify($postRevision.content)}
+              <TiptapRenderer
+                class=""
+                content={$postRevision.content}
+                options={{
+                  paragraphIndent: $postRevision.paragraphIndent,
+                  paragraphSpacing: $postRevision.paragraphSpacing,
+                  protectContent: $query.post.protectContent,
+                }}
+                bind:editor
+              />
+            {/key}
           {/if}
         {/if}
 
-        {#if editor && !preview}
+        <!-- {#if editor && !preview}
           <SelectionBubbleMenu class="flex" {editor}>
             <button
               class="shrink-0"
@@ -576,7 +550,7 @@
               공유
             </button>
           </SelectionBubbleMenu>
-        {/if}
+        {/if} -->
       </div>
     {:else}
       <form
@@ -863,17 +837,6 @@
 
 {#if $postRevision.contentKind === 'ARTICLE' && !preview}
   <Toolbar {$query} {handleShare} />
-{/if}
-
-{#if share.open && $query.post.space}
-  <ShareContent
-    protectContent={$query.post.protectContent}
-    spaceIcon={$query.post.space.icon}
-    spaceName={$query.post.space.name}
-    title={$postRevision.title ?? '(제목 없음)'}
-    bind:content={share.content}
-    bind:open={share.open}
-  />
 {/if}
 
 <Modal size="sm" bind:open={openDeletePostWarning}>

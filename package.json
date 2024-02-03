@@ -43,9 +43,6 @@
       "read-package-tree": "*",
       "readdir-scoped-modules": "*",
       "string-similarity": "*"
-    },
-    "patchedDependencies": {
-      "@vercel/nft@0.26.2": "patches/@vercel__nft@0.26.2.patch"
     }
   }
 }

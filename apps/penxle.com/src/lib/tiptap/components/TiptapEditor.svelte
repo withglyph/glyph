@@ -2,22 +2,24 @@
   import { Editor } from '@tiptap/core';
   import { Fragment, Node, Slice } from '@tiptap/pm/model';
   import { clsx } from 'clsx';
-  import { onMount } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import { dev } from '$app/environment';
   import { extensions } from '$lib/tiptap';
   import type { JSONContent } from '@tiptap/core';
   import type { EditorProps } from '@tiptap/pm/view';
+  import type { TiptapContentOptions } from '../types';
 
   let _class: string;
   export { _class as class };
-  export let editor: Editor | undefined = undefined;
+
   export let content: JSONContent | undefined = undefined;
-  export let paragraphIndent: number | undefined = undefined;
-  export let paragraphSpacing: number | undefined = undefined;
+  export let options: TiptapContentOptions;
+
+  export let editor: Editor | undefined = undefined;
+
+  const dispatch = createEventDispatcher<{ change: JSONContent }>();
 
   let element: HTMLDivElement;
-
-  export let onChange: (() => void) | undefined = undefined;
 
   const clipboardTextParser: EditorProps['clipboardTextParser'] = (text, context) => {
     const lines = text.split(/\r\n?|\n/);
@@ -53,12 +55,11 @@
           }
         },
       },
-      onTransaction: ({ transaction }) => {
-        editor = editor;
+      onTransaction: ({ editor: editor_, transaction }) => {
+        editor = editor_;
         if (transaction.docChanged) {
-          onChange?.();
-
-          content = editor?.getJSON();
+          content = editor.getJSON();
+          dispatch('change', content);
         }
       },
     });
@@ -75,8 +76,8 @@
   class="contents tiptap-editor"
   autocapitalize="off"
   autocorrect="off"
-  data-indent={paragraphIndent}
-  data-spacing={paragraphSpacing}
+  data-indent={options.paragraphIndent}
+  data-spacing={options.paragraphSpacing}
   spellcheck="false"
 >
   {#if !editor}

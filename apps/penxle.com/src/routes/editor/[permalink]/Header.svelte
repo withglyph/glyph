@@ -3,13 +3,8 @@
   import { Link } from '@penxle/ui';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
-  import * as R from 'radash';
-  import { onDestroy, onMount } from 'svelte';
-  import { browser, dev } from '$app/environment';
-  import { beforeNavigate } from '$app/navigation';
   import Wordmark from '$assets/icons/wordmark.svg?component';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
   import { Logo } from '$lib/components/branding';
   import ColorPicker from '$lib/components/ColorPicker.svelte';
   import { Menu, MenuItem } from '$lib/components/menu';
@@ -17,29 +12,20 @@
   import { createFloatingActions } from '$lib/svelte-floating-ui';
   import { values } from '$lib/tiptap/values';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
-  import ArticleCharacterCount from './ArticleCharacterCount.svelte';
-  import DraftPostModal from './DraftPostModal.svelte';
+  import CharacterCountWidget from './CharacterCountWidget.svelte';
+  import { getEditorContext } from './context';
+  import DraftListModal from './DraftListModal.svelte';
   import PublishMenu from './PublishMenu.svelte';
   import RevisionListModal from './RevisionListModal.svelte';
-  import { preventRevise } from './store';
   import ToolbarButtonTooltip from './ToolbarButtonTooltip.svelte';
-  import type { Editor, JSONContent } from '@tiptap/core';
-  import type { Writable } from 'svelte/store';
-  import type { EditorPage_Header_post, EditorPage_Header_query, PostRevisionKind } from '$glitch';
+  import type { EditorPage_Header_post, EditorPage_Header_query } from '$glitch';
 
+  export { _post as $post, _query as $query };
   let _query: EditorPage_Header_query;
   let _post: EditorPage_Header_post;
-  export { _post as $post, _query as $query };
 
-  export let autoSaveCount: Writable<number>;
-  export let title: string | null;
-  export let subtitle: string | null;
-  export let content: JSONContent;
-  export let editor: Editor | undefined;
-  export let paragraphIndent: number;
-  export let paragraphSpacing: number;
-
-  let warnUnload = false;
+  const { store, state, forceSave } = getEditorContext();
+  $: editor = $state.editor;
 
   $: query = fragment(
     _query,
@@ -64,7 +50,7 @@
             id
           }
 
-          ...EditorPage_DraftPostModal_user
+          ...EditorPage_DraftListModal_user
           ...CreateSpaceModal_user
         }
 
@@ -80,7 +66,6 @@
         id
         permalink
         state
-        contentFilters
         discloseStats
         hasPassword
         receiveFeedback
@@ -99,115 +84,17 @@
     `),
   );
 
-  beforeNavigate(({ cancel, willUnload }) => {
-    const message = '작성 중인 포스트가 있어요. 정말 나가시겠어요?';
+  const menuOffset = 11;
 
-    if (warnUnload) {
-      if (dev) {
-        return;
-      }
+  let fontColorOpen = false;
+  let colorPickerOpen = false;
 
-      if ($autoSaveCount === 0) {
-        return;
-      }
+  let contentOptionsOpen = false;
+  let paragraphIndentOpen = false;
+  let paragraphSpacingOpen = false;
 
-      if (willUnload) {
-        cancel();
-        return;
-      }
-
-      if (!confirm(message)) {
-        cancel();
-        return;
-      }
-    }
-  });
-
-  onMount(() => {
-    if (window.innerWidth < 800) {
-      warnUnload = false;
-    }
-  });
-
-  const revisePost = graphql(`
-    mutation EditorPage_RevisePost_Mutation($input: RevisePostInput!) {
-      revisePost(input: $input) {
-        id
-        permalink
-
-        draftRevision @_required {
-          id
-          kind
-          updatedAt
-        }
-
-        space {
-          id
-          slug
-        }
-
-        ...EditorPage_RevisionListModal_Post
-      }
-    }
-  `);
-
-  let reviseKind: PostRevisionKind | undefined;
-
-  const doRevisePost = async (revisionKind: PostRevisionKind) => {
-    if (!canRevise) return;
-
-    const resp = await revisePost({
-      revisionKind,
-      contentKind: 'ARTICLE',
-      postId: $post.id,
-      title,
-      subtitle,
-      content,
-      paragraphIndent,
-      paragraphSpacing,
-    });
-
-    mixpanel.track('post:revise', { postId: resp.id, revisionKind });
-
-    revisedAt = resp.draftRevision?.updatedAt;
-    reviseKind = resp.draftRevision?.kind;
-
-    return resp;
-  };
-
-  let revisedAt: string | undefined;
-  let publishMenuOpen = false;
   let revisionListOpen = false;
   let draftListOpen = false;
-
-  // let enablePassword = false;
-  // let enableContentFilter = false;
-
-  // $: if ($post?.hasPassword) {
-  //   enablePassword = true;
-  // }
-
-  // $: if ($post?.contentFilters.filter((v) => v !== 'ADULT').length ?? 0 > 0) {
-  //   enableContentFilter = true;
-  // }
-
-  $: permalink = $post.permalink;
-
-  $: canRevise = browser && !$preventRevise;
-  // $: canPublish = canRevise && title.trim().length > 0;
-
-  $: if (canRevise) {
-    warnUnload = true;
-  }
-
-  const autoSave = R.debounce({ delay: 1000 }, async () => doRevisePost('AUTO_SAVE'));
-  const unsubscriber = autoSaveCount.subscribe(() => {
-    if (canRevise) {
-      autoSave();
-    }
-  });
-
-  onDestroy(unsubscriber);
 
   const handleInsertImage = () => {
     const picker = document.createElement('input');
@@ -244,14 +131,6 @@
     picker.showPicker();
   };
 
-  let menuOffset = 11;
-
-  let fontColorOpen = false;
-  let fontFamilyOpen = false;
-  let fontSizeOpen = false;
-  let postSettingOpen = false;
-  let colorPickerOpen = false;
-
   const [floatingRef, floatingContent, update] = createFloatingActions({
     strategy: 'absolute',
     placement: 'bottom-end',
@@ -261,9 +140,6 @@
   $: if (colorPickerOpen) {
     void update();
   }
-
-  let paragraphIndentOpen = false;
-  let paragraphSpacingOpen = false;
 
   $: currentColor = (editor?.getAttributes('font_color').fontColor as string | undefined) ?? values.color[0].value;
 </script>
@@ -277,25 +153,30 @@
 
     <div class="flex items-end justify-end flex-1">
       <div class="flex flex-col items-end text-right mr-3">
-        <ArticleCharacterCount {editor} />
+        <CharacterCountWidget {editor} />
 
-        {#if $revisePost.inflight}
-          <span class="text-10-r text-gray-400">{dayjs(revisedAt).formatAsTime()} 저장중</span>
-        {:else if revisedAt && reviseKind === 'AUTO_SAVE'}
-          <span class="text-10-r text-gray-400">{dayjs(revisedAt).formatAsTime()} 저장됨</span>
-        {:else if revisedAt && reviseKind === 'MANUAL_SAVE'}
-          <span class="text-10-sb text-teal-500">{dayjs(revisedAt).formatAsTime()} 저장됨</span>
-        {:else}
-          <span class="text-10-r text-gray-400">{dayjs().formatAsTime()} 저장중</span>
-        {/if}
+        <span
+          class={clsx(
+            'transition',
+            !$state.isRevising && $state.lastRevision?.kind === 'MANUAL_SAVE'
+              ? 'text-10-sb text-teal-500'
+              : 'text-10-r text-gray-400',
+          )}
+        >
+          {#if $state.isRevising || !$state.lastRevision}
+            {dayjs().formatAsTime()} 저장중
+          {:else}
+            {dayjs($state.lastRevision.updatedAt).formatAsTime()} 저장됨
+          {/if}
+        </span>
       </div>
 
       <div class="flex items-center border border-gray-200 rounded py-2.5 px-3.5 mr-2 leading-none! text-14-m">
         <button
           class="after:(content-empty border-r border-gray-300 h-4 ml-2) leading-none!"
-          disabled={!canRevise}
+          disabled={!$state.canRevise}
           type="button"
-          on:click={() => doRevisePost('MANUAL_SAVE')}
+          on:click={() => forceSave()}
         >
           저장
         </button>
@@ -310,23 +191,9 @@
         </button>
       </div>
 
-      {#if $post}
-        <PublishMenu
-          {$post}
-          {$query}
-          {autoSaveCount}
-          {content}
-          {revisedAt}
-          {subtitle}
-          {title}
-          bind:warnUnload
-          bind:paragraphIndent
-          bind:paragraphSpacing
-          bind:open={publishMenuOpen}
-        />
-      {/if}
+      <PublishMenu {$post} {$query} />
 
-      <Menu class="flex center" disabled={!permalink} offset={menuOffset} placement="bottom-end" rounded={false}>
+      <Menu class="flex center" offset={menuOffset} placement="bottom-end" rounded={false}>
         <div slot="value" class="h-9 flex center">
           <i class="i-tb-dots-vertical square-6" aria-label="더보기" />
         </div>
@@ -339,7 +206,7 @@
           저장이력
         </MenuItem>
 
-        <MenuItem external href={`/editor/${permalink}/preview`} type="link">미리보기</MenuItem>
+        <MenuItem external href={`/editor/${$post.permalink}/preview`} type="link">미리보기</MenuItem>
       </Menu>
     </div>
   </div>
@@ -384,16 +251,17 @@
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="폰트">
-          <Menu class="h-8.5" offset={menuOffset} placement="bottom" rounded={false} bind:open={fontFamilyOpen}>
+          <Menu class="h-8.5" offset={menuOffset} placement="bottom" rounded={false}>
             <div
               slot="value"
               class="flex pl-4px pr-2px items-center gap-1 whitespace-nowrap h-full hover:(bg-gray-100 rounded)"
+              let:open
             >
               <div>
                 {values.fontFamily.find(({ value }) => editor?.getAttributes('font_family').fontFamily === value)
                   ?.label ?? values.fontFamily[0].label}
               </div>
-              <i class={clsx('i-tb-chevron-down square-4.5 text-gray-300', fontFamilyOpen && 'rotate-180')} />
+              <i class={clsx('i-tb-chevron-down square-4.5 text-gray-300', open && 'rotate-180')} />
             </div>
 
             {#each values.fontFamily as font (font.value)}
@@ -430,12 +298,11 @@
             offset={menuOffset}
             placement="bottom"
             rounded={false}
-            bind:open={fontSizeOpen}
           >
-            <div slot="value" class="flex center pl-4px pr-2px gap-1 h-full hover:(bg-gray-100 rounded)">
+            <div slot="value" class="flex center pl-4px pr-2px gap-1 h-full hover:(bg-gray-100 rounded)" let:open>
               {values.fontSize.find(({ value }) => editor?.getAttributes('font_size').fontSize === value)?.label ??
                 values.fontSize[4].label}
-              <i class={clsx('i-tb-chevron-down square-4.5 text-gray-300', fontSizeOpen && 'rotate-180')} />
+              <i class={clsx('i-tb-chevron-down square-4.5 text-gray-300', open && 'rotate-180')} />
             </div>
 
             {#each values.fontSize as fontSize (fontSize.value)}
@@ -716,7 +583,7 @@
       </div>
 
       <ToolbarButtonTooltip message="본문 설정">
-        <Menu offset={menuOffset} placement="bottom" rounded={false} bind:open={postSettingOpen}>
+        <Menu offset={menuOffset} placement="bottom" rounded={false} bind:open={contentOptionsOpen}>
           <div slot="value" class="flex center square-8.5">
             <i class="i-tb-settings square-6" />
           </div>
@@ -737,15 +604,15 @@
             <MenuItem
               class="flex items-center gap-2 justify-between"
               on:click={() => {
-                postSettingOpen = false;
+                contentOptionsOpen = false;
                 paragraphIndentOpen = false;
-                paragraphIndent = 0;
+                $store.paragraphIndent = 0;
               }}
             >
               없음
               <i
-                class={clsx('i-tb-check square-5 text-teal-500', paragraphIndent !== 0 && 'invisible')}
-                aria-hidden={paragraphIndent !== 0}
+                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphIndent !== 0 && 'invisible')}
+                aria-hidden={$store.paragraphIndent !== 0}
                 aria-label="선택됨"
               />
             </MenuItem>
@@ -753,16 +620,16 @@
             <MenuItem
               class="flex items-center gap-2 justify-between"
               on:click={() => {
-                postSettingOpen = false;
+                contentOptionsOpen = false;
                 paragraphIndentOpen = false;
                 paragraphIndentOpen = false;
-                paragraphIndent = 50;
+                $store.paragraphIndent = 50;
               }}
             >
               0.5칸
               <i
-                class={clsx('i-tb-check square-5 text-teal-500', paragraphIndent !== 50 && 'invisible')}
-                aria-hidden={paragraphIndent !== 50}
+                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphIndent !== 50 && 'invisible')}
+                aria-hidden={$store.paragraphIndent !== 50}
                 aria-label="선택됨"
               />
             </MenuItem>
@@ -770,15 +637,15 @@
             <MenuItem
               class="flex items-center gap-2 justify-between"
               on:click={() => {
-                postSettingOpen = false;
+                contentOptionsOpen = false;
                 paragraphIndentOpen = false;
-                paragraphIndent = 100;
+                $store.paragraphIndent = 100;
               }}
             >
               1칸
               <i
-                class={clsx('i-tb-check square-5 text-teal-500', paragraphIndent !== 100 && 'invisible')}
-                aria-hidden={paragraphIndent !== 100}
+                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphIndent !== 100 && 'invisible')}
+                aria-hidden={$store.paragraphIndent !== 100}
                 aria-label="선택됨"
               />
             </MenuItem>
@@ -786,15 +653,15 @@
             <MenuItem
               class="flex items-center gap-2 justify-between"
               on:click={() => {
-                postSettingOpen = false;
+                contentOptionsOpen = false;
                 paragraphIndentOpen = false;
-                paragraphIndent = 200;
+                $store.paragraphIndent = 200;
               }}
             >
               2칸
               <i
-                class={clsx('i-tb-check square-5 text-teal-500', paragraphIndent !== 200 && 'invisible')}
-                aria-hidden={paragraphIndent !== 200}
+                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphIndent !== 200 && 'invisible')}
+                aria-hidden={$store.paragraphIndent !== 200}
                 aria-label="선택됨"
               />
             </MenuItem>
@@ -816,15 +683,15 @@
             <MenuItem
               class="flex items-center gap-2 justify-between"
               on:click={() => {
-                postSettingOpen = false;
+                contentOptionsOpen = false;
                 paragraphSpacingOpen = false;
-                paragraphSpacing = 0;
+                $store.paragraphSpacing = 0;
               }}
             >
               없음
               <i
-                class={clsx('i-tb-check square-5 text-teal-500', paragraphSpacing !== 0 && 'invisible')}
-                aria-hidden={paragraphSpacing !== 0}
+                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphSpacing !== 0 && 'invisible')}
+                aria-hidden={$store.paragraphSpacing !== 0}
                 aria-label="선택됨"
               />
             </MenuItem>
@@ -832,15 +699,15 @@
             <MenuItem
               class="flex items-center gap-2 justify-between"
               on:click={() => {
-                postSettingOpen = false;
+                contentOptionsOpen = false;
                 paragraphSpacingOpen = false;
-                paragraphSpacing = 50;
+                $store.paragraphSpacing = 50;
               }}
             >
               0.5줄
               <i
-                class={clsx('i-tb-check square-5 text-teal-500', paragraphSpacing !== 50 && 'invisible')}
-                aria-hidden={paragraphSpacing !== 50}
+                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphSpacing !== 50 && 'invisible')}
+                aria-hidden={$store.paragraphSpacing !== 50}
                 aria-label="선택됨"
               />
             </MenuItem>
@@ -848,15 +715,15 @@
             <MenuItem
               class="flex items-center gap-2 justify-between"
               on:click={() => {
-                postSettingOpen = false;
+                contentOptionsOpen = false;
                 paragraphSpacingOpen = false;
-                paragraphSpacing = 100;
+                $store.paragraphSpacing = 100;
               }}
             >
               1줄
               <i
-                class={clsx('i-tb-check square-5 text-teal-500', paragraphSpacing !== 100 && 'invisible')}
-                aria-hidden={paragraphSpacing !== 100}
+                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphSpacing !== 100 && 'invisible')}
+                aria-hidden={$store.paragraphSpacing !== 100}
                 aria-label="선택됨"
               />
             </MenuItem>
@@ -864,15 +731,15 @@
             <MenuItem
               class="flex items-center gap-2 justify-between"
               on:click={() => {
-                postSettingOpen = false;
+                contentOptionsOpen = false;
                 paragraphSpacingOpen = false;
-                paragraphSpacing = 200;
+                $store.paragraphSpacing = 200;
               }}
             >
               2줄
               <i
-                class={clsx('i-tb-check square-5 text-teal-500', paragraphSpacing !== 200 && 'invisible')}
-                aria-hidden={paragraphSpacing !== 200}
+                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphSpacing !== 200 && 'invisible')}
+                aria-hidden={$store.paragraphSpacing !== 200}
                 aria-label="선택됨"
               />
             </MenuItem>
@@ -883,7 +750,7 @@
   </div>
 </header>
 
-<DraftPostModal $user={$query.me} bind:open={draftListOpen} />
+<DraftListModal $user={$query.me} bind:open={draftListOpen} />
 <RevisionListModal {$post} bind:open={revisionListOpen} />
 
 <style>

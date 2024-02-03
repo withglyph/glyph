@@ -115,7 +115,7 @@
         <TiptapRenderer
           class="font-(size-1.5625rem 600) [&_.ProseMirror]:(line-height-152% overflow-hidden line-clamp-7) flex-grow"
           {content}
-          {protectContent}
+          options={{ paragraphIndent: 0, paragraphSpacing: 0, protectContent }}
         />
       {/if}
       <header class={('header' in color && color.header) || color.body}>

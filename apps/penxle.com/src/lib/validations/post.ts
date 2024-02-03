@@ -3,7 +3,6 @@ import { tagPattern } from '$lib/const/post';
 
 export const RevisePostInputSchema = z.object({
   revisionKind: z.enum(['AUTO_SAVE', 'MANUAL_SAVE']),
-  contentKind: z.enum(['ARTICLE', 'GALLERY']),
   postId: z.string(),
   title: z.string().max(100).nullable().optional(),
   subtitle: z.string().max(100).nullable().optional(),

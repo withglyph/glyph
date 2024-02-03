@@ -755,7 +755,6 @@ export const postSchema = defineSchema((builder) => {
   const RevisePostInput = builder.inputType('RevisePostInput', {
     fields: (t) => ({
       revisionKind: t.field({ type: PrismaEnums.PostRevisionKind }),
-      contentKind: t.field({ type: PrismaEnums.PostRevisionContentKind, defaultValue: 'ARTICLE' }),
 
       postId: t.id(),
 
@@ -1042,7 +1041,7 @@ export const postSchema = defineSchema((builder) => {
         const revisionData = {
           userId: context.session.userId,
           kind: input.revisionKind,
-          contentKind: input.contentKind,
+          contentKind: 'ARTICLE' as const,
           title: input.title?.length ? input.title : null,
           subtitle: input.subtitle?.length ? input.subtitle : null,
           freeContentId: freeContent.id,

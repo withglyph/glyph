@@ -1,29 +1,17 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { Button } from '$lib/components';
-  import ArticleEditor from './ArticleEditor.svelte';
-  import type { Editor, JSONContent } from '@tiptap/core';
-  import type { Writable } from 'svelte/store';
+  import { TiptapEditor } from '$lib/tiptap/components';
+  import { getEditorContext } from './context';
+  import ArticleLinkEditMenu from './InlineLinkMenu.svelte';
+  import ArticleRubyEditMenu from './InlineRubyMenu.svelte';
 
-  export let autoSaveCount: Writable<number>;
-  export let title: string | null;
-  export let subtitle: string | null;
-  export let content: JSONContent;
-  export let editor: Editor | undefined;
-  export let paragraphIndent: number;
-  export let paragraphSpacing: number;
-
-  function autoSave() {
-    $autoSaveCount += 1;
-  }
+  const { store, state } = getEditorContext();
 
   onMount(() => {
-    autoSave();
-
     const saveEventHandler = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key === 's') {
         event.preventDefault();
-        autoSave();
       }
     };
 
@@ -53,8 +41,7 @@
         maxlength="100"
         placeholder="제목을 입력하세요"
         type="text"
-        bind:value={title}
-        on:keydown={autoSave}
+        bind:value={$store.title}
       />
 
       <input
@@ -62,11 +49,22 @@
         maxlength="100"
         placeholder="부제목을 입력해주세요"
         type="text"
-        bind:value={subtitle}
-        on:keydown={autoSave}
+        bind:value={$store.subtitle}
       />
     </div>
 
-    <ArticleEditor onChange={autoSave} {paragraphIndent} {paragraphSpacing} bind:editor bind:content />
+    <div class="px-15 w-full flex grow">
+      <TiptapEditor
+        class="mb-100px max-w-full grow"
+        options={$store}
+        bind:editor={$state.editor}
+        bind:content={$store.content}
+      />
+    </div>
+
+    {#if $state.editor}
+      <ArticleLinkEditMenu editor={$state.editor} />
+      <ArticleRubyEditMenu editor={$state.editor} />
+    {/if}
   </div>
 </main>

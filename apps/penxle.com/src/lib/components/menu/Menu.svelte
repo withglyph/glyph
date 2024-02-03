@@ -61,7 +61,7 @@
   use:floatingRef
   {...props}
 >
-  <slot name="value" />
+  <slot name="value" {open} />
 </svelte:element>
 
 {#if open}

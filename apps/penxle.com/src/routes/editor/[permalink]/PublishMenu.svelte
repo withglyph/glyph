@@ -2,7 +2,6 @@
   import { flip, offset, shift } from '@floating-ui/dom';
   import clsx from 'clsx';
   import { slide } from 'svelte/transition';
-  import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -13,78 +12,19 @@
   import { portal } from '$lib/svelte/actions';
   import { createFloatingActions } from '$lib/svelte-floating-ui';
   import { PublishPostInputSchema } from '$lib/validations/post';
-  import CreateSpaceModal from '../(default)/CreateSpaceModal.svelte';
+  import CreateSpaceModal from '../../(default)/CreateSpaceModal.svelte';
+  import { getEditorContext } from './context';
   import PublishMenuSearch from './PublishMenuSearch.svelte';
   import RadioGroup from './RadioGroup.svelte';
-  import { preventRevise } from './store';
-  import type { JSONContent } from '@tiptap/core';
   import type { ChangeEventHandler } from 'svelte/elements';
-  import type { Writable } from 'svelte/store';
-  import type {
-    EditorPage_PublishMenu_post,
-    EditorPage_PublishMenu_query,
-    Image_image,
-    PostPair,
-    PostRevisionKind,
-  } from '$glitch';
-  import type { SwitchSpace } from './types/switch-space';
+  import type { EditorPage_PublishMenu_post, EditorPage_PublishMenu_query, Image_image, PostPair } from '$glitch';
 
-  export let open = false;
-  export let warnUnload = false;
-  export let revisedAt: string | undefined = undefined;
-
-  export let autoSaveCount: Writable<number>;
-  export let title: string | null;
-  export let subtitle: string | null;
-  export let content: JSONContent;
-  export let paragraphIndent: number;
-  export let paragraphSpacing: number;
-
-  const { form, data, setInitialValues, handleSubmit } = createMutationForm({
-    mutation: graphql(`
-      mutation EditorPage_PublishMenu_PublishPost_Mutation($input: PublishPostInput!) {
-        publishPost(input: $input) {
-          id
-          permalink
-          discloseStats
-          receiveFeedback
-          receivePatronage
-          receiveTagContribution
-          protectContent
-          visibility
-
-          space @_required {
-            id
-            slug
-          }
-        }
-      }
-    `),
-    schema: PublishPostInputSchema,
-    extra: async () => {
-      const resp = await doRevisePost('AUTO_SAVE');
-      return {
-        revisionId: resp?.draftRevision.id,
-        spaceId: selectedSpaceId,
-        collectionId: selectedCollectionId,
-        thumbnailId: currentThumbnail?.id,
-      };
-    },
-    onSuccess: async (resp) => {
-      warnUnload = false;
-      mixpanel.track('post:publish', { postId: resp.id });
-      await goto(`/${resp.space.slug}/${resp.permalink}`);
-    },
-  });
-
+  export { _post as $post, _query as $query };
   let _post: EditorPage_PublishMenu_post;
-  export { _post as $post };
-
   let _query: EditorPage_PublishMenu_query;
-  export { _query as $query };
+  export let open = false;
 
-  $: canRevise = browser && !$preventRevise;
-  $: canPublish = canRevise;
+  const { forceSave } = getEditorContext();
 
   $: query = fragment(
     _query,
@@ -119,7 +59,6 @@
             id
           }
 
-          ...EditorPage_DraftPostModal_user
           ...CreateSpaceModal_user
         }
       }
@@ -133,7 +72,6 @@
         id
         permalink
         state
-        contentFilters
         discloseStats
         hasPassword
         receiveFeedback
@@ -178,46 +116,41 @@
     `),
   );
 
-  const revisePost = graphql(`
-    mutation EditorPage_PublishMenu_RevisePost_Mutation($input: RevisePostInput!) {
-      revisePost(input: $input) {
-        id
-        permalink
-
-        draftRevision @_required {
+  const { form, data, setInitialValues, handleSubmit } = createMutationForm({
+    mutation: graphql(`
+      mutation EditorPage_PublishMenu_PublishPost_Mutation($input: PublishPostInput!) {
+        publishPost(input: $input) {
           id
-          updatedAt
-        }
+          permalink
+          discloseStats
+          receiveFeedback
+          receivePatronage
+          receiveTagContribution
+          protectContent
+          visibility
 
-        space {
-          id
-          slug
+          space @_required {
+            id
+            slug
+          }
         }
       }
-    }
-  `);
-
-  const doRevisePost = async (revisionKind: PostRevisionKind) => {
-    if (!canRevise) return;
-
-    const resp = await revisePost({
-      revisionKind,
-      contentKind: 'ARTICLE',
-      postId: $post.id,
-      title,
-      subtitle,
-      content,
-      paragraphIndent,
-      paragraphSpacing,
-    });
-
-    mixpanel.track('post:revise', { postId: resp.id, revisionKind });
-
-    revisedAt = resp.draftRevision.updatedAt;
-    $data.revisionId = resp.draftRevision.id;
-
-    return resp;
-  };
+    `),
+    schema: PublishPostInputSchema,
+    extra: async () => {
+      const revisionId = await forceSave();
+      return {
+        revisionId,
+        spaceId: selectedSpaceId,
+        collectionId: selectedCollectionId,
+        thumbnailId: currentThumbnail?.id,
+      };
+    },
+    onSuccess: async (resp) => {
+      mixpanel.track('post:publish', { postId: resp.id });
+      await goto(`/${resp.space.slug}/${resp.permalink}`);
+    },
+  });
 
   const [floatingRef, floatingContent, update] = createFloatingActions({
     strategy: 'absolute',
@@ -262,18 +195,6 @@
   let spaceSelectorOpen = false;
   let collectionSelectorOpen = false;
 
-  const switchSpace: SwitchSpace = ({ id, emitSave = false }) => {
-    selectedSpaceId = id;
-    selectedCollectionId = undefined;
-    spaceSelectorOpen = false;
-
-    $data.spaceId = selectedSpaceId;
-
-    if (emitSave) {
-      $autoSaveCount += 1;
-    }
-  };
-
   let tabIndex = 0;
   let selectedCollectionId: string | undefined = undefined;
 
@@ -308,7 +229,6 @@
 <div class="w-fit" use:floatingRef>
   <button
     class="bg-gray-950 text-white px-3 py-2.5 rounded text-14-m mr-3 leading-none border border-gray-950"
-    disabled={!canPublish}
     type="button"
     on:click={() => (open = true)}
   >
@@ -454,7 +374,12 @@
                       class="px-4 py-3 w-full hover:(bg-teal-50 text-teal-700) flex justify-between items-center"
                       type="button"
                       on:click={() => {
-                        switchSpace({ id: space.id, emitSave: true });
+                        if (selectedSpaceId !== space.id) {
+                          selectedCollectionId = undefined;
+                        }
+
+                        selectedSpaceId = space.id;
+                        spaceSelectorOpen = false;
                       }}
                     >
                       <div class="flex items-center gap-1.5">
@@ -483,7 +408,7 @@
           >
             <button
               class="flex items-center justify-between w-full"
-              disabled={!selectedSpace}
+              disabled={!selectedSpace || !selectedSpace.collections || selectedSpace.collections.length === 0}
               type="button"
               on:click={() => (collectionSelectorOpen = true)}
             >
@@ -834,7 +759,15 @@
 </div>
 
 {#if $query}
-  <CreateSpaceModal $user={$query.me} {switchSpace} bind:open={createSpaceOpen} />
+  <CreateSpaceModal
+    $user={$query.me}
+    bind:open={createSpaceOpen}
+    on:create={(event) => {
+      selectedSpaceId = event.detail.id;
+      selectedCollectionId = undefined;
+      spaceSelectorOpen = false;
+    }}
+  />
 {/if}
 
 <ThumbnailPicker bind:this={thumbnailPicker} keepBoundsWhenClosed on:change={(e) => (thumbnail = e.detail)} />

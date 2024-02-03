@@ -6,20 +6,19 @@
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import { toast } from '$lib/notification';
-  import type { EditorPage_DraftPostModal_user } from '$glitch';
+  import type { EditorPage_DraftListModal_user } from '$glitch';
+
+  let _user: EditorPage_DraftListModal_user;
+  export { _user as $user };
+  export let open = false;
 
   let deletePostId: string | undefined;
-  export let open = false;
-  export let postId: string | undefined = undefined;
-  let deleteDraftPostOpen = false;
-
-  let _user: EditorPage_DraftPostModal_user;
-  export { _user as $user };
+  let deletePostOpen = false;
 
   $: user = fragment(
     _user,
     graphql(`
-      fragment EditorPage_DraftPostModal_user on User {
+      fragment EditorPage_DraftListModal_user on User {
         id
 
         posts(state: DRAFT) {
@@ -37,7 +36,7 @@
   );
 
   const deletePost = graphql(`
-    mutation EditorPage_DraftPostModal_DeletePost_Mutation($input: DeletePostInput!) {
+    mutation EditorPage_DraftListModal_DeletePost_Mutation($input: DeletePostInput!) {
       deletePost(input: $input) {
         id
       }
@@ -46,7 +45,7 @@
 </script>
 
 <Modal bind:open>
-  <svelte:fragment slot="title">임시저장된 글</svelte:fragment>
+  <svelte:fragment slot="title">임시저장된 포스트</svelte:fragment>
   <svelte:fragment slot="subtitle">{$user.posts?.length ?? 0}개의 포스트</svelte:fragment>
 
   <ul class="sm:(overflow-y-auto max-h-15rem)">
@@ -57,7 +56,7 @@
           type="button"
           on:click={async () => {
             open = false;
-            window.location.href = `/editor/${post.permalink}`;
+            await goto(`/editor/${post.permalink}`);
           }}
         >
           <p
@@ -73,7 +72,7 @@
           class="i-lc-trash hidden square-5 color-text-disabled"
           type="button"
           on:click={() => {
-            deleteDraftPostOpen = true;
+            deletePostOpen = true;
             deletePostId = post.id;
           }}
         />
@@ -82,23 +81,20 @@
   </ul>
 </Modal>
 
-<Modal size="sm" bind:open={deleteDraftPostOpen}>
+<Modal size="sm" bind:open={deletePostOpen}>
   <svelte:fragment slot="title">임시저장글을 삭제할까요?</svelte:fragment>
 
   <div slot="action" class="flex gap-3 w-full">
-    <Button class="w-full" color="secondary" size="xl" on:click={() => (deleteDraftPostOpen = false)}>닫기</Button>
+    <Button class="w-full" color="secondary" size="xl" on:click={() => (deletePostOpen = false)}>닫기</Button>
     <Button
       class="w-full"
       size="xl"
       on:click={async () => {
         if (deletePostId) {
-          if (postId === deletePostId) {
-            await goto('/editor');
-          }
           await deletePost({ postId: deletePostId });
           mixpanel.track('post:delete', { postId: deletePostId, via: 'editor' });
           toast.success('임시저장 포스트를 삭제했어요');
-          deleteDraftPostOpen = false;
+          deletePostOpen = false;
         }
       }}
     >

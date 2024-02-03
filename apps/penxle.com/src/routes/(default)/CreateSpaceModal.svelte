@@ -1,5 +1,6 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import { createEventDispatcher } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
@@ -12,7 +13,6 @@
   import { toast } from '$lib/notification';
   import { CreateSpaceSchema } from '$lib/validations';
   import type { CreateSpaceModal_user } from '$glitch';
-  import type { SwitchSpace } from '../editor/types/switch-space';
 
   let _user: CreateSpaceModal_user;
   export { _user as $user };
@@ -20,13 +20,10 @@
   let useSpaceProfile = true;
   let thumbnailPicker: ThumbnailPicker;
 
-  export let switchSpace: SwitchSpace | undefined = undefined;
   export let open = false;
   export let via: 'user-menu' | 'space-list-menu' | 'editor' = 'user-menu';
 
-  $: if (switchSpace) {
-    via = 'editor';
-  }
+  const dispatch = createEventDispatcher<{ create: { id: string } }>();
 
   $: user = fragment(
     _user,
@@ -64,9 +61,7 @@
     initialValues: { profileName: '' },
     extra: () => ({ profileAvatarId: avatar.id }),
     onSuccess: async ({ id, slug }) => {
-      if (via === 'editor' && switchSpace) {
-        switchSpace({ id, emitSave: true });
-      }
+      dispatch('create', { id });
 
       mixpanel.track('space:create', { useSpaceProfile, via });
       toast.success('스페이스를 만들었어요');

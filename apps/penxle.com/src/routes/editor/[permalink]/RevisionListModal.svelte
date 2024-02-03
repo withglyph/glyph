@@ -1,19 +1,17 @@
 <script lang="ts">
   import dayjs from 'dayjs';
   import qs from 'query-string';
-  import { getContext } from 'svelte';
   import { fragment, graphql } from '$glitch';
   import { Badge, Modal } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
-  import { toast } from '$lib/notification';
-  import type { Writable } from 'svelte/store';
+  import { getEditorContext } from './context';
   import type { EditorPage_RevisionListModal_Post } from '$glitch';
-  import type { RestoredRevision } from './types/restore-revision';
-
-  export let open: boolean;
 
   let _post: EditorPage_RevisionListModal_Post;
+  export let open: boolean;
   export { _post as $post };
+
+  const { store, forceSave } = getEditorContext();
 
   $: post = fragment(
     _post,
@@ -36,19 +34,18 @@
       post(permalink: $permalink) {
         id
 
-        draftRevision(revisionId: $revisionId) {
+        draftRevision(revisionId: $revisionId) @_required {
           id
           kind
-          contentKind
           content
           title
           subtitle
+          paragraphIndent
+          paragraphSpacing
         }
       }
     }
   `);
-
-  let restoredRevision = getContext<Writable<RestoredRevision>>('restoredRevision');
 
   let selectedRevisionId: string;
 
@@ -114,10 +111,15 @@
                     permalink: $post.permalink,
                     revisionId: revision.id,
                   });
-                  restoredRevision.set(fetched.post.draftRevision);
 
-                  toast.success('저장 이력에서 포스트를 복원했어요');
-                  open = false;
+                  $store.title = fetched.post.draftRevision.title ?? undefined;
+                  $store.subtitle = fetched.post.draftRevision.subtitle ?? undefined;
+                  $store.content = fetched.post.draftRevision.content;
+                  $store.paragraphIndent = fetched.post.draftRevision.paragraphIndent;
+                  $store.paragraphSpacing = fetched.post.draftRevision.paragraphSpacing;
+
+                  await forceSave();
+                  location.reload();
                 }}
               >
                 복원하기

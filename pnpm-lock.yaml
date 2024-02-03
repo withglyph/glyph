@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  '@vercel/nft@0.26.2':
-    hash: zz2mrtzrvwdstdv5gyu6l6f6vu
-    path: patches/@vercel__nft@0.26.2.patch
-
 importers:
 
   .:
@@ -706,7 +701,7 @@ importers:
         version: 0.58.4(rollup@4.9.6)(vite@5.0.12)
       '@vercel/nft':
         specifier: ^0.26.2
-        version: 0.26.2(patch_hash=zz2mrtzrvwdstdv5gyu6l6f6vu)
+        version: 0.26.2
       browserslist:
         specifier: ^4.22.3
         version: 4.22.3
@@ -6257,7 +6252,7 @@ packages:
       - graphql
     dev: false
 
-  /@vercel/nft@0.26.2(patch_hash=zz2mrtzrvwdstdv5gyu6l6f6vu):
+  /@vercel/nft@0.26.2:
     resolution: {integrity: sha512-bxe2iShmKZi7476xYamyKvhhKwQ6JPEtQ2FSq1AjMUH2buMd8LQMkdoHinTqZYc+1sMTh3G0ARdjzNvV1FEisA==}
     engines: {node: '>=16'}
     hasBin: true
@@ -6278,7 +6273,6 @@ packages:
       - encoding
       - supports-color
     dev: false
-    patched: true
 
   /@whatwg-node/events@0.1.1:
     resolution: {integrity: sha512-AyQEn5hIPV7Ze+xFoXVU3QTHXVbWPrzaOkxtENMPMuNL6VVHrp4hHfDt9nrQpjO7BgvuM95dMtkycX5M/DZR3w==}

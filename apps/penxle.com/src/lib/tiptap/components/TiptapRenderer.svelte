@@ -4,27 +4,27 @@
   import { onMount } from 'svelte';
   import { extensions } from '$lib/tiptap';
   import type { JSONContent } from '@tiptap/core';
+  import type { TiptapRendererOptions } from '../types';
 
   let _class: string;
   export { _class as class };
 
   export let content: JSONContent;
-  export let editor: Editor | undefined = undefined;
-  export let paragraphIndent: number | undefined = undefined;
-  export let paragraphSpacing: number | undefined = undefined;
+  export let options: TiptapRendererOptions;
 
-  export let protectContent = false;
-  const handleContentProtection = (e: Event) => {
-    if (protectContent) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
+  export let editor: Editor | undefined = undefined;
 
   let element: HTMLElement;
   let loaded = false;
 
   $: html = generateHTML(content, extensions);
+
+  const handleContentProtection = (e: Event) => {
+    if (options.protectContent) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
 
   onMount(() => {
     editor = new Editor({
@@ -41,6 +41,7 @@
 
     return () => {
       editor?.destroy();
+      editor = undefined;
     };
   });
 </script>
@@ -48,8 +49,8 @@
 <article
   bind:this={element}
   class={_class}
-  data-indent={paragraphIndent}
-  data-spacing={paragraphSpacing}
+  data-indent={options.paragraphIndent}
+  data-spacing={options.paragraphSpacing}
   on:copy|capture={handleContentProtection}
   on:cut|capture={handleContentProtection}
   on:contextmenu|capture={handleContentProtection}
