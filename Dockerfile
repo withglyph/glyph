@@ -12,7 +12,6 @@ ENV PATH=$PNPM_HOME:$PATH
 RUN corepack enable
 
 COPY pnpm-lock.yaml .
-COPY patches ./patches
 RUN pnpm fetch
 
 COPY . .
