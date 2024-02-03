@@ -956,7 +956,6 @@ export const postSchema = defineSchema((builder) => {
         const revisionData = {
           userId: context.session.userId,
           kind: input.revisionKind,
-          contentKind: 'ARTICLE' as const,
           title: input.title?.length ? input.title : null,
           subtitle: input.subtitle?.length ? input.subtitle : null,
           freeContentId: freeContent.id,
