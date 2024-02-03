@@ -17,14 +17,15 @@
 
   let rgb = Color(hex).rgb();
 
-  $: hex = rgb.hex().toString();
+  $: if (hexInputEl) {
+    hex = rgb.hex().toString().toUpperCase();
+    hexInputEl.value = hex;
+  }
+
   $: if (initialize) {
     dispatch('input', { hex });
   } else {
     initialize = true;
-  }
-  $: if (hexInputEl) {
-    hexInputEl.value = hex;
   }
 
   $: if (gradientSliderInputEl) {
