@@ -32,7 +32,7 @@
         id
         ...EditorPage_Header_post
 
-        draftRevision @_required {
+        draftRevision {
           id
           title
           subtitle
@@ -49,7 +49,7 @@
       revisePost(input: $input) {
         id
 
-        draftRevision @_required {
+        draftRevision {
           id
           kind
           updatedAt

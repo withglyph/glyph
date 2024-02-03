@@ -82,12 +82,10 @@ model Image {
   hash        String
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  profilesUsingThisAsAvatar                 Profile[]
-  spacesUsingThisAsIcon                     Space[]
-  postsUsingThisAsThumbnail                 Post[]
-  postRevisionsUsingThisAsCroppedThumbnail  PostRevision[]
-  postRevisionsUsingThisAsOriginalThumbnail PostRevision[]    @relation("origin")
-  spaceCollectionUsingThisAsThumbnail       SpaceCollection[]
+  profilesUsingThisAsAvatar           Profile[]
+  spacesUsingThisAsIcon               Space[]
+  postsUsingThisAsThumbnail           Post[]
+  spaceCollectionUsingThisAsThumbnail SpaceCollection[]
 
   @@map("images")
 }
@@ -174,8 +172,6 @@ model Post {
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
   publishedAt DateTime? @map("published_at") @db.Timestamptz
 
-  contentFilters ContentFilterCategory[] @map("content_filters")
-
   likes          PostLike[]
   revisions      PostRevision[]
   views          PostView[]
@@ -241,18 +237,10 @@ model PostRevision {
   paidContentId String?              @map("paid_content_id")
   paidContent   PostRevisionContent? @relation(name: "paid_content", fields: [paidContentId], references: [id])
 
-  autoIndent       Boolean @default(true) @map("auto_indent")
-  paragraphIndent  Int     @default(100) @map("paragraph_indent")
-  paragraphSpacing Int     @default(100) @map("paragraph_spacing")
+  paragraphIndent  Int @default(100) @map("paragraph_indent")
+  paragraphSpacing Int @default(100) @map("paragraph_spacing")
 
-  contentKind PostRevisionContentKind
-  price       Int?
-
-  croppedThumbnailId  String? @map("cropped_thumbnail_id")
-  croppedThumbnail    Image?  @relation(fields: [croppedThumbnailId], references: [id])
-  originalThumbnailId String? @map("original_thumbnail_id")
-  originalThumbnail   Image?  @relation("origin", fields: [originalThumbnailId], references: [id])
-  thumbnailBounds     Json?
+  price Int?
 
   kind      PostRevisionKind
   title     String?
@@ -261,8 +249,7 @@ model PostRevision {
   updatedAt DateTime         @default(now()) @map("updated_at") @db.Timestamptz
 
   purchases                         PostPurchase[]
-  tags                              PostRevisionTag[]
-  postsUsingThisAsPublishedRevision Post[]            @relation(name: "published_revision")
+  postsUsingThisAsPublishedRevision Post[]         @relation(name: "published_revision")
 
   @@index([createdAt])
   @@map("post_revisions")
@@ -278,18 +265,6 @@ model PostRevisionContent {
   revisionsUsingThisAsPaidContent PostRevision[] @relation("paid_content")
 
   @@map("post_revision_contents")
-}
-
-model PostRevisionTag {
-  id         String       @id
-  revisionId String       @map("revision_id")
-  revision   PostRevision @relation(fields: [revisionId], references: [id])
-  tagId      String       @map("tag_id")
-  tag        Tag          @relation(fields: [tagId], references: [id])
-  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz
-
-  @@unique([revisionId, tagId])
-  @@map("post_revision_tags")
 }
 
 model PostTag {
@@ -512,13 +487,12 @@ model Tag {
   name      String   @unique
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  wiki          TagWiki?
-  parents       TagHierarchy[]    @relation("parents")
-  children      TagHierarchy[]    @relation("children")
-  userMutes     UserTagMute[]
-  postRevisions PostRevisionTag[]
-  followers     TagFollow[]
-  posts         PostTag[]
+  wiki      TagWiki?
+  parents   TagHierarchy[] @relation("parents")
+  children  TagHierarchy[] @relation("children")
+  userMutes UserTagMute[]
+  followers TagFollow[]
+  posts     PostTag[]
 
   @@index(createdAt)
   @@map("tags")

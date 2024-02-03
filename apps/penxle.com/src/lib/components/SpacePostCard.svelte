@@ -20,7 +20,6 @@
         permalink
         blurred
         publishedAt
-        contentFilters
         hasPassword
         viewCount
         discloseStats

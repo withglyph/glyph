@@ -67,7 +67,6 @@
           liked
           viewCount
           unlocked
-          contentFilters
           blurred
           hasPassword
           receiveFeedback
@@ -183,7 +182,6 @@
         content
         characterCount
         createdAt
-        contentKind
         previewText
         paragraphIndent
         paragraphSpacing
@@ -199,9 +197,9 @@
     blurContent = $query.post.blurred;
   });
 
-  $: if ($query.post.contentFilters.includes('ADULT') && (!$query.me?.personalIdentity || !$query.me?.isAdulthood)) {
-    adultOpen = true;
-  }
+  // $: if ($query.post.contentFilters.includes('ADULT') && (!$query.me?.personalIdentity || !$query.me?.isAdulthood)) {
+  //   adultOpen = true;
+  // }
 
   const likePost = graphql(`
     mutation Post_LikePost_Mutation($input: LikePostInput!) {
@@ -389,12 +387,10 @@
                     {humanizeNumber($query.post.likeCount)}
                   </span>
                 {/if}
-                {#if $postRevision.contentKind === 'ARTICLE'}
-                  <span class="flex items-center gap-1">
-                    <i class="i-lc-alarm-clock square-3.75" />
-                    {calcurateReadingTime($postRevision.characterCount)}분
-                  </span>
-                {/if}
+                <span class="flex items-center gap-1">
+                  <i class="i-lc-alarm-clock square-3.75" />
+                  {calcurateReadingTime($postRevision.characterCount)}분
+                </span>
               </div>
             </div>
           </div>
@@ -835,7 +831,7 @@
 
 <LoginRequireModal bind:open={loginRequireOpen} />
 
-{#if $postRevision.contentKind === 'ARTICLE' && !preview}
+{#if !preview}
   <Toolbar {$query} {handleShare} />
 {/if}
 

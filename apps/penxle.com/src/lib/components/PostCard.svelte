@@ -22,7 +22,6 @@
         permalink
         blurred
         publishedAt
-        contentFilters
         hasPassword
         ageRating
 

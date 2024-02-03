@@ -67,7 +67,6 @@ export const searchSchema = defineSchema((builder) => {
         includeTags: t.arg.stringList({ defaultValue: [] }),
         excludeTags: t.arg.stringList({ defaultValue: [] }),
         adultFilter: t.arg.boolean({ required: false }),
-        excludeContentFilters: t.arg({ type: [PrismaEnums.ContentFilterCategory], required: false }),
         orderBy: t.arg({ type: OrderByKind, defaultValue: 'ACCURACY' }),
         page: t.arg.int({ defaultValue: 1 }),
       },

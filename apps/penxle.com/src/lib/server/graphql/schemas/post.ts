@@ -1,7 +1,6 @@
 import { init as cuid } from '@paralleldrive/cuid2';
 import { hash, verify } from 'argon2';
 import dayjs from 'dayjs';
-import * as R from 'radash';
 import { match, P } from 'ts-pattern';
 import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
@@ -124,32 +123,10 @@ export const postSchema = defineSchema((builder) => {
         },
       }),
 
-      contentFilters: t.expose('contentFilters', { type: [PrismaEnums.ContentFilterCategory] }),
       blurred: t.boolean({
-        select: {
-          tags: {
-            where: { kind: 'TRIGGER' },
-          },
-        },
-        resolve: async (post, _, { db, ...context }) => {
-          if (!context.session) {
-            return post.contentFilters.length > 0;
-          }
-
-          const myFilters = R.objectify(
-            // await db.userContentFilterPreference.findMany({
-            //   where: { userId: context.session.userId },
-            // }),
-            await db.user
-              .findUniqueOrThrow({
-                where: { id: context.session.userId },
-              })
-              .contentFilterPreferences(),
-            (filter) => filter.category,
-            (filter) => filter.action,
-          );
-
-          return post.tags.length > 0 || post.contentFilters.some((filter) => myFilters[filter] !== 'EXPOSE');
+        select: { tags: { where: { kind: 'TRIGGER' } } },
+        resolve: async (post) => {
+          return post.tags.length > 0;
         },
       }),
 
@@ -171,7 +148,6 @@ export const postSchema = defineSchema((builder) => {
         type: 'PostRevision',
         authScopes: { $granted: '$post:edit' },
         grantScopes: ['$postRevision:edit'],
-        nullable: true,
         args: { revisionId: t.arg.id({ required: false }) },
         select: ({ revisionId }, __, nestedSelection) => ({
           revisions: nestedSelection({
@@ -232,27 +208,6 @@ export const postSchema = defineSchema((builder) => {
               orderBy: { createdAt: 'desc' },
             })),
           ];
-        },
-      }),
-
-      bookmarked: t.boolean({
-        deprecationReason: 'Use bookmarkGroups instead',
-        select: (_, { ...context }) => {
-          if (!context.session) {
-            return {};
-          }
-
-          return {
-            bookmarks: {
-              where: {
-                bookmarkGroup: { userId: context.session?.userId },
-              },
-            },
-          };
-        },
-
-        resolve: (post) => {
-          return post.bookmarks?.length > 0;
         },
       }),
 
@@ -504,48 +459,11 @@ export const postSchema = defineSchema((builder) => {
       title: t.exposeString('title', { nullable: true }),
       subtitle: t.exposeString('subtitle', { nullable: true }),
       price: t.exposeInt('price', { nullable: true }),
-      autoIndent: t.exposeBoolean('autoIndent'),
       paragraphIndent: t.exposeInt('paragraphIndent'),
       paragraphSpacing: t.exposeInt('paragraphSpacing'),
 
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
       updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
-
-      originalThumbnail: t.relation('originalThumbnail', {
-        nullable: true,
-        deprecationReason: 'Use Post.thumbnail instead',
-        authScopes: { $granted: '$postRevision:view' },
-        unauthorizedResolver: () => null,
-      }),
-
-      croppedThumbnail: t.relation('croppedThumbnail', {
-        nullable: true,
-        deprecationReason: 'Use Post.thumbnail instead',
-        authScopes: { $granted: '$postRevision:view' },
-        unauthorizedResolver: () => null,
-      }),
-
-      thumbnailBounds: t.expose('thumbnailBounds', {
-        type: 'JSON',
-        deprecationReason: 'Deleted',
-        nullable: true,
-        authScopes: { $granted: '$postRevision:view' },
-        unauthorizedResolver: () => null,
-      }),
-
-      tags: t.prismaField({
-        type: ['Tag'],
-        deprecationReason: 'Use Post.tags instead',
-        select: (_, __, nestedSelection) => ({
-          tags: {
-            include: { tag: nestedSelection() },
-          },
-        }),
-
-        resolve: (_, { tags }) => tags.map(({ tag }) => tag),
-      }),
-
-      contentKind: t.expose('contentKind', { type: PrismaEnums.PostRevisionContentKind }),
 
       editableContent: t.field({
         type: 'JSON',
@@ -776,13 +694,13 @@ export const postSchema = defineSchema((builder) => {
       thumbnailId: t.id({ required: false }),
       visibility: t.field({ type: PrismaEnums.PostVisibility }),
       password: t.string({ required: false }),
-      ageRating: t.field({ type: PrismaEnums.PostAgeRating, defaultValue: 'ALL' }),
-      externalSearchable: t.boolean({ defaultValue: true }),
+      ageRating: t.field({ type: PrismaEnums.PostAgeRating }),
+      externalSearchable: t.boolean(),
       discloseStats: t.boolean(),
       receiveFeedback: t.boolean(),
       receivePatronage: t.boolean(),
       receiveTagContribution: t.boolean(),
-      protectContent: t.boolean({ required: false, defaultValue: true }),
+      protectContent: t.boolean(),
       category: t.field({ type: PrismaEnums.PostCategory }),
       pairs: t.field({ type: [PrismaEnums.PostPair], defaultValue: [] }),
       tags: t.field({ type: [TagInput], defaultValue: [] }),
@@ -968,15 +886,12 @@ export const postSchema = defineSchema((builder) => {
             receivePatronage: true,
             receiveTagContribution: true,
             protectContent: true,
-            contentFilters: [],
             revisions: {
               create: {
                 id: createId(),
                 userId: context.session.userId,
                 kind: 'AUTO_SAVE',
                 freeContentId: emptyContent.id,
-                contentKind: 'ARTICLE',
-                title: '',
               },
             },
           },
@@ -1170,13 +1085,6 @@ export const postSchema = defineSchema((builder) => {
             if (revision.price <= 0 || revision.price > 1_000_000 || revision.price % 100 !== 0) {
               throw new IntentionalError('잘못된 가격이에요');
             }
-            if (
-              revision.contentKind === 'GALLERY' &&
-              ((revision.freeContent.data as JSONContent[]).length === 0 ||
-                ((revision.paidContent?.data as JSONContent[])?.length ?? 0) === 0)
-            ) {
-              throw new IntentionalError('결제 상자 위치가 잘못되었어요');
-            }
           }
         }
 
@@ -1234,8 +1142,7 @@ export const postSchema = defineSchema((builder) => {
             receiveFeedback: input.receiveFeedback,
             receivePatronage: input.receivePatronage,
             receiveTagContribution: input.receiveTagContribution,
-            // TODO: required 만들기
-            protectContent: input.protectContent ?? true,
+            protectContent: input.protectContent,
             password,
             category: input.category,
             pairs: input.pairs,

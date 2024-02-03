@@ -25,7 +25,7 @@
           id
           permalink
 
-          draftRevision @_required {
+          draftRevision {
             id
             title
             updatedAt

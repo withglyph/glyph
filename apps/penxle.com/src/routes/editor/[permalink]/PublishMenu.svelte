@@ -103,7 +103,7 @@
           }
         }
 
-        draftRevision @_required {
+        draftRevision {
           id
         }
 

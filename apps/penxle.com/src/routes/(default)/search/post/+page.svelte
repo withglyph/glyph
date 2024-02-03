@@ -13,7 +13,6 @@
       $includeTags: [String!]! = []
       $excludeTags: [String!]! = []
       $adultFilter: Boolean
-      $excludeContentFilters: [ContentFilterCategory!]
       $orderBy: OrderByKind!
       $page: Int! = 1
     ) {
@@ -22,7 +21,6 @@
         includeTags: $includeTags
         excludeTags: $excludeTags
         adultFilter: $adultFilter
-        excludeContentFilters: $excludeContentFilters
         orderBy: $orderBy
         page: $page
       ) {

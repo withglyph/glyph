@@ -341,13 +341,11 @@ type Post {
   ageRating: PostAgeRating!
   blurred: Boolean!
   bookmarkGroups: [BookmarkGroup!]!
-  bookmarked: Boolean! @deprecated(reason: "Use bookmarkGroups instead")
   category: PostCategory!
   collection: SpaceCollection
-  contentFilters: [ContentFilterCategory!]!
   createdAt: DateTime!
   discloseStats: Boolean!
-  draftRevision(revisionId: ID): PostRevision
+  draftRevision(revisionId: ID): PostRevision!
   externalSearchable: Boolean!
   hasPassword: Boolean!
   id: ID!
@@ -408,30 +406,19 @@ type PostReaction {
 }
 
 type PostRevision {
-  autoIndent: Boolean!
   characterCount: Int!
   content: JSON!
-  contentKind: PostRevisionContentKind!
   createdAt: DateTime!
-  croppedThumbnail: Image @deprecated(reason: "Use Post.thumbnail instead")
   editableContent: JSON!
   id: ID!
   kind: PostRevisionKind!
-  originalThumbnail: Image @deprecated(reason: "Use Post.thumbnail instead")
   paragraphIndent: Int!
   paragraphSpacing: Int!
   previewText: String!
   price: Int
   subtitle: String
-  tags: [Tag!]! @deprecated(reason: "Use Post.tags instead")
-  thumbnailBounds: JSON @deprecated(reason: "Deleted")
   title: String
   updatedAt: DateTime!
-}
-
-enum PostRevisionContentKind {
-  ARTICLE
-  GALLERY
 }
 
 enum PostRevisionKind {
@@ -492,14 +479,14 @@ type ProvisionedUser {
 }
 
 input PublishPostInput {
-  ageRating: PostAgeRating! = ALL
+  ageRating: PostAgeRating!
   category: PostCategory!
   collectionId: ID
   discloseStats: Boolean!
-  externalSearchable: Boolean! = true
+  externalSearchable: Boolean!
   pairs: [PostPair!]! = []
   password: String
-  protectContent: Boolean = true
+  protectContent: Boolean!
   receiveFeedback: Boolean!
   receivePatronage: Boolean!
   receiveTagContribution: Boolean!
@@ -551,7 +538,7 @@ type Query {
   recommendFeed: [Post!]!
   sampleImage: Image!
   sampleImages: [Image!]!
-  searchPosts(adultFilter: Boolean, excludeContentFilters: [ContentFilterCategory!], excludeTags: [String!]! = [], includeTags: [String!]! = [], orderBy: OrderByKind! = ACCURACY, page: Int! = 1, query: String!): SearchResult!
+  searchPosts(adultFilter: Boolean, excludeTags: [String!]! = [], includeTags: [String!]! = [], orderBy: OrderByKind! = ACCURACY, page: Int! = 1, query: String!): SearchResult!
   searchSpaces(query: String!): [Space!]!
   searchTags(query: String!): [Tag!]!
   space(slug: String!): Space!
