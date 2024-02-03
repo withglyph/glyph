@@ -102,6 +102,8 @@
         updatedAt: resp.draftRevision.updatedAt,
       };
 
+      warnUnload = false;
+
       return resp.draftRevision.id;
     };
   };
