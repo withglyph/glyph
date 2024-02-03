@@ -254,7 +254,7 @@
           <Menu class="h-8.5" offset={menuOffset} placement="bottom" rounded={false}>
             <div
               slot="value"
-              class="flex pl-4px pr-2px items-center gap-1 whitespace-nowrap h-full hover:(bg-gray-100 rounded)"
+              class="flex justify-between pl-4px pr-2px items-center gap-1 whitespace-nowrap h-full hover:(bg-gray-100 rounded) w-36"
               let:open
             >
               <div>
@@ -299,7 +299,11 @@
             placement="bottom"
             rounded={false}
           >
-            <div slot="value" class="flex center pl-4px pr-2px gap-1 h-full hover:(bg-gray-100 rounded)" let:open>
+            <div
+              slot="value"
+              class="flex justify-between items-center pl-4px pr-2px gap-1 h-full hover:(bg-gray-100 rounded) w-16"
+              let:open
+            >
               {values.fontSize.find(({ value }) => editor?.getAttributes('font_size').fontSize === value)?.label ??
                 values.fontSize[4].label}
               <i class={clsx('i-tb-chevron-down square-4.5 text-gray-300', open && 'rotate-180')} />
