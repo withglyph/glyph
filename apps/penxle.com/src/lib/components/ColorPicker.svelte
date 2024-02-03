@@ -12,20 +12,16 @@
   let gradientSliderInputEl: HTMLInputElement | undefined;
 
   export let hex = '#000000';
-  let initialize = false;
   const dispatch = createEventDispatcher<{ input: { hex: string } }>();
+  const dispatchInput = (color: Color) => {
+    hex = color.hex().toString().toUpperCase();
+    dispatch('input', { hex });
+  };
 
   let rgb = Color(hex).rgb();
 
   $: if (hexInputEl) {
-    hex = rgb.hex().toString().toUpperCase();
     hexInputEl.value = hex;
-  }
-
-  $: if (initialize) {
-    dispatch('input', { hex });
-  } else {
-    initialize = true;
   }
 
   $: if (gradientSliderInputEl) {
@@ -79,10 +75,12 @@
     const imageData = colorCtx.getImageData(x, y, 1, 1).data;
 
     rgb = Color([imageData[0], imageData[1], imageData[2]]);
+    dispatchInput(rgb);
   };
 
   const updateColor = (color: Color) => {
     rgb = color.rgb();
+    dispatchInput(rgb);
 
     fillGradient();
     updatePosition();
@@ -173,6 +171,7 @@
 
           const imageData = colorCtx.getImageData(x, y, 1, 1).data;
           rgb = Color([imageData[0], imageData[1], imageData[2]]);
+          dispatchInput(rgb);
         }}
       />
       <canvas
