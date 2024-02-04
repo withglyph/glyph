@@ -1,4 +1,4 @@
-import { DropCursor, GapCursor, History, Placeholder } from '$lib/tiptap/extensions';
+import { DropCursor, GapCursor, History, Placeholder, Typography } from '$lib/tiptap/extensions';
 import { Bold, FontColor, FontFamily, FontSize, Italic, Link, Ruby, Strike, Underline } from '$lib/tiptap/marks';
 import { AccessBarrier, Embed, File, Image } from '$lib/tiptap/node-views';
 import {
@@ -43,6 +43,7 @@ export const extensions = [
   GapCursor,
   History,
   Placeholder,
+  Typography,
 
   // node views
   AccessBarrier,
