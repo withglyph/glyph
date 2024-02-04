@@ -23,6 +23,18 @@ export const revisionContentToText = async (revisionContent: RevisionContent): P
   return '';
 };
 
+export const isEmptyContent = (content: JSONContent[]): boolean => {
+  if (content.length === 0) {
+    return true;
+  }
+
+  if (content.length === 1 && content[0].type === 'paragraph' && !content[0].content?.length) {
+    return true;
+  }
+
+  return false;
+};
+
 export const sanitizeContent = async (content: JSONContent[]): Promise<JSONContent[]> => {
   traverse(content, ({ key, value, parent }) => {
     if (parent && key === 'attrs' && typeof value === 'object') {

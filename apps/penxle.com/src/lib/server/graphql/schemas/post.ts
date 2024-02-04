@@ -22,7 +22,7 @@ import {
   revisePostContent,
   searchResultToPrismaData,
 } from '$lib/server/utils';
-import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
+import { decorateContent, isEmptyContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
 import { base36To10, createId, createTiptapDocument, createTiptapNode, validateTiptapDocument } from '$lib/utils';
 import { PublishPostInputSchema, RevisePostInputSchema } from '$lib/validations/post';
 import { PrismaEnums } from '$prisma';
@@ -470,7 +470,9 @@ export const postSchema = defineSchema((builder) => {
         authScopes: { $granted: '$postRevision:edit' },
         select: { price: true, freeContent: true, paidContent: true },
         resolve: async (revision, _, { db }) => {
-          const freeContent = await decorateContent(db, revision.freeContent.data as JSONContent[]);
+          const freeContent = revision.freeContent
+            ? await decorateContent(db, revision.freeContent.data as JSONContent[])
+            : [{ type: 'paragraph' }];
           const paidContent = revision.paidContent
             ? await decorateContent(db, revision.paidContent.data as JSONContent[])
             : null;
@@ -488,7 +490,9 @@ export const postSchema = defineSchema((builder) => {
         authScopes: { $granted: '$postRevision:view' },
         select: { post: true, freeContent: true, paidContent: true },
         resolve: async (revision, _, { db, ...context }) => {
-          const freeContent = await decorateContent(db, revision.freeContent.data as JSONContent[]);
+          const freeContent = revision.freeContent
+            ? await decorateContent(db, revision.freeContent.data as JSONContent[])
+            : [{ type: 'paragraph' }];
           const paidContent = revision.paidContent
             ? await decorateContent(db, revision.paidContent.data as JSONContent[])
             : null;
@@ -614,7 +618,7 @@ export const postSchema = defineSchema((builder) => {
         authScopes: { $granted: '$postRevision:view' },
         select: { freeContent: true, paidContent: true },
         resolve: async (revision) => {
-          const contentText = await revisionContentToText(revision.freeContent);
+          const contentText = revision.freeContent ? await revisionContentToText(revision.freeContent) : '';
           const paidContentText = revision.paidContent ? await revisionContentToText(revision.paidContent) : '';
           return contentText.length + paidContentText.length;
         },
@@ -627,7 +631,7 @@ export const postSchema = defineSchema((builder) => {
         authScopes: { $granted: '$postRevision:view' },
         select: { freeContent: true },
         resolve: async (revision) => {
-          const contentText = await revisionContentToText(revision.freeContent);
+          const contentText = revision.freeContent ? await revisionContentToText(revision.freeContent) : '';
           return contentText.slice(0, 200).replaceAll(/\s+/g, ' ');
         },
 
@@ -870,8 +874,6 @@ export const postSchema = defineSchema((builder) => {
           }
         }
 
-        const emptyContent = await revisePostContent({ db, contentData: [createTiptapNode({ type: 'paragraph' })] });
-
         return await db.post.create({
           ...query,
           data: {
@@ -879,7 +881,7 @@ export const postSchema = defineSchema((builder) => {
             permalink,
             userId: context.session.userId,
             spaceId: input.spaceId,
-            state: 'DRAFT',
+            state: 'EPHEMERAL',
             visibility: 'PUBLIC',
             discloseStats: true,
             receiveFeedback: true,
@@ -891,7 +893,6 @@ export const postSchema = defineSchema((builder) => {
                 id: createId(),
                 userId: context.session.userId,
                 kind: 'AUTO_SAVE',
-                freeContentId: emptyContent.id,
               },
             },
           },
@@ -942,28 +943,29 @@ export const postSchema = defineSchema((builder) => {
         document = await sanitizeContent(document);
 
         const accessBarrierPosition = document.findIndex((node) => node.type === 'access_barrier');
-        const accessBarrier = accessBarrierPosition === -1 ? undefined : document[accessBarrierPosition];
-        const freeContentData = accessBarrier ? document.slice(0, accessBarrierPosition) : document;
-        const paidContentData = accessBarrier ? document.slice(accessBarrierPosition + 1) : null;
+        const accessBarrier = document[accessBarrierPosition];
+        const freeContentData = document.slice(0, accessBarrierPosition);
+        const paidContentData = document.slice(accessBarrierPosition + 1);
 
-        const freeContent = await revisePostContent({ db, contentData: freeContentData });
-        const paidContent =
-          paidContentData && paidContentData.length > 0
-            ? await revisePostContent({ db, contentData: paidContentData })
-            : null;
-        const price: number | null = accessBarrier?.attrs?.price ?? null;
+        const freeContent = isEmptyContent(freeContentData)
+          ? null
+          : await revisePostContent({ db, contentData: freeContentData });
+        const paidContent = isEmptyContent(paidContentData)
+          ? null
+          : await revisePostContent({ db, contentData: paidContentData });
+        const price: number | null = accessBarrier.attrs?.price ?? null;
 
         const revisionData = {
           userId: context.session.userId,
           kind: input.revisionKind,
           title: input.title?.length ? input.title : null,
           subtitle: input.subtitle?.length ? input.subtitle : null,
-          freeContentId: freeContent.id,
+          freeContentId: freeContent?.id,
           paidContentId: paidContent?.id ?? null,
           price,
           paragraphIndent: input.paragraphIndent,
           paragraphSpacing: input.paragraphSpacing,
-        };
+        } as const;
 
         /// 여기까지 데이터 가공 단계
         /// 여기부터 포스트 수정 단계
@@ -987,13 +989,15 @@ export const postSchema = defineSchema((builder) => {
           revisionId = lastRevision.id;
 
           // dangling PostContent 삭제
-          await db.postRevisionContent.deleteMany({
-            where: {
-              id: lastRevision.freeContentId,
-              revisionsUsingThisAsFreeContent: { none: {} },
-              revisionsUsingThisAsPaidContent: { none: {} },
-            },
-          });
+          if (lastRevision.freeContentId) {
+            await db.postRevisionContent.deleteMany({
+              where: {
+                id: lastRevision.freeContentId,
+                revisionsUsingThisAsFreeContent: { none: {} },
+                revisionsUsingThisAsPaidContent: { none: {} },
+              },
+            });
+          }
 
           if (lastRevision.paidContentId) {
             await db.postRevisionContent.deleteMany({
@@ -1011,6 +1015,17 @@ export const postSchema = defineSchema((builder) => {
               postId: input.postId,
               ...revisionData,
             },
+          });
+        }
+
+        /// 게시글에 수정된 부분이 있을 경우 포스트 상태를 DRAFT로 변경
+        if (
+          post.state === 'EPHEMERAL' &&
+          (input.title?.length || input.subtitle?.length || freeContent || paidContent)
+        ) {
+          await db.post.update({
+            where: { id: input.postId },
+            data: { state: 'DRAFT' },
           });
         }
 

@@ -63,7 +63,7 @@ export const imageSchema = defineSchema((builder) => {
               where: { id: 'authlayout_bg' },
             });
 
-            if (!post?.publishedRevision) {
+            if (!post?.publishedRevision?.freeContent) {
               return null;
             }
 

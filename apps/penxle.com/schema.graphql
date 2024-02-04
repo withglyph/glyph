@@ -431,6 +431,7 @@ enum PostRevisionKind {
 enum PostState {
   DELETED
   DRAFT
+  EPHEMERAL
   PUBLISHED
 }
 

@@ -232,10 +232,10 @@ model PostRevision {
   post          Post                 @relation(fields: [postId], references: [id])
   userId        String               @map("user_id")
   user          User                 @relation(fields: [userId], references: [id])
-  freeContentId String               @map("free_content_id")
-  freeContent   PostRevisionContent  @relation(name: "free_content", fields: [freeContentId], references: [id])
+  freeContentId String?              @map("free_content_id")
+  freeContent   PostRevisionContent? @relation(name: "free_content", fields: [freeContentId], references: [id], onDelete: Restrict)
   paidContentId String?              @map("paid_content_id")
-  paidContent   PostRevisionContent? @relation(name: "paid_content", fields: [paidContentId], references: [id])
+  paidContent   PostRevisionContent? @relation(name: "paid_content", fields: [paidContentId], references: [id], onDelete: Restrict)
 
   paragraphIndent  Int @default(100) @map("paragraph_indent")
   paragraphSpacing Int @default(100) @map("paragraph_spacing")
@@ -840,6 +840,7 @@ enum PostRevisionContentKind {
 }
 
 enum PostState {
+  EPHEMERAL
   DRAFT
   PUBLISHED
   DELETED
