@@ -1,4 +1,5 @@
-import { Node } from '@tiptap/core';
+import { findChildren, Node } from '@tiptap/core';
+import { Plugin } from '@tiptap/pm/state';
 import clsx from 'clsx';
 import { values } from '$lib/tiptap/values';
 import { closest } from '$lib/utils';
@@ -124,5 +125,37 @@ export const Paragraph = Node.create({
           return commands.updateAttributes(this.name, { letterSpacing });
         },
     };
+  },
+
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        appendTransaction: (_, __, newState) => {
+          const { doc, selection, storedMarks, tr } = newState;
+          const { $from, empty } = selection;
+
+          if (
+            $from.parent.type.name !== this.name ||
+            !empty ||
+            $from.parentOffset !== 0 ||
+            $from.parent.childCount !== 0 ||
+            storedMarks?.length
+          ) {
+            return;
+          }
+
+          const lastNode = findChildren(doc, (node) => node.type.name === this.name).findLast(
+            ({ node, pos }) => node.childCount > 0 && pos < $from.pos,
+          );
+
+          const lastChild = lastNode?.node.lastChild;
+          if (!lastChild) {
+            return;
+          }
+
+          return tr.setStoredMarks(lastChild.marks);
+        },
+      }),
+    ];
   },
 });
