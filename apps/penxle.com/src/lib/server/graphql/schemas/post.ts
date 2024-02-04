@@ -1159,34 +1159,36 @@ export const postSchema = defineSchema((builder) => {
           },
         });
 
-        if (input.collectionId && post.collectionPost?.collectionId !== input.collectionId) {
-          if (post.collectionPost) {
-            await db.spaceCollectionPost.delete({
+        if (input.collectionId) {
+          if (post.collectionPost?.collectionId !== input.collectionId) {
+            if (post.collectionPost) {
+              await db.spaceCollectionPost.delete({
+                where: {
+                  postId: post.id,
+                },
+              });
+            }
+
+            const targetCollectionAggregation = await db.spaceCollectionPost.aggregate({
               where: {
+                collectionId: input.collectionId,
+              },
+              _max: {
+                order: true,
+              },
+            });
+
+            const order = targetCollectionAggregation._max.order ?? -1;
+
+            await db.spaceCollectionPost.create({
+              data: {
+                id: createId(),
                 postId: post.id,
+                collectionId: input.collectionId,
+                order: order + 1,
               },
             });
           }
-
-          const targetCollectionAggregation = await db.spaceCollectionPost.aggregate({
-            where: {
-              collectionId: input.collectionId,
-            },
-            _max: {
-              order: true,
-            },
-          });
-
-          const order = targetCollectionAggregation._max.order ?? -1;
-
-          await db.spaceCollectionPost.create({
-            data: {
-              id: createId(),
-              postId: post.id,
-              collectionId: input.collectionId,
-              order: order + 1,
-            },
-          });
         } else {
           await db.spaceCollectionPost.deleteMany({
             where: {
