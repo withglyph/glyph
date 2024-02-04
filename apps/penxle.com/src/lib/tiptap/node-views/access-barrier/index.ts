@@ -23,6 +23,10 @@ export const AccessBarrier = createNodeView(Component, {
           transformCopied: () => Slice.empty,
         },
         filterTransaction: (tr) => {
+          if (!this.editor.isEditable) {
+            return true;
+          }
+
           const nodes = findChildren(tr.doc, (node) => node.type.name === this.name);
           return nodes.length === 1;
         },
