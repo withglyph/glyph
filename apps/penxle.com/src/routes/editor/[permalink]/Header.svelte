@@ -79,6 +79,7 @@
         }
 
         ...EditorPage_PublishMenu_post
+        ...EditorPage_DraftListModal_post
         ...EditorPage_RevisionListModal_Post
       }
     `),
@@ -754,7 +755,7 @@
   </div>
 </header>
 
-<DraftListModal $user={$query.me} bind:open={draftListOpen} />
+<DraftListModal {$post} $user={$query.me} bind:open={draftListOpen} />
 <RevisionListModal {$post} bind:open={revisionListOpen} />
 
 <style>

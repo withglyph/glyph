@@ -905,7 +905,10 @@ export const postSchema = defineSchema((builder) => {
       args: { input: t.arg({ type: RevisePostInput }) },
       resolve: async (query, _, { input }, { db, ...context }) => {
         const post = await db.post.findUniqueOrThrow({
-          where: { id: input.postId },
+          where: {
+            id: input.postId,
+            state: { not: 'DELETED' },
+          },
         });
 
         if (post.userId !== context.session.userId) {
