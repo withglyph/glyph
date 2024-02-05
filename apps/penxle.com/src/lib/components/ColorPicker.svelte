@@ -15,6 +15,7 @@
   const dispatch = createEventDispatcher<{ input: { hex: string } }>();
   const dispatchInput = (color: Color) => {
     hex = color.hex().toString().toUpperCase();
+
     dispatch('input', { hex });
   };
 
@@ -22,10 +23,6 @@
 
   $: if (hexInputEl) {
     hexInputEl.value = hex;
-  }
-
-  $: if (gradientSliderInputEl) {
-    gradientSliderInputEl.value = rgb.hue().toString();
   }
 
   let x = 0;
@@ -84,6 +81,9 @@
 
     fillGradient();
     updatePosition();
+
+    if (!gradientSliderInputEl) throw new Error('gradientSliderInputEl is undefined');
+    gradientSliderInputEl.value = rgb.hue().toString();
   };
 
   const updateHistory = async () => {
