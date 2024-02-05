@@ -9,6 +9,7 @@
   import { Avatar, Button, Image, SpacePostCard, Tag, Tooltip } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import Modal from '$lib/components/Modal.svelte';
+  import { categoryFilter } from '$lib/const/feed';
   import { EmojiPicker } from '$lib/emoji';
   import Emoji from '$lib/emoji/Emoji.svelte';
   import { FormValidationError } from '$lib/errors';
@@ -75,6 +76,8 @@
           protectContent
           publishedAt
           ageRating
+          category
+          pairs
 
           tags {
             id
@@ -590,6 +593,10 @@
     <hr class="w-full border-color-alphagray-10" />
 
     <div class="flex gap-2 flex-wrap">
+      <Tag size="sm">#{categoryFilter[$query.post.category]}</Tag>
+      {#each $query.post.pairs as pair (pair)}
+        <Tag size="sm">#{pair}</Tag>
+      {/each}
       {#each $query.post.tags as { tag } (tag.id)}
         <Tag href={preview ? undefined : `/tag/${tag.name}`} size="sm">
           #{tag.name}

@@ -1,4 +1,4 @@
-import type { ContentFilterCategory } from '$glitch';
+import type { ContentFilterCategory, PostCategory } from '$glitch';
 
 export const filterToLocaleString: Record<ContentFilterCategory, string> = {
   ADULT: '성인물',
@@ -12,4 +12,11 @@ export const filterToLocaleString: Record<ContentFilterCategory, string> = {
   PHOBIA: '정신질환/공포증',
   TRAUMA: '트라우마',
   VIOLENCE: '폭력성',
+};
+
+export const categoryFilter: Record<PostCategory, string> = {
+  FANFICTION: '2차창작',
+  NONFICTION: '비문학',
+  ORIGINAL: '오리지널',
+  OTHER: '기타',
 };

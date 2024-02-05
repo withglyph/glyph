@@ -3,6 +3,7 @@
   import dayjs from 'dayjs';
   import { fragment, graphql } from '$glitch';
   import { Badge, Image, Tag } from '$lib/components';
+  import { categoryFilter } from '$lib/const/feed';
   import { humanizeNumber } from '$lib/utils';
   import type { SpaceFeed_post } from '$glitch';
 
@@ -24,6 +25,8 @@
         viewCount
         discloseStats
         ageRating
+        category
+        pairs
 
         tags {
           id
@@ -90,6 +93,8 @@
         {/if}
         {#if $post.ageRating === 'R19'}
           <Badge class="w-fit mb-1" color="red">성인물</Badge>
+        {:else if $post.ageRating === 'R15'}
+          <Badge class="w-fit mb-1" color="red">15세</Badge>
         {/if}
         {#if triggerTags.length > 0}
           <Badge class="w-fit mb-1" color="orange">트리거 주의</Badge>
@@ -146,16 +151,20 @@
     </article>
   </a>
   <div class="flex justify-between items-center gap-3 mt-2">
-    {#if $post.tags}
-      <div class="flex gap-1.5 flex-wrap">
+    <div class="flex gap-1.5 flex-wrap">
+      <Tag class="max-w-65" size="sm">#{categoryFilter[$post.category]}</Tag>
+      {#each $post.pairs as pair (pair)}
+        <Tag class="max-w-65" size="sm">#{pair}</Tag>
+      {/each}
+      {#if $post.tags}
         {#each $post.tags.slice(0, 4) as { tag } (tag.id)}
           <Tag class="max-w-65" href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
         {/each}
         {#if $post.tags.length > 4}
           <Tag size="sm">+{$post.tags.length - 4}개의 태그</Tag>
         {/if}
-      </div>
-    {/if}
+      {/if}
+    </div>
 
     <time class="body-13-m text-secondary whitespace-nowrap" datetime={$post.publishedAt}>
       {dayjs($post.publishedAt).formatAsDate()}

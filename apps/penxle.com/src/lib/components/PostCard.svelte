@@ -4,6 +4,7 @@
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Avatar, Badge, Image, Tag } from '$lib/components';
+  import { categoryFilter } from '$lib/const/feed';
   import { toast } from '$lib/notification';
   import type { Feed_post } from '$glitch';
 
@@ -24,6 +25,8 @@
         publishedAt
         hasPassword
         ageRating
+        category
+        pairs
 
         tags {
           id
@@ -167,6 +170,8 @@
       {/if}
       {#if $post.ageRating === 'R19'}
         <Badge class="w-fit mb-1" color="red">성인물</Badge>
+      {:else if $post.ageRating === 'R15'}
+        <Badge class="w-fit mb-1" color="red">15세</Badge>
       {/if}
       {#if triggerTags.length > 0}
         <Badge class="w-fit mb-1" color="orange">트리거 주의</Badge>
@@ -219,16 +224,21 @@
     </div>
   </a>
 
-  {#if $post.tags.length > 0}
-    <div class={clsx('flex flex-wrap gap-1.5 px-6 mt-2', showSpaceInfoMessage && 'pb-4')}>
+  <div class={clsx('flex flex-wrap gap-1.5 px-6 mt-2', showSpaceInfoMessage && 'pb-4')}>
+    <Tag class="max-w-65" size="sm">#{categoryFilter[$post.category]}</Tag>
+    {#each $post.pairs as pair (pair)}
+      <Tag class="max-w-65" size="sm">#{pair}</Tag>
+    {/each}
+
+    {#if $post.tags.length > 0}
       {#each $post.tags.slice(0, 4) as { tag } (tag.id)}
         <Tag class="max-w-65" href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
       {/each}
       {#if $post.tags.length > 4}
         <Tag size="sm">+{$post.tags.length - 4}개의 태그</Tag>
       {/if}
-    </div>
-  {/if}
+    {/if}
+  </div>
 
   {#if !showSpaceInfoMessage}
     <a class="flex items-center px-6 pt-4 space-x-3 truncate pb-4" href={`/${$post.space.slug}/${$post.permalink}`}>
