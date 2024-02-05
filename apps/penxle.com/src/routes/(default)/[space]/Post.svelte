@@ -27,7 +27,7 @@
   let openDeletePostWarning = false;
   let blurContent = true;
   let element: 'a' | 'div';
-  let adultOpen = false;
+  let requirePersonalIdentityOpen = false;
 
   $: element = preview ? 'div' : 'a';
 
@@ -49,6 +49,7 @@
         me {
           id
           isAdulthood
+          allowedAgeRating
 
           personalIdentity {
             id
@@ -197,9 +198,14 @@
     blurContent = $query.post.blurred;
   });
 
-  // $: if ($query.post.contentFilters.includes('ADULT') && (!$query.me?.personalIdentity || !$query.me?.isAdulthood)) {
-  //   adultOpen = true;
-  // }
+  $: if ($query.post.ageRating !== 'ALL') {
+    loginRequireOpen = !$query.me;
+
+    if ($query.me) {
+      requirePersonalIdentityOpen =
+        !$query.me.personalIdentity || !$query.me.allowedAgeRating.includes($query.post.ageRating);
+    }
+  }
 
   const likePost = graphql(`
     mutation Post_LikePost_Mutation($input: LikePostInput!) {
@@ -491,6 +497,8 @@
               <ul class="flex gap-0.625rem flex-wrap justify-center max-w-26rem">
                 {#if $query.post.ageRating === 'R19'}
                   <Tag as="div" size="sm">😳 성인물</Tag>
+                {:else if $query.post.ageRating === 'R15'}
+                  <Tag as="div" size="sm">15세</Tag>
                 {/if}
                 {#each triggerTags as triggerTag (triggerTag.id)}
                   <Tag as="div" size="sm">{triggerTag.tag.name.replaceAll('_', ' ')}</Tag>
@@ -829,7 +837,14 @@
   </div>
 </article>
 
-<LoginRequireModal bind:open={loginRequireOpen} />
+<LoginRequireModal bind:open={loginRequireOpen}>
+  <svelte:fragment slot="subtitle">
+    {$query.post.ageRating === 'R15' ? '15세' : '성인'} 포스트 열람을 위해 로그인이 필요해요
+  </svelte:fragment>
+  <svelte:fragment slot="action-secondary">
+    <Button class="w-full" color="secondary" size="xl" on:click={() => history.back()}>뒤로 가기</Button>
+  </svelte:fragment>
+</LoginRequireModal>
 
 {#if !preview}
   <Toolbar {$query} {handleShare} />
@@ -854,14 +869,13 @@
   </div>
 </Modal>
 
-<Modal size="sm" bind:open={adultOpen}>
-  <svelte:fragment slot="title">성인 인증이 필요한 포스트예요</svelte:fragment>
-  <svelte:fragment slot="subtitle">
-    {!$query.me?.personalIdentity && '성인 인증을 하고 더 다양한 포스트를 감상해보세요!'}
+<Modal size="sm" bind:open={requirePersonalIdentityOpen}>
+  <svelte:fragment slot="title">
+    {$query.post.ageRating === 'R15' ? '본인' : '성인'} 인증이 필요한 포스트예요
   </svelte:fragment>
 
   <div slot="action" class="flex gap-3 w-full">
-    {#if !$query.me || !$query.me.personalIdentity}
+    {#if !$query.me?.personalIdentity}
       <Button
         class="w-full"
         color="secondary"
@@ -878,25 +892,19 @@
       class="w-full"
       size="xl"
       on:click={async () => {
-        if (!$query.me) {
-          adultOpen = false;
-          loginRequireOpen = true;
-          return;
-        }
-
-        if (!$query.me.personalIdentity) {
+        if (!$query.me?.personalIdentity) {
           await goto('/me/settings');
           return;
         }
 
-        if (!$query.me.isAdulthood) {
+        if (!$query.me.allowedAgeRating.includes($query.post.ageRating)) {
           history.back();
           return;
         }
       }}
     >
       {#if !$query.me?.personalIdentity}
-        성인 인증하기
+        본인 인증하기
       {:else}
         뒤로 가기
       {/if}
