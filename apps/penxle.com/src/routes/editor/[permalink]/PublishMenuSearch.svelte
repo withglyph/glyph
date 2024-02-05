@@ -36,19 +36,19 @@
   <form
     class="relative"
     on:submit|preventDefault={() => {
-      if (tags.some((tag) => tag.name === query)) {
+      const escapedValue = query.trim().replace(/^#/, '').replaceAll(' ', '_');
+
+      if (escapedValue.length === 0) return;
+
+      if (tags.some((tag) => tag.name === escapedValue)) {
         toast.error('중복된 태그는 입력할 수 없어요');
         return;
       }
 
-      if (!tagPattern.test(query)) {
+      if (!tagPattern.test(escapedValue)) {
         toast.error('허용되지 않은 문자를 태그로 입력했어요');
         return;
       }
-
-      const escapedValue = query.trim().replaceAll(' ', '_');
-
-      if (escapedValue.length === 0) return;
 
       tags = [...tags, { kind, name: escapedValue }];
 
