@@ -327,14 +327,14 @@
             class="py-2.5 px-4 mb-4 rounded-md relative bg-white border border-gray-200 hover:bg-gray-50 has-[:disabled]:bg-gray-50"
           >
             <Tooltip
-              enabled={!!$post.space}
+              enabled={$post.state === 'PUBLISHED'}
               message="이미 게시한 포스트는 스페이스를 바꿀 수 없어요"
               offset={16}
               placement="top"
             >
               <button
                 class="flex items-center justify-between w-full"
-                disabled={!!$post.space}
+                disabled={$post.state === 'PUBLISHED'}
                 type="button"
                 on:click={() => (spaceSelectorOpen = true)}
               >
