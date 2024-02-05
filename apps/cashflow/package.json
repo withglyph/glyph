@@ -8,19 +8,18 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.504.0",
+    "@aws-sdk/client-dynamodb": "^3.506.0",
     "@slack/bolt": "^3.17.1",
     "dayjs": "^1.11.10",
     "iconv-lite": "^0.6.3"
   },
   "devDependencies": {
-    "@penxle/lib": "workspace:^",
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
-    "@pulumi/aws": "^6.19.0",
+    "@pulumi/aws": "^6.20.1",
     "@pulumi/kubernetes": "^4.7.1",
-    "@pulumi/pulumi": "^3.104.1",
-    "@types/node": "^20.11.14",
+    "@pulumi/pulumi": "^3.104.2",
+    "@types/node": "^20.11.16",
     "tsup": "^8.0.1",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3"

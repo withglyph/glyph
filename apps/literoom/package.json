@@ -19,9 +19,9 @@
     "@penxle/lib": "workspace:^",
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
-    "@pulumi/aws": "^6.19.0",
+    "@pulumi/aws": "^6.20.1",
     "@pulumi/aws-native": "^0.95.0",
-    "@pulumi/pulumi": "^3.104.1",
+    "@pulumi/pulumi": "^3.104.2",
     "tsup": "^8.0.1",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3"
