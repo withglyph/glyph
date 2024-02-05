@@ -66,7 +66,7 @@
       bind:value={query}
       on:blur={() => {
         if (query.length > 0) {
-          formEl.submit();
+          formEl.requestSubmit();
         }
       }}
     />
