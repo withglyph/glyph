@@ -124,9 +124,24 @@ export const postSchema = defineSchema((builder) => {
       }),
 
       blurred: t.boolean({
-        select: { tags: { where: { kind: 'TRIGGER' } } },
-        resolve: async (post) => {
-          return post.tags.length > 0;
+        select: {
+          tags: { where: { kind: 'TRIGGER' } },
+          ageRating: true,
+        },
+        resolve: async (post, _, { db, ...context }) => {
+          if (post.ageRating === 'ALL') return post.tags.length > 0;
+          if (!context.session) return true;
+
+          const contentFilter = await db.userContentFilterPreference.findUnique({
+            where: {
+              userId_category: {
+                userId: context.session.userId,
+                category: 'ADULT',
+              },
+            },
+          });
+
+          return contentFilter?.action !== 'EXPOSE';
         },
       }),
 
