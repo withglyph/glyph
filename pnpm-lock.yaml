@@ -452,6 +452,9 @@ importers:
       ts-pattern:
         specifier: ^5.0.6
         version: 5.0.6
+      twitter-api-v2:
+        specifier: ^1.16.0
+        version: 1.16.0
       xmlbuilder2:
         specifier: ^3.1.1
         version: 3.1.1
@@ -13260,6 +13263,10 @@ packages:
       turbo-windows-64: 1.12.2
       turbo-windows-arm64: 1.12.2
     dev: true
+
+  /twitter-api-v2@1.16.0:
+    resolution: {integrity: sha512-e7wzWqx5oQZ9IUc2xt8JiJ84ioVGlmjmca1h0NwCKx2AFfKXDePmQa42gcBDe0qau9YaHsIpzO9z5SX1fmb+IQ==}
+    dev: false
 
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}

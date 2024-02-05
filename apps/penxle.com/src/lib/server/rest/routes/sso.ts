@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { status } from 'itty-router';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
-import { google, naver } from '$lib/server/external-api';
+import { google, naver, twitter } from '$lib/server/external-api';
 import { createAccessToken } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { createRouter } from '../router';
@@ -29,6 +29,17 @@ sso.get('/sso/naver', async (_, context) => {
   }
 
   const externalUser = await naver.authorizeUser(code);
+  return await handle(context, externalUser);
+});
+
+sso.get('/sso/twitter', async (_, context) => {
+  const token = context.event.url.searchParams.get('oauth_token');
+  const verifier = context.event.url.searchParams.get('oauth_verifier');
+  if (!token || !verifier) {
+    throw new Error('oauth_token and oauth_verifier is required');
+  }
+
+  const externalUser = await twitter.authorizeUser(token, verifier);
   return await handle(context, externalUser);
 });
 

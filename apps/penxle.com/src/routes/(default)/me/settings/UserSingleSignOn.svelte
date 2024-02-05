@@ -2,6 +2,7 @@
   import * as R from 'radash';
   import Google from '$assets/icons/google.svg?component';
   import Naver from '$assets/icons/naver.svg?component';
+  import Twitter from '$assets/icons/twitter.svg?component';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
@@ -16,6 +17,7 @@
   let providerName = {
     GOOGLE: '구글',
     NAVER: '네이버',
+    TWITTER: '트위터',
   }[provider];
 
   $: user = fragment(
@@ -67,6 +69,8 @@
         <Google class="square-9" />
       {:else if provider === 'NAVER'}
         <Naver class="sqauare-9" />
+      {:else if provider === 'TWITTER'}
+        <Twitter class="sqauare-9" />
       {/if}
     </div>
     <div>

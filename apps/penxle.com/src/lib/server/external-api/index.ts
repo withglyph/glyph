@@ -5,3 +5,4 @@ export * as google from './google';
 export * as iframely from './iframely';
 export * as naver from './naver';
 export * as portone from './portone';
+export * as twitter from './twitter';

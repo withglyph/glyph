@@ -989,6 +989,7 @@ enum UserSingleSignOnAuthorizationType {
 enum UserSingleSignOnProvider {
   GOOGLE
   NAVER
+  TWITTER
 }
 
 enum UserState {

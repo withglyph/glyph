@@ -9,7 +9,7 @@ import { IntentionalError, PermissionDeniedError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
 import { LoginUser, UpdateUserEmail } from '$lib/server/email/templates';
 import { AuthScope, UserSingleSignOnAuthorizationType } from '$lib/server/enums';
-import { coocon, google, naver } from '$lib/server/external-api';
+import { coocon, google, naver, twitter } from '$lib/server/external-api';
 import {
   createAccessToken,
   createRandomAvatar,
@@ -703,14 +703,15 @@ export const userSchema = defineSchema((builder) => {
     issueUserSingleSignOnAuthorizationUrl: t.field({
       type: IssueUserSingleSignOnAuthorizationUrlResult,
       args: { input: t.arg({ type: IssueUserSingleSignOnAuthorizationUrlInput }) },
-      resolve: (_, { input }, context) => {
+      resolve: async (_, { input }, context) => {
         const provider = match(input.provider)
           .with('GOOGLE', () => google)
           .with('NAVER', () => naver)
+          .with('TWITTER', () => twitter)
           .exhaustive();
 
         return {
-          url: provider.generateAuthorizationUrl(context.event, input.type),
+          url: await provider.generateAuthorizationUrl(context.event, input.type),
         };
       },
     }),

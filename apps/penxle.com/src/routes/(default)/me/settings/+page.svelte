@@ -168,6 +168,7 @@
 
   <UserSingleSignOn $user={$query.me} provider="GOOGLE" />
   <UserSingleSignOn $user={$query.me} provider="NAVER" />
+  <UserSingleSignOn $user={$query.me} provider="TWITTER" />
 
   <div class="w-full border-b border-alphagray-15" />
 

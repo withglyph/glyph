@@ -976,6 +976,7 @@ enum UserPersonalIdentityKind {
 enum UserSingleSignOnProvider {
   GOOGLE
   NAVER
+  TWITTER
 
   @@map("_user_single_sign_on_provider")
 }
