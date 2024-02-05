@@ -142,6 +142,8 @@
     void update();
   }
 
+  let currentColor: string;
+
   $: currentColor = (editor?.getAttributes('font_color').fontColor as string | undefined) ?? values.color[0].value;
 </script>
 
@@ -238,7 +240,7 @@
 
           <div class={clsx('z-52', !colorPickerOpen && 'hidden')} use:floatingContent use:portal>
             <ColorPicker
-              hex={currentColor}
+              bind:hex={currentColor}
               on:input={(event) => {
                 const { hex } = event.detail;
                 if (hex === values.color[0].value.toUpperCase()) {

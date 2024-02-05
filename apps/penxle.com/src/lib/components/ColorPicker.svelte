@@ -212,8 +212,10 @@
       max="300"
       min="0"
       type="range"
-      on:change={(event) => {
+      on:input={(event) => {
         updateColor({ hue: event.currentTarget.valueAsNumber });
+      }}
+      on:change={() => {
         updateHistory();
       }}
     />
