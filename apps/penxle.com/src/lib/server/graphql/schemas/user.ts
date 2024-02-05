@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
 import { random } from 'radash';
+import * as R from 'radash';
 import { match } from 'ts-pattern';
 import { IntentionalError, PermissionDeniedError } from '$lib/errors';
 import { sendEmail } from '$lib/server/email';
@@ -18,6 +19,7 @@ import {
   getUserPoint,
   getUserRevenue,
   isAdulthood,
+  isGte15,
 } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import {
@@ -80,6 +82,22 @@ export const userSchema = defineSchema((builder) => {
           }
 
           return isAdulthood(user.personalIdentity.birthday);
+        },
+      }),
+
+      allowedAgeRating: t.field({
+        type: [PrismaEnums.PostAgeRating],
+        select: { personalIdentity: { select: { birthday: true } } },
+        resolve: (user) => {
+          if (!user.personalIdentity) {
+            return ['ALL' as const];
+          }
+
+          return R.sift([
+            isAdulthood(user.personalIdentity.birthday) && 'R19',
+            isGte15(user.personalIdentity.birthday) && 'R15',
+            'ALL',
+          ]);
         },
       }),
 

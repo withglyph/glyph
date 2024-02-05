@@ -861,6 +861,7 @@ input UpdateUserProfileInput {
 }
 
 type User {
+  allowedAgeRating: [PostAgeRating!]!
   bookmarks: [BookmarkGroup!]!
   contentFilterPreferences: [UserContentFilterPreference!]!
   email: String!
