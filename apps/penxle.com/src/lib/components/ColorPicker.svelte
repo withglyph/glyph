@@ -13,8 +13,8 @@
 
   export let hex = '#000000';
   const dispatch = createEventDispatcher<{ input: { hex: string } }>();
-  const dispatchInput = (color: Color) => {
-    hex = color.hex().toString().toUpperCase();
+  const dispatchInput = () => {
+    hex = rgb.hex().toString().toUpperCase();
 
     dispatch('input', { hex });
   };
@@ -28,12 +28,12 @@
   let x = 0;
   let y = 0;
 
-  const fillGradient = () => {
+  const fillGradient = (color = rgb) => {
     if (!colorCtx) throw new Error('colorCtx is null');
 
     let gradientH = colorCtx.createLinearGradient(0, 0, colorCtx.canvas.width, 0);
     gradientH.addColorStop(0, 'white');
-    gradientH.addColorStop(1, rgb.toString());
+    gradientH.addColorStop(1, color.rgb().toString());
     colorCtx.fillStyle = gradientH;
     colorCtx.fillRect(0, 0, colorCtx.canvas.width, colorCtx.canvas.height);
 
@@ -72,15 +72,27 @@
     const imageData = colorCtx.getImageData(x, y, 1, 1).data;
 
     rgb = Color([imageData[0], imageData[1], imageData[2]]);
-    dispatchInput(rgb);
+    dispatchInput();
   };
 
-  const updateColor = (color: Color) => {
-    rgb = color.rgb();
-    dispatchInput(rgb);
+  const updateColor = (props: { hue: number } | { color: Color }) => {
+    if ('hue' in props) {
+      const saturation = (x / colorBlock.offsetWidth) * 100;
+      const lightness = (1 - y / colorBlock.offsetHeight) * 100;
 
-    fillGradient();
-    updatePosition();
+      const color = Color.hsl(props.hue, 100, 50);
+
+      rgb = color.saturationl(saturation).lightness(lightness);
+      // FIX TODO: 그라데이션 슬라이더 내 색상과 달리 채도가 낮은 문제가 있음
+      fillGradient();
+    } else {
+      rgb = props.color;
+
+      fillGradient();
+      updatePosition();
+    }
+
+    dispatchInput();
 
     if (!gradientSliderInputEl) throw new Error('gradientSliderInputEl is undefined');
     gradientSliderInputEl.value = rgb.hue().toString();
@@ -171,7 +183,7 @@
 
           const imageData = colorCtx.getImageData(x, y, 1, 1).data;
           rgb = Color([imageData[0], imageData[1], imageData[2]]);
-          dispatchInput(rgb);
+          dispatchInput();
         }}
       />
       <canvas
@@ -201,9 +213,7 @@
       min="0"
       type="range"
       on:change={(event) => {
-        const hue = event.currentTarget.valueAsNumber;
-
-        updateColor(Color.hsl(hue, 100, 50));
+        updateColor({ hue: event.currentTarget.valueAsNumber });
         updateHistory();
       }}
     />
@@ -213,7 +223,7 @@
       on:submit|preventDefault={() => {
         if (!hexInputEl) throw new Error('hexInputEl is undefined');
 
-        updateColor(Color(hexInputEl.value));
+        updateColor({ color: Color(hexInputEl.value) });
         updateHistory();
       }}
     >
@@ -223,7 +233,7 @@
         type="color"
         value={hex}
         on:input={(event) => {
-          updateColor(Color(event.currentTarget.value));
+          updateColor({ color: Color(event.currentTarget.value) });
         }}
         on:change={updateHistory}
       />
@@ -260,7 +270,7 @@
         type="button"
         on:click={() => {
           if (!color) return;
-          updateColor(Color(color));
+          updateColor({ color: Color(color) });
         }}
       />
     {/each}
@@ -276,7 +286,7 @@
         aria-pressed={hex === preset}
         type="button"
         on:click={() => {
-          updateColor(Color(preset));
+          updateColor({ color: Color(preset) });
           updateHistory();
         }}
       />
