@@ -19,6 +19,7 @@
   export let label: string;
   export let tooltip: string = label;
 
+  let formEl: HTMLFormElement;
   let postTags: TagInput[] | undefined = [];
   // let open = false;
 
@@ -34,6 +35,7 @@
   </p>
 
   <form
+    bind:this={formEl}
     class="relative"
     on:submit|preventDefault={() => {
       const escapedValue = query.trim().replace(/^#/, '').replaceAll(' ', '_');
@@ -57,12 +59,16 @@
     }}
     use:outsideClickEvent
   >
-    <!-- on:outsideClick={() => (open = false)} -->
     <input
       class="rounded-1.5 bg-gray-50 py-2.5 pl-4 pr-4 text-14-r border border-gray-200 w-full"
       {placeholder}
       type="search"
       bind:value={query}
+      on:blur={() => {
+        if (query.length > 0) {
+          formEl.submit();
+        }
+      }}
     />
     <!-- on:input={() => (open = true)} -->
     <!-- <div class="absolute inset-y-0 right-4 flex center text-gray-700">
