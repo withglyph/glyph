@@ -1,6 +1,7 @@
 import { init as cuid } from '@paralleldrive/cuid2';
 import { hash, verify } from 'argon2';
 import dayjs from 'dayjs';
+import * as R from 'radash';
 import { match, P } from 'ts-pattern';
 import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
@@ -228,22 +229,28 @@ export const postSchema = defineSchema((builder) => {
 
       bookmarkGroups: t.prismaField({
         type: ['BookmarkGroup'],
-        resolve: (query, post, __, { db, ...context }) => {
+        select: (_, context, nestedSelection) => {
+          if (!context.session) {
+            return {};
+          }
+          return {
+            bookmarks: {
+              select: { bookmarkGroup: nestedSelection() },
+              where: {
+                bookmarkGroup: {
+                  userId: context.session?.userId,
+                },
+              },
+            },
+          };
+        },
+        resolve: (_, post, __, context) => {
           if (!context.session) {
             return [];
           }
 
-          return db.bookmarkGroup.findMany({
-            ...query,
-            where: {
-              userId: context.session.userId,
-              posts: {
-                some: {
-                  postId: post.id,
-                },
-              },
-            },
-          });
+          // @ts-expect-error session이 있으면 bookmarkGroup도 존재함 (이거 타입가드를 깔끔하게 할 수 있는 방법이 없을까요...)
+          return R.sift(post.bookmarks.map((bookmark) => bookmark.bookmarkGroup ?? null));
         },
 
         unauthorizedResolver: () => [],
