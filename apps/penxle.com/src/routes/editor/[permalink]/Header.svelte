@@ -135,7 +135,7 @@
   const [floatingRef, floatingContent, update] = createFloatingActions({
     strategy: 'absolute',
     placement: 'bottom-end',
-    middleware: [offset(18), flip(), shift({ padding: 8 })],
+    middleware: [offset(menuOffset), flip(), shift({ padding: 8 })],
   });
 
   $: if (colorPickerOpen) {
@@ -216,7 +216,8 @@
       <div class="flex center space-x-3 h-8.5 after:(content-empty border-r border-gray-300 h-4 mx-3)">
         <ToolbarButtonTooltip message="글자 색">
           <button
-            class="flex items-center pl-4px pr-2px gap-1 h-8.5 hover:(bg-gray-100 rounded)"
+            class="flex items-center pl-4px pr-2px gap-1 h-8.5 rounded hover:bg-gray-100 aria-pressed:bg-gray-100"
+            aria-pressed={colorPickerOpen}
             type="button"
             on:click={() => (colorPickerOpen = true)}
             use:floatingRef
@@ -252,10 +253,11 @@
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="폰트">
-          <Menu class="h-8.5" offset={menuOffset} placement="bottom" rounded={false}>
+          <Menu offset={menuOffset} placement="bottom" rounded={false}>
             <div
               slot="value"
-              class="flex justify-between pl-4px pr-2px items-center gap-1 whitespace-nowrap h-full hover:(bg-gray-100 rounded) w-36"
+              class="flex justify-between pl-4px pr-2px items-center gap-1 whitespace-nowrap h-8.5 rounded hover:bg-gray-100 w-36 aria-pressed:bg-gray-100"
+              aria-pressed={open}
               let:open
             >
               <div>
@@ -293,16 +295,11 @@
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="글자 크기">
-          <Menu
-            class="flex items-center h-8.5"
-            menuClass="max-h-60 overflow-y-auto"
-            offset={menuOffset}
-            placement="bottom"
-            rounded={false}
-          >
+          <Menu menuClass="max-h-78 overflow-y-auto" offset={menuOffset} placement="bottom" rounded={false}>
             <div
               slot="value"
-              class="flex justify-between items-center pl-4px pr-2px gap-1 h-full hover:(bg-gray-100 rounded) w-16"
+              class="flex justify-between items-center pl-4px pr-2px gap-1 h-8.5 rounded hover:bg-gray-100 w-16 aria-pressed:bg-gray-100"
+              aria-pressed={open}
               let:open
             >
               {values.fontSize.find(({ value }) => editor?.getAttributes('font_size').fontSize === value)?.label ??
@@ -393,20 +390,21 @@
 
       <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
         <ToolbarButtonTooltip message="정렬">
-          <Menu
-            class="flex center gap-0.25rem square-8.5 hover:(bg-gray-100 rounded) hover:(bg-gray-100 rounded)"
-            offset={menuOffset}
-            placement="bottom"
-            rounded={false}
-          >
-            <i
+          <Menu offset={menuOffset} placement="bottom" rounded={false}>
+            <div
               slot="value"
-              class={clsx(
-                values.textAlign.find(({ value }) => value === editor?.getAttributes('paragraph').textAlign)?.icon ??
-                  values.textAlign[0].icon,
-                'square-6',
-              )}
-            />
+              class="flex center rounded square-8.5 hover:bg-gray-100 aria-pressed:bg-gray-100"
+              aria-pressed={open}
+              let:open
+            >
+              <i
+                class={clsx(
+                  values.textAlign.find(({ value }) => value === editor?.getAttributes('paragraph').textAlign)?.icon ??
+                    values.textAlign[0].icon,
+                  'square-6',
+                )}
+              />
+            </div>
 
             {#each values.textAlign as textAlign (textAlign.value)}
               <button
@@ -422,13 +420,15 @@
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="행간">
-          <Menu
-            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
-            offset={menuOffset}
-            placement="bottom"
-            rounded={false}
-          >
-            <i slot="value" class="i-px-line-height square-6" />
+          <Menu offset={menuOffset} placement="bottom" rounded={false}>
+            <div
+              slot="value"
+              class="flex center square-8.5 rounded hover:bg-gray-100 aria-pressed:bg-gray-100"
+              aria-pressed={open}
+              let:open
+            >
+              <i class="i-px-line-height square-6" />
+            </div>
 
             {#each values.lineHeight as lineHeight (lineHeight.value)}
               <MenuItem
@@ -452,13 +452,15 @@
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="자간">
-          <Menu
-            class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
-            offset={menuOffset}
-            placement="bottom"
-            rounded={false}
-          >
-            <i slot="value" class="i-px-letter-space square-6" />
+          <Menu offset={menuOffset} placement="bottom" rounded={false}>
+            <div
+              slot="value"
+              class="flex center square-8.5 rounded hover:bg-gray-100 aria-pressed:bg-gray-100"
+              aria-pressed={open}
+              let:open
+            >
+              <i class="i-px-letter-space square-6" />
+            </div>
 
             {#each values.letterSpacing as letterSpacing (letterSpacing.value)}
               <MenuItem
@@ -484,13 +486,15 @@
 
       <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
         <ToolbarButtonTooltip message="리스트">
-          <Menu
-            class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
-            offset={menuOffset}
-            placement="bottom"
-            rounded={false}
-          >
-            <i slot="value" class="i-tb-list square-6" />
+          <Menu offset={menuOffset} placement="bottom" rounded={false}>
+            <div
+              slot="value"
+              class="flex center square-8.5 rounded hover:bg-gray-100 aria-pressed:bg-gray-100"
+              aria-pressed={open}
+              let:open
+            >
+              <i class="i-tb-list square-6" />
+            </div>
 
             <MenuItem
               on:click={() => {
@@ -511,13 +515,15 @@
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="구분선">
-          <Menu
-            class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
-            offset={menuOffset}
-            placement="bottom"
-            rounded={false}
-          >
-            <i slot="value" class="i-tb-minus square-6" />
+          <Menu offset={menuOffset} placement="bottom" rounded={false}>
+            <div
+              slot="value"
+              class="flex center square-8.5 rounded hover:bg-gray-100 aria-pressed:bg-gray-100"
+              aria-pressed={open}
+              let:open
+            >
+              <i class="i-tb-minus square-6" />
+            </div>
 
             {#each values.horizontalRule as hr (hr.value)}
               <MenuItem
@@ -533,14 +539,15 @@
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="인용구">
-          <Menu
-            class="flex center square-8.5 body-14-m hover:(bg-gray-100 rounded)"
-            as="button"
-            offset={menuOffset}
-            placement="bottom"
-            rounded={false}
-          >
-            <i slot="value" class="i-tb-quote square-6" />
+          <Menu as="button" offset={menuOffset} placement="bottom" rounded={false}>
+            <div
+              slot="value"
+              class="flex center square-8.5 rounded hover:bg-gray-100 aria-pressed:bg-gray-100"
+              aria-pressed={open}
+              let:open
+            >
+              <i class="i-tb-quote square-6" />
+            </div>
 
             {#each values.blockquote as blockquote (blockquote.value)}
               <MenuItem
@@ -589,7 +596,7 @@
 
       <ToolbarButtonTooltip message="본문 설정">
         <Menu offset={menuOffset} placement="bottom" rounded={false} bind:open={contentOptionsOpen}>
-          <div slot="value" class="flex center square-8.5">
+          <div slot="value" class="flex center square-8.5 hover:(bg-gray-100 rounded)">
             <i class="i-tb-settings square-6" />
           </div>
 
