@@ -8,6 +8,7 @@
   import { Image, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { Checkbox, FormValidationMessage, Switch } from '$lib/components/forms';
   import ThumbnailPicker from '$lib/components/media/ThumbnailPicker.svelte';
+  import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { createMutationForm } from '$lib/form';
   import { portal } from '$lib/svelte/actions';
   import { createFloatingActions } from '$lib/svelte-floating-ui';
@@ -155,7 +156,7 @@
   const [floatingRef, floatingContent, update] = createFloatingActions({
     strategy: 'absolute',
     placement: 'bottom-end',
-    middleware: [offset(67), flip(), shift({ padding: 8 })],
+    middleware: [offset(11), flip(), shift({ padding: 8 })],
   });
 
   $: if (open) {
@@ -183,6 +184,7 @@
 
   let enablePassword = false;
   let createSpaceOpen = false;
+  let createCollectionOpen = false;
 
   $: if ($post?.hasPassword) {
     enablePassword = true;
@@ -232,7 +234,7 @@
     type="button"
     on:click={() => (open = true)}
   >
-    포스트 게시
+    발행
   </button>
 </div>
 
@@ -319,13 +321,11 @@
     <form class="w-96 py-5 px-6 h-108 overflow-y-auto" use:form>
       <input name="thumbnailId" type="hidden" value={currentThumbnail?.id} />
 
-      <div class={clsx('space-y-4 hidden', tabIndex === 0 && 'block!')}>
+      <div class={clsx('space-y-8 hidden', tabIndex === 0 && 'block!')}>
         <div>
-          <p class="text-18-m mb-3">스페이스</p>
+          <p class="text-14-sb pt-1 pb-2">스페이스</p>
 
-          <div
-            class="py-2.5 px-4 mb-4 rounded-md relative bg-white border border-gray-200 hover:bg-gray-50 has-[:disabled]:bg-gray-50"
-          >
+          <div class="mb-4 relative">
             <Tooltip
               enabled={$post.state === 'PUBLISHED'}
               message="이미 게시한 포스트는 스페이스를 바꿀 수 없어요"
@@ -333,15 +333,18 @@
               placement="top"
             >
               <button
-                class="flex items-center justify-between w-full"
+                class={clsx(
+                  'flex items-center justify-between w-full rounded-md p-3 border border-gray-200 hover:bg-gray-50 disabled:bg-gray-50',
+                  spaceSelectorOpen && 'rounded-b-none',
+                )}
                 disabled={$post.state === 'PUBLISHED'}
                 type="button"
                 on:click={() => (spaceSelectorOpen = true)}
               >
                 {#if selectedSpace}
-                  <div class="flex items-center gap-1.5">
-                    <Image class="square-5.5 rounded-sm flex-none" $image={selectedSpace.icon} />
-                    <span class="text-12-r truncate">{selectedSpace.name}</span>
+                  <div class="flex items-center gap-2">
+                    <Image class="square-6 rounded-sm flex-none" $image={selectedSpace.icon} />
+                    <span class="text-13-m truncate">{selectedSpace.name}</span>
                   </div>
                 {:else}
                   <span class="text-gray-500 text-13-r">스페이스를 선택해주세요</span>
@@ -349,7 +352,7 @@
 
                 <p class="flex center square-6">
                   <i
-                    class={clsx('square-3.5', spaceSelectorOpen ? 'i-tb-caret-up-filled' : 'i-tb-caret-down-filled')}
+                    class={clsx('square-4.5', spaceSelectorOpen ? 'i-tb-caret-up-filled' : 'i-tb-caret-down-filled')}
                   />
                 </p>
               </button>
@@ -365,13 +368,13 @@
               />
 
               <ul
-                class="absolute z-59 top-45px left-0 w-full rounded-b-md bg-white border border-gray-200"
+                class="absolute z-59 top-48px left-0 w-full rounded-b-md bg-white border border-gray-200"
                 transition:slide={{ axis: 'y', duration: 250 }}
               >
                 {#each $query.me.spaces as space (space.id)}
                   <li class="border-b border-gray-200">
                     <button
-                      class="px-4 py-3 w-full hover:(bg-teal-50 text-teal-700) flex justify-between items-center"
+                      class="p-3 w-full hover:bg-gray-100 flex justify-between items-center"
                       type="button"
                       on:click={() => {
                         if (selectedSpaceId !== space.id) {
@@ -382,17 +385,21 @@
                         spaceSelectorOpen = false;
                       }}
                     >
-                      <div class="flex items-center gap-1.5">
-                        <Image class="square-5.5 rounded-sm flex-none" $image={space.icon} />
-                        <span class="text-12-r truncate">{space.name}</span>
+                      <div class="flex items-center gap-2">
+                        <Image class="square-6 rounded-sm flex-none" $image={space.icon} />
+                        <span class="text-13-m truncate">{space.name}</span>
                       </div>
                     </button>
                   </li>
                 {/each}
                 <li>
-                  <button class="text-13-r px-4 py-3" type="button" on:click={() => (createSpaceOpen = true)}>
-                    <i class="i-tb-plus square-3.5 m-1.5" />
+                  <button
+                    class="text-13-m p-3 w-full rounded-b-md flex items-center justify-between hover:bg-gray-100"
+                    type="button"
+                    on:click={() => (createSpaceOpen = true)}
+                  >
                     새로운 스페이스 추가하기
+                    <i class="i-tb-plus square-6 text-gray-400" />
                   </button>
                 </li>
               </ul>
@@ -401,31 +408,27 @@
         </div>
 
         <div>
-          <p class="text-18-m mb-3 pt-5">컬렉션</p>
+          <p class="text-14-sb pt-1 pb-2">컬렉션</p>
 
-          <div
-            class="py-2.5 px-4 mb-4 rounded-md relative bg-white border border-gray-200 hover:bg-gray-50 has-[:disabled]:bg-gray-50"
-          >
+          <div class="relative">
             <button
-              class="flex items-center justify-between w-full"
+              class={clsx(
+                'flex items-center justify-between w-full p-3 rounded-md border border-gray-200 hover:bg-gray-100 disabled:bg-gray-100',
+                collectionSelectorOpen && 'rounded-b-none',
+              )}
               disabled={!selectedSpace || !selectedSpace.collections || selectedSpace.collections.length === 0}
               type="button"
               on:click={() => (collectionSelectorOpen = true)}
             >
               {#if selectedCollection}
-                <div class="flex items-center gap-1.5">
-                  {#if selectedCollection.thumbnail}
-                    <Image class="square-5.5 rounded-sm flex-none" $image={selectedCollection.thumbnail} />
-                  {/if}
-                  <span class="text-12-r truncate">{selectedCollection.name}</span>
-                </div>
+                <span class="text-13-m truncate">{selectedCollection.name}</span>
               {:else}
                 <span class="text-gray-500 text-13-r">컬렉션을 선택해주세요</span>
               {/if}
 
               <p class="flex center square-6">
                 <i
-                  class={clsx('square-3.5', collectionSelectorOpen ? 'i-tb-caret-up-filled' : 'i-tb-caret-down-filled')}
+                  class={clsx('square-4.5', collectionSelectorOpen ? 'i-tb-caret-up-filled' : 'i-tb-caret-down-filled')}
                 />
               </p>
             </button>
@@ -440,13 +443,13 @@
               />
 
               <ul
-                class="absolute z-59 top-45px left-0 w-full rounded-b-md bg-white border border-gray-200"
+                class="absolute z-59 top-48px left-0 w-full rounded-b-md bg-white border border-gray-200"
                 transition:slide={{ axis: 'y', duration: 250 }}
               >
                 {#if selectedCollectionId !== undefined}
                   <li class="border-b border-gray-200">
                     <button
-                      class="px-4 py-3 w-full hover:(bg-teal-50 text-teal-700) flex justify-between items-center"
+                      class="p-3 w-full hover:bg-gray-100 flex justify-between items-center"
                       type="button"
                       on:click={() => {
                         selectedCollectionId = undefined;
@@ -454,7 +457,7 @@
                       }}
                     >
                       <div class="flex items-center gap-1.5">
-                        <span class="text-12-r truncate">선택 안함</span>
+                        <span class="text-13-m truncate">선택 안함</span>
                       </div>
                     </button>
                   </li>
@@ -462,7 +465,7 @@
                 {#each selectedSpace?.collections as collection (collection.id)}
                   <li class="border-b border-gray-200">
                     <button
-                      class="px-4 py-3 w-full hover:(bg-teal-50 text-teal-700) flex justify-between items-center"
+                      class="p-3 w-full hover:bg-gray-100 flex justify-between items-center"
                       type="button"
                       on:click={() => {
                         selectedCollectionId = collection.id;
@@ -470,20 +473,30 @@
                       }}
                     >
                       <div class="flex items-center gap-1.5">
-                        <span class="text-12-r truncate">{collection.name}</span>
+                        <span class="text-13-m truncate">{collection.name}</span>
                       </div>
                     </button>
                   </li>
                 {/each}
+                <li>
+                  <button
+                    class="text-13-m p-3 w-full rounded-b-md flex items-center justify-between hover:bg-gray-100"
+                    type="button"
+                    on:click={() => (createCollectionOpen = true)}
+                  >
+                    새로운 컬렉션 추가하기
+                    <i class="i-tb-plus square-6 text-gray-400" />
+                  </button>
+                </li>
               </ul>
             {/if}
           </div>
         </div>
       </div>
 
-      <div class={clsx('space-y-4 hidden', tabIndex === 1 && 'block!')}>
+      <div class={clsx('space-y-8 hidden', tabIndex === 1 && 'block!')}>
         <div>
-          <p class="text-18-m mb-3 flex gap-1.5">
+          <p class="text-14-sb pt-1 pb-2 flex gap-1.5">
             <span>카테고리</span>
             <!-- <Tooltip class="flex center" message="카테고리" placement="top">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
@@ -499,7 +512,7 @@
         </div>
 
         <div>
-          <p class="text-18-m mb-3 flex gap-1.5 pt-5">
+          <p class="text-14-sb pt-1 pb-2 flex gap-1">
             <span>페어</span>
             <Tooltip class="flex center" message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
@@ -565,8 +578,8 @@
         />
       </div>
 
-      <div class={clsx('space-y-4 hidden', tabIndex === 2 && 'block!')}>
-        <p class="text-18-m mb-3">썸네일</p>
+      <div class={clsx('hidden', tabIndex === 2 && 'block!')}>
+        <p class="text-14-sb pt-1 pb-2">썸네일</p>
 
         {#if currentThumbnail}
           <div class="border border-gray-200 px-4 py-3.5 rounded flex items-center justify-between">
@@ -588,36 +601,42 @@
           </div>
         {:else}
           <button
-            class="flex items-center justify-between py-3 px-4 border border-dashed border-gray-200 rounded w-full"
+            class="flex items-center justify-between p-3 border border-gray-200 rounded w-full"
             type="button"
             on:click={() => thumbnailPicker.show()}
           >
             <div class="flex items-center gap-1.5">
-              <i class="i-tb-photo-up square-4.5 text-gray-300" />
-              <span class="text-14-r">썸네일 이미지를 업로드해주세요</span>
+              <i class="i-tb-photo square-4.5 text-gray-300" />
+              <span class="text-13-m text-gray-400">썸네일 이미지를 선택해주세요</span>
             </div>
 
-            <div class="text-11-sb text-white bg-teal-500 rounded-sm py-1 px-3">업로드</div>
+            <div class="text-11-sb text-white bg-teal-500 rounded py-1.5 px-3.5">업로드</div>
           </button>
         {/if}
       </div>
 
-      <div class={clsx('space-y-4 hidden', tabIndex === 3 && 'block!')}>
+      <div class={clsx('space-y-8 hidden', tabIndex === 3 && 'block!')}>
         <div>
-          <p class="text-18-m mb-3 flex gap-1.5">공개범위</p>
+          <p class="text-14-sb py-1">공개범위</p>
+
+          <RadioGroup
+            name="visibility"
+            class="my-2.5"
+            items={[
+              {
+                label: '전체 공개',
+                value: 'PUBLIC',
+                icon: 'i-px2-globe',
+                checked: $data.visibility === 'PUBLIC',
+              },
+              { label: '링크 공개', value: 'UNLISTED', icon: 'i-px2-link', checked: $data.visibility === 'UNLISTED' },
+              { label: '멤버 공개', value: 'SPACE', icon: 'i-px2-users', checked: $data.visibility === 'SPACE' },
+            ]}
+          />
         </div>
 
-        <RadioGroup
-          name="visibility"
-          items={[
-            { label: '전체 공개', value: 'PUBLIC', icon: 'i-px2-globe', checked: $data.visibility === 'PUBLIC' },
-            { label: '링크 공개', value: 'UNLISTED', icon: 'i-tb-link', checked: $data.visibility === 'UNLISTED' },
-            { label: '멤버 공개', value: 'SPACE', icon: 'i-tb-users', checked: $data.visibility === 'SPACE' },
-          ]}
-        />
-
         <div>
-          <p class="text-18-m mb-3 flex gap-1.5 pt-5">
+          <p class="text-14-sb py-2 flex gap-1">
             <span>비밀글</span>
             <Tooltip class="flex center" message="설정하면 비밀번호를 입력한 독자만 내용을 열람할 수 있어요">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
@@ -625,7 +644,7 @@
           </p>
 
           <Checkbox
-            class="mb-3 text-14-r"
+            class="mb-3 mt-1.5 text-14-r"
             on:change={() => {
               enablePassword = !enablePassword;
               if (!enablePassword) {
@@ -655,7 +674,7 @@
         </div>
 
         <div>
-          <p class="text-18-m mb-3 flex gap-1.5 pt-5">
+          <p class="text-14-sb py-1 flex gap-1">
             <span>콘텐츠 등급</span>
             <Tooltip
               class="flex center"
@@ -667,16 +686,17 @@
 
           <RadioGroup
             name="ageRating"
+            class="my-2.5"
             items={[
-              { label: '모든 연령', value: 'ALL', icon: 'i-px2-rating-all', checked: $data.ageRating === 'ALL' },
-              { label: '15세 이상', value: 'R15', icon: 'i-px2-rating-15-plus', checked: $data.ageRating === 'R15' },
-              { label: '성인물', value: 'R19', icon: 'i-tb-rating-18-plus', checked: $data.ageRating === 'R19' },
+              { label: '모든 연령', value: 'ALL', text: 'ALL', checked: $data.ageRating === 'ALL' },
+              { label: '15세 이상', value: 'R15', text: '15+', checked: $data.ageRating === 'R15' },
+              { label: '성인물', value: 'R19', text: '20+', checked: $data.ageRating === 'R19' },
             ]}
           />
         </div>
 
-        <div class="mb-1">
-          <p class="text-18-m mb-3 flex gap-1.5 pt-5">
+        <div>
+          <p class="text-14-sb py-1 flex gap-1 mb-1.5">
             <span>검색 공개</span>
             <Tooltip class="flex center" message="외부 검색엔진에서 이 포스트를 검색할 수 있을지 설정해요">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
@@ -704,21 +724,21 @@
         </div>
       </div>
 
-      <div class={clsx('space-y-4 hidden', tabIndex === 4 && 'block!')}>
+      <div class={clsx('space-y-8 hidden', tabIndex === 4 && 'block!')}>
         <Switch
           name="receiveFeedback"
           class="flex items-center justify-between"
           checked={$data.receiveFeedback ?? true}
         >
           <div>
-            <p class="text-14-m">피드백</p>
+            <p class="text-14-sb py-1">피드백</p>
             <p class="text-11-r text-gray-700 mt-1">가장 오래 머무른 구간, 밑줄, 이모지 등 피드백을 받아요</p>
           </div>
         </Switch>
 
         <Switch name="discloseStats" class="flex items-center justify-between" checked={$data.discloseStats ?? true}>
           <div>
-            <p class="text-14-m">게시물 세부 공개</p>
+            <p class="text-14-sb py-1">게시물 세부 공개</p>
             <p class="text-11-r text-gray-700 mt-1">독자에게 좋아요, 조회수를 공유해요</p>
           </div>
         </Switch>
@@ -729,14 +749,14 @@
           checked={$data.receivePatronage ?? true}
         >
           <div>
-            <p class="text-14-m">창작자 후원</p>
+            <p class="text-14-sb py-1">창작자 후원</p>
             <p class="text-11-r text-gray-700 mt-1">독자들이 게시물에 자유롭게 후원할 수 있어요</p>
           </div>
         </Switch>
 
         <Switch name="protectContent" class="flex items-center justify-between" checked={$data.protectContent ?? true}>
           <div>
-            <p class="text-14-m">게시물 내용 보호</p>
+            <p class="text-14-sb py-1">게시물 내용 보호</p>
             <p class="text-11-r text-gray-700 mt-1">게시물의 내용을 보호하기 위해 우클릭 또는 복사를 제한해요</p>
           </div>
         </Switch>
@@ -747,12 +767,12 @@
   <div class="flex justify-end px-6 py-5 border-t border-gray-200">
     <Tooltip enabled={!selectedSpaceId} message="게시할 스페이스를 선택해주세요" offset={12} placement="top">
       <button
-        class="w-30 py-3 px-6 bg-gray-950 text-white text-14-m rounded-1.5 text-center"
+        class="w-30 py-3 px-6 text-14-m border border-gray-300 rounded-1.5 text-center"
         disabled={!selectedSpaceId}
         type="button"
         on:click={handleSubmit}
       >
-        게시
+        발행
       </button>
     </Tooltip>
   </div>
@@ -768,6 +788,10 @@
       spaceSelectorOpen = false;
     }}
   />
+{/if}
+
+{#if selectedSpaceId}
+  <CreateCollectionModal bind:open={createCollectionOpen} bind:spaceId={selectedSpaceId} />
 {/if}
 
 <ThumbnailPicker bind:this={thumbnailPicker} keepBoundsWhenClosed on:change={(e) => (thumbnail = e.detail)} />

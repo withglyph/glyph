@@ -27,7 +27,7 @@
 </script>
 
 <div>
-  <p class="text-18-m mb-3 flex gap-1.5 pt-5">
+  <p class="text-14-sb pt-1 pb-2 flex gap-1">
     <span>{label}</span>
     <Tooltip class="flex center" message={tooltip} placement="top">
       <i class="i-tb-alert-circle square-3.5 text-gray-400" />
@@ -60,7 +60,7 @@
     use:outsideClickEvent
   >
     <input
-      class="rounded-1.5 bg-gray-50 py-2.5 pl-4 pr-4 text-14-r border border-gray-200 w-full"
+      class="rounded-1.5 py-2.5 pl-4 pr-4 text-14-r border border-gray-200 w-full"
       {placeholder}
       type="search"
       bind:value={query}
