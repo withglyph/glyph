@@ -416,7 +416,7 @@
                 'flex items-center justify-between w-full p-3 rounded-md border border-gray-200 hover:bg-gray-100 disabled:bg-gray-100',
                 collectionSelectorOpen && 'rounded-b-none',
               )}
-              disabled={!selectedSpace || !selectedSpace.collections || selectedSpace.collections.length === 0}
+              disabled={!selectedSpace}
               type="button"
               on:click={() => (collectionSelectorOpen = true)}
             >
@@ -433,7 +433,7 @@
               </p>
             </button>
 
-            {#if collectionSelectorOpen && selectedSpace?.collections && selectedSpace.collections.length > 0}
+            {#if collectionSelectorOpen && selectedSpace?.collections}
               <div
                 class="fixed inset-0 z-57"
                 role="button"
