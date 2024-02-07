@@ -23,7 +23,6 @@
     }
   `);
 
-  // @ts-expect-error TODO: fix this
   $: posts = R.unique($query.recommendFeed, (post) => post.space.id).slice(0, 5);
 </script>
 
