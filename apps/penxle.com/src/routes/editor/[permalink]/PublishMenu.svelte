@@ -230,7 +230,7 @@
 
 <div class="w-fit" use:floatingRef>
   <button
-    class="bg-gray-950 text-white px-3 py-2.5 rounded text-14-m mr-3 leading-none border border-gray-950"
+    class="bg-gray-950 text-white px-8 py-2.5 rounded text-14-m mr-3 leading-none border border-gray-950 text-center"
     type="button"
     on:click={() => (open = true)}
   >
@@ -767,7 +767,7 @@
   <div class="flex justify-end px-6 py-5 border-t border-gray-200">
     <Tooltip enabled={!selectedSpaceId} message="게시할 스페이스를 선택해주세요" offset={12} placement="top">
       <button
-        class="w-30 py-3 px-6 text-14-m border border-gray-300 rounded-1.5 text-center"
+        class="w-24 py-2 px-8 text-14-m text-white bg-gray-950 rounded text-center"
         disabled={!selectedSpaceId}
         type="button"
         on:click={handleSubmit}
