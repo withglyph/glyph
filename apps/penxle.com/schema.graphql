@@ -523,7 +523,7 @@ input PurchasePostInput {
 type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
-  autoCompleteTags(kind: PostTagKind!, query: String!): [Tag!]!
+  autoCompleteTags(excludeTags: [String!]! = [], kind: PostTagKind!, query: String!): [Tag!]!
   flash: Flash
   hello(name: String!): String!
   me: User

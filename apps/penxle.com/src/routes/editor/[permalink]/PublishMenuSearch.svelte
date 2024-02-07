@@ -1,5 +1,6 @@
 <script lang="ts">
   import * as R from 'radash';
+  import { graphql } from '$glitch';
   import { Tooltip } from '$lib/components';
   import { tagPattern } from '$lib/const/post';
   import { toast } from '$lib/notification';
@@ -12,6 +13,22 @@
     kind: PostTagKind;
   };
 
+  $: autoCompleteTag = graphql(`
+    query PublishMenuSearch_AutoCompleteTag($kind: PostTagKind!, $query: String!, $excludeTags: [String!]) @_manual {
+      autoCompleteTags(kind: $kind, query: $query, excludeTags: $excludeTags) {
+        id
+        name
+        usageCount {
+          CHARACTER
+          COUPLING
+          EXTRA
+          TITLE
+          TRIGGER
+        }
+      }
+    }
+  `);
+
   export let query = '';
   export let placeholder: string | undefined = undefined;
   export let tags: TagInput[] = [];
@@ -21,9 +38,21 @@
 
   let formEl: HTMLFormElement;
   let postTags: TagInput[] | undefined = [];
-  // let open = false;
+  let open = false;
+  let autoCompleteTags: { id: string; name: string; usageCount: Record<PostTagKind, number> }[] = [];
 
   $: postTags = R.group(tags, (tag) => tag.kind)[kind];
+
+  const refetchTags = R.debounce({ delay: 150 }, async () => {
+    if (query.length === 0) {
+      autoCompleteTags = [];
+      return;
+    }
+    const queriedTags = await autoCompleteTag.refetch({ kind, query });
+    autoCompleteTags = queriedTags.autoCompleteTags.filter(
+      (tag) => !postTags?.some((postTag) => postTag.name === tag.name),
+    );
+  });
 </script>
 
 <div>
@@ -54,7 +83,8 @@
 
       tags = [...tags, { kind, name: escapedValue }];
 
-      // open = false;
+      open = false;
+      autoCompleteTags = [];
       query = '';
     }}
     use:outsideClickEvent
@@ -66,32 +96,63 @@
       bind:value={query}
       on:blur={() => {
         if (query.length > 0) {
-          formEl.requestSubmit();
+          // formEl.requestSubmit();
+        }
+        if (window.innerWidth >= 800) {
+          open = false;
         }
       }}
+      on:focus={() => {
+        if (query.length > 0) {
+          open = true;
+        }
+      }}
+      on:input={async () => {
+        open = true;
+        refetchTags();
+      }}
     />
-    <!-- on:input={() => (open = true)} -->
-    <!-- <div class="absolute inset-y-0 right-4 flex center text-gray-700">
-      <i class="i-tb-search square-4" />
-    </div> -->
 
-    <!-- {#if open}
+    <div class="absolute inset-y-0 right-4 flex center text-gray-700">
+      <i class="i-tb-search square-4" />
+    </div>
+
+    {#if open}
       <ul class="absolute left-0 w-full bg-white border border-gray-200 rounded-b-1.5 z-1">
-        <li class="hover:bg-gray-100 last-of-type:rounded-b-1.5">
-          <button
-            class="py-2 px-1.5 w-full"
-            type="button"
-            on:click={() => {
-              open = false;
-              query = '';
-            }}
-          >
-            <i class="i-tb-search square-3 text-gray-400 m-1.5" />
-            <span class="text-12-r">검색 결과</span>
-          </button>
-        </li>
+        {#each autoCompleteTags as tag (tag.id)}
+          <li class="hover:bg-gray-100 last-of-type:rounded-b-1.5">
+            <button
+              class="py-2 px-1.5 w-full"
+              type="button"
+              on:click={() => {
+                query = tag.name;
+                open = false;
+                formEl.requestSubmit();
+              }}
+            >
+              <i class="i-tb-search square-3 text-gray-400 m-1.5" />
+              <span class="text-12-r">
+                {tag.name}
+              </span>
+              <span class="flex-grow text-right text-10-r">{tag.usageCount[kind]}회 사용</span>
+            </button>
+          </li>
+        {:else}
+          <li class="hover:bg-gray-100 last-of-type:rounded-b-1.5">
+            <button class="py-2 px-1.5 w-full" type="button">
+              <i class="i-tb-search square-3 text-gray-400 m-1.5" />
+              <span class="text-12-r">
+                {#if query.length > 0}
+                  결과가 없어요
+                {:else}
+                  태그를 입력해주세요
+                {/if}
+              </span>
+            </button>
+          </li>
+        {/each}
       </ul>
-    {/if} -->
+    {/if}
   </form>
 
   {#if postTags}
