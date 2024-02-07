@@ -1,5 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
+  import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import Post from '../Post.svelte';
@@ -12,6 +15,11 @@
 
       post(permalink: $permalink) {
         id
+
+        space {
+          id
+          slug
+        }
 
         publishedRevision @_required {
           id
@@ -36,6 +44,12 @@
     mixpanel.track('post:view', { postId: $query.post.id });
     await updatePostView({ postId: $query.post.id });
   });
+
+  $: if ($query.post.space?.slug && $query.post.space?.slug !== $page.params.space && browser) {
+    const url = new URL(location.href);
+    url.pathname = `/${$query.post.space.slug}/${$page.params.post}`;
+    goto(url, { replaceState: true });
+  }
 </script>
 
 <Post $postRevision={$query.post.publishedRevision} {$query} />
