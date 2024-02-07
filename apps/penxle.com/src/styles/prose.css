@@ -1,4 +1,8 @@
 .tiptap {
+  & p {
+    --uno: caret-gray-950;
+  }
+
   & li > p:first-child {
     display: inline;
   }
