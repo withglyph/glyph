@@ -1,81 +1,70 @@
-.ProseMirror {
-  --uno: whitespace-pre-wrap break-all;
-
+.tiptap {
   & li > p:first-child {
     display: inline;
+  }
+
+  &[data-indent='0'] {
+    & p {
+      --uno: indent-0;
+    }
+  }
+
+  &[data-indent='50'] {
+    & p {
+      --uno: indent-0.5rem;
+    }
+  }
+
+  &[data-indent='100'] {
+    & p {
+      --uno: indent-1rem;
+    }
+  }
+
+  &[data-indent='200'] {
+    & p {
+      --uno: indent-2rem;
+    }
+  }
+
+  &[data-spacing='0'] {
+    & p {
+      --uno: mb-0;
+    }
+  }
+
+  &[data-spacing='50'] {
+    & p {
+      --uno: mb-0.5rem;
+    }
+  }
+
+  &[data-spacing='100'] {
+    & p {
+      --uno: mb-1rem;
+    }
+  }
+
+  &[data-spacing='200'] {
+    & p {
+      --uno: mb-2rem;
+    }
   }
 }
 
 .tiptap-editor {
-  & p.is-editor-empty:first-child::before {
-    --uno: text-gray-40 h-0 pointer-events-none float-left;
-    content: attr(data-placeholder);
-  }
-
   & [data-drag-handle] {
     --uno: cursor-grab;
   }
-}
 
-& [data-indent='0'] {
-  & p {
-    --uno: indent-0;
+  & .ProseMirror-dropcursor {
+    --uno: bg-teal-500;
   }
-}
 
-& [data-indent='50'] {
-  & p {
-    --uno: indent-0.5rem;
+  & .ProseMirror-focused .ProseMirror-gapcursor {
+    --uno: border-l border-l-black w-0 h-20px my-1;
+    animation: cursor-blink 1s steps(2, start) infinite;
   }
-}
-
-& [data-indent='100'] {
-  & p {
-    --uno: indent-1rem;
-  }
-}
-
-& [data-indent='200'] {
-  & p {
-    --uno: indent-2rem;
-  }
-}
-
-& [data-spacing='0'] {
-  & p {
-    --uno: mb-0;
-  }
-}
-
-& [data-spacing='50'] {
-  & p {
-    --uno: mb-0.5rem;
-  }
-}
-
-& [data-spacing='100'] {
-  & p {
-    --uno: mb-1rem;
-  }
-}
-
-& [data-spacing='200'] {
-  & p {
-    --uno: mb-2rem;
-  }
-}
-
-/*
-  * extensions
-*/
-
-.ProseMirror-dropcursor {
-  --uno: bg-teal-500;
-}
-
-.ProseMirror-focused .ProseMirror-gapcursor {
-  --uno: border-l border-l-black w-0 h-20px my-1;
-  animation: cursor-blink 1s steps(2, start) infinite;
 }
 
 /*

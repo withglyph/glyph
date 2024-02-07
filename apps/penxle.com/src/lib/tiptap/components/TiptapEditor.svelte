@@ -1,7 +1,6 @@
 <script lang="ts">
   import { Editor } from '@tiptap/core';
   import { Fragment, Node, Slice } from '@tiptap/pm/model';
-  import { clsx } from 'clsx';
   import { createEventDispatcher, onMount } from 'svelte';
   import { dev } from '$app/environment';
   import { extensions } from '$lib/tiptap';
@@ -45,8 +44,8 @@
       editorProps: {
         clipboardTextParser,
         attributes: { class: _class },
-        scrollMargin: { top: 100, bottom: 100, left: 0, right: 0 },
-        scrollThreshold: { top: 100, bottom: 100, left: 0, right: 0 },
+        scrollMargin: { top: 150, bottom: 50, left: 0, right: 0 },
+        scrollThreshold: { top: 150, bottom: 50, left: 0, right: 0 },
         handleKeyDown: (_, event) => {
           // 맥 구름입력기에서 엔터키 입력시 마지막 글자 잘리는 문제 workaround
           if (editor && event.key === 'Enter') {
@@ -73,19 +72,13 @@
 
 <div
   bind:this={element}
-  class="contents tiptap-editor"
+  class="tiptap tiptap-editor contents whitespace-pre-wrap break-all"
   autocapitalize="off"
   autocorrect="off"
   data-indent={options.paragraphIndent}
   data-spacing={options.paragraphSpacing}
   spellcheck="false"
->
-  {#if !editor}
-    <div class={clsx('ProseMirror', _class)}>
-      <p class="is-editor-empty" data-placeholder="내용을 입력하세요" />
-    </div>
-  {/if}
-</div>
+/>
 
 {#if dev}
   <div

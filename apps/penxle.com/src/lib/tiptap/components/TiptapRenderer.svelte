@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Editor } from '@tiptap/core';
   import { generateHTML } from '@tiptap/html';
+  import clsx from 'clsx';
   import { onMount } from 'svelte';
   import { extensions } from '$lib/tiptap';
   import type { JSONContent } from '@tiptap/core';
@@ -33,6 +34,10 @@
       extensions,
       injectCSS: false,
 
+      editorProps: {
+        attributes: { class: _class },
+      },
+
       onCreate: ({ editor }) => {
         element.append(editor.options.element);
         loaded = true;
@@ -48,7 +53,7 @@
 
 <article
   bind:this={element}
-  class={_class}
+  class="tiptap contents whitespace-pre-wrap break-all"
   data-indent={options.paragraphIndent}
   data-spacing={options.paragraphSpacing}
   on:copy|capture={handleContentProtection}
@@ -56,7 +61,7 @@
   on:contextmenu|capture={handleContentProtection}
 >
   {#if !loaded}
-    <div class="ProseMirror">
+    <div class={clsx('ProseMirror', _class)}>
       {@html html}
     </div>
   {/if}
