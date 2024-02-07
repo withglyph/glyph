@@ -2,11 +2,13 @@ import graphql from 'graphql';
 import type { Client } from '@urql/core';
 import type { Readable } from 'svelte/store';
 
-export type MakeRequired<T, K extends string> = T & {
-  [P in keyof T as P extends (K extends `${infer K0}.${string}` ? K0 : K) ? P : never]-?: P extends K
-    ? NonNullable<T[P]>
-    : MakeRequired<T[P], K extends `${Exclude<P, symbol>}.${infer R}` ? R : never>;
-};
+export type MakeRequired<T, K extends string> = T extends (infer T0)[]
+  ? MakeRequired<T0, K>[]
+  : T & {
+      [P in keyof T as P extends (K extends `${infer K0}.${string}` ? K0 : K) ? P : never]-?: P extends K
+        ? NonNullable<T[P]>
+        : MakeRequired<T[P], K extends `${Exclude<P, symbol>}.${infer R}` ? R : never>;
+    };
 
 export type FragmentType<T extends { ' $fragmentType'?: unknown }> = Omit<
   NonNullable<T[' $fragmentType']>,
