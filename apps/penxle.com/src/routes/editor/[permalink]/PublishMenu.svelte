@@ -781,6 +781,7 @@
 {#if $query}
   <CreateSpaceModal
     $user={$query.me}
+    via="editor"
     bind:open={createSpaceOpen}
     on:create={(event) => {
       selectedSpaceId = event.detail.id;
