@@ -51,6 +51,7 @@ const processSpaceSlug = async ({ db, userId, slugs }: Pick<Context, 'db'> & { u
         userId,
         space: {
           slug: { in: slugs },
+          visibility: 'PUBLIC',
         },
         state: 'ACTIVE',
       },
