@@ -2,13 +2,17 @@ import dayjs from 'dayjs';
 import { status } from 'itty-router';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
+import * as R from 'radash';
 import { google, naver, twitter } from '$lib/server/external-api';
 import { createAccessToken } from '$lib/server/utils';
-import { createId } from '$lib/utils';
+import { base36To10, createId } from '$lib/utils';
 import { createRouter } from '../router';
 import type { Context } from '$lib/server/context';
 import type { TwitterUser } from '$lib/server/external-api/twitter';
 import type { ExternalUser } from '$lib/server/external-api/types';
+
+const penxleSpaceRegex = /^penxle\.com\/([\d_a-z][\d._a-z]*[\d_a-z])/;
+const penxleShortlinkRegex = /^pnxl\.me\/([\da-z]+)/;
 
 export const sso = createRouter();
 type State = { type: string };
@@ -44,16 +48,57 @@ sso.get('/sso/twitter', async (_, context) => {
   return await handle(context, externalUser);
 });
 
-const processSpaceSlug = async ({ db, userId, slugs }: Pick<Context, 'db'> & { userId: string; slugs: string[] }) => {
-  if (slugs.length > 0) {
+const processLink = async ({ db, userId, links }: Pick<Context, 'db'> & { userId: string; links: string[] }) => {
+  const spaceLinks = R.sift(links.map((link) => link.match(penxleSpaceRegex)?.[1]));
+  if (spaceLinks.length > 0) {
     const isLinked = await db.spaceMember.exists({
       where: {
         userId,
         space: {
-          slug: { in: slugs },
+          slug: { in: spaceLinks },
+          state: 'ACTIVE',
           visibility: 'PUBLIC',
         },
         state: 'ACTIVE',
+      },
+    });
+
+    if (isLinked) {
+      await db.userEventEnrollment.upsert({
+        where: {
+          userId_eventCode: {
+            userId,
+            eventCode: 'twitter_spacelink_2024',
+          },
+        },
+        create: {
+          id: createId(),
+          userId,
+          eventCode: 'twitter_spacelink_2024',
+          eligible: true,
+        },
+        update: {
+          eligible: true,
+        },
+      });
+
+      return;
+    }
+  }
+
+  const shortLinks = R.sift(links.map((link) => link.match(penxleShortlinkRegex)?.[1]));
+  if (shortLinks.length > 0) {
+    const isLinked = await db.post.exists({
+      where: {
+        permalink: { in: shortLinks.map((shortLink) => base36To10(shortLink)) },
+        userId,
+        state: 'PUBLISHED',
+        visibility: { not: 'SPACE' },
+        password: null,
+        space: {
+          state: 'ACTIVE',
+          visibility: 'PUBLIC',
+        },
       },
     });
 
@@ -120,8 +165,8 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser & 
         // 케이스 1-1-1: 그 "누군가"가 현재 로그인된 본인인 경우
         // -> 이미 로그인도 되어 있고 연동도 되어 있으니 아무것도 하지 않음
 
-        if (externalUser.penxleSpaceSlugs) {
-          await processSpaceSlug({ db, userId: context.session.userId, slugs: externalUser.penxleSpaceSlugs });
+        if (externalUser.links) {
+          await processLink({ db, userId: context.session.userId, links: externalUser.links });
         }
 
         return status(303, { headers: { Location: '/me/settings' } });
@@ -152,8 +197,8 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser & 
         },
       });
 
-      if (externalUser.penxleSpaceSlugs) {
-        await processSpaceSlug({ db, userId: context.session.userId, slugs: externalUser.penxleSpaceSlugs });
+      if (externalUser.links) {
+        await processLink({ db, userId: context.session.userId, links: externalUser.links });
       }
 
       return status(303, { headers: { Location: '/me/settings' } });

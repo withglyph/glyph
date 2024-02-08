@@ -1,5 +1,4 @@
 import qs from 'query-string';
-import * as R from 'radash';
 import { TwitterApi } from 'twitter-api-v2';
 import { env } from '$env/dynamic/private';
 import { redis } from '$lib/server/cache';
@@ -7,10 +6,8 @@ import type { RequestEvent } from '@sveltejs/kit';
 import type { ExternalUser } from './types';
 
 export type TwitterUser = {
-  penxleSpaceSlugs: string[];
+  links: string[];
 };
-
-const penxleSpaceRegex = /^penxle\.com\/([\d_a-z][\d._a-z]*[\d_a-z])/;
 
 export const generateAuthorizationUrl = async (event: RequestEvent, type: string) => {
   const state = Buffer.from(JSON.stringify({ type })).toString('base64');
@@ -48,12 +45,10 @@ export const authorizeUser = async (token: string, verifier: string): Promise<Ex
   const { client: userClient } = await client.login(verifier);
   const user = await userClient.v1.verifyCredentials({ include_email: true });
 
-  const slugs = R.sift(
-    [
-      ...(user.entities?.url?.urls.map((url) => url.display_url) ?? []),
-      ...(user.entities?.description?.urls.map((url) => url.display_url) ?? []),
-    ].map((url) => url.match(penxleSpaceRegex)?.[1]),
-  );
+  const links = [
+    ...(user.entities?.url?.urls.map((url) => url.display_url) ?? []),
+    ...(user.entities?.description?.urls.map((url) => url.display_url) ?? []),
+  ];
 
   return {
     provider: 'TWITTER',
@@ -62,6 +57,6 @@ export const authorizeUser = async (token: string, verifier: string): Promise<Ex
     email: user.email!,
     name: user.name,
     avatarUrl: user.profile_image_url_https,
-    penxleSpaceSlugs: slugs,
+    links,
   };
 };
