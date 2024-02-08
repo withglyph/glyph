@@ -3,6 +3,7 @@
   import { Link } from '@penxle/ui';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
+  import { onMount } from 'svelte';
   import Wordmark from '$assets/icons/wordmark.svg?component';
   import { fragment, graphql } from '$glitch';
   import { Logo } from '$lib/components/branding';
@@ -15,6 +16,7 @@
   import CharacterCountWidget from './CharacterCountWidget.svelte';
   import { getEditorContext } from './context';
   import DraftListModal from './DraftListModal.svelte';
+  import MobileEditMenu from './MobileEditMenu.svelte';
   import PublishMenu from './PublishMenu.svelte';
   import RevisionListModal from './RevisionListModal.svelte';
   import ToolbarButtonTooltip from './ToolbarButtonTooltip.svelte';
@@ -154,9 +156,27 @@
   }
 
   $: currentColor = (editor?.getAttributes('font_color').fontColor as string | undefined) ?? values.color[0].value;
+
+  let vvOffset: number | undefined;
+
+  const handleVisualViewportChange = () => {
+    vvOffset = window.visualViewport?.offsetTop;
+  };
+
+  onMount(() => {
+    handleVisualViewportChange();
+
+    window.visualViewport?.addEventListener('resize', handleVisualViewportChange);
+    window.visualViewport?.addEventListener('scroll', handleVisualViewportChange);
+
+    return () => {
+      window.visualViewport?.removeEventListener('resize', handleVisualViewportChange);
+      window.visualViewport?.addEventListener('scroll', handleVisualViewportChange);
+    };
+  });
 </script>
 
-<header class="sticky top-0 z-49 bg-white">
+<header style:transform={`translateY(${vvOffset ?? 0}px)`} class="w-full top-0 bg-white absolute z-100 transition">
   <div class="w-full flex items-center justify-between border-b border-gray-200 h-14 px-5 sm:pl-7">
     <Link class="flex items-center gap-2" href="/">
       <Logo class="square-6 <sm:hidden" />
@@ -251,6 +271,7 @@
       </Menu>
     </div>
   </div>
+
   <div class="flex items-center border-b border-gray-200 h-14 px-6 <sm:hidden">
     <div class="flex items-center pointer-events-auto">
       <div class="flex center space-x-3 h-8.5 after:(content-empty border-r border-gray-300 h-4 mx-3)">
@@ -813,6 +834,8 @@
       </ToolbarButtonTooltip>
     </div>
   </div>
+
+  <MobileEditMenu />
 </header>
 
 <DraftListModal {$post} $user={$query.me} bind:open={draftListOpen} />

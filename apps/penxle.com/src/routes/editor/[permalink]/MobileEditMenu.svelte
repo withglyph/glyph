@@ -3,11 +3,13 @@
   import { values } from '$lib/tiptap/values';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
   import { getEditorContext } from './context';
+  import MobileToolbarButton from './MobileToolbarButton.svelte';
 
   const { store, state } = getEditorContext();
   $: editor = $state.editor;
 
-  let menuKind:
+  type TopMenu = 'default' | 'text' | 'insert' | 'options';
+  type SubMenu =
     | 'textColor'
     | 'fontFamily'
     | 'fontSize'
@@ -15,13 +17,25 @@
     | 'lineHeight'
     | 'letterSpacing'
     | 'paragraphIndent'
-    | 'paragraphSpacing'
-    | null = null;
-  let bottomMenuKind: 'quote' | 'horizontalRule' | null = null;
+    | 'paragraphSpacing';
+  type BottomMenu = 'quote' | 'horizontalRule';
 
-  let textSettingOpen = false;
-  let insertSettingOpen = false;
-  let additionalSettingOpen = false;
+  let topMenu: TopMenu = 'default';
+  let subMenu: SubMenu | null = null;
+  let bottomMenu: BottomMenu | null = null;
+
+  $: if (topMenu === 'default') {
+    subMenu = null;
+    bottomMenu = null;
+  }
+
+  const toggleSubMenu = (menu: SubMenu) => {
+    subMenu = subMenu === menu ? null : menu;
+  };
+
+  const toggleBottomMenu = (menu: BottomMenu) => {
+    bottomMenu = bottomMenu === menu ? null : menu;
+  };
 
   const handleInsertImage = () => {
     const picker = document.createElement('input');
@@ -88,341 +102,262 @@
   $: currentColor = (editor?.getAttributes('font_color').fontColor as string | undefined) ?? values.color[0].value;
 </script>
 
-{#if menuKind}
-  <div class="px-6 py-2.5 border-t border-gray-200 w-full fixed bottom-45px bg-white h-44px">
-    {#if menuKind === 'textColor'}
-      <div class="flex gap-4.5 overflow-x-auto">
-        {#each colorPresets as preset (preset)}
-          <button
-            style:background-color={preset}
-            class={clsx(
-              'flex center flex-none square-4 rounded-full [&>i]:aria-pressed:block!',
-              preset === '#FFFFFF' && 'border-(1px gray-200) [&>i]:aria-pressed:text-gray-950',
-            )}
-            aria-pressed={currentColor.toUpperCase() === preset}
-            type="button"
-            on:click={() => {
-              if (preset === values.color[0].value.toUpperCase()) {
-                editor?.chain().focus().unsetFontColor().run();
-              } else {
-                editor?.chain().focus().setFontColor(preset).run();
-              }
-            }}
-          >
-            <i class="i-tb-check square-3 text-white hidden" />
-          </button>
-        {/each}
-      </div>
-    {:else if menuKind === 'fontFamily'}
-      <div class="flex gap-4.5 items-center overflow-x-auto overflow-y-hidden">
-        {#each values.fontFamily as font (font.value)}
-          <button
-            style:font-family={`PNXL_${font.value}`}
-            class={clsx('flex-none text-15-r aria-pressed:text-teal-500', font.value === 'Pretendard' && 'text-16-r')}
-            aria-pressed={font.value === (editor?.getAttributes('font_family').fontFamily ?? 'Pretendard')}
-            type="button"
-            on:click={() => {
-              if (font.value === values.fontFamily[0].value) {
-                editor?.chain().focus().unsetFontFamily().run();
-              } else {
-                editor?.chain().focus().setFontFamily(font.value).run();
-              }
-            }}
-          >
-            {font.label}
-          </button>
-        {/each}
-      </div>
-    {:else if menuKind === 'fontSize'}
-      <div class="flex gap-4.5 items-center overflow-x-auto">
-        {#each values.fontSize as fontSize (fontSize.value)}
-          <button
-            class="text-15-r aria-pressed:text-teal-500"
-            aria-pressed={fontSize.value === (editor?.getAttributes('font_size').fontSize ?? 16)}
-            type="button"
-            on:click={() => {
-              if (fontSize.value === 16) {
-                editor?.chain().focus().unsetFontSize().run();
-              } else {
-                editor?.chain().focus().setFontSize(fontSize.value).run();
-              }
-            }}
-          >
-            {fontSize.label.replace('pt', '')}
-          </button>
-        {/each}
-      </div>
-    {:else if menuKind === 'textAlign'}
-      <div class="flex gap-4.5 items-center overflow-x-auto">
-        {#each values.textAlign as textAlign (textAlign.value)}
-          <button
-            class="aria-pressed:text-teal-500"
-            aria-pressed={editor?.isActive({ textAlign: textAlign.value })}
-            type="button"
-            on:click={() => editor?.chain().focus().setParagraphTextAlign(textAlign.value).run()}
-          >
-            <i class={clsx(textAlign.icon, 'square-6')} />
-          </button>
-        {/each}
-      </div>
-    {:else if menuKind === 'lineHeight'}
-      <div class="flex gap-4.5 items-center overflow-x-auto">
-        {#each values.lineHeight as lineHeight (lineHeight.value)}
-          <button
-            class="text-15-r aria-pressed:text-teal-500"
-            aria-pressed={editor?.isActive({ lineHeight: lineHeight.value })}
-            type="button"
-            on:click={() => {
-              editor?.chain().focus().setParagraphLineHeight(lineHeight.value).run();
-            }}
-          >
-            {lineHeight.label}
-          </button>
-        {/each}
-      </div>
-    {:else if menuKind === 'letterSpacing'}
-      <div class="flex gap-4.5 items-center overflow-x-auto">
-        {#each values.letterSpacing as letterSpacing (letterSpacing.value)}
-          <button
-            class="text-15-r aria-pressed:text-teal-500"
-            aria-pressed={editor?.isActive({ letterSpacing: letterSpacing.value })}
-            type="button"
-            on:click={() => {
-              editor?.chain().focus().setParagraphLetterSpacing(letterSpacing.value).run();
-            }}
-          >
-            {letterSpacing.label}
-          </button>
-        {/each}
-      </div>
-    {:else if menuKind === 'paragraphIndent'}
-      <div class="flex gap-4.5 items-center overflow-x-auto">
-        {#each paragraphIndentPresets as paragraphIndent (paragraphIndent.value)}
-          <button
-            class="text-15-r aria-pressed:text-teal-500"
-            aria-pressed={$store.paragraphIndent === paragraphIndent.value}
-            type="button"
-            on:click={() => {
-              $store.paragraphIndent = paragraphIndent.value;
-            }}
-          >
-            {paragraphIndent.label}
-          </button>
-        {/each}
-      </div>
-    {:else if menuKind === 'paragraphSpacing'}
-      <div class="flex gap-4.5 items-center overflow-x-auto">
-        {#each paragraphSpacingPresets as paragraphSpacing (paragraphSpacing.value)}
-          <button
-            class="text-15-r aria-pressed:text-teal-500"
-            aria-pressed={$store.paragraphSpacing === paragraphSpacing.value}
-            type="button"
-            on:click={() => {
-              $store.paragraphSpacing = paragraphSpacing.value;
-            }}
-          >
-            {paragraphSpacing.label}
-          </button>
-        {/each}
-      </div>
-    {/if}
-  </div>
-{/if}
+<div class="flex flex-col bg-white text-gray-800 sm:hidden" on:touchend|nonpassive|preventDefault>
+  <div
+    class="border-b border-gray-200 w-full px-20px py-14px flex items-center gap-20px overflow-x-auto [&::-webkit-scrollbar]:hidden touch-pan-x"
+  >
+    {#if topMenu === 'default'}
+      <MobileToolbarButton class="i-px2-text square-26px" on:click={() => (topMenu = 'text')} />
 
-<div class="fixed bottom-0 bg-white border-t border-gray-200 w-full">
-  <div class="px-5 py-3.5 h-54px flex items-center justify-between">
-    {#if textSettingOpen}
-      <div class="flex gap-4.5 overflow-x-auto">
-        <button
-          class="flex center after:(inline-block content-empty w-1px h-3.5 bg-gray-200 ml-2)"
-          type="button"
-          on:click={() => {
-            menuKind = null;
-            bottomMenuKind = null;
-            textSettingOpen = false;
-          }}
-        >
-          <i class="i-tb-arrow-left square-6 text-gray-400" />
-        </button>
+      <MobileToolbarButton class="i-tb-photo square-26px" on:click={handleInsertImage} />
 
-        <div class="flex items-center gap-2.5">
-          <button
-            aria-pressed={menuKind === 'textColor'}
-            type="button"
-            on:click={() => {
-              menuKind = 'textColor';
-            }}
-          >
+      <MobileToolbarButton class="i-tb-plus square-26px" on:click={() => (topMenu = 'insert')} />
+
+      <MobileToolbarButton class="i-px2-quite-line square-26px" on:click={() => toggleBottomMenu('horizontalRule')} />
+
+      <MobileToolbarButton class="i-tb-settings square-26px" on:click={() => (topMenu = 'options')} />
+    {:else}
+      <MobileToolbarButton class="i-tb-arrow-left square-26px text-gray-400" on:click={() => (topMenu = 'default')} />
+
+      <div class="w-1px h-14px flex-none bg-gray-200" />
+
+      <div class="flex items-center gap-20px overflow-x-auto [&::-webkit-scrollbar]:hidden touch-pan-x">
+        {#if topMenu === 'text'}
+          <MobileToolbarButton on:click={() => toggleSubMenu('textColor')}>
             <div
               style:background-color={currentColor}
               class={clsx(
-                'rounded-full square-4.5',
-                currentColor.toUpperCase() === '#FFFFFF' && 'border-(1px gray-200)',
+                'rounded-full square-24px',
+                currentColor.toUpperCase() === '#FFFFFF' && 'border border-gray-200',
               )}
             />
-          </button>
+          </MobileToolbarButton>
 
-          <button
-            class="text-15-r whitespace-nowrap"
-            aria-pressed={menuKind === 'fontFamily'}
-            type="button"
-            on:click={() => (menuKind = 'fontFamily')}
-          >
+          <MobileToolbarButton class="text-16-r flex-none px-5px" on:click={() => toggleSubMenu('fontFamily')}>
             {values.fontFamily.find(({ value }) => editor?.getAttributes('font_family').fontFamily === value)?.label ??
               values.fontFamily[0].label}
-          </button>
+          </MobileToolbarButton>
 
-          <button aria-pressed={menuKind === 'fontSize'} type="button" on:click={() => (menuKind = 'fontSize')}>
+          <MobileToolbarButton class="text-16-r flex-none px-5px w-30px" on:click={() => toggleSubMenu('fontSize')}>
             {values.fontSize
               .find(({ value }) => editor?.getAttributes('font_size').fontSize === value)
-              ?.label.replace('pt', '') ?? values.fontSize[4].label.replace('pt', '')}
-          </button>
-        </div>
+              ?.label.replace('pt', '') ?? '16'}
+          </MobileToolbarButton>
 
-        <div class="flex items-center gap-4">
-          <button type="button" on:click={() => editor?.chain().focus().toggleBold().run()}>
-            <i class={clsx('i-tb-bold square-6', editor?.isActive('bold') && 'text-teal-500')} />
-          </button>
-
-          <button type="button" on:click={() => editor?.chain().focus().toggleItalic().run()}>
-            <i class={clsx('i-tb-italic square-6', editor?.isActive('italic') && 'text-teal-500')} />
-          </button>
-
-          <button type="button" on:click={() => editor?.chain().focus().toggleStrike().run()}>
-            <i class={clsx('i-tb-strikethrough square-6', editor?.isActive('strike') && 'text-teal-500')} />
-          </button>
-
-          <button type="button" on:click={() => editor?.chain().focus().toggleUnderline().run()}>
-            <i class={clsx('i-tb-underline square-6', editor?.isActive('underline') && 'text-teal-500')} />
-          </button>
-
-          <button type="button">
-            <i class="i-px2-ruby square-6" />
-          </button>
-
-          <button aria-pressed={menuKind === 'textAlign'} type="button" on:click={() => (menuKind = 'textAlign')}>
-            <i class="i-tb-align-justified square-6" />
-          </button>
-
-          <button aria-pressed={menuKind === 'lineHeight'} type="button" on:click={() => (menuKind = 'lineHeight')}>
-            <i class="i-px2-line-height square-6" />
-          </button>
-
-          <button
-            aria-pressed={menuKind === 'letterSpacing'}
-            type="button"
-            on:click={() => (menuKind = 'letterSpacing')}
-          >
-            <i class="i-px2-letter-spacing square-6" />
-          </button>
-        </div>
-      </div>
-    {:else if insertSettingOpen}
-      <div class="flex gap-4.5 overflow-x-auto">
-        <button
-          class="flex center after:(inline-block content-empty w-1px h-3.5 bg-gray-200 ml-2)"
-          type="button"
-          on:click={() => {
-            menuKind = null;
-            bottomMenuKind = null;
-            insertSettingOpen = false;
-          }}
-        >
-          <i class="i-tb-arrow-left square-6 text-gray-400" />
-        </button>
-
-        <div class="flex gap-4">
-          <button
-            class="i-tb-list square-6"
-            type="button"
-            on:click={() => {
-              editor?.chain().focus().toggleBulletList().run();
-            }}
+          <MobileToolbarButton
+            class={clsx('i-tb-bold square-26px', editor?.isActive('bold') && 'text-teal-500')}
+            on:click={() => editor?.chain().focus().toggleBold().run()}
           />
 
-          <button
-            class="i-tb-list-numbers square-6"
-            type="button"
-            on:click={() => {
-              editor?.chain().focus().toggleOrderedList().run();
-            }}
+          <MobileToolbarButton
+            class={clsx('i-tb-italic square-26px', editor?.isActive('italic') && 'text-teal-500')}
+            on:click={() => editor?.chain().focus().toggleItalic().run()}
           />
 
-          <button class="i-tb-quote square-6" type="button" on:click={() => (bottomMenuKind = 'quote')} />
-        </div>
+          <MobileToolbarButton
+            class={clsx('i-tb-strikethrough square-26px', editor?.isActive('strike') && 'text-teal-500')}
+            on:click={() => editor?.chain().focus().toggleStrike().run()}
+          />
 
-        <button class="i-tb-folder square-6" type="button" on:click={handleInsertFile} />
+          <MobileToolbarButton
+            class={clsx('i-tb-underline square-26px', editor?.isActive('underline') && 'text-teal-500')}
+            on:click={() => editor?.chain().focus().toggleUnderline().run()}
+          />
 
-        <button
-          class="i-tb-link square-6"
-          disabled={editor?.isActive('link') || editor?.state.selection.empty}
-          type="button"
-          on:click={() => editor?.chain().focus().setLink('').run()}
-        />
-      </div>
-    {:else if additionalSettingOpen}
-      <div class="flex gap-4.5 overflow-x-auto">
-        <button
-          class="flex center after:(inline-block content-empty w-1px h-3.5 bg-gray-200 ml-2)"
-          type="button"
-          on:click={() => {
-            menuKind = null;
-            bottomMenuKind = null;
-            additionalSettingOpen = false;
-          }}
-        >
-          <i class="i-tb-arrow-left square-6 text-gray-400" />
-        </button>
+          <MobileToolbarButton
+            class="i-px2-ruby square-26px"
+            disabled={editor?.isActive('ruby') || editor?.state.selection.empty}
+            on:click={() => editor?.chain().focus().setRuby('').run()}
+          />
 
-        <button
-          class="text-15-r"
-          type="button"
-          on:click={() => {
-            menuKind = 'paragraphIndent';
-          }}
-        >
-          문단 들여쓰기
-        </button>
+          <MobileToolbarButton
+            class={clsx(
+              'square-26px',
+              values.textAlign.find(({ value }) => value === editor?.getAttributes('paragraph').textAlign)?.icon ??
+                values.textAlign[0].icon,
+            )}
+            on:click={() => toggleSubMenu('textAlign')}
+          />
 
-        <button
-          class="text-15-r"
-          type="button"
-          on:click={() => {
-            menuKind = 'paragraphSpacing';
-          }}
-        >
-          문단 사이간격
-        </button>
-      </div>
-    {:else}
-      <div class="flex gap-5.5">
-        <button class="i-px2-text square-6.5" type="button" on:click={() => (textSettingOpen = true)} />
+          <MobileToolbarButton class="i-px2-line-height square-26px" on:click={() => toggleSubMenu('lineHeight')} />
 
-        <button class="i-tb-photo square-6.5" type="button" on:click={handleInsertImage} />
+          <MobileToolbarButton
+            class="i-px2-letter-spacing square-26px"
+            on:click={() => toggleSubMenu('letterSpacing')}
+          />
+        {:else if topMenu === 'insert'}
+          <MobileToolbarButton
+            class="i-tb-list square-26px"
+            on:click={() => editor?.chain().focus().toggleBulletList().run()}
+          />
 
-        <button class="i-tb-plus square-6.5" type="button" on:click={() => (insertSettingOpen = true)} />
+          <MobileToolbarButton
+            class="i-tb-list-numbers square-26px"
+            on:click={() => editor?.chain().focus().toggleOrderedList().run()}
+          />
 
-        <button
-          class="i-px2-quite-line square-6.5"
-          type="button"
-          on:click={() => (bottomMenuKind = 'horizontalRule')}
-        />
+          <MobileToolbarButton class="i-tb-quote square-26px" on:click={() => toggleBottomMenu('quote')} />
 
-        <button class="i-tb-settings square-6.5" type="button" on:click={() => (additionalSettingOpen = true)} />
+          <MobileToolbarButton class="i-tb-folder square-26px" on:click={handleInsertFile} />
+
+          <MobileToolbarButton
+            class="i-tb-link square-26px"
+            disabled={editor?.isActive('link') || editor?.state.selection.empty}
+            on:click={() => editor?.chain().focus().setLink('').run()}
+          />
+        {:else if topMenu === 'options'}
+          <MobileToolbarButton class="text-16-r" on:click={() => toggleSubMenu('paragraphIndent')}>
+            문단 들여쓰기
+          </MobileToolbarButton>
+
+          <MobileToolbarButton class="text-16-r" on:click={() => toggleSubMenu('paragraphSpacing')}>
+            문단 사이간격
+          </MobileToolbarButton>
+        {/if}
       </div>
     {/if}
   </div>
-  {#if bottomMenuKind}
-    <div class="grid grid-cols-2 border-t border-gray-200">
-      {#if bottomMenuKind === 'quote'}
+
+  {#if subMenu}
+    <div
+      class="border-b border-gray-200 w-full px-20px py-14px flex items-center gap-20px overflow-x-auto [&::-webkit-scrollbar]:hidden touch-pan-x"
+    >
+      {#if subMenu === 'textColor'}
+        <div class="flex gap-24px">
+          {#each colorPresets as color (color)}
+            <MobileToolbarButton
+              style={`background-color: ${color};`}
+              class={clsx(
+                'flex center flex-none square-24px rounded-full border',
+                color === '#FFFFFF' ? 'border-gray-200' : 'border-transparent',
+              )}
+              on:click={() => {
+                if (color === values.color[0].value.toUpperCase()) {
+                  editor?.chain().focus().unsetFontColor().run();
+                } else {
+                  editor?.chain().focus().setFontColor(color).run();
+                }
+              }}
+            >
+              <i
+                class={clsx(
+                  'i-tb-check square-12px',
+                  currentColor.toUpperCase() !== color && 'hidden',
+                  color === '#FFFFFF' ? 'text-gray-950' : 'text-white',
+                )}
+              />
+            </MobileToolbarButton>
+          {/each}
+        </div>
+      {:else if subMenu === 'fontFamily'}
+        <div class="flex gap-10px">
+          {#each values.fontFamily as fontFamily (fontFamily.value)}
+            <MobileToolbarButton
+              style={`font-family: PNXL_${fontFamily.value};`}
+              class={clsx(
+                'flex-none px-5px',
+                fontFamily.value === (editor?.getAttributes('font_family').fontFamily ?? 'Pretendard') &&
+                  'text-teal-500',
+                fontFamily.value === 'Pretendard' ? 'text-17-r' : 'text-16-r',
+              )}
+              on:click={() => {
+                if (fontFamily.value === values.fontFamily[0].value) {
+                  editor?.chain().focus().unsetFontFamily().run();
+                } else {
+                  editor?.chain().focus().setFontFamily(fontFamily.value).run();
+                }
+              }}
+            >
+              {fontFamily.label}
+            </MobileToolbarButton>
+          {/each}
+        </div>
+      {:else if subMenu === 'fontSize'}
+        <div class="flex gap-24px text-16-r">
+          {#each values.fontSize as fontSize (fontSize.value)}
+            <MobileToolbarButton
+              class={clsx(
+                'px-5px',
+                fontSize.value === (editor?.getAttributes('font_size').fontSize ?? 16) && 'text-teal-500',
+              )}
+              on:click={() => editor?.chain().focus().setFontSize(fontSize.value).focus().run()}
+            >
+              {fontSize.label.replace('pt', '')}
+            </MobileToolbarButton>
+          {/each}
+        </div>
+      {:else if subMenu === 'textAlign'}
+        <div class="flex gap-20px">
+          {#each values.textAlign as textAlign (textAlign.value)}
+            <MobileToolbarButton
+              class={clsx(
+                'square-26px',
+                textAlign.icon,
+                editor?.isActive({ textAlign: textAlign.value }) && 'text-teal-500',
+              )}
+              on:click={() => editor?.chain().focus().setParagraphTextAlign(textAlign.value).run()}
+            />
+          {/each}
+        </div>
+      {:else if subMenu === 'lineHeight'}
+        <div class="flex gap-24px text-16-r">
+          {#each values.lineHeight as lineHeight (lineHeight.value)}
+            <MobileToolbarButton
+              class={clsx('px-5px', editor?.isActive({ lineHeight: lineHeight.value }) && 'text-teal-500')}
+              on:click={() => editor?.chain().focus().setParagraphLineHeight(lineHeight.value).run()}
+            >
+              {lineHeight.label}
+            </MobileToolbarButton>
+          {/each}
+        </div>
+      {:else if subMenu === 'letterSpacing'}
+        <div class="flex gap-22px text-16-r">
+          {#each values.letterSpacing as letterSpacing (letterSpacing.value)}
+            <MobileToolbarButton
+              class={clsx('px-5px', editor?.isActive({ letterSpacing: letterSpacing.value }) && 'text-teal-500')}
+              on:click={() => editor?.chain().focus().setParagraphLetterSpacing(letterSpacing.value).run()}
+            >
+              {letterSpacing.label}
+            </MobileToolbarButton>
+          {/each}
+        </div>
+      {:else if subMenu === 'paragraphIndent'}
+        <div class="flex gap-20px text-16-r">
+          {#each paragraphIndentPresets as paragraphIndent (paragraphIndent.value)}
+            <MobileToolbarButton
+              class={clsx('px-5px', $store.paragraphIndent === paragraphIndent.value && 'text-teal-500')}
+              on:click={() => ($store.paragraphIndent = paragraphIndent.value)}
+            >
+              {paragraphIndent.label}
+            </MobileToolbarButton>
+          {/each}
+        </div>
+      {:else if subMenu === 'paragraphSpacing'}
+        <div class="flex gap-4.5 items-center overflow-x-auto">
+          {#each paragraphSpacingPresets as paragraphSpacing (paragraphSpacing.value)}
+            <MobileToolbarButton
+              class={clsx('px-5px', $store.paragraphSpacing === paragraphSpacing.value && 'text-teal-500')}
+              on:click={() => ($store.paragraphSpacing = paragraphSpacing.value)}
+            >
+              {paragraphSpacing.label}
+            </MobileToolbarButton>
+          {/each}
+        </div>
+      {/if}
+    </div>
+  {/if}
+
+  {#if bottomMenu}
+    <div class="grid grid-cols-2 border-b border-gray-200 touch-none">
+      {#if bottomMenu === 'quote'}
         {#each values.blockquote as blockquote (blockquote.value)}
-          <button
+          <MobileToolbarButton
             class="flex center px-7 py-6.5"
-            type="button"
             on:click={() => {
               editor?.chain().focus().setBlockquote(blockquote.value).run();
-              bottomMenuKind = null;
-              editor?.chain().focus();
+              setTimeout(() => {
+                bottomMenu = null;
+              }, 0);
             }}
           >
             <blockquote
@@ -432,21 +367,21 @@
             >
               내용을 입력해주세요
             </blockquote>
-          </button>
+          </MobileToolbarButton>
         {/each}
-      {:else if bottomMenuKind === 'horizontalRule'}
+      {:else if bottomMenu === 'horizontalRule'}
         {#each values.horizontalRule as hr (hr.value)}
-          <button
+          <MobileToolbarButton
             class="flex center px-7 py-6.5"
-            type="button"
             on:click={() => {
               editor?.chain().focus().setHorizontalRule(hr.value).run();
-              bottomMenuKind = null;
-              editor?.chain().focus();
+              setTimeout(() => {
+                bottomMenu = null;
+              }, 0);
             }}
           >
             <hr class="w-full divider-preview" aria-label={`${hr.value}번째 구분선`} data-kind={hr.value} />
-          </button>
+          </MobileToolbarButton>
         {/each}
       {/if}
     </div>
@@ -492,6 +427,11 @@
     &[data-kind='7'] {
       --uno: h-1.25rem;
       background-image: url(https://penxle.com/horizontal-rules/7.svg);
+    }
+
+    &[data-kind='8'] {
+      --uno: h-0.75rem;
+      background-image: url(https://penxle.com/horizontal-rules/8.svg);
     }
   }
 

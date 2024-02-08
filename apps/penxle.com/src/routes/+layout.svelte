@@ -53,7 +53,7 @@
   <script data-domain="penxle.com" defer src="https://plausible.io/js/script.js"></script>
 </svelte:head>
 
-<div class="min-h-100dvh flex flex-col">
+<div class="relative flex flex-col min-h-100dvh">
   <slot />
 </div>
 

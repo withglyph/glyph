@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import * as R from 'radash';
+  import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { browser, dev } from '$app/environment';
   import { beforeNavigate } from '$app/navigation';
@@ -9,7 +10,6 @@
   import Content from './Content.svelte';
   import { setEditorContext } from './context';
   import Header from './Header.svelte';
-  import MobileEditMenu from './MobileEditMenu.svelte';
   import type { EditorPage_Editor_post, EditorPage_Editor_query, PostRevisionKind } from '$glitch';
   import type { EditorState, EditorStore } from './context';
 
@@ -129,20 +129,35 @@
     forceSave: makeRevisePost('MANUAL_SAVE'),
   });
 
-  let mobile: boolean;
+  let vvHeight: number | undefined;
 
-  $: if (browser) {
-    mobile = window.innerWidth < 800;
-  }
+  const handleVisualViewportChange = () => {
+    if (window.visualViewport) {
+      vvHeight = window.visualViewport.height + window.visualViewport.offsetTop;
+    }
+  };
+
+  onMount(() => {
+    handleVisualViewportChange();
+
+    window.visualViewport?.addEventListener('resize', handleVisualViewportChange);
+    window.visualViewport?.addEventListener('scroll', handleVisualViewportChange);
+
+    return () => {
+      window.visualViewport?.removeEventListener('resize', handleVisualViewportChange);
+      window.visualViewport?.removeEventListener('scroll', handleVisualViewportChange);
+    };
+  });
 </script>
-
-<svelte:window on:resize={() => (mobile = window.innerWidth < 800)} />
 
 <Helmet title="포스트 수정하기" />
 
-<Header {$post} {$query} />
-<Content />
+<div class="relative grow isolate select-none touch-none">
+  <div style:height={vvHeight ? `${vvHeight}px` : '100dvh'} class="flex flex-col">
+    <Header {$post} {$query} />
 
-{#if mobile}
-  <MobileEditMenu />
-{/if}
+    <div class="flex flex-col grow mt-112px overflow-auto">
+      <Content />
+    </div>
+  </div>
+</div>
