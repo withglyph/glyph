@@ -27,7 +27,7 @@
 </script>
 
 <div>
-  <p class="text-14-sb pt-1 pb-2 flex gap-1">
+  <p class="text-14-sb pt-1 pb-2 flex gap-1 <sm:text-15-m">
     <span>{label}</span>
     <Tooltip class="flex center" message={tooltip} placement="top">
       <i class="i-tb-alert-circle square-3.5 text-gray-400" />

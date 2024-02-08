@@ -217,16 +217,18 @@
 
 <div
   class={clsx(
-    'bg-white z-50 <sm:(w-full shadow-[0px_8px_24px_0px_rgba(0,0,0,0.28)]) sm:(border border-gray-200 border-t-none rounded-b-lg shadow-[0px_5px_22px_0px_rgba(0,0,0,0.06)])',
+    'bg-white z-50 <sm:(w-full shadow-[0px_8px_24px_0px_rgba(0,0,0,0.28)] rounded-t-3.5) sm:(border border-gray-200 border-t-none rounded-b-lg shadow-[0px_5px_22px_0px_rgba(0,0,0,0.06)])',
     !open && 'hidden!',
   )}
 >
-  <div class="flex flex-col center w-full sm:hidden">
-    <div class="w-15 h-1.25 my-2 bg-gray-200 rounded-full" />
-  </div>
-  <div class="py-4 px-6 border-b border-gray-200 <sm:hidden">
-    <p class="text-16-sb">게시 옵션</p>
-    <span class="text-12-r text-gray-500 mt-0.5">다양한 옵션을 선택해 원하는 방식으로 게시글을 업로드할 수 있어요</span>
+  <div class="py-4 px-6 border-b border-gray-200 <sm:border-gray-100">
+    <p class="text-16-sb <sm:(text-center relative)">
+      게시 옵션
+      <button class="i-tb-x square-6 absolute right-0 sm:hidden" type="button" on:click={() => (open = false)}></button>
+    </p>
+    <span class="text-12-r text-gray-500 mt-0.5 <sm:hidden">
+      다양한 옵션을 선택해 원하는 방식으로 게시글을 업로드할 수 있어요
+    </span>
   </div>
 
   <div class="flex <sm:flex-col">
@@ -246,7 +248,7 @@
         {:else}
           <i class="i-px2-dot square-6 text-pink-500 <sm:hidden" />
         {/if}
-        <span class="py-2 px-1 w-full">발행</span>
+        <span class="w-full pb-2 sm:(py-2 px-1)">발행</span>
       </button>
       <button
         class={clsx(
@@ -261,7 +263,7 @@
         {:else}
           <i class="i-px2-checkmark square-6 text-gray-300 <sm:hidden" />
         {/if}
-        <span class="py-2 px-1 w-full">태그</span>
+        <span class="w-full pb-2 sm:(py-2 px-1)">태그</span>
       </button>
       <button
         class={clsx(
@@ -276,7 +278,7 @@
         {:else}
           <i class="i-px2-checkmark square-6 text-gray-300 <sm:hidden" />
         {/if}
-        <span class="py-2 px-1 w-full">썸네일</span>
+        <span class="w-full pb-2 sm:(py-2 px-1)">썸네일</span>
       </button>
       <button
         class={clsx(
@@ -287,7 +289,7 @@
         on:click={() => (tabIndex = 3)}
       >
         <i class="i-px2-checkmark square-6 text-teal-500 <sm:hidden" />
-        <span class="py-2 px-1 w-full">대상 독자</span>
+        <span class="w-full pb-2 sm:(py-2 px-1)">대상 독자</span>
       </button>
       <button
         class={clsx(
@@ -298,7 +300,7 @@
         on:click={() => (tabIndex = 4)}
       >
         <i class="i-px2-checkmark square-6 text-teal-500 <sm:hidden" />
-        <span class="py-2 px-1 w-full">세부 옵션</span>
+        <span class="w-full pb-2 sm:(py-2 px-1)">세부 옵션</span>
       </button>
     </div>
 
@@ -307,7 +309,7 @@
 
       <div class={clsx('space-y-8 hidden', tabIndex === 0 && 'block!')}>
         <div>
-          <p class="text-14-sb pt-1 pb-2">스페이스</p>
+          <p class="text-14-sb pt-1 pb-2 <sm:text-15-m">스페이스</p>
 
           <div class="mb-4 relative">
             <Tooltip
@@ -392,7 +394,7 @@
         </div>
 
         <div>
-          <p class="text-14-sb pt-1 pb-2">컬렉션</p>
+          <p class="text-14-sb pt-1 pb-2 <sm:text-15-m">컬렉션</p>
 
           <div class="relative">
             <button
@@ -480,7 +482,7 @@
 
       <div class={clsx('space-y-8 hidden', tabIndex === 1 && 'block!')}>
         <div>
-          <p class="text-14-sb pt-1 pb-2 flex gap-1.5">
+          <p class="text-14-sb pt-1 pb-2 flex gap-1 <sm:text-15-m">
             <span>카테고리</span>
             <!-- <Tooltip class="flex center" message="카테고리" placement="top">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
@@ -496,7 +498,7 @@
         </div>
 
         <div>
-          <p class="text-14-sb pt-1 pb-2 flex gap-1">
+          <p class="text-14-sb pt-1 pb-2 flex gap-1 <sm:text-15-m">
             <span>페어</span>
             <Tooltip class="flex center" message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
               <i class="i-tb-alert-circle square-3.5 text-gray-400" />
@@ -563,7 +565,7 @@
       </div>
 
       <div class={clsx('hidden', tabIndex === 2 && 'block!')}>
-        <p class="text-14-sb pt-1 pb-2">썸네일</p>
+        <p class="text-14-sb pt-1 pb-2 <sm:text-15-m">썸네일</p>
 
         {#if currentThumbnail}
           <div class="border border-gray-200 px-4 py-3.5 rounded flex items-center justify-between">
@@ -601,7 +603,7 @@
 
       <div class={clsx('space-y-8 hidden', tabIndex === 3 && 'block!')}>
         <div>
-          <p class="text-14-sb py-1">공개범위</p>
+          <p class="text-14-sb py-1 <sm:text-15-m">공개범위</p>
 
           <RadioGroup
             name="visibility"
@@ -715,15 +717,17 @@
           checked={$data.receiveFeedback ?? true}
         >
           <div>
-            <p class="text-14-sb py-1">피드백</p>
-            <p class="text-11-r text-gray-700 mt-1">가장 오래 머무른 구간, 밑줄, 이모지 등 피드백을 받아요</p>
+            <p class="text-14-sb py-1 <sm:text-15-m">피드백</p>
+            <p class="text-11-r text-gray-400 sm:(mt-1 text-gray-700)">
+              가장 오래 머무른 구간, 밑줄, 이모지 등 피드백을 받아요
+            </p>
           </div>
         </Switch>
 
         <Switch name="discloseStats" class="flex items-center justify-between" checked={$data.discloseStats ?? true}>
           <div>
-            <p class="text-14-sb py-1">게시물 세부 공개</p>
-            <p class="text-11-r text-gray-700 mt-1">독자에게 좋아요, 조회수를 공유해요</p>
+            <p class="text-14-sb py-1 <sm:text-15-m">게시물 세부 공개</p>
+            <p class="text-11-r text-gray-400 sm:(mt-1 text-gray-700)">독자에게 좋아요, 조회수를 공유해요</p>
           </div>
         </Switch>
 
@@ -733,15 +737,17 @@
           checked={$data.receivePatronage ?? true}
         >
           <div>
-            <p class="text-14-sb py-1">창작자 후원</p>
-            <p class="text-11-r text-gray-700 mt-1">독자들이 게시물에 자유롭게 후원할 수 있어요</p>
+            <p class="text-14-sb py-1 <sm:text-15-m">창작자 후원</p>
+            <p class="text-11-r text-gray-400 sm:(mt-1 text-gray-700)">독자들이 게시물에 자유롭게 후원할 수 있어요</p>
           </div>
         </Switch>
 
         <Switch name="protectContent" class="flex items-center justify-between" checked={$data.protectContent ?? true}>
           <div>
-            <p class="text-14-sb py-1">게시물 내용 보호</p>
-            <p class="text-11-r text-gray-700 mt-1">게시물의 내용을 보호하기 위해 우클릭 또는 복사를 제한해요</p>
+            <p class="text-14-sb py-1 <sm:text-15-m">게시물 내용 보호</p>
+            <p class="text-11-r text-gray-400 sm:(mt-1 text-gray-700)">
+              게시물의 내용을 보호하기 위해 우클릭 또는 복사를 제한해요
+            </p>
           </div>
         </Switch>
       </div>
