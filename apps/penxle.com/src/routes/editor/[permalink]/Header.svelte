@@ -471,7 +471,7 @@
               type="button"
               let:open
             >
-              <i class="i-px-line-height square-6" />
+              <i class="i-px2-line-height square-6" />
             </button>
 
             {#each values.lineHeight as lineHeight (lineHeight.value)}
@@ -504,7 +504,7 @@
               type="button"
               let:open
             >
-              <i class="i-px-letter-space square-6" />
+              <i class="i-px2-letter-spacing square-6" />
             </button>
 
             {#each values.letterSpacing as letterSpacing (letterSpacing.value)}
