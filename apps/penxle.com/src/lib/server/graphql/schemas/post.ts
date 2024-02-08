@@ -1237,6 +1237,69 @@ export const postSchema = defineSchema((builder) => {
           });
         }
 
+        // 글 포스트 발행 이벤트 체크
+        const now = dayjs().kst();
+        if (now.isAfter('2024-02-09') && now.isBefore('2024-02-20')) {
+          const eventPosts = await db.post.findMany({
+            select: {
+              tags: true,
+              publishedRevision: {
+                select: {
+                  freeContent: true,
+                  paidContent: true,
+                },
+              },
+            },
+            where: {
+              userId: context.session.userId,
+              visibility: 'PUBLIC',
+              state: 'PUBLISHED',
+              password: null,
+              space: {
+                state: 'ACTIVE',
+                visibility: 'PUBLIC',
+              },
+              publishedAt: { gte: dayjs.kst('2024-02-09').toDate() },
+            },
+          });
+
+          let eventPostCount = 0;
+          for (const post of eventPosts) {
+            if (post.tags.length >= 3) {
+              const contentText = post.publishedRevision?.freeContent
+                ? await revisionContentToText(post.publishedRevision.freeContent)
+                : '';
+              const paidContentText = post.publishedRevision?.paidContent
+                ? await revisionContentToText(post.publishedRevision.paidContent)
+                : '';
+              if (contentText.length + paidContentText.length >= 300) {
+                eventPostCount++;
+                if (eventPostCount >= 2) {
+                  await db.userEventEnrollment.upsert({
+                    where: {
+                      userId_eventCode: {
+                        userId: context.session.userId,
+                        eventCode: 'post_publish_202402',
+                      },
+                    },
+                    create: {
+                      id: createId(),
+                      userId: context.session.userId,
+                      eventCode: 'post_publish_202402',
+                      eligible: true,
+                    },
+                    update: {
+                      eligible: true,
+                    },
+                  });
+
+                  break;
+                }
+              }
+            }
+          }
+        }
+
         await indexPost(post);
         return db.post.findUniqueOrThrow({
           ...query,
