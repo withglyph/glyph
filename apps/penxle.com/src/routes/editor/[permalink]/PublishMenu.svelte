@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { flip, offset, shift } from '@floating-ui/dom';
   import clsx from 'clsx';
   import { slide } from 'svelte/transition';
   import { goto } from '$app/navigation';
@@ -10,8 +9,6 @@
   import ThumbnailPicker from '$lib/components/media/ThumbnailPicker.svelte';
   import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { createMutationForm } from '$lib/form';
-  import { portal } from '$lib/svelte/actions';
-  import { createFloatingActions } from '$lib/svelte-floating-ui';
   import { PublishPostInputSchema } from '$lib/validations/post';
   import CreateSpaceModal from '../../(default)/CreateSpaceModal.svelte';
   import { getEditorContext } from './context';
@@ -153,16 +150,6 @@
     },
   });
 
-  const [floatingRef, floatingContent, update] = createFloatingActions({
-    strategy: 'absolute',
-    placement: 'bottom-end',
-    middleware: [offset(11), flip(), shift({ padding: 8 })],
-  });
-
-  $: if (open) {
-    void update();
-  }
-
   $: setInitialValues({
     revisionId: $post.draftRevision.id,
     spaceId: $post.space ? $post.space.id : '',
@@ -228,97 +215,94 @@
   }
 </script>
 
-<div class="w-fit" use:floatingRef>
-  <button
-    class="bg-gray-950 text-white px-8 py-2.5 rounded text-14-m mr-3 leading-none border border-gray-950 text-center"
-    type="button"
-    on:click={() => (open = true)}
-  >
-    발행
-  </button>
-</div>
-
-{#if open}
-  <div
-    class="fixed inset-0 z-49"
-    role="button"
-    tabindex="-1"
-    on:click={() => (open = false)}
-    on:keypress={null}
-    use:portal
-  />
-{/if}
-
 <div
   class={clsx(
-    'bg-white shadow-[0px_5px_22px_0px_rgba(0,0,0,0.06)] border border-gray-200 border-t-none z-50 rounded-b-lg',
+    'bg-white z-50 <sm:(w-full shadow-[0px_8px_24px_0px_rgba(0,0,0,0.28)]) sm:(border border-gray-200 border-t-none rounded-b-lg shadow-[0px_5px_22px_0px_rgba(0,0,0,0.06)])',
     !open && 'hidden!',
   )}
-  use:floatingContent
-  use:portal
 >
-  <div class="py-4 px-6 border-b border-gray-200">
+  <div class="flex flex-col center w-full sm:hidden">
+    <div class="w-15 h-1.25 my-2 bg-gray-200 rounded-full" />
+  </div>
+  <div class="py-4 px-6 border-b border-gray-200 <sm:hidden">
     <p class="text-16-sb">게시 옵션</p>
     <span class="text-12-r text-gray-500 mt-0.5">다양한 옵션을 선택해 원하는 방식으로 게시글을 업로드할 수 있어요</span>
   </div>
 
-  <div class="flex">
-    <div class="w-52 flex flex-col border-r border-gray-200 gap-1.5 py-1.5">
+  <div class="flex <sm:flex-col">
+    <div
+      class="w-52 flex py-1.5 <sm:(flex-row w-full overflow-x-auto whitespace-nowrap py-4 px-5 gap-7) sm:(border-r flex-col border-gray-200 gap-1.5)"
+    >
       <button
-        class={clsx('mx-2 py-1 text-13-r flex items-center rounded hover:bg-gray-50', tabIndex === 0 && 'bg-gray-50')}
+        class={clsx(
+          'flex items-center text-15-sb <sm:(border-b-2 border-white text-gray-300 aria-pressed:(border-gray-950 text-gray-950)) sm:(text-13-r py-1 mx-2 rounded aria-pressed:bg-gray-50 hover:bg-gray-50)',
+        )}
+        aria-pressed={tabIndex === 0}
         type="button"
         on:click={() => (tabIndex = 0)}
       >
         {#if selectedSpaceId || $post.space}
-          <i class="i-px2-checkmark square-6 text-teal-500" />
+          <i class="i-px2-checkmark square-6 text-teal-500 <sm:hidden" />
         {:else}
-          <i class="i-px2-dot square-6 text-pink-500" />
+          <i class="i-px2-dot square-6 text-pink-500 <sm:hidden" />
         {/if}
         <span class="py-2 px-1 w-full">발행</span>
       </button>
       <button
-        class={clsx('mx-2 py-1 text-13-r flex items-center rounded hover:bg-gray-50', tabIndex === 1 && 'bg-gray-50')}
+        class={clsx(
+          'flex items-center text-15-sb <sm:(border-b-2 border-white text-gray-300 aria-pressed:(border-gray-950 text-gray-950)) sm:(text-13-r py-1 mx-2 rounded aria-pressed:bg-gray-50 hover:bg-gray-50)',
+        )}
+        aria-pressed={tabIndex === 1}
         type="button"
         on:click={() => (tabIndex = 1)}
       >
         {#if $data.tags?.length > 0}
-          <i class="i-px2-checkmark square-6 text-teal-500" />
+          <i class="i-px2-checkmark square-6 text-teal-500 <sm:hidden" />
         {:else}
-          <i class="i-px2-checkmark square-6 text-gray-300" />
+          <i class="i-px2-checkmark square-6 text-gray-300 <sm:hidden" />
         {/if}
         <span class="py-2 px-1 w-full">태그</span>
       </button>
       <button
-        class={clsx('mx-2 py-1 text-13-r flex items-center rounded hover:bg-gray-50', tabIndex === 2 && 'bg-gray-50')}
+        class={clsx(
+          'flex items-center text-15-sb <sm:(border-b-2 border-white text-gray-300 aria-pressed:(border-gray-950 text-gray-950)) sm:(text-13-r py-1 mx-2 rounded aria-pressed:bg-gray-50 hover:bg-gray-50)',
+        )}
+        aria-pressed={tabIndex === 2}
         type="button"
         on:click={() => (tabIndex = 2)}
       >
         {#if currentThumbnail}
-          <i class="i-px2-checkmark square-6 text-teal-500" />
+          <i class="i-px2-checkmark square-6 text-teal-500 <sm:hidden" />
         {:else}
-          <i class="i-px2-checkmark square-6 text-gray-300" />
+          <i class="i-px2-checkmark square-6 text-gray-300 <sm:hidden" />
         {/if}
         <span class="py-2 px-1 w-full">썸네일</span>
       </button>
       <button
-        class={clsx('mx-2 py-1 text-13-r flex items-center rounded hover:bg-gray-50', tabIndex === 3 && 'bg-gray-50')}
+        class={clsx(
+          'flex items-center text-15-sb <sm:(border-b-2 border-white text-gray-300 aria-pressed:(border-gray-950 text-gray-950)) sm:(text-13-r py-1 mx-2 rounded aria-pressed:bg-gray-50 hover:bg-gray-50)',
+        )}
+        aria-pressed={tabIndex === 3}
         type="button"
         on:click={() => (tabIndex = 3)}
       >
-        <i class="i-px2-checkmark square-6 text-teal-500" />
+        <i class="i-px2-checkmark square-6 text-teal-500 <sm:hidden" />
         <span class="py-2 px-1 w-full">대상 독자</span>
       </button>
       <button
-        class={clsx('mx-2 py-1 text-13-r flex items-center rounded hover:bg-gray-50', tabIndex === 4 && 'bg-gray-50')}
+        class={clsx(
+          'flex items-center text-15-sb <sm:(border-b-2 border-white text-gray-300 aria-pressed:(border-gray-950 text-gray-950)) sm:(text-13-r py-1 mx-2 rounded aria-pressed:bg-gray-50 hover:bg-gray-50)',
+        )}
+        aria-pressed={tabIndex === 4}
         type="button"
         on:click={() => (tabIndex = 4)}
       >
-        <i class="i-px2-checkmark square-6 text-teal-500" />
+        <i class="i-px2-checkmark square-6 text-teal-500 <sm:hidden" />
         <span class="py-2 px-1 w-full">세부 옵션</span>
       </button>
     </div>
 
-    <form class="w-96 py-5 px-6 h-108 overflow-y-auto" use:form>
+    <form class="w-96 py-5 px-6 overflow-y-auto <sm:(w-full pt-0 pb-8 px-5 h-50vh) sm:h-108" use:form>
       <input name="thumbnailId" type="hidden" value={currentThumbnail?.id} />
 
       <div class={clsx('space-y-8 hidden', tabIndex === 0 && 'block!')}>
@@ -764,10 +748,16 @@
     </form>
   </div>
 
-  <div class="flex justify-end px-6 py-5 border-t border-gray-200">
-    <Tooltip enabled={!selectedSpaceId} message="게시할 스페이스를 선택해주세요" offset={12} placement="top">
+  <div class="flex justify-end px-6 py-5 sm:(border-t border-gray-200)">
+    <Tooltip
+      class="<sm:w-full"
+      enabled={!selectedSpaceId}
+      message="게시할 스페이스를 선택해주세요"
+      offset={12}
+      placement="top"
+    >
       <button
-        class="w-24 py-2 px-8 text-14-m text-white bg-gray-950 rounded text-center"
+        class="w-24 py-2 px-8 text-14-m text-white bg-gray-950 rounded text-center <sm:(w-full text-16-sb)"
         disabled={!selectedSpaceId}
         type="button"
         on:click={handleSubmit}

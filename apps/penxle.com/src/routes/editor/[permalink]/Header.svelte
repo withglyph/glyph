@@ -94,6 +94,7 @@
   let paragraphIndentOpen = false;
   let paragraphSpacingOpen = false;
 
+  let publishMenuOpen = false;
   let revisionListOpen = false;
   let draftListOpen = false;
 
@@ -138,6 +139,16 @@
     middleware: [offset(menuOffset), flip(), shift({ padding: 8 })],
   });
 
+  const [publishMenuRef, publishMenu, updatePublishMenu] = createFloatingActions({
+    strategy: 'absolute',
+    placement: 'bottom-end',
+    middleware: [offset(11), flip(), shift({ padding: 8 })],
+  });
+
+  $: if (publishMenuOpen) {
+    void updatePublishMenu();
+  }
+
   $: if (colorPickerOpen) {
     void update();
   }
@@ -145,11 +156,13 @@
   $: currentColor = (editor?.getAttributes('font_color').fontColor as string | undefined) ?? values.color[0].value;
 </script>
 
-<header class="sticky top-0 z-50 bg-white <sm:hidden">
-  <div class="w-full flex items-center justify-between border-b border-gray-200 h-14 pl-7 pr-5">
+<header class="sticky top-0 z-49 bg-white">
+  <div class="w-full flex items-center justify-between border-b border-gray-200 h-14 px-5 sm:pl-7">
     <Link class="flex items-center gap-2" href="/">
-      <Logo class="square-6" />
-      <Wordmark class="h-5.25 color-icon-primary" />
+      <Logo class="square-6 <sm:hidden" />
+      <Wordmark class="h-5.25 color-icon-primary <sm:hidden" />
+
+      <i class="i-tb-chevron-left square-6 sm:hidden" />
     </Link>
 
     <div class="flex items-end justify-end flex-1">
@@ -192,10 +205,37 @@
         </button>
       </div>
 
-      <PublishMenu {$post} {$query} />
+      <div class="w-fit" use:publishMenuRef>
+        <button
+          class="bg-gray-950 text-white px-8 py-2.5 rounded text-14-m leading-none border border-gray-950 text-center whitespace-nowrap sm:mr-3"
+          type="button"
+          on:click={() => (publishMenuOpen = true)}
+        >
+          발행
+        </button>
+      </div>
+
+      {#if publishMenuOpen}
+        <div
+          class="fixed inset-0 z-49 <sm:bg-black/50"
+          role="button"
+          tabindex="-1"
+          on:click={() => (publishMenuOpen = false)}
+          on:keypress={null}
+          use:portal
+        />
+      {/if}
+
+      <div class="fixed left-0 bottom-0 w-full z-50 sm:hidden" use:portal>
+        <PublishMenu {$post} {$query} bind:open={publishMenuOpen} />
+      </div>
+
+      <div class="z-50 <sm:hidden" use:portal use:publishMenu>
+        <PublishMenu {$post} {$query} bind:open={publishMenuOpen} />
+      </div>
 
       <Menu class="flex center" offset={menuOffset} placement="bottom-end" rounded={false}>
-        <div slot="value" class="h-9 flex center">
+        <div slot="value" class="h-9 flex center <sm:hidden">
           <i class="i-tb-dots-vertical square-6" aria-label="더보기" />
         </div>
 
@@ -211,7 +251,7 @@
       </Menu>
     </div>
   </div>
-  <div class="flex items-center border-b border-gray-200 h-14 px-6">
+  <div class="flex items-center border-b border-gray-200 h-14 px-6 <sm:hidden">
     <div class="flex items-center pointer-events-auto">
       <div class="flex center space-x-3 h-8.5 after:(content-empty border-r border-gray-300 h-4 mx-3)">
         <ToolbarButtonTooltip message="글자 색">
