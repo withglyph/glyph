@@ -295,6 +295,7 @@ export const userSchema = defineSchema((builder) => {
       eventEnrollment: t.prismaField({
         type: 'UserEventEnrollment',
         nullable: true,
+        grantScopes: ['$user'],
         args: { eventCode: t.arg.string() },
         select: (input, __, nestedSelection) => ({
           eventEnrollments: nestedSelection({
