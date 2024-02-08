@@ -61,14 +61,14 @@
     --uno: cursor-grab;
   }
 
-  & .ProseMirror-dropcursor {
-    --uno: bg-teal-500;
-  }
-
   & .ProseMirror-focused .ProseMirror-gapcursor {
     --uno: border-l border-l-black w-0 h-20px my-1;
     animation: cursor-blink 1s steps(2, start) infinite;
   }
+}
+
+& .ProseMirror-dropcursor {
+  --uno: bg-teal-500;
 }
 
 /*
