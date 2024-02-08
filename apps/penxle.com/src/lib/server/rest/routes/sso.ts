@@ -7,6 +7,7 @@ import { createAccessToken } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { createRouter } from '../router';
 import type { Context } from '$lib/server/context';
+import type { TwitterUser } from '$lib/server/external-api/twitter';
 import type { ExternalUser } from '$lib/server/external-api/types';
 
 export const sso = createRouter();
@@ -43,7 +44,45 @@ sso.get('/sso/twitter', async (_, context) => {
   return await handle(context, externalUser);
 });
 
-const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) => {
+const processSpaceSlug = async ({ db, userId, slugs }: Pick<Context, 'db'> & { userId: string; slugs: string[] }) => {
+  if (slugs.length > 0) {
+    const isLinked = await db.spaceMember.exists({
+      where: {
+        userId,
+        space: {
+          slug: { in: slugs },
+        },
+        state: 'ACTIVE',
+      },
+    });
+
+    if (isLinked) {
+      await db.userEventEnrollment.upsert({
+        where: {
+          userId_eventCode: {
+            userId,
+            eventCode: 'twitter_spacelink_2024',
+          },
+        },
+        create: {
+          id: createId(),
+          userId,
+          eventCode: 'twitter_spacelink_2024',
+          eligible: true,
+        },
+        update: {
+          eligible: true,
+        },
+      });
+
+      return;
+    }
+  }
+
+  // 필요하면 여기서 자격없음 처리
+};
+
+const handle = async ({ db, ...context }: Context, externalUser: ExternalUser & Partial<TwitterUser>) => {
   const _state = context.event.url.searchParams.get('state');
   if (!_state) {
     throw new Error('state is required');
@@ -80,6 +119,10 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
         // 케이스 1-1-1: 그 "누군가"가 현재 로그인된 본인인 경우
         // -> 이미 로그인도 되어 있고 연동도 되어 있으니 아무것도 하지 않음
 
+        if (externalUser.penxleSpaceSlugs) {
+          await processSpaceSlug({ db, userId: context.session.userId, slugs: externalUser.penxleSpaceSlugs });
+        }
+
         return status(303, { headers: { Location: '/me/settings' } });
       } else {
         // 케이스 1-1-2: 그 "누군가"가 현재 로그인된 본인이 아닌 경우
@@ -107,6 +150,10 @@ const handle = async ({ db, ...context }: Context, externalUser: ExternalUser) =
           email: externalUser.email,
         },
       });
+
+      if (externalUser.penxleSpaceSlugs) {
+        await processSpaceSlug({ db, userId: context.session.userId, slugs: externalUser.penxleSpaceSlugs });
+      }
 
       return status(303, { headers: { Location: '/me/settings' } });
     }

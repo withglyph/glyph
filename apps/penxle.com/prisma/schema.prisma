@@ -583,6 +583,7 @@ model User {
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
   emailVerifications       UserEmailVerification[]
+  eventEnrollments         UserEventEnrollment[]
   uploadedFiles            File[]
   uploadedImages           Image[]
   spaceBlockedBy           SpaceUserBlock[]
@@ -618,6 +619,19 @@ model UserEmailVerification {
   expiresAt DateTime                  @map("expires_at") @db.Timestamptz
 
   @@map("user_email_verifications")
+}
+
+model UserEventEnrollment {
+  id         String    @id
+  userId     String    @map("user_id")
+  user       User      @relation(fields: [userId], references: [id])
+  eventCode  String    @map("event_code")
+  eligible   Boolean
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  rewardedAt DateTime? @map("rewarded_at") @db.Timestamptz
+
+  @@unique([userId, eventCode])
+  @@map("user_event_enrollments")
 }
 
 model UserMarketingConsent {
