@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { validator } from '@felte/validator-zod';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import { createForm } from 'felte';
@@ -26,14 +25,17 @@
   export let updateAttributes: NodeViewProps['updateAttributes'];
 
   $: isLastChild = editor?.state.doc.lastChild?.eq(node) ?? false;
-  $: setInitialValues({ price: node.attrs.price ?? 0 });
 
   let priceOpen = false;
   let loginRequireOpen = false;
   let postPurchaseOpen = false;
   let pointPurchaseOpen = false;
 
+  let invalidPrice = false;
+
   let priceInputEl: HTMLInputElement | undefined;
+
+  const priceValidator = z.number().int().min(100).max(1_000_000).multipleOf(100);
 
   const purchasePost = graphql(`
     mutation TiptapAccessBarrier_PurchasePost_Mutation($input: PurchasePostInput!) {
@@ -53,26 +55,32 @@
     offset: 8,
   });
 
-  const { form, errors, data, setFields, setInitialValues } = createForm({
-    initialValues: { price: 0 },
-    extend: [
-      validator({
-        schema: z.object({
-          price: z.number().int().min(100).max(1_000_000).multipleOf(100),
-        }),
-      }),
-    ],
+  const { form, setInitialValues, reset } = createForm({
     onSubmit: (values) => {
-      updateAttributes({ price: values.price });
+      const safeParsed = priceValidator.safeParse(Number.parseInt(values.price.replaceAll(',', '')));
+
+      if (!safeParsed.success) {
+        invalidPrice = true;
+        return;
+      }
+
+      updateAttributes({ price: safeParsed.data });
+      invalidPrice = false;
       priceOpen = false;
+
+      reset();
     },
   });
+
+  $: setInitialValues({ price: node.attrs.price ? comma(node.attrs.price) : '' });
 
   $: if (priceOpen) {
     // eslint-disable-next-line unicorn/prefer-top-level-await
     tick().then(() => {
       priceInputEl?.focus();
     });
+  } else {
+    priceOpen = false;
   }
 
   afterNavigate(() => {
@@ -163,19 +171,16 @@
           <div class="relative">
             <input
               bind:this={priceInputEl}
-              class={clsx(
-                'border pl-12px pr-24px py-10px rounded-4px text-14-r w-90px sm:(w-110px text-16-r)',
-                $errors.price ? 'border-error-900 bg-error-50' : 'border-gray-200 bg-gray-100',
-              )}
+              name="price"
+              class="border pl-12px pr-24px py-10px rounded-4px text-16-r w-110px'border pl-12px pr-24px py-10px rounded-4px text-16-r w-110px'
+                border-gray-200 bg-white aria-[invalid='true']:(border-error-900 bg-error-50)"
+              aria-invalid={invalidPrice}
               inputmode="numeric"
-              pattern="[0-9]*"
               placeholder="1,000"
-              type="text"
-              value={$data.price ? comma($data.price) : ''}
               on:input={(event) => {
-                const value = event.currentTarget.value.replaceAll(/\D/g, '');
-                event.currentTarget.value = value;
-                setFields('price', Number(value), true);
+                const parsed = Number.parseInt(event.currentTarget.value.replaceAll(/\D/g, ''));
+
+                event.currentTarget.value = Number.isNaN(parsed) ? '' : comma(parsed);
               }}
             />
             <span class="absolute inset-y-0 right-0 flex center pr-12px text-16-r">P</span>
