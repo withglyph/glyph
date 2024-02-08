@@ -291,6 +291,20 @@ export const userSchema = defineSchema((builder) => {
           orderBy: { createdAt: 'desc' },
         }),
       }),
+
+      eventEnrollment: t.prismaField({
+        type: 'UserEventEnrollment',
+        nullable: true,
+        args: { eventCode: t.arg.string() },
+        select: (input, __, nestedSelection) => ({
+          eventEnrollments: nestedSelection({
+            where: {
+              eventCode: input.eventCode,
+            },
+          }),
+        }),
+        resolve: (_, { eventEnrollments }) => eventEnrollments[0],
+      }),
     }),
   });
 
@@ -356,6 +370,17 @@ export const userSchema = defineSchema((builder) => {
       id: t.exposeID('id'),
       bankCode: t.exposeString('bankCode'),
       bankAccountNumber: t.exposeString('bankAccountNumber'),
+    }),
+  });
+
+  builder.prismaObject('UserEventEnrollment', {
+    authScopes: { $granted: '$user' },
+    fields: (t) => ({
+      id: t.exposeID('id'),
+      eventCode: t.exposeString('eventCode'),
+      eligible: t.exposeBoolean('eligible'),
+      createdAt: t.expose('createdAt', { type: 'DateTime' }),
+      rewardedAt: t.expose('rewardedAt', { type: 'DateTime', nullable: true }),
     }),
   });
 

@@ -865,6 +865,7 @@ type User {
   bookmarks: [BookmarkGroup!]!
   contentFilterPreferences: [UserContentFilterPreference!]!
   email: String!
+  eventEnrollment(eventCode: String!): UserEventEnrollment
   followedSpaces: [Space!]!
   followedTags: [Tag!]!
   id: ID!
@@ -906,6 +907,14 @@ type UserEmailVerification {
 enum UserEmailVerificationKind {
   USER_EMAIL_UPDATE
   USER_LOGIN
+}
+
+type UserEventEnrollment {
+  createdAt: DateTime!
+  eligible: Boolean!
+  eventCode: String!
+  id: ID!
+  rewardedAt: DateTime
 }
 
 type UserMarketingConsent {
