@@ -1239,7 +1239,7 @@ export const postSchema = defineSchema((builder) => {
 
         // 글 포스트 발행 이벤트 체크
         const now = dayjs().kst();
-        if (now.isAfter('2024-02-09') && now.isBefore('2024-02-20')) {
+        if (now.isAfter(dayjs.kst('2024-02-09')) && now.isBefore(dayjs.kst('2024-02-20'))) {
           const eventPosts = await db.post.findMany({
             select: {
               tags: true,
