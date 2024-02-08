@@ -255,6 +255,7 @@ export const feedSchema = defineSchema((builder) => {
                   }
                 : undefined,
             },
+            ageRating: 'ALL',
           },
 
           take: 5,
