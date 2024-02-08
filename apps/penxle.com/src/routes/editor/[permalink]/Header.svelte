@@ -831,7 +831,7 @@
 
     &[data-kind='2'],
     &[data-kind='3'] {
-      border: solid 1px currentColor;
+      border-top: solid 1px currentColor;
     }
 
     &[data-kind='3'] {
@@ -839,7 +839,7 @@
     }
 
     &[data-kind='4'] {
-      --uno: h-1.8rem;
+      --uno: h-1.5rem;
       background-image: url(https://penxle.com/horizontal-rules/4.svg);
     }
 
@@ -856,6 +856,11 @@
     &[data-kind='7'] {
       --uno: h-1.25rem;
       background-image: url(https://penxle.com/horizontal-rules/7.svg);
+    }
+
+    &[data-kind='8'] {
+      --uno: h-0.75rem;
+      background-image: url(https://penxle.com/horizontal-rules/8.svg);
     }
   }
 
