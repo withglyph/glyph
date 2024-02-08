@@ -1,5 +1,7 @@
 <script lang="ts">
   import { Helmet, Link } from '@penxle/ui';
+  import MobileBanner from '$assets/images/mobile-banner.png';
+  import WebBanner from '$assets/images/web-banner.png';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Image, Tag } from '$lib/components';
@@ -84,6 +86,9 @@
 <main
   class="flex flex-col grow items-center justify-start w-full h-full truncate sm:(bg-primary mx-auto px-7.5) backgroundGrid <sm:(bg-primary)"
 >
+  <a class="sm:hidden" href="/penxle/736143117">
+    <img alt="MobileBanner" src={MobileBanner} />
+  </a>
   <div class="grid w-full max-w-300 sm:(p-0 gap-7.5 grid-cols-[8fr_2fr] mt-8) lg:grid-cols-[7.5fr_2.5fr]">
     <div class="flex flex-col w-full truncate">
       <div class="<sm:(pt-6 px-4 bg-cardprimary border-b border-secondary sticky top-0)">
@@ -116,6 +121,10 @@
 
     <div class="<sm:hidden space-y-10 sm:max-w-60 lg:max-w-80">
       <div>
+        <Link class="inline-block mb-4" href="/penxle/736143117">
+          <img class="rounded-9px" alt="WebBanner" src={WebBanner} />
+        </Link>
+
         <p class="body-16-b mb-2">✨ 최근 게시물을 게시한 스페이스</p>
 
         <div class="px-1 py-2 bg-cardprimary border border-secondary rounded-2xl space-y-1">
