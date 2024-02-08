@@ -114,7 +114,17 @@
         <mark class="inline-block leading-0 border-b-10">{$query.me.profile.name}님</mark>
       </p>
       <p class="text-lg font-semibold text-secondary mb-4">{$query.me.email}</p>
-      <Button class="w-full" size="xl" on:click={() => (comingSoonOpen = true)}>새 포스트 작성하기</Button>
+      <Button
+        class="w-full"
+        size="xl"
+        on:click={async () => {
+          const { permalink } = await createPost({ spaceId: undefined });
+          mixpanel.track('post:create', { via: 'feed' });
+          await goto(`/editor/${permalink}`);
+        }}
+      >
+        새 포스트 작성하기
+      </Button>
     </div>
     <div class="space-y-1">
       <a

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components';
   import { TiptapEditor } from '$lib/tiptap/components';
   import { getEditorContext } from './context';
   import ArticleLinkEditMenu from './InlineLinkMenu.svelte';
@@ -23,19 +22,9 @@
   });
 </script>
 
-<div class="grow body-16-b flex center text-center bg-surface-primary px-5 sm:hidden">
-  <div class="bg-cardprimary rounded-2xl w-full max-w-107.5 py-10 px-5 flex flex-col center text-center">
-    모바일 에디터는 준비중이에요
-    <br />
-    조금만 기다려주세요!
-
-    <Button class="w-fit mt-4" href="/" size="lg" type="link">메인으로 돌아가기</Button>
-  </div>
-</div>
-
-<main class="flex grow flex-col bg-gray-50 <sm:hidden">
-  <div class="bg-white flex flex-col grow w-full max-w-270 mx-auto pt-17 grow">
-    <div class="mx-15 pb-5 mb-5 border-b border-gray-200">
+<main class="flex grow flex-col bg-gray-50">
+  <div class="bg-white flex flex-col grow w-full max-w-270 mx-auto grow py-5 sm:pt-10.5">
+    <div class="pb-5 mb-5 border-b border-gray-200 mx-5 sm:mx-15">
       <input
         class="w-full text-28-sb"
         maxlength="100"
@@ -53,7 +42,7 @@
       />
     </div>
 
-    <div class="px-15 w-full flex grow">
+    <div class="px-5 w-full flex grow sm:px-15">
       <TiptapEditor
         class="mb-100px max-w-full grow"
         options={$store}

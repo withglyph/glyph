@@ -99,7 +99,7 @@
     >
       {#if isLastChild}
         <button
-          class="text-14px font-medium px-6px py-4px rounded-4px transition hover:bg-gray-100"
+          class="text-12px font-medium px-6px py-4px rounded-4px transition hover:bg-gray-100 sm:text-14px"
           type="button"
           on:click={() =>
             editor
@@ -111,11 +111,11 @@
           여기서부터 유료 분량 만들기
         </button>
       {:else}
-        <div class="text-14px font-medium px-6px py-4px">여기서부터 유료 분량</div>
+        <div class="text-12px font-medium px-6px py-4px whitespace-nowrap sm:text-14px">여기서부터 유료 분량</div>
         <div class="w-1px h-14px bg-gray-200" />
         <button
           class={clsx(
-            'flex center gap-4px text-14-m px-6px py-4px rounded-4px transition hover:bg-gray-100',
+            'flex center gap-4px text-12-m px-6px py-4px rounded-4px transition whitespace-nowrap hover:bg-gray-100 sm:text-14-m',
             priceOpen && 'bg-gray-100',
             node.attrs.price ? 'text-teal-600' : 'text-error-900',
           )}
@@ -132,7 +132,7 @@
         </button>
         <div class="w-1px h-14px bg-gray-200" />
         <button
-          class="text-14px font-medium px-6px py-4px rounded-4px transition hover:bg-gray-100"
+          class="text-12px font-medium px-6px py-4px rounded-4px transition whitespace-nowrap hover:bg-gray-100 sm:text-14px"
           type="button"
           on:click={() =>
             editor
@@ -145,7 +145,7 @@
       {/if}
       <div class="w-1px h-14px bg-gray-200" />
       <div class="flex-none p-4px rounded-4px transition hover:bg-gray-100">
-        <i class="i-tb-grip-vertical block square-18px" />
+        <i class="i-tb-grip-vertical block square-16px sm:square-18px" />
       </div>
     </div>
 
@@ -169,8 +169,8 @@
             <input
               bind:this={priceInputEl}
               class={clsx(
-                'border pl-12px pr-24px py-10px rounded-4px text-16-r w-110px',
-                $errors.price ? 'border-error-900 bg-error-50' : 'border-gray-200 bg-white',
+                'border pl-12px pr-24px py-10px rounded-4px text-14-r w-90px sm:(w-110px text-16-r)',
+                $errors.price ? 'border-error-900 bg-error-50' : 'border-gray-200 bg-gray-100',
               )}
               inputmode="numeric"
               pattern="[0-9]*"
@@ -186,7 +186,7 @@
             <span class="absolute inset-y-0 right-0 flex center pr-12px text-16-r">P</span>
           </div>
 
-          <button class="bg-teal-600 px-16px py-10px flex center text-14-sb text-white rounded-4px" type="submit">
+          <button class="bg-teal-500 px-16px py-8px flex center text-12-sb text-white rounded-4px" type="submit">
             설정
           </button>
         </form>

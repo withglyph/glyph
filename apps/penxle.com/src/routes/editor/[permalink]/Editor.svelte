@@ -9,6 +9,7 @@
   import Content from './Content.svelte';
   import { setEditorContext } from './context';
   import Header from './Header.svelte';
+  import MobileEditMenu from './MobileEditMenu.svelte';
   import type { EditorPage_Editor_post, EditorPage_Editor_query, PostRevisionKind } from '$glitch';
   import type { EditorState, EditorStore } from './context';
 
@@ -127,9 +128,21 @@
     state,
     forceSave: makeRevisePost('MANUAL_SAVE'),
   });
+
+  let mobile: boolean;
+
+  $: if (browser) {
+    mobile = window.innerWidth < 800;
+  }
 </script>
+
+<svelte:window on:resize={() => (mobile = window.innerWidth < 800)} />
 
 <Helmet title="포스트 수정하기" />
 
 <Header {$post} {$query} />
 <Content />
+
+{#if mobile}
+  <MobileEditMenu />
+{/if}

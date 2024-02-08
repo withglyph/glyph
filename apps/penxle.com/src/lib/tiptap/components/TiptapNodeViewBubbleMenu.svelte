@@ -53,7 +53,7 @@
     use:portal
   >
     <div bind:this={$arrowRef} class="z-1 absolute square-12px rotate-45 bg-white border border-gray-200" />
-    <div class="z-2 bg-white rounded-4px px-8px py-6px relative flex center gap-4px">
+    <div class="z-2 bg-white rounded-4px px-8px py-6px relative flex center gap-4px <sm:gap-8px">
       <slot />
     </div>
   </div>

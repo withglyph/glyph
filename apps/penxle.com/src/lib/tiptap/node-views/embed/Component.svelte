@@ -115,57 +115,59 @@
 {#if editor && selected && node.attrs.__data}
   <TiptapNodeViewBubbleMenu {editor} {getPos} {node}>
     {#if node.attrs.__data.html}
-      <button
-        class="p-4px rounded-2px transition hover:bg-gray-100"
-        type="button"
-        on:click={() => {
-          updateAttributes({ mode: 'embed-full' });
-          editor?.commands.focus();
-        }}
-      >
-        <i
-          class={clsx(
-            'i-px2-embed-full text-gray-600 square-18px block',
-            node.attrs.mode === 'embed-full' && 'text-teal-500',
-          )}
-        />
-      </button>
-      <button
-        class="p-4px rounded-2px transition hover:bg-gray-100"
-        type="button"
-        on:click={() => {
-          updateAttributes({ mode: 'embed-compact' });
-          editor?.commands.focus();
-        }}
-      >
-        <i
-          class={clsx(
-            'i-px2-embed-compact text-gray-600 square-18px block',
-            node.attrs.mode === 'embed-compact' && 'text-teal-500',
-          )}
-        />
-      </button>
-      <button
-        class="p-4px rounded-2px transition hover:bg-gray-100"
-        type="button"
-        on:click={() => {
-          updateAttributes({ mode: 'opengraph' });
-          editor?.commands.focus();
-        }}
-      >
-        <i
-          class={clsx(
-            'i-px2-opengraph text-gray-600 square-18px block',
-            node.attrs.mode === 'opengraph' && 'text-teal-500',
-          )}
-        />
-      </button>
+      <div class="<sm:space-x-1.5">
+        <button
+          class="p-4px rounded-2px transition hover:bg-gray-100"
+          type="button"
+          on:click={() => {
+            updateAttributes({ mode: 'embed-full' });
+            editor?.commands.focus();
+          }}
+        >
+          <i
+            class={clsx(
+              'i-px2-embed-full text-gray-600 square-18px block <sm:square-20px',
+              node.attrs.mode === 'embed-full' && 'text-teal-500',
+            )}
+          />
+        </button>
+        <button
+          class="p-4px rounded-2px transition hover:bg-gray-100"
+          type="button"
+          on:click={() => {
+            updateAttributes({ mode: 'embed-compact' });
+            editor?.commands.focus();
+          }}
+        >
+          <i
+            class={clsx(
+              'i-px2-embed-compact text-gray-600 square-18px block <sm:square-20px',
+              node.attrs.mode === 'embed-compact' && 'text-teal-500',
+            )}
+          />
+        </button>
+        <button
+          class="p-4px rounded-2px transition hover:bg-gray-100"
+          type="button"
+          on:click={() => {
+            updateAttributes({ mode: 'opengraph' });
+            editor?.commands.focus();
+          }}
+        >
+          <i
+            class={clsx(
+              'i-px2-opengraph text-gray-600 square-18px block <sm:square-20px',
+              node.attrs.mode === 'opengraph' && 'text-teal-500',
+            )}
+          />
+        </button>
+      </div>
 
       <div class="w-1px h-12px bg-gray-200" />
     {/if}
 
     <button class="p-4px rounded-2px transition hover:bg-gray-100" type="button" on:click={convertToLink}>
-      <i class="i-tb-link text-gray-600 square-18px block" />
+      <i class="i-tb-link text-gray-600 square-18px block <sm:square-20px" />
     </button>
 
     <div class="w-1px h-12px bg-gray-200" />
@@ -178,7 +180,7 @@
         editor?.commands.focus();
       }}
     >
-      <i class="i-tb-trash text-gray-600 square-18px block" />
+      <i class="i-tb-trash text-gray-600 square-18px block <sm:square-20px" />
     </button>
   </TiptapNodeViewBubbleMenu>
 {/if}
