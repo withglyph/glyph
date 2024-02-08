@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
@@ -40,10 +39,10 @@
     }
   `);
 
-  onMount(async () => {
+  $: if (browser && $query.post.id) {
     mixpanel.track('post:view', { postId: $query.post.id });
-    await updatePostView({ postId: $query.post.id });
-  });
+    updatePostView({ postId: $query.post.id });
+  }
 
   $: if ($query.post.space?.slug && $query.post.space?.slug !== $page.params.space && browser) {
     const url = new URL(location.href);
