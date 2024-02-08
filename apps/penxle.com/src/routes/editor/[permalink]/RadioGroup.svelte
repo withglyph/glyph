@@ -1,5 +1,6 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import { nanoid } from 'nanoid';
 
   export let name: string;
   export let items: { label: string; value: string; icon?: string; checked: boolean; text?: string }[];
@@ -9,7 +10,7 @@
 
 <fieldset class={clsx('flex gap-xs', _class)}>
   {#each items as item (item.value)}
-    {@const id = `${name}-${item.value}`}
+    {@const id = nanoid()}
     <div class="flex flex-col justify-center relative">
       <div
         class="relative m-b-0.375rem square-16 flex center bg-gray-50 border-(1px gray-100) rounded-0.625rem has-[:checked]:(border-teal-500 bg-teal-50)"
