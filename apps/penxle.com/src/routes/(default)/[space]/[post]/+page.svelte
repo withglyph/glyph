@@ -39,9 +39,12 @@
     }
   `);
 
-  $: if (browser && $query.post.id) {
-    mixpanel.track('post:view', { postId: $query.post.id });
-    updatePostView({ postId: $query.post.id });
+  let postId: string | undefined;
+
+  $: if (browser && postId !== $query.post.id) {
+    postId = $query.post.id;
+    mixpanel.track('post:view', { postId });
+    updatePostView({ postId });
   }
 
   $: if ($query.post.space?.slug && $query.post.space?.slug !== $page.params.space && browser) {
