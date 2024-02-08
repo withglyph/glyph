@@ -27,6 +27,15 @@ new aws.route53.Record('penxle.com|txt', {
   ttl: 300,
 });
 
+new aws.route53.Record('_atproto.penxle.com|txt', {
+  zoneId: zones.penxle_com.zoneId,
+  type: 'TXT',
+  name: '_atproto.penxle.com',
+  // spell-checker:disable-next-line
+  records: ['did=did:plc:ny3tz5doox6cp3a37juqcgnj'],
+  ttl: 300,
+});
+
 new aws.route53.Record('channel._domainkey.penxle.com', {
   zoneId: zones.penxle_com.zoneId,
   type: 'CNAME',
