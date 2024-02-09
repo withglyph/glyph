@@ -103,8 +103,8 @@
         {/if}
 
         <div class="flex flex-col grow p-14px">
-          <div class="text-14-m line-clamp-1">{node.attrs.__data.title}</div>
-          <div class="text-12-r text-gray-400 line-clamp-1">{node.attrs.__data.description}</div>
+          <div class="text-14-m line-clamp-1">{node.attrs.__data.title ?? '(제목 없음)'}</div>
+          <div class="text-12-r text-gray-400 line-clamp-1">{node.attrs.__data.description ?? ''}</div>
           <div class="flex items-end text-12-r text-teal-500 grow">{new URL(node.attrs.url).hostname}</div>
         </div>
       </Link>
