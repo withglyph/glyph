@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
+  import MobileBanner from '$assets/images/mobile-banner.png';
+  import WebBanner from '$assets/images/web-banner.png';
   import { graphql } from '$glitch';
   import PostCard from '../../PostCard.svelte';
 
@@ -16,6 +19,12 @@
     }
   `);
 </script>
+
+<Helmet title="관심 스페이스 피드 | 펜슬" />
+
+<a class="sm:hidden" href="/penxle/736143117">
+  <img alt="MobileBanner" src={MobileBanner} />
+</a>
 
 <div class="w-full bg-white grow px-16px py-32px">
   <div class="flex gap-32px w-full max-w-300 pb-16px mx-auto">
@@ -42,6 +51,10 @@
     <div class="flex-none flex flex-col gap-32px w-300px <sm:hidden">
       <div class="sticky top-100px">
         <div class="flex flex-col gap-8px">
+          <a class="inline-block mb-4" href="/penxle/736143117">
+            <img class="rounded-9px" alt="WebBanner" src={WebBanner} />
+          </a>
+
           <div class="text-18-b">최근 사용된 태그</div>
           <div class="flex flex-wrap items-start gap-8px">
             {#each $query.recentlyUsedTags as tag (tag.id)}

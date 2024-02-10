@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
+  import MobileBanner from '$assets/images/mobile-banner.png';
+  import WebBanner from '$assets/images/web-banner.png';
   import { graphql } from '$glitch';
   import PostCard from './PostCard.svelte';
 
@@ -20,6 +23,19 @@
     }
   `);
 </script>
+
+<Helmet
+  description="펜슬은 개인 창작자들을 위한 자유롭고 즐거운 창작 공간이에요."
+  image={{
+    src: 'https://pnxl.net/assets/opengraph/default-cover.png',
+    size: 'large',
+  }}
+  title="펜슬 - 함께 그리는 반짝임"
+/>
+
+<a class="sm:hidden" href="/penxle/736143117">
+  <img alt="MobileBanner" src={MobileBanner} />
+</a>
 
 <div class="w-full bg-white grow px-16px py-32px">
   <div class="flex gap-32px w-full max-w-300 pb-16px mx-auto">
@@ -48,6 +64,10 @@
     <div class="flex-none flex flex-col gap-32px w-300px <sm:hidden">
       <div class="sticky top-100px">
         <div class="flex flex-col gap-8px">
+          <a class="inline-block mb-4" href="/penxle/736143117">
+            <img class="rounded-9px" alt="WebBanner" src={WebBanner} />
+          </a>
+
           <div class="text-18-b">최근 사용된 태그</div>
           <div class="flex flex-wrap items-start gap-8px">
             {#each $query.recentlyUsedTags as tag (tag.id)}
