@@ -17,6 +17,7 @@ export const feedSchema = defineSchema((builder) => {
             visibility: 'PUBLIC',
             password: null,
             ageRating: 'ALL',
+            publishedAt: { gte: dayjs().subtract(7, 'day').toDate() },
             space: {
               state: 'ACTIVE',
               visibility: 'PUBLIC',
@@ -37,7 +38,7 @@ export const feedSchema = defineSchema((builder) => {
               : undefined,
           },
 
-          orderBy: { publishedAt: 'desc' },
+          orderBy: { views: { _count: 'desc' } },
           take: 100,
         });
 
@@ -180,7 +181,7 @@ export const feedSchema = defineSchema((builder) => {
 
           distinct: ['tagId'],
           orderBy: { createdAt: 'desc' },
-          take: 20,
+          take: 200,
         });
 
         return postTags.map(({ tag }) => tag);
