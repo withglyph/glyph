@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import * as R from 'radash';
 import { defineSchema } from '../builder';
 
 export const feedSchema = defineSchema((builder) => {
@@ -39,10 +38,10 @@ export const feedSchema = defineSchema((builder) => {
           },
 
           orderBy: { publishedAt: 'desc' },
-          take: 50,
+          take: 100,
         });
 
-        return R.shuffle(posts).slice(0, 20);
+        return posts;
       },
     }),
 
