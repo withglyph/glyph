@@ -86,11 +86,13 @@
       </div>
 
       {#if preview}
-        {@html content}
+        <div class="relative overflow-hidden isolate">
+          {@html content}
+        </div>
       {/if}
     </div>
   {:else}
-    <div class="px-8px py-4px">
+    <div class="relative overflow-hidden isolate px-8px py-4px">
       {@html content}
     </div>
   {/if}
