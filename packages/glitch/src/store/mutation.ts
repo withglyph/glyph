@@ -13,7 +13,7 @@ export const createMutationStore = (document: TypedDocumentNode<unknown, AnyVari
 
     const request = createRequest(document, input ? { input } : undefined);
     const operation = client.createRequestOperation('mutation', request, {
-      requestPolicy: 'cache-first',
+      requestPolicy: 'network-only',
     });
 
     const result = await pipe(

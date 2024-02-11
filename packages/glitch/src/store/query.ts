@@ -49,6 +49,7 @@ export const createQueryStore = async (
 
         return client.executeRequestOperation(operation);
       }),
+      filter(({ data }) => data),
       map(({ data }) => data),
       subscribe(set),
     );
