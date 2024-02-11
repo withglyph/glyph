@@ -47,9 +47,9 @@ class SvelteNodeView extends NodeView<NodeViewComponentType> implements ProseMir
     const context = new Map();
     context.set('onDragStart', (event: DragEvent) => this.#onDragStart(event));
 
-    this.#element = this.#createElement();
+    const target = document.createElement('div');
     this.#component = new this.component({
-      target: this.#element,
+      target,
       props: {
         editor: this.editor,
         node: this.node,
@@ -64,25 +64,28 @@ class SvelteNodeView extends NodeView<NodeViewComponentType> implements ProseMir
       context,
     });
 
-    if (!this.#element.firstElementChild?.hasAttribute('data-node-view')) {
+    const element = target.querySelector<HTMLElement>('[data-node-view]');
+    if (!element) {
       throw new Error('<NodeView /> not found');
     }
 
+    this.#element = element;
+
     if (!this.node.isLeaf) {
-      const contentElement = this.#element.querySelector('[data-node-view-content-editable]');
+      const contentElement = element.querySelector<HTMLElement>('[data-node-view-content-editable]');
       if (!contentElement) {
         throw new Error('<NodeViewContentEditable /> not found');
       }
 
-      this.#contentElement = this.#createElement();
-      contentElement.append(this.#contentElement);
+      this.#contentElement = contentElement;
     }
 
     this.#handleSelectionUpdate = () => {
       if (this.node.type.spec.selectable !== false) {
         const { from, to } = this.editor.state.selection;
+        const pos = this.getPos();
 
-        if (from <= this.getPos() && to >= this.getPos() + this.node.nodeSize) {
+        if (from <= pos && to >= pos + this.node.nodeSize) {
           this.selectNode();
         } else {
           this.deselectNode();
@@ -137,13 +140,6 @@ class SvelteNodeView extends NodeView<NodeViewComponentType> implements ProseMir
     this.editor.off('transaction', this.#handleTransaction);
     this.#component.$destroy();
     this.#contentElement = null;
-  }
-
-  #createElement() {
-    const element = document.createElement(this.node.isInline ? 'span' : 'div');
-    element.style.whiteSpace = 'normal';
-    element.style.pointerEvents = 'none';
-    return element;
   }
 }
 

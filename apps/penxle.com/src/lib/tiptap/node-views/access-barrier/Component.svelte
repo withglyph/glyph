@@ -86,7 +86,7 @@
 
 {#if editor?.isEditable}
   <NodeView
-    class={clsx('flex justify-end relative py-8px rounded-6px pointer-events-auto', selected && 'ring-2 ring-teal-500')}
+    class={clsx('flex justify-end relative py-8px rounded-6px', selected && 'ring-2 ring-teal-500')}
     data-drag-handle
     draggable
   >
