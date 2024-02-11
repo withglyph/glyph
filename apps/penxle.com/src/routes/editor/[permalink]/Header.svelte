@@ -661,6 +661,17 @@
             <i class="i-tb-link square-6" />
           </button>
         </ToolbarButtonTooltip>
+
+        <ToolbarButtonTooltip message="HTML">
+          <button
+            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            disabled={editor?.isActive('html')}
+            type="button"
+            on:click={() => editor?.chain().focus().setHtml().run()}
+          >
+            <i class="i-tb-html square-6" />
+          </button>
+        </ToolbarButtonTooltip>
       </div>
 
       <ToolbarButtonTooltip message="본문 설정">
