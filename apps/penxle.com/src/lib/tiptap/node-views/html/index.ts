@@ -27,8 +27,9 @@ export const Html = createNodeView(Component, {
     return {
       setHtml:
         () =>
-        ({ commands }) => {
-          return commands.setNode(this.name);
+        ({ tr }) => {
+          tr.replaceSelectionWith(this.type.create());
+          return tr.docChanged;
         },
     };
   },
