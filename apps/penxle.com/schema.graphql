@@ -532,6 +532,7 @@ type Query {
   provisionedUser(token: String!): ProvisionedUser!
   randomAvatars: [String!]!
   randomIcons: [String!]!
+  recentFeed: [Post!]!
   recentlyCreatedTags: [Tag!]!
   recentlyPublishedSpaces: [Space!]!
   recentlyPurchasedPosts: [Post!]!

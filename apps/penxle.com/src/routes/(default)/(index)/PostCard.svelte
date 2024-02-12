@@ -15,6 +15,7 @@
       fragment Feed_PostCard_post on Post {
         id
         permalink
+        ageRating
         likeCount
         viewCount
         publishedAt
@@ -106,6 +107,14 @@
             <i class="i-tb-clock-hour-4 square-14px" />
             {calcurateReadingTime($post.publishedRevision.characterCount)}분
           </div>
+        {/if}
+
+        {#if $post.ageRating === 'R15'}
+          <div class="bg-red-20 text-red-50 rounded-4px px-8px py-2px">15세</div>
+        {/if}
+
+        {#if $post.ageRating === 'R19'}
+          <div class="bg-red-20 text-red-50 rounded-4px px-8px py-2px">성인</div>
         {/if}
       </div>
     </div>

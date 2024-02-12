@@ -17,7 +17,7 @@ export const feedSchema = defineSchema((builder) => {
             visibility: 'PUBLIC',
             password: null,
             ageRating: 'ALL',
-            publishedAt: { gte: dayjs().subtract(7, 'day').toDate() },
+            publishedAt: { gte: dayjs().subtract(3, 'day').toDate() },
             space: {
               state: 'ACTIVE',
               visibility: 'PUBLIC',
@@ -38,7 +38,44 @@ export const feedSchema = defineSchema((builder) => {
               : undefined,
           },
 
-          orderBy: { views: { _count: 'desc' } },
+          orderBy: [{ views: { _count: 'desc' } }, { publishedAt: 'desc' }],
+          take: 100,
+        });
+
+        return posts;
+      },
+    }),
+
+    recentFeed: t.prismaField({
+      type: ['Post'],
+      resolve: async (query, _, __, { db, ...context }) => {
+        const posts = await db.post.findMany({
+          ...query,
+          where: {
+            state: 'PUBLISHED',
+            visibility: 'PUBLIC',
+            password: null,
+            space: {
+              state: 'ACTIVE',
+              visibility: 'PUBLIC',
+              userMutes: context.session
+                ? {
+                    none: { userId: context.session.userId },
+                  }
+                : undefined,
+            },
+            tags: context.session
+              ? {
+                  none: {
+                    tag: {
+                      userMutes: { some: { userId: context.session.userId } },
+                    },
+                  },
+                }
+              : undefined,
+          },
+
+          orderBy: { publishedAt: 'desc' },
           take: 100,
         });
 

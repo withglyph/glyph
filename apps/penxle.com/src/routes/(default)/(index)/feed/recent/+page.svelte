@@ -6,8 +6,8 @@
   import PostCard from '../../PostCard.svelte';
 
   $: query = graphql(`
-    query FeedSpacesPage_Query {
-      spaceFeed {
+    query FeedRecentPage_Query {
+      recentFeed {
         id
         ...Feed_PostCard_post
       }
@@ -20,7 +20,7 @@
   `);
 </script>
 
-<Helmet title="관심 스페이스 피드 | 펜슬" />
+<Helmet title="최신 피드 | 펜슬" />
 
 <a class="sm:hidden" href="/penxle/736143117">
   <img alt="MobileBanner" src={MobileBanner} />
@@ -31,16 +31,16 @@
     <div class="grow sm:pr-100px">
       <div class="flex gap-16px text-18-sb">
         <a class="text-gray-300 hover:text-inherit" href="/">추천</a>
-        <a class="text-gray-300 hover:text-inherit" href="/feed/recent">최신</a>
+        <div class="underline underline-4 underline-offset-8">최신</div>
         <a class="text-gray-300 hover:text-inherit" href="/feed/tags">관심 태그</a>
-        <div class="underline underline-4 underline-offset-8">관심 스페이스</div>
+        <a class="text-gray-300 hover:text-inherit" href="/feed/spaces">관심 스페이스</a>
       </div>
 
-      <div class="text-24-b pt-32px pb-2px">관심 스페이스</div>
-      <div class="text-14-m text-gray-500">관심있는 스페이스의 최신 포스트를 둘러보세요</div>
+      <div class="text-24-b pt-32px pb-2px">최신 포스트</div>
+      <div class="text-14-m text-gray-500">펜슬에 올라오는 최신 포스트들을 둘러보세요</div>
 
       <div class="mt-16px flex flex-col mt-32px gap-32px w-full">
-        {#each $query.spaceFeed as post (post.id)}
+        {#each $query.recentFeed as post (post.id)}
           <div class="w-full grow border-b-1px border-gray-200" />
           <PostCard $post={post} />
         {/each}

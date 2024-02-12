@@ -31,12 +31,13 @@
     <div class="grow sm:pr-100px">
       <div class="flex gap-16px text-18-sb">
         <a class="text-gray-300 hover:text-inherit" href="/">추천</a>
+        <a class="text-gray-300 hover:text-inherit" href="/feed/recent">최신</a>
         <div class="underline underline-4 underline-offset-8">관심 태그</div>
         <a class="text-gray-300 hover:text-inherit" href="/feed/spaces">관심 스페이스</a>
       </div>
 
       <div class="text-24-b pt-32px pb-2px">관심 태그</div>
-      <div class="text-14-m text-gray-500">관심있는 태그의 최신 글을 둘러보세요</div>
+      <div class="text-14-m text-gray-500">관심있는 태그의 최신 포스트를 둘러보세요</div>
 
       <div class="mt-16px flex flex-col mt-32px gap-32px w-full">
         {#each $query.tagFeed as post (post.id)}

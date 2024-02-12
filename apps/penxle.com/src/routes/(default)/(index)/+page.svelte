@@ -42,6 +42,7 @@
     <div class="grow sm:pr-100px">
       <div class="flex gap-16px text-18-sb">
         <div class="underline underline-4 underline-offset-8">추천</div>
+        <a class="text-gray-300 hover:text-inherit" href="/feed/recent">최신</a>
         {#if $query.me}
           <a class="text-gray-300 hover:text-inherit" href="/feed/tags">관심 태그</a>
           <a class="text-gray-300 hover:text-inherit" href="/feed/spaces">관심 스페이스</a>
