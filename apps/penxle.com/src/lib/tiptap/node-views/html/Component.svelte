@@ -21,9 +21,11 @@
 
   let preview = false;
 
-  $: content = DOMPurify.sanitize(node.attrs.content, {
-    USE_PROFILES: { html: true },
-  });
+  $: content = DOMPurify.isSupported
+    ? DOMPurify.sanitize(node.attrs.content, {
+        USE_PROFILES: { html: true },
+      })
+    : '';
 
   onMount(() => {
     if (!editor?.isEditable) {
