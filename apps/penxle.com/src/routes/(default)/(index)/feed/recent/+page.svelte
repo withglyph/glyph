@@ -7,6 +7,10 @@
 
   $: query = graphql(`
     query FeedRecentPage_Query {
+      me {
+        id
+      }
+
       recentFeed {
         id
         ...Feed_PostCard_post
@@ -32,8 +36,10 @@
       <div class="flex gap-16px text-18-sb">
         <a class="text-gray-300 hover:text-inherit" href="/">추천</a>
         <div class="underline underline-4 underline-offset-8">최신</div>
-        <a class="text-gray-300 hover:text-inherit" href="/feed/tags">관심 태그</a>
-        <a class="text-gray-300 hover:text-inherit" href="/feed/spaces">관심 스페이스</a>
+        {#if $query.me}
+          <a class="text-gray-300 hover:text-inherit" href="/feed/tags">관심 태그</a>
+          <a class="text-gray-300 hover:text-inherit" href="/feed/spaces">관심 스페이스</a>
+        {/if}
       </div>
 
       <div class="text-24-b pt-32px pb-2px">최신 포스트</div>
