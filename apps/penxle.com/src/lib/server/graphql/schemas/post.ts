@@ -1019,23 +1019,31 @@ export const postSchema = defineSchema((builder) => {
 
           // dangling PostContent 삭제
           if (lastRevision.freeContentId) {
-            await db.postRevisionContent.deleteMany({
+            const freeContentReference = await db.postRevision.exists({
               where: {
-                id: lastRevision.freeContentId,
-                revisionsUsingThisAsFreeContent: { none: {} },
-                revisionsUsingThisAsPaidContent: { none: {} },
+                OR: [{ freeContentId: lastRevision.freeContentId }, { paidContentId: lastRevision.freeContentId }],
               },
             });
+
+            if (!freeContentReference) {
+              await db.postRevisionContent.delete({
+                where: { id: lastRevision.freeContentId },
+              });
+            }
           }
 
           if (lastRevision.paidContentId) {
-            await db.postRevisionContent.deleteMany({
+            const paidContentReference = await db.postRevision.exists({
               where: {
-                id: lastRevision.paidContentId,
-                revisionsUsingThisAsFreeContent: { none: {} },
-                revisionsUsingThisAsPaidContent: { none: {} },
+                OR: [{ freeContentId: lastRevision.paidContentId }, { paidContentId: lastRevision.paidContentId }],
               },
             });
+
+            if (!paidContentReference) {
+              await db.postRevisionContent.delete({
+                where: { id: lastRevision.paidContentId },
+              });
+            }
           }
         } else {
           await db.postRevision.create({
