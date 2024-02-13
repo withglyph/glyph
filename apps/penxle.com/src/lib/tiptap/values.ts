@@ -61,7 +61,7 @@ export const values = {
     { label: '왼쪽', value: 'left', icon: 'i-tb-align-left' },
     { label: '중앙', value: 'center', icon: 'i-tb-align-center' },
     { label: '오른쪽', value: 'right', icon: 'i-tb-align-right' },
-    { label: '양쪽', value: 'justify', icon: 'i-tb-align-justified' },
+    { label: '양쪽', value: 'justify', icon: 'i-px2-align-justified' },
   ],
 
   horizontalRule: [
