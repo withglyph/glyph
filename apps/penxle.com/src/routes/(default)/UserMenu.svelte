@@ -1,13 +1,10 @@
 <script lang="ts">
-  import { flip, offset, shift } from '@floating-ui/dom';
   import { Link } from '@penxle/ui';
-  import { tick } from 'svelte';
   import { afterNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Avatar } from '$lib/components';
-  import { portal } from '$lib/svelte/actions';
-  import { createFloatingActions } from '$lib/svelte-floating-ui';
+  import { createFloatingActions, portal } from '$lib/svelte/actions';
   import GotoSpaceModal from './GotoSpaceModal.svelte';
   import type { DefaultLayout_UserMenu_user } from '$glitch';
 
@@ -40,16 +37,10 @@
     }
   `);
 
-  const [floatingRef, floatingContent, update] = createFloatingActions({
-    strategy: 'absolute',
+  const { anchor, floating } = createFloatingActions({
     placement: 'bottom-end',
-    middleware: [offset(4), flip(), shift({ padding: 8 })],
+    offset: 4,
   });
-
-  $: if (open) {
-    // eslint-disable-next-line unicorn/prefer-top-level-await
-    void tick().then(() => update());
-  }
 
   afterNavigate(() => {
     open = false;
@@ -61,7 +52,7 @@
   tabindex="-1"
   type="button"
   on:click={() => (open = true)}
-  use:floatingRef
+  use:anchor
 >
   <Avatar class="square-9" $profile={$user.profile} />
 </button>
@@ -76,7 +67,7 @@
     use:portal
   />
 
-  <div class="z-50 w-64 flex flex-col border rounded bg-white py-2 shadow" use:floatingContent use:portal>
+  <div class="z-50 w-64 flex flex-col border rounded bg-white py-2 shadow" use:floating>
     <a class="flex items-center gap-2 px-4 py-2" href="/me/cabinets">
       <Avatar class="square-10" $profile={$user.profile} />
       <div class="flex flex-col">

@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { flip, offset, shift } from '@floating-ui/dom';
   import clsx from 'clsx';
   import * as EmojiMart from 'emoji-mart';
-  import { onMount, tick } from 'svelte';
+  import { onMount } from 'svelte';
   import { afterNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { createFloatingActions } from '$lib/svelte-floating-ui';
+  import { createFloatingActions } from '$lib/svelte/actions';
   import LoginRequireModal from '../../routes/(default)/LoginRequireModal.svelte';
   import i18n from './i18n.json';
   import { emojiData as data } from './index';
@@ -63,16 +62,10 @@
     }
   `);
 
-  const [floatingRef, floatingContent, update] = createFloatingActions({
-    strategy: 'absolute',
+  const { anchor, floating } = createFloatingActions({
     placement: 'bottom-start',
-    middleware: [offset(4), flip(), shift({ padding: 8 })],
+    offset: 4,
   });
-
-  $: if (open) {
-    // eslint-disable-next-line unicorn/prefer-top-level-await
-    void tick().then(() => update());
-  }
 
   onMount(() => {
     picker = new EmojiMart.Picker({
@@ -124,7 +117,7 @@
       e.stopPropagation();
       open = true;
     }}
-    use:floatingRef
+    use:anchor
   >
     <i class="i-lc-smile-plus square-3.5" />
   </button>
@@ -137,13 +130,13 @@
       e.stopPropagation();
       open = true;
     }}
-    use:floatingRef
+    use:floating
   >
     <i class="i-px-happy bg-[#5C5755] square-4" />
   </button>
 {/if}
 
-<div bind:this={pickerEl} class={clsx('z-50 h-100', !open && 'hidden')} use:floatingContent />
+<div bind:this={pickerEl} class={clsx('z-50 h-100', !open && 'hidden')} use:floating />
 
 <LoginRequireModal bind:open={loginRequireOpen} />
 

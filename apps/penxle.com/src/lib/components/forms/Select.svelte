@@ -1,11 +1,9 @@
 <script lang="ts">
-  import { flip, offset, shift } from '@floating-ui/dom';
   import clsx from 'clsx';
-  import { setContext, tick } from 'svelte';
+  import { setContext } from 'svelte';
   import { writable } from 'svelte/store';
   import { afterNavigate } from '$app/navigation';
-  import { portal } from '$lib/svelte/actions';
-  import { createFloatingActions } from '$lib/svelte-floating-ui';
+  import { createFloatingActions, portal } from '$lib/svelte/actions';
   import type { Placement } from '@floating-ui/dom';
 
   let open = false;
@@ -24,16 +22,10 @@
   setContext('currentText', text);
   setContext('close', () => (open = false));
 
-  const [floatingRef, floatingContent, update] = createFloatingActions({
-    strategy: 'absolute',
+  const { anchor, floating } = createFloatingActions({
     placement,
-    middleware: [offset(4), flip(), shift({ padding: 8 })],
+    offset: 4,
   });
-
-  $: if (open) {
-    // eslint-disable-next-line unicorn/prefer-top-level-await
-    void tick().then(() => update());
-  }
 
   afterNavigate(() => {
     open = false;
@@ -48,7 +40,7 @@
   tabindex={0}
   type="button"
   on:click={() => (open = true)}
-  use:floatingRef
+  use:anchor
 >
   {$text}
 </button>
@@ -63,11 +55,7 @@
     use:portal
   />
 
-  <ul
-    class="z-52 bg-cardprimary rounded-lg py-2 px-1 space-y-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.15)]"
-    use:floatingContent
-    use:portal
-  >
+  <ul class="z-52 bg-cardprimary rounded-lg py-2 px-1 space-y-1 shadow-[0_4px_16px_0_rgba(0,0,0,0.15)]" use:floating>
     <slot />
   </ul>
 {/if}

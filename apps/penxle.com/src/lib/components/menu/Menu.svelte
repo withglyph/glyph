@@ -1,10 +1,8 @@
 <script lang="ts">
-  import { flip, offset, shift } from '@floating-ui/dom';
   import clsx from 'clsx';
-  import { setContext, tick } from 'svelte';
+  import { setContext } from 'svelte';
   import { afterNavigate } from '$app/navigation';
-  import { portal } from '$lib/svelte/actions';
-  import { createFloatingActions } from '$lib/svelte-floating-ui';
+  import { createFloatingActions, portal } from '$lib/svelte/actions';
   import type { Placement } from '@floating-ui/dom';
 
   export let open = false;
@@ -31,16 +29,10 @@
 
   setContext('close', preventClose ? undefined : () => (open = false));
 
-  const [floatingRef, floatingContent, update] = createFloatingActions({
-    strategy: 'absolute',
+  const { anchor, floating } = createFloatingActions({
     placement,
-    middleware: [offset(_offset ?? 4), flip(), shift({ padding: 8 })],
+    offset: _offset ?? 4,
   });
-
-  $: if (open) {
-    // eslint-disable-next-line unicorn/prefer-top-level-await
-    void tick().then(() => update());
-  }
 
   afterNavigate(() => {
     open = false;
@@ -58,7 +50,7 @@
   class={_class}
   on:click={toggleOpen}
   on:keypress={as === 'div' ? toggleOpen : null}
-  use:floatingRef
+  use:anchor
   {...props}
 >
   <slot name="value" {open} />
@@ -85,8 +77,7 @@
       !rounded && 'rounded-t-none!',
       menuClass,
     )}
-    use:floatingContent
-    use:portal
+    use:floating
   >
     <slot />
   </div>

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { flip, offset, shift } from '@floating-ui/dom';
   import { Link } from '@penxle/ui';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
@@ -9,8 +8,7 @@
   import { Logo } from '$lib/components/branding';
   import ColorPicker from '$lib/components/ColorPicker.svelte';
   import { Menu, MenuItem } from '$lib/components/menu';
-  import { portal } from '$lib/svelte/actions';
-  import { createFloatingActions } from '$lib/svelte-floating-ui';
+  import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { values } from '$lib/tiptap/values';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
   import CharacterCountWidget from './CharacterCountWidget.svelte';
@@ -135,25 +133,15 @@
     picker.showPicker();
   };
 
-  const [floatingRef, floatingContent, update] = createFloatingActions({
-    strategy: 'absolute',
+  const { anchor: colorPickerAnchor, floating: colorPickerFloating } = createFloatingActions({
     placement: 'bottom-end',
-    middleware: [offset(menuOffset), flip(), shift({ padding: 8 })],
+    offset: menuOffset,
   });
 
-  const [publishMenuRef, publishMenu, updatePublishMenu] = createFloatingActions({
-    strategy: 'absolute',
+  const { anchor: publishAnchor, floating: publishFloating } = createFloatingActions({
     placement: 'bottom-end',
-    middleware: [offset(11), flip(), shift({ padding: 8 })],
+    offset: 11,
   });
-
-  $: if (publishMenuOpen) {
-    void updatePublishMenu();
-  }
-
-  $: if (colorPickerOpen) {
-    void update();
-  }
 
   $: currentColor = (editor?.getAttributes('font_color').fontColor as string | undefined) ?? values.color[0].value;
 
@@ -225,7 +213,7 @@
         </button>
       </div>
 
-      <div class="w-fit" use:publishMenuRef>
+      <div class="w-fit" use:publishAnchor>
         <button
           class="bg-gray-950 text-white px-8 py-2.5 rounded text-14-m leading-none border border-gray-950 text-center whitespace-nowrap sm:mr-3"
           type="button"
@@ -250,7 +238,7 @@
         <PublishMenu {$post} {$query} bind:open={publishMenuOpen} />
       </div>
 
-      <div class="z-50 <sm:hidden" use:portal use:publishMenu>
+      <div class="z-50 <sm:hidden" use:publishFloating>
         <PublishMenu {$post} {$query} bind:open={publishMenuOpen} />
       </div>
 
@@ -281,7 +269,7 @@
             aria-pressed={colorPickerOpen}
             type="button"
             on:click={() => (colorPickerOpen = true)}
-            use:floatingRef
+            use:colorPickerAnchor
           >
             <div style:color={currentColor} class="rounded-full square-4.5 bg-[currentColor]" />
             <i class={clsx('i-tb-chevron-down square-4.5 text-gray-300', fontColorOpen && 'rotate-180')} />
@@ -298,7 +286,7 @@
             />
           {/if}
 
-          <div class={clsx('z-52', !colorPickerOpen && 'hidden')} use:floatingContent use:portal>
+          <div class={clsx('z-52', !colorPickerOpen && 'hidden')} use:colorPickerFloating>
             <ColorPicker
               hex={currentColor}
               on:input={(event) => {

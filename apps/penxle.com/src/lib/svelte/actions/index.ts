@@ -1,3 +1,4 @@
+export * from './floating';
 export * from './focused';
 export * from './hover';
 export * from './intersection-observer';

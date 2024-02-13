@@ -1,10 +1,8 @@
 <script lang="ts">
-  import { flip, offset, shift } from '@floating-ui/dom';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import ky from 'ky';
   // import * as R from 'radash';
-  import { tick } from 'svelte';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -13,8 +11,7 @@
   import { ThumbnailPicker } from '$lib/components/media';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
-  import { portal } from '$lib/svelte/actions';
-  import { createFloatingActions } from '$lib/svelte-floating-ui';
+  import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { AcceptSpaceMemberInvitationSchema } from '$lib/validations';
   import type { DefaultLayout_Notification_user } from '$glitch';
 
@@ -127,16 +124,10 @@
   //   }
   // `);
 
-  const [floatingRef, floatingContent, update] = createFloatingActions({
-    strategy: 'absolute',
+  const { anchor, floating } = createFloatingActions({
     placement: 'bottom-end',
-    middleware: [offset(4), flip(), shift({ padding: 8 })],
+    offset: 8,
   });
-
-  $: if (open) {
-    // eslint-disable-next-line unicorn/prefer-top-level-await
-    void tick().then(() => update());
-  }
 
   // $: invitations = R.alphabetical($user.receivedSpaceMemberInvitations, (invitation) => invitation.createdAt, 'desc');
 
@@ -180,7 +171,7 @@
     aria-pressed={open}
     type="button"
     on:click={() => (open = true)}
-    use:floatingRef
+    use:anchor
   >
     <i class="i-px-bell-fill square-5" />
   </button>
@@ -202,8 +193,7 @@
 
   <div
     class="absolute z-50 w-full max-w-95 flex flex-col rounded-2xl bg-cardprimary p-4 shadow-[0_2px_10px_0_rgba(0,0,0,0.10)]"
-    use:floatingContent
-    use:portal
+    use:floating
   >
     <div class="flex items-center justify-between">
       <p class="subtitle-18-b">알림</p>

@@ -8,7 +8,6 @@
   import { onMount, tick } from 'svelte';
   import { browser } from '$app/environment';
   import { portal } from '$lib/svelte/actions';
-  import { computeArrowPosition } from '$lib/svelte-floating-ui';
   import { isEmptyTextBlock, isMobile } from '$lib/utils';
 
   let key = 'share-bubble-menu';
@@ -62,7 +61,7 @@
       top: `${position.y}px`,
     });
 
-    Object.assign(arrowEl.style, computeArrowPosition(position));
+    // Object.assign(arrowEl.style, computeArrowPosition(position));
   });
 
   onMount(() => {

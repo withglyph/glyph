@@ -1,12 +1,9 @@
 <script lang="ts">
-  import { flip, offset, shift } from '@floating-ui/dom';
-  import { tick } from 'svelte';
   import { beforeNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { Button } from '$lib/components';
   import Image from '$lib/components/Image.svelte';
-  import { portal } from '$lib/svelte/actions';
-  import { createFloatingActions } from '$lib/svelte-floating-ui';
+  import { createFloatingActions, portal } from '$lib/svelte/actions';
   import CreateSpaceModal from '../../CreateSpaceModal.svelte';
   import type { SpaceDashboardLayout_SpaceListMenu_query } from '$glitch';
 
@@ -52,16 +49,10 @@
     `),
   );
 
-  const [floatingRef, floatingContent, update] = createFloatingActions({
-    strategy: 'absolute',
+  const { anchor, floating } = createFloatingActions({
     placement: 'left-start',
-    middleware: [offset(16), flip(), shift({ padding: 8 })],
+    offset: 16,
   });
-
-  $: if (open) {
-    // eslint-disable-next-line unicorn/prefer-top-level-await
-    void tick().then(() => update());
-  }
 
   beforeNavigate(() => {
     open = false;
@@ -72,7 +63,7 @@
   class="flex items-center gap-3 bg-primary rounded-lg p-2 w-full"
   type="button"
   on:click={() => (open = !open)}
-  use:floatingRef
+  use:anchor
 >
   <Image class="square-12 rounded-lg flex-none border border-secondary" $image={$query.space.icon} />
   <div class="truncate">
@@ -99,11 +90,7 @@
     use:portal
   />
 
-  <div
-    class="z-50 w-52 py-4 px-3 rounded-2xl shadow-[0_4px_4px_0px_rgba(0,0,0,0.10)] bg-cardprimary"
-    use:floatingContent
-    use:portal
-  >
+  <div class="z-50 w-52 py-4 px-3 rounded-2xl shadow-[0_4px_4px_0px_rgba(0,0,0,0.10)] bg-cardprimary" use:floating>
     <div class="space-y-3">
       {#each $query.me.spaces as space (space.id)}
         <a class="p-1 flex gap-2 items-center rounded-xl hover:bg-primary" href={`/${space.slug}/dashboard/settings`}>

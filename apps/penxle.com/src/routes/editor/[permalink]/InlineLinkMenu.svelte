@@ -1,14 +1,11 @@
 <script lang="ts">
-  import { flip, offset, shift } from '@floating-ui/dom';
   import { Editor, posToDOMRect } from '@tiptap/core';
   import { Plugin, PluginKey } from '@tiptap/pm/state';
   import { EditorView } from '@tiptap/pm/view';
   import * as R from 'radash';
   import { onMount, tick } from 'svelte';
-  import { writable } from 'svelte/store';
   import { Tooltip } from '$lib/components';
-  import { portal } from '$lib/svelte/actions';
-  import { arrow, computeArrowPosition, createFloatingActions } from '$lib/svelte-floating-ui';
+  import { createFloatingActions } from '$lib/svelte/actions';
   import type { VirtualElement } from '@floating-ui/dom';
 
   const key = 'link-edit-menu';
@@ -20,17 +17,10 @@
   let open = false;
   let preventUpdate = false;
 
-  const arrowRef = writable<HTMLElement | null>(null);
-
-  const [floatingRef, floatingContent] = createFloatingActions({
-    strategy: 'absolute',
+  const { anchor, floating, arrow } = createFloatingActions({
     placement: 'top',
-    middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrowRef })],
-    onComputed(position) {
-      if ($arrowRef) {
-        Object.assign($arrowRef.style, computeArrowPosition(position));
-      }
-    },
+    offset: 8,
+    arrow: true,
   });
 
   const update = R.debounce({ delay: 150 }, async (view: EditorView) => {
@@ -53,9 +43,10 @@
 
     const targetEl: VirtualElement = {
       getBoundingClientRect: () => posToDOMRect(view, from, to),
+      contextElement: view.dom,
     };
 
-    floatingRef(targetEl);
+    anchor(targetEl);
   });
 
   onMount(() => {
@@ -83,8 +74,7 @@
         command.unsetLink().run();
       }
     }}
-    use:floatingContent
-    use:portal
+    use:floating
   >
     <span class="invisible min-w-8.25rem max-w-20rem text-clip overflow-hidden whitespace-nowrap">{href}</span>
     <input
@@ -103,6 +93,6 @@
         />
       </button>
     </Tooltip>
-    <div bind:this={$arrowRef} class="absolute square-2 rotate-45 bg-cardprimary" />
+    <div class="absolute square-2 rotate-45 bg-cardprimary" use:arrow />
   </form>
 {/if}

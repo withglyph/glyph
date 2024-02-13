@@ -1,6 +1,5 @@
 <script lang="ts">
   import { validator } from '@felte/validator-zod';
-  import { offset } from '@floating-ui/dom';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import { createForm } from 'felte';
@@ -11,8 +10,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Modal } from '$lib/components';
   import Button from '$lib/components/Button.svelte';
-  import { portal } from '$lib/svelte/actions';
-  import { createFloatingActions } from '$lib/svelte-floating-ui';
+  import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { NodeView } from '$lib/tiptap';
   import { calcurateReadingTime, comma } from '$lib/utils';
   import LoginRequireModal from '../../../../routes/(default)/LoginRequireModal.svelte';
@@ -50,10 +48,9 @@
     }
   `);
 
-  const [floatingRef, floatingContent, update] = createFloatingActions({
-    strategy: 'absolute',
+  const { anchor, floating } = createFloatingActions({
     placement: 'bottom',
-    middleware: [offset(8)],
+    offset: 8,
   });
 
   const { form, errors, data, setFields, setInitialValues } = createForm({
@@ -73,8 +70,7 @@
 
   $: if (priceOpen) {
     // eslint-disable-next-line unicorn/prefer-top-level-await
-    void tick().then(() => {
-      update();
+    tick().then(() => {
       priceInputEl?.focus();
     });
   }
@@ -121,7 +117,7 @@
           )}
           type="button"
           on:click={() => (priceOpen = true)}
-          use:floatingRef
+          use:anchor
         >
           {#if node.attrs.price}
             {comma(node.attrs.price)} P
@@ -161,8 +157,7 @@
 
       <div
         class="z-52 bg-white border border-gray-200 flex flex-col gap-6px px-10px pt-8px pb-10px rounded-b-6px"
-        use:floatingContent
-        use:portal
+        use:floating
       >
         <form class="contents" use:form>
           <div class="relative">
