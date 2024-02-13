@@ -88,7 +88,11 @@ export const postSchema = defineSchema((builder) => {
 
       viewCount: t.int({
         resolve: (post, _, { db }) =>
-          useCache(`Post:${post.id}:viewCount`, () => db.postView.count({ where: { postId: post.id } }), 600),
+          useCache(
+            `Post:${post.id}:viewCount`,
+            () => db.postView.count({ where: { postId: post.id } }),
+            365 * 24 * 60 * 60,
+          ),
       }),
 
       visibility: t.expose('visibility', { type: PrismaEnums.PostVisibility }),
