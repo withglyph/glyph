@@ -631,6 +631,7 @@
 
           <Checkbox
             class="mb-3 mt-1.5 text-14-r"
+            checked={enablePassword}
             on:change={() => {
               enablePassword = !enablePassword;
               if (!enablePassword) {
