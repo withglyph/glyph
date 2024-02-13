@@ -4,7 +4,9 @@ import type { RequestHandler } from './$types';
 export const GET: RequestHandler = async () => {
   const lines = ['User-agent: *', 'Disallow: /api/', 'Disallow: /_internal/', 'Disallow: /_playground/'];
 
-  if (!production) {
+  if (production) {
+    lines.push('Allow: /api/shortlink/');
+  } else {
     lines.push('Disallow: /');
   }
 
