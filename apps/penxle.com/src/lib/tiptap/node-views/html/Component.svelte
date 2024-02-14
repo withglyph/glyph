@@ -21,11 +21,7 @@
 
   let preview = false;
 
-  $: content = DOMPurify.isSupported
-    ? DOMPurify.sanitize(node.attrs.content, {
-        USE_PROFILES: { html: true },
-      })
-    : '';
+  $: content = DOMPurify.isSupported ? DOMPurify.sanitize(node.attrs.content) : '';
 
   onMount(() => {
     if (!editor?.isEditable) {
@@ -89,13 +85,27 @@
 
       {#if preview}
         <div class="relative overflow-hidden isolate">
-          {@html content}
+          <div class="html-content">
+            {@html content}
+          </div>
         </div>
       {/if}
     </div>
   {:else}
     <div class="relative overflow-hidden isolate px-8px py-4px">
-      {@html content}
+      <div class="html-content">
+        {@html content}
+      </div>
     </div>
   {/if}
 </NodeView>
+
+<style>
+  .html-content {
+    all: initial;
+
+    & :global(:where(:not(svg, svg *))) {
+      all: revert;
+    }
+  }
+</style>
