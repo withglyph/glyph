@@ -99,7 +99,7 @@
     { value: 200, label: '2줄' },
   ];
 
-  $: currentColor = (editor?.getAttributes('font_color').fontColor as string | undefined) ?? values.color[0].value;
+  $: currentColor = (editor?.getAttributes('font_color').fontColor as string | undefined) ?? values.defaultColor;
 </script>
 
 <div class="flex flex-col bg-white text-gray-800 sm:hidden" on:touchend|nonpassive|preventDefault>
@@ -232,7 +232,7 @@
                 color === '#FFFFFF' ? 'border-gray-200' : 'border-transparent',
               )}
               on:click={() => {
-                if (color === values.color[0].value.toUpperCase()) {
+                if (color === values.defaultColor) {
                   editor?.chain().focus().unsetFontColor().run();
                 } else {
                   editor?.chain().focus().setFontColor(color).run();

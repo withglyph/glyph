@@ -143,7 +143,7 @@
     offset: 11,
   });
 
-  $: currentColor = (editor?.getAttributes('font_color').fontColor as string | undefined) ?? values.color[0].value;
+  $: currentColor = (editor?.getAttributes('font_color').fontColor as string | undefined) ?? values.defaultColor;
 
   let vvOffset: number | undefined;
 
@@ -291,7 +291,7 @@
               hex={currentColor}
               on:input={(event) => {
                 const { hex } = event.detail;
-                if (hex === values.color[0].value.toUpperCase()) {
+                if (hex === values.defaultColor) {
                   editor?.chain().focus().unsetFontColor().run();
                 } else {
                   editor?.chain().focus().setFontColor(hex).run();

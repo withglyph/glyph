@@ -1,15 +1,5 @@
 export const values = {
-  color: [
-    { label: '검정색', value: '#09090b' },
-    { label: '회색', value: '#78716c' },
-    { label: '연회색', value: '#a8a29e' },
-    { label: '빨간색', value: '#ea4335' },
-    { label: '파란색', value: '#4285f4' },
-    { label: '갈색', value: '#a96d42' },
-    { label: '초록색', value: '#00c75e' },
-    { label: '보라색', value: '#9747ff' },
-    { label: '흰색', value: '#ffffff' },
-  ],
+  defaultColor: '#09090B',
 
   fontFamily: [
     { label: '프리텐다드', value: 'Pretendard' },

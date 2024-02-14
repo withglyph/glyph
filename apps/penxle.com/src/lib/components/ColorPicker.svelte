@@ -2,6 +2,7 @@
   import clsx from 'clsx';
   import Color from 'color';
   import { createEventDispatcher, onMount, tick } from 'svelte';
+  import { values } from '$lib/tiptap/values';
 
   let colorBlock: HTMLCanvasElement;
   let colorCtx: CanvasRenderingContext2D | null;
@@ -115,7 +116,7 @@
     '#8B5CF6',
     '#EC4899',
     '#6B7280',
-    '#09090B',
+    values.defaultColor,
     '#FFFFFF',
   ];
 
