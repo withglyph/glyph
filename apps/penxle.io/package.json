@@ -21,18 +21,18 @@
     "@sveltejs/kit": "^2.5.0",
     "clsx": "^2.1.0",
     "lightningcss": "^1.23.0",
-    "svelte": "^4.2.9"
+    "svelte": "^4.2.10"
   },
   "devDependencies": {
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
-    "@pulumi/pulumi": "^3.104.2",
+    "@pulumi/pulumi": "^3.105.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.2",
-    "@types/node": "^20.11.16",
-    "svelte-check": "^3.6.3",
-    "tsx": "^4.7.0",
+    "@types/node": "^20.11.17",
+    "svelte-check": "^3.6.4",
+    "tsx": "^4.7.1",
     "typescript": "^5.3.3",
     "unocss": "^0.58.5",
-    "vite": "^5.0.12"
+    "vite": "^5.1.1"
   }
 }

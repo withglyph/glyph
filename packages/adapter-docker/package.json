@@ -28,8 +28,8 @@
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
     "@sveltejs/kit": "^2.5.0",
-    "@types/node": "^20.11.16",
-    "tsup": "^8.0.1",
+    "@types/node": "^20.11.17",
+    "tsup": "^8.0.2",
     "typescript": "^5.3.3"
   }
 }

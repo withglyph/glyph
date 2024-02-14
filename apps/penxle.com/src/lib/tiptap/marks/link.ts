@@ -82,7 +82,6 @@ export const Link = Mark.create({
             return;
           }
 
-          /* eslint-disable unicorn/consistent-destructuring */
           const { tr } = newState;
           const transform = combineTransactionSteps(oldState.doc, [...transactions]);
           const changes = getChangedRanges(transform);

@@ -1,22 +1,13 @@
-import { trace } from '@opentelemetry/api';
 import SchemaBuilder from '@pothos/core';
 import PrismaPlugin from '@pothos/plugin-prisma';
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects';
-import TracingPlugin, { isRootField } from '@pothos/plugin-tracing';
 import ValidationPlugin from '@pothos/plugin-validation';
-import { createOpenTelemetryWrapper } from '@pothos/tracing-opentelemetry';
 import { GraphQLDateTime, GraphQLJSON, GraphQLVoid } from 'graphql-scalars';
 import { PermissionDeniedError } from '$lib/errors';
 import { Prisma, PrismaClient } from '$prisma';
 import type { PrismaPothosTypes } from '$prisma';
 import type { Context, UserContext } from '../context';
-
-const tracer = trace.getTracer('graphql');
-const createSpan = createOpenTelemetryWrapper(tracer, {
-  includeArgs: true,
-  includeSource: true,
-});
 
 type Builder = ReturnType<typeof createBuilder>;
 export const createBuilder = () => {
@@ -46,7 +37,7 @@ export const createBuilder = () => {
       user: !!context.session,
     }),
     defaultInputFieldRequiredness: true,
-    plugins: [TracingPlugin, ScopeAuthPlugin, PrismaPlugin, SimpleObjectsPlugin, ValidationPlugin],
+    plugins: [ScopeAuthPlugin, PrismaPlugin, SimpleObjectsPlugin, ValidationPlugin],
     prisma: {
       // spell-checker:disable-next-line
       dmmf: Prisma.dmmf,
@@ -56,10 +47,6 @@ export const createBuilder = () => {
     scopeAuthOptions: {
       treatErrorsAsUnauthorized: true,
       unauthorizedError: () => new PermissionDeniedError(),
-    },
-    tracing: {
-      default: (config) => isRootField(config),
-      wrap: (resolver, options) => createSpan(resolver, options),
     },
   });
 

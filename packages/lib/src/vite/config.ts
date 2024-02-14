@@ -22,7 +22,7 @@ export const defineConfig = (config: UserConfig) => {
     },
     ssr: {
       ...config.ssr,
-      external: ['@penxle/tracing', ...(config.ssr?.external ?? [])],
+      external: config.ssr?.external === true ? true : ['@penxle/tracing', ...(config.ssr?.external ?? [])],
     },
   });
 };

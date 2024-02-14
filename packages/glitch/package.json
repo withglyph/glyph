@@ -36,10 +36,10 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@graphql-codegen/core": "^4.0.0",
-    "@graphql-codegen/typed-document-node": "^5.0.1",
-    "@graphql-codegen/typescript": "^4.0.1",
-    "@graphql-codegen/typescript-operations": "^4.0.1",
+    "@graphql-codegen/core": "^4.0.2",
+    "@graphql-codegen/typed-document-node": "^5.0.4",
+    "@graphql-codegen/typescript": "^4.0.4",
+    "@graphql-codegen/typescript-operations": "^4.1.2",
     "@graphql-codegen/typescript-urql-graphcache": "^3.1.0",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@urql/core": "^4.2.3",
@@ -51,16 +51,16 @@
     "graphql-tag": "^2.12.6",
     "radash": "^11.0.0",
     "recast": "^0.23.4",
-    "svelte": "^4.2.9",
+    "svelte": "^4.2.10",
     "wonka": "^6.3.4"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
     "@sveltejs/kit": "^2.5.0",
-    "rollup": "^4.9.6",
-    "tsup": "^8.0.1",
+    "rollup": "^4.10.0",
+    "tsup": "^8.0.2",
     "typescript": "^5.3.3",
-    "vite": "^5.0.12"
+    "vite": "^5.1.1"
   },
   "peerDependencies": {
     "@sveltejs/kit": "^2.0.0"
