@@ -1,3 +1,4 @@
+import { NodeSelection, TextSelection } from '@tiptap/pm/state';
 import { createNodeView } from '../../lib';
 import Component from './Component.svelte';
 
@@ -27,8 +28,16 @@ export const Html = createNodeView(Component, {
     return {
       setHtml:
         () =>
-        ({ tr }) => {
-          tr.replaceSelectionWith(this.type.create());
+        ({ state, tr }) => {
+          const { selection } = state;
+          const { $to } = selection;
+
+          const pos = selection instanceof TextSelection ? $to.end() + 1 : $to.pos;
+
+          tr.insert(pos, this.type.create());
+          tr.setSelection(NodeSelection.create(tr.doc, pos));
+          tr.scrollIntoView();
+
           return tr.docChanged;
         },
     };
