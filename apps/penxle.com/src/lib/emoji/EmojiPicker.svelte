@@ -130,7 +130,7 @@
       e.stopPropagation();
       open = true;
     }}
-    use:floating
+    use:anchor
   >
     <i class="i-px-happy bg-[#5C5755] square-4" />
   </button>
