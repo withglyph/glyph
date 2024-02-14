@@ -143,7 +143,8 @@
     offset: 11,
   });
 
-  $: currentColor = (editor?.getAttributes('font_color').fontColor as string | undefined) ?? values.defaultColor;
+  $: currentColor =
+    (editor?.getAttributes('font_color').fontColor as string | undefined)?.toUpperCase() ?? values.defaultColor;
 
   let vvOffset: number | undefined;
 

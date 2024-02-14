@@ -99,7 +99,8 @@
     { value: 200, label: '2줄' },
   ];
 
-  $: currentColor = (editor?.getAttributes('font_color').fontColor as string | undefined) ?? values.defaultColor;
+  $: currentColor =
+    (editor?.getAttributes('font_color').fontColor as string | undefined)?.toUpperCase() ?? values.defaultColor;
 </script>
 
 <div class="flex flex-col bg-white text-gray-800 sm:hidden" on:touchend|nonpassive|preventDefault>
