@@ -20,7 +20,7 @@
   `);
 </script>
 
-<Helmet title="관심 태그 피드 | 펜슬" />
+<Helmet title="관심 태그 피드" />
 
 <a class="sm:hidden" href="/penxle/736143117">
   <img alt="MobileBanner" src={MobileBanner} />

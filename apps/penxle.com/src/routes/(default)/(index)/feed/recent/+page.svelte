@@ -24,7 +24,7 @@
   `);
 </script>
 
-<Helmet title="최신 피드 | 펜슬" />
+<Helmet title="최신 피드" />
 
 <a class="sm:hidden" href="/penxle/736143117">
   <img alt="MobileBanner" src={MobileBanner} />
