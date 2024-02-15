@@ -764,7 +764,7 @@
       placement="top"
     >
       <button
-        class="w-24 py-2 px-8 text-14-m text-white bg-gray-950 rounded text-center <sm:(w-full text-16-sb)"
+        class="w-24 py-2 px-8 text-14-m text-white bg-gray-950 rounded text-center <sm:(w-full text-16-sb py-2.5)"
         disabled={!selectedSpaceId}
         type="button"
         on:click={handleSubmit}
