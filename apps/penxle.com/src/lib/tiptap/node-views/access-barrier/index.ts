@@ -1,6 +1,5 @@
 import { findChildren } from '@tiptap/core';
-import { Slice } from '@tiptap/pm/model';
-import { Plugin } from '@tiptap/pm/state';
+import { NodeSelection, Plugin } from '@tiptap/pm/state';
 import { createNodeView } from '../../lib';
 import Component from './Component.svelte';
 
@@ -19,16 +18,42 @@ export const AccessBarrier = createNodeView(Component, {
   addProseMirrorPlugins() {
     return [
       new Plugin({
-        props: {
-          transformCopied: () => Slice.empty,
-        },
-        filterTransaction: (tr) => {
+        appendTransaction: (transactions, oldState, newState) => {
           if (!this.editor.isEditable) {
-            return true;
+            return null;
           }
 
-          const nodes = findChildren(tr.doc, (node) => node.type.name === this.name);
-          return nodes.length === 1;
+          const { tr } = newState;
+
+          const oldNodes = findChildren(oldState.doc, (node) => node.type.name === this.name);
+          const newNodes = findChildren(newState.doc, (node) => node.type.name === this.name);
+
+          if (oldNodes.length !== 1) {
+            return null;
+          }
+
+          let pos = oldNodes[0].pos;
+          for (const transaction of transactions) {
+            // eslint-disable-next-line unicorn/no-array-callback-reference
+            pos = transaction.mapping.map(pos);
+          }
+
+          if (newNodes.length === 0) {
+            tr.insert(pos, oldNodes[0].node.copy());
+            const newNode = findChildren(tr.doc, (node) => node.type.name === this.name)[0];
+            tr.setSelection(NodeSelection.create(tr.doc, newNode.pos));
+            return tr;
+          } else if (newNodes.length > 1) {
+            for (const newNode of newNodes) {
+              if (newNode.pos === pos) {
+                continue;
+              }
+
+              tr.delete(newNode.pos, newNode.pos + newNode.node.nodeSize);
+            }
+
+            return tr;
+          }
         },
       }),
     ];
