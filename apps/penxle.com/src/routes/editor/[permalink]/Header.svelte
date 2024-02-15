@@ -13,7 +13,6 @@
   import CharacterCountWidget from './CharacterCountWidget.svelte';
   import { getEditorContext } from './context';
   import DraftListModal from './DraftListModal.svelte';
-  import ImageEditor from './ImageEditor.svelte';
   import MobileEditMenu from './MobileEditMenu.svelte';
   import PublishMenu from './PublishMenu.svelte';
   import RevisionListModal from './RevisionListModal.svelte';
@@ -97,7 +96,6 @@
   let publishMenuOpen = false;
   let revisionListOpen = false;
   let draftListOpen = false;
-  let imageEditorOpen = false;
 
   const handleInsertFile = () => {
     const picker = document.createElement('input');
@@ -825,7 +823,6 @@
   <MobileEditMenu />
 </header>
 
-<ImageEditor bind:open={imageEditorOpen} />
 <DraftListModal {$post} $user={$query.me} bind:open={draftListOpen} />
 <RevisionListModal {$post} bind:open={revisionListOpen} />
 
