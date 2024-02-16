@@ -46,12 +46,14 @@
   }
 
   .driver-popover-prev-btn {
-    --uno: border-(1px solid gray-200) color-gray-500 hover: (bg-gray-50) focus-visible: (outline-(2px solid gray-100))
-      active: (outline-(2px solid gray-100)) disabled: (border-gray-100 color-gray-300);
+    /* prettier-ignore */
+    --uno: border-(1px solid gray-200) color-gray-500 hover:bg-gray-50 focus-visible:(outline-(2px solid gray-100))
+    active: (outline-(2px solid gray-100)) disabled: (border-gray-100 color-gray-300);
   }
 
   .driver-popover-next-btn {
-    --uno: border-none color-white bg-teal-500 hover: (bg-teal-400) focus-visible: (outline-(2px solid teal-100)) active:
+    /* prettier-ignore */
+    --uno: border-none color-white bg-teal-500 hover:bg-teal-400 focus-visible:(outline-(2px solid teal-100)) active:
       (outline-(2px solid teal-100));
   }
 
