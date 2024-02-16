@@ -55,6 +55,11 @@
     sortable = Sortable.create(sortableContainer, {
       handle: '.image',
       dataIdAttr: 'data-id',
+      onMove: (evt) => {
+        if (evt.related.className.includes('prevent-dragging')) {
+          return false;
+        }
+      },
       onEnd: ({ newIndex, oldIndex }) => {
         if (newIndex === undefined || oldIndex === undefined) return;
 
@@ -69,6 +74,11 @@
     sortable = Sortable.create(sortableGallery, {
       handle: '.image',
       dataIdAttr: 'data-id',
+      onMove: (evt) => {
+        if (evt.related.className.includes('prevent-dragging')) {
+          return false;
+        }
+      },
       onEnd: ({ newIndex, oldIndex }) => {
         if (newIndex === undefined || oldIndex === undefined) return;
 
@@ -354,7 +364,7 @@
             </li>
           {/each}
 
-          <li>
+          <li class="prevent-dragging">
             <button class="p-1 flex flex-col gap-1 rounded" type="button" on:click={handleInsertImage}>
               <div class="bg-gray-100 square-12 rounded-0.1875rem flex center">
                 <i class="i-tb-plus square-4 text-gray-400" />
@@ -580,7 +590,11 @@
         {/if}
       {/each}
       {#if view === 'grid'}
-        <button class="p-1.5 flex flex-col gap-1.5 rounded h-127px" type="button" on:click={handleInsertImage}>
+        <button
+          class="p-1.5 flex flex-col gap-1.5 rounded h-127px prevent-dragging"
+          type="button"
+          on:click={handleInsertImage}
+        >
           <div class="bg-gray-100 square-23 rounded-0.3125rem flex center">
             <i class="i-tb-plus block square-5 text-gray-400 stroke-2" />
           </div>
@@ -589,7 +603,7 @@
         </button>
       {:else}
         <button
-          class="py-6 px-5 rounded border border-gray-200 flex items-center w-full text-gray-400 bg-gray-100 h-68px"
+          class="py-6 px-5 rounded border border-gray-200 flex items-center w-full text-gray-400 bg-gray-100 h-68px prevent-dragging"
           type="button"
           on:click={handleInsertImage}
         >
