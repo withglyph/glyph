@@ -5,6 +5,7 @@
   import { driver as driverFn } from 'driver.js';
   import ky from 'ky';
   import { nanoid } from 'nanoid';
+  import * as R from 'radash';
   import { onDestroy, onMount, tick } from 'svelte';
   import { register } from 'swiper/element/bundle';
   import { graphql } from '$glitch';
@@ -52,6 +53,14 @@
   $: updateAttributes({ ids: isomorphicImages.filter((i) => i.kind === 'data').map((i: IsomorphicImage) => i.id) });
 
   let imageListOpen = false;
+  let selectedImages: string[] = [];
+  let selectedImageName: string | undefined;
+
+  $: if (selectedImages.length > 0) {
+    const selectedNode = node.attrs.__data.find((i: IsomorphicImage) => i.id === selectedImages[0]);
+
+    selectedImageName = selectedNode?.__file ? selectedNode.__file.name : selectedNode?.__data.name;
+  }
 
   let view: 'grid' | 'list' = 'grid';
 
@@ -225,7 +234,7 @@
   </svelte:fragment>
 
   <div class="flex h-511px">
-    <div class="grow flex flex-col">
+    <div class="flex flex-col w-562px">
       <div class="grow flex flex-col items-center overflow-y-auto p-t-6 p-b-4">
         <div
           class={clsx(
@@ -233,10 +242,21 @@
             node.attrs.ids.length <= 1 && 'justify-center',
             node.attrs.layout === 'standalone' && 'gap-6',
             node.attrs.layout === 'grid' && node.attrs.gridColumns === 2 && 'grid! grid-cols-2',
-            node.attrs.layout === 'grid' && node.attrs.gridColumns === 3 && 'grid-cols-3',
+            node.attrs.layout === 'grid' && node.attrs.gridColumns === 3 && 'grid! grid-cols-3',
             node.attrs.spacing && 'gap-1.5',
           )}
         >
+          {#if node.attrs.ids.length === 0}
+            <button
+              class="border border-gray-300 border-dashed bg-gray-50 text-gray-300 w-100 h-75 flex flex-col center gap-2.5"
+              type="button"
+              on:click={handleInsertImage}
+            >
+              <i class="i-tb-photo-up square-8" />
+              <p class="text-13-m">이미지를 업로드해주세요</p>
+            </button>
+          {/if}
+
           <!-- <swiper-container bind:this={swiperEl} class="w-100"> -->
           {#each isomorphicImages as image (image.id)}
             {#if node.attrs.layout === 'slide'}
@@ -255,15 +275,6 @@
                 </button>
               </div>
             {/if}
-          {:else}
-            <button
-              class="border-2 border-dashed border-gray-300 bg-gray-50 text-gray-400 w-100 h-75 flex flex-col center gap-2.5"
-              type="button"
-              on:click={handleInsertImage}
-            >
-              <i class="i-tb-photo-up square-8" />
-              <p class="text-13-m">이미지를 업로드해주세요</p>
-            </button>
           {/each}
           <!-- </swiper-container> -->
         </div>
@@ -271,13 +282,13 @@
 
       <button
         bind:this={onboardingAnchorElements[1]}
-        class="px-2 py-1.5 text-gray-400 border-(1 gray-200 b-none) rounded-t bg-white leading-0 shrink self-end m-r-5"
+        class="px-2 py-1.5 text-gray-400 border-(1 gray-200 b-none) rounded-t bg-white leading-0 shrink self-end m-r-4 z-1"
         type="button"
         on:click={() => {
           imageListOpen = true;
         }}
       >
-        <i class="i-tb-layout-grid square-4" />
+        <i class="i-tb-layout-grid square-3.5" />
         <span class="text-11-sb ml-1.5">전체 목록</span>
       </button>
       <div class="h-104px border-t border-gray-200 flex px-6 relative">
@@ -285,13 +296,22 @@
           {#each isomorphicImages as image, index (image.id)}
             <li class="flex-none relative">
               <button
-                class="relative p-1 flex flex-col gap-1 flex-none rounded hover:bg-gray-100 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!) aria-pressed:[&>div]:block"
-                aria-pressed={false}
+                class="relative p-1 flex flex-col gap-1 flex-none rounded hover:bg-gray-100 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!) [&>div]:aria-pressed:(flex center)"
+                aria-pressed={selectedImages.includes(image.id)}
                 type="button"
+                on:click={() => {
+                  selectedImages = selectedImages.includes(image.id)
+                    ? selectedImages.filter((id) => id !== image.id)
+                    : [...selectedImages, image.id];
+                }}
               >
                 <IsomorphicImage class="square-12 rounded-0.1875rem object-cover" {image} />
-                <div class="absolute left-1 top-1 bg-black/30 square-12 rounded-0.1875rem flex center hidden">
-                  <i class="i-tb-trash square-4.5 text-white" />
+                <div class="absolute left-1 top-1 bg-black/30 square-12 rounded-0.1875rem hidden">
+                  <button
+                    class="i-tb-trash square-4.5 text-white"
+                    type="button"
+                    on:click={() => removeImage(image.id)}
+                  />
                 </div>
 
                 <p class="text-10-r text-gray-400 text-center w-full">{index + 1}</p>
@@ -408,7 +428,7 @@
       class="px-4 py-2.5 text-15-sb rounded bg-gray-950 text-white w-95px text-center border border-gray-950"
       type="button"
       on:click={() => {
-        /*pass*/
+        open = false;
       }}
     >
       삽입
@@ -435,8 +455,35 @@
   <div>
     <div class="pt-5 px-6 flex items-center justify-between">
       <div class="flex">
-        <Checkbox class="text-14-r gap-2 after:(content-[''] block h-3 w-1px bg-gray-200 ml-1)">전체선택</Checkbox>
-        <button class="text-14-r text-error-900 px-3" type="button">삭제</button>
+        <Checkbox
+          class="text-14-r gap-2 after:(content-[''] block h-3 w-1px bg-gray-200 ml-1)"
+          checked={R.isEqual(
+            selectedImages,
+            isomorphicImages.map((i) => i.id),
+          )}
+          on:change={() => {
+            selectedImages = R.isEqual(
+              selectedImages,
+              isomorphicImages.map((i) => i.id),
+            )
+              ? []
+              : isomorphicImages.map((i) => i.id);
+          }}
+        >
+          전체선택
+        </Checkbox>
+        <button
+          class="text-14-r text-error-900 px-3"
+          type="button"
+          on:click={async () => {
+            for (const id of selectedImages) {
+              await removeImage(id);
+            }
+            selectedImages = [];
+          }}
+        >
+          삭제
+        </button>
       </div>
 
       <div>
@@ -470,8 +517,13 @@
         {#if view === 'grid'}
           <button
             class="relative p-1.5 flex flex-col flex-none gap-1.5 h-127px rounded hover:bg-gray-100 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!)"
-            aria-pressed={true}
+            aria-pressed={selectedImages.includes(image.id)}
             type="button"
+            on:click={() => {
+              selectedImages = selectedImages.includes(image.id)
+                ? selectedImages.filter((id) => id !== image.id)
+                : [...selectedImages, image.id];
+            }}
           >
             <IsomorphicImage class="square-23 rounded-0.3125rem object-cover" {image} />
 
@@ -483,14 +535,20 @@
           </button>
         {:else}
           <button
-            class="relative py-2.5 px-6 rounded border border-gray-200 flex items-center w-full h-68px"
+            class="relative py-2.5 px-6 rounded border border-gray-200 flex items-center w-full h-68px aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!)"
+            aria-pressed={selectedImages.includes(image.id)}
             type="button"
+            on:click={() => {
+              selectedImages = selectedImages.includes(image.id)
+                ? selectedImages.filter((id) => id !== image.id)
+                : [...selectedImages, image.id];
+            }}
           >
             <span class="text-14-r text-gray-400 w-26px mr-3 text-center">{index + 1}</span>
             <IsomorphicImage class="square-12 rounded-md object-cover mr-4" {image} />
             <p class="grow text-14-r">{image.kind === 'data' ? image.__data.name : image.__file.name}</p>
 
-            <button class="p-1 mr-2" type="button">
+            <button class="p-1 mr-2" type="button" on:click={() => removeImage(image.id)}>
               <i class="i-tb-trash block square-6 text-gray-600" />
             </button>
 
@@ -525,6 +583,16 @@
   </div>
 
   <svelte:fragment slot="action">
+    {#if selectedImages.length > 0}
+      <p class="text-14-r grow">
+        이미지 {selectedImageName}
+        {#if selectedImages.length > 1}
+          외 <mark class="text-teal-500">{selectedImages.length - 1}개</mark>
+        {/if}
+        선택됨
+      </p>
+    {/if}
+
     <button
       class="px-4 py-2.5 text-15-sb rounded w-95px text-center border border-gray-200"
       type="button"
