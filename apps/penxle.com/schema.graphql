@@ -161,6 +161,7 @@ input IgnoreSpaceMemberInvitationInput {
 type Image {
   height: Int!
   id: ID!
+  name: String!
   placeholder: String!
   url: String!
   width: Int!

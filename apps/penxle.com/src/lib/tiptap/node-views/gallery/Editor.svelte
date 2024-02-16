@@ -1,14 +1,18 @@
 <script lang="ts">
   import clsx from 'clsx';
-  import { onMount } from 'svelte';
+  import ky from 'ky';
+  import { nanoid } from 'nanoid';
+  import { onMount, tick } from 'svelte';
   import { register } from 'swiper/element/bundle';
+  import { graphql } from '$glitch';
   import { Tooltip } from '$lib/components';
   import { Checkbox, Switch } from '$lib/components/forms';
-  import FileImage from '$lib/tiptap/node-views/image/FileImage.svelte';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
+  import IsomorphicImage from './IsomorphicImage.svelte';
   import Modal from './Modal.svelte';
   import RadioGroup from './RadioGroup.svelte';
   import type { SwiperContainer, SwiperSlide } from 'swiper/element-bundle';
+  import type { Image_image } from '$glitch';
   import type { NodeViewProps } from '$lib/tiptap';
 
   export let open = false;
@@ -16,9 +20,35 @@
   export let node: NodeViewProps['node'];
   export let updateAttributes: NodeViewProps['updateAttributes'];
 
-  let imageListOpen = false;
+  const prepareImageUpload = graphql(`
+    mutation TiptapGallery_PrepareImageUpload_Mutation {
+      prepareImageUpload {
+        key
+        presignedUrl
+      }
+    }
+  `);
 
-  let images: File[] = [];
+  const finalizeImageUpload = graphql(`
+    mutation TiptapGallery_FinalizeImageUpload_Mutation($input: FinalizeImageUploadInput!) {
+      finalizeImageUpload(input: $input) {
+        id
+        name
+        ...Image_image
+      }
+    }
+  `);
+
+  type IsomorphicImage = { id: string } & (
+    | { kind: 'file'; __file: File }
+    | { kind: 'data'; __data: { id: string; name: string } & Image_image }
+  );
+  let isomorphicImages: IsomorphicImage[];
+  $: isomorphicImages = node.attrs.__data;
+
+  $: updateAttributes({ ids: isomorphicImages.filter((i) => i.kind === 'data').map((i: IsomorphicImage) => i.id) });
+
+  let imageListOpen = false;
 
   let view: 'grid' | 'list' = 'grid';
 
@@ -51,6 +81,12 @@
     }
   });
 
+  const upload = async (file: File) => {
+    const { key, presignedUrl } = await prepareImageUpload();
+    await ky.put(presignedUrl, { body: file });
+    return await finalizeImageUpload({ key, name: file.name });
+  };
+
   const handleInsertImage = () => {
     const picker = document.createElement('input');
     picker.type = 'file';
@@ -65,15 +101,34 @@
       }
 
       for (const file of files) {
-        if (!isValidImageFile(file)) {
+        if (!(await isValidImageFile(file))) {
           continue;
         }
 
-        images = [...images, file];
+        const id = nanoid();
+
+        await tick();
+        updateAttributes({
+          __data: [...node.attrs.__data, { id, kind: 'file', __file: file }],
+        });
+
+        upload(file).then((resp) => {
+          updateAttributes({
+            __data: node.attrs.__data.map((i: IsomorphicImage) =>
+              i.id === id ? { id: resp.id, kind: 'data', __data: resp } : i,
+            ),
+          });
+        });
       }
     });
 
     picker.showPicker();
+  };
+
+  const removeImage = (id: string) => {
+    updateAttributes({
+      __data: node.attrs.__data.filter((i: IsomorphicImage) => i.id !== id),
+    });
   };
 </script>
 
@@ -96,7 +151,7 @@
         <div
           class={clsx(
             'grow flex flex-col items-center w-100 mx-auto',
-            images.length <= 1 && 'justify-center',
+            node.attrs.ids.length <= 1 && 'justify-center',
             node.attrs.layout === 'standalone' && 'gap-6',
             node.attrs.layout === 'grid' && node.attrs.gridColumns === 2 && 'grid! grid-cols-2',
             node.attrs.layout === 'grid' && node.attrs.gridColumns === 3 && 'grid-cols-3',
@@ -104,20 +159,18 @@
           )}
         >
           <!-- <swiper-container bind:this={swiperEl} class="w-100"> -->
-          {#each images as image (image)}
+          {#each isomorphicImages as image (image.id)}
             {#if node.attrs.layout === 'slide'}
               <swiper-slide bind:this={swiperSlideEl}>
-                <FileImage class="object-cover" file={image} />
+                <IsomorphicImage class="object-cover" {image} />
               </swiper-slide>
             {:else}
               <div class="relative square-full">
-                <FileImage class="square-full object-cover" file={image} />
+                <IsomorphicImage class="square-full object-cover" {image} />
                 <button
                   class="square-6.5 bg-#09090B66 rounded-sm flex center absolute bottom-3.5 right-3.5"
                   type="button"
-                  on:click={() => {
-                    images = images.filter((i) => i !== image);
-                  }}
+                  on:click={() => removeImage(image.id)}
                 >
                   <i class="i-tb-trash square-4.5 text-white" />
                 </button>
@@ -150,14 +203,14 @@
         </button>
 
         <ul class="flex grow gap-1 overflow-x-auto overflow-y-hidden py-3.5 px-2.5 images">
-          {#each images as image, index (image)}
+          {#each isomorphicImages as image, index (image.id)}
             <li class="flex-none">
               <button
                 class="relative p-1 flex flex-col gap-1 flex-none rounded hover:bg-gray-100 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!) aria-pressed:[&>div]:block"
                 aria-pressed={false}
                 type="button"
               >
-                <FileImage class="square-12 rounded-0.1875rem object-cover" file={image} />
+                <IsomorphicImage class="square-12 rounded-0.1875rem object-cover" {image} />
                 <div class="absolute left-1 top-1 bg-black/30 square-12 rounded-0.1875rem flex center hidden">
                   <i class="i-tb-trash square-4.5 text-white" />
                 </div>
@@ -273,7 +326,7 @@
       class="px-4 py-2.5 text-15-sb rounded bg-gray-950 text-white w-95px text-center border border-gray-950"
       type="button"
       on:click={() => {
-        images = [];
+        /*pass*/
       }}
     >
       삽입
@@ -331,22 +384,22 @@
         view === 'list' && 'gap-2.5',
       )}
     >
-      {#each images as image, index (image)}
+      {#each isomorphicImages as image, index (image.id)}
         {#if view === 'grid'}
           <button
             class="p-1.5 flex flex-col flex-none gap-1.5 h-127px rounded hover:bg-gray-100 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!)"
             aria-pressed={true}
             type="button"
           >
-            <FileImage class="square-23 rounded-0.3125rem object-cover" file={image} />
+            <IsomorphicImage class="square-23 rounded-0.3125rem object-cover" {image} />
 
             <p class="text-12-r text-gray-400 text-center w-full">{index + 1}</p>
           </button>
         {:else}
           <button class="py-2.5 px-6 rounded border border-gray-200 flex items-center w-full h-68px" type="button">
             <span class="text-14-r text-gray-400 w-26px mr-3 text-center">{index + 1}</span>
-            <FileImage class="square-12 rounded-md object-cover mr-4" file={image} />
-            <p class="grow text-14-r">{image.name}</p>
+            <IsomorphicImage class="square-12 rounded-md object-cover mr-4" {image} />
+            <p class="grow text-14-r">{image.kind === 'data' ? image.__data.name : image.__file.name}</p>
 
             <button class="p-1 mr-2" type="button">
               <i class="i-tb-trash block square-6 text-gray-600" />

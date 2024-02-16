@@ -77,6 +77,42 @@ export const decorateContent = async (
         };
       }
 
+      if (node.type === 'gallery') {
+        if (!node.attrs?.ids?.length) {
+          return node;
+        }
+
+        const images = await db.image.findMany({
+          select: { id: true, name: true, path: true },
+          where: { id: { in: node.attrs.ids } },
+        });
+
+        return {
+          ...node,
+          attrs: {
+            ...node.attrs,
+            __data: node.attrs.ids
+              .map((id: string) => {
+                const image = images.find((i) => i.id === id);
+                if (!image) {
+                  return null;
+                }
+
+                return {
+                  id: image.id,
+                  kind: 'data',
+                  __data: {
+                    id: image.id,
+                    name: image.name,
+                    url: `https://pnxl.net/${image.path}`,
+                  },
+                };
+              })
+              .filter(Boolean),
+          },
+        };
+      }
+
       if (node.type === 'file') {
         if (!node.attrs?.id) {
           return node;

@@ -22,7 +22,8 @@ export const Gallery = createNodeView(Component, {
       gridColumns: { default: 2 },
       slidesPerPage: { default: 1 },
       spacing: { default: false },
-      images: { default: [] },
+      ids: { default: [] },
+      __data: { default: [] },
     };
   },
 

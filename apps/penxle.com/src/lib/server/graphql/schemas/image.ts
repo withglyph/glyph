@@ -16,6 +16,7 @@ export const imageSchema = defineSchema((builder) => {
   builder.prismaObject('Image', {
     fields: (t) => ({
       id: t.exposeID('id'),
+      name: t.exposeString('name'),
       width: t.exposeInt('width'),
       height: t.exposeInt('height'),
       placeholder: t.exposeString('placeholder'),
