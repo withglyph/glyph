@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { detectOverflow, hide } from '@floating-ui/dom';
   import { Editor, posToDOMRect } from '@tiptap/core';
   import { tick } from 'svelte';
   import { createFloatingActions } from '$lib/svelte/actions';
@@ -15,6 +16,30 @@
     placement: 'top',
     offset: 10,
     arrow: true,
+    middleware: [
+      {
+        name: 'bubble',
+        fn: async (state) => {
+          const overflow = await detectOverflow(state, { altBoundary: true });
+          if (overflow.top > 0) {
+            const max = state.y - overflow.bottom - 24;
+
+            return {
+              y: Math.min(
+                state.rects.reference.y + state.rects.reference.height - state.rects.floating.height - 24,
+                max,
+              ),
+              data: {
+                bubbled: true,
+              },
+            };
+          }
+
+          return {};
+        },
+      },
+      hide({ strategy: 'escaped' }),
+    ],
   });
 
   $: update(editor);

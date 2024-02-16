@@ -1,6 +1,6 @@
 import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { match } from 'ts-pattern';
-import type { FloatingElement, Placement, ReferenceElement } from '@floating-ui/dom';
+import type { FloatingElement, Middleware, Placement, ReferenceElement } from '@floating-ui/dom';
 import type { Action } from 'svelte/action';
 
 type ReferenceAction = Action<ReferenceElement>;
@@ -12,6 +12,7 @@ type CreateFloatingActionsOptions = {
   placement: Placement;
   offset?: number;
   arrow?: boolean;
+  middleware?: Middleware[];
 };
 
 type CreateFloatingActionsReturn = {
@@ -32,13 +33,14 @@ export function createFloatingActions(options?: CreateFloatingActionsOptions): C
       return;
     }
 
+    const middleware = options?.middleware ?? [shift({ padding: 8 }), flip()];
+
     const { x, y, placement, strategy, middlewareData } = await computePosition(referenceElement, floatingElement, {
       strategy: 'absolute',
       placement: options?.placement,
       middleware: [
         !!options?.offset && offset(options.offset),
-        shift({ padding: 8 }),
-        flip(),
+        ...middleware,
         !!options?.arrow && arrowElement && arrow({ element: arrowElement, padding: 16 }),
       ],
     });
@@ -53,11 +55,11 @@ export function createFloatingActions(options?: CreateFloatingActionsOptions): C
       left: `${x}px`,
     });
 
-    // if (middlewareData.hide) {
-    //   Object.assign(floatingElement.style, {
-    //     visibility: middlewareData.hide.referenceHidden ? 'hidden' : 'visible',
-    //   });
-    // }
+    if (middlewareData.hide) {
+      Object.assign(floatingElement.style, {
+        visibility: middlewareData.hide.referenceHidden || middlewareData.hide.escaped ? 'hidden' : 'visible',
+      });
+    }
 
     if (middlewareData.arrow && arrowElement) {
       const { x, y } = middlewareData.arrow;
@@ -74,6 +76,7 @@ export function createFloatingActions(options?: CreateFloatingActionsOptions): C
         top: y === undefined ? '' : `${y}px`,
         [side]: `${-arrowElement.offsetHeight / 2}px`,
         transform: 'rotate(45deg)',
+        visibility: middlewareData.bubble?.bubbled ? 'hidden' : 'visible',
       });
     }
   };
