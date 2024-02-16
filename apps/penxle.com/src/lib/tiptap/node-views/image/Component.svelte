@@ -71,12 +71,12 @@
           <RingSpinner class="w-8 h-8 text-brand-50" />
         </div>
       {:else if node.attrs.__data}
-        <Image class="max-w-full" $image={node.attrs.__data} draggable intrinsic />
+        <Image class="max-w-full" $image={node.attrs.__data} />
       {/if}
     </div>
   {:else if node.attrs.__data}
     <div class="contents pointer-events-auto" role="presentation" on:click={() => (open = true)}>
-      <Image class="max-w-full" $image={node.attrs.__data} intrinsic />
+      <Image class="max-w-full" $image={node.attrs.__data} />
     </div>
 
     {#if open}

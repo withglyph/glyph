@@ -57,7 +57,7 @@ export const decorateContent = async (
         }
 
         const image = await db.image.findUnique({
-          select: { id: true, width: true, height: true, placeholder: true, path: true },
+          select: { id: true, path: true },
           where: { id: node.attrs.id },
         });
 
@@ -71,9 +71,6 @@ export const decorateContent = async (
             ...node.attrs,
             __data: {
               id: image.id,
-              width: image.width,
-              height: image.height,
-              placeholder: image.placeholder,
               url: `https://pnxl.net/${image.path}`,
             },
           },
