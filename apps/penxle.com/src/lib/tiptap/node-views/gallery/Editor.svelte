@@ -96,6 +96,7 @@
       finalizeImageUpload(input: $input) {
         id
         name
+        color
         ...Image_image
       }
     }

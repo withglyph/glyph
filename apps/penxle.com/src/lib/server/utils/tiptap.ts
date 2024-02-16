@@ -83,7 +83,7 @@ export const decorateContent = async (
         }
 
         const images = await db.image.findMany({
-          select: { id: true, name: true, path: true },
+          select: { id: true, name: true, color: true, path: true },
           where: { id: { in: node.attrs.ids } },
         });
 
@@ -104,6 +104,7 @@ export const decorateContent = async (
                   __data: {
                     id: image.id,
                     name: image.name,
+                    color: image.color,
                     url: `https://pnxl.net/${image.path}`,
                   },
                 };

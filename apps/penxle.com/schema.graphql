@@ -159,6 +159,7 @@ input IgnoreSpaceMemberInvitationInput {
 }
 
 type Image {
+  color: String!
   height: Int!
   id: ID!
   name: String!

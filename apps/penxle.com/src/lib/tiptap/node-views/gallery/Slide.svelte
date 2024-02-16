@@ -7,7 +7,7 @@
 
   type IsomorphicImage = { id: string } & (
     | { kind: 'file'; __file: File }
-    | { kind: 'data'; __data: { id: string; name: string } & Image_image }
+    | { kind: 'data'; __data: { id: string; name: string; color: string } & Image_image }
   );
 
   export let isomorphicImages: IsomorphicImage[];
@@ -50,7 +50,7 @@
   <button
     bind:this={swiperPrevElem}
     class={clsx(
-      'absolute top-50% -left-40px flex center z-100 i-lc-chevron-left square-6 text-gray-500 disabled:text-gray-300!',
+      'absolute top-50% -left-40px flex center z-100 i-lc-chevron-left square-6 text-gray-500 disabled:text-gray-300! <sm:hidden',
       isomorphicImages.length === 0 && 'hidden!',
     )}
     type="button"
@@ -58,26 +58,24 @@
   <swiper-container bind:this={swiperEl} class="square-full relative" init="false" scrollbar-hide="true">
     {#each isomorphicImages as image (image)}
       <swiper-slide bind:this={swiperSlideEl}>
-        <div class="relative square-full">
-          <IsomorphicImage class="-z-1 object-cover absolute inset-0 square-full blur-50" {image} />
+        <div style:background-color={image.kind === 'data' ? image.__data.color : undefined} class="square-full">
           <IsomorphicImage class="object-contain square-full" {image} />
         </div>
       </swiper-slide>
     {/each}
     {#if slidesPerPage === 2 && isomorphicImages.length % 2 === 1}
-      <swiper-slide bind:this={swiperSlideEl}>
-        <!-- eslint-disable unicorn/prefer-at -->
-        <IsomorphicImage
-          class="object-cover square-full blur-50"
-          image={isomorphicImages[isomorphicImages.length - 1]}
-        />
-      </swiper-slide>
+      {@const image = isomorphicImages.at(-1)}
+      {#if image}
+        <swiper-slide bind:this={swiperSlideEl}>
+          <div style:background-color={image.kind === 'data' ? image.__data.color : undefined} class="square-full" />
+        </swiper-slide>
+      {/if}
     {/if}
   </swiper-container>
   <button
     bind:this={swiperNextElem}
     class={clsx(
-      'absolute top-50% -right-40px flex center z-100 i-lc-chevron-right square-6 text-gray-500 disabled:text-gray-300',
+      'absolute top-50% -right-40px flex center z-100 i-lc-chevron-right square-6 text-gray-500 disabled:text-gray-300 <sm:hidden',
       isomorphicImages.length === 0 && 'hidden!',
     )}
     type="button"

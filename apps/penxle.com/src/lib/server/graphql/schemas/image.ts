@@ -17,6 +17,7 @@ export const imageSchema = defineSchema((builder) => {
     fields: (t) => ({
       id: t.exposeID('id'),
       name: t.exposeString('name'),
+      color: t.exposeString('color'),
       width: t.exposeInt('width'),
       height: t.exposeInt('height'),
       placeholder: t.exposeString('placeholder'),
