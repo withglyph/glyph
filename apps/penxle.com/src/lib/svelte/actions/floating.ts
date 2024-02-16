@@ -1,4 +1,4 @@
-import { arrow, autoUpdate, computePosition, flip, hide, offset, shift } from '@floating-ui/dom';
+import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { match } from 'ts-pattern';
 import type { FloatingElement, Placement, ReferenceElement } from '@floating-ui/dom';
 import type { Action } from 'svelte/action';
@@ -39,10 +39,13 @@ export function createFloatingActions(options?: CreateFloatingActionsOptions): C
         !!options?.offset && offset(options.offset),
         shift({ padding: 8 }),
         flip(),
-        hide(),
         !!options?.arrow && arrowElement && arrow({ element: arrowElement, padding: 16 }),
       ],
     });
+
+    if (!referenceElement || !floatingElement) {
+      return;
+    }
 
     Object.assign(floatingElement.style, {
       position: strategy,
@@ -50,11 +53,11 @@ export function createFloatingActions(options?: CreateFloatingActionsOptions): C
       left: `${x}px`,
     });
 
-    if (middlewareData.hide) {
-      Object.assign(floatingElement.style, {
-        visibility: middlewareData.hide.referenceHidden ? 'hidden' : 'visible',
-      });
-    }
+    // if (middlewareData.hide) {
+    //   Object.assign(floatingElement.style, {
+    //     visibility: middlewareData.hide.referenceHidden ? 'hidden' : 'visible',
+    //   });
+    // }
 
     if (middlewareData.arrow && arrowElement) {
       const { x, y } = middlewareData.arrow;
