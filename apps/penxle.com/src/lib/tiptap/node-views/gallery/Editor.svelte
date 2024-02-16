@@ -6,8 +6,7 @@
   import ky from 'ky';
   import { nanoid } from 'nanoid';
   import * as R from 'radash';
-  import { onDestroy, onMount, tick } from 'svelte';
-  import { register } from 'swiper/element/bundle';
+  import { onDestroy, tick } from 'svelte';
   import { graphql } from '$glitch';
   import { Tooltip } from '$lib/components';
   import { Checkbox, Switch } from '$lib/components/forms';
@@ -15,7 +14,7 @@
   import IsomorphicImage from './IsomorphicImage.svelte';
   import Modal from './Modal.svelte';
   import RadioGroup from './RadioGroup.svelte';
-  import type { SwiperContainer, SwiperSlide } from 'swiper/element-bundle';
+  import Slide from './Slide.svelte';
   import type { Image_image } from '$glitch';
   import type { NodeViewProps } from '$lib/tiptap';
 
@@ -63,14 +62,6 @@
   }
 
   let view: 'grid' | 'list' = 'grid';
-
-  let swiperEl: SwiperContainer;
-  let swiperSlideEl: SwiperSlide;
-  let swiperNextElem: HTMLElement | undefined;
-  let swiperPrevElem: HTMLElement | undefined;
-  let swiperPaginationElem: HTMLElement | undefined;
-
-  register();
 
   let visited = persisted('gallery-editor-visited', false);
 
@@ -145,27 +136,6 @@
   onDestroy(() => {
     if (driver) {
       driver.destroy();
-    }
-  });
-
-  onMount(() => {
-    if (swiperEl != undefined) {
-      const swiperParams = {
-        navigation: {
-          nextEl: swiperNextElem,
-          prevEl: swiperPrevElem,
-        },
-        pagination: {
-          el: swiperPaginationElem,
-          type: 'bullets',
-        },
-        slidesPerView: 1,
-        slidesPerGroupSkip: 1,
-        grabCursor: true,
-      };
-      Object.assign(swiperEl, swiperParams);
-      swiperEl.initialize();
-      swiperEl.swiper.update();
     }
   });
 
@@ -257,13 +227,10 @@
             </button>
           {/if}
 
-          <!-- <swiper-container bind:this={swiperEl} class="w-100"> -->
-          {#each isomorphicImages as image (image.id)}
-            {#if node.attrs.layout === 'slide'}
-              <swiper-slide bind:this={swiperSlideEl}>
-                <IsomorphicImage class="object-cover" {image} />
-              </swiper-slide>
-            {:else}
+          {#if node.attrs.layout === 'slide'}
+            <Slide {node} />
+          {:else}
+            {#each isomorphicImages as image (image.id)}
               <div class="relative square-full">
                 <IsomorphicImage class="square-full object-cover" {image} />
                 <button
@@ -274,9 +241,8 @@
                   <i class="i-tb-trash square-4.5 text-white" />
                 </button>
               </div>
-            {/if}
-          {/each}
-          <!-- </swiper-container> -->
+            {/each}
+          {/if}
         </div>
       </div>
 
