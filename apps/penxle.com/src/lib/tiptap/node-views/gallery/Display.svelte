@@ -28,7 +28,7 @@
   )}
 >
   {#if node.attrs.layout === 'slide'}
-    <Slide isomorphicImages={node.attrs.__data} slidesPerPage={node.attrs.slidesPerPage} />
+    <Slide isomorphicImages={node.attrs.__data} slidesPerPage={node.attrs.slidesPerPage} spacing={node.attrs.spacing} />
   {:else}
     {#each node.attrs.__data as image (image.id)}
       <div class="relative square-full">

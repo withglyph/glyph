@@ -12,6 +12,7 @@
 
   export let isomorphicImages: IsomorphicImage[];
   export let slidesPerPage: number;
+  export let spacing: boolean;
 
   let swiperEl: SwiperContainer;
   let swiperSlideEl: SwiperSlide;
@@ -31,6 +32,7 @@
     slidesPerView: slidesPerPage,
     slidesPerGroup: slidesPerPage,
     grabCursor: true,
+    spaceBetween: spacing ? 6 : 0,
   };
 
   register();
