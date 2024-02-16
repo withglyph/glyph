@@ -16,19 +16,44 @@
   export let deleteNode: NodeViewProps['deleteNode'];
   export let updateAttributes: NodeViewProps['updateAttributes'];
 
-  let open = false;
+  let open = node.attrs.layout === 'initial';
+  let onClose: (() => void) | null;
+
+  const handleClose = () => {
+    if (node.attrs.layout !== 'initial' && node.attrs.__data.length === 0) {
+      deleteNode();
+      return;
+    }
+
+    if (editor && node.attrs.layout === 'standalone' && node.attrs.__data.length > 0) {
+      let chain = editor.chain();
+      for (const image of node.attrs.__data) {
+        chain = chain.setStandaloneGallery(image);
+      }
+      chain.run();
+      deleteNode();
+      return;
+    }
+  };
+
+  $: if (open) {
+    onClose = handleClose;
+  } else {
+    onClose?.();
+    onClose = null;
+  }
 </script>
 
-<NodeView
-  class={clsx(
-    'flex center',
-    node.attrs.ids.length === 0 && 'bg-#d9d9d9 w-394px h-221px mx-auto',
-    selected && 'ring-3 ring-teal-500',
-  )}
-  data-drag-handle
-  draggable
->
-  <Display {node} {updateAttributes} />
+<NodeView class="flex center pointer-events-none py-4px" data-drag-handle draggable>
+  <div
+    class={clsx(
+      'pointer-events-auto',
+      node.attrs.ids.length === 0 && 'bg-#d9d9d9 w-400px h-200px',
+      selected && 'ring-2 ring-teal-500',
+    )}
+  >
+    <Display {node} {updateAttributes} />
+  </div>
 </NodeView>
 
 {#if editor && selected}
@@ -44,5 +69,5 @@
     </button>
   </TiptapNodeViewBubbleMenu>
 
-  <Editor {deleteNode} {editor} {node} {updateAttributes} bind:open />
+  <Editor {node} {updateAttributes} bind:open />
 {/if}

@@ -22,10 +22,12 @@
 
   export let open = false;
 
-  export let editor: NodeViewProps['editor'] | undefined;
   export let node: NodeViewProps['node'];
   export let updateAttributes: NodeViewProps['updateAttributes'];
-  export let deleteNode: NodeViewProps['deleteNode'];
+
+  if (node.attrs.layout === 'initial') {
+    updateAttributes({ layout: 'standalone' });
+  }
 
   let sortable: Sortable;
 
@@ -271,19 +273,6 @@
     }));
     selectedImages = selectedImages.filter((i) => !ids.includes(i));
   };
-
-  const handleInsert = () => {
-    if (editor && node.attrs.layout === 'standalone') {
-      let chain = editor.chain();
-      for (const image of node.attrs.__data) {
-        chain = chain.setStandaloneGallery(image);
-      }
-      chain.run();
-      deleteNode();
-    }
-
-    open = false;
-  };
 </script>
 
 <Modal on:close={() => (open = false)} bind:open>
@@ -470,7 +459,7 @@
     <button
       class="px-4 py-2.5 text-15-sb rounded bg-gray-950 text-white w-95px text-center border border-gray-950"
       type="button"
-      on:click={handleInsert}
+      on:click={() => (open = false)}
     >
       삽입
     </button>
