@@ -989,7 +989,7 @@ export const postSchema = defineSchema((builder) => {
           kind: input.revisionKind,
           title: input.title?.length ? input.title : null,
           subtitle: input.subtitle?.length ? input.subtitle : null,
-          freeContentId: freeContent?.id,
+          freeContentId: freeContent?.id ?? null,
           paidContentId: paidContent?.id ?? null,
           price,
           paragraphIndent: input.paragraphIndent,
