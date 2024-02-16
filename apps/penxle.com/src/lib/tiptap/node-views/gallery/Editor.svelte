@@ -1,13 +1,16 @@
 <script lang="ts">
+  import './driver.css';
+
   import clsx from 'clsx';
+  import { driver as driverFn } from 'driver.js';
   import ky from 'ky';
   import { nanoid } from 'nanoid';
-  import { onMount, tick } from 'svelte';
+  import { onDestroy, onMount, tick } from 'svelte';
   import { register } from 'swiper/element/bundle';
   import { graphql } from '$glitch';
   import { Tooltip } from '$lib/components';
   import { Checkbox, Switch } from '$lib/components/forms';
-  import { isValidImageFile, validImageMimes } from '$lib/utils';
+  import { isValidImageFile, persisted, validImageMimes } from '$lib/utils';
   import IsomorphicImage from './IsomorphicImage.svelte';
   import Modal from './Modal.svelte';
   import RadioGroup from './RadioGroup.svelte';
@@ -59,6 +62,82 @@
   let swiperPaginationElem: HTMLElement | undefined;
 
   register();
+
+  let visited = persisted('gallery-editor-visited', false);
+
+  let onboardingAnchorElements: [HTMLElement, HTMLElement] | [null, null] = [null, null];
+  const onboardingAnchorLastDynamicId = 'image-list-view-first-item';
+
+  let driver: ReturnType<typeof driverFn> | undefined;
+
+  async function startDrive() {
+    await tick();
+
+    if (!onboardingAnchorElements[0] || !onboardingAnchorElements[1])
+      throw new Error('onboardingAnchorElements is not ready');
+
+    driver = driverFn({
+      steps: [
+        {
+          element: onboardingAnchorElements[0],
+          popover: {
+            popoverClass: 'onboarding-popover step-1',
+            description: '이미지를 <mark>드래그해서 놓으면</mark> 순서를 변경할 수 있어요',
+          },
+        },
+        {
+          element: onboardingAnchorElements[1],
+          popover: {
+            popoverClass: 'onboarding-popover step-2',
+            description: '전체목록을 클릭하면 <mark>여러 장의 이미지를 편집</mark>할 수 있어요',
+            onNextClick: async () => {
+              imageListOpen = true;
+              await tick();
+              driver?.moveNext();
+            },
+          },
+        },
+        {
+          element: '#' + onboardingAnchorLastDynamicId,
+          popover: {
+            popoverClass: 'onboarding-popover step-3',
+            description: '이미지 편집과 동일하게 <mark>드래그해서 놓으면</mark> 순서를 변경할 수 있어요',
+            onPrevClick: async () => {
+              imageListOpen = false;
+              await tick();
+              driver?.movePrevious();
+            },
+          },
+        },
+      ],
+      showProgress: true,
+      showButtons: ['previous', 'next'],
+      overlayOpacity: 0.2,
+      stagePadding: 0,
+      stageRadius: 4,
+      prevBtnText: '이전',
+      nextBtnText: '다음',
+      doneBtnText: '완료',
+      progressText: '<mark>{{current}}</mark><span class="divider">/</span>{{total}}',
+    });
+
+    driver.drive();
+
+    // eslint-disable-next-line svelte/infinite-reactive-loop
+    $visited = true;
+  }
+
+  $: firstIsomorphicImageIsUploading = isomorphicImages.length > 0 && isomorphicImages[0].kind === 'data';
+  $: if (open && !$visited && firstIsomorphicImageIsUploading) {
+    // eslint-disable-next-line svelte/infinite-reactive-loop, unicorn/prefer-top-level-await
+    startDrive();
+  }
+
+  onDestroy(() => {
+    if (driver) {
+      driver.destroy();
+    }
+  });
 
   onMount(() => {
     if (swiperEl != undefined) {
@@ -147,7 +226,7 @@
 
   <div class="flex h-511px">
     <div class="grow flex flex-col">
-      <div class={clsx('grow flex flex-col items-center overflow-y-auto py-6')}>
+      <div class="grow flex flex-col items-center overflow-y-auto p-t-6 p-b-4">
         <div
           class={clsx(
             'grow flex flex-col items-center w-100 mx-auto',
@@ -190,21 +269,21 @@
         </div>
       </div>
 
+      <button
+        bind:this={onboardingAnchorElements[1]}
+        class="px-2 py-1.5 text-gray-400 border-(1 gray-200 b-none) rounded-t bg-white leading-0 shrink self-end m-r-5"
+        type="button"
+        on:click={() => {
+          imageListOpen = true;
+        }}
+      >
+        <i class="i-tb-layout-grid square-4" />
+        <span class="text-11-sb ml-1.5">전체 목록</span>
+      </button>
       <div class="h-104px border-t border-gray-200 flex px-6 relative">
-        <button
-          class="px-2 py-1.5 text-gray-400 border border-gray-200 rounded-t bg-white absolute -top-30px right-16px leading-0"
-          type="button"
-          on:click={() => {
-            imageListOpen = true;
-          }}
-        >
-          <i class="i-tb-layout-grid square-4" />
-          <span class="text-11-sb ml-1.5">전체 목록</span>
-        </button>
-
         <ul class="flex grow gap-1 overflow-x-auto overflow-y-hidden py-3.5 px-2.5 images">
           {#each isomorphicImages as image, index (image.id)}
-            <li class="flex-none">
+            <li class="flex-none relative">
               <button
                 class="relative p-1 flex flex-col gap-1 flex-none rounded hover:bg-gray-100 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!) aria-pressed:[&>div]:block"
                 aria-pressed={false}
@@ -217,6 +296,9 @@
 
                 <p class="text-10-r text-gray-400 text-center w-full">{index + 1}</p>
               </button>
+              {#if index === 0}
+                <div bind:this={onboardingAnchorElements[0]} class="absolute inset-0 z--1" />
+              {/if}
             </li>
           {/each}
 
@@ -387,16 +469,23 @@
       {#each isomorphicImages as image, index (image.id)}
         {#if view === 'grid'}
           <button
-            class="p-1.5 flex flex-col flex-none gap-1.5 h-127px rounded hover:bg-gray-100 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!)"
+            class="relative p-1.5 flex flex-col flex-none gap-1.5 h-127px rounded hover:bg-gray-100 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!)"
             aria-pressed={true}
             type="button"
           >
             <IsomorphicImage class="square-23 rounded-0.3125rem object-cover" {image} />
 
             <p class="text-12-r text-gray-400 text-center w-full">{index + 1}</p>
+
+            {#if index === 0}
+              <div id={onboardingAnchorLastDynamicId} class="absolute inset-0 z--1" />
+            {/if}
           </button>
         {:else}
-          <button class="py-2.5 px-6 rounded border border-gray-200 flex items-center w-full h-68px" type="button">
+          <button
+            class="relative py-2.5 px-6 rounded border border-gray-200 flex items-center w-full h-68px"
+            type="button"
+          >
             <span class="text-14-r text-gray-400 w-26px mr-3 text-center">{index + 1}</span>
             <IsomorphicImage class="square-12 rounded-md object-cover mr-4" {image} />
             <p class="grow text-14-r">{image.kind === 'data' ? image.__data.name : image.__file.name}</p>
@@ -408,6 +497,9 @@
             <button class="p-1" type="button">
               <i class="i-tb-grip-vertical block square-6 text-gray-600" />
             </button>
+            {#if index === 0}
+              <div id={onboardingAnchorLastDynamicId} class="absolute inset-0 z--1" />
+            {/if}
           </button>
         {/if}
       {/each}

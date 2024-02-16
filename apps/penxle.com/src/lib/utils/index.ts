@@ -8,5 +8,6 @@ export * from './image';
 export * from './name';
 export * from './notification';
 export * from './number';
+export * from './persisted-store';
 export * from './tiptap';
 export * from './url';

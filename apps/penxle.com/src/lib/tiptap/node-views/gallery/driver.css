@@ -1,0 +1,61 @@
+@import 'driver.js/dist/driver.css';
+
+.driver-popover.onboarding-popover {
+  --uno: p-x-0.875rem p-r-1rem p-t-0.88rem p-b-0.0.625rem border-(1px solid gray-200);
+  box-shadow: 0px 3px 24px 0px rgba(0, 0, 0, 0.08);
+
+  &.step-1 {
+    --uno: w-16.25rem;
+  }
+  &.step-2 {
+    --uno: w-14.25rem;
+  }
+  &.step-3 {
+    --uno: w-17.1875rem;
+  }
+
+  .driver-popover-description {
+    --uno: m-l-2rem text-14-m break-keep;
+  }
+
+  .driver-popover-progress-text {
+    display: inline-flex !important;
+    --uno: m-y-0.22rem absolute leading-150% rounded-1.875rem top-0.875rem p-x-0.25rem p-y-0.03rem color-white
+      bg-teal-500 text-10-b font-800 text-opacity-70 gap-0.125rem items-center;
+
+    mark {
+      --uno: color-white text-opacity-100;
+    }
+
+    .divider {
+      --uno: text-8-r text-opacity-60;
+    }
+  }
+
+  .driver-popover-footer {
+    --uno: m-t-xs;
+  }
+
+  /* cspell:disable-next-line */
+  .driver-popover-navigation-btns button + button {
+    margin-left: 0.75rem !important;
+  }
+
+  button {
+    --uno: text-11-sb leading-150% p-x-0.88rem p-y-0.38rem text-shadow-none;
+  }
+
+  .driver-popover-prev-btn {
+    --uno: border-(1px solid gray-200) color-gray-500 hover: (bg-gray-50) focus-visible: (outline-(2px solid gray-100))
+      active: (outline-(2px solid gray-100)) disabled: (border-gray-100 color-gray-300);
+  }
+
+  .driver-popover-next-btn {
+    --uno: border-none color-white bg-teal-500 hover: (bg-teal-400) focus-visible: (outline-(2px solid teal-100)) active:
+      (outline-(2px solid teal-100));
+  }
+
+  mark {
+    --uno: color-teal-500;
+  }
+}
