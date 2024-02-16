@@ -9,15 +9,16 @@
   import Modal from './Modal.svelte';
   import RadioGroup from './RadioGroup.svelte';
   import type { SwiperContainer, SwiperSlide } from 'swiper/element-bundle';
+  import type { NodeViewProps } from '$lib/tiptap';
 
   export let open = false;
+
+  export let node: NodeViewProps['node'];
+  export let updateAttributes: NodeViewProps['updateAttributes'];
+
   let imageListOpen = false;
 
   let images: File[] = [];
-
-  let layout: 'INDIVIDUAL' | 'GRID' | 'SLIDE' | 'SCROLL' = 'INDIVIDUAL';
-  let gap = false;
-  let column: 2 | 3 = 2;
 
   let view: 'grid' | 'list' = 'grid';
 
@@ -74,18 +75,6 @@
 
     picker.showPicker();
   };
-
-  const onLayoutChange = (e: Event) => {
-    const { value } = e.currentTarget as HTMLInputElement;
-
-    layout = value as typeof layout;
-  };
-
-  const onChange = (e: Event) => {
-    const { value } = e.currentTarget as HTMLInputElement;
-
-    column = Number(value) as typeof column;
-  };
 </script>
 
 <Modal on:close={() => (open = false)} bind:open>
@@ -108,15 +97,15 @@
           class={clsx(
             'grow flex flex-col items-center w-100 mx-auto',
             images.length <= 1 && 'justify-center',
-            layout === 'INDIVIDUAL' && 'gap-6',
-            layout === 'GRID' && 'grid! grid-cols-2',
-            layout === 'GRID' && column === 3 && 'grid-cols-3',
-            gap && 'gap-1.5',
+            node.attrs.layout === 'standalone' && 'gap-6',
+            node.attrs.layout === 'grid' && node.attrs.gridColumns === 2 && 'grid! grid-cols-2',
+            node.attrs.layout === 'grid' && node.attrs.gridColumns === 3 && 'grid-cols-3',
+            node.attrs.spacing && 'gap-1.5',
           )}
         >
           <!-- <swiper-container bind:this={swiperEl} class="w-100"> -->
           {#each images as image (image)}
-            {#if layout === 'SLIDE'}
+            {#if node.attrs.layout === 'slide'}
               <swiper-slide bind:this={swiperSlideEl}>
                 <FileImage class="object-cover" file={image} />
               </swiper-slide>
@@ -201,20 +190,25 @@
           items={[
             {
               label: '개별',
-              value: 'INDIVIDUAL',
+              value: 'standalone',
               icon: 'i-tb-photo',
-              checked: layout === 'INDIVIDUAL',
+              checked: node.attrs.layout === 'standalone',
             },
-            { label: '그리드', value: 'GRID', icon: 'i-px2-grid', checked: layout === 'GRID' },
-            { label: '슬라이드', value: 'SLIDE', icon: 'i-px2-content-slideshow', checked: layout === 'SLIDE' },
-            { label: '스크롤', value: 'SCROLL', icon: 'i-px2-content-scroll', checked: layout === 'SCROLL' },
+            { label: '그리드', value: 'grid', icon: 'i-px2-grid', checked: node.attrs.layout === 'grid' },
+            {
+              label: '슬라이드',
+              value: 'slide',
+              icon: 'i-px2-content-slideshow',
+              checked: node.attrs.layout === 'slide',
+            },
+            { label: '스크롤', value: 'scroll', icon: 'i-px2-content-scroll', checked: node.attrs.layout === 'scroll' },
           ]}
           size="sm"
-          on:change={onLayoutChange}
+          on:change={(v) => updateAttributes({ layout: v.detail })}
         />
       </div>
 
-      {#if layout === 'GRID'}
+      {#if node.attrs.layout === 'grid'}
         <div>
           <p class="text-13-m mb-2.5">열</p>
 
@@ -226,18 +220,18 @@
                 label: '2열',
                 value: 2,
                 icon: 'i-px2-grid-2-column',
-                checked: column === 2,
+                checked: node.attrs.gridColumns === 2,
               },
-              { label: '3열', value: 3, icon: 'i-px2-grid-3-column', checked: column === 3 },
+              { label: '3열', value: 3, icon: 'i-px2-grid-3-column', checked: node.attrs.gridColumns === 3 },
             ]}
             size="sm"
             variant="list"
-            on:change={onChange}
+            on:change={(v) => updateAttributes({ gridColumns: v.detail })}
           />
         </div>
       {/if}
 
-      {#if layout === 'SLIDE'}
+      {#if node.attrs.layout === 'slide'}
         <div>
           <p class="text-13-m mb-2.5">보기</p>
 
@@ -247,24 +241,28 @@
             items={[
               {
                 label: '한 쪽 보기',
-                value: 2,
+                value: 1,
                 icon: 'i-px2-book-single-page',
-                checked: column === 2,
+                checked: node.attrs.slidesPerPage === 1,
               },
-              { label: '두 쪽 보기', value: 3, icon: 'i-px2-book-both-page', checked: column === 3 },
+              { label: '두 쪽 보기', value: 2, icon: 'i-px2-book-both-page', checked: node.attrs.slidesPerPage === 2 },
             ]}
             size="sm"
             variant="list"
-            on:change={onChange}
+            on:change={(v) => updateAttributes({ slidesPerPage: v.detail })}
           />
         </div>
       {/if}
 
-      {#if layout !== 'INDIVIDUAL'}
+      {#if node.attrs.layout !== 'standalone'}
         <div>
           <p class="text-13-m mb-2.5">간격 설정</p>
 
-          <Switch name="space" checked={gap} on:change={() => (gap = !gap)} />
+          <Switch
+            name="space"
+            checked={node.attrs.spacing}
+            on:change={() => updateAttributes({ spacing: !node.attrs.spacing })}
+          />
         </div>
       {/if}
     </div>

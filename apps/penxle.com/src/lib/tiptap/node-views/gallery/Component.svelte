@@ -12,7 +12,7 @@
   export let selected: NodeViewProps['selected'];
   export let getPos: NodeViewProps['getPos'];
   export let deleteNode: NodeViewProps['deleteNode'];
-  // export let updateAttributes: NodeViewProps['updateAttributes'];
+  export let updateAttributes: NodeViewProps['updateAttributes'];
 
   let open = false;
 </script>
@@ -34,5 +34,5 @@
     </button>
   </TiptapNodeViewBubbleMenu>
 
-  <Editor bind:open />
+  <Editor {node} {updateAttributes} bind:open />
 {/if}

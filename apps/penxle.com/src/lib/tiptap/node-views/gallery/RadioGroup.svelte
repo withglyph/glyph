@@ -1,9 +1,12 @@
-<script lang="ts">
+<script generics="T" lang="ts">
   import clsx from 'clsx';
   import { nanoid } from 'nanoid';
+  import { createEventDispatcher } from 'svelte';
+
+  const dispatch = createEventDispatcher<{ change: T }>();
 
   export let name: string;
-  export let items: { label: string; value: string | number; icon?: string; checked: boolean; text?: string }[];
+  export let items: { label: string; value: T; icon?: string; checked: boolean; text?: string }[];
   let _class: string | undefined = undefined;
   export { _class as class };
   export let variant: 'gallery' | 'list' = 'gallery';
@@ -29,7 +32,7 @@
           checked={item.checked}
           type="radio"
           value={item.value}
-          on:change
+          on:change={() => dispatch('change', item.value)}
         />
         {#if item.icon}
           <i
