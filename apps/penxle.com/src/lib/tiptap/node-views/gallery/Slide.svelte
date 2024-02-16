@@ -53,10 +53,10 @@
     )}
     type="button"
   />
-  <swiper-container bind:this={swiperEl} class="square-full max-w-100 relative" init="false" scrollbar-hide="true">
+  <swiper-container bind:this={swiperEl} class="square-full relative" init="false" scrollbar-hide="true">
     {#each isomorphicImages as image (image)}
-      <swiper-slide bind:this={swiperSlideEl} class="relative">
-        <IsomorphicImage class="absolute top-50% translate-y--50% object-cover" {image} />
+      <swiper-slide bind:this={swiperSlideEl}>
+        <IsomorphicImage class="object-cover" {image} />
       </swiper-slide>
     {/each}
   </swiper-container>

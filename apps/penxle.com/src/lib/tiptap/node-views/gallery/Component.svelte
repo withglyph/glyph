@@ -47,7 +47,7 @@
 <NodeView class="flex center pointer-events-none py-4px" data-drag-handle draggable>
   <div
     class={clsx(
-      'pointer-events-auto',
+      'pointer-events-auto max-w-960px',
       node.attrs.ids.length === 0 && 'bg-#d9d9d9 w-400px h-200px',
       selected && 'ring-2 ring-teal-500',
     )}

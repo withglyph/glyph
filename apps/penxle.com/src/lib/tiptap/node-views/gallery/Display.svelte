@@ -18,11 +18,12 @@
 
 <div
   class={clsx(
+    'w-full',
     node.attrs.layout === 'standalone' && 'gap-6',
     node.attrs.layout !== 'grid' && 'flex flex-col items-center',
     node.attrs.layout === 'grid' && 'grid',
-    node.attrs.gridColumns === 2 && 'grid-cols-2',
-    node.attrs.gridColumns === 3 && 'grid-cols-3',
+    node.attrs.layout === 'grid' && node.attrs.gridColumns === 2 && 'grid-cols-2',
+    node.attrs.layout === 'grid' && node.attrs.gridColumns === 3 && 'grid-cols-3',
     node.attrs.spacing && 'gap-1.5',
   )}
 >

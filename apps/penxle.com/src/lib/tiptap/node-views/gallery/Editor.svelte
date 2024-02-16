@@ -291,7 +291,7 @@
   <div class="flex h-511px">
     <div class="flex flex-col w-562px">
       <div class="grow flex flex-col items-center overflow-y-auto p-t-6 p-b-4">
-        <div class="grow flex flex-col items-center">
+        <div class="grow flex flex-col center w-100">
           {#if node.attrs.ids.length === 0}
             <button
               class="border border-gray-300 border-dashed bg-gray-50 text-gray-300 w-100 h-75 flex flex-col center gap-2.5"
