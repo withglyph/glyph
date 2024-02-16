@@ -461,7 +461,7 @@
       type="button"
       on:click={() => (open = false)}
     >
-      삽입
+      닫기
     </button>
   </svelte:fragment>
 </Modal>
