@@ -44,5 +44,5 @@
     </button>
   </TiptapNodeViewBubbleMenu>
 
-  <Editor {node} {updateAttributes} bind:open />
+  <Editor {deleteNode} {editor} {node} {updateAttributes} bind:open />
 {/if}

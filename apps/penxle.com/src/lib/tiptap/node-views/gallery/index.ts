@@ -7,6 +7,7 @@ declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     gallery: {
       setGallery: () => ReturnType;
+      setStandaloneGallery: (data: { id: true }) => ReturnType;
     };
   }
 }
@@ -38,6 +39,21 @@ export const Gallery = createNodeView(Component, {
           const pos = selection instanceof TextSelection ? $to.end() + 1 : $to.pos;
 
           tr.insert(pos, this.type.create());
+          tr.setSelection(NodeSelection.create(tr.doc, pos));
+          tr.scrollIntoView();
+
+          return tr.docChanged;
+        },
+
+      setStandaloneGallery:
+        (data) =>
+        ({ state, tr }) => {
+          const { selection } = state;
+          const { $to } = selection;
+
+          const pos = selection instanceof TextSelection ? $to.end() + 1 : $to.pos;
+
+          tr.insert(pos, this.type.create({ layout: 'standalone', ids: [data.id], __data: [data] }));
           tr.setSelection(NodeSelection.create(tr.doc, pos));
           tr.scrollIntoView();
 
