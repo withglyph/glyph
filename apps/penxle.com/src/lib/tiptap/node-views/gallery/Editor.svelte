@@ -331,7 +331,7 @@
           {#each node.attrs.__data as image, index (image.id)}
             <li class="flex-none relative image" data-id={image.id}>
               <button
-                class="relative p-1 flex flex-col gap-1 flex-none rounded hover:bg-gray-100 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!) [&>div]:aria-pressed:(flex center)"
+                class="relative p-1 flex flex-col gap-1 flex-none rounded hover:bg-gray-200 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!) [&>div]:aria-pressed:(flex center)"
                 aria-pressed={selectedImages.includes(image.id)}
                 type="button"
                 on:click={() => {
@@ -486,7 +486,7 @@
   </svelte:fragment>
 
   <div>
-    <div class="pt-5 px-6 flex items-center justify-between">
+    <div class="py-3 px-6 flex items-center justify-between border-b border-gray-200">
       <div class="flex">
         <Checkbox
           class="text-14-r gap-2 after:(content-[''] block h-3 w-1px bg-gray-200 ml-1)"
@@ -528,7 +528,7 @@
     <div
       bind:this={sortableGallery}
       class={clsx(
-        'flex flex-wrap gap-2 content-start px-6 py-2.5 h-460px overflow-y-auto',
+        'flex flex-wrap gap-2 content-start px-6 pt-6 pb-8 h-460px overflow-y-auto',
         view === 'list' && 'gap-2.5',
       )}
     >
@@ -568,10 +568,6 @@
             <span class="text-14-r text-gray-400 w-26px mr-3 text-center">{index + 1}</span>
             <IsomorphicImage class="square-12 rounded-md object-cover mr-4" {image} />
             <p class="grow text-14-r">{image.kind === 'data' ? image.__data.name : image.__file.name}</p>
-
-            <button class="p-1 mr-2" type="button" on:click={() => removeImage(image.id)}>
-              <i class="i-tb-trash block square-6 text-gray-600" />
-            </button>
 
             <button class="p-1" type="button">
               <i class="i-tb-grip-vertical block square-6 text-gray-600" />

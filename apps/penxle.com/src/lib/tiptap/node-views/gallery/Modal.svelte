@@ -39,7 +39,9 @@
         <slot />
 
         {#if $$slots.action}
-          <div class="absolute w-full bottom-0 h-76px border-t border-gray-200 flex items-center justify-end px-6 py-4">
+          <div
+            class="absolute w-full bottom-0 h-76px border-t border-gray-200 flex items-center justify-end px-6 py-4 bg-white"
+          >
             <slot name="action" />
           </div>
         {/if}
