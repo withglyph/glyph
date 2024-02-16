@@ -6,6 +6,7 @@
   import ky from 'ky';
   import { nanoid } from 'nanoid';
   import * as R from 'radash';
+  import Sortable from 'sortablejs';
   import { onDestroy, tick } from 'svelte';
   import { graphql } from '$glitch';
   import { Tooltip } from '$lib/components';
@@ -22,6 +23,56 @@
 
   export let node: NodeViewProps['node'];
   export let updateAttributes: NodeViewProps['updateAttributes'];
+
+  let sortable: Sortable;
+
+  let sortableContainer: HTMLElement;
+  let sortableGallery: HTMLElement;
+
+  const reorderArray = (arr: (string | IsomorphicImage)[], newIndex: number, oldIndex: number) => {
+    const draggedItem = arr[oldIndex];
+
+    if (oldIndex > newIndex) {
+      arr = [...arr.slice(0, newIndex), draggedItem, ...arr.slice(newIndex, oldIndex), ...arr.slice(oldIndex + 1)];
+    } else {
+      arr = [
+        ...arr.slice(0, oldIndex),
+        ...arr.slice(oldIndex + 1, newIndex + 1),
+        draggedItem,
+        ...arr.slice(newIndex + 1),
+      ];
+    }
+
+    return arr;
+  };
+
+  $: if (sortableContainer) {
+    sortable = Sortable.create(sortableContainer, {
+      handle: '.image',
+      dataIdAttr: 'data-id',
+      onEnd: ({ newIndex, oldIndex }) => {
+        if (newIndex === undefined || oldIndex === undefined) return;
+
+        const reorderedData = reorderArray(node.attrs.__data, newIndex, oldIndex);
+
+        updateAttributes({ __data: reorderedData });
+      },
+    });
+  }
+
+  $: if (sortableGallery) {
+    sortable = Sortable.create(sortableGallery, {
+      handle: '.image',
+      dataIdAttr: 'data-id',
+      onEnd: ({ newIndex, oldIndex }) => {
+        if (newIndex === undefined || oldIndex === undefined) return;
+
+        const reorderedData = reorderArray(node.attrs.__data, newIndex, oldIndex);
+
+        updateAttributes({ __data: reorderedData });
+      },
+    });
+  }
 
   const prepareImageUpload = graphql(`
     mutation TiptapGallery_PrepareImageUpload_Mutation {
@@ -136,6 +187,10 @@
   onDestroy(() => {
     if (driver) {
       driver.destroy();
+    }
+
+    if (sortable) {
+      sortable.destroy();
     }
   });
 
@@ -255,12 +310,15 @@
         }}
       >
         <i class="i-tb-layout-grid square-3.5" />
-        <span class="text-11-sb ml-1.5">전체 목록</span>
+        <span class="text-11-sb ml-1.5">전체목록</span>
       </button>
       <div class="h-104px border-t border-gray-200 flex px-6 relative">
-        <ul class="flex grow gap-1 overflow-x-auto overflow-y-hidden py-3.5 px-2.5 images">
+        <ul
+          bind:this={sortableContainer}
+          class="flex grow gap-1 overflow-x-auto overflow-y-hidden py-3.5 px-2.5 images"
+        >
           {#each isomorphicImages as image, index (image.id)}
-            <li class="flex-none relative">
+            <li class="flex-none relative image" data-id={image.id}>
               <button
                 class="relative p-1 flex flex-col gap-1 flex-none rounded hover:bg-gray-100 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!) [&>div]:aria-pressed:(flex center)"
                 aria-pressed={selectedImages.includes(image.id)}
@@ -474,6 +532,7 @@
     </div>
 
     <div
+      bind:this={sortableGallery}
       class={clsx(
         'flex flex-wrap gap-2 content-start px-6 py-2.5 h-460px overflow-y-auto',
         view === 'list' && 'gap-2.5',
@@ -482,8 +541,9 @@
       {#each isomorphicImages as image, index (image.id)}
         {#if view === 'grid'}
           <button
-            class="relative p-1.5 flex flex-col flex-none gap-1.5 h-127px rounded hover:bg-gray-100 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!)"
+            class="relative p-1.5 flex flex-col flex-none gap-1.5 h-127px rounded hover:bg-gray-100 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!) image"
             aria-pressed={selectedImages.includes(image.id)}
+            data-id={image.id}
             type="button"
             on:click={() => {
               selectedImages = selectedImages.includes(image.id)
@@ -501,8 +561,9 @@
           </button>
         {:else}
           <button
-            class="relative py-2.5 px-6 rounded border border-gray-200 flex items-center w-full h-68px aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!)"
+            class="relative py-2.5 px-6 rounded border border-gray-200 bg-white flex items-center w-full h-68px aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!) image"
             aria-pressed={selectedImages.includes(image.id)}
+            data-id={image.id}
             type="button"
             on:click={() => {
               selectedImages = selectedImages.includes(image.id)
@@ -562,7 +623,9 @@
     <button
       class="px-4 py-2.5 text-15-sb rounded w-95px text-center border border-gray-200"
       type="button"
-      on:click={() => (imageListOpen = false)}
+      on:click={() => {
+        imageListOpen = false;
+      }}
     >
       확인
     </button>
