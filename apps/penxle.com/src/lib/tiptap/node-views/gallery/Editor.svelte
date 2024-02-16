@@ -51,42 +51,35 @@
     return arr;
   };
 
+  let sortableOptions: Sortable.Options = {
+    scroll: true,
+    handle: '.image',
+    animation: 150,
+    delay: 50,
+    forceAutoScrollFallback: true,
+    scrollSensitivity: 60,
+    scrollSpeed: 10,
+    bubbleScroll: true,
+    onMove: (evt) => {
+      if (evt.related.className.includes('prevent-dragging')) {
+        return false;
+      }
+    },
+    onEnd: ({ newIndex, oldIndex }) => {
+      if (newIndex === undefined || oldIndex === undefined) return;
+
+      const reorderedData = reorderArray(node.attrs.__data, newIndex, oldIndex);
+
+      updateAttributes({ __data: reorderedData });
+    },
+  };
+
   $: if (sortableContainer) {
-    sortable = Sortable.create(sortableContainer, {
-      handle: '.image',
-      dataIdAttr: 'data-id',
-      onMove: (evt) => {
-        if (evt.related.className.includes('prevent-dragging')) {
-          return false;
-        }
-      },
-      onEnd: ({ newIndex, oldIndex }) => {
-        if (newIndex === undefined || oldIndex === undefined) return;
-
-        const reorderedData = reorderArray(node.attrs.__data, newIndex, oldIndex);
-
-        updateAttributes({ __data: reorderedData });
-      },
-    });
+    sortable = Sortable.create(sortableContainer, sortableOptions);
   }
 
   $: if (sortableGallery) {
-    sortable = Sortable.create(sortableGallery, {
-      handle: '.image',
-      dataIdAttr: 'data-id',
-      onMove: (evt) => {
-        if (evt.related.className.includes('prevent-dragging')) {
-          return false;
-        }
-      },
-      onEnd: ({ newIndex, oldIndex }) => {
-        if (newIndex === undefined || oldIndex === undefined) return;
-
-        const reorderedData = reorderArray(node.attrs.__data, newIndex, oldIndex);
-
-        updateAttributes({ __data: reorderedData });
-      },
-    });
+    sortable = Sortable.create(sortableGallery, sortableOptions);
   }
 
   const prepareImageUpload = graphql(`
