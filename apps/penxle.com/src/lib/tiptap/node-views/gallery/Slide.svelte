@@ -58,9 +58,21 @@
   <swiper-container bind:this={swiperEl} class="square-full relative" init="false" scrollbar-hide="true">
     {#each isomorphicImages as image (image)}
       <swiper-slide bind:this={swiperSlideEl}>
-        <IsomorphicImage class="object-cover" {image} />
+        <div class="relative square-full">
+          <IsomorphicImage class="-z-1 object-cover absolute inset-0 square-full blur-50" {image} />
+          <IsomorphicImage class="object-contain square-full" {image} />
+        </div>
       </swiper-slide>
     {/each}
+    {#if slidesPerPage === 2 && isomorphicImages.length % 2 === 1}
+      <swiper-slide bind:this={swiperSlideEl}>
+        <!-- eslint-disable unicorn/prefer-at -->
+        <IsomorphicImage
+          class="object-cover square-full blur-50"
+          image={isomorphicImages[isomorphicImages.length - 1]}
+        />
+      </swiper-slide>
+    {/if}
   </swiper-container>
   <button
     bind:this={swiperNextElem}
@@ -76,3 +88,9 @@
     class={clsx('mt-2 text-right w-full text-10-m text-gray-400', isomorphicImages.length === 0 && 'hidden')}
   />
 </div>
+
+<style>
+  swiper-slide {
+    height: auto;
+  }
+</style>

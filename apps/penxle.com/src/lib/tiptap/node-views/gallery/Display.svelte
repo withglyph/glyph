@@ -18,7 +18,8 @@
 
 <div
   class={clsx(
-    'w-full',
+    node.attrs.size === 'full' && 'max-w-full',
+    node.attrs.size === 'compact' && 'max-w-500px',
     node.attrs.layout === 'standalone' && 'gap-6',
     node.attrs.layout !== 'grid' && 'flex flex-col items-center',
     node.attrs.layout === 'grid' && 'grid',
