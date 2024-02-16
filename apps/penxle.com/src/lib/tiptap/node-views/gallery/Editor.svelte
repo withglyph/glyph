@@ -13,10 +13,10 @@
   import { Tooltip } from '$lib/components';
   import { Checkbox, Switch } from '$lib/components/forms';
   import { isValidImageFile, persisted, validImageMimes } from '$lib/utils';
+  import Display from './Display.svelte';
   import IsomorphicImage from './IsomorphicImage.svelte';
   import Modal from './Modal.svelte';
   import RadioGroup from './RadioGroup.svelte';
-  import Slide from './Slide.svelte';
   import type { Image_image } from '$glitch';
   import type { NodeViewProps } from '$lib/tiptap';
 
@@ -287,16 +287,7 @@
   <div class="flex h-511px">
     <div class="flex flex-col w-562px">
       <div class="grow flex flex-col items-center overflow-y-auto p-t-6 p-b-4">
-        <div
-          class={clsx(
-            'grow flex flex-col items-center w-100 mx-auto',
-            node.attrs.ids.length <= 1 && 'justify-center',
-            node.attrs.layout === 'standalone' && 'gap-6',
-            node.attrs.layout === 'grid' && node.attrs.gridColumns === 2 && 'grid! grid-cols-2',
-            node.attrs.layout === 'grid' && node.attrs.gridColumns === 3 && 'grid! grid-cols-3',
-            node.attrs.spacing && 'gap-1.5',
-          )}
-        >
+        <div class="grow flex flex-col items-center">
           {#if node.attrs.ids.length === 0}
             <button
               class="border border-gray-300 border-dashed bg-gray-50 text-gray-300 w-100 h-75 flex flex-col center gap-2.5"
@@ -308,22 +299,9 @@
             </button>
           {/if}
 
-          {#if node.attrs.layout === 'slide'}
-            <Slide isomorphicImages={node.attrs.__data} slidesPerPage={node.attrs.slidesPerPage} />
-          {:else}
-            {#each node.attrs.__data as image (image.id)}
-              <div class="relative square-full">
-                <IsomorphicImage class="square-full object-cover" {image} />
-                <button
-                  class="square-6.5 bg-#09090B66 rounded-sm flex center absolute bottom-3.5 right-3.5"
-                  type="button"
-                  on:click={() => removeImage(image.id)}
-                >
-                  <i class="i-tb-trash square-4.5 text-white" />
-                </button>
-              </div>
-            {/each}
-          {/if}
+          <div class={clsx('w-100', node.attrs.layout === 'standalone' && 'gap-6')}>
+            <Display deletable {node} {updateAttributes} />
+          </div>
         </div>
       </div>
 

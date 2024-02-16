@@ -1,6 +1,8 @@
 <script lang="ts">
+  import clsx from 'clsx';
   import { NodeView } from '$lib/tiptap';
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
+  import Display from './Display.svelte';
   import Editor from './Editor.svelte';
   import type { NodeViewProps } from '$lib/tiptap';
 
@@ -17,8 +19,16 @@
   let open = false;
 </script>
 
-<NodeView class="flex center py-12px border-4 border-dotted border-teal-500 rounded-xl" data-drag-handle draggable>
-  Gallery
+<NodeView
+  class={clsx(
+    'flex center',
+    node.attrs.ids.length === 0 && 'bg-#d9d9d9 w-394px h-221px mx-auto',
+    selected && 'ring-3 ring-teal-500',
+  )}
+  data-drag-handle
+  draggable
+>
+  <Display {node} {updateAttributes} />
 </NodeView>
 
 {#if editor && selected}
