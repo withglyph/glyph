@@ -20,8 +20,8 @@
 
   .driver-popover-progress-text {
     display: inline-flex !important;
-    --uno: m-y-0.22rem absolute leading-150% rounded-1.875rem top-0.875rem p-x-0.25rem p-y-0.03rem color-white
-      bg-teal-500 text-10-b font-800 text-opacity-70 gap-0.125rem items-center;
+    /* prettier-ignore */
+    --uno: m-y-0.22rem absolute leading-150% rounded-1.875rem top-0.875rem p-x-0.25rem p-y-0.03rem color-white bg-teal-500 text-10-b font-800 text-opacity-70 gap-0.125rem items-center;
 
     mark {
       --uno: color-white text-opacity-100;
