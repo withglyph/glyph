@@ -73,6 +73,7 @@ export const fetchExchange: Exchange = ({ forward, dispatchDebug }) => {
     },
     {
       batchScheduleFn: schedule,
+      maxBatchSize: 10,
       cache: false,
     },
   );

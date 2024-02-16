@@ -1,6 +1,7 @@
 <script lang="ts">
   import './driver.css';
 
+  import { Semaphore } from 'async-mutex';
   import clsx from 'clsx';
   import { driver as driverFn } from 'driver.js';
   import ky from 'ky';
@@ -97,10 +98,10 @@
     | { kind: 'file'; __file: File }
     | { kind: 'data'; __data: { id: string; name: string } & Image_image }
   );
-  let isomorphicImages: IsomorphicImage[];
-  $: isomorphicImages = node.attrs.__data;
 
-  $: updateAttributes({ ids: isomorphicImages.filter((i) => i.kind === 'data').map((i: IsomorphicImage) => i.id) });
+  $: updateAttributes({
+    ids: node.attrs.__data.filter((i: IsomorphicImage) => i.kind === 'data').map((i: IsomorphicImage) => i.id),
+  });
 
   let imageListOpen = false;
   let selectedImages: string[] = [];
@@ -108,9 +109,15 @@
 
   $: if (selectedImages.length > 0) {
     const selectedNode = node.attrs.__data.find((i: IsomorphicImage) => i.id === selectedImages[0]);
-
-    selectedImageName = selectedNode?.__file ? selectedNode.__file.name : selectedNode?.__data.name;
+    selectedImageName = selectedNode?.kind === 'data' ? selectedNode.__data.name : selectedNode?.__file.name;
   }
+
+  $: allSelected =
+    node.attrs.__data.length > 0 &&
+    R.diff(
+      node.attrs.__data.map((i: IsomorphicImage) => i.id),
+      selectedImages,
+    ).length === 0;
 
   let view: 'grid' | 'list' = 'grid';
 
@@ -178,7 +185,7 @@
     $visited = true;
   }
 
-  $: firstIsomorphicImageIsUploading = isomorphicImages.length > 0 && isomorphicImages[0].kind === 'data';
+  $: firstIsomorphicImageIsUploading = node.attrs.__data.length > 0 && node.attrs.__data[0].kind === 'data';
   $: if (open && !$visited && firstIsomorphicImageIsUploading) {
     // eslint-disable-next-line svelte/infinite-reactive-loop, unicorn/prefer-top-level-await
     startDrive();
@@ -194,10 +201,14 @@
     }
   });
 
+  const semaphore = new Semaphore(20);
+
   const upload = async (file: File) => {
-    const { key, presignedUrl } = await prepareImageUpload();
-    await ky.put(presignedUrl, { body: file });
-    return await finalizeImageUpload({ key, name: file.name });
+    return await semaphore.runExclusive(async () => {
+      const { key, presignedUrl } = await prepareImageUpload();
+      await ky.put(presignedUrl, { body: file });
+      return await finalizeImageUpload({ key, name: file.name });
+    });
   };
 
   const handleInsertImage = () => {
@@ -213,24 +224,31 @@
         return;
       }
 
+      const images: IsomorphicImage[] = [];
       for (const file of files) {
         if (!(await isValidImageFile(file))) {
           continue;
         }
 
         const id = nanoid();
+        images.push({ id, kind: 'file', __file: file });
+      }
 
-        await tick();
-        updateAttributes({
-          __data: [...node.attrs.__data, { id, kind: 'file', __file: file }],
-        });
+      await updateAttributes((attrs) => ({
+        __data: [...attrs.__data, ...images],
+      }));
 
-        upload(file).then((resp) => {
-          updateAttributes({
-            __data: node.attrs.__data.map((i: IsomorphicImage) =>
-              i.id === id ? { id: resp.id, kind: 'data', __data: resp } : i,
+      for (const image of images) {
+        if (image.kind !== 'file') {
+          continue;
+        }
+
+        upload(image.__file).then((resp) => {
+          updateAttributes((attrs) => ({
+            __data: attrs.__data.map((i: IsomorphicImage) =>
+              i.id === image.id ? { id: resp.id, kind: 'data', __data: resp } : i,
             ),
-          });
+          }));
         });
       }
     });
@@ -238,10 +256,18 @@
     picker.showPicker();
   };
 
-  const removeImage = (id: string) => {
-    updateAttributes({
-      __data: node.attrs.__data.filter((i: IsomorphicImage) => i.id !== id),
-    });
+  const removeImage = async (id: string) => {
+    await updateAttributes((attrs) => ({
+      __data: attrs.__data.filter((i: IsomorphicImage) => i.id !== id),
+    }));
+    selectedImages = selectedImages.filter((i) => i !== id);
+  };
+
+  const removeImages = async (ids: string[]) => {
+    await updateAttributes((attrs) => ({
+      __data: attrs.__data.filter((i: IsomorphicImage) => !ids.includes(i.id)),
+    }));
+    selectedImages = selectedImages.filter((i) => !ids.includes(i));
   };
 </script>
 
@@ -283,9 +309,9 @@
           {/if}
 
           {#if node.attrs.layout === 'slide'}
-            <Slide {node} />
+            <Slide isomorphicImages={node.attrs.__data} slidesPerPage={node.attrs.slidesPerPage} />
           {:else}
-            {#each isomorphicImages as image (image.id)}
+            {#each node.attrs.__data as image (image.id)}
               <div class="relative square-full">
                 <IsomorphicImage class="square-full object-cover" {image} />
                 <button
@@ -317,7 +343,7 @@
           bind:this={sortableContainer}
           class="flex grow gap-1 overflow-x-auto overflow-y-hidden py-3.5 px-2.5 images"
         >
-          {#each isomorphicImages as image, index (image.id)}
+          {#each node.attrs.__data as image, index (image.id)}
             <li class="flex-none relative image" data-id={image.id}>
               <button
                 class="relative p-1 flex flex-col gap-1 flex-none rounded hover:bg-gray-100 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!) [&>div]:aria-pressed:(flex center)"
@@ -481,31 +507,16 @@
       <div class="flex">
         <Checkbox
           class="text-14-r gap-2 after:(content-[''] block h-3 w-1px bg-gray-200 ml-1)"
-          checked={R.isEqual(
-            selectedImages,
-            isomorphicImages.map((i) => i.id),
-          )}
+          checked={allSelected}
+          disabled={node.attrs.__data.length === 0}
           on:change={() => {
-            selectedImages = R.isEqual(
-              selectedImages,
-              isomorphicImages.map((i) => i.id),
-            )
-              ? []
-              : isomorphicImages.map((i) => i.id);
+            // @ts-expect-error any
+            selectedImages = allSelected ? [] : node.attrs.__data.map((i) => i.id);
           }}
         >
           전체선택
         </Checkbox>
-        <button
-          class="text-14-r text-error-900 px-3"
-          type="button"
-          on:click={async () => {
-            for (const id of selectedImages) {
-              await removeImage(id);
-            }
-            selectedImages = [];
-          }}
-        >
+        <button class="text-14-r text-error-900 px-3" type="button" on:click={() => removeImages(selectedImages)}>
           삭제
         </button>
       </div>
@@ -538,7 +549,7 @@
         view === 'list' && 'gap-2.5',
       )}
     >
-      {#each isomorphicImages as image, index (image.id)}
+      {#each node.attrs.__data as image, index (image.id)}
         {#if view === 'grid'}
           <button
             class="relative p-1.5 flex flex-col flex-none gap-1.5 h-127px rounded hover:bg-gray-100 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!) image"

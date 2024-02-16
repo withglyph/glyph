@@ -1,4 +1,5 @@
 import { NodeView } from '@tiptap/core';
+import { Mutex } from 'async-mutex';
 import type {
   DecorationWithType,
   NodeViewProps as TiptapNodeViewProps,
@@ -10,7 +11,12 @@ import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
 import type { NodeView as ProseMirrorNodeView } from '@tiptap/pm/view';
 import type { ComponentType, SvelteComponent } from 'svelte';
 
-export type NodeViewProps = TiptapNodeViewProps;
+export type NodeViewProps = Omit<TiptapNodeViewProps, 'updateAttributes'> & {
+  updateAttributes: (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    attributes: Record<string, any> | ((attributes: Record<string, any>) => Record<string, any>),
+  ) => Promise<void>;
+};
 type NodeViewComponent = SvelteComponent<NodeViewProps>;
 export type NodeViewComponentType = ComponentType<NodeViewComponent>;
 
@@ -18,6 +24,7 @@ class SvelteNodeView extends NodeView<NodeViewComponentType> implements ProseMir
   #element: HTMLElement;
   #contentElement: HTMLElement | null = null;
   #component: NodeViewComponent;
+  #mutex = new Mutex();
 
   #handleSelectionUpdate: () => void;
   #handleTransaction: () => void;
@@ -58,7 +65,15 @@ class SvelteNodeView extends NodeView<NodeViewComponentType> implements ProseMir
         selected: false,
 
         getPos: () => this.getPos() as number,
-        updateAttributes: (attributes = {}) => this.updateAttributes(attributes),
+        updateAttributes: async (attributes) => {
+          await this.#mutex.runExclusive(() => {
+            if (typeof attributes === 'function') {
+              attributes = attributes(this.node.attrs);
+            }
+
+            this.updateAttributes(attributes);
+          });
+        },
         deleteNode: () => this.deleteNode(),
       },
       context,

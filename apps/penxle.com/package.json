@@ -58,6 +58,7 @@
     "@urql/core": "^4.2.3",
     "@urql/exchange-graphcache": "^6.4.1",
     "argon2": "^0.31.2",
+    "async-mutex": "^0.4.1",
     "body-scroll-lock": "4.0.0-beta.0",
     "clsx": "^2.1.0",
     "codemirror": "^6.0.1",
