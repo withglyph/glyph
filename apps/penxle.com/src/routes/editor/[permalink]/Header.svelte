@@ -10,7 +10,6 @@
   import { Menu, MenuItem } from '$lib/components/menu';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { values } from '$lib/tiptap/values';
-  import { isValidImageFile, validImageMimes } from '$lib/utils';
   import CharacterCountWidget from './CharacterCountWidget.svelte';
   import { getEditorContext } from './context';
   import DraftListModal from './DraftListModal.svelte';
@@ -97,24 +96,6 @@
   let publishMenuOpen = false;
   let revisionListOpen = false;
   let draftListOpen = false;
-
-  const handleInsertImage = () => {
-    const picker = document.createElement('input');
-    picker.type = 'file';
-    picker.accept = validImageMimes.join(',');
-
-    picker.addEventListener('change', async () => {
-      const file = picker.files?.[0];
-
-      if (!file || !(await isValidImageFile(file))) {
-        return;
-      }
-
-      editor?.chain().focus().setImage(file).run();
-    });
-
-    picker.showPicker();
-  };
 
   const handleInsertFile = () => {
     const picker = document.createElement('input');
@@ -629,7 +610,11 @@
 
       <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
         <ToolbarButtonTooltip message="이미지">
-          <button class="flex center square-8.5 hover:(bg-gray-100 rounded)" type="button" on:click={handleInsertImage}>
+          <button
+            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            type="button"
+            on:click={() => editor?.chain().focus().setGallery().run()}
+          >
             <i class="i-tb-photo square-6" />
           </button>
         </ToolbarButtonTooltip>

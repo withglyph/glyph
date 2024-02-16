@@ -28,7 +28,7 @@
 
 {#if enabled && $hovered}
   <div
-    class="z-100 rounded bg-gray-90 px-4 py-2 text-xs font-semibold text-white"
+    class="z-100 rounded bg-gray-90 px-4 py-2 text-12-r text-white"
     role="tooltip"
     use:floating
     transition:scale={{ start: 0.9, duration: 200 }}
