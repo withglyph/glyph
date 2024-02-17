@@ -20,9 +20,8 @@
 
   .driver-popover-progress-text {
     display: inline-flex !important;
-    border-radius: 1.875rem;
     /* prettier-ignore */
-    --uno: m-y-0.22rem absolute leading-150% top-0.875rem p-x-0.25rem p-y-0.09rem color-white bg-teal-500 text-10-b font-800 text-opacity-70 gap-0.125rem items-center;
+    --uno: m-y-0.22rem absolute leading-150% rounded-1.875rem top-0.875rem p-x-0.25rem p-y-0.03rem color-white bg-teal-500 text-10-b font-800 text-opacity-70 gap-0.125rem items-center;
 
     mark {
       --uno: color-white text-opacity-100;
@@ -43,8 +42,7 @@
   }
 
   button {
-    padding: 0.38rem 0.88rem;
-    --uno: text-11-sb leading-150% text-shadow-none;
+    --uno: text-11-sb leading-150% p-x-0.88rem p-y-0.38rem text-shadow-none;
   }
 
   .driver-popover-prev-btn {
