@@ -2,7 +2,7 @@ import { presetPenxle } from '@penxle/lib/unocss';
 import { defineConfig, transformerDirectives, transformerVariantGroup } from 'unocss';
 
 export default defineConfig({
-  content: { pipeline: { include: ['**/*.{svelte,ts}'] } },
+  content: { pipeline: { include: ['**/*.{svelte,ts,css}'] } },
   presets: [presetPenxle()],
   transformers: [transformerDirectives(), transformerVariantGroup()],
 });
