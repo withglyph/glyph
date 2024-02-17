@@ -1026,9 +1026,13 @@ export const postSchema = defineSchema((builder) => {
             });
 
             if (!freeContentReference) {
-              await db.postRevisionContent.delete({
-                where: { id: lastRevision.freeContentId },
-              });
+              try {
+                await db.postRevisionContent.delete({
+                  where: { id: lastRevision.freeContentId },
+                });
+              } catch {
+                // pass
+              }
             }
           }
 
@@ -1040,9 +1044,13 @@ export const postSchema = defineSchema((builder) => {
             });
 
             if (!paidContentReference) {
-              await db.postRevisionContent.delete({
-                where: { id: lastRevision.paidContentId },
-              });
+              try {
+                await db.postRevisionContent.delete({
+                  where: { id: lastRevision.paidContentId },
+                });
+              } catch {
+                // pass
+              }
             }
           }
         } else {
