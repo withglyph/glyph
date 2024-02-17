@@ -87,7 +87,7 @@
         <i
           class={clsx(
             'i-tb-align-left text-gray-600 square-18px block <sm:square-20px',
-            node.attrs.align === 'left' && 'text-teal-500',
+            node.attrs.align === 'left' && 'text-teal-500!',
           )}
         />
       </button>
@@ -103,7 +103,7 @@
         <i
           class={clsx(
             'i-tb-align-center text-gray-600 square-18px block <sm:square-20px',
-            node.attrs.align === 'center' && 'text-teal-500',
+            node.attrs.align === 'center' && 'text-teal-500!',
           )}
         />
       </button>
@@ -119,7 +119,7 @@
         <i
           class={clsx(
             'i-tb-align-right text-gray-600 square-18px block <sm:square-20px',
-            node.attrs.align === 'right' && 'text-teal-500',
+            node.attrs.align === 'right' && 'text-teal-500!',
           )}
         />
       </button>
@@ -138,7 +138,7 @@
       <i
         class={clsx(
           'i-px2-embed-full text-gray-600 square-18px block <sm:square-20px',
-          node.attrs.size === 'full' && 'text-teal-500',
+          node.attrs.size === 'full' && 'text-teal-500!',
         )}
       />
     </button>
@@ -153,7 +153,7 @@
       <i
         class={clsx(
           'i-px2-embed-compact text-gray-600 square-18px block <sm:square-20px',
-          node.attrs.size === 'compact' && 'text-teal-500',
+          node.attrs.size === 'compact' && 'text-teal-500!',
         )}
       />
     </button>

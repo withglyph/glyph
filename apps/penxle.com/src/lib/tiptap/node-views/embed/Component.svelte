@@ -127,7 +127,7 @@
           <i
             class={clsx(
               'i-px2-embed-full text-gray-600 square-18px block <sm:square-20px',
-              node.attrs.mode === 'embed-full' && 'text-teal-500',
+              node.attrs.mode === 'embed-full' && 'text-teal-500!',
             )}
           />
         </button>
@@ -142,7 +142,7 @@
           <i
             class={clsx(
               'i-px2-embed-compact text-gray-600 square-18px block <sm:square-20px',
-              node.attrs.mode === 'embed-compact' && 'text-teal-500',
+              node.attrs.mode === 'embed-compact' && 'text-teal-500!',
             )}
           />
         </button>
@@ -157,7 +157,7 @@
           <i
             class={clsx(
               'i-px2-opengraph text-gray-600 square-18px block <sm:square-20px',
-              node.attrs.mode === 'opengraph' && 'text-teal-500',
+              node.attrs.mode === 'opengraph' && 'text-teal-500!',
             )}
           />
         </button>
