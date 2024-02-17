@@ -209,7 +209,7 @@
 
     <div class="relative">
       <FormField name="email" class="peer" label="이메일">
-        <TextInput class="w-full" placeholder="이메일 입력">
+        <TextInput class="w-full" placeholder="이메일 입력" type="email">
           <span slot="right-label" />
         </TextInput>
       </FormField>

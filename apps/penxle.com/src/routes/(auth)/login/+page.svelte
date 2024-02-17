@@ -49,7 +49,7 @@
 <form class="w-full max-w-87.5" use:form>
   <div class="space-y-3">
     <FormField name="email" label="이메일">
-      <TextInput class="w-full font-bold" placeholder="이메일 입력" />
+      <TextInput class="w-full font-bold" placeholder="이메일 입력" type="email" />
     </FormField>
   </div>
 
