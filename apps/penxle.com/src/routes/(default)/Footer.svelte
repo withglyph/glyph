@@ -55,6 +55,7 @@
       <div class="flex items-center gap-4">
         <Link class="i-px-logo square-4 hover:text-primary" href="/penxle" />
         <Link class="i-lg-twitter square-4 hover:text-[#1DA1F2]" href="https://twitter.com/penxle" />
+        <Link class="i-lg-bluesky square-4 hover:text-[#1185 FE]" href="https://bsky.app/profile/penxle.com" />
         <Link class="i-lg-instagram square-4 hover:text-[#E4405F]" href="https://www.instagram.com/penxle.team/" />
         <Link class="i-lg-github square-4 hover:text-[#181717]" href="https://github.com/penxle" />
       </div>
