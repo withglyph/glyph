@@ -69,7 +69,7 @@
 <a class="flex gap-32px min-h-150px" href={`/${$post.space.slug}/${$post.permalink}`}>
   <div class="flex flex-col grow">
     <div class="flex items-center gap-12px">
-      <div class="relative">
+      <div class="relative flex-none">
         <Image class="flex-none square-24px rounded-4px border" $image={$post.space.icon} />
         <Avatar
           class="flex-none square-16px absolute border border-white -right-4px -bottom-4px"
@@ -83,7 +83,7 @@
 
       <div class="w-1px h-12px bg-gray-200" />
 
-      <div class="flex-none text-12-m text-gray-400">
+      <div class="flex-none text-12-m text-gray-400 <sm:hidden">
         {dayjs($post.publishedAt).fromNow()}
       </div>
 
@@ -103,7 +103,7 @@
         {/if}
 
         {#if $post.publishedRevision.characterCount > 0}
-          <div class="flex items-center gap-2px">
+          <div class="flex items-center gap-2px <sm:hidden">
             <i class="i-tb-clock-hour-4 square-14px" />
             {calcurateReadingTime($post.publishedRevision.characterCount)}분
           </div>
