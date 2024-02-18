@@ -70,9 +70,9 @@
   <div class="flex flex-col grow">
     <div class="flex items-center gap-12px">
       <div class="relative">
-        <Image class="square-24px rounded-4px border" $image={$post.space.icon} />
+        <Image class="flex-none square-24px rounded-4px border" $image={$post.space.icon} />
         <Avatar
-          class="square-16px absolute border border-white -right-4px -bottom-4px"
+          class="flex-none square-16px absolute border border-white -right-4px -bottom-4px"
           $profile={$post.member.profile}
         />
       </div>
@@ -128,7 +128,7 @@
           {$post.publishedRevision.subtitle}
         </div>
       {/if}
-      <div class="text-14-r text-gray-700 mt-12px break-all line-clamp-2">
+      <div class="text-14-r text-gray-700 mt-12px break-words line-clamp-2">
         {$post.publishedRevision.previewText}
       </div>
     </div>

@@ -39,7 +39,7 @@ export const feedSchema = defineSchema((builder) => {
           },
 
           orderBy: [{ views: { _count: 'desc' } }, { publishedAt: 'desc' }],
-          take: 100,
+          take: 50,
         });
 
         return posts;
@@ -76,7 +76,7 @@ export const feedSchema = defineSchema((builder) => {
           },
 
           orderBy: { publishedAt: 'desc' },
-          take: 100,
+          take: 50,
         });
 
         return posts;
@@ -157,7 +157,7 @@ export const feedSchema = defineSchema((builder) => {
           },
 
           orderBy: { publishedAt: 'desc' },
-          take: 20,
+          take: 50,
         });
       },
     }),
@@ -187,7 +187,7 @@ export const feedSchema = defineSchema((builder) => {
           },
 
           orderBy: { createdAt: 'desc' },
-          take: 20,
+          take: 50,
         });
       },
     }),
@@ -218,7 +218,7 @@ export const feedSchema = defineSchema((builder) => {
 
           distinct: ['tagId'],
           orderBy: { createdAt: 'desc' },
-          take: 200,
+          take: 50,
         });
 
         return postTags.map(({ tag }) => tag);
