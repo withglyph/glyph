@@ -95,7 +95,7 @@
   onMount(() => {
     switch ($page.url.searchParams.get('message')) {
       case 'sso_already_linked_by_other':
-        toast.error('이 소셜 계정은 이미 다른 펜슬로그 계정에 연동되어 있어요.');
+        toast.error('이 소셜 계정은 이미 다른 펜슬 계정에 연동되어 있어요.');
         break;
     }
   });
@@ -174,7 +174,7 @@
 
   <div class="flex flex-wrap items-center justify-between gap-4">
     <div>
-      <h3 class="text-lg font-extrabold mb-2">이벤트 등 펜슬로그 소식 받아보기</h3>
+      <h3 class="text-lg font-extrabold mb-2">이벤트 등 펜슬 소식 받아보기</h3>
       {#if $query.me.marketingConsent}
         <p class="text-3.75 text-secondary break-keep">
           {dayjs($query.me.marketingConsent.createdAt).formatAsDate()} 승인됨
@@ -188,7 +188,7 @@
         await updateUserMarketingConsent({ consent });
         mixpanel.track('user:marketing_consent:update', { consent });
         toast.success(`${dayjs().formatAsDate()} ${consent ? '승인' : '거부'} 처리되었어요`, {
-          title: '펜슬로그 마케팅 수신 동의',
+          title: '펜슬 마케팅 수신 동의',
         });
       }}
     />

@@ -33,7 +33,7 @@
 </script>
 
 <div class="w-full max-w-315 flex flex-col grow sm:p-7.5">
-  <h1 class="text-xl font-bold mb-5 <sm:hidden">나의 펜슬로그</h1>
+  <h1 class="text-xl font-bold mb-5 <sm:hidden">나의 펜슬</h1>
   <div class="sm:(flex gap-10)">
     <aside
       class={clsx(

@@ -43,7 +43,7 @@
       </div>
 
       <div class="text-24-b pt-32px pb-2px">최신 포스트</div>
-      <div class="text-14-m text-gray-500">펜슬로그에 올라오는 최신 포스트들을 둘러보세요</div>
+      <div class="text-14-m text-gray-500">펜슬에 올라오는 최신 포스트들을 둘러보세요</div>
 
       <div class="mt-16px flex flex-col mt-32px gap-32px w-full">
         {#each $query.recentFeed as post (post.id)}

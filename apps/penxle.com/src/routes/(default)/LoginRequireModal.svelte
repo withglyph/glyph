@@ -8,7 +8,7 @@
   <svelte:fragment slot="title">로그인이 필요한 기능이에요</svelte:fragment>
 
   <svelte:fragment slot="subtitle">
-    <slot name="subtitle">로그인 하고 펜슬로그의 더 다양한 기능을 사용해 보세요!</slot>
+    <slot name="subtitle">로그인 하고 펜슬의 더 다양한 기능을 사용해 보세요!</slot>
   </svelte:fragment>
 
   <div slot="action" class="flex w-full gap-3">

@@ -44,7 +44,7 @@
         <div class="flex flex-wrap items-center">
           <Link class="hover:text-secondary" href="https://penxle.channel.io">고객 센터</Link>
           <div class="h-2 border-l border-gray-60 mx-1" />
-          <Link class="hover:text-secondary" href="/penxle">펜슬로그 소식</Link>
+          <Link class="hover:text-secondary" href="/penxle">펜슬 소식</Link>
           <div class="h-2 border-l border-gray-60 mx-1" />
           <Link class="hover:text-secondary" href="https://penxle.io">펜슬컴퍼니 소개</Link>
         </div>

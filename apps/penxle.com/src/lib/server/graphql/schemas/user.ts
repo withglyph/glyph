@@ -572,7 +572,7 @@ export const userSchema = defineSchema((builder) => {
         const token = nanoid();
 
         await sendEmail({
-          subject: `펜슬로그 ${isEmailExists ? '로그인' : '가입'}하기`,
+          subject: `펜슬 ${isEmailExists ? '로그인' : '가입'}하기`,
           recipient: input.email,
           template: LoginUser,
           props: {
@@ -777,7 +777,7 @@ export const userSchema = defineSchema((builder) => {
         });
 
         await sendEmail({
-          subject: '펜슬로그 이메일 변경',
+          subject: 'PENXLE 이메일 변경',
           recipient: input.email,
           template: UpdateUserEmail,
           props: {

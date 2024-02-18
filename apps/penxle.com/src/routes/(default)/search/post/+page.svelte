@@ -68,7 +68,7 @@
   $: search = `?q=${$page.url.searchParams.get('q')}`;
 </script>
 
-<Helmet title={$page.url.searchParams.get('q') ?? ''} />
+<Helmet title="{$page.url.searchParams.get('q')} - 펜슬 검색결과" />
 
 <div class="body-14-m text-secondary mt-3 <sm:m-l-4">
   약 {$query.searchPosts.count}개의 검색결과가 있어요!

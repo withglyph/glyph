@@ -85,7 +85,7 @@ email.get('/email', async (_, { db, ...context }) => {
     });
 
     await sendEmail({
-      subject: '펜슬로그 이메일이 변경되었어요.',
+      subject: 'PENXLE 이메일이 변경되었어요.',
       recipient: userEmailVerification.user.email,
       template: UserEmailUpdated,
       props: {
