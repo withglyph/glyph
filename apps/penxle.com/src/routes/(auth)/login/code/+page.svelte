@@ -43,11 +43,11 @@
       <DigitsInput name="code" />
     </div>
 
-    <Button class="w-full mt-3" size="xl" type="submit">펜슬 시작하기</Button>
+    <Button class="w-full mt-3" size="xl" type="submit">펜슬로그 시작하기</Button>
   </form>
 {:else}
   <div class="text-center mt-4 text-sm">
-    {email} 으로 펜슬 로그인 링크를 보냈어요!
+    {email} 으로 펜슬로그 로그인 링크를 보냈어요!
     <br />
     메일을 열어 링크를 클릭하면 로그인이 완료돼요.
   </div>

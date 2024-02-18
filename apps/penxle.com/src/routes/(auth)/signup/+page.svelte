@@ -73,7 +73,7 @@
         개인정보처리방침
       </Link>에 동의해요 (필수)
     </Checkbox>
-    <Checkbox name="marketingConsent" class="text-sm">이벤트 등 펜슬 소식 받아보기 (선택)</Checkbox>
+    <Checkbox name="marketingConsent" class="text-sm">이벤트 등 펜슬로그 소식 받아보기 (선택)</Checkbox>
   </section>
-  <Button class="w-full" size="xl" type="submit">펜슬 회원가입 하기</Button>
+  <Button class="w-full" size="xl" type="submit">펜슬로그 회원가입 하기</Button>
 </form>

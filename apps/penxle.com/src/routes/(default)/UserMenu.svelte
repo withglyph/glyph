@@ -112,7 +112,7 @@
       href="https://penxle.nolt.io"
     >
       <i class="i-lc-lightbulb" />
-      펜슬 피드백하기
+      펜슬로그 피드백하기
     </Link>
 
     <button

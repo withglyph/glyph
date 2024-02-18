@@ -117,7 +117,7 @@
       </p>
       <div class="space-y-3">
         <h1 class="text-center title-20-b">포인트가 충전 완료 되었어요!</h1>
-        <p class="text-center text-secondary">펜슬의 다양한 작품을 감상해보세요</p>
+        <p class="text-center text-secondary">펜슬로그의 다양한 작품을 감상해보세요</p>
 
         <div class="bg-white border border-secondary rounded-2xl p-4 space-y-4">
           <div>

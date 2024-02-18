@@ -99,7 +99,7 @@
             <Notification $user={$query.me} />
             <UserMenu $user={$query.me} />
           {:else}
-            <Button href="/login" size="md" type="link">펜슬과 함께하기</Button>
+            <Button href="/login" size="md" type="link">펜슬로그와 함께하기</Button>
           {/if}
         </div>
       </div>
@@ -143,7 +143,7 @@
         )}
         href="/me"
       >
-        나의 펜슬
+        나의 펜슬로그
       </a>
       <a
         class={clsx(

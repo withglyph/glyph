@@ -11,8 +11,8 @@
 </script>
 
 <svelte:head>
-  <title>{title} | 펜슬</title>
-  <meta content={`${title} | 펜슬`} property="og:title" />
+  <title>{title} | 펜슬로그</title>
+  <meta content={`${title} | 펜슬로그`} property="og:title" />
   {#if description}
     <meta name="description" content={description} />
     <meta content={description} property="og:description" />

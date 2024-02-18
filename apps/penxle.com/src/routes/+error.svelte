@@ -11,7 +11,7 @@
   $: code = error.extra.code ?? $page.status;
 </script>
 
-<Helmet title="펜슬" />
+<Helmet title="펜슬로그" />
 
 <header class="z-10 w-full h-15 px-4 py-2 flex items-center sm:px-7.5">
   <nav>
@@ -53,7 +53,7 @@
       class="mt-16 rounded-full bg-gray-80 px-4 py-2 font-medium leading-none text-white transition duration-300 active:bg-black hover:bg-gray-90"
       href="/"
     >
-      펜슬 홈으로 가기
+      펜슬로그 홈으로 가기
     </a>
   </section>
 

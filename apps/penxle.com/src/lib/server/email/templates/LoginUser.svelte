@@ -4,7 +4,7 @@
   export let url: string;
 </script>
 
-<p>아래 링크를 눌러 펜슬에 {action}하세요.</p>
+<p>아래 링크를 눌러 펜슬로그에 {action}하세요.</p>
 <p>
   <a href={url}>{url}</a>
 </p>

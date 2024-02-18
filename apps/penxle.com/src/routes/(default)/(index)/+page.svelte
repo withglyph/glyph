@@ -25,12 +25,12 @@
 </script>
 
 <Helmet
-  description="펜슬은 개인 창작자들을 위한 자유롭고 즐거운 창작 공간이에요."
+  description="펜슬로그는 개인 창작자들을 위한 자유롭고 즐거운 창작 공간이에요."
   image={{
     src: 'https://pnxl.net/assets/opengraph/default-cover.png',
     size: 'large',
   }}
-  title="펜슬 - 함께 그리는 반짝임"
+  title="펜슬로그 - 지속 가능한 창작 커뮤니티"
 />
 
 <a class="sm:hidden" href="/penxle/736143117">
@@ -50,7 +50,7 @@
       </div>
 
       <div class="text-24-b pt-32px pb-2px">추천 포스트</div>
-      <div class="text-14-m text-gray-500">펜슬에 올라오는 포스트들을 둘러보세요</div>
+      <div class="text-14-m text-gray-500">펜슬로그에 올라오는 포스트들을 둘러보세요</div>
 
       <div class="mt-16px flex flex-col mt-32px gap-32px w-full">
         {#each $query.recommendFeed as post (post.id)}

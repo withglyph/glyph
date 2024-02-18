@@ -67,7 +67,7 @@
     </div>
 
     <div>
-      <Button class="w-full" size="xl" on:click={() => (confirmModalOpen = true)}>펜슬 탈퇴하기</Button>
+      <Button class="w-full" size="xl" on:click={() => (confirmModalOpen = true)}>펜슬로그 탈퇴하기</Button>
       <Button class="w-full mt-3" color="secondary" size="xl">탈퇴를 취소할래요</Button>
     </div>
   </div>

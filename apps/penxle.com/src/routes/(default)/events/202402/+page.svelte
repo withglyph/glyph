@@ -62,7 +62,7 @@
     <mark class="text-teal-500">+2000P</mark>
   </p>
   <p class="text-gray-400 text-11-r px-5 sm:(px-15 text-14-r)">
-    트위터 연동 시에는 펜슬 링크가 필요하며,
+    트위터 연동 시에는 펜슬로그 링크가 필요하며,
     <br />
     이미 연동되어 있는 경우에는 다시 한 번 연동해주세요
   </p>

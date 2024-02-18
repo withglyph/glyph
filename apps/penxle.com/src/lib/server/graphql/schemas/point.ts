@@ -118,7 +118,7 @@ export const pointSchema = defineSchema((builder) => {
 
         const paymentData = {
           merchant_uid: paymentKey,
-          name: `펜슬 ${input.pointAmount} P`,
+          name: `펜슬로그 ${input.pointAmount} P`,
           amount: paymentAmount,
           buyer_email: user.email,
 
