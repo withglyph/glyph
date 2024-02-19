@@ -604,8 +604,11 @@ export const postSchema = defineSchema((builder) => {
           let paidContentImageCount = 0,
             paidContentFileCount = 0;
           for (const node of paidContent) {
+            // eslint-disable-next-line unicorn/prefer-switch
             if (node.type === 'image') {
               paidContentImageCount++;
+            } else if (node.type === 'gallery') {
+              paidContentImageCount += node.attrs?.ids?.length ?? 0;
             } else if (node.type === 'file') {
               paidContentFileCount++;
             }
