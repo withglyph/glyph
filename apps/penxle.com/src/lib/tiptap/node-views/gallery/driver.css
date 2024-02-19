@@ -1,40 +1,53 @@
 @import 'driver.js/dist/driver.css';
 
 .driver-popover.onboarding-popover {
-  --uno: p-x-0.875rem p-r-1rem p-t-0.88rem p-b-0.0.625rem border-(1px solid gray-200);
+  padding: 0.875rem 1rem 0.625rem;
+  --uno: border-(1px solid gray-200);
   box-shadow: 0px 3px 24px 0px rgba(0, 0, 0, 0.08);
 
   &.step-1 {
-    --uno: w-16.25rem;
+    width: 16.25rem;
   }
   &.step-2 {
-    --uno: w-14.25rem;
+    width: 14.25rem;
   }
   &.step-3 {
-    --uno: w-17.1875rem;
+    width: 17.1875rem;
   }
 
   .driver-popover-description {
-    --uno: m-l-2rem text-14-m break-keep;
+    margin-left: 2rem;
+    font-size: 0.875rem;
+    work-break: keep-all;
   }
 
   .driver-popover-progress-text {
     display: inline-flex !important;
     border-radius: 1.875rem;
-    /* prettier-ignore */
-    --uno: m-y-0.22rem absolute leading-150% top-0.875rem p-x-0.25rem p-y-0.09rem color-white bg-teal-500 text-10-b font-800 text-opacity-70 gap-0.125rem items-center;
+    position: absolute;
+    top: 0.875rem;
+    margin: 0.22rem 0;
+    padding: 0.09rem 0.25rem;
+    line-height: 150%;
+    color: rgba(255, 255, 255, 0.7);
+    background-color: #14b8a6;
+    font-size: 0.625rem;
+    font-weight: 800;
+    gap: 0.125rem;
+    align-items: center;
 
     mark {
-      --uno: color-white text-opacity-100;
+      color: white;
     }
 
     .divider {
-      --uno: text-8-r text-opacity-60;
+      font-size: 0.5rem;
+      font-weight: 400;
     }
   }
 
   .driver-popover-footer {
-    --uno: m-t-xs;
+    margin-top: 0.75rem;
   }
 
   /* cspell:disable-next-line */
@@ -43,8 +56,11 @@
   }
 
   button {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 150%;
     padding: 0.38rem 0.88rem;
-    --uno: text-11-sb leading-150% text-shadow-none;
+    text-shadow: none;
   }
 
   .driver-popover-prev-btn {
