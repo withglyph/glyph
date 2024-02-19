@@ -14,7 +14,7 @@
 </script>
 
 {#if $query.authLayoutBackgroundImage}
-  <Image class="fixed inset-0" $image={$query.authLayoutBackgroundImage} />
+  <Image class="fixed inset-0 object-cover" $image={$query.authLayoutBackgroundImage} />
 {/if}
 
 <Header />
