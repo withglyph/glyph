@@ -9,6 +9,7 @@ const createZone = (domain: string) => {
 };
 
 export const zones = {
+  pencil_so: createZone('pencil.so'),
   penxle_com: createZone('penxle.com'),
   penxle_io: createZone('penxle.io'),
   pnxl_cc: createZone('pnxl.cc'),
@@ -17,6 +18,15 @@ export const zones = {
   pnxl_net: createZone('pnxl.net'),
   pnxl_site: createZone('pnxl.site'),
 };
+
+new aws.route53.Record('pencil.so|txt', {
+  zoneId: zones.pencil_so.zoneId,
+  type: 'TXT',
+  name: 'pencil.so',
+  // spell-checker:disable-next-line
+  records: ['google-site-verification=7lMNJhce63je2LK5iw8ZzBFh34dMrjjS2IfRDd06Sm0'],
+  ttl: 300,
+});
 
 new aws.route53.Record('penxle.com|txt', {
   zoneId: zones.penxle_com.zoneId,

@@ -19,6 +19,7 @@ const createCertificate = (domain: string) => {
 };
 
 export const certificates = {
+  pencil_so: createCertificate('pencil.so'),
   penxle_com: createCertificate('penxle.com'),
   penxle_io: createCertificate('penxle.io'),
   pnxl_cc: createCertificate('pnxl.cc'),
@@ -203,6 +204,7 @@ new aws.route53.Record('pnxl.net', {
 });
 
 export const outputs = {
+  AWS_ACM_CLOUDFRONT_PENCIL_SO_CERTIFICATE_ARN: certificates.pencil_so.arn,
   AWS_ACM_CLOUDFRONT_PENXLE_COM_CERTIFICATE_ARN: certificates.penxle_com.arn,
   AWS_ACM_CLOUDFRONT_PENXLE_IO_CERTIFICATE_ARN: certificates.penxle_io.arn,
   AWS_ACM_CLOUDFRONT_PNXL_CC_CERTIFICATE_ARN: certificates.pnxl_cc.arn,
