@@ -599,7 +599,7 @@ export const postSchema = defineSchema((builder) => {
             }
           }
 
-          const paidContentText = await revisionContentToText(revision.paidContent);
+          const paidContentText = revision.paidContent ? await revisionContentToText(revision.paidContent) : '';
 
           let paidContentImageCount = 0,
             paidContentFileCount = 0;
