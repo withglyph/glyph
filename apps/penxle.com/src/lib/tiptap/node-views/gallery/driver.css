@@ -65,12 +65,12 @@
 
   .driver-popover-prev-btn {
     /* prettier-ignore */
-    --uno: border-(1px solid gray-200) color-gray-500 hover:bg-gray-50 focus-visible:(outline-(2px solid gray-100)) active:(outline-(2px solid gray-100)) disabled:(border-gray-100 color-gray-300);
+    --uno: border-(1px solid gray-200) color-gray-500 hover:bg-gray-50 focus-visible:bg-gray-50 active:(border-gray-300 shadow-[0_0_0_2px_#E4E4E7]) disabled:(border-gray-100 color-gray-300 bg-[initial] shadow-none);
   }
 
   .driver-popover-next-btn {
     /* prettier-ignore */
-    --uno: border-none color-white bg-teal-500 hover:bg-teal-400 focus-visible:(outline-(2px solid teal-100)) active:(outline-(2px solid teal-100));
+    --uno: border-none color-white bg-teal-500 hover:bg-teal-400 focus-visible:bg-teal-400 active:shadow-[0_0_0_2px_#99F6E4];
   }
 
   mark {
