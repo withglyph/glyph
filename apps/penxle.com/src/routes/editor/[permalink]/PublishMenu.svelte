@@ -1,5 +1,6 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import { onMount } from 'svelte';
   import { slide } from 'svelte/transition';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
@@ -206,13 +207,10 @@
     $data.pairs = checked ? ($data.pairs ? [...$data.pairs, pair] : [pair]) : $data.pairs?.filter((v) => v !== pair);
   };
 
-  $: if ($post.space) {
-    selectedSpaceId = $post.space.id;
-  }
-
-  $: if ($post?.collection) {
-    selectedCollectionId = $post.collection.id;
-  }
+  onMount(() => {
+    selectedSpaceId = $post.space?.id;
+    selectedCollectionId = $post.collection?.id;
+  });
 </script>
 
 <div
