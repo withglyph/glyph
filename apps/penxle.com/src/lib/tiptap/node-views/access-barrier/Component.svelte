@@ -10,6 +10,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Modal } from '$lib/components';
   import Button from '$lib/components/Button.svelte';
+  import { Button as ButtonV2 } from '$lib/components/v2';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { NodeView } from '$lib/tiptap';
   import { calcurateReadingTime, comma } from '$lib/utils';
@@ -181,9 +182,7 @@
             <span class="absolute inset-y-0 right-0 flex center pr-12px text-16-r">P</span>
           </div>
 
-          <button class="bg-teal-500 px-16px py-8px flex center text-12-sb text-white rounded-4px" type="submit">
-            설정
-          </button>
+          <ButtonV2 size="sm" type="submit" variant="secondary">설정</ButtonV2>
         </form>
       </div>
     {/if}

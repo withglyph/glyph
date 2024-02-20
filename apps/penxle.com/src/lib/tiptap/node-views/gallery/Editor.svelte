@@ -12,6 +12,7 @@
   import { graphql } from '$glitch';
   import { Tooltip } from '$lib/components';
   import { Checkbox, Switch } from '$lib/components/forms';
+  import Button from '$lib/components/v2/Button.svelte';
   import { isValidImageFile, persisted, validImageMimes } from '$lib/utils';
   import Display from './Display.svelte';
   import IsomorphicImage from './IsomorphicImage.svelte';
@@ -460,13 +461,7 @@
   </div>
 
   <svelte:fragment slot="action">
-    <button
-      class="px-4 py-2.5 text-15-sb rounded bg-gray-950 text-white w-95px text-center border border-gray-950"
-      type="button"
-      on:click={() => (open = false)}
-    >
-      닫기
-    </button>
+    <Button class="w-95px" size="lg" on:click={() => (open = false)}>닫기</Button>
   </svelte:fragment>
 </Modal>
 
@@ -615,14 +610,6 @@
       </p>
     {/if}
 
-    <button
-      class="px-4 py-2.5 text-15-sb rounded w-95px text-center border border-gray-200"
-      type="button"
-      on:click={() => {
-        imageListOpen = false;
-      }}
-    >
-      확인
-    </button>
+    <Button class="w-95px" size="lg" variant="outline" on:click={() => (imageListOpen = false)}>확인</Button>
   </svelte:fragment>
 </Modal>
