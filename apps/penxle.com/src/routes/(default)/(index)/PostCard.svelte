@@ -19,6 +19,7 @@
         likeCount
         viewCount
         publishedAt
+        discloseStats
 
         publishedRevision @_required {
           id
@@ -88,14 +89,14 @@
       </div>
 
       <div class="flex flex-none grow justify-end gap-8px text-12-m text-gray-400">
-        {#if $post.viewCount > 0}
+        {#if $post.viewCount > 0 && $post.discloseStats}
           <div class="flex items-center gap-2px">
             <i class="i-tb-eye square-14px" />
             {humanizeNumber($post.viewCount)}
           </div>
         {/if}
 
-        {#if $post.likeCount > 0}
+        {#if $post.likeCount > 0 && $post.discloseStats}
           <div class="flex items-center gap-2px">
             <i class="i-tb-heart square-14px" />
             {humanizeNumber($post.likeCount)}
