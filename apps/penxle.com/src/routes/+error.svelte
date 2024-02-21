@@ -11,7 +11,7 @@
   $: code = error.extra.code ?? $page.status;
 </script>
 
-<Helmet title="펜슬" />
+<Helmet description="펜슬 에러 페이지" title="펜슬" />
 
 <header class="z-10 w-full h-15 px-4 py-2 flex items-center sm:px-7.5">
   <nav>

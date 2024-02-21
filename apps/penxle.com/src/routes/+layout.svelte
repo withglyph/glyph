@@ -50,7 +50,7 @@
 </script>
 
 <svelte:head>
-  <script data-domain="penxle.com" defer src="https://plausible.io/js/script.js"></script>
+  <script data-domain="pencil.so" defer src="https://plausible.io/js/script.js"></script>
 </svelte:head>
 
 <div class="relative flex flex-col min-h-100dvh">

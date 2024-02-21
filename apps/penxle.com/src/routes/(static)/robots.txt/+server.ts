@@ -5,7 +5,7 @@ export const GET: RequestHandler = async () => {
   const lines = ['User-agent: *', 'Disallow: /api/', 'Disallow: /_internal/', 'Disallow: /_playground/'];
 
   if (production) {
-    lines.push('Allow: /api/shortlink/');
+    lines.push('User-agent: Twitterbot', 'Allow: /api/shortlink/');
   } else {
     lines.push('Disallow: /');
   }

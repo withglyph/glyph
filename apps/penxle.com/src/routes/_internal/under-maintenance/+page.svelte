@@ -1,7 +1,9 @@
 <script lang="ts">
-  import { Link } from '@penxle/ui';
+  import { Helmet, Link } from '@penxle/ui';
   import LogoFloating from '$assets/branding/logo-floating.svg?component';
 </script>
+
+<Helmet description="펜슬은 지금 점검중이에요" title="점검중" />
 
 <div class="mx-auto flex grow flex-col center gap-4 text-center">
   <LogoFloating class="square-25" />

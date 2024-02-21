@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
   import { onMount } from 'svelte';
   import { graphql } from '$glitch';
   import { PostManageTable } from '$lib/components/pages/posts';
@@ -22,6 +23,8 @@
     }
   `);
 </script>
+
+<Helmet description="내 포스트를 관리하세요" title="내 포스트 관리" />
 
 {#if $query.me}
   <PostManageTable $posts={$query.me.posts} type="me" />

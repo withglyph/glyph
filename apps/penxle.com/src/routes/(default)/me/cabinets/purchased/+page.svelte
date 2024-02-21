@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
   import dayjs from 'dayjs';
   import { graphql } from '$glitch';
   import { Image } from '$lib/components';
@@ -44,6 +45,8 @@
     }
   `);
 </script>
+
+<Helmet description="구매한 포스트 목록을 둘러보세요" title="구매한 포스트" />
 
 {#each $query.me.purchasedPosts as post (post.id)}
   <li>

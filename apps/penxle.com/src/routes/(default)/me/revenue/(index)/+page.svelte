@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
   import dayjs from 'dayjs';
   import qs from 'query-string';
   import { page } from '$app/stores';
@@ -51,6 +52,8 @@
     location.href = stringifiedURL;
   };
 </script>
+
+<Helmet description="내 수익을 확인하세요" title="수익" />
 
 {#if $query.me.revenues.length > 0}
   <div class="flex gap-2 justify-end">

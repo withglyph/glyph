@@ -67,7 +67,8 @@
     }
   `);
   $: collectionId = $page.params.entity;
-  $: collection = $query.space.collections.find(({ id }) => id === collectionId);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  $: collection = $query.space.collections.find(({ id }) => id === collectionId)!;
 
   const followSpace = graphql(`
     mutation SpaceCollectionPage_FollowSpace_Mutation($input: FollowSpaceInput!) {
@@ -88,7 +89,10 @@
   `);
 </script>
 
-<Helmet title={`${collection?.name} | 컬렉션 | ${$query.space.name}`} />
+<Helmet
+  description={`${$query.space.name} 스페이스의 ${collection.name} 컬렉션`}
+  title={`${$query.space.name}의 ${collection.name}`}
+/>
 
 <svelte:window
   on:scroll={(e) => {

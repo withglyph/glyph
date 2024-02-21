@@ -21,7 +21,8 @@
   `);
 </script>
 
-<Helmet title="계정 탈퇴" />
+<Helmet description="펜슬 계정을 탈퇴해요" title="계정 탈퇴" />
+
 <div class="mx-auto py-7 px-5 sm:px-10">
   <div class="space-y-6 w-full max-w-200">
     <h1 class="font-extrabold text-2xl">계정을 탈퇴하시겠어요?</h1>

@@ -5,7 +5,7 @@
   export let data: PageData;
 </script>
 
-<Helmet title={data.meta.title} />
+<Helmet description={`${data.meta.title} 도움말`} title={data.meta.title} />
 
 <article>
   <h1 class="text-2xl font-bold">{data.meta.title}</h1>

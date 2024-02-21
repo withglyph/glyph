@@ -57,7 +57,7 @@
   );
 </script>
 
-<Helmet title="필터링 설정" />
+<Helmet description="보고 싶은 컨텐츠와 보고 싶지 않은 컨텐츠를 설정할 수 있어요" title="필터링 설정" />
 
 <div class="py-8 px-6 space-y-8 sm:px-8">
   <button type="button" on:click={() => (mutedSpaceOpen = true)}>

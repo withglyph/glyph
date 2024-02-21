@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
   import clsx from 'clsx';
   import qs from 'query-string';
   import { page } from '$app/stores';
@@ -53,8 +52,6 @@
     location.href = stringifiedURL;
   };
 </script>
-
-<Helmet title="{$page.url.searchParams.get('q')} - 검색" />
 
 <div class="max-w-300 grow <sm:(w-full bg-cardprimary pt-5) sm:(grid grid-cols-[2fr_7fr] mx-10 gap-11.5 my-9.5)">
   <aside class="min-w-38 max-w-61 <sm:hidden">

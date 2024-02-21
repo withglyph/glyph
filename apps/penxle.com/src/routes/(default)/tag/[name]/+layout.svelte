@@ -77,7 +77,7 @@
 
     <div class="flex items-start justify-between">
       <div>
-        <h1 class="title-24-eb text-darkprimary">{$query.tag.name}</h1>
+        <h1 class="title-24-eb text-darkprimary">#{$query.tag.name}</h1>
         <!-- <p class="body-13-m text-disabled mt-2">2023.07.27 03:55에 크**님이 마지막으로 수정함</p> -->
       </div>
       <div class="flex items-center gap-2">

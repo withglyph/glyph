@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
   import { graphql } from '$glitch';
   import { PostCard } from '$lib/components';
 
@@ -25,6 +26,8 @@
     }
   `);
 </script>
+
+<Helmet description="북마크한 포스트 목록을 둘러보세요" title="북마크한 포스트" />
 
 <div class="bg-white w-full flex center h-15 border-b border-secondary <sm:hidden">
   <a href="/me/cabinets">

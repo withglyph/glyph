@@ -1,8 +1,9 @@
 <script lang="ts">
   import { page } from '$app/stores';
 
+  export let type = 'website';
   export let title: string;
-  export let description: string | undefined = undefined;
+  export let description: string;
   export let image: string | { src: string; size: 'small' | 'large' } | undefined = undefined;
 
   $: ({
@@ -30,6 +31,8 @@
   {/if}
   <link {href} rel="canonical" />
   <meta content={href} property="og:url" />
-  <meta content="website" property="og:type" />
+  <meta content="펜슬" property="og:site_name" />
+  <meta content={type} property="og:type" />
+  <meta content="ko_KR" property="og:locale" />
   <meta content="@penxle" property="twitter:site" />
 </svelte:head>

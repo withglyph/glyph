@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
   import { graphql } from '$glitch';
   import PostItem from '../PostItem.svelte';
 
@@ -17,6 +18,8 @@
     }
   `);
 </script>
+
+<Helmet description="최근 본 포스트 목록을 둘러보세요" title="최근 본 포스트" />
 
 {#each $query.me.recentlyViewedPosts as post (post.id)}
   <PostItem $post={post} />

@@ -106,7 +106,7 @@
   </script>
 </svelte:head>
 
-<Helmet title="계정 설정" />
+<Helmet description="내 계정을 설정해요" title="계정 설정" />
 
 <div class="py-8 px-6 space-y-8 sm:px-8">
   <div class="flex flex-wrap items-center justify-between gap-4">

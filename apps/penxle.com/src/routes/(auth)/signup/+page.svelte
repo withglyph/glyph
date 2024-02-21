@@ -50,9 +50,9 @@
   };
 </script>
 
-<Helmet title="펜슬 시작하기" />
+<Helmet description="이메일을 통해 펜슬에 가입하거나 로그인할 수 있어요" title="펜슬 가입하기" />
 
-<h1 class="font-bold text-xl w-full max-w-87.5">펜슬 회원가입</h1>
+<h1 class="font-bold text-xl w-full max-w-87.5">펜슬 가입하기</h1>
 
 <form class="mt-6 w-full max-w-87.5 space-y-4" use:form>
   <input name="token" type="hidden" value={$page.url.searchParams.get('token')} />

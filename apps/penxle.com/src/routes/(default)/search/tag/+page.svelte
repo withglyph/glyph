@@ -15,9 +15,10 @@
   `);
 
   $: search = `?q=${$page.url.searchParams.get('q')}`;
+  $: keyword = $page.url.searchParams.get('q');
 </script>
 
-<Helmet title="{$page.url.searchParams.get('q')} - 펜슬 검색결과" />
+<Helmet description={`펜슬에서 ${keyword} 검색을 한 결과에요`} title={`${keyword} 검색 결과`} />
 
 <div class="body-14-m text-secondary mt-3 <sm:m-l-4">
   약 {$query.searchTags.length ?? 0}개의 검색결과가 있어요!

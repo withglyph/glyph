@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
   import { graphql } from '$glitch';
   import { Button } from '$lib/components';
   import { PostManageTable } from '$lib/components/pages/posts';
@@ -7,6 +8,7 @@
     query SpaceSettingPostsPage_Query($slug: String!) {
       space(slug: $slug) {
         id
+        name
 
         collections {
           ...PostManageTable_Collection
@@ -25,6 +27,8 @@
     }
   `);
 </script>
+
+<Helmet description={`${$query.space.name} 스페이스 포스트 관리`} title={`포스트 관리 | ${$query.space.name}`} />
 
 <div class="flex justify-between gap-2 flex-wrap flex-items-end">
   <div class="flex gap-2">

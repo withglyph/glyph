@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
   import dayjs from 'dayjs';
   import { graphql } from '$glitch';
   import { Button, Image } from '$lib/components';
@@ -19,6 +20,7 @@
       space(slug: $slug) {
         id
 
+        name
         slug
 
         meAsMember {
@@ -59,6 +61,8 @@
   let selectedCollection: (typeof $query.space.collections)[number] | null = null;
   let deleting = false;
 </script>
+
+<Helmet description={`${$query.space.name} 스페이스 컬렉션 관리`} title={`컬렉션 관리 | ${$query.space.name}`} />
 
 <div class="flex justify-between gap-2">
   <div class="flex gap-2">

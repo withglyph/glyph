@@ -22,7 +22,7 @@
   `);
 </script>
 
-<Helmet title="최신 피드" />
+<Helmet description="펜슬에 올라오는 최신 포스트들을 둘러보세요" title="최신 피드" />
 
 <div class="w-full bg-white grow px-16px py-32px">
   <div class="flex gap-32px w-full max-w-300 pb-16px mx-auto">

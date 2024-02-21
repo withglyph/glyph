@@ -18,7 +18,7 @@
   `);
 </script>
 
-<Helmet title="관심 태그 피드" />
+<Helmet description="관심있는 태그의 최신 포스트들을 둘러보세요" title="관심 태그 피드" />
 
 <div class="w-full bg-white grow px-16px py-32px">
   <div class="flex gap-32px w-full max-w-300 pb-16px mx-auto">

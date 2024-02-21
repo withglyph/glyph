@@ -45,7 +45,7 @@
   $: preferences = R.group($query.me.notificationPreferences, (v) => v.category);
 </script>
 
-<Helmet title="알림 설정" />
+<Helmet description="받을 알림을 설정할 수 있어요" title="알림 설정" />
 
 <div class="sm:(space-y-8 p-8)">
   <div class="hidden justify-end gap-8 text-3.75 text-secondary sm:flex">

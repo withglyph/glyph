@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import stringify from 'fast-json-stable-stringify';
@@ -329,15 +328,6 @@
 
   $: triggerTags = $query.post.tags.filter(({ kind }) => kind === 'TRIGGER');
 </script>
-
-<Helmet
-  description={$postRevision.previewText}
-  image={{
-    src: $query.post.thumbnail?.url ?? 'https://pnxl.net/assets/opengraph/default-cover.png',
-    size: 'large',
-  }}
-  title={$postRevision.title ?? '(제목 없음)'}
-/>
 
 <article class={clsx('w-full bg-cardprimary py-7.5 px-4 grow sm:py-17', _class)}>
   <div class="w-full max-w-187.5 mx-auto space-y-6">

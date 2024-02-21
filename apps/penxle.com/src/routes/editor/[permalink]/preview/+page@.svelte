@@ -8,6 +8,7 @@
 
   let mode: 'desktop' | 'mobile' = 'desktop';
 
+  import { Helmet } from '@penxle/ui';
   import { page } from '$app/stores';
 
   $: hideHeader = $page.url.searchParams.get('hideHeader') === 'true';
@@ -19,6 +20,7 @@
 
         draftRevision(revisionId: $revisionId) @_required {
           id
+          title
           ...Post_postRevision
         }
       }
@@ -27,6 +29,8 @@
     }
   `);
 </script>
+
+<Helmet description="포스트 미리보기" title={`${$query.post.draftRevision.title ?? '(제목 없음)'} 미리보기`} />
 
 {#if !hideHeader}
   <header class="relative sticky top-0 z-10 border-b border-secondary bg-white px-4 py-2 sm:px-7.5 h-15.25 flex center">

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Link } from '@penxle/ui';
+  import { Helmet, Link } from '@penxle/ui';
   import clsx from 'clsx';
   import qs from 'query-string';
   import Paypal from '$assets/icons/paypal.svg?component';
@@ -86,6 +86,8 @@
   <script src="https://cdn.iamport.kr/v1/iamport.js">
   </script>
 </svelte:head>
+
+<Helmet description="펜슬 포인트를 충전할 수 있어요" title="포인트 충전" />
 
 <form class="space-y-6 flex flex-col center my-9 w-full max-w-200 px-4 sm:my-22" use:form>
   <h1 class="title-20-b w-full">포인트 충전</h1>

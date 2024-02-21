@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import ky from 'ky';
@@ -77,6 +78,8 @@
     await goto(resp.url);
   };
 </script>
+
+<Helmet description="받은 알림 목록을 둘러보세요" title="알림" />
 
 <div class="bg-cardprimary w-full flex flex-col grow">
   {#if $query.me.notifications.length > 0}

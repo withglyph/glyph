@@ -96,7 +96,7 @@
   `);
 </script>
 
-<Helmet title={`멤버 관리 | ${$query.space.name}`} />
+<Helmet description={`${$query.space.name} 스페이스 멤버 관리`} title={`멤버 관리 | ${$query.space.name}`} />
 
 <div class="title-24-eb flex gap-4 mb-6 <sm:hidden">
   <h2>멤버 관리</h2>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
   import dayjs from 'dayjs';
   import { onMount } from 'svelte';
   import { graphql } from '$glitch';
@@ -58,6 +59,8 @@
     clearInterval(timer);
   }
 </script>
+
+<Helmet description="펜슬 포인트를 충전할 수 있어요" title="포인트 충전" />
 
 <div class="flex flex-col center w-full my-22">
   {#if $query.pointPurchase.state === 'PENDING' && $query.pointPurchase.paymentMethod === 'VIRTUAL_BANK_ACCOUNT'}

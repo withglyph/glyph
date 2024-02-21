@@ -1,10 +1,23 @@
 <script lang="ts">
   // import { page } from '$app/stores';
+  import { Helmet } from '@penxle/ui';
+  import { graphql } from '$glitch';
   import { Button } from '$lib/components';
   import ComingSoonModal from '../../../ComingSoonModal.svelte';
 
+  $: query = graphql(`
+    query TagPage_Query($name: String!) {
+      tag(name: $name) {
+        id
+        name
+      }
+    }
+  `);
+
   let comingSoonOpen = false;
 </script>
+
+<Helmet description={`펜슬의 #${$query.tag.name} 태그`} title={`#${$query.tag.name}`} />
 
 <div class="flex justify-between items-center">
   <p class="title-20-b">내용</p>

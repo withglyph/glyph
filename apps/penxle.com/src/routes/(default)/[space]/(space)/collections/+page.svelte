@@ -32,7 +32,10 @@
   let openCreateCollectionModal = false;
 </script>
 
-<Helmet title={`컬렉션 | ${$query.space.name}`} />
+<Helmet
+  description={`${$query.space.name} 스페이스의 컬렉션 목록을 확인해보세요.`}
+  title={`${$query.space.name}의 컬렉션`}
+/>
 
 <div
   class={clsx(

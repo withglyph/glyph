@@ -27,7 +27,10 @@
   `);
 </script>
 
-<Helmet title={`소개 | ${$query.space.name}`} />
+<Helmet
+  description={$query.space.description ?? `펜슬의 ${$query.space.name} 스페이스 소개`}
+  title={`${$query.space.name} 소개`}
+/>
 
 <div class="w-full max-w-200 space-y-2 <sm:bg-surface-primary grow">
   <section class="p-8 flex flex-col gap-3 bg-cardprimary">

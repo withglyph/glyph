@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
+  import dayjs from 'dayjs';
   import { browser } from '$app/environment';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -12,15 +14,42 @@
 
       post(permalink: $permalink) {
         id
+        publishedAt
 
         space {
           id
           slug
         }
 
+        member {
+          id
+
+          profile {
+            name
+          }
+        }
+
         publishedRevision @_required {
           id
+          title
+          subtitle
+          previewText
+          createdAt
           ...Post_postRevision
+        }
+
+        thumbnail {
+          id
+          url
+        }
+
+        tags {
+          id
+
+          tag {
+            id
+            name
+          }
         }
       }
 
@@ -51,5 +80,24 @@
   //   goto(url, { replaceState: true });
   // }
 </script>
+
+<Helmet
+  description={`${$query.post.publishedRevision.subtitle ? `${$query.post.publishedRevision.subtitle} | ` : ''}${$query.post.publishedRevision.previewText}`}
+  image={{
+    src: $query.post.thumbnail?.url ?? 'https://pnxl.net/assets/opengraph/default-cover.png',
+    size: 'large',
+  }}
+  title={$query.post.publishedRevision.title ?? '(제목 없음)'}
+  type="article"
+/>
+
+<svelte:head>
+  <meta content={dayjs($query.post.publishedAt).toISOString()} property="article:published_time" />
+  <meta content={dayjs($query.post.publishedRevision.createdAt).toISOString()} property="article:modified_time" />
+  <meta content={$query.post.member?.profile.name} property="article:author" />
+  {#each $query.post.tags as { tag } (tag.id)}
+    <meta content={tag.name} property="article:tag" />
+  {/each}
+</svelte:head>
 
 <Post $postRevision={$query.post.publishedRevision} {$query} />

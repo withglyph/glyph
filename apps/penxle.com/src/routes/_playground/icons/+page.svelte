@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
   import { graphql } from '$glitch';
   import { Button } from '$lib/components';
 
@@ -9,8 +8,6 @@
     }
   `);
 </script>
-
-<Helmet title="스페이스 아이콘 플레이그라운드" />
 
 <div class="flex grow center">
   <div class="w-150 flex flex-col center gap-4">

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -26,6 +27,8 @@
     },
   });
 </script>
+
+<Helmet description="이메일로 전송된 코드를 통해 펜슬에 가입하거나 로그인할 수 있어요" title="코드로 시작하기" />
 
 <div class="bg-green-50 rounded-full flex center square-16">
   <i class="i-lc-mail-check text-white square-6" />

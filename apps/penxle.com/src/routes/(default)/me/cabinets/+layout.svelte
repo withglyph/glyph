@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Helmet, Link } from '@penxle/ui';
+  import { Link } from '@penxle/ui';
   import { graphql } from '$glitch';
   import { GridImage } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
@@ -47,8 +47,6 @@
     scrollTopEl.style.display = currentTarget.scrollY > 200 ? 'flex' : 'none';
   }}
 />
-
-<Helmet title="나의 서랍" />
 
 <h1 class="title-20-eb mb-6 <sm:hidden">나의 서랍</h1>
 

@@ -18,6 +18,6 @@
   });
 </script>
 
-<Helmet title={`대시보드 | ${$query.space.name}`} />
+<Helmet description={`${$query.space.name} 스페이스 대시보드`} title={`대시보드 | ${$query.space.name}`} />
 
 dashboard

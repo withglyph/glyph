@@ -150,7 +150,7 @@
   });
 </script>
 
-<Helmet title="포스트 수정하기" />
+<Helmet description="포스트 작성하기" title={`${$store.title ?? '(제목 없음)'} 작성`} />
 
 <div class="relative grow isolate select-none touch-none">
   <div style:height={vvHeight ? `${vvHeight}px` : '100dvh'} class="flex flex-col">
