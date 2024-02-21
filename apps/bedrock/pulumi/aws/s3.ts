@@ -31,6 +31,7 @@ const uploads = new aws.s3.Bucket('uploads', {
       allowedHeaders: ['*'],
       allowedMethods: ['PUT'],
       allowedOrigins: [
+        'https://pencil.so',
         'https://penxle.com',
         'https://staging.penxle.com',
         'https://dev.penxle.com',

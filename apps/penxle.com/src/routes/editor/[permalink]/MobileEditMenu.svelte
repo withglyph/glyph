@@ -412,27 +412,27 @@
 
     &[data-kind='4'] {
       --uno: h-1.8rem;
-      background-image: url(https://penxle.com/horizontal-rules/4.svg);
+      background-image: url(https://pencil.so/horizontal-rules/4.svg);
     }
 
     &[data-kind='5'] {
       --uno: h-0.875rem;
-      background-image: url(https://penxle.com/horizontal-rules/5.svg);
+      background-image: url(https://pencil.so/horizontal-rules/5.svg);
     }
 
     &[data-kind='6'] {
       --uno: h-0.91027rem;
-      background-image: url(https://penxle.com/horizontal-rules/6.svg);
+      background-image: url(https://pencil.so/horizontal-rules/6.svg);
     }
 
     &[data-kind='7'] {
       --uno: h-1.25rem;
-      background-image: url(https://penxle.com/horizontal-rules/7.svg);
+      background-image: url(https://pencil.so/horizontal-rules/7.svg);
     }
 
     &[data-kind='8'] {
       --uno: h-0.75rem;
-      background-image: url(https://penxle.com/horizontal-rules/8.svg);
+      background-image: url(https://pencil.so/horizontal-rules/8.svg);
     }
   }
 
@@ -443,7 +443,7 @@
       --uno: border-l-none;
       &:before {
         --uno: block w-4;
-        content: url(https://penxle.com/blockquotes/carbon.svg);
+        content: url(https://pencil.so/blockquotes/carbon.svg);
       }
     }
 
@@ -451,11 +451,11 @@
       --uno: border-l-none;
       &:before {
         --uno: block w-4 m-x-auto;
-        content: url(https://penxle.com/blockquotes/carbon.svg);
+        content: url(https://pencil.so/blockquotes/carbon.svg);
       }
       &:after {
         --uno: block w-4 rotate-180 m-x-auto;
-        content: url(https://penxle.com/blockquotes/carbon.svg);
+        content: url(https://pencil.so/blockquotes/carbon.svg);
       }
     }
   }
