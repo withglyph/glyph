@@ -11,6 +11,7 @@ import {
   createNotification,
   createRevenue,
   deductUserPoint,
+  generatePostShareImage,
   getMutedSpaceIds,
   getMutedTagIds,
   getUserPoint,
@@ -801,6 +802,18 @@ export const postSchema = defineSchema((builder) => {
     fields: (t) => ({
       postId: t.id(),
       password: t.string(),
+    }),
+  });
+
+  const GeneratePostShareImageInput = builder.inputType('GeneratePostShareImageInput', {
+    fields: (t) => ({
+      title: t.string(),
+      space: t.string(),
+      body: t.string(),
+      font: t.string(), // Pretendard, RIDIBatang
+      size: t.string(), // small, medium, large
+      color: t.string(), // hex code
+      background: t.string(), // hex code
     }),
   });
 
@@ -1658,6 +1671,14 @@ export const postSchema = defineSchema((builder) => {
           ...query,
           where: { id: post.id },
         });
+      },
+    }),
+
+    generatePostShareImage: t.string({
+      args: { input: t.arg({ type: GeneratePostShareImageInput }) },
+      resolve: async (_, { input }) => {
+        const png = await generatePostShareImage(input);
+        return `data:image/png;base64,${png.toString('base64')}`;
       },
     }),
   }));

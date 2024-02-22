@@ -154,6 +154,16 @@ input FollowTagInput {
   tagId: ID!
 }
 
+input GeneratePostShareImageInput {
+  background: String!
+  body: String!
+  color: String!
+  font: String!
+  size: String!
+  space: String!
+  title: String!
+}
+
 input IgnoreSpaceMemberInvitationInput {
   invitationId: ID!
 }
@@ -226,6 +236,7 @@ type Mutation {
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   followSpace(input: FollowSpaceInput!): Space!
   followTag(input: FollowTagInput!): Tag!
+  generatePostShareImage(input: GeneratePostShareImageInput!): String!
   ignoreSpaceMemberInvitation(input: IgnoreSpaceMemberInvitationInput!): SpaceMemberInvitation!
   issueUserEmailAuthorizationUrl(input: IssueUserEmailAuthorizationUrlInput!): IssueUserEmailAuthorizationUrlResult!
   issueUserSingleSignOnAuthorizationUrl(input: IssueUserSingleSignOnAuthorizationUrlInput!): IssueUserSingleSignOnAuthorizationUrlResult!
