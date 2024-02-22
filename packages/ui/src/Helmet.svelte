@@ -3,7 +3,7 @@
 
   export let type = 'website';
   export let title: string;
-  export let titleSuffix = '| 펜슬';
+  export let titleSuffix = ' | 펜슬';
   export let description: string;
   export let image: string | { src: string; size: 'small' | 'large' } | undefined = undefined;
 
