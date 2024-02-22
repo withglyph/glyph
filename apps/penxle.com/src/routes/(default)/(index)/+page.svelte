@@ -34,12 +34,13 @@
 </svelte:head>
 
 <Helmet
-  description="펜슬은 누구나 창작자가 될 수 있는, 개인 창작자들을 위한 자유롭고 즐거운 창작 공간이에요."
+  description="펜슬은 누구나 창작자가 될 수 있는, 개인 창작자들을 위한 자유롭고 즐거운 창작 사이트예요."
   image={{
     src: 'https://pnxl.net/assets/opengraph/default-cover.png',
     size: 'large',
   }}
   title="누구나 창작자가 되다, 펜슬"
+  titleSuffix=""
 />
 
 <div class="w-full bg-white grow px-16px py-32px">

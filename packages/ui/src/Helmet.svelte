@@ -3,6 +3,7 @@
 
   export let type = 'website';
   export let title: string;
+  export let titleSuffix = '| 펜슬';
   export let description: string;
   export let image: string | { src: string; size: 'small' | 'large' } | undefined = undefined;
 
@@ -12,8 +13,8 @@
 </script>
 
 <svelte:head>
-  <title>{title} | 펜슬</title>
-  <meta content={`${title} | 펜슬`} property="og:title" />
+  <title>{title}{titleSuffix}</title>
+  <meta content={`${title}${titleSuffix}`} property="og:title" />
   {#if description}
     <meta name="description" content={description} />
     <meta content={description} property="og:description" />
