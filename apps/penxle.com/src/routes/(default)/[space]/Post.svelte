@@ -330,7 +330,7 @@
   title={$postRevision.title ?? '(제목 없음)'}
 />
 
-<article class={clsx('w-full bg-white grow', _class)}>
+<article class={clsx('w-full grow @dark:bg-gray-900', _class)}>
   <div class="w-full max-w-960px mx-auto flex flex-col pt-60px">
     <div>
       <h1 class="text-28-sb break-all">{$postRevision.title ?? '(제목 없음)'}</h1>
