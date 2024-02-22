@@ -198,6 +198,7 @@ export const feedSchema = defineSchema((builder) => {
         const postTags = await db.postTag.findMany({
           include: { tag: query },
           where: {
+            kind: { not: 'TRIGGER' },
             tag: context.session
               ? {
                   userMutes: { none: { userId: context.session.userId } },
