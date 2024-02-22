@@ -34,7 +34,7 @@
 </svelte:head>
 
 <Helmet
-  description="펜슬은 누구나 창작자가 될 수 있는, 개인 창작자들을 위한 자유롭고 즐거운 창작 사이트예요."
+  description="펜슬은 누구나 창작자가 될 수 있는, 개인 창작자들을 위한 자유롭고 즐거운 창작 사이트예요. 펜슬에 1, 2차 창작물을 올리고, 다른 사람들의 창작 활동을 둘러보세요."
   image={{
     src: 'https://pnxl.net/assets/opengraph/default-cover.png',
     size: 'large',
