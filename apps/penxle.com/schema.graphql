@@ -880,6 +880,7 @@ type User {
   bookmarks: [BookmarkGroup!]!
   contentFilterPreferences: [UserContentFilterPreference!]!
   email: String!
+  emojiReactedPosts: [Post!]!
   eventEnrollment(eventCode: String!): UserEventEnrollment
   followedSpaces: [Space!]!
   followedTags: [Tag!]!

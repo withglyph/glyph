@@ -238,6 +238,37 @@ export const userSchema = defineSchema((builder) => {
         },
       }),
 
+      emojiReactedPosts: t.prismaField({
+        type: ['Post'],
+        resolve: async (query, user, _, { db }) => {
+          const emojiReactions = await db.postReaction.findMany({
+            select: { post: query },
+            where: {
+              userId: user.id,
+              post: {
+                state: 'PUBLISHED',
+                space: {
+                  state: 'ACTIVE',
+                  OR: [{ visibility: 'PUBLIC' }, { visibility: 'PRIVATE', members: { some: { userId: user.id } } }],
+                },
+                OR: [
+                  { visibility: 'PUBLIC' },
+                  { visibility: 'UNLISTED' },
+                  {
+                    visibility: 'SPACE',
+                    space: { members: { some: { userId: user.id } } },
+                  },
+                ],
+              },
+            },
+            orderBy: { createdAt: 'desc' },
+            distinct: ['postId'],
+          });
+
+          return emojiReactions.map(({ post }) => post);
+        },
+      }),
+
       purchasedPosts: t.prismaField({
         type: ['Post'],
         select: (_, __, nestedSelection) => ({
