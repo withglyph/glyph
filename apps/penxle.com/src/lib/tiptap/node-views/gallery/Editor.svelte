@@ -12,11 +12,10 @@
   import { graphql } from '$glitch';
   import { Tooltip } from '$lib/components';
   import { Checkbox, Switch } from '$lib/components/forms';
-  import Button from '$lib/components/v2/Button.svelte';
+  import { Button, Modal } from '$lib/components/v2';
   import { isValidImageFile, persisted, validImageMimes } from '$lib/utils';
   import Display from './Display.svelte';
   import IsomorphicImage from './IsomorphicImage.svelte';
-  import Modal from './Modal.svelte';
   import RadioGroup from './RadioGroup.svelte';
   import type { Image_image } from '$glitch';
   import type { NodeViewProps } from '$lib/tiptap';
@@ -280,11 +279,11 @@
   };
 </script>
 
-<Modal on:close={() => (open = false)} bind:open>
+<Modal size="lg" on:close={() => (open = false)} bind:open>
   <svelte:fragment slot="title">
     이미지 편집
     <Tooltip
-      class="flex ml-1"
+      class="flex items-center ml-1"
       message="이미지는 무제한으로 추가할 수 있으며, 하단에 있는 이미지를 드래그해서 놓으면 순서를 변경할 수 있어요"
       offset={10}
       placement="bottom-start"
