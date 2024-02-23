@@ -11,7 +11,7 @@ export const searchSchema = defineSchema((builder) => {
    * * Types
    */
 
-  const OrderByKind = builder.enumType('OrderByKind', {
+  const OrderByKind = builder.enumType('SearchOrderByKind', {
     values: ['ACCURACY', 'LATEST'],
   });
 

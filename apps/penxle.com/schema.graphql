@@ -28,6 +28,11 @@ input BookmarkPostInput {
   postId: ID!
 }
 
+enum CommentOrderByKind {
+  LATEST
+  OLDEST
+}
+
 enum ContentFilterAction {
   EXPOSE
   WARN
@@ -45,6 +50,13 @@ enum ContentFilterCategory {
   PHOBIA
   TRAUMA
   VIOLENCE
+}
+
+input CreateCommentInput {
+  content: String!
+  parentId: ID
+  postId: ID!
+  visibility: PostCommentVisibility!
 }
 
 input CreatePostInput {
@@ -87,6 +99,10 @@ input CreateUserInput {
 A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
 scalar DateTime
+
+input DeleteCommentInput {
+  commentId: ID!
+}
 
 input DeletePostInput {
   postId: ID!
@@ -220,12 +236,14 @@ input MarkNotificationAsReadInput {
 type Mutation {
   acceptSpaceMemberInvitation(input: AcceptSpaceMemberInvitationInput!): SpaceMemberInvitation!
   bookmarkPost(input: BookmarkPostInput!): Post!
+  createComment(input: CreateCommentInput!): PostComment!
   createPost(input: CreatePostInput!): Post!
   createPostReaction(input: CreatePostReactionInput!): Post!
   createSpace(input: CreateSpaceInput!): Space!
   createSpaceCollection(input: CreateSpaceCollectionInput!): SpaceCollection!
   createSpaceMemberInvitation(input: CreateSpaceMemberInvitationInput!): SpaceMemberInvitation!
   createUser(input: CreateUserInput!): User!
+  deleteComment(input: DeleteCommentInput!): PostComment!
   deletePost(input: DeletePostInput!): Post!
   deletePostReaction(input: DeletePostReactionInput!): Post!
   deleteSpace(input: DeleteSpaceInput!): Space!
@@ -269,6 +287,7 @@ type Mutation {
   unmuteSpace(input: UnmuteSpaceInput!): Space!
   unmuteTag(input: UnmuteTagInput!): Tag!
   unsetParentTag(input: UnsetParentTagInput!): Tag!
+  updateComment(input: UpdateCommentInput!): PostComment!
   updatePostCollection(input: UpdatePostCollectionInput!): Post! @deprecated(reason: "Use setSpaceCollectionPost instead")
   updatePostOptions(input: UpdatePostOptionsInput!): Post!
   updatePostView(input: UpdatePostViewInput!): Post!
@@ -291,11 +310,6 @@ input MuteSpaceInput {
 
 input MuteTagInput {
   tagId: ID!
-}
-
-enum OrderByKind {
-  ACCURACY
-  LATEST
 }
 
 enum PaymentMethod {
@@ -357,6 +371,8 @@ type Post {
   bookmarkGroups: [BookmarkGroup!]!
   category: PostCategory!
   collection: SpaceCollection
+  commentCount: Int!
+  comments(orderBy: CommentOrderByKind! = OLDEST, page: Int! = 1, take: Int! = 5): [PostComment!]!
   createdAt: DateTime!
   discloseStats: Boolean!
   draftRevision(revisionId: ID): PostRevision!
@@ -402,6 +418,28 @@ enum PostCategory {
   NONFICTION
   ORIGINAL
   OTHER
+}
+
+type PostComment {
+  childComments: [PostComment!]!
+  content: String!
+  createdAt: DateTime!
+  id: ID!
+  parent: PostComment
+  pinned: Boolean!
+  profile: Profile!
+  state: PostCommentState!
+  updatedAt: DateTime
+}
+
+enum PostCommentState {
+  ACTIVE
+  INACTIVE
+}
+
+enum PostCommentVisibility {
+  PRIVATE
+  PUBLIC
 }
 
 enum PostPair {
@@ -502,6 +540,7 @@ input PublishPostInput {
   pairs: [PostPair!]! = []
   password: String
   protectContent: Boolean!
+  receiveComment: Boolean = true
   receiveFeedback: Boolean!
   receivePatronage: Boolean!
   receiveTagContribution: Boolean!
@@ -554,7 +593,7 @@ type Query {
   recommendFeed: [Post!]!
   sampleImage: Image!
   sampleImages: [Image!]!
-  searchPosts(adultFilter: Boolean, excludeTags: [String!]! = [], includeTags: [String!]! = [], orderBy: OrderByKind! = ACCURACY, page: Int! = 1, query: String!): SearchResult!
+  searchPosts(adultFilter: Boolean, excludeTags: [String!]! = [], includeTags: [String!]! = [], orderBy: SearchOrderByKind! = ACCURACY, page: Int! = 1, query: String!): SearchResult!
   searchSpaces(query: String!): [Space!]!
   searchTags(query: String!): [Tag!]!
   space(slug: String!): Space!
@@ -606,6 +645,11 @@ input RevisePostInput {
 input ReviseTagWikiInput {
   content: String!
   tagId: ID!
+}
+
+enum SearchOrderByKind {
+  ACCURACY
+  LATEST
 }
 
 type SearchResult {
@@ -804,6 +848,11 @@ input UnmuteTagInput {
 input UnsetParentTagInput {
   parentTagId: ID!
   tagId: ID!
+}
+
+input UpdateCommentInput {
+  commentId: ID!
+  content: String!
 }
 
 input UpdatePostCollectionInput {

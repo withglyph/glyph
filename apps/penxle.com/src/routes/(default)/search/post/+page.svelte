@@ -13,7 +13,7 @@
       $includeTags: [String!]! = []
       $excludeTags: [String!]! = []
       $adultFilter: Boolean
-      $orderBy: OrderByKind!
+      $orderBy: SearchOrderByKind!
       $page: Int! = 1
     ) {
       searchPosts(

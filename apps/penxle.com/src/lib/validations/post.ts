@@ -27,6 +27,7 @@ export const PublishPostInputSchema = z.object({
   receivePatronage: z.boolean(),
   receiveTagContribution: z.boolean(),
   protectContent: z.boolean(),
+  receiveComment: z.boolean().default(true),
   category: z.enum(['ORIGINAL', 'FANFICTION', 'NONFICTION', 'OTHER']),
   pairs: z.array(z.enum(['BL', 'GL', 'HL', 'MULTIPLE', 'NONCP', 'OTHER'])),
   tags: z.array(

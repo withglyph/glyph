@@ -36,6 +36,10 @@ export const postSchema = defineSchema((builder) => {
    * * Types
    */
 
+  const CommentOrderByKind = builder.enumType('CommentOrderByKind', {
+    values: ['LATEST', 'OLDEST'] as const,
+  });
+
   builder.prismaObject('Post', {
     grantScopes: async (post, { db, ...context }) => {
       // 글 관리 권한이 있는지 체크
@@ -422,6 +426,64 @@ export const postSchema = defineSchema((builder) => {
         },
       }),
 
+      commentCount: t.relationCount('comments', {
+        where: { state: 'ACTIVE' },
+      }),
+
+      comments: t.prismaField({
+        type: ['PostComment'],
+        args: {
+          orderBy: t.arg({ type: CommentOrderByKind, defaultValue: 'OLDEST' }),
+          page: t.arg.int({ defaultValue: 1 }),
+          take: t.arg.int({ defaultValue: 5 }),
+        },
+        resolve: async (query, post, { orderBy, page, take }, { db }) => {
+          const orderQuery = match(orderBy)
+            .with('OLDEST', () => ({ createdAt: 'asc' as const }))
+            .with('LATEST', () => ({ createdAt: 'desc' as const }))
+            .exhaustive();
+
+          const pinnedComments = await db.postComment.findMany({
+            ...query,
+            where: {
+              postId: post.id,
+              state: 'ACTIVE',
+              pinned: true,
+            },
+            orderBy: orderQuery,
+            take,
+            skip: (page - 1) * take,
+          });
+
+          if (pinnedComments.length >= take) {
+            return pinnedComments;
+          }
+
+          const pinnedCommentsCount = await db.postComment.count({
+            where: {
+              postId: post.id,
+              state: 'ACTIVE',
+              pinned: true,
+            },
+          });
+
+          const comments = await db.postComment.findMany({
+            ...query,
+            where: {
+              postId: post.id,
+              state: 'ACTIVE',
+              pinned: false,
+              parentId: null,
+            },
+            orderBy: orderQuery,
+            take: take - pinnedComments.length,
+            skip: Math.max(0, (page - 1) * take - pinnedCommentsCount),
+          });
+
+          return [...pinnedComments, ...comments];
+        },
+      }),
+
       //// deprecated
 
       purchasedRevision: t.withAuth({ user: true }).prismaField({
@@ -735,6 +797,7 @@ export const postSchema = defineSchema((builder) => {
       receivePatronage: t.boolean(),
       receiveTagContribution: t.boolean(),
       protectContent: t.boolean(),
+      receiveComment: t.boolean({ required: false, defaultValue: true }),
       category: t.field({ type: PrismaEnums.PostCategory }),
       pairs: t.field({ type: [PrismaEnums.PostPair], defaultValue: [] }),
       tags: t.field({ type: [TagInput], defaultValue: [] }),
@@ -1218,6 +1281,7 @@ export const postSchema = defineSchema((builder) => {
             receivePatronage: input.receivePatronage,
             receiveTagContribution: input.receiveTagContribution,
             protectContent: input.protectContent,
+            receiveComment: input.receiveComment ?? true,
             password,
             category: input.category,
             pairs: input.pairs,
