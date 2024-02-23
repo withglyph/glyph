@@ -165,6 +165,7 @@ model Post {
   receivePatronage       Boolean @map("receive_patronage")
   receiveTagContribution Boolean @map("receive_tag_contribution")
   protectContent         Boolean @default(true) @map("protect_content")
+  receiveComment         Boolean @default(true) @map("receive_comment")
 
   category PostCategory @default(OTHER)
   pairs    PostPair[]   @default([])
@@ -172,17 +173,41 @@ model Post {
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
   publishedAt DateTime? @map("published_at") @db.Timestamptz
 
-  likes          PostLike[]
-  revisions      PostRevision[]
-  views          PostView[]
-  purchases      PostPurchase[]
-  reactions      PostReaction[]
   bookmarks      BookmarkGroupPost[]
   collectionPost SpaceCollectionPost?
+  comments       PostComment[]
+  likes          PostLike[]
+  purchases      PostPurchase[]
+  reactions      PostReaction[]
+  revisions      PostRevision[]
   tags           PostTag[]
+  views          PostView[]
 
   @@index([publishedAt])
   @@map("posts")
+}
+
+model PostComment {
+  id         String                @id
+  postId     String                @map("post_id")
+  post       Post                  @relation(fields: [postId], references: [id])
+  userId     String                @map("user_id")
+  user       User                  @relation(fields: [userId], references: [id])
+  profileId  String                @map("profile_id")
+  profile    Profile               @relation(fields: [profileId], references: [id])
+  parentId   String?               @map("parent_id")
+  parent     PostComment?          @relation("child_comments", fields: [parentId], references: [id])
+  state      PostCommentState
+  visibility PostCommentVisibility
+  content    String
+  pinned     Boolean               @default(false)
+  createdAt  DateTime              @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt  DateTime?             @map("updated_at") @db.Timestamptz
+
+  childComments PostComment[] @relation("child_comments")
+
+  @@index([postId, createdAt])
+  @@map("post_comments")
 }
 
 model PostLike {
@@ -315,10 +340,11 @@ model Profile {
   avatar    Image    @relation(fields: [avatarId], references: [id])
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
+  comments         PostComment[]
+  notifications    UserNotification[]
   spaceMasquerades SpaceMasquerade[]
   spaceMembers     SpaceMember[]
   user             User?
-  notifications    UserNotification[]
 
   @@map("profiles")
 }
@@ -425,14 +451,15 @@ model SpaceUserBlock {
 }
 
 model SpaceMasquerade {
-  id        String   @id
-  spaceId   String   @map("space_id")
-  space     Space    @relation(fields: [spaceId], references: [id])
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
-  profileId String   @map("profile_id")
-  profile   Profile  @relation(fields: [profileId], references: [id])
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  id        String    @id
+  spaceId   String    @map("space_id")
+  space     Space     @relation(fields: [spaceId], references: [id])
+  userId    String    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id])
+  profileId String    @map("profile_id")
+  profile   Profile   @relation(fields: [profileId], references: [id])
+  blockedAt DateTime? @map("blocked_at") @db.Timestamptz
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   @@unique([spaceId, userId])
   @@map("space_masquerades")
@@ -582,6 +609,7 @@ model User {
 
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
+  comments                 PostComment[]
   emailVerifications       UserEmailVerification[]
   eventEnrollments         UserEventEnrollment[]
   uploadedFiles            File[]
@@ -825,6 +853,20 @@ enum PostCategory {
   OTHER
 
   @@map("_post_category")
+}
+
+enum PostCommentState {
+  ACTIVE
+  INACTIVE
+
+  @@map("_post_comment_state")
+}
+
+enum PostCommentVisibility {
+  PUBLIC
+  PRIVATE
+
+  @@map("_post_comment_visibility")
 }
 
 enum PostPair {
