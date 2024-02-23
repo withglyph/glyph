@@ -161,19 +161,19 @@
   };
 </script>
 
-<div class="flex center mx-3 relative">
+<div class="flex center relative">
   <a class="square-10 rounded-full square-10 flex center sm:hidden" href="/me/notifications">
-    <i class="i-px-bell-fill square-5 color-text-secondary" />
+    <i class="i-tb-bell square-5 color-gray-700" />
   </a>
 
   <button
-    class="square-10 rounded-full flex center transition color-text-secondary hover:bg-surface-primary aria-pressed:(bg-yellow-10 color-yellow-50!) <sm:hidden"
+    class="square-10 rounded-full flex center transition color-gray-700 hover:bg-surface-primary aria-pressed:(bg-yellow-10 color-yellow-50!) <sm:hidden"
     aria-pressed={open}
     type="button"
     on:click={() => (open = true)}
     use:anchor
   >
-    <i class="i-px-bell-fill square-5" />
+    <i class="i-tb-bell square-5" />
   </button>
 
   {#if checkUnreadNotification}

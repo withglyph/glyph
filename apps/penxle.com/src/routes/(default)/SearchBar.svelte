@@ -33,12 +33,12 @@
   }}
 >
   <input
-    class="transition-all rounded-9 bg-primary py-2 pl-11 pr-4 text-sm border border-bg-primary focus-within:border-primary next:focus:text-icon-primary w-full"
+    class="transition-all rounded bg-primary py-3 pr-10 pl-3 text-14-m h-45px border border-bg-primary focus-within:border-primary next:focus:text-icon-primary w-full"
     placeholder="검색어를 입력하세요"
     type="search"
     bind:value
   />
-  <div class="absolute inset-y-0 left-4 flex center text-secondary">
-    <i class="i-lc-search square-5 transition" />
+  <div class="absolute inset-y-0 right-3 flex center text-gray-400">
+    <i class="i-tb-search square-5 transition" />
   </div>
 </form>
