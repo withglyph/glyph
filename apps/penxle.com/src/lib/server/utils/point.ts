@@ -5,14 +5,16 @@ import type { InteractiveTransactionClient } from '../database';
 type GetUserPointParams = {
   db: InteractiveTransactionClient;
   userId: string;
+  kind?: PrismaEnums.PointKind;
 };
-export const getUserPoint = async ({ db, userId }: GetUserPointParams) => {
+export const getUserPoint = async ({ db, userId, kind }: GetUserPointParams) => {
   const agg = await db.pointBalance.aggregate({
     _sum: { leftover: true },
     where: {
       userId,
       leftover: { gt: 0 },
       expiresAt: { gt: new Date() },
+      kind,
     },
   });
 

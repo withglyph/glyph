@@ -102,8 +102,9 @@ export const userSchema = defineSchema((builder) => {
       }),
 
       point: t.int({
-        resolve: async (user, _, { db }) => {
-          return getUserPoint({ db, userId: user.id });
+        args: { kind: t.arg({ type: PrismaEnums.PointKind, required: false }) },
+        resolve: async (user, { kind }, { db }) => {
+          return getUserPoint({ db, userId: user.id, kind: kind ?? undefined });
         },
       }),
 

@@ -14,6 +14,8 @@
       me @_required {
         id
         point
+        freePoint: point(kind: FREE)
+        paidPoint: point(kind: PAID)
 
         points {
           id
@@ -64,13 +66,13 @@
         <div class="flex p-0 gap-1 justify-between">
           <div class="text-secondary body-14-m">유료 포인트</div>
           <div class="text-primary body-14-m">
-            {comma($query.me.point)}P
+            {comma($query.me.paidPoint)}P
           </div>
         </div>
         <div class="flex p-0 gap-1 justify-between">
           <div class="text-secondary body-14-m">무료 포인트</div>
           <div class="text-primary body-14-m">
-            {comma(0)}P
+            {comma($query.me.freePoint)}P
           </div>
         </div>
       </div>
