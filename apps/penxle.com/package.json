@@ -16,7 +16,7 @@
     "migrate": "doppler run -- prisma migrate dev",
     "migrate:new": "doppler run -- prisma migrate dev --create-only",
     "run:script": "doppler run -- node --import ./scripts/loader/register.js --import tsx",
-    "run:script:prod": "doppler run -c prod_direct -- node --import ./scripts/loader/register.js --import tsx",
+    "run:script:prod": "doppler run -c prod -- node --import ./scripts/loader/register.js --import tsx",
     "test": "playwright test"
   },
   "dependencies": {
