@@ -27,7 +27,6 @@
   export let updateAttributes: NodeViewProps['updateAttributes'];
 
   $: isLastChild = editor?.state.doc.lastChild?.eq(node) ?? false;
-  $: setInitialValues({ price: node.attrs.price ?? 0 });
 
   let priceOpen = false;
   let loginRequireOpen = false;
@@ -54,26 +53,39 @@
     offset: 8,
   });
 
-  const { form, errors, data, setFields, setInitialValues } = createForm({
-    initialValues: { price: 0 },
+  const { form, isSubmitting, setInitialValues, errors } = createForm({
     extend: [
       validator({
         schema: z.object({
-          price: z.number().int().min(100).max(1_000_000).multipleOf(100),
+          price: z
+            .string()
+            .transform((value) => Number.parseInt(value.replaceAll(',', '')))
+            .pipe(z.number().int().min(100).max(1_000_000).multipleOf(100)),
         }),
       }),
     ],
-    onSubmit: (values) => {
-      updateAttributes({ price: values.price });
-      priceOpen = false;
+    onSubmit: ({ price }: { price: string }) => {
+      const parsed = Number.parseInt(price.replaceAll(',', ''));
+      if (Number.isNaN(parsed)) throw new Error('Unexpected invalid price');
+
+      updateAttributes({ price: parsed });
     },
   });
+
+  let isSubmitted = false;
+  $: if ($isSubmitting && !isSubmitted) {
+    isSubmitted = true;
+  }
+
+  $: setInitialValues({ price: node.attrs.price ? comma(node.attrs.price) : '' });
 
   $: if (priceOpen) {
     // eslint-disable-next-line unicorn/prefer-top-level-await
     tick().then(() => {
       priceInputEl?.focus();
     });
+  } else {
+    isSubmitted = false;
   }
 
   afterNavigate(() => {
@@ -164,19 +176,16 @@
           <div class="relative">
             <input
               bind:this={priceInputEl}
-              class={clsx(
-                'border pl-12px pr-24px py-10px rounded-4px text-14-r w-90px sm:(w-110px text-16-r)',
-                $errors.price ? 'border-error-900 bg-error-50' : 'border-gray-200 bg-gray-100',
-              )}
+              name="price"
+              class="border pl-12px pr-24px py-10px rounded-4px text-16-r w-110px border pl-12px pr-24px py-10px rounded-4px text-16-r w-110px'
+                border-gray-200 bg-white aria-[invalid='true']:(border-error-900 bg-error-50)"
+              aria-invalid={isSubmitted && !!errors.price}
               inputmode="numeric"
-              pattern="[0-9]*"
               placeholder="1,000"
-              type="text"
-              value={$data.price ? comma($data.price) : ''}
               on:input={(event) => {
-                const value = event.currentTarget.value.replaceAll(/\D/g, '');
-                event.currentTarget.value = value;
-                setFields('price', Number(value), true);
+                const parsed = Number.parseInt(event.currentTarget.value.replaceAll(/\D/g, ''));
+
+                event.currentTarget.value = Number.isNaN(parsed) ? '' : comma(parsed);
               }}
             />
             <span class="absolute inset-y-0 right-0 flex center pr-12px text-16-r">P</span>

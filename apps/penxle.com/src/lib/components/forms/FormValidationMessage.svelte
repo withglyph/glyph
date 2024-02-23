@@ -1,5 +1,6 @@
 <script lang="ts">
   import { getFormContext } from '$lib/form';
+  import type { Writable } from 'svelte/store';
 
   let errorFor: string;
   export { errorFor as for };
@@ -9,9 +10,16 @@
   if (!form) {
     throw new Error('Validation must be used within a Form');
   }
+  const isSubmitting: Writable<boolean> = form.isSubmitting;
+
+  let isSubmitted = false;
+
+  $: if ($isSubmitting && !isSubmitted) {
+    isSubmitted = true;
+  }
 
   $: store = type === 'error' ? form.errors : form.warnings;
-  $: message = $store[errorFor]?.[0];
+  $: message = isSubmitted && $store[errorFor]?.[0];
 </script>
 
 {#if message}
