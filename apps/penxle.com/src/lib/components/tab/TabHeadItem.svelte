@@ -36,7 +36,7 @@
       $variant === 'primary' &&
         'title-20-eb border-b-10 leading-5 transition border-transparent text-disabled hover:(text-black border-brand-50) aria-selected:(text-black border-brand-50)',
       $variant === 'secondary' &&
-        'bg-white p-3 text-center sm:bg-transparent transition border-b-2 border-white body-16-sb text-disabled hover:(text-black border-black) aria-selected:(text-black font-bold border-b-2 border-black)',
+        'bg-white py-3 px-5 text-center sm:bg-transparent transition border-b-2 border-white text-14-sb text-disabled hover:(text-black border-black) aria-selected:(text-black font-bold border-b-2 border-black)',
       _class,
     )}
     aria-selected={selected}

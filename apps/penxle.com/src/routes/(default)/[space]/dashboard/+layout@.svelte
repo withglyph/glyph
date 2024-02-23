@@ -60,9 +60,13 @@
 <Header {$query} />
 
 <main class="flex flex-col justify-center grow sm:flex-row">
-  <button class="flex items-center justify-between p-4 sm:hidden" type="button" on:click={() => (open = true)}>
-    <h2 class="title-20-eb">{$pageSubTitle}</h2>
-    <i class="i-lc-chevron-down square-6" />
+  <button
+    class="flex items-center justify-between p-4 border-b border-gray-200 sm:hidden"
+    type="button"
+    on:click={() => (open = true)}
+  >
+    <h2 class="text-16-sb">{$pageSubTitle}</h2>
+    <i class="i-tb-chevron-down square-6 block" />
   </button>
 
   <aside class="flex justify-end <sm:hidden max-w-21.1875rem w-full">
@@ -146,17 +150,17 @@
             </a>
           </li>
           <li>
-            <button
+            <a
               class={clsx(
                 'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-                $page.url.pathname === `/${$query.space.slug}/dashboard/subscribers` && 'bg-primary text-primary',
+                $page.url.pathname.startsWith(`/${$query.space.slug}/dashboard/subscribers`) &&
+                  'bg-primary text-primary',
               )}
-              type="button"
-              on:click={() => (comingSoonOpen = true)}
+              href="/{$query.space.slug}/dashboard/subscribers/blocked"
             >
               <i class="i-lc-users square-5" />
               독자 관리
-            </button>
+            </a>
           </li>
           <li>
             <a
@@ -175,7 +179,7 @@
     </div>
   </aside>
 
-  <div class="bg-primary flex-1 py-5 px-4 sm:(py-10 px-11) overflow-auto">
+  <div class="bg-primary flex-1 sm:(py-10 px-11) overflow-auto">
     <div class="max-w-218 w-full">
       <slot />
     </div>
@@ -276,17 +280,16 @@
         </a>
       </li>
       <li>
-        <button
+        <a
           class={clsx(
             'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-            $page.url.pathname === `/${$query.space.slug}/dashboard/subscribers` && 'bg-primary text-primary',
+            $page.url.pathname.startsWith(`/${$query.space.slug}/dashboard/subscribers`) && 'bg-primary text-primary',
           )}
-          type="button"
-          on:click={() => (comingSoonOpen = true)}
+          href="/{$query.space.slug}/dashboard/subscribers/blocked"
         >
           <i class="i-lc-users square-5" />
           독자 관리
-        </button>
+        </a>
       </li>
       <li>
         <a
