@@ -160,12 +160,12 @@ model Post {
   ageRating          PostAgeRating  @default(ALL) @map("age_rating")
   externalSearchable Boolean        @default(true) @map("external_searchable")
 
-  discloseStats          Boolean @map("disclose_stats")
-  receiveFeedback        Boolean @map("receive_feedback")
-  receivePatronage       Boolean @map("receive_patronage")
-  receiveTagContribution Boolean @map("receive_tag_contribution")
-  protectContent         Boolean @default(true) @map("protect_content")
-  receiveComment         Boolean @default(true) @map("receive_comment")
+  discloseStats          Boolean                  @map("disclose_stats")
+  receiveFeedback        Boolean                  @map("receive_feedback")
+  receivePatronage       Boolean                  @map("receive_patronage")
+  receiveTagContribution Boolean                  @map("receive_tag_contribution")
+  protectContent         Boolean                  @default(true) @map("protect_content")
+  commentQualification   PostCommentQualification @default(ANY) @map("comment_qualification")
 
   category PostCategory @default(OTHER)
   pairs    PostPair[]   @default([])
@@ -853,6 +853,14 @@ enum PostCategory {
   OTHER
 
   @@map("_post_category")
+}
+
+enum PostCommentQualification {
+  NONE
+  IDENTIFIED
+  ANY
+
+  @@map("_post_comment_qualification")
 }
 
 enum PostCommentState {

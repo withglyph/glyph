@@ -71,7 +71,6 @@ export const commentSchema = defineSchema((builder) => {
           where: {
             id: input.postId,
             state: 'PUBLISHED',
-            receiveComment: true,
           },
         });
 
@@ -93,6 +92,20 @@ export const commentSchema = defineSchema((builder) => {
 
           if (meAsMember) {
             return meAsMember.profileId;
+          }
+
+          if (post.commentQualification === 'NONE') {
+            throw new PermissionDeniedError();
+          }
+
+          if (post.commentQualification === 'IDENTIFIED') {
+            const user = await db.userPersonalIdentity.existsUnique({
+              where: { userId: context.session.userId },
+            });
+
+            if (!user) {
+              throw new PermissionDeniedError();
+            }
           }
 
           const masquerade = await makeMasquerade({

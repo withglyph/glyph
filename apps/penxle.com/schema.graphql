@@ -433,6 +433,12 @@ type PostComment {
   visibility: PostCommentVisibility!
 }
 
+enum PostCommentQualification {
+  ANY
+  IDENTIFIED
+  NONE
+}
+
 enum PostCommentState {
   ACTIVE
   INACTIVE
@@ -536,12 +542,12 @@ input PublishPostInput {
   ageRating: PostAgeRating!
   category: PostCategory!
   collectionId: ID
+  commentQualification: PostCommentQualification = ANY
   discloseStats: Boolean!
   externalSearchable: Boolean!
   pairs: [PostPair!]! = []
   password: String
   protectContent: Boolean!
-  receiveComment: Boolean = true
   receiveFeedback: Boolean!
   receivePatronage: Boolean!
   receiveTagContribution: Boolean!

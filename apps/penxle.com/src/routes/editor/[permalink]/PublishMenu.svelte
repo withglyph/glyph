@@ -166,7 +166,7 @@
     receiveTagContribution: $post.receiveTagContribution,
     protectContent: $post.protectContent,
     // TODO: CI 에러 방지용으로 넣은 줄이고 나중에 실제 데이터 붙여야 해요
-    receiveComment: true,
+    commentQualification: 'ANY',
     category: $post.category,
     pairs: $post.pairs ?? [],
     tags: $post.tags.map((t) => ({ name: t.tag.name, kind: t.kind })),
