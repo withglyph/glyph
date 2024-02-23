@@ -805,6 +805,7 @@ enum PointTransactionCause {
   EXPIRE
   UNLOCK_CONTENT
   PATRONIZE
+  EVENT_REWARD
 
   @@map("_point_transaction_cause")
 }

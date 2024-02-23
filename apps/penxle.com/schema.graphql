@@ -341,6 +341,7 @@ type PointTransaction {
 }
 
 enum PointTransactionCause {
+  EVENT_REWARD
   EXPIRE
   INTERNAL
   PATRONIZE

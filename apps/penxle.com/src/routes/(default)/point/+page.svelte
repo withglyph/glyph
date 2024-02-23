@@ -44,6 +44,7 @@
     REFUND: '환불',
     UNDO_PURCHASE: '결제 취소',
     UNLOCK_CONTENT: '구매',
+    EVENT_REWARD: '이벤트 보상',
   };
 
   let purchased = (cause: PointTransactionCause) => {
