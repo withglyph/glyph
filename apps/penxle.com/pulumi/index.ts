@@ -9,6 +9,8 @@ const site = new penxle.Site('pencil.so', {
 
   domain: {
     production: 'pencil.so',
+    staging: 'staging.pencil.so',
+    dev: 'dev.pencil.so',
   },
 
   image: {
