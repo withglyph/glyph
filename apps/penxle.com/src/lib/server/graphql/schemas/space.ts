@@ -199,6 +199,42 @@ export const spaceSchema = defineSchema((builder) => {
           },
         },
       }),
+
+      commentProfile: t.prismaField({
+        type: 'Profile',
+        nullable: true,
+        resolve: async (query, space, __, { db, ...context }) => {
+          if (!context.session) {
+            return null;
+          }
+
+          const meAsMember = await db.spaceMember.findUnique({
+            select: { profile: query },
+            where: {
+              spaceId_userId: {
+                spaceId: space.id,
+                userId: context.session.userId,
+              },
+              state: 'ACTIVE',
+            },
+          });
+
+          if (meAsMember) {
+            return meAsMember.profile;
+          }
+
+          const masquerade = await makeMasquerade({
+            db,
+            spaceId: space.id,
+            userId: context.session.userId,
+            query: {
+              include: { profile: query },
+            },
+          });
+
+          return masquerade.blockedAt ? null : masquerade.profile;
+        },
+      }),
     }),
   });
 
