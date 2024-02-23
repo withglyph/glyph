@@ -123,7 +123,7 @@
   </button>
 {:else}
   <button
-    class="square-5 hover:border-primary flex center p-0.5 disabled:(text-disabled border-gray-30 cursor-not-allowed)"
+    class="square-6 flex center hover:bg-gray-50 disabled:(text-disabled border-gray-30 cursor-not-allowed)"
     {disabled}
     type="button"
     on:click={(e) => {
@@ -132,7 +132,9 @@
     }}
     use:anchor
   >
-    <i class="i-px-happy bg-[#5C5755] square-4" />
+    <i class="i-tb-mood-plus text-gray-700 square-6 block" />
+
+    <slot />
   </button>
 {/if}
 

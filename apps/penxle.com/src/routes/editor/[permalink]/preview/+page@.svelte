@@ -90,7 +90,6 @@
     )}
     $postRevision={$query.post.draftRevision}
     {$query}
-    preview
   />
 </main>
 

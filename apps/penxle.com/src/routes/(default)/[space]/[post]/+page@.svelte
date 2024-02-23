@@ -5,6 +5,8 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
+  import Footer from '../../Footer.svelte';
+  import Header from '../../Header.svelte';
   import Post from '../Post.svelte';
 
   $: query = graphql(`
@@ -54,6 +56,7 @@
         }
       }
 
+      ...DefaultLayout_Header_query
       ...Post_query
     }
   `);
@@ -101,4 +104,8 @@
   {/each}
 </svelte:head>
 
+<Header {$query} />
+
 <Post $postRevision={$query.post.publishedRevision} {$query} />
+
+<Footer />

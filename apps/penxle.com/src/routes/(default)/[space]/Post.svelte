@@ -3,20 +3,25 @@
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import stringify from 'fast-json-stable-stringify';
+  import { onMount } from 'svelte';
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Avatar, Button, Image, SpacePostCard, Tag, Tooltip } from '$lib/components';
+  import { Avatar, Badge, Image, Tooltip } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import Modal from '$lib/components/Modal.svelte';
+  import { Button } from '$lib/components/v2';
+  import { categoryFilter, pairFilter } from '$lib/const/feed';
   import { EmojiPicker } from '$lib/emoji';
   import Emoji from '$lib/emoji/Emoji.svelte';
   import { FormValidationError } from '$lib/errors';
   import { toast } from '$lib/notification';
   import { TiptapRenderer } from '$lib/tiptap/components';
-  import { calcurateReadingTime, humanizeNumber } from '$lib/utils';
+  import { comma, humanizeNumber } from '$lib/utils';
   import LoginRequireModal from '../LoginRequireModal.svelte';
-  import Toolbar from './Toolbar.svelte';
+  import AlertText from './AlertText.svelte';
+  import Comment from './Comment.svelte';
+  import CommentInput from './CommentInput.svelte';
   import type { Editor } from '@tiptap/core';
   import type { Post_postRevision, Post_query } from '$glitch';
 
@@ -26,8 +31,6 @@
   let password = '';
   let openDeletePostWarning = false;
   let blurContent = true;
-  let element: 'a' | 'div';
-  let requirePersonalIdentityOpen = false;
 
   let _class: string | undefined = undefined;
   export { _class as class };
@@ -37,8 +40,6 @@
 
   let _postRevision: Post_postRevision;
   export { _postRevision as $postRevision };
-
-  export let preview = false;
 
   $: query = fragment(
     _query,
@@ -73,6 +74,8 @@
           protectContent
           publishedAt
           ageRating
+          category
+          pairs
 
           tags {
             id
@@ -91,7 +94,54 @@
 
           recommendedPosts {
             id
-            ...SpaceFeed_post
+            permalink
+            publishedAt
+            ageRating
+            hasPassword
+
+            tags {
+              id
+              kind
+
+              tag {
+                id
+                name
+              }
+            }
+
+            thumbnail {
+              id
+              ...Image_image
+            }
+
+            publishedRevision @_required {
+              id
+              title
+              subtitle
+              previewText
+              price
+            }
+
+            space @_required {
+              id
+              slug
+              name
+
+              icon {
+                id
+                ...Image_image
+              }
+            }
+
+            member @_required {
+              id
+
+              profile {
+                id
+                name
+                ...Avatar_profile
+              }
+            }
           }
 
           collection {
@@ -112,6 +162,7 @@
             publishedRevision @_required {
               id
               title
+              subtitle
             }
           }
 
@@ -122,6 +173,7 @@
             publishedRevision @_required {
               id
               title
+              subtitle
             }
           }
 
@@ -166,7 +218,6 @@
         }
 
         ...EmojiPicker_query
-        ...Toolbar_query
       }
     `),
   );
@@ -179,7 +230,6 @@
         title
         subtitle
         content
-        characterCount
         createdAt
         previewText
         paragraphIndent
@@ -195,35 +245,6 @@
   afterNavigate(() => {
     blurContent = $query.post.blurred;
   });
-
-  $: if ($query.post.ageRating !== 'ALL') {
-    loginRequireOpen = !$query.me;
-
-    if ($query.me) {
-      requirePersonalIdentityOpen =
-        !$query.me.personalIdentity || !$query.me.allowedAgeRating.includes($query.post.ageRating);
-    }
-  }
-
-  const likePost = graphql(`
-    mutation Post_LikePost_Mutation($input: LikePostInput!) {
-      likePost(input: $input) {
-        id
-        liked
-        likeCount
-      }
-    }
-  `);
-
-  const unlikePost = graphql(`
-    mutation Post_UnlikePost_Mutation($input: UnlikePostInput!) {
-      unlikePost(input: $input) {
-        id
-        liked
-        likeCount
-      }
-    }
-  `);
 
   const muteSpace = graphql(`
     mutation Post_MuteSpace_Mutation($input: MuteSpaceInput!) {
@@ -312,14 +333,29 @@
     }
   `);
 
-  const handleShare = () => {
-    const shortLink = `https://pnxl.me/${$query.post.shortlink}`;
-    navigator.clipboard.writeText(shortLink);
-    toast.success('링크가 복사되었어요');
-  };
+  // const handleShare = () => {
+  //   const shortLink = `https://pnxl.me/${$query.post.shortlink}`;
+  //   navigator.clipboard.writeText(shortLink);
+  //   toast.success('링크가 복사되었어요');
+  // };
 
   $: triggerTags = $query.post.tags.filter(({ kind }) => kind === 'TRIGGER');
+
+  let stickyFooterEl: HTMLElement;
+  let top: number;
+  let sticky = true;
+
+  onMount(() => {
+    top = stickyFooterEl.getBoundingClientRect().top;
+  });
 </script>
+
+<svelte:window
+  on:scroll|resize={() => {
+    if (window.innerWidth < 800 && $query.post.space)
+      sticky = top > stickyFooterEl.getBoundingClientRect().top ? false : true;
+  }}
+/>
 
 <Helmet
   description={$postRevision.previewText}
@@ -331,69 +367,74 @@
 />
 
 <article class={clsx('w-full bg-white grow', _class)}>
-  <div class="w-full max-w-960px mx-auto flex flex-col pt-60px">
+  <div class="w-full max-w-1062px mx-auto px-80px flex flex-col pt-42px <sm:(pt-24px px-5)">
     <div>
       <h1 class="text-28-sb break-all">{$postRevision.title ?? '(제목 없음)'}</h1>
       {#if $postRevision.subtitle}
-        <h2 class="text-16-r text-gray-700 break-all">{$postRevision.subtitle}</h2>
+        <h2 class="text-16-r text-gray-700 break-all mt-3px">{$postRevision.subtitle}</h2>
       {/if}
     </div>
 
-    <div class="border-y border-gray-100 flex gap-12px p-12px">
-      {#if $query.post.space && $query.post.member}
-        <a class="relative" href={`/${$query.post.space.slug}`}>
-          <Image class="square-36px rounded-4px border" $image={$query.post.space.icon} />
-          <Avatar
-            class="square-24px absolute border border-white -right-4px -bottom-4px"
-            $profile={$query.post.member.profile}
-          />
-        </a>
-      {:else}
-        <div class="absolute">
-          <div class="square-36px rounded-4px border" />
-          <div class="square-24px absolute border border-white -right-4px -bottom-4px" />
-        </div>
-      {/if}
+    <div class="border-y border-gray-100 flex justify-between px-2.5 py-3 my-6">
+      <a class="flex gap-18px" href={`/${$query.post.space?.slug}`}>
+        {#if $query.post.space && $query.post.member}
+          <a class="relative flex-none h-fit" href={`/${$query.post.space.slug}`}>
+            <Image class="square-36px rounded-4px border" $image={$query.post.space.icon} />
+            <Avatar
+              class="square-24px absolute border border-white -right-6px -bottom-2px"
+              $profile={$query.post.member.profile}
+            />
+          </a>
+        {:else}
+          <div class="absolute">
+            <div class="square-36px rounded-4px border" />
+            <div class="square-24px absolute border border-white -right-4px -bottom-4px" />
+          </div>
+        {/if}
 
-      <div class="flex flex-col gap-2px">
-        <div class="text-14-m text-gray-700">
-          {$query.post.space?.name ?? '스페이스'} · {$query.post.member?.profile.name ?? '작성자'}
-        </div>
+        <div class="flex flex-col gap-2px">
+          <div class="text-14-m text-gray-700 flex items-center flex-wrap gap-1">
+            <span>{$query.post.space?.name ?? '스페이스'}</span>
+            <span class="text-12-r text-gray-400">by {$query.post.member?.profile.name ?? '작성자'}</span>
+          </div>
 
-        <div class="flex gap-8px">
-          <span class="text-gray-500">{dayjs($query.post.publishedAt).formatAsDate()}</span>
-          <div class="w-1px h-12px bg-gray-200" />
-          <div class="flex gap-8px">
-            <div class="flex items-center gap-2px">
-              <i class="i-tb-eye square-14px" />
-              {humanizeNumber($query.post.viewCount)}
-            </div>
-            <div class="flex items-center gap-2px">
-              <i class="i-tb-heart square-14px" />
-              {humanizeNumber($query.post.likeCount)}
-            </div>
-            <div class="flex items-center gap-2px">
-              <i class="i-tb-clock-hour-4 square-14px" />
-              {calcurateReadingTime($postRevision.characterCount)}분
-            </div>
+          <div class="flex items-center text-11-r text-gray-500">
+            <time>
+              {dayjs($query.post.publishedAt).formatAsDate()}
+            </time>
+            {#if $query.post.discloseStats}
+              <div class="flex items-center before:(content-empty w-1px h-12px bg-gray-200 mx-2)">
+                <div class="flex items-center gap-2px mr-2.5">
+                  <i class="i-tb-eye square-14px text-gray-400" />
+                  {humanizeNumber($query.post.viewCount)}
+                </div>
+                <div class="flex items-center gap-2px">
+                  <i class="i-tb-heart square-14px text-gray-400" />
+                  {humanizeNumber($query.post.likeCount)}
+                </div>
+              </div>
+            {/if}
           </div>
         </div>
-      </div>
+      </a>
 
-      <div class="flex items-center gap-12px">
-        <button class="px-10px py-2px text-14-r text-gray-400" type="button">URL 복사</button>
+      <div class="flex items-center gap-12px <sm:hidden">
+        <!-- <Button size="xs" variant="tertiary">집중모드</Button> -->
+
+        <button class="i-tb-share-2 square-24px text-gray-500" type="button" />
 
         <button
           class={clsx(
             'square-24px',
-            $query.post.bookmarkGroups.length > 0 ? 'i-tb-bookmark-filled bg-yellow-50' : 'i-tb-bookmark text-gray-500',
+            $query.post.bookmarkGroups.length > 0
+              ? 'i-tb-bookmark-filled bg-teal-500'
+              : 'i-tb-bookmark text-gray-500 transition hover:text-teal-400',
           )}
           type="button"
           on:click={async () => {
             if ($query.post.bookmarkGroups.length > 0) {
               await unbookmarkPost({ bookmarkId: $query.post.bookmarkGroups[0].id, postId: $query.post.id });
               mixpanel.track('post:unbookmark', { postId: $query.post.id, via: 'post' });
-              toast.success('북마크에서 삭제했어요');
             } else {
               if (!$query.me) {
                 loginRequireOpen = true;
@@ -402,13 +443,13 @@
 
               await bookmarkPost({ postId: $query.post.id });
               mixpanel.track('post:bookmark', { postId: $query.post.id, via: 'post' });
-              toast.success('북마크에 저장되었어요');
             }
           }}
         />
 
-        <Menu>
+        <Menu placement="bottom-end">
           <i slot="value" class="i-tb-dots-vertical square-24px text-gray-500" />
+
           {#if $query.post.space?.meAsMember}
             <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
             <MenuItem
@@ -451,48 +492,207 @@
     </div>
 
     {#if !$query.post.hasPassword || $query.post.space?.meAsMember || $query.post.unlocked}
-      <div class="relative">
-        {#if $query.me?.personalIdentity || !$query.me?.isAdulthood}
-          {#if blurContent}
-            <header class="py-6 px-3 rounded-3 w-full flex flex-col gap-0.625rem items-center bg-primary" role="alert">
-              <div class="flex flex-col gap-2 items-center">
-                <i class="i-px-alert-triangle square-6 color-text-secondary" />
-                <h2 class="body-16-eb text-center break-keep">포스트에 민감한 내용이 포함되어 있어요</h2>
-              </div>
-              <ul class="flex gap-0.625rem flex-wrap justify-center max-w-26rem">
-                {#if $query.post.ageRating === 'R19'}
-                  <Tag as="div" size="sm">😳 성인물</Tag>
-                {:else if $query.post.ageRating === 'R15'}
-                  <Tag as="div" size="sm">15세</Tag>
-                {/if}
-                {#each triggerTags as triggerTag (triggerTag.id)}
-                  <Tag as="div" size="sm">{triggerTag.tag.name.replaceAll('_', ' ')}</Tag>
-                {/each}
-              </ul>
+      <div>
+        {#if blurContent}
+          {#if $query.post.ageRating === 'ALL'}
+            <AlertText
+              description="해당 포스트에는 민감한 내용이 포함되어 있어요"
+              icon="i-tb-alert-square-rounded"
+              title="트리거 주의"
+              {triggerTags}
+            >
               <Button
-                class="rounded-xl m-t-3"
+                class="w-158px text-14-sb! mt-5"
                 size="sm"
-                on:click={() => {
+                variant="outline"
+                on:click={() => (blurContent = false)}
+              >
+                표시
+              </Button>
+            </AlertText>
+          {:else if $query.post.ageRating === 'R15'}
+            <AlertText
+              description={$query.me
+                ? $query.me.personalIdentity
+                  ? ''
+                  : '해당 내용을 감상하려면 본인 인증이 필요해요'
+                : '해당 내용을 감상하려면 본인 인증이 필요해요 로그인 후 이용해주세요'}
+              icon="i-px2-rating-15-plus"
+              title="15세 콘텐츠"
+              {triggerTags}
+            >
+              <Button
+                class="w-158px text-14-sb! mt-5"
+                size="sm"
+                variant="outline"
+                on:click={async () => {
+                  if (!$query.me) {
+                    await goto('/login');
+                    return;
+                  }
+
+                  if (!$query.me.personalIdentity) {
+                    await goto('/me/settings');
+                    return;
+                  }
+
                   blurContent = false;
                 }}
               >
-                내용 표시하기
+                {$query.me ? ($query.me.personalIdentity ? '표시' : '본인 인증') : '로그인 및 본인 인증'}
               </Button>
-            </header>
-          {:else}
-            {#key stringify($postRevision.content)}
-              <TiptapRenderer
-                class=""
-                content={$postRevision.content}
-                options={{
-                  paragraphIndent: $postRevision.paragraphIndent,
-                  paragraphSpacing: $postRevision.paragraphSpacing,
-                  protectContent: $query.post.protectContent,
+            </AlertText>
+          {:else if $query.post.ageRating === 'R19'}
+            <AlertText
+              description={$query.me
+                ? $query.me.personalIdentity
+                  ? $query.me.isAdulthood
+                    ? ''
+                    : '해당 내용은 20세 이상만 열람할 수 있어요'
+                  : '해당 내용을 감상하려면 본인 인증이 필요해요'
+                : '해당 내용을 감상하려면 본인 인증이 필요해요. 로그인 후 이용해주세요'}
+              icon="i-px2-rating-20-plus"
+              title="성인용 콘텐츠"
+              {triggerTags}
+            >
+              <Button
+                class="w-158px text-14-sb! mt-5"
+                size="sm"
+                variant="outline"
+                on:click={async () => {
+                  if (!$query.me) {
+                    await goto('/login');
+                    return;
+                  }
+
+                  if (!$query.me.personalIdentity) {
+                    await goto('/me/settings');
+                    return;
+                  }
+
+                  if (!$query.me.isAdulthood) {
+                    history.back();
+                  }
+
+                  blurContent = false;
                 }}
-                bind:editor
-              />
-            {/key}
+              >
+                {$query.me
+                  ? $query.me.personalIdentity
+                    ? $query.me.isAdulthood
+                      ? '표시'
+                      : '돌아가기'
+                    : '본인 인증'
+                  : '로그인 및 본인 인증'}
+              </Button>
+            </AlertText>
           {/if}
+        {:else}
+          {#key stringify($postRevision.content)}
+            <TiptapRenderer
+              class=""
+              content={$postRevision.content}
+              options={{
+                paragraphIndent: $postRevision.paragraphIndent,
+                paragraphSpacing: $postRevision.paragraphSpacing,
+                protectContent: $query.post.protectContent,
+              }}
+              bind:editor
+            />
+          {/key}
+
+          <div class="my-12">
+            <dl class="space-y-1">
+              <div class="flex">
+                <dt class="text-12-m text-gray-600 mr-1">카테고리</dt>
+                <dd class="text-12-r text-gray-400 underline">
+                  #{categoryFilter[$query.post.category]}
+                </dd>
+              </div>
+
+              {#if $query.post.pairs.length > 0}
+                <div class="flex gap-2px flex-wrap">
+                  <dt class="text-12-m text-gray-600 mr-2px">페어</dt>
+                  {#each $query.post.pairs as pair (pair)}
+                    <dd class="text-12-r text-gray-400 underline">#{pairFilter[pair]}</dd>
+                  {/each}
+                </div>
+              {/if}
+
+              <div class="flex gap-2px flex-wrap">
+                {#if $query.post.tags.some(({ kind }) => kind === 'TITLE')}
+                  <dt class="text-12-m text-gray-600 mr-2px">작품</dt>
+                  {#each $query.post.tags as { tag, kind } (tag.id)}
+                    {#if kind === 'TITLE'}
+                      <dd class="text-12-r text-gray-400 underline">
+                        <a href={`/tag/${tag.name}`}>#{tag.name}</a>
+                      </dd>
+                    {/if}
+                  {/each}
+                {/if}
+
+                {#if $query.post.tags.some(({ kind }) => kind === 'CHARACTER')}
+                  <dt
+                    class="text-12-m text-gray-600 mr-2px flex before:(content-empty w-1px h-10px mx-2 my-auto bg-gray-200) first-of-type:before:hidden"
+                  >
+                    캐릭터
+                  </dt>
+                  {#each $query.post.tags as { tag, kind } (tag.id)}
+                    {#if kind === 'CHARACTER'}
+                      <dd class="text-12-r text-gray-400 underline">
+                        <a href={`/tag/${tag.name}`}>#{tag.name}</a>
+                      </dd>
+                    {/if}
+                  {/each}
+                {/if}
+
+                {#if $query.post.tags.some(({ kind }) => kind === 'COUPLING')}
+                  <dt
+                    class="text-12-m text-gray-600 mr-2px flex before:(content-empty w-1px h-10px mx-2 my-auto bg-gray-200) first-of-type:before:hidden"
+                  >
+                    커플링
+                  </dt>
+                  {#each $query.post.tags as { tag, kind } (tag.id)}
+                    {#if kind === 'COUPLING'}
+                      <dd class="text-12-r text-gray-400 underline">
+                        <a href={`/tag/${tag.name}`}>#{tag.name}</a>
+                      </dd>
+                    {/if}
+                  {/each}
+                {/if}
+
+                {#if $query.post.tags.some(({ kind }) => kind === 'TRIGGER')}
+                  <dt
+                    class="text-12-m text-gray-600 mr-2px flex before:(content-empty w-1px h-10px mx-2 my-auto bg-gray-200) first-of-type:before:hidden"
+                  >
+                    트리거
+                  </dt>
+                  {#each $query.post.tags as { tag, kind } (tag.id)}
+                    {#if kind === 'TRIGGER'}
+                      <dd class="text-12-r text-gray-400 underline">
+                        <a href={`/tag/${tag.name}`}>#{tag.name}</a>
+                      </dd>
+                    {/if}
+                  {/each}
+                {/if}
+
+                {#if $query.post.tags.some(({ kind }) => kind === 'EXTRA')}
+                  <dt
+                    class="text-12-m text-gray-600 mr-2px flex before:(content-empty w-1px h-10px mx-2 my-auto bg-gray-200) first-of-type:before:hidden"
+                  >
+                    추가태그
+                  </dt>
+                  {#each $query.post.tags as { tag, kind } (tag.id)}
+                    {#if kind === 'EXTRA'}
+                      <dd class="text-12-r text-gray-400 underline">
+                        <a href={`/tag/${tag.name}`}>#{tag.name}</a>
+                      </dd>
+                    {/if}
+                  {/each}
+                {/if}
+              </div>
+            </dl>
+          </div>
         {/if}
 
         <!-- {#if editor && !preview}
@@ -522,57 +722,67 @@
         {/if} -->
       </div>
     {:else}
-      <form
-        class="space-y-4 w-full flex flex-col center"
-        on:submit={async () => {
-          try {
-            await unlockPasswordedPost({
-              postId: $query.post.id,
-              password,
-            });
-            mixpanel.track('post:unlock', { postId: $query.post.id });
-          } catch (err) {
-            if (err instanceof FormValidationError) toast.error(err.message);
-          }
-        }}
-      >
-        <p class="body-16-eb">비밀번호를 입력해야하는 포스트예요</p>
-        <input
-          class="body-15-m bg-primary rounded-2.5 h-11.5 w-full max-w-83 px-3.5 py-2"
-          placeholder="포스트 비밀번호 입력"
-          type="password"
-          bind:value={password}
-        />
-        <div class="w-full max-w-42">
-          <Button class="w-full" size="lg" type="submit">포스트 보기</Button>
-          <Button class="w-full text-secondary mt-2.5" href="/" size="xs" type="link" variant="text">
-            피드로 돌아가기
-          </Button>
-        </div>
-      </form>
+      <AlertText description="해당 내용은 비밀번호 입력이 필요해요" icon="i-tb-lock-square-rounded" title="비밀글">
+        <form
+          class="mt-5 flex gap-7px"
+          on:submit|preventDefault={async () => {
+            try {
+              await unlockPasswordedPost({
+                postId: $query.post.id,
+                password,
+              });
+              mixpanel.track('post:unlock', { postId: $query.post.id });
+            } catch (err) {
+              if (err instanceof FormValidationError) toast.error(err.message);
+            }
+          }}
+        >
+          <input
+            class="text-14-r border border-gray-200 bg-gray-50 py-1.5 px-2.5 rounded w-274px"
+            placeholder="비밀번호를 입력해주세요"
+            type="password"
+            bind:value={password}
+          />
+          <Button class="text-14-sb!" size="sm" type="submit">입력</Button>
+        </form>
+      </AlertText>
     {/if}
 
-    <hr class="w-full border-color-alphagray-10" />
+    <div
+      bind:this={stickyFooterEl}
+      class="sticky flex items-center justify-between -mx-5 bottom-0 grow px-5 py-3.5 bg-white border-t border-gray-200 z-1 sm:hidden"
+    >
+      <div class="flex items-center">
+        <a class="flex items-center gap-1 text-15-r mr-5" href="#comment">
+          <i class="i-tb-message-circle square-6 block" />
+          4
+        </a>
 
-    <div class="flex gap-2 flex-wrap">
-      {#each $query.post.tags as { tag } (tag.id)}
-        <Tag href={preview ? undefined : `/tag/${tag.name}`} size="sm">
-          #{tag.name}
-        </Tag>
-      {/each}
-      <!-- <Button class="rounded-12! px-4!" color="tertiary" size="sm" variant="outlined">
-        <i class="i-lc-plus square-4" />
-      </Button> -->
+        <EmojiPicker {$query} variant="toolbar">
+          <div class="relative">
+            {#each $query.post.reactions.slice(0, 5) as reaction, idx (reaction.id)}
+              <em-emoji
+                id={reaction.emoji}
+                style:left={`${idx * 11}px`}
+                class="square-5 text-center absolute top-50% -translate-y-50%"
+                set="twitter"
+              />
+            {/each}
+          </div>
+        </EmojiPicker>
+      </div>
+
+      {#if sticky}
+        <div class="flex items-center gap-5">
+          <button class="i-tb-chevron-left square-6 text-gray-700" type="button" />
+          <button class="i-tb-list square-6 text-gray-700" type="button" />
+          <button class="i-tb-chevron-right square-6 text-gray-700" type="button" />
+        </div>
+      {/if}
     </div>
-    <div class="flex items-center gap-2.5 flex-wrap mt-4!">
-      {#if preview}
-        <button
-          class="square-6 rounded-lg border border-secondary hover:border-primary flex center p-0.5"
-          type="button"
-        >
-          <i class="i-lc-smile-plus square-3.5" />
-        </button>
-      {:else}
+
+    <div class="flex justify-between border-t border-gray-200 pt-3 pb-6 <sm:hidden">
+      <div class="flex items-center gap-2.5 flex-wrap">
         <Tooltip
           enabled={!$query.post.receiveFeedback}
           message="피드백 받기를 설정하지 않은 포스트예요"
@@ -580,152 +790,169 @@
         >
           <EmojiPicker {$query} disabled={!$query.post.receiveFeedback} />
         </Tooltip>
-      {/if}
 
-      {#each $query.post.reactions.slice(0, 30) as reaction (reaction.id)}
-        <Emoji emoji={reaction.emoji} mine={reaction.mine} postId={$query.post.id} />
-      {/each}
-      {#if $query.post.reactions.length > 30}
-        {#if !emojiOpen}
-          <button
-            class="caption-12-m text-secondary rounded-3xl p-1 bg-primary transition hover:bg-surface-secondary"
-            type="button"
-            on:click={() => (emojiOpen = true)}
-          >
-            + {$query.post.reactions.length - 30}
-          </button>
-        {:else}
-          {#each $query.post.reactions.slice(30) as reaction (reaction.id)}
-            <Emoji emoji={reaction.emoji} mine={reaction.mine} postId={$query.post.id} />
-          {/each}
+        {#each $query.post.reactions.slice(0, 30) as reaction (reaction.id)}
+          <Emoji emoji={reaction.emoji} mine={reaction.mine} postId={$query.post.id} />
+        {/each}
+        {#if $query.post.reactions.length > 30}
+          {#if !emojiOpen}
+            <button
+              class="caption-12-m text-secondary rounded-3xl p-1 bg-primary transition hover:bg-surface-secondary"
+              type="button"
+              on:click={() => (emojiOpen = true)}
+            >
+              + {$query.post.reactions.length - 30}
+            </button>
+          {:else}
+            {#each $query.post.reactions.slice(30) as reaction (reaction.id)}
+              <Emoji emoji={reaction.emoji} mine={reaction.mine} postId={$query.post.id} />
+            {/each}
+          {/if}
         {/if}
-      {/if}
-    </div>
-
-    <div class="flex items-center justify-between py-2">
-      <Button
-        class="rounded-12! px-3.75! h-8! py-1.25! w-16"
-        color="tertiary"
-        disabled={preview}
-        size="sm"
-        variant="outlined"
-        on:click={async () => {
-          if (!$query.me) {
-            loginRequireOpen = true;
-            return;
-          }
-
-          if ($query.post.liked) {
-            await unlikePost({ postId: $query.post.id });
-            mixpanel.track('post:unlike', { postId: $query.post.id, via: 'post' });
-          } else {
-            await likePost({ postId: $query.post.id });
-            mixpanel.track('post:like', { postId: $query.post.id, via: 'post' });
-          }
-        }}
-      >
-        {#if $query.post.liked}
-          <i class="i-px-heart-fill square-4 text-red-50" />
-        {:else}
-          <i class="i-px-heart square-4" />
-        {/if}
-        {#if $query.post.discloseStats}
-          <span class="body-15-b ml-1">{$query.post.likeCount}</span>
-        {/if}
-      </Button>
-
-      <div>
-        {#if $query.post.bookmarkGroups.length}
-          <button
-            class="i-px-bookmark-fill square-6 mr-3 bg-yellow-50"
-            type="button"
-            on:click={async () => {
-              await unbookmarkPost({ bookmarkId: $query.post.bookmarkGroups[0].id, postId: $query.post.id });
-              mixpanel.track('post:unbookmark', { postId: $query.post.id, via: 'post' });
-              toast.success('북마크에서 삭제했어요');
-            }}
-          />
-        {:else}
-          <button
-            class="i-px-bookmark-outline square-6 mr-3"
-            disabled={preview}
-            type="button"
-            on:click={async () => {
-              if (!$query.me) {
-                loginRequireOpen = true;
-                return;
-              }
-
-              await bookmarkPost({ postId: $query.post.id });
-              mixpanel.track('post:bookmark', { postId: $query.post.id, via: 'post' });
-              toast.success('북마크에 저장되었어요');
-            }}
-          />
-        {/if}
-        <button class="i-lc-share square-6" type="button" on:click={handleShare} />
       </div>
+      <button class="i-tb-share-2 square-24px text-gray-500" type="button" />
     </div>
 
-    <div class="bg-primary rounded-2xl flex py-4 px-6 items-center gap-4">
-      <svelte:element this={element} href={preview || !$query.post.space ? undefined : `/${$query.post.space.slug}`}>
+    {#if $query.post.collection}
+      <div class="bg-gray-50 rounded-2.5 p-5">
+        <a class="flex gap-3" href={`/${$query.post.space?.slug}/collections/${$query.post.collection.id}`}>
+          {#if $query.post.collection.thumbnail}
+            <Image class="w-60px h-84px rounded flex-none" $image={$query.post.collection.thumbnail} />
+          {/if}
+
+          <div class="truncate">
+            <p class="text-11-r text-gray-400">컬렉션</p>
+            <p class="text-18-sb mb-2 truncate">{$query.post.collection.name}</p>
+            <p class="text-11-r text-gray-700 truncate">
+              총 {$query.post.collection.count}개의 포스트
+            </p>
+          </div>
+        </a>
+
+        <div class="bg-white p-4 rounded mt-4">
+          {#if $query.post.previousPost}
+            <a
+              class="flex items-center gap-8 truncate rounded p-12px transition h-66px hover:bg-gray-100"
+              href={`/${$query.post.space?.slug}/${$query.post.previousPost.permalink}`}
+            >
+              <span class="text-13-r text-gray-500">이전글</span>
+
+              <div class="truncate">
+                <p class="truncate text-gray-700">
+                  {$query.post.previousPost.publishedRevision.title ?? '(제목 없음)'}
+                </p>
+                {#if $query.post.previousPost.publishedRevision.subtitle}
+                  <p class="truncate text-12-r text-gray-700">{$query.post.previousPost.publishedRevision.subtitle}</p>
+                {/if}
+              </div>
+            </a>
+          {/if}
+          {#if $query.post.nextPost}
+            <hr class="bg-gray-100 my-2.5" />
+
+            <a
+              class="flex items-center gap-8 truncate rounded p-12px transition h-66px hover:bg-gray-100"
+              href={`/${$query.post.space?.slug}/${$query.post.nextPost.permalink}`}
+            >
+              <span class="text-13-r text-gray-500">다음글</span>
+
+              <div class="truncate">
+                <p class="truncate text-gray-700">
+                  {$query.post.nextPost.publishedRevision.title ?? '(제목 없음)'}
+                </p>
+                {#if $query.post.nextPost.publishedRevision.subtitle}
+                  <p class="truncate text-12-r text-gray-700">{$query.post.nextPost.publishedRevision.subtitle}</p>
+                {/if}
+              </div>
+            </a>
+          {/if}
+        </div>
+      </div>
+    {:else}
+      {#if $query.post.previousPost}
+        <a
+          class="flex items-center gap-8 truncate rounded p-5 transition mt-12px hover:bg-gray-100"
+          href={`/${$query.post.space?.slug}/${$query.post.previousPost.permalink}`}
+        >
+          <span class="text-13-r text-gray-500">이전글</span>
+
+          <div class="truncate">
+            <p class="truncate text-gray-700">
+              {$query.post.previousPost.publishedRevision.title ?? '(제목 없음)'}
+            </p>
+            {#if $query.post.previousPost.publishedRevision.subtitle}
+              <p class="truncate text-12-r text-gray-700">{$query.post.previousPost.publishedRevision.subtitle}</p>
+            {/if}
+          </div>
+        </a>
+      {/if}
+      {#if $query.post.nextPost}
+        <hr class="bg-gray-100 my-12px" />
+
+        <a
+          class="flex items-center gap-8 truncate rounded p-5 transition hover:bg-gray-100"
+          href={`/${$query.post.space?.slug}/${$query.post.nextPost.permalink}`}
+        >
+          <span class="text-13-r text-gray-500">다음글</span>
+
+          <div class="truncate">
+            <p class="truncate text-gray-700">
+              {$query.post.nextPost.publishedRevision.title ?? '(제목 없음)'}
+            </p>
+            {#if $query.post.nextPost.publishedRevision.subtitle}
+              <p class="truncate text-12-r text-gray-700">{$query.post.nextPost.publishedRevision.subtitle}</p>
+            {/if}
+          </div>
+        </a>
+      {/if}
+    {/if}
+
+    <div class="bg-gray-50 rounded-2.5 flex items-center p-5 gap-3 mb-6 mt-36px">
+      <a class="flex-none" href={`/${$query.post.space?.slug}`}>
         {#if $query.post.space}
-          <Image class="square-16 rounded-2xl border border-secondary" $image={$query.post.space.icon} />
+          <Image class="square-16 rounded border border-gray-200" $image={$query.post.space.icon} />
         {:else}
-          <div class="square-16 rounded-2xl border border-secondary" />
+          <div class="square-16 rounded border border-gray-200" />
         {/if}
-      </svelte:element>
+      </a>
 
       <div class="grow truncate">
-        <svelte:element
-          this={element}
-          class="truncate w-full"
-          href={preview || !$query.post.space ? undefined : `/${$query.post.space.slug}`}
-        >
-          <p class="body-15-b truncate w-full">
+        <a class="truncate w-full" href={`/${$query.post.space?.slug}`}>
+          <p class="text-14-m truncate w-full text-gray-700">
             {#if $query.post.space}
               {$query.post.space.name}
             {:else}
               스페이스 이름
             {/if}
           </p>
-        </svelte:element>
-        <svelte:element
-          this={element}
-          class="w-full whitespace-pre-wrap"
-          href={preview || !$query.post.space ? undefined : `/${$query.post.space.slug}`}
-        >
-          <p class="body-14-m text-secondary mt-2 break-all w-full">
+        </a>
+        <a class="w-full whitespace-pre-wrap" href={`/${$query.post.space?.slug}`}>
+          <p class="text-13-r text-gray-600 mt-1 break-all w-full">
             {$query.post.space?.description ?? '아직 소개가 없어요'}
           </p>
-        </svelte:element>
+        </a>
       </div>
 
       {#if !$query.post.space?.meAsMember}
         {#if $query.post.space?.followed}
-          <!-- <Button class="rounded-12!" color="tertiary" size="md" variant="outlined">
-                <i class="i-lc-bell square-5" />
-                <span class="mx-2">알림받는중</span>
-                <i class="i-lc-chevron-down square-5" />
-              </Button> -->
           <Button
-            class="shrink-0"
-            color="tertiary"
-            size="md"
-            variant="outlined"
+            class="flex-none bg-white flex center gap-1"
+            size="sm"
+            variant="outline"
             on:click={async () => {
               if (!$query.post.space) return;
 
               await unfollowSpace({ spaceId: $query.post.space.id });
               mixpanel.track('space:unfollow', { spaceId: $query.post.space.id, via: 'post' });
-              toast.success('관심 스페이스 해제되었어요');
             }}
           >
-            관심 해제
+            <i class="i-tb-check square-3.5 block text-gray-400" />
+            관심 스페이스
           </Button>
         {:else}
           <Button
-            class="shrink-0"
-            size="md"
+            class="flex-none"
+            size="sm"
             on:click={async () => {
               if (!$query.post.space) return;
 
@@ -736,84 +963,131 @@
 
               await followSpace({ spaceId: $query.post.space.id });
               mixpanel.track('space:follow', { spaceId: $query.post.space.id, via: 'post' });
-              toast.success('관심 스페이스로 등록되었어요');
             }}
           >
-            관심
+            관심 스페이스 추가
           </Button>
         {/if}
       {/if}
     </div>
 
-    <div class="space-y-3">
-      {#if $query.post.collection}
-        <p class="body-16-b">컬렉션명</p>
+    <div class="mt-40px">
+      <!-- 댓글 허용-->
+      {#if true}
+        <p id="comment" class="text-18-sb text-gray-700 mb-2.5 scroll-my-61px">댓글 {comma(0)}</p>
+        <CommentInput />
 
-        <a
-          class="p-2 flex gap-3 my-3 rounded-xl transition hover:bg-primary"
-          href={`/${$query.post.space?.slug}/collections/${$query.post.collection.id}`}
-        >
-          {#if $query.post.collection.thumbnail}
-            <Image class="w-24 h-30 rounded-lg flex-none" $image={$query.post.collection.thumbnail} />
-          {/if}
-
-          <div class="truncate">
-            <p class="body-16-b mb-1 truncate">{$query.post.collection.name}</p>
-            <p class="body-14-m text-secondary truncate">{$query.post.collection.count}개의 포스트</p>
-          </div>
-        </a>
-      {/if}
-
-      {#if $query.post.previousPost || $query.post.nextPost}
-        <div class="border border-secondary rounded-xl px-4 py-3">
-          {#if $query.post.nextPost}
-            <a
-              class="body-16-b flex items-center gap-4 truncate rounded-xl p-2 transition hover:bg-primary"
-              href={`/${$query.post.space?.slug}/${$query.post.nextPost.permalink}`}
-            >
-              <span>다음글</span>
-              <p class="truncate">{$query.post.nextPost.publishedRevision.title ?? '(제목 없음)'}</p>
-            </a>
-          {/if}
-          {#if $query.post.previousPost}
-            <a
-              class="body-16-b flex items-center gap-4 truncate rounded-xl p-2 transition hover:bg-primary"
-              href={`/${$query.post.space?.slug}/${$query.post.previousPost.permalink}`}
-            >
-              <span>이전글</span>
-              <p class="truncate">{$query.post.previousPost.publishedRevision.title ?? '(제목 없음)'}</p>
-            </a>
-          {/if}
-        </div>
+        <ul class="mt-6">
+          <Comment />
+        </ul>
+      {:else}
+        <p class="py-6 px-5 text-15-r text-gray-400 border-t border-gray-200">
+          해당 게시물은 댓글이 허용되어있지않아요
+        </p>
       {/if}
     </div>
 
     {#if $query.post.recommendedPosts.length > 0}
-      <div>
-        <p class="title-20-b mb-4">추천글</p>
+      <div class="mt-10.5">
+        <p class="text-18-sb mb-2 sm:(text-20-sb mb-4 mx-5)">추천 포스트</p>
 
-        <div class="grow gap-4 sm:columns-2 <sm:(bg-surface-primary -mx-4)">
-          {#each $query.post.recommendedPosts as post (post.id)}
-            <SpacePostCard class="mb-2 inline-block break-inside-avoid sm:mb-4" $post={post} />
+        <ul class="grow">
+          {#each $query.post.recommendedPosts as post, index (post.id)}
+            {#if index !== 0}
+              <hr class="bg-gray-100 sm:my-4" />
+            {/if}
+            <li class="rounded-2.5 sm:hover:bg-gray-50">
+              <a class="flex flex-col py-6 sm:p-5" href={`/${post.space.slug}/${post.permalink}`}>
+                <div class="flex">
+                  <div class="w-96px mr-3.5 sm:(w-124px mr-5)">
+                    {#if post.thumbnail}
+                      <Image class="square-124px rounded-1.5 flex-none <sm:square-96px" $image={post.thumbnail} />
+                    {:else}
+                      <div class="square-124px rounded-1.5 flex-none <sm:square-96px">
+                        <svg class="rounded-1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <rect fill="#0c0a091a" height="24" width="24" />
+                          <path
+                            d="M7.36 3.86c2.3 5.04.42 10.01-.1 11.36-.08.23-.13.36-.11.36a15.7 15.7 0 0 1 9.45 4.6l-1.58-2.74L13 14.07a1.1 1.1 0 1 1 .53-.35l3.53 6.11c-1.4-4.68.63-10.12.63-10.12-6.15-.67-10.33-5.85-10.33-5.85Z"
+                            fill="#FAFAF9"
+                          />
+                        </svg>
+                      </div>
+                    {/if}
+
+                    <div class="flex items-center truncate mt-1">
+                      <div class="relative mr-2 flex-none <sm:hidden">
+                        <Image class="square-5.5 border border-gray-100 rounded" $image={post.space.icon} />
+
+                        <Avatar
+                          class="square-18px absolute border border-gray-100 -right-6px -bottom-6px"
+                          $profile={post.member.profile}
+                        />
+                      </div>
+                      <div class="truncate">
+                        <p class="text-12-m text-gray-700 truncate">{post.space.name}</p>
+                        <p class="text-11-r truncate text-gray-400">by {post.member.profile.name}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="grow flex flex-col justify-between truncate">
+                    <div class="truncate">
+                      <div class="flex items-center gap-2.5 truncate">
+                        {#if post.publishedRevision?.price}
+                          <Badge class="w-fit" color="purple">유료</Badge>
+                        {/if}
+                        {#if post.ageRating === 'R19'}
+                          <Badge class="w-fit" color="red">성인</Badge>
+                        {/if}
+                        {#if post.ageRating === 'R15'}
+                          <Badge class="w-fit" color="red">15세</Badge>
+                        {/if}
+                        {#if post.tags.some(({ kind }) => kind === 'TRIGGER')}
+                          <Badge class="w-fit" color="orange">트리거주의</Badge>
+                        {/if}
+                        {#if post.hasPassword}
+                          <Badge class="w-fit" color="gray">비밀글</Badge>
+                        {/if}
+
+                        <p class="text-16-sb text-gray-700 truncate sm:text-18-sb">
+                          {post.publishedRevision.title ?? '(제목 없음)'}
+                        </p>
+                      </div>
+
+                      {#if post.publishedRevision.subtitle}
+                        <p class="text-12- text-gray-700 truncate mt-1px sm:(mt-2px text-15-m)">
+                          {post.publishedRevision.subtitle}
+                        </p>
+                      {/if}
+
+                      <p
+                        class="line-clamp-3 break-all whitespace-pre-wrap text-12-r mt-7px text-gray-500 sm:(text-14-r mt-3)"
+                      >
+                        {post.publishedRevision.previewText}
+                      </p>
+                    </div>
+
+                    <ul class="flex flex-wrap items-center gap-1.5">
+                      {#each post.tags as { tag, kind } (tag.id)}
+                        <li class={clsx('text-12-r text-gray-400 underline p-0.5', kind === 'TITLE' && 'bg-gray-100')}>
+                          #{tag.name}
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+                </div>
+
+                <time class="text-11-r text-gray-400 text-right mt-2">{dayjs(post.publishedAt).formatAsDate()}</time>
+              </a>
+            </li>
           {/each}
-        </div>
+        </ul>
       </div>
     {/if}
   </div>
 </article>
 
-<LoginRequireModal bind:open={loginRequireOpen}>
-  <svelte:fragment slot="subtitle">
-    {$query.post.ageRating === 'R15' ? '15세' : '성인'} 포스트 열람을 위해 로그인이 필요해요
-  </svelte:fragment>
-  <svelte:fragment slot="action-secondary">
-    <Button class="w-full" color="secondary" size="xl" on:click={() => history.back()}>뒤로 가기</Button>
-  </svelte:fragment>
-</LoginRequireModal>
-
-{#if !preview}
-  <Toolbar {$query} {handleShare} />
-{/if}
+<LoginRequireModal bind:open={loginRequireOpen} />
 
 <Modal size="sm" bind:open={openDeletePostWarning}>
   <svelte:fragment slot="title">정말 포스트를 삭제하시겠어요?</svelte:fragment>
@@ -830,49 +1104,6 @@
       }}
     >
       삭제
-    </Button>
-  </div>
-</Modal>
-
-<Modal size="sm" bind:open={requirePersonalIdentityOpen}>
-  <svelte:fragment slot="title">
-    {$query.post.ageRating === 'R15' ? '본인' : '성인'} 인증이 필요한 포스트예요
-  </svelte:fragment>
-
-  <div slot="action" class="flex gap-3 w-full">
-    {#if !$query.me?.personalIdentity}
-      <Button
-        class="w-full"
-        color="secondary"
-        size="xl"
-        on:click={() => {
-          history.back();
-        }}
-      >
-        뒤로 가기
-      </Button>
-    {/if}
-
-    <Button
-      class="w-full"
-      size="xl"
-      on:click={async () => {
-        if (!$query.me?.personalIdentity) {
-          await goto('/me/settings');
-          return;
-        }
-
-        if (!$query.me.allowedAgeRating.includes($query.post.ageRating)) {
-          history.back();
-          return;
-        }
-      }}
-    >
-      {#if !$query.me?.personalIdentity}
-        본인 인증하기
-      {:else}
-        뒤로 가기
-      {/if}
     </Button>
   </div>
 </Modal>
