@@ -46,11 +46,6 @@
     UNLOCK_CONTENT: '구매',
     EVENT_REWARD: '이벤트 보상',
   };
-
-  let purchased = (cause: PointTransactionCause) => {
-    const causes = ['INTERNAL', 'PURCHASE', 'PATRONIZE', 'REFUND', 'UNDO_PURCHASE'];
-    return causes.includes(cause);
-  };
 </script>
 
 <Helmet description="내 현재 포인트와 사용 내역을 확인할 수 있어요" title="포인트" />
@@ -132,7 +127,7 @@
                           </div>
                         </div>
 
-                        {#if purchased(point.cause)}
+                        {#if point.amount > 0}
                           <div class="text-green-50 body-16-b flex items-center">+{comma(point.amount)}</div>
                         {:else}
                           <div class="text-secondary body-16-b flex items-center">{comma(point.amount)}</div>
