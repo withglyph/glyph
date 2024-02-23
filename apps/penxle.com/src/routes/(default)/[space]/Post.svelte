@@ -1,8 +1,10 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import { getTextBetween } from '@tiptap/core';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import stringify from 'fast-json-stable-stringify';
+  import { onMount } from 'svelte';
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -21,6 +23,8 @@
   import AlertText from './AlertText.svelte';
   import Comment from './Comment.svelte';
   import CommentInput from './CommentInput.svelte';
+  import SelectionBubbleMenu from './SelectionBubbleMenu.svelte';
+  import ShareContent from './ShareContent.svelte';
   import type { Editor } from '@tiptap/core';
   import type { Post_postRevision, Post_query } from '$glitch';
 
@@ -30,6 +34,7 @@
   let password = '';
   let openDeletePostWarning = false;
   let blurContent = true;
+  let openShareContentModal = false;
 
   let _class: string | undefined = undefined;
   export { _class as class };
@@ -338,7 +343,24 @@
   //   toast.success('링크가 복사되었어요');
   // };
 
+  let selectedText = '';
   $: triggerTags = $query.post.tags.filter(({ kind }) => kind === 'TRIGGER');
+
+  const setSelectedText = () => {
+    if (!editor) {
+      return;
+    }
+
+    selectedText = getTextBetween(editor?.state.doc, editor.state.selection);
+  };
+
+  onMount(() => {
+    editor?.on('selectionUpdate', setSelectedText);
+
+    return () => {
+      editor?.off('selectionUpdate', setSelectedText);
+    };
+  });
 </script>
 
 <Helmet
@@ -1128,6 +1150,21 @@
     {/if}
   </div>
 </article>
+
+{#if editor}
+  <SelectionBubbleMenu {editor}>
+    <button type="button" on:click={() => (openShareContentModal = true)}>공유</button>
+  </SelectionBubbleMenu>
+{/if}
+
+{#if openShareContentModal}
+  <ShareContent
+    body={selectedText}
+    spaceName={$query.post.space?.name ?? ''}
+    title={$postRevision.title ?? '(제목 없음)'}
+    bind:open={openShareContentModal}
+  />
+{/if}
 
 <LoginRequireModal bind:open={loginRequireOpen} />
 

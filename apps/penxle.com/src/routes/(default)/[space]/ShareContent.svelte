@@ -132,7 +132,12 @@
   };
 </script>
 
-<Modal actionClass={clsx(showShareTargetMenu && 'invisible')} titleClass="m-x-8 justify-center" bind:open>
+<Modal
+  class="max-w-screen!"
+  actionClass={clsx(showShareTargetMenu && 'invisible')}
+  titleClass="m-x-8 justify-center"
+  bind:open
+>
   <button
     slot="title-left"
     class="absolute left-0 px-6 disabled:(invisible opacity-0) transition-opacity"
@@ -156,12 +161,16 @@
   <form id="share-content-as-image" class="flex flex-col">
     <article
       class={clsx(
-        'relative m-x-5 m-t-5 m-b-4 square-24.875rem',
-        backgroundColor === '#FFFFFF' && 'border-(1px solid color-alphagray-10)',
+        'relative m-x-5 m-t-5 m-b-4',
+        backgroundColor === '#FFFFFF' ? 'border-(1px solid alphagray-10)' : 'border-(1px solid transparent)',
       )}
     >
       {#if generatedPostShareImage}
-        <img alt="밑줄 이미지 미리보기" src={generatedPostShareImage} />
+        <img
+          class="w-24.875rem h-24.875rem max-w-full max-h-full"
+          alt="밑줄 이미지 미리보기"
+          src={generatedPostShareImage}
+        />
       {/if}
 
       {#if showSpinner}
