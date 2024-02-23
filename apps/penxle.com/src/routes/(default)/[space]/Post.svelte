@@ -3,7 +3,6 @@
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import stringify from 'fast-json-stable-stringify';
-  import { onMount } from 'svelte';
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -340,22 +339,7 @@
   // };
 
   $: triggerTags = $query.post.tags.filter(({ kind }) => kind === 'TRIGGER');
-
-  let stickyFooterEl: HTMLElement;
-  let top: number;
-  let sticky = true;
-
-  onMount(() => {
-    top = stickyFooterEl.getBoundingClientRect().top;
-  });
 </script>
-
-<svelte:window
-  on:scroll|resize={() => {
-    if (window.innerWidth < 800 && $query.post.space)
-      sticky = top > stickyFooterEl.getBoundingClientRect().top ? false : true;
-  }}
-/>
 
 <Helmet
   description={$postRevision.previewText}
@@ -368,11 +352,53 @@
 
 <article class={clsx('w-full bg-white grow', _class)}>
   <div class="w-full max-w-1062px mx-auto px-80px flex flex-col pt-42px <sm:(pt-24px px-5)">
-    <div>
-      <h1 class="text-28-sb break-all">{$postRevision.title ?? '(제목 없음)'}</h1>
-      {#if $postRevision.subtitle}
-        <h2 class="text-16-r text-gray-700 break-all mt-3px">{$postRevision.subtitle}</h2>
-      {/if}
+    <div class="flex justify-between items-start">
+      <div>
+        <h1 class="text-28-sb break-all">{$postRevision.title ?? '(제목 없음)'}</h1>
+        {#if $postRevision.subtitle}
+          <h2 class="text-16-r text-gray-700 break-all mt-3px">{$postRevision.subtitle}</h2>
+        {/if}
+      </div>
+
+      <Menu placement="bottom-end">
+        <i slot="value" class="i-tb-dots-vertical square-24px text-gray-500 block sm:hidden" />
+
+        {#if $query.post.space?.meAsMember}
+          <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
+          <MenuItem
+            on:click={() => {
+              openDeletePostWarning = true;
+            }}
+          >
+            삭제하기
+          </MenuItem>
+        {:else}
+          <MenuItem
+            on:click={async () => {
+              if (!$query.post.space) return;
+
+              if ($query.post.space.muted) {
+                await unmuteSpace({ spaceId: $query.post.space.id });
+                mixpanel.track('space:unmute', { spaceId: $query.post.space.id, via: 'post' });
+              } else {
+                if (!$query.me) {
+                  loginRequireOpen = true;
+                  return;
+                }
+
+                await muteSpace({ spaceId: $query.post.space.id });
+                mixpanel.track('space:mute', { spaceId: $query.post.space.id, via: 'post' });
+              }
+            }}
+          >
+            {#if $query.post.space?.muted}
+              스페이스 숨기기 해제
+            {:else}
+              스페이스 숨기기
+            {/if}
+          </MenuItem>
+        {/if}
+      </Menu>
     </div>
 
     <div class="border-y border-gray-100 flex justify-between px-2.5 py-3 my-6">
@@ -448,7 +474,7 @@
         />
 
         <Menu placement="bottom-end">
-          <i slot="value" class="i-tb-dots-vertical square-24px text-gray-500" />
+          <i slot="value" class="i-tb-dots-vertical square-24px text-gray-500 sm:hidden" />
 
           {#if $query.post.space?.meAsMember}
             <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
@@ -467,7 +493,6 @@
                 if ($query.post.space.muted) {
                   await unmuteSpace({ spaceId: $query.post.space.id });
                   mixpanel.track('space:unmute', { spaceId: $query.post.space.id, via: 'post' });
-                  toast.success('스페이스 숨기기를 해제했어요');
                 } else {
                   if (!$query.me) {
                     loginRequireOpen = true;
@@ -476,7 +501,6 @@
 
                   await muteSpace({ spaceId: $query.post.space.id });
                   mixpanel.track('space:mute', { spaceId: $query.post.space.id, via: 'post' });
-                  toast.success('스페이스를 숨겼어요');
                 }
               }}
             >
@@ -749,7 +773,6 @@
     {/if}
 
     <div
-      bind:this={stickyFooterEl}
       class="sticky flex items-center justify-between -mx-5 bottom-0 grow px-5 py-3.5 bg-white border-t border-gray-200 z-1 sm:hidden"
     >
       <div class="flex items-center">
@@ -772,13 +795,32 @@
         </EmojiPicker>
       </div>
 
-      {#if sticky}
-        <div class="flex items-center gap-5">
-          <button class="i-tb-chevron-left square-6 text-gray-700" type="button" />
-          <button class="i-tb-list square-6 text-gray-700" type="button" />
-          <button class="i-tb-chevron-right square-6 text-gray-700" type="button" />
-        </div>
-      {/if}
+      <div class="flex items-center gap-5">
+        <button
+          class={clsx(
+            'square-24px',
+            $query.post.bookmarkGroups.length > 0
+              ? 'i-tb-bookmark-filled bg-teal-500'
+              : 'i-tb-bookmark text-gray-700 transition hover:text-teal-400',
+          )}
+          type="button"
+          on:click={async () => {
+            if ($query.post.bookmarkGroups.length > 0) {
+              await unbookmarkPost({ bookmarkId: $query.post.bookmarkGroups[0].id, postId: $query.post.id });
+              mixpanel.track('post:unbookmark', { postId: $query.post.id, via: 'post' });
+            } else {
+              if (!$query.me) {
+                loginRequireOpen = true;
+                return;
+              }
+
+              await bookmarkPost({ postId: $query.post.id });
+              mixpanel.track('post:bookmark', { postId: $query.post.id, via: 'post' });
+            }
+          }}
+        />
+        <button class="i-tb-share-2 square-6 text-gray-700" type="button" />
+      </div>
     </div>
 
     <div class="flex justify-between border-t border-gray-200 pt-3 pb-6 <sm:hidden">
