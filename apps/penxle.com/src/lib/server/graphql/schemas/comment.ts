@@ -1,19 +1,40 @@
 import { NotFoundError, PermissionDeniedError } from '$lib/errors';
-import { makeMasquerade } from '$lib/server/utils';
+import { Loader, makeMasquerade } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { PrismaEnums } from '$prisma';
 import { defineSchema } from '../builder';
 
 export const commentSchema = defineSchema((builder) => {
   builder.prismaObject('PostComment', {
+    grantScopes: async (comment, { db, ...context }) => {
+      if (comment.visibility === 'PUBLIC') return ['$comment:viewContent'];
+      if (!context.session) return [];
+      if (comment.userId === context.session.userId) return ['$comment:viewContent'];
+
+      const postLoader = Loader.post({ db, context });
+      const post = await postLoader.load(comment.postId);
+
+      if (post?.userId === context.session.userId) return ['$comment:viewContent'];
+      if (!post) return [];
+
+      const memberLoader = Loader.spaceMember({ db, context });
+      const member = await memberLoader.load(post.spaceId);
+
+      if (member?.role === 'ADMIN') return ['$comment:viewContent'];
+      return [];
+    },
     fields: (t) => ({
       id: t.exposeID('id'),
       profile: t.relation('profile'),
       parent: t.relation('parent', { nullable: true }),
       state: t.expose('state', { type: PrismaEnums.PostCommentState }),
-      content: t.exposeString('content'),
+      content: t.exposeString('content', {
+        authScopes: { $granted: '$comment:viewContent' },
+        unauthorizedResolver: () => '',
+      }),
       pinned: t.exposeBoolean('pinned'),
       childComments: t.relation('childComments'),
+      visibility: t.expose('visibility', { type: PrismaEnums.PostCommentVisibility }),
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
       updatedAt: t.expose('updatedAt', { type: 'DateTime', nullable: true }),
     }),

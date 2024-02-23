@@ -430,6 +430,7 @@ type PostComment {
   profile: Profile!
   state: PostCommentState!
   updatedAt: DateTime
+  visibility: PostCommentVisibility!
 }
 
 enum PostCommentState {
