@@ -2,6 +2,7 @@
   import { Helmet } from '@penxle/ui';
   import dayjs from 'dayjs';
   import { browser } from '$app/environment';
+  import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import Post from '../Post.svelte';
@@ -84,7 +85,7 @@
 <Helmet
   description={`${$query.post.publishedRevision.subtitle ? `${$query.post.publishedRevision.subtitle} | ` : ''}${$query.post.publishedRevision.previewText}`}
   image={{
-    src: $query.post.thumbnail?.url ?? 'https://pnxl.net/assets/opengraph/default-cover.png',
+    src: `${$page.url.origin}/api/opengraph/post/${$query.post.id}`,
     size: 'large',
   }}
   title={$query.post.publishedRevision.title ?? '(제목 없음)'}
