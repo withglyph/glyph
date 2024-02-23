@@ -23,6 +23,7 @@
 </script>
 
 <svelte:head>
+  <meta name="naver-site-verification" content="b127529850b2cea3fde71eaf9c43d5b6cbb76d42" />
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
