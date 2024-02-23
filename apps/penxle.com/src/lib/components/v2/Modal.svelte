@@ -7,6 +7,7 @@
   export let size: 'sm' | 'md' | 'lg' = 'md';
   let _class: string | undefined = undefined;
   export let titleClass: string | undefined = undefined;
+  export let actionClass: string | undefined = undefined;
   export { _class as class };
 </script>
 
@@ -64,7 +65,10 @@
 
           {#if $$slots.action}
             <div
-              class="sticky w-full bottom-0 border-t border-gray-200 flex items-center justify-end px-6 py-4 bg-white rounded-b-inherit"
+              class={clsx(
+                'sticky w-full bottom-0 border-t border-gray-200 flex items-center justify-end px-6 py-4 bg-white rounded-b-inherit',
+                actionClass,
+              )}
             >
               <slot name="action" />
             </div>
