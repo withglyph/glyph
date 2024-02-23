@@ -14,6 +14,9 @@ const DefaultCover = await got('https://pnxl.net/assets/opengraph/default-cover.
 const PretendardLight = await got('https://pnxl.net/assets/fonts/Pretendard-Light.otf').buffer();
 const PretendardRegular = await got('https://pnxl.net/assets/fonts/Pretendard-Regular.otf').buffer();
 const PretendardSemibold = await got('https://pnxl.net/assets/fonts/Pretendard-SemiBold.otf').buffer();
+const KoPubWorldDotumLight = await got('https://pnxl.net/assets/fonts/KoPubWorldDotumLight.otf').buffer();
+const KoPubWorldDotumMedium = await got('https://pnxl.net/assets/fonts/KoPubWorldDotumMedium.otf').buffer();
+const KoPubWorldDotumBold = await got('https://pnxl.net/assets/fonts/KoPubWorldDotumBold.otf').buffer();
 
 opengraph.get('/opengraph/post/:postId', async (request, { db }) => {
   const postId = (request as IRequest).params.postId;
@@ -174,6 +177,7 @@ opengraph.get('/opengraph/post/:postId', async (request, { db }) => {
           padding: '80px',
           color: '#ffffff',
           backgroundColor: '#18181B',
+          fontFamily: 'Pretendard, KoPubWorldDotum',
         },
       },
     },
@@ -184,6 +188,9 @@ opengraph.get('/opengraph/post/:postId', async (request, { db }) => {
         { name: 'Pretendard', data: PretendardLight, weight: 300, style: 'normal' },
         { name: 'Pretendard', data: PretendardRegular, weight: 400, style: 'normal' },
         { name: 'Pretendard', data: PretendardSemibold, weight: 600, style: 'normal' },
+        { name: 'KoPubWorldDotum', data: KoPubWorldDotumLight, weight: 300, style: 'normal' },
+        { name: 'KoPubWorldDotum', data: KoPubWorldDotumMedium, weight: 400, style: 'normal' },
+        { name: 'KoPubWorldDotum', data: KoPubWorldDotumBold, weight: 600, style: 'normal' },
       ],
       loadAdditionalAsset: async (code, segment) => {
         if (code === 'emoji') {
@@ -192,14 +199,14 @@ opengraph.get('/opengraph/post/:postId', async (request, { db }) => {
           return 'data:image/svg+xml,' + encodeURIComponent(svg);
         }
 
-        return [];
+        return (
+          'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>')
+        );
       },
-      // debug: true,
     },
   );
 
   const img = await renderAsync(svg, {
-    // fitTo: { mode: 'zoom', value: 0.3 },
     font: { loadSystemFonts: false },
     imageRendering: 0,
     shapeRendering: 2,
