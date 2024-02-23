@@ -447,6 +447,12 @@ enum PostCommentQualification {
   NONE
 }
 
+enum PostCommentQualification {
+  ANY
+  IDENTIFIED
+  NONE
+}
+
 enum PostCommentState {
   ACTIVE
   INACTIVE
