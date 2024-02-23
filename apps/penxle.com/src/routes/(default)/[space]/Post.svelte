@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import stringify from 'fast-json-stable-stringify';
@@ -28,10 +29,6 @@
   let element: 'a' | 'div';
   let requirePersonalIdentityOpen = false;
 
-  $: element = preview ? 'div' : 'a';
-
-  export let preview = false;
-
   let _class: string | undefined = undefined;
   export { _class as class };
 
@@ -40,6 +37,8 @@
 
   let _postRevision: Post_postRevision;
   export { _postRevision as $postRevision };
+
+  export let preview = false;
 
   $: query = fragment(
     _query,
@@ -175,7 +174,7 @@
   $: postRevision = fragment(
     _postRevision,
     graphql(`
-      fragment Post_postRevision on PostRevision @_required {
+      fragment Post_postRevision on PostRevision {
         id
         title
         subtitle
@@ -315,165 +314,141 @@
 
   const handleShare = () => {
     const shortLink = `https://pnxl.me/${$query.post.shortlink}`;
-    if (navigator.share) {
-      navigator.share({
-        title: $postRevision.title ?? '(제목 없음)',
-        url: shortLink,
-      });
-    } else {
-      navigator.clipboard.writeText(shortLink);
-      toast.success('링크가 복사되었어요');
-    }
+    navigator.clipboard.writeText(shortLink);
+    toast.success('링크가 복사되었어요');
   };
 
   $: triggerTags = $query.post.tags.filter(({ kind }) => kind === 'TRIGGER');
 </script>
 
-<article class={clsx('w-full bg-cardprimary py-7.5 px-4 grow sm:py-17', _class)}>
-  <div class="w-full max-w-187.5 mx-auto space-y-6">
-    <header>
-      <hgroup class="space-y-4">
-        <h1 class="title-24-eb break-all sm:title-32-eb">{$postRevision.title ?? '(제목 없음)'}</h1>
-        {#if $postRevision.subtitle}
-          <p class="body-16-sb text-secondary break-all sm:subtitle-18-sb">{$postRevision.subtitle}</p>
-        {/if}
-      </hgroup>
+<Helmet
+  description={$postRevision.previewText}
+  image={{
+    src: $query.post.thumbnail?.url ?? 'https://pnxl.net/assets/opengraph/default-cover.png',
+    size: 'large',
+  }}
+  title={$postRevision.title ?? '(제목 없음)'}
+/>
 
-      <div class="border-b border-secondary w-full flex flex-col mt-4.75 sm:mt-6">
-        <div class="flex items-start pt-4 pb-5 gap-3">
-          <svelte:element
-            this={element}
-            class="relative"
-            href={preview || !$query.post.space ? undefined : `/${$query.post.space.slug}`}
-          >
-            {#if $query.post.space && $query.post.member}
-              <Image class="square-10.5 rounded-3.5 border border-secondary" $image={$query.post.space.icon} />
-              <Avatar
-                class="square-6 absolute border border-bg-primary -right-1 -bottom-1"
-                $profile={$query.post.member.profile}
-              />
-            {:else}
-              <div class="square-10.5 rounded-3.5 border border-secondary" />
-              <div class="square-6 absolute border border-bg-primary -right-1 -bottom-1" />
-            {/if}
-          </svelte:element>
+<article class={clsx('w-full bg-white grow', _class)}>
+  <div class="w-full max-w-960px mx-auto flex flex-col pt-60px">
+    <div>
+      <h1 class="text-28-sb break-all">{$postRevision.title ?? '(제목 없음)'}</h1>
+      {#if $postRevision.subtitle}
+        <h2 class="text-16-r text-gray-700 break-all">{$postRevision.subtitle}</h2>
+      {/if}
+    </div>
 
-          <div class="grow-1">
-            <svelte:element
-              this={element}
-              class="body-15-b break-all"
-              href={preview || !$query.post.space ? undefined : `/${$query.post.space.slug}`}
-            >
-              {#if $query.post.space && $query.post.member}
-                {$query.post.space.name} · {$query.post.member.profile.name}
-              {:else}
-                스페이스 이름 · 작성자
-              {/if}
-            </svelte:element>
-            <div class="flex items-center flex-wrap body-13-m text-secondary">
-              <span class="mr-3.5">{dayjs($query.post.publishedAt ?? $postRevision.createdAt).formatAsDate()}</span>
-              <div class="flex items-center gap-3.5 body-13-m text-secondary">
-                {#if $query.post.discloseStats}
-                  <span class="flex items-center gap-1">
-                    <i class="i-lc-eye square-3.75" />
-                    {humanizeNumber($query.post.viewCount)}
-                  </span>
-                  <span class="flex items-center gap-1">
-                    <i class="i-px-heart square-3.75" />
-                    {humanizeNumber($query.post.likeCount)}
-                  </span>
-                {/if}
-                <span class="flex items-center gap-1">
-                  <i class="i-lc-alarm-clock square-3.75" />
-                  {calcurateReadingTime($postRevision.characterCount)}분
-                </span>
-              </div>
+    <div class="border-y border-gray-100 flex gap-12px p-12px">
+      {#if $query.post.space && $query.post.member}
+        <a class="relative" href={`/${$query.post.space.slug}`}>
+          <Image class="square-36px rounded-4px border" $image={$query.post.space.icon} />
+          <Avatar
+            class="square-24px absolute border border-white -right-4px -bottom-4px"
+            $profile={$query.post.member.profile}
+          />
+        </a>
+      {:else}
+        <div class="absolute">
+          <div class="square-36px rounded-4px border" />
+          <div class="square-24px absolute border border-white -right-4px -bottom-4px" />
+        </div>
+      {/if}
+
+      <div class="flex flex-col gap-2px">
+        <div class="text-14-m text-gray-700">
+          {$query.post.space?.name ?? '스페이스'} · {$query.post.member?.profile.name ?? '작성자'}
+        </div>
+
+        <div class="flex gap-8px">
+          <span class="text-gray-500">{dayjs($query.post.publishedAt).formatAsDate()}</span>
+          <div class="w-1px h-12px bg-gray-200" />
+          <div class="flex gap-8px">
+            <div class="flex items-center gap-2px">
+              <i class="i-tb-eye square-14px" />
+              {humanizeNumber($query.post.viewCount)}
+            </div>
+            <div class="flex items-center gap-2px">
+              <i class="i-tb-heart square-14px" />
+              {humanizeNumber($query.post.likeCount)}
+            </div>
+            <div class="flex items-center gap-2px">
+              <i class="i-tb-clock-hour-4 square-14px" />
+              {calcurateReadingTime($postRevision.characterCount)}분
             </div>
           </div>
-
-          {#if $query.post.bookmarkGroups.length}
-            <button
-              class="i-px-bookmark-fill square-6 bg-yellow-50"
-              type="button"
-              on:click={async () => {
-                await unbookmarkPost({ bookmarkId: $query.post.bookmarkGroups[0].id, postId: $query.post.id });
-                mixpanel.track('post:unbookmark', { postId: $query.post.id, via: 'post' });
-                toast.success('북마크에서 삭제했어요');
-              }}
-            />
-          {:else}
-            <button
-              class="i-px-bookmark-outline square-6"
-              disabled={preview}
-              type="button"
-              on:click={async () => {
-                if (!$query.me) {
-                  loginRequireOpen = true;
-                  return;
-                }
-
-                await bookmarkPost({ postId: $query.post.id });
-                mixpanel.track('post:bookmark', { postId: $query.post.id, via: 'post' });
-                toast.success('북마크에 저장되었어요');
-              }}
-            />
-          {/if}
-
-          <button class="i-lc-share square-6" disabled={preview} type="button" on:click={handleShare} />
-
-          <Menu disabled={preview}>
-            <i slot="value" class="i-lc-more-vertical square-6 text-icon-primary" />
-            {#if !$query.post.space?.meAsMember}
-              {#if $query.post.space?.muted}
-                <MenuItem
-                  on:click={async () => {
-                    if (!$query.post.space) return;
-
-                    await unmuteSpace({ spaceId: $query.post.space.id });
-                    mixpanel.track('space:unmute', { spaceId: $query.post.space.id, via: 'post' });
-                    toast.success('스페이스 숨기기를 해제했어요');
-                  }}
-                >
-                  스페이스 숨기기 해제
-                </MenuItem>
-              {:else}
-                <MenuItem
-                  on:click={async () => {
-                    if (!$query.post.space) return;
-
-                    if (!$query.me) {
-                      loginRequireOpen = true;
-                      return;
-                    }
-
-                    await muteSpace({ spaceId: $query.post.space.id });
-                    mixpanel.track('space:mute', { spaceId: $query.post.space.id, via: 'post' });
-                    toast.success('스페이스를 숨겼어요');
-                  }}
-                >
-                  스페이스 숨기기
-                </MenuItem>
-              {/if}
-              <MenuItem>포스트 신고하기</MenuItem>
-            {:else}
-              {@const myPost = $query.post.member?.id === $query.post.space?.meAsMember.id}
-              {#if myPost}
-                <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
-              {/if}
-              {#if myPost || $query.post.space?.meAsMember.role === 'ADMIN'}
-                <MenuItem
-                  on:click={() => {
-                    openDeletePostWarning = true;
-                  }}
-                >
-                  삭제하기
-                </MenuItem>
-              {/if}
-            {/if}
-          </Menu>
         </div>
       </div>
-    </header>
+
+      <div class="flex items-center gap-12px">
+        <button class="px-10px py-2px text-14-r text-gray-400" type="button">URL 복사</button>
+
+        <button
+          class={clsx(
+            'square-24px',
+            $query.post.bookmarkGroups.length > 0 ? 'i-tb-bookmark-filled bg-yellow-50' : 'i-tb-bookmark text-gray-500',
+          )}
+          type="button"
+          on:click={async () => {
+            if ($query.post.bookmarkGroups.length > 0) {
+              await unbookmarkPost({ bookmarkId: $query.post.bookmarkGroups[0].id, postId: $query.post.id });
+              mixpanel.track('post:unbookmark', { postId: $query.post.id, via: 'post' });
+              toast.success('북마크에서 삭제했어요');
+            } else {
+              if (!$query.me) {
+                loginRequireOpen = true;
+                return;
+              }
+
+              await bookmarkPost({ postId: $query.post.id });
+              mixpanel.track('post:bookmark', { postId: $query.post.id, via: 'post' });
+              toast.success('북마크에 저장되었어요');
+            }
+          }}
+        />
+
+        <Menu>
+          <i slot="value" class="i-tb-dots-vertical square-24px text-gray-500" />
+          {#if $query.post.space?.meAsMember}
+            <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
+            <MenuItem
+              on:click={() => {
+                openDeletePostWarning = true;
+              }}
+            >
+              삭제하기
+            </MenuItem>
+          {:else}
+            <MenuItem
+              on:click={async () => {
+                if (!$query.post.space) return;
+
+                if ($query.post.space.muted) {
+                  await unmuteSpace({ spaceId: $query.post.space.id });
+                  mixpanel.track('space:unmute', { spaceId: $query.post.space.id, via: 'post' });
+                  toast.success('스페이스 숨기기를 해제했어요');
+                } else {
+                  if (!$query.me) {
+                    loginRequireOpen = true;
+                    return;
+                  }
+
+                  await muteSpace({ spaceId: $query.post.space.id });
+                  mixpanel.track('space:mute', { spaceId: $query.post.space.id, via: 'post' });
+                  toast.success('스페이스를 숨겼어요');
+                }
+              }}
+            >
+              {#if $query.post.space?.muted}
+                스페이스 숨기기 해제
+              {:else}
+                스페이스 숨기기
+              {/if}
+            </MenuItem>
+          {/if}
+        </Menu>
+      </div>
+    </div>
 
     {#if !$query.post.hasPassword || $query.post.space?.meAsMember || $query.post.unlocked}
       <div class="relative">
