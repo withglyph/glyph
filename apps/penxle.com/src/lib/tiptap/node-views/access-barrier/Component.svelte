@@ -8,13 +8,14 @@
   import { afterNavigate } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Modal } from '$lib/components';
+  import { Modal, Tooltip } from '$lib/components';
   import Button from '$lib/components/Button.svelte';
   import { Button as ButtonV2 } from '$lib/components/v2';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { NodeView } from '$lib/tiptap';
   import { calcurateReadingTime, comma } from '$lib/utils';
   import LoginRequireModal from '../../../../routes/(default)/LoginRequireModal.svelte';
+  import { priceErrorMap } from './zod';
   import type { NodeViewProps } from '$lib/tiptap';
 
   type $$Props = NodeViewProps;
@@ -60,7 +61,7 @@
           price: z
             .string()
             .transform((value) => Number.parseInt(value.replaceAll(',', '')))
-            .pipe(z.number().int().min(100).max(1_000_000).multipleOf(100)),
+            .pipe(z.number({ errorMap: priceErrorMap }).int().min(100).max(1_000_000).multipleOf(100)),
         }),
       }),
     ],
@@ -76,6 +77,9 @@
   $: if ($isSubmitting && !isSubmitted) {
     isSubmitted = true;
   }
+
+  $: invalidPrice = isSubmitted && !!$errors.price;
+  $: priceErrorDetailTooltipId = invalidPrice ? 'price-error' : undefined;
 
   $: setInitialValues({ price: node.attrs.price ? comma(node.attrs.price) : '' });
 
@@ -173,23 +177,31 @@
         use:floating
       >
         <form class="contents" use:form>
-          <div class="relative">
-            <input
-              bind:this={priceInputEl}
-              name="price"
-              class="border pl-12px pr-24px py-10px rounded-4px text-16-r w-110px border pl-12px pr-24px py-10px rounded-4px text-16-r w-110px'
+          <Tooltip enabled={invalidPrice} keepShowing offset={8} placement="top">
+            <span id={priceErrorDetailTooltipId} slot="message" aria-live="assertive">
+              {#if $errors.price}
+                {@html $errors.price.join('<br/>')}
+              {/if}
+            </span>
+            <div class="relative">
+              <input
+                bind:this={priceInputEl}
+                name="price"
+                class="border pl-12px pr-24px py-10px rounded-4px text-16-r w-110px border pl-12px pr-24px py-10px rounded-4px text-16-r w-110px'
                 border-gray-200 bg-white aria-[invalid='true']:(border-error-900 bg-error-50)"
-              aria-invalid={isSubmitted && !!errors.price}
-              inputmode="numeric"
-              placeholder="1,000"
-              on:input={(event) => {
-                const parsed = Number.parseInt(event.currentTarget.value.replaceAll(/\D/g, ''));
+                aria-errormessage={priceErrorDetailTooltipId}
+                aria-invalid={invalidPrice}
+                inputmode="numeric"
+                placeholder="1,000"
+                on:input={(event) => {
+                  const parsed = Number.parseInt(event.currentTarget.value.replaceAll(/\D/g, ''));
 
-                event.currentTarget.value = Number.isNaN(parsed) ? '' : comma(parsed);
-              }}
-            />
-            <span class="absolute inset-y-0 right-0 flex center pr-12px text-16-r">P</span>
-          </div>
+                  event.currentTarget.value = Number.isNaN(parsed) ? '' : comma(parsed);
+                }}
+              />
+              <span class="absolute inset-y-0 right-0 flex center pr-12px text-16-r">P</span>
+            </div>
+          </Tooltip>
 
           <ButtonV2 size="sm" type="submit" variant="secondary">설정</ButtonV2>
         </form>

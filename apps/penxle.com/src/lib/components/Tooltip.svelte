@@ -6,18 +6,18 @@
 
   let _class: string | undefined = undefined;
   export { _class as class };
-  let _offset: number | undefined = undefined;
-  export { _offset as offset };
+  export let offset: number | undefined = undefined;
 
   export let enabled = true;
-  export let message: string;
+  export let message: string | undefined = undefined;
   export let placement: Placement = 'bottom';
+  export let keepShowing = false;
 
   const hovered = writable(false);
 
   const { anchor, floating, arrow } = createFloatingActions({
     placement,
-    offset: _offset ?? 0,
+    offset: offset ?? 0,
     arrow: true,
   });
 </script>
@@ -26,14 +26,16 @@
   <slot />
 </div>
 
-{#if enabled && $hovered}
+{#if enabled && ($hovered || keepShowing)}
   <div
     class="z-100 rounded bg-gray-90 px-4 py-2 text-12-r text-white"
     role="tooltip"
     use:floating
     transition:scale={{ start: 0.9, duration: 200 }}
   >
-    {message}
+    <slot name="message">
+      {message}
+    </slot>
     <div class="square-2 bg-gray-90" use:arrow />
   </div>
 {/if}
