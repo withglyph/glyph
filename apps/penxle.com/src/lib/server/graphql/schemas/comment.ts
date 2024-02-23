@@ -88,10 +88,11 @@ export const commentSchema = defineSchema((builder) => {
           return masquerade.profileId;
         })();
 
-        if (input.parentId) {
-          const parentComment = await db.postComment.existsUnique({
+        let parentId: string | null = input.parentId ?? null;
+        if (parentId) {
+          const parentComment = await db.postComment.findUnique({
             where: {
-              id: input.parentId,
+              id: parentId,
               postId: input.postId,
               state: 'ACTIVE',
             },
@@ -99,6 +100,10 @@ export const commentSchema = defineSchema((builder) => {
 
           if (!parentComment) {
             throw new NotFoundError();
+          }
+
+          if (parentComment.parentId) {
+            parentId = parentComment.parentId;
           }
         }
 
@@ -109,7 +114,7 @@ export const commentSchema = defineSchema((builder) => {
             postId: input.postId,
             userId: context.session.userId,
             profileId,
-            parentId: input.parentId,
+            parentId,
             state: 'ACTIVE',
             content: input.content,
             visibility: input.visibility,
