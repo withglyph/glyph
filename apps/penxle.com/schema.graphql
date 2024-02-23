@@ -9,6 +9,11 @@ enum AuthScope {
   USER
 }
 
+input BlockMasqueradeInput {
+  masqueradeId: ID!
+  spaceId: ID!
+}
+
 type BookmarkGroup {
   id: ID!
   name: String!
@@ -235,6 +240,7 @@ input MarkNotificationAsReadInput {
 
 type Mutation {
   acceptSpaceMemberInvitation(input: AcceptSpaceMemberInvitationInput!): SpaceMemberInvitation!
+  blockMasquerade(input: BlockMasqueradeInput!): Space!
   bookmarkPost(input: BookmarkPostInput!): Post!
   createComment(input: CreateCommentInput!): PostComment!
   createPost(input: CreatePostInput!): Post!
@@ -277,6 +283,7 @@ type Mutation {
   reviseTagWiki(input: ReviseTagWikiInput!): TagWiki!
   setParentTag(input: SetParentTagInput!): Tag!
   setSpaceCollectionPosts(input: SetSpaceCollectionPostsInput!): SpaceCollection!
+  unblockMasquerade(input: UnblockMasqueradeInput!): Space!
   unbookmarkPost(input: UnbookmarkPostInput!): Post!
   unfollowSpace(input: UnfollowSpaceInput!): Space!
   unfollowTag(input: UnfollowTagInput!): Tag!
@@ -425,6 +432,7 @@ type PostComment {
   content: String!
   createdAt: DateTime!
   id: ID!
+  masquerade: SpaceMasquerade
   parent: PostComment
   pinned: Boolean!
   profile: Profile!
@@ -675,6 +683,7 @@ input SetSpaceCollectionPostsInput {
 }
 
 type Space {
+  blockedMasquerades: [SpaceMasquerade!]!
   collections: [SpaceCollection!]!
   createdAt: DateTime!
   description: String
@@ -721,6 +730,8 @@ type SpaceExternalLink {
 }
 
 type SpaceMasquerade {
+  blocked: Boolean!
+  blockedAt: DateTime
   id: ID!
   profile: Profile!
 }
@@ -812,6 +823,11 @@ type TagWikiRevision {
   content: String!
   createdAt: DateTime!
   id: ID!
+}
+
+input UnblockMasqueradeInput {
+  masqueradeId: ID!
+  spaceId: ID!
 }
 
 input UnbookmarkPostInput {

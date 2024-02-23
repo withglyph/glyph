@@ -189,6 +189,16 @@ export const spaceSchema = defineSchema((builder) => {
           return space.masquerades[0];
         },
       }),
+
+      blockedMasquerades: t.relation('masquerades', {
+        authScopes: { $granted: '$space:admin' },
+        grantScopes: ['$spaceMasquerade:spaceAdmin'],
+        query: {
+          where: {
+            blockedAt: { not: null },
+          },
+        },
+      }),
     }),
   });
 
@@ -257,6 +267,16 @@ export const spaceSchema = defineSchema((builder) => {
     fields: (t) => ({
       id: t.exposeID('id'),
       profile: t.relation('profile'),
+      blockedAt: t.expose('blockedAt', {
+        authScopes: { $granted: '$spaceMasquerade:spaceAdmin' },
+        type: 'DateTime',
+        nullable: true,
+      }),
+
+      blocked: t.field({
+        type: 'Boolean',
+        resolve: (masquerade) => !!masquerade.blockedAt,
+      }),
     }),
   });
 
@@ -373,6 +393,20 @@ export const spaceSchema = defineSchema((builder) => {
     fields: (t) => ({
       spaceMemberId: t.id(),
       role: t.field({ type: PrismaEnums.SpaceMemberRole }),
+    }),
+  });
+
+  const BlockMasqueradeInput = builder.inputType('BlockMasqueradeInput', {
+    fields: (t) => ({
+      spaceId: t.id(),
+      masqueradeId: t.id(),
+    }),
+  });
+
+  const UnblockMasqueradeInput = builder.inputType('UnblockMasqueradeInput', {
+    fields: (t) => ({
+      spaceId: t.id(),
+      masqueradeId: t.id(),
     }),
   });
 
@@ -1140,6 +1174,62 @@ export const spaceSchema = defineSchema((builder) => {
           ...query,
           where: { id: input.spaceId },
         });
+      },
+    }),
+
+    blockMasquerade: t.withAuth({ user: true }).prismaField({
+      type: 'Space',
+      args: { input: t.arg({ type: BlockMasqueradeInput }) },
+      resolve: async (query, _, { input }, { db, ...context }) => {
+        const meAsMember = await db.spaceMember.findUniqueOrThrow({
+          select: { space: query },
+          where: {
+            spaceId_userId: {
+              spaceId: input.spaceId,
+              userId: context.session.userId,
+            },
+            state: 'ACTIVE',
+            role: 'ADMIN',
+          },
+        });
+
+        await db.spaceMasquerade.update({
+          where: {
+            id: input.masqueradeId,
+            spaceId: input.spaceId,
+          },
+          data: { blockedAt: new Date() },
+        });
+
+        return meAsMember.space;
+      },
+    }),
+
+    unblockMasquerade: t.withAuth({ user: true }).prismaField({
+      type: 'Space',
+      args: { input: t.arg({ type: UnblockMasqueradeInput }) },
+      resolve: async (query, _, { input }, { db, ...context }) => {
+        const meAsMember = await db.spaceMember.findUniqueOrThrow({
+          select: { space: query },
+          where: {
+            spaceId_userId: {
+              spaceId: input.spaceId,
+              userId: context.session.userId,
+            },
+            state: 'ACTIVE',
+            role: 'ADMIN',
+          },
+        });
+
+        await db.spaceMasquerade.update({
+          where: {
+            id: input.masqueradeId,
+            spaceId: input.spaceId,
+          },
+          data: { blockedAt: null },
+        });
+
+        return meAsMember.space;
       },
     }),
   }));

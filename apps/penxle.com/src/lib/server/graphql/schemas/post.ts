@@ -449,6 +449,13 @@ export const postSchema = defineSchema((builder) => {
               postId: post.id,
               state: 'ACTIVE',
               pinned: true,
+              profile: {
+                spaceMasquerade: {
+                  NOT: {
+                    blockedAt: { not: null },
+                  },
+                },
+              },
             },
             orderBy: orderQuery,
             take,
@@ -464,6 +471,13 @@ export const postSchema = defineSchema((builder) => {
               postId: post.id,
               state: 'ACTIVE',
               pinned: true,
+              profile: {
+                spaceMasquerade: {
+                  NOT: {
+                    blockedAt: { not: null },
+                  },
+                },
+              },
             },
           });
 
@@ -474,6 +488,13 @@ export const postSchema = defineSchema((builder) => {
               state: 'ACTIVE',
               pinned: false,
               parentId: null,
+              profile: {
+                spaceMasquerade: {
+                  NOT: {
+                    blockedAt: { not: null },
+                  },
+                },
+              },
             },
             orderBy: orderQuery,
             take: take - pinnedComments.length,

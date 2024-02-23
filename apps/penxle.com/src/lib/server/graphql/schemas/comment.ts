@@ -26,6 +26,17 @@ export const commentSchema = defineSchema((builder) => {
     fields: (t) => ({
       id: t.exposeID('id'),
       profile: t.relation('profile'),
+      masquerade: t.prismaField({
+        type: 'SpaceMasquerade',
+        nullable: true,
+        select: (_, __, nestedSelection) => ({
+          profile: {
+            select: { spaceMasquerade: nestedSelection() },
+          },
+        }),
+        resolve: (_, { profile }) => profile.spaceMasquerade,
+      }),
+
       parent: t.relation('parent', { nullable: true }),
       state: t.expose('state', { type: PrismaEnums.PostCommentState }),
       content: t.exposeString('content', {
