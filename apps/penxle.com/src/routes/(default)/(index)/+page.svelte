@@ -29,7 +29,7 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "펜슬",
-      "url": "https://pencil.co"
+      "url": "https://pencil.so"
     }
   </script>
 </svelte:head>
