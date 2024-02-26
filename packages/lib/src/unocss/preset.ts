@@ -63,7 +63,7 @@ export const presetPenxle = (): Preset<Theme> => ({
       },
     ],
     [
-      /^(text)-(\d+)-(b|sb|m|r)$/,
+      /^(text)-(\d+)-(b|sb|m|r|l)$/,
       // eslint-disable-next-line unicorn/no-unreadable-array-destructuring
       ([, , d, w]) => {
         const fontWeight = {
@@ -71,6 +71,7 @@ export const presetPenxle = (): Preset<Theme> => ({
           b: 'bold',
           m: 'medium',
           r: 'normal',
+          l: 'light',
         }[w];
 
         return `text-[${d}px] font-${fontWeight}`;
