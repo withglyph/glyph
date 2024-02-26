@@ -7,6 +7,7 @@ import { defineSchema } from '../builder';
 export const commentSchema = defineSchema((builder) => {
   builder.prismaObject('PostComment', {
     grantScopes: async (comment, { db, ...context }) => {
+      if (comment.state === 'INACTIVE') return [];
       if (comment.visibility === 'PUBLIC') return ['$comment:viewContent'];
       if (!context.session) return [];
       if (comment.userId === context.session.userId) return ['$comment:viewContent'];
@@ -44,7 +45,12 @@ export const commentSchema = defineSchema((builder) => {
         unauthorizedResolver: () => '',
       }),
       pinned: t.exposeBoolean('pinned'),
-      childComments: t.relation('childComments'),
+      childComments: t.relation('childComments', {
+        query: {
+          where: { state: 'ACTIVE' },
+        },
+      }),
+
       visibility: t.expose('visibility', { type: PrismaEnums.PostCommentVisibility }),
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
       updatedAt: t.expose('updatedAt', { type: 'DateTime', nullable: true }),

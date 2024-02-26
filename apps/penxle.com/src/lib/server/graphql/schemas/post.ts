@@ -439,6 +439,8 @@ export const postSchema = defineSchema((builder) => {
           take: t.arg.int({ defaultValue: 5 }),
         },
         resolve: async (query, post, { orderBy, page, take }, { db }) => {
+          if (post.commentQualification === 'NONE') return [];
+
           const orderQuery = match(orderBy)
             .with('OLDEST', () => ({ createdAt: 'asc' as const }))
             .with('LATEST', () => ({ createdAt: 'desc' as const }))
@@ -493,7 +495,6 @@ export const postSchema = defineSchema((builder) => {
             ...query,
             where: {
               postId: post.id,
-              state: 'ACTIVE',
               pinned: false,
               parentId: null,
               profile: {
@@ -510,6 +511,14 @@ export const postSchema = defineSchema((builder) => {
                   },
                 ],
               },
+              OR: [
+                { state: 'ACTIVE' },
+                {
+                  childComments: {
+                    some: { state: 'ACTIVE' },
+                  },
+                },
+              ],
             },
             orderBy: orderQuery,
             take: take - pinnedComments.length,
