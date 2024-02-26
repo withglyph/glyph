@@ -6,7 +6,7 @@
   import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button } from '$lib/components';
+  import { Button } from '$lib/components/v2';
 
   $: query = graphql(`
     query MeNotificationsPage_Query {
@@ -81,42 +81,49 @@
 
 <Helmet description="받은 알림 목록을 둘러보세요" title="알림" />
 
-<div class="bg-cardprimary w-full flex flex-col grow">
-  {#if $query.me.notifications.length > 0}
-    <div class="flex justify-end w-full max-w-200 mt-7 mx-auto <sm:px-2">
-      <Button size="lg" on:click={async () => await readAllNotifications()}>모두 읽음</Button>
-    </div>
-  {/if}
+<header class="px-5 py-3.5 flex items-center justify-between relative">
+  <button class="i-tb-chevron-left square-6" type="button" on:click={() => history.back()} />
 
-  <ul class="space-y-3 min-h-30 my-7 w-full max-w-200 mx-auto <sm:px-2">
+  <h1 class="text-16-sb absolute left-50% -translate-x-50%">알림</h1>
+
+  <Button size="md" variant="outline" on:click={async () => await readAllNotifications()}>모두 읽기</Button>
+</header>
+
+<div class="w-full flex flex-col grow">
+  <ul class="min-h-30 my-7 w-full max-w-200 mx-auto">
     {#each $query.me.notifications as notification (notification.id)}
       <li>
         <button
           class={clsx(
-            'border border-secondary rounded-2xl bg-primary p-4 w-full flex gap-3 items-start hover:bg-surface-primary transition',
-            notification.state === 'UNREAD' && 'border-yellow-30! bg-yellow-10! hover:bg-yellow-20!',
+            'border-b border-gray-100 px-4 py-5 w-full hover:bg-gray-100 transition',
+            notification.state === 'UNREAD' && 'bg-gray-50',
           )}
           type="button"
           on:click={() => redirect(notification)}
         >
-          <div class="space-y-1">
-            <div>
-              {#if notification.__typename === 'SubscribeNotification'}
-                <p class="body-15-b">
-                  {notification.actor.name}님이 {notification.space.name.length > 10
-                    ? `${notification.space.name.slice(0, 10)}...`
-                    : notification.space.name} 스페이스를 구독했어요
-                </p>
-              {:else if notification.category === 'TREND'}
-                <p class="body-15-b">포스트 조회수가 급상승하고 있어요</p>
-              {:else if notification.__typename === 'PurchaseNotification'}
-                <p class="body-15-b">
-                  {notification.actor.name}님이 {notification.post.publishedRevision?.title ?? '(제목 없음)'} 포스트를 구매했어요
-                </p>
-              {/if}
-            </div>
-            <time class="body-13-m text-disabled">{dayjs(notification.createdAt).formatAsDateTime()}</time>
+          <div class="text-13-r flex items-center gap-1 text-gray-500">
+            {#if notification.__typename === 'SubscribeNotification'}
+              <i class="i-tb-check square-3.5 block" />
+              스페이스 구독
+            {:else if notification.__typename === 'PurchaseNotification'}
+              <i class="i-tb-coin square-3.5" />
+              포스트 구매
+            {/if}
           </div>
+          <div class={clsx('text-14-m px-5.5 text-gray-400', notification.state === 'UNREAD' && 'text-gray-800')}>
+            {#if notification.__typename === 'SubscribeNotification'}
+              {notification.actor.name}님이 {notification.space.name.length > 10
+                ? `${notification.space.name.slice(0, 10)}...`
+                : notification.space.name} 스페이스를 구독했어요
+            {:else if notification.category === 'TREND'}
+              포스트 조회수가 급상승하고 있어요
+            {:else if notification.__typename === 'PurchaseNotification'}
+              {notification.actor.name}님이 {notification.post.publishedRevision?.title ?? '(제목 없음)'} 포스트를 구매했어요
+            {/if}
+          </div>
+          <time class="text-10-l text-gray-400 text-right w-full inline-block">
+            {dayjs(notification.createdAt).formatAsDateTime()}
+          </time>
         </button>
       </li>
     {:else}

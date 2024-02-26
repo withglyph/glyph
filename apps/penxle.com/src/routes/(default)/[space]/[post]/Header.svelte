@@ -11,7 +11,7 @@
   import { Button } from '$lib/components/v2';
   import { toast } from '$lib/notification';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
-  import Notification from '../../Notification.svelte';
+  import NotificationMenu from '../../NotificationMenu.svelte';
   import SearchBar from '../../SearchBar.svelte';
   import UserMenu from '../../UserMenu.svelte';
   import type { SpacePostPage_Header_query } from '$glitch';
@@ -155,7 +155,7 @@
               <i class="i-tb-plus square-5 block" />
               포스트 작성
             </Button>
-            <Notification $user={$query.me} />
+            <NotificationMenu $user={$query.me} />
             <UserMenu $user={$query.me} />
           {:else}
             <Button href="/login" size="md" type="link">펜슬과 함께하기</Button>

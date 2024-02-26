@@ -1,14 +1,15 @@
 <script lang="ts">
+  // import * as R from 'radash';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import ky from 'ky';
-  // import * as R from 'radash';
-  import { goto } from '$app/navigation';
+  import { beforeNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Image, Modal } from '$lib/components';
+  import { Image, Modal } from '$lib/components';
   import { FormField, Switch, TextInput } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
+  import { Button } from '$lib/components/v2';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
@@ -159,15 +160,19 @@
     const resp = await ky.get(`/api/notification/${notification.id}`);
     await goto(resp.url);
   };
+
+  beforeNavigate(() => {
+    open = false;
+  });
 </script>
 
 <div class="flex center relative">
-  <a class="square-10 rounded-full square-10 flex center sm:hidden" href="/me/notifications">
-    <i class="i-tb-bell square-5 color-gray-700" />
+  <a class="square-8 rounded-full flex center sm:hidden" href="/me/notifications">
+    <i class="i-tb-bell square-5.5 color-gray-700" />
   </a>
 
   <button
-    class="square-10 rounded-full flex center transition color-gray-700 hover:bg-surface-primary aria-pressed:(bg-yellow-10 color-yellow-50!) <sm:hidden"
+    class="square-8 rounded-full flex center transition color-gray-700 hover:bg-gray-100 aria-pressed:(bg-yellow-10 bg-gray-100!) <sm:hidden"
     aria-pressed={open}
     type="button"
     on:click={() => (open = true)}
@@ -177,7 +182,7 @@
   </button>
 
   {#if checkUnreadNotification}
-    <span class="square-2 rounded-full absolute top-1 right-1 bg-red-50" />
+    <span class="square-2 rounded-full absolute top-0 right-0 bg-red-50" />
   {/if}
 </div>
 
@@ -192,62 +197,64 @@
   />
 
   <div
-    class="absolute z-50 w-full max-w-95 flex flex-col rounded-2xl bg-cardprimary p-4 shadow-[0_2px_10px_0_rgba(0,0,0,0.10)]"
+    class="absolute z-50 w-full max-w-375px flex flex-col rounded-2.5 bg-white shadow-[0px_5px_22px_0px_rgba(0,0,0,0.06)]"
     use:floating
   >
-    <div class="flex items-center justify-between">
-      <p class="subtitle-18-b">알림</p>
-      <a
-        class="rounded-full square-6.5 flex center transition hover:bg-primary"
-        href="/me/settings/notifications"
-        on:click={() => (open = false)}
-      >
-        <i class="i-lc-settings color-icon-secondary square-5" />
-      </a>
+    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+      <p class="text-16-sb">알림</p>
+      {#if $user.notifications.length > 0}
+        <Button class="text-12-sb" size="sm" variant="outline" on:click={async () => await readAllNotifications()}>
+          모두 읽기
+        </Button>
+      {/if}
     </div>
 
-    <hr class="w-full border-color-alphagray-10 my-4" />
-
-    <ul class="space-y-3 max-h-110 overflow-y-auto min-h-30">
+    <ul class="max-h-110 overflow-y-auto min-h-30">
       {#each $user.notifications.slice(0, 20) as notification (notification.id)}
         <li>
           <button
             class={clsx(
-              'border border-secondary rounded-2xl bg-primary p-4 w-full flex gap-3 items-start hover:bg-surface-primary transition',
-              notification.state === 'UNREAD' && 'border-yellow-30! bg-yellow-10! hover:bg-yellow-20!',
+              'border-b border-gray-100 px-4 py-5 w-full hover:bg-gray-100 transition',
+              notification.state === 'UNREAD' && 'bg-gray-50',
             )}
             type="button"
             on:click={() => redirect(notification)}
           >
-            <div class="space-y-1">
-              <div>
-                {#if notification.__typename === 'SubscribeNotification'}
-                  <p class="body-15-b">
-                    {notification.actor.name}님이 {notification.space.name.length > 10
-                      ? `${notification.space.name.slice(0, 10)}...`
-                      : notification.space.name} 스페이스를 구독했어요
-                  </p>
-                {:else if notification.category === 'TREND'}
-                  <p class="body-15-b">포스트 조회수가 급상승하고 있어요</p>
-                {:else if notification.__typename === 'PurchaseNotification'}
-                  <p class="body-15-b">
-                    {notification.actor.name}님이 {notification.post.publishedRevision?.title ?? '(제목 없음)'} 포스트를
-                    구매했어요
-                  </p>
-                {/if}
-              </div>
-              <time class="body-13-m text-disabled">{dayjs(notification.createdAt).formatAsDateTime()}</time>
+            <div class="text-13-r flex items-center gap-1 text-gray-500">
+              {#if notification.__typename === 'SubscribeNotification'}
+                <i class="i-tb-check square-3.5 block" />
+                스페이스 구독
+              {:else if notification.__typename === 'PurchaseNotification'}
+                <i class="i-tb-coin square-3.5" />
+                포스트 구매
+              {/if}
             </div>
+            <div class={clsx('text-14-m px-5.5 text-gray-400', notification.state === 'UNREAD' && 'text-gray-800')}>
+              {#if notification.__typename === 'SubscribeNotification'}
+                {notification.actor.name}님이 {notification.space.name.length > 10
+                  ? `${notification.space.name.slice(0, 10)}...`
+                  : notification.space.name} 스페이스를 구독했어요
+              {:else if notification.category === 'TREND'}
+                포스트 조회수가 급상승하고 있어요
+              {:else if notification.__typename === 'PurchaseNotification'}
+                {notification.actor.name}님이 {notification.post.publishedRevision?.title ?? '(제목 없음)'} 포스트를 구매했어요
+              {/if}
+            </div>
+            <time class="text-10-l text-gray-400 text-right w-full inline-block">
+              {dayjs(notification.createdAt).formatAsDateTime()}
+            </time>
           </button>
         </li>
       {:else}
-        <p class="text-center text-secondary body-14-b">알림이 없어요</p>
+        <li class="text-center text-secondary body-14-b">알림이 없어요</li>
       {/each}
 
       {#if $user.notifications.length > 20}
-        <Button class="body-15-b text-disabled" href="/me/notifications" size="sm" type="link" variant="text">
-          알림 더보기
-        </Button>
+        <li>
+          <a class="text-14-r text-gray-400 inline-block w-full text-center" href="/me/notifications" type="link">
+            더보기
+          </a>
+        </li>
       {/if}
 
       <!-- {#each invitations as invitation (invitation.space.id)}
@@ -285,12 +292,6 @@
         </li>
       {/each} -->
     </ul>
-
-    {#if $user.notifications.length > 0}
-      <div class="flex justify-end mt-2">
-        <Button size="md" on:click={async () => await readAllNotifications()}>모두 읽음</Button>
-      </div>
-    {/if}
   </div>
 {/if}
 
