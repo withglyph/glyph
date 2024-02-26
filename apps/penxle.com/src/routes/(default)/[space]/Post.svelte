@@ -424,7 +424,7 @@
     </div>
 
     <div class="border-y border-gray-100 flex justify-between px-2.5 py-3 my-6">
-      <a class="flex gap-18px" href={`/${$query.post.space?.slug}`}>
+      <div class="flex gap-18px">
         {#if $query.post.space && $query.post.member}
           <a class="relative flex-none h-fit" href={`/${$query.post.space.slug}`}>
             <Image class="square-36px rounded-4px border" $image={$query.post.space.icon} />
@@ -441,10 +441,10 @@
         {/if}
 
         <div class="flex flex-col gap-2px">
-          <div class="text-14-m text-gray-700 flex items-center flex-wrap gap-1">
+          <a class="text-14-m text-gray-700 flex items-center flex-wrap gap-1" href={`/${$query.post.space?.slug}`}>
             <span>{$query.post.space?.name ?? '스페이스'}</span>
             <span class="text-12-r text-gray-400">by {$query.post.member?.profile.name ?? '작성자'}</span>
-          </div>
+          </a>
 
           <div class="flex items-center text-11-r text-gray-500">
             <time>
@@ -464,7 +464,7 @@
             {/if}
           </div>
         </div>
-      </a>
+      </div>
 
       <div class="flex items-center gap-12px <sm:hidden">
         <!-- <Button size="xs" variant="tertiary">집중모드</Button> -->
