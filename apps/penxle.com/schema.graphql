@@ -379,6 +379,7 @@ type Post {
   category: PostCategory!
   collection: SpaceCollection
   commentCount: Int!
+  commentQualification: PostCommentQualification!
   comments(orderBy: CommentOrderByKind! = OLDEST, page: Int! = 1, take: Int! = 5): [PostComment!]!
   createdAt: DateTime!
   discloseStats: Boolean!
@@ -439,12 +440,6 @@ type PostComment {
   state: PostCommentState!
   updatedAt: DateTime
   visibility: PostCommentVisibility!
-}
-
-enum PostCommentQualification {
-  ANY
-  IDENTIFIED
-  NONE
 }
 
 enum PostCommentQualification {
@@ -691,6 +686,7 @@ input SetSpaceCollectionPostsInput {
 type Space {
   blockedMasquerades: [SpaceMasquerade!]!
   collections: [SpaceCollection!]!
+  commentProfile: Profile
   createdAt: DateTime!
   description: String
   externalLinks: [SpaceExternalLink!]!

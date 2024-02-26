@@ -111,6 +111,7 @@ export const postSchema = defineSchema((builder) => {
       receivePatronage: t.exposeBoolean('receivePatronage'),
       receiveTagContribution: t.exposeBoolean('receiveTagContribution'),
       protectContent: t.exposeBoolean('protectContent'),
+      commentQualification: t.expose('commentQualification', { type: PrismaEnums.PostCommentQualification }),
 
       thumbnail: t.relation('thumbnail', {
         authScopes: { $granted: '$post:view' },
@@ -472,11 +473,18 @@ export const postSchema = defineSchema((builder) => {
               state: 'ACTIVE',
               pinned: true,
               profile: {
-                spaceMasquerade: {
-                  NOT: {
-                    blockedAt: { not: null },
+                OR: [
+                  {
+                    spaceMasquerade: {
+                      NOT: {
+                        blockedAt: { not: null },
+                      },
+                    },
                   },
-                },
+                  {
+                    spaceMasquerade: null,
+                  },
+                ],
               },
             },
           });
@@ -489,11 +497,18 @@ export const postSchema = defineSchema((builder) => {
               pinned: false,
               parentId: null,
               profile: {
-                spaceMasquerade: {
-                  NOT: {
-                    blockedAt: { not: null },
+                OR: [
+                  {
+                    spaceMasquerade: {
+                      NOT: {
+                        blockedAt: { not: null },
+                      },
+                    },
                   },
-                },
+                  {
+                    spaceMasquerade: null,
+                  },
+                ],
               },
             },
             orderBy: orderQuery,
