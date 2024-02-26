@@ -971,36 +971,38 @@
       {/if}
     {/if}
 
-    <div class="bg-gray-50 rounded-2.5 flex items-center p-5 gap-3 mb-6 mt-36px">
-      <a class="flex-none" href={`/${$query.post.space?.slug}`}>
-        {#if $query.post.space}
-          <Image class="square-16 rounded border border-gray-200" $image={$query.post.space.icon} />
-        {:else}
-          <div class="square-16 rounded border border-gray-200" />
-        {/if}
-      </a>
+    <aside class="bg-gray-50 rounded-2.5 flex sm:(items-center justify-between) <sm:flex-col p-5 gap-3 mb-6 mt-36px">
+      <div class="flex gap-3">
+        <a class="flex-none" href={`/${$query.post.space?.slug}`}>
+          {#if $query.post.space}
+            <Image class="square-16 rounded border border-gray-200" $image={$query.post.space.icon} />
+          {:else}
+            <div class="square-16 rounded border border-gray-200" />
+          {/if}
+        </a>
 
-      <div class="grow truncate">
-        <a class="truncate w-full" href={`/${$query.post.space?.slug}`}>
-          <p class="text-14-m truncate w-full text-gray-700">
-            {#if $query.post.space}
-              {$query.post.space.name}
-            {:else}
-              스페이스 이름
-            {/if}
-          </p>
-        </a>
-        <a class="w-full whitespace-pre-wrap" href={`/${$query.post.space?.slug}`}>
-          <p class="text-13-r text-gray-600 mt-1 break-all w-full">
-            {$query.post.space?.description ?? '아직 소개가 없어요'}
-          </p>
-        </a>
+        <article class="grow truncate">
+          <a class="truncate w-full" href={`/${$query.post.space?.slug}`}>
+            <p class="text-14-m truncate w-full text-gray-700">
+              {#if $query.post.space}
+                {$query.post.space.name}
+              {:else}
+                스페이스 이름
+              {/if}
+            </p>
+          </a>
+          <a class="w-full whitespace-pre-wrap" href={`/${$query.post.space?.slug}`}>
+            <p class="text-13-r text-gray-600 mt-1 break-all w-full">
+              {$query.post.space?.description ?? '아직 소개가 없어요'}
+            </p>
+          </a>
+        </article>
       </div>
 
       {#if !$query.post.space?.meAsMember}
         {#if $query.post.space?.followed}
           <Button
-            class="flex-none bg-white flex center gap-1"
+            class="shrink-0 <sm:self-end flex items-center gap-1"
             size="sm"
             variant="outline"
             on:click={async () => {
@@ -1015,7 +1017,7 @@
           </Button>
         {:else}
           <Button
-            class="flex-none"
+            class="shrink-0 <sm:self-end"
             size="sm"
             on:click={async () => {
               if (!$query.post.space) return;
@@ -1033,7 +1035,7 @@
           </Button>
         {/if}
       {/if}
-    </div>
+    </aside>
 
     <div class="mt-40px">
       <!-- 댓글 허용-->
