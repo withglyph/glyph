@@ -22,6 +22,7 @@ export const shadedColors = {
     80: '#292524',
     90: '#1C1917',
     100: '#F4F4F5',
+    150: '#EBEBEB',
     200: '#E4E4E7',
     300: '#D4D4D8',
     400: '#A1A1AA',
