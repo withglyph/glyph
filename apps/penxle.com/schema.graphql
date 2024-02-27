@@ -391,7 +391,7 @@ type Post {
   bookmarkGroups: [BookmarkGroup!]!
   category: PostCategory!
   collection: SpaceCollection
-  commentCount: Int!
+  commentCount(pagination: Boolean! = false): Int!
   commentQualification: PostCommentQualification!
   comments(orderBy: CommentOrderByKind! = OLDEST, page: Int! = 1, take: Int! = 5): [PostComment!]!
   createdAt: DateTime!

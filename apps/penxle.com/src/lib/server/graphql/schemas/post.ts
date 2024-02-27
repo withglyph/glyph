@@ -428,7 +428,23 @@ export const postSchema = defineSchema((builder) => {
       }),
 
       commentCount: t.relationCount('comments', {
-        where: { state: 'ACTIVE' },
+        args: { pagination: t.arg.boolean({ defaultValue: false }) },
+        where: ({ pagination }) => {
+          if (!pagination) {
+            return { state: 'ACTIVE' as const };
+          }
+          return {
+            OR: [
+              { state: 'ACTIVE' as const },
+              {
+                childComments: {
+                  some: { state: 'ACTIVE' as const },
+                },
+              },
+            ],
+            parentId: null,
+          };
+        },
       }),
 
       comments: t.prismaField({
