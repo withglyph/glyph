@@ -231,7 +231,7 @@
             }
           }
 
-          postComments: comments(orderBy: LATEST) {
+          postComments: comments(orderBy: LATEST, page: 1, take: 1000) {
             id
             content
             createdAt
@@ -273,48 +273,41 @@
     `),
   );
 
-  $: comments = graphql(`
-    query Post_Comments($permalink: String!, $orderBy: CommentOrderByKind!, $page: Int!, $take: Int!) @_manual {
-      post(permalink: $permalink) {
-        comments(orderBy: $orderBy, page: $page, take: $take) {
-          id
-          content
-          createdAt
-          pinned
-
-          profile {
-            id
-            name
-          }
-
-          childComments {
-            id
-          }
-        }
-      }
-    }
-  `);
+  // $: comments = graphql(`
+  //   query Post_Comments($permalink: String!, $orderBy: CommentOrderByKind!, $page: Int!, $take: Int!) @_manual {
+  //     post(permalink: $permalink) {
+  //       comments(orderBy: $orderBy, page: $page, take: $take) {
+  //         id
+  //         ...PostPage_Comment_postComment
+  //       }
+  //     }
+  //   }
+  // `);
 
   let page = 2;
-  const take = 5;
+  const take = 1000;
 
-  let postComments: typeof $query.post.postComments = [];
+  // let _postComments: typeof $query.post.postComments = [];
   let initialize = false;
+  // $: postComments = derived(comments, ($comments) => {
+  //   return $comments?.post.comments ?? [];
+  // });
+  $: postComments = $query.post.postComments;
 
   $: if (!initialize) {
-    postComments = $query.post.postComments;
+    // _postComments = $query.post.postComments;
     initialize = true;
   }
 
   const fetchComments = async () => {
-    const refetchedComments = await comments.refetch({
-      permalink: $query.post.permalink,
-      orderBy: 'LATEST',
-      page,
-      take,
-    });
+    // const refetchedComments = await comments.refetch({
+    //   permalink: $query.post.permalink,
+    //   orderBy: 'LATEST',
+    //   page,
+    //   take,
+    // });
 
-    postComments = [...postComments, ...refetchedComments.post.comments];
+    // _postComments = [..._postComments, ...refetchedComments.post.comments];
     page += 1;
   };
 
