@@ -34,7 +34,7 @@
     >
       <div
         class={clsx(
-          'pointer-events-auto w-178 select-text rounded-2.5 bg-white shadow-[0px_8px_24px_0px_rgba(0,0,0,0.28)]',
+          'pointer-events-auto relative max-h-full w-full flex flex-col rounded-2.5 select-text bg-white shadow-modal-50',
           size === 'sm' && 'max-w-92',
           size === 'md' && 'rounded-b-none sm:(max-w-107.5 rounded-2xl)',
           size === 'lg' && 'rounded-b-none sm:(max-w-187 rounded-2xl)',
@@ -58,7 +58,7 @@
         </header>
 
         <div
-          class={clsx('relative content flex flex-col w-full overflow-y-auto max-h-160 rounded-b-inherit', _class)}
+          class={clsx('relative content flex flex-col w-full <sm:max-h-160 overflow-y-auto rounded-b-inherit', _class)}
           data-scroll-lock-ignore
         >
           <slot />
