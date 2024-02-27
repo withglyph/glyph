@@ -1,7 +1,7 @@
 <script lang="ts">
   import Button from '$lib/components/v2/Button.svelte';
 
-  const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
+  const sizes = ['2xs', 'xs', 'sm', 'md', 'lg', 'xl'] as const;
   const variants = ['primary', 'secondary', 'tertiary', 'outline', 'secondary-outline'] as const;
 </script>
 
