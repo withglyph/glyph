@@ -557,7 +557,7 @@
         <!-- <Button size="xs" variant="tertiary">집중모드</Button> -->
 
         <SharePostPopover href={shortLink}>
-          <i class="i-tb-share-2 square-20px text-gray-500 transition hover:text-teal-400" />
+          <i class="i-tb-share-2 square-24px text-gray-500 transition hover:text-teal-400" />
         </SharePostPopover>
 
         <button
