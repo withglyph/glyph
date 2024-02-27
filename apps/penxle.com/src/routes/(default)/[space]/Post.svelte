@@ -467,7 +467,7 @@
         <!-- <Button size="xs" variant="tertiary">집중모드</Button> -->
 
         <SharePostPopover href={shortLink}>
-          <i class="i-tb-share-2 square-24px text-gray-500" />
+          <i class="i-tb-share-2 square-24px text-gray-500 transition hover:text-teal-400" />
         </SharePostPopover>
 
         <button
@@ -841,7 +841,7 @@
           }}
         />
         <SharePostPopover href={shortLink}>
-          <i class="i-tb-share-2 square-6 text-gray-700" />
+          <i class="i-tb-share-2 square-6 text-gray-700 transition hover:text-teal-400" />
         </SharePostPopover>
       </div>
     </div>
@@ -876,7 +876,7 @@
         {/if}
       </div>
       <SharePostPopover href={shortLink}>
-        <i class="i-tb-share-2 square-24px text-gray-500" />
+        <i class="i-tb-share-2 square-24px text-gray-500 transition hover:text-teal-400" />
       </SharePostPopover>
     </div>
 
