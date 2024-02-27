@@ -168,6 +168,17 @@
               id
               ...Image_image
             }
+
+            posts {
+              id
+              permalink
+
+              publishedRevision {
+                id
+                title
+                subtitle
+              }
+            }
           }
 
           previousPost {
@@ -945,6 +956,7 @@
     </div>
 
     {#if $query.post.collection}
+      {@const positionInCollection = $query.post.collection.posts.findIndex((post) => post.id === $query.post.id)}
       <div class="bg-gray-50 rounded-2.5 p-5">
         <a class="flex gap-3" href={`/${$query.post.space?.slug}/collections/${$query.post.collection.id}`}>
           {#if $query.post.collection.thumbnail}
@@ -960,42 +972,46 @@
           </div>
         </a>
 
-        <div class="bg-white mt-4">
-          {#if $query.post.previousPost}
-            <a
-              class="flex items-center gap-8 truncate p-4 transition h-86px hover:bg-gray-100"
-              href={`/${$query.post.space?.slug}/${$query.post.previousPost.permalink}`}
-            >
-              <span class="text-13-m text-gray-500">이전글</span>
+        {#if positionInCollection > -1}
+          <div class="bg-white mt-4">
+            {#if positionInCollection > 0}
+              {@const previousPost = $query.post.collection.posts[positionInCollection - 1]}
+              <a
+                class="flex items-center gap-8 truncate p-4 transition h-86px hover:bg-gray-100"
+                href={`/${$query.post.space?.slug}/${previousPost.permalink}`}
+              >
+                <span class="text-13-m text-gray-500">이전글</span>
 
-              <div class="truncate">
-                <p class="truncate text-16-sb">
-                  {$query.post.previousPost.publishedRevision.title ?? '(제목 없음)'}
-                </p>
-                {#if $query.post.previousPost.publishedRevision.subtitle}
-                  <p class="truncate text-13-r text-gray-500">{$query.post.previousPost.publishedRevision.subtitle}</p>
-                {/if}
-              </div>
-            </a>
-          {/if}
-          {#if $query.post.nextPost}
-            <a
-              class="flex items-center gap-8 truncate p-5 transition h-86px hover:bg-gray-100 border-t border-gray-100"
-              href={`/${$query.post.space?.slug}/${$query.post.nextPost.permalink}`}
-            >
-              <span class="text-13-m text-gray-500">다음글</span>
+                <div class="truncate">
+                  <p class="truncate text-16-sb">
+                    {previousPost.publishedRevision?.title ?? '(제목 없음)'}
+                  </p>
+                  {#if previousPost.publishedRevision?.subtitle}
+                    <p class="truncate text-13-r text-gray-500">{previousPost.publishedRevision.subtitle}</p>
+                  {/if}
+                </div>
+              </a>
+            {/if}
+            {#if positionInCollection < $query.post.collection.posts.length - 1}
+              {@const nextPost = $query.post.collection.posts[positionInCollection + 1]}
+              <a
+                class="flex items-center gap-8 truncate p-5 transition h-86px hover:bg-gray-100 border-t border-gray-100"
+                href={`/${$query.post.space?.slug}/${nextPost.permalink}`}
+              >
+                <span class="text-13-m text-gray-500">다음글</span>
 
-              <div class="truncate">
-                <p class="truncate text-16-sb">
-                  {$query.post.nextPost.publishedRevision.title ?? '(제목 없음)'}
-                </p>
-                {#if $query.post.nextPost.publishedRevision.subtitle}
-                  <p class="truncate text-13-r text-gray-500">{$query.post.nextPost.publishedRevision.subtitle}</p>
-                {/if}
-              </div>
-            </a>
-          {/if}
-        </div>
+                <div class="truncate">
+                  <p class="truncate text-16-sb">
+                    {nextPost.publishedRevision?.title ?? '(제목 없음)'}
+                  </p>
+                  {#if nextPost.publishedRevision?.subtitle}
+                    <p class="truncate text-13-r text-gray-500">{nextPost.publishedRevision.subtitle}</p>
+                  {/if}
+                </div>
+              </a>
+            {/if}
+          </div>
+        {/if}
       </div>
     {:else}
       {#if $query.post.previousPost}
