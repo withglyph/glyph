@@ -253,7 +253,11 @@ export const searchSchema = defineSchema((builder) => {
 
     autoCompleteTags: t.prismaField({
       type: ['Tag'],
-      args: { query: t.arg.string(), kind: t.arg({ type: PrismaEnums.PostTagKind }) },
+      args: {
+        query: t.arg.string(),
+        kind: t.arg({ type: PrismaEnums.PostTagKind }),
+        excludeTags: t.arg.stringList({ defaultValue: [] }),
+      },
       resolve: async (query, _, args, { db, ...context }) => {
         const mutedTags = context.session
           ? await db.userTagMute.findMany({
@@ -277,16 +281,18 @@ export const searchSchema = defineSchema((builder) => {
                   rank_feature: {
                     field: `usageCount.${args.kind}`,
                     saturation: { pivot: 10 },
+                    boost: 2,
                   },
                 },
               ],
-              filter: {
-                bool: {
-                  must_not: {
-                    ids: { values: mutedTags.map(({ tagId }) => tagId) },
-                  },
+              must_not: [
+                {
+                  ids: { values: mutedTags.map(({ tagId }) => tagId) },
                 },
-              },
+                {
+                  terms: { 'name.raw': args.excludeTags },
+                },
+              ],
             },
           },
         });
