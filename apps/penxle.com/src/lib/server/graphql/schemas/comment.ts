@@ -79,6 +79,18 @@ export const commentSchema = defineSchema((builder) => {
     }),
   });
 
+  const PinCommentInput = builder.inputType('PinCommentInput', {
+    fields: (t) => ({
+      commentId: t.id(),
+    }),
+  });
+
+  const UnpinCommentInput = builder.inputType('UnpinCommentInput', {
+    fields: (t) => ({
+      commentId: t.id(),
+    }),
+  });
+
   builder.mutationFields((t) => ({
     createComment: t.withAuth({ user: true }).prismaField({
       type: 'PostComment',
@@ -262,6 +274,98 @@ export const commentSchema = defineSchema((builder) => {
           data: {
             content: input.content,
             updatedAt: new Date(),
+          },
+        });
+      },
+    }),
+
+    pinComment: t.withAuth({ user: true }).prismaField({
+      type: 'PostComment',
+      args: { input: t.arg({ type: PinCommentInput }) },
+      resolve: async (query, _, { input }, { db, ...context }) => {
+        const comment = await db.postComment.findUniqueOrThrow({
+          where: { id: input.commentId },
+          include: {
+            post: true,
+          },
+        });
+
+        if (comment.post.userId !== context.session.userId) {
+          const meAsMember = comment.post.spaceId
+            ? await db.spaceMember.findUnique({
+                where: {
+                  spaceId_userId: {
+                    spaceId: comment.post.spaceId,
+                    userId: context.session.userId,
+                  },
+                  state: 'ACTIVE',
+                  role: 'ADMIN',
+                },
+              })
+            : null;
+
+          if (!meAsMember) {
+            throw new PermissionDeniedError();
+          }
+        }
+
+        // 지금은 댓글 고정 1개만 가능
+
+        await db.postComment.updateMany({
+          where: {
+            postId: comment.postId,
+            pinned: true,
+          },
+          data: {
+            pinned: false,
+          },
+        });
+
+        return db.postComment.update({
+          ...query,
+          where: { id: comment.id },
+          data: {
+            pinned: true,
+          },
+        });
+      },
+    }),
+
+    unpinComment: t.withAuth({ user: true }).prismaField({
+      type: 'PostComment',
+      args: { input: t.arg({ type: UnpinCommentInput }) },
+      resolve: async (query, _, { input }, { db, ...context }) => {
+        const comment = await db.postComment.findUniqueOrThrow({
+          where: { id: input.commentId },
+          include: {
+            post: true,
+          },
+        });
+
+        if (comment.post.userId !== context.session.userId) {
+          const meAsMember = comment.post.spaceId
+            ? await db.spaceMember.findUnique({
+                where: {
+                  spaceId_userId: {
+                    spaceId: comment.post.spaceId,
+                    userId: context.session.userId,
+                  },
+                  state: 'ACTIVE',
+                  role: 'ADMIN',
+                },
+              })
+            : null;
+
+          if (!meAsMember) {
+            throw new PermissionDeniedError();
+          }
+        }
+
+        return db.postComment.update({
+          ...query,
+          where: { id: comment.id },
+          data: {
+            pinned: false,
           },
         });
       },

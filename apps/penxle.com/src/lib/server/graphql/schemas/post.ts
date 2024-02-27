@@ -453,11 +453,18 @@ export const postSchema = defineSchema((builder) => {
               state: 'ACTIVE',
               pinned: true,
               profile: {
-                spaceMasquerade: {
-                  NOT: {
-                    blockedAt: { not: null },
+                OR: [
+                  {
+                    spaceMasquerade: {
+                      NOT: {
+                        blockedAt: { not: null },
+                      },
+                    },
                   },
-                },
+                  {
+                    spaceMasquerade: null,
+                  },
+                ],
               },
             },
             orderBy: orderQuery,

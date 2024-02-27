@@ -271,6 +271,7 @@ type Mutation {
   markNotificationAsRead(input: MarkNotificationAsReadInput!): UserNotification!
   muteSpace(input: MuteSpaceInput!): Space!
   muteTag(input: MuteTagInput!): Tag!
+  pinComment(input: PinCommentInput!): PostComment!
   prepareFileUpload: PrepareFileUploadResult!
   prepareImageUpload: PrepareImageUploadResult!
   publishPost(input: PublishPostInput!): Post!
@@ -293,6 +294,7 @@ type Mutation {
   unlockPasswordedPost(input: UnlockPasswordedPostInput!): Post!
   unmuteSpace(input: UnmuteSpaceInput!): Space!
   unmuteTag(input: UnmuteTagInput!): Tag!
+  unpinComment(input: UnpinCommentInput!): PostComment!
   unsetParentTag(input: UnsetParentTagInput!): Tag!
   updateComment(input: UpdateCommentInput!): PostComment!
   updatePostCollection(input: UpdatePostCollectionInput!): Post! @deprecated(reason: "Use setSpaceCollectionPost instead")
@@ -328,6 +330,10 @@ enum PaymentMethod {
   PAYPAL
   PHONE_BILL
   VIRTUAL_BANK_ACCOUNT
+}
+
+input PinCommentInput {
+  commentId: ID!
 }
 
 enum PointKind {
@@ -868,6 +874,10 @@ input UnmuteSpaceInput {
 
 input UnmuteTagInput {
   tagId: ID!
+}
+
+input UnpinCommentInput {
+  commentId: ID!
 }
 
 input UnsetParentTagInput {
