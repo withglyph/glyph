@@ -25,6 +25,7 @@
   import CommentInput from './CommentInput.svelte';
   import SelectionBubbleMenu from './SelectionBubbleMenu.svelte';
   import ShareContent from './ShareContent.svelte';
+  import SharePostPopover from './SharePostPopover.svelte';
   import type { Editor } from '@tiptap/core';
   import type { Post_postRevision, Post_query } from '$glitch';
 
@@ -337,12 +338,6 @@
     }
   `);
 
-  // const handleShare = () => {
-  //   const shortLink = `https://pnxl.me/${$query.post.shortlink}`;
-  //   navigator.clipboard.writeText(shortLink);
-  //   toast.success('링크가 복사되었어요');
-  // };
-
   let selectedText = '';
   $: triggerTags = $query.post.tags.filter(({ kind }) => kind === 'TRIGGER');
 
@@ -361,6 +356,8 @@
       editor?.off('selectionUpdate', setSelectedText);
     };
   });
+
+  $: shortLink = `https://pnxl.me/${$query.post.shortlink}`;
 </script>
 
 <Helmet
@@ -469,7 +466,9 @@
       <div class="flex items-center gap-12px <sm:hidden">
         <!-- <Button size="xs" variant="tertiary">집중모드</Button> -->
 
-        <button class="i-tb-share-2 square-24px text-gray-500" type="button" />
+        <SharePostPopover href={shortLink}>
+          <i class="i-tb-share-2 square-24px text-gray-500" />
+        </SharePostPopover>
 
         <button
           class={clsx(
@@ -841,7 +840,9 @@
             }
           }}
         />
-        <button class="i-tb-share-2 square-6 text-gray-700" type="button" />
+        <SharePostPopover href={shortLink}>
+          <i class="i-tb-share-2 square-6 text-gray-700" />
+        </SharePostPopover>
       </div>
     </div>
 
@@ -874,7 +875,9 @@
           {/if}
         {/if}
       </div>
-      <button class="i-tb-share-2 square-24px text-gray-500" type="button" />
+      <SharePostPopover href={shortLink}>
+        <i class="i-tb-share-2 square-24px text-gray-500" />
+      </SharePostPopover>
     </div>
 
     {#if $query.post.collection}

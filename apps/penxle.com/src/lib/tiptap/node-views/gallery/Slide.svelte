@@ -50,7 +50,7 @@
   <button
     bind:this={swiperPrevElem}
     class={clsx(
-      'absolute top-50% -left-40px flex center z-100 i-lc-chevron-left square-6 text-gray-500 disabled:text-gray-300! <sm:hidden',
+      'absolute top-50% -left-40px flex center i-lc-chevron-left square-6 text-gray-500 disabled:text-gray-300! <sm:hidden',
       isomorphicImages.length === 0 && 'hidden!',
     )}
     type="button"
@@ -75,7 +75,7 @@
   <button
     bind:this={swiperNextElem}
     class={clsx(
-      'absolute top-50% -right-40px flex center z-100 i-lc-chevron-right square-6 text-gray-500 disabled:text-gray-300 <sm:hidden',
+      'absolute top-50% -right-40px flex center i-lc-chevron-right square-6 text-gray-500 disabled:text-gray-300 <sm:hidden',
       isomorphicImages.length === 0 && 'hidden!',
     )}
     type="button"

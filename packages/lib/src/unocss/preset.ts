@@ -3,6 +3,7 @@ import { IconSet } from '@iconify/tools';
 import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders';
 import { presetIcons } from '@unocss/preset-icons';
 import { presetUno } from '@unocss/preset-uno';
+import { boxShadow } from './box-shadow';
 import { basicColors, designColors, partialShadedColors, shadedColors, specialColors } from './colors';
 import { fontFamily } from './font-family';
 import type { Preset } from '@unocss/core';
@@ -94,6 +95,7 @@ export const presetPenxle = (): Preset<Theme> => ({
       xl: '1600px',
     },
     fontFamily,
+    boxShadow,
   }),
 });
 
