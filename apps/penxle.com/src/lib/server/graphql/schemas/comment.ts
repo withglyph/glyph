@@ -52,6 +52,22 @@ export const commentSchema = defineSchema((builder) => {
       }),
 
       likeCount: t.relationCount('likes'),
+      likedByMe: t.boolean({
+        resolve: async (comment, _, { db, ...context }) => {
+          if (!context.session) return false;
+
+          const commentLikes = await db.postComment
+            .findUnique({
+              where: { id: comment.id },
+            })
+            .likes({
+              where: { userId: context.session.userId },
+            });
+
+          return !!commentLikes?.length;
+        },
+      }),
+
       likedByPostedUser: t.boolean({
         select: {
           post: {
@@ -59,14 +75,19 @@ export const commentSchema = defineSchema((builder) => {
               userId: true,
             },
           },
-          likes: {
-            select: {
-              userId: true,
-            },
-          },
         },
-        resolve: async (comment) => {
-          return comment.likes.some((like) => like.userId === comment.post.userId);
+        resolve: async (comment, _, { db, ...context }) => {
+          if (!context.session) return false;
+
+          const commentLikes = await db.postComment
+            .findUnique({
+              where: { id: comment.id },
+            })
+            .likes({
+              where: { userId: comment.post.userId },
+            });
+
+          return !!commentLikes?.length;
         },
       }),
 

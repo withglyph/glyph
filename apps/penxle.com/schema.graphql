@@ -448,6 +448,7 @@ type PostComment {
   id: ID!
   isPurchasedUser: Boolean!
   likeCount: Int!
+  likedByMe: Boolean!
   likedByPostedUser: Boolean!
   masquerade: SpaceMasquerade
   parent: PostComment
