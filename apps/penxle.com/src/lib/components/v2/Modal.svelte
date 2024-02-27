@@ -58,7 +58,7 @@
         </header>
 
         <div
-          class={clsx('relative content flex flex-col w-full overflow-y-auto <sm:h-160 rounded-b-inherit', _class)}
+          class={clsx('relative content flex flex-col w-full overflow-y-auto max-h-160 rounded-b-inherit', _class)}
           data-scroll-lock-ignore
         >
           <slot />

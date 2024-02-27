@@ -55,7 +55,7 @@
     size === 'sm' && 'p-x-0.88rem p-y-2 text-12-sb rounded-1',
     size === 'md' && 'p-x-4 p-y-2 text-14-sb rounded-0.31rem',
     size === 'lg' && 'p-x-5 p-y-0.62rem text-15-sb rounded-0.38rem',
-    size === 'xl' && 'p-x-6 p-x-3 text-17-sb rounded-0.44rem',
+    size === 'xl' && 'p-x-6 p-y-3 text-17-sb rounded-0.44rem',
     _class,
   )}
   aria-busy={showSpinner}

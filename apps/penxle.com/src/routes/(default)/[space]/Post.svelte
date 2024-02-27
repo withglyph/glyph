@@ -26,6 +26,7 @@
   import SelectionBubbleMenu from './SelectionBubbleMenu.svelte';
   import ShareContent from './ShareContent.svelte';
   import SharePostPopover from './SharePostPopover.svelte';
+  import TagManageModal from './TagManageModal.svelte';
   import type { Editor } from '@tiptap/core';
   import type { Post_postRevision, Post_query } from '$glitch';
 
@@ -36,6 +37,7 @@
   let openDeletePostWarning = false;
   let blurContent = true;
   let openShareContentModal = false;
+  let openTagManageModal = false;
 
   let _class: string | undefined = undefined;
   export { _class as class };
@@ -66,6 +68,9 @@
 
         post(permalink: $permalink) {
           id
+
+          ...TagManageModal_post
+
           permalink
           shortlink
           likeCount
@@ -727,7 +732,7 @@
             />
           {/key}
 
-          <div class="my-5">
+          <div class="flex justify-between my-12">
             <dl class="space-y-1">
               <div class="flex">
                 <dt class="text-13-m text-gray-500 mr-1">카테고리</dt>
@@ -818,6 +823,11 @@
                 {/if}
               </div>
             </dl>
+            {#if $query.post.space?.meAsMember}
+              <Button class="self-end" size="xs" variant="tertiary" on:click={() => (openTagManageModal = true)}>
+                테그수정
+              </Button>
+            {/if}
           </div>
         {/if}
       </div>
@@ -1266,3 +1276,5 @@
     </Button>
   </div>
 </Modal>
+
+<TagManageModal $post={$query.post} bind:open={openTagManageModal} />
