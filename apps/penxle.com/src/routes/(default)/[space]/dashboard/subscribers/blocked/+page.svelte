@@ -83,7 +83,7 @@
                 type="button"
                 on:click={async () => {
                   await unblockMasquerade({ spaceId: $query.space.id, masqueradeId: masquerade.id });
-                  mixpanel.track('unblock:masquerade', { masqueradeId: masquerade.id, spaceId: $query.space.id });
+                  mixpanel.track('space:masquerade:unblock', { masqueradeId: masquerade.id, spaceId: $query.space.id });
                 }}
               >
                 차단해제

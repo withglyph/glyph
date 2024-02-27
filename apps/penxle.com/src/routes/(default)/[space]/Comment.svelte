@@ -246,10 +246,10 @@
               on:click={async () => {
                 if ($postComment.pinned) {
                   await unpinComment({ commentId: $postComment.id });
-                  mixpanel.track('unpin:comment', { commentId: $postComment.id });
+                  mixpanel.track('comment:unpin', { commentId: $postComment.id });
                 } else {
                   await pinComment({ commentId: $postComment.id });
-                  mixpanel.track('unpin:comment', { commentId: $postComment.id });
+                  mixpanel.track('comment:pin', { commentId: $postComment.id });
                 }
               }}
             >
@@ -265,7 +265,7 @@
                 if (!$postComment.masquerade) return;
 
                 await blockMasquerade({ masqueradeId: $postComment.masquerade.id, spaceId: $query.post.space.id });
-                mixpanel.track('block:masquerade', {
+                mixpanel.track('space:masquerade:block', {
                   masqueradeId: $postComment.masquerade?.id,
                   spaceId: $query.post.space.id,
                 });
@@ -281,7 +281,7 @@
 
                 if (!$postComment.masquerade) return;
 
-                mixpanel.track('delete:comment', {
+                mixpanel.track('comment:delete', {
                   masqueradeId: $postComment.masquerade.id,
                   spaceId: $query.post.space.id,
                 });
@@ -310,10 +310,10 @@
               on:click={async () => {
                 if ($postComment.likedByMe) {
                   await unlikeComment({ commentId: $postComment.id });
-                  mixpanel.track('unlike:comment', { postId: $query.post.id, commentId: $postComment.id });
+                  mixpanel.track('comment:unlike', { postId: $query.post.id, commentId: $postComment.id });
                 } else {
                   await likeComment({ commentId: $postComment.id });
-                  mixpanel.track('like:comment', { postId: $query.post.id, commentId: $postComment.id });
+                  mixpanel.track('comment:like', { postId: $query.post.id, commentId: $postComment.id });
                 }
               }}
             >
