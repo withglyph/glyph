@@ -23,8 +23,8 @@
 </script>
 
 <main class="flex grow flex-col bg-gray-50">
-  <div class="bg-white flex flex-col grow w-full max-w-270 mx-auto grow py-5 sm:pt-10.5">
-    <div class="pb-5 mb-5 border-b border-gray-200 mx-5 sm:mx-15">
+  <div class="bg-white flex flex-col grow w-full max-w-1062px mx-auto grow py-5 sm:pt-10.5">
+    <div class="pb-5 mb-5 border-b border-gray-200 mx-5 sm:mx-20">
       <input
         class="w-full text-28-sb"
         maxlength="100"
@@ -42,7 +42,7 @@
       />
     </div>
 
-    <div class="px-5 w-full flex grow sm:px-15">
+    <div class="px-5 w-full flex grow sm:px-20">
       <TiptapEditor
         class="mb-100px max-w-full grow"
         options={$store}

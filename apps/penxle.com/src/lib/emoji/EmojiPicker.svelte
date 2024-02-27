@@ -110,7 +110,7 @@
 
 {#if variant === 'post'}
   <button
-    class="square-6 rounded-lg border border-secondary hover:border-primary flex center p-0.5 disabled:(text-disabled border-gray-30 cursor-not-allowed)"
+    class="square-6 rounded hover:bg-gray-50 flex center disabled:(text-disabled border-gray-30 cursor-not-allowed)"
     {disabled}
     type="button"
     on:click={(e) => {
@@ -119,11 +119,11 @@
     }}
     use:anchor
   >
-    <i class="i-lc-smile-plus square-3.5" />
+    <i class="i-lc-smile-plus square-5" />
   </button>
 {:else}
   <button
-    class="square-6 flex center hover:bg-gray-50 disabled:(text-disabled border-gray-30 cursor-not-allowed)"
+    class="square-6 flex center rounded hover:bg-gray-50 disabled:(text-disabled border-gray-30 cursor-not-allowed)"
     {disabled}
     type="button"
     on:click={(e) => {
@@ -132,9 +132,7 @@
     }}
     use:anchor
   >
-    <i class="i-tb-mood-plus text-gray-700 square-6 block" />
-
-    <slot />
+    <i class="i-tb-mood-plus text-gray-700 square-5 block" />
   </button>
 {/if}
 

@@ -33,7 +33,7 @@
   }}
 >
   <input
-    class="transition-all rounded bg-primary py-3 pr-10 pl-3 text-14-m h-45px border border-bg-primary focus-within:border-primary next:focus:text-icon-primary w-full"
+    class="transition-all rounded bg-gray-100 py-2.5 pr-10 pl-3 text-14-r h-41px focus-within:(ring ring-teal-500 bg-white) next:focus:text-icon-primary w-full <sm:h-45px"
     placeholder="검색어를 입력하세요"
     type="search"
     bind:value

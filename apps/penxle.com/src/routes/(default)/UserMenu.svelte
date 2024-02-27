@@ -77,13 +77,8 @@
   });
 </script>
 
-<button
-  class="flex center border border-gray-200 rounded-full"
-  tabindex="-1"
-  type="button"
-  on:click={() => (open = true)}
->
-  <Avatar class="square-8" $profile={$user.profile} />
+<button class="flex center ring ring-gray-200 rounded-full" tabindex="-1" type="button" on:click={() => (open = true)}>
+  <Avatar class="square-9" $profile={$user.profile} />
 </button>
 
 {#if open}
@@ -97,39 +92,44 @@
       transition:fade={{ duration: 150 }}
     />
 
-    <div class={clsx('pointer-events-none absolute flex justify-end top-0 bottom-0 right-0 w-75')}>
+    <div class={clsx('pointer-events-none absolute flex justify-end top-0 bottom-0 right-0 <sm:w-294px sm:w-320px')}>
       <div
-        class={clsx('pointer-events-auto max-h-full flex flex-col bg-white shadow-xl w-270px sm:w-320px')}
+        class={clsx(
+          'pointer-events-auto max-h-full flex flex-col bg-white shadow-[0px_6px_24px_0px_rgba(0,0,0,0.08)] rounded-lt-3 w-full',
+        )}
         use:scrollLock
         in:fly={{ x: '10%', duration: 150 }}
         out:fade={{ duration: 150 }}
       >
         <div class="overflow-x-hidden">
           {#if $user}
-            <div class="flex items-center gap-1.5 justify-between px-4 py-4.5 border-b border-gray-200">
+            <div class="flex items-center gap-1.5 justify-between px-4 py-4.5 border-b border-gray-100">
               <div class="flex items-center gap-1.5">
-                <Avatar class="square-8 border border-gray-200" $profile={$user.profile} />
+                <Avatar class="square-9 border border-gray-100" $profile={$user.profile} />
                 <div class="truncate">
                   <p class="text-14-m truncate">
                     <span class="truncate">{$user.profile.name}</span>
                     <span>님</span>
                   </p>
-                  <p class="text-10-r text-gray-400">{$user.email}</p>
+                  <p class="text-10-r text-gray-500">{$user.email}</p>
                 </div>
               </div>
-              <Button class="whitespace-nowrap" href="/me/settings" size="sm" type="link" variant="outline">
+              <Button class="whitespace-nowrap" href="/me/settings" size="xs" type="link" variant="outline">
                 계정 설정
               </Button>
             </div>
 
             <button
-              class="flex items-center justify-between p-4 border-b border-gray-200 w-full"
+              class={clsx(
+                'flex items-center justify-between p-4 pr-3.5 border-b w-full',
+                spaceListOpen ? 'border-gray-150' : 'border-gray-100',
+              )}
               type="button"
               on:click={() => {
                 spaceListOpen = !spaceListOpen;
               }}
             >
-              <p class="text-14-m text-gray-800">내 스페이스</p>
+              <p class="text-14-m text-gray-800">나의 스페이스</p>
 
               <i class={clsx('i-tb-chevron-down square-5 text-gray-400', spaceListOpen && 'i-tb-chevron-up')} />
             </button>
@@ -137,10 +137,10 @@
             {#if spaceListOpen}
               <ul>
                 {#each $user.spaces as space (space.id)}
-                  <li class="flex items-center justify-between gap-1.5 bg-gray-50 border-b border-gray-100 px-4 py-3">
+                  <li class="flex items-center justify-between gap-1.5 bg-gray-50 border-b border-gray-150 px-4 py-3">
                     <a class="flex items-center gap-3 truncate" href="/{space.slug}">
                       <div class="relative flex-none">
-                        <Image class="flex-none square-5.5 rounded-3px border border-gray-100" $image={space.icon} />
+                        <Image class="flex-none square-6.5 rounded border border-gray-150" $image={space.icon} />
                         <Avatar
                           class="absolute square-4.5 -right-6px -bottom-4px"
                           $profile={space.meAsMember.profile}
@@ -149,13 +149,16 @@
 
                       <div class="truncate">
                         <p class="text-12-m text-gray-800 truncate">{space.name}</p>
-                        <p class="text-11-r text-gray-400 truncate">by {space.meAsMember.profile.name}</p>
+                        <p class="text-12-r text-gray-500 truncate">
+                          <span class="text-11-r">by</span>
+                          {space.meAsMember.profile.name}
+                        </p>
                       </div>
                     </a>
 
                     <div class="flex items-center gap-5">
                       <button
-                        class="i-tb-pencil square-5 text-gray-400 sm:hidden"
+                        class="i-tb-pencil square-5 text-gray-500 sm:hidden"
                         type="button"
                         on:click={async () => {
                           const { permalink } = await createPost({ spaceId: space.id });
@@ -165,27 +168,27 @@
                       />
 
                       <a href="/{space.slug}/dashboard/settings">
-                        <i class="i-tb-settings square-5 text-gray-400" />
+                        <i class="i-tb-settings square-5 text-gray-500" />
                       </a>
                     </div>
                   </li>
                 {/each}
-                <li class="bg-gray-50 border-b border-gray-100">
+                <li class="bg-gray-100 border-b border-gray-150">
                   <button
-                    class="flex items-center gap-1.5 text-12-m text-gray-500 px-4 py-3"
+                    class="flex items-center gap-1.5 text-14-m text-gray-500 p-4"
                     type="button"
                     on:click={() => (createSpaceOpen = true)}
                   >
-                    <i class="i-tb-plus square-5 text-gray-400" />
+                    <i class="i-tb-plus square-3.5" />
                     스페이스 만들기
                   </button>
                 </li>
               </ul>
             {/if}
 
-            <a class="p-4 border-b border-gray-200 text-14-m text-gray-800 inline-block w-full" href="/point">포인트</a>
+            <a class="p-4 border-b border-gray-100 text-14-m text-gray-800 inline-block w-full" href="/point">포인트</a>
             <Link
-              class="p-4 border-b border-gray-200 text-14-m text-gray-800 inline-block w-full"
+              class="p-4 border-b border-gray-100 text-14-m text-gray-800 inline-block w-full"
               href="https://penxle.nolt.io"
             >
               펜슬 피드백하기

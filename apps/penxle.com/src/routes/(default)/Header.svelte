@@ -44,22 +44,22 @@
   `);
 </script>
 
-<header class="relative sticky top-0 z-10 border-b border-gray-200 bg-white px-5 sm:px-10 h-15.25 flex center h-65px">
+<header class="relative sticky top-0 z-10 border-b border-gray-100 bg-white px-5 flex center h-56px sm:(px-10 h-77px)">
   <nav class="w-full max-w-300">
     <section class="flex items-center justify-between">
-      <Link class="mr-3.5 flex items-center gap-2 sm:mr-4 transition w-fit" href="/">
+      <Link class="mr-4 flex items-center gap-7px sm:mr-4 transition w-fit" href="/">
         <Logo class="<sm:square-14px sm:square-21px" />
-        <Wordmark class="h-12px sm:h-19px" />
+        <Wordmark class="h-13px sm:h-19px" />
       </Link>
 
       <div class="flex flex-1 items-center justify-between">
         <SearchBar class="flex-1 max-w-80 <sm:focus-within:max-w-full peer" />
 
-        <div class="flex items-center gap-5 relative">
+        <div class="flex items-center gap-3 relative">
           {#if $query.me}
             <Button
               class="flex items-center gap-1 text-14-sb! text-gray-700 <sm:hidden"
-              size="sm"
+              size="md"
               type="button"
               variant="outline"
               on:click={async () => {
@@ -68,13 +68,13 @@
                 await goto(`/editor/${permalink}`);
               }}
             >
-              <i class="i-tb-plus square-5 block" />
+              <i class="i-tb-plus square-3.5 block" />
               포스트 작성
             </Button>
             <NotificationMenu $user={$query.me} />
             <UserMenu $user={$query.me} />
           {:else}
-            <Button href="/login" size="md" type="link">펜슬과 함께하기</Button>
+            <Button href="/login" size="md" type="link" variant="outline">로그인/회원가입</Button>
           {/if}
         </div>
       </div>

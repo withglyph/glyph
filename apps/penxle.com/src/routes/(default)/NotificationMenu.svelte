@@ -167,12 +167,12 @@
 </script>
 
 <div class="flex center relative">
-  <a class="square-8 rounded-full flex center sm:hidden" href="/me/notifications">
-    <i class="i-tb-bell square-5.5 color-gray-700" />
+  <a class="square-8.5 rounded-full flex center sm:hidden" href="/me/notifications">
+    <i class="i-tb-bell square-5" />
   </a>
 
   <button
-    class="square-8 rounded-full flex center transition color-gray-700 hover:bg-gray-100 aria-pressed:(bg-yellow-10 bg-gray-100!) <sm:hidden"
+    class="square-9 rounded-full flex center transition color-gray-700 hover:bg-gray-100 aria-pressed:(bg-yellow-10 bg-gray-100!) <sm:hidden"
     aria-pressed={open}
     type="button"
     on:click={() => (open = true)}
