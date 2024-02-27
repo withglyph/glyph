@@ -445,6 +445,7 @@ type PostComment {
   content: String!
   createdAt: DateTime!
   id: ID!
+  isPurchasedUser: Boolean!
   likeCount: Int!
   likedByPostedUser: Boolean!
   masquerade: SpaceMasquerade

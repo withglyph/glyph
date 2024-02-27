@@ -70,6 +70,20 @@ export const commentSchema = defineSchema((builder) => {
         },
       }),
 
+      isPurchasedUser: t.boolean({
+        resolve: async (comment, _, { db }) => {
+          const purchases = await db.post
+            .findUnique({
+              where: { id: comment.postId },
+            })
+            .purchases({
+              where: { userId: comment.userId },
+            });
+
+          return !!purchases?.length;
+        },
+      }),
+
       visibility: t.expose('visibility', { type: PrismaEnums.PostCommentVisibility }),
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
       updatedAt: t.expose('updatedAt', { type: 'DateTime', nullable: true }),
