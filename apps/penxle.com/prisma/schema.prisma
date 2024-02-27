@@ -204,10 +204,25 @@ model PostComment {
   createdAt  DateTime              @default(now()) @map("created_at") @db.Timestamptz
   updatedAt  DateTime?             @map("updated_at") @db.Timestamptz
 
-  childComments PostComment[] @relation("child_comments")
+  childComments PostComment[]     @relation("child_comments")
+  likes         PostCommentLike[]
 
   @@index([postId, createdAt])
   @@map("post_comments")
+}
+
+model PostCommentLike {
+  id        String      @id
+  commentId String      @map("comment_id")
+  comment   PostComment @relation(fields: [commentId], references: [id])
+  userId    String      @map("user_id")
+  user      User        @relation(fields: [userId], references: [id])
+  profileId String      @map("profile_id")
+  profile   Profile     @relation(fields: [profileId], references: [id])
+  createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([commentId, userId])
+  @@map("post_comment_likes")
 }
 
 model PostLike {
@@ -341,6 +356,7 @@ model Profile {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   comments        PostComment[]
+  commentLikes    PostCommentLike[]
   notifications   UserNotification[]
   spaceMasquerade SpaceMasquerade?
   spaceMembers    SpaceMember[]
@@ -610,6 +626,7 @@ model User {
   // PSL 선언을 위한 릴레이션들 (거의 쓰이지 않음)
   authoredTagWikiRevisions TagWikiRevision[]
   comments                 PostComment[]
+  commentLikes             PostCommentLike[]
   emailVerifications       UserEmailVerification[]
   eventEnrollments         UserEventEnrollment[]
   uploadedFiles            File[]
