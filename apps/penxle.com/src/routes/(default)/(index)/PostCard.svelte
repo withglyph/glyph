@@ -129,7 +129,7 @@
           {$post.publishedRevision.subtitle}
         </div>
       {/if}
-      <div class="text-14-r text-gray-700 mt-12px break-words line-clamp-2">
+      <div class="text-14-r text-gray-700 mt-12px break-words line-clamp-2 break-all">
         {$post.publishedRevision.previewText}
       </div>
     </div>
