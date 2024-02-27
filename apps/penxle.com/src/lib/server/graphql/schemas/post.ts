@@ -872,6 +872,15 @@ export const postSchema = defineSchema((builder) => {
     }),
   });
 
+  const UpdatePostTagsInput = builder.inputType('UpdatePostTagsInput', {
+    fields: (t) => ({
+      postId: t.id(),
+      category: t.field({ type: PrismaEnums.PostCategory }),
+      pairs: t.field({ type: [PrismaEnums.PostPair] }),
+      tags: t.field({ type: [TagInput] }),
+    }),
+  });
+
   const DeletePostInput = builder.inputType('DeletePostInput', {
     fields: (t) => ({
       postId: t.id(),
@@ -1433,6 +1442,68 @@ export const postSchema = defineSchema((builder) => {
         return db.post.findUniqueOrThrow({
           ...query,
           where: { id: post.id },
+        });
+      },
+    }),
+
+    updatePostTags: t.withAuth({ user: true }).prismaField({
+      type: 'Post',
+      args: { input: t.arg({ type: UpdatePostTagsInput }) },
+      resolve: async (query, _, { input }, { db, ...context }) => {
+        const post = await db.post.findUniqueOrThrow({
+          where: { id: input.postId },
+        });
+
+        if (post.userId !== context.session.userId) {
+          const meAsMember = post.spaceId
+            ? await db.spaceMember.findUnique({
+                where: {
+                  spaceId_userId: {
+                    spaceId: post.spaceId,
+                    userId: context.session.userId,
+                  },
+
+                  state: 'ACTIVE',
+                },
+              })
+            : null;
+
+          if (meAsMember?.role !== 'ADMIN') {
+            throw new PermissionDeniedError();
+          }
+        }
+
+        const postTags = await Promise.all(
+          (input.tags ?? []).map((tag) =>
+            db.tag.upsert({
+              where: { name: tag.name },
+              create: {
+                id: createId(),
+                name: tag.name,
+              },
+              update: {},
+            }),
+          ),
+        );
+
+        return db.post.update({
+          ...query,
+          where: { id: post.id },
+          data: {
+            category: input.category,
+            pairs: input.pairs,
+            tags: {
+              deleteMany: {},
+              createMany: {
+                data: input.tags.map(({ name, kind }) => ({
+                  id: createId(),
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  tagId: postTags.find((tag) => tag.name === name)!.id,
+                  kind,
+                })),
+              },
+            },
+          },
         });
       },
     }),

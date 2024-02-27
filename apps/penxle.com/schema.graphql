@@ -305,6 +305,7 @@ type Mutation {
   updateComment(input: UpdateCommentInput!): PostComment!
   updatePostCollection(input: UpdatePostCollectionInput!): Post! @deprecated(reason: "Use setSpaceCollectionPost instead")
   updatePostOptions(input: UpdatePostOptionsInput!): Post!
+  updatePostTags(input: UpdatePostTagsInput!): Post!
   updatePostView(input: UpdatePostViewInput!): Post!
   updateSpace(input: UpdateSpaceInput!): Space!
   updateSpaceCollection(input: UpdateSpaceCollectionInput!): SpaceCollection!
@@ -915,6 +916,13 @@ input UpdatePostOptionsInput {
   receivePatronage: Boolean
   receiveTagContribution: Boolean
   visibility: PostVisibility
+}
+
+input UpdatePostTagsInput {
+  category: PostCategory!
+  pairs: [PostPair!]!
+  postId: ID!
+  tags: [TagInput!]!
 }
 
 input UpdatePostViewInput {
