@@ -50,5 +50,23 @@ export const updates: GraphCacheConfig['updates'] = {
     setSpaceCollectionPosts: (_, { input }, cache) => {
       cache.invalidate({ __typename: 'SpaceCollection', id: input.collectionId });
     },
+    createComment: (_, { input }, cache) => {
+      cache.invalidate({ __typename: 'Post', id: input.postId });
+    },
+    deleteComment: (_, { input }, cache) => {
+      cache.invalidate({ __typename: 'PostComment', id: input.commentId });
+    },
+    blockMasquerade: (_, { input }, cache) => {
+      cache.invalidate({ __typename: 'Space', id: input.spaceId });
+    },
+    unblockMasquerade: (_, { input }, cache) => {
+      cache.invalidate({ __typename: 'Space', id: input.spaceId });
+    },
+    pinComment: (_, { input }, cache) => {
+      cache.invalidate({ __typename: 'PostComment', id: input.commentId });
+    },
+    unpinComment: (_, { input }, cache) => {
+      cache.invalidate({ __typename: 'PostComment', id: input.commentId });
+    },
   },
 };

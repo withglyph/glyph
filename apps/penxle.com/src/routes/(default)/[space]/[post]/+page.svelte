@@ -26,6 +26,7 @@
           id
 
           profile {
+            id
             name
           }
         }
