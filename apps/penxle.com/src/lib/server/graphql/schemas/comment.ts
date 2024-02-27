@@ -220,6 +220,7 @@ export const commentSchema = defineSchema((builder) => {
         const commentId = createId();
 
         let parentId: string | null = input.parentId ?? null;
+        let notifiedUserId = post.userId;
         if (parentId) {
           const parentComment = await db.postComment.findUnique({
             include: {
@@ -240,18 +241,13 @@ export const commentSchema = defineSchema((builder) => {
             parentId = parentComment.parent.id;
           }
 
+          notifiedUserId = parentComment.parent ? parentComment.parent.userId : parentComment.userId;
+        }
+
+        if (notifiedUserId !== context.session.userId) {
           await createNotification({
             db,
-            userId: parentComment.parent ? parentComment.parent.userId : parentComment.userId,
-            category: 'COMMENT',
-            actorId: profileId,
-            data: { commentId },
-            origin: context.event.url.origin,
-          });
-        } else {
-          await createNotification({
-            db,
-            userId: post.userId,
+            userId: notifiedUserId,
             category: 'COMMENT',
             actorId: profileId,
             data: { commentId },
