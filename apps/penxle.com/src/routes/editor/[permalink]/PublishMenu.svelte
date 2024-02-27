@@ -82,6 +82,7 @@
         pairs
         externalSearchable
         ageRating
+        commentQualification
 
         thumbnail {
           id
@@ -165,8 +166,7 @@
     receivePatronage: $post.receivePatronage,
     receiveTagContribution: $post.receiveTagContribution,
     protectContent: $post.protectContent,
-    // TODO: CI 에러 방지용으로 넣은 줄이고 나중에 실제 데이터 붙여야 해요
-    commentQualification: 'ANY',
+    commentQualification: $post.commentQualification,
     category: $post.category,
     pairs: $post.pairs ?? [],
     tags: $post.tags.map((t) => ({ name: t.tag.name, kind: t.kind })),
@@ -298,6 +298,17 @@
         aria-pressed={tabIndex === 4}
         type="button"
         on:click={() => (tabIndex = 4)}
+      >
+        <i class="i-px2-checkmark square-6 text-teal-500 <sm:hidden" />
+        <span class="w-full pb-2 sm:(py-2 px-1)">댓글관리</span>
+      </button>
+      <button
+        class={clsx(
+          'flex items-center text-15-sb <sm:(border-b-2 border-white text-gray-300 aria-pressed:(border-gray-950 text-gray-950)) sm:(text-13-r py-1 mx-2 rounded aria-pressed:bg-gray-50 hover:bg-gray-50)',
+        )}
+        aria-pressed={tabIndex === 5}
+        type="button"
+        on:click={() => (tabIndex = 5)}
       >
         <i class="i-px2-checkmark square-6 text-teal-500 <sm:hidden" />
         <span class="w-full pb-2 sm:(py-2 px-1)">세부 옵션</span>
@@ -712,6 +723,49 @@
       </div>
 
       <div class={clsx('space-y-8 hidden', tabIndex === 4 && 'block!')}>
+        <Switch
+          class="flex items-center justify-between"
+          checked={$data.commentQualification !== 'NONE' ?? true}
+          on:change={(e) => {
+            $data.commentQualification = e.currentTarget.checked ? 'ANY' : 'NONE';
+          }}
+        >
+          <div>
+            <p class="text-14-sb py-1 <sm:text-15-m">댓글 허용</p>
+            <p class="text-11-r text-gray-400 sm:(mt-1 text-gray-700)">
+              독자들이 게시물에 대한 의견을 나누고 소통할 수 있어요
+            </p>
+          </div>
+        </Switch>
+
+        <div>
+          <p class="text-14-sb py-1 <sm:text-15-m">댓글을 달 수 있는 계정</p>
+          <p class="text-11-r text-gray-400 mb-1.5">게시물에 대한 댓글을 달 수 있는 계정을 선택할 수 있어요</p>
+
+          <SegmentButtonGroup>
+            <ToggleButton
+              name="commentQualification"
+              checked={$data.commentQualification === 'ANY'}
+              disabled={$data.commentQualification === 'NONE'}
+              type="radio"
+              value="ANY"
+            >
+              모든계정
+            </ToggleButton>
+            <ToggleButton
+              name="commentQualification"
+              checked={$data.commentQualification === 'IDENTIFIED'}
+              disabled={$data.commentQualification === 'NONE'}
+              type="radio"
+              value="IDENTIFIED"
+            >
+              본인 인증된 계정
+            </ToggleButton>
+          </SegmentButtonGroup>
+        </div>
+      </div>
+
+      <div class={clsx('space-y-8 hidden', tabIndex === 5 && 'block!')}>
         <Switch
           name="receiveFeedback"
           class="flex items-center justify-between"
