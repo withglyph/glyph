@@ -51,6 +51,25 @@ export const commentSchema = defineSchema((builder) => {
         },
       }),
 
+      likeCount: t.relationCount('likes'),
+      likedByPostedUser: t.boolean({
+        select: {
+          post: {
+            select: {
+              userId: true,
+            },
+          },
+          likes: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+        resolve: async (comment) => {
+          return comment.likes.some((like) => like.userId === comment.post.userId);
+        },
+      }),
+
       visibility: t.expose('visibility', { type: PrismaEnums.PostCommentVisibility }),
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
       updatedAt: t.expose('updatedAt', { type: 'DateTime', nullable: true }),
@@ -86,6 +105,18 @@ export const commentSchema = defineSchema((builder) => {
   });
 
   const UnpinCommentInput = builder.inputType('UnpinCommentInput', {
+    fields: (t) => ({
+      commentId: t.id(),
+    }),
+  });
+
+  const LikeCommentInput = builder.inputType('LikeCommentInput', {
+    fields: (t) => ({
+      commentId: t.id(),
+    }),
+  });
+
+  const UnlikeCommentInput = builder.inputType('UnlikeCommentInput', {
     fields: (t) => ({
       commentId: t.id(),
     }),
@@ -367,6 +398,93 @@ export const commentSchema = defineSchema((builder) => {
           data: {
             pinned: false,
           },
+        });
+      },
+    }),
+
+    likeComment: t.withAuth({ user: true }).prismaField({
+      type: 'PostComment',
+      args: { input: t.arg({ type: LikeCommentInput }) },
+      resolve: async (query, _, { input }, { db, ...context }) => {
+        const comment = await db.postComment.findUniqueOrThrow({
+          include: {
+            post: true,
+          },
+          where: {
+            id: input.commentId,
+            state: 'ACTIVE',
+          },
+        });
+
+        const profileId = await (async () => {
+          const meAsMember = await db.spaceMember.findUnique({
+            where: {
+              spaceId_userId: {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                spaceId: comment.post.spaceId!,
+                userId: context.session.userId,
+              },
+              state: 'ACTIVE',
+            },
+          });
+
+          if (meAsMember) {
+            return meAsMember.profileId;
+          }
+
+          const masquerade = await makeMasquerade({
+            db,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            spaceId: comment.post.spaceId!,
+            userId: context.session.userId,
+          });
+
+          if (masquerade.blockedAt) {
+            throw new PermissionDeniedError();
+          }
+
+          return masquerade.profileId;
+        })();
+
+        await db.postCommentLike.upsert({
+          where: {
+            commentId_userId: {
+              commentId: comment.id,
+              userId: context.session.userId,
+            },
+          },
+          create: {
+            id: createId(),
+            commentId: comment.id,
+            userId: context.session.userId,
+            profileId,
+          },
+          update: {},
+        });
+
+        return db.postComment.findUniqueOrThrow({
+          ...query,
+          where: { id: comment.id },
+        });
+      },
+    }),
+
+    unlikeComment: t.withAuth({ user: true }).prismaField({
+      type: 'PostComment',
+      args: { input: t.arg({ type: UnlikeCommentInput }) },
+      resolve: async (query, _, { input }, { db, ...context }) => {
+        await db.postCommentLike.delete({
+          where: {
+            commentId_userId: {
+              commentId: input.commentId,
+              userId: context.session.userId,
+            },
+          },
+        });
+
+        return db.postComment.findUniqueOrThrow({
+          ...query,
+          where: { id: input.commentId },
         });
       },
     }),

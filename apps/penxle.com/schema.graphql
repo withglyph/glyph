@@ -226,6 +226,10 @@ input LeaveSpaceInput {
   spaceId: ID!
 }
 
+input LikeCommentInput {
+  commentId: ID!
+}
+
 input LikePostInput {
   postId: ID!
 }
@@ -265,6 +269,7 @@ type Mutation {
   issueUserEmailAuthorizationUrl(input: IssueUserEmailAuthorizationUrlInput!): IssueUserEmailAuthorizationUrlResult!
   issueUserSingleSignOnAuthorizationUrl(input: IssueUserSingleSignOnAuthorizationUrlInput!): IssueUserSingleSignOnAuthorizationUrlResult!
   leaveSpace(input: LeaveSpaceInput!): SpaceMember!
+  likeComment(input: LikeCommentInput!): PostComment!
   likePost(input: LikePostInput!): Post!
   loginUser(input: LoginUserInput!): UserEmailVerification!
   logoutUser: Void
@@ -289,6 +294,7 @@ type Mutation {
   unfollowSpace(input: UnfollowSpaceInput!): Space!
   unfollowTag(input: UnfollowTagInput!): Tag!
   unfurlEmbed(input: UnfurlEmbedInput!): Embed
+  unlikeComment(input: UnlikeCommentInput!): PostComment!
   unlikePost(input: UnlikePostInput!): Post!
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
   unlockPasswordedPost(input: UnlockPasswordedPostInput!): Post!
@@ -439,6 +445,8 @@ type PostComment {
   content: String!
   createdAt: DateTime!
   id: ID!
+  likeCount: Int!
+  likedByPostedUser: Boolean!
   masquerade: SpaceMasquerade
   parent: PostComment
   pinned: Boolean!
@@ -853,6 +861,10 @@ input UnfollowTagInput {
 
 input UnfurlEmbedInput {
   url: String!
+}
+
+input UnlikeCommentInput {
+  commentId: ID!
 }
 
 input UnlikePostInput {
