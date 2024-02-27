@@ -33,6 +33,19 @@ input BookmarkPostInput {
   postId: ID!
 }
 
+type CommentNotification implements UserNotification {
+  actor: Profile!
+  category: UserNotificationCategory!
+  comment: PostComment!
+  createdAt: DateTime!
+  data: JSON!
+  id: ID!
+  parentComment: PostComment
+  post: Post!
+  state: UserNotificationState!
+  user: User!
+}
+
 enum CommentOrderByKind {
   LATEST
   OLDEST

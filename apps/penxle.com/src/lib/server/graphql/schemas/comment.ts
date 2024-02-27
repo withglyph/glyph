@@ -1,5 +1,5 @@
 import { NotFoundError, PermissionDeniedError } from '$lib/errors';
-import { Loader, makeMasquerade } from '$lib/server/utils';
+import { createNotification, Loader, makeMasquerade } from '$lib/server/utils';
 import { createId } from '$lib/utils';
 import { PrismaEnums } from '$prisma';
 import { defineSchema } from '../builder';
@@ -217,9 +217,14 @@ export const commentSchema = defineSchema((builder) => {
           return masquerade.profileId;
         })();
 
+        const commentId = createId();
+
         let parentId: string | null = input.parentId ?? null;
         if (parentId) {
           const parentComment = await db.postComment.findUnique({
+            include: {
+              parent: true,
+            },
             where: {
               id: parentId,
               postId: input.postId,
@@ -231,15 +236,33 @@ export const commentSchema = defineSchema((builder) => {
             throw new NotFoundError();
           }
 
-          if (parentComment.parentId) {
-            parentId = parentComment.parentId;
+          if (parentComment.parent) {
+            parentId = parentComment.parent.id;
           }
+
+          await createNotification({
+            db,
+            userId: parentComment.parent ? parentComment.parent.userId : parentComment.userId,
+            category: 'COMMENT',
+            actorId: profileId,
+            data: { commentId },
+            origin: context.event.url.origin,
+          });
+        } else {
+          await createNotification({
+            db,
+            userId: post.userId,
+            category: 'COMMENT',
+            actorId: profileId,
+            data: { commentId },
+            origin: context.event.url.origin,
+          });
         }
 
         return db.postComment.create({
           ...query,
           data: {
-            id: createId(),
+            id: commentId,
             postId: input.postId,
             userId: context.session.userId,
             profileId,

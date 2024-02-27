@@ -22,6 +22,7 @@ export const notificationSchema = defineSchema((builder) => {
       match(notification.category)
         .with('PURCHASE', () => 'PurchaseNotification')
         .with('SUBSCRIBE', () => 'SubscribeNotification')
+        .with('COMMENT', () => 'CommentNotification')
         .run(),
   });
 
@@ -63,6 +64,55 @@ export const notificationSchema = defineSchema((builder) => {
     }),
   });
 
+  builder.prismaObject('UserNotification', {
+    variant: 'CommentNotification',
+    interfaces: [UserNotification],
+    fields: (t) => ({
+      post: t.prismaField({
+        type: 'Post',
+        resolve: (query, notification, _, { db }) => {
+          const data = notification.data as { commentId: string };
+          return db.post.findFirstOrThrow({
+            ...query,
+            where: {
+              comments: {
+                some: { id: data.commentId },
+              },
+            },
+          });
+        },
+      }),
+
+      comment: t.prismaField({
+        type: 'PostComment',
+        resolve: async (query, notification, _, { db }) => {
+          const data = notification.data as { commentId: string };
+          return db.postComment.findUniqueOrThrow({
+            ...query,
+            where: {
+              id: data.commentId,
+            },
+          });
+        },
+      }),
+
+      parentComment: t.prismaField({
+        type: 'PostComment',
+        nullable: true,
+        resolve: async (query, notification, _, { db }) => {
+          const data = notification.data as { commentId: string };
+          const comment = await db.postComment.findUnique({
+            select: { parent: query },
+            where: {
+              id: data.commentId,
+            },
+          });
+
+          return comment?.parent;
+        },
+      }),
+    }),
+  });
   /**
    * * Inputs
    */

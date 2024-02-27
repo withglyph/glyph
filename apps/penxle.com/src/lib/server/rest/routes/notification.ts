@@ -42,6 +42,18 @@ notification.get('/notification/:notificationId', async (request, { db }) => {
 
           return `/${space.slug}`;
         })
+        .with({ category: 'COMMENT' }, async ({ data }) => {
+          const comment = await db.postComment.findUniqueOrThrow({
+            include: { post: { include: { space: true } } },
+            where: { id: data.commentId },
+          });
+
+          if (!comment.post.space) {
+            return `/404`;
+          }
+
+          return `/${comment.post.space.slug}/${comment.post.permalink}`;
+        })
         .exhaustive(),
     },
   });

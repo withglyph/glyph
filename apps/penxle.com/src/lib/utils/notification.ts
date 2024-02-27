@@ -14,6 +14,14 @@ type SubscribeNotification = {
   };
 };
 
-export type Notification = (PurchaseNotification | SubscribeNotification) & {
+type CommentNotification = {
+  category: 'COMMENT';
+  actorId: string;
+  data: {
+    commentId: string;
+  };
+};
+
+export type Notification = (PurchaseNotification | SubscribeNotification | CommentNotification) & {
   userId: string;
 };
