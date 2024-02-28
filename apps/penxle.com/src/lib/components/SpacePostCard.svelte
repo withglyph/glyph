@@ -1,17 +1,17 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import dayjs from 'dayjs';
   import IconAlertTriangle from '~icons/tabler/alert-triangle';
   import { fragment, graphql } from '$glitch';
   import { Badge, Icon, Image, Tag } from '$lib/components';
   import { humanizeNumber } from '$lib/utils';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import type { SpaceFeed_post } from '$glitch';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   let _post: SpaceFeed_post;
   export { _post as $post };
-
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 
   $: post = fragment(
     _post,
@@ -76,31 +76,56 @@
 </script>
 
 <article
-  class={clsx(
-    'w-full border border-secondary rounded-2xl py-4 px-6 bg-cardprimary max-w-50rem sm:(border border-secondary rounded-2xl transition hover:(border-tertiary shadow-[0_4px_16px_0_rgba(0,0,0,0.25)])) <sm:(border-none rounded-none)',
-    _class,
+  class={css(
+    {
+      paddingY: '16px',
+      paddingX: '24px',
+      backgroundColor: 'white',
+      width: 'full',
+      maxWidth: '800px',
+      transition: 'common',
+      sm: {
+        borderWidth: '1px',
+        borderColor: 'gray.200',
+        borderRadius: '16px',
+        _hover: {
+          borderColor: 'gray.900',
+          boxShadow: '[0 4px 16px 0 var(--shadow-color)]',
+          boxShadowColor: '[black/25]',
+        },
+      },
+    },
+    style,
   )}
 >
-  <a class="space-y-2" href={`/${$post.space.slug}/${$post.permalink}`}>
-    <div class="truncate flex items-center gap-3">
-      <h2 class="title-20-b truncate grow">{$post.publishedRevision?.title ?? '(제목 없음)'}</h2>
+  <a
+    class={flex({
+      flexDirection: 'column',
+      gap: '8px',
+    })}
+    href={`/${$post.space.slug}/${$post.permalink}`}
+  >
+    <div class={flex({ align: 'center', gap: '12px', truncate: true })}>
+      <h2 class={css({ flexGrow: '1', fontSize: '20px', fontWeight: 'bold', truncate: true })}>
+        {$post.publishedRevision?.title ?? '(제목 없음)'}
+      </h2>
 
-      <div class="flex gap-1">
+      <div class={flex({ gap: '4px' })}>
         {#if $post.publishedRevision?.price}
-          <Badge class="w-fit" color="purple">유료</Badge>
+          <Badge style={css.raw({ marginBottom: '4px', width: 'fit' })} color="purple">유료</Badge>
         {/if}
         {#if $post.ageRating === 'R19'}
-          <Badge class="w-fit mb-1" color="red">성인물</Badge>
+          <Badge style={css.raw({ marginBottom: '4px', width: 'fit' })} color="red">성인물</Badge>
         {/if}
         {#if triggerTags.length > 0}
-          <Badge class="w-fit mb-1" color="orange">트리거 주의</Badge>
+          <Badge style={css.raw({ marginBottom: '4px', width: 'fit' })} color="orange">트리거 주의</Badge>
         {/if}
         {#if $post.hasPassword}
-          <Badge class="w-fit" color="gray">비밀글</Badge>
+          <Badge style={css.raw({ marginBottom: '4px', width: 'fit' })} color="gray">비밀글</Badge>
         {/if}
       </div>
     </div>
-    <p class="body-13-m m-t-1! text-secondary">
+    <p class={css({ marginTop: '4px', fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
       {$post.member.profile.name}
       {#if $post.discloseStats}
         · 조회수 {humanizeNumber($post.viewCount)}
@@ -108,26 +133,71 @@
     </p>
 
     <article
-      class={clsx('flex gap-xs justify-between rounded-lg <sm:(flex-wrap flex-col)', $post.blurred && 'min-h-33')}
+      class={css(
+        {
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '12px',
+          borderRadius: '8px',
+          sm: {
+            flexDirection: 'row',
+          },
+        },
+        $post.blurred && { minHeight: '132px' },
+      )}
     >
       {#if $post.blurred}
         <header
-          class="p-4 rounded-2xl h-full w-full flex flex-col center gap-2.5 items-center bg-primary text-secondary border border-secondary"
+          class={center({
+            flexDirection: 'column',
+            gap: '10px',
+            borderWidth: '1px',
+            borderColor: 'gray.200',
+            borderRadius: '16px',
+            padding: '16px',
+            color: 'gray.500',
+            backgroundColor: 'gray.50',
+            size: 'full',
+          })}
           role="alert"
         >
-          <Icon class="square-6" icon={IconAlertTriangle} />
-          <p class="body-14-sb text-center">포스트에 민감한 내용이 포함되어 있어요</p>
+          <Icon style={css.raw({ size: '24px' })} icon={IconAlertTriangle} />
+          <p class={css({ fontSize: '14px', fontWeight: 'semibold', textAlign: 'center' })}>
+            포스트에 민감한 내용이 포함되어 있어요
+          </p>
 
           {#if triggerTags.length > 0}
-            <div class="flex flex-wrap gap-2.5 center">
+            <div class={center({ gap: '10px', flexWrap: 'wrap' })}>
               <span
-                class="px-3 border border-secondary rounded-lg bg-surface-primary text-primary body-13-m h-6 flex items-center"
+                class={flex({
+                  align: 'center',
+                  borderWidth: '1px',
+                  borderColor: 'gray.200',
+                  borderRadius: '8px',
+                  paddingX: '12px',
+                  fontSize: '13px',
+                  fontWeight: 'medium',
+                  backgroundColor: 'gray.100',
+                  height: '24px',
+                })}
               >
                 {triggerTags[0].tag.name.replaceAll('_', ' ')}
               </span>
               {#if triggerTags.length > 1}
                 <span
-                  class="px-3 border border-secondary rounded-lg bg-surface-primary text-primary body-13-m h-6 flex items-center"
+                  class={flex({
+                    align: 'center',
+                    borderWidth: '1px',
+                    borderColor: 'gray.200',
+                    borderRadius: '8px',
+                    paddingX: '12px',
+                    fontSize: '13px',
+                    fontWeight: 'medium',
+                    backgroundColor: 'gray.100',
+                    height: '24px',
+                  })}
                 >
                   그 외 태그 {triggerTags.length - 1}개
                 </span>
@@ -136,21 +206,33 @@
           {/if}
         </header>
       {:else}
-        <p class="grow bodylong-16-m text-secondary break-all line-clamp-4 whitespace-pre-line">
+        <p
+          class={css({
+            flexGrow: '1',
+            fontWeight: 'medium',
+            color: 'gray.500',
+            wordBreak: 'break-all',
+            lineClamp: '4',
+            whiteSpace: 'pre-wrap',
+          })}
+        >
           {$post.publishedRevision.previewText}
         </p>
 
         {#if $post.thumbnail}
-          <Image class="square-30 rounded-md flex-none sm:aspect-square" $image={$post.thumbnail} />
+          <Image
+            style={css.raw({ flex: 'none', borderRadius: '6px', size: '120px', sm: { aspectRatio: '[1/1]' } })}
+            $image={$post.thumbnail}
+          />
         {/if}
       {/if}
     </article>
   </a>
-  <div class="flex justify-between items-center gap-3 mt-2">
+  <div class={flex({ align: 'center', justify: 'space-between', gap: '12px', marginTop: '8px' })}>
     {#if $post.tags}
-      <div class="flex gap-1.5 flex-wrap">
+      <div class={flex({ gap: '6px', flexWrap: 'wrap' })}>
         {#each $post.tags.slice(0, 4) as { tag } (tag.id)}
-          <Tag class="max-w-65" href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
+          <Tag style={css.raw({ maxWidth: '260px' })} href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
         {/each}
         {#if $post.tags.length > 4}
           <Tag size="sm">+{$post.tags.length - 4}개의 태그</Tag>
@@ -158,7 +240,10 @@
       </div>
     {/if}
 
-    <time class="body-13-m text-secondary whitespace-nowrap" datetime={$post.publishedAt}>
+    <time
+      class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500', whiteSpace: 'pre-wrap' })}
+      datetime={$post.publishedAt}
+    >
       {dayjs($post.publishedAt).formatAsDate()}
     </time>
   </div>

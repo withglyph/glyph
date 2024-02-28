@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { Link } from '@penxle/ui';
-  import clsx from 'clsx';
   import { fade, fly } from 'svelte/transition';
   import IconChevronDown from '~icons/tabler/chevron-down';
   import IconChevronUp from '~icons/tabler/chevron-up';
@@ -9,9 +7,11 @@
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Avatar, Icon, Image } from '$lib/components';
+  import { Avatar, Icon, Image, Link } from '$lib/components';
   import { Button } from '$lib/components/v2';
   import { portal, scrollLock } from '$lib/svelte/actions';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
   import type { DefaultLayout_UserMenu_user } from '$glitch';
 
@@ -81,14 +81,25 @@
   });
 </script>
 
-<button class="flex center ring ring-gray-200 rounded-full" tabindex="-1" type="button" on:click={() => (open = true)}>
-  <Avatar class="square-9" $profile={$user.profile} />
+<button
+  class={center({ borderRadius: 'full', outlineWidth: '1px', outlineColor: 'gray.200' })}
+  tabindex="-1"
+  type="button"
+  on:click={() => (open = true)}
+>
+  <Avatar style={css.raw({ size: '36px' })} $profile={$user.profile} />
 </button>
 
 {#if open}
-  <div class="fixed inset-0 z-50" use:portal>
+  <div class={css({ position: 'fixed', inset: '0', zIndex: '50' })} use:portal>
     <div
-      class="absolute inset-0 bg-black/50 backdrop-blur"
+      class={css({
+        position: 'absolute',
+        inset: '0',
+        backgroundColor: '[black/50]',
+        backdropFilter: 'auto',
+        backdropBlur: '8px',
+      })}
       role="button"
       tabindex="-1"
       on:click={() => (open = false)}
@@ -96,69 +107,133 @@
       transition:fade={{ duration: 150 }}
     />
 
-    <div class={clsx('pointer-events-none absolute flex justify-end top-0 bottom-0 right-0 <sm:w-294px sm:w-320px')}>
+    <div
+      class={flex({
+        justify: 'flex-end',
+        position: 'absolute',
+        top: '0',
+        bottom: '0',
+        right: '0',
+        width: { base: '294px', sm: '320px' },
+        pointerEvents: 'none',
+      })}
+    >
       <div
-        class={clsx(
-          'pointer-events-auto max-h-full flex flex-col bg-white shadow-[0px_6px_24px_0px_rgba(0,0,0,0.08)] rounded-lt-3 w-full',
-        )}
+        class={flex({
+          direction: 'column',
+          borderTopLeftRadius: '12px',
+          width: 'full',
+          maxHeight: 'full',
+          backgroundColor: 'white',
+          boxShadow: '[0px 6px 24px 0px var(--shadow-color)]',
+          boxShadowColor: '[black/8]',
+          pointerEvents: 'auto',
+        })}
         use:scrollLock
         in:fly={{ x: '10%', duration: 150 }}
         out:fade={{ duration: 150 }}
       >
-        <div class="overflow-x-hidden">
+        <div class={css({ overflowX: 'hidden' })}>
           {#if $user}
-            <div class="flex items-center gap-6.5 justify-between px-4 py-4.5 border-b border-gray-100">
-              <a class="flex items-center gap-1.5" href="/me/cabinets">
-                <Avatar class="square-9 border border-gray-100" $profile={$user.profile} />
-                <div class="truncate">
-                  <p class="text-14-m truncate">
-                    <span class="truncate">{$user.profile.name}</span>
+            <div
+              class={flex({
+                justify: 'space-between',
+                align: 'center',
+                gap: '26px',
+                borderBottomWidth: '1px',
+                borderBottomColor: 'gray.100',
+                paddingX: '16px',
+                paddingY: '18px',
+              })}
+            >
+              <a class={flex({ align: 'center', gap: '6px' })} href="/me/cabinets">
+                <Avatar
+                  style={css.raw({ borderWidth: '1px', borderColor: 'gray.100', size: '36px' })}
+                  $profile={$user.profile}
+                />
+                <div class={css({ truncate: true })}>
+                  <p class={css({ fontSize: '14px', fontWeight: 'medium', truncate: true })}>
+                    <span class={css({ truncate: true })}>{$user.profile.name}</span>
                     <span>님</span>
                   </p>
-                  <p class="text-10-r text-gray-500">{$user.email}</p>
+                  <p class={css({ fontSize: '10px', color: 'gray.500' })}>{$user.email}</p>
                 </div>
               </a>
-              <Button class="whitespace-nowrap" href="/me/settings" size="xs" type="link" variant="outline">
+
+              <Button
+                style={css.raw({ whiteSpace: 'nowrap' })}
+                href="/me/settings"
+                size="xs"
+                type="link"
+                variant="outline"
+              >
                 계정 설정
               </Button>
             </div>
 
             <button
-              class={clsx(
-                'flex items-center justify-between p-4 pr-3.5 border-b w-full',
-                spaceListOpen ? 'border-gray-150' : 'border-gray-100',
-              )}
+              class={flex({
+                justify: 'space-between',
+                align: 'center',
+                borderBottomWidth: '1px',
+                borderBottomColor: spaceListOpen ? 'gray.150' : 'gray.100',
+                padding: '16px',
+                paddingRight: '14px',
+                width: 'full',
+              })}
               type="button"
               on:click={() => {
                 spaceListOpen = !spaceListOpen;
               }}
             >
-              <p class="text-14-m text-gray-800">나의 스페이스</p>
+              <p class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.800' })}>나의 스페이스</p>
 
               {#if spaceListOpen}
-                <Icon class="square-5 text-gray-400" icon={IconChevronUp} />
+                <Icon style={css.raw({ size: '20px', color: 'gray.400' })} icon={IconChevronUp} />
               {:else}
-                <Icon class="square-5 text-gray-400" icon={IconChevronDown} />
+                <Icon style={css.raw({ size: '20px', color: 'gray.400' })} icon={IconChevronDown} />
               {/if}
             </button>
 
             {#if spaceListOpen}
               <ul>
                 {#each $user.spaces as space (space.id)}
-                  <li class="flex items-center justify-between gap-1.5 bg-gray-50 border-b border-gray-150 px-4 py-3">
-                    <a class="flex items-center gap-3 truncate" href="/{space.slug}">
-                      <div class="relative flex-none">
-                        <Image class="flex-none square-6.5 rounded border border-gray-150" $image={space.icon} />
+                  <li
+                    class={flex({
+                      justify: 'space-between',
+                      align: 'center',
+                      gap: '6px',
+                      borderBottomWidth: '1px',
+                      borderBottomColor: 'gray.150',
+                      paddingX: '16px',
+                      paddingY: '12px',
+                      backgroundColor: 'gray.50',
+                    })}
+                  >
+                    <a class={flex({ align: 'center', gap: '12px', truncate: true })} href="/{space.slug}">
+                      <div class={css({ position: 'relative', flex: 'none' })}>
+                        <Image
+                          style={css.raw({
+                            flex: 'none',
+                            borderWidth: '1px',
+                            borderColor: 'gray.150',
+                            borderRadius: '4px',
+                            size: '26px',
+                          })}
+                          $image={space.icon}
+                        />
                         <Avatar
-                          class="absolute square-4.5 -right-6px -bottom-4px"
+                          style={css.raw({ position: 'absolute', right: '-6px', bottom: '-4px', size: '18px' })}
                           $profile={space.meAsMember.profile}
                         />
                       </div>
 
-                      <div class="truncate">
-                        <p class="text-12-m text-gray-800 truncate">{space.name}</p>
-                        <p class="text-12-r text-gray-500 truncate">
-                          <span class="text-11-r">by</span>
+                      <div class={css({ truncate: true })}>
+                        <p class={css({ fontSize: '12px', fontWeight: 'medium', color: 'gray.800', truncate: true })}>
+                          {space.name}
+                        </p>
+                        <p class={css({ fontSize: '12px', color: 'gray.500', truncate: true })}>
+                          <span class={css({ fontSize: '11px' })}>by</span>
                           {space.meAsMember.profile.name}
                         </p>
                       </div>
@@ -172,32 +247,74 @@
                         await goto(`/editor/${permalink}`);
                       }}
                     >
-                      <Icon class="square-5 text-gray-500" icon={IconPencil} />
+                      <Icon style={css.raw({ size: '20px', color: 'gray.500' })} icon={IconPencil} />
                     </button>
                   </li>
                 {/each}
-                <li class="bg-gray-100 border-b border-gray-150">
+
+                <li
+                  class={css({ borderBottomWidth: '1px', borderBottomColor: 'gray.150', backgroundColor: 'gray.100' })}
+                >
                   <button
-                    class="flex items-center gap-1.5 text-14-m text-gray-500 p-4"
+                    class={flex({
+                      align: 'center',
+                      gap: '6px',
+                      padding: '16px',
+                      fontSize: '14px',
+                      fontWeight: 'medium',
+                      color: 'gray.500',
+                    })}
                     type="button"
                     on:click={() => (createSpaceOpen = true)}
                   >
-                    <Icon class="square-3.5" icon={IconPlus} />
+                    <Icon style={css.raw({ size: '14px' })} icon={IconPlus} />
                     스페이스 만들기
                   </button>
                 </li>
               </ul>
             {/if}
 
-            <a class="p-4 border-b border-gray-100 text-14-m text-gray-800 inline-block w-full" href="/point">포인트</a>
+            <a
+              class={css({
+                display: 'inline-block',
+                borderBottomWidth: '1px',
+                borderBottomColor: 'gray.100',
+                padding: '16px',
+                width: 'full',
+                fontSize: '14px',
+                fontWeight: 'medium',
+                color: 'gray.800',
+              })}
+              href="/point"
+            >
+              포인트
+            </a>
+
             <Link
-              class="p-4 border-b border-gray-100 text-14-m text-gray-800 inline-block w-full"
+              style={css.raw({
+                display: 'inline-block',
+                borderBottomWidth: '1px',
+                borderBottomColor: 'gray.100',
+                padding: '16px',
+                width: 'full',
+                fontSize: '14px',
+                fontWeight: 'medium',
+                color: 'gray.800',
+              })}
               href="https://penxle.nolt.io"
             >
               펜슬 피드백하기
             </Link>
+
             <button
-              class="p-4 text-14-m text-gray-800 w-full"
+              class={css({
+                padding: '16px',
+                width: 'full',
+                fontSize: '14px',
+                fontWeight: 'medium',
+                color: 'gray.800',
+                textAlign: 'left',
+              })}
               type="button"
               on:click={async () => {
                 await logoutUser();

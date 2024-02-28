@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { TiptapEditor } from '$lib/tiptap/components';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import { getEditorContext } from './context';
   import ArticleLinkEditMenu from './InlineLinkMenu.svelte';
   import ArticleRubyEditMenu from './InlineRubyMenu.svelte';
@@ -22,11 +24,30 @@
   });
 </script>
 
-<main class="flex grow flex-col bg-gray-50">
-  <div class="bg-white flex flex-col grow w-full max-w-1062px mx-auto grow py-5 sm:pt-10.5">
-    <div class="pb-5 mb-5 border-b border-gray-200 mx-5 sm:mx-20">
+<main class={flex({ direction: 'column', grow: '1', backgroundColor: 'gray.50' })}>
+  <div
+    class={flex({
+      direction: 'column',
+      grow: '1',
+      marginX: 'auto',
+      paddingY: '20px',
+      width: 'full',
+      maxWidth: '1062px',
+      backgroundColor: 'white',
+      sm: { paddingTop: '42px' },
+    })}
+  >
+    <div
+      class={css({
+        borderBottomWidth: '1px',
+        borderBottomColor: 'gray.200',
+        marginX: { base: '20px', sm: '80px' },
+        marginBottom: '20px',
+        paddingBottom: '20px',
+      })}
+    >
       <input
-        class="w-full text-28-sb <sm:text-22-sb"
+        class={css({ width: 'full', fontSize: { base: '22px', sm: '28px' }, fontWeight: 'medium' })}
         maxlength="100"
         placeholder="제목을 입력하세요"
         type="text"
@@ -34,7 +55,7 @@
       />
 
       <input
-        class="mt-1 w-full text-16-r"
+        class={css({ marginTop: '4px', width: 'full', fontSize: '16px' })}
         maxlength="100"
         placeholder="부제목을 입력해주세요"
         type="text"
@@ -42,9 +63,9 @@
       />
     </div>
 
-    <div class="px-5 w-full flex grow sm:px-20">
+    <div class={flex({ grow: '1', paddingX: { base: '20px', sm: '80px' }, width: 'full' })}>
       <TiptapEditor
-        class="mb-100px max-w-full grow"
+        style={css.raw({ flexGrow: '1', marginBottom: '100px', maxWidth: 'full' })}
         options={$store}
         bind:editor={$state.editor}
         bind:content={$store.content}

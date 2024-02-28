@@ -1,8 +1,9 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import Color from 'color';
   import { createEventDispatcher, onMount, tick } from 'svelte';
   import { values } from '$lib/tiptap/values';
+  import { css, cx } from '$styled-system/css';
+  import { flex, grid } from '$styled-system/patterns';
 
   let colorBlock: HTMLCanvasElement;
   let colorCtx: CanvasRenderingContext2D | null;
@@ -126,12 +127,21 @@
 </script>
 
 <div
-  class="flex flex-col w-12rem border-(1px gray-200) rounded-b-2 shadow-[0px_5px_22px_0px_rgba(0,0,0,0.06)] bg-white"
+  class={flex({
+    direction: 'column',
+    borderWidth: '1px',
+    borderColor: 'gray.200',
+    borderBottomRadius: '8px',
+    width: '192px',
+    backgroundColor: 'white',
+    boxShadow: '[0 5px 22px 0 var(--shadow-color)]',
+    boxShadowColor: '[black/6]',
+  })}
 >
-  <div class="p-xs">
+  <div class={css({ padding: '12px' })}>
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <form
-      class="relative touch-none m-b-2 h-5.25rem"
+      class={css({ position: 'relative', marginBottom: '8px', height: '84px', touchAction: 'none' })}
       on:mouseup={() => (drag = false)}
       on:touchend={() => (drag = false)}
       on:touchcancel={() => (drag = false)}
@@ -143,7 +153,16 @@
         style:left={`${x}px`}
         style:top={`${y}px`}
         style:background-color={rgb.toString()}
-        class="absolute square-0.875rem border-2 border-white bg-transparent rounded-full cursor-pointer translate--1/2 drop-shadow-[(0_0_3px_rgba(0,0,0,0.20))_drop-shadow(0_1px_10px_rgba(0,0,0,0.08))]"
+        class={css({
+          position: 'absolute',
+          borderWidth: '2px',
+          borderColor: 'white',
+          borderRadius: 'full',
+          size: '14px',
+          backgroundColor: 'transparent',
+          cursor: 'pointer',
+          translate: '[-50%]',
+        })}
         type="submit"
         on:keydown={(event) => {
           if (!colorCtx) throw new Error('colorCtx is null');
@@ -177,7 +196,7 @@
       />
       <canvas
         bind:this={colorBlock}
-        class="hover:cursor-crosshair rounded-1 square-full"
+        class={css({ borderRadius: '4px', size: 'full', _hover: { cursor: 'crosshair' } })}
         on:click={onChangeColor}
         on:mousedown={() => (drag = true)}
         on:mousemove={(event) => {
@@ -197,7 +216,10 @@
     <input
       bind:this={gradientSliderInputEl}
       style={`--thumb-color: ${rgb.toString()}`}
-      class="appearance-none rounded-0.125rem w-full h-2 gradient-slider m-b-xs"
+      class={cx(
+        'gradient-slider',
+        css({ borderRadius: '2px', marginBottom: '12px', width: 'full', height: '8px', appearance: 'none' }),
+      )}
       max="300"
       min="0"
       type="range"
@@ -210,7 +232,7 @@
     />
 
     <form
-      class="flex items-center font-sans"
+      class={flex({ align: 'center' })}
       on:submit|preventDefault={() => {
         if (!hexInputEl) throw new Error('hexInputEl is undefined');
 
@@ -220,7 +242,13 @@
     >
       <input
         style:background-color={hex}
-        class="square-1.375rem border rounded-full m-r-xs"
+        class={css({
+          borderWidth: '1px',
+          borderColor: 'gray.200',
+          borderRadius: 'full',
+          marginRight: '12px',
+          size: '22px',
+        })}
         type="color"
         value={hex}
         on:input={(event) => {
@@ -232,7 +260,16 @@
       <!-- eslint-disable svelte/no-useless-mustaches -->
       <input
         bind:this={hexInputEl}
-        class="w-21 text-12-r p-x-2 p-y-1 border-(1px gray-200) rounded-1 m-r-1 gray-950"
+        class={css({
+          borderWidth: '1px',
+          borderColor: 'gray.200',
+          borderRadius: '4px',
+          marginRight: '4px',
+          paddingX: '8px',
+          paddingY: '4px',
+          width: '84px',
+          fontSize: '12px',
+        })}
         maxlength="7"
         pattern="#[0-9A-Fa-f]{'{'}6{'}'}"
         placeholder="#FFFFFF"
@@ -241,20 +278,62 @@
       <!-- eslint-enable svelte/no-useless-mustaches -->
 
       <button
-        class="border-(1px gray-200) rounded-1 flex-1 text-center text-12-m p-x-2 p-y-1 h-full color-gray-700 focus:(color-teal-700 border-(1px teal-400) bg-teal-50) hover:(color-teal-700 border-(1px teal-400) bg-teal-50)"
+        class={css({
+          flex: '1',
+          borderWidth: '1px',
+          borderColor: 'gray.200',
+          borderRadius: '4px',
+          paddingX: '8px',
+          paddingY: '4px',
+          height: 'full',
+          fontSize: '12px',
+          fontWeight: 'medium',
+          color: 'gray.700',
+          _hover: {
+            borderColor: 'teal.400',
+            color: 'teal.700',
+            backgroundColor: 'teal.50',
+          },
+          _focus: {
+            borderColor: 'teal.400',
+            color: 'teal.700',
+            backgroundColor: 'teal.50',
+          },
+        })}
         type="submit"
       >
         확인
       </button>
     </form>
   </div>
-  <div class="p-x-5 p-y-xs border-(t-(1px gray-200) b-(1px gray-200)) grid grid-cols-[repeat(5,auto)] justify-between">
+  <div
+    class={grid({
+      columns: 5,
+      justifyContent: 'space-between',
+      borderYWidth: '1px',
+      borderYColor: 'gray.200',
+      paddingX: '20px',
+      paddingY: '12px',
+    })}
+  >
     {#each paddedHistory as color, index (color ?? index)}
       <button
         style:background-color={color}
-        class={clsx(
-          'square-4 rounded-full aria-pressed:shadow-[0_0_0_2px_#D4D4D8] disabled:(border-(dashed 1px gray-300))',
-          color === '#FFFFFF' && 'border-(1px [#E4E4E7])',
+        class={css(
+          {
+            borderRadius: 'full',
+            size: '16px',
+            _pressed: {
+              boxShadow: '[0 0 0 2px var(--shadow-color)]',
+              boxShadowColor: '[#D4D4D8]',
+            },
+            _disabled: {
+              borderWidth: '1px',
+              borderStyle: 'dashed',
+              borderColor: 'gray.300',
+            },
+          },
+          color === '#FFFFFF' && { borderWidth: '1px', borderColor: '[#E4E4E7]' },
         )}
         aria-pressed={hex === color}
         disabled={!color}
@@ -266,13 +345,23 @@
       />
     {/each}
   </div>
-  <div class="p-x-5 p-y-xs grid grid-cols-[repeat(5,auto)] justify-between gap-y-0.625rem" role="group">
+  <div
+    class={grid({ columns: 5, justifyContent: 'space-between', gap: '10px', paddingX: '20px', paddingY: '12px' })}
+    role="group"
+  >
     {#each presets as preset (preset)}
       <button
         style:background-color={preset}
-        class={clsx(
-          'square-4 rounded-full aria-pressed:shadow-[0_0_0_2px_#D4D4D8]',
-          preset === '#FFFFFF' && 'border-(1px gray-200)',
+        class={css(
+          {
+            borderRadius: 'full',
+            size: '16px',
+            _pressed: {
+              boxShadow: '[0 0 0 2px var(--shadow-color)]',
+              boxShadowColor: '[#D4D4D8]',
+            },
+          },
+          preset === '#FFFFFF' && { borderWidth: '1px', borderColor: '[#E4E4E7]' },
         )}
         aria-pressed={hex === preset}
         type="button"

@@ -7,6 +7,8 @@
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import { toast } from '$lib/notification';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import type { MeSettingsPage_UserSingleSignOn_user, UserSingleSignOnProvider } from '$glitch';
 
   let _user: MeSettingsPage_UserSingleSignOn_user;
@@ -62,21 +64,21 @@
   $: singleSignOns = R.objectify($user.singleSignOns, (v) => v.provider);
 </script>
 
-<div class="flex flex-wrap items-center justify-between gap-4">
-  <div class="flex items-center gap-3">
-    <div class="square-9 flex center">
+<div class={flex({ align: 'center', justify: 'space-between', flexWrap: 'wrap', gap: '16px' })}>
+  <div class={flex({ align: 'center', gap: '12px' })}>
+    <div class={center({ size: '36px' })}>
       {#if provider === 'GOOGLE'}
-        <Google class="square-9" />
+        <Google class={css({ size: '36px' })} />
       {:else if provider === 'NAVER'}
-        <Naver class="sqauare-9" />
+        <Naver class={css({ size: '36px' })} />
       {:else if provider === 'TWITTER'}
-        <Twitter class="sqauare-9" />
+        <Twitter class={css({ size: '36px' })} />
       {/if}
     </div>
     <div>
-      <h3 class="text-lg font-extrabold mr-2">{R.capitalize(provider)}</h3>
+      <h3 class={css({ marginRight: '8px', fontSize: '18px', fontWeight: 'bold' })}>{R.capitalize(provider)}</h3>
       {#if singleSignOns[provider]}
-        <p class="text-3.75 text-secondary break-keep">
+        <p class={css({ fontSize: '15px', color: 'gray.500', wordBreak: 'keep-all' })}>
           {singleSignOns[provider].email}
         </p>
       {/if}
@@ -106,10 +108,12 @@
 <Modal size="sm" bind:open>
   <svelte:fragment slot="title">{providerName} 계정 연동을 해제할까요?</svelte:fragment>
 
-  <div slot="action" class="flex gap-3 w-full">
-    <Button class="w-full" color="secondary" size="xl" on:click={() => (open = false)}>돌아가기</Button>
+  <div slot="action" class={flex({ gap: '12px', width: 'full' })}>
+    <Button style={css.raw({ width: 'full' })} color="secondary" size="xl" on:click={() => (open = false)}>
+      돌아가기
+    </Button>
     <Button
-      class="w-full"
+      style={css.raw({ width: 'full' })}
       size="xl"
       on:click={async () => {
         await unlinkUserSingleSignOn({ provider });

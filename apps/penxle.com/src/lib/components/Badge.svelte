@@ -1,27 +1,40 @@
 <script lang="ts">
-  import { clsx } from 'clsx';
+  import { css, cva } from '$styled-system/css';
   import type { HTMLAttributes } from 'svelte/elements';
+  import type { RecipeVariant, RecipeVariantProps, SystemStyleObject } from '$styled-system/types';
 
-  type $$Props = HTMLAttributes<HTMLDivElement> & { color?: typeof color };
+  type $$Props = Omit<HTMLAttributes<HTMLDivElement>, 'class' | 'style'> & {
+    style?: SystemStyleObject;
+  } & RecipeVariantProps<typeof recipe>;
 
-  let _class: $$Props['class'] = undefined;
-  export { _class as class };
-  export let color: 'unselect' | 'select' | 'green' | 'red' | 'gray' | 'purple' | 'orange' = 'unselect';
+  export let style: SystemStyleObject | undefined = undefined;
+  export let color: Variants['color'] = 'unselect';
+
+  type Variants = RecipeVariant<typeof recipe>;
+  const recipe = cva({
+    base: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: '4px',
+      padding: '10px',
+      fontSize: '12px',
+      fontWeight: 'bold',
+    },
+    variants: {
+      color: {
+        unselect: { color: 'gray.50', backgroundColor: 'gray.800' },
+        select: { borderWidth: '1px', borderColor: 'gray.300' },
+        green: { color: '[#4ECEA6]', backgroundColor: '[#ECFCF8]' },
+        red: { color: '[#F66062]', backgroundColor: '[#FEEEED]' },
+        gray: { color: 'gray.600', backgroundColor: 'gray.100' },
+        purple: { color: '[#9656C9]', backgroundColor: '[#F4EEFD]' },
+        orange: { color: '[#E9945B]', backgroundColor: '[#FEF5EE]' },
+      },
+    },
+  });
 </script>
 
-<div
-  class={clsx(
-    'flex center h-6 p-2.5 rounded caption-12-b',
-    color === 'unselect' && 'text-gray-5 bg-gray-80',
-    color === 'select' && 'border border-gray-30',
-    color === 'green' && 'text-green-50 bg-green-10',
-    color === 'red' && 'text-red-50 bg-red-10',
-    color === 'gray' && 'text-gray-60 bg-gray-10',
-    color === 'purple' && 'text-purple-50 bg-purple-10',
-    color === 'orange' && 'text-orange-50 bg-orange-10',
-    _class,
-  )}
-  {...$$restProps}
->
+<div class={css(recipe.raw({ color }), style)} {...$$restProps}>
   <slot />
 </div>

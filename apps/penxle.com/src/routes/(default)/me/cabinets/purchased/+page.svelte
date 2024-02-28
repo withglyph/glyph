@@ -3,6 +3,8 @@
   import dayjs from 'dayjs';
   import { graphql } from '$glitch';
   import { Image } from '$lib/components';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
 
   $: query = graphql(`
     query MeCabinetsPurchasedPage_Query {
@@ -50,28 +52,59 @@
 
 {#each $query.me.purchasedPosts as post (post.id)}
   <li>
-    <div class="flex items-center justify-between gap-3 body-14-m text-secondary mb-2">
+    <div
+      class={flex({
+        align: 'center',
+        justify: 'space-between',
+        gap: '12px',
+        marginBottom: '8px',
+        fontSize: '14px',
+        fontWeight: 'medium',
+        color: 'gray.500',
+      })}
+    >
       <p>
         <time>{dayjs(post.purchasedAt).formatAsDate()}</time>
-        <span class="before:(content-['|'] mx-1)">결제됨</span>
+        <span class={css({ _before: { content: '|', marginX: '4px' } })}>결제됨</span>
       </p>
-      <a class="text-right" href={`/${post.space?.slug}/purchased/${post.permalink}`}>구매버전 보기</a>
+      <a class={css({ textAlign: 'right' })} href={`/${post.space?.slug}/purchased/${post.permalink}`}>구매버전 보기</a>
     </div>
 
     <a
-      class="border border-secondary rounded-2xl py-3 px-4 flex items-center gap-4"
+      class={flex({
+        align: 'center',
+        gap: '16px',
+        borderWidth: '1px',
+        borderColor: 'gray.200',
+        borderRadius: '16px',
+        paddingX: '16px',
+        paddingY: '12px',
+      })}
       href={`/${post.space?.slug}/${post.permalink}`}
     >
       {#if post.space}
-        <Image class="square-12.5 rounded-xl flex-none border border-secondary" $image={post.space.icon} />
+        <Image
+          style={css.raw({
+            flex: 'none',
+            borderWidth: '1px',
+            borderColor: 'gray.200',
+            borderRadius: '12px',
+            size: '50px',
+          })}
+          $image={post.space.icon}
+        />
       {/if}
 
-      <div class="truncate">
-        <p class="body-16-eb truncate">{post.purchasedRevision?.title ?? '(제목 없음)'}</p>
-        <p class="body-14-m text-secondary truncate">{post.space?.name} · {post.member?.profile.name}</p>
+      <div class={css({ truncate: true })}>
+        <p class={css({ fontWeight: 'bold', truncate: true })}>{post.purchasedRevision?.title ?? '(제목 없음)'}</p>
+        <p class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.500', truncate: true })}>
+          {post.space?.name} · {post.member?.profile.name}
+        </p>
       </div>
     </a>
   </li>
 {:else}
-  <p class="text-secondary text-center body-16-m py-10">구매한 포스트가 없어요</p>
+  <p class={css({ paddingY: '40px', fontWeight: 'medium', color: 'gray.500', textAlign: 'center' })}>
+    구매한 포스트가 없어요
+  </p>
 {/each}

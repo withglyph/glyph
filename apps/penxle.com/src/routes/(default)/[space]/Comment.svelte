@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import dayjs from 'dayjs';
   import IconReplyBar from '~icons/effit/reply-bar';
   import IconCaretDownFilled from '~icons/tabler/caret-down-filled';
@@ -14,6 +13,8 @@
   import { Avatar, Icon } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Button, Modal } from '$lib/components/v2';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import CommentInput from './CommentInput.svelte';
   import type { PostPage_Comment_postComment, PostPage_Comment_query } from '$glitch';
 
@@ -203,52 +204,80 @@
   />
 {:else}
   <li
-    class={clsx(
-      'py-4 border-t border-gray-100 flex gap-1 first-of-type:border-none px-5 <sm:-mx-5',
-      $postComment.pinned && 'bg-teal-50',
-      parentId && 'bg-gray-50',
+    class={css(
+      {
+        display: 'flex',
+        gap: '4px',
+        borderTopWidth: '1px',
+        borderTopColor: 'gray.100',
+        paddingX: '20px',
+        paddingY: '16px',
+        sm: { marginX: '-20px' },
+        _firstOfType: { borderWidth: '0' },
+      },
+      $postComment.pinned && { backgroundColor: 'teal.50' },
+      !!parentId && { backgroundColor: 'gray.50' },
     )}
   >
     {#if parentId}
-      <Icon class="square-3.5 text-gray-500" icon={IconReplyBar} />
+      <Icon style={css.raw({ size: '14px', color: 'gray.500' })} icon={IconReplyBar} />
     {/if}
 
-    <div class="grow">
+    <div class={css({ flexGrow: '1' })}>
       {#if $postComment.pinned}
-        <p class="text-gray-400 text-11-m mb-2 flex items-center gap-1">
-          <Icon class="text-gray-400" icon={IconPinnedFilled} />
+        <p
+          class={flex({
+            align: 'center',
+            gap: '4px',
+            marginBottom: '8px',
+            fontSize: '11px',
+            fontWeight: 'medium',
+            color: 'gray.400',
+          })}
+        >
+          <Icon style={css.raw({ color: 'gray.400' })} icon={IconPinnedFilled} />
           고정된 댓글
         </p>
       {/if}
 
-      <div class="flex items-center justify-between mb-2">
+      <div class={flex({ justify: 'space-between', align: 'center', marginBottom: '8px' })}>
         {#if $query.post.member?.profile.id === $postComment.profile.id}
-          <p class="bg-gray-400 text-white text-11-sb px-2.5 py-1 rounded">
+          <p
+            class={css({
+              borderRadius: '4px',
+              paddingX: '10px',
+              paddingY: '4px',
+              fontSize: '11px',
+              fontWeight: 'semibold',
+              color: 'white',
+              backgroundColor: 'gray.400',
+            })}
+          >
             {$query.post.member?.profile.name}
           </p>
         {:else}
-          <p class="text-14-m flex gap-1 items-center flex-wrap">
+          <p class={flex({ align: 'center', gap: '4px', wrap: 'wrap', fontSize: '14px', fontWeight: 'medium' })}>
             {$postComment.profile.name}
             {#if $postComment.isPurchasedUser}
-              <mark class="text-12-r text-teal-500">구매자</mark>
+              <span class={css({ fontSize: '12px', color: 'teal.500' })}>구매자</span>
             {/if}
             {#if $postComment.visibility === 'PRIVATE'}
-              <Icon class="square-4 text-gray-400" icon={IconLock} />
+              <Icon style={css.raw({ size: '16px', color: 'gray.400' })} icon={IconLock} />
             {/if}
           </p>
         {/if}
 
-        <Menu menuClass="w-158px" placement="bottom-end">
+        <Menu menuStyle={css.raw({ width: '158px' })} placement="bottom-end">
           <button
             slot="value"
-            class={clsx(
+            class={css(
               ($postComment.state === 'INACTIVE' ||
-                (!$query.post.space.meAsMember && $postComment.profile.id !== $query.post.space.commentProfile?.id)) &&
-                'hidden',
+                (!$query.post.space.meAsMember &&
+                  $postComment.profile.id !== $query.post.space.commentProfile?.id)) && { display: 'none' },
             )}
             type="button"
           >
-            <Icon class="square-5 text-gray-500 square-5" icon={IconDotsVertical} />
+            <Icon style={css.raw({ size: '20px', color: 'gray.500' })} icon={IconDotsVertical} />
           </button>
 
           {#if $query.post.space.meAsMember}
@@ -292,18 +321,29 @@
       </div>
 
       {#if $postComment.visibility === 'PRIVATE' && $query.post.space.commentProfile?.id !== $postComment.profile.id && !$query.post.space.meAsMember}
-        <p class="text-14-r text-gray-400">비밀댓글이에요</p>
+        <p class={css({ fontSize: '14px', color: 'gray.400' })}>비밀댓글이에요</p>
       {:else}
         {#if $postComment.state === 'INACTIVE'}
-          <p class="text-14-r text-gray-400">삭제된 댓글이에요</p>
+          <p class={css({ fontSize: '14px', color: 'gray.400' })}>삭제된 댓글이에요</p>
         {:else}
-          <p class="text-14-r whitespace-pre-wrap break-all">{$postComment.content}</p>
+          <p class={css({ fontSize: '14px', whiteSpace: 'pre-wrap', wordBreak: 'break-all' })}>
+            {$postComment.content}
+          </p>
 
-          <time class="text-10-l text-gray-400 block">{dayjs($postComment.createdAt).formatAsDateTime()}</time>
+          <div class={css({ fontSize: '10px', fontWeight: 'light', color: 'gray.400' })}>
+            {dayjs($postComment.createdAt).formatAsDateTime()}
+          </div>
 
-          <div class="mt-5 flex gap-1.5 items-center h-34px">
+          <div class={flex({ align: 'center', gap: '6px', marginTop: '20px', height: '34px' })}>
             <button
-              class="text-gray-400 flex items-center gap-1 text-13-m m-7px"
+              class={flex({
+                align: 'center',
+                gap: '4px',
+                margin: '7px',
+                fontSize: '13px',
+                fontWeight: 'medium',
+                color: 'gray.400',
+              })}
               type="button"
               on:click={async () => {
                 if ($postComment.likedByMe) {
@@ -316,9 +356,9 @@
               }}
             >
               {#if $postComment.likedByMe}
-                <Icon class="square-4 block text-teal-500" icon={IconHeartFilled} />
+                <Icon style={css.raw({ size: '16px', color: 'teal.500' })} icon={IconHeartFilled} />
               {:else}
-                <Icon class="square-4 block text-gray-400" icon={IconHeart} />
+                <Icon style={css.raw({ size: '16px', color: 'teal.500' })} icon={IconHeart} />
               {/if}
               {#if $postComment.likeCount > 0}
                 {$postComment.likeCount}
@@ -327,7 +367,7 @@
 
             {#if !parentId}
               <Button
-                class="bg-white/60!"
+                style={css.raw({ backgroundColor: '[white/60]' })}
                 size="2xs"
                 variant="outline"
                 on:click={() => (replyInputOpen = !replyInputOpen)}
@@ -337,12 +377,33 @@
             {/if}
 
             {#if $postComment.likedByPostedUser}
-              <div class="ring ring-teal-500 rounded-full square-5.5 relative m-1.5">
+              <div
+                class={css({
+                  position: 'relative',
+                  borderRadius: 'full',
+                  outlineWidth: '1px',
+                  outlineColor: 'teal.500',
+                  margin: '6px',
+                  size: '22px',
+                })}
+              >
                 {#if $query.post.member}
-                  <Avatar class="rounded-full square-5.5" $profile={$query.post.member.profile} />
+                  <Avatar
+                    style={css.raw({ borderRadius: 'full', size: '22px' })}
+                    $profile={$query.post.member.profile}
+                  />
                 {/if}
 
-                <Icon class="text-teal-500 square-4 absolute -bottom-6px -right-6px" icon={IconHeartFilled} />
+                <Icon
+                  style={css.raw({
+                    position: 'absolute',
+                    bottom: '-6px',
+                    right: '-6px',
+                    size: '16px',
+                    color: 'teal.500',
+                  })}
+                  icon={IconHeartFilled}
+                />
               </div>
             {/if}
           </div>
@@ -350,7 +411,14 @@
 
         {#if !parentId && $postComment.childComments.length > 0}
           <button
-            class="flex items-center gap-1 text-12-m text-gray-500 mt-3"
+            class={flex({
+              align: 'center',
+              gap: '4px',
+              marginTop: '12px',
+              fontSize: '12px',
+              fontWeight: 'medium',
+              color: 'gray.500',
+            })}
             type="button"
             on:click={() => {
               repliesOpen = !repliesOpen;
@@ -359,9 +427,9 @@
           >
             {$postComment.childComments.length}개의 답글
             {#if repliesOpen}
-              <Icon class="square-14px text-gray-500" icon={IconCaretUpFilled} />
+              <Icon style={css.raw({ size: '14px', color: 'gray.500' })} icon={IconCaretUpFilled} />
             {:else}
-              <Icon class="square-14px text-gray-500" icon={IconCaretDownFilled} />
+              <Icon style={css.raw({ size: '14px', color: 'gray.500' })} icon={IconCaretDownFilled} />
             {/if}
           </button>
         {/if}
@@ -381,23 +449,36 @@
 {/if}
 
 <Modal
-  actionClass="gap-1.5 border-none pt-7 pb-6 sm:(pb-7 px-7)"
+  actionStyle={css.raw({
+    gap: '6px',
+    borderWidth: '0',
+    paddingTop: '28px',
+    paddingBottom: '24px',
+    sm: { paddingX: '28px', paddingBottom: '28px' },
+  })}
   size="sm"
-  titleClass="text-18-sb"
+  titleStyle={css.raw({ fontSize: '18px', fontWeight: 'semibold' })}
   bind:open={blockMasqueradeOpen}
 >
   <svelte:fragment slot="title">{$postComment.profile.name}님을 차단할까요?</svelte:fragment>
 
-  <div class="text-14-r text-gray-700 px-6 mt-1 sm:px-7">
+  <div class={css({ marginTop: '4px', paddingX: { base: '24px', sm: '28px' }, fontSize: '14px', color: 'gray.700' })}>
     차단된 유저는 스페이스의 모든 게시물을 볼 수 없으며, 댓글을 달 수 없어요
     <br />
     차단 해지는 [스페이스 설정 - 독자관리]에서 가능해요
   </div>
 
   <svelte:fragment slot="action">
-    <Button class="w-full" size="lg" variant="outline" on:click={() => (blockMasqueradeOpen = false)}>취소</Button>
     <Button
-      class="w-full"
+      style={css.raw({ width: 'full' })}
+      size="lg"
+      variant="outline"
+      on:click={() => (blockMasqueradeOpen = false)}
+    >
+      취소
+    </Button>
+    <Button
+      style={css.raw({ width: 'full' })}
       size="lg"
       on:click={async () => {
         if (!$postComment.masquerade) return;

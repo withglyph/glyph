@@ -7,6 +7,8 @@
   import { Menu, MenuItem } from '$lib/components/menu';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { toast } from '$lib/notification';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
 
   let loginRequireOpen = false;
@@ -68,20 +70,28 @@
   `);
 </script>
 
-<div class="w-full max-w-200 my-7 flex flex-col grow">
-  <div class="bg-gray-70 rounded-t-xl px-6 pt-4 pb-10">
-    <div class="flex body-13-m text-disabled mb-2.5">
+<div class={flex({ direction: 'column', grow: 1, width: 'full', maxWidth: '800px', marginY: '28px' })}>
+  <div
+    class={css({
+      borderTopRadius: '12px',
+      backgroundColor: 'gray.700',
+      paddingX: '24px',
+      paddingTop: '16px',
+      paddingBottom: '40px',
+    })}
+  >
+    <div class={flex({ marginBottom: '10px', fontSize: '13px', fontWeight: 'medium', color: 'gray.400' })}>
       {#each $query.tag.parents as parent (parent.id)}
-        <span class="after:(content-['|'] mx-2)">{parent.name}</span>
+        <span class={css({ _after: { content: '|', marginX: '8px' } })}>{parent.name}</span>
       {/each}
     </div>
 
-    <div class="flex items-start justify-between">
+    <div class={flex({ justify: 'space-between', align: 'flex-start' })}>
       <div>
-        <h1 class="title-24-eb text-darkprimary">#{$query.tag.name}</h1>
+        <h1 class={css({ fontSize: '24px', fontWeight: 'bold', color: 'white' })}>#{$query.tag.name}</h1>
         <!-- <p class="body-13-m text-disabled mt-2">2023.07.27 03:55에 크**님이 마지막으로 수정함</p> -->
       </div>
-      <div class="flex items-center gap-2">
+      <div class={flex({ align: 'center', gap: '8px' })}>
         {#if $query.tag.followed}
           <Button
             color="secondary"
@@ -114,7 +124,7 @@
 
         <Menu placement="bottom-start">
           <button slot="value" type="button">
-            <Icon class="square-6 text-disabled" icon={IconDotsVertical} />
+            <Icon style={css.raw({ size: '24px', color: 'gray.400' })} icon={IconDotsVertical} />
           </button>
 
           {#if $query.tag.muted}
@@ -149,7 +159,17 @@
     </div>
   </div>
 
-  <div class="py-4 px-6 rounded-xl bg-cardprimary space-y-4 -mt-3 grow">
+  <div
+    class={flex({
+      rowGap: '16px',
+      marginTop: '-12px',
+      borderRadius: '12px',
+      paddingX: '24px',
+      paddingY: '16px',
+      backgroundColor: 'white',
+      flexGrow: 1,
+    })}
+  >
     <TabHead class="w-full" variant="secondary">
       <TabHeadItem id={1} pathname={`/tag/${$page.params.name}`}>위키</TabHeadItem>
       <TabHeadItem id={2} pathname={`/tag/${$page.params.name}/post`}>포스트</TabHeadItem>

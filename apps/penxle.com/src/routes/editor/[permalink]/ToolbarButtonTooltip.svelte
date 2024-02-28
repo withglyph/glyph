@@ -1,6 +1,7 @@
 <script lang="ts">
   import { writable } from 'svelte/store';
   import { createFloatingActions, hover } from '$lib/svelte/actions';
+  import { css } from '$styled-system/css';
   import type { Placement } from '@floating-ui/dom';
 
   export let message: string;
@@ -31,7 +32,20 @@
 </div>
 
 {#if show}
-  <div class="z-100 rounded-2px bg-gray-600 px-10px py-6px text-12-m text-gray-100" role="tooltip" use:floating>
+  <div
+    class={css({
+      borderRadius: '2px',
+      paddingX: '10px',
+      paddingY: '6px',
+      fontSize: '12px',
+      fontWeight: 'medium',
+      color: 'gray.100',
+      backgroundColor: 'gray.600',
+      zIndex: '100',
+    })}
+    role="tooltip"
+    use:floating
+  >
     {message}
   </div>
 {/if}

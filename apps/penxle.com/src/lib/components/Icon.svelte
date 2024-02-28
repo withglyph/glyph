@@ -1,10 +1,21 @@
 <script lang="ts">
-  import clsx from 'clsx';
+  import { css } from '$styled-system/css';
   import type { ComponentType } from 'svelte';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   export let icon: ComponentType;
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 </script>
 
-<svelte:component this={icon} class={clsx('iconify-icon', _class)} />
+<svelte:component
+  this={icon}
+  class={css(
+    {
+      'display': 'block',
+      'verticalAlign': 'middle',
+      'flex': 'none',
+      '& *': { strokeWidth: '[1.5]' },
+    },
+    style,
+  )}
+/>

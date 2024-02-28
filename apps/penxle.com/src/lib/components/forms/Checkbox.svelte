@@ -1,18 +1,19 @@
 <script lang="ts">
-  import { clsx } from 'clsx';
   import IconAlertTriangleFilled from '~icons/tabler/alert-triangle-filled';
   import IconChecked from '~icons/tabler/check';
   import { Icon } from '$lib/components';
   import { getFormContext } from '$lib/form';
+  import { css, cx } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import FormValidationMessage from './FormValidationMessage.svelte';
   import type { HTMLInputAttributes } from 'svelte/elements';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   export let name: string | null | undefined = undefined;
   export let checked: boolean | null | undefined = false;
-  let _class: string | null | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 
-  type $$Props = HTMLInputAttributes;
+  type $$Props = Omit<HTMLInputAttributes, 'style'> & { style?: SystemStyleObject };
   type $$Events = {
     change: Parameters<NonNullable<HTMLInputAttributes['on:change']>>[0];
   };
@@ -25,30 +26,53 @@
 </script>
 
 <div>
-  <label class={clsx('flex relative items-center gap-1.5 select-none', _class)}>
+  <label
+    class={css({ position: 'relative', display: 'flex', alignItems: 'center', gap: '6px', userSelect: 'none' }, style)}
+  >
     <input
       id={name}
       {name}
-      class="flex center square-4.5 shrink-0 border border-gray-300 rounded-0.75 cursor-pointer appearance-none transition checked:(border-none bg-teal-500) enabled:(aria-[invalid]:border-red-50 hover:border-gray-300!)"
+      class={cx(
+        'peer',
+        center({
+          flex: 'none',
+          size: '18px',
+          borderWidth: '1px',
+          borderColor: 'gray.300',
+          borderRadius: '3px',
+          cursor: 'pointer',
+          appearance: 'none',
+          transition: 'common',
+          _checked: { borderWidth: '0', backgroundColor: 'teal.500' },
+          _enabled: { '&[aria-invalid]': { borderColor: 'red.500' } },
+        }),
+      )}
       type="checkbox"
       on:change
       bind:checked
       {...$$restProps}
     />
-    {#if checked}
-      <div class="absolute top-1px left-0 square-4.5 flex center">
-        <Icon class="text-white square-3.5 block" icon={IconChecked} />
-      </div>
-    {/if}
+    <div
+      class={center({
+        display: 'none',
+        position: 'absolute',
+        top: '2px',
+        left: '0',
+        size: '18px',
+        _peerChecked: { display: 'flex' },
+      })}
+    >
+      <Icon style={css.raw({ size: '14px', color: 'white' })} icon={IconChecked} />
+    </div>
 
-    <span class="slot cursor-pointer">
+    <span class={css({ cursor: 'pointer' })}>
       <slot />
     </span>
   </label>
   {#if name}
     <FormValidationMessage for={name} let:message>
-      <div class="flex items-center gap-1.5 mt-1.5 text-11-r text-gray-400">
-        <Icon class="text-error-900" icon={IconAlertTriangleFilled} />
+      <div class={flex({ align: 'center', gap: '6px', marginTop: '6px', fontSize: '11px', color: 'gray.400' })}>
+        <Icon style={css.raw({ color: 'red.500' })} icon={IconAlertTriangleFilled} />
         {message}
       </div>
     </FormValidationMessage>

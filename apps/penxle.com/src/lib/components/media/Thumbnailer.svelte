@@ -1,19 +1,20 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { onDestroy, tick } from 'svelte';
   import IconZoomIn from '~icons/tabler/zoom-in';
   import IconZoomOut from '~icons/tabler/zoom-out';
   import { Slider } from '$lib/components/forms';
   import { clamp } from '$lib/utils';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import { Icon } from '..';
   import type { PointerEventHandler } from 'svelte/elements';
   import type { ImageBounds } from '$lib/utils';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   export let file: File | undefined = undefined;
   export let bounds: ImageBounds | undefined = undefined;
   export let rounded = false;
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 
   export let src: string | undefined = undefined;
   export let ratio: 'square' | 'rectangle' = 'square';
@@ -102,19 +103,25 @@
   });
 </script>
 
-<div class={_class}>
+<div class={css(style)}>
   <div
-    class={clsx('relative overflow-hidden p-8 flex center w-full', ratio === 'square' ? 'aspect-1/1' : 'aspect-3/4')}
+    class={center({
+      position: 'relative',
+      padding: '32px',
+      width: 'full',
+      overflow: 'hidden',
+      aspectRatio: ratio === 'square' ? '[1/1]' : '[3/4]',
+    })}
   >
     <img
       bind:this={imgEl}
       style:transform
-      class={clsx(
-        'max-w-none cursor-move touch-none object-contain',
-        naturalWidth > naturalHeight && 'h-full',
-        naturalWidth < naturalHeight && 'w-full',
-        naturalWidth === naturalHeight && 'h-full',
-        (!naturalWidth || !naturalHeight) && 'hidden',
+      class={css(
+        { maxWidth: '[none]', objectFit: 'contain', cursor: 'move', touchAction: 'none' },
+        naturalWidth > naturalHeight && { height: 'full' },
+        naturalWidth < naturalHeight && { width: 'full' },
+        naturalWidth === naturalHeight && { size: 'full' },
+        (!naturalWidth || !naturalHeight) && { display: 'none' },
       )}
       alt=""
       {src}
@@ -137,16 +144,24 @@
 
     <div
       bind:this={boxEl}
-      class={clsx(
-        'pointer-events-none absolute inset-8 border-4 border-white outline-10000 outline-solid outline-black/50',
-        rounded && 'rounded-full',
+      class={css(
+        {
+          position: 'absolute',
+          inset: '32px',
+          borderWidth: '4px',
+          borderColor: 'white',
+          outlineWidth: '[10000px]',
+          outlineColor: '[black/50]',
+          pointerEvents: 'none',
+        },
+        rounded && { borderRadius: 'full' },
       )}
     />
   </div>
 
-  <div class="flex gap-4 items-center mt-4 mx-4">
-    <Icon class="text-gray-60 square-5" icon={IconZoomOut} />
-    <Slider class="w-full" max={8} min={1} bind:value={scale} />
-    <Icon class="text-gray-60 square-5" icon={IconZoomIn} />
+  <div class={flex({ align: 'center', gap: '16px', marginTop: '16px', marginX: '16px' })}>
+    <Icon style={css.raw({ size: '20px', color: 'gray.500' })} icon={IconZoomOut} />
+    <Slider style={css.raw({ width: 'full' })} max={8} min={1} bind:value={scale} />
+    <Icon style={css.raw({ size: '20px', color: 'gray.500' })} icon={IconZoomIn} />
   </div>
 </div>

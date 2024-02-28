@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import { graphql } from '$glitch';
+  import { css } from '$styled-system/css';
   import PostItem from '../PostItem.svelte';
 
   $: query = graphql(`
@@ -24,5 +25,7 @@
 {#each $query.me.likedPosts as post (post.id)}
   <PostItem $post={post} />
 {:else}
-  <p class="text-secondary text-center body-16-m py-10">좋아요한 포스트가 없어요</p>
+  <p class={css({ paddingY: '40px', fontWeight: 'medium', color: 'gray.500', textAlign: 'center' })}>
+    좋아요한 포스트가 없어요
+  </p>
 {/each}

@@ -287,7 +287,7 @@
     </div>
   </NodeView>
 
-  <Modal titleClass="m-x-8 justify-center" bind:open={postPurchaseOpen}>
+  <Modal titleStyle="m-x-8 justify-center" bind:open={postPurchaseOpen}>
     <svelte:fragment slot="title">
       {node.attrs.__data.point < node.attrs.price ? '포인트 충전' : '포스트 구매'}
     </svelte:fragment>

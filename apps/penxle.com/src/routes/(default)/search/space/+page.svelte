@@ -8,6 +8,8 @@
   import { Icon, Image } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { toast } from '$lib/notification';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
 
   let loginRequireOpen = false;
@@ -61,11 +63,28 @@
 
 <Helmet description={`펜슬에서 ${keyword} 검색을 한 결과에요`} title={`${keyword} 검색 결과`} />
 
-<div class="body-14-m text-secondary mt-3 <sm:m-l-4">
+<div
+  class={css({
+    marginTop: '12px',
+    fontSize: '14px',
+    fontWeight: 'medium',
+    color: 'gray.500',
+    smDown: { marginLeft: '16px' },
+  })}
+>
   약 {$query.searchSpaces.length ?? 0}개의 검색결과가 있어요!
 </div>
 
-<TabHead class="mt-9 mb-4 w-full <sm:(sticky top-61px z-1)" {search} variant="secondary">
+<TabHead
+  style={css.raw({
+    marginTop: '36px',
+    marginBottom: '16px',
+    width: 'full',
+    smDown: { position: 'sticky', zIndex: '1', top: '56px' },
+  })}
+  {search}
+  variant="secondary"
+>
   <TabHeadItem id={0} pathname="/search">전체</TabHeadItem>
   <TabHeadItem id={1} pathname="/search/post">포스트</TabHeadItem>
   <TabHeadItem id={2} pathname="/search/space">스페이스</TabHeadItem>
@@ -73,24 +92,54 @@
 </TabHead>
 
 {#if $query.searchSpaces.length === 0}
-  <div class="text-secondary body-15-b text-center flex center min-h-50">검색 결과가 없어요</div>
+  <div
+    class={center({ fontSize: '15px', fontWeight: 'bold', color: 'gray.500', textAlign: 'center', minHeight: '200px' })}
+  >
+    검색 결과가 없어요
+  </div>
 {:else}
-  <div class="space-y-4 <sm:px-4">
+  <div class={flex({ flexDirection: 'column', gap: '16px', smDown: { paddingX: '16px' } })}>
     {#each $query.searchSpaces as space (space.id)}
-      <div class="p-1 rounded-lg hover:bg-surface-primary flex items-center gap-4">
-        <a href={`/${space.slug}`}>
-          <Image class="square-15 rounded-5 border border-secondary" $image={space.icon} />
+      <div
+        class={flex({
+          align: 'center',
+          gap: '16px',
+          borderRadius: '8px',
+          padding: '4px',
+          _hover: { backgroundColor: 'gray.50' },
+        })}
+      >
+        <a class={css({ flex: 'none' })} href={`/${space.slug}`}>
+          <Image
+            style={css.raw({
+              borderWidth: '1px',
+              borderColor: 'gray.200',
+              borderRadius: '[20px]',
+              size: '60px',
+            })}
+            $image={space.icon}
+          />
         </a>
 
-        <a class="flex flex-col gap-1 grow" href={`/${space.slug}`}>
-          <p class="body-15-b">{space.name}</p>
-          <p class="body-14-m text-secondary">{space.description ?? ''}</p>
+        <a class={flex({ flexDirection: 'column', gap: '4px', grow: '1' })} href={`/${space.slug}`}>
+          <p class={css({ fontSize: '15px', fontWeight: 'bold' })}>{space.name}</p>
+          <p class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.500' })}>{space.description ?? ''}</p>
         </a>
 
         {#if !space.meAsMember}
           {#if space.followed}
             <button
-              class="py-1.5 px-2 rounded-12 border border-secondary body-13-m flex items-center gap-1"
+              class={flex({
+                align: 'center',
+                gap: '4px',
+                borderWidth: '1px',
+                borderColor: 'gray.200',
+                borderRadius: '[48px]',
+                paddingX: '8px',
+                paddingY: '6px',
+                fontSize: '13px',
+                fontWeight: 'medium',
+              })}
               type="button"
               on:click={async () => {
                 await unfollowSpace({ spaceId: space.id });
@@ -103,7 +152,17 @@
             </button>
           {:else}
             <button
-              class="py-1.5 px-2 rounded-12 bg-gray-90 text-gray-5 body-13-m flex items-center gap-1"
+              class={flex({
+                align: 'center',
+                gap: '4px',
+                borderRadius: '[48px]',
+                paddingX: '8px',
+                paddingY: '6px',
+                fontSize: '13px',
+                fontWeight: 'medium',
+                color: 'gray.50',
+                backgroundColor: 'gray.900',
+              })}
               type="button"
               on:click={async () => {
                 if (!$query.me) {
