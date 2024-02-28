@@ -8,9 +8,8 @@
   import { afterNavigate } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Modal, Tooltip } from '$lib/components';
-  import Button from '$lib/components/Button.svelte';
-  import { Button as ButtonV2 } from '$lib/components/v2';
+  import { Tooltip } from '$lib/components';
+  import { Button, Modal } from '$lib/components/v2';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { NodeView } from '$lib/tiptap';
   import { calcurateReadingTime, comma } from '$lib/utils';
@@ -32,7 +31,6 @@
   let priceOpen = false;
   let loginRequireOpen = false;
   let postPurchaseOpen = false;
-  let pointPurchaseOpen = false;
 
   let priceInputEl: HTMLInputElement | undefined;
 
@@ -203,7 +201,7 @@
             </div>
           </Tooltip>
 
-          <ButtonV2 size="sm" type="submit" variant="secondary">설정</ButtonV2>
+          <Button size="sm" type="submit" variant="secondary">설정</Button>
         </form>
       </div>
     {/if}
@@ -231,11 +229,7 @@
                 return;
               }
 
-              if (node.attrs.__data.point < node.attrs.price) {
-                pointPurchaseOpen = true;
-              } else {
-                postPurchaseOpen = true;
-              }
+              postPurchaseOpen = true;
             }}
           >
             구매하기
@@ -281,47 +275,67 @@
     </div>
   </NodeView>
 
-  <Modal size="sm" bind:open={pointPurchaseOpen}>
-    <svelte:fragment slot="title">보유중인 포인트가 부족해요</svelte:fragment>
-    <svelte:fragment slot="subtitle">보유중인 포인트 : {comma(node.attrs.__data.point)}P</svelte:fragment>
-
-    <div slot="action" class="w-full flex gap-3">
-      <Button class="w-full" color="secondary" size="xl" on:click={() => (pointPurchaseOpen = false)}>돌아가기</Button>
-      <Button class="w-full" href="/point/purchase" size="xl" type="link">충전하기</Button>
-    </div>
-  </Modal>
-
-  <Modal size="sm" bind:open={postPurchaseOpen}>
+  <Modal titleClass="m-x-8 justify-center" bind:open={postPurchaseOpen}>
     <svelte:fragment slot="title">
-      {comma(node.attrs.price)}P를 사용하여
-      <br />
-      포스트를 구매하시겠어요?
+      {node.attrs.__data.point < node.attrs.price ? '포인트 충전' : '포스트 구매'}
     </svelte:fragment>
-    <svelte:fragment slot="subtitle">보유중인 포인트 : {comma(node.attrs.__data.point)}P</svelte:fragment>
 
-    <div slot="action" class="w-full flex gap-3">
-      <Button class="w-full" color="secondary" size="xl" on:click={() => (postPurchaseOpen = false)}>돌아가기</Button>
-      <Button
-        class="w-full"
-        size="xl"
-        on:click={async () => {
-          await purchasePost({
-            postId: node.attrs.__data.postId,
-            revisionId: node.attrs.__data.revisionId,
-          });
+    <div class="my-4 px-5">
+      <div class="px-3.5 py-3 bg-gray-50 rounded flex items-center justify-between mb-2">
+        <p class="text-14-r text-gray-500">현재 보유한 포인트</p>
 
-          mixpanel.track('post:purchase', {
-            postId: node.attrs.__data.postId,
-            kind: 'article',
-            price: node.attrs.price,
-          });
+        <p class="text-gray-400 text-16-r w-117px px-2 py-1.5 rounded">
+          <mark class="text-gray-500 text-16-sb">{comma(node.attrs.__data.point)}</mark>
+          P
+        </p>
+      </div>
 
-          postPurchaseOpen = false;
-        }}
-      >
-        구매하기
-      </Button>
+      <div class="px-3.5 py-3 bg-gray-50 rounded flex items-center justify-between mb-1.5">
+        <p class="text-14-r text-gray-500">사용할 포인트</p>
+
+        <p class="text-16-r w-117px px-2 py-1.5 rounded ring ring-gray-300 bg-gray-100 text-gray-400">
+          <mark class="text-16-sb text-gray-500">
+            {comma(node.attrs.price)}
+          </mark>
+          P
+        </p>
+      </div>
+
+      <p class="text-right text-13-r text-gray-400 mb-8">
+        {#if node.attrs.__data.point < node.attrs.price}
+          필요한 포인트 <mark class="text-13-m text-error-900">
+            {comma(node.attrs.__data.point - node.attrs.price)}P
+          </mark>
+        {/if}
+      </p>
     </div>
+
+    <svelte:fragment slot="action">
+      {#if node.attrs.__data.point < node.attrs.price}
+        <Button class="w-full" href="/point/purchase" size="xl" type="link">충전하기</Button>
+      {:else}
+        <Button
+          class="w-full"
+          size="xl"
+          on:click={async () => {
+            await purchasePost({
+              postId: node.attrs.__data.postId,
+              revisionId: node.attrs.__data.revisionId,
+            });
+
+            mixpanel.track('post:purchase', {
+              postId: node.attrs.__data.postId,
+              kind: 'article',
+              price: node.attrs.price,
+            });
+
+            postPurchaseOpen = false;
+          }}
+        >
+          구매하기
+        </Button>
+      {/if}
+    </svelte:fragment>
   </Modal>
 
   <LoginRequireModal bind:open={loginRequireOpen} />
