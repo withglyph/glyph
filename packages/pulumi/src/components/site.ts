@@ -60,9 +60,9 @@ export class Site extends pulumi.ComponentResource {
 
     const domainName = match(stack)
       .with('prod', () => args.domain.production)
-      .with('staging', () => args.domain.staging ?? pulumi.interpolate`${args.name}-stg.pnxl.site`)
-      .with('dev', () => args.domain.dev ?? pulumi.interpolate`${args.name}-dev.pnxl.site`)
-      .otherwise(() => pulumi.interpolate`${args.name}-${stack}.pnxl.site`);
+      .with('staging', () => args.domain.staging ?? pulumi.interpolate`${args.name}-stg.effit.dev`)
+      .with('dev', () => args.domain.dev ?? pulumi.interpolate`${args.name}-dev.effit.dev`)
+      .otherwise(() => pulumi.interpolate`${args.name}-${stack}.effit.dev`);
 
     const namespace = match(stack)
       .with('prod', () => 'prod')
