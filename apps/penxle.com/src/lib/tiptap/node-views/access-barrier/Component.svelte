@@ -12,7 +12,7 @@
   import { Button, Modal } from '$lib/components/v2';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { NodeView } from '$lib/tiptap';
-  import { calcurateReadingTime, comma } from '$lib/utils';
+  import { comma } from '$lib/utils';
   import LoginRequireModal from '../../../../routes/(default)/LoginRequireModal.svelte';
   import { priceErrorMap } from './zod';
   import type { NodeViewProps } from '$lib/tiptap';
@@ -97,7 +97,7 @@
 
 {#if editor?.isEditable}
   <NodeView
-    class={clsx('flex justify-end relative py-8px rounded-6px', selected && 'ring-2 ring-teal-500')}
+    class={clsx('flex justify-end relative py-4 rounded-6px', selected && 'ring-2 ring-teal-500')}
     data-drag-handle
     draggable
   >
@@ -207,22 +207,22 @@
     {/if}
   </NodeView>
 {:else if node.attrs.__data.purchasable}
-  <NodeView class="flex center py-8px">
+  <NodeView class="flex center py-4">
     <div
-      class="pointer-events-auto border border-gray-300 rounded-6px px-24px py-20px flex flex-col gap-24px w-full max-w-500px"
+      class="pointer-events-auto border border-gray-150 rounded-6px px-24px py-20px flex flex-col gap-2.5 w-full max-w-500px"
     >
-      <div class="text-16-r text-gray-700">
+      <div class="text-14-r text-gray-500">
         다음 내용을 감상해보시겠어요?
         <br />
-        구매한 포스트는 영구 소장이 가능해요.
+        구매한 포스트는 영구 소장이 가능해요
       </div>
 
-      <div class="flex flex-col gap-8px">
+      <div>
         <div class="flex items-center">
-          <span class="text-24-sb grow">{comma(node.attrs.price)}P</span>
-          <button
-            class="flex center w-100px px-12px py-8.5px bg-gray-950 text-white rounded-4px text-13-sb"
-            type="button"
+          <span class="text-20-sb grow">{comma(node.attrs.price)}P</span>
+          <Button
+            class="<sm:hidden"
+            size="md"
             on:click={() => {
               if (node.attrs.__data.point === null) {
                 loginRequireOpen = true;
@@ -233,15 +233,29 @@
             }}
           >
             구매하기
-          </button>
+          </Button>
+          <Button
+            class="sm:hidden"
+            size="sm"
+            on:click={() => {
+              if (node.attrs.__data.point === null) {
+                loginRequireOpen = true;
+                return;
+              }
+
+              postPurchaseOpen = true;
+            }}
+          >
+            구매하기
+          </Button>
         </div>
 
-        <div class="w-full h-1px bg-gray-200" />
+        <hr class="h-1px bg-gray-100 border-none mt-3 mb-2" />
 
         <div class="flex items-center gap-8px">
           <div class="flex items-center gap-4px">
             <i class="i-tb-text-recognition square-16px text-gray-400" />
-            <span class="text-14-r text-gray-600">
+            <span class="text-14-r text-gray-500">
               {comma(node.attrs.__data.counts.characters)}자
             </span>
           </div>
@@ -249,8 +263,8 @@
           {#if node.attrs.__data.counts.images}
             <div class="flex items-center gap-4px">
               <i class="i-tb-photo square-16px text-gray-400" />
-              <span class="text-14-r text-gray-600">
-                {comma(node.attrs.__data.counts.images)}개
+              <span class="text-14-r text-gray-500">
+                {comma(node.attrs.__data.counts.images)}장
               </span>
             </div>
           {/if}
@@ -258,18 +272,11 @@
           {#if node.attrs.__data.counts.files}
             <div class="flex items-center gap-4px">
               <i class="i-tb-folder square-16px text-gray-400" />
-              <span class="text-14-r text-gray-600">
+              <span class="text-14-r text-gray-500">
                 {comma(node.attrs.__data.counts.files)}개
               </span>
             </div>
           {/if}
-
-          <div class="flex items-center gap-4px">
-            <i class="i-tb-clock-hour-4 square-16px text-gray-400" />
-            <span class="text-14-r text-gray-600">
-              {calcurateReadingTime(node.attrs.__data.counts.characters)}분
-            </span>
-          </div>
         </div>
       </div>
     </div>
@@ -341,7 +348,7 @@
   <LoginRequireModal bind:open={loginRequireOpen} />
 {:else}
   <NodeView
-    class={clsx('flex justify-end relative py-8px rounded-6px pointer-events-auto', selected && 'ring-2 ring-teal-500')}
+    class={clsx('flex justify-end relative py-4 rounded-6px pointer-events-auto', selected && 'ring-2 ring-teal-500')}
     data-drag-handle
     draggable
   >
