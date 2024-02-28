@@ -30,3 +30,16 @@ export const post = ({ db, context }: LoaderParams) =>
 
     return postIds.map((postId) => posts.find((post) => post.id === postId));
   });
+
+export const spaceMasquerade = ({ db, context }: LoaderParams & SessionContext) =>
+  context.dataLoader('spaceMasquerade', async (spaceIds) => {
+    if (!context.session) return spaceIds.map(() => null);
+    const spaceMasquerades = await db.spaceMasquerade.findMany({
+      where: {
+        spaceId: { in: spaceIds as string[] },
+        userId: context.session.userId,
+      },
+    });
+
+    return spaceIds.map((spaceId) => spaceMasquerades.find((masquerade) => masquerade.spaceId === spaceId));
+  });
