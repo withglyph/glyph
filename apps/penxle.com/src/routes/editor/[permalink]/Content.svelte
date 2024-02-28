@@ -26,7 +26,7 @@
   <div class="bg-white flex flex-col grow w-full max-w-1062px mx-auto grow py-5 sm:pt-10.5">
     <div class="pb-5 mb-5 border-b border-gray-200 mx-5 sm:mx-20">
       <input
-        class="w-full text-28-sb"
+        class="w-full text-28-sb <sm:text-22-sb"
         maxlength="100"
         placeholder="제목을 입력하세요"
         type="text"

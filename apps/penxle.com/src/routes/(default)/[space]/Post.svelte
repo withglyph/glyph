@@ -463,7 +463,7 @@
     {/if}
     <div class="flex justify-between items-start">
       <div>
-        <h1 class="text-28-sb break-all">{$postRevision.title ?? '(제목 없음)'}</h1>
+        <h1 class="text-28-sb break-all <sm:text-22-sb">{$postRevision.title ?? '(제목 없음)'}</h1>
         {#if $postRevision.subtitle}
           <h2 class="text-16-r text-gray-700 break-all mt-3px">{$postRevision.subtitle}</h2>
         {/if}
