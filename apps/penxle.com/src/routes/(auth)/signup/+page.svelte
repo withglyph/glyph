@@ -59,7 +59,7 @@
   <input name="token" type="hidden" value={$page.url.searchParams.get('token')} />
 
   <FormField name="name" label="닉네임">
-    <TextInput class={css({ width: 'full', fontWeight: 'bold' })} maxlength={20} placeholder="닉네임 입력">
+    <TextInput style={css.raw({ width: 'full', fontWeight: 'bold' })} maxlength={20} placeholder="닉네임 입력">
       <span slot="right-icon" class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.400' })}>
         {$data.name.length}/20
       </span>

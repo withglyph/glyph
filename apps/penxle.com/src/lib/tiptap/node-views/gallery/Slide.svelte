@@ -1,9 +1,9 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { register } from 'swiper/element/bundle';
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { Icon } from '$lib/components';
+  import { css } from '$styled-system/css';
   import IsomorphicImage from './IsomorphicImage.svelte';
   import type { SwiperContainer, SwiperSlide } from 'swiper/element-bundle';
   import type { Image_image } from '$glitch';
@@ -49,22 +49,48 @@
   }
 </script>
 
-<div class={clsx('relative flex flex-col center square-full', isomorphicImages.length === 0 && 'hidden!')}>
+<div
+  class={css(
+    {
+      position: 'relative',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      size: 'full',
+    },
+    isomorphicImages.length === 0 && { display: 'none' },
+  )}
+>
   <button
     bind:this={swiperPrevElem}
-    class={clsx(
-      'absolute top-50% -left-40px flex center text-gray-500 disabled:text-gray-300! <sm:hidden',
-      isomorphicImages.length === 0 && 'hidden!',
-    )}
+    class={css({
+      position: 'absolute',
+      top: '[50%]',
+      left: '[-40%]',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: { base: 'gray.500', _disabled: 'gray.300' },
+      hideBelow: 'sm',
+    })}
     type="button"
   >
-    <Icon class="square-6" icon={IconChevronLeft} />
+    <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />
   </button>
-  <swiper-container bind:this={swiperEl} class="square-full relative" init="false" scrollbar-hide="true">
+  <swiper-container
+    bind:this={swiperEl}
+    class={css({ position: 'relative', size: 'full' })}
+    init="false"
+    scrollbar-hide="true"
+  >
     {#each isomorphicImages as image (image)}
       <swiper-slide bind:this={swiperSlideEl}>
-        <div style:background-color={image.kind === 'data' ? image.__data.color : undefined} class="square-full">
-          <IsomorphicImage class="object-contain square-full" {image} />
+        <div
+          style:background-color={image.kind === 'data' ? image.__data.color : undefined}
+          class={css({ size: 'full' })}
+        >
+          <IsomorphicImage style={css.raw({ objectFit: 'contain', size: 'full' })} {image} />
         </div>
       </swiper-slide>
     {/each}
@@ -72,25 +98,47 @@
       {@const image = isomorphicImages.at(-1)}
       {#if image}
         <swiper-slide bind:this={swiperSlideEl}>
-          <div style:background-color={image.kind === 'data' ? image.__data.color : undefined} class="square-full" />
+          <div
+            style:background-color={image.kind === 'data' ? image.__data.color : undefined}
+            class={css({ size: 'full' })}
+          />
         </swiper-slide>
       {/if}
     {/if}
   </swiper-container>
   <button
     bind:this={swiperNextElem}
-    class={clsx(
-      'absolute top-50% -right-40px flex center text-gray-500 disabled:text-gray-300 <sm:hidden',
-      isomorphicImages.length === 0 && 'hidden!',
+    class={css(
+      {
+        position: 'absolute',
+        top: '[50%]',
+        right: '[-40%]',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: { base: 'gray.500', _disabled: 'gray.300' },
+        hideBelow: 'sm',
+      },
+      isomorphicImages.length === 0 && { display: 'none' },
     )}
     type="button"
   >
-    <Icon class="square-6" icon={IconChevronRight} />
+    <Icon style={css.raw({ size: '24px' })} icon={IconChevronRight} />
   </button>
 
   <div
     bind:this={swiperPaginationElem}
-    class={clsx('mt-2 text-right w-full text-10-m text-gray-400', isomorphicImages.length === 0 && 'hidden')}
+    class={css(
+      {
+        marginTop: '8px',
+        fontSize: '10px',
+        fontWeight: 'medium',
+        color: 'gray.400',
+        textAlign: 'right',
+        width: 'full',
+      },
+      isomorphicImages.length === 0 && { display: 'none' },
+    )}
   />
 </div>
 

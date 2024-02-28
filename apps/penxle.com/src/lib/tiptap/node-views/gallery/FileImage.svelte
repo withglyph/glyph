@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
+  import { css } from '$styled-system/css';
+  import type { SystemStyleObject } from '$styled-system/types';
 
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
   export let file: File;
 
   const src = URL.createObjectURL(file);
@@ -12,4 +13,4 @@
   });
 </script>
 
-<img class={_class} alt="" {src} />
+<img class={css(style)} alt="" {src} />
