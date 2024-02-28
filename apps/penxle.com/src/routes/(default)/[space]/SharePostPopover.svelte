@@ -2,8 +2,11 @@
   import clsx from 'clsx';
   import qs from 'query-string';
   import { uid } from 'radash';
+  import { tick } from 'svelte';
+  import { fade } from 'svelte/transition';
   import Button from '$lib/components/v2/Button.svelte';
   import { toast } from '$lib/notification';
+  import { createFloatingActions, portal } from '$lib/svelte/actions';
   import type { HTMLAttributes } from 'svelte/elements';
 
   type $$Props = Omit<HTMLAttributes<HTMLDivElement>, 'role'> & {
@@ -21,6 +24,13 @@
 
   const shareTargetMenuLinkClassName =
     'hover:bg-gray-150 focus-visible:bg-gray-150 square-4rem rounded-2 flex center bg-gray-50 color-gray-500 after:(absolute content-[""] inset-0 cursor-pointer)';
+
+  const { floating, anchor, update } = createFloatingActions({ placement: 'bottom-end', offset: 16 });
+
+  $: if (open) {
+    // eslint-disable-next-line unicorn/prefer-top-level-await
+    void tick().then(() => update());
+  }
 </script>
 
 {#if open}
@@ -30,25 +40,25 @@
     tabindex="-1"
     on:click={() => (open = false)}
     on:keypress={null}
+    use:portal
   />
 {/if}
 
-<div class="relative">
-  <button aria-controls={id} aria-expanded={open} type="button" on:click={() => (open = !open)}>
-    <slot />
-  </button>
+<button aria-controls={id} aria-expanded={open} type="button" on:click={() => (open = !open)} use:anchor>
+  <slot />
+</button>
 
+{#if open}
   <div
     {id}
     role="region"
+    use:floating
     {...$$restProps}
     class={clsx(
-      'absolute bg-white rounded-0.625rem border-(1px gray-200) sm:(shadow-popup-50  w-23.5rem z-2 top-[calc(100%+0.87rem)] right-[calc(100%+0.97rem)]) <sm:(fixed z-50 bottom-0 left-0 right-0 w-full rounded-b-none shadow-modal-50)',
-      open
-        ? 'sm:transition-opacity <sm:translate-y-0 transition-all'
-        : 'invisible z--1 sm:opacity-0 <sm:translate-y-100%',
+      'bg-white rounded-0.625rem border-(1px gray-200) sm:(shadow-popup-50 w-23.5rem z-2 <sm:(fixed! z-50 top-initial! bottom-0! left-0! right-0! w-full rounded-b-none shadow-modal-50)',
       $$restProps.class,
     )}
+    transition:fade={{ duration: 100 }}
   >
     <header class="p-x-5 p-y-3 flex justify-between items-center color-gray-950 border-(b gray-100)">
       <h1 class="text-16-sb">공유하기</h1>
@@ -113,4 +123,4 @@
       </Button>
     </footer>
   </div>
-</div>
+{/if}
