@@ -1,14 +1,15 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
   import dayjs from 'dayjs';
   import { onMount } from 'svelte';
   import IconCircleCheck from '~icons/tabler/circle-check';
   import IconCopy from '~icons/tabler/copy';
   import { graphql } from '$glitch';
-  import { Button, Icon } from '$lib/components';
+  import { Button, Helmet, Icon } from '$lib/components';
   import { Radio } from '$lib/components/forms';
   import { toast } from '$lib/notification';
   import { comma } from '$lib/utils';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import type { PaymentMethod } from '$glitch';
 
   $: query = graphql(`
@@ -64,32 +65,66 @@
 
 <Helmet description="펜슬 포인트를 충전할 수 있어요" title="포인트 충전" />
 
-<div class="flex flex-col center w-full my-22">
+<div class={center({ flexDirection: 'column', marginY: '88px', width: 'full' })}>
   {#if $query.pointPurchase.state === 'PENDING' && $query.pointPurchase.paymentMethod === 'VIRTUAL_BANK_ACCOUNT'}
-    <div class="w-full max-w-200">
-      <h1 class="title-20-b w-full">포인트 충전을 위해 입금을 진행해주세요</h1>
-      <p class="text-secondary mt-3">입금이 확인되면 페이지가 자동으로 넘어가요</p>
+    <div class={css({ width: 'full', maxWidth: '800px' })}>
+      <h1 class={css({ width: 'full', fontSize: '20px', fontWeight: 'bold' })}>
+        포인트 충전을 위해 입금을 진행해주세요
+      </h1>
+      <p class={css({ marginTop: '12px', color: 'gray.500' })}>입금이 확인되면 페이지가 자동으로 넘어가요</p>
 
-      <div class="space-y-3 my-6">
-        <div class="bg-white border border-secondary rounded-2xl p-4">
-          <p class="text-secondary mb-2">충전 상품</p>
-          <Radio class="p-4 border-t bg-primary first-of-type:border-0 gap-6 grow rounded-lg" checked>
-            <div class="flex items-center justify-between w-full">
-              <p class="body-16-b">{comma($query.pointPurchase.pointAmount)}P</p>
+      <div class={css({ gap: '12px', marginY: '24px' })}>
+        <div
+          class={css({
+            borderWidth: '1px',
+            borderRadius: '16px',
+            borderColor: 'gray.200',
+            padding: '16px',
+            backgroundColor: 'white',
+          })}
+        >
+          <p class={css({ marginBottom: '8px', color: 'gray.500' })}>충전 상품</p>
+          <Radio
+            class={css({
+              gap: '24px',
+              flexGrow: 1,
+              borderTopWidth: '1px',
+              borderRadius: '8px',
+              padding: '16px',
+              backgroundColor: 'gray.50',
+              _firstOfType: { borderWidth: '0' },
+            })}
+            checked
+          >
+            <div class={flex({ alignItems: 'center', justify: 'space-between', width: 'full' })}>
+              <p class={css({ fontSize: '16px', fontWeight: 'bold' })}>{comma($query.pointPurchase.pointAmount)}P</p>
               <p>{comma($query.pointPurchase.paymentAmount)}원</p>
             </div>
           </Radio>
         </div>
 
-        <div class="bg-white border border-secondary rounded-2xl p-4 space-y-4">
+        <div
+          class={css({
+            gap: '16px',
+            borderWidth: '1px',
+            borderColor: 'gray.200',
+            borderRadius: '16px',
+            padding: '16px',
+            backgroundColor: 'white',
+          })}
+        >
           <div>
-            <span class="inline-block text-secondary mr-4 w-15">입금 은행</span>
+            <span class={css({ display: 'inline-block', color: 'gray.500', marginRight: '16px', width: '60px' })}>
+              입금 은행
+            </span>
             <span>{$query.pointPurchase.paymentResult.vbank_name}</span>
           </div>
 
-          <div class="flex items-center">
-            <span class="inline-block text-secondary mr-4 w-15">입금 계좌</span>
-            <span class="mr-4">{$query.pointPurchase.paymentResult.vbank_num}</span>
+          <div class={flex({ alignItems: 'center' })}>
+            <span class={css({ display: 'inline-block', color: 'gray.500', marginRight: '16px', width: '60px' })}>
+              입금 계좌
+            </span>
+            <span class={css({ marginRight: '16px' })}>{$query.pointPurchase.paymentResult.vbank_num}</span>
             <Button
               color="tertiary"
               size="sm"
@@ -99,50 +134,63 @@
                 toast.success('계좌번호가 복사되었어요');
               }}
             >
-              <Icon class="square-4 text-secondary mr-1" icon={IconCopy} />
+              <Icon style={css.raw({ marginRight: '4px', size: '16px', color: 'gray.500' })} icon={IconCopy} />
               복사
             </Button>
           </div>
 
           <div>
-            <span class="inline-block text-secondary mr-4 w-15">입금 금액</span>
+            <span class={css({ display: 'inline-block', color: 'gray.500', marginRight: '16px', width: '60px' })}>
+              입금 금액
+            </span>
             <span>{comma($query.pointPurchase.paymentAmount)}원</span>
           </div>
         </div>
       </div>
 
-      <p class="text-center text-secondary body-14-m">
+      <p class={css({ color: 'gray.500', fontSize: '14px', fontWeight: 'medium', textAlign: 'center' })}>
         {dayjs($query.pointPurchase.expiresAt).formatAsDateTime()} 까지 입금해주세요
       </p>
     </div>
   {:else}
-    <div class="w-full max-w-200">
-      <p class="text-center mb-6">
-        <Icon class="square-13.75 text-green-50" icon={IconCircleCheck} />
+    <div class={css({ width: 'full', maxWidth: '800px' })}>
+      <p class={css({ marginBottom: '24px', textAlign: 'center' })}>
+        <Icon style={css.raw({ size: '55px', color: '[#4ecea6]' })} icon={IconCircleCheck} />
       </p>
-      <div class="space-y-3">
-        <h1 class="text-center title-20-b">포인트가 충전 완료 되었어요!</h1>
-        <p class="text-center text-secondary">펜슬의 다양한 작품을 감상해보세요</p>
+      <div class={css({ gap: '12px' })}>
+        <h1 class={css({ textAlign: 'center', fontSize: '20px', fontWeight: 'bold' })}>포인트가 충전 완료 되었어요!</h1>
+        <p class={css({ textAlign: 'center', color: 'gray.500' })}>펜슬의 다양한 작품을 감상해보세요</p>
 
-        <div class="bg-white border border-secondary rounded-2xl p-4 space-y-4">
+        <div
+          class={css({
+            backgroundColor: 'white',
+            borderWidth: '1px',
+            borderColor: 'gray.200',
+            borderRadius: '16px',
+            padding: '16px',
+            gap: '16px',
+          })}
+        >
           <div>
-            <span class="text-secondary mr-4">충전 금액</span>
+            <span class={css({ color: 'gray.500', marginRight: '16px' })}>충전 금액</span>
             <span>{comma($query.pointPurchase.pointAmount)}P</span>
           </div>
 
           <div>
-            <span class="text-secondary mr-4">충전 수단</span>
+            <span class={css({ color: 'gray.500', marginRight: '16px' })}>충전 수단</span>
             <span>{paymentMethods[$query.pointPurchase.paymentMethod]}</span>
           </div>
         </div>
 
-        <p class="text-center text-secondary bodylong-16-m">
+        <p class={css({ color: 'gray.500', fontSize: '14px', fontWeight: 'medium', textAlign: 'center' })}>
           보유중인 포인트 : {comma($query.me.point)}P
         </p>
       </div>
 
-      <div class="flex center mt-6">
-        <Button class="max-w-48" href="/point" size="xl" type="link">포인트 내역 확인하러가기</Button>
+      <div class={center({ marginTop: '24px' })}>
+        <Button style={css.raw({ maxWidth: '192px' })} href="/point" size="xl" type="link">
+          포인트 내역 확인하러가기
+        </Button>
       </div>
     </div>
   {/if}

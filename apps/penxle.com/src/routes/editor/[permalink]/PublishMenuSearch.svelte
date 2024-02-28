@@ -5,6 +5,8 @@
   import { tagPattern } from '$lib/const/post';
   import { toast } from '$lib/notification';
   import { outsideClickEvent } from '$lib/svelte/actions';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import Chip from './Chip.svelte';
   import type { PostTagKind } from '$glitch';
 
@@ -28,16 +30,24 @@
 </script>
 
 <div>
-  <p class="text-14-sb pt-1 pb-2 flex gap-1 <sm:text-15-m">
+  <p
+    class={flex({
+      gap: '4px',
+      paddingTop: '4px',
+      paddingBottom: '8px',
+      fontSize: { base: '15px', sm: '14px' },
+      fontWeight: { base: 'medium', sm: 'semibold' },
+    })}
+  >
     <span>{label}</span>
-    <Tooltip class="flex center" message={tooltip} placement="top">
-      <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
+    <Tooltip style={center.raw()} message={tooltip} placement="top">
+      <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconAlertCircle} />
     </Tooltip>
   </p>
 
   <form
     bind:this={formEl}
-    class="relative"
+    class={css({ position: 'relative' })}
     on:submit|preventDefault={() => {
       const escapedValue = query.trim().replace(/^#/, '').replaceAll(' ', '_');
 
@@ -61,7 +71,15 @@
     use:outsideClickEvent
   >
     <input
-      class="rounded-1.5 py-2.5 pl-4 pr-4 text-14-r border border-gray-200 w-full"
+      class={css({
+        borderRadius: '6px',
+        paddingX: '16px',
+        paddingY: '10px',
+        fontSize: '14px',
+        borderWidth: '1px',
+        borderColor: 'gray.200',
+        width: 'full',
+      })}
       {placeholder}
       type="search"
       bind:value={query}
@@ -74,7 +92,7 @@
   </form>
 
   {#if postTags}
-    <ul class="flex flex-wrap gap-1.5 py-2.5">
+    <ul class={flex({ gap: '6px', wrap: 'wrap', paddingY: '10px' })}>
       {#each postTags as tag (tag.name)}
         <Chip on:click={() => (tags = tags.filter((t) => t.name !== tag.name))}>
           {tag.name}

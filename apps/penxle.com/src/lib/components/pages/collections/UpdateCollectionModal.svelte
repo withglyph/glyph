@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import mixpanel from 'mixpanel-browser';
   import IconCamera from '~icons/tabler/camera';
   import { fragment, graphql } from '$glitch';
@@ -9,6 +8,8 @@
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { UpdateSpaceCollectionSchema } from '$lib/validations';
+  import { css, cx } from '$styled-system/css';
+  import { center } from '$styled-system/patterns';
   import type { UpdateCollectionModal_Collection_query } from '$glitch';
 
   let thumbnailPicker: ThumbnailPicker;
@@ -64,28 +65,61 @@
   <svelte:fragment slot="title">컬렉션 관리</svelte:fragment>
   <form use:form>
     <button
-      class="bg-primary w-full aspect-3/4 rounded-6 flex flex-col center overflow-hidden mx-auto relative group"
+      class={cx(
+        'group',
+        center({
+          position: 'relative',
+          flexDirection: 'column',
+          borderRadius: '[24px]',
+          marginX: 'auto',
+          width: 'full',
+          aspectRatio: '[3/4]',
+          backgroundColor: 'gray.50',
+          overflow: 'hidden',
+        }),
+      )}
       aria-describedby="upload-restriction"
       type="button"
       on:click={() => thumbnailPicker.show()}
     >
       {#if thumbnail}
-        <Image class="square-full" $image={thumbnail} />
+        <Image style={css.raw({ size: 'full' })} $image={thumbnail} />
       {/if}
       <div
-        class={clsx(
-          'select-none absolute top-50% -translate-y-50% rounded-full square-15 bg-alphagray-50 flex center invisible group-hover:visible group-active:visible',
-          thumbnail ? 'group-hover:visible group-active:visible' : 'visible!',
+        class={css(
+          {
+            position: 'absolute',
+            top: '[50%]',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 'full',
+            size: '60px',
+            backgroundColor: '[black/50]',
+            translate: 'auto',
+            translateY: '[-50%]',
+            visibility: 'hidden',
+          },
+          thumbnail
+            ? { visibility: { base: 'hidden', _groupHover: 'visible', _groupActive: 'visible' } }
+            : { visibility: 'visible' },
         )}
       >
-        <Icon class="square-6 text-darkprimary" icon={IconCamera} />
+        <Icon style={css.raw({ size: '24px', color: 'white' })} icon={IconCamera} />
       </div>
     </button>
-    <div id="upload-restriction" class="body-13-m text-disabled m-y-xs">JPG, PNG 업로드 가능</div>
+    <div
+      id="upload-restriction"
+      class={css({ marginY: '12px', fontSize: '13px', fontWeight: 'medium', color: 'gray.400' })}
+    >
+      JPG, PNG 업로드 가능
+    </div>
     <FormField name="name" label="컬렉션명">
-      <TextInput class="w-full font-bold" maxlength={20} required />
+      <TextInput style={css.raw({ width: 'full', fontWeight: 'bold' })} maxlength={20} required />
     </FormField>
-    <Button class="w-full m-t-6" loading={$isSubmitting} size="xl" type="submit">컬렉션 수정하기</Button>
+    <Button style={css.raw({ marginTop: '24px', width: 'full' })} loading={$isSubmitting} size="xl" type="submit">
+      컬렉션 수정하기
+    </Button>
   </form>
 </Modal>
 

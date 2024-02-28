@@ -1,27 +1,98 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { fade, fly } from 'svelte/transition';
   import IconX from '~icons/tabler/x';
   import { beforeNavigate } from '$app/navigation';
   import { Icon } from '$lib/components';
   import { portal, scrollLock } from '$lib/svelte/actions';
+  import { css, sva } from '$styled-system/css';
+  import { center } from '$styled-system/patterns';
+  import type { RecipeVariant, SystemStyleObject } from '$styled-system/types';
 
+  export let style: SystemStyleObject | undefined = undefined;
   export let open: boolean;
-  export let size: 'sm' | 'md' | 'lg' = 'md';
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let size: Variants['size'] = 'md';
 
   beforeNavigate(() => {
     open = false;
   });
+
+  type Variants = RecipeVariant<typeof recipe>;
+  const recipe = sva({
+    slots: ['root', 'container', 'action'],
+    base: {
+      root: { position: 'absolute', display: 'flex', inset: '0', pointerEvents: 'none' },
+      container: {
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: '16px',
+        width: 'full',
+        maxHeight: 'full',
+        backgroundColor: 'white',
+        pointerEvents: 'auto',
+        userSelect: 'text',
+      },
+      action: { display: 'flex', justifyContent: 'flex-end', alignItems: 'center' },
+    },
+    variants: {
+      size: {
+        sm: {
+          root: { justifyContent: 'center', alignItems: 'center', padding: '20px' },
+          container: { padding: '16px', paddingTop: '32px', maxWidth: '368px' },
+          action: { marginTop: '16px' },
+        },
+        md: {
+          root: {
+            justifyContent: 'center',
+            alignItems: 'flex-end',
+            width: 'full',
+            sm: { padding: '24px', alignItems: 'center' },
+          },
+          container: {
+            paddingX: '24px',
+            paddingTop: '16px',
+            paddingBottom: '22px',
+            borderBottomRadius: '0',
+            sm: { maxWidth: '430px', borderRadius: '16px' },
+          },
+          action: { marginTop: '24px' },
+        },
+        lg: {
+          root: {
+            justifyContent: 'center',
+            alignItems: 'flex-end',
+            width: 'full',
+            sm: { padding: '36px', alignItems: 'center' },
+          },
+          container: {
+            padding: '28px',
+            paddingTop: '20px',
+            borderBottomRadius: '0',
+            sm: { maxWidth: '748px', borderRadius: '16px' },
+          },
+          action: { marginTop: '16px' },
+        },
+      },
+    },
+  });
+
+  $: classes = recipe({ size });
 </script>
 
 <svelte:window on:keydown={(e) => e.key === 'Escape' && (open = false)} />
 
 {#if open}
-  <div class="fixed inset-0 z-50" use:portal>
+  <div class={css({ position: 'fixed', inset: '0', zIndex: '50' })} use:portal>
     <div
-      class="absolute inset-0 bg-black/50 backdrop-blur"
+      class={css({
+        position: 'absolute',
+        inset: '0',
+        backgroundColor: '[black/50]',
+        backdropFilter: 'auto',
+        backdropBlur: '8px',
+      })}
       role="button"
       tabindex="-1"
       on:click={() => (open = false)}
@@ -29,52 +100,52 @@
       transition:fade={{ duration: 150 }}
     />
 
-    <div
-      class={clsx(
-        'pointer-events-none absolute inset-0 flex',
-        size === 'sm' && 'p-5 center',
-        size === 'md' && 'w-full justify-center items-end sm:(p-6 center!)',
-        size === 'lg' && 'w-full justify-center items-end sm:(p-9 center!)',
-      )}
-    >
-      <div
-        class={clsx(
-          'pointer-events-auto relative max-h-full w-full flex flex-col center rounded-2xl bg-cardprimary shadow-xl select-text',
-          size === 'sm' && 'p-4 pt-8 max-w-92',
-          size === 'md' && 'px-6 pt-4 pb-5.5 rounded-b-none sm:(max-w-107.5 rounded-2xl)',
-          size === 'lg' && 'p-7 pt-5 rounded-b-none sm:(max-w-187 rounded-2xl)',
-        )}
-        use:scrollLock
-        in:fly={{ y: '10%', duration: 150 }}
-        out:fade={{ duration: 150 }}
-      >
+    <div class={classes.root}>
+      <div class={classes.container} use:scrollLock in:fly={{ y: '10%', duration: 150 }} out:fade={{ duration: 150 }}>
         <div
-          class={clsx('content flex flex-col w-full overflow-y-auto', size === 'sm' && 'max-w-92', _class)}
+          class={css(
+            { display: 'flex', flexDirection: 'column', width: 'full', overflowY: 'auto' },
+            size === 'sm' && { maxWidth: '368px' },
+            style,
+          )}
           data-scroll-lock-ignore
         >
           {#if $$slots.title}
             <div
-              class={clsx(
-                'flex justify-between py-3',
-                size === 'sm' && 'justify-center! text-center',
-                size !== 'sm' && 'pt-4 pb-0',
+              class={css(
+                { display: 'flex', justifyContent: 'space-between', paddingY: '12px' },
+                size === 'sm'
+                  ? { justifyContent: 'center', textAlign: 'center' }
+                  : { paddingTop: '16px', paddingBottom: '0' },
               )}
             >
               <div
-                class={clsx(
-                  'flex flex-col break-all',
-                  size !== 'sm' && 'pr-9 mt-4 mb-4',
-                  size !== 'sm' && 'text' in $$slots && 'mb-2!',
+                class={css(
+                  { display: 'flex', flexDirection: 'column', wordBreak: 'break-all' },
+                  size !== 'sm' && { paddingRight: '36px', marginTop: '16px', marginBottom: '16px' },
+                  size !== 'sm' && 'text' in $$slots && { marginBottom: '8px' },
                 )}
               >
-                <h3 class={clsx('break-keep', size === 'sm' && 'subtitle-18-eb', size !== 'sm' && 'title-20-b')}>
+                <h3
+                  class={css(
+                    { wordBreak: 'keep-all' },
+                    size === 'sm' ? { fontSize: '18px', fontWeight: 'bold' } : { fontSize: '20px', fontWeight: 'bold' },
+                  )}
+                >
                   <slot name="title" />
                 </h3>
                 {#if $$slots.subtitle}
                   <div
-                    class={clsx(
-                      'flex justify-between mt-1 text-secondary body-16-m',
-                      size === 'sm' && 'justify-center! text-center',
+                    class={css(
+                      {
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginTop: '4px',
+                        fontSize: '16px',
+                        fontWeight: 'medium',
+                        color: 'gray.500',
+                      },
+                      size === 'sm' && { justifyContent: 'center', textAlign: 'center' },
                     )}
                   >
                     <h4>
@@ -85,21 +156,39 @@
               </div>
               {#if size !== 'sm'}
                 <button
-                  class="absolute right-6 z-1 square-7 flex center rounded text-secondary transition hover:(bg-gray-10 text-gray-60)"
+                  class={center({
+                    position: 'absolute',
+                    borderRadius: '4px',
+                    right: '24px',
+                    size: '28px',
+                    color: 'gray.500',
+                    transition: 'common',
+                    zIndex: '1',
+                    _hover: { backgroundColor: 'gray.100', color: 'gray.600' },
+                  })}
                   type="button"
                   on:click={() => (open = false)}
                 >
-                  <Icon class="square-6" icon={IconX} />
+                  <Icon style={css.raw({ size: '24px' })} icon={IconX} />
                 </button>
               {/if}
             </div>
           {:else}
             <button
-              class="absolute right-6 z-1 square-7 flex center rounded text-secondary transition hover:(bg-gray-10 text-gray-60)"
+              class={center({
+                position: 'absolute',
+                borderRadius: '4px',
+                right: '24px',
+                size: '28px',
+                color: 'gray.500',
+                transition: 'common',
+                zIndex: '1',
+                _hover: { backgroundColor: 'gray.100', color: 'gray.600' },
+              })}
               type="button"
               on:click={() => (open = false)}
             >
-              <Icon class="square-6" icon={IconX} />
+              <Icon style={css.raw({ size: '24px' })} icon={IconX} />
             </button>
           {/if}
 
@@ -107,14 +196,7 @@
           <slot />
 
           {#if $$slots.action}
-            <div
-              class={clsx(
-                'flex items-center justify-end',
-                size === 'sm' && 'mt-4',
-                size === 'md' && 'mt-6',
-                size === 'lg' && 'mt-4',
-              )}
-            >
+            <div class={classes.action}>
               <slot name="action" />
             </div>
           {/if}

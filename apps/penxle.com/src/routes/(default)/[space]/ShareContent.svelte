@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { RingSpinner } from '@penxle/ui/spinners';
-  import clsx from 'clsx';
   import IconAlertCircle from '~icons/tabler/alert-circle';
   import IconArrowBarToDown from '~icons/tabler/arrow-bar-to-down';
   import IconChevronLeft from '~icons/tabler/chevron-left';
@@ -8,9 +6,12 @@
   import { browser } from '$app/environment';
   import { graphql } from '$glitch';
   import { Icon, Tooltip } from '$lib/components';
+  import { RingSpinner } from '$lib/components/spinners';
   import { Button, Modal } from '$lib/components/v2';
   import { toast } from '$lib/notification';
   import { dataurl2file } from '$lib/utils';
+  import { css, cx } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
 
   export let open = false;
   export let body: string;
@@ -19,28 +20,17 @@
   export let spaceName: string;
 
   let showShareTargetMenu = false;
-  const shareTargetMenuButtonWarpClassname =
-    "flex flex-col gap-0.38rem items-center relative [&>button]:(square-4rem flex center bg-gray-50 color-gray-500) [&>label]:(text-13-m color-gray-600 leading-150% after:(absolute content-[''] inset-0 cursor-pointer))";
 
   const fontFamilies = [
-    { label: '프리텐타드', value: 'font-sans' },
-    { label: '리디바탕', value: 'font-serif' },
+    { label: '프리텐타드', value: 'PNXL_Pretendard' },
+    { label: '리디바탕', value: 'PNXL_RIDIBatang' },
   ] as const;
   let fontFamily: (typeof fontFamilies)[number]['value'] = fontFamilies[0].value;
 
   const fontSizes = [
-    {
-      label: '작은글씨',
-      value: 'text-12-r!',
-    },
-    {
-      label: '중간글씨',
-      value: 'text-16-r!',
-    },
-    {
-      label: '큰글씨',
-      value: 'text-20-r!',
-    },
+    { label: '작은글씨', value: '12px' },
+    { label: '중간글씨', value: '16px' },
+    { label: '큰글씨', value: '20px' },
   ] as const;
   let fontSize: (typeof fontSizes)[number]['value'] = fontSizes[1].value;
 
@@ -87,14 +77,14 @@
 
   const handleShare = async () => {
     const fontFamilyToInputFormat = {
-      'font-sans': 'Pretendard',
-      'font-serif': 'RIDIBatang',
+      PNXL_Pretendard: 'Pretendard',
+      PNXL_RIDIBatang: 'RIDIBatang',
     } as const satisfies Record<(typeof fontFamilies)[number]['value'], string>;
 
     const fontSizeToInputFormat = {
-      'text-12-r!': 'small',
-      'text-16-r!': 'medium',
-      'text-20-r!': 'large',
+      '12px': 'small',
+      '16px': 'medium',
+      '20px': 'large',
     } as const satisfies Record<(typeof fontSizes)[number]['value'], string>;
 
     showSpinner = true;
@@ -134,111 +124,173 @@
     const file = dataurl2file(generatedPostShareImage, `${title} | ${spaceName}.png`);
     navigator.share({ title, text: '밑줄 이미지 공유', files: [file] });
   };
+
+  const shareTargetMenuButtonWarpClassname = css({
+    'position': 'relative',
+    'display': 'flex',
+    'flexDirection': 'column',
+    'alignItems': 'center',
+    'gap': '6px',
+
+    '& > button': {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      size: '64px',
+      color: 'gray.500',
+      backgroundColor: 'gray.50',
+    },
+
+    '& > label': {
+      fontSize: '13px',
+      fontWeight: 'medium',
+      _after: {
+        content: '""',
+        position: 'absolute',
+        inset: '0',
+        cursor: 'pointer',
+      },
+    },
+  });
 </script>
 
 <Modal
-  class="max-w-screen!"
-  actionClass={clsx(showShareTargetMenu && 'invisible')}
-  titleClass="m-x-8 justify-center"
+  style={css.raw({ maxWidth: 'screen' })}
+  actionStyle={css.raw(showShareTargetMenu && { visibility: 'hidden' })}
+  titleStyle={css.raw({ justifyContent: 'center', marginX: '32px' })}
   bind:open
 >
   <button
     slot="title-left"
-    class="absolute left-0 px-6 disabled:(invisible opacity-0) transition-opacity"
+    class={css({
+      position: 'absolute',
+      left: '0',
+      paddingX: '24px',
+      transition: 'opacity',
+      _disabled: { opacity: '[0]', visibility: 'hidden' },
+    })}
     disabled={!showShareTargetMenu}
     type="button"
     on:click={() => (showShareTargetMenu = false)}
   >
-    <Icon class="square-6" icon={IconChevronLeft} />
+    <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />
   </button>
   <svelte:fragment slot="title">
     밑줄 이미지 편집
     <Tooltip
-      class="flex items-center ml-1"
+      style={flex.raw({ align: 'center', marginLeft: '4px' })}
       message="포스트에서 인상깊었던 내용을 공유할 수 있어요"
       offset={10}
       placement="bottom-start"
     >
-      <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
+      <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconAlertCircle} />
     </Tooltip>
   </svelte:fragment>
-  <form id="share-content-as-image" class="flex flex-col">
+  <form id="share-content-as-image" class={flex({ direction: 'column' })}>
     <article
-      class={clsx(
-        'relative m-x-5 m-t-5 m-b-4',
-        backgroundColor === '#FFFFFF' ? 'border-(1px solid alphagray-10)' : 'border-(1px solid transparent)',
-      )}
+      class={css({
+        position: 'relative',
+        marginX: '20px',
+        marginTop: '20px',
+        marginBottom: '16px',
+        borderWidth: '1px',
+        borderColor: backgroundColor === '#FFFFFF' ? '[black/10]' : 'transparent',
+      })}
     >
       {#if generatedPostShareImage}
         <img
-          class="w-24.875rem h-24.875rem max-w-full max-h-full"
+          class={css({ width: '398px', maxWidth: 'full', height: '398px', maxHeight: 'full' })}
           alt="밑줄 이미지 미리보기"
           src={generatedPostShareImage}
         />
       {/if}
 
       {#if showSpinner}
-        <div class="absolute inset-0 flex center px-4 py-2">
-          <RingSpinner class="square-5rem color-teal-400 opacity-80" />
+        <div class={center({ position: 'absolute', inset: '0', paddingX: '16px', paddingY: '8px' })}>
+          <RingSpinner style={css.raw({ size: '80px', color: 'teal.400', opacity: '[0.8]' })} />
         </div>
       {/if}
     </article>
 
-    <div class="relative">
+    <div class={css({ position: 'relative' })}>
       <section
-        class={clsx(
-          'flex gap-4 center absolute bg-white inset-0 square-full transition-opacity border-(t-0.5rem solid gray-100)',
-          // 5.75rem = action button wrapper height
-          'p-t-5.75rem',
-          !showShareTargetMenu && 'invisible opacity-0 z--1',
+        class={css(
+          {
+            position: 'absolute',
+            inset: '0',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '16px',
+            borderTopWidth: '[8px]',
+            borderTopColor: 'gray.100',
+            paddingTop: '92px',
+            size: 'full',
+            backgroundColor: 'white',
+            transition: 'opacity',
+          },
+          !showShareTargetMenu && { opacity: '[0]', visibility: 'hidden', zIndex: '[-1]' },
         )}
       >
         <div class={shareTargetMenuButtonWarpClassname}>
           <button id="download-share-button" type="button" on:click={download}>
-            <Icon class="square-1.875rem" icon={IconArrowBarToDown} />
+            <Icon style={css.raw({ size: '30px' })} icon={IconArrowBarToDown} />
           </button>
           <label for="download-share-button">이미지 저장</label>
         </div>
         <div class={shareTargetMenuButtonWarpClassname}>
           <button
             id="etc-share-button"
-            class="peer disabled:color-gray-300"
+            class={cx('peer', css({ _disabled: { color: 'gray.300' } }))}
             disabled={typeof navigator !== 'undefined' && !navigator.share}
             type="button"
             on:click={share}
           >
-            <Icon class="square-1.875rem" icon={IconDots} />
+            <Icon style={css.raw({ size: '30px' })} icon={IconDots} />
           </button>
-          <label class="peer-disabled:color-gray-300" for="etc-share-button">기타</label>
+          <label class={css({ _peerDisabled: { color: 'gray.300' } })} for="etc-share-button">기타</label>
         </div>
       </section>
-      <section class="flex gap-2 overflow-x-auto p-x-5 p-b-2 scrollbar">
+      <section class={flex({ gap: '8px', paddingX: '20px', paddingY: '8px', overflowX: 'auto', scrollbar: 'hidden' })}>
         {#each backgroundColors as bgColor (bgColor)}
           <label>
             <input
               name="backgroundColorClassname"
-              class="appearance-none peer"
+              class={cx('peer', css({ appearance: 'none' }))}
               type="radio"
               value={bgColor}
               bind:group={backgroundColor}
             />
             <div
               style:background={bgColor}
-              class={clsx(
-                bgColor === '#FFFFFF' && 'border-(1px solid gray-200)',
-                'square-2.875rem rounded-0.1875rem peer-checked:border-(2px solid teal-500) z--1',
+              class={css(
+                {
+                  borderRadius: '3px',
+                  size: '46px',
+                  zIndex: '[-1]',
+                  _peerChecked: { borderWidth: '2px', borderColor: 'teal.500' },
+                },
+                bgColor === '#FFFFFF' && { borderWidth: '1px', borderColor: 'gray.200' },
               )}
             />
           </label>
         {/each}
       </section>
-      <section class="flex p-x-5 p-y-0.88rem gap-4 items-center" role="group">
+      <section class={flex({ align: 'center', gap: '16px', paddingX: '20px', paddingY: '14px' })} role="group">
         {#each fontFamilies as family (family)}
           <button
-            class={clsx(
-              'inline-flex items-center p-x-0.31rem h-2.125rem text-16-r leading-160% rounded-0.1875rem hover:bg-gray-100 focus:bg-gray-100 aria-pressed:color-teal-500',
-              family.value,
-            )}
+            style:--font-family={family.value}
+            class={css({
+              display: 'inline-flex',
+              alignItems: 'center',
+              borderRadius: '3px',
+              paddingX: '5px',
+              height: '34px',
+              fontFamily: '[var(--font-family)]',
+              _hover: { backgroundColor: 'gray.100' },
+              _focus: { backgroundColor: 'gray.100' },
+              _pressed: { color: 'teal.500' },
+            })}
             aria-pressed={fontFamily === family.value}
             type="button"
             on:click={() => (fontFamily = family.value)}
@@ -247,14 +299,31 @@
           </button>
         {/each}
       </section>
-      <section class="flex p-x-5 p-y-0.88rem gap-4 items-center border-(t-1px b-1px solid gray-200)" role="group">
+      <section
+        class={flex({
+          align: 'center',
+          gap: '16px',
+          borderYWidth: '1px',
+          borderYColor: 'gray.200',
+          paddingX: '20px',
+          paddingY: '14px',
+        })}
+        role="group"
+      >
         {#each fontSizes as size (size)}
           <button
-            class={clsx(
-              'inline-flex items-center p-x-0.31rem h-2.125rem text-16-r leading-160% rounded-0.1875rem hover:bg-gray-100 focus:bg-gray-100 aria-pressed:color-teal-500',
-              size.value,
-              'aria-pressed:font-bold',
-            )}
+            style:--font-size={size.value}
+            class={css({
+              display: 'inline-flex',
+              alignItems: 'center',
+              borderRadius: '3px',
+              paddingX: '5px',
+              height: '34px',
+              fontSize: '[var(--font-size)]',
+              _hover: { backgroundColor: 'gray.100' },
+              _focus: { backgroundColor: 'gray.100' },
+              _pressed: { fontWeight: 'bold', color: 'teal.500' },
+            })}
             aria-pressed={fontSize === size.value}
             type="button"
             on:click={() => (fontSize = size.value)}
@@ -268,7 +337,7 @@
 
   <Button
     slot="action"
-    class="flex-1 m-t-4"
+    style={css.raw({ flex: '1', marginTop: '16px' })}
     disabled={generatedPostShareImage === null}
     size="lg"
     on:click={() => (showShareTargetMenu = true)}
@@ -276,27 +345,3 @@
     공유
   </Button>
 </Modal>
-
-<style>
-  .scrollbar {
-    &::-webkit-scrollbar {
-      --uno: bg-none h-2;
-    }
-
-    &::-webkit-scrollbar-track {
-      --uno: bg-gray-100;
-    }
-
-    /* This is necessary so you can still see the thumb even with the track hidden */
-    &::-webkit-scrollbar-thumb {
-      --uno: bg-gray-300 rounded-3;
-
-      &:hover {
-        --uno: bg-gray-400;
-      }
-    }
-
-    scrollbar-width: thin;
-    scrollbar-color: #888 rgb(244, 244, 225);
-  }
-</style>

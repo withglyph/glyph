@@ -1,10 +1,10 @@
 <script lang="ts">
-  import clsx from 'clsx';
+  import { css } from '$styled-system/css';
+  import type { SystemStyleObject } from '$styled-system/types';
 
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 </script>
 
-<table class={clsx('w-full border-spacing-0 <sm:table-fixed', _class)}>
+<table class={css({ borderSpacing: '0', width: 'full', smDown: { tableLayout: 'fixed' } }, style)}>
   <slot />
 </table>

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
-  import clsx from 'clsx';
   import IconAlertTriangle from '~icons/tabler/alert-triangle';
   import IconPlus from '~icons/tabler/plus';
   import { graphql } from '$glitch';
-  import { Button, Icon, Image } from '$lib/components';
+  import { Button, Helmet, Icon, Image } from '$lib/components';
   import { CreateCollectionModal } from '$lib/components/pages/collections';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
 
   $: query = graphql(`
     query SpaceCollectionsPage_Query($slug: String!) {
@@ -45,29 +45,55 @@
 />
 
 <div
-  class={clsx(
-    'min-h-11rem w-full max-w-50rem flex flex-col grow gap-xs <sm:(p-0 gap-2 bg-surface-primary) sm:py-4',
-    ($query.space.collections.length === 0 || $query.space.myMasquerade?.blocked) && 'center gap-0!',
+  class={css(
+    {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '12px',
+      flexGrow: '1',
+      width: 'full',
+      maxWidth: '800px',
+      minHeight: '176px',
+      sm: { paddingY: '16px' },
+      smDown: { gap: '8px', padding: '0', backgroundColor: 'gray.100' },
+    },
+    ($query.space.collections.length === 0 || $query.space.myMasquerade?.blocked) && {
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: '0',
+    },
   )}
 >
   {#if $query.space.myMasquerade?.blocked}
-    <Icon class="square-7" icon={IconAlertTriangle} />
-    <p class="text-18-sb mt-1 mb-0.5">차단당했습니다</p>
-    <p class="text-14-r text-gray-500">{$query.space.name}의 게시물을 볼 수 없어요</p>
+    <Icon style={css.raw({ size: '28px' })} icon={IconAlertTriangle} />
+    <p class={css({ marginTop: '4px', marginBottom: '2px', fontSize: '18px', fontWeight: 'semibold' })}>
+      차단당했습니다
+    </p>
+    <p class={css({ fontSize: '14px', color: 'gray.500' })}>{$query.space.name}의 게시물을 볼 수 없어요</p>
   {:else if $query.space.collections.length > 0}
-    <ul class="space-y-1">
+    <ul class={flex({ direction: 'column', gap: '4px' })}>
       {#each $query.space.collections as collection (collection.id)}
         <li>
           <a
-            class="flex gap-xs p-2 bg-cardprimary sm:(rounded-0.75rem hover:bg-primary focus:bg-primary)"
+            class={flex({
+              gap: '12px',
+              padding: '8px',
+              backgroundColor: 'white',
+              sm: { borderRadius: '12px', backgroundColor: { _hover: 'gray.50', _focus: 'gray.50' } },
+            })}
             href={`/${$query.space.slug}/collections/${collection.id}`}
           >
             {#if collection.thumbnail}
-              <Image class="w-6rem h-7.5rem rounded-2" $image={collection.thumbnail} />
+              <Image
+                style={css.raw({ borderRadius: '8px', width: '96px', height: '120px' })}
+                $image={collection.thumbnail}
+              />
             {/if}
-            <dl class="p-y-2">
-              <dt class="body-16-b m-b-1">{collection.name}</dt>
-              <dd class="body-14-m text-secondary">{collection.count}개의 포스트</dd>
+            <dl class={css({ paddingY: '8px' })}>
+              <dt class={css({ marginBottom: '4px', fontWeight: 'bold' })}>{collection.name}</dt>
+              <dd class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.500' })}>
+                {collection.count}개의 포스트
+              </dd>
             </dl>
           </a>
         </li>
@@ -76,20 +102,24 @@
 
     {#if $query.space.meAsMember}
       <Button
-        class="flex gap-2"
+        style={flex.raw({ gap: '8px' })}
         color="tertiary"
         size="lg"
         variant="outlined"
         on:click={() => (openCreateCollectionModal = true)}
       >
-        새 컬렉션 추가하기 <Icon class="square-5" icon={IconPlus} />
+        새 컬렉션 추가하기 <Icon style={css.raw({ size: '20px' })} icon={IconPlus} />
       </Button>
     {/if}
   {:else}
-    <div class="flex flex-col center">
-      <p class="body-15-b text-secondary">아직 스페이스에 업로드된 컬렉션이 없어요</p>
+    <div class={center({ flexDirection: 'column' })}>
+      <p class={css({ fontSize: '15px', fontWeight: 'bold', color: 'gray.500' })}>
+        아직 스페이스에 업로드된 컬렉션이 없어요
+      </p>
       {#if $query.space.meAsMember}
-        <Button class="mt-5" size="lg" on:click={() => (openCreateCollectionModal = true)}>컬렉션 생성하기</Button>
+        <Button style={css.raw({ marginTop: '20px' })} size="lg" on:click={() => (openCreateCollectionModal = true)}>
+          컬렉션 생성하기
+        </Button>
       {/if}
     </div>
   {/if}

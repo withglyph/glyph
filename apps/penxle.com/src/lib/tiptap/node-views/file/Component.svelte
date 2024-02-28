@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { RingSpinner } from '@penxle/ui/spinners';
-  import clsx from 'clsx';
   import ky from 'ky';
   import numeral from 'numeral';
   import { onMount } from 'svelte';
@@ -10,8 +8,11 @@
   import IconTrash from '~icons/tabler/trash';
   import { graphql } from '$glitch';
   import { Icon } from '$lib/components';
+  import { RingSpinner } from '$lib/components/spinners';
   import { NodeView } from '$lib/tiptap';
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import type { NodeViewProps } from '$lib/tiptap';
 
   type $$Props = NodeViewProps;
@@ -65,37 +66,58 @@
   });
 </script>
 
-<NodeView class="flex center py-4px" data-drag-handle draggable>
+<NodeView style={center.raw({ paddingY: '4px' })} data-drag-handle draggable>
   {@const data = node.attrs.__file ?? node.attrs.__data}
 
   <svelte:element
     this={editor?.isEditable ? 'div' : 'a'}
-    class={clsx(
-      'relative w-400px p-12px border border-gray-300 rounded-4px flex pointer-events-auto',
-      selected && 'ring-2 ring-teal-500',
+    class={css(
+      {
+        position: 'relative',
+        display: 'flex',
+        borderWidth: '1px',
+        borderColor: 'gray.300',
+        borderRadius: '4px',
+        padding: '12px',
+        width: '400px',
+        pointerEvents: 'auto',
+      },
+      selected && {
+        outlineWidth: '2px',
+        outlineColor: 'teal.500',
+      },
     )}
     href={editor?.isEditable ? undefined : data.url}
   >
-    <div class="flex gap-8px items-center grow">
-      <div class="flex gap-6px items-center">
-        <Icon class="text-gray-300 square-18px" icon={IconFolder} />
-        <div class="text-14-r line-clamp-1">{data.name}</div>
+    <div class={flex({ align: 'center', gap: '8px', grow: '1' })}>
+      <div class={flex({ align: 'center', gap: '6px' })}>
+        <Icon style={css.raw({ size: '18px', color: 'gray.300' })} icon={IconFolder} />
+        <div class={css({ fontSize: '14px', lineClamp: 1 })}>{data.name}</div>
       </div>
-      <div class="w-1px h-12px bg-gray-300" />
-      <div class="text-14-r text-gray-400 flex-none">{numeral(data.size).format('0b')}</div>
+
+      <div class={css({ width: '1px', height: '12px', backgroundColor: 'gray.300' })} />
+
+      <div class={css({ flex: 'none', fontSize: '14px', color: 'gray.400' })}>{numeral(data.size).format('0b')}</div>
     </div>
 
-    <div class="p-4px rounded-4px transition hover:bg-gray-100">
+    <div
+      class={css({
+        borderRadius: '4px',
+        padding: '4px',
+        transition: 'common',
+        _hover: { backgroundColor: 'gray.100' },
+      })}
+    >
       {#if editor?.isEditable}
-        <Icon class="block text-gray-600 square-18px" icon={IconGripVertical} />
+        <Icon style={css.raw({ size: '18px', color: 'gray.600' })} icon={IconGripVertical} />
       {:else}
-        <Icon class="block text-gray-600 square-18px" icon={IconDownload} />
+        <Icon style={css.raw({ size: '18px', color: 'gray.600' })} icon={IconDownload} />
       {/if}
     </div>
 
     {#if !node.attrs.id}
-      <div class="absolute inset-0 flex center bg-white/50">
-        <RingSpinner class="w-8 h-8 text-teal-500" />
+      <div class={center({ position: 'absolute', inset: '0', backgroundColor: '[white/50]' })}>
+        <RingSpinner style={css.raw({ size: '32px', color: 'teal.500' })} />
       </div>
     {/if}
   </svelte:element>
@@ -103,8 +125,17 @@
 
 {#if editor && selected}
   <TiptapNodeViewBubbleMenu {editor} {getPos} {node}>
-    <button class="p-4px rounded-2px transition hover:bg-gray-100" type="button" on:click={() => deleteNode()}>
-      <Icon class="block text-gray-600 square-18px" icon={IconTrash} />
+    <button
+      class={css({
+        borderRadius: '2px',
+        padding: '4px',
+        transition: 'common',
+        _hover: { backgroundColor: 'gray.100' },
+      })}
+      type="button"
+      on:click={() => deleteNode()}
+    >
+      <Icon style={css.raw({ size: '18px', color: 'gray.600' })} icon={IconTrash} />
     </button>
   </TiptapNodeViewBubbleMenu>
 {/if}

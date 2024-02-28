@@ -8,6 +8,7 @@ import {
 } from '@tiptap/core';
 import { Plugin } from '@tiptap/pm/state';
 import { find } from 'linkifyjs';
+import { css } from '$styled-system/css';
 
 declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -40,7 +41,7 @@ export const Link = Mark.create({
     return [
       'a',
       mergeAttributes(HTMLAttributes, {
-        class: 'text-disabled underline',
+        class: css({ color: 'gray.500', textDecorationLine: 'underline' }),
         target: '_blank',
         rel: 'noreferrer nofollow',
       }),

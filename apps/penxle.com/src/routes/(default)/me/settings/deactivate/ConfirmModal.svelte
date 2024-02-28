@@ -4,6 +4,7 @@
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { DeleteUserSchema } from '$lib/validations';
+  import { css } from '$styled-system/css';
   import CompleteModal from './CompleteModal.svelte';
 
   export let open = false;
@@ -27,11 +28,11 @@
   <svelte:fragment slot="title">펜슬 계정을 탈퇴하시겠어요?</svelte:fragment>
   <svelte:fragment slot="subtitle">모든 데이터가 삭제되고 복구할 수 없어요</svelte:fragment>
 
-  <form class="w-full" use:form>
+  <form class={css({ width: 'full' })} use:form>
     <FormField name="email" label="현재 이메일">
-      <TextInput class="w-full" placeholder="이메일 입력" />
+      <TextInput style={css.raw({ width: 'full' })} placeholder="이메일 입력" />
     </FormField>
-    <Button class="w-full m-t" size="xl" type="submit">탈퇴하기</Button>
+    <Button style={css.raw({ marginTop: '16px', width: 'full' })} size="xl" type="submit">탈퇴하기</Button>
   </form>
 </Modal>
 

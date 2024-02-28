@@ -13,6 +13,5 @@
   "svelte.enable-ts-plugin": true,
   "svelte.plugin.svelte.defaultScriptLanguage": "ts",
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "unocss.root": ["apps/penxle.com", "apps/penxle.io", "apps/help.penxle.com"]
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }

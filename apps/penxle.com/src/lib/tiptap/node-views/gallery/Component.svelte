@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import IconEmbedCompact from '~icons/effit/embed-compact';
   import IconEmbedFull from '~icons/effit/embed-full';
   import IconAlignCenter from '~icons/tabler/align-center';
@@ -10,6 +9,7 @@
   import { Icon } from '$lib/components';
   import { NodeView } from '$lib/tiptap';
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
+  import { css } from '$styled-system/css';
   import Display from './Display.svelte';
   import Editor from './Editor.svelte';
   import type { NodeViewProps } from '$lib/tiptap';
@@ -53,23 +53,31 @@
 </script>
 
 <NodeView
-  class={clsx(
-    'flex items-center pointer-events-none py-4px',
-    node.attrs.align === 'left' && 'justify-start',
-    node.attrs.align === 'center' && 'justify-center',
-    node.attrs.align === 'right' && 'justify-end',
+  style={css.raw(
+    {
+      display: 'flex',
+      alignItems: 'center',
+      pointerEvents: 'none',
+      paddingY: '4px',
+    },
+    node.attrs.align === 'left' && { justifyContent: 'flex-start' },
+    node.attrs.align === 'center' && { justifyContent: 'center' },
+    node.attrs.align === 'right' && { justifyContent: 'flex-end' },
   )}
   data-drag-handle
   draggable
 >
   <div
-    class={clsx(
-      'pointer-events-auto min-w-0',
-      node.attrs.ids.length === 0 && 'bg-#d9d9d9 w-400px h-200px',
-      selected && 'ring-2 ring-teal-500',
+    class={css(
+      {
+        minWidth: '0',
+        pointerEvents: 'auto',
+      },
+      node.attrs.ids.length === 0 && { backgroundColor: '[#d9d9d9]', width: '400px', height: '200px' },
+      selected && { ringWidth: '2px', ringColor: 'teal.500' },
     )}
   >
-    <div class={clsx(editor?.isEditable && 'pointer-events-none')}>
+    <div class={css(editor?.isEditable && { pointerEvents: 'none' })}>
       <Display {node} {updateAttributes} />
     </div>
   </div>
@@ -77,15 +85,29 @@
 
 {#if editor && selected}
   <TiptapNodeViewBubbleMenu {editor} {getPos} {node}>
-    <button class="p-4px rounded-2px transition hover:bg-gray-100" type="button" on:click={() => (open = true)}>
-      <Icon class="text-gray-600 square-18px block <sm:square-20px" icon={IconEdit} />
+    <button
+      class={css({
+        borderRadius: '2px',
+        padding: '4px',
+        transition: 'common',
+        _hover: { backgroundColor: 'gray.100' },
+      })}
+      type="button"
+      on:click={() => (open = true)}
+    >
+      <Icon style={css.raw({ color: 'gray.600', size: { base: '20px', sm: '18px' } })} icon={IconEdit} />
     </button>
 
-    <div class="w-1px h-12px bg-gray-200" />
+    <div class={css({ backgroundColor: 'gray.200', width: '1px', height: '12px' })} />
 
     {#if node.attrs.size === 'compact'}
       <button
-        class="p-4px rounded-2px transition hover:bg-gray-100"
+        class={css({
+          borderRadius: '2px',
+          padding: '4px',
+          transition: 'common',
+          _hover: { backgroundColor: 'gray.100' },
+        })}
         type="button"
         on:click={() => {
           updateAttributes({ align: 'left' });
@@ -93,16 +115,24 @@
         }}
       >
         <Icon
-          class={clsx(
-            'text-gray-600 square-18px block <sm:square-20px',
-            node.attrs.align === 'left' && 'text-teal-500!',
+          style={css.raw(
+            {
+              color: 'gray.600',
+              size: { base: '20px', sm: '18px' },
+            },
+            node.attrs.align === 'left' && { color: 'teal.500' },
           )}
           icon={IconAlignLeft}
         />
       </button>
 
       <button
-        class="p-4px rounded-2px transition hover:bg-gray-100"
+        class={css({
+          borderRadius: '2px',
+          padding: '4px',
+          transition: 'common',
+          _hover: { backgroundColor: 'gray.100' },
+        })}
         type="button"
         on:click={() => {
           updateAttributes({ align: 'center' });
@@ -110,16 +140,24 @@
         }}
       >
         <Icon
-          class={clsx(
-            'text-gray-600 square-18px block <sm:square-20px',
-            node.attrs.align === 'center' && 'text-teal-500!',
+          style={css.raw(
+            {
+              color: 'gray.600',
+              size: { base: '20px', sm: '18px' },
+            },
+            node.attrs.align === 'center' && { color: 'teal.500' },
           )}
           icon={IconAlignCenter}
         />
       </button>
 
       <button
-        class="p-4px rounded-2px transition hover:bg-gray-100"
+        class={css({
+          borderRadius: '2px',
+          padding: '4px',
+          transition: 'common',
+          _hover: { backgroundColor: 'gray.100' },
+        })}
         type="button"
         on:click={() => {
           updateAttributes({ align: 'right' });
@@ -127,19 +165,27 @@
         }}
       >
         <Icon
-          class={clsx(
-            'text-gray-600 square-18px block <sm:square-20px',
-            node.attrs.align === 'right' && 'text-teal-500!',
+          style={css.raw(
+            {
+              color: 'gray.600',
+              size: { base: '20px', sm: '18px' },
+            },
+            node.attrs.align === 'right' && { color: 'teal.500' },
           )}
           icon={IconAlignRight}
         />
       </button>
 
-      <div class="w-1px h-12px bg-gray-200" />
+      <div class={css({ backgroundColor: 'gray.200', width: '1px', height: '12px' })} />
     {/if}
 
     <button
-      class="p-4px rounded-2px transition hover:bg-gray-100"
+      class={css({
+        borderRadius: '2px',
+        padding: '4px',
+        transition: 'common',
+        _hover: { backgroundColor: 'gray.100' },
+      })}
       type="button"
       on:click={() => {
         updateAttributes({ size: 'full' });
@@ -147,12 +193,23 @@
       }}
     >
       <Icon
-        class={clsx('text-gray-600 square-18px block <sm:square-20px', node.attrs.size === 'full' && 'text-teal-500!')}
+        style={css.raw(
+          {
+            color: 'gray.600',
+            size: { base: '20px', sm: '18px' },
+          },
+          node.attrs.size === 'full' && { color: 'teal.500' },
+        )}
         icon={IconEmbedFull}
       />
     </button>
     <button
-      class="p-4px rounded-2px transition hover:bg-gray-100"
+      class={css({
+        borderRadius: '2px',
+        padding: '4px',
+        transition: 'common',
+        _hover: { backgroundColor: 'gray.100' },
+      })}
       type="button"
       on:click={() => {
         updateAttributes({ size: 'compact' });
@@ -160,18 +217,30 @@
       }}
     >
       <Icon
-        class={clsx(
-          'text-gray-600 square-18px block <sm:square-20px',
-          node.attrs.size === 'compact' && 'text-teal-500!',
+        style={css.raw(
+          {
+            color: 'gray.600',
+            size: { base: '20px', sm: '18px' },
+          },
+          node.attrs.size === 'compact' && { color: 'teal.500' },
         )}
         icon={IconEmbedCompact}
       />
     </button>
 
-    <div class="w-1px h-12px bg-gray-200" />
+    <div class={css({ backgroundColor: 'gray.200', width: '1px', height: '12px' })} />
 
-    <button class="p-4px rounded-2px transition hover:bg-gray-100" type="button" on:click={() => deleteNode()}>
-      <Icon class="text-gray-600 square-18px block" icon={IconTrash} />
+    <button
+      class={css({
+        borderRadius: '2px',
+        padding: '4px',
+        transition: 'common',
+        _hover: { backgroundColor: 'gray.100' },
+      })}
+      type="button"
+      on:click={() => deleteNode()}
+    >
+      <Icon style={css.raw({ color: 'gray.600', size: '18px' })} icon={IconTrash} />
     </button>
   </TiptapNodeViewBubbleMenu>
 

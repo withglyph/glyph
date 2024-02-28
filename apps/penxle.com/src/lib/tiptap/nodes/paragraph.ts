@@ -1,6 +1,5 @@
 import { findChildren, Node } from '@tiptap/core';
 import { Plugin } from '@tiptap/pm/state';
-import clsx from 'clsx';
 import { values } from '$lib/tiptap/values';
 import { closest } from '$lib/utils';
 
@@ -33,13 +32,6 @@ export const Paragraph = Node.create({
 
   addAttributes() {
     return {
-      level: {
-        default: undefined,
-        renderHTML: ({ level }) => ({
-          class: clsx(level === 2 && 'body-13-m'),
-        }),
-      },
-
       textAlign: {
         default: 'left',
         parseHTML: (element) => {

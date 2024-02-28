@@ -1,52 +1,65 @@
 .prose {
-  /*
-   * nodes
-  */
-
   & p {
-    --uno: py-0.5;
+    padding-top: 2px;
+    padding-bottom: 2px;
   }
 
   & h1 {
-    --uno: text-2xl font-bold mt-4;
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 16px;
   }
 
   & h2 {
-    --uno: text-xl font-bold mt-4;
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 16px;
   }
 
   & h3 {
-    --uno: text-lg font-bold mt-4;
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 16px;
   }
 
   & h4 {
-    --uno: text-base font-bold mt-4;
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 16px;
   }
 
   & ol,
   & ul {
-    --uno: list-outside pl-8 py-1;
+    list-style-position: outside;
+    padding-left: 32px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 
     & li {
-      --uno: py-0.5;
+      padding-top: 2px;
+      padding-bottom: 2px;
     }
 
     & ol,
     & ul {
-      --uno: pl-8;
+      padding-left: 32px;
     }
   }
 
   & ol {
-    --uno: list-decimal;
+    list-style-type: decimal;
   }
 
   & ul {
-    --uno: list-disc;
+    list-style-type: disc;
   }
 
   & blockquote {
-    --uno: border-l-4 pl-2 py-1 whitespace-pre;
+    border-left: 1px solid black;
+    padding-left: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    white-space: pre;
   }
 
   /*
@@ -54,18 +67,18 @@
   */
 
   & strong {
-    --uno: font-bold;
+    font-weight: 700;
   }
 
   & i {
-    --uno: font-italic;
+    font-style: italic;
   }
 
   & s {
-    --uno: line-through;
+    text-decoration-line: line-through;
   }
 
   & u {
-    --uno: underline;
+    text-decoration-line: underline;
   }
 }

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Link } from '@penxle/ui';
   import IconDotsVertical from '~icons/tabler/dots-vertical';
   import IconLock from '~icons/tabler/lock';
   import IconSettings from '~icons/tabler/settings';
@@ -7,16 +6,17 @@
   import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { BottomSheet, Button, Icon, Image, Modal } from '$lib/components';
+  import { BottomSheet, Button, Icon, Image } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { toast } from '$lib/notification';
   import { handleShare } from '$lib/utils';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
 
   let moveToLoginOpen = false;
   let menuOpen = false;
-  let linkOpen = false;
   let revealMutedSpace = false;
 
   $: query = graphql(`
@@ -101,71 +101,109 @@
   `);
 </script>
 
-<main class="flex flex-col items-center w-full bg-cardprimary grow">
-  <div class="pt-6 px-4 bg-cardprimary w-full max-w-200 sm:(flex mb-8)">
-    <div class="flex items-start justify-between">
+<main class={flex({ direction: 'column', align: 'center', grow: '1', width: 'full', background: 'white' })}>
+  <div
+    class={css({
+      paddingTop: '24px',
+      paddingX: '16px',
+      width: 'full',
+      maxWidth: '800px',
+      backgroundColor: 'white',
+      sm: { display: 'flex', marginBottom: '32px' },
+    })}
+  >
+    <div class={flex({ justify: 'space-between', align: 'flex-start' })}>
       <Image
-        class="square-15 rounded-2xl border border-secondary sm:(square-30 rounded-3xl mr-6)"
+        style={css.raw({
+          borderWidth: '1px',
+          borderColor: 'gray.200',
+          borderRadius: '16px',
+          size: '60px',
+          sm: { borderRadius: '[24px]', marginRight: '24px', size: '120px' },
+        })}
         $image={$query.space.icon}
       />
-      <div class="flex">
+      <div class={flex()}>
         <button
-          class="square-9 flex center rounded-xl transition duration-300 hover:bg-primary sm:hidden"
+          class={center({
+            borderRadius: '12px',
+            size: '36px',
+            transition: 'common',
+            transitionDuration: '[300ms]',
+            _hover: { backgroundColor: 'gray.50' },
+            hideFrom: 'sm',
+          })}
           type="button"
           on:click={() => {
             handleShare($query.space.name, `${location.origin}/${$query.space.slug}`);
           }}
         >
-          <Icon class="square-6 text-icon-secondary" icon={IconShare2} />
+          <Icon style={css.raw({ size: '24px', color: 'gray.400' })} icon={IconShare2} />
         </button>
         {#if !$query.space.meAsMember}
           <button
-            class="square-9 flex center rounded-xl transition duration-300 hover:bg-primary sm:hidden"
+            class={center({
+              borderRadius: '12px',
+              size: '36px',
+              transition: 'common',
+              transitionDuration: '[300ms]',
+              _hover: { backgroundColor: 'gray.50' },
+              hideFrom: 'sm',
+            })}
             type="button"
             on:click={() => {
               menuOpen = true;
             }}
           >
-            <Icon class="square-6 text-icon-secondary" icon={IconDotsVertical} />
+            <Icon style={css.raw({ size: '24px', color: 'gray.400' })} icon={IconDotsVertical} />
           </button>
         {/if}
       </div>
     </div>
-    <div class="flex-1 sm:mr-6">
-      <div class="mt-5 truncate sm:(mt-0 mb-3)">
-        <h1 class="title-20-eb flex items-center gap-1 flex-wrap mb-2 truncate sm:(title-24-eb mb-3)">
+    <div class={css({ flex: '1', sm: { marginRight: '24px' } })}>
+      <div class={css({ marginTop: '20px', truncate: true, sm: { marginTop: '0', marginBottom: '12px' } })}>
+        <h1
+          class={flex({
+            align: 'center',
+            gap: '4px',
+            wrap: 'wrap',
+            marginBottom: { base: '8px', sm: '12px' },
+            fontSize: { base: '20px', sm: '24px' },
+            fontWeight: 'bold',
+            truncate: true,
+          })}
+        >
           {$query.space.name}
 
           {#if $query.space.visibility === 'PRIVATE'}
-            <span class="bg-gray-10 text-secondary rounded-2xl py-1 px-1.5 caption-12-b text-nowrap">
+            <span
+              class={css({
+                borderRadius: '16px',
+                paddingX: '6px',
+                paddingY: '4px',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                color: 'gray.100',
+                textWrap: 'nowrap',
+              })}
+            >
               비공개
-              <Icon class="square-3 mb-0.5" icon={IconLock} />
+              <Icon style={css.raw({ marginBottom: '2px', size: '12px' })} icon={IconLock} />
             </span>
           {/if}
         </h1>
 
-        <div class="flex items-center mb-2">
-          <span class="text-secondary body-16-sb">관심 독자</span>
-          <span class="text-primary ml-2 subtitle-18-b">{$query.space.followerCount}</span>
-          <span class="ml-3 text-secondary body-16-sb">포스트</span>
-          <span class="text-primary ml-2 subtitle-18-b">{$query.space.postCount}</span>
+        <div class={flex({ align: 'center', marginBottom: '8px' })}>
+          <span class={css({ fontWeight: 'semibold', color: 'gray.500' })}>관심 독자</span>
+          <span class={css({ marginLeft: '8px', fontSize: '18px', fontWeight: 'bold' })}>
+            {$query.space.followerCount}
+          </span>
+          <span class={css({ marginLeft: '12px', fontWeight: 'semibold', color: 'gray.500' })}>포스트</span>
+          <span class={css({ marginLeft: '8px', fontSize: '18px', fontWeight: 'bold' })}>{$query.space.postCount}</span>
         </div>
-        {#if $query.space.externalLinks.length > 0}
-          <div class="flex gap-1 body-15-sb text-secondary flex-wrap">
-            <Link class="truncate" external href={`${$query.space.externalLinks[0].url}`} underline>
-              {$query.space.externalLinks[0].url}
-            </Link>
-
-            <button class="whitespace-pre-wrap" type="button" on:click={() => (linkOpen = true)}>
-              {#if $query.space.externalLinks.length > 1}
-                외 {$query.space.externalLinks.length - 1}개
-              {/if}
-            </button>
-          </div>
-        {/if}
       </div>
     </div>
-    <div class="flex self-start items-center gap-2 <sm:hidden">
+    <div class={flex({ align: 'center', gap: '8px', alignSelf: 'flex-start', hideBelow: 'sm' })}>
       {#if $query.space.meAsMember}
         <Button
           size="md"
@@ -185,19 +223,27 @@
             handleShare($query.space.name, `${location.origin}/${$query.space.slug}`);
           }}
         >
-          <Icon class="mr-2" icon={IconShare2} />
+          <Icon style={css.raw({ marginRight: '8px' })} icon={IconShare2} />
           공유하기
         </Button>
         <a
-          class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
+          class={center({
+            borderWidth: '1px',
+            borderColor: { base: 'gray.200', _hover: 'gray.400' },
+            borderRadius: '12px',
+            padding: '4px',
+            size: '36px',
+            transition: 'common',
+            transitionDuration: '[300ms]',
+          })}
           href={`/${$query.space.slug}/dashboard/settings`}
         >
-          <Icon class="square-6 text-secondary" icon={IconSettings} />
+          <Icon style={css.raw({ size: '24px', color: 'gray.500' })} icon={IconSettings} />
         </a>
       {:else}
         {#if $query.me === null}
           <Button
-            class="flex-1"
+            style={css.raw({ flex: '1' })}
             size="md"
             on:click={() => {
               moveToLoginOpen = true;
@@ -207,7 +253,7 @@
           </Button>
         {:else if $query.space.followed}
           <Button
-            class="flex-1"
+            style={css.raw({ flex: '1' })}
             color="tertiary"
             size="md"
             variant="outlined"
@@ -221,7 +267,7 @@
           </Button>
         {:else}
           <Button
-            class="flex-1"
+            style={css.raw({ flex: '1' })}
             size="md"
             on:click={async () => {
               await followSpace({ spaceId: $query.space.id });
@@ -240,14 +286,22 @@
             handleShare($query.space.name, `${location.origin}/${$query.space.slug}`);
           }}
         >
-          <Icon class="mr-2" icon={IconShare2} />
+          <Icon style={css.raw({ marginRight: '8px' })} icon={IconShare2} />
           공유하기
         </Button>
         {#if !$query.space.meAsMember}
           <Menu
-            class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
+            style={center.raw({
+              borderWidth: '1px',
+              borderColor: { base: 'gray.200', _hover: 'gray.400' },
+              borderRadius: '12px',
+              padding: '4px',
+              size: '36px',
+              transition: 'common',
+              transitionDuration: '[300ms]',
+            })}
           >
-            <Icon slot="value" class="square-6 text-secondary" icon={IconDotsVertical} />
+            <Icon slot="value" style={css.raw({ size: '24px', color: 'gray.500' })} icon={IconDotsVertical} />
 
             {#if $query.space.muted}
               <MenuItem
@@ -276,10 +330,19 @@
       {/if}
     </div>
   </div>
-  <div class="flex gap-2 w-full mt-6 mb-3 px-4 sm:hidden">
+  <div
+    class={flex({
+      gap: '8px',
+      marginTop: '24px',
+      marginBottom: '12px',
+      paddingX: '16px',
+      width: 'full',
+      hideFrom: 'sm',
+    })}
+  >
     {#if $query.space.meAsMember}
       <Button
-        class="<sm:w-full"
+        style={css.raw({ smDown: { width: 'full' } })}
         size="xl"
         on:click={async () => {
           const { permalink } = await createPost({ spaceId: $query.space.id });
@@ -290,18 +353,18 @@
         포스트 작성
       </Button>
       <Button
-        class="square-12.5"
+        style={css.raw({ size: '50px' })}
         color="tertiary"
         href={`/${$query.space.slug}/dashboard/settings`}
         size="xl"
         type="link"
         variant="outlined"
       >
-        <Icon class="square-6 text-secondary" icon={IconSettings} />
+        <Icon style={css.raw({ size: '24px', color: 'gray.500' })} icon={IconSettings} />
       </Button>
     {:else if $query.me === null}
       <Button
-        class="w-full"
+        style={css.raw({ width: 'full' })}
         size="xl"
         on:click={() => {
           moveToLoginOpen = true;
@@ -311,7 +374,7 @@
       </Button>
     {:else if $query.space.followed}
       <Button
-        class="w-full"
+        style={css.raw({ width: 'full' })}
         color="tertiary"
         size="xl"
         variant="outlined"
@@ -325,7 +388,7 @@
       </Button>
     {:else}
       <Button
-        class="w-full"
+        style={css.raw({ width: 'full' })}
         size="xl"
         on:click={async () => {
           await followSpace({ spaceId: $query.space.id });
@@ -338,7 +401,7 @@
     {/if}
   </div>
 
-  <TabHead class="w-full max-w-200 border-none" variant="secondary">
+  <TabHead style={css.raw({ borderWidth: '0', width: 'full', maxWidth: '800px' })} variant="secondary">
     <TabHeadItem id={1} pathname="/{$query.space.slug}">
       <span>홈</span>
     </TabHeadItem>
@@ -350,14 +413,27 @@
     </TabHeadItem>
   </TabHead>
 
-  <hr class="w-full border-color-alphagray-10" />
+  <hr class={css({ borderColor: '[black/10]', width: 'full' })} />
 
   {#if $query.space.muted && !revealMutedSpace}
-    <div class="w-full min-h-11rem max-w-50rem flex flex-col center grow body-15-sb text-secondary">
+    <div
+      class={center({
+        flexDirection: 'column',
+        flexGrow: 'grow',
+        width: 'full',
+        maxWidth: '800px',
+        minHeight: '176px',
+        fontSize: '15px',
+        fontWeight: 'semibold',
+        color: 'gray.500',
+      })}
+    >
       <p>내가 숨긴 스페이스예요</p>
       <p>내용을 보시겠어요?</p>
       <p>(스페이스 숨김은 유지돼요)</p>
-      <Button class="w-fit mt-5" size="lg" on:click={() => (revealMutedSpace = true)}>내용 보기</Button>
+      <Button style={css.raw({ marginTop: '20px', width: 'fit' })} size="lg" on:click={() => (revealMutedSpace = true)}>
+        내용 보기
+      </Button>
     </div>
   {:else}
     <slot />
@@ -367,12 +443,21 @@
 <LoginRequireModal bind:open={moveToLoginOpen} />
 
 <BottomSheet bind:open={menuOpen}>
-  <div class="body-15-b py-2 text-center">더보기</div>
+  <div class={css({ paddingY: '8px', textAlign: 'center', fontSize: '15px', fontWeight: 'bold' })}>더보기</div>
 
-  <div class="mt-2">
+  <div class={css({ marginTop: '8px' })}>
     {#if $query.space.muted}
       <button
-        class="w-full px-3 h-14 text-secondary text-center body-16-sb rounded-2xl hover:bg-primary"
+        class={css({
+          borderRadius: '16px',
+          paddingX: '12px',
+          width: 'full',
+          height: '56px',
+          textAlign: 'center',
+          fontWeight: 'semibold',
+          color: 'gray.500',
+          _hover: { backgroundColor: 'gray.50' },
+        })}
         type="button"
         on:click={async () => {
           await unmuteSpace({ spaceId: $query.space.id });
@@ -384,7 +469,16 @@
       </button>
     {:else}
       <button
-        class="w-full px-3 h-14 text-secondary text-center body-16-sb rounded-2xl hover:bg-primary"
+        class={css({
+          borderRadius: '16px',
+          paddingX: '12px',
+          width: 'full',
+          height: '56px',
+          textAlign: 'center',
+          fontWeight: 'semibold',
+          color: 'gray.500',
+          _hover: { backgroundColor: 'gray.50' },
+        })}
         type="button"
         on:click={async () => {
           await muteSpace({ spaceId: $query.space.id });
@@ -396,40 +490,20 @@
       </button>
     {/if}
 
-    <button class="w-full px-3 h-14 text-secondary text-center body-16-sb rounded-2xl hover:bg-primary" type="button">
+    <button
+      class={css({
+        borderRadius: '16px',
+        paddingX: '12px',
+        width: 'full',
+        height: '56px',
+        textAlign: 'center',
+        fontWeight: 'semibold',
+        color: 'gray.500',
+        _hover: { backgroundColor: 'gray.50' },
+      })}
+      type="button"
+    >
       스페이스 신고하기
     </button>
   </div>
 </BottomSheet>
-
-<BottomSheet bind:open={linkOpen}>
-  <div class="body-15-b py-2 text-center">링크</div>
-
-  <div class="flex flex-col mt-2 truncate">
-    {#each $query.space.externalLinks as link (link.id)}
-      <Link
-        class="px-3 py-4.5 body-16-sb truncate text-secondary rounded-2xl hover:bg-primary"
-        external
-        href={link.url}
-      >
-        {link.url}
-      </Link>
-    {/each}
-  </div>
-</BottomSheet>
-
-<Modal bind:open={linkOpen}>
-  <svelte:fragment slot="title">링크</svelte:fragment>
-
-  <div class="flex flex-col truncate">
-    {#each $query.space.externalLinks as link (link.id)}
-      <Link
-        class="px-3 py-4.5 body-16-sb truncate text-secondary rounded-2xl hover:bg-primary"
-        external
-        href={link.url}
-      >
-        {link.url}
-      </Link>
-    {/each}
-  </div>
-</Modal>

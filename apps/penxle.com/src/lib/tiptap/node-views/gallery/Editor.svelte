@@ -2,7 +2,6 @@
   import './driver.css';
 
   import { Semaphore } from 'async-mutex';
-  import clsx from 'clsx';
   import { driver as driverFn } from 'driver.js';
   import ky from 'ky';
   import { nanoid } from 'nanoid';
@@ -30,6 +29,8 @@
   import { Checkbox, Switch } from '$lib/components/forms';
   import { Button, Modal } from '$lib/components/v2';
   import { isValidImageFile, persisted, validImageMimes } from '$lib/utils';
+  import { css, cx } from '$styled-system/css';
+  import { center, flex, grid } from '$styled-system/patterns';
   import Display from './Display.svelte';
   import IsomorphicImage from './IsomorphicImage.svelte';
   import RadioGroup from './RadioGroup.svelte';
@@ -299,31 +300,50 @@
   <svelte:fragment slot="title">
     이미지 편집
     <Tooltip
-      class="flex items-center ml-1"
+      style={flex.raw({ align: 'center', marginLeft: '4px' })}
       message="이미지는 무제한으로 추가할 수 있으며, 하단에 있는 이미지를 드래그해서 놓으면 순서를 변경할 수 있어요"
       offset={10}
       placement="bottom-start"
     >
-      <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
+      <Icon style={css.raw({ color: 'gray.400', size: '14px' })} icon={IconAlertCircle} />
     </Tooltip>
   </svelte:fragment>
 
-  <div class="flex h-511px">
-    <div class="flex flex-col w-562px">
-      <div class="grow flex flex-col items-center overflow-y-auto p-t-6 p-b-4">
-        <div class="grow flex flex-col center w-100">
+  <div class={flex({ height: '511px' })}>
+    <div class={flex({ flexDirection: 'column', width: '562px' })}>
+      <div
+        class={flex({
+          flexDirection: 'column',
+          align: 'center',
+          flexGrow: '1',
+          paddingTop: '24px',
+          paddingBottom: '16px',
+          overflowY: 'auto',
+        })}
+      >
+        <div class={center({ flexDirection: 'column', flexGrow: '1', width: '400px' })}>
           {#if node.attrs.ids.length === 0}
             <button
-              class="border border-gray-300 border-dashed bg-gray-50 text-gray-300 w-100 h-75 flex flex-col center gap-2.5"
+              class={center({
+                flexDirection: 'column',
+                gap: '10px',
+                borderWidth: '1px',
+                borderColor: 'gray.300',
+                borderStyle: 'dashed',
+                color: 'gray.300',
+                backgroundColor: 'gray.50',
+                width: '400px',
+                height: '300px',
+              })}
               type="button"
               on:click={handleInsertImage}
             >
-              <Icon class="square-8" icon={IconPhotoUp} />
-              <p class="text-13-m">이미지를 업로드해주세요</p>
+              <Icon style={css.raw({ size: '32px' })} icon={IconPhotoUp} />
+              <p class={css({ fontSize: '13px', fontWeight: 'medium' })}>이미지를 업로드해주세요</p>
             </button>
           {/if}
 
-          <div class={clsx('w-100', node.attrs.layout === 'standalone' && 'gap-6')}>
+          <div class={css({ width: '400px' }, node.attrs.layout === 'standalone' && { gap: '24px' })}>
             <Display deletable {node} {updateAttributes} />
           </div>
         </div>
@@ -331,24 +351,62 @@
 
       <button
         bind:this={onboardingAnchorElements[1]}
-        class="px-2 py-1.5 text-gray-400 border-(1 gray-200 b-none) rounded-t bg-white leading-0 shrink self-end m-r-4 z-1"
+        class={css({
+          zIndex: '1',
+          flexShrink: '1',
+          alignSelf: 'flex-end',
+          borderWidth: '1px',
+          borderBottomStyle: 'none',
+          borderColor: 'gray.200',
+          borderTopRadius: '4px',
+          marginRight: '16px',
+          paddingX: '8px',
+          paddingY: '6px',
+          color: 'gray.400',
+          backgroundColor: 'white',
+        })}
         type="button"
         on:click={() => {
           imageListOpen = true;
         }}
       >
-        <Icon class="square-3.5" icon={IconLayoutGrid} />
-        <span class="text-11-sb ml-1.5">전체목록</span>
+        <Icon style={css.raw({ size: '14px' })} icon={IconLayoutGrid} />
+        <span class={css({ marginLeft: '6px', fontSize: '11px', fontWeight: 'semibold' })}>전체목록</span>
       </button>
-      <div class="h-104px border-t border-gray-200 flex px-6 relative">
+      <div
+        class={flex({
+          position: 'relative',
+          borderTopWidth: '1px',
+          borderColor: 'gray.200',
+          paddingX: '24px',
+          height: '104px',
+        })}
+      >
         <ul
           bind:this={sortableContainer}
-          class="flex grow gap-1 overflow-x-auto overflow-y-hidden py-3.5 px-2.5 images"
+          class={flex({
+            flexGrow: '1',
+            gap: '4px',
+            paddingX: '10px',
+            paddingY: '14px',
+            overflowX: 'auto',
+            overflowY: 'hidden',
+          })}
         >
           {#each node.attrs.__data as image, index (image.id)}
-            <li class="flex-none relative image" data-id={image.id}>
+            <li class={cx('image', css({ position: 'relative', flex: 'none' }))} data-id={image.id}>
               <button
-                class="relative p-1 flex flex-col gap-1 flex-none rounded hover:bg-gray-200 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!) [&>div]:aria-pressed:(flex center)"
+                class={flex({
+                  'position': 'relative',
+                  'flex': 'none',
+                  'flexDirection': 'column',
+                  'gap': '4px',
+                  'borderRadius': '4px',
+                  'padding': '4px',
+                  '_hover': { backgroundColor: 'gray.200' },
+                  '_pressed': { ringWidth: '[1.5px]', ringColor: 'teal.500', backgroundColor: 'teal.50' },
+                  '& > div': { _pressed: { display: 'flex', alignItems: 'center', justifyContent: 'center' } },
+                })}
                 aria-pressed={selectedImages.includes(image.id)}
                 type="button"
                 on:click={() => {
@@ -357,41 +415,79 @@
                     : [...selectedImages, image.id];
                 }}
               >
-                <IsomorphicImage class="square-12 rounded-0.1875rem object-cover" {image} />
-                <div class="absolute left-1 top-1 bg-black/30 square-12 rounded-0.1875rem hidden">
+                <IsomorphicImage style={css.raw({ borderRadius: '3px', size: '48px', objectFit: 'cover' })} {image} />
+                <div
+                  class={css({
+                    position: 'absolute',
+                    top: '4px',
+                    left: '4px',
+                    display: 'none',
+                    borderRadius: '[3px]',
+                    backgroundColor: '[black/30]',
+                    size: '48px',
+                  })}
+                >
                   <button type="button" on:click={() => removeImage(image.id)}>
-                    <Icon class="square-4.5 text-white" icon={IconTrash} />
+                    <Icon style={css.raw({ color: 'white', size: '18px' })} icon={IconTrash} />
                   </button>
                 </div>
-
-                <p class="text-10-r text-gray-400 text-center w-full">{index + 1}</p>
+                <p class={css({ fontSize: '10px', color: 'gray.400', textAlign: 'center', width: 'full' })}>
+                  {index + 1}
+                </p>
               </button>
               {#if index === 0}
-                <div bind:this={onboardingAnchorElements[0]} class="absolute inset-0 z--1" />
+                <div
+                  bind:this={onboardingAnchorElements[0]}
+                  class={css({ position: 'absolute', inset: '0', zIndex: '[-1]' })}
+                />
               {/if}
             </li>
           {/each}
 
           <li class="prevent-dragging">
-            <button class="p-1 flex flex-col gap-1 rounded" type="button" on:click={handleInsertImage}>
-              <div class="bg-gray-100 square-12 rounded-0.1875rem flex center">
-                <Icon class="square-4 text-gray-400" icon={IconPlus} />
+            <button
+              class={flex({ flexDirection: 'column', gap: '4px', borderRadius: '4px', padding: '4px' })}
+              type="button"
+              on:click={handleInsertImage}
+            >
+              <div class={center({ borderRadius: '3px', backgroundColor: 'gray.100', size: '48px' })}>
+                <Icon style={css.raw({ color: 'gray.400', size: '16px' })} icon={IconPlus} />
               </div>
 
-              <p class="text-10-r text-gray-400 text-center w-full">이미지 추가</p>
+              <p class={css({ fontSize: '10px', color: 'gray.400', textAlign: 'center', width: 'full' })}>
+                이미지 추가
+              </p>
             </button>
           </li>
         </ul>
       </div>
     </div>
 
-    <div class="w-37.5 flex-none py-5 pl-5 pr-6 border-l border-gray-200 space-y-4">
+    <div
+      class={flex({
+        flexDirection: 'column',
+        flex: 'none',
+        gap: '16px',
+        borderLeftWidth: '1px',
+        borderColor: 'gray.200',
+        paddingY: '20px',
+        paddingLeft: '20px',
+        paddingRight: '24px',
+        width: '150px',
+      })}
+    >
       <div>
-        <p class="text-13-m mb-2.5">레이아웃</p>
+        <p class={css({ marginBottom: '10px', fontSize: '13px', fontWeight: 'medium' })}>레이아웃</p>
 
         <RadioGroup
           name="layout"
-          class="grid! grid-cols-2 grid-rows-2 border-b border-gray-100 pb-4"
+          style={grid.raw({
+            gridTemplateColumns: '2',
+            gridTemplateRows: '2',
+            borderBottomWidth: '1px',
+            borderColor: 'gray.100',
+            paddingBottom: '16px',
+          })}
           items={[
             {
               label: '개별',
@@ -415,11 +511,11 @@
 
       {#if node.attrs.layout === 'grid'}
         <div>
-          <p class="text-13-m mb-2.5">열</p>
+          <p class={css({ marginBottom: '10px', fontSize: '13px', fontWeight: 'medium' })}>열</p>
 
           <RadioGroup
             name="column"
-            class="border-b border-gray-100 pb-4 gap-2!"
+            style={css.raw({ gap: '8px', borderBottomWidth: '1px', borderColor: 'gray.100', paddingBottom: '16px' })}
             items={[
               {
                 label: '2열',
@@ -438,11 +534,11 @@
 
       {#if node.attrs.layout === 'slide'}
         <div>
-          <p class="text-13-m mb-2.5">보기</p>
+          <p class={css({ marginBottom: '10px', fontSize: '13px', fontWeight: 'medium' })}>보기</p>
 
           <RadioGroup
             name="view"
-            class="border-b border-gray-100 pb-4 gap-2!"
+            style={css.raw({ gap: '8px', borderBottomWidth: '1px', borderColor: 'gray.100', paddingBottom: '16px' })}
             items={[
               {
                 label: '한 쪽 보기',
@@ -461,7 +557,7 @@
 
       {#if node.attrs.layout !== 'standalone'}
         <div>
-          <p class="text-13-m mb-2.5">간격 설정</p>
+          <p class={css({ marginBottom: '10px', fontSize: '13px', fontWeight: 'medium' })}>간격 설정</p>
 
           <Switch
             name="space"
@@ -474,31 +570,51 @@
   </div>
 
   <svelte:fragment slot="action">
-    <Button class="w-95px" size="lg" on:click={() => (open = false)}>닫기</Button>
+    <Button style={css.raw({ width: '95px' })} size="lg" on:click={() => (open = false)}>닫기</Button>
   </svelte:fragment>
 </Modal>
 
 <Modal bind:open={imageListOpen}>
   <svelte:fragment slot="title">
-    <button class="mr-1" type="button" on:click={() => (imageListOpen = false)}>
-      <Icon class="block square-6" icon={IconChevronLeft} />
+    <button class={css({ marginRight: '4px' })} type="button" on:click={() => (imageListOpen = false)}>
+      <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />
     </button>
     전체목록
     <Tooltip
-      class="flex center ml-1"
+      style={center.raw({ marginLeft: '4px' })}
       message="원하는 순서에 이미지를 드래그해서 놓으면 순서를 변경할 수 있어요"
       offset={10}
       placement="bottom-start"
     >
-      <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
+      <Icon style={css.raw({ color: 'gray.400', size: '14px' })} icon={IconAlertCircle} />
     </Tooltip>
   </svelte:fragment>
 
   <div>
-    <div class="py-3 px-6 flex items-center justify-between border-b border-gray-200">
-      <div class="flex">
+    <div
+      class={flex({
+        align: 'center',
+        justify: 'space-between',
+        borderBottomWidth: '1px',
+        borderColor: 'gray.200',
+        paddingX: '24px',
+        paddingY: '12px',
+      })}
+    >
+      <div class={css({ display: 'flex' })}>
         <Checkbox
-          class="text-14-r gap-2 after:(content-[''] block h-3 w-1px bg-gray-200 ml-1)"
+          style={css.raw({
+            gap: '8px',
+            fontSize: '14px',
+            _after: {
+              content: "''",
+              display: 'block',
+              marginLeft: '4px',
+              backgroundColor: 'gray.200',
+              height: '12px',
+              width: '1px',
+            },
+          })}
           checked={allSelected}
           disabled={node.attrs.__data.length === 0}
           on:change={() => {
@@ -508,43 +624,70 @@
         >
           전체선택
         </Checkbox>
-        <button class="text-14-r text-error-900 px-3" type="button" on:click={() => removeImages(selectedImages)}>
+        <button
+          class={css({ paddingX: '12px', fontSize: '14px', color: '[#DC2626]' })}
+          type="button"
+          on:click={() => removeImages(selectedImages)}
+        >
           삭제
         </button>
       </div>
 
       <div>
         <button
-          class="p-1 rounded aria-pressed:bg-gray-200"
+          class={css({ padding: '4px', borderRadius: '4px', _pressed: { backgroundColor: 'gray.200' } })}
           aria-pressed={view === 'grid'}
           type="button"
           on:click={() => (view = 'grid')}
         >
-          <Icon class="block square-5 text-gray-400" icon={IconLayoutGrid} />
+          <Icon style={css.raw({ color: 'gray.400', size: '20px' })} icon={IconLayoutGrid} />
         </button>
 
         <button
-          class="p-1 rounded aria-pressed:bg-gray-200"
+          class={css({ padding: '4px', borderRadius: '4px', _pressed: { backgroundColor: 'gray.200' } })}
           aria-pressed={view === 'list'}
           type="button"
           on:click={() => (view = 'list')}
         >
-          <Icon class="block square-5 text-gray-400" icon={IconList} />
+          <Icon style={css.raw({ color: 'gray.400', size: '20px' })} icon={IconList} />
         </button>
       </div>
     </div>
 
     <div
       bind:this={sortableGallery}
-      class={clsx(
-        'flex flex-wrap gap-2 content-start px-6 pt-6 pb-8 h-460px overflow-y-auto',
-        view === 'list' && 'gap-2.5',
+      class={css(
+        {
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignContent: 'flex-start',
+          gap: '8px',
+          paddingTop: '24px',
+          paddingBottom: '32px',
+          paddingX: '24px',
+          height: '460px',
+          overflowY: 'auto',
+        },
+        view === 'list' && { gap: '10px' },
       )}
     >
       {#each node.attrs.__data as image, index (image.id)}
         {#if view === 'grid'}
           <button
-            class="relative p-1.5 flex flex-col flex-none gap-1.5 h-127px rounded hover:bg-gray-100 aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!) image"
+            class={cx(
+              'image',
+              flex({
+                position: 'relative',
+                flexDirection: 'column',
+                flex: 'none',
+                gap: '6px',
+                borderRadius: '4px',
+                padding: '6px',
+                height: '127px',
+                _hover: { backgroundColor: 'gray.100' },
+                _pressed: { ringWidth: '[1.5px]', ringColor: 'teal.500', backgroundColor: 'teal.50' },
+              }),
+            )}
             aria-pressed={selectedImages.includes(image.id)}
             data-id={image.id}
             type="button"
@@ -554,17 +697,34 @@
                 : [...selectedImages, image.id];
             }}
           >
-            <IsomorphicImage class="square-23 rounded-0.3125rem object-cover" {image} />
-
-            <p class="text-12-r text-gray-400 text-center w-full">{index + 1}</p>
+            <IsomorphicImage style={css.raw({ borderRadius: '5px', size: '92px', objectFit: 'cover' })} {image} />
+            <p class={css({ fontSize: '12px', color: 'gray.400', textAlign: 'center', width: 'full' })}>{index + 1}</p>
 
             {#if index === 0}
-              <div id={onboardingAnchorLastDynamicId} class="absolute inset-0 z--1" />
+              <div
+                id={onboardingAnchorLastDynamicId}
+                class={css({ position: 'absolute', inset: '0', zIndex: '[-1]' })}
+              />
             {/if}
           </button>
         {:else}
           <button
-            class="relative py-2.5 px-6 rounded border border-gray-200 bg-white flex items-center w-full h-68px aria-pressed:(ring-1.5 ring-teal-500 bg-teal-50!) image"
+            class={cx(
+              'image',
+              flex({
+                position: 'relative',
+                align: 'center',
+                borderWidth: '1px',
+                borderColor: 'gray.200',
+                borderRadius: '4px',
+                paddingX: '24px',
+                paddingY: '10px',
+                backgroundColor: { base: 'white', _hover: 'gray.100' },
+                height: '68px',
+                width: 'full',
+                _pressed: { ringWidth: '[1.5px]', ringColor: 'teal.500', backgroundColor: 'teal.50' },
+              }),
+            )}
             aria-pressed={selectedImages.includes(image.id)}
             data-id={image.id}
             type="button"
@@ -574,39 +734,80 @@
                 : [...selectedImages, image.id];
             }}
           >
-            <span class="text-14-r text-gray-400 w-26px mr-3 text-center">{index + 1}</span>
-            <IsomorphicImage class="square-12 rounded-md object-cover mr-4" {image} />
-            <p class="grow text-14-r">{image.kind === 'data' ? image.__data.name : image.__file.name}</p>
+            <span
+              class={css({
+                marginRight: '12px',
+                fontSize: '14px',
+                color: 'gray.400',
+                textAlign: 'center',
+                width: '26px',
+              })}
+            >
+              {index + 1}
+            </span>
+            <IsomorphicImage
+              style={css.raw({ marginRight: '16px', borderRadius: '6px', size: '48px', objectFit: 'cover' })}
+              {image}
+            />
+            <p class={css({ flexGrow: '1', fontSize: '14px' })}>
+              {image.kind === 'data' ? image.__data.name : image.__file.name}
+            </p>
 
-            <button class="p-1" type="button">
-              <Icon class="block square-6 text-gray-600" icon={IconGripVertical} />
+            <button class={css({ padding: '4px' })} type="button">
+              <Icon style={css.raw({ color: 'gray.600', size: '24px' })} icon={IconGripVertical} />
             </button>
             {#if index === 0}
-              <div id={onboardingAnchorLastDynamicId} class="absolute inset-0 z--1" />
+              <div
+                id={onboardingAnchorLastDynamicId}
+                class={css({ position: 'absolute', inset: '0', zIndex: '[-1]' })}
+              />
             {/if}
           </button>
         {/if}
       {/each}
       {#if view === 'grid'}
         <button
-          class="p-1.5 flex flex-col gap-1.5 rounded h-127px prevent-dragging"
+          class={cx(
+            'prevent-dragging',
+            flex({
+              flexDirection: 'column',
+              gap: '6px',
+              borderRadius: '4px',
+              padding: '6px',
+              height: '127px',
+            }),
+          )}
           type="button"
           on:click={handleInsertImage}
         >
-          <div class="bg-gray-100 square-23 rounded-0.3125rem flex center">
-            <Icon class="block square-5 text-gray-400 stroke-2" icon={IconPlus} />
+          <div class={center({ borderRadius: '5px', backgroundColor: 'gray.100', size: '92px' })}>
+            <Icon style={css.raw({ color: 'gray.400', size: '20px', strokeWidth: '2px' })} icon={IconPlus} />
           </div>
 
-          <p class="text-12-r text-gray-400 text-center w-full">이미지 추가</p>
+          <p class={css({ fontSize: '12px', color: 'gray.400', textAlign: 'center', width: 'full' })}>이미지 추가</p>
         </button>
       {:else}
         <button
-          class="py-6 px-5 rounded border border-gray-200 flex items-center w-full text-gray-400 bg-gray-100 h-68px prevent-dragging"
+          class={cx(
+            'prevent-dragging',
+            flex({
+              align: 'center',
+              borderWidth: '1px',
+              borderColor: 'gray.200',
+              borderRadius: '4px',
+              paddingX: '20px',
+              paddingY: '24px',
+              color: 'gray.400',
+              backgroundColor: 'gray.100',
+              width: 'full',
+              height: '68px',
+            }),
+          )}
           type="button"
           on:click={handleInsertImage}
         >
-          <Icon class="block square-5 mr-1" icon={IconPlus} />
-          <span class="text-14-m">이미지 추가</span>
+          <Icon style={css.raw({ marginRight: '4px', size: '20px' })} icon={IconPlus} />
+          <span class={css({ fontSize: '14px', fontWeight: 'medium' })}>이미지 추가</span>
         </button>
       {/if}
     </div>
@@ -614,15 +815,17 @@
 
   <svelte:fragment slot="action">
     {#if selectedImages.length > 0}
-      <p class="text-14-r grow">
+      <p class={css({ flexGrow: '1', fontSize: '14px' })}>
         이미지 {selectedImageName}
         {#if selectedImages.length > 1}
-          외 <mark class="text-teal-500">{selectedImages.length - 1}개</mark>
+          외 <mark class={css({ color: 'teal.500' })}>{selectedImages.length - 1}개</mark>
         {/if}
         선택됨
       </p>
     {/if}
 
-    <Button class="w-95px" size="lg" variant="outline" on:click={() => (imageListOpen = false)}>확인</Button>
+    <Button style={css.raw({ width: '95px' })} size="lg" variant="outline" on:click={() => (imageListOpen = false)}>
+      확인
+    </Button>
   </svelte:fragment>
 </Modal>

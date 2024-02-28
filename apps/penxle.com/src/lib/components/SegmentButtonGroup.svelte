@@ -1,22 +1,40 @@
 <script lang="ts">
-  import clsx from 'clsx';
-
-  const firstChild = ['[&>*:first-child]:(rounded-r-none)', '[&>*:first-child:not(:has(:checked))]:(border-r-none)'];
-  const notFirstOrLastChild = '[&>*:not(:first-child,:last-child)]:rounded-(l-none r-none)';
-  const resetBorder = '[&>*:not(:first-child,:last-child,:has(:checked))]:border-r-none';
-  const resetSelectedChildNextSibling = '[&>*:has(:checked)+*]:border-l-none';
-  const lastChild = '[&>*:last-child]:rounded-l-none';
+  import { css } from '$styled-system/css';
 </script>
 
 <div
-  class={clsx(
-    'flex [&>*]:flex-1',
-    firstChild,
-    notFirstOrLastChild,
-    resetBorder,
-    resetSelectedChildNextSibling,
-    lastChild,
-  )}
+  class={css({
+    'display': 'flex',
+
+    '& > *': {
+      flex: '1',
+    },
+
+    '& > *:first-child': {
+      'borderRightRadius': '0',
+
+      '&:not(:has(:checked))': {
+        borderRightWidth: '0',
+      },
+    },
+
+    '& > *:not(:first-child, :last-child)': {
+      borderLeftRadius: '0',
+      borderRightRadius: '0',
+    },
+
+    '& > *:not(:first-child, :last-child, :has(:checked))': {
+      borderRightWidth: '0',
+    },
+
+    '& > *:has(:checked) + *': {
+      borderLeftWidth: '0',
+    },
+
+    '& > *:last-child': {
+      borderLeftRadius: '0',
+    },
+  })}
   role="group"
 >
   <slot />

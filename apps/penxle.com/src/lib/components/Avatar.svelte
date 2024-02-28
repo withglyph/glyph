@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { clsx } from 'clsx';
   import { fragment, graphql } from '$glitch';
+  import { css } from '$styled-system/css';
   import Image from './Image.svelte';
   import type { Avatar_profile } from '$glitch';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   let _profile: Avatar_profile;
-  let _class: string | undefined = undefined;
-  export { _profile as $profile, _class as class };
+  export { _profile as $profile };
+  export let style: SystemStyleObject | undefined = undefined;
 
   $: profile = fragment(
     _profile,
@@ -23,4 +24,4 @@
   );
 </script>
 
-<Image class={clsx('rounded-full', _class)} $image={$profile.avatar} />
+<Image style={css.raw({ borderRadius: 'full' }, style)} $image={$profile.avatar} />

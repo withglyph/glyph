@@ -1,12 +1,12 @@
 <script lang="ts">
   import dayjs from 'dayjs';
-  import IconClockHour4 from '~icons/tabler/clock-hour-4';
   import IconEye from '~icons/tabler/eye';
   import IconHeart from '~icons/tabler/heart';
   import { fragment, graphql } from '$glitch';
   import { Avatar, Icon } from '$lib/components';
   import Image from '$lib/components/Image.svelte';
-  import { calcurateReadingTime, humanizeNumber } from '$lib/utils';
+  import { humanizeNumber } from '$lib/utils';
+  import { css } from '$styled-system/css';
   import type { Feed_PostCard_post } from '$glitch';
 
   let _post: Feed_PostCard_post;
@@ -70,77 +70,159 @@
   );
 </script>
 
-<a class="flex gap-32px min-h-150px" href={`/${$post.space.slug}/${$post.permalink}`}>
-  <div class="flex flex-col grow">
-    <div class="flex items-center gap-12px">
-      <div class="relative flex-none">
-        <Image class="flex-none square-24px rounded-4px border" $image={$post.space.icon} />
+<a class={css({ display: 'flex', gap: '32px', minHeight: '150px' })} href={`/${$post.space.slug}/${$post.permalink}`}>
+  <div class={css({ display: 'flex', flexDirection: 'column', flexGrow: '1' })}>
+    <div class={css({ display: 'flex', alignItems: 'center', gap: '12px' })}>
+      <div class={css({ position: 'relative', flex: 'none' })}>
+        <Image
+          style={css.raw({
+            flex: 'none',
+            size: '24px',
+            borderWidth: '1px',
+            borderColor: 'gray.200',
+            borderRadius: '4px',
+          })}
+          $image={$post.space.icon}
+        />
         <Avatar
-          class="flex-none square-16px absolute border border-white -right-4px -bottom-4px"
+          style={css.raw({
+            position: 'absolute',
+            flex: 'none',
+            right: '-4px',
+            bottom: '-4px',
+            size: '16px',
+            borderWidth: '1px',
+            borderColor: 'white',
+          })}
           $profile={$post.member.profile}
         />
       </div>
 
-      <div class="text-12-m text-gray-500 break-all line-clamp-1">
+      <div
+        class={css({
+          fontSize: '12px',
+          fontWeight: 'medium',
+          color: 'gray.500',
+          wordBreak: 'break-all',
+          lineClamp: '1',
+        })}
+      >
         {$post.space.name} · {$post.member.profile.name}
       </div>
 
-      <div class="w-1px h-12px bg-gray-200" />
+      <div class={css({ width: '1px', height: '12px', backgroundColor: 'gray.200' })} />
 
-      <div class="flex-none text-12-m text-gray-400 <sm:hidden">
+      <div class={css({ flex: 'none', fontSize: '12px', fontWeight: 'medium', color: 'gray.400', hideBelow: 'sm' })}>
         {dayjs($post.publishedAt).fromNow()}
       </div>
 
-      <div class="flex flex-none grow justify-end gap-8px text-12-m text-gray-400">
+      <div
+        class={css({
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: '8px',
+          flex: 'none',
+          flexGrow: 1,
+          fontSize: '12px',
+          fontWeight: 'medium',
+          color: 'gray.400',
+        })}
+      >
         {#if $post.viewCount > 0 && $post.discloseStats}
-          <div class="flex items-center gap-2px">
-            <Icon class="square-14px" icon={IconEye} />
+          <div class={css({ display: 'flex', alignItems: 'center', gap: '2px' })}>
+            <Icon style={css.raw({ size: '14px' })} icon={IconEye} />
             {humanizeNumber($post.viewCount)}
           </div>
         {/if}
 
         {#if $post.likeCount > 0 && $post.discloseStats}
-          <div class="flex items-center gap-2px">
-            <Icon class="square-14px" icon={IconHeart} />
+          <div class={css({ display: 'flex', alignItems: 'center', gap: '2px' })}>
+            <Icon style={css.raw({ size: '14px' })} icon={IconHeart} />
             {humanizeNumber($post.likeCount)}
           </div>
         {/if}
 
-        {#if $post.publishedRevision.characterCount > 0}
-          <div class="flex items-center gap-2px <sm:hidden">
-            <Icon class="square-14px" icon={IconClockHour4} />
-            {calcurateReadingTime($post.publishedRevision.characterCount)}분
+        {#if $post.ageRating === 'R15'}
+          <div
+            class={css({
+              paddingX: '8px',
+              paddingY: '2px',
+              borderRadius: '4px',
+              color: 'red.500',
+              backgroundColor: 'red.200',
+            })}
+          >
+            15세
           </div>
         {/if}
 
-        {#if $post.ageRating === 'R15'}
-          <div class="bg-red-20 text-red-50 rounded-4px px-8px py-2px">15세</div>
-        {/if}
-
         {#if $post.ageRating === 'R19'}
-          <div class="bg-red-20 text-red-50 rounded-4px px-8px py-2px">성인</div>
+          <div
+            class={css({
+              paddingX: '8px',
+              paddingY: '2px',
+              borderRadius: '4px',
+              color: 'red.500',
+              backgroundColor: 'red.200',
+            })}
+          >
+            성인
+          </div>
         {/if}
       </div>
     </div>
 
-    <div class="flex flex-col mt-12px">
-      <div class="text-18-b break-all leading-none line-clamp-1">
+    <div class={css({ display: 'flex', flexDirection: 'column', marginTop: '12px' })}>
+      <div
+        class={css({ fontSize: '18px', fontWeight: 'bold', lineHeight: '[1]', wordBreak: 'break-all', lineClamp: '1' })}
+      >
         {$post.publishedRevision.title ?? '(제목 없음)'}
       </div>
       {#if $post.publishedRevision.subtitle}
-        <div class="text-14-m text-gray-500 mt-8px leading-none break-all line-clamp-1">
+        <div
+          class={css({
+            marginTop: '8px',
+            fontSize: '14px',
+            fontWeight: 'medium',
+            color: 'gray.500',
+            lineHeight: '[1]',
+            wordBreak: 'break-all',
+            lineClamp: '1',
+          })}
+        >
           {$post.publishedRevision.subtitle}
         </div>
       {/if}
-      <div class="text-14-r text-gray-700 mt-12px break-words line-clamp-2 break-all">
+      <div
+        class={css({ marginTop: '12px', fontSize: '14px', color: 'gray.700', wordBreak: 'break-all', lineClamp: '2' })}
+      >
         {$post.publishedRevision.previewText}
       </div>
     </div>
 
     {#if $post.tags.length > 0}
-      <div class="flex flex-wrap items-start gap-8px mt-32px h-25px overflow-hidden">
+      <div
+        class={css({
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: '8px',
+          flexWrap: 'wrap',
+          marginTop: '32px',
+          height: '25px',
+          overflow: 'hidden',
+        })}
+      >
         {#each $post.tags as { tag } (tag.id)}
-          <div class="text-11-r text-gray-700 bg-gray-100 px-12px py-4px rounded-30px">
+          <div
+            class={css({
+              borderRadius: 'full',
+              paddingX: '12px',
+              paddingY: '4px',
+              fontSize: '11px',
+              color: 'gray.700',
+              backgroundColor: 'gray.100',
+            })}
+          >
             #{tag.name}
           </div>
         {/each}
@@ -149,8 +231,8 @@
   </div>
 
   {#if $post.thumbnail}
-    <div class="flex-none square-100px rounded-8px overflow-hidden">
-      <Image class="square-full group-hover:scale-110 transition" $image={$post.thumbnail} />
+    <div class={css({ flex: 'none', borderRadius: '8px', size: '100px', overflow: 'hidden' })}>
+      <Image style={css.raw({ size: 'full' })} $image={$post.thumbnail} />
     </div>
   {/if}
 </a>

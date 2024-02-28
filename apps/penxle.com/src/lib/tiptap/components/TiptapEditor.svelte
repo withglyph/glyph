@@ -3,12 +3,12 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import { dev } from '$app/environment';
   import { extensions } from '$lib/tiptap';
+  import { css, cx } from '$styled-system/css';
   import type { JSONContent } from '@tiptap/core';
+  import type { SystemStyleObject } from '$styled-system/types';
   import type { TiptapContentOptions } from '../types';
 
-  let _class: string;
-  export { _class as class };
-
+  export let style: SystemStyleObject | undefined = undefined;
   export let content: JSONContent | undefined = undefined;
   export let options: TiptapContentOptions;
 
@@ -25,7 +25,7 @@
       extensions,
       injectCSS: false,
       editorProps: {
-        attributes: { class: _class },
+        attributes: { class: css(style) },
         scrollMargin: { top: 150, bottom: 50, left: 0, right: 0 },
         scrollThreshold: { top: 150, bottom: 50, left: 0, right: 0 },
         // handleKeyDown: (_, event) => {
@@ -54,7 +54,7 @@
 
 <div
   bind:this={element}
-  class="tiptap tiptap-editor contents whitespace-pre-wrap break-all"
+  class={cx('tiptap tiptap-editor', css({ display: 'contents', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }))}
   autocapitalize="off"
   autocorrect="off"
   data-indent={options.paragraphIndent}
@@ -64,7 +64,23 @@
 
 {#if dev}
   <div
-    class="fixed top-0 right-0 z-100 opacity-50 pointer-events-none p-4 bg-gray-5 w-20vw font-mono whitespace-pre-wrap break-all text-xs h-screen overflow-scroll"
+    class={css({
+      position: 'fixed',
+      top: '0',
+      right: '0',
+      padding: '16px',
+      width: '[20vw]',
+      height: 'screen',
+      fontFamily: '[PNXL_FiraCode]',
+      fontSize: '12px',
+      whiteSpace: 'pre-wrap',
+      wordBreak: 'break-all',
+      backgroundColor: 'gray.50',
+      opacity: '[0.5]',
+      overflow: 'scroll',
+      pointerEvents: 'none',
+      zIndex: '50',
+    })}
   >
     {JSON.stringify(content, null, 2)}
   </div>

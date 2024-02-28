@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button, Image, Modal } from '$lib/components';
@@ -8,6 +7,8 @@
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { UpdateSpaceProfileSchema } from '$lib/validations';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import type { SpaceDashboardLayout_UpdateSpaceProfileModal_query } from '$glitch';
 
   let _query: SpaceDashboardLayout_UpdateSpaceProfileModal_query;
@@ -106,28 +107,39 @@
   <svelte:fragment slot="subtitle">스페이스에서만 보여질 프로필을 설정해요</svelte:fragment>
 
   <form use:form>
-    <Switch class="flex items-center justify-between mb-4" bind:checked={useSpaceProfile}>
-      <span class="body-16-b">스페이스 전용 프로필</span>
+    <Switch
+      style={flex.raw({ justify: 'space-between', align: 'center', marginBottom: '16px' })}
+      bind:checked={useSpaceProfile}
+    >
+      <span class={css({ fontWeight: 'bold' })}>스페이스 전용 프로필</span>
     </Switch>
 
-    <div class={clsx('flex gap-3 w-full', !useSpaceProfile && 'hidden!')}>
+    <div class={css({ display: 'flex', gap: '12px', width: 'full' }, !useSpaceProfile && { display: 'none' })}>
       <button
-        class="bg-primary square-19.25 rounded-xl flex center overflow-hidden shrink-0"
+        class={center({
+          flex: 'none',
+          borderRadius: '12px',
+          size: '77px',
+          backgroundColor: 'gray.50',
+          overflow: 'hidden',
+        })}
         type="button"
         on:click={() => thumbnailPicker.show()}
       >
-        <Image class="square-full" $image={avatar} />
+        <Image style={css.raw({ size: 'full' })} $image={avatar} />
       </button>
 
-      <FormField name="profileName" class="grow" label="닉네임">
+      <FormField name="profileName" style={css.raw({ flexGrow: '1' })} label="닉네임">
         <TextInput maxlength={20} placeholder="닉네임 입력">
-          <span slot="right-icon" class="body-14-m text-disabled">{$data.profileName?.length ?? 0} / 20</span>
+          <span slot="right-icon" class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.500' })}>
+            {$data.profileName?.length ?? 0}/20
+          </span>
         </TextInput>
       </FormField>
     </div>
 
     <Button
-      class="mt-4 w-full"
+      style={css.raw({ marginTop: '16px', width: 'full' })}
       size="xl"
       on:click={async () => {
         if (useSpaceProfile) {
