@@ -12,6 +12,11 @@
         slug
         name
 
+        myMasquerade {
+          id
+          blocked
+        }
+
         collections {
           id
           name
@@ -40,10 +45,14 @@
 <div
   class={clsx(
     'min-h-11rem w-full max-w-50rem flex flex-col grow gap-xs <sm:(p-0 gap-2 bg-surface-primary) sm:py-4',
-    $query.space.collections.length === 0 && 'center',
+    ($query.space.collections.length === 0 || $query.space.myMasquerade?.blocked) && 'center gap-0!',
   )}
 >
-  {#if $query.space.collections.length > 0}
+  {#if $query.space.myMasquerade?.blocked}
+    <i class="i-tb-alert-triangle square-7" />
+    <p class="text-18-sb mt-1 mb-0.5">차단당했습니다</p>
+    <p class="text-14-r text-gray-500">{$query.space.name}의 게시물을 볼 수 없어요</p>
+  {:else if $query.space.collections.length > 0}
     <ul class="space-y-1">
       {#each $query.space.collections as collection (collection.id)}
         <li>

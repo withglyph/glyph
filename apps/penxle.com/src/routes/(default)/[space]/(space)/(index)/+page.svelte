@@ -14,6 +14,11 @@
         slug
         description
 
+        myMasquerade {
+          id
+          blocked
+        }
+
         icon {
           id
           url
@@ -51,10 +56,14 @@
 <article
   class={clsx(
     'w-full min-h-11rem max-w-50rem flex flex-col items-center py-6.5 grow <sm:(p-0 gap-2 bg-surface-primary)',
-    $query.space.posts.length === 0 && 'center',
+    ($query.space.posts.length === 0 || $query.space.myMasquerade?.blocked) && 'center gap-0!',
   )}
 >
-  {#if $query.space.posts.length === 0}
+  {#if $query.space.myMasquerade?.blocked}
+    <i class="i-tb-alert-triangle square-7" />
+    <p class="text-18-sb mt-1 mb-0.5">차단당했습니다</p>
+    <p class="text-14-r text-gray-500">{$query.space.name}의 게시물을 볼 수 없어요</p>
+  {:else if $query.space.posts.length === 0}
     <div class="flex flex-col center">
       <h2 class="body-15-b text-secondary">아직 스페이스에 업로드된 포스트가 없어요</h2>
       {#if $query.space.meAsMember}
