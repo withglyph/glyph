@@ -75,10 +75,7 @@
 </script>
 
 <form
-  class={clsx(
-    'px-5 pt-5 pb-4',
-    parentId ? 'border-t border-gray-100 bg-gray-50 <sm:-mx-5' : 'border border-gray-200 rounded-2.5',
-  )}
+  class={clsx('px-5 py-4 <sm:-mx-5', parentId && 'border-t border-gray-100 bg-gray-50')}
   on:submit|preventDefault={async () => {
     if (commentId) {
       await updateComment({
@@ -116,19 +113,20 @@
     }
   }}
 >
-  <div class="flex gap-2.5">
+  <div class="flex gap-1">
     {#if parentId}
-      <i class="i-px2-reply-bar square-5 text-gray-400" />
+      <i class="i-px2-reply-bar square-3.5 text-gray-500" />
     {/if}
 
-    <label
-      class={clsx(
-        'w-full min-h-80px rounded-1.5 bg-white focus-within:(ring-1.5 ring-teal-500) p-4 <sm:p-2.5',
-        parentId && 'ring-1.5 ring-gray-200',
-      )}
-    >
-      <p class="flex items-center gap-0.5">
-        <span class="text-11-r text-gray-400">{$post.space.commentProfile?.name ?? ''}</span>
+    <div class="w-full">
+      <p class="flex items-center gap-0.5 mb-2">
+        {#if $post.space.meAsMember}
+          <span class="py-1 px-2.5 rounded bg-gray-400 text-11-sb text-white">
+            {$post.space.commentProfile?.name ?? ''}
+          </span>
+        {:else}
+          <span class="text-14-m">{$post.space.commentProfile?.name ?? ''}</span>
+        {/if}
         {#if !$post.space?.meAsMember && $query.me}
           <Tooltip
             enabled={!$post.space?.meAsMember}
@@ -142,8 +140,10 @@
       </p>
 
       <textarea
-        class="text-15-r resize-none w-full"
-        disabled={!$query.me || ($post.commentQualification === 'IDENTIFIED' && !$query.me.personalIdentity)}
+        class="text-14-r resize-none w-full rounded py-2.5 px-3.5 ring ring-gray-200 focus-within:ring-teal-500"
+        disabled={!$query.me ||
+          ($post.commentQualification === 'IDENTIFIED' && !$query.me.personalIdentity) ||
+          !$post.space.commentProfile}
         placeholder={$query.me
           ? $post.commentQualification === 'IDENTIFIED' && !$query.me?.personalIdentity
             ? '창작자가 본인 인증 후 댓글을 달 수 있도록 설정했어요'
@@ -153,56 +153,34 @@
           : '댓글을 작성하려면 로그인이 필요해요'}
         bind:value={content}
       />
-    </label>
+    </div>
   </div>
 
-  <div class={clsx('flex items-center justify-between pt-2', ($post.space.meAsMember || commentId) && 'justify-end!')}>
+  <div
+    class={clsx('flex items-center justify-between pt-2.5', ($post.space.meAsMember || commentId) && 'justify-end!')}
+  >
     {#if !$post.space.meAsMember && !commentId}
       <button
         class={clsx(
-          'flex items-center gap-1 text-14-r text-gray-400 py-2 px-3 rounded hover:bg-gray-100',
+          'flex items-center gap-1 text-14-r text-gray-400 p-1.5 rounded hover:bg-gray-100',
           visibility === 'PRIVATE' && 'text-teal-500',
         )}
         disabled={!$query.me || ($post.commentQualification === 'IDENTIFIED' && !$query.me?.personalIdentity)}
         type="button"
         on:click={() => (visibility = visibility === 'PUBLIC' ? 'PRIVATE' : 'PUBLIC')}
       >
-        <i class={clsx('i-tb-lock square-6 block text-gray-400', visibility === 'PRIVATE' && 'text-teal-500')} />
-        비밀글
+        <i class={clsx('i-tb-lock square-5 block text-gray-400', visibility === 'PRIVATE' && 'text-teal-500')} />
       </button>
     {/if}
 
-    {#if parentId}
-      <div class="flex gap-1.5">
-        <Button
-          class="h-44px w-94px bg-white flex center <sm:(h-34px text-12-sb w-69px)"
-          disabled={!$query.me || ($post.commentQualification === 'IDENTIFIED' && !$query.me?.personalIdentity)}
-          size="lg"
-          variant="outline"
-          on:click={() => (editing = false)}
-        >
-          취소
-        </Button>
-        <Button
-          class="h-44px w-94px flex center <sm:(h-34px text-12-sb w-69px)"
-          disabled={!$query.me || ($post.commentQualification === 'IDENTIFIED' && !$query.me?.personalIdentity)}
-          size="lg"
-          type="submit"
-          variant="secondary"
-        >
-          등록
-        </Button>
-      </div>
-    {:else}
-      <Button
-        class="h-44px w-94px flex center <sm:(h-34px text-12-sb w-69px)"
-        disabled={!$query.me || ($post.commentQualification === 'IDENTIFIED' && !$query.me?.personalIdentity)}
-        size="lg"
-        type="submit"
-        variant="outline"
-      >
-        등록
-      </Button>
-    {/if}
+    <Button
+      class="h-44px w-94px flex center <sm:(h-34px text-12-sb w-69px)"
+      disabled={!$query.me || ($post.commentQualification === 'IDENTIFIED' && !$query.me?.personalIdentity)}
+      size="lg"
+      type="submit"
+      variant="outline"
+    >
+      등록
+    </Button>
   </div>
 </form>

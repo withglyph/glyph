@@ -119,7 +119,7 @@
     }}
     use:anchor
   >
-    <i class="i-lc-smile-plus square-5" />
+    <i class="i-tb-mood-plus square-5" />
   </button>
 {:else}
   <button

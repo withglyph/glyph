@@ -862,7 +862,7 @@
     {/if}
 
     <div
-      class="sticky flex items-center justify-between -mx-5 bottom-0 grow px-5 py-3.5 bg-white border-t border-gray-200 z-1 sm:hidden"
+      class="sticky flex items-center justify-between -mx-5 bottom-0 grow px-5 py-3.5 bg-white border-t border-gray-150 z-1 sm:hidden"
     >
       <div class="flex items-center">
         {#if $query.post.commentQualification === 'NONE'}
@@ -915,12 +915,12 @@
           }}
         />
         <SharePostPopover href={shortLink}>
-          <i class="i-tb-share-2 square-5 text-gray-700 transition hover:text-teal-400" />
+          <i class="i-tb-share-2 square-5 text-gray-700 block transition hover:text-teal-400" />
         </SharePostPopover>
       </div>
     </div>
 
-    <div class="flex justify-between border-t border-gray-200 py-4.5 <sm:hidden">
+    <div class="flex justify-between border-t border-gray-150 py-4.5 <sm:hidden">
       <div class="flex items-center gap-2.5 flex-wrap">
         <Tooltip
           enabled={!$query.post.receiveFeedback}
@@ -950,7 +950,7 @@
         {/if}
       </div>
       <SharePostPopover href={shortLink}>
-        <i class="i-tb-share-2 square-5 text-gray-500 transition hover:text-teal-400" />
+        <i class="i-tb-share-2 square-5 text-gray-500 block transition hover:text-teal-400" />
       </SharePostPopover>
     </div>
 
@@ -1122,6 +1122,7 @@
           <p id="comment" class="text-18-sb text-gray-700 mb-2.5 scroll-my-61px">
             댓글 {comma($query.post.commentCount)}
           </p>
+          <hr class="bg-gray-100 my-2 h-1px border-none" />
           <CommentInput $post={$query.post} {$query} />
 
           <ul class="mt-6">

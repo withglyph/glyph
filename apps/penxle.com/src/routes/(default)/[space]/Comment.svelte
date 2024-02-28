@@ -196,13 +196,13 @@
 {:else}
   <li
     class={clsx(
-      'py-6 border-t border-gray-100 flex gap-2.5 first-of-type:border-none px-5 <sm:-mx-5',
+      'py-4 border-t border-gray-100 flex gap-1 first-of-type:border-none px-5 <sm:-mx-5',
       $postComment.pinned && 'bg-teal-50',
       parentId && 'bg-gray-50',
     )}
   >
     {#if parentId}
-      <i class="i-px2-reply-bar square-5 text-gray-400" />
+      <i class="i-px2-reply-bar square-3.5 text-gray-500" />
     {/if}
 
     <div class="grow">
@@ -213,13 +213,13 @@
         </p>
       {/if}
 
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between mb-2">
         {#if $query.post.member?.profile.id === $postComment.profile.id}
           <p class="bg-gray-400 text-white text-11-sb px-2.5 py-1 rounded">
             {$query.post.member?.profile.name}
           </p>
         {:else}
-          <p class="text-15-sb flex gap-1 items-center flex-wrap">
+          <p class="text-14-m flex gap-1 items-center flex-wrap">
             {$postComment.profile.name}
             {#if $postComment.isPurchasedUser}
               <mark class="text-12-r text-teal-500">구매자</mark>
@@ -283,18 +283,18 @@
       </div>
 
       {#if $postComment.visibility === 'PRIVATE' && $query.post.space.commentProfile?.id !== $postComment.profile.id && !$query.post.space.meAsMember}
-        <p class="text-15-r text-gray-400 mt-2 mb-1.5">비밀댓글이에요</p>
+        <p class="text-14-r text-gray-400">비밀댓글이에요</p>
       {:else}
         {#if $postComment.state === 'INACTIVE'}
-          <p class="text-15-r text-gray-400 mt-2 mb-1.5">삭제된 댓글이에요</p>
+          <p class="text-14-r text-gray-400">삭제된 댓글이에요</p>
         {:else}
-          <p class="text-15-r mt-2 mb-1.5 whitespace-pre">{$postComment.content}</p>
+          <p class="text-14-r whitespace-pre">{$postComment.content}</p>
 
-          <time class="text-11-l text-gray-400 block">{dayjs($postComment.createdAt).formatAsDateTime()}</time>
+          <time class="text-10-l text-gray-400 block">{dayjs($postComment.createdAt).formatAsDateTime()}</time>
 
-          <div class="mt-5 flex gap-1.5 items-center">
+          <div class="mt-5 flex gap-1.5 items-center h-34px">
             <button
-              class="text-gray-500 flex items-center gap-1 text-13-m m-7px"
+              class="text-gray-400 flex items-center gap-1 text-13-m m-7px"
               type="button"
               on:click={async () => {
                 if ($postComment.likedByMe) {
@@ -309,15 +309,17 @@
               {#if $postComment.likedByMe}
                 <i class="i-tb-heart-filled square-4 block text-teal-500" />
               {:else}
-                <i class="i-tb-heart square-4 block text-gray-500" />
+                <i class="i-tb-heart square-4 block text-gray-400" />
               {/if}
-              {$postComment.likeCount ?? ''}
+              {#if $postComment.likeCount > 0}
+                {$postComment.likeCount}
+              {/if}
             </button>
 
             {#if !parentId}
               <Button
                 class="bg-white/60!"
-                size="xs"
+                size="2xs"
                 variant="outline"
                 on:click={() => (replyInputOpen = !replyInputOpen)}
               >
