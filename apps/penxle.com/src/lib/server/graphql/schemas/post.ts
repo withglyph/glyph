@@ -608,10 +608,12 @@ export const postSchema = defineSchema((builder) => {
         }
       }
 
-      const spaceMasqueradeLoader = Loader.spaceMasquerade({ db, context });
-      const masquerade = await spaceMasqueradeLoader.load(post.spaceId);
-      if (masquerade?.blockedAt) {
-        return [];
+      if (post.spaceId) {
+        const spaceMasqueradeLoader = Loader.spaceMasquerade({ db, context });
+        const masquerade = await spaceMasqueradeLoader.load(post.spaceId);
+        if (masquerade?.blockedAt) {
+          return [];
+        }
       }
 
       return ['$postRevision:view'];
