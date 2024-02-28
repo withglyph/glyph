@@ -1,8 +1,10 @@
 <script lang="ts">
   import clsx from 'clsx';
   import * as R from 'radash';
+  import IconChevronDown from '~icons/tabler/chevron-down';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
+  import { Icon } from '$lib/components';
   import { Switch } from '$lib/components/forms';
   import type { MeSettingsNotificationsPage_Notification_user, UserNotificationCategory } from '$glitch';
 
@@ -59,7 +61,7 @@
         {description}
       </p>
     </div>
-    <span class={clsx('i-lc-chevron-down', open && 'transform rotate-180')} />
+    <Icon class={clsx(open && 'transform rotate-180')} icon={IconChevronDown} />
   </button>
   <div class="flex flex-col justify-center <sm:hidden">
     <div class="text-lg font-extrabold">{title}</div>

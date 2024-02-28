@@ -1,8 +1,9 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import dayjs from 'dayjs';
+  import IconAlertTriangle from '~icons/tabler/alert-triangle';
   import { graphql } from '$glitch';
-  import { Avatar, Badge } from '$lib/components';
+  import { Avatar, Badge, Icon } from '$lib/components';
 
   $: query = graphql(`
     query SpaceAboutPage_Query($slug: String!) {
@@ -40,7 +41,7 @@
 <div class="w-full max-w-200 space-y-2 <sm:bg-surface-primary grow">
   {#if $query.space.myMasquerade?.blocked}
     <div class="flex flex-col center grow min-h-11rem">
-      <i class="i-tb-alert-triangle square-7" />
+      <Icon class="square-7" icon={IconAlertTriangle} />
       <p class="text-18-sb mt-1 mb-0.5">차단당했습니다</p>
       <p class="text-14-r text-gray-500">{$query.space.name}의 게시물을 볼 수 없어요</p>
     </div>

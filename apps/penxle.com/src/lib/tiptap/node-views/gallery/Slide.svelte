@@ -1,6 +1,9 @@
 <script lang="ts">
   import clsx from 'clsx';
   import { register } from 'swiper/element/bundle';
+  import IconChevronLeft from '~icons/tabler/chevron-left';
+  import IconChevronRight from '~icons/tabler/chevron-right';
+  import { Icon } from '$lib/components';
   import IsomorphicImage from './IsomorphicImage.svelte';
   import type { SwiperContainer, SwiperSlide } from 'swiper/element-bundle';
   import type { Image_image } from '$glitch';
@@ -50,11 +53,13 @@
   <button
     bind:this={swiperPrevElem}
     class={clsx(
-      'absolute top-50% -left-40px flex center i-lc-chevron-left square-6 text-gray-500 disabled:text-gray-300! <sm:hidden',
+      'absolute top-50% -left-40px flex center text-gray-500 disabled:text-gray-300! <sm:hidden',
       isomorphicImages.length === 0 && 'hidden!',
     )}
     type="button"
-  />
+  >
+    <Icon class="square-6" icon={IconChevronLeft} />
+  </button>
   <swiper-container bind:this={swiperEl} class="square-full relative" init="false" scrollbar-hide="true">
     {#each isomorphicImages as image (image)}
       <swiper-slide bind:this={swiperSlideEl}>
@@ -75,11 +80,13 @@
   <button
     bind:this={swiperNextElem}
     class={clsx(
-      'absolute top-50% -right-40px flex center i-lc-chevron-right square-6 text-gray-500 disabled:text-gray-300 <sm:hidden',
+      'absolute top-50% -right-40px flex center text-gray-500 disabled:text-gray-300 <sm:hidden',
       isomorphicImages.length === 0 && 'hidden!',
     )}
     type="button"
-  />
+  >
+    <Icon class="square-6" icon={IconChevronRight} />
+  </button>
 
   <div
     bind:this={swiperPaginationElem}

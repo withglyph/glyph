@@ -1,9 +1,13 @@
 <script lang="ts">
   import { RingSpinner } from '@penxle/ui/spinners';
   import clsx from 'clsx';
+  import IconAlertCircle from '~icons/tabler/alert-circle';
+  import IconArrowBarToDown from '~icons/tabler/arrow-bar-to-down';
+  import IconChevronLeft from '~icons/tabler/chevron-left';
+  import IconDots from '~icons/tabler/dots';
   import { browser } from '$app/environment';
   import { graphql } from '$glitch';
-  import { Tooltip } from '$lib/components';
+  import { Icon, Tooltip } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
   import { toast } from '$lib/notification';
   import { dataurl2file } from '$lib/utils';
@@ -145,7 +149,7 @@
     type="button"
     on:click={() => (showShareTargetMenu = false)}
   >
-    <i class="i-tb-chevron-left square-6" />
+    <Icon class="square-6" icon={IconChevronLeft} />
   </button>
   <svelte:fragment slot="title">
     밑줄 이미지 편집
@@ -155,7 +159,7 @@
       offset={10}
       placement="bottom-start"
     >
-      <i class="i-tb-alert-circle square-3.5 text-gray-400" />
+      <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
     </Tooltip>
   </svelte:fragment>
   <form id="share-content-as-image" class="flex flex-col">
@@ -191,7 +195,7 @@
       >
         <div class={shareTargetMenuButtonWarpClassname}>
           <button id="download-share-button" type="button" on:click={download}>
-            <i class="square-1.875rem i-tb-arrow-bar-to-down" />
+            <Icon class="square-1.875rem" icon={IconArrowBarToDown} />
           </button>
           <label for="download-share-button">이미지 저장</label>
         </div>
@@ -203,7 +207,7 @@
             type="button"
             on:click={share}
           >
-            <i class="square-1.875rem i-tb-dots" />
+            <Icon class="square-1.875rem" icon={IconDots} />
           </button>
           <label class="peer-disabled:color-gray-300" for="etc-share-button">기타</label>
         </div>

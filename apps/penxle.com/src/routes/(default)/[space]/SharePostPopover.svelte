@@ -4,6 +4,10 @@
   import { uid } from 'radash';
   import { tick } from 'svelte';
   import { fade } from 'svelte/transition';
+  import IconMastodon from '~icons/simple-icons/mastodon';
+  import IconTwitter from '~icons/simple-icons/twitter';
+  import IconX from '~icons/tabler/x';
+  import { Icon } from '$lib/components';
   import Button from '$lib/components/v2/Button.svelte';
   import { toast } from '$lib/notification';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
@@ -64,7 +68,7 @@
       <h1 class="text-16-sb">공유하기</h1>
 
       <button aria-label="닫기" type="button" on:click={() => (open = false)}>
-        <i class="i-tb-x square-6" />
+        <Icon class="square-6" icon={IconX} />
       </button>
     </header>
     <div class="flex justify-center p-y-5 gap-4" role="group">
@@ -79,7 +83,7 @@
           rel="noopener noreferrer"
           target="_blank"
         >
-          <i class="i-lg-twitter color-#1D9BF0 square-8" />
+          <Icon class="color-#1D9BF0 square-8" icon={IconTwitter} />
         </a>
         <label for={twitterLinkId}>트위터</label>
       </div>
@@ -92,7 +96,7 @@
             query: { text: href },
           })}
         >
-          <i class="i-lg-mastodon color-#6364FF square-8" />
+          <Icon class="color-#6364FF square-8" icon={IconMastodon} />
         </a>
         <label for={mastodonLinkId}>마스토돈</label>
       </div>

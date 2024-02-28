@@ -4,6 +4,9 @@
   import { EditorView, minimalSetup } from 'codemirror';
   import DOMPurify from 'isomorphic-dompurify';
   import { onMount } from 'svelte';
+  import IconEye from '~icons/tabler/eye';
+  import IconGripVertical from '~icons/tabler/grip-vertical';
+  import { Icon } from '$lib/components';
   import { NodeView } from '$lib/tiptap';
   import type { NodeViewProps } from '$lib/tiptap';
 
@@ -70,11 +73,11 @@
         type="button"
         on:click={() => (preview = !preview)}
       >
-        <i class={clsx('block i-tb-eye square-18px', preview ? 'text-teal-500' : 'text-gray-600')} />
+        <Icon class={clsx('block square-18px', preview ? 'text-teal-500' : 'text-gray-600')} icon={IconEye} />
       </button>
 
       <div class="p-4px rounded-4px transition hover:bg-gray-100">
-        <i class="block i-tb-grip-vertical square-18px text-gray-600" />
+        <Icon class="block square-18px text-gray-600" icon={IconGripVertical} />
       </div>
     </div>
 

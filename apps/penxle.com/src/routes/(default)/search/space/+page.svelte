@@ -1,9 +1,11 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import mixpanel from 'mixpanel-browser';
+  import IconCheck from '~icons/tabler/check';
+  import IconPlus from '~icons/tabler/plus';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { Image } from '$lib/components';
+  import { Icon, Image } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { toast } from '$lib/notification';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
@@ -96,7 +98,7 @@
                 toast.success('관심 스페이스 해제되었어요');
               }}
             >
-              <i class="i-lc-check" />
+              <Icon icon={IconCheck} />
               관심
             </button>
           {:else}
@@ -114,7 +116,7 @@
                 toast.success('관심 스페이스로 등록되었어요');
               }}
             >
-              <i class="i-lc-plus" />
+              <Icon icon={IconPlus} />
               관심
             </button>
           {/if}

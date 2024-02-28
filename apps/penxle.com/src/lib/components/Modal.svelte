@@ -1,7 +1,9 @@
 <script lang="ts">
   import clsx from 'clsx';
   import { fade, fly } from 'svelte/transition';
+  import IconX from '~icons/tabler/x';
   import { beforeNavigate } from '$app/navigation';
+  import { Icon } from '$lib/components';
   import { portal, scrollLock } from '$lib/svelte/actions';
 
   export let open: boolean;
@@ -87,7 +89,7 @@
                   type="button"
                   on:click={() => (open = false)}
                 >
-                  <i class="i-lc-x square-6" />
+                  <Icon class="square-6" icon={IconX} />
                 </button>
               {/if}
             </div>
@@ -97,7 +99,7 @@
               type="button"
               on:click={() => (open = false)}
             >
-              <i class="i-lc-x square-6" />
+              <Icon class="square-6" icon={IconX} />
             </button>
           {/if}
 

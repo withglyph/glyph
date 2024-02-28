@@ -2,10 +2,14 @@
   import { Link } from '@penxle/ui';
   import clsx from 'clsx';
   import { fade, fly } from 'svelte/transition';
+  import IconChevronDown from '~icons/tabler/chevron-down';
+  import IconChevronUp from '~icons/tabler/chevron-up';
+  import IconPencil from '~icons/tabler/pencil';
+  import IconPlus from '~icons/tabler/plus';
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Avatar, Image } from '$lib/components';
+  import { Avatar, Icon, Image } from '$lib/components';
   import { Button } from '$lib/components/v2';
   import { portal, scrollLock } from '$lib/svelte/actions';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
@@ -131,7 +135,11 @@
             >
               <p class="text-14-m text-gray-800">나의 스페이스</p>
 
-              <i class={clsx('i-tb-chevron-down square-5 text-gray-400', spaceListOpen && 'i-tb-chevron-up')} />
+              {#if spaceListOpen}
+                <Icon class="square-5 text-gray-400" icon={IconChevronUp} />
+              {:else}
+                <Icon class="square-5 text-gray-400" icon={IconChevronDown} />
+              {/if}
             </button>
 
             {#if spaceListOpen}
@@ -157,14 +165,15 @@
                     </a>
 
                     <button
-                      class="i-tb-pencil square-5 text-gray-500"
                       type="button"
                       on:click={async () => {
                         const { permalink } = await createPost({ spaceId: space.id });
                         mixpanel.track('post:create', { via: 'user-menu' });
                         await goto(`/editor/${permalink}`);
                       }}
-                    />
+                    >
+                      <Icon class="square-5 text-gray-500" icon={IconPencil} />
+                    </button>
                   </li>
                 {/each}
                 <li class="bg-gray-100 border-b border-gray-150">
@@ -173,7 +182,7 @@
                     type="button"
                     on:click={() => (createSpaceOpen = true)}
                   >
-                    <i class="i-tb-plus square-3.5" />
+                    <Icon class="square-3.5" icon={IconPlus} />
                     스페이스 만들기
                   </button>
                 </li>

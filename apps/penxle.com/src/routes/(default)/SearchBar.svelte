@@ -1,8 +1,10 @@
 <script lang="ts">
   import clsx from 'clsx';
   import qs from 'query-string';
+  import IconSearch from '~icons/tabler/search';
   import { afterNavigate, goto } from '$app/navigation';
   import { page } from '$app/stores';
+  import { Icon } from '$lib/components';
 
   let _class: string | undefined = undefined;
   export { _class as class };
@@ -39,6 +41,6 @@
     bind:value
   />
   <div class="absolute inset-y-0 right-3 flex center text-gray-400">
-    <i class="i-tb-search square-5 transition" />
+    <Icon class="square-5 transition" icon={IconSearch} />
   </div>
 </form>

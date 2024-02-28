@@ -1,8 +1,8 @@
 <script lang="ts">
-  // import { page } from '$app/stores';
   import { Helmet } from '@penxle/ui';
+  import IconPencil from '~icons/tabler/pencil';
   import { graphql } from '$glitch';
-  import { Button } from '$lib/components';
+  import { Button, Icon } from '$lib/components';
   import ComingSoonModal from '../../../ComingSoonModal.svelte';
 
   $: query = graphql(`
@@ -21,16 +21,6 @@
 
 <div class="flex justify-between items-center">
   <p class="title-20-b">내용</p>
-  <!-- <Button
-    class="flex gap-1 px-2! h-6.5! rounded-2xl!"
-    color="tertiary"
-    href={`/tag/${$page.params.id}/edit`}
-    type="link"
-    variant="outlined"
-  >
-    <span class="body-13-b">편집</span>
-    <i class="i-px-pencil-underline square-4" />
-  </Button> -->
   <Button
     class="flex gap-1 px-2! h-6.5! rounded-2xl!"
     color="tertiary"
@@ -38,7 +28,7 @@
     on:click={() => (comingSoonOpen = true)}
   >
     <span class="body-13-b">편집</span>
-    <i class="i-px-pencil-underline square-4" />
+    <Icon class="square-4" icon={IconPencil} />
   </Button>
 </div>
 

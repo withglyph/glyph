@@ -1,3 +1,8 @@
+import IconAlignJustify from '~icons/effit/align-justify';
+import IconAlignCenter from '~icons/tabler/align-center';
+import IconAlignLeft from '~icons/tabler/align-left';
+import IconAlignRight from '~icons/tabler/align-right';
+
 export const values = {
   defaultColor: '#09090B',
 
@@ -48,10 +53,10 @@ export const values = {
   ],
 
   textAlign: [
-    { label: '왼쪽', value: 'left', icon: 'i-tb-align-left' },
-    { label: '중앙', value: 'center', icon: 'i-tb-align-center' },
-    { label: '오른쪽', value: 'right', icon: 'i-tb-align-right' },
-    { label: '양쪽', value: 'justify', icon: 'i-px2-align-justified' },
+    { label: '왼쪽', value: 'left', icon: IconAlignLeft },
+    { label: '중앙', value: 'center', icon: IconAlignCenter },
+    { label: '오른쪽', value: 'right', icon: IconAlignRight },
+    { label: '양쪽', value: 'justify', icon: IconAlignJustify },
   ],
 
   horizontalRule: [

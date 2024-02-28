@@ -3,6 +3,10 @@
   import { backInOut, expoInOut, linear, sineInOut } from 'svelte/easing';
   import { tweened } from 'svelte/motion';
   import { fly, scale, slide } from 'svelte/transition';
+  import IconAlertTriangle from '~icons/tabler/alert-triangle';
+  import IconCircleCheck from '~icons/tabler/circle-check';
+  import IconX from '~icons/tabler/x';
+  import { Icon } from '$lib/components';
   import { store } from './store';
   import type { Toast } from './store';
 
@@ -30,13 +34,11 @@
   >
     <div style:transform={`translateX(${$progress}%)`} class="absolute inset-0 bg-black/15" />
 
-    <span
-      class={clsx(
-        'text-white',
-        toast.type === 'success' && 'i-lc-check-circle-2',
-        toast.type === 'error' && 'i-lc-alert-triangle',
-      )}
-    />
+    {#if toast.type === 'success'}
+      <Icon class="text-white" icon={IconCircleCheck} />
+    {:else if toast.type === 'error'}
+      <Icon class="text-white" icon={IconAlertTriangle} />
+    {/if}
   </div>
 
   <div
@@ -57,7 +59,9 @@
           {toast.message}
         </span>
       </div>
-      <button class="i-lc-x" type="button" on:click={dismiss} />
+      <button type="button" on:click={dismiss}>
+        <Icon icon={IconX} />
+      </button>
     </div>
   </div>
 </div>

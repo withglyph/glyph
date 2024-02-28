@@ -4,6 +4,7 @@ export { default as BottomSheet } from './BottomSheet.svelte';
 export { default as Button } from './Button.svelte';
 export { default as ColorPicker } from './ColorPicker.svelte';
 export { default as GridImage } from './GridImage.svelte';
+export { default as Icon } from './Icon.svelte';
 export { default as Image } from './Image.svelte';
 export { default as Modal } from './Modal.svelte';
 export { default as Pagination } from './Pagination.svelte';

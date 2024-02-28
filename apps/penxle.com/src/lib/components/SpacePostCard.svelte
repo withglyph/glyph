@@ -1,8 +1,9 @@
 <script lang="ts">
   import clsx from 'clsx';
   import dayjs from 'dayjs';
+  import IconAlertTriangle from '~icons/tabler/alert-triangle';
   import { fragment, graphql } from '$glitch';
-  import { Badge, Image, Tag } from '$lib/components';
+  import { Badge, Icon, Image, Tag } from '$lib/components';
   import { humanizeNumber } from '$lib/utils';
   import type { SpaceFeed_post } from '$glitch';
 
@@ -114,7 +115,7 @@
           class="p-4 rounded-2xl h-full w-full flex flex-col center gap-2.5 items-center bg-primary text-secondary border border-secondary"
           role="alert"
         >
-          <i class="i-px-alert-triangle square-6" />
+          <Icon class="square-6" icon={IconAlertTriangle} />
           <p class="body-14-sb text-center">포스트에 민감한 내용이 포함되어 있어요</p>
 
           {#if triggerTags.length > 0}

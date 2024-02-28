@@ -1,10 +1,13 @@
 <script lang="ts">
   import clsx from 'clsx';
   import dayjs from 'dayjs';
+  import IconCalendar from '~icons/tabler/calendar';
+  import IconTextRecognition from '~icons/tabler/text-recognition';
+  import IconTrash from '~icons/tabler/trash';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Badge, Button, Modal } from '$lib/components';
+  import { Badge, Button, Icon, Modal } from '$lib/components';
   import { toast } from '$lib/notification';
   import type { EditorPage_DraftListModal_post, EditorPage_DraftListModal_user } from '$glitch';
 
@@ -79,24 +82,26 @@
           </p>
           <div class="body-13-m text-secondary flex gap-8px items-center">
             <div class="flex gap-2px items-center">
-              <i class="i-tb-calendar" />
+              <Icon icon={IconCalendar} />
               {dayjs(_post.draftRevision?.updatedAt).formatAsDateTime()}
             </div>
 
             <div class="flex gap-2px items-center">
-              <i class="i-tb-text-recognition" />
+              <Icon icon={IconTextRecognition} />
               {_post.draftRevision.characterCount}자
             </div>
           </div>
         </button>
         <button
-          class="i-lc-trash hidden square-5 color-text-disabled"
+          class="hidden"
           type="button"
           on:click={() => {
             deletePostOpen = true;
             deletePostId = _post.id;
           }}
-        />
+        >
+          <Icon class="square-5 color-text-disabled" icon={IconTrash} />
+        </button>
         {#if _post.id === $post.id}
           <div class="mb-1 flex-none">
             <Badge color="green">현재 포스트</Badge>

@@ -1,8 +1,9 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import IconLock from '~icons/tabler/lock';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Modal } from '$lib/components';
+  import { Button, Icon, Modal } from '$lib/components';
   import { PopupSearch } from '$lib/components/forms';
   import Image from '$lib/components/Image.svelte';
   import { toast } from '$lib/notification';
@@ -97,7 +98,7 @@
               {#if space.visibility === 'PRIVATE'}
                 <span class="bg-primary text-secondary rounded-full px-1 caption-12-b text-nowrap">
                   비공개
-                  <i class="i-px-lock square-3 mb-0.5" />
+                  <Icon class="square-3 mb-0.5" icon={IconLock} />
                 </span>
               {/if}
             </div>

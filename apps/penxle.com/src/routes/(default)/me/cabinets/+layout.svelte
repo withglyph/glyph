@@ -1,7 +1,8 @@
 <script lang="ts">
   import { Link } from '@penxle/ui';
+  import IconArrowUp from '~icons/tabler/arrow-up';
   import { graphql } from '$glitch';
-  import { GridImage } from '$lib/components';
+  import { GridImage, Icon } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import FollowSpaceModal from './FollowSpaceModal.svelte';
   import FollowTagModal from './FollowTagModal.svelte';
@@ -84,8 +85,6 @@
         <h2 class="title-20-b <sm:title-18-eb">북마크</h2>
         <!-- <span class="subtitle-18-eb ml-2 text-secondary">7</span> -->
       </div>
-
-      <!-- <i class="i-lc-chevron-down square-6" /> -->
     </div>
 
     {#if $query.me.bookmarks.length === 0 || $query.me.bookmarks[0].postCount === 0}
@@ -142,7 +141,7 @@
     scrollTo({ top: 0, behavior: 'smooth' });
   }}
 >
-  <i class="i-lc-arrow-up square-5 text-darkprimary" />
+  <Icon class="square-5 text-darkprimary" icon={IconArrowUp} />
 </button>
 
 <FollowSpaceModal $user={$query.me} bind:open={followingSpaceOpen} />

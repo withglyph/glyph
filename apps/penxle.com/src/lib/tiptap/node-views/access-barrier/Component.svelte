@@ -5,10 +5,15 @@
   import { createForm } from 'felte';
   import { tick } from 'svelte';
   import { z } from 'zod';
+  import IconAlertTriangle from '~icons/tabler/alert-triangle';
+  import IconFolder from '~icons/tabler/folder';
+  import IconGripVertical from '~icons/tabler/grip-vertical';
+  import IconPhoto from '~icons/tabler/photo';
+  import IconTextRecognition from '~icons/tabler/text-recognition';
   import { afterNavigate } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Tooltip } from '$lib/components';
+  import { Icon, Tooltip } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { NodeView } from '$lib/tiptap';
@@ -137,7 +142,7 @@
           {#if node.attrs.price}
             {comma(node.attrs.price)} P
           {:else}
-            <i class="i-tb-alert-triangle square-16px" />
+            <Icon class="square-16px" icon={IconAlertTriangle} />
             가격설정
           {/if}
         </button>
@@ -156,7 +161,7 @@
       {/if}
       <div class="w-1px h-14px bg-gray-200" />
       <div class="flex-none p-4px rounded-4px transition hover:bg-gray-100">
-        <i class="i-tb-grip-vertical block square-16px sm:square-18px" />
+        <Icon class="block square-16px sm:square-18px" icon={IconGripVertical} />
       </div>
     </div>
 
@@ -254,7 +259,7 @@
 
         <div class="flex items-center gap-8px">
           <div class="flex items-center gap-4px">
-            <i class="i-tb-text-recognition square-16px text-gray-400" />
+            <Icon class="square-16px text-gray-400" icon={IconTextRecognition} />
             <span class="text-14-r text-gray-500">
               {comma(node.attrs.__data.counts.characters)}자
             </span>
@@ -262,16 +267,16 @@
 
           {#if node.attrs.__data.counts.images}
             <div class="flex items-center gap-4px">
-              <i class="i-tb-photo square-16px text-gray-400" />
+              <Icon class="square-16px text-gray-400" icon={IconPhoto} />
               <span class="text-14-r text-gray-500">
-                {comma(node.attrs.__data.counts.images)}장
+                {comma(node.attrs.__data.counts.images)}개
               </span>
             </div>
           {/if}
 
           {#if node.attrs.__data.counts.files}
             <div class="flex items-center gap-4px">
-              <i class="i-tb-folder square-16px text-gray-400" />
+              <Icon class="square-16px text-gray-400" icon={IconFolder} />
               <span class="text-14-r text-gray-500">
                 {comma(node.attrs.__data.counts.files)}개
               </span>

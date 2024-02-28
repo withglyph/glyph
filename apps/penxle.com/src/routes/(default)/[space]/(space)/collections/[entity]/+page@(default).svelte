@@ -2,9 +2,13 @@
   import { Helmet } from '@penxle/ui';
   import clsx from 'clsx';
   import mixpanel from 'mixpanel-browser';
+  import IconAlignBoxLeftMiddle from '~icons/tabler/align-box-left-middle';
+  import IconChevronRight from '~icons/tabler/chevron-right';
+  import IconList from '~icons/tabler/list';
+  import IconSettings from '~icons/tabler/settings';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { Button, Image, SpacePostCard } from '$lib/components';
+  import { Button, Icon, Image, SpacePostCard } from '$lib/components';
   import { ManageCollectionModal } from '$lib/components/pages/collections';
   import { toast } from '$lib/notification';
   import LoginRequireModal from '../../../../LoginRequireModal.svelte';
@@ -136,7 +140,7 @@
       <h1 class="title-20-b m-b-2">{collection?.name}</h1>
       <div class="max-w-75rem w-full self-center flex justify-between items-center flex-wrap gap-1">
         <p class="body-14-m">
-          <i class="i-px-document-align-left square-4 m-r-1 align-sub" />
+          <Icon class="square-4 m-r-1 align-sub" icon={IconAlignBoxLeftMiddle} />
           {collection?.count}개의 포스트
         </p>
         {#if $query.space.meAsMember}
@@ -150,7 +154,7 @@
                 openPostManageCollectionModal = true;
               }}
             >
-              포스트 관리 <i class="i-lc-list" />
+              포스트 관리 <Icon icon={IconList} />
             </Button>
             <Button
               class="flex gap-1 text-darkprimary! disabled:invisible"
@@ -160,7 +164,7 @@
               type="link"
               variant="outlined"
             >
-              컬렉션 관리 <i class="i-lc-settings" />
+              컬렉션 관리 <Icon icon={IconSettings} />
             </Button>
           </div>
         {/if}
@@ -205,7 +209,7 @@
               <h2 class="subtitle-18-eb <sm:body-15-b leading-5">
                 {$query.space.name}
               </h2>
-              <i class="i-lc-chevron-right text-icon-secondary square-5 <sm:hidden" />
+              <Icon class="text-icon-secondary square-5 <sm:hidden" icon={IconChevronRight} />
             </a>
             <a href="/{$query.space?.slug}">
               <p class="body-15-sb <sm:body-14-m text-secondary whitespace-pre-wrap">

@@ -2,9 +2,11 @@
   import clsx from 'clsx';
   import * as EmojiMart from 'emoji-mart';
   import { onMount } from 'svelte';
+  import IconMoodPlus from '~icons/tabler/mood-plus';
   import { afterNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
+  import { Icon } from '$lib/components';
   import { createFloatingActions } from '$lib/svelte/actions';
   import LoginRequireModal from '../../routes/(default)/LoginRequireModal.svelte';
   import i18n from './i18n.json';
@@ -119,7 +121,7 @@
     }}
     use:anchor
   >
-    <i class="i-tb-mood-plus square-5" />
+    <Icon class="square-5" icon={IconMoodPlus} />
   </button>
 {:else}
   <button
@@ -132,7 +134,7 @@
     }}
     use:anchor
   >
-    <i class="i-tb-mood-plus text-gray-700 square-5 block" />
+    <Icon class="text-gray-700 square-5 block" icon={IconMoodPlus} />
   </button>
 {/if}
 

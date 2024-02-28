@@ -1,8 +1,9 @@
 <script lang="ts">
   import clsx from 'clsx';
   import mixpanel from 'mixpanel-browser';
+  import IconCamera from '~icons/tabler/camera';
   import { fragment, graphql } from '$glitch';
-  import { Button, Image, Modal } from '$lib/components';
+  import { Button, Icon, Image, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
   import { createMutationForm } from '$lib/form';
@@ -77,7 +78,7 @@
           thumbnail ? 'group-hover:visible group-active:visible' : 'visible!',
         )}
       >
-        <i class="i-px-camera square-6 text-darkprimary" />
+        <Icon class="square-6 text-darkprimary" icon={IconCamera} />
       </div>
     </button>
     <div id="upload-restriction" class="body-13-m text-disabled m-y-xs">JPG, PNG 업로드 가능</div>

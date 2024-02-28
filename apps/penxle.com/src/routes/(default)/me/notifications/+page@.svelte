@@ -3,9 +3,15 @@
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import ky from 'ky';
+  import IconCheck from '~icons/tabler/check';
+  import IconChevronLeft from '~icons/tabler/chevron-left';
+  import IconCoin from '~icons/tabler/coin';
+  import IconMessageCircle from '~icons/tabler/message-circle';
+  import IconSettings from '~icons/tabler/settings';
   import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
+  import { Icon } from '$lib/components';
   import { Button } from '$lib/components/v2';
 
   $: query = graphql(`
@@ -96,12 +102,14 @@
 
 <header>
   <div class="px-5 py-3.5 flex items-center justify-between relative border-b border-gray-100 h-55px">
-    <button class="i-tb-chevron-left square-6" type="button" on:click={() => history.back()} />
+    <button type="button" on:click={() => history.back()}>
+      <Icon class="square-6" icon={IconChevronLeft} />
+    </button>
 
     <h1 class="text-16-sb absolute left-50% -translate-x-50%">알림</h1>
 
     <a href="/me/settings/notifications">
-      <i class="i-tb-settings square-5" />
+      <Icon class="square-5" icon={IconSettings} />
     </a>
   </div>
 
@@ -132,13 +140,13 @@
             )}
           >
             {#if notification.__typename === 'SubscribeNotification'}
-              <i class="i-tb-check square-3 block" />
+              <Icon class="square-3 block" icon={IconCheck} />
               스페이스 구독
             {:else if notification.__typename === 'PurchaseNotification'}
-              <i class="i-tb-coin square-3" />
+              <Icon class="square-3" icon={IconCoin} />
               구매
             {:else if notification.__typename === 'CommentNotification'}
-              <i class="i-tb-message-circle square-3 block" />
+              <Icon class="square-3 block" icon={IconMessageCircle} />
               댓글
             {/if}
           </div>

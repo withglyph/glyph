@@ -1,7 +1,10 @@
 <script lang="ts">
   import dayjs from 'dayjs';
+  import IconClockHour4 from '~icons/tabler/clock-hour-4';
+  import IconEye from '~icons/tabler/eye';
+  import IconHeart from '~icons/tabler/heart';
   import { fragment, graphql } from '$glitch';
-  import { Avatar } from '$lib/components';
+  import { Avatar, Icon } from '$lib/components';
   import Image from '$lib/components/Image.svelte';
   import { calcurateReadingTime, humanizeNumber } from '$lib/utils';
   import type { Feed_PostCard_post } from '$glitch';
@@ -91,21 +94,21 @@
       <div class="flex flex-none grow justify-end gap-8px text-12-m text-gray-400">
         {#if $post.viewCount > 0 && $post.discloseStats}
           <div class="flex items-center gap-2px">
-            <i class="i-tb-eye square-14px" />
+            <Icon class="square-14px" icon={IconEye} />
             {humanizeNumber($post.viewCount)}
           </div>
         {/if}
 
         {#if $post.likeCount > 0 && $post.discloseStats}
           <div class="flex items-center gap-2px">
-            <i class="i-tb-heart square-14px" />
+            <Icon class="square-14px" icon={IconHeart} />
             {humanizeNumber($post.likeCount)}
           </div>
         {/if}
 
         {#if $post.publishedRevision.characterCount > 0}
           <div class="flex items-center gap-2px <sm:hidden">
-            <i class="i-tb-clock-hour-4 square-14px" />
+            <Icon class="square-14px" icon={IconClockHour4} />
             {calcurateReadingTime($post.publishedRevision.characterCount)}분
           </div>
         {/if}

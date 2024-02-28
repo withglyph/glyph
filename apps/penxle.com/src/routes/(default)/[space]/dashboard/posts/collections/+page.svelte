@@ -1,8 +1,9 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import dayjs from 'dayjs';
+  import IconTrash from '~icons/tabler/trash';
   import { graphql } from '$glitch';
-  import { Button, Image } from '$lib/components';
+  import { Button, Icon, Image } from '$lib/components';
   import {
     CreateCollectionModal,
     ManageCollectionModal,
@@ -139,7 +140,7 @@
                 toast.success('컬렉션을 삭제했어요');
               }}
             >
-              <i class="i-lc-trash-2 square-4 text-secondary hover:text-action-red-primary" />
+              <Icon class="square-4 text-secondary hover:text-action-red-primary" icon={IconTrash} />
             </Button>
           </div>
         </TableData>

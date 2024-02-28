@@ -1,9 +1,11 @@
 <script lang="ts">
   import clsx from 'clsx';
   import { nanoid } from 'nanoid';
+  import { Icon } from '$lib/components';
+  import type { ComponentType } from 'svelte';
 
   export let name: string;
-  export let items: { label: string; value: string | number; icon?: string; checked: boolean; text?: string }[];
+  export let items: { label: string; value: string | number; icon?: ComponentType; checked: boolean; text?: string }[];
   let _class: string | undefined = undefined;
   export { _class as class };
   export let variant: 'gallery' | 'list' = 'gallery';
@@ -32,13 +34,13 @@
           on:change
         />
         {#if item.icon}
-          <i
+          <Icon
             class={clsx(
-              item.icon,
               'color-gray-400 peer-checked:color-teal-500',
               size === 'sm' && 'square-5',
               size === 'md' && 'square-8',
             )}
+            icon={item.icon}
           />
         {:else if item.text}
           <span class="text-18-sb text-gray-400 peer-checked:text-teal-500">{item.text}</span>

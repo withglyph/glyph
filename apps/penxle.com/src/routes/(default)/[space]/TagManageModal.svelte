@@ -1,8 +1,9 @@
 <script lang="ts">
   import mixpanel from 'mixpanel-browser';
   import { uid } from 'radash';
+  import IconAlertCircle from '~icons/tabler/alert-circle';
   import { fragment, graphql } from '$glitch';
-  import { SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
+  import { Icon, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
   import { createMutationForm } from '$lib/form';
   import { UpdatePostTagsInputSchema } from '$lib/validations/post';
@@ -117,7 +118,7 @@
       <h2 class="text-15-m p-t-1 p-b-3 flex gap-1">
         <span>페어</span>
         <Tooltip class="flex center" message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
-          <i class="i-tb-alert-circle square-3.5 text-gray-400" />
+          <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
         </Tooltip>
       </h2>
 

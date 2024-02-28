@@ -1,5 +1,7 @@
 <script lang="ts">
   import { clsx } from 'clsx';
+  import IconAlertTriangle from '~icons/tabler/alert-triangle';
+  import { Icon } from '$lib/components';
   import { getFormContext } from '$lib/form';
   import { clamp } from '$lib/utils';
   import FormValidationMessage from './FormValidationMessage.svelte';
@@ -54,7 +56,7 @@
 {#if name}
   <FormValidationMessage for={name} let:message>
     <div class="flex items-center gap-1.5 mt-1.5 text-xs text-red-50">
-      <i class="i-lc-alert-triangle" />
+      <Icon icon={IconAlertTriangle} />
       {message}
     </div>
   </FormValidationMessage>

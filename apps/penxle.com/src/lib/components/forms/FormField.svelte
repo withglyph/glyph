@@ -1,4 +1,6 @@
 <script lang="ts">
+  import IconAlertTriangle from '~icons/tabler/alert-triangle';
+  import { Icon } from '$lib/components';
   import { setFormField } from '$lib/form';
   import FormValidationMessage from './FormValidationMessage.svelte';
 
@@ -21,7 +23,7 @@
   </div>
   <FormValidationMessage for={name} let:message>
     <div class="flex items-center gap-1.5 mt-1.5 text-xs text-red-50">
-      <i class="i-lc-alert-triangle" />
+      <Icon icon={IconAlertTriangle} />
       {message}
     </div>
   </FormValidationMessage>

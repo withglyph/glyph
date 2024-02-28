@@ -1,8 +1,11 @@
 <script lang="ts">
   import clsx from 'clsx';
   import { onDestroy, tick } from 'svelte';
+  import IconZoomIn from '~icons/tabler/zoom-in';
+  import IconZoomOut from '~icons/tabler/zoom-out';
   import { Slider } from '$lib/components/forms';
   import { clamp } from '$lib/utils';
+  import { Icon } from '..';
   import type { PointerEventHandler } from 'svelte/elements';
   import type { ImageBounds } from '$lib/utils';
 
@@ -142,8 +145,8 @@
   </div>
 
   <div class="flex gap-4 items-center mt-4 mx-4">
-    <i class="i-lc-zoom-out text-gray-60 square-5" />
+    <Icon class="text-gray-60 square-5" icon={IconZoomOut} />
     <Slider class="w-full" max={8} min={1} bind:value={scale} />
-    <i class="i-lc-zoom-in text-gray-60 square-5" />
+    <Icon class="text-gray-60 square-5" icon={IconZoomIn} />
   </div>
 </div>

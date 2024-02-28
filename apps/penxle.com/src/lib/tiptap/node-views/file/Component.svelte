@@ -4,7 +4,12 @@
   import ky from 'ky';
   import numeral from 'numeral';
   import { onMount } from 'svelte';
+  import IconDownload from '~icons/tabler/download';
+  import IconFolder from '~icons/tabler/folder';
+  import IconGripVertical from '~icons/tabler/grip-vertical';
+  import IconTrash from '~icons/tabler/trash';
   import { graphql } from '$glitch';
+  import { Icon } from '$lib/components';
   import { NodeView } from '$lib/tiptap';
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
   import type { NodeViewProps } from '$lib/tiptap';
@@ -73,7 +78,7 @@
   >
     <div class="flex gap-8px items-center grow">
       <div class="flex gap-6px items-center">
-        <i class="i-tb-folder text-gray-300 square-18px" />
+        <Icon class="text-gray-300 square-18px" icon={IconFolder} />
         <div class="text-14-r line-clamp-1">{data.name}</div>
       </div>
       <div class="w-1px h-12px bg-gray-300" />
@@ -82,9 +87,9 @@
 
     <div class="p-4px rounded-4px transition hover:bg-gray-100">
       {#if editor?.isEditable}
-        <i class="block i-tb-grip-vertical square-18px text-gray-600" />
+        <Icon class="block text-gray-600 square-18px" icon={IconGripVertical} />
       {:else}
-        <i class="block i-tb-download square-18px text-gray-600" />
+        <Icon class="block text-gray-600 square-18px" icon={IconDownload} />
       {/if}
     </div>
 
@@ -99,7 +104,7 @@
 {#if editor && selected}
   <TiptapNodeViewBubbleMenu {editor} {getPos} {node}>
     <button class="p-4px rounded-2px transition hover:bg-gray-100" type="button" on:click={() => deleteNode()}>
-      <i class="i-tb-trash text-gray-600 square-18px block" />
+      <Icon class="block text-gray-600 square-18px" icon={IconTrash} />
     </button>
   </TiptapNodeViewBubbleMenu>
 {/if}

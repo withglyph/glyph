@@ -1,4 +1,8 @@
 <script lang="ts">
+  import IconChevronLeft from '~icons/tabler/chevron-left';
+  import IconChevronRight from '~icons/tabler/chevron-right';
+  import { Icon } from '$lib/components';
+
   export let initialPage: number;
   export let totalItems: number;
   export let itemsPerPage = 10;
@@ -31,7 +35,7 @@
       currentPage = previousPageGroup * displayPage;
     }}
   >
-    <i class="i-lc-chevron-left square-3.5" aria-label="왼쪽 화살표 아이콘" />
+    <Icon class="square-3.5" icon={IconChevronLeft} />
   </button>
   {#each range as index (index)}
     <button
@@ -54,6 +58,6 @@
       currentPage = nextPageGroup * displayPage - (displayPage - 1);
     }}
   >
-    <i class="i-lc-chevron-right square-3.5" aria-label="오른쪽 화살표 아이콘" />
+    <Icon class="square-3.5" icon={IconChevronRight} />
   </button>
 </div>

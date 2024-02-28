@@ -108,6 +108,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@iconify/json": "^2.2.187",
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@playwright/test": "^1.41.2",
@@ -123,6 +124,7 @@
     "tsx": "^4.7.1",
     "typescript": "^5.3.3",
     "unocss": "^0.58.5",
+    "unplugin-icons": "^0.18.5",
     "vite": "^5.1.3"
   }
 }

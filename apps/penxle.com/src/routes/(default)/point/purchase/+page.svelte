@@ -2,10 +2,11 @@
   import { Helmet, Link } from '@penxle/ui';
   import clsx from 'clsx';
   import qs from 'query-string';
+  import IconAlertTriangle from '~icons/tabler/alert-triangle';
   import Paypal from '$assets/icons/paypal.svg?component';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Modal } from '$lib/components';
+  import { Button, Icon, Modal } from '$lib/components';
   import { Checkbox, Radio } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
@@ -146,7 +147,7 @@
 
   <div class="bg-surface-primary rounded-2xl p-4 w-full">
     <p class="flex items-center body-13-b gap-2">
-      <i class="i-lc-alert-triangle" />
+      <Icon icon={IconAlertTriangle} />
       <span>결제 전 확인해주세요!</span>
     </p>
     <div class="mt-2 text-secondary body-13-m">

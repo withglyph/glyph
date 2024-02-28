@@ -2,8 +2,10 @@
   import { Helmet } from '@penxle/ui';
   import dayjs from 'dayjs';
   import { onMount } from 'svelte';
+  import IconCircleCheck from '~icons/tabler/circle-check';
+  import IconCopy from '~icons/tabler/copy';
   import { graphql } from '$glitch';
-  import { Button } from '$lib/components';
+  import { Button, Icon } from '$lib/components';
   import { Radio } from '$lib/components/forms';
   import { toast } from '$lib/notification';
   import { comma } from '$lib/utils';
@@ -97,7 +99,7 @@
                 toast.success('계좌번호가 복사되었어요');
               }}
             >
-              <i class="i-lc-copy square-4 text-secondary mr-1" />
+              <Icon class="square-4 text-secondary mr-1" icon={IconCopy} />
               복사
             </Button>
           </div>
@@ -116,7 +118,7 @@
   {:else}
     <div class="w-full max-w-200">
       <p class="text-center mb-6">
-        <i class="i-lc-check-circle-2 square-13.75 text-green-50" />
+        <Icon class="square-13.75 text-green-50" icon={IconCircleCheck} />
       </p>
       <div class="space-y-3">
         <h1 class="text-center title-20-b">포인트가 충전 완료 되었어요!</h1>

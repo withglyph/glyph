@@ -1,9 +1,13 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import IconEffit from '~icons/effit/effit';
+  import IconStamp from '~icons/effit/stamp';
+  import IconChevronRight from '~icons/tabler/chevron-right';
   import { goto } from '$app/navigation';
   import ImageBanner from '$assets/images/event-202402.png';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
+  import { Icon } from '$lib/components';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
 
   let open = false;
@@ -74,11 +78,10 @@
       <div class="flex center gap-4 sm:gap-10">
         <div>
           <div class="relative mx-auto square-22 sm:square-26">
-            <i class="i-px-logo text-gray-200 square-full" />
+            <Icon class="text-gray-200 square-full" icon={IconEffit} />
             {#if $query.me?.post_publish?.eligible}
-              <i class="i-px2-stamp square-full absolute left-0 top-0 flex center">
-                <span class="text-error-900 text-14-b -rotate-8">2000P</span>
-              </i>
+              <Icon class="square-full absolute left-0 top-0 flex center" icon={IconStamp} />
+              <span class="text-error-900 text-14-b -rotate-8">2000P</span>
             {/if}
           </div>
           <p
@@ -93,11 +96,10 @@
 
         <div>
           <div class="relative mx-auto square-22 sm:square-26">
-            <i class="i-px-logo text-gray-200 square-full" />
+            <Icon class="text-gray-200 square-full" icon={IconEffit} />
             {#if $query.me?.twitter_spacelink?.eligible}
-              <i class="i-px2-stamp square-full absolute left-0 top-0 flex center">
-                <span class="text-error-900 text-14-b -rotate-8">+2000P</span>
-              </i>
+              <Icon class="square-full absolute left-0 top-0 flex center" icon={IconStamp} />
+              <span class="text-error-900 text-14-b -rotate-8">+2000P</span>
             {/if}
           </div>
           <p
@@ -157,7 +159,7 @@
     </button>
 
     <a class="text-14-r text-gray-600 inline-block my-14.5 mx-auto" href="/penxle/736143117">
-      이벤트 자세히보기 <i class="i-tb-chevron-right" />
+      이벤트 자세히보기 <Icon icon={IconChevronRight} />
     </a>
   </div>
 </div>

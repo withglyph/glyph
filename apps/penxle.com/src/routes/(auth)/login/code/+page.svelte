@@ -1,9 +1,12 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import IconGoogle from '~icons/simple-icons/google';
+  import IconNaver from '~icons/simple-icons/naver';
+  import IconMailCheck from '~icons/tabler/mail-check';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button } from '$lib/components';
+  import { Button, Icon } from '$lib/components';
   import { DigitsInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { IssueUserEmailAuthorizationUrlSchema } from '$lib/validations';
@@ -31,7 +34,7 @@
 <Helmet description="이메일로 전송된 코드를 통해 펜슬에 가입하거나 로그인할 수 있어요" title="코드로 시작하기" />
 
 <div class="bg-green-50 rounded-full flex center square-16">
-  <i class="i-lc-mail-check text-white square-6" />
+  <Icon class="text-white square-6" icon={IconMailCheck} />
 </div>
 
 {#if useCode}
@@ -56,12 +59,12 @@
   </div>
 
   <Button class="w-full gap-2 mt-4" external={false} href="https://mail.naver.com" type="link">
-    <i class="i-lg-naver" />
+    <Icon icon={IconNaver} />
     네이버 메일 열기
   </Button>
 
   <Button class="w-full gap-2 mt-2" external={false} href="https://gmail.com" type="link">
-    <i class="i-lg-google" />
+    <Icon icon={IconGoogle} />
     지메일 열기
   </Button>
 

@@ -3,8 +3,9 @@
   import clsx from 'clsx';
   import ky from 'ky';
   import { onMount } from 'svelte';
+  import IconTrash from '~icons/tabler/trash';
   import { graphql } from '$glitch';
-  import { Image } from '$lib/components';
+  import { Icon, Image } from '$lib/components';
   import { portal, scrollLock } from '$lib/svelte/actions';
   import { NodeView } from '$lib/tiptap';
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
@@ -97,7 +98,7 @@
 {#if editor && selected}
   <TiptapNodeViewBubbleMenu {editor} {getPos} {node}>
     <button class="p-4px rounded-2px transition hover:bg-gray-100" type="button" on:click={() => deleteNode()}>
-      <i class="i-tb-trash text-gray-600 square-18px block" />
+      <Icon class="text-gray-600 square-18px block" icon={IconTrash} />
     </button>
   </TiptapNodeViewBubbleMenu>
 {/if}

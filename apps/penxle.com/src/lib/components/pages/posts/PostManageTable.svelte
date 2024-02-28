@@ -1,9 +1,16 @@
 <script generics="T extends 'space' | 'me'" lang="ts">
   import clsx from 'clsx';
   import dayjs from 'dayjs';
+  import IconGlobe from '~icons/effit/globe';
+  import IconLink from '~icons/effit/link';
+  import IconUsers from '~icons/effit/users';
+  import IconCheck from '~icons/tabler/check';
+  import IconChevronDown from '~icons/tabler/chevron-down';
+  import IconPlus from '~icons/tabler/plus';
+  import IconTrash from '~icons/tabler/trash';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Avatar, Badge, Button, Image, Modal, Tag, Tooltip } from '$lib/components';
+  import { Avatar, Badge, Button, Icon, Image, Modal, Tag, Tooltip } from '$lib/components';
   import { Checkbox, Editable, Switch } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Table, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
@@ -162,9 +169,9 @@
   };
 
   const visibilityToIcon = {
-    PUBLIC: 'i-px-globe-solid',
-    SPACE: 'i-px-people',
-    UNLISTED: 'i-px-liink',
+    PUBLIC: IconGlobe,
+    SPACE: IconUsers,
+    UNLISTED: IconLink,
   };
 
   const visibilityOptions = Object.entries(visibilityToLocaleString).map(([value, label]) => ({ value, label })) as {
@@ -366,15 +373,13 @@
           <TableData class="overflow-visible!">
             <div class="flex gap-0.125rem">
               {#if post.member}
-                <Menu
-                  class="disabled:[&>i.i-lc-chevron-down]:hidden "
-                  disabled={!hasPermissionToUpdatePost(post.member.id)}
-                  placement="bottom-end"
-                >
+                <Menu disabled={!hasPermissionToUpdatePost(post.member.id)} placement="bottom-end">
                   <span slot="value" class="flex items-center body-13-b [&>i]:text-icon-secondary">
-                    <i class={clsx(visibilityToIcon[post.visibility], 'square-4 m-r-0.15rem')} />
+                    <Icon class="square-4 m-r-0.15rem" icon={visibilityToIcon[post.visibility]} />
                     {visibilityToLocaleString[post.visibility]}
-                    <i class="i-lc-chevron-down square-4" />
+                    {#if hasPermissionToUpdatePost(post.member.id)}
+                      <Icon class="square-4" icon={IconChevronDown} />
+                    {/if}
                   </span>
 
                   {#each visibilityOptions as visibilityOption (visibilityOption.value)}
@@ -418,7 +423,7 @@
                     openDeletePostWaring = true;
                   }}
                 >
-                  <i class="i-lc-trash-2 square-4 text-secondary hover:text-action-red-primary" />
+                  <Icon class="square-4 text-secondary hover:text-action-red-primary" icon={IconTrash} />
                 </Button>
               </div>
             {/if}
@@ -516,11 +521,11 @@
               }}
             >
               {collection.name}
-              <i class="i-lc-check square-4 color-green-50 invisible group-aria-pressed:visible" aria-label="선택됨" />
+              <Icon class="square-4 color-green-50 invisible group-aria-pressed:visible" icon={IconCheck} />
             </MenuItem>
           {/each}
           <MenuItem class="flex items-center gap-0.62rem" on:click={() => (openCreateCollection = true)}>
-            <i class="i-lc-plus square-4 text-secondary" />
+            <Icon class="square-4 text-secondary" icon={IconPlus} />
             새로 만들기
           </MenuItem>
         </Menu>

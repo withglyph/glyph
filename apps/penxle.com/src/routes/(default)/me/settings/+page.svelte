@@ -4,10 +4,11 @@
   import { nanoid } from 'nanoid';
   import qs from 'query-string';
   import { onMount } from 'svelte';
+  import IconChevronRight from '~icons/tabler/chevron-right';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Avatar, Badge, Button } from '$lib/components';
+  import { Avatar, Badge, Button, Icon } from '$lib/components';
   import { Switch } from '$lib/components/forms';
   import { toast } from '$lib/notification';
   import UpdateEmailModal from './UpdateEmailModal.svelte';
@@ -209,7 +210,7 @@
   <div class="flex justify-end">
     <Button href="/me/settings/deactivate" size="lg" type="link" variant="text">
       탈퇴하기
-      <i class="i-lc-chevron-right" />
+      <Icon icon={IconChevronRight} />
     </Button>
   </div>
 </div>

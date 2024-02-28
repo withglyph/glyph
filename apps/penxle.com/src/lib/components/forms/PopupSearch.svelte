@@ -1,5 +1,7 @@
 <script lang="ts">
   import { clsx } from 'clsx';
+  import IconSearch from '~icons/tabler/search';
+  import { Icon } from '$lib/components';
   import type { HTMLInputAttributes } from 'svelte/elements';
 
   export let name: HTMLInputAttributes['name'] = undefined;
@@ -23,6 +25,6 @@
     {...$$restProps}
   />
   <div class="absolute inset-y-0 left-3.5 flex center text-secondary h-100%">
-    <i class="i-lc-search square-5 transition" aria-label="검색 아이콘" />
+    <Icon class="square-5 transition" icon={IconSearch} />
   </div>
 </form>

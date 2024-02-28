@@ -1,5 +1,8 @@
 <script lang="ts">
   import { clsx } from 'clsx';
+  import IconAlertTriangleFilled from '~icons/tabler/alert-triangle-filled';
+  import IconChecked from '~icons/tabler/check';
+  import { Icon } from '$lib/components';
   import { getFormContext } from '$lib/form';
   import FormValidationMessage from './FormValidationMessage.svelte';
   import type { HTMLInputAttributes } from 'svelte/elements';
@@ -26,12 +29,18 @@
     <input
       id={name}
       {name}
-      class="relative flex center square-4.5 shrink-0 border border-gray-300 rounded-0.75 cursor-pointer appearance-none transition checked:(border-none bg-teal-500) checked:after:(square-3.5 i-tb-check text-white content-empty) enabled:(aria-[invalid]:border-red-50 hover:border-gray-300!)"
+      class="relative flex center square-4.5 shrink-0 border border-gray-300 rounded-0.75 cursor-pointer appearance-none transition checked:(border-none bg-teal-500) enabled:(aria-[invalid]:border-red-50 hover:border-gray-300!)"
       type="checkbox"
       on:change
       bind:checked
       {...$$restProps}
     />
+    {#if checked}
+      <div class="absolute inset-0 square-full flex center">
+        <Icon class="text-white square-3.5" icon={IconChecked} />
+      </div>
+    {/if}
+
     <span class="slot cursor-pointer">
       <slot />
     </span>
@@ -39,7 +48,7 @@
   {#if name}
     <FormValidationMessage for={name} let:message>
       <div class="flex items-center gap-1.5 mt-1.5 text-11-r text-gray-400">
-        <i class="i-tb-alert-triangle-filled text-error-900" />
+        <Icon class="text-error-900" icon={IconAlertTriangleFilled} />
         {message}
       </div>
     </FormValidationMessage>

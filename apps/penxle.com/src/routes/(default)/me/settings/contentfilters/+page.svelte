@@ -1,10 +1,11 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import * as R from 'radash';
+  import IconChevronRight from '~icons/tabler/chevron-right';
   import ContentFilteringExample from '$assets/images/content-filtering-example.png';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Modal } from '$lib/components';
+  import { Button, Icon, Modal } from '$lib/components';
   import { Switch } from '$lib/components/forms';
   // import ContentFilterButton from './ContentFilterButton.svelte';
   import MutedSpaceModal from './MutedSpaceModal.svelte';
@@ -63,7 +64,7 @@
   <button type="button" on:click={() => (mutedSpaceOpen = true)}>
     <div class="flex items-center gap-1 w-full mb-2">
       <h3 class="text-lg font-extrabold">숨긴 스페이스</h3>
-      <i class="i-lc-chevron-right square-6 text-secondary" />
+      <Icon class="square-6 text-secondary" icon={IconChevronRight} />
     </div>
     <p class="text-secondary">스페이스를 숨기기 할 경우 해당 스페이스가 올린 포스트가 사이트에서 보이지 않아요.</p>
     <p class="text-secondary">
@@ -76,7 +77,7 @@
   <button type="button" on:click={() => (mutedTagOpen = true)}>
     <div class="flex items-center gap-1 w-full mb-2">
       <h3 class="text-lg font-extrabold">숨긴 태그</h3>
-      <i class="i-lc-chevron-right square-6 text-secondary" />
+      <Icon class="square-6 text-secondary" icon={IconChevronRight} />
     </div>
     <p class="text-secondary">태그를 숨기기 처리할 경우 해당 태그가 속해있는 포스트가 사이트에서 보이지 않아요.</p>
     <p class="text-secondary">
@@ -115,7 +116,6 @@
     <div class="flex items-center justify-between w-full mb-2">
       <div class="flex items-center gap-1">
         <h3 class="text-lg font-extrabold">트리거 주의 쿠션 비활성화</h3>
-        <button class="i-lc-help-circle square-4.5 text-secondary" type="button" on:click={() => (open = true)} />
       </div>
     </div>
 

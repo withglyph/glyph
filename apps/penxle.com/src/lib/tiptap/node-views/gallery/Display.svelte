@@ -1,5 +1,7 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import IconTrash from '~icons/tabler/trash';
+  import { Icon } from '$lib/components';
   import IsomorphicImage from './IsomorphicImage.svelte';
   import Slide from './Slide.svelte';
   import type { NodeViewProps } from '$lib/tiptap';
@@ -40,7 +42,7 @@
             type="button"
             on:click={() => removeImage(image.id)}
           >
-            <i class="i-tb-trash square-4.5 text-white" />
+            <Icon class="square-4.5 text-white" icon={IconTrash} />
           </button>
         {/if}
       </div>

@@ -1,9 +1,13 @@
 <script lang="ts">
   import clsx from 'clsx';
   import dayjs from 'dayjs';
+  import IconAlertTriangle from '~icons/tabler/alert-triangle';
+  import IconBookmark from '~icons/tabler/bookmark';
+  import IconBookmarkFilled from '~icons/tabler/bookmark-filled';
+  import IconDotsVertical from '~icons/tabler/dots-vertical';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Avatar, Badge, Image, Tag } from '$lib/components';
+  import { Avatar, Badge, Icon, Image, Tag } from '$lib/components';
   import { toast } from '$lib/notification';
   import type { Feed_post } from '$glitch';
 
@@ -138,17 +142,14 @@
       <time class="body-13-m text-secondary">{dayjs($post.publishedAt).fromNow()}</time>
     </a>
     <button type="button" on:click={toggleBookmark}>
-      <i
-        class={clsx(
-          'square-5 color-brand-50',
-          $post.bookmarkGroups.length > 0
-            ? 'i-px-bookmark-fill color-brand-50'
-            : 'i-px-bookmark-outline color-icon-primary',
-        )}
-      />
+      {#if $post.bookmarkGroups.length > 0}
+        <Icon class="square-5 color-brand-50" icon={IconBookmarkFilled} />
+      {:else}
+        <Icon class="square-5 color-icon-primary" icon={IconBookmark} />
+      {/if}
     </button>
     <button type="button">
-      <i class="i-lc-more-vertical square-5 color-icon-primary" />
+      <Icon class="square-5 color-icon-primary" icon={IconDotsVertical} />
     </button>
   </div>
 {/if}
@@ -186,7 +187,7 @@
             class="p-4 rounded-2xl h-full w-full flex flex-col center gap-2.5 items-center bg-primary text-secondary border border-secondary"
             role="alert"
           >
-            <i class="i-px-alert-triangle square-6" />
+            <Icon class="square-6" icon={IconAlertTriangle} />
             <p class="body-14-sb text-center whitespace-pre-wrap">포스트에 민감한 내용이 포함되어 있어요</p>
 
             {#if triggerTags.length > 0}

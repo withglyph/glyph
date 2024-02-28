@@ -1,6 +1,8 @@
 <script lang="ts">
+  import IconX from '~icons/tabler/x';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
+  import { Icon } from '$lib/components';
 
   export let postId: string;
   export let emoji: string;
@@ -34,8 +36,9 @@
     }}
   >
     <em-emoji id={emoji} class="square-4.5 text-center" set="twitter" />
-    <i
-      class="i-lc-x square-5 absolute top-50% -translate-y-50% left-50% -translate-x-50% opacity-0 transition select-none"
+    <Icon
+      class="square-5 absolute top-50% -translate-y-50% left-50% -translate-x-50% opacity-0 transition select-none"
+      icon={IconX}
     />
   </button>
 {:else}

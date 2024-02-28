@@ -9,8 +9,24 @@
   import * as R from 'radash';
   import Sortable from 'sortablejs';
   import { onDestroy, tick } from 'svelte';
+  import IconBookBothPage from '~icons/effit/book-both-page';
+  import IconBookSinglePage from '~icons/effit/book-single-page';
+  import IconContentScroll from '~icons/effit/content-scroll';
+  import IconContentSlide from '~icons/effit/content-slide';
+  import IconGrid from '~icons/effit/grid';
+  import IconGrid2Columns from '~icons/effit/grid-2-columns';
+  import IconGrid3Columns from '~icons/effit/grid-3-columns';
+  import IconAlertCircle from '~icons/tabler/alert-circle';
+  import IconChevronLeft from '~icons/tabler/chevron-left';
+  import IconGripVertical from '~icons/tabler/grip-vertical';
+  import IconLayoutGrid from '~icons/tabler/layout-grid';
+  import IconList from '~icons/tabler/list';
+  import IconPhoto from '~icons/tabler/photo';
+  import IconPhotoUp from '~icons/tabler/photo-up';
+  import IconPlus from '~icons/tabler/plus';
+  import IconTrash from '~icons/tabler/trash';
   import { graphql } from '$glitch';
-  import { Tooltip } from '$lib/components';
+  import { Icon, Tooltip } from '$lib/components';
   import { Checkbox, Switch } from '$lib/components/forms';
   import { Button, Modal } from '$lib/components/v2';
   import { isValidImageFile, persisted, validImageMimes } from '$lib/utils';
@@ -288,7 +304,7 @@
       offset={10}
       placement="bottom-start"
     >
-      <i class="i-tb-alert-circle square-3.5 text-gray-400" />
+      <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
     </Tooltip>
   </svelte:fragment>
 
@@ -302,7 +318,7 @@
               type="button"
               on:click={handleInsertImage}
             >
-              <i class="i-tb-photo-up square-8" />
+              <Icon class="square-8" icon={IconPhotoUp} />
               <p class="text-13-m">이미지를 업로드해주세요</p>
             </button>
           {/if}
@@ -321,7 +337,7 @@
           imageListOpen = true;
         }}
       >
-        <i class="i-tb-layout-grid square-3.5" />
+        <Icon class="square-3.5" icon={IconLayoutGrid} />
         <span class="text-11-sb ml-1.5">전체목록</span>
       </button>
       <div class="h-104px border-t border-gray-200 flex px-6 relative">
@@ -343,11 +359,9 @@
               >
                 <IsomorphicImage class="square-12 rounded-0.1875rem object-cover" {image} />
                 <div class="absolute left-1 top-1 bg-black/30 square-12 rounded-0.1875rem hidden">
-                  <button
-                    class="i-tb-trash square-4.5 text-white"
-                    type="button"
-                    on:click={() => removeImage(image.id)}
-                  />
+                  <button type="button" on:click={() => removeImage(image.id)}>
+                    <Icon class="square-4.5 text-white" icon={IconTrash} />
+                  </button>
                 </div>
 
                 <p class="text-10-r text-gray-400 text-center w-full">{index + 1}</p>
@@ -361,7 +375,7 @@
           <li class="prevent-dragging">
             <button class="p-1 flex flex-col gap-1 rounded" type="button" on:click={handleInsertImage}>
               <div class="bg-gray-100 square-12 rounded-0.1875rem flex center">
-                <i class="i-tb-plus square-4 text-gray-400" />
+                <Icon class="square-4 text-gray-400" icon={IconPlus} />
               </div>
 
               <p class="text-10-r text-gray-400 text-center w-full">이미지 추가</p>
@@ -382,17 +396,17 @@
             {
               label: '개별',
               value: 'standalone',
-              icon: 'i-tb-photo',
+              icon: IconPhoto,
               checked: node.attrs.layout === 'standalone',
             },
-            { label: '그리드', value: 'grid', icon: 'i-px2-grid', checked: node.attrs.layout === 'grid' },
+            { label: '그리드', value: 'grid', icon: IconGrid, checked: node.attrs.layout === 'grid' },
             {
               label: '슬라이드',
               value: 'slide',
-              icon: 'i-px2-content-slideshow',
+              icon: IconContentSlide,
               checked: node.attrs.layout === 'slide',
             },
-            { label: '스크롤', value: 'scroll', icon: 'i-px2-content-scroll', checked: node.attrs.layout === 'scroll' },
+            { label: '스크롤', value: 'scroll', icon: IconContentScroll, checked: node.attrs.layout === 'scroll' },
           ]}
           size="sm"
           on:change={(v) => updateAttributes({ layout: v.detail })}
@@ -410,10 +424,10 @@
               {
                 label: '2열',
                 value: 2,
-                icon: 'i-px2-grid-2-column',
+                icon: IconGrid2Columns,
                 checked: node.attrs.gridColumns === 2,
               },
-              { label: '3열', value: 3, icon: 'i-px2-grid-3-column', checked: node.attrs.gridColumns === 3 },
+              { label: '3열', value: 3, icon: IconGrid3Columns, checked: node.attrs.gridColumns === 3 },
             ]}
             size="sm"
             variant="list"
@@ -433,10 +447,10 @@
               {
                 label: '한 쪽 보기',
                 value: 1,
-                icon: 'i-px2-book-single-page',
+                icon: IconBookSinglePage,
                 checked: node.attrs.slidesPerPage === 1,
               },
-              { label: '두 쪽 보기', value: 2, icon: 'i-px2-book-both-page', checked: node.attrs.slidesPerPage === 2 },
+              { label: '두 쪽 보기', value: 2, icon: IconBookBothPage, checked: node.attrs.slidesPerPage === 2 },
             ]}
             size="sm"
             variant="list"
@@ -467,7 +481,7 @@
 <Modal bind:open={imageListOpen}>
   <svelte:fragment slot="title">
     <button class="mr-1" type="button" on:click={() => (imageListOpen = false)}>
-      <i class="i-tb-chevron-left block square-6" />
+      <Icon class="block square-6" icon={IconChevronLeft} />
     </button>
     전체목록
     <Tooltip
@@ -476,7 +490,7 @@
       offset={10}
       placement="bottom-start"
     >
-      <i class="i-tb-alert-circle square-3.5 text-gray-400" />
+      <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
     </Tooltip>
   </svelte:fragment>
 
@@ -506,7 +520,7 @@
           type="button"
           on:click={() => (view = 'grid')}
         >
-          <i class="i-tb-layout-grid block square-5 text-gray-400" />
+          <Icon class="block square-5 text-gray-400" icon={IconLayoutGrid} />
         </button>
 
         <button
@@ -515,7 +529,7 @@
           type="button"
           on:click={() => (view = 'list')}
         >
-          <i class="i-tb-list block square-5 text-gray-400" />
+          <Icon class="block square-5 text-gray-400" icon={IconList} />
         </button>
       </div>
     </div>
@@ -565,7 +579,7 @@
             <p class="grow text-14-r">{image.kind === 'data' ? image.__data.name : image.__file.name}</p>
 
             <button class="p-1" type="button">
-              <i class="i-tb-grip-vertical block square-6 text-gray-600" />
+              <Icon class="block square-6 text-gray-600" icon={IconGripVertical} />
             </button>
             {#if index === 0}
               <div id={onboardingAnchorLastDynamicId} class="absolute inset-0 z--1" />
@@ -580,7 +594,7 @@
           on:click={handleInsertImage}
         >
           <div class="bg-gray-100 square-23 rounded-0.3125rem flex center">
-            <i class="i-tb-plus block square-5 text-gray-400 stroke-2" />
+            <Icon class="block square-5 text-gray-400 stroke-2" icon={IconPlus} />
           </div>
 
           <p class="text-12-r text-gray-400 text-center w-full">이미지 추가</p>
@@ -591,7 +605,7 @@
           type="button"
           on:click={handleInsertImage}
         >
-          <i class="i-tb-plus block square-5 mr-1" />
+          <Icon class="block square-5 mr-1" icon={IconPlus} />
           <span class="text-14-m">이미지 추가</span>
         </button>
       {/if}

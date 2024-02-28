@@ -3,7 +3,13 @@
   import { RingSpinner } from '@penxle/ui/spinners';
   import clsx from 'clsx';
   import { onMount } from 'svelte';
+  import IconEmbedCompact from '~icons/effit/embed-compact';
+  import IconEmbedFull from '~icons/effit/embed-full';
+  import IconOpengraph from '~icons/effit/opengraph';
+  import IconLink from '~icons/tabler/link';
+  import IconTrash from '~icons/tabler/trash';
   import { graphql } from '$glitch';
+  import { Icon } from '$lib/components';
   import { NodeView } from '$lib/tiptap';
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
   import type { NodeViewProps } from '$lib/tiptap';
@@ -124,11 +130,12 @@
             editor?.commands.focus();
           }}
         >
-          <i
+          <Icon
             class={clsx(
-              'i-px2-embed-full text-gray-600 square-18px block <sm:square-20px',
+              'text-gray-600 square-18px block <sm:square-20px',
               node.attrs.mode === 'embed-full' && 'text-teal-500!',
             )}
+            icon={IconEmbedFull}
           />
         </button>
         <button
@@ -139,11 +146,12 @@
             editor?.commands.focus();
           }}
         >
-          <i
+          <Icon
             class={clsx(
-              'i-px2-embed-compact text-gray-600 square-18px block <sm:square-20px',
+              'text-gray-600 square-18px block <sm:square-20px',
               node.attrs.mode === 'embed-compact' && 'text-teal-500!',
             )}
+            icon={IconEmbedCompact}
           />
         </button>
         <button
@@ -154,11 +162,12 @@
             editor?.commands.focus();
           }}
         >
-          <i
+          <Icon
             class={clsx(
-              'i-px2-opengraph text-gray-600 square-18px block <sm:square-20px',
+              'text-gray-600 square-18px block <sm:square-20px',
               node.attrs.mode === 'opengraph' && 'text-teal-500!',
             )}
+            icon={IconOpengraph}
           />
         </button>
       </div>
@@ -167,7 +176,7 @@
     {/if}
 
     <button class="p-4px rounded-2px transition hover:bg-gray-100" type="button" on:click={convertToLink}>
-      <i class="i-tb-link text-gray-600 square-18px block <sm:square-20px" />
+      <Icon class="text-gray-600 square-18px block <sm:square-20px" icon={IconLink} />
     </button>
 
     <div class="w-1px h-12px bg-gray-200" />
@@ -180,7 +189,7 @@
         editor?.commands.focus();
       }}
     >
-      <i class="i-tb-trash text-gray-600 square-18px block <sm:square-20px" />
+      <Icon class="text-gray-600 square-18px block <sm:square-20px" icon={IconTrash} />
     </button>
   </TiptapNodeViewBubbleMenu>
 {/if}

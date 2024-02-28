@@ -1,5 +1,7 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import IconEdit from '~icons/tabler/edit';
+  import { Icon } from '$lib/components';
   import type { HTMLInputAttributes } from 'svelte/elements';
 
   export let value: string | null | undefined = undefined;
@@ -38,8 +40,7 @@
     on:blur
   />
   <button
-    class={clsx('i-px-edit-2-outline square-6 text-secondary disabled:text-disabled', editing && 'hidden')}
-    aria-label="수정 아이콘"
+    class={clsx('text-secondary disabled:text-disabled', editing && 'hidden')}
     type="button"
     on:click={() => {
       editing = true;
@@ -48,5 +49,7 @@
         inputEl.select();
       });
     }}
-  />
+  >
+    <Icon class="square-6" icon={IconEdit} />
+  </button>
 </label>

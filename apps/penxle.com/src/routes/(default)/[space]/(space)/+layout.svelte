@@ -1,9 +1,13 @@
 <script lang="ts">
   import { Link } from '@penxle/ui';
+  import IconDotsVertical from '~icons/tabler/dots-vertical';
+  import IconLock from '~icons/tabler/lock';
+  import IconSettings from '~icons/tabler/settings';
+  import IconShare2 from '~icons/tabler/share-2';
   import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { BottomSheet, Button, Image, Modal } from '$lib/components';
+  import { BottomSheet, Button, Icon, Image, Modal } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { toast } from '$lib/notification';
@@ -112,7 +116,7 @@
             handleShare($query.space.name, `${location.origin}/${$query.space.slug}`);
           }}
         >
-          <i class="i-lc-share square-6 text-icon-secondary" />
+          <Icon class="square-6 text-icon-secondary" icon={IconShare2} />
         </button>
         {#if !$query.space.meAsMember}
           <button
@@ -122,7 +126,7 @@
               menuOpen = true;
             }}
           >
-            <i class="i-lc-more-vertical square-6 text-icon-secondary" />
+            <Icon class="square-6 text-icon-secondary" icon={IconDotsVertical} />
           </button>
         {/if}
       </div>
@@ -135,7 +139,7 @@
           {#if $query.space.visibility === 'PRIVATE'}
             <span class="bg-gray-10 text-secondary rounded-2xl py-1 px-1.5 caption-12-b text-nowrap">
               비공개
-              <i class="i-px-lock square-3 mb-0.5" />
+              <Icon class="square-3 mb-0.5" icon={IconLock} />
             </span>
           {/if}
         </h1>
@@ -181,14 +185,14 @@
             handleShare($query.space.name, `${location.origin}/${$query.space.slug}`);
           }}
         >
-          <i class="i-lc-share mr-2" />
+          <Icon class="mr-2" icon={IconShare2} />
           공유하기
         </Button>
         <a
           class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
           href={`/${$query.space.slug}/dashboard/settings`}
         >
-          <i class="i-lc-settings square-6 text-secondary" />
+          <Icon class="square-6 text-secondary" icon={IconSettings} />
         </a>
       {:else}
         {#if $query.me === null}
@@ -236,14 +240,14 @@
             handleShare($query.space.name, `${location.origin}/${$query.space.slug}`);
           }}
         >
-          <i class="i-lc-share mr-2" />
+          <Icon class="mr-2" icon={IconShare2} />
           공유하기
         </Button>
         {#if !$query.space.meAsMember}
           <Menu
             class="border border-secondary rounded-xl square-9 p-1 flex center transition duration-300 hover:border-primary"
           >
-            <i slot="value" class="i-lc-more-vertical square-6 text-secondary" />
+            <Icon slot="value" class="square-6 text-secondary" icon={IconDotsVertical} />
 
             {#if $query.space.muted}
               <MenuItem
@@ -293,7 +297,7 @@
         type="link"
         variant="outlined"
       >
-        <i class="i-lc-settings square-6 text-secondary" />
+        <Icon class="square-6 text-secondary" icon={IconSettings} />
       </Button>
     {:else if $query.me === null}
       <Button

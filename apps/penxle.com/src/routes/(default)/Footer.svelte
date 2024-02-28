@@ -1,6 +1,11 @@
 <script lang="ts">
   import { Link } from '@penxle/ui';
+  import IconEffit from '~icons/effit/effit';
+  import IconGithub from '~icons/simple-icons/github';
+  import IconInstagram from '~icons/simple-icons/instagram';
+  import IconTwitter from '~icons/simple-icons/twitter';
   import CompanyLogo from '$assets/branding/company-logo.svg?component';
+  import { Icon } from '$lib/components';
 </script>
 
 <footer class="border-t border-secondary px-4 py-10 text-xs tracking-wider text-secondary flex sm:px-7.5">
@@ -53,10 +58,21 @@
 
     <div>
       <div class="flex items-center gap-4">
-        <Link class="i-px-logo square-4 hover:text-primary" href="/pencil" />
-        <Link class="i-lg-twitter square-4 hover:text-[#1DA1F2]" href="https://twitter.com/penxle" />
-        <Link class="i-lg-instagram square-4 hover:text-[#E4405F]" href="https://www.instagram.com/penxle.team/" />
-        <Link class="i-lg-github square-4 hover:text-[#181717]" href="https://github.com/penxle" />
+        <Link class="hover:text-primary" href="/pencil">
+          <Icon class="square-4" icon={IconEffit} />
+        </Link>
+
+        <Link class="hover:text-[#1DA1F2]" href="https://twitter.com/pencil_site">
+          <Icon class="square-4" icon={IconTwitter} />
+        </Link>
+
+        <Link class="hover:text-[#E4405F]" href="https://www.instagram.com/penxle.team/">
+          <Icon class="square-4" icon={IconInstagram} />
+        </Link>
+
+        <Link class="hover:text-[#181717]" href="https://github.com/penxle">
+          <Icon class="square-4" icon={IconGithub} />
+        </Link>
       </div>
     </div>
   </div>

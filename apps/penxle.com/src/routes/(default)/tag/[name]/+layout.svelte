@@ -1,8 +1,9 @@
 <script lang="ts">
+  import IconDotsVertical from '~icons/tabler/dots-vertical';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button } from '$lib/components';
+  import { Button, Icon } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { toast } from '$lib/notification';
@@ -112,7 +113,9 @@
         {/if}
 
         <Menu placement="bottom-start">
-          <button slot="value" class="i-lc-more-vertical square-6 text-disabled" type="button" />
+          <button slot="value" type="button">
+            <Icon class="square-6 text-disabled" icon={IconDotsVertical} />
+          </button>
 
           {#if $query.tag.muted}
             <MenuItem

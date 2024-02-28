@@ -1,5 +1,13 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import IconEmbedCompact from '~icons/effit/embed-compact';
+  import IconEmbedFull from '~icons/effit/embed-full';
+  import IconAlignCenter from '~icons/tabler/align-center';
+  import IconAlignLeft from '~icons/tabler/align-left';
+  import IconAlignRight from '~icons/tabler/align-right';
+  import IconEdit from '~icons/tabler/edit';
+  import IconTrash from '~icons/tabler/trash';
+  import { Icon } from '$lib/components';
   import { NodeView } from '$lib/tiptap';
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
   import Display from './Display.svelte';
@@ -70,7 +78,7 @@
 {#if editor && selected}
   <TiptapNodeViewBubbleMenu {editor} {getPos} {node}>
     <button class="p-4px rounded-2px transition hover:bg-gray-100" type="button" on:click={() => (open = true)}>
-      <i class="i-tb-edit text-gray-600 square-18px block <sm:square-20px" />
+      <Icon class="text-gray-600 square-18px block <sm:square-20px" icon={IconEdit} />
     </button>
 
     <div class="w-1px h-12px bg-gray-200" />
@@ -84,11 +92,12 @@
           editor?.commands.focus();
         }}
       >
-        <i
+        <Icon
           class={clsx(
-            'i-tb-align-left text-gray-600 square-18px block <sm:square-20px',
+            'text-gray-600 square-18px block <sm:square-20px',
             node.attrs.align === 'left' && 'text-teal-500!',
           )}
+          icon={IconAlignLeft}
         />
       </button>
 
@@ -100,11 +109,12 @@
           editor?.commands.focus();
         }}
       >
-        <i
+        <Icon
           class={clsx(
-            'i-tb-align-center text-gray-600 square-18px block <sm:square-20px',
+            'text-gray-600 square-18px block <sm:square-20px',
             node.attrs.align === 'center' && 'text-teal-500!',
           )}
+          icon={IconAlignCenter}
         />
       </button>
 
@@ -116,11 +126,12 @@
           editor?.commands.focus();
         }}
       >
-        <i
+        <Icon
           class={clsx(
-            'i-tb-align-right text-gray-600 square-18px block <sm:square-20px',
+            'text-gray-600 square-18px block <sm:square-20px',
             node.attrs.align === 'right' && 'text-teal-500!',
           )}
+          icon={IconAlignRight}
         />
       </button>
 
@@ -135,11 +146,9 @@
         editor?.commands.focus();
       }}
     >
-      <i
-        class={clsx(
-          'i-px2-embed-full text-gray-600 square-18px block <sm:square-20px',
-          node.attrs.size === 'full' && 'text-teal-500!',
-        )}
+      <Icon
+        class={clsx('text-gray-600 square-18px block <sm:square-20px', node.attrs.size === 'full' && 'text-teal-500!')}
+        icon={IconEmbedFull}
       />
     </button>
     <button
@@ -150,18 +159,19 @@
         editor?.commands.focus();
       }}
     >
-      <i
+      <Icon
         class={clsx(
-          'i-px2-embed-compact text-gray-600 square-18px block <sm:square-20px',
+          'text-gray-600 square-18px block <sm:square-20px',
           node.attrs.size === 'compact' && 'text-teal-500!',
         )}
+        icon={IconEmbedCompact}
       />
     </button>
 
     <div class="w-1px h-12px bg-gray-200" />
 
     <button class="p-4px rounded-2px transition hover:bg-gray-100" type="button" on:click={() => deleteNode()}>
-      <i class="i-tb-trash text-gray-600 square-18px block" />
+      <Icon class="text-gray-600 square-18px block" icon={IconTrash} />
     </button>
   </TiptapNodeViewBubbleMenu>
 

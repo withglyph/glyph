@@ -5,10 +5,26 @@
   import dayjs from 'dayjs';
   import stringify from 'fast-json-stable-stringify';
   import { onMount } from 'svelte';
+  import IconRating15Plus from '~icons/effit/rating-15-plus';
+  import IconRating20Plus from '~icons/effit/rating-20-plus';
+  import IconAlertSquareRounded from '~icons/tabler/alert-square-rounded';
+  import IconAlertTriangle from '~icons/tabler/alert-triangle';
+  import IconBookmark from '~icons/tabler/bookmark';
+  import IconBookmarkFilled from '~icons/tabler/bookmark-filled';
+  import IconCheck from '~icons/tabler/check';
+  import IconChevronRight from '~icons/tabler/chevron-right';
+  import IconDotsVertical from '~icons/tabler/dots-vertical';
+  import IconEye from '~icons/tabler/eye';
+  import IconLockSquareRounded from '~icons/tabler/lock-square-rounded';
+  import IconMessageCircle from '~icons/tabler/message-circle';
+  import IconMessageCircleOff from '~icons/tabler/message-circle-off';
+  import IconMoodSmile from '~icons/tabler/mood-smile';
+  import IconPlus from '~icons/tabler/plus';
+  import IconShare2 from '~icons/tabler/share-2';
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Avatar, Badge, Image, Tooltip } from '$lib/components';
+  import { Avatar, Badge, Icon, Image, Tooltip } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Button, Modal } from '$lib/components/v2';
   import { categoryFilter, pairFilter } from '$lib/const/feed';
@@ -462,7 +478,7 @@
         href={`/${$query.post.space?.slug}/collections/${$query.post.collection.id}`}
       >
         {$query.post.collection.name}
-        <i class="i-tb-chevron-right square-4 text-gray-500" />
+        <Icon class="square-4 text-gray-500" icon={IconChevronRight} />
       </a>
     {/if}
     <div class="flex justify-between items-start">
@@ -474,7 +490,7 @@
       </div>
 
       <Menu placement="bottom-end">
-        <i slot="value" class="i-tb-dots-vertical square-24px text-gray-500 block sm:hidden" />
+        <Icon slot="value" class="square-24px text-gray-500 block sm:hidden" icon={IconDotsVertical} />
 
         {#if $query.post.space?.meAsMember}
           <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
@@ -544,11 +560,11 @@
             {#if $query.post.discloseStats}
               <div class="flex items-center before:(content-empty w-1px h-12px bg-gray-200 mx-2)">
                 <div class="flex items-center gap-2px mr-2.5">
-                  <i class="i-tb-eye square-14px text-gray-400" />
+                  <Icon class="square-14px text-gray-400" icon={IconEye} />
                   {humanizeNumber($query.post.viewCount)}
                 </div>
                 <div class="flex items-center gap-2px">
-                  <i class="i-tb-mood-smile square-13px text-gray-400" />
+                  <Icon class="square-13px text-gray-400" icon={IconMoodSmile} />
                   {humanizeNumber($query.post.likeCount)}
                 </div>
               </div>
@@ -561,16 +577,10 @@
         <!-- <Button size="xs" variant="tertiary">집중모드</Button> -->
 
         <SharePostPopover href={shortLink}>
-          <i class="i-tb-share-2 square-24px text-gray-500 transition hover:text-teal-400" />
+          <Icon class="square-24px text-gray-500 transition hover:text-teal-400" icon={IconShare2} />
         </SharePostPopover>
 
         <button
-          class={clsx(
-            'square-24px',
-            $query.post.bookmarkGroups.length > 0
-              ? 'i-tb-bookmark-filled bg-teal-500'
-              : 'i-tb-bookmark text-gray-500 transition hover:text-teal-400',
-          )}
           type="button"
           on:click={async () => {
             if ($query.post.bookmarkGroups.length > 0) {
@@ -586,10 +596,16 @@
               mixpanel.track('post:bookmark', { postId: $query.post.id, via: 'post' });
             }
           }}
-        />
+        >
+          {#if $query.post.bookmarkGroups.length > 0}
+            <Icon class="square-24px bg-teal-500" icon={IconBookmarkFilled} />
+          {:else}
+            <Icon class="square-24px text-gray-500 transition hover:text-teal-400" icon={IconBookmark} />
+          {/if}
+        </button>
 
         <Menu placement="bottom-end">
-          <i slot="value" class="i-tb-dots-vertical square-24px text-gray-500" />
+          <Icon slot="value" class="square-24px text-gray-500" icon={IconDotsVertical} />
 
           {#if $query.post.space?.meAsMember}
             <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
@@ -635,14 +651,14 @@
         {#if $query.post.space?.myMasquerade?.blocked}
           <AlertText
             description="{$query.post.space.name}의 게시물을 볼 수 없어요"
-            icon="i-tb-alert-triangle"
+            icon={IconAlertTriangle}
             title="차단당했습니다"
           />
         {:else if blurContent}
           {#if $query.post.ageRating === 'ALL'}
             <AlertText
               description="해당 포스트에는 민감한 내용이 포함되어 있어요"
-              icon="i-tb-alert-square-rounded"
+              icon={IconAlertSquareRounded}
               title="트리거 주의"
               {triggerTags}
             >
@@ -662,7 +678,7 @@
                   ? ''
                   : '해당 내용을 감상하려면 본인 인증이 필요해요'
                 : '해당 내용을 감상하려면 본인 인증이 필요해요 로그인 후 이용해주세요'}
-              icon="i-px2-rating-15-plus"
+              icon={IconRating15Plus}
               title="15세 콘텐츠"
               {triggerTags}
             >
@@ -696,7 +712,7 @@
                     : '해당 내용은 20세 이상만 열람할 수 있어요'
                   : '해당 내용을 감상하려면 본인 인증이 필요해요'
                 : '해당 내용을 감상하려면 본인 인증이 필요해요. 로그인 후 이용해주세요'}
-              icon="i-px2-rating-20-plus"
+              icon={IconRating20Plus}
               title="성인용 콘텐츠"
               {triggerTags}
             >
@@ -846,7 +862,7 @@
         {/if}
       </div>
     {:else}
-      <AlertText description="해당 내용은 비밀번호 입력이 필요해요" icon="i-tb-lock-square-rounded" title="비밀글">
+      <AlertText description="해당 내용은 비밀번호 입력이 필요해요" icon={IconLockSquareRounded} title="비밀글">
         <form
           class="mt-5 flex gap-7px"
           on:submit|preventDefault={async () => {
@@ -883,11 +899,11 @@
             offset={10}
             placement="top"
           >
-            <i class="i-tb-message-circle-off square-5 text-gray-400" />
+            <Icon class="square-5 text-gray-400" icon={IconMessageCircleOff} />
           </Tooltip>
         {:else}
           <a class="flex center mr-5 square-6" href="#comment">
-            <i class="i-tb-message-circle square-5 block" />
+            <Icon class="square-5 block" icon={IconMessageCircle} />
           </a>
         {/if}
 
@@ -903,12 +919,6 @@
 
       <div class="flex items-center gap-5">
         <button
-          class={clsx(
-            'square-20px',
-            $query.post.bookmarkGroups.length > 0
-              ? 'i-tb-bookmark-filled bg-teal-500'
-              : 'i-tb-bookmark text-gray-700 transition hover:text-teal-400',
-          )}
           type="button"
           on:click={async () => {
             if ($query.post.bookmarkGroups.length > 0) {
@@ -924,9 +934,15 @@
               mixpanel.track('post:bookmark', { postId: $query.post.id, via: 'post' });
             }
           }}
-        />
+        >
+          {#if $query.post.bookmarkGroups.length > 0}
+            <Icon class="square-20px bg-teal-500" icon={IconBookmarkFilled} />
+          {:else}
+            <Icon class="square-20px text-gray-700 transition hover:text-teal-400" icon={IconBookmark} />
+          {/if}
+        </button>
         <SharePostPopover href={shortLink}>
-          <i class="i-tb-share-2 square-5 text-gray-700 block transition hover:text-teal-400" />
+          <Icon class="square-5 block text-gray-700 transition hover:text-teal-400" icon={IconShare2} />
         </SharePostPopover>
       </div>
     </div>
@@ -961,7 +977,7 @@
         {/if}
       </div>
       <SharePostPopover href={shortLink}>
-        <i class="i-tb-share-2 square-5 text-gray-500 block transition hover:text-teal-400" />
+        <Icon class="square-5 text-gray-500 block transition hover:text-teal-400" icon={IconShare2} />
       </SharePostPopover>
     </div>
 
@@ -1101,7 +1117,7 @@
               mixpanel.track('space:unfollow', { spaceId: $query.post.space.id, via: 'post' });
             }}
           >
-            <i class="i-tb-check square-3.5 block text-gray-400" />
+            <Icon class="square-3.5 block text-gray-400" icon={IconCheck} />
             관심 스페이스
           </Button>
         {:else}
@@ -1120,7 +1136,7 @@
               mixpanel.track('space:follow', { spaceId: $query.post.space.id, via: 'post' });
             }}
           >
-            <i class="i-tb-plus square-3.5 block" />
+            <Icon class="square-3.5 block" icon={IconPlus} />
             관심 스페이스
           </Button>
         {/if}

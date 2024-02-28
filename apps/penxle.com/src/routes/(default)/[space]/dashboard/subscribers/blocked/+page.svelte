@@ -1,9 +1,12 @@
 <script lang="ts">
   import dayjs from 'dayjs';
   import { onMount } from 'svelte';
+  import IconAlertTriangle from '~icons/tabler/alert-triangle';
+  import IconSelector from '~icons/tabler/selector';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
+  import { Icon } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { pageSubTitle } from '$lib/stores';
 
@@ -52,7 +55,7 @@
 
 {#if $query.space.blockedMasquerades.length === 0}
   <div class="flex flex-col gap-1 center grow my-30">
-    <i class="i-tb-alert-triangle square-7 block" />
+    <Icon class="square-7 block" icon={IconAlertTriangle} />
     <p class="text-center my-auto text-16-sb">차단 유저가 없어요</p>
   </div>
 {:else}
@@ -63,7 +66,7 @@
           <th class="py-2 pl-5 lg:w-120px <sm:hidden">
             <button class="flex items-center gap-1" type="button">
               차단일자
-              <i class="i-tb-selector square-3.5" />
+              <Icon class="square-3.5" icon={IconSelector} />
             </button>
           </th>
           <th class="py-2 px-2.5 text-left">아이디(익명)</th>

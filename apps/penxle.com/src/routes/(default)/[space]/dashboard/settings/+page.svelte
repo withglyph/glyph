@@ -185,63 +185,6 @@
           <span slot="right-icon" class="body-14-sb text-disabled">{$data.slug?.length ?? 0}/20</span>
         </TextInput>
       </FormField>
-
-      <!-- <div class="flex items-center justify-end">
-        <label class="body-14-b flex items-center justify-end gap-1 w-fit">
-          링크 추가
-          <button
-            class="border border-secondary square-6 bg-white text-secondary rounded-lg flex center"
-            type="button"
-            on:click={() => {
-              links.push({ id: nanoid(), url: '' });
-              links = links;
-            }}
-          >
-            <i class="i-lc-plus" />
-          </button>
-        </label>
-      </div> -->
-
-      <!-- <ul class="externalLinks space-y-3">
-        {#each links as { url, id }, index (id)}
-          <li class="flex items-start gap-3">
-            <div>
-              <button
-                class="square-6 p-0.5 border border-secondary rounded-lg flex center mb-1 transition cursor-move hover:border-primary"
-                type="button"
-              >
-                <i class="linkHandle i-lc-menu square-3.5 text-icon-secondary" />
-              </button>
-              <button
-                class="square-6 p-0.5 border border-secondary rounded-lg flex center transition hover:border-primary"
-                type="button"
-                on:click={() => {
-                  links = links.filter((_, i) => i !== index);
-                  links = links;
-                }}
-              >
-                <i class="i-lc-trash square-3.5 text-red-50" />
-              </button>
-            </div>
-
-            <div
-              class="w-full flex flex-col gap-1.5 border border-gray-5 rounded-2xl transition bg-primary pt-3 pb-4 px-3.5 hover:border-secondary focus-within:border-tertiary! [&:has(textarea[aria-invalid])]:border-action-error disabled:opacity-50"
-            >
-              <label class="body-13-b" for={`url${index + 1}`}>{`URL ${index + 1}`}</label>
-              <TextInput
-                id={`externalLinks[${index}]`}
-                name={`externalLinks[${index}]`}
-                class="w-full"
-                autocomplete="on"
-                placeholder="URL을 입력해주세요"
-                type="url"
-                bind:value={url}
-              />
-              <FormValidationMessage for={`externalLinks[${index}]`} />
-            </div>
-          </li>
-        {/each}
-      </ul> -->
     </div>
 
     <Switch name="isPublic" class="flex justify-between mt-8 body-16-b">

@@ -1,3 +1,5 @@
+import 'unplugin-icons/types/svelte';
+
 import type { PortableAppError } from '$lib/errors';
 
 declare global {

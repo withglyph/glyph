@@ -1,9 +1,17 @@
 <script lang="ts">
   import clsx from 'clsx';
   import dayjs from 'dayjs';
+  import IconReplyBar from '~icons/effit/reply-bar';
+  import IconCaretDownFilled from '~icons/tabler/caret-down-filled';
+  import IconCaretUpFilled from '~icons/tabler/caret-up-filled';
+  import IconDotsVertical from '~icons/tabler/dots-vertical';
+  import IconHeart from '~icons/tabler/heart';
+  import IconHeartFilled from '~icons/tabler/heart-filled';
+  import IconLock from '~icons/tabler/lock';
+  import IconPinnedFilled from '~icons/tabler/pinned-filled';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Avatar } from '$lib/components';
+  import { Avatar, Icon } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Button, Modal } from '$lib/components/v2';
   import CommentInput from './CommentInput.svelte';
@@ -202,13 +210,13 @@
     )}
   >
     {#if parentId}
-      <i class="i-px2-reply-bar square-3.5 text-gray-500" />
+      <Icon class="square-3.5 text-gray-500" icon={IconReplyBar} />
     {/if}
 
     <div class="grow">
       {#if $postComment.pinned}
         <p class="text-gray-400 text-11-m mb-2 flex items-center gap-1">
-          <i class="i-tb-pinned-filled text-gray-400" />
+          <Icon class="text-gray-400" icon={IconPinnedFilled} />
           고정된 댓글
         </p>
       {/if}
@@ -225,7 +233,7 @@
               <mark class="text-12-r text-teal-500">구매자</mark>
             {/if}
             {#if $postComment.visibility === 'PRIVATE'}
-              <i class="i-tb-lock square-4 text-gray-400" />
+              <Icon class="square-4 text-gray-400" icon={IconLock} />
             {/if}
           </p>
         {/if}
@@ -234,13 +242,14 @@
           <button
             slot="value"
             class={clsx(
-              'i-tb-dots-vertical square-5 text-gray-500',
               ($postComment.state === 'INACTIVE' ||
                 (!$query.post.space.meAsMember && $postComment.profile.id !== $query.post.space.commentProfile?.id)) &&
                 'hidden',
             )}
             type="button"
-          />
+          >
+            <Icon class="square-5 text-gray-500 square-5" icon={IconDotsVertical} />
+          </button>
 
           {#if $query.post.space.meAsMember}
             <MenuItem
@@ -307,9 +316,9 @@
               }}
             >
               {#if $postComment.likedByMe}
-                <i class="i-tb-heart-filled square-4 block text-teal-500" />
+                <Icon class="square-4 block text-teal-500" icon={IconHeartFilled} />
               {:else}
-                <i class="i-tb-heart square-4 block text-gray-400" />
+                <Icon class="square-4 block text-gray-400" icon={IconHeart} />
               {/if}
               {#if $postComment.likeCount > 0}
                 {$postComment.likeCount}
@@ -333,7 +342,7 @@
                   <Avatar class="rounded-full square-5.5" $profile={$query.post.member.profile} />
                 {/if}
 
-                <i class="i-tb-heart-filled text-teal-500 square-4 absolute -bottom-6px -right-6px" />
+                <Icon class="text-teal-500 square-4 absolute -bottom-6px -right-6px" icon={IconHeartFilled} />
               </div>
             {/if}
           </div>
@@ -349,9 +358,11 @@
             }}
           >
             {$postComment.childComments.length}개의 답글
-            <i
-              class={clsx('i-tb-caret-down-filled square-14px text-gray-500', repliesOpen && 'i-tb-caret-up-filled')}
-            />
+            {#if repliesOpen}
+              <Icon class="square-14px text-gray-500" icon={IconCaretUpFilled} />
+            {:else}
+              <Icon class="square-14px text-gray-500" icon={IconCaretDownFilled} />
+            {/if}
           </button>
         {/if}
       {/if}

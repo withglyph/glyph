@@ -3,8 +3,29 @@
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import { onMount } from 'svelte';
+  import IconLetterSpacing from '~icons/effit/letter-spacing';
+  import IconLineHeight from '~icons/effit/line-height';
+  import IconRuby from '~icons/effit/ruby';
+  import IconBold from '~icons/tabler/bold';
+  import IconCheck from '~icons/tabler/check';
+  import IconChevronDown from '~icons/tabler/chevron-down';
+  import IconChevronLeft from '~icons/tabler/chevron-left';
+  import IconDotsVertical from '~icons/tabler/dots-vertical';
+  import IconFolder from '~icons/tabler/folder';
+  import IconHtml from '~icons/tabler/html';
+  import IconItalic from '~icons/tabler/italic';
+  import IconLink from '~icons/tabler/link';
+  import IconList from '~icons/tabler/list';
+  import IconListNumbers from '~icons/tabler/list-numbers';
+  import IconMinus from '~icons/tabler/minus';
+  import IconPhoto from '~icons/tabler/photo';
+  import IconQuote from '~icons/tabler/quote';
+  import IconSettings from '~icons/tabler/settings';
+  import IconStrikethrough from '~icons/tabler/strikethrough';
+  import IconUnderline from '~icons/tabler/underline';
   import Wordmark from '$assets/icons/wordmark.svg?component';
   import { fragment, graphql } from '$glitch';
+  import { Icon } from '$lib/components';
   import { Logo } from '$lib/components/branding';
   import ColorPicker from '$lib/components/ColorPicker.svelte';
   import { Menu, MenuItem } from '$lib/components/menu';
@@ -152,7 +173,7 @@
       <Logo class="square-6 <sm:hidden" />
       <Wordmark class="h-5.25 color-icon-primary <sm:hidden" />
 
-      <i class="i-tb-chevron-left square-6 sm:hidden" />
+      <Icon class="square-6 sm:hidden" icon={IconChevronLeft} />
     </Link>
 
     <div class="flex items-end justify-end flex-1">
@@ -226,7 +247,7 @@
 
       <Menu class="flex center" offset={menuOffset} placement="bottom-end" rounded={false}>
         <div slot="value" class="h-9 flex center <sm:hidden">
-          <i class="i-tb-dots-vertical square-6" aria-label="더보기" />
+          <Icon class="square-6" icon={IconDotsVertical} />
         </div>
 
         <MenuItem
@@ -254,7 +275,7 @@
             use:colorPickerAnchor
           >
             <div style:color={currentColor} class="rounded-full square-4.5 bg-[currentColor]" />
-            <i class={clsx('i-tb-chevron-down square-4.5 text-gray-300', fontColorOpen && 'rotate-180')} />
+            <Icon class={clsx('square-4.5 text-gray-300', fontColorOpen && 'rotate-180')} icon={IconChevronDown} />
           </button>
 
           {#if colorPickerOpen}
@@ -296,7 +317,7 @@
                 {values.fontFamily.find(({ value }) => editor?.getAttributes('font_family').fontFamily === value)
                   ?.label ?? values.fontFamily[0].label}
               </div>
-              <i class={clsx('i-tb-chevron-down square-4.5 text-gray-300', open && 'rotate-180')} />
+              <Icon class={clsx('square-4.5 text-gray-300', open && 'rotate-180')} icon={IconChevronDown} />
             </button>
 
             {#each values.fontFamily as font (font.value)}
@@ -313,13 +334,9 @@
                 <span style:font-family={`PNXL_${font.value}`}>
                   {font.label}
                 </span>
-                <i
-                  class={clsx(
-                    'i-tb-check square-5 text-teal-500',
-                    !editor?.isActive({ fontFamily: font.value }) && 'invisible',
-                  )}
-                  aria-hidden={!editor?.isActive({ fontFamily: font.value })}
-                  aria-label="선택됨"
+                <Icon
+                  class={clsx('square-5 text-teal-500', !editor?.isActive({ fontFamily: font.value }) && 'invisible')}
+                  icon={IconCheck}
                 />
               </MenuItem>
             {/each}
@@ -337,7 +354,7 @@
             >
               {values.fontSize.find(({ value }) => editor?.getAttributes('font_size').fontSize === value)?.label ??
                 values.fontSize[4].label}
-              <i class={clsx('i-tb-chevron-down square-4.5 text-gray-300', open && 'rotate-180')} />
+              <Icon class={clsx('square-4.5 text-gray-300', open && 'rotate-180')} icon={IconChevronDown} />
             </button>
 
             {#each values.fontSize as fontSize (fontSize.value)}
@@ -354,13 +371,9 @@
                 }}
               >
                 {fontSize.label}
-                <i
-                  class={clsx(
-                    'i-tb-check square-5 text-teal-500',
-                    !editor?.isActive({ fontSize: fontSize.value }) && 'invisible',
-                  )}
-                  aria-hidden={!editor?.isActive({ fontSize: fontSize.value })}
-                  aria-label="선택됨"
+                <Icon
+                  class={clsx('square-5 text-teal-500', !editor?.isActive({ fontSize: fontSize.value }) && 'invisible')}
+                  icon={IconCheck}
                 />
               </MenuItem>
             {/each}
@@ -375,7 +388,7 @@
             type="button"
             on:click={() => editor?.chain().focus().toggleBold().run()}
           >
-            <i class={clsx('i-tb-bold square-6', editor?.isActive('bold') && 'text-teal-500')} />
+            <Icon class={clsx('square-6', editor?.isActive('bold') && 'text-teal-500')} icon={IconBold} />
           </button>
         </ToolbarButtonTooltip>
 
@@ -385,7 +398,7 @@
             type="button"
             on:click={() => editor?.chain().focus().toggleItalic().run()}
           >
-            <i class={clsx('i-tb-italic square-6', editor?.isActive('italic') && 'text-teal-500')} />
+            <Icon class={clsx('square-6', editor?.isActive('italic') && 'text-teal-500')} icon={IconItalic} />
           </button>
         </ToolbarButtonTooltip>
 
@@ -395,7 +408,7 @@
             type="button"
             on:click={() => editor?.chain().focus().toggleStrike().run()}
           >
-            <i class={clsx('i-tb-strikethrough square-6', editor?.isActive('strike') && 'text-teal-500')} />
+            <Icon class={clsx('square-6', editor?.isActive('strike') && 'text-teal-500')} icon={IconStrikethrough} />
           </button>
         </ToolbarButtonTooltip>
 
@@ -405,7 +418,7 @@
             type="button"
             on:click={() => editor?.chain().focus().toggleUnderline().run()}
           >
-            <i class={clsx('i-tb-underline square-6', editor?.isActive('underline') && 'text-teal-500')} />
+            <Icon class={clsx('square-6', editor?.isActive('underline') && 'text-teal-500')} icon={IconUnderline} />
           </button>
         </ToolbarButtonTooltip>
 
@@ -416,7 +429,7 @@
             type="button"
             on:click={() => editor?.chain().focus().setRuby('').run()}
           >
-            <i class="i-px2-ruby square-6" />
+            <Icon class="square-6" icon={IconRuby} />
           </button>
         </ToolbarButtonTooltip>
       </div>
@@ -431,12 +444,10 @@
               type="button"
               let:open
             >
-              <i
-                class={clsx(
-                  values.textAlign.find(({ value }) => value === editor?.getAttributes('paragraph').textAlign)?.icon ??
-                    values.textAlign[0].icon,
-                  'square-6',
-                )}
+              <Icon
+                class="square-6"
+                icon={values.textAlign.find(({ value }) => value === editor?.getAttributes('paragraph').textAlign)
+                  ?.icon ?? values.textAlign[0].icon}
               />
             </button>
 
@@ -447,7 +458,7 @@
                 type="button"
                 on:click={() => editor?.chain().focus().setParagraphTextAlign(textAlign.value).run()}
               >
-                <i class={clsx(textAlign.icon, 'square-6')} />
+                <Icon class="square-6" icon={textAlign.icon} />
               </button>
             {/each}
           </Menu>
@@ -462,7 +473,7 @@
               type="button"
               let:open
             >
-              <i class="i-px2-line-height square-6" />
+              <Icon class="square-6" icon={IconLineHeight} />
             </button>
 
             {#each values.lineHeight as lineHeight (lineHeight.value)}
@@ -473,13 +484,12 @@
                 }}
               >
                 {lineHeight.label}
-                <i
+                <Icon
                   class={clsx(
-                    'i-tb-check square-5 text-teal-500',
+                    'square-5 text-teal-500',
                     !editor?.isActive({ lineHeight: lineHeight.value }) && 'invisible',
                   )}
-                  aria-hidden={!editor?.isActive({ lineHeight: lineHeight.value })}
-                  aria-label="선택됨"
+                  icon={IconCheck}
                 />
               </MenuItem>
             {/each}
@@ -495,7 +505,7 @@
               type="button"
               let:open
             >
-              <i class="i-px2-letter-spacing square-6" />
+              <Icon class="square-6" icon={IconLetterSpacing} />
             </button>
 
             {#each values.letterSpacing as letterSpacing (letterSpacing.value)}
@@ -506,13 +516,12 @@
                 }}
               >
                 {letterSpacing.label}
-                <i
+                <Icon
                   class={clsx(
-                    'i-tb-check square-5 text-teal-500',
+                    'square-5 text-teal-500',
                     !editor?.isActive({ letterSpacing: letterSpacing.value }) && 'invisible',
                   )}
-                  aria-hidden={!editor?.isActive({ letterSpacing: letterSpacing.value })}
-                  aria-label="선택됨"
+                  icon={IconCheck}
                 />
               </MenuItem>
             {/each}
@@ -530,7 +539,7 @@
               type="button"
               let:open
             >
-              <i class="i-tb-list square-6" />
+              <Icon class="square-6" icon={IconList} />
             </button>
 
             <MenuItem
@@ -538,7 +547,7 @@
                 editor?.chain().focus().toggleBulletList().run();
               }}
             >
-              <i class="i-tb-list square-6" aria-label="순서 없는 리스트" />
+              <Icon class="square-6" icon={IconList} />
             </MenuItem>
 
             <MenuItem
@@ -546,7 +555,7 @@
                 editor?.chain().focus().toggleOrderedList().run();
               }}
             >
-              <i class="i-tb-list-numbers square-6" aria-label="번호 매겨진 리스트" />
+              <Icon class="square-6" icon={IconListNumbers} />
             </MenuItem>
           </Menu>
         </ToolbarButtonTooltip>
@@ -560,7 +569,7 @@
               type="button"
               let:open
             >
-              <i class="i-tb-minus square-6" />
+              <Icon class="square-6" icon={IconMinus} />
             </button>
 
             {#each values.horizontalRule as hr (hr.value)}
@@ -585,7 +594,7 @@
               type="button"
               let:open
             >
-              <i class="i-tb-quote square-6" />
+              <Icon class="square-6" icon={IconQuote} />
             </button>
 
             {#each values.blockquote as blockquote (blockquote.value)}
@@ -615,13 +624,13 @@
             type="button"
             on:click={() => editor?.chain().focus().setGallery().run()}
           >
-            <i class="i-tb-photo square-6" />
+            <Icon class="square-6" icon={IconPhoto} />
           </button>
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="파일">
           <button class="flex center square-8.5 hover:(bg-gray-100 rounded)" type="button" on:click={handleInsertFile}>
-            <i class="i-tb-folder square-6" />
+            <Icon class="square-6" icon={IconFolder} />
           </button>
         </ToolbarButtonTooltip>
 
@@ -632,7 +641,7 @@
             type="button"
             on:click={() => editor?.chain().focus().setLink('').run()}
           >
-            <i class="i-tb-link square-6" />
+            <Icon class="square-6" icon={IconLink} />
           </button>
         </ToolbarButtonTooltip>
 
@@ -643,7 +652,7 @@
             type="button"
             on:click={() => editor?.chain().focus().setHtml().run()}
           >
-            <i class="i-tb-html square-6" />
+            <Icon class="square-6" icon={IconHtml} />
           </button>
         </ToolbarButtonTooltip>
       </div>
@@ -656,7 +665,7 @@
             aria-pressed={contentOptionsOpen}
             type="button"
           >
-            <i class="i-tb-settings square-6" />
+            <Icon class="square-6" icon={IconSettings} />
           </button>
 
           <Menu offset={16} placement="right-start" bind:open={paragraphIndentOpen}>
@@ -681,10 +690,9 @@
               }}
             >
               없음
-              <i
-                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphIndent !== 0 && 'invisible')}
-                aria-hidden={$store.paragraphIndent !== 0}
-                aria-label="선택됨"
+              <Icon
+                class={clsx('square-5 text-teal-500', $store.paragraphIndent !== 0 && 'invisible')}
+                icon={IconCheck}
               />
             </MenuItem>
 
@@ -698,10 +706,9 @@
               }}
             >
               0.5칸
-              <i
-                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphIndent !== 50 && 'invisible')}
-                aria-hidden={$store.paragraphIndent !== 50}
-                aria-label="선택됨"
+              <Icon
+                class={clsx('square-5 text-teal-500', $store.paragraphIndent !== 50 && 'invisible')}
+                icon={IconCheck}
               />
             </MenuItem>
 
@@ -714,10 +721,9 @@
               }}
             >
               1칸
-              <i
-                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphIndent !== 100 && 'invisible')}
-                aria-hidden={$store.paragraphIndent !== 100}
-                aria-label="선택됨"
+              <Icon
+                class={clsx('square-5 text-teal-500', $store.paragraphIndent !== 100 && 'invisible')}
+                icon={IconCheck}
               />
             </MenuItem>
 
@@ -730,10 +736,9 @@
               }}
             >
               2칸
-              <i
-                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphIndent !== 200 && 'invisible')}
-                aria-hidden={$store.paragraphIndent !== 200}
-                aria-label="선택됨"
+              <Icon
+                class={clsx('square-5 text-teal-500', $store.paragraphIndent !== 200 && 'invisible')}
+                icon={IconCheck}
               />
             </MenuItem>
           </Menu>
@@ -760,10 +765,9 @@
               }}
             >
               없음
-              <i
-                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphSpacing !== 0 && 'invisible')}
-                aria-hidden={$store.paragraphSpacing !== 0}
-                aria-label="선택됨"
+              <Icon
+                class={clsx('square-5 text-teal-500', $store.paragraphSpacing !== 0 && 'invisible')}
+                icon={IconCheck}
               />
             </MenuItem>
 
@@ -776,10 +780,9 @@
               }}
             >
               0.5줄
-              <i
-                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphSpacing !== 50 && 'invisible')}
-                aria-hidden={$store.paragraphSpacing !== 50}
-                aria-label="선택됨"
+              <Icon
+                class={clsx('square-5 text-teal-500', $store.paragraphSpacing !== 50 && 'invisible')}
+                icon={IconCheck}
               />
             </MenuItem>
 
@@ -792,10 +795,9 @@
               }}
             >
               1줄
-              <i
-                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphSpacing !== 100 && 'invisible')}
-                aria-hidden={$store.paragraphSpacing !== 100}
-                aria-label="선택됨"
+              <Icon
+                class={clsx('square-5 text-teal-500', $store.paragraphSpacing !== 100 && 'invisible')}
+                icon={IconCheck}
               />
             </MenuItem>
 
@@ -808,10 +810,9 @@
               }}
             >
               2줄
-              <i
-                class={clsx('i-tb-check square-5 text-teal-500', $store.paragraphSpacing !== 200 && 'invisible')}
-                aria-hidden={$store.paragraphSpacing !== 200}
-                aria-label="선택됨"
+              <Icon
+                class={clsx('square-5 text-teal-500', $store.paragraphSpacing !== 200 && 'invisible')}
+                icon={IconCheck}
               />
             </MenuItem>
           </Menu>

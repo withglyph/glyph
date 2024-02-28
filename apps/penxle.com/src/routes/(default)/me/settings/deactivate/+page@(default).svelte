@@ -1,7 +1,8 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
-  import { Button } from '$lib/components';
+  import { Button, Icon } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { comma } from '$lib/utils';
   import ConfirmModal from './ConfirmModal.svelte';
@@ -43,7 +44,7 @@
       <div>
         <a class="flex items-center justify-between mb-2" href="/me/revenue">
           <h3 class="font-extrabold text-lg">수익금 및 정산금</h3>
-          <i class="i-lc-chevron-right text-secondary square-6" />
+          <Icon class="text-secondary square-6" icon={IconChevronRight} />
         </a>
         <p class="text-secondary">포인트 충전을 통해 적립한 포인트는 회원 탈퇴 시 환불이 불가능합니다.</p>
         <p class="text-secondary">

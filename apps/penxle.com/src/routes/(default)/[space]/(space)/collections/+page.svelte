@@ -1,8 +1,10 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
   import clsx from 'clsx';
+  import IconAlertTriangle from '~icons/tabler/alert-triangle';
+  import IconPlus from '~icons/tabler/plus';
   import { graphql } from '$glitch';
-  import { Button, Image } from '$lib/components';
+  import { Button, Icon, Image } from '$lib/components';
   import { CreateCollectionModal } from '$lib/components/pages/collections';
 
   $: query = graphql(`
@@ -49,7 +51,7 @@
   )}
 >
   {#if $query.space.myMasquerade?.blocked}
-    <i class="i-tb-alert-triangle square-7" />
+    <Icon class="square-7" icon={IconAlertTriangle} />
     <p class="text-18-sb mt-1 mb-0.5">차단당했습니다</p>
     <p class="text-14-r text-gray-500">{$query.space.name}의 게시물을 볼 수 없어요</p>
   {:else if $query.space.collections.length > 0}
@@ -80,7 +82,7 @@
         variant="outlined"
         on:click={() => (openCreateCollectionModal = true)}
       >
-        새 컬렉션 추가하기 <i class="i-lc-plus square-5" />
+        새 컬렉션 추가하기 <Icon class="square-5" icon={IconPlus} />
       </Button>
     {/if}
   {:else}

@@ -1,6 +1,7 @@
 <script lang="ts">
   import * as R from 'radash';
-  import { Tooltip } from '$lib/components';
+  import IconAlertCircle from '~icons/tabler/alert-circle';
+  import { Icon, Tooltip } from '$lib/components';
   import { tagPattern } from '$lib/const/post';
   import { toast } from '$lib/notification';
   import { outsideClickEvent } from '$lib/svelte/actions';
@@ -30,7 +31,7 @@
   <p class="text-14-sb pt-1 pb-2 flex gap-1 <sm:text-15-m">
     <span>{label}</span>
     <Tooltip class="flex center" message={tooltip} placement="top">
-      <i class="i-tb-alert-circle square-3.5 text-gray-400" />
+      <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
     </Tooltip>
   </p>
 
@@ -70,28 +71,6 @@
         }
       }}
     />
-    <!-- on:input={() => (open = true)} -->
-    <!-- <div class="absolute inset-y-0 right-4 flex center text-gray-700">
-      <i class="i-tb-search square-4" />
-    </div> -->
-
-    <!-- {#if open}
-      <ul class="absolute left-0 w-full bg-white border border-gray-200 rounded-b-1.5 z-1">
-        <li class="hover:bg-gray-100 last-of-type:rounded-b-1.5">
-          <button
-            class="py-2 px-1.5 w-full"
-            type="button"
-            on:click={() => {
-              open = false;
-              query = '';
-            }}
-          >
-            <i class="i-tb-search square-3 text-gray-400 m-1.5" />
-            <span class="text-12-r">검색 결과</span>
-          </button>
-        </li>
-      </ul>
-    {/if} -->
   </form>
 
   {#if postTags}

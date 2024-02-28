@@ -1,10 +1,17 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import IconEffit from '~icons/effit/effit';
+  import IconChevronDown from '~icons/tabler/chevron-down';
+  import IconFileText from '~icons/tabler/file-text';
+  import IconHome from '~icons/tabler/home';
+  import IconSettings from '~icons/tabler/settings';
+  import IconUser from '~icons/tabler/user';
+  import IconUsers from '~icons/tabler/users';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Avatar, BottomSheet, Button, Image, Tooltip } from '$lib/components';
+  import { Avatar, BottomSheet, Button, Icon, Image, Tooltip } from '$lib/components';
   import { pageSubTitle } from '$lib/stores';
   import ComingSoonModal from '../../ComingSoonModal.svelte';
   import Footer from '../../Footer.svelte';
@@ -66,7 +73,7 @@
     on:click={() => (open = true)}
   >
     <h2 class="text-16-sb">{$pageSubTitle}</h2>
-    <i class="i-tb-chevron-down square-6 block" />
+    <Icon class="square-6 block" icon={IconChevronDown} />
   </button>
 
   <aside class="flex justify-end <sm:hidden max-w-21.1875rem w-full">
@@ -119,7 +126,7 @@
                 disabled
                 type="button"
               >
-                <i class="i-lc-home square-5" />
+                <Icon class="square-5" icon={IconHome} />
                 대시보드
               </button>
             </Tooltip>
@@ -133,7 +140,7 @@
               type="button"
               on:click={() => (comingSoonOpen = true)}
             >
-              <i class="i-lc-user square-5" />
+              <Icon class="square-5" icon={IconUser} />
               멤버 관리
             </button>
           </li>
@@ -145,7 +152,7 @@
               )}
               href="/{$query.space.slug}/dashboard/posts"
             >
-              <i class="i-lc-file-text square-5" />
+              <Icon class="square-5" icon={IconFileText} />
               포스트 관리
             </a>
           </li>
@@ -158,7 +165,7 @@
               )}
               href="/{$query.space.slug}/dashboard/subscribers/blocked"
             >
-              <i class="i-lc-users square-5" />
+              <Icon class="square-5" icon={IconUsers} />
               독자 관리
             </a>
           </li>
@@ -170,7 +177,7 @@
               )}
               href="/{$query.space.slug}/dashboard/settings"
             >
-              <i class="i-lc-settings square-5" />
+              <Icon class="square-5" icon={IconSettings} />
               스페이스 설정
             </a>
           </li>
@@ -190,7 +197,7 @@
 
 <BottomSheet bind:open>
   <div class="flex w-full gap-2 items-center">
-    <i class="i-px-logo square-6 rounded-lg" />
+    <Icon class="square-6 rounded-lg" icon={IconEffit} />
     <span class="font-extrabold">스페이스 관리</span>
   </div>
 
@@ -250,7 +257,7 @@
           type="button"
           on:click={() => (comingSoonOpen = true)}
         >
-          <i class="i-lc-home square-5" />
+          <Icon class="square-5" icon={IconHome} />
           대시보드
         </button>
       </li>
@@ -263,7 +270,7 @@
           type="button"
           on:click={() => (comingSoonOpen = true)}
         >
-          <i class="i-lc-user square-5" />
+          <Icon class="square-5" icon={IconUser} />
           멤버 관리
         </button>
       </li>
@@ -275,7 +282,7 @@
           )}
           href="/{$query.space.slug}/dashboard/posts"
         >
-          <i class="i-lc-file-text square-5" />
+          <Icon class="square-5" icon={IconFileText} />
           포스트 관리
         </a>
       </li>
@@ -287,7 +294,7 @@
           )}
           href="/{$query.space.slug}/dashboard/subscribers/blocked"
         >
-          <i class="i-lc-users square-5" />
+          <Icon class="square-5" icon={IconUsers} />
           독자 관리
         </a>
       </li>
@@ -299,7 +306,7 @@
           )}
           href="/{$query.space.slug}/dashboard/settings"
         >
-          <i class="i-lc-settings square-5" />
+          <Icon class="square-5" icon={IconSettings} />
           스페이스 설정
         </a>
       </li>

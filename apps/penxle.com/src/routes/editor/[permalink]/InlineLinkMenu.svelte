@@ -4,7 +4,9 @@
   import { EditorView } from '@tiptap/pm/view';
   import * as R from 'radash';
   import { onMount, tick } from 'svelte';
-  import { Tooltip } from '$lib/components';
+  import IconCheck from '~icons/tabler/check';
+  import IconTrash from '~icons/tabler/trash';
+  import { Icon, Tooltip } from '$lib/components';
   import { createFloatingActions } from '$lib/svelte/actions';
   import type { VirtualElement } from '@floating-ui/dom';
 
@@ -87,10 +89,11 @@
     />
     <Tooltip message={trimmedHref.length > 0 ? '적용' : '링크 삭제'}>
       <button class="text-secondary hover:text-primary active:text-primary" type="submit">
-        <i
-          class={trimmedHref.length > 0 ? 'i-lc-check' : 'i-lc-trash'}
-          aria-label={trimmedHref.length > 0 ? '적용' : '링크 삭제'}
-        />
+        {#if trimmedHref.length > 0}
+          <Icon icon={IconCheck} />
+        {:else}
+          <Icon icon={IconTrash} />
+        {/if}
       </button>
     </Tooltip>
     <div class="absolute square-2 rotate-45 bg-cardprimary" use:arrow />

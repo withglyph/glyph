@@ -1,7 +1,8 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
+  import IconChevronLeft from '~icons/tabler/chevron-left';
   import { graphql } from '$glitch';
-  import { PostCard } from '$lib/components';
+  import { Icon, PostCard } from '$lib/components';
 
   $: query = graphql(`
     query MeCabinetsBookmarkPage_Query {
@@ -31,7 +32,7 @@
 
 <div class="bg-white w-full flex center h-15 border-b border-secondary <sm:hidden">
   <a href="/me/cabinets">
-    <i class="i-lc-chevron-left square-6 text-secondary" />
+    <Icon class="square-6 text-secondary" icon={IconChevronLeft} />
   </a>
   <h1 class="title-20-b w-full text-center max-w-200">북마크</h1>
 </div>

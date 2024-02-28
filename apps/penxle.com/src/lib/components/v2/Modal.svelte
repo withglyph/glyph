@@ -1,6 +1,8 @@
 <script lang="ts">
   import clsx from 'clsx';
   import { fade, fly } from 'svelte/transition';
+  import IconX from '~icons/tabler/x';
+  import { Icon } from '$lib/components';
   import { portal, scrollLock } from '$lib/svelte/actions';
 
   export let open: boolean;
@@ -59,7 +61,7 @@
           {#if $$slots['title'] && size !== 'sm'}
             <slot name="title-right">
               <button class="absolute right-0 px-6" type="button" on:click={() => (open = false)}>
-                <i class="i-tb-x square-6" />
+                <Icon class="square-6" icon={IconX} />
               </button>
             </slot>
           {/if}

@@ -1,5 +1,25 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import IconHorizontalRule from '~icons/effit/horizontal-rule';
+  import IconLetterSpacing from '~icons/effit/letter-spacing';
+  import IconLineHeight from '~icons/effit/line-height';
+  import IconRuby from '~icons/effit/ruby';
+  import IconText from '~icons/effit/text';
+  import IconArrowLeft from '~icons/tabler/arrow-left';
+  import IconBold from '~icons/tabler/bold';
+  import IconCheck from '~icons/tabler/check';
+  import IconFolder from '~icons/tabler/folder';
+  import IconItalic from '~icons/tabler/italic';
+  import IconLink from '~icons/tabler/link';
+  import IconList from '~icons/tabler/list';
+  import IconListNumbers from '~icons/tabler/list-numbers';
+  import IconPhoto from '~icons/tabler/photo';
+  import IconPlus from '~icons/tabler/plus';
+  import IconQuote from '~icons/tabler/quote';
+  import IconSettings from '~icons/tabler/settings';
+  import IconStrikethrough from '~icons/tabler/strikethrough';
+  import IconUnderline from '~icons/tabler/underline';
+  import { Icon } from '$lib/components';
   import { values } from '$lib/tiptap/values';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
   import { getEditorContext } from './context';
@@ -108,17 +128,29 @@
     class="border-b border-gray-200 w-full px-20px py-14px flex items-center gap-20px overflow-x-auto [&::-webkit-scrollbar]:hidden touch-pan-x"
   >
     {#if topMenu === 'default'}
-      <MobileToolbarButton class="i-px2-text square-26px" on:click={() => (topMenu = 'text')} />
+      <MobileToolbarButton on:click={() => (topMenu = 'text')}>
+        <Icon class="square-26px" icon={IconText} />
+      </MobileToolbarButton>
 
-      <MobileToolbarButton class="i-tb-photo square-26px" on:click={handleInsertImage} />
+      <MobileToolbarButton on:click={handleInsertImage}>
+        <Icon class="square-26px" icon={IconPhoto} />
+      </MobileToolbarButton>
 
-      <MobileToolbarButton class="i-tb-plus square-26px" on:click={() => (topMenu = 'insert')} />
+      <MobileToolbarButton on:click={() => (topMenu = 'insert')}>
+        <Icon class="square-26px" icon={IconPlus} />
+      </MobileToolbarButton>
 
-      <MobileToolbarButton class="i-px2-quite-line square-26px" on:click={() => toggleBottomMenu('horizontalRule')} />
+      <MobileToolbarButton on:click={() => toggleBottomMenu('horizontalRule')}>
+        <Icon class="square-26px" icon={IconHorizontalRule} />
+      </MobileToolbarButton>
 
-      <MobileToolbarButton class="i-tb-settings square-26px" on:click={() => (topMenu = 'options')} />
+      <MobileToolbarButton on:click={() => (topMenu = 'options')}>
+        <Icon class="square-26px" icon={IconSettings} />
+      </MobileToolbarButton>
     {:else}
-      <MobileToolbarButton class="i-tb-arrow-left square-26px text-gray-400" on:click={() => (topMenu = 'default')} />
+      <MobileToolbarButton on:click={() => (topMenu = 'default')}>
+        <Icon class="square-26px text-gray-400" icon={IconArrowLeft} />
+      </MobileToolbarButton>
 
       <div class="w-1px h-14px flex-none bg-gray-200" />
 
@@ -145,31 +177,28 @@
               ?.label.replace('pt', '') ?? '16'}
           </MobileToolbarButton>
 
-          <MobileToolbarButton
-            class={clsx('i-tb-bold square-26px', editor?.isActive('bold') && 'text-teal-500')}
-            on:click={() => editor?.chain().focus().toggleBold().run()}
-          />
+          <MobileToolbarButton on:click={() => editor?.chain().focus().toggleBold().run()}>
+            <Icon class={clsx('square-26px', editor?.isActive('bold') && 'text-teal-500')} icon={IconBold} />
+          </MobileToolbarButton>
+
+          <MobileToolbarButton on:click={() => editor?.chain().focus().toggleItalic().run()}>
+            <Icon class={clsx('square-26px', editor?.isActive('italic') && 'text-teal-500')} icon={IconItalic} />
+          </MobileToolbarButton>
+
+          <MobileToolbarButton on:click={() => editor?.chain().focus().toggleStrike().run()}>
+            <Icon class={clsx('square-26px', editor?.isActive('strike') && 'text-teal-500')} icon={IconStrikethrough} />
+          </MobileToolbarButton>
+
+          <MobileToolbarButton on:click={() => editor?.chain().focus().toggleUnderline().run()}>
+            <Icon class={clsx('square-26px', editor?.isActive('underline') && 'text-teal-500')} icon={IconUnderline} />
+          </MobileToolbarButton>
 
           <MobileToolbarButton
-            class={clsx('i-tb-italic square-26px', editor?.isActive('italic') && 'text-teal-500')}
-            on:click={() => editor?.chain().focus().toggleItalic().run()}
-          />
-
-          <MobileToolbarButton
-            class={clsx('i-tb-strikethrough square-26px', editor?.isActive('strike') && 'text-teal-500')}
-            on:click={() => editor?.chain().focus().toggleStrike().run()}
-          />
-
-          <MobileToolbarButton
-            class={clsx('i-tb-underline square-26px', editor?.isActive('underline') && 'text-teal-500')}
-            on:click={() => editor?.chain().focus().toggleUnderline().run()}
-          />
-
-          <MobileToolbarButton
-            class="i-px2-ruby square-26px"
             disabled={editor?.isActive('ruby') || editor?.state.selection.empty}
             on:click={() => editor?.chain().focus().setRuby('').run()}
-          />
+          >
+            <Icon class="square-26px" icon={IconRuby} />
+          </MobileToolbarButton>
 
           <MobileToolbarButton
             class={clsx(
@@ -180,32 +209,36 @@
             on:click={() => toggleSubMenu('textAlign')}
           />
 
-          <MobileToolbarButton class="i-px2-line-height square-26px" on:click={() => toggleSubMenu('lineHeight')} />
+          <MobileToolbarButton on:click={() => toggleSubMenu('lineHeight')}>
+            <Icon class="square-26px" icon={IconLineHeight} />
+          </MobileToolbarButton>
 
-          <MobileToolbarButton
-            class="i-px2-letter-spacing square-26px"
-            on:click={() => toggleSubMenu('letterSpacing')}
-          />
+          <MobileToolbarButton on:click={() => toggleSubMenu('letterSpacing')}>
+            <Icon class="square-26px" icon={IconLetterSpacing} />
+          </MobileToolbarButton>
         {:else if topMenu === 'insert'}
-          <MobileToolbarButton
-            class="i-tb-list square-26px"
-            on:click={() => editor?.chain().focus().toggleBulletList().run()}
-          />
+          <MobileToolbarButton on:click={() => editor?.chain().focus().toggleBulletList().run()}>
+            <Icon class="square-26px" icon={IconList} />
+          </MobileToolbarButton>
+
+          <MobileToolbarButton on:click={() => editor?.chain().focus().toggleOrderedList().run()}>
+            <Icon class="square-26px" icon={IconListNumbers} />
+          </MobileToolbarButton>
+
+          <MobileToolbarButton on:click={() => toggleBottomMenu('quote')}>
+            <Icon class="square-26px" icon={IconQuote} />
+          </MobileToolbarButton>
+
+          <MobileToolbarButton on:click={handleInsertFile}>
+            <Icon class="square-26px" icon={IconFolder} />
+          </MobileToolbarButton>
 
           <MobileToolbarButton
-            class="i-tb-list-numbers square-26px"
-            on:click={() => editor?.chain().focus().toggleOrderedList().run()}
-          />
-
-          <MobileToolbarButton class="i-tb-quote square-26px" on:click={() => toggleBottomMenu('quote')} />
-
-          <MobileToolbarButton class="i-tb-folder square-26px" on:click={handleInsertFile} />
-
-          <MobileToolbarButton
-            class="i-tb-link square-26px"
             disabled={editor?.isActive('link') || editor?.state.selection.empty}
             on:click={() => editor?.chain().focus().setLink('').run()}
-          />
+          >
+            <Icon class="square-26px" icon={IconLink} />
+          </MobileToolbarButton>
         {:else if topMenu === 'options'}
           <MobileToolbarButton class="text-16-r" on:click={() => toggleSubMenu('paragraphIndent')}>
             문단 들여쓰기
@@ -240,12 +273,13 @@
                 }
               }}
             >
-              <i
+              <Icon
                 class={clsx(
-                  'i-tb-check square-12px',
+                  'square-12px',
                   currentColor.toUpperCase() !== color && 'hidden',
                   color === '#FFFFFF' ? 'text-gray-950' : 'text-white',
                 )}
+                icon={IconCheck}
               />
             </MobileToolbarButton>
           {/each}

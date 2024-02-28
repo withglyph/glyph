@@ -2,10 +2,23 @@
   import clsx from 'clsx';
   import { onMount } from 'svelte';
   import { slide } from 'svelte/transition';
+  import IconCheckmark from '~icons/effit/checkmark';
+  import IconDot from '~icons/effit/dot';
+  import IconGlobe from '~icons/effit/globe';
+  import IconLink from '~icons/effit/link';
+  import IconUsers from '~icons/effit/users';
+  import IconAlertCircle from '~icons/tabler/alert-circle';
+  import IconAlertTriangle from '~icons/tabler/alert-triangle';
+  import IconCaretDownFilled from '~icons/tabler/caret-down-filled';
+  import IconCaretUpFilled from '~icons/tabler/caret-up-filled';
+  import IconPhoto from '~icons/tabler/photo';
+  import IconPlus from '~icons/tabler/plus';
+  import IconTrash from '~icons/tabler/trash';
+  import IconX from '~icons/tabler/x';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Image, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
+  import { Icon, Image, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { Checkbox, FormValidationMessage, Switch } from '$lib/components/forms';
   import ThumbnailPicker from '$lib/components/media/ThumbnailPicker.svelte';
   import { CreateCollectionModal } from '$lib/components/pages/collections';
@@ -224,7 +237,9 @@
   <div class="py-4 px-6 border-b border-gray-200 <sm:border-gray-100">
     <p class="text-16-sb <sm:(text-center relative)">
       게시 옵션
-      <button class="i-tb-x square-6 absolute right-0 sm:hidden" type="button" on:click={() => (open = false)}></button>
+      <button class="absolute right-0 sm:hidden" type="button" on:click={() => (open = false)}>
+        <Icon class="square-6" icon={IconX} />
+      </button>
     </p>
     <span class="text-12-r text-gray-500 mt-0.5 <sm:hidden">
       다양한 옵션을 선택해 원하는 방식으로 게시글을 업로드할 수 있어요
@@ -244,9 +259,9 @@
         on:click={() => (tabIndex = 0)}
       >
         {#if selectedSpaceId || $post.space}
-          <i class="i-px2-checkmark square-6 text-teal-500 <sm:hidden" />
+          <Icon class="square-6 text-teal-500 <sm:hidden" icon={IconCheckmark} />
         {:else}
-          <i class="i-px2-dot square-6 text-pink-500 <sm:hidden" />
+          <Icon class="square-6 text-pink-500 <sm:hidden" icon={IconDot} />
         {/if}
         <span class="w-full pb-2 sm:(py-2 px-1)">발행</span>
       </button>
@@ -259,9 +274,9 @@
         on:click={() => (tabIndex = 1)}
       >
         {#if $data.tags?.length > 0}
-          <i class="i-px2-checkmark square-6 text-teal-500 <sm:hidden" />
+          <Icon class="square-6 text-teal-500 <sm:hidden" icon={IconCheckmark} />
         {:else}
-          <i class="i-px2-checkmark square-6 text-gray-300 <sm:hidden" />
+          <Icon class="square-6 text-gray-300 <sm:hidden" icon={IconCheckmark} />
         {/if}
         <span class="w-full pb-2 sm:(py-2 px-1)">태그</span>
       </button>
@@ -274,9 +289,9 @@
         on:click={() => (tabIndex = 2)}
       >
         {#if currentThumbnail}
-          <i class="i-px2-checkmark square-6 text-teal-500 <sm:hidden" />
+          <Icon class="square-6 text-teal-500 <sm:hidden" icon={IconCheckmark} />
         {:else}
-          <i class="i-px2-checkmark square-6 text-gray-300 <sm:hidden" />
+          <Icon class="square-6 text-gray-300 <sm:hidden" icon={IconCheckmark} />
         {/if}
         <span class="w-full pb-2 sm:(py-2 px-1)">썸네일</span>
       </button>
@@ -288,7 +303,7 @@
         type="button"
         on:click={() => (tabIndex = 3)}
       >
-        <i class="i-px2-checkmark square-6 text-teal-500 <sm:hidden" />
+        <Icon class="square-6 text-teal-500 <sm:hidden" icon={IconCheckmark} />
         <span class="w-full pb-2 sm:(py-2 px-1)">대상 독자</span>
       </button>
       <button
@@ -299,7 +314,7 @@
         type="button"
         on:click={() => (tabIndex = 4)}
       >
-        <i class="i-px2-checkmark square-6 text-teal-500 <sm:hidden" />
+        <Icon class="square-6 text-teal-500 <sm:hidden" icon={IconCheckmark} />
         <span class="w-full pb-2 sm:(py-2 px-1)">댓글관리</span>
       </button>
       <button
@@ -310,7 +325,7 @@
         type="button"
         on:click={() => (tabIndex = 5)}
       >
-        <i class="i-px2-checkmark square-6 text-teal-500 <sm:hidden" />
+        <Icon class="square-6 text-teal-500 <sm:hidden" icon={IconCheckmark} />
         <span class="w-full pb-2 sm:(py-2 px-1)">세부 옵션</span>
       </button>
     </div>
@@ -348,9 +363,11 @@
                 {/if}
 
                 <p class="flex center square-6">
-                  <i
-                    class={clsx('square-4.5', spaceSelectorOpen ? 'i-tb-caret-up-filled' : 'i-tb-caret-down-filled')}
-                  />
+                  {#if spaceSelectorOpen}
+                    <Icon class="square-4.5" icon={IconCaretUpFilled} />
+                  {:else}
+                    <Icon class="square-4.5" icon={IconCaretDownFilled} />
+                  {/if}
                 </p>
               </button>
             </Tooltip>
@@ -396,7 +413,7 @@
                     on:click={() => (createSpaceOpen = true)}
                   >
                     새로운 스페이스 추가하기
-                    <i class="i-tb-plus square-6 text-gray-400" />
+                    <Icon class="square-6 text-gray-400" icon={IconPlus} />
                   </button>
                 </li>
               </ul>
@@ -424,9 +441,11 @@
               {/if}
 
               <p class="flex center square-6">
-                <i
-                  class={clsx('square-4.5', collectionSelectorOpen ? 'i-tb-caret-up-filled' : 'i-tb-caret-down-filled')}
-                />
+                {#if collectionSelectorOpen}
+                  <Icon class="square-4.5" icon={IconCaretUpFilled} />
+                {:else}
+                  <Icon class="square-4.5" icon={IconCaretDownFilled} />
+                {/if}
               </p>
             </button>
 
@@ -482,7 +501,7 @@
                     on:click={() => (createCollectionOpen = true)}
                   >
                     새로운 컬렉션 추가하기
-                    <i class="i-tb-plus square-6 text-gray-400" />
+                    <Icon class="square-6 text-gray-400" icon={IconPlus} />
                   </button>
                 </li>
               </ul>
@@ -495,9 +514,6 @@
         <div>
           <p class="text-14-sb pt-1 pb-2 flex gap-1 <sm:text-15-m">
             <span>카테고리</span>
-            <!-- <Tooltip class="flex center" message="카테고리" placement="top">
-              <i class="i-tb-alert-circle square-3.5 text-gray-400" />
-            </Tooltip> -->
           </p>
 
           <SegmentButtonGroup>
@@ -512,7 +528,7 @@
           <p class="text-14-sb pt-1 pb-2 flex gap-1 <sm:text-15-m">
             <span>페어</span>
             <Tooltip class="flex center" message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
-              <i class="i-tb-alert-circle square-3.5 text-gray-400" />
+              <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
             </Tooltip>
           </p>
 
@@ -584,7 +600,7 @@
 
             <div class="flex items-center gap-1.5">
               <button type="button" on:click={() => (thumbnail = null)}>
-                <i class="i-tb-trash square-6" />
+                <Icon class="square-6" icon={IconTrash} />
               </button>
 
               <button
@@ -603,7 +619,7 @@
             on:click={() => thumbnailPicker.show()}
           >
             <div class="flex items-center gap-1.5">
-              <i class="i-tb-photo square-4.5 text-gray-300" />
+              <Icon class="square-4.5 text-gray-300" icon={IconPhoto} />
               <span class="text-13-m text-gray-400">썸네일 이미지를 선택해주세요</span>
             </div>
 
@@ -623,11 +639,11 @@
               {
                 label: '전체 공개',
                 value: 'PUBLIC',
-                icon: 'i-px2-globe',
+                icon: IconGlobe,
                 checked: $data.visibility === 'PUBLIC',
               },
-              { label: '링크 공개', value: 'UNLISTED', icon: 'i-px2-link', checked: $data.visibility === 'UNLISTED' },
-              { label: '멤버 공개', value: 'SPACE', icon: 'i-px2-users', checked: $data.visibility === 'SPACE' },
+              { label: '링크 공개', value: 'UNLISTED', icon: IconLink, checked: $data.visibility === 'UNLISTED' },
+              { label: '멤버 공개', value: 'SPACE', icon: IconUsers, checked: $data.visibility === 'SPACE' },
             ]}
           />
         </div>
@@ -636,7 +652,7 @@
           <p class="text-14-sb py-2 flex gap-1">
             <span>비밀글</span>
             <Tooltip class="flex center" message="설정하면 비밀번호를 입력한 독자만 내용을 열람할 수 있어요">
-              <i class="i-tb-alert-circle square-3.5 text-gray-400" />
+              <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
             </Tooltip>
           </p>
 
@@ -665,7 +681,7 @@
           />
           <FormValidationMessage for="password" let:message>
             <div class="flex items-center gap-1.5 text-xs text-red-50">
-              <i class="i-lc-alert-triangle" />
+              <Icon icon={IconAlertTriangle} />
               {message}
             </div>
           </FormValidationMessage>
@@ -678,7 +694,7 @@
               class="flex center"
               message="연령 제한을 설정하면 본인인증이 완료된 해당 나이 이상의 독자만 내용을 열람할 수 있어요"
             >
-              <i class="i-tb-alert-circle square-3.5 text-gray-400" />
+              <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
             </Tooltip>
           </p>
 
@@ -697,7 +713,7 @@
           <p class="text-14-sb py-1 flex gap-1 mb-1.5">
             <span>검색 공개</span>
             <Tooltip class="flex center" message="외부 검색엔진에서 이 포스트를 검색할 수 있을지 설정해요">
-              <i class="i-tb-alert-circle square-3.5 text-gray-400" />
+              <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
             </Tooltip>
           </p>
 

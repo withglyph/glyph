@@ -1,7 +1,8 @@
 <script lang="ts">
-  import clsx from 'clsx';
+  import { Icon } from '$lib/components';
+  import type { ComponentType } from 'svelte';
 
-  export let icon: string;
+  export let icon: ComponentType;
   export let title: string;
   export let triggerTags: { id: string; tag: { name: string } }[] = [];
   export let description: string | undefined = undefined;
@@ -9,7 +10,7 @@
 
 <header class="py-80px px-3 w-full flex flex-col items-center" role="alert">
   <div class="flex flex-col gap-2 items-center">
-    <i class={clsx('block square-8 text-teal-500', icon)} />
+    <Icon class="block square-8 text-teal-500" {icon} />
     <h2 class="text-18-sb text-center break-keep">
       {title}
     </h2>

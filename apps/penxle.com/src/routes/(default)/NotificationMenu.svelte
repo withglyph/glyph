@@ -3,10 +3,15 @@
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import ky from 'ky';
+  import IconBell from '~icons/tabler/bell';
+  import IconCheck from '~icons/tabler/check';
+  import IconCoin from '~icons/tabler/coin';
+  import IconMessageCircle from '~icons/tabler/message-circle';
+  import IconX from '~icons/tabler/x';
   import { beforeNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Image, Modal } from '$lib/components';
+  import { Icon, Image, Modal } from '$lib/components';
   import { FormField, Switch, TextInput } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
   import { Button } from '$lib/components/v2';
@@ -181,7 +186,7 @@
 
 <div class="flex center relative">
   <a class="square-8.5 rounded-full flex center sm:hidden" href="/me/notifications">
-    <i class="i-tb-bell square-5" />
+    <Icon class="square-5" icon={IconBell} />
   </a>
 
   <button
@@ -191,7 +196,7 @@
     on:click={() => (open = true)}
     use:anchor
   >
-    <i class="i-tb-bell square-5" />
+    <Icon class="square-5" icon={IconBell} />
   </button>
 
   {#if checkUnreadNotification}
@@ -216,7 +221,9 @@
     <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 h-55px">
       <p class="text-16-sb">알림</p>
 
-      <button class="i-tb-x square-5" type="button" on:click={() => (open = false)} />
+      <button type="button" on:click={() => (open = false)}>
+        <Icon class="square-5" icon={IconX} />
+      </button>
     </div>
 
     <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 h-55px">
@@ -249,13 +256,13 @@
               )}
             >
               {#if notification.__typename === 'SubscribeNotification'}
-                <i class="i-tb-check square-3 block" />
+                <Icon class="square-3 block" icon={IconCheck} />
                 스페이스 구독
               {:else if notification.__typename === 'PurchaseNotification'}
-                <i class="i-tb-coin square-3 block" />
+                <Icon class="square-3 block" icon={IconCoin} />
                 구매
               {:else if notification.__typename === 'CommentNotification'}
-                <i class="i-tb-message-circle square-3 block" />
+                <Icon class="square-3 block" icon={IconMessageCircle} />
                 댓글
               {/if}
             </div>

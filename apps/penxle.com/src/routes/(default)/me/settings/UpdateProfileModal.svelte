@@ -1,7 +1,8 @@
 <script lang="ts">
+  import IconCamera from '~icons/tabler/camera';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Image, Modal } from '$lib/components';
+  import { Button, Icon, Image, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
   import { createMutationForm } from '$lib/form';
@@ -71,7 +72,7 @@
     >
       <Image class="square-full" $image={avatar} />
       <div class="select-none absolute top-50% -translate-y-50% rounded-full square-15 bg-alphagray-50 hidden">
-        <i class="i-px-camera square-6 text-darkprimary" />
+        <Icon class="square-6 text-darkprimary" icon={IconCamera} />
       </div>
     </button>
 

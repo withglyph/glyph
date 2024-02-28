@@ -1,8 +1,11 @@
 <script lang="ts">
   import clsx from 'clsx';
+  import IconReplyBar from '~icons/effit/reply-bar';
+  import IconAlertCircle from '~icons/tabler/alert-circle';
+  import IconLock from '~icons/tabler/lock';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Tooltip } from '$lib/components';
+  import { Icon, Tooltip } from '$lib/components';
   import { Button } from '$lib/components/v2';
   import type { CommentInput_post, CommentInput_query, PostCommentVisibility } from '$glitch';
 
@@ -115,7 +118,7 @@
 >
   <div class="flex gap-1">
     {#if parentId}
-      <i class="i-px2-reply-bar square-3.5 text-gray-500" />
+      <Icon class="square-3.5 text-gray-500" icon={IconReplyBar} />
     {/if}
 
     <div class="w-full">
@@ -134,7 +137,7 @@
             offset={10}
             placement="top"
           >
-            <i class="i-tb-alert-circle square-3 text-gray-400 block" />
+            <Icon class="square-3 text-gray-400 block" icon={IconAlertCircle} />
           </Tooltip>
         {/if}
       </p>
@@ -162,14 +165,17 @@
     {#if !$post.space.meAsMember && !commentId}
       <button
         class={clsx(
-          'flex items-center gap-1 text-14-r text-gray-400 p-1.5 rounded hover:bg-gray-100',
-          visibility === 'PRIVATE' && 'text-teal-500',
+          'flex items-center gap-1 text-14-r p-1.5 rounded hover:bg-gray-100',
+          visibility === 'PRIVATE' ? 'text-teal-500' : 'text-gray-400',
         )}
         disabled={!$query.me || ($post.commentQualification === 'IDENTIFIED' && !$query.me?.personalIdentity)}
         type="button"
         on:click={() => (visibility = visibility === 'PUBLIC' ? 'PRIVATE' : 'PUBLIC')}
       >
-        <i class={clsx('i-tb-lock square-5 block text-gray-400', visibility === 'PRIVATE' && 'text-teal-500')} />
+        <Icon
+          class={clsx('square-5 block ', visibility === 'PRIVATE' ? 'text-teal-500' : 'text-gray-400')}
+          icon={IconLock}
+        />
       </button>
     {/if}
 

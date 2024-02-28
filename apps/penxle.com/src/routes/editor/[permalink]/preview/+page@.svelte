@@ -1,15 +1,17 @@
 <script lang="ts">
+  import { Helmet } from '@penxle/ui';
   import clsx from 'clsx';
+  import IconDeviceDesktop from '~icons/tabler/device-desktop';
+  import IconDeviceMobile from '~icons/tabler/device-mobile';
+  import { page } from '$app/stores';
   import Wordmark from '$assets/icons/wordmark.svg?component';
   import { graphql } from '$glitch';
+  import { Icon } from '$lib/components';
   import { Logo } from '$lib/components/branding';
   import Post from '../../../(default)/[space]/Post.svelte';
   import Footer from '../../../(default)/Footer.svelte';
 
   let mode: 'desktop' | 'mobile' = 'desktop';
-
-  import { Helmet } from '@penxle/ui';
-  import { page } from '$app/stores';
 
   $: hideHeader = $page.url.searchParams.get('hideHeader') === 'true';
 
@@ -60,7 +62,7 @@
                 mode = 'desktop';
               }}
             >
-              <i class="i-lc-monitor square-5" />
+              <Icon class="square-5" icon={IconDeviceDesktop} />
             </button>
             <button
               class={clsx(
@@ -73,7 +75,7 @@
                 mode = 'mobile';
               }}
             >
-              <i class="i-lc-smartphone square-5" />
+              <Icon class="square-5" icon={IconDeviceMobile} />
             </button>
           </div>
         </div>

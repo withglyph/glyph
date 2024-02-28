@@ -1,8 +1,9 @@
 <script lang="ts">
   import dayjs from 'dayjs';
   import qs from 'query-string';
+  import IconDots from '~icons/tabler/dots';
   import { fragment, graphql } from '$glitch';
-  import { Badge, Modal } from '$lib/components';
+  import { Badge, Icon, Modal } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { getEditorContext } from './context';
   import type { EditorPage_RevisionListModal_Post } from '$glitch';
@@ -104,7 +105,7 @@
               {disabled}
               placement="right-start"
             >
-              <i slot="value" class="i-lc-more-horizontal square-6" aria-label="더보기 메뉴" />
+              <Icon slot="value" class="square-6" icon={IconDots} />
               <MenuItem
                 on:click={async () => {
                   const fetched = await restoreRevision.refetch({

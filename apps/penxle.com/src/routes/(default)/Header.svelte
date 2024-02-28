@@ -1,10 +1,12 @@
 <script lang="ts">
   import { Link } from '@penxle/ui';
+  import IconPlus from '~icons/tabler/plus';
   import { goto } from '$app/navigation';
   import Logo from '$assets/icons/logo.svg?component';
   import Wordmark from '$assets/icons/wordmark.svg?component';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
+  import { Icon } from '$lib/components';
   import { Button } from '$lib/components/v2';
   import NotificationMenu from './NotificationMenu.svelte';
   import SearchBar from './SearchBar.svelte';
@@ -68,7 +70,7 @@
                 await goto(`/editor/${permalink}`);
               }}
             >
-              <i class="i-tb-plus square-3.5 block" />
+              <Icon class="square-3.5 block" icon={IconPlus} />
               포스트 작성
             </Button>
             <NotificationMenu $user={$query.me} />

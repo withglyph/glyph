@@ -1,12 +1,16 @@
 <script lang="ts">
   import { Link } from '@penxle/ui';
-  import clsx from 'clsx';
+  import IconBookmark from '~icons/tabler/bookmark';
+  import IconBookmarkFilled from '~icons/tabler/bookmark-filled';
+  import IconDotsVertical from '~icons/tabler/dots-vertical';
+  import IconPlus from '~icons/tabler/plus';
+  import IconShare2 from '~icons/tabler/share-2';
   import { goto } from '$app/navigation';
   import Logo from '$assets/icons/logo.svg?component';
   import Wordmark from '$assets/icons/wordmark.svg?component';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Modal } from '$lib/components';
+  import { Icon, Modal } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Button } from '$lib/components/v2';
   import { toast } from '$lib/notification';
@@ -152,7 +156,7 @@
                 await goto(`/editor/${permalink}`);
               }}
             >
-              <i class="i-tb-plus square-5 block" />
+              <Icon class="square-5 block" icon={IconPlus} />
               포스트 작성
             </Button>
             <NotificationMenu $user={$query.me} />
@@ -164,15 +168,11 @@
       </div>
 
       <div class="flex items-center gap-12px">
-        <button class="i-tb-share-2 square-24px text-gray-500" type="button" />
+        <button type="button">
+          <Icon class="square-24px text-gray-500" icon={IconShare2} />
+        </button>
 
         <button
-          class={clsx(
-            'square-24px',
-            $query.post.bookmarkGroups.length > 0
-              ? 'i-tb-bookmark-filled bg-teal-500'
-              : 'i-tb-bookmark text-gray-500 transition hover:text-teal-400',
-          )}
           type="button"
           on:click={async () => {
             if ($query.post.bookmarkGroups.length > 0) {
@@ -188,10 +188,16 @@
               mixpanel.track('post:bookmark', { postId: $query.post.id, via: 'post' });
             }
           }}
-        />
+        >
+          {#if $query.post.bookmarkGroups.length > 0}
+            <Icon class="square-24px bg-teal-500" icon={IconBookmarkFilled} />
+          {:else}
+            <Icon class="square-24px text-gray=500 transition hover:text-teal-400" icon={IconBookmark} />
+          {/if}
+        </button>
 
         <Menu placement="bottom-end">
-          <i slot="value" class="i-tb-dots-vertical square-24px text-gray-500" />
+          <Icon slot="value" class="square-24px text-gray-500" icon={IconDotsVertical} />
 
           {#if $query.post.space?.meAsMember}
             <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>

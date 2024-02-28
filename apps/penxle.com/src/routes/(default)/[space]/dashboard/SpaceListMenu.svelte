@@ -1,7 +1,8 @@
 <script lang="ts">
+  import IconPlus from '~icons/tabler/plus';
   import { beforeNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
-  import { Button } from '$lib/components';
+  import { Button, Icon } from '$lib/components';
   import Image from '$lib/components/Image.svelte';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import CreateSpaceModal from '../../CreateSpaceModal.svelte';
@@ -113,7 +114,7 @@
     <div class="w-full border-b border-alphagray-10 my-3" />
 
     <Button size="xs" variant="text" on:click={() => (openCreateSpace = true)}>
-      <i class="i-lc-plus square-3.5 mr-1" />
+      <Icon class="square-3.5 mr-1" icon={IconPlus} />
       스페이스 만들기
     </Button>
   </div>

@@ -1,6 +1,7 @@
 <script lang="ts">
+  import IconPlus from '~icons/tabler/plus';
   import { fragment, graphql } from '$glitch';
-  import { Image, Modal } from '$lib/components';
+  import { Icon, Image, Modal } from '$lib/components';
   import { absolutePath } from '$lib/utils';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
   import type { DefaultLayout_GotoSpaceModal_user } from '$glitch';
@@ -59,7 +60,7 @@
       }}
     >
       <div class="square-10 flex center border border-gray-40 rounded-full border-dashed">
-        <i class="i-lc-plus square-5 text-gray-40" />
+        <Icon class="square-5 text-gray-40" icon={IconPlus} />
       </div>
       <div class="text-gray-40">새 스페이스 만들기</div>
     </button>

@@ -1,8 +1,11 @@
 <script lang="ts">
   import clsx from 'clsx';
   import qs from 'query-string';
+  import IconChevronDown from '~icons/tabler/chevron-down';
+  import IconFilter from '~icons/tabler/filter';
+  import IconSearch from '~icons/tabler/search';
   import { page } from '$app/stores';
-  import { Button, Modal, Tag } from '$lib/components';
+  import { Button, Icon, Modal, Tag } from '$lib/components';
   import { Checkbox, Radio } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { filterToLocaleString } from '$lib/const/feed';
@@ -62,7 +65,10 @@
         on:click={() => (showTagOption = !showTagOption)}
       >
         <p class="body-15-b w-full max-w-82.5">태그 옵션</p>
-        <i class={clsx('i-lc-chevron-down square-4 color-icon-secondary', showTagOption && 'transform rotate-180')} />
+        <Icon
+          class={clsx('square-4 color-icon-secondary', showTagOption && 'transform rotate-180')}
+          icon={IconChevronDown}
+        />
       </button>
 
       {#if showTagOption}
@@ -90,7 +96,7 @@
               bind:value={includeValue}
             />
             <button class="absolute inset-y-0 right-3.5 flex center text-secondary h-100%" type="submit">
-              <i class="i-lc-search square-5 transition" aria-label="검색 아이콘" />
+              <Icon class="square-5 transition" icon={IconSearch} />
             </button>
           </form>
 
@@ -134,7 +140,7 @@
               bind:value={excludeValue}
             />
             <button class="absolute inset-y-0 right-3.5 flex center text-secondary h-100%" type="submit">
-              <i class="i-lc-search square-5 transition" aria-label="검색 아이콘" />
+              <Icon class="square-5 transition" icon={IconSearch} />
             </button>
           </form>
 
@@ -164,7 +170,10 @@
         on:click={() => (showAdultOption = !showAdultOption)}
       >
         <p class="body-15-b w-full max-w-82.5">성인물 옵션</p>
-        <i class={clsx('i-lc-chevron-down square-4 color-icon-secondary', showAdultOption && 'transform rotate-180')} />
+        <Icon
+          class={clsx('square-4 color-icon-secondary', showAdultOption && 'transform rotate-180')}
+          icon={IconChevronDown}
+        />
       </button>
 
       {#if showAdultOption}
@@ -210,9 +219,6 @@
         on:click={() => (showTriggerOption = !showTriggerOption)}
       >
         <p class="body-15-b w-full max-w-82.5">트리거 워닝</p>
-        <i
-          class={clsx('i-lc-chevron-down square-4 color-icon-secondary', showTriggerOption && 'transform rotate-180')}
-        />
       </button>
 
       {#if showTriggerOption}
@@ -248,14 +254,14 @@
         variant="outlined"
         on:click={() => (filterOpen = true)}
       >
-        <i class="i-lc-list-filter square-5" />
+        <Icon class="square-5" icon={IconFilter} />
         필터
       </Button>
 
       <Menu as="div" placement="bottom">
         <Button slot="value" class="shrink-0" color="tertiary" size="md" variant="outlined">
           {orderBy === 'LATEST' ? '최신순' : '정확도순'}
-          <i class="i-lc-chevron-down square-5" />
+          <Icon class="square-5" icon={IconChevronDown} />
         </Button>
 
         <MenuItem
@@ -293,7 +299,10 @@
       on:click={() => (showTagOption = !showTagOption)}
     >
       <p class="body-15-b w-full max-w-82.5">태그 옵션</p>
-      <i class={clsx('i-lc-chevron-down square-4 color-icon-secondary', showTagOption && 'transform rotate-180')} />
+      <Icon
+        class={clsx('square-4 color-icon-secondary', showTagOption && 'transform rotate-180')}
+        icon={IconChevronDown}
+      />
     </button>
 
     {#if showTagOption}
@@ -320,7 +329,7 @@
             bind:value={includeValue}
           />
           <div class="absolute inset-y-0 right-3.5 flex center text-secondary h-100%">
-            <i class="i-lc-search square-5 transition" aria-label="검색 아이콘" />
+            <Icon class="square-5 transition" icon={IconSearch} />
           </div>
         </form>
 
@@ -361,7 +370,7 @@
             bind:value={excludeValue}
           />
           <div class="absolute inset-y-0 right-3.5 flex center text-secondary h-100%">
-            <i class="i-lc-search square-5 transition" aria-label="검색 아이콘" />
+            <Icon class="square-5 transition" icon={IconSearch} />
           </div>
         </form>
 
@@ -390,7 +399,10 @@
       on:click={() => (showAdultOption = !showAdultOption)}
     >
       <p class="body-15-b w-full max-w-82.5">성인물 옵션</p>
-      <i class={clsx('i-lc-chevron-down square-4 color-icon-secondary', showAdultOption && 'transform rotate-180')} />
+      <Icon
+        class={clsx('square-4 color-icon-secondary', showAdultOption && 'transform rotate-180')}
+        icon={IconChevronDown}
+      />
     </button>
 
     {#if showAdultOption}
@@ -433,7 +445,10 @@
       on:click={() => (showTriggerOption = !showTriggerOption)}
     >
       <p class="body-15-b w-full max-w-82.5">트리거 워닝</p>
-      <i class={clsx('i-lc-chevron-down square-4 color-icon-secondary', showTriggerOption && 'transform rotate-180')} />
+      <Icon
+        class={clsx('square-4 color-icon-secondary', showTriggerOption && 'transform rotate-180')}
+        icon={IconChevronDown}
+      />
     </button>
 
     {#if showTriggerOption}
