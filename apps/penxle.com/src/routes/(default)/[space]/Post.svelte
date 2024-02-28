@@ -828,8 +828,8 @@
               </div>
             </dl>
             {#if $query.post.space?.meAsMember}
-              <Button class="self-end" size="xs" variant="tertiary" on:click={() => (openTagManageModal = true)}>
-                테그수정
+              <Button class="self-end" size="2xs" variant="outline" on:click={() => (openTagManageModal = true)}>
+                태그수정
               </Button>
             {/if}
           </div>
