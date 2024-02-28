@@ -28,7 +28,7 @@
           }
 
           ...DefaultLayout_UserMenu_user
-          ...DefaultLayout_Notification_user
+          ...DefaultLayout_NotificationMenu_user
         }
       }
     `),

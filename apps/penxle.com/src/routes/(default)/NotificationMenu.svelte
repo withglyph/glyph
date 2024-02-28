@@ -14,9 +14,9 @@
   import { toast } from '$lib/notification';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { AcceptSpaceMemberInvitationSchema } from '$lib/validations';
-  import type { DefaultLayout_Notification_user } from '$glitch';
+  import type { DefaultLayout_NotificationMenu_user } from '$glitch';
 
-  let _user: DefaultLayout_Notification_user;
+  let _user: DefaultLayout_NotificationMenu_user;
   export { _user as $user };
 
   let open = false;
@@ -28,7 +28,7 @@
   $: user = fragment(
     _user,
     graphql(`
-      fragment DefaultLayout_Notification_user on User {
+      fragment DefaultLayout_NotificationMenu_user on User {
         id
 
         profile {
@@ -64,6 +64,19 @@
           }
 
           ... on PurchaseNotification {
+            id
+
+            post {
+              id
+
+              publishedRevision {
+                id
+                title
+              }
+            }
+          }
+
+          ... on CommentNotification {
             id
 
             post {
@@ -215,21 +228,29 @@
           <button
             class={clsx(
               'border-b border-gray-100 px-4 py-5 w-full hover:bg-gray-100 transition',
-              notification.state === 'UNREAD' && 'bg-gray-50',
+              notification.state === 'UNREAD' && 'bg-teal-50',
             )}
             type="button"
             on:click={() => redirect(notification)}
           >
-            <div class="text-13-r flex items-center gap-1 text-gray-500">
+            <div
+              class={clsx(
+                'text-13-r flex items-center gap-1 text-gray-500',
+                notification.state === 'UNREAD' && 'text-teal-500',
+              )}
+            >
               {#if notification.__typename === 'SubscribeNotification'}
-                <i class="i-tb-check square-3.5 block" />
+                <i class="i-tb-check square-3 block" />
                 스페이스 구독
               {:else if notification.__typename === 'PurchaseNotification'}
-                <i class="i-tb-coin square-3.5" />
-                포스트 구매
+                <i class="i-tb-coin square-3 block" />
+                구매
+              {:else if notification.__typename === 'CommentNotification'}
+                <i class="i-tb-message-circle square-3 block" />
+                댓글
               {/if}
             </div>
-            <div class={clsx('text-14-m px-5.5 text-gray-400', notification.state === 'UNREAD' && 'text-gray-800')}>
+            <div class="text-14-m px-3">
               {#if notification.__typename === 'SubscribeNotification'}
                 {notification.actor.name}님이 {notification.space.name.length > 10
                   ? `${notification.space.name.slice(0, 10)}...`
@@ -238,6 +259,9 @@
                 포스트 조회수가 급상승하고 있어요
               {:else if notification.__typename === 'PurchaseNotification'}
                 {notification.actor.name}님이 {notification.post.publishedRevision?.title ?? '(제목 없음)'} 포스트를 구매했어요
+              {:else if notification.__typename === 'CommentNotification'}
+                {notification.actor.name}님이 {notification.post.publishedRevision?.title ?? '(제목 없음)'}에 댓글을
+                달았어요
               {/if}
             </div>
             <time class="text-10-l text-gray-400 text-right w-full inline-block">
