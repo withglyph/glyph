@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import dayjs from 'dayjs';
   import IconCalendar from '~icons/tabler/calendar';
   import IconTextRecognition from '~icons/tabler/text-recognition';
@@ -9,6 +8,8 @@
   import { mixpanel } from '$lib/analytics';
   import { Badge, Button, Icon, Modal } from '$lib/components';
   import { toast } from '$lib/notification';
+  import { css, cx } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type { EditorPage_DraftListModal_post, EditorPage_DraftListModal_user } from '$glitch';
 
   let _user: EditorPage_DraftListModal_user;
@@ -62,11 +63,23 @@
   <svelte:fragment slot="title">임시저장된 포스트</svelte:fragment>
   <svelte:fragment slot="subtitle">{$user.posts?.length ?? 0}개의 포스트</svelte:fragment>
 
-  <ul class="sm:(overflow-y-auto max-h-15rem)">
+  <ul class={css({ sm: { maxHeight: '240px', overflowY: 'auto' } })}>
     {#each $user.posts as _post (_post.id)}
-      <li class="py-3 border-t border-secondary flex items-center justify-between gap-2 [&>button]:hover:block">
+      <li
+        class={cx(
+          'group',
+          flex({
+            justify: 'space-between',
+            align: 'center',
+            gap: '8px',
+            borderTopWidth: '1px',
+            borderTopColor: 'gray.200',
+            paddingY: '12px',
+          }),
+        )}
+      >
         <button
-          class="truncate w-full"
+          class={css({ width: 'full', truncate: true })}
           type="button"
           on:click={async () => {
             open = false;
@@ -74,36 +87,39 @@
           }}
         >
           <p
-            class={clsx('body-16-b mb-1 truncate', _post.draftRevision?.title?.trim().length === 0 && 'text-secondary')}
+            class={css(
+              { marginBottom: '4px', fontWeight: 'bold', truncate: true },
+              _post.draftRevision?.title?.trim().length === 0 && { color: 'gray.500' },
+            )}
           >
             {_post.draftRevision?.title?.trim().length === 0
               ? '(제목 없음)'
               : _post.draftRevision?.title ?? '(제목 없음)'}
           </p>
-          <div class="body-13-m text-secondary flex gap-8px items-center">
-            <div class="flex gap-2px items-center">
+          <div class={flex({ align: 'center', gap: '8px', fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
+            <div class={flex({ align: 'center', gap: '2px' })}>
               <Icon icon={IconCalendar} />
               {dayjs(_post.draftRevision?.updatedAt).formatAsDateTime()}
             </div>
 
-            <div class="flex gap-2px items-center">
+            <div class={flex({ align: 'center', gap: '2px' })}>
               <Icon icon={IconTextRecognition} />
               {_post.draftRevision.characterCount}자
             </div>
           </div>
         </button>
         <button
-          class="hidden"
+          class={css({ display: 'none', _groupHover: { display: 'block' } })}
           type="button"
           on:click={() => {
             deletePostOpen = true;
             deletePostId = _post.id;
           }}
         >
-          <Icon class="square-5 color-text-disabled" icon={IconTrash} />
+          <Icon style={css.raw({ size: '20px', color: 'gray.400' })} icon={IconTrash} />
         </button>
         {#if _post.id === $post.id}
-          <div class="mb-1 flex-none">
+          <div class={css({ flex: 'none', marginBottom: '4px' })}>
             <Badge color="green">현재 포스트</Badge>
           </div>
         {/if}
@@ -115,10 +131,12 @@
 <Modal size="sm" bind:open={deletePostOpen}>
   <svelte:fragment slot="title">임시저장글을 삭제할까요?</svelte:fragment>
 
-  <div slot="action" class="flex gap-3 w-full">
-    <Button class="w-full" color="secondary" size="xl" on:click={() => (deletePostOpen = false)}>닫기</Button>
+  <div slot="action" class={flex({ gap: '12px', width: 'full' })}>
+    <Button style={css.raw({ width: 'full' })} color="secondary" size="xl" on:click={() => (deletePostOpen = false)}>
+      닫기
+    </Button>
     <Button
-      class="w-full"
+      style={css.raw({ width: 'full' })}
       size="xl"
       on:click={async () => {
         if (deletePostId) {

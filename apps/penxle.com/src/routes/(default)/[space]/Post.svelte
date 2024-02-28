@@ -1,6 +1,5 @@
 <script lang="ts">
   import { getTextBetween } from '@tiptap/core';
-  import clsx from 'clsx';
   import dayjs from 'dayjs';
   import stringify from 'fast-json-stable-stringify';
   import IconRating15Plus from '~icons/effit/rating-15-plus';
@@ -32,6 +31,8 @@
   import { toast } from '$lib/notification';
   import { TiptapRenderer } from '$lib/tiptap/components';
   import { comma, humanizeNumber } from '$lib/utils';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import LoginRequireModal from '../LoginRequireModal.svelte';
   import AlertText from './AlertText.svelte';
   import Comment from './Comment.svelte';
@@ -42,6 +43,7 @@
   import TagManageModal from './TagManageModal.svelte';
   import type { Editor } from '@tiptap/core';
   import type { Post_postRevision, Post_query } from '$glitch';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   let editor: Editor | undefined;
   let loginRequireOpen = false;
@@ -52,8 +54,7 @@
   let openShareContentModal = false;
   let openTagManageModal = false;
 
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 
   let _query: Post_query;
   export { _query as $query };
@@ -434,37 +435,51 @@
   $: shortLink = `https://pnxl.me/${$query.post.shortlink}`;
 </script>
 
-<article class={clsx('w-full bg-white grow', _class)}>
-  <div class="w-full max-w-1062px mx-auto px-80px flex flex-col pt-42px mb-60px <sm:(pt-24px px-5)">
+<article class={css({ flexGrow: '1', width: 'full', backgroundColor: 'white' }, style)}>
+  <div
+    class={flex({
+      direction: 'column',
+      marginX: 'auto',
+      marginBottom: '60px',
+      paddingX: '80px',
+      paddingTop: '42px',
+      width: 'full',
+      maxWidth: '1062px',
+      smDown: {
+        paddingTop: '24px',
+        paddingX: '20px',
+      },
+    })}
+  >
     {#if $query.post.collection}
       <a
-        class="text-14-r text-gray-500 flex items-center gap-0.5 mb-4"
+        class={flex({ align: 'center', gap: '2px', marginBottom: '16px', fontSize: '14px', color: 'gray.500' })}
         href={`/${$query.post.space?.slug}/collections/${$query.post.collection.id}`}
       >
         {$query.post.collection.name}
-        <Icon class="square-4 text-gray-500" icon={IconChevronRight} />
+        <Icon style={css.raw({ size: '16px', color: 'gray.500' })} icon={IconChevronRight} />
       </a>
     {/if}
-    <div class="flex justify-between items-start">
+    <div class={flex({ justify: 'between', align: 'flex-start' })}>
       <div>
-        <h1 class="text-28-sb break-all <sm:text-22-sb">{$postRevision.title ?? '(제목 없음)'}</h1>
+        <h1 class={css({ fontSize: { base: '22px', sm: '28px' }, fontWeight: 'semibold', wordBreak: 'break-all' })}>
+          {$postRevision.title ?? '(제목 없음)'}
+        </h1>
         {#if $postRevision.subtitle}
-          <h2 class="text-16-r text-gray-700 break-all mt-3px">{$postRevision.subtitle}</h2>
+          <h2 class={css({ marginTop: '3px', color: 'gray.700', wordBreak: 'break-all' })}>{$postRevision.subtitle}</h2>
         {/if}
       </div>
 
       <Menu placement="bottom-end">
-        <Icon slot="value" class="square-24px text-gray-500 block sm:hidden" icon={IconDotsVertical} />
+        <Icon
+          slot="value"
+          style={css.raw({ size: '24px', color: 'gray.500', hideFrom: 'sm' })}
+          icon={IconDotsVertical}
+        />
 
         {#if $query.post.space?.meAsMember}
           <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
-          <MenuItem
-            on:click={() => {
-              openDeletePostWarning = true;
-            }}
-          >
-            삭제하기
-          </MenuItem>
+          <MenuItem on:click={() => (openDeletePostWarning = true)}>삭제하기</MenuItem>
         {:else}
           <MenuItem
             on:click={async () => {
@@ -494,41 +509,81 @@
       </Menu>
     </div>
 
-    <div class="border-y border-gray-100 flex justify-between py-3 mt-4 truncate">
-      <div class="flex gap-18px">
+    <div
+      class={flex({
+        justify: 'space-between',
+        borderYWidth: '1px',
+        borderYColor: 'gray.100',
+        marginTop: '16px',
+        paddingY: '12px',
+        truncate: true,
+      })}
+    >
+      <div class={flex({ gap: '18px' })}>
         {#if $query.post.space && $query.post.member}
-          <a class="relative flex-none h-fit square-36px" href={`/${$query.post.space.slug}`}>
-            <Image class="square-36px rounded-5px border" $image={$query.post.space.icon} />
+          <a class={css({ position: 'relative', flex: 'none', size: '36px' })} href={`/${$query.post.space.slug}`}>
+            <Image
+              style={css.raw({ borderWidth: '1px', borderColor: 'gray.200', borderRadius: '5px', size: '36px' })}
+              $image={$query.post.space.icon}
+            />
             <Avatar
-              class="square-26px absolute border border-gray-200 -right-8px -bottom-6px"
+              style={css.raw({
+                position: 'absolute',
+                right: '-8px',
+                bottom: '-6px',
+                borderWidth: '1px',
+                borderColor: 'gray.200',
+                size: '26px',
+              })}
               $profile={$query.post.member.profile}
             />
           </a>
         {:else}
-          <div class="absolute square-36px">
-            <div class="square-36px rounded-4px border" />
-            <div class="square-24px absolute border border-white -right-4px -bottom-4px" />
+          <div class={css({ position: 'absolute', size: '36px' })}>
+            <div class={css({ borderWidth: '1px', borderColor: 'gray.200', borderRadius: '4px', size: '36px' })} />
+            <div
+              class={css({
+                position: 'absolute',
+                right: '-4px',
+                bottom: '-4px',
+                borderWidth: '1px',
+                borderColor: 'white',
+                size: '24px',
+              })}
+            />
           </div>
         {/if}
 
-        <div class="flex flex-col gap-2px truncate">
-          <a class="flex items-center flex-wrap gap-1 truncate" href={`/${$query.post.space?.slug}`}>
-            <span class="text-15-m truncate">{$query.post.space?.name ?? '스페이스'}</span>
-            <span class="text-12-m text-gray-500">by {$query.post.member?.profile.name ?? '작성자'}</span>
+        <div class={flex({ direction: 'column', gap: '2px', truncate: true })}>
+          <a
+            class={flex({ align: 'center', gap: '4px', wrap: 'wrap', truncate: true })}
+            href={`/${$query.post.space?.slug}`}
+          >
+            <span class={css({ fontSize: '15px', fontWeight: 'medium', truncate: true })}>
+              {$query.post.space?.name ?? '스페이스'}
+            </span>
+            <span class={css({ fontSize: '12px', fontWeight: 'medium', color: 'gray.500' })}>
+              by {$query.post.member?.profile.name ?? '작성자'}
+            </span>
           </a>
 
-          <div class="flex items-center text-11-r text-gray-500">
+          <div class={flex({ align: 'center', fontSize: '11px', color: 'gray.500' })}>
             <time>
               {dayjs($query.post.publishedAt ?? $postRevision.createdAt).formatAsDate()}
             </time>
             {#if $query.post.discloseStats}
-              <div class="flex items-center before:(content-empty w-1px h-12px bg-gray-200 mx-2)">
-                <div class="flex items-center gap-2px mr-2.5">
-                  <Icon class="square-14px text-gray-400" icon={IconEye} />
+              <div
+                class={flex({
+                  align: 'center',
+                  _before: { content: '""', marginX: '8px', width: '1px', height: '12px', backgroundColor: 'gray.200' },
+                })}
+              >
+                <div class={flex({ align: 'center', gap: '2px', marginRight: '10px' })}>
+                  <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconEye} />
                   {humanizeNumber($query.post.viewCount)}
                 </div>
-                <div class="flex items-center gap-2px">
-                  <Icon class="square-13px text-gray-400" icon={IconMoodSmile} />
+                <div class={flex({ align: 'center', gap: '2px' })}>
+                  <Icon style={css.raw({ size: '13px', color: 'gray.400' })} icon={IconMoodSmile} />
                   {humanizeNumber($query.post.likeCount)}
                 </div>
               </div>
@@ -537,11 +592,14 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-12px <sm:hidden">
+      <div class={flex({ align: 'center', gap: '12px', hideBelow: 'sm' })}>
         <!-- <Button size="xs" variant="tertiary">집중모드</Button> -->
 
         <SharePostPopover href={shortLink}>
-          <Icon class="square-24px text-gray-500 transition hover:text-teal-400" icon={IconShare2} />
+          <Icon
+            style={css.raw({ size: '24px', color: { base: 'gray.500', _hover: 'teal.400' }, transition: 'common' })}
+            icon={IconShare2}
+          />
         </SharePostPopover>
 
         <button
@@ -562,24 +620,21 @@
           }}
         >
           {#if $query.post.bookmarkGroups.length > 0}
-            <Icon class="square-24px text-teal-500" icon={IconBookmarkFilled} />
+            <Icon style={css.raw({ size: '24px', color: 'teal.500' })} icon={IconBookmarkFilled} />
           {:else}
-            <Icon class="square-24px text-gray-500 transition hover:text-teal-400" icon={IconBookmark} />
+            <Icon
+              style={css.raw({ size: '24px', color: { base: 'gray.500', _hover: 'teal.400' }, transition: 'common' })}
+              icon={IconBookmark}
+            />
           {/if}
         </button>
 
         <Menu placement="bottom-end">
-          <Icon slot="value" class="square-24px text-gray-500" icon={IconDotsVertical} />
+          <Icon slot="value" style={css.raw({ size: '24px', color: 'gray.500' })} icon={IconDotsVertical} />
 
           {#if $query.post.space?.meAsMember}
             <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
-            <MenuItem
-              on:click={() => {
-                openDeletePostWarning = true;
-              }}
-            >
-              삭제하기
-            </MenuItem>
+            <MenuItem on:click={() => (openDeletePostWarning = true)}>삭제하기</MenuItem>
           {:else}
             <MenuItem
               on:click={async () => {
@@ -627,7 +682,7 @@
               {triggerTags}
             >
               <Button
-                class="w-158px text-14-sb! mt-4"
+                style={css.raw({ marginTop: '16px', width: '158px', fontSize: '14px', fontWeight: 'semibold' })}
                 size="md"
                 variant="outline"
                 on:click={() => (blurContent = false)}
@@ -647,7 +702,7 @@
               {triggerTags}
             >
               <Button
-                class="w-158px text-14-sb! mt-4"
+                style={css.raw({ marginTop: '16px', width: '158px', fontSize: '14px', fontWeight: 'semibold' })}
                 size="sm"
                 variant="outline"
                 on:click={async () => {
@@ -681,7 +736,7 @@
               {triggerTags}
             >
               <Button
-                class="w-158px text-14-sb! mt-4"
+                style={css.raw({ marginTop: '16px', width: '158px', fontSize: '14px', fontWeight: 'semibold' })}
                 size="sm"
                 variant="outline"
                 on:click={async () => {
@@ -715,7 +770,7 @@
         {:else}
           {#key stringify($postRevision.content)}
             <TiptapRenderer
-              class="pt-4 pb-6"
+              style={css.raw({ paddingTop: '16px', paddingBottom: '24px' })}
               content={$postRevision.content}
               options={{
                 paragraphIndent: $postRevision.paragraphIndent,
@@ -726,30 +781,38 @@
             />
           {/key}
 
-          <div class="flex justify-between my-12">
-            <dl class="space-y-1">
-              <div class="flex">
-                <dt class="text-13-m text-gray-500 mr-1">카테고리</dt>
-                <dd class="text-13-r text-gray-400 underline">
+          <div class={flex({ justify: 'space-between', marginY: '48px' })}>
+            <dl class={flex({ direction: 'column', gap: '4px' })}>
+              <div class={flex()}>
+                <dt class={css({ marginRight: '4px', fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
+                  카테고리
+                </dt>
+                <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
                   #{categoryFilter[$query.post.category]}
                 </dd>
               </div>
 
               {#if $query.post.pairs.length > 0}
-                <div class="flex gap-2px flex-wrap">
-                  <dt class="text-13-m text-gray-500 mr-2px">페어</dt>
+                <div class={flex({ gap: '2px', wrap: 'wrap' })}>
+                  <dt class={css({ marginRight: '2px', fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
+                    페어
+                  </dt>
                   {#each $query.post.pairs as pair (pair)}
-                    <dd class="text-13-r text-gray-400 underline">#{pairFilter[pair]}</dd>
+                    <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
+                      #{pairFilter[pair]}
+                    </dd>
                   {/each}
                 </div>
               {/if}
 
-              <div class="flex gap-2px flex-wrap">
+              <div class={flex({ gap: '2px', wrap: 'wrap' })}>
                 {#if $query.post.tags.some(({ kind }) => kind === 'TITLE')}
-                  <dt class="text-13-m text-gray-500 mr-2px">작품</dt>
+                  <dt class={css({ marginRight: '2px', fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
+                    작품
+                  </dt>
                   {#each $query.post.tags as { tag, kind } (tag.id)}
                     {#if kind === 'TITLE'}
-                      <dd class="text-13-r text-gray-400 underline">
+                      <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
                         <a href={`/tag/${tag.name}`}>#{tag.name}</a>
                       </dd>
                     {/if}
@@ -758,13 +821,31 @@
 
                 {#if $query.post.tags.some(({ kind }) => kind === 'CHARACTER')}
                   <dt
-                    class="text-13-m text-gray-500 mr-2px flex before:(content-empty w-1px h-10px mx-2 my-auto bg-gray-200) first-of-type:before:hidden"
+                    class={flex({
+                      marginRight: '2px',
+                      fontSize: '13px',
+                      fontWeight: 'medium',
+                      color: 'gray.500',
+                      _before: {
+                        content: '""',
+                        marginX: '8px',
+                        marginY: 'auto',
+                        width: '1px',
+                        height: '10px',
+                        backgroundColor: 'gray.200',
+                      },
+                      _firstOfType: {
+                        _before: {
+                          display: 'none',
+                        },
+                      },
+                    })}
                   >
                     캐릭터
                   </dt>
                   {#each $query.post.tags as { tag, kind } (tag.id)}
                     {#if kind === 'CHARACTER'}
-                      <dd class="text-13-r text-gray-400 underline">
+                      <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
                         <a href={`/tag/${tag.name}`}>#{tag.name}</a>
                       </dd>
                     {/if}
@@ -773,13 +854,31 @@
 
                 {#if $query.post.tags.some(({ kind }) => kind === 'COUPLING')}
                   <dt
-                    class="text-13-m text-gray-500 mr-2px flex before:(content-empty w-1px h-10px mx-2 my-auto bg-gray-200) first-of-type:before:hidden"
+                    class={flex({
+                      marginRight: '2px',
+                      fontSize: '13px',
+                      fontWeight: 'medium',
+                      color: 'gray.500',
+                      _before: {
+                        content: '""',
+                        marginX: '8px',
+                        marginY: 'auto',
+                        width: '1px',
+                        height: '10px',
+                        backgroundColor: 'gray.200',
+                      },
+                      _firstOfType: {
+                        _before: {
+                          display: 'none',
+                        },
+                      },
+                    })}
                   >
                     커플링
                   </dt>
                   {#each $query.post.tags as { tag, kind } (tag.id)}
                     {#if kind === 'COUPLING'}
-                      <dd class="text-13-r text-gray-400 underline">
+                      <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
                         <a href={`/tag/${tag.name}`}>#{tag.name}</a>
                       </dd>
                     {/if}
@@ -788,13 +887,31 @@
 
                 {#if $query.post.tags.some(({ kind }) => kind === 'TRIGGER')}
                   <dt
-                    class="text-13-m text-gray-500 mr-2px flex before:(content-empty w-1px h-10px mx-2 my-auto bg-gray-200) first-of-type:before:hidden"
+                    class={flex({
+                      marginRight: '2px',
+                      fontSize: '13px',
+                      fontWeight: 'medium',
+                      color: 'gray.500',
+                      _before: {
+                        content: '""',
+                        marginX: '8px',
+                        marginY: 'auto',
+                        width: '1px',
+                        height: '10px',
+                        backgroundColor: 'gray.200',
+                      },
+                      _firstOfType: {
+                        _before: {
+                          display: 'none',
+                        },
+                      },
+                    })}
                   >
                     트리거
                   </dt>
                   {#each $query.post.tags as { tag, kind } (tag.id)}
                     {#if kind === 'TRIGGER'}
-                      <dd class="text-13-r text-gray-400 underline">
+                      <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
                         <a href={`/tag/${tag.name}`}>#{tag.name}</a>
                       </dd>
                     {/if}
@@ -803,13 +920,31 @@
 
                 {#if $query.post.tags.some(({ kind }) => kind === 'EXTRA')}
                   <dt
-                    class="text-13-m text-gray-500 mr-2px flex before:(content-empty w-1px h-10px mx-2 my-auto bg-gray-200) first-of-type:before:hidden"
+                    class={flex({
+                      marginRight: '2px',
+                      fontSize: '13px',
+                      fontWeight: 'medium',
+                      color: 'gray.500',
+                      _before: {
+                        content: '""',
+                        marginX: '8px',
+                        marginY: 'auto',
+                        width: '1px',
+                        height: '10px',
+                        backgroundColor: 'gray.200',
+                      },
+                      _firstOfType: {
+                        _before: {
+                          display: 'none',
+                        },
+                      },
+                    })}
                   >
                     추가태그
                   </dt>
                   {#each $query.post.tags as { tag, kind } (tag.id)}
                     {#if kind === 'EXTRA'}
-                      <dd class="text-13-r text-gray-400 underline">
+                      <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
                         <a href={`/tag/${tag.name}`}>#{tag.name}</a>
                       </dd>
                     {/if}
@@ -818,7 +953,12 @@
               </div>
             </dl>
             {#if $query.post.space?.meAsMember}
-              <Button class="self-end" size="2xs" variant="outline" on:click={() => (openTagManageModal = true)}>
+              <Button
+                style={css.raw({ alignSelf: 'flex-end' })}
+                size="2xs"
+                variant="outline"
+                on:click={() => (openTagManageModal = true)}
+              >
                 태그수정
               </Button>
             {/if}
@@ -828,7 +968,7 @@
     {:else}
       <AlertText description="해당 내용은 비밀번호 입력이 필요해요" icon={IconLockSquareRounded} title="비밀글">
         <form
-          class="mt-5 flex gap-7px"
+          class={flex({ gap: '7px', marginTop: '20px' })}
           on:submit|preventDefault={async () => {
             try {
               await unlockPasswordedPost({
@@ -842,32 +982,55 @@
           }}
         >
           <input
-            class="text-14-r border border-gray-200 bg-gray-50 py-1.5 px-2.5 rounded w-274px"
+            class={css({
+              borderWidth: '1px',
+              borderColor: 'gray.200',
+              borderRadius: '4px',
+              paddingX: '10px',
+              paddingY: '6px',
+              width: '274px',
+              fontSize: '14px',
+              backgroundColor: 'gray.50',
+            })}
             placeholder="비밀번호를 입력해주세요"
             type="password"
             bind:value={password}
           />
-          <Button class="text-14-sb!" size="sm" type="submit">입력</Button>
+          <Button style={css.raw({ fontSize: '14px', fontWeight: 'semibold' })} size="sm" type="submit">입력</Button>
         </form>
       </AlertText>
     {/if}
 
     <div
-      class="sticky flex items-center justify-between -mx-5 bottom-0 grow px-5 py-3.5 bg-white border-t border-gray-150 z-1 sm:hidden"
+      class={flex({
+        position: 'sticky',
+        bottom: '0',
+        justify: 'space-between',
+        align: 'center',
+        grow: '1',
+        borderTopWidth: '1px',
+        borderTopColor: 'gray.150',
+        marginX: '-20px',
+        paddingX: '20px',
+        paddingY: '14px',
+        backgroundColor: 'white',
+        zIndex: '1',
+        hideFrom: 'sm',
+      })}
     >
-      <div class="flex items-center">
+      <div class={flex({ align: 'center' })}>
         {#if $query.post.commentQualification === 'NONE'}
           <Tooltip
-            class="flex center square-6 mr-5"
+            style={center.raw({ marginRight: '20px', size: '24px' })}
             message="해당 게시물은 댓글이 허용되어 있지 않아요"
             offset={10}
             placement="top"
           >
-            <Icon class="square-5 text-gray-400" icon={IconMessageCircleOff} />
+            <Icon style={css.raw({ size: '20px', color: 'gray.400' })} icon={IconMessageCircleOff} />
           </Tooltip>
         {:else}
-          <a class="flex center mr-5 square-6" href="#comment">
-            <Icon class="square-5 block" icon={IconMessageCircle} />
+          <a class={center({ marginTop: '20px', size: '24px' })} href="#comment">
+            <Icon style={css.raw({ size: '20px' })} icon={IconMessageCircle} />
           </a>
         {/if}
 
@@ -881,7 +1044,7 @@
         </Tooltip>
       </div>
 
-      <div class="flex items-center gap-5">
+      <div class={flex({ align: 'center', gap: '20px' })}>
         <button
           type="button"
           on:click={async () => {
@@ -900,19 +1063,33 @@
           }}
         >
           {#if $query.post.bookmarkGroups.length > 0}
-            <Icon class="square-20px text-teal-500" icon={IconBookmarkFilled} />
+            <Icon style={css.raw({ size: '20px', color: 'teal.500' })} icon={IconBookmarkFilled} />
           {:else}
-            <Icon class="square-20px text-gray-700 transition hover:text-teal-400" icon={IconBookmark} />
+            <Icon
+              style={css.raw({ size: '20px', color: { base: 'gray.700', _hover: 'teal.400' }, transition: 'common' })}
+              icon={IconBookmark}
+            />
           {/if}
         </button>
         <SharePostPopover href={shortLink}>
-          <Icon class="square-5 block text-gray-700 transition hover:text-teal-400" icon={IconShare2} />
+          <Icon
+            style={css.raw({ size: '20px', color: { base: 'gray.700', _hover: 'teal.400' }, transition: 'common' })}
+            icon={IconShare2}
+          />
         </SharePostPopover>
       </div>
     </div>
 
-    <div class="flex justify-between border-t border-gray-150 py-4.5 <sm:hidden">
-      <div class="flex items-center gap-2.5 flex-wrap">
+    <div
+      class={flex({
+        justify: 'space-between',
+        borderTopWidth: '1px',
+        borderTopColor: 'gray.150',
+        paddingY: '18px',
+        hideBelow: 'sm',
+      })}
+    >
+      <div class={flex({ align: 'center', gap: '10px', wrap: 'wrap' })}>
         <Tooltip
           enabled={!$query.post.receiveFeedback}
           message="피드백 받기를 설정하지 않은 포스트예요"
@@ -927,7 +1104,14 @@
         {#if $query.post.reactions.length > 30}
           {#if !emojiOpen}
             <button
-              class="caption-12-m text-secondary rounded-3xl p-1 bg-primary transition hover:bg-surface-secondary"
+              class={css({
+                borderRadius: 'full',
+                padding: '4px',
+                fontSize: '12px',
+                fontWeight: 'medium',
+                backgroundColor: { base: 'gray.50', _hover: 'gray.200' },
+                transition: 'common',
+              })}
               type="button"
               on:click={() => (emojiOpen = true)}
             >
@@ -941,43 +1125,61 @@
         {/if}
       </div>
       <SharePostPopover href={shortLink}>
-        <Icon class="square-5 text-gray-500 block transition hover:text-teal-400" icon={IconShare2} />
+        <Icon
+          style={css.raw({ size: '20px', color: { base: 'gray.500', _hover: 'teal.400' }, transition: 'common' })}
+          icon={IconShare2}
+        />
       </SharePostPopover>
     </div>
 
     {#if $query.post.collection}
       {@const positionInCollection = $query.post.collection.posts.findIndex((post) => post.id === $query.post.id)}
-      <div class="bg-gray-50 rounded-2.5 p-5">
-        <a class="flex gap-3" href={`/${$query.post.space?.slug}/collections/${$query.post.collection.id}`}>
+      <div class={css({ borderRadius: '10px', padding: '20px', backgroundColor: 'gray.50' })}>
+        <a class={flex({ gap: '12px' })} href={`/${$query.post.space?.slug}/collections/${$query.post.collection.id}`}>
           {#if $query.post.collection.thumbnail}
-            <Image class="w-60px h-84px rounded flex-none" $image={$query.post.collection.thumbnail} />
+            <Image
+              style={css.raw({ flex: 'none', borderRadius: '4px', width: '60px', height: '84px' })}
+              $image={$query.post.collection.thumbnail}
+            />
           {/if}
 
-          <div class="truncate">
-            <p class="text-11-r text-gray-500">컬렉션</p>
-            <p class="text-18-sb mb-2 truncate">{$query.post.collection.name}</p>
-            <p class="text-13-r text-gray-500 truncate">
+          <div class={css({ truncate: true })}>
+            <p class={css({ fontSize: '11px', color: 'gray.500' })}>컬렉션</p>
+            <p class={css({ marginBottom: '8px', fontSize: '18px', fontWeight: 'semibold', truncate: true })}>
+              {$query.post.collection.name}
+            </p>
+            <p class={css({ fontSize: '13px', color: 'gray.500', truncate: true })}>
               총 {$query.post.collection.count}개의 포스트
             </p>
           </div>
         </a>
 
         {#if positionInCollection > -1}
-          <div class="bg-white mt-4">
+          <div class={css({ marginTop: '16px', backgroundColor: 'white' })}>
             {#if positionInCollection > 0}
               {@const previousPost = $query.post.collection.posts[positionInCollection - 1]}
               <a
-                class="flex items-center gap-8 truncate p-4 transition h-86px hover:bg-gray-100"
+                class={flex({
+                  align: 'center',
+                  gap: '32px',
+                  padding: '16px',
+                  height: '86px',
+                  transition: 'common',
+                  truncate: true,
+                  _hover: { backgroundColor: 'gray.100' },
+                })}
                 href={`/${$query.post.space?.slug}/${previousPost.permalink}`}
               >
-                <span class="text-13-m text-gray-500">이전글</span>
+                <span class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>이전글</span>
 
-                <div class="truncate">
-                  <p class="truncate text-16-sb">
+                <div class={css({ truncate: true })}>
+                  <p class={css({ fontWeight: 'semibold', truncate: true })}>
                     {previousPost.publishedRevision?.title ?? '(제목 없음)'}
                   </p>
                   {#if previousPost.publishedRevision?.subtitle}
-                    <p class="truncate text-13-r text-gray-500">{previousPost.publishedRevision.subtitle}</p>
+                    <p class={css({ fontSize: '13px', color: 'gray.500', truncate: true })}>
+                      {previousPost.publishedRevision.subtitle}
+                    </p>
                   {/if}
                 </div>
               </a>
@@ -985,17 +1187,27 @@
             {#if positionInCollection < $query.post.collection.posts.length - 1}
               {@const nextPost = $query.post.collection.posts[positionInCollection + 1]}
               <a
-                class="flex items-center gap-8 truncate p-5 transition h-86px hover:bg-gray-100 border-t border-gray-100"
+                class={flex({
+                  align: 'center',
+                  gap: '32px',
+                  padding: '16px',
+                  height: '86px',
+                  transition: 'common',
+                  truncate: true,
+                  _hover: { backgroundColor: 'gray.100' },
+                })}
                 href={`/${$query.post.space?.slug}/${nextPost.permalink}`}
               >
-                <span class="text-13-m text-gray-500">다음글</span>
+                <span class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>다음글</span>
 
-                <div class="truncate">
-                  <p class="truncate text-16-sb">
+                <div class={css({ truncate: true })}>
+                  <p class={css({ fontWeight: 'semibold', truncate: true })}>
                     {nextPost.publishedRevision?.title ?? '(제목 없음)'}
                   </p>
                   {#if nextPost.publishedRevision?.subtitle}
-                    <p class="truncate text-13-r text-gray-500">{nextPost.publishedRevision.subtitle}</p>
+                    <p class={css({ fontSize: '13px', color: 'gray.500', truncate: true })}>
+                      {nextPost.publishedRevision.subtitle}
+                    </p>
                   {/if}
                 </div>
               </a>
@@ -1006,53 +1218,102 @@
     {:else}
       {#if $query.post.previousPost}
         <a
-          class="flex items-center gap-8 truncate p-5 transition mt-12px h-82px hover:bg-gray-100"
+          class={flex({
+            align: 'center',
+            gap: '32px',
+            marginTop: '12px',
+            padding: '20px',
+            height: '82px',
+            transition: 'common',
+            truncate: true,
+            _hover: { backgroundColor: 'gray.100' },
+          })}
           href={`/${$query.post.space?.slug}/${$query.post.previousPost.permalink}`}
         >
-          <span class="text-13-m text-gray-500">이전글</span>
+          <span class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>이전글</span>
 
-          <div class="truncate">
-            <p class="truncate text-16-sb">
+          <div class={css({ truncate: true })}>
+            <p class={css({ fontWeight: 'semibold', truncate: true })}>
               {$query.post.previousPost.publishedRevision.title ?? '(제목 없음)'}
             </p>
             {#if $query.post.previousPost.publishedRevision.subtitle}
-              <p class="truncate text-13-r text-gray-500">{$query.post.previousPost.publishedRevision.subtitle}</p>
+              <p class={css({ fontSize: '13px', color: 'gray.500', truncate: true })}>
+                {$query.post.previousPost.publishedRevision.subtitle}
+              </p>
             {/if}
           </div>
         </a>
       {/if}
       {#if $query.post.nextPost}
         <a
-          class="flex items-center gap-8 truncate p-5 transition h-82px hover:bg-gray-100 border-t border-gray-100"
+          class={flex({
+            align: 'center',
+            gap: '32px',
+            borderTopWidth: '1px',
+            borderTopColor: 'gray.100',
+            padding: '20px',
+            height: '82px',
+            transition: 'common',
+            truncate: true,
+            _hover: { backgroundColor: 'gray.100' },
+          })}
           href={`/${$query.post.space?.slug}/${$query.post.nextPost.permalink}`}
         >
-          <span class="text-13-m text-gray-500">다음글</span>
+          <span class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>다음글</span>
 
-          <div class="truncate">
-            <p class="truncate text-16-sb">
+          <div class={css({ truncate: true })}>
+            <p class={css({ fontWeight: 'semibold', truncate: true })}>
               {$query.post.nextPost.publishedRevision.title ?? '(제목 없음)'}
             </p>
             {#if $query.post.nextPost.publishedRevision.subtitle}
-              <p class="truncate text-13-r text-gray-500">{$query.post.nextPost.publishedRevision.subtitle}</p>
+              <p class={css({ fontSize: '13px', color: 'gray.500', truncate: true })}>
+                {$query.post.nextPost.publishedRevision.subtitle}
+              </p>
             {/if}
           </div>
         </a>
       {/if}
     {/if}
 
-    <aside class="bg-gray-50 rounded-2.5 flex sm:(items-center justify-between) <sm:(flex-col center) p-5 gap-3 my-4">
-      <div class="flex gap-3 <sm:(flex-col center)">
-        <a class="flex-none" href={`/${$query.post.space?.slug}`}>
+    <aside
+      class={flex({
+        gap: '12px',
+        borderRadius: '10px',
+        marginY: '16px',
+        padding: '20px',
+        backgroundColor: 'gray.50',
+        sm: { justifyContent: 'space-between', alignItems: 'center' },
+        smDown: { flexDirection: 'column', justifyContent: 'center', alignItems: 'center' },
+      })}
+    >
+      <div
+        class={flex({
+          gap: '12px',
+          smDown: { flexDirection: 'column', justifyContent: 'center', alignItems: 'center' },
+        })}
+      >
+        <a class={css({ flex: 'none' })} href={`/${$query.post.space?.slug}`}>
           {#if $query.post.space}
-            <Image class="square-16 rounded border border-gray-200" $image={$query.post.space.icon} />
+            <Image
+              style={css.raw({ borderWidth: '1px', borderColor: 'gray.200', borderRadius: '4px', size: '64px' })}
+              $image={$query.post.space.icon}
+            />
           {:else}
-            <div class="square-16 rounded border border-gray-200" />
+            <div class={css({ borderWidth: '1px', borderColor: 'gray.200', borderRadius: '4px', size: '64px' })} />
           {/if}
         </a>
 
-        <article class="grow truncate">
-          <a class="truncate w-full" href={`/${$query.post.space?.slug}`}>
-            <p class="text-18-sb truncate w-full <sm:text-center">
+        <article class={css({ flexGrow: '1', truncate: true })}>
+          <a class={css({ width: 'full', truncate: true })} href={`/${$query.post.space?.slug}`}>
+            <p
+              class={css({
+                width: 'full',
+                fontSize: '18px',
+                fontWeight: 'semibold',
+                truncate: true,
+                smDown: { textAlign: 'center' },
+              })}
+            >
               {#if $query.post.space}
                 {$query.post.space.name}
               {:else}
@@ -1060,8 +1321,17 @@
               {/if}
             </p>
           </a>
-          <a class="w-full whitespace-pre-wrap" href={`/${$query.post.space?.slug}`}>
-            <p class="text-13-r text-gray-500 mt-1 break-all w-full <sm:text-center">
+          <a class={css({ width: 'full', whiteSpace: 'pre-wrap' })} href={`/${$query.post.space?.slug}`}>
+            <p
+              class={css({
+                marginTop: '4px',
+                width: 'full',
+                fontSize: '13px',
+                color: 'gray.500',
+                wordBreak: 'break-all',
+                smDown: { textAlign: 'center' },
+              })}
+            >
               {$query.post.space?.description ?? '아직 소개가 없어요'}
             </p>
           </a>
@@ -1071,7 +1341,7 @@
       {#if !$query.post.space?.meAsMember}
         {#if $query.post.space?.followed}
           <Button
-            class="shrink-0 flex items-center gap-1"
+            style={flex.raw({ align: 'center', gap: '4px', flex: 'none' })}
             size="sm"
             variant="outline"
             on:click={async () => {
@@ -1081,12 +1351,12 @@
               mixpanel.track('space:unfollow', { spaceId: $query.post.space.id, via: 'post' });
             }}
           >
-            <Icon class="square-3.5 block text-gray-400" icon={IconCheck} />
+            <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconCheck} />
             관심 스페이스
           </Button>
         {:else}
           <Button
-            class="shrink-0 flex items-center gap-1"
+            style={flex.raw({ align: 'center', gap: '4px', flex: 'none' })}
             size="sm"
             on:click={async () => {
               if (!$query.post.space) return;
@@ -1100,7 +1370,7 @@
               mixpanel.track('space:follow', { spaceId: $query.post.space.id, via: 'post' });
             }}
           >
-            <Icon class="square-3.5 block" icon={IconPlus} />
+            <Icon style={css.raw({ size: '14px' })} icon={IconPlus} />
             관심 스페이스
           </Button>
         {/if}
@@ -1108,20 +1378,29 @@
     </aside>
 
     {#if $query.post.space && !blurContent && !$query.post.space.myMasquerade?.blocked}
-      <div class="mt-40px">
+      <div class={css({ marginTop: '40px' })}>
         {#if $query.post.commentQualification !== 'NONE'}
-          <p id="comment" class="text-18-sb text-gray-700 mb-2.5 scroll-my-61px">
+          <p
+            id="comment"
+            class={css({
+              marginBottom: '10px',
+              fontSize: '18px',
+              fontWeight: 'semibold',
+              color: 'gray.700',
+              scrollMarginY: '61px',
+            })}
+          >
             댓글 {comma($query.post.commentCount)}
           </p>
-          <hr class="bg-gray-100 my-2 h-1px border-none" />
+          <hr class={css({ marginY: '8px', height: '1px', backgroundColor: 'gray.100' })} />
           <CommentInput $post={$query.post} {$query} />
 
-          <ul class="mt-6">
+          <ul class={css({ marginTop: '24px' })}>
             {#each postComments as comment (comment.id)}
               <Comment $postComment={comment} {$query} />
             {/each}
             {#if take * (page - 1) < $query.post.paginationCount}
-              <li class="text-center">
+              <li class={css({ textAlign: 'center' })}>
                 <button
                   type="button"
                   on:click={async () => {
@@ -1134,7 +1413,16 @@
             {/if}
           </ul>
         {:else}
-          <p class="py-6 px-5 text-15-r text-gray-400 border-t border-gray-200">
+          <p
+            class={css({
+              borderTopWidth: '1px',
+              borderTopColor: 'gray.200',
+              paddingX: '20px',
+              paddingY: '24px',
+              fontSize: '15px',
+              color: 'gray.400',
+            })}
+          >
             해당 게시물은 댓글이 허용되어 있지 않아요
           </p>
         {/if}
@@ -1142,23 +1430,42 @@
     {/if}
 
     {#if $query.post.recommendedPosts.length > 0}
-      <div class="mt-10.5">
-        <p class="text-18-sb mb-2 sm:(text-20-sb mb-4 mx-5)">추천 포스트</p>
+      <div class={css({ marginTop: '42px' })}>
+        <p
+          class={css({
+            marginBottom: '8px',
+            fontSize: '18px',
+            fontWeight: 'semibold',
+            sm: { marginBottom: '16px', marginX: '20px', fontSize: '20px' },
+          })}
+        >
+          추천 포스트
+        </p>
 
-        <ul class="grow">
+        <ul class={css({ flexGrow: '1' })}>
           {#each $query.post.recommendedPosts as post, index (post.id)}
             {#if index !== 0}
-              <hr class="bg-gray-100 sm:my-4" />
+              <hr class={css({ backgroundColor: 'gray.100', sm: { marginY: '16px' } })} />
             {/if}
-            <li class="rounded-2.5 sm:hover:bg-gray-50">
-              <a class="flex flex-col py-6 sm:p-5" href={`/${post.space.slug}/${post.permalink}`}>
-                <div class="flex">
-                  <div class="w-96px mr-3.5 sm:(w-124px mr-5)">
+            <li class={css({ borderRadius: '10px', sm: { _hover: { backgroundColor: 'gray.50' } } })}>
+              <a
+                class={flex({ direction: 'column', paddingY: '24px', sm: { padding: '20px' } })}
+                href={`/${post.space.slug}/${post.permalink}`}
+              >
+                <div class={flex()}>
+                  <div class={css({ marginRight: { base: '14px', sm: '20px' }, width: { base: '96px', sm: '124px' } })}>
                     {#if post.thumbnail}
-                      <Image class="square-124px rounded-1.5 flex-none <sm:square-96px" $image={post.thumbnail} />
+                      <Image
+                        style={css.raw({ flex: 'none', borderRadius: '6px', size: { base: '96px', sm: '124px' } })}
+                        $image={post.thumbnail}
+                      />
                     {:else}
-                      <div class="square-124px rounded-1.5 flex-none <sm:square-96px">
-                        <svg class="rounded-1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <div class={css({ flex: 'none', borderRadius: '6px', size: { base: '96px', sm: '124px' } })}>
+                        <svg
+                          class={css({ borderRadius: '6px' })}
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
                           <rect fill="#0c0a091a" height="24" width="24" />
                           <path
                             d="M7.36 3.86c2.3 5.04.42 10.01-.1 11.36-.08.23-.13.36-.11.36a15.7 15.7 0 0 1 9.45 4.6l-1.58-2.74L13 14.07a1.1 1.1 0 1 1 .53-.35l3.53 6.11c-1.4-4.68.63-10.12.63-10.12-6.15-.67-10.33-5.85-10.33-5.85Z"
@@ -1168,62 +1475,108 @@
                       </div>
                     {/if}
 
-                    <div class="flex items-center truncate mt-1">
-                      <div class="relative mr-2 flex-none <sm:hidden">
-                        <Image class="square-5.5 border border-gray-100 rounded" $image={post.space.icon} />
+                    <div class={flex({ align: 'center', marginTop: '4px', truncate: true })}>
+                      <div class={css({ position: 'relative', flex: 'none', marginRight: '8px', hideBelow: 'sm' })}>
+                        <Image
+                          style={css.raw({
+                            borderWidth: '1px',
+                            borderColor: 'gray.100',
+                            borderRadius: '4px',
+                            size: '22px',
+                          })}
+                          $image={post.space.icon}
+                        />
 
                         <Avatar
-                          class="square-18px absolute border border-gray-100 -right-6px -bottom-6px"
+                          style={css.raw({
+                            position: 'absolute',
+                            right: '-6px',
+                            bottom: '-6px',
+                            borderWidth: '1px',
+                            borderColor: 'gray.100',
+                            size: '18px',
+                          })}
                           $profile={post.member.profile}
                         />
                       </div>
-                      <div class="truncate">
-                        <p class="text-12-m text-gray-700 truncate">{post.space.name}</p>
-                        <p class="text-11-r truncate text-gray-400">by {post.member.profile.name}</p>
+                      <div class={css({ truncate: true })}>
+                        <p class={css({ fontSize: '12px', fontWeight: 'medium', color: 'gray.700', truncate: true })}>
+                          {post.space.name}
+                        </p>
+                        <p class={css({ fontSize: '11px', color: 'gray.400', truncate: true })}>
+                          by {post.member.profile.name}
+                        </p>
                       </div>
                     </div>
                   </div>
 
-                  <div class="grow flex flex-col justify-between truncate">
-                    <div class="truncate">
-                      <div class="flex items-center gap-2.5 truncate">
+                  <div class={flex({ direction: 'column', justify: 'space-between', grow: '1', truncate: true })}>
+                    <div class={css({ truncate: true })}>
+                      <div class={flex({ align: 'center', gap: '10px', truncate: true })}>
                         {#if post.publishedRevision?.price}
-                          <Badge class="w-fit" color="purple">유료</Badge>
+                          <Badge style={css.raw({ width: 'fit' })} color="purple">유료</Badge>
                         {/if}
                         {#if post.ageRating === 'R19'}
-                          <Badge class="w-fit" color="red">성인</Badge>
+                          <Badge style={css.raw({ width: 'fit' })} color="red">성인</Badge>
                         {/if}
                         {#if post.ageRating === 'R15'}
-                          <Badge class="w-fit" color="red">15세</Badge>
+                          <Badge style={css.raw({ width: 'fit' })} color="red">15세</Badge>
                         {/if}
                         {#if post.tags.some(({ kind }) => kind === 'TRIGGER')}
-                          <Badge class="w-fit" color="orange">트리거주의</Badge>
+                          <Badge style={css.raw({ width: 'fit' })} color="orange">트리거주의</Badge>
                         {/if}
                         {#if post.hasPassword}
-                          <Badge class="w-fit" color="gray">비밀글</Badge>
+                          <Badge style={css.raw({ width: 'fit' })} color="gray">비밀글</Badge>
                         {/if}
 
-                        <p class="text-16-sb text-gray-700 truncate sm:text-18-sb">
+                        <p
+                          class={css({
+                            fontWeight: 'semibold',
+                            color: 'gray.700',
+                            truncate: true,
+                            sm: { fontSize: '18px' },
+                          })}
+                        >
                           {post.publishedRevision.title ?? '(제목 없음)'}
                         </p>
                       </div>
 
                       {#if post.publishedRevision.subtitle}
-                        <p class="text-12- text-gray-700 truncate mt-1px sm:(mt-2px text-15-m)">
+                        <p
+                          class={css({
+                            marginTop: { base: '1px', sm: '2px' },
+                            fontSize: { base: '12px', sm: '15px' },
+                            fontWeight: 'medium',
+                            color: 'gray.700',
+                            truncate: true,
+                          })}
+                        >
                           {post.publishedRevision.subtitle}
                         </p>
                       {/if}
 
                       <p
-                        class="line-clamp-3 break-all whitespace-pre-wrap text-12-r mt-7px text-gray-500 sm:(text-14-r mt-3)"
+                        class={css({
+                          marginTop: { base: '7px', sm: '12px' },
+                          fontSize: { base: '12px', sm: '14px' },
+                          color: 'gray.500',
+                          whiteSpace: 'pre-wrap',
+                          wordBreak: 'break-all',
+                          lineClamp: 3,
+                        })}
                       >
                         {post.publishedRevision.previewText}
                       </p>
                     </div>
 
-                    <ul class="flex flex-wrap items-center gap-1.5">
+                    <ul class={flex({ align: 'center', gap: '6px', wrap: 'wrap' })}>
                       {#each post.tags as { tag, kind } (tag.id)}
-                        <li class={clsx('text-12-r text-gray-400 underline p-0.5', kind === 'TITLE' && 'bg-gray-100')}>
+                        <li
+                          class={css(
+                            { padding: '2px', fontSize: '12px', color: 'gray.400', textDecorationLine: 'underline' },
+                            kind === 'TITLE' && { backgroundColor: 'gray.100' },
+                          )}
+                        >
                           #{tag.name}
                         </li>
                       {/each}
@@ -1231,7 +1584,9 @@
                   </div>
                 </div>
 
-                <time class="text-11-r text-gray-400 text-right mt-2">{dayjs(post.publishedAt).formatAsDate()}</time>
+                <time class={css({ marginTop: '8px', textAlign: 'right', fontSize: '11px', color: 'gray.400' })}>
+                  {dayjs(post.publishedAt).formatAsDate()}
+                </time>
               </a>
             </li>
           {/each}
@@ -1259,19 +1614,28 @@
 <LoginRequireModal bind:open={loginRequireOpen} />
 
 <Modal
-  actionClass="border-none gap-1.5 pt-6 pb-6 sm:p-7"
+  actionStyle={css.raw({ gap: '6px', borderWidth: '0', paddingY: '24px', sm: { padding: '28px' } })}
   size="sm"
-  titleClass="text-18-sb"
+  titleStyle={css.raw({ fontSize: '18px', fontWeight: 'semibold' })}
   bind:open={openDeletePostWarning}
 >
   <svelte:fragment slot="title">포스트를 삭제하시겠어요?</svelte:fragment>
 
-  <p class="mt-1 text-14-r text-gray-700 px-6 sm:px-7">삭제된 글은 복구할 수 없어요</p>
+  <p class={css({ marginTop: '4px', paddingX: { base: '24px', sm: '28px' }, fontSize: '14px', color: 'gray.700' })}>
+    삭제된 글은 복구할 수 없어요
+  </p>
 
   <svelte:fragment slot="action">
-    <Button class="w-full" size="lg" variant="outline" on:click={() => (openDeletePostWarning = false)}>취소</Button>
     <Button
-      class="w-full"
+      style={css.raw({ width: 'full' })}
+      size="lg"
+      variant="outline"
+      on:click={() => (openDeletePostWarning = false)}
+    >
+      취소
+    </Button>
+    <Button
+      style={css.raw({ width: 'full' })}
       size="lg"
       on:click={async () => {
         await goto(`/${$query.post.space?.slug}`);

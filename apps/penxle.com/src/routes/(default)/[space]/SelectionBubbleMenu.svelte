@@ -1,10 +1,11 @@
 <script lang="ts">
   import { Editor, isTextSelection, posToDOMRect } from '@tiptap/core';
   import { Plugin, PluginKey } from '@tiptap/pm/state';
-  import { EditorView } from '@tiptap/pm/view';
   import { onMount, tick } from 'svelte';
   import { createFloatingActions } from '$lib/svelte/actions';
+  import { css } from '$styled-system/css';
   import type { VirtualElement } from '@floating-ui/dom';
+  import type { EditorView } from '@tiptap/pm/view';
 
   export let editor: Editor;
 
@@ -52,8 +53,19 @@
 </script>
 
 {#if open}
-  <div class="z-1 select-none bg-gray-90 text-sm text-gray-30 rounded-lg p-2" use:floating>
+  <div
+    class={css({
+      borderRadius: '8px',
+      padding: '8px',
+      fontSize: '14px',
+      color: 'gray.300',
+      backgroundColor: 'gray.900',
+      userSelect: 'none',
+      zIndex: '1',
+    })}
+    use:floating
+  >
     <slot />
-    <div class="square-2 bg-gray-90" use:arrow />
+    <div class={css({ size: '8px', backgroundColor: 'gray.900' })} use:arrow />
   </div>
 {/if}

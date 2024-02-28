@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import IconHorizontalRule from '~icons/effit/horizontal-rule';
   import IconLetterSpacing from '~icons/effit/letter-spacing';
   import IconLineHeight from '~icons/effit/line-height';
@@ -22,6 +21,8 @@
   import { Icon } from '$lib/components';
   import { values } from '$lib/tiptap/values';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
+  import { css, cx } from '$styled-system/css';
+  import { center, flex, grid } from '$styled-system/patterns';
   import { getEditorContext } from './context';
   import MobileToolbarButton from './MobileToolbarButton.svelte';
 
@@ -123,130 +124,157 @@
     (editor?.getAttributes('font_color').fontColor as string | undefined)?.toUpperCase() ?? values.defaultColor;
 </script>
 
-<div class="flex flex-col bg-white text-gray-800 sm:hidden" on:touchend|nonpassive|preventDefault>
+<div
+  class={flex({ direction: 'column', color: 'gray.800', backgroundColor: 'white', hideFrom: 'sm' })}
+  on:touchend|nonpassive|preventDefault
+>
   <div
-    class="border-b border-gray-200 w-full px-20px py-14px flex items-center gap-20px overflow-x-auto [&::-webkit-scrollbar]:hidden touch-pan-x"
+    class={flex({
+      align: 'center',
+      gap: '20px',
+      borderBottomWidth: '1px',
+      borderBottomColor: 'gray.200',
+      paddingX: '20px',
+      paddingY: '14px',
+      width: 'full',
+      overflowX: 'auto',
+      scrollbar: 'hidden',
+      touchAction: 'pan-x',
+    })}
   >
     {#if topMenu === 'default'}
       <MobileToolbarButton on:click={() => (topMenu = 'text')}>
-        <Icon class="square-26px" icon={IconText} />
+        <Icon style={css.raw({ size: '26px' })} icon={IconText} />
       </MobileToolbarButton>
 
       <MobileToolbarButton on:click={handleInsertImage}>
-        <Icon class="square-26px" icon={IconPhoto} />
+        <Icon style={css.raw({ size: '26px' })} icon={IconPhoto} />
       </MobileToolbarButton>
 
       <MobileToolbarButton on:click={() => (topMenu = 'insert')}>
-        <Icon class="square-26px" icon={IconPlus} />
+        <Icon style={css.raw({ size: '26px' })} icon={IconPlus} />
       </MobileToolbarButton>
 
       <MobileToolbarButton on:click={() => toggleBottomMenu('horizontalRule')}>
-        <Icon class="square-26px" icon={IconHorizontalRule} />
+        <Icon style={css.raw({ size: '26px' })} icon={IconHorizontalRule} />
       </MobileToolbarButton>
 
       <MobileToolbarButton on:click={() => (topMenu = 'options')}>
-        <Icon class="square-26px" icon={IconSettings} />
+        <Icon style={css.raw({ size: '26px' })} icon={IconSettings} />
       </MobileToolbarButton>
     {:else}
       <MobileToolbarButton on:click={() => (topMenu = 'default')}>
-        <Icon class="square-26px text-gray-400" icon={IconArrowLeft} />
+        <Icon style={css.raw({ size: '26px', color: 'gray.400' })} icon={IconArrowLeft} />
       </MobileToolbarButton>
 
-      <div class="w-1px h-14px flex-none bg-gray-200" />
+      <div class={css({ flex: 'none', width: '1px', height: '14px', backgroundColor: 'gray.200' })} />
 
-      <div class="flex items-center gap-20px overflow-x-auto [&::-webkit-scrollbar]:hidden touch-pan-x">
+      <div class={flex({ align: 'center', gap: '20px', overflowX: 'auto', scrollbar: 'hidden', touchAction: 'pan-x' })}>
         {#if topMenu === 'text'}
           <MobileToolbarButton on:click={() => toggleSubMenu('textColor')}>
             <div
               style:background-color={currentColor}
-              class={clsx(
-                'rounded-full square-24px',
-                currentColor.toUpperCase() === '#FFFFFF' && 'border border-gray-200',
+              class={css(
+                { borderRadius: 'full', size: '24px' },
+                currentColor.toUpperCase() === '#FFFFFF' && { borderWidth: '1px', borderColor: 'gray.200' },
               )}
             />
           </MobileToolbarButton>
 
-          <MobileToolbarButton class="text-16-r flex-none px-5px" on:click={() => toggleSubMenu('fontFamily')}>
+          <MobileToolbarButton
+            class={css({ flex: 'none', paddingX: '5px' })}
+            on:click={() => toggleSubMenu('fontFamily')}
+          >
             {values.fontFamily.find(({ value }) => editor?.getAttributes('font_family').fontFamily === value)?.label ??
               values.fontFamily[0].label}
           </MobileToolbarButton>
 
-          <MobileToolbarButton class="text-16-r flex-none px-5px w-30px" on:click={() => toggleSubMenu('fontSize')}>
+          <MobileToolbarButton
+            class={css({ flex: 'none', paddingX: '5px', width: '30px' })}
+            on:click={() => toggleSubMenu('fontSize')}
+          >
             {values.fontSize
               .find(({ value }) => editor?.getAttributes('font_size').fontSize === value)
               ?.label.replace('pt', '') ?? '16'}
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleBold().run()}>
-            <Icon class={clsx('square-26px', editor?.isActive('bold') && 'text-teal-500')} icon={IconBold} />
+            <Icon
+              style={css.raw({ size: '26px' }, editor?.isActive('bold') && { color: 'teal.500' })}
+              icon={IconBold}
+            />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleItalic().run()}>
-            <Icon class={clsx('square-26px', editor?.isActive('italic') && 'text-teal-500')} icon={IconItalic} />
+            <Icon
+              style={css.raw({ size: '26px' }, editor?.isActive('italic') && { color: 'teal.500' })}
+              icon={IconItalic}
+            />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleStrike().run()}>
-            <Icon class={clsx('square-26px', editor?.isActive('strike') && 'text-teal-500')} icon={IconStrikethrough} />
+            <Icon
+              style={css.raw({ size: '26px' }, editor?.isActive('strike') && { color: 'teal.500' })}
+              icon={IconStrikethrough}
+            />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleUnderline().run()}>
-            <Icon class={clsx('square-26px', editor?.isActive('underline') && 'text-teal-500')} icon={IconUnderline} />
+            <Icon
+              style={css.raw({ size: '26px' }, editor?.isActive('underline') && { color: 'teal.500' })}
+              icon={IconUnderline}
+            />
           </MobileToolbarButton>
 
           <MobileToolbarButton
             disabled={editor?.isActive('ruby') || editor?.state.selection.empty}
             on:click={() => editor?.chain().focus().setRuby('').run()}
           >
-            <Icon class="square-26px" icon={IconRuby} />
+            <Icon style={css.raw({ size: '26px' })} icon={IconRuby} />
           </MobileToolbarButton>
 
-          <MobileToolbarButton
-            class={clsx(
-              'square-26px',
-              values.textAlign.find(({ value }) => value === editor?.getAttributes('paragraph').textAlign)?.icon ??
-                values.textAlign[0].icon,
-            )}
-            on:click={() => toggleSubMenu('textAlign')}
-          />
+          <MobileToolbarButton on:click={() => toggleSubMenu('textAlign')}>
+            <Icon
+              style={css.raw({ size: '26px' })}
+              icon={values.textAlign.find(({ value }) => value === editor?.getAttributes('paragraph').textAlign)
+                ?.icon ?? values.textAlign[0].icon}
+            />
+          </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => toggleSubMenu('lineHeight')}>
-            <Icon class="square-26px" icon={IconLineHeight} />
+            <Icon style={css.raw({ size: '26px' })} icon={IconLineHeight} />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => toggleSubMenu('letterSpacing')}>
-            <Icon class="square-26px" icon={IconLetterSpacing} />
+            <Icon style={css.raw({ size: '26px' })} icon={IconLetterSpacing} />
           </MobileToolbarButton>
         {:else if topMenu === 'insert'}
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleBulletList().run()}>
-            <Icon class="square-26px" icon={IconList} />
+            <Icon style={css.raw({ size: '26px' })} icon={IconList} />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleOrderedList().run()}>
-            <Icon class="square-26px" icon={IconListNumbers} />
+            <Icon style={css.raw({ size: '26px' })} icon={IconListNumbers} />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => toggleBottomMenu('quote')}>
-            <Icon class="square-26px" icon={IconQuote} />
+            <Icon style={css.raw({ size: '26px' })} icon={IconQuote} />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={handleInsertFile}>
-            <Icon class="square-26px" icon={IconFolder} />
+            <Icon style={css.raw({ size: '26px' })} icon={IconFolder} />
           </MobileToolbarButton>
 
           <MobileToolbarButton
             disabled={editor?.isActive('link') || editor?.state.selection.empty}
             on:click={() => editor?.chain().focus().setLink('').run()}
           >
-            <Icon class="square-26px" icon={IconLink} />
+            <Icon style={css.raw({ size: '26px' })} icon={IconLink} />
           </MobileToolbarButton>
         {:else if topMenu === 'options'}
-          <MobileToolbarButton class="text-16-r" on:click={() => toggleSubMenu('paragraphIndent')}>
-            문단 들여쓰기
-          </MobileToolbarButton>
+          <MobileToolbarButton on:click={() => toggleSubMenu('paragraphIndent')}>문단 들여쓰기</MobileToolbarButton>
 
-          <MobileToolbarButton class="text-16-r" on:click={() => toggleSubMenu('paragraphSpacing')}>
-            문단 사이간격
-          </MobileToolbarButton>
+          <MobileToolbarButton on:click={() => toggleSubMenu('paragraphSpacing')}>문단 사이간격</MobileToolbarButton>
         {/if}
       </div>
     {/if}
@@ -254,17 +282,30 @@
 
   {#if subMenu}
     <div
-      class="border-b border-gray-200 w-full px-20px py-14px flex items-center gap-20px overflow-x-auto [&::-webkit-scrollbar]:hidden touch-pan-x"
+      class={flex({
+        align: 'center',
+        borderBottomWidth: '1px',
+        borderBottomColor: 'gray.200',
+        paddingX: '20px',
+        paddingY: '14px',
+        width: 'full',
+        overflowX: 'auto',
+        scrollbar: 'hidden',
+        touchAction: 'pan-x',
+      })}
     >
       {#if subMenu === 'textColor'}
-        <div class="flex gap-24px">
+        <div class={flex({ gap: '24px' })}>
           {#each colorPresets as color (color)}
             <MobileToolbarButton
               style={`background-color: ${color};`}
-              class={clsx(
-                'flex center flex-none square-24px rounded-full border',
-                color === '#FFFFFF' ? 'border-gray-200' : 'border-transparent',
-              )}
+              class={center({
+                flex: 'none',
+                borderWidth: '1px',
+                borderColor: color === '#FFFFFF' ? 'gray.200' : 'transparent',
+                borderRadius: 'full',
+                size: '24px',
+              })}
               on:click={() => {
                 if (color === values.defaultColor) {
                   editor?.chain().focus().unsetFontColor().run();
@@ -274,10 +315,9 @@
               }}
             >
               <Icon
-                class={clsx(
-                  'square-12px',
-                  currentColor.toUpperCase() !== color && 'hidden',
-                  color === '#FFFFFF' ? 'text-gray-950' : 'text-white',
+                style={css.raw(
+                  { size: '12px', color: color === '#FFFFFF' ? 'gray.950' : 'white' },
+                  currentColor.toUpperCase() !== color && { display: 'none' },
                 )}
                 icon={IconCheck}
               />
@@ -285,15 +325,15 @@
           {/each}
         </div>
       {:else if subMenu === 'fontFamily'}
-        <div class="flex gap-10px">
+        <div class={flex({ gap: '10px' })}>
           {#each values.fontFamily as fontFamily (fontFamily.value)}
             <MobileToolbarButton
               style={`font-family: PNXL_${fontFamily.value};`}
-              class={clsx(
-                'flex-none px-5px',
-                fontFamily.value === (editor?.getAttributes('font_family').fontFamily ?? 'Pretendard') &&
-                  'text-teal-500',
-                fontFamily.value === 'Pretendard' ? 'text-17-r' : 'text-16-r',
+              class={css(
+                { flex: 'none', paddingX: '5px', fontSize: fontFamily.value === 'Pretendard' ? '17px' : '16px' },
+                fontFamily.value === (editor?.getAttributes('font_family').fontFamily ?? 'Pretendard') && {
+                  color: 'teal.500',
+                },
               )}
               on:click={() => {
                 if (fontFamily.value === values.fontFamily[0].value) {
@@ -308,12 +348,12 @@
           {/each}
         </div>
       {:else if subMenu === 'fontSize'}
-        <div class="flex gap-24px text-16-r">
+        <div class={flex({ gap: '24px' })}>
           {#each values.fontSize as fontSize (fontSize.value)}
             <MobileToolbarButton
-              class={clsx(
-                'px-5px',
-                fontSize.value === (editor?.getAttributes('font_size').fontSize ?? 16) && 'text-teal-500',
+              class={css(
+                { paddingX: '5px' },
+                fontSize.value === (editor?.getAttributes('font_size').fontSize ?? 16) && { color: 'teal.500' },
               )}
               on:click={() => editor?.chain().focus().setFontSize(fontSize.value).focus().run()}
             >
@@ -322,23 +362,27 @@
           {/each}
         </div>
       {:else if subMenu === 'textAlign'}
-        <div class="flex gap-20px">
+        <div class={flex({ gap: '20px' })}>
           {#each values.textAlign as textAlign (textAlign.value)}
-            <MobileToolbarButton
-              class={clsx(
-                'square-26px',
-                textAlign.icon,
-                editor?.isActive({ textAlign: textAlign.value }) && 'text-teal-500',
-              )}
-              on:click={() => editor?.chain().focus().setParagraphTextAlign(textAlign.value).run()}
-            />
+            <MobileToolbarButton on:click={() => editor?.chain().focus().setParagraphTextAlign(textAlign.value).run()}>
+              <Icon
+                style={css.raw(
+                  { size: '26px' },
+                  editor?.isActive({ textAlign: textAlign.value }) && { color: 'teal.500' },
+                )}
+                icon={textAlign.icon}
+              />
+            </MobileToolbarButton>
           {/each}
         </div>
       {:else if subMenu === 'lineHeight'}
-        <div class="flex gap-24px text-16-r">
+        <div class={flex({ gap: '24px' })}>
           {#each values.lineHeight as lineHeight (lineHeight.value)}
             <MobileToolbarButton
-              class={clsx('px-5px', editor?.isActive({ lineHeight: lineHeight.value }) && 'text-teal-500')}
+              class={css(
+                { paddingX: '5px' },
+                editor?.isActive({ lineHeight: lineHeight.value }) && { color: 'teal.500' },
+              )}
               on:click={() => editor?.chain().focus().setParagraphLineHeight(lineHeight.value).run()}
             >
               {lineHeight.label}
@@ -346,10 +390,13 @@
           {/each}
         </div>
       {:else if subMenu === 'letterSpacing'}
-        <div class="flex gap-22px text-16-r">
+        <div class={flex({ gap: '22px' })}>
           {#each values.letterSpacing as letterSpacing (letterSpacing.value)}
             <MobileToolbarButton
-              class={clsx('px-5px', editor?.isActive({ letterSpacing: letterSpacing.value }) && 'text-teal-500')}
+              class={css(
+                { paddingX: '5px' },
+                editor?.isActive({ letterSpacing: letterSpacing.value }) && { color: 'teal.500' },
+              )}
               on:click={() => editor?.chain().focus().setParagraphLetterSpacing(letterSpacing.value).run()}
             >
               {letterSpacing.label}
@@ -357,10 +404,13 @@
           {/each}
         </div>
       {:else if subMenu === 'paragraphIndent'}
-        <div class="flex gap-20px text-16-r">
+        <div class={flex({ gap: '20px' })}>
           {#each paragraphIndentPresets as paragraphIndent (paragraphIndent.value)}
             <MobileToolbarButton
-              class={clsx('px-5px', $store.paragraphIndent === paragraphIndent.value && 'text-teal-500')}
+              class={css(
+                { paddingX: '5px' },
+                $store.paragraphIndent === paragraphIndent.value && { color: 'teal.500' },
+              )}
               on:click={() => ($store.paragraphIndent = paragraphIndent.value)}
             >
               {paragraphIndent.label}
@@ -368,10 +418,13 @@
           {/each}
         </div>
       {:else if subMenu === 'paragraphSpacing'}
-        <div class="flex gap-4.5 items-center overflow-x-auto">
+        <div class={flex({ gap: '20px' })}>
           {#each paragraphSpacingPresets as paragraphSpacing (paragraphSpacing.value)}
             <MobileToolbarButton
-              class={clsx('px-5px', $store.paragraphSpacing === paragraphSpacing.value && 'text-teal-500')}
+              class={css(
+                { paddingX: '5px' },
+                $store.paragraphSpacing === paragraphSpacing.value && { color: 'teal.500' },
+              )}
               on:click={() => ($store.paragraphSpacing = paragraphSpacing.value)}
             >
               {paragraphSpacing.label}
@@ -383,11 +436,11 @@
   {/if}
 
   {#if bottomMenu}
-    <div class="grid grid-cols-2 border-b border-gray-200 touch-none">
+    <div class={grid({ columns: 2, borderBottomWidth: '1px', borderBottomColor: 'gray.200', touchAction: 'none' })}>
       {#if bottomMenu === 'quote'}
         {#each values.blockquote as blockquote (blockquote.value)}
           <MobileToolbarButton
-            class="flex center px-7 py-6.5"
+            class={center({ paddingX: '28px', paddingY: '26px' })}
             on:click={() => {
               editor?.chain().focus().setBlockquote(blockquote.value).run();
               setTimeout(() => {
@@ -396,7 +449,7 @@
             }}
           >
             <blockquote
-              class="blockquote-preview text-disabled"
+              class={cx('blockquote-preview', css({ color: 'gray.400' }))}
               aria-label={`${blockquote.value}번째 인용구`}
               data-kind={blockquote.value}
             >
@@ -407,7 +460,7 @@
       {:else if bottomMenu === 'horizontalRule'}
         {#each values.horizontalRule as hr (hr.value)}
           <MobileToolbarButton
-            class="flex center px-7 py-6.5"
+            class={center({ paddingX: '28px', paddingY: '26px' })}
             on:click={() => {
               editor?.chain().focus().setHorizontalRule(hr.value).run();
               setTimeout(() => {
@@ -415,7 +468,11 @@
               }, 0);
             }}
           >
-            <hr class="w-full divider-preview" aria-label={`${hr.value}번째 구분선`} data-kind={hr.value} />
+            <hr
+              class={cx('divider-preview', css({ width: 'full' }))}
+              aria-label={`${hr.value}번째 구분선`}
+              data-kind={hr.value}
+            />
           </MobileToolbarButton>
         {/each}
       {/if}
@@ -425,7 +482,9 @@
 
 <style>
   .divider-preview {
-    --uno: bg-no-repeat border-none bg-center;
+    border-style: none;
+    background-position: center;
+    background-repeat: no-repeat;
 
     &[data-kind='1'] {
       background-image: linear-gradient(to right, currentColor 50%, rgb(255 255 255 / 0) 50%);
@@ -445,50 +504,60 @@
     }
 
     &[data-kind='4'] {
-      --uno: h-1.8rem;
+      height: 1.8rem;
       background-image: url(https://pencil.so/horizontal-rules/4.svg);
     }
 
     &[data-kind='5'] {
-      --uno: h-0.875rem;
+      height: 0.875rem;
       background-image: url(https://pencil.so/horizontal-rules/5.svg);
     }
 
     &[data-kind='6'] {
-      --uno: h-0.91027rem;
+      height: 0.91027rem;
       background-image: url(https://pencil.so/horizontal-rules/6.svg);
     }
 
     &[data-kind='7'] {
-      --uno: h-1.25rem;
+      height: 1.25rem;
       background-image: url(https://pencil.so/horizontal-rules/7.svg);
     }
 
     &[data-kind='8'] {
-      --uno: h-0.75rem;
+      height: 0.75rem;
       background-image: url(https://pencil.so/horizontal-rules/8.svg);
     }
   }
 
   .blockquote-preview {
-    --uno: border-l-3px border-gray-950 pl-1.5 text-9px;
+    border-left-width: 3px;
+    border-color: #09090b;
+    padding-left: 6px;
+    font-size: 9px;
 
     &[data-kind='2'] {
-      --uno: border-l-none;
       &:before {
-        --uno: block w-4;
+        display: block;
+        width: 16px;
         content: url(https://pencil.so/blockquotes/carbon.svg);
       }
     }
 
     &[data-kind='3'] {
-      --uno: border-l-none;
+      border-left-style: none;
       &:before {
-        --uno: block w-4 m-x-auto;
+        display: block;
+        width: 16px;
+        margin-left: auto;
+        margin-right: auto;
         content: url(https://pencil.so/blockquotes/carbon.svg);
       }
       &:after {
-        --uno: block w-4 rotate-180 m-x-auto;
+        display: block;
+        width: 16px;
+        margin-left: auto;
+        margin-right: auto;
+        transform: rotate(180deg);
         content: url(https://pencil.so/blockquotes/carbon.svg);
       }
     }

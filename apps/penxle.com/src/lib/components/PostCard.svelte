@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import dayjs from 'dayjs';
   import IconAlertTriangle from '~icons/tabler/alert-triangle';
   import IconBookmark from '~icons/tabler/bookmark';
@@ -9,14 +8,16 @@
   import { mixpanel } from '$lib/analytics';
   import { Avatar, Badge, Icon, Image, Tag } from '$lib/components';
   import { toast } from '$lib/notification';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import type { Feed_post } from '$glitch';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   let _post: Feed_post;
   export { _post as $post };
 
   export let showSpaceInfoMessage = false;
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 
   $: post = fragment(
     _post,
@@ -119,87 +120,178 @@
 </script>
 
 {#if showSpaceInfoMessage}
-  <div class="mt-2 flex items-center gap-3 mb-4 truncate">
-    <a class="relative" href={`/${$post.space.slug}`}>
-      <Image class="square-10.5 rounded-3.5 flex-none border border-secondary" $image={$post.space.icon} />
+  <div class={flex({ align: 'center', gap: '12px', marginTop: '8px', marginBottom: '16px', truncate: true })}>
+    <a class={css({ position: 'relative' })} href={`/${$post.space.slug}`}>
+      <Image
+        style={css.raw({
+          flex: 'none',
+          borderWidth: '1px',
+          borderColor: 'gray.200',
+          borderRadius: '14px',
+          size: '42px',
+        })}
+        $image={$post.space.icon}
+      />
       <Avatar
-        class="square-6 absolute border border-bg-primary -right-1 -bottom-1 flex-none"
+        style={css.raw({
+          position: 'absolute',
+          right: '-4px',
+          bottom: '-4px',
+          flex: 'none',
+          borderWidth: '1px',
+          borderColor: 'gray.50',
+          size: '24px',
+        })}
         $profile={$post.member.profile}
       />
     </a>
-    <a class="w-full flex flex-col truncate" href={`/${$post.space.slug}`}>
-      <p class="mb-0.5 body-15-b truncate sm:hidden">{$post.space.name} · {$post.member.profile.name}</p>
+    <a class={flex({ flexDirection: 'column', width: 'full', truncate: true })} href={`/${$post.space.slug}`}>
+      <p class={css({ marginBottom: '2px', fontSize: '15px', fontWeight: 'bold', truncate: true, hideFrom: 'sm' })}>
+        {$post.space.name} · {$post.member.profile.name}
+      </p>
 
-      <p class="mb-0.5 body-15-b <sm:hidden">
+      <p class={css({ marginBottom: '2px', fontSize: '15px', fontWeight: 'bold', hideBelow: 'sm' })}>
         {$post.member.profile.name}님이 {$post.space.name}에
         <!-- prettier-ignore -->
         {#if $post.publishedRevision.price}
-          <mark class="text-blue-50">유료글</mark>을
+          <mark class={css({color: '[#58a8c3]'})}>유료글</mark>을
         {/if}
         게시했어요
       </p>
-
-      <time class="body-13-m text-secondary">{dayjs($post.publishedAt).fromNow()}</time>
+      <time class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
+        {dayjs($post.publishedAt).fromNow()}
+      </time>
     </a>
     <button type="button" on:click={toggleBookmark}>
       {#if $post.bookmarkGroups.length > 0}
-        <Icon class="square-5 color-brand-50" icon={IconBookmarkFilled} />
+        <Icon style={css.raw({ color: '[#FCD242]', size: '20px' })} icon={IconBookmarkFilled} />
       {:else}
-        <Icon class="square-5 color-icon-primary" icon={IconBookmark} />
+        <Icon style={css.raw({ color: 'gray.900', size: '20px' })} icon={IconBookmark} />
       {/if}
     </button>
     <button type="button">
-      <Icon class="square-5 color-icon-primary" icon={IconDotsVertical} />
+      <Icon style={css.raw({ color: 'gray.900', size: '20px' })} icon={IconDotsVertical} />
     </button>
   </div>
 {/if}
 
 <div
-  class={clsx(
-    'flex flex-col w-full bg-cardprimary sm:(border border-secondary rounded-2xl transition hover:(border-tertiary shadow-[0_4px_16px_0_rgba(0,0,0,0.25)]))',
-    $post.tags.length === 0 && showSpaceInfoMessage && 'pb-4',
-    _class,
+  class={css(
+    {
+      display: 'flex',
+      flexDirection: 'column',
+      width: 'full',
+      backgroundColor: 'white',
+      sm: {
+        borderWidth: '1px',
+        borderColor: 'gray.200',
+        borderRadius: '16px',
+        transition: 'common',
+        _hover: {
+          borderColor: 'gray.900',
+          boxShadow: '[0 4px 16px 0 var(--shadow-color)]',
+          boxShadowColor: '[black/25]',
+        },
+      },
+    },
+    $post.tags.length === 0 && showSpaceInfoMessage && { paddingBottom: '16px' },
+    style,
   )}
 >
-  <a class="px-6 pt-4" href={`/${$post.space.slug}/${$post.permalink}`}>
-    <div class="flex gap-1 flex-wrap">
+  <a class={css({ paddingX: '24px', paddingTop: '16px' })} href={`/${$post.space.slug}/${$post.permalink}`}>
+    <div class={flex({ flexWrap: 'wrap', gap: '4px' })}>
       {#if $post.publishedRevision.price}
-        <Badge class="w-fit mb-1" color="purple">유료</Badge>
+        <Badge style={css.raw({ marginBottom: '4px', width: 'fit' })} color="purple">유료</Badge>
       {/if}
       {#if $post.ageRating === 'R19'}
-        <Badge class="w-fit mb-1" color="red">성인물</Badge>
+        <Badge style={css.raw({ marginBottom: '4px', width: 'fit' })} color="red">성인물</Badge>
       {/if}
       {#if triggerTags.length > 0}
-        <Badge class="w-fit mb-1" color="orange">트리거 주의</Badge>
+        <Badge style={css.raw({ marginBottom: '4px', width: 'fit' })} color="orange">트리거 주의</Badge>
       {/if}
       {#if $post.hasPassword}
-        <Badge class="w-fit mb-1" color="gray">비밀글</Badge>
+        <Badge style={css.raw({ marginBottom: '4px', width: 'fit' })} color="gray">비밀글</Badge>
       {/if}
     </div>
-    <h2 class="title-18-b mb-1 truncate sm:title-20-b">{$post.publishedRevision.title ?? '(제목 없음)'}</h2>
-
+    <h2
+      class={css({
+        fontSize: '18px',
+        fontWeight: 'bold',
+        marginBottom: '4px',
+        truncate: true,
+        sm: { fontSize: '20px' },
+      })}
+    >
+      {$post.publishedRevision.title ?? '(제목 없음)'}
+    </h2>
     <div>
       <article
-        class={clsx('flex gap-xs justify-between rounded-lg <sm:(flex-wrap flex-col)', $post.blurred && 'min-h-33')}
+        class={css(
+          {
+            display: 'flex',
+            flexWrap: 'wrap',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            gap: '12px',
+            borderRadius: '8px',
+            sm: {
+              flexWrap: 'nowrap',
+              flexDirection: 'row',
+            },
+          },
+          $post.blurred && { minHeight: '132px' },
+        )}
       >
         {#if $post.blurred}
           <header
-            class="p-4 rounded-2xl h-full w-full flex flex-col center gap-2.5 items-center bg-primary text-secondary border border-secondary"
+            class={center({
+              flexDirection: 'column',
+              gap: '10px',
+              borderWidth: '1px',
+              borderColor: 'gray.50',
+              borderRadius: '16px',
+              padding: '16px',
+              color: 'gray.500',
+              size: 'full',
+              backgroundColor: 'white',
+            })}
             role="alert"
           >
-            <Icon class="square-6" icon={IconAlertTriangle} />
-            <p class="body-14-sb text-center whitespace-pre-wrap">포스트에 민감한 내용이 포함되어 있어요</p>
+            <Icon style={css.raw({ size: '24px' })} icon={IconAlertTriangle} />
+            <p class={css({ fontSize: '14px', fontWeight: 'semibold', textAlign: 'center', whiteSpace: 'pre-wrap' })}>
+              포스트에 민감한 내용이 포함되어 있어요
+            </p>
 
             {#if triggerTags.length > 0}
-              <div class="flex flex-wrap gap-2.5 center">
+              <div class={center({ flexWrap: 'wrap', gap: '10px' })}>
                 <span
-                  class="px-3 border border-secondary rounded-lg bg-surface-primary text-primary body-13-m h-6 flex items-center"
+                  class={flex({
+                    align: 'center',
+                    borderWidth: '1px',
+                    borderColor: 'gray.200',
+                    borderRadius: '8px',
+                    paddingX: '12px',
+                    fontSize: '13px',
+                    fontWeight: 'medium',
+                    backgroundColor: 'gray.100',
+                    height: '24px',
+                  })}
                 >
                   {triggerTags[0].tag.name.replaceAll('_', ' ')}
                 </span>
                 {#if triggerTags.length > 1}
                   <span
-                    class="px-3 border border-secondary rounded-lg bg-surface-primary text-primary body-13-m h-6 flex items-center"
+                    class={flex({
+                      align: 'center',
+                      borderWidth: '1px',
+                      borderColor: 'gray.200',
+                      borderRadius: '8px',
+                      paddingX: '12px',
+                      fontSize: '13px',
+                      fontWeight: 'medium',
+                      backgroundColor: 'gray.100',
+                      height: '24px',
+                    })}
                   >
                     그 외 태그 {triggerTags.length - 1}개
                   </span>
@@ -208,12 +300,24 @@
             {/if}
           </header>
         {:else}
-          <p class="grow body-16-m text-secondary break-all line-clamp-4 whitespace-pre-line">
+          <p
+            class={css({
+              flexGrow: '1',
+              color: 'gray.500',
+              fontWeight: 'medium',
+              lineClamp: '4',
+              wordBreak: 'break-all',
+              whiteSpace: 'pre-line',
+            })}
+          >
             {$post.publishedRevision.previewText}
           </p>
 
           {#if $post.thumbnail}
-            <Image class="square-30 rounded-md flex-none sm:aspect-square" $image={$post.thumbnail} />
+            <Image
+              style={css.raw({ size: '120px', borderRadius: '6px', flex: 'none', sm: { aspectRatio: '[1/1]' } })}
+              $image={$post.thumbnail}
+            />
           {/if}
         {/if}
       </article>
@@ -221,9 +325,14 @@
   </a>
 
   {#if $post.tags.length > 0}
-    <div class={clsx('flex flex-wrap gap-1.5 px-6 mt-2', showSpaceInfoMessage && 'pb-4')}>
+    <div
+      class={css(
+        { display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px', paddingX: '24px' },
+        showSpaceInfoMessage && { paddingBottom: '16px' },
+      )}
+    >
       {#each $post.tags.slice(0, 4) as { tag } (tag.id)}
-        <Tag class="max-w-65" href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
+        <Tag style={css.raw({ maxWidth: '260px' })} href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
       {/each}
       {#if $post.tags.length > 4}
         <Tag size="sm">+{$post.tags.length - 4}개의 태그</Tag>
@@ -232,10 +341,26 @@
   {/if}
 
   {#if !showSpaceInfoMessage}
-    <a class="flex items-center px-6 pt-4 space-x-3 truncate pb-4" href={`/${$post.space.slug}/${$post.permalink}`}>
-      <Image class="square-6 rounded-lg flex-none border border-secondary" $image={$post.space.icon} />
-      <p class="body-15-sb grow truncate">{$post.space.name} · {$post.member.profile.name}</p>
-      <time class="body-13-m text-secondary">{dayjs($post.publishedAt).fromNow()}</time>
+    <a
+      class={flex({ alignItems: 'center', gap: '12px', paddingX: '24px', paddingY: '16px', truncate: true })}
+      href={`/${$post.space.slug}/${$post.permalink}`}
+    >
+      <Image
+        style={css.raw({
+          flex: 'none',
+          borderWidth: '1px',
+          borderColor: 'gray.200',
+          borderRadius: '8px',
+          size: '24px',
+        })}
+        $image={$post.space.icon}
+      />
+      <p class={css({ flexGrow: '1', fontSize: '15px', fontWeight: 'semibold', truncate: true })}>
+        {$post.space.name} · {$post.member.profile.name}
+      </p>
+      <time class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
+        {dayjs($post.publishedAt).fromNow()}
+      </time>
     </a>
   {/if}
 </div>

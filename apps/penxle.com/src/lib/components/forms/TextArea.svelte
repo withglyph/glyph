@@ -1,14 +1,16 @@
 <script lang="ts">
-  import { clsx } from 'clsx';
   import { getFormContext } from '$lib/form';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import type { HTMLTextareaAttributes } from 'svelte/elements';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   export let name: HTMLTextareaAttributes['name'] = undefined;
   export let value: HTMLTextareaAttributes['value'] = undefined;
-  let _class: HTMLTextareaAttributes['class'] = undefined;
-  export { _class as class };
 
-  type $$Props = HTMLTextareaAttributes;
+  export let style: SystemStyleObject | undefined = undefined;
+
+  type $$Props = Omit<HTMLTextareaAttributes, 'class' | 'style'> & { style?: SystemStyleObject };
 
   const { field } = getFormContext();
 
@@ -17,17 +19,21 @@
   }
 </script>
 
-<div class="relative flex items-center">
+<div class={flex({ position: 'relative', align: 'center' })}>
   <textarea
     id={name}
     {name}
-    class={clsx('body-15-m resize-none', _class, 'right-icon' in $$slots && 'mb-4')}
+    class={css(
+      { fontSize: '15px', fontWeight: 'medium', resize: 'none' },
+      'right-icon' in $$slots && { marginBottom: '16px' },
+      style,
+    )}
     on:input
     bind:value
     {...$$restProps}
   />
   {#if 'right-icon' in $$slots}
-    <div class="absolute right-0 bottom-0 flex center">
+    <div class={center({ position: 'absolute', right: '0', bottom: '0' })}>
       <slot name="right-icon" />
     </div>
   {/if}

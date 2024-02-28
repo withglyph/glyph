@@ -1,5 +1,4 @@
 <script generics="T extends 'space' | 'me'" lang="ts">
-  import clsx from 'clsx';
   import dayjs from 'dayjs';
   import IconGlobe from '~icons/effit/globe';
   import IconLink from '~icons/effit/link';
@@ -15,6 +14,8 @@
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Table, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
   import { toast } from '$lib/notification';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type { ChangeEventHandler } from 'svelte/elements';
   import type {
     PostManageTable_Collection,
@@ -284,76 +285,88 @@
   `);
 </script>
 
-<div class="overflow-auto">
+<div class={css({ overflow: 'auto' })}>
   {#if $posts.length > 0}
-    <Table class="text-left border-separate border-spacing-y-0.125rem">
+    <Table style={css.raw({ borderCollapse: 'separate', borderSpacingY: '2px', textAlign: 'left' })}>
       <TableHeader>
         <TableRow>
-          <TableHead class="w-2.5rem">
+          <TableHead style={css.raw({ width: '40px' })}>
             <Checkbox on:change={handleSelectAllPost} />
           </TableHead>
-          <TableHead class="sm:max-w-14rem">제목</TableHead>
-          <TableHead class="<sm:hidden max-w-10rem">
+          <TableHead style={css.raw({ sm: { maxWidth: '224px' } })}>제목</TableHead>
+          <TableHead style={css.raw({ maxWidth: '160px', hideBelow: 'sm' })}>
             {#if type === 'space'}
               작성자
             {:else}
               스페이스
             {/if}
           </TableHead>
-          <TableHead class="w-12rem <sm:hidden">태그</TableHead>
-          <TableHead class="<sm:w-5.25rem">공개옵션</TableHead>
-          <TableHead class="<sm:hidden">관리</TableHead>
+          <TableHead style={css.raw({ width: '192px', hideBelow: 'sm' })}>태그</TableHead>
+          <TableHead style={css.raw({ smDown: { width: '84px' } })}>공개옵션</TableHead>
+          <TableHead style={css.raw({ hideBelow: 'sm' })}>관리</TableHead>
           <!-- 모바일 화면 너비에서 마지막에 빈 테이블 헤드 요소가 없으면 테이블 헤더 오른쪽이 잘리는 문제가 있어서 추가했습니다. -->
-          <TableHead class="w-0" />
+          <TableHead style={css.raw({ width: '0' })} />
         </TableRow>
       </TableHeader>
 
       {#each $posts as post (post.id)}
         <TableRow
-          class="rounded-2 [&[aria-selected='true']]:bg-primary border-solid border-b border-alphagray-10 last:border-b-0 [&>td>div]:(items-center <sm:justify-end) aria-selected:bg-primary"
+          style={css.raw({
+            'borderRadius': '8px',
+            'borderBottomWidth': '1px',
+            'borderBottomColor': '[black/10]',
+            '_last': { borderBottomWidth: '0' },
+            '_selected': { backgroundColor: 'gray.50' },
+            '& > td > div': {
+              alignItems: 'center',
+              smDown: { justifyContent: 'flex-end' },
+            },
+          })}
           aria-selected={selectedPostIds.has('post.id')}
         >
-          <TableData class="p-r-none!">
+          <TableData style={css.raw({ paddingRight: '0' })}>
             <Checkbox checked={selectedPostIds.has(post.id)} value={post.id} on:change={handleSelectPost} />
           </TableData>
-          <TableData class="sm:max-w-14rem">
+          <TableData style={css.raw({ sm: { maxWidth: '224px' } })}>
             <a
-              class="flex justify-start gap-xs"
+              class={flex({ justify: 'flex-start', gap: '12px' })}
               href={`/${post.space?.slug}/${post.permalink}`}
               rel="noopener noreferrer"
               target="_blank"
             >
               {#if post.thumbnail}
-                <Image class="square-2.625rem flex-shrink-0 rounded-2" $image={post.thumbnail} />
+                <Image style={css.raw({ flex: 'none', borderRadius: '8px', size: '42px' })} $image={post.thumbnail} />
               {/if}
-              <dl class="truncate [&>dt]:truncate">
-                <dt class="body-15-b">
+              <dl class={css({ truncate: true })}>
+                <dt class={css({ fontSize: '15px', fontWeight: 'bold', truncate: true })}>
                   {post.publishedRevision.title ?? '(제목 없음)'}
                 </dt>
-                <dd class="body-13-m text-secondary">
+                <dd class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
                   {dayjs(post.publishedAt).formatAsDate()}
                 </dd>
               </dl>
             </a>
           </TableData>
-          <TableData class="<sm:hidden max-w-10rem">
-            <div class="flex gap-1">
+          <TableData style={css.raw({ maxWidth: '160px', hideBelow: 'sm' })}>
+            <div class={flex({ gap: '4px' })}>
               {#if post.member && post.space}
                 {#if type === 'space'}
-                  <Avatar class="square-5 shrink-0" $profile={post.member.profile} />
-                  <span class="body-13-b truncate">{post.member.profile.name}</span>
+                  <Avatar style={css.raw({ flex: 'none', size: '20px' })} $profile={post.member.profile} />
+                  <span class={css({ fontSize: '13px', fontWeight: 'bold', truncate: true })}>
+                    {post.member.profile.name}
+                  </span>
                   {#if post.member.id === $spaceMember?.id}
-                    <Badge class="w-fit px-2 py-1" color="green">나</Badge>
+                    <Badge style={css.raw({ paddingX: '8px', paddingY: '4px', width: 'fit' })} color="green">나</Badge>
                   {/if}
                 {:else if type === 'me'}
-                  <Avatar class="square-5" $profile={post.member.profile} />
-                  <span class="body-13-b">{post.space.name}</span>
+                  <Avatar style={css.raw({ size: '20px' })} $profile={post.member.profile} />
+                  <span class={css({ fontSize: '13px', fontWeight: 'bold' })}>{post.space.name}</span>
                 {/if}
               {/if}
             </div>
           </TableData>
-          <TableData class="<sm:hidden max-w-12rem">
-            <div class="flex gap-1">
+          <TableData style={css.raw({ maxWidth: '192px', hideBelow: 'sm' })}>
+            <div class={flex({ gap: '4px' })}>
               {#each post.tags.slice(0, 3) as { tag } (tag.id)}
                 <Tag size="sm">{tag.name}</Tag>
               {/each}
@@ -365,20 +378,23 @@
                     .join(', ')}
                   placement="top"
                 >
-                  <span class="body-13-b">+{post.tags.length - 2}</span>
+                  <span class={css({ fontSize: '13px', fontWeight: 'bold' })}>+{post.tags.length - 2}</span>
                 </Tooltip>
               {/if}
             </div>
           </TableData>
-          <TableData class="overflow-visible!">
-            <div class="flex gap-0.125rem">
+          <TableData style={css.raw({ overflow: 'visible' })}>
+            <div class={flex({ gap: '2px' })}>
               {#if post.member}
                 <Menu disabled={!hasPermissionToUpdatePost(post.member.id)} placement="bottom-end">
-                  <span slot="value" class="flex items-center body-13-b [&>i]:text-icon-secondary">
-                    <Icon class="square-4 m-r-0.15rem" icon={visibilityToIcon[post.visibility]} />
+                  <span slot="value" class={flex({ align: 'center', fontSize: '13px', fontWeight: 'bold' })}>
+                    <Icon
+                      style={css.raw({ marginRight: '2px', size: '16px', color: 'gray.400' })}
+                      icon={visibilityToIcon[post.visibility]}
+                    />
                     {visibilityToLocaleString[post.visibility]}
                     {#if hasPermissionToUpdatePost(post.member.id)}
-                      <Icon class="square-4" icon={IconChevronDown} />
+                      <Icon style={css.raw({ size: '16px', color: 'gray.400' })} icon={IconChevronDown} />
                     {/if}
                   </span>
 
@@ -398,11 +414,11 @@
               {/if}
             </div>
           </TableData>
-          <TableData class="<sm:hidden">
+          <TableData style={css.raw({ hideBelow: 'sm' })}>
             {#if post.member}
-              <div class={clsx('flex gap-2')} hidden={!hasPermissionToUpdatePost(post.member.id)}>
+              <div class={flex({ gap: '8px' })} hidden={!hasPermissionToUpdatePost(post.member.id)}>
                 <Button
-                  class="disabled:invisible"
+                  style={css.raw({ _disabled: { visibility: 'hidden' } })}
                   color="tertiary"
                   disabled={type === 'space' && post.member.id !== $spaceMember?.id}
                   external
@@ -414,7 +430,7 @@
                   수정
                 </Button>
                 <Button
-                  class="p-none! disabled:invisible"
+                  style={css.raw({ padding: '0', _disabled: { visibility: 'hidden' } })}
                   disabled={type === 'space' && (post.member.id !== $spaceMember?.id || $spaceMember?.role !== 'ADMIN')}
                   size="sm"
                   variant="text"
@@ -423,7 +439,10 @@
                     openDeletePostWaring = true;
                   }}
                 >
-                  <Icon class="square-4 text-secondary hover:text-action-red-primary" icon={IconTrash} />
+                  <Icon
+                    style={css.raw({ size: '16px', color: { base: 'gray.500', _hover: '[#F66062]' } })}
+                    icon={IconTrash}
+                  />
                 </Button>
               </div>
             {/if}
@@ -433,39 +452,69 @@
       {/each}
     </Table>
   {:else}
-    <p class="body-16-m text-center m-y-30">작성한 포스트가 없어요</p>
+    <p class={css({ marginY: '120px', textAlign: 'center', fontWeight: 'medium' })}>작성한 포스트가 없어요</p>
   {/if}
 </div>
 
 {#if $posts.length > 0}
   <div
-    class={clsx(
-      selectedPostCount > 0 ? 'visible opacity-100 translate-y-0' : 'invisible opacity-0 translate-y-1rem',
-      'self-center flex justify-center flex-wrap gap-4 items-center px-6 py-2 flex-wrap sticky bottom-1rem bg-white rounded-2xl shadow-[0_0.25rem_1rem_0_rgba(0,0,0,0.15)] transition-all-300',
+    class={css(
+      {
+        position: 'sticky',
+        bottom: '16px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '16px',
+        flexWrap: 'wrap',
+        alignSelf: 'center',
+        borderRadius: '16px',
+        paddingX: '24px',
+        paddingY: '8px',
+        backgroundColor: 'white',
+        boxShadow: '[0 4px 16px 0 var(--shadow-color)]',
+        boxShadowColor: '[black/15]',
+        translate: 'auto',
+        transition: 'all',
+        transitionDuration: '[300ms]',
+      },
+      selectedPostCount > 0
+        ? { opacity: '[1]', visibility: 'visible', translateY: '0' }
+        : { opacity: '[0]', visibility: 'hidden', translateY: '16px' },
     )}
   >
-    <span class="body-15-b" aria-live="polite">
+    <span class={css({ fontSize: '15px', fontWeight: 'bold' })} aria-live="polite">
       {selectedPostCount}개의 포스트 선택됨
     </span>
-    <div class="flex gap-4 flex-wrap justify-center">
+    <div class={flex({ justify: 'center', gap: '16px', wrap: 'wrap' })}>
       {#if selectedOwnPosts || $spaceMember?.role === 'ADMIN'}
-        <Menu class="<sm:hidden" as="div" offset={toolbarMenuOffset} placement="top">
-          <Button slot="value" class="whitespace-nowrap" color="secondary" size="md">공개범위 설정</Button>
+        <Menu style={css.raw({ hideBelow: 'sm' })} as="div" offset={toolbarMenuOffset} placement="top">
+          <Button slot="value" style={css.raw({ whiteSpace: 'nowrap' })} color="secondary" size="md">
+            공개범위 설정
+          </Button>
           <MenuItem on:click={() => updateVisibilities('PUBLIC')}>전체 공개</MenuItem>
           <MenuItem on:click={() => updateVisibilities('UNLISTED')}>링크 공개</MenuItem>
           <MenuItem on:click={() => updateVisibilities('SPACE')}>멤버 공개</MenuItem>
         </Menu>
         <Menu
-          class={clsx(type === 'space' && '<sm:hidden')}
+          style={css.raw(type === 'space' && { hideBelow: 'sm' })}
           as="div"
           offset={toolbarMenuOffset}
           placement="top"
           preventClose
         >
-          <Button slot="value" class="whitespace-nowrap" color="secondary" size="md">포스트 옵션 설정</Button>
+          <Button slot="value" style={css.raw({ whiteSpace: 'nowrap' })} color="secondary" size="md">
+            포스트 옵션 설정
+          </Button>
           <MenuItem type="div">
             <Switch
-              class="flex gap-0.63rem body-14-m items-center justify-between"
+              style={flex.raw({
+                justify: 'space-between',
+                align: 'center',
+                gap: '10px',
+                fontSize: '14px',
+                fontWeight: 'medium',
+              })}
               checked={receiveFeedback}
               on:change={(event) => {
                 receiveFeedback = event.currentTarget.checked;
@@ -478,7 +527,13 @@
           </MenuItem>
           <MenuItem type="div">
             <Switch
-              class="flex gap-0.63rem body-14-m items-center justify-between"
+              style={flex.raw({
+                justify: 'space-between',
+                align: 'center',
+                gap: '10px',
+                fontSize: '14px',
+                fontWeight: 'medium',
+              })}
               checked={receiveTagContribution}
               on:change={(event) => {
                 receiveTagContribution = event.currentTarget.checked;
@@ -491,7 +546,13 @@
           </MenuItem>
           <MenuItem type="div">
             <Switch
-              class="flex gap-0.63rem body-14-m items-center justify-between"
+              style={flex.raw({
+                justify: 'space-between',
+                align: 'center',
+                gap: '10px',
+                fontSize: '14px',
+                fontWeight: 'medium',
+              })}
               checked={discloseStats}
               on:change={(event) => {
                 discloseStats = event.currentTarget.checked;
@@ -506,10 +567,12 @@
       {/if}
       {#if type === 'space'}
         <Menu as="div" offset={toolbarMenuOffset}>
-          <Button slot="value" class="whitespace-nowrap" color="secondary" size="md">컬렉션 추가</Button>
+          <Button slot="value" style={css.raw({ whiteSpace: 'nowrap' })} color="secondary" size="md">
+            컬렉션 추가
+          </Button>
           {#each $collections as collection (collection.id)}
             <MenuItem
-              class="flex gap-0.62rem group"
+              style={flex.raw({ width: '10px' })}
               aria-pressed={selectedCollectionId === collection.id}
               on:click={async () => {
                 await setSpaceCollectionPosts({
@@ -521,18 +584,25 @@
               }}
             >
               {collection.name}
-              <Icon class="square-4 color-green-50 invisible group-aria-pressed:visible" icon={IconCheck} />
+              <Icon
+                style={css.raw({
+                  size: '16px',
+                  color: '[#4ECEA6]',
+                  visibility: { base: 'hidden', _pressed: 'visible' },
+                })}
+                icon={IconCheck}
+              />
             </MenuItem>
           {/each}
-          <MenuItem class="flex items-center gap-0.62rem" on:click={() => (openCreateCollection = true)}>
-            <Icon class="square-4 text-secondary" icon={IconPlus} />
+          <MenuItem style={flex.raw({ align: 'center', gap: '10px' })} on:click={() => (openCreateCollection = true)}>
+            <Icon style={css.raw({ size: '16px', color: 'gray.500' })} icon={IconPlus} />
             새로 만들기
           </MenuItem>
         </Menu>
       {/if}
       {#if selectedOwnPosts || $spaceMember?.role === 'ADMIN'}
         <Button
-          class={clsx('whitespace-nowrap', type === 'space' && '<sm:hidden')}
+          style={css.raw({ whiteSpace: 'nowrap' }, type === 'space' && { hideBelow: 'sm' })}
           color="red"
           size="md"
           on:click={() => {
@@ -550,8 +620,9 @@
 <Modal size="sm" bind:open={openDeletePostWaring}>
   <svelte:fragment slot="title">정말 포스트를 삭제하시겠어요?</svelte:fragment>
 
-  <div slot="action" class="flex gap-2 w-full [&>button]:grow">
+  <div slot="action" class={flex({ gap: '8px', width: 'full' })}>
     <Button
+      style={css.raw({ flexGrow: '1' })}
       color="secondary"
       size="md"
       on:click={() => {
@@ -564,6 +635,7 @@
       취소
     </Button>
     <Button
+      style={css.raw({ flexGrow: '1' })}
       size="md"
       on:click={async () => {
         if (deletePostId) {
@@ -591,7 +663,7 @@
   <svelte:fragment slot="title">
     <form
       id="create-collection"
-      class="w-[fit-content]"
+      class={css({ width: 'fit' })}
       on:submit|preventDefault={async (event) => {
         if (!(event.currentTarget.collectionName instanceof HTMLInputElement))
           throw new Error('기대하지 않은 경우입니다.');
@@ -619,24 +691,31 @@
     </form>
   </svelte:fragment>
   <svelte:fragment slot="subtitle">컬렉션에 노출되는 포스트를 관리하세요</svelte:fragment>
-  <ul class="max-h-15rem overflow-y-auto space-y-1">
+  <ul class={flex({ direction: 'column', gap: '4px', maxHeight: '240px', overflowY: 'auto' })}>
     {#each selectedPosts as post (post.id)}
-      <li class="flex gap-xs items-center p-y-2">
+      <li class={flex({ align: 'center', gap: '12px', paddingY: '8px' })}>
         {#if post.thumbnail}
-          <Image class="square-15 flex-shrink-0 rounded-2" $image={post.thumbnail} />
+          <Image style={css.raw({ flex: 'none', borderRadius: '8px', size: '60px' })} $image={post.thumbnail} />
         {/if}
-        <dl class="truncate [&>dt]:truncate">
-          <dt class="body-15-b">
+        <dl class={css({ truncate: true })}>
+          <dt class={css({ fontSize: '15px', fontWeight: 'bold', truncate: true })}>
             {post.publishedRevision.title ?? '(제목 없음)'}
           </dt>
-          <dd class="body-13-m text-secondary">
+          <dd class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500', truncate: true })}>
             {dayjs(post.publishedAt).formatAsDate()}
           </dd>
         </dl>
       </li>
     {/each}
   </ul>
-  <Button slot="action" class="w-full" form="create-collection" loading={createingCollection} size="lg" type="submit">
+  <Button
+    slot="action"
+    style={css.raw({ width: 'full' })}
+    form="create-collection"
+    loading={createingCollection}
+    size="lg"
+    type="submit"
+  >
     컬렉션 생성하기
   </Button>
 </Modal>

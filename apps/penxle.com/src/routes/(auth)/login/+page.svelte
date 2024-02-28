@@ -9,6 +9,8 @@
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { LoginUserSchema } from '$lib/validations';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
 
   const { form } = createMutationForm({
     mutation: graphql(`
@@ -22,7 +24,7 @@
     schema: LoginUserSchema,
     onSuccess: async (resp) => {
       mixpanel.track('user:login:start', { method: 'email' });
-      await goto(`/login/code?email=${resp.email}`);
+      await goto(`/login/next?email=${resp.email}`);
     },
   });
 
@@ -39,26 +41,30 @@
 
 <Helmet description="이메일을 통해 펜슬에 가입하거나 로그인할 수 있어요" title="펜슬 시작하기" />
 
-<div class="flex center flex-col gap-6 mb-6">
-  <div class="flex center flex-col">
-    <h1 class="text-gray-90 text-2xl font-extrabold text-center">누구나 창작자가 되다, 펜슬</h1>
-    <h2 class="text-gray-60 text-3.75 mt-2 font-bold">이메일을 통해 펜슬에 가입하거나 로그인할 수 있어요</h2>
+<div class={center({ flexDirection: 'column', gap: '24px', marginBottom: '24px' })}>
+  <div class={center({ flexDirection: 'column' })}>
+    <h1 class={css({ fontSize: '24px', fontWeight: 'bold', color: 'gray.900', textAlign: 'center' })}>
+      누구나 창작자가 되다, 펜슬
+    </h1>
+    <h2 class={css({ marginTop: '8px', fontSize: '15px', fontWeight: 'bold', color: 'gray.600' })}>
+      이메일을 통해 펜슬에 가입하거나 로그인할 수 있어요
+    </h2>
   </div>
 </div>
 
-<form class="w-full max-w-87.5" use:form>
-  <div class="space-y-3">
+<form class={css({ width: 'full', maxWidth: '350px' })} use:form>
+  <div class={flex({ direction: 'column', gap: '12px' })}>
     <FormField name="email" label="이메일">
-      <TextInput class="w-full font-bold" placeholder="이메일 입력" type="email" />
+      <TextInput class={css({ width: 'full', fontWeight: 'bold' })} placeholder="이메일 입력" type="email" />
     </FormField>
   </div>
 
-  <Button class="w-full mt-3" size="xl" type="submit">펜슬 시작하기</Button>
+  <Button style={css.raw({ marginTop: '12px', width: 'full' })} size="xl" type="submit">펜슬 시작하기</Button>
 </form>
 
-<div class="flex gap-6 mt-4">
+<div class={flex({ gap: '24px', marginTop: '16px' })}>
   <button
-    class="flex center bg-surface-primary square-13.5 rounded-20"
+    class={center({ borderRadius: 'full', size: '54px', backgroundColor: 'gray.100' })}
     type="button"
     on:click={async () => {
       const { url } = await issueUserSingleSignOnAuthorizationUrl({
@@ -70,11 +76,11 @@
       location.href = url;
     }}
   >
-    <Google class="square-6" />
+    <Google class={css({ size: '24px' })} />
   </button>
 
   <button
-    class="flex center bg-surface-primary square-13.5 rounded-20"
+    class={center({ borderRadius: 'full', size: '54px', backgroundColor: 'gray.100' })}
     type="button"
     on:click={async () => {
       const { url } = await issueUserSingleSignOnAuthorizationUrl({
@@ -86,6 +92,6 @@
       location.href = url;
     }}
   >
-    <Naver class="square-6" />
+    <Naver class={css({ size: '24px' })} />
   </button>
 </div>

@@ -1,17 +1,17 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { setContext } from 'svelte';
   import { afterNavigate } from '$app/navigation';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
+  import { css } from '$styled-system/css';
   import type { Placement } from '@floating-ui/dom';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   export let open = false;
-  let _class: string | undefined = undefined;
-  let _offset: number | undefined = undefined;
+  export let offset: number | undefined = undefined;
   export let padding = true;
 
-  export { _class as class };
-  export { _offset as offset };
+  export let style: SystemStyleObject | undefined = undefined;
+  export let menuStyle: SystemStyleObject | undefined = undefined;
 
   export let as: 'button' | 'div' = 'button';
 
@@ -23,7 +23,6 @@
   export let disabled = false;
 
   export let rounded = true;
-  export let menuClass: string | undefined = undefined;
 
   $: props = as === 'button' ? { type: 'button', disabled } : { tabindex: -1 };
 
@@ -31,7 +30,7 @@
 
   const { anchor, floating } = createFloatingActions({
     placement,
-    offset: _offset ?? 4,
+    offset: offset ?? 4,
   });
 
   afterNavigate(() => {
@@ -43,11 +42,11 @@
   }
 </script>
 
-<!-- eslint-disable-next-line svelte/valid-compile -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
 <svelte:element
   this={as}
-  class={_class}
+  class={css(style)}
+  role="button"
+  tabindex="-1"
   on:click={toggleOpen}
   on:keypress={as === 'div' ? toggleOpen : null}
   use:anchor
@@ -58,7 +57,7 @@
 
 {#if open}
   <div
-    class="fixed inset-0 z-51"
+    class={css({ position: 'fixed', inset: '0', zIndex: '40' })}
     role="button"
     tabindex="-1"
     on:click={() => (open = false)}
@@ -67,15 +66,24 @@
   />
 
   <div
-    class={clsx(
-      'z-52 bg-cardprimary rounded-lg px-2.5 space-y-1 shadow-[0px_5px_22px_0px_rgba(0,0,0,0.06)] flex border border-gray-200',
+    class={css(
       {
-        'flex-col py-2.5': alignment === 'vertical',
-        'flex-row py-1': alignment === 'horizontal',
+        display: 'flex',
+        gap: '4px',
+        borderWidth: '1px',
+        borderColor: 'gray.200',
+        borderRadius: '8px',
+        paddingX: '10px',
+        boxShadow: '[0 5px 22px 0 var(--shadow-color)]',
+        boxShadowColor: '[black/6]',
+        backgroundColor: 'white',
+        zIndex: '50',
       },
-      !padding && 'p-none!',
-      !rounded && 'rounded-t-none!',
-      menuClass,
+      alignment === 'horizontal' && { flexDirection: 'row', paddingY: '4px' },
+      alignment === 'vertical' && { flexDirection: 'column', paddingY: '10px' },
+      !padding && { padding: '0' },
+      !rounded && { borderTopRadius: '0' },
+      menuStyle,
     )}
     use:floating
   >

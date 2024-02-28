@@ -1,14 +1,14 @@
 <script lang="ts">
   import { Editor } from '@tiptap/core';
   import { generateHTML } from '@tiptap/html';
-  import clsx from 'clsx';
   import { onMount } from 'svelte';
   import { extensions } from '$lib/tiptap';
+  import { css, cx } from '$styled-system/css';
   import type { JSONContent } from '@tiptap/core';
+  import type { SystemStyleObject } from '$styled-system/types';
   import type { TiptapRendererOptions } from '../types';
 
-  let _class: string;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 
   export let content: JSONContent;
   export let options: TiptapRendererOptions;
@@ -35,7 +35,7 @@
       injectCSS: false,
 
       editorProps: {
-        attributes: { class: _class },
+        attributes: { class: css(style) },
       },
 
       onCreate: ({ editor }) => {
@@ -53,7 +53,7 @@
 
 <article
   bind:this={element}
-  class="tiptap contents whitespace-pre-wrap break-all"
+  class={cx('tiptap', css({ display: 'contents', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }))}
   data-indent={options.paragraphIndent}
   data-spacing={options.paragraphSpacing}
   on:copy|capture={handleContentProtection}
@@ -61,7 +61,7 @@
   on:contextmenu|capture={handleContentProtection}
 >
   {#if !loaded}
-    <div class={clsx('ProseMirror', _class)}>
+    <div class={cx('ProseMirror', css(style))}>
       {@html html}
     </div>
   {/if}

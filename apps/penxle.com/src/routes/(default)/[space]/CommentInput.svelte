@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import IconReplyBar from '~icons/effit/reply-bar';
   import IconAlertCircle from '~icons/tabler/alert-circle';
   import IconLock from '~icons/tabler/lock';
@@ -7,6 +6,8 @@
   import { mixpanel } from '$lib/analytics';
   import { Icon, Tooltip } from '$lib/components';
   import { Button } from '$lib/components/v2';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import type { CommentInput_post, CommentInput_query, PostCommentVisibility } from '$glitch';
 
   let visibility: PostCommentVisibility = 'PUBLIC';
@@ -78,7 +79,10 @@
 </script>
 
 <form
-  class={clsx('px-5 py-4 <sm:-mx-5', parentId && 'border-t border-gray-100 bg-gray-50')}
+  class={css(
+    { paddingX: '20px', paddingY: '16px', smDown: { marginX: '-20px' } },
+    !!parentId && { borderTopWidth: '1px', borderTopColor: 'gray.100', backgroundColor: 'gray.50' },
+  )}
   on:submit|preventDefault={async () => {
     if (commentId) {
       await updateComment({
@@ -116,19 +120,29 @@
     }
   }}
 >
-  <div class="flex gap-1">
+  <div class={flex({ gap: '4px' })}>
     {#if parentId}
-      <Icon class="square-3.5 text-gray-500" icon={IconReplyBar} />
+      <Icon style={css.raw({ size: '14px', color: 'gray.500' })} icon={IconReplyBar} />
     {/if}
 
-    <div class="w-full">
-      <p class="flex items-center gap-0.5 mb-2">
+    <div class={css({ width: 'full' })}>
+      <div class={flex({ align: 'center', gap: '2px', marginBottom: '8px' })}>
         {#if $post.space.meAsMember}
-          <span class="py-1 px-2.5 rounded bg-gray-400 text-11-sb text-white">
+          <span
+            class={css({
+              borderRadius: '4px',
+              paddingX: '10px',
+              paddingY: '4px',
+              fontSize: '11px',
+              fontWeight: 'semibold',
+              color: 'white',
+              backgroundColor: 'gray.400',
+            })}
+          >
             {$post.space.commentProfile?.name ?? ''}
           </span>
         {:else}
-          <span class="text-14-m">{$post.space.commentProfile?.name ?? ''}</span>
+          <span class={css({ fontSize: '14px', fontWeight: 'medium' })}>{$post.space.commentProfile?.name ?? ''}</span>
         {/if}
         {#if !$post.space?.meAsMember && $query.me}
           <Tooltip
@@ -137,13 +151,22 @@
             offset={10}
             placement="top"
           >
-            <Icon class="square-3 text-gray-400 block" icon={IconAlertCircle} />
+            <Icon style={css.raw({ size: '12px', color: 'gray.400' })} icon={IconAlertCircle} />
           </Tooltip>
         {/if}
-      </p>
+      </div>
 
       <textarea
-        class="text-14-r resize-none w-full rounded py-2.5 px-3.5 ring ring-gray-200 focus-within:ring-teal-500"
+        class={css({
+          borderRadius: '4px',
+          outlineWidth: '1px',
+          outlineColor: { base: 'gray.200', _focusWithin: 'teal.500' },
+          paddingX: '14px',
+          paddingY: '10px',
+          width: 'full',
+          fontSize: '14px',
+          resize: 'none',
+        })}
         disabled={!$query.me ||
           ($post.commentQualification === 'IDENTIFIED' && !$query.me.personalIdentity) ||
           !$post.space.commentProfile}
@@ -161,27 +184,47 @@
   </div>
 
   <div
-    class={clsx('flex items-center justify-between pt-2.5', ($post.space.meAsMember || commentId) && 'justify-end!')}
+    class={css(
+      { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '10px' },
+      ($post.space.meAsMember || !!commentId) && { justifyContent: 'flex-end' },
+    )}
   >
     {#if !$post.space.meAsMember && !commentId}
       <button
-        class={clsx(
-          'flex items-center gap-1 text-14-r p-1.5 rounded hover:bg-gray-100',
-          visibility === 'PRIVATE' ? 'text-teal-500' : 'text-gray-400',
-        )}
+        class={flex({
+          align: 'center',
+          gap: '4px',
+          borderRadius: '4px',
+          padding: '6px',
+          fontSize: '14px',
+          color: visibility === 'PRIVATE' ? 'teal.500' : 'gray.400',
+          _hover: { backgroundColor: 'gray.100' },
+        })}
         disabled={!$query.me || ($post.commentQualification === 'IDENTIFIED' && !$query.me?.personalIdentity)}
         type="button"
         on:click={() => (visibility = visibility === 'PUBLIC' ? 'PRIVATE' : 'PUBLIC')}
       >
         <Icon
-          class={clsx('square-5 block ', visibility === 'PRIVATE' ? 'text-teal-500' : 'text-gray-400')}
+          style={css.raw({
+            size: '20px',
+            color: visibility === 'PRIVATE' ? 'teal.500' : 'gray.400',
+          })}
           icon={IconLock}
         />
       </button>
     {/if}
 
     <Button
-      class="h-44px w-94px flex center <sm:(h-34px text-12-sb w-69px)"
+      style={center.raw({
+        width: '94px',
+        height: '44px',
+        smDown: {
+          width: '69px',
+          height: '34px',
+          fontSize: '12px',
+          fontWeight: 'semibold',
+        },
+      })}
       disabled={!$query.me || ($post.commentQualification === 'IDENTIFIED' && !$query.me?.personalIdentity)}
       size="lg"
       type="submit"

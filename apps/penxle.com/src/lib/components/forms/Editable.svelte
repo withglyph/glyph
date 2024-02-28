@@ -1,12 +1,15 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import IconEdit from '~icons/tabler/edit';
   import { Icon } from '$lib/components';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type { HTMLInputAttributes } from 'svelte/elements';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   export let value: string | null | undefined = undefined;
+  export let style: SystemStyleObject | undefined = undefined;
 
-  type $$Props = HTMLInputAttributes & { value?: typeof value };
+  type $$Props = Omit<HTMLInputAttributes, 'class' | 'style'> & { value?: typeof value; style?: SystemStyleObject };
   type $$Events = {
     input: Parameters<NonNullable<HTMLInputAttributes['on:input']>>[0];
     blur: Parameters<NonNullable<HTMLInputAttributes['on:blur']>>[0];
@@ -18,19 +21,14 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-<label
-  class="relative flex items-center gap-1"
-  on:click={() => {
-    editing = true;
-  }}
->
-  <span class={clsx(editing && 'invisible', !value && 'text-disabled')} role="textbox" tabindex="-1">
+<label class={flex({ position: 'relative', align: 'center', gap: '4px' })} on:click={() => (editing = true)}>
+  <span class={css(editing && { visibility: 'hidden' }, !value && { color: 'gray.400' })} role="textbox" tabindex="-1">
     {value || $$props.placeholder}
   </span>
   <input
     {...$$props}
     bind:this={inputEl}
-    class={clsx(!editing && 'hidden', 'w-full absolute left-0', $$props.class)}
+    class={css({ position: 'absolute', left: '0', width: 'full' }, !editing && { visibility: 'hidden' }, style)}
     tabindex="0"
     type="text"
     on:blur={() => {
@@ -40,7 +38,7 @@
     on:blur
   />
   <button
-    class={clsx('text-secondary disabled:text-disabled', editing && 'hidden')}
+    class={css({ color: { base: 'gray.500', _disabled: 'gray.400' } }, editing && { display: 'none' })}
     type="button"
     on:click={() => {
       editing = true;
@@ -50,6 +48,6 @@
       });
     }}
   >
-    <Icon class="square-6" icon={IconEdit} />
+    <Icon style={css.raw({ size: '24px' })} icon={IconEdit} />
   </button>
 </label>

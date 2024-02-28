@@ -1,13 +1,10 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { getFormContext } from '$lib/form';
-  import type { HTMLInputAttributes } from 'svelte/elements';
+  import { css } from '$styled-system/css';
+  import type { SystemStyleObject } from '$styled-system/types';
 
-  type $$Props = Omit<HTMLInputAttributes, 'type'>;
-
-  let _class: $$Props['class'] = undefined;
-  export { _class as class };
-  export let name: $$Props['name'] = undefined;
+  export let name: string | undefined = undefined;
+  export let style: SystemStyleObject | undefined = undefined;
 
   const { field } = getFormContext();
 
@@ -16,11 +13,38 @@
   }
 </script>
 
-<label class={clsx('flex items-center', _class)}>
+<label class={css({ display: 'flex', alignItems: 'center' }, style)}>
   <input
     id={name}
     {name}
-    class="inline-block square-4.5 cursor-pointer appearance-none relative border border-primary rounded-full flex-none checked:border-tertiary checked:before:(absolute block content-[''] square-2.5 rounded-full bg-gray-90 top-50% left-50% -translate-50%)"
+    class={css({
+      position: 'relative',
+      display: 'inline-block',
+      flex: 'none',
+      borderWidth: '1px',
+      borderColor: 'gray.400',
+      borderRadius: 'full',
+      size: '18px',
+      cursor: 'pointer',
+      appearance: 'none',
+      _checked: {
+        borderColor: 'gray.900',
+
+        _before: {
+          content: '""',
+          position: 'absolute',
+          top: '[50%]',
+          left: '[50%]',
+          translate: 'auto',
+          translateX: '[-50%]',
+          translateY: '[-50%]',
+          display: 'block',
+          borderRadius: 'full',
+          backgroundColor: 'gray.900',
+          size: '10px',
+        },
+      },
+    })}
     type="radio"
     on:change
     {...$$restProps}

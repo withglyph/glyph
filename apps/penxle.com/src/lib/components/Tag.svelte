@@ -1,10 +1,10 @@
 <script lang="ts">
-  import clsx from 'clsx';
+  import { css, cva } from '$styled-system/css';
   import type { HTMLInputAttributes } from 'svelte/elements';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   export let size: 'sm' | 'lg' = 'lg';
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 
   export let as: 'div' | 'a' | 'label' = 'a';
   export let checked = false;
@@ -13,23 +13,41 @@
   type $$Events = {
     change: Parameters<NonNullable<HTMLInputAttributes['on:change']>>[0];
   };
+
+  const recipe = cva({
+    base: {
+      borderWidth: '1px',
+      borderColor: 'gray.100',
+      borderRadius: 'full',
+      paddingY: '4px',
+      lineHeight: '[1]',
+      backgroundColor: 'gray.100',
+      transition: 'common',
+      transitionDuration: '[300ms]',
+      truncate: true,
+    },
+    variants: {
+      size: {
+        sm: { paddingX: '8px', fontSize: '13px', fontWeight: 'medium' },
+        lg: { paddingX: '16px', fontWeight: 'semibold' },
+      },
+    },
+  });
 </script>
 
 <svelte:element
   this={as}
   id={name}
-  class={clsx(
-    'rounded-8 bg-gray-10 transition duration-300 border border-gray-10 leading-none py-1 truncate',
-    checked && 'border-gray-90!',
-    size === 'sm' && 'px-2 body-13-m',
-    size === 'lg' && 'px-4 body-16-sb',
-    as !== 'div' && 'hover:(bg-gray-20 border-gray-20)',
-    _class,
+  class={css(
+    recipe.raw({ size }),
+    checked && { borderColor: 'gray.900' },
+    as !== 'div' && { _hover: { borderColor: 'gray.200', backgroundColor: 'gray.200' } },
+    style,
   )}
   {...$$restProps}
 >
   {#if as === 'label'}
-    <input class="appearance-none" aria-checked={checked} type="checkbox" on:change bind:checked />
+    <input class={css({ appearance: 'none' })} aria-checked={checked} type="checkbox" on:change bind:checked />
   {/if}
   <slot />
 </svelte:element>

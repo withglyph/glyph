@@ -5,6 +5,8 @@
   import { Button } from '$lib/components';
   // import PopupSearch from '$lib/components/forms/PopupSearch.svelte';
   import { comma } from '$lib/utils';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import type { PointTransactionCause } from '$glitch';
 
   $: query = graphql(`
@@ -50,41 +52,92 @@
 
 <Helmet description="내 현재 포인트와 사용 내역을 확인할 수 있어요" title="포인트" />
 
-<div class="w-full max-w-315 flex flex-col sm:p-7.5">
-  <h1 class="text-xl font-bold mb-5 <sm:hidden">포인트</h1>
-  <div class="sm:(flex gap-10)">
-    <aside class="w-81.5 bg-cardprimary border border-secondary rounded-2xl px-4 py-6 h-full <sm:hidden">
-      <div class="bg-primary py-4 px-3 rounded-xl space-y-2">
-        <p class="body-14-m text-secondary">보유 포인트</p>
-        <p class="title-24-b">{comma($query.me.point)}P</p>
+<div class={flex({ direction: 'column', width: 'full', maxWidth: '1260px', sm: { padding: '30px' } })}>
+  <h1 class={css({ hideBelow: 'sm', marginBottom: '20px', fontSize: '20px', fontWeight: 'bold' })}>포인트</h1>
+  <div class={css({ sm: { display: 'flex', gap: '40px' } })}>
+    <aside
+      class={css({
+        hideBelow: 'sm',
+        borderWidth: '1px',
+        borderColor: 'gray.200',
+        borderRadius: '16px',
+        paddingX: '16px',
+        paddingY: '24px',
+        width: '326px',
+        height: 'full',
+        backgroundColor: 'white',
+      })}
+    >
+      <div
+        class={css({
+          gap: '4px',
+          borderRadius: '12px',
+          paddingX: '12px',
+          paddingY: '16px',
+          backgroundColor: 'gray.50',
+        })}
+      >
+        <p class={css({ fontSize: '14px', color: 'gray.500' })}>보유 포인트</p>
+        <p class={css({ fontSize: '24px', fontWeight: 'bold' })}>{comma($query.me.point)}P</p>
       </div>
-      <div class="mt-4 flex p-0 flex-col gap-4">
-        <div class="flex p-0 gap-1 justify-between">
-          <div class="text-secondary body-14-m">유료 포인트</div>
-          <div class="text-primary body-14-m">
+      <div class={flex({ direction: 'column', gap: '16px', marginTop: '16px', padding: '0' })}>
+        <div class={flex({ justify: 'space-between', gap: '4px', padding: '0' })}>
+          <div class={css({ fontSize: '14px', color: 'gray.500' })}>유료 포인트</div>
+          <div class={css({ fontSize: '14px', color: 'gray.900' })}>
             {comma($query.me.paidPoint)}P
           </div>
         </div>
-        <div class="flex p-0 gap-1 justify-between">
-          <div class="text-secondary body-14-m">무료 포인트</div>
-          <div class="text-primary body-14-m">
+        <div class={flex({ justify: 'space-between', gap: '4px', padding: '0' })}>
+          <div class={css({ fontSize: '14px', color: 'gray.500' })}>무료 포인트</div>
+          <div class={css({ fontSize: '14px', color: 'gray.900' })}>
             {comma($query.me.freePoint)}P
           </div>
         </div>
       </div>
-      <Button class="mt-4" href="/point/purchase" size="xl" type="link">포인트 충전하기</Button>
+      <Button class={css({ marginTop: '16px' })} href="/point/purchase" size="xl" type="link">포인트 충전하기</Button>
     </aside>
 
-    <div class="w-full max-w-208">
-      <h2 class="text-black text-xl font-bold <sm:(mx-5 mt-4)">이용 내역</h2>
-      <div class="mt-4 flex p-6 flex-col gap-6 rounded-xl border border-secondary bg-white <sm:(mx-5 mb-4)">
+    <div class={css({ width: 'full', maxWidth: '832px' })}>
+      <h2
+        class={css({
+          fontSize: '20px',
+          fontWeight: 'bold',
+          color: 'black',
+          smDown: { marginX: '20px', marginTop: '16px' },
+        })}
+      >
+        이용 내역
+      </h2>
+      <div
+        class={flex({
+          direction: 'column',
+          gap: '24px',
+          marginTop: '16px',
+          borderWidth: '1px',
+          borderColor: 'gray.200',
+          borderRadius: '12px',
+          padding: '24px',
+          backgroundColor: 'white',
+          smDown: { marginX: '20px', marginBottom: '16px' },
+        })}
+      >
         {#if $query.me.points.length === 0}
-          <div class="body-15-b grow text-center flex flex-col center">
+          <div
+            class={center({
+              flexDirection: 'column',
+              flexGrow: 1,
+              textAlign: 'center',
+              fontSize: '15px',
+              fontWeight: 'bold',
+            })}
+          >
             포인트 내역이 없어요.
             <br />
             포인트를 충전해보세요!
 
-            <Button class="w-fit mt-4" href="/point/purchase" size="lg" type="link">포인트 충전하기</Button>
+            <Button class={css({ marginTop: '16px', width: 'fit' })} href="/point/purchase" size="lg" type="link">
+              포인트 충전하기
+            </Button>
           </div>
         {:else}
           <div class="flex flex-col gap-4">
