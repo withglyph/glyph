@@ -229,6 +229,11 @@
               id
               role
             }
+
+            myMasquerade {
+              id
+              blocked
+            }
           }
 
           member {
@@ -627,7 +632,13 @@
 
     {#if !$query.post.hasPassword || $query.post.space?.meAsMember || $query.post.unlocked}
       <div>
-        {#if blurContent}
+        {#if $query.post.space?.myMasquerade?.blocked}
+          <AlertText
+            description="{$query.post.space.name}의 게시물을 볼 수 없어요"
+            icon="i-tb-alert-triangle"
+            title="차단당했습니다"
+          />
+        {:else if blurContent}
           {#if $query.post.ageRating === 'ALL'}
             <AlertText
               description="해당 포스트에는 민감한 내용이 포함되어 있어요"
@@ -1116,7 +1127,7 @@
       {/if}
     </aside>
 
-    {#if $query.post.space}
+    {#if $query.post.space && !blurContent && !$query.post.space.myMasquerade?.blocked}
       <div class="mt-40px">
         {#if $query.post.commentQualification !== 'NONE'}
           <p id="comment" class="text-18-sb text-gray-700 mb-2.5 scroll-my-61px">
