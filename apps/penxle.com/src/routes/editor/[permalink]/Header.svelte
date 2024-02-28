@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { Link } from '@penxle/ui';
-  import clsx from 'clsx';
   import dayjs from 'dayjs';
   import { onMount } from 'svelte';
   import IconLetterSpacing from '~icons/effit/letter-spacing';
@@ -23,14 +21,16 @@
   import IconSettings from '~icons/tabler/settings';
   import IconStrikethrough from '~icons/tabler/strikethrough';
   import IconUnderline from '~icons/tabler/underline';
+  import Logo from '$assets/branding/logo.svg?component';
   import Wordmark from '$assets/icons/wordmark.svg?component';
   import { fragment, graphql } from '$glitch';
   import { Icon } from '$lib/components';
-  import { Logo } from '$lib/components/branding';
   import ColorPicker from '$lib/components/ColorPicker.svelte';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { values } from '$lib/tiptap/values';
+  import { css, cx } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import CharacterCountWidget from './CharacterCountWidget.svelte';
   import { getEditorContext } from './context';
   import DraftListModal from './DraftListModal.svelte';
@@ -107,7 +107,6 @@
 
   const menuOffset = 11;
 
-  let fontColorOpen = false;
   let colorPickerOpen = false;
 
   let contentOptionsOpen = false;
@@ -167,25 +166,46 @@
   });
 </script>
 
-<header style:transform={`translateY(${vvOffset ?? 0}px)`} class="w-full top-0 bg-white absolute z-100 transition">
-  <div class="w-full flex items-center justify-between border-b border-gray-200 h-14 px-5 sm:pl-7">
-    <Link class="flex items-center gap-2" href="/">
-      <Logo class="square-6 <sm:hidden" />
-      <Wordmark class="h-5.25 color-icon-primary <sm:hidden" />
+<header
+  style:transform={`translateY(${vvOffset ?? 0}px)`}
+  class={css({
+    position: 'absolute',
+    top: '0',
+    width: 'full',
+    backgroundColor: 'white',
+    transition: 'common',
+    zIndex: '100',
+  })}
+>
+  <div
+    class={flex({
+      justify: 'space-between',
+      align: 'center',
+      borderBottomWidth: '1px',
+      borderBottomColor: 'gray.200',
+      paddingX: '20px',
+      width: 'full',
+      height: '56px',
+      sm: { paddingLeft: '28px' },
+    })}
+  >
+    <a class={flex({ align: 'center', gap: '8px' })} href="/">
+      <Logo class={css({ size: '24px', hideBelow: 'sm' })} />
+      <Wordmark class={css({ height: '21px', color: 'gray.900', hideBelow: 'sm' })} />
 
-      <Icon class="square-6 sm:hidden" icon={IconChevronLeft} />
-    </Link>
+      <Icon style={css.raw({ size: '24px', hideFrom: 'sm' })} icon={IconChevronLeft} />
+    </a>
 
-    <div class="flex items-end justify-end flex-1">
-      <div class="flex flex-col items-end text-right mr-3">
+    <div class={flex({ flex: '1', justify: 'flex-end', align: 'flex-end' })}>
+      <div class={flex({ direction: 'column', align: 'flex-end', marginRight: '12px', textAlign: 'right' })}>
         <CharacterCountWidget {editor} />
 
         <span
-          class={clsx(
-            'transition',
+          class={css(
+            { transition: 'common', fontSize: '10px' },
             !$state.isRevising && $state.lastRevision?.kind === 'MANUAL_SAVE'
-              ? 'text-10-sb text-teal-500'
-              : 'text-10-r text-gray-400',
+              ? { fontWeight: 'semibold', color: 'teal.500' }
+              : { color: 'gray.400' },
           )}
         >
           {#if $state.isRevising || !$state.lastRevision}
@@ -196,9 +216,31 @@
         </span>
       </div>
 
-      <div class="flex items-center border border-gray-200 rounded py-2.5 px-3.5 mr-2 leading-none! text-14-m">
+      <div
+        class={flex({
+          align: 'center',
+          borderWidth: '1px',
+          borderColor: 'gray.200',
+          borderRadius: '4px',
+          marginRight: '8px',
+          paddingX: '14px',
+          paddingY: '10px',
+          fontSize: '14px',
+          fontWeight: 'medium',
+          lineHeight: '[1]',
+        })}
+      >
         <button
-          class="after:(content-empty border-r border-gray-300 h-4 ml-2) leading-none!"
+          class={css({
+            lineHeight: '[1]',
+            _after: {
+              content: '""',
+              borderRightWidth: '1px',
+              borderRightColor: 'gray.300',
+              marginLeft: '8px',
+              height: '16px',
+            },
+          })}
           disabled={!$state.canRevise}
           type="button"
           on:click={() => forceSave()}
@@ -207,7 +249,13 @@
         </button>
 
         <button
-          class="text-14-sb text-gray-400 pl-2 leading-none!"
+          class={css({
+            paddingLeft: '8px',
+            fontSize: '14px',
+            fontWeight: 'semibold',
+            color: 'gray.400',
+            lineHeight: '[1]',
+          })}
           disabled={$query.me.posts.length === 0}
           type="button"
           on:click={() => (draftListOpen = true)}
@@ -216,9 +264,22 @@
         </button>
       </div>
 
-      <div class="w-fit" use:publishAnchor>
+      <div class={css({ width: 'fit' })} use:publishAnchor>
         <button
-          class="bg-gray-950 text-white px-8 py-2.5 rounded text-14-m leading-none border border-gray-950 text-center whitespace-nowrap sm:mr-3"
+          class={css({
+            borderWidth: '1px',
+            borderColor: 'gray.950',
+            borderRadius: '4px',
+            paddingX: '32px',
+            paddingY: '10px',
+            fontSize: '14px',
+            fontWeight: 'medium',
+            color: 'white',
+            lineHeight: '[1]',
+            whiteSpace: 'nowrap',
+            backgroundColor: 'gray.950',
+            sm: { marginRight: '12px' },
+          })}
           type="button"
           on:click={() => (publishMenuOpen = true)}
         >
@@ -228,7 +289,7 @@
 
       {#if publishMenuOpen}
         <div
-          class="fixed inset-0 z-49 <sm:bg-black/50"
+          class={css({ position: 'fixed', inset: '0', zIndex: '40', smDown: { backgroundColor: '[black/50]' } })}
           role="button"
           tabindex="-1"
           on:click={() => (publishMenuOpen = false)}
@@ -237,50 +298,79 @@
         />
       {/if}
 
-      <div class="fixed left-0 bottom-0 w-full z-50 sm:hidden" use:portal>
+      <div
+        class={css({ position: 'fixed', left: '0', bottom: '0', width: 'full', zIndex: '50', hideFrom: 'sm' })}
+        use:portal
+      >
         <PublishMenu {$post} {$query} bind:open={publishMenuOpen} />
       </div>
 
-      <div class="z-50 <sm:hidden" use:publishFloating>
+      <div class={css({ zIndex: '50', hideBelow: 'sm' })} use:publishFloating>
         <PublishMenu {$post} {$query} bind:open={publishMenuOpen} />
       </div>
 
-      <Menu class="flex center" offset={menuOffset} placement="bottom-end" rounded={false}>
-        <div slot="value" class="h-9 flex center <sm:hidden">
-          <Icon class="square-6" icon={IconDotsVertical} />
+      <Menu style={center.raw()} offset={menuOffset} placement="bottom-end" rounded={false}>
+        <div slot="value" class={center({ height: '36px', hideBelow: 'sm' })}>
+          <Icon style={css.raw({ size: '24px' })} icon={IconDotsVertical} />
         </div>
 
-        <MenuItem
-          on:click={() => {
-            revisionListOpen = true;
-          }}
-        >
-          저장이력
-        </MenuItem>
-
+        <MenuItem on:click={() => (revisionListOpen = true)}>저장이력</MenuItem>
         <MenuItem external href={`/editor/${$post.permalink}/preview`} type="link">미리보기</MenuItem>
       </Menu>
     </div>
   </div>
 
-  <div class="flex items-center border-b border-gray-200 h-14 px-6 <sm:hidden">
-    <div class="flex items-center pointer-events-auto">
-      <div class="flex center space-x-3 h-8.5 after:(content-empty border-r border-gray-300 h-4 mx-3)">
+  <div
+    class={flex({
+      align: 'center',
+      borderBottomWidth: '1px',
+      borderBottomColor: 'gray.200',
+      paddingX: '24px',
+      height: '56px',
+      hideBelow: 'sm',
+    })}
+  >
+    <div class={flex({ align: 'center', pointerEvents: 'auto' })}>
+      <div
+        class={center({
+          gap: '12px',
+          height: '34px',
+          _after: {
+            content: '""',
+            borderRightWidth: '1px',
+            borderRightColor: 'gray.300',
+            marginRight: '12px',
+            height: '16px',
+          },
+        })}
+      >
         <ToolbarButtonTooltip message="글자 색">
           <button
-            class="flex items-center pl-4px pr-2px gap-1 h-8.5 rounded hover:bg-gray-100 aria-pressed:bg-gray-100"
+            class={flex({
+              align: 'center',
+              gap: '4px',
+              borderRadius: '4px',
+              paddingLeft: '4px',
+              paddingRight: '2px',
+              height: '34px',
+              _hover: { backgroundColor: 'gray.100' },
+              _pressed: { backgroundColor: 'gray.100' },
+            })}
             aria-pressed={colorPickerOpen}
             type="button"
             on:click={() => (colorPickerOpen = true)}
             use:colorPickerAnchor
           >
-            <div style:color={currentColor} class="rounded-full square-4.5 bg-[currentColor]" />
-            <Icon class={clsx('square-4.5 text-gray-300', fontColorOpen && 'rotate-180')} icon={IconChevronDown} />
+            <div style:background-color={currentColor} class={css({ borderRadius: 'full', size: '18px' })} />
+            <Icon
+              style={css.raw({ size: '18px', color: 'gray.300' }, colorPickerOpen && { rotate: '180deg' })}
+              icon={IconChevronDown}
+            />
           </button>
 
           {#if colorPickerOpen}
             <div
-              class="fixed inset-0 z-51"
+              class={css({ position: 'fixed', inset: '0', zIndex: '40' })}
               role="button"
               tabindex="-1"
               on:click={() => (colorPickerOpen = false)}
@@ -289,7 +379,7 @@
             />
           {/if}
 
-          <div class={clsx('z-52', !colorPickerOpen && 'hidden')} use:colorPickerFloating>
+          <div class={css({ zIndex: '50' }, !colorPickerOpen && { display: 'none' })} use:colorPickerFloating>
             <ColorPicker
               hex={currentColor}
               on:input={(event) => {
@@ -308,7 +398,19 @@
           <Menu as="div" offset={menuOffset} placement="bottom" rounded={false}>
             <button
               slot="value"
-              class="flex justify-between pl-4px pr-2px items-center gap-1 whitespace-nowrap h-8.5 rounded hover:bg-gray-100 w-36 aria-pressed:bg-gray-100"
+              class={flex({
+                justify: 'space-between',
+                align: 'center',
+                gap: '4px',
+                borderRadius: '4px',
+                paddingLeft: '4px',
+                paddingRight: '2px',
+                width: '144px',
+                height: '34px',
+                whiteSpace: 'nowrap',
+                _hover: { backgroundColor: 'gray.100' },
+                _pressed: { backgroundColor: 'gray.100' },
+              })}
               aria-pressed={open}
               type="button"
               let:open
@@ -317,12 +419,15 @@
                 {values.fontFamily.find(({ value }) => editor?.getAttributes('font_family').fontFamily === value)
                   ?.label ?? values.fontFamily[0].label}
               </div>
-              <Icon class={clsx('square-4.5 text-gray-300', open && 'rotate-180')} icon={IconChevronDown} />
+              <Icon
+                style={css.raw({ size: '18px', color: 'gray.300' }, open && { rotate: '180deg' })}
+                icon={IconChevronDown}
+              />
             </button>
 
             {#each values.fontFamily as font (font.value)}
               <MenuItem
-                class={clsx('flex items-center gap-2 justify-between')}
+                style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
                 on:click={() => {
                   if (font.value === values.fontFamily[0].value) {
                     editor?.chain().focus().unsetFontFamily().run();
@@ -335,7 +440,10 @@
                   {font.label}
                 </span>
                 <Icon
-                  class={clsx('square-5 text-teal-500', !editor?.isActive({ fontFamily: font.value }) && 'invisible')}
+                  style={css.raw(
+                    { size: '20px', color: 'teal.500' },
+                    !editor?.isActive({ fontFamily: font.value }) && { visibility: 'hidden' },
+                  )}
                   icon={IconCheck}
                 />
               </MenuItem>
@@ -344,22 +452,42 @@
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="글자 크기">
-          <Menu as="div" menuClass="max-h-78 overflow-y-auto" offset={menuOffset} placement="bottom" rounded={false}>
+          <Menu
+            as="div"
+            menuStyle={css.raw({ maxHeight: '312px', overflowY: 'auto' })}
+            offset={menuOffset}
+            placement="bottom"
+            rounded={false}
+          >
             <button
               slot="value"
-              class="flex justify-between items-center pl-4px pr-2px gap-1 h-8.5 rounded hover:bg-gray-100 w-16 aria-pressed:bg-gray-100"
+              class={flex({
+                justify: 'space-between',
+                align: 'center',
+                gap: '4px',
+                borderRadius: '4px',
+                paddingLeft: '4px',
+                paddingRight: '2px',
+                width: '64px',
+                height: '34px',
+                _hover: { backgroundColor: 'gray.100' },
+                _pressed: { backgroundColor: 'gray.100' },
+              })}
               aria-pressed={open}
               type="button"
               let:open
             >
               {values.fontSize.find(({ value }) => editor?.getAttributes('font_size').fontSize === value)?.label ??
                 values.fontSize[4].label}
-              <Icon class={clsx('square-4.5 text-gray-300', open && 'rotate-180')} icon={IconChevronDown} />
+              <Icon
+                style={css.raw({ size: '18px', color: 'gray.300' }, open && { rotate: '180deg' })}
+                icon={IconChevronDown}
+              />
             </button>
 
             {#each values.fontSize as fontSize (fontSize.value)}
               <MenuItem
-                class="flex items-center gap-2 justify-between"
+                style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
                 on:click={() => {
                   if (!editor) return;
 
@@ -372,7 +500,10 @@
               >
                 {fontSize.label}
                 <Icon
-                  class={clsx('square-5 text-teal-500', !editor?.isActive({ fontSize: fontSize.value }) && 'invisible')}
+                  style={css.raw(
+                    { size: '20px', color: 'teal.500' },
+                    !editor?.isActive({ fontSize: fontSize.value }) && { visibility: 'hidden' },
+                  )}
                   icon={IconCheck}
                 />
               </MenuItem>
@@ -381,71 +512,112 @@
         </ToolbarButtonTooltip>
       </div>
 
-      <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
+      <div
+        class={center({
+          gap: '4px',
+          _after: {
+            content: '""',
+            borderRightWidth: '1px',
+            borderRightColor: 'gray.300',
+            marginLeft: '8px',
+            marginRight: '12px',
+            height: '16px',
+          },
+        })}
+      >
         <ToolbarButtonTooltip message="굵게">
           <button
-            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            class={center({ size: '34px', borderRadius: '4px', _hover: { backgroundColor: 'gray.100' } })}
             type="button"
             on:click={() => editor?.chain().focus().toggleBold().run()}
           >
-            <Icon class={clsx('square-6', editor?.isActive('bold') && 'text-teal-500')} icon={IconBold} />
+            <Icon
+              style={css.raw({ size: '24px' }, editor?.isActive('bold') && { color: 'teal.500' })}
+              icon={IconBold}
+            />
           </button>
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="기울임">
           <button
-            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            class={center({ size: '34px', borderRadius: '4px', _hover: { backgroundColor: 'gray.100' } })}
             type="button"
             on:click={() => editor?.chain().focus().toggleItalic().run()}
           >
-            <Icon class={clsx('square-6', editor?.isActive('italic') && 'text-teal-500')} icon={IconItalic} />
+            <Icon
+              style={css.raw({ size: '24px' }, editor?.isActive('italic') && { color: 'teal.500' })}
+              icon={IconItalic}
+            />
           </button>
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="취소선">
           <button
-            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            class={center({ size: '34px', borderRadius: '4px', _hover: { backgroundColor: 'gray.100' } })}
             type="button"
             on:click={() => editor?.chain().focus().toggleStrike().run()}
           >
-            <Icon class={clsx('square-6', editor?.isActive('strike') && 'text-teal-500')} icon={IconStrikethrough} />
+            <Icon
+              style={css.raw({ size: '24px' }, editor?.isActive('strike') && { color: 'teal.500' })}
+              icon={IconStrikethrough}
+            />
           </button>
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="밑줄">
           <button
-            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            class={center({ size: '34px', borderRadius: '4px', _hover: { backgroundColor: 'gray.100' } })}
             type="button"
             on:click={() => editor?.chain().focus().toggleUnderline().run()}
           >
-            <Icon class={clsx('square-6', editor?.isActive('underline') && 'text-teal-500')} icon={IconUnderline} />
+            <Icon
+              style={css.raw({ size: '24px' }, editor?.isActive('underline') && { color: 'teal.500' })}
+              icon={IconUnderline}
+            />
           </button>
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="루비">
           <button
-            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            class={center({ size: '34px', borderRadius: '4px', _hover: { backgroundColor: 'gray.100' } })}
             disabled={editor?.isActive('ruby') || editor?.state.selection.empty}
             type="button"
             on:click={() => editor?.chain().focus().setRuby('').run()}
           >
-            <Icon class="square-6" icon={IconRuby} />
+            <Icon style={css.raw({ size: '24px' })} icon={IconRuby} />
           </button>
         </ToolbarButtonTooltip>
       </div>
 
-      <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
+      <div
+        class={center({
+          gap: '4px',
+          _after: {
+            content: '""',
+            borderRightWidth: '1px',
+            borderRightColor: 'gray.300',
+            marginLeft: '8px',
+            marginRight: '12px',
+            height: '16px',
+          },
+        })}
+      >
         <ToolbarButtonTooltip message="정렬">
           <Menu as="div" offset={menuOffset} placement="bottom" rounded={false}>
             <button
               slot="value"
-              class="flex center rounded square-8.5 hover:bg-gray-100 aria-pressed:bg-gray-100"
+              class={center({
+                borderRadius: '4px',
+                size: '34px',
+                _hover: { backgroundColor: 'gray.100' },
+                _pressed: { backgroundColor: 'gray.100' },
+              })}
               aria-pressed={open}
               type="button"
               let:open
             >
               <Icon
-                class="square-6"
+                style={css.raw({ size: '24px' })}
                 icon={values.textAlign.find(({ value }) => value === editor?.getAttributes('paragraph').textAlign)
                   ?.icon ?? values.textAlign[0].icon}
               />
@@ -453,12 +625,16 @@
 
             {#each values.textAlign as textAlign (textAlign.value)}
               <button
-                class="flex center square-8.5 hover:(bg-primary) aria-pressed:text-teal-500"
+                class={center({
+                  size: '34px',
+                  _hover: { backgroundColor: 'gray.50' },
+                  _pressed: { color: 'teal.500' },
+                })}
                 aria-pressed={editor?.isActive({ textAlign: textAlign.value })}
                 type="button"
                 on:click={() => editor?.chain().focus().setParagraphTextAlign(textAlign.value).run()}
               >
-                <Icon class="square-6" icon={textAlign.icon} />
+                <Icon style={css.raw({ size: '24px' })} icon={textAlign.icon} />
               </button>
             {/each}
           </Menu>
@@ -468,26 +644,31 @@
           <Menu as="div" offset={menuOffset} placement="bottom" rounded={false}>
             <button
               slot="value"
-              class="flex center square-8.5 rounded hover:bg-gray-100 aria-pressed:bg-gray-100"
+              class={center({
+                borderRadius: '4px',
+                size: '34px',
+                _hover: { backgroundColor: 'gray.100' },
+                _pressed: { backgroundColor: 'gray.100' },
+              })}
               aria-pressed={open}
               type="button"
               let:open
             >
-              <Icon class="square-6" icon={IconLineHeight} />
+              <Icon style={css.raw({ size: '24px' })} icon={IconLineHeight} />
             </button>
 
             {#each values.lineHeight as lineHeight (lineHeight.value)}
               <MenuItem
-                class="flex items-center gap-2 justify-between"
+                style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
                 on:click={() => {
                   editor?.chain().focus().setParagraphLineHeight(lineHeight.value).run();
                 }}
               >
                 {lineHeight.label}
                 <Icon
-                  class={clsx(
-                    'square-5 text-teal-500',
-                    !editor?.isActive({ lineHeight: lineHeight.value }) && 'invisible',
+                  style={css.raw(
+                    { size: '20px', color: 'teal.500' },
+                    !editor?.isActive({ lineHeight: lineHeight.value }) && { visibility: 'hidden' },
                   )}
                   icon={IconCheck}
                 />
@@ -500,26 +681,31 @@
           <Menu as="div" offset={menuOffset} placement="bottom" rounded={false}>
             <button
               slot="value"
-              class="flex center square-8.5 rounded hover:bg-gray-100 aria-pressed:bg-gray-100"
+              class={center({
+                borderRadius: '4px',
+                size: '34px',
+                _hover: { backgroundColor: 'gray.100' },
+                _pressed: { backgroundColor: 'gray.100' },
+              })}
               aria-pressed={open}
               type="button"
               let:open
             >
-              <Icon class="square-6" icon={IconLetterSpacing} />
+              <Icon style={css.raw({ size: '24px' })} icon={IconLetterSpacing} />
             </button>
 
             {#each values.letterSpacing as letterSpacing (letterSpacing.value)}
               <MenuItem
-                class="flex items-center gap-2 justify-between"
+                style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
                 on:click={() => {
                   editor?.chain().focus().setParagraphLetterSpacing(letterSpacing.value).run();
                 }}
               >
                 {letterSpacing.label}
                 <Icon
-                  class={clsx(
-                    'square-5 text-teal-500',
-                    !editor?.isActive({ letterSpacing: letterSpacing.value }) && 'invisible',
+                  style={css.raw(
+                    { size: '20px', color: 'teal.500' },
+                    !editor?.isActive({ letterSpacing: letterSpacing.value }) && { visibility: 'hidden' },
                   )}
                   icon={IconCheck}
                 />
@@ -529,17 +715,34 @@
         </ToolbarButtonTooltip>
       </div>
 
-      <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
+      <div
+        class={center({
+          gap: '4px',
+          _after: {
+            content: '""',
+            borderRightWidth: '1px',
+            borderRightColor: 'gray.300',
+            marginLeft: '8px',
+            marginRight: '12px',
+            height: '16px',
+          },
+        })}
+      >
         <ToolbarButtonTooltip message="리스트">
           <Menu as="div" offset={menuOffset} placement="bottom" rounded={false}>
             <button
               slot="value"
-              class="flex center square-8.5 rounded hover:bg-gray-100 aria-pressed:bg-gray-100"
+              class={center({
+                borderRadius: '4px',
+                size: '34px',
+                _hover: { backgroundColor: 'gray.100' },
+                _pressed: { backgroundColor: 'gray.100' },
+              })}
               aria-pressed={open}
               type="button"
               let:open
             >
-              <Icon class="square-6" icon={IconList} />
+              <Icon style={css.raw({ size: '24px' })} icon={IconList} />
             </button>
 
             <MenuItem
@@ -547,7 +750,7 @@
                 editor?.chain().focus().toggleBulletList().run();
               }}
             >
-              <Icon class="square-6" icon={IconList} />
+              <Icon style={css.raw({ size: '24px' })} icon={IconList} />
             </MenuItem>
 
             <MenuItem
@@ -555,7 +758,7 @@
                 editor?.chain().focus().toggleOrderedList().run();
               }}
             >
-              <Icon class="square-6" icon={IconListNumbers} />
+              <Icon style={css.raw({ size: '24px' })} icon={IconListNumbers} />
             </MenuItem>
           </Menu>
         </ToolbarButtonTooltip>
@@ -564,22 +767,31 @@
           <Menu as="div" offset={menuOffset} placement="bottom" rounded={false}>
             <button
               slot="value"
-              class="flex center square-8.5 rounded hover:bg-gray-100 aria-pressed:bg-gray-100"
+              class={center({
+                borderRadius: '4px',
+                size: '34px',
+                _hover: { backgroundColor: 'gray.100' },
+                _pressed: { backgroundColor: 'gray.100' },
+              })}
               aria-pressed={open}
               type="button"
               let:open
             >
-              <Icon class="square-6" icon={IconMinus} />
+              <Icon style={css.raw({ size: '24px' })} icon={IconMinus} />
             </button>
 
             {#each values.horizontalRule as hr (hr.value)}
               <MenuItem
-                class="flex center gap-2 w-900px"
+                style={center.raw({ gap: '8px' })}
                 on:click={() => {
                   editor?.chain().focus().setHorizontalRule(hr.value).run();
                 }}
               >
-                <hr class="w-11rem divider-preview" aria-label={`${hr.value}번째 구분선`} data-kind={hr.value} />
+                <hr
+                  class={cx('divider-preview', css({ width: '176px' }))}
+                  aria-label={`${hr.value}번째 구분선`}
+                  data-kind={hr.value}
+                />
               </MenuItem>
             {/each}
           </Menu>
@@ -589,23 +801,28 @@
           <Menu as="div" offset={menuOffset} placement="bottom" rounded={false}>
             <button
               slot="value"
-              class="flex center square-8.5 rounded hover:bg-gray-100 aria-pressed:bg-gray-100"
+              class={center({
+                borderRadius: '4px',
+                size: '34px',
+                _hover: { backgroundColor: 'gray.100' },
+                _pressed: { backgroundColor: 'gray.100' },
+              })}
               aria-pressed={open}
               type="button"
               let:open
             >
-              <Icon class="square-6" icon={IconQuote} />
+              <Icon style={css.raw({ size: '24px' })} icon={IconQuote} />
             </button>
 
             {#each values.blockquote as blockquote (blockquote.value)}
               <MenuItem
-                class="flex center gap-2 w-900px"
+                style={center.raw({ gap: '8px' })}
                 on:click={() => {
                   editor?.chain().focus().setBlockquote(blockquote.value).run();
                 }}
               >
                 <blockquote
-                  class="blockquote-preview text-disabled"
+                  class={cx('blockquote-preview', css({ color: 'gray.400', fontSize: '[12px!]' }))}
                   aria-label={`${blockquote.value}번째 인용구`}
                   data-kind={blockquote.value}
                 >
@@ -617,42 +834,74 @@
         </ToolbarButtonTooltip>
       </div>
 
-      <div class="flex center space-x-1 after:(content-empty border-r border-gray-300 h-4 mx-3)">
+      <div
+        class={center({
+          gap: '4px',
+          _after: {
+            content: '""',
+            borderRightWidth: '1px',
+            borderRightColor: 'gray.300',
+            marginLeft: '8px',
+            marginRight: '12px',
+            height: '16px',
+          },
+        })}
+      >
         <ToolbarButtonTooltip message="이미지">
           <button
-            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            class={center({
+              borderRadius: '4px',
+              size: '34px',
+              _hover: { backgroundColor: 'gray.100' },
+            })}
             type="button"
             on:click={() => editor?.chain().focus().setGallery().run()}
           >
-            <Icon class="square-6" icon={IconPhoto} />
+            <Icon style={css.raw({ size: '24px' })} icon={IconPhoto} />
           </button>
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="파일">
-          <button class="flex center square-8.5 hover:(bg-gray-100 rounded)" type="button" on:click={handleInsertFile}>
-            <Icon class="square-6" icon={IconFolder} />
+          <button
+            class={center({
+              borderRadius: '4px',
+              size: '34px',
+              _hover: { backgroundColor: 'gray.100' },
+            })}
+            type="button"
+            on:click={handleInsertFile}
+          >
+            <Icon style={css.raw({ size: '24px' })} icon={IconFolder} />
           </button>
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="링크">
           <button
-            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            class={center({
+              borderRadius: '4px',
+              size: '34px',
+              _hover: { backgroundColor: 'gray.100' },
+            })}
             disabled={editor?.isActive('link') || editor?.state.selection.empty}
             type="button"
             on:click={() => editor?.chain().focus().setLink('').run()}
           >
-            <Icon class="square-6" icon={IconLink} />
+            <Icon style={css.raw({ size: '24px' })} icon={IconLink} />
           </button>
         </ToolbarButtonTooltip>
 
         <ToolbarButtonTooltip message="HTML">
           <button
-            class="flex center square-8.5 hover:(bg-gray-100 rounded)"
+            class={center({
+              borderRadius: '4px',
+              size: '34px',
+              _hover: { backgroundColor: 'gray.100' },
+            })}
             disabled={editor?.isActive('html')}
             type="button"
             on:click={() => editor?.chain().focus().setHtml().run()}
           >
-            <Icon class="square-6" icon={IconHtml} />
+            <Icon style={css.raw({ size: '24px' })} icon={IconHtml} />
           </button>
         </ToolbarButtonTooltip>
       </div>
@@ -661,17 +910,29 @@
         <Menu as="div" offset={menuOffset} placement="bottom" rounded={false} bind:open={contentOptionsOpen}>
           <button
             slot="value"
-            class="flex center square-8.5 rounded hover:bg-gray-100 aria-pressed:bg-gray-100"
+            class={center({
+              borderRadius: '4px',
+              size: '34px',
+              _hover: { backgroundColor: 'gray.100' },
+              _pressed: { backgroundColor: 'gray.100' },
+            })}
             aria-pressed={contentOptionsOpen}
             type="button"
           >
-            <Icon class="square-6" icon={IconSettings} />
+            <Icon style={css.raw({ size: '24px' })} icon={IconSettings} />
           </button>
 
           <Menu offset={16} placement="right-start" bind:open={paragraphIndentOpen}>
             <button
               slot="value"
-              class="px-3.5 py-3 text-14-r w-full rounded-2 hover:(bg-teal-50 text-teal-600)"
+              class={css({
+                borderRadius: '8px',
+                paddingX: '14px',
+                paddingY: '12px',
+                width: 'full',
+                fontSize: '14px',
+                _hover: { backgroundColor: 'teal.50', color: 'teal.600' },
+              })}
               type="button"
               on:mouseenter={() => {
                 paragraphIndentOpen = true;
@@ -682,7 +943,7 @@
             </button>
 
             <MenuItem
-              class="flex items-center gap-2 justify-between"
+              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
               on:click={() => {
                 contentOptionsOpen = false;
                 paragraphIndentOpen = false;
@@ -691,13 +952,16 @@
             >
               없음
               <Icon
-                class={clsx('square-5 text-teal-500', $store.paragraphIndent !== 0 && 'invisible')}
+                style={css.raw(
+                  { size: '20px', color: 'teal.500' },
+                  $store.paragraphIndent !== 0 && { visibility: 'hidden' },
+                )}
                 icon={IconCheck}
               />
             </MenuItem>
 
             <MenuItem
-              class="flex items-center gap-2 justify-between"
+              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
               on:click={() => {
                 contentOptionsOpen = false;
                 paragraphIndentOpen = false;
@@ -707,13 +971,16 @@
             >
               0.5칸
               <Icon
-                class={clsx('square-5 text-teal-500', $store.paragraphIndent !== 50 && 'invisible')}
+                style={css.raw(
+                  { size: '20px', color: 'teal.500' },
+                  $store.paragraphIndent !== 50 && { visibility: 'hidden' },
+                )}
                 icon={IconCheck}
               />
             </MenuItem>
 
             <MenuItem
-              class="flex items-center gap-2 justify-between"
+              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
               on:click={() => {
                 contentOptionsOpen = false;
                 paragraphIndentOpen = false;
@@ -722,13 +989,16 @@
             >
               1칸
               <Icon
-                class={clsx('square-5 text-teal-500', $store.paragraphIndent !== 100 && 'invisible')}
+                style={css.raw(
+                  { size: '20px', color: 'teal.500' },
+                  $store.paragraphIndent !== 100 && { visibility: 'hidden' },
+                )}
                 icon={IconCheck}
               />
             </MenuItem>
 
             <MenuItem
-              class="flex items-center gap-2 justify-between"
+              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
               on:click={() => {
                 contentOptionsOpen = false;
                 paragraphIndentOpen = false;
@@ -737,7 +1007,10 @@
             >
               2칸
               <Icon
-                class={clsx('square-5 text-teal-500', $store.paragraphIndent !== 200 && 'invisible')}
+                style={css.raw(
+                  { size: '20px', color: 'teal.500' },
+                  $store.paragraphIndent !== 200 && { visibility: 'hidden' },
+                )}
                 icon={IconCheck}
               />
             </MenuItem>
@@ -746,7 +1019,14 @@
           <Menu offset={16} placement="right-start" bind:open={paragraphSpacingOpen}>
             <button
               slot="value"
-              class="px-3.5 py-3 text-14-r w-full rounded-2 hover:(bg-teal-50 text-teal-600)"
+              class={css({
+                borderRadius: '8px',
+                paddingX: '14px',
+                paddingY: '12px',
+                width: 'full',
+                fontSize: '14px',
+                _hover: { backgroundColor: 'teal.50', color: 'teal.600' },
+              })}
               type="button"
               on:mouseenter={() => {
                 paragraphIndentOpen = false;
@@ -757,7 +1037,7 @@
             </button>
 
             <MenuItem
-              class="flex items-center gap-2 justify-between"
+              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
               on:click={() => {
                 contentOptionsOpen = false;
                 paragraphSpacingOpen = false;
@@ -766,13 +1046,16 @@
             >
               없음
               <Icon
-                class={clsx('square-5 text-teal-500', $store.paragraphSpacing !== 0 && 'invisible')}
+                style={css.raw(
+                  { size: '20px', color: 'teal.500' },
+                  $store.paragraphSpacing !== 0 && { visibility: 'hidden' },
+                )}
                 icon={IconCheck}
               />
             </MenuItem>
 
             <MenuItem
-              class="flex items-center gap-2 justify-between"
+              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
               on:click={() => {
                 contentOptionsOpen = false;
                 paragraphSpacingOpen = false;
@@ -781,13 +1064,16 @@
             >
               0.5줄
               <Icon
-                class={clsx('square-5 text-teal-500', $store.paragraphSpacing !== 50 && 'invisible')}
+                style={css.raw(
+                  { size: '20px', color: 'teal.500' },
+                  $store.paragraphSpacing !== 50 && { visibility: 'hidden' },
+                )}
                 icon={IconCheck}
               />
             </MenuItem>
 
             <MenuItem
-              class="flex items-center gap-2 justify-between"
+              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
               on:click={() => {
                 contentOptionsOpen = false;
                 paragraphSpacingOpen = false;
@@ -796,13 +1082,16 @@
             >
               1줄
               <Icon
-                class={clsx('square-5 text-teal-500', $store.paragraphSpacing !== 100 && 'invisible')}
+                style={css.raw(
+                  { size: '20px', color: 'teal.500' },
+                  $store.paragraphSpacing !== 100 && { visibility: 'hidden' },
+                )}
                 icon={IconCheck}
               />
             </MenuItem>
 
             <MenuItem
-              class="flex items-center gap-2 justify-between"
+              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
               on:click={() => {
                 contentOptionsOpen = false;
                 paragraphSpacingOpen = false;
@@ -811,7 +1100,10 @@
             >
               2줄
               <Icon
-                class={clsx('square-5 text-teal-500', $store.paragraphSpacing !== 200 && 'invisible')}
+                style={css.raw(
+                  { size: '20px', color: 'teal.500' },
+                  $store.paragraphSpacing !== 200 && { visibility: 'hidden' },
+                )}
                 icon={IconCheck}
               />
             </MenuItem>
@@ -829,7 +1121,9 @@
 
 <style>
   .divider-preview {
-    --uno: bg-no-repeat border-none bg-center;
+    border-style: none;
+    background-position: center;
+    background-repeat: no-repeat;
 
     &[data-kind='1'] {
       background-image: linear-gradient(to right, currentColor 50%, rgb(255 255 255 / 0) 50%);
@@ -840,7 +1134,8 @@
 
     &[data-kind='2'],
     &[data-kind='3'] {
-      border-top: solid 1px currentColor;
+      border: solid 1px currentColor;
+      background-color: currentColor;
     }
 
     &[data-kind='3'] {
@@ -848,50 +1143,60 @@
     }
 
     &[data-kind='4'] {
-      --uno: h-1.5rem;
+      height: 1.8rem;
       background-image: url(https://pencil.so/horizontal-rules/4.svg);
     }
 
     &[data-kind='5'] {
-      --uno: h-0.875rem;
+      height: 0.875rem;
       background-image: url(https://pencil.so/horizontal-rules/5.svg);
     }
 
     &[data-kind='6'] {
-      --uno: h-0.91027rem;
+      height: 0.91027rem;
       background-image: url(https://pencil.so/horizontal-rules/6.svg);
     }
 
     &[data-kind='7'] {
-      --uno: h-1.25rem;
+      height: 1.25rem;
       background-image: url(https://pencil.so/horizontal-rules/7.svg);
     }
 
     &[data-kind='8'] {
-      --uno: h-0.75rem;
+      height: 0.75rem;
       background-image: url(https://pencil.so/horizontal-rules/8.svg);
     }
   }
 
   .blockquote-preview {
-    --uno: border-l-0.1875rem border-text-primary pl-0.625rem my-0.34375rem;
+    border-left-width: 3px;
+    border-color: #09090b;
+    padding-left: 6px;
+    font-size: 9px;
 
     &[data-kind='2'] {
-      --uno: border-l-none;
       &:before {
-        --uno: block w-2rem;
+        display: block;
+        width: 16px;
         content: url(https://pencil.so/blockquotes/carbon.svg);
       }
     }
 
     &[data-kind='3'] {
-      --uno: border-l-none;
+      border-left-style: none;
       &:before {
-        --uno: block w-2rem m-x-auto;
+        display: block;
+        width: 16px;
+        margin-left: auto;
+        margin-right: auto;
         content: url(https://pencil.so/blockquotes/carbon.svg);
       }
       &:after {
-        --uno: block w-2rem rotate-180 m-x-auto;
+        display: block;
+        width: 16px;
+        margin-left: auto;
+        margin-right: auto;
+        transform: rotate(180deg);
         content: url(https://pencil.so/blockquotes/carbon.svg);
       }
     }

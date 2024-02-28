@@ -1,34 +1,54 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { Image } from '$lib/components';
+  import { css, sva } from '$styled-system/css';
   import type { Image_image } from '$glitch';
+  import type { SystemStyleObject } from '$styled-system/types';
 
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
   export let images: Image_image[];
+
+  const recipe = sva({
+    slots: ['root', 'item'],
+    base: {
+      root: { display: 'grid' },
+      item: { display: 'grid' },
+    },
+    variants: {
+      length: {
+        1: {
+          root: { gridTemplateColumns: '1' },
+          item: { borderRadius: '8px' },
+        },
+        2: {
+          root: { gridTemplateColumns: '2' },
+          item: { _firstOfType: { borderLeftRadius: '8px' }, _lastOfType: { borderRightRadius: '8px' } },
+        },
+        3: {
+          root: { gridTemplateColumns: '2', gridTemplateRows: '2' },
+          item: {
+            _firstOfType: { borderTopLeftRadius: '8px' },
+            _even: { borderTopRightRadius: '8px' },
+            _lastOfType: { gridColumn: '[1/-1]', borderBottomRadius: '8px' },
+          },
+        },
+        4: {
+          root: { gridTemplateColumns: '2', gridTemplateRows: '2' },
+          item: {
+            _firstOfType: { borderTopLeftRadius: '8px', borderBottomLeftRadius: '0' },
+            _even: { borderTopRightRadius: '8px' },
+            _odd: { borderBottomLeftRadius: '8px' },
+            _lastOfType: { borderTopRightRadius: '0', borderBottomRightRadius: '8px' },
+          },
+        },
+      },
+    },
+  });
+
+  $: styles = recipe.raw({ length: images.length as 1 | 2 | 3 | 4 });
 </script>
 
-<div
-  class={clsx(
-    'grid',
-    images.length === 1 && 'grid-cols-1',
-    images.length === 2 && 'grid-cols-2',
-    images.length >= 3 && 'grid-rows-2 grid-cols-2',
-    _class,
-  )}
->
+<div class={css(styles.root, style)}>
   {#each images.slice(0, 4) as image, idx (idx)}
-    <Image
-      class={clsx(
-        'grid',
-        images.length === 1 && 'rounded-lg',
-        images.length === 2 && 'first-of-type:rounded-l-lg last-of-type:rounded-r-lg',
-        images.length === 3 &&
-          'first-of-type:rounded-lt-lg even:rounded-rt-lg last-of-type:(col-span-full rounded-b-lg)',
-        images.length === 4 &&
-          'first-of-type:(rounded-lt-lg rounded-lb-none) even:rounded-rt-lg odd:rounded-lb-lg last-of-type:(rounded-rb-lg rounded-rt-none)',
-      )}
-      $image={image}
-    />
+    <Image style={styles.item} $image={image} />
   {/each}
 </div>

@@ -1,15 +1,29 @@
 <script lang="ts">
-  import { clsx } from 'clsx';
+  import { css } from '$styled-system/css';
   import type { SvelteHTMLElements } from 'svelte/elements';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   type HTMLTableRowElement = SvelteHTMLElements['tr'];
 
-  let _class: string | HTMLTableRowElement['class'] = undefined;
-  export { _class as class };
+  type $$Props = Omit<HTMLTableRowElement, 'class' | 'style'> & { style?: SystemStyleObject };
 
-  type $$Props = HTMLTableRowElement;
+  export let style: SystemStyleObject | undefined = undefined;
 </script>
 
-<tr class={clsx('truncate [&>td]:(border-b last-of-type:border-b-none)', _class)} {...$$restProps}>
+<!-- <tr class={clsx('truncate [&>td]:(border-b last-of-type:border-b-none)', _class)} {...$$restProps}> -->
+<tr
+  class={css(
+    {
+      'truncate': true,
+      '& > td': {
+        borderBottomWidth: '1px',
+        borderBottomColor: 'gray.200',
+        _lastOfType: { borderBottomWidth: '0' },
+      },
+    },
+    style,
+  )}
+  {...$$restProps}
+>
   <slot />
 </tr>

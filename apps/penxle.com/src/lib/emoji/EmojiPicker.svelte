@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import * as EmojiMart from 'emoji-mart';
   import { onMount } from 'svelte';
   import IconMoodPlus from '~icons/tabler/mood-plus';
@@ -8,6 +7,8 @@
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { createFloatingActions } from '$lib/svelte/actions';
+  import { css } from '$styled-system/css';
+  import { center } from '$styled-system/patterns';
   import LoginRequireModal from '../../routes/(default)/LoginRequireModal.svelte';
   import i18n from './i18n.json';
   import { emojiData as data } from './index';
@@ -112,7 +113,12 @@
 
 {#if variant === 'post'}
   <button
-    class="square-6 rounded hover:bg-gray-50 flex center disabled:(text-disabled border-gray-30 cursor-not-allowed)"
+    class={center({
+      borderRadius: '4px',
+      size: '24px',
+      _hover: { backgroundColor: 'gray.50' },
+      _disabled: { borderColor: 'gray.300', color: 'gray.400', cursor: 'not-allowed' },
+    })}
     {disabled}
     type="button"
     on:click={(e) => {
@@ -121,11 +127,16 @@
     }}
     use:anchor
   >
-    <Icon class="square-5" icon={IconMoodPlus} />
+    <Icon style={css.raw({ size: '20px' })} icon={IconMoodPlus} />
   </button>
 {:else}
   <button
-    class="square-6 flex center rounded hover:bg-gray-50 disabled:(text-disabled border-gray-30 cursor-not-allowed)"
+    class={center({
+      borderRadius: '4px',
+      size: '24px',
+      _hover: { backgroundColor: 'gray.50' },
+      _disabled: { borderColor: 'gray.300', color: 'gray.400', cursor: 'not-allowed' },
+    })}
     {disabled}
     type="button"
     on:click={(e) => {
@@ -134,11 +145,11 @@
     }}
     use:anchor
   >
-    <Icon class="text-gray-700 square-5 block" icon={IconMoodPlus} />
+    <Icon style={css.raw({ size: '20px', color: 'gray.700' })} icon={IconMoodPlus} />
   </button>
 {/if}
 
-<div bind:this={pickerEl} class={clsx('z-50 h-100', !open && 'hidden')} use:floating />
+<div bind:this={pickerEl} class={css({ height: '400px', zIndex: '50' }, !open && { display: 'none' })} use:floating />
 
 <LoginRequireModal bind:open={loginRequireOpen} />
 

@@ -1,14 +1,20 @@
 <script lang="ts">
-  import clsx from 'clsx';
+  import { css } from '$styled-system/css';
+  import type { SystemStyleObject } from '$styled-system/types';
 
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 </script>
 
 <th
-  class={clsx(
-    'border-y border-secondary py-2 first-of-type:(border-l rounded-l-lg pl-4) last-of-type:(border-r rounded-r-lg pr-4)',
-    _class,
+  class={css(
+    {
+      borderYWidth: '1px',
+      borderColor: 'gray.200',
+      paddingY: '8px',
+      _firstOfType: { borderLeftWidth: '1px', borderLeftRadius: '8px', paddingLeft: '16px' },
+      _lastOfType: { borderRightWidth: '1px', borderRightRadius: '8px', paddingRight: '16px' },
+    },
+    style,
   )}
   scope="col"
 >

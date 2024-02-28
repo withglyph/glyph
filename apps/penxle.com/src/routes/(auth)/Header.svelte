@@ -1,12 +1,22 @@
 <script lang="ts">
-  import { Link } from '@penxle/ui';
   import LogoWhite from '$assets/icons/logo-white.svg?component';
   import WordmarkWhite from '$assets/icons/wordmark-white.svg?component';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
 </script>
 
-<header class="z-10 w-full h-15 px-4 py-2 flex items-center sm:px-7.5">
-  <Link class="flex items-center gap-2" href="/">
-    <LogoWhite class="<sm:hidden sm:square-6" />
-    <WordmarkWhite class="h-5.25 color-icon-primary" />
-  </Link>
+<header
+  class={flex({
+    align: 'center',
+    paddingX: { base: '16px', sm: '30px' },
+    paddingY: '8px',
+    width: 'full',
+    height: '60px',
+    zIndex: '10',
+  })}
+>
+  <a class={flex({ align: 'center', gap: '8px' })} href="/">
+    <LogoWhite class={css({ size: '24px', hideBelow: 'sm' })} />
+    <WordmarkWhite class={css({ height: '21px', color: 'gray.900' })} />
+  </a>
 </header>

@@ -7,6 +7,8 @@
   import { beforeNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import Content from './Content.svelte';
   import { setEditorContext } from './context';
   import Header from './Header.svelte';
@@ -152,11 +154,13 @@
 
 <Helmet description="포스트 작성하기" title={`${$store.title ?? '(제목 없음)'} 작성`} />
 
-<div class="relative grow isolate select-none touch-none">
-  <div style:height={vvHeight ? `${vvHeight}px` : '100dvh'} class="flex flex-col">
+<div
+  class={css({ position: 'relative', flexGrow: '1', isolation: 'isolate', userSelect: 'none', touchAction: 'none' })}
+>
+  <div style:height={vvHeight ? `${vvHeight}px` : '100dvh'} class={flex({ direction: 'column' })}>
     <Header {$post} {$query} />
 
-    <div class="flex flex-col grow mt-112px overflow-auto">
+    <div class={flex({ direction: 'column', grow: '1', marginTop: '112px', overflow: 'auto' })}>
       <Content />
     </div>
   </div>

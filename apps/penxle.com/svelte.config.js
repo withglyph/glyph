@@ -1,15 +1,16 @@
 import { docker } from '@penxle/adapter-docker';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import preprocess from 'svelte-preprocess';
 
 /** @type {import('@sveltejs/kit').Config} */
 export default {
-  preprocess: vitePreprocess(),
+  preprocess: preprocess(),
   kit: {
     adapter: docker(),
     alias: {
-      $assets: './src/assets',
-      $glitch: './.glitch',
-      $prisma: './prisma',
+      '$assets': './src/assets',
+      '$glitch': './.glitch',
+      '$prisma': './prisma',
+      '$styled-system': './styled-system/*',
     },
     env: {
       publicPrefix: 'PUBLIC_',
@@ -28,12 +29,5 @@ export default {
       }),
     },
     version: { pollInterval: 60 * 1000 },
-  },
-  onwarn: (warning, handler) => {
-    if (warning.code === 'vite-plugin-svelte-css-no-scopable-elements') {
-      return;
-    }
-
-    handler(warning);
   },
 };
