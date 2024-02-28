@@ -103,7 +103,7 @@
       >
         <div class="overflow-x-hidden">
           {#if $user}
-            <div class="flex items-center gap-1.5 justify-between px-4 py-4.5 border-b border-gray-100">
+            <div class="flex items-center gap-6.5 justify-between px-4 py-4.5 border-b border-gray-100">
               <div class="flex items-center gap-1.5">
                 <Avatar class="square-9 border border-gray-100" $profile={$user.profile} />
                 <div class="truncate">
@@ -156,21 +156,15 @@
                       </div>
                     </a>
 
-                    <div class="flex items-center gap-5">
-                      <button
-                        class="i-tb-pencil square-5 text-gray-500 sm:hidden"
-                        type="button"
-                        on:click={async () => {
-                          const { permalink } = await createPost({ spaceId: space.id });
-                          mixpanel.track('post:create', { via: 'user-menu' });
-                          await goto(`/editor/${permalink}`);
-                        }}
-                      />
-
-                      <a href="/{space.slug}/dashboard/settings">
-                        <i class="i-tb-settings square-5 text-gray-500" />
-                      </a>
-                    </div>
+                    <button
+                      class="i-tb-pencil square-5 text-gray-500"
+                      type="button"
+                      on:click={async () => {
+                        const { permalink } = await createPost({ spaceId: space.id });
+                        mixpanel.track('post:create', { via: 'user-menu' });
+                        await goto(`/editor/${permalink}`);
+                      }}
+                    />
                   </li>
                 {/each}
                 <li class="bg-gray-100 border-b border-gray-150">
