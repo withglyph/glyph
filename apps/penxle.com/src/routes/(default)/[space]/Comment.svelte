@@ -5,13 +5,14 @@
   import { mixpanel } from '$lib/analytics';
   import { Avatar } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
-  import { Button } from '$lib/components/v2';
+  import { Button, Modal } from '$lib/components/v2';
   import CommentInput from './CommentInput.svelte';
   import type { PostPage_Comment_postComment, PostPage_Comment_query } from '$glitch';
 
   export let editing = false;
   let repliesOpen = false;
   let replyInputOpen = false;
+  let blockMasqueradeOpen = false;
   export let parentId: string | undefined = undefined;
 
   let _postComment: PostPage_Comment_postComment;
@@ -260,19 +261,7 @@
             <MenuItem on:click={() => (editing = true)}>수정</MenuItem>
           {/if}
           {#if $query.post.space.meAsMember && $postComment.masquerade && $postComment.profile.id !== $query.post.member?.profile.id}
-            <MenuItem
-              on:click={async () => {
-                if (!$postComment.masquerade) return;
-
-                await blockMasquerade({ masqueradeId: $postComment.masquerade.id, spaceId: $query.post.space.id });
-                mixpanel.track('space:masquerade:block', {
-                  masqueradeId: $postComment.masquerade?.id,
-                  spaceId: $query.post.space.id,
-                });
-              }}
-            >
-              차단
-            </MenuItem>
+            <MenuItem on:click={() => (blockMasqueradeOpen = true)}>차단</MenuItem>
           {/if}
           {#if $query.post.space.meAsMember || $query.post.space.commentProfile?.id === $postComment.profile.id}
             <MenuItem
@@ -377,3 +366,37 @@
 {#if replyInputOpen && $postComment.state !== 'INACTIVE'}
   <CommentInput $post={$query.post} {$query} parentId={$postComment.id} bind:editing={replyInputOpen} />
 {/if}
+
+<Modal
+  actionClass="gap-1.5 border-none pt-7 pb-6 sm:(pb-7 px-7)"
+  size="sm"
+  titleClass="text-18-sb"
+  bind:open={blockMasqueradeOpen}
+>
+  <svelte:fragment slot="title">{$postComment.profile.name}님을 차단할까요?</svelte:fragment>
+
+  <div class="text-14-r text-gray-700 px-6 mt-1 sm:px-7">
+    차단된 유저는 스페이스의 모든 게시물을 볼 수 없으며, 댓글을 달 수 없어요
+    <br />
+    차단 해지는 [스페이스 설정 - 독자관리]에서 가능해요
+  </div>
+
+  <svelte:fragment slot="action">
+    <Button class="w-full" size="lg" variant="outline" on:click={() => (blockMasqueradeOpen = false)}>취소</Button>
+    <Button
+      class="w-full"
+      size="lg"
+      on:click={async () => {
+        if (!$postComment.masquerade) return;
+
+        await blockMasquerade({ masqueradeId: $postComment.masquerade.id, spaceId: $query.post.space.id });
+        mixpanel.track('space:masquerade:block', {
+          masqueradeId: $postComment.masquerade?.id,
+          spaceId: $query.post.space.id,
+        });
+      }}
+    >
+      차단
+    </Button>
+  </svelte:fragment>
+</Modal>

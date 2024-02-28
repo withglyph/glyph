@@ -43,18 +43,26 @@
         in:fly={{ y: 10 }}
         out:fade={{ duration: 150 }}
       >
-        <header class="relative flex items-center px-6 py-3.5 border-b border-gray-200">
+        <header
+          class={clsx(
+            'relative flex items-center',
+            size === 'sm' && 'pt-6 px-6 sm:(pt-7 px-7)',
+            size !== 'sm' && 'px-6 py-3.5 border-b border-gray-200',
+          )}
+        >
           <slot name="title-left" />
 
           <h3 class={clsx('break-keep text-16-sb flex flex-1 m-r-8', titleClass)}>
             <slot name="title" />
           </h3>
 
-          <slot name="title-right">
-            <button class="absolute right-0 px-6" type="button" on:click={() => (open = false)}>
-              <i class="i-tb-x square-6" />
-            </button>
-          </slot>
+          {#if $$slots['title'] && size !== 'sm'}
+            <slot name="title-right">
+              <button class="absolute right-0 px-6" type="button" on:click={() => (open = false)}>
+                <i class="i-tb-x square-6" />
+              </button>
+            </slot>
+          {/if}
         </header>
 
         <div

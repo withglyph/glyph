@@ -47,9 +47,9 @@
     variant === 'tertiary' &&
       'color-gray-500 bg-gray-100 hover:bg-gray-50 focus-visible:bg-gray-50 active:shadow-[0_0_0_2px_#E4E4E7] aria-pressed:bg-gray-50 disabled:(color-gray-300 bg-gray-50 shadow-none)',
     variant === 'outline' &&
-      'color-gray-500 bg-white border-(1px solid gray-200) hover:bg-gray-50 focus-visible:bg-gray-50 active:(border-gray-300 shadow-[0_0_0_2px_#E4E4E7]) aria-pressed:bg-gray-50 disabled:(color-gray-300 border-gray-100 bg-[initial] shadow-none)',
+      'color-gray-500 bg-white ring-(1px solid gray-200) hover:bg-gray-50 focus-visible:bg-gray-50 active:(ring-gray-300 shadow-[0_0_0_2px_#E4E4E7]) aria-pressed:bg-gray-50 disabled:(color-gray-300 ring-gray-100 bg-[initial] shadow-none)',
     variant === 'secondary-outline' &&
-      'color-teal-500 border-(1px solid teal-500) hover:bg-teal-50 focus-visible:bg-teal-50 active:shadow-[0_0_0_2px_#99F6E4] aria-pressed:bg-teal-50 disabled:(color-gray-300 border-gray-100 bg-[initial] shadow-none)',
+      'color-teal-500 ring-(1px solid teal-500) hover:bg-teal-50 focus-visible:bg-teal-50 active:shadow-[0_0_0_2px_#99F6E4] aria-pressed:bg-teal-50 disabled:(color-gray-300 ring-gray-100 bg-[initial] shadow-none)',
     size === '2xs' && 'p-x-0.88rem p-y-0.31rem text-11-sb rounded-1',
     size === 'xs' && 'p-x-0.88rem p-y-2 text-11-sb rounded-1',
     size === 'sm' && 'p-x-0.88rem p-y-2 text-12-sb rounded-1',
