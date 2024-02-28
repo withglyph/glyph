@@ -1,4 +1,5 @@
 import { Mark, mergeAttributes } from '@tiptap/core';
+import { css } from '$styled-system/css';
 
 declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -37,8 +38,27 @@ export const Ruby = Mark.create({
     return [
       'span',
       mergeAttributes(HTMLAttributes, {
-        class:
-          'inline-block relative indent-0 line-height-[1] after:(block absolute top-0 -translate-y-full text-0.75em text-center line-height-[1] min-w-full w-max content-[attr(data-ruby)] select-none pointer-events-none)',
+        class: css({
+          position: 'relative',
+          display: 'inline-block',
+          lineHeight: '[1]',
+          textIndent: '0',
+          _after: {
+            content: 'attr(data-ruby)',
+            position: 'absolute',
+            top: '0',
+            display: 'block',
+            width: 'max',
+            minWidth: 'full',
+            textAlign: 'center',
+            fontSize: '[0.75em]',
+            lineHeight: '[1]',
+            translate: 'auto',
+            translateY: '[-100%]',
+            pointerEvents: 'none',
+            userSelect: 'none',
+          },
+        }),
       }),
       0,
     ];

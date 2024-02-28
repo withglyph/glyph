@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import dayjs from 'dayjs';
   import mixpanel from 'mixpanel-browser';
   import { page } from '$app/stores';
@@ -10,6 +9,8 @@
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { SetSpaceCollectionPostSchema } from '$lib/validations';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type {
     SpaceCollectionsEnitityPage_ManageCollectionModal_collection,
     SpaceCollectionsEnitityPage_ManageCollectionModal_post,
@@ -169,7 +170,7 @@
           submitButtonEl.click();
         }}
       />
-      <button bind:this={submitButtonEl} class="hidden" type="submit" />
+      <button bind:this={submitButtonEl} class={css({ display: 'none' })} type="submit" />
     </form>
   </svelte:fragment>
   <svelte:fragment slot="subtitle">
@@ -179,45 +180,87 @@
   </svelte:fragment>
 
   <PopupSearch
-    class={clsx('m-b-4', $posts.length === 0 && 'hidden')}
+    style={css.raw({ marginBottom: '16px' }, $posts.length === 0 && { display: 'none' })}
     on:input={(e) => (query = e.currentTarget.value.trim())}
   />
   <form use:form>
     <ul
-      class={clsx(
-        'flex flex-col gap-4 min-h-10rem max-h-15rem overflow-y-auto',
-        filteredPosts.length === 0 && 'justify-center',
+      class={css(
+        {
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          minHeight: '160px',
+          maxHeight: '240px',
+          overflowY: 'auto',
+        },
+        filteredPosts.length === 0 && { justifyContent: 'center' },
       )}
     >
       {#each filteredPosts as post (post.id)}
-        <li class="flex items-center justify-between">
-          <a class="flex gap-2 items-center truncate mr-2" href="/{slug}/{post.permalink}">
+        <li class={flex({ justify: 'space-between', align: 'center' })}>
+          <a
+            class={flex({ align: 'center', gap: '8px', marginRight: '8px', truncate: true })}
+            href="/{slug}/{post.permalink}"
+          >
             {#if post.thumbnail}
-              <Image class="square-10.5 rounded-lg grow-0 shrink-0" $image={post.thumbnail} />
+              <Image style={css.raw({ flex: 'none', borderRadius: '8px', size: '42px' })} $image={post.thumbnail} />
             {/if}
-            <div class="truncate">
-              <p class="body-17-b truncate grow">{post.publishedRevision?.title ?? '(제목 없음)'}</p>
-              <time class="body-15-m text-secondary truncate" datetime={post.publishedAt}>
+            <div class={css({ truncate: true })}>
+              <p class={css({ flexGrow: '1', fontSize: '17px', fontWeight: 'bold', truncate: true })}>
+                {post.publishedRevision?.title ?? '(제목 없음)'}
+              </p>
+              <time
+                class={css({ fontSize: '15px', fontWeight: 'medium', color: 'gray.500', truncate: true })}
+                datetime={post.publishedAt}
+              >
                 {dayjs(post.publishedAt).formatAsDate()}
               </time>
             </div>
           </a>
           {#if registeredPostIds.has(post.id)}
-            <Button class="shrink-0" color="tertiary" size="md" variant="outlined" on:click={() => removePost(post.id)}>
+            <Button
+              style={css.raw({ flex: 'none' })}
+              color="tertiary"
+              size="md"
+              variant="outlined"
+              on:click={() => removePost(post.id)}
+            >
               해제
             </Button>
           {:else}
-            <Button class="shrink-0" color="secondary" size="md" on:click={() => registerPost(post.id)}>추가</Button>
+            <Button
+              style={css.raw({ flex: 'none' })}
+              color="secondary"
+              size="md"
+              on:click={() => registerPost(post.id)}
+            >
+              추가
+            </Button>
           {/if}
         </li>
       {:else}
-        <article class="flex flex-col text-secondary body-16-m self-center break-keep">
+        <article
+          class={flex({
+            direction: 'column',
+            alignSelf: 'center',
+            fontWeight: 'medium',
+            color: 'gray.500',
+            wordBreak: 'keep-all',
+          })}
+        >
           {$posts.length === 0 ? '아직 스페이스에 업로드된 포스트가 없어요' : '일치하는 검색 결과가 없어요'}
         </article>
       {/each}
     </ul>
-    <div class="flex w-full gap-xs m-t-6">
-      <Button class="flex-1" disabled={$posts.length === 0} loading={$isSubmitting} size="xl" type="submit">
+    <div class={flex({ gap: '12px', marginTop: '24px', width: 'full' })}>
+      <Button
+        style={css.raw({ flex: '1' })}
+        disabled={$posts.length === 0}
+        loading={$isSubmitting}
+        size="xl"
+        type="submit"
+      >
         저장하기
       </Button>
       <Button

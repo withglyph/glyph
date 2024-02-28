@@ -1,7 +1,4 @@
 <script lang="ts">
-  import { Link } from '@penxle/ui';
-  import { RingSpinner } from '@penxle/ui/spinners';
-  import clsx from 'clsx';
   import { onMount } from 'svelte';
   import IconEmbedCompact from '~icons/effit/embed-compact';
   import IconEmbedFull from '~icons/effit/embed-full';
@@ -9,9 +6,12 @@
   import IconLink from '~icons/tabler/link';
   import IconTrash from '~icons/tabler/trash';
   import { graphql } from '$glitch';
-  import { Icon } from '$lib/components';
+  import { Icon, Link } from '$lib/components';
+  import { RingSpinner } from '$lib/components/spinners';
   import { NodeView } from '$lib/tiptap';
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type { NodeViewProps } from '$lib/tiptap';
 
   type $$Props = NodeViewProps;
@@ -71,47 +71,92 @@
   <script async src="https://cdn.iframe.ly/embed.js"></script>
 </svelte:head>
 
-<NodeView class={clsx('flex center py-4px', editor?.isEditable && 'pointer-events-none')} data-drag-handle draggable>
+<NodeView
+  style={css.raw(
+    { display: 'flex', justifyContent: 'center', alignItems: 'center', paddingY: '4px' },
+    editor?.isEditable && { pointerEvents: 'none' },
+  )}
+  data-drag-handle
+  draggable
+>
   {#if !node.attrs.__data}
     <div
-      class={clsx(
-        'w-full border border-gray-300 flex rounded-4px max-w-500px h-100px overflow-hidden pointer-events-auto flex center',
-        selected && 'ring-2 ring-teal-500',
+      class={css(
+        {
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderWidth: '1px',
+          borderColor: 'gray.300',
+          borderRadius: '4px',
+          width: 'full',
+          maxWidth: '500px',
+          height: '100px',
+          overflow: 'hidden',
+          pointerEvents: 'auto',
+        },
+        selected && {
+          outlineWidth: '2px',
+          outlineColor: 'teal.500',
+        },
       )}
     >
-      <RingSpinner class="text-teal-500 square-8" />
+      <RingSpinner style={css.raw({ size: '32px', color: 'teal.500' })} />
     </div>
   {:else if node.attrs.mode.startsWith('embed-')}
     <div
-      class={clsx(
-        'w-full pointer-events-auto',
-        node.attrs.mode === 'embed-compact' && 'max-w-500px',
-        selected && 'ring-2 ring-teal-500',
+      class={css(
+        { width: 'full', pointerEvents: 'auto' },
+        node.attrs.mode === 'embed-compact' && { maxWidth: '500px' },
+        selected && { outlineWidth: '2px', outlineColor: 'teal.500' },
       )}
     >
-      <div class={clsx('contents', editor?.isEditable && 'pointer-events-none')}>
+      <div class={css({ display: 'contents' }, editor?.isEditable && { pointerEvents: 'none' })}>
         {@html node.attrs.__data.html}
       </div>
     </div>
   {:else if node.attrs.mode === 'opengraph'}
     <div
-      class={clsx(
-        'w-full border border-gray-300 flex rounded-4px max-w-500px h-100px overflow-hidden pointer-events-auto',
-        selected && 'ring-2 ring-teal-500',
+      class={css(
+        {
+          display: 'flex',
+          borderWidth: '1px',
+          borderColor: 'gray.300',
+          borderRadius: '4px',
+          width: 'full',
+          maxWidth: '500px',
+          height: '100px',
+          overflow: 'hidden',
+          pointerEvents: 'auto',
+        },
+        selected && {
+          outlineWidth: '2px',
+          outlineColor: 'teal.500',
+        },
       )}
     >
       <Link
-        class={clsx('contents', editor?.isEditable ? 'pointer-events-none' : 'pointer-events-auto')}
+        style={css.raw({ display: 'contents', pointerEvents: editor?.isEditable ? 'none' : 'auto' })}
         href={node.attrs.url}
       >
         {#if node.attrs.__data.thumbnailUrl}
-          <img class="h-full aspect-1/1 object-cover" alt="" src={node.attrs.__data.thumbnailUrl} />
+          <img
+            class={css({ height: 'full', aspectRatio: '[1/1]', objectFit: 'cover' })}
+            alt=""
+            src={node.attrs.__data.thumbnailUrl}
+          />
         {/if}
 
-        <div class="flex flex-col grow p-14px">
-          <div class="text-14-m line-clamp-1">{node.attrs.__data.title ?? '(제목 없음)'}</div>
-          <div class="text-12-r text-gray-400 line-clamp-1">{node.attrs.__data.description ?? ''}</div>
-          <div class="flex items-end text-12-r text-teal-500 grow">{new URL(node.attrs.url).hostname}</div>
+        <div class={flex({ direction: 'column', grow: '1', padding: '14px' })}>
+          <div class={css({ fontSize: '14px', fontWeight: 'medium', lineClamp: 1 })}>
+            {node.attrs.__data.title ?? '(제목 없음)'}
+          </div>
+          <div class={css({ fontSize: '12px', color: 'gray.400', lineClamp: 1 })}>
+            {node.attrs.__data.description ?? ''}
+          </div>
+          <div class={flex({ align: 'flex-end', grow: '1', fontSize: '12px', color: 'teal.500' })}>
+            {new URL(node.attrs.url).hostname}
+          </div>
         </div>
       </Link>
     </div>
@@ -121,9 +166,14 @@
 {#if editor && selected && node.attrs.__data}
   <TiptapNodeViewBubbleMenu {editor} {getPos} {node}>
     {#if node.attrs.__data.html}
-      <div class="<sm:space-x-1.5">
+      <div class={flex({ smDown: { gap: '6px' } })}>
         <button
-          class="p-4px rounded-2px transition hover:bg-gray-100"
+          class={css({
+            borderRadius: '2px',
+            padding: '4px',
+            transition: 'common',
+            _hover: { backgroundColor: 'gray.100' },
+          })}
           type="button"
           on:click={() => {
             updateAttributes({ mode: 'embed-full' });
@@ -131,15 +181,20 @@
           }}
         >
           <Icon
-            class={clsx(
-              'text-gray-600 square-18px block <sm:square-20px',
-              node.attrs.mode === 'embed-full' && 'text-teal-500!',
-            )}
+            style={css.raw({
+              size: { base: '20px', sm: '18px' },
+              color: node.attrs.mode === 'embed-full' ? 'teal.500' : 'gray.600',
+            })}
             icon={IconEmbedFull}
           />
         </button>
         <button
-          class="p-4px rounded-2px transition hover:bg-gray-100"
+          class={css({
+            borderRadius: '2px',
+            padding: '4px',
+            transition: 'common',
+            _hover: { backgroundColor: 'gray.100' },
+          })}
           type="button"
           on:click={() => {
             updateAttributes({ mode: 'embed-compact' });
@@ -147,15 +202,20 @@
           }}
         >
           <Icon
-            class={clsx(
-              'text-gray-600 square-18px block <sm:square-20px',
-              node.attrs.mode === 'embed-compact' && 'text-teal-500!',
-            )}
+            style={css.raw({
+              size: { base: '20px', sm: '18px' },
+              color: node.attrs.mode === 'embed-compact' ? 'teal.500' : 'gray.600',
+            })}
             icon={IconEmbedCompact}
           />
         </button>
         <button
-          class="p-4px rounded-2px transition hover:bg-gray-100"
+          class={css({
+            borderRadius: '2px',
+            padding: '4px',
+            transition: 'common',
+            _hover: { backgroundColor: 'gray.100' },
+          })}
           type="button"
           on:click={() => {
             updateAttributes({ mode: 'opengraph' });
@@ -163,33 +223,45 @@
           }}
         >
           <Icon
-            class={clsx(
-              'text-gray-600 square-18px block <sm:square-20px',
-              node.attrs.mode === 'opengraph' && 'text-teal-500!',
-            )}
+            style={css.raw({
+              size: { base: '20px', sm: '18px' },
+              color: node.attrs.mode === 'opengraph' ? 'teal.500' : 'gray.600',
+            })}
             icon={IconOpengraph}
           />
         </button>
       </div>
 
-      <div class="w-1px h-12px bg-gray-200" />
+      <div class={css({ width: '1px', height: '12px', backgroundColor: 'gray.200' })} />
     {/if}
 
-    <button class="p-4px rounded-2px transition hover:bg-gray-100" type="button" on:click={convertToLink}>
-      <Icon class="text-gray-600 square-18px block <sm:square-20px" icon={IconLink} />
+    <button
+      class={css({
+        borderRadius: '2px',
+        padding: '4px',
+        transition: 'common',
+        _hover: { backgroundColor: 'gray.100' },
+      })}
+      type="button"
+      on:click={convertToLink}
+    >
+      <Icon style={css.raw({ size: { base: '20px', sm: '18px' }, color: 'gray.600' })} icon={IconLink} />
     </button>
 
-    <div class="w-1px h-12px bg-gray-200" />
-
     <button
-      class="p-4px rounded-2px transition hover:bg-gray-100"
+      class={css({
+        borderRadius: '2px',
+        padding: '4px',
+        transition: 'common',
+        _hover: { backgroundColor: 'gray.100' },
+      })}
       type="button"
       on:click={() => {
         deleteNode();
         editor?.commands.focus();
       }}
     >
-      <Icon class="text-gray-600 square-18px block <sm:square-20px" icon={IconTrash} />
+      <Icon style={css.raw({ size: { base: '20px', sm: '18px' }, color: 'gray.600' })} icon={IconTrash} />
     </button>
   </TiptapNodeViewBubbleMenu>
 {/if}

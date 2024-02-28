@@ -1,11 +1,12 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import * as R from 'radash';
   import IconChevronDown from '~icons/tabler/chevron-down';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { Switch } from '$lib/components/forms';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type { MeSettingsNotificationsPage_Notification_user, UserNotificationCategory } from '$glitch';
 
   let _user: MeSettingsNotificationsPage_Notification_user;
@@ -49,30 +50,46 @@
   $: preferences = R.group($user.notificationPreferences, (v) => v.category);
 </script>
 
-<div class="flex flex-col flex-wrap justify-center sm:(flex-row items-center justify-between flex-nowrap)">
+<div
+  class={flex({
+    direction: { base: 'column', sm: 'row' },
+    wrap: { base: 'wrap', sm: 'nowrap' },
+    align: { sm: 'center' },
+    justify: { base: 'center', sm: 'space-between' },
+  })}
+>
   <button
-    class="flex items-center justify-between py-4 px-6 sm:p-0 sm:hidden"
+    class={flex({ align: 'center', justify: 'space-between', paddingX: '24px', paddingY: '16px', hideFrom: 'sm' })}
     type="button"
     on:click={() => (open = !open)}
   >
     <div>
-      <div class="text-lg font-extrabold">{title}</div>
-      <p class="text-3.75 text-secondary">
+      <div class={css({ fontSize: '18px', fontWeight: 'bold', textAlign: 'left' })}>{title}</div>
+      <p class={css({ fontSize: '15px', color: 'gray.500', textAlign: 'left' })}>
         {description}
       </p>
     </div>
-    <Icon class={clsx(open && 'transform rotate-180')} icon={IconChevronDown} />
+    <Icon style={css.raw(open && { transform: 'rotate(180deg)' })} icon={IconChevronDown} />
   </button>
-  <div class="flex flex-col justify-center <sm:hidden">
-    <div class="text-lg font-extrabold">{title}</div>
-    <p class="text-3.75 text-secondary">
+  <div class={flex({ direction: 'column', justify: 'center', hideBelow: 'sm' })}>
+    <div class={css({ fontSize: '18px', fontWeight: 'bold' })}>{title}</div>
+    <p class={css({ fontSize: '15px', color: 'gray.500' })}>
       {description}
     </p>
   </div>
   {#if open}
-    <div class="flex flex-col bg-surface-primary py-4 px-6 space-y-6 sm:hidden">
-      <div class="flex justify-between items-center">
-        <span class="font-semibold">웹사이트</span>
+    <div
+      class={flex({
+        direction: 'column',
+        gap: '24px',
+        paddingX: '24px',
+        paddingY: '16px',
+        backgroundColor: 'gray.50',
+        hideFrom: 'sm',
+      })}
+    >
+      <div class={flex({ align: 'center', justify: 'space-between' })}>
+        <span class={css({ fontWeight: 'semibold' })}>웹사이트</span>
         <Switch
           checked={preferences[category]?.find((v) => v.method === 'WEBSITE')?.opted ?? true}
           disabled={preferences.ALL?.find((v) => v.method === 'WEBSITE')?.opted === false}
@@ -87,8 +104,8 @@
         />
       </div>
 
-      <div class="flex justify-between items-center">
-        <span class="font-semibold">이메일</span>
+      <div class={flex({ align: 'center', justify: 'space-between' })}>
+        <span class={css({ fontWeight: 'semibold' })}>이메일</span>
         <Switch
           checked={preferences[category]?.find((v) => v.method === 'EMAIL')?.opted ?? true}
           disabled={preferences.ALL?.find((v) => v.method === 'EMAIL')?.opted === false}
@@ -104,7 +121,7 @@
       </div>
     </div>
   {/if}
-  <div class="flex items-center bg-white gap-8 <sm:hidden">
+  <div class={flex({ align: 'center', gap: '32px', backgroundColor: 'white', hideBelow: 'sm' })}>
     <Switch
       checked={preferences[category]?.find((v) => v.method === 'WEBSITE')?.opted ?? true}
       disabled={preferences.ALL?.find((v) => v.method === 'WEBSITE')?.opted === false}

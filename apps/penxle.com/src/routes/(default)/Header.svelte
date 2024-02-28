@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Link } from '@penxle/ui';
   import IconPlus from '~icons/tabler/plus';
   import { goto } from '$app/navigation';
   import Logo from '$assets/icons/logo.svg?component';
@@ -8,6 +7,8 @@
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { Button } from '$lib/components/v2';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import NotificationMenu from './NotificationMenu.svelte';
   import SearchBar from './SearchBar.svelte';
   import UserMenu from './UserMenu.svelte';
@@ -46,21 +47,39 @@
   `);
 </script>
 
-<header class="relative sticky top-0 z-10 border-b border-gray-100 bg-white px-5 flex center h-56px sm:(px-10 h-77px)">
-  <nav class="w-full max-w-300">
-    <section class="flex items-center justify-between">
-      <Link class="mr-4 flex items-center gap-7px sm:mr-4 transition w-fit" href="/">
-        <Logo class="<sm:square-14px sm:square-21px" />
-        <Wordmark class="h-13px sm:h-19px" />
-      </Link>
+<header
+  class={center({
+    position: 'sticky',
+    borderBottomWidth: '1px',
+    borderBottomColor: 'gray.100',
+    paddingX: { base: '20px', sm: '40px' },
+    top: '0',
+    height: { base: '56px', sm: '77px' },
+    backgroundColor: 'white',
+    zIndex: '10',
+  })}
+>
+  <nav class={css({ width: 'full', maxWidth: '1200px' })}>
+    <section class={flex({ justify: 'space-between', align: 'center' })}>
+      <a class={flex({ align: 'center', gap: '7px', marginRight: '16px' })} href="/">
+        <Logo class={css({ size: { base: '14px', sm: '21px' } })} />
+        <Wordmark class={css({ height: { base: '13px', sm: '19px' } })} />
+      </a>
 
-      <div class="flex flex-1 items-center justify-between">
-        <SearchBar class="flex-1 max-w-80 <sm:focus-within:max-w-full" />
+      <div class={flex({ flex: '1', justify: 'space-between', align: 'center' })}>
+        <SearchBar style={css.raw({ flex: '1', maxWidth: { base: '320px', smDown: { _focusWithin: 'full' } } })} />
 
-        <div class="flex items-center gap-3 relative">
+        <div class={flex({ align: 'center', gap: '12px' })}>
           {#if $query.me}
             <Button
-              class="flex items-center gap-1 text-14-sb! text-gray-700 <sm:hidden"
+              style={flex.raw({
+                align: 'center',
+                gap: '4px',
+                color: 'gray.700',
+                fontSize: '14px',
+                fontWeight: 'semibold',
+                hideBelow: 'sm',
+              })}
               size="md"
               type="button"
               variant="outline"
@@ -70,7 +89,7 @@
                 await goto(`/editor/${permalink}`);
               }}
             >
-              <Icon class="square-3.5 block" icon={IconPlus} />
+              <Icon style={css.raw({ size: '14px' })} icon={IconPlus} />
               포스트 작성
             </Button>
             <NotificationMenu $user={$query.me} />

@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
   import { graphql } from '$glitch';
-  import { Button } from '$lib/components';
+  import { Button, Helmet } from '$lib/components';
   import { PostManageTable } from '$lib/components/pages/posts';
 
   $: query = graphql(`

@@ -7,6 +7,9 @@ node_modules/
 .svelte-kit/
 .turbo/
 
+styled-system/
+styled-system-studio/
+
 dist/
 
 vite.config.ts.timestamp-*

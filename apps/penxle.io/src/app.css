@@ -1,0 +1,3 @@
+@layer reset, fonts, base, tokens, recipes, utilities;
+
+@import url(styles/fonts.css) layer(fonts);

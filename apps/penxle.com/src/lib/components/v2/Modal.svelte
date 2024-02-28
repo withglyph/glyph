@@ -1,24 +1,89 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { fade, fly } from 'svelte/transition';
   import IconX from '~icons/tabler/x';
   import { Icon } from '$lib/components';
   import { portal, scrollLock } from '$lib/svelte/actions';
+  import { css, sva } from '$styled-system/css';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   export let open: boolean;
   export let size: 'sm' | 'md' | 'lg' = 'md';
-  let _class: string | undefined = undefined;
-  export let titleClass: string | undefined = undefined;
-  export let actionClass: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
+  export let titleStyle: SystemStyleObject | undefined = undefined;
+  export let actionStyle: SystemStyleObject | undefined = undefined;
+
+  const recipe = sva({
+    slots: ['root', 'container'],
+    base: {
+      root: {
+        position: 'absolute',
+        inset: '0',
+        display: 'flex',
+        pointerEvents: 'none',
+      },
+      container: {
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        borderRadius: '10px',
+        width: 'full',
+        maxHeight: 'full',
+        backgroundColor: 'white',
+        boxShadow: '[0 8px 24px 0 var(--shadow-color)]',
+        boxShadowColor: '[black/28]',
+        pointerEvents: 'auto',
+        userSelect: 'text',
+      },
+    },
+    variants: {
+      size: {
+        sm: {
+          root: {
+            padding: '20px',
+            justifyContent: 'center',
+            alignItems: 'center',
+          },
+          container: {
+            maxWidth: '368px',
+          },
+        },
+        md: {
+          root: {
+            justifyContent: 'center',
+            alignItems: 'flex-end',
+            width: 'full',
+            sm: { padding: '24px', alignItems: 'center' },
+          },
+          container: {
+            borderBottomRadius: '0',
+            sm: { borderRadius: '16px', maxWidth: '430px' },
+          },
+        },
+        lg: {
+          root: {
+            justifyContent: 'center',
+            alignItems: 'flex-end',
+            width: 'full',
+            sm: { padding: '36px', alignItems: 'center' },
+          },
+          container: {
+            borderBottomRadius: '0',
+            sm: { borderRadius: '16px', maxWidth: '748px' },
+          },
+        },
+      },
+    },
+  });
+
+  $: classes = recipe({ size });
 </script>
 
 <svelte:window on:keydown={(e) => e.key === 'Escape' && (open = false)} />
 
 {#if open}
-  <div class="fixed inset-0 z-100" use:portal>
+  <div class={css({ position: 'fixed', inset: '0', zIndex: '100' })} use:portal>
     <div
-      class="absolute inset-0 bg-black/40"
+      class={css({ position: 'absolute', inset: '0', backgroundColor: '[black/40]' })}
       role="button"
       tabindex="-1"
       on:click={() => (open = false)}
@@ -26,58 +91,79 @@
       transition:fade={{ duration: 150 }}
     />
 
-    <div
-      class={clsx(
-        'pointer-events-none absolute inset-0 flex',
-        size === 'sm' && 'p-5 center',
-        size === 'md' && 'w-full justify-center items-end sm:(p-6 center!)',
-        size === 'lg' && 'w-full justify-center items-end sm:(p-9 center!)',
-      )}
-    >
-      <div
-        class={clsx(
-          'pointer-events-auto relative max-h-full w-full flex flex-col rounded-2.5 select-text bg-white shadow-modal-50',
-          size === 'sm' && 'max-w-92',
-          size === 'md' && 'rounded-b-none sm:(max-w-107.5 rounded-2xl)',
-          size === 'lg' && 'rounded-b-none sm:(max-w-187 rounded-2xl)',
-        )}
-        use:scrollLock
-        in:fly={{ y: 10 }}
-        out:fade={{ duration: 150 }}
-      >
+    <div class={classes.root}>
+      <div class={classes.container} use:scrollLock in:fly={{ y: 10 }} out:fade={{ duration: 150 }}>
         <header
-          class={clsx(
-            'relative flex items-center',
-            size === 'sm' && 'pt-6 px-6 sm:(pt-7 px-7)',
-            size !== 'sm' && 'px-6 py-3.5 border-b border-gray-200',
+          class={css(
+            { position: 'relative', display: 'flex', alignItems: 'center' },
+            size === 'sm' && { paddingTop: '24px', paddingX: '24px', sm: { paddingTop: '28px', paddingX: '28px' } },
+            size !== 'sm' && {
+              paddingX: '24px',
+              paddingY: '14px',
+              borderBottomWidth: '1px',
+              borderBottomColor: 'gray.200',
+            },
           )}
         >
           <slot name="title-left" />
 
-          <h3 class={clsx('break-keep text-16-sb flex flex-1 m-r-8', titleClass)}>
+          <h3
+            class={css(
+              { display: 'flex', flex: '1', marginRight: '32px', fontWeight: 'semibold', wordBreak: 'keep-all' },
+              titleStyle,
+            )}
+          >
             <slot name="title" />
           </h3>
 
           {#if $$slots['title'] && size !== 'sm'}
             <slot name="title-right">
-              <button class="absolute right-0 px-6" type="button" on:click={() => (open = false)}>
-                <Icon class="square-6" icon={IconX} />
+              <button
+                class={css({ position: 'absolute', right: '0', paddingX: '24px' })}
+                type="button"
+                on:click={() => (open = false)}
+              >
+                <Icon style={css.raw({ size: '24px' })} icon={IconX} />
               </button>
             </slot>
           {/if}
         </header>
 
         <div
-          class={clsx('relative content flex flex-col w-full <sm:max-h-160 overflow-y-auto rounded-b-inherit', _class)}
+          class={css(
+            {
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              borderBottomRadius: '[inherit]',
+              width: 'full',
+              overflowY: 'auto',
+              smDown: { maxHeight: '640px' },
+            },
+            style,
+          )}
           data-scroll-lock-ignore
         >
           <slot />
 
           {#if $$slots.action}
             <div
-              class={clsx(
-                'sticky w-full bottom-0 border-t border-gray-200 flex items-center justify-end px-6 py-4 bg-white rounded-b-inherit',
-                actionClass,
+              class={css(
+                {
+                  position: 'sticky',
+                  bottom: '0',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  alignItems: 'center',
+                  borderTopWidth: '1px',
+                  borderTopColor: 'gray.200',
+                  borderBottomRadius: '[inherit]',
+                  paddingX: '24px',
+                  paddingY: '16px',
+                  width: 'full',
+                  backgroundColor: 'white',
+                },
+                actionStyle,
               )}
             >
               <slot name="action" />

@@ -1,4 +1,5 @@
 import { mergeAttributes, Node } from '@tiptap/core';
+import { css } from '$styled-system/css';
 
 declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -19,7 +20,13 @@ export const BulletList = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['ul', mergeAttributes(HTMLAttributes, { class: 'list-outside list-disc ml-1.25rem' }), 0];
+    return [
+      'ul',
+      mergeAttributes(HTMLAttributes, {
+        class: css({ marginLeft: '20px', listStylePosition: 'outside', listStyleType: 'disc' }),
+      }),
+      0,
+    ];
   },
 
   addCommands() {

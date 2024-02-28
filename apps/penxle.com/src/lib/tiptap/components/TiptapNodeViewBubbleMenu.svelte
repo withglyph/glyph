@@ -3,6 +3,8 @@
   import { Editor, posToDOMRect } from '@tiptap/core';
   import { tick } from 'svelte';
   import { createFloatingActions } from '$lib/svelte/actions';
+  import { css } from '$styled-system/css';
+  import { center } from '$styled-system/patterns';
   import type { VirtualElement } from '@floating-ui/dom';
   import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
 
@@ -64,11 +66,34 @@
 </script>
 
 {#if open}
-  <div class="bg-white border border-gray-200 rounded-4px shadow-[0_2px_8px_0] shadow-black/6" use:floating>
-    <div class="z-2 bg-white rounded-4px px-8px py-6px relative flex center gap-4px <sm:gap-8px">
+  <div
+    class={css({
+      borderWidth: '1px',
+      borderColor: 'gray.200',
+      borderRadius: '4px',
+      backgroundColor: 'white',
+      boxShadow: '[0 2px 8px 0 var(--shadow-color)]',
+      boxShadowColor: '[black/6]',
+    })}
+    use:floating
+  >
+    <div
+      class={center({
+        position: 'relative',
+        gap: { base: '8px', sm: '4px' },
+        borderRadius: '4px',
+        paddingX: '8px',
+        paddingY: '6px',
+        backgroundColor: 'white',
+        zIndex: '2',
+      })}
+    >
       <slot />
     </div>
 
-    <div class="z-1 square-12px bg-white border border-gray-200" use:arrow />
+    <div
+      class={css({ borderWidth: '1px', borderColor: 'gray.200', size: '12px', backgroundColor: 'white', zIndex: '1' })}
+      use:arrow
+    />
   </div>
 {/if}

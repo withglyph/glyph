@@ -1,5 +1,6 @@
 <script lang="ts">
   import { graphql } from '$glitch';
+  import { flex } from '$styled-system/patterns';
   import Footer from './Footer.svelte';
   import Header from './Header.svelte';
 
@@ -12,7 +13,17 @@
 
 <Header {$query} />
 
-<main class="flex flex-col grow items-center justify-start mx-auto w-full h-full bg-primary">
+<main
+  class={flex({
+    direction: 'column',
+    align: 'center',
+    grow: 1,
+    marginX: 'auto',
+    width: 'full',
+    height: 'full',
+    backgroundColor: 'gray.50',
+  })}
+>
   <slot />
 </main>
 

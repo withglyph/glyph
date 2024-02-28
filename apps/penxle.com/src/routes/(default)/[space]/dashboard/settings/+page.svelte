@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
   // import { nanoid } from 'nanoid';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button } from '$lib/components';
+  import { Button, Helmet } from '$lib/components';
   import { FormField, Switch, TextArea, TextInput } from '$lib/components/forms';
   // import FormValidationMessage from '$lib/components/forms/FormValidationMessage.svelte';
   import Image from '$lib/components/Image.svelte';

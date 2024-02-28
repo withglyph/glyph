@@ -1,4 +1,5 @@
 import { Mark, mergeAttributes } from '@tiptap/core';
+import { css } from '$styled-system/css';
 
 declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -17,7 +18,7 @@ export const Underline = Mark.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['u', mergeAttributes(HTMLAttributes, { class: 'underline' }), 0];
+    return ['u', mergeAttributes(HTMLAttributes, { class: css({ textDecorationLine: 'underline' }) }), 0];
   },
 
   addCommands() {

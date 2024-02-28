@@ -3,20 +3,34 @@
   import { page } from '$app/stores';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { pageSubTitle } from '$lib/stores';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
 
   onMount(async () => {
     pageSubTitle.set('포스트 관리');
   });
 </script>
 
-<section class="flex flex-col gap-4 px-6 py-8 rounded-xl bg-white border border-secondary <sm:(my-5 mx-4)">
-  <h1 class="title-20-eb">포스트 관리</h1>
+<section
+  class={flex({
+    direction: 'column',
+    gap: '16px',
+    paddingX: '24px',
+    paddingY: '32px',
+    borderRadius: '12px',
+    backgroundColor: 'white',
+    borderWidth: '1px',
+    borderColor: 'gray.200',
+    smDown: { marginX: '16px', marginY: '20px' },
+  })}
+>
+  <h1 class={css({ fontSize: '20px', fontWeight: 'bold' })}>포스트 관리</h1>
   <div>
-    <TabHead class="border-none" variant="secondary">
+    <TabHead style={css.raw({ borderStyle: 'none' })} variant="secondary">
       <TabHeadItem id={0} pathname="/{$page.params.space}/dashboard/posts">포스트</TabHeadItem>
       <TabHeadItem id={1} pathname="/{$page.params.space}/dashboard/posts/collections">컬렉션</TabHeadItem>
     </TabHead>
-    <hr class="w-full border-color-alphagray-10" />
+    <hr class={css({ width: 'full', borderColor: '[black/10]' })} />
   </div>
   <slot />
 </section>

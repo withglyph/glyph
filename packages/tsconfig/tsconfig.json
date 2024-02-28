@@ -14,9 +14,7 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitOverride": true,
 
-    "importsNotUsedAsValues": "remove",
-    "isolatedModules": false,
-    "preserveValueImports": false,
+    "isolatedModules": true,
     "verbatimModuleSyntax": true
   }
 }

@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
   import qs from 'query-string';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { Pagination, PostCard } from '$lib/components';
+  import { Helmet, Pagination, PostCard } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
+  import { css } from '$styled-system/css';
+  import { center } from '$styled-system/patterns';
   import { initSearchFilter } from '../util';
 
   $: query = graphql(`
@@ -71,23 +72,44 @@
 
 <Helmet description={`펜슬에서 ${keyword} 검색을 한 결과에요`} title={`${keyword} 검색 결과`} />
 
-<div class="body-14-m text-secondary mt-3 <sm:m-l-4">
+<div
+  class={css({
+    marginTop: '12px',
+    fontSize: '14px',
+    fontWeight: 'medium',
+    color: 'gray.500',
+    smDown: { marginLeft: '16px' },
+  })}
+>
   약 {$query.searchPosts.count}개의 검색결과가 있어요!
 </div>
 
-<TabHead class="mt-9 w-full <sm:(sticky top-61px z-1) sm:mb-4" {search} variant="secondary">
+<TabHead
+  style={css.raw({
+    marginTop: '36px',
+    width: 'full',
+    smDown: { position: 'sticky', zIndex: '1', top: '56px' },
+    sm: { marginBottom: '16px' },
+  })}
+  {search}
+  variant="secondary"
+>
   <TabHeadItem id={0} pathname="/search">전체</TabHeadItem>
-  <TabHeadItem id={1} class="text-black! border-black!" pathname="/search/post">포스트</TabHeadItem>
+  <TabHeadItem id={1} pathname="/search/post">포스트</TabHeadItem>
   <TabHeadItem id={2} pathname="/search/space">스페이스</TabHeadItem>
   <TabHeadItem id={3} pathname="/search/tag">태그</TabHeadItem>
 </TabHead>
 
 {#if $query.searchPosts.count === 0}
-  <div class="text-secondary body-15-b text-center flex center min-h-50">검색 결과가 없어요</div>
+  <div
+    class={center({ fontSize: '15px', fontWeight: 'bold', color: 'gray.500', textAlign: 'center', minHeight: '200px' })}
+  >
+    검색 결과가 없어요
+  </div>
 {:else}
-  <div class="<sm:bg-primary">
+  <div class={css({ smDown: { backgroundColor: 'gray.50' } })}>
     {#each $query.searchPosts.posts as post (post.id)}
-      <PostCard class="mt-4 first:mt-0" $post={post} />
+      <PostCard style={css.raw({ marginTop: '16px', _firstOfType: { marginTop: '0' } })} $post={post} />
     {/each}
     <Pagination {initialPage} onChange={updateSearchFilter} totalItems={$query.searchPosts.count} />
   </div>

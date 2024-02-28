@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { RingSpinner } from '@penxle/ui/spinners';
   import clsx from 'clsx';
   import ky from 'ky';
   import { onMount } from 'svelte';
   import IconTrash from '~icons/tabler/trash';
   import { graphql } from '$glitch';
   import { Icon, Image } from '$lib/components';
+  import { RingSpinner } from '$lib/components/spinners';
   import { portal, scrollLock } from '$lib/svelte/actions';
   import { NodeView } from '$lib/tiptap';
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';

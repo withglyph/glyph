@@ -1,17 +1,17 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { getContext } from 'svelte';
+  import { css } from '$styled-system/css';
   import type { DragEventHandler } from 'svelte/elements';
+  import type { SystemStyleObject } from '$styled-system/types';
 
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 
   const onDragStart = getContext<DragEventHandler<HTMLDivElement>>('onDragStart');
 </script>
 
 <div
   {...$$restProps}
-  class={clsx(_class, 'whitespace-normal')}
+  style={css({ whiteSpace: 'normal' }, style)}
   data-node-view
   role="presentation"
   on:dragstart={onDragStart}

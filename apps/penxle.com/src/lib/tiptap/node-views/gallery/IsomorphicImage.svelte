@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { RingSpinner } from '@penxle/ui/spinners';
   import clsx from 'clsx';
   import { Image } from '$lib/components';
+  import { RingSpinner } from '$lib/components/spinners';
   import FileImage from './FileImage.svelte';
   import type { Image_image } from '$glitch';
 

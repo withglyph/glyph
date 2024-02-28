@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
-  import clsx from 'clsx';
   import mixpanel from 'mixpanel-browser';
   import IconAlignBoxLeftMiddle from '~icons/tabler/align-box-left-middle';
   import IconChevronRight from '~icons/tabler/chevron-right';
@@ -8,9 +6,11 @@
   import IconSettings from '~icons/tabler/settings';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { Button, Icon, Image, SpacePostCard } from '$lib/components';
+  import { Button, Helmet, Icon, Image, SpacePostCard } from '$lib/components';
   import { ManageCollectionModal } from '$lib/components/pages/collections';
   import { toast } from '$lib/notification';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import LoginRequireModal from '../../../../LoginRequireModal.svelte';
 
   let openPostManageCollectionModal = false;
@@ -111,53 +111,84 @@
 
 {#if $query.space.meAsMember}
   <div
-    class={clsx(
-      'sm:hidden fixed p-y-0.62rem p-x-4 w-full transition-bottom bg-white z-1',
-      bottomNavShow ? ' bottom-0' : 'bottom--5rem',
-    )}
+    class={css({
+      position: 'fixed',
+      bottom: bottomNavShow ? '0' : '-80px',
+      paddingX: '16px',
+      paddingY: '10px',
+      width: 'full',
+      backgroundColor: 'white',
+      transition: 'all',
+      zIndex: '1',
+      hideFrom: 'sm',
+    })}
   >
-    <Button
-      class="w-full"
-      size="xl"
-      on:click={() => {
-        openPostManageCollectionModal = true;
-      }}
-    >
+    <Button style={css.raw({ width: 'full' })} size="xl" on:click={() => (openPostManageCollectionModal = true)}>
       포스트 관리
     </Button>
   </div>
 {/if}
 
-<section class="flex flex-col items-center w-full sm:bg-cardprimary <sm:bg-surface-primary grow">
+<section
+  class={flex({
+    direction: 'column',
+    align: 'center',
+    grow: '1',
+    width: 'full',
+    backgroundColor: { base: 'gray.100', sm: 'white' },
+  })}
+>
   <header
     style={typeof collection?.thumbnail?.url === 'string'
       ? `background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.8)), url(${collection.thumbnail.url})`
       : ''}
-    class="w-full h-12.875rem p-x-6 p-y-6 flex justify-center items-end text-darkprimary bg-(cover center no-repeat alphagray-50)"
+    class={flex({
+      justify: 'center',
+      align: 'flex-end',
+      padding: '24px',
+      width: 'full',
+      height: '206px',
+      color: 'white',
+      backgroundColor: '[black/50]',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    })}
   >
-    <div class="max-w-75rem flex-1">
-      <a class="body-14-sb" href="/{$query.space?.slug}">{$query.space.name}</a>
-      <h1 class="title-20-b m-b-2">{collection?.name}</h1>
-      <div class="max-w-75rem w-full self-center flex justify-between items-center flex-wrap gap-1">
-        <p class="body-14-m">
-          <Icon class="square-4 m-r-1 align-sub" icon={IconAlignBoxLeftMiddle} />
+    <div class={css({ flex: '1', maxWidth: '1200px' })}>
+      <a class={css({ fontSize: '14px', fontWeight: 'semibold' })} href="/{$query.space?.slug}">{$query.space.name}</a>
+      <h1 class={css({ marginBottom: '8px', fontSize: '20px', fontWeight: 'bold' })}>{collection?.name}</h1>
+      <div
+        class={flex({
+          justify: 'space-between',
+          align: 'center',
+          gap: '4px',
+          wrap: 'wrap',
+          alignSelf: 'center',
+          width: 'full',
+          maxWidth: '1200px',
+        })}
+      >
+        <p class={css({ fontSize: '14px', fontWeight: 'medium' })}>
+          <Icon
+            style={css.raw({ marginRight: '4px', size: '16px', verticalAlign: 'sub' })}
+            icon={IconAlignBoxLeftMiddle}
+          />
           {collection?.count}개의 포스트
         </p>
         {#if $query.space.meAsMember}
-          <div class="flex flex-wrap gap-2" role="group">
+          <div class={flex({ gap: '8px', wrap: 'wrap' })} role="group">
             <Button
-              class="flex gap-1 text-darkprimary! disabled:invisible"
+              style={flex.raw({ gap: '4px', color: 'white', _disabled: { visibility: 'hidden' } })}
               color="tertiary"
               size="sm"
               variant="outlined"
-              on:click={() => {
-                openPostManageCollectionModal = true;
-              }}
+              on:click={() => (openPostManageCollectionModal = true)}
             >
               포스트 관리 <Icon icon={IconList} />
             </Button>
             <Button
-              class="flex gap-1 text-darkprimary! disabled:invisible"
+              style={flex.raw({ gap: '4px', color: 'white', _disabled: { visibility: 'hidden' } })}
               color="tertiary"
               href="/{$query.space.slug}/dashboard/posts/collections"
               size="sm"
@@ -172,17 +203,42 @@
     </div>
   </header>
 
-  <article class="sm:p-x-6 w-full flex flex-1">
-    <div class="max-w-75rem m-x-auto w-full flex sm:(m-y-2.25rem gap-8) <sm:(flex-col gap-2)">
+  <article class={flex({ flex: '1', width: 'full', sm: { paddingX: '24px' } })}>
+    <div
+      class={flex({
+        marginX: 'auto',
+        width: 'full',
+        maxWidth: '1200px',
+        sm: { gap: '32px', marginY: '36px' },
+        smDown: { flexDirection: 'column', gap: '8px' },
+      })}
+    >
       {#if collection?.count}
-        <ul class="sm:max-w-[calc(100%-18.4375rem)] <sm:space-y-2 flex-1 space-y-8">
+        <ul
+          class={flex({
+            direction: 'column',
+            gap: { base: '8px', sm: '32px' },
+            flex: '1',
+            sm: { maxWidth: '[calc(100% - 295px)]' },
+          })}
+        >
           {#each collection.posts as post (post.id)}
             <li><SpacePostCard $post={post} /></li>
           {/each}
         </ul>
       {:else}
-        <section class="sm:max-w-[calc(100%-18.4375rem)] <sm:min-h-20rem flex flex-col center flex-1 space-y-8">
-          <div class="body-15-sb text-center break-keep">아직 컬렉션에 추가된 포스트가 없어요</div>
+        <section
+          class={center({
+            flexDirection: 'column',
+            gap: '32px',
+            flex: '1',
+            sm: { maxWidth: '[calc(100% - 295px)]' },
+            smDown: { minHeight: '320px' },
+          })}
+        >
+          <div class={css({ textAlign: 'center', fontSize: '15px', fontWeight: 'semibold', wordBreak: 'keep-all' })}>
+            아직 컬렉션에 추가된 포스트가 없어요
+          </div>
           {#if $query.space.meAsMember && !$query.space.posts.every((post) => post.collection?.id)}
             <Button
               size="lg"
@@ -196,23 +252,53 @@
         </section>
       {/if}
 
-      <aside class="max-w-18.4375rem <sm:max-w-initial w-full">
-        <section class="flex sm:flex-col p-6 <sm:(p-y-4 gap-4) sm:(bg-primary rounded-4 m-b-4) bg-primary center">
+      <aside class={css({ width: 'full', sm: { maxWidth: '295px' } })}>
+        <section
+          class={center({
+            padding: '24px',
+            backgroundColor: 'gray.50',
+            sm: { flexDirection: 'column', borderRadius: '16px', marginBottom: '16px' },
+            smDown: { gap: '16px', paddingY: '16px' },
+          })}
+        >
           <a href="/{$query.space?.slug}">
             <Image
-              class="square-4rem rounded-4 shrink-0 border border-secondary sm:(m-b-4 square-3.75rem)"
+              style={css.raw({
+                flex: 'none',
+                borderWidth: '1px',
+                borderColor: 'gray.200',
+                borderRadius: '16px',
+                size: '64px',
+                sm: { marginBottom: '16px', size: '60px' },
+              })}
               $image={$query.space.icon}
             />
           </a>
-          <hgroup class="sm:(text-center w-full m-b-2) flex-1 break-keep">
-            <a class="flex sm:center m-b-2" href="/{$query.space?.slug}">
-              <h2 class="subtitle-18-eb <sm:body-15-b leading-5">
+          <hgroup
+            class={css({
+              flex: '1',
+              wordBreak: 'keep-all',
+              sm: { marginBottom: '8px', width: 'full', textAlign: 'center' },
+            })}
+          >
+            <a
+              class={flex({ marginBottom: '8px', sm: { justifyContent: 'center', alignItems: 'center' } })}
+              href="/{$query.space?.slug}"
+            >
+              <h2 class={css({ fontSize: { base: '15px', sm: '18px' }, fontWeight: 'bold' })}>
                 {$query.space.name}
               </h2>
-              <Icon class="text-icon-secondary square-5 <sm:hidden" icon={IconChevronRight} />
+              <Icon style={css.raw({ size: '20px', color: 'gray.400', hideBelow: 'sm' })} icon={IconChevronRight} />
             </a>
             <a href="/{$query.space?.slug}">
-              <p class="body-15-sb <sm:body-14-m text-secondary whitespace-pre-wrap">
+              <p
+                class={css({
+                  fontSize: { base: '14px', sm: '15px' },
+                  fontWeight: { base: 'medium', sm: 'semibold' },
+                  color: 'gray.500',
+                  whiteSpace: 'pre-wrap',
+                })}
+              >
                 {$query.space.description ?? '아직 소개가 없어요'}
               </p>
             </a>
@@ -220,7 +306,7 @@
           {#if !$query.space.meAsMember}
             {#if $query.space.followed}
               <Button
-                class="rounded-12! shrink-0"
+                style={css.raw({ flex: 'none', borderRadius: 'full' })}
                 color="tertiary"
                 size="md"
                 variant="outlined"
@@ -234,7 +320,7 @@
               </Button>
             {:else}
               <Button
-                class="rounded-12! shrink-0"
+                style={css.raw({ flex: 'none', borderRadius: 'full' })}
                 size="md"
                 on:click={async () => {
                   if (!$query.me) {
@@ -252,26 +338,48 @@
             {/if}
           {/if}
         </section>
-        <section class="<sm:(bg-primary p-y-2 p-x-4 m-t-2)">
+        <section
+          class={css({ smDown: { marginTop: '8px', paddingX: '16px', paddingY: '8px', backgroundColor: 'gray.50' } })}
+        >
           {#if $query.space.collections.length > 1}
-            <h2 class="body-14-b m-b-2 <sm:m-b-3">이 스페이스의 다른 컬렉션</h2>
+            <h2 class={css({ marginBottom: { base: '12px', sm: '8px' }, fontSize: '14px', fontWeight: 'bold' })}>
+              이 스페이스의 다른 컬렉션
+            </h2>
 
-            <ul class="sm:space-y-1 <sm:(flex gap-xs overflow-x-auto)">
+            <ul
+              class={flex({ sm: { flexDirection: 'column', gap: '8px' }, smDown: { gap: '12px', overflowX: 'auto' } })}
+            >
               {#each $query.space.collections as collection (collection.id)}
                 {#if collection.id !== collectionId}
                   <li>
                     <a
-                      class="flex <sm:(flex-col w-7.5rem) gap-xs p-2 sm:(hover:bg-primary focus:bg-primary) rounded-3 <sm:rounded-none"
+                      class={flex({
+                        gap: '12px',
+                        padding: '8px',
+                        sm: { borderRadius: '12px', backgroundColor: { _hover: 'gray.50', _focus: 'gray.50' } },
+                        smDown: { flexDirection: 'column', width: '120px' },
+                      })}
                       href={`/${$query.space.slug}/collections/${collection.id}`}
                     >
                       {#if collection.thumbnail}
-                        <Image class="w-6rem h-7.5rem rounded-2" $image={collection.thumbnail} />
+                        <Image
+                          style={css.raw({ borderRadius: '8px', width: '96px', height: '120px' })}
+                          $image={collection.thumbnail}
+                        />
                       {/if}
-                      <dl class="p-y-2">
-                        <dt class="body-16-b m-b-1 <sm:(line-clamp-2 min-w-0)">
+                      <dl class={css({ paddingY: '8px' })}>
+                        <dt
+                          class={css({
+                            marginBottom: '4px',
+                            fontWeight: 'bold',
+                            smDown: { minWidth: '0', lineClamp: 2 },
+                          })}
+                        >
                           {collection.name}
                         </dt>
-                        <dd class="body-14-m text-secondary">{collection.count}개의 포스트</dd>
+                        <dd class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.500' })}>
+                          {collection.count}개의 포스트
+                        </dd>
                       </dl>
                     </a>
                   </li>

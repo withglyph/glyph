@@ -3,6 +3,8 @@
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
+  import { css, cx } from '$styled-system/css';
+  import { center } from '$styled-system/patterns';
 
   export let postId: string;
   export let emoji: string;
@@ -25,7 +27,19 @@
 
 {#if mine}
   <button
-    class="relative bg-primary p-0.5 square-6 rounded-lg text-center border border-secondary [&>em-emoji]:hover:opacity-30 [&>i]:hover:opacity-100"
+    class={cx(
+      'group',
+      css({
+        position: 'relative',
+        borderWidth: '1px',
+        borderColor: 'gray.200',
+        borderRadius: '8px',
+        padding: '2px',
+        size: '24px',
+        textAlign: 'center',
+        backgroundColor: 'gray.50',
+      }),
+    )}
     type="button"
     on:click={async () => {
       await deletePostReaction({
@@ -35,12 +49,28 @@
       mixpanel.track('post:reaction:delete', { postId, emoji });
     }}
   >
-    <em-emoji id={emoji} class="square-4.5 text-center" set="twitter" />
+    <em-emoji
+      id={emoji}
+      class={center({ 'size': '18px', '& img': { display: '[block!]' }, '_groupHover': { opacity: '[0.3]' } })}
+      set="twitter"
+    />
     <Icon
-      class="square-5 absolute top-50% -translate-y-50% left-50% -translate-x-50% opacity-0 transition select-none"
+      style={css.raw({
+        position: 'absolute',
+        top: '[50%]',
+        left: '[50%]',
+        size: '20px',
+        translate: 'auto',
+        translateX: '[-50%]',
+        translateY: '[-50%]',
+        transition: 'common',
+        userSelect: 'none',
+        opacity: '[0]',
+        _groupHover: { opacity: '[1]' },
+      })}
       icon={IconX}
     />
   </button>
 {:else}
-  <em-emoji id={emoji} class="square-4.5 text-center" set="twitter" />
+  <em-emoji id={emoji} class={center({ 'size': '18px', '& img': { display: '[block!]' } })} set="twitter" />
 {/if}
