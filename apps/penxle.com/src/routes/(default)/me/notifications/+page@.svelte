@@ -94,16 +94,27 @@
 
 <Helmet description="받은 알림 목록을 둘러보세요" title="알림" />
 
-<header class="px-5 py-3.5 flex items-center justify-between relative">
-  <button class="i-tb-chevron-left square-6" type="button" on:click={() => history.back()} />
+<header>
+  <div class="px-5 py-3.5 flex items-center justify-between relative border-b border-gray-100 h-55px">
+    <button class="i-tb-chevron-left square-6" type="button" on:click={() => history.back()} />
 
-  <h1 class="text-16-sb absolute left-50% -translate-x-50%">알림</h1>
+    <h1 class="text-16-sb absolute left-50% -translate-x-50%">알림</h1>
 
-  <Button size="md" variant="outline" on:click={async () => await readAllNotifications()}>모두 읽기</Button>
+    <a href="/me/settings/notifications">
+      <i class="i-tb-settings square-5" />
+    </a>
+  </div>
+
+  <div class="px-5 py-3.5 flex items-center justify-between border-b border-gray-100 h-55px">
+    <p>
+      새소식 <mark class="text-16-r text-teal-500">{unreadNotifications.length}</mark>
+    </p>
+    <Button size="xs" variant="outline" on:click={async () => await readAllNotifications()}>모두 읽기</Button>
+  </div>
 </header>
 
 <div class="w-full flex flex-col grow">
-  <ul class="min-h-30 my-7 w-full max-w-200 mx-auto">
+  <ul class="min-h-30 mb-7 w-full max-w-200 mx-auto">
     {#each $query.me.notifications as notification (notification.id)}
       <li>
         <button

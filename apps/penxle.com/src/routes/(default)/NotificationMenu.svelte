@@ -213,8 +213,17 @@
     class="absolute z-50 w-full max-w-375px flex flex-col rounded-2.5 bg-white shadow-[0px_5px_22px_0px_rgba(0,0,0,0.06)]"
     use:floating
   >
-    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 h-55px">
       <p class="text-16-sb">알림</p>
+
+      <button class="i-tb-x square-5" type="button" on:click={() => (open = false)} />
+    </div>
+
+    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 h-55px">
+      <p>
+        새소식 <mark class="text-16-m text-teal-500">{unreadNotifications.length}</mark>
+      </p>
+
       {#if $user.notifications.length > 0}
         <Button class="text-12-sb" size="sm" variant="outline" on:click={async () => await readAllNotifications()}>
           모두 읽기
