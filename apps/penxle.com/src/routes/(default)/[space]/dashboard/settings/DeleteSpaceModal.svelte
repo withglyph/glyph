@@ -4,6 +4,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
+  import { css } from '$styled-system/css';
   import type { SpaceDashboardSettingsPage_DeleteSpaceModal_space } from '$glitch';
 
   let _space: SpaceDashboardSettingsPage_DeleteSpaceModal_space;
@@ -46,14 +47,14 @@
       completeModalOpen = true;
     }}
   >
-    <FormField name="slug" class="grow" label="스페이스 고유 url">
-      <TextInput class="w-full" placeholder="URL을 입력해주세요" bind:value={confirm}>
+    <FormField name="slug" style={css.raw({ flexGrow: '1' })} label="스페이스 고유 url">
+      <TextInput style={css.raw({ width: 'full' })} placeholder="URL을 입력해주세요" bind:value={confirm}>
         <span slot="left-text">{$page.url.host}/</span>
       </TextInput>
     </FormField>
 
     <Button
-      class="w-full mt-6"
+      style={css.raw({ marginTop: '24px', width: 'full' })}
       color="red"
       disabled={confirm !== $space.slug}
       loading={$deleteSpace.inflight}
@@ -71,7 +72,7 @@
 
   <Button
     slot="action"
-    class="w-full"
+    style={css.raw({ width: 'full' })}
     size="xl"
     on:click={() => {
       completeModalOpen = false;

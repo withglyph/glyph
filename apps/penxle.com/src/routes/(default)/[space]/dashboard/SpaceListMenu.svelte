@@ -5,6 +5,8 @@
   import { Button, Icon } from '$lib/components';
   import Image from '$lib/components/Image.svelte';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import CreateSpaceModal from '../../CreateSpaceModal.svelte';
   import type { SpaceDashboardLayout_SpaceListMenu_query } from '$glitch';
 
@@ -61,20 +63,23 @@
 </script>
 
 <button
-  class="flex items-center gap-3 bg-primary rounded-lg p-2 w-full"
+  class={flex({ align: 'center', gap: '12px', borderRadius: '8px', padding: '8px', width: 'full' })}
   type="button"
   on:click={() => (open = !open)}
   use:anchor
 >
-  <Image class="square-12 rounded-lg flex-none border border-secondary" $image={$query.space.icon} />
-  <div class="truncate">
-    <h3 class="body-14-b truncate">{$query.space.name}</h3>
-    <div class="flex items-center gap-1 caption-12-m text-secondary">
+  <Image
+    style={css.raw({ flex: 'none', borderWidth: '1px', borderColor: 'gray.200', borderRadius: '8px', size: '48px' })}
+    $image={$query.space.icon}
+  />
+  <div class={css({ truncate: true })}>
+    <h3 class={css({ fontSize: '14px', fontWeight: 'bold', truncate: true })}>{$query.space.name}</h3>
+    <div class={flex({ align: 'center', gap: '4px', fontSize: '12px', fontWeight: 'medium', color: 'gray.500' })}>
       {#if $query.space.visibility === 'PUBLIC'}
-        <span class="block square-1.25 rounded-full bg-green-50" />
+        <div class={css({ borderRadius: 'full', size: '5px', backgroundColor: '[#4ECEA6]' })} />
         <span>공개중</span>
       {:else}
-        <span class="block square-1.25 rounded-full bg-text-disabled" />
+        <div class={css({ borderRadius: 'full', size: '5px', backgroundColor: 'gray.500' })} />
         <span>비공개중</span>
       {/if}
     </div>
@@ -83,7 +88,7 @@
 
 {#if open}
   <div
-    class="fixed inset-0 z-49"
+    class={css({ position: 'fixed', inset: '0', zIndex: '40' })}
     role="button"
     tabindex="-1"
     on:click={() => (open = false)}
@@ -91,19 +96,53 @@
     use:portal
   />
 
-  <div class="z-50 w-52 py-4 px-3 rounded-2xl shadow-[0_4px_4px_0px_rgba(0,0,0,0.10)] bg-cardprimary" use:floating>
-    <div class="space-y-3">
+  <div
+    class={css({
+      paddingX: '12px',
+      paddingY: '16px',
+      borderRadius: '16px',
+      width: '208px',
+      backgroundColor: 'white',
+      boxShadow: '[0 4px 4px 0px var(--shadow-color)]',
+      boxShadowColor: '[black/10]',
+      zIndex: '50',
+    })}
+    use:floating
+  >
+    <div class={flex({ direction: 'column', gap: '12px' })}>
       {#each $query.me.spaces as space (space.id)}
-        <a class="p-1 flex gap-2 items-center rounded-xl hover:bg-primary" href={`/${space.slug}/dashboard/settings`}>
-          <Image class="square-10.5 rounded-lg flex-none border border-secondary" $image={space.icon} />
-          <div class="truncate">
-            <p class="body-15-b mb-1 truncate">{space.name}</p>
-            <div class="flex items-center gap-1 caption-12-m text-secondary">
+        <a
+          class={flex({
+            align: 'center',
+            gap: '8px',
+            borderRadius: '12px',
+            padding: '4px',
+            _hover: { backgroundColor: 'gray.50' },
+          })}
+          href={`/${space.slug}/dashboard/settings`}
+        >
+          <Image
+            style={css.raw({
+              flex: 'none',
+              borderWidth: '1px',
+              borderColor: 'gray.200',
+              borderRadius: '8px',
+              size: '42px',
+            })}
+            $image={space.icon}
+          />
+          <div class={css({ truncate: true })}>
+            <p class={css({ marginBottom: '4px', fontSize: '15px', fontWeight: 'bold', truncate: true })}>
+              {space.name}
+            </p>
+            <div
+              class={flex({ align: 'center', gap: '4px', fontSize: '12px', fontWeight: 'medium', color: 'gray.500' })}
+            >
               {#if space.visibility === 'PUBLIC'}
-                <span class="block square-1.25 rounded-full bg-green-50" />
+                <div class={css({ borderRadius: 'full', size: '5px', backgroundColor: '[#4ECEA6]' })} />
                 <span>공개중</span>
               {:else}
-                <span class="block square-1.25 rounded-full bg-text-disabled" />
+                <div class={css({ borderRadius: 'full', size: '5px', backgroundColor: 'gray.500' })} />
                 <span>비공개중</span>
               {/if}
             </div>
@@ -111,10 +150,11 @@
         </a>
       {/each}
     </div>
-    <div class="w-full border-b border-alphagray-10 my-3" />
+
+    <div class={css({ borderBottomWidth: '1px', borderBottomColor: '[black/10]', marginY: '12px', width: 'full' })} />
 
     <Button size="xs" variant="text" on:click={() => (openCreateSpace = true)}>
-      <Icon class="square-3.5 mr-1" icon={IconPlus} />
+      <Icon style={css.raw({ marginRight: '4px', size: '14px' })} icon={IconPlus} />
       스페이스 만들기
     </Button>
   </div>

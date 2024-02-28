@@ -8,6 +8,8 @@
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { UpdateUserProfileSchema } from '$lib/validations';
+  import { css } from '$styled-system/css';
+  import { center } from '$styled-system/patterns';
   import type { MeSettingsPage_UpdateProfileModal_profile } from '$glitch';
 
   let _profile: MeSettingsPage_UpdateProfileModal_profile;
@@ -66,23 +68,51 @@
 
   <form use:form>
     <button
-      class="bg-primary square-80 rounded-6 flex flex-col center mb-3 overflow-hidden mx-auto relative [&>div]:hover:(flex center)"
+      class={center({
+        'position': 'relative',
+        'flexDirection': 'column',
+        'borderRadius': '[24px]',
+        'marginX': 'auto',
+        'marginBottom': '12px',
+        'backgroundColor': 'gray.50',
+        'size': '320px',
+        'overflow': 'hidden',
+        '& > div': {
+          _hover: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          },
+        },
+      })}
       type="button"
       on:click={() => thumbnailPicker.show()}
     >
-      <Image class="square-full" $image={avatar} />
-      <div class="select-none absolute top-50% -translate-y-50% rounded-full square-15 bg-alphagray-50 hidden">
-        <Icon class="square-6 text-darkprimary" icon={IconCamera} />
+      <Image style={css.raw({ size: 'full' })} $image={avatar} />
+      <div
+        class={css({
+          userSelect: 'none',
+          position: 'absolute',
+          top: '[50%]',
+          translateY: '-1/2',
+          display: 'none',
+          borderRadius: 'full',
+          backgroundColor: '[black/50]',
+          size: '60px',
+        })}
+      >
+        <Icon style={css.raw({ color: '[#FFF9F8]', size: '24px' })} icon={IconCamera} />
       </div>
     </button>
 
     <FormField name="name" label="닉네임">
-      <TextInput class="w-full font-bold" maxlength={20} placeholder="닉네임 입력">
-        <span slot="right-icon" class="body-14-m text-disabled">{$data.name.length} / 20</span>
+      <TextInput style={css.raw({ fontWeight: 'bold', width: 'full' })} maxlength={20} placeholder="닉네임 입력">
+        <span slot="right-icon" class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.400' })}>
+          {$data.name.length} / 20
+        </span>
       </TextInput>
     </FormField>
-
-    <Button class="w-full mt-4" size="xl" type="submit">수정</Button>
+    <Button style={css.raw({ marginTop: '16px', width: 'full' })} size="xl" type="submit">수정</Button>
   </form>
 </Modal>
 

@@ -2,7 +2,7 @@
 
 .driver-popover.onboarding-popover {
   padding: 0.875rem 1rem 0.625rem;
-  --uno: border-(1px solid gray-200);
+  border: 1px solid #e4e4e7;
   box-shadow: 0px 3px 24px 0px rgba(0, 0, 0, 0.08);
 
   &.step-1 {
@@ -64,16 +64,49 @@
   }
 
   .driver-popover-prev-btn {
-    /* prettier-ignore */
-    --uno: border-(1px solid gray-200) color-gray-500 hover:bg-gray-50 focus-visible:bg-gray-50 active:(border-gray-300 shadow-[0_0_0_2px_#E4E4E7]) disabled:(border-gray-100 color-gray-300 bg-[initial] shadow-none);
+    border: 1px solid #e4e4e7;
+    color: #71717a;
+
+    &:hover {
+      background-color: #fafafa;
+    }
+
+    &:focus-visible {
+      background-color: #fafafa;
+    }
+
+    &:active {
+      border-color: #d4d4d8;
+      box-shadow: 0px 0px 0px 2px #e4e4e7;
+    }
+
+    &:disabled {
+      color: #d4d4d8;
+      border-color: #f4f4f5;
+      background-color: initial;
+      box-shadow: none;
+    }
   }
 
   .driver-popover-next-btn {
-    /* prettier-ignore */
-    --uno: border-none color-white bg-teal-500 hover:bg-teal-400 focus-visible:bg-teal-400 active:shadow-[0_0_0_2px_#99F6E4];
+    border-style: none;
+    color: white;
+    background-color: #14b8a6;
+
+    &:hover {
+      background-color: #2dd4bf;
+    }
+
+    &:focus-visible {
+      background-color: #2dd4bf;
+    }
+
+    &:active {
+      box-shadow: 0px 0px 0px 2px #99f6e4;
+    }
   }
 
   mark {
-    --uno: color-teal-500;
+    color: #14b8a6;
   }
 }

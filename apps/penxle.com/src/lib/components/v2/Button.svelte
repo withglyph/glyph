@@ -1,26 +1,30 @@
 <script generics="T extends 'button' | 'submit' | 'link' = 'button'" lang="ts">
-  import { RingSpinner } from '@penxle/ui/spinners';
-  import { clsx } from 'clsx';
+  import { RingSpinner } from '$lib/components/spinners';
   import { getFormContext } from '$lib/form';
+  import { css, cva } from '$styled-system/css';
+  import { center } from '$styled-system/patterns';
   import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
+  import type { RecipeVariant, RecipeVariantProps } from '$styled-system/css';
+  import type { SystemStyleObject } from '$styled-system/types';
 
-  type $$Props = {
+  type $$Props = RecipeVariantProps<typeof recipe> & {
     type?: T;
     loading?: boolean;
-    variant?: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'secondary-outline';
-    size?: '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  } & (T extends 'link' ? HTMLAnchorAttributes & { external?: boolean } : Omit<HTMLButtonAttributes, 'type'>);
+    style?: SystemStyleObject;
+  } & Omit<
+      T extends 'link' ? HTMLAnchorAttributes & { external?: boolean } : Omit<HTMLButtonAttributes, 'type'>,
+      'class' | 'style'
+    >;
 
   type $$Events = T extends 'link' ? unknown : { click: MouseEvent };
 
   export let type: 'button' | 'submit' | 'link' = 'button';
 
-  let _class: string | null | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined;
 
   export let loading = false;
-  export let variant: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'secondary-outline' = 'primary';
-  export let size: '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
+  export let variant: Variants['variant'] = 'primary';
+  export let size: Variants['size'] = 'md';
 
   export let external = false;
 
@@ -33,31 +37,86 @@
     type === 'link'
       ? { href: showSpinner ? undefined : $$restProps.href }
       : { disabled: $$restProps.disabled || showSpinner };
+
+  type Variants = RecipeVariant<typeof recipe>;
+  const recipe = cva({
+    base: { textAlign: 'center', outlineOffset: '0' },
+    variants: {
+      variant: {
+        'primary': {
+          color: 'white',
+          backgroundColor: {
+            base: 'gray.950',
+            _hover: 'gray.800',
+            _focusVisible: 'gray.800',
+            _pressed: 'gray.800',
+            _disabled: 'gray.200',
+          },
+          boxShadow: { _active: '[0 0 0 2px #A1A1AA]' },
+        },
+        'secondary': {
+          color: 'white',
+          backgroundColor: {
+            base: 'teal.500',
+            _hover: 'teal.400',
+            _focusVisible: 'teal.400',
+            _pressed: 'teal.400',
+            _disabled: 'gray.200',
+          },
+          boxShadow: { _active: '[0 0 0 2px #99F6E4]' },
+        },
+        'tertiary': {
+          color: { base: 'gray.500', _disabled: 'gray.300' },
+          backgroundColor: {
+            base: 'gray.100',
+            _hover: 'gray.50',
+            _focusVisible: 'gray.50',
+            _pressed: 'gray.50',
+            _disabled: 'gray.50',
+          },
+          boxShadow: { _active: '[0 0 0 2px #E4E4E7]' },
+        },
+        'outline': {
+          color: { base: 'gray.500', _disabled: 'gray.300' },
+          outlineWidth: '1px',
+          outlineColor: { base: 'gray.200', _active: 'gray.300', _disabled: 'gray.100' },
+          backgroundColor: {
+            base: 'white',
+            _hover: 'gray.50',
+            _focusVisible: 'gray.50',
+            _pressed: 'gray.50',
+            _disabled: '[initial]',
+          },
+          boxShadow: { _active: '[0 0 0 2px #E4E4E7]' },
+        },
+        'secondary-outline': {
+          color: { base: 'teal.500', _disabled: 'gray.300' },
+          outlineWidth: '1px',
+          outlineColor: { base: 'teal.500', _disabled: 'gray.100' },
+          backgroundColor: {
+            _hover: 'teal.50',
+            _focusVisible: 'teal.50',
+            _pressed: 'teal.50',
+            _disabled: '[initial]',
+          },
+          boxShadow: { _active: '[0 0 0 2px #99F6E4]' },
+        },
+      },
+      size: {
+        '2xs': { paddingX: '14px', paddingY: '5px', fontSize: '11px', fontWeight: 'semibold', borderRadius: '4px' },
+        'xs': { paddingX: '14px', paddingY: '8px', fontSize: '11px', fontWeight: 'semibold', borderRadius: '4px' },
+        'sm': { paddingX: '14px', paddingY: '8px', fontSize: '12px', fontWeight: 'semibold', borderRadius: '4px' },
+        'md': { paddingX: '16px', paddingY: '8px', fontSize: '14px', fontWeight: 'semibold', borderRadius: '5px' },
+        'lg': { paddingX: '20px', paddingY: '10px', fontSize: '15px', fontWeight: 'semibold', borderRadius: '6px' },
+        'xl': { paddingX: '24px', paddingY: '12px', fontSize: '17px', fontWeight: 'semibold', borderRadius: '7px' },
+      },
+    },
+  });
 </script>
 
 <svelte:element
   this={element}
-  class={clsx(
-    'text-center outline-offset-0',
-    showSpinner && 'relative',
-    variant === 'primary' &&
-      'color-white bg-gray-950 hover:bg-gray-800 focus-visible:bg-gray-800 active:shadow-[0_0_0_2px_#A1A1AA] aria-pressed:bg-gray-800 disabled:(bg-gray-200 shadow-none)',
-    variant === 'secondary' &&
-      'color-white bg-teal-500 hover:bg-teal-400 focus-visible:bg-teal-400 active:shadow-[0_0_0_2px_#99F6E4] aria-pressed:bg-teal-400 disabled:(bg-gray-200 shadow-none)',
-    variant === 'tertiary' &&
-      'color-gray-500 bg-gray-100 hover:bg-gray-50 focus-visible:bg-gray-50 active:shadow-[0_0_0_2px_#E4E4E7] aria-pressed:bg-gray-50 disabled:(color-gray-300 bg-gray-50 shadow-none)',
-    variant === 'outline' &&
-      'color-gray-500 bg-white ring-(1px solid gray-200) hover:bg-gray-50 focus-visible:bg-gray-50 active:(ring-gray-300 shadow-[0_0_0_2px_#E4E4E7]) aria-pressed:bg-gray-50 disabled:(color-gray-300 ring-gray-100 bg-[initial] shadow-none)',
-    variant === 'secondary-outline' &&
-      'color-teal-500 ring-(1px solid teal-500) hover:bg-teal-50 focus-visible:bg-teal-50 active:shadow-[0_0_0_2px_#99F6E4] aria-pressed:bg-teal-50 disabled:(color-gray-300 ring-gray-100 bg-[initial] shadow-none)',
-    size === '2xs' && 'p-x-0.88rem p-y-0.31rem text-11-sb rounded-1',
-    size === 'xs' && 'p-x-0.88rem p-y-2 text-11-sb rounded-1',
-    size === 'sm' && 'p-x-0.88rem p-y-2 text-12-sb rounded-1',
-    size === 'md' && 'p-x-4 p-y-2 text-14-sb rounded-0.31rem',
-    size === 'lg' && 'p-x-5 p-y-0.62rem text-15-sb rounded-0.38rem',
-    size === 'xl' && 'p-x-6 p-y-3 text-17-sb rounded-0.44rem',
-    _class,
-  )}
+  class={css(recipe.raw({ variant, size }), style)}
   aria-busy={showSpinner}
   role="button"
   tabindex="0"
@@ -70,13 +129,16 @@
   }}
 >
   {#if showSpinner}
-    <div class="absolute inset-0 flex center px-4 py-2">
+    <div class={center({ position: 'absolute', inset: '0', paddingX: '16px', paddingY: '8px' })}>
       <RingSpinner
-        class={clsx('h-full', (variant === 'outline' || variant === 'secondary-outline') && 'color-gray-300')}
+        style={css.raw(
+          { height: 'full' },
+          (variant === 'outline' || variant === 'secondary-outline') && { color: 'gray.300' },
+        )}
       />
     </div>
   {/if}
-  <div class={clsx('contents', showSpinner && 'invisible')}>
+  <div class={css({ display: 'contents' }, showSpinner && { visibility: 'hidden' })}>
     <slot />
   </div>
 </svelte:element>

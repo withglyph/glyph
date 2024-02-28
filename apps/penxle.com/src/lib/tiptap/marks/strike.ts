@@ -1,4 +1,5 @@
 import { Mark, mergeAttributes } from '@tiptap/core';
+import { css } from '$styled-system/css';
 
 declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -17,7 +18,7 @@ export const Strike = Mark.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['s', mergeAttributes(HTMLAttributes, { class: 'line-through' }), 0];
+    return ['s', mergeAttributes(HTMLAttributes, { class: css({ textDecorationLine: 'line-through' }) }), 0];
   },
 
   addCommands() {

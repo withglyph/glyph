@@ -1,6 +1,7 @@
 import { Extension } from '@tiptap/core';
 import { Plugin } from '@tiptap/pm/state';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
+import { css } from '$styled-system/css';
 
 export const Placeholder = Extension.create({
   name: 'placeholder',
@@ -28,7 +29,15 @@ export const Placeholder = Extension.create({
             ) {
               return DecorationSet.create(doc, [
                 Decoration.node(0, doc.firstChild.nodeSize, {
-                  'class': 'before:(content-[attr(data-placeholder)] text-gray-400 h-0 pointer-events-none float-left)',
+                  'class': css({
+                    _before: {
+                      content: 'attr(data-placeholder)',
+                      float: 'left',
+                      height: '0',
+                      color: 'gray.400',
+                      pointerEvents: 'none',
+                    },
+                  }),
                   'data-placeholder': '내용을 입력하세요',
                 }),
               ]);

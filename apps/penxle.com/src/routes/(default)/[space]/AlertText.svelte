@@ -1,5 +1,7 @@
 <script lang="ts">
   import { Icon } from '$lib/components';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type { ComponentType } from 'svelte';
 
   export let icon: ComponentType;
@@ -8,22 +10,25 @@
   export let description: string | undefined = undefined;
 </script>
 
-<header class="py-80px px-3 w-full flex flex-col items-center" role="alert">
-  <div class="flex flex-col gap-2 items-center">
-    <Icon class="block square-8 text-teal-500" {icon} />
-    <h2 class="text-18-sb text-center break-keep">
+<header
+  class={flex({ direction: 'column', align: 'center', paddingX: '12px', paddingY: '80px', width: 'full' })}
+  role="alert"
+>
+  <div class={flex({ direction: 'column', align: 'center', gap: '8px' })}>
+    <Icon style={css.raw({ size: '32px', color: 'teal.500' })} {icon} />
+    <h2 class={css({ textAlign: 'center', fontSize: '18px', fontWeight: 'semibold' })}>
       {title}
     </h2>
   </div>
 
-  <ul class="flex gap-1.5 flex-wrap justify-center">
+  <ul class={flex({ justify: 'center', gap: '6px', wrap: 'wrap' })}>
     {#each triggerTags as triggerTag (triggerTag.id)}
-      <li class="text-teal-500">#{triggerTag.tag.name.replaceAll('_', ' ')}</li>
+      <li class={css({ color: 'teal.500' })}>#{triggerTag.tag.name.replaceAll('_', ' ')}</li>
     {/each}
   </ul>
 
   {#if description}
-    <p class="text-14-r text-gray-500 mt-2px">{description}</p>
+    <p class={css({ marginTop: '2px', fontSize: '14px', color: 'gray.500' })}>{description}</p>
   {/if}
 
   <slot />

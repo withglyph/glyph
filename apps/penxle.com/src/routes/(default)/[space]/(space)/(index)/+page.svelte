@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
-  import clsx from 'clsx';
   import IconAlertTriangle from '~icons/tabler/alert-triangle';
   import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Icon, SpacePostCard } from '$lib/components';
+  import { Button, Helmet, Icon, SpacePostCard } from '$lib/components';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
 
   $: query = graphql(`
     query SpacePage_Query($slug: String!) {
@@ -55,21 +55,38 @@
 />
 
 <article
-  class={clsx(
-    'w-full min-h-11rem max-w-50rem flex flex-col items-center py-6.5 grow <sm:(p-0 gap-2 bg-surface-primary)',
-    ($query.space.posts.length === 0 || $query.space.myMasquerade?.blocked) && 'center gap-0!',
+  class={css(
+    {
+      flexDirection: 'column',
+      alignItems: 'center',
+      flexGrow: '1',
+      paddingY: '26px',
+      width: 'full',
+      maxWidth: '800px',
+      minHeight: '176px',
+      smDown: { gap: '8px', padding: '0', background: 'gray.100' },
+    },
+    ($query.space.posts.length === 0 || $query.space.myMasquerade?.blocked) && {
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: '0',
+    },
   )}
 >
   {#if $query.space.myMasquerade?.blocked}
-    <Icon class="square-7" icon={IconAlertTriangle} />
-    <p class="text-18-sb mt-1 mb-0.5">차단당했습니다</p>
-    <p class="text-14-r text-gray-500">{$query.space.name}의 게시물을 볼 수 없어요</p>
+    <Icon style={css.raw({ size: '28px' })} icon={IconAlertTriangle} />
+    <p class={css({ marginTop: '4px', marginBottom: '2px', fontSize: '18px', fontWeight: 'semibold' })}>
+      차단당했습니다
+    </p>
+    <p class={css({ fontSize: '14px', color: 'gray.500' })}>{$query.space.name}의 게시물을 볼 수 없어요</p>
   {:else if $query.space.posts.length === 0}
-    <div class="flex flex-col center">
-      <h2 class="body-15-b text-secondary">아직 스페이스에 업로드된 포스트가 없어요</h2>
+    <div class={center({ flexDirection: 'column' })}>
+      <h2 class={css({ fontSize: '15px', fontWeight: 'bold', color: 'gray.500' })}>
+        아직 스페이스에 업로드된 포스트가 없어요
+      </h2>
       {#if $query.space.meAsMember}
         <Button
-          class="mt-5"
+          style={css.raw({ marginTop: '20px' })}
           size="lg"
           on:click={async () => {
             const { permalink } = await createPost({ spaceId: $query.space.id });
@@ -82,7 +99,7 @@
       {/if}
     </div>
   {:else}
-    <ul class="w-full space-y-4 <sm:space-y-2">
+    <ul class={flex({ direction: 'column', gap: { base: '8px', sm: '16px' }, width: 'full' })}>
       {#each $query.space.posts as post (post.id)}
         <li>
           <SpacePostCard $post={post} />

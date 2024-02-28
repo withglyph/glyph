@@ -1,16 +1,14 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
+  import { css } from '$styled-system/css';
   import type { PageData } from './$types';
 
   export let data: PageData;
 </script>
 
-<Helmet description={`${data.meta.title} 도움말`} title={data.meta.title} />
-
 <article>
-  <h1 class="text-2xl font-bold">{data.meta.title}</h1>
+  <h1 class={css({ fontSize: '24px', fontWeight: 'bold' })}>{data.meta.title}</h1>
 
-  <hr class="mb-4 mt-2" />
+  <hr class={css({ marginTop: '8px', marginBottom: '16px' })} />
 
   <div class="prose">
     <svelte:component this={data.content} />

@@ -1,27 +1,54 @@
 <script lang="ts">
-  import { clsx } from 'clsx';
+  import { css } from '$styled-system/css';
   import type { HTMLInputAttributes } from 'svelte/elements';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   type $$Events = {
     change: Event & { currentTarget: HTMLInputElement };
   };
 
-  type $$Props = HTMLInputAttributes;
+  type $$Props = Omit<HTMLInputAttributes, 'class' | 'style'> & { style?: SystemStyleObject };
 
   export let checked: $$Props['checked'] = undefined;
-
-  let _class: $$Props['class'] = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 </script>
 
 <label
-  class={clsx(
-    'relative inline-flex p-x-0.875rem p-y-0.375rem text-12-m text-gray-400 transition-colors justify-center whitespace-nowrap rounded-0.375rem border-(1px gray-200) bg-gray-50 focus:(border-teal-500 color-teal-700) has-[:checked]:(border-teal-500 color-teal-700 bg-teal-50) cursor-pointer',
-    _class,
+  class={css(
+    {
+      'position': 'relative',
+      'display': 'inline-flex',
+      'justifyContent': 'center',
+      'borderWidth': '1px',
+      'borderColor': 'gray.200',
+      'borderRadius': '6px',
+      'paddingX': '14px',
+      'paddingY': '6px',
+      'fontSize': '12px',
+      'fontWeight': 'medium',
+      'color': 'gray.400',
+      'whiteSpace': 'nowrap',
+      'backgroundColor': 'gray.50',
+      'transition': 'common',
+      'cursor': 'pointer',
+      '_focus': { borderColor: 'teal.500', color: 'teal.700' },
+      '&:has(:checked)': {
+        borderColor: 'teal.500',
+        color: 'teal.700',
+        backgroundColor: 'teal.50',
+      },
+    },
+    style,
   )}
 >
   <input
-    class="apperance-none inset-0 invisible absolute square-full"
+    class={css({
+      position: 'absolute',
+      inset: '0',
+      size: 'full',
+      appearance: 'none',
+      visibility: 'hidden',
+    })}
     aria-checked={checked}
     type="checkbox"
     on:change

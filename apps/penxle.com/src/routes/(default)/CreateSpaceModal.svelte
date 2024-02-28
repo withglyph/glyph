@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { createEventDispatcher } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
@@ -12,6 +11,8 @@
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { CreateSpaceSchema } from '$lib/validations';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type { CreateSpaceModal_user } from '$glitch';
 
   let _user: CreateSpaceModal_user;
@@ -96,44 +97,56 @@
 <Modal bind:open>
   <svelte:fragment slot="title">스페이스 만들기</svelte:fragment>
 
-  <form class="space-y-3" use:form>
+  <form class={flex({ direction: 'column', gap: '12px' })} use:form>
     <FormField name="name" label="스페이스 이름">
       <TextInput maxlength={20} placeholder="스페이스명">
-        <span slot="right-icon" class="body-14-m text-disabled">{$data.name?.length}/20</span>
+        <span slot="right-icon" class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.400' })}>
+          {$data.name?.length}/20
+        </span>
       </TextInput>
     </FormField>
 
     <FormField name="slug" label="스페이스 URL">
       <TextInput maxlength={20} placeholder="입력해주세요">
         <span slot="left-text">{$page.url.host}/</span>
-        <span slot="right-icon" class="body-14-m text-disabled">{$data.slug?.length}/20</span>
+        <span slot="right-icon" class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.400' })}>
+          {$data.slug?.length}/20
+        </span>
       </TextInput>
     </FormField>
 
-    <div class="space-y-4 py-2">
-      <Switch class="flex items-center justify-between" bind:checked={useSpaceProfile}>
-        <p class="body-16-b">스페이스 전용 프로필</p>
+    <div class={css({ paddingY: '8px' })}>
+      <Switch style={flex.raw({ justify: 'space-between', align: 'center' })} bind:checked={useSpaceProfile}>
+        <p class={css({ fontSize: '16px', fontWeight: 'bold' })}>스페이스 전용 프로필</p>
       </Switch>
     </div>
 
-    <div class={clsx('flex gap-3', !useSpaceProfile && 'hidden!')}>
+    <div class={css({ display: 'flex', gap: '12px' }, !useSpaceProfile && { display: 'none' })}>
       <button
-        class="bg-primary square-18.5 rounded-xl overflow-hidden shrink-0"
+        class={css({
+          flexShrink: '0',
+          borderRadius: '12px',
+          size: '74px',
+          backgroundColor: 'gray.50',
+          overflow: 'hidden',
+        })}
         type="button"
         on:click={() => thumbnailPicker.show()}
       >
-        <Image class="square-full" $image={avatar} />
+        <Image style={css.raw({ size: 'full' })} $image={avatar} />
       </button>
 
-      <FormField name="profileName" class="grow" label="스페이스 닉네임">
+      <FormField name="profileName" style={css.raw({ flexGrow: '1' })} label="스페이스 닉네임">
         <TextInput maxlength={20} placeholder="닉네임 입력">
-          <span slot="right-icon" class="body-14-m text-disabled">{$data.profileName?.length ?? 0} / 20</span>
+          <span slot="right-icon" class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.400' })}>
+            {$data.profileName?.length ?? 0}/20
+          </span>
         </TextInput>
       </FormField>
     </div>
   </form>
 
-  <Button slot="action" class="w-full" loading={$isSubmitting} size="xl" on:click={handleSubmit}>
+  <Button slot="action" style={css.raw({ width: 'full' })} loading={$isSubmitting} size="xl" on:click={handleSubmit}>
     스페이스 만들기
   </Button>
 </Modal>

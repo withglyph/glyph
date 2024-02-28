@@ -1,10 +1,22 @@
 <script lang="ts">
-  import clsx from 'clsx';
+  import { css } from '$styled-system/css';
+  import type { SystemStyleObject } from '$styled-system/types';
 
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 </script>
 
-<thead class={clsx('[&>tr]:(bg-primary text-secondary body-13-b)', _class)}>
+<thead
+  class={css(
+    {
+      '& > tr': {
+        fontSize: '13px',
+        fontWeight: 'bold',
+        color: 'gray.500',
+        backgroundColor: 'gray.50',
+      },
+    },
+    style,
+  )}
+>
   <slot />
 </thead>

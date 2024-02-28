@@ -1,17 +1,16 @@
 <script lang="ts">
-  import { clsx } from 'clsx';
   import { getFormContext } from '$lib/form';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import type { HTMLInputAttributes } from 'svelte/elements';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   export let name: HTMLInputAttributes['name'] = undefined;
   export let value: HTMLInputAttributes['value'] = undefined;
-  let _class: HTMLInputAttributes['class'] = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 
-  type $$Props = HTMLInputAttributes;
-  type $$Events = {
-    input: Event & { currentTarget: HTMLInputElement };
-  };
+  type $$Props = Omit<HTMLInputAttributes, 'class' | 'style'> & { style?: SystemStyleObject };
+  type $$Events = { input: Event & { currentTarget: HTMLInputElement } };
 
   const { field } = getFormContext();
 
@@ -20,27 +19,27 @@
   }
 </script>
 
-<div class="relative flex items-center">
+<div class={flex({ align: 'center', position: 'relative' })}>
   {#if 'left-icon' in $$slots}
-    <div class="absolute inset-y-0 left-4 flex center">
+    <div class={center({ position: 'absolute', left: '16px', insetY: '0' })}>
       <slot name="left-icon" />
     </div>
   {/if}
   {#if 'left-text' in $$slots}
-    <div class="body-15-m">
+    <div class={css({ fontSize: '15px', fontWeight: 'medium' })}>
       <slot name="left-text" />
     </div>
   {/if}
   <input
     id={name}
     {name}
-    class={clsx(
-      'body-15-m w-full',
-      _class,
-      'left-icon' in $$slots && 'pl-10',
-      'right-label' in $$slots && 'pr-20',
-      'right-icon' in $$slots && 'pr-10',
-      'left-text' in $$slots ? 'rounded-r' : 'rounded',
+    class={css(
+      { width: 'full', fontSize: '15px', fontWeight: 'medium', backgroundColor: 'transparent' },
+      style,
+      'left-icon' in $$slots && { paddingLeft: '40px' },
+      'right-label' in $$slots && { paddingRight: '80px' },
+      'right-icon' in $$slots && { paddingRight: '40px' },
+      'left-text' in $$slots ? { borderRightRadius: '4px' } : { borderRadius: '4px' },
     )}
     type="text"
     on:input
@@ -48,12 +47,17 @@
     {...$$restProps}
   />
   {#if 'right-label' in $$slots}
-    <div class={clsx('absolute inset-y-0 right-0 flex center', 'right-icon' in $$slots && 'right-6')}>
+    <div
+      class={css(
+        center.raw({ position: 'absolute', right: '0', insetY: '0' }),
+        'right-icon' in $$slots && { right: '24px' },
+      )}
+    >
       <slot name="right-label" />
     </div>
   {/if}
   {#if 'right-icon' in $$slots}
-    <div class="absolute inset-y-0 right-0 flex center">
+    <div class={center({ position: 'absolute', right: '0', insetY: '0' })}>
       <slot name="right-icon" />
     </div>
   {/if}
