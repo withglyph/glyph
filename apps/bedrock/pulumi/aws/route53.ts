@@ -9,6 +9,10 @@ const createZone = (domain: string) => {
 };
 
 export const zones = {
+  effit_so: createZone('effit.so'),
+  effit_io: createZone('effit.io'),
+  effit_dev: createZone('effit.dev'),
+  efft_me: createZone('efft.me'),
   pencil_so: createZone('pencil.so'),
   penxle_com: createZone('penxle.com'),
   penxle_io: createZone('penxle.io'),

@@ -19,6 +19,10 @@ const createCertificate = (domain: string) => {
 };
 
 export const certificates = {
+  effit_so: createCertificate('effit.so'),
+  effit_io: createCertificate('effit.io'),
+  effit_dev: createCertificate('effit.dev'),
+  efft_me: createCertificate('efft.me'),
   pencil_so: createCertificate('pencil.so'),
   penxle_com: createCertificate('penxle.com'),
   penxle_io: createCertificate('penxle.io'),
@@ -204,6 +208,10 @@ new aws.route53.Record('pnxl.net', {
 });
 
 export const outputs = {
+  AWS_ACM_CLOUDFRONT_EFFIT_SO_CERTIFICATE_ARN: certificates.effit_so.arn,
+  AWS_ACM_CLOUDFRONT_EFFIT_IO_CERTIFICATE_ARN: certificates.effit_io.arn,
+  AWS_ACM_CLOUDFRONT_EFFIT_DEV_CERTIFICATE_ARN: certificates.effit_dev.arn,
+  AWS_ACM_CLOUDFRONT_EFFT_ME_CERTIFICATE_ARN: certificates.efft_me.arn,
   AWS_ACM_CLOUDFRONT_PENCIL_SO_CERTIFICATE_ARN: certificates.pencil_so.arn,
   AWS_ACM_CLOUDFRONT_PENXLE_COM_CERTIFICATE_ARN: certificates.penxle_com.arn,
   AWS_ACM_CLOUDFRONT_PENXLE_IO_CERTIFICATE_ARN: certificates.penxle_io.arn,
