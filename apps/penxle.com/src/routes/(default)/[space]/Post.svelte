@@ -10,8 +10,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Avatar, Badge, Image, Tooltip } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
-  import Modal from '$lib/components/Modal.svelte';
-  import { Button } from '$lib/components/v2';
+  import { Button, Modal } from '$lib/components/v2';
   import { categoryFilter, pairFilter } from '$lib/const/feed';
   import { EmojiPicker } from '$lib/emoji';
   import Emoji from '$lib/emoji/Emoji.svelte';
@@ -1267,13 +1266,21 @@
 
 <LoginRequireModal bind:open={loginRequireOpen} />
 
-<Modal size="sm" bind:open={openDeletePostWarning}>
-  <svelte:fragment slot="title">정말 포스트를 삭제하시겠어요?</svelte:fragment>
+<Modal
+  actionClass="border-none gap-1.5 pt-6 pb-6 sm:p-7"
+  size="sm"
+  titleClass="text-18-sb"
+  bind:open={openDeletePostWarning}
+>
+  <svelte:fragment slot="title">포스트를 삭제하시겠어요?</svelte:fragment>
 
-  <div slot="action" class="flex gap-2 w-full [&>button]:grow">
-    <Button color="secondary" size="md" on:click={() => (openDeletePostWarning = false)}>취소</Button>
+  <p class="mt-1 text-14-r text-gray-700 px-6 sm:px-7">삭제된 글은 복구할 수 없어요</p>
+
+  <svelte:fragment slot="action">
+    <Button class="w-full" size="lg" variant="outline" on:click={() => (openDeletePostWarning = false)}>취소</Button>
     <Button
-      size="md"
+      class="w-full"
+      size="lg"
       on:click={async () => {
         await goto(`/${$query.post.space?.slug}`);
         await deletePost({ postId: $query.post.id });
@@ -1283,7 +1290,7 @@
     >
       삭제
     </Button>
-  </div>
+  </svelte:fragment>
 </Modal>
 
 <TagManageModal $post={$query.post} bind:open={openTagManageModal} />
