@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
   import dayjs from 'dayjs';
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
+  import { Helmet } from '$lib/components';
   import Post from '../Post.svelte';
 
   $: query = graphql(`

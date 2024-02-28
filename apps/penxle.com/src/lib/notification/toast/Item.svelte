@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { backInOut, expoInOut, linear, sineInOut } from 'svelte/easing';
   import { tweened } from 'svelte/motion';
   import { fly, scale, slide } from 'svelte/transition';
@@ -7,6 +6,8 @@
   import IconCircleCheck from '~icons/tabler/circle-check';
   import IconX from '~icons/tabler/x';
   import { Icon } from '$lib/components';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import { store } from './store';
   import type { Toast } from './store';
 
@@ -21,23 +22,48 @@
 </script>
 
 <div
-  class="<sm:hidden flex items-center rounded-lg min-w-11 w-fit max-w-full h-11 p-1 bg-gray-80 drop-shadow-lg pointer-events-auto overflow-hidden"
+  class={flex({
+    align: 'center',
+    borderRadius: '8px',
+    padding: '4px',
+    width: 'fit',
+    minWidth: '44px',
+    maxWidth: 'full',
+    height: '44px',
+    backgroundColor: 'gray.800',
+    dropShadow: '[0 10px 8px]', // drop-shadow-lg
+    overflow: 'hidden',
+    pointerEvents: 'auto',
+    hideBelow: 'sm',
+  })}
   in:scale={{ duration: 400, easing: backInOut }}
   out:scale={{ duration: 400, delay: 600, easing: backInOut }}
 >
   <div
-    class={clsx(
-      'square-9 flex flex-none center relative rounded overflow-hidden',
-      toast.type === 'success' && 'bg-green-50',
-      toast.type === 'error' && 'bg-red-50',
+    class={css(
+      {
+        position: 'relative',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 'none',
+        borderRadius: '4px',
+        size: '36px',
+        overflow: 'hidden',
+      },
+      toast.type === 'success' && { backgroundColor: '[#4ECEA6]' },
+      toast.type === 'error' && { backgroundColor: '[#F66062]' },
     )}
   >
-    <div style:transform={`translateX(${$progress}%)`} class="absolute inset-0 bg-black/15" />
+    <div
+      style:transform={`translateX(${$progress}%)`}
+      class={css({ position: 'absolute', inset: '0', backgroundColor: '[black/15]' })}
+    />
 
     {#if toast.type === 'success'}
-      <Icon class="text-white" icon={IconCircleCheck} />
+      <Icon style={css.raw({ color: 'white' })} icon={IconCircleCheck} />
     {:else if toast.type === 'error'}
-      <Icon class="text-white" icon={IconAlertTriangle} />
+      <Icon style={css.raw({ color: 'white' })} icon={IconAlertTriangle} />
     {/if}
   </div>
 
@@ -46,16 +72,21 @@
     out:slide={{ axis: 'x', duration: 400, delay: 200, easing: expoInOut }}
   >
     <div
-      class="flex items-center gap-4 text-white pl-4 pr-2"
+      class={flex({ align: 'center', gap: '16px', paddingLeft: '16px', paddingRight: '8px', color: 'white' })}
       on:introend={() => ($progress = 0)}
       in:fly={{ x: '-0.125rem', duration: 200, delay: 800, easing: sineInOut }}
       out:fly={{ x: '-0.125rem', duration: 200, easing: sineInOut }}
     >
-      <div class="flex flex-col">
+      <div class={flex({ direction: 'column' })}>
         {#if toast.title}
-          <span class="text-xs font-bold line-clamp-1">{toast.title}</span>
+          <span class={css({ fontSize: '12px', fontWeight: 'bold', lineClamp: 1 })}>{toast.title}</span>
         {/if}
-        <span class={clsx('line-clamp-1', toast.title ? 'text-xs font-semibold' : 'text-sm font-bold')}>
+        <span
+          class={css(
+            { lineClamp: 1 },
+            toast.title ? { fontSize: '12px', fontWeight: 'semibold' } : { fontSize: '14px', fontWeight: 'bold' },
+          )}
+        >
           {toast.message}
         </span>
       </div>
@@ -67,12 +98,20 @@
 </div>
 
 <div
-  class="sm:hidden w-fit p-3 bg-alphagray-80 rounded-lg shadow-[0_4px_4px_0_rgba(0,0,0,0.10)]"
+  class={css({
+    borderRadius: '8px',
+    padding: '12px',
+    width: 'fit',
+    backgroundColor: '[black/80]',
+    boxShadow: '[0 4px 4px 0 var(--shadow-color)]',
+    boxShadowColor: '[black/10]',
+    hideFrom: 'sm',
+  })}
   in:slide={{ axis: 'y', duration: 400, delay: 400, easing: expoInOut }}
   out:slide={{ axis: 'y', duration: 400, delay: 200, easing: expoInOut }}
 >
   {#if toast.title}
-    <span class="body-13-b text-darkprimary line-clamp-1">{toast.title}</span>
+    <span class={css({ fontSize: '13px', fontWeight: 'bold', color: 'white', lineClamp: 1 })}>{toast.title}</span>
   {/if}
-  <span class="body-13-m text-darkprimary line-clamp-1">{toast.message}</span>
+  <span class={css({ fontSize: '13px', fontWeight: 'medium', color: 'white', lineClamp: 1 })}>{toast.message}</span>
 </div>

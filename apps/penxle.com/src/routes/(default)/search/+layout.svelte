@@ -1,37 +1,36 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import qs from 'query-string';
   import IconChevronDown from '~icons/tabler/chevron-down';
   import IconFilter from '~icons/tabler/filter';
   import IconSearch from '~icons/tabler/search';
   import { page } from '$app/stores';
   import { Button, Icon, Modal, Tag } from '$lib/components';
-  import { Checkbox, Radio } from '$lib/components/forms';
+  import { Radio } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
-  import { filterToLocaleString } from '$lib/const/feed';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import { initSearchFilter } from './util';
-  import type { ContentFilterCategory } from '$glitch';
 
   let showTagOption = true;
   let showAdultOption = true;
-  let showTriggerOption = true;
+  // let showTriggerOption = true;
   let filterOpen = false;
   let includeValue = '';
   let excludeValue = '';
   let { includeTags, excludeTags, adultFilter, excludeContentFilters, orderBy } = initSearchFilter($page.url.search);
 
-  const contentFilters: ContentFilterCategory[] = [
-    'GROSSNESS',
-    'VIOLENCE',
-    'CRIME',
-    'CRUELTY',
-    'PHOBIA',
-    'GAMBLING',
-    'TRAUMA',
-    'HORROR',
-    'INSULT',
-    'OTHER',
-  ];
+  // const contentFilters: ContentFilterCategory[] = [
+  //   'GROSSNESS',
+  //   'VIOLENCE',
+  //   'CRIME',
+  //   'CRUELTY',
+  //   'PHOBIA',
+  //   'GAMBLING',
+  //   'TRAUMA',
+  //   'HORROR',
+  //   'INSULT',
+  //   'OTHER',
+  // ];
 
   const updateSearchFilter = () => {
     const stringifiedURL = qs.stringifyUrl(
@@ -56,27 +55,57 @@
   };
 </script>
 
-<div class="max-w-300 grow <sm:(w-full bg-cardprimary pt-5) sm:(grid grid-cols-[2fr_7fr] mx-10 gap-11.5 my-9.5)">
-  <aside class="min-w-38 max-w-61 <sm:hidden">
-    <div class="bg-cardprimary border border-secondary rounded-2xl px-3 py-4">
+<div
+  class={css({
+    flexGrow: '1',
+    maxWidth: '1200px',
+    smDown: {
+      paddingTop: '20px',
+      width: 'full',
+      backgroundColor: 'white',
+    },
+    sm: {
+      display: 'grid',
+      gridTemplateColumns: '[2fr 7fr]',
+      gap: '46px',
+      marginX: '40px',
+      marginY: '38px',
+    },
+  })}
+>
+  <aside class={css({ minWidth: '152px', maxWidth: '244px', hideBelow: 'sm' })}>
+    <div
+      class={css({
+        borderWidth: '1px',
+        borderColor: 'gray.200',
+        borderRadius: '16px',
+        paddingX: '12px',
+        paddingY: '16px',
+        backgroundColor: 'white',
+      })}
+    >
       <button
-        class="w-full flex items-center justify-between py-3 gap-2.5"
+        class={flex({ align: 'center', justify: 'space-between', gap: '10px', paddingY: '12px', width: 'full' })}
         type="button"
         on:click={() => (showTagOption = !showTagOption)}
       >
-        <p class="body-15-b w-full max-w-82.5">태그 옵션</p>
+        <p class={css({ fontSize: '15px', fontWeight: 'bold', textAlign: 'left', width: 'full', maxWidth: '330px' })}>
+          태그 옵션
+        </p>
         <Icon
-          class={clsx('square-4 color-icon-secondary', showTagOption && 'transform rotate-180')}
+          style={css.raw({ color: 'gray.400', size: '20px' }, showTagOption && { transform: 'rotate(180deg)' })}
           icon={IconChevronDown}
         />
       </button>
 
       {#if showTagOption}
-        <div class="my-4">
-          <p class="body-15-sb text-secondary mb-2">포함 태그</p>
+        <div class={css({ marginY: '16px' })}>
+          <p class={css({ marginBottom: '8px', fontSize: '15px', fontWeight: 'semibold', color: 'gray.500' })}>
+            포함 태그
+          </p>
 
           <form
-            class="relative h-11.5 max-w-82.5 mb-3"
+            class={css({ position: 'relative', marginBottom: '12px', height: '46px', maxWidth: '330px' })}
             on:submit|preventDefault={() => {
               const escapedValue = includeValue.trim().replaceAll(' ', '_');
 
@@ -91,19 +120,41 @@
             }}
           >
             <input
-              class="rounded-2.5 h-11.5 w-full py-2 pr-11 pl-4 border border-secondary body-14-m"
+              class={css({
+                borderWidth: '1px',
+                borderColor: 'gray.200',
+                borderRadius: '10px',
+                paddingY: '8px',
+                paddingLeft: '16px',
+                paddingRight: '44px',
+                fontSize: '14px',
+                fontWeight: 'medium',
+                height: '46px',
+                width: 'full',
+              })}
               type="text"
               bind:value={includeValue}
             />
-            <button class="absolute inset-y-0 right-3.5 flex center text-secondary h-100%" type="submit">
-              <Icon class="square-5 transition" icon={IconSearch} />
+
+            <button
+              class={center({
+                position: 'absolute',
+                top: '0',
+                bottom: '0',
+                right: '14px',
+                color: 'gray.500',
+                height: 'full',
+              })}
+              type="submit"
+            >
+              <Icon style={css.raw({ size: '20px', transition: 'common' })} icon={IconSearch} />
             </button>
           </form>
 
-          <div class="flex flex-wrap gap-1.5">
+          <div class={flex({ flexWrap: 'wrap', gap: '6px' })}>
             {#each includeTags as tag (tag)}
               <Tag
-                class="w-fit cursor-pointer"
+                style={css.raw({ width: 'fit', cursor: 'pointer' })}
                 as="label"
                 size="sm"
                 on:change={() => {
@@ -117,10 +168,20 @@
             {/each}
           </div>
 
-          <p class="body-15-sb text-secondary mb-2 mt-4">제외 태그</p>
+          <p
+            class={css({
+              marginTop: '16px',
+              marginBottom: '8px',
+              fontSize: '15px',
+              fontWeight: 'semibold',
+              color: 'gray.500',
+            })}
+          >
+            제외 태그
+          </p>
 
           <form
-            class="relative h-11.5 max-w-82.5 mt-3"
+            class={css({ position: 'relative', marginTop: '12px', height: '46px', maxWidth: '330px' })}
             on:submit|preventDefault={() => {
               const escapedValue = excludeValue.trim().replaceAll(' ', '_');
 
@@ -135,19 +196,41 @@
             }}
           >
             <input
-              class="rounded-2.5 h-11.5 w-full py-2 pr-11 pl-4 border border-secondary body-14-m"
+              class={css({
+                borderWidth: '1px',
+                borderColor: 'gray.200',
+                borderRadius: '10px',
+                paddingY: '8px',
+                paddingRight: '44px',
+                paddingLeft: '16px',
+                fontSize: '14px',
+                fontWeight: 'medium',
+                height: '46px',
+                width: 'full',
+              })}
               type="text"
               bind:value={excludeValue}
             />
-            <button class="absolute inset-y-0 right-3.5 flex center text-secondary h-100%" type="submit">
-              <Icon class="square-5 transition" icon={IconSearch} />
+
+            <button
+              class={center({
+                position: 'absolute',
+                top: '0',
+                bottom: '0',
+                right: '14px',
+                color: 'gray.500',
+                height: 'full',
+              })}
+              type="submit"
+            >
+              <Icon style={css.raw({ size: '20px', transition: 'common' })} icon={IconSearch} />
             </button>
           </form>
 
-          <div class="flex flex-wrap gap-1.5 mt-3">
+          <div class={flex({ flexWrap: 'wrap', gap: '6px', marginTop: '12px' })}>
             {#each excludeTags as tag (tag)}
               <Tag
-                class="w-fit cursor-pointer"
+                style={css.raw({ width: 'fit', cursor: 'pointer' })}
                 as="label"
                 size="sm"
                 on:change={() => {
@@ -162,16 +245,26 @@
         </div>
       {/if}
 
-      <hr class="w-full border-color-alphagray-10" />
+      <hr class={css({ borderStyle: 'none', backgroundColor: 'gray.200', height: '1px' })} />
 
       <button
-        class="w-full flex items-center justify-between py-3 gap-2.5 mt-4"
+        class={flex({
+          align: 'center',
+          justify: 'space-between',
+          gap: '10px',
+          marginTop: '16px',
+          paddingY: '12px',
+          width: 'full',
+        })}
         type="button"
         on:click={() => (showAdultOption = !showAdultOption)}
       >
-        <p class="body-15-b w-full max-w-82.5">성인물 옵션</p>
+        <p class={css({ fontSize: '15px', fontWeight: 'bold', textAlign: 'left', width: 'full', maxWidth: '330px' })}>
+          성인물 옵션
+        </p>
+
         <Icon
-          class={clsx('square-4 color-icon-secondary', showAdultOption && 'transform rotate-180')}
+          style={css.raw({ size: '20px', color: 'gray.400' }, showAdultOption && { transform: 'rotate(180deg)' })}
           icon={IconChevronDown}
         />
       </button>
@@ -179,7 +272,13 @@
       {#if showAdultOption}
         <fieldset>
           <Radio
-            class="gap-2 body-15-sb text-secondary mt-2"
+            style={css.raw({
+              gap: '8px',
+              marginTop: '8px',
+              fontSize: '15px',
+              fontWeight: 'semibold',
+              color: 'gray.500',
+            })}
             checked={adultFilter === null}
             on:change={() => {
               adultFilter = null;
@@ -189,7 +288,13 @@
             성인물 포함
           </Radio>
           <Radio
-            class="gap-2 body-15-sb text-secondary mt-2"
+            style={css.raw({
+              gap: '8px',
+              marginTop: '8px',
+              fontSize: '15px',
+              fontWeight: 'semibold',
+              color: 'gray.500',
+            })}
             checked={adultFilter === false}
             on:change={() => {
               adultFilter = false;
@@ -199,7 +304,13 @@
             성인물 제외
           </Radio>
           <Radio
-            class="gap-2 body-15-sb text-secondary mt-2"
+            style={css.raw({
+              gap: '8px',
+              marginTop: '8px',
+              fontSize: '15px',
+              fontWeight: 'semibold',
+              color: 'gray.500',
+            })}
             checked={adultFilter === true}
             on:change={() => {
               adultFilter = true;
@@ -210,58 +321,28 @@
           </Radio>
         </fieldset>
       {/if}
-
-      <!-- <hr class="w-full border-color-alphagray-10 my-4" />
-
-      <button
-        class="w-full flex items-center justify-between py-3 gap-2.5"
-        type="button"
-        on:click={() => (showTriggerOption = !showTriggerOption)}
-      >
-        <p class="body-15-b w-full max-w-82.5">트리거 워닝</p>
-      </button>
-
-      {#if showTriggerOption}
-        <div class="flex flex-wrap gap-3">
-          {#each contentFilters as contentFilter (contentFilter)}
-            <Checkbox
-              class="body-14-m"
-              checked={!excludeContentFilters.includes(contentFilter)}
-              on:change={() => {
-                excludeContentFilters = excludeContentFilters.includes(contentFilter)
-                  ? excludeContentFilters.filter((f) => f !== contentFilter)
-                  : [...excludeContentFilters, contentFilter];
-
-                updateSearchFilter();
-              }}
-            >
-              {filterToLocaleString[contentFilter]}
-            </Checkbox>
-          {/each}
-        </div>
-      {/if} -->
     </div>
   </aside>
 
-  <div class="sm:max-w-185">
-    <div class="flex items-center justify-between w-full <sm:px-4">
-      <h1 class="title-24-eb grow">검색결과</h1>
+  <div class={css({ sm: { maxWidth: '740px' } })}>
+    <div class={flex({ align: 'center', justify: 'space-between', width: 'full', smDown: { paddingX: '16px' } })}>
+      <h1 class={css({ flexGrow: '1', fontSize: '24px', fontWeight: 'bold' })}>검색결과</h1>
 
       <Button
-        class="sm:hidden mx-1 shrink-0"
+        style={css.raw({ flexShrink: '0', marginX: '4px', hideFrom: 'sm' })}
         color="tertiary"
         size="md"
         variant="outlined"
         on:click={() => (filterOpen = true)}
       >
-        <Icon class="square-5" icon={IconFilter} />
+        <Icon style={css.raw({ size: '20px' })} icon={IconFilter} />
         필터
       </Button>
 
       <Menu as="div" placement="bottom">
-        <Button slot="value" class="shrink-0" color="tertiary" size="md" variant="outlined">
+        <Button slot="value" style={css.raw({ flexShrink: '0' })} color="tertiary" size="md" variant="outlined">
           {orderBy === 'LATEST' ? '최신순' : '정확도순'}
-          <Icon class="square-5" icon={IconChevronDown} />
+          <Icon style={css.raw({ size: '20px' })} icon={IconChevronDown} />
         </Button>
 
         <MenuItem
@@ -290,27 +371,31 @@
 <Modal bind:open={filterOpen}>
   <svelte:fragment slot="title">검색 필터</svelte:fragment>
 
-  <hr class="w-full border-color-alphagray-10 mb-2" />
+  <hr class={css({ borderStyle: 'none', marginBottom: '8px', backgroundColor: 'gray.200', height: '1px' })} />
 
-  <div class="overflow-y-auto">
+  <div class={css({ overflowY: 'auto' })}>
     <button
-      class="w-full flex items-center justify-between py-3 gap-2.5"
+      class={flex({ align: 'center', justify: 'space-between', gap: '10px', paddingY: '12px', width: 'full' })}
       type="button"
       on:click={() => (showTagOption = !showTagOption)}
     >
-      <p class="body-15-b w-full max-w-82.5">태그 옵션</p>
+      <p class={css({ fontSize: '15px', textAlign: 'left', fontWeight: 'bold', width: 'full', maxWidth: '330px' })}>
+        태그 옵션
+      </p>
       <Icon
-        class={clsx('square-4 color-icon-secondary', showTagOption && 'transform rotate-180')}
+        style={css.raw({ color: 'gray.400', size: '20px' }, showTagOption && { transform: 'rotate(180deg)' })}
         icon={IconChevronDown}
       />
     </button>
 
     {#if showTagOption}
-      <div class="my-4">
-        <p class="body-15-sb text-secondary mb-2">포함 태그</p>
+      <div class={css({ marginY: '16px' })}>
+        <p class={css({ marginBottom: '8px', fontSize: '15px', fontWeight: 'semibold', color: 'gray.500' })}>
+          포함 태그
+        </p>
 
         <form
-          class="relative h-11.5 max-w-82.5 mb-3"
+          class={css({ position: 'relative', marginBottom: '12px', height: '46px', maxWidth: '330px' })}
           on:submit|preventDefault={() => {
             const escapedValue = includeValue.trim().replaceAll(' ', '_');
 
@@ -324,19 +409,40 @@
           }}
         >
           <input
-            class="rounded-2.5 h-11.5 w-full py-2 pr-11 pl-4 border border-secondary body-14-m"
+            class={css({
+              borderWidth: '1px',
+              borderColor: 'gray.200',
+              borderRadius: '10px',
+              paddingY: '8px',
+              paddingLeft: '16px',
+              paddingRight: '44px',
+              fontSize: '14px',
+              fontWeight: 'medium',
+              height: '46px',
+              width: 'full',
+            })}
             type="text"
             bind:value={includeValue}
           />
-          <div class="absolute inset-y-0 right-3.5 flex center text-secondary h-100%">
-            <Icon class="square-5 transition" icon={IconSearch} />
+
+          <div
+            class={center({
+              position: 'absolute',
+              top: '0',
+              bottom: '0',
+              right: '14px',
+              color: 'gray.500',
+              height: 'full',
+            })}
+          >
+            <Icon style={css.raw({ size: '20px', transition: 'common' })} icon={IconSearch} />
           </div>
         </form>
 
-        <div class="flex flex-wrap gap-1.5">
+        <div class={flex({ flexWrap: 'wrap', gap: '6px' })}>
           {#each includeTags as tag (tag)}
             <Tag
-              class="w-fit"
+              style={css.raw({ width: 'fit' })}
               as="label"
               size="sm"
               on:change={() => {
@@ -348,10 +454,20 @@
           {/each}
         </div>
 
-        <p class="body-15-sb text-secondary mb-2 mt-4">제외 태그</p>
+        <p
+          class={css({
+            marginTop: '16px',
+            marginBottom: '8px',
+            fontSize: '15px',
+            fontWeight: 'semibold',
+            color: 'gray.500',
+          })}
+        >
+          제외 태그
+        </p>
 
         <form
-          class="relative h-11.5 max-w-82.5 mt-3"
+          class={css({ position: 'relative', marginTop: '12px', height: '46px', maxWidth: '330px' })}
           on:submit|preventDefault={() => {
             const escapedValue = excludeValue.trim().replaceAll(' ', '_');
 
@@ -365,19 +481,39 @@
           }}
         >
           <input
-            class="rounded-2.5 h-11.5 w-full py-2 pr-11 pl-4 border border-secondary body-14-m"
+            class={css({
+              borderWidth: '1px',
+              borderColor: 'gray.200',
+              borderRadius: '10px',
+              paddingY: '8px',
+              paddingLeft: '16px',
+              paddingRight: '44px',
+              fontSize: '14px',
+              fontWeight: 'medium',
+              height: '46px',
+              width: 'full',
+            })}
             type="text"
             bind:value={excludeValue}
           />
-          <div class="absolute inset-y-0 right-3.5 flex center text-secondary h-100%">
-            <Icon class="square-5 transition" icon={IconSearch} />
+          <div
+            class={center({
+              position: 'absolute',
+              top: '0',
+              bottom: '0',
+              right: '14px',
+              color: 'gray.500',
+              height: 'full',
+            })}
+          >
+            <Icon style={css.raw({ size: '20px', transition: 'common' })} icon={IconSearch} />
           </div>
         </form>
 
-        <div class="flex flex-wrap gap-1.5 mt-3">
+        <div class={flex({ flexWrap: 'wrap', gap: '6px', marginTop: '12px' })}>
           {#each excludeTags as tag (tag)}
             <Tag
-              class="w-fit"
+              style={css.raw({ width: 'fit' })}
               as="label"
               size="sm"
               on:change={() => {
@@ -391,16 +527,25 @@
       </div>
     {/if}
 
-    <hr class="w-full border-color-alphagray-10" />
+    <hr class={css({ borderStyle: 'none', backgroundColor: 'gray.200', height: '1px' })} />
 
     <button
-      class="w-full flex items-center justify-between py-3 gap-2.5 mt-4"
+      class={flex({
+        align: 'center',
+        justify: 'space-between',
+        gap: '10px',
+        marginTop: '16px',
+        paddingY: '12px',
+        width: 'full',
+      })}
       type="button"
       on:click={() => (showAdultOption = !showAdultOption)}
     >
-      <p class="body-15-b w-full max-w-82.5">성인물 옵션</p>
+      <p class={css({ fontSize: '15px', fontWeight: 'bold', textAlign: 'left', width: 'full', maxWidth: '330px' })}>
+        성인물 옵션
+      </p>
       <Icon
-        class={clsx('square-4 color-icon-secondary', showAdultOption && 'transform rotate-180')}
+        style={css.raw({ color: 'gray.400', size: '20px' }, showAdultOption && { transform: 'rotate(180deg)' })}
         icon={IconChevronDown}
       />
     </button>
@@ -408,7 +553,7 @@
     {#if showAdultOption}
       <fieldset>
         <Radio
-          class="gap-2 body-15-sb text-secondary mt-2"
+          style={css.raw({ gap: '8px', marginTop: '8px', fontSize: '15px', fontWeight: 'semibold', color: 'gray.500' })}
           checked={adultFilter === null}
           on:change={() => {
             adultFilter = null;
@@ -417,7 +562,7 @@
           성인물 포함
         </Radio>
         <Radio
-          class="gap-2 body-15-sb text-secondary mt-2"
+          style={css.raw({ gap: '8px', marginTop: '8px', fontSize: '15px', fontWeight: 'semibold', color: 'gray.500' })}
           checked={adultFilter === false}
           on:change={() => {
             adultFilter = false;
@@ -426,7 +571,7 @@
           성인물 제외
         </Radio>
         <Radio
-          class="gap-2 body-15-sb text-secondary mt-2"
+          style={css.raw({ gap: '8px', marginTop: '8px', fontSize: '15px', fontWeight: 'semibold', color: 'gray.500' })}
           checked={adultFilter === true}
           on:change={() => {
             adultFilter = true;
@@ -437,25 +582,27 @@
       </fieldset>
     {/if}
 
-    <hr class="w-full border-color-alphagray-10 my-4" />
+    <!-- <hr class={css({ borderStyle: 'none', marginY: '16px', backgroundColor: 'gray.200', height: '1px' })} />
 
     <button
-      class="w-full flex items-center justify-between py-3 gap-2.5"
+      class={flex({ align: 'center', justify: 'space-between', gap: '10px', paddingY: '12px', width: 'full' })}
       type="button"
       on:click={() => (showTriggerOption = !showTriggerOption)}
     >
-      <p class="body-15-b w-full max-w-82.5">트리거 워닝</p>
+      <p class={css({ fontSize: '15px', fontWeight: 'bold', textAlign: 'left', width: 'full', maxWidth: '330px' })}>
+        트리거 워닝
+      </p>
       <Icon
-        class={clsx('square-4 color-icon-secondary', showTriggerOption && 'transform rotate-180')}
+        style={css.raw({ color: 'gray.400', size: '20px' }, showTriggerOption && { transform: 'rotate(180deg)' })}
         icon={IconChevronDown}
       />
     </button>
 
     {#if showTriggerOption}
-      <div class="flex flex-wrap gap-3">
+      <div class={flex({ flexWrap: 'wrap', gap: '12px' })}>
         {#each contentFilters as contentFilter (contentFilter)}
           <Checkbox
-            class="body-14-m"
+            style={css.raw({ fontSize: '14px', fontWeight: 'medium' })}
             checked={!excludeContentFilters.includes(contentFilter)}
             on:change={() => {
               excludeContentFilters = excludeContentFilters.includes(contentFilter)
@@ -467,11 +614,11 @@
           </Checkbox>
         {/each}
       </div>
-    {/if}
+    {/if} -->
 
-    <div class="flex gap-3 mt-4">
+    <div class={flex({ gap: '12px', marginTop: '16px' })}>
       <Button
-        class="grow"
+        style={css.raw({ flexGrow: '1' })}
         color="tertiary"
         size="xl"
         variant="outlined"
@@ -488,7 +635,7 @@
         초기화
       </Button>
       <Button
-        class="grow-3"
+        style={css.raw({ flexGrow: '3' })}
         size="xl"
         on:click={() => {
           filterOpen = false;

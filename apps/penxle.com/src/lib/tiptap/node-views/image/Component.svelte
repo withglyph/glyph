@@ -1,14 +1,15 @@
 <script lang="ts">
-  import { RingSpinner } from '@penxle/ui/spinners';
-  import clsx from 'clsx';
   import ky from 'ky';
   import { onMount } from 'svelte';
   import IconTrash from '~icons/tabler/trash';
   import { graphql } from '$glitch';
   import { Icon, Image } from '$lib/components';
+  import { RingSpinner } from '$lib/components/spinners';
   import { portal, scrollLock } from '$lib/svelte/actions';
   import { NodeView } from '$lib/tiptap';
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
+  import { css } from '$styled-system/css';
+  import { center } from '$styled-system/patterns';
   import FileImage from './FileImage.svelte';
   import type { NodeViewProps } from '$lib/tiptap';
 
@@ -63,33 +64,41 @@
   });
 </script>
 
-<NodeView class="flex center py-4px" data-drag-handle draggable>
+<NodeView style={center.raw({ paddingY: '4px' })} data-drag-handle draggable>
   {#if editor?.isEditable}
-    <div class={clsx('relative max-w-full pointer-events-auto', selected && 'ring-2px ring-teal-500')}>
+    <div
+      class={css(
+        { position: 'relative', maxWidth: 'full', pointerEvents: 'auto' },
+        selected && { ringWidth: '2px', ringColor: 'teal.500' },
+      )}
+    >
       {#if node.attrs.__file}
-        <FileImage class="w-full" file={node.attrs.__file} />
-        <div class="absolute inset-0 flex center bg-white/50">
-          <RingSpinner class="w-8 h-8 text-brand-50" />
+        <FileImage style={css.raw({ width: 'full' })} file={node.attrs.__file} />
+        <div class={center({ position: 'absolute', inset: '0', backgroundColor: '[white/50]' })}>
+          <RingSpinner style={css.raw({ size: '32px', color: '[#FCD242]' })} />
         </div>
       {:else if node.attrs.__data}
-        <Image class="max-w-full" $image={node.attrs.__data} />
+        <Image style={css.raw({ maxWidth: 'full' })} $image={node.attrs.__data} />
       {/if}
     </div>
   {:else if node.attrs.__data}
-    <div class="contents pointer-events-auto" role="presentation" on:click={() => (open = true)}>
-      <Image class="max-w-full" $image={node.attrs.__data} />
+    <div class={css({ display: 'contents', pointerEvents: 'auto' })} role="presentation" on:click={() => (open = true)}>
+      <Image style={css.raw({ maxWidth: 'full' })} $image={node.attrs.__data} />
     </div>
 
     {#if open}
       <div
-        class="fixed inset-0 m-4 z-999 flex center"
+        class={center({ position: 'fixed', zIndex: '[999]', inset: '0', margin: '16px' })}
         role="presentation"
         on:click={() => (open = false)}
         use:portal
         use:scrollLock
       >
-        <div class="fixed inset-0 bg-black/50" />
-        <Image class="max-w-full max-h-full overflow-scroll" $image={node.attrs.__data} />
+        <div class={css({ position: 'fixed', inset: '0', backgroundColor: '[black.50]' })} />
+        <Image
+          style={css.raw({ maxWidth: 'full', maxHeight: 'full', overflow: 'scroll' })}
+          $image={node.attrs.__data}
+        />
       </div>
     {/if}
   {/if}
@@ -97,8 +106,17 @@
 
 {#if editor && selected}
   <TiptapNodeViewBubbleMenu {editor} {getPos} {node}>
-    <button class="p-4px rounded-2px transition hover:bg-gray-100" type="button" on:click={() => deleteNode()}>
-      <Icon class="text-gray-600 square-18px block" icon={IconTrash} />
+    <button
+      class={css({
+        borderRadius: '2px',
+        padding: '4px',
+        transition: 'common',
+        _hover: { backgroundColor: 'gray.100' },
+      })}
+      type="button"
+      on:click={() => deleteNode()}
+    >
+      <Icon style={css.raw({ color: 'gray.600', size: '18px' })} icon={IconTrash} />
     </button>
   </TiptapNodeViewBubbleMenu>
 {/if}

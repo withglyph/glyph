@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
   import { onMount } from 'svelte';
   import { graphql } from '$glitch';
+  import { Helmet } from '$lib/components';
   import { PostManageTable } from '$lib/components/pages/posts';
   import { pageSubTitle } from '$lib/stores';
 

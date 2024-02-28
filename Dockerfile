@@ -21,12 +21,11 @@ RUN pnpm install --frozen-lockfile --offline
 ARG APP
 ARG TURBO_TEAM
 ARG TURBO_TOKEN
-ARG SENTRY_AUTH_TOKEN
 ENV TURBO_TEAM=${TURBO_TEAM}
 ENV TURBO_TOKEN=${TURBO_TOKEN}
-ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+ENV NODE_ENV=production
 
-RUN pnpm turbo build --filter=@penxle/${APP}...
+RUN cd apps/${APP} && pnpm turbo build
 RUN pnpm deploy --filter=@penxle/${APP} --prod out
 
 # ---
@@ -41,6 +40,8 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 ARG APP
+ENV NODE_ENV=production
+
 COPY --from=build --chown=1000 /app/out/ .
 
 USER 1000

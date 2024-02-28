@@ -2,6 +2,8 @@
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { Icon } from '$lib/components';
+  import { css } from '$styled-system/css';
+  import { center } from '$styled-system/patterns';
 
   export let initialPage: number;
   export let totalItems: number;
@@ -25,9 +27,9 @@
   }
 </script>
 
-<div class="flex center mt-9 gap-1 pb-4" role="group">
+<div class={center({ gap: '4px', marginTop: '36px', paddingBottom: '16px' })} role="group">
   <button
-    class="square-7 flex center disabled:(text-disabled cursor-not-allowed)"
+    class={center({ size: '28px', _disabled: { color: 'gray.400', cursor: 'not-allowed' } })}
     disabled={currentPage <= displayPage}
     type="button"
     on:click={() => {
@@ -35,11 +37,24 @@
       currentPage = previousPageGroup * displayPage;
     }}
   >
-    <Icon class="square-3.5" icon={IconChevronLeft} />
+    <Icon style={css.raw({ size: '14px' })} icon={IconChevronLeft} />
   </button>
   {#each range as index (index)}
     <button
-      class="square-8 p-2 rounded-lg border border-alphagray-10 flex center body-13-b transition bg-cardprimary hover:(bg-gray-90 text-darkprimary) focus-visible:(bg-gray-90 text-darkprimary) aria-pressed:(bg-gray-90 text-darkprimary)"
+      class={center({
+        borderWidth: '1px',
+        borderColor: '[black/10]',
+        borderRadius: '8px',
+        padding: '8px',
+        size: '32px',
+        fontSize: '13px',
+        fontWeight: 'bold',
+        backgroundColor: 'white',
+        transition: 'common',
+        _hover: { color: 'white', backgroundColor: 'gray.900' },
+        _focusVisible: { color: 'white', backgroundColor: 'gray.900' },
+        _pressed: { color: 'white', backgroundColor: 'gray.900' },
+      })}
       aria-pressed={currentPage === index}
       type="button"
       on:click={() => {
@@ -50,7 +65,7 @@
     </button>
   {/each}
   <button
-    class="square-7 flex center disabled:(text-disabled cursor-not-allowed)"
+    class={center({ size: '28px', _disabled: { color: 'gray.400', cursor: 'not-allowed' } })}
     disabled={currentPageGroup === totalPageGroup}
     type="button"
     on:click={() => {
@@ -58,6 +73,6 @@
       currentPage = nextPageGroup * displayPage - (displayPage - 1);
     }}
   >
-    <Icon class="square-3.5" icon={IconChevronRight} />
+    <Icon style={css.raw({ size: '14px' })} icon={IconChevronRight} />
   </button>
 </div>

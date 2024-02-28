@@ -1,12 +1,30 @@
 <script lang="ts">
   import TabHead from '$lib/components/tab/TabHead.svelte';
   import TabHeadItem from '$lib/components/tab/TabHeadItem.svelte';
+  import { css } from '$styled-system/css';
 </script>
 
-<div class="bg-white text-3.75 sm:(border border-secondary rounded-2xl)">
-  <h2 class="title-20-eb mt-8 mb-4 <sm:hidden px-8">설정</h2>
+<div
+  class={css({
+    fontSize: '15px',
+    backgroundColor: 'white',
+    sm: { borderWidth: '1px', borderColor: 'gray.200', borderRadius: '16px' },
+  })}
+>
+  <h2
+    class={css({
+      marginTop: '32px',
+      marginBottom: '16px',
+      paddingX: '32px',
+      fontSize: '20px',
+      fontWeight: 'bold',
+      hideBelow: 'sm',
+    })}
+  >
+    설정
+  </h2>
 
-  <TabHead class="w-full sm:px-8" variant="secondary">
+  <TabHead style={css.raw({ width: 'full', sm: { paddingX: '32px' } })} variant="secondary">
     <TabHeadItem id={1} pathname="/me/settings">계정</TabHeadItem>
     <TabHeadItem id={2} pathname="/me/settings/notifications">알림</TabHeadItem>
     <TabHeadItem id={3} pathname="/me/settings/contentfilters">필터링</TabHeadItem>

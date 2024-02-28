@@ -1,30 +1,38 @@
 <script lang="ts">
-  import '../styles/index.css';
-  import 'virtual:uno.css';
+  import '../app.css';
 
-  import { AutoUpdater, Link, StackIndicator } from '@penxle/ui';
   import Logo from '$assets/branding/logo.svg?component';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
 </script>
 
-<div class="min-h-screen flex flex-col center">
-  <header class="relative sticky top-0 z-10 w-full bg-brand-50 px-8">
-    <div class="mx-auto h-16 max-w-screen-lg flex items-center">
-      <Link href="https://penxle.com">
-        <Logo class="square-8" />
-      </Link>
+<div class={center({ flexDirection: 'column', minHeight: '100vh' })}>
+  <header
+    class={css({
+      position: 'sticky',
+      top: '0',
+      paddingX: '32px',
+      width: '100%',
+      backgroundColor: 'black',
+      zIndex: '10',
+    })}
+  >
+    <div class={flex({ align: 'center', marginX: 'auto', height: '64px', maxWidth: '1000px' })}>
+      <a href="https://penxle.com">
+        <Logo class={css({ width: '32px', height: '32px' })} />
+      </a>
 
-      <div class="mx-4 h-8 border-l border-l-gray-60" />
+      <div class={css({ borderLeftWidth: '1px', borderLeftColor: 'white', marginX: '16px', height: '32px' })} />
 
-      <Link class="select-none text-lg font-bold" href="/">도움 센터</Link>
+      <a class={css({ fontSize: '18px', fontWeight: 'bold', color: 'white', userSelect: 'none' })} href="/">
+        도움 센터
+      </a>
     </div>
   </header>
 
-  <main class="w-full grow px-8 py-4">
-    <div class="mx-auto max-w-screen-lg">
+  <main class={css({ flexGrow: '1', paddingX: '32px', paddingY: '16px', width: '100%' })}>
+    <div class={css({ marginX: 'auto', maxWidth: '1000px' })}>
       <slot />
     </div>
   </main>
 </div>
-
-<AutoUpdater />
-<StackIndicator />

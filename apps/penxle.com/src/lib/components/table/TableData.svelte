@@ -1,10 +1,21 @@
 <script lang="ts">
-  import clsx from 'clsx';
+  import { css } from '$styled-system/css';
+  import type { SystemStyleObject } from '$styled-system/types';
 
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 </script>
 
-<td class={clsx('py-4 first-of-type:pl-4 pr-4 truncate whitespace-nowrap', _class)}>
+<td
+  class={css(
+    {
+      paddingRight: '16px',
+      paddingY: '16px',
+      whiteSpace: 'nowrap',
+      truncate: true,
+      _firstOfType: { paddingLeft: '16px' },
+    },
+    style,
+  )}
+>
   <slot />
 </td>

@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { Helmet, Link } from '@penxle/ui';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button } from '$lib/components';
+  import { Button, Helmet, Link } from '$lib/components';
   import { Checkbox, FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { CreateUserSchema } from '$lib/validations';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type { ChangeEventHandler } from 'svelte/elements';
 
   $: query = graphql(`
@@ -45,27 +46,31 @@
   $: consentAll = $data.termsConsent && $data.marketingConsent;
   const handleConsentAll: ChangeEventHandler<HTMLInputElement> = (event) => {
     const { checked } = event.currentTarget;
-    setFields('termsConsent', checked);
-    setFields('marketingConsent', checked);
+    setFields('termsConsent', checked, true);
+    setFields('marketingConsent', checked, true);
   };
 </script>
 
 <Helmet description="이메일을 통해 펜슬에 가입하거나 로그인할 수 있어요" title="펜슬 가입하기" />
 
-<h1 class="font-bold text-xl w-full max-w-87.5">펜슬 가입하기</h1>
+<h1 class={css({ width: 'full', maxWidth: '350px', fontSize: '20px', fontWeight: 'bold' })}>펜슬 가입하기</h1>
 
-<form class="mt-6 w-full max-w-87.5 space-y-4" use:form>
+<form class={flex({ direction: 'column', gap: '16px', marginTop: '24px', width: 'full', maxWidth: '350px' })} use:form>
   <input name="token" type="hidden" value={$page.url.searchParams.get('token')} />
 
   <FormField name="name" label="닉네임">
-    <TextInput class="w-full font-bold" maxlength={20} placeholder="닉네임 입력">
-      <span slot="right-icon" class="body-14-m text-disabled">{$data.name.length} / 20</span>
+    <TextInput style={css.raw({ width: 'full', fontWeight: 'bold' })} maxlength={20} placeholder="닉네임 입력">
+      <span slot="right-icon" class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.400' })}>
+        {$data.name.length}/20
+      </span>
     </TextInput>
   </FormField>
 
-  <section class="my-4 space-y-3">
-    <Checkbox class="font-bold" checked={consentAll} on:change={handleConsentAll}>전체 동의</Checkbox>
-    <Checkbox name="termsConsent" class="text-sm">
+  <section class={flex({ direction: 'column', gap: '12px', marginY: '16px' })}>
+    <Checkbox style={css.raw({ fontWeight: 'bold' })} checked={consentAll} on:change={handleConsentAll}>
+      전체 동의
+    </Checkbox>
+    <Checkbox name="termsConsent" style={css.raw({ fontSize: '14px' })}>
       <Link href="https://help.penxle.com/legal/terms" underline>이용약관</Link> 및 <Link
         href="https://help.penxle.com/legal/privacy"
         underline
@@ -73,7 +78,9 @@
         개인정보처리방침
       </Link>에 동의해요 (필수)
     </Checkbox>
-    <Checkbox name="marketingConsent" class="text-sm">이벤트 등 펜슬 소식 받아보기 (선택)</Checkbox>
+    <Checkbox name="marketingConsent" style={css.raw({ fontSize: '14px' })}>
+      이벤트 등 펜슬 소식 받아보기 (선택)
+    </Checkbox>
   </section>
-  <Button class="w-full" size="xl" type="submit">펜슬 회원가입 하기</Button>
+  <Button style={css.raw({ width: 'full' })} size="xl" type="submit">펜슬 회원가입 하기</Button>
 </form>

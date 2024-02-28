@@ -1,14 +1,16 @@
 <script lang="ts">
   import { Editor, posToDOMRect } from '@tiptap/core';
   import { Plugin, PluginKey } from '@tiptap/pm/state';
-  import { EditorView } from '@tiptap/pm/view';
   import * as R from 'radash';
   import { onMount, tick } from 'svelte';
   import IconCheck from '~icons/tabler/check';
   import IconTrash from '~icons/tabler/trash';
   import { Icon, Tooltip } from '$lib/components';
   import { createFloatingActions } from '$lib/svelte/actions';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type { VirtualElement } from '@floating-ui/dom';
+  import type { EditorView } from '@tiptap/pm/view';
 
   const key = 'ruby-edit-menu';
 
@@ -66,7 +68,22 @@
 
 {#if open}
   <form
-    class="absolute flex gap-2 items-center z-25 select-none bg-cardprimary body-13-m text-secondary rounded-lg p-x-xs p-y-2 shadow-[0_2px_10px_0_rgba(0,0,0,0.10)]"
+    class={flex({
+      position: 'absolute',
+      align: 'center',
+      gap: '8px',
+      paddingX: '12px',
+      paddingY: '8px',
+      borderRadius: '8px',
+      fontSize: '13px',
+      fontWeight: 'medium',
+      color: 'gray.500',
+      backgroundColor: 'white',
+      boxShadow: '[0 2px 10px 0 var(--shadow-color)]',
+      boxShadowColor: '[black/10]',
+      zIndex: '30',
+      userSelect: 'none',
+    })}
     on:submit|preventDefault={() => {
       const command = editor.chain().focus();
       if (trimmedText.length > 0) {
@@ -77,15 +94,26 @@
     }}
     use:floating
   >
-    <span class="invisible min-w-8.25rem max-w-20rem text-clip overflow-hidden whitespace-nowrap">{text}</span>
+    <span
+      class={css({
+        visibility: 'hidden',
+        minWidth: '132px',
+        maxWidth: '320px',
+        textOverflow: 'clip',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+      })}
+    >
+      {text}
+    </span>
     <input
-      class="absolute left-xs w-full max-w-20rem"
+      class={css({ position: 'absolute', left: '12px', width: 'full', maxWidth: '320px' })}
       type="text"
       on:mousedown|stopPropagation={() => (preventUpdate = true)}
       bind:value={text}
     />
     <Tooltip message={trimmedText.length > 0 ? '적용' : '삭제'}>
-      <button class="text-secondary hover:text-primary active:text-primary" type="submit">
+      <button class={css({ color: { base: 'gray.500', _hover: 'gray.900', _active: 'gray.900' } })} type="submit">
         {#if trimmedText.length > 0}
           <Icon icon={IconCheck} />
         {:else}
@@ -93,6 +121,6 @@
         {/if}
       </button>
     </Tooltip>
-    <div class="absolute square-2 rotate-45 bg-cardprimary" use:arrow />
+    <div class={css({ size: '8px', backgroundColor: 'white' })} use:arrow />
   </form>
 {/if}

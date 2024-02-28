@@ -5,6 +5,8 @@
   import { fragment, graphql } from '$glitch';
   import { Badge, Icon, Modal } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import { getEditorContext } from './context';
   import type { EditorPage_RevisionListModal_Post } from '$glitch';
 
@@ -59,9 +61,9 @@
 <Modal size="lg" bind:open>
   <svelte:fragment slot="title">저장 이력</svelte:fragment>
 
-  <article class="flex gap-xs h-32rem">
+  <article class={flex({ gap: '12px', height: '512px' })}>
     <iframe
-      class="w-28.625rem"
+      class={css({ width: '458px' })}
       src={qs.stringifyUrl({
         url: previewSource,
         query: {
@@ -71,15 +73,25 @@
       })}
       title="미리보기"
     />
-    <aside class="flex-grow">
-      <ul class="overflow-y-auto w-full h-full">
+    <aside class={css({ flexGrow: '1' })}>
+      <ul class={css({ size: 'full', overflowY: 'auto' })}>
         {#each $post.revisions as revision (revision.id)}
           <li
-            class="block rounded p-x-2 p-y-xs w-full data-[pressed=true]:bg-primary hover:bg-primary flex justify-between items-center group"
+            class={flex({
+              'justify': 'space-between',
+              'align': 'center',
+              'borderRadius': '4px',
+              'paddingX': '8px',
+              'paddingY': '12px',
+              'width': 'full',
+              '_hover': { backgroundColor: 'gray.50' },
+              '_pressed': { backgroundColor: 'gray.50' },
+              '--menu-display': { base: 'none', _pressed: 'block' },
+            })}
             data-pressed={selectedRevisionId === revision.id}
           >
             <button
-              class="flex-grow"
+              class={css({ flexGrow: '1' })}
               aria-pressed={selectedRevisionId === revision.id}
               type="button"
               on:click={() => {
@@ -87,13 +99,13 @@
               }}
             >
               <dl>
-                <dt class="body-16-b text-primary flex gap-0.25rem">
+                <dt class={flex({ gap: '4px', fontWeight: 'bold' })}>
                   <time datetime={revision.createdAt.slice(0, 11)}>{dayjs(revision.createdAt).formatAsDate()}</time>
                   {#if revision.kind === 'PUBLISHED' || revision.kind === 'ARCHIVED'}
                     <Badge color="green">발행</Badge>
                   {/if}
                 </dt>
-                <dd class="body-13-m text-secondary">
+                <dd class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
                   <time datetime={revision.createdAt.slice(12)}>
                     {dayjs(revision.createdAt).format('HH:mm:ss')}
                   </time>
@@ -101,11 +113,15 @@
               </dl>
             </button>
             <Menu
-              class="hidden group-data-[pressed=true]:enabled:block p-0.5rem text-secondary hover:text-primary"
+              style={css.raw({
+                display: '[var(--menu-display)]',
+                padding: '8px',
+                color: { base: 'gray.500', _hover: 'gray.900' },
+              })}
               {disabled}
               placement="right-start"
             >
-              <Icon slot="value" class="square-6" icon={IconDots} />
+              <Icon slot="value" style={css.raw({ size: '24px' })} icon={IconDots} />
               <MenuItem
                 on:click={async () => {
                   const fetched = await restoreRevision.refetch({
@@ -139,7 +155,7 @@
               </MenuItem>
             </Menu>
           </li>
-          <hr class="m-y-xs last:hidden border-color-alphagray-10" />
+          <hr class={css({ borderColor: 'gray.200', marginY: '12px', _last: { display: 'none' } })} />
         {/each}
       </ul>
     </aside>

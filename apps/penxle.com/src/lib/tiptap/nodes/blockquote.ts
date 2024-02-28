@@ -1,6 +1,6 @@
 import { Node } from '@tiptap/core';
-import clsx from 'clsx';
 import { closest } from '$lib/utils';
+import { css } from '$styled-system/css';
 import { values } from '../values';
 
 const blockquotes = values.blockquote.map(({ value }) => value);
@@ -38,12 +38,24 @@ export const Blockquote = Node.create({
           return closest(blockquote, blockquotes);
         },
         renderHTML: ({ kind }) => ({
-          'class': clsx(
-            'border-text-primary pl-0.625rem my-0.34375rem',
-            kind === 1 && 'border-l-0.1875rem pr-6',
-            kind === 2 && 'pr-6 before:(block w-2rem content-[url(/blockquotes/carbon.svg)])',
-            kind === 3 &&
-              'text-center before:(block w-2rem mx-auto content-[url(/blockquotes/carbon.svg)]) after:(block w-2rem rotate-180 mx-auto content-[url(/blockquotes/carbon.svg)])',
+          'class': css(
+            { marginY: '[5.5px]', paddingLeft: '10px', borderColor: 'gray.900' },
+            kind === 1 && { borderLeftWidth: '3px', paddingRight: '24px' },
+            kind === 2 && {
+              paddingRight: '24px',
+              _before: { content: 'url(/blockquotes/carbon.svg)', display: 'block', width: '32px' },
+            },
+            kind === 3 && {
+              textAlign: 'center',
+              _before: { content: 'url(/blockquotes/carbon.svg)', display: 'block', marginX: 'auto', width: '32px' },
+              _after: {
+                content: 'url(/blockquotes/carbon.svg)',
+                display: 'block',
+                marginX: 'auto',
+                width: '32px',
+                rotate: '180deg',
+              },
+            },
           ),
           'data-kind': kind,
         }),

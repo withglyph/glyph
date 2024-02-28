@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { onMount } from 'svelte';
   import { slide } from 'svelte/transition';
   import IconCheckmark from '~icons/effit/checkmark';
@@ -24,6 +23,8 @@
   import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { createMutationForm } from '$lib/form';
   import { PublishPostInputSchema } from '$lib/validations/post';
+  import { css } from '$styled-system/css';
+  import { center, flex, grid } from '$styled-system/patterns';
   import CreateSpaceModal from '../../(default)/CreateSpaceModal.svelte';
   import { getEditorContext } from './context';
   import PublishMenuSearch from './PublishMenuSearch.svelte';
@@ -233,115 +234,288 @@
 </script>
 
 <div
-  class={clsx(
-    'bg-white z-50 <sm:(w-full shadow-[0px_8px_24px_0px_rgba(0,0,0,0.28)] rounded-t-3.5) sm:(border border-gray-200 border-t-none rounded-b-lg shadow-[0px_5px_22px_0px_rgba(0,0,0,0.06)])',
-    !open && 'hidden!',
+  class={css(
+    {
+      backgroundColor: 'white',
+      zIndex: '50',
+      smDown: {
+        borderTopRadius: '14px',
+        width: 'full',
+        boxShadow: '[0 8px 24px 0 var(--shadow-color)]',
+        boxShadowColor: '[black/28]',
+      },
+      sm: {
+        borderWidth: '1px',
+        borderColor: 'gray.200',
+        borderTopWidth: '0',
+        borderBottomRadius: '8px',
+        boxShadow: '[0 5px 22px 0 var(--shadow-color)]',
+        boxShadowColor: '[black/6]',
+      },
+    },
+    !open && { display: 'none' },
   )}
 >
-  <div class="py-4 px-6 border-b border-gray-200 <sm:border-gray-100">
-    <p class="text-16-sb <sm:(text-center relative)">
+  <div
+    class={css({
+      borderBottomWidth: '1px',
+      borderBottomColor: { base: 'gray.100', sm: 'gray.200' },
+      paddingX: '24px',
+      paddingY: '16px',
+    })}
+  >
+    <p class={css({ fontWeight: 'semibold', smDown: { position: 'relative', textAlign: 'center' } })}>
       게시 옵션
-      <button class="absolute right-0 sm:hidden" type="button" on:click={() => (open = false)}>
-        <Icon class="square-6" icon={IconX} />
+      <button
+        class={css({ position: 'absolute', right: '0', hideFrom: 'sm' })}
+        type="button"
+        on:click={() => (open = false)}
+      >
+        <Icon style={css.raw({ size: '24px' })} icon={IconX} />
       </button>
     </p>
-    <span class="text-12-r text-gray-500 mt-0.5 <sm:hidden">
+    <span class={css({ marginTop: '2px', fontSize: '12px', color: 'gray.500', hideBelow: 'sm' })}>
       다양한 옵션을 선택해 원하는 방식으로 게시글을 업로드할 수 있어요
     </span>
   </div>
 
-  <div class="flex <sm:flex-col">
+  <div class={flex({ smDown: { flexDirection: 'column' } })}>
     <div
-      class="w-52 flex py-1.5 <sm:(flex-row w-full overflow-x-auto whitespace-nowrap py-4 px-5 gap-7) sm:(border-r flex-col border-gray-200 gap-1.5)"
+      class={flex({
+        smDown: {
+          gap: '28px',
+          paddingX: '20px',
+          paddingY: '16px',
+          width: 'full',
+          whiteSpace: 'nowrap',
+          overflowX: 'auto',
+        },
+        sm: {
+          flexDirection: 'column',
+          gap: '6px',
+          borderRightWidth: '1px',
+          borderRightColor: 'gray.200',
+          paddingY: '6px',
+          width: '208px',
+        },
+      })}
     >
       <button
-        class={clsx(
-          'flex items-center text-15-sb <sm:(border-b-2 border-white text-gray-300 aria-pressed:(border-gray-950 text-gray-950)) sm:(text-13-r py-1 mx-2 rounded aria-pressed:bg-gray-50 hover:bg-gray-50)',
-        )}
+        class={flex({
+          align: 'center',
+          textAlign: 'left',
+          smDown: {
+            borderBottomWidth: '2px',
+            borderBottomColor: 'white',
+            fontSize: '15px',
+            fontWeight: 'semibold',
+            color: 'gray.300',
+            _pressed: { borderBottomColor: 'gray.950', color: 'gray.950' },
+          },
+          sm: {
+            fontSize: '13px',
+            borderRadius: '4px',
+            marginX: '8px',
+            paddingY: '4px',
+            _hover: { backgroundColor: 'gray.50' },
+            _pressed: { backgroundColor: 'gray.50' },
+          },
+        })}
         aria-pressed={tabIndex === 0}
         type="button"
         on:click={() => (tabIndex = 0)}
       >
         {#if selectedSpaceId || $post.space}
-          <Icon class="square-6 text-teal-500 <sm:hidden" icon={IconCheckmark} />
+          <Icon style={css.raw({ size: '24px', color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} />
         {:else}
-          <Icon class="square-6 text-pink-500 <sm:hidden" icon={IconDot} />
+          <Icon style={css.raw({ size: '24px', color: 'red.500', hideBelow: 'sm' })} icon={IconDot} />
         {/if}
-        <span class="w-full pb-2 sm:(py-2 px-1)">발행</span>
+        <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>발행</span>
       </button>
+
       <button
-        class={clsx(
-          'flex items-center text-15-sb <sm:(border-b-2 border-white text-gray-300 aria-pressed:(border-gray-950 text-gray-950)) sm:(text-13-r py-1 mx-2 rounded aria-pressed:bg-gray-50 hover:bg-gray-50)',
-        )}
+        class={flex({
+          align: 'center',
+          textAlign: 'left',
+          smDown: {
+            borderBottomWidth: '2px',
+            borderBottomColor: 'white',
+            fontSize: '15px',
+            fontWeight: 'semibold',
+            color: 'gray.300',
+            _pressed: { borderBottomColor: 'gray.950', color: 'gray.950' },
+          },
+          sm: {
+            fontSize: '13px',
+            borderRadius: '4px',
+            marginX: '8px',
+            paddingY: '4px',
+            _hover: { backgroundColor: 'gray.50' },
+            _pressed: { backgroundColor: 'gray.50' },
+          },
+        })}
         aria-pressed={tabIndex === 1}
         type="button"
         on:click={() => (tabIndex = 1)}
       >
         {#if $data.tags?.length > 0}
-          <Icon class="square-6 text-teal-500 <sm:hidden" icon={IconCheckmark} />
+          <Icon style={css.raw({ size: '24px', color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} />
         {:else}
-          <Icon class="square-6 text-gray-300 <sm:hidden" icon={IconCheckmark} />
+          <Icon style={css.raw({ size: '24px', color: 'gray.300', hideBelow: 'sm' })} icon={IconCheckmark} />
         {/if}
-        <span class="w-full pb-2 sm:(py-2 px-1)">태그</span>
+        <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>태그</span>
       </button>
       <button
-        class={clsx(
-          'flex items-center text-15-sb <sm:(border-b-2 border-white text-gray-300 aria-pressed:(border-gray-950 text-gray-950)) sm:(text-13-r py-1 mx-2 rounded aria-pressed:bg-gray-50 hover:bg-gray-50)',
-        )}
+        class={flex({
+          align: 'center',
+          textAlign: 'left',
+          smDown: {
+            borderBottomWidth: '2px',
+            borderBottomColor: 'white',
+            fontSize: '15px',
+            fontWeight: 'semibold',
+            color: 'gray.300',
+            _pressed: { borderBottomColor: 'gray.950', color: 'gray.950' },
+          },
+          sm: {
+            fontSize: '13px',
+            borderRadius: '4px',
+            marginX: '8px',
+            paddingY: '4px',
+            _hover: { backgroundColor: 'gray.50' },
+            _pressed: { backgroundColor: 'gray.50' },
+          },
+        })}
         aria-pressed={tabIndex === 2}
         type="button"
         on:click={() => (tabIndex = 2)}
       >
         {#if currentThumbnail}
-          <Icon class="square-6 text-teal-500 <sm:hidden" icon={IconCheckmark} />
+          <Icon style={css.raw({ size: '24px', color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} />
         {:else}
-          <Icon class="square-6 text-gray-300 <sm:hidden" icon={IconCheckmark} />
+          <Icon style={css.raw({ size: '24px', color: 'gray.300', hideBelow: 'sm' })} icon={IconCheckmark} />
         {/if}
-        <span class="w-full pb-2 sm:(py-2 px-1)">썸네일</span>
+        <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>
+          썸네일
+        </span>
       </button>
       <button
-        class={clsx(
-          'flex items-center text-15-sb <sm:(border-b-2 border-white text-gray-300 aria-pressed:(border-gray-950 text-gray-950)) sm:(text-13-r py-1 mx-2 rounded aria-pressed:bg-gray-50 hover:bg-gray-50)',
-        )}
+        class={flex({
+          align: 'center',
+          textAlign: 'left',
+          smDown: {
+            borderBottomWidth: '2px',
+            borderBottomColor: 'white',
+            fontSize: '15px',
+            fontWeight: 'semibold',
+            color: 'gray.300',
+            _pressed: { borderBottomColor: 'gray.950', color: 'gray.950' },
+          },
+          sm: {
+            fontSize: '13px',
+            borderRadius: '4px',
+            marginX: '8px',
+            paddingY: '4px',
+            _hover: { backgroundColor: 'gray.50' },
+            _pressed: { backgroundColor: 'gray.50' },
+          },
+        })}
         aria-pressed={tabIndex === 3}
         type="button"
         on:click={() => (tabIndex = 3)}
       >
-        <Icon class="square-6 text-teal-500 <sm:hidden" icon={IconCheckmark} />
-        <span class="w-full pb-2 sm:(py-2 px-1)">대상 독자</span>
+        <Icon style={css.raw({ size: '24px', color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} />
+        <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>
+          대상 독자
+        </span>
       </button>
       <button
-        class={clsx(
-          'flex items-center text-15-sb <sm:(border-b-2 border-white text-gray-300 aria-pressed:(border-gray-950 text-gray-950)) sm:(text-13-r py-1 mx-2 rounded aria-pressed:bg-gray-50 hover:bg-gray-50)',
-        )}
+        class={flex({
+          align: 'center',
+          textAlign: 'left',
+          smDown: {
+            borderBottomWidth: '2px',
+            borderBottomColor: 'white',
+            fontSize: '15px',
+            fontWeight: 'semibold',
+            color: 'gray.300',
+            _pressed: { borderBottomColor: 'gray.950', color: 'gray.950' },
+          },
+          sm: {
+            fontSize: '13px',
+            borderRadius: '4px',
+            marginX: '8px',
+            paddingY: '4px',
+            _hover: { backgroundColor: 'gray.50' },
+            _pressed: { backgroundColor: 'gray.50' },
+          },
+        })}
         aria-pressed={tabIndex === 4}
         type="button"
         on:click={() => (tabIndex = 4)}
       >
-        <Icon class="square-6 text-teal-500 <sm:hidden" icon={IconCheckmark} />
-        <span class="w-full pb-2 sm:(py-2 px-1)">댓글관리</span>
+        <Icon style={css.raw({ size: '24px', color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} />
+        <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>댓글</span>
       </button>
       <button
-        class={clsx(
-          'flex items-center text-15-sb <sm:(border-b-2 border-white text-gray-300 aria-pressed:(border-gray-950 text-gray-950)) sm:(text-13-r py-1 mx-2 rounded aria-pressed:bg-gray-50 hover:bg-gray-50)',
-        )}
+        class={flex({
+          align: 'center',
+          textAlign: 'left',
+          smDown: {
+            borderBottomWidth: '2px',
+            borderBottomColor: 'white',
+            fontSize: '15px',
+            fontWeight: 'semibold',
+            color: 'gray.300',
+            _pressed: { borderBottomColor: 'gray.950', color: 'gray.950' },
+          },
+          sm: {
+            fontSize: '13px',
+            borderRadius: '4px',
+            marginX: '8px',
+            paddingY: '4px',
+            _hover: { backgroundColor: 'gray.50' },
+            _pressed: { backgroundColor: 'gray.50' },
+          },
+        })}
         aria-pressed={tabIndex === 5}
         type="button"
         on:click={() => (tabIndex = 5)}
       >
-        <Icon class="square-6 text-teal-500 <sm:hidden" icon={IconCheckmark} />
-        <span class="w-full pb-2 sm:(py-2 px-1)">세부 옵션</span>
+        <Icon style={css.raw({ size: '24px', color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} />
+        <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>
+          세부 옵션
+        </span>
       </button>
     </div>
 
-    <form class="w-96 py-5 px-6 overflow-y-auto <sm:(w-full pt-0 pb-8 px-5 h-50vh) sm:h-108" use:form>
+    <form
+      class={css({
+        overflowY: 'auto',
+        smDown: { paddingX: '20px', paddingBottom: '32px', width: 'full', height: '[50vh]' },
+        sm: { paddingX: '24px', paddingY: '20px', width: '384px', height: '432px' },
+      })}
+      use:form
+    >
       <input name="thumbnailId" type="hidden" value={currentThumbnail?.id} />
 
-      <div class={clsx('space-y-8 hidden', tabIndex === 0 && 'block!')}>
+      <div
+        class={css({ display: 'flex', flexDirection: 'column', gap: '32px' }, tabIndex !== 0 && { display: 'none' })}
+      >
         <div>
-          <p class="text-14-sb pt-1 pb-2 <sm:text-15-m">스페이스</p>
+          <p
+            class={flex({
+              gap: '4px',
+              paddingTop: '4px',
+              paddingBottom: '8px',
+              fontSize: { base: '15px', sm: '14px' },
+              fontWeight: { base: 'medium', sm: 'semibold' },
+            })}
+          >
+            스페이스
+          </p>
 
-          <div class="mb-4 relative">
+          <div class={css({ position: 'relative' })}>
             <Tooltip
               enabled={$post.state === 'PUBLISHED'}
               message="이미 게시한 포스트는 스페이스를 바꿀 수 없어요"
@@ -349,28 +523,43 @@
               placement="top"
             >
               <button
-                class={clsx(
-                  'flex items-center justify-between w-full rounded-md p-3 border border-gray-200 hover:bg-gray-50 disabled:bg-gray-50',
-                  spaceSelectorOpen && 'rounded-b-none',
+                class={css(
+                  {
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    borderWidth: '1px',
+                    borderColor: 'gray.200',
+                    borderRadius: '6px',
+                    padding: '12px',
+                    width: 'full',
+                    backgroundColor: { _hover: 'gray.50', _disabled: 'gray.50' },
+                  },
+                  spaceSelectorOpen && { borderBottomRadius: '[0!]' },
                 )}
                 disabled={$post.state === 'PUBLISHED'}
                 type="button"
                 on:click={() => (spaceSelectorOpen = true)}
               >
                 {#if selectedSpace}
-                  <div class="flex items-center gap-2">
-                    <Image class="square-6 rounded-sm flex-none" $image={selectedSpace.icon} />
-                    <span class="text-13-m truncate">{selectedSpace.name}</span>
+                  <div class={flex({ align: 'center', gap: '8px' })}>
+                    <Image
+                      style={css.raw({ flex: 'none', borderRadius: '2px', size: '24px' })}
+                      $image={selectedSpace.icon}
+                    />
+                    <span class={css({ fontSize: '13px', fontWeight: 'medium', truncate: true })}>
+                      {selectedSpace.name}
+                    </span>
                   </div>
                 {:else}
-                  <span class="text-gray-500 text-13-r">스페이스를 선택해주세요</span>
+                  <span class={css({ fontSize: '13px', color: 'gray.500' })}>스페이스를 선택해주세요</span>
                 {/if}
 
-                <p class="flex center square-6">
+                <p class={center({ size: '24px' })}>
                   {#if spaceSelectorOpen}
-                    <Icon class="square-4.5" icon={IconCaretUpFilled} />
+                    <Icon style={css.raw({ size: '18px' })} icon={IconCaretUpFilled} />
                   {:else}
-                    <Icon class="square-4.5" icon={IconCaretDownFilled} />
+                    <Icon style={css.raw({ size: '18px' })} icon={IconCaretDownFilled} />
                   {/if}
                 </p>
               </button>
@@ -378,7 +567,7 @@
 
             {#if spaceSelectorOpen}
               <div
-                class="fixed inset-0 z-57"
+                class={css({ position: 'fixed', inset: '0', zIndex: '50' })}
                 role="button"
                 tabindex="-1"
                 on:click={() => (spaceSelectorOpen = false)}
@@ -386,13 +575,29 @@
               />
 
               <ul
-                class="absolute z-59 top-48px left-0 w-full rounded-b-md bg-white border border-gray-200"
+                class={css({
+                  position: 'absolute',
+                  top: '48px',
+                  left: '0',
+                  borderWidth: '1px',
+                  borderColor: 'gray.200',
+                  borderBottomRadius: '6px',
+                  width: 'full',
+                  backgroundColor: 'white',
+                  zIndex: '50',
+                })}
                 transition:slide={{ axis: 'y', duration: 250 }}
               >
                 {#each $query.me.spaces as space (space.id)}
-                  <li class="border-b border-gray-200">
+                  <li class={css({ borderBottomWidth: '1px', borderBottomColor: 'gray.200' })}>
                     <button
-                      class="p-3 w-full hover:bg-gray-100 flex justify-between items-center"
+                      class={flex({
+                        justify: 'space-between',
+                        align: 'center',
+                        padding: '12px',
+                        width: 'full',
+                        _hover: { backgroundColor: 'gray.100' },
+                      })}
                       type="button"
                       on:click={() => {
                         if (selectedSpaceId !== space.id) {
@@ -403,21 +608,35 @@
                         spaceSelectorOpen = false;
                       }}
                     >
-                      <div class="flex items-center gap-2">
-                        <Image class="square-6 rounded-sm flex-none" $image={space.icon} />
-                        <span class="text-13-m truncate">{space.name}</span>
+                      <div class={flex({ align: 'center', gap: '8px' })}>
+                        <Image
+                          style={css.raw({ flex: 'none', borderRadius: '2px', size: '24px' })}
+                          $image={space.icon}
+                        />
+                        <span class={css({ fontSize: '13px', fontWeight: 'medium', truncate: true })}>
+                          {space.name}
+                        </span>
                       </div>
                     </button>
                   </li>
                 {/each}
                 <li>
                   <button
-                    class="text-13-m p-3 w-full rounded-b-md flex items-center justify-between hover:bg-gray-100"
+                    class={flex({
+                      justify: 'space-between',
+                      align: 'center',
+                      borderBottomRadius: '6px',
+                      padding: '12px',
+                      width: 'full',
+                      fontSize: '13px',
+                      fontWeight: 'medium',
+                      _hover: { backgroundColor: 'gray.100' },
+                    })}
                     type="button"
                     on:click={() => (createSpaceOpen = true)}
                   >
                     새로운 스페이스 추가하기
-                    <Icon class="square-6 text-gray-400" icon={IconPlus} />
+                    <Icon style={css.raw({ size: '24px', color: 'gray.400' })} icon={IconPlus} />
                   </button>
                 </li>
               </ul>
@@ -426,36 +645,58 @@
         </div>
 
         <div>
-          <p class="text-14-sb pt-1 pb-2 <sm:text-15-m">컬렉션</p>
+          <p
+            class={flex({
+              gap: '4px',
+              paddingTop: '4px',
+              paddingBottom: '8px',
+              fontSize: { base: '15px', sm: '14px' },
+              fontWeight: { base: 'medium', sm: 'semibold' },
+            })}
+          >
+            컬렉션
+          </p>
 
-          <div class="relative">
+          <div class={css({ position: 'relative' })}>
             <button
-              class={clsx(
-                'flex items-center justify-between w-full p-3 rounded-md border border-gray-200 hover:bg-gray-100 disabled:bg-gray-100',
-                collectionSelectorOpen && 'rounded-b-none',
+              class={css(
+                {
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  borderWidth: '1px',
+                  borderColor: 'gray.200',
+                  borderRadius: '6px',
+                  padding: '12px',
+                  width: 'full',
+                  backgroundColor: { _hover: 'gray.100', _disabled: 'gray.100' },
+                },
+                collectionSelectorOpen && { borderBottomRadius: '[0!]' },
               )}
               disabled={!selectedSpace}
               type="button"
               on:click={() => (collectionSelectorOpen = true)}
             >
               {#if selectedCollection}
-                <span class="text-13-m truncate">{selectedCollection.name}</span>
+                <span class={css({ fontSize: '13px', fontWeight: 'medium', truncate: true })}>
+                  {selectedCollection.name}
+                </span>
               {:else}
-                <span class="text-gray-500 text-13-r">컬렉션을 선택해주세요</span>
+                <span class={css({ fontSize: '13px', color: 'gray.500' })}>컬렉션을 선택해주세요</span>
               {/if}
 
-              <p class="flex center square-6">
+              <p class={center({ size: '24px' })}>
                 {#if collectionSelectorOpen}
-                  <Icon class="square-4.5" icon={IconCaretUpFilled} />
+                  <Icon style={css.raw({ size: '18px' })} icon={IconCaretUpFilled} />
                 {:else}
-                  <Icon class="square-4.5" icon={IconCaretDownFilled} />
+                  <Icon style={css.raw({ size: '18px' })} icon={IconCaretDownFilled} />
                 {/if}
               </p>
             </button>
 
             {#if collectionSelectorOpen && selectedSpace?.collections}
               <div
-                class="fixed inset-0 z-57"
+                class={css({ position: 'fixed', inset: '0', zIndex: '50' })}
                 role="button"
                 tabindex="-1"
                 on:click={() => (collectionSelectorOpen = false)}
@@ -463,49 +704,78 @@
               />
 
               <ul
-                class="absolute z-59 top-48px left-0 w-full rounded-b-md bg-white border border-gray-200"
+                class={css({
+                  position: 'absolute',
+                  top: '48px',
+                  left: '0',
+                  borderWidth: '1px',
+                  borderColor: 'gray.200',
+                  borderBottomRadius: '6px',
+                  width: 'full',
+                  backgroundColor: 'white',
+                  zIndex: '50',
+                })}
                 transition:slide={{ axis: 'y', duration: 250 }}
               >
                 {#if selectedCollectionId !== undefined}
-                  <li class="border-b border-gray-200">
+                  <li class={css({ borderBottomWidth: '1px', borderBottomColor: 'gray.200' })}>
                     <button
-                      class="p-3 w-full hover:bg-gray-100 flex justify-between items-center"
+                      class={flex({
+                        justify: 'space-between',
+                        align: 'center',
+                        padding: '12px',
+                        width: 'full',
+                        _hover: { backgroundColor: 'gray.100' },
+                      })}
                       type="button"
                       on:click={() => {
                         selectedCollectionId = undefined;
                         collectionSelectorOpen = false;
                       }}
                     >
-                      <div class="flex items-center gap-1.5">
-                        <span class="text-13-m truncate">선택 안함</span>
-                      </div>
+                      <span class={css({ fontSize: '13px', fontWeight: 'medium', truncate: true })}>선택 안함</span>
                     </button>
                   </li>
                 {/if}
                 {#each selectedSpace?.collections as collection (collection.id)}
-                  <li class="border-b border-gray-200">
+                  <li class={css({ borderBottomWidth: '1px', borderBottomColor: 'gray.200' })}>
                     <button
-                      class="p-3 w-full hover:bg-gray-100 flex justify-between items-center"
+                      class={flex({
+                        justify: 'space-between',
+                        align: 'center',
+                        padding: '12px',
+                        width: 'full',
+                        _hover: { backgroundColor: 'gray.100' },
+                      })}
                       type="button"
                       on:click={() => {
                         selectedCollectionId = collection.id;
                         collectionSelectorOpen = false;
                       }}
                     >
-                      <div class="flex items-center gap-1.5">
-                        <span class="text-13-m truncate">{collection.name}</span>
-                      </div>
+                      <span class={css({ fontSize: '13px', fontWeight: 'medium', truncate: true })}>
+                        {collection.name}
+                      </span>
                     </button>
                   </li>
                 {/each}
                 <li>
                   <button
-                    class="text-13-m p-3 w-full rounded-b-md flex items-center justify-between hover:bg-gray-100"
+                    class={flex({
+                      justify: 'space-between',
+                      align: 'center',
+                      borderBottomRadius: '6px',
+                      padding: '12px',
+                      width: 'full',
+                      fontSize: '13px',
+                      fontWeight: 'medium',
+                      _hover: { backgroundColor: 'gray.100' },
+                    })}
                     type="button"
                     on:click={() => (createCollectionOpen = true)}
                   >
                     새로운 컬렉션 추가하기
-                    <Icon class="square-6 text-gray-400" icon={IconPlus} />
+                    <Icon style={css.raw({ size: '24px', color: 'gray.400' })} icon={IconPlus} />
                   </button>
                 </li>
               </ul>
@@ -514,10 +784,20 @@
         </div>
       </div>
 
-      <div class={clsx('space-y-8 hidden', tabIndex === 1 && 'block!')}>
+      <div
+        class={css({ display: 'flex', flexDirection: 'column', gap: '32px' }, tabIndex !== 1 && { display: 'none' })}
+      >
         <div>
-          <p class="text-14-sb pt-1 pb-2 flex gap-1 <sm:text-15-m">
-            <span>카테고리</span>
+          <p
+            class={flex({
+              gap: '4px',
+              paddingTop: '4px',
+              paddingBottom: '8px',
+              fontSize: { base: '15px', sm: '14px' },
+              fontWeight: { base: 'medium', sm: 'semibold' },
+            })}
+          >
+            카테고리
           </p>
 
           <SegmentButtonGroup>
@@ -529,14 +809,23 @@
         </div>
 
         <div>
-          <p class="text-14-sb pt-1 pb-2 flex gap-1 <sm:text-15-m">
+          <p
+            class={flex({
+              gap: '4px',
+              paddingTop: '4px',
+              paddingBottom: '8px',
+              fontSize: { base: '15px', sm: '14px' },
+              fontWeight: { base: 'medium', sm: 'semibold' },
+            })}
+          >
+            카테고리
             <span>페어</span>
-            <Tooltip class="flex center" message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
-              <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
+            <Tooltip style={center.raw()} message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
+              <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconAlertCircle} />
             </Tooltip>
           </p>
 
-          <div class="grid grid-cols-4 gap-0.5625rem">
+          <div class={grid({ columns: 4, gap: '9px' })}>
             <ToggleButton checked={$data.pairs?.includes('BL')} on:change={(e) => checkPair(e, 'BL')}>BL</ToggleButton>
             <ToggleButton checked={$data.pairs?.includes('GL')} on:change={(e) => checkPair(e, 'GL')}>GL</ToggleButton>
             <ToggleButton checked={$data.pairs?.includes('HL')} on:change={(e) => checkPair(e, 'HL')}>HL</ToggleButton>
@@ -595,20 +884,54 @@
         />
       </div>
 
-      <div class={clsx('hidden', tabIndex === 2 && 'block!')}>
-        <p class="text-14-sb pt-1 pb-2 <sm:text-15-m">썸네일</p>
+      <div class={css(tabIndex !== 2 && { display: 'none' })}>
+        <p
+          class={flex({
+            gap: '4px',
+            paddingTop: '4px',
+            paddingBottom: '8px',
+            fontSize: { base: '15px', sm: '14px' },
+            fontWeight: { base: 'medium', sm: 'semibold' },
+          })}
+        >
+          썸네일
+        </p>
 
         {#if currentThumbnail}
-          <div class="border border-gray-200 px-4 py-3.5 rounded flex items-center justify-between">
-            <Image class="bg-#d9d9d9 square-15 rounded-sm" $image={currentThumbnail} />
+          <div
+            class={flex({
+              justify: 'space-between',
+              align: 'center',
+              borderWidth: '1px',
+              borderColor: 'gray.200',
+              borderRadius: '4px',
+              paddingX: '16px',
+              paddingY: '14px',
+            })}
+          >
+            <Image
+              style={css.raw({ borderRadius: '2px', size: '60px', backgroundColor: 'gray.300' })}
+              $image={currentThumbnail}
+            />
 
-            <div class="flex items-center gap-1.5">
+            <div class={flex({ align: 'center', gap: '6px' })}>
               <button type="button" on:click={() => (thumbnail = null)}>
-                <Icon class="square-6" icon={IconTrash} />
+                <Icon style={css.raw({ size: '24px' })} icon={IconTrash} />
               </button>
 
               <button
-                class="w-13.5 border border-gray-200 px-3 py-1 rounded-sm text-11-sb text-gray-400 text-center"
+                class={css({
+                  borderWidth: '1px',
+                  borderColor: 'gray.200',
+                  borderRadius: '2px',
+                  paddingX: '12px',
+                  paddingY: '4px',
+                  width: '54px',
+                  textAlign: 'center',
+                  fontSize: '11px',
+                  fontWeight: 'semibold',
+                  color: 'gray.400',
+                })}
                 type="button"
                 on:click={() => thumbnailPicker.show()}
               >
@@ -618,27 +941,60 @@
           </div>
         {:else}
           <button
-            class="flex items-center justify-between p-3 border border-gray-200 rounded w-full"
+            class={flex({
+              justify: 'space-between',
+              align: 'center',
+              borderWidth: '1px',
+              borderColor: 'gray.200',
+              borderRadius: '4px',
+              padding: '12px',
+              width: 'full',
+            })}
             type="button"
             on:click={() => thumbnailPicker.show()}
           >
-            <div class="flex items-center gap-1.5">
-              <Icon class="square-4.5 text-gray-300" icon={IconPhoto} />
-              <span class="text-13-m text-gray-400">썸네일 이미지를 선택해주세요</span>
+            <div class={flex({ align: 'center', gap: '6px' })}>
+              <Icon style={css.raw({ size: '18px', color: 'gray.300' })} icon={IconPhoto} />
+              <span class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.400' })}>
+                썸네일 이미지를 선택해주세요
+              </span>
             </div>
 
-            <div class="text-11-sb text-white bg-teal-500 rounded py-1.5 px-3.5">업로드</div>
+            <div
+              class={css({
+                borderRadius: '4px',
+                paddingX: '14px',
+                paddingY: '6px',
+                fontSize: '11px',
+                fontWeight: 'semibold',
+                color: 'white',
+                backgroundColor: 'teal.500',
+              })}
+            >
+              업로드
+            </div>
           </button>
         {/if}
       </div>
 
-      <div class={clsx('space-y-8 hidden', tabIndex === 3 && 'block!')}>
+      <div
+        class={css({ display: 'flex', flexDirection: 'column', gap: '32px' }, tabIndex !== 3 && { display: 'none' })}
+      >
         <div>
-          <p class="text-14-sb py-1 <sm:text-15-m">공개범위</p>
+          <p
+            class={flex({
+              gap: '4px',
+              paddingTop: '4px',
+              paddingBottom: '8px',
+              fontSize: { base: '15px', sm: '14px' },
+              fontWeight: { base: 'medium', sm: 'semibold' },
+            })}
+          >
+            공개 범위
+          </p>
 
           <RadioGroup
             name="visibility"
-            class="my-2.5"
             items={[
               {
                 label: '전체 공개',
@@ -653,15 +1009,23 @@
         </div>
 
         <div>
-          <p class="text-14-sb py-2 flex gap-1">
+          <p
+            class={flex({
+              gap: '4px',
+              paddingTop: '4px',
+              paddingBottom: '8px',
+              fontSize: { base: '15px', sm: '14px' },
+              fontWeight: { base: 'medium', sm: 'semibold' },
+            })}
+          >
             <span>비밀글</span>
-            <Tooltip class="flex center" message="설정하면 비밀번호를 입력한 독자만 내용을 열람할 수 있어요">
-              <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
+            <Tooltip style={center.raw()} message="설정하면 비밀번호를 입력한 독자만 내용을 열람할 수 있어요">
+              <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconAlertCircle} />
             </Tooltip>
           </p>
 
           <Checkbox
-            class="mb-3 mt-1.5 text-14-r"
+            style={css.raw({ marginTop: '6px', marginBottom: '12px', fontSize: '14px' })}
             checked={enablePassword}
             on:change={() => {
               enablePassword = !enablePassword;
@@ -675,16 +1039,27 @@
 
           <input
             name="password"
-            class={clsx(
-              'bg-gray-50 rounded px-4 py-3.5 text-14-r h-10 border border-gray-200 w-71.5',
-              !enablePassword && 'hidden!',
+            class={css(
+              {
+                borderWidth: '1px',
+                borderColor: 'gray.200',
+                borderRadius: '4px',
+                paddingX: '16px',
+                paddingY: '14px',
+                width: '286px',
+                height: '40px',
+                fontSize: '14px',
+                backgroundColor: 'gray.50',
+              },
+              !enablePassword && { display: 'none' },
             )}
             pattern="^[!-~]+$"
             placeholder="암호를 입력해주세요"
             type="text"
           />
+
           <FormValidationMessage for="password" let:message>
-            <div class="flex items-center gap-1.5 text-xs text-red-50">
+            <div class={flex({ align: 'center', gap: '6px', fontSize: '12px', color: 'red.500' })}>
               <Icon icon={IconAlertTriangle} />
               {message}
             </div>
@@ -692,19 +1067,26 @@
         </div>
 
         <div>
-          <p class="text-14-sb py-1 flex gap-1">
-            <span>콘텐츠 등급</span>
+          <p
+            class={flex({
+              gap: '4px',
+              paddingTop: '4px',
+              paddingBottom: '8px',
+              fontSize: { base: '15px', sm: '14px' },
+              fontWeight: { base: 'medium', sm: 'semibold' },
+            })}
+          >
+            <span>연령 제한</span>
             <Tooltip
-              class="flex center"
+              style={center.raw()}
               message="연령 제한을 설정하면 본인인증이 완료된 해당 나이 이상의 독자만 내용을 열람할 수 있어요"
             >
-              <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
+              <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconAlertCircle} />
             </Tooltip>
           </p>
 
           <RadioGroup
             name="ageRating"
-            class="my-2.5"
             items={[
               { label: '모든 연령', value: 'ALL', text: 'ALL', checked: $data.ageRating === 'ALL' },
               { label: '15세 이상', value: 'R15', text: '15+', checked: $data.ageRating === 'R15' },
@@ -714,10 +1096,18 @@
         </div>
 
         <div>
-          <p class="text-14-sb py-1 flex gap-1 mb-1.5">
+          <p
+            class={flex({
+              gap: '4px',
+              paddingTop: '4px',
+              paddingBottom: '8px',
+              fontSize: { base: '15px', sm: '14px' },
+              fontWeight: { base: 'medium', sm: 'semibold' },
+            })}
+          >
             <span>검색 공개</span>
-            <Tooltip class="flex center" message="외부 검색엔진에서 이 포스트를 검색할 수 있을지 설정해요">
-              <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
+            <Tooltip style={center.raw()} message="외부 검색엔진에서 이 포스트를 검색할 수 있을지 설정해요">
+              <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconAlertCircle} />
             </Tooltip>
           </p>
 
@@ -742,25 +1132,48 @@
         </div>
       </div>
 
-      <div class={clsx('space-y-8 hidden', tabIndex === 4 && 'block!')}>
+      <div
+        class={css({ display: 'flex', flexDirection: 'column', gap: '32px' }, tabIndex !== 4 && { display: 'none' })}
+      >
         <Switch
-          class="flex items-center justify-between"
+          style={flex.raw({ justify: 'space-between', align: 'center' })}
           checked={$data.commentQualification !== 'NONE' ?? true}
           on:change={(e) => {
             $data.commentQualification = e.currentTarget.checked ? 'ANY' : 'NONE';
           }}
         >
           <div>
-            <p class="text-14-sb py-1 <sm:text-15-m">댓글 허용</p>
-            <p class="text-11-r text-gray-400 sm:(mt-1 text-gray-700)">
+            <p
+              class={flex({
+                gap: '4px',
+                paddingTop: '4px',
+                paddingBottom: '8px',
+                fontSize: { base: '15px', sm: '14px' },
+                fontWeight: { base: 'medium', sm: 'semibold' },
+              })}
+            >
+              댓글 허용
+            </p>
+            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.700' } })}>
               독자들이 게시물에 대한 의견을 나누고 소통할 수 있어요
             </p>
           </div>
         </Switch>
 
         <div>
-          <p class="text-14-sb py-1 <sm:text-15-m">댓글을 달 수 있는 계정</p>
-          <p class="text-11-r text-gray-400 mb-1.5">게시물에 대한 댓글을 달 수 있는 계정을 선택할 수 있어요</p>
+          <p
+            class={flex({
+              gap: '4px',
+              paddingY: '4px',
+              fontSize: { base: '15px', sm: '14px' },
+              fontWeight: { base: 'medium', sm: 'semibold' },
+            })}
+          >
+            댓글을 달 수 있는 계정
+          </p>
+          <p class={css({ marginBottom: '6px', fontSize: '11px', color: 'gray.400' })}>
+            게시물에 대한 댓글을 달 수 있는 계정을 선택할 수 있어요
+          </p>
 
           <SegmentButtonGroup>
             <ToggleButton
@@ -785,42 +1198,92 @@
         </div>
       </div>
 
-      <div class={clsx('space-y-8 hidden', tabIndex === 5 && 'block!')}>
+      <div
+        class={css({ display: 'flex', flexDirection: 'column', gap: '32px' }, tabIndex !== 5 && { display: 'none' })}
+      >
         <Switch
           name="receiveFeedback"
-          class="flex items-center justify-between"
+          style={flex.raw({ justify: 'space-between', align: 'center' })}
           checked={$data.receiveFeedback ?? true}
         >
           <div>
-            <p class="text-14-sb py-1 <sm:text-15-m">피드백</p>
-            <p class="text-11-r text-gray-400 sm:(mt-1 text-gray-700)">
+            <p
+              class={flex({
+                gap: '4px',
+                paddingY: '4px',
+                fontSize: { base: '15px', sm: '14px' },
+                fontWeight: { base: 'medium', sm: 'semibold' },
+              })}
+            >
+              피드백
+            </p>
+            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.700' } })}>
               가장 오래 머무른 구간, 밑줄, 이모지 등 피드백을 받아요
             </p>
           </div>
         </Switch>
 
-        <Switch name="discloseStats" class="flex items-center justify-between" checked={$data.discloseStats ?? true}>
+        <Switch
+          name="discloseStats"
+          style={flex.raw({ justify: 'space-between', align: 'center' })}
+          checked={$data.discloseStats ?? true}
+        >
           <div>
-            <p class="text-14-sb py-1 <sm:text-15-m">게시물 세부 공개</p>
-            <p class="text-11-r text-gray-400 sm:(mt-1 text-gray-700)">독자에게 좋아요, 조회수를 공유해요</p>
+            <p
+              class={flex({
+                gap: '4px',
+                paddingY: '4px',
+                fontSize: { base: '15px', sm: '14px' },
+                fontWeight: { base: 'medium', sm: 'semibold' },
+              })}
+            >
+              게시물 세부 공개
+            </p>
+            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.700' } })}>
+              독자에게 좋아요, 조회수를 공유해요
+            </p>
           </div>
         </Switch>
 
         <Switch
           name="receivePatronage"
-          class="flex items-center justify-between"
+          style={flex.raw({ justify: 'space-between', align: 'center' })}
           checked={$data.receivePatronage ?? true}
         >
           <div>
-            <p class="text-14-sb py-1 <sm:text-15-m">창작자 후원</p>
-            <p class="text-11-r text-gray-400 sm:(mt-1 text-gray-700)">독자들이 게시물에 자유롭게 후원할 수 있어요</p>
+            <p
+              class={flex({
+                gap: '4px',
+                paddingY: '4px',
+                fontSize: { base: '15px', sm: '14px' },
+                fontWeight: { base: 'medium', sm: 'semibold' },
+              })}
+            >
+              창작자 후원
+            </p>
+            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.700' } })}>
+              독자들이 게시물에 자유롭게 후원할 수 있어요
+            </p>
           </div>
         </Switch>
 
-        <Switch name="protectContent" class="flex items-center justify-between" checked={$data.protectContent ?? true}>
+        <Switch
+          name="protectContent"
+          style={flex.raw({ justify: 'space-between', align: 'center' })}
+          checked={$data.protectContent ?? true}
+        >
           <div>
-            <p class="text-14-sb py-1 <sm:text-15-m">게시물 내용 보호</p>
-            <p class="text-11-r text-gray-400 sm:(mt-1 text-gray-700)">
+            <p
+              class={flex({
+                gap: '4px',
+                paddingY: '4px',
+                fontSize: { base: '15px', sm: '14px' },
+                fontWeight: { base: 'medium', sm: 'semibold' },
+              })}
+            >
+              게시물 내용 보호
+            </p>
+            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.700' } })}>
               게시물의 내용을 보호하기 위해 우클릭 또는 복사를 제한해요
             </p>
           </div>
@@ -829,16 +1292,32 @@
     </form>
   </div>
 
-  <div class="flex justify-end px-6 py-5 sm:(border-t border-gray-200)">
+  <div
+    class={flex({
+      justify: 'flex-end',
+      paddingX: '24px',
+      paddingY: '20px',
+      sm: { borderTopWidth: '1px', borderTopColor: 'gray.200' },
+    })}
+  >
     <Tooltip
-      class="<sm:w-full"
+      style={css.raw({ smDown: { width: 'full' } })}
       enabled={!selectedSpaceId}
       message="게시할 스페이스를 선택해주세요"
       offset={12}
       placement="top"
     >
       <button
-        class="w-24 py-2 px-8 text-14-m text-white bg-gray-950 rounded text-center <sm:(w-full text-16-sb py-2.5)"
+        class={css({
+          borderRadius: '4px',
+          paddingX: '32px',
+          paddingY: { base: '10px', sm: '8px' },
+          width: { base: 'full', sm: '96px' },
+          fontSize: { base: '16px', sm: '14px' },
+          fontWeight: { base: 'semibold', sm: 'medium' },
+          color: 'white',
+          backgroundColor: 'gray.950',
+        })}
         disabled={!selectedSpaceId}
         type="button"
         on:click={handleSubmit}

@@ -1,13 +1,9 @@
 <script lang="ts">
-  import '../styles/index.css';
-  import 'virtual:uno.css';
+  import '../app.css';
 
-  import { AutoUpdater, StackIndicator } from '@penxle/ui';
+  import { flex } from '$styled-system/patterns';
 </script>
 
-<div class="min-h-screen flex flex-col">
+<div class={flex({ direction: 'column', minHeight: '100vh' })}>
   <slot />
 </div>
-
-<AutoUpdater />
-<StackIndicator />

@@ -1,4 +1,5 @@
 import { Mark, mergeAttributes } from '@tiptap/core';
+import { css } from '$styled-system/css';
 
 declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -17,7 +18,7 @@ export const Bold = Mark.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['b', mergeAttributes(HTMLAttributes, { class: 'font-bold' }), 0];
+    return ['b', mergeAttributes(HTMLAttributes, { class: css({ fontWeight: 'bold' }) }), 0];
   },
 
   addCommands() {

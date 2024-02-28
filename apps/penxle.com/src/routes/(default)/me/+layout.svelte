@@ -1,10 +1,11 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { page } from '$app/stores';
   import PencilUnderline from '$assets/icons/pencil-underline.svg?component';
   import { graphql } from '$glitch';
   import { Avatar, Button } from '$lib/components';
   import { comma } from '$lib/utils';
+  import { css } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import ComingSoonModal from '../ComingSoonModal.svelte';
   import UpdateProfileModal from './settings/UpdateProfileModal.svelte';
 
@@ -32,46 +33,86 @@
   `);
 </script>
 
-<div class="w-full max-w-315 flex flex-col grow sm:p-7.5">
-  <h1 class="text-xl font-bold mb-5 <sm:hidden">나의 펜슬</h1>
-  <div class="sm:(flex gap-10)">
+<div class={flex({ flexDirection: 'column', grow: '1', width: 'full', maxWidth: '1260px', sm: { padding: '30px' } })}>
+  <h1 class={css({ fontSize: '20px', fontWeight: 'bold', marginBottom: '20px', hideBelow: 'sm' })}>나의 펜슬</h1>
+  <div class={css({ sm: { display: 'flex', gap: '40px' } })}>
     <aside
-      class={clsx(
-        'w-81.5 bg-cardprimary border border-secondary rounded-2xl px-4 py-10 h-full <sm:hidden',
-        $page.url.pathname === '/me' && 'block! border-bg-cardprimary w-full max-w-screen rounded-0!',
+      class={css(
+        {
+          borderWidth: '1px',
+          borderColor: 'gray.200',
+          borderRadius: '16px',
+          paddingX: '16px',
+          paddingY: '40px',
+          backgroundColor: 'white',
+          width: '326px',
+          height: 'full',
+          hideBelow: 'sm',
+        },
+        $page.url.pathname === '/me' && {
+          display: 'block',
+          borderColor: 'white',
+          borderRadius: '0',
+          width: 'full',
+          maxWidth: 'screen',
+        },
       )}
     >
-      <div class="flex flex-col items-center gap-4 mb-6">
-        <div class="flex center border border-primary rounded-full square-21">
-          <Avatar class="square-20" $profile={$query.me.profile} />
+      <div class={flex({ flexDirection: 'column', align: 'center', gap: '16px', marginBottom: '24px' })}>
+        <div class={center({ borderWidth: '1px', borderColor: 'gray.200', borderRadius: 'full', size: '84px' })}>
+          <Avatar style={css.raw({ size: '80px' })} $profile={$query.me.profile} />
         </div>
-        <div class="text-center">
-          <p class="text-xl font-bold mb-2">{$query.me.profile.name}</p>
-          <p class="font-semibold text-secondary">{$query.me.email}</p>
+        <div class={css({ textAlign: 'center' })}>
+          <p class={css({ marginBottom: '8px', fontSize: '20px', fontWeight: 'bold' })}>{$query.me.profile.name}</p>
+          <p class={css({ fontWeight: 'semibold', color: 'gray.500' })}>{$query.me.email}</p>
         </div>
-        <div class="w-full flex items-center justify-between gap-2 px-3 py-2.5 bg-surface-primary rounded-2.5">
-          <a class="font-bold grow" href="/point">{comma($query.me.point)}P</a>
+        <div
+          class={flex({
+            align: 'center',
+            justify: 'space-between',
+            gap: '8px',
+            borderRadius: '10px',
+            paddingX: '12px',
+            paddingY: '10px',
+            backgroundColor: 'gray.100',
+            width: 'full',
+          })}
+        >
+          <a class={css({ flexGrow: '1', fontWeight: 'bold' })} href="/point">{comma($query.me.point)}P</a>
           <Button href="/point/purchase" size="md" type="link">충전하기</Button>
         </div>
         <Button
-          class="w-full font-bold text-sm"
+          style={css.raw({ fontSize: '14px', fontWeight: 'bold', width: 'full' })}
           color="tertiary"
           size="lg"
           variant="outlined"
           on:click={() => (open = true)}
         >
-          <PencilUnderline class="square-5 mr-2" />
+          <PencilUnderline class={css({ marginRight: '8px', size: '20px' })} />
           프로필 수정
         </Button>
       </div>
 
       <nav>
-        <ul class="space-y-1">
+        <ul class={flex({ flexDirection: 'column', gap: '4px' })}>
           <li>
             <a
-              class={clsx(
-                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
-                $page.url.pathname.startsWith('/me/cabinets') && 'bg-primary text-primary',
+              class={css(
+                {
+                  display: 'flex',
+                  alignItems: 'center',
+                  borderRadius: '6px',
+                  padding: '12px',
+                  fontWeight: 'bold',
+                  color: 'gray.400',
+                  width: 'full',
+                  height: '60px',
+                  transition: 'common',
+                  _hover: {
+                    backgroundColor: 'gray.50',
+                  },
+                },
+                $page.url.pathname.startsWith('/me/cabinets') && { backgroundColor: 'gray.50', color: 'gray.950' },
               )}
               href="/me/cabinets"
             >
@@ -80,9 +121,22 @@
           </li>
           <li>
             <button
-              class={clsx(
-                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
-                $page.url.pathname === '/me/dashboard' && 'bg-primary text-primary',
+              class={css(
+                {
+                  display: 'flex',
+                  alignItems: 'center',
+                  borderRadius: '6px',
+                  padding: '12px',
+                  fontWeight: 'bold',
+                  color: 'gray.400',
+                  width: 'full',
+                  height: '60px',
+                  transition: 'common',
+                  _hover: {
+                    backgroundColor: 'gray.50',
+                  },
+                },
+                $page.url.pathname === '/me/dashboard' && { backgroundColor: 'gray.50', color: 'gray.950' },
               )}
               type="button"
               on:click={() => (comingSoonOpen = true)}
@@ -92,9 +146,22 @@
           </li>
           <li>
             <a
-              class={clsx(
-                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
-                $page.url.pathname === '/me/posts' && 'bg-primary text-primary',
+              class={css(
+                {
+                  display: 'flex',
+                  alignItems: 'center',
+                  borderRadius: '6px',
+                  padding: '12px',
+                  fontWeight: 'bold',
+                  color: 'gray.400',
+                  width: 'full',
+                  height: '60px',
+                  transition: 'common',
+                  _hover: {
+                    backgroundColor: 'gray.50',
+                  },
+                },
+                $page.url.pathname === '/me/posts' && { backgroundColor: 'gray.50', color: 'gray.950' },
               )}
               href="/me/posts"
             >
@@ -103,20 +170,46 @@
           </li>
           <li>
             <a
-              class={clsx(
-                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
-                $page.url.pathname.startsWith('/me/revenue') && 'bg-primary text-primary',
+              class={css(
+                {
+                  display: 'flex',
+                  alignItems: 'center',
+                  borderRadius: '6px',
+                  padding: '12px',
+                  fontWeight: 'bold',
+                  color: 'gray.400',
+                  width: 'full',
+                  height: '60px',
+                  transition: 'common',
+                  _hover: {
+                    backgroundColor: 'gray.50',
+                  },
+                },
+                $page.url.pathname.startsWith('/me/revenue') && { backgroundColor: 'gray.50', color: 'gray.950' },
               )}
               href="/me/revenue"
             >
-              정산/수익
+              수익/정산
             </a>
           </li>
           <li>
             <a
-              class={clsx(
-                'flex items-center w-full inline-block p-3 h-15 font-bold rounded-1.5 transition hover:bg-primary text-disabled',
-                $page.url.pathname.startsWith('/me/settings') && 'bg-primary text-primary',
+              class={css(
+                {
+                  display: 'flex',
+                  alignItems: 'center',
+                  borderRadius: '6px',
+                  padding: '12px',
+                  fontWeight: 'bold',
+                  color: 'gray.400',
+                  width: 'full',
+                  height: '60px',
+                  transition: 'common',
+                  _hover: {
+                    backgroundColor: 'gray.50',
+                  },
+                },
+                $page.url.pathname.startsWith('/me/settings') && { backgroundColor: 'gray.50', color: 'gray.950' },
               )}
               href="/me/settings"
             >
@@ -127,7 +220,7 @@
       </nav>
     </aside>
 
-    <div class="w-full max-w-208 overflow-auto">
+    <div class={css({ width: 'full', maxWidth: '832px', overflow: 'auto' })}>
       <slot />
     </div>
   </div>

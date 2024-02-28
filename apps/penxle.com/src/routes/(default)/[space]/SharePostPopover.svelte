@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import qs from 'query-string';
   import { uid } from 'radash';
   import { tick } from 'svelte';
@@ -11,23 +10,52 @@
   import Button from '$lib/components/v2/Button.svelte';
   import { toast } from '$lib/notification';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type { HTMLAttributes } from 'svelte/elements';
+  import type { SystemStyleObject } from '$styled-system/types';
 
-  type $$Props = Omit<HTMLAttributes<HTMLDivElement>, 'role'> & {
+  type $$Props = Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'class' | 'style'> & {
     href: string;
+    style?: SystemStyleObject;
   };
 
+  export let style: SystemStyleObject | undefined = undefined;
   export let href: string;
   let open = false;
   const id = 'share-popover-' + uid(2);
   const twitterLinkId = id + '-twitter-button';
   const mastodonLinkId = id + '-mastodon-button';
 
-  const shareTargetMenuLinkWarpClassname =
-    'flex flex-col gap-0.38rem items-center relative [&>label]:(text-13-m color-gray-500 leading-150%)';
+  const shareTargetMenuLinkWarpClassname = css({
+    'position': 'relative',
+    'display': 'flex',
+    'flexDirection': 'column',
+    'alignItems': 'center',
+    'gap': '6px',
 
-  const shareTargetMenuLinkClassName =
-    'hover:bg-gray-150 focus-visible:bg-gray-150 square-4rem rounded-2 flex center bg-gray-50 color-gray-500 after:(absolute content-[""] inset-0 cursor-pointer)';
+    '& > label': {
+      fontSize: '13px',
+      fontWeight: 'medium',
+      color: 'gray.500',
+    },
+  });
+
+  const shareTargetMenuLinkClassName = css({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: '8px',
+    size: '64px',
+    color: 'gray.500',
+    backgroundColor: { base: 'gray.50', _hover: 'gray.150', _focusVisible: 'gray.150' },
+    _after: {
+      content: '""',
+      position: 'absolute',
+      inset: '0',
+      cursor: 'pointer',
+    },
+  });
 
   const { floating, anchor, update } = createFloatingActions({ placement: 'bottom-end', offset: 16 });
 
@@ -39,7 +67,18 @@
 
 {#if open}
   <div
-    class="fixed inset-0 z-1 <sm:(z-10 bg-black/50 backdrop-blur transition-opacity)"
+    class={css({
+      position: 'fixed',
+      inset: '0',
+      zIndex: '1',
+      smDown: {
+        backgroundColor: '[black/50]',
+        transition: 'opacity',
+        backdropFilter: 'auto',
+        backdropBlur: '8px',
+        zIndex: '10',
+      },
+    })}
     role="button"
     tabindex="-1"
     on:click={() => (open = false)}
@@ -58,20 +97,54 @@
     role="region"
     use:floating
     {...$$restProps}
-    class={clsx(
-      'bg-white rounded-0.625rem border-(1px gray-200) sm:(shadow-popup-50 w-23.5rem z-2 <sm:(fixed! z-50 top-initial! bottom-0! left-0! right-0! w-full rounded-b-none shadow-modal-50)',
-      $$restProps.class,
+    class={css(
+      {
+        borderWidth: '1px',
+        borderColor: 'gray.200',
+        borderRadius: '10px',
+        backgroundColor: 'white',
+        sm: {
+          width: '376px',
+          boxShadow: '[0px 6px 18px 0px var(--shadow-color)]',
+          boxShadowColor: '[black/12]',
+          zIndex: '2',
+        },
+        smDown: {
+          position: 'fixed',
+          top: '[initial]',
+          bottom: '0',
+          left: '0',
+          right: '0',
+          borderBottomRadius: '0',
+          width: 'full',
+          boxShadow: '[0px 8px 24px 0px var(--shadow-color)]',
+          boxShadowColor: '[black/28]',
+          zIndex: '50',
+        },
+      },
+      style,
     )}
     transition:fade={{ duration: 100 }}
   >
-    <header class="p-x-5 p-y-3 flex justify-between items-center color-gray-950 border-(b gray-100)">
-      <h1 class="text-16-sb">공유하기</h1>
+    <header
+      class={flex({
+        justify: 'space-between',
+        align: 'center',
+        borderBottomWidth: '1px',
+        borderBottomColor: 'gray.100',
+        paddingX: '20px',
+        paddingY: '12px',
+        color: 'gray.950',
+      })}
+    >
+      <h1 class={css({ fontWeight: 'semibold' })}>공유하기</h1>
 
       <button aria-label="닫기" type="button" on:click={() => (open = false)}>
-        <Icon class="square-6" icon={IconX} />
+        <Icon style={css.raw({ size: '24px' })} icon={IconX} />
       </button>
     </header>
-    <div class="flex justify-center p-y-5 gap-4" role="group">
+
+    <div class={flex({ justify: 'center', gap: '16px', paddingY: '20px' })} role="group">
       <div class={shareTargetMenuLinkWarpClassname}>
         <a
           id={twitterLinkId}
@@ -83,7 +156,7 @@
           rel="noopener noreferrer"
           target="_blank"
         >
-          <Icon class="color-#1D9BF0 square-8" icon={IconTwitter} />
+          <Icon style={css.raw({ size: '32px', color: '[#1D9BF0]' })} icon={IconTwitter} />
         </a>
         <label for={twitterLinkId}>트위터</label>
       </div>
@@ -96,20 +169,28 @@
             query: { text: href },
           })}
         >
-          <Icon class="color-#6364FF square-8" icon={IconMastodon} />
+          <Icon style={css.raw({ size: '32px', color: '[#6364FF]' })} icon={IconMastodon} />
         </a>
         <label for={mastodonLinkId}>마스토돈</label>
       </div>
     </div>
-    <footer class="m-5 flex">
+    <footer class={flex({ margin: '20px' })}>
       <input
-        class="flex-1 rounded-l-1 border-(1px gray-200) border-r-none text-14-r p-3"
+        class={css({
+          flex: '1',
+          borderWidth: '1px',
+          borderColor: 'gray.200',
+          borderLeftRadius: '4px',
+          borderRightRadius: '0',
+          padding: '12px',
+          fontSize: '14px',
+        })}
         readonly
         type="text"
         value={href}
       />
       <Button
-        class="flex-shrink-0 rounded-l-none"
+        style={css.raw({ flex: 'none', borderLeftWidth: '0' })}
         size="lg"
         type="button"
         variant="tertiary"
