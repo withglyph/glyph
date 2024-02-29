@@ -108,7 +108,7 @@
         <div class="overflow-x-hidden">
           {#if $user}
             <div class="flex items-center gap-6.5 justify-between px-4 py-4.5 border-b border-gray-100">
-              <div class="flex items-center gap-1.5">
+              <a class="flex items-center gap-1.5" href="/me/cabinets">
                 <Avatar class="square-9 border border-gray-100" $profile={$user.profile} />
                 <div class="truncate">
                   <p class="text-14-m truncate">
@@ -117,7 +117,7 @@
                   </p>
                   <p class="text-10-r text-gray-500">{$user.email}</p>
                 </div>
-              </div>
+              </a>
               <Button class="whitespace-nowrap" href="/me/settings" size="xs" type="link" variant="outline">
                 계정 설정
               </Button>
