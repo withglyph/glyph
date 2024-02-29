@@ -471,7 +471,7 @@
 />
 
 <article class={clsx('w-full bg-white grow', _class)}>
-  <div class="w-full max-w-1062px mx-auto px-80px flex flex-col pt-42px <sm:(pt-24px px-5)">
+  <div class="w-full max-w-1062px mx-auto px-80px flex flex-col pt-42px mb-60px <sm:(pt-24px px-5)">
     {#if $query.post.collection}
       <a
         class="text-14-r text-gray-500 flex items-center gap-0.5 mb-4"
