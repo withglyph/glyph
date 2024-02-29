@@ -297,7 +297,7 @@
         {#if $postComment.state === 'INACTIVE'}
           <p class="text-14-r text-gray-400">삭제된 댓글이에요</p>
         {:else}
-          <p class="text-14-r whitespace-pre">{$postComment.content}</p>
+          <p class="text-14-r whitespace-pre-wrap break-all">{$postComment.content}</p>
 
           <time class="text-10-l text-gray-400 block">{dayjs($postComment.createdAt).formatAsDateTime()}</time>
 
