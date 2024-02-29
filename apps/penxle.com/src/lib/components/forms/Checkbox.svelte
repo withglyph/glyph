@@ -25,19 +25,19 @@
 </script>
 
 <div>
-  <label class={clsx('flex items-center gap-1.5 select-none', _class)}>
+  <label class={clsx('flex relative items-center gap-1.5 select-none', _class)}>
     <input
       id={name}
       {name}
-      class="relative flex center square-4.5 shrink-0 border border-gray-300 rounded-0.75 cursor-pointer appearance-none transition checked:(border-none bg-teal-500) enabled:(aria-[invalid]:border-red-50 hover:border-gray-300!)"
+      class="flex center square-4.5 shrink-0 border border-gray-300 rounded-0.75 cursor-pointer appearance-none transition checked:(border-none bg-teal-500) enabled:(aria-[invalid]:border-red-50 hover:border-gray-300!)"
       type="checkbox"
       on:change
       bind:checked
       {...$$restProps}
     />
     {#if checked}
-      <div class="absolute inset-0 square-full flex center">
-        <Icon class="text-white square-3.5" icon={IconChecked} />
+      <div class="absolute top-1px left-0 square-4.5 flex center">
+        <Icon class="text-white square-3.5 block" icon={IconChecked} />
       </div>
     {/if}
 
