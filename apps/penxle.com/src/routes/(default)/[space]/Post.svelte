@@ -598,7 +598,7 @@
           }}
         >
           {#if $query.post.bookmarkGroups.length > 0}
-            <Icon class="square-24px bg-teal-500" icon={IconBookmarkFilled} />
+            <Icon class="square-24px text-teal-500" icon={IconBookmarkFilled} />
           {:else}
             <Icon class="square-24px text-gray-500 transition hover:text-teal-400" icon={IconBookmark} />
           {/if}
@@ -936,7 +936,7 @@
           }}
         >
           {#if $query.post.bookmarkGroups.length > 0}
-            <Icon class="square-20px bg-teal-500" icon={IconBookmarkFilled} />
+            <Icon class="square-20px text-teal-500" icon={IconBookmarkFilled} />
           {:else}
             <Icon class="square-20px text-gray-700 transition hover:text-teal-400" icon={IconBookmark} />
           {/if}
