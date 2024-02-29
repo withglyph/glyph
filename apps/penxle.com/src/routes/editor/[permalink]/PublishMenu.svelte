@@ -45,6 +45,10 @@
         me @_required {
           id
 
+          personalIdentity {
+            id
+          }
+
           spaces {
             id
             name
@@ -771,7 +775,7 @@
             <ToggleButton
               name="commentQualification"
               checked={$data.commentQualification === 'IDENTIFIED'}
-              disabled={$data.commentQualification === 'NONE'}
+              disabled={$data.commentQualification === 'NONE' || $query.me.personalIdentity === null}
               type="radio"
               value="IDENTIFIED"
             >
