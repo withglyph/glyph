@@ -55,7 +55,7 @@
       </Link>
 
       <div class="flex flex-1 items-center justify-between">
-        <SearchBar class="flex-1 max-w-80 <sm:focus-within:max-w-full peer" />
+        <SearchBar class="flex-1 max-w-80 <sm:focus-within:max-w-full" />
 
         <div class="flex items-center gap-3 relative">
           {#if $query.me}
