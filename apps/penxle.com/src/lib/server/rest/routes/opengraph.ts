@@ -3,6 +3,7 @@ import { renderAsync } from '@resvg/resvg-js';
 import got from 'got';
 import { png } from 'itty-router';
 import satori from 'satori';
+import sharp from 'sharp';
 import twemoji from 'twemoji';
 import { s3 } from '$lib/server/external-api/aws';
 import { createRouter } from '../router';
@@ -134,7 +135,7 @@ opengraph.get('/opengraph/post/:postId', async (request, { db }) => {
               style: {
                 display: 'flex',
                 flexDirection: 'column',
-                width: '620px',
+                width: post.thumbnail ? '620px' : '100%',
                 height: '100%',
               },
             },
@@ -219,7 +220,8 @@ opengraph.get('/opengraph/post/:postId', async (request, { db }) => {
 const getS3ImageSrc = async (key: string) => {
   const object = await s3.send(new GetObjectCommand({ Bucket: 'penxle-data', Key: key }));
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const buffer = await object.Body!.transformToByteArray();
+  const source = await object.Body!.transformToByteArray();
+  const buffer = await sharp(source, { failOn: 'none' }).png().toBuffer();
 
-  return `data:image/png;base64,${Buffer.from(buffer).toString('base64')}`;
+  return `data:image/png;base64,${buffer.toString('base64')}`;
 };
