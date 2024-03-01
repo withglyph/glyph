@@ -180,6 +180,7 @@ export const generatePostShareImage = async ({
                 fontSize: size === 'small' ? '14px' : size === 'medium' ? '16px' : '18px',
                 // lineHeight: font === 'RIDIBatang' ? '2.215' : '1.875', // 30px for Pretendard, 34px for RIDIBatang
                 lineHeight: font === 'RIDIBatang' ? '34px' : '30px', // 30px for Pretendard, 34px for RIDIBatang
+                wordBreak: 'break-all',
                 lineClamp: 5,
               },
             },
@@ -199,6 +200,7 @@ export const generatePostShareImage = async ({
                       lineHeight: '30px',
                       fontWeight: 300,
                       opacity: 0.6,
+                      wordBreak: 'break-all',
                       lineClamp: 1,
                     },
                   },
@@ -214,6 +216,7 @@ export const generatePostShareImage = async ({
                       lineHeight: '20px',
                       fontWeight: 300,
                       opacity: 0.36,
+                      wordBreak: 'break-all',
                       lineClamp: 1,
                     },
                   },
