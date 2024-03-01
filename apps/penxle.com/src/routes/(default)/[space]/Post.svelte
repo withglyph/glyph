@@ -4,7 +4,6 @@
   import clsx from 'clsx';
   import dayjs from 'dayjs';
   import stringify from 'fast-json-stable-stringify';
-  import { onMount } from 'svelte';
   import IconRating15Plus from '~icons/effit/rating-15-plus';
   import IconRating20Plus from '~icons/effit/rating-20-plus';
   import IconAlertSquareRounded from '~icons/tabler/alert-square-rounded';
@@ -437,27 +436,7 @@
     }
   `);
 
-  let selectedText = '';
   $: triggerTags = $query.post.tags.filter(({ kind }) => kind === 'TRIGGER');
-
-  const setSelectedText = () => {
-    if (!editor) {
-      return;
-    }
-
-    selectedText = getTextBetween(editor?.state.doc, editor.state.selection);
-  };
-
-  onMount(() => {
-    // fetchComments();
-
-    editor?.on('selectionUpdate', setSelectedText);
-
-    return () => {
-      editor?.off('selectionUpdate', setSelectedText);
-    };
-  });
-
   $: shortLink = `https://pnxl.me/${$query.post.shortlink}`;
 </script>
 
@@ -1283,9 +1262,9 @@
   </SelectionBubbleMenu>
 {/if}
 
-{#if openShareContentModal}
+{#if editor && openShareContentModal}
   <ShareContent
-    body={selectedText}
+    body={getTextBetween(editor.state.doc, editor.state.selection)}
     spaceName={$query.post.space?.name ?? ''}
     title={$postRevision.title ?? '(제목 없음)'}
     bind:open={openShareContentModal}
