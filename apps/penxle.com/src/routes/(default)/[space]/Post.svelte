@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
   import { getTextBetween } from '@tiptap/core';
   import clsx from 'clsx';
   import dayjs from 'dayjs';
@@ -114,11 +113,6 @@
               id
               name
             }
-          }
-
-          thumbnail {
-            id
-            url
           }
 
           recommendedPosts {
@@ -439,15 +433,6 @@
   $: triggerTags = $query.post.tags.filter(({ kind }) => kind === 'TRIGGER');
   $: shortLink = `https://pnxl.me/${$query.post.shortlink}`;
 </script>
-
-<Helmet
-  description={$postRevision.previewText}
-  image={{
-    src: $query.post.thumbnail?.url ?? 'https://pnxl.net/assets/opengraph/default-cover.png',
-    size: 'large',
-  }}
-  title={$postRevision.title ?? '(제목 없음)'}
-/>
 
 <article class={clsx('w-full bg-white grow', _class)}>
   <div class="w-full max-w-1062px mx-auto px-80px flex flex-col pt-42px mb-60px <sm:(pt-24px px-5)">

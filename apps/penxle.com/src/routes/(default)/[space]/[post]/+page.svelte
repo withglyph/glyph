@@ -40,11 +40,6 @@
           ...Post_postRevision
         }
 
-        thumbnail {
-          id
-          url
-        }
-
         tags {
           id
 
