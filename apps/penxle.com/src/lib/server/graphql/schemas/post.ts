@@ -1132,6 +1132,7 @@ export const postSchema = defineSchema((builder) => {
 
         const lastRevision = input.postId
           ? await db.postRevision.findFirst({
+              include: { freeContent: true, paidContent: true },
               where: { postId: input.postId },
               orderBy: { createdAt: 'desc' },
             })
@@ -1171,10 +1172,23 @@ export const postSchema = defineSchema((builder) => {
 
         let revisionId = createId();
 
+        const checkContentLengthDiff = async () => {
+          if (!lastRevision) return 0;
+          const lastRevisionContentLength =
+            (lastRevision.freeContent ? await revisionContentToText(lastRevision.freeContent) : '').length +
+            (lastRevision.paidContent ? await revisionContentToText(lastRevision.paidContent) : '').length;
+          const currentContentLength =
+            (freeContent ? await revisionContentToText(freeContent) : '').length +
+            (paidContent ? await revisionContentToText(paidContent) : '').length;
+
+          return Math.abs(lastRevisionContentLength - currentContentLength);
+        };
+
         if (
           lastRevision &&
           lastRevision.kind === 'AUTO_SAVE' &&
-          dayjs(lastRevision.createdAt).add(5, 'minutes').isAfter(dayjs())
+          dayjs(lastRevision.createdAt).add(1, 'minutes').isAfter(dayjs()) &&
+          (await checkContentLengthDiff()) < 100
         ) {
           await db.postRevision.update({
             where: { id: lastRevision.id },
