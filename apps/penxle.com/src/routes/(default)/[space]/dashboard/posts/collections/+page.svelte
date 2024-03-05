@@ -11,6 +11,8 @@
   } from '$lib/components/pages/collections';
   import { Table, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
   import { toast } from '$lib/notification';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
 
   let openManageCollectionModal = false;
   let openCreateCollectionModal = false;
@@ -65,30 +67,30 @@
 
 <Helmet description={`${$query.space.name} 스페이스 컬렉션 관리`} title={`컬렉션 관리 | ${$query.space.name}`} />
 
-<div class="flex justify-between gap-2">
-  <div class="flex gap-2">
+<div class={flex({ justify: 'space-between', gap: '8px' })}>
+  <div class={flex({ gap: '8px' })}>
     <Button size="md" on:click={() => (openCreateCollectionModal = true)}>새 컬렉션 생성</Button>
   </div>
 </div>
 
-<div class="overflow-y-auto">
-  <Table class="text-left border-separate border-spacing-y-0.125rem">
+<div class={css({ overflowY: 'auto' })}>
+  <Table style={css.raw({ borderSpacingY: '2px', borderCollapse: 'separate', textAlign: 'left' })}>
     <TableHeader>
       <TableRow>
         <TableHead>컬렉션</TableHead>
-        <TableHead class="<sm:hidden">생성일</TableHead>
+        <TableHead style={css.raw({ hideBelow: 'sm' })}>생성일</TableHead>
         <TableHead>관리</TableHead>
       </TableRow>
     </TableHeader>
     <colgroup>
       <col span="1" />
-      <col class="w-8rem <sm:hidden" span="1" />
-      <col class="w-11.5rem <sm:w-5rem" span="1" />
+      <col class={css({ width: '128px', hideBelow: 'sm' })} span="1" />
+      <col class={css({ width: '184px', smDown: { width: '80px' } })} span="1" />
     </colgroup>
     {#each $query.space.collections as collection (collection.id)}
       <TableRow>
         <TableData>
-          <a class="flex gap-xs" href={`/${$query.space.slug}/collections/${collection.id}`}>
+          <a class={flex({ gap: '12px' })} href={`/${$query.space.slug}/collections/${collection.id}`}>
             {#if collection.thumbnail}
               <Image class="w-6rem h-7.5rem rounded-2 shrink-0" $image={collection.thumbnail} />
             {/if}

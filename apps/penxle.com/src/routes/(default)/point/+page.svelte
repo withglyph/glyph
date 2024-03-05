@@ -140,9 +140,9 @@
             </Button>
           </div>
         {:else}
-          <div class="flex flex-col gap-4">
+          <div class={flex({ direction: 'column', gap: '16px' })}>
             <!-- <PopupSearch class="" placeholder="검색어를 입력하세요" /> -->
-            <div class="flex gap-2">
+            <div class={flex({ gap: '8px' })}>
               <!-- Chips 컴포넌트 -->
               <!-- <div
                 class="flex px-2 py-1.5 items-center border-1 border-#D6D3D1 border-rd-12 bg-#292524 body-13-m text-gray-5"
@@ -159,21 +159,42 @@
                 결제/후원
               </div> -->
             </div>
-            <div class="flex flex-col gap-4">
+            <div class={flex({ direction: 'column', gap: '16px' })}>
               {#each $query.me.points as point (point.id)}
-                <div class="flex flex-col gap-1">
-                  <div class="text-secondary body-13-m pb-3 border-b-1 border-solid border-alphagray-10">
+                <div class={flex({ direction: 'column', gap: '4px' })}>
+                  <div
+                    class={css({
+                      borderBottomWidth: '1px',
+                      borderStyle: 'solid',
+                      borderColor: '[black/10]',
+                      paddingBottom: '12px',
+                      fontSize: '13px',
+                      color: 'gray.500',
+                    })}
+                  >
                     {dayjs(point.createdAt).formatAsDate()}
                   </div>
-                  <div class="flex flex-col gap-1">
-                    <div class="flex p-xs flex-col gap-3">
-                      <div class="flex gap-4 items-center justify-between">
-                        <div class="flex gap-6 align-top">
-                          <div class="text-secondary body-13-m">{dayjs(point.createdAt).formatAsTime()}</div>
-                          <div class="flex flex-col gap-2 flex-1 w-full">
-                            <div class="text-secondary body-13-m">{pointTransactionCause[point.cause]}</div>
+                  <div class={flex({ direction: 'column', gap: '4px' })}>
+                    <div class={flex({ direction: 'column', gap: '12px', padding: '12px' })}>
+                      <div class={flex({ align: 'center', justify: 'space-between', gap: '16px' })}>
+                        <div class={flex({ gap: '24px', verticalAlign: 'top' })}>
+                          <div class={css({ fontSize: '13px', color: 'gray.500' })}>
+                            {dayjs(point.createdAt).formatAsTime()}
+                          </div>
+                          <div class={flex({ direction: 'column', flex: '1', gap: '8px', width: 'full' })}>
+                            <div class={css({ fontSize: '13px', color: 'gray.500' })}>
+                              {pointTransactionCause[point.cause]}
+                            </div>
                             {#if point.cause === 'UNLOCK_CONTENT'}
-                              <div class="text-primary body-16-sb whitespace-pre-wrap break-all">
+                              <div
+                                class={css({
+                                  fontSize: '16px',
+                                  fontWeight: 'semibold',
+                                  color: 'gray.900',
+                                  whiteSpace: 'pre-wrap',
+                                  wordBreak: 'break-all',
+                                })}
+                              >
                                 {point.post?.publishedRevision?.title ?? '(제목 없음)'}
                               </div>
                             {/if}
@@ -181,9 +202,17 @@
                         </div>
 
                         {#if point.amount > 0}
-                          <div class="text-green-50 body-16-b flex items-center">+{comma(point.amount)}</div>
+                          <div
+                            class={flex({ align: 'center', fontSize: '16px', fontWeight: 'bold', color: '[#4ecea6]' })}
+                          >
+                            +{comma(point.amount)}
+                          </div>
                         {:else}
-                          <div class="text-secondary body-16-b flex items-center">{comma(point.amount)}</div>
+                          <div
+                            class={flex({ align: 'center', fontSize: '16px', fontWeight: 'bold', color: 'gray.500' })}
+                          >
+                            {comma(point.amount)}
+                          </div>
                         {/if}
                       </div>
                     </div>

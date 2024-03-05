@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Helmet, Link } from '@penxle/ui';
-  import clsx from 'clsx';
   import qs from 'query-string';
   import IconAlertTriangle from '~icons/tabler/alert-triangle';
   import Paypal from '$assets/icons/paypal.svg?component';
@@ -12,6 +11,8 @@
   import { toast } from '$lib/notification';
   import { comma } from '$lib/utils';
   import { PurchasePointSchema } from '$lib/validations';
+  import { css } from '$styled-system/css';
+  import { center, flex, grid } from '$styled-system/patterns';
   import type { PaymentMethod } from '$glitch';
 
   $: query = graphql(`
@@ -90,34 +91,74 @@
 
 <Helmet description="펜슬 포인트를 충전할 수 있어요" title="포인트 충전" />
 
-<form class="space-y-6 flex flex-col center my-9 w-full max-w-200 px-4 sm:my-22" use:form>
-  <h1 class="title-20-b w-full">포인트 충전</h1>
+<form
+  class={center({
+    flexDirection: 'column',
+    gap: '24px',
+    marginY: '36px',
+    paddingX: '16px',
+    width: 'full',
+    maxWidth: '800px',
+    sm: { marginY: '88px' },
+  })}
+  use:form
+>
+  <h1 class={css({ width: 'full', fontSize: '20px', fontWeight: 'bold' })}>포인트 충전</h1>
 
-  <p class="w-full flex items-center gap-2">
+  <p class={flex({ align: 'center', gap: '8px', width: 'full' })}>
     <span>보유중인 포인트 :</span>
-    <span class="title-20-b">{comma($query.me.point)}P</span>
+    <span class={css({ fontSize: '20px', fontWeight: 'bold' })}>{comma($query.me.point)}P</span>
   </p>
 
-  <div class="w-full p-4 bg-cardprimary border border-secondary rounded-2xl">
-    <div class="flex flex-col">
-      <div class="flex px-4 py-2 border bg-primary border-secondary text-secondary rounded-lg body-13-m">
-        <div class="mr-4">선택</div>
-        <div class="grow">충전 포인트</div>
+  <div
+    class={css({
+      borderWidth: '1px',
+      borderColor: 'gray.200',
+      borderRadius: '16px',
+      padding: '16px',
+      width: 'full',
+      backgroundColor: 'white',
+    })}
+  >
+    <div class={flex({ direction: 'column' })}>
+      <div
+        class={flex({
+          borderWidth: '1px',
+          borderColor: 'gray.200',
+          borderRadius: '8px',
+          paddingX: '16px',
+          paddingY: '8px',
+          backgroundColor: 'gray.50',
+          fontSize: '13px',
+          fontWeight: 'medium',
+          color: 'gray.500',
+        })}
+      >
+        <div class={css({ marginRight: '16px' })}>선택</div>
+        <div class={css({ flexGrow: 1 })}>충전 포인트</div>
         <div>금액</div>
       </div>
       {#each pointAmounts as amount (amount)}
         <Radio
-          class={clsx(
-            'p-4 border-t hover:bg-primary first-of-type:border-0 gap-6 grow cursor-pointer',
-            $data.pointAmount === amount && 'bg-primary',
+          style={css.raw(
+            {
+              'padding': '16px',
+              'borderTopWidth': '1px',
+              '&:first-of-type': { borderWidth: '0' },
+              '&:hover': { backgroundColor: 'gray.50' },
+              'gap': '24px',
+              'flexGrow': 1,
+              'cursor': 'pointer',
+            },
+            $data.pointAmount === amount && { backgroundColor: 'gray.50' },
           )}
           checked={$data.pointAmount === amount}
           on:change={() => {
             $data.pointAmount = amount;
           }}
         >
-          <div class="flex items-center justify-between w-full">
-            <p class="body-16-b">{comma(amount)}P</p>
+          <div class={flex({ align: 'center', justify: 'space-between', width: 'full' })}>
+            <p class={css({ fontSize: '16px', fontWeight: 'bold' })}>{comma(amount)}P</p>
             <p>{comma(amount)}원</p>
           </div>
         </Radio>
@@ -125,19 +166,26 @@
     </div>
   </div>
 
-  <p class="w-full">결제수단</p>
+  <p class={css({ width: 'full' })}>결제수단</p>
 
-  <div class="grid grid-cols-3 gap-2 sm:(grid-cols-4 gap-4) w-full">
+  <div class={grid({ columns: 3, gap: '8px', sm: { gridTemplateColumns: '4', gap: '16px' }, width: 'full' })}>
     {#each paymentMethods as [method, name] (method)}
       <Button
-        class={clsx('disabled:border w-full', $data.paymentMethod === method && 'bg-surface-primary! border-tertiary')}
+        style={css.raw(
+          { width: 'full', _disabled: { borderWidth: '1px' } },
+          $data.paymentMethod === method && {
+            backgroundColor: 'gray.100',
+            borderWidth: '1px',
+            borderColor: 'gray.900',
+          },
+        )}
         color="tertiary"
         size="xl"
         variant="outlined"
         on:click={() => ($data.paymentMethod = method)}
       >
         {#if method === 'PAYPAL'}
-          <Paypal class="h-5" />
+          <Paypal class={css({ height: '20px' })} />
         {:else}
           {name}
         {/if}
@@ -145,12 +193,12 @@
     {/each}
   </div>
 
-  <div class="bg-surface-primary rounded-2xl p-4 w-full">
-    <p class="flex items-center body-13-b gap-2">
+  <div class={css({ borderRadius: '16px', padding: '16px', width: 'full', backgroundColor: 'gray.100' })}>
+    <p class={flex({ align: 'center', gap: '8px', fontSize: '13px', fontWeight: 'bold' })}>
       <Icon icon={IconAlertTriangle} />
       <span>결제 전 확인해주세요!</span>
     </p>
-    <div class="mt-2 text-secondary body-13-m">
+    <div class={css({ marginTop: '8px', fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
       <p>- 모든 금액은 부가가치세 제외 금액입니다. 결제 진행시 부가가치세 10%가 부과되어 결제됩니다.</p>
       <p>
         - 충전한 포인트 전액 결제 취소는 포인트를 구매한 뒤 사용한 이력이 없고 결제 후 7일 이내에 결제 취소한 경우에
@@ -163,7 +211,8 @@
       <p>
         - 잔여 포인트는 충전한 포인트의 잔액이 80% 이하일 때에 한해 환불 신청이 가능하며, 잔액의 10% 또는 1,000원 중 큰
         금액을 환급 수수료로 제외하고 환불해드립니다. 포인트 잔액이 1,000원 이하이면 환불이 불가능합니다. 환불은
-        <Link class="underline" href="https://help.penxle.com/">펜슬 도움 센터</Link>를 통해 신청할 수 있습니다.
+        <Link class={css({ textDecorationLine: 'underline' })} href="https://help.penxle.com/">펜슬 도움 센터</Link>를
+        통해 신청할 수 있습니다.
       </p>
       <p>- 무료로 지급받은 포인트는 환불받을 수 없으며, 지급일로부터 1년이 되는 시점에 소멸됩니다.</p>
       <p>
@@ -176,20 +225,24 @@
       </p>
       <p>
         - 자세한 내용은 서비스 이용 전 동의하신
-        <Link class="underline" href="https://help.penxle.com/legal/terms">이용약관</Link>을 참조해주시기 바랍니다.
+        <Link class={css({ textDecorationLine: 'underline' })} href="https://help.penxle.com/legal/terms">
+          이용약관
+        </Link>을 참조해주시기 바랍니다.
       </p>
     </div>
   </div>
 
-  <Checkbox name="pointAgreement" class="body-14-m">
+  <Checkbox name="pointAgreement" style={css.raw({ fontSize: '14px', fontWeight: 'medium' })}>
     주문 내용과 아래 유의 사항을 확인하였으며 결제 진행에 동의합니다.
   </Checkbox>
 
-  <Button class="w-full max-w-125" size="xl" type="submit">포인트 충전하기</Button>
+  <Button style={css.raw({ width: 'full', maxWidth: '500px' })} size="xl" type="submit">포인트 충전하기</Button>
 
-  <p class="flex items-center gap-2">
+  <p class={flex({ align: 'center', gap: '8px' })}>
     <span>충전 후 보유 포인트 :</span>
-    <span class="title-20-b">{comma($query.me.point + ($data.pointAmount ?? 0))}P</span>
+    <span class={css({ fontSize: '20px', fontWeight: 'bold' })}>
+      {comma($query.me.point + ($data.pointAmount ?? 0))}P
+    </span>
   </p>
 </form>
 
