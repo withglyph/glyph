@@ -460,7 +460,7 @@
         <Icon style={css.raw({ size: '16px', color: 'gray.500' })} icon={IconChevronRight} />
       </a>
     {/if}
-    <div class={flex({ justify: 'between', align: 'flex-start' })}>
+    <div class={flex({ justify: 'space-between', align: 'flex-start' })}>
       <div>
         <h1 class={css({ fontSize: { base: '22px', sm: '28px' }, fontWeight: 'semibold', wordBreak: 'break-all' })}>
           {$postRevision.title ?? '(제목 없음)'}

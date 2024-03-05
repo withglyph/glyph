@@ -6,6 +6,8 @@
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { Switch } from '$lib/components/forms';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import MutedSpaceModal from './MutedSpaceModal.svelte';
   import MutedTagModal from './MutedTagModal.svelte';
 
@@ -56,36 +58,40 @@
 
 <Helmet description="보고 싶은 컨텐츠와 보고 싶지 않은 컨텐츠를 설정할 수 있어요" title="필터링 설정" />
 
-<div class="py-8 px-6 space-y-8 sm:px-8">
-  <button type="button" on:click={() => (mutedSpaceOpen = true)}>
-    <div class="flex items-center gap-1 w-full mb-2">
-      <h3 class="text-lg font-extrabold">숨긴 스페이스</h3>
-      <Icon class="square-6 text-secondary" icon={IconChevronRight} />
+<div class={flex({ direction: 'column', gap: '32px', paddingX: { base: '24px', sm: '32px' }, paddingY: '32px' })}>
+  <button class={css({ textAlign: 'left' })} type="button" on:click={() => (mutedSpaceOpen = true)}>
+    <div class={flex({ align: 'center', gap: '4px', marginBottom: '8px', width: 'full' })}>
+      <h3 class={css({ fontSize: '18px', fontWeight: 'bold' })}>숨긴 스페이스</h3>
+      <Icon style={css.raw({ color: 'gray.500', size: '24px' })} icon={IconChevronRight} />
     </div>
-    <p class="text-secondary">스페이스를 숨기기 할 경우 해당 스페이스가 올린 포스트가 사이트에서 보이지 않아요.</p>
-    <p class="text-secondary">
+    <p class={css({ color: 'gray.500' })}>
+      스페이스를 숨기기 할 경우 해당 스페이스가 올린 포스트가 사이트에서 보이지 않아요.
+    </p>
+    <p class={css({ color: 'gray.500' })}>
       위 기능은 스페이스에만 귀속되므로 숨긴 스페이스의 멤버가 다른 스페이스에서 올린 글은 노출될 수 있어요.
     </p>
   </button>
 
-  <div class="w-full border-b border-alphagray-10" />
+  <hr class={css({ borderStyle: 'none', backgroundColor: 'gray.200', height: '1px' })} />
 
-  <button type="button" on:click={() => (mutedTagOpen = true)}>
-    <div class="flex items-center gap-1 w-full mb-2">
-      <h3 class="text-lg font-extrabold">숨긴 태그</h3>
-      <Icon class="square-6 text-secondary" icon={IconChevronRight} />
+  <button class={css({ textAlign: 'left' })} type="button" on:click={() => (mutedTagOpen = true)}>
+    <div class={flex({ align: 'center', gap: '4px', marginBottom: '8px', width: 'full' })}>
+      <h3 class={css({ fontSize: '18px', fontWeight: 'bold' })}>숨긴 태그</h3>
+      <Icon style={css.raw({ color: 'gray.500', size: '24px' })} icon={IconChevronRight} />
     </div>
-    <p class="text-secondary">태그를 숨기기 처리할 경우 해당 태그가 속해있는 포스트가 사이트에서 보이지 않아요.</p>
-    <p class="text-secondary">
+    <p class={css({ color: 'gray.500' })}>
+      태그를 숨기기 처리할 경우 해당 태그가 속해있는 포스트가 사이트에서 보이지 않아요.
+    </p>
+    <p class={css({ color: 'gray.500' })}>
       다른 태그를 포함하였더라도 숨긴 태그가 함께 포함되어 있는 포스트는 보이지 않으니 주의해주세요.
     </p>
   </button>
 
-  <div class="w-full border-b border-alphagray-10" />
+  <hr class={css({ borderStyle: 'none', backgroundColor: 'gray.200', height: '1px' })} />
 
-  <div class="flex flex-col flex-wrap">
-    <div class="flex items-center justify-between w-full mb-2">
-      <h3 class="text-lg font-extrabold">성인물 쿠션 비활성화</h3>
+  <div class={flex({ direction: 'column', wrap: 'wrap' })}>
+    <div class={flex({ align: 'center', justify: 'space-between', marginBottom: '8px', width: 'full' })}>
+      <h3 class={css({ fontSize: '18px', fontWeight: 'bold' })}>성인물 쿠션 비활성화</h3>
 
       <Switch
         checked={preferences.ADULT === 'EXPOSE'}
@@ -99,7 +105,7 @@
       />
     </div>
 
-    <p class="text-secondary">
+    <p class={css({ color: 'gray.500' })}>
       성인물로 설정되어 있는 포스트는 기본적으로 읽기 전 경고 메시지가 보여져요.
       <br />
       이 옵션을 활성화할 경우 성인물 경고 메시지가 더 이상 뜨지 않아요.

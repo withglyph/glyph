@@ -3,6 +3,8 @@
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal, Tag } from '$lib/components';
   import { toast } from '$lib/notification';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type { ChangeEventHandler } from 'svelte/elements';
   import type { MeCabinetsPage_FollowTagModal_user } from '$glitch';
 
@@ -53,21 +55,36 @@
   <svelte:fragment slot="title">관심 태그 관리</svelte:fragment>
   <svelte:fragment slot="subtitle">태그를 선택해 관심태그를 해제할 수 있어요</svelte:fragment>
 
-  <ul class="flex flex-wrap gap-2.5 min-h-10rem max-h-15rem overflow-y-auto">
+  <ul class={flex({ wrap: 'wrap', gap: '10px', minHeight: '160px', maxHeight: '240px', overflowY: 'auto' })}>
     {#each $user.followedTags as tag (tag.id)}
-      <Tag class="h-fit" as="label" checked={tags.includes(tag)} on:change={(e) => handleChange(e, tag)}>
+      <Tag
+        style={css.raw({ height: 'fit' })}
+        as="label"
+        checked={tags.includes(tag)}
+        on:change={(e) => handleChange(e, tag)}
+      >
         {tag.name}
       </Tag>
     {:else}
-      <article class="text-secondary body-16-m self-center m-x-auto break-keep">아직 추가된 관심 태그가 없어요</article>
+      <article
+        class={css({
+          marginX: 'auto',
+          color: 'gray.500',
+          fontWeight: 'medium',
+          alignSelf: 'center',
+          wordBreak: 'keep-all',
+        })}
+      >
+        아직 추가된 관심 태그가 없어요
+      </article>
     {/each}
   </ul>
 
-  <div class="flex gap-3 mt-4">
-    <Button class="grow-10" size="xl" on:click={() => (open = false)}>닫기</Button>
+  <div class={flex({ gap: '12px', marginTop: '16px' })}>
+    <Button style={css.raw({ flexGrow: '10' })} size="xl" on:click={() => (open = false)}>닫기</Button>
     {#if tags.length > 0}
       <Button
-        class="grow"
+        style={css.raw({ flexGrow: '1' })}
         color="tertiary"
         size="xl"
         variant="outlined"

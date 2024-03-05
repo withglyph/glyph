@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Helmet } from '@penxle/ui';
-  import clsx from 'clsx';
   import dayjs from 'dayjs';
   import ky from 'ky';
   import IconCheck from '~icons/tabler/check';
@@ -13,6 +12,8 @@
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { Button } from '$lib/components/v2';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
 
   $: query = graphql(`
     query MeNotificationsPage_Query {
@@ -101,56 +102,87 @@
 <Helmet description="받은 알림 목록을 둘러보세요" title="알림" />
 
 <header>
-  <div class="px-5 py-3.5 flex items-center justify-between relative border-b border-gray-100 h-55px">
+  <div
+    class={flex({
+      align: 'center',
+      justify: 'space-between',
+      position: 'relative',
+      borderBottomWidth: '1px',
+      borderColor: 'gray.100',
+      paddingX: '20px',
+      paddingY: '14px',
+      height: '55px',
+    })}
+  >
     <button type="button" on:click={() => history.back()}>
-      <Icon class="square-6" icon={IconChevronLeft} />
+      <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />
     </button>
 
-    <h1 class="text-16-sb absolute left-50% -translate-x-50%">알림</h1>
+    <h1 class={css({ position: 'absolute', left: '[50%]', translateX: '-1/2', fontWeight: 'semibold' })}>알림</h1>
 
     <a href="/me/settings/notifications">
-      <Icon class="square-5" icon={IconSettings} />
+      <Icon style={css.raw({ size: '20px' })} icon={IconSettings} />
     </a>
   </div>
 
-  <div class="px-5 py-3.5 flex items-center justify-between border-b border-gray-100 h-55px">
+  <div
+    class={flex({
+      align: 'center',
+      justify: 'space-between',
+      borderBottomWidth: '1px',
+      borderColor: 'gray.100',
+      paddingX: '20px',
+      paddingY: '14px',
+      height: '55px',
+    })}
+  >
     <p>
-      새소식 <mark class="text-16-r text-teal-500">{unreadNotifications.length}</mark>
+      새소식 <mark class={css({ color: 'teal.500' })}>
+        {unreadNotifications.length}
+      </mark>
     </p>
     <Button size="xs" variant="outline" on:click={async () => await readAllNotifications()}>모두 읽기</Button>
   </div>
 </header>
 
-<div class="w-full flex flex-col grow">
-  <ul class="min-h-30 mb-7 w-full max-w-200 mx-auto">
+<div class={flex({ flexDirection: 'column', flexGrow: '1', width: 'full' })}>
+  <ul class={css({ marginX: 'auto', marginBottom: '28px', minHeight: '120px', width: 'full', maxWidth: '800px' })}>
     {#each $query.me.notifications as notification (notification.id)}
       <li>
         <button
-          class={clsx(
-            'border-b border-gray-100 px-4 py-5 w-full hover:bg-gray-100 transition',
-            notification.state === 'UNREAD' && 'bg-teal-50',
+          class={css(
+            {
+              borderBottomWidth: '1px',
+              borderColor: 'gray.100',
+              paddingX: '16px',
+              paddingY: '20px',
+              width: 'full',
+              transition: 'common',
+              _hover: { backgroundColor: 'gray.100' },
+            },
+            notification.state === 'UNREAD' && { backgroundColor: 'teal.50' },
           )}
           type="button"
           on:click={() => redirect(notification)}
         >
           <div
-            class={clsx(
-              'text-13-r flex items-center gap-1 text-gray-500',
-              notification.state === 'UNREAD' && 'text-teal-500',
+            class={css(
+              { display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: 'gray.500' },
+              notification.state === 'UNREAD' && { color: 'teal.500' },
             )}
           >
             {#if notification.__typename === 'SubscribeNotification'}
-              <Icon class="square-3 block" icon={IconCheck} />
+              <Icon style={css.raw({ size: '12px' })} icon={IconCheck} />
               스페이스 구독
             {:else if notification.__typename === 'PurchaseNotification'}
-              <Icon class="square-3" icon={IconCoin} />
+              <Icon style={css.raw({ size: '12px' })} icon={IconCoin} />
               구매
             {:else if notification.__typename === 'CommentNotification'}
-              <Icon class="square-3 block" icon={IconMessageCircle} />
+              <Icon style={css.raw({ size: '12px' })} icon={IconMessageCircle} />
               댓글
             {/if}
           </div>
-          <div class="text-14-m px-3">
+          <div class={css({ paddingX: '12px', fontSize: '14px', fontWeight: 'medium' })}>
             {#if notification.__typename === 'SubscribeNotification'}
               {notification.actor.name}님이 {notification.space.name.length > 10
                 ? `${notification.space.name.slice(0, 10)}...`
@@ -164,13 +196,22 @@
               달았어요
             {/if}
           </div>
-          <time class="text-10-l text-gray-400 text-right w-full inline-block">
+          <time
+            class={css({
+              display: 'inline-block',
+              fontSize: '10px',
+              fontWeight: 'light',
+              color: 'gray.400',
+              textAlign: 'right',
+              width: 'full',
+            })}
+          >
             {dayjs(notification.createdAt).formatAsDateTime()}
           </time>
         </button>
       </li>
     {:else}
-      <p class="text-center text-secondary body-14-b">알림이 없어요</p>
+      <p class={css({ fontSize: '15px', color: 'gray.400', textAlign: 'center' })}>알림이 없어요</p>
     {/each}
   </ul>
 </div>

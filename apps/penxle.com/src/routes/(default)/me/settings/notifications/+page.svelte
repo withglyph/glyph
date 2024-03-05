@@ -4,6 +4,8 @@
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Switch } from '$lib/components/forms';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import NotificationSwitch from './NotificationSwitch.svelte';
 
   $: query = graphql(`
@@ -47,15 +49,27 @@
 
 <Helmet description="받을 알림을 설정할 수 있어요" title="알림 설정" />
 
-<div class="sm:(space-y-8 p-8)">
-  <div class="hidden justify-end gap-8 text-3.75 text-secondary sm:flex">
+<div class={css({ sm: { display: 'flex', flexDirection: 'column', gap: '32px', padding: '32px' } })}>
+  <div class={flex({ justify: 'end', gap: '32px', fontSize: '15px', color: 'gray.500', hideBelow: 'sm' })}>
     <span>웹사이트</span>
     <span>이메일</span>
   </div>
-  <div class="flex flex-wrap items-center justify-between gap-4 pt-14 py-4 px-6 sm:p-0">
-    <div class="text-lg font-extrabold">알림 켜기 / 끄기</div>
+
+  <div
+    class={flex({
+      align: 'center',
+      justify: 'space-between',
+      wrap: 'wrap',
+      gap: '16px',
+      paddingTop: '56px',
+      paddingBottom: '16px',
+      paddingX: '24px',
+      sm: { padding: '0' },
+    })}
+  >
+    <div class={css({ fontSize: '18px', fontWeight: 'bold' })}>알림 켜기 / 끄기</div>
     <Switch
-      class="sm:hidden"
+      style={css.raw({ hideFrom: 'sm' })}
       checked={preferences.ALL?.some((v) => v.opted) ?? true}
       on:change={async (e) => {
         const opted = e.currentTarget.checked;
@@ -77,7 +91,7 @@
       }}
     />
 
-    <div class="hidden sm:(flex gap-8)">
+    <div class={flex({ gap: '32px', hideBelow: 'sm' })}>
       <Switch
         checked={preferences.ALL?.find((v) => v.method === 'WEBSITE')?.opted ?? true}
         on:change={async (e) => {

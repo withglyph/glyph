@@ -1,10 +1,11 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button, Image, Modal } from '$lib/components';
   import { PopupSearch } from '$lib/components/forms';
   import { toast } from '$lib/notification';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type { MeSettingsContentFiltersPage_MutedSpaceModal_user } from '$glitch';
 
   let _user: MeSettingsContentFiltersPage_MutedSpaceModal_user;
@@ -68,28 +69,46 @@
   <svelte:fragment slot="title">숨긴 스페이스</svelte:fragment>
 
   <PopupSearch
-    class={clsx('mb-4', mutedSpaces?.length === 0 && 'hidden')}
+    style={css.raw({ marginBottom: '16px' }, mutedSpaces?.length === 0 && { display: 'none' })}
     on:input={(event) => (query = event.currentTarget.value.trim())}
   />
 
   <ul
-    class={clsx(
-      'flex flex-col gap-4 min-h-10rem max-h-15rem overflow-y-auto',
-      filteredSpaces?.length === 0 && 'justify-center',
+    class={css(
+      {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        minHeight: '160px',
+        maxHeight: '240px',
+        overflowY: 'auto',
+      },
+      filteredSpaces?.length === 0 && { justifyContent: 'center' },
     )}
   >
     {#each filteredSpaces ?? [] as space (space.id)}
-      <li class="flex items-center justify-between">
-        <div class="flex gap-2 items-center truncate mr-2">
-          <Image class="square-10.5 rounded-lg grow-0 shrink-0 border border-secondary" $image={space.icon} />
-          <div class="truncate">
-            <p class="body-15-b truncate grow">{space.name}</p>
-            <p class="body-13-m text-secondary truncate">{space.description ?? ''}</p>
+      <li class={flex({ align: 'center', justify: 'space-between' })}>
+        <div class={flex({ align: 'center', gap: '8px', marginRight: '8px', truncate: true })}>
+          <Image
+            style={css.raw({
+              flex: 'none',
+              borderWidth: '1px',
+              borderColor: 'gray.200',
+              borderRadius: '8px',
+              size: '42px',
+            })}
+            $image={space.icon}
+          />
+          <div class={css({ truncate: true })}>
+            <p class={css({ flexGrow: '1', fontSize: '15px', fontWeight: 'bold', truncate: true })}>{space.name}</p>
+            <p class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500', truncate: true })}>
+              {space.description ?? ''}
+            </p>
           </div>
         </div>
         {#if $user.mutedSpaces.find((muted) => muted.id === space.id)}
           <Button
-            class="shrink-0"
+            style={css.raw({ flexShrink: '0' })}
             color="tertiary"
             size="md"
             variant="outlined"
@@ -103,7 +122,7 @@
           </Button>
         {:else}
           <Button
-            class="shrink-0"
+            style={css.raw({ flexShrink: '0' })}
             color="secondary"
             size="md"
             on:click={async () => {
@@ -117,7 +136,7 @@
         {/if}
       </li>
     {:else}
-      <article class="text-secondary body-16-m text-center break-keep">
+      <article class={css({ fontWeight: 'medium', color: 'gray.500', textAlign: 'center', wordBreak: 'keep-all' })}>
         {#if mutedSpaces}
           {mutedSpaces.length === 0 ? '숨긴 스페이스가 없어요' : '일치하는 검색 결과가 없어요'}
         {/if}
