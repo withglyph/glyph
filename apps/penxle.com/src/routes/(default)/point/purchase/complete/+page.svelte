@@ -73,7 +73,7 @@
       </h1>
       <p class={css({ marginTop: '12px', color: 'gray.500' })}>입금이 확인되면 페이지가 자동으로 넘어가요</p>
 
-      <div class={css({ gap: '12px', marginY: '24px' })}>
+      <div class={flex({ direction: 'column', gap: '12px', marginY: '24px' })}>
         <div
           class={css({
             borderWidth: '1px',
@@ -85,7 +85,7 @@
         >
           <p class={css({ marginBottom: '8px', color: 'gray.500' })}>충전 상품</p>
           <Radio
-            class={css({
+            style={css.raw({
               gap: '24px',
               flexGrow: 1,
               borderTopWidth: '1px',
@@ -104,7 +104,8 @@
         </div>
 
         <div
-          class={css({
+          class={flex({
+            direction: 'column',
             gap: '16px',
             borderWidth: '1px',
             borderColor: 'gray.200',
@@ -155,14 +156,15 @@
   {:else}
     <div class={css({ width: 'full', maxWidth: '800px' })}>
       <p class={css({ marginBottom: '24px', textAlign: 'center' })}>
-        <Icon style={css.raw({ size: '55px', color: '[#4ecea6]' })} icon={IconCircleCheck} />
+        <Icon style={css.raw({ size: '55px', color: '[#4ecea6]', marginX: 'auto' })} icon={IconCircleCheck} />
       </p>
-      <div class={css({ gap: '12px' })}>
+      <div class={flex({ direction: 'column', gap: '12px' })}>
         <h1 class={css({ textAlign: 'center', fontSize: '20px', fontWeight: 'bold' })}>포인트가 충전 완료 되었어요!</h1>
         <p class={css({ textAlign: 'center', color: 'gray.500' })}>펜슬의 다양한 작품을 감상해보세요</p>
 
         <div
-          class={css({
+          class={flex({
+            direction: 'column',
             backgroundColor: 'white',
             borderWidth: '1px',
             borderColor: 'gray.200',
@@ -182,7 +184,7 @@
           </div>
         </div>
 
-        <p class={css({ color: 'gray.500', fontSize: '14px', fontWeight: 'medium', textAlign: 'center' })}>
+        <p class={css({ color: 'gray.500', fontSize: '16px', fontWeight: 'medium', textAlign: 'center' })}>
           보유중인 포인트 : {comma($query.me.point)}P
         </p>
       </div>
