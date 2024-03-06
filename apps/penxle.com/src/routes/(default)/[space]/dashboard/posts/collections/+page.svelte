@@ -91,21 +91,43 @@
         <TableData>
           <a class={flex({ gap: '12px' })} href={`/${$query.space.slug}/collections/${collection.id}`}>
             {#if collection.thumbnail}
-              <Image class="w-6rem h-7.5rem rounded-2 shrink-0" $image={collection.thumbnail} />
+              <Image
+                style={css.raw({ width: '96px', height: '120px', borderRadius: '8px', flexShrink: 0 })}
+                $image={collection.thumbnail}
+              />
             {/if}
-            <dl class="truncate [&>dt]:truncate">
-              <dt class="body-15-b m-b-1">
+            <dl
+              class={css({
+                'overflow': 'hidden',
+                'textOverflow': 'ellipsis',
+                'whiteSpace': 'nowrap',
+                '&>dt': { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+              })}
+            >
+              <dt class={css({ marginBottom: '4px', fontSize: '15px', fontWeight: 'bold' })}>
                 {collection.name}
               </dt>
-              <dd class="body-13-b text-secondary whitespace-pre-wrap break-keep">{collection.count}개의 포스트</dd>
+              <dd
+                class={css({
+                  fontSize: '13px',
+                  fontWeight: 'bold',
+                  color: 'gray.500',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'keep-all',
+                })}
+              >
+                {collection.count}개의 포스트
+              </dd>
             </dl>
           </a>
         </TableData>
-        <TableData class="body-13-b text-disabled <sm:hidden">{dayjs(collection.createdAt).formatAsDate()}</TableData>
+        <TableData style={css.raw({ hideBelow: 'sm', fontSize: '13px', fontWeight: 'bold', color: 'gray.400' })}>
+          {dayjs(collection.createdAt).formatAsDate()}
+        </TableData>
         <TableData>
-          <div class="flex gap-2">
+          <div class={flex({ gap: '8px' })}>
             <Button
-              class="<sm:hidden"
+              style={css.raw({ hideBelow: 'sm' })}
               color="tertiary"
               size="sm"
               variant="outlined"
@@ -125,11 +147,11 @@
                 openUpdateCollectionModal = true;
               }}
             >
-              <span class="<sm:hidden sm:m-r-0.5">컬렉션</span>
+              <span class={css({ hideBelow: 'sm', sm: { marginRight: '2px' } })}>컬렉션</span>
               관리
             </Button>
             <Button
-              class="p-none! disabled:invisible"
+              style={css.raw({ padding: '0', _disabled: { visibility: 'hidden' } })}
               loading={deleting}
               size="sm"
               variant="text"
@@ -141,7 +163,10 @@
                 toast.success('컬렉션을 삭제했어요');
               }}
             >
-              <Icon class="square-4 text-secondary hover:text-action-red-primary" icon={IconTrash} />
+              <Icon
+                style={css.raw({ size: '16px', color: 'gray.500', _hover: { color: 'red.500' } })}
+                icon={IconTrash}
+              />
             </Button>
           </div>
         </TableData>
