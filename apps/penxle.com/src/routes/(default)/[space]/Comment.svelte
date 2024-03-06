@@ -212,7 +212,7 @@
         borderTopColor: 'gray.100',
         paddingX: '20px',
         paddingY: '16px',
-        sm: { marginX: '-20px' },
+        smDown: { marginX: '-20px' },
         _firstOfType: { borderWidth: '0' },
       },
       $postComment.pinned && { backgroundColor: 'teal.50' },

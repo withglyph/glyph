@@ -1029,7 +1029,7 @@
             <Icon style={css.raw({ size: '20px', color: 'gray.400' })} icon={IconMessageCircleOff} />
           </Tooltip>
         {:else}
-          <a class={center({ marginTop: '20px', size: '24px' })} href="#comment">
+          <a class={center({ marginRight: '20px', size: '24px' })} href="#comment">
             <Icon style={css.raw({ size: '20px' })} icon={IconMessageCircle} />
           </a>
         {/if}

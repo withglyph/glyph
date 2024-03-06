@@ -258,7 +258,7 @@
                 댓글
               {/if}
             </div>
-            <div class={css({ paddingX: '12px', fontSize: '14px', fontWeight: 'medium' })}>
+            <div class={css({ paddingX: '12px', fontSize: '14px', fontWeight: 'medium', textAlign: 'left' })}>
               {#if notification.__typename === 'SubscribeNotification'}
                 {notification.actor.name}님이 {notification.space.name.length > 10
                   ? `${notification.space.name.slice(0, 10)}...`
