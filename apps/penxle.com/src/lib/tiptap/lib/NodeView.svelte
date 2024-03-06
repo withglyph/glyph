@@ -11,7 +11,7 @@
 
 <div
   {...$$restProps}
-  style={css({ whiteSpace: 'normal' }, style)}
+  class={css({ whiteSpace: 'normal' }, style)}
   data-node-view
   role="presentation"
   on:dragstart={onDragStart}

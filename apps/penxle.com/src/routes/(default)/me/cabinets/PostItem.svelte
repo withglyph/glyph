@@ -110,11 +110,8 @@
             borderWidth: '1px',
             borderColor: 'gray.200',
             borderRadius: '[20px]',
-            height: '80px',
-            width: '100px',
-            sm: {
-              aspectRatio: '[1/1]',
-            },
+            size: '100px',
+            objectFit: 'cover',
           })}
           $image={$post.thumbnail}
         />

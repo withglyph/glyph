@@ -8,7 +8,7 @@
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
-  import { flex } from '$styled-system/patterns';
+  import { center, flex } from '$styled-system/patterns';
   import LoginRequireModal from '../../LoginRequireModal.svelte';
 
   let loginRequireOpen = false;
@@ -70,14 +70,14 @@
   `);
 </script>
 
-<div class={flex({ direction: 'column', grow: 1, width: 'full', maxWidth: '800px', marginY: '28px' })}>
+<div class={flex({ direction: 'column', grow: '1', marginY: '28px', width: 'full', maxWidth: '800px' })}>
   <div
     class={css({
       borderTopRadius: '12px',
-      backgroundColor: 'gray.700',
       paddingX: '24px',
       paddingTop: '16px',
       paddingBottom: '40px',
+      backgroundColor: 'gray.700',
     })}
   >
     <div class={flex({ marginBottom: '10px', fontSize: '13px', fontWeight: 'medium', color: 'gray.400' })}>
@@ -121,8 +121,8 @@
           </Button>
         {/if}
 
-        <Menu placement="bottom-start">
-          <button slot="value" type="button">
+        <Menu as="div" placement="bottom-start">
+          <button slot="value" class={center()} type="button">
             <Icon style={css.raw({ size: '24px', color: 'gray.400' })} icon={IconDotsVertical} />
           </button>
 
@@ -160,13 +160,14 @@
 
   <div
     class={flex({
-      rowGap: '16px',
-      marginTop: '-12px',
+      direction: 'column',
+      gap: '16px',
+      grow: '1',
       borderRadius: '12px',
+      marginTop: '-12px',
       paddingX: '24px',
       paddingY: '16px',
       backgroundColor: 'white',
-      flexGrow: 1,
     })}
   >
     <TabHead style={css.raw({ width: 'full' })} variant="secondary">

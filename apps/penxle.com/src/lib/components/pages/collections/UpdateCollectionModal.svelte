@@ -90,6 +90,9 @@
           {
             position: 'absolute',
             top: '[50%]',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
             borderRadius: 'full',
             size: '60px',
             backgroundColor: '[black/50]',

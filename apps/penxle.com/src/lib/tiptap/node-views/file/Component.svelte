@@ -66,7 +66,7 @@
   });
 </script>
 
-<NodeView style={flex.raw({ paddingY: '4px' })} data-drag-handle draggable>
+<NodeView style={center.raw({ paddingY: '4px' })} data-drag-handle draggable>
   {@const data = node.attrs.__file ?? node.attrs.__data}
 
   <svelte:element

@@ -128,7 +128,7 @@
 
   <div class={flex({ align: 'center', justify: 'space-between', flexWrap: 'wrap', gap: '16px' })}>
     <div>
-      <div class={flex({ align: 'center', flexWrap: 'wrap', gap: '8px' })}>
+      <div class={flex({ align: 'center', flexWrap: 'wrap', marginBottom: '8px' })}>
         <h3 class={css({ marginRight: '8px', fontSize: '18px', fontWeight: 'bold' })}>이메일 인증</h3>
         <Badge style={css.raw({ fontSize: '12px', fontWeight: 'bold' })} color="green">인증 완료</Badge>
       </div>
@@ -168,7 +168,7 @@
 
   <hr class={css({ borderStyle: 'none', backgroundColor: 'gray.300', height: '1px' })} />
 
-  <h3 class={css({ marginBottom: '16px', fontSize: '18px', fontWeight: 'bold' })}>연동 관리</h3>
+  <h3 class={css({ fontSize: '18px', fontWeight: 'bold' })}>연동 관리</h3>
 
   <UserSingleSignOn $user={$query.me} provider="GOOGLE" />
   <UserSingleSignOn $user={$query.me} provider="NAVER" />

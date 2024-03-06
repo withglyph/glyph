@@ -8,6 +8,7 @@ export default defineConfig({
   plugins: [
     svg(),
     icons({
+      scale: 1,
       compiler: 'svelte',
       customCollections: {
         effit: FileSystemIconLoader('./src/assets/icons'),

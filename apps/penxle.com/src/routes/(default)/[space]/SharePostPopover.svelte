@@ -110,11 +110,11 @@
           zIndex: '2',
         },
         smDown: {
-          position: 'fixed',
-          top: '[initial]',
-          bottom: '0',
-          left: '0',
-          right: '0',
+          position: '[fixed!]',
+          top: '[initial!]',
+          bottom: '[0!]',
+          left: '[0!]',
+          right: '[0!]',
           borderBottomRadius: '0',
           width: 'full',
           boxShadow: '[0px 8px 24px 0px var(--shadow-color)]',
@@ -179,9 +179,9 @@
         class={css({
           flex: '1',
           borderWidth: '1px',
+          borderRightWidth: '0',
           borderColor: 'gray.200',
           borderLeftRadius: '4px',
-          borderRightRadius: '0',
           padding: '12px',
           fontSize: '14px',
         })}
@@ -190,7 +190,7 @@
         value={href}
       />
       <Button
-        style={css.raw({ flex: 'none', borderLeftWidth: '0' })}
+        style={css.raw({ flex: 'none', borderLeftRadius: '0' })}
         size="lg"
         type="button"
         variant="tertiary"

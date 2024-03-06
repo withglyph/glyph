@@ -18,6 +18,7 @@
       alignItems: 'center',
       borderRadius: '4px',
       padding: '10px',
+      height: '24px',
       fontSize: '12px',
       fontWeight: 'bold',
     },

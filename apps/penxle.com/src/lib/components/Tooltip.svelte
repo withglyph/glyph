@@ -23,7 +23,7 @@
   });
 </script>
 
-<div class={css({ display: 'contents' }, style)} use:anchor use:hover={hovered}>
+<div class={css(style)} use:anchor use:hover={hovered}>
   <slot />
 </div>
 

@@ -23,12 +23,12 @@
   메일을 열어 링크를 클릭하면 로그인이 완료돼요.
 </div>
 
-<Button style={flex.raw({ gap: '2px', marginTop: '16px', width: 'full' })} href="https://mail.naver.com" type="link">
+<Button style={flex.raw({ gap: '8px', marginTop: '16px', width: 'full' })} href="https://mail.naver.com" type="link">
   <Icon icon={IconNaver} />
   네이버 메일 열기
 </Button>
 
-<Button style={flex.raw({ gap: '2px', marginTop: '16px', width: 'full' })} href="https://gmail.com" type="link">
+<Button style={flex.raw({ gap: '8px', marginTop: '8px', width: 'full' })} href="https://gmail.com" type="link">
   <Icon icon={IconGoogle} />
   지메일 열기
 </Button>
