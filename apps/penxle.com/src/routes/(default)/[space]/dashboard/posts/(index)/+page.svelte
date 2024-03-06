@@ -2,6 +2,8 @@
   import { graphql } from '$glitch';
   import { Button, Helmet } from '$lib/components';
   import { PostManageTable } from '$lib/components/pages/posts';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
 
   $: query = graphql(`
     query SpaceSettingPostsPage_Query($slug: String!) {
@@ -29,9 +31,9 @@
 
 <Helmet description={`${$query.space.name} 스페이스 포스트 관리`} title={`포스트 관리 | ${$query.space.name}`} />
 
-<div class="flex justify-between gap-2 flex-wrap flex-items-end">
-  <div class="flex gap-2">
-    <Button class="flex-1" href="/me/posts" size="md" type="link">내 포스트 관리하기</Button>
+<div class={flex({ justify: 'space-between', align: 'flex-end', gap: '8px', wrap: 'wrap' })}>
+  <div class={flex({ gap: '8px' })}>
+    <Button style={css.raw({ flex: '1' })} href="/me/posts" size="md" type="link">내 포스트 관리하기</Button>
   </div>
 </div>
 
