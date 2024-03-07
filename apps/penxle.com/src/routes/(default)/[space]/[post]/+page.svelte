@@ -15,6 +15,7 @@
 
       post(permalink: $permalink) {
         id
+        externalSearchable
         publishedAt
 
         space {
@@ -89,6 +90,9 @@
 />
 
 <svelte:head>
+  {#if !$query.post.externalSearchable}
+    <meta name="robots" content="noindex" />
+  {/if}
   <meta content={dayjs($query.post.publishedAt).toISOString()} property="article:published_time" />
   <meta content={dayjs($query.post.publishedRevision.createdAt).toISOString()} property="article:modified_time" />
   <meta content={$query.post.member?.profile.name} property="article:author" />

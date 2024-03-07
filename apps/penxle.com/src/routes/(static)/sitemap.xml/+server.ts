@@ -22,6 +22,7 @@ export const GET: RequestHandler = async (event) => {
         state: 'PUBLISHED',
         visibility: 'PUBLIC',
         password: null,
+        externalSearchable: true,
         space: { state: 'ACTIVE', visibility: 'PUBLIC' },
       },
       orderBy: { id: 'asc' },
