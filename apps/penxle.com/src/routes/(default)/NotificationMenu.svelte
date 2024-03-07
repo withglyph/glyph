@@ -149,7 +149,9 @@
   </button>
 
   {#if checkUnreadNotification}
-    <span class={circle({ position: 'absolute', size: '8px', top: '0', right: '0', backgroundColor: 'red.50' })} />
+    <span
+      class={circle({ position: 'absolute', size: '8px', top: '2px', right: '2px', backgroundColor: '[#F66062]' })}
+    />
   {/if}
 </div>
 
