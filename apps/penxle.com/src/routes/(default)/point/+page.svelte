@@ -51,18 +51,30 @@
 
 <Helmet description="내 현재 포인트와 사용 내역을 확인할 수 있어요" title="포인트" />
 
-<div class={flex({ direction: 'column', width: 'full', maxWidth: '1260px', sm: { padding: '30px' } })}>
+<div
+  class={flex({
+    direction: 'column',
+    width: 'full',
+    maxWidth: '1260px',
+    sm: { padding: '30px' },
+  })}
+>
   <h1 class={css({ hideBelow: 'sm', marginBottom: '20px', fontSize: '20px', fontWeight: 'bold' })}>포인트</h1>
-  <div class={css({ sm: { display: 'flex', gap: '40px' } })}>
+  <div
+    class={css({
+      display: 'flex',
+      gap: '40px',
+      smDown: { flexDirection: 'column', alignItems: 'center', marginTop: '20px', paddingX: '20px' },
+    })}
+  >
     <aside
       class={css({
-        hideBelow: 'sm',
         borderWidth: '1px',
         borderColor: 'gray.200',
         borderRadius: '16px',
         paddingX: '16px',
         paddingY: '24px',
-        width: '326px',
+        width: { base: 'full', sm: '326px' },
         height: 'full',
         backgroundColor: 'white',
       })}
@@ -104,7 +116,7 @@
           fontSize: '20px',
           fontWeight: 'bold',
           color: 'black',
-          smDown: { marginX: '20px', marginTop: '16px' },
+          smDown: { marginTop: '16px' },
         })}
       >
         이용 내역
@@ -119,7 +131,7 @@
           borderRadius: '12px',
           padding: '24px',
           backgroundColor: 'white',
-          smDown: { marginX: '20px', marginBottom: '16px' },
+          smDown: { marginBottom: '16px' },
         })}
       >
         {#if $query.me.points.length === 0}
