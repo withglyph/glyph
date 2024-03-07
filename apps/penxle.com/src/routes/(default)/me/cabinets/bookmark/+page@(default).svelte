@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import { graphql } from '$glitch';
-  import { Icon, PostCard } from '$lib/components';
+  import { Helmet, Icon, PostCard } from '$lib/components';
+  import { css } from '$styled-system/css';
+  import { center } from '$styled-system/patterns';
 
   $: query = graphql(`
     query MeCabinetsBookmarkPage_Query {
@@ -30,19 +31,34 @@
 
 <Helmet description="북마크한 포스트 목록을 둘러보세요" title="북마크한 포스트" />
 
-<div class="bg-white w-full flex center h-15 border-b border-secondary <sm:hidden">
+<div
+  class={center({
+    borderBottomWidth: '1px',
+    borderColor: 'gray.200',
+    backgroundColor: 'white',
+    width: 'full',
+    height: '60px',
+    hideBelow: 'sm',
+  })}
+>
   <a href="/me/cabinets">
-    <Icon class="square-6 text-secondary" icon={IconChevronLeft} />
+    <Icon style={css.raw({ color: 'gray.500', size: '24px' })} icon={IconChevronLeft} />
   </a>
-  <h1 class="title-20-b w-full text-center max-w-200">북마크</h1>
+  <h1 class={css({ fontSize: '20px', fontWeight: 'bold', textAlign: 'center', width: 'full', maxWidth: '800px' })}>
+    북마크
+  </h1>
 </div>
 
-<div class="my-7 w-full max-w-200">
-  <p class="subtitle-18-eb">{$query.me.bookmarks[0].postCount}개의 포스트</p>
+<div class={css({ marginY: '28px', width: 'full', maxWidth: '800px' })}>
+  <p class={css({ fontSize: '18px', fontWeight: 'bold' })}>{$query.me.bookmarks[0].postCount}개의 포스트</p>
 
-  <div class="mt-9">
+  <div class={css({ marginTop: '36px' })}>
     {#each $query.me.bookmarks[0].posts as { post } (post.id)}
-      <PostCard class="mb-11.5 last-of-type:mb-0" $post={post} showSpaceInfoMessage />
+      <PostCard
+        style={css.raw({ marginBottom: { base: '46px', _lastOfType: '0' } })}
+        $post={post}
+        showSpaceInfoMessage
+      />
     {/each}
   </div>
 </div>

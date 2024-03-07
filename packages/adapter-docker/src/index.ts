@@ -29,8 +29,6 @@ export const docker = (): Adapter => {
       await fs.writeFile(
         path.join(out, 'index.js'),
         `
-          // import '@penxle/tracing';
-
           import path from 'node:path';
           import { fileURLToPath } from 'node:url';
           import { serve } from '@penxle/adapter-docker/server';

@@ -1,16 +1,15 @@
 <script generics="T extends 'button' | 'submit' | 'link' = 'button'" lang="ts">
-  import { RingSpinner } from '@penxle/ui/spinners';
-  import { clsx } from 'clsx';
+  import { RingSpinner } from '$lib/components/spinners';
   import { getFormContext } from '$lib/form';
+  import { css, cva } from '$styled-system/css';
+  import { center } from '$styled-system/patterns';
+  import type { RecipeVariant, RecipeVariantProps } from '$styled-system/css';
+  import type { SystemStyleObject } from '$styled-system/types';
 
-  type $$Props = {
+  type $$Props = RecipeVariantProps<typeof recipe> & {
     'type'?: T;
-    'class'?: string;
-    'disabled'?: boolean;
+    'style'?: SystemStyleObject;
     'loading'?: boolean;
-    'color'?: 'primary' | 'secondary' | 'tertiary' | 'red';
-    'variant'?: 'text' | 'outlined' | 'contained';
-    'size'?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     'form'?: string;
     'aria-hidden'?: boolean;
   } & (T extends 'link' ? { href: string; external?: boolean } : unknown) &
@@ -20,14 +19,13 @@
 
   export let type: 'button' | 'submit' | 'link' = 'button';
 
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 
-  export let disabled = false;
+  export let disabled: Variants['disabled'] = false;
   export let loading = false;
-  export let color: 'primary' | 'secondary' | 'tertiary' | 'red' = 'primary';
-  export let variant: 'text' | 'outlined' | 'contained' = 'contained';
-  export let size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md';
+  export let color: Variants['color'] = 'primary';
+  export let variant: Variants['variant'] = 'contained';
+  export let size: Variants['size'] = 'md';
 
   export let form: string | undefined = undefined;
 
@@ -44,40 +42,113 @@
   const { isSubmitting } = getFormContext().form ?? {};
 
   $: showSpinner = !!(loading || (type === 'submit' && $isSubmitting));
+
+  type Variants = RecipeVariant<typeof recipe>;
+  const recipe = cva({
+    base: {
+      position: 'relative',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingX: '16px',
+      paddingY: '8px',
+      textAlign: 'center',
+      textWrap: 'nowrap',
+      fontSize: '13px',
+      fontWeight: 'bold',
+      lineHeight: '[1]',
+      transition: 'common',
+      transitionDuration: '[300ms]',
+    },
+    variants: {
+      color: { primary: {}, secondary: {}, tertiary: {}, red: {} },
+      variant: { text: {}, outlined: {}, contained: {} },
+      size: {
+        xs: { paddingX: '0', paddingY: '0', height: '23px', borderRadius: '16px' },
+        sm: { padding: '8px', height: '26px', borderRadius: '8px' },
+        md: { fontSize: '14px', height: '36px', borderRadius: '10px' },
+        lg: { fontSize: '16px', height: '40px', borderRadius: '12px' },
+        xl: { fontSize: '16px', height: '50px', borderRadius: '16px' },
+      },
+      disabled: {
+        true: { color: 'gray.400', backgroundColor: 'gray.300' },
+      },
+    },
+    compoundVariants: [
+      {
+        variant: 'contained',
+        disabled: true,
+        css: { borderWidth: '1px', borderColor: 'transparent' },
+      },
+      {
+        variant: 'outlined',
+        disabled: true,
+        css: { color: 'gray.400', borderColor: 'gray.300', backgroundColor: 'transparent' },
+      },
+      {
+        variant: 'text',
+        disabled: false,
+        css: { color: 'gray.900', backgroundColor: 'transparent', _hover: { color: 'gray.800' } },
+      },
+      {
+        variant: 'contained',
+        color: 'primary',
+        disabled: false,
+        css: {
+          color: 'red.50',
+          backgroundColor: 'gray.800',
+          borderWidth: '1px',
+          borderColor: 'gray.800',
+          _hover: { borderColor: 'gray.950', backgroundColor: 'gray.950' },
+          _active: { backgroundColor: 'black' },
+        },
+      },
+      {
+        variant: 'contained',
+        color: 'secondary',
+        disabled: false,
+        css: {
+          color: 'gray.900',
+          backgroundColor: 'gray.100',
+          borderWidth: '1px',
+          borderColor: 'gray.100',
+          _hover: { borderColor: 'gray.200', backgroundColor: 'gray.200' },
+          _active: { borderColor: 'gray.200', backgroundColor: 'gray.200' },
+        },
+      },
+      {
+        variant: 'contained',
+        color: 'red',
+        disabled: false,
+        css: {
+          borderColor: 'red.500',
+          color: 'red.50',
+          backgroundColor: 'red.500',
+          _hover: { borderColor: '[#F66062]', backgroundColor: '[#F66062]' },
+        },
+      },
+      {
+        variant: 'outlined',
+        color: 'tertiary',
+        disabled: false,
+        css: {
+          borderWidth: '1px',
+          borderColor: 'gray.200',
+          color: 'gray.900',
+          backgroundColor: 'transparent',
+          _hover: { borderColor: 'gray.400' },
+          _active: { borderColor: 'gray.900', backgroundColor: 'gray.50' },
+        },
+      },
+    ],
+  });
+
+  $: _style = recipe.raw({ variant, size, color, disabled });
 </script>
 
 <svelte:element
   this={element}
-  class={clsx(
-    'flex center px-4 py-2 font-bold leading-none transition duration-300 text-center text-3.25 text-nowrap',
-    showSpinner && 'relative',
-    disabled && 'text-disabled! bg-gray-30!',
-    disabled && variant === 'contained' && 'border border-transparent!',
-    disabled && variant === 'outlined' && 'text-disabled! border-gray-30! bg-transparent!',
-    size === 'xs' && 'px-0! py-0! h-5.75 rounded-2xl',
-    size === 'sm' && 'p-2! h-6.5 rounded-lg',
-    size === 'md' && 'text-sm h-9 rounded-2.5',
-    size === 'lg' && 'text-base h-10 rounded-xl',
-    size === 'xl' && 'text-base h-12.5 rounded-2xl',
-    !disabled && variant === 'text' && 'text-primary bg-transparent hover:text-gray-80',
-    !disabled &&
-      color === 'primary' &&
-      variant === 'contained' &&
-      'text-red-5 bg-gray-80 border border-gray-80 hover:(bg-gray-950 border-gray-950) active:bg-black',
-    !disabled &&
-      color === 'secondary' &&
-      variant === 'contained' &&
-      'text-primary bg-surface-primary border border-surface-primary hover:(bg-surface-secondary border-surface-secondary) active:(bg-surface-secondary border-surface-secondary)',
-    !disabled &&
-      color === 'red' &&
-      variant === 'contained' &&
-      'bg-action-red-primary border-action-red-primary text-darkprimary hover:(bg-action-red-primaryhover border-action-red-primaryhover)',
-    !disabled &&
-      color === 'tertiary' &&
-      variant === 'outlined' &&
-      'text-primary bg-transparent border border-secondary hover:border-primary active:(bg-primary border-tertiary)',
-    _class,
-  )}
+  class={css(_style, style)}
   role="button"
   tabindex="0"
   on:click
@@ -89,11 +160,11 @@
   {...$$restProps}
 >
   {#if showSpinner}
-    <div class="absolute inset-0 flex center px-4 py-2">
-      <RingSpinner class="h-full" />
+    <div class={center({ position: 'absolute', inset: '0', paddingX: '16px', paddingY: '8px' })}>
+      <RingSpinner style={css.raw({ height: 'full' })} />
     </div>
   {/if}
-  <div class={clsx('contents', showSpinner && 'invisible')}>
+  <div class={css({ display: 'contents' }, showSpinner && { visibility: 'hidden' })}>
     <slot />
   </div>
 </svelte:element>

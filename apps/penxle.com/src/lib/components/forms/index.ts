@@ -1,14 +1,10 @@
 export { default as Checkbox } from './Checkbox.svelte';
 export { default as DigitsInput } from './DigitsInput.svelte';
-export { default as DropDown } from './DropDown.svelte';
 export { default as Editable } from './Editable.svelte';
 export { default as FormField } from './FormField.svelte';
 export { default as FormValidationMessage } from './FormValidationMessage.svelte';
 export { default as PopupSearch } from './PopupSearch.svelte';
 export { default as Radio } from './Radio.svelte';
-export { default as Select } from './Select.svelte';
-export { default as SelectDivider } from './SelectDivider.svelte';
-export { default as SelectOption } from './SelectOption.svelte';
 export { default as Slider } from './Slider.svelte';
 export { default as Switch } from './Switch.svelte';
 export { default as TextArea } from './TextArea.svelte';

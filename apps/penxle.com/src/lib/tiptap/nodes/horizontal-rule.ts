@@ -1,6 +1,6 @@
 import { Node } from '@tiptap/core';
-import clsx from 'clsx';
 import { closest } from '$lib/utils';
+import { css } from '$styled-system/css';
 import { values } from '../values';
 
 const horizontalRules = values.horizontalRule.map(({ value }) => value);
@@ -32,21 +32,28 @@ export const HorizontalRule = Node.create({
           return closest(horizontalRule, horizontalRules);
         },
         renderHTML: ({ kind }) => ({
-          'class': clsx(
-            'bg-no-repeat border-none bg-center m-y-xs m-x-auto',
-            kind === 1 && 'h-0.0625rem bg-repeat!',
-            kind === 2 && 'border-t-1 border-solid border-gray-400',
-            kind === 3 && 'border-t-1 border-solid border-gray-400 w-7.5rem',
-            kind === 4 && 'h-7 bg-[url(/horizontal-rules/4.svg)]',
-            kind === 5 && 'h-0.875rem bg-[url(/horizontal-rules/5.svg)]',
-            kind === 6 && 'h-0.91027rem bg-[url(/horizontal-rules/6.svg)]',
-            kind === 7 && 'h-1.25rem bg-[url(/horizontal-rules/7.svg)]',
-            kind === 8 && 'h-3 bg-[url(/horizontal-rules/8.svg)]',
+          'class': css(
+            {
+              borderWidth: '0',
+              marginX: 'auto',
+              marginY: '12px',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+            },
+            kind === 1 && {
+              height: '1px',
+              backgroundRepeat: 'repeat',
+              backgroundSize: '16px 1px',
+              backgroundImage: '[linear-gradient(to right, #27272A 50%, rgb(255 255 255 / 0) 50%)]',
+            },
+            kind === 2 && { borderTopWidth: '1px', borderColor: 'gray.400' },
+            kind === 3 && { borderTopWidth: '1px', borderColor: 'gray.400', width: '120px' },
+            kind === 4 && { height: '28px', backgroundImage: '[url(/horizontal-rules/4.svg)]' },
+            kind === 5 && { height: '14px', backgroundImage: '[url(/horizontal-rules/5.svg)]' },
+            kind === 6 && { height: '15px', backgroundImage: '[url(/horizontal-rules/6.svg)]' },
+            kind === 7 && { height: '20px', backgroundImage: '[url(/horizontal-rules/7.svg)]' },
+            kind === 8 && { height: '12px', backgroundImage: '[url(/horizontal-rules/8.svg)]' },
           ),
-          'style':
-            kind === 1
-              ? 'background-size: 16px 1px; background-image: linear-gradient(to right, #27272A 50%, rgb(255 255 255 / 0) 50%);'
-              : undefined,
           'data-kind': kind,
         }),
       },

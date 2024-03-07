@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
-  import clsx from 'clsx';
   import IconDeviceDesktop from '~icons/tabler/device-desktop';
   import IconDeviceMobile from '~icons/tabler/device-mobile';
   import { page } from '$app/stores';
+  import Logo from '$assets/branding/logo.svg?component';
   import Wordmark from '$assets/icons/wordmark.svg?component';
   import { graphql } from '$glitch';
-  import { Icon } from '$lib/components';
-  import { Logo } from '$lib/components/branding';
+  import { Helmet, Icon } from '$lib/components';
+  import { css } from '$styled-system/css';
+  import { center, flex, grid } from '$styled-system/patterns';
   import Post from '../../../(default)/[space]/Post.svelte';
   import Footer from '../../../(default)/Footer.svelte';
 
@@ -35,47 +35,105 @@
 <Helmet description="포스트 미리보기" title={`${$query.post.draftRevision.title ?? '(제목 없음)'} 미리보기`} />
 
 {#if !hideHeader}
-  <header class="relative sticky top-0 z-10 border-b border-secondary bg-white px-4 py-2 sm:px-7.5 h-15.25 flex center">
-    <nav class="w-full max-w-300">
-      <section class="flex items-center justify-between relative">
-        <div class="mr-3.5 flex items-center gap-2 sm:mr-4 transition w-fit absolute left-0">
-          <Logo class="<sm:square-7.5 sm:square-6" />
-          <Wordmark class="<sm:hidden h-5.25" />
+  <header
+    class={center({
+      position: 'sticky',
+      top: '0',
+      borderBottomWidth: '1px',
+      borderBottomColor: 'gray.200',
+      paddingX: { base: '16px', sm: '30px' },
+      paddingY: '8px',
+      height: '61px',
+      backgroundColor: 'white',
+      zIndex: '10',
+    })}
+  >
+    <nav class={css({ width: 'full', maxWidth: '1200px' })}>
+      <section class={flex({ position: 'relative', justify: 'space-between', align: 'center' })}>
+        <div
+          class={flex({
+            position: 'absolute',
+            left: '0',
+            align: 'center',
+            gap: '8px',
+            marginRight: { base: '14px', sm: '16px' },
+            width: 'full',
+            transition: 'common',
+          })}
+        >
+          <Logo class={css({ size: { base: '30px', sm: '24px' } })} />
+          <Wordmark class={css({ height: '21px', hideBelow: 'sm' })} />
         </div>
-        <div class="grow flex center">
+        <div class={center({ flexGrow: '1' })}>
           <div
-            class={clsx(
-              "bg-surface-primary rounded-2.5 h-10 w-fit grid relative grid-cols-2 before:(content-[''] absolute w-50% h-100% left-0 bg-cardprimary border border-secondary rounded-2.5 transition-all)",
-              mode === 'mobile' && 'before:left-50%',
-            )}
+            class={grid({
+              position: 'relative',
+              columns: 2,
+              borderRadius: '10px',
+              width: 'fit',
+              height: '40px',
+              backgroundColor: 'gray.100',
+              _before: {
+                content: '""',
+                position: 'absolute',
+                left: mode === 'mobile' ? '[50%]' : '0',
+                borderWidth: '1px',
+                borderColor: 'gray.200',
+                borderRadius: '10px',
+                width: '1/2',
+                height: 'full',
+                backgroundColor: 'white',
+                transition: 'all',
+              },
+            })}
           >
             <button
-              class={clsx(
-                'h-10 py-2 px-4 flex items-center gap-2 z-1',
-                mode === 'desktop' &&
-                  'first:(text-icon-primary transition-color) last:(text-icon-secondary transition-color)',
-                mode === 'mobile' &&
-                  'first:(text-icon-secondary transition-color) last:(text-icon-primary transition-color)',
-              )}
+              class={flex({
+                align: 'center',
+                gap: '8px',
+                paddingX: '16px',
+                paddingY: '8px',
+                height: '40px',
+                zIndex: '1',
+                _first: {
+                  color: mode === 'desktop' ? 'gray.900' : 'gray.400',
+                  transition: 'colors',
+                },
+                _last: {
+                  color: mode === 'mobile' ? 'gray.900' : 'gray.400',
+                  transition: 'colors',
+                },
+              })}
               type="button"
               on:click={() => {
                 mode = 'desktop';
               }}
             >
-              <Icon class="square-5" icon={IconDeviceDesktop} />
+              <Icon style={css.raw({ size: '20px' })} icon={IconDeviceDesktop} />
             </button>
             <button
-              class={clsx(
-                'h-10 py-2 px-4 flex items-center gap-2 z-1',
-                mode === 'desktop' && 'first:(text-icon-primary transition) last:(text-icon-secondary transition)',
-                mode === 'mobile' && 'first:(text-icon-secondary transition) last:(text-icon-primary transition)',
-              )}
+              class={flex({
+                align: 'center',
+                gap: '8px',
+                paddingX: '16px',
+                paddingY: '8px',
+                height: '40px',
+                zIndex: '1',
+                _first: {
+                  color: mode === 'desktop' ? 'gray.900' : 'gray.400',
+                  transition: 'colors',
+                },
+                _last: {
+                  color: mode === 'mobile' ? 'gray.900' : 'gray.400',
+                  transition: 'colors',
+                },
+              })}
               type="button"
               on:click={() => {
                 mode = 'mobile';
               }}
             >
-              <Icon class="square-5" icon={IconDeviceMobile} />
+              <Icon style={css.raw({ size: '20px' })} icon={IconDeviceMobile} />
             </button>
           </div>
         </div>
@@ -84,11 +142,21 @@
   </header>
 {/if}
 
-<main class="flex grow items-start justify-center m-auto w-full bg-primary">
+<main
+  class={flex({
+    justify: 'center',
+    align: 'flex-start',
+    grow: '1',
+    margin: 'auto',
+    width: 'full',
+    backgroundColor: 'gray.50',
+  })}
+>
   <Post
-    class={clsx(
-      mode === 'mobile' && 'max-w-100 py-17!',
-      mode === 'desktop' && 'max-w-262 py-7.5! border-l border-r border-secondary',
+    style={css.raw(
+      mode === 'desktop'
+        ? { borderXWidth: '1px', borderXColor: 'gray.200', paddingY: '30px', maxWidth: '1048px' }
+        : { paddingY: '68px', maxWidth: '400px' },
     )}
     $postRevision={$query.post.draftRevision}
     {$query}

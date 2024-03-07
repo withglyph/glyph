@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import IconLock from '~icons/tabler/lock';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -7,6 +6,8 @@
   import { PopupSearch } from '$lib/components/forms';
   import Image from '$lib/components/Image.svelte';
   import { toast } from '$lib/notification';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type { MeCabinetsPage_FollowSpaceModal_user } from '$glitch';
 
   let _user: MeCabinetsPage_FollowSpaceModal_user;
@@ -72,42 +73,70 @@
   <svelte:fragment slot="title">관심 스페이스</svelte:fragment>
 
   <PopupSearch
-    class={clsx('mb-4', followedSpaces?.length === 0 && 'hidden')}
+    style={css.raw({ marginBottom: '16px' }, followedSpaces?.length === 0 && { display: 'none' })}
     on:input={(event) => (query = event.currentTarget.value.trim())}
   />
 
   <ul
-    class={clsx(
-      'flex flex-col gap-4 min-h-10rem max-h-15rem overflow-y-auto',
-      filteredSpaces?.length === 0 && 'justify-center',
+    class={css(
+      {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        minHeight: '160px',
+        maxHeight: '240px',
+        overflowY: 'auto',
+      },
+      filteredSpaces?.length === 0 && { justifyContent: 'center' },
     )}
   >
     {#each filteredSpaces ?? [] as space (space.id)}
-      <li class="flex items-center justify-between">
+      <li class={flex({ align: 'center', justify: 'space-between' })}>
         <svelte:element
           this={space.visibility === 'PRIVATE' ? 'div' : 'a'}
-          class="flex gap-2 truncate mr-2 grow"
+          class={flex({ gap: '8px', grow: '1', marginRight: '8px', truncate: true })}
           href={space.visibility === 'PRIVATE' ? undefined : `/${space.slug}`}
         >
-          <Image class="square-10.5 rounded-lg flex-none border border-secondary" $image={space.icon} />
-          <div class="truncate">
-            <div class="flex items-center gap-1">
-              <p class="body-15-b truncate">
+          <Image
+            style={css.raw({
+              flex: 'none',
+              borderWidth: '1px',
+              borderColor: 'gray.200',
+              borderRadius: '8px',
+              size: '42px',
+            })}
+            $image={space.icon}
+          />
+          <div class={css({ truncate: true })}>
+            <div class={flex({ align: 'center', gap: '4px' })}>
+              <p class={css({ fontSize: '15px', fontWeight: 'bold', truncate: true })}>
                 {space.name}
               </p>
               {#if space.visibility === 'PRIVATE'}
-                <span class="bg-primary text-secondary rounded-full px-1 caption-12-b text-nowrap">
+                <span
+                  class={css({
+                    borderRadius: 'full',
+                    paddingX: '4px',
+                    fontSize: '12px',
+                    fontWeight: 'bold',
+                    color: 'gray.500',
+                    textWrap: 'nowrap',
+                    backgroundColor: 'white',
+                  })}
+                >
                   비공개
-                  <Icon class="square-3 mb-0.5" icon={IconLock} />
+                  <Icon style={css.raw({ marginBottom: '2px', size: '12px' })} icon={IconLock} />
                 </span>
               {/if}
             </div>
-            <p class="body-13-m text-secondary truncate">{space.description ?? ''}</p>
+            <p class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500', truncate: true })}>
+              {space.description ?? ''}
+            </p>
           </div>
         </svelte:element>
         {#if $user.followedSpaces.find((follow) => follow.id === space.id)}
           <Button
-            class="shrink-0"
+            style={css.raw({ flex: 'none' })}
             color="tertiary"
             size="md"
             variant="outlined"
@@ -121,7 +150,7 @@
           </Button>
         {:else}
           <Button
-            class="shrink-0"
+            style={css.raw({ flex: 'none' })}
             color="secondary"
             size="md"
             on:click={async () => {
@@ -135,7 +164,7 @@
         {/if}
       </li>
     {:else}
-      <article class="text-secondary body-16-m text-center break-keep">
+      <article class={css({ fontWeight: 'medium', textAlign: 'center', color: 'gray.500', wordBreak: 'keep-all' })}>
         {#if followedSpaces}
           {followedSpaces.length === 0 ? '아직 추가된 관심 스페이스가 없어요' : '일치하는 검색 결과가 없어요'}
         {/if}

@@ -1,6 +1,5 @@
 {
   "recommendations": [
-    "antfu.unocss",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
     "github.copilot",

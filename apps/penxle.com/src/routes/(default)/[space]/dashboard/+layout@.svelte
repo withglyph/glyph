@@ -1,5 +1,4 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import IconEffit from '~icons/effit/effit';
   import IconChevronDown from '~icons/tabler/chevron-down';
   import IconFileText from '~icons/tabler/file-text';
@@ -13,6 +12,8 @@
   import { mixpanel } from '$lib/analytics';
   import { Avatar, BottomSheet, Button, Icon, Image, Tooltip } from '$lib/components';
   import { pageSubTitle } from '$lib/stores';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import ComingSoonModal from '../../ComingSoonModal.svelte';
   import Footer from '../../Footer.svelte';
   import Header from '../../Header.svelte';
@@ -66,31 +67,43 @@
 
 <Header {$query} />
 
-<main class="flex flex-col justify-center grow sm:flex-row">
+<main class={flex({ justify: 'center', grow: '1', smDown: { flexDirection: 'column' } })}>
   <button
-    class="flex items-center justify-between p-4 border-b border-gray-200 sm:hidden"
+    class={flex({
+      justify: 'space-between',
+      align: 'center',
+      borderBottomWidth: '1px',
+      borderBottomColor: 'gray.200',
+      padding: '16px',
+      hideFrom: 'sm',
+    })}
     type="button"
     on:click={() => (open = true)}
   >
-    <h2 class="text-16-sb">{$pageSubTitle}</h2>
-    <Icon class="square-6 block" icon={IconChevronDown} />
+    <h2 class={css({ fontWeight: 'semibold' })}>{$pageSubTitle}</h2>
+    <Icon style={css.raw({ size: '24px' })} icon={IconChevronDown} />
   </button>
 
-  <aside class="flex justify-end <sm:hidden max-w-21.1875rem w-full">
-    <div class="w-52 p-x-4">
-      <h1 class="font-extrabold mt-10">스페이스 관리</h1>
+  <aside class={flex({ justify: 'flex-end', width: 'full', maxWidth: '339px', hideBelow: 'sm' })}>
+    <div class={css({ paddingX: '16px', width: '208px' })}>
+      <h1 class={css({ marginTop: '40px', fontWeight: 'bold' })}>스페이스 관리</h1>
 
-      <div class="space-y-3 my-5.5">
+      <div class={flex({ direction: 'column', gap: '12px', marginY: '22px' })}>
         <SpaceListMenu {$query} />
 
-        <div class="py-2.5 px-2 flex items-center justify-between gap-1">
+        <div class={flex({ justify: 'space-between', align: 'center', gap: '4px', paddingX: '8px', paddingY: '10px' })}>
           {#if $query.space.meAsMember}
-            <div class="flex items-center truncate">
-              <Avatar class="square-6! mr-3 grow-0 shrink-0 text-nowrap" $profile={$query.space.meAsMember.profile} />
-              <span class="body-14-b truncate grow">{$query.space.meAsMember.profile.name}</span>
+            <div class={flex({ align: 'center', truncate: true })}>
+              <Avatar
+                style={css.raw({ flex: 'none', marginRight: '12px', size: '24px' })}
+                $profile={$query.space.meAsMember.profile}
+              />
+              <span class={css({ flexGrow: '1', fontSize: '14px', fontWeight: 'bold', truncate: true })}>
+                {$query.space.meAsMember.profile.name}
+              </span>
             </div>
             <button
-              class="shrink-0 text-secondary caption-12-m"
+              class={css({ flex: 'none', fontSize: '12px', fontWeight: 'medium', color: 'gray.500' })}
               type="button"
               on:click={() => (updateSpaceProfileOpen = true)}
             >
@@ -100,7 +113,7 @@
         </div>
 
         <Button
-          class="w-full"
+          style={css.raw({ width: 'full' })}
           color="tertiary"
           size="xl"
           variant="outlined"
@@ -114,70 +127,144 @@
         </Button>
       </div>
 
-      <nav class="w-full mb-10">
-        <ul class="body-16-b text-disabled space-y-1">
+      <nav class={css({ marginBottom: '40px', width: 'full' })}>
+        <ul class={flex({ direction: 'column', gap: '4px', fontWeight: 'bold', color: 'gray.500' })}>
           <li>
             <Tooltip message="준비중인 기능이에요">
               <button
-                class={clsx(
-                  'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-                  $page.url.pathname === `/${$query.space.slug}/dashboard` && 'bg-primary text-primary',
+                class={css(
+                  {
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    borderRadius: '16px',
+                    paddingX: '8px',
+                    paddingY: '26px',
+                    width: 'full',
+                    _hover: {
+                      color: 'gray.900',
+                      backgroundColor: 'gray.50',
+                    },
+                  },
+                  $page.url.pathname === `/${$query.space.slug}/dashboard` && {
+                    color: 'gray.900',
+                    backgroundColor: 'gray.50',
+                  },
                 )}
                 disabled
                 type="button"
               >
-                <Icon class="square-5" icon={IconHome} />
+                <Icon style={css.raw({ size: '20px' })} icon={IconHome} />
                 대시보드
               </button>
             </Tooltip>
           </li>
           <li>
             <button
-              class={clsx(
-                'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-                $page.url.pathname === `/${$query.space.slug}/dashboard/members` && 'bg-primary text-primary',
+              class={css(
+                {
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  borderRadius: '16px',
+                  paddingX: '8px',
+                  paddingY: '26px',
+                  width: 'full',
+                  _hover: {
+                    color: 'gray.900',
+                    backgroundColor: 'gray.50',
+                  },
+                },
+                $page.url.pathname === `/${$query.space.slug}/dashboard/members` && {
+                  color: 'gray.900',
+                  backgroundColor: 'gray.50',
+                },
               )}
               type="button"
               on:click={() => (comingSoonOpen = true)}
             >
-              <Icon class="square-5" icon={IconUser} />
+              <Icon style={css.raw({ size: '20px' })} icon={IconUser} />
               멤버 관리
             </button>
           </li>
           <li>
             <a
-              class={clsx(
-                'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-                $page.url.pathname === `/${$query.space.slug}/dashboard/posts` && 'bg-primary text-primary',
+              class={css(
+                {
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  borderRadius: '16px',
+                  paddingX: '8px',
+                  paddingY: '26px',
+                  width: 'full',
+                  _hover: {
+                    color: 'gray.900',
+                    backgroundColor: 'gray.50',
+                  },
+                },
+                $page.url.pathname === `/${$query.space.slug}/dashboard/posts` && {
+                  color: 'gray.900',
+                  backgroundColor: 'gray.50',
+                },
               )}
               href="/{$query.space.slug}/dashboard/posts"
             >
-              <Icon class="square-5" icon={IconFileText} />
+              <Icon style={css.raw({ size: '20px' })} icon={IconFileText} />
               포스트 관리
             </a>
           </li>
           <li>
             <a
-              class={clsx(
-                'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-                $page.url.pathname.startsWith(`/${$query.space.slug}/dashboard/subscribers`) &&
-                  'bg-primary text-primary',
+              class={css(
+                {
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  borderRadius: '16px',
+                  paddingX: '8px',
+                  paddingY: '26px',
+                  width: 'full',
+                  _hover: {
+                    color: 'gray.900',
+                    backgroundColor: 'gray.50',
+                  },
+                },
+                $page.url.pathname === `/${$query.space.slug}/dashboard/subscribers` && {
+                  color: 'gray.900',
+                  backgroundColor: 'gray.50',
+                },
               )}
               href="/{$query.space.slug}/dashboard/subscribers/blocked"
             >
-              <Icon class="square-5" icon={IconUsers} />
+              <Icon style={css.raw({ size: '20px' })} icon={IconUsers} />
               독자 관리
             </a>
           </li>
           <li>
             <a
-              class={clsx(
-                'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-                $page.url.pathname === `/${$query.space.slug}/dashboard/settings` && 'bg-primary text-primary',
+              class={css(
+                {
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  borderRadius: '16px',
+                  paddingX: '8px',
+                  paddingY: '26px',
+                  width: 'full',
+                  _hover: {
+                    color: 'gray.900',
+                    backgroundColor: 'gray.50',
+                  },
+                },
+                $page.url.pathname === `/${$query.space.slug}/dashboard/settings` && {
+                  color: 'gray.900',
+                  backgroundColor: 'gray.50',
+                },
               )}
               href="/{$query.space.slug}/dashboard/settings"
             >
-              <Icon class="square-5" icon={IconSettings} />
+              <Icon style={css.raw({ size: '20px' })} icon={IconSettings} />
               스페이스 설정
             </a>
           </li>
@@ -186,8 +273,10 @@
     </div>
   </aside>
 
-  <div class="bg-primary flex-1 sm:(py-10 px-11) overflow-auto">
-    <div class="max-w-218 w-full">
+  <div
+    class={css({ flex: '1', backgroundColor: 'gray.50', overflow: 'auto', sm: { paddingX: '44px', paddingY: '40px' } })}
+  >
+    <div class={css({ width: 'full', maxWidth: '872px' })}>
       <slot />
     </div>
   </div>
@@ -196,24 +285,47 @@
 <Footer />
 
 <BottomSheet bind:open>
-  <div class="flex w-full gap-2 items-center">
-    <Icon class="square-6 rounded-lg" icon={IconEffit} />
-    <span class="font-extrabold">스페이스 관리</span>
+  <div class={flex({ align: 'center', gap: '8px', width: 'full' })}>
+    <Icon style={css.raw({ size: '24px', borderRadius: '8px' })} icon={IconEffit} />
+    <span class={css({ fontWeight: 'bold' })}>스페이스 관리</span>
   </div>
 
-  <div class="w-full border-b border-alphagray-10 my-2" />
+  <div class={css({ borderBottomWidth: '1px', borderBottomColor: '[black/10]', marginY: '8px', width: 'full' })} />
 
-  <div class="bg-primary py-2 px-3 rounded-lg flex items-center justify-between mb-3 truncate gap-1">
-    <div class="flex items-center gap-3 w-full truncate">
-      <Image class="square-12 rounded-xl flex-none border border-secondary" $image={$query.space.icon} />
-      <div class="truncate">
-        <p class="body-15-b mb-1 truncate">{$query.space.name}</p>
-        <div class="flex items-center gap-1 caption-12-m text-secondary">
+  <div
+    class={flex({
+      justify: 'space-between',
+      align: 'center',
+      gap: '4px',
+      borderRadius: '8px',
+      marginBottom: '12px',
+      paddingX: '12px',
+      paddingY: '8px',
+      backgroundColor: 'gray.50',
+      truncate: true,
+    })}
+  >
+    <div class={flex({ align: 'center', gap: '12px', width: 'full', truncate: true })}>
+      <Image
+        style={css.raw({
+          flex: 'none',
+          borderWidth: '1px',
+          borderColor: 'gray.200',
+          borderRadius: '12px',
+          size: '48px',
+        })}
+        $image={$query.space.icon}
+      />
+      <div class={css({ truncate: true })}>
+        <p class={css({ marginBottom: '4px', fontSize: '15px', fontWeight: 'bold', truncate: true })}>
+          {$query.space.name}
+        </p>
+        <div class={flex({ align: 'center', gap: '4px', fontSize: '12px', fontWeight: 'medium', color: 'gray.500' })}>
           {#if $query.space.visibility === 'PUBLIC'}
-            <span class="block square-1.25 rounded-full bg-green-50" />
+            <div class={css({ borderRadius: 'full', size: '5px', backgroundColor: '[#4ECEA6]' })} />
             <span>공개중</span>
           {:else}
-            <span class="block square-1.25 rounded-full bg-text-disabled" />
+            <div class={css({ borderRadius: 'full', size: '5px', backgroundColor: 'gray.400' })} />
             <span>비공개중</span>
           {/if}
         </div>
@@ -221,21 +333,34 @@
     </div>
 
     <a
-      class="py-1.5 px-3 rounded-12 bg-gray-80 text-gray-5 body-13-m text-nowrap"
+      class={css({
+        borderRadius: '[48px]',
+        paddingX: '12px',
+        paddingY: '6px',
+        fontSize: '13px',
+        fontWeight: 'medium',
+        color: 'gray.50',
+        textWrap: 'nowrap',
+      })}
       href={`/editor?space=${$query.space.slug}`}
     >
       포스트 작성하기
     </a>
   </div>
 
-  <div class="py-2.5 px-3 flex items-center justify-between gap-1">
+  <div class={flex({ justify: 'space-between', align: 'center', gap: '4px', paddingX: '12px', paddingY: '10px' })}>
     {#if $query.space.meAsMember}
-      <div class="flex items-center truncate">
-        <Avatar class="square-6! mr-3 grow-0 shrink-0 text-nowrap" $profile={$query.space.meAsMember.profile} />
-        <span class="body-14-b truncate grow">{$query.space.meAsMember.profile.name}</span>
+      <div class={flex({ align: 'center', truncate: true })}>
+        <Avatar
+          style={css.raw({ flex: 'none', marginRight: '12px', size: '24px' })}
+          $profile={$query.space.meAsMember.profile}
+        />
+        <span class={css({ flexGrow: '1', fontSize: '14px', fontWeight: 'bold', truncate: true })}>
+          {$query.space.meAsMember.profile.name}
+        </span>
       </div>
       <button
-        class="text-secondary caption-12-m text-nowrap"
+        class={css({ fontSize: '12px', fontWeight: 'medium', color: 'gray.500', textWrap: 'nowrap' })}
         type="button"
         on:click={() => (updateSpaceProfileOpen = true)}
       >
@@ -244,69 +369,139 @@
     {/if}
   </div>
 
-  <div class="w-full border-b border-alphagray-10 my-2" />
+  <div class={css({ borderBottomWidth: '1px', borderBottomColor: '[black/10]', marginY: '8px', width: 'full' })} />
 
-  <nav class="w-full">
-    <ul class="body-16-b text-disabled">
+  <nav class={css({ width: 'full' })}>
+    <ul class={css({ fontWeight: 'bold', color: 'gray.500' })}>
       <li>
         <button
-          class={clsx(
-            'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-            $page.url.pathname === `/${$query.space.slug}/dashboard` && 'bg-primary text-primary',
+          class={css(
+            {
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              borderRadius: '16px',
+              paddingX: '8px',
+              paddingY: '26px',
+              _hover: {
+                color: 'gray.950',
+                backgroundColor: 'gray.50',
+              },
+            },
+            $page.url.pathname === `/${$query.space.slug}/dashboard` && {
+              color: 'gray.950',
+              backgroundColor: 'gray.50',
+            },
           )}
           type="button"
           on:click={() => (comingSoonOpen = true)}
         >
-          <Icon class="square-5" icon={IconHome} />
+          <Icon style={css.raw({ size: '20px' })} icon={IconHome} />
           대시보드
         </button>
       </li>
       <li>
         <button
-          class={clsx(
-            'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-            $page.url.pathname === `/${$query.space.slug}/dashboard/members` && 'bg-primary text-primary',
+          class={css(
+            {
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              borderRadius: '16px',
+              paddingX: '8px',
+              paddingY: '26px',
+              _hover: {
+                color: 'gray.950',
+                backgroundColor: 'gray.50',
+              },
+            },
+            $page.url.pathname === `/${$query.space.slug}/dashboard/members` && {
+              color: 'gray.950',
+              backgroundColor: 'gray.50',
+            },
           )}
           type="button"
           on:click={() => (comingSoonOpen = true)}
         >
-          <Icon class="square-5" icon={IconUser} />
+          <Icon style={css.raw({ size: '20px' })} icon={IconUser} />
           멤버 관리
         </button>
       </li>
       <li>
         <a
-          class={clsx(
-            'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-            $page.url.pathname === `/${$query.space.slug}/dashboard/posts` && 'bg-primary text-primary',
+          class={css(
+            {
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              borderRadius: '16px',
+              paddingX: '8px',
+              paddingY: '26px',
+              _hover: {
+                color: 'gray.950',
+                backgroundColor: 'gray.50',
+              },
+            },
+            $page.url.pathname === `/${$query.space.slug}/dashboard/posts` && {
+              color: 'gray.950',
+              backgroundColor: 'gray.50',
+            },
           )}
           href="/{$query.space.slug}/dashboard/posts"
         >
-          <Icon class="square-5" icon={IconFileText} />
+          <Icon style={css.raw({ size: '20px' })} icon={IconFileText} />
           포스트 관리
         </a>
       </li>
       <li>
         <a
-          class={clsx(
-            'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-            $page.url.pathname.startsWith(`/${$query.space.slug}/dashboard/subscribers`) && 'bg-primary text-primary',
+          class={css(
+            {
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              borderRadius: '16px',
+              paddingX: '8px',
+              paddingY: '26px',
+              _hover: {
+                color: 'gray.950',
+                backgroundColor: 'gray.50',
+              },
+            },
+            $page.url.pathname === `/${$query.space.slug}/dashboard/subscribers` && {
+              color: 'gray.950',
+              backgroundColor: 'gray.50',
+            },
           )}
           href="/{$query.space.slug}/dashboard/subscribers/blocked"
         >
-          <Icon class="square-5" icon={IconUsers} />
+          <Icon style={css.raw({ size: '20px' })} icon={IconUsers} />
           독자 관리
         </a>
       </li>
       <li>
         <a
-          class={clsx(
-            'px-2 py-6.5 inline-block w-full flex items-center gap-3 rounded-2xl hover:(bg-primary text-primary)',
-            $page.url.pathname === `/${$query.space.slug}/dashboard/settings` && 'bg-primary text-primary',
+          class={css(
+            {
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              borderRadius: '16px',
+              paddingX: '8px',
+              paddingY: '26px',
+              _hover: {
+                color: 'gray.950',
+                backgroundColor: 'gray.50',
+              },
+            },
+            $page.url.pathname === `/${$query.space.slug}/dashboard/settings` && {
+              color: 'gray.950',
+              backgroundColor: 'gray.50',
+            },
           )}
           href="/{$query.space.slug}/dashboard/settings"
         >
-          <Icon class="square-5" icon={IconSettings} />
+          <Icon style={css.raw({ size: '20px' })} icon={IconSettings} />
           스페이스 설정
         </a>
       </li>

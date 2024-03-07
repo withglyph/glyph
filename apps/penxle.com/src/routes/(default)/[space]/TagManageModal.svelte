@@ -7,6 +7,8 @@
   import { Button, Modal } from '$lib/components/v2';
   import { createMutationForm } from '$lib/form';
   import { UpdatePostTagsInputSchema } from '$lib/validations/post';
+  import { css } from '$styled-system/css';
+  import { center, flex, grid } from '$styled-system/patterns';
   import PublishMenuSearch from '../../editor/[permalink]/PublishMenuSearch.svelte';
   import type { ChangeEventHandler } from 'svelte/elements';
   import type { PostCategory, PostPair, TagManageModal_post } from '$glitch';
@@ -99,15 +101,22 @@
 
 <Modal size="md" bind:open>
   <svelte:fragment slot="title">태그수정</svelte:fragment>
-  <form {id} class="p-y-4 p-x-5 space-y-2.5rem" use:form>
+  <form {id} class={flex({ direction: 'column', gap: '40px', paddingX: '20px', paddingY: '16px' })} use:form>
     <div>
-      <h2 class="text-15-m p-t-1 p-b-3 flex gap-1">
+      <h2
+        class={flex({ gap: '4px', fontSize: '15px', fontWeight: 'medium', paddingTop: '4px', paddingBottom: '12px' })}
+      >
         <span>카테고리</span>
       </h2>
 
       <SegmentButtonGroup>
         {#each categories as category (category.value)}
-          <ToggleButton name="category" class="p-x-3 p-y-2" type="radio" value={category.value}>
+          <ToggleButton
+            name="category"
+            style={css.raw({ paddingX: '12px', paddingY: '8px' })}
+            type="radio"
+            value={category.value}
+          >
             {category.label}
           </ToggleButton>
         {/each}
@@ -115,17 +124,19 @@
     </div>
 
     <div>
-      <h2 class="text-15-m p-t-1 p-b-3 flex gap-1">
+      <h2
+        class={flex({ gap: '4px', paddingTop: '4px', paddingBottom: '12px', fontSize: '15px', fontWeight: 'medium' })}
+      >
         <span>페어</span>
-        <Tooltip class="flex center" message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
-          <Icon class="square-3.5 text-gray-400" icon={IconAlertCircle} />
+        <Tooltip style={center.raw()} message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
+          <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconAlertCircle} />
         </Tooltip>
       </h2>
 
-      <div class="grid grid-cols-4 gap-0.5625rem">
+      <div class={grid({ columns: 4, gap: '9px' })}>
         {#each pairs as pair (pair.value)}
           <ToggleButton
-            class="p-y-2"
+            style={css.raw({ paddingY: '8px' })}
             checked={$data.pairs?.includes(pair.value)}
             on:change={(e) => checkPair(e, pair.value)}
           >
@@ -181,6 +192,6 @@
     />
   </form>
   <svelte:fragment slot="action">
-    <Button class="flex-1" form={id} loading={$isSubmitting} size="xl" type="submit">수정</Button>
+    <Button style={css.raw({ flex: '1' })} form={id} loading={$isSubmitting} size="xl" type="submit">수정</Button>
   </svelte:fragment>
 </Modal>

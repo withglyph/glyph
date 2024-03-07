@@ -1,13 +1,14 @@
 <script lang="ts">
-  import '../styles/index.css';
-  import 'virtual:uno.css';
+  import '../app.css';
 
-  import { AutoUpdater, StackIndicator } from '@penxle/ui';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { toast, ToastProvider } from '$lib/notification';
+  import { flex } from '$styled-system/patterns';
+  import AutoUpdater from './AutoUpdater.svelte';
+  import StackIndicator from './StackIndicator.svelte';
 
   $: query = graphql(`
     query RootLayout_Query {
@@ -53,7 +54,7 @@
   <script data-domain="pencil.so" defer src="https://plausible.io/js/script.js"></script>
 </svelte:head>
 
-<div class="relative flex flex-col min-h-100dvh">
+<div class={flex({ direction: 'column', position: 'relative', minHeight: 'dvh' })}>
   <slot />
 </div>
 

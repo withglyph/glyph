@@ -5,6 +5,8 @@
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { VerifyPassportIdentitySchema } from '$lib/validations';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
 
   export let open = false;
 
@@ -34,7 +36,7 @@
   <svelte:fragment slot="title">여권 인증</svelte:fragment>
 
   <form use:form>
-    <div class="space-y-2 max-h-110 overflow-y-auto">
+    <div class={flex({ direction: 'column', gap: '8px', maxHeight: '440px', overflowY: 'auto' })}>
       <FormField name="name" label="이름">
         <TextInput placeholder="예) 홍길동" />
       </FormField>
@@ -56,6 +58,6 @@
       </FormField>
     </div>
 
-    <Button class="w-full mt-4" size="xl" type="submit">여권 인증</Button>
+    <Button style={css.raw({ marginTop: '16px', width: 'full' })} size="xl" type="submit">여권 인증</Button>
   </form>
 </Modal>

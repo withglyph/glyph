@@ -5,6 +5,7 @@
   import { Button, Modal } from '$lib/components';
   import { trackable } from '$lib/svelte/store';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
+  import { css } from '$styled-system/css';
   import Thumbnailer from './Thumbnailer.svelte';
   import type { ImageBounds } from '$lib/utils';
 
@@ -82,7 +83,7 @@
 
 <input
   bind:this={fileEl}
-  class="hidden"
+  class={css({ display: 'none' })}
   accept={validImageMimes.join(',')}
   type="file"
   on:change={async (e) => {
@@ -102,8 +103,14 @@
     <svelte:fragment slot="title">
       <slot name="title">위치 조정</slot>
     </svelte:fragment>
-    <Thumbnailer class="w-full" {...props} {ratio} bind:bounds={draftBounds} />
-    <Button slot="action" class="w-full mt-4" loading={$uploading} size="xl" on:click={upload}>
+    <Thumbnailer style={css.raw({ width: 'full' })} {...props} {ratio} bind:bounds={draftBounds} />
+    <Button
+      slot="action"
+      style={css.raw({ marginTop: '16px', width: 'full' })}
+      loading={$uploading}
+      size="xl"
+      on:click={upload}
+    >
       <slot name="save">저장</slot>
     </Button>
   </Modal>

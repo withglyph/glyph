@@ -1,44 +1,62 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { getContext } from 'svelte';
   import { page } from '$app/stores';
+  import { css, cva } from '$styled-system/css';
   import type { Writable } from 'svelte/store';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   export let id: number;
   export let activeTabValue: number | undefined = undefined;
   export let pathname: string | undefined = undefined;
 
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 
   let variant = getContext<Writable<'primary' | 'secondary'>>('variant');
   let search = getContext<Writable<string | undefined>>('search');
 
   let element: 'a' | 'button';
   $: element = pathname ? 'a' : 'button';
-  $: props =
-    element === 'a'
-      ? {
-          href: pathname && pathname + ($search ?? ''),
-        }
-      : { type: 'button' };
+  $: props = element === 'a' ? { href: pathname && pathname + ($search ?? '') } : { type: 'button' };
 
   $: pathnameRegex = pathname ? new RegExp(`^${pathname}/?$`) : null;
   $: selected = activeTabValue === id || pathnameRegex?.test($page.url.pathname);
+
+  const recipe = cva({
+    base: {
+      display: 'block',
+      flexGrow: { base: '1', sm: '0' },
+      width: 'full',
+      color: { base: 'gray.400', _hover: 'black', _selected: 'black' },
+      transition: 'common',
+    },
+    variants: {
+      variant: {
+        primary: {
+          borderBottomWidth: '[10px]',
+          borderBottomColor: { base: 'transparent', _hover: 'teal.500', _selected: 'teal.500' },
+          fontSize: '20px',
+          fontWeight: 'bold',
+        },
+        secondary: {
+          borderBottomWidth: '2px',
+          borderBottomColor: { base: 'white', _hover: 'black', _selected: 'black' },
+          paddingX: '20px',
+          paddingY: '12px',
+          textAlign: 'center',
+          fontSize: '14px',
+          fontWeight: { base: 'semibold', _selected: 'bold' },
+          backgroundColor: { base: 'white', sm: 'transparent' },
+        },
+      },
+    },
+  });
 </script>
 
-<li class="grow sm:grow-0" role="presentation">
+<li class={css({ smDown: { flexGrow: '1' } })} role="presentation">
   <svelte:element
     this={element}
     id="{id}-tabhead"
-    class={clsx(
-      'block w-full grow sm:grow-0',
-      $variant === 'primary' &&
-        'title-20-eb border-b-10 leading-5 transition border-transparent text-disabled hover:(text-black border-brand-50) aria-selected:(text-black border-brand-50)',
-      $variant === 'secondary' &&
-        'bg-white py-3 px-5 text-center sm:bg-transparent transition border-b-2 border-white text-14-sb text-disabled hover:(text-black border-black) aria-selected:(text-black font-bold border-b-2 border-black)',
-      _class,
-    )}
+    class={css(recipe.raw({ variant: $variant }), style)}
     aria-selected={selected}
     role="tab"
     tabindex="-1"

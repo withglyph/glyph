@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { Helmet } from '@penxle/ui';
   import { graphql } from '$glitch';
-  import { PostCard } from '$lib/components';
+  import { Helmet, PostCard } from '$lib/components';
 
   $: query = graphql(`
     query TagPostPage_Query($name: String!) {

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { html } from '@codemirror/lang-html';
-  import clsx from 'clsx';
   import { EditorView, minimalSetup } from 'codemirror';
   import DOMPurify from 'isomorphic-dompurify';
   import { onMount } from 'svelte';
@@ -8,6 +7,8 @@
   import IconGripVertical from '~icons/tabler/grip-vertical';
   import { Icon } from '$lib/components';
   import { NodeView } from '$lib/tiptap';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type { NodeViewProps } from '$lib/tiptap';
 
   type $$Props = NodeViewProps;
@@ -59,35 +60,59 @@
   });
 </script>
 
-<NodeView class={clsx('relative border border-dashed', selected && 'ring-2px ring-teal-500')} draggable>
+<NodeView
+  style={css.raw(
+    { position: 'relative', borderWidth: '1px', borderStyle: 'dashed' },
+    selected && { ringWidth: '2px', ringColor: 'teal.500' },
+  )}
+  draggable
+>
   {#if editor?.isEditable}
-    <div class="flex items-center gap-8px bg-gray-50 px-8px py-4px" data-drag-handle>
-      <div class="text-16-sb text-gray-500 grow">HTML</div>
+    <div
+      class={flex({ align: 'center', gap: '8px', paddingX: '8px', paddingY: '4px', backgroundColor: 'gray.50' })}
+      data-drag-handle
+    >
+      <div class={css({ flexGrow: '1', fontWeight: 'semibold', color: 'gray.500' })}>HTML</div>
 
       {#if preview}
-        <div class="text-12-r text-gray-500">미리보는 중</div>
+        <div class={css({ fontSize: '12px', color: 'gray.500' })}>미리보는 중</div>
       {/if}
 
       <button
-        class="p-4px rounded-4px transition hover:bg-gray-100"
+        class={css({
+          borderRadius: '4px',
+          padding: '4px',
+          transition: 'common',
+          _hover: { backgroundColor: 'gray.100' },
+        })}
         type="button"
         on:click={() => (preview = !preview)}
       >
-        <Icon class={clsx('block square-18px', preview ? 'text-teal-500' : 'text-gray-600')} icon={IconEye} />
+        <Icon
+          style={css.raw({ size: '18px' }, preview ? { color: 'teal.500' } : { color: 'gray.600' })}
+          icon={IconEye}
+        />
       </button>
 
-      <div class="p-4px rounded-4px transition hover:bg-gray-100">
-        <Icon class="block square-18px text-gray-600" icon={IconGripVertical} />
+      <div
+        class={css({
+          borderRadius: '4px',
+          padding: '4px',
+          transition: 'common',
+          _hover: { backgroundColor: 'gray.100' },
+        })}
+      >
+        <Icon style={css.raw({ color: 'gray.600', size: '18px' })} icon={IconGripVertical} />
       </div>
     </div>
 
-    <div class="p-8px">
-      <div class={clsx('font-mono text-14-r', preview && 'hidden')}>
+    <div class={css({ padding: '8px' })}>
+      <div class={css({ fontSize: '14px', fontFamily: '[PNXL_firacode]' }, preview && { display: 'none' })}>
         <div bind:this={codeEl} />
       </div>
 
       {#if preview}
-        <div class="relative overflow-hidden isolate">
+        <div class={css({ position: 'relative', overflow: 'hidden', isolation: 'isolate' })}>
           <div class="html-content">
             {@html content}
           </div>
@@ -95,7 +120,9 @@
       {/if}
     </div>
   {:else}
-    <div class="relative overflow-hidden isolate px-8px py-4px">
+    <div
+      class={css({ position: 'relative', overflow: 'hidden', isolation: 'isolate', paddingX: '8px', paddingY: '4px' })}
+    >
       <div class="html-content">
         {@html content}
       </div>

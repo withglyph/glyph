@@ -1,10 +1,11 @@
 <script generics="T extends 'button' | 'div' | 'link' = 'button'" lang="ts">
-  import { clsx } from 'clsx';
   import { getContext } from 'svelte';
+  import { css } from '$styled-system/css';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   type $$Props = {
     type?: T;
-    class?: string;
+    style?: SystemStyleObject;
     disabled?: boolean;
   } & (T extends 'link' ? { href: string; external?: boolean } : unknown) &
     (T extends 'button' ? { 'aria-pressed'?: boolean } : unknown);
@@ -13,8 +14,7 @@
 
   export let type: 'button' | 'div' | 'link' = 'button';
 
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 
   export let disabled = false;
   export let href: string | undefined = undefined;
@@ -28,14 +28,15 @@
   let close = getContext<undefined | (() => void)>('close');
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
 <svelte:element
   this={element}
-  class={clsx(
-    'text-14-r px-3.5 py-3 w-full rounded-2',
-    disabled ? 'cursor-not-allowed' : 'hover:(bg-teal-50 text-teal-600)',
-    _class,
+  class={css(
+    { borderRadius: '8px', paddingX: '14px', paddingY: '12px', width: 'full', fontSize: '14px' },
+    disabled ? { cursor: 'not-allowed' } : { _hover: { backgroundColor: 'teal.50', color: 'teal.600' } },
+    style,
   )}
+  role="menuitem"
+  tabindex="-1"
   on:click
   on:click={close}
   {...external && {

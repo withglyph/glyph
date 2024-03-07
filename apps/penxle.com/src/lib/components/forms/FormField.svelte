@@ -2,27 +2,42 @@
   import IconAlertTriangle from '~icons/tabler/alert-triangle';
   import { Icon } from '$lib/components';
   import { setFormField } from '$lib/form';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import FormValidationMessage from './FormValidationMessage.svelte';
+  import type { SystemStyleObject } from '$styled-system/types';
 
+  export let style: SystemStyleObject | undefined = undefined;
   export let name: string;
   export let label: string;
-  let _class: string | undefined = undefined;
-  export { _class as class };
 
   setFormField({
     name,
   });
 </script>
 
-<section class={_class}>
+<section class={css(style)}>
   <div
-    class="flex flex-col gap-1.5 border border-gray-5 rounded-2xl transition bg-primary pt-3 pb-4 px-3.5 hover:border-secondary focus-within:border-tertiary! [&:has(input[aria-invalid])]:border-action-red-primary [&:has(textarea[aria-invalid])]:border-action-red-primary disabled:opacity-50"
+    class={flex({
+      'direction': 'column',
+      'gap': '6px',
+      'borderWidth': '1px',
+      'borderColor': { base: 'gray.50', _hover: 'gray.200', _focusWithin: '[gray.900!]' },
+      'borderRadius': '16px',
+      'paddingX': '14px',
+      'paddingTop': '12px',
+      'paddingBottom': '16px',
+      'backgroundColor': 'gray.50',
+      'transition': 'common',
+      '_disabled': { opacity: '[0.5]' },
+      '&:has(input[aria-invalid], textarea[aria-invalid])': { borderColor: 'red.500' },
+    })}
   >
-    <label class="body-14-sb" for={name}>{label}</label>
+    <label class={css({ fontSize: '14px', fontWeight: 'semibold' })} for={name}>{label}</label>
     <slot />
   </div>
   <FormValidationMessage for={name} let:message>
-    <div class="flex items-center gap-1.5 mt-1.5 text-xs text-red-50">
+    <div class={flex({ align: 'center', gap: '6px', marginTop: '6px', fontSize: '12px', color: 'red.500' })}>
       <Icon icon={IconAlertTriangle} />
       {message}
     </div>

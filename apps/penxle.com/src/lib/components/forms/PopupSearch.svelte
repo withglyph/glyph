@@ -1,30 +1,46 @@
 <script lang="ts">
-  import { clsx } from 'clsx';
   import IconSearch from '~icons/tabler/search';
   import { Icon } from '$lib/components';
+  import { css } from '$styled-system/css';
+  import { center } from '$styled-system/patterns';
   import type { HTMLInputAttributes } from 'svelte/elements';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   export let name: HTMLInputAttributes['name'] = undefined;
   export let value: HTMLInputAttributes['value'] = undefined;
-  let _class: HTMLInputAttributes['class'] = undefined;
-  export { _class as class };
 
-  type $$Props = HTMLInputAttributes;
+  export let style: SystemStyleObject | undefined = undefined;
+
+  type $$Props = Omit<HTMLInputAttributes, 'class' | 'style'> & { style?: SystemStyleObject };
   type $$Events = {
     input: Parameters<NonNullable<HTMLInputAttributes['on:input']>>[0];
   };
 </script>
 
-<form class={clsx('relative h-11.5', _class)} on:submit|preventDefault>
+<form class={css({ position: 'relative', height: '46px' }, style)} on:submit|preventDefault>
   <input
     {name}
-    class="rounded-2.5 h-11.5 w-full bg-primary py-1.75 pr-3.5 pl-11 border border-bg-primary transition focus-within:border-tertiary"
+    class={css(
+      {
+        borderWidth: '1px',
+        borderColor: { base: 'gray.50', _focusWithin: 'gray.900' },
+        borderRadius: '10px',
+        paddingLeft: '44px',
+        paddingRight: '14px',
+        paddingY: '7px',
+        width: 'full',
+        height: '46px',
+        transition: 'common',
+      },
+      style,
+    )}
     type="search"
     bind:value
     on:input
     {...$$restProps}
   />
-  <div class="absolute inset-y-0 left-3.5 flex center text-secondary h-100%">
-    <Icon class="square-5 transition" icon={IconSearch} />
+
+  <div class={center({ position: 'absolute', left: '14px', insetY: '0', height: 'full', color: 'gray.500' })}>
+    <Icon style={css.raw({ size: '20px' })} icon={IconSearch} />
   </div>
 </form>

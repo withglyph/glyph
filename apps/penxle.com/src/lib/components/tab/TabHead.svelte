@@ -1,14 +1,14 @@
 <script lang="ts">
-  import clsx from 'clsx';
   import { setContext } from 'svelte';
   import { writable } from 'svelte/store';
+  import { css, cva } from '$styled-system/css';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   export let _variant: 'primary' | 'secondary' = 'primary';
   export { _variant as variant };
   let variant = writable<'primary' | 'secondary'>(_variant);
 
-  let _class: string | undefined = undefined;
-  export { _class as class };
+  export let style: SystemStyleObject | undefined = undefined;
 
   let _search: string | undefined = undefined;
   export { _search as search };
@@ -19,16 +19,18 @@
 
   $: $variant = _variant;
   $: $search = _search;
+
+  const recipe = cva({
+    base: { display: 'flex', width: 'fit' },
+    variants: {
+      variant: {
+        primary: { gap: '8px' },
+        secondary: { borderBottomWidth: '1px', borderBottomColor: 'gray.200' },
+      },
+    },
+  });
 </script>
 
-<ul
-  class={clsx(
-    'flex w-fit',
-    $variant === 'primary' && 'gap-2',
-    $variant === 'secondary' && 'border-b border-secondary',
-    _class,
-  )}
-  role="tablist"
->
+<ul class={css(recipe.raw({ variant: _variant }), style)} role="tablist">
   <slot />
 </ul>
