@@ -366,16 +366,35 @@ model Profile {
 }
 
 model Revenue {
-  id        String       @id
-  userId    String       @map("user_id")
-  user      User         @relation(fields: [userId], references: [id])
-  targetId  String?      @map("target_id")
-  state     RevenueState
-  kind      RevenueKind
-  amount    Int
-  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  id           String             @id
+  userId       String             @map("user_id")
+  user         User               @relation(fields: [userId], references: [id])
+  withdrawalId String?            @map("withdrawal_id")
+  withdrawal   RevenueWithdrawal? @relation(fields: [withdrawalId], references: [id])
+  targetId     String?            @map("target_id")
+  state        RevenueState
+  kind         RevenueKind
+  amount       Int
+  createdAt    DateTime           @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("revenues")
+}
+
+model RevenueWithdrawal {
+  id                String                 @id
+  userId            String                 @map("user_id")
+  user              User                   @relation(fields: [userId], references: [id])
+  state             RevenueWithdrawalState @default(PENDING)
+  bankCode          String                 @map("bank_code")
+  bankAccountNumber String                 @map("bank_account_number")
+  paidAmount        Int                    @map("paid_amount")
+  taxAmount         Int                    @map("tax_amount")
+  txId              String?                @map("tx_id")
+  createdAt         DateTime               @default(now()) @map("created_at") @db.Timestamptz
+
+  revenues Revenue[]
+
+  @@map("revenue_withdrawals")
 }
 
 model Space {
@@ -607,6 +626,7 @@ model User {
   pointPurchases                 PointPurchase[]
   pointTransactions              PointTransaction[]
   revenues                       Revenue[]
+  revenueWithdrawals             RevenueWithdrawal[]
   sessions                       UserSession[]
   settlementIdentity             UserSettlementIdentity?
   singleSignOns                  UserSingleSignOn[]
@@ -968,6 +988,14 @@ enum RevenueState {
   PAID
 
   @@map("_revenue_state")
+}
+
+enum RevenueWithdrawalState {
+  PENDING
+  SUCCESS
+  FAILED
+
+  @@map("_revenue_withdrawal_state")
 }
 
 enum SpaceCollectionState {
