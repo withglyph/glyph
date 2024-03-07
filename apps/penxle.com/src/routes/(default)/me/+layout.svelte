@@ -47,15 +47,17 @@
           backgroundColor: 'white',
           width: '326px',
           height: 'full',
-          hideBelow: 'sm',
         },
-        $page.url.pathname === '/me' && {
-          display: 'block',
-          borderColor: 'white',
-          borderRadius: '0',
-          width: 'full',
-          maxWidth: 'screen',
-        },
+        $page.url.pathname === '/me'
+          ? {
+              borderColor: 'white',
+              borderRadius: '0',
+              width: 'full',
+              maxWidth: 'screen',
+            }
+          : {
+              hideBelow: 'sm',
+            },
       )}
     >
       <div class={flex({ flexDirection: 'column', align: 'center', gap: '16px', marginBottom: '24px' })}>
