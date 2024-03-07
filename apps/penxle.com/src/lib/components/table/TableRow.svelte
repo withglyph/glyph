@@ -17,8 +17,8 @@
       '& > td': {
         borderBottomWidth: '1px',
         borderBottomColor: 'gray.200',
-        _lastOfType: { borderBottomWidth: '0' },
       },
+      '_lastOfType': { '& > td': { borderBottomWidth: '0' } },
     },
     style,
   )}
