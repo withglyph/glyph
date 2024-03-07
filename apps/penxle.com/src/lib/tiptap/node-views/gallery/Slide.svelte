@@ -64,16 +64,19 @@
 >
   <button
     bind:this={swiperPrevElem}
-    class={css({
-      position: 'absolute',
-      top: '[50%]',
-      left: '[-40%]',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: { base: 'gray.500', _disabled: 'gray.300' },
-      hideBelow: 'sm',
-    })}
+    class={css(
+      {
+        position: 'absolute',
+        top: '[50%]',
+        left: '[-40px]',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: { base: 'gray.500', _disabled: 'gray.300' },
+        hideBelow: 'sm',
+      },
+      isomorphicImages.length === 0 && { display: 'none' },
+    )}
     type="button"
   >
     <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />
@@ -112,7 +115,7 @@
       {
         position: 'absolute',
         top: '[50%]',
-        right: '[-40%]',
+        right: '[-40px]',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

@@ -102,7 +102,7 @@
 
     {#if $query.space.meAsMember}
       <Button
-        style={flex.raw({ gap: '8px' })}
+        style={flex.raw({ gap: '8px', marginX: '8px', marginBottom: '8px', backgroundColor: 'white' })}
         color="tertiary"
         size="lg"
         variant="outlined"

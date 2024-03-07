@@ -309,7 +309,7 @@
     </Tooltip>
   </svelte:fragment>
 
-  <div class={flex({ height: '511px' })}>
+  <div class={flex({ height: '490px' })}>
     <div class={flex({ flexDirection: 'column', width: '562px' })}>
       <div
         class={flex({
@@ -351,7 +351,7 @@
 
       <button
         bind:this={onboardingAnchorElements[1]}
-        class={css({
+        class={flex({
           zIndex: '1',
           flexShrink: '1',
           alignSelf: 'flex-end',
@@ -466,14 +466,13 @@
     <div
       class={flex({
         flexDirection: 'column',
-        flex: 'none',
+        flexGrow: '1',
         gap: '16px',
         borderLeftWidth: '1px',
         borderColor: 'gray.200',
         paddingY: '20px',
         paddingLeft: '20px',
         paddingRight: '24px',
-        width: '150px',
       })}
     >
       <div>
@@ -574,7 +573,7 @@
   </svelte:fragment>
 </Modal>
 
-<Modal bind:open={imageListOpen}>
+<Modal size="lg" bind:open={imageListOpen}>
   <svelte:fragment slot="title">
     <button class={css({ marginRight: '4px' })} type="button" on:click={() => (imageListOpen = false)}>
       <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />

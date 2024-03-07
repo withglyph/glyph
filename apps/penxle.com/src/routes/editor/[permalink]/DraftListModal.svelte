@@ -88,7 +88,7 @@
         >
           <p
             class={css(
-              { marginBottom: '4px', fontWeight: 'bold', truncate: true },
+              { marginBottom: '4px', textAlign: 'left', fontWeight: 'bold', truncate: true },
               _post.draftRevision?.title?.trim().length === 0 && { color: 'gray.500' },
             )}
           >

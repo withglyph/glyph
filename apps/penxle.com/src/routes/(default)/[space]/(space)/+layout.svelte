@@ -177,13 +177,14 @@
 
           {#if $query.space.visibility === 'PRIVATE'}
             <span
-              class={css({
+              class={center({
                 borderRadius: '16px',
                 paddingX: '6px',
                 paddingY: '4px',
                 fontSize: '12px',
                 fontWeight: 'bold',
-                color: 'gray.100',
+                color: 'gray.500',
+                backgroundColor: 'gray.100',
                 textWrap: 'nowrap',
               })}
             >

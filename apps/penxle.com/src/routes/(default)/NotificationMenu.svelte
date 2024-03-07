@@ -297,9 +297,11 @@
           <a
             class={css({
               display: 'inline-block',
+              paddingY: '16px',
               width: 'full',
               textAlign: 'center',
               fontSize: '14px',
+              fontWeight: 'medium',
               color: 'gray.400',
             })}
             href="/me/notifications"
