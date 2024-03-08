@@ -114,14 +114,15 @@
               </p>
               {#if space.visibility === 'PRIVATE'}
                 <span
-                  class={css({
+                  class={flex({
+                    align: 'center',
                     borderRadius: 'full',
                     paddingX: '4px',
                     fontSize: '12px',
                     fontWeight: 'bold',
                     color: 'gray.500',
                     textWrap: 'nowrap',
-                    backgroundColor: 'white',
+                    backgroundColor: 'gray.100',
                   })}
                 >
                   비공개
