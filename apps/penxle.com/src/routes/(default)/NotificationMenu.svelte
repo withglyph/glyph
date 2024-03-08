@@ -128,7 +128,7 @@
 
 <div class={center({ position: 'relative' })}>
   <a class={circle({ size: '34px', hideFrom: 'sm' })} href="/me/notifications">
-    <Icon style={css.raw({ size: '20px' })} icon={IconBell} />
+    <Icon style={css.raw({ size: '24px' })} icon={IconBell} />
   </a>
 
   <button
@@ -145,12 +145,12 @@
     on:click={() => (open = true)}
     use:anchor
   >
-    <Icon style={css.raw({ size: '20px' })} icon={IconBell} />
+    <Icon style={css.raw({ size: '24px' })} icon={IconBell} />
   </button>
 
   {#if checkUnreadNotification}
     <span
-      class={circle({ position: 'absolute', size: '8px', top: '2px', right: '2px', backgroundColor: '[#F66062]' })}
+      class={circle({ position: 'absolute', size: '6px', top: '4px', right: '4px', backgroundColor: 'teal.500' })}
     />
   {/if}
 </div>

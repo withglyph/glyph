@@ -79,7 +79,7 @@
         'outline': {
           color: { base: 'gray.500', _disabled: 'gray.300' },
           outlineWidth: '1px',
-          outlineColor: { base: 'gray.200', _active: 'gray.300', _disabled: 'gray.100' },
+          outlineColor: { base: 'gray.150', _active: 'gray.300', _disabled: 'gray.100' },
           backgroundColor: {
             base: 'white',
             _hover: 'gray.50',

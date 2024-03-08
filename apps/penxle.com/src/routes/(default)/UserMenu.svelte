@@ -87,7 +87,7 @@
   type="button"
   on:click={() => (open = true)}
 >
-  <Avatar style={css.raw({ size: '36px' })} $profile={$user.profile} />
+  <Avatar style={css.raw({ size: { base: '34px', sm: '36px' } })} $profile={$user.profile} />
 </button>
 
 {#if open}

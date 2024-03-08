@@ -61,20 +61,29 @@
 >
   <nav class={css({ width: 'full', maxWidth: '1200px' })}>
     <section class={flex({ justify: 'space-between', align: 'center' })}>
-      <a class={flex({ align: 'center', gap: '7px', marginRight: '16px' })} href="/">
+      <a class={flex({ align: 'center', gap: '7px', marginRight: '24px' })} href="/">
         <Logo class={css({ size: { base: '14px', sm: '21px' } })} />
-        <Wordmark class={css({ height: { base: '13px', sm: '19px' } })} />
+        <Wordmark class={css({ height: { base: '14px', sm: '19px' } })} />
       </a>
 
-      <div class={flex({ flex: '1', justify: 'space-between', align: 'center' })}>
-        <SearchBar style={css.raw({ flex: '1', maxWidth: { base: '320px', smDown: { _focusWithin: 'full' } } })} />
+      <div
+        class={flex({
+          flex: '1',
+          justify: { base: 'flex-end', sm: 'space-between' },
+          align: 'center',
+          sm: { gap: '12px' },
+        })}
+      >
+        <SearchBar style={css.raw({ flex: '1', maxWidth: { base: '400px', smDown: { _focusWithin: 'full' } } })} />
 
-        <div class={flex({ align: 'center', gap: '12px' })}>
+        <div class={flex({ align: 'center', gap: { base: '12px', sm: '14px' } })}>
           {#if $query.me}
             <Button
               style={flex.raw({
                 align: 'center',
                 gap: '4px',
+                paddingLeft: '12px',
+                paddingRight: '14px',
                 color: 'gray.700',
                 fontSize: '14px',
                 fontWeight: 'semibold',
@@ -95,7 +104,12 @@
             <NotificationMenu $user={$query.me} />
             <UserMenu $user={$query.me} />
           {:else}
-            <Button href="/login" size="md" type="link" variant="outline">로그인/회원가입</Button>
+            <Button style={css.raw({ hideFrom: 'sm' })} href="/login" size="sm" type="link" variant="outline">
+              로그인/회원가입
+            </Button>
+            <Button style={css.raw({ hideBelow: 'sm' })} href="/login" size="md" type="link" variant="outline">
+              로그인/회원가입
+            </Button>
           {/if}
         </div>
       </div>

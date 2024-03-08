@@ -1,9 +1,10 @@
 <script lang="ts">
   import qs from 'query-string';
   import { onMount } from 'svelte';
+  import IconChevronLeft from '~icons/tabler/chevron-left';
+  import IconCircleXFilled from '~icons/tabler/circle-x-filled';
   import IconSearch from '~icons/tabler/search';
-  import IconX from '~icons/tabler/x';
-  import { afterNavigate, goto } from '$app/navigation';
+  import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { Icon } from '$lib/components';
   import { css, cx } from '$styled-system/css';
@@ -37,75 +38,105 @@
       open = true;
     }
   });
+
+  beforeNavigate(() => {
+    if (window.innerWidth < 800 && open) {
+      open = false;
+    }
+  });
 </script>
 
 {#if open}
-  <form
-    class={css(
-      {
-        position: 'relative',
-        smDown: { position: 'absolute', left: '0', right: '0', top: '0', maxWidth: 'full', zIndex: '50' },
+  <div
+    class={css({
+      flexGrow: '1',
+      smDown: {
+        position: 'absolute',
+        left: '0',
+        right: '0',
+        top: '0',
+        zIndex: '50',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        borderBottomWidth: '1px',
+        borderBottomColor: 'gray.100',
+        paddingX: '20px',
+        backgroundColor: 'white',
+        height: '56px',
       },
-      style,
-    )}
-    on:submit|preventDefault={async () => {
-      await goto(qs.stringifyUrl({ url: '/search', query: { q: value } }));
-    }}
+    })}
   >
-    <input
-      class={cx(
-        'peer',
-        css({
-          borderRadius: '4px',
-          paddingLeft: '12px',
-          paddingRight: '68px',
-          paddingY: '10px',
-          width: 'full',
-          height: { base: '41px', smDown: '56px' },
-          fontSize: '14px',
-          backgroundColor: 'gray.100',
-          transition: 'common',
-          _focusWithin: {
-            ringWidth: '1px',
-            ringColor: 'teal.500',
-            backgroundColor: 'white',
-          },
-        }),
+    <button class={css({ hideFrom: 'sm' })} type="button" on:click={() => (open = false)}>
+      <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />
+    </button>
+    <form
+      class={css(
+        {
+          position: 'relative',
+          smDown: { maxWidth: 'full' },
+        },
+        style,
       )}
-      placeholder="검색어를 입력하세요"
-      type="search"
-      bind:value
-    />
-
-    <button
-      class={center({
-        position: 'absolute',
-        insetY: '0',
-        right: '12px',
-        transition: 'common',
-        color: { base: 'gray.400', _peerFocus: 'gray.900' },
-      })}
-      type="submit"
+      on:submit|preventDefault={async () => {
+        await goto(qs.stringifyUrl({ url: '/search', query: { q: value } }));
+      }}
     >
-      <Icon style={css.raw({ size: '20px' })} icon={IconSearch} />
-    </button>
+      <input
+        class={cx(
+          'peer',
+          css({
+            borderRadius: '6px',
+            paddingLeft: '16px',
+            paddingRight: '68px',
+            paddingY: '10px',
+            fontSize: '15px',
+            backgroundColor: 'gray.50',
+            width: 'full',
+            height: { base: '45px', sm: '43px' },
+            transition: 'common',
+            _focusWithin: {
+              ringWidth: '1px',
+              ringColor: 'teal.500',
+              backgroundColor: 'white',
+            },
+          }),
+        )}
+        placeholder="검색어를 입력하세요"
+        type="search"
+        bind:value
+      />
 
-    <button
-      class={center({
-        position: 'absolute',
-        insetY: '0',
-        right: '40px',
-        color: 'gray.400',
-        hideFrom: 'sm',
-      })}
-      type="button"
-      on:click={() => (open = false)}
-    >
-      <Icon style={css.raw({ size: '20px' })} icon={IconX} />
-    </button>
-  </form>
+      <button
+        class={center({
+          position: 'absolute',
+          insetY: '0',
+          right: '48px',
+          color: 'gray.400',
+          hideFrom: 'sm',
+        })}
+        type="button"
+        on:click={() => (value = '')}
+      >
+        <Icon style={css.raw({ size: '20px' })} icon={IconCircleXFilled} />
+      </button>
+
+      <button
+        class={center({
+          position: 'absolute',
+          insetY: '0',
+          right: '16px',
+          transition: 'common',
+          color: { base: 'gray.500', _peerFocus: 'teal.500' },
+        })}
+        type="submit"
+      >
+        <Icon style={css.raw({ size: '20px' })} icon={IconSearch} />
+      </button>
+    </form>
+  </div>
 {:else}
-  <button type="button" on:click={() => (open = true)}>
-    <Icon style={css.raw({ size: '20px', color: 'gray.400' })} icon={IconSearch} />
+  <button class={center({ marginRight: '8px', size: '34px' })} type="button" on:click={() => (open = true)}>
+    <Icon style={css.raw({ size: '24px', color: 'gray.950' })} icon={IconSearch} />
   </button>
 {/if}
