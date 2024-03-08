@@ -66,7 +66,7 @@
           boxShadow: { _active: '[0 0 0 2px #99F6E4]' },
         },
         'tertiary': {
-          color: { base: 'gray.500', _disabled: 'gray.300' },
+          color: { base: 'gray.500', _disabled: 'gray.400' },
           backgroundColor: {
             base: 'gray.100',
             _hover: 'gray.50',
@@ -77,9 +77,9 @@
           boxShadow: { _active: '[0 0 0 2px #E4E4E7]' },
         },
         'outline': {
-          color: { base: 'gray.500', _disabled: 'gray.300' },
+          color: { base: 'gray.500', _disabled: 'gray.400' },
           outlineWidth: '1px',
-          outlineColor: { base: 'gray.150', _active: 'gray.300', _disabled: 'gray.100' },
+          outlineColor: { base: 'gray.150', _active: 'gray.300', _disabled: 'gray.150' },
           backgroundColor: {
             base: 'white',
             _hover: 'gray.50',
@@ -90,7 +90,7 @@
           boxShadow: { _active: '[0 0 0 2px #E4E4E7]' },
         },
         'secondary-outline': {
-          color: { base: 'teal.500', _disabled: 'gray.300' },
+          color: { base: 'teal.500', _disabled: 'gray.400' },
           outlineWidth: '1px',
           outlineColor: { base: 'teal.500', _disabled: 'gray.100' },
           backgroundColor: {
