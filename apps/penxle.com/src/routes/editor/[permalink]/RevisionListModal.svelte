@@ -105,7 +105,7 @@
                     <Badge color="green">발행</Badge>
                   {/if}
                 </dt>
-                <dd class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
+                <dd class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500', textAlign: 'left' })}>
                   <time datetime={revision.createdAt.slice(12)}>
                     {dayjs(revision.createdAt).format('HH:mm:ss')}
                   </time>
