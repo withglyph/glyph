@@ -82,7 +82,6 @@
 
         post(permalink: $permalink) {
           id
-
           ...TagManageModal_post
 
           permalink
@@ -103,8 +102,6 @@
           commentCount
           paginationCount: commentCount(pagination: true)
           commentQualification
-
-          ...CommentInput_post
 
           tags {
             id
@@ -539,7 +536,7 @@
             />
           </a>
         {:else}
-          <div class={css({ position: 'absolute', size: '36px' })}>
+          <div class={css({ position: 'relative', size: '36px' })}>
             <div class={css({ borderWidth: '1px', borderColor: 'gray.200', borderRadius: '4px', size: '36px' })} />
             <div
               class={css({
@@ -547,7 +544,9 @@
                 right: '-4px',
                 bottom: '-4px',
                 borderWidth: '1px',
-                borderColor: 'white',
+                borderColor: 'gray.200',
+                borderRadius: 'full',
+                backgroundColor: 'white',
                 size: '24px',
               })}
             />
@@ -593,8 +592,6 @@
       </div>
 
       <div class={flex({ align: 'center', gap: '12px', hideBelow: 'sm' })}>
-        <!-- <Button size="xs" variant="tertiary">집중모드</Button> -->
-
         <SharePostPopover href={shortLink}>
           <Icon
             style={css.raw({ size: '24px', color: { base: 'gray.500', _hover: 'teal.400' }, transition: 'common' })}
@@ -1393,7 +1390,7 @@
             댓글 {comma($query.post.commentCount)}
           </p>
           <hr class={css({ marginY: '8px', height: '1px', backgroundColor: 'gray.100' })} />
-          <CommentInput $post={$query.post} {$query} />
+          <CommentInput {$query} />
 
           <ul class={css({ marginTop: '24px' })}>
             {#each postComments as comment (comment.id)}
