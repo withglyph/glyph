@@ -1009,40 +1009,73 @@
         borderTopColor: 'gray.150',
         marginX: '-20px',
         paddingX: '20px',
-        paddingY: '14px',
         backgroundColor: 'white',
         zIndex: '1',
+        height: '56px',
         hideFrom: 'sm',
       })}
     >
-      <div class={flex({ align: 'center' })}>
+      <div class={flex({ align: 'center', flexGrow: '1', height: '34px' })}>
         {#if $query.post.commentQualification === 'NONE'}
           <Tooltip
-            style={center.raw({ marginRight: '20px', size: '24px' })}
+            style={center.raw({ marginRight: '8px', size: '34px' })}
             message="해당 게시물은 댓글이 허용되어 있지 않아요"
             offset={10}
             placement="top"
           >
-            <Icon style={css.raw({ size: '20px', color: 'gray.400' })} icon={IconMessageCircleOff} />
+            <Icon style={css.raw({ size: '24px', color: 'gray.400' })} icon={IconMessageCircleOff} />
           </Tooltip>
         {:else}
-          <a class={center({ marginRight: '20px', size: '24px' })} href="#comment">
-            <Icon style={css.raw({ size: '20px' })} icon={IconMessageCircle} />
+          <a class={center({ marginRight: '8px', size: '34px' })} href="#comment">
+            <Icon style={css.raw({ size: '24px' })} icon={IconMessageCircle} />
+            {#if $query.post.commentCount > 0}
+              <span class={css({ marginLeft: '4px', fontSize: '13px', fontWeight: 'medium' })}>
+                {$query.post.commentCount}
+              </span>
+            {/if}
           </a>
         {/if}
 
         <Tooltip
+          style={flex.raw({ width: 'full', align: 'center', height: 'full' })}
           enabled={!$query.post.receiveFeedback}
           message="피드백 받기를 설정하지 않은 포스트예요"
           offset={10}
           placement="top"
         >
-          <EmojiPicker {$query} disabled={!$query.post.receiveFeedback} variant="toolbar" />
+          <EmojiPicker
+            style={css.raw({
+              backgroundColor: 'gray.50',
+              width: '[fit-content]',
+              padding: '5px',
+              borderRadius: '4px',
+              height: 'full',
+            })}
+            {$query}
+            disabled={!$query.post.receiveFeedback}
+          >
+            {#each $query.post.reactions.slice(0, 3) as reaction (reaction.id)}
+              <em-emoji
+                id={reaction.emoji}
+                class={center({
+                  'size': '24px',
+                  '& img': { display: '[block!]' },
+                })}
+                set="twitter"
+              />
+            {/each}
+            {#if $query.post.reactions.length > 3}
+              <span class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
+                ..+{$query.post.reactions.length - 3}
+              </span>
+            {/if}
+          </EmojiPicker>
         </Tooltip>
       </div>
 
-      <div class={flex({ align: 'center', gap: '20px' })}>
+      <div class={flex({ align: 'center', gap: '10px' })}>
         <button
+          class={center({ size: '34px' })}
           type="button"
           on:click={async () => {
             if ($query.post.bookmarkGroups.length > 0) {
@@ -1060,17 +1093,17 @@
           }}
         >
           {#if $query.post.bookmarkGroups.length > 0}
-            <Icon style={css.raw({ size: '20px', color: 'teal.500' })} icon={IconBookmarkFilled} />
+            <Icon style={css.raw({ size: '24px', color: 'teal.500' })} icon={IconBookmarkFilled} />
           {:else}
             <Icon
-              style={css.raw({ size: '20px', color: { base: 'gray.700', _hover: 'teal.400' }, transition: 'common' })}
+              style={css.raw({ size: '24px', color: { _hover: 'teal.400' }, transition: 'common' })}
               icon={IconBookmark}
             />
           {/if}
         </button>
-        <SharePostPopover href={shortLink}>
+        <SharePostPopover style={center.raw({ size: '34px' })} href={shortLink}>
           <Icon
-            style={css.raw({ size: '20px', color: { base: 'gray.700', _hover: 'teal.400' }, transition: 'common' })}
+            style={css.raw({ size: '24px', color: { _hover: 'teal.400' }, transition: 'common' })}
             icon={IconShare2}
           />
         </SharePostPopover>

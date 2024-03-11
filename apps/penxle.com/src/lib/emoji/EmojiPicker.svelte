@@ -8,12 +8,12 @@
   import { Icon } from '$lib/components';
   import { createFloatingActions } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
-  import { center } from '$styled-system/patterns';
   import LoginRequireModal from '../../routes/(default)/LoginRequireModal.svelte';
   import i18n from './i18n.json';
   import { emojiData as data } from './index';
   import type { Emoji } from '@emoji-mart/data';
   import type { EmojiPicker_query } from '$glitch';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let picker: any;
@@ -24,8 +24,10 @@
 
   let _query: EmojiPicker_query;
   export { _query as $query };
+
   export let variant: 'post' | 'toolbar' = 'post';
   export let disabled = false;
+  export let style: SystemStyleObject | undefined = undefined;
 
   $: query = fragment(
     _query,
@@ -111,43 +113,27 @@
   });
 </script>
 
-{#if variant === 'post'}
-  <button
-    class={center({
+<button
+  class={css(
+    {
+      display: 'flex',
+      alignItems: 'center',
       borderRadius: '4px',
       size: '24px',
       _hover: { backgroundColor: 'gray.50' },
       _disabled: { borderColor: 'gray.300', color: 'gray.400', cursor: 'not-allowed' },
-    })}
-    {disabled}
-    type="button"
-    on:click={(e) => {
-      e.stopPropagation();
-      open = true;
-    }}
-    use:anchor
-  >
-    <Icon style={css.raw({ size: '20px' })} icon={IconMoodPlus} />
-  </button>
-{:else}
-  <button
-    class={center({
-      borderRadius: '4px',
-      size: '24px',
-      _hover: { backgroundColor: 'gray.50' },
-      _disabled: { borderColor: 'gray.300', color: 'gray.400', cursor: 'not-allowed' },
-    })}
-    {disabled}
-    type="button"
-    on:click={(e) => {
-      e.stopPropagation();
-      open = true;
-    }}
-    use:anchor
-  >
-    <Icon style={css.raw({ size: '20px', color: 'gray.700' })} icon={IconMoodPlus} />
-  </button>
-{/if}
+    },
+    style,
+  )}
+  {disabled}
+  type="button"
+  on:click|stopPropagation={() => (open = true)}
+  use:anchor
+>
+  <Icon style={css.raw({ size: '24px' })} icon={IconMoodPlus} />
+
+  <slot />
+</button>
 
 <div bind:this={pickerEl} class={css({ height: '400px', zIndex: '50' }, !open && { display: 'none' })} use:floating />
 
