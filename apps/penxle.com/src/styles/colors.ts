@@ -51,7 +51,7 @@ export const colors = defineTokens.colors({
   },
 
   error: {
-    50: { value: '#FFCECE' },
+    50: { value: '#FFECEC' },
     900: { value: '#DC2626' },
   },
 
