@@ -1,9 +1,9 @@
 <script lang="ts">
   import qs from 'query-string';
   import { onMount } from 'svelte';
+  import IconSearch from '~icons/effit/search';
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconCircleXFilled from '~icons/tabler/circle-x-filled';
-  import IconSearch from '~icons/tabler/search';
   import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { Icon } from '$lib/components';
@@ -45,6 +45,12 @@
     }
   });
 </script>
+
+<svelte:window
+  on:resize={() => {
+    open = window.innerWidth >= 800;
+  }}
+/>
 
 {#if open}
   <div
