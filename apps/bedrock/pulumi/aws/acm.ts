@@ -34,31 +34,28 @@ const createCertificate = (domain: string) => {
 };
 
 export const certificates = {
-  effit_so: createCertificate('effit.so'),
-  effit_io: createCertificate('effit.io'),
-  effit_dev: createCertificate('effit.dev'),
-  efft_me: createCertificate('efft.me'),
+  // glyph_space: createCertificate('glyph.space'),
+  glyphcdn_com: createCertificate('glyphcdn.com'),
+  glyph_ninja: createCertificate('glyph.ninja'),
+  glph_to: createCertificate('glph.to'),
   pencil_so: createCertificate('pencil.so'),
   penxle_com: createCertificate('penxle.com'),
   penxle_io: createCertificate('penxle.io'),
-  pnxl_cc: createCertificate('pnxl.cc'),
   pnxl_co: createCertificate('pnxl.co'),
   pnxl_me: createCertificate('pnxl.me'),
   pnxl_net: createCertificate('pnxl.net'),
-  pnxl_site: createCertificate('pnxl.site'),
 };
 
 export const outputs = {
-  AWS_ACM_EFFIT_SO_CERTIFICATE_ARN: certificates.effit_so.arn,
-  AWS_ACM_EFFIT_IO_CERTIFICATE_ARN: certificates.effit_io.arn,
-  AWS_ACM_EFFIT_DEV_CERTIFICATE_ARN: certificates.effit_dev.arn,
-  AWS_ACM_EFFT_ME_CERTIFICATE_ARN: certificates.efft_me.arn,
+  // AWS_ACM_GLYPH_SPACE_CERTIFICATE_ARN: certificates.glyph_space.arn,
+  AWS_ACM_GLYPH_NINJA_CERTIFICATE_ARN: certificates.glyph_ninja.arn,
+  AWS_ACM_GLYPHCDN_COM_CERTIFICATE_ARN: certificates.glyphcdn_com.arn,
+  AWS_ACM_GLPH_TO_CERTIFICATE_ARN: certificates.glph_to.arn,
+
   AWS_ACM_PENCIL_SO_CERTIFICATE_ARN: certificates.pencil_so.arn,
   AWS_ACM_PENXLE_COM_CERTIFICATE_ARN: certificates.penxle_com.arn,
   AWS_ACM_PENXLE_IO_CERTIFICATE_ARN: certificates.penxle_io.arn,
-  AWS_ACM_PNXL_CC_CERTIFICATE_ARN: certificates.pnxl_cc.arn,
   AWS_ACM_PNXL_CO_CERTIFICATE_ARN: certificates.pnxl_co.arn,
   AWS_ACM_PNXL_ME_CERTIFICATE_ARN: certificates.pnxl_me.arn,
   AWS_ACM_PNXL_NET_CERTIFICATE_ARN: certificates.pnxl_net.arn,
-  AWS_ACM_PNXL_SITE_CERTIFICATE_ARN: certificates.pnxl_site.arn,
 };

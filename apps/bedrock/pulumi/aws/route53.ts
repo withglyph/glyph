@@ -9,18 +9,16 @@ const createZone = (domain: string) => {
 };
 
 export const zones = {
-  effit_so: createZone('effit.so'),
-  effit_io: createZone('effit.io'),
-  effit_dev: createZone('effit.dev'),
-  efft_me: createZone('efft.me'),
+  glyph_space: createZone('glyph.space'),
+  glyph_ninja: createZone('glyph.ninja'),
+  glyphcdn_com: createZone('glyphcdn.com'),
+  glph_to: createZone('glph.to'),
   pencil_so: createZone('pencil.so'),
   penxle_com: createZone('penxle.com'),
   penxle_io: createZone('penxle.io'),
-  pnxl_cc: createZone('pnxl.cc'),
   pnxl_co: createZone('pnxl.co'),
   pnxl_me: createZone('pnxl.me'),
   pnxl_net: createZone('pnxl.net'),
-  pnxl_site: createZone('pnxl.site'),
 };
 
 new aws.route53.Record('pencil.so|txt', {

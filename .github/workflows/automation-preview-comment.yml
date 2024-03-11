@@ -24,6 +24,6 @@ jobs:
 
             | 프로젝트 | 프리뷰 URL |
             | --- | --- |
-            | penxle.com | https://website-pr-${{ github.event.pull_request.number }}.effit.dev |
-            | penxle.io | https://company-pr-${{ github.event.pull_request.number }}.effit.dev |
-            | help.penxle.com | https://help-pr-${{ github.event.pull_request.number }}.effit.dev |
+            | penxle.com | https://website-pr-${{ github.event.pull_request.number }}.glyph.ninja |
+            | penxle.io | https://company-pr-${{ github.event.pull_request.number }}.glyph.ninja |
+            | help.penxle.com | https://help-pr-${{ github.event.pull_request.number }}.glyph.ninja |

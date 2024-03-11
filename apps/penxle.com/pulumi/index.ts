@@ -57,75 +57,75 @@ const site = new penxle.Site('pencil.so', {
   },
 });
 
-new penxle.Site('effit.so', {
-  name: 'website',
+// new penxle.Site('effit.so', {
+//   name: 'website',
 
-  domain: {
-    production: 'effit.so',
-    staging: 'staging.effit.so',
-    dev: 'dev.effit.so',
-  },
+//   domain: {
+//     production: 'effit.so',
+//     staging: 'staging.effit.so',
+//     dev: 'dev.effit.so',
+//   },
 
-  image: {
-    name: '721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/penxle.com',
-    digest: config.require('image.digest'),
-  },
+//   image: {
+//     name: '721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/penxle.com',
+//     digest: config.require('image.digest'),
+//   },
 
-  resources: {
-    cpu: '1000m',
-    memory: '2000Mi',
-  },
+//   resources: {
+//     cpu: '1000m',
+//     memory: '2000Mi',
+//   },
 
-  autoscale: {
-    minCount: 2,
-    maxCount: 20,
-  },
+//   autoscale: {
+//     minCount: 2,
+//     maxCount: 20,
+//   },
 
-  iam: {
-    policy: {
-      Version: '2012-10-17',
-      Statement: [
-        {
-          Effect: 'Allow',
-          Action: ['s3:GetObject', 's3:PutObject'],
-          Resource: [
-            pulumi.concat(bedrockRef('AWS_S3_BUCKET_DATA_ARN'), '/*'),
-            pulumi.concat(bedrockRef('AWS_S3_BUCKET_UPLOADS_ARN'), '/*'),
-          ],
-        },
-        {
-          Effect: 'Allow',
-          Action: ['s3:DeleteObject'],
-          Resource: [pulumi.concat(bedrockRef('AWS_S3_BUCKET_UPLOADS_ARN'), '/*')],
-        },
-        {
-          Effect: 'Allow',
-          Action: ['ses:SendEmail'],
-          Resource: ['*'],
-        },
-      ],
-    },
-  },
+//   iam: {
+//     policy: {
+//       Version: '2012-10-17',
+//       Statement: [
+//         {
+//           Effect: 'Allow',
+//           Action: ['s3:GetObject', 's3:PutObject'],
+//           Resource: [
+//             pulumi.concat(bedrockRef('AWS_S3_BUCKET_DATA_ARN'), '/*'),
+//             pulumi.concat(bedrockRef('AWS_S3_BUCKET_UPLOADS_ARN'), '/*'),
+//           ],
+//         },
+//         {
+//           Effect: 'Allow',
+//           Action: ['s3:DeleteObject'],
+//           Resource: [pulumi.concat(bedrockRef('AWS_S3_BUCKET_UPLOADS_ARN'), '/*')],
+//         },
+//         {
+//           Effect: 'Allow',
+//           Action: ['ses:SendEmail'],
+//           Resource: ['*'],
+//         },
+//       ],
+//     },
+//   },
 
-  secret: {
-    project: 'penxle-com',
-  },
-});
+//   secret: {
+//     project: 'penxle-com',
+//   },
+// });
 
 if (pulumi.getStack() === 'prod') {
-  new penxle.Redirect('www.effit.so', {
-    name: 'www-effit-so',
+  // new penxle.Redirect('www.effit.so', {
+  //   name: 'www-effit-so',
 
-    from: {
-      host: 'www.effit.so',
-    },
+  //   from: {
+  //     host: 'www.effit.so',
+  //   },
 
-    to: {
-      host: 'effit.so',
-    },
+  //   to: {
+  //     host: 'effit.so',
+  //   },
 
-    code: 301,
-  });
+  //   code: 301,
+  // });
 
   new penxle.Redirect('www.pencil.so', {
     name: 'www-pencil-so',
@@ -169,20 +169,20 @@ if (pulumi.getStack() === 'prod') {
     code: 301,
   });
 
-  new penxle.Redirect('efft.me', {
-    name: 'efft-me',
+  // new penxle.Redirect('efft.me', {
+  //   name: 'efft-me',
 
-    from: {
-      host: 'efft.me',
-    },
+  //   from: {
+  //     host: 'efft.me',
+  //   },
 
-    to: {
-      host: 'effit.so',
-      path: '/api/shortlink/#{path}',
-    },
+  //   to: {
+  //     host: 'effit.so',
+  //     path: '/api/shortlink/#{path}',
+  //   },
 
-    code: 302,
-  });
+  //   code: 302,
+  // });
 
   new penxle.Redirect('pnxl.me', {
     name: 'pnxl-me',
