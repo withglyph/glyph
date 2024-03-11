@@ -77,18 +77,23 @@
       <ul class={css({ size: 'full', overflowY: 'auto' })}>
         {#each $post.revisions as revision (revision.id)}
           <li
-            class={flex({
-              'justify': 'space-between',
-              'align': 'center',
-              'borderRadius': '4px',
-              'paddingX': '8px',
-              'paddingY': '12px',
-              'width': 'full',
-              '_hover': { backgroundColor: 'gray.50' },
-              '_pressed': { backgroundColor: 'gray.50' },
-              '--menu-display': { base: 'none', _pressed: 'block' },
-            })}
-            data-pressed={selectedRevisionId === revision.id}
+            class={css(
+              {
+                'display': 'flex',
+                'justifyContent': 'space-between',
+                'alignItems': 'center',
+                'borderRadius': '4px',
+                'paddingX': '8px',
+                'paddingY': '12px',
+                'width': 'full',
+                '_hover': { backgroundColor: 'gray.50' },
+                '--menu-display': 'none',
+              },
+              selectedRevisionId === revision.id && {
+                'backgroundColor': 'gray.50',
+                '--menu-display': 'block',
+              },
+            )}
           >
             <button
               class={css({ flexGrow: '1' })}
