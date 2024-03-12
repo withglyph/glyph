@@ -5,10 +5,12 @@ import * as pulumi from '@pulumi/pulumi';
 const config = new pulumi.Config('penxle');
 
 const site = new penxle.Site('pencil.so', {
-  name: 'pencil',
+  name: 'website',
 
   domain: {
     production: 'pencil.so',
+    staging: 'staging.glyph.ninja',
+    dev: 'dev.glyph.ninja',
   },
 
   image: {
