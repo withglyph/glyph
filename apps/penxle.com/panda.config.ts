@@ -1,5 +1,5 @@
 import { defineConfig } from '@pandacss/dev';
-import { breakpoints, globalCss, hooks, tokens, utilities } from './src/styles';
+import { breakpoints, conditions, globalCss, hooks, tokens, utilities } from './src/styles';
 
 const prod = process.env.NODE_ENV === 'production';
 
@@ -26,6 +26,8 @@ export default defineConfig({
   },
 
   globalCss,
+
+  conditions,
   utilities,
 
   hooks: prod

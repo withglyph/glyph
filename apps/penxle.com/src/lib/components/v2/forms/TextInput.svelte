@@ -25,14 +25,14 @@
     {name}
     class={css(
       {
-        'borderWidth': '1px',
-        'borderColor': { base: 'gray.150', _hover: 'gray.400', _focus: 'gray.400' },
-        'borderRadius': '8px',
-        'paddingX': '16px',
-        'paddingY': '12px',
-        'width': 'full',
-        'backgroundColor': { base: 'white', _disabled: 'gray.100' },
-        '&[aria-invalid="true"]': {
+        borderWidth: '1px',
+        borderColor: { base: 'gray.150', _hover: 'gray.400', _focus: 'gray.400' },
+        borderRadius: '8px',
+        paddingX: '16px',
+        paddingY: '12px',
+        width: 'full',
+        backgroundColor: { base: 'white', _disabled: 'gray.100' },
+        _invalid: {
           backgroundColor: 'error.50',
           borderColor: '[error.900!]',
           color: 'error.900',
