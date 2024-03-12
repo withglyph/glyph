@@ -11,6 +11,7 @@ export { default as Link } from './Link.svelte';
 export { default as Modal } from './Modal.svelte';
 export { default as Pagination } from './Pagination.svelte';
 export { default as PostCard } from './PostCard.svelte';
+export { default as ProgressBar } from './ProgressBar.svelte';
 export { default as SegmentButtonGroup } from './SegmentButtonGroup.svelte';
 export { default as SpacePostCard } from './SpacePostCard.svelte';
 export { default as Tag } from './Tag.svelte';
