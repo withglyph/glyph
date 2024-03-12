@@ -148,7 +148,8 @@
 
   let visited = persisted('gallery-editor-visited', false);
 
-  let onboardingAnchorElements: [HTMLElement, HTMLElement] | [null, null] = [null, null];
+  let onboardingAnchorElement1: HTMLElement | undefined;
+  let onboardingAnchorElement2: HTMLElement | undefined;
   const onboardingAnchorLastDynamicId = 'image-list-view-first-item';
 
   let driver: ReturnType<typeof driverFn> | undefined;
@@ -156,20 +157,20 @@
   async function startDrive() {
     await tick();
 
-    if (!onboardingAnchorElements[0] || !onboardingAnchorElements[1])
+    if (!onboardingAnchorElement1 || !onboardingAnchorElement2)
       throw new Error('onboardingAnchorElements is not ready');
 
     driver = driverFn({
       steps: [
         {
-          element: onboardingAnchorElements[0],
+          element: onboardingAnchorElement1,
           popover: {
             popoverClass: 'onboarding-popover step-1',
             description: '이미지를 <mark>드래그해서 놓으면</mark> 순서를 변경할 수 있어요',
           },
         },
         {
-          element: onboardingAnchorElements[1],
+          element: onboardingAnchorElement2,
           popover: {
             popoverClass: 'onboarding-popover step-2',
             description: '전체목록을 클릭하면 <mark>여러 장의 이미지를 편집</mark>할 수 있어요',
@@ -350,7 +351,7 @@
       </div>
 
       <button
-        bind:this={onboardingAnchorElements[1]}
+        bind:this={onboardingAnchorElement2}
         class={flex({
           zIndex: '1',
           flexShrink: '1',
@@ -437,7 +438,7 @@
               </button>
               {#if index === 0}
                 <div
-                  bind:this={onboardingAnchorElements[0]}
+                  bind:this={onboardingAnchorElement1}
                   class={css({ position: 'absolute', inset: '0', zIndex: '[-1]' })}
                 />
               {/if}
