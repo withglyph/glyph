@@ -46,12 +46,6 @@
   });
 </script>
 
-<svelte:window
-  on:resize={() => {
-    open = window.innerWidth >= 800;
-  }}
-/>
-
 {#if open}
   <div
     class={css({
