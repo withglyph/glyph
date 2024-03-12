@@ -47,9 +47,11 @@
           color: 'white',
           backgroundColor: {
             base: 'gray.950',
-            _hover: 'gray.800',
-            _focusVisible: 'gray.800',
-            _pressed: 'gray.800',
+            _enabled: {
+              _hover: 'gray.800',
+              _focusVisible: 'gray.800',
+              _pressed: 'gray.800',
+            },
             _disabled: 'gray.200',
           },
           boxShadow: { _active: '[0 0 0 2px #A1A1AA]' },
@@ -58,9 +60,11 @@
           color: 'white',
           backgroundColor: {
             base: 'teal.500',
-            _hover: 'teal.400',
-            _focusVisible: 'teal.400',
-            _pressed: 'teal.400',
+            _enabled: {
+              _hover: 'teal.400',
+              _focusVisible: 'teal.400',
+              _pressed: 'teal.400',
+            },
             _disabled: 'gray.200',
           },
           boxShadow: { _active: '[0 0 0 2px #99F6E4]' },
@@ -69,9 +73,11 @@
           color: { base: 'gray.500', _disabled: 'gray.400' },
           backgroundColor: {
             base: 'gray.100',
-            _hover: 'gray.50',
-            _focusVisible: 'gray.50',
-            _pressed: 'gray.50',
+            _enabled: {
+              _hover: 'gray.50',
+              _focusVisible: 'gray.50',
+              _pressed: 'gray.50',
+            },
             _disabled: 'gray.50',
           },
           boxShadow: { _active: '[0 0 0 2px #E4E4E7]' },
@@ -82,9 +88,11 @@
           outlineColor: { base: 'gray.150', _active: 'gray.300', _disabled: 'gray.150' },
           backgroundColor: {
             base: 'white',
-            _hover: 'gray.50',
-            _focusVisible: 'gray.50',
-            _pressed: 'gray.50',
+            _enabled: {
+              _hover: 'gray.50',
+              _focusVisible: 'gray.50',
+              _pressed: 'gray.50',
+            },
             _disabled: '[initial]',
           },
           boxShadow: { _active: '[0 0 0 2px #E4E4E7]' },
@@ -94,9 +102,11 @@
           outlineWidth: '1px',
           outlineColor: { base: 'teal.500', _disabled: 'gray.100' },
           backgroundColor: {
-            _hover: 'teal.50',
-            _focusVisible: 'teal.50',
-            _pressed: 'teal.50',
+            _enabled: {
+              _hover: 'teal.50',
+              _focusVisible: 'teal.50',
+              _pressed: 'teal.50',
+            },
             _disabled: '[initial]',
           },
           boxShadow: { _active: '[0 0 0 2px #99F6E4]' },
