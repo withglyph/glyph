@@ -126,7 +126,7 @@
 
 <svelte:element
   this={element}
-  class={css(recipe.raw({ variant, size }), style)}
+  class={css(recipe.raw({ variant, size }), showSpinner && { position: 'relative' }, style)}
   aria-busy={showSpinner}
   role="button"
   tabindex="0"

@@ -46,7 +46,6 @@
   type Variants = RecipeVariant<typeof recipe>;
   const recipe = cva({
     base: {
-      position: 'relative',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
@@ -148,7 +147,7 @@
 
 <svelte:element
   this={element}
-  class={css(_style, style)}
+  class={css(_style, showSpinner && { position: 'relative' }, style)}
   role="button"
   tabindex="0"
   on:click
