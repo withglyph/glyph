@@ -279,6 +279,7 @@ type Mutation {
   followTag(input: FollowTagInput!): Tag!
   generatePostShareImage(input: GeneratePostShareImageInput!): String!
   ignoreSpaceMemberInvitation(input: IgnoreSpaceMemberInvitationInput!): SpaceMemberInvitation!
+  instantSettleRevenue: User!
   issueUserEmailAuthorizationUrl(input: IssueUserEmailAuthorizationUrlInput!): IssueUserEmailAuthorizationUrlResult!
   issueUserSingleSignOnAuthorizationUrl(input: IssueUserSingleSignOnAuthorizationUrlInput!): IssueUserSingleSignOnAuthorizationUrlResult!
   leaveSpace(input: LeaveSpaceInput!): SpaceMember!
@@ -676,6 +677,12 @@ enum RevenueState {
   INVOICED
   PAID
   PENDING
+}
+
+enum RevenueWithdrawalState {
+  FAILED
+  PENDING
+  SUCCESS
 }
 
 input RevisePostInput {

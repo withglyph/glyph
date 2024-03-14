@@ -1,3 +1,4 @@
+import { settleRevenue } from '$lib/server/utils';
 import { PrismaEnums } from '$prisma';
 import { defineSchema } from '../builder';
 
@@ -29,4 +30,18 @@ export const revenueSchema = defineSchema((builder) => {
       }),
     }),
   });
+
+  builder.mutationFields((t) => ({
+    instantSettleRevenue: t.withAuth({ user: true }).prismaField({
+      type: 'User',
+      resolve: async (query, _, __, { db, ...context }) => {
+        await settleRevenue({ userId: context.session.userId, settlementType: 'INSTANT' });
+
+        return db.user.findUniqueOrThrow({
+          ...query,
+          where: { id: context.session.userId },
+        });
+      },
+    }),
+  }));
 });

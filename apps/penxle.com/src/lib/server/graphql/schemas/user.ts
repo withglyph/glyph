@@ -1062,7 +1062,7 @@ export const userSchema = defineSchema((builder) => {
         });
 
         if (
-          personalIdentity.name
+          !personalIdentity.name
             .replaceAll(' ', '')
             .toLowerCase()
             .startsWith(accountHolderName.replaceAll(' ', '').toLowerCase())

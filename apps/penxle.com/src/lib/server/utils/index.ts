@@ -12,4 +12,5 @@ export * from './point';
 export * from './post';
 export * from './revenue';
 export * from './search';
+export * from './slack';
 export * from './tag';
