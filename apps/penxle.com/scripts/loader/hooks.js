@@ -1,5 +1,5 @@
 export const resolve = async (specifier, context, nextResolve) => {
-  if (specifier.startsWith('$')) {
+  if (specifier.startsWith('$app/') || specifier.startsWith('$env/')) {
     return {
       url: `virtual://${specifier}`,
       shortCircuit: true,

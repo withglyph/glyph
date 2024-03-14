@@ -5,7 +5,9 @@ const prod = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
   preflight: true,
+
   include: ['./src/**/*.{js,ts,svelte}'],
+  outExtension: 'js',
 
   eject: true,
   presets: ['@pandacss/preset-base'],
