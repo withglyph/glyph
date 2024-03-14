@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import { elasticSearch, indexName } from '$lib/server/search';
+import { getMutedSpaceIds, getMutedTagIds, makeQueryContainers, searchResultToPrismaData } from '$lib/server/utils';
 import { defineSchema } from '../builder';
 
 export const feedSchema = defineSchema((builder) => {
@@ -10,39 +12,137 @@ export const feedSchema = defineSchema((builder) => {
     recommendFeed: t.prismaField({
       type: ['Post'],
       resolve: async (query, _, __, { db, ...context }) => {
-        const posts = await db.post.findMany({
-          ...query,
-          where: {
-            state: 'PUBLISHED',
-            visibility: 'PUBLIC',
-            password: null,
-            ageRating: 'ALL',
-            publishedAt: { gte: dayjs().subtract(3, 'day').toDate() },
-            space: {
-              state: 'ACTIVE',
-              visibility: 'PUBLIC',
-              userMutes: context.session
-                ? {
-                    none: { userId: context.session.userId },
-                  }
-                : undefined,
-            },
-            tags: context.session
-              ? {
-                  none: {
-                    tag: {
-                      userMutes: { some: { userId: context.session.userId } },
+        const searchResult = await (async () => {
+          if (context.session) {
+            const [mutedTagIds, mutedSpaceIds, followingTagIds, viewedTagIds] = await Promise.all([
+              getMutedTagIds({ db, userId: context.session.userId }),
+              getMutedSpaceIds({ db, userId: context.session.userId }),
+              db.tagFollow
+                .findMany({
+                  select: { tagId: true },
+                  where: { userId: context.session.userId },
+                })
+                .then((tagFollows) => tagFollows.map(({ tagId }) => tagId)),
+              db.postView
+                .findMany({
+                  select: {
+                    post: {
+                      select: {
+                        tags: {
+                          select: { tagId: true },
+                        },
+                      },
                     },
                   },
-                }
-              : undefined,
+                  where: { userId: context.session.userId },
+                  orderBy: { viewedAt: 'desc' },
+                  take: 50,
+                })
+                .then((postViews) => [
+                  ...new Set<string>(postViews.flatMap(({ post }) => post.tags.map(({ tagId }) => tagId))),
+                ]),
+            ]);
+
+            return elasticSearch.search({
+              index: indexName('posts'),
+              query: {
+                function_score: {
+                  query: {
+                    bool: {
+                      must_not: makeQueryContainers([
+                        {
+                          query: { terms: { ['tags.id']: mutedTagIds } },
+                          condition: mutedTagIds.length > 0,
+                        },
+                        {
+                          query: { terms: { spaceId: mutedSpaceIds } },
+                          condition: mutedSpaceIds.length > 0,
+                        },
+                      ]),
+                      should: makeQueryContainers([
+                        {
+                          query: { rank_feature: { field: 'trendingScore' } },
+                        },
+                        {
+                          query: { terms: { ['tags.id']: followingTagIds } },
+                          condition: followingTagIds.length > 0,
+                        },
+                        {
+                          query: {
+                            terms: {
+                              ['tags.id']: viewedTagIds,
+                              boost: 0.2,
+                            },
+                          },
+                          condition: viewedTagIds.length > 0,
+                        },
+                      ]),
+                    },
+                  },
+                  functions: [
+                    {
+                      random_score: { seed: Math.floor(Math.random() * 1000), field: '_seq_no' },
+                    },
+                    {
+                      exp: {
+                        publishedAt: {
+                          scale: '7d',
+                          offset: '1d',
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+
+              size: 50,
+            });
+          } else {
+            return elasticSearch.search({
+              index: indexName('posts'),
+              query: {
+                function_score: {
+                  query: {
+                    bool: {
+                      should: [{ rank_feature: { field: 'trendingScore', boost: 2 } }],
+                    },
+                  },
+                  functions: [
+                    {
+                      random_score: { seed: Math.floor(Math.random() * 1000), field: '_seq_no' },
+                    },
+                    {
+                      exp: {
+                        publishedAt: {
+                          scale: '7d',
+                          offset: '1d',
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+
+              size: 50,
+            });
+          }
+        })();
+
+        return searchResultToPrismaData({
+          searchResult,
+          db,
+          tableName: 'post',
+          queryArgs: {
+            ...query,
+            where: {
+              state: 'PUBLISHED',
+              space: {
+                state: 'ACTIVE',
+                visibility: 'PUBLIC',
+              },
+            },
           },
-
-          orderBy: [{ views: { _count: 'desc' } }, { publishedAt: 'desc' }],
-          take: 50,
         });
-
-        return posts;
       },
     }),
 
