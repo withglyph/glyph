@@ -1,4 +1,5 @@
 import { webcrypto } from 'node:crypto';
+import { useCache } from '$lib/server/cache';
 import { createId } from '$lib/utils';
 import type { JSONContent } from '@tiptap/core';
 import type { InteractiveTransactionClient } from '../prisma';
@@ -23,3 +24,10 @@ export const revisePostContent = async ({ db, contentData }: RevisePostContentPa
     update: {},
   });
 };
+
+type GetPostViewCountParams = {
+  db: InteractiveTransactionClient;
+  postId: string;
+};
+export const getPostViewCount = ({ db, postId }: GetPostViewCountParams) =>
+  useCache(`Post:${postId}:viewCount`, () => db.postView.count({ where: { postId } }), 365 * 24 * 60 * 60);

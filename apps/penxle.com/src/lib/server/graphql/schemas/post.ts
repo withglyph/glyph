@@ -5,7 +5,7 @@ import * as R from 'radash';
 import { match, P } from 'ts-pattern';
 import { emojiData } from '$lib/emoji';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
-import { redis, useCache } from '$lib/server/cache';
+import { redis } from '$lib/server/cache';
 import { elasticSearch, indexName } from '$lib/server/search';
 import {
   createNotification,
@@ -14,8 +14,10 @@ import {
   generatePostShareImage,
   getMutedSpaceIds,
   getMutedTagIds,
+  getPostViewCount,
   getUserPoint,
   indexPost,
+  indexPostTrendingScore,
   isAdulthood,
   isGte15,
   Loader,
@@ -92,12 +94,7 @@ export const postSchema = defineSchema((builder) => {
       likeCount: t.relationCount('likes'),
 
       viewCount: t.int({
-        resolve: (post, _, { db }) =>
-          useCache(
-            `Post:${post.id}:viewCount`,
-            () => db.postView.count({ where: { postId: post.id } }),
-            365 * 24 * 60 * 60,
-          ),
+        resolve: (post, _, { db }) => getPostViewCount({ db, postId: post.id }),
       }),
 
       visibility: t.expose('visibility', { type: PrismaEnums.PostVisibility }),
@@ -1757,6 +1754,8 @@ export const postSchema = defineSchema((builder) => {
           if (viewCount) {
             await redis.incr(`Post:${input.postId}:viewCount`);
           }
+
+          indexPostTrendingScore({ db, postId: input.postId }).then();
         }
 
         return db.post.findUniqueOrThrow({
