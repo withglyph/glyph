@@ -951,7 +951,7 @@
             </dl>
             {#if $query.post.space?.meAsMember}
               <Button
-                style={css.raw({ alignSelf: 'flex-end' })}
+                style={css.raw({ flex: 'none', alignSelf: 'flex-end' })}
                 size="2xs"
                 variant="outline"
                 on:click={() => (openTagManageModal = true)}
