@@ -12,7 +12,6 @@ export const zones = {
   withglyph_com: createZone('withglyph.com'),
   withglyph_io: createZone('withglyph.io'),
   withglyph_dev: createZone('withglyph.dev'),
-  glyph_ninja: createZone('glyph.ninja'),
   glyph_pub: createZone('glyph.pub'),
   glph_to: createZone('glph.to'),
   pencil_so: createZone('pencil.so'),

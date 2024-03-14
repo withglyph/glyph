@@ -22,7 +22,6 @@ export const certificates = {
   withglyph_com: createCertificate('withglyph.com'),
   withglyph_io: createCertificate('withglyph.io'),
   withglyph_dev: createCertificate('withglyph.dev'),
-  glyph_ninja: createCertificate('glyph.ninja'),
   glyph_pub: createCertificate('glyph.pub'),
   glph_to: createCertificate('glph.to'),
   pencil_so: createCertificate('pencil.so'),
@@ -285,7 +284,6 @@ export const outputs = {
   AWS_ACM_CLOUDFRONT_WITHGLYPH_COM_CERTIFICATE_ARN: certificates.withglyph_com.arn,
   AWS_ACM_CLOUDFRONT_WITHGLYPH_IO_CERTIFICATE_ARN: certificates.withglyph_io.arn,
   AWS_ACM_CLOUDFRONT_WITHGLYPH_DEV_CERTIFICATE_ARN: certificates.withglyph_dev.arn,
-  AWS_ACM_CLOUDFRONT_GLYPH_NINJA_CERTIFICATE_ARN: certificates.glyph_ninja.arn,
   AWS_ACM_CLOUDFRONT_GLYPH_PUB_CERTIFICATE_ARN: certificates.glyph_pub.arn,
   AWS_ACM_CLOUDFRONT_GLPH_TO_CERTIFICATE_ARN: certificates.glph_to.arn,
 
