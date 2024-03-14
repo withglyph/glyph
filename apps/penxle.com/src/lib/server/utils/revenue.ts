@@ -8,16 +8,20 @@ import { prismaClient } from '../database';
 import type { PrismaEnums } from '$prisma';
 import type { InteractiveTransactionClient } from '../database';
 
+const getWithdrawableDayjs = () => dayjs().subtract(7, 'day');
+
 type GetUserRevenueParams = {
   db: InteractiveTransactionClient;
   userId: string;
+  withdrawableOnly?: boolean;
 };
-export const getUserRevenue = async ({ db, userId }: GetUserRevenueParams) => {
+export const getUserRevenue = async ({ db, userId, withdrawableOnly }: GetUserRevenueParams) => {
   const agg = await db.revenue.aggregate({
     _sum: { amount: true },
     where: {
       userId,
       state: { not: 'PAID' },
+      createdAt: withdrawableOnly ? { lt: getWithdrawableDayjs().toDate() } : undefined,
     },
   });
 
@@ -50,25 +54,24 @@ export const createRevenue = async ({ db, userId, targetId, amount, kind }: Crea
 
 type SettleRevenueParams = {
   userId: string;
-  settlementType: 'REGULAR' | 'INSTANT';
+  settlementType: PrismaEnums.RevenueWithdrawalKind;
 };
 export const settleRevenue = async ({ userId, settlementType }: SettleRevenueParams) => {
   const db = await prismaClient.$begin({ isolation: 'ReadCommitted' });
   await db.$lock(`USER_REVENUE_${userId}`);
 
-  const dateCondition = dayjs().subtract(7, 'day').toDate();
   const revenues = await db.revenue.findMany({
     where: {
       userId,
       state: { not: 'PAID' },
       withdrawalId: null,
-      createdAt: { lt: dateCondition },
+      createdAt: { lt: getWithdrawableDayjs().toDate() },
     },
   });
 
   const totalRevenueAmount = revenues.reduce((sum, revenue) => sum + revenue.amount, 0);
   const totalSettleAmount = match(settlementType)
-    .with('REGULAR', () => (totalRevenueAmount >= 30_000 ? Math.floor(totalRevenueAmount * 0.85) : 0))
+    .with('MONTHLY', () => (totalRevenueAmount >= 30_000 ? Math.floor(totalRevenueAmount * 0.85) : 0))
     .with('INSTANT', () => (totalRevenueAmount >= 1000 ? Math.floor(totalRevenueAmount * 0.85) - 500 : 0))
     .exhaustive();
 
@@ -88,8 +91,10 @@ export const settleRevenue = async ({ userId, settlementType }: SettleRevenuePar
     data: {
       id: createId(),
       userId,
+      kind: settlementType,
       bankCode: settlementIdentity.bankCode,
       bankAccountNumber: settlementIdentity.bankAccountNumber,
+      revenueAmount: totalRevenueAmount,
       paidAmount: totalSettleAmount,
       taxAmount: Math.floor(totalSettleAmount * 0.033),
       revenues: { connect: revenues.map((revenue) => ({ id: revenue.id })) },

@@ -31,6 +31,20 @@ export const revenueSchema = defineSchema((builder) => {
     }),
   });
 
+  builder.prismaObject('RevenueWithdrawal', {
+    fields: (t) => ({
+      id: t.exposeID('id'),
+      kind: t.expose('kind', { type: PrismaEnums.RevenueWithdrawalKind }),
+      state: t.expose('state', { type: PrismaEnums.RevenueWithdrawalState }),
+      bankCode: t.exposeString('bankCode'),
+      bankAccountNumber: t.exposeString('bankAccountNumber'),
+      revenueAmount: t.exposeInt('revenueAmount'),
+      paidAmount: t.exposeInt('paidAmount'),
+      taxAmount: t.exposeInt('taxAmount'),
+      createdAt: t.expose('createdAt', { type: 'DateTime' }),
+    }),
+  });
+
   builder.mutationFields((t) => ({
     instantSettleRevenue: t.withAuth({ user: true }).prismaField({
       type: 'User',

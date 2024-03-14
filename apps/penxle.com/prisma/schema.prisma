@@ -384,9 +384,11 @@ model RevenueWithdrawal {
   id                String                 @id
   userId            String                 @map("user_id")
   user              User                   @relation(fields: [userId], references: [id])
+  kind              RevenueWithdrawalKind
   state             RevenueWithdrawalState @default(PENDING)
   bankCode          String                 @map("bank_code")
   bankAccountNumber String                 @map("bank_account_number")
+  revenueAmount     Int                    @map("revenue_amount")
   paidAmount        Int                    @map("paid_amount")
   taxAmount         Int                    @map("tax_amount")
   txId              String?                @map("tx_id")
@@ -988,6 +990,13 @@ enum RevenueState {
   PAID
 
   @@map("_revenue_state")
+}
+
+enum RevenueWithdrawalKind {
+  INSTANT
+  MONTHLY
+
+  @@map("_revenue_withdrawal_kind")
 }
 
 enum RevenueWithdrawalState {

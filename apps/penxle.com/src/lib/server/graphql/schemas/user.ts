@@ -293,8 +293,9 @@ export const userSchema = defineSchema((builder) => {
 
       revenue: t.field({
         type: 'Int',
-        resolve: async (user, _, { db }) => {
-          return getUserRevenue({ db, userId: user.id });
+        args: { withdrawable: t.arg.boolean({ defaultValue: false }) },
+        resolve: async (user, args, { db }) => {
+          return getUserRevenue({ db, userId: user.id, withdrawableOnly: args.withdrawable });
         },
       }),
 
@@ -308,6 +309,12 @@ export const userSchema = defineSchema((builder) => {
           take,
           skip: (page - 1) * take,
         }),
+      }),
+
+      revenueWithdrawals: t.relation('revenueWithdrawals', {
+        query: {
+          orderBy: { createdAt: 'desc' },
+        },
       }),
 
       notifications: t.relation('notifications', {

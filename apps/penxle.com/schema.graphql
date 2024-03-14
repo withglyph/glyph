@@ -679,6 +679,23 @@ enum RevenueState {
   PENDING
 }
 
+type RevenueWithdrawal {
+  bankAccountNumber: String!
+  bankCode: String!
+  createdAt: DateTime!
+  id: ID!
+  kind: RevenueWithdrawalKind!
+  paidAmount: Int!
+  revenueAmount: Int!
+  state: RevenueWithdrawalState!
+  taxAmount: Int!
+}
+
+enum RevenueWithdrawalKind {
+  INSTANT
+  MONTHLY
+}
+
 enum RevenueWithdrawalState {
   FAILED
   PENDING
@@ -1026,7 +1043,8 @@ type User {
   purchasedPosts: [Post!]!
   receivedSpaceMemberInvitations(state: SpaceMemberInvitationState): [SpaceMemberInvitation!]!
   recentlyViewedPosts: [Post!]!
-  revenue: Int!
+  revenue(withdrawable: Boolean! = false): Int!
+  revenueWithdrawals: [RevenueWithdrawal!]!
   revenues(page: Int! = 1, take: Int! = 10): [Revenue!]!
   singleSignOns: [UserSingleSignOn!]!
   spaces: [Space!]!
