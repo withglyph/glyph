@@ -1,7 +1,9 @@
+const specialPrefixes = ['$app/', '$env/', '~icons/'];
+
 export const resolve = async (specifier, context, nextResolve) => {
-  if (specifier.startsWith('$app/') || specifier.startsWith('$env/')) {
+  if (specialPrefixes.some((prefix) => specifier.startsWith(prefix))) {
     return {
-      url: `virtual://${specifier}`,
+      url: `special://${specifier}`,
       shortCircuit: true,
     };
   }
@@ -10,9 +12,17 @@ export const resolve = async (specifier, context, nextResolve) => {
 };
 
 export const load = (url, context, nextLoad) => {
-  if (url.startsWith('virtual://')) {
-    const mod = url.replace(/^virtual:\/\//, '');
+  if (url.startsWith('special://')) {
+    const mod = url.replace(/^special:\/\//, '');
     let source;
+
+    if (mod.startsWith('~icons/')) {
+      return {
+        format: 'module',
+        source: 'export default {};',
+        shortCircuit: true,
+      };
+    }
 
     switch (mod) {
       case '$env/dynamic/public':
