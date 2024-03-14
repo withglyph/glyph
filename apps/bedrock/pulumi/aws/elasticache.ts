@@ -42,6 +42,14 @@ new aws.route53.Record('redis.pnxl.co', {
   ttl: 300,
 });
 
+new aws.route53.Record('redis.withglyph.io', {
+  zoneId: zones.withglyph_io.zoneId,
+  type: 'CNAME',
+  name: 'redis.withglyph.io',
+  records: [cluster.primaryEndpointAddress],
+  ttl: 300,
+});
+
 export const outputs = {
   AWS_ELASTICACHE_PENXLE_CONNECTION_URL: pulumi.interpolate`redis://${cluster.primaryEndpointAddress}`,
 };

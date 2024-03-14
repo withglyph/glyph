@@ -9,9 +9,11 @@ const createZone = (domain: string) => {
 };
 
 export const zones = {
-  glyph_space: createZone('glyph.space'),
+  withglyph_com: createZone('withglyph.com'),
+  withglyph_io: createZone('withglyph.io'),
+  withglyph_dev: createZone('withglyph.dev'),
   glyph_ninja: createZone('glyph.ninja'),
-  glyphcdn_com: createZone('glyphcdn.com'),
+  glyph_pub: createZone('glyph.pub'),
   glph_to: createZone('glph.to'),
   pencil_so: createZone('pencil.so'),
   penxle_com: createZone('penxle.com'),

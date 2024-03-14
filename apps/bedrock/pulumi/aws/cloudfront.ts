@@ -19,9 +19,11 @@ const createCertificate = (domain: string) => {
 };
 
 export const certificates = {
-  // glyph_space: createCertificate('glyph.space'),
+  withglyph_com: createCertificate('withglyph.com'),
+  withglyph_io: createCertificate('withglyph.io'),
+  withglyph_dev: createCertificate('withglyph.dev'),
   glyph_ninja: createCertificate('glyph.ninja'),
-  glyphcdn_com: createCertificate('glyphcdn.com'),
+  glyph_pub: createCertificate('glyph.pub'),
   glph_to: createCertificate('glph.to'),
   pencil_so: createCertificate('pencil.so'),
   penxle_com: createCertificate('penxle.com'),
@@ -205,10 +207,86 @@ new aws.route53.Record('pnxl.net', {
   ],
 });
 
+const glyphPub = new aws.cloudfront.Distribution('glyph.pub', {
+  enabled: true,
+  aliases: ['glyph.pub'],
+  httpVersion: 'http2and3',
+
+  origins: [
+    {
+      originId: 'penxle-data',
+      domainName: 'penxle-data.s3.amazonaws.com',
+      originAccessControlId: originAccessControl.id,
+      originShield: { enabled: true, originShieldRegion: 'ap-northeast-2' },
+    },
+    {
+      originId: 'penxle-images',
+      // spell-checker:disable-next-line
+      domainName: 'penxle-images-zjf3dm5q7dybsggznshhnpyqapn2a--ol-s3.s3.ap-northeast-2.amazonaws.com',
+      originAccessControlId: originAccessControl.id,
+      originShield: { enabled: true, originShieldRegion: 'ap-northeast-2' },
+    },
+  ],
+
+  defaultCacheBehavior: {
+    targetOriginId: 'penxle-data',
+    compress: true,
+    viewerProtocolPolicy: 'redirect-to-https',
+    allowedMethods: ['GET', 'HEAD', 'OPTIONS'],
+    cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
+    cachePolicyId: cdnCachePolicy.id,
+    originRequestPolicyId: cdnOriginRequestPolicy.id,
+    responseHeadersPolicyId: cdnResponseHeadersPolicy.id,
+  },
+
+  orderedCacheBehaviors: [
+    {
+      pathPattern: 'images/*',
+      targetOriginId: 'penxle-images',
+      compress: true,
+      viewerProtocolPolicy: 'redirect-to-https',
+      allowedMethods: ['GET', 'HEAD', 'OPTIONS'],
+      cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
+      cachePolicyId: cdnCachePolicy.id,
+      originRequestPolicyId: cdnOriginRequestPolicy.id,
+      responseHeadersPolicyId: cdnResponseHeadersPolicy.id,
+    },
+  ],
+
+  restrictions: {
+    geoRestriction: {
+      restrictionType: 'none',
+    },
+  },
+
+  viewerCertificate: {
+    acmCertificateArn: certificates.glyph_pub.arn,
+    sslSupportMethod: 'sni-only',
+    minimumProtocolVersion: 'TLSv1.2_2021',
+  },
+
+  waitForDeployment: false,
+});
+
+new aws.route53.Record('glyph.pub', {
+  zoneId: zones.glyph_pub.zoneId,
+  type: 'A',
+  name: 'glyph.pub',
+  aliases: [
+    {
+      name: glyphPub.domainName,
+      zoneId: glyphPub.hostedZoneId,
+      evaluateTargetHealth: false,
+    },
+  ],
+});
+
 export const outputs = {
-  // AWS_ACM_CLOUDFRONT_GLYPH_SPACE_CERTIFICATE_ARN: certificates.glyph_space.arn,
+  AWS_ACM_CLOUDFRONT_WITHGLYPH_COM_CERTIFICATE_ARN: certificates.withglyph_com.arn,
+  AWS_ACM_CLOUDFRONT_WITHGLYPH_IO_CERTIFICATE_ARN: certificates.withglyph_io.arn,
+  AWS_ACM_CLOUDFRONT_WITHGLYPH_DEV_CERTIFICATE_ARN: certificates.withglyph_dev.arn,
   AWS_ACM_CLOUDFRONT_GLYPH_NINJA_CERTIFICATE_ARN: certificates.glyph_ninja.arn,
-  AWS_ACM_CLOUDFRONT_GLYPHCDN_COM_CERTIFICATE_ARN: certificates.glyphcdn_com.arn,
+  AWS_ACM_CLOUDFRONT_GLYPH_PUB_CERTIFICATE_ARN: certificates.glyph_pub.arn,
   AWS_ACM_CLOUDFRONT_GLPH_TO_CERTIFICATE_ARN: certificates.glph_to.arn,
 
   AWS_ACM_CLOUDFRONT_PENCIL_SO_CERTIFICATE_ARN: certificates.pencil_so.arn,

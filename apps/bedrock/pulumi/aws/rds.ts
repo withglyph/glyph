@@ -133,6 +133,22 @@ new aws.route53.Record('dev.db.pnxl.co', {
   ttl: 300,
 });
 
+new aws.route53.Record('db.withglyph.io', {
+  zoneId: zones.withglyph_io.zoneId,
+  type: 'CNAME',
+  name: 'db.withglyph.io',
+  records: [cluster.endpoint],
+  ttl: 300,
+});
+
+new aws.route53.Record('dev.db.withglyph.io', {
+  zoneId: zones.withglyph_io.zoneId,
+  type: 'CNAME',
+  name: 'dev.db.withglyph.io',
+  records: [devCluster.endpoint],
+  ttl: 300,
+});
+
 export const rds = {
   instance,
 };

@@ -12,6 +12,6 @@ new k8s.networking.v1.Ingress('wildcard@preview', {
   },
   spec: {
     ingressClassName: 'alb',
-    rules: [{ host: '*.glyph.ninja' }],
+    rules: [{ host: '*.withglyph.dev' }],
   },
 });

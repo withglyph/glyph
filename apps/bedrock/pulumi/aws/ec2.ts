@@ -89,6 +89,14 @@ new aws.route53.Record('pool.db.pnxl.co', {
   ttl: 300,
 });
 
+new aws.route53.Record('pool.db.withglyph.io', {
+  zoneId: zones.withglyph_io.zoneId,
+  name: 'pool.db.withglyph.io',
+  type: 'A',
+  records: [pgbouncer.privateIp],
+  ttl: 300,
+});
+
 export const outputs = {
   AWS_EC2_KEY_PAIR_PENXLE_PRIVATE_KEY: privateKey.privateKeyOpenssh,
 };
