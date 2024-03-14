@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { prismaClient } from '$lib/server/database';
-import { createId } from '$lib/utils';
+import { createId } from '$lib/utils/id';
 
 let eventEnrollmentCount = 0;
 do {
