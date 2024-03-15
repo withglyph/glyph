@@ -225,7 +225,7 @@ export const indexPostTrendingScore = async ({ db, postId }: IndexPostTrendingSc
         id: postId,
         doc: { trendingScore: score },
       })
-      .catch();
+      .catch(() => null);
 
     await redis.setex(`Post:${postId}:trendingScore`, 600, score);
   }
