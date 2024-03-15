@@ -174,7 +174,13 @@
 
     <div class={css({ display: 'flex', flexDirection: 'column', marginTop: '12px' })}>
       <div
-        class={css({ fontSize: '18px', fontWeight: 'bold', lineHeight: '[1]', wordBreak: 'break-all', lineClamp: '1' })}
+        class={css({
+          fontSize: '18px',
+          fontWeight: 'bold',
+          lineHeight: 'none',
+          wordBreak: 'break-all',
+          lineClamp: '1',
+        })}
       >
         {$post.publishedRevision.title ?? '(제목 없음)'}
       </div>
@@ -185,7 +191,7 @@
             fontSize: '14px',
             fontWeight: 'medium',
             color: 'gray.500',
-            lineHeight: '[1]',
+            lineHeight: 'none',
             wordBreak: 'break-all',
             lineClamp: '1',
           })}

@@ -41,7 +41,7 @@ export const Ruby = Mark.create({
         class: css({
           position: 'relative',
           display: 'inline-block',
-          lineHeight: '[1]',
+          lineHeight: 'none',
           textIndent: '0',
           _after: {
             content: 'attr(data-ruby)',
@@ -52,9 +52,9 @@ export const Ruby = Mark.create({
             minWidth: 'full',
             textAlign: 'center',
             fontSize: '[0.75em]',
-            lineHeight: '[1]',
+            lineHeight: 'none',
             translate: 'auto',
-            translateY: '[-100%]',
+            translateY: '-full',
             pointerEvents: 'none',
             userSelect: 'none',
           },

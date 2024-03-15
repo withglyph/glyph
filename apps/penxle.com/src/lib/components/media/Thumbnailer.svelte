@@ -110,7 +110,7 @@
       padding: '32px',
       width: 'full',
       overflow: 'hidden',
-      aspectRatio: ratio === 'square' ? '[1/1]' : '[3/4]',
+      aspectRatio: ratio === 'square' ? '1/1' : '[3/4]',
     })}
   >
     <img
@@ -151,7 +151,7 @@
           borderWidth: '4px',
           borderColor: 'white',
           outlineWidth: '[10000px]',
-          outlineColor: '[black/50]',
+          outlineColor: 'black/50',
           pointerEvents: 'none',
         },
         rounded && { borderRadius: 'full' },

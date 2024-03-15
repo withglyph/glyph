@@ -149,7 +149,7 @@
       width: 'full',
       height: '206px',
       color: 'white',
-      backgroundColor: '[black/50]',
+      backgroundColor: 'black/50',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',

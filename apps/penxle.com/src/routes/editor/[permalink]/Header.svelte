@@ -227,12 +227,12 @@
           paddingY: '10px',
           fontSize: '14px',
           fontWeight: 'medium',
-          lineHeight: '[1]',
+          lineHeight: 'none',
         })}
       >
         <button
           class={css({
-            lineHeight: '[1]',
+            lineHeight: 'none',
             _after: {
               content: '""',
               borderRightWidth: '1px',
@@ -254,7 +254,7 @@
             fontSize: '14px',
             fontWeight: 'semibold',
             color: 'gray.400',
-            lineHeight: '[1]',
+            lineHeight: 'none',
           })}
           disabled={$query.me.posts.length === 0}
           type="button"
@@ -275,7 +275,7 @@
             fontSize: '14px',
             fontWeight: 'medium',
             color: 'white',
-            lineHeight: '[1]',
+            lineHeight: 'none',
             whiteSpace: 'nowrap',
             backgroundColor: 'gray.950',
             sm: { marginRight: '12px' },
@@ -289,7 +289,7 @@
 
       {#if publishMenuOpen}
         <div
-          class={css({ position: 'fixed', inset: '0', zIndex: '40', smDown: { backgroundColor: '[black/50]' } })}
+          class={css({ position: 'fixed', inset: '0', zIndex: '40', smDown: { backgroundColor: 'black/50' } })}
           role="button"
           tabindex="-1"
           on:click={() => (publishMenuOpen = false)}

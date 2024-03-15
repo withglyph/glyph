@@ -89,15 +89,15 @@
         class={css(
           {
             position: 'absolute',
-            top: '[50%]',
+            top: '1/2',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: 'full',
             size: '60px',
-            backgroundColor: '[black/50]',
+            backgroundColor: 'black/50',
             translate: 'auto',
-            translateY: '[-50%]',
+            translateY: '-1/2',
             userSelect: 'none',
             visibility: 'hidden',
           },

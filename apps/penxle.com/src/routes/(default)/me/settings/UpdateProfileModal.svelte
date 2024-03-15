@@ -93,11 +93,11 @@
         class={css({
           userSelect: 'none',
           position: 'absolute',
-          top: '[50%]',
+          top: '1/2',
           translateY: '-1/2',
           display: 'none',
           borderRadius: 'full',
-          backgroundColor: '[black/50]',
+          backgroundColor: 'black/50',
           size: '60px',
         })}
       >

@@ -80,8 +80,7 @@
       fontWeight: 'medium',
       color: 'gray.500',
       backgroundColor: 'white',
-      boxShadow: '[0 2px 10px 0 var(--shadow-color)]',
-      boxShadowColor: '[black/10]',
+      boxShadow: '[0 2px 10px 0 {colors.black/10}]',
       zIndex: '30',
       userSelect: 'none',
     })}

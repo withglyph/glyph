@@ -72,8 +72,7 @@
       borderColor: 'gray.200',
       borderRadius: '4px',
       backgroundColor: 'white',
-      boxShadow: '[0 2px 8px 0 var(--shadow-color)]',
-      boxShadowColor: '[black/6]',
+      boxShadow: '[0 2px 8px 0 {colors.black/6}]',
     })}
     use:floating
   >

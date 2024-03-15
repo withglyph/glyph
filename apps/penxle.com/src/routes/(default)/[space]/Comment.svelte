@@ -359,7 +359,7 @@
 
               {#if !parentId}
                 <Button
-                  style={css.raw({ backgroundColor: '[white/60]' })}
+                  style={css.raw({ backgroundColor: 'white/60' })}
                   size="2xs"
                   variant="outline"
                   on:click={() => (replyInputOpen = !replyInputOpen)}

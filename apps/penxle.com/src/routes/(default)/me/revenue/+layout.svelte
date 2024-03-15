@@ -46,21 +46,21 @@
     </div>
   </div>
   <div class={flex({ direction: 'column', gap: '8px', paddingTop: '8px', paddingX: '32px' })}>
-    <div class={css({ width: 'full', height: '1px', backgroundColor: '[black/10]' })} />
+    <div class={css({ width: 'full', height: '1px', backgroundColor: 'black/10' })} />
     <div class={flex({ gap: '8px', paddingY: '8px' })}>
       <div class={css({ flex: '1', fontSize: '18px', fontWeight: 'bold' })}>누적 정산액</div>
       <div class={css({ fontSize: '18px', fontWeight: 'bold' })}>{comma(0)}원</div>
     </div>
   </div>
   <div class={flex({ direction: 'column', gap: '8px', paddingTop: '8px', paddingX: '32px' })}>
-    <div class={css({ width: 'full', height: '1px', backgroundColor: '[black/10]' })} />
+    <div class={css({ width: 'full', height: '1px', backgroundColor: 'black/10' })} />
     <div class={flex({ gap: '8px', paddingY: '8px' })}>
       <div class={css({ flex: '1', fontSize: '18px', fontWeight: 'bold' })}>지급 대기</div>
       <div class={css({ fontSize: '18px', fontWeight: 'bold' })}>{comma(0)}원</div>
     </div>
   </div>
   <div class={flex({ direction: 'column', gap: '8px', paddingTop: '8px', paddingX: '32px' })}>
-    <div class={css({ width: 'full', height: '1px', backgroundColor: '[black/10]' })} />
+    <div class={css({ width: 'full', height: '1px', backgroundColor: 'black/10' })} />
     <div class={flex({ gap: '8px', paddingY: '8px' })}>
       <div class={css({ flex: '1', fontSize: '18px', fontWeight: 'bold' })}>정산 가능</div>
       <div class={css({ fontSize: '18px', fontWeight: 'bold' })}>{comma($query.me.revenue)}원</div>

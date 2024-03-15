@@ -314,7 +314,7 @@
           style={css.raw({
             'borderRadius': '8px',
             'borderBottomWidth': '1px',
-            'borderBottomColor': '[black/10]',
+            'borderBottomColor': 'black/10',
             '_last': { borderBottomWidth: '0' },
             '_selected': { backgroundColor: 'gray.50' },
             '& > td > div': {
@@ -472,15 +472,13 @@
         paddingX: '24px',
         paddingY: '8px',
         backgroundColor: 'white',
-        boxShadow: '[0 4px 16px 0 var(--shadow-color)]',
-        boxShadowColor: '[black/15]',
+        boxShadow: '[0 4px 16px 0 {colors.black/15}]',
         translate: 'auto',
         transition: 'all',
-        transitionDuration: '[300ms]',
       },
       selectedPostCount > 0
-        ? { opacity: '[1]', visibility: 'visible', translateY: '0' }
-        : { opacity: '[0]', visibility: 'hidden', translateY: '16px' },
+        ? { opacity: '100', visibility: 'visible', translateY: '0' }
+        : { opacity: '0', visibility: 'hidden', translateY: '16px' },
     )}
   >
     <span class={css({ fontSize: '15px', fontWeight: 'bold' })} aria-live="polite">

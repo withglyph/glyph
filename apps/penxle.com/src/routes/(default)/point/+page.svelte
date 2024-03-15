@@ -160,8 +160,7 @@
                   <div
                     class={css({
                       borderBottomWidth: '1px',
-                      borderStyle: 'solid',
-                      borderColor: '[black/10]',
+                      borderBottomColor: 'black/10',
                       paddingBottom: '12px',
                       fontSize: '13px',
                       color: 'gray.500',
@@ -198,7 +197,7 @@
 
                         {#if point.amount > 0}
                           <div
-                            class={flex({ align: 'center', fontSize: '16px', fontWeight: 'bold', color: '[#4ecea6]' })}
+                            class={flex({ align: 'center', fontSize: '16px', fontWeight: 'bold', color: '[#4ECEA6]' })}
                           >
                             +{comma(point.amount)}
                           </div>

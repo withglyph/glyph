@@ -29,7 +29,7 @@
       'paddingBottom': '16px',
       'backgroundColor': 'gray.50',
       'transition': 'common',
-      '_disabled': { opacity: '[0.5]' },
+      '_disabled': { opacity: '50' },
       '&:has(input[aria-invalid], textarea[aria-invalid])': { borderColor: 'red.500' },
     })}
   >

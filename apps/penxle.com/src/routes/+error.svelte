@@ -75,11 +75,10 @@
         paddingX: '16px',
         paddingY: '8px',
         fontWeight: 'medium',
-        lineHeight: '[1]',
+        lineHeight: 'none',
         color: 'white',
         backgroundColor: { base: 'gray.800', _hover: 'gray.900', _active: 'black' },
         transition: 'common',
-        transitionDuration: '[300ms]',
       })}
       href="/"
     >
@@ -109,7 +108,7 @@
   <Modal bind:open>
     <svelte:fragment slot="title">{name}: {message}</svelte:fragment>
 
-    <div class={css({ fontFamily: '[PNXL_FiraCode]', overflow: 'auto', whiteSpace: 'pre' })}>
+    <div class={css({ fontFamily: 'mono', overflow: 'auto', whiteSpace: 'pre' })}>
       {stack ?? 'Stacktrace not available'}
     </div>
 

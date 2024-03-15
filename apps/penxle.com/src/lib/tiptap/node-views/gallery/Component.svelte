@@ -73,7 +73,7 @@
         minWidth: '0',
         pointerEvents: 'auto',
       },
-      node.attrs.ids.length === 0 && { backgroundColor: '[#d9d9d9]', width: '400px', height: '200px' },
+      node.attrs.ids.length === 0 && { backgroundColor: '[#D9D9D9]', width: '400px', height: '200px' },
       selected && { ringWidth: '2px', ringColor: 'teal.500' },
     )}
   >

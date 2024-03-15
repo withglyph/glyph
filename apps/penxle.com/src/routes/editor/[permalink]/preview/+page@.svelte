@@ -76,7 +76,7 @@
               _before: {
                 content: '""',
                 position: 'absolute',
-                left: mode === 'mobile' ? '[50%]' : '0',
+                left: mode === 'mobile' ? '1/2' : '0',
                 borderWidth: '1px',
                 borderColor: 'gray.200',
                 borderRadius: '10px',

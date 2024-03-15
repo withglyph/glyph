@@ -141,7 +141,7 @@
       >
         {#if node.attrs.__data.thumbnailUrl}
           <img
-            class={css({ height: 'full', aspectRatio: '[1/1]', objectFit: 'cover' })}
+            class={css({ height: 'full', aspectRatio: '1/1', objectFit: 'cover' })}
             alt=""
             src={node.attrs.__data.thumbnailUrl}
           />

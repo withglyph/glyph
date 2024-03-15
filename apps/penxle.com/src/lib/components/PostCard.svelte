@@ -154,7 +154,7 @@
         {$post.member.profile.name}님이 {$post.space.name}에
         <!-- prettier-ignore -->
         {#if $post.publishedRevision.price}
-          <mark class={css({color: '[#58a8c3]'})}>유료글</mark>을
+          <mark class={css({color: '[#58A8C3]'})}>유료글</mark>을
         {/if}
         게시했어요
       </p>
@@ -189,8 +189,7 @@
         transition: 'common',
         _hover: {
           borderColor: 'gray.900',
-          boxShadow: '[0 4px 16px 0 var(--shadow-color)]',
-          boxShadowColor: '[black/25]',
+          boxShadow: '[0 4px 16px 0 {colors.black/25}]',
         },
       },
     },
@@ -315,7 +314,7 @@
 
           {#if $post.thumbnail}
             <Image
-              style={css.raw({ size: '120px', borderRadius: '6px', flex: 'none', sm: { aspectRatio: '[1/1]' } })}
+              style={css.raw({ size: '120px', borderRadius: '6px', flex: 'none', sm: { aspectRatio: '1/1' } })}
               $image={$post.thumbnail}
             />
           {/if}

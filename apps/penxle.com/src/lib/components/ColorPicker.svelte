@@ -134,8 +134,7 @@
     borderBottomRadius: '8px',
     width: '192px',
     backgroundColor: 'white',
-    boxShadow: '[0 5px 22px 0 var(--shadow-color)]',
-    boxShadowColor: '[black/6]',
+    boxShadow: '[0 5px 22px 0 {colors.black/6}]',
   })}
 >
   <div class={css({ padding: '12px' })}>
@@ -161,7 +160,9 @@
           size: '14px',
           backgroundColor: 'transparent',
           cursor: 'pointer',
-          translate: '[-50%]',
+          translate: 'auto',
+          translateX: '-1/2',
+          translateY: '-1/2',
         })}
         type="submit"
         on:keydown={(event) => {
@@ -323,10 +324,7 @@
           {
             borderRadius: 'full',
             size: '16px',
-            _pressed: {
-              boxShadow: '[0 0 0 2px var(--shadow-color)]',
-              boxShadowColor: '[#D4D4D8]',
-            },
+            _pressed: { boxShadow: '[0 0 0 2px #D4D4D8]' },
             _disabled: {
               borderWidth: '1px',
               borderStyle: 'dashed',
@@ -356,10 +354,7 @@
           {
             borderRadius: 'full',
             size: '16px',
-            _pressed: {
-              boxShadow: '[0 0 0 2px var(--shadow-color)]',
-              boxShadowColor: '[#D4D4D8]',
-            },
+            _pressed: { boxShadow: '[0 0 0 2px #D4D4D8]' },
           },
           preset === '#FFFFFF' && { borderWidth: '1px', borderColor: '[#E4E4E7]' },
         )}

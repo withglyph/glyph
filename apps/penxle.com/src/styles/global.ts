@@ -4,7 +4,7 @@ export const globalCss = defineGlobalStyles({
   ':root': {
     '--global-color-border': 'colors.gray.200',
     '--global-color-placeholder': 'colors.gray.400',
-    '--global-font-body': 'PNXL_Pretendard',
+    '--global-font-body': 'fonts.sans',
 
     'color': 'gray.950',
     'lineHeight': 1.5,
@@ -17,6 +17,8 @@ export const globalCss = defineGlobalStyles({
   },
 
   '*, *::before, *::after': {
+    borderWidth: 0,
+    borderStyle: 'solid',
     outlineWidth: 0,
     outlineStyle: 'solid',
     backgroundColor: 'transparent',
@@ -24,10 +26,6 @@ export const globalCss = defineGlobalStyles({
 
   'button': {
     cursor: 'pointer',
-  },
-
-  'img': {
-    borderStyle: 'solid',
   },
 
   '[disabled]': {

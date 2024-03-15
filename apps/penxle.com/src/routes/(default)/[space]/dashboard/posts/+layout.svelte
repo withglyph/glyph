@@ -30,7 +30,7 @@
       <TabHeadItem id={0} pathname="/{$page.params.space}/dashboard/posts">포스트</TabHeadItem>
       <TabHeadItem id={1} pathname="/{$page.params.space}/dashboard/posts/collections">컬렉션</TabHeadItem>
     </TabHead>
-    <hr class={css({ width: 'full', borderColor: '[black/10]' })} />
+    <hr class={css({ width: 'full', borderColor: 'black/10' })} />
   </div>
   <slot />
 </section>

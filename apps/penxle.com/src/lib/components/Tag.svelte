@@ -20,10 +20,9 @@
       borderColor: 'gray.100',
       borderRadius: 'full',
       paddingY: '4px',
-      lineHeight: '[1]',
+      lineHeight: 'none',
       backgroundColor: 'gray.100',
       transition: 'common',
-      transitionDuration: '[300ms]',
       truncate: true,
     },
     variants: {

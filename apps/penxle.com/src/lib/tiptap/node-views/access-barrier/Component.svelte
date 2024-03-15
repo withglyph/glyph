@@ -132,8 +132,7 @@
         width: 'fit',
         color: 'gray.600',
         backgroundColor: 'white',
-        boxShadow: '[0 2px 10px 0 var(--shadow-color)]',
-        boxShadowColor: '[black/4]',
+        boxShadow: '[0 2px 10px 0 {colors.black/4}]',
       })}
     >
       {#if isLastChild}
@@ -543,8 +542,7 @@
         width: 'fit',
         color: 'gray.600',
         backgroundColor: 'white',
-        boxShadow: '[0 2px 10px 0 var(--shadow-color)]',
-        boxShadowColor: '[black/4]',
+        boxShadow: '[0 2px 10px 0 {colors.black/4}]',
       })}
     >
       <div class={css({ paddingX: '6px', paddingY: '4px', fontSize: '14px', fontWeight: 'medium' })}>
@@ -569,7 +567,7 @@
             fontSize: '13px',
             color: 'gray.400',
             translate: 'auto',
-            translateY: '[-100%]',
+            translateY: '-full',
           })}
         >
           {dayjs(node.attrs.__data.purchasedAt).formatAsDate()} (결제 완료)

@@ -107,7 +107,7 @@
     </div>
 
     <div class={css({ padding: '8px' })}>
-      <div class={css({ fontSize: '14px', fontFamily: '[PNXL_firacode]' }, preview && { display: 'none' })}>
+      <div class={css({ fontSize: '14px', fontFamily: 'mono' }, preview && { display: 'none' })}>
         <div bind:this={codeEl} />
       </div>
 

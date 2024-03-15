@@ -1046,7 +1046,7 @@
           <EmojiPicker
             style={css.raw({
               backgroundColor: 'gray.50',
-              width: '[fit-content]',
+              width: 'fit',
               padding: '5px',
               borderRadius: '4px',
               height: 'full',

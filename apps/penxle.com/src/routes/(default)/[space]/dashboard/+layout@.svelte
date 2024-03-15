@@ -290,7 +290,7 @@
     <span class={css({ fontWeight: 'bold' })}>스페이스 관리</span>
   </div>
 
-  <div class={css({ borderBottomWidth: '1px', borderBottomColor: '[black/10]', marginY: '8px', width: 'full' })} />
+  <div class={css({ borderBottomWidth: '1px', borderBottomColor: 'black/10', marginY: '8px', width: 'full' })} />
 
   <div
     class={flex({
@@ -369,7 +369,7 @@
     {/if}
   </div>
 
-  <div class={css({ borderBottomWidth: '1px', borderBottomColor: '[black/10]', marginY: '8px', width: 'full' })} />
+  <div class={css({ borderBottomWidth: '1px', borderBottomColor: 'black/10', marginY: '8px', width: 'full' })} />
 
   <nav class={css({ width: 'full' })}>
     <ul class={css({ fontWeight: 'bold', color: 'gray.500' })}>

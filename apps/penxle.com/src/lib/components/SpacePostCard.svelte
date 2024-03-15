@@ -90,8 +90,7 @@
         borderRadius: '16px',
         _hover: {
           borderColor: 'gray.900',
-          boxShadow: '[0 4px 16px 0 var(--shadow-color)]',
-          boxShadowColor: '[black/25]',
+          boxShadow: '[0 4px 16px 0 {colors.black/25}]',
         },
       },
     },
@@ -221,7 +220,7 @@
 
         {#if $post.thumbnail}
           <Image
-            style={css.raw({ flex: 'none', borderRadius: '6px', size: '120px', sm: { aspectRatio: '[1/1]' } })}
+            style={css.raw({ flex: 'none', borderRadius: '6px', size: '120px', sm: { aspectRatio: '1/1' } })}
             $image={$post.thumbnail}
           />
         {/if}

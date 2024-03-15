@@ -67,8 +67,8 @@
     class={css(
       {
         position: 'absolute',
-        top: '[50%]',
-        left: '[-40px]',
+        top: '1/2',
+        left: '-40px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -114,8 +114,8 @@
     class={css(
       {
         position: 'absolute',
-        top: '[50%]',
-        right: '[-40px]',
+        top: '1/2',
+        right: '-40px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

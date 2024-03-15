@@ -46,13 +46,13 @@
       style:left={p}
       class={css({
         position: 'absolute',
-        top: '[50%]',
+        top: '1/2',
         borderRadius: 'full',
         size: '16px',
         backgroundColor: 'gray.500',
         translate: 'auto',
-        translateX: '[-50%]',
-        translateY: '[-50%]',
+        translateX: '-1/2',
+        translateY: '-1/2',
         pointerEvents: 'auto',
         touchAction: 'none',
       })}

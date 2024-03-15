@@ -173,8 +173,7 @@
       width: 'full',
       maxWidth: '375px',
       backgroundColor: 'white',
-      boxShadow: '[0px 5px 22px 0px var(--shadow-color)]',
-      boxShadowColor: '[black/6]',
+      boxShadow: '[0px 5px 22px 0px {colors.black/6}]',
       zIndex: '50',
     })}
     use:floating

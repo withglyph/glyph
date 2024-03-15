@@ -67,8 +67,7 @@
     transition: 'common',
     _hover: {
       borderColor: 'gray.950',
-      boxShadow: '[0 4px 16px 0 var(--shadow-color)]',
-      boxShadowColor: '[black/25]',
+      boxShadow: '[0 4px 16px 0 {colors.black/25}]',
     },
   })}
 >

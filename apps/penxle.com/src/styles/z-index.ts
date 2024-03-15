@@ -1,6 +1,7 @@
 import { defineTokens } from '@pandacss/dev';
 
 export const zIndex = defineTokens.zIndex({
+  '-1': { value: '-1' },
   0: { value: '0' },
   1: { value: '1' },
   2: { value: '2' },

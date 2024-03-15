@@ -129,7 +129,6 @@
             borderRadius: '12px',
             size: '36px',
             transition: 'common',
-            transitionDuration: '[300ms]',
             _hover: { backgroundColor: 'gray.50' },
             hideFrom: 'sm',
           })}
@@ -146,7 +145,6 @@
               borderRadius: '12px',
               size: '36px',
               transition: 'common',
-              transitionDuration: '[300ms]',
               _hover: { backgroundColor: 'gray.50' },
               hideFrom: 'sm',
             })}
@@ -235,7 +233,6 @@
             padding: '4px',
             size: '36px',
             transition: 'common',
-            transitionDuration: '[300ms]',
           })}
           href={`/${$query.space.slug}/dashboard/settings`}
         >
@@ -299,7 +296,6 @@
               padding: '4px',
               size: '36px',
               transition: 'common',
-              transitionDuration: '[300ms]',
             })}
           >
             <Icon slot="value" style={css.raw({ size: '24px', color: 'gray.500' })} icon={IconDotsVertical} />
@@ -414,7 +410,7 @@
     </TabHeadItem>
   </TabHead>
 
-  <hr class={css({ borderColor: '[black/10]', width: 'full' })} />
+  <hr class={css({ borderColor: 'black/10', width: 'full' })} />
 
   {#if $query.space.muted && !revealMutedSpace}
     <div

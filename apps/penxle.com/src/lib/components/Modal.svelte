@@ -89,7 +89,7 @@
       class={css({
         position: 'absolute',
         inset: '0',
-        backgroundColor: '[black/50]',
+        backgroundColor: 'black/50',
         backdropFilter: 'auto',
         backdropBlur: '8px',
       })}

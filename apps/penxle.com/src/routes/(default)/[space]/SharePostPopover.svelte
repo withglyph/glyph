@@ -72,7 +72,7 @@
       inset: '0',
       zIndex: '1',
       smDown: {
-        backgroundColor: '[black/50]',
+        backgroundColor: 'black/50',
         transition: 'opacity',
         backdropFilter: 'auto',
         backdropBlur: '8px',
@@ -105,8 +105,7 @@
         backgroundColor: 'white',
         sm: {
           width: '376px',
-          boxShadow: '[0px 6px 18px 0px var(--shadow-color)]',
-          boxShadowColor: '[black/12]',
+          boxShadow: '[0px 6px 18px 0px {colors.black/12}]',
           zIndex: '2',
         },
         smDown: {
@@ -117,8 +116,7 @@
           right: '[0!]',
           borderBottomRadius: '0',
           width: 'full',
-          boxShadow: '[0px 8px 24px 0px var(--shadow-color)]',
-          boxShadowColor: '[black/28]',
+          boxShadow: '[0px 8px 24px 0px {colors.black/28}]',
           zIndex: '50',
         },
       },

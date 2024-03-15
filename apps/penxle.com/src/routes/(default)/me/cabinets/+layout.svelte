@@ -212,7 +212,7 @@
     bottom: '24px',
     display: 'none',
     borderRadius: 'full',
-    backgroundColor: '[black/50]',
+    backgroundColor: 'black/50',
     size: '50px',
   })}
   type="button"

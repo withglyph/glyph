@@ -57,7 +57,7 @@
   >
     <div
       style:transform={`translateX(${$progress}%)`}
-      class={css({ position: 'absolute', inset: '0', backgroundColor: '[black/15]' })}
+      class={css({ position: 'absolute', inset: '0', backgroundColor: 'black/15' })}
     />
 
     {#if toast.type === 'success'}
@@ -102,9 +102,8 @@
     borderRadius: '8px',
     padding: '12px',
     width: 'fit',
-    backgroundColor: '[black/80]',
-    boxShadow: '[0 4px 4px 0 var(--shadow-color)]',
-    boxShadowColor: '[black/10]',
+    backgroundColor: 'black/80',
+    boxShadow: '[0 4px 4px 0 {colors.black/10}]',
     hideFrom: 'sm',
   })}
   in:slide={{ axis: 'y', duration: 400, delay: 400, easing: expoInOut }}

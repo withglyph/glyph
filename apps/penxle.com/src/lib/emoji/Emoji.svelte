@@ -51,22 +51,22 @@
   >
     <em-emoji
       id={emoji}
-      class={center({ 'size': '18px', '& img': { display: '[block!]' }, '_groupHover': { opacity: '[0.3]' } })}
+      class={center({ 'size': '18px', '& img': { display: '[block!]' }, '_groupHover': { opacity: '30' } })}
       set="twitter"
     />
     <Icon
       style={css.raw({
         position: 'absolute',
-        top: '[50%]',
-        left: '[50%]',
+        top: '1/2',
+        left: '1/2',
         size: '20px',
         translate: 'auto',
-        translateX: '[-50%]',
-        translateY: '[-50%]',
+        translateX: '-1/2',
+        translateY: '-1/2',
         transition: 'common',
         userSelect: 'none',
-        opacity: '[0]',
-        _groupHover: { opacity: '[1]' },
+        opacity: '0',
+        _groupHover: { opacity: '100' },
       })}
       icon={IconX}
     />

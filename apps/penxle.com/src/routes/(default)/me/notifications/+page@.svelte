@@ -117,7 +117,7 @@
       <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />
     </button>
 
-    <h1 class={css({ position: 'absolute', left: '[50%]', translateX: '-1/2', fontWeight: 'semibold' })}>알림</h1>
+    <h1 class={css({ position: 'absolute', left: '1/2', translateX: '-1/2', fontWeight: 'semibold' })}>알림</h1>
 
     <a href="/me/settings/notifications">
       <Icon style={css.raw({ size: '20px' })} icon={IconSettings} />

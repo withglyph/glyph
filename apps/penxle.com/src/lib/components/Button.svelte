@@ -55,9 +55,8 @@
       textWrap: 'nowrap',
       fontSize: '13px',
       fontWeight: 'bold',
-      lineHeight: '[1]',
+      lineHeight: 'none',
       transition: 'common',
-      transitionDuration: '[300ms]',
     },
     variants: {
       color: { primary: {}, secondary: {}, tertiary: {}, red: {} },

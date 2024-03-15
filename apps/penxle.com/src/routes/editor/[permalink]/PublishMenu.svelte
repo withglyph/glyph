@@ -241,16 +241,14 @@
       smDown: {
         borderTopRadius: '14px',
         width: 'full',
-        boxShadow: '[0 8px 24px 0 var(--shadow-color)]',
-        boxShadowColor: '[black/28]',
+        boxShadow: '[0 8px 24px 0 {colors.black/28}]',
       },
       sm: {
         borderWidth: '1px',
         borderColor: 'gray.200',
         borderTopWidth: '0',
         borderBottomRadius: '8px',
-        boxShadow: '[0 5px 22px 0 var(--shadow-color)]',
-        boxShadowColor: '[black/6]',
+        boxShadow: '[0 5px 22px 0 {colors.black/6}]',
       },
     },
     !open && { display: 'none' },

@@ -110,7 +110,7 @@
 </TabHead>
 
 <div class={flex({ gap: '36px', marginY: '36px', smDown: { flexDirection: 'column' } })}>
-  <div class={css({ flexGrow: '1', width: '[50%]', smDown: { paddingX: '16px', width: 'full' } })}>
+  <div class={css({ flexGrow: '1', width: '1/2', smDown: { paddingX: '16px', width: 'full' } })}>
     <svelte:element
       this={$query.searchSpaces.length === 0 ? 'h2' : 'a'}
       class={flex({ align: 'center', marginBottom: '16px', fontSize: '20px', fontWeight: 'bold' })}
@@ -242,7 +242,7 @@
     {/if}
   </div>
 
-  <div class={css({ flexGrow: '1', width: '[50%]', smDown: { paddingX: '16px', width: 'full' } })}>
+  <div class={css({ flexGrow: '1', width: '1/2', smDown: { paddingX: '16px', width: 'full' } })}>
     <svelte:element
       this={$query.searchTags.length === 0 ? 'h2' : 'a'}
       class={flex({ align: 'center', marginBottom: '16px', fontSize: '20px', fontWeight: 'bold' })}

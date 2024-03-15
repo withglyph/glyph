@@ -54,13 +54,4 @@ export const colors = defineTokens.colors({
     50: { value: '#FFECEC' },
     900: { value: '#DC2626' },
   },
-
-  positive: {
-    50: { value: '#D7FBE3' },
-    900: { value: '#16A34A' },
-  },
-
-  hyperlink: {
-    600: { value: '#2563EB' },
-  },
 });

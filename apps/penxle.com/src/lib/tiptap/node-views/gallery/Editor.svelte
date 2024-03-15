@@ -423,8 +423,8 @@
                     top: '4px',
                     left: '4px',
                     display: 'none',
-                    borderRadius: '[3px]',
-                    backgroundColor: '[black/30]',
+                    borderRadius: '3px',
+                    backgroundColor: 'black/30',
                     size: '48px',
                   })}
                 >
@@ -439,7 +439,7 @@
               {#if index === 0}
                 <div
                   bind:this={onboardingAnchorElement1}
-                  class={css({ position: 'absolute', inset: '0', zIndex: '[-1]' })}
+                  class={css({ position: 'absolute', inset: '0', zIndex: '-1' })}
                 />
               {/if}
             </li>
@@ -701,10 +701,7 @@
             <p class={css({ fontSize: '12px', color: 'gray.400', textAlign: 'center', width: 'full' })}>{index + 1}</p>
 
             {#if index === 0}
-              <div
-                id={onboardingAnchorLastDynamicId}
-                class={css({ position: 'absolute', inset: '0', zIndex: '[-1]' })}
-              />
+              <div id={onboardingAnchorLastDynamicId} class={css({ position: 'absolute', inset: '0', zIndex: '-1' })} />
             {/if}
           </button>
         {:else}
@@ -757,10 +754,7 @@
               <Icon style={css.raw({ color: 'gray.600', size: '24px' })} icon={IconGripVertical} />
             </button>
             {#if index === 0}
-              <div
-                id={onboardingAnchorLastDynamicId}
-                class={css({ position: 'absolute', inset: '0', zIndex: '[-1]' })}
-              />
+              <div id={onboardingAnchorLastDynamicId} class={css({ position: 'absolute', inset: '0', zIndex: '-1' })} />
             {/if}
           </button>
         {/if}

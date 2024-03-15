@@ -167,7 +167,7 @@
       left: '0',
       paddingX: '24px',
       transition: 'opacity',
-      _disabled: { opacity: '[0]', visibility: 'hidden' },
+      _disabled: { opacity: '0', visibility: 'hidden' },
     })}
     disabled={!showShareTargetMenu}
     type="button"
@@ -194,7 +194,7 @@
         marginTop: '20px',
         marginBottom: '16px',
         borderWidth: '1px',
-        borderColor: backgroundColor === '#FFFFFF' ? '[black/10]' : 'transparent',
+        borderColor: backgroundColor === '#FFFFFF' ? 'black/10' : 'transparent',
       })}
     >
       {#if generatedPostShareImage}
@@ -207,7 +207,7 @@
 
       {#if showSpinner}
         <div class={center({ position: 'absolute', inset: '0', paddingX: '16px', paddingY: '8px' })}>
-          <RingSpinner style={css.raw({ size: '80px', color: 'teal.400', opacity: '[0.8]' })} />
+          <RingSpinner style={css.raw({ size: '80px', color: 'teal.400', opacity: '80' })} />
         </div>
       {/if}
     </article>
@@ -229,7 +229,7 @@
             backgroundColor: 'white',
             transition: 'opacity',
           },
-          !showShareTargetMenu && { opacity: '[0]', visibility: 'hidden', zIndex: '[-1]' },
+          !showShareTargetMenu && { opacity: '0', visibility: 'hidden', zIndex: '-1' },
         )}
       >
         <div class={shareTargetMenuButtonWarpClassname}>
@@ -267,7 +267,7 @@
                 {
                   borderRadius: '3px',
                   size: '46px',
-                  zIndex: '[-1]',
+                  zIndex: '-1',
                   _peerChecked: { borderWidth: '2px', borderColor: 'teal.500' },
                 },
                 bgColor === '#FFFFFF' && { borderWidth: '1px', borderColor: 'gray.200' },
@@ -279,14 +279,13 @@
       <section class={flex({ align: 'center', gap: '16px', paddingX: '20px', paddingY: '14px' })} role="group">
         {#each fontFamilies as family (family)}
           <button
-            style:--font-family={family.value}
+            style:font-family={family.value}
             class={css({
               display: 'inline-flex',
               alignItems: 'center',
               borderRadius: '3px',
               paddingX: '5px',
               height: '34px',
-              fontFamily: '[var(--font-family)]',
               _hover: { backgroundColor: 'gray.100' },
               _focus: { backgroundColor: 'gray.100' },
               _pressed: { color: 'teal.500' },
@@ -312,14 +311,13 @@
       >
         {#each fontSizes as size (size)}
           <button
-            style:--font-size={size.value}
+            style:font-size={size.value}
             class={css({
               display: 'inline-flex',
               alignItems: 'center',
               borderRadius: '3px',
               paddingX: '5px',
               height: '34px',
-              fontSize: '[var(--font-size)]',
               _hover: { backgroundColor: 'gray.100' },
               _focus: { backgroundColor: 'gray.100' },
               _pressed: { fontWeight: 'bold', color: 'teal.500' },

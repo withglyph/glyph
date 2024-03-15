@@ -155,7 +155,7 @@
   {:else}
     <div class={css({ width: 'full', maxWidth: '800px' })}>
       <p class={css({ marginBottom: '24px', textAlign: 'center' })}>
-        <Icon style={css.raw({ size: '55px', color: '[#4ecea6]' })} icon={IconCircleCheck} />
+        <Icon style={css.raw({ size: '55px', color: '[#4ECEA6]' })} icon={IconCircleCheck} />
       </p>
       <div class={css({ gap: '12px' })}>
         <h1 class={css({ textAlign: 'center', fontSize: '20px', fontWeight: 'bold' })}>포인트가 충전 완료 되었어요!</h1>

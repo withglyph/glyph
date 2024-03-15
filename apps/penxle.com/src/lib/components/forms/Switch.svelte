@@ -34,7 +34,7 @@
         content: '""',
         borderRadius: 'full',
         height: 'full',
-        aspectRatio: '[1/1]',
+        aspectRatio: '1/1',
         backgroundColor: 'white',
       },
       _disabled: {

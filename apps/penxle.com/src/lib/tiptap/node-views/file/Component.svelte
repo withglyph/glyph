@@ -116,7 +116,7 @@
     </div>
 
     {#if !node.attrs.id}
-      <div class={center({ position: 'absolute', inset: '0', backgroundColor: '[white/50]' })}>
+      <div class={center({ position: 'absolute', inset: '0', backgroundColor: 'white/50' })}>
         <RingSpinner style={css.raw({ size: '32px', color: 'teal.500' })} />
       </div>
     {/if}

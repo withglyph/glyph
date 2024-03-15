@@ -43,7 +43,7 @@
     <button
       class={center({
         borderWidth: '1px',
-        borderColor: '[black/10]',
+        borderColor: 'black/10',
         borderRadius: '8px',
         padding: '8px',
         size: '32px',
