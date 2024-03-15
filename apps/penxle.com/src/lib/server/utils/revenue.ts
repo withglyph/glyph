@@ -52,6 +52,20 @@ export const createRevenue = async ({ db, userId, targetId, amount, kind }: Crea
   });
 };
 
+export const calculateFeeAmount = (revenueAmount: number, withdrawalFeeAmount = 0) => {
+  const settleAmount = Math.floor(revenueAmount * 0.85) - withdrawalFeeAmount;
+  const taxBaseAmount = Math.floor(settleAmount / (1 - 0.033));
+  const taxAmount = Math.floor(taxBaseAmount * 0.033);
+  const serviceFeeAmount = revenueAmount - settleAmount - taxAmount - withdrawalFeeAmount;
+
+  return {
+    settleAmount,
+    taxBaseAmount,
+    taxAmount,
+    serviceFeeAmount,
+  };
+};
+
 type SettleRevenueParams = {
   userId: string;
   settlementType: PrismaEnums.RevenueWithdrawalKind;
@@ -70,13 +84,35 @@ export const settleRevenue = async ({ userId, settlementType }: SettleRevenuePar
   });
 
   const totalRevenueAmount = revenues.reduce((sum, revenue) => sum + revenue.amount, 0);
-  const totalSettleAmount = match(settlementType)
-    .with('MONTHLY', () => (totalRevenueAmount >= 30_000 ? Math.floor(totalRevenueAmount * 0.85) : 0))
-    .with('INSTANT', () => (totalRevenueAmount >= 1000 ? Math.floor(totalRevenueAmount * 0.85) - 500 : 0))
+
+  if (
+    !match(settlementType)
+      .with('MONTHLY', () => totalRevenueAmount >= 30_000)
+      .with('INSTANT', () => totalRevenueAmount >= 1000)
+      .exhaustive()
+  ) {
+    throw new IntentionalError('출금할 수 있는 금액이 없어요');
+  }
+
+  const withdrawalFeeAmount = match(settlementType)
+    .with('MONTHLY', () => 0)
+    .with('INSTANT', () => 500)
     .exhaustive();
 
-  if (totalSettleAmount <= 0) {
+  const { settleAmount, taxBaseAmount, taxAmount, serviceFeeAmount } = calculateFeeAmount(
+    totalRevenueAmount,
+    withdrawalFeeAmount,
+  );
+
+  if (settleAmount <= 0) {
     throw new IntentionalError('출금할 수 있는 금액이 없어요');
+  }
+
+  if (
+    settleAmount + serviceFeeAmount + taxAmount + withdrawalFeeAmount !== totalRevenueAmount ||
+    Math.floor(taxBaseAmount * 0.033) !== taxAmount
+  ) {
+    throw new IntentionalError('출금 금액 계산에 문제가 발생했어요. 고객센터에 문의해주세요');
   }
 
   const settlementIdentity = await db.userSettlementIdentity.findUnique({
@@ -95,8 +131,12 @@ export const settleRevenue = async ({ userId, settlementType }: SettleRevenuePar
       bankCode: settlementIdentity.bankCode,
       bankAccountNumber: settlementIdentity.bankAccountNumber,
       revenueAmount: totalRevenueAmount,
-      paidAmount: totalSettleAmount,
-      taxAmount: Math.floor(totalSettleAmount * 0.033),
+      paidAmount: settleAmount,
+      taxAmount,
+      serviceFeeAmount,
+      withdrawalFeeAmount,
+      totalFeeAmount: serviceFeeAmount + withdrawalFeeAmount,
+      taxBaseAmount,
       revenues: { connect: revenues.map((revenue) => ({ id: revenue.id })) },
     },
   });

@@ -381,18 +381,22 @@ model Revenue {
 }
 
 model RevenueWithdrawal {
-  id                String                 @id
-  userId            String                 @map("user_id")
-  user              User                   @relation(fields: [userId], references: [id])
-  kind              RevenueWithdrawalKind
-  state             RevenueWithdrawalState @default(PENDING)
-  bankCode          String                 @map("bank_code")
-  bankAccountNumber String                 @map("bank_account_number")
-  revenueAmount     Int                    @map("revenue_amount")
-  paidAmount        Int                    @map("paid_amount")
-  taxAmount         Int                    @map("tax_amount")
-  txId              String?                @map("tx_id")
-  createdAt         DateTime               @default(now()) @map("created_at") @db.Timestamptz
+  id                  String                 @id
+  userId              String                 @map("user_id")
+  user                User                   @relation(fields: [userId], references: [id])
+  kind                RevenueWithdrawalKind
+  state               RevenueWithdrawalState @default(PENDING)
+  bankCode            String                 @map("bank_code")
+  bankAccountNumber   String                 @map("bank_account_number")
+  revenueAmount       Int                    @map("revenue_amount")
+  paidAmount          Int                    @map("paid_amount")
+  taxAmount           Int                    @map("tax_amount")
+  serviceFeeAmount    Int                    @map("service_fee_amount")
+  withdrawalFeeAmount Int                    @map("withdrawal_fee_amount")
+  totalFeeAmount      Int                    @map("total_fee_amount")
+  taxBaseAmount       Int                    @map("tax_base_amount")
+  txId                String?                @map("tx_id")
+  createdAt           DateTime               @default(now()) @map("created_at") @db.Timestamptz
 
   revenues Revenue[]
 

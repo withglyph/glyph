@@ -41,6 +41,9 @@ export const revenueSchema = defineSchema((builder) => {
       revenueAmount: t.exposeInt('revenueAmount'),
       paidAmount: t.exposeInt('paidAmount'),
       taxAmount: t.exposeInt('taxAmount'),
+      taxBaseAmount: t.exposeInt('taxBaseAmount'),
+      serviceFeeAmount: t.exposeInt('serviceFeeAmount'),
+      withdrawalFeeAmount: t.exposeInt('withdrawalFeeAmount'),
       createdAt: t.expose('createdAt', { type: 'DateTime' }),
     }),
   });

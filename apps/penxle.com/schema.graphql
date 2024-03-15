@@ -687,8 +687,11 @@ type RevenueWithdrawal {
   kind: RevenueWithdrawalKind!
   paidAmount: Int!
   revenueAmount: Int!
+  serviceFeeAmount: Int!
   state: RevenueWithdrawalState!
   taxAmount: Int!
+  taxBaseAmount: Int!
+  withdrawalFeeAmount: Int!
 }
 
 enum RevenueWithdrawalKind {
@@ -1046,6 +1049,7 @@ type User {
   revenue(withdrawable: Boolean! = false): Int!
   revenueWithdrawals: [RevenueWithdrawal!]!
   revenues(page: Int! = 1, take: Int! = 10): [Revenue!]!
+  settlementIdentity: UserSettlementIdentity
   singleSignOns: [UserSingleSignOn!]!
   spaces: [Space!]!
   state: UserState!

@@ -317,6 +317,11 @@ export const userSchema = defineSchema((builder) => {
         },
       }),
 
+      settlementIdentity: t.relation('settlementIdentity', {
+        nullable: true,
+        grantScopes: ['$user'],
+      }),
+
       notifications: t.relation('notifications', {
         args: {
           unreadOnly: t.arg.boolean({ defaultValue: false }),
