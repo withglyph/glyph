@@ -3,7 +3,7 @@ import { match } from 'ts-pattern';
 import { IntentionalError } from '$lib/errors';
 import * as coocon from '$lib/server/external-api/coocon';
 import { logToSlack } from '$lib/server/utils';
-import { createId } from '$lib/utils';
+import { calculateFeeAmount, createId } from '$lib/utils';
 import { prismaClient } from '../database';
 import type { PrismaEnums } from '$prisma';
 import type { InteractiveTransactionClient } from '../database';
@@ -50,20 +50,6 @@ export const createRevenue = async ({ db, userId, targetId, amount, kind }: Crea
       state: 'PENDING',
     },
   });
-};
-
-export const calculateFeeAmount = (revenueAmount: number, withdrawalFeeAmount = 0) => {
-  const settleAmount = Math.floor(revenueAmount * 0.85) - withdrawalFeeAmount;
-  const taxBaseAmount = Math.floor(settleAmount / (1 - 0.033));
-  const taxAmount = Math.floor(taxBaseAmount * 0.033);
-  const serviceFeeAmount = revenueAmount - settleAmount - taxAmount - withdrawalFeeAmount;
-
-  return {
-    settleAmount,
-    taxBaseAmount,
-    taxAmount,
-    serviceFeeAmount,
-  };
 };
 
 type SettleRevenueParams = {

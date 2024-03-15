@@ -1,4 +1,4 @@
-import { calculateFeeAmount } from '$lib/server/utils/revenue';
+import { calculateFeeAmount } from '$lib/utils/revenue';
 
 for (let i = 100; i <= 100_000_000; i++) {
   const { settleAmount, taxBaseAmount, taxAmount, serviceFeeAmount } = calculateFeeAmount(i);
