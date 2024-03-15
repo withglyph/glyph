@@ -197,13 +197,11 @@
         borderColor: backgroundColor === '#FFFFFF' ? 'black/10' : 'transparent',
       })}
     >
-      {#if generatedPostShareImage}
-        <img
-          class={css({ width: '398px', maxWidth: 'full', height: '398px', maxHeight: 'full' })}
-          alt="밑줄 이미지 미리보기"
-          src={generatedPostShareImage}
-        />
-      {/if}
+      <img
+        class={css({ width: '398px', maxWidth: 'full', height: '398px', maxHeight: 'full' })}
+        alt="밑줄 이미지 미리보기"
+        src={generatedPostShareImage || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"}
+      />
 
       {#if showSpinner}
         <div class={center({ position: 'absolute', inset: '0', paddingX: '16px', paddingY: '8px' })}>
