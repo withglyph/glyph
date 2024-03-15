@@ -219,12 +219,14 @@ export const indexPostTrendingScore = async ({ db, postId }: IndexPostTrendingSc
     // 앞으로 점수에 영향을 미치는 요소들을 추가할지도?
     const score = viewCount;
 
-    await elasticSearch.update({
-      index: indexName('posts'),
-      id: postId,
-      doc: { trendingScore: score },
-    });
+    await elasticSearch
+      .update({
+        index: indexName('posts'),
+        id: postId,
+        doc: { trendingScore: score },
+      })
+      .catch();
 
-    await redis.setex(`Post:${postId}:trendingScore`, 3600, score);
+    await redis.setex(`Post:${postId}:trendingScore`, 600, score);
   }
 };
