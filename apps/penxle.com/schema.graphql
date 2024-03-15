@@ -1143,6 +1143,7 @@ enum UserRole {
 }
 
 type UserSettlementIdentity {
+  bankAccountHolderName: String!
   bankAccountNumber: String!
   bankCode: String!
   id: ID!

@@ -415,6 +415,19 @@ export const userSchema = defineSchema((builder) => {
       id: t.exposeID('id'),
       bankCode: t.exposeString('bankCode'),
       bankAccountNumber: t.exposeString('bankAccountNumber'),
+      bankAccountHolderName: t.string({
+        resolve: async ({ bankAccountHolderName }) => {
+          if (bankAccountHolderName.length <= 1) {
+            return '*';
+          } else if (bankAccountHolderName.length === 2) {
+            return bankAccountHolderName.at(0) + '*';
+          } else {
+            return (
+              bankAccountHolderName.at(0) + '*'.repeat(bankAccountHolderName.length - 2) + bankAccountHolderName.at(-1)
+            );
+          }
+        },
+      }),
     }),
   });
 
@@ -1118,6 +1131,7 @@ export const userSchema = defineSchema((builder) => {
               ).toString('hex'),
               bankCode: input.bankCode,
               bankAccountNumber: input.bankAccountNumber,
+              bankAccountHolderName: accountHolderName,
             },
           });
         }
