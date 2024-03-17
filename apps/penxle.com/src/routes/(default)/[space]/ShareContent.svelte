@@ -194,11 +194,15 @@
         marginTop: '20px',
         marginBottom: '16px',
         borderWidth: '1px',
-        borderColor: backgroundColor === '#FFFFFF' ? 'black/10' : 'transparent',
+        borderColor: backgroundColor === '#FFFFFF' ? '[black/10]' : 'transparent',
+        alignSelf: 'center',
+        size: 'full',
+        maxSize: '398px',
+        aspectRatio: '[1/1]',
       })}
     >
       <img
-        class={css({ width: '398px', maxWidth: 'full', height: '398px', maxHeight: 'full' })}
+        class={css({ size: 'full' })}
         alt="밑줄 이미지 미리보기"
         src={generatedPostShareImage || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"}
       />
