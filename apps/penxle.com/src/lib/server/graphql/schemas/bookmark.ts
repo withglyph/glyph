@@ -11,7 +11,14 @@ export const bookmarkSchema = defineSchema((builder) => {
     fields: (t) => ({
       id: t.exposeID('id'),
       name: t.exposeString('name'),
-      posts: t.relation('posts'),
+      posts: t.relation('posts', {
+        query: {
+          where: {
+            post: { state: 'PUBLISHED' },
+          },
+        },
+      }),
+
       postCount: t.relationCount('posts', {
         where: {
           post: {

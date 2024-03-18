@@ -984,7 +984,7 @@ export const postSchema = defineSchema((builder) => {
           throw new NotFoundError();
         }
 
-        if (post.userId !== context.session?.userId) {
+        if (post.userId !== context.session?.userId || post.state === 'DELETED') {
           if (!post.space) {
             throw new NotFoundError();
           }
@@ -999,15 +999,18 @@ export const postSchema = defineSchema((builder) => {
               throw new PermissionDeniedError();
             }
 
-            const member = await db.spaceMember.findUnique({
-              where: {
-                spaceId_userId: {
-                  spaceId: post.space.id,
-                  userId: context.session.userId,
-                },
-                state: 'ACTIVE',
-              },
-            });
+            const member =
+              post.state === 'DELETED'
+                ? null
+                : await db.spaceMember.findUnique({
+                    where: {
+                      spaceId_userId: {
+                        spaceId: post.space.id,
+                        userId: context.session.userId,
+                      },
+                      state: 'ACTIVE',
+                    },
+                  });
 
             if (!member || (post.state === 'DRAFT' && member.role !== 'ADMIN')) {
               const purchase = await db.postPurchase.exists({
