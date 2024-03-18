@@ -439,6 +439,7 @@ type Post {
   thumbnail: Image
   unlocked: Boolean!
   viewCount: Int!
+  viewed: Boolean!
   visibility: PostVisibility!
 }
 

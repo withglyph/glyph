@@ -97,6 +97,21 @@ export const postSchema = defineSchema((builder) => {
         resolve: (post, _, { db }) => getPostViewCount({ db, postId: post.id }),
       }),
 
+      viewed: t.boolean({
+        select: (_, context, nestedSelection) => {
+          return {
+            views: context.session
+              ? nestedSelection({
+                  where: {
+                    userId: context.session.userId,
+                  },
+                })
+              : false,
+          };
+        },
+        resolve: async ({ views }) => !!(views && views.length > 0),
+      }),
+
       visibility: t.expose('visibility', { type: PrismaEnums.PostVisibility }),
       ageRating: t.expose('ageRating', { type: PrismaEnums.PostAgeRating }),
       externalSearchable: t.exposeBoolean('externalSearchable'),
