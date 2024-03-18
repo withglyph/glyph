@@ -22,6 +22,42 @@ export const zones = {
   pnxl_net: createZone('pnxl.net'),
 };
 
+new aws.route53.Record('withglyph.com|mx', {
+  zoneId: zones.withglyph_com.zoneId,
+  type: 'MX',
+  name: 'withglyph.com',
+  records: ['1 smtp.google.com'],
+  ttl: 300,
+});
+
+new aws.route53.Record('withglyph.com|txt', {
+  zoneId: zones.withglyph_com.zoneId,
+  type: 'TXT',
+  name: 'withglyph.com',
+  records: [
+    // spell-checker:disable-next-line
+    'google-site-verification=lWwP2X_Hg6WkFmykY1WBebezvqKK2hiZRqECoP92zMQ',
+    'v=spf1 include:_spf.google.com ~all',
+  ],
+  ttl: 300,
+});
+
+new aws.route53.Record('mail.withglyph.com|mx', {
+  zoneId: zones.withglyph_com.zoneId,
+  type: 'MX',
+  name: 'mail.withglyph.com',
+  records: ['10 feedback-smtp.ap-northeast-2.amazonses.com'],
+  ttl: 300,
+});
+
+new aws.route53.Record('mail.withglyph.com|txt', {
+  zoneId: zones.withglyph_com.zoneId,
+  type: 'TXT',
+  name: 'mail.withglyph.com',
+  records: ['v=spf1 include:amazonses.com ~all'],
+  ttl: 300,
+});
+
 new aws.route53.Record('pencil.so|txt', {
   zoneId: zones.pencil_so.zoneId,
   type: 'TXT',
@@ -40,28 +76,11 @@ new aws.route53.Record('penxle.com|txt', {
   ttl: 300,
 });
 
-new aws.route53.Record('_atproto.penxle.com|txt', {
-  zoneId: zones.penxle_com.zoneId,
-  type: 'TXT',
-  name: '_atproto.penxle.com',
-  // spell-checker:disable-next-line
-  records: ['did=did:plc:ny3tz5doox6cp3a37juqcgnj'],
-  ttl: 300,
-});
-
 new aws.route53.Record('channel._domainkey.penxle.com', {
   zoneId: zones.penxle_com.zoneId,
   type: 'CNAME',
   name: 'channel._domainkey.penxle.com',
   records: ['6534d2c4c57e777960a5.dkim.channel.io'],
-  ttl: 300,
-});
-
-new aws.route53.Record('idea.penxle.com', {
-  zoneId: zones.penxle_com.zoneId,
-  type: 'CNAME',
-  name: 'idea.penxle.com',
-  records: ['cname.frill.co'],
   ttl: 300,
 });
 
@@ -86,14 +105,6 @@ new aws.route53.Record('mail.penxle.com|txt', {
   type: 'TXT',
   name: 'mail.penxle.com',
   records: ['v=spf1 include:amazonses.com ~all'],
-  ttl: 300,
-});
-
-new aws.route53.Record('status.penxle.com', {
-  zoneId: zones.penxle_com.zoneId,
-  type: 'CNAME',
-  name: 'status.penxle.com',
-  records: ['statuspage.betteruptime.com'],
   ttl: 300,
 });
 

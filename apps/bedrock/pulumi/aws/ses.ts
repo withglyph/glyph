@@ -29,4 +29,30 @@ emailIdentity.dkimSigningAttributes.tokens.apply((tokens) => {
   }
 });
 
+const configurationSet2 = new aws.sesv2.ConfigurationSet('withglyph.com', {
+  configurationSetName: 'withglyph_com',
+});
+
+const emailIdentity2 = new aws.sesv2.EmailIdentity('withglyph.com', {
+  emailIdentity: 'withglyph.com',
+  configurationSetName: configurationSet2.configurationSetName,
+});
+
+new aws.sesv2.EmailIdentityMailFromAttributes('withglyph.com', {
+  emailIdentity: emailIdentity2.id,
+  mailFromDomain: 'mail.withglyph.com',
+});
+
+emailIdentity2.dkimSigningAttributes.tokens.apply((tokens) => {
+  for (const token of tokens) {
+    new aws.route53.Record(`${token}._domainkey.withglyph.com`, {
+      zoneId: zones.withglyph_com.zoneId,
+      type: 'CNAME',
+      name: `${token}._domainkey.withglyph.com`,
+      records: [`${token}.dkim.amazonses.com`],
+      ttl: 300,
+    });
+  }
+});
+
 export const outputs = {};
