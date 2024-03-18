@@ -1,6 +1,14 @@
 import dayjs from 'dayjs';
+import * as R from 'radash';
 import { elasticSearch, indexName } from '$lib/server/search';
-import { getMutedSpaceIds, getMutedTagIds, makeQueryContainers, searchResultToPrismaData } from '$lib/server/utils';
+import {
+  getMutedSpaceIds,
+  getMutedTagIds,
+  isAdulthood,
+  isGte15,
+  makeQueryContainers,
+  searchResultToPrismaData,
+} from '$lib/server/utils';
 import { defineSchema } from '../builder';
 
 export const feedSchema = defineSchema((builder) => {
@@ -14,7 +22,7 @@ export const feedSchema = defineSchema((builder) => {
       resolve: async (query, _, __, { db, ...context }) => {
         const searchResult = await (async () => {
           if (context.session) {
-            const [mutedTagIds, mutedSpaceIds, followingTagIds, viewedTagIds] = await Promise.all([
+            const [mutedTagIds, mutedSpaceIds, followingTagIds, viewedTagIds, userBirthday] = await Promise.all([
               getMutedTagIds({ db, userId: context.session.userId }),
               getMutedSpaceIds({ db, userId: context.session.userId }),
               db.tagFollow
@@ -41,7 +49,14 @@ export const feedSchema = defineSchema((builder) => {
                 .then((postViews) => [
                   ...new Set<string>(postViews.flatMap(({ post }) => post.tags.map(({ tagId }) => tagId))),
                 ]),
+              db.userPersonalIdentity
+                .findUnique({ where: { userId: context.session.userId } })
+                .then((user) => user?.birthday),
             ]);
+
+            const allowedAgeRating = userBirthday
+              ? R.sift([isAdulthood(userBirthday) && 'R19', isGte15(userBirthday) && 'R15', 'ALL'])
+              : ['ALL'];
 
             return elasticSearch.search({
               index: indexName('posts'),
@@ -77,6 +92,7 @@ export const feedSchema = defineSchema((builder) => {
                           condition: viewedTagIds.length > 0,
                         },
                       ]),
+                      filter: [{ terms: { ageRating: allowedAgeRating } }],
                     },
                   },
                   functions: [
@@ -86,8 +102,8 @@ export const feedSchema = defineSchema((builder) => {
                     {
                       exp: {
                         publishedAt: {
-                          scale: '7d',
-                          offset: '1d',
+                          scale: '30d',
+                          offset: '7d',
                         },
                       },
                     },
@@ -105,6 +121,7 @@ export const feedSchema = defineSchema((builder) => {
                   query: {
                     bool: {
                       should: [{ rank_feature: { field: 'trendingScore', boost: 2 } }],
+                      filter: [{ term: { ageRating: 'ALL' } }],
                     },
                   },
                   functions: [
@@ -114,8 +131,8 @@ export const feedSchema = defineSchema((builder) => {
                     {
                       exp: {
                         publishedAt: {
-                          scale: '7d',
-                          offset: '1d',
+                          scale: '30d',
+                          offset: '7d',
                         },
                       },
                     },

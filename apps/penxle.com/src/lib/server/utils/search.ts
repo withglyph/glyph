@@ -215,9 +215,12 @@ type IndexPostTrendingScoreParams = {
 export const indexPostTrendingScore = async ({ db, postId }: IndexPostTrendingScoreParams) => {
   const trendingScoreCache = await redis.get(`Post:${postId}:trendingScore`);
   if (!trendingScoreCache) {
-    const viewCount = await getPostViewCount({ db, postId });
+    const [viewCount, purchasedCount] = await Promise.all([
+      getPostViewCount({ db, postId }),
+      db.postPurchase.count({ where: { postId } }),
+    ]);
     // 앞으로 점수에 영향을 미치는 요소들을 추가할지도?
-    const score = viewCount;
+    const score = viewCount + purchasedCount * 20;
 
     await elasticSearch
       .update({
