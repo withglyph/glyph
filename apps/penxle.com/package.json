@@ -117,6 +117,7 @@
     "@types/numeral": "^2.0.5",
     "@types/randomcolor": "^0.5.9",
     "arg": "^5.0.2",
+    "autoprefixer": "^10.4.18",
     "postcss": "^8.4.35",
     "postcss-load-config": "^5.0.3",
     "svelte-check": "^3.6.6",

@@ -4,8 +4,6 @@ import { breakpoints, conditions, globalCss, hooks, tokens, utilities } from './
 const prod = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
-  preflight: true,
-
   include: ['./src/**/*.{js,ts,svelte}'],
   outExtension: 'js',
 
@@ -18,9 +16,6 @@ export default defineConfig({
   separator: '-',
   hash: prod,
   minify: prod,
-
-  lightningcss: true,
-  browserslist: ['> 2%', 'last 2 versions', 'not dead'],
 
   theme: {
     breakpoints,
