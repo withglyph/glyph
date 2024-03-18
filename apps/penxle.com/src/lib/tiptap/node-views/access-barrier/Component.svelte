@@ -32,8 +32,6 @@
   export let editor: NodeViewProps['editor'] | undefined;
   export let updateAttributes: NodeViewProps['updateAttributes'];
 
-  $: isLastChild = editor?.state.doc.lastChild?.eq(node) ?? false;
-
   let priceOpen = false;
   let loginRequireOpen = false;
   let postPurchaseOpen = false;
@@ -135,7 +133,7 @@
         boxShadow: '[0 2px 10px 0 {colors.black/4}]',
       })}
     >
-      {#if isLastChild}
+      {#if !node.attrs || node.attrs.price === null}
         <button
           class={css({
             borderRadius: '4px',
@@ -147,12 +145,14 @@
             _hover: { backgroundColor: 'gray.100' },
           })}
           type="button"
-          on:click={() =>
+          on:click={() => {
+            updateAttributes({ price: 0 });
             editor
               ?.chain()
               .insertContentAt(getPos() + node.nodeSize, { type: 'paragraph' })
               .focus()
-              .run()}
+              .run();
+          }}
         >
           여기서부터 유료 분량 만들기
         </button>
@@ -211,11 +211,15 @@
             _hover: { backgroundColor: 'gray.100' },
           })}
           type="button"
-          on:click={() =>
+          on:click={() => {
+            updateAttributes({ price: null });
+
+            const from = getPos();
             editor
               ?.chain()
-              .cut({ from: getPos(), to: getPos() + node.nodeSize }, editor.state.doc.content.size)
-              .run()}
+              .cut({ from, to: from + node.nodeSize }, editor.state.doc.content.size)
+              .run();
+          }}
         >
           해제
         </button>
