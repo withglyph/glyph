@@ -22,7 +22,7 @@ export const feedSchema = defineSchema((builder) => {
       resolve: async (query, _, __, { db, ...context }) => {
         const searchResult = await (async () => {
           if (context.session) {
-            const [mutedTagIds, mutedSpaceIds, followingTagIds, viewedTagIds, userBirthday] = await Promise.all([
+            const [mutedTagIds, mutedSpaceIds, followingTagIds, viewedPosts, userBirthday] = await Promise.all([
               getMutedTagIds({ db, userId: context.session.userId }),
               getMutedSpaceIds({ db, userId: context.session.userId }),
               db.tagFollow
@@ -36,6 +36,7 @@ export const feedSchema = defineSchema((builder) => {
                   select: {
                     post: {
                       select: {
+                        id: true,
                         tags: {
                           select: { tagId: true },
                         },
@@ -46,13 +47,16 @@ export const feedSchema = defineSchema((builder) => {
                   orderBy: { viewedAt: 'desc' },
                   take: 50,
                 })
-                .then((postViews) => [
-                  ...new Set<string>(postViews.flatMap(({ post }) => post.tags.map(({ tagId }) => tagId))),
-                ]),
+                .then((postViews) => postViews.map(({ post }) => post)),
               db.userPersonalIdentity
                 .findUnique({ where: { userId: context.session.userId } })
                 .then((user) => user?.birthday),
             ]);
+
+            const viewedPostIds = viewedPosts.map(({ id }) => id);
+            const viewedTagIds = [
+              ...new Set<string>(viewedPosts.flatMap(({ tags }) => tags.map(({ tagId }) => tagId))),
+            ];
 
             const allowedAgeRating = userBirthday
               ? R.sift([isAdulthood(userBirthday) && 'R19', isGte15(userBirthday) && 'R15', 'ALL'])
@@ -72,6 +76,11 @@ export const feedSchema = defineSchema((builder) => {
                         {
                           query: { terms: { spaceId: mutedSpaceIds } },
                           condition: mutedSpaceIds.length > 0,
+                        },
+                        {
+                          query: {
+                            ids: { values: viewedPostIds },
+                          },
                         },
                       ]),
                       should: makeQueryContainers([
