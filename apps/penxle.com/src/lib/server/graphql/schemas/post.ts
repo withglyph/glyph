@@ -394,27 +394,40 @@ export const postSchema = defineSchema((builder) => {
           const searchResult = await elasticSearch.search({
             index: indexName('posts'),
             query: {
-              bool: {
-                should: [{ terms: { 'tags.id': postTagIds } }, { term: { ['spaceId']: post.spaceId } }],
-                must_not: makeQueryContainers([
-                  {
-                    query: {
-                      terms: { ['tags.id']: mutedTagIds },
-                    },
-                    condition: mutedTagIds.length > 0,
+              function_score: {
+                query: {
+                  bool: {
+                    should: [
+                      { terms: { 'tags.id': postTagIds } },
+                      { term: { ['spaceId']: post.spaceId } },
+                      { rank_feature: { field: 'trendingScore' } },
+                    ],
+                    must_not: makeQueryContainers([
+                      {
+                        query: {
+                          terms: { ['tags.id']: mutedTagIds },
+                        },
+                        condition: mutedTagIds.length > 0,
+                      },
+                      {
+                        query: {
+                          terms: { spaceId: mutedSpaceIds },
+                        },
+                        condition: mutedSpaceIds.length > 0,
+                      },
+                      {
+                        query: {
+                          ids: { values: recentlyViewedPostIds },
+                        },
+                      },
+                    ]),
                   },
+                },
+                functions: [
                   {
-                    query: {
-                      terms: { spaceId: mutedSpaceIds },
-                    },
-                    condition: mutedSpaceIds.length > 0,
+                    random_score: { seed: Math.floor(Math.random() * 1000), field: '_seq_no' },
                   },
-                  {
-                    query: {
-                      ids: { values: recentlyViewedPostIds },
-                    },
-                  },
-                ]),
+                ],
               },
             },
 
