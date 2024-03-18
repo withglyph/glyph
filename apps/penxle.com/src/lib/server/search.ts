@@ -1,5 +1,5 @@
 import { Client } from '@elastic/elasticsearch';
-import { dev } from '$app/environment';
+import { stack } from '@penxle/lib/environment';
 import { env } from '$env/dynamic/private';
 
 export const elasticSearch = new Client({
@@ -8,8 +8,8 @@ export const elasticSearch = new Client({
 });
 
 export const indexName = (name: string) => {
-  if (dev) {
-    return `${name}-dev`;
+  if (stack === 'prod' || stack === 'staging') {
+    return name;
   }
-  return name;
+  return `${name}-dev`;
 };
