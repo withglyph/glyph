@@ -433,7 +433,7 @@ export const postSchema = defineSchema((builder) => {
               },
             },
 
-            size: 10,
+            size: 3,
           });
 
           return searchResultToPrismaData({
