@@ -211,11 +211,16 @@
             _hover: { backgroundColor: 'gray.100' },
           })}
           type="button"
-          on:click={() =>
-            editor
-              ?.chain()
-              .cut({ from: getPos(), to: getPos() + node.nodeSize }, editor.state.doc.content.size)
-              .run()}
+          on:click={() => {
+            updateAttributes({ price: null });
+            // Hack: "RangeError: Index out of range" 가 일어나서 setTimeout 을 통해 이벤트 루프를 분리하니 해결됨
+            setTimeout(() =>
+              editor
+                ?.chain()
+                .cut({ from: getPos(), to: getPos() + node.nodeSize }, editor.state.doc.content.size)
+                .run(),
+            );
+          }}
         >
           해제
         </button>
