@@ -66,8 +66,7 @@
   <p class={flex({ align: 'center', gap: '2px', smDown: { paddingX: '20px' } })}>
     내 계좌:
     <span>{banks[$query.me.settlementIdentity.bankCode]} {$query.me.settlementIdentity.bankAccountNumber}</span>
-    <!-- 계좌 변경 시 cs 문의 -->
-    <Tooltip style={flex.raw({ align: 'center' })} message="">
+    <Tooltip style={flex.raw({ align: 'center' })} message="출금 계좌 변경은 사이트 하단 고객센터를 통해 가능해요">
       <Icon style={css.raw({ size: '16px', color: 'gray.500', transform: 'rotate(180deg)' })} icon={IconInfoCircle} />
     </Tooltip>
   </p>
@@ -90,7 +89,7 @@
     <div>
       <div class={flex({ align: 'center', gap: '4px', fontSize: { base: '14px', sm: '16px' }, fontWeight: 'medium' })}>
         출금 가능 금액
-        <Tooltip style={flex.raw({ align: 'center' })} message="">
+        <Tooltip style={flex.raw({ align: 'center' })} message="수익 발생 후 7일이 지난 수익금을 출금할 수 있어요">
           <Icon
             style={css.raw({ size: '16px', color: 'gray.500', transform: 'rotate(180deg)' })}
             icon={IconInfoCircle}
@@ -103,29 +102,38 @@
     </div>
 
     <Tooltip
-      style={css.raw({ width: 'fit' })}
-      enabled={$query.me.withdrawableRevenue < 1000 || !$query.me.settlementIdentity}
-      message={$query.me.settlementIdentity
-        ? $query.me?.withdrawableRevenue < 1000
-          ? '천원 이상부터 출금할 수 있어요'
-          : ''
-        : '창작자 인증이 필요해요'}
+      enabled={!!$query.me.settlementIdentity && $query.me.withdrawableRevenue < 1000}
+      message="즉시출금은 1,000원 이상부터 신청 가능해요"
     >
       <Button
-        style={css.raw({ hideFrom: 'sm' })}
-        disabled={$query.me.withdrawableRevenue < 1000 || !$query.me.settlementIdentity}
+        style={css.raw({ width: 'full', hideFrom: 'sm' })}
+        disabled={!!$query.me.settlementIdentity && $query.me.withdrawableRevenue < 1000}
         size="md"
-        on:click={() => (instantSettleRevenueOpen = true)}
+        on:click={() => {
+          if (!$query.me.settlementIdentity) {
+            open = true;
+            return;
+          }
+
+          instantSettleRevenueOpen = true;
+        }}
       >
-        즉시 출금
+        즉시출금
       </Button>
       <Button
-        style={css.raw({ hideBelow: 'sm' })}
-        disabled={$query.me.withdrawableRevenue < 1000 || !$query.me.settlementIdentity}
+        style={css.raw({ width: 'full', hideBelow: 'sm' })}
+        disabled={!!$query.me.settlementIdentity && $query.me.withdrawableRevenue < 1000}
         size="lg"
-        on:click={() => (instantSettleRevenueOpen = true)}
+        on:click={() => {
+          if (!$query.me.settlementIdentity) {
+            open = true;
+            return;
+          }
+
+          instantSettleRevenueOpen = true;
+        }}
       >
-        즉시 출금
+        즉시출금
       </Button>
     </Tooltip>
   </div>
@@ -155,7 +163,7 @@
         {comma($query.me.revenue)}P
       </p>
     </div>
-    <div
+    <button
       class={flex({
         flexDirection: 'column',
         gap: '4px',
@@ -165,15 +173,18 @@
         padding: { base: '20px', sm: '24px' },
         backgroundColor: 'gray.5',
       })}
+      type="button"
+      on:click={() => {
+        if (!$query.me.settlementIdentity) {
+          open = true;
+          return;
+        }
+
+        monthlyWithdrawSettingOpen = true;
+      }}
     >
       <div class={flex({ align: 'center', gap: '4px' })}>
         <p class={css({ fontSize: { base: '14px', sm: '16px' }, fontWeight: 'medium' })}>자동 출금</p>
-        <Tooltip style={flex.raw({ align: 'center' })} message="">
-          <Icon
-            style={css.raw({ size: '16px', color: 'gray.500', transform: 'rotate(180deg)' })}
-            icon={IconInfoCircle}
-          />
-        </Tooltip>
         {#if $query.me.withdrawalConfig?.monthlyWithdrawalEnabled}
           {#if $query.me.withdrawalConfig.monthlyWithdrawalDue}
             <time class={css({ fontSize: '10px', color: 'gray.400' })}>
@@ -187,24 +198,19 @@
 
       <p
         class={css(
-          $query.me.withdrawalConfig?.monthlyWithdrawalEnabled ? { color: 'teal.500' } : { color: 'gray.400' },
+          { display: 'flex', alignItems: 'center', gap: '2px', fontWeight: 'semibold', width: 'full' },
+          $query.me.withdrawalConfig?.monthlyWithdrawalEnabled ? { color: 'teal.500' } : { color: 'gray.500' },
           !$query.me.settlementIdentity && { fontSize: '14px', fontWeight: 'medium' },
         )}
       >
         {#if $query.me.settlementIdentity}
-          <button
-            class={css({ display: 'flex', alignItems: 'center', gap: '2px', fontWeight: 'semibold', width: 'full' })}
-            type="button"
-            on:click={() => (monthlyWithdrawSettingOpen = true)}
-          >
-            {$query.me.withdrawalConfig?.monthlyWithdrawalEnabled ? 'ON' : 'OFF'}
-            <Icon style={css.raw({ size: '20px' })} icon={IconChevronRight} />
-          </button>
+          {$query.me.withdrawalConfig?.monthlyWithdrawalEnabled ? 'ON' : 'OFF'}
         {:else}
-          창작자 인증이 필요해요
+          계좌 인증이 필요해요
         {/if}
+        <Icon style={css.raw({ size: '20px' })} icon={IconChevronRight} />
       </p>
-    </div>
+    </button>
   </div>
 </div>
 
@@ -222,50 +228,27 @@
       },
     })}
   >
-    <p class={css({ fontWeight: 'semibold' })}>출금 시 본인인증 후 창작자 인증이 필요해요</p>
+    <p class={css({ fontWeight: 'semibold' })}>출금 전 계좌 인증이 필요해요</p>
 
     <p class={css({ marginTop: '4px', marginBottom: '16px', fontSize: '14px', color: 'gray.500' })}>
-      창작자님의 수익에 대한 원천징수 신고를 하기 위해 꼭 필요한 정보예요. 창작자님이 신고해야 할 세액을 회사에서
-      세무적으로 대신 신고하는것이기 때문에, 세무서에 제출해야 하는 정보입니다.
+      수익금을 출금하기 전 계좌 인증이 필요해요. 본인 명의의 국내 은행 계좌와 신분증을 미리 준비해 주세요.
     </p>
 
-    <div class={flex({ align: 'center', gap: '14px' })}>
-      {#if !$query.me.personalIdentity}
-        <a
-          class={flex({
-            align: 'center',
-            gap: '2px',
-            color: 'teal.500',
-            width: 'fit',
-            fontSize: '14px',
-            fontWeight: 'medium',
-          })}
-          href="/me/settings"
-        >
-          본인인증 <Icon icon={IconChevronRight} />
-        </a>
-      {/if}
-
-      <button
-        class={css({
-          display: 'flex',
-          alignItems: 'center',
-          gap: '2px',
-          color: { base: 'teal.500', _disabled: 'gray.400' },
-          width: 'fit',
-          fontSize: '14px',
-          fontWeight: 'medium',
-        })}
-        disabled={!$query.me.personalIdentity}
-        type="button"
-        on:click={() => (open = true)}
-      >
-        창작자인증 <Icon
-          style={css.raw(!$query.me.personalIdentity && { transform: 'rotate(180deg)' })}
-          icon={$query.me.personalIdentity ? IconChevronRight : IconInfoCircle}
-        />
-      </button>
-    </div>
+    <button
+      class={css({
+        display: 'flex',
+        alignItems: 'center',
+        gap: '2px',
+        color: 'teal.500',
+        width: 'fit',
+        fontSize: '14px',
+        fontWeight: 'medium',
+      })}
+      type="button"
+      on:click={() => (open = true)}
+    >
+      계좌인증 <Icon icon={IconChevronRight} />
+    </button>
   </div>
 {/if}
 
@@ -277,9 +260,9 @@
     color: '[#9B9B9E]',
   })}
 >
-  - 즉시출금 금액은 1회 최소 1,000원 이상으로 신청 가능합니다. (정산 수수료 500원 발생) <br />
-  - 정기출금 정산일은 매월 10일이며, 30,000원 이상의 수익금이 발생했을 때 자동으로 출금됩니다. 정기출금을 원치 않다면 정기출금
-  off모드로 변경해주세요.
+  - 즉시출금은 최소 1,000원부터 가능하며, 즉시출금 수수료가 별도로 발생합니다.
+  <br />
+  - 자동출금 진행일은 매월 10일이며, 잔여 수익금이 30,000원 이상일 경우 진행됩니다.
 </div>
 
 <div

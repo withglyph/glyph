@@ -58,7 +58,7 @@
       창작자님의 출금 요청하신 금액은
       <br />
       <mark class={css({ fontSize: '20px', fontWeight: 'bold', color: 'teal.500' })}>
-        {$user.withdrawableRevenue}원
+        {comma($user.withdrawableRevenue)}원
       </mark>
       입니다
     </p>
@@ -106,7 +106,7 @@
       >
         <dt class={flex({ align: 'center', gap: '2px', width: '120px' })}>
           즉시 출금 수수료
-          <Tooltip message="">
+          <Tooltip message="즉시출금 신청 시 1건당 500원의 추가 수수료가 발생해요">
             <Icon
               style={css.raw({ size: '16px', color: 'gray.500', transform: 'rotate(180deg)' })}
               icon={IconInfoCircle}
@@ -131,11 +131,9 @@
     </dl>
 
     <p class={css({ marginBottom: '40px', paddingY: '10px', fontSize: '12px', color: 'gray.500' })}>
-      - 즉시출금 금액은 1회 최소 1,000원 이상으로 신청 가능합니다.
+      - 즉시출금 신청 시 서비스 이용료와는 별개로 즉시출금 수수료가 추가로 발생합니다.
       <br />
-      - (정산 수수료 500원 발생)
-      <br />
-      - 정기출금 정산일은 매월 10일이며, 30,000원 이상의 수익금이 발생했을 때 자동으로 출금됩니다.
+      - 즉시출금은 신청 즉시 출금이 진행되며, 신청 이후 취소할 수 없습니다.
     </p>
   </div>
 

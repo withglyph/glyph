@@ -1,5 +1,6 @@
 <script lang="ts">
   import dayjs from 'dayjs';
+  import { nanoid } from 'nanoid';
   import IconBank002 from '~icons/effit/bank-002';
   import IconBank003 from '~icons/effit/bank-003';
   import IconBank004 from '~icons/effit/bank-004';
@@ -23,6 +24,7 @@
   import IconAlertCircle from '~icons/tabler/alert-circle';
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconMinus from '~icons/tabler/minus';
+  import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Icon, ProgressBar } from '$lib/components';
@@ -30,6 +32,7 @@
   import { FormField, TextInput } from '$lib/components/v2/forms';
   import { banks } from '$lib/const/revenue';
   import { createMutationForm } from '$lib/form';
+  import { toast } from '$lib/notification';
   import { VerifySettlementIdentitySchema } from '$lib/validations';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
@@ -71,13 +74,13 @@
     },
   });
 
-  let page = 1;
+  let currPage = 1;
 
   $: title = {
     1: '창작자 인증',
     2: '은행 선택',
     3: '입금 계좌번호 확인',
-  }[page];
+  }[currPage];
 
   const bankIcons: Record<string, ComponentType> = {
     '002': IconBank002,
@@ -105,36 +108,97 @@
     '090': IconBank090,
     '092': IconBank092,
   };
+
+  const handleUserIdentityVerification = () => {
+    mixpanel.track('user:personal-identity-verification:start');
+
+    // @ts-expect-error portone 관련 코드
+    IMP.init('imp72534540');
+
+    // @ts-expect-error portone 관련 코드
+    IMP.certification(
+      {
+        merchant_uid: nanoid(),
+        company: 'PENXLE',
+        m_redirect_url: `${$page.url.origin}/api/identification/callback`,
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      async (resp: any) => {
+        if (resp.error_msg) {
+          toast.error(resp.error_msg);
+          return;
+        }
+      },
+    );
+  };
 </script>
+
+<svelte:head>
+  <script src="https://cdn.iamport.kr/v1/iamport.js">
+  </script>
+</svelte:head>
 
 <Modal
   style={css.raw({ height: { base: '540px', sm: '600px' } })}
   size="md"
-  titleStyle={css.raw({ justifyContent: 'center' }, page === 1 && { marginX: '32px' })}
+  titleStyle={css.raw({ justifyContent: 'center' }, currPage === 1 && { marginX: '32px' })}
   bind:open
 >
   <svelte:fragment slot="title-left">
-    {#if page > 1}
-      <button type="button" on:click={() => (page -= 1)}>
+    {#if currPage > 1}
+      <button type="button" on:click={() => (currPage -= 1)}>
         <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />
       </button>
     {/if}
   </svelte:fragment>
   <svelte:fragment slot="title">{title}</svelte:fragment>
 
-  <ProgressBar max={3} value={page} />
+  <ProgressBar max={3} value={currPage} />
 
   <form class={flex({ flexDirection: 'column', flexGrow: '1' })} use:form>
     <div
       class={css(
         { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexGrow: '1' },
-        page !== 1 && { display: 'none' },
+        currPage !== 1 && { display: 'none' },
       )}
     >
       <div class={css({ marginY: '20px', paddingX: '20px' })}>
-        <FormField name="" label="이름">
-          <TextInput disabled maxlength={7} value={$user.personalIdentity?.name} />
-        </FormField>
+        <div class={flex({ align: 'flex-end', gap: '6px', paddingBottom: '18px' })}>
+          <label class={css({ flexGrow: '1', display: 'inline-block', marginBottom: '6px', fontSize: '14px' })}>
+            이름
+            <div class={flex({ align: 'center' })}>
+              <input
+                class={css({
+                  borderWidth: '1px',
+                  borderColor: { base: 'gray.150', _hover: 'gray.400', _focus: 'gray.400' },
+                  borderRadius: '8px',
+                  paddingX: '16px',
+                  paddingY: '9px',
+                  fontSize: '16px',
+                  backgroundColor: 'gray.100',
+                  width: 'full',
+                })}
+                placeholder="이름"
+                readonly
+                type="text"
+                value={$user.personalIdentity?.name ?? ''}
+                on:click={() => {
+                  if (!$user.personalIdentity) handleUserIdentityVerification();
+                }}
+              />
+            </div>
+          </label>
+
+          <Button
+            style={css.raw({ marginBottom: '6px', width: '122px', height: '44px' })}
+            disabled={!!$user.personalIdentity}
+            on:click={() => {
+              if (!$user.personalIdentity) handleUserIdentityVerification();
+            }}
+          >
+            {$user.personalIdentity ? '본인인증 완료됨' : '본인인증'}
+          </Button>
+        </div>
 
         <div class={flex({ align: 'center', justify: 'space-evenly', gap: '5px' })}>
           <FormField name="" style={css.raw({ flexGrow: '1' })} label="주민등록번호">
@@ -172,8 +236,8 @@
         </FormField>
 
         <p class={css({ fontSize: '12px', color: 'gray.500' })}>
-          창작자님의 수익에 대한 원천징수 신고를 하기 위해 꼭 필요한 정보예요. 창작자님이 신고해야 할 세액을 회사에서
-          세무적으로 대신 신고하는것이기 때문에, 세무서에 제출해야 하는 정보입니다.
+          펜슬에서 발생한 수익에 대한 원천징수 신고를 하기 위해 꼭 필요한 정보예요. 제출하신 정보는 안전하게 암호화된
+          이후 세무 신고에 사용되고, 이용 목적을 달성한 이후 개인정보처리방침에 따라 파기돼요.
         </p>
       </div>
 
@@ -185,7 +249,7 @@
         on:click={() => {
           if ($errors.residentRegistrationNumberBack || $errors.idCardIssuedDate) return;
 
-          page += 1;
+          currPage += 1;
         }}
       >
         다음
@@ -195,7 +259,7 @@
     <div
       class={css(
         { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexGrow: '1' },
-        page !== 2 && { display: 'none' },
+        currPage !== 2 && { display: 'none' },
       )}
     >
       <div
@@ -240,7 +304,7 @@
         disabled={!!$errors.bankCode}
         size="lg"
         on:click={() => {
-          page += 1;
+          currPage += 1;
         }}
       >
         다음
@@ -250,7 +314,7 @@
     <div
       class={css(
         { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexGrow: '1' },
-        page !== 3 && { display: 'none' },
+        currPage !== 3 && { display: 'none' },
       )}
     >
       <div class={css({ marginY: '20px', paddingTop: '8px', paddingX: '20px', paddingBottom: '40px' })}>
@@ -283,6 +347,8 @@
             중앙농협은행인지 지역농축협은행인지 다시 한 번 확인해주세요
           </p>
         {/if}
+
+        <p class={css({ fontSize: '12px', color: 'gray.500' })}>수익금이 입금될 본인 명의의 계좌번호를 입력해주세요</p>
       </div>
 
       <Button

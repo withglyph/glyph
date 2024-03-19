@@ -2,7 +2,7 @@
   import dayjs from 'dayjs';
   import IconInfoCircle from '~icons/tabler/alert-circle';
   import { fragment, graphql } from '$glitch';
-  import { Icon } from '$lib/components';
+  import { Icon, Tooltip } from '$lib/components';
   import { Modal } from '$lib/components/v2';
   import { banks } from '$lib/const/revenue';
   import { comma } from '$lib/utils';
@@ -66,7 +66,7 @@
 </script>
 
 <Modal titleStyle={css.raw({ justifyContent: 'center', marginX: '32px' })} bind:open>
-  <svelte:fragment slot="title">정산 상세 정보</svelte:fragment>
+  <svelte:fragment slot="title">출금 상세 정보</svelte:fragment>
 
   {#if $revenueWithdrawal}
     <div class={css({ paddingTop: '16px', paddingBottom: { base: '32px', sm: '20px' }, paddingX: '20px' })}>
@@ -154,7 +154,7 @@
               paddingY: '14px',
             })}
           >
-            <dt class={css({ width: '120px' })}>수익금</dt>
+            <dt class={css({ width: '120px' })}>신청금액</dt>
             <dd class={css({ fontWeight: 'semibold' })}>{comma($revenueWithdrawal.revenueAmount)}원</dd>
           </div>
         </dl>
@@ -171,7 +171,7 @@
             fontWeight: 'semibold',
           })}
         >
-          정산 수수료
+          공제내역
         </p>
         <dl class={css({ fontSize: '14px' })}>
           <div
@@ -198,10 +198,16 @@
             })}
           >
             <dt class={flex({ align: 'center', gap: '2px', width: '120px' })}>
-              원천징수금 <Icon
-                style={css.raw({ size: '16px', color: 'gray.500', transform: 'rotate(180deg)' })}
-                icon={IconInfoCircle}
-              />
+              소득세
+              <Tooltip
+                style={flex.raw({ align: 'center' })}
+                message="소득에 대한 세금을 직접 납부하는 불편함을 줄여드리기 위해 회사가 원천징수를 통해 대리해 납부해 드리는 금액이에요"
+              >
+                <Icon
+                  style={css.raw({ size: '16px', color: 'gray.500', transform: 'rotate(180deg)' })}
+                  icon={IconInfoCircle}
+                />
+              </Tooltip>
             </dt>
             <dd class={css({ fontWeight: 'semibold' })}>{comma($revenueWithdrawal.taxAmount)}원</dd>
           </div>
@@ -209,11 +215,9 @@
       </div>
 
       <p class={css({ paddingY: '10px', fontSize: '12px', color: 'gray.500' })}>
-        소득자가 자신의 세금을 직접 납부하는게 아닌, 원천징수 대상소득을 지급하는 원천징수 의무자(국가, 법인,
-        개인사업자, 비사업자 포함)가 소득자로부터 세금을 미리 징수하여 국가(국세청)에 납부하는 제도를 말해요
-        <br />
-        즉, 창작자님의 수익으로 인해 소득이 발생한 부분에 대해 세금이 부과되는데 그 세금을 회사가 창작자님의 소득에서 떼어
-        대신 납부해요
+        원천징수란 소득자가 자신의 세금을 직접 납부하는 게 아닌, 원천징수 대상 소득을 지급하는 원천징수 의무자(회사)가
+        소득자로부터 세금을 미리 징수하여 국가에 납부하는 제도를 말해요. 원천징수된 세금은 다음 해 5월 종합소득세 신고를
+        통해 돌려받을 수 있어요.
       </p>
 
       <div class={css({ marginTop: '24px' })}>

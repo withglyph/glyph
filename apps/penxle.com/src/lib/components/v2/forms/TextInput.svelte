@@ -32,7 +32,7 @@
         borderColor: { base: 'gray.150', _hover: 'gray.400', _focus: 'gray.400' },
         borderRadius: '8px',
         paddingX: '16px',
-        paddingY: '12px',
+        paddingY: '9px',
         width: 'full',
         backgroundColor: { base: 'gray.5', _disabled: 'gray.100' },
         _invalid: {
