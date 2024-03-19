@@ -59,7 +59,7 @@ const markTextNode = (node: JSONContent, marks: NonNullable<JSONContent['marks']
   traverse(node.content, ({ key, value, parent }) => {
     if (parent && key === 'type' && value === 'text') {
       parent.marks = [...(parent.marks ?? []), ...marks];
-      // @ts-expect-error any
+      // @ts-expect-error parent의 타입이 any라서 filter 인자 타입 추론이 안 됨
       parent.marks = parent.marks.filter((mark, index, self) => self.findIndex((m) => m.type === mark.type) === index);
     }
   });

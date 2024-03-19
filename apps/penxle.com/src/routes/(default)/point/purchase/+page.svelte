@@ -54,15 +54,15 @@
         });
       };
 
-      // @ts-expect-error portone
+      // @ts-expect-error portone 관련 코드
       IMP.init('imp72534540');
 
       if (resp.paymentData.pg === 'paypal_v2') {
         paypalOpen = true;
-        // @ts-expect-error portone
+        // @ts-expect-error portone 관련 코드
         IMP.loadUI('paypal-spb', resp.paymentData, callback);
       } else {
-        // @ts-expect-error portone
+        // @ts-expect-error portone 관련 코드
         IMP.request_pay(resp.paymentData, callback);
       }
     },

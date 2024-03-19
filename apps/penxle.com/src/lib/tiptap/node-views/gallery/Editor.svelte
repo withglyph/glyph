@@ -618,7 +618,7 @@
           checked={allSelected}
           disabled={node.attrs.__data.length === 0}
           on:change={() => {
-            // @ts-expect-error any
+            // @ts-expect-error node.attrs.__data 타입이 any라서 map에서 타입 오류가 발생함
             selectedImages = allSelected ? [] : node.attrs.__data.map((i) => i.id);
           }}
         >

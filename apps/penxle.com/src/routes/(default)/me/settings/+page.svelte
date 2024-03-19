@@ -69,10 +69,10 @@
   const handleUserIdentityVerification = () => {
     mixpanel.track('user:personal-identity-verification:start');
 
-    // @ts-expect-error portone
+    // @ts-expect-error portone 관련 코드
     IMP.init('imp72534540');
 
-    // @ts-expect-error portone
+    // @ts-expect-error portone 관련 코드
     IMP.certification(
       {
         merchant_uid: nanoid(),
