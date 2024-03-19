@@ -6,6 +6,7 @@
   import { Button, Modal } from '$lib/components/v2';
   import { banks } from '$lib/const/revenue';
   import { comma } from '$lib/utils';
+  import { calculateFeeAmount } from '$lib/utils/revenue';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type { MeRevenuePage_InstantSettleRevenueModal_user } from '$glitch';
@@ -44,6 +45,8 @@
       }
     }
   `);
+
+  $: feeAmount = calculateFeeAmount($user.withdrawableRevenue, 500);
 </script>
 
 <Modal
@@ -53,7 +56,7 @@
 >
   <svelte:fragment slot="title">즉시출금</svelte:fragment>
 
-  <div class={css({ paddingTop: '8px', paddingX: '20px' })}>
+  <div class={css({ paddingTop: '24px', paddingX: '20px' })}>
     <p>
       창작자님의 출금 요청하신 금액은
       <br />
@@ -104,6 +107,19 @@
           paddingY: '14px',
         })}
       >
+        <dt class={css({ width: '120px' })}>서비스 이용료</dt>
+        <dd class={css({ fontWeight: 'semibold' })}>{comma(feeAmount.serviceFeeAmount)}원</dd>
+      </div>
+      <div
+        class={flex({
+          align: 'center',
+          gap: '16px',
+          borderBottomWidth: '1px',
+          borderColor: 'gray.100',
+          paddingX: '10px',
+          paddingY: '14px',
+        })}
+      >
         <dt class={flex({ align: 'center', gap: '2px', width: '120px' })}>
           즉시 출금 수수료
           <Tooltip message="즉시출금 신청 시 1건당 500원의 추가 수수료가 발생해요">
@@ -125,8 +141,32 @@
           paddingY: '14px',
         })}
       >
+        <dt class={flex({ align: 'center', gap: '2px', width: '120px' })}>
+          소득세
+          <Tooltip
+            style={flex.raw({ align: 'center' })}
+            message="소득에 대한 세금을 직접 납부하는 불편함을 줄여드리기 위해 회사가 원천징수를 통해 대리해 납부해 드리는 금액이에요"
+          >
+            <Icon
+              style={css.raw({ size: '16px', color: 'gray.500', transform: 'rotate(180deg)' })}
+              icon={IconInfoCircle}
+            />
+          </Tooltip>
+        </dt>
+        <dd class={css({ fontWeight: 'semibold' })}>{comma(feeAmount.taxAmount)}원</dd>
+      </div>
+      <div
+        class={flex({
+          align: 'center',
+          gap: '16px',
+          borderBottomWidth: '1px',
+          borderColor: 'gray.100',
+          paddingX: '10px',
+          paddingY: '14px',
+        })}
+      >
         <dt class={css({ width: '120px' })}>최종 지급 금액</dt>
-        <dd class={css({ fontWeight: 'semibold' })}>{comma($user.withdrawableRevenue - 500)}원</dd>
+        <dd class={css({ fontWeight: 'semibold' })}>{comma(feeAmount.settleAmount)}원</dd>
       </div>
     </dl>
 
