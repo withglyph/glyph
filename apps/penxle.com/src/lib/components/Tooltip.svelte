@@ -37,6 +37,7 @@
       color: 'gray.5',
       backgroundColor: 'gray.900',
       zIndex: '100',
+      maxWidth: '228px',
     })}
     role="tooltip"
     use:floating
