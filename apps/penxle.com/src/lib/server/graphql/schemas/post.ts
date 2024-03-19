@@ -689,7 +689,7 @@ export const postSchema = defineSchema((builder) => {
             ? await decorateContent(db, revision.paidContent.data as JSONContent[])
             : null;
 
-          if (!paidContent) {
+          if (!paidContent || paidContent.length === 0) {
             return createTiptapDocument(freeContent);
           }
 
@@ -1181,7 +1181,7 @@ export const postSchema = defineSchema((builder) => {
         const paidContent = isEmptyContent(paidContentData)
           ? null
           : await revisePostContent({ db, contentData: paidContentData });
-        const price: number | null = accessBarrier.attrs?.price ?? null;
+        const price: number | null = paidContent ? accessBarrier.attrs?.price ?? null : null;
 
         const revisionData = {
           userId: context.session.userId,
