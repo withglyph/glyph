@@ -1,10 +1,12 @@
 <script lang="ts">
+  import dayjs from 'dayjs';
   import IconInfoCircle from '~icons/tabler/alert-circle';
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
   import { Icon, Tooltip } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { Button } from '$lib/components/v2';
+  import { banks } from '$lib/const/revenue';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -23,18 +25,30 @@
       me @_required {
         id
         revenue
+        withdrawableRevenue: revenue(withdrawable: true)
+
+        withdrawalConfig {
+          id
+          monthlyWithdrawalDue
+          monthlyWithdrawalEnabled
+        }
 
         personalIdentity {
           id
         }
 
+        settlementIdentity {
+          id
+          bankCode
+          bankAccountNumber
+        }
+
+        ...MeRevenuePage_InstantSettleRevenueModal_user
+        ...MeRevenuePage_MonthlyWithdrawSettingModal_user
         ...MeRevenuePage_VerifySettlementIdentityModal_user
       }
     }
   `);
-
-  let verified = true; // 창작자 인증 여부
-  let on = true; // 자동출금 on 여부
 </script>
 
 <h1
@@ -48,9 +62,10 @@
   수익/출금
 </h1>
 
-{#if verified}
+{#if $query.me.settlementIdentity}
   <p class={flex({ align: 'center', gap: '2px', smDown: { paddingX: '20px' } })}>
-    내 계좌: <span>카카오뱅크 3333-02-000000</span>
+    내 계좌:
+    <span>{banks[$query.me.settlementIdentity.bankCode]} {$query.me.settlementIdentity.bankAccountNumber}</span>
     <!-- 계좌 변경 시 cs 문의 -->
     <Tooltip style={flex.raw({ align: 'center' })} message="">
       <Icon style={css.raw({ size: '16px', color: 'gray.500', transform: 'rotate(180deg)' })} icon={IconInfoCircle} />
@@ -82,15 +97,37 @@
           />
         </Tooltip>
       </div>
-      <p class={css({ fontSize: { base: '24px', sm: '26px' }, fontWeight: 'semibold' })}>100원</p>
+      <p class={css({ fontSize: { base: '24px', sm: '26px' }, fontWeight: 'semibold' })}>
+        {comma($query.me.withdrawableRevenue)}원
+      </p>
     </div>
 
-    <Button style={css.raw({ hideFrom: 'sm' })} size="md" on:click={() => (instantSettleRevenueOpen = true)}>
-      즉시 출금
-    </Button>
-    <Button style={css.raw({ hideBelow: 'sm' })} size="lg" on:click={() => (instantSettleRevenueOpen = true)}>
-      즉시 출금
-    </Button>
+    <Tooltip
+      style={css.raw({ width: 'fit' })}
+      enabled={$query.me.withdrawableRevenue < 1000 || !$query.me.settlementIdentity}
+      message={$query.me.settlementIdentity
+        ? $query.me?.withdrawableRevenue < 1000
+          ? '천원 이상부터 출금할 수 있어요'
+          : ''
+        : '창작자 인증이 필요해요'}
+    >
+      <Button
+        style={css.raw({ hideFrom: 'sm' })}
+        disabled={$query.me.withdrawableRevenue < 1000 || !$query.me.settlementIdentity}
+        size="md"
+        on:click={() => (instantSettleRevenueOpen = true)}
+      >
+        즉시 출금
+      </Button>
+      <Button
+        style={css.raw({ hideBelow: 'sm' })}
+        disabled={$query.me.withdrawableRevenue < 1000 || !$query.me.settlementIdentity}
+        size="lg"
+        on:click={() => (instantSettleRevenueOpen = true)}
+      >
+        즉시 출금
+      </Button>
+    </Tooltip>
   </div>
   <div class={flex({ flexDirection: 'column', gap: '8px', width: { base: 'full', sm: 'fit' } })}>
     <div
@@ -112,10 +149,10 @@
         })}
       >
         <p class={css({ fontSize: { base: '14px', sm: '16px' }, fontWeight: 'medium' })}>포스트 수익</p>
-        <time class={css({ fontSize: '11px', color: 'gray.400' })}>(23.05.10-23.05.20)</time>
+        <time class={css({ fontSize: '11px', color: 'gray.400' })}>(-{dayjs(new Date()).formatAsDate()})</time>
       </div>
       <p class={css({ fontSize: { base: '16px', sm: '18px' }, fontWeight: { base: 'medium', sm: 'semibold' } })}>
-        {comma(100)}P
+        {comma($query.me.revenue)}P
       </p>
     </div>
     <div
@@ -137,21 +174,30 @@
             icon={IconInfoCircle}
           />
         </Tooltip>
+        {#if $query.me.withdrawalConfig?.monthlyWithdrawalEnabled}
+          {#if $query.me.withdrawalConfig.monthlyWithdrawalDue}
+            <time class={css({ fontSize: '10px', color: 'gray.400' })}>
+              ({dayjs($query.me.withdrawalConfig.monthlyWithdrawalDue).formatAsDate()} 출금예정)
+            </time>
+          {:else}
+            <mark class={css({ fontSize: '10px', color: '[#FF8736]' })}>3만원 미달</mark>
+          {/if}
+        {/if}
       </div>
 
       <p
         class={css(
-          on ? { color: 'teal.500' } : { color: 'gray.400' },
-          !verified && { fontSize: '14px', fontWeight: 'medium' },
+          $query.me.withdrawalConfig?.monthlyWithdrawalEnabled ? { color: 'teal.500' } : { color: 'gray.400' },
+          !$query.me.settlementIdentity && { fontSize: '14px', fontWeight: 'medium' },
         )}
       >
-        {#if verified}
+        {#if $query.me.settlementIdentity}
           <button
             class={css({ display: 'flex', alignItems: 'center', gap: '2px', fontWeight: 'semibold', width: 'full' })}
             type="button"
             on:click={() => (monthlyWithdrawSettingOpen = true)}
           >
-            {on ? 'ON' : 'OFF'}
+            {$query.me.withdrawalConfig?.monthlyWithdrawalEnabled ? 'ON' : 'OFF'}
             <Icon style={css.raw({ size: '20px' })} icon={IconChevronRight} />
           </button>
         {:else}
@@ -162,7 +208,7 @@
   </div>
 </div>
 
-{#if !$query.me.personalIdentity || !verified}
+{#if !$query.me.personalIdentity || !$query.me.settlementIdentity}
   <div
     class={css({
       paddingX: { base: '20px', sm: '24px' },
@@ -261,6 +307,6 @@
   </div>
 </div>
 
-<InstantSettleRevenueModal bind:open={instantSettleRevenueOpen} />
-<MonthlyWithdrawSettingModal bind:open={monthlyWithdrawSettingOpen} />
+<InstantSettleRevenueModal $user={$query.me} bind:open={instantSettleRevenueOpen} />
+<MonthlyWithdrawSettingModal $user={$query.me} bind:open={monthlyWithdrawSettingOpen} />
 <VerifySettlementIdentityModal $user={$query.me} bind:open />

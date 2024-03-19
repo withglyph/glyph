@@ -1,12 +1,49 @@
 <script lang="ts">
   import IconInfoCircle from '~icons/tabler/alert-circle';
+  import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Icon, Tooltip } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
+  import { banks } from '$lib/const/revenue';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
+  import type { MeRevenuePage_InstantSettleRevenueModal_user } from '$glitch';
 
   export let open = false;
+
+  let _user: MeRevenuePage_InstantSettleRevenueModal_user;
+  export { _user as $user };
+
+  $: user = fragment(
+    _user,
+    graphql(`
+      fragment MeRevenuePage_InstantSettleRevenueModal_user on User {
+        id
+        withdrawableRevenue: revenue(withdrawable: true)
+
+        settlementIdentity {
+          id
+          bankAccountHolderName
+          bankCode
+          bankAccountNumber
+        }
+      }
+    `),
+  );
+
+  const instantSettleRevenue = graphql(`
+    mutation InstantSettleRevenue_Mutation {
+      instantSettleRevenue {
+        id
+        revenue(withdrawable: true)
+
+        revenueWithdrawals {
+          id
+        }
+      }
+    }
+  `);
 </script>
 
 <Modal
@@ -20,7 +57,9 @@
     <p>
       창작자님의 출금 요청하신 금액은
       <br />
-      <mark class={css({ fontSize: '20px', fontWeight: 'bold', color: 'teal.500' })}>1000원</mark>
+      <mark class={css({ fontSize: '20px', fontWeight: 'bold', color: 'teal.500' })}>
+        {$user.withdrawableRevenue}원
+      </mark>
       입니다
     </p>
 
@@ -37,8 +76,8 @@
         backgroundColor: 'gray.50',
       })}
     >
-      <span>카카오뱅크 3333-02-000000</span>
-      <span>(홍*동)</span>
+      <span>{banks[$user.settlementIdentity?.bankCode ?? '']} {$user.settlementIdentity?.bankAccountNumber}</span>
+      <span>({$user.settlementIdentity?.bankAccountHolderName})</span>
     </div>
 
     <dl class={css({ fontSize: '14px' })}>
@@ -53,7 +92,7 @@
         })}
       >
         <dt class={css({ width: '120px' })}>총 출금 금액</dt>
-        <dd class={css({ fontWeight: 'semibold' })}>{comma(1_000_000)}원</dd>
+        <dd class={css({ fontWeight: 'semibold' })}>{comma($user.withdrawableRevenue)}원</dd>
       </div>
       <div
         class={flex({
@@ -87,7 +126,7 @@
         })}
       >
         <dt class={css({ width: '120px' })}>최종 지급 금액</dt>
-        <dd class={css({ fontWeight: 'semibold' })}>{comma(1_000_000)}원</dd>
+        <dd class={css({ fontWeight: 'semibold' })}>{comma($user.withdrawableRevenue - 500)}원</dd>
       </div>
     </dl>
 
@@ -100,5 +139,15 @@
     </p>
   </div>
 
-  <Button slot="action" style={css.raw({ width: 'full' })}>신청</Button>
+  <Button
+    slot="action"
+    style={css.raw({ width: 'full' })}
+    on:click={async () => {
+      await instantSettleRevenue();
+      mixpanel.track('user:instant-settle-revenue');
+      open = false;
+    }}
+  >
+    신청
+  </Button>
 </Modal>

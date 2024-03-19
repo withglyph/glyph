@@ -1,10 +1,60 @@
 <script lang="ts">
+  import dayjs from 'dayjs';
+  import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Switch } from '$lib/components/forms';
   import { Modal } from '$lib/components/v2';
+  import { banks } from '$lib/const/revenue';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
+  import type { MeRevenuePage_MonthlyWithdrawSettingModal_user } from '$glitch';
 
   export let open = false;
+
+  let _user: MeRevenuePage_MonthlyWithdrawSettingModal_user;
+  export { _user as $user };
+
+  $: user = fragment(
+    _user,
+    graphql(`
+      fragment MeRevenuePage_MonthlyWithdrawSettingModal_user on User {
+        id
+
+        withdrawalConfig {
+          id
+          monthlyWithdrawalDue
+          monthlyWithdrawalEnabled
+        }
+
+        settlementIdentity {
+          id
+          bankCode
+          bankAccountNumber
+          bankAccountHolderName
+        }
+      }
+    `),
+  );
+
+  const disableMonthlyWithdrawal = graphql(`
+    mutation MeRevenuePage_MonthlyWithdrawSettingModal_DisableMonthlyWithdrawal_Mutation {
+      disableMonthlyWithdrawal {
+        id
+        monthlyWithdrawalDue
+        monthlyWithdrawalEnabled
+      }
+    }
+  `);
+
+  const enableMonthlyWithdrawal = graphql(`
+    mutation MeRevenuePage_MonthlyWithdrawSettingModal_EnableMonthlyWithdrawal_Mutation {
+      enableMonthlyWithdrawal {
+        id
+        monthlyWithdrawalDue
+        monthlyWithdrawalEnabled
+      }
+    }
+  `);
 </script>
 
 <Modal titleStyle={css.raw({ justifyContent: 'center', marginX: '32px' })} bind:open>
@@ -14,9 +64,22 @@
     <div class={flex({ align: 'center', justify: 'space-between' })}>
       <div class={flex({ flexDirection: 'column', gap: '2px' })}>
         <p class={css({ fontWeight: 'semibold' })}>자동출금</p>
-        <span class={css({ fontSize: '10px', color: 'gray.400' })}>(23.05.20 출금예정)</span>
+        <span class={css({ fontSize: '10px', color: 'gray.400' })}>
+          ({dayjs($user.withdrawalConfig?.monthlyWithdrawalDue).formatAsDate()} 출금예정)
+        </span>
       </div>
-      <Switch />
+      <Switch
+        value={$user.withdrawalConfig?.monthlyWithdrawalEnabled}
+        on:change={async () => {
+          if ($user.withdrawalConfig?.monthlyWithdrawalEnabled) {
+            await disableMonthlyWithdrawal();
+            mixpanel.track('user:disable-monthly-withdrawal');
+          } else {
+            await enableMonthlyWithdrawal();
+            mixpanel.track('user:enable-monthly-withdrawal');
+          }
+        }}
+      />
     </div>
 
     <div
@@ -33,8 +96,8 @@
         backgroundColor: 'gray.50',
       })}
     >
-      <span>카카오뱅크 3333-02-000000</span>
-      <span>(홍*동)</span>
+      <span>{banks[$user.settlementIdentity?.bankCode ?? '']} {$user.settlementIdentity?.bankAccountNumber}</span>
+      <span>({$user.settlementIdentity?.bankAccountHolderName})</span>
     </div>
   </div>
 
