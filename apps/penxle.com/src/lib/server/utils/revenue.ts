@@ -207,6 +207,8 @@ export const settleRevenue = async ({ userId, settlementType }: SettleRevenuePar
         },
       },
     });
+
+    await dbAfter.$commit();
   } catch (err) {
     logToSlack('settle', {
       blocks: [
