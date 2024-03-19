@@ -428,6 +428,7 @@ type Post {
   publishedRevision: PostRevision
   purchasedAt: DateTime
   purchasedRevision: PostRevision @deprecated(reason: "Use PostPurchase.revision instead")
+  reactionCount: Int!
   reactions: [PostReaction!]!
   receiveFeedback: Boolean!
   receivePatronage: Boolean!

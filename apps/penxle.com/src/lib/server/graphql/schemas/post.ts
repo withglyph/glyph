@@ -249,6 +249,8 @@ export const postSchema = defineSchema((builder) => {
         },
       }),
 
+      reactionCount: t.relationCount('reactions'),
+
       bookmarkGroups: t.prismaField({
         type: ['BookmarkGroup'],
         select: (_, context, nestedSelection) => {
