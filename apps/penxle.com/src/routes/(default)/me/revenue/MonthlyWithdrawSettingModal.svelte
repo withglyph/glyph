@@ -64,12 +64,14 @@
     <div class={flex({ align: 'center', justify: 'space-between' })}>
       <div class={flex({ flexDirection: 'column', gap: '2px' })}>
         <p class={css({ fontWeight: 'semibold' })}>자동출금</p>
-        <span class={css({ fontSize: '10px', color: 'gray.400' })}>
-          ({dayjs($user.withdrawalConfig?.monthlyWithdrawalDue).formatAsDate()} 출금예정)
-        </span>
+        {#if $user.withdrawalConfig?.monthlyWithdrawalDue}
+          <span class={css({ fontSize: '10px', color: 'gray.400' })}>
+            ({dayjs($user.withdrawalConfig.monthlyWithdrawalDue).formatAsDate()} 출금예정)
+          </span>
+        {/if}
       </div>
       <Switch
-        value={$user.withdrawalConfig?.monthlyWithdrawalEnabled}
+        checked={!!$user.withdrawalConfig?.monthlyWithdrawalEnabled}
         on:change={async () => {
           if ($user.withdrawalConfig?.monthlyWithdrawalEnabled) {
             await disableMonthlyWithdrawal();
