@@ -82,6 +82,7 @@ export const revenueSchema = defineSchema((builder) => {
 
     enableMonthlyWithdrawal: t.withAuth({ user: true }).prismaField({
       type: 'UserWithdrawalConfig',
+      grantScopes: ['$user'],
       resolve: async (query, _, __, { db, ...context }) => {
         if (dayjs().kst().day() === 10) throw new IntentionalError('매월 10일에는 자동 출금 설정을 변경할 수 없어요');
 
@@ -112,6 +113,7 @@ export const revenueSchema = defineSchema((builder) => {
 
     disableMonthlyWithdrawal: t.withAuth({ user: true }).prismaField({
       type: 'UserWithdrawalConfig',
+      grantScopes: ['$user'],
       resolve: async (query, _, __, { db, ...context }) => {
         if (dayjs().kst().day() === 10) throw new IntentionalError('매월 10일에는 자동 출금 설정을 변경할 수 없어요');
 
