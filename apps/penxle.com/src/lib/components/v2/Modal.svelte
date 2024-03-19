@@ -27,7 +27,7 @@
         flexDirection: 'column',
         borderRadius: '10px',
         width: 'full',
-        maxHeight: 'full',
+        maxHeight: { base: '540px', sm: '600px' },
         backgroundColor: 'white',
         boxShadow: '[0 8px 24px 0 {colors.black/28}]',
         pointerEvents: 'auto',
@@ -80,7 +80,7 @@
 <svelte:window on:keydown={(e) => e.key === 'Escape' && (open = false)} />
 
 {#if open}
-  <div class={css({ position: 'fixed', inset: '0', zIndex: '100' })} use:portal>
+  <div class={css({ position: 'fixed', inset: '0', zIndex: '50' })} use:portal>
     <div
       class={css({ position: 'absolute', inset: '0', backgroundColor: 'black/40' })}
       role="button"
@@ -137,7 +137,6 @@
               borderBottomRadius: '[inherit]',
               width: 'full',
               overflowY: 'auto',
-              smDown: { maxHeight: '640px' },
             },
             style,
           )}

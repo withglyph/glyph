@@ -3,8 +3,7 @@
   import qs from 'query-string';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { Button, Helmet, Pagination } from '$lib/components';
-  import { Table, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
+  import { Helmet, Image, Pagination } from '$lib/components';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -23,6 +22,12 @@
 
           post {
             id
+            state
+
+            thumbnail {
+              id
+              ...Image_image
+            }
 
             publishedRevision @_required {
               id
@@ -32,6 +37,15 @@
             space @_required {
               id
               name
+            }
+
+            member {
+              id
+
+              profile {
+                id
+                name
+              }
             }
           }
         }
@@ -53,50 +67,92 @@
   };
 </script>
 
-<Helmet description="내 수익을 확인하세요" title="수익" />
+<Helmet description="내 수익을 확인하세요" title="내 수익" />
 
 {#if $query.me.revenues.length > 0}
-  <div class={flex({ justify: 'flex-end', gap: '8px' })}>
-    <div class={flex({ align: 'flex-end', gap: '8px' })}>
-      <Button href="/me/posts" size="md" type="link">내 포스트 관리하기</Button>
-    </div>
-  </div>
-
-  <Table style={css.raw({ marginTop: '16px', textAlign: 'left', borderCollapse: 'separate', borderSpacingY: '2px' })}>
-    <TableHeader>
-      <TableRow>
-        <TableHead style={css.raw({ width: '[50%]' })}>포스트명</TableHead>
-        <TableHead style={css.raw({ width: '[30%]' })}>수익 발생일</TableHead>
-        <TableHead style={css.raw({ textAlign: 'right', width: '[20%]' })}>수익금</TableHead>
-      </TableRow>
-    </TableHeader>
+  <ul>
     {#each $query.me.revenues as revenue (revenue.id)}
-      <TableRow>
-        <TableData>
-          <div class={flex({ direction: 'column', gap: '4px', maxWidth: '388px', truncate: true })}>
-            <div class={css({ fontWeight: 'bold', truncate: true, sm: { fontSize: '18px' } })}>
-              {revenue.post?.publishedRevision?.title ?? '(제목 없음)'}
-            </div>
-            <div class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500', truncate: true })}>
-              {revenue.post?.space?.name}
-            </div>
-          </div>
-        </TableData>
-        <TableData style={css.raw({ fontSize: '14px', fontWeight: 'medium', color: 'gray.500' })}>
-          {dayjs(revenue.createdAt).formatAsDateTime()}
-        </TableData>
-        <TableData style={css.raw({ textAlign: 'right' })}>
-          <div class={flex({ direction: 'column' })}>
-            <div class={css({ fontWeight: 'bold', sm: { fontSize: '18px' } })}>{comma(revenue.amount)}원</div>
-          </div>
-        </TableData>
-      </TableRow>
-    {/each}
-  </Table>
+      <li
+        class={flex({
+          gap: '16px',
+          borderTopWidth: '1px',
+          borderColor: 'gray.100',
+          paddingY: '20px',
+          _firstOfType: { borderTopWidth: '0' },
+        })}
+      >
+        <svelte:element
+          this={revenue.post?.state === 'DELETED' ? 'div' : 'a'}
+          class={css({ marginY: '4px' })}
+          href={revenue.post?.state === 'DELETED' ? undefined : '/'}
+        >
+          {#if revenue.post?.thumbnail}
+            <Image
+              style={css.raw({ flex: 'none', borderRadius: '6px', size: '86px' })}
+              $image={revenue.post.thumbnail}
+            />
+          {:else}
+            <svg
+              class={css({ flex: 'none', borderRadius: '6px', size: '86px' })}
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect fill="#0c0a091a" height="24" width="24" />
+              <path
+                d="M7.36 3.86c2.3 5.04.42 10.01-.1 11.36-.08.23-.13.36-.11.36a15.7 15.7 0 0 1 9.45 4.6l-1.58-2.74L13 14.07a1.1 1.1 0 1 1 .53-.35l3.53 6.11c-1.4-4.68.63-10.12.63-10.12-6.15-.67-10.33-5.85-10.33-5.85Z"
+                fill="#FAFAF9"
+              />
+            </svg>
+          {/if}
+        </svelte:element>
 
-  <Pagination {initialPage} onChange={updatePage} totalItems={$query.me.revenues.length} />
+        <svelte:element
+          this={revenue.post?.state === 'DELETED' ? 'div' : 'a'}
+          class={css(
+            { display: 'flex', flexDirection: 'column', justifyContent: 'space-between' },
+            revenue.post?.state === 'DELETED' && { color: 'gray.400' },
+          )}
+          href={revenue.post?.state === 'DELETED' ? undefined : '/'}
+        >
+          <div class={flex({ flexDirection: 'column' })}>
+            <time
+              class={css(
+                { fontSize: '12px', fontWeight: 'light', color: 'gray.500' },
+                revenue.post?.state === 'DELETED' && { color: 'gray.400' },
+              )}
+            >
+              {dayjs(revenue.createdAt).formatAsDateTime()} 결제
+            </time>
+            <p class={css({ fontSize: '14px', fontWeight: 'medium' })}>
+              {revenue.post?.publishedRevision?.title ?? '(제목 없음)'}
+              {#if revenue.post?.state === 'DELETED'}(삭제된 포스트){/if}
+            </p>
+            <p class={flex({ align: 'center', gap: '4px' })}>
+              <span class={css({ fontSize: '14px', fontWeight: 'medium' })}>{revenue.post?.space?.name}</span>
+              <span class={css({ fontSize: '12px' })}>by {revenue.post?.member?.profile.name}</span>
+            </p>
+          </div>
+          <p
+            class={css(
+              { fontWeight: 'semibold', color: 'teal.500' },
+              revenue.post?.state === 'DELETED' && { color: 'gray.400' },
+            )}
+          >
+            {comma(revenue.amount)}P
+          </p>
+        </svelte:element>
+      </li>
+    {/each}
+  </ul>
+
+  <Pagination
+    style={css.raw({ marginTop: '32px', paddingBottom: '0' })}
+    {initialPage}
+    onChange={updatePage}
+    totalItems={$query.me.revenues.length}
+  />
 {:else}
-  <div class={css({ paddingY: '40px', fontWeight: 'medium', textAlign: 'center', color: 'gray.500' })}>
-    아직 수익 내역이 없어요
+  <div class={css({ paddingY: '40px', fontWeight: 'semibold', textAlign: 'center', color: 'gray.400' })}>
+    아직 수익내역이 없어요
   </div>
 {/if}

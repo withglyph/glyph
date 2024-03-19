@@ -4,12 +4,14 @@
   import { Icon } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center } from '$styled-system/patterns';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   export let initialPage: number;
   export let totalItems: number;
   export let itemsPerPage = 10;
   export let displayPage = 10;
   export let onChange: (page: number) => void;
+  export let style: SystemStyleObject | undefined = undefined;
 
   let currentPage = initialPage;
 
@@ -27,7 +29,20 @@
   }
 </script>
 
-<div class={center({ gap: '4px', marginTop: '36px', paddingBottom: '16px' })} role="group">
+<div
+  class={css(
+    {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '4px',
+      marginTop: '36px',
+      paddingBottom: '16px',
+    },
+    style,
+  )}
+  role="group"
+>
   <button
     class={center({ size: '28px', _disabled: { color: 'gray.400', cursor: 'not-allowed' } })}
     disabled={currentPage <= displayPage}
