@@ -181,7 +181,7 @@
       display: 'flex',
       flexDirection: 'column',
       width: 'full',
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
       sm: {
         borderWidth: '1px',
         borderColor: 'gray.200',
@@ -189,7 +189,7 @@
         transition: 'common',
         _hover: {
           borderColor: 'gray.900',
-          boxShadow: '[0 4px 16px 0 {colors.black/25}]',
+          boxShadow: '[0 4px 16px 0 {colors.gray.900/25}]',
         },
       },
     },
@@ -252,7 +252,7 @@
               padding: '16px',
               color: 'gray.500',
               size: 'full',
-              backgroundColor: 'white',
+              backgroundColor: 'gray.5',
             })}
             role="alert"
           >

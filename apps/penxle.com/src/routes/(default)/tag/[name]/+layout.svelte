@@ -77,7 +77,7 @@
       paddingX: '24px',
       paddingTop: '16px',
       paddingBottom: '40px',
-      backgroundColor: 'gray.700',
+      backgroundColor: 'gray.600',
     })}
   >
     <div class={flex({ marginBottom: '10px', fontSize: '13px', fontWeight: 'medium', color: 'gray.400' })}>
@@ -88,7 +88,7 @@
 
     <div class={flex({ justify: 'space-between', align: 'flex-start' })}>
       <div>
-        <h1 class={css({ fontSize: '24px', fontWeight: 'bold', color: 'white' })}>#{$query.tag.name}</h1>
+        <h1 class={css({ fontSize: '24px', fontWeight: 'bold', color: 'gray.5' })}>#{$query.tag.name}</h1>
       </div>
       <div class={flex({ align: 'center', gap: '8px' })}>
         {#if $query.tag.followed}
@@ -167,7 +167,7 @@
       marginTop: '-12px',
       paddingX: '24px',
       paddingY: '16px',
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
     })}
   >
     <TabHead style={css.raw({ width: 'full' })} variant="secondary">

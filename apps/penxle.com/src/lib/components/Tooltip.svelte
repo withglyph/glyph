@@ -34,7 +34,7 @@
       paddingX: '16px',
       paddingY: '8px',
       fontSize: '12px',
-      color: 'white',
+      color: 'gray.5',
       backgroundColor: 'gray.900',
       zIndex: '100',
     })}

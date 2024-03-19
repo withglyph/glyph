@@ -81,7 +81,7 @@
       borderWidth: '1px',
       borderColor: 'gray.150',
       borderRadius: '8px',
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
       width: 'full',
       maxWidth: '278px',
       padding: { base: '20px', sm: '24px' },
@@ -136,7 +136,7 @@
         borderColor: 'gray.150',
         borderRadius: '8px',
         padding: { base: '20px', sm: '24px' },
-        backgroundColor: 'white',
+        backgroundColor: 'gray.5',
       })}
     >
       <div
@@ -163,7 +163,7 @@
         borderColor: 'gray.150',
         borderRadius: '8px',
         padding: { base: '20px', sm: '24px' },
-        backgroundColor: 'white',
+        backgroundColor: 'gray.5',
       })}
     >
       <div class={flex({ align: 'center', gap: '4px' })}>
@@ -214,7 +214,7 @@
       paddingX: { base: '20px', sm: '24px' },
       paddingY: '20px',
       marginTop: '12px',
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
       sm: {
         borderWidth: '1px',
         borderColor: 'gray.150',
@@ -289,7 +289,7 @@
     marginTop: '40px',
     paddingTop: '20px',
     paddingBottom: '32px',
-    backgroundColor: 'white',
+    backgroundColor: 'gray.5',
     sm: {
       borderWidth: '1px',
       borderColor: 'gray.200',

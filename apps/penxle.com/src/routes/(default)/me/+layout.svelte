@@ -52,13 +52,13 @@
           borderRadius: '16px',
           paddingX: '16px',
           paddingY: '40px',
-          backgroundColor: 'white',
+          backgroundColor: 'gray.5',
           width: '326px',
           height: 'full',
         },
         $page.url.pathname === '/me'
           ? {
-              borderColor: 'white',
+              borderColor: 'gray.5',
               borderRadius: '0',
               width: 'full',
               maxWidth: 'screen',
@@ -122,7 +122,7 @@
                     backgroundColor: 'gray.50',
                   },
                 },
-                $page.url.pathname.startsWith('/me/cabinets') && { backgroundColor: 'gray.50', color: 'gray.950' },
+                $page.url.pathname.startsWith('/me/cabinets') && { backgroundColor: 'gray.50', color: 'gray.900' },
               )}
               href="/me/cabinets"
             >
@@ -146,7 +146,7 @@
                     backgroundColor: 'gray.50',
                   },
                 },
-                $page.url.pathname === '/me/dashboard' && { backgroundColor: 'gray.50', color: 'gray.950' },
+                $page.url.pathname === '/me/dashboard' && { backgroundColor: 'gray.50', color: 'gray.900' },
               )}
               type="button"
               on:click={() => (comingSoonOpen = true)}
@@ -171,7 +171,7 @@
                     backgroundColor: 'gray.50',
                   },
                 },
-                $page.url.pathname === '/me/posts' && { backgroundColor: 'gray.50', color: 'gray.950' },
+                $page.url.pathname === '/me/posts' && { backgroundColor: 'gray.50', color: 'gray.900' },
               )}
               href="/me/posts"
             >
@@ -195,7 +195,7 @@
                     backgroundColor: 'gray.50',
                   },
                 },
-                $page.url.pathname.startsWith('/me/revenue') && { backgroundColor: 'gray.50', color: 'gray.950' },
+                $page.url.pathname.startsWith('/me/revenue') && { backgroundColor: 'gray.50', color: 'gray.900' },
               )}
               href="/me/revenue"
             >
@@ -219,7 +219,7 @@
                     backgroundColor: 'gray.50',
                   },
                 },
-                $page.url.pathname.startsWith('/me/settings') && { backgroundColor: 'gray.50', color: 'gray.950' },
+                $page.url.pathname.startsWith('/me/settings') && { backgroundColor: 'gray.50', color: 'gray.900' },
               )}
               href="/me/settings"
             >

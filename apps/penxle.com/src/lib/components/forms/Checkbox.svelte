@@ -44,7 +44,7 @@
           appearance: 'none',
           transition: 'common',
           _checked: { borderWidth: '0', backgroundColor: 'teal.500' },
-          _enabled: { '&[aria-invalid]': { borderColor: 'red.500' } },
+          _enabled: { '&[aria-invalid]': { borderColor: 'red.600' } },
         }),
       )}
       type="checkbox"
@@ -62,7 +62,7 @@
         _peerChecked: { display: 'flex' },
       })}
     >
-      <Icon style={css.raw({ size: '14px', color: 'white' })} icon={IconChecked} />
+      <Icon style={css.raw({ size: '14px', color: 'gray.5' })} icon={IconChecked} />
     </div>
 
     <span class={css({ cursor: 'pointer' })}>
@@ -72,7 +72,7 @@
   {#if name}
     <FormValidationMessage for={name} let:message>
       <div class={flex({ align: 'center', gap: '6px', marginTop: '6px', fontSize: '11px', color: 'gray.400' })}>
-        <Icon style={css.raw({ color: 'red.500' })} icon={IconAlertTriangleFilled} />
+        <Icon style={css.raw({ color: 'red.600' })} icon={IconAlertTriangleFilled} />
         {message}
       </div>
     </FormValidationMessage>

@@ -314,7 +314,7 @@
           style={css.raw({
             'borderRadius': '8px',
             'borderBottomWidth': '1px',
-            'borderBottomColor': 'black/10',
+            'borderBottomColor': 'gray.900/10',
             '_last': { borderBottomWidth: '0' },
             '_selected': { backgroundColor: 'gray.50' },
             '& > td > div': {
@@ -471,8 +471,8 @@
         borderRadius: '16px',
         paddingX: '24px',
         paddingY: '8px',
-        backgroundColor: 'white',
-        boxShadow: '[0 4px 16px 0 {colors.black/15}]',
+        backgroundColor: 'gray.5',
+        boxShadow: '[0 4px 16px 0 {colors.gray.900/15}]',
         translate: 'auto',
         transition: 'all',
       },

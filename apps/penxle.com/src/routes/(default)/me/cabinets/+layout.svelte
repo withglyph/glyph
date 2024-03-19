@@ -57,7 +57,7 @@
     class={css({
       paddingX: { base: '20px', sm: '32px' },
       paddingY: '16px',
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
       sm: { borderWidth: '1px', borderColor: 'gray.200', borderRadius: '16px' },
     })}
   >
@@ -112,7 +112,7 @@
       flexDirection: 'column',
       gap: '8px',
       padding: '16px',
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
       sm: {
         gap: '24px',
         borderWidth: '1px',
@@ -175,7 +175,7 @@
 
   <div
     class={css({
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
       paddingY: '16px',
       sm: { borderWidth: '1px', borderColor: 'gray.200', borderRadius: '16px' },
     })}
@@ -212,7 +212,7 @@
     bottom: '24px',
     display: 'none',
     borderRadius: 'full',
-    backgroundColor: 'black/50',
+    backgroundColor: 'gray.900/50',
     size: '50px',
   })}
   type="button"

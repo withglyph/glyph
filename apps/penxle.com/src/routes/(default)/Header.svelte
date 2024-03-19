@@ -55,7 +55,7 @@
     paddingX: { base: '20px', sm: '40px' },
     top: '0',
     height: { base: '56px', sm: '77px' },
-    backgroundColor: 'white',
+    backgroundColor: 'gray.5',
     zIndex: '10',
   })}
 >
@@ -84,7 +84,7 @@
                 gap: '4px',
                 paddingLeft: '12px',
                 paddingRight: '14px',
-                color: 'gray.700',
+                color: 'gray.800',
                 fontSize: '14px',
                 fontWeight: 'semibold',
                 hideBelow: 'sm',

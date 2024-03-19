@@ -92,7 +92,7 @@
             bottom: '-4px',
             size: '16px',
             borderWidth: '1px',
-            borderColor: 'white',
+            borderColor: 'gray.5',
           })}
           $profile={$post.member.profile}
         />
@@ -148,7 +148,7 @@
               paddingX: '8px',
               paddingY: '2px',
               borderRadius: '4px',
-              color: 'red.500',
+              color: 'red.600',
               backgroundColor: 'red.200',
             })}
           >
@@ -162,7 +162,7 @@
               paddingX: '8px',
               paddingY: '2px',
               borderRadius: '4px',
-              color: 'red.500',
+              color: 'red.600',
               backgroundColor: 'red.200',
             })}
           >
@@ -200,7 +200,7 @@
         </div>
       {/if}
       <div
-        class={css({ marginTop: '12px', fontSize: '14px', color: 'gray.700', wordBreak: 'break-all', lineClamp: '2' })}
+        class={css({ marginTop: '12px', fontSize: '14px', color: 'gray.600', wordBreak: 'break-all', lineClamp: '2' })}
       >
         {$post.publishedRevision.previewText}
       </div>
@@ -225,7 +225,7 @@
               paddingX: '12px',
               paddingY: '4px',
               fontSize: '11px',
-              color: 'gray.700',
+              color: 'gray.600',
               backgroundColor: 'gray.100',
             })}
           >

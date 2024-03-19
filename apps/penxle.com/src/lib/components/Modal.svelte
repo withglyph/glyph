@@ -30,7 +30,7 @@
         borderRadius: '16px',
         width: 'full',
         maxHeight: 'full',
-        backgroundColor: 'white',
+        backgroundColor: 'gray.5',
         pointerEvents: 'auto',
         userSelect: 'text',
       },
@@ -89,7 +89,7 @@
       class={css({
         position: 'absolute',
         inset: '0',
-        backgroundColor: 'black/50',
+        backgroundColor: 'gray.900/50',
         backdropFilter: 'auto',
         backdropBlur: '8px',
       })}

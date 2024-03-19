@@ -78,8 +78,8 @@
       fontSize: '13px',
       fontWeight: 'medium',
       color: 'gray.500',
-      backgroundColor: 'white',
-      boxShadow: '[0 2px 10px 0 {colors.black/10}]',
+      backgroundColor: 'gray.5',
+      boxShadow: '[0 2px 10px 0 {colors.gray.900/10}]',
       zIndex: '30',
       userSelect: 'none',
     })}
@@ -120,6 +120,6 @@
         {/if}
       </button>
     </Tooltip>
-    <div class={css({ size: '8px', backgroundColor: 'white' })} use:arrow />
+    <div class={css({ size: '8px', backgroundColor: 'gray.5' })} use:arrow />
   </form>
 {/if}

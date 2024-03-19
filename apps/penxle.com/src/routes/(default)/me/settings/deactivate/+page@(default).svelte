@@ -31,7 +31,7 @@
 
     <div
       class={flex({
-        backgroundColor: 'white',
+        backgroundColor: 'gray.5',
         borderRadius: '16px',
         borderWidth: '1px',
         borderColor: 'gray.300',

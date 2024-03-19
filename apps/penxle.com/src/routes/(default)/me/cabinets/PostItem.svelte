@@ -63,11 +63,11 @@
     borderRadius: '16px',
     paddingX: '24px',
     paddingY: '16px',
-    backgroundColor: 'white',
+    backgroundColor: 'gray.5',
     transition: 'common',
     _hover: {
-      borderColor: 'gray.950',
-      boxShadow: '[0 4px 16px 0 {colors.black/25}]',
+      borderColor: 'gray.900',
+      boxShadow: '[0 4px 16px 0 {colors.gray.900/25}]',
     },
   })}
 >

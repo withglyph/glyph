@@ -133,8 +133,8 @@
     borderColor: 'gray.200',
     borderBottomRadius: '8px',
     width: '192px',
-    backgroundColor: 'white',
-    boxShadow: '[0 5px 22px 0 {colors.black/6}]',
+    backgroundColor: 'gray.5',
+    boxShadow: '[0 5px 22px 0 {colors.gray.900/6}]',
   })}
 >
   <div class={css({ padding: '12px' })}>
@@ -155,7 +155,7 @@
         class={css({
           position: 'absolute',
           borderWidth: '2px',
-          borderColor: 'white',
+          borderColor: 'gray.5',
           borderRadius: 'full',
           size: '14px',
           backgroundColor: 'transparent',
@@ -289,7 +289,7 @@
           height: 'full',
           fontSize: '12px',
           fontWeight: 'medium',
-          color: 'gray.700',
+          color: 'gray.600',
           _hover: {
             borderColor: 'teal.400',
             color: 'teal.700',

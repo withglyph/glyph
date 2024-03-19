@@ -57,13 +57,13 @@
   >
     <div
       style:transform={`translateX(${$progress}%)`}
-      class={css({ position: 'absolute', inset: '0', backgroundColor: 'black/15' })}
+      class={css({ position: 'absolute', inset: '0', backgroundColor: 'gray.900/15' })}
     />
 
     {#if toast.type === 'success'}
-      <Icon style={css.raw({ color: 'white' })} icon={IconCircleCheck} />
+      <Icon style={css.raw({ color: 'gray.5' })} icon={IconCircleCheck} />
     {:else if toast.type === 'error'}
-      <Icon style={css.raw({ color: 'white' })} icon={IconAlertTriangle} />
+      <Icon style={css.raw({ color: 'gray.5' })} icon={IconAlertTriangle} />
     {/if}
   </div>
 
@@ -72,7 +72,7 @@
     out:slide={{ axis: 'x', duration: 400, delay: 200, easing: expoInOut }}
   >
     <div
-      class={flex({ align: 'center', gap: '16px', paddingLeft: '16px', paddingRight: '8px', color: 'white' })}
+      class={flex({ align: 'center', gap: '16px', paddingLeft: '16px', paddingRight: '8px', color: 'gray.5' })}
       on:introend={() => ($progress = 0)}
       in:fly={{ x: '-0.125rem', duration: 200, delay: 800, easing: sineInOut }}
       out:fly={{ x: '-0.125rem', duration: 200, easing: sineInOut }}
@@ -102,15 +102,15 @@
     borderRadius: '8px',
     padding: '12px',
     width: 'fit',
-    backgroundColor: 'black/80',
-    boxShadow: '[0 4px 4px 0 {colors.black/10}]',
+    backgroundColor: 'gray.900/80',
+    boxShadow: '[0 4px 4px 0 {colors.gray.900/10}]',
     hideFrom: 'sm',
   })}
   in:slide={{ axis: 'y', duration: 400, delay: 400, easing: expoInOut }}
   out:slide={{ axis: 'y', duration: 400, delay: 200, easing: expoInOut }}
 >
   {#if toast.title}
-    <span class={css({ fontSize: '13px', fontWeight: 'bold', color: 'white', lineClamp: 1 })}>{toast.title}</span>
+    <span class={css({ fontSize: '13px', fontWeight: 'bold', color: 'gray.5', lineClamp: 1 })}>{toast.title}</span>
   {/if}
-  <span class={css({ fontSize: '13px', fontWeight: 'medium', color: 'white', lineClamp: 1 })}>{toast.message}</span>
+  <span class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.5', lineClamp: 1 })}>{toast.message}</span>
 </div>

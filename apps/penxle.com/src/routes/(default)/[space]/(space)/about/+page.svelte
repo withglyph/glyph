@@ -58,7 +58,7 @@
       <p class={css({ fontSize: '14px', color: 'gray.500' })}>{$query.space.name}의 게시물을 볼 수 없어요</p>
     </div>
   {:else}
-    <section class={flex({ direction: 'column', gap: '12px', padding: '32px', backgroundColor: 'white' })}>
+    <section class={flex({ direction: 'column', gap: '12px', padding: '32px', backgroundColor: 'gray.5' })}>
       <h2 class={css({ fontSize: '18px', fontWeight: 'bold' })}>스페이스 소개</h2>
       <p class={css({ whiteSpace: 'pre-wrap' })}>
         {$query.space.description ?? '아직 스페이스 소개가 작성되지 않았어요'}
@@ -70,7 +70,7 @@
       </p>
     </section>
 
-    <section class={flex({ direction: 'column', gap: '12px', padding: '32px', backgroundColor: 'white' })}>
+    <section class={flex({ direction: 'column', gap: '12px', padding: '32px', backgroundColor: 'gray.5' })}>
       <h2
         class={css({
           fontSize: '18px',

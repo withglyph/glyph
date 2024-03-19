@@ -95,7 +95,7 @@
             alignItems: 'center',
             borderRadius: 'full',
             size: '60px',
-            backgroundColor: 'black/50',
+            backgroundColor: 'gray.900/50',
             translate: 'auto',
             translateY: '-1/2',
             visibility: 'hidden',
@@ -105,7 +105,7 @@
             : { visibility: 'visible' },
         )}
       >
-        <Icon style={css.raw({ size: '24px', color: 'white' })} icon={IconCamera} />
+        <Icon style={css.raw({ size: '24px', color: 'gray.5' })} icon={IconCamera} />
       </div>
     </button>
     <div

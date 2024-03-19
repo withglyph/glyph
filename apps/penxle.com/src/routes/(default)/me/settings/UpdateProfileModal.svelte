@@ -97,7 +97,7 @@
           translateY: '-1/2',
           display: 'none',
           borderRadius: 'full',
-          backgroundColor: 'black/50',
+          backgroundColor: 'gray.900/50',
           size: '60px',
         })}
       >

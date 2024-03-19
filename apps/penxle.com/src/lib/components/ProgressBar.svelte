@@ -10,7 +10,7 @@
     style:width={`${(value / max) * 100}%`}
     class={css({
       borderRightRadius: '8px',
-      backgroundColor: 'black',
+      backgroundColor: 'gray.900',
       height: '3px',
     })}
   />

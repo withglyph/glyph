@@ -71,8 +71,8 @@
       borderWidth: '1px',
       borderColor: 'gray.200',
       borderRadius: '4px',
-      backgroundColor: 'white',
-      boxShadow: '[0 2px 8px 0 {colors.black/6}]',
+      backgroundColor: 'gray.5',
+      boxShadow: '[0 2px 8px 0 {colors.gray.900/6}]',
     })}
     use:floating
   >
@@ -83,7 +83,7 @@
         borderRadius: '4px',
         paddingX: '8px',
         paddingY: '6px',
-        backgroundColor: 'white',
+        backgroundColor: 'gray.5',
         zIndex: '2',
       })}
     >
@@ -91,7 +91,7 @@
     </div>
 
     <div
-      class={css({ borderWidth: '1px', borderColor: 'gray.200', size: '12px', backgroundColor: 'white', zIndex: '1' })}
+      class={css({ borderWidth: '1px', borderColor: 'gray.200', size: '12px', backgroundColor: 'gray.5', zIndex: '1' })}
       use:arrow
     />
   </div>

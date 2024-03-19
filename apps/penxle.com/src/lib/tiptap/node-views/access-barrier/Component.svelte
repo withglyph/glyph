@@ -131,8 +131,8 @@
         marginRight: '20px',
         width: 'fit',
         color: 'gray.600',
-        backgroundColor: 'white',
-        boxShadow: '[0 2px 10px 0 {colors.black/4}]',
+        backgroundColor: 'gray.5',
+        boxShadow: '[0 2px 10px 0 {colors.gray.900/4}]',
       })}
     >
       {#if isLastChild}
@@ -179,7 +179,7 @@
             paddingY: '4px',
             fontSize: { base: '12px', sm: '14px' },
             fontWeight: 'medium',
-            color: node.attrs.price ? 'teal.600' : 'error.900',
+            color: node.attrs.price ? 'teal.600' : 'red.600',
             backgroundColor: { _hover: 'gray.100', _pressed: 'gray.100' },
             transition: 'common',
             whiteSpace: 'nowrap',
@@ -256,7 +256,7 @@
           paddingX: '10px',
           paddingTop: '8px',
           paddingBottom: '10px',
-          backgroundColor: 'white',
+          backgroundColor: 'gray.5',
           zIndex: '50',
         })}
         use:floating
@@ -280,10 +280,10 @@
                   paddingRight: '24px',
                   paddingY: '10px',
                   width: '110px',
-                  backgroundColor: 'white',
+                  backgroundColor: 'gray.5',
                   _invalid: {
-                    borderColor: 'error.900',
-                    backgroundColor: 'error.50',
+                    borderColor: 'red.600',
+                    backgroundColor: 'red.50',
                   },
                 })}
                 aria-errormessage={priceErrorDetailTooltipId}
@@ -462,7 +462,7 @@
       <p class={css({ marginBottom: '32px', textAlign: 'right', fontSize: '13px', color: 'gray.400' })}>
         {#if node.attrs.__data.point < node.attrs.price}
           필요한 포인트
-          <mark class={css({ fontSize: '13px', fontWeight: 'medium', color: 'error.900' })}>
+          <mark class={css({ fontSize: '13px', fontWeight: 'medium', color: 'red.600' })}>
             {comma(node.attrs.__data.point - node.attrs.price)}P
           </mark>
         {/if}
@@ -541,8 +541,8 @@
         padding: '8px',
         width: 'fit',
         color: 'gray.600',
-        backgroundColor: 'white',
-        boxShadow: '[0 2px 10px 0 {colors.black/4}]',
+        backgroundColor: 'gray.5',
+        boxShadow: '[0 2px 10px 0 {colors.gray.900/4}]',
       })}
     >
       <div class={css({ paddingX: '6px', paddingY: '4px', fontSize: '14px', fontWeight: 'medium' })}>

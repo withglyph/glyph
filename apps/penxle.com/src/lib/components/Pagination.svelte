@@ -58,17 +58,17 @@
     <button
       class={center({
         borderWidth: '1px',
-        borderColor: 'black/10',
+        borderColor: 'gray.900/10',
         borderRadius: '8px',
         padding: '8px',
         size: '32px',
         fontSize: '13px',
         fontWeight: 'bold',
-        backgroundColor: 'white',
+        backgroundColor: 'gray.5',
         transition: 'common',
-        _hover: { color: 'white', backgroundColor: 'gray.900' },
-        _focusVisible: { color: 'white', backgroundColor: 'gray.900' },
-        _pressed: { color: 'white', backgroundColor: 'gray.900' },
+        _hover: { color: 'gray.5', backgroundColor: 'gray.900' },
+        _focusVisible: { color: 'gray.5', backgroundColor: 'gray.900' },
+        _pressed: { color: 'gray.5', backgroundColor: 'gray.900' },
       })}
       aria-pressed={currentPage === index}
       type="button"

@@ -117,7 +117,7 @@
       paddingX: '16px',
       paddingY: '10px',
       width: 'full',
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
       transition: 'all',
       zIndex: '1',
       hideFrom: 'sm',
@@ -135,7 +135,7 @@
     align: 'center',
     grow: '1',
     width: 'full',
-    backgroundColor: { base: 'gray.100', sm: 'white' },
+    backgroundColor: { base: 'gray.100', sm: 'gray.5' },
   })}
 >
   <header
@@ -148,8 +148,8 @@
       padding: '24px',
       width: 'full',
       height: '206px',
-      color: 'white',
-      backgroundColor: 'black/50',
+      color: 'gray.5',
+      backgroundColor: 'gray.900/50',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
@@ -179,7 +179,7 @@
         {#if $query.space.meAsMember}
           <div class={flex({ gap: '8px', wrap: 'wrap' })} role="group">
             <Button
-              style={flex.raw({ gap: '4px', color: 'white', _disabled: { visibility: 'hidden' } })}
+              style={flex.raw({ gap: '4px', color: 'gray.5', _disabled: { visibility: 'hidden' } })}
               color="tertiary"
               size="sm"
               variant="outlined"
@@ -188,7 +188,7 @@
               포스트 관리 <Icon icon={IconList} />
             </Button>
             <Button
-              style={flex.raw({ gap: '4px', color: 'white', _disabled: { visibility: 'hidden' } })}
+              style={flex.raw({ gap: '4px', color: 'gray.5', _disabled: { visibility: 'hidden' } })}
               color="tertiary"
               href="/{$query.space.slug}/dashboard/posts/collections"
               size="sm"

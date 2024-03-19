@@ -134,7 +134,7 @@
   <button
     class={circle({
       size: '36px',
-      color: 'gray.700',
+      color: 'gray.800',
       transition: 'common',
       _hover: { backgroundColor: 'gray.100' },
       _pressed: { backgroundColor: 'gray.100' },
@@ -172,8 +172,8 @@
       borderRadius: '10px',
       width: 'full',
       maxWidth: '375px',
-      backgroundColor: 'white',
-      boxShadow: '[0px 5px 22px 0px {colors.black/6}]',
+      backgroundColor: 'gray.5',
+      boxShadow: '[0px 5px 22px 0px {colors.gray.900/6}]',
       zIndex: '50',
     })}
     use:floating

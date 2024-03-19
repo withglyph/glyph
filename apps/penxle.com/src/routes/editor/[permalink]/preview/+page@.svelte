@@ -44,7 +44,7 @@
       paddingX: { base: '16px', sm: '30px' },
       paddingY: '8px',
       height: '61px',
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
       zIndex: '10',
     })}
   >
@@ -82,7 +82,7 @@
                 borderRadius: '10px',
                 width: '1/2',
                 height: 'full',
-                backgroundColor: 'white',
+                backgroundColor: 'gray.5',
                 transition: 'all',
               },
             })}

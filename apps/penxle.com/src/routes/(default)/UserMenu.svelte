@@ -96,7 +96,7 @@
       class={css({
         position: 'absolute',
         inset: '0',
-        backgroundColor: 'black/50',
+        backgroundColor: 'gray.900/50',
         backdropFilter: 'auto',
         backdropBlur: '8px',
       })}
@@ -124,8 +124,8 @@
           borderTopLeftRadius: '12px',
           width: 'full',
           maxHeight: 'full',
-          backgroundColor: 'white',
-          boxShadow: '[0px 6px 24px 0px {colors.black/8}]',
+          backgroundColor: 'gray.5',
+          boxShadow: '[0px 6px 24px 0px {colors.gray.900/8}]',
           pointerEvents: 'auto',
         })}
         use:scrollLock

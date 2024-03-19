@@ -62,7 +62,7 @@
         borderBottomWidth: '1px',
         borderBottomColor: 'gray.100',
         paddingX: '20px',
-        backgroundColor: 'white',
+        backgroundColor: 'gray.5',
         height: '56px',
       },
     })}
@@ -98,7 +98,7 @@
             _focusWithin: {
               ringWidth: '1px',
               ringColor: 'teal.500',
-              backgroundColor: 'white',
+              backgroundColor: 'gray.5',
             },
           }),
         )}
@@ -137,6 +137,6 @@
   </div>
 {:else}
   <button class={center({ marginRight: '8px', size: '34px' })} type="button" on:click={() => (open = true)}>
-    <Icon style={css.raw({ size: '24px', color: 'gray.950' })} icon={IconSearch} />
+    <Icon style={css.raw({ size: '24px', color: 'gray.900' })} icon={IconSearch} />
   </button>
 {/if}

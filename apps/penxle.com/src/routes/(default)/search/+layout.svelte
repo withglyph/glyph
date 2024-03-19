@@ -62,7 +62,7 @@
     smDown: {
       paddingTop: '20px',
       width: 'full',
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
     },
     sm: {
       display: 'grid',
@@ -81,7 +81,7 @@
         borderRadius: '16px',
         paddingX: '12px',
         paddingY: '16px',
-        backgroundColor: 'white',
+        backgroundColor: 'gray.5',
       })}
     >
       <button

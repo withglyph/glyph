@@ -7,7 +7,7 @@
 <div
   class={css({
     fontSize: '15px',
-    backgroundColor: 'white',
+    backgroundColor: 'gray.5',
     sm: { borderWidth: '1px', borderColor: 'gray.200', borderRadius: '16px' },
   })}
 >

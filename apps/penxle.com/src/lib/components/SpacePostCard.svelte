@@ -80,7 +80,7 @@
     {
       paddingY: '16px',
       paddingX: '24px',
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
       width: 'full',
       maxWidth: '800px',
       transition: 'common',
@@ -90,7 +90,7 @@
         borderRadius: '16px',
         _hover: {
           borderColor: 'gray.900',
-          boxShadow: '[0 4px 16px 0 {colors.black/25}]',
+          boxShadow: '[0 4px 16px 0 {colors.gray.900/25}]',
         },
       },
     },

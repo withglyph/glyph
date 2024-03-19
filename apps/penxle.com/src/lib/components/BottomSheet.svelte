@@ -30,7 +30,7 @@
       class={css({
         position: 'absolute',
         inset: '0',
-        backgroundColor: 'black/50',
+        backgroundColor: 'gray.900/50',
         backdropFilter: 'auto',
         backdropBlur: '8px',
       })}
@@ -52,7 +52,7 @@
           paddingY: '24px',
           width: 'full',
           height: 'fit',
-          backgroundColor: 'white',
+          backgroundColor: 'gray.5',
           pointerEvents: 'auto',
         })}
         in:fly={{ y: '20%', duration: 150 }}

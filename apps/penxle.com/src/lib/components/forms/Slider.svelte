@@ -39,7 +39,7 @@
     class={css({ borderRadius: 'full', width: 'full', height: '8px', backgroundColor: 'gray.200', overflow: 'hidden' })}
     on:pointerdown={handler}
   >
-    <div style:width={p} class={css({ height: 'full', backgroundColor: 'black' })} />
+    <div style:width={p} class={css({ height: 'full', backgroundColor: 'gray.900' })} />
   </div>
   <div class={css({ position: 'absolute', width: 'full', height: '8px', pointerEvents: 'none' })}>
     <button
@@ -70,7 +70,7 @@
 
 {#if name}
   <FormValidationMessage for={name} let:message>
-    <div class={flex({ align: 'center', gap: '6px', marginTop: '6px', fontSize: '12px', color: 'red.500' })}>
+    <div class={flex({ align: 'center', gap: '6px', marginTop: '6px', fontSize: '12px', color: 'red.600' })}>
       <Icon icon={IconAlertTriangle} />
       {message}
     </div>

@@ -28,8 +28,8 @@
         borderRadius: '10px',
         width: 'full',
         maxHeight: { base: '540px', sm: '600px' },
-        backgroundColor: 'white',
-        boxShadow: '[0 8px 24px 0 {colors.black/28}]',
+        backgroundColor: 'gray.5',
+        boxShadow: '[0 8px 24px 0 {colors.gray.900/28}]',
         pointerEvents: 'auto',
         userSelect: 'text',
       },
@@ -82,7 +82,7 @@
 {#if open}
   <div class={css({ position: 'fixed', inset: '0', zIndex: '50' })} use:portal>
     <div
-      class={css({ position: 'absolute', inset: '0', backgroundColor: 'black/40' })}
+      class={css({ position: 'absolute', inset: '0', backgroundColor: 'gray.900/40' })}
       role="button"
       tabindex="-1"
       on:click={() => (open = false)}
@@ -159,7 +159,7 @@
                   paddingX: '24px',
                   paddingY: '16px',
                   width: 'full',
-                  backgroundColor: 'white',
+                  backgroundColor: 'gray.5',
                 },
                 actionStyle,
               )}

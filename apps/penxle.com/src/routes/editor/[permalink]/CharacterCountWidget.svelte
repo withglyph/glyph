@@ -32,7 +32,7 @@
       paddingX: '16px',
       paddingY: '12px',
       color: 'gray.300',
-      backgroundColor: 'gray.950',
+      backgroundColor: 'gray.900',
       zIndex: '50',
     })}
     role="tooltip"
@@ -41,17 +41,17 @@
   >
     <div class={css({ fontSize: '12px' })}>
       <span class={css({ display: 'inline-block', width: '60px', color: 'gray.300' })}>공백 미포함</span>
-      <span class={css({ textAlign: 'right', fontSize: '12px', fontWeight: 'medium', color: 'white' })}>
+      <span class={css({ textAlign: 'right', fontSize: '12px', fontWeight: 'medium', color: 'gray.5' })}>
         {countWithoutWhitespace}자
       </span>
     </div>
     <div class={css({ fontSize: '12px' })}>
       <span class={css({ display: 'inline-block', width: '60px', color: 'gray.300' })}>공백 포함</span>
-      <span class={css({ textAlign: 'right', fontSize: '12px', fontWeight: 'medium', color: 'white' })}>
+      <span class={css({ textAlign: 'right', fontSize: '12px', fontWeight: 'medium', color: 'gray.5' })}>
         {countWithWhitespace}자
       </span>
     </div>
 
-    <div class={css({ size: '8px', backgroundColor: 'gray.950' })} use:arrow />
+    <div class={css({ size: '8px', backgroundColor: 'gray.900' })} use:arrow />
   </div>
 {/if}

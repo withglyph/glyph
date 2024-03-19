@@ -130,7 +130,7 @@
                 paddingY: '4px',
                 fontSize: '11px',
                 fontWeight: 'semibold',
-                color: 'white',
+                color: 'gray.5',
                 backgroundColor: 'gray.400',
               })}
             >

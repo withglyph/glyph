@@ -102,8 +102,8 @@
       paddingY: '16px',
       borderRadius: '16px',
       width: '208px',
-      backgroundColor: 'white',
-      boxShadow: '[0 4px 4px 0px {colors.black/10}]',
+      backgroundColor: 'gray.5',
+      boxShadow: '[0 4px 4px 0px {colors.gray.900/10}]',
       zIndex: '50',
     })}
     use:floating
@@ -150,7 +150,7 @@
       {/each}
     </div>
 
-    <div class={css({ borderBottomWidth: '1px', borderBottomColor: 'black/10', marginY: '12px', width: 'full' })} />
+    <div class={css({ borderBottomWidth: '1px', borderBottomColor: 'gray.900/10', marginY: '12px', width: 'full' })} />
 
     <Button size="xs" variant="text" on:click={() => (openCreateSpace = true)}>
       <Icon style={css.raw({ marginRight: '4px', size: '14px' })} icon={IconPlus} />

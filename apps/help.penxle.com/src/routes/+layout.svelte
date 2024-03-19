@@ -13,7 +13,7 @@
       top: '0',
       paddingX: '32px',
       width: '100%',
-      backgroundColor: 'black',
+      backgroundColor: 'gray.900',
       zIndex: '10',
     })}
   >
@@ -22,9 +22,9 @@
         <Logo class={css({ width: '32px', height: '32px' })} />
       </a>
 
-      <div class={css({ borderLeftWidth: '1px', borderLeftColor: 'white', marginX: '16px', height: '32px' })} />
+      <div class={css({ borderLeftWidth: '1px', borderLeftColor: 'gray.5', marginX: '16px', height: '32px' })} />
 
-      <a class={css({ fontSize: '18px', fontWeight: 'bold', color: 'white', userSelect: 'none' })} href="/">
+      <a class={css({ fontSize: '18px', fontWeight: 'bold', color: 'gray.5', userSelect: 'none' })} href="/">
         도움 센터
       </a>
     </div>

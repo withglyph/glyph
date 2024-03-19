@@ -5,5 +5,5 @@
 </script>
 
 <div class={center({ flexGrow: '1', margin: '32px', pointerEvents: 'none', userSelect: 'none' })}>
-  <CompanyLogo class={css({ height: '33vh', color: 'black' })} />
+  <CompanyLogo class={css({ height: '33vh', color: 'gray.900' })} />
 </div>

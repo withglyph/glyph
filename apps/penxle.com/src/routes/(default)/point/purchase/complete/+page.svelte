@@ -80,7 +80,7 @@
             borderRadius: '16px',
             borderColor: 'gray.200',
             padding: '16px',
-            backgroundColor: 'white',
+            backgroundColor: 'gray.5',
           })}
         >
           <p class={css({ marginBottom: '8px', color: 'gray.500' })}>충전 상품</p>
@@ -110,7 +110,7 @@
             borderColor: 'gray.200',
             borderRadius: '16px',
             padding: '16px',
-            backgroundColor: 'white',
+            backgroundColor: 'gray.5',
           })}
         >
           <div>
@@ -163,7 +163,7 @@
 
         <div
           class={css({
-            backgroundColor: 'white',
+            backgroundColor: 'gray.5',
             borderWidth: '1px',
             borderColor: 'gray.200',
             borderRadius: '16px',

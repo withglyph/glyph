@@ -17,7 +17,7 @@
   `);
 </script>
 
-<div class={css({ flexGrow: '1', paddingX: '16px', paddingY: '32px', width: 'full', backgroundColor: 'white' })}>
+<div class={css({ flexGrow: '1', paddingX: '16px', paddingY: '32px', width: 'full', backgroundColor: 'gray.5' })}>
   <div
     class={css({
       display: 'flex',
@@ -100,7 +100,7 @@
                   paddingX: '12px',
                   paddingY: '4px',
                   fontSize: '12px',
-                  color: 'gray.700',
+                  color: 'gray.800',
                   backgroundColor: 'gray.100',
                 })}
                 href={`/tag/${tag.name}`}

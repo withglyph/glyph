@@ -364,7 +364,7 @@
           paddingX: '8px',
           paddingY: '6px',
           color: 'gray.400',
-          backgroundColor: 'white',
+          backgroundColor: 'gray.5',
         })}
         type="button"
         on:click={() => {
@@ -424,12 +424,12 @@
                     left: '4px',
                     display: 'none',
                     borderRadius: '3px',
-                    backgroundColor: 'black/30',
+                    backgroundColor: 'gray.900/30',
                     size: '48px',
                   })}
                 >
                   <button type="button" on:click={() => removeImage(image.id)}>
-                    <Icon style={css.raw({ color: 'white', size: '18px' })} icon={IconTrash} />
+                    <Icon style={css.raw({ color: 'gray.5', size: '18px' })} icon={IconTrash} />
                   </button>
                 </div>
                 <p class={css({ fontSize: '10px', color: 'gray.400', textAlign: 'center', width: 'full' })}>
@@ -716,7 +716,7 @@
                 borderRadius: '4px',
                 paddingX: '24px',
                 paddingY: '10px',
-                backgroundColor: { base: 'white', _hover: 'gray.100' },
+                backgroundColor: { base: 'gray.5', _hover: 'gray.100' },
                 height: '68px',
                 width: 'full',
                 _pressed: { ringWidth: '[1.5px]', ringColor: 'teal.500', backgroundColor: 'teal.50' },

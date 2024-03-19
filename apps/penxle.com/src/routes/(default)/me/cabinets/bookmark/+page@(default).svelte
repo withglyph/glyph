@@ -35,7 +35,7 @@
   class={center({
     borderBottomWidth: '1px',
     borderColor: 'gray.200',
-    backgroundColor: 'white',
+    backgroundColor: 'gray.5',
     width: 'full',
     height: '60px',
     hideBelow: 'sm',

@@ -236,19 +236,19 @@
 <div
   class={css(
     {
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
       zIndex: '50',
       smDown: {
         borderTopRadius: '14px',
         width: 'full',
-        boxShadow: '[0 8px 24px 0 {colors.black/28}]',
+        boxShadow: '[0 8px 24px 0 {colors.gray.900/28}]',
       },
       sm: {
         borderWidth: '1px',
         borderColor: 'gray.200',
         borderTopWidth: '0',
         borderBottomRadius: '8px',
-        boxShadow: '[0 5px 22px 0 {colors.black/6}]',
+        boxShadow: '[0 5px 22px 0 {colors.gray.900/6}]',
       },
     },
     !open && { display: 'none' },
@@ -304,11 +304,11 @@
           textAlign: 'left',
           smDown: {
             borderBottomWidth: '2px',
-            borderBottomColor: 'white',
+            borderBottomColor: 'gray.5',
             fontSize: '15px',
             fontWeight: 'semibold',
             color: 'gray.300',
-            _pressed: { borderBottomColor: 'gray.950', color: 'gray.950' },
+            _pressed: { borderBottomColor: 'gray.900', color: 'gray.900' },
           },
           sm: {
             fontSize: '13px',
@@ -326,7 +326,7 @@
         {#if selectedSpaceId || $post.space}
           <Icon style={css.raw({ size: '24px', color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} />
         {:else}
-          <Icon style={css.raw({ size: '24px', color: 'red.500', hideBelow: 'sm' })} icon={IconDot} />
+          <Icon style={css.raw({ size: '24px', color: 'red.600', hideBelow: 'sm' })} icon={IconDot} />
         {/if}
         <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>발행</span>
       </button>
@@ -337,11 +337,11 @@
           textAlign: 'left',
           smDown: {
             borderBottomWidth: '2px',
-            borderBottomColor: 'white',
+            borderBottomColor: 'gray.5',
             fontSize: '15px',
             fontWeight: 'semibold',
             color: 'gray.300',
-            _pressed: { borderBottomColor: 'gray.950', color: 'gray.950' },
+            _pressed: { borderBottomColor: 'gray.900', color: 'gray.900' },
           },
           sm: {
             fontSize: '13px',
@@ -369,11 +369,11 @@
           textAlign: 'left',
           smDown: {
             borderBottomWidth: '2px',
-            borderBottomColor: 'white',
+            borderBottomColor: 'gray.5',
             fontSize: '15px',
             fontWeight: 'semibold',
             color: 'gray.300',
-            _pressed: { borderBottomColor: 'gray.950', color: 'gray.950' },
+            _pressed: { borderBottomColor: 'gray.900', color: 'gray.900' },
           },
           sm: {
             fontSize: '13px',
@@ -403,11 +403,11 @@
           textAlign: 'left',
           smDown: {
             borderBottomWidth: '2px',
-            borderBottomColor: 'white',
+            borderBottomColor: 'gray.5',
             fontSize: '15px',
             fontWeight: 'semibold',
             color: 'gray.300',
-            _pressed: { borderBottomColor: 'gray.950', color: 'gray.950' },
+            _pressed: { borderBottomColor: 'gray.900', color: 'gray.900' },
           },
           sm: {
             fontSize: '13px',
@@ -433,11 +433,11 @@
           textAlign: 'left',
           smDown: {
             borderBottomWidth: '2px',
-            borderBottomColor: 'white',
+            borderBottomColor: 'gray.5',
             fontSize: '15px',
             fontWeight: 'semibold',
             color: 'gray.300',
-            _pressed: { borderBottomColor: 'gray.950', color: 'gray.950' },
+            _pressed: { borderBottomColor: 'gray.900', color: 'gray.900' },
           },
           sm: {
             fontSize: '13px',
@@ -461,11 +461,11 @@
           textAlign: 'left',
           smDown: {
             borderBottomWidth: '2px',
-            borderBottomColor: 'white',
+            borderBottomColor: 'gray.5',
             fontSize: '15px',
             fontWeight: 'semibold',
             color: 'gray.300',
-            _pressed: { borderBottomColor: 'gray.950', color: 'gray.950' },
+            _pressed: { borderBottomColor: 'gray.900', color: 'gray.900' },
           },
           sm: {
             fontSize: '13px',
@@ -581,7 +581,7 @@
                   borderColor: 'gray.200',
                   borderBottomRadius: '6px',
                   width: 'full',
-                  backgroundColor: 'white',
+                  backgroundColor: 'gray.5',
                   zIndex: '50',
                 })}
                 transition:slide={{ axis: 'y', duration: 250 }}
@@ -710,7 +710,7 @@
                   borderColor: 'gray.200',
                   borderBottomRadius: '6px',
                   width: 'full',
-                  backgroundColor: 'white',
+                  backgroundColor: 'gray.5',
                   zIndex: '50',
                 })}
                 transition:slide={{ axis: 'y', duration: 250 }}
@@ -965,7 +965,7 @@
                 paddingY: '6px',
                 fontSize: '11px',
                 fontWeight: 'semibold',
-                color: 'white',
+                color: 'gray.5',
                 backgroundColor: 'teal.500',
               })}
             >
@@ -1057,7 +1057,7 @@
           />
 
           <FormValidationMessage for="password" let:message>
-            <div class={flex({ align: 'center', gap: '6px', fontSize: '12px', color: 'red.500' })}>
+            <div class={flex({ align: 'center', gap: '6px', fontSize: '12px', color: 'red.600' })}>
               <Icon icon={IconAlertTriangle} />
               {message}
             </div>
@@ -1152,7 +1152,7 @@
             >
               댓글 허용
             </p>
-            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.700' } })}>
+            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.600' } })}>
               독자들이 게시물에 대한 의견을 나누고 소통할 수 있어요
             </p>
           </div>
@@ -1215,7 +1215,7 @@
             >
               피드백
             </p>
-            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.700' } })}>
+            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.600' } })}>
               가장 오래 머무른 구간, 밑줄, 이모지 등 피드백을 받아요
             </p>
           </div>
@@ -1237,7 +1237,7 @@
             >
               게시물 세부 공개
             </p>
-            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.700' } })}>
+            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.600' } })}>
               독자에게 좋아요, 조회수를 공유해요
             </p>
           </div>
@@ -1259,7 +1259,7 @@
             >
               창작자 후원
             </p>
-            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.700' } })}>
+            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.600' } })}>
               독자들이 게시물에 자유롭게 후원할 수 있어요
             </p>
           </div>
@@ -1281,7 +1281,7 @@
             >
               게시물 내용 보호
             </p>
-            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.700' } })}>
+            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.600' } })}>
               게시물의 내용을 보호하기 위해 우클릭 또는 복사를 제한해요
             </p>
           </div>
@@ -1313,8 +1313,8 @@
           width: { base: 'full', sm: '96px' },
           fontSize: { base: '16px', sm: '14px' },
           fontWeight: { base: 'semibold', sm: 'medium' },
-          color: 'white',
-          backgroundColor: 'gray.950',
+          color: 'gray.5',
+          backgroundColor: 'gray.900',
         })}
         disabled={!selectedSpaceId}
         type="button"

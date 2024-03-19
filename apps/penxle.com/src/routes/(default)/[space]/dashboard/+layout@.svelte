@@ -290,7 +290,7 @@
     <span class={css({ fontWeight: 'bold' })}>스페이스 관리</span>
   </div>
 
-  <div class={css({ borderBottomWidth: '1px', borderBottomColor: 'black/10', marginY: '8px', width: 'full' })} />
+  <div class={css({ borderBottomWidth: '1px', borderBottomColor: 'gray.900/10', marginY: '8px', width: 'full' })} />
 
   <div
     class={flex({
@@ -369,7 +369,7 @@
     {/if}
   </div>
 
-  <div class={css({ borderBottomWidth: '1px', borderBottomColor: 'black/10', marginY: '8px', width: 'full' })} />
+  <div class={css({ borderBottomWidth: '1px', borderBottomColor: 'gray.900/10', marginY: '8px', width: 'full' })} />
 
   <nav class={css({ width: 'full' })}>
     <ul class={css({ fontWeight: 'bold', color: 'gray.500' })}>
@@ -384,12 +384,12 @@
               paddingX: '8px',
               paddingY: '26px',
               _hover: {
-                color: 'gray.950',
+                color: 'gray.900',
                 backgroundColor: 'gray.50',
               },
             },
             $page.url.pathname === `/${$query.space.slug}/dashboard` && {
-              color: 'gray.950',
+              color: 'gray.900',
               backgroundColor: 'gray.50',
             },
           )}
@@ -411,12 +411,12 @@
               paddingX: '8px',
               paddingY: '26px',
               _hover: {
-                color: 'gray.950',
+                color: 'gray.900',
                 backgroundColor: 'gray.50',
               },
             },
             $page.url.pathname === `/${$query.space.slug}/dashboard/members` && {
-              color: 'gray.950',
+              color: 'gray.900',
               backgroundColor: 'gray.50',
             },
           )}
@@ -438,12 +438,12 @@
               paddingX: '8px',
               paddingY: '26px',
               _hover: {
-                color: 'gray.950',
+                color: 'gray.900',
                 backgroundColor: 'gray.50',
               },
             },
             $page.url.pathname === `/${$query.space.slug}/dashboard/posts` && {
-              color: 'gray.950',
+              color: 'gray.900',
               backgroundColor: 'gray.50',
             },
           )}
@@ -464,12 +464,12 @@
               paddingX: '8px',
               paddingY: '26px',
               _hover: {
-                color: 'gray.950',
+                color: 'gray.900',
                 backgroundColor: 'gray.50',
               },
             },
             $page.url.pathname === `/${$query.space.slug}/dashboard/subscribers` && {
-              color: 'gray.950',
+              color: 'gray.900',
               backgroundColor: 'gray.50',
             },
           )}
@@ -490,12 +490,12 @@
               paddingX: '8px',
               paddingY: '26px',
               _hover: {
-                color: 'gray.950',
+                color: 'gray.900',
                 backgroundColor: 'gray.50',
               },
             },
             $page.url.pathname === `/${$query.space.slug}/dashboard/settings` && {
-              color: 'gray.950',
+              color: 'gray.900',
               backgroundColor: 'gray.50',
             },
           )}

@@ -3,23 +3,27 @@ import { defineTokens } from '@pandacss/dev';
 export const colors = defineTokens.colors({
   current: { value: 'currentColor' },
 
-  black: { value: '#000000' },
-  white: { value: '#FFFFFF' },
   transparent: { value: 'rgb(0 0 0 / 0)' },
 
   gray: {
-    50: { value: '#FAFAFA' },
-    100: { value: '#F4F4F5' },
-    150: { value: '#EBEBEB' },
-    200: { value: '#E4E4E7' },
-    300: { value: '#D4D4D8' },
-    400: { value: '#A1A1AA' },
-    500: { value: '#71717A' },
-    600: { value: '#52525B' },
-    700: { value: '#3F3F46' },
-    800: { value: '#27272A' },
-    900: { value: '#18181B' },
-    950: { value: '#09090B' },
+    5: { value: '#FBFBFB' },
+    50: { value: '#F8F8F8' },
+    100: { value: '#F3F3F3' },
+    150: { value: '#EDEDED' },
+    200: { value: '#E2E2E2' },
+    300: { value: '#C7C7C7' },
+    400: { value: '#9B9B9B' },
+    500: { value: '#767676' },
+    600: { value: '#595959' },
+    800: { value: '#353535' },
+    900: { value: '#171717' },
+  },
+
+  cyan: {
+    50: { value: '#F2FCFD' },
+    200: { value: '#E7F9FB' },
+    400: { value: '#27A6BA' },
+    600: { value: '#0894B3' },
   },
 
   teal: {
@@ -37,21 +41,42 @@ export const colors = defineTokens.colors({
   },
 
   red: {
-    50: { value: '#FFF9F8' },
-    100: { value: '#FEEEED' },
-    200: { value: '#FDDFDE' },
-    300: { value: '#FCC8C6' },
-    400: { value: '#F98B88' },
-    500: { value: '#F66062' },
-    600: { value: '#A83E3D' },
-    700: { value: '#83302E' },
-    800: { value: '#4F1C1C' },
-    900: { value: '#361312' },
-    950: { value: '#170807' },
+    50: { value: '#FFF8F8' },
+    200: { value: '#FFE5E5' },
+    400: { value: '#E36469' },
+    600: { value: '#DC3D43' },
+    800: { value: '#CD2B31' },
   },
 
-  error: {
-    50: { value: '#FFECEC' },
-    900: { value: '#DC2626' },
+  yellow: {
+    800: { value: '#FFAA00' },
+  },
+
+  green: {
+    800: { value: '#04B014' },
+  },
+
+  grass: {
+    50: { value: '#E9F9EE' },
+    200: { value: '#DDF3E4' },
+    600: { value: '#18794E' },
+  },
+
+  blue: {
+    50: { value: '#F0F4FF' },
+    200: { value: '#D9E2FC' },
+    600: { value: '#3451B2' },
+  },
+
+  violet: {
+    50: { value: '#F5F2FF' },
+    200: { value: '#EDE9FE' },
+    600: { value: '#5746AF' },
+  },
+
+  pink: {
+    50: { value: '#FEEFF6' },
+    200: { value: '#FCE5F3' },
+    600: { value: '#CD1D8D' },
   },
 });

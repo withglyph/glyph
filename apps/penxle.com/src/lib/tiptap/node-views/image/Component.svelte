@@ -74,7 +74,7 @@
     >
       {#if node.attrs.__file}
         <FileImage style={css.raw({ width: 'full' })} file={node.attrs.__file} />
-        <div class={center({ position: 'absolute', inset: '0', backgroundColor: 'white/50' })}>
+        <div class={center({ position: 'absolute', inset: '0', backgroundColor: 'gray.5/50' })}>
           <RingSpinner style={css.raw({ size: '32px', color: '[#FCD242]' })} />
         </div>
       {:else if node.attrs.__data}
@@ -94,7 +94,7 @@
         use:portal
         use:scrollLock
       >
-        <div class={css({ position: 'fixed', inset: '0', backgroundColor: 'black/50' })} />
+        <div class={css({ position: 'fixed', inset: '0', backgroundColor: 'gray.900/50' })} />
         <Image
           style={css.raw({ maxWidth: 'full', maxHeight: 'full', overflow: 'scroll' })}
           $image={node.attrs.__data}

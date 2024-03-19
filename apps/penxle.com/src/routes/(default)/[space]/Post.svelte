@@ -432,7 +432,7 @@
   $: shortLink = `https://pnxl.me/${$query.post.shortlink}`;
 </script>
 
-<article class={css({ flexGrow: '1', width: 'full', backgroundColor: 'white' }, style)}>
+<article class={css({ flexGrow: '1', width: 'full', backgroundColor: 'gray.5' }, style)}>
   <div
     class={flex({
       direction: 'column',
@@ -463,7 +463,7 @@
           {$postRevision.title ?? '(제목 없음)'}
         </h1>
         {#if $postRevision.subtitle}
-          <h2 class={css({ marginTop: '3px', color: 'gray.700', wordBreak: 'break-all' })}>{$postRevision.subtitle}</h2>
+          <h2 class={css({ marginTop: '3px', color: 'gray.600', wordBreak: 'break-all' })}>{$postRevision.subtitle}</h2>
         {/if}
       </div>
 
@@ -546,7 +546,7 @@
                 borderWidth: '1px',
                 borderColor: 'gray.200',
                 borderRadius: 'full',
-                backgroundColor: 'white',
+                backgroundColor: 'gray.5',
                 size: '24px',
               })}
             />
@@ -1009,7 +1009,7 @@
         borderTopColor: 'gray.150',
         marginX: '-20px',
         paddingX: '20px',
-        backgroundColor: 'white',
+        backgroundColor: 'gray.5',
         zIndex: '1',
         height: '56px',
         hideFrom: 'sm',
@@ -1185,7 +1185,7 @@
         </a>
 
         {#if positionInCollection > -1}
-          <div class={css({ marginTop: '16px', backgroundColor: 'white' })}>
+          <div class={css({ marginTop: '16px', backgroundColor: 'gray.5' })}>
             {#if positionInCollection > 0}
               {@const previousPost = $query.post.collection.posts[positionInCollection - 1]}
               <a
@@ -1416,7 +1416,7 @@
               marginBottom: '10px',
               fontSize: '18px',
               fontWeight: 'semibold',
-              color: 'gray.700',
+              color: 'gray.600',
               scrollMarginY: '61px',
             })}
           >
@@ -1530,7 +1530,7 @@
                         />
                       </div>
                       <div class={css({ truncate: true })}>
-                        <p class={css({ fontSize: '12px', fontWeight: 'medium', color: 'gray.700', truncate: true })}>
+                        <p class={css({ fontSize: '12px', fontWeight: 'medium', color: 'gray.600', truncate: true })}>
                           {post.space.name}
                         </p>
                         <p class={css({ fontSize: '11px', color: 'gray.400', truncate: true })}>
@@ -1562,7 +1562,7 @@
                         <p
                           class={css({
                             fontWeight: 'semibold',
-                            color: 'gray.700',
+                            color: 'gray.600',
                             truncate: true,
                             sm: { fontSize: '18px' },
                           })}
@@ -1577,7 +1577,7 @@
                             marginTop: { base: '1px', sm: '2px' },
                             fontSize: { base: '12px', sm: '15px' },
                             fontWeight: 'medium',
-                            color: 'gray.700',
+                            color: 'gray.600',
                             truncate: true,
                           })}
                         >
@@ -1651,7 +1651,7 @@
 >
   <svelte:fragment slot="title">포스트를 삭제하시겠어요?</svelte:fragment>
 
-  <p class={css({ marginTop: '4px', paddingX: { base: '24px', sm: '28px' }, fontSize: '14px', color: 'gray.700' })}>
+  <p class={css({ marginTop: '4px', paddingX: { base: '24px', sm: '28px' }, fontSize: '14px', color: 'gray.600' })}>
     삭제된 글은 복구할 수 없어요
   </p>
 

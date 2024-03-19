@@ -121,7 +121,7 @@
       marginY: '20px',
       paddingX: '16px',
       paddingY: '24px',
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
     },
   })}
 >
@@ -132,7 +132,7 @@
         borderColor: 'gray.200',
         borderRadius: '12px',
         padding: '24px',
-        backgroundColor: 'white',
+        backgroundColor: 'gray.5',
       },
     })}
     use:form

@@ -72,7 +72,7 @@
       inset: '0',
       zIndex: '1',
       smDown: {
-        backgroundColor: 'black/50',
+        backgroundColor: 'gray.900/50',
         transition: 'opacity',
         backdropFilter: 'auto',
         backdropBlur: '8px',
@@ -102,10 +102,10 @@
         borderWidth: '1px',
         borderColor: 'gray.200',
         borderRadius: '10px',
-        backgroundColor: 'white',
+        backgroundColor: 'gray.5',
         sm: {
           width: '376px',
-          boxShadow: '[0px 6px 18px 0px {colors.black/12}]',
+          boxShadow: '[0px 6px 18px 0px {colors.gray.900/12}]',
           zIndex: '2',
         },
         smDown: {
@@ -116,7 +116,7 @@
           right: '[0!]',
           borderBottomRadius: '0',
           width: 'full',
-          boxShadow: '[0px 8px 24px 0px {colors.black/28}]',
+          boxShadow: '[0px 8px 24px 0px {colors.gray.900/28}]',
           zIndex: '50',
         },
       },
@@ -132,7 +132,7 @@
         borderBottomColor: 'gray.100',
         paddingX: '20px',
         paddingY: '12px',
-        color: 'gray.950',
+        color: 'gray.900',
       })}
     >
       <h1 class={css({ fontWeight: 'semibold' })}>공유하기</h1>

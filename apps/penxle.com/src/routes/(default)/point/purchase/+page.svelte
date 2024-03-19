@@ -116,7 +116,7 @@
       borderRadius: '16px',
       padding: '16px',
       width: 'full',
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
     })}
   >
     <div class={flex({ direction: 'column' })}>

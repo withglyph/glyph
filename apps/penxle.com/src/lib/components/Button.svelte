@@ -97,8 +97,8 @@
           backgroundColor: 'gray.800',
           borderWidth: '1px',
           borderColor: 'gray.800',
-          _hover: { borderColor: 'gray.950', backgroundColor: 'gray.950' },
-          _active: { backgroundColor: 'black' },
+          _hover: { borderColor: 'gray.900', backgroundColor: 'gray.900' },
+          _active: { backgroundColor: 'gray.900' },
         },
       },
       {
@@ -119,9 +119,9 @@
         color: 'red',
         disabled: false,
         css: {
-          borderColor: 'red.500',
+          borderColor: 'red.600',
           color: 'red.50',
-          backgroundColor: 'red.500',
+          backgroundColor: 'red.600',
           _hover: { borderColor: '[#F66062]', backgroundColor: '[#F66062]' },
         },
       },

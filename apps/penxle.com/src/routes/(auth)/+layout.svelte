@@ -35,7 +35,7 @@
       borderRadius: '16px',
       width: 'full',
       maxWidth: '430px',
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
       zIndex: '1',
     })}
   >

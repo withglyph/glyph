@@ -172,7 +172,7 @@
     position: 'absolute',
     top: '0',
     width: 'full',
-    backgroundColor: 'white',
+    backgroundColor: 'gray.5',
     transition: 'common',
     zIndex: '100',
   })}
@@ -268,16 +268,16 @@
         <button
           class={css({
             borderWidth: '1px',
-            borderColor: 'gray.950',
+            borderColor: 'gray.900',
             borderRadius: '4px',
             paddingX: '32px',
             paddingY: '10px',
             fontSize: '14px',
             fontWeight: 'medium',
-            color: 'white',
+            color: 'gray.5',
             lineHeight: 'none',
             whiteSpace: 'nowrap',
-            backgroundColor: 'gray.950',
+            backgroundColor: 'gray.900',
             sm: { marginRight: '12px' },
           })}
           type="button"
@@ -289,7 +289,7 @@
 
       {#if publishMenuOpen}
         <div
-          class={css({ position: 'fixed', inset: '0', zIndex: '40', smDown: { backgroundColor: 'black/50' } })}
+          class={css({ position: 'fixed', inset: '0', zIndex: '40', smDown: { backgroundColor: 'gray.900/50' } })}
           role="button"
           tabindex="-1"
           on:click={() => (publishMenuOpen = false)}

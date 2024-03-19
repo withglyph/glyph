@@ -18,7 +18,7 @@
     paddingX: '24px',
     paddingY: '32px',
     borderRadius: '12px',
-    backgroundColor: 'white',
+    backgroundColor: 'gray.5',
     borderWidth: '1px',
     borderColor: 'gray.200',
     smDown: { marginX: '16px', marginY: '20px' },
@@ -30,7 +30,7 @@
       <TabHeadItem id={0} pathname="/{$page.params.space}/dashboard/posts">포스트</TabHeadItem>
       <TabHeadItem id={1} pathname="/{$page.params.space}/dashboard/posts/collections">컬렉션</TabHeadItem>
     </TabHead>
-    <hr class={css({ width: 'full', borderColor: 'black/10' })} />
+    <hr class={css({ width: 'full', borderColor: 'gray.900/10' })} />
   </div>
   <slot />
 </section>

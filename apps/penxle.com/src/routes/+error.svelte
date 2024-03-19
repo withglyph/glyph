@@ -76,8 +76,8 @@
         paddingY: '8px',
         fontWeight: 'medium',
         lineHeight: 'none',
-        color: 'white',
-        backgroundColor: { base: 'gray.800', _hover: 'gray.900', _active: 'black' },
+        color: 'gray.5',
+        backgroundColor: { base: 'gray.800', _hover: 'gray.900', _active: 'gray.900' },
         transition: 'common',
       })}
       href="/"

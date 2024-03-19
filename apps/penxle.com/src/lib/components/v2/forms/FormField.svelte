@@ -34,7 +34,7 @@
       gap: '2px',
       marginTop: '6px',
       fontSize: '12px',
-      color: 'error.900',
+      color: 'red.600',
       minHeight: '18px',
     })}
   >

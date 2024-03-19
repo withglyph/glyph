@@ -76,7 +76,7 @@
         paddingY: '24px',
         width: { base: 'full', sm: '326px' },
         height: 'full',
-        backgroundColor: 'white',
+        backgroundColor: 'gray.5',
       })}
     >
       <div
@@ -115,7 +115,7 @@
         class={css({
           fontSize: '20px',
           fontWeight: 'bold',
-          color: 'black',
+          color: 'gray.900',
           smDown: { marginTop: '16px' },
         })}
       >
@@ -130,7 +130,7 @@
           borderColor: 'gray.200',
           borderRadius: '12px',
           padding: '24px',
-          backgroundColor: 'white',
+          backgroundColor: 'gray.5',
           smDown: { marginBottom: '16px' },
         })}
       >
@@ -160,7 +160,7 @@
                   <div
                     class={css({
                       borderBottomWidth: '1px',
-                      borderBottomColor: 'black/10',
+                      borderBottomColor: 'gray.900/10',
                       paddingBottom: '12px',
                       fontSize: '13px',
                       color: 'gray.500',

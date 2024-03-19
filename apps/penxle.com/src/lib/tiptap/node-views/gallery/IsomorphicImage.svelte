@@ -19,7 +19,7 @@
 {#if image.kind === 'file'}
   <div class={css({ position: 'relative' }, style)}>
     <FileImage style={css.raw(style)} file={image.__file} />
-    <div class={center({ position: 'absolute', inset: '0', backgroundColor: 'white/50' })}>
+    <div class={center({ position: 'absolute', inset: '0', backgroundColor: 'gray.5/50' })}>
       <RingSpinner style={css.raw({ color: 'teal.500', size: '32px' })} />
     </div>
   </div>

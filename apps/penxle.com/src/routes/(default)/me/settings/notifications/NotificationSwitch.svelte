@@ -121,7 +121,7 @@
       </div>
     </div>
   {/if}
-  <div class={flex({ align: 'center', gap: '32px', backgroundColor: 'white', hideBelow: 'sm' })}>
+  <div class={flex({ align: 'center', gap: '32px', backgroundColor: 'gray.5', hideBelow: 'sm' })}>
     <Switch
       checked={preferences[category]?.find((v) => v.method === 'WEBSITE')?.opted ?? true}
       disabled={preferences.ALL?.find((v) => v.method === 'WEBSITE')?.opted === false}

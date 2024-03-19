@@ -241,7 +241,7 @@
                 paddingY: '4px',
                 fontSize: '11px',
                 fontWeight: 'semibold',
-                color: 'white',
+                color: 'gray.5',
                 backgroundColor: 'gray.400',
               })}
             >
@@ -359,7 +359,7 @@
 
               {#if !parentId}
                 <Button
-                  style={css.raw({ backgroundColor: 'white/60' })}
+                  style={css.raw({ backgroundColor: 'gray.5/60' })}
                   size="2xs"
                   variant="outline"
                   on:click={() => (replyInputOpen = !replyInputOpen)}
@@ -454,7 +454,7 @@
   >
     <svelte:fragment slot="title">{$postComment.profile.name}님을 차단할까요?</svelte:fragment>
 
-    <div class={css({ marginTop: '4px', paddingX: { base: '24px', sm: '28px' }, fontSize: '14px', color: 'gray.700' })}>
+    <div class={css({ marginTop: '4px', paddingX: { base: '24px', sm: '28px' }, fontSize: '14px', color: 'gray.600' })}>
       차단된 유저는 스페이스의 모든 게시물을 볼 수 없으며, 댓글을 달 수 없어요
       <br />
       차단 해지는 [스페이스 설정 - 독자관리]에서 가능해요

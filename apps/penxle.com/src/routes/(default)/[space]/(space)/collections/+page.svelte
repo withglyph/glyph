@@ -78,7 +78,7 @@
             class={flex({
               gap: '12px',
               padding: '8px',
-              backgroundColor: 'white',
+              backgroundColor: 'gray.5',
               sm: { borderRadius: '12px', backgroundColor: { _hover: 'gray.50', _focus: 'gray.50' } },
             })}
             href={`/${$query.space.slug}/collections/${collection.id}`}
@@ -102,7 +102,7 @@
 
     {#if $query.space.meAsMember}
       <Button
-        style={flex.raw({ gap: '8px', marginX: '8px', marginBottom: '8px', backgroundColor: 'white' })}
+        style={flex.raw({ gap: '8px', marginX: '8px', marginBottom: '8px', backgroundColor: 'gray.5' })}
         color="tertiary"
         size="lg"
         variant="outlined"

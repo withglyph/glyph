@@ -101,14 +101,14 @@
   `);
 </script>
 
-<main class={flex({ direction: 'column', align: 'center', grow: '1', width: 'full', background: 'white' })}>
+<main class={flex({ direction: 'column', align: 'center', grow: '1', width: 'full', background: 'gray.5' })}>
   <div
     class={css({
       paddingTop: '24px',
       paddingX: '16px',
       width: 'full',
       maxWidth: '800px',
-      backgroundColor: 'white',
+      backgroundColor: 'gray.5',
       sm: { display: 'flex', marginBottom: '32px' },
     })}
   >
@@ -410,7 +410,7 @@
     </TabHeadItem>
   </TabHead>
 
-  <hr class={css({ borderColor: 'black/10', width: 'full' })} />
+  <hr class={css({ borderColor: 'gray.900/10', width: 'full' })} />
 
   {#if $query.space.muted && !revealMutedSpace}
     <div

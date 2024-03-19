@@ -44,9 +44,9 @@
     variants: {
       variant: {
         'primary': {
-          color: 'white',
+          color: 'gray.5',
           backgroundColor: {
-            base: 'gray.950',
+            base: 'gray.900',
             _enabled: {
               _hover: 'gray.800',
               _focusVisible: 'gray.800',
@@ -57,7 +57,7 @@
           boxShadow: { _active: '[0 0 0 2px #A1A1AA]' },
         },
         'secondary': {
-          color: 'white',
+          color: 'gray.5',
           backgroundColor: {
             base: 'teal.500',
             _enabled: {
@@ -87,7 +87,7 @@
           outlineWidth: '1px',
           outlineColor: { base: 'gray.150', _active: 'gray.300', _disabled: 'gray.150' },
           backgroundColor: {
-            base: 'white',
+            base: 'gray.5',
             _enabled: {
               _hover: 'gray.50',
               _focusVisible: 'gray.50',

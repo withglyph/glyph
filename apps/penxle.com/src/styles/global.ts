@@ -24,7 +24,7 @@ export const globalCss = defineGlobalStyles({
     WebkitFontSmoothing: 'auto',
     MozOsxFontSmoothing: 'auto',
 
-    color: 'gray.950',
+    color: 'gray.900',
     lineHeight: '1.5',
   },
 

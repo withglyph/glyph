@@ -164,7 +164,7 @@
               }}
             >
               <Icon
-                style={css.raw({ size: '16px', color: 'gray.500', _hover: { color: 'red.500' } })}
+                style={css.raw({ size: '16px', color: 'gray.500', _hover: { color: 'red.600' } })}
                 icon={IconTrash}
               />
             </Button>
