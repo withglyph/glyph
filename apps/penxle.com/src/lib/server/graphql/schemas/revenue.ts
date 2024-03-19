@@ -91,7 +91,7 @@ export const revenueSchema = defineSchema((builder) => {
         });
 
         if (!userSettlementIdentity) {
-          throw new IntentionalError('먼저 창작자 인증을 진행해주세요');
+          throw new IntentionalError('먼저 계좌 인증을 진행해주세요');
         }
 
         return db.userWithdrawalConfig.upsert({
@@ -122,7 +122,7 @@ export const revenueSchema = defineSchema((builder) => {
         });
 
         if (!userSettlementIdentity) {
-          throw new IntentionalError('먼저 창작자 인증을 진행해주세요');
+          throw new IntentionalError('먼저 계좌 인증을 진행해주세요');
         }
 
         return db.userWithdrawalConfig.upsert({

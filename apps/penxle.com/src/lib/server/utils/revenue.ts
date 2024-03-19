@@ -122,7 +122,7 @@ export const settleRevenue = async ({ userId, settlementType }: SettleRevenuePar
   });
 
   if (!settlementIdentity) {
-    throw new IntentionalError('먼저 창작자 인증을 진행해 주세요');
+    throw new IntentionalError('먼저 계좌 인증을 진행해 주세요');
   }
 
   const settlement = await db.revenueWithdrawal.create({
