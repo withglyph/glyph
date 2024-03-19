@@ -19,7 +19,7 @@
         id
         permalink
         ageRating
-        likeCount
+        reactionCount
         viewCount
         publishedAt
         discloseStats
@@ -135,10 +135,10 @@
           </div>
         {/if}
 
-        {#if $post.likeCount > 0 && $post.discloseStats}
+        {#if $post.reactionCount > 0 && $post.discloseStats}
           <div class={css({ display: 'flex', alignItems: 'center', gap: '2px' })}>
             <Icon style={css.raw({ size: '14px' })} icon={IconHeart} />
-            {humanizeNumber($post.likeCount)}
+            {humanizeNumber($post.reactionCount)}
           </div>
         {/if}
 

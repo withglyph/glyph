@@ -86,7 +86,7 @@
 
           permalink
           shortlink
-          likeCount
+          reactionCount
           liked
           viewCount
           unlocked
@@ -583,7 +583,7 @@
                 </div>
                 <div class={flex({ align: 'center', gap: '2px' })}>
                   <Icon style={css.raw({ size: '13px', color: 'gray.400' })} icon={IconMoodSmile} />
-                  {humanizeNumber($query.post.likeCount)}
+                  {humanizeNumber($query.post.reactionCount)}
                 </div>
               </div>
             {/if}

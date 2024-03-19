@@ -191,7 +191,7 @@
       })}
       variant="secondary"
     >
-      <TabHeadItem id={1} pathname="/me/cabinets">좋아요</TabHeadItem>
+      <TabHeadItem id={1} pathname="/me/cabinets">이모지</TabHeadItem>
       <TabHeadItem id={2} pathname="/me/cabinets/recent">최근</TabHeadItem>
       <TabHeadItem id={3} pathname="/me/cabinets/purchased">구매</TabHeadItem>
     </TabHead>
