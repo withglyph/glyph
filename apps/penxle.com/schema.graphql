@@ -333,7 +333,7 @@ type Mutation {
   updateUserNotificationPreference(input: UpdateUserNotificationPreferenceInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
   verifyPassportIdentity(input: VerifyPassportIdentityInput!): User!
-  verifySettlementIdentity(input: VerifySettlementIdentityInput!): User!
+  verifySettlementIdentity(input: VerifySettlementIdentityInput!): UserSettlementIdentity!
 }
 
 input MuteSpaceInput {

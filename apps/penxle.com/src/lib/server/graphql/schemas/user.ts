@@ -1083,7 +1083,8 @@ export const userSchema = defineSchema((builder) => {
     }),
 
     verifySettlementIdentity: t.withAuth({ user: true }).prismaField({
-      type: 'User',
+      type: 'UserSettlementIdentity',
+      grantScopes: ['$user'],
       args: { input: t.arg({ type: VerifySettlementIdentityInput }) },
       resolve: async (query, _, { input }, { db, session }) => {
         const personalIdentity = await db.userPersonalIdentity.findUnique({
@@ -1163,9 +1164,9 @@ export const userSchema = defineSchema((builder) => {
           });
         }
 
-        return await db.user.findUniqueOrThrow({
+        return await db.userSettlementIdentity.findUniqueOrThrow({
           ...query,
-          where: { id: session.userId },
+          where: { userId: session.userId },
         });
       },
     }),
