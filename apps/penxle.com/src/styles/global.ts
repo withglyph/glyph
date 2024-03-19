@@ -16,9 +16,7 @@ export const globalCss = defineGlobalStyles({
   },
 
   'html': {
-    fontFamily: 'sans',
-    // spell-checker:disable-next-line
-    fontFeatureSettings: '"calt" 0, "ss01" 1, "ss05" 1, "ss07" 1',
+    fontFamily: 'ui',
     textSizeAdjust: '100%',
 
     WebkitFontSmoothing: 'auto',

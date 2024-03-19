@@ -53,7 +53,10 @@
 
 <article
   bind:this={element}
-  class={cx('tiptap', css({ display: 'contents', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }))}
+  class={cx(
+    'tiptap',
+    css({ display: 'contents', fontFamily: 'prose', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }),
+  )}
   data-indent={options.paragraphIndent}
   data-spacing={options.paragraphSpacing}
   on:copy|capture={handleContentProtection}

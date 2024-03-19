@@ -54,7 +54,10 @@
 
 <div
   bind:this={element}
-  class={cx('tiptap tiptap-editor', css({ display: 'contents', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }))}
+  class={cx(
+    'tiptap tiptap-editor',
+    css({ display: 'contents', fontFamily: 'prose', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }),
+  )}
   autocapitalize="off"
   autocorrect="off"
   data-indent={options.paragraphIndent}
