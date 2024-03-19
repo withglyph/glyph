@@ -638,6 +638,7 @@ model User {
   singleSignOns                  UserSingleSignOn[]
   spaces                         SpaceMember[]
   tagMutes                       UserTagMute[]
+  withdrawalConfig               UserWithdrawalConfig?
   sentSpaceMemberInvitations     SpaceMemberInvitation[]       @relation("spaceMemberInvitationSent")
   receivedSpaceMemberInvitations SpaceMemberInvitation[]       @relation("spaceMemberInvitationReceived")
   followedSpaces                 SpaceFollow[]
@@ -815,6 +816,15 @@ model UserTagMute {
 
   @@unique([userId, tagId])
   @@map("user_tag_mute")
+}
+
+model UserWithdrawalConfig {
+  id                       String  @id
+  userId                   String  @unique @map("user_id")
+  user                     User    @relation(fields: [userId], references: [id])
+  monthlyWithdrawalEnabled Boolean @default(false) @map("monthly_withdrawal_enabled")
+
+  @@map("user_withdrawal_configs")
 }
 
 enum ContentFilterCategory {

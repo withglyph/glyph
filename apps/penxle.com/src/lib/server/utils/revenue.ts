@@ -3,7 +3,7 @@ import { match } from 'ts-pattern';
 import { IntentionalError } from '$lib/errors';
 import * as coocon from '$lib/server/external-api/coocon';
 import { logToSlack } from '$lib/server/utils';
-import { calculateFeeAmount, createId } from '$lib/utils';
+import { calculateFeeAmount, createId, getMonthlyWithdrawableDayjsBefore } from '$lib/utils';
 import { prismaClient } from '../database';
 import type { PrismaEnums } from '$prisma';
 import type { InteractiveTransactionClient } from '../database';
@@ -14,14 +14,30 @@ type GetUserRevenueParams = {
   db: InteractiveTransactionClient;
   userId: string;
   withdrawableOnly?: boolean;
+  monthlyWithdrawableOnly?: boolean;
 };
-export const getUserRevenue = async ({ db, userId, withdrawableOnly }: GetUserRevenueParams) => {
+export const getUserRevenue = async ({
+  db,
+  userId,
+  withdrawableOnly,
+  monthlyWithdrawableOnly,
+}: GetUserRevenueParams) => {
+  const dateLt = (() => {
+    if (monthlyWithdrawableOnly) {
+      return getMonthlyWithdrawableDayjsBefore().toDate();
+    }
+    if (withdrawableOnly) {
+      return getWithdrawableDayjs().toDate();
+    }
+    return undefined;
+  })();
+
   const agg = await db.revenue.aggregate({
     _sum: { amount: true },
     where: {
       userId,
       state: { not: 'PAID' },
-      createdAt: withdrawableOnly ? { lt: getWithdrawableDayjs().toDate() } : undefined,
+      createdAt: { lt: dateLt },
     },
   });
 

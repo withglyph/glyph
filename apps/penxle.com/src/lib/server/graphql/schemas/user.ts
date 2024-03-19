@@ -21,7 +21,7 @@ import {
   isAdulthood,
   isGte15,
 } from '$lib/server/utils';
-import { createId } from '$lib/utils';
+import { createId, getMonthlyWithdrawalDayjs } from '$lib/utils';
 import {
   CreateUserSchema,
   DeleteUserSchema,
@@ -322,6 +322,11 @@ export const userSchema = defineSchema((builder) => {
         grantScopes: ['$user'],
       }),
 
+      withdrawalConfig: t.relation('withdrawalConfig', {
+        nullable: true,
+        grantScopes: ['$user'],
+      }),
+
       notifications: t.relation('notifications', {
         args: {
           unreadOnly: t.arg.boolean({ defaultValue: false }),
@@ -426,6 +431,28 @@ export const userSchema = defineSchema((builder) => {
               bankAccountHolderName.at(0) + '*'.repeat(bankAccountHolderName.length - 2) + bankAccountHolderName.at(-1)
             );
           }
+        },
+      }),
+    }),
+  });
+
+  builder.prismaObject('UserWithdrawalConfig', {
+    authScopes: { $granted: '$user' },
+    fields: (t) => ({
+      id: t.exposeID('id'),
+      monthlyWithdrawalEnabled: t.exposeBoolean('monthlyWithdrawalEnabled'),
+      monthlyWithdrawalDue: t.field({
+        type: 'DateTime',
+        nullable: true,
+        resolve: async ({ userId, monthlyWithdrawalEnabled }, _, { db }) => {
+          if (!monthlyWithdrawalEnabled) return null;
+
+          const revenueAmount = await getUserRevenue({ db, userId, monthlyWithdrawableOnly: true });
+          if (revenueAmount <= 30_000) return null;
+
+          return getMonthlyWithdrawalDayjs()
+            .add(dayjs().kst().day() > 10 ? 1 : 0, 'month')
+            .toDate();
         },
       }),
     }),

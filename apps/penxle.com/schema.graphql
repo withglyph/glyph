@@ -273,6 +273,8 @@ type Mutation {
   deleteSpaceCollection(input: DeleteSpaceCollectionInput!): SpaceCollection!
   deleteSpaceProfile(input: DeleteSpaceProfileInput!): SpaceMember!
   deleteUser(input: DeleteUserInput!): Void
+  disableMonthlyWithdrawal: UserWithdrawalConfig!
+  enableMonthlyWithdrawal: UserWithdrawalConfig!
   finalizeFileUpload(input: FinalizeFileUploadInput!): File!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
   followSpace(input: FollowSpaceInput!): Space!
@@ -639,6 +641,7 @@ type Query {
   recentlyPurchasedPosts: [Post!]!
   recentlyUsedTags: [Tag!]!
   recommendFeed: [Post!]!
+  revenueWithdrawal(id: String!): RevenueWithdrawal!
   sampleImage: Image!
   sampleImages: [Image!]!
   searchPosts(adultFilter: Boolean, excludeTags: [String!]! = [], includeTags: [String!]! = [], orderBy: SearchOrderByKind! = ACCURACY, page: Int! = 1, query: String!): SearchResult!
@@ -1054,6 +1057,7 @@ type User {
   singleSignOns: [UserSingleSignOn!]!
   spaces: [Space!]!
   state: UserState!
+  withdrawalConfig: UserWithdrawalConfig
 }
 
 type UserContentFilterPreference {
@@ -1170,6 +1174,12 @@ enum UserSingleSignOnProvider {
 enum UserState {
   ACTIVE
   INACTIVE
+}
+
+type UserWithdrawalConfig {
+  id: ID!
+  monthlyWithdrawalDue: DateTime
+  monthlyWithdrawalEnabled: Boolean!
 }
 
 input VerifyPassportIdentityInput {
