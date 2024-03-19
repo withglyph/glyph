@@ -54,7 +54,7 @@
             sm: { padding: '24px', alignItems: 'center' },
           },
           container: {
-            borderBottomRadius: '0',
+            smDown: { borderBottomRadius: '0' },
             sm: { borderRadius: '16px', maxWidth: '430px' },
           },
         },
@@ -66,7 +66,7 @@
             sm: { padding: '36px', alignItems: 'center' },
           },
           container: {
-            borderBottomRadius: '0',
+            smDown: { borderBottomRadius: '0' },
             sm: { borderRadius: '16px', maxWidth: '748px' },
           },
         },
