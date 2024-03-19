@@ -10,7 +10,10 @@
   export let style: SystemStyleObject | undefined = undefined;
 
   type $$Props = Omit<HTMLInputAttributes, 'class' | 'style'> & { style?: SystemStyleObject };
-  type $$Events = { input: Event & { currentTarget: HTMLInputElement } };
+  type $$Events = {
+    input: Event & { currentTarget: HTMLInputElement };
+    keydown: KeyboardEvent & { currentTarget: HTMLInputElement };
+  };
 
   const { field } = getFormContext();
 
@@ -43,6 +46,7 @@
     )}
     type="text"
     on:input
+    on:keydown
     bind:value
     {...$$restProps}
   />

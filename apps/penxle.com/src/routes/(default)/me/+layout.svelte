@@ -33,7 +33,15 @@
   `);
 </script>
 
-<div class={flex({ flexDirection: 'column', grow: '1', width: 'full', maxWidth: '1260px', sm: { padding: '30px' } })}>
+<div
+  class={flex({
+    flexDirection: 'column',
+    grow: '1',
+    width: 'full',
+    maxWidth: '1260px',
+    sm: { padding: '30px', paddingBottom: '60px' },
+  })}
+>
   <h1 class={css({ fontSize: '20px', fontWeight: 'bold', marginBottom: '20px', hideBelow: 'sm' })}>나의 펜슬</h1>
   <div class={css({ sm: { display: 'flex', gap: '40px' } })}>
     <aside
@@ -191,7 +199,7 @@
               )}
               href="/me/revenue"
             >
-              수익/정산
+              수익/출금
             </a>
           </li>
           <li>

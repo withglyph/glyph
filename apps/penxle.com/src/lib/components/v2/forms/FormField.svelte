@@ -10,6 +10,7 @@
   export let style: SystemStyleObject | undefined = undefined;
   export let name: string;
   export let label: string;
+  export let hideLabel = false;
 
   setFormField({
     name,
@@ -17,7 +18,15 @@
 </script>
 
 <section class={css(style)}>
-  <label class={css({ display: 'inline-block', marginBottom: '6px', fontSize: '14px' })} for={name}>{label}</label>
+  <label
+    class={css(
+      { display: 'inline-block', marginBottom: '6px', fontSize: '14px' },
+      hideLabel && { visibility: 'hidden' },
+    )}
+    for={name}
+  >
+    {label}
+  </label>
   <slot />
   <div
     class={flex({

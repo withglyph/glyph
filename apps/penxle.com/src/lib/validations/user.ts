@@ -34,12 +34,14 @@ export const VerifySettlementIdentitySchema = z.object({
   residentRegistrationNumberBack: z
     .string()
     .trim()
-    .regex(/^\d{7}$/),
+    .length(7, '주민등록번호 뒷자리를 입력해주세요')
+    .regex(/^\d{7}$/, '올바른 주민등록번호를 입력해주세요'),
   idCardIssuedDate: YYYYMMDD,
-  bankCode: z.string().regex(/^\d{3}$/),
+  bankCode: z.string().regex(/^\d{3}$/, '은행을 선택해주세요'),
   bankAccountNumber: z
     .string()
-    .regex(/^(?:\d+-)*\d+$/)
+    .min(1, '계좌번호를 입력해주세요')
+    .regex(/^(?:\d+-)*\d+$/, '올바른 계좌번호를 입력해주세요')
     .transform((v) => v.replaceAll('-', '')),
 });
 

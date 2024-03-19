@@ -1,0 +1,324 @@
+<script lang="ts">
+  import dayjs from 'dayjs';
+  import IconBank002 from '~icons/effit/bank-002';
+  import IconBank003 from '~icons/effit/bank-003';
+  import IconBank004 from '~icons/effit/bank-004';
+  import IconBank007 from '~icons/effit/bank-007';
+  import IconBank011 from '~icons/effit/bank-011';
+  import IconBank020 from '~icons/effit/bank-020';
+  import IconBank023 from '~icons/effit/bank-023';
+  import IconBank027 from '~icons/effit/bank-027';
+  import IconBank031 from '~icons/effit/bank-031';
+  import IconBank032 from '~icons/effit/bank-032';
+  import IconBank034 from '~icons/effit/bank-034';
+  import IconBank035 from '~icons/effit/bank-035';
+  import IconBank045 from '~icons/effit/bank-045';
+  import IconBank048 from '~icons/effit/bank-048';
+  import IconBank050 from '~icons/effit/bank-050';
+  import IconBank071 from '~icons/effit/bank-071';
+  import IconBank081 from '~icons/effit/bank-081';
+  import IconBank089 from '~icons/effit/bank-089';
+  import IconBank090 from '~icons/effit/bank-090';
+  import IconBank092 from '~icons/effit/bank-092';
+  import IconAlertCircle from '~icons/tabler/alert-circle';
+  import IconChevronLeft from '~icons/tabler/chevron-left';
+  import IconMinus from '~icons/tabler/minus';
+  import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
+  import { Icon, ProgressBar } from '$lib/components';
+  import { Button, Modal } from '$lib/components/v2';
+  import { FormField, TextInput } from '$lib/components/v2/forms';
+  import { createMutationForm } from '$lib/form';
+  import { VerifySettlementIdentitySchema } from '$lib/validations';
+  import { css } from '$styled-system/css';
+  import { flex, grid } from '$styled-system/patterns';
+  import type { ComponentType } from 'svelte';
+  import type { MeRevenuePage_VerifySettlementIdentityModal_user } from '$glitch';
+
+  let _user: MeRevenuePage_VerifySettlementIdentityModal_user;
+  export { _user as $user };
+
+  export let open = false;
+
+  $: user = fragment(
+    _user,
+    graphql(`
+      fragment MeRevenuePage_VerifySettlementIdentityModal_user on User {
+        personalIdentity {
+          id
+          name
+          birthday
+        }
+      }
+    `),
+  );
+
+  const { form, data, errors, touched } = createMutationForm({
+    mutation: graphql(`
+      mutation MeRevenuePage_VerifySettlementIdentityModal_VerifySettlementIdentity_Mutation(
+        $input: VerifySettlementIdentityInput!
+      ) {
+        verifySettlementIdentity(input: $input) {
+          id
+        }
+      }
+    `),
+    schema: VerifySettlementIdentitySchema,
+    onSuccess: () => {
+      mixpanel.track('user:verify-settlement-identity');
+      open = false;
+    },
+  });
+
+  let page = 1;
+
+  $: title = {
+    1: '창작자 인증',
+    2: '은행 선택',
+    3: '입금 계좌번호 확인',
+  }[page];
+
+  const banks: Record<string, string> = {
+    '090': '카카오뱅크',
+    '092': '토스',
+    '088': '신한은행',
+    '004': 'KB국민은행',
+    '020': '우리은행',
+    '081': '하나은행',
+    '003': '기업은행',
+    '071': '우체국',
+    '012': '농축협',
+    '011': 'NH농협은행',
+    '002': '산업은행',
+    '007': '수협은행',
+    '023': 'SC제일은행',
+    '089': '케이뱅크',
+    '027': '한국씨티은행',
+    '031': '대구은행',
+    '032': '부산은행',
+    '034': '광주은행',
+    '035': '제주은행',
+    '037': '전북은행',
+    '039': '경남은행',
+    '045': '새마을금고',
+    '048': '신협',
+    '050': '상호저축은행',
+  };
+
+  const bankIcons: Record<string, ComponentType> = {
+    '002': IconBank002,
+    '003': IconBank003,
+    '004': IconBank004,
+    '007': IconBank007,
+    '011': IconBank011,
+    '012': IconBank011,
+    '020': IconBank020,
+    '023': IconBank023,
+    '027': IconBank027,
+    '031': IconBank031,
+    '032': IconBank032,
+    '034': IconBank034,
+    '035': IconBank035,
+    '037': IconBank034,
+    '039': IconBank032,
+    '045': IconBank045,
+    '048': IconBank048,
+    '050': IconBank050,
+    '071': IconBank071,
+    '081': IconBank081,
+    '088': IconBank035,
+    '089': IconBank089,
+    '090': IconBank090,
+    '092': IconBank092,
+  };
+</script>
+
+<Modal
+  style={css.raw({ height: { base: '540px', sm: '600px' } })}
+  size="md"
+  titleStyle={css.raw({ justifyContent: 'center' }, page === 1 && { marginX: '32px' })}
+  bind:open
+>
+  <svelte:fragment slot="title-left">
+    {#if page > 1}
+      <button type="button" on:click={() => (page -= 1)}>
+        <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />
+      </button>
+    {/if}
+  </svelte:fragment>
+  <svelte:fragment slot="title">{title}</svelte:fragment>
+
+  <ProgressBar max={3} value={page} />
+
+  <form class={flex({ flexDirection: 'column', flexGrow: '1' })} use:form>
+    <div
+      class={css(
+        { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexGrow: '1' },
+        page !== 1 && { display: 'none' },
+      )}
+    >
+      <div class={css({ marginY: '20px', paddingX: '20px' })}>
+        <FormField name="" label="이름">
+          <TextInput disabled maxlength={7} value={$user.personalIdentity?.name} />
+        </FormField>
+
+        <div class={flex({ align: 'center', justify: 'space-evenly', gap: '5px' })}>
+          <FormField name="" style={css.raw({ flexGrow: '1' })} label="주민등록번호">
+            <TextInput disabled maxlength={7} value={dayjs($user.personalIdentity?.birthday).format('YYMMDD')} />
+          </FormField>
+          <Icon icon={IconMinus} />
+          <FormField
+            name="residentRegistrationNumberBack"
+            style={css.raw({ flexGrow: '1' })}
+            hideLabel
+            label="주민등록번호 뒷자리"
+          >
+            <TextInput maxlength={7} placeholder="뒤 7자리" type="password" />
+          </FormField>
+        </div>
+
+        <FormField name="idCardIssuedDate" label="주민등록증 발급일자">
+          <TextInput
+            max={dayjs(new Date()).format('YYYY.MM.DD')}
+            maxlength={10}
+            placeholder="2024.01.01"
+            on:input={(e) => {
+              if (e.currentTarget.value.length === 10) {
+                e.currentTarget.blur();
+              }
+            }}
+            on:keydown={(e) => {
+              if (e.key === 'Backspace') return;
+
+              if (e.currentTarget.value.length === 4 || e.currentTarget.value.length === 7) {
+                e.currentTarget.value += '.';
+              }
+            }}
+          />
+        </FormField>
+
+        <p class={css({ fontSize: '12px', color: 'gray.500' })}>
+          창작자님의 수익에 대한 원천징수 신고를 하기 위해 꼭 필요한 정보예요. 창작자님이 신고해야 할 세액을 회사에서
+          세무적으로 대신 신고하는것이기 때문에, 세무서에 제출해야 하는 정보입니다.
+        </p>
+      </div>
+
+      <Button
+        style={css.raw({ marginX: '20px', marginBottom: '20px' })}
+        disabled={!$touched.residentRegistrationNumberBack || !$touched.idCardIssuedDate}
+        size="lg"
+        type="submit"
+        on:click={() => {
+          if ($errors.residentRegistrationNumberBack || $errors.idCardIssuedDate) return;
+
+          page += 1;
+        }}
+      >
+        다음
+      </Button>
+    </div>
+
+    <div
+      class={css(
+        { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexGrow: '1' },
+        page !== 2 && { display: 'none' },
+      )}
+    >
+      <div
+        class={grid({
+          columns: 2,
+          gap: '10px',
+          paddingTop: '28px',
+          paddingX: '20px',
+          paddingBottom: '40px',
+          overflowY: 'auto',
+          maxHeight: { base: '420px', sm: '470px' },
+        })}
+      >
+        {#each Object.entries(banks) as [code, name] (code)}
+          <button
+            class={css(
+              {
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                borderWidth: '1px',
+                borderColor: 'gray.100',
+                borderRadius: '6px',
+                paddingX: '10px',
+                paddingY: '12px',
+                fontSize: '14px',
+                transition: 'common',
+              },
+              $data.bankCode === code && { borderColor: 'gray.400', backgroundColor: 'gray.100' },
+            )}
+            type="button"
+            on:click={() => ($data.bankCode = code)}
+          >
+            <Icon style={css.raw({ size: '24px' })} icon={bankIcons[code]} />
+            {name}
+          </button>
+        {/each}
+      </div>
+
+      <Button
+        style={css.raw({ marginX: '20px', marginBottom: '20px' })}
+        disabled={!!$errors.bankCode}
+        size="lg"
+        on:click={() => {
+          page += 1;
+        }}
+      >
+        다음
+      </Button>
+    </div>
+
+    <div
+      class={css(
+        { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexGrow: '1' },
+        page !== 3 && { display: 'none' },
+      )}
+    >
+      <div class={css({ marginY: '20px', paddingTop: '8px', paddingX: '20px', paddingBottom: '40px' })}>
+        <span
+          class={css({
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            borderRadius: '4px',
+            marginBottom: '24px',
+            paddingX: '10px',
+            paddingY: '8px',
+            fontSize: '13px',
+            fontWeight: 'medium',
+            backgroundColor: 'gray.50',
+            minWidth: '106px',
+          })}
+        >
+          <Icon style={css.raw({ size: '16px' })} icon={bankIcons[$data.bankCode]} />
+          {banks[$data.bankCode]}
+        </span>
+
+        <FormField name="bankAccountNumber" label="계좌번호">
+          <TextInput placeholder="'-'를 제외한 계좌번호를 입력해주세요" />
+        </FormField>
+
+        {#if $data.bankCode === '012' || $data.bankCode === '011'}
+          <p class={flex({ align: 'center', gap: '2px', fontSize: '12px', color: 'teal.500' })}>
+            <Icon style={css.raw({ fontSize: '14px' })} icon={IconAlertCircle} />
+            중앙농협은행인지 지역농축협은행인지 다시 한 번 확인해주세요
+          </p>
+        {/if}
+      </div>
+
+      <Button
+        style={css.raw({ marginX: '20px', marginBottom: '20px' })}
+        disabled={!!$errors.bankAccountNumber}
+        size="lg"
+        type="submit"
+      >
+        완료
+      </Button>
+    </div>
+  </form>
+</Modal>
