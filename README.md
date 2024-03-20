@@ -1,14 +1,14 @@
-# PENXLE
+# Glyph
 
-![](https://img.shields.io/github/actions/workflow/status/penxle/penxle/ci.yml)
-![](https://img.shields.io/github/license/penxle/penxle)
-![](https://img.shields.io/github/languages/code-size/penxle/penxle)
+![](https://img.shields.io/github/actions/workflow/status/withglyph/glyph/ci.yml)
+![](https://img.shields.io/github/license/withglyph/glyph)
+![](https://img.shields.io/github/languages/code-size/withglyph/glyph)
 
-함께 그리는 반짝임, PENXLE.
+나만의 공간, 함께 새겨질 우주 - Glyph
 
 ## 시스템 요구사항
 
-- Node 18 LTS 이상
+- Node 20 LTS 이상
 - pnpm 8 이상
 - Doppler CLI
 
@@ -29,8 +29,8 @@ $ doppler login
 ## 환경 초기화
 
 ```bash
-$ git clone git@github.com:penxle/penxle.git
-$ cd penxle
+$ git clone git@github.com:withglyph/glyph.git
+$ cd glyph
 $ pnpm bootstrap
 ```
 
