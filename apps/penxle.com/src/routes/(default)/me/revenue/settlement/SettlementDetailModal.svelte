@@ -69,7 +69,7 @@
   <svelte:fragment slot="title">출금 상세 정보</svelte:fragment>
 
   {#if $revenueWithdrawal}
-    <div class={css({ paddingTop: '16px', paddingBottom: { base: '32px', sm: '20px' }, paddingX: '20px' })}>
+    <div class={css({ paddingTop: '24px', paddingBottom: { base: '60px', sm: '24px' }, paddingX: '20px' })}>
       <div
         class={css({
           _after: {
@@ -81,7 +81,7 @@
           },
         })}
       >
-        <p class={css({ fontWeight: 'semibold' })}>{$revenueWithdrawal?.id}</p>
+        <p class={css({ fontWeight: 'semibold' })}>{$revenueWithdrawal?.id.toUpperCase()}</p>
         <time class={css({ marginTop: '5px', fontSize: '14px', color: 'gray.500' })}>
           {dayjs($revenueWithdrawal?.createdAt).formatAsDateTime()}
         </time>
