@@ -23,6 +23,7 @@
           post {
             id
             state
+            permalink
 
             thumbnail {
               id
@@ -37,6 +38,7 @@
             space @_required {
               id
               name
+              slug
             }
 
             member {
@@ -83,8 +85,10 @@
       >
         <svelte:element
           this={revenue.post?.state === 'DELETED' ? 'div' : 'a'}
-          class={css({ marginY: '4px' })}
-          href={revenue.post?.state === 'DELETED' ? undefined : '/'}
+          class={css({ size: '86px' })}
+          href={revenue.post?.state === 'DELETED'
+            ? undefined
+            : `/${revenue.post?.space?.slug}/${revenue.post?.permalink}}`}
         >
           {#if revenue.post?.thumbnail}
             <Image
@@ -117,7 +121,7 @@
           <div class={flex({ flexDirection: 'column' })}>
             <time
               class={css(
-                { fontSize: '12px', fontWeight: 'light', color: 'gray.500' },
+                { fontSize: '12px', fontWeight: 'light', color: 'gray.500', lineHeight: 'none' },
                 revenue.post?.state === 'DELETED' && { color: 'gray.400' },
               )}
             >
@@ -128,13 +132,15 @@
               {#if revenue.post?.state === 'DELETED'}(삭제된 포스트){/if}
             </p>
             <p class={flex({ align: 'center', gap: '4px' })}>
-              <span class={css({ fontSize: '14px', fontWeight: 'medium' })}>{revenue.post?.space?.name}</span>
-              <span class={css({ fontSize: '12px' })}>by {revenue.post?.member?.profile.name}</span>
+              <span class={css({ fontSize: '12px' })}>
+                {revenue.post?.space?.name ?? '스페이스'}
+              </span>
+              <span class={css({ fontSize: '12px' })}>by {revenue.post?.member?.profile.name ?? '작성자'}</span>
             </p>
           </div>
           <p
             class={css(
-              { fontWeight: 'semibold', color: 'teal.500' },
+              { fontWeight: 'semibold', color: 'teal.500', lineHeight: 'none' },
               revenue.post?.state === 'DELETED' && { color: 'gray.400' },
             )}
           >

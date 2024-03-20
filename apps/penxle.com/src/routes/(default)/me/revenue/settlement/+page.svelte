@@ -50,38 +50,94 @@
 <Helmet description="출금 내역을 확인하세요" title="출금 내역" />
 
 {#if $query.me.revenueWithdrawals.length > 0}
-  <table class={css({ borderSpacing: '60px', width: 'full' })}>
+  <table class={css({ borderSpacing: '0', width: 'full' })}>
     <thead>
       <tr
         class={css({
           fontSize: '14px',
           fontWeight: 'medium',
           textAlign: 'left',
-          borderBottomWidth: '1px',
-          borderBottomColor: 'gray.150',
         })}
       >
-        <th class={css({ paddingTop: '20px', paddingBottom: '12px', width: { base: '124px', sm: '170px' } })}>일시</th>
-        <th class={css({ paddingTop: '20px', paddingBottom: '12px', width: { base: '48px', sm: '94px' } })}>유형</th>
-        <th class={css({ paddingTop: '20px', paddingBottom: '12px', width: { base: '67px', sm: '112px' } })}>상태</th>
-        <th class={css({ paddingTop: '20px', paddingBottom: '12px' })}>금액(원)</th>
+        <th
+          class={css({
+            borderBottomWidth: '1px',
+            borderBottomColor: 'gray.150',
+            paddingTop: '20px',
+            paddingBottom: '12px',
+            width: { base: '124px', sm: '170px' },
+          })}
+        >
+          일시
+        </th>
+        <th
+          class={css({
+            borderBottomWidth: '1px',
+            borderBottomColor: 'gray.150',
+            paddingTop: '20px',
+            paddingBottom: '12px',
+            width: { base: '48px', sm: '94px' },
+          })}
+        >
+          유형
+        </th>
+        <th
+          class={css({
+            borderBottomWidth: '1px',
+            borderBottomColor: 'gray.150',
+            paddingTop: '20px',
+            paddingBottom: '12px',
+            width: { base: '67px', sm: '112px' },
+          })}
+        >
+          상태
+        </th>
+        <th
+          class={css({
+            borderBottomWidth: '1px',
+            borderBottomColor: 'gray.150',
+            paddingTop: '20px',
+            paddingBottom: '12px',
+          })}
+        >
+          금액(원)
+        </th>
       </tr>
     </thead>
     <tbody>
       {#each $query.me.revenueWithdrawals as withdrawal (withdrawal.id)}
         <tr
           class={css({
-            borderBottomWidth: '1px',
-            borderColor: 'gray.100',
-            _lastOfType: { borderStyle: 'none' },
+            _lastOfType: { '& > td': { borderStyle: 'none' } },
           })}
         >
-          <td class={css({ paddingY: '24px', fontSize: '14px', fontWeight: 'light', color: 'gray.500' })}>
+          <td
+            class={css({
+              borderBottomWidth: '1px',
+              borderColor: 'gray.100',
+              paddingY: '24px',
+              fontSize: '14px',
+              fontWeight: 'light',
+              color: 'gray.500',
+            })}
+          >
             {dayjs(withdrawal.createdAt).formatAsDateTime()}
           </td>
-          <td class={css({ paddingY: '24px', fontSize: '14px' })}>{revenueWithdrawalKind[withdrawal.kind]}</td>
-          <td class={css({ paddingY: '24px', fontSize: '14px' })}>{revenueWithdrawalState[withdrawal.state]}</td>
-          <td class={css({ paddingY: '24px', fontSize: '14px', fontWeight: 'semibold' })}>
+          <td class={css({ borderBottomWidth: '1px', borderColor: 'gray.100', paddingY: '24px', fontSize: '14px' })}>
+            {revenueWithdrawalKind[withdrawal.kind]}
+          </td>
+          <td class={css({ borderBottomWidth: '1px', borderColor: 'gray.100', paddingY: '24px', fontSize: '14px' })}>
+            {revenueWithdrawalState[withdrawal.state]}
+          </td>
+          <td
+            class={css({
+              borderBottomWidth: '1px',
+              borderColor: 'gray.100',
+              paddingY: '24px',
+              fontSize: '14px',
+              fontWeight: 'semibold',
+            })}
+          >
             <button
               class={flex({ align: 'center' })}
               type="button"
