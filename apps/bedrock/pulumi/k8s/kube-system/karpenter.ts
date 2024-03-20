@@ -118,10 +118,12 @@ new k8s.helm.v3.Chart('karpenter', {
   chart: 'oci://public.ecr.aws/karpenter/karpenter',
   namespace: 'kube-system',
   fetchOpts: {
-    version: 'v0.33.2',
+    version: '0.35.2',
   },
 
   values: {
+    dnsPolicy: 'Default',
+
     serviceAccount: {
       create: false,
       name: serviceAccount.metadata.name,
@@ -135,7 +137,7 @@ new k8s.helm.v3.Chart('karpenter', {
       clusterName: cluster.name,
       // interruptionQueue: cluster.name,
       featureGates: {
-        // spotToSpotConsolidation: true,
+        spotToSpotConsolidation: true,
       },
     },
   },
