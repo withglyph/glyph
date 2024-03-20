@@ -87,7 +87,14 @@
   />
 {/if}
 
-<button aria-controls={id} aria-expanded={open} type="button" on:click={() => (open = !open)} use:anchor>
+<button
+  class={css(style)}
+  aria-controls={id}
+  aria-expanded={open}
+  type="button"
+  on:click={() => (open = !open)}
+  use:anchor
+>
   <slot />
 </button>
 
@@ -97,31 +104,28 @@
     role="region"
     use:floating
     {...$$restProps}
-    class={css(
-      {
-        borderWidth: '1px',
-        borderColor: 'gray.200',
-        borderRadius: '10px',
-        backgroundColor: 'gray.5',
-        sm: {
-          width: '376px',
-          boxShadow: '[0px 6px 18px 0px {colors.gray.900/12}]',
-          zIndex: '2',
-        },
-        smDown: {
-          position: '[fixed!]',
-          top: '[initial!]',
-          bottom: '[0!]',
-          left: '[0!]',
-          right: '[0!]',
-          borderBottomRadius: '0',
-          width: 'full',
-          boxShadow: '[0px 8px 24px 0px {colors.gray.900/28}]',
-          zIndex: '50',
-        },
+    class={css({
+      borderWidth: '1px',
+      borderColor: 'gray.200',
+      borderRadius: '10px',
+      backgroundColor: 'gray.5',
+      sm: {
+        width: '376px',
+        boxShadow: '[0px 6px 18px 0px {colors.gray.900/12}]',
+        zIndex: '2',
       },
-      style,
-    )}
+      smDown: {
+        position: '[fixed!]',
+        top: '[initial!]',
+        bottom: '[0!]',
+        left: '[0!]',
+        right: '[0!]',
+        borderBottomRadius: '0',
+        width: 'full',
+        boxShadow: '[0px 8px 24px 0px {colors.gray.900/28}]',
+        zIndex: '50',
+      },
+    })}
     transition:fade={{ duration: 100 }}
   >
     <header
