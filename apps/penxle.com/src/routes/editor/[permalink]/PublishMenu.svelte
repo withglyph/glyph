@@ -21,6 +21,7 @@
   import { Checkbox, FormValidationMessage, Switch } from '$lib/components/forms';
   import ThumbnailPicker from '$lib/components/media/ThumbnailPicker.svelte';
   import { CreateCollectionModal } from '$lib/components/pages/collections';
+  import { Button } from '$lib/components/v2';
   import { createMutationForm } from '$lib/form';
   import { PublishPostInputSchema } from '$lib/validations/post';
   import { css } from '$styled-system/css';
@@ -134,7 +135,7 @@
     `),
   );
 
-  const { form, data, setInitialValues, handleSubmit } = createMutationForm({
+  const { form, data, setInitialValues, handleSubmit, isSubmitting } = createMutationForm({
     mutation: graphql(`
       mutation EditorPage_PublishMenu_PublishPost_Mutation($input: PublishPostInput!) {
         publishPost(input: $input) {
@@ -1299,29 +1300,25 @@
     })}
   >
     <Tooltip
-      style={css.raw({ smDown: { width: 'full' } })}
+      style={css.raw({ smDown: { flex: '1' } })}
       enabled={!selectedSpaceId}
       message="게시할 스페이스를 선택해주세요"
       offset={12}
       placement="top"
     >
-      <button
-        class={css({
-          borderRadius: '4px',
+      <Button
+        style={css.raw({
           paddingX: '32px',
-          paddingY: { base: '10px', sm: '8px' },
           width: { base: 'full', sm: '96px' },
-          fontSize: { base: '16px', sm: '14px' },
-          fontWeight: { base: 'semibold', sm: 'medium' },
-          color: 'gray.5',
-          backgroundColor: 'gray.900',
         })}
         disabled={!selectedSpaceId}
+        loading={$isSubmitting}
+        size="lg"
         type="button"
         on:click={handleSubmit}
       >
         발행
-      </button>
+      </Button>
     </Tooltip>
   </div>
 </div>
