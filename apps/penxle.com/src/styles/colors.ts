@@ -6,10 +6,10 @@ export const colors = defineTokens.colors({
   transparent: { value: 'rgb(0 0 0 / 0)' },
 
   gray: {
-    5: { value: '#FBFBFB' },
-    50: { value: '#F8F8F8' },
-    100: { value: '#F3F3F3' },
-    150: { value: '#EDEDED' },
+    5: { value: '#FDFDFD' },
+    50: { value: '#F5F5F5' },
+    100: { value: '#EEEEEE' },
+    150: { value: '#E9E9E9' },
     200: { value: '#E2E2E2' },
     300: { value: '#C7C7C7' },
     400: { value: '#9B9B9B' },
