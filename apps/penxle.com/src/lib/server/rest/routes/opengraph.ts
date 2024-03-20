@@ -11,13 +11,13 @@ import type { IRequest } from 'itty-router';
 
 export const opengraph = createRouter();
 
-const DefaultCover = await got('https://pnxl.net/assets/opengraph/default-cover.png').buffer();
-const PretendardLight = await got('https://pnxl.net/assets/fonts/Pretendard-Light.otf').buffer();
-const PretendardRegular = await got('https://pnxl.net/assets/fonts/Pretendard-Regular.otf').buffer();
-const PretendardSemibold = await got('https://pnxl.net/assets/fonts/Pretendard-SemiBold.otf').buffer();
-const KoPubWorldDotumLight = await got('https://pnxl.net/assets/fonts/KoPubWorldDotumLight.otf').buffer();
-const KoPubWorldDotumMedium = await got('https://pnxl.net/assets/fonts/KoPubWorldDotumMedium.otf').buffer();
-const KoPubWorldDotumBold = await got('https://pnxl.net/assets/fonts/KoPubWorldDotumBold.otf').buffer();
+const DefaultCover = await got('https://glyph.pub/assets/opengraph/default-cover.png').buffer();
+const PretendardLight = await got('https://glyph.pub/assets/fonts/Pretendard-Light.otf').buffer();
+const PretendardRegular = await got('https://glyph.pub/assets/fonts/Pretendard-Regular.otf').buffer();
+const PretendardSemibold = await got('https://glyph.pub/assets/fonts/Pretendard-SemiBold.otf').buffer();
+const KoPubWorldDotumLight = await got('https://glyph.pub/assets/fonts/KoPubWorldDotumLight.otf').buffer();
+const KoPubWorldDotumMedium = await got('https://glyph.pub/assets/fonts/KoPubWorldDotumMedium.otf').buffer();
+const KoPubWorldDotumBold = await got('https://glyph.pub/assets/fonts/KoPubWorldDotumBold.otf').buffer();
 
 opengraph.get('/opengraph/post/:postId', async (request, { db }) => {
   const postId = (request as IRequest).params.postId;

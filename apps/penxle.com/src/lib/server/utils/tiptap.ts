@@ -71,7 +71,7 @@ export const decorateContent = async (
             ...node.attrs,
             __data: {
               id: image.id,
-              url: `https://pnxl.net/${image.path}`,
+              url: `https://glyph.pub/${image.path}`,
             },
           },
         };
@@ -105,7 +105,7 @@ export const decorateContent = async (
                     id: image.id,
                     name: image.name,
                     color: image.color,
-                    url: `https://pnxl.net/${image.path}`,
+                    url: `https://glyph.pub/${image.path}`,
                   },
                 };
               })
@@ -136,7 +136,7 @@ export const decorateContent = async (
               id: file.id,
               name: file.name,
               size: file.size,
-              url: `https://pnxl.net/${file.path}`,
+              url: `https://glyph.pub/${file.path}`,
             },
           },
         };

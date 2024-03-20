@@ -18,7 +18,7 @@ export const fileSchema = defineSchema((builder) => {
 
       url: t.field({
         type: 'String',
-        resolve: (parent) => `https://pnxl.net/${parent.path}`,
+        resolve: (parent) => `https://glyph.pub/${parent.path}`,
       }),
     }),
   });

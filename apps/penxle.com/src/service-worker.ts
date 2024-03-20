@@ -9,7 +9,7 @@ const sw = self as unknown as ServiceWorkerGlobalScope;
 
 const cacheKey = `cache-${version}`;
 const assets = [...build, ...files];
-const remoteAssets = ['https://pnxl.net/assets/fonts/SUIT.woff2'];
+const remoteAssets = ['https://glyph.pub/assets/fonts/SUIT.woff2'];
 
 sw.addEventListener('install', (event) => {
   event.waitUntil(

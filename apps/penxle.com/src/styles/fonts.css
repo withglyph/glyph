@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'PNXL_SUIT';
-  src: url('https://pnxl.net/assets/fonts/SUIT.woff2') format('woff2-variations');
+  src: url('https://glyph.pub/assets/fonts/SUIT.woff2') format('woff2-variations');
   font-style: normal;
   font-weight: 100 900;
   font-display: block;
@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: 'PNXL_Pretendard';
-  src: url('https://pnxl.net/assets/fonts/Pretendard.woff2') format('woff2-variations');
+  src: url('https://glyph.pub/assets/fonts/Pretendard.woff2') format('woff2-variations');
   font-style: normal;
   font-weight: 100 900;
   font-display: block;
@@ -16,7 +16,7 @@
 
 @font-face {
   font-family: 'PNXL_NanumBarunGothic';
-  src: url('https://pnxl.net/assets/fonts/NanumBarunGothic.woff2') format('woff2');
+  src: url('https://glyph.pub/assets/fonts/NanumBarunGothic.woff2') format('woff2');
   font-style: normal;
   font-weight: 400;
   font-display: block;
@@ -24,7 +24,7 @@
 
 @font-face {
   font-family: 'PNXL_NanumBarunGothic';
-  src: url('https://pnxl.net/assets/fonts/NanumBarunGothicBold.woff2') format('woff2');
+  src: url('https://glyph.pub/assets/fonts/NanumBarunGothicBold.woff2') format('woff2');
   font-style: normal;
   font-weight: 700;
   font-display: block;
@@ -32,7 +32,7 @@
 
 @font-face {
   font-family: 'PNXL_KoPubWorldDotum';
-  src: url('https://pnxl.net/assets/fonts/KoPubWorldDotumMedium.woff2') format('woff2');
+  src: url('https://glyph.pub/assets/fonts/KoPubWorldDotumMedium.woff2') format('woff2');
   font-style: normal;
   font-weight: 400;
   font-display: block;
@@ -40,7 +40,7 @@
 
 @font-face {
   font-family: 'PNXL_KoPubWorldDotum';
-  src: url('https://pnxl.net/assets/fonts/KoPubWorldDotumBold.woff2') format('woff2');
+  src: url('https://glyph.pub/assets/fonts/KoPubWorldDotumBold.woff2') format('woff2');
   font-style: normal;
   font-weight: 700;
   font-display: block;
@@ -48,7 +48,7 @@
 
 @font-face {
   font-family: 'PNXL_RIDIBatang';
-  src: url('https://pnxl.net/assets/fonts/RIDIBatang.woff2') format('woff2-variations');
+  src: url('https://glyph.pub/assets/fonts/RIDIBatang.woff2') format('woff2-variations');
   font-style: normal;
   font-weight: 400 400;
   font-display: block;
@@ -56,7 +56,7 @@
 
 @font-face {
   font-family: 'PNXL_KoPubWorldBatang';
-  src: url('https://pnxl.net/assets/fonts/KoPubWorldBatangMedium.woff2') format('woff2');
+  src: url('https://glyph.pub/assets/fonts/KoPubWorldBatangMedium.woff2') format('woff2');
   font-style: normal;
   font-weight: 400;
   font-display: block;
@@ -64,7 +64,7 @@
 
 @font-face {
   font-family: 'PNXL_KoPubWorldBatang';
-  src: url('https://pnxl.net/assets/fonts/KoPubWorldBatangBold.woff2') format('woff2');
+  src: url('https://glyph.pub/assets/fonts/KoPubWorldBatangBold.woff2') format('woff2');
   font-style: normal;
   font-weight: 700;
   font-display: block;
@@ -72,7 +72,7 @@
 
 @font-face {
   font-family: 'PNXL_NanumMyeongjo';
-  src: url('https://pnxl.net/assets/fonts/NanumMyeongjo.woff2') format('woff2');
+  src: url('https://glyph.pub/assets/fonts/NanumMyeongjo.woff2') format('woff2');
   font-style: normal;
   font-weight: 400;
   font-display: block;
@@ -80,7 +80,7 @@
 
 @font-face {
   font-family: 'PNXL_NanumMyeongjo';
-  src: url('https://pnxl.net/assets/fonts/NanumMyeongjoBold.woff2') format('woff2');
+  src: url('https://glyph.pub/assets/fonts/NanumMyeongjoBold.woff2') format('woff2');
   font-style: normal;
   font-weight: 700;
   font-display: block;
@@ -88,7 +88,7 @@
 
 @font-face {
   font-family: 'PNXL_FiraCode';
-  src: url('https://pnxl.net/assets/fonts/FiraCode.woff2') format('woff2-variations');
+  src: url('https://glyph.pub/assets/fonts/FiraCode.woff2') format('woff2-variations');
   font-style: normal;
   font-weight: 100 900;
   font-display: block;

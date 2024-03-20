@@ -13,9 +13,9 @@ import type { InteractiveTransactionClient } from '../database';
 
 type ImageSource = Buffer | ArrayBuffer | Uint8Array;
 
-const PretendardLight = await got('https://pnxl.net/assets/fonts/Pretendard-Light.otf').buffer();
-const PretendardRegular = await got('https://pnxl.net/assets/fonts/Pretendard-Regular.otf').buffer();
-const RIDIBatang = await got('https://pnxl.net/assets/fonts/RIDIBatang.otf').buffer();
+const PretendardLight = await got('https://glyph.pub/assets/fonts/Pretendard-Light.otf').buffer();
+const PretendardRegular = await got('https://glyph.pub/assets/fonts/Pretendard-Regular.otf').buffer();
+const RIDIBatang = await got('https://glyph.pub/assets/fonts/RIDIBatang.otf').buffer();
 
 export const finalizeImage = async (source: ImageSource, bounds?: ImageBounds) => {
   let image = sharp(source, { failOn: 'none' }).rotate().flatten({ background: '#ffffff' });

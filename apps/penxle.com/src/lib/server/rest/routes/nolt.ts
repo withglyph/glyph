@@ -22,7 +22,7 @@ nolt.get('/nolt', async (_, { db, ...context }) => {
     id: user.id,
     email: user.email,
     name: user.profile.name,
-    imageUrl: `https://pnxl.net/${user.profile.avatar.path}`,
+    imageUrl: `https://glyph.pub/${user.profile.avatar.path}`,
   })
     .setProtectedHeader({ alg: 'HS256' })
     .sign(key);

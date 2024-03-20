@@ -6,7 +6,7 @@
   import { center, flex } from '$styled-system/patterns';
 </script>
 
-<div class={center({ flexDirection: 'column', minHeight: '100vh' })}>
+<div class={center({ flexDirection: 'column', minHeight: '100vh', fontFamily: 'PNXL_SUIT' })}>
   <header
     class={css({
       position: 'sticky',
