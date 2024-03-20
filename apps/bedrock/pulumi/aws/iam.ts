@@ -186,7 +186,7 @@ const githubActionsRole = new aws.iam.Role('actions@github', {
         Action: 'sts:AssumeRoleWithWebIdentity',
         Condition: {
           StringLike: {
-            'token.actions.githubusercontent.com:sub': 'repo:penxle/*',
+            'token.actions.githubusercontent.com:sub': 'repo:withglyph/*',
           },
           StringEquals: {
             'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
