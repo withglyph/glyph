@@ -11,7 +11,8 @@ permissions:
 jobs:
   build-and-deploy:
     name: ${{ matrix.app }}
-    runs-on: ubuntu-latest
+    runs-on: eks
+    # container: node:20
     if: (github.event.action == 'labeled' && github.event.label.name == 'preview') || (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'preview'))
 
     strategy:

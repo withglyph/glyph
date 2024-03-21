@@ -42,6 +42,16 @@ export const cluster = new aws.eks.Cluster('penxle', {
   },
 });
 
+new aws.eks.Addon('aws-ebs-csi-driver', {
+  clusterName: cluster.name,
+  addonName: 'aws-ebs-csi-driver',
+  addonVersion: aws.eks.getAddonVersionOutput({
+    addonName: 'aws-ebs-csi-driver',
+    kubernetesVersion: cluster.version,
+    mostRecent: true,
+  }).version,
+});
+
 new aws.eks.Addon('coredns', {
   clusterName: cluster.name,
   addonName: 'coredns',
