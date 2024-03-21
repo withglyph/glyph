@@ -448,10 +448,10 @@ export const userSchema = defineSchema((builder) => {
           if (!monthlyWithdrawalEnabled) return null;
 
           const revenueAmount = await getUserRevenue({ db, userId, monthlyWithdrawableOnly: true });
-          if (revenueAmount <= 30_000) return null;
+          if (revenueAmount < 30_000) return null;
 
           return getMonthlyWithdrawalDayjs()
-            .add(dayjs().kst().day() > 10 ? 1 : 0, 'month')
+            .add(dayjs().kst().date() > 10 ? 1 : 0, 'month')
             .toDate();
         },
       }),

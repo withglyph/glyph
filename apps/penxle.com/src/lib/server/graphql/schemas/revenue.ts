@@ -84,7 +84,7 @@ export const revenueSchema = defineSchema((builder) => {
       type: 'UserWithdrawalConfig',
       grantScopes: ['$user'],
       resolve: async (query, _, __, { db, ...context }) => {
-        if (dayjs().kst().day() === 10) throw new IntentionalError('매월 10일에는 자동 출금 설정을 변경할 수 없어요');
+        if (dayjs().kst().date() === 10) throw new IntentionalError('매월 10일에는 자동 출금 설정을 변경할 수 없어요');
 
         const userSettlementIdentity = await db.userSettlementIdentity.findUnique({
           where: { userId: context.session.userId },
@@ -115,7 +115,7 @@ export const revenueSchema = defineSchema((builder) => {
       type: 'UserWithdrawalConfig',
       grantScopes: ['$user'],
       resolve: async (query, _, __, { db, ...context }) => {
-        if (dayjs().kst().day() === 10) throw new IntentionalError('매월 10일에는 자동 출금 설정을 변경할 수 없어요');
+        if (dayjs().kst().date() === 10) throw new IntentionalError('매월 10일에는 자동 출금 설정을 변경할 수 없어요');
 
         const userSettlementIdentity = await db.userSettlementIdentity.findUnique({
           where: { userId: context.session.userId },
