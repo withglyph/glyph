@@ -1165,7 +1165,7 @@
         <a class={flex({ gap: '12px' })} href={`/${$query.post.space?.slug}/collections/${$query.post.collection.id}`}>
           {#if $query.post.collection.thumbnail}
             <Image
-              style={css.raw({ flex: 'none', borderRadius: '4px', width: '60px', height: '84px' })}
+              style={css.raw({ flex: 'none', borderRadius: '4px', width: '60px', height: '84px', objectFit: 'cover' })}
               $image={$query.post.collection.thumbnail}
             />
           {/if}
