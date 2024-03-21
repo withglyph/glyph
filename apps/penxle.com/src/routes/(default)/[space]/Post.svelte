@@ -1035,7 +1035,7 @@
         {/if}
 
         <Tooltip
-          style={flex.raw({ width: 'full', align: 'center', height: 'full' })}
+          style={flex.raw({ align: 'center', height: 'full' })}
           enabled={!$query.post.receiveFeedback}
           message="피드백 받기를 설정하지 않은 포스트예요"
           offset={10}
