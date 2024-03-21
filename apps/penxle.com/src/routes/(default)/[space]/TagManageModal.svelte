@@ -129,7 +129,7 @@
       >
         <span>페어</span>
         <Tooltip style={center.raw()} message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
-          <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconAlertCircle} />
+          <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
         </Tooltip>
       </h2>
 

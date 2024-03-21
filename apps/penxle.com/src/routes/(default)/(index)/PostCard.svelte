@@ -130,14 +130,14 @@
       >
         {#if $post.viewCount > 0 && $post.discloseStats}
           <div class={css({ display: 'flex', alignItems: 'center', gap: '2px' })}>
-            <Icon style={css.raw({ size: '14px' })} icon={IconEye} />
+            <Icon icon={IconEye} />
             {humanizeNumber($post.viewCount)}
           </div>
         {/if}
 
         {#if $post.reactionCount > 0 && $post.discloseStats}
           <div class={css({ display: 'flex', alignItems: 'center', gap: '2px' })}>
-            <Icon style={css.raw({ size: '14px' })} icon={IconHeart} />
+            <Icon icon={IconHeart} />
             {humanizeNumber($post.reactionCount)}
           </div>
         {/if}

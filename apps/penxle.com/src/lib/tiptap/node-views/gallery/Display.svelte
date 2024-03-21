@@ -50,7 +50,7 @@
             type="button"
             on:click={() => removeImage(image.id)}
           >
-            <Icon style={css.raw({ color: 'gray.5', size: '18px' })} icon={IconTrash} />
+            <Icon style={css.raw({ color: 'gray.5' })} icon={IconTrash} size={20} />
           </button>
         {/if}
       </div>

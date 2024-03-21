@@ -220,7 +220,7 @@
     scrollTo({ top: 0, behavior: 'smooth' });
   }}
 >
-  <Icon style={css.raw({ color: '[#FFF9F8]', size: '20px' })} icon={IconArrowUp} />
+  <Icon style={css.raw({ color: '[#FFF9F8]' })} icon={IconArrowUp} size={20} />
 </button>
 
 <FollowSpaceModal $user={$query.me} bind:open={followingSpaceOpen} />

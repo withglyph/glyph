@@ -14,7 +14,7 @@
 <Helmet description="이메일로 전송된 코드를 통해 펜슬에 가입하거나 로그인할 수 있어요" title="펜슬 시작하기" />
 
 <div class={circle({ size: '64px', backgroundColor: 'teal.500' })}>
-  <Icon style={css.raw({ size: '24px', color: 'gray.5' })} icon={IconMailCheck} />
+  <Icon style={css.raw({ color: 'gray.5' })} icon={IconMailCheck} size={24} />
 </div>
 
 <div class={css({ marginTop: '16px', textAlign: 'center', fontSize: '14px' })}>

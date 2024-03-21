@@ -98,7 +98,7 @@
                 await goto(`/editor/${permalink}`);
               }}
             >
-              <Icon style={css.raw({ size: '14px' })} icon={IconPlus} />
+              <Icon icon={IconPlus} />
               포스트 작성
             </Button>
             <NotificationMenu $user={$query.me} />

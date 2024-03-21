@@ -126,7 +126,7 @@
                   })}
                 >
                   비공개
-                  <Icon style={css.raw({ marginBottom: '2px', size: '12px' })} icon={IconLock} />
+                  <Icon style={css.raw({ marginBottom: '2px' })} icon={IconLock} size={12} />
                 </span>
               {/if}
             </div>

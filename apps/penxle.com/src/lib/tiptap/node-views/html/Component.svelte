@@ -88,10 +88,7 @@
         type="button"
         on:click={() => (preview = !preview)}
       >
-        <Icon
-          style={css.raw({ size: '18px' }, preview ? { color: 'teal.500' } : { color: 'gray.600' })}
-          icon={IconEye}
-        />
+        <Icon style={css.raw(preview ? { color: 'teal.500' } : { color: 'gray.600' })} icon={IconEye} size={20} />
       </button>
 
       <div
@@ -102,7 +99,7 @@
           _hover: { backgroundColor: 'gray.100' },
         })}
       >
-        <Icon style={css.raw({ color: 'gray.600', size: '18px' })} icon={IconGripVertical} />
+        <Icon style={css.raw({ color: 'gray.600' })} icon={IconGripVertical} size={20} />
       </div>
     </div>
 

@@ -116,7 +116,7 @@
             deletePostId = _post.id;
           }}
         >
-          <Icon style={css.raw({ size: '20px', color: 'gray.400' })} icon={IconTrash} />
+          <Icon style={css.raw({ color: 'gray.400' })} icon={IconTrash} size={20} />
         </button>
         {#if _post.id === $post.id}
           <div class={css({ flex: 'none', marginBottom: '4px' })}>

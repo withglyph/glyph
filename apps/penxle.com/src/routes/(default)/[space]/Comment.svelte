@@ -212,7 +212,7 @@
       )}
     >
       {#if parentId}
-        <Icon style={css.raw({ size: '14px', color: 'gray.500' })} icon={IconReplyBar} />
+        <Icon style={css.raw({ color: 'gray.500' })} icon={IconReplyBar} />
       {/if}
 
       <div class={css({ flexGrow: '1' })}>
@@ -254,7 +254,7 @@
                 <span class={css({ fontSize: '12px', color: 'teal.500' })}>구매자</span>
               {/if}
               {#if $postComment.visibility === 'PRIVATE'}
-                <Icon style={css.raw({ size: '16px', color: 'gray.400' })} icon={IconLock} />
+                <Icon style={css.raw({ color: 'gray.400' })} icon={IconLock} />
               {/if}
             </p>
           {/if}
@@ -269,7 +269,7 @@
               )}
               type="button"
             >
-              <Icon style={css.raw({ size: '20px', color: 'gray.500' })} icon={IconDotsVertical} />
+              <Icon style={css.raw({ color: 'gray.500' })} icon={IconDotsVertical} size={20} />
             </button>
 
             {#if $query.post.space.meAsMember}
@@ -348,9 +348,9 @@
                 }}
               >
                 {#if $postComment.likedByMe}
-                  <Icon style={css.raw({ size: '16px', color: 'teal.500' })} icon={IconHeartFilled} />
+                  <Icon style={css.raw({ color: 'teal.500' })} icon={IconHeartFilled} />
                 {:else}
-                  <Icon style={css.raw({ size: '16px', color: 'teal.500' })} icon={IconHeart} />
+                  <Icon style={css.raw({ color: 'teal.500' })} icon={IconHeart} />
                 {/if}
                 {#if $postComment.likeCount > 0}
                   {$postComment.likeCount}
@@ -391,7 +391,6 @@
                       position: 'absolute',
                       bottom: '-6px',
                       right: '-6px',
-                      size: '16px',
                       color: 'teal.500',
                     })}
                     icon={IconHeartFilled}
@@ -419,9 +418,9 @@
             >
               {$postComment.childComments.length}개의 답글
               {#if repliesOpen}
-                <Icon style={css.raw({ size: '14px', color: 'gray.500' })} icon={IconCaretUpFilled} />
+                <Icon style={css.raw({ color: 'gray.500' })} icon={IconCaretUpFilled} size={12} />
               {:else}
-                <Icon style={css.raw({ size: '14px', color: 'gray.500' })} icon={IconCaretDownFilled} />
+                <Icon style={css.raw({ color: 'gray.500' })} icon={IconCaretDownFilled} size={12} />
               {/if}
             </button>
           {/if}

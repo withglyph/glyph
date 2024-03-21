@@ -170,10 +170,7 @@
         })}
       >
         <p class={css({ fontSize: '14px', fontWeight: 'medium' })}>
-          <Icon
-            style={css.raw({ marginRight: '4px', size: '16px', verticalAlign: 'sub' })}
-            icon={IconAlignBoxLeftMiddle}
-          />
+          <Icon style={css.raw({ marginRight: '4px', verticalAlign: 'sub' })} icon={IconAlignBoxLeftMiddle} />
           {collection?.count}개의 포스트
         </p>
         {#if $query.space.meAsMember}
@@ -288,7 +285,7 @@
               <h2 class={css({ fontSize: { base: '15px', sm: '18px' }, fontWeight: 'bold' })}>
                 {$query.space.name}
               </h2>
-              <Icon style={css.raw({ size: '20px', color: 'gray.400', hideBelow: 'sm' })} icon={IconChevronRight} />
+              <Icon style={css.raw({ color: 'gray.400', hideBelow: 'sm' })} icon={IconChevronRight} size={20} />
             </a>
             <a href="/{$query.space?.slug}">
               <p

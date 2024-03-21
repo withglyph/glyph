@@ -147,7 +147,7 @@
   <svelte:fragment slot="title-left">
     {#if currPage > 1}
       <button type="button" on:click={() => (currPage -= 1)}>
-        <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />
+        <Icon icon={IconChevronLeft} size={24} />
       </button>
     {/if}
   </svelte:fragment>
@@ -293,7 +293,7 @@
             type="button"
             on:click={() => ($data.bankCode = code)}
           >
-            <Icon style={css.raw({ size: '24px' })} icon={bankIcons[code]} />
+            <Icon icon={bankIcons[code]} size={24} />
             {name}
           </button>
         {/each}
@@ -333,7 +333,7 @@
             minWidth: '106px',
           })}
         >
-          <Icon style={css.raw({ size: '16px' })} icon={bankIcons[$data.bankCode]} />
+          <Icon icon={bankIcons[$data.bankCode]} />
           {banks[$data.bankCode]}
         </span>
 

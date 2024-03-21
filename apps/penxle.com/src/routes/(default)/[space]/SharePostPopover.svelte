@@ -142,7 +142,7 @@
       <h1 class={css({ fontWeight: 'semibold' })}>공유하기</h1>
 
       <button aria-label="닫기" type="button" on:click={() => (open = false)}>
-        <Icon style={css.raw({ size: '24px' })} icon={IconX} />
+        <Icon icon={IconX} size={24} />
       </button>
     </header>
 
@@ -158,7 +158,7 @@
           rel="noopener noreferrer"
           target="_blank"
         >
-          <Icon style={css.raw({ size: '32px', color: '[#1D9BF0]' })} icon={IconTwitter} />
+          <Icon style={css.raw({ color: '[#1D9BF0]' })} icon={IconTwitter} size={32} />
         </a>
         <label for={twitterLinkId}>트위터</label>
       </div>
@@ -171,7 +171,7 @@
             query: { text: href },
           })}
         >
-          <Icon style={css.raw({ size: '32px', color: '[#6364FF]' })} icon={IconMastodon} />
+          <Icon style={css.raw({ color: '[#6364FF]' })} icon={IconMastodon} size={32} />
         </a>
         <label for={mastodonLinkId}>마스토돈</label>
       </div>

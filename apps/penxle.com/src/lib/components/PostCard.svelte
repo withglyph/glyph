@@ -164,13 +164,13 @@
     </a>
     <button type="button" on:click={toggleBookmark}>
       {#if $post.bookmarkGroups.length > 0}
-        <Icon style={css.raw({ color: '[#FCD242]', size: '20px' })} icon={IconBookmarkFilled} />
+        <Icon style={css.raw({ color: '[#FCD242]' })} icon={IconBookmarkFilled} size={20} />
       {:else}
-        <Icon style={css.raw({ color: 'gray.900', size: '20px' })} icon={IconBookmark} />
+        <Icon style={css.raw({ color: 'gray.900' })} icon={IconBookmark} size={20} />
       {/if}
     </button>
     <button type="button">
-      <Icon style={css.raw({ color: 'gray.900', size: '20px' })} icon={IconDotsVertical} />
+      <Icon style={css.raw({ color: 'gray.900' })} icon={IconDotsVertical} size={20} />
     </button>
   </div>
 {/if}
@@ -256,7 +256,7 @@
             })}
             role="alert"
           >
-            <Icon style={css.raw({ size: '24px' })} icon={IconAlertTriangle} />
+            <Icon icon={IconAlertTriangle} size={24} />
             <p class={css({ fontSize: '14px', fontWeight: 'semibold', textAlign: 'center', whiteSpace: 'pre-wrap' })}>
               포스트에 민감한 내용이 포함되어 있어요
             </p>

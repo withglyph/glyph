@@ -153,7 +153,7 @@
     <div class={css({ borderBottomWidth: '1px', borderBottomColor: 'gray.900/10', marginY: '12px', width: 'full' })} />
 
     <Button size="xs" variant="text" on:click={() => (openCreateSpace = true)}>
-      <Icon style={css.raw({ marginRight: '4px', size: '14px' })} icon={IconPlus} />
+      <Icon style={css.raw({ marginRight: '4px' })} icon={IconPlus} />
       스페이스 만들기
     </Button>
   </div>

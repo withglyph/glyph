@@ -137,7 +137,7 @@
             handleShare($query.space.name, `${location.origin}/${$query.space.slug}`);
           }}
         >
-          <Icon style={css.raw({ size: '24px', color: 'gray.400' })} icon={IconShare2} />
+          <Icon style={css.raw({ color: 'gray.400' })} icon={IconShare2} size={24} />
         </button>
         {#if !$query.space.meAsMember}
           <button
@@ -153,7 +153,7 @@
               menuOpen = true;
             }}
           >
-            <Icon style={css.raw({ size: '24px', color: 'gray.400' })} icon={IconDotsVertical} />
+            <Icon style={css.raw({ color: 'gray.400' })} icon={IconDotsVertical} size={24} />
           </button>
         {/if}
       </div>
@@ -187,7 +187,7 @@
               })}
             >
               비공개
-              <Icon style={css.raw({ marginBottom: '2px', size: '12px' })} icon={IconLock} />
+              <Icon style={css.raw({ marginBottom: '2px' })} icon={IconLock} size={12} />
             </span>
           {/if}
         </h1>
@@ -236,7 +236,7 @@
           })}
           href={`/${$query.space.slug}/dashboard/settings`}
         >
-          <Icon style={css.raw({ size: '24px', color: 'gray.500' })} icon={IconSettings} />
+          <Icon style={css.raw({ color: 'gray.500' })} icon={IconSettings} size={24} />
         </a>
       {:else}
         {#if $query.me === null}
@@ -298,7 +298,7 @@
               transition: 'common',
             })}
           >
-            <Icon slot="value" style={css.raw({ size: '24px', color: 'gray.500' })} icon={IconDotsVertical} />
+            <Icon slot="value" style={css.raw({ color: 'gray.500' })} icon={IconDotsVertical} size={24} />
 
             {#if $query.space.muted}
               <MenuItem
@@ -357,7 +357,7 @@
         type="link"
         variant="outlined"
       >
-        <Icon style={css.raw({ size: '24px', color: 'gray.500' })} icon={IconSettings} />
+        <Icon style={css.raw({ color: 'gray.500' })} icon={IconSettings} size={24} />
       </Button>
     {:else if $query.me === null}
       <Button

@@ -1,7 +1,6 @@
 <script lang="ts">
   import IconX from '~icons/tabler/x';
   import { Icon } from '$lib/components';
-  import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
 </script>
 
@@ -22,5 +21,5 @@
   on:click
 >
   <slot />
-  <Icon style={css.raw({ size: '14px' })} icon={IconX} />
+  <Icon icon={IconX} size={12} />
 </button>

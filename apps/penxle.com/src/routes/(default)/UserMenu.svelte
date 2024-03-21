@@ -197,9 +197,9 @@
               <p class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.800' })}>나의 스페이스</p>
 
               {#if spaceListOpen}
-                <Icon style={css.raw({ size: '20px', color: 'gray.400' })} icon={IconChevronUp} />
+                <Icon style={css.raw({ color: 'gray.400' })} icon={IconChevronUp} size={20} />
               {:else}
-                <Icon style={css.raw({ size: '20px', color: 'gray.400' })} icon={IconChevronDown} />
+                <Icon style={css.raw({ color: 'gray.400' })} icon={IconChevronDown} size={20} />
               {/if}
             </button>
 
@@ -255,7 +255,7 @@
                         await goto(`/editor/${permalink}`);
                       }}
                     >
-                      <Icon style={css.raw({ size: '20px', color: 'gray.500' })} icon={IconPencil} />
+                      <Icon style={css.raw({ color: 'gray.500' })} icon={IconPencil} size={20} />
                     </button>
                   </li>
                 {/each}
@@ -275,7 +275,7 @@
                     type="button"
                     on:click={() => (createSpaceOpen = true)}
                   >
-                    <Icon style={css.raw({ size: '14px' })} icon={IconPlus} />
+                    <Icon icon={IconPlus} />
                     스페이스 만들기
                   </button>
                 </li>

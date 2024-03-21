@@ -134,7 +134,7 @@
                 toast.success('계좌번호가 복사되었어요');
               }}
             >
-              <Icon style={css.raw({ marginRight: '4px', size: '16px', color: 'gray.500' })} icon={IconCopy} />
+              <Icon style={css.raw({ marginRight: '4px', color: 'gray.500' })} icon={IconCopy} />
               복사
             </Button>
           </div>

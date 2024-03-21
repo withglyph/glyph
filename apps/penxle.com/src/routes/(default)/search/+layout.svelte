@@ -93,8 +93,9 @@
           태그 옵션
         </p>
         <Icon
-          style={css.raw({ color: 'gray.400', size: '20px' }, showTagOption && { transform: 'rotate(180deg)' })}
+          style={css.raw({ color: 'gray.400' }, showTagOption && { transform: 'rotate(180deg)' })}
           icon={IconChevronDown}
+          size={20}
         />
       </button>
 
@@ -147,7 +148,7 @@
               })}
               type="submit"
             >
-              <Icon style={css.raw({ size: '20px', transition: 'common' })} icon={IconSearch} />
+              <Icon style={css.raw({ transition: 'common' })} icon={IconSearch} size={20} />
             </button>
           </form>
 
@@ -223,7 +224,7 @@
               })}
               type="submit"
             >
-              <Icon style={css.raw({ size: '20px', transition: 'common' })} icon={IconSearch} />
+              <Icon style={css.raw({ transition: 'common' })} icon={IconSearch} size={20} />
             </button>
           </form>
 
@@ -264,8 +265,9 @@
         </p>
 
         <Icon
-          style={css.raw({ size: '20px', color: 'gray.400' }, showAdultOption && { transform: 'rotate(180deg)' })}
+          style={css.raw({ color: 'gray.400' }, showAdultOption && { transform: 'rotate(180deg)' })}
           icon={IconChevronDown}
+          size={20}
         />
       </button>
 
@@ -335,14 +337,14 @@
         variant="outlined"
         on:click={() => (filterOpen = true)}
       >
-        <Icon style={css.raw({ size: '20px' })} icon={IconFilter} />
+        <Icon icon={IconFilter} size={20} />
         필터
       </Button>
 
       <Menu as="div" placement="bottom">
         <Button slot="value" style={css.raw({ flexShrink: '0' })} color="tertiary" size="md" variant="outlined">
           {orderBy === 'LATEST' ? '최신순' : '정확도순'}
-          <Icon style={css.raw({ size: '20px' })} icon={IconChevronDown} />
+          <Icon icon={IconChevronDown} size={20} />
         </Button>
 
         <MenuItem
@@ -383,8 +385,9 @@
         태그 옵션
       </p>
       <Icon
-        style={css.raw({ color: 'gray.400', size: '20px' }, showTagOption && { transform: 'rotate(180deg)' })}
+        style={css.raw({ color: 'gray.400' }, showTagOption && { transform: 'rotate(180deg)' })}
         icon={IconChevronDown}
+        size={20}
       />
     </button>
 
@@ -435,7 +438,7 @@
               height: 'full',
             })}
           >
-            <Icon style={css.raw({ size: '20px', transition: 'common' })} icon={IconSearch} />
+            <Icon style={css.raw({ transition: 'common' })} icon={IconSearch} size={20} />
           </div>
         </form>
 
@@ -506,7 +509,7 @@
               height: 'full',
             })}
           >
-            <Icon style={css.raw({ size: '20px', transition: 'common' })} icon={IconSearch} />
+            <Icon style={css.raw({ transition: 'common' })} icon={IconSearch} size={20} />
           </div>
         </form>
 
@@ -545,8 +548,9 @@
         성인물 옵션
       </p>
       <Icon
-        style={css.raw({ color: 'gray.400', size: '20px' }, showAdultOption && { transform: 'rotate(180deg)' })}
+        style={css.raw({ color: 'gray.400' }, showAdultOption && { transform: 'rotate(180deg)' })}
         icon={IconChevronDown}
+        size={20}
       />
     </button>
 
@@ -581,40 +585,6 @@
         </Radio>
       </fieldset>
     {/if}
-
-    <!-- <hr class={css({ borderStyle: 'none', marginY: '16px', backgroundColor: 'gray.200', height: '1px' })} />
-
-    <button
-      class={flex({ align: 'center', justify: 'space-between', gap: '10px', paddingY: '12px', width: 'full' })}
-      type="button"
-      on:click={() => (showTriggerOption = !showTriggerOption)}
-    >
-      <p class={css({ fontSize: '15px', fontWeight: 'bold', textAlign: 'left', width: 'full', maxWidth: '330px' })}>
-        트리거 워닝
-      </p>
-      <Icon
-        style={css.raw({ color: 'gray.400', size: '20px' }, showTriggerOption && { transform: 'rotate(180deg)' })}
-        icon={IconChevronDown}
-      />
-    </button>
-
-    {#if showTriggerOption}
-      <div class={flex({ flexWrap: 'wrap', gap: '12px' })}>
-        {#each contentFilters as contentFilter (contentFilter)}
-          <Checkbox
-            style={css.raw({ fontSize: '14px', fontWeight: 'medium' })}
-            checked={!excludeContentFilters.includes(contentFilter)}
-            on:change={() => {
-              excludeContentFilters = excludeContentFilters.includes(contentFilter)
-                ? excludeContentFilters.filter((f) => f !== contentFilter)
-                : [...excludeContentFilters, contentFilter];
-            }}
-          >
-            {filterToLocaleString[contentFilter]}
-          </Checkbox>
-        {/each}
-      </div>
-    {/if} -->
 
     <div class={flex({ gap: '12px', marginTop: '16px' })}>
       <Button

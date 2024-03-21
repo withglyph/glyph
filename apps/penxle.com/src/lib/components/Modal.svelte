@@ -169,7 +169,7 @@
                   type="button"
                   on:click={() => (open = false)}
                 >
-                  <Icon style={css.raw({ size: '24px' })} icon={IconX} />
+                  <Icon icon={IconX} size={24} />
                 </button>
               {/if}
             </div>
@@ -188,7 +188,7 @@
               type="button"
               on:click={() => (open = false)}
             >
-              <Icon style={css.raw({ size: '24px' })} icon={IconX} />
+              <Icon icon={IconX} size={24} />
             </button>
           {/if}
 

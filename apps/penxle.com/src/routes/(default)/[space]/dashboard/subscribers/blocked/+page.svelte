@@ -57,7 +57,7 @@
 
 {#if $query.space.blockedMasquerades.length === 0}
   <div class={center({ flexDirection: 'column', gap: '4px', flexGrow: '1', marginY: '120px' })}>
-    <Icon style={css.raw({ size: '28px' })} icon={IconAlertTriangle} />
+    <Icon icon={IconAlertTriangle} size={28} />
     <p class={css({ marginY: 'auto', fontWeight: 'semibold', textAlign: 'center' })}>차단 유저가 없어요</p>
   </div>
 {:else}
@@ -77,7 +77,7 @@
           <th class={css({ paddingY: '8px', paddingLeft: '20px', lg: { width: '120px' }, hideBelow: 'sm' })}>
             <button class={flex({ align: 'center', gap: '4px' })} type="button">
               차단일자
-              <Icon style={css.raw({ size: '14px' })} icon={IconSelector} />
+              <Icon icon={IconSelector} />
             </button>
           </th>
           <th class={css({ paddingX: '10px', paddingY: '8px', textAlign: 'left' })}>아이디(익명)</th>

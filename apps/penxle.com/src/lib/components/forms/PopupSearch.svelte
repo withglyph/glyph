@@ -41,6 +41,6 @@
   />
 
   <div class={center({ position: 'absolute', left: '14px', insetY: '0', height: 'full', color: 'gray.500' })}>
-    <Icon style={css.raw({ size: '20px' })} icon={IconSearch} />
+    <Icon icon={IconSearch} size={20} />
   </div>
 </form>

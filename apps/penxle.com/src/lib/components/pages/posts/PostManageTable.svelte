@@ -389,12 +389,12 @@
                 <Menu disabled={!hasPermissionToUpdatePost(post.member.id)} placement="bottom-end">
                   <span slot="value" class={flex({ align: 'center', fontSize: '13px', fontWeight: 'bold' })}>
                     <Icon
-                      style={css.raw({ marginRight: '2px', size: '16px', color: 'gray.400' })}
+                      style={css.raw({ marginRight: '2px', color: 'gray.400' })}
                       icon={visibilityToIcon[post.visibility]}
                     />
                     {visibilityToLocaleString[post.visibility]}
                     {#if hasPermissionToUpdatePost(post.member.id)}
-                      <Icon style={css.raw({ size: '16px', color: 'gray.400' })} icon={IconChevronDown} />
+                      <Icon style={css.raw({ color: 'gray.400' })} icon={IconChevronDown} />
                     {/if}
                   </span>
 
@@ -439,10 +439,7 @@
                     openDeletePostWaring = true;
                   }}
                 >
-                  <Icon
-                    style={css.raw({ size: '16px', color: { base: 'gray.500', _hover: '[#F66062]' } })}
-                    icon={IconTrash}
-                  />
+                  <Icon style={css.raw({ color: { base: 'gray.500', _hover: '[#F66062]' } })} icon={IconTrash} />
                 </Button>
               </div>
             {/if}
@@ -584,7 +581,6 @@
               {collection.name}
               <Icon
                 style={css.raw({
-                  size: '16px',
                   color: '[#4ECEA6]',
                   visibility: { base: 'hidden', _pressed: 'visible' },
                 })}
@@ -593,7 +589,7 @@
             </MenuItem>
           {/each}
           <MenuItem style={flex.raw({ align: 'center', gap: '10px' })} on:click={() => (openCreateCollection = true)}>
-            <Icon style={css.raw({ size: '16px', color: 'gray.500' })} icon={IconPlus} />
+            <Icon style={css.raw({ color: 'gray.500' })} icon={IconPlus} />
             새로 만들기
           </MenuItem>
         </Menu>

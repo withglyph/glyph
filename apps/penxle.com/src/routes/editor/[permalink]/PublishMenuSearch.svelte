@@ -41,7 +41,7 @@
   >
     <span>{label}</span>
     <Tooltip style={center.raw()} message={tooltip} placement="top">
-      <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconAlertCircle} />
+      <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
     </Tooltip>
   </p>
 

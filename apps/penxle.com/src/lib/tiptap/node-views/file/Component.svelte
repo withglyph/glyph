@@ -91,7 +91,7 @@
   >
     <div class={flex({ align: 'center', gap: '8px', grow: '1' })}>
       <div class={flex({ align: 'center', gap: '6px' })}>
-        <Icon style={css.raw({ size: '18px', color: 'gray.300' })} icon={IconFolder} />
+        <Icon style={css.raw({ color: 'gray.300' })} icon={IconFolder} size={20} />
         <div class={css({ fontSize: '14px', lineClamp: 1 })}>{data.name}</div>
       </div>
 
@@ -109,9 +109,9 @@
       })}
     >
       {#if editor?.isEditable}
-        <Icon style={css.raw({ size: '18px', color: 'gray.600' })} icon={IconGripVertical} />
+        <Icon style={css.raw({ color: 'gray.600' })} icon={IconGripVertical} size={20} />
       {:else}
-        <Icon style={css.raw({ size: '18px', color: 'gray.600' })} icon={IconDownload} />
+        <Icon style={css.raw({ color: 'gray.600' })} icon={IconDownload} size={20} />
       {/if}
     </div>
 
@@ -135,7 +135,7 @@
       type="button"
       on:click={() => deleteNode()}
     >
-      <Icon style={css.raw({ size: '18px', color: 'gray.600' })} icon={IconTrash} />
+      <Icon style={css.raw({ color: 'gray.600' })} icon={IconTrash} size={20} />
     </button>
   </TiptapNodeViewBubbleMenu>
 {/if}

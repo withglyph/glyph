@@ -29,7 +29,7 @@
     on:click={() => (comingSoonOpen = true)}
   >
     <span class={css({ fontSize: '13px', fontWeight: 'bold' })}>편집</span>
-    <Icon style={css.raw({ size: '16px' })} icon={IconPencil} />
+    <Icon icon={IconPencil} />
   </Button>
 </div>
 

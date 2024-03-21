@@ -59,7 +59,6 @@
         position: 'absolute',
         top: '1/2',
         left: '1/2',
-        size: '20px',
         translate: 'auto',
         translateX: '-1/2',
         translateY: '-1/2',
@@ -69,6 +68,7 @@
         _groupHover: { opacity: '100' },
       })}
       icon={IconX}
+      size={20}
     />
   </button>
 {:else}

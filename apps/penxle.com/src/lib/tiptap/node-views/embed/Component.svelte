@@ -182,10 +182,10 @@
         >
           <Icon
             style={css.raw({
-              size: { base: '20px', sm: '18px' },
               color: node.attrs.mode === 'embed-full' ? 'teal.500' : 'gray.600',
             })}
             icon={IconEmbedFull}
+            size={20}
           />
         </button>
         <button
@@ -203,10 +203,10 @@
         >
           <Icon
             style={css.raw({
-              size: { base: '20px', sm: '18px' },
               color: node.attrs.mode === 'embed-compact' ? 'teal.500' : 'gray.600',
             })}
             icon={IconEmbedCompact}
+            size={20}
           />
         </button>
         <button
@@ -224,10 +224,10 @@
         >
           <Icon
             style={css.raw({
-              size: { base: '20px', sm: '18px' },
               color: node.attrs.mode === 'opengraph' ? 'teal.500' : 'gray.600',
             })}
             icon={IconOpengraph}
+            size={20}
           />
         </button>
       </div>
@@ -245,7 +245,7 @@
       type="button"
       on:click={convertToLink}
     >
-      <Icon style={css.raw({ size: { base: '20px', sm: '18px' }, color: 'gray.600' })} icon={IconLink} />
+      <Icon style={css.raw({ color: 'gray.600' })} icon={IconLink} size={20} />
     </button>
 
     <button
@@ -261,7 +261,7 @@
         editor?.commands.focus();
       }}
     >
-      <Icon style={css.raw({ size: { base: '20px', sm: '18px' }, color: 'gray.600' })} icon={IconTrash} />
+      <Icon style={css.raw({ color: 'gray.600' })} icon={IconTrash} size={20} />
     </button>
   </TiptapNodeViewBubbleMenu>
 {/if}

@@ -192,7 +192,7 @@
           {#if node.attrs.price}
             {comma(node.attrs.price)} P
           {:else}
-            <Icon style={css.raw({ size: '16px' })} icon={IconAlertTriangle} />
+            <Icon icon={IconAlertTriangle} />
             가격설정
           {/if}
         </button>
@@ -237,7 +237,7 @@
           _hover: { backgroundColor: 'gray.100' },
         })}
       >
-        <Icon style={css.raw({ size: { base: '16px', sm: '18px' } })} icon={IconGripVertical} />
+        <Icon icon={IconGripVertical} size={20} />
       </div>
     </div>
 
@@ -379,7 +379,7 @@
 
         <div class={flex({ align: 'center', gap: '8px' })}>
           <div class={flex({ align: 'center', gap: '4px' })}>
-            <Icon style={css.raw({ size: '16px', color: 'gray.400' })} icon={IconTextRecognition} />
+            <Icon style={css.raw({ color: 'gray.400' })} icon={IconTextRecognition} />
             <span class={css({ fontSize: '14px', color: 'gray.500' })}>
               {comma(node.attrs.__data.counts.characters)}자
             </span>
@@ -387,7 +387,7 @@
 
           {#if node.attrs.__data.counts.images}
             <div class={flex({ align: 'center', gap: '4px' })}>
-              <Icon style={css.raw({ size: '16px', color: 'gray.400' })} icon={IconPhoto} />
+              <Icon style={css.raw({ color: 'gray.400' })} icon={IconPhoto} />
               <span class={css({ fontSize: '14px', color: 'gray.500' })}>
                 {comma(node.attrs.__data.counts.images)}개
               </span>
@@ -396,7 +396,7 @@
 
           {#if node.attrs.__data.counts.files}
             <div class={flex({ align: 'center', gap: '4px' })}>
-              <Icon style={css.raw({ size: '16px', color: 'gray.400' })} icon={IconFolder} />
+              <Icon style={css.raw({ color: 'gray.400' })} icon={IconFolder} />
               <span class={css({ fontSize: '14px', color: 'gray.500' })}>
                 {comma(node.attrs.__data.counts.files)}개
               </span>

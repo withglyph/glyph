@@ -123,7 +123,7 @@
 
         <Menu as="div" placement="bottom-start">
           <button slot="value" class={center()} type="button">
-            <Icon style={css.raw({ size: '24px', color: 'gray.400' })} icon={IconDotsVertical} />
+            <Icon style={css.raw({ color: 'gray.400' })} icon={IconDotsVertical} size={24} />
           </button>
 
           {#if $query.tag.muted}

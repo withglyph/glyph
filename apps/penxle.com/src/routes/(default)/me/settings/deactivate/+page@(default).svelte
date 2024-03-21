@@ -57,7 +57,7 @@
       <div>
         <a class={flex({ align: 'center', justify: 'space-between', marginBottom: '8px' })} href="/me/revenue">
           <h3 class={css({ fontWeight: 'bold', fontSize: '18px' })}>수익금 및 정산금</h3>
-          <Icon style={css.raw({ color: 'gray.500', size: '24px' })} icon={IconChevronRight} />
+          <Icon style={css.raw({ color: 'gray.500' })} icon={IconChevronRight} size={24} />
         </a>
         <p class={css({ color: 'gray.500' })}>포인트 충전을 통해 적립한 포인트는 회원 탈퇴 시 환불이 불가능합니다.</p>
         <p class={css({ color: 'gray.500' })}>

@@ -118,7 +118,7 @@
     >
       스페이스
       {#if $query.searchSpaces.length > 0}
-        <Icon style={css.raw({ color: 'gray.500', size: '24px' })} icon={IconChevronRight} />
+        <Icon style={css.raw({ color: 'gray.500' })} icon={IconChevronRight} size={24} />
       {/if}
     </svelte:element>
 
@@ -250,7 +250,7 @@
     >
       태그
       {#if $query.searchTags.length > 0}
-        <Icon style={css.raw({ color: 'gray.500', size: '24px' })} icon={IconChevronRight} />
+        <Icon style={css.raw({ color: 'gray.500' })} icon={IconChevronRight} size={24} />
       {/if}
     </svelte:element>
 
@@ -284,7 +284,7 @@
   >
     포스트
     {#if $query.searchPosts.count > 0}
-      <Icon style={css.raw({ color: 'gray.500', size: '24px' })} icon={IconChevronRight} />
+      <Icon style={css.raw({ color: 'gray.500' })} icon={IconChevronRight} size={24} />
     {/if}
   </svelte:element>
 

@@ -270,7 +270,7 @@
         type="button"
         on:click={() => (open = false)}
       >
-        <Icon style={css.raw({ size: '24px' })} icon={IconX} />
+        <Icon icon={IconX} size={24} />
       </button>
     </p>
     <span class={css({ marginTop: '2px', fontSize: '12px', color: 'gray.500', hideBelow: 'sm' })}>
@@ -325,9 +325,9 @@
         on:click={() => (tabIndex = 0)}
       >
         {#if selectedSpaceId || $post.space}
-          <Icon style={css.raw({ size: '24px', color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} />
+          <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
         {:else}
-          <Icon style={css.raw({ size: '24px', color: 'red.600', hideBelow: 'sm' })} icon={IconDot} />
+          <Icon style={css.raw({ color: 'red.600', hideBelow: 'sm' })} icon={IconDot} size={24} />
         {/if}
         <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>발행</span>
       </button>
@@ -358,9 +358,9 @@
         on:click={() => (tabIndex = 1)}
       >
         {#if $data.tags?.length > 0}
-          <Icon style={css.raw({ size: '24px', color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} />
+          <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
         {:else}
-          <Icon style={css.raw({ size: '24px', color: 'gray.300', hideBelow: 'sm' })} icon={IconCheckmark} />
+          <Icon style={css.raw({ color: 'gray.300', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
         {/if}
         <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>태그</span>
       </button>
@@ -390,9 +390,9 @@
         on:click={() => (tabIndex = 2)}
       >
         {#if currentThumbnail}
-          <Icon style={css.raw({ size: '24px', color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} />
+          <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
         {:else}
-          <Icon style={css.raw({ size: '24px', color: 'gray.300', hideBelow: 'sm' })} icon={IconCheckmark} />
+          <Icon style={css.raw({ color: 'gray.300', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
         {/if}
         <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>
           썸네일
@@ -423,7 +423,7 @@
         type="button"
         on:click={() => (tabIndex = 3)}
       >
-        <Icon style={css.raw({ size: '24px', color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} />
+        <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
         <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>
           대상 독자
         </span>
@@ -453,7 +453,7 @@
         type="button"
         on:click={() => (tabIndex = 4)}
       >
-        <Icon style={css.raw({ size: '24px', color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} />
+        <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
         <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>댓글</span>
       </button>
       <button
@@ -481,7 +481,7 @@
         type="button"
         on:click={() => (tabIndex = 5)}
       >
-        <Icon style={css.raw({ size: '24px', color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} />
+        <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
         <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>
           세부 옵션
         </span>
@@ -556,9 +556,9 @@
 
                 <p class={center({ size: '24px' })}>
                   {#if spaceSelectorOpen}
-                    <Icon style={css.raw({ size: '18px' })} icon={IconCaretUpFilled} />
+                    <Icon icon={IconCaretUpFilled} />
                   {:else}
-                    <Icon style={css.raw({ size: '18px' })} icon={IconCaretDownFilled} />
+                    <Icon icon={IconCaretDownFilled} />
                   {/if}
                 </p>
               </button>
@@ -635,7 +635,7 @@
                     on:click={() => (createSpaceOpen = true)}
                   >
                     새로운 스페이스 추가하기
-                    <Icon style={css.raw({ size: '24px', color: 'gray.400' })} icon={IconPlus} />
+                    <Icon style={css.raw({ color: 'gray.400' })} icon={IconPlus} size={24} />
                   </button>
                 </li>
               </ul>
@@ -686,9 +686,9 @@
 
               <p class={center({ size: '24px' })}>
                 {#if collectionSelectorOpen}
-                  <Icon style={css.raw({ size: '18px' })} icon={IconCaretUpFilled} />
+                  <Icon icon={IconCaretUpFilled} />
                 {:else}
-                  <Icon style={css.raw({ size: '18px' })} icon={IconCaretDownFilled} />
+                  <Icon icon={IconCaretDownFilled} />
                 {/if}
               </p>
             </button>
@@ -774,7 +774,7 @@
                     on:click={() => (createCollectionOpen = true)}
                   >
                     새로운 컬렉션 추가하기
-                    <Icon style={css.raw({ size: '24px', color: 'gray.400' })} icon={IconPlus} />
+                    <Icon style={css.raw({ color: 'gray.400' })} icon={IconPlus} size={24} />
                   </button>
                 </li>
               </ul>
@@ -817,10 +817,9 @@
               fontWeight: { base: 'medium', sm: 'semibold' },
             })}
           >
-            카테고리
             <span>페어</span>
             <Tooltip style={center.raw()} message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
-              <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconAlertCircle} />
+              <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
             </Tooltip>
           </p>
 
@@ -915,7 +914,7 @@
 
             <div class={flex({ align: 'center', gap: '6px' })}>
               <button type="button" on:click={() => (thumbnail = null)}>
-                <Icon style={css.raw({ size: '24px' })} icon={IconTrash} />
+                <Icon icon={IconTrash} size={24} />
               </button>
 
               <button
@@ -953,7 +952,7 @@
             on:click={() => thumbnailPicker.show()}
           >
             <div class={flex({ align: 'center', gap: '6px' })}>
-              <Icon style={css.raw({ size: '18px', color: 'gray.300' })} icon={IconPhoto} />
+              <Icon style={css.raw({ color: 'gray.300' })} icon={IconPhoto} size={20} />
               <span class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.400' })}>
                 썸네일 이미지를 선택해주세요
               </span>
@@ -1019,7 +1018,7 @@
           >
             <span>비밀글</span>
             <Tooltip style={center.raw()} message="설정하면 비밀번호를 입력한 독자만 내용을 열람할 수 있어요">
-              <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconAlertCircle} />
+              <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
             </Tooltip>
           </p>
 
@@ -1080,7 +1079,7 @@
               style={center.raw()}
               message="연령 제한을 설정하면 본인인증이 완료된 해당 나이 이상의 독자만 내용을 열람할 수 있어요"
             >
-              <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconAlertCircle} />
+              <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
             </Tooltip>
           </p>
 
@@ -1106,7 +1105,7 @@
           >
             <span>검색 공개</span>
             <Tooltip style={center.raw()} message="외부 검색엔진에서 이 포스트를 검색할 수 있을지 설정해요">
-              <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconAlertCircle} />
+              <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
             </Tooltip>
           </p>
 

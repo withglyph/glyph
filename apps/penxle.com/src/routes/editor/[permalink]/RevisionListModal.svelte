@@ -126,7 +126,7 @@
               {disabled}
               placement="right-start"
             >
-              <Icon slot="value" style={css.raw({ size: '24px' })} icon={IconDots} />
+              <Icon slot="value" icon={IconDots} size={24} />
               <MenuItem
                 on:click={async () => {
                   const fetched = await restoreRevision.refetch({

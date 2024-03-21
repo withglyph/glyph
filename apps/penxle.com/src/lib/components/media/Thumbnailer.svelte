@@ -160,8 +160,8 @@
   </div>
 
   <div class={flex({ align: 'center', gap: '16px', marginTop: '16px', marginX: '16px' })}>
-    <Icon style={css.raw({ size: '20px', color: 'gray.500' })} icon={IconZoomOut} />
+    <Icon style={css.raw({ color: 'gray.500' })} icon={IconZoomOut} size={20} />
     <Slider style={css.raw({ width: 'full' })} max={8} min={1} bind:value={scale} />
-    <Icon style={css.raw({ size: '20px', color: 'gray.500' })} icon={IconZoomIn} />
+    <Icon style={css.raw({ color: 'gray.500' })} icon={IconZoomIn} size={20} />
   </div>
 </div>

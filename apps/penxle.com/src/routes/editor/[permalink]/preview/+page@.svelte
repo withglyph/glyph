@@ -109,7 +109,7 @@
                 mode = 'desktop';
               }}
             >
-              <Icon style={css.raw({ size: '20px' })} icon={IconDeviceDesktop} />
+              <Icon icon={IconDeviceDesktop} size={20} />
             </button>
             <button
               class={flex({
@@ -133,7 +133,7 @@
                 mode = 'mobile';
               }}
             >
-              <Icon style={css.raw({ size: '20px' })} icon={IconDeviceMobile} />
+              <Icon icon={IconDeviceMobile} size={20} />
             </button>
           </div>
         </div>

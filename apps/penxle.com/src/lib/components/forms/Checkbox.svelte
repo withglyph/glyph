@@ -56,13 +56,13 @@
       class={center({
         display: 'none',
         position: 'absolute',
-        top: '2px',
+        top: '0',
         left: '0',
         size: '18px',
         _peerChecked: { display: 'flex' },
       })}
     >
-      <Icon style={css.raw({ size: '14px', color: 'gray.5' })} icon={IconChecked} />
+      <Icon style={css.raw({ color: 'gray.5' })} icon={IconChecked} />
     </div>
 
     <span class={css({ cursor: 'pointer' })}>

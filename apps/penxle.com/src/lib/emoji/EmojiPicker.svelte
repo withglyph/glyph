@@ -130,7 +130,7 @@
   on:click|stopPropagation={() => (open = true)}
   use:anchor
 >
-  <Icon style={css.raw({ size: '24px' })} icon={IconMoodPlus} />
+  <Icon icon={IconMoodPlus} size={24} />
 
   <slot />
 </button>

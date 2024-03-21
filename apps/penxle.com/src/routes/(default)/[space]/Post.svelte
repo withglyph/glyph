@@ -454,7 +454,7 @@
         href={`/${$query.post.space?.slug}/collections/${$query.post.collection.id}`}
       >
         {$query.post.collection.name}
-        <Icon style={css.raw({ size: '16px', color: 'gray.500' })} icon={IconChevronRight} />
+        <Icon style={css.raw({ color: 'gray.500' })} icon={IconChevronRight} />
       </a>
     {/if}
     <div class={flex({ justify: 'space-between', align: 'flex-start' })}>
@@ -468,11 +468,7 @@
       </div>
 
       <Menu placement="bottom-end">
-        <Icon
-          slot="value"
-          style={css.raw({ size: '24px', color: 'gray.500', hideFrom: 'sm' })}
-          icon={IconDotsVertical}
-        />
+        <Icon slot="value" style={css.raw({ color: 'gray.500', hideFrom: 'sm' })} icon={IconDotsVertical} size={24} />
 
         {#if $query.post.space?.meAsMember}
           <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
@@ -578,11 +574,11 @@
                 })}
               >
                 <div class={flex({ align: 'center', gap: '2px', marginRight: '10px' })}>
-                  <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconEye} />
+                  <Icon style={css.raw({ color: 'gray.400' })} icon={IconEye} />
                   {humanizeNumber($query.post.viewCount)}
                 </div>
                 <div class={flex({ align: 'center', gap: '2px' })}>
-                  <Icon style={css.raw({ size: '13px', color: 'gray.400' })} icon={IconMoodSmile} />
+                  <Icon style={css.raw({ size: '15px', color: 'gray.400' })} icon={IconMoodSmile} />
                   {humanizeNumber($query.post.reactionCount)}
                 </div>
               </div>
@@ -594,8 +590,9 @@
       <div class={flex({ align: 'center', gap: '12px', hideBelow: 'sm' })}>
         <SharePostPopover href={shortLink}>
           <Icon
-            style={css.raw({ size: '24px', color: { base: 'gray.500', _hover: 'teal.400' }, transition: 'common' })}
+            style={css.raw({ color: { base: 'gray.500', _hover: 'teal.400' }, transition: 'common' })}
             icon={IconShare2}
+            size={24}
           />
         </SharePostPopover>
 
@@ -617,17 +614,18 @@
           }}
         >
           {#if $query.post.bookmarkGroups.length > 0}
-            <Icon style={css.raw({ size: '24px', color: 'teal.500' })} icon={IconBookmarkFilled} />
+            <Icon style={css.raw({ color: 'teal.500' })} icon={IconBookmarkFilled} size={24} />
           {:else}
             <Icon
-              style={css.raw({ size: '24px', color: { base: 'gray.500', _hover: 'teal.400' }, transition: 'common' })}
+              style={css.raw({ color: { base: 'gray.500', _hover: 'teal.400' }, transition: 'common' })}
               icon={IconBookmark}
+              size={24}
             />
           {/if}
         </button>
 
         <Menu placement="bottom-end">
-          <Icon slot="value" style={css.raw({ size: '24px', color: 'gray.500' })} icon={IconDotsVertical} />
+          <Icon slot="value" style={css.raw({ color: 'gray.500' })} icon={IconDotsVertical} size={24} />
 
           {#if $query.post.space?.meAsMember}
             <MenuItem href={`/editor/${$query.post.permalink}`} type="link">수정하기</MenuItem>
@@ -1023,11 +1021,11 @@
             offset={10}
             placement="top"
           >
-            <Icon style={css.raw({ size: '24px', color: 'gray.400' })} icon={IconMessageCircleOff} />
+            <Icon style={css.raw({ color: 'gray.400' })} icon={IconMessageCircleOff} size={24} />
           </Tooltip>
         {:else}
           <a class={center({ marginRight: '8px', size: '34px' })} href="#comment">
-            <Icon style={css.raw({ size: '24px' })} icon={IconMessageCircle} />
+            <Icon icon={IconMessageCircle} size={24} />
             {#if $query.post.commentCount > 0}
               <span class={css({ marginLeft: '4px', fontSize: '13px', fontWeight: 'medium' })}>
                 {$query.post.commentCount}
@@ -1093,19 +1091,17 @@
           }}
         >
           {#if $query.post.bookmarkGroups.length > 0}
-            <Icon style={css.raw({ size: '24px', color: 'teal.500' })} icon={IconBookmarkFilled} />
+            <Icon style={css.raw({ color: 'teal.500' })} icon={IconBookmarkFilled} size={24} />
           {:else}
             <Icon
-              style={css.raw({ size: '24px', color: { _hover: 'teal.400' }, transition: 'common' })}
+              style={css.raw({ color: { _hover: 'teal.400' }, transition: 'common' })}
               icon={IconBookmark}
+              size={24}
             />
           {/if}
         </button>
         <SharePostPopover style={center.raw({ size: '34px' })} href={shortLink}>
-          <Icon
-            style={css.raw({ size: '24px', color: { _hover: 'teal.400' }, transition: 'common' })}
-            icon={IconShare2}
-          />
+          <Icon style={css.raw({ color: { _hover: 'teal.400' }, transition: 'common' })} icon={IconShare2} size={24} />
         </SharePostPopover>
       </div>
     </div>
@@ -1156,8 +1152,9 @@
       </div>
       <SharePostPopover href={shortLink}>
         <Icon
-          style={css.raw({ size: '20px', color: { base: 'gray.500', _hover: 'teal.400' }, transition: 'common' })}
+          style={css.raw({ color: { base: 'gray.500', _hover: 'teal.400' }, transition: 'common' })}
           icon={IconShare2}
+          size={20}
         />
       </SharePostPopover>
     </div>
@@ -1381,7 +1378,7 @@
               mixpanel.track('space:unfollow', { spaceId: $query.post.space.id, via: 'post' });
             }}
           >
-            <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconCheck} />
+            <Icon style={css.raw({ color: 'gray.400' })} icon={IconCheck} />
             관심 스페이스
           </Button>
         {:else}
@@ -1400,7 +1397,7 @@
               mixpanel.track('space:follow', { spaceId: $query.post.space.id, via: 'post' });
             }}
           >
-            <Icon style={css.raw({ size: '14px' })} icon={IconPlus} />
+            <Icon icon={IconPlus} />
             관심 스페이스
           </Button>
         {/if}

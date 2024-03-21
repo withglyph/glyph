@@ -48,6 +48,6 @@
       });
     }}
   >
-    <Icon style={css.raw({ size: '24px' })} icon={IconEdit} />
+    <Icon icon={IconEdit} size={24} />
   </button>
 </label>

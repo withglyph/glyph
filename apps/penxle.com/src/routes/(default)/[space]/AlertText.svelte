@@ -15,7 +15,7 @@
   role="alert"
 >
   <div class={flex({ direction: 'column', align: 'center', gap: '8px' })}>
-    <Icon style={css.raw({ size: '32px', color: 'teal.500' })} {icon} />
+    <Icon style={css.raw({ color: 'teal.500' })} {icon} size={32} />
     <h2 class={css({ textAlign: 'center', fontSize: '18px', fontWeight: 'semibold' })}>
       {title}
     </h2>

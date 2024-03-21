@@ -61,7 +61,7 @@
   <button class={css({ textAlign: 'left' })} type="button" on:click={() => (mutedSpaceOpen = true)}>
     <div class={flex({ align: 'center', gap: '4px', marginBottom: '8px', width: 'full' })}>
       <h3 class={css({ fontSize: '18px', fontWeight: 'bold' })}>숨긴 스페이스</h3>
-      <Icon style={css.raw({ color: 'gray.500', size: '24px' })} icon={IconChevronRight} />
+      <Icon style={css.raw({ color: 'gray.500' })} icon={IconChevronRight} size={24} />
     </div>
     <p class={css({ color: 'gray.500' })}>
       스페이스를 숨기기 할 경우 해당 스페이스가 올린 포스트가 사이트에서 보이지 않아요.
@@ -76,7 +76,7 @@
   <button class={css({ textAlign: 'left' })} type="button" on:click={() => (mutedTagOpen = true)}>
     <div class={flex({ align: 'center', gap: '4px', marginBottom: '8px', width: 'full' })}>
       <h3 class={css({ fontSize: '18px', fontWeight: 'bold' })}>숨긴 태그</h3>
-      <Icon style={css.raw({ color: 'gray.500', size: '24px' })} icon={IconChevronRight} />
+      <Icon style={css.raw({ color: 'gray.500' })} icon={IconChevronRight} size={24} />
     </div>
     <p class={css({ color: 'gray.500' })}>
       태그를 숨기기 처리할 경우 해당 태그가 속해있는 포스트가 사이트에서 보이지 않아요.

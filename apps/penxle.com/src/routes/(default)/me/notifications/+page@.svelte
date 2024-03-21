@@ -114,13 +114,13 @@
     })}
   >
     <button type="button" on:click={() => history.back()}>
-      <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />
+      <Icon icon={IconChevronLeft} size={24} />
     </button>
 
     <h1 class={css({ position: 'absolute', left: '1/2', translateX: '-1/2', fontWeight: 'semibold' })}>알림</h1>
 
     <a href="/me/settings/notifications">
-      <Icon style={css.raw({ size: '20px' })} icon={IconSettings} />
+      <Icon icon={IconSettings} size={20} />
     </a>
   </div>
 
@@ -171,13 +171,13 @@
             )}
           >
             {#if notification.__typename === 'SubscribeNotification'}
-              <Icon style={css.raw({ size: '12px' })} icon={IconCheck} />
+              <Icon icon={IconCheck} size={12} />
               스페이스 구독
             {:else if notification.__typename === 'PurchaseNotification'}
-              <Icon style={css.raw({ size: '12px' })} icon={IconCoin} />
+              <Icon icon={IconCoin} size={12} />
               구매
             {:else if notification.__typename === 'CommentNotification'}
-              <Icon style={css.raw({ size: '12px' })} icon={IconMessageCircle} />
+              <Icon icon={IconMessageCircle} size={12} />
               댓글
             {/if}
           </div>

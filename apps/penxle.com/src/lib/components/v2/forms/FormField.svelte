@@ -39,7 +39,7 @@
     })}
   >
     <FormValidationMessage for={name} let:message>
-      <Icon style={css.raw({ size: '14px' })} icon={IconAlertCircle} />
+      <Icon icon={IconAlertCircle} size={12} />
       {message}
     </FormValidationMessage>
   </div>

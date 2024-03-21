@@ -106,7 +106,7 @@
             : { visibility: 'visible' },
         )}
       >
-        <Icon style={css.raw({ size: '24px', color: 'gray.50' })} icon={IconCamera} />
+        <Icon style={css.raw({ color: 'gray.50' })} icon={IconCamera} size={24} />
       </div>
     </button>
     <div

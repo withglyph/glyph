@@ -201,10 +201,7 @@
               <dt class={flex({ align: 'center', gap: '2px', width: '120px' })}>
                 즉시출금 수수료
                 <Tooltip message="즉시출금 신청 시 1건당 500원의 추가 수수료가 발생해요">
-                  <Icon
-                    style={css.raw({ size: '16px', color: 'gray.500', transform: 'rotate(180deg)' })}
-                    icon={IconInfoCircle}
-                  />
+                  <Icon style={css.raw({ color: 'gray.500', transform: 'rotate(180deg)' })} icon={IconInfoCircle} />
                 </Tooltip>
               </dt>
               <dd class={css({ fontWeight: 'semibold' })}>500원</dd>
@@ -226,10 +223,7 @@
                 style={flex.raw({ align: 'center' })}
                 message="소득에 대한 세금을 직접 납부하는 불편함을 줄여드리기 위해 회사가 원천징수를 통해 대리해 납부해 드리는 금액이에요"
               >
-                <Icon
-                  style={css.raw({ size: '16px', color: 'gray.500', transform: 'rotate(180deg)' })}
-                  icon={IconInfoCircle}
-                />
+                <Icon style={css.raw({ color: 'gray.500', transform: 'rotate(180deg)' })} icon={IconInfoCircle} />
               </Tooltip>
             </dt>
             <dd class={css({ fontWeight: 'semibold' })}>{comma($revenueWithdrawal.taxAmount)}원</dd>

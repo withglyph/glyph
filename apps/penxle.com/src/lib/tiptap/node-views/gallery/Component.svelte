@@ -95,7 +95,7 @@
       type="button"
       on:click={() => (open = true)}
     >
-      <Icon style={css.raw({ color: 'gray.600', size: { base: '20px', sm: '18px' } })} icon={IconEdit} />
+      <Icon style={css.raw({ color: 'gray.600' })} icon={IconEdit} size={20} />
     </button>
 
     <div class={css({ backgroundColor: 'gray.200', width: '1px', height: '12px' })} />
@@ -118,11 +118,11 @@
           style={css.raw(
             {
               color: 'gray.600',
-              size: { base: '20px', sm: '18px' },
             },
             node.attrs.align === 'left' && { color: 'teal.500' },
           )}
           icon={IconAlignLeft}
+          size={20}
         />
       </button>
 
@@ -143,11 +143,11 @@
           style={css.raw(
             {
               color: 'gray.600',
-              size: { base: '20px', sm: '18px' },
             },
             node.attrs.align === 'center' && { color: 'teal.500' },
           )}
           icon={IconAlignCenter}
+          size={20}
         />
       </button>
 
@@ -168,11 +168,11 @@
           style={css.raw(
             {
               color: 'gray.600',
-              size: { base: '20px', sm: '18px' },
             },
             node.attrs.align === 'right' && { color: 'teal.500' },
           )}
           icon={IconAlignRight}
+          size={20}
         />
       </button>
 
@@ -196,11 +196,11 @@
         style={css.raw(
           {
             color: 'gray.600',
-            size: { base: '20px', sm: '18px' },
           },
           node.attrs.size === 'full' && { color: 'teal.500' },
         )}
         icon={IconEmbedFull}
+        size={20}
       />
     </button>
     <button
@@ -220,11 +220,11 @@
         style={css.raw(
           {
             color: 'gray.600',
-            size: { base: '20px', sm: '18px' },
           },
           node.attrs.size === 'compact' && { color: 'teal.500' },
         )}
         icon={IconEmbedCompact}
+        size={20}
       />
     </button>
 
@@ -240,7 +240,7 @@
       type="button"
       on:click={() => deleteNode()}
     >
-      <Icon style={css.raw({ color: 'gray.600', size: '18px' })} icon={IconTrash} />
+      <Icon style={css.raw({ color: 'gray.600' })} icon={IconTrash} size={20} />
     </button>
   </TiptapNodeViewBubbleMenu>
 

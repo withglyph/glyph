@@ -163,10 +163,7 @@
                 toast.success('컬렉션을 삭제했어요');
               }}
             >
-              <Icon
-                style={css.raw({ size: '16px', color: 'gray.500', _hover: { color: 'red.600' } })}
-                icon={IconTrash}
-              />
+              <Icon style={css.raw({ color: 'gray.500', _hover: { color: 'red.600' } })} icon={IconTrash} />
             </Button>
           </div>
         </TableData>

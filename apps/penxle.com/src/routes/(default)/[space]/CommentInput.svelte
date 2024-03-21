@@ -117,7 +117,7 @@
   >
     <div class={flex({ gap: '4px' })}>
       {#if parentId}
-        <Icon style={css.raw({ size: '14px', color: 'gray.500' })} icon={IconReplyBar} />
+        <Icon style={css.raw({ color: 'gray.500' })} icon={IconReplyBar} />
       {/if}
 
       <div class={css({ width: 'full' })}>
@@ -148,7 +148,7 @@
               offset={10}
               placement="top"
             >
-              <Icon style={css.raw({ size: '12px', color: 'gray.400' })} icon={IconAlertCircle} />
+              <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} size={12} />
             </Tooltip>
           {/if}
         </div>
@@ -203,10 +203,10 @@
         >
           <Icon
             style={css.raw({
-              size: '20px',
               color: visibility === 'PRIVATE' ? 'teal.500' : 'gray.400',
             })}
             icon={IconLock}
+            size={20}
           />
         </button>
       {/if}

@@ -67,7 +67,7 @@
     내 계좌:
     <span>{banks[$query.me.settlementIdentity.bankCode]} {$query.me.settlementIdentity.bankAccountNumber}</span>
     <Tooltip style={flex.raw({ align: 'center' })} message="출금 계좌 변경은 사이트 하단 고객센터를 통해 가능해요">
-      <Icon style={css.raw({ size: '16px', color: 'gray.500', transform: 'rotate(180deg)' })} icon={IconInfoCircle} />
+      <Icon style={css.raw({ color: 'gray.500', transform: 'rotate(180deg)' })} icon={IconInfoCircle} />
     </Tooltip>
   </p>
 {/if}
@@ -90,10 +90,7 @@
       <div class={flex({ align: 'center', gap: '4px', fontSize: { base: '14px', sm: '16px' }, fontWeight: 'medium' })}>
         출금 가능 금액
         <Tooltip style={flex.raw({ align: 'center' })} message="수익 발생 후 7일이 지난 수익금을 출금할 수 있어요">
-          <Icon
-            style={css.raw({ size: '16px', color: 'gray.500', transform: 'rotate(180deg)' })}
-            icon={IconInfoCircle}
-          />
+          <Icon style={css.raw({ color: 'gray.500', transform: 'rotate(180deg)' })} icon={IconInfoCircle} />
         </Tooltip>
       </div>
       <p class={css({ fontSize: { base: '24px', sm: '26px' }, fontWeight: 'semibold' })}>
@@ -208,7 +205,7 @@
         {:else}
           계좌 인증이 필요해요
         {/if}
-        <Icon style={css.raw({ size: '20px' })} icon={IconChevronRight} />
+        <Icon icon={IconChevronRight} size={20} />
       </p>
     </button>
   </div>

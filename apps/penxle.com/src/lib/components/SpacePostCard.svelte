@@ -162,7 +162,7 @@
           })}
           role="alert"
         >
-          <Icon style={css.raw({ size: '24px' })} icon={IconAlertTriangle} />
+          <Icon icon={IconAlertTriangle} size={24} />
           <p class={css({ fontSize: '14px', fontWeight: 'semibold', textAlign: 'center' })}>
             포스트에 민감한 내용이 포함되어 있어요
           </p>

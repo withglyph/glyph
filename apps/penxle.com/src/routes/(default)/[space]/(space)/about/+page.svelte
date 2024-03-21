@@ -51,7 +51,7 @@
 >
   {#if $query.space.myMasquerade?.blocked}
     <div class={center({ flexDirection: 'column', minHeight: '176px' })}>
-      <Icon style={css.raw({ size: '28px' })} icon={IconAlertTriangle} />
+      <Icon icon={IconAlertTriangle} size={28} />
       <p class={css({ marginTop: '4px', marginBottom: '2px', fontSize: '18px', fontWeight: 'semibold' })}>
         차단당했습니다
       </p>

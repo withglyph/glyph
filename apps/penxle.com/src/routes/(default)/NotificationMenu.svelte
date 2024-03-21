@@ -128,7 +128,7 @@
 
 <div class={center({ position: 'relative' })}>
   <a class={circle({ size: '34px', hideFrom: 'sm' })} href="/me/notifications">
-    <Icon style={css.raw({ size: '24px' })} icon={IconBell} />
+    <Icon icon={IconBell} size={24} />
   </a>
 
   <button
@@ -145,7 +145,7 @@
     on:click={() => (open = true)}
     use:anchor
   >
-    <Icon style={css.raw({ size: '24px' })} icon={IconBell} />
+    <Icon icon={IconBell} size={24} />
   </button>
 
   {#if checkUnreadNotification}
@@ -192,7 +192,7 @@
       <p class={css({ fontSize: '16px', fontWeight: 'semibold' })}>알림</p>
 
       <button type="button" on:click={() => (open = false)}>
-        <Icon style={css.raw({ size: '20px' })} icon={IconX} />
+        <Icon icon={IconX} size={20} />
       </button>
     </div>
 
@@ -249,13 +249,13 @@
               )}
             >
               {#if notification.__typename === 'SubscribeNotification'}
-                <Icon style={css.raw({ size: '12px' })} icon={IconCheck} />
+                <Icon icon={IconCheck} size={12} />
                 스페이스 구독
               {:else if notification.__typename === 'PurchaseNotification'}
-                <Icon style={css.raw({ size: '12px' })} icon={IconCoin} />
+                <Icon icon={IconCoin} size={12} />
                 구매
               {:else if notification.__typename === 'CommentNotification'}
-                <Icon style={css.raw({ size: '12px' })} icon={IconMessageCircle} />
+                <Icon icon={IconMessageCircle} size={12} />
                 댓글
               {/if}
             </div>

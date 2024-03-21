@@ -306,7 +306,7 @@
       offset={10}
       placement="bottom-start"
     >
-      <Icon style={css.raw({ color: 'gray.400', size: '14px' })} icon={IconAlertCircle} />
+      <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
     </Tooltip>
   </svelte:fragment>
 
@@ -339,7 +339,7 @@
               type="button"
               on:click={handleInsertImage}
             >
-              <Icon style={css.raw({ size: '32px' })} icon={IconPhotoUp} />
+              <Icon icon={IconPhotoUp} size={32} />
               <p class={css({ fontSize: '13px', fontWeight: 'medium' })}>이미지를 업로드해주세요</p>
             </button>
           {/if}
@@ -371,7 +371,7 @@
           imageListOpen = true;
         }}
       >
-        <Icon style={css.raw({ size: '14px' })} icon={IconLayoutGrid} />
+        <Icon icon={IconLayoutGrid} />
         <span class={css({ marginLeft: '6px', fontSize: '11px', fontWeight: 'semibold' })}>전체목록</span>
       </button>
       <div
@@ -429,7 +429,7 @@
                   })}
                 >
                   <button type="button" on:click={() => removeImage(image.id)}>
-                    <Icon style={css.raw({ color: 'gray.5', size: '18px' })} icon={IconTrash} />
+                    <Icon style={css.raw({ color: 'gray.5' })} icon={IconTrash} size={20} />
                   </button>
                 </div>
                 <p class={css({ fontSize: '10px', color: 'gray.400', textAlign: 'center', width: 'full' })}>
@@ -452,7 +452,7 @@
               on:click={handleInsertImage}
             >
               <div class={center({ borderRadius: '3px', backgroundColor: 'gray.100', size: '48px' })}>
-                <Icon style={css.raw({ color: 'gray.400', size: '16px' })} icon={IconPlus} />
+                <Icon style={css.raw({ color: 'gray.400' })} icon={IconPlus} />
               </div>
 
               <p class={css({ fontSize: '10px', color: 'gray.400', textAlign: 'center', width: 'full' })}>
@@ -577,7 +577,7 @@
 <Modal size="lg" bind:open={imageListOpen}>
   <svelte:fragment slot="title">
     <button class={css({ marginRight: '4px' })} type="button" on:click={() => (imageListOpen = false)}>
-      <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />
+      <Icon icon={IconChevronLeft} size={24} />
     </button>
     전체목록
     <Tooltip
@@ -586,7 +586,7 @@
       offset={10}
       placement="bottom-start"
     >
-      <Icon style={css.raw({ color: 'gray.400', size: '14px' })} icon={IconAlertCircle} />
+      <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
     </Tooltip>
   </svelte:fragment>
 
@@ -640,7 +640,7 @@
           type="button"
           on:click={() => (view = 'grid')}
         >
-          <Icon style={css.raw({ color: 'gray.400', size: '20px' })} icon={IconLayoutGrid} />
+          <Icon style={css.raw({ color: 'gray.400' })} icon={IconLayoutGrid} size={20} />
         </button>
 
         <button
@@ -649,7 +649,7 @@
           type="button"
           on:click={() => (view = 'list')}
         >
-          <Icon style={css.raw({ color: 'gray.400', size: '20px' })} icon={IconList} />
+          <Icon style={css.raw({ color: 'gray.400' })} icon={IconList} size={20} />
         </button>
       </div>
     </div>
@@ -751,7 +751,7 @@
             </p>
 
             <button class={css({ padding: '4px' })} type="button">
-              <Icon style={css.raw({ color: 'gray.600', size: '24px' })} icon={IconGripVertical} />
+              <Icon style={css.raw({ color: 'gray.600' })} icon={IconGripVertical} size={24} />
             </button>
             {#if index === 0}
               <div id={onboardingAnchorLastDynamicId} class={css({ position: 'absolute', inset: '0', zIndex: '-1' })} />
@@ -775,7 +775,7 @@
           on:click={handleInsertImage}
         >
           <div class={center({ borderRadius: '5px', backgroundColor: 'gray.100', size: '92px' })}>
-            <Icon style={css.raw({ color: 'gray.400', size: '20px', strokeWidth: '2px' })} icon={IconPlus} />
+            <Icon style={css.raw({ color: 'gray.400' })} icon={IconPlus} size={20} />
           </div>
 
           <p class={css({ fontSize: '12px', color: 'gray.400', textAlign: 'center', width: 'full' })}>이미지 추가</p>
@@ -800,7 +800,7 @@
           type="button"
           on:click={handleInsertImage}
         >
-          <Icon style={css.raw({ marginRight: '4px', size: '20px' })} icon={IconPlus} />
+          <Icon style={css.raw({ marginRight: '4px' })} icon={IconPlus} size={20} />
           <span class={css({ fontSize: '14px', fontWeight: 'medium' })}>이미지 추가</span>
         </button>
       {/if}

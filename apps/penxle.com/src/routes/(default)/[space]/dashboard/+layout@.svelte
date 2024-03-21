@@ -81,7 +81,7 @@
     on:click={() => (open = true)}
   >
     <h2 class={css({ fontWeight: 'semibold' })}>{$pageSubTitle}</h2>
-    <Icon style={css.raw({ size: '24px' })} icon={IconChevronDown} />
+    <Icon icon={IconChevronDown} size={24} />
   </button>
 
   <aside class={flex({ justify: 'flex-end', width: 'full', maxWidth: '339px', hideBelow: 'sm' })}>
@@ -154,7 +154,7 @@
                 disabled
                 type="button"
               >
-                <Icon style={css.raw({ size: '20px' })} icon={IconHome} />
+                <Icon icon={IconHome} size={20} />
                 대시보드
               </button>
             </Tooltip>
@@ -183,7 +183,7 @@
               type="button"
               on:click={() => (comingSoonOpen = true)}
             >
-              <Icon style={css.raw({ size: '20px' })} icon={IconUser} />
+              <Icon icon={IconUser} size={20} />
               멤버 관리
             </button>
           </li>
@@ -210,7 +210,7 @@
               )}
               href="/{$query.space.slug}/dashboard/posts"
             >
-              <Icon style={css.raw({ size: '20px' })} icon={IconFileText} />
+              <Icon icon={IconFileText} size={20} />
               포스트 관리
             </a>
           </li>
@@ -237,7 +237,7 @@
               )}
               href="/{$query.space.slug}/dashboard/subscribers/blocked"
             >
-              <Icon style={css.raw({ size: '20px' })} icon={IconUsers} />
+              <Icon icon={IconUsers} size={20} />
               독자 관리
             </a>
           </li>
@@ -264,7 +264,7 @@
               )}
               href="/{$query.space.slug}/dashboard/settings"
             >
-              <Icon style={css.raw({ size: '20px' })} icon={IconSettings} />
+              <Icon icon={IconSettings} size={20} />
               스페이스 설정
             </a>
           </li>
@@ -286,7 +286,7 @@
 
 <BottomSheet bind:open>
   <div class={flex({ align: 'center', gap: '8px', width: 'full' })}>
-    <Icon style={css.raw({ size: '24px', borderRadius: '8px' })} icon={IconEffit} />
+    <Icon style={css.raw({ borderRadius: '8px' })} icon={IconEffit} size={24} />
     <span class={css({ fontWeight: 'bold' })}>스페이스 관리</span>
   </div>
 
@@ -396,7 +396,7 @@
           type="button"
           on:click={() => (comingSoonOpen = true)}
         >
-          <Icon style={css.raw({ size: '20px' })} icon={IconHome} />
+          <Icon icon={IconHome} size={20} />
           대시보드
         </button>
       </li>
@@ -423,7 +423,7 @@
           type="button"
           on:click={() => (comingSoonOpen = true)}
         >
-          <Icon style={css.raw({ size: '20px' })} icon={IconUser} />
+          <Icon icon={IconUser} size={20} />
           멤버 관리
         </button>
       </li>
@@ -449,7 +449,7 @@
           )}
           href="/{$query.space.slug}/dashboard/posts"
         >
-          <Icon style={css.raw({ size: '20px' })} icon={IconFileText} />
+          <Icon icon={IconFileText} size={20} />
           포스트 관리
         </a>
       </li>
@@ -475,7 +475,7 @@
           )}
           href="/{$query.space.slug}/dashboard/subscribers/blocked"
         >
-          <Icon style={css.raw({ size: '20px' })} icon={IconUsers} />
+          <Icon icon={IconUsers} size={20} />
           독자 관리
         </a>
       </li>
@@ -501,7 +501,7 @@
           )}
           href="/{$query.space.slug}/dashboard/settings"
         >
-          <Icon style={css.raw({ size: '20px' })} icon={IconSettings} />
+          <Icon icon={IconSettings} size={20} />
           스페이스 설정
         </a>
       </li>

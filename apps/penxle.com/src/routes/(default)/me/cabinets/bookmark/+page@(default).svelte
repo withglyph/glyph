@@ -42,7 +42,7 @@
   })}
 >
   <a href="/me/cabinets">
-    <Icon style={css.raw({ color: 'gray.500', size: '24px' })} icon={IconChevronLeft} />
+    <Icon style={css.raw({ color: 'gray.500' })} icon={IconChevronLeft} size={24} />
   </a>
   <h1 class={css({ fontSize: '20px', fontWeight: 'bold', textAlign: 'center', width: 'full', maxWidth: '800px' })}>
     북마크

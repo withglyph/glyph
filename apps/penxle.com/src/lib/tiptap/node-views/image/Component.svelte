@@ -116,7 +116,7 @@
       type="button"
       on:click={() => deleteNode()}
     >
-      <Icon style={css.raw({ color: 'gray.600', size: '18px' })} icon={IconTrash} />
+      <Icon style={css.raw({ color: 'gray.600' })} icon={IconTrash} size={20} />
     </button>
   </TiptapNodeViewBubbleMenu>
 {/if}

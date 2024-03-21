@@ -1,11 +1,10 @@
 <script lang="ts">
-  import IconAlertCircle from '~icons/tabler/alert-circle';
   import IconArrowBarToDown from '~icons/tabler/arrow-bar-to-down';
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconDots from '~icons/tabler/dots';
   import { browser } from '$app/environment';
   import { graphql } from '$glitch';
-  import { Icon, Tooltip } from '$lib/components';
+  import { Icon } from '$lib/components';
   import { RingSpinner } from '$lib/components/spinners';
   import { Button, Modal } from '$lib/components/v2';
   import { toast } from '$lib/notification';
@@ -173,19 +172,9 @@
     type="button"
     on:click={() => (showShareTargetMenu = false)}
   >
-    <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />
+    <Icon icon={IconChevronLeft} size={24} />
   </button>
-  <svelte:fragment slot="title">
-    밑줄 이미지 편집
-    <Tooltip
-      style={flex.raw({ align: 'center', marginLeft: '4px' })}
-      message="포스트에서 인상깊었던 내용을 공유할 수 있어요"
-      offset={10}
-      placement="bottom-start"
-    >
-      <Icon style={css.raw({ size: '14px', color: 'gray.400' })} icon={IconAlertCircle} />
-    </Tooltip>
-  </svelte:fragment>
+  <svelte:fragment slot="title">밑줄 이미지 편집</svelte:fragment>
   <form id="share-content-as-image" class={flex({ direction: 'column' })}>
     <article
       class={css({
@@ -236,7 +225,7 @@
       >
         <div class={shareTargetMenuButtonWarpClassname}>
           <button id="download-share-button" type="button" on:click={download}>
-            <Icon style={css.raw({ size: '30px' })} icon={IconArrowBarToDown} />
+            <Icon icon={IconArrowBarToDown} size={32} />
           </button>
           <label for="download-share-button">이미지 저장</label>
         </div>
@@ -248,7 +237,7 @@
             type="button"
             on:click={share}
           >
-            <Icon style={css.raw({ size: '30px' })} icon={IconDots} />
+            <Icon icon={IconDots} size={32} />
           </button>
           <label class={css({ _peerDisabled: { color: 'gray.300' } })} for="etc-share-button">기타</label>
         </div>

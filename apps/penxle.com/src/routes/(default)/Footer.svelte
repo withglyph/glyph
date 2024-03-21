@@ -76,19 +76,19 @@
     <div>
       <div class={flex({ align: 'center', gap: '16px' })}>
         <Link href="/pencil">
-          <Icon style={css.raw({ size: '16px', color: { _hover: 'gray.900' } })} icon={IconEffit} />
+          <Icon style={css.raw({ color: { _hover: 'gray.900' } })} icon={IconEffit} />
         </Link>
 
         <Link href="https://twitter.com/pencil_site">
-          <Icon style={css.raw({ size: '16px', color: { _hover: '[#1DA1F2]' } })} icon={IconTwitter} />
+          <Icon style={css.raw({ color: { _hover: '[#1DA1F2]' } })} icon={IconTwitter} />
         </Link>
 
         <Link href="https://www.instagram.com/penxle.team/">
-          <Icon style={css.raw({ size: '16px', color: { _hover: '[#E4405F]' } })} icon={IconInstagram} />
+          <Icon style={css.raw({ color: { _hover: '[#E4405F]' } })} icon={IconInstagram} />
         </Link>
 
         <Link href="https://github.com/penxle">
-          <Icon style={css.raw({ size: '16px', color: { _hover: '[#181717]' } })} icon={IconGithub} />
+          <Icon style={css.raw({ color: { _hover: '[#181717]' } })} icon={IconGithub} />
         </Link>
       </div>
     </div>

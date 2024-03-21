@@ -68,7 +68,7 @@
     })}
   >
     <button class={css({ hideFrom: 'sm' })} type="button" on:click={() => (open = false)}>
-      <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />
+      <Icon icon={IconChevronLeft} size={24} />
     </button>
     <form
       class={css(
@@ -118,7 +118,7 @@
         type="button"
         on:click={() => (value = '')}
       >
-        <Icon style={css.raw({ size: '20px' })} icon={IconCircleXFilled} />
+        <Icon icon={IconCircleXFilled} size={20} />
       </button>
 
       <button
@@ -131,12 +131,12 @@
         })}
         type="submit"
       >
-        <Icon style={css.raw({ size: '20px' })} icon={IconSearch} />
+        <Icon icon={IconSearch} size={20} />
       </button>
     </form>
   </div>
 {:else}
   <button class={center({ marginRight: '8px', size: '34px' })} type="button" on:click={() => (open = true)}>
-    <Icon style={css.raw({ size: '24px', color: 'gray.900' })} icon={IconSearch} />
+    <Icon style={css.raw({ color: 'gray.900' })} icon={IconSearch} size={24} />
   </button>
 {/if}

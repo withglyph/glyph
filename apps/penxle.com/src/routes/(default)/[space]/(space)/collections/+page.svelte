@@ -65,7 +65,7 @@
   )}
 >
   {#if $query.space.myMasquerade?.blocked}
-    <Icon style={css.raw({ size: '28px' })} icon={IconAlertTriangle} />
+    <Icon icon={IconAlertTriangle} size={28} />
     <p class={css({ marginTop: '4px', marginBottom: '2px', fontSize: '18px', fontWeight: 'semibold' })}>
       차단당했습니다
     </p>
@@ -108,7 +108,7 @@
         variant="outlined"
         on:click={() => (openCreateCollectionModal = true)}
       >
-        새 컬렉션 추가하기 <Icon style={css.raw({ size: '20px' })} icon={IconPlus} />
+        새 컬렉션 추가하기 <Icon icon={IconPlus} size={20} />
       </Button>
     {/if}
   {:else}

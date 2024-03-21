@@ -79,7 +79,7 @@
     )}
     type="button"
   >
-    <Icon style={css.raw({ size: '24px' })} icon={IconChevronLeft} />
+    <Icon icon={IconChevronLeft} size={24} />
   </button>
   <swiper-container
     bind:this={swiperEl}
@@ -126,7 +126,7 @@
     )}
     type="button"
   >
-    <Icon style={css.raw({ size: '24px' })} icon={IconChevronRight} />
+    <Icon icon={IconChevronRight} size={24} />
   </button>
 
   <div

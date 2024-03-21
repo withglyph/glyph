@@ -52,7 +52,7 @@
       currentPage = previousPageGroup * displayPage;
     }}
   >
-    <Icon style={css.raw({ size: '14px' })} icon={IconChevronLeft} />
+    <Icon icon={IconChevronLeft} />
   </button>
   {#each range as index (index)}
     <button
@@ -88,6 +88,6 @@
       currentPage = nextPageGroup * displayPage - (displayPage - 1);
     }}
   >
-    <Icon style={css.raw({ size: '14px' })} icon={IconChevronRight} />
+    <Icon icon={IconChevronRight} />
   </button>
 </div>

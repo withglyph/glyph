@@ -193,7 +193,7 @@
       <Logo class={css({ size: '24px', hideBelow: 'sm' })} />
       <Wordmark class={css({ height: '21px', color: 'gray.900', hideBelow: 'sm' })} />
 
-      <Icon style={css.raw({ size: '24px', hideFrom: 'sm' })} icon={IconChevronLeft} />
+      <Icon style={css.raw({ hideFrom: 'sm' })} icon={IconChevronLeft} size={24} />
     </a>
 
     <div class={flex({ flex: '1', justify: 'flex-end', align: 'flex-end' })}>
@@ -311,7 +311,7 @@
 
       <Menu style={center.raw()} offset={menuOffset} placement="bottom-end" rounded={false}>
         <div slot="value" class={center({ height: '36px', hideBelow: 'sm' })}>
-          <Icon style={css.raw({ size: '24px' })} icon={IconDotsVertical} />
+          <Icon icon={IconDotsVertical} size={24} />
         </div>
 
         <MenuItem on:click={() => (revisionListOpen = true)}>저장이력</MenuItem>
@@ -363,8 +363,9 @@
           >
             <div style:background-color={currentColor} class={css({ borderRadius: 'full', size: '18px' })} />
             <Icon
-              style={css.raw({ size: '18px', color: 'gray.300' }, colorPickerOpen && { rotate: '180deg' })}
+              style={css.raw({ color: 'gray.300' }, colorPickerOpen && { rotate: '180deg' })}
               icon={IconChevronDown}
+              size={20}
             />
           </button>
 
@@ -420,8 +421,9 @@
                   ?.label ?? values.fontFamily[0].label}
               </div>
               <Icon
-                style={css.raw({ size: '18px', color: 'gray.300' }, open && { rotate: '180deg' })}
+                style={css.raw({ color: 'gray.300' }, open && { rotate: '180deg' })}
                 icon={IconChevronDown}
+                size={20}
               />
             </button>
 
@@ -441,10 +443,11 @@
                 </span>
                 <Icon
                   style={css.raw(
-                    { size: '20px', color: 'teal.500' },
+                    { color: 'teal.500' },
                     !editor?.isActive({ fontFamily: font.value }) && { visibility: 'hidden' },
                   )}
                   icon={IconCheck}
+                  size={20}
                 />
               </MenuItem>
             {/each}
@@ -480,8 +483,9 @@
               {values.fontSize.find(({ value }) => editor?.getAttributes('font_size').fontSize === value)?.label ??
                 values.fontSize[4].label}
               <Icon
-                style={css.raw({ size: '18px', color: 'gray.300' }, open && { rotate: '180deg' })}
+                style={css.raw({ color: 'gray.300' }, open && { rotate: '180deg' })}
                 icon={IconChevronDown}
+                size={20}
               />
             </button>
 
@@ -501,10 +505,11 @@
                 {fontSize.label}
                 <Icon
                   style={css.raw(
-                    { size: '20px', color: 'teal.500' },
+                    { color: 'teal.500' },
                     !editor?.isActive({ fontSize: fontSize.value }) && { visibility: 'hidden' },
                   )}
                   icon={IconCheck}
+                  size={20}
                 />
               </MenuItem>
             {/each}
@@ -531,10 +536,7 @@
             type="button"
             on:click={() => editor?.chain().focus().toggleBold().run()}
           >
-            <Icon
-              style={css.raw({ size: '24px' }, editor?.isActive('bold') && { color: 'teal.500' })}
-              icon={IconBold}
-            />
+            <Icon style={css.raw(editor?.isActive('bold') && { color: 'teal.500' })} icon={IconBold} size={24} />
           </button>
         </ToolbarButtonTooltip>
 
@@ -544,10 +546,7 @@
             type="button"
             on:click={() => editor?.chain().focus().toggleItalic().run()}
           >
-            <Icon
-              style={css.raw({ size: '24px' }, editor?.isActive('italic') && { color: 'teal.500' })}
-              icon={IconItalic}
-            />
+            <Icon style={css.raw(editor?.isActive('italic') && { color: 'teal.500' })} icon={IconItalic} size={24} />
           </button>
         </ToolbarButtonTooltip>
 
@@ -558,8 +557,9 @@
             on:click={() => editor?.chain().focus().toggleStrike().run()}
           >
             <Icon
-              style={css.raw({ size: '24px' }, editor?.isActive('strike') && { color: 'teal.500' })}
+              style={css.raw(editor?.isActive('strike') && { color: 'teal.500' })}
               icon={IconStrikethrough}
+              size={24}
             />
           </button>
         </ToolbarButtonTooltip>
@@ -571,8 +571,9 @@
             on:click={() => editor?.chain().focus().toggleUnderline().run()}
           >
             <Icon
-              style={css.raw({ size: '24px' }, editor?.isActive('underline') && { color: 'teal.500' })}
+              style={css.raw(editor?.isActive('underline') && { color: 'teal.500' })}
               icon={IconUnderline}
+              size={24}
             />
           </button>
         </ToolbarButtonTooltip>
@@ -584,7 +585,7 @@
             type="button"
             on:click={() => editor?.chain().focus().setRuby('').run()}
           >
-            <Icon style={css.raw({ size: '24px' })} icon={IconRuby} />
+            <Icon icon={IconRuby} size={24} />
           </button>
         </ToolbarButtonTooltip>
       </div>
@@ -617,9 +618,9 @@
               let:open
             >
               <Icon
-                style={css.raw({ size: '24px' })}
                 icon={values.textAlign.find(({ value }) => value === editor?.getAttributes('paragraph').textAlign)
                   ?.icon ?? values.textAlign[0].icon}
+                size={24}
               />
             </button>
 
@@ -634,7 +635,7 @@
                 type="button"
                 on:click={() => editor?.chain().focus().setParagraphTextAlign(textAlign.value).run()}
               >
-                <Icon style={css.raw({ size: '24px' })} icon={textAlign.icon} />
+                <Icon icon={textAlign.icon} size={24} />
               </button>
             {/each}
           </Menu>
@@ -654,7 +655,7 @@
               type="button"
               let:open
             >
-              <Icon style={css.raw({ size: '24px' })} icon={IconLineHeight} />
+              <Icon icon={IconLineHeight} size={24} />
             </button>
 
             {#each values.lineHeight as lineHeight (lineHeight.value)}
@@ -667,10 +668,11 @@
                 {lineHeight.label}
                 <Icon
                   style={css.raw(
-                    { size: '20px', color: 'teal.500' },
+                    { color: 'teal.500' },
                     !editor?.isActive({ lineHeight: lineHeight.value }) && { visibility: 'hidden' },
                   )}
                   icon={IconCheck}
+                  size={20}
                 />
               </MenuItem>
             {/each}
@@ -691,7 +693,7 @@
               type="button"
               let:open
             >
-              <Icon style={css.raw({ size: '24px' })} icon={IconLetterSpacing} />
+              <Icon icon={IconLetterSpacing} size={24} />
             </button>
 
             {#each values.letterSpacing as letterSpacing (letterSpacing.value)}
@@ -704,10 +706,11 @@
                 {letterSpacing.label}
                 <Icon
                   style={css.raw(
-                    { size: '20px', color: 'teal.500' },
+                    { color: 'teal.500' },
                     !editor?.isActive({ letterSpacing: letterSpacing.value }) && { visibility: 'hidden' },
                   )}
                   icon={IconCheck}
+                  size={20}
                 />
               </MenuItem>
             {/each}
@@ -742,7 +745,7 @@
               type="button"
               let:open
             >
-              <Icon style={css.raw({ size: '24px' })} icon={IconList} />
+              <Icon icon={IconList} size={24} />
             </button>
 
             <MenuItem
@@ -750,7 +753,7 @@
                 editor?.chain().focus().toggleBulletList().run();
               }}
             >
-              <Icon style={css.raw({ size: '24px' })} icon={IconList} />
+              <Icon icon={IconList} size={24} />
             </MenuItem>
 
             <MenuItem
@@ -758,7 +761,7 @@
                 editor?.chain().focus().toggleOrderedList().run();
               }}
             >
-              <Icon style={css.raw({ size: '24px' })} icon={IconListNumbers} />
+              <Icon icon={IconListNumbers} size={24} />
             </MenuItem>
           </Menu>
         </ToolbarButtonTooltip>
@@ -777,7 +780,7 @@
               type="button"
               let:open
             >
-              <Icon style={css.raw({ size: '24px' })} icon={IconMinus} />
+              <Icon icon={IconMinus} size={24} />
             </button>
 
             {#each values.horizontalRule as hr (hr.value)}
@@ -811,7 +814,7 @@
               type="button"
               let:open
             >
-              <Icon style={css.raw({ size: '24px' })} icon={IconQuote} />
+              <Icon icon={IconQuote} size={24} />
             </button>
 
             {#each values.blockquote as blockquote (blockquote.value)}
@@ -857,7 +860,7 @@
             type="button"
             on:click={() => editor?.chain().focus().setGallery().run()}
           >
-            <Icon style={css.raw({ size: '24px' })} icon={IconPhoto} />
+            <Icon icon={IconPhoto} size={24} />
           </button>
         </ToolbarButtonTooltip>
 
@@ -871,7 +874,7 @@
             type="button"
             on:click={handleInsertFile}
           >
-            <Icon style={css.raw({ size: '24px' })} icon={IconFolder} />
+            <Icon icon={IconFolder} size={24} />
           </button>
         </ToolbarButtonTooltip>
 
@@ -886,7 +889,7 @@
             type="button"
             on:click={() => editor?.chain().focus().setLink('').run()}
           >
-            <Icon style={css.raw({ size: '24px' })} icon={IconLink} />
+            <Icon icon={IconLink} size={24} />
           </button>
         </ToolbarButtonTooltip>
 
@@ -901,7 +904,7 @@
             type="button"
             on:click={() => editor?.chain().focus().setHtml().run()}
           >
-            <Icon style={css.raw({ size: '24px' })} icon={IconHtml} />
+            <Icon icon={IconHtml} size={24} />
           </button>
         </ToolbarButtonTooltip>
       </div>
@@ -919,7 +922,7 @@
             aria-pressed={contentOptionsOpen}
             type="button"
           >
-            <Icon style={css.raw({ size: '24px' })} icon={IconSettings} />
+            <Icon icon={IconSettings} size={24} />
           </button>
 
           <Menu offset={16} placement="right-start" bind:open={paragraphIndentOpen}>
@@ -952,11 +955,9 @@
             >
               없음
               <Icon
-                style={css.raw(
-                  { size: '20px', color: 'teal.500' },
-                  $store.paragraphIndent !== 0 && { visibility: 'hidden' },
-                )}
+                style={css.raw({ color: 'teal.500' }, $store.paragraphIndent !== 0 && { visibility: 'hidden' })}
                 icon={IconCheck}
+                size={20}
               />
             </MenuItem>
 
@@ -971,11 +972,9 @@
             >
               0.5칸
               <Icon
-                style={css.raw(
-                  { size: '20px', color: 'teal.500' },
-                  $store.paragraphIndent !== 50 && { visibility: 'hidden' },
-                )}
+                style={css.raw({ color: 'teal.500' }, $store.paragraphIndent !== 50 && { visibility: 'hidden' })}
                 icon={IconCheck}
+                size={20}
               />
             </MenuItem>
 
@@ -989,11 +988,9 @@
             >
               1칸
               <Icon
-                style={css.raw(
-                  { size: '20px', color: 'teal.500' },
-                  $store.paragraphIndent !== 100 && { visibility: 'hidden' },
-                )}
+                style={css.raw({ color: 'teal.500' }, $store.paragraphIndent !== 100 && { visibility: 'hidden' })}
                 icon={IconCheck}
+                size={20}
               />
             </MenuItem>
 
@@ -1007,11 +1004,9 @@
             >
               2칸
               <Icon
-                style={css.raw(
-                  { size: '20px', color: 'teal.500' },
-                  $store.paragraphIndent !== 200 && { visibility: 'hidden' },
-                )}
+                style={css.raw({ color: 'teal.500' }, $store.paragraphIndent !== 200 && { visibility: 'hidden' })}
                 icon={IconCheck}
+                size={20}
               />
             </MenuItem>
           </Menu>
@@ -1046,11 +1041,9 @@
             >
               없음
               <Icon
-                style={css.raw(
-                  { size: '20px', color: 'teal.500' },
-                  $store.paragraphSpacing !== 0 && { visibility: 'hidden' },
-                )}
+                style={css.raw({ color: 'teal.500' }, $store.paragraphSpacing !== 0 && { visibility: 'hidden' })}
                 icon={IconCheck}
+                size={20}
               />
             </MenuItem>
 
@@ -1064,11 +1057,9 @@
             >
               0.5줄
               <Icon
-                style={css.raw(
-                  { size: '20px', color: 'teal.500' },
-                  $store.paragraphSpacing !== 50 && { visibility: 'hidden' },
-                )}
+                style={css.raw({ color: 'teal.500' }, $store.paragraphSpacing !== 50 && { visibility: 'hidden' })}
                 icon={IconCheck}
+                size={20}
               />
             </MenuItem>
 
@@ -1082,11 +1073,9 @@
             >
               1줄
               <Icon
-                style={css.raw(
-                  { size: '20px', color: 'teal.500' },
-                  $store.paragraphSpacing !== 100 && { visibility: 'hidden' },
-                )}
+                style={css.raw({ color: 'teal.500' }, $store.paragraphSpacing !== 100 && { visibility: 'hidden' })}
                 icon={IconCheck}
+                size={20}
               />
             </MenuItem>
 
@@ -1100,11 +1089,9 @@
             >
               2줄
               <Icon
-                style={css.raw(
-                  { size: '20px', color: 'teal.500' },
-                  $store.paragraphSpacing !== 200 && { visibility: 'hidden' },
-                )}
+                style={css.raw({ color: 'teal.500' }, $store.paragraphSpacing !== 200 && { visibility: 'hidden' })}
                 icon={IconCheck}
+                size={20}
               />
             </MenuItem>
           </Menu>

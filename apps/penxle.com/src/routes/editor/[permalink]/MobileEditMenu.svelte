@@ -144,27 +144,27 @@
   >
     {#if topMenu === 'default'}
       <MobileToolbarButton on:click={() => (topMenu = 'text')}>
-        <Icon style={css.raw({ size: '26px' })} icon={IconText} />
+        <Icon icon={IconText} size={24} />
       </MobileToolbarButton>
 
       <MobileToolbarButton on:click={handleInsertImage}>
-        <Icon style={css.raw({ size: '26px' })} icon={IconPhoto} />
+        <Icon icon={IconPhoto} size={24} />
       </MobileToolbarButton>
 
       <MobileToolbarButton on:click={() => (topMenu = 'insert')}>
-        <Icon style={css.raw({ size: '26px' })} icon={IconPlus} />
+        <Icon icon={IconPlus} size={24} />
       </MobileToolbarButton>
 
       <MobileToolbarButton on:click={() => toggleBottomMenu('horizontalRule')}>
-        <Icon style={css.raw({ size: '26px' })} icon={IconHorizontalRule} />
+        <Icon icon={IconHorizontalRule} size={24} />
       </MobileToolbarButton>
 
       <MobileToolbarButton on:click={() => (topMenu = 'options')}>
-        <Icon style={css.raw({ size: '26px' })} icon={IconSettings} />
+        <Icon icon={IconSettings} size={24} />
       </MobileToolbarButton>
     {:else}
       <MobileToolbarButton on:click={() => (topMenu = 'default')}>
-        <Icon style={css.raw({ size: '26px', color: 'gray.400' })} icon={IconArrowLeft} />
+        <Icon style={css.raw({ color: 'gray.400' })} icon={IconArrowLeft} size={24} />
       </MobileToolbarButton>
 
       <div class={css({ flex: 'none', width: '1px', height: '14px', backgroundColor: 'gray.200' })} />
@@ -199,30 +199,26 @@
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleBold().run()}>
-            <Icon
-              style={css.raw({ size: '26px' }, editor?.isActive('bold') && { color: 'teal.500' })}
-              icon={IconBold}
-            />
+            <Icon style={css.raw(editor?.isActive('bold') && { color: 'teal.500' })} icon={IconBold} size={24} />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleItalic().run()}>
-            <Icon
-              style={css.raw({ size: '26px' }, editor?.isActive('italic') && { color: 'teal.500' })}
-              icon={IconItalic}
-            />
+            <Icon style={css.raw(editor?.isActive('italic') && { color: 'teal.500' })} icon={IconItalic} size={24} />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleStrike().run()}>
             <Icon
-              style={css.raw({ size: '26px' }, editor?.isActive('strike') && { color: 'teal.500' })}
+              style={css.raw(editor?.isActive('strike') && { color: 'teal.500' })}
               icon={IconStrikethrough}
+              size={24}
             />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleUnderline().run()}>
             <Icon
-              style={css.raw({ size: '26px' }, editor?.isActive('underline') && { color: 'teal.500' })}
+              style={css.raw(editor?.isActive('underline') && { color: 'teal.500' })}
               icon={IconUnderline}
+              size={24}
             />
           </MobileToolbarButton>
 
@@ -230,46 +226,46 @@
             disabled={editor?.isActive('ruby') || editor?.state.selection.empty}
             on:click={() => editor?.chain().focus().setRuby('').run()}
           >
-            <Icon style={css.raw({ size: '26px' })} icon={IconRuby} />
+            <Icon icon={IconRuby} size={24} />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => toggleSubMenu('textAlign')}>
             <Icon
-              style={css.raw({ size: '26px' })}
               icon={values.textAlign.find(({ value }) => value === editor?.getAttributes('paragraph').textAlign)
                 ?.icon ?? values.textAlign[0].icon}
+              size={24}
             />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => toggleSubMenu('lineHeight')}>
-            <Icon style={css.raw({ size: '26px' })} icon={IconLineHeight} />
+            <Icon icon={IconLineHeight} size={24} />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => toggleSubMenu('letterSpacing')}>
-            <Icon style={css.raw({ size: '26px' })} icon={IconLetterSpacing} />
+            <Icon icon={IconLetterSpacing} size={24} />
           </MobileToolbarButton>
         {:else if topMenu === 'insert'}
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleBulletList().run()}>
-            <Icon style={css.raw({ size: '26px' })} icon={IconList} />
+            <Icon icon={IconList} size={24} />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleOrderedList().run()}>
-            <Icon style={css.raw({ size: '26px' })} icon={IconListNumbers} />
+            <Icon icon={IconListNumbers} size={24} />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => toggleBottomMenu('quote')}>
-            <Icon style={css.raw({ size: '26px' })} icon={IconQuote} />
+            <Icon icon={IconQuote} size={24} />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={handleInsertFile}>
-            <Icon style={css.raw({ size: '26px' })} icon={IconFolder} />
+            <Icon icon={IconFolder} size={24} />
           </MobileToolbarButton>
 
           <MobileToolbarButton
             disabled={editor?.isActive('link') || editor?.state.selection.empty}
             on:click={() => editor?.chain().focus().setLink('').run()}
           >
-            <Icon style={css.raw({ size: '26px' })} icon={IconLink} />
+            <Icon icon={IconLink} size={24} />
           </MobileToolbarButton>
         {:else if topMenu === 'options'}
           <MobileToolbarButton on:click={() => toggleSubMenu('paragraphIndent')}>문단 들여쓰기</MobileToolbarButton>
@@ -316,10 +312,11 @@
             >
               <Icon
                 style={css.raw(
-                  { size: '12px', color: color === '#FFFFFF' ? 'gray.900' : 'gray.5' },
+                  { color: color === '#FFFFFF' ? 'gray.900' : 'gray.5' },
                   currentColor.toUpperCase() !== color && { display: 'none' },
                 )}
                 icon={IconCheck}
+                size={12}
               />
             </MobileToolbarButton>
           {/each}
@@ -366,11 +363,9 @@
           {#each values.textAlign as textAlign (textAlign.value)}
             <MobileToolbarButton on:click={() => editor?.chain().focus().setParagraphTextAlign(textAlign.value).run()}>
               <Icon
-                style={css.raw(
-                  { size: '26px' },
-                  editor?.isActive({ textAlign: textAlign.value }) && { color: 'teal.500' },
-                )}
+                style={css.raw(editor?.isActive({ textAlign: textAlign.value }) && { color: 'teal.500' })}
                 icon={textAlign.icon}
+                size={24}
               />
             </MobileToolbarButton>
           {/each}
