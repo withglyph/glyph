@@ -1,11 +1,11 @@
-import { createId } from '@felte/core';
+import { and, eq, inArray } from 'drizzle-orm';
 import * as R from 'radash';
 import { PrismaEnums } from '$prisma';
+import { database, UserNotificationMethod, UserNotificationPreferences, UserNotifications } from '../database';
 import type { Notification } from '$lib/utils';
-import type { InteractiveTransactionClient } from '../prisma';
+import type { DbEnum } from '../database';
 
 type CheckNotificationPreferencesParams = {
-  db: InteractiveTransactionClient;
   userId: string;
   category: PrismaEnums.UserNotificationCategory;
 };
@@ -13,22 +13,26 @@ type CheckNotificationPreferencesParams = {
 type CheckNotificationPreferencesResult = Record<PrismaEnums.UserNotificationMethod, boolean>;
 
 export const checkNotificationPreferences = async ({
-  db,
   userId,
   category,
 }: CheckNotificationPreferencesParams): Promise<CheckNotificationPreferencesResult> => {
-  const preferences = await db.userNotificationPreference.findMany({
-    where: {
-      userId,
-      category: {
-        in: [category, 'ALL'],
-      },
-    },
-  });
+  const preferences = await database
+    .select({
+      category: UserNotificationPreferences.category,
+      method: UserNotificationPreferences.method,
+      opted: UserNotificationPreferences.opted,
+    })
+    .from(UserNotificationPreferences)
+    .where(
+      and(
+        eq(UserNotificationPreferences.userId, userId),
+        inArray(UserNotificationPreferences.category, [category, 'ALL']),
+      ),
+    );
 
   return R.zipToObject(
-    Object.keys(PrismaEnums.UserNotificationMethod) as PrismaEnums.UserNotificationMethod[],
-    (method: PrismaEnums.UserNotificationMethod) =>
+    UserNotificationMethod.enumValues,
+    (method: DbEnum<typeof UserNotificationMethod>) =>
       preferences.find((preference) => preference.method === method && preference.category === category)?.opted ??
       preferences.find((preference) => preference.method === method && preference.category === 'ALL')?.opted ??
       true,
@@ -36,23 +40,19 @@ export const checkNotificationPreferences = async ({
 };
 
 type CreateNotificationParams = Notification & {
-  db: InteractiveTransactionClient;
   origin: string;
 };
 
-export const createNotification = async ({ db, userId, category, actorId, data }: CreateNotificationParams) => {
-  const preferences = await checkNotificationPreferences({ db, userId, category });
+export const createNotification = async ({ userId, category, actorId, data }: CreateNotificationParams) => {
+  const preferences = await checkNotificationPreferences({ userId, category });
 
   if (preferences.WEBSITE) {
-    await db.userNotification.create({
-      data: {
-        id: createId(),
-        userId,
-        category,
-        actorId,
-        data,
-        state: 'UNREAD',
-      },
+    await database.insert(UserNotifications).values({
+      userId,
+      category,
+      actorId,
+      data,
+      state: 'UNREAD',
     });
   }
 

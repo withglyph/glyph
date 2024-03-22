@@ -19,3 +19,5 @@ if (!dev && !building) {
   // warm up the database connection
   await prismaClient.$connect();
 }
+
+export * from './database/index';

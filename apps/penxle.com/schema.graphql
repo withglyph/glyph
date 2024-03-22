@@ -34,7 +34,7 @@ input BookmarkPostInput {
 }
 
 type CommentNotification implements UserNotification {
-  actor: Profile!
+  actor: Profile
   category: UserNotificationCategory!
   comment: PostComment!
   createdAt: DateTime!
@@ -603,7 +603,7 @@ input PublishPostInput {
 }
 
 type PurchaseNotification implements UserNotification {
-  actor: Profile!
+  actor: Profile
   category: UserNotificationCategory!
   createdAt: DateTime!
   data: JSON!
@@ -845,7 +845,7 @@ enum SpaceVisibility {
 }
 
 type SubscribeNotification implements UserNotification {
-  actor: Profile!
+  actor: Profile
   category: UserNotificationCategory!
   createdAt: DateTime!
   data: JSON!
@@ -1094,7 +1094,7 @@ type UserMarketingConsent {
 }
 
 interface UserNotification {
-  actor: Profile!
+  actor: Profile
   category: UserNotificationCategory!
   createdAt: DateTime!
   data: JSON!

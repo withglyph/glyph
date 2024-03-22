@@ -122,7 +122,7 @@
     },
   });
 
-  $: setInitialValues({ collectionId: $collection.id, postIds: [] });
+  $: setInitialValues({ spaceCollectionId: $collection.id, postIds: [] });
 
   const registerPost = (postId: string) => {
     registeredPostIds.add(postId);

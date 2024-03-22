@@ -1,289 +1,466 @@
+import dayjs from 'dayjs';
+import { and, count, eq } from 'drizzle-orm';
 import { NotFoundError, PermissionDeniedError } from '$lib/errors';
-import { createNotification, Loader, makeMasquerade } from '$lib/server/utils';
-import { createId } from '$lib/utils';
+import {
+  database,
+  dbEnum,
+  PostCommentLikes,
+  PostComments,
+  PostCommentState,
+  PostCommentVisibility,
+  PostPurchases,
+  Posts,
+  SpaceMasquerades,
+  UserPersonalIdentities,
+} from '$lib/server/database';
+import { createNotification, getSpaceMember, makeMasquerade } from '$lib/server/utils';
 import { PrismaEnums } from '$prisma';
-import { defineSchema } from '../builder';
+import { builder } from '../builder';
+import { makeLoadableObjectFields } from '../utils';
+import { SpaceMasquerade } from './space';
+import { Profile } from './user';
 
-export const commentSchema = defineSchema((builder) => {
-  builder.prismaObject('PostComment', {
-    grantScopes: async (comment, { db, ...context }) => {
-      if (comment.state === 'INACTIVE') return [];
-      if (comment.visibility === 'PUBLIC') return ['$comment:viewContent'];
-      if (!context.session) return [];
-      if (comment.userId === context.session.userId) return ['$comment:viewContent'];
+export const PostComment = builder.loadableObject('PostComment', {
+  ...makeLoadableObjectFields(PostComments),
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    content: t.exposeString('content'),
+    pinned: t.exposeBoolean('pinned'),
+    visibility: t.expose('visibility', { type: dbEnum(PostCommentVisibility) }),
+    state: t.expose('state', { type: dbEnum(PostCommentState) }),
+    createdAt: t.expose('createdAt', { type: 'DateTime' }),
+    updatedAt: t.expose('updatedAt', { type: 'DateTime', nullable: true }),
 
-      const postLoader = Loader.post({ db, context });
-      const post = await postLoader.load(comment.postId);
+    profile: t.field({
+      type: Profile,
+      resolve: (postComment) => postComment.profileId,
+    }),
 
-      if (post?.userId === context.session.userId) return ['$comment:viewContent'];
-      if (!post) return [];
+    masquerade: t.field({
+      type: SpaceMasquerade,
+      nullable: true,
+      resolve: async (postComment) => {
+        const rows = await database
+          .select({ id: SpaceMasquerades.id })
+          .from(SpaceMasquerades)
+          .where(eq(SpaceMasquerades.profileId, postComment.profileId));
 
-      const memberLoader = Loader.spaceMember({ db, context });
-      const member = await memberLoader.load(post.spaceId);
+        if (rows.length === 0) {
+          return null;
+        }
 
-      if (member?.role === 'ADMIN') return ['$comment:viewContent'];
-      return [];
+        return rows[0].id;
+      },
+    }),
+
+    liked: t.boolean({
+      resolve: async (postComment, _, context) => {
+        if (!context.session) {
+          return false;
+        }
+
+        const rows = await database
+          .select({ id: PostCommentLikes.id })
+          .from(PostCommentLikes)
+          .where(
+            and(eq(PostCommentLikes.commentId, postComment.id), eq(PostCommentLikes.userId, context.session.userId)),
+          );
+
+        return rows.length > 0;
+      },
+    }),
+
+    likedByPostUser: t.boolean({
+      resolve: async (postComment) => {
+        const posts = database
+          .select({ userId: Posts.userId })
+          .from(Posts)
+          .where(eq(Posts.id, postComment.postId))
+          .as('sq');
+
+        const rows = await database
+          .select({ id: PostCommentLikes.id })
+          .from(PostCommentLikes)
+          .where(and(eq(PostCommentLikes.commentId, postComment.id), eq(PostCommentLikes.userId, posts.userId)));
+
+        return rows.length > 0;
+      },
+    }),
+
+    likeCount: t.int({
+      resolve: async (postComment) => {
+        const rows = await database
+          .select({ count: count() })
+          .from(PostCommentLikes)
+          .where(eq(PostCommentLikes.commentId, postComment.id));
+
+        return rows[0].count;
+      },
+    }),
+
+    purchased: t.boolean({
+      resolve: async (postComment) => {
+        const rows = await database
+          .select({ id: PostPurchases.id })
+          .from(PostPurchases)
+          .where(and(eq(PostPurchases.postId, postComment.postId), eq(PostPurchases.userId, postComment.userId)));
+
+        return rows.length > 0;
+      },
+    }),
+  }),
+});
+
+builder.objectFields(PostComment, (t) => ({
+  parent: t.field({
+    type: PostComment,
+    nullable: true,
+    resolve: (postComment) => postComment.parentId,
+  }),
+
+  children: t.field({
+    type: [PostComment],
+    resolve: async (postComment) => {
+      const rows = await database
+        .select({ id: PostComments.id })
+        .from(PostComments)
+        .where(and(eq(PostComments.parentId, postComment.id), eq(PostComments.state, 'ACTIVE')));
+
+      return rows.map((row) => row.id);
     },
-    fields: (t) => ({
-      id: t.exposeID('id'),
-      profile: t.relation('profile'),
-      masquerade: t.prismaField({
-        type: 'SpaceMasquerade',
-        nullable: true,
-        select: (_, __, nestedSelection) => ({
-          profile: {
-            select: { spaceMasquerade: nestedSelection() },
-          },
-        }),
-        resolve: (_, { profile }) => profile.spaceMasquerade,
-      }),
+  }),
+}));
 
-      parent: t.relation('parent', { nullable: true }),
-      state: t.expose('state', { type: PrismaEnums.PostCommentState }),
-      content: t.exposeString('content', {
-        authScopes: { $granted: '$comment:viewContent' },
-        unauthorizedResolver: () => '',
-      }),
-      pinned: t.exposeBoolean('pinned'),
-      childComments: t.relation('childComments', {
-        query: {
-          where: { state: 'ACTIVE' },
-        },
-      }),
+const CreateCommentInput = builder.inputType('CreateCommentInput', {
+  fields: (t) => ({
+    content: t.string(),
+    parentId: t.id({ required: false }),
+    postId: t.id(),
+    visibility: t.field({ type: PrismaEnums.PostCommentVisibility }),
+  }),
+});
 
-      likeCount: t.relationCount('likes'),
-      likedByMe: t.boolean({
-        resolve: async (comment, _, { db, ...context }) => {
-          if (!context.session) return false;
+const DeleteCommentInput = builder.inputType('DeleteCommentInput', {
+  fields: (t) => ({
+    commentId: t.id(),
+  }),
+});
 
-          const commentLikes = await db.postComment
-            .findUnique({
-              where: { id: comment.id },
-            })
-            .likes({
-              where: { userId: context.session.userId },
-            });
+const UpdateCommentInput = builder.inputType('UpdateCommentInput', {
+  fields: (t) => ({
+    commentId: t.id(),
+    content: t.string(),
+  }),
+});
 
-          return !!commentLikes?.length;
-        },
-      }),
+const PinCommentInput = builder.inputType('PinCommentInput', {
+  fields: (t) => ({
+    commentId: t.id(),
+  }),
+});
 
-      likedByPostedUser: t.boolean({
-        select: {
-          post: {
-            select: {
-              userId: true,
-            },
-          },
-        },
-        resolve: async (comment, _, { db, ...context }) => {
-          if (!context.session) return false;
+const UnpinCommentInput = builder.inputType('UnpinCommentInput', {
+  fields: (t) => ({
+    commentId: t.id(),
+  }),
+});
 
-          const commentLikes = await db.postComment
-            .findUnique({
-              where: { id: comment.id },
-            })
-            .likes({
-              where: { userId: comment.post.userId },
-            });
+const LikeCommentInput = builder.inputType('LikeCommentInput', {
+  fields: (t) => ({
+    commentId: t.id(),
+  }),
+});
 
-          return !!commentLikes?.length;
-        },
-      }),
+const UnlikeCommentInput = builder.inputType('UnlikeCommentInput', {
+  fields: (t) => ({
+    commentId: t.id(),
+  }),
+});
 
-      isPurchasedUser: t.boolean({
-        resolve: async (comment, _, { db }) => {
-          const purchases = await db.post
-            .findUnique({
-              where: { id: comment.postId },
-            })
-            .purchases({
-              where: { userId: comment.userId },
-            });
+builder.mutationFields((t) => ({
+  createComment: t.withAuth({ user: true }).field({
+    type: PostComment,
+    args: { input: t.arg({ type: CreateCommentInput }) },
+    resolve: async (_, { input }, context) => {
+      const posts = await database
+        .select({ userId: Posts.userId, spaceId: Posts.spaceId, commentQualification: Posts.commentQualification })
+        .from(Posts)
+        .where(and(eq(Posts.id, input.postId), eq(Posts.state, 'PUBLISHED')));
 
-          return !!purchases?.length;
-        },
-      }),
+      if (posts.length === 0) {
+        throw new NotFoundError();
+      }
 
-      visibility: t.expose('visibility', { type: PrismaEnums.PostCommentVisibility }),
-      createdAt: t.expose('createdAt', { type: 'DateTime' }),
-      updatedAt: t.expose('updatedAt', { type: 'DateTime', nullable: true }),
-    }),
-  });
+      const [post] = posts;
 
-  const CreateCommentInput = builder.inputType('CreateCommentInput', {
-    fields: (t) => ({
-      content: t.string(),
-      parentId: t.id({ required: false }),
-      postId: t.id(),
-      visibility: t.field({ type: PrismaEnums.PostCommentVisibility }),
-    }),
-  });
+      if (post.commentQualification === 'NONE') {
+        throw new PermissionDeniedError();
+      }
 
-  const DeleteCommentInput = builder.inputType('DeleteCommentInput', {
-    fields: (t) => ({
-      commentId: t.id(),
-    }),
-  });
+      if (post.commentQualification === 'IDENTIFIED') {
+        const rows = await database
+          .select({ id: UserPersonalIdentities.id })
+          .from(UserPersonalIdentities)
+          .where(eq(UserPersonalIdentities.userId, context.session.userId));
 
-  const UpdateCommentInput = builder.inputType('UpdateCommentInput', {
-    fields: (t) => ({
-      commentId: t.id(),
-      content: t.string(),
-    }),
-  });
+        if (rows.length === 0) {
+          throw new PermissionDeniedError();
+        }
+      }
 
-  const PinCommentInput = builder.inputType('PinCommentInput', {
-    fields: (t) => ({
-      commentId: t.id(),
-    }),
-  });
+      let notificationTargetUserId;
 
-  const UnpinCommentInput = builder.inputType('UnpinCommentInput', {
-    fields: (t) => ({
-      commentId: t.id(),
-    }),
-  });
+      if (input.parentId) {
+        const rows = await database
+          .select()
+          .from(PostComments)
+          .where(
+            and(
+              eq(PostComments.id, input.parentId),
+              eq(PostComments.postId, input.postId),
+              eq(PostComments.state, 'ACTIVE'),
+            ),
+          );
 
-  const LikeCommentInput = builder.inputType('LikeCommentInput', {
-    fields: (t) => ({
-      commentId: t.id(),
-    }),
-  });
-
-  const UnlikeCommentInput = builder.inputType('UnlikeCommentInput', {
-    fields: (t) => ({
-      commentId: t.id(),
-    }),
-  });
-
-  builder.mutationFields((t) => ({
-    createComment: t.withAuth({ user: true }).prismaField({
-      type: 'PostComment',
-      args: { input: t.arg({ type: CreateCommentInput }) },
-      resolve: async (query, _, { input }, { db, ...context }) => {
-        const post = await db.post.findUniqueOrThrow({
-          where: {
-            id: input.postId,
-            state: 'PUBLISHED',
-          },
-        });
-
-        if (!post.spaceId) {
+        if (rows.length === 0) {
           throw new NotFoundError();
         }
 
-        const profileId = await (async () => {
-          const meAsMember = await db.spaceMember.findUnique({
-            where: {
-              spaceId_userId: {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                spaceId: post.spaceId!,
-                userId: context.session.userId,
-              },
-              state: 'ACTIVE',
-            },
-          });
+        notificationTargetUserId = rows[0].userId;
+      } else {
+        notificationTargetUserId = post.userId;
+      }
 
-          if (meAsMember) {
-            return meAsMember.profileId;
-          }
+      let profileId: string;
 
-          if (post.commentQualification === 'NONE') {
-            throw new PermissionDeniedError();
-          }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const spaceMember = await getSpaceMember(context, post.spaceId!);
+      if (spaceMember) {
+        profileId = spaceMember.profileId;
+      } else {
+        const masquerade = await makeMasquerade({
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          spaceId: post.spaceId!,
+          userId: context.session.userId,
+        });
 
-          if (post.commentQualification === 'IDENTIFIED') {
-            const user = await db.userPersonalIdentity.existsUnique({
-              where: { userId: context.session.userId },
-            });
-
-            if (!user) {
-              throw new PermissionDeniedError();
-            }
-          }
-
-          const masquerade = await makeMasquerade({
-            db,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            spaceId: post.spaceId!,
-            userId: context.session.userId,
-          });
-
-          if (masquerade.blockedAt) {
-            throw new PermissionDeniedError();
-          }
-
-          return masquerade.profileId;
-        })();
-
-        const commentId = createId();
-
-        let parentId: string | null = input.parentId ?? null;
-        let notifiedUserId = post.userId;
-        if (parentId) {
-          const parentComment = await db.postComment.findUnique({
-            include: {
-              parent: true,
-            },
-            where: {
-              id: parentId,
-              postId: input.postId,
-              state: 'ACTIVE',
-            },
-          });
-
-          if (!parentComment) {
-            throw new NotFoundError();
-          }
-
-          if (parentComment.parent) {
-            parentId = parentComment.parent.id;
-          }
-
-          notifiedUserId = parentComment.parent ? parentComment.parent.userId : parentComment.userId;
+        if (masquerade.blockedAt) {
+          throw new PermissionDeniedError();
         }
 
-        if (notifiedUserId !== context.session.userId) {
-          await createNotification({
-            db,
-            userId: notifiedUserId,
+        profileId = masquerade.profileId;
+      }
+
+      return await database.transaction(async (tx) => {
+        const [comment] = await tx
+          .insert(PostComments)
+          .values({
+            postId: input.postId,
+            userId: context.session.userId,
+            profileId,
+            parentId: input.parentId,
+            content: input.content,
+            visibility: input.visibility,
+            state: 'ACTIVE',
+          })
+          .returning({ id: PostComments.id });
+
+        if (notificationTargetUserId !== context.session.userId) {
+          await createNotification(tx)({
+            userId: notificationTargetUserId,
             category: 'COMMENT',
             actorId: profileId,
-            data: { commentId },
+            data: { commentId: comment.id },
             origin: context.event.url.origin,
           });
         }
 
-        return db.postComment.create({
-          ...query,
-          data: {
-            id: commentId,
-            postId: input.postId,
-            userId: context.session.userId,
-            profileId,
-            parentId,
-            state: 'ACTIVE',
-            content: input.content,
-            visibility: input.visibility,
-          },
-        });
-      },
-    }),
+        return comment.id;
+      });
+    },
+  }),
 
-    deleteComment: t.withAuth({ user: true }).prismaField({
-      type: 'PostComment',
-      args: { input: t.arg({ type: DeleteCommentInput }) },
-      resolve: async (query, _, { input }, { db, ...context }) => {
-        const comment = await db.postComment.findUniqueOrThrow({
-          where: { id: input.commentId },
-          include: {
-            post: true,
-          },
-        });
+  deleteComment: t.withAuth({ user: true }).field({
+    type: PostComment,
+    args: { input: t.arg({ type: DeleteCommentInput }) },
+    resolve: async (_, { input }, context) => {
+      const comments = await database
+        .select({ userId: PostComments.userId, post: { userId: Posts.userId, spaceId: Posts.spaceId } })
+        .from(PostComments)
+        .innerJoin(Posts, eq(PostComments.postId, Posts.id))
+        .where(and(eq(PostComments.id, input.commentId), eq(PostComments.state, 'ACTIVE')));
 
+      if (comments.length === 0) {
+        throw new NotFoundError();
+      }
+
+      const [comment] = comments;
+
+      const masquerade = await makeMasquerade({
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        spaceId: comment.post.spaceId!,
+        userId: context.session.userId,
+      });
+
+      if (masquerade.blockedAt) {
+        throw new PermissionDeniedError();
+      }
+
+      // 댓글을 삭제할 권한이 있나요?
+      // 1. 댓글 작성자 자신
+      // 2. 포스트 작성자
+      if (comment.userId !== context.session.userId && comment.post.userId !== context.session.userId) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const meAsMember = await getSpaceMember(context, comment.post.spaceId!);
+
+        if (meAsMember?.role !== 'ADMIN') {
+          throw new PermissionDeniedError();
+        }
+      }
+
+      await database
+        .update(PostComments)
+        .set({ state: 'INACTIVE', pinned: false })
+        .where(eq(PostComments.id, input.commentId));
+
+      return input.commentId;
+    },
+  }),
+
+  updateComment: t.withAuth({ user: true }).field({
+    type: PostComment,
+    args: { input: t.arg({ type: UpdateCommentInput }) },
+    resolve: async (_, { input }, context) => {
+      const comments = await database
+        .select({ userId: PostComments.userId, post: { userId: Posts.userId, spaceId: Posts.spaceId } })
+        .from(PostComments)
+        .innerJoin(Posts, eq(PostComments.postId, Posts.id))
+        .where(
+          and(
+            eq(PostComments.id, input.commentId),
+            eq(PostComments.state, 'ACTIVE'),
+            eq(PostComments.userId, context.session.userId),
+          ),
+        );
+
+      if (comments.length === 0) {
+        throw new NotFoundError();
+      }
+
+      const [comment] = comments;
+
+      const masquerade = await makeMasquerade({
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        spaceId: comment.post.spaceId!,
+        userId: context.session.userId,
+      });
+
+      if (masquerade.blockedAt) {
+        throw new PermissionDeniedError();
+      }
+
+      await database.update(PostComments).set({
+        content: input.content,
+        updatedAt: dayjs(),
+      });
+
+      return input.commentId;
+    },
+  }),
+
+  pinComment: t.withAuth({ user: true }).field({
+    type: PostComment,
+    args: { input: t.arg({ type: PinCommentInput }) },
+    resolve: async (_, { input }, context) => {
+      const comments = await database
+        .select({ post: { id: Posts.id, userId: Posts.userId, spaceId: Posts.spaceId } })
+        .from(PostComments)
+        .innerJoin(Posts, eq(PostComments.postId, Posts.id))
+        .where(and(eq(PostComments.id, input.commentId), eq(PostComments.state, 'ACTIVE')));
+
+      if (comments.length === 0) {
+        throw new NotFoundError();
+      }
+
+      const [comment] = comments;
+
+      if (comment.post.userId !== context.session.userId) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const meAsMember = await getSpaceMember(context, comment.post.spaceId!);
+        if (meAsMember?.role !== 'ADMIN') {
+          throw new PermissionDeniedError();
+        }
+      }
+
+      // 지금은 댓글 고정 1개만 가능
+
+      await database.transaction(async (tx) => {
+        await tx
+          .update(PostComments)
+          .set({ pinned: false })
+          .where(and(eq(PostComments.postId, comment.post.id), eq(PostComments.pinned, true)));
+
+        await tx.update(PostComments).set({ pinned: true }).where(eq(PostComments.id, input.commentId));
+      });
+
+      return input.commentId;
+    },
+  }),
+
+  unpinComment: t.withAuth({ user: true }).field({
+    type: PostComment,
+    args: { input: t.arg({ type: UnpinCommentInput }) },
+    resolve: async (_, { input }, context) => {
+      const comments = await database
+        .select({ post: { id: Posts.id, userId: Posts.userId, spaceId: Posts.spaceId } })
+        .from(PostComments)
+        .innerJoin(Posts, eq(PostComments.postId, Posts.id))
+        .where(and(eq(PostComments.id, input.commentId), eq(PostComments.state, 'ACTIVE')));
+
+      if (comments.length === 0) {
+        throw new NotFoundError();
+      }
+
+      const [comment] = comments;
+
+      if (comment.post.userId !== context.session.userId) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const meAsMember = await getSpaceMember(context, comment.post.spaceId!);
+        if (meAsMember?.role !== 'ADMIN') {
+          throw new PermissionDeniedError();
+        }
+      }
+
+      await database.update(PostComments).set({ pinned: false }).where(eq(PostComments.id, input.commentId));
+
+      return input.commentId;
+    },
+  }),
+
+  likeComment: t.withAuth({ user: true }).field({
+    type: PostComment,
+    args: { input: t.arg({ type: LikeCommentInput }) },
+    resolve: async (_, { input }, context) => {
+      const comments = await database
+        .select({ post: { id: Posts.id, userId: Posts.userId, spaceId: Posts.spaceId } })
+        .from(PostComments)
+        .innerJoin(Posts, eq(PostComments.postId, Posts.id))
+        .where(and(eq(PostComments.id, input.commentId), eq(PostComments.state, 'ACTIVE')));
+
+      if (comments.length === 0) {
+        throw new NotFoundError();
+      }
+
+      const [comment] = comments;
+
+      let profileId: string;
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const spaceMember = await getSpaceMember(context, comment.post.spaceId!);
+      if (spaceMember) {
+        profileId = spaceMember.profileId;
+      } else {
         const masquerade = await makeMasquerade({
-          db,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           spaceId: comment.post.spaceId!,
           userId: context.session.userId,
@@ -293,254 +470,33 @@ export const commentSchema = defineSchema((builder) => {
           throw new PermissionDeniedError();
         }
 
-        // 댓글을 삭제할 권한이 있나요?
-        // 1. 댓글 작성자 자신
-        // 2. 포스트 작성자
-        if (comment.userId !== context.session.userId && comment.post.userId !== context.session.userId) {
-          // 3. 스페이스 소속 관리자
-          const meAsMember = comment.post.spaceId
-            ? await db.spaceMember.findUnique({
-                where: {
-                  spaceId_userId: {
-                    spaceId: comment.post.spaceId,
-                    userId: context.session.userId,
-                  },
-                  state: 'ACTIVE',
-                  role: 'ADMIN',
-                },
-              })
-            : null;
+        profileId = masquerade.profileId;
+      }
 
-          if (!meAsMember) {
-            throw new PermissionDeniedError();
-          }
-        }
-
-        return db.postComment.update({
-          ...query,
-          where: { id: comment.id },
-          data: {
-            state: 'INACTIVE',
-            pinned: false,
-          },
-        });
-      },
-    }),
-
-    updateComment: t.withAuth({ user: true }).prismaField({
-      type: 'PostComment',
-      args: { input: t.arg({ type: UpdateCommentInput }) },
-      resolve: async (query, _, { input }, { db, ...context }) => {
-        const comment = await db.postComment.findUniqueOrThrow({
-          where: {
-            id: input.commentId,
-            state: 'ACTIVE',
-            userId: context.session.userId,
-          },
-          include: {
-            post: true,
-          },
-        });
-
-        const masquerade = await makeMasquerade({
-          db,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          spaceId: comment.post.spaceId!,
+      await database
+        .insert(PostCommentLikes)
+        .values({
+          commentId: input.commentId,
           userId: context.session.userId,
-        });
+          profileId,
+        })
+        .onConflictDoNothing();
 
-        if (masquerade.blockedAt) {
-          throw new PermissionDeniedError();
-        }
+      return input.commentId;
+    },
+  }),
 
-        return await db.postComment.update({
-          ...query,
-          where: { id: comment.id },
-          data: {
-            content: input.content,
-            updatedAt: new Date(),
-          },
-        });
-      },
-    }),
+  unlikeComment: t.withAuth({ user: true }).field({
+    type: PostComment,
+    args: { input: t.arg({ type: UnlikeCommentInput }) },
+    resolve: async (_, { input }, context) => {
+      await database
+        .delete(PostCommentLikes)
+        .where(
+          and(eq(PostCommentLikes.commentId, input.commentId), eq(PostCommentLikes.userId, context.session.userId)),
+        );
 
-    pinComment: t.withAuth({ user: true }).prismaField({
-      type: 'PostComment',
-      args: { input: t.arg({ type: PinCommentInput }) },
-      resolve: async (query, _, { input }, { db, ...context }) => {
-        const comment = await db.postComment.findUniqueOrThrow({
-          where: { id: input.commentId },
-          include: {
-            post: true,
-          },
-        });
-
-        if (comment.post.userId !== context.session.userId) {
-          const meAsMember = comment.post.spaceId
-            ? await db.spaceMember.findUnique({
-                where: {
-                  spaceId_userId: {
-                    spaceId: comment.post.spaceId,
-                    userId: context.session.userId,
-                  },
-                  state: 'ACTIVE',
-                  role: 'ADMIN',
-                },
-              })
-            : null;
-
-          if (!meAsMember) {
-            throw new PermissionDeniedError();
-          }
-        }
-
-        // 지금은 댓글 고정 1개만 가능
-
-        await db.postComment.updateMany({
-          where: {
-            postId: comment.postId,
-            pinned: true,
-          },
-          data: {
-            pinned: false,
-          },
-        });
-
-        return db.postComment.update({
-          ...query,
-          where: { id: comment.id },
-          data: {
-            pinned: true,
-          },
-        });
-      },
-    }),
-
-    unpinComment: t.withAuth({ user: true }).prismaField({
-      type: 'PostComment',
-      args: { input: t.arg({ type: UnpinCommentInput }) },
-      resolve: async (query, _, { input }, { db, ...context }) => {
-        const comment = await db.postComment.findUniqueOrThrow({
-          where: { id: input.commentId },
-          include: {
-            post: true,
-          },
-        });
-
-        if (comment.post.userId !== context.session.userId) {
-          const meAsMember = comment.post.spaceId
-            ? await db.spaceMember.findUnique({
-                where: {
-                  spaceId_userId: {
-                    spaceId: comment.post.spaceId,
-                    userId: context.session.userId,
-                  },
-                  state: 'ACTIVE',
-                  role: 'ADMIN',
-                },
-              })
-            : null;
-
-          if (!meAsMember) {
-            throw new PermissionDeniedError();
-          }
-        }
-
-        return db.postComment.update({
-          ...query,
-          where: { id: comment.id },
-          data: {
-            pinned: false,
-          },
-        });
-      },
-    }),
-
-    likeComment: t.withAuth({ user: true }).prismaField({
-      type: 'PostComment',
-      args: { input: t.arg({ type: LikeCommentInput }) },
-      resolve: async (query, _, { input }, { db, ...context }) => {
-        const comment = await db.postComment.findUniqueOrThrow({
-          include: {
-            post: true,
-          },
-          where: {
-            id: input.commentId,
-            state: 'ACTIVE',
-          },
-        });
-
-        const profileId = await (async () => {
-          const meAsMember = await db.spaceMember.findUnique({
-            where: {
-              spaceId_userId: {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                spaceId: comment.post.spaceId!,
-                userId: context.session.userId,
-              },
-              state: 'ACTIVE',
-            },
-          });
-
-          if (meAsMember) {
-            return meAsMember.profileId;
-          }
-
-          const masquerade = await makeMasquerade({
-            db,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            spaceId: comment.post.spaceId!,
-            userId: context.session.userId,
-          });
-
-          if (masquerade.blockedAt) {
-            throw new PermissionDeniedError();
-          }
-
-          return masquerade.profileId;
-        })();
-
-        await db.postCommentLike.upsert({
-          where: {
-            commentId_userId: {
-              commentId: comment.id,
-              userId: context.session.userId,
-            },
-          },
-          create: {
-            id: createId(),
-            commentId: comment.id,
-            userId: context.session.userId,
-            profileId,
-          },
-          update: {},
-        });
-
-        return db.postComment.findUniqueOrThrow({
-          ...query,
-          where: { id: comment.id },
-        });
-      },
-    }),
-
-    unlikeComment: t.withAuth({ user: true }).prismaField({
-      type: 'PostComment',
-      args: { input: t.arg({ type: UnlikeCommentInput }) },
-      resolve: async (query, _, { input }, { db, ...context }) => {
-        await db.postCommentLike.delete({
-          where: {
-            commentId_userId: {
-              commentId: input.commentId,
-              userId: context.session.userId,
-            },
-          },
-        });
-
-        return db.postComment.findUniqueOrThrow({
-          ...query,
-          where: { id: input.commentId },
-        });
-      },
-    }),
-  }));
-});
+      return input.commentId;
+    },
+  }),
+}));

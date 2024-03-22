@@ -1,13 +1,17 @@
+import { dbEnum } from '$lib/server/database';
+import * as dbEnums from '$lib/server/database/schemas/enums';
 import * as enums from '$lib/server/enums';
-import { PrismaEnums } from '$prisma';
-import { defineSchema } from '../builder';
+import { builder } from '../builder';
 
-export const enumsSchema = defineSchema((builder) => {
-  /**
-   * * Enums
-   */
+/**
+ * * Enums
+ */
 
-  for (const [name, e] of Object.entries({ ...PrismaEnums, ...enums })) {
-    builder.enumType(e, { name });
-  }
-});
+for (const [name, e] of Object.entries(enums)) {
+  builder.enumType(e, { name });
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+for (const [name, e] of Object.entries<any>(dbEnums)) {
+  builder.enumType(dbEnum(e), { name });
+}

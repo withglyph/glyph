@@ -11,17 +11,11 @@ import type { InteractiveTransactionClient } from '../database';
 const getWithdrawableDayjs = () => dayjs().subtract(7, 'day');
 
 type GetUserRevenueParams = {
-  db: InteractiveTransactionClient;
   userId: string;
   withdrawableOnly?: boolean;
   monthlyWithdrawableOnly?: boolean;
 };
-export const getUserRevenue = async ({
-  db,
-  userId,
-  withdrawableOnly,
-  monthlyWithdrawableOnly,
-}: GetUserRevenueParams) => {
+export const getUserRevenue = async ({ userId, withdrawableOnly, monthlyWithdrawableOnly }: GetUserRevenueParams) => {
   const dateLt = (() => {
     if (monthlyWithdrawableOnly) {
       return getMonthlyWithdrawableDayjsBefore().toDate();

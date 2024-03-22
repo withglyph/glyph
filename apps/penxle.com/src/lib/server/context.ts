@@ -1,18 +1,11 @@
-import DataLoader from 'dataloader';
 import dayjs from 'dayjs';
+import { and, eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import { redis } from './cache';
-import { prismaClient } from './database';
+import { database, UserRole, Users, UserSessions } from './database';
 import { decodeAccessToken } from './utils/access-token';
 import type { RequestEvent } from '@sveltejs/kit';
-import type { MaybePromise } from '$lib/types';
-import type { PrismaEnums } from '$prisma';
-import type { InteractiveTransactionClient } from './database';
-
-type InternalContext = {
-  $commitHooks: (() => MaybePromise<void>)[];
-  $dataLoaders: Record<string, DataLoader<unknown, unknown>>;
-};
+import type { DbEnum } from './database';
 
 type DefaultContext = {
   event: RequestEvent;
@@ -20,30 +13,20 @@ type DefaultContext = {
   deviceId: string;
 
   flash: (type: 'success' | 'error', message: string) => Promise<void>;
-
-  db: InteractiveTransactionClient;
-  $commit: () => Promise<void>;
-  $rollback: () => Promise<void>;
-  onCommit: (fn: () => MaybePromise<void>) => void;
-
-  dataLoader: <idType, dataType>(
-    name: string,
-    loader: DataLoader.BatchLoadFn<idType, dataType>,
-  ) => DataLoader<idType, dataType>;
 };
 
 export type UserContext = {
   session: {
     id: string;
     userId: string;
-    role: PrismaEnums.UserRole;
+    profileId: string;
+    role: DbEnum<typeof UserRole>;
   };
 };
 
 export type Context = DefaultContext & Partial<UserContext>;
 
 export const createContext = async (event: RequestEvent): Promise<Context> => {
-  const db = await prismaClient.$begin({ isolation: 'ReadCommitted' });
   let deviceId = event.cookies.get('penxle-did');
   if (!deviceId) {
     deviceId = nanoid(32);
@@ -53,28 +36,11 @@ export const createContext = async (event: RequestEvent): Promise<Context> => {
     });
   }
 
-  const ctx: Context & InternalContext = {
+  const ctx: Context = {
     event,
-    db,
     deviceId,
-    $commitHooks: [],
-    onCommit: (fn: () => MaybePromise<void>) => ctx.$commitHooks.push(fn),
     flash: async (type: 'success' | 'error', message: string) => {
       await redis.setex(`flash:${deviceId}`, 30, JSON.stringify({ type, message }));
-    },
-    $commit: async () => {
-      await db.$commit();
-      await Promise.all(ctx.$commitHooks.map((fn) => fn()));
-    },
-    $rollback: async () => {
-      await db.$rollback();
-    },
-    $dataLoaders: {},
-    dataLoader: <idType, dataType>(name: string, loader: DataLoader.BatchLoadFn<idType, dataType>) => {
-      if (!ctx.$dataLoaders[name]) {
-        ctx.$dataLoaders[name] = new DataLoader(loader);
-      }
-      return ctx.$dataLoaders[name] as DataLoader<idType, dataType>;
     },
   };
 
@@ -89,22 +55,14 @@ export const createContext = async (event: RequestEvent): Promise<Context> => {
     }
 
     if (sessionId) {
-      const session = await db.userSession.findUnique({
-        include: { user: true },
-        where: {
-          id: sessionId,
-          user: {
-            state: 'ACTIVE',
-          },
-        },
-      });
+      const sessions = await database
+        .select({ id: UserSessions.id, userId: Users.id, profileId: Users.profileId, role: Users.role })
+        .from(UserSessions)
+        .innerJoin(Users, eq(Users.id, UserSessions.userId))
+        .where(and(eq(UserSessions.id, sessionId), eq(Users.state, 'ACTIVE')));
 
-      if (session) {
-        ctx.session = {
-          id: sessionId,
-          userId: session.userId,
-          role: session.user.role,
-        };
+      if (sessions.length > 0) {
+        ctx.session = sessions[0];
       }
     }
   }

@@ -58,7 +58,7 @@
     },
   });
 
-  $: setInitialValues({ collectionId: $collection.id, name: $collection.name, thumbnailId: $collection.thumbnail?.id });
+  $: setInitialValues({ spaceCollectionId: $collection.id, name: $collection.name, thumbnailId: $collection.thumbnail?.id });
 </script>
 
 <Modal size="md" bind:open>
