@@ -124,10 +124,29 @@
   beforeNavigate(() => {
     open = false;
   });
+
+  const backgroundStyle = {
+    backgroundColor: 'gray.100',
+  } as const;
+
+  const solidStyle = {
+    '& path': {
+      fill: '[currentColor]',
+    },
+  } as const;
 </script>
 
 <div class={center({ position: 'relative' })}>
-  <a class={circle({ size: '34px', hideFrom: 'sm' })} href="/me/notifications">
+  <a
+    class={circle({
+      size: '34px',
+      color: 'gray.800',
+      hideFrom: 'sm',
+      _hover: backgroundStyle,
+      _focusVisible: backgroundStyle,
+    })}
+    href="/me/notifications"
+  >
     <Icon icon={IconBell} size={24} />
   </a>
 
@@ -136,9 +155,10 @@
       size: '36px',
       color: 'gray.800',
       transition: 'common',
-      _hover: { backgroundColor: 'gray.100' },
-      _pressed: { backgroundColor: 'gray.100' },
       hideBelow: 'sm',
+      _hover: backgroundStyle,
+      _focusVisible: backgroundStyle,
+      _pressed: solidStyle,
     })}
     aria-pressed={open}
     type="button"
@@ -223,7 +243,7 @@
       {/if}
     </div>
 
-    <ul class={css({ minHeight: '120px', maxHeight: '440px', overflowY: 'auto' })}>
+    <ul class={css({ minHeight: '120px', maxHeight: '440px', overflowY: 'auto', position: 'relative' })}>
       {#each $user.notifications.slice(0, 20) as notification (notification.id)}
         <li>
           <button
@@ -288,7 +308,18 @@
           </button>
         </li>
       {:else}
-        <li class={css({ fontSize: '14px', fontWeight: 'bold', textAlign: 'center', color: 'gray.500' })}>
+        <li
+          class={css({
+            fontSize: '14px',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            color: 'gray.500',
+            position: 'absolute',
+            top: '[50%]',
+            left: '[50%]',
+            transform: 'translate(-50%, -50%)',
+          })}
+        >
           알림이 없어요
         </li>
       {/each}
