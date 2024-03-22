@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import { traverse } from 'object-traversal';
 import { createTiptapDocument, documentToText } from '$lib/utils';
 import { useCache } from '../cache';
+import { Loader } from '.';
 import type { JSONContent } from '@tiptap/core';
 import type { Prisma } from '$prisma';
 import type { InteractiveTransactionClient } from '../prisma';
@@ -49,6 +50,8 @@ export const decorateContent = async (
   db: InteractiveTransactionClient,
   content: JSONContent[],
 ): Promise<JSONContent[]> => {
+  const imageLoader = Loader.image({ db });
+
   return Promise.all(
     content.map(async (node) => {
       if (node.type === 'image') {
@@ -56,10 +59,7 @@ export const decorateContent = async (
           return node;
         }
 
-        const image = await db.image.findUnique({
-          select: { id: true, path: true },
-          where: { id: node.attrs.id },
-        });
+        const image = await imageLoader.load(node.attrs.id);
 
         if (!image) {
           return node;
@@ -82,19 +82,15 @@ export const decorateContent = async (
           return node;
         }
 
-        const images = await db.image.findMany({
-          select: { id: true, name: true, color: true, path: true },
-          where: { id: { in: node.attrs.ids } },
-        });
+        const images = await imageLoader.loadMany(node.attrs.ids);
 
         return {
           ...node,
           attrs: {
             ...node.attrs,
-            __data: node.attrs.ids
-              .map((id: string) => {
-                const image = images.find((i) => i.id === id);
-                if (!image) {
+            __data: images
+              .map((image) => {
+                if (!image || image instanceof Error) {
                   return null;
                 }
 
