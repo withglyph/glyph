@@ -1431,13 +1431,13 @@ builder.mutationFields((t) => ({
       document = await sanitizeContent(document);
 
       const accessBarrierPosition = document.findIndex((node) => node.type === 'access_barrier');
-      const accessBarrier = document[accessBarrierPosition];
-      const freeContentData = document.slice(0, accessBarrierPosition);
-      const paidContentData = document.slice(accessBarrierPosition + 1);
+      const accessBarrier = accessBarrierPosition === -1 ? null : document[accessBarrierPosition];
+      const freeContentData = accessBarrierPosition === -1 ? document : document.slice(0, accessBarrierPosition);
+      const paidContentData = accessBarrierPosition === -1 ? [] : document.slice(accessBarrierPosition + 1);
 
       const freeContentId = await makePostContentId(freeContentData);
       const paidContentId = await makePostContentId(paidContentData);
-      const price: number | null = paidContentId ? accessBarrier.attrs?.price ?? null : null;
+      const price: number | null = paidContentId ? accessBarrier?.attrs?.price ?? null : null;
 
       const revisionData: typeof PostRevisions.$inferInsert = {
         postId: input.postId,
