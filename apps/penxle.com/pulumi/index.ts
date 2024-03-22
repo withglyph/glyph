@@ -19,13 +19,14 @@ const site = new penxle.Site('pencil.so', {
   },
 
   resources: {
-    cpu: '1000m',
-    memory: '2000Mi',
+    cpu: '2000m',
+    memory: '4000Mi',
   },
 
   autoscale: {
-    minCount: 2,
-    maxCount: 20,
+    minCount: 5,
+    maxCount: 50,
+    averageCpuUtilization: 20,
   },
 
   iam: {
