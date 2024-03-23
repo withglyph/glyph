@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
 import { redis } from './cache';
 import { prismaClient } from './database';
+import { db as db2 } from './database/index';
 import { decodeAccessToken } from './utils/access-token';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { MaybePromise } from '$lib/types';
@@ -43,6 +44,9 @@ export type UserContext = {
 export type Context = DefaultContext & Partial<UserContext>;
 
 export const createContext = async (event: RequestEvent): Promise<Context> => {
+  const a = await db2.selectFrom('user_sessions').selectAll().executeTakeFirstOrThrow();
+  console.log('!!!!!!!!!!!!!', a.createdAt);
+
   const db = await prismaClient.$begin({ isolation: 'ReadCommitted' });
   let deviceId = event.cookies.get('penxle-did');
   if (!deviceId) {
