@@ -683,6 +683,7 @@ export const Posts = pgTable(
     externalSearchable: boolean('external_searchable').notNull().default(true),
     pairs: E.PostPair('pairs')
       .array()
+      .notNull()
       .default(sql`'{}'`),
     category: E.PostCategory('category').notNull().default('OTHER'),
     commentQualification: E.PostCommentQualification('comment_qualification').notNull().default('ANY'),

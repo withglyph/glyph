@@ -1,33 +1,44 @@
 import { webcrypto } from 'node:crypto';
+import { count, eq } from 'drizzle-orm';
 import { useCache } from '$lib/server/cache';
 import { createId } from '$lib/utils';
+import { database, PostRevisionContents, PostViews } from '../database';
+import { useFirstRowOrThrow } from './database';
 import type { JSONContent } from '@tiptap/core';
-import type { InteractiveTransactionClient } from '../prisma';
 
 type RevisePostContentParams = {
-  db: InteractiveTransactionClient;
   contentData: JSONContent[];
 };
 
-export const revisePostContent = async ({ db, contentData }: RevisePostContentParams) => {
+export const revisePostContent = async ({ contentData }: RevisePostContentParams) => {
   const contentHash = Buffer.from(
     await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(contentData))),
   ).toString('hex');
 
-  return await db.postRevisionContent.upsert({
-    where: { hash: contentHash },
-    create: {
+  return await database
+    .insert(PostRevisionContents)
+    .values({
       id: createId(),
       hash: contentHash,
       data: contentData,
-    },
-    update: {},
-  });
+    })
+    .onConflictDoNothing({ target: PostRevisionContents.hash })
+    .returning()
+    .then(useFirstRowOrThrow());
 };
 
 type GetPostViewCountParams = {
-  db: InteractiveTransactionClient;
   postId: string;
 };
-export const getPostViewCount = ({ db, postId }: GetPostViewCountParams) =>
-  useCache(`Post:${postId}:viewCount`, () => db.postView.count({ where: { postId } }), 365 * 24 * 60 * 60);
+export const getPostViewCount = ({ postId }: GetPostViewCountParams) =>
+  useCache(
+    `Post:${postId}:viewCount`,
+    async () => {
+      const [{ postViewCount }] = await database
+        .select({ postViewCount: count() })
+        .from(PostViews)
+        .where(eq(PostViews.postId, postId));
+      return postViewCount;
+    },
+    365 * 24 * 60 * 60,
+  );

@@ -1,15 +1,15 @@
 import dayjs from 'dayjs';
 import { and, asc, eq, gt, sum } from 'drizzle-orm';
-import { database, PointBalances, PointKind, PointTransactions } from '../database';
-import type { DbEnum, PointTransactionCause, Transaction } from '../database';
+import { database,  PointBalances, PointKind, PointTransactionCause, PointTransactions  } from '../database';
+import type {DbEnum, Transaction} from '../database';
 
 type GetUserPointParams = {
   userId: string;
   kind?: DbEnum<typeof PointKind>;
 };
 export const getUserPoint = async ({ userId, kind }: GetUserPointParams) => {
-  const [{ leftover }] = await database
-    .select({ leftover: sum(PointBalances.leftover).mapWith(Number) })
+  return await database
+    .select({ sum: sum(PointBalances.leftover) })
     .from(PointBalances)
     .where(
       and(
@@ -18,9 +18,8 @@ export const getUserPoint = async ({ userId, kind }: GetUserPointParams) => {
         gt(PointBalances.expiresAt, dayjs()),
         kind ? eq(PointBalances.kind, kind) : undefined,
       ),
-    );
-
-  return leftover ?? 0;
+    )
+    .then(([{ sum }]) => sum ?? 0);
 };
 
 type DeductPointParams = {

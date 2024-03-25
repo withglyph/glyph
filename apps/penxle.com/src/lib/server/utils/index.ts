@@ -2,6 +2,7 @@ export * from './access-token';
 export * from './aes';
 export * from './age';
 export * from './avatar';
+export * from './database';
 export * from './icon';
 export * from './image';
 export * from './masquerade';
