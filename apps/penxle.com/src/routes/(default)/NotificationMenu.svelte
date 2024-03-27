@@ -235,7 +235,7 @@
         <Button
           style={css.raw({ fontSize: '12px', fontWeight: 'semibold' })}
           size="sm"
-          variant="outline"
+          variant="gray-outline"
           on:click={async () => await readAllNotifications()}
         >
           모두 읽기

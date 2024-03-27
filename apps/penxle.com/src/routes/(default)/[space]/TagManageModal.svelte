@@ -192,6 +192,6 @@
     />
   </form>
   <svelte:fragment slot="action">
-    <Button style={css.raw({ flex: '1' })} form={id} loading={$isSubmitting} size="xl" type="submit">수정</Button>
+    <Button style={css.raw({ flex: '1' })} form={id} loading={$isSubmitting} size="lg" type="submit">수정</Button>
   </svelte:fragment>
 </Modal>

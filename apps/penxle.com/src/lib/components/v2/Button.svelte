@@ -23,7 +23,7 @@
   export let style: SystemStyleObject | undefined;
 
   export let loading = false;
-  export let variant: Variants['variant'] = 'primary';
+  export let variant: Variants['variant'] = 'gray-primary-fill';
   export let size: Variants['size'] = 'md';
 
   export let external = false;
@@ -40,85 +40,120 @@
 
   type Variants = RecipeVariant<typeof recipe>;
   const recipe = cva({
-    base: { textAlign: 'center', outlineOffset: '0' },
+    base: {
+      textAlign: 'center',
+      outlineOffset: '0',
+      userSelect: 'none',
+      color: { _enabled: 'gray.5', _disabled: 'gray.400' },
+      backgroundColor: { _disabled: 'gray.150' },
+    },
     variants: {
       variant: {
-        'primary': {
-          color: 'gray.5',
-          backgroundColor: {
-            base: 'gray.900',
-            _enabled: {
+        'gray-primary-fill': {
+          _enabled: {
+            backgroundColor: {
+              base: 'gray.900',
               _hover: 'gray.800',
               _focusVisible: 'gray.800',
-              _pressed: 'gray.800',
+              _active: 'gray.900',
+              _pressed: 'gray.900',
             },
-            _disabled: 'gray.200',
+            outlineWidth: { _active: '2px', _pressed: '2px' },
+            outlineColor: { _active: 'gray.400', _pressed: 'gray.400' },
           },
-          boxShadow: { _active: '[0 0 0 2px #A1A1AA]' },
         },
-        'secondary': {
-          color: 'gray.5',
-          backgroundColor: {
-            base: 'teal.500',
-            _enabled: {
-              _hover: 'teal.400',
-              _focusVisible: 'teal.400',
-              _pressed: 'teal.400',
-            },
-            _disabled: 'gray.200',
-          },
-          boxShadow: { _active: '[0 0 0 2px #99F6E4]' },
-        },
-        'tertiary': {
-          color: { base: 'gray.500', _disabled: 'gray.400' },
-          backgroundColor: {
-            base: 'gray.100',
-            _enabled: {
-              _hover: 'gray.50',
-              _focusVisible: 'gray.50',
+        'gray-sub-fill': {
+          _enabled: {
+            color: 'gray.900',
+            backgroundColor: {
+              base: 'gray.50',
+              _hover: 'gray.100',
+              _focusVisible: 'gray.100',
+              _active: 'gray.50',
               _pressed: 'gray.50',
             },
-            _disabled: 'gray.50',
+            outlineWidth: { _active: '2px', _pressed: '2px' },
+            outlineColor: { _active: 'gray.200', _pressed: 'gray.200' },
           },
-          boxShadow: { _active: '[0 0 0 2px #E4E4E7]' },
         },
-        'outline': {
-          color: { base: 'gray.500', _disabled: 'gray.400' },
-          outlineWidth: '1px',
-          outlineColor: { base: 'gray.150', _active: 'gray.300', _disabled: 'gray.150' },
-          backgroundColor: {
-            base: 'gray.5',
-            _enabled: {
-              _hover: 'gray.50',
-              _focusVisible: 'gray.50',
-              _pressed: 'gray.50',
+        'cyan-fill': {
+          _enabled: {
+            backgroundColor: {
+              base: 'cyan.400',
+              _hover: 'cyan.600',
+              _focusVisible: 'cyan.600',
+              _active: 'cyan.400',
+              _pressed: 'cyan.400',
             },
-            _disabled: '[initial]',
+            outlineWidth: { _active: '2px', _pressed: '2px' },
+
+            outlineColor: { _active: 'cyan.600', _pressed: 'cyan.600' },
           },
-          boxShadow: { _active: '[0 0 0 2px #E4E4E7]' },
         },
-        'secondary-outline': {
-          color: { base: 'teal.500', _disabled: 'gray.400' },
-          outlineWidth: '1px',
-          outlineColor: { base: 'teal.500', _disabled: 'gray.100' },
-          backgroundColor: {
-            _enabled: {
-              _hover: 'teal.50',
-              _focusVisible: 'teal.50',
-              _pressed: 'teal.50',
+        'gradation-fill': {
+          _enabled: {
+            bgGradient: 'to-r',
+            gradientFrom: {
+              base: '[#34186B]',
+              _hover: '[#2F2058]',
+              _focusVisible: '[#2F2058]',
+              _active: '[#34186B]',
+              _pressed: '[#34186B]',
             },
-            _disabled: '[initial]',
+            gradientTo: {
+              base: '[#27A6BA]',
+              _hover: '[#207383]',
+              _focusVisible: '[#207383]',
+              _active: '[#27A6BA]',
+              _pressed: '[#27A6BA]',
+            },
+            outlineWidth: { _active: '2px', _pressed: '2px' },
+            outlineColor: { _active: 'cyan.400', _pressed: 'cyan.400' },
           },
-          boxShadow: { _active: '[0 0 0 2px #99F6E4]' },
+        },
+        'gray-outline': {
+          _enabled: {
+            color: 'gray.900',
+            backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100', _active: 'gray.5', _pressed: 'gray.5' },
+            outlineWidth: { base: '1px', _active: '3px', _pressed: '3px' },
+            outlineColor: 'gray.200',
+          },
+        },
+        'gray-text': {
+          _enabled: {
+            color: 'gray.900',
+            backgroundColor: { _hover: 'gray.50', _focusVisible: 'gray.50', _active: 'gray.5', _pressed: 'gray.5' },
+            outlineWidth: { base: '1px', _active: '2px', _pressed: '2px' },
+            outlineColor: 'gray.200',
+          },
+        },
+        'red-text': {
+          _enabled: {
+            color: 'red.600',
+            backgroundColor: { _hover: 'red.50', _focusVisible: 'red.50', _active: 'gray.5', _pressed: 'gray.5' },
+            outlineWidth: { _active: '2px', _pressed: '2px' },
+            outlineColor: 'red.600',
+          },
+        },
+        'red-fill': {
+          _enabled: {
+            backgroundColor: {
+              base: 'red.600',
+              _active: 'red.600',
+              _hover: 'red.800',
+              _focusVisible: 'red.600',
+              _pressed: 'red.600',
+            },
+            outlineWidth: { _active: '2px', _pressed: '2px' },
+            outlineColor: { _active: 'red.900', _pressed: 'red.900' },
+          },
         },
       },
       size: {
-        '2xs': { paddingX: '14px', paddingY: '5px', fontSize: '11px', fontWeight: 'semibold', borderRadius: '4px' },
-        'xs': { paddingX: '14px', paddingY: '8px', fontSize: '11px', fontWeight: 'semibold', borderRadius: '4px' },
-        'sm': { paddingX: '14px', paddingY: '8px', fontSize: '12px', fontWeight: 'semibold', borderRadius: '4px' },
-        'md': { paddingX: '16px', paddingY: '8px', fontSize: '14px', fontWeight: 'semibold', borderRadius: '5px' },
-        'lg': { paddingX: '20px', paddingY: '10px', fontSize: '15px', fontWeight: 'semibold', borderRadius: '6px' },
-        'xl': { paddingX: '24px', paddingY: '12px', fontSize: '17px', fontWeight: 'semibold', borderRadius: '7px' },
+        xs: { paddingX: '8px', paddingY: '4px', fontSize: '12px', fontWeight: 'medium' },
+        sm: { paddingX: '12px', paddingY: '9px', fontSize: '13px', fontWeight: 'medium' },
+        md: { padding: '12px', fontSize: '14px', fotWeight: 'semibold' },
+        lg: { paddingX: '16px', paddingY: '14px', fontSize: '14px', fontWeight: 'semibold' },
       },
     },
   });
@@ -139,13 +174,8 @@
   }}
 >
   {#if showSpinner}
-    <div class={center({ position: 'absolute', inset: '0', paddingX: '16px', paddingY: '8px' })}>
-      <RingSpinner
-        style={css.raw(
-          { height: 'full' },
-          (variant === 'outline' || variant === 'secondary-outline') && { color: 'gray.300' },
-        )}
-      />
+    <div class={center({ position: 'absolute', inset: '0', padding: '[inherit]' })}>
+      <RingSpinner style={css.raw({ height: 'full', color: variant === 'cyan-fill' ? 'gray.150' : 'gray.400' })} />
     </div>
   {/if}
   <div class={css({ display: 'contents' }, showSpinner && { visibility: 'hidden' })}>

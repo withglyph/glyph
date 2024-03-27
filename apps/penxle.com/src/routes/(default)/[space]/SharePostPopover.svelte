@@ -176,14 +176,17 @@
         <label for={mastodonLinkId}>마스토돈</label>
       </div>
     </div>
-    <footer class={flex({ margin: '20px' })}>
+    <footer
+      class={flex({
+        margin: '20px',
+        borderWidth: '1px',
+        borderColor: 'gray.200',
+        borderRadius: '4px',
+      })}
+    >
       <input
         class={css({
           flex: '1',
-          borderWidth: '1px',
-          borderRightWidth: '0',
-          borderColor: 'gray.200',
-          borderLeftRadius: '4px',
           padding: '12px',
           fontSize: '14px',
         })}
@@ -192,10 +195,16 @@
         value={href}
       />
       <Button
-        style={css.raw({ flex: 'none', borderLeftRadius: '0' })}
+        style={css.raw({
+          flex: 'none',
+          outlineWidth: '0',
+          borderLeftRadius: '0',
+          borderRightRadius: '4px',
+          borderRightWidth: '1px',
+        })}
         size="lg"
         type="button"
-        variant="tertiary"
+        variant="gray-sub-fill"
         on:click={async () => {
           try {
             navigator.clipboard.writeText(href);

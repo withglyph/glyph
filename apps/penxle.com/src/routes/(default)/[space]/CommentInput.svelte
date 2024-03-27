@@ -225,7 +225,7 @@
         disabled={!$query.me || ($query.post.commentQualification === 'IDENTIFIED' && !$query.me?.personalIdentity)}
         size="lg"
         type="submit"
-        variant="outline"
+        variant="gray-outline"
       >
         등록
       </Button>

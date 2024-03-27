@@ -360,8 +360,8 @@
               {#if !parentId}
                 <Button
                   style={css.raw({ backgroundColor: 'gray.5/60' })}
-                  size="2xs"
-                  variant="outline"
+                  size="xs"
+                  variant="gray-outline"
                   on:click={() => (replyInputOpen = !replyInputOpen)}
                 >
                   답글
@@ -463,7 +463,7 @@
       <Button
         style={css.raw({ width: 'full' })}
         size="lg"
-        variant="outline"
+        variant="gray-outline"
         on:click={() => (blockMasqueradeOpen = false)}
       >
         취소

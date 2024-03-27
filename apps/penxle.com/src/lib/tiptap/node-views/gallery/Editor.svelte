@@ -818,7 +818,12 @@
       </p>
     {/if}
 
-    <Button style={css.raw({ width: '95px' })} size="lg" variant="outline" on:click={() => (imageListOpen = false)}>
+    <Button
+      style={css.raw({ width: '95px' })}
+      size="lg"
+      variant="gray-outline"
+      on:click={() => (imageListOpen = false)}
+    >
       확인
     </Button>
   </svelte:fragment>
