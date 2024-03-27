@@ -37,7 +37,7 @@
   const { isSubmitting } = getFormContext().form ?? {};
 
   $: showSpinner = !!(loading || (type === 'submit' && $isSubmitting));
-  $: props = type === 'link' ? { ['aria-disabled']: disabled } : { disabled };
+  $: props = type === 'link' ? { ['aria-disabled']: disabled } : { type, disabled };
 
   type Variants = RecipeVariant<typeof recipe>;
   const recipe = cva({
