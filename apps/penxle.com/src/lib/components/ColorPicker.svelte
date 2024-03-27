@@ -2,7 +2,7 @@
   import Color from 'color';
   import { createEventDispatcher, onMount, tick } from 'svelte';
   import { values } from '$lib/tiptap/values';
-  import { css, cx } from '$styled-system/css';
+  import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
 
   let colorBlock: HTMLCanvasElement;
@@ -217,10 +217,7 @@
     <input
       bind:this={gradientSliderInputEl}
       style={`--thumb-color: ${rgb.toString()}`}
-      class={cx(
-        'gradient-slider',
-        css({ borderRadius: '2px', marginBottom: '12px', width: 'full', height: '8px', appearance: 'none' }),
-      )}
+      class="gradient-slider"
       max="300"
       min="0"
       type="range"
@@ -371,6 +368,12 @@
 
 <style>
   .gradient-slider {
+    border-radius: 2px;
+    margin-bottom: 12px;
+    width: 100%;
+    height: 8px;
+    appearance: none;
+
     background: linear-gradient(
       to right,
       hsl(0, 100%, 50%) 0%,
@@ -382,9 +385,16 @@
     );
     &::-webkit-slider-thumb {
       -webkit-appearance: none;
+      border-radius: 0.5rem;
+      height: 0.875rem;
+      width: 0.5rem;
+      background-color: var(--thumb-color);
+      border: 2px solid #fff;
+      box-shadow:
+        0px 0px 3px 0px rgba(0, 0, 0, 0.2),
+        0px 1px 10px 0px rgba(0, 0, 0, 0.08);
     }
 
-    &::-webkit-slider-thumb,
     &::-moz-range-thumb {
       border-radius: 0.5rem;
       height: 0.875rem;
