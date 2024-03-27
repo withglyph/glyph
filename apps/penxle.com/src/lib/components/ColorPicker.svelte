@@ -241,11 +241,17 @@
       <input
         style:background-color={hex}
         class={css({
-          borderWidth: '1px',
-          borderColor: 'gray.200',
-          borderRadius: 'full',
-          marginRight: '12px',
-          size: '22px',
+          'borderWidth': '1px',
+          'borderColor': 'gray.200',
+          'borderRadius': 'full',
+          'marginRight': '12px',
+          'size': '22px',
+          '&::-webkit-color-swatch-wrapper': {
+            visibility: 'hidden',
+          },
+          '&::-moz-color-swatch': {
+            borderStyle: 'none',
+          },
         })}
         type="color"
         value={hex}
@@ -405,10 +411,5 @@
         0px 0px 3px 0px rgba(0, 0, 0, 0.2),
         0px 1px 10px 0px rgba(0, 0, 0, 0.08);
     }
-  }
-
-  input[type='color']::-moz-color-swatch,
-  input[type='color']::-webkit-color-swatch {
-    border: none;
   }
 </style>
