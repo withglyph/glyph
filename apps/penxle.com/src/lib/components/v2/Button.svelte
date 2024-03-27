@@ -11,8 +11,11 @@
     type?: T;
     loading?: boolean;
     style?: SystemStyleObject;
+    disabled?: boolean;
   } & Omit<
-      T extends 'link' ? HTMLAnchorAttributes & { external?: boolean } : Omit<HTMLButtonAttributes, 'type'>,
+      T extends 'link'
+        ? HTMLAnchorAttributes & { external?: boolean }
+        : Omit<HTMLButtonAttributes, 'type' | 'disabled'>,
       'class' | 'style'
     >;
 
@@ -22,6 +25,7 @@
 
   export let style: SystemStyleObject | undefined;
 
+  export let disabled = false;
   export let loading = false;
   export let variant: Variants['variant'] = 'gray-primary-fill';
   export let size: Variants['size'] = 'md';
@@ -33,10 +37,7 @@
   const { isSubmitting } = getFormContext().form ?? {};
 
   $: showSpinner = !!(loading || (type === 'submit' && $isSubmitting));
-  $: props =
-    type === 'link'
-      ? { href: showSpinner ? undefined : $$restProps.href }
-      : { disabled: $$restProps.disabled || showSpinner };
+  $: props = type === 'link' ? { ['aria-disabled']: disabled } : { disabled };
 
   type Variants = RecipeVariant<typeof recipe>;
   const recipe = cva({
@@ -46,6 +47,7 @@
       userSelect: 'none',
       color: { _enabled: 'gray.5', _disabled: 'gray.400' },
       backgroundColor: { _disabled: 'gray.150' },
+      pointerEvents: { _disabled: 'none', _busy: 'none' },
     },
     variants: {
       variant: {
