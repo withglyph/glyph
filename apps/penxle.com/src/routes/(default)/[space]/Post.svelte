@@ -679,7 +679,7 @@
               <Button
                 style={css.raw({ marginTop: '16px', width: '158px', fontSize: '14px', fontWeight: 'semibold' })}
                 size="md"
-                variant="outline"
+                variant="gray-outline"
                 on:click={() => (blurContent = false)}
               >
                 표시
@@ -699,7 +699,7 @@
               <Button
                 style={css.raw({ marginTop: '16px', width: '158px', fontSize: '14px', fontWeight: 'semibold' })}
                 size="sm"
-                variant="outline"
+                variant="gray-outline"
                 on:click={async () => {
                   if (!$query.me) {
                     await goto('/login');
@@ -733,7 +733,7 @@
               <Button
                 style={css.raw({ marginTop: '16px', width: '158px', fontSize: '14px', fontWeight: 'semibold' })}
                 size="sm"
-                variant="outline"
+                variant="gray-outline"
                 on:click={async () => {
                   if (!$query.me) {
                     await goto('/login');
@@ -808,7 +808,7 @@
                   {#each $query.post.tags as { tag, kind } (tag.id)}
                     {#if kind === 'TITLE'}
                       <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
-                        <a href={`/tag/${tag.name}`}>#{tag.name}</a>
+                        <a href={`/tag/${tag.name}/post`}>#{tag.name}</a>
                       </dd>
                     {/if}
                   {/each}
@@ -841,7 +841,7 @@
                   {#each $query.post.tags as { tag, kind } (tag.id)}
                     {#if kind === 'CHARACTER'}
                       <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
-                        <a href={`/tag/${tag.name}`}>#{tag.name}</a>
+                        <a href={`/tag/${tag.name}/post`}>#{tag.name}</a>
                       </dd>
                     {/if}
                   {/each}
@@ -874,7 +874,7 @@
                   {#each $query.post.tags as { tag, kind } (tag.id)}
                     {#if kind === 'COUPLING'}
                       <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
-                        <a href={`/tag/${tag.name}`}>#{tag.name}</a>
+                        <a href={`/tag/${tag.name}/post`}>#{tag.name}</a>
                       </dd>
                     {/if}
                   {/each}
@@ -907,7 +907,7 @@
                   {#each $query.post.tags as { tag, kind } (tag.id)}
                     {#if kind === 'TRIGGER'}
                       <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
-                        <a href={`/tag/${tag.name}`}>#{tag.name}</a>
+                        <a href={`/tag/${tag.name}/post`}>#{tag.name}</a>
                       </dd>
                     {/if}
                   {/each}
@@ -940,7 +940,7 @@
                   {#each $query.post.tags as { tag, kind } (tag.id)}
                     {#if kind === 'EXTRA'}
                       <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
-                        <a href={`/tag/${tag.name}`}>#{tag.name}</a>
+                        <a href={`/tag/${tag.name}/post`}>#{tag.name}</a>
                       </dd>
                     {/if}
                   {/each}
@@ -950,8 +950,8 @@
             {#if $query.post.space?.meAsMember}
               <Button
                 style={css.raw({ flex: 'none', alignSelf: 'flex-end' })}
-                size="2xs"
-                variant="outline"
+                size="xs"
+                variant="gray-outline"
                 on:click={() => (openTagManageModal = true)}
               >
                 태그수정
@@ -1370,7 +1370,7 @@
           <Button
             style={flex.raw({ align: 'center', gap: '4px', flex: 'none' })}
             size="sm"
-            variant="outline"
+            variant="gray-outline"
             on:click={async () => {
               if (!$query.post.space) return;
 
@@ -1656,7 +1656,7 @@
     <Button
       style={css.raw({ width: 'full' })}
       size="lg"
-      variant="outline"
+      variant="gray-outline"
       on:click={() => (openDeletePostWarning = false)}
     >
       취소

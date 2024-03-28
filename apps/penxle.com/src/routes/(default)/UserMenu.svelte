@@ -164,7 +164,7 @@
                 href="/me"
                 size="xs"
                 type="link"
-                variant="outline"
+                variant="gray-outline"
               >
                 계정 설정
               </Button>
@@ -173,7 +173,7 @@
                 href="/me/settings"
                 size="sm"
                 type="link"
-                variant="outline"
+                variant="gray-outline"
               >
                 계정 설정
               </Button>

@@ -84,14 +84,11 @@
                 gap: '4px',
                 paddingLeft: '12px',
                 paddingRight: '14px',
-                color: 'gray.800',
-                fontSize: '14px',
-                fontWeight: 'semibold',
                 hideBelow: 'sm',
               })}
               size="md"
               type="button"
-              variant="outline"
+              variant="gray-outline"
               on:click={async () => {
                 const { permalink } = await createPost({ spaceId: undefined });
                 mixpanel.track('post:create', { via: 'feed' });
@@ -104,10 +101,10 @@
             <NotificationMenu $user={$query.me} />
             <UserMenu $user={$query.me} />
           {:else}
-            <Button style={css.raw({ hideFrom: 'sm' })} href="/login" size="sm" type="link" variant="outline">
+            <Button style={css.raw({ hideFrom: 'sm' })} href="/login" size="sm" type="link" variant="gray-outline">
               로그인/회원가입
             </Button>
-            <Button style={css.raw({ hideBelow: 'sm' })} href="/login" size="md" type="link" variant="outline">
+            <Button style={css.raw({ hideBelow: 'sm' })} href="/login" size="md" type="link" variant="gray-outline">
               로그인/회원가입
             </Button>
           {/if}

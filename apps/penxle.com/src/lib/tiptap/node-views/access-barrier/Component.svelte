@@ -305,7 +305,7 @@
             </div>
           </Tooltip>
 
-          <Button size="sm" type="submit" variant="secondary">설정</Button>
+          <Button size="sm" type="submit" variant="cyan-fill">설정</Button>
         </form>
       </div>
     {/if}
@@ -476,11 +476,11 @@
 
     <svelte:fragment slot="action">
       {#if node.attrs.__data.point < node.attrs.price}
-        <Button style={css.raw({ width: 'full' })} href="/point/purchase" size="xl" type="link">충전하기</Button>
+        <Button style={css.raw({ width: 'full' })} href="/point/purchase" size="lg" type="link">충전하기</Button>
       {:else}
         <Button
           style={css.raw({ width: 'full' })}
-          size="xl"
+          size="lg"
           on:click={async () => {
             await purchasePost({
               postId: node.attrs.__data.postId,

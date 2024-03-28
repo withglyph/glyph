@@ -1,3 +1,4 @@
+import * as R from 'radash';
 import { elasticSearch, indexName } from '$lib/server/search';
 import { getTagUsageCount, makeQueryContainers, searchResultToPrismaData } from '$lib/server/utils';
 import { createId } from '$lib/utils';
@@ -235,6 +236,55 @@ export const tagSchema = defineSchema((builder) => {
       args: { name: t.arg.string() },
       resolve: (query, _, { name }, { db }) => {
         return db.tag.findUniqueOrThrow({ ...query, where: { name } });
+      },
+    }),
+
+    recommendedTags: t.prismaField({
+      type: ['Tag'],
+      resolve: async (query, _, __, { db, ...context }) => {
+        if (context.session) {
+          const data = await db.postView.findMany({
+            select: {
+              post: {
+                select: {
+                  tags: {
+                    select: { tag: query },
+                    where: {
+                      kind: { not: 'TRIGGER' },
+                      tag: {
+                        followers: {
+                          none: { userId: context.session?.userId },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            where: { userId: context.session.userId },
+            orderBy: { viewedAt: 'desc' },
+            take: 50,
+          });
+
+          const rawTags = data.flatMap(({ post }) => post.tags.map(({ tag }) => tag));
+          // eslint-disable-next-line unicorn/no-array-reduce
+          const tagUsage = rawTags.reduce(
+            (acc, tag) => {
+              if (!acc[tag.id]) {
+                acc[tag.id] = 0;
+              }
+              acc[tag.id] += 1;
+              return acc;
+            },
+            {} as Record<string, number>,
+          );
+
+          const tags = R.unique(rawTags, (tag) => tag.id).sort((a, b) => tagUsage[b.id] - tagUsage[a.id]);
+
+          return tags.slice(0, 10);
+        } else {
+          return [];
+        }
       },
     }),
   }));

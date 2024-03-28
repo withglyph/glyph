@@ -374,7 +374,10 @@
               class={css({ position: 'fixed', inset: '0', zIndex: '40' })}
               role="button"
               tabindex="-1"
-              on:click={() => (colorPickerOpen = false)}
+              on:click={() => {
+                colorPickerOpen = false;
+                editor?.commands.focus();
+              }}
               on:keypress={null}
               use:portal
             />
@@ -386,9 +389,9 @@
               on:input={(event) => {
                 const { hex } = event.detail;
                 if (hex === values.defaultColor) {
-                  editor?.chain().focus().unsetFontColor().run();
+                  editor?.commands.unsetFontColor();
                 } else {
-                  editor?.chain().focus().setFontColor(hex).run();
+                  editor?.commands.setFontColor(hex);
                 }
               }}
             />

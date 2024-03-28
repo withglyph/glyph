@@ -125,18 +125,13 @@
     open = false;
   });
 
+  const backgroundStyle = {
+    backgroundColor: 'gray.100',
+  } as const;
+
   const solidStyle = {
-    _hover: {
-      'backgroundColor': 'gray.100',
-      '& path': {
-        fill: '[currentColor]',
-      },
-    },
-    _pressed: {
-      'backgroundColor': 'gray.100',
-      '& path': {
-        fill: '[currentColor]',
-      },
+    '& path': {
+      fill: '[currentColor]',
     },
   } as const;
 </script>
@@ -147,7 +142,8 @@
       size: '34px',
       color: 'gray.800',
       hideFrom: 'sm',
-      ...solidStyle,
+      _hover: backgroundStyle,
+      _focusVisible: backgroundStyle,
     })}
     href="/me/notifications"
   >
@@ -160,7 +156,9 @@
       color: 'gray.800',
       transition: 'common',
       hideBelow: 'sm',
-      ...solidStyle,
+      _hover: backgroundStyle,
+      _focusVisible: backgroundStyle,
+      _pressed: solidStyle,
     })}
     aria-pressed={open}
     type="button"
@@ -237,7 +235,7 @@
         <Button
           style={css.raw({ fontSize: '12px', fontWeight: 'semibold' })}
           size="sm"
-          variant="outline"
+          variant="gray-outline"
           on:click={async () => await readAllNotifications()}
         >
           모두 읽기
@@ -245,7 +243,7 @@
       {/if}
     </div>
 
-    <ul class={css({ minHeight: '120px', maxHeight: '440px', overflowY: 'auto' })}>
+    <ul class={css({ minHeight: '120px', maxHeight: '440px', overflowY: 'auto', position: 'relative' })}>
       {#each $user.notifications.slice(0, 20) as notification (notification.id)}
         <li>
           <button
@@ -310,7 +308,18 @@
           </button>
         </li>
       {:else}
-        <li class={css({ fontSize: '14px', fontWeight: 'bold', textAlign: 'center', color: 'gray.500' })}>
+        <li
+          class={css({
+            fontSize: '14px',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            color: 'gray.500',
+            position: 'absolute',
+            top: '[50%]',
+            left: '[50%]',
+            transform: 'translate(-50%, -50%)',
+          })}
+        >
           알림이 없어요
         </li>
       {/each}

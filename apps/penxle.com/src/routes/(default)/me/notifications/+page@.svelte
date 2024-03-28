@@ -140,7 +140,7 @@
         {unreadNotifications.length}
       </mark>
     </p>
-    <Button size="xs" variant="outline" on:click={async () => await readAllNotifications()}>모두 읽기</Button>
+    <Button size="xs" variant="gray-outline" on:click={async () => await readAllNotifications()}>모두 읽기</Button>
   </div>
 </header>
 

@@ -231,7 +231,7 @@
     {#if $post.tags}
       <div class={flex({ gap: '6px', flexWrap: 'wrap' })}>
         {#each $post.tags.slice(0, 4) as { tag } (tag.id)}
-          <Tag style={css.raw({ maxWidth: '260px' })} href={`/tag/${tag.name}`} size="sm">#{tag.name}</Tag>
+          <Tag style={css.raw({ maxWidth: '260px' })} href={`/tag/${tag.name}/post`} size="sm">#{tag.name}</Tag>
         {/each}
         {#if $post.tags.length > 4}
           <Tag size="sm">+{$post.tags.length - 4}개의 태그</Tag>

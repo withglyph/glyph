@@ -58,7 +58,7 @@
 {:else}
   <div class={flex({ flexWrap: 'wrap', gap: '12px', smDown: { paddingX: '16px' } })}>
     {#each $query.searchTags as tag (tag.id)}
-      <Tag href={`/tag/${tag.name}`} size="lg">#{tag.name}</Tag>
+      <Tag href={`/tag/${tag.name}/post`} size="lg">#{tag.name}</Tag>
     {/each}
   </div>
 {/if}

@@ -118,10 +118,12 @@ new k8s.helm.v3.Chart('karpenter', {
   chart: 'oci://public.ecr.aws/karpenter/karpenter',
   namespace: 'kube-system',
   fetchOpts: {
-    version: 'v0.33.2',
+    version: '0.35.2',
   },
 
   values: {
+    dnsPolicy: 'Default',
+
     serviceAccount: {
       create: false,
       name: serviceAccount.metadata.name,
@@ -135,7 +137,7 @@ new k8s.helm.v3.Chart('karpenter', {
       clusterName: cluster.name,
       // interruptionQueue: cluster.name,
       featureGates: {
-        // spotToSpotConsolidation: true,
+        spotToSpotConsolidation: true,
       },
     },
   },
@@ -160,10 +162,10 @@ const nodeClass = new k8s.apiextensions.CustomResource('default', {
       {
         deviceName: '/dev/xvda',
         ebs: {
-          volumeSize: '20Gi',
+          volumeSize: '200Gi',
           volumeType: 'gp3',
-          iops: 3000,
-          throughput: 150,
+          iops: 5000,
+          throughput: 300,
         },
       },
     ],
@@ -197,8 +199,8 @@ new k8s.apiextensions.CustomResource('default', {
           { key: 'kubernetes.io/arch', operator: 'In', values: ['amd64'] },
           { key: 'kubernetes.io/os', operator: 'In', values: ['linux'] },
           { key: 'karpenter.sh/capacity-type', operator: 'In', values: ['spot'] },
-          { key: 'karpenter.k8s.aws/instance-category', operator: 'In', values: ['c', 'm', 'r'] },
-          { key: 'karpenter.k8s.aws/instance-generation', operator: 'Gt', values: ['2'] },
+          { key: 'karpenter.k8s.aws/instance-category', operator: 'In', values: ['c'] },
+          { key: 'karpenter.k8s.aws/instance-generation', operator: 'Gt', values: ['5'] },
         ],
       },
     },

@@ -23,7 +23,7 @@ export const colors = defineTokens.colors({
     50: { value: '#F2FCFD' },
     200: { value: '#E7F9FB' },
     400: { value: '#27A6BA' },
-    600: { value: '#0894B3' },
+    600: { value: '#176470' },
   },
 
   teal: {
@@ -46,6 +46,7 @@ export const colors = defineTokens.colors({
     400: { value: '#E36469' },
     600: { value: '#DC3D43' },
     800: { value: '#CD2B31' },
+    900: { value: '#7B1A1D' },
   },
 
   yellow: {

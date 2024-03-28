@@ -642,6 +642,7 @@ type Query {
   recentlyPurchasedPosts: [Post!]!
   recentlyUsedTags: [Tag!]!
   recommendFeed: [Post!]!
+  recommendedTags: [Tag!]!
   revenueWithdrawal(id: String!): RevenueWithdrawal!
   sampleImage: Image!
   sampleImages: [Image!]!
