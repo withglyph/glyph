@@ -116,7 +116,9 @@
             { display: 'flex', flexDirection: 'column', justifyContent: 'space-between' },
             revenue.post?.state === 'DELETED' && { color: 'gray.400' },
           )}
-          href={revenue.post?.state === 'DELETED' ? undefined : '/'}
+          href={revenue.post?.state === 'DELETED'
+            ? undefined
+            : `/${revenue.post?.space?.slug}/${revenue.post?.permalink}}`}
         >
           <div class={flex({ flexDirection: 'column' })}>
             <time
