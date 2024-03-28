@@ -70,7 +70,6 @@
           }
 
           ...EditorPage_DraftListModal_user
-          ...CreateSpaceModal_user
         }
 
         ...EditorPage_PublishMenu_query

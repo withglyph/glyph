@@ -120,7 +120,7 @@
     },
   });
 
-  $: setInitialValues({ collectionId: $collection.id, postIds: [] });
+  $: setInitialValues({ spaceCollectionId: $collection.id, postIds: [] });
 
   const registerPost = (postId: string) => {
     registeredPostIds.add(postId);
@@ -145,7 +145,7 @@
       on:submit|preventDefault={async (e) => {
         if (name && name.length > 0 && name !== $collection.name) {
           await updateSpaceCollection({
-            collectionId: $collection.id,
+            spaceCollectionId: $collection.id,
             name,
             thumbnailId: $collection.thumbnail?.id,
           });

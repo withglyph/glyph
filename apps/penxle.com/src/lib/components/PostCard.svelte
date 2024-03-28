@@ -105,7 +105,7 @@
 
   const toggleBookmark = async () => {
     if ($post.bookmarkGroups.length > 0) {
-      await unbookmarkPost({ bookmarkId: $post.bookmarkGroups[0].id, postId: $post.id });
+      await unbookmarkPost({ bookmarkGroupId: $post.bookmarkGroups[0].id, postId: $post.id });
       mixpanel.track('post:unbookmark', { postId: $post.id, via: 'feed' });
     } else {
       await bookmarkPost({ postId: $post.id });

@@ -156,7 +156,7 @@
               variant="text"
               on:click={async () => {
                 deleting = true;
-                await deleteSpaceCollection({ collectionId: collection.id });
+                await deleteSpaceCollection({ spaceCollectionId: collection.id });
                 deleting = false;
               }}
             >
