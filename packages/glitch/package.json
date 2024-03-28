@@ -44,7 +44,7 @@
     "@graphql-typed-document-node/core": "^3.2.0",
     "@urql/core": "^4.3.0",
     "@urql/devtools": "^2.0.3",
-    "@urql/exchange-graphcache": "^6.5.0",
+    "@urql/exchange-graphcache": "^6.5.1",
     "dataloader": "^2.2.2",
     "fast-glob": "^3.3.2",
     "graphql": "^16.8.1",
@@ -57,10 +57,10 @@
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
     "@sveltejs/kit": "^2.5.4",
-    "rollup": "^4.13.0",
+    "rollup": "^4.13.1",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.2",
-    "vite": "^5.1.6"
+    "typescript": "^5.4.3",
+    "vite": "^5.2.6"
   },
   "peerDependencies": {
     "@sveltejs/kit": "^2.0.0"

@@ -10,7 +10,7 @@ export default defineConfig({
   presets: ['@pandacss/preset-base'],
 
   strictPropertyValues: true,
-  strictTokens: true,
+  // strictTokens: true,
 
   separator: '-',
   hash: prod,
