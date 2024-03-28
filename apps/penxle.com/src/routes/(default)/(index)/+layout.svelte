@@ -103,7 +103,7 @@
                   color: 'gray.800',
                   backgroundColor: 'gray.100',
                 })}
-                href={`/tag/${tag.name}`}
+                href={`/tag/${tag.name}/post`}
               >
                 #{tag.name}
               </a>

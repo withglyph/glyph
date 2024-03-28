@@ -808,7 +808,7 @@
                   {#each $query.post.tags as { tag, kind } (tag.id)}
                     {#if kind === 'TITLE'}
                       <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
-                        <a href={`/tag/${tag.name}`}>#{tag.name}</a>
+                        <a href={`/tag/${tag.name}/post`}>#{tag.name}</a>
                       </dd>
                     {/if}
                   {/each}
@@ -841,7 +841,7 @@
                   {#each $query.post.tags as { tag, kind } (tag.id)}
                     {#if kind === 'CHARACTER'}
                       <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
-                        <a href={`/tag/${tag.name}`}>#{tag.name}</a>
+                        <a href={`/tag/${tag.name}/post`}>#{tag.name}</a>
                       </dd>
                     {/if}
                   {/each}
@@ -874,7 +874,7 @@
                   {#each $query.post.tags as { tag, kind } (tag.id)}
                     {#if kind === 'COUPLING'}
                       <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
-                        <a href={`/tag/${tag.name}`}>#{tag.name}</a>
+                        <a href={`/tag/${tag.name}/post`}>#{tag.name}</a>
                       </dd>
                     {/if}
                   {/each}
@@ -907,7 +907,7 @@
                   {#each $query.post.tags as { tag, kind } (tag.id)}
                     {#if kind === 'TRIGGER'}
                       <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
-                        <a href={`/tag/${tag.name}`}>#{tag.name}</a>
+                        <a href={`/tag/${tag.name}/post`}>#{tag.name}</a>
                       </dd>
                     {/if}
                   {/each}
@@ -940,7 +940,7 @@
                   {#each $query.post.tags as { tag, kind } (tag.id)}
                     {#if kind === 'EXTRA'}
                       <dd class={css({ fontSize: '13px', color: 'gray.400', textDecorationLine: 'underline' })}>
-                        <a href={`/tag/${tag.name}`}>#{tag.name}</a>
+                        <a href={`/tag/${tag.name}/post`}>#{tag.name}</a>
                       </dd>
                     {/if}
                   {/each}
