@@ -136,34 +136,16 @@
     {:else}
       {#each $query.me.bookmarkGroups as bookmark (bookmark.id)}
         <Link style={css.raw({ display: 'inline-block' })} href="/me/cabinets/bookmark">
-          {#if bookmark.thumbnails.length > 0}
-            <GridImage
-              style={css.raw({
-                borderWidth: '1px',
-                borderColor: 'gray.200',
-                borderRadius: '8px',
-                size: { base: '148px', sm: '168px' },
-              })}
-              images={bookmark.thumbnails}
-            />
-          {:else}
-            <div
-              class={center({
-                borderWidth: '1px',
-                borderColor: 'gray.200',
-                borderRadius: '8px',
-                size: { base: '148px', sm: '168px' },
-              })}
-            >
-              <svg class={css({ borderRadius: '8px' })} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <rect fill="#0c0a091a" height="24" width="24" />
-                <path
-                  d="M7.36 3.86c2.3 5.04.42 10.01-.1 11.36-.08.23-.13.36-.11.36a15.7 15.7 0 0 1 9.45 4.6l-1.58-2.74L13 14.07a1.1 1.1 0 1 1 .53-.35l3.53 6.11c-1.4-4.68.63-10.12.63-10.12-6.15-.67-10.33-5.85-10.33-5.85Z"
-                  fill="#FAFAF9"
-                />
-              </svg>
-            </div>
-          {/if}
+          <GridImage
+            style={css.raw({
+              borderWidth: '1px',
+              borderColor: 'gray.200',
+              borderRadius: '8px',
+              size: { base: '148px', sm: '168px' },
+            })}
+            images={bookmark.thumbnails}
+          />
+
           <p class={css({ marginTop: '8px', marginBottom: '4px', fontSize: '15px', fontWeight: 'bold' })}>북마크</p>
           <p class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
             {bookmark.postCount}개의 포스트

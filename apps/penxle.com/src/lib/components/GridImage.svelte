@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Image } from '$lib/components';
   import { css, sva } from '$styled-system/css';
+  import { center } from '$styled-system/patterns';
   import type { Image_image } from '$glitch';
   import type { SystemStyleObject } from '$styled-system/types';
 
@@ -50,5 +51,11 @@
 <div class={css(styles.root, style)}>
   {#each images.slice(0, 4) as image, idx (idx)}
     <Image style={styles.item} $image={image} />
+  {:else}
+    <div class={center({ color: 'gray.300', backgroundColor: 'gray.50' })}>
+      <svg fill="currentColor" viewBox="0 0 69 58" width="34px" xmlns="http://www.w3.org/2000/svg">
+        <path d="M23.087 0H0v58h23.087V0ZM69 0H28.253v58h40.749V0Z" />
+      </svg>
+    </div>
   {/each}
 </div>
