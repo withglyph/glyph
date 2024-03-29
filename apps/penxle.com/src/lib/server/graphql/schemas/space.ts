@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { and, count, desc, eq, inArray, isNotNull, notExists } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, isNotNull, notExists, notInArray } from 'drizzle-orm';
 import { match } from 'ts-pattern';
 import { SpaceMemberRole, SpaceVisibility } from '$lib/enums';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
@@ -544,6 +544,21 @@ builder.mutationFields((t) => ({
             .otherwise(() => undefined),
         })
         .where(eq(Spaces.id, input.spaceId));
+
+      if (input.isPublic === false) {
+        await database.delete(SpaceFollows).where(
+          and(
+            eq(SpaceFollows.spaceId, input.spaceId),
+            notInArray(
+              SpaceFollows.userId,
+              database
+                .select({ userId: SpaceMembers.userId })
+                .from(SpaceMembers)
+                .where(and(eq(SpaceMembers.spaceId, input.spaceId), eq(SpaceMembers.state, 'ACTIVE'))),
+            ),
+          ),
+        );
+      }
 
       return input.spaceId;
     },
