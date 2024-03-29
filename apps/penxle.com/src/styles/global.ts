@@ -23,7 +23,8 @@ export const globalCss = defineGlobalStyles({
     MozOsxFontSmoothing: 'auto',
 
     color: 'gray.900',
-    lineHeight: '1.5',
+    lineHeight: '1.44',
+    letterSpacing: '-0.4',
   },
 
   'a': {
