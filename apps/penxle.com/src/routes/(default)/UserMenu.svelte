@@ -114,7 +114,7 @@
         top: '0',
         bottom: '0',
         right: '0',
-        width: { base: '294px', sm: '320px' },
+        width: { base: '312px', sm: '420px' },
         pointerEvents: 'none',
       })}
     >
@@ -160,16 +160,7 @@
               </a>
 
               <Button
-                style={css.raw({ whiteSpace: 'nowrap', hideFrom: 'sm' })}
-                href="/me"
-                size="xs"
-                type="link"
-                variant="gray-outline"
-              >
-                계정 설정
-              </Button>
-              <Button
-                style={css.raw({ whiteSpace: 'nowrap', hideBelow: 'sm' })}
+                style={css.raw({ whiteSpace: 'nowrap' })}
                 href="/me/settings"
                 size="sm"
                 type="link"
