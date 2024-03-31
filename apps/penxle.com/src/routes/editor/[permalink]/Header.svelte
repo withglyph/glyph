@@ -596,7 +596,13 @@
         })}
       >
         <ToolbarButtonTooltip message="정렬">
-          <Menu as="div" offset={menuOffset} placement="bottom" rounded={false}>
+          <Menu
+            as="div"
+            menuStyle={css.raw({ minWidth: '[initial]' })}
+            offset={menuOffset}
+            placement="bottom"
+            rounded={false}
+          >
             <button
               slot="value"
               class={center({
@@ -723,7 +729,13 @@
         })}
       >
         <ToolbarButtonTooltip message="리스트">
-          <Menu as="div" offset={menuOffset} placement="bottom" rounded={false}>
+          <Menu
+            as="div"
+            menuStyle={css.raw({ minWidth: '[initial]' })}
+            offset={menuOffset}
+            placement="bottom"
+            rounded={false}
+          >
             <button
               slot="value"
               class={center({
