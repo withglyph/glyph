@@ -26,6 +26,7 @@
   import { Icon } from '$lib/components';
   import ColorPicker from '$lib/components/ColorPicker.svelte';
   import { Menu, MenuItem } from '$lib/components/menu';
+  import { Button } from '$lib/components/v2';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { values } from '$lib/tiptap/values';
   import { css, cx } from '$styled-system/css';
@@ -183,12 +184,20 @@
       borderBottomColor: 'gray.200',
       paddingX: '20px',
       width: 'full',
-      height: '56px',
-      sm: { paddingLeft: '28px' },
+      smDown: { height: '64px' },
     })}
   >
     <a class={flex({ align: 'center', gap: '8px' })} href="/">
-      <Logo class={css({ height: '25px', hideBelow: 'sm', color: 'gray.900' })} />
+      <Logo
+        class={css({
+          height: '25px',
+          hideBelow: 'sm',
+          color: 'gray.900',
+          marginTop: '20px',
+          marginBottom: '17px',
+          smDown: { visibility: 'hidden' },
+        })}
+      />
       <Icon style={css.raw({ hideFrom: 'sm' })} icon={IconChevronLeft} size={24} />
     </a>
 
@@ -212,75 +221,56 @@
         </span>
       </div>
 
-      <div
-        class={flex({
-          align: 'center',
-          borderWidth: '1px',
-          borderColor: 'gray.200',
-          borderRadius: '4px',
-          marginRight: '8px',
-          paddingX: '14px',
-          paddingY: '10px',
-          fontSize: '14px',
-          fontWeight: 'medium',
-          lineHeight: 'none',
-        })}
-      >
-        <button
-          class={css({
-            lineHeight: 'none',
-            _after: {
-              content: '""',
-              borderRightWidth: '1px',
-              borderRightColor: 'gray.300',
-              marginLeft: '8px',
-              height: '16px',
-            },
-          })}
-          disabled={!$state.canRevise}
-          type="button"
-          on:click={() => forceSave()}
+      <div class={flex({ gap: '10px' })} role="group">
+        <Button
+          style={flex.raw({ alignItems: 'center', padding: '0!', backgroundColor: 'transparent!' })}
+          role="presentation"
+          size="sm"
+          tabindex={-1}
+          type="link"
+          variant="gray-outline"
         >
-          저장
-        </button>
+          <button
+            class={css({
+              paddingLeft: '12px',
+              paddingRight: '8px',
+              paddingY: '9px',
+              backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100' },
+            })}
+            disabled={!$state.canRevise}
+            type="button"
+            on:click={() => forceSave()}
+          >
+            저장
+          </button>
+          <hr class={css({ width: '1px', height: '8px', backgroundColor: 'gray.300' })} />
+          <button
+            class={css({
+              paddingLeft: '8px',
+              paddingRight: '12px',
+              paddingY: '9px',
+              fontWeight: 'bold',
+              color: 'gray.400',
+              backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100' },
+            })}
+            disabled={$query.me.posts.length === 0}
+            type="button"
+            on:click={() => (draftListOpen = true)}
+          >
+            {$query.me.posts?.length ?? 0}
+          </button>
+        </Button>
 
-        <button
-          class={css({
-            paddingLeft: '8px',
-            fontSize: '14px',
-            fontWeight: 'semibold',
-            color: 'gray.400',
-            lineHeight: 'none',
-          })}
-          disabled={$query.me.posts.length === 0}
-          type="button"
-          on:click={() => (draftListOpen = true)}
-        >
-          {$query.me.posts?.length ?? 0}
-        </button>
-      </div>
-
-      <div class={css({ width: 'fit' })} use:publishAnchor>
-        <button
-          class={css({
-            borderWidth: '1px',
-            borderColor: 'gray.900',
-            borderRadius: '4px',
-            paddingX: '32px',
-            paddingY: '10px',
-            fontSize: '14px',
-            fontWeight: 'medium',
-            color: 'gray.5',
-            lineHeight: 'none',
-            whiteSpace: 'nowrap',
-            backgroundColor: 'gray.900',
-            sm: { marginRight: '12px' },
-          })}
-          type="button"
-          on:click={() => (publishMenuOpen = true)}
-        >
-          발행
-        </button>
+        <div class={css({ width: 'fit' })} use:publishAnchor>
+          <Button
+            style={css.raw({ width: '68px' })}
+            aria-pressed={publishMenuOpen}
+            size="sm"
+            on:click={() => (publishMenuOpen = true)}
+          >
+            발행
+          </Button>
+        </div>
       </div>
 
       {#if publishMenuOpen}
@@ -305,8 +295,13 @@
         <PublishMenu {$post} {$query} bind:open={publishMenuOpen} />
       </div>
 
-      <Menu style={center.raw()} offset={menuOffset} placement="bottom-end" rounded={false}>
-        <div slot="value" class={center({ height: '36px', hideBelow: 'sm' })}>
+      <Menu
+        style={center.raw({ marginLeft: '28px', hideBelow: 'sm' })}
+        offset={menuOffset}
+        placement="bottom-end"
+        rounded={false}
+      >
+        <div slot="value" class={center({ height: '36px' })}>
           <Icon icon={IconDotsVertical} size={24} />
         </div>
 
