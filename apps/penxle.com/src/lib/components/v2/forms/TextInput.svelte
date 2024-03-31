@@ -11,7 +11,7 @@
   export let size: Variants['size'] = 'md';
 
   type $$Props = RecipeVariantProps<typeof recipe> &
-    Omit<HTMLInputAttributes, 'class' | 'style'> & { style?: SystemStyleObject };
+    Omit<HTMLInputAttributes, 'class' | 'style' | 'size'> & { style?: SystemStyleObject };
   type $$Events = {
     input: Event & { currentTarget: HTMLInputElement };
     keydown: KeyboardEvent & { currentTarget: HTMLInputElement };
