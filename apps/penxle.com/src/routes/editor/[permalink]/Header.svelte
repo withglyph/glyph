@@ -316,7 +316,7 @@
       align: 'center',
       borderBottomWidth: '1px',
       borderBottomColor: 'gray.200',
-      paddingX: '24px',
+      paddingX: '20px',
       height: '56px',
       hideBelow: 'sm',
     })}
@@ -324,14 +324,14 @@
     <div class={flex({ align: 'center', pointerEvents: 'auto' })}>
       <div
         class={center({
-          gap: '12px',
+          gap: '10px',
           height: '34px',
           _after: {
             content: '""',
             borderRightWidth: '1px',
             borderRightColor: 'gray.300',
-            marginRight: '12px',
-            height: '16px',
+            marginX: '8px',
+            height: '12px',
           },
         })}
       >
@@ -339,7 +339,7 @@
           <button
             class={flex({
               align: 'center',
-              gap: '4px',
+              gap: '10px',
               borderRadius: '4px',
               paddingLeft: '4px',
               paddingRight: '2px',
@@ -396,7 +396,7 @@
               class={flex({
                 justify: 'space-between',
                 align: 'center',
-                gap: '4px',
+                gap: '10px',
                 borderRadius: '4px',
                 paddingLeft: '4px',
                 paddingRight: '2px',
@@ -461,7 +461,7 @@
               class={flex({
                 justify: 'space-between',
                 align: 'center',
-                gap: '4px',
+                gap: '10px',
                 borderRadius: '4px',
                 paddingLeft: '4px',
                 paddingRight: '2px',
@@ -513,14 +513,13 @@
 
       <div
         class={center({
-          gap: '4px',
+          gap: '10px',
           _after: {
             content: '""',
             borderRightWidth: '1px',
             borderRightColor: 'gray.300',
-            marginLeft: '8px',
-            marginRight: '12px',
-            height: '16px',
+            marginX: '8px',
+            height: '12px',
           },
         })}
       >
@@ -591,9 +590,8 @@
             content: '""',
             borderRightWidth: '1px',
             borderRightColor: 'gray.300',
-            marginLeft: '8px',
-            marginRight: '12px',
-            height: '16px',
+            marginX: '8px',
+            height: '12px',
           },
         })}
       >
@@ -714,14 +712,13 @@
 
       <div
         class={center({
-          gap: '4px',
+          gap: '10px',
           _after: {
             content: '""',
             borderRightWidth: '1px',
             borderRightColor: 'gray.300',
-            marginLeft: '8px',
-            marginRight: '12px',
-            height: '16px',
+            marginX: '8px',
+            height: '12px',
           },
         })}
       >
@@ -833,14 +830,13 @@
 
       <div
         class={center({
-          gap: '4px',
+          gap: '12px',
           _after: {
             content: '""',
             borderRightWidth: '1px',
             borderRightColor: 'gray.300',
-            marginLeft: '8px',
-            marginRight: '12px',
-            height: '16px',
+            marginX: '8px',
+            height: '12px',
           },
         })}
       >
