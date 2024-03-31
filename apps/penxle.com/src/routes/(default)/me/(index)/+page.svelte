@@ -3,7 +3,7 @@
   import { goto } from '$app/navigation';
 
   onMount(() => {
-    if (window.innerWidth >= 800) {
+    if (window.innerWidth >= 992) {
       goto('/me/cabinets');
     }
   });

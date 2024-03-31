@@ -99,7 +99,7 @@
 
 <svelte:window
   on:scroll={(e) => {
-    if (e.currentTarget.innerWidth <= 800) {
+    if (e.currentTarget.innerWidth <= 992) {
       const currentScrollPos = e.currentTarget.scrollY;
 
       bottomNavShow = prevScrollpos > currentScrollPos;

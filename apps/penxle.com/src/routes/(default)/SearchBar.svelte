@@ -36,7 +36,7 @@
 
   onMount(() => {
     const toggleSearchBar = () => {
-      open = window.innerWidth >= 800;
+      open = window.innerWidth >= 992;
     };
 
     toggleSearchBar();
@@ -49,7 +49,7 @@
   });
 
   beforeNavigate(() => {
-    if (window.innerWidth < 800 && open) {
+    if (window.innerWidth < 992 && open) {
       open = false;
     }
   });
