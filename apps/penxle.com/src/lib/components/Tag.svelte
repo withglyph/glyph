@@ -23,15 +23,18 @@
       transition: 'common',
       truncate: true,
       cursor: 'pointer',
+      _hover: {
+        opacity: '[0.8]',
+      },
     },
     variants: {
       size: {
         sm: {
           'paddingX': '6px',
           'paddingY': '2px',
-          'fontSize': '11px',
+          'fontSize': '12px',
           'color': 'gray.500',
-          'backgroundColor': { base: 'gray.50', _hover: 'gray.150' },
+          'backgroundColor': 'gray.50',
           '&:has(:checked)': {
             borderWidth: '1px',
             borderColor: 'gray.300',
@@ -43,7 +46,7 @@
           'fontSize': '13px',
           'fontWeight': 'medium',
           'color': 'gray.5',
-          'backgroundColor': { base: 'gray.900', _hover: 'gray.400' },
+          'backgroundColor': 'gray.900',
           '&:has(:checked)': {
             borderWidth: '1px',
             borderColor: 'gray.400',

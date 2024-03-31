@@ -1,17 +1,81 @@
 <script lang="ts">
+  import IconChevronLeft from '~icons/tabler/chevron-left';
+  import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
-  import { Helmet } from '$lib/components';
+  import { Helmet, Icon, Tag } from '$lib/components';
   import { css } from '$styled-system/css';
+  import { flex, grid } from '$styled-system/patterns';
+  import HorizontalScroll from './HorizontalScroll.svelte';
+  import Post from './Post.svelte';
   import PostCard from './PostCard.svelte';
 
   $: query = graphql(`
     query IndexPage_Query {
+      me {
+        id
+
+        profile {
+          id
+          name
+        }
+
+        posts {
+          id
+          ...Feed_Post_post
+          ...Feed_PostCard_post
+        }
+      }
+
       recommendFeed {
         id
+
+        ...Feed_Post_post
         ...Feed_PostCard_post
+      }
+
+      recentlyUsedTags {
+        id
+        name
       }
     }
   `);
+
+  const tags = [
+    { id: '1', name: '태그 1' },
+    { id: '2', name: '태그 2' },
+    { id: '3', name: '태그 3' },
+    { id: '4', name: '태그 4' },
+    { id: '5', name: '태그 5' },
+    { id: '6', name: '태그 6' },
+    { id: '7', name: '태그 7' },
+    { id: '8', name: '태그 8' },
+    { id: '9', name: '태그 9' },
+    { id: '10', name: '태그 10' },
+    { id: '11', name: '태그 11' },
+    { id: '12', name: '태그 12' },
+    { id: '13', name: '태그 13' },
+    { id: '14', name: '태그 14' },
+    { id: '15', name: '태그 15' },
+    { id: '16', name: '태그 16' },
+    { id: '17', name: '태그 17' },
+    { id: '18', name: '태그 18' },
+    { id: '19', name: '태그 19' },
+    { id: '20', name: '태그 20' },
+  ];
+
+  let checkedTags = tags[0];
+
+  const collections = [
+    '컬렉션 제목 1',
+    '컬렉션 제목 2',
+    '컬렉션 제목 3',
+    '컬렉션 제목 4',
+    '컬렉션 제목 5',
+    '컬렉션 제목 6',
+    '컬렉션 제목 7',
+    '컬렉션 제목 8',
+    '컬렉션 제목 9',
+  ];
 </script>
 
 <svelte:head>
@@ -36,14 +100,252 @@
   titleSuffix=""
 />
 
-<div class={css({ paddingTop: '32px', paddingBottom: '2px', fontSize: '24px', fontWeight: 'bold' })}>추천 포스트</div>
-<div class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.500' })}>
-  펜슬에 올라오는 포스트들을 둘러보세요
+<div class={css({ backgroundColor: 'gray.50', height: { base: '320px', sm: '380px' } })}>carousel</div>
+
+<HorizontalScroll
+  style={css.raw({ gap: '8px', paddingY: '16px' })}
+  buttonStyle={css.raw({ backgroundColor: '[#ffffff/75]' })}
+  gradientStyle={css.raw({ gradientFrom: '[gray.900/0]', gradientTo: 'gray.900', height: '35px', width: '70px' })}
+>
+  <Icon
+    slot="left-icon"
+    style={css.raw({ 'color': 'gray.800', '& *': { strokeWidth: '[2.5]' } })}
+    icon={IconChevronLeft}
+    size={20}
+  />
+
+  {#each tags as tag, index (tag.id)}
+    <Tag
+      style={css.raw(
+        { minWidth: 'fit', paddingX: '24px', height: '35px' },
+        index % 3 === 1 && { backgroundColor: 'gray.800' },
+        index % 3 === 2 && { backgroundColor: 'gray.600' },
+      )}
+    >
+      #{tag.name}
+    </Tag>
+  {/each}
+
+  <Icon
+    slot="right-icon"
+    style={css.raw({ 'color': 'gray.800', '& *': { strokeWidth: '[2.5]' } })}
+    icon={IconChevronRight}
+    size={20}
+  />
+</HorizontalScroll>
+
+<div class={css({ paddingY: { base: '24px', sm: '36px' } })}>
+  <h2 class={css({ marginBottom: '14px', fontSize: { base: '20px', sm: '24px' }, fontWeight: 'bold' })}>
+    글리프 큐레이션
+  </h2>
+
+  <HorizontalScroll
+    style={css.raw({ gap: { base: '12px', sm: '14px' } })}
+    buttonStyle={css.raw({ backgroundColor: '[#000000/40]' })}
+    gradientStyle={css.raw({
+      gradientFrom: '[#ffffff/0]',
+      gradientTo: '[#ffffff]',
+      display: 'flex',
+      alignItems: 'center',
+      height: '235px',
+      width: '80px',
+    })}
+  >
+    <Icon
+      slot="left-icon"
+      style={css.raw({ 'color': 'gray.5', '& *': { strokeWidth: '[2.5]' } })}
+      icon={IconChevronLeft}
+      size={20}
+    />
+
+    {#if $query.me}
+      {#each $query.me.posts as post (post.id)}
+        <PostCard style={css.raw({ width: { base: '200px', sm: '218px' } })} $post={post} />
+      {/each}
+    {/if}
+
+    <Icon
+      slot="right-icon"
+      style={css.raw({ 'color': 'gray.5', '& *': { strokeWidth: '[2.5]' } })}
+      icon={IconChevronRight}
+      size={20}
+    />
+  </HorizontalScroll>
 </div>
 
-<div class={css({ display: 'flex', flexDirection: 'column', gap: '32px', marginTop: '32px', width: 'full' })}>
-  {#each $query.recommendFeed as post (post.id)}
-    <div class={css({ flexGrow: '1', borderBottomWidth: '1px', borderBottomColor: 'gray.200', width: 'full' })} />
-    <PostCard $post={post} />
-  {/each}
+<div class={css({ paddingTop: '36px', paddingBottom: '60px' })}>
+  <h2 class={css({ marginBottom: '14px', fontSize: { base: '20px', sm: '24px' }, fontWeight: 'bold' })}>
+    {$query.me?.profile.name}님을 위한 추천
+  </h2>
+  <div
+    class={css({
+      display: 'grid',
+      gap: '60px',
+      overflowX: 'auto',
+      overflowY: 'hidden',
+      height: '814px',
+    })}
+  >
+    {#if $query.me}
+      {#each $query.me.posts as post (post.id)}
+        <Post style={css.raw({ width: '313px', height: '165px' })} $post={post} />
+      {/each}
+    {/if}
+  </div>
+</div>
+
+<div class={css({ marginX: '-20px', paddingX: '20px', paddingY: '60px', backgroundColor: 'gray.900' })}>
+  <h2
+    class={css({ marginBottom: '16px', fontSize: { base: '20px', sm: '24px' }, fontWeight: 'bold', color: 'gray.5' })}
+  >
+    추천 해시태그
+  </h2>
+
+  <div
+    class={flex({
+      align: 'center',
+      gap: '4px',
+      marginBottom: { base: '20px', sm: '14px' },
+      overflowX: 'auto',
+      scrollbar: 'hidden',
+    })}
+  >
+    {#each tags.slice(0, 5) as tag (tag.id)}
+      <Tag
+        style={css.raw({
+          'backgroundColor': 'gray.800',
+          'minWidth': 'fit',
+          'color': 'gray.300',
+          '&:has(:checked)': {
+            borderWidth: '0',
+            backgroundColor: 'gray.50',
+            color: 'gray.900',
+          },
+        })}
+        as="label"
+        checked={checkedTags.id === tag.id}
+        size="lg"
+        on:change={(e) => {
+          if (e.currentTarget.checked) checkedTags = tag;
+        }}
+      >
+        #{tag.name}
+      </Tag>
+    {/each}
+  </div>
+
+  <div class={grid({ columns: { base: 2, sm: 5 }, columnGap: '14px', rowGap: '36px' })}>
+    {#if $query.me}
+      {#each $query.me?.posts.slice(0, 6) as post (post.id)}
+        <PostCard $post={post} showTags theme="dark" />
+      {/each}
+      {#each $query.me.posts.slice(6, 10) as post (post.id)}
+        <PostCard style={css.raw({ hideBelow: 'sm' })} $post={post} showTags theme="dark" />
+      {/each}
+    {/if}
+  </div>
+</div>
+
+<div class={css({ paddingTop: '40px' })}>
+  <h2 class={css({ marginBottom: '14px', fontSize: { base: '20px', sm: '24px' }, fontWeight: 'bold' })}>추천 컬렉션</h2>
+
+  <ul class={css({ sm: { display: 'grid', gridTemplateColumns: '3', columnGap: '10px' } })}>
+    {#each collections.slice(0, 6) as collection (collection)}
+      <li
+        class={flex({
+          align: 'center',
+          gap: '14px',
+          paddingY: { base: '16px', sm: '24px' },
+          _firstOfType: { paddingTop: '0' },
+        })}
+      >
+        <div
+          class={css({
+            backgroundColor: 'gray.50',
+            flex: 'none',
+            width: { base: '48px', sm: '60px' },
+            aspectRatio: '[4/5]',
+          })}
+        />
+
+        <div class={css({ truncate: true })}>
+          <h3
+            class={css({
+              marginBottom: '2px',
+              fontSize: { base: '14px', sm: '16px' },
+              fontWeight: 'semibold',
+              truncate: true,
+            })}
+          >
+            {collection}
+          </h3>
+
+          <div class={flex({ align: 'center', gap: '4px', truncate: true })}>
+            <div
+              class={css({
+                backgroundColor: 'gray.50',
+                flex: 'none',
+                borderWidth: '1px',
+                borderColor: 'gray.100',
+                size: '18px',
+              })}
+            />
+
+            <span class={css({ fontSize: { base: '12px', sm: '13px' }, color: 'gray.600', truncate: true })}>
+              스페이스명
+            </span>
+          </div>
+        </div>
+      </li>
+    {/each}
+    {#each collections.slice(6, 9) as collection (collection)}
+      <li
+        class={flex({
+          align: 'center',
+          gap: '14px',
+          paddingY: { base: '16px', sm: '24px' },
+          _firstOfType: { paddingTop: '0' },
+          hideBelow: 'sm',
+        })}
+      >
+        <div
+          class={css({
+            backgroundColor: 'gray.50',
+            flex: 'none',
+            width: { base: '48px', sm: '60px' },
+            aspectRatio: '[4/5]',
+          })}
+        />
+
+        <div class={css({ truncate: true })}>
+          <h3
+            class={css({
+              marginBottom: '2px',
+              fontSize: { base: '14px', sm: '16px' },
+              fontWeight: 'semibold',
+              truncate: true,
+            })}
+          >
+            {collection}
+          </h3>
+
+          <div class={flex({ align: 'center', gap: '4px', truncate: true })}>
+            <div
+              class={css({
+                backgroundColor: 'gray.50',
+                flex: 'none',
+                borderWidth: '1px',
+                borderColor: 'gray.100',
+                size: '18px',
+              })}
+            />
+
+            <span class={css({ fontSize: { base: '12px', sm: '13px' }, color: 'gray.600', truncate: true })}>
+              스페이스명
+            </span>
+          </div>
+        </div>
+      </li>
+    {/each}
+  </ul>
 </div>

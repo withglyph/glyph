@@ -16,10 +16,7 @@
 </script>
 
 <ul
-  class={css(
-    { display: 'flex', gap: '20px', paddingX: '20px', paddingY: '8px', fontSize: '22px', width: 'fit' },
-    style,
-  )}
+  class={css({ display: 'flex', gap: '20px', paddingY: '8px', fontSize: '22px', width: 'fit' }, style)}
   role="tablist"
 >
   <slot />
