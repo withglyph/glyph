@@ -1,6 +1,7 @@
 <script generics="T extends 'button' | 'div' | 'link' = 'button'" lang="ts">
   import { getContext } from 'svelte';
   import { css } from '$styled-system/css';
+  import type { HTMLButtonAttributes } from 'svelte/elements';
   import type { SystemStyleObject } from '$styled-system/types';
 
   type $$Props = {
@@ -8,7 +9,7 @@
     style?: SystemStyleObject;
     disabled?: boolean;
   } & (T extends 'link' ? { href: string; external?: boolean } : unknown) &
-    (T extends 'button' ? { 'aria-pressed'?: boolean } : unknown);
+    (T extends 'button' ? Omit<HTMLButtonAttributes, 'type' | 'style' | 'disabled'> : unknown);
 
   type $$Events = T extends 'link' ? unknown : { click: MouseEvent };
 
@@ -54,6 +55,7 @@
     rel: 'noopener noreferrer',
   }}
   {...props}
+  {...$$restProps}
 >
   <slot />
 </svelte:element>

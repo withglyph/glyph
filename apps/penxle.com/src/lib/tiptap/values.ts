@@ -2,6 +2,8 @@ import IconAlignJustify from '~icons/effit/align-justify';
 import IconAlignCenter from '~icons/tabler/align-center';
 import IconAlignLeft from '~icons/tabler/align-left';
 import IconAlignRight from '~icons/tabler/align-right';
+import IconList from '~icons/tabler/list';
+import IconListNumbers from '~icons/tabler/list-numbers';
 
 export const values = {
   defaultColor: '#09090B',
@@ -57,6 +59,19 @@ export const values = {
     { label: '중앙', value: 'center', icon: IconAlignCenter },
     { label: '오른쪽', value: 'right', icon: IconAlignRight },
     { label: '양쪽', value: 'justify', icon: IconAlignJustify },
+  ],
+
+  list: [
+    {
+      label: '순서 없는 목록',
+      value: 'bullet_list',
+      icon: IconList,
+    },
+    {
+      label: '순서 있는 목록',
+      value: 'ordered_list',
+      icon: IconListNumbers,
+    },
   ],
 
   horizontalRule: [

@@ -13,8 +13,6 @@
   import IconHtml from '~icons/tabler/html';
   import IconItalic from '~icons/tabler/italic';
   import IconLink from '~icons/tabler/link';
-  import IconList from '~icons/tabler/list';
-  import IconListNumbers from '~icons/tabler/list-numbers';
   import IconMinus from '~icons/tabler/minus';
   import IconPhoto from '~icons/tabler/photo';
   import IconQuote from '~icons/tabler/quote';
@@ -623,18 +621,14 @@
             </button>
 
             {#each values.textAlign as textAlign (textAlign.value)}
-              <button
-                class={center({
-                  size: '34px',
-                  _hover: { backgroundColor: 'gray.50' },
-                  _pressed: { color: 'teal.500' },
-                })}
+              <MenuItem
+                style={css.raw({ _pressed: { color: 'teal.500' } })}
+                aria-label={textAlign.label}
                 aria-pressed={editor?.isActive({ textAlign: textAlign.value })}
-                type="button"
                 on:click={() => editor?.chain().focus().setParagraphTextAlign(textAlign.value).run()}
               >
                 <Icon icon={textAlign.icon} size={24} />
-              </button>
+              </MenuItem>
             {/each}
           </Menu>
         </ToolbarButtonTooltip>
@@ -748,24 +742,23 @@
               type="button"
               let:open
             >
-              <Icon icon={IconList} size={24} />
+              <Icon
+                icon={editor?.isActive(values.list[1].value) ? values.list[1].icon : values.list[0].icon}
+                size={24}
+              />
             </button>
-
-            <MenuItem
-              on:click={() => {
-                editor?.chain().focus().toggleBulletList().run();
-              }}
-            >
-              <Icon icon={IconList} size={24} />
-            </MenuItem>
-
-            <MenuItem
-              on:click={() => {
-                editor?.chain().focus().toggleOrderedList().run();
-              }}
-            >
-              <Icon icon={IconListNumbers} size={24} />
-            </MenuItem>
+            {#each values.list as list (list.value)}
+              <MenuItem
+                style={css.raw({ _pressed: { color: 'teal.500' } })}
+                aria-label={list.label}
+                aria-pressed={editor?.isActive(list.value)}
+                on:click={() => {
+                  editor?.chain().focus().toggleList(list.value, 'list_item').run();
+                }}
+              >
+                <Icon icon={list.icon} size={24} />
+              </MenuItem>
+            {/each}
           </Menu>
         </ToolbarButtonTooltip>
 
