@@ -3,11 +3,12 @@
   import { onMount } from 'svelte';
   import IconSearch from '~icons/effit/search';
   import IconChevronLeft from '~icons/tabler/chevron-left';
-  import IconCircleXFilled from '~icons/tabler/circle-x-filled';
+  import IconX from '~icons/tabler/x';
   import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { Icon } from '$lib/components';
-  import { css, cx } from '$styled-system/css';
+  import { TextInput } from '$lib/components/v2/forms';
+  import { css } from '$styled-system/css';
   import { center } from '$styled-system/patterns';
   import type { SystemStyleObject } from '$styled-system/types';
 
@@ -15,7 +16,7 @@
 
   let value = ($page.url.pathname === '/search' && $page.url.searchParams.get('q')) || '';
 
-  let open = false;
+  export let open = false;
 
   afterNavigate(({ from, to }) => {
     if (!from || !to) return;
@@ -34,9 +35,17 @@
   });
 
   onMount(() => {
-    if (window.innerWidth >= 800) {
-      open = true;
-    }
+    const toggleSearchBar = () => {
+      open = window.innerWidth >= 800;
+    };
+
+    toggleSearchBar();
+
+    window.addEventListener('resize', toggleSearchBar);
+
+    return () => {
+      window.removeEventListener('resize', toggleSearchBar);
+    };
   });
 
   beforeNavigate(() => {
@@ -48,95 +57,55 @@
 
 {#if open}
   <div
-    class={css({
-      flexGrow: '1',
-      smDown: {
-        position: 'absolute',
-        left: '0',
-        right: '0',
-        top: '0',
-        zIndex: '50',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        borderBottomWidth: '1px',
-        borderBottomColor: 'gray.100',
-        paddingX: '20px',
-        backgroundColor: 'gray.5',
-        height: '56px',
+    class={css(
+      {
+        smDown: {
+          position: 'absolute',
+          inset: '0',
+          zIndex: '50',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          backgroundColor: 'gray.5',
+          height: 'full',
+        },
       },
-    })}
+      style,
+    )}
   >
     <button class={css({ hideFrom: 'sm' })} type="button" on:click={() => (open = false)}>
       <Icon icon={IconChevronLeft} size={24} />
     </button>
     <form
-      class={css(
-        {
-          position: 'relative',
-          smDown: { maxWidth: 'full' },
-        },
-        style,
-      )}
       on:submit|preventDefault={async () => {
         await goto(qs.stringifyUrl({ url: '/search', query: { q: value } }));
       }}
     >
-      <input
-        class={cx(
-          'peer',
-          css({
-            borderRadius: '6px',
-            paddingLeft: '16px',
-            paddingRight: '68px',
-            paddingY: '10px',
-            fontSize: '15px',
-            backgroundColor: 'gray.50',
-            width: 'full',
-            height: { base: '45px', sm: '43px' },
-            transition: 'common',
-            _focusWithin: {
-              ringWidth: '1px',
-              ringColor: 'teal.500',
-              backgroundColor: 'gray.5',
-            },
-          }),
-        )}
-        placeholder="검색어를 입력하세요"
-        type="search"
-        bind:value
-      />
-
-      <button
-        class={center({
-          position: 'absolute',
-          insetY: '0',
-          right: '48px',
-          color: 'gray.400',
-          hideFrom: 'sm',
-        })}
-        type="button"
-        on:click={() => (value = '')}
-      >
-        <Icon icon={IconCircleXFilled} size={20} />
-      </button>
-
-      <button
-        class={center({
-          position: 'absolute',
-          insetY: '0',
-          right: '16px',
-          transition: 'common',
-          color: { base: 'gray.500', _peerFocus: 'teal.500' },
-        })}
-        type="submit"
-      >
-        <Icon icon={IconSearch} size={20} />
-      </button>
+      <TextInput placeholder="검색어를 입력하세요" size="sm" type="search" bind:value>
+        <button slot="left-icon" class={center({ transition: 'common', color: 'gray.500' })} type="submit">
+          <Icon icon={IconSearch} size={20} />
+        </button>
+        <button
+          slot="right-icon"
+          class={center({ color: 'gray.600', display: { _disabled: 'none' } })}
+          aria-label="지우기"
+          disabled={value.length === 0}
+          type="button"
+          on:click={() => (value = '')}
+        >
+          <Icon icon={IconX} size={20} />
+        </button>
+      </TextInput>
     </form>
   </div>
 {:else}
-  <button class={center({ marginRight: '8px', size: '34px' })} type="button" on:click={() => (open = true)}>
+  <button
+    class={css(style)}
+    type="button"
+    on:click={async () => {
+      open = true;
+    }}
+  >
     <Icon style={css.raw({ color: 'gray.900' })} icon={IconSearch} size={24} />
   </button>
 {/if}

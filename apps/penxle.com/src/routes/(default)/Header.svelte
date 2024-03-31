@@ -51,63 +51,79 @@
     position: 'sticky',
     borderBottomWidth: '1px',
     borderBottomColor: 'gray.100',
-    paddingX: { base: '20px', sm: '40px' },
+    paddingX: '20px',
     top: '0',
-    height: { base: '56px', sm: '77px' },
     backgroundColor: 'gray.5',
     zIndex: '10',
   })}
 >
-  <nav class={css({ width: 'full', maxWidth: '1200px' })}>
-    <section class={flex({ justify: 'space-between', align: 'center' })}>
-      <a class={flex({ marginRight: '24px' })} href="/">
-        <Logo class={css({ height: '25px', color: 'gray.900' })} />
-      </a>
+  <nav
+    class={flex({
+      width: 'full',
+      maxWidth: '1280px',
+      justify: 'space-between',
+      align: 'center',
+      position: 'relative',
+      gap: '24px',
+    })}
+  >
+    <a
+      class={css({
+        sm: { marginTop: '20px', marginBottom: '17px' },
+        smDown: { marginTop: '18px', marginBottom: '13px' },
+      })}
+      href="/"
+    >
+      <Logo class={css({ height: '25px', color: 'gray.900' })} />
+    </a>
 
-      <div
-        class={flex({
-          flex: '1',
-          justify: { base: 'flex-end', sm: 'space-between' },
-          align: 'center',
-          sm: { gap: '12px' },
-        })}
-      >
-        <SearchBar style={css.raw({ flex: '1', maxWidth: { base: '400px', smDown: { _focusWithin: 'full' } } })} />
+    <SearchBar
+      style={css.raw({
+        position: 'absolute',
+        left: '[50%]',
+        transform: 'translateX(-50%)',
+        marginRight: '130px',
+        flex: '1',
+        hideBelow: 'sm',
+        maxWidth: '[32%]',
+        width: 'full',
+      })}
+      open
+    />
 
-        <div class={flex({ align: 'center', gap: { base: '12px', sm: '14px' } })}>
-          {#if $query.me}
-            <Button
-              style={flex.raw({
-                align: 'center',
-                gap: '4px',
-                paddingLeft: '12px',
-                paddingRight: '14px',
-                hideBelow: 'sm',
-              })}
-              size="md"
-              type="button"
-              variant="gray-outline"
-              on:click={async () => {
-                const { permalink } = await createPost({ spaceId: undefined });
-                mixpanel.track('post:create', { via: 'feed' });
-                await goto(`/editor/${permalink}`);
-              }}
-            >
-              <Icon icon={IconPlus} />
-              포스트 작성
-            </Button>
-            <NotificationMenu $user={$query.me} />
-            <UserMenu $user={$query.me} />
-          {:else}
-            <Button style={css.raw({ hideFrom: 'sm' })} href="/login" size="sm" type="link" variant="gray-outline">
-              로그인/회원가입
-            </Button>
-            <Button style={css.raw({ hideBelow: 'sm' })} href="/login" size="md" type="link" variant="gray-outline">
-              로그인/회원가입
-            </Button>
-          {/if}
-        </div>
-      </div>
-    </section>
+    <div class={flex({ align: 'center', gap: { base: '24px', sm: '28px' } })}>
+      <SearchBar style={css.raw({ hideFrom: 'sm', maxWidth: 'full' })} />
+      {#if $query.me}
+        <Button
+          style={flex.raw({
+            align: 'center',
+            gap: '4px',
+            paddingLeft: '12px',
+            paddingRight: '14px',
+            hideBelow: 'sm',
+          })}
+          size="sm"
+          type="button"
+          variant="gray-outline"
+          on:click={async () => {
+            const { permalink } = await createPost({ spaceId: undefined });
+            mixpanel.track('post:create', { via: 'feed' });
+            await goto(`/editor/${permalink}`);
+          }}
+        >
+          <Icon icon={IconPlus} />
+          포스트 작성
+        </Button>
+        <NotificationMenu $user={$query.me} />
+        <UserMenu $user={$query.me} />
+      {:else}
+        <Button style={css.raw({ hideFrom: 'sm' })} href="/login" size="sm" type="link" variant="gray-outline">
+          로그인/회원가입
+        </Button>
+        <Button style={css.raw({ hideBelow: 'sm' })} href="/login" size="md" type="link" variant="gray-outline">
+          로그인/회원가입
+        </Button>
+      {/if}
+    </div>
   </nav>
 </header>
