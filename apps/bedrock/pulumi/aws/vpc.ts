@@ -117,10 +117,25 @@ const tailnetSecurityGroup = new aws.ec2.SecurityGroup('tailnet', {
   description: 'Connection from Tailscale VPN',
   vpcId: vpc.id,
 
-  ingress: [{ protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
-  egress: [{ protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
-
   tags: { Name: 'tailnet' },
+});
+
+new aws.ec2.SecurityGroupRule('tailnet.ingress', {
+  securityGroupId: tailnetSecurityGroup.id,
+  type: 'ingress',
+  protocol: '-1',
+  fromPort: 0,
+  toPort: 0,
+  cidrBlocks: ['0.0.0.0/0'],
+});
+
+new aws.ec2.SecurityGroupRule('tailnet.egress', {
+  securityGroupId: tailnetSecurityGroup.id,
+  type: 'egress',
+  protocol: '-1',
+  fromPort: 0,
+  toPort: 0,
+  cidrBlocks: ['0.0.0.0/0'],
 });
 
 const internalSecurityGroup = new aws.ec2.SecurityGroup('internal', {
@@ -128,38 +143,69 @@ const internalSecurityGroup = new aws.ec2.SecurityGroup('internal', {
   description: 'Connection between services',
   vpcId: vpc.id,
 
-  ingress: [
-    { protocol: '-1', fromPort: 0, toPort: 0, self: true },
-    { protocol: '-1', fromPort: 0, toPort: 0, securityGroups: [tailnetSecurityGroup.id] },
-  ],
-  egress: [{ protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
-
   tags: { Name: 'internal' },
 });
 
-new aws.ec2.SecurityGroup('public-web', {
+new aws.ec2.SecurityGroupRule('internal.ingress[self]', {
+  securityGroupId: internalSecurityGroup.id,
+  type: 'ingress',
+  protocol: '-1',
+  fromPort: 0,
+  toPort: 0,
+  self: true,
+});
+
+new aws.ec2.SecurityGroupRule('internal.ingress[tailnet]', {
+  securityGroupId: internalSecurityGroup.id,
+  type: 'ingress',
+  protocol: '-1',
+  fromPort: 0,
+  toPort: 0,
+  sourceSecurityGroupId: tailnetSecurityGroup.id,
+});
+
+new aws.ec2.SecurityGroupRule('internal.egress', {
+  securityGroupId: internalSecurityGroup.id,
+  type: 'egress',
+  protocol: '-1',
+  fromPort: 0,
+  toPort: 0,
+  cidrBlocks: ['0.0.0.0/0'],
+});
+
+const publicWebSecurityGroup = new aws.ec2.SecurityGroup('public-web', {
   name: 'public-web',
   description: 'Security group for public websites',
   vpcId: vpc.id,
 
-  ingress: [
-    { protocol: 'tcp', fromPort: 80, toPort: 80, cidrBlocks: ['0.0.0.0/0'] },
-    { protocol: 'tcp', fromPort: 443, toPort: 443, cidrBlocks: ['0.0.0.0/0'] },
-  ],
-  egress: [{ protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
-
   tags: { Name: 'public-web' },
 });
 
-new aws.ec2.SecurityGroup('public-nlb', {
-  name: 'public-nlb',
-  description: 'Security group for public NLBs',
-  vpcId: vpc.id,
+new aws.ec2.SecurityGroupRule('public-web.ingress[tcp:80]', {
+  securityGroupId: publicWebSecurityGroup.id,
+  type: 'ingress',
+  protocol: 'tcp',
+  fromPort: 80,
+  toPort: 80,
+  cidrBlocks: ['0.0.0.0/0'],
+});
 
-  ingress: [{ protocol: 'tcp', fromPort: 2266, toPort: 2266, cidrBlocks: ['0.0.0.0/0'] }],
-  egress: [{ protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] }],
+new aws.ec2.SecurityGroupRule('public-web.ingress[tcp:443]', {
+  securityGroupId: publicWebSecurityGroup.id,
+  type: 'ingress',
+  protocol: 'tcp',
+  fromPort: 443,
+  toPort: 443,
+  cidrBlocks: ['0.0.0.0/0'],
+});
 
-  tags: { Name: 'public-nlb' },
+new aws.ec2.SecurityGroupRule('public-web.egress', {
+  securityGroupId: publicWebSecurityGroup.id,
+  type: 'egress',
+  protocol: '-1',
+  fromPort: 0,
+  toPort: 0,
+  cidrBlocks: ['0.0.0.0/0'],
 });
 
 export { vpc };

@@ -112,13 +112,7 @@ new aws.route53.Record('penxle.io|mx', {
   zoneId: zones.penxle_io.zoneId,
   type: 'MX',
   name: 'penxle.io',
-  records: [
-    '1 aspmx.l.google.com',
-    '5 alt1.aspmx.l.google.com',
-    '5 alt2.aspmx.l.google.com',
-    '10 alt3.aspmx.l.google.com',
-    '10 alt4.aspmx.l.google.com',
-  ],
+  records: ['1 smtp.google.com'],
   ttl: 300,
 });
 
@@ -126,6 +120,9 @@ new aws.route53.Record('penxle.io|txt', {
   zoneId: zones.penxle_io.zoneId,
   type: 'TXT',
   name: 'penxle.io',
-  records: ['v=spf1 include:_spf.google.com ~all'],
+  records: [
+    'v=spf1 include:_spf.google.com ~all',
+    'google-site-verification=tpr1g3VFKecYSsdN12t9DhRGUBbaAxEhi1LupBHHq6I',
+  ],
   ttl: 300,
 });

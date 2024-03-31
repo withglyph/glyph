@@ -50,7 +50,6 @@ export class Site extends pulumi.ComponentResource {
     const stack = pulumi.getStack();
 
     const isProd = stack === 'prod';
-    const isStaging = stack === 'staging';
 
     const resourceName = match(stack)
       .with('prod', () => args.name)
@@ -70,6 +69,12 @@ export class Site extends pulumi.ComponentResource {
       .with('dev', () => 'dev')
       .otherwise(() => 'preview');
 
+    const config = match(stack)
+      .with('prod', () => 'prod')
+      .with('staging', () => 'prod')
+      .with('dev', () => 'dev')
+      .otherwise(() => 'dev');
+
     this.url = pulumi.output(pulumi.interpolate`https://${domainName}`);
 
     let secret;
@@ -83,7 +88,7 @@ export class Site extends pulumi.ComponentResource {
           },
           spec: {
             project: args.secret.project,
-            config: isProd || isStaging ? 'prod' : 'preview',
+            config,
           },
         },
         { parent: this },
