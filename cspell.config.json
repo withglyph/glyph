@@ -70,6 +70,7 @@
     "pooler",
     "ptsd",
     "pulumi",
+    "rabbitmq",
     "reexecute",
     "reindex",
     "resvg",

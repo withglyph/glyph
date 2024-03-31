@@ -1,5 +1,5 @@
 import { sequence } from '@sveltejs/kit/hooks';
-import { building, dev } from '$app/environment';
+import { building } from '$app/environment';
 import { setupGlobals } from './common';
 import { logging } from './handles';
 
@@ -9,8 +9,8 @@ setupGlobals();
 
 export const handle = sequence(logging);
 
-// warm up the server handlers
-if (!dev && !building) {
+if (!building) {
   await import('$lib/server/graphql/handler');
   await import('$lib/server/rest/handler');
+  await import('$lib/server/jobs');
 }

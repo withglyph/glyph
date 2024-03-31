@@ -385,6 +385,9 @@ importers:
       query-string:
         specifier: ^9.0.0
         version: 9.0.0
+      rabbitmq-client:
+        specifier: ^4.5.2
+        version: 4.5.2
       radash:
         specifier: ^12.1.0
         version: 12.1.0
@@ -12523,6 +12526,11 @@ packages:
   /quick-lru@5.1.1:
     resolution: {integrity: sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==}
     engines: {node: '>=10'}
+
+  /rabbitmq-client@4.5.2:
+    resolution: {integrity: sha512-m0NzQ3UtMPDtHWhaGN7agtQ1RyJ+UAyuKlYfhRByZ9FqJWtGCyk2Z+1JL40cParKtk2ZS9uolkcxONan0ZcEqg==}
+    engines: {node: '>=16'}
+    dev: false
 
   /radash@12.1.0:
     resolution: {integrity: sha512-b0Zcf09AhqKS83btmUeYBS8tFK7XL2e3RvLmZcm0sTdF1/UUlHSsjXdCcWNxe7yfmAlPve5ym0DmKGtTzP6kVQ==}
