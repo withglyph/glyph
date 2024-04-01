@@ -9,9 +9,10 @@
   export let value: HTMLInputAttributes['value'] = undefined;
   export let style: SystemStyleObject | undefined = undefined;
   export let size: Variants['size'] = 'md';
+  export let inputEl: HTMLInputElement | undefined = undefined;
 
   type $$Props = RecipeVariantProps<typeof recipe> &
-    Omit<HTMLInputAttributes, 'class' | 'style' | 'size'> & { style?: SystemStyleObject };
+    Omit<HTMLInputAttributes, 'class' | 'style' | 'size'> & { style?: SystemStyleObject; inputEl?: HTMLInputElement };
   type $$Events = {
     input: Event & { currentTarget: HTMLInputElement };
     keydown: KeyboardEvent & { currentTarget: HTMLInputElement };
@@ -100,6 +101,7 @@
     </div>
   {/if}
   <input
+    bind:this={inputEl}
     id={name}
     {name}
     class={cx(

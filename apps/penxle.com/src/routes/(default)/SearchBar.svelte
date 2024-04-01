@@ -1,6 +1,6 @@
 <script lang="ts">
   import qs from 'query-string';
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import IconSearch from '~icons/effit/search';
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconX from '~icons/tabler/x';
@@ -14,6 +14,7 @@
 
   export let style: SystemStyleObject | undefined = undefined;
 
+  let inputEl: HTMLInputElement | undefined;
   let value = ($page.url.pathname === '/search' && $page.url.searchParams.get('q')) || '';
 
   export let open = false;
@@ -81,7 +82,7 @@
         await goto(qs.stringifyUrl({ url: '/search', query: { q: value } }));
       }}
     >
-      <TextInput placeholder="검색어를 입력하세요" size="sm" type="search" bind:value>
+      <TextInput placeholder="검색어를 입력하세요" size="sm" type="search" bind:inputEl bind:value>
         <button slot="left-icon" class={center({ transition: 'common', color: 'gray.500' })} type="submit">
           <Icon icon={IconSearch} size={20} />
         </button>
@@ -104,6 +105,8 @@
     type="button"
     on:click={async () => {
       open = true;
+      await tick();
+      inputEl?.focus();
     }}
   >
     <Icon style={css.raw({ color: 'gray.900' })} icon={IconSearch} size={24} />
