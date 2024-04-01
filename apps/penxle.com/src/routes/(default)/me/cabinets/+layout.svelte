@@ -138,9 +138,6 @@
         <Link style={css.raw({ display: 'inline-block' })} href="/me/cabinets/bookmark">
           <GridImage
             style={css.raw({
-              borderWidth: '1px',
-              borderColor: 'gray.200',
-              borderRadius: '8px',
               size: { base: '148px', sm: '168px' },
             })}
             images={bookmark.thumbnails}

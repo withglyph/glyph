@@ -11,6 +11,7 @@
   export let style: SystemStyleObject | undefined = undefined;
   export let size: number | undefined = undefined;
   export let quality: number | undefined = undefined;
+  export let showPlaceholder = true;
 
   $: image =
     _image &&
@@ -35,7 +36,7 @@
 
 {#if src}
   <img class={css(style)} alt="" loading="lazy" {src} />
-{:else}
+{:else if showPlaceholder}
   <div class={center({ color: 'gray.300', backgroundColor: 'gray.50', ...style })}>
     <svg fill="currentColor" viewBox="0 0 69 58" width="41%" xmlns="http://www.w3.org/2000/svg">
       <path d="M23.087 0H0v58h23.087V0ZM69 0H28.253v58h40.749V0Z" />

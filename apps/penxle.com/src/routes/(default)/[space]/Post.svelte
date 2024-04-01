@@ -1481,7 +1481,7 @@
                 <div class={flex()}>
                   <div class={css({ marginRight: { base: '14px', sm: '20px' }, width: { base: '96px', sm: '124px' } })}>
                     <Image
-                      style={css.raw({ flex: 'none', borderRadius: '6px', size: { base: '96px', sm: '124px' } })}
+                      style={css.raw({ flex: 'none', size: { base: '96px', sm: '124px' } })}
                       $image={post.thumbnail ?? undefined}
                     />
 

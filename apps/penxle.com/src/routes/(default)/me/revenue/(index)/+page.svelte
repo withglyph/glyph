@@ -90,10 +90,7 @@
             ? undefined
             : `/${revenue.post?.space?.slug}/${revenue.post?.permalink}}`}
         >
-          <Image
-            style={css.raw({ flex: 'none', borderRadius: '6px', size: '86px' })}
-            $image={revenue.post?.thumbnail ?? undefined}
-          />
+          <Image style={css.raw({ flex: 'none', size: '86px' })} $image={revenue.post?.thumbnail ?? undefined} />
         </svelte:element>
 
         <svelte:element
