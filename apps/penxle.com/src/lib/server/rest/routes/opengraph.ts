@@ -6,6 +6,7 @@ import { png } from 'itty-router';
 import satori from 'satori';
 import sharp from 'sharp';
 import twemoji from 'twemoji';
+import fullLogoRaw from '$assets/logos/full.svg?raw';
 import { database, Images, PostRevisions, Posts, Profiles, SpaceMembers, Spaces } from '$lib/server/database';
 import { s3 } from '$lib/server/external-api/aws';
 import { createRouter } from '../router';
@@ -23,19 +24,6 @@ const KoPubWorldDotumBold = await got('https://glyph.pub/assets/fonts/KoPubWorld
 
 opengraph.get('/opengraph/post/:postId', async (request) => {
   const postId = (request as IRequest).params.postId;
-
-  // const post = await db.post.findUnique({
-  //   select: {
-  //     publishedRevision: { select: { title: true, subtitle: true } },
-  //     space: { select: { name: true } },
-  //     member: { select: { profile: { select: { name: true } } } },
-  //     thumbnail: { select: { path: true } },
-  //   },
-  //   where: {
-  //     id: postId,
-  //     state: 'PUBLISHED',
-  //   },
-  // });
 
   const posts = await database
     .select({
@@ -58,6 +46,8 @@ opengraph.get('/opengraph/post/:postId', async (request) => {
 
   const [post] = posts;
 
+  const logoUrl = `data:image/svg+xml,${encodeURIComponent(fullLogoRaw)}`.replace('currentColor', 'white');
+
   const svg = await satori(
     {
       type: 'div',
@@ -70,10 +60,11 @@ opengraph.get('/opengraph/post/:postId', async (request) => {
                 {
                   type: 'img',
                   props: {
-                    // spell-checker:disable-next-line
-                    src: 'data:image/svg+xml,%3Csvg width="125" height="23" viewBox="0 0 125 23" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cg opacity="0.4"%3E%3Cpath fill-rule="evenodd" clip-rule="evenodd" d="M3.53957 0.881287C1.58472 0.881287 0 2.466 0 4.42085V18.5791C0 20.534 1.58472 22.1187 3.53956 22.1187H17.6978C19.6527 22.1187 21.2374 20.534 21.2374 18.5791V4.42086C21.2374 2.46601 19.6527 0.881287 17.6978 0.881287H3.53957ZM6.52608 14.6296C6.98568 13.4156 8.67526 8.95299 6.61461 4.42086C6.61461 4.42086 10.3719 9.07574 15.8947 9.67596C15.8947 9.67596 14.0752 14.5657 15.3284 18.7727L12.1595 13.284C12.425 12.9735 12.4803 12.5174 12.2644 12.1434C11.9906 11.6691 11.3841 11.5066 10.9097 11.7805C10.4354 12.0543 10.2729 12.6608 10.5468 13.1351C10.7794 13.538 11.2521 13.716 11.6798 13.5925L13.4952 16.626L14.9122 19.0802C13.5573 17.6939 10.7391 15.4444 6.42315 14.9514C6.40481 14.9499 6.44744 14.8373 6.52607 14.6296L6.52608 14.6296Z" fill="white"/%3E%3Cpath d="M27.7822 20.7915V2.2088H33.9468C38.4742 2.2088 41.3391 4.58739 41.3391 8.32871C41.3391 11.5993 38.8579 14.7212 33.9468 14.7212H32.0283V20.7915H27.7822ZM31.9516 11.302H33.9212C35.8908 11.302 37.093 10.1127 37.093 8.35349C37.093 6.79254 35.9419 5.62802 33.9212 5.62802H31.9516V11.302Z" fill="white"/%3E%3Cpath d="M44.2187 20.7915V2.2088H56.2664V5.70236H48.4648V9.64189H55.3711V12.8629H48.4648V17.298H56.2664V20.7915H44.2187Z" fill="white"/%3E%3Cpath d="M59.631 20.7915V2.2088H63.6213L71.781 14.0274V2.2088H75.7713V20.7915H71.781L63.6213 9.17113V20.7915H59.631Z" fill="white"/%3E%3Cpath d="M78.5574 20.7915V18.9333L84.1848 11.3763L78.8388 4.14141V2.2088H82.5733L86.9985 8.40305L91.1423 2.2088H94.4931V4.06708L89.2495 11.2524L94.8512 18.8589V20.7915H91.1167L86.4869 14.2504L81.9083 20.7915H78.5574Z" fill="white"/%3E%3Cpath d="M97.6248 20.7915V2.2088H101.871V17.298H109.545V20.7915H97.6248Z" fill="white"/%3E%3Cpath d="M112.188 20.7915V2.2088H124.235V5.70236H116.434V9.64189H123.34V12.8629H116.434V17.298H124.235V20.7915H112.188Z" fill="white"/%3E%3C/g%3E%3C/svg%3E%0A',
+                    src: logoUrl,
                     width: 125,
-                    height: 23,
+                    style: {
+                      opacity: 0.4,
+                    },
                   },
                 },
                 {
