@@ -389,7 +389,7 @@ type Post {
   externalSearchable: Boolean!
   hasPassword: Boolean!
   id: ID!
-  likeCount: Int!
+  likeCount: Int! @deprecated(reason: "Use `reactionCount` instead")
   liked: Boolean!
   member: SpaceMember
   nextPost: Post
