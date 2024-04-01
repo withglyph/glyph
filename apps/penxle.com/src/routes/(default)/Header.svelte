@@ -117,12 +117,7 @@
         <NotificationMenu $user={$query.me} />
         <UserMenu $user={$query.me} />
       {:else}
-        <Button style={css.raw({ hideFrom: 'sm' })} href="/login" size="sm" type="link" variant="gray-outline">
-          로그인/회원가입
-        </Button>
-        <Button style={css.raw({ hideBelow: 'sm' })} href="/login" size="md" type="link" variant="gray-outline">
-          로그인/회원가입
-        </Button>
+        <Button href="/login" size="sm" type="link" variant="gray-outline">로그인/회원가입</Button>
       {/if}
     </div>
   </nav>
