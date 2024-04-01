@@ -154,7 +154,7 @@
       size: {
         xs: { paddingX: '8px', paddingY: '4px', fontSize: '12px', fontWeight: 'medium' },
         sm: { paddingX: '12px', paddingY: '9px', fontSize: '13px', fontWeight: 'medium' },
-        md: { padding: '12px', fontSize: '14px', fotWeight: 'semibold' },
+        md: { padding: '12px', fontSize: '14px', fontWeight: 'semibold' },
         lg: { paddingX: '16px', paddingY: '14px', fontSize: '14px', fontWeight: 'semibold' },
       },
     },
