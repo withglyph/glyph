@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { customAlphabet } from 'nanoid';
 import numeral from 'numeral';
 import { match } from 'ts-pattern';
@@ -40,21 +40,26 @@ PointTransaction.implement({
     post: t.field({
       type: Post,
       nullable: true,
-      resolve: async (pointTransaction) => {
+      resolve: async (pointTransaction, _, context) => {
         if (!pointTransaction.targetId) {
           return null;
         }
 
-        const postPurchases = await database
-          .select({ postId: PostPurchases.postId })
-          .from(PostPurchases)
-          .where(eq(PostPurchases.id, pointTransaction.targetId));
+        const loader = context.loader({
+          name: 'PointTransaction.post',
+          nullable: true,
+          load: async (postPurchaseIds: string[]) => {
+            return await database
+              .select({ id: PostPurchases.id, postId: PostPurchases.postId })
+              .from(PostPurchases)
+              .where(inArray(PostPurchases.id, postPurchaseIds));
+          },
+          key: (postPurchase) => postPurchase?.id,
+        });
 
-        if (postPurchases.length === 0) {
-          return null;
-        }
+        const postPurchase = await loader.load(pointTransaction.targetId);
 
-        return postPurchases[0].postId;
+        return postPurchase?.postId;
       },
     }),
   }),

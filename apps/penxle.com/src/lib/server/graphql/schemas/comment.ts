@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { and, count, eq } from 'drizzle-orm';
+import { and, count, eq, inArray } from 'drizzle-orm';
 import { PostCommentState, PostCommentVisibility } from '$lib/enums';
 import { NotFoundError, PermissionDeniedError } from '$lib/errors';
 import {
@@ -40,75 +40,117 @@ PostComment.implement({
     masquerade: t.field({
       type: SpaceMasquerade,
       nullable: true,
-      resolve: async (postComment) => {
-        const rows = await database
-          .select({ id: SpaceMasquerades.id })
-          .from(SpaceMasquerades)
-          .where(eq(SpaceMasquerades.profileId, postComment.profileId));
+      resolve: async (postComment, _, context) => {
+        const loader = context.loader({
+          name: 'PostComment.masquerade[profileId]',
+          nullable: true,
+          load: async (profileIds: string[]) => {
+            return await database
+              .select()
+              .from(SpaceMasquerades)
+              .where(inArray(SpaceMasquerades.profileId, profileIds));
+          },
+          key: (masquerades) => masquerades?.profileId,
+        });
 
-        if (rows.length === 0) {
-          return null;
-        }
-
-        return rows[0].id;
+        return await loader.load(postComment.profileId);
       },
     }),
 
     liked: t.boolean({
       resolve: async (postComment, _, context) => {
-        if (!context.session) {
-          return false;
-        }
+        const loader = context.loader({
+          name: 'PostComment.liked',
+          nullable: true,
+          load: async (commentIds: string[]) => {
+            if (!context.session) {
+              return [];
+            }
 
-        const rows = await database
-          .select({ id: PostCommentLikes.id })
-          .from(PostCommentLikes)
-          .where(
-            and(eq(PostCommentLikes.commentId, postComment.id), eq(PostCommentLikes.userId, context.session.userId)),
-          );
+            return await database
+              .select({ id: PostCommentLikes.id, commentId: PostCommentLikes.commentId })
+              .from(PostCommentLikes)
+              .where(
+                and(
+                  inArray(PostCommentLikes.commentId, commentIds),
+                  eq(PostCommentLikes.userId, context.session.userId),
+                ),
+              );
+          },
+          key: (rows) => rows?.commentId,
+        });
 
-        return rows.length > 0;
+        const like = await loader.load(postComment.id);
+        return !!like;
       },
     }),
 
     likedByPostUser: t.boolean({
-      resolve: async (postComment) => {
-        const rows = await database
-          .select({ id: PostCommentLikes.id })
-          .from(PostCommentLikes)
-          .where(
-            and(
-              eq(PostCommentLikes.commentId, postComment.id),
-              eq(
-                PostCommentLikes.userId,
-                database.select({ userId: Posts.userId }).from(Posts).where(eq(Posts.id, postComment.postId)),
-              ),
-            ),
-          );
+      resolve: async (postComment, _, context) => {
+        const loader = context.loader({
+          name: 'PostComment.likedByPostUser',
+          nullable: true,
+          load: async (commentIds: string[]) => {
+            return await database
+              .select({ commentId: PostCommentLikes.commentId })
+              .from(PostCommentLikes)
+              .innerJoin(PostComments, eq(PostComments.id, PostCommentLikes.commentId))
+              .innerJoin(Posts, eq(Posts.id, PostComments.postId))
+              .where(and(inArray(PostCommentLikes.commentId, commentIds), eq(PostCommentLikes.userId, Posts.userId)));
+          },
+          key: (rows) => rows?.commentId,
+        });
 
-        return rows.length > 0;
+        const like = await loader.load(postComment.id);
+        return !!like;
       },
     }),
 
     likeCount: t.int({
-      resolve: async (postComment) => {
-        const rows = await database
-          .select({ count: count() })
-          .from(PostCommentLikes)
-          .where(eq(PostCommentLikes.commentId, postComment.id));
+      resolve: async (postComment, _, context) => {
+        const loader = context.loader({
+          name: 'PostComment.likeCount',
+          nullable: true,
+          load: async (commentIds: string[]) => {
+            return await database
+              .select({ commentId: PostCommentLikes.commentId, count: count() })
+              .from(PostCommentLikes)
+              .where(inArray(PostCommentLikes.commentId, commentIds))
+              .groupBy(PostCommentLikes.commentId);
+          },
+          key: (rows) => rows?.commentId,
+        });
 
-        return rows[0].count;
+        const row = await loader.load(postComment.id);
+
+        return row?.count ?? 0;
       },
     }),
 
     purchased: t.boolean({
-      resolve: async (postComment) => {
-        const rows = await database
-          .select({ id: PostPurchases.id })
-          .from(PostPurchases)
-          .where(and(eq(PostPurchases.postId, postComment.postId), eq(PostPurchases.userId, postComment.userId)));
+      resolve: async (postComment, _, context) => {
+        const loader = context.loader({
+          name: 'PostComment.purchased',
+          nullable: true,
+          load: async (commentIds: string[]) => {
+            return await database
+              .select({ commentId: PostComments.id })
+              .from(PostComments)
+              .innerJoin(PostPurchases, eq(PostComments.postId, PostPurchases.postId))
+              .where(
+                and(
+                  inArray(PostComments.id, commentIds),
+                  eq(PostPurchases.postId, PostComments.postId),
+                  eq(PostPurchases.userId, PostComments.userId),
+                ),
+              );
+          },
+          key: (rows) => rows?.commentId,
+        });
 
-        return rows.length > 0;
+        const row = await loader.load(postComment.id);
+
+        return !!row;
       },
     }),
 
@@ -120,13 +162,21 @@ PostComment.implement({
 
     children: t.field({
       type: [PostComment],
-      resolve: async (postComment) => {
-        const rows = await database
-          .select({ id: PostComments.id })
-          .from(PostComments)
-          .where(and(eq(PostComments.parentId, postComment.id), eq(PostComments.state, 'ACTIVE')));
+      resolve: async (postComment, _, context) => {
+        const loader = context.loader({
+          name: 'PostComment.children',
+          many: true,
+          load: async (parentIds: string[]) => {
+            return await database
+              .select()
+              .from(PostComments)
+              .where(and(inArray(PostComments.parentId, parentIds), eq(PostComments.state, 'ACTIVE')));
+          },
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          key: (comments) => comments.parentId!,
+        });
 
-        return rows.map((row) => row.id);
+        return await loader.load(postComment.id);
       },
     }),
   }),

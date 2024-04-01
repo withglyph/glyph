@@ -78,6 +78,21 @@ import { PostTag } from './tag';
 import type { JSONContent } from '@tiptap/core';
 
 /**
+ * * Loaders
+ */
+
+const postRevisionContentLoader = {
+  name: 'PostRevisionContent',
+  load: async (ids: string[]) => {
+    return await database
+      .select({ id: PostRevisionContents.id, data: PostRevisionContents.data })
+      .from(PostRevisionContents)
+      .where(inArray(PostRevisionContents.id, ids));
+  },
+  key: (content: { id: string }) => content.id,
+};
+
+/**
  * * Types
  */
 
@@ -147,6 +162,7 @@ Post.implement({
     }),
 
     likeCount: t.int({
+      deprecationReason: 'Use `reactionCount` instead',
       resolve: async (post) => {
         const [{ value }] = await database
           .select({ value: count() })
@@ -157,21 +173,30 @@ Post.implement({
     }),
 
     viewCount: t.int({
-      resolve: (post) => getPostViewCount(post.id),
+      resolve: (post, _, context) => getPostViewCount({ context, postId: post.id }),
     }),
 
     viewed: t.boolean({
       resolve: async (post, _, context) => {
-        if (!context.session) {
-          return false;
-        }
+        const loader = context.loader({
+          name: 'Post.viewed',
+          nullable: true,
+          load: async (ids: string[]) => {
+            if (!context.session) {
+              return [];
+            }
 
-        const views = await database
-          .select({ id: PostViews.id })
-          .from(PostViews)
-          .where(and(eq(PostViews.postId, post.id), eq(PostViews.userId, context.session.userId)));
+            return await database
+              .select({ postId: PostViews.postId })
+              .from(PostViews)
+              .where(and(inArray(PostViews.postId, ids), eq(PostViews.userId, context.session.userId)));
+          },
+          key: (row) => row?.postId,
+        });
 
-        return views.length > 0;
+        const view = await loader.load(post.id);
+
+        return !!view;
       },
     }),
 
@@ -328,12 +353,23 @@ Post.implement({
     }),
 
     reactionCount: t.int({
-      resolve: async (post) =>
-        await database
-          .select({ count: count() })
-          .from(PostReactions)
-          .where(eq(PostReactions.postId, post.id))
-          .then(([{ count }]) => count),
+      resolve: async (post, _, context) => {
+        const loader = context.loader({
+          name: 'Post.reactionCount',
+          nullable: true,
+          load: async (ids: string[]) => {
+            return await database
+              .select({ postId: PostReactions.postId, count: count() })
+              .from(PostReactions)
+              .where(inArray(PostReactions.postId, ids))
+              .groupBy(PostReactions.postId);
+          },
+          key: (row) => row?.postId,
+        });
+
+        const postReaction = await loader.load(post.id);
+        return postReaction?.count ?? 0;
+      },
     }),
 
     bookmarkGroups: t.field({
@@ -529,7 +565,7 @@ Post.implement({
 
     commentCount: t.int({
       args: { pagination: t.arg.boolean({ defaultValue: false }) },
-      resolve: async (post, { pagination }) => {
+      resolve: async (post, { pagination }, context) => {
         if (pagination) {
           const ChildComments = alias(PostComments, 'child');
 
@@ -553,11 +589,21 @@ Post.implement({
             )
             .then(([result]) => result.count);
         } else {
-          return await database
-            .select({ count: count() })
-            .from(PostComments)
-            .where(and(eq(PostComments.postId, post.id), eq(PostComments.state, 'ACTIVE')))
-            .then(([result]) => result.count);
+          const loader = context.loader({
+            name: 'Post.commentCount',
+            nullable: true,
+            load: async (postIds: string[]) => {
+              return await database
+                .select({ postId: PostComments.postId, count: count() })
+                .from(PostComments)
+                .where(and(inArray(PostComments.postId, postIds), eq(PostComments.state, 'ACTIVE')))
+                .groupBy(PostComments.postId);
+            },
+            key: (row) => row?.postId,
+          });
+
+          const row = await loader.load(post.id);
+          return row?.count ?? 0;
         }
       },
     }),
@@ -668,16 +714,7 @@ PostRevision.implement({
     editableContent: t.field({
       type: 'JSON',
       resolve: async (revision, _, context) => {
-        const loader = context.loader({
-          name: 'PostRevision.editableContent',
-          load: async (ids: string[]) => {
-            return await database
-              .select({ id: PostRevisionContents.id, data: PostRevisionContents.data })
-              .from(PostRevisionContents)
-              .where(inArray(PostRevisionContents.id, ids));
-          },
-          key: (content) => content.id,
-        });
+        const loader = context.loader(postRevisionContentLoader);
 
         const [freeContentRaw, paidContentRaw] = await Promise.all([
           revision.freeContentId ? loader.load(revision.freeContentId) : undefined,
@@ -845,16 +882,7 @@ PostRevision.implement({
 
     characterCount: t.int({
       resolve: async (revision, _, context) => {
-        const loader = context.loader({
-          name: 'PostRevision.characterCount',
-          load: async (ids: string[]) => {
-            return await database
-              .select({ id: PostRevisionContents.id, data: PostRevisionContents.data })
-              .from(PostRevisionContents)
-              .where(inArray(PostRevisionContents.id, ids));
-          },
-          key: (content) => content.id,
-        });
+        const loader = context.loader(postRevisionContentLoader);
 
         const [freeContentLength, paidContentLength] = await Promise.all([
           revision.freeContentId
@@ -877,16 +905,7 @@ PostRevision.implement({
 
     previewText: t.string({
       resolve: async (revision, _, context) => {
-        const loader = context.loader({
-          name: 'PostRevision.previewText',
-          load: async (ids: string[]) => {
-            return await database
-              .select({ id: PostRevisionContents.id, data: PostRevisionContents.data })
-              .from(PostRevisionContents)
-              .where(inArray(PostRevisionContents.id, ids));
-          },
-          key: (content) => content.id,
-        });
+        const loader = context.loader(postRevisionContentLoader);
 
         const contentText = revision.freeContentId
           ? await loader.load(revision.freeContentId).then((content) => revisionContentToText(content))
@@ -905,13 +924,7 @@ PostReaction.implement({
     emoji: t.exposeString('emoji'),
 
     mine: t.boolean({
-      resolve: (reaction, _, { ...context }) => {
-        if (!context.session) {
-          return false;
-        }
-
-        return reaction.userId === context.session.userId;
-      },
+      resolve: (reaction, _, context) => !!context.session && reaction.userId === context.session.userId,
     }),
   }),
 });
