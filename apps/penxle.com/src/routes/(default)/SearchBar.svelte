@@ -78,6 +78,7 @@
       <Icon icon={IconChevronLeft} size={24} />
     </button>
     <form
+      class={css({ flexGrow: '1' })}
       on:submit|preventDefault={async () => {
         await goto(qs.stringifyUrl({ url: '/search', query: { q: value } }));
       }}
