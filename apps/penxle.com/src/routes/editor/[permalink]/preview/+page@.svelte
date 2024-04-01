@@ -2,7 +2,7 @@
   import IconDeviceDesktop from '~icons/tabler/device-desktop';
   import IconDeviceMobile from '~icons/tabler/device-mobile';
   import { page } from '$app/stores';
-  import Logo from '$assets/branding/logo.svg?component';
+  import FullLogo from '$assets/logos/full.svg?component';
   import { graphql } from '$glitch';
   import { Helmet, Icon } from '$lib/components';
   import { css } from '$styled-system/css';
@@ -60,7 +60,7 @@
             transition: 'common',
           })}
         >
-          <Logo class={css({ height: '25px', color: 'gray.900' })} />
+          <FullLogo class={css({ height: '25px', color: 'gray.900' })} />
         </div>
         <div class={center({ flexGrow: '1' })}>
           <div

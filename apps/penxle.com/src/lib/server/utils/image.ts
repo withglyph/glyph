@@ -5,7 +5,7 @@ import satori from 'satori';
 import sharp from 'sharp';
 import { rgbaToThumbHash } from 'thumbhash';
 import twemoji from 'twemoji';
-import logo from '$assets/branding/logo.svg?raw';
+import fullLogoRaw from '$assets/logos/full.svg?raw';
 import { aws } from '$lib/server/external-api';
 import { database, Images } from '../database';
 import { getDominantColor } from './mmcq';
@@ -157,7 +157,7 @@ export const generatePostShareImage = async ({
   color,
   background,
 }: GeneratePostFragmentImageParams) => {
-  const _logo = `data:image/svg+xml,${encodeURIComponent(logo)}`.replace('currentColor', color);
+  const logoUrl = `data:image/svg+xml,${encodeURIComponent(fullLogoRaw)}`.replace('currentColor', color);
 
   const svg = await satori(
     {
@@ -225,7 +225,7 @@ export const generatePostShareImage = async ({
           {
             type: 'img',
             props: {
-              src: _logo,
+              src: logoUrl,
               height: 12,
               style: {
                 position: 'absolute',

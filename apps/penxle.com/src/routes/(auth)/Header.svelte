@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Logo from '$assets/branding/logo.svg?component';
+  import FullLogo from '$assets/logos/full.svg?component';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
 </script>
@@ -15,6 +15,6 @@
   })}
 >
   <a href="/">
-    <Logo class={css({ color: 'gray.5', height: '25px', hideBelow: 'sm' })} />
+    <FullLogo class={css({ color: 'gray.5', height: '25px', hideBelow: 'sm' })} />
   </a>
 </header>

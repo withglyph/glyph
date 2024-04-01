@@ -2,7 +2,7 @@
   import IconGithub from '~icons/simple-icons/github';
   import IconInstagram from '~icons/simple-icons/instagram';
   import IconTwitter from '~icons/simple-icons/twitter';
-  import Logo from '$assets/branding/logo.svg?component';
+  import FullLogo from '$assets/logos/full.svg?component';
   import { Icon, Link } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -28,7 +28,7 @@
     })}
   >
     <div>
-      <Logo class={css({ height: '22px', color: 'gray.900', marginBottom: '12px' })} />
+      <FullLogo class={css({ height: '22px', color: 'gray.900', marginBottom: '12px' })} />
 
       <section
         class={flex({

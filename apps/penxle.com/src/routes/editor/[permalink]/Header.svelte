@@ -19,7 +19,7 @@
   import IconSettings from '~icons/tabler/settings';
   import IconStrikethrough from '~icons/tabler/strikethrough';
   import IconUnderline from '~icons/tabler/underline';
-  import Logo from '$assets/branding/logo.svg?component';
+  import FullLogo from '$assets/logos/full.svg?component';
   import { fragment, graphql } from '$glitch';
   import { Icon } from '$lib/components';
   import ColorPicker from '$lib/components/ColorPicker.svelte';
@@ -186,7 +186,7 @@
     })}
   >
     <a class={flex({ align: 'center', gap: '8px' })} href="/">
-      <Logo
+      <FullLogo
         class={css({
           height: '25px',
           hideBelow: 'sm',

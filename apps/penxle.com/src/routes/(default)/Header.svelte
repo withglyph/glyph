@@ -1,7 +1,7 @@
 <script lang="ts">
   import IconPlus from '~icons/tabler/plus';
   import { goto } from '$app/navigation';
-  import Logo from '$assets/branding/logo.svg?component';
+  import FullLogo from '$assets/logos/full.svg?component';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
@@ -74,7 +74,7 @@
       })}
       href="/"
     >
-      <Logo class={css({ height: '25px', color: 'gray.900' })} />
+      <FullLogo class={css({ height: '25px', color: 'gray.900' })} />
     </a>
 
     <SearchBar
