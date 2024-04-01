@@ -1,8 +1,11 @@
 <script lang="ts">
+  import IconBookmark from '~icons/tabler/bookmark';
+  import IconBookmarkFilled from '~icons/tabler/bookmark-filled';
   import IconEye from '~icons/tabler/eye';
   import IconMessageCircle from '~icons/tabler/message-circle';
   import IconMoodSmile from '~icons/tabler/mood-smile';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Chip, Icon, Tag } from '$lib/components';
   import Image from '$lib/components/Image.svelte';
   import { humanizeNumber } from '$lib/utils';
@@ -14,6 +17,7 @@
   let _post: Feed_Post_post;
   export { _post as $post };
 
+  export let showBookmark = false;
   export let style: SystemStyleObject | undefined = undefined;
 
   $: post = fragment(
@@ -28,6 +32,10 @@
         discloseStats
         commentCount
         blurred
+
+        bookmarkGroups {
+          id
+        }
 
         publishedRevision @_required {
           id
@@ -62,13 +70,36 @@
       }
     `),
   );
+
+  const bookmarkPost = graphql(`
+    mutation Feed_Post_BookmarkPost_Mutation($input: BookmarkPostInput!) {
+      bookmarkPost(input: $input) {
+        id
+
+        bookmarkGroups {
+          id
+        }
+      }
+    }
+  `);
+
+  const unbookmarkPost = graphql(`
+    mutation Feed_Post_UnbookmarkPost_Mutation($input: UnbookmarkPostInput!) {
+      unbookmarkPost(input: $input) {
+        id
+
+        bookmarkGroups {
+          id
+        }
+      }
+    }
+  `);
 </script>
 
 <a
   class={css(
     {
       display: 'flex',
-      alignItems: 'center',
       justifyContent: 'space-between',
       gap: { base: '24px', sm: '40px' },
       paddingY: '20px',
@@ -78,7 +109,7 @@
   )}
   href={`/${$post.space.slug}/${$post.permalink}`}
 >
-  <div class={css({ truncate: true })}>
+  <div class={css({ flexGrow: '1', truncate: true })}>
     <h3 class={css({ marginBottom: '2px', fontSize: '14px', fontWeight: 'semibold', truncate: true })}>
       {$post.publishedRevision.title ?? '(제목 없음)'}
     </h3>
@@ -161,24 +192,64 @@
     </div>
   </div>
 
-  <div class={css({ position: 'relative', width: { base: '118px', sm: '144px' }, aspectRatio: '16/10' })}>
-    {#if $post.thumbnail}
-      <Image style={css.raw({ size: 'full', objectFit: 'cover' })} $image={$post.thumbnail} />
-    {/if}
+  <div
+    class={css({
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flex-end',
+      justifyContent: showBookmark ? 'space-between' : 'center',
+    })}
+  >
+    <div
+      class={css({
+        position: 'relative',
+        flex: 'none',
+        width: { base: '118px', sm: '144px' },
+        aspectRatio: '16/10',
+      })}
+    >
+      {#if $post.thumbnail}
+        <Image style={css.raw({ flex: 'none', size: 'full', objectFit: 'cover' })} $image={$post.thumbnail} />
+      {/if}
 
-    <div class={css({ position: 'absolute', left: '6px', bottom: '6px', display: 'flex', gap: '4px' })}>
-      {#if $post.publishedRevision.price}
-        <Chip color="blue">유료</Chip>
-      {/if}
-      {#if $post.ageRating === 'R15'}
-        <Chip color="pink">15세</Chip>
-      {/if}
-      {#if $post.ageRating === 'R19'}
-        <Chip color="pink">성인</Chip>
-      {/if}
-      {#if $post.blurred && $post.ageRating === 'ALL'}
-        <Chip color="violet">트리거</Chip>
-      {/if}
+      <div class={css({ position: 'absolute', left: '6px', bottom: '6px', display: 'flex', gap: '4px' })}>
+        {#if $post.publishedRevision.price}
+          <Chip color="blue">유료</Chip>
+        {/if}
+        {#if $post.ageRating === 'R15'}
+          <Chip color="pink">15세</Chip>
+        {/if}
+        {#if $post.ageRating === 'R19'}
+          <Chip color="pink">성인</Chip>
+        {/if}
+        {#if $post.blurred && $post.ageRating === 'ALL'}
+          <Chip color="violet">트리거</Chip>
+        {/if}
+      </div>
     </div>
+
+    {#if showBookmark}
+      {#if $post.bookmarkGroups.length > 0}
+        <button
+          type="button"
+          on:click={async () => {
+            await unbookmarkPost({ bookmarkGroupId: $post.bookmarkGroups[0].id, postId: $post.id });
+            mixpanel.track('post:unbookmark', { postId: $post.id, via: 'feed' });
+          }}
+        >
+          <Icon icon={IconBookmarkFilled} size={24} />
+        </button>
+      {:else}
+        <button
+          type="button"
+          on:click={async () => {
+            await bookmarkPost({ postId: $post.id });
+            mixpanel.track('post:bookmark', { postId: $post.id, via: 'feed' });
+          }}
+        >
+          <Icon icon={IconBookmark} size={24} />
+        </button>
+      {/if}
+    {/if}
   </div>
 </a>

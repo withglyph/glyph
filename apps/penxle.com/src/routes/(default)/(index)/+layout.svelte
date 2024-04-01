@@ -15,6 +15,7 @@
 <div
   class={css({
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     flexGrow: '1',
     paddingBottom: { base: '92px', sm: '120px' },
@@ -22,15 +23,14 @@
     backgroundColor: 'gray.5',
   })}
 >
-  <div class={css({ paddingX: '20px', width: 'full', maxWidth: '1280px' })}>
-    <TabHead>
-      <TabHeadItem id={1} pathname="/">추천</TabHeadItem>
-      {#if $query.me}
-        <!-- 구독 페이지로 이동 -->
-        <TabHeadItem id={2} pathname="/feed/recent">구독</TabHeadItem>
-      {/if}
-    </TabHead>
+  <TabHead
+    style={css.raw({ marginX: 'auto', paddingX: '20px', paddingBottom: '20px', width: 'full', maxWidth: '1280px' })}
+  >
+    <TabHeadItem id={1} pathname="/">추천</TabHeadItem>
+    {#if $query.me}
+      <TabHeadItem id={2} pathname="/feed/subscribes">구독</TabHeadItem>
+    {/if}
+  </TabHead>
 
-    <slot />
-  </div>
+  <slot />
 </div>
