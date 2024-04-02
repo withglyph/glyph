@@ -9,6 +9,7 @@ export const CreateUserSchema = z.object({
   token: z.string(),
   name,
   termsConsent: z.boolean().refine((v) => v, '필수 약관에 동의해주세요'),
+  isGte14: z.boolean().refine((v) => v, '만 14세 이상만 가입할 수 있어요'),
   marketingConsent: z.boolean(),
 });
 

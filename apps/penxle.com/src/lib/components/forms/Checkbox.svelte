@@ -14,7 +14,9 @@
   export let variant: Variants['variant'] = 'gray';
   export let size: Variants['size'] = 'lg';
 
-  type $$Props = Omit<HTMLInputAttributes, 'style'> & { style?: SystemStyleObject } & RecipeVariantProps<typeof recipe>;
+  type $$Props = Omit<HTMLInputAttributes, 'style' | 'variant' | 'size'> & {
+    style?: SystemStyleObject;
+  } & RecipeVariantProps<typeof recipe>;
   type $$Events = {
     change: Parameters<NonNullable<HTMLInputAttributes['on:change']>>[0];
   };

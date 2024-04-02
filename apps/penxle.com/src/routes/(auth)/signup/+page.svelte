@@ -2,8 +2,10 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Helmet, Link } from '$lib/components';
-  import { Checkbox, FormField, TextInput } from '$lib/components/forms';
+  import { Helmet, Link } from '$lib/components';
+  import { Checkbox } from '$lib/components/forms';
+  import { Button } from '$lib/components/v2';
+  import { FormField, TextInput } from '$lib/components/v2/forms';
   import { createMutationForm } from '$lib/form';
   import { CreateUserSchema } from '$lib/validations';
   import { css } from '$styled-system/css';
@@ -40,47 +42,65 @@
     name: $query.provisionedUser.name ?? '',
     token: $page.url.searchParams.get('token') ?? '',
     termsConsent: false,
+    isGte14: false,
     marketingConsent: false,
   });
 
-  $: consentAll = $data.termsConsent && $data.marketingConsent;
+  $: consentAll = $data.termsConsent && $data.isGte14 && $data.marketingConsent;
   const handleConsentAll: ChangeEventHandler<HTMLInputElement> = (event) => {
     const { checked } = event.currentTarget;
+
     setFields('termsConsent', checked, true);
+    setFields('isGte14', checked, true);
     setFields('marketingConsent', checked, true);
   };
 </script>
 
-<Helmet description="이메일을 통해 펜슬에 가입하거나 로그인할 수 있어요" title="펜슬 가입하기" />
+<Helmet description="이메일을 통해 글리프에 가입하거나 로그인할 수 있어요" title="글리프 회원가입" />
 
-<h1 class={css({ width: 'full', maxWidth: '350px', fontSize: '20px', fontWeight: 'bold' })}>펜슬 가입하기</h1>
+<h1 class={css({ marginTop: { base: '32px', sm: '20px' }, marginBottom: '4px', fontSize: '24px', fontWeight: 'bold' })}>
+  회원가입
+</h1>
 
-<form class={flex({ direction: 'column', gap: '16px', marginTop: '24px', width: 'full', maxWidth: '350px' })} use:form>
+<h2 class={css({ fontSize: '14px', color: 'gray.500' })}>창작자를 위한 플랫폼 글리프와 함께하세요</h2>
+
+<form class={flex({ direction: 'column', flexGrow: '1', width: 'full' })} use:form>
   <input name="token" type="hidden" value={$page.url.searchParams.get('token')} />
 
-  <FormField name="name" label="닉네임">
-    <TextInput style={css.raw({ width: 'full', fontWeight: 'bold' })} maxlength={20} placeholder="닉네임 입력">
-      <span slot="right-icon" class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.400' })}>
-        {$data.name.length}/20
+  <FormField name="name" style={css.raw({ marginTop: '36px' })} label="닉네임">
+    <TextInput style={css.raw({ width: 'full' })} maxlength={20} placeholder="닉네임을 입력해주세요">
+      <span slot="right-icon" class={css({ fontWeight: 'medium', color: 'gray.300' })}>
+        <mark class={css({ color: 'gray.600' })}>{$data.name.length}</mark>
+        /20
       </span>
     </TextInput>
   </FormField>
 
-  <section class={flex({ direction: 'column', gap: '12px', marginY: '16px' })}>
-    <Checkbox style={css.raw({ fontWeight: 'bold' })} checked={consentAll} on:change={handleConsentAll}>
+  <section class={flex({ direction: 'column', marginTop: '16px' })}>
+    <Checkbox
+      style={css.raw({ fontWeight: 'semibold', marginBottom: '20px' })}
+      checked={consentAll}
+      variant="cyan"
+      on:change={handleConsentAll}
+    >
       전체 동의
     </Checkbox>
-    <Checkbox name="termsConsent" style={css.raw({ fontSize: '14px' })}>
-      <Link href="https://help.penxle.com/legal/terms" underline>이용약관</Link> 및 <Link
-        href="https://help.penxle.com/legal/privacy"
-        underline
-      >
-        개인정보처리방침
-      </Link>에 동의해요 (필수)
+
+    <Checkbox name="termsConsent" style={css.raw({ color: 'gray.600' })} size="sm" variant="cyan">
+      (필수)
+      <Link href="https://help.penxle.com/legal/terms" underline>이용약관</Link>
+      및
+      <Link href="https://help.penxle.com/legal/privacy" underline>개인정보처리방침</Link> 동의
     </Checkbox>
-    <Checkbox name="marketingConsent" style={css.raw({ fontSize: '14px' })}>
-      이벤트 등 펜슬 소식 받아보기 (선택)
+    <Checkbox name="isGte14" style={css.raw({ color: 'gray.600' })} size="sm" variant="cyan">
+      (필수) 만 14세 이상입니다
+    </Checkbox>
+    <Checkbox name="marketingConsent" style={css.raw({ color: 'gray.600' })} size="sm" variant="cyan">
+      (선택) 광고성 알림 수신 동의
     </Checkbox>
   </section>
-  <Button style={css.raw({ width: 'full' })} size="xl" type="submit">펜슬 회원가입 하기</Button>
+
+  <Button style={css.raw({ marginTop: 'auto', marginBottom: '20px', width: 'full' })} size="md" type="submit">
+    시작하기
+  </Button>
 </form>

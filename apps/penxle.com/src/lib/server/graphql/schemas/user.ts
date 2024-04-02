@@ -684,6 +684,7 @@ const CreateUserInput = builder.inputType('CreateUserInput', {
     token: t.string(),
     name: t.string(),
     termsConsent: t.boolean(),
+    isGte14: t.boolean(),
     marketingConsent: t.boolean(),
   }),
   validate: { schema: CreateUserSchema },

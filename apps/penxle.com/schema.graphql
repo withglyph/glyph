@@ -94,6 +94,7 @@ input CreateSpaceInput {
 }
 
 input CreateUserInput {
+  isGte14: Boolean!
   marketingConsent: Boolean!
   name: String!
   termsConsent: Boolean!

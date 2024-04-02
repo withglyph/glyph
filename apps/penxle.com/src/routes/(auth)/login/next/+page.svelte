@@ -1,43 +1,125 @@
 <script lang="ts">
+  import dayjs from 'dayjs';
   import qs from 'query-string';
-  import IconGoogle from '~icons/simple-icons/google';
-  import IconNaver from '~icons/simple-icons/naver';
-  import IconMailCheck from '~icons/tabler/mail-check';
+  import IconGoogle from '~icons/effit/google';
+  import IconNaver from '~icons/effit/naver';
+  import IconCheck from '~icons/tabler/check';
   import { page } from '$app/stores';
-  import { Button, Helmet, Icon } from '$lib/components';
+  import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
+  import { Helmet, Icon } from '$lib/components';
+  import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
-  import { circle, flex } from '$styled-system/patterns';
+  import { center, flex } from '$styled-system/patterns';
 
   $: email = $page.url.searchParams.get('email');
+
+  const loginUser = graphql(`
+    mutation LoginNextPage_loginUser_Mutation($input: LoginUserInput!) {
+      loginUser(input: $input) {
+        id
+        email
+      }
+    }
+  `);
+
+  let emailResendTime: string | null = null;
 </script>
 
 <Helmet description="이메일로 전송된 코드를 통해 펜슬에 가입하거나 로그인할 수 있어요" title="펜슬 시작하기" />
 
-<div class={circle({ size: '64px', backgroundColor: 'teal.500' })}>
-  <Icon style={css.raw({ color: 'gray.5' })} icon={IconMailCheck} size={24} />
-</div>
+<h1 class={css({ marginTop: { base: '32px', sm: '20px' }, marginBottom: '4px', fontSize: '24px', fontWeight: 'bold' })}>
+  이메일 인증
+</h1>
 
-<div class={css({ marginTop: '16px', textAlign: 'center', fontSize: '14px' })}>
-  {email} 으로 펜슬 로그인 링크를 보냈어요!
+<p class={css({ fontSize: '14px' })}>
+  인증 메일이 {email}으로 전송되었어요
   <br />
-  메일을 열어 링크를 클릭하면 로그인이 완료돼요.
-</div>
+  이메일을 열어 회원가입을 진행해주세요
+</p>
 
-<Button style={flex.raw({ gap: '8px', marginTop: '16px', width: 'full' })} href="https://mail.naver.com" type="link">
+<Button
+  style={center.raw({ gap: '10px', marginTop: '36px', fontSize: '16px', width: 'full' })}
+  href="https://gmail.com"
+  type="link"
+  variant="gray-outline"
+>
+  <Icon style={css.raw({ size: '18px' })} icon={IconGoogle} />
+  구글 이메일 열기
+</Button>
+
+<Button
+  style={center.raw({ gap: '10px', marginTop: '11px', marginBottom: '36px', fontSize: '16px', width: 'full' })}
+  href="https://mail.naver.com"
+  type="link"
+  variant="gray-outline"
+>
   <Icon icon={IconNaver} />
-  네이버 메일 열기
+  네이버 이메일 열기
 </Button>
 
-<Button style={flex.raw({ gap: '8px', marginTop: '8px', width: 'full' })} href="https://gmail.com" type="link">
-  <Icon icon={IconGoogle} />
-  지메일 열기
-</Button>
+<div
+  class={center({
+    width: 'full',
+    gap: '15px',
+    fontWeight: 'semibold',
+    color: 'gray.400',
+    _before: { content: '""', display: 'block', width: 'full', height: '1px', backgroundColor: 'gray.100' },
+    _after: { content: '""', display: 'block', width: 'full', height: '1px', backgroundColor: 'gray.100' },
+  })}
+>
+  OR
+</div>
 
 <a
-  class={css({ marginTop: '16px', fontSize: '14px', color: 'gray.500' })}
+  class={css({ marginTop: '10px', marginX: 'auto', color: 'gray.500' })}
   href={qs.stringifyUrl({ url: '/login/code', query: { email } })}
 >
-  대신 코드 입력하기
+  코드 입력하기
 </a>
 
-<a class={css({ marginTop: '16px', fontSize: '14px', color: 'gray.500' })} href="/login">이 이메일이 아닌가요?</a>
+<div class={css({ marginTop: 'auto' })}>
+  {#if emailResendTime}
+    <div
+      class={flex({
+        align: 'center',
+        gap: '6px',
+        borderWidth: '1px',
+        borderColor: '[#DDF3E4]',
+        marginBottom: '16px',
+        paddingX: '16px',
+        paddingY: '14px',
+        fontSize: '13px',
+        color: '[#18794E]',
+        backgroundColor: 'cyan.50',
+      })}
+    >
+      <Icon icon={IconCheck} />
+      인증 메일이 재발송되었어요 ({emailResendTime})
+    </div>
+  {/if}
+  <div
+    class={flex({
+      align: 'center',
+      justify: 'space-between',
+      marginBottom: '20px',
+      fontSize: '14px',
+      color: 'gray.500',
+    })}
+  >
+    <a href="/login">이 이메일이 아닌가요?</a>
+
+    <button
+      type="button"
+      on:click={async () => {
+        if (!email) return;
+
+        await loginUser({ email });
+        mixpanel.track('user:login:start', { method: 'email' });
+        emailResendTime = dayjs.kst().formatAsDateTime();
+      }}
+    >
+      인증 메일 재전송
+    </button>
+  </div>
+</div>

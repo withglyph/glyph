@@ -1,9 +1,9 @@
 <script lang="ts">
+  import FullLogo from '$assets/logos/full.svg?component';
   import { graphql } from '$glitch';
   import { Image } from '$lib/components';
   import { css } from '$styled-system/css';
-  import { center } from '$styled-system/patterns';
-  import Header from './Header.svelte';
+  import { center, flex } from '$styled-system/patterns';
 
   $: query = graphql(`
     query AuthLayout_Query {
@@ -24,21 +24,24 @@
   <div class={css({ position: 'fixed', inset: '0', size: 'full', backgroundColor: 'gray.100' })} />
 {/if}
 
-<Header />
-
-<main class={center({ paddingX: { base: '4px', sm: '0' }, margin: 'auto', width: 'full' })}>
+<main class={center({ margin: 'auto', width: 'full' })}>
   <div
-    class={center({
+    class={flex({
       flexDirection: 'column',
-      paddingX: { base: '20px', sm: '40px' },
-      paddingY: '28px',
-      borderRadius: '16px',
+      paddingX: { base: '20px', sm: '32px' },
       width: 'full',
-      maxWidth: '430px',
+      height: { base: 'screen', sm: '520px' },
       backgroundColor: 'gray.5',
       zIndex: '1',
+      sm: {
+        paddingTop: '32px',
+        maxWidth: '420px',
+      },
     })}
   >
+    <a class={css({ smDown: { marginTop: '120px', marginBottom: '70px' } })} href="/">
+      <FullLogo class={css({ width: { base: 'full', sm: 'fit' }, height: { base: '38px', sm: '17px' } })} />
+    </a>
     <slot />
   </div>
 </main>
