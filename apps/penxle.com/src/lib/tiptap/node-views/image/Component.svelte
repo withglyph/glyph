@@ -64,7 +64,7 @@
   });
 </script>
 
-<NodeView style={center.raw({ paddingY: '4px' })} data-drag-handle draggable>
+<NodeView style={center.raw({ paddingY: '4px', smDown: { marginX: '-20px' } })} data-drag-handle draggable>
   {#if editor?.isEditable}
     <div
       class={css(
