@@ -620,6 +620,7 @@ type Query {
   recentFeed: [Post!]!
   recentlyUsedTags: [Tag!]!
   recommendFeed: [Post!]!
+  recommendedTags: [Tag!]!
   revenueWithdrawal(id: String!): RevenueWithdrawal!
   searchPosts(adultFilter: Boolean, excludeTags: [String!]! = [], includeTags: [String!]! = [], orderBy: SearchOrderByKind! = ACCURACY, page: Int! = 1, query: String!): SearchResult!
   searchSpaces(query: String!): [Space!]!

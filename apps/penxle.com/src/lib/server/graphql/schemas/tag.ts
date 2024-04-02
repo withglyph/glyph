@@ -1,8 +1,9 @@
-import { and, eq } from 'drizzle-orm';
+import { and, desc, eq, ne, notInArray } from 'drizzle-orm';
 import { PostTagKind } from '$lib/enums';
 import { NotFoundError } from '$lib/errors';
-import { database, PostTags, TagFollows, Tags, UserTagMutes } from '$lib/server/database';
-import { getTagUsageCount } from '$lib/server/utils';
+import { database, PostTags, PostViews, TagFollows, Tags, UserTagMutes } from '$lib/server/database';
+import { elasticSearch, indexName } from '$lib/server/search';
+import { getTagUsageCount, searchResultToIds } from '$lib/server/utils';
 import { builder } from '../builder';
 import { createObjectRef } from '../utils';
 import { Post } from './post';
@@ -141,6 +142,63 @@ builder.queryFields((t) => ({
       }
 
       return tags[0].id;
+    },
+  }),
+
+  recommendedTags: t.field({
+    type: [Tag],
+    resolve: async (_, __, context) => {
+      if (context.session) {
+        return await database
+          .select({ tagId: PostTags.tagId })
+          .from(PostViews)
+          .innerJoin(PostTags, eq(PostTags.postId, PostViews.postId))
+          .where(
+            and(
+              eq(PostViews.userId, context.session.userId),
+              ne(PostTags.kind, 'TRIGGER'),
+              notInArray(
+                PostTags.tagId,
+                database
+                  .select({ tagId: UserTagMutes.tagId })
+                  .from(UserTagMutes)
+                  .where(eq(UserTagMutes.userId, context.session.userId)),
+              ),
+              notInArray(
+                PostTags.tagId,
+                database
+                  .select({ tagId: TagFollows.tagId })
+                  .from(TagFollows)
+                  .where(eq(TagFollows.userId, context.session.userId)),
+              ),
+            ),
+          )
+          .orderBy(desc(PostViews.viewedAt))
+          .limit(20)
+          .then((rows) => rows.map((row) => row.tagId));
+      } else {
+        const searchResult = await elasticSearch.search({
+          index: indexName('tags'),
+          query: {
+            function_score: {
+              query: {
+                bool: {
+                  should: [{ rank_feature: { field: 'usageCount.TITLE' } }],
+                },
+              },
+              functions: [
+                {
+                  random_score: { seed: Math.floor(Math.random() * 1000), field: '_seq_no' },
+                },
+              ],
+            },
+          },
+
+          size: 20,
+        });
+
+        return searchResultToIds(searchResult);
+      }
     },
   }),
 }));
