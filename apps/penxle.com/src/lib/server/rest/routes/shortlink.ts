@@ -3,12 +3,11 @@ import { status } from 'itty-router';
 import { database, Posts, Spaces } from '$lib/server/database';
 import { base36To10 } from '$lib/utils';
 import { createRouter } from '../router';
-import type { IRequest } from 'itty-router';
 
 export const shortlink = createRouter();
 
 shortlink.get('/shortlink/:shortlink', async (request) => {
-  const shortlink = (request as IRequest).params.shortlink;
+  const shortlink = request.params.shortlink;
   if (!shortlink) {
     throw new Error('link is required');
   }

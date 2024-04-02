@@ -53,7 +53,7 @@ export const Blockquote = Node.create({
                 display: 'block',
                 marginX: 'auto',
                 width: '32px',
-                rotate: '180deg',
+                rotate: '[180deg]',
               },
             },
           ),

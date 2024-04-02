@@ -56,11 +56,11 @@
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
-    "@sveltejs/kit": "^2.5.4",
-    "rollup": "^4.13.1",
+    "@sveltejs/kit": "^2.5.5",
+    "rollup": "^4.13.2",
     "tsup": "^8.0.2",
     "typescript": "^5.4.3",
-    "vite": "^5.2.6"
+    "vite": "^5.2.7"
   },
   "peerDependencies": {
     "@sveltejs/kit": "^2.0.0"

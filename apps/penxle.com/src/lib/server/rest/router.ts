@@ -1,4 +1,5 @@
-import { Router } from 'itty-router';
+import { IttyRouter } from 'itty-router';
+import type { IRequest } from 'itty-router';
 import type { Context } from '../context';
 
-export const createRouter = () => Router<Request, [Context]>({ base: '/api' });
+export const createRouter = () => IttyRouter<IRequest, [Context]>({ base: '/api' });

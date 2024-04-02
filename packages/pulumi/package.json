@@ -29,11 +29,11 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@pulumi/aws": "^6.28.1",
+    "@pulumi/aws": "^6.28.2",
     "@pulumi/kubernetes": "^4.9.1",
     "@pulumi/pulumi": "^3.112.0",
     "fast-glob": "^3.3.2",
-    "ts-pattern": "^5.0.8"
+    "ts-pattern": "^5.1.0"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",

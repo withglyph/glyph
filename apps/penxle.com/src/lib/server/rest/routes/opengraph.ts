@@ -10,7 +10,6 @@ import fullLogoRaw from '$assets/logos/full.svg?raw';
 import { database, Images, PostRevisions, Posts, Profiles, SpaceMembers, Spaces } from '$lib/server/database';
 import { s3 } from '$lib/server/external-api/aws';
 import { createRouter } from '../router';
-import type { IRequest } from 'itty-router';
 
 export const opengraph = createRouter();
 
@@ -23,7 +22,7 @@ const KoPubWorldDotumMedium = await got('https://glyph.pub/assets/fonts/KoPubWor
 const KoPubWorldDotumBold = await got('https://glyph.pub/assets/fonts/KoPubWorldDotumBold.otf').buffer();
 
 opengraph.get('/opengraph/post/:postId', async (request) => {
-  const postId = (request as IRequest).params.postId;
+  const postId = request.params.postId;
 
   const posts = await database
     .select({

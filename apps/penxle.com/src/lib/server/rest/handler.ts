@@ -8,19 +8,19 @@ const router = createRouter();
 
 router.all(
   '*',
-  healthz.handle,
-  email.handle,
-  identification.handle,
-  nolt.handle,
-  notification.handle,
-  opengraph.handle,
-  payment.handle,
-  shortlink.handle,
-  sso.handle,
+  healthz.fetch,
+  email.fetch,
+  identification.fetch,
+  nolt.fetch,
+  notification.fetch,
+  opengraph.fetch,
+  payment.fetch,
+  shortlink.fetch,
+  sso.fetch,
   () => error(404),
 );
 
 export const handler = async (event: RequestEvent) => {
   const context = await createContext(event);
-  return await router.handle(event.request, context);
+  return await router.fetch(event.request, context);
 };

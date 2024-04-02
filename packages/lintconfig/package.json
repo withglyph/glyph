@@ -10,8 +10,8 @@
   "dependencies": {
     "@eslint/eslintrc": "^3.0.2",
     "@eslint/js": "^8.57.0",
-    "@prettier/plugin-xml": "^3.3.1",
-    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@prettier/plugin-xml": "^3.4.1",
+    "@typescript-eslint/eslint-plugin": "^7.5.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-simple-import-sort": "^12.0.0",
@@ -19,7 +19,7 @@
     "eslint-plugin-unicorn": "^51.0.1",
     "globals": "^15.0.0",
     "ignore": "^5.3.1",
-    "prettier-plugin-packagejson": "^2.4.13",
+    "prettier-plugin-packagejson": "^2.4.14",
     "prettier-plugin-sh": "^0.14.0",
     "prettier-plugin-svelte": "^3.2.2",
     "svelte-eslint-parser": "^0.33.1"

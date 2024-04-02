@@ -3,13 +3,12 @@ import { status } from 'itty-router';
 import { match } from 'ts-pattern';
 import { database, PostComments, Posts, Spaces, UserNotifications } from '$lib/server/database';
 import { createRouter } from '../router';
-import type { IRequest } from 'itty-router';
 import type { Notification } from '$lib/utils';
 
 export const notification = createRouter();
 
 notification.get('/notification/:notificationId', async (request) => {
-  const notificationId = (request as IRequest).params.notificationId;
+  const notificationId = request.params.notificationId;
   if (!notificationId) {
     throw new Error('notificationId is required');
   }

@@ -352,7 +352,7 @@
           >
             <div style:background-color={currentColor} class={css({ borderRadius: 'full', size: '18px' })} />
             <Icon
-              style={css.raw({ color: 'gray.300' }, colorPickerOpen && { rotate: '180deg' })}
+              style={css.raw({ color: 'gray.300' }, colorPickerOpen && { rotate: '[180deg]' })}
               icon={IconChevronDown}
               size={20}
             />
@@ -413,7 +413,7 @@
                   ?.label ?? values.fontFamily[0].label}
               </div>
               <Icon
-                style={css.raw({ color: 'gray.300' }, open && { rotate: '180deg' })}
+                style={css.raw({ color: 'gray.300' }, open && { rotate: '[180deg]' })}
                 icon={IconChevronDown}
                 size={20}
               />
@@ -475,7 +475,7 @@
               {values.fontSize.find(({ value }) => editor?.getAttributes('font_size').fontSize === value)?.label ??
                 values.fontSize[4].label}
               <Icon
-                style={css.raw({ color: 'gray.300' }, open && { rotate: '180deg' })}
+                style={css.raw({ color: 'gray.300' }, open && { rotate: '[180deg]' })}
                 icon={IconChevronDown}
                 size={20}
               />
