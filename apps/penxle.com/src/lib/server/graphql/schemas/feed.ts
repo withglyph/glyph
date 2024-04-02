@@ -48,12 +48,15 @@ builder.queryFields((t) => ({
               .then((row) => row?.birthday),
           ]);
 
-          const viewedTagIds = await database
-            .select({ tagId: PostTags.tagId })
-            .from(PostTags)
-            .where(inArray(PostTags.postId, viewedPostIds))
-            .groupBy(PostTags.tagId)
-            .then((rows) => rows.map((row) => row.tagId));
+          const viewedTagIds =
+            viewedPostIds.length > 0
+              ? await database
+                  .select({ tagId: PostTags.tagId })
+                  .from(PostTags)
+                  .where(inArray(PostTags.postId, viewedPostIds))
+                  .groupBy(PostTags.tagId)
+                  .then((rows) => rows.map((row) => row.tagId))
+              : [];
 
           const allowedAgeRating = userBirthday
             ? R.sift([isAdulthood(userBirthday) && 'R19', isGte15(userBirthday) && 'R15', 'ALL'])
@@ -78,6 +81,7 @@ builder.queryFields((t) => ({
                         query: {
                           ids: { values: viewedPostIds },
                         },
+                        condition: viewedPostIds.length > 0,
                       },
                     ]),
                     should: makeQueryContainers([
