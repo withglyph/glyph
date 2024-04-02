@@ -283,6 +283,9 @@ importers:
       '@urql/exchange-graphcache':
         specifier: ^6.5.1
         version: 6.5.1(graphql@16.8.1)
+      '@use-gesture/vanilla':
+        specifier: ^10.3.1
+        version: 10.3.1
       argon2:
         specifier: ^0.40.1
         version: 0.40.1
@@ -6269,6 +6272,16 @@ packages:
       wonka: 6.3.4
     transitivePeerDependencies:
       - graphql
+    dev: false
+
+  /@use-gesture/core@10.3.1:
+    resolution: {integrity: sha512-WcINiDt8WjqBdUXye25anHiNxPc0VOrlT8F6LLkU6cycrOGUDyY/yyFmsg3k8i5OLvv25llc0QC45GhR/C8llw==}
+    dev: false
+
+  /@use-gesture/vanilla@10.3.1:
+    resolution: {integrity: sha512-lT4scGLu59ovA3zmtUonukAGcA0AdOOh+iwNDS05Bsu7Lq9aZToDHhI6D8Q2qvsVraovtsLLYwPrWdG/noMAKw==}
+    dependencies:
+      '@use-gesture/core': 10.3.1
     dev: false
 
   /@vue/compiler-core@3.4.19:

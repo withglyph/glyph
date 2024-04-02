@@ -6,6 +6,7 @@
   import { Helmet, Icon, Tag } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
+  import Carousel from './Carousel.svelte';
   import HorizontalScroll from './HorizontalScroll.svelte';
   import Post from './Post.svelte';
   import PostCard from './PostCard.svelte';
@@ -102,7 +103,7 @@
 />
 
 <div class={css({ marginX: 'auto', paddingX: '20px', width: 'full', maxWidth: '1280px' })}>
-  <div class={css({ backgroundColor: 'gray.50', height: { base: '320px', sm: '380px' } })}>carousel</div>
+  <Carousel />
 
   <HorizontalScroll
     style={css.raw({ gap: '8px', paddingY: '16px' })}
