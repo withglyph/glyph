@@ -379,29 +379,44 @@ Post.implement({
     bookmarkGroups: t.field({
       type: [BookmarkGroup],
       resolve: async (post, _, context) => {
-        if (!context.session) {
-          return [];
-        }
+        const loader = context.loader({
+          name: 'Post.bookmarkGroups',
+          many: true,
+          load: async (ids: string[]) => {
+            if (!context.session) {
+              return [];
+            }
 
-        return await database
-          .select({ id: BookmarkGroups.id })
-          .from(BookmarkGroups)
-          .innerJoin(BookmarkGroupPosts, eq(BookmarkGroups.id, BookmarkGroupPosts.bookmarkGroupId))
-          .where(and(eq(BookmarkGroups.userId, context.session.userId), eq(BookmarkGroupPosts.postId, post.id)))
-          .then((groups) => groups.map((group) => group.id));
+            return await database
+              .select({ id: BookmarkGroups.id, postId: BookmarkGroupPosts.postId })
+              .from(BookmarkGroups)
+              .innerJoin(BookmarkGroupPosts, eq(BookmarkGroups.id, BookmarkGroupPosts.bookmarkGroupId))
+              .where(and(eq(BookmarkGroups.userId, context.session.userId), inArray(BookmarkGroupPosts.postId, ids)));
+          },
+          key: (row) => row.postId,
+        });
+
+        const rows = await loader.load(post.id);
+        return rows.map((row) => row.id);
       },
     }),
 
     collection: t.field({
       type: SpaceCollection,
       nullable: true,
-      resolve: async (post) =>
-        database
+      resolve: async (post) => {
+        const collections = await database
           .select({ id: SpaceCollections.id })
           .from(SpaceCollections)
           .innerJoin(SpaceCollectionPosts, eq(SpaceCollections.id, SpaceCollectionPosts.collectionId))
-          .where(and(eq(SpaceCollectionPosts.postId, post.id), eq(SpaceCollections.state, 'ACTIVE')))
-          .then((collections) => collections[0]?.id),
+          .where(and(eq(SpaceCollectionPosts.postId, post.id), eq(SpaceCollections.state, 'ACTIVE')));
+
+        if (collections.length === 0) {
+          return null;
+        }
+
+        return collections[0].id;
+      },
     }),
 
     purchasedAt: t.field({
@@ -412,11 +427,16 @@ Post.implement({
           return null;
         }
 
-        return await database
+        const purchases = await database
           .select({ createdAt: PostPurchases.createdAt })
           .from(PostPurchases)
-          .where(and(eq(PostPurchases.postId, post.id), eq(PostPurchases.userId, context.session.userId)))
-          .then((purchases) => purchases[0]?.createdAt);
+          .where(and(eq(PostPurchases.postId, post.id), eq(PostPurchases.userId, context.session.userId)));
+
+        if (purchases.length === 0) {
+          return null;
+        }
+
+        return purchases[0].createdAt;
       },
     }),
 
