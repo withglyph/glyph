@@ -1,7 +1,7 @@
 <script lang="ts">
   import { setContext } from 'svelte';
   import { afterNavigate } from '$app/navigation';
-  import { createFloatingActions, portal } from '$lib/svelte/actions';
+  import { createFloatingActions } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
   import type { Placement } from '@floating-ui/dom';
   import type { SystemStyleObject } from '$styled-system/types';
@@ -57,12 +57,11 @@
 
 {#if open}
   <div
-    class={css({ position: 'fixed', inset: '0', zIndex: '40' })}
+    class={css({ position: 'fixed', inset: '0' })}
     role="button"
     tabindex="-1"
     on:click={() => (open = false)}
     on:keypress={null}
-    use:portal
   />
 
   <div
