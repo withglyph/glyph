@@ -32,68 +32,48 @@ const indexData: Record<string, Omit<IndicesCreateRequest, 'index'>> = {
       },
       analysis: {
         analyzer: {
-          ngram_23: {
+          ngram_2: {
             type: 'custom',
-            tokenizer: 'ngram_23',
+            tokenizer: 'ngram_2',
             filter: ['lowercase'],
           },
         },
         tokenizer: {
-          ngram_23: {
+          ngram_2: {
             type: 'ngram',
             token_chars: ['letter', 'digit'],
             min_gram: 2,
-            max_gram: 3,
+            max_gram: 2,
           },
         },
       },
     },
     mappings: {
       properties: {
-        title: { type: 'text', analyzer: 'ngram_23' },
-        subtitle: { type: 'text', analyzer: 'ngram_23' },
+        title: { type: 'text', analyzer: 'ngram_2' },
+        subtitle: { type: 'text', analyzer: 'ngram_2' },
         tags: {
           properties: {
             id: { type: 'keyword' },
-            name: { type: 'text', analyzer: 'ngram_23' },
-            nameRaw: { type: 'keyword' },
+            name: {
+              type: 'text',
+              analyzer: 'ngram_2',
+              fields: {
+                raw: { type: 'keyword' },
+              },
+            },
             kind: { type: 'keyword' },
           },
         },
-        spaceId: { type: 'keyword' },
+        space: {
+          properties: {
+            id: { type: 'keyword' },
+            name: { type: 'text', analyzer: 'ngram_2' },
+          },
+        },
         ageRating: { type: 'keyword' },
-        trendingScore: { type: 'rank_feature' },
+        reputation: { type: 'rank_feature' },
         publishedAt: { type: 'date', format: 'epoch_millis' },
-      },
-    },
-  },
-  spaces: {
-    settings: {
-      index: {
-        number_of_shards: 6,
-        number_of_replicas: 0,
-      },
-      analysis: {
-        analyzer: {
-          ngram_23: {
-            type: 'custom',
-            tokenizer: 'ngram_23',
-            filter: ['lowercase'],
-          },
-        },
-        tokenizer: {
-          ngram_23: {
-            type: 'ngram',
-            token_chars: ['letter', 'digit'],
-            min_gram: 2,
-            max_gram: 3,
-          },
-        },
-      },
-    },
-    mappings: {
-      properties: {
-        name: { type: 'text', analyzer: 'ngram_23' },
       },
     },
   },
@@ -104,18 +84,18 @@ const indexData: Record<string, Omit<IndicesCreateRequest, 'index'>> = {
         number_of_replicas: 0,
         analysis: {
           analyzer: {
-            ngram_23: {
+            ngram_2: {
               type: 'custom',
-              tokenizer: 'ngram_23',
+              tokenizer: 'ngram_2',
               filter: ['lowercase'],
             },
           },
           tokenizer: {
-            ngram_23: {
+            ngram_2: {
               type: 'ngram',
               token_chars: ['letter', 'digit'],
               min_gram: 2,
-              max_gram: 3,
+              max_gram: 2,
             },
           },
         },
@@ -125,9 +105,9 @@ const indexData: Record<string, Omit<IndicesCreateRequest, 'index'>> = {
       properties: {
         name: {
           properties: {
-            raw: { type: 'text', analyzer: 'ngram_23' }, // 원본
-            disassembled: { type: 'text', analyzer: 'ngram_23' }, // 초중종성 분해
-            initial: { type: 'text', analyzer: 'ngram_23' }, // 초성
+            raw: { type: 'text', analyzer: 'ngram_2' }, // 원본
+            disassembled: { type: 'text', analyzer: 'ngram_2' }, // 초중종성 분해
+            initial: { type: 'text', analyzer: 'ngram_2' }, // 초성
           },
         },
         usageCount: { type: 'rank_features' },

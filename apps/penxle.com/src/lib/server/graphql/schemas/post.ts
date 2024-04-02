@@ -40,6 +40,7 @@ import {
   UserContentFilterPreferences,
   UserPersonalIdentities,
 } from '$lib/server/database';
+import { enqueueJob } from '$lib/server/jobs';
 import { elasticSearch, indexName } from '$lib/server/search';
 import {
   createNotification,
@@ -1458,6 +1459,8 @@ builder.mutationFields((t) => ({
         }
       });
 
+      await enqueueJob('indexPost', revision.post.id);
+
       return revision.post.id;
     },
   }),
@@ -1493,6 +1496,8 @@ builder.mutationFields((t) => ({
           receiveTagContribution: input.receiveTagContribution ?? undefined,
         })
         .where(eq(Posts.id, input.postId));
+
+      await enqueueJob('indexPost', input.postId);
 
       return input.postId;
     },
@@ -1530,6 +1535,8 @@ builder.mutationFields((t) => ({
         await tx.update(Posts).set({ category: input.category, pairs: input.pairs }).where(eq(Posts.id, input.postId));
       });
 
+      await enqueueJob('indexPost', input.postId);
+
       return input.postId;
     },
   }),
@@ -1565,6 +1572,8 @@ builder.mutationFields((t) => ({
           .set({ kind: 'ARCHIVED' })
           .where(and(eq(PostRevisions.postId, input.postId), eq(PostRevisions.kind, 'PUBLISHED')));
       });
+
+      await enqueueJob('indexPost', input.postId);
 
       return input.postId;
     },

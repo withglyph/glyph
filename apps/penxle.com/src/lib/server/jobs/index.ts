@@ -4,10 +4,10 @@ import { nanoid } from 'nanoid';
 import { dev } from '$app/environment';
 import { pub, rabbit } from '../mq';
 import { finalizeResource, setResourceFinalizer } from '../utils';
-import { Test2Job, TestJob } from './test';
+import { IndexAllPostsInSpaceJob, IndexPostJob } from './search';
 import type { JobFn } from './types';
 
-const jobs = [TestJob, Test2Job];
+const jobs = [IndexAllPostsInSpaceJob, IndexPostJob];
 
 await finalizeResource('jobs');
 

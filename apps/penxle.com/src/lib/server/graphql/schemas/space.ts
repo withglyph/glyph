@@ -18,6 +18,7 @@ import {
   UserSpaceMutes,
   UserTagMutes,
 } from '$lib/server/database';
+import { enqueueJob } from '$lib/server/jobs';
 import {
   createNotification,
   createRandomIcon,
@@ -506,6 +507,8 @@ builder.mutationFields((t) => ({
         await tx.update(Spaces).set({ state: 'INACTIVE' }).where(eq(Spaces.id, input.spaceId));
       });
 
+      await enqueueJob('indexAllPostsInSpace', input.spaceId);
+
       return input.spaceId;
     },
   }),
@@ -559,6 +562,8 @@ builder.mutationFields((t) => ({
           ),
         );
       }
+
+      await enqueueJob('indexAllPostsInSpace', input.spaceId);
 
       return input.spaceId;
     },

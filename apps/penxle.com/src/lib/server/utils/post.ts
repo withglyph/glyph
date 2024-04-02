@@ -1,8 +1,8 @@
 import { webcrypto } from 'node:crypto';
 import { asc, count, eq, inArray } from 'drizzle-orm';
 import * as R from 'radash';
-import { redis } from '$lib/server/cache';
-import { database, PostRevisionContents, PostViews, SpaceCollectionPosts } from '../database';
+import { redis, useCache } from '$lib/server/cache';
+import { database, PostPurchases, PostRevisionContents, PostViews, SpaceCollectionPosts } from '../database';
 import { isEmptyContent } from './tiptap';
 import type { JSONContent } from '@tiptap/core';
 import type { Context } from '../context';
@@ -28,52 +28,84 @@ export const makePostContentId = async (data: JSONContent[] | null) => {
 
 type GetPostViewCountParams = {
   postId: string;
-  context: Pick<Context, 'loader'>;
+  context?: Pick<Context, 'loader'>;
 };
 
-export const getPostViewCount = async ({ postId, context }: GetPostViewCountParams) => {
-  const loader = context.loader({
-    name: 'Post.viewCount',
-    load: async (postIds: string[]) => {
-      const cached = await redis.mget(postIds.map((id) => `Post:${id}:viewCount`));
-      const missedIds = postIds.filter((_, i) => !cached[i]);
+export const getPostViewCount = async ({ postId, context }: GetPostViewCountParams): Promise<number> => {
+  if (context) {
+    const loader = context.loader({
+      name: 'Post.viewCount',
+      load: async (postIds: string[]) => {
+        const cached = await redis.mget(postIds.map((id) => `Post:${id}:viewCount`));
+        const missedIds = postIds.filter((_, i) => !cached[i]);
 
-      const missed =
-        missedIds.length > 0
-          ? R.objectify(
-              await database
-                .select({ postId: PostViews.postId, count: count() })
-                .from(PostViews)
-                .where(inArray(PostViews.postId, missedIds))
-                .groupBy(PostViews.postId),
-              (postView) => postView.postId,
-            )
-          : {};
+        const missed =
+          missedIds.length > 0
+            ? R.objectify(
+                await database
+                  .select({ postId: PostViews.postId, count: count() })
+                  .from(PostViews)
+                  .where(inArray(PostViews.postId, missedIds))
+                  .groupBy(PostViews.postId),
+                (postView) => postView.postId,
+              )
+            : {};
 
-      return postIds.map((postId, index) => {
-        const cachedPostView = cached[index];
-        if (cachedPostView) {
+        return postIds.map((postId, index) => {
+          const cachedPostView = cached[index];
+          if (cachedPostView) {
+            return {
+              postId,
+              count: Number.parseInt(cachedPostView),
+            };
+          }
+          const postView = missed[postId];
+
+          redis.setex(`Post:${postId}:viewCount`, 365 * 24 * 60 * 60, postView?.count ?? 0);
           return {
             postId,
-            count: Number.parseInt(cachedPostView),
+            count: postView?.count ?? 0,
           };
-        }
-        const postView = missed[postId];
+        });
+      },
+      key: (row) => row.postId,
+    });
 
-        redis.setex(`Post:${postId}:viewCount`, 365 * 24 * 60 * 60, postView?.count ?? 0);
-        return {
-          postId,
-          count: postView?.count ?? 0,
-        };
-      });
-    },
-    key: (row) => row.postId,
-  });
+    const postView = await loader.load(postId);
 
-  const postView = await loader.load(postId);
-
-  return postView.count;
+    return postView.count;
+  } else {
+    return await useCache(
+      `Post:${postId}:viewCount`,
+      async () => {
+        return await database
+          .select({ count: count() })
+          .from(PostViews)
+          .where(eq(PostViews.postId, postId))
+          .then((rows) => rows[0].count);
+      },
+      365 * 24 * 60 * 60,
+    );
+  }
 };
+
+export const calculatePostReputation = (postId: string) =>
+  useCache(
+    `Post:${postId}:reputation`,
+    async () => {
+      const [viewCount, purchasedCount] = await Promise.all([
+        getPostViewCount({ postId }),
+        database
+          .select({ count: count() })
+          .from(PostPurchases)
+          .where(eq(PostPurchases.postId, postId))
+          .then((row) => row[0].count),
+      ]);
+
+      return viewCount + purchasedCount * 20;
+    },
+    600,
+  );
 
 export const defragmentSpaceCollectionPosts = async (tx: Transaction, collectionId: string) => {
   const posts = await tx
