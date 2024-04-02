@@ -2,7 +2,6 @@ import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from '@aws-sd
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { eq } from 'drizzle-orm';
 import * as R from 'radash';
-import { useCache } from '$lib/server/cache';
 import { database, Images, PostRevisionContents, PostRevisions, Posts } from '$lib/server/database';
 import { aws } from '$lib/server/external-api';
 import { finalizeImage } from '$lib/server/utils';
@@ -58,28 +57,22 @@ builder.queryFields((t) => ({
     type: Image,
     nullable: true,
     resolve: async () => {
-      return await useCache(
-        'authLayoutBackgroundImage',
-        async () => {
-          const posts = await database
-            .select({ content: PostRevisionContents.data })
-            .from(Posts)
-            .innerJoin(PostRevisions, eq(PostRevisions.id, Posts.publishedRevisionId))
-            .innerJoin(PostRevisionContents, eq(PostRevisionContents.id, PostRevisions.freeContentId))
-            .where(eq(Posts.id, 'authlayout_bg'));
+      const posts = await database
+        .select({ content: PostRevisionContents.data })
+        .from(Posts)
+        .innerJoin(PostRevisions, eq(PostRevisions.id, Posts.publishedRevisionId))
+        .innerJoin(PostRevisionContents, eq(PostRevisionContents.id, PostRevisions.freeContentId))
+        .where(eq(Posts.id, 'authlayout_bg'));
 
-          if (posts.length === 0) {
-            return null;
-          }
+      if (posts.length === 0) {
+        return null;
+      }
 
-          const ids = (posts[0].content as { type: string; attrs: Record<string, unknown> }[])
-            .filter(({ type }) => type === 'image')
-            .map(({ attrs }) => attrs.id as string);
+      const ids = (posts[0].content as { type: string; attrs: Record<string, unknown> }[])
+        .filter(({ type }) => type === 'image')
+        .map(({ attrs }) => attrs.id as string);
 
-          return R.draw(ids);
-        },
-        10,
-      );
+      return R.draw(ids);
     },
   }),
 }));
