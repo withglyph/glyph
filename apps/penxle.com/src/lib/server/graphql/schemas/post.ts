@@ -217,6 +217,10 @@ Post.implement({
 
     blurred: t.boolean({
       resolve: async (post, _, context) => {
+        if (context.session?.userId === post.userId) {
+          return false;
+        }
+
         if (post.ageRating !== 'ALL' && !context.session) {
           return true;
         }
