@@ -146,7 +146,7 @@ const handle = async (context: Context, externalUser: ExternalUser & Partial<Twi
   const sso = await database
     .select({ userId: UserSingleSignOns.userId })
     .from(UserSingleSignOns)
-    .where(eq(eq(UserSingleSignOns.provider, externalUser.provider), eq(UserSingleSignOns.principal, externalUser.id)))
+    .where(and(eq(UserSingleSignOns.provider, externalUser.provider), eq(UserSingleSignOns.principal, externalUser.id)))
     .then(useFirstRow);
 
   // 하나의 핸들러로 여러가지 기능을 처리하기에 케이스 분리가 필요함.
