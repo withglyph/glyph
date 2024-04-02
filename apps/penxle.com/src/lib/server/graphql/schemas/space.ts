@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { and, count, desc, eq, inArray, isNotNull, notExists, notInArray } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, isNotNull, ne, notExists, notInArray } from 'drizzle-orm';
 import { match } from 'ts-pattern';
 import { SpaceMemberRole, SpaceVisibility } from '$lib/enums';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
@@ -527,7 +527,7 @@ builder.mutationFields((t) => ({
         const slugUsages = await database
           .select({ id: Spaces.id })
           .from(Spaces)
-          .where(and(eq(Spaces.slug, input.slug), eq(Spaces.state, 'ACTIVE')));
+          .where(and(eq(Spaces.slug, input.slug), eq(Spaces.state, 'ACTIVE'), ne(Spaces.id, input.spaceId)));
 
         if (slugUsages.length > 0) {
           throw new IntentionalError('이미 사용중인 URL이에요.');
