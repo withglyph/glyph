@@ -1,7 +1,7 @@
 import { stack } from '@penxle/lib/environment';
 import * as Sentry from '@sentry/sveltekit';
 import { nanoid } from 'nanoid';
-import { dev } from '$app/environment';
+import { building, dev } from '$app/environment';
 import { pub, rabbit } from '../mq';
 import { finalizeResource, setResourceFinalizer } from '../utils';
 import { IndexAllPostsInSpaceJob, IndexPostJob } from './search';
@@ -9,46 +9,52 @@ import type { JobFn } from './types';
 
 const jobs = [IndexAllPostsInSpaceJob, IndexPostJob];
 
-await finalizeResource('jobs');
-
-const exchange = 'jobs';
-const queue = dev ? `jobs:local:${nanoid()}` : `jobs:${stack}`;
-const routingKey = queue;
-
-await rabbit.exchangeDeclare({ exchange, type: 'direct' });
-
 type Jobs = typeof jobs;
 type JobNames = Jobs[number]['name'];
 type JobMap = { [Job in Jobs[number] as Job['name']]: Job['fn'] };
 type Body = { name: JobNames; payload: unknown; meta: { retry: number } };
 
-const jobMap = Object.fromEntries(jobs.map((job) => [job.name, job.fn])) as JobMap;
-const sub = rabbit.createConsumer(
-  {
-    queue,
-    queueOptions: { exclusive: dev },
-    queueBindings: [{ exchange, queue, routingKey }],
-  },
-  async (msg) => {
-    const { name, payload, meta } = msg.body as Body;
-    try {
-      await jobMap[name]?.(payload as never);
-    } catch (err: unknown) {
-      if (meta.retry < 3) {
-        try {
-          const body = { name, payload, meta: { retry: meta.retry + 1 } } satisfies Body;
-          await pub.send({ exchange, routingKey }, body);
-          return;
-        } catch {
-          // pass
-        }
-      }
+const exchange = 'jobs';
+const queue = dev ? `jobs:local:${nanoid()}` : `jobs:${stack}`;
+const routingKey = queue;
 
-      Sentry.captureException(err);
-      console.error(err);
-    }
-  },
-);
+const startWorker = async () => {
+  await finalizeResource('jobs');
+
+  await rabbit.exchangeDeclare({ exchange, type: 'direct' });
+
+  const jobMap = Object.fromEntries(jobs.map((job) => [job.name, job.fn])) as JobMap;
+  const sub = rabbit.createConsumer(
+    {
+      queue,
+      queueOptions: { exclusive: dev },
+      queueBindings: [{ exchange, queue, routingKey }],
+    },
+    async (msg) => {
+      const { name, payload, meta } = msg.body as Body;
+      try {
+        await jobMap[name]?.(payload as never);
+      } catch (err: unknown) {
+        if (meta.retry < 3) {
+          try {
+            const body = { name, payload, meta: { retry: meta.retry + 1 } } satisfies Body;
+            await pub.send({ exchange, routingKey }, body);
+            return;
+          } catch {
+            // pass
+          }
+        }
+
+        Sentry.captureException(err);
+        console.error(err);
+      }
+    },
+  );
+
+  setResourceFinalizer('jobs', async () => {
+    await sub.close();
+  });
+};
 
 export const enqueueJob = async <N extends JobNames, F extends JobMap[N]>(
   name: N,
@@ -58,6 +64,6 @@ export const enqueueJob = async <N extends JobNames, F extends JobMap[N]>(
   await pub.send({ exchange, routingKey }, body);
 };
 
-setResourceFinalizer('jobs', async () => {
-  await sub.close();
-});
+if (!building) {
+  startWorker();
+}
