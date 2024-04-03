@@ -628,7 +628,7 @@ type Query {
   space(slug: String!): Space!
   spaceFeed: [Post!]!
   tag(name: String!): Tag!
-  tagFeed: [Post!]!
+  tagFeed: [TagFeed!]!
 }
 
 type Revenue {
@@ -800,6 +800,11 @@ type Tag {
   name: String!
   posts: [Post!]!
   usageCount: TagUsageCount!
+}
+
+type TagFeed {
+  posts: [Post!]!
+  tag: Tag!
 }
 
 input TagInput {
