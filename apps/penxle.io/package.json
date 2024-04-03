@@ -20,7 +20,7 @@
     "svelte": "^4.2.12"
   },
   "devDependencies": {
-    "@pandacss/dev": "^0.37.0",
+    "@pandacss/dev": "^0.37.1",
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@pulumi/pulumi": "^3.112.0",

@@ -103,7 +103,7 @@
   },
   "devDependencies": {
     "@iconify/json": "^2.2.196",
-    "@pandacss/dev": "^0.37.0",
+    "@pandacss/dev": "^0.37.1",
     "@penxle/pulumi": "workspace:^",
     "@penxle/tsconfig": "workspace:^",
     "@playwright/test": "^1.42.1",

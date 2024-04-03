@@ -43,6 +43,9 @@
       "read-package-tree": "*",
       "readdir-scoped-modules": "*",
       "string-similarity": "*"
+    },
+    "patchedDependencies": {
+      "@pandacss/generator@0.37.1": "patches/@pandacss__generator@0.37.1.patch"
     }
   }
 }
