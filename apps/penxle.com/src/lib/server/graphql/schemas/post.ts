@@ -570,21 +570,24 @@ Post.implement({
           size: 3,
         });
 
-        const posts = await database
-          .select({ id: Posts.id })
-          .from(Posts)
-          .innerJoin(Spaces, eq(Posts.spaceId, Spaces.id))
-          .where(
-            and(
-              inArray(Posts.id, searchResultToIds(searchResult)),
-              eq(Posts.state, 'PUBLISHED'),
-              eq(Posts.visibility, 'PUBLIC'),
-              eq(Spaces.state, 'ACTIVE'),
-              eq(Spaces.visibility, 'PUBLIC'),
-            ),
-          );
+        const postIds = searchResultToIds(searchResult);
 
-        return posts.map((post) => post.id);
+        return postIds.length > 0
+          ? await database
+              .select({ Posts })
+              .from(Posts)
+              .innerJoin(Spaces, eq(Posts.spaceId, Spaces.id))
+              .where(
+                and(
+                  inArray(Posts.id, postIds),
+                  eq(Posts.state, 'PUBLISHED'),
+                  eq(Posts.visibility, 'PUBLIC'),
+                  eq(Spaces.state, 'ACTIVE'),
+                  eq(Spaces.visibility, 'PUBLIC'),
+                ),
+              )
+              .then((rows) => rows.map((row) => row.Posts))
+          : [];
       },
     }),
 
