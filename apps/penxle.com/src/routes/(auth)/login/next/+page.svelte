@@ -41,6 +41,7 @@
 <Button
   style={center.raw({ gap: '10px', marginTop: '36px', fontSize: '16px', width: 'full' })}
   href="https://gmail.com"
+  size="lg"
   type="link"
   variant="gray-outline"
 >
@@ -51,6 +52,7 @@
 <Button
   style={center.raw({ gap: '10px', marginTop: '11px', marginBottom: '36px', fontSize: '16px', width: 'full' })}
   href="https://mail.naver.com"
+  size="lg"
   type="link"
   variant="gray-outline"
 >

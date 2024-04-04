@@ -30,7 +30,7 @@
       flexDirection: 'column',
       paddingX: { base: '20px', sm: '32px' },
       width: 'full',
-      height: { base: 'screen', sm: '520px' },
+      height: { base: 'screen', sm: '524px' },
       backgroundColor: 'gray.5',
       zIndex: '1',
       sm: {

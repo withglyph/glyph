@@ -107,4 +107,4 @@
   </div>
 </div>
 
-<Button style={css.raw({ marginY: '20px', width: 'full' })} size="md" on:click={handleSubmit}>시작하기</Button>
+<Button style={css.raw({ marginY: '20px', width: 'full' })} size="lg" on:click={handleSubmit}>시작하기</Button>
