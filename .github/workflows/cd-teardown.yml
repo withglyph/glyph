@@ -27,10 +27,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::721144421085:role/actions@github
           aws-region: ap-northeast-2
@@ -46,7 +46,7 @@ jobs:
         run: aws eks update-kubeconfig --name penxle
 
       - name: Destroy infrastructure
-        uses: pulumi/actions@v4
+        uses: pulumi/actions@v5
         with:
           command: destroy
           work-dir: apps/${{ matrix.app }}

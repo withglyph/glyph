@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -67,12 +67,12 @@ jobs:
           provenance: false
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
           version: latest
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: pnpm
@@ -98,7 +98,7 @@ jobs:
         run: aws eks update-kubeconfig --name penxle
 
       - name: Apply infrastructure
-        uses: pulumi/actions@v4
+        uses: pulumi/actions@v5
         with:
           command: up
           work-dir: apps/${{ matrix.app }}
