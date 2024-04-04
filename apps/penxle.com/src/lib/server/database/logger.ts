@@ -10,7 +10,7 @@ export class DrizzleLogger implements Logger {
       })
       .replaceAll('"', '');
 
-    logger.info({
+    logger.trace({
       context: 'database',
       query: q,
     });
