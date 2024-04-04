@@ -1,8 +1,6 @@
-import { Client } from '@urql/core';
+import { Client, fetchExchange } from '@urql/core';
 import { devtoolsExchange } from '@urql/devtools';
 import { cacheExchange } from '@urql/exchange-graphcache';
-import { fetchExchange } from './exchanges/fetch';
-import { refetchExchange, signalRefetch } from './exchanges/refetch';
 import type { Exchange } from '@urql/core';
 import type { CacheExchangeOpts } from '@urql/exchange-graphcache';
 import type { GlitchClient } from '../types';
@@ -19,7 +17,7 @@ export const createClient = <E>({ url, cache, ...rest }: CreateClientParams<E>) 
     const exchanges: Exchange[] = [];
 
     if (isClient) {
-      exchanges.push(devtoolsExchange, refetchExchange);
+      exchanges.push(devtoolsExchange);
     }
 
     exchanges.push(cacheExchange(cache), fetchExchange);
@@ -29,8 +27,4 @@ export const createClient = <E>({ url, cache, ...rest }: CreateClientParams<E>) 
       ...rest,
     };
   };
-};
-
-export const refetchAllQueries = () => {
-  signalRefetch();
 };

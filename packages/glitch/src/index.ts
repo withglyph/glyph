@@ -1,2 +1,2 @@
-export { createClient, refetchAllQueries } from './client';
+export { createClient } from './client';
 export type { FragmentStore, MutationStore, QueryStore } from './types';

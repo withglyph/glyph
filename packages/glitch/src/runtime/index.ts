@@ -12,7 +12,7 @@ export const graphql = (
     return createMutationStore(document);
   } else if (kind === 'fragment') {
     return null;
-  } else {
+  } else if (kind === 'subscription') {
     throw new Error('subscription is not supported yet');
   }
 };
