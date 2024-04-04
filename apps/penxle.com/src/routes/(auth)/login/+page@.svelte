@@ -33,7 +33,10 @@
 
 <div class={css({ position: 'fixed', inset: '0', display: 'flex' })}>
   {#if $query.authLayoutBackgroundImage}
-    <Image style={css.raw({ flexGrow: '1', objectFit: 'cover' })} $image={$query.authLayoutBackgroundImage} />
+    <Image
+      style={css.raw({ flexGrow: '1', objectFit: 'cover', overflow: 'hidden' })}
+      $image={$query.authLayoutBackgroundImage}
+    />
   {:else}
     <div class={css({ flexGrow: '1', backgroundColor: 'gray.100' })} />
   {/if}
