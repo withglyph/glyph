@@ -5,6 +5,7 @@
   import { fade } from 'svelte/transition';
   import IconMastodon from '~icons/simple-icons/mastodon';
   import IconTwitter from '~icons/simple-icons/twitter';
+  import IconCopy from '~icons/tabler/copy';
   import IconX from '~icons/tabler/x';
   import { Icon } from '$lib/components';
   import Button from '$lib/components/v2/Button.svelte';
@@ -12,6 +13,7 @@
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
+  import { TextInput } from './v2/forms';
   import type { HTMLAttributes } from 'svelte/elements';
   import type { SystemStyleObject } from '$styled-system/types';
 
@@ -35,8 +37,7 @@
     'gap': '6px',
 
     '& > label': {
-      fontSize: '13px',
-      fontWeight: 'medium',
+      fontSize: '14px',
       color: 'gray.500',
     },
   });
@@ -45,7 +46,6 @@
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: '8px',
     size: '64px',
     color: 'gray.500',
     backgroundColor: { base: 'gray.50', _hover: 'gray.150', _focusVisible: 'gray.150' },
@@ -57,7 +57,7 @@
     },
   });
 
-  const { floating, anchor, update } = createFloatingActions({ placement: 'bottom-end', offset: 16 });
+  const { floating, anchor, update } = createFloatingActions({ placement: 'bottom-end', offset: 6 });
 
   $: if (open) {
     // eslint-disable-next-line unicorn/prefer-top-level-await
@@ -105,13 +105,11 @@
     use:floating
     {...$$restProps}
     class={css({
-      borderWidth: '1px',
-      borderColor: 'gray.200',
-      borderRadius: '10px',
+      borderColor: 'gray.600',
       backgroundColor: 'gray.5',
       sm: {
+        borderWidth: '1px',
         width: '376px',
-        boxShadow: '[0px 6px 18px 0px {colors.gray.900/12}]',
         zIndex: '2',
       },
       smDown: {
@@ -120,33 +118,37 @@
         bottom: '[0!]',
         left: '[0!]',
         right: '[0!]',
-        borderBottomRadius: '0',
+        borderTopWidth: '1px',
         width: 'full',
-        boxShadow: '[0px 8px 24px 0px {colors.gray.900/28}]',
         zIndex: '50',
       },
     })}
     transition:fade={{ duration: 100 }}
   >
     <header
-      class={flex({
-        justify: 'space-between',
-        align: 'center',
+      class={css({
+        position: 'relative',
         borderBottomWidth: '1px',
-        borderBottomColor: 'gray.100',
+        borderBottomColor: 'gray.150',
         paddingX: '20px',
         paddingY: '12px',
+        fontSize: '18px',
         color: 'gray.900',
       })}
     >
-      <h1 class={css({ fontWeight: 'semibold' })}>공유하기</h1>
+      <h1 class={css({ fontWeight: 'semibold', textAlign: 'center' })}>공유</h1>
 
-      <button aria-label="닫기" type="button" on:click={() => (open = false)}>
+      <button
+        class={css({ position: 'absolute', top: '1/2', translate: 'auto', translateY: '-1/2', right: '20px' })}
+        aria-label="닫기"
+        type="button"
+        on:click={() => (open = false)}
+      >
         <Icon icon={IconX} size={24} />
       </button>
     </header>
 
-    <div class={flex({ justify: 'center', gap: '16px', paddingY: '20px' })} role="group">
+    <div class={flex({ justify: 'center', gap: '32px', paddingY: '48px' })} role="group">
       <div class={shareTargetMenuLinkWarpClassname}>
         <a
           id={twitterLinkId}
@@ -181,30 +183,14 @@
         margin: '20px',
         borderWidth: '1px',
         borderColor: 'gray.200',
-        borderRadius: '4px',
       })}
     >
-      <input
-        class={css({
-          flex: '1',
-          padding: '12px',
-          fontSize: '14px',
-        })}
-        readonly
-        type="text"
-        value={href}
-      />
+      <div class={css({ flexGrow: '1' })}>
+        <TextInput readonly type="text" value={href} />
+      </div>
       <Button
-        style={css.raw({
-          flex: 'none',
-          outlineWidth: '0',
-          borderLeftRadius: '0',
-          borderRightRadius: '4px',
-          borderRightWidth: '1px',
-        })}
-        size="lg"
+        style={flex.raw({ align: 'center', gap: '4px', flex: 'none' })}
         type="button"
-        variant="gray-sub-fill"
         on:click={async () => {
           try {
             navigator.clipboard.writeText(href);
@@ -214,6 +200,7 @@
           }
         }}
       >
+        <Icon icon={IconCopy} size={20} />
         복사
       </Button>
     </footer>

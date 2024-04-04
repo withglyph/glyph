@@ -21,7 +21,7 @@
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Alert, Avatar, Chip, Icon, Image, Tooltip } from '$lib/components';
+  import { Alert, Avatar, Chip, Icon, Image, ShareLinkPopover, Tooltip } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Button } from '$lib/components/v2';
   import { categoryFilter, pairFilter } from '$lib/const/feed';
@@ -39,7 +39,6 @@
   import CommentInput from './CommentInput.svelte';
   import SelectionBubbleMenu from './SelectionBubbleMenu.svelte';
   import ShareContent from './ShareContent.svelte';
-  import SharePostPopover from './SharePostPopover.svelte';
   import TagManageModal from './TagManageModal.svelte';
   import type { Editor } from '@tiptap/core';
   import type { Post_postRevision, Post_query } from '$glitch';
@@ -588,13 +587,13 @@
       </div>
 
       <div class={flex({ align: 'center', gap: '12px', hideBelow: 'sm' })}>
-        <SharePostPopover href={shortLink}>
+        <ShareLinkPopover href={shortLink}>
           <Icon
             style={css.raw({ color: { base: 'gray.500', _hover: 'teal.400' }, transition: 'common' })}
             icon={IconShare2}
             size={24}
           />
-        </SharePostPopover>
+        </ShareLinkPopover>
 
         <button
           type="button"
@@ -1100,9 +1099,9 @@
             />
           {/if}
         </button>
-        <SharePostPopover style={center.raw({ size: '34px' })} href={shortLink}>
+        <ShareLinkPopover style={center.raw({ size: '34px' })} href={shortLink}>
           <Icon style={css.raw({ color: { _hover: 'teal.400' }, transition: 'common' })} icon={IconShare2} size={24} />
-        </SharePostPopover>
+        </ShareLinkPopover>
       </div>
     </div>
 
@@ -1150,13 +1149,13 @@
           {/if}
         {/if}
       </div>
-      <SharePostPopover href={shortLink}>
+      <ShareLinkPopover href={shortLink}>
         <Icon
           style={css.raw({ color: { base: 'gray.500', _hover: 'teal.400' }, transition: 'common' })}
           icon={IconShare2}
           size={20}
         />
-      </SharePostPopover>
+      </ShareLinkPopover>
     </div>
 
     {#if $query.post.collection}

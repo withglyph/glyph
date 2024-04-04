@@ -1,11 +1,16 @@
 <script lang="ts">
-  import IconAlertTriangle from '~icons/tabler/alert-triangle';
+  import IconChevronRight from '~icons/tabler/chevron-right';
+  import IconPencil from '~icons/tabler/pencil';
+  import IconPlus from '~icons/tabler/plus';
   import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Helmet, Icon, SpacePostCard } from '$lib/components';
+  import { Helmet, Icon } from '$lib/components';
+  import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
-  import { center, flex } from '$styled-system/patterns';
+  import { flex } from '$styled-system/patterns';
+  import PostCard from '../../../(index)/PostCard.svelte';
+  import Collection from '../Collection.svelte';
 
   $: query = graphql(`
     query SpacePage_Query($slug: String!) {
@@ -15,9 +20,9 @@
         slug
         description
 
-        myMasquerade {
+        collections {
           id
-          blocked
+          ...SpacePage_Collection_spaceCollection
         }
 
         icon {
@@ -31,9 +36,10 @@
 
         posts {
           id
-
-          ...SpaceFeed_post
+          ...Feed_PostCard_post
         }
+
+        ...SpacePage_Collection_space
       }
     }
   `);
@@ -54,57 +60,76 @@
   title={$query.space.name}
 />
 
-<article
-  class={css(
-    {
-      flexDirection: 'column',
-      alignItems: 'center',
-      flexGrow: '1',
-      paddingY: '26px',
-      width: 'full',
-      maxWidth: '800px',
-      minHeight: '176px',
-      smDown: { gap: '8px', padding: '0', background: 'gray.100' },
-    },
-    ($query.space.posts.length === 0 || $query.space.myMasquerade?.blocked) && {
-      justifyContent: 'center',
-      alignItems: 'center',
-      gap: '0',
-    },
-  )}
->
-  {#if $query.space.myMasquerade?.blocked}
-    <Icon icon={IconAlertTriangle} size={28} />
-    <p class={css({ marginTop: '4px', marginBottom: '2px', fontSize: '18px', fontWeight: 'semibold' })}>
-      차단당했습니다
+<div class={flex({ align: 'center', justify: 'space-between', marginTop: '14px' })}>
+  <a href={`/${$query.space.slug}/posts`}>
+    <h2 class={css({ fontSize: { base: '16px', sm: '18px' }, fontWeight: { base: 'semibold', sm: 'bold' } })}>
+      포스트
+    </h2>
+  </a>
+  <a href={`/${$query.space.slug}/posts`}>
+    <Icon icon={IconChevronRight} size={24} />
+  </a>
+</div>
+
+{#if $query.space.posts.length === 0}
+  <div class={css({ marginY: '50px' })}>
+    <p class={css({ fontWeight: 'semibold', color: 'gray.400', textAlign: 'center' })}>
+      스페이스에 업로드된 포스트가 없어요
     </p>
-    <p class={css({ fontSize: '14px', color: 'gray.500' })}>{$query.space.name}의 게시물을 볼 수 없어요</p>
-  {:else if $query.space.posts.length === 0}
-    <div class={center({ flexDirection: 'column' })}>
-      <h2 class={css({ fontSize: '15px', fontWeight: 'bold', color: 'gray.500' })}>
-        아직 스페이스에 업로드된 포스트가 없어요
-      </h2>
-      {#if $query.space.meAsMember}
-        <Button
-          style={css.raw({ marginTop: '20px' })}
-          size="lg"
-          on:click={async () => {
-            const { permalink } = await createPost({ spaceId: $query.space.id });
-            mixpanel.track('post:create', { via: 'space' });
-            await goto(`/editor/${permalink}`);
-          }}
-        >
-          포스트 작성하기
-        </Button>
-      {/if}
-    </div>
-  {:else}
-    <ul class={flex({ direction: 'column', gap: { base: '8px', sm: '16px' }, width: 'full' })}>
-      {#each $query.space.posts as post (post.id)}
-        <li>
-          <SpacePostCard $post={post} />
-        </li>
-      {/each}
-    </ul>
-  {/if}
-</article>
+    {#if $query.space.meAsMember}
+      <Button
+        style={flex.raw({ align: 'center', gap: '4px', marginTop: '16px', marginX: 'auto' })}
+        variant="cyan-fill"
+        on:click={async () => {
+          const { permalink } = await createPost({ spaceId: $query.space.id });
+          mixpanel.track('post:create', { via: 'space-home', spaceId: $query.space.id });
+          await goto(`/editor/${permalink}`);
+        }}
+      >
+        <Icon icon={IconPencil} />
+        첫 포스트 작성하기
+      </Button>
+    {/if}
+  </div>
+{:else}
+  <ul class={flex({ align: 'center', gap: '12px', wrap: 'wrap' })}>
+    {#each $query.space.posts.slice(0, 4) as post (post.id)}
+      <li>
+        <PostCard style={css.raw({ width: { base: '162px', sm: '206px' } })} $post={post} showTags />
+      </li>
+    {/each}
+  </ul>
+{/if}
+
+<div class={flex({ align: 'center', justify: 'space-between', marginTop: '14px' })}>
+  <a href={`/${$query.space.slug}/collections`}>
+    <h2 class={css({ fontSize: { base: '16px', sm: '18px' }, fontWeight: { base: 'semibold', sm: 'bold' } })}>
+      컬렉션
+    </h2>
+  </a>
+  <a href={`/${$query.space.slug}/collections`}>
+    <Icon icon={IconChevronRight} size={24} />
+  </a>
+</div>
+
+{#if $query.space.collections.length === 0}
+  <div class={css({ marginY: '50px' })}>
+    <p class={css({ fontWeight: 'semibold', color: 'gray.400', textAlign: 'center' })}>
+      스페이스에 업로드된 컬렉션이 없어요
+    </p>
+    {#if $query.space.meAsMember}
+      <Button style={flex.raw({ align: 'center', gap: '4px', marginTop: '16px', marginX: 'auto' })} variant="cyan-fill">
+        <Icon icon={IconPlus} />
+        새 컬렉션 만들기
+      </Button>
+    {/if}
+  </div>
+{:else}
+  <ul class={flex({ align: 'center', gap: '12px', wrap: 'wrap', marginTop: '14px', marginBottom: '20px' })}>
+    {#each $query.space.collections.slice(0, 4) as collection (collection.id)}
+      <li>
+        <Collection $space={$query.space} $spaceCollection={collection} />
+      </li>
+    {/each}
+  </ul>
+{/if}

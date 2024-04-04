@@ -30,7 +30,7 @@
         }
 
         posts {
-          ...SpaceCollectionsEnitityPage_ManageCollectionModal_post
+          ...SpaceCollectionsEntityPage_ManageCollectionModal_post
         }
 
         collections {
@@ -45,7 +45,7 @@
           }
 
           ...UpdateCollectionModal_Collection_query
-          ...SpaceCollectionsEnitityPage_ManageCollectionModal_collection
+          ...SpaceCollectionsEntityPage_ManageCollectionModal_collection
         }
       }
     }

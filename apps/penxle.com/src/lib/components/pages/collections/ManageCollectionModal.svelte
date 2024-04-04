@@ -11,14 +11,14 @@
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type {
-    SpaceCollectionsEnitityPage_ManageCollectionModal_collection,
-    SpaceCollectionsEnitityPage_ManageCollectionModal_post,
+    SpaceCollectionsEntityPage_ManageCollectionModal_collection,
+    SpaceCollectionsEntityPage_ManageCollectionModal_post,
   } from '$glitch';
 
   $: slug = $page.params.space;
 
-  let _collection: SpaceCollectionsEnitityPage_ManageCollectionModal_collection;
-  let _posts: SpaceCollectionsEnitityPage_ManageCollectionModal_post[];
+  let _collection: SpaceCollectionsEntityPage_ManageCollectionModal_collection;
+  let _posts: SpaceCollectionsEntityPage_ManageCollectionModal_post[];
   export { _collection as $collection, _posts as $posts };
   export let open = false;
   export let spaceId: string;
@@ -28,7 +28,7 @@
   $: posts = fragment(
     _posts,
     graphql(`
-      fragment SpaceCollectionsEnitityPage_ManageCollectionModal_post on Post {
+      fragment SpaceCollectionsEntityPage_ManageCollectionModal_post on Post {
         id
         permalink
         publishedAt
@@ -53,7 +53,7 @@
   $: collection = fragment(
     _collection,
     graphql(`
-      fragment SpaceCollectionsEnitityPage_ManageCollectionModal_collection on SpaceCollection {
+      fragment SpaceCollectionsEntityPage_ManageCollectionModal_collection on SpaceCollection {
         id
         name
 
@@ -100,7 +100,7 @@
 
   const { form, setInitialValues, isSubmitting } = createMutationForm({
     mutation: graphql(`
-      mutation SpaceCollectionsEnitityPage_ManageCollectionModal_SetSpaceCollectionPosts_Mutation(
+      mutation SpaceCollectionsEntityPage_ManageCollectionModal_SetSpaceCollectionPosts_Mutation(
         $input: SetSpaceCollectionPostsInput!
       ) {
         setSpaceCollectionPosts(input: $input) {

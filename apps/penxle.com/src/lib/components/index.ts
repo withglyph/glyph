@@ -14,7 +14,7 @@ export { default as Pagination } from './Pagination.svelte';
 export { default as PostCard } from './PostCard.svelte';
 export { default as ProgressBar } from './ProgressBar.svelte';
 export { default as SegmentButtonGroup } from './SegmentButtonGroup.svelte';
-export { default as SpacePostCard } from './SpacePostCard.svelte';
+export { default as ShareLinkPopover } from './ShareLinkPopover.svelte';
 export { default as Tag } from './Tag.svelte';
 export { default as ToggleButton } from './ToggleButton.svelte';
 export { default as Tooltip } from './Tooltip.svelte';

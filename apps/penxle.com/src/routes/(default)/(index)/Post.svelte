@@ -209,7 +209,10 @@
       })}
     >
       {#if $post.thumbnail}
-        <Image style={css.raw({ flex: 'none', size: 'full', objectFit: 'cover' })} $image={$post.thumbnail} />
+        <Image
+          style={css.raw({ flex: 'none', size: 'full', aspectRatio: '16/10', objectFit: 'cover' })}
+          $image={$post.thumbnail}
+        />
       {/if}
 
       <div class={css({ position: 'absolute', left: '6px', bottom: '6px', display: 'flex', gap: '4px' })}>
