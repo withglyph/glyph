@@ -67,6 +67,7 @@
           root: {
             paddingX: '12px',
             paddingY: '10px',
+            fontSize: '14px',
             height: '44px',
           },
           rightIcon: { right: '12px' },
