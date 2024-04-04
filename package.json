@@ -35,11 +35,6 @@
     "pnpm": "^8.11.0"
   },
   "pnpm": {
-    "peerDependencyRules": {
-      "allowAny": [
-        "@urql/exchange-graphcache"
-      ]
-    },
     "allowedDeprecatedVersions": {
       "@babel/plugin-proposal-class-properties": "*",
       "@babel/plugin-proposal-object-rest-spread": "*",

@@ -50,7 +50,7 @@
     "@tiptap/pm": "^2.2.4",
     "@types/sortablejs": "^1.15.8",
     "@urql/core": "^5.0.0",
-    "@urql/exchange-graphcache": "^7.0.0",
+    "@urql/exchange-graphcache": "^6.5.1",
     "@use-gesture/vanilla": "^10.3.1",
     "argon2": "^0.40.1",
     "async-mutex": "^0.5.0",
