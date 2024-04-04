@@ -72,6 +72,7 @@ export default [
       'svelte/sort-attributes': 'error',
       'unicorn/catch-error-name': ['error', { name: 'err' }],
       'unicorn/consistent-function-scoping': 'off',
+      'unicorn/no-empty-file': 'off',
       'unicorn/no-null': 'off',
       'unicorn/no-useless-undefined': 'off',
       'unicorn/prefer-ternary': ['error', 'only-single-line'],
