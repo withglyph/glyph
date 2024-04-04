@@ -1,5 +1,5 @@
 <script lang="ts">
-  import IconPlus from '~icons/tabler/plus';
+  import IconPencil from '~icons/tabler/pencil';
   import { goto } from '$app/navigation';
   import FullLogo from '$assets/logos/full.svg?component';
   import { fragment, graphql } from '$glitch';
@@ -111,7 +111,7 @@
             await goto(`/editor/${permalink}`);
           }}
         >
-          <Icon icon={IconPlus} />
+          <Icon icon={IconPencil} />
           포스트 작성
         </Button>
         <NotificationMenu $user={$query.me} />
