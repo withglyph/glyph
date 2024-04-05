@@ -48,7 +48,7 @@
       paddingX: { base: '20px', sm: '43px' },
       width: 'full',
       backgroundColor: { base: '[black/40]', sm: 'gray.5' },
-      sm: { width: '420px' },
+      sm: { flex: 'none', width: '420px' },
       smDown: { position: 'fixed', zIndex: '1', size: 'full' },
     })}
   >
