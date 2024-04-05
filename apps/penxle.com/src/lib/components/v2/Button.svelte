@@ -129,11 +129,11 @@
             outlineColor: 'gray.200',
           },
         },
-        'red-text': {
+        'red-outline': {
           _enabled: {
             color: 'red.600',
             backgroundColor: { _hover: 'red.50', _focusVisible: 'red.50', _active: 'gray.5', _pressed: 'gray.5' },
-            outlineWidth: { _active: '2px', _pressed: '2px' },
+            outlineWidth: { base: '1px', _active: '3px', _pressed: '3px' },
             outlineColor: 'red.600',
           },
         },
