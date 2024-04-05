@@ -31,7 +31,7 @@ export const getUserRevenue = async ({ userId, withdrawableOnly, monthlyWithdraw
       ),
     );
 
-  return value;
+  return value ?? 0;
 };
 
 type SettleRevenueParams = {

@@ -300,12 +300,11 @@ User.implement({
     followedTags: t.field({
       type: [Tag],
       resolve: async (user) => {
-        const follows = await database
-          .select({ tagId: TagFollows.id })
+        return await database
+          .select({ tagId: TagFollows.tagId })
           .from(TagFollows)
-          .where(and(eq(TagFollows.userId, user.id)));
-
-        return follows.map((tag) => tag.tagId);
+          .where(and(eq(TagFollows.userId, user.id)))
+          .then((rows) => rows.map((row) => row.tagId));
       },
     }),
 
