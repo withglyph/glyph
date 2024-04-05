@@ -88,11 +88,10 @@
         maxWidth: '[32%]',
         width: 'full',
       })}
-      open
     />
 
     <div class={flex({ align: 'center', gap: { base: '24px', sm: '28px' } })}>
-      <SearchBar style={css.raw({ hideFrom: 'sm', maxWidth: 'full' })} />
+      <SearchBar style={css.raw({ hideFrom: 'sm', maxWidth: 'full' })} smBelow />
       {#if $query.me}
         <Button
           style={flex.raw({

@@ -1,10 +1,10 @@
 <script lang="ts">
   import qs from 'query-string';
-  import { onMount, tick } from 'svelte';
+  import { tick } from 'svelte';
   import IconSearch from '~icons/effit/search';
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconX from '~icons/tabler/x';
-  import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
+  import { afterNavigate, goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { Icon } from '$lib/components';
   import { TextInput } from '$lib/components/v2/forms';
@@ -17,7 +17,8 @@
   let inputEl: HTMLInputElement | undefined;
   let value = ($page.url.pathname === '/search' && $page.url.searchParams.get('q')) || '';
 
-  export let open = false;
+  export let smBelow = false;
+  let open = !smBelow;
 
   afterNavigate(({ from, to }) => {
     if (!from || !to) return;
@@ -34,33 +35,13 @@
       value = '';
     }
   });
-
-  onMount(() => {
-    const toggleSearchBar = () => {
-      open = window.innerWidth >= 992;
-    };
-
-    toggleSearchBar();
-
-    window.addEventListener('resize', toggleSearchBar);
-
-    return () => {
-      window.removeEventListener('resize', toggleSearchBar);
-    };
-  });
-
-  beforeNavigate(() => {
-    if (window.innerWidth < 992 && open) {
-      open = false;
-    }
-  });
 </script>
 
 {#if open}
   <div
     class={css(
       {
-        smDown: {
+        '&[data-sm-below=true]': {
           position: 'absolute',
           inset: '0',
           zIndex: '50',
@@ -70,11 +51,15 @@
           backgroundColor: 'gray.5',
           height: 'full',
         },
+        '&[data-sm-below=false] > button.close-search-bar': {
+          display: 'none',
+        },
       },
       style,
     )}
+    data-sm-below={smBelow}
   >
-    <button class={css({ hideFrom: 'sm' })} type="button" on:click={() => (open = false)}>
+    <button class="close-search-bar" type="button" on:click={() => (open = false)}>
       <Icon icon={IconChevronLeft} size={24} />
     </button>
     <form
