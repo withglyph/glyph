@@ -77,8 +77,7 @@
           class={center({ color: 'gray.600', display: { _disabled: 'none' } })}
           aria-label="지우기"
           disabled={value.length === 0}
-          type="button"
-          on:click={() => (value = '')}
+          type="reset"
         >
           <Icon icon={IconX} size={20} />
         </button>
