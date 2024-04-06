@@ -372,9 +372,10 @@
             />
           {/if}
 
-          <div class={css({ zIndex: '50' }, !colorPickerOpen && { display: 'none' })} use:colorPickerFloating>
+          <div class={css({ zIndex: '50' })} use:colorPickerFloating>
             <ColorPicker
               hex={currentColor}
+              open={colorPickerOpen}
               on:input={(event) => {
                 const { hex } = event.detail;
                 if (hex === values.defaultColor) {

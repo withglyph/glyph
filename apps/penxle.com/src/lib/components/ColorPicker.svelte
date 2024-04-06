@@ -5,53 +5,51 @@
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
 
+  let initialized = false;
+
   let colorBlock: HTMLCanvasElement;
-  let colorCtx: CanvasRenderingContext2D | null;
+  let colorCtx: CanvasRenderingContext2D;
 
   let drag = false;
 
-  let hexInputEl: HTMLInputElement | undefined;
-  let gradientSliderInputEl: HTMLInputElement | undefined;
+  let hexInputEl: HTMLInputElement;
+  let hueGradientInputEl: HTMLInputElement;
 
-  export let hex = '#000000';
+  export let open: boolean;
+  export let hex: string;
+
   const dispatch = createEventDispatcher<{ input: { hex: string } }>();
   const dispatchInput = (color: Color) => {
-    hex = color.hex().toString().toUpperCase();
-
-    dispatch('input', { hex });
+    dispatch('input', { hex: color.hex().toUpperCase() });
   };
-
-  let rgb = Color(hex).rgb();
-
-  $: if (hexInputEl) {
-    hexInputEl.value = hex;
-  }
 
   let x = 0;
   let y = 0;
 
-  const fillGradient = () => {
-    if (!colorCtx) throw new Error('colorCtx is null');
-
-    let gradientH = colorCtx.createLinearGradient(0, 0, colorCtx.canvas.width, 0);
-    gradientH.addColorStop(0, 'white');
-    gradientH.addColorStop(1, rgb.toString());
+  const fillBoxGradient = (hue: number) => {
+    const gradientH = colorCtx.createLinearGradient(0, 0, colorCtx.canvas.width, 0);
+    gradientH.addColorStop(0, `hsl(${hue}, 100%, 100%)`);
+    gradientH.addColorStop(1, `hsl(${hue}, 100%, 50%)`);
     colorCtx.fillStyle = gradientH;
     colorCtx.fillRect(0, 0, colorCtx.canvas.width, colorCtx.canvas.height);
 
-    let gradientV = colorCtx.createLinearGradient(0, 0, 0, colorCtx.canvas.height);
-    gradientV.addColorStop(0, 'rgba(0,0,0,0)');
-    gradientV.addColorStop(1, 'black');
+    const gradientV = colorCtx.createLinearGradient(0, 0, 0, colorCtx.canvas.height);
+    gradientV.addColorStop(0, 'rgba(0, 0, 0, 0)');
+    gradientV.addColorStop(1, `hsl(${hue}, 0%, 0%)`);
     colorCtx.fillStyle = gradientV;
     colorCtx.fillRect(0, 0, colorCtx.canvas.width, colorCtx.canvas.height);
   };
 
-  const updatePosition = () => {
-    x = Math.max(0, Math.min(rgb.saturationl() * colorBlock.offsetWidth, colorBlock.offsetWidth));
-    y = Math.max(0, Math.min((1 - rgb.lightness()) * colorBlock.offsetHeight, colorBlock.offsetHeight));
+  const getColorAtBoxGradientPosition = () => {
+    const [red, green, blue] = colorCtx.getImageData(x, y, 1, 1).data;
+    return Color([red, green, blue]);
   };
 
-  const onChangeColor = (e: MouseEvent | TouchEvent) => {
+  const updateHexInputValue = (value: string) => {
+    hexInputEl.value = value.toUpperCase();
+  };
+
+  const onChangeBoxGradientPosition = (e: MouseEvent | TouchEvent) => {
     if (!colorCtx) return;
 
     let _x: number, _y: number;
@@ -71,21 +69,34 @@
     x = Math.max(0, Math.min(_x, colorBlock.offsetWidth));
     y = Math.max(0, Math.min(_y, colorBlock.offsetHeight));
 
-    const imageData = colorCtx.getImageData(x, y, 1, 1).data;
+    const color = getColorAtBoxGradientPosition();
+    updateHexInputValue(color.hex());
 
-    rgb = Color([imageData[0], imageData[1], imageData[2]]);
-    dispatchInput(rgb);
+    dispatchInput(color);
   };
 
-  const updateColor = (color: Color) => {
-    rgb = color.rgb();
-    dispatchInput(rgb);
+  const updateColorFromHex = (value: string) => {
+    const color = Color(value);
+    const hue = color.hue();
 
-    fillGradient();
-    updatePosition();
+    fillBoxGradient(hue);
+    hueGradientInputEl.value = hue.toString();
 
-    if (!gradientSliderInputEl) throw new Error('gradientSliderInputEl is undefined');
-    gradientSliderInputEl.value = rgb.hue().toString();
+    x = (color.saturationl() / 100) * colorBlock.offsetWidth;
+    y = (1 - color.lightness() / 100) * colorBlock.offsetHeight;
+
+    updateHexInputValue(value);
+
+    dispatchInput(color);
+  };
+
+  const updateColorFromHue = (hue: number) => {
+    fillBoxGradient(hue);
+
+    const color = getColorAtBoxGradientPosition();
+    updateHexInputValue(color.hex());
+
+    dispatchInput(color);
   };
 
   const updateHistory = async () => {
@@ -97,16 +108,24 @@
 
   onMount(() => {
     const initializeBoxGradient = () => {
-      colorCtx = colorBlock.getContext('2d', { willReadFrequently: true });
-      if (!colorCtx) throw new Error('colorCtx is null');
+      const context = colorBlock.getContext('2d', { willReadFrequently: true });
+      if (!context) throw new Error('colorBlock context not found');
 
+      colorCtx = context;
       colorCtx.rect(0, 0, colorBlock.width, colorBlock.height);
     };
 
     initializeBoxGradient();
-    fillGradient();
-    updatePosition();
+    initialized = true;
   });
+
+  const resetColor = () => {
+    updateColorFromHex(hex);
+  };
+
+  $: if (initialized && open) {
+    resetColor();
+  }
 
   const presets = [
     '#EF4444',
@@ -122,7 +141,6 @@
   ];
 
   let history: string[] = [];
-
   $: paddedHistory = [...history, ...Array.from({ length: 5 - history.length }).fill(null)] as (null | string)[];
 </script>
 
@@ -135,6 +153,7 @@
     width: '192px',
     backgroundColor: 'gray.5',
     boxShadow: '[0 5px 22px 0 {colors.gray.900/6}]',
+    display: open ? 'block' : 'none',
   })}
 >
   <div class={css({ padding: '12px' })}>
@@ -151,7 +170,7 @@
       <button
         style:left={`${x}px`}
         style:top={`${y}px`}
-        style:background-color={rgb.toString()}
+        style:background-color={hex}
         class={css({
           position: 'absolute',
           borderWidth: '2px',
@@ -191,50 +210,45 @@
           }
 
           const imageData = colorCtx.getImageData(x, y, 1, 1).data;
-          rgb = Color([imageData[0], imageData[1], imageData[2]]);
-          dispatchInput(rgb);
+          dispatchInput(Color([imageData[0], imageData[1], imageData[2]]));
         }}
       />
       <canvas
         bind:this={colorBlock}
         class={css({ borderRadius: '4px', size: 'full', _hover: { cursor: 'crosshair' } })}
-        on:click={onChangeColor}
+        on:click={onChangeBoxGradientPosition}
         on:mousedown={() => (drag = true)}
         on:mousemove={(event) => {
           if (drag) {
-            onChangeColor(event);
+            onChangeBoxGradientPosition(event);
           }
         }}
         on:touchstart={() => (drag = true)}
         on:touchmove={(event) => {
           if (drag) {
-            onChangeColor(event);
+            onChangeBoxGradientPosition(event);
           }
         }}
       />
     </form>
 
     <input
-      bind:this={gradientSliderInputEl}
-      style={`--thumb-color: ${rgb.toString()}`}
+      bind:this={hueGradientInputEl}
+      style={`--thumb-color: ${hex}`}
       class="gradient-slider"
-      max="300"
+      max="360"
       min="0"
       type="range"
-      on:change={(event) => {
-        const hue = event.currentTarget.valueAsNumber;
-
-        updateColor(Color.hsl(hue, 100, 50));
-        updateHistory();
+      on:input={(event) => {
+        updateColorFromHue(event.currentTarget.valueAsNumber);
       }}
+      on:change={updateHistory}
     />
 
     <form
-      class={flex({ align: 'center' })}
+      class={flex({ align: 'center', overflow: 'hidden' })}
       on:submit|preventDefault={() => {
-        if (!hexInputEl) throw new Error('hexInputEl is undefined');
-
-        updateColor(Color(hexInputEl.value));
+        updateColorFromHex(hexInputEl.value);
         updateHistory();
       }}
     >
@@ -256,7 +270,7 @@
         type="color"
         value={hex}
         on:input={(event) => {
-          updateColor(Color(event.currentTarget.value));
+          updateColorFromHex(event.currentTarget.value);
         }}
         on:change={updateHistory}
       />
@@ -341,7 +355,7 @@
         type="button"
         on:click={() => {
           if (!color) return;
-          updateColor(Color(color));
+          updateColorFromHex(color);
         }}
       />
     {/each}
@@ -364,7 +378,7 @@
         aria-pressed={hex === preset}
         type="button"
         on:click={() => {
-          updateColor(Color(preset));
+          updateColorFromHex(preset);
           updateHistory();
         }}
       />
@@ -383,11 +397,12 @@
     background: linear-gradient(
       to right,
       hsl(0, 100%, 50%) 0%,
-      hsl(60, 100%, 50%) 20%,
-      hsl(120, 100%, 50%) 40%,
-      hsl(180, 100%, 50%) 60%,
-      hsl(240, 100%, 50%) 80%,
-      hsl(300, 100%, 50%) 100%
+      hsl(60, 100%, 50%) 17%,
+      hsl(120, 100%, 50%) 33%,
+      hsl(180, 100%, 50%) 50%,
+      hsl(240, 100%, 50%) 67%,
+      hsl(300, 100%, 50%) 83%,
+      hsl(360, 100%, 50%) 100%
     );
     &::-webkit-slider-thumb {
       -webkit-appearance: none;
