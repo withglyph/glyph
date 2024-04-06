@@ -3,8 +3,7 @@
   import IconMessageCircle from '~icons/tabler/message-circle';
   import IconMoodSmile from '~icons/tabler/mood-smile';
   import { fragment, graphql } from '$glitch';
-  import { Chip, Icon, Tag } from '$lib/components';
-  import Image from '$lib/components/Image.svelte';
+  import { Chip, Icon, Image, Tag } from '$lib/components';
   import { humanizeNumber } from '$lib/utils';
   import { css, sva } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -112,9 +111,11 @@
       style,
     )}
   >
-    {#if $post.thumbnail}
-      <Image style={css.raw({ size: 'full', aspectRatio: '16/10', objectFit: 'cover' })} $image={$post.thumbnail} />
-    {/if}
+    <Image
+      style={css.raw({ size: 'full', aspectRatio: '16/10', objectFit: 'cover' })}
+      $image={$post.thumbnail}
+      placeholder
+    />
 
     <div class={css({ position: 'absolute', left: '6px', bottom: '6px', display: 'flex', gap: '4px' })}>
       {#if $post.publishedRevision.price}
