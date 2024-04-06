@@ -18,6 +18,8 @@
     keydown: KeyboardEvent & { currentTarget: HTMLInputElement };
   };
 
+  let leftIconEl: HTMLElement | null = null;
+
   const { field } = getFormContext();
 
   if (field) {
@@ -27,9 +29,8 @@
   type Variants = RecipeVariant<typeof recipe>;
   const recipe = sva({
     className: 'input',
-    slots: ['leftIcon', 'root', 'rightIcon'],
+    slots: ['root', 'rightIcon'],
     base: {
-      leftIcon: { position: 'absolute', insetY: '0', display: 'flex', alignItems: 'center', justifyContent: 'center' },
       root: {
         borderWidth: '1px',
         borderColor: { base: 'gray.50', _enabled: { _hover: 'gray.100', _focus: 'gray.400' } },
@@ -53,7 +54,6 @@
     variants: {
       size: {
         xs: {
-          leftIcon: { left: '12px' },
           root: {
             paddingX: '12px',
             paddingY: '8px',
@@ -63,7 +63,6 @@
           rightIcon: { right: '12px' },
         },
         sm: {
-          leftIcon: { left: '12px' },
           root: {
             paddingX: '12px',
             paddingY: '10px',
@@ -73,7 +72,6 @@
           rightIcon: { right: '12px' },
         },
         md: {
-          leftIcon: { left: '14px' },
           root: {
             padding: '14px',
             height: '48px',
@@ -81,7 +79,6 @@
           rightIcon: { right: '14px' },
         },
         lg: {
-          leftIcon: { left: '14px' },
           root: {
             padding: '14px',
             height: '52px',
@@ -97,7 +94,17 @@
 
 <div class={flex({ align: 'center', position: 'relative' })}>
   {#if 'left-icon' in $$slots}
-    <div class={classes.leftIcon}>
+    <div
+      bind:this={leftIconEl}
+      style:left={size === 'xs' || size === 'sm' ? '12px' : '14px'}
+      class={css({
+        position: 'absolute',
+        insetY: '0',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      })}
+    >
       <slot name="left-icon" />
     </div>
   {/if}
@@ -105,13 +112,12 @@
     bind:this={inputEl}
     id={name}
     {name}
+    style:padding-left={leftIconEl &&
+      `calc(${leftIconEl.getBoundingClientRect().width + 6}px + ${leftIconEl.style.left})`}
     class={cx(
       classes.root,
       css(
         style,
-        'left-icon' in $$slots && {
-          paddingLeft: size === 'xs' ? '32px' : size === 'lg' ? '40px' : '34px',
-        },
         'right-icon' in $$slots && {
           paddingRight: size === 'xs' ? '32px' : size === 'lg' ? '40px' : '34px',
         },

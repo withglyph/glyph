@@ -1,7 +1,7 @@
-import { initSearchFilter } from '../util';
+import { initSearchFilter } from './util';
 import type { PageLoadEvent } from './$types';
 
-export const _SearchPostPage_QueryVariables = (event: PageLoadEvent) => {
+export const _SearchPage_QueryVariables = (event: PageLoadEvent) => {
   const { includeTags, excludeTags, adultFilter, excludeContentFilters, orderBy, page } = initSearchFilter(
     event.url.search,
   );
