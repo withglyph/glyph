@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Button, Helmet, Image } from '$lib/components';
   import { FormField, Switch, TextArea, TextInput } from '$lib/components/forms';

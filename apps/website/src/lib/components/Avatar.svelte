@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { css } from '$styled-system/css';
   import Image from './Image.svelte';
-  import type { Avatar_profile } from '$glitch';
+  import type { Avatar_profile } from '$bifrost';
   import type { SystemStyleObject } from '$styled-system/types';
 
   type Size = 16 | 24 | 32 | 48 | 64 | 96 | 128 | 256 | 512 | 1024 | 'full';

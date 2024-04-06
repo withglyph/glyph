@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Avatar, Helmet } from '$lib/components';
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';

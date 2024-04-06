@@ -11,7 +11,7 @@
   import IconTextRecognition from '~icons/tabler/text-recognition';
   import { browser } from '$app/environment';
   import { afterNavigate } from '$app/navigation';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon, Tooltip } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';

@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import IconMoodPlus from '~icons/tabler/mood-plus';
   import { afterNavigate } from '$app/navigation';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { createFloatingActions } from '$lib/svelte/actions';
@@ -12,7 +12,7 @@
   import i18n from './i18n.json';
   import { emojiData as data } from './index';
   import type { Emoji } from '@emoji-mart/data';
-  import type { EmojiPicker_query } from '$glitch';
+  import type { EmojiPicker_query } from '$bifrost';
   import type { SystemStyleObject } from '$styled-system/types';
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

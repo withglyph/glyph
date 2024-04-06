@@ -3,12 +3,18 @@ import { createForm } from 'felte';
 import { FormValidationError } from '$lib/errors';
 import { context } from './context';
 import type { AssignableErrors, Extender, RecursivePartial } from '@felte/core';
-import type { MutationStore } from '@withglyph/glitch';
+import type { MutationStore } from '@withglyph/bifrost/runtime';
 import type { AnyZodObject, TypeOf, ZodEffects } from 'zod';
 import type { MaybePromise, Unwrap } from '$lib/types';
 
 type MutationFormConfig<D, Z extends AnyZodObject> = {
-  mutation: MutationStore<D, { input: TypeOf<Z> }>;
+  mutation: MutationStore<{
+    $name: string;
+    $kind: 'mutation';
+    $input: { input: TypeOf<Z> };
+    $output: D;
+    $meta: Record<string, string>;
+  }>;
   schema: Z | ZodEffects<Z> | { validate: Z; warn: Z };
   initialValues?: RecursivePartial<TypeOf<Z>>;
   extra?: () => MaybePromise<RecursivePartial<TypeOf<Z>>>;

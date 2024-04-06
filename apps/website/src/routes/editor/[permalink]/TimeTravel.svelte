@@ -6,7 +6,7 @@
   import { yDocToProsemirrorJSON } from 'y-prosemirror';
   import * as Y from 'yjs';
   import IconClockPlay from '~icons/tabler/clock-play';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { Icon } from '$lib/components';
   import { RingSpinner } from '$lib/components/spinners';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
@@ -17,7 +17,7 @@
   import { getEditorContext } from './context';
   import type { Editor } from '@tiptap/core';
   import type { PointerEventHandler } from 'svelte/elements';
-  import type { EditorPage_TimeTravel_post } from '$glitch';
+  import type { EditorPage_TimeTravel_post } from '$bifrost';
 
   let _post: EditorPage_TimeTravel_post;
   export { _post as $post };

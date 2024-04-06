@@ -1,13 +1,13 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import { building } from '$app/environment';
 import { setupGlobals } from './common';
-import { logging } from './handles';
+import { headers, logging } from './handles';
 
 export { handleError } from './common';
 
 setupGlobals();
 
-export const handle = sequence(logging);
+export const handle = sequence(logging, headers);
 
 if (!building) {
   await import('$lib/server/graphql/handler');

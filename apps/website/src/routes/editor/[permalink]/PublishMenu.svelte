@@ -15,7 +15,7 @@
   import IconUser from '~icons/tabler/user';
   import IconX from '~icons/tabler/x';
   import { goto } from '$app/navigation';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon, Image, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { Checkbox, FormValidationMessage, Switch } from '$lib/components/forms';
@@ -32,7 +32,8 @@
   import PublishMenuSearch from './PublishMenuSearch.svelte';
   import RadioGroup from './RadioGroup.svelte';
   import type { ChangeEventHandler } from 'svelte/elements';
-  import type { EditorPage_PublishMenu_post, EditorPage_PublishMenu_query, Image_image, PostPair } from '$glitch';
+  import type { EditorPage_PublishMenu_post, EditorPage_PublishMenu_query, Image_image } from '$bifrost';
+  import type { PostPair } from '$lib/enums';
 
   export { _post as $post, _query as $query };
   let _post: EditorPage_PublishMenu_post;

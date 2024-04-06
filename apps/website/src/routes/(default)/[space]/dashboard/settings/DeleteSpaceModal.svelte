@@ -1,11 +1,11 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { css } from '$styled-system/css';
-  import type { SpaceDashboardSettingsPage_DeleteSpaceModal_space } from '$glitch';
+  import type { SpaceDashboardSettingsPage_DeleteSpaceModal_space } from '$bifrost';
 
   let _space: SpaceDashboardSettingsPage_DeleteSpaceModal_space;
   export { _space as $space };

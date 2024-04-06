@@ -1,4 +1,4 @@
-import { createClient } from '@withglyph/glitch';
+import { createClient } from '@withglyph/bifrost';
 import { AppError } from '$lib/errors';
 import { toast } from '$lib/notification';
 import { keys } from './keys';

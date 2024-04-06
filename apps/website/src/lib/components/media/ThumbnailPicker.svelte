@@ -1,7 +1,7 @@
 <script lang="ts">
   import ky from 'ky';
   import { createEventDispatcher } from 'svelte';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Button, Modal } from '$lib/components/v2';
   import { trackable } from '$lib/svelte/store';
   import { isValidImageFile, validImageMimes } from '$lib/utils';

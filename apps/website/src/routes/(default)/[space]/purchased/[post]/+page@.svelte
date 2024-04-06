@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import Footer from '../../../Footer.svelte';

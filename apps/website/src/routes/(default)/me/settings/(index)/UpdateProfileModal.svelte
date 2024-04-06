@@ -1,6 +1,6 @@
 <script lang="ts">
   import IconCamera from '~icons/tabler/camera';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon, Image } from '$lib/components';
   import { ThumbnailPicker } from '$lib/components/media';
@@ -10,7 +10,7 @@
   import { UpdateUserProfileSchema } from '$lib/validations';
   import { css } from '$styled-system/css';
   import { center } from '$styled-system/patterns';
-  import type { MeSettingsPage_UpdateProfileModal_profile } from '$glitch';
+  import type { MeSettingsPage_UpdateProfileModal_profile } from '$bifrost';
 
   let _profile: MeSettingsPage_UpdateProfileModal_profile;
   export { _profile as $profile };

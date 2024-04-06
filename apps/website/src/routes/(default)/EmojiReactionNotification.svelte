@@ -5,13 +5,13 @@
   import { onMount } from 'svelte';
   import IconMoodHeart from '~icons/tabler/mood-heart';
   import { goto } from '$app/navigation';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { emojiData } from '$lib/emoji';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import type { EmojiReactionNotification_emojiReactionNotification } from '$glitch';
+  import type { EmojiReactionNotification_emojiReactionNotification } from '$bifrost';
 
   let _emojiReactionNotification: EmojiReactionNotification_emojiReactionNotification;
   export { _emojiReactionNotification as $emojiReactionNotification };

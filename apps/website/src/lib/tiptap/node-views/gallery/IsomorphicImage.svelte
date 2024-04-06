@@ -4,7 +4,7 @@
   import { css } from '$styled-system/css';
   import { center } from '$styled-system/patterns';
   import FileImage from './FileImage.svelte';
-  import type { Image_image } from '$glitch';
+  import type { Image_image } from '$bifrost';
   import type { SystemStyleObject } from '$styled-system/types';
 
   type IsomorphicImage = { id: string } & (

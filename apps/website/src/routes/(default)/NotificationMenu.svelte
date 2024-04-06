@@ -2,7 +2,7 @@
   import IconBell from '~icons/tabler/bell';
   import IconX from '~icons/tabler/x';
   import { beforeNavigate } from '$app/navigation';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { Button } from '$lib/components/v2';
@@ -13,7 +13,7 @@
   import EmojiReactionNotification from './EmojiReactionNotification.svelte';
   import PurchaseNotification from './PurchaseNotification.svelte';
   import SubscribeNotification from './SubscribeNotification.svelte';
-  import type { DefaultLayout_NotificationMenu_user } from '$glitch';
+  import type { DefaultLayout_NotificationMenu_user } from '$bifrost';
 
   let _user: DefaultLayout_NotificationMenu_user;
   export { _user as $user };

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import Editor from './Editor.svelte';
 
   $: query = graphql(`

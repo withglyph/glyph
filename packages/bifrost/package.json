@@ -1,0 +1,66 @@
+{
+  "name": "@withglyph/bifrost",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/client.js",
+      "types": "./dist/client.d.ts"
+    },
+    "./runtime": {
+      "import": "./dist/runtime.js",
+      "types": "./dist/runtime.d.ts"
+    },
+    "./vite": {
+      "import": "./dist/vite.js",
+      "types": "./dist/vite.d.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/*"
+      ]
+    }
+  },
+  "bin": {
+    "bifrost": "./bin/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "codegen": "svelte-kit sync",
+    "dev": "tsup --watch",
+    "lint:typecheck": "tsc",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@sveltejs/kit": "^2.5.7",
+    "@urql/core": "^5.0.3",
+    "@urql/exchange-graphcache": "^7.0.2",
+    "dataloader": "^2.2.2",
+    "dedent": "^1.5.1",
+    "deepmerge": "^4.3.1",
+    "fast-glob": "^3.3.2",
+    "fast-json-stable-stringify": "^2.1.0",
+    "graphql": "^16.8.1",
+    "graphql-request": "^6.1.0",
+    "graphql-sse": "^2.5.3",
+    "object-traversal": "^1.0.1",
+    "radash": "^12.1.0",
+    "recast": "^0.23.6",
+    "svelte": "^4.2.15",
+    "ts-pattern": "^5.1.1",
+    "wonka": "^6.3.4"
+  },
+  "devDependencies": {
+    "@withglyph/tsconfig": "workspace:^",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.10",
+    "vitest": "^1.4.0"
+  }
+}

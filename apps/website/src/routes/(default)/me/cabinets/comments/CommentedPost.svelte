@@ -1,10 +1,10 @@
 <script lang="ts">
   import dayjs from 'dayjs';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { Image } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import type { CommentedPost_postComment } from '$glitch';
+  import type { CommentedPost_postComment } from '$bifrost';
 
   let _postComment: CommentedPost_postComment;
   export { _postComment as $postComment };

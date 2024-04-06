@@ -2,7 +2,7 @@
   import qs from 'query-string';
   import IconFilter from '~icons/tabler/adjustments-horizontal';
   import { page } from '$app/stores';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { AdSense, Helmet, Icon, Pagination } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
   import { Select, SelectItem } from '$lib/components/v2/select';

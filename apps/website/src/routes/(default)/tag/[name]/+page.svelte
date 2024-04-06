@@ -3,7 +3,7 @@
   import IconDotsVertical from '~icons/tabler/dots-vertical';
   import IconVolume from '~icons/tabler/volume-3';
   import { page } from '$app/stores';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Alert, Helmet, Icon, Pagination } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';

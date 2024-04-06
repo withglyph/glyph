@@ -3,13 +3,14 @@
   import Google from '$assets/icons/google.svg?component';
   import Naver from '$assets/icons/naver.svg?component';
   import Twitter from '$assets/icons/twitter.svg?component';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Alert } from '$lib/components';
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import type { MeSettingsPage_UserSingleSignOn_user, UserSingleSignOnProvider } from '$glitch';
+  import type { MeSettingsPage_UserSingleSignOn_user } from '$bifrost';
+  import type { UserSingleSignOnProvider } from '$lib/enums';
 
   let _user: MeSettingsPage_UserSingleSignOn_user;
   export { _user as $user };

@@ -1,7 +1,7 @@
 <script lang="ts">
   import IconHelpLine from '~icons/glyph/help-line';
   import IconChevronRight from '~icons/tabler/chevron-right';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Icon, Tooltip } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { Button } from '$lib/components/v2';

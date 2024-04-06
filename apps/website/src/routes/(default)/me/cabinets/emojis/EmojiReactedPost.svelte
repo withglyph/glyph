@@ -5,7 +5,7 @@
   import IconEye from '~icons/tabler/eye';
   import IconMessageCircle from '~icons/tabler/message-circle';
   import IconMoodSmile from '~icons/tabler/mood-smile';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Chip, Icon, Image } from '$lib/components';
   import { humanizeNumber } from '$lib/utils';
@@ -15,7 +15,7 @@
   import type {
     MeCabinetsEmojisPage_EmojiReactedPost_post,
     MeCabinetsEmojisPage_EmojiReactedPost_query,
-  } from '$glitch';
+  } from '$bifrost';
   import type { SystemStyleObject } from '$styled-system/types';
 
   let _post: MeCabinetsEmojisPage_EmojiReactedPost_post;

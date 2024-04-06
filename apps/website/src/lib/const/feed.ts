@@ -1,4 +1,4 @@
-import type { ContentFilterCategory, PostCategory, PostPair } from '$glitch';
+import type { ContentFilterCategory, PostCategory, PostPair } from '$lib/enums';
 
 export const filterToLocaleString: Record<ContentFilterCategory, string> = {
   ADULT: '성인물',

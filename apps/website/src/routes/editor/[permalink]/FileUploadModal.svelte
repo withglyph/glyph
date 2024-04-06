@@ -3,7 +3,7 @@
   import { nanoid } from 'nanoid';
   import { writable } from 'svelte/store';
   import FilePlusIcon from '~icons/tabler/file-plus';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Icon } from '$lib/components';
   import { Modal } from '$lib/components/v2';
   import Button from '$lib/components/v2/Button.svelte';

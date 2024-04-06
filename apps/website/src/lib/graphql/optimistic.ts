@@ -1,4 +1,4 @@
-import type { GraphCacheConfig } from '$glitch';
+import type { GraphCacheConfig } from '$bifrost';
 
 export const optimistic: GraphCacheConfig['optimistic'] = {
   likePost: ({ input }, cache) => ({

@@ -4,12 +4,12 @@
   import IconBookmark from '~icons/tabler/bookmark';
   import IconBookmarkFilled from '~icons/tabler/bookmark-filled';
   import IconDotsVertical from '~icons/tabler/dots-vertical';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Avatar, Chip, Icon, Image, Tag } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import type { Feed_post } from '$glitch';
+  import type { Feed_post } from '$bifrost';
   import type { SystemStyleObject } from '$styled-system/types';
 
   let _post: Feed_post;

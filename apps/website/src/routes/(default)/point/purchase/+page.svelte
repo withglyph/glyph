@@ -2,7 +2,7 @@
   import qs from 'query-string';
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import Paypal from '$assets/icons/paypal.svg?component';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Helmet, Icon, Link, ToggleButton } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
@@ -13,7 +13,7 @@
   import { PurchasePointSchema } from '$lib/validations';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
-  import type { PaymentMethod } from '$glitch';
+  import type { PaymentMethod } from '$lib/enums';
 
   $: query = graphql(`
     query PointPurchasePage_Query {

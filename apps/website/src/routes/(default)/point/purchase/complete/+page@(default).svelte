@@ -1,13 +1,13 @@
 <script lang="ts">
   import dayjs from 'dayjs';
   import { onMount } from 'svelte';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Helmet } from '$lib/components';
   import { Button } from '$lib/components/v2';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import type { PaymentMethod } from '$glitch';
+  import type { PaymentMethod } from '$lib/enums';
 
   $: query = graphql(`
     query PointPurchaseCompletePage_Query($paymentKey: String!) {

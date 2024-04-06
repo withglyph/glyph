@@ -1,14 +1,14 @@
 <script lang="ts">
   import IconPlus from '~icons/tabler/plus';
   import { beforeNavigate } from '$app/navigation';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { Button, Icon } from '$lib/components';
   import Image from '$lib/components/Image.svelte';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import CreateSpaceModal from '../../CreateSpaceModal.svelte';
-  import type { SpaceDashboardLayout_SpaceListMenu_query } from '$glitch';
+  import type { SpaceDashboardLayout_SpaceListMenu_query } from '$bifrost';
 
   let _query: SpaceDashboardLayout_SpaceListMenu_query;
   export { _query as $query };

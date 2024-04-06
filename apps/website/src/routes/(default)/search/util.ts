@@ -1,12 +1,12 @@
 import qs from 'query-string';
-import type { ContentFilterCategory, SearchOrderByKind } from '$glitch';
+import type { ContentFilterCategory } from '$lib/enums';
 
 export const initSearchFilter = (param: string) => {
   let includeTags: string[] = [];
   let excludeTags: string[] = [];
   let adultFilter: boolean | null = null;
   let excludeContentFilters: ContentFilterCategory[] = [];
-  let orderBy: SearchOrderByKind = 'ACCURACY';
+  let orderBy: 'ACCURACY' | 'LATEST' = 'ACCURACY';
   let page = 1;
 
   const parsedURL = qs.parseUrl(param).query;

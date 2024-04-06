@@ -1,12 +1,12 @@
 <script lang="ts">
   import IconTrash from '~icons/tabler/trash';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { Modal } from '$lib/components/v2';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import type { MeCabinetsPage_FollowTagModal_user } from '$glitch';
+  import type { MeCabinetsPage_FollowTagModal_user } from '$bifrost';
 
   let _user: MeCabinetsPage_FollowTagModal_user;
   export { _user as $user };

@@ -1,6 +1,6 @@
 <script lang="ts">
   import IconChevronRight from '~icons/tabler/chevron-right';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Button, Helmet, Icon } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { comma } from '$lib/utils';

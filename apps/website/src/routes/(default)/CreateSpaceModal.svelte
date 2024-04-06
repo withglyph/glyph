@@ -4,7 +4,7 @@
   import IconCamera from '~icons/tabler/camera';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon, Image, Tooltip } from '$lib/components';
   import { ThumbnailPicker } from '$lib/components/media';
@@ -14,7 +14,7 @@
   import { CreateSpaceSchema } from '$lib/validations';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import type { CreateSpaceModal_user, Image_image } from '$glitch';
+  import type { CreateSpaceModal_user, Image_image } from '$bifrost';
 
   let _user: CreateSpaceModal_user;
   export { _user as $user };

@@ -1,7 +1,7 @@
 <script lang="ts">
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconChevronRight from '~icons/tabler/chevron-right';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { AdSense, Helmet, Icon, Image, Tag } from '$lib/components';
   import { categoryFilter } from '$lib/const/feed';
   import { css } from '$styled-system/css';

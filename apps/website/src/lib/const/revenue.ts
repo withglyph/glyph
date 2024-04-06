@@ -1,4 +1,4 @@
-import type { RevenueWithdrawalState } from '$glitch';
+import type { RevenueWithdrawalState } from '$lib/enums';
 
 export const banks: Record<string, string> = {
   '090': '카카오뱅크',

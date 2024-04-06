@@ -1,11 +1,11 @@
 <script lang="ts">
   import dayjs from 'dayjs';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Helmet, Image } from '$lib/components';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import type { PointTransactionCause } from '$glitch';
+  import type { PointTransactionCause } from '$lib/enums';
 
   $: query = graphql(`
     query MePointUsagePage_Query {

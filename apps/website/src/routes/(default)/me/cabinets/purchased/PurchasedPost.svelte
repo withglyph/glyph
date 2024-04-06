@@ -1,10 +1,10 @@
 <script lang="ts">
   import dayjs from 'dayjs';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { Chip, Image } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import type { MeCabinetsPurchasedPage_PurchasedPost_post } from '$glitch';
+  import type { MeCabinetsPurchasedPage_PurchasedPost_post } from '$bifrost';
   import type { SystemStyleObject } from '$styled-system/types';
 
   let _post: MeCabinetsPurchasedPage_PurchasedPost_post;

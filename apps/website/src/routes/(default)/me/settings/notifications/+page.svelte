@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Helmet } from '$lib/components';
   import { flex } from '$styled-system/patterns';
   import NotificationSwitch from './NotificationSwitch.svelte';

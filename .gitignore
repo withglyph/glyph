@@ -2,6 +2,7 @@
 
 node_modules/
 
+.bifrost/
 .glitch/
 .svelte-kit/
 .turbo/

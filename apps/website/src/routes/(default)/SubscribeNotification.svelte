@@ -3,11 +3,11 @@
   import ky from 'ky';
   import IconCheck from '~icons/tabler/check';
   import { goto } from '$app/navigation';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { css } from '$styled-system/css';
-  import type { SubscribeNotification_subscribeNotification } from '$glitch';
+  import type { SubscribeNotification_subscribeNotification } from '$bifrost';
 
   let _subscribeNotification: SubscribeNotification_subscribeNotification;
   export { _subscribeNotification as $subscribeNotification };

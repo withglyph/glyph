@@ -6,7 +6,7 @@
   import IconShare2 from '~icons/tabler/share-2';
   import IconVolume3 from '~icons/tabler/volume-3';
   import { page } from '$app/stores';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Alert, Icon, Image, ShareLinkPopover } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';

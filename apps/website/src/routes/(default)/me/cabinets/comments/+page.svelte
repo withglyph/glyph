@@ -1,7 +1,7 @@
 <script lang="ts">
   import qs from 'query-string';
   import { page } from '$app/stores';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Helmet, Pagination } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';

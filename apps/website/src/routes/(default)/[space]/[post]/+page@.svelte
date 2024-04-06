@@ -2,7 +2,7 @@
   import dayjs from 'dayjs';
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Helmet } from '$lib/components';
   import { css } from '$styled-system/css';

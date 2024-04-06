@@ -7,7 +7,7 @@
   import IconChevronDown from '~icons/tabler/chevron-down';
   import IconPlus from '~icons/tabler/plus';
   import IconTrash from '~icons/tabler/trash';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Avatar, Button, Chip, Icon, Image, Modal, Tag, Tooltip } from '$lib/components';
   import { Checkbox, Editable, Switch } from '$lib/components/forms';
@@ -16,12 +16,8 @@
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type { ChangeEventHandler } from 'svelte/elements';
-  import type {
-    PostManageTable_Collection,
-    PostManageTable_Post_query,
-    PostManageTable_SpaceMember,
-    PostVisibility,
-  } from '$glitch';
+  import type { PostManageTable_Collection, PostManageTable_Post_query, PostManageTable_SpaceMember } from '$bifrost';
+  import type { PostVisibility } from '$lib/enums';
   import type { PublishPostInput } from '$lib/validations/post';
 
   const toolbarMenuOffset = 16;

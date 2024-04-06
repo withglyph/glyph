@@ -3,7 +3,7 @@
   import IconPencil from '~icons/tabler/pencil';
   import IconPlus from '~icons/tabler/plus';
   import { goto } from '$app/navigation';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Helmet, Icon } from '$lib/components';
   import { CreateCollectionModal } from '$lib/components/pages/collections';

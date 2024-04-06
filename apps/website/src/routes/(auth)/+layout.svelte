@@ -1,6 +1,6 @@
 <script lang="ts">
   import FullLogo from '$assets/logos/full.svg?component';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Image } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';

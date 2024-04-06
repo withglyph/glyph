@@ -1,6 +1,6 @@
 <script lang="ts">
   import IconPlus from '~icons/tabler/plus';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Helmet, Icon } from '$lib/components';
   import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { Button } from '$lib/components/v2';

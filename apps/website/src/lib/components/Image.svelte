@@ -1,9 +1,9 @@
 <script lang="ts">
   import qs from 'query-string';
   import CompactLogo from '$assets/logos/compact.svg?component';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { css } from '$styled-system/css';
-  import type { Image_image } from '$glitch';
+  import type { Image_image } from '$bifrost';
   import type { SystemStyleObject } from '$styled-system/types';
 
   type Size = 16 | 24 | 32 | 48 | 64 | 96 | 128 | 256 | 512 | 1024 | 'full';

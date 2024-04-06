@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Button, Image, Modal } from '$lib/components';
   import { FormField, Switch, TextInput } from '$lib/components/forms';
@@ -8,7 +8,7 @@
   import { UpdateSpaceProfileSchema } from '$lib/validations';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import type { SpaceDashboardLayout_UpdateSpaceProfileModal_query } from '$glitch';
+  import type { SpaceDashboardLayout_UpdateSpaceProfileModal_query } from '$bifrost';
 
   let _query: SpaceDashboardLayout_UpdateSpaceProfileModal_query;
   export { _query as $query };

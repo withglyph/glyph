@@ -10,7 +10,7 @@
   import IconLayoutGrid from '~icons/tabler/layout-grid';
   import IconMinus from '~icons/tabler/minus';
   import IconPlus from '~icons/tabler/plus';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { Icon, Tooltip } from '$lib/components';
   import Image from '$lib/components/Image.svelte';
   import { Button, Modal } from '$lib/components/v2';
@@ -22,7 +22,7 @@
   import type {
     SpaceCollectionsEntityPage_ManageCollectionModal_collection,
     SpaceCollectionsEntityPage_ManageCollectionModal_post,
-  } from '$glitch';
+  } from '$bifrost';
 
   let _collection: SpaceCollectionsEntityPage_ManageCollectionModal_collection;
   let _posts: SpaceCollectionsEntityPage_ManageCollectionModal_post[];

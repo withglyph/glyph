@@ -5,14 +5,14 @@
   import IconEye from '~icons/tabler/eye';
   import IconMessageCircle from '~icons/tabler/message-circle';
   import IconMoodSmile from '~icons/tabler/mood-smile';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Chip, Icon, Image, Tag } from '$lib/components';
   import { humanizeNumber } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import LoginRequireAlert from '../LoginRequireAlert.svelte';
-  import type { Feed_Post_post, Feed_Post_query } from '$glitch';
+  import type { Feed_Post_post, Feed_Post_query } from '$bifrost';
   import type { SystemStyleObject } from '$styled-system/types';
 
   let _post: Feed_Post_post;

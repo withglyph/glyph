@@ -8,7 +8,7 @@ export default {
     adapter: docker(),
     alias: {
       '$assets': './src/assets',
-      '$glitch': './.glitch',
+      '$bifrost': './.bifrost',
       '$styled-system': './styled-system/*',
     },
     env: {

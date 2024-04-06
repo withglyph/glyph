@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Alert } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
@@ -8,7 +8,7 @@
   import { UpdateUserEmailSchema } from '$lib/validations';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import type { MeSettingsPage_UpdateEmailModal_user } from '$glitch';
+  import type { MeSettingsPage_UpdateEmailModal_user } from '$bifrost';
 
   export let open = false;
 
