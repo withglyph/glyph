@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fade, fly } from 'svelte/transition';
-  import IconChevronDown from '~icons/tabler/chevron-down';
-  import IconChevronUp from '~icons/tabler/chevron-up';
+  import IconCaretDownFilled from '~icons/tabler/caret-down-filled';
+  import IconCaretUpFilled from '~icons/tabler/caret-up-filled';
   import IconPencil from '~icons/tabler/pencil';
   import IconPlus from '~icons/tabler/plus';
   import { afterNavigate, goto } from '$app/navigation';
@@ -117,18 +117,18 @@
         width: { base: '312px', sm: '420px' },
         pointerEvents: 'none',
       })}
+      use:scrollLock
     >
       <div
         class={flex({
           direction: 'column',
-          borderTopLeftRadius: '12px',
           width: 'full',
           maxHeight: 'full',
           backgroundColor: 'gray.5',
           boxShadow: '[0px 6px 24px 0px {colors.gray.900/8}]',
           pointerEvents: 'auto',
         })}
-        use:scrollLock
+        data-scroll-lock-ignore
         in:fly={{ x: '10%', duration: 150 }}
         out:fade={{ duration: 150 }}
       >
@@ -141,26 +141,25 @@
                 gap: '26px',
                 borderBottomWidth: '1px',
                 borderBottomColor: 'gray.100',
-                paddingX: '16px',
-                paddingY: '18px',
+                padding: '14px',
               })}
             >
-              <a class={flex({ align: 'center', gap: '6px' })} href="/me/cabinets">
+              <a class={flex({ align: 'center', gap: '6px', truncate: true })} href="/me/cabinets">
                 <Avatar
                   style={css.raw({ borderWidth: '1px', borderColor: 'gray.100', size: '36px' })}
                   $profile={$user.profile}
                 />
                 <div class={css({ truncate: true })}>
-                  <p class={css({ fontSize: '14px', fontWeight: 'medium', truncate: true })}>
+                  <p class={css({ fontSize: '14px', truncate: true })}>
                     <span class={css({ truncate: true })}>{$user.profile.name}</span>
                     <span>님</span>
                   </p>
-                  <p class={css({ fontSize: '10px', color: 'gray.500' })}>{$user.email}</p>
+                  <p class={css({ fontSize: '12px', color: 'gray.600' })}>{$user.email}</p>
                 </div>
               </a>
 
               <Button
-                style={css.raw({ whiteSpace: 'nowrap' })}
+                style={css.raw({ whiteSpace: 'nowrap', flex: 'none' })}
                 href="/me/settings"
                 size="sm"
                 type="link"
@@ -176,8 +175,8 @@
                 align: 'center',
                 borderBottomWidth: '1px',
                 borderBottomColor: spaceListOpen ? 'gray.150' : 'gray.100',
-                padding: '16px',
-                paddingRight: '14px',
+                padding: '14px',
+                fontSize: '14px',
                 width: 'full',
               })}
               type="button"
@@ -185,12 +184,12 @@
                 spaceListOpen = !spaceListOpen;
               }}
             >
-              <p class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.800' })}>나의 스페이스</p>
+              <p>내 스페이스</p>
 
               {#if spaceListOpen}
-                <Icon style={css.raw({ color: 'gray.400' })} icon={IconChevronUp} size={20} />
+                <Icon style={css.raw({ color: 'gray.400' })} icon={IconCaretUpFilled} />
               {:else}
-                <Icon style={css.raw({ color: 'gray.400' })} icon={IconChevronDown} size={20} />
+                <Icon style={css.raw({ color: 'gray.400' })} icon={IconCaretDownFilled} />
               {/if}
             </button>
 
@@ -201,34 +200,35 @@
                     class={flex({
                       justify: 'space-between',
                       align: 'center',
-                      gap: '6px',
+                      gap: '40px',
                       borderBottomWidth: '1px',
                       borderBottomColor: 'gray.150',
-                      paddingX: '16px',
-                      paddingY: '12px',
-                      backgroundColor: 'gray.50',
+                      padding: '14px',
+                      paddingRight: '0',
+                      backgroundColor: { base: 'gray.5', _hover: 'gray.100' },
+                      transition: 'common',
                     })}
                   >
-                    <a class={flex({ align: 'center', gap: '12px', truncate: true })} href="/{space.slug}">
+                    <a
+                      class={flex({ align: 'center', gap: '12px', flexGrow: '1', truncate: true })}
+                      href="/{space.slug}"
+                    >
                       <div class={css({ position: 'relative', flex: 'none' })}>
                         <Image
                           style={css.raw({
                             flex: 'none',
-                            borderWidth: '1px',
-                            borderColor: 'gray.150',
-                            borderRadius: '4px',
-                            size: '26px',
+                            size: '28px',
                           })}
                           $image={space.icon}
                         />
                         <Avatar
-                          style={css.raw({ position: 'absolute', right: '-6px', bottom: '-4px', size: '18px' })}
+                          style={css.raw({ position: 'absolute', right: '-6px', bottom: '-4px', size: '20px' })}
                           $profile={space.meAsMember.profile}
                         />
                       </div>
 
                       <div class={css({ truncate: true })}>
-                        <p class={css({ fontSize: '12px', fontWeight: 'medium', color: 'gray.800', truncate: true })}>
+                        <p class={css({ fontSize: '14px', truncate: true })}>
                           {space.name}
                         </p>
                         <p class={css({ fontSize: '12px', color: 'gray.500', truncate: true })}>
@@ -239,6 +239,7 @@
                     </a>
 
                     <button
+                      class={center({ flex: 'none', size: '32px', paddingRight: '12px' })}
                       type="button"
                       on:click={async () => {
                         const { permalink } = await createPost({ spaceId: space.id });
@@ -246,22 +247,22 @@
                         await goto(`/editor/${permalink}`);
                       }}
                     >
-                      <Icon style={css.raw({ color: 'gray.500' })} icon={IconPencil} size={20} />
+                      <Icon style={css.raw({ color: 'gray.500', size: '20px' })} icon={IconPencil} />
                     </button>
                   </li>
                 {/each}
 
                 <li
-                  class={css({ borderBottomWidth: '1px', borderBottomColor: 'gray.150', backgroundColor: 'gray.100' })}
+                  class={css({ borderBottomWidth: '1px', borderBottomColor: 'gray.150', backgroundColor: 'gray.50' })}
                 >
                   <button
                     class={flex({
                       align: 'center',
-                      gap: '6px',
-                      padding: '16px',
+                      gap: '4px',
+                      padding: '14px',
                       fontSize: '14px',
-                      fontWeight: 'medium',
                       color: 'gray.500',
+                      width: 'full',
                     })}
                     type="button"
                     on:click={() => (createSpaceOpen = true)}
@@ -278,11 +279,9 @@
                 display: 'inline-block',
                 borderBottomWidth: '1px',
                 borderBottomColor: 'gray.100',
-                padding: '16px',
-                width: 'full',
+                padding: '14px',
                 fontSize: '14px',
-                fontWeight: 'medium',
-                color: 'gray.800',
+                width: 'full',
               })}
               href="/point"
             >
@@ -294,11 +293,9 @@
                 display: 'inline-block',
                 borderBottomWidth: '1px',
                 borderBottomColor: 'gray.100',
-                padding: '16px',
-                width: 'full',
+                padding: '14px',
                 fontSize: '14px',
-                fontWeight: 'medium',
-                color: 'gray.800',
+                width: 'full',
               })}
               href="https://penxle.nolt.io"
             >
@@ -307,11 +304,9 @@
 
             <button
               class={css({
-                padding: '16px',
+                padding: '14px',
                 width: 'full',
                 fontSize: '14px',
-                fontWeight: 'medium',
-                color: 'gray.800',
                 textAlign: 'left',
               })}
               type="button"
