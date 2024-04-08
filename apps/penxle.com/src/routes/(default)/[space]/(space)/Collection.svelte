@@ -37,15 +37,11 @@
 </script>
 
 <a href="/{$space.slug}/collections/{$spaceCollection.id}">
-  <!-- TODO: image placeholder -->
-  {#if $spaceCollection.thumbnail}
-    <Image
-      style={css.raw({ width: { base: '161px', sm: '206px' }, aspectRatio: '4/5' })}
-      $image={$spaceCollection.thumbnail}
-    />
-  {:else}
-    <div class={css({ width: { base: '161px', sm: '206px' }, backgroundColor: 'gray.100', aspectRatio: '4/5' })} />
-  {/if}
+  <Image
+    style={css.raw({ width: { base: '161px', sm: '206px' }, aspectRatio: '4/5' })}
+    $image={$spaceCollection.thumbnail}
+    placeholder
+  />
   <p class={css({ marginTop: '6px', fontWeight: 'semibold' })}>{$spaceCollection.name}</p>
   <p class={css({ fontSize: '14px', color: 'gray.600' })}>포스트 {comma($spaceCollection.count)}개</p>
 </a>

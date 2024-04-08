@@ -86,10 +86,7 @@
       type="button"
       on:click={() => thumbnailPicker.show()}
     >
-      <!-- TODO: image placeholder -->
-      {#if thumbnail}
-        <Image style={css.raw({ size: 'full', aspectRatio: '4/5' })} $image={thumbnail} />
-      {/if}
+      <Image style={css.raw({ size: 'full', aspectRatio: '4/5' })} $image={thumbnail} placeholder />
 
       <div
         class={center({

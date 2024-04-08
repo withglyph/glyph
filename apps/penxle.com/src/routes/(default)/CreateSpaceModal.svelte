@@ -129,10 +129,7 @@
         type="button"
         on:click={() => thumbnailPicker.show()}
       >
-        <!-- TODO: image placeholder -->
-        {#if icon}
-          <Image style={css.raw({ size: 'full' })} $image={icon} />
-        {/if}
+        <Image style={css.raw({ size: 'full' })} $image={icon} placeholder />
 
         <div
           class={center({

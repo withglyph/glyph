@@ -115,27 +115,15 @@
           sm: { gap: '20px' },
         })}
       >
-        {#if collection.thumbnail}
-          <Image
-            style={css.raw({
-              width: { base: '84px', sm: '240px' },
-              marginTop: { base: '-63px', sm: '-77px' },
-              aspectRatio: '[4/5]',
-            })}
-            $image={collection.thumbnail}
-          />
-        {:else}
-          <!-- TODO: image placeholder -->
-          <div
-            class={css({
-              width: { base: '84px', sm: '240px' },
-              marginTop: { base: '-63px', sm: '-77px' },
-              aspectRatio: '[4/5]',
-              backgroundColor: 'gray.100',
-            })}
-          />
-        {/if}
-
+        <Image
+          style={css.raw({
+            width: { base: '84px', sm: '240px' },
+            marginTop: { base: '-63px', sm: '-77px' },
+            aspectRatio: '[4/5]',
+          })}
+          $image={collection.thumbnail}
+          placeholder
+        />
         <div class={css({ marginTop: 'auto', smDown: { paddingY: '14px' } })}>
           <a
             class={flex({
