@@ -9,14 +9,39 @@
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
 
-  const urls = [
-    'https://picsum.photos/1240/380?1',
-    'https://picsum.photos/1240/380?2',
-    'https://picsum.photos/1240/380?3',
-    'https://picsum.photos/1240/380?4',
-    'https://picsum.photos/1240/380?5',
+  type Slide = {
+    title: string;
+    subtitle: string;
+    bottomline?: string;
+    color: string;
+    backgroundImageUrl: string;
+  };
+
+  const slides: Slide[] = [
+    {
+      title: '시즌 2 컴백!\n<나의 밤을 그대에게>',
+      subtitle: '신을 섬기는 기사와, 그를 사랑하게 된 악마',
+      bottomline: 'ⓒ유씨',
+      color: '#9FAAA8',
+      backgroundImageUrl: 'https://pnxl.net/images/_/banner_uc2.png',
+    },
+    {
+      title: '<유키의 백엔드 대모험>\n독점 연재 진행중',
+      subtitle: '엘렐레 엘렐레',
+      bottomline: 'ⓒ유키',
+      color: '#6B879C',
+      backgroundImageUrl: 'https://pnxl.net/images/_/banner_yuki.png',
+    },
+    {
+      title: '<카일리의 좌충우돌\n프론트 개발기> 시작합니다',
+      subtitle: '뚱인데요?',
+      bottomline: 'ⓒ카일리',
+      color: '#EDA303',
+      backgroundImageUrl: 'https://pnxl.net/images/_/banner_kylie.png',
+    },
   ];
-  $: slides = [...urls, urls[0], urls[1]];
+
+  $: repeatableSlides = [...slides, slides[0], slides[1]];
 
   const value = tweened(0, { duration: 1000, easing: expoInOut });
   $: currentIdx = Math.floor($value);
@@ -81,8 +106,8 @@
 
   const next = async () => {
     await transition(async () => {
-      await value.update((v) => (v + 1) % slides.length);
-      if ($value === slides.length - 2) {
+      await value.update((v) => (v + 1) % repeatableSlides.length);
+      if ($value === repeatableSlides.length - 2) {
         await value.set(0, { duration: 0 });
       }
     });
@@ -91,9 +116,9 @@
   const previous = async () => {
     await transition(async () => {
       if ($value === 0) {
-        await value.set(slides.length - 2, { duration: 0 });
+        await value.set(repeatableSlides.length - 2, { duration: 0 });
       }
-      await value.update((v) => (v - 1 + slides.length) % slides.length);
+      await value.update((v) => (v - 1 + repeatableSlides.length) % repeatableSlides.length);
     });
   };
 </script>
@@ -119,20 +144,23 @@
         height: 'full',
         smDown: { marginRight: '-80px' }, // 다음 슬라이드 100px에서 20px로 줄이기 (나머지 80px를 화면 밖으로 밀어냄)
         touchAction: 'pan-y',
+        userSelect: 'none',
       })}
     >
-      {#each slides as url, idx (idx)}
+      {#each repeatableSlides as slide, idx (idx)}
         <div
           style:flex-grow={idx === currentIdx ? `${1 - progress}` : idx === currentIdx + 1 ? `${progress}` : '0'}
           style:flex-basis={idx === currentIdx + 1 ? '100px' : idx === currentIdx + 2 ? `${100 * progress}px` : '0px'}
           class={css({ height: 'full', overflow: 'hidden' })}
         >
           <div
-            style:background-image={`url(${url})`}
+            style:background-image={`url(${slide.backgroundImageUrl})`}
             class={css({
               position: 'relative',
               marginX: '4px',
               height: 'full',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
               backgroundPosition: 'center',
               cursor: 'pointer',
             })}
@@ -144,26 +172,80 @@
             }}
           >
             <div
+              style:--slide-color={slide.color}
+              class={css({
+                position: 'absolute',
+                insetX: '0',
+                bottom: '0',
+                height: '200px',
+                backgroundGradient: 'to-b',
+                gradientFrom: 'transparent',
+                gradientTo: 'var(--slide-color)',
+              })}
+            />
+
+            <div
+              style:--slide-color={slide.color}
+              class={css({
+                position: 'absolute',
+                insetX: '0',
+                bottom: '0',
+                height: '200px',
+                backgroundGradient: 'to-b',
+                gradientFrom: 'transparent',
+                gradientTo: 'var(--slide-color)',
+              })}
+            />
+
+            <div
+              style:opacity={idx === currentIdx ? `${1 - progress}` : idx === currentIdx + 1 ? `${progress}` : '0'}
+              style:transform={idx === currentIdx ? `translateX(-${progress * 32}px)` : ''}
+              class={css({
+                position: 'absolute',
+                left: { base: '18px', sm: '40px' },
+                bottom: { base: '16px', sm: '34px' },
+                width: '1000px',
+                color: 'gray.5',
+                whiteSpace: 'pre-line',
+              })}
+            >
+              <div class={flex({ gap: '6px', direction: 'column' })}>
+                <div>
+                  <div class={css({ fontSize: { base: '24px', sm: '32px' }, fontWeight: 'bold', lineHeight: '[1.2]' })}>
+                    {slide.title}
+                  </div>
+
+                  <div class={css({ fontSize: '14px' })}>
+                    {slide.subtitle}
+                  </div>
+                </div>
+
+                {#if slide.bottomline}
+                  <div class={css({ fontSize: '12px', fontWeight: 'light', opacity: '80' })}>
+                    {slide.bottomline}
+                  </div>
+                {/if}
+              </div>
+            </div>
+
+            <div
               style:opacity={idx === currentIdx ? `${1 - progress}` : idx === currentIdx + 1 ? `${progress}` : '0'}
               class={flex({
                 position: 'absolute',
-                right: '24px',
-                bottom: '24px',
-                align: 'center',
+                right: { base: '16px', sm: '34px' },
+                bottom: { base: '16px', sm: '34px' },
                 gap: '2px',
-                borderRadius: 'full',
-                paddingX: '8px',
+                paddingX: '2px',
                 paddingY: '2px',
                 color: 'gray.5',
-                fontSize: '12px',
-                backgroundColor: 'gray.900/50',
+                fontSize: '11px',
               })}
             >
               <div class={css({ fontWeight: 'semibold' })}>
-                {idx === urls.length ? 1 : idx + 1}
+                {idx === slides.length ? 1 : idx + 1}
               </div>
               <div class={css({ opacity: '50' })}>/</div>
-              <div class={css({ opacity: '50' })}>{urls.length}</div>
+              <div class={css({ opacity: '70' })}>{slides.length}</div>
             </div>
           </div>
         </div>
