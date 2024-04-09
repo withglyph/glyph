@@ -196,14 +196,11 @@
 >
   <a class={css({ paddingX: '24px', paddingTop: '16px' })} href={`/${$post.space.slug}/${$post.permalink}`}>
     <div class={flex({ flexWrap: 'wrap', gap: '4px' })}>
-      {#if $post.publishedRevision.price}
-        <Chip style={css.raw({ marginBottom: '4px', width: 'fit' })} color="blue">유료</Chip>
-      {/if}
       {#if $post.ageRating === 'R19'}
-        <Chip style={css.raw({ marginBottom: '4px', width: 'fit' })} color="pink">성인물</Chip>
+        <Chip style={css.raw({ marginBottom: '4px', width: 'fit' })} color="pink">성인</Chip>
       {/if}
-      {#if triggerTags.length > 0}
-        <Chip style={css.raw({ marginBottom: '4px', width: 'fit' })} color="violet">트리거</Chip>
+      {#if $post.ageRating === 'R15'}
+        <Chip style={css.raw({ marginBottom: '4px', width: 'fit' })} color="pink">15세</Chip>
       {/if}
       {#if $post.hasPassword}
         <Chip style={css.raw({ marginBottom: '4px', width: 'fit' })} color="gray">비밀글</Chip>

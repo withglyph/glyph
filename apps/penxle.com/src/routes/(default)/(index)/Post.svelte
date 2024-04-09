@@ -31,6 +31,7 @@
         discloseStats
         commentCount
         blurred
+        hasPassword
 
         bookmarkGroups {
           id
@@ -40,7 +41,6 @@
           id
           title
           subtitle
-          price
         }
 
         space @_required {
@@ -214,17 +214,14 @@
       />
 
       <div class={css({ position: 'absolute', left: '6px', bottom: '6px', display: 'flex', gap: '4px' })}>
-        {#if $post.publishedRevision.price}
-          <Chip color="blue">유료</Chip>
-        {/if}
         {#if $post.ageRating === 'R15'}
           <Chip color="pink">15세</Chip>
         {/if}
         {#if $post.ageRating === 'R19'}
           <Chip color="pink">성인</Chip>
         {/if}
-        {#if $post.blurred && $post.ageRating === 'ALL'}
-          <Chip color="violet">트리거</Chip>
+        {#if $post.hasPassword}
+          <Chip color="gray">비밀글</Chip>
         {/if}
       </div>
     </div>
