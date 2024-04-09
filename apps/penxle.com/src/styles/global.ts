@@ -19,8 +19,8 @@ export const globalCss = defineGlobalStyles({
     fontFamily: 'ui',
     textSizeAdjust: '100%',
 
-    WebkitFontSmoothing: 'auto',
-    MozOsxFontSmoothing: 'auto',
+    WebkitFontSmoothing: 'antialiased',
+    MozOsxFontSmoothing: 'grayscale',
 
     color: 'gray.900',
     lineHeight: '1.44',
