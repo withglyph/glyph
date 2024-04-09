@@ -4,7 +4,7 @@
   import { createForm } from 'felte';
   import { tick } from 'svelte';
   import { z } from 'zod';
-  import IconAlertTriangle from '~icons/tabler/alert-triangle';
+  import IconAlertTriangle from '~icons/tabler/alert-triangle-filled';
   import IconFolder from '~icons/tabler/folder';
   import IconGripVertical from '~icons/tabler/grip-vertical';
   import IconPhoto from '~icons/tabler/photo';
@@ -108,10 +108,9 @@
         position: 'relative',
         display: 'flex',
         justifyContent: 'flex-end',
-        borderRadius: '6px',
-        paddingY: '16px',
+        paddingY: '10px',
       },
-      selected && { outlineWidth: '2px', outlineColor: 'teal.500' },
+      selected && { outlineWidth: '2px', outlineColor: 'cyan.400' },
     )}
     data-drag-handle
     draggable
@@ -126,23 +125,20 @@
         gap: '8px',
         borderWidth: '1px',
         borderColor: 'gray.200',
-        borderRadius: '6px',
         padding: '8px',
         marginRight: '20px',
         width: 'fit',
         color: 'gray.600',
         backgroundColor: 'gray.5',
         boxShadow: '[0 2px 10px 0 {colors.gray.900/4}]',
+        fontSize: '13px',
       })}
     >
       {#if isLastChild}
         <button
           class={css({
-            borderRadius: '4px',
             paddingX: '6px',
             paddingY: '4px',
-            fontSize: { base: '12px', sm: '14px' },
-            fontWeight: 'medium',
             transition: 'common',
             _hover: { backgroundColor: 'gray.100' },
           })}
@@ -161,8 +157,6 @@
           class={css({
             paddingX: '6px',
             paddingY: '4px',
-            fontSize: { base: '12px', sm: '14px' },
-            fontWeight: 'medium',
             whiteSpace: 'nowrap',
           })}
         >
@@ -174,13 +168,11 @@
         <button
           class={center({
             gap: '4px',
-            borderRadius: '4px',
             paddingX: '6px',
             paddingY: '4px',
-            fontSize: { base: '12px', sm: '14px' },
-            fontWeight: 'medium',
-            color: node.attrs.price ? 'teal.600' : 'red.600',
-            backgroundColor: { _hover: 'gray.100', _pressed: 'gray.100' },
+            fontWeight: node.attrs.price ? 'medium' : 'normal',
+            color: node.attrs.price ? 'cyan.400' : 'red.600',
+            backgroundColor: { _hover: 'gray.50', _pressed: 'gray.50' },
             transition: 'common',
             whiteSpace: 'nowrap',
           })}
@@ -201,11 +193,8 @@
 
         <button
           class={css({
-            borderRadius: '4px',
             paddingX: '6px',
             paddingY: '4px',
-            fontSize: { base: '12px', sm: '14px' },
-            fontWeight: 'medium',
             whiteSpace: 'nowrap',
             transition: 'common',
             _hover: { backgroundColor: 'gray.100' },
@@ -231,7 +220,6 @@
       <div
         class={css({
           flex: 'none',
-          borderRadius: '4px',
           padding: '4px',
           transition: 'common',
           _hover: { backgroundColor: 'gray.100' },
@@ -257,7 +245,6 @@
           gap: '6px',
           borderWidth: '1px',
           borderColor: 'gray.200',
-          borderBottomRadius: '6px',
           paddingX: '10px',
           paddingTop: '8px',
           paddingBottom: '10px',
@@ -280,7 +267,6 @@
                 class={css({
                   borderWidth: '1px',
                   borderColor: 'gray.200',
-                  borderRadius: '4px',
                   paddingLeft: '12px',
                   paddingRight: '24px',
                   paddingY: '10px',
@@ -311,14 +297,13 @@
     {/if}
   </NodeView>
 {:else if node.attrs.__data.purchasable}
-  <NodeView style={center.raw({ paddingY: '16px' })}>
+  <NodeView style={center.raw({ paddingY: '10px' })}>
     <div
       class={flex({
         direction: 'column',
         gap: '10px',
         borderWidth: '1px',
         borderColor: 'gray.150',
-        borderRadius: '6px',
         paddingX: '24px',
         paddingY: '20px',
         width: 'full',
@@ -416,7 +401,6 @@
       class={flex({
         justify: 'space-between',
         align: 'center',
-        borderRadius: '4px',
         marginBottom: '8px',
         paddingX: '14px',
         paddingY: '12px',
@@ -425,7 +409,7 @@
     >
       <p class={css({ fontSize: '14px', color: 'gray.500' })}>현재 보유한 포인트</p>
 
-      <p class={css({ borderRadius: '4px', paddingX: '8px', paddingY: '6px', width: '117px', color: 'gray.400' })}>
+      <p class={css({ paddingX: '8px', paddingY: '6px', width: '117px', color: 'gray.400' })}>
         <span class={css({ fontWeight: 'semibold', color: 'gray.500' })}>{comma(node.attrs.__data.point)}</span>
         P
       </p>
@@ -435,7 +419,6 @@
       class={flex({
         justify: 'space-between',
         align: 'center',
-        borderRadius: '4px',
         marginBottom: '6px',
         paddingX: '14px',
         paddingY: '12px',
@@ -448,7 +431,6 @@
         class={css({
           outlineWidth: '1px',
           outlineColor: 'gray.300',
-          borderRadius: '4px',
           paddingX: '8px',
           paddingY: '6px',
           width: '117px',
@@ -508,13 +490,12 @@
         position: 'relative',
         display: 'flex',
         justifyContent: 'flex-end',
-        borderRadius: '6px',
-        paddingY: '16px',
+        paddingY: '10px',
         pointerEvents: 'auto',
       },
       selected && {
         outlineWidth: '2px',
-        outlineColor: 'teal.500',
+        outlineColor: 'cyan.400',
       },
     )}
     data-drag-handle
@@ -539,7 +520,6 @@
         gap: '8px',
         borderWidth: '1px',
         borderColor: 'gray.200',
-        borderRadius: '6px',
         marginRight: '20px',
         padding: '8px',
         width: 'fit',
@@ -555,7 +535,7 @@
       <div class={css({ width: '1px', height: '14px', backgroundColor: 'gray.200' })} />
 
       <div
-        class={center({ paddingX: '6px', paddingY: '4px', fontSize: '14px', fontWeight: 'medium', color: 'teal.600' })}
+        class={center({ paddingX: '6px', paddingY: '4px', fontSize: '14px', fontWeight: 'medium', color: 'cyan.400' })}
       >
         {comma(node.attrs.price)}P
       </div>
