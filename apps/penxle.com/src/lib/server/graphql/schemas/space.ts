@@ -25,6 +25,7 @@ import {
   directUploadImage,
   getSpaceMember,
   makeMasquerade,
+  useFirstRow,
 } from '$lib/server/utils';
 import { CreateSpaceSchema, UpdateSpaceSchema } from '$lib/validations';
 import { builder } from '../builder';
@@ -720,10 +721,19 @@ builder.mutationFields((t) => ({
         throw new PermissionDeniedError();
       }
 
-      await database
+      const blockedUserId = await database
         .update(SpaceMasquerades)
         .set({ blockedAt: dayjs() })
-        .where(and(eq(SpaceMasquerades.id, input.masqueradeId), eq(SpaceMasquerades.spaceId, input.spaceId)));
+        .where(and(eq(SpaceMasquerades.id, input.masqueradeId), eq(SpaceMasquerades.spaceId, input.spaceId)))
+        .returning({ userId: SpaceMasquerades.userId })
+        .then(useFirstRow)
+        .then((row) => row?.userId);
+
+      if (blockedUserId) {
+        await database
+          .delete(SpaceFollows)
+          .where(and(eq(SpaceFollows.userId, blockedUserId), eq(SpaceFollows.spaceId, input.spaceId)));
+      }
 
       return input.spaceId;
     },
