@@ -3,6 +3,7 @@ import { asc, count, eq, inArray } from 'drizzle-orm';
 import * as R from 'radash';
 import { redis, useCache } from '$lib/server/cache';
 import { database, PostPurchases, PostRevisionContents, PostViews, SpaceCollectionPosts } from '../database';
+import { useFirstRow, useFirstRowOrThrow } from './database';
 import { isEmptyContent } from './tiptap';
 import type { JSONContent } from '@tiptap/core';
 import type { Context } from '../context';
@@ -17,13 +18,21 @@ export const makePostContentId = async (data: JSONContent[] | null) => {
     await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(data))),
   ).toString('hex');
 
-  const [content] = await database
-    .insert(PostRevisionContents)
-    .values({ hash, data })
-    .onConflictDoNothing()
-    .returning({ id: PostRevisionContents.id });
+  const contentId: string =
+    (await database
+      .select({ id: PostRevisionContents.id })
+      .from(PostRevisionContents)
+      .where(eq(PostRevisionContents.hash, hash))
+      .then(useFirstRow)
+      .then((row) => row?.id)) ??
+    (await database
+      .insert(PostRevisionContents)
+      .values({ hash, data })
+      .returning({ id: PostRevisionContents.id })
+      .then(useFirstRowOrThrow())
+      .then((row) => row.id));
 
-  return content.id;
+  return contentId;
 };
 
 type GetPostViewCountParams = {

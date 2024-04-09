@@ -58,6 +58,8 @@ import {
   makePostContentId,
   makeQueryContainers,
   searchResultToIds,
+  useFirstRow,
+  useFirstRowOrThrow,
 } from '$lib/server/utils';
 import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
 import {
@@ -1421,8 +1423,21 @@ builder.mutationFields((t) => ({
         await tx.delete(PostTags).where(eq(PostTags.postId, revision.post.id));
 
         for (const { name, kind } of input.tags) {
-          const [tag] = await tx.insert(Tags).values({ name }).onConflictDoNothing().returning({ id: Tags.id });
-          await tx.insert(PostTags).values({ postId: revision.post.id, tagId: tag.id, kind });
+          const tagId: string =
+            (await tx
+              .select({ id: Tags.id })
+              .from(Tags)
+              .where(eq(Tags.name, name))
+              .then(useFirstRow)
+              .then((row) => row?.id)) ??
+            (await tx
+              .insert(Tags)
+              .values({ name })
+              .returning({ id: Tags.id })
+              .then(useFirstRowOrThrow())
+              .then((row) => row.id));
+
+          await tx.insert(PostTags).values({ postId: revision.post.id, tagId, kind });
         }
 
         await tx
@@ -1531,8 +1546,21 @@ builder.mutationFields((t) => ({
         await tx.delete(PostTags).where(eq(PostTags.postId, input.postId));
 
         for (const { name, kind } of input.tags) {
-          const [tag] = await tx.insert(Tags).values({ name }).onConflictDoNothing().returning({ id: Tags.id });
-          await tx.insert(PostTags).values({ postId: input.postId, tagId: tag.id, kind });
+          const tagId: string =
+            (await tx
+              .select({ id: Tags.id })
+              .from(Tags)
+              .where(eq(Tags.name, name))
+              .then(useFirstRow)
+              .then((row) => row?.id)) ??
+            (await tx
+              .insert(Tags)
+              .values({ name })
+              .returning({ id: Tags.id })
+              .then(useFirstRowOrThrow())
+              .then((row) => row.id));
+
+          await tx.insert(PostTags).values({ postId: input.postId, tagId, kind });
         }
 
         await tx.update(Posts).set({ category: input.category, pairs: input.pairs }).where(eq(Posts.id, input.postId));
