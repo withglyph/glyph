@@ -345,7 +345,6 @@
             class={flex({
               align: 'center',
               gap: '10px',
-              borderRadius: '4px',
               paddingLeft: '4px',
               paddingRight: '2px',
               height: '34px',
@@ -403,7 +402,6 @@
                 justify: 'space-between',
                 align: 'center',
                 gap: '10px',
-                borderRadius: '4px',
                 paddingLeft: '4px',
                 paddingRight: '2px',
                 width: '144px',
@@ -468,7 +466,6 @@
                 justify: 'space-between',
                 align: 'center',
                 gap: '10px',
-                borderRadius: '4px',
                 paddingLeft: '4px',
                 paddingRight: '2px',
                 width: '64px',
@@ -531,7 +528,7 @@
       >
         <ToolbarButtonTooltip message="굵게">
           <button
-            class={center({ size: '34px', borderRadius: '4px', _hover: { backgroundColor: 'gray.100' } })}
+            class={center({ size: '34px', _hover: { backgroundColor: 'gray.100' } })}
             type="button"
             on:click={() => editor?.chain().focus().toggleBold().run()}
           >
@@ -541,7 +538,7 @@
 
         <ToolbarButtonTooltip message="기울임">
           <button
-            class={center({ size: '34px', borderRadius: '4px', _hover: { backgroundColor: 'gray.100' } })}
+            class={center({ size: '34px', _hover: { backgroundColor: 'gray.100' } })}
             type="button"
             on:click={() => editor?.chain().focus().toggleItalic().run()}
           >
@@ -551,7 +548,7 @@
 
         <ToolbarButtonTooltip message="취소선">
           <button
-            class={center({ size: '34px', borderRadius: '4px', _hover: { backgroundColor: 'gray.100' } })}
+            class={center({ size: '34px', _hover: { backgroundColor: 'gray.100' } })}
             type="button"
             on:click={() => editor?.chain().focus().toggleStrike().run()}
           >
@@ -565,7 +562,7 @@
 
         <ToolbarButtonTooltip message="밑줄">
           <button
-            class={center({ size: '34px', borderRadius: '4px', _hover: { backgroundColor: 'gray.100' } })}
+            class={center({ size: '34px', _hover: { backgroundColor: 'gray.100' } })}
             type="button"
             on:click={() => editor?.chain().focus().toggleUnderline().run()}
           >
@@ -579,7 +576,7 @@
 
         <ToolbarButtonTooltip message="루비">
           <button
-            class={center({ size: '34px', borderRadius: '4px', _hover: { backgroundColor: 'gray.100' } })}
+            class={center({ size: '34px', _hover: { backgroundColor: 'gray.100' } })}
             disabled={editor?.isActive('ruby') || editor?.state.selection.empty}
             type="button"
             on:click={() => editor?.chain().focus().setRuby('').run()}
@@ -612,7 +609,6 @@
             <button
               slot="value"
               class={center({
-                borderRadius: '4px',
                 size: '34px',
                 _hover: { backgroundColor: 'gray.100' },
                 _pressed: { backgroundColor: 'gray.100' },
@@ -646,7 +642,6 @@
             <button
               slot="value"
               class={center({
-                borderRadius: '4px',
                 size: '34px',
                 _hover: { backgroundColor: 'gray.100' },
                 _pressed: { backgroundColor: 'gray.100' },
@@ -684,7 +679,6 @@
             <button
               slot="value"
               class={center({
-                borderRadius: '4px',
                 size: '34px',
                 _hover: { backgroundColor: 'gray.100' },
                 _pressed: { backgroundColor: 'gray.100' },
@@ -741,7 +735,6 @@
             <button
               slot="value"
               class={center({
-                borderRadius: '4px',
                 size: '34px',
                 _hover: { backgroundColor: 'gray.100' },
                 _pressed: { backgroundColor: 'gray.100' },
@@ -775,7 +768,6 @@
             <button
               slot="value"
               class={center({
-                borderRadius: '4px',
                 size: '34px',
                 _hover: { backgroundColor: 'gray.100' },
                 _pressed: { backgroundColor: 'gray.100' },
@@ -809,7 +801,6 @@
             <button
               slot="value"
               class={center({
-                borderRadius: '4px',
                 size: '34px',
                 _hover: { backgroundColor: 'gray.100' },
                 _pressed: { backgroundColor: 'gray.100' },
@@ -856,7 +847,6 @@
         <ToolbarButtonTooltip message="이미지">
           <button
             class={center({
-              borderRadius: '4px',
               size: '34px',
               _hover: { backgroundColor: 'gray.100' },
             })}
@@ -870,7 +860,6 @@
         <ToolbarButtonTooltip message="파일">
           <button
             class={center({
-              borderRadius: '4px',
               size: '34px',
               _hover: { backgroundColor: 'gray.100' },
             })}
@@ -884,7 +873,6 @@
         <ToolbarButtonTooltip message="링크">
           <button
             class={center({
-              borderRadius: '4px',
               size: '34px',
               _hover: { backgroundColor: 'gray.100' },
             })}
@@ -899,7 +887,6 @@
         <ToolbarButtonTooltip message="HTML">
           <button
             class={center({
-              borderRadius: '4px',
               size: '34px',
               _hover: { backgroundColor: 'gray.100' },
             })}
@@ -917,7 +904,6 @@
           <button
             slot="value"
             class={center({
-              borderRadius: '4px',
               size: '34px',
               _hover: { backgroundColor: 'gray.100' },
               _pressed: { backgroundColor: 'gray.100' },
@@ -932,7 +918,6 @@
             <button
               slot="value"
               class={css({
-                borderRadius: '8px',
                 paddingX: '14px',
                 paddingY: '12px',
                 width: 'full',
@@ -1018,7 +1003,6 @@
             <button
               slot="value"
               class={css({
-                borderRadius: '8px',
                 paddingX: '14px',
                 paddingY: '12px',
                 width: 'full',
