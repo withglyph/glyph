@@ -32,7 +32,7 @@
       marginX: 'auto',
       paddingY: '20px',
       width: 'full',
-      maxWidth: '1062px',
+      maxWidth: '940px',
       backgroundColor: 'gray.5',
       sm: { paddingTop: '42px' },
     })}
@@ -47,7 +47,7 @@
       })}
     >
       <input
-        class={css({ width: 'full', fontSize: { base: '22px', sm: '28px' }, fontWeight: 'medium' })}
+        class={css({ width: 'full', fontSize: { base: '22px', sm: '28px' }, fontWeight: 'bold' })}
         maxlength="100"
         placeholder="제목을 입력하세요"
         type="text"
@@ -55,7 +55,7 @@
       />
 
       <input
-        class={css({ marginTop: '4px', width: 'full', fontSize: '16px' })}
+        class={css({ marginTop: '4px', width: 'full', fontSize: '16px', fontWeight: 'medium' })}
         maxlength="100"
         placeholder="부제목을 입력해주세요"
         type="text"
@@ -63,7 +63,7 @@
       />
     </div>
 
-    <div class={flex({ grow: '1', paddingX: { base: '20px', sm: '80px' }, width: 'full' })}>
+    <div class={flex({ grow: '1', paddingX: { base: '20px', sm: '40px' }, width: 'full' })}>
       <TiptapEditor
         style={css.raw({ flexGrow: '1', marginBottom: '100px', maxWidth: 'full' })}
         options={$store}
