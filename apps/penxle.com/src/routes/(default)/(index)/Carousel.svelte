@@ -209,19 +209,25 @@
                 whiteSpace: 'pre-line',
               })}
             >
-              <div class={flex({ gap: '6px', direction: 'column' })}>
-                <div>
-                  <div class={css({ fontSize: { base: '24px', sm: '32px' }, fontWeight: 'bold', lineHeight: '[1.2]' })}>
+              <div class={flex({ gap: '4px', direction: 'column' })}>
+                <div class={flex({ gap: '2px', direction: 'column' })}>
+                  <div
+                    class={css({
+                      fontSize: { base: '24px', sm: '32px' },
+                      fontWeight: '[750]',
+                      lineHeight: '[1.2]',
+                    })}
+                  >
                     {slide.title}
                   </div>
 
-                  <div class={css({ fontSize: '14px' })}>
+                  <div class={css({ fontSize: { base: '14px', sm: '16px' } })}>
                     {slide.subtitle}
                   </div>
                 </div>
 
                 {#if slide.bottomline}
-                  <div class={css({ fontSize: '12px', fontWeight: 'light', opacity: '80' })}>
+                  <div class={css({ fontSize: '11px', fontWeight: 'light', opacity: '70' })}>
                     {slide.bottomline}
                   </div>
                 {/if}
