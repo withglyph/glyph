@@ -1,6 +1,7 @@
 <script lang="ts">
   import Color from 'color';
   import { createEventDispatcher, onMount, tick } from 'svelte';
+  import { Button } from '$lib/components/v2';
   import { values } from '$lib/tiptap/values';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
@@ -149,7 +150,6 @@
     direction: 'column',
     borderWidth: '1px',
     borderColor: 'gray.200',
-    borderBottomRadius: '8px',
     width: '192px',
     backgroundColor: 'gray.5',
     boxShadow: '[0 5px 22px 0 {colors.gray.900/6}]',
@@ -159,7 +159,13 @@
   <div class={css({ padding: '12px' })}>
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <form
-      class={css({ position: 'relative', marginBottom: '8px', height: '84px', touchAction: 'none' })}
+      class={css({
+        position: 'relative',
+        marginBottom: '8px',
+        height: '84px',
+        touchAction: 'none',
+        overflow: 'hidden',
+      })}
       on:mouseup={() => (drag = false)}
       on:touchend={() => (drag = false)}
       on:touchcancel={() => (drag = false)}
@@ -215,7 +221,7 @@
       />
       <canvas
         bind:this={colorBlock}
-        class={css({ borderRadius: '4px', size: 'full', _hover: { cursor: 'crosshair' } })}
+        class={css({ size: 'full', _hover: { cursor: 'crosshair' } })}
         on:click={onChangeBoxGradientPosition}
         on:mousedown={() => (drag = true)}
         on:mousemove={(event) => {
@@ -246,7 +252,7 @@
     />
 
     <form
-      class={flex({ align: 'center', overflow: 'hidden' })}
+      class={flex({ align: 'center' })}
       on:submit|preventDefault={() => {
         updateColorFromHex(hexInputEl.value);
         updateHistory();
@@ -258,7 +264,7 @@
           'borderWidth': '1px',
           'borderColor': 'gray.200',
           'borderRadius': 'full',
-          'marginRight': '12px',
+          'marginRight': '8px',
           'size': '22px',
           '&::-webkit-color-swatch-wrapper': {
             visibility: 'hidden',
@@ -281,11 +287,10 @@
         class={css({
           borderWidth: '1px',
           borderColor: 'gray.200',
-          borderRadius: '4px',
           marginRight: '4px',
           paddingX: '8px',
           paddingY: '4px',
-          width: '84px',
+          width: '76px',
           fontSize: '12px',
         })}
         maxlength="7"
@@ -293,35 +298,7 @@
         placeholder="#FFFFFF"
         type="text"
       />
-      <!-- eslint-enable svelte/no-useless-mustaches -->
-
-      <button
-        class={css({
-          flex: '1',
-          borderWidth: '1px',
-          borderColor: 'gray.200',
-          borderRadius: '4px',
-          paddingX: '8px',
-          paddingY: '4px',
-          height: 'full',
-          fontSize: '12px',
-          fontWeight: 'medium',
-          color: 'gray.600',
-          _hover: {
-            borderColor: 'teal.400',
-            color: 'teal.700',
-            backgroundColor: 'teal.50',
-          },
-          _focus: {
-            borderColor: 'teal.400',
-            color: 'teal.700',
-            backgroundColor: 'teal.50',
-          },
-        })}
-        type="submit"
-      >
-        확인
-      </button>
+      <Button style={css.raw({ flex: '1' })} size="xs" type="submit" variant="gray-outline">확인</Button>
     </form>
   </div>
   <div
@@ -341,7 +318,7 @@
           {
             borderRadius: 'full',
             size: '16px',
-            _pressed: { boxShadow: '[0 0 0 2px #D4D4D8]' },
+            _pressed: { boxShadow: '[0 0 0 2px {colors.gray.400}]' },
             _disabled: {
               borderWidth: '1px',
               borderStyle: 'dashed',
@@ -371,7 +348,7 @@
           {
             borderRadius: 'full',
             size: '16px',
-            _pressed: { boxShadow: '[0 0 0 2px #D4D4D8]' },
+            _pressed: { boxShadow: '[0 0 0 2px {colors.gray.400}]' },
           },
           preset === '#FFFFFF' && { borderWidth: '1px', borderColor: '[#E4E4E7]' },
         )}
@@ -388,7 +365,6 @@
 
 <style>
   .gradient-slider {
-    border-radius: 2px;
     margin-bottom: 12px;
     width: 100%;
     height: 8px;
