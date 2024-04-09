@@ -200,15 +200,22 @@
     </a>
 
     <div class={flex({ flex: '1', justify: 'flex-end', align: 'flex-end' })}>
-      <div class={flex({ direction: 'column', align: 'flex-end', marginRight: '12px', textAlign: 'right' })}>
-        <CharacterCountWidget {editor} />
-
+      <div
+        class={flex({
+          direction: 'column',
+          marginRight: '8px',
+          textAlign: 'right',
+          fontSize: '12px',
+          alignSelf: 'flex-start',
+        })}
+      >
+        <CharacterCountWidget {editor} offset={8} placement="bottom-end" />
         <span
           class={css(
-            { transition: 'common', fontSize: '10px' },
+            { transition: 'common', fontSize: '12px' },
             !$state.isRevising && $state.lastRevision?.kind === 'MANUAL_SAVE'
               ? { fontWeight: 'semibold', color: 'teal.500' }
-              : { color: 'gray.400' },
+              : { color: 'gray.600' },
           )}
         >
           {#if $state.isRevising || !$state.lastRevision}
