@@ -214,7 +214,7 @@
           class={css(
             { transition: 'common', fontSize: '12px' },
             !$state.isRevising && $state.lastRevision?.kind === 'MANUAL_SAVE'
-              ? { fontWeight: 'semibold', color: 'teal.500' }
+              ? { fontWeight: 'semibold', color: 'cyan.400' }
               : { color: 'gray.600' },
           )}
         >
@@ -441,7 +441,7 @@
                 </span>
                 <Icon
                   style={css.raw(
-                    { color: 'teal.500' },
+                    { color: 'cyan.400' },
                     !editor?.isActive({ fontFamily: font.value }) && { visibility: 'hidden' },
                   )}
                   icon={IconCheck}
@@ -502,7 +502,7 @@
                 {fontSize.label}
                 <Icon
                   style={css.raw(
-                    { color: 'teal.500' },
+                    { color: 'cyan.400' },
                     !editor?.isActive({ fontSize: fontSize.value }) && { visibility: 'hidden' },
                   )}
                   icon={IconCheck}
@@ -532,7 +532,7 @@
             type="button"
             on:click={() => editor?.chain().focus().toggleBold().run()}
           >
-            <Icon style={css.raw(editor?.isActive('bold') && { color: 'teal.500' })} icon={IconBold} size={24} />
+            <Icon style={css.raw(editor?.isActive('bold') && { color: 'cyan.400' })} icon={IconBold} size={24} />
           </button>
         </ToolbarButtonTooltip>
 
@@ -542,7 +542,7 @@
             type="button"
             on:click={() => editor?.chain().focus().toggleItalic().run()}
           >
-            <Icon style={css.raw(editor?.isActive('italic') && { color: 'teal.500' })} icon={IconItalic} size={24} />
+            <Icon style={css.raw(editor?.isActive('italic') && { color: 'cyan.400' })} icon={IconItalic} size={24} />
           </button>
         </ToolbarButtonTooltip>
 
@@ -553,7 +553,7 @@
             on:click={() => editor?.chain().focus().toggleStrike().run()}
           >
             <Icon
-              style={css.raw(editor?.isActive('strike') && { color: 'teal.500' })}
+              style={css.raw(editor?.isActive('strike') && { color: 'cyan.400' })}
               icon={IconStrikethrough}
               size={24}
             />
@@ -567,7 +567,7 @@
             on:click={() => editor?.chain().focus().toggleUnderline().run()}
           >
             <Icon
-              style={css.raw(editor?.isActive('underline') && { color: 'teal.500' })}
+              style={css.raw(editor?.isActive('underline') && { color: 'cyan.400' })}
               icon={IconUnderline}
               size={24}
             />
@@ -626,7 +626,7 @@
 
             {#each values.textAlign as textAlign (textAlign.value)}
               <MenuItem
-                style={css.raw({ _pressed: { color: 'teal.500' } })}
+                style={css.raw({ _pressed: { color: 'cyan.400' } })}
                 aria-label={textAlign.label}
                 aria-pressed={editor?.isActive({ textAlign: textAlign.value })}
                 on:click={() => editor?.chain().focus().setParagraphTextAlign(textAlign.value).run()}
@@ -663,7 +663,7 @@
                 {lineHeight.label}
                 <Icon
                   style={css.raw(
-                    { color: 'teal.500' },
+                    { color: 'cyan.400' },
                     !editor?.isActive({ lineHeight: lineHeight.value }) && { visibility: 'hidden' },
                   )}
                   icon={IconCheck}
@@ -700,7 +700,7 @@
                 {letterSpacing.label}
                 <Icon
                   style={css.raw(
-                    { color: 'teal.500' },
+                    { color: 'cyan.400' },
                     !editor?.isActive({ letterSpacing: letterSpacing.value }) && { visibility: 'hidden' },
                   )}
                   icon={IconCheck}
@@ -750,7 +750,7 @@
             </button>
             {#each values.list as list (list.value)}
               <MenuItem
-                style={css.raw({ _pressed: { color: 'teal.500' } })}
+                style={css.raw({ _pressed: { color: 'cyan.400' } })}
                 aria-label={list.label}
                 aria-pressed={editor?.isActive(list.value)}
                 on:click={() => {
@@ -943,7 +943,7 @@
             >
               없음
               <Icon
-                style={css.raw({ color: 'teal.500' }, $store.paragraphIndent !== 0 && { visibility: 'hidden' })}
+                style={css.raw({ color: 'cyan.400' }, $store.paragraphIndent !== 0 && { visibility: 'hidden' })}
                 icon={IconCheck}
                 size={20}
               />
@@ -960,7 +960,7 @@
             >
               0.5칸
               <Icon
-                style={css.raw({ color: 'teal.500' }, $store.paragraphIndent !== 50 && { visibility: 'hidden' })}
+                style={css.raw({ color: 'cyan.400' }, $store.paragraphIndent !== 50 && { visibility: 'hidden' })}
                 icon={IconCheck}
                 size={20}
               />
@@ -976,7 +976,7 @@
             >
               1칸
               <Icon
-                style={css.raw({ color: 'teal.500' }, $store.paragraphIndent !== 100 && { visibility: 'hidden' })}
+                style={css.raw({ color: 'cyan.400' }, $store.paragraphIndent !== 100 && { visibility: 'hidden' })}
                 icon={IconCheck}
                 size={20}
               />
@@ -992,7 +992,7 @@
             >
               2칸
               <Icon
-                style={css.raw({ color: 'teal.500' }, $store.paragraphIndent !== 200 && { visibility: 'hidden' })}
+                style={css.raw({ color: 'cyan.400' }, $store.paragraphIndent !== 200 && { visibility: 'hidden' })}
                 icon={IconCheck}
                 size={20}
               />
@@ -1028,7 +1028,7 @@
             >
               없음
               <Icon
-                style={css.raw({ color: 'teal.500' }, $store.paragraphSpacing !== 0 && { visibility: 'hidden' })}
+                style={css.raw({ color: 'cyan.400' }, $store.paragraphSpacing !== 0 && { visibility: 'hidden' })}
                 icon={IconCheck}
                 size={20}
               />
@@ -1044,7 +1044,7 @@
             >
               0.5줄
               <Icon
-                style={css.raw({ color: 'teal.500' }, $store.paragraphSpacing !== 50 && { visibility: 'hidden' })}
+                style={css.raw({ color: 'cyan.400' }, $store.paragraphSpacing !== 50 && { visibility: 'hidden' })}
                 icon={IconCheck}
                 size={20}
               />
@@ -1060,7 +1060,7 @@
             >
               1줄
               <Icon
-                style={css.raw({ color: 'teal.500' }, $store.paragraphSpacing !== 100 && { visibility: 'hidden' })}
+                style={css.raw({ color: 'cyan.400' }, $store.paragraphSpacing !== 100 && { visibility: 'hidden' })}
                 icon={IconCheck}
                 size={20}
               />
@@ -1076,7 +1076,7 @@
             >
               2줄
               <Icon
-                style={css.raw({ color: 'teal.500' }, $store.paragraphSpacing !== 200 && { visibility: 'hidden' })}
+                style={css.raw({ color: 'cyan.400' }, $store.paragraphSpacing !== 200 && { visibility: 'hidden' })}
                 icon={IconCheck}
                 size={20}
               />
