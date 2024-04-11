@@ -4,6 +4,7 @@
   import IconDotsVertical from '~icons/tabler/dots-vertical';
   import IconPlus from '~icons/tabler/plus';
   import IconShare2 from '~icons/tabler/share-2';
+  import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Icon, Image, ShareLinkPopover } from '$lib/components';
@@ -251,7 +252,7 @@
               </Menu>
             {/if}
 
-            <ShareLinkPopover href="{location.origin}/{$query.space.slug}">
+            <ShareLinkPopover href="{$page.url.origin}/{$query.space.slug}">
               <div class={center({ outlineWidth: '1px', outlineColor: 'gray.200', size: '37px' })}>
                 <Icon style={css.raw({ '& *': { strokeWidth: '[2]' } })} icon={IconShare2} />
               </div>

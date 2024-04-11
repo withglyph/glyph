@@ -182,7 +182,7 @@
               </Button>
             {/if}
 
-            <ShareLinkPopover href="{location.origin}/{$query.space.slug}/collections/{collection.id}">
+            <ShareLinkPopover href="{$page.url.origin}/{$query.space.slug}/collections/{collection.id}">
               <div class={center({ outlineWidth: '1px', outlineColor: 'gray.200', size: '37px' })}>
                 <Icon icon={IconShare2} />
               </div>
