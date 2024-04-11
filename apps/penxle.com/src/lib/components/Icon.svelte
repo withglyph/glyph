@@ -12,6 +12,7 @@
       display: 'block',
       verticalAlign: 'middle',
       flex: 'none',
+      transition: 'common',
     },
     variants: {
       size: {

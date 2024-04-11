@@ -16,6 +16,7 @@
   type $$Events = {
     input: Event & { currentTarget: HTMLInputElement };
     keydown: KeyboardEvent & { currentTarget: HTMLInputElement };
+    blur: FocusEvent & { currentTarget: HTMLInputElement };
   };
 
   let leftIconEl: HTMLElement | null = null;
@@ -126,6 +127,7 @@
     type="text"
     on:input
     on:keydown
+    on:blur
     bind:value
     {...$$restProps}
   />

@@ -7,7 +7,7 @@
   import { Helmet, Icon } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex, grid } from '$styled-system/patterns';
-  import Post from '../../../(default)/[space]/Post.svelte';
+  import PostView from '../../../(default)/[space]/PostView.svelte';
   import Footer from '../../../(default)/Footer.svelte';
 
   let mode: 'desktop' | 'mobile' = 'desktop';
@@ -150,7 +150,7 @@
     backgroundColor: 'gray.50',
   })}
 >
-  <Post
+  <PostView
     style={css.raw(
       mode === 'desktop'
         ? { borderXWidth: '1px', borderXColor: 'gray.200', paddingY: '30px', maxWidth: '1048px' }

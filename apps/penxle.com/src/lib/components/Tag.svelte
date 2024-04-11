@@ -22,7 +22,6 @@
       height: 'fit',
       transition: 'common',
       truncate: true,
-      cursor: 'pointer',
       _hover: {
         opacity: '[0.8]',
       },
@@ -62,6 +61,7 @@
   id={name}
   class={css(
     recipe.raw({ size }),
+    as !== 'div' && { cursor: 'pointer' },
     'right-icon' in $$slots && {
       gap: '4px',
       paddingLeft: size === 'sm' ? '6px' : '10px',

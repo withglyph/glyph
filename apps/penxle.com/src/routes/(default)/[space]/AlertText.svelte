@@ -1,34 +1,46 @@
 <script lang="ts">
-  import { Icon } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import type { ComponentType } from 'svelte';
+  import type { SystemStyleObject } from '$styled-system/types';
 
-  export let icon: ComponentType;
+  export let titleStyle: SystemStyleObject | undefined = undefined;
   export let title: string;
   export let triggerTags: { id: string; tag: { name: string } }[] = [];
   export let description: string | undefined = undefined;
 </script>
 
 <header
-  class={flex({ direction: 'column', align: 'center', paddingX: '12px', paddingY: '80px', width: 'full' })}
+  class={flex({
+    direction: 'column',
+    align: 'center',
+    paddingTop: '60px',
+    paddingBottom: { base: '60px', sm: '24px' },
+    width: 'full',
+  })}
   role="alert"
 >
-  <div class={flex({ direction: 'column', align: 'center', gap: '8px' })}>
-    <Icon style={css.raw({ color: 'teal.500' })} {icon} size={32} />
-    <h2 class={css({ textAlign: 'center', fontSize: '18px', fontWeight: 'semibold' })}>
-      {title}
-    </h2>
-  </div>
+  <h2 class={css({ textAlign: 'center', fontSize: '16px', fontWeight: 'semibold' }, titleStyle)}>
+    {title}
+  </h2>
 
   <ul class={flex({ justify: 'center', gap: '6px', wrap: 'wrap' })}>
     {#each triggerTags as triggerTag (triggerTag.id)}
-      <li class={css({ color: 'teal.500' })}>#{triggerTag.tag.name.replaceAll('_', ' ')}</li>
+      <li class={css({ fontSize: '14px', color: 'red.600' })}>#{triggerTag.tag.name.replaceAll('_', ' ')}</li>
     {/each}
   </ul>
 
   {#if description}
-    <p class={css({ marginTop: '2px', fontSize: '14px', color: 'gray.500' })}>{description}</p>
+    <p
+      class={css({
+        marginTop: '4px',
+        fontSize: '14px',
+        color: 'gray.500',
+        textAlign: 'center',
+        whiteSpace: 'pre-wrap',
+      })}
+    >
+      {description}
+    </p>
   {/if}
 
   <slot />

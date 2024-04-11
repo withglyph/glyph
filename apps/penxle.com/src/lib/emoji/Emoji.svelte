@@ -3,7 +3,7 @@
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
-  import { css, cx } from '$styled-system/css';
+  import { cx } from '$styled-system/css';
   import { center } from '$styled-system/patterns';
 
   export let postId: string;
@@ -14,6 +14,7 @@
     mutation Emoji_DeletePostReaction_Mutation($input: DeletePostReactionInput!) {
       deletePostReaction(input: $input) {
         id
+        reactionCount
 
         reactions {
           id
@@ -29,12 +30,8 @@
   <button
     class={cx(
       'group',
-      css({
+      center({
         position: 'relative',
-        borderWidth: '1px',
-        borderColor: 'gray.200',
-        borderRadius: '8px',
-        padding: '2px',
         size: '24px',
         textAlign: 'center',
         backgroundColor: 'gray.50',
@@ -54,23 +51,28 @@
       class={center({ 'size': '18px', '& img': { display: '[block!]' }, '_groupHover': { opacity: '30' } })}
       set="twitter"
     />
-    <Icon
-      style={css.raw({
+    <div
+      class={center({
         position: 'absolute',
         top: '1/2',
         left: '1/2',
         translate: 'auto',
         translateX: '-1/2',
         translateY: '-1/2',
+        color: 'gray.5',
+        backgroundColor: 'black/40',
+        size: '24px',
         transition: 'common',
         userSelect: 'none',
         opacity: '0',
         _groupHover: { opacity: '100' },
       })}
-      icon={IconX}
-      size={20}
-    />
+    >
+      <Icon icon={IconX} size={20} />
+    </div>
   </button>
 {:else}
-  <em-emoji id={emoji} class={center({ 'size': '18px', '& img': { display: '[block!]' } })} set="twitter" />
+  <div class={center({ size: '24px' })}>
+    <em-emoji id={emoji} class={center({ 'size': '18px', '& img': { display: '[block!]' } })} set="twitter" />
+  </div>
 {/if}

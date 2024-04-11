@@ -1,7 +1,7 @@
 <script lang="ts">
+  import IconLock from '~icons/effit/lock';
   import IconReplyBar from '~icons/effit/reply-bar';
   import IconAlertCircle from '~icons/tabler/alert-circle';
-  import IconLock from '~icons/tabler/lock';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Icon, Tooltip } from '$lib/components';
@@ -74,10 +74,6 @@
 
 {#if $query.post.space}
   <form
-    class={css(
-      { paddingX: '20px', paddingY: '16px', smDown: { marginX: '-20px' } },
-      !!parentId && { borderTopWidth: '1px', borderTopColor: 'gray.100', backgroundColor: 'gray.50' },
-    )}
     on:submit|preventDefault={async () => {
       if (commentId) {
         await updateComment({
@@ -117,30 +113,14 @@
   >
     <div class={flex({ gap: '4px' })}>
       {#if parentId}
-        <Icon style={css.raw({ color: 'gray.500' })} icon={IconReplyBar} />
+        <Icon icon={IconReplyBar} size={12} />
       {/if}
 
       <div class={css({ width: 'full' })}>
-        <div class={flex({ align: 'center', gap: '2px', marginBottom: '8px' })}>
-          {#if $query.post.space.meAsMember}
-            <span
-              class={css({
-                borderRadius: '4px',
-                paddingX: '10px',
-                paddingY: '4px',
-                fontSize: '11px',
-                fontWeight: 'semibold',
-                color: 'gray.5',
-                backgroundColor: 'gray.400',
-              })}
-            >
-              {$query.post.space.commentProfile?.name ?? ''}
-            </span>
-          {:else}
-            <span class={css({ fontSize: '14px', fontWeight: 'medium' })}>
-              {$query.post.space.commentProfile?.name ?? ''}
-            </span>
-          {/if}
+        <div class={flex({ align: 'center', gap: '4px', marginBottom: '6px' })}>
+          <span class={css({ fontSize: '15px' })}>
+            {$query.post.space.commentProfile?.name ?? ''}
+          </span>
           {#if !$query.post.space?.meAsMember && $query.me}
             <Tooltip
               enabled={!$query.post.space?.meAsMember}
@@ -151,15 +131,16 @@
               <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} size={12} />
             </Tooltip>
           {/if}
+          {#if $query.post.space.meAsMember}
+            <span class={css({ fontSize: '12px', color: 'cyan.400' })}>창작자</span>
+          {/if}
         </div>
 
         <textarea
           class={css({
-            borderRadius: '4px',
             outlineWidth: '1px',
-            outlineColor: { base: 'gray.200', _focusWithin: 'teal.500' },
-            paddingX: '14px',
-            paddingY: '10px',
+            outlineColor: { base: 'gray.200', _focusWithin: 'gray.900' },
+            padding: '20px',
             width: 'full',
             fontSize: '14px',
             resize: 'none',
@@ -182,48 +163,26 @@
 
     <div
       class={css(
-        { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '10px' },
+        { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '6px' },
         ($query.post.space.meAsMember || !!commentId) && { justifyContent: 'flex-end' },
       )}
     >
       {#if !$query.post.space.meAsMember && !commentId}
-        <button
-          class={flex({
-            align: 'center',
-            gap: '4px',
-            borderRadius: '4px',
-            padding: '6px',
-            fontSize: '14px',
-            color: visibility === 'PRIVATE' ? 'teal.500' : 'gray.400',
-            _hover: { backgroundColor: 'gray.100' },
-          })}
+        <Button
+          style={center.raw({ size: '37px', _pressed: { backgroundColor: 'gray.200!', outline: 'none!' } })}
+          aria-pressed={visibility === 'PRIVATE'}
           disabled={!$query.me || ($query.post.commentQualification === 'IDENTIFIED' && !$query.me?.personalIdentity)}
-          type="button"
+          variant="gray-outline"
           on:click={() => (visibility = visibility === 'PUBLIC' ? 'PRIVATE' : 'PUBLIC')}
         >
-          <Icon
-            style={css.raw({
-              color: visibility === 'PRIVATE' ? 'teal.500' : 'gray.400',
-            })}
-            icon={IconLock}
-            size={20}
-          />
-        </button>
+          <Icon icon={IconLock} />
+        </Button>
       {/if}
 
       <Button
-        style={center.raw({
-          width: '94px',
-          height: '44px',
-          smDown: {
-            width: '69px',
-            height: '34px',
-            fontSize: '12px',
-            fontWeight: 'semibold',
-          },
-        })}
+        style={center.raw({ width: '68px', height: '37px' })}
         disabled={!$query.me || ($query.post.commentQualification === 'IDENTIFIED' && !$query.me?.personalIdentity)}
-        size="lg"
+        size="sm"
         type="submit"
         variant="gray-outline"
       >

@@ -6,7 +6,6 @@
   import IconDotsVertical from '~icons/tabler/dots-vertical';
   import IconHeart from '~icons/tabler/heart';
   import IconHeartFilled from '~icons/tabler/heart-filled';
-  import IconLock from '~icons/tabler/lock';
   import IconPinnedFilled from '~icons/tabler/pinned-filled';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -14,7 +13,7 @@
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
-  import { flex } from '$styled-system/patterns';
+  import { center, flex } from '$styled-system/patterns';
   import CommentInput from './CommentInput.svelte';
   import type { PostPage_Comment_postComment, PostPage_Comment_query } from '$glitch';
 
@@ -119,7 +118,14 @@
         children {
           id
           content
+          pinned
+          visibility
           createdAt
+          state
+          purchased
+          liked
+          likeCount
+          likedByPostUser
 
           profile {
             id
@@ -200,77 +206,60 @@
         {
           display: 'flex',
           gap: '4px',
-          borderTopWidth: '1px',
-          borderTopColor: 'gray.100',
-          paddingX: '20px',
-          paddingY: '16px',
-          smDown: { marginX: '-20px' },
-          _firstOfType: { borderWidth: '0' },
+          borderBottomWidth: '1px',
+          borderBottomColor: 'gray.100',
+          paddingY: '24px',
         },
-        $postComment.pinned && { backgroundColor: 'teal.50' },
-        !!parentId && { backgroundColor: 'gray.50' },
+        !!parentId && { paddingLeft: { base: '20px', sm: '40px' } },
       )}
     >
       {#if parentId}
-        <Icon style={css.raw({ color: 'gray.500' })} icon={IconReplyBar} />
+        <Icon icon={IconReplyBar} size={12} />
       {/if}
 
       <div class={css({ flexGrow: '1' })}>
         {#if $postComment.pinned}
-          <p
+          <span
             class={flex({
               align: 'center',
-              gap: '4px',
-              marginBottom: '8px',
-              fontSize: '11px',
-              fontWeight: 'medium',
-              color: 'gray.400',
+              gap: '2px',
+              marginBottom: '6px',
+              padding: '4px',
+              paddingRight: '6px',
+              fontSize: '12px',
+              color: 'gray.500',
+              width: 'fit',
+              backgroundColor: 'gray.50',
             })}
           >
-            <Icon style={css.raw({ color: 'gray.400' })} icon={IconPinnedFilled} />
-            고정된 댓글
-          </p>
+            <Icon icon={IconPinnedFilled} size={12} />
+            고정 댓글
+          </span>
         {/if}
 
-        <div class={flex({ justify: 'space-between', align: 'center', marginBottom: '8px' })}>
-          {#if $query.post.member?.profile.id === $postComment.profile.id}
-            <p
-              class={css({
-                borderRadius: '4px',
-                paddingX: '10px',
-                paddingY: '4px',
-                fontSize: '11px',
-                fontWeight: 'semibold',
-                color: 'gray.5',
-                backgroundColor: 'gray.400',
-              })}
-            >
-              {$query.post.member?.profile.name}
-            </p>
-          {:else}
-            <p class={flex({ align: 'center', gap: '4px', wrap: 'wrap', fontSize: '14px', fontWeight: 'medium' })}>
-              {$postComment.profile.name}
-              {#if $postComment.purchased}
-                <span class={css({ fontSize: '12px', color: 'teal.500' })}>구매자</span>
-              {/if}
-              {#if $postComment.visibility === 'PRIVATE'}
-                <Icon style={css.raw({ color: 'gray.400' })} icon={IconLock} />
-              {/if}
-            </p>
-          {/if}
+        <div class={flex({ justify: 'space-between', align: 'center', marginBottom: '6px' })}>
+          <p class={flex({ align: 'center', gap: '4px', wrap: 'wrap', fontSize: '15px' })}>
+            {$postComment.profile.name}
+            <span class={css({ fontSize: '12px', color: 'cyan.400' })}>
+              {$postComment.purchased
+                ? '구매자'
+                : $query.post.member?.profile.id === $postComment.profile.id
+                  ? '창작자'
+                  : ''}
+            </span>
+          </p>
 
           <Menu menuStyle={css.raw({ width: '158px' })} placement="bottom-end">
-            <button
+            <div
               slot="value"
               class={css(
                 ($postComment.state === 'INACTIVE' ||
                   (!$query.post.space.meAsMember &&
                     $postComment.profile.id !== $query.post.space.commentProfile?.id)) && { display: 'none' },
               )}
-              type="button"
             >
               <Icon style={css.raw({ color: 'gray.500' })} icon={IconDotsVertical} size={20} />
-            </button>
+            </div>
 
             {#if $query.post.space.meAsMember}
               <MenuItem
@@ -322,66 +311,85 @@
               {$postComment.content}
             </p>
 
-            <div class={css({ fontSize: '10px', fontWeight: 'light', color: 'gray.400' })}>
+            <time
+              class={css({ display: 'inline-block', marginTop: '4px', fontSize: '13px', color: 'gray.500' })}
+              datetime={$postComment.createdAt}
+            >
               {dayjs($postComment.createdAt).formatAsDateTime()}
-            </div>
+            </time>
 
-            <div class={flex({ align: 'center', gap: '6px', marginTop: '20px', height: '34px' })}>
-              <button
-                class={flex({
-                  align: 'center',
-                  gap: '4px',
-                  margin: '7px',
-                  fontSize: '13px',
-                  fontWeight: 'medium',
-                  color: 'gray.400',
-                })}
-                type="button"
-                on:click={async () => {
-                  if ($postComment.liked) {
-                    await unlikeComment({ commentId: $postComment.id });
-                    mixpanel.track('comment:unlike', { postId: $query.post.id, commentId: $postComment.id });
-                  } else {
-                    await likeComment({ commentId: $postComment.id });
-                    mixpanel.track('comment:like', { postId: $query.post.id, commentId: $postComment.id });
-                  }
-                }}
-              >
-                {#if $postComment.liked}
-                  <Icon style={css.raw({ color: 'teal.500' })} icon={IconHeartFilled} />
-                {:else}
-                  <Icon style={css.raw({ color: 'teal.500' })} icon={IconHeart} />
+            <div class={flex({ align: 'center', justify: 'space-between', height: '37px' })}>
+              <div class={flex({ align: 'center', marginTop: '6px' })}>
+                {#if !parentId}
+                  <button
+                    class={flex({
+                      align: 'center',
+                      marginRight: '14px',
+                      paddingY: '9px',
+                      fontSize: '13px',
+                      fontWeight: 'medium',
+                      color: 'gray.500',
+                      _after: {
+                        content: '""',
+                        display: 'block',
+                        width: '1px',
+                        height: '10px',
+                        backgroundColor: 'gray.100',
+                        marginLeft: '14px',
+                      },
+                    })}
+                    type="button"
+                    on:click={() => (replyInputOpen = !replyInputOpen)}
+                  >
+                    답글
+                  </button>
                 {/if}
-                {#if $postComment.likeCount > 0}
-                  {$postComment.likeCount}
-                {/if}
-              </button>
 
-              {#if !parentId}
-                <Button
-                  style={css.raw({ backgroundColor: 'gray.5/60' })}
-                  size="xs"
-                  variant="gray-outline"
-                  on:click={() => (replyInputOpen = !replyInputOpen)}
+                <button
+                  class={flex({
+                    align: 'center',
+                    gap: '2px',
+                    fontSize: '14px',
+                    fontWeight: 'medium',
+                    color: 'gray.500',
+                    height: '37px',
+                  })}
+                  type="button"
+                  on:click={async () => {
+                    if ($postComment.liked) {
+                      await unlikeComment({ commentId: $postComment.id });
+                      mixpanel.track('comment:unlike', { postId: $query.post.id, commentId: $postComment.id });
+                    } else {
+                      await likeComment({ commentId: $postComment.id });
+                      mixpanel.track('comment:like', { postId: $query.post.id, commentId: $postComment.id });
+                    }
+                  }}
                 >
-                  답글
-                </Button>
-              {/if}
+                  {#if $postComment.liked}
+                    <Icon icon={IconHeartFilled} />
+                  {:else}
+                    <Icon icon={IconHeart} />
+                  {/if}
+                  {#if $postComment.likeCount > 0}
+                    {$postComment.likeCount}
+                  {/if}
+                </button>
+              </div>
 
               {#if $postComment.likedByPostUser}
                 <div
-                  class={css({
+                  class={center({
                     position: 'relative',
                     borderRadius: 'full',
                     outlineWidth: '1px',
-                    outlineColor: 'teal.500',
-                    margin: '6px',
-                    size: '22px',
+                    outlineColor: 'gray.900',
+                    marginRight: '7px',
+                    size: '24px',
                   })}
                 >
                   {#if $query.post.member}
                     <Avatar
-                      style={css.raw({ borderRadius: 'full', size: '22px' })}
+                      style={css.raw({ borderRadius: 'full', size: '24px' })}
                       $profile={$query.post.member.profile}
                     />
                   {/if}
@@ -389,9 +397,9 @@
                   <Icon
                     style={css.raw({
                       position: 'absolute',
-                      bottom: '-6px',
-                      right: '-6px',
-                      color: 'teal.500',
+                      bottom: '-4px',
+                      right: '-4px',
+                      color: 'gray.900',
                     })}
                     icon={IconHeartFilled}
                   />
@@ -405,8 +413,9 @@
               class={flex({
                 align: 'center',
                 gap: '4px',
-                marginTop: '12px',
-                fontSize: '12px',
+                marginTop: '2px',
+                paddingY: '6px',
+                fontSize: '13px',
                 fontWeight: 'medium',
                 color: 'gray.500',
               })}
@@ -418,9 +427,9 @@
             >
               {$postComment.children.length}개의 답글
               {#if repliesOpen}
-                <Icon style={css.raw({ color: 'gray.500' })} icon={IconCaretUpFilled} size={12} />
+                <Icon icon={IconCaretUpFilled} />
               {:else}
-                <Icon style={css.raw({ color: 'gray.500' })} icon={IconCaretDownFilled} size={12} />
+                <Icon icon={IconCaretDownFilled} />
               {/if}
             </button>
           {/if}
@@ -436,22 +445,25 @@
   {/if}
 
   {#if replyInputOpen && $postComment.state !== 'INACTIVE'}
-    <CommentInput {$query} parentId={$postComment.id} bind:editing={replyInputOpen} />
+    <li class={css({ paddingTop: '18px', paddingLeft: '40px', paddingBottom: '24px' })}>
+      <CommentInput {$query} parentId={$postComment.id} bind:editing={replyInputOpen} />
+    </li>
   {/if}
 
   <Alert bind:open={blockMasqueradeOpen}>
-    <svelte:fragment slot="title">{$postComment.profile.name}님을 차단할까요?</svelte:fragment>
+    <p slot="title" class={css({ textAlign: 'left' })}>{$postComment.profile.name}님을 차단할까요?</p>
 
-    <svelte:fragment slot="content">
+    <div slot="content" class={css({ textAlign: 'left' })}>
       차단된 유저는 스페이스의 모든 게시물을 볼 수 없으며, 댓글을 달 수 없어요
       <br />
       차단 해지는 [스페이스 설정 - 독자관리]에서 가능해요
-    </svelte:fragment>
+    </div>
 
     <svelte:fragment slot="action">
       <Button size="lg" variant="gray-sub-fill" on:click={() => (blockMasqueradeOpen = false)}>취소</Button>
       <Button
         size="lg"
+        variant="red-fill"
         on:click={async () => {
           if (!$postComment.masquerade || !$query.post.space) return;
 

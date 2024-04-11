@@ -1,8 +1,8 @@
 <script lang="ts">
-  import mixpanel from 'mixpanel-browser';
   import { uid } from 'radash';
-  import IconAlertCircle from '~icons/tabler/alert-circle';
+  import IconHelpLine from '~icons/effit/help-line';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Icon, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
   import { createMutationForm } from '$lib/form';
@@ -99,24 +99,16 @@
   ];
 </script>
 
-<Modal titleStyle={css.raw({ justifyContent: 'flex-start', marginLeft: '0' })} bind:open>
+<Modal bind:open>
   <svelte:fragment slot="title">태그수정</svelte:fragment>
-  <form {id} class={flex({ direction: 'column', gap: '40px' })} use:form>
+
+  <form {id} class={flex({ direction: 'column', gap: '42px' })} use:form>
     <div>
-      <h2
-        class={flex({ gap: '4px', fontSize: '15px', fontWeight: 'medium', paddingTop: '4px', paddingBottom: '12px' })}
-      >
-        <span>카테고리</span>
-      </h2>
+      <h2 class={css({ paddingBottom: '8px', fontSize: '14px' })}>카테고리</h2>
 
       <SegmentButtonGroup>
         {#each categories as category (category.value)}
-          <ToggleButton
-            name="category"
-            style={css.raw({ paddingX: '12px', paddingY: '8px' })}
-            type="radio"
-            value={category.value}
-          >
+          <ToggleButton name="category" type="radio" value={category.value}>
             {category.label}
           </ToggleButton>
         {/each}
@@ -124,16 +116,14 @@
     </div>
 
     <div>
-      <h2
-        class={flex({ gap: '4px', paddingTop: '4px', paddingBottom: '12px', fontSize: '15px', fontWeight: 'medium' })}
-      >
+      <h2 class={flex({ gap: '4px', paddingBottom: '8px', fontSize: '14px' })}>
         <span>페어</span>
         <Tooltip style={center.raw()} message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
-          <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
+          <Icon style={css.raw({ color: 'gray.400' })} icon={IconHelpLine} size={12} />
         </Tooltip>
       </h2>
 
-      <div class={grid({ columns: 4, gap: '9px' })}>
+      <div class={grid({ columns: 4, gap: '8px' })}>
         {#each pairs as pair (pair.value)}
           <ToggleButton
             style={css.raw({ paddingY: '8px' })}
@@ -149,7 +139,7 @@
     <PublishMenuSearch
       kind="TITLE"
       label="작품"
-      placeholder="예) 마법소녀_펜슬이"
+      placeholder="작품 이름을 입력해주세요 (예시:  마법소녀_글리프)"
       tooltip="여러 명칭을 쓸 수 있어요"
       bind:tags={$data.tags}
       bind:query={titleQuery}
@@ -158,7 +148,7 @@
     <PublishMenuSearch
       kind="CHARACTER"
       label="캐릭터"
-      placeholder="예) 펜슬이"
+      placeholder="캐릭터 이름을 입력해주세요 (예시: 글리프링)"
       tooltip="등장 캐릭터가 너무 많다면 주연만 써도 좋아요"
       bind:tags={$data.tags}
       bind:query={characterQuery}
@@ -167,7 +157,7 @@
     <PublishMenuSearch
       kind="COUPLING"
       label="커플링"
-      placeholder="예) AAxBB"
+      placeholder="커플링을 입력해주세요 (예시: AAxBB)"
       tooltip="커플링명은 자주 쓰이는 이름으로 하면 좋아요"
       bind:tags={$data.tags}
       bind:query={couplingQuery}
@@ -175,8 +165,8 @@
 
     <PublishMenuSearch
       kind="TRIGGER"
-      label="트리거 주의"
-      placeholder="예) 스포일러, 폭력성 등"
+      label="주의사항"
+      placeholder="작품을 읽기 전 주의해야할 사항을 입력해주세요"
       tooltip="이 포스트를 독자들이 볼 때 주의해야 할 사항을 입력해주세요"
       bind:tags={$data.tags}
       bind:query={triggerQuery}
@@ -185,13 +175,23 @@
     <PublishMenuSearch
       kind="EXTRA"
       label="추가 태그"
-      placeholder="추가 태그"
+      placeholder="추가적으로 원하는 태그를 입력해주세요"
       tooltip="위 분류에 속하지 않지만 추가적으로 넣고 싶은 태그를 입력해주세요"
       bind:tags={$data.tags}
       bind:query={extraQuery}
     />
   </form>
+
   <svelte:fragment slot="action">
-    <Button style={css.raw({ flex: '1' })} form={id} loading={$isSubmitting} size="lg" type="submit">수정</Button>
+    <Button
+      style={css.raw({ flex: '1' })}
+      form={id}
+      loading={$isSubmitting}
+      size="lg"
+      type="submit"
+      variant="gradation-fill"
+    >
+      완료
+    </Button>
   </svelte:fragment>
 </Modal>

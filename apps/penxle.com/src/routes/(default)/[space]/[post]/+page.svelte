@@ -5,7 +5,7 @@
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Helmet } from '$lib/components';
-  import Post from '../Post.svelte';
+  import PostView from '../PostView.svelte';
 
   $: query = graphql(`
     query SpacePostPage_Query($permalink: String!) {
@@ -101,4 +101,4 @@
   {/each}
 </svelte:head>
 
-<Post $postRevision={$query.post.publishedRevision} {$query} />
+<PostView $postRevision={$query.post.publishedRevision} {$query} />

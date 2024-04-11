@@ -1,6 +1,6 @@
 <script lang="ts">
   import { graphql } from '$glitch';
-  import Post from '../../Post.svelte';
+  import PostView from '../../PostView.svelte';
 
   $: query = graphql(`
     query SpacePurchasedPostPage_Query($permalink: String!) {
@@ -18,4 +18,4 @@
   `);
 </script>
 
-<Post $postRevision={$query.post.purchasedRevision} {$query} />
+<PostView $postRevision={$query.post.purchasedRevision} {$query} />

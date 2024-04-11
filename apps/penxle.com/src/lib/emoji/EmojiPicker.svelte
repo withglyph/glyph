@@ -57,6 +57,7 @@
     mutation EmojiPicker_CreatePostReaction_Mutation($input: CreatePostReactionInput!) {
       createPostReaction(input: $input) {
         id
+        reactionCount
 
         reactions {
           id
@@ -118,7 +119,6 @@
     {
       display: 'flex',
       alignItems: 'center',
-      borderRadius: '4px',
       size: '24px',
       _hover: { backgroundColor: 'gray.50' },
       _disabled: { borderColor: 'gray.300', color: 'gray.400', cursor: 'not-allowed' },
