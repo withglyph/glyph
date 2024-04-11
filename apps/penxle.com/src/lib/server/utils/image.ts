@@ -231,6 +231,7 @@ export const generatePostShareImage = async ({
                 position: 'absolute',
                 bottom: '24px',
                 right: '24px',
+                opacity: 0.2,
               },
             },
           },
