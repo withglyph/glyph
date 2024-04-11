@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { disassembleHangulString, InitialHangulString } from '$lib/utils';
 import { database, PostRevisions, Posts, PostTags, Spaces, Tags } from '../database';
 import { elasticSearch, indexName } from '../search';
@@ -94,7 +94,7 @@ export const IndexAllPostsInSpaceJob = defineJob('indexAllPostsInSpace', async (
   const postIds = await database
     .select({ id: Posts.id })
     .from(Posts)
-    .where(and(eq(Posts.spaceId, spaceId)))
+    .where(and(eq(Posts.spaceId, spaceId), inArray(Posts.state, ['PUBLISHED', 'DELETED'])))
     .then((rows) => rows.map((row) => row.id));
 
   await Promise.all(postIds.map((postId) => enqueueJob('indexPost', postId)));

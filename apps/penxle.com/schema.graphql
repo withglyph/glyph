@@ -618,6 +618,7 @@ type Query {
   draftPost(permalink: String!): Post!
   featuredTagFeed: [FeaturedTag!]!
   flash: Flash
+  followingFeed(page: Int! = 1, take: Int! = 30): [Post!]!
   hello(name: String!): String!
   me: User
   pointPurchase(paymentKey: String!): PointPurchase!

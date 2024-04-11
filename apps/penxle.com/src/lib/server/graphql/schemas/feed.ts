@@ -7,6 +7,7 @@ import {
   Posts,
   PostTags,
   PostViews,
+  SpaceFollows,
   Spaces,
   TagFollows,
   UserPersonalIdentities,
@@ -287,6 +288,72 @@ builder.queryFields((t) => ({
       );
 
       return R.sift(tags.map((tagId) => (mutedTagIds.includes(tagId) ? null : { tagId }))).slice(0, 5);
+    },
+  }),
+
+  followingFeed: t.field({
+    type: [Post],
+    args: {
+      page: t.arg.int({ defaultValue: 1 }),
+      take: t.arg.int({ defaultValue: 30 }),
+    },
+    resolve: async (_, { page, take }, context) => {
+      if (!context.session) {
+        return [];
+      }
+
+      const [mutedTagIds, mutedSpaceIds, followingSpaceIds, followingTagIds] = await Promise.all([
+        getMutedTagIds({ userId: context.session.userId }),
+        getMutedSpaceIds({ userId: context.session.userId }),
+        database
+          .select({ spaceId: SpaceFollows.spaceId })
+          .from(SpaceFollows)
+          .where(eq(SpaceFollows.userId, context.session.userId))
+          .then((rows) => rows.map((row) => row.spaceId)),
+        database
+          .select({ tagId: TagFollows.tagId })
+          .from(TagFollows)
+          .where(eq(TagFollows.userId, context.session.userId))
+          .then((rows) => rows.map((row) => row.tagId)),
+      ]);
+
+      const searchResult = await elasticSearch.search({
+        index: indexName('posts'),
+        query: {
+          bool: {
+            filter: {
+              bool: {
+                should: makeQueryContainers([
+                  {
+                    query: { terms: { ['tags.id']: followingTagIds } },
+                    condition: followingTagIds.length > 0,
+                  },
+                  {
+                    query: { terms: { 'space.id': followingSpaceIds } },
+                    condition: followingSpaceIds.length > 0,
+                  },
+                ]),
+              },
+            },
+            must_not: makeQueryContainers([
+              {
+                query: { terms: { ['tags.id']: mutedTagIds } },
+                condition: mutedTagIds.length > 0,
+              },
+              {
+                query: { terms: { 'space.id': mutedSpaceIds } },
+                condition: mutedSpaceIds.length > 0,
+              },
+            ]),
+          },
+        },
+
+        sort: [{ publishedAt: 'desc' }],
+        from: (page - 1) * take,
+        size: take,
+      });
+
+      return searchResultToIds(searchResult);
     },
   }),
 

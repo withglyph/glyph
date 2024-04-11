@@ -7,8 +7,10 @@ export const elasticSearch = new Client({
   auth: { apiKey: env.PRIVATE_ELASTICSEARCH_API_KEY },
 });
 
-export const indexName = (name: string) => {
-  if (stack === 'prod' || stack === 'staging') {
+export type ElasticSearchEnvironment = 'prod' | 'dev';
+
+export const indexName = (name: string, env?: ElasticSearchEnvironment) => {
+  if (env !== 'dev' && (stack === 'prod' || stack === 'staging' || env === 'prod')) {
     return name;
   }
   return `${name}-dev`;
