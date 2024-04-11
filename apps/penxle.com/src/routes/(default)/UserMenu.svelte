@@ -308,7 +308,7 @@
               })}
               href="https://penxle.nolt.io"
             >
-              펜슬 피드백하기
+              글리프 피드백하기
             </Link>
 
             <button

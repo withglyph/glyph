@@ -841,7 +841,7 @@ builder.mutationFields((t) => ({
         .returning({ id: UserEmailVerifications.id });
 
       await sendEmail({
-        subject: `펜슬 ${isEmailExists ? '로그인' : '가입'}하기`,
+        subject: `글리프 ${isEmailExists ? '로그인' : '가입'}하기`,
         recipient: input.email,
         template: LoginUser,
         props: {
@@ -1028,7 +1028,7 @@ builder.mutationFields((t) => ({
       });
 
       await sendEmail({
-        subject: 'PENXLE 이메일 변경',
+        subject: '글리프 이메일 변경',
         recipient: input.email,
         template: UpdateUserEmail,
         props: {

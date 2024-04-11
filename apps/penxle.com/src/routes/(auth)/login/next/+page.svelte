@@ -26,7 +26,10 @@
   let emailResendTime: string | null = null;
 </script>
 
-<Helmet description="이메일로 전송된 코드를 통해 펜슬에 가입하거나 로그인할 수 있어요" title="펜슬 시작하기" />
+<Helmet
+  description="이메일로 전송된 코드를 통해 글리프에 가입하거나 로그인할 수 있어요"
+  title="이메일로 글리프 시작하기"
+/>
 
 <h1 class={css({ marginTop: { base: '32px', sm: '20px' }, marginBottom: '4px', fontSize: '24px', fontWeight: 'bold' })}>
   이메일 인증

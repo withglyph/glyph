@@ -103,7 +103,7 @@ email.get('/email', async (_, context) => {
       await tx.update(Users).set({ email: userEmailVerification.email }).where(eq(Users.id, user.id));
 
       await sendEmail({
-        subject: 'PENXLE 이메일이 변경되었어요.',
+        subject: '글리프 이메일이 변경되었어요.',
         recipient: user.email,
         template: UserEmailUpdated,
         props: {

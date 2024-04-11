@@ -88,9 +88,9 @@
 
     <Checkbox name="termsConsent" style={css.raw({ color: 'gray.600' })} size="sm" variant="cyan">
       (필수)
-      <Link href="https://help.penxle.com/legal/terms" underline>이용약관</Link>
+      <Link href="https://help.withglyph.com/legal/terms" underline>이용약관</Link>
       및
-      <Link href="https://help.penxle.com/legal/privacy" underline>개인정보처리방침</Link> 동의
+      <Link href="https://help.withglyph.com/legal/privacy" underline>개인정보처리방침</Link> 동의
     </Checkbox>
     <Checkbox name="isGte14" style={css.raw({ color: 'gray.600' })} size="sm" variant="cyan">
       (필수) 만 14세 이상입니다

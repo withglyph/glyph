@@ -55,7 +55,7 @@
 </script>
 
 <Helmet
-  description={$query.space.description ?? `펜슬의 ${$query.space.name} 스페이스`}
+  description={$query.space.description ?? `글리프의 ${$query.space.name} 스페이스`}
   image={{ src: $query.space.icon.url, size: 'small' }}
   title={$query.space.name}
 />

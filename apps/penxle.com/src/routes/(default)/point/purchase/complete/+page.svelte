@@ -62,7 +62,7 @@
   }
 </script>
 
-<Helmet description="펜슬 포인트를 충전할 수 있어요" title="포인트 충전" />
+<Helmet description="글리프 포인트를 충전할 수 있어요" title="포인트 충전" />
 
 <div class={center({ flexDirection: 'column', marginY: '88px', width: 'full' })}>
   {#if $query.pointPurchase.state === 'PENDING' && $query.pointPurchase.paymentMethod === 'VIRTUAL_BANK_ACCOUNT'}
@@ -157,7 +157,7 @@
       </p>
       <div class={css({ gap: '12px' })}>
         <h1 class={css({ textAlign: 'center', fontSize: '20px', fontWeight: 'bold' })}>포인트가 충전 완료 되었어요!</h1>
-        <p class={css({ textAlign: 'center', color: 'gray.500' })}>펜슬의 다양한 작품을 감상해보세요</p>
+        <p class={css({ textAlign: 'center', color: 'gray.500' })}>글리프의 다양한 작품을 감상해보세요</p>
 
         <div
           class={css({

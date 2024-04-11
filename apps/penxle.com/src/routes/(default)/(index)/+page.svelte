@@ -86,19 +86,16 @@
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "펜슬",
-      "url": "https://pencil.so"
+      "name": "글리프",
+      "url": "https://withglyph.com"
     }
   </script>
 </svelte:head>
 
 <Helmet
-  description="펜슬은 누구나 창작자가 될 수 있는, 개인 창작자들을 위한 자유롭고 즐거운 창작 사이트예요. 펜슬에 1, 2차 창작물을 올리고, 다른 사람들의 창작 활동을 둘러보세요."
-  image={{
-    src: 'https://glyph.pub/assets/opengraph/default-cover.png',
-    size: 'large',
-  }}
-  title="누구나 창작자가 되다, 펜슬"
+  description="당신의 창작을 응원합니다. 만화, 소설, 일러스트, 영상 등 다양한 콘텐츠를 글리프에서 만나보세요."
+  image={{ src: 'https://glyph.pub/assets/opengraph/default-cover-light.png', size: 'large' }}
+  title="글리프 - 창작자를 위한 콘텐츠 플랫폼"
   titleSuffix=""
 />
 

@@ -12,7 +12,7 @@
   $: code = error.extra.code ?? $page.status;
 </script>
 
-<Helmet description="펜슬 에러 페이지" title="펜슬" />
+<Helmet description="글리프 에러 페이지" title="글리프" />
 
 <header
   class={flex({
@@ -82,7 +82,7 @@
       })}
       href="/"
     >
-      펜슬 홈으로 가기
+      글리프 홈으로 가기
     </a>
   </section>
 

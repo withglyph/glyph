@@ -125,7 +125,7 @@
     IMP.certification(
       {
         merchant_uid: nanoid(),
-        company: 'PENXLE',
+        company: 'Glyph',
         m_redirect_url: `${$page.url.origin}/api/identification/callback`,
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -236,7 +236,7 @@
         </FormField>
 
         <p class={css({ fontSize: '12px', color: 'gray.500' })}>
-          펜슬에서 발생한 수익에 대한 원천징수 신고를 하기 위해 꼭 필요한 정보예요. 제출하신 정보는 안전하게 암호화된
+          글리프에서 발생한 수익에 대한 원천징수 신고를 하기 위해 꼭 필요한 정보예요. 제출하신 정보는 안전하게 암호화된
           이후 세무 신고에 사용되고, 이용 목적을 달성한 이후 개인정보처리방침에 따라 파기돼요.
         </p>
       </div>

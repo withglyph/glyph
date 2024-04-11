@@ -139,7 +139,7 @@
     <PublishMenuSearch
       kind="TITLE"
       label="작품"
-      placeholder="작품 이름을 입력해주세요 (예시:  마법소녀_글리프)"
+      placeholder="작품 이름을 입력해주세요 (예시: 마법소녀_글리프)"
       tooltip="여러 명칭을 쓸 수 있어요"
       bind:tags={$data.tags}
       bind:query={titleQuery}
@@ -148,7 +148,7 @@
     <PublishMenuSearch
       kind="CHARACTER"
       label="캐릭터"
-      placeholder="캐릭터 이름을 입력해주세요 (예시: 글리프링)"
+      placeholder="캐릭터 이름을 입력해주세요 (예시: 글리핑)"
       tooltip="등장 캐릭터가 너무 많다면 주연만 써도 좋아요"
       bind:tags={$data.tags}
       bind:query={characterQuery}

@@ -17,7 +17,7 @@
   `);
 </script>
 
-<Helmet description={`펜슬의 #${$query.tag.name} 태그`} title={`#${$query.tag.name}`} />
+<Helmet description={`글리프의 #${$query.tag.name} 태그`} title={`#${$query.tag.name}`} />
 
 {#each $query.tag.posts as post (post.id)}
   <PostCard $post={post} />

@@ -3,7 +3,7 @@
 
   export let type = 'website';
   export let title: string;
-  export let titleSuffix = ' | 펜슬';
+  export let titleSuffix = ' | 글리프';
   export let description: string;
   export let image: string | { src: string; size: 'small' | 'large' } | undefined = undefined;
 
@@ -32,8 +32,8 @@
   {/if}
   <link {href} rel="canonical" />
   <meta content={href} property="og:url" />
-  <meta content="펜슬" property="og:site_name" />
+  <meta content="글리프" property="og:site_name" />
   <meta content={type} property="og:type" />
   <meta content="ko_KR" property="og:locale" />
-  <meta content="@penxle" property="twitter:site" />
+  <meta content="@withglyph" property="twitter:site" />
 </svelte:head>

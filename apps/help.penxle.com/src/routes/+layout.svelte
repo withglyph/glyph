@@ -18,7 +18,7 @@
     })}
   >
     <div class={flex({ align: 'center', marginX: 'auto', height: '64px', maxWidth: '1000px' })}>
-      <a href="https://penxle.com">
+      <a href="https://withglyph.com">
         <Logo class={css({ height: '25px', color: 'gray.900' })} />
       </a>
 

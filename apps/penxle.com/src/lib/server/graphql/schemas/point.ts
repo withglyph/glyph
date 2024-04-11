@@ -143,7 +143,7 @@ builder.mutationFields((t) => ({
 
       const paymentData = {
         merchant_uid: paymentKey,
-        name: `펜슬 ${input.pointAmount} P`,
+        name: `글리프 ${input.pointAmount} P`,
         amount: paymentAmount,
         buyer_email: users[0].email,
 

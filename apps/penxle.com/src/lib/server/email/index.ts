@@ -35,7 +35,7 @@ export const sendEmail = async <T extends SvelteComponent>({
 
   await aws.ses.send(
     new SendEmailCommand({
-      Source: '펜슬 <hello@penxle.com>',
+      Source: '글리프 <hello@withglyph.com>',
       Destination: { ToAddresses: [recipient] },
       Message: {
         Subject: { Data: subject },

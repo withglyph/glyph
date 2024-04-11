@@ -18,7 +18,7 @@
   let comingSoonOpen = false;
 </script>
 
-<Helmet description={`펜슬의 #${$query.tag.name} 태그`} title={`#${$query.tag.name}`} />
+<Helmet description={`글리프의 #${$query.tag.name} 태그`} title={`#${$query.tag.name}`} />
 
 <div class={flex({ justify: 'space-between', align: 'center' })}>
   <p class={css({ fontSize: '20px', fontWeight: 'bold' })}>내용</p>

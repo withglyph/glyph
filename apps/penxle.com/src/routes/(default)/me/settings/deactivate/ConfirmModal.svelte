@@ -25,7 +25,7 @@
 </script>
 
 <Modal size="md" bind:open>
-  <svelte:fragment slot="title">펜슬 계정을 탈퇴하시겠어요?</svelte:fragment>
+  <svelte:fragment slot="title">글리프 계정을 탈퇴하시겠어요?</svelte:fragment>
   <svelte:fragment slot="subtitle">모든 데이터가 삭제되고 복구할 수 없어요</svelte:fragment>
 
   <form class={css({ width: 'full' })} use:form>

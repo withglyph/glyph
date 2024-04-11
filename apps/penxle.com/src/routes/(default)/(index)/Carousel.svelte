@@ -23,21 +23,21 @@
       subtitle: '신을 섬기는 기사와, 그를 사랑하게 된 악마',
       bottomline: 'ⓒ유씨',
       color: '#9FAAA8',
-      backgroundImageUrl: 'https://pnxl.net/images/_/banner_uc2.png',
+      backgroundImageUrl: 'https://glyph.pub/images/_/banner_uc2.png',
     },
     {
       title: '<유키의 백엔드 대모험>\n독점 연재 진행중',
       subtitle: '엘렐레 엘렐레',
       bottomline: 'ⓒ유키',
       color: '#6B879C',
-      backgroundImageUrl: 'https://pnxl.net/images/_/banner_yuki.png',
+      backgroundImageUrl: 'https://glyph.pub/images/_/banner_yuki.png',
     },
     {
       title: '<카일리의 좌충우돌\n프론트 개발기> 시작합니다',
       subtitle: '뚱인데요?',
       bottomline: 'ⓒ카일리',
       color: '#EDA303',
-      backgroundImageUrl: 'https://pnxl.net/images/_/banner_kylie.png',
+      backgroundImageUrl: 'https://glyph.pub/images/_/banner_kylie.png',
     },
   ];
 

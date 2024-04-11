@@ -42,7 +42,7 @@
     sm: { padding: '30px', paddingBottom: '60px' },
   })}
 >
-  <h1 class={css({ fontSize: '20px', fontWeight: 'bold', marginBottom: '20px', hideBelow: 'sm' })}>나의 펜슬</h1>
+  <h1 class={css({ fontSize: '20px', fontWeight: 'bold', marginBottom: '20px', hideBelow: 'sm' })}>나의 글리프</h1>
   <div class={css({ sm: { display: 'flex', gap: '40px' } })}>
     <aside
       class={css(

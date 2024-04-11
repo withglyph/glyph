@@ -76,7 +76,7 @@
     IMP.certification(
       {
         merchant_uid: nanoid(),
-        company: 'PENXLE',
+        company: 'Glyph',
         m_redirect_url: `${$page.url.origin}/api/identification/callback`,
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -97,7 +97,7 @@
   onMount(() => {
     switch ($page.url.searchParams.get('message')) {
       case 'sso_already_linked_by_other':
-        toast('이 소셜 계정은 이미 다른 펜슬 계정에 연동되어 있어요.');
+        toast('이 소셜 계정은 이미 다른 글리프 계정에 연동되어 있어요.');
         break;
     }
   });
@@ -178,7 +178,7 @@
 
   <div class={flex({ align: 'center', justify: 'space-between', flexWrap: 'wrap', gap: '16px' })}>
     <div>
-      <h3 class={css({ marginBottom: '8px', fontSize: '18px', fontWeight: 'bold' })}>이벤트 등 펜슬 소식 받아보기</h3>
+      <h3 class={css({ marginBottom: '8px', fontSize: '18px', fontWeight: 'bold' })}>이벤트 등 글리프 소식 받아보기</h3>
       {#if $query.me.marketingConsent}
         <p class={css({ fontSize: '15px', color: 'gray.500', wordBreak: 'keep-all' })}>
           {dayjs($query.me.marketingConsent.createdAt).formatAsDate()} 승인됨

@@ -88,7 +88,7 @@
   </script>
 </svelte:head>
 
-<Helmet description="펜슬 포인트를 충전할 수 있어요" title="포인트 충전" />
+<Helmet description="글리프 포인트를 충전할 수 있어요" title="포인트 충전" />
 
 <form
   class={center({
@@ -210,8 +210,8 @@
       <p>
         - 잔여 포인트는 충전한 포인트의 잔액이 80% 이하일 때에 한해 환불 신청이 가능하며, 잔액의 10% 또는 1,000원 중 큰
         금액을 환급 수수료로 제외하고 환불해드립니다. 포인트 잔액이 1,000원 이하이면 환불이 불가능합니다. 환불은
-        <Link style={css.raw({ textDecorationLine: 'underline' })} href="https://help.penxle.com/">
-          펜슬 도움 센터
+        <Link style={css.raw({ textDecorationLine: 'underline' })} href="https://help.withglyph.com/">
+          글리프 도움 센터
         </Link>를 통해 신청할 수 있습니다.
       </p>
       <p>- 무료로 지급받은 포인트는 환불받을 수 없으며, 지급일로부터 1년이 되는 시점에 소멸됩니다.</p>
@@ -225,7 +225,7 @@
       </p>
       <p>
         - 자세한 내용은 서비스 이용 전 동의하신
-        <Link style={css.raw({ textDecorationLine: 'underline' })} href="https://help.penxle.com/legal/terms">
+        <Link style={css.raw({ textDecorationLine: 'underline' })} href="https://help.withglyph.com/legal/terms">
           이용약관
         </Link>을 참조해주시기 바랍니다.
       </p>

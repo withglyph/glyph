@@ -23,7 +23,7 @@
   `);
 </script>
 
-<Helmet description="펜슬 계정을 탈퇴해요" title="계정 탈퇴" />
+<Helmet description="글리프 계정을 탈퇴해요" title="계정 탈퇴" />
 
 <div class={css({ marginX: 'auto', paddingY: '28px', paddingX: { base: '20px', sm: '40px' } })}>
   <div class={flex({ flexDirection: 'column', gap: '24px', width: 'full', maxWidth: '800px' })}>
@@ -96,7 +96,7 @@
 
     <div>
       <Button style={css.raw({ width: 'full' })} size="xl" on:click={() => (confirmModalOpen = true)}>
-        펜슬 탈퇴하기
+        글리프 탈퇴하기
       </Button>
       <Button style={css.raw({ marginBottom: '12px', width: 'full' })} color="secondary" size="xl">
         탈퇴를 취소할래요
