@@ -156,7 +156,7 @@
       color: 'gray.800',
       transition: 'common',
       hideBelow: 'sm',
-      _hover: backgroundStyle,
+      _hover: solidStyle,
       _focusVisible: backgroundStyle,
       _pressed: solidStyle,
     })}
