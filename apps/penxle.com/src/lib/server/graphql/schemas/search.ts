@@ -1,3 +1,6 @@
+import { match } from 'ts-pattern';
+import { elasticSearch, indexName } from '$lib/server/search';
+import { getMutedSpaceIds, getMutedTagIds, makeQueryContainers } from '$lib/server/utils';
 import { builder } from '../builder';
 import { Post } from './post';
 import { Space } from './space';
@@ -51,11 +54,79 @@ builder.queryFields((t) => ({
       adultFilter: t.arg.boolean({ required: false }),
       orderBy: t.arg({ type: OrderByKind, defaultValue: 'ACCURACY' }),
       page: t.arg.int({ defaultValue: 1 }),
+      take: t.arg.int({ defaultValue: 10 }),
     },
-    resolve: async () => {
-      return {
-        result: { hits: { hits: [] }, _shards: { total: 0, successful: 0, failed: 0 }, timed_out: false, took: 0 },
-      };
+    resolve: async (_, args, context) => {
+      const [mutedTagIds, mutedSpaceIds] = await Promise.all([
+        getMutedTagIds({ userId: context.session?.userId }),
+        getMutedSpaceIds({ userId: context.session?.userId }),
+      ]);
+
+      const searchResult = await elasticSearch.search({
+        index: indexName('posts'),
+        query: {
+          bool: {
+            should: [{ term: { 'tags.nameRaw': args.query } }],
+
+            must: [
+              {
+                multi_match: {
+                  query: args.query,
+                  fields: ['title', 'subtitle', 'tags.name'],
+                  type: 'phrase_prefix',
+                },
+              },
+            ],
+
+            filter: {
+              bool: {
+                must: makeQueryContainers([
+                  { query: { term: { ageRating: 'R19' } }, condition: args.adultFilter === true },
+                  ...args.includeTags.map((tag) => ({
+                    query: { term: { ['tags.nameRaw']: tag } },
+                  })),
+                ]),
+
+                must_not: makeQueryContainers([
+                  {
+                    query: {
+                      terms: { ['tags.id']: mutedTagIds },
+                    },
+                    condition: mutedTagIds.length > 0,
+                  },
+                  {
+                    query: {
+                      terms: { spaceId: mutedSpaceIds },
+                    },
+                    condition: mutedSpaceIds.length > 0,
+                  },
+                  {
+                    query: {
+                      terms: { ['tags.nameRaw']: args.excludeTags },
+                    },
+                    condition: args.excludeTags.length > 0,
+                  },
+                  {
+                    query: {
+                      term: { ageRating: 'R19' },
+                    },
+                    condition: args.adultFilter === false,
+                  },
+                ]),
+              },
+            },
+          },
+        },
+
+        size: 10,
+        from: (args.page - 1) * 10,
+        sort: match(args.orderBy)
+          .with('ACCURACY', () => ['_score'])
+          .with('LATEST', () => [{ publishedAt: 'desc' as const }])
+          .otherwise(() => undefined),
+      });
+
+      return { result: searchResult };
     },
   }),
 
