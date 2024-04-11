@@ -1,5 +1,6 @@
 import { webcrypto } from 'node:crypto';
 import { asc, count, eq, inArray } from 'drizzle-orm';
+import stringify from 'fast-json-stable-stringify';
 import * as R from 'radash';
 import { redis, useCache } from '$lib/server/cache';
 import { database, PostPurchases, PostRevisionContents, PostViews, SpaceCollectionPosts } from '../database';
@@ -15,7 +16,7 @@ export const makePostContentId = async (data: JSONContent[] | null) => {
   }
 
   const hash = Buffer.from(
-    await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(data))),
+    await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(stringify(data))),
   ).toString('hex');
 
   const contentId: string =
