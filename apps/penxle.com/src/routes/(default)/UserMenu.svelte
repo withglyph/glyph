@@ -159,7 +159,16 @@
               </a>
 
               <Button
-                style={css.raw({ whiteSpace: 'nowrap', flex: 'none' })}
+                style={css.raw({ whiteSpace: 'nowrap', flex: 'none', hideFrom: 'sm' })}
+                href="/me"
+                size="sm"
+                type="link"
+                variant="gray-outline"
+              >
+                계정 설정
+              </Button>
+              <Button
+                style={css.raw({ whiteSpace: 'nowrap', flex: 'none', hideBelow: 'sm' })}
                 href="/me/settings"
                 size="sm"
                 type="link"
