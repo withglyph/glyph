@@ -41,7 +41,7 @@
   >
     <TabHeadItem id={1} style={css.raw({ fontWeight: '[800]' })} pathname="/">추천</TabHeadItem>
     {#if $query.me}
-      <TabHeadItem id={2} style={css.raw({ fontWeight: '[800]' })} pathname="/feed/subscribes">구독</TabHeadItem>
+      <TabHeadItem id={2} style={css.raw({ fontWeight: '[800]' })} pathname="/feed">구독</TabHeadItem>
     {/if}
   </TabHead>
 

@@ -9,7 +9,7 @@
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import PostCard from '../../../(index)/PostCard.svelte';
+  import PostCard from '../../../(feed)/PostCard.svelte';
   import Collection from '../Collection.svelte';
 
   $: query = graphql(`

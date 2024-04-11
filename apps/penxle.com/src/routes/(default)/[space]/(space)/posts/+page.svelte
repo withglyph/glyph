@@ -7,7 +7,7 @@
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import Post from '../../../(index)/Post.svelte';
+  import Post from '../../../(feed)/Post.svelte';
 
   $: query = graphql(`
     query SpacePostsPage_Query($slug: String!) {

@@ -29,7 +29,7 @@
   import { comma, humanizeNumber } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { center, flex, grid } from '$styled-system/patterns';
-  import PostCard from '../(index)/PostCard.svelte';
+  import PostCard from '../(feed)/PostCard.svelte';
   import LoginRequireModal from '../LoginRequireModal.svelte';
   import AlertText from './AlertText.svelte';
   import Comment from './Comment.svelte';

@@ -9,7 +9,7 @@
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import Post from '../(index)/Post.svelte';
+  import Post from '../(feed)/Post.svelte';
   import AdultFilter from './AdultFilter.svelte';
   import TagForm from './TagForm.svelte';
   import { initSearchFilter } from './util';

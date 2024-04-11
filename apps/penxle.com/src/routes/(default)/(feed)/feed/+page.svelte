@@ -3,7 +3,7 @@
   import { Helmet } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import Post from '../../Post.svelte';
+  import Post from '../Post.svelte';
 
   $: query = graphql(`
     query FeedSpacesPage_Query {

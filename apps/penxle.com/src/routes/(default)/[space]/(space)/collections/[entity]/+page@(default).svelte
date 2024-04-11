@@ -10,7 +10,7 @@
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import Post from '../../../../(index)/Post.svelte';
+  import Post from '../../../../(feed)/Post.svelte';
 
   $: query = graphql(`
     query SpaceCollectionsEntityPage_Query($slug: String!) {

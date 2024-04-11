@@ -6,10 +6,10 @@
   import { Helmet, Icon, Tag } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
+  import Post from '../Post.svelte';
+  import PostCard from '../PostCard.svelte';
   import Carousel from './Carousel.svelte';
   import HorizontalScroll from './HorizontalScroll.svelte';
-  import Post from './Post.svelte';
-  import PostCard from './PostCard.svelte';
 
   $: query = graphql(`
     query IndexPage_Query {
