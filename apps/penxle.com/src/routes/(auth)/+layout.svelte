@@ -16,12 +16,27 @@
 </script>
 
 {#if $query.authLayoutBackgroundImage}
-  <Image
-    style={css.raw({ position: 'fixed', inset: '0', size: 'full', objectFit: 'cover' })}
-    $image={$query.authLayoutBackgroundImage}
-  />
+  <div class={css({ position: 'fixed', size: 'full', inset: '0' })}>
+    <Image style={css.raw({ size: 'full', objectFit: 'cover' })} $image={$query.authLayoutBackgroundImage} />
+    <div
+      class={css({
+        position: 'absolute',
+        inset: '0',
+        backgroundColor: '[gray.900/40]',
+      })}
+    />
+  </div>
 {:else}
-  <div class={css({ position: 'fixed', inset: '0', size: 'full', backgroundColor: 'gray.100' })} />
+  <div class={css({ position: 'fixed', size: 'full', inset: '0' })}>
+    <div class={css({ size: 'full', backgroundColor: 'gray.100' })} />
+    <div
+      class={css({
+        position: 'absolute',
+        inset: '0',
+        backgroundColor: '[gray.900/40]',
+      })}
+    />
+  </div>
 {/if}
 
 <main class={center({ margin: 'auto', width: 'full' })}>
@@ -30,10 +45,13 @@
       flexDirection: 'column',
       paddingX: { base: '20px', sm: '32px' },
       width: 'full',
-      height: { base: 'screen', sm: '524px' },
+      height: { base: 'screen', sm: '536px' },
       backgroundColor: 'gray.5',
       zIndex: '1',
+      overflowY: 'auto',
       sm: {
+        borderWidth: '1px',
+        borderColor: 'gray.600',
         paddingTop: '32px',
         maxWidth: '420px',
       },

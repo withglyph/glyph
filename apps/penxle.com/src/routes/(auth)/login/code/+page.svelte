@@ -14,7 +14,7 @@
 
   $: email = $page.url.searchParams.get('email');
 
-  const { form, handleSubmit } = createMutationForm({
+  const { form, handleSubmit, data, setErrors } = createMutationForm({
     mutation: graphql(`
       mutation LoginCodePage_IssueUserEmailAuthorizationUrl_Mutation($input: IssueUserEmailAuthorizationUrlInput!) {
         issueUserEmailAuthorizationUrl(input: $input) {
@@ -26,6 +26,10 @@
     onSuccess: (resp) => {
       mixpanel.track('user:login:success', { method: 'email:code' });
       location.href = resp.url;
+    },
+    onError: (resp) => {
+      // @ts-expect-error form validation error
+      setErrors('code', resp.message);
     },
   });
 
@@ -107,4 +111,11 @@
   </div>
 </div>
 
-<Button style={css.raw({ marginY: '20px', width: 'full' })} size="lg" on:click={handleSubmit}>시작하기</Button>
+<Button
+  style={css.raw({ marginTop: '20px', marginBottom: '32px', width: 'full' })}
+  disabled={$data.code?.length < 6}
+  size="lg"
+  on:click={handleSubmit}
+>
+  시작하기
+</Button>

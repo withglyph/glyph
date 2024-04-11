@@ -100,7 +100,7 @@
     </Checkbox>
   </section>
 
-  <Button style={css.raw({ marginTop: 'auto', marginBottom: '20px', width: 'full' })} size="lg" type="submit">
+  <Button style={css.raw({ marginTop: 'auto', marginBottom: '32px', width: 'full' })} size="lg" type="submit">
     시작하기
   </Button>
 </form>

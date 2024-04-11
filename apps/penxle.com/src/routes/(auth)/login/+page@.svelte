@@ -45,10 +45,10 @@
     class={flex({
       direction: 'column',
       justifyContent: 'center',
-      paddingX: { base: '20px', sm: '43px' },
+      paddingX: { base: '20px', sm: '60px' },
       width: 'full',
       backgroundColor: { base: '[black/40]', sm: 'gray.5' },
-      sm: { flex: 'none', width: '420px' },
+      sm: { flex: 'none', width: '520px' },
       smDown: { position: 'fixed', zIndex: '1', size: 'full' },
     })}
   >
@@ -71,9 +71,9 @@
 
       <p
         class={css({
-          fontSize: '14px',
+          fontSize: '16px',
           color: 'gray.500',
-          smDown: { fontWeight: 'medium', textAlign: 'center', color: 'gray.5' },
+          smDown: { textAlign: 'center', color: 'gray.5' },
         })}
       >
         나만의 공간, 함께 새겨질 우주

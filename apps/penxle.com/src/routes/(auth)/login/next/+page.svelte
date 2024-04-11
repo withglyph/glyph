@@ -67,7 +67,7 @@
   class={center({
     width: 'full',
     gap: '15px',
-    fontWeight: 'semibold',
+    fontSize: '14px',
     color: 'gray.400',
     _before: { content: '""', display: 'block', width: 'full', height: '1px', backgroundColor: 'gray.100' },
     _after: { content: '""', display: 'block', width: 'full', height: '1px', backgroundColor: 'gray.100' },
@@ -77,7 +77,7 @@
 </div>
 
 <a
-  class={css({ marginTop: '10px', marginX: 'auto', color: 'gray.500' })}
+  class={css({ marginTop: '10px', marginX: 'auto', fontSize: '15px', color: 'gray.600' })}
   href={qs.stringifyUrl({ url: '/login/code', query: { email } })}
 >
   코드 입력하기
@@ -103,11 +103,12 @@
       인증 메일이 재발송되었어요 ({emailResendTime})
     </div>
   {/if}
+
   <div
     class={flex({
       align: 'center',
       justify: 'space-between',
-      marginBottom: '20px',
+      marginBottom: '32px',
       fontSize: '14px',
       color: 'gray.500',
     })}

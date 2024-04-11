@@ -40,7 +40,7 @@
     <TextInput style={css.raw({ width: 'full' })} placeholder="이메일을 입력해주세요" type="email" />
   </FormField>
 
-  <Button style={css.raw({ marginTop: 'auto', marginBottom: '20px', width: 'full' })} size="lg" type="submit">
+  <Button style={css.raw({ marginTop: 'auto', marginBottom: '32px', width: 'full' })} size="lg" type="submit">
     다음
   </Button>
 </form>
