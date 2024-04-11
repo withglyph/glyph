@@ -133,7 +133,7 @@
   <div
     class={cx(
       css({
-        maxWidth: '1280px',
+        maxWidth: '1288px',
         width: 'full',
         height: { base: '320px', sm: '380px' },
         overflow: 'hidden',
@@ -157,16 +157,7 @@
           class={css({ height: 'full', overflow: 'hidden' })}
         >
           <div
-            style:background-image={`url(${slide.backgroundImageUrl})`}
-            class={css({
-              position: 'relative',
-              marginX: '4px',
-              height: 'full',
-              backgroundSize: 'cover',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
-              cursor: 'pointer',
-            })}
+            class={css({ position: 'relative', marginX: '4px', height: 'full', cursor: 'pointer' })}
             role="presentation"
             on:click={() => {
               if (idx === currentIdx + 1) {
@@ -174,6 +165,23 @@
               }
             }}
           >
+            <div
+              class={css({
+                position: 'absolute',
+                inset: '0',
+                display: 'flex',
+                justifyContent: 'center',
+                overflow: 'hidden',
+                pointerEvents: 'none',
+              })}
+            >
+              <img
+                class={css({ minWidth: '1180px', objectFit: 'cover' })}
+                alt={slide.title}
+                src={slide.backgroundImageUrl}
+              />
+            </div>
+
             <div
               style:--slide-color={slide.color}
               class={css({
