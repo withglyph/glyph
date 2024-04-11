@@ -1,7 +1,7 @@
 <script lang="ts">
   import qs from 'query-string';
   import { tick } from 'svelte';
-  import IconSearch from '~icons/effit/search';
+  import IconSearch from '~icons/glyph/search';
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconX from '~icons/tabler/x';
   import { afterNavigate, goto } from '$app/navigation';

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import IconHorizontalRule from '~icons/effit/horizontal-rule';
-  import IconLetterSpacing from '~icons/effit/letter-spacing';
-  import IconLineHeight from '~icons/effit/line-height';
-  import IconRuby from '~icons/effit/ruby';
-  import IconText from '~icons/effit/text';
+  import IconHorizontalRule from '~icons/glyph/horizontal-rule';
+  import IconLetterSpacing from '~icons/glyph/letter-spacing';
+  import IconLineHeight from '~icons/glyph/line-height';
+  import IconRuby from '~icons/glyph/ruby';
+  import IconText from '~icons/glyph/text';
   import IconArrowLeft from '~icons/tabler/arrow-left';
   import IconBold from '~icons/tabler/bold';
   import IconCheck from '~icons/tabler/check';

@@ -1,6 +1,6 @@
 <script lang="ts">
   import dayjs from 'dayjs';
-  import IconReplyBar from '~icons/effit/reply-bar';
+  import IconReplyBar from '~icons/glyph/reply-bar';
   import IconCaretDownFilled from '~icons/tabler/caret-down-filled';
   import IconCaretUpFilled from '~icons/tabler/caret-up-filled';
   import IconDotsVertical from '~icons/tabler/dots-vertical';

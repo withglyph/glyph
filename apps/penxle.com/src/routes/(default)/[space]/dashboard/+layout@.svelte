@@ -1,5 +1,4 @@
 <script lang="ts">
-  import IconEffit from '~icons/effit/effit';
   import IconChevronDown from '~icons/tabler/chevron-down';
   import IconFileText from '~icons/tabler/file-text';
   import IconHome from '~icons/tabler/home';
@@ -286,7 +285,6 @@
 
 <BottomSheet bind:open>
   <div class={flex({ align: 'center', gap: '8px', width: 'full' })}>
-    <Icon style={css.raw({ borderRadius: '8px' })} icon={IconEffit} size={24} />
     <span class={css({ fontWeight: 'bold' })}>스페이스 관리</span>
   </div>
 

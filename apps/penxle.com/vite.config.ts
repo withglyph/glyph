@@ -11,7 +11,7 @@ export default defineConfig({
       scale: 1,
       compiler: 'svelte',
       customCollections: {
-        effit: FileSystemIconLoader('./src/assets/icons'),
+        glyph: FileSystemIconLoader('./src/assets/icons'),
       },
     }),
     glitch(),

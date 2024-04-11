@@ -1,4 +1,4 @@
-import IconAlignJustify from '~icons/effit/align-justify';
+import IconAlignJustify from '~icons/glyph/align-justify';
 import IconAlignCenter from '~icons/tabler/align-center';
 import IconAlignLeft from '~icons/tabler/align-left';
 import IconAlignRight from '~icons/tabler/align-right';

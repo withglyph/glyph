@@ -1,8 +1,8 @@
 <script generics="T extends 'space' | 'me'" lang="ts">
   import dayjs from 'dayjs';
-  import IconGlobe from '~icons/effit/globe';
-  import IconLink from '~icons/effit/link';
-  import IconUsers from '~icons/effit/users';
+  import IconGlobe from '~icons/glyph/globe';
+  import IconLink from '~icons/glyph/link';
+  import IconUsers from '~icons/glyph/users';
   import IconCheck from '~icons/tabler/check';
   import IconChevronDown from '~icons/tabler/chevron-down';
   import IconPlus from '~icons/tabler/plus';

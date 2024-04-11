@@ -1,5 +1,5 @@
 <script lang="ts">
-  import IconLock from '~icons/effit/lock';
+  import IconLock from '~icons/glyph/lock';
   import IconClipboard from '~icons/tabler/clipboard';
   import IconDotsVertical from '~icons/tabler/dots-vertical';
   import IconPlus from '~icons/tabler/plus';

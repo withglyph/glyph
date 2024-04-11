@@ -1,9 +1,9 @@
 <script lang="ts">
   import dayjs from 'dayjs';
   import { onMount } from 'svelte';
-  import IconLetterSpacing from '~icons/effit/letter-spacing';
-  import IconLineHeight from '~icons/effit/line-height';
-  import IconRuby from '~icons/effit/ruby';
+  import IconLetterSpacing from '~icons/glyph/letter-spacing';
+  import IconLineHeight from '~icons/glyph/line-height';
+  import IconRuby from '~icons/glyph/ruby';
   import IconBold from '~icons/tabler/bold';
   import IconCheck from '~icons/tabler/check';
   import IconChevronDown from '~icons/tabler/chevron-down';

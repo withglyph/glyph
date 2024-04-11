@@ -1,6 +1,6 @@
 <script lang="ts">
   import { uid } from 'radash';
-  import IconHelpLine from '~icons/effit/help-line';
+  import IconHelpLine from '~icons/glyph/help-line';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Icon, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';

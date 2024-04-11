@@ -1,6 +1,6 @@
 <script lang="ts">
-  import IconEmbedCompact from '~icons/effit/embed-compact';
-  import IconEmbedFull from '~icons/effit/embed-full';
+  import IconEmbedCompact from '~icons/glyph/embed-compact';
+  import IconEmbedFull from '~icons/glyph/embed-full';
   import IconAlignCenter from '~icons/tabler/align-center';
   import IconAlignLeft from '~icons/tabler/align-left';
   import IconAlignRight from '~icons/tabler/align-right';

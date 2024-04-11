@@ -1,6 +1,6 @@
 <script lang="ts">
-  import IconLock from '~icons/effit/lock';
-  import IconReplyBar from '~icons/effit/reply-bar';
+  import IconLock from '~icons/glyph/lock';
+  import IconReplyBar from '~icons/glyph/reply-bar';
   import IconAlertCircle from '~icons/tabler/alert-circle';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';

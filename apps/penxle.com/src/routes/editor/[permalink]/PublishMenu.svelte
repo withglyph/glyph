@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import IconCheckmark from '~icons/effit/checkmark';
-  import IconDot from '~icons/effit/dot';
-  import IconGlobe from '~icons/effit/globe';
-  import IconLink from '~icons/effit/link';
-  import IconUsers from '~icons/effit/users';
+  import IconCheckmark from '~icons/glyph/checkmark';
+  import IconDot from '~icons/glyph/dot';
+  import IconGlobe from '~icons/glyph/globe';
+  import IconLink from '~icons/glyph/link';
+  import IconUsers from '~icons/glyph/users';
   import IconAlertCircle from '~icons/tabler/alert-circle';
   import IconAlertTriangle from '~icons/tabler/alert-triangle';
   import IconPhoto from '~icons/tabler/photo';

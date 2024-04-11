@@ -1,8 +1,8 @@
 <script lang="ts">
   import dayjs from 'dayjs';
   import qs from 'query-string';
-  import IconGoogle from '~icons/effit/google';
-  import IconNaver from '~icons/effit/naver';
+  import IconGoogle from '~icons/glyph/google';
+  import IconNaver from '~icons/glyph/naver';
   import IconCheck from '~icons/tabler/check';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';

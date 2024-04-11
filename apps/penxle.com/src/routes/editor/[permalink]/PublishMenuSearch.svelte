@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as R from 'radash';
-  import IconHelpLine from '~icons/effit/help-line';
+  import IconHelpLine from '~icons/glyph/help-line';
   import IconHash from '~icons/tabler/hash';
   import IconX from '~icons/tabler/x';
   import { Icon, Tag, Tooltip } from '$lib/components';

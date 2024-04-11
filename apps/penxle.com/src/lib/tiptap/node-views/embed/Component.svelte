@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import IconEmbedCompact from '~icons/effit/embed-compact';
-  import IconEmbedFull from '~icons/effit/embed-full';
-  import IconOpengraph from '~icons/effit/opengraph';
+  import IconEmbedCompact from '~icons/glyph/embed-compact';
+  import IconEmbedFull from '~icons/glyph/embed-full';
+  import IconOpengraph from '~icons/glyph/opengraph';
   import IconLink from '~icons/tabler/link';
   import IconTrash from '~icons/tabler/trash';
   import { graphql } from '$glitch';
