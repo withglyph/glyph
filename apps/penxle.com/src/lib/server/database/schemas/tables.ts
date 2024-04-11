@@ -1,8 +1,8 @@
 import { init } from '@paralleldrive/cuid2';
 import { sql } from 'drizzle-orm';
-import { boolean, index, integer, jsonb, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
+import { boolean, index, integer, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import * as E from './enums';
-import { datetime } from './types';
+import { datetime, jsonb } from './types';
 import type { AnyPgColumn } from 'drizzle-orm/pg-core';
 
 const createId = init({ length: 16 });
