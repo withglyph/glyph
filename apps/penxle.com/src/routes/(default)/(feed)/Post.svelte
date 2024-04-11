@@ -109,7 +109,14 @@
   href={`/${$post.space.slug}/${$post.permalink}`}
 >
   <div class={css({ flexGrow: '1', truncate: true })}>
-    <h3 class={css({ marginBottom: '2px', fontSize: '14px', fontWeight: 'semibold', truncate: true })}>
+    <h3
+      class={css({
+        marginBottom: '2px',
+        fontSize: { base: '14px', sm: '15px' },
+        fontWeight: 'semibold',
+        truncate: true,
+      })}
+    >
       {$post.publishedRevision.title ?? '(제목 없음)'}
     </h3>
     <h4 class={css({ fontSize: '13px', color: 'gray.600', height: '19px', truncate: true })}>

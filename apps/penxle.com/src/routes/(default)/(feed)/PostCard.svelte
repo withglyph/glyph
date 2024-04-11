@@ -70,7 +70,7 @@
     slots: ['title', 'subtitle', 'tag'],
     base: {
       title: {
-        fontSize: { base: '14px', sm: '16px' },
+        fontSize: { base: '14px', sm: '15px' },
         fontWeight: 'semibold',
         wordBreak: 'break-all',
         lineClamp: '1',
