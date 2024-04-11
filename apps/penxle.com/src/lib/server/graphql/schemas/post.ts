@@ -1122,8 +1122,14 @@ builder.queryFields((t) => ({
           space: { id: Spaces.id, visibility: Spaces.visibility, state: Spaces.state },
         })
         .from(Posts)
-        .innerJoin(Spaces, eq(Posts.spaceId, Spaces.id))
-        .where(and(eq(Posts.permalink, args.permalink), ne(Posts.state, 'DELETED'), eq(Spaces.state, 'ACTIVE')));
+        .leftJoin(Spaces, eq(Posts.spaceId, Spaces.id))
+        .where(
+          and(
+            eq(Posts.permalink, args.permalink),
+            ne(Posts.state, 'DELETED'),
+            or(eq(Spaces.state, 'ACTIVE'), isNull(Spaces.id)),
+          ),
+        );
 
       if (posts.length === 0) {
         throw new NotFoundError();
@@ -1131,8 +1137,11 @@ builder.queryFields((t) => ({
 
       const [post] = posts;
 
-      if (post.space.visibility === 'PRIVATE' || post.visibility === 'SPACE') {
-        const meAsMember = await getSpaceMember(context, post.space.id);
+      if (
+        post.userId !== context.session?.userId &&
+        (!post.space || post.space.visibility === 'PRIVATE' || post.visibility === 'SPACE')
+      ) {
+        const meAsMember = post.space ? await getSpaceMember(context, post.space.id) : null;
         if (!meAsMember) {
           throw new PermissionDeniedError();
         }

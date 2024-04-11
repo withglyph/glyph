@@ -31,7 +31,7 @@
   `);
 </script>
 
-<Helmet description="포스트 미리보기" title={`${$query.post.draftRevision.title ?? '(제목 없음)'} 미리보기`} />
+<Helmet description="포스트 미리보기" title={`${$query.post.draftRevision?.title ?? '(제목 없음)'} 미리보기`} />
 
 {#if !hideHeader}
   <header
