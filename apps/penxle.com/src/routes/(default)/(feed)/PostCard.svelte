@@ -157,10 +157,10 @@
       })}
     >
       {#each $post.tags.slice(0, 2) as tag (tag.id)}
-        <Tag style={classes.tag} href={`/tag/${tag.tag.name}/post`} size="sm">#{tag.tag.name}</Tag>
+        <Tag style={classes.tag} as="div" size="sm">#{tag.tag.name}</Tag>
       {/each}
       {#if $post.tags.length > 2}
-        <Tag style={classes.tag} size="sm">+{$post.tags.length - 2}</Tag>
+        <Tag style={classes.tag} as="div" size="sm">+{$post.tags.length - 2}</Tag>
       {/if}
     </div>
   {/if}

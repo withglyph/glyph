@@ -126,16 +126,12 @@
       })}
     >
       {#each $post.tags.slice(0, 2) as tag (tag.id)}
-        <Tag
-          style={css.raw({ maxWidth: { base: '62px', sm: '94px' }, truncate: true })}
-          href={`/tag/${tag.tag.name}/post`}
-          size="sm"
-        >
+        <Tag style={css.raw({ maxWidth: { base: '62px', sm: '94px' }, truncate: true })} as="div" size="sm">
           #{tag.tag.name}
         </Tag>
       {/each}
       {#if $post.tags.length > 2}
-        <Tag style={css.raw({ maxWidth: { base: '62px', sm: '94px' }, truncate: true })} size="sm">
+        <Tag style={css.raw({ maxWidth: { base: '62px', sm: '94px' }, truncate: true })} as="div" size="sm">
           +{$post.tags.length - 2}
         </Tag>
       {/if}

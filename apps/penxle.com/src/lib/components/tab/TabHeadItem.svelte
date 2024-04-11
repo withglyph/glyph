@@ -41,7 +41,7 @@
       },
       style,
     )}
-    aria-selected={selected}
+    aria-selected={selected ? 'true' : 'false'}
     role="tab"
     tabindex="-1"
     on:click
