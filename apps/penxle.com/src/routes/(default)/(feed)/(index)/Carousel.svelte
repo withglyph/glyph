@@ -143,7 +143,6 @@
   <div
     class={cx(
       css({
-        maxWidth: '1288px',
         width: 'full',
         height: { base: '320px', sm: '380px' },
         overflow: 'hidden',
