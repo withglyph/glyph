@@ -149,7 +149,7 @@
         </div>
       </button>
 
-      <p class={css({ fontSize: '13px', color: 'gray.500' })}>800x100 픽셀 이상 (1:1 비율)</p>
+      <p class={css({ fontSize: '13px', color: 'gray.500' })}>800x800 픽셀 이상 (1:1 비율)</p>
     </div>
 
     <hr
