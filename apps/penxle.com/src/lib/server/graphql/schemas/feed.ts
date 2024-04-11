@@ -1,5 +1,6 @@
-import { and, desc, eq } from 'drizzle-orm';
+import { and, count, desc, eq } from 'drizzle-orm';
 import * as R from 'radash';
+import { useCache } from '$lib/server/cache';
 import {
   database,
   inArray,
@@ -23,6 +24,91 @@ import {
 import { builder } from '../builder';
 import { Post } from './post';
 import { Tag } from './tag';
+
+/**
+ * * Types
+ */
+
+class FeaturedTag {
+  tagId!: string;
+}
+
+builder.objectType(FeaturedTag, {
+  name: 'FeaturedTag',
+  fields: (t) => ({
+    tag: t.field({
+      type: Tag,
+      resolve: ({ tagId }) => tagId,
+    }),
+    posts: t.field({
+      type: [Post],
+      resolve: async ({ tagId }, _, context) => {
+        const [mutedTagIds, mutedSpaceIds] = context.session
+          ? await Promise.all([
+              getMutedTagIds({ userId: context.session.userId }),
+              getMutedSpaceIds({ userId: context.session.userId }),
+            ])
+          : [[], []];
+
+        const searchResult = await elasticSearch.search({
+          index: indexName('posts'),
+          query: {
+            function_score: {
+              query: {
+                bool: {
+                  must_not: makeQueryContainers([
+                    {
+                      query: { terms: { ['tags.id']: mutedTagIds } },
+                      condition: mutedTagIds.length > 0,
+                    },
+                    {
+                      query: { terms: { 'space.id': mutedSpaceIds } },
+                      condition: mutedSpaceIds.length > 0,
+                    },
+                  ]),
+                  filter: [{ term: { ['tags.id']: tagId } }],
+                },
+              },
+              functions: [
+                {
+                  random_score: { seed: Math.floor(Math.random() * 1000), field: '_seq_no' },
+                },
+                {
+                  exp: {
+                    publishedAt: {
+                      scale: '30d',
+                      offset: '7d',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          size: 10,
+        });
+
+        const postIds = searchResultToIds(searchResult);
+
+        return postIds.length > 0
+          ? await database
+              .select({ Posts })
+              .from(Posts)
+              .innerJoin(Spaces, eq(Posts.spaceId, Spaces.id))
+              .where(
+                and(
+                  inArray(Posts.id, postIds),
+                  eq(Posts.state, 'PUBLISHED'),
+                  eq(Posts.visibility, 'PUBLIC'),
+                  eq(Spaces.state, 'ACTIVE'),
+                  eq(Spaces.visibility, 'PUBLIC'),
+                ),
+              )
+              .then((rows) => rows.map((row) => row.Posts))
+          : [];
+      },
+    }),
+  }),
+});
 
 /**
  * * Queries
@@ -181,14 +267,30 @@ builder.queryFields((t) => ({
     },
   }),
 
-  recentFeed: t.field({
-    type: [Post],
-    resolve: async () => {
-      return [];
+  featuredTagFeed: t.field({
+    type: [FeaturedTag],
+    resolve: async (_, __, context) => {
+      const mutedTagIds = context.session ? await getMutedTagIds({ userId: context.session.userId }) : [];
+      const tags = await useCache(
+        'tagFeed',
+        async () => {
+          return database
+            .select({ tagId: PostTags.tagId })
+            .from(PostTags)
+            .where(and(inArray(PostTags.kind, ['CHARACTER', 'TITLE'])))
+            .orderBy(desc(count()))
+            .groupBy(PostTags.tagId)
+            .limit(20)
+            .then((rows) => rows.map((row) => row.tagId));
+        },
+        60 * 60,
+      );
+
+      return R.sift(tags.map((tagId) => (mutedTagIds.includes(tagId) ? null : { tagId }))).slice(0, 5);
     },
   }),
 
-  tagFeed: t.withAuth({ user: true }).field({
+  recentFeed: t.field({
     type: [Post],
     resolve: async () => {
       return [];

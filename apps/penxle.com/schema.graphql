@@ -142,6 +142,11 @@ type Embed {
   url: String!
 }
 
+type FeaturedTag {
+  posts: [Post!]!
+  tag: Tag!
+}
+
 type File {
   id: ID!
   name: String!
@@ -611,6 +616,7 @@ type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
   draftPost(permalink: String!): Post!
+  featuredTagFeed: [FeaturedTag!]!
   flash: Flash
   hello(name: String!): String!
   me: User
@@ -628,7 +634,6 @@ type Query {
   space(slug: String!): Space!
   spaceFeed: [Post!]!
   tag(name: String!): Tag!
-  tagFeed: [Post!]!
 }
 
 type Revenue {
