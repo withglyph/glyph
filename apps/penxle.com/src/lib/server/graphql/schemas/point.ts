@@ -1,11 +1,11 @@
 import dayjs from 'dayjs';
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { customAlphabet } from 'nanoid';
 import numeral from 'numeral';
 import { match } from 'ts-pattern';
 import { PaymentMethod, PointPurchaseState, PointTransactionCause } from '$lib/enums';
 import { NotFoundError } from '$lib/errors';
-import { database, PointPurchases, PointTransactions, PostPurchases, Users } from '$lib/server/database';
+import { database, inArray, PointPurchases, PointTransactions, PostPurchases, Users } from '$lib/server/database';
 import { exim, portone } from '$lib/server/external-api';
 import { builder } from '../builder';
 import { createObjectRef } from '../utils';

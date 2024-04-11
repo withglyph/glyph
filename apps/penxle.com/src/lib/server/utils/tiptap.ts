@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
-import { eq, inArray } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { traverse } from 'object-traversal';
 import { createTiptapDocument, documentToText } from '$lib/utils';
 import { useCache } from '../cache';
-import { database, Embeds, Files, Images } from '../database';
+import { database, Embeds, Files, Images, inArray } from '../database';
 import type { JSONContent } from '@tiptap/core';
 
 type RevisionContent = {

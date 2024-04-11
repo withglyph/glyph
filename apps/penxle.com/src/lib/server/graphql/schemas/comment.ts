@@ -1,9 +1,10 @@
 import dayjs from 'dayjs';
-import { and, count, eq, inArray } from 'drizzle-orm';
+import { and, count, eq } from 'drizzle-orm';
 import { PostCommentState, PostCommentVisibility } from '$lib/enums';
 import { NotFoundError, PermissionDeniedError } from '$lib/errors';
 import {
   database,
+  inArray,
   PostCommentLikes,
   PostComments,
   PostPurchases,

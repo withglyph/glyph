@@ -1,6 +1,6 @@
-import { and, asc, count, eq, inArray, or } from 'drizzle-orm';
+import { and, asc, count, eq, or } from 'drizzle-orm';
 import { NotFoundError, PermissionDeniedError } from '$lib/errors';
-import { database, Posts, SpaceCollectionPosts, SpaceCollections } from '$lib/server/database';
+import { database, inArray, Posts, SpaceCollectionPosts, SpaceCollections } from '$lib/server/database';
 import { getSpaceMember } from '$lib/server/utils';
 import { CreateSpaceCollectionSchema, UpdateSpaceCollectionSchema } from '$lib/validations';
 import { builder } from '../builder';

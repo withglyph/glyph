@@ -1,7 +1,7 @@
-import { and, desc, eq, ne, notInArray } from 'drizzle-orm';
+import { and, desc, eq, ne } from 'drizzle-orm';
 import { PostTagKind } from '$lib/enums';
 import { NotFoundError } from '$lib/errors';
-import { database, PostTags, PostViews, TagFollows, Tags, UserTagMutes } from '$lib/server/database';
+import { database, notInArray, PostTags, PostViews, TagFollows, Tags, UserTagMutes } from '$lib/server/database';
 import { elasticSearch, indexName } from '$lib/server/search';
 import { getTagUsageCount, searchResultToIds } from '$lib/server/utils';
 import { builder } from '../builder';

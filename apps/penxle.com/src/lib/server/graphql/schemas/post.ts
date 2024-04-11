@@ -1,7 +1,7 @@
 import { init as cuid } from '@paralleldrive/cuid2';
 import { hash, verify } from 'argon2';
 import dayjs from 'dayjs';
-import { and, asc, count, desc, eq, exists, gt, inArray, isNotNull, isNull, lt, ne, notExists, or } from 'drizzle-orm';
+import { and, asc, count, desc, eq, exists, gt, isNotNull, isNull, lt, ne, notExists, or } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { match, P } from 'ts-pattern';
 import { emojiData } from '$lib/emoji';
@@ -21,6 +21,7 @@ import {
   BookmarkGroupPosts,
   BookmarkGroups,
   database,
+  inArray,
   PostComments,
   PostLikes,
   PostPurchases,

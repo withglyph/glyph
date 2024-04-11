@@ -13,3 +13,4 @@ export type Database = typeof database;
 export type Transaction = Database extends PgDatabase<infer T, infer U, infer V> ? PgTransaction<T, U, V> : never;
 
 export * from './schemas/tables';
+export * from './utils';

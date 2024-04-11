@@ -1,10 +1,12 @@
 import dayjs from 'dayjs';
-import { and, count, desc, eq, inArray, isNotNull, ne, notExists, notInArray } from 'drizzle-orm';
+import { and, count, desc, eq, isNotNull, ne, notExists } from 'drizzle-orm';
 import { match } from 'ts-pattern';
 import { SpaceMemberRole, SpaceVisibility } from '$lib/enums';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import {
   database,
+  inArray,
+  notInArray,
   PostRevisions,
   Posts,
   PostTags,

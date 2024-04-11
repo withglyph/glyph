@@ -1,7 +1,7 @@
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import * as R from 'radash';
 import { UserNotificationCategory, UserNotificationMethod } from '$lib/enums';
-import { database, UserNotificationPreferences, UserNotifications } from '../database';
+import { database, inArray, UserNotificationPreferences, UserNotifications } from '../database';
 import type { Notification } from '$lib/utils';
 
 type CheckNotificationPreferencesParams = {

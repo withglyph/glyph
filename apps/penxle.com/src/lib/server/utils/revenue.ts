@@ -1,12 +1,12 @@
 import dayjs from 'dayjs';
-import { and, eq, inArray, isNull, lt, ne, sum } from 'drizzle-orm';
+import { and, eq, isNull, lt, ne, sum } from 'drizzle-orm';
 import { match } from 'ts-pattern';
 import { RevenueWithdrawalKind } from '$lib/enums';
 import { IntentionalError } from '$lib/errors';
 import * as coocon from '$lib/server/external-api/coocon';
 import { logToSlack } from '$lib/server/utils';
 import { calculateFeeAmount, getMonthlyWithdrawableDayjsBefore } from '$lib/utils';
-import { database, Revenues, RevenueWithdrawals, UserSettlementIdentities } from '../database';
+import { database, inArray, Revenues, RevenueWithdrawals, UserSettlementIdentities } from '../database';
 
 const getWithdrawableDayjs = () => dayjs().subtract(7, 'day');
 

@@ -1,5 +1,5 @@
-import { asc, inArray } from 'drizzle-orm';
-import { database } from '../database';
+import { asc } from 'drizzle-orm';
+import { database, inArray } from '../database';
 import { builder } from './builder';
 import type { DataLoaderOptions } from '@pothos/plugin-dataloader';
 import type { AnyPgColumn, AnyPgTable, PgTable, TableConfig } from 'drizzle-orm/pg-core';

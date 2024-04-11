@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
-import { and, eq, inArray, isNull } from 'drizzle-orm';
-import { database, PointBalances, PointTransactions, UserEventEnrollments } from '$lib/server/database';
+import { and, eq, isNull } from 'drizzle-orm';
+import { database, inArray, PointBalances, PointTransactions, UserEventEnrollments } from '$lib/server/database';
 
 let eventEnrollmentCount = 0;
 do {

@@ -1,6 +1,15 @@
-import { and, desc, eq, inArray } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import * as R from 'radash';
-import { database, Posts, PostTags, PostViews, Spaces, TagFollows, UserPersonalIdentities } from '$lib/server/database';
+import {
+  database,
+  inArray,
+  Posts,
+  PostTags,
+  PostViews,
+  Spaces,
+  TagFollows,
+  UserPersonalIdentities,
+} from '$lib/server/database';
 import { elasticSearch, indexName } from '$lib/server/search';
 import {
   getMutedSpaceIds,

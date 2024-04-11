@@ -1,11 +1,12 @@
 import dayjs from 'dayjs';
-import { and, eq, inArray, isNull } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { status } from 'itty-router';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
 import * as R from 'radash';
 import {
   database,
+  inArray,
   Posts,
   ProvisionedUsers,
   SpaceMembers,
