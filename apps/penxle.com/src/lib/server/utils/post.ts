@@ -112,7 +112,8 @@ export const calculatePostReputation = (postId: string) =>
           .then((row) => row[0].count),
       ]);
 
-      return viewCount + purchasedCount * 20;
+      // rank_feature는 0이면 박살남
+      return viewCount + purchasedCount * 20 + 1;
     },
     600,
   );

@@ -73,7 +73,7 @@ const indexData: Record<string, Omit<IndicesCreateRequest, 'index'>> = {
         },
         ageRating: { type: 'keyword' },
         reputation: { type: 'rank_feature' },
-        publishedAt: { type: 'date', format: 'epoch_millis' },
+        publishedAt: { type: 'date' },
       },
     },
   },
