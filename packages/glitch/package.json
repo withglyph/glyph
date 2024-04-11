@@ -51,16 +51,16 @@
     "graphql-tag": "^2.12.6",
     "radash": "^12.1.0",
     "recast": "^0.23.6",
-    "svelte": "^4.2.12",
+    "svelte": "^4.2.13",
     "wonka": "^6.3.4"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
     "@sveltejs/kit": "^2.5.5",
-    "rollup": "^4.14.0",
+    "rollup": "^4.14.1",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.3",
-    "vite": "^5.2.7"
+    "typescript": "^5.4.5",
+    "vite": "^5.2.8"
   },
   "peerDependencies": {
     "@sveltejs/kit": "^2.0.0"

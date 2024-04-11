@@ -60,7 +60,7 @@
         translateX: '-1/2',
         translateY: '-1/2',
         color: 'gray.5',
-        backgroundColor: 'black/40',
+        backgroundColor: 'gray.900/40',
         size: '24px',
         transition: 'common',
         userSelect: 'none',
