@@ -76,9 +76,9 @@
           smDown: { textAlign: 'center', color: 'gray.5' },
         })}
       >
-        나만의 공간, 함께 새겨질 우주
-        <br />
-        창작자를 위한 플랫폼 글리프와 함께하세요
+        창작자를 위한 콘텐츠 플랫폼
+        <br class={css({ hideFrom: 'sm' })} />
+        글리프에 오신 것을 환영해요!
       </p>
     </div>
 
