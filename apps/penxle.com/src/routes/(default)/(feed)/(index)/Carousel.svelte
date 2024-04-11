@@ -15,29 +15,39 @@
     bottomline?: string;
     color: string;
     backgroundImageUrl: string;
+    href: string;
   };
 
   const slides: Slide[] = [
+    {
+      title: '펜슬이 글리프로 바뀌었어요',
+      subtitle: '리브랜딩 이야기',
+      color: '#504C575A',
+      backgroundImageUrl: 'https://glyph.pub/images/_/banner_rebranding.png',
+      href: '/glyph',
+    },
+    {
+      title: '4월 13일 업데이트 노트',
+      subtitle: '새로워진 글리프를 만나보세요',
+      color: '#1717175A',
+      backgroundImageUrl: 'https://glyph.pub/images/_/banner_updates.png',
+      href: '/glyph',
+    },
     {
       title: '시즌 2 컴백!\n<나의 밤을 그대에게>',
       subtitle: '신을 섬기는 기사와, 그를 사랑하게 된 악마',
       bottomline: 'ⓒ유씨',
       color: '#9FAAA8',
       backgroundImageUrl: 'https://glyph.pub/images/_/banner_uc2.png',
+      // spell-checker:disable-next-line
+      href: '/uc/collections/xlcu0otv80zl6z47',
     },
     {
-      title: '<유키의 백엔드 대모험>\n독점 연재 진행중',
-      subtitle: '엘렐레 엘렐레',
-      bottomline: 'ⓒ유키',
-      color: '#6B879C',
-      backgroundImageUrl: 'https://glyph.pub/images/_/banner_yuki.png',
-    },
-    {
-      title: '<카일리의 좌충우돌\n프론트 개발기> 시작합니다',
-      subtitle: '뚱인데요?',
-      bottomline: 'ⓒ카일리',
-      color: '#EDA303',
-      backgroundImageUrl: 'https://glyph.pub/images/_/banner_kylie.png',
+      title: '트위터 프로필 연동하고\n포인트 받아가세요',
+      subtitle: '2000P 적립 이벤트',
+      color: '#124B8E5A',
+      backgroundImageUrl: 'https://glyph.pub/images/_/banner_twitter_events.png',
+      href: '/glyph',
     },
   ];
 
@@ -156,11 +166,17 @@
           style:flex-basis={idx === currentIdx + 1 ? '100px' : idx === currentIdx + 2 ? `${100 * progress}px` : '0px'}
           class={css({ height: 'full', overflow: 'hidden' })}
         >
-          <div
-            class={css({ position: 'relative', marginX: '4px', height: 'full', cursor: 'pointer' })}
-            role="presentation"
-            on:click={() => {
+          <a
+            class={css({
+              position: 'relative',
+              display: 'block',
+              marginX: '4px',
+              height: 'full',
+            })}
+            href={slide.href}
+            on:click={(e) => {
               if (idx === currentIdx + 1) {
+                e.preventDefault();
                 next();
               }
             }}
@@ -264,7 +280,7 @@
               <div class={css({ opacity: '50' })}>/</div>
               <div class={css({ opacity: '70' })}>{slides.length}</div>
             </div>
-          </div>
+          </a>
         </div>
       {/each}
     </div>
