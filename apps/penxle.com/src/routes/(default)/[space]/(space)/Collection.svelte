@@ -38,7 +38,12 @@
 
 <a href="/{$space.slug}/collections/{$spaceCollection.id}">
   <Image
-    style={css.raw({ width: { base: '161px', sm: '206px' }, aspectRatio: '4/5' })}
+    style={css.raw({
+      borderWidth: '[0.8px]',
+      borderColor: 'gray.100',
+      width: { base: '161px', sm: '206px' },
+      aspectRatio: '4/5',
+    })}
     $image={$spaceCollection.thumbnail}
     placeholder
   />

@@ -63,7 +63,6 @@
             permalink
 
             ...Feed_Post_post
-            ...SpaceFeed_post
           }
 
           ...SpaceCollectionsEntityPage_ManageCollectionModal_collection
@@ -117,6 +116,8 @@
       >
         <Image
           style={css.raw({
+            borderWidth: '[0.8px]',
+            borderColor: 'gray.100',
             width: { base: '84px', sm: '240px' },
             marginTop: { base: '-63px', sm: '-77px' },
             aspectRatio: '[4/5]',

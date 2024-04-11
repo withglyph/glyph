@@ -146,7 +146,7 @@
             >
               <a class={flex({ align: 'center', gap: '6px', truncate: true })} href="/me/cabinets">
                 <Avatar
-                  style={css.raw({ borderWidth: '1px', borderColor: 'gray.100', size: '36px' })}
+                  style={css.raw({ borderWidth: '[0.8px]', borderColor: 'gray.100', size: '36px' })}
                   $profile={$user.profile}
                 />
                 <div class={css({ truncate: true })}>
@@ -217,12 +217,21 @@
                         <Image
                           style={css.raw({
                             flex: 'none',
+                            borderWidth: '[0.8px]',
+                            borderColor: 'gray.100',
                             size: '28px',
                           })}
                           $image={space.icon}
                         />
                         <Avatar
-                          style={css.raw({ position: 'absolute', right: '-6px', bottom: '-4px', size: '20px' })}
+                          style={css.raw({
+                            position: 'absolute',
+                            right: '-6px',
+                            bottom: '-4px',
+                            borderWidth: '[0.8px]',
+                            borderColor: 'gray.100',
+                            size: '20px',
+                          })}
                           $profile={space.meAsMember.profile}
                         />
                       </div>

@@ -294,6 +294,8 @@
         >
           <div
             class={css({
+              borderWidth: '[0.8px]',
+              borderColor: 'gray.100',
               backgroundColor: 'gray.50',
               flex: 'none',
               width: { base: '48px', sm: '60px' },
@@ -318,7 +320,7 @@
                 class={css({
                   backgroundColor: 'gray.50',
                   flex: 'none',
-                  borderWidth: '1px',
+                  borderWidth: '[0.8px]',
                   borderColor: 'gray.100',
                   size: '18px',
                 })}
@@ -343,6 +345,8 @@
         >
           <div
             class={css({
+              borderWidth: '[0.8px]',
+              borderColor: 'gray.100',
               backgroundColor: 'gray.50',
               flex: 'none',
               width: { base: '48px', sm: '60px' },
@@ -367,7 +371,7 @@
                 class={css({
                   backgroundColor: 'gray.50',
                   flex: 'none',
-                  borderWidth: '1px',
+                  borderWidth: '[0.8px]',
                   borderColor: 'gray.100',
                   size: '18px',
                 })}

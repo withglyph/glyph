@@ -112,7 +112,13 @@
     )}
   >
     <Image
-      style={css.raw({ size: 'full', aspectRatio: '16/10', objectFit: 'cover' })}
+      style={css.raw({
+        borderWidth: '[0.8px]',
+        borderColor: 'gray.100',
+        size: 'full',
+        aspectRatio: '16/10',
+        objectFit: 'cover',
+      })}
       $image={$post.thumbnail}
       placeholder
     />
@@ -161,7 +167,13 @@
 
   {#if showSpace}
     <div class={flex({ align: 'center', gap: '4px', marginY: '4px', height: '24px', width: 'full', truncate: true })}>
-      <Image style={css.raw({ flex: 'none', size: '18px' })} $image={$post.space.icon} />
+      <Image
+        style={css.raw(
+          { flex: 'none', borderWidth: '[0.8px]', borderColor: 'gray.100', size: '18px' },
+          theme === 'dark' && { borderColor: 'gray.800' },
+        )}
+        $image={$post.space.icon}
+      />
 
       <div
         class={css(

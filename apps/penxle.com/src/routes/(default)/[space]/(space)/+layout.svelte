@@ -2,6 +2,7 @@
   import IconLock from '~icons/effit/lock';
   import IconClipboard from '~icons/tabler/clipboard';
   import IconDotsVertical from '~icons/tabler/dots-vertical';
+  import IconPlus from '~icons/tabler/plus';
   import IconShare2 from '~icons/tabler/share-2';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -119,7 +120,12 @@
         })}
       >
         <Image
-          style={css.raw({ size: { base: '100px', sm: '240px' }, marginTop: { base: '-63px', sm: '-60px' } })}
+          style={css.raw({
+            borderWidth: '[0.8px]',
+            borderColor: 'gray.100',
+            size: { base: '100px', sm: '240px' },
+            marginTop: { base: '-63px', sm: '-60px' },
+          })}
           $image={$query.space.icon}
         />
 
@@ -192,7 +198,7 @@
               </Button>
             {:else}
               <Button
-                style={css.raw({ width: '96px', height: '37px' })}
+                style={center.raw({ gap: '4px', width: '96px', height: '37px' })}
                 disabled={$query.space.myMasquerade?.blocked}
                 size="sm"
                 on:click={async () => {
@@ -205,6 +211,7 @@
                   mixpanel.track('space:follow', { spaceId: $query.space.id, via: 'space' });
                 }}
               >
+                <Icon icon={IconPlus} />
                 구독
               </Button>
             {/if}
@@ -220,7 +227,7 @@
                 })}
                 disabled={$query.space.myMasquerade?.blocked}
               >
-                <Icon slot="value" style={css.raw({ color: 'gray.500' })} icon={IconDotsVertical} />
+                <Icon slot="value" style={css.raw({ '& *': { strokeWidth: '[2]' } })} icon={IconDotsVertical} />
 
                 {#if $query.space.muted}
                   <MenuItem
@@ -246,14 +253,14 @@
 
             <ShareLinkPopover href="{location.origin}/{$query.space.slug}">
               <div class={center({ outlineWidth: '1px', outlineColor: 'gray.200', size: '37px' })}>
-                <Icon icon={IconShare2} />
+                <Icon style={css.raw({ '& *': { strokeWidth: '[2]' } })} icon={IconShare2} />
               </div>
             </ShareLinkPopover>
           </div>
         </div>
       </div>
 
-      <TabHead style={css.raw({ fontSize: '16px' })}>
+      <TabHead>
         <TabHeadItem id={1} pathname="/{$query.space.slug}">
           <span>홈</span>
         </TabHeadItem>
