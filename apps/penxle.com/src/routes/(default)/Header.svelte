@@ -58,7 +58,6 @@
       alignItems: 'center',
       borderBottomWidth: '1px',
       borderBottomColor: 'gray.100',
-      paddingX: '20px',
       top: '0',
       backgroundColor: 'gray.5',
       height: '62px',
@@ -69,12 +68,14 @@
 >
   <nav
     class={flex({
+      align: 'center',
+      justify: 'space-between',
+      gap: '24px',
+      position: 'relative',
+      paddingX: '20px',
+      height: '62px',
       width: 'full',
       maxWidth: '1280px',
-      justify: 'space-between',
-      align: 'center',
-      position: 'relative',
-      gap: '24px',
     })}
   >
     <a

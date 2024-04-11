@@ -24,7 +24,6 @@
     flexDirection: 'column',
     justifyContent: 'center',
     flexGrow: '1',
-    paddingX: '20px',
     paddingBottom: { base: '96px', sm: '120px' },
     width: 'full',
     backgroundColor: 'gray.5',
@@ -33,6 +32,7 @@
   <TabHead
     style={css.raw({
       marginX: 'auto',
+      paddingX: '20px',
       paddingBottom: '20px',
       fontSize: { base: '20px', sm: '24px' },
       width: 'full',

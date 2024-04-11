@@ -99,7 +99,7 @@
   titleSuffix=""
 />
 
-<div class={css({ marginX: 'auto', width: 'full', maxWidth: '1280px' })}>
+<div class={css({ marginX: 'auto', paddingX: '20px', width: 'full', maxWidth: '1280px' })}>
   <Carousel />
 
   <HorizontalScroll
@@ -222,7 +222,7 @@
   </div>
 </div>
 
-<div class={css({ marginX: '-20px', paddingY: { base: '40px', sm: '60px' }, backgroundColor: 'gray.900' })}>
+<div class={css({ paddingY: { base: '40px', sm: '60px' }, backgroundColor: 'gray.900' })}>
   <div class={css({ marginX: 'auto', paddingX: '20px', width: 'full', maxWidth: '1280px' })}>
     <h2
       class={css({
@@ -282,7 +282,7 @@
   </div>
 </div>
 
-<div class={css({ marginX: 'auto', width: 'full', maxWidth: '1280px' })}>
+<div class={css({ marginX: 'auto', paddingX: '20px', width: 'full', maxWidth: '1280px' })}>
   <div class={css({ paddingTop: { base: '40px', sm: '60px' } })}>
     <h2 class={css({ marginBottom: '14px', fontSize: '20px', fontWeight: 'semibold' })}>추천 컬렉션</h2>
 
