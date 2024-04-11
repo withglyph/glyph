@@ -139,8 +139,7 @@
 <div class={center({ position: 'relative' })}>
   <a
     class={circle({
-      size: '34px',
-      color: 'gray.800',
+      size: '28px',
       hideFrom: 'sm',
       _hover: backgroundStyle,
       _focusVisible: backgroundStyle,
@@ -152,8 +151,7 @@
 
   <button
     class={circle({
-      size: '36px',
-      color: 'gray.800',
+      size: '28px',
       transition: 'common',
       hideBelow: 'sm',
       _hover: solidStyle,
@@ -170,7 +168,15 @@
 
   {#if checkUnreadNotification}
     <span
-      class={circle({ position: 'absolute', size: '6px', top: '4px', right: '4px', backgroundColor: 'teal.500' })}
+      class={circle({
+        position: 'absolute',
+        borderWidth: '1px',
+        borderColor: 'gray.5',
+        size: '8px',
+        top: '4px',
+        right: '4px',
+        backgroundColor: 'teal.500',
+      })}
     />
   {/if}
 </div>

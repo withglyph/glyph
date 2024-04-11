@@ -6,7 +6,7 @@
   import IconArrowLeft from '~icons/tabler/arrow-left';
   import IconArrowRight from '~icons/tabler/arrow-right';
   import { Icon } from '$lib/components';
-  import { css } from '$styled-system/css';
+  import { css, cx } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
 
   type Slide = {
@@ -131,12 +131,15 @@
   })}
 >
   <div
-    class={css({
-      maxWidth: '1248px',
-      width: 'full',
-      height: { base: '320px', sm: '380px' },
-      overflow: 'hidden',
-    })}
+    class={cx(
+      css({
+        maxWidth: '1280px',
+        width: 'full',
+        height: { base: '320px', sm: '380px' },
+        overflow: 'hidden',
+      }),
+      'peer',
+    )}
   >
     <div
       bind:this={containerEl}
@@ -268,36 +271,50 @@
       align: 'center',
       pointerEvents: 'none',
       hideBelow: 'sm',
+      _peerHover: {
+        '& > button': { visibility: 'visible' },
+      },
+      _hover: {
+        '& > button': { visibility: 'visible' },
+      },
     })}
   >
     <button
       class={center({
         borderRadius: 'full',
-        size: '48px',
-        backgroundColor: 'gray.5/80',
+        size: '34px',
+        backgroundColor: 'gray.5',
         filter: 'auto',
         dropShadow: '[drop-shadow(2px 2px 8px {colors.gray.900/15})]',
         pointerEvents: 'auto',
+        visibility: 'hidden',
+        _peerHover: {
+          visibility: 'visible',
+        },
       })}
       type="button"
       on:click={previous}
     >
-      <Icon icon={IconArrowLeft} size={32} />
+      <Icon style={css.raw({ '& *': { strokeWidth: '[2]' } })} icon={IconArrowLeft} size={20} />
     </button>
 
     <button
       class={center({
         borderRadius: 'full',
-        size: '48px',
-        backgroundColor: 'gray.5/80',
+        size: '34px',
+        backgroundColor: 'gray.5',
         filter: 'auto',
         dropShadow: '[drop-shadow(2px 2px 8px {colors.gray.900/15})]',
         pointerEvents: 'auto',
+        visibility: 'hidden',
+        _peerHover: {
+          visibility: 'visible',
+        },
       })}
       type="button"
       on:click={next}
     >
-      <Icon icon={IconArrowRight} size={32} />
+      <Icon style={css.raw({ '& *': { strokeWidth: '[2]' } })} icon={IconArrowRight} size={20} />
     </button>
   </div>
 </div>

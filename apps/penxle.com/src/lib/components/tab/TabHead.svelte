@@ -15,9 +15,6 @@
   $: $search = _search;
 </script>
 
-<ul
-  class={css({ display: 'flex', gap: '20px', paddingY: '8px', fontSize: '22px', width: 'fit' }, style)}
-  role="tablist"
->
+<ul class={css({ display: 'flex', gap: '20px', paddingY: '8px', width: 'fit' }, style)} role="tablist">
   <slot />
 </ul>

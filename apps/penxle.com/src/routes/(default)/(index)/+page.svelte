@@ -102,17 +102,16 @@
   titleSuffix=""
 />
 
-<div class={css({ marginX: 'auto', paddingX: '20px', width: 'full', maxWidth: '1280px' })}>
+<div class={css({ marginX: 'auto', width: 'full', maxWidth: '1280px' })}>
   <Carousel />
 
   <HorizontalScroll
-    style={css.raw({ gap: '8px', paddingY: '16px' })}
-    buttonStyle={css.raw({ backgroundColor: '[#ffffff/75]' })}
-    gradientStyle={css.raw({ gradientFrom: '[gray.900/0]', gradientTo: 'gray.900', height: '35px', width: '70px' })}
+    style={css.raw({ gap: '10px', paddingY: '10px' })}
+    gradientStyle={css.raw({ gradientFrom: '[#ffffff/0]', gradientTo: '[#ffffff]', height: '34px', width: '70px' })}
   >
     <Icon
       slot="left-icon"
-      style={css.raw({ 'color': 'gray.800', '& *': { strokeWidth: '[2.5]' } })}
+      style={css.raw({ 'color': 'gray.5', '& *': { strokeWidth: '[2]' } })}
       icon={IconChevronLeft}
       size={20}
     />
@@ -120,9 +119,10 @@
     {#each tags as tag, index (tag.id)}
       <Tag
         style={css.raw(
-          { minWidth: 'fit', paddingX: '24px', height: '35px' },
-          index % 3 === 1 && { backgroundColor: 'gray.800' },
-          index % 3 === 2 && { backgroundColor: 'gray.600' },
+          { paddingX: '24px', color: 'gray.600', minWidth: 'fit', height: '34px' },
+          index % 3 === 0 && { backgroundColor: 'gray.50' },
+          index % 3 === 1 && { backgroundColor: 'gray.100' },
+          index % 3 === 2 && { backgroundColor: 'gray.150' },
         )}
         href={`/tag/${tag.name}/post`}
       >
@@ -132,20 +132,17 @@
 
     <Icon
       slot="right-icon"
-      style={css.raw({ 'color': 'gray.800', '& *': { strokeWidth: '[2.5]' } })}
+      style={css.raw({ 'color': 'gray.5', '& *': { strokeWidth: '[2]' } })}
       icon={IconChevronRight}
       size={20}
     />
   </HorizontalScroll>
 
-  <div class={css({ paddingY: { base: '24px', sm: '36px' } })}>
-    <h2 class={css({ marginBottom: '14px', fontSize: { base: '20px', sm: '24px' }, fontWeight: 'bold' })}>
-      글리프 큐레이션
-    </h2>
+  <div class={css({ paddingY: { base: '32px', sm: '40px' } })}>
+    <h2 class={css({ marginBottom: '14px', fontSize: '20px', fontWeight: 'semibold' })}>글리프 큐레이션</h2>
 
     <HorizontalScroll
       style={css.raw({ gap: { base: '12px', sm: '14px' } })}
-      buttonStyle={css.raw({ backgroundColor: '[#000000/40]' })}
       gradientStyle={css.raw({
         gradientFrom: '[#ffffff/0]',
         gradientTo: '[#ffffff]',
@@ -157,7 +154,7 @@
     >
       <Icon
         slot="left-icon"
-        style={css.raw({ 'color': 'gray.5', '& *': { strokeWidth: '[2.5]' } })}
+        style={css.raw({ 'color': 'gray.5', '& *': { strokeWidth: '[2]' } })}
         icon={IconChevronLeft}
         size={20}
       />
@@ -170,21 +167,22 @@
 
       <Icon
         slot="right-icon"
-        style={css.raw({ 'color': 'gray.5', '& *': { strokeWidth: '[2.5]' } })}
+        style={css.raw({ 'color': 'gray.5', '& *': { strokeWidth: '[2]' } })}
         icon={IconChevronRight}
         size={20}
       />
     </HorizontalScroll>
   </div>
 
-  <div class={css({ paddingTop: '36px', paddingBottom: '60px' })}>
+  <div class={css({ paddingTop: { base: '32px', sm: '40px' }, paddingBottom: { base: '40px', sm: '60px' } })}>
     <div class={flex({ align: 'center', justify: 'space-between', marginBottom: '14px' })}>
-      <h2 class={css({ fontSize: { base: '20px', sm: '24px' }, fontWeight: 'bold' })}>
+      <h2 class={css({ fontSize: '20px', fontWeight: 'semibold' })}>
         {$query.me?.profile.name}님을 위한 추천
       </h2>
 
+      <!-- TODO: refresh recommend feed -->
       <button class={css({ color: 'gray.500' })} type="button">
-        <Icon icon={IconRefresh} size={24} />
+        <Icon icon={IconRefresh} size={20} />
       </button>
     </div>
 
@@ -196,21 +194,26 @@
       })}
     >
       {#if $query.me}
-        {#each $query.me.posts.slice(0, 3) as post (post.id)}
+        {#each $query.me.posts.slice(0, 3) as post, index (post.id)}
           <li
             class={css({
               sm: { _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' } },
             })}
           >
-            <Post $post={post} />
+            <Post
+              style={css.raw(index === 0 && { paddingTop: '0' }, index === 1 && { sm: { paddingTop: '0' } })}
+              $post={post}
+            />
           </li>
         {/each}
         {#each $query.me.posts.slice(3, 6) as post, index (post.id)}
           <li
             class={css(
+              {
+                hideBelow: 'sm',
+              },
               index === 0 && {
                 _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' },
-                hideBelow: 'sm',
               },
             )}
           >
@@ -222,10 +225,15 @@
   </div>
 </div>
 
-<div class={css({ paddingY: '60px', backgroundColor: 'gray.900' })}>
+<div class={css({ marginX: '-20px', paddingY: { base: '40px', sm: '60px' }, backgroundColor: 'gray.900' })}>
   <div class={css({ marginX: 'auto', paddingX: '20px', width: 'full', maxWidth: '1280px' })}>
     <h2
-      class={css({ marginBottom: '16px', fontSize: { base: '20px', sm: '24px' }, fontWeight: 'bold', color: 'gray.5' })}
+      class={css({
+        marginBottom: '16px',
+        fontSize: '20px',
+        fontWeight: 'semibold',
+        color: 'gray.5',
+      })}
     >
       추천 해시태그
     </h2>
@@ -233,7 +241,7 @@
     <div
       class={flex({
         align: 'center',
-        gap: '4px',
+        gap: '6px',
         marginBottom: { base: '20px', sm: '14px' },
         overflowX: 'auto',
         scrollbar: 'hidden',
@@ -242,6 +250,7 @@
       {#each tags.slice(0, 5) as tag (tag.id)}
         <Tag
           style={css.raw({
+            'paddingX': '12px',
             'backgroundColor': 'gray.800',
             'minWidth': 'fit',
             'color': 'gray.300',
@@ -276,11 +285,9 @@
   </div>
 </div>
 
-<div class={css({ marginX: 'auto', paddingX: '20px', width: 'full', maxWidth: '1280px' })}>
-  <div class={css({ paddingTop: '40px' })}>
-    <h2 class={css({ marginBottom: '14px', fontSize: { base: '20px', sm: '24px' }, fontWeight: 'bold' })}>
-      추천 컬렉션
-    </h2>
+<div class={css({ marginX: 'auto', width: 'full', maxWidth: '1280px' })}>
+  <div class={css({ paddingTop: { base: '40px', sm: '60px' } })}>
+    <h2 class={css({ marginBottom: '14px', fontSize: '20px', fontWeight: 'semibold' })}>추천 컬렉션</h2>
 
     <ul class={css({ sm: { display: 'grid', gridTemplateColumns: '3', columnGap: '10px' } })}>
       {#each collections.slice(0, 6) as collection (collection)}
@@ -358,7 +365,7 @@
             <h3
               class={css({
                 marginBottom: '2px',
-                fontSize: { base: '14px', sm: '16px' },
+                fontSize: '14px',
                 fontWeight: 'semibold',
                 truncate: true,
               })}
@@ -377,9 +384,7 @@
                 })}
               />
 
-              <span class={css({ fontSize: { base: '12px', sm: '13px' }, color: 'gray.600', truncate: true })}>
-                스페이스명
-              </span>
+              <span class={css({ fontSize: '12px', color: 'gray.600', truncate: true })}>스페이스명</span>
             </div>
           </div>
         </li>

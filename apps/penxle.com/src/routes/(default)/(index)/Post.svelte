@@ -120,8 +120,7 @@
       class={flex({
         align: 'center',
         gap: '4px',
-        marginTop: '6px',
-        marginBottom: '12px',
+        marginY: '6px',
         height: '21px',
         truncate: true,
       })}
@@ -199,7 +198,7 @@
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-end',
-      justifyContent: showBookmark ? 'space-between' : 'center',
+      justifyContent: 'space-between',
     })}
   >
     <div

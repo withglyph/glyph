@@ -36,7 +36,7 @@
         borderBottomColor: { base: 'transparent', _hover: 'gray.900', _selected: 'gray.900' },
         paddingBottom: '2px',
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontWeight: 'medium',
         backgroundColor: { base: 'gray.5', sm: 'transparent' },
       },
       style,

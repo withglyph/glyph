@@ -7,14 +7,17 @@
   import { Icon } from '$lib/components';
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
-  import { center, flex } from '$styled-system/patterns';
+  import { flex } from '$styled-system/patterns';
   import NotificationMenu from './NotificationMenu.svelte';
   import SearchBar from './SearchBar.svelte';
   import UserMenu from './UserMenu.svelte';
   import type { DefaultLayout_Header_query } from '$glitch';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   let _query: DefaultLayout_Header_query;
   export { _query as $query };
+
+  export let style: SystemStyleObject | undefined = undefined;
 
   $: query = fragment(
     _query,
@@ -47,15 +50,22 @@
 </script>
 
 <header
-  class={center({
-    position: 'sticky',
-    borderBottomWidth: '1px',
-    borderBottomColor: 'gray.100',
-    paddingX: '20px',
-    top: '0',
-    backgroundColor: 'gray.5',
-    zIndex: '10',
-  })}
+  class={css(
+    {
+      position: 'sticky',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderBottomWidth: '1px',
+      borderBottomColor: 'gray.100',
+      paddingX: '20px',
+      top: '0',
+      backgroundColor: 'gray.5',
+      height: '62px',
+      zIndex: '10',
+    },
+    style,
+  )}
 >
   <nav
     class={flex({
@@ -90,7 +100,7 @@
       })}
     />
 
-    <div class={flex({ align: 'center', gap: { base: '24px', sm: '28px' } })}>
+    <div class={flex({ align: 'center', gap: { base: '18px', sm: '24px' } })}>
       <SearchBar style={css.raw({ hideFrom: 'sm', maxWidth: 'full' })} smBelow />
       {#if $query.me}
         <Button
@@ -103,7 +113,6 @@
           })}
           size="sm"
           type="button"
-          variant="gray-outline"
           on:click={async () => {
             const { permalink } = await createPost({ spaceId: undefined });
             mixpanel.track('post:create', { via: 'feed' });
@@ -116,7 +125,7 @@
         <NotificationMenu $user={$query.me} />
         <UserMenu $user={$query.me} />
       {:else}
-        <Button href="/login" size="sm" type="link" variant="gray-outline">로그인/회원가입</Button>
+        <Button href="/login" size="sm" type="link">로그인/회원가입</Button>
       {/if}
     </div>
   </nav>

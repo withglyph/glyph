@@ -1,10 +1,10 @@
 <script lang="ts">
   import { css } from '$styled-system/css';
+  import { center } from '$styled-system/patterns';
   import type { SystemStyleObject } from '$styled-system/types';
 
   export let style: SystemStyleObject | undefined = undefined;
   export let gradientStyle: SystemStyleObject | undefined = undefined;
-  export let buttonStyle: SystemStyleObject | undefined = undefined;
 
   let containerEl: HTMLDivElement | null = null;
   let currentScroll = 0;
@@ -22,7 +22,7 @@
   };
 </script>
 
-<div class={css({ position: 'relative' })}>
+<div class={css({ position: 'relative', smDown: { marginRight: '-20px' } })}>
   <div
     bind:this={containerEl}
     class={css(
@@ -55,17 +55,12 @@
         )}
       >
         <button
-          class={css(
-            {
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 'full',
-              marginRight: 'auto',
-              size: '35px',
-            },
-            buttonStyle,
-          )}
+          class={center({
+            borderRadius: 'full',
+            marginRight: 'auto',
+            size: '34px',
+            backgroundColor: '[#000000/40]',
+          })}
           type="button"
           on:click={() => scrollLeft(50)}
         >
@@ -91,17 +86,12 @@
         )}
       >
         <button
-          class={css(
-            {
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 'full',
-              marginLeft: 'auto',
-              size: '35px',
-            },
-            buttonStyle,
-          )}
+          class={center({
+            borderRadius: 'full',
+            marginLeft: 'auto',
+            size: '34px',
+            backgroundColor: '[#000000/40]',
+          })}
           type="button"
           on:click={() => scrollRight(50)}
         >
