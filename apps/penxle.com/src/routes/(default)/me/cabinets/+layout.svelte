@@ -182,7 +182,7 @@
   >
     <h2 class={css({ paddingX: { base: '16px', sm: '32px' }, fontSize: '20px', fontWeight: 'bold' })}>포스트 목록</h2>
 
-    <TabHead style={css.raw({ marginLeft: '10px', fontSize: '18px' })}>
+    <TabHead style={css.raw({ paddingX: '32px' })}>
       <TabHeadItem id={1} pathname="/me/cabinets">이모지</TabHeadItem>
       <TabHeadItem id={2} pathname="/me/cabinets/recent">최근</TabHeadItem>
       <TabHeadItem id={3} pathname="/me/cabinets/purchased">구매</TabHeadItem>

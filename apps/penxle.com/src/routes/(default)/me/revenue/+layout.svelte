@@ -277,9 +277,9 @@
     },
   })}
 >
-  <TabHead>
-    <TabHeadItem id={1} style={css.raw({ fontSize: '16px' })} pathname="/me/revenue">내 수익</TabHeadItem>
-    <TabHeadItem id={2} style={css.raw({ fontSize: '16px' })} pathname="/me/revenue/settlement">출금 내역</TabHeadItem>
+  <TabHead style={css.raw({ paddingX: '24px' })}>
+    <TabHeadItem id={1} pathname="/me/revenue">내 수익</TabHeadItem>
+    <TabHeadItem id={2} pathname="/me/revenue/settlement">출금 내역</TabHeadItem>
   </TabHead>
 
   <div class={css({ paddingX: { base: '20px', sm: '24px' } })}>

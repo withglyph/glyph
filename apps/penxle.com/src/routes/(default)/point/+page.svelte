@@ -110,7 +110,7 @@
       </Button>
     </aside>
 
-    <div class={css({ width: 'full', maxWidth: '832px' })}>
+    <div class={css({ width: 'full', sm: { maxWidth: '832px' } })}>
       <h2
         class={css({
           fontSize: '20px',

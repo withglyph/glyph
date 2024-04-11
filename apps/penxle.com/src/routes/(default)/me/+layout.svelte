@@ -230,7 +230,7 @@
       </nav>
     </aside>
 
-    <div class={css({ width: 'full', maxWidth: '832px', overflow: 'auto' })}>
+    <div class={css({ width: 'full', sm: { maxWidth: '832px' }, overflow: 'auto' })}>
       <slot />
     </div>
   </div>
