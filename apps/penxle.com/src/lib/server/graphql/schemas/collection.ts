@@ -1,6 +1,7 @@
 import { and, asc, count, eq, or } from 'drizzle-orm';
 import { NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { database, inArray, Posts, SpaceCollectionPosts, SpaceCollections } from '$lib/server/database';
+import { enqueueJob } from '$lib/server/jobs';
 import { getSpaceMember } from '$lib/server/utils';
 import { CreateSpaceCollectionSchema, UpdateSpaceCollectionSchema } from '$lib/validations';
 import { builder } from '../builder';
@@ -135,6 +136,8 @@ builder.mutationFields((t) => ({
         .values({ spaceId: input.spaceId, name: input.name, state: 'ACTIVE' })
         .returning({ id: SpaceCollections.id });
 
+      await enqueueJob('indexCollection', { collectionId: collection.id });
+
       return collection.id;
     },
   }),
@@ -166,6 +169,8 @@ builder.mutationFields((t) => ({
         await tx.delete(SpaceCollectionPosts).where(eq(SpaceCollectionPosts.collectionId, input.spaceCollectionId));
       });
 
+      await enqueueJob('indexCollection', { collectionId: input.spaceCollectionId });
+
       return input.spaceCollectionId;
     },
   }),
@@ -192,6 +197,8 @@ builder.mutationFields((t) => ({
         .update(SpaceCollections)
         .set({ name: input.name, thumbnailId: input.thumbnailId ?? null })
         .where(eq(SpaceCollections.id, input.spaceCollectionId));
+
+      await enqueueJob('indexCollection', { collectionId: input.spaceCollectionId });
 
       return input.spaceCollectionId;
     },

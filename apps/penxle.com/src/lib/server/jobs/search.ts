@@ -1,8 +1,17 @@
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNotNull } from 'drizzle-orm';
 import { disassembleHangulString, InitialHangulString } from '$lib/utils';
-import { database, PostRevisions, Posts, PostTags, Spaces, Tags } from '../database';
+import {
+  database,
+  PostRevisions,
+  Posts,
+  PostTags,
+  SpaceCollectionPosts,
+  SpaceCollections,
+  Spaces,
+  Tags,
+} from '../database';
 import { elasticSearch, indexName } from '../search';
-import { calculatePostReputation, getTagUsageCount, useFirstRow } from '../utils';
+import { calculateCollectionReputation, calculatePostReputation, getTagUsageCount, useFirstRow } from '../utils';
 import { enqueueJob } from '.';
 import { defineJob } from './types';
 
@@ -98,4 +107,70 @@ export const IndexAllPostsInSpaceJob = defineJob('indexAllPostsInSpace', async (
     .then((rows) => rows.map((row) => row.id));
 
   await Promise.all(postIds.map((postId) => enqueueJob('indexPost', postId)));
+});
+
+type IndexCollectionJobParams = { collectionId: string } | { postId: string };
+
+export const IndexCollectionJob = defineJob('indexCollection', async (params: IndexCollectionJobParams) => {
+  const collectionId =
+    'collectionId' in params
+      ? params.collectionId
+      : await database
+          .select({ collectionId: SpaceCollectionPosts.collectionId })
+          .from(SpaceCollectionPosts)
+          .where(eq(SpaceCollectionPosts.postId, params.postId))
+          .then(useFirstRow)
+          .then((row) => row?.collectionId);
+
+  if (!collectionId) {
+    return;
+  }
+
+  const collection = await database
+    .select({
+      id: SpaceCollections.id,
+      name: SpaceCollections.name,
+      spaceId: SpaceCollections.spaceId,
+      thumbnailId: SpaceCollections.thumbnailId,
+      lastPostPublishedAt: Posts.publishedAt,
+    })
+    .from(SpaceCollections)
+    .innerJoin(SpaceCollectionPosts, eq(SpaceCollections.id, SpaceCollectionPosts.collectionId))
+    .innerJoin(Posts, eq(SpaceCollectionPosts.postId, Posts.id))
+    .where(
+      and(
+        eq(SpaceCollections.id, collectionId),
+        eq(SpaceCollections.state, 'ACTIVE'),
+        eq(Posts.state, 'PUBLISHED'),
+        eq(Posts.visibility, 'PUBLIC'),
+        isNotNull(Posts.publishedAt),
+      ),
+    )
+    .orderBy(desc(Posts.publishedAt))
+    .limit(1)
+    .then(useFirstRow);
+
+  if (!collection) {
+    await elasticSearch
+      .delete({
+        index: indexName('collections'),
+        id: collectionId,
+      })
+      .catch(() => null);
+    return;
+  }
+
+  await elasticSearch.index({
+    index: indexName('collections'),
+    id: collection.id,
+    document: {
+      name: collection.name,
+      space: {
+        id: collection.spaceId,
+      },
+      reputation: await calculateCollectionReputation(collection.id),
+      hasThumbnail: !!collection.thumbnailId,
+      lastPostPublishedAt: collection.lastPostPublishedAt?.toDate(),
+    },
+  });
 });

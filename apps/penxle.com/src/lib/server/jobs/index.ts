@@ -4,10 +4,10 @@ import { nanoid } from 'nanoid';
 import { building, dev } from '$app/environment';
 import { pub, rabbit } from '../mq';
 import { finalizeResource, setResourceFinalizer } from '../utils';
-import { IndexAllPostsInSpaceJob, IndexPostJob } from './search';
+import { IndexAllPostsInSpaceJob, IndexCollectionJob, IndexPostJob } from './search';
 import type { JobFn } from './types';
 
-const jobs = [IndexAllPostsInSpaceJob, IndexPostJob];
+const jobs = [IndexAllPostsInSpaceJob, IndexPostJob, IndexCollectionJob];
 
 type Jobs = typeof jobs;
 type JobNames = Jobs[number]['name'];

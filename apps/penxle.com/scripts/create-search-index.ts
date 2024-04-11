@@ -114,6 +114,44 @@ const indexData: Record<string, Omit<IndicesCreateRequest, 'index'>> = {
       },
     },
   },
+  collections: {
+    settings: {
+      index: {
+        number_of_shards: 6,
+        number_of_replicas: 0,
+        analysis: {
+          analyzer: {
+            ngram_2: {
+              type: 'custom',
+              tokenizer: 'ngram_2',
+              filter: ['lowercase'],
+            },
+          },
+          tokenizer: {
+            ngram_2: {
+              type: 'ngram',
+              token_chars: ['letter', 'digit'],
+              min_gram: 2,
+              max_gram: 2,
+            },
+          },
+        },
+      },
+    },
+    mappings: {
+      properties: {
+        name: { type: 'text', analyzer: 'ngram_2' },
+        space: {
+          properties: {
+            id: { type: 'keyword' },
+          },
+        },
+        reputation: { type: 'rank_feature' },
+        hasThumbnail: { type: 'boolean' },
+        lastPostPublishedAt: { type: 'date' },
+      },
+    },
+  },
 };
 
 const createIndex = async (name: string, indexBody: Omit<IndicesCreateRequest, 'index'>) => {

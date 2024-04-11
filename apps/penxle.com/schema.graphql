@@ -615,6 +615,7 @@ input PurchasePostInput {
 type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
+  collectionFeed: [SpaceCollection!]!
   draftPost(permalink: String!): Post!
   featuredTagFeed: [FeaturedTag!]!
   flash: Flash

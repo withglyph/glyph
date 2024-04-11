@@ -23,6 +23,7 @@ import {
   useFirstRow,
 } from '$lib/server/utils';
 import { builder } from '../builder';
+import { SpaceCollection } from './collection';
 import { Post } from './post';
 import { Tag } from './tag';
 
@@ -351,6 +352,50 @@ builder.queryFields((t) => ({
         sort: [{ publishedAt: 'desc' }],
         from: (page - 1) * take,
         size: take,
+      });
+
+      return searchResultToIds(searchResult);
+    },
+  }),
+
+  collectionFeed: t.field({
+    type: [SpaceCollection],
+    resolve: async (_, __, context) => {
+      const mutedSpaceIds = await getMutedSpaceIds({ userId: context.session?.userId });
+
+      const searchResult = await elasticSearch.search({
+        index: indexName('collections'),
+        query: {
+          function_score: {
+            query: {
+              bool: {
+                must_not: makeQueryContainers([
+                  {
+                    query: { terms: { spaceId: mutedSpaceIds } },
+                    condition: mutedSpaceIds.length > 0,
+                  },
+                ]),
+                should: [{ rank_feature: { field: 'reputation' } }],
+              },
+            },
+
+            functions: [
+              {
+                random_score: { seed: Math.floor(Math.random() * 1000), field: '_seq_no' },
+              },
+              {
+                exp: {
+                  lastUpdatedAt: {
+                    scale: '30d',
+                    offset: '7d',
+                  },
+                },
+              },
+            ],
+          },
+        },
+
+        size: 10,
       });
 
       return searchResultToIds(searchResult);

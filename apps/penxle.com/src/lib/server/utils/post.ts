@@ -99,7 +99,7 @@ export const getPostViewCount = async ({ postId, context }: GetPostViewCountPara
   }
 };
 
-export const calculatePostReputation = (postId: string) =>
+export const calculatePostReputation = async (postId: string) =>
   useCache(
     `Post:${postId}:reputation`,
     async () => {
@@ -114,6 +114,21 @@ export const calculatePostReputation = (postId: string) =>
 
       // rank_feature는 0이면 박살남
       return viewCount + purchasedCount * 20 + 1;
+    },
+    600,
+  );
+
+export const calculateCollectionReputation = async (collectionId: string) =>
+  useCache(
+    `SpaceCollection:${collectionId}:reputation`,
+    async () => {
+      return await database
+        .select({ postId: SpaceCollectionPosts.postId })
+        .from(SpaceCollectionPosts)
+        .where(eq(SpaceCollectionPosts.collectionId, collectionId))
+        .then((rows) => rows.map((row) => row.postId))
+        .then((postIds) => Promise.all(postIds.map((postId) => calculatePostReputation(postId))))
+        .then((reputations) => reputations.reduce((a, b) => a + b, 0) / Math.sqrt(reputations.length));
     },
     600,
   );
