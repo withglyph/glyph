@@ -34,10 +34,13 @@
         backgroundColor: 'gray.5',
         pointerEvents: 'auto',
         userSelect: 'text',
+        borderColor: 'gray.600',
 
         smDown: {
           borderTopWidth: '1px',
-          borderTopColor: 'gray.600',
+        },
+        sm: {
+          borderWidth: '1px',
         },
       },
     },
