@@ -41,7 +41,7 @@
     style={css.raw({
       borderWidth: '[0.8px]',
       borderColor: 'gray.100',
-      width: { base: '161px', sm: '206px' },
+      width: 'full',
       aspectRatio: '4/5',
     })}
     $image={$spaceCollection.thumbnail}

@@ -8,7 +8,7 @@
   import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
-  import { flex } from '$styled-system/patterns';
+  import { flex, grid } from '$styled-system/patterns';
   import PostCard from '../../../(feed)/PostCard.svelte';
   import Collection from '../Collection.svelte';
 
@@ -86,10 +86,10 @@
     {/if}
   </div>
 {:else}
-  <ul class={flex({ align: 'center', gap: '12px', wrap: 'wrap' })}>
+  <ul class={grid({ columns: { base: 2, sm: 4 }, gap: '12px' })}>
     {#each $query.space.posts.slice(0, 4) as post (post.id)}
       <li>
-        <PostCard style={css.raw({ width: { base: '162px', sm: '206px' } })} $post={post} showTags />
+        <PostCard $post={post} showTags />
       </li>
     {/each}
   </ul>
@@ -117,7 +117,7 @@
     {/if}
   </div>
 {:else}
-  <ul class={flex({ align: 'center', gap: '12px', wrap: 'wrap', marginBottom: '20px' })}>
+  <ul class={grid({ columns: { base: 2, sm: 4 }, gap: '12px' })}>
     {#each $query.space.collections.slice(0, 4) as collection (collection.id)}
       <li>
         <Collection $space={$query.space} $spaceCollection={collection} />

@@ -5,7 +5,7 @@
   import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
-  import { flex } from '$styled-system/patterns';
+  import { flex, grid } from '$styled-system/patterns';
   import Collection from '../Collection.svelte';
 
   let createCollectionOpen = false;
@@ -57,7 +57,7 @@
     {/if}
   </div>
 {:else}
-  <ul class={flex({ gap: '12px', wrap: 'wrap' })}>
+  <ul class={grid({ columns: { base: 2, sm: 4 }, gap: '12px' })}>
     {#each $query.space.collections as collection (collection.id)}
       <li>
         <Collection $space={$query.space} $spaceCollection={collection} />
