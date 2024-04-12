@@ -34,7 +34,7 @@
         position: 'relative',
         size: '24px',
         textAlign: 'center',
-        backgroundColor: 'gray.50',
+        backgroundColor: 'gray.100',
       }),
     )}
     type="button"
