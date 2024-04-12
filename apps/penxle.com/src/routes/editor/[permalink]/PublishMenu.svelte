@@ -7,12 +7,10 @@
   import IconAlertTriangle from '~icons/tabler/alert-triangle';
   import IconFileSettings from '~icons/tabler/file-settings';
   import IconMessageCircle from '~icons/tabler/message-circle-2';
-  import IconPhoto from '~icons/tabler/photo';
   import IconPhotoCheck from '~icons/tabler/photo-check';
   import IconPlanet from '~icons/tabler/planet';
   import IconPlus from '~icons/tabler/plus';
   import IconTag from '~icons/tabler/tag';
-  import IconTrash from '~icons/tabler/trash';
   import IconUser from '~icons/tabler/user';
   import IconX from '~icons/tabler/x';
   import { goto } from '$app/navigation';
@@ -589,76 +587,56 @@
               align: 'center',
               borderWidth: '1px',
               borderColor: 'gray.200',
-              borderRadius: '4px',
               paddingX: '16px',
               paddingY: '14px',
             })}
           >
-            <Image
-              style={css.raw({ borderRadius: '2px', size: '60px', backgroundColor: 'gray.300' })}
-              $image={currentThumbnail}
-            />
-
-            <div class={flex({ align: 'center', gap: '6px' })}>
-              <button type="button" on:click={() => (thumbnail = null)}>
-                <Icon icon={IconTrash} size={24} />
-              </button>
-
-              <button
-                class={css({
-                  borderWidth: '1px',
-                  borderColor: 'gray.200',
-                  borderRadius: '2px',
-                  paddingX: '12px',
-                  paddingY: '4px',
-                  width: '54px',
-                  textAlign: 'center',
-                  fontSize: '11px',
-                  fontWeight: 'semibold',
-                  color: 'gray.400',
-                })}
-                type="button"
-                on:click={() => thumbnailPicker.show()}
-              >
-                변경
-              </button>
+            <Image style={css.raw({ size: '38px', backgroundColor: 'gray.300' })} $image={currentThumbnail} />
+            <div
+              class={flex({
+                'align': 'center',
+                'gap': '8px',
+                '& > *': {
+                  width: '68px',
+                },
+              })}
+              role="group"
+            >
+              <Button size="sm" variant="red-fill" on:click={() => (thumbnail = null)}>삭제</Button>
+              <Button size="sm" variant="gray-outline" on:click={() => thumbnailPicker.show()}>변경</Button>
             </div>
           </div>
         {:else}
-          <button
+          <!-- eslint-disable-next-line svelte/valid-compile -->
+          <!-- svelte-ignore a11y-label-has-associated-control -->
+          <label
             class={flex({
+              cursor: 'pointer',
               justify: 'space-between',
               align: 'center',
               borderWidth: '1px',
-              borderColor: 'gray.200',
-              borderRadius: '4px',
-              padding: '12px',
+              borderColor: 'gray.150',
+              paddingX: '16px',
+              paddingY: '14px',
               width: 'full',
             })}
-            type="button"
-            on:click={() => thumbnailPicker.show()}
           >
-            <div class={flex({ align: 'center', gap: '6px' })}>
-              <Icon style={css.raw({ color: 'gray.300' })} icon={IconPhoto} size={20} />
-              <span class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.400' })}>
-                썸네일 이미지를 선택해주세요
+            <div class={flex({ align: 'center', gap: '8px' })}>
+              <Image style={css.raw({ size: '38px' })} placeholder />
+              <span class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.500' })}>
+                썸네일을 업로드해주세요
               </span>
             </div>
 
-            <div
-              class={css({
-                borderRadius: '4px',
-                paddingX: '14px',
-                paddingY: '6px',
-                fontSize: '11px',
-                fontWeight: 'semibold',
-                color: 'gray.5',
-                backgroundColor: 'teal.500',
-              })}
+            <Button
+              style={css.raw({ width: '68px' })}
+              size="sm"
+              variant="cyan-fill"
+              on:click={() => thumbnailPicker.show()}
             >
               업로드
-            </div>
-          </button>
+            </Button>
+          </label>
         {/if}
       </div>
 

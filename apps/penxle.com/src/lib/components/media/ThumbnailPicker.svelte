@@ -2,7 +2,7 @@
   import ky from 'ky';
   import { createEventDispatcher } from 'svelte';
   import { graphql } from '$glitch';
-  import { Button, Modal } from '$lib/components';
+  import { Button, Modal } from '$lib/components/v2';
   import { trackable } from '$lib/svelte/store';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
   import { css } from '$styled-system/css';
@@ -99,18 +99,12 @@
 />
 
 {#if props}
-  <Modal size="md" bind:open>
+  <Modal size="sm" bind:open>
     <svelte:fragment slot="title">
       <slot name="title">위치 조정</slot>
     </svelte:fragment>
     <Thumbnailer style={css.raw({ width: 'full' })} {...props} {ratio} bind:bounds={draftBounds} />
-    <Button
-      slot="action"
-      style={css.raw({ marginTop: '16px', width: 'full' })}
-      loading={$uploading}
-      size="xl"
-      on:click={upload}
-    >
+    <Button style={css.raw({ marginTop: '16px', width: 'full' })} loading={$uploading} size="md" on:click={upload}>
       <slot name="save">저장</slot>
     </Button>
   </Modal>
