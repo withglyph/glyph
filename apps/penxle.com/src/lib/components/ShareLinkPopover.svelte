@@ -5,7 +5,6 @@
   import { fade } from 'svelte/transition';
   import IconMastodon from '~icons/simple-icons/mastodon';
   import IconTwitter from '~icons/simple-icons/twitter';
-  import IconCopy from '~icons/tabler/copy';
   import IconX from '~icons/tabler/x';
   import { Icon } from '$lib/components';
   import Button from '$lib/components/v2/Button.svelte';
@@ -60,7 +59,7 @@
     },
   });
 
-  const { floating, anchor, update } = createFloatingActions({ placement: 'bottom-end', offset: 6 });
+  const { floating, anchor, update } = createFloatingActions({ placement: 'bottom-start', offset: 6 });
 
   $: if (open) {
     // eslint-disable-next-line unicorn/prefer-top-level-await
@@ -193,7 +192,7 @@
         <TextInput readonly type="text" value={href} />
       </div>
       <Button
-        style={flex.raw({ align: 'center', gap: '4px', flex: 'none' })}
+        style={css.raw({ flex: 'none' })}
         type="button"
         on:click={async () => {
           try {
@@ -204,7 +203,6 @@
           }
         }}
       >
-        <Icon icon={IconCopy} size={20} />
         복사
       </Button>
     </footer>
