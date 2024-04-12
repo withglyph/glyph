@@ -591,7 +591,10 @@
               paddingY: '14px',
             })}
           >
-            <Image style={css.raw({ size: '38px', backgroundColor: 'gray.300' })} $image={currentThumbnail} />
+            <Image
+              style={css.raw({ height: '38px', aspectRatio: '16/10', objectFit: 'cover', backgroundColor: 'gray.300' })}
+              $image={currentThumbnail}
+            />
             <div
               class={flex({
                 'align': 'center',
@@ -622,7 +625,7 @@
             })}
           >
             <div class={flex({ align: 'center', gap: '8px' })}>
-              <Image style={css.raw({ size: '38px' })} placeholder />
+              <Image style={css.raw({ height: '38px', aspectRatio: '16/10' })} placeholder />
               <span class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.500' })}>
                 썸네일을 업로드해주세요
               </span>
@@ -902,4 +905,9 @@
   <CreateCollectionModal bind:open={createCollectionOpen} bind:spaceId={selectedSpaceId} />
 {/if}
 
-<ThumbnailPicker bind:this={thumbnailPicker} keepBoundsWhenClosed on:change={(e) => (thumbnail = e.detail)} />
+<ThumbnailPicker
+  bind:this={thumbnailPicker}
+  keepBoundsWhenClosed
+  ratio="post"
+  on:change={(e) => (thumbnail = e.detail)}
+/>

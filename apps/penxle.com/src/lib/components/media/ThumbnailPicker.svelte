@@ -18,7 +18,7 @@
   let open = false;
   export let keepBoundsWhenClosed = false;
 
-  export let ratio: 'square' | 'rectangle' = 'square';
+  export let ratio: 'square' | 'collection' | 'post' | undefined = undefined;
 
   $: if (!open) {
     if (!keepBoundsWhenClosed) {
@@ -99,12 +99,12 @@
 />
 
 {#if props}
-  <Modal size="sm" bind:open>
+  <Modal actionStyle={css.raw({ paddingTop: '0' })} size="sm" bind:open>
     <svelte:fragment slot="title">
       <slot name="title">위치 조정</slot>
     </svelte:fragment>
-    <Thumbnailer style={css.raw({ width: 'full' })} {...props} {ratio} bind:bounds={draftBounds} />
-    <Button style={css.raw({ marginTop: '16px', width: 'full' })} loading={$uploading} size="md" on:click={upload}>
+    <Thumbnailer {...props} {ratio} bind:bounds={draftBounds} />
+    <Button slot="action" style={css.raw({ width: 'full' })} loading={$uploading} size="lg" on:click={upload}>
       <slot name="save">저장</slot>
     </Button>
   </Modal>

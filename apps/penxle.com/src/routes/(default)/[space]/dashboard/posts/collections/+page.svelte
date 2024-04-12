@@ -91,7 +91,7 @@
           <a class={flex({ gap: '12px' })} href={`/${$query.space.slug}/collections/${collection.id}`}>
             {#if collection.thumbnail}
               <Image
-                style={css.raw({ width: '96px', height: '120px', borderRadius: '8px', flexShrink: 0 })}
+                style={css.raw({ width: '96px', aspectRatio: '[3/4]', flexShrink: 0 })}
                 $image={collection.thumbnail}
               />
             {/if}

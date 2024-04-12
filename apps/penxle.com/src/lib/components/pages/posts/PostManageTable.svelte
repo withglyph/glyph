@@ -333,9 +333,17 @@
               rel="noopener noreferrer"
               target="_blank"
             >
-              {#if post.thumbnail}
-                <Image style={css.raw({ flex: 'none', borderRadius: '8px', size: '42px' })} $image={post.thumbnail} />
-              {/if}
+              <Image
+                style={css.raw({
+                  flex: 'none',
+                  height: '42px',
+                  aspectRatio: '16/10',
+                  objectFit: 'cover',
+                })}
+                $image={post.thumbnail}
+                placeholder
+              />
+
               <dl class={css({ truncate: true })}>
                 <dt class={css({ fontSize: '15px', fontWeight: 'bold', truncate: true })}>
                   {post.publishedRevision.title ?? '(제목 없음)'}
@@ -682,9 +690,16 @@
   <ul class={flex({ direction: 'column', gap: '4px', maxHeight: '240px', overflowY: 'auto' })}>
     {#each selectedPosts as post (post.id)}
       <li class={flex({ align: 'center', gap: '12px', paddingY: '8px' })}>
-        {#if post.thumbnail}
-          <Image style={css.raw({ flex: 'none', borderRadius: '8px', size: '60px' })} $image={post.thumbnail} />
-        {/if}
+        <Image
+          style={css.raw({
+            flex: 'none',
+            height: '60px',
+            aspectRatio: '16/10',
+            objectFit: 'cover',
+          })}
+          $image={post.thumbnail}
+          placeholder
+        />
         <dl class={css({ truncate: true })}>
           <dt class={css({ fontSize: '15px', fontWeight: 'bold', truncate: true })}>
             {post.publishedRevision.title ?? '(제목 없음)'}

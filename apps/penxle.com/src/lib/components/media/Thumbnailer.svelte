@@ -17,7 +17,13 @@
   export let style: SystemStyleObject | undefined = undefined;
 
   export let src: string | undefined = undefined;
-  export let ratio: 'square' | 'rectangle' = 'square';
+  export let ratio: 'square' | 'collection' | 'post' = 'square';
+
+  const aspectRatio = {
+    square: '1/1',
+    collection: '3/4',
+    post: '16/10',
+  } as const satisfies Record<typeof ratio, string>;
 
   $: {
     if (!file && !src) throw new Error('file or src props required');
@@ -110,14 +116,14 @@
       padding: '32px',
       width: 'full',
       overflow: 'hidden',
-      aspectRatio: ratio === 'square' ? '1/1' : '[3/4]',
+      aspectRatio: aspectRatio[ratio],
     })}
   >
     <img
       bind:this={imgEl}
       style:transform
       class={css(
-        { maxWidth: '[none]', objectFit: 'contain', cursor: 'move', touchAction: 'none' },
+        { objectFit: 'contain', cursor: 'move', touchAction: 'none' },
         naturalWidth > naturalHeight && { height: 'full' },
         naturalWidth < naturalHeight && { width: 'full' },
         naturalWidth === naturalHeight && { size: 'full' },

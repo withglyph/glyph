@@ -123,4 +123,4 @@
   </Button>
 </Modal>
 
-<ThumbnailPicker bind:this={thumbnailPicker} ratio="rectangle" on:change={(e) => (thumbnail = e.detail)} />
+<ThumbnailPicker bind:this={thumbnailPicker} ratio="collection" on:change={(e) => (thumbnail = e.detail)} />
