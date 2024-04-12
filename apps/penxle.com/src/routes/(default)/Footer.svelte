@@ -11,10 +11,12 @@
 <footer
   class={css({
     borderTopWidth: '1px',
+    borderTopColor: 'gray.150',
     paddingX: '20px',
     paddingY: '40px',
     fontSize: '12px',
     letterSpacing: '[0.05em]',
+    backgroundColor: 'gray.5',
   })}
 >
   <div
