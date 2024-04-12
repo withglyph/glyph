@@ -200,6 +200,7 @@
             <Post
               style={css.raw(index === 0 && { paddingTop: '0' }, index === 1 && { sm: { paddingTop: '0' } })}
               $post={post}
+              showSpace
             />
           </li>
         {/each}
@@ -214,7 +215,7 @@
               },
             )}
           >
-            <Post $post={post} />
+            <Post $post={post} showSpace />
           </li>
         {/each}
       {/if}

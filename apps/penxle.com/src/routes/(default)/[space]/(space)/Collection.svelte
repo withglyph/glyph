@@ -47,6 +47,6 @@
     $image={$spaceCollection.thumbnail}
     placeholder
   />
-  <p class={css({ marginTop: '6px', fontWeight: 'semibold' })}>{$spaceCollection.name}</p>
+  <p class={css({ marginTop: '6px', fontSize: '15px', fontWeight: 'semibold' })}>{$spaceCollection.name}</p>
   <p class={css({ fontSize: '14px', color: 'gray.600' })}>포스트 {comma($spaceCollection.count)}개</p>
 </a>

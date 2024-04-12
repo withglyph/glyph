@@ -109,7 +109,15 @@
     background: 'gray.5',
   })}
 >
-  <div class={css({ backgroundColor: 'gray.50', width: 'full', height: { base: '100px', sm: '180px' } })} />
+  <div
+    class={css({
+      backgroundGradient: 'to-b',
+      gradientFrom: 'gray.50',
+      gradientTo: 'gray.150',
+      width: 'full',
+      height: { base: '100px', sm: '182px' },
+    })}
+  />
 
   <div class={css({ paddingX: '20px', width: 'full' })}>
     <div class={flex({ direction: 'column', flexGrow: '1', marginX: 'auto', width: 'full', maxWidth: '860px' })}>
@@ -124,8 +132,8 @@
           style={css.raw({
             borderWidth: '[0.8px]',
             borderColor: 'gray.100',
-            size: { base: '100px', sm: '240px' },
-            marginTop: { base: '-63px', sm: '-60px' },
+            size: { base: '100px', sm: '184px' },
+            marginTop: { base: '-63px', sm: '-34px' },
           })}
           $image={$query.space.icon}
         />
@@ -140,18 +148,17 @@
             class={flex({
               align: 'center',
               gap: '4px',
-              fontSize: { base: '20px', sm: '28px' },
+              fontSize: { base: '20px', sm: '24px' },
               fontWeight: 'bold',
               truncate: true,
             })}
           >
             {$query.space.name}
             {#if $query.space.visibility === 'PRIVATE'}
-              <Icon style={css.raw({ hideBelow: 'sm' })} icon={IconLock} size={28} />
-              <Icon style={css.raw({ hideFrom: 'sm' })} icon={IconLock} size={24} />
+              <Icon icon={IconLock} size={24} />
             {/if}
           </h1>
-          <p class={css({ fontSize: { base: '14px', sm: '20px' } })}>
+          <p class={css({ fontSize: '14px' })}>
             by {$query.space.members[0].profile.name}
           </p>
 
@@ -162,7 +169,7 @@
                 alignItems: 'center',
                 gap: '4px',
                 marginTop: { base: '6px', sm: '8px' },
-                marginBottom: '20px',
+                marginBottom: '16px',
                 fontSize: '13px',
                 color: 'gray.500',
               },
@@ -170,7 +177,7 @@
             )}
           >
             <dt>구독자</dt>
-            <dd class={css({ marginRight: '10px' })}>{$query.space.followerCount}명</dd>
+            <dd class={css({ marginRight: '6px' })}>{$query.space.followerCount}명</dd>
             <dt>포스트</dt>
             <dd>{$query.space.postCount}개</dd>
           </dl>
@@ -217,6 +224,12 @@
               </Button>
             {/if}
 
+            <ShareLinkPopover href="{$page.url.origin}/{$query.space.slug}">
+              <div class={center({ outlineWidth: '1px', outlineColor: 'gray.200', size: '37px' })}>
+                <Icon style={css.raw({ '& *': { strokeWidth: '[2]' } })} icon={IconShare2} />
+              </div>
+            </ShareLinkPopover>
+
             {#if !$query.space.meAsMember}
               <Menu
                 style={center.raw({
@@ -227,6 +240,7 @@
                   transition: 'common',
                 })}
                 disabled={$query.space.myMasquerade?.blocked}
+                placement="bottom-start"
               >
                 <Icon slot="value" style={css.raw({ '& *': { strokeWidth: '[2]' } })} icon={IconDotsVertical} />
 
@@ -251,12 +265,6 @@
                 {/if}
               </Menu>
             {/if}
-
-            <ShareLinkPopover href="{$page.url.origin}/{$query.space.slug}">
-              <div class={center({ outlineWidth: '1px', outlineColor: 'gray.200', size: '37px' })}>
-                <Icon style={css.raw({ '& *': { strokeWidth: '[2]' } })} icon={IconShare2} />
-              </div>
-            </ShareLinkPopover>
           </div>
         </div>
       </div>

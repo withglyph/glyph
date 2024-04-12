@@ -52,21 +52,30 @@
   title={$query.space.name}
 />
 
-<p class={css({ marginTop: '14px', fontSize: '13px', color: 'gray.500' })}>총 {$query.space.postCount}개의 포스트</p>
+<p class={css({ marginTop: '14px', marginBottom: '8px', fontSize: '13px', color: 'gray.500' })}>
+  총 {$query.space.postCount}개의 포스트
+</p>
 
 <ul class={flex({ direction: 'column', width: 'full' })}>
   {#each $query.space.posts as post (post.id)}
-    <li class={css({ _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' } })}>
-      <Post $post={post} showBookmark />
+    <li
+      class={css({
+        _firstOfType: {
+          '& > a': { paddingTop: '0' },
+        },
+        _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' },
+        _lastOfType: { _after: { display: 'none' } },
+      })}
+    >
+      <Post $post={post} showBookmark showDate showSpace />
     </li>
   {:else}
-    <li class={css({ marginY: '50px' })}>
-      <p class={css({ fontWeight: 'semibold', color: 'gray.400', textAlign: 'center' })}>
-        스페이스에 업로드된 포스트가 없어요
-      </p>
+    <li class={css({ marginY: '32px' })}>
+      <p class={css({ color: 'gray.500', textAlign: 'center' })}>스페이스에 업로드된 포스트가 없어요</p>
       {#if $query.space.meAsMember}
         <Button
           style={flex.raw({ align: 'center', gap: '4px', marginTop: '16px', marginX: 'auto' })}
+          size="sm"
           variant="cyan-fill"
           on:click={async () => {
             const { permalink } = await createPost({ spaceId: $query.space.id });

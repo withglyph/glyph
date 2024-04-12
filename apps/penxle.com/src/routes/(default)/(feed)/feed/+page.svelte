@@ -46,7 +46,7 @@
           _lastOfType: { _after: { display: 'none' } },
         })}
       >
-        <Post $post={post} showBookmark />
+        <Post $post={post} showBookmark showSpace />
       </li>
     {:else}
       <li class={css({ marginY: 'auto', fontWeight: 'semibold', color: 'gray.400', textAlign: 'center' })}>

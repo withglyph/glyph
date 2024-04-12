@@ -1,4 +1,5 @@
 <script lang="ts">
+  import dayjs from 'dayjs';
   import IconBookmark from '~icons/tabler/bookmark';
   import IconBookmarkFilled from '~icons/tabler/bookmark-filled';
   import IconEye from '~icons/tabler/eye';
@@ -16,7 +17,9 @@
   let _post: Feed_Post_post;
   export { _post as $post };
 
+  export let showSpace = false;
   export let showBookmark = false;
+  export let showDate = false;
   export let style: SystemStyleObject | undefined = undefined;
 
   $: post = fragment(
@@ -32,6 +35,7 @@
         commentCount
         blurred
         hasPassword
+        publishedAt
 
         bookmarkGroups {
           id
@@ -95,171 +99,209 @@
   `);
 </script>
 
-<a
-  class={css(
-    {
-      display: 'flex',
-      justifyContent: 'space-between',
-      gap: { base: '24px', sm: '40px' },
-      paddingY: '20px',
-      truncate: true,
-    },
-    style,
-  )}
-  href={`/${$post.space.slug}/${$post.permalink}`}
->
-  <div class={css({ flexGrow: '1', truncate: true })}>
-    <h3
-      class={css({
-        marginBottom: '2px',
-        fontSize: { base: '14px', sm: '15px' },
-        fontWeight: 'semibold',
+<div class={css({ position: 'relative' })}>
+  <a
+    class={css(
+      {
+        display: 'flex',
+        justifyContent: 'space-between',
+        gap: { base: '24px', sm: '40px' },
+        paddingY: '20px',
         truncate: true,
-      })}
-    >
-      {$post.publishedRevision.title ?? '(제목 없음)'}
-    </h3>
-    <h4 class={css({ fontSize: '13px', color: 'gray.600', height: '19px', truncate: true })}>
-      {$post.publishedRevision.subtitle ?? ''}
-    </h4>
-
-    <div
-      class={flex({
-        align: 'center',
-        gap: '4px',
-        marginY: '6px',
-        height: '21px',
-        truncate: true,
-      })}
-    >
-      {#each $post.tags.slice(0, 2) as tag (tag.id)}
-        <Tag style={css.raw({ maxWidth: { base: '62px', sm: '94px' }, truncate: true })} as="div" size="sm">
-          #{tag.tag.name}
-        </Tag>
-      {/each}
-      {#if $post.tags.length > 2}
-        <Tag style={css.raw({ maxWidth: { base: '62px', sm: '94px' }, truncate: true })} as="div" size="sm">
-          +{$post.tags.length - 2}
-        </Tag>
-      {/if}
-    </div>
-
-    <div class={flex({ align: 'center', gap: '4px', marginY: '4px', height: '24px', width: 'full', truncate: true })}>
-      <Image
-        style={css.raw({ flex: 'none', borderWidth: '[0.8px]', borderColor: 'gray.100', size: '18px' })}
-        $image={$post.space.icon}
-      />
-
-      <div
+      },
+      style,
+    )}
+    href={`/${$post.space.slug}/${$post.permalink}`}
+  >
+    <div class={css({ flexGrow: '1', truncate: true })}>
+      <h3
         class={css({
-          fontSize: { base: '12px', sm: '13px' },
-          color: 'gray.600',
-          wordBreak: 'break-all',
-          lineClamp: '1',
+          marginBottom: '2px',
+          fontSize: { base: '14px', sm: '16px' },
+          fontWeight: 'semibold',
           truncate: true,
         })}
       >
-        {$post.space.name}
+        {$post.publishedRevision.title ?? '(제목 없음)'}
+      </h3>
+      <h4 class={css({ fontSize: '13px', color: 'gray.600', height: '19px', truncate: true })}>
+        {$post.publishedRevision.subtitle ?? ''}
+      </h4>
+
+      <div
+        class={flex({
+          align: 'center',
+          gap: '4px',
+          marginY: '6px',
+          height: '21px',
+          truncate: true,
+        })}
+      >
+        {#each $post.tags.slice(0, 2) as tag (tag.id)}
+          <Tag style={css.raw({ maxWidth: { base: '62px', sm: '94px' }, truncate: true })} as="div" size="sm">
+            #{tag.tag.name}
+          </Tag>
+        {/each}
+        {#if $post.tags.length > 2}
+          <Tag style={css.raw({ maxWidth: { base: '62px', sm: '94px' }, truncate: true })} as="div" size="sm">
+            +{$post.tags.length - 2}
+          </Tag>
+        {/if}
+      </div>
+
+      {#if showSpace}
+        <div
+          class={flex({ align: 'center', gap: '4px', marginY: '4px', height: '24px', width: 'full', truncate: true })}
+        >
+          <Image
+            style={css.raw({ flex: 'none', borderWidth: '[0.8px]', borderColor: 'gray.100', size: '18px' })}
+            $image={$post.space.icon}
+          />
+
+          <div
+            class={css({
+              fontSize: { base: '12px', sm: '13px' },
+              color: 'gray.600',
+              wordBreak: 'break-all',
+              lineClamp: '1',
+              truncate: true,
+            })}
+          >
+            {$post.space.name}
+          </div>
+        </div>
+      {/if}
+
+      <div
+        class={css({
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          color: 'gray.400',
+          fontSize: '12px',
+          height: '17px',
+        })}
+      >
+        {#if $post.viewCount > 0 && $post.discloseStats}
+          <div class={flex({ align: 'center', gap: '2px' })}>
+            <Icon icon={IconEye} />
+            {humanizeNumber($post.viewCount)}
+          </div>
+        {/if}
+
+        {#if $post.reactionCount > 0 && $post.discloseStats}
+          <div class={flex({ align: 'center', gap: '2px' })}>
+            <Icon icon={IconMoodSmile} />
+            {humanizeNumber($post.reactionCount)}
+          </div>
+        {/if}
+
+        {#if $post.commentCount > 0 && $post.discloseStats}
+          <div class={flex({ align: 'center', gap: '2px' })}>
+            <Icon icon={IconMessageCircle} />
+            {humanizeNumber($post.commentCount)}
+          </div>
+        {/if}
+
+        {#if showDate}
+          <time
+            class={flex({
+              align: 'center',
+              gap: '8px',
+              _before: { content: '""', display: 'block', width: '1px', height: '12px', backgroundColor: 'gray.100' },
+            })}
+            datetime={$post.publishedAt}
+          >
+            {dayjs($post.publishedAt).formatAsDate()}
+          </time>
+        {/if}
       </div>
     </div>
 
     <div
       class={css({
         display: 'flex',
-        alignItems: 'center',
-        gap: '6px',
-        color: 'gray.400',
-        fontSize: '12px',
-        height: '17px',
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+        justifyContent: 'space-between',
       })}
     >
-      {#if $post.viewCount > 0 && $post.discloseStats}
-        <div class={flex({ align: 'center', gap: '2px' })}>
-          <Icon icon={IconEye} />
-          {humanizeNumber($post.viewCount)}
-        </div>
-      {/if}
-
-      {#if $post.reactionCount > 0 && $post.discloseStats}
-        <div class={flex({ align: 'center', gap: '2px' })}>
-          <Icon icon={IconMoodSmile} />
-          {humanizeNumber($post.reactionCount)}
-        </div>
-      {/if}
-
-      {#if $post.commentCount > 0 && $post.discloseStats}
-        <div class={flex({ align: 'center', gap: '2px' })}>
-          <Icon icon={IconMessageCircle} />
-          {humanizeNumber($post.commentCount)}
-        </div>
-      {/if}
-    </div>
-  </div>
-
-  <div
-    class={css({
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-end',
-      justifyContent: 'space-between',
-    })}
-  >
-    <div
-      class={css({
-        position: 'relative',
-        flex: 'none',
-        width: { base: '118px', sm: '144px' },
-        aspectRatio: '16/10',
-      })}
-    >
-      <Image
-        style={css.raw({
+      <div
+        class={css({
+          position: 'relative',
           flex: 'none',
-          borderWidth: '[0.8px]',
-          borderColor: 'gray.100',
-          size: 'full',
+          width: { base: '118px', sm: '144px' },
           aspectRatio: '16/10',
-          objectFit: 'cover',
         })}
-        $image={$post.thumbnail}
-        placeholder
-      />
+      >
+        <Image
+          style={css.raw({
+            flex: 'none',
+            borderWidth: '[0.8px]',
+            borderColor: 'gray.100',
+            size: 'full',
+            aspectRatio: '16/10',
+            objectFit: 'cover',
+          })}
+          $image={$post.thumbnail}
+          placeholder
+        />
 
-      <div class={css({ position: 'absolute', left: '6px', bottom: '6px', display: 'flex', gap: '4px' })}>
-        {#if $post.ageRating === 'R15'}
-          <Chip color="pink">15세</Chip>
-        {/if}
-        {#if $post.ageRating === 'R19'}
-          <Chip color="pink">성인</Chip>
-        {/if}
-        {#if $post.hasPassword}
-          <Chip color="gray">비밀글</Chip>
-        {/if}
+        <div class={css({ position: 'absolute', left: '6px', bottom: '6px', display: 'flex', gap: '4px' })}>
+          {#if $post.ageRating === 'R15'}
+            <Chip color="pink">15세</Chip>
+          {/if}
+          {#if $post.ageRating === 'R19'}
+            <Chip color="pink">성인</Chip>
+          {/if}
+          {#if $post.hasPassword}
+            <Chip color="gray">비밀글</Chip>
+          {/if}
+        </div>
       </div>
     </div>
+  </a>
 
-    {#if showBookmark}
-      {#if $post.bookmarkGroups.length > 0}
-        <button
-          type="button"
-          on:click={async () => {
-            await unbookmarkPost({ bookmarkGroupId: $post.bookmarkGroups[0].id, postId: $post.id });
-            mixpanel.track('post:unbookmark', { postId: $post.id, via: 'feed' });
-          }}
-        >
-          <Icon icon={IconBookmarkFilled} size={24} />
-        </button>
-      {:else}
-        <button
-          type="button"
-          on:click={async () => {
-            await bookmarkPost({ postId: $post.id });
-            mixpanel.track('post:bookmark', { postId: $post.id, via: 'feed' });
-          }}
-        >
-          <Icon icon={IconBookmark} size={24} />
-        </button>
-      {/if}
+  {#if showBookmark}
+    {#if $post.bookmarkGroups.length > 0}
+      <button
+        class={css({
+          position: 'absolute',
+          right: '0',
+          bottom: '20px',
+          zIndex: '1',
+          marginTop: '8px',
+        })}
+        type="button"
+        on:click={async () => {
+          await unbookmarkPost({ bookmarkGroupId: $post.bookmarkGroups[0].id, postId: $post.id });
+          mixpanel.track('post:unbookmark', { postId: $post.id, via: 'feed' });
+        }}
+      >
+        <Icon style={css.raw({ color: 'gray.400' })} icon={IconBookmarkFilled} size={20} />
+      </button>
+    {:else}
+      <button
+        class={css({
+          position: 'absolute',
+          right: '0',
+          bottom: '20px',
+          zIndex: '1',
+          marginTop: '8px',
+          _hover: {
+            '& path': {
+              fill: '[currentColor]',
+            },
+          },
+        })}
+        type="button"
+        on:click={async () => {
+          await bookmarkPost({ postId: $post.id });
+          mixpanel.track('post:bookmark', { postId: $post.id, via: 'feed' });
+        }}
+      >
+        <Icon style={css.raw({ color: 'gray.400' })} icon={IconBookmark} size={20} />
+      </button>
     {/if}
-  </div>
-</a>
+  {/if}
+</div>

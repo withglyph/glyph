@@ -215,7 +215,7 @@
         <ul>
           {#each $query.searchPosts.posts as post (post.id)}
             <li>
-              <Post $post={post} />
+              <Post $post={post} showBookmark showDate showSpace />
             </li>
           {/each}
           <Pagination {initialPage} onChange={updateSearchFilter} totalItems={$query.searchPosts.count} />

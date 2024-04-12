@@ -69,11 +69,10 @@
       {
         display: 'flex',
         borderWidth: '1px',
-        borderColor: 'gray.100',
+        borderColor: 'gray.200',
         backgroundColor: 'gray.5',
         minWidth: '148px',
         zIndex: '50',
-        _last: { borderBottomStyle: 'none' },
       },
       alignment === 'horizontal' && { flexDirection: 'row', paddingY: '14px' },
       alignment === 'vertical' && { flexDirection: 'column' },

@@ -103,7 +103,15 @@
     background: 'gray.5',
   })}
 >
-  <div class={css({ backgroundColor: 'gray.50', width: 'full', height: { base: '100px', sm: '180px' } })} />
+  <div
+    class={css({
+      backgroundGradient: 'to-b',
+      gradientFrom: 'gray.50',
+      gradientTo: 'gray.150',
+      width: 'full',
+      height: { base: '100px', sm: '182px' },
+    })}
+  />
 
   <div class={css({ paddingX: '20px', width: 'full' })}>
     <div class={flex({ direction: 'column', flexGrow: '1', marginX: 'auto', width: 'full', maxWidth: '860px' })}>
@@ -118,8 +126,8 @@
           style={css.raw({
             borderWidth: '[0.8px]',
             borderColor: 'gray.100',
-            width: { base: '84px', sm: '240px' },
-            marginTop: { base: '-63px', sm: '-77px' },
+            width: { base: '84px', sm: '184px' },
+            marginTop: { base: '-63px', sm: '-46px' },
             aspectRatio: '[4/5]',
           })}
           $image={collection.thumbnail}
@@ -129,9 +137,9 @@
           <a
             class={flex({
               align: 'center',
-              gap: '4px',
+              gap: '3px',
               marginBottom: '6px',
-              fontSize: { base: '14px', sm: '16px' },
+              fontSize: '14px',
               color: 'gray.500',
               width: 'fit',
             })}
@@ -141,13 +149,28 @@
             <Icon icon={IconChevronRight} />
           </a>
 
-          <h1 class={css({ fontSize: { base: '20px', sm: '28px' }, fontWeight: 'bold' })}>
+          <h1 class={css({ fontSize: { base: '20px', sm: '24px' }, fontWeight: 'bold' })}>
             {collection.name}
           </h1>
 
-          <p class={css({ fontSize: { base: '14px', sm: '20px' } })}>
+          <p class={css({ fontSize: '14px' })}>
             by {$query.space.members[0].profile.name}
           </p>
+
+          <dl
+            class={css({
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              marginTop: { base: '6px', sm: '8px' },
+              marginBottom: '16px',
+              fontSize: '13px',
+              color: 'gray.500',
+            })}
+          >
+            <dt>포스트</dt>
+            <dd>{collection.count}개</dd>
+          </dl>
 
           <div class={flex({ align: 'center', gap: '8px', marginTop: '20px' })}>
             <Button
@@ -196,7 +219,7 @@
       <ul>
         {#each collection.posts as post (post.id)}
           <li>
-            <Post $post={post} showBookmark />
+            <Post $post={post} showBookmark showDate showSpace />
           </li>
         {:else}
           <li class={css({ marginY: '50px', textAlign: 'center', color: 'gray.400', fontWeight: 'semibold' })}>
