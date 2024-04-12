@@ -1,7 +1,7 @@
 <script lang="ts">
   import { setContext } from 'svelte';
   import { afterNavigate } from '$app/navigation';
-  import { createFloatingActions } from '$lib/svelte/actions';
+  import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
   import type { Placement } from '@floating-ui/dom';
   import type { SystemStyleObject } from '$styled-system/types';
@@ -20,11 +20,17 @@
   export let alignment: 'horizontal' | 'vertical' = 'vertical';
 
   export let hideBackdrop = false;
+  export let backdropPortal = true;
   export let preventClose = false;
   export let disabled = false;
 
   export let rounded = true;
 
+  $: action = backdropPortal
+    ? portal
+    : () => {
+        // void
+      };
   $: props = as === 'button' ? { type: 'button', disabled } : { tabindex: -1 };
 
   setContext('close', preventClose ? undefined : () => (open = false));
@@ -64,6 +70,7 @@
     tabindex="-1"
     on:click={() => (open = false)}
     on:keypress={null}
+    use:action
   />
 
   <div

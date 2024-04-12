@@ -123,6 +123,7 @@
                 padding: '8px',
                 color: { base: 'gray.500', _hover: 'gray.900' },
               })}
+              backdropPortal={false}
               {disabled}
               placement="right-start"
             >
