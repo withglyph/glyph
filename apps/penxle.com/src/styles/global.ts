@@ -24,7 +24,7 @@ export const globalCss = defineGlobalStyles({
 
     color: 'gray.900',
     lineHeight: '1.44',
-    letterSpacing: '-0.4',
+    letterSpacing: '-0.004em',
   },
 
   'a': {
