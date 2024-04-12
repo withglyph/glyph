@@ -1,7 +1,7 @@
 <script lang="ts">
   import IconArrowBarToDown from '~icons/tabler/arrow-bar-to-down';
   import IconChevronLeft from '~icons/tabler/chevron-left';
-  import IconDots from '~icons/tabler/dots';
+  import IconShare2 from '~icons/tabler/share-2';
   import { browser } from '$app/environment';
   import { graphql } from '$glitch';
   import { Icon } from '$lib/components';
@@ -27,7 +27,7 @@
   let fontFamily: (typeof fontFamilies)[number]['value'] = fontFamilies[0].value;
 
   const fontSizes = [
-    { label: '작은글씨', value: '12px' },
+    { label: '작은글씨', value: '14px' },
     { label: '중간글씨', value: '16px' },
     { label: '큰글씨', value: '20px' },
   ] as const;
@@ -81,7 +81,7 @@
     } as const satisfies Record<(typeof fontFamilies)[number]['value'], string>;
 
     const fontSizeToInputFormat = {
-      '12px': 'small',
+      '14px': 'small',
       '16px': 'medium',
       '20px': 'large',
     } as const satisfies Record<(typeof fontSizes)[number]['value'], string>;
@@ -134,7 +134,7 @@
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      size: '64px',
+      size: '60px',
       color: 'gray.500',
       backgroundColor: 'gray.50',
     },
@@ -169,21 +169,29 @@
   >
     <Icon icon={IconChevronLeft} size={24} />
   </button>
-  <svelte:fragment slot="title">밑줄 이미지 편집</svelte:fragment>
-  <form id="share-content-as-image" class={flex({ direction: 'column' })}>
+  <svelte:fragment slot="title">{showShareTargetMenu ? '공유 및 저장' : '이미지로 공유'}</svelte:fragment>
+  <form id="share-content-as-image" class={flex({ direction: 'column', position: 'relative' })}>
     <article
       class={css({
-        position: 'relative',
-        borderWidth: '1px',
-        borderColor: backgroundColor === '#FFFFFF' ? '[gray.900/10]' : 'transparent',
-        alignSelf: 'center',
-        size: 'full',
-        maxSize: '398px',
+        position: 'sticky',
+        top: '0',
+        marginX: '-20px',
+        paddingX: '20px',
+        backgroundColor: 'gray.5',
+        maxHeight: '334px',
+        flexGrow: '1',
         aspectRatio: '[1/1]',
+        zIndex: '1',
       })}
     >
       <img
-        class={css({ size: 'full' })}
+        class={css({
+          borderWidth: '1px',
+          borderColor: backgroundColor === '#FFFFFF' ? '[gray.900/10]' : 'transparent',
+          marginX: 'auto',
+          size: 'full',
+          maxSize: '334px',
+        })}
         alt="밑줄 이미지 미리보기"
         src={generatedPostShareImage || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"}
       />
@@ -196,134 +204,155 @@
     </article>
 
     <div class={css({ position: 'relative' })}>
-      <section
-        class={css(
-          {
-            position: 'absolute',
-            inset: '0',
+      {#if showShareTargetMenu}
+        <hr
+          class={css({
+            border: 'none',
+            marginTop: '16px',
+            height: '8px',
+            marginX: '-20px',
+            backgroundColor: 'gray.50',
+          })}
+        />
+
+        <section
+          class={css({
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             gap: '16px',
-            borderTopWidth: '[8px]',
-            borderTopColor: 'gray.100',
-            paddingTop: '92px',
+            paddingTop: '32px',
+            paddingBottom: '52px',
             size: 'full',
             backgroundColor: 'gray.5',
             transition: 'opacity',
-          },
-          !showShareTargetMenu && { opacity: '0', visibility: 'hidden', zIndex: '-1' },
-        )}
-      >
-        <div class={shareTargetMenuButtonWarpClassname}>
-          <button id="download-share-button" type="button" on:click={download}>
-            <Icon icon={IconArrowBarToDown} size={32} />
-          </button>
-          <label for="download-share-button">이미지 저장</label>
-        </div>
-        <div class={shareTargetMenuButtonWarpClassname}>
-          <button
-            id="etc-share-button"
-            class={cx('peer', css({ _disabled: { color: 'gray.300' } }))}
-            disabled={typeof navigator !== 'undefined' && !navigator.share}
-            type="button"
-            on:click={share}
-          >
-            <Icon icon={IconDots} size={32} />
-          </button>
-          <label class={css({ _peerDisabled: { color: 'gray.300' } })} for="etc-share-button">기타</label>
-        </div>
-      </section>
-      <section class={flex({ gap: '8px', paddingY: '8px', overflowX: 'auto', scrollbar: 'hidden' })}>
-        {#each backgroundColors as bgColor (bgColor)}
-          <label>
-            <input
-              name="backgroundColorClassname"
-              class={cx('peer', css({ appearance: 'none' }))}
-              type="radio"
-              value={bgColor}
-              bind:group={backgroundColor}
-            />
-            <div
-              style:background={bgColor}
-              class={css(
-                {
-                  borderRadius: '3px',
-                  size: '46px',
-                  zIndex: '-1',
-                  _peerChecked: { borderWidth: '2px', borderColor: 'teal.500' },
-                },
-                bgColor === '#FFFFFF' && { borderWidth: '1px', borderColor: 'gray.200' },
-              )}
-            />
-          </label>
-        {/each}
-      </section>
-      <section class={flex({ align: 'center', gap: '16px', paddingY: '14px' })} role="group">
-        {#each fontFamilies as family (family)}
-          <button
-            style:font-family={family.value}
-            class={css({
-              display: 'inline-flex',
-              alignItems: 'center',
-              borderRadius: '3px',
-              paddingX: '5px',
-              height: '34px',
-              _hover: { backgroundColor: 'gray.100' },
-              _focus: { backgroundColor: 'gray.100' },
-              _pressed: { color: 'teal.500' },
-            })}
-            aria-pressed={fontFamily === family.value}
-            type="button"
-            on:click={() => (fontFamily = family.value)}
-          >
-            {family.label}
-          </button>
-        {/each}
-      </section>
-      <section
-        class={flex({
-          align: 'center',
-          gap: '16px',
-          borderYWidth: '1px',
-          borderYColor: 'gray.200',
-          marginX: '-20px',
-          paddingX: '20px',
-          paddingY: '14px',
-        })}
-        role="group"
-      >
-        {#each fontSizes as size (size)}
-          <button
-            style:font-size={size.value}
-            class={css({
-              display: 'inline-flex',
-              alignItems: 'center',
-              borderRadius: '3px',
-              paddingX: '5px',
-              height: '34px',
-              _hover: { backgroundColor: 'gray.100' },
-              _focus: { backgroundColor: 'gray.100' },
-              _pressed: { fontWeight: 'bold', color: 'teal.500' },
-            })}
-            aria-pressed={fontSize === size.value}
-            type="button"
-            on:click={() => (fontSize = size.value)}
-          >
-            {size.label}
-          </button>
-        {/each}
-      </section>
+          })}
+        >
+          <div class={shareTargetMenuButtonWarpClassname}>
+            <button id="download-share-button" type="button" on:click={download}>
+              <Icon icon={IconArrowBarToDown} size={28} />
+            </button>
+            <label for="download-share-button">이미지 저장</label>
+          </div>
+          <div class={shareTargetMenuButtonWarpClassname}>
+            <button
+              id="etc-share-button"
+              class={cx('peer', css({ _disabled: { color: 'gray.300' } }))}
+              disabled={typeof navigator !== 'undefined' && !navigator.share}
+              type="button"
+              on:click={share}
+            >
+              <Icon icon={IconShare2} size={24} />
+            </button>
+            <label class={css({ _peerDisabled: { color: 'gray.300' } })} for="etc-share-button">SNS 공유</label>
+          </div>
+        </section>
+      {:else}
+        <section
+          class={flex({
+            align: 'center',
+            gap: '8px',
+            marginTop: '16px',
+            marginBottom: '14px',
+            overflowX: 'auto',
+            scrollbar: 'hidden',
+          })}
+        >
+          {#each backgroundColors as bgColor (bgColor)}
+            <label class={css({ position: 'relative', flex: 'none', size: '46px' })}>
+              <input
+                name="background-color-{bgColor}"
+                class={cx('peer', css({ appearance: 'none', visibility: 'hidden' }))}
+                type="radio"
+                value={bgColor}
+                bind:group={backgroundColor}
+              />
+              <div
+                style:background={bgColor}
+                class={css(
+                  {
+                    position: 'absolute',
+                    left: '0',
+                    top: '0',
+                    size: '46px',
+                    backgroundColor: 'gray.900',
+                    userSelect: 'none',
+                    _peerChecked: { borderWidth: '2px', borderColor: 'cyan.400' },
+                  },
+                  bgColor === '#FFFFFF' && { borderWidth: '1px', borderColor: 'gray.200' },
+                )}
+              />
+            </label>
+          {/each}
+        </section>
+
+        <hr class={css({ border: 'none', height: '8px', marginX: '-20px', backgroundColor: 'gray.50' })} />
+
+        <section class={flex({ align: 'center', gap: '16px', paddingY: '14px' })} role="group">
+          {#each fontFamilies as family (family)}
+            <button
+              style:font-family={family.value}
+              class={css({
+                display: 'inline-flex',
+                alignItems: 'center',
+                borderRadius: '3px',
+                paddingX: '5px',
+                height: '34px',
+                _hover: { backgroundColor: 'gray.100' },
+                _focus: { backgroundColor: 'gray.100' },
+                _pressed: { color: 'cyan.400' },
+              })}
+              aria-pressed={fontFamily === family.value}
+              type="button"
+              on:click={() => (fontFamily = family.value)}
+            >
+              {family.label}
+            </button>
+          {/each}
+        </section>
+        <section
+          class={flex({
+            align: 'center',
+            gap: '16px',
+            borderTopWidth: '1px',
+            borderTopColor: 'gray.100',
+            marginX: '-20px',
+            paddingX: '20px',
+            paddingY: '14px',
+          })}
+          role="group"
+        >
+          {#each fontSizes as size (size)}
+            <button
+              style:font-size={size.value}
+              class={css({
+                display: 'inline-flex',
+                alignItems: 'center',
+                borderRadius: '3px',
+                paddingX: '5px',
+                height: '34px',
+                _hover: { backgroundColor: 'gray.100' },
+                _focus: { backgroundColor: 'gray.100' },
+                _pressed: { fontWeight: 'bold', color: 'cyan.400' },
+              })}
+              aria-pressed={fontSize === size.value}
+              type="button"
+              on:click={() => (fontSize = size.value)}
+            >
+              {size.label}
+            </button>
+          {/each}
+        </section>
+
+        <Button
+          style={css.raw({ marginY: '20px', width: 'full' })}
+          disabled={generatedPostShareImage === null}
+          size="lg"
+          on:click={() => (showShareTargetMenu = true)}
+        >
+          다음
+        </Button>
+      {/if}
     </div>
   </form>
-
-  <Button
-    slot="action"
-    style={css.raw({ flex: '1' })}
-    disabled={generatedPostShareImage === null}
-    size="lg"
-    on:click={() => (showShareTargetMenu = true)}
-  >
-    공유
-  </Button>
 </Modal>
