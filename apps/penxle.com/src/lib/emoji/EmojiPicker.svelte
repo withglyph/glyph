@@ -8,7 +8,7 @@
   import { Icon } from '$lib/components';
   import { createFloatingActions } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
-  import LoginRequireModal from '../../routes/(default)/LoginRequireModal.svelte';
+  import LoginRequireAlert from '../../routes/(default)/LoginRequireAlert.svelte';
   import i18n from './i18n.json';
   import { emojiData as data } from './index';
   import type { Emoji } from '@emoji-mart/data';
@@ -137,7 +137,7 @@
 
 <div bind:this={pickerEl} class={css({ height: '400px', zIndex: '50' }, !open && { display: 'none' })} use:floating />
 
-<LoginRequireModal bind:open={loginRequireOpen} />
+<LoginRequireAlert bind:open={loginRequireOpen} />
 
 <style>
   :global(em-emoji-picker) {

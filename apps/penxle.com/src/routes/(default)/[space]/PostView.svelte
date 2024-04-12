@@ -30,7 +30,7 @@
   import { css } from '$styled-system/css';
   import { center, flex, grid } from '$styled-system/patterns';
   import PostCard from '../(feed)/PostCard.svelte';
-  import LoginRequireModal from '../LoginRequireModal.svelte';
+  import LoginRequireAlert from '../LoginRequireAlert.svelte';
   import AlertText from './AlertText.svelte';
   import Comment from './Comment.svelte';
   import CommentInput from './CommentInput.svelte';
@@ -1511,7 +1511,7 @@
   />
 {/if}
 
-<LoginRequireModal bind:open={loginRequireOpen} />
+<LoginRequireAlert bind:open={loginRequireOpen} />
 
 <Alert bind:open={openDeletePostWarning}>
   <p slot="title" class={css({ textAlign: 'left' })}>포스트를 삭제하시겠어요?</p>

@@ -8,7 +8,7 @@
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import LoginRequireModal from '../../LoginRequireModal.svelte';
+  import LoginRequireAlert from '../../LoginRequireAlert.svelte';
 
   let loginRequireOpen = false;
 
@@ -174,4 +174,4 @@
   </div>
 </div>
 
-<LoginRequireModal bind:open={loginRequireOpen} />
+<LoginRequireAlert bind:open={loginRequireOpen} />

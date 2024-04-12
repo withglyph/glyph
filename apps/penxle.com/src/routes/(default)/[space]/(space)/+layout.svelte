@@ -13,7 +13,7 @@
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import LoginRequireModal from '../../LoginRequireModal.svelte';
+  import LoginRequireAlert from '../../LoginRequireAlert.svelte';
 
   let moveToLoginOpen = false;
   let revealMutedSpace = false;
@@ -325,4 +325,4 @@
   </div>
 </main>
 
-<LoginRequireModal bind:open={moveToLoginOpen} />
+<LoginRequireAlert bind:open={moveToLoginOpen} />

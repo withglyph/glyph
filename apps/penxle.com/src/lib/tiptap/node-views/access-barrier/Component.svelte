@@ -19,7 +19,7 @@
   import { comma } from '$lib/utils';
   import { css, cx } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import LoginRequireModal from '../../../../routes/(default)/LoginRequireModal.svelte';
+  import LoginRequireAlert from '../../../../routes/(default)/LoginRequireAlert.svelte';
   import { priceErrorMap } from './zod';
   import type { NodeViewProps } from '$lib/tiptap';
 
@@ -482,7 +482,7 @@
     </svelte:fragment>
   </Modal>
 
-  <LoginRequireModal bind:open={loginRequireOpen} />
+  <LoginRequireAlert bind:open={loginRequireOpen} />
 {:else}
   <NodeView
     style={css.raw(
