@@ -16,8 +16,6 @@
 
   const recipe = cva({
     base: {
-      display: 'flex',
-      alignItems: 'center',
       backgroundColor: 'gray.100',
       height: 'fit',
       transition: 'common',
@@ -63,7 +61,6 @@
     recipe.raw({ size }),
     as !== 'div' && { cursor: 'pointer' },
     'right-icon' in $$slots && {
-      gap: '4px',
       paddingLeft: size === 'sm' ? '6px' : '10px',
       paddingRight: size === 'sm' ? '4px' : '8px',
     },

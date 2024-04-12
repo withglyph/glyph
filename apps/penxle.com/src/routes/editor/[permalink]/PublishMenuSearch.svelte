@@ -101,7 +101,12 @@
   {#if postTags}
     <ul class={flex({ gap: '6px', wrap: 'wrap', paddingY: '10px' })}>
       {#each postTags as tag (tag.name)}
-        <Tag as="label" size="sm" on:change={() => (tags = tags.filter((t) => t.name !== tag.name))}>
+        <Tag
+          style={css.raw({ display: 'flex', alignItems: 'center', gap: '4px' })}
+          as="label"
+          size="sm"
+          on:change={() => (tags = tags.filter((t) => t.name !== tag.name))}
+        >
           {tag.name}
           <Icon slot="right-icon" icon={IconX} size={12} />
         </Tag>

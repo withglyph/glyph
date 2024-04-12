@@ -163,7 +163,6 @@
               fontSize: { base: '12px', sm: '13px' },
               color: 'gray.600',
               wordBreak: 'break-all',
-              lineClamp: '1',
               truncate: true,
             })}
           >

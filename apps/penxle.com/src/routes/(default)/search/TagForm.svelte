@@ -64,7 +64,14 @@
   <div class={flex({ flexWrap: 'wrap', gap: '6px', marginTop: '6px' })}>
     {#each tags as tag (tag)}
       <Tag
-        style={css.raw({ backgroundColor: 'cyan.400', width: 'fit', cursor: 'pointer' })}
+        style={css.raw({
+          display: 'flex',
+          alignItems: 'center',
+          gap: '4px',
+          backgroundColor: 'cyan.400',
+          width: 'fit',
+          cursor: 'pointer',
+        })}
         as="label"
         on:change={() => {
           tags = tags.filter((t) => t !== tag);

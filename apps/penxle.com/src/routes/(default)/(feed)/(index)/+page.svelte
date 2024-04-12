@@ -101,7 +101,7 @@
 
   <HorizontalScroll
     style={css.raw({ gap: '10px', paddingY: '10px' })}
-    gradientStyle={css.raw({ gradientFrom: '[#ffffff/0]', gradientTo: '[#ffffff]', height: '34px', width: '70px' })}
+    gradientStyle={css.raw({ gradientFrom: '[#ffffff/0]', gradientTo: '[#ffffff]', height: '33px', width: '70px' })}
   >
     <Icon
       slot="left-icon"
@@ -113,7 +113,7 @@
     {#each $query.recommendedTags as tag, index (tag.id)}
       <Tag
         style={css.raw(
-          { paddingX: '24px', color: 'gray.600', minWidth: 'fit', height: '34px' },
+          { paddingX: '24px', paddingY: '7px', color: 'gray.600', minWidth: 'fit' },
           index % 3 === 0 && { backgroundColor: 'gray.50' },
           index % 3 === 1 && { backgroundColor: 'gray.100' },
           index % 3 === 2 && { backgroundColor: 'gray.150' },

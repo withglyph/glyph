@@ -72,15 +72,14 @@
       title: {
         fontSize: { base: '14px', sm: '15px' },
         fontWeight: 'semibold',
-        wordBreak: 'break-all',
-        lineClamp: '1',
+        width: 'full',
         truncate: true,
       },
       subtitle: {
         fontSize: { base: '13px', sm: '14px' },
         wordBreak: 'break-all',
-        lineClamp: '1',
         height: '19px',
+        width: 'full',
         truncate: true,
       },
       tag: { maxWidth: '94px', truncate: true },
@@ -104,7 +103,10 @@
   $: classes = recipe.raw({ theme });
 </script>
 
-<a class={css({ display: 'block' }, style)} href={`/${$post.space.slug}/${$post.permalink}`}>
+<a
+  class={css({ display: 'block', truncate: true, flex: 'none' }, style)}
+  href={`/${$post.space.slug}/${$post.permalink}`}
+>
   <div
     class={css(
       { position: 'relative', flex: 'none', marginBottom: '6px', aspectRatio: '16/10', overflow: 'hidden' },
@@ -114,6 +116,7 @@
     <Image
       style={css.raw(
         {
+          flex: 'none',
           borderWidth: '[0.8px]',
           borderColor: 'gray.100',
           size: 'full',
@@ -185,7 +188,7 @@
             fontWeight: 'medium',
             color: 'gray.500',
             wordBreak: 'break-all',
-            lineClamp: '1',
+            width: 'full',
             truncate: true,
           },
           theme === 'dark' && { color: 'gray.400' },
