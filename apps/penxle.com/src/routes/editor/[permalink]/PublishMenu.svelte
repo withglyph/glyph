@@ -385,7 +385,7 @@
     >
       <input name="thumbnailId" type="hidden" value={currentThumbnail?.id} />
 
-      <div class={tabContentStyle} hidden={tabIndex !== 0}>
+      <section class={tabContentStyle} hidden={tabIndex !== 0}>
         <div>
           <h3 class={labelStyle}>스페이스</h3>
 
@@ -499,9 +499,9 @@
             </svelte:fragment>
           </Select>
         </div>
-      </div>
+      </section>
 
-      <div class={tabContentStyle} hidden={tabIndex !== 1}>
+      <section class={tabContentStyle} hidden={tabIndex !== 1}>
         <div>
           <h3 class={labelStyle}>카테고리</h3>
 
@@ -578,7 +578,7 @@
           bind:tags={$data.tags}
           bind:query={extraQuery}
         />
-      </div>
+      </section>
 
       <div hidden={tabIndex !== 2}>
         <h3 class={labelStyle}>썸네일</h3>
@@ -663,7 +663,7 @@
         {/if}
       </div>
 
-      <div class={tabContentStyle} hidden={tabIndex !== 3}>
+      <section class={tabContentStyle} hidden={tabIndex !== 3}>
         <div>
           <h3 class={labelStyle}>공개 범위</h3>
 
@@ -780,9 +780,9 @@
             </ToggleButton>
           </SegmentButtonGroup>
         </div>
-      </div>
+      </section>
 
-      <div class={tabContentStyle} hidden={tabIndex !== 4}>
+      <section class={tabContentStyle} hidden={tabIndex !== 4}>
         <Switch
           style={flex.raw({ justify: 'space-between', align: 'center' })}
           checked={$data.commentQualification !== 'NONE' ?? true}
@@ -823,9 +823,9 @@
             </ToggleButton>
           </SegmentButtonGroup>
         </div>
-      </div>
+      </section>
 
-      <div class={tabContentStyle} hidden={tabIndex !== 5}>
+      <section class={tabContentStyle} hidden={tabIndex !== 5}>
         <Switch
           name="receiveFeedback"
           style={flex.raw({ justify: 'space-between', align: 'center' })}
@@ -871,7 +871,7 @@
             <dd>게시물의 내용을 보호하기 위해 우클릭 또는 복사를 제한해요</dd>
           </dl>
         </Switch>
-      </div>
+      </section>
     </form>
   </div>
 
