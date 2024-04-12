@@ -2,7 +2,7 @@
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
-  import { Helmet, Icon, Tag } from '$lib/components';
+  import { Helmet, Icon, Image, Tag } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
   import Post from '../Post.svelte';
@@ -48,6 +48,22 @@
       collectionFeed {
         id
         name
+
+        thumbnail {
+          id
+          ...Image_image
+        }
+
+        space {
+          id
+          name
+          slug
+
+          icon {
+            id
+            ...Image_image
+          }
+        }
       }
     }
   `);
@@ -117,7 +133,7 @@
   </HorizontalScroll>
 
   <div class={css({ paddingY: { base: '32px', sm: '40px' } })}>
-    <h2 class={css({ marginBottom: '14px', fontSize: '21px', fontWeight: 'semibold' })}>에디터 Pick</h2>
+    <h2 class={css({ marginBottom: '14px', fontSize: '21px', fontWeight: 'bold' })}>에디터 Pick</h2>
 
     <HorizontalScroll
       style={css.raw({ gap: { base: '12px', sm: '14px' } })}
@@ -152,7 +168,7 @@
 
   <div class={css({ paddingTop: { base: '32px', sm: '40px' }, paddingBottom: { base: '40px', sm: '60px' } })}>
     <div class={flex({ align: 'center', justify: 'space-between', marginBottom: '14px' })}>
-      <h2 class={css({ fontSize: '21px', fontWeight: 'semibold' })}>
+      <h2 class={css({ fontSize: '21px', fontWeight: 'bold' })}>
         {$query.me ? `${$query.me.profile.name}님을 위한 추천` : '독자님을 위한 추천'}
       </h2>
 
@@ -205,7 +221,7 @@
       class={css({
         marginBottom: '16px',
         fontSize: '21px',
-        fontWeight: 'semibold',
+        fontWeight: 'bold',
         color: 'gray.5',
       })}
     >
@@ -265,106 +281,124 @@
 
 <div class={css({ marginX: 'auto', paddingX: '20px', width: 'full', maxWidth: '1280px' })}>
   <div class={css({ paddingTop: { base: '40px', sm: '60px' } })}>
-    <h2 class={css({ marginBottom: '14px', fontSize: '21px', fontWeight: 'semibold' })}>많이 찾은 컬렉션</h2>
+    <h2 class={css({ marginBottom: '14px', fontSize: '21px', fontWeight: 'bold' })}>많이 찾은 컬렉션</h2>
 
     <ul class={css({ sm: { display: 'grid', gridTemplateColumns: '3', columnGap: '10px' } })}>
       {#each $query.collectionFeed.slice(0, 6) as collection (collection.id)}
         <li
-          class={flex({
-            align: 'center',
-            gap: '14px',
-            paddingY: { base: '16px', sm: '24px' },
-            _firstOfType: { paddingTop: '0' },
+          class={css({
+            smDown: { _firstOfType: { '& > a': { paddingTop: '0' } } },
           })}
         >
-          <div
-            class={css({
-              borderWidth: '[0.8px]',
-              borderColor: 'gray.100',
-              backgroundColor: 'gray.50',
-              flex: 'none',
-              width: { base: '48px', sm: '60px' },
-              aspectRatio: '[4/5]',
+          <a
+            class={flex({
+              align: 'center',
+              gap: '14px',
+              paddingY: { base: '16px', sm: '24px' },
             })}
-          />
-
-          <div class={css({ truncate: true })}>
-            <h3
-              class={css({
-                marginBottom: '2px',
-                fontSize: { base: '14px', sm: '16px' },
-                fontWeight: 'semibold',
-                truncate: true,
+            href="/{collection.space.slug}/collections/{collection.id}"
+          >
+            <Image
+              style={css.raw({
+                borderWidth: '[0.8px]',
+                borderColor: 'gray.100',
+                flex: 'none',
+                width: { base: '48px', sm: '60px' },
+                aspectRatio: '[4/5]',
               })}
-            >
-              {collection}
-            </h3>
+              $image={collection.thumbnail}
+              placeholder
+            />
 
-            <div class={flex({ align: 'center', gap: '4px', truncate: true })}>
-              <div
+            <div class={css({ truncate: true })}>
+              <h3
                 class={css({
-                  backgroundColor: 'gray.50',
-                  flex: 'none',
-                  borderWidth: '[0.8px]',
-                  borderColor: 'gray.100',
-                  size: '18px',
+                  marginBottom: '2px',
+                  fontSize: '14px',
+                  fontWeight: 'semibold',
+                  truncate: true,
                 })}
-              />
+              >
+                {collection.name}
+              </h3>
 
-              <span class={css({ fontSize: { base: '12px', sm: '13px' }, color: 'gray.600', truncate: true })}>
-                스페이스명
-              </span>
+              <div class={flex({ align: 'center', gap: '4px', truncate: true })}>
+                <Image
+                  style={css.raw({
+                    flex: 'none',
+                    borderWidth: '[0.8px]',
+                    borderColor: 'gray.100',
+                    size: '18px',
+                  })}
+                  $image={collection.space.icon}
+                  placeholder
+                />
+
+                <span class={css({ fontSize: '12px', color: 'gray.600', truncate: true })}>
+                  {collection.space.name}
+                </span>
+              </div>
             </div>
-          </div>
+          </a>
         </li>
       {/each}
       {#each $query.collectionFeed.slice(6, 9) as collection (collection.id)}
         <li
-          class={flex({
-            align: 'center',
-            gap: '14px',
-            paddingY: { base: '16px', sm: '24px' },
-            _firstOfType: { paddingTop: '0' },
+          class={css({
+            _firstOfType: { '& > a': { paddingTop: '0' } },
             hideBelow: 'sm',
           })}
         >
-          <div
-            class={css({
-              borderWidth: '[0.8px]',
-              borderColor: 'gray.100',
-              backgroundColor: 'gray.50',
-              flex: 'none',
-              width: { base: '48px', sm: '60px' },
-              aspectRatio: '[4/5]',
+          <a
+            class={flex({
+              align: 'center',
+              gap: '14px',
+              paddingY: { base: '16px', sm: '24px' },
             })}
-          />
-
-          <div class={css({ truncate: true })}>
-            <h3
-              class={css({
-                marginBottom: '2px',
-                fontSize: '14px',
-                fontWeight: 'semibold',
-                truncate: true,
+            href="/{collection.space.slug}/collections/{collection.id}"
+          >
+            <Image
+              style={css.raw({
+                borderWidth: '[0.8px]',
+                borderColor: 'gray.100',
+                flex: 'none',
+                width: { base: '48px', sm: '60px' },
+                aspectRatio: '[4/5]',
               })}
-            >
-              {collection.name}
-            </h3>
+              $image={collection.thumbnail}
+              placeholder
+            />
 
-            <div class={flex({ align: 'center', gap: '4px', truncate: true })}>
-              <div
+            <div class={css({ truncate: true })}>
+              <h3
                 class={css({
-                  backgroundColor: 'gray.50',
-                  flex: 'none',
-                  borderWidth: '[0.8px]',
-                  borderColor: 'gray.100',
-                  size: '18px',
+                  marginBottom: '2px',
+                  fontSize: '14px',
+                  fontWeight: 'semibold',
+                  truncate: true,
                 })}
-              />
+              >
+                {collection.name}
+              </h3>
 
-              <span class={css({ fontSize: '12px', color: 'gray.600', truncate: true })}>스페이스명</span>
+              <div class={flex({ align: 'center', gap: '4px', truncate: true })}>
+                <Image
+                  style={css.raw({
+                    flex: 'none',
+                    borderWidth: '[0.8px]',
+                    borderColor: 'gray.100',
+                    size: '18px',
+                  })}
+                  $image={collection.space.icon}
+                  placeholder
+                />
+
+                <span class={css({ fontSize: '12px', color: 'gray.600', truncate: true })}>
+                  {collection.space.name}
+                </span>
+              </div>
             </div>
-          </div>
+          </a>
         </li>
       {/each}
     </ul>

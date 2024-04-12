@@ -112,13 +112,16 @@
     )}
   >
     <Image
-      style={css.raw({
-        borderWidth: '[0.8px]',
-        borderColor: 'gray.100',
-        size: 'full',
-        aspectRatio: '16/10',
-        objectFit: 'cover',
-      })}
+      style={css.raw(
+        {
+          borderWidth: '[0.8px]',
+          borderColor: 'gray.100',
+          size: 'full',
+          aspectRatio: '16/10',
+          objectFit: 'cover',
+        },
+        theme === 'dark' && { borderColor: 'gray.800' },
+      )}
       $image={$post.thumbnail}
       placeholder
     />
