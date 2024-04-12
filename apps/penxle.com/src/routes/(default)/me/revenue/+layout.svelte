@@ -1,7 +1,7 @@
 <script lang="ts">
   import dayjs from 'dayjs';
   import IconInfoCircle from '~icons/tabler/alert-circle';
-  import IconChevronRight from '~icons/tabler/chevron-right';
+  // import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
   import { Icon, Tooltip } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
@@ -98,13 +98,13 @@
       </p>
     </div>
 
-    <Tooltip
-      enabled={!!$query.me.settlementIdentity && $query.me.withdrawableRevenue < 1000}
-      message="즉시출금은 1,000원 이상부터 신청 가능해요"
-    >
+    <Tooltip enabled message="정산 기능은 4월 중 업데이트 예정이에요">
+      <!-- enabled={!!$query.me.settlementIdentity && $query.me.withdrawableRevenue < 1000} 
+        message="즉시출금은 1,000원 이상부터 신청 가능해요"
+      -->
       <Button
         style={css.raw({ width: 'full', hideFrom: 'sm' })}
-        disabled={!!$query.me.settlementIdentity && $query.me.withdrawableRevenue < 1000}
+        disabled
         size="md"
         on:click={() => {
           if (!$query.me.settlementIdentity) {
@@ -119,7 +119,7 @@
       </Button>
       <Button
         style={css.raw({ width: 'full', hideBelow: 'sm' })}
-        disabled={!!$query.me.settlementIdentity && $query.me.withdrawableRevenue < 1000}
+        disabled
         size="lg"
         on:click={() => {
           if (!$query.me.settlementIdentity) {
@@ -160,58 +160,63 @@
         {comma($query.me.revenue)}P
       </p>
     </div>
-    <button
-      class={flex({
-        flexDirection: 'column',
-        gap: '4px',
-        borderWidth: '1px',
-        borderColor: 'gray.150',
-        borderRadius: '8px',
-        padding: { base: '20px', sm: '24px' },
-        backgroundColor: 'gray.5',
-      })}
-      type="button"
-      on:click={() => {
-        if (!$query.me.settlementIdentity) {
-          open = true;
-          return;
-        }
+    <Tooltip style={css.raw({ width: 'full' })} enabled message="정산 기능은 4월 중 업데이트 예정이에요">
+      <button
+        class={flex({
+          flexDirection: 'column',
+          gap: '4px',
+          borderWidth: '1px',
+          borderColor: 'gray.150',
+          borderRadius: '8px',
+          padding: { base: '20px', sm: '24px' },
+          backgroundColor: 'gray.5',
+          width: 'full',
+        })}
+        disabled
+        type="button"
+        on:click={() => {
+          if (!$query.me.settlementIdentity) {
+            open = true;
+            return;
+          }
 
-        monthlyWithdrawSettingOpen = true;
-      }}
-    >
-      <div class={flex({ align: 'center', gap: '4px' })}>
-        <p class={css({ fontSize: { base: '14px', sm: '16px' }, fontWeight: 'medium' })}>자동 출금</p>
-        {#if $query.me.withdrawalConfig?.monthlyWithdrawalEnabled}
-          {#if $query.me.withdrawalConfig.monthlyWithdrawalDue}
-            <time class={css({ fontSize: '10px', color: 'gray.400' })}>
-              ({dayjs($query.me.withdrawalConfig.monthlyWithdrawalDue).formatAsDate()} 출금예정)
-            </time>
-          {:else}
-            <mark class={css({ fontSize: '10px', color: '[#FF8736]' })}>3만원 미달</mark>
-          {/if}
-        {/if}
-      </div>
-
-      <p
-        class={css(
-          { display: 'flex', alignItems: 'center', gap: '2px', fontWeight: 'semibold', width: 'full' },
-          $query.me.withdrawalConfig?.monthlyWithdrawalEnabled ? { color: 'teal.500' } : { color: 'gray.500' },
-          !$query.me.settlementIdentity && { fontSize: '14px', fontWeight: 'medium' },
-        )}
+          monthlyWithdrawSettingOpen = true;
+        }}
       >
-        {#if $query.me.settlementIdentity}
+        <div class={flex({ align: 'center', gap: '4px' })}>
+          <p class={css({ fontSize: { base: '14px', sm: '16px' }, fontWeight: 'medium' })}>자동 출금</p>
+          {#if $query.me.withdrawalConfig?.monthlyWithdrawalEnabled}
+            {#if $query.me.withdrawalConfig.monthlyWithdrawalDue}
+              <time class={css({ fontSize: '10px', color: 'gray.400' })}>
+                ({dayjs($query.me.withdrawalConfig.monthlyWithdrawalDue).formatAsDate()} 출금예정)
+              </time>
+            {:else}
+              <mark class={css({ fontSize: '10px', color: '[#FF8736]' })}>3만원 미달</mark>
+            {/if}
+          {/if}
+        </div>
+
+        <p
+          class={css(
+            { display: 'flex', alignItems: 'center', gap: '2px', fontWeight: 'semibold', width: 'full' },
+            $query.me.withdrawalConfig?.monthlyWithdrawalEnabled ? { color: 'teal.500' } : { color: 'gray.500' },
+            !$query.me.settlementIdentity && { fontSize: '14px', fontWeight: 'medium' },
+          )}
+        >
+          <!-- {#if $query.me.settlementIdentity}
           {$query.me.withdrawalConfig?.monthlyWithdrawalEnabled ? 'ON' : 'OFF'}
         {:else}
           계좌 인증이 필요해요
-        {/if}
-        <Icon icon={IconChevronRight} size={20} />
-      </p>
-    </button>
+        {/if} -->
+
+          <!-- <Icon icon={IconChevronRight} size={20} /> -->
+        </p>
+      </button>
+    </Tooltip>
   </div>
 </div>
 
-{#if !$query.me.personalIdentity || !$query.me.settlementIdentity}
+<!-- {#if !$query.me.personalIdentity || !$query.me.settlementIdentity}
   <div
     class={css({
       paddingX: { base: '20px', sm: '24px' },
@@ -247,7 +252,7 @@
       계좌인증 <Icon icon={IconChevronRight} />
     </button>
   </div>
-{/if}
+{/if} -->
 
 <div
   class={css({
