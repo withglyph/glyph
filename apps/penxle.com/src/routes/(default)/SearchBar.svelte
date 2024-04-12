@@ -48,6 +48,7 @@
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
+          paddingX: '20px',
           backgroundColor: 'gray.5',
           height: 'full',
         },
