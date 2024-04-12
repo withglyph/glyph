@@ -35,9 +35,22 @@
         ...Feed_PostCard_post
       }
 
-      recentlyUsedTags {
+      recommendedTags {
         id
         name
+      }
+
+      featuredTagFeed {
+        tag {
+          id
+          name
+        }
+
+        posts {
+          id
+          ...Feed_Post_post
+          ...Feed_PostCard_post
+        }
       }
     }
   `);
@@ -113,7 +126,7 @@
       size={20}
     />
 
-    {#each tags as tag, index (tag.id)}
+    {#each $query.recommendedTags as tag, index (tag.id)}
       <Tag
         style={css.raw(
           { paddingX: '24px', color: 'gray.600', minWidth: 'fit', height: '34px' },
@@ -245,7 +258,7 @@
         scrollbar: 'hidden',
       })}
     >
-      {#each tags.slice(0, 5) as tag (tag.id)}
+      {#each $query.featuredTagFeed.slice(0, 5) as { tag } (tag.id)}
         <Tag
           style={css.raw({
             'paddingX': '12px',
