@@ -1053,6 +1053,7 @@
         align: 'center',
         justify: 'space-between',
         paddingY: '18px',
+        backgroundColor: 'gray.5',
         smDown: {
           flexGrow: '1',
           position: 'sticky',
