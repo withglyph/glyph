@@ -41,9 +41,9 @@
       class={css({
         borderBottomWidth: '1px',
         borderBottomColor: 'gray.200',
-        marginX: { base: '20px', sm: '80px' },
+        marginX: { base: '20px', sm: '40px' },
         marginBottom: '20px',
-        paddingBottom: '20px',
+        paddingBottom: '10px',
       })}
     >
       <input
