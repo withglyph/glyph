@@ -514,7 +514,12 @@
         {#if $query.post.space && $query.post.member}
           <a class={css({ position: 'relative', flex: 'none', size: '36px' })} href={`/${$query.post.space.slug}`}>
             <Image
-              style={css.raw({ borderWidth: '[0.8px]', borderColor: 'gray.100', size: '36px' })}
+              style={css.raw({
+                borderWidth: '[0.8px]',
+                marginTop: '2px',
+                borderColor: 'gray.100',
+                size: '36px',
+              })}
               $image={$query.post.space.icon}
             />
             <Avatar
@@ -1467,9 +1472,7 @@
     {/if}
   </div>
 
-  <hr
-    class={css({ border: 'none', marginTop: '24px', marginX: '-20px', height: '16px', backgroundColor: 'gray.50' })}
-  />
+  <hr class={css({ border: 'none', marginTop: '24px', marginX: '-20px', height: '16px', backgroundColor: 'gray.5' })} />
 
   {#if $query.post.recommendedPosts.length > 0}
     <div

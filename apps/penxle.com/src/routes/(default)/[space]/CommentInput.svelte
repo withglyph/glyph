@@ -10,7 +10,7 @@
   import { center, flex } from '$styled-system/patterns';
   import type { CommentInput_query, PostCommentVisibility } from '$glitch';
 
-  let visibility: PostCommentVisibility = 'PUBLIC';
+  export let visibility: PostCommentVisibility = 'PUBLIC';
   export let content = '';
   export let commentId: string | undefined = undefined;
   export let editing = true;
@@ -111,54 +111,51 @@
       }
     }}
   >
-    <div class={flex({ gap: '4px' })}>
-      {#if parentId}
-        <Icon icon={IconReplyBar} size={12} />
-      {/if}
-
-      <div class={css({ width: 'full' })}>
-        <div class={flex({ align: 'center', gap: '4px', marginBottom: '6px' })}>
-          <span class={css({ fontSize: '15px' })}>
-            {$query.post.space.commentProfile?.name ?? ''}
-          </span>
-          {#if !$query.post.space?.meAsMember && $query.me}
-            <Tooltip
-              enabled={!$query.post.space?.meAsMember}
-              message="익명의 프로필명이 자동으로 생성돼요"
-              offset={10}
-              placement="top"
-            >
-              <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} size={12} />
-            </Tooltip>
-          {/if}
-          {#if $query.post.space.meAsMember}
-            <span class={css({ fontSize: '12px', color: 'cyan.400' })}>창작자</span>
-          {/if}
-        </div>
-
-        <textarea
-          class={css({
-            outlineWidth: '1px',
-            outlineColor: { base: 'gray.200', _focusWithin: 'gray.900' },
-            padding: '20px',
-            width: 'full',
-            fontSize: '14px',
-            resize: 'none',
-          })}
-          disabled={!$query.me ||
-            ($query.post.commentQualification === 'IDENTIFIED' && !$query.me.personalIdentity) ||
-            !$query.post.space.commentProfile}
-          placeholder={$query.me
-            ? $query.post.commentQualification === 'IDENTIFIED' && !$query.me?.personalIdentity
-              ? '창작자가 본인 인증 후 댓글을 달 수 있도록 설정했어요'
-              : parentId
-                ? '답글을 작성해보세요'
-                : '창작자에게 응원의 글을 남겨주세요'
-            : '댓글을 작성하려면 로그인이 필요해요'}
-          rows="4"
-          bind:value={content}
-        />
+    <div class={css({ width: 'full' })}>
+      <div class={flex({ align: 'center', gap: '4px', marginBottom: '6px' })}>
+        {#if parentId}
+          <Icon icon={IconReplyBar} size={12} />
+        {/if}
+        <span class={css({ fontSize: '14px', fontWeight: 'medium' })}>
+          {$query.post.space.commentProfile?.name ?? ''}
+        </span>
+        {#if !$query.post.space?.meAsMember && $query.me}
+          <Tooltip
+            enabled={!$query.post.space?.meAsMember}
+            message="익명의 프로필명이 자동으로 생성돼요"
+            offset={10}
+            placement="top"
+          >
+            <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} size={12} />
+          </Tooltip>
+        {/if}
+        {#if $query.post.space.meAsMember}
+          <span class={css({ fontSize: '12px', color: 'cyan.400' })}>창작자</span>
+        {/if}
       </div>
+
+      <textarea
+        class={css({
+          outlineWidth: '1px',
+          outlineColor: { base: 'gray.200', _focusWithin: 'gray.900' },
+          padding: '20px',
+          width: 'full',
+          fontSize: '14px',
+          resize: 'none',
+        })}
+        disabled={!$query.me ||
+          ($query.post.commentQualification === 'IDENTIFIED' && !$query.me.personalIdentity) ||
+          !$query.post.space.commentProfile}
+        placeholder={$query.me
+          ? $query.post.commentQualification === 'IDENTIFIED' && !$query.me?.personalIdentity
+            ? '창작자가 본인 인증 후 댓글을 달 수 있도록 설정했어요'
+            : parentId
+              ? '답글을 작성해보세요'
+              : '창작자에게 응원의 글을 남겨주세요'
+          : '댓글을 작성하려면 로그인이 필요해요'}
+        rows="4"
+        bind:value={content}
+      />
     </div>
 
     <div
@@ -167,7 +164,7 @@
         ($query.post.space.meAsMember || !!commentId) && { justifyContent: 'flex-end' },
       )}
     >
-      {#if !$query.post.space.meAsMember && !commentId}
+      {#if !commentId && $query.me}
         <Button
           style={center.raw({ size: '37px', _pressed: { backgroundColor: 'gray.200!', outline: 'none!' } })}
           aria-pressed={visibility === 'PRIVATE'}
@@ -180,7 +177,7 @@
       {/if}
 
       <Button
-        style={center.raw({ width: '68px', height: '37px' })}
+        style={center.raw({ marginLeft: 'auto', width: '68px', height: '37px' })}
         disabled={!$query.me || ($query.post.commentQualification === 'IDENTIFIED' && !$query.me?.personalIdentity)}
         size="sm"
         type="submit"

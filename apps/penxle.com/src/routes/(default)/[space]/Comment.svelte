@@ -1,5 +1,6 @@
 <script lang="ts">
   import dayjs from 'dayjs';
+  import IconLock from '~icons/glyph/lock';
   import IconReplyBar from '~icons/glyph/reply-bar';
   import IconCaretDownFilled from '~icons/tabler/caret-down-filled';
   import IconCaretUpFilled from '~icons/tabler/caret-up-filled';
@@ -204,19 +205,14 @@
     <li
       class={css(
         {
-          display: 'flex',
-          gap: '4px',
           borderBottomWidth: '1px',
           borderBottomColor: 'gray.100',
           paddingY: '24px',
+          _lastOfType: { borderBottomWidth: '0' },
         },
         !!parentId && { paddingLeft: { base: '20px', sm: '40px' } },
       )}
     >
-      {#if parentId}
-        <Icon icon={IconReplyBar} size={12} />
-      {/if}
-
       <div class={css({ flexGrow: '1' })}>
         {#if $postComment.pinned}
           <span
@@ -238,9 +234,15 @@
         {/if}
 
         <div class={flex({ justify: 'space-between', align: 'center', marginBottom: '6px' })}>
-          <p class={flex({ align: 'center', gap: '4px', wrap: 'wrap', fontSize: '15px' })}>
+          <p class={flex({ align: 'center', gap: '2px', wrap: 'wrap', fontSize: '14px', fontWeight: 'medium' })}>
+            {#if parentId}
+              <Icon icon={IconReplyBar} size={12} />
+            {/if}
+            {#if $postComment.visibility === 'PRIVATE'}
+              <Icon style={css.raw({ size: '14px' })} icon={IconLock} />
+            {/if}
             {$postComment.profile.name}
-            <span class={css({ fontSize: '12px', color: 'cyan.400' })}>
+            <span class={css({ marginRight: '2px', fontSize: '12px', color: 'cyan.400' })}>
               {$postComment.purchased
                 ? '구매자'
                 : $query.post.member?.profile.id === $postComment.profile.id
@@ -312,7 +314,7 @@
             </p>
 
             <time
-              class={css({ display: 'inline-block', marginTop: '4px', fontSize: '13px', color: 'gray.500' })}
+              class={css({ display: 'inline-block', marginTop: '4px', fontSize: '12px', color: 'gray.500' })}
               datetime={$postComment.createdAt}
             >
               {dayjs($postComment.createdAt).formatAsDateTime()}
@@ -446,7 +448,12 @@
 
   {#if replyInputOpen && $postComment.state !== 'INACTIVE'}
     <li class={css({ paddingTop: '18px', paddingLeft: '40px', paddingBottom: '24px' })}>
-      <CommentInput {$query} parentId={$postComment.id} bind:editing={replyInputOpen} />
+      <CommentInput
+        {$query}
+        parentId={$postComment.id}
+        visibility={$postComment.visibility}
+        bind:editing={replyInputOpen}
+      />
     </li>
   {/if}
 
