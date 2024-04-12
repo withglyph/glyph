@@ -71,6 +71,7 @@ const indexData: Record<string, Omit<IndicesCreateRequest, 'index'>> = {
             name: { type: 'text', analyzer: 'ngram_2' },
           },
         },
+        category: { type: 'keyword' },
         ageRating: { type: 'keyword' },
         reputation: { type: 'rank_feature' },
         publishedAt: { type: 'date' },

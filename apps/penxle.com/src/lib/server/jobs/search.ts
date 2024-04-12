@@ -20,6 +20,7 @@ export const IndexPostJob = defineJob('indexPost', async (postId: string) => {
     .select({
       title: PostRevisions.title,
       subtitle: PostRevisions.subtitle,
+      category: Posts.category,
       ageRating: Posts.ageRating,
       publishedAt: Posts.publishedAt,
       spaceId: Spaces.id,
@@ -54,6 +55,7 @@ export const IndexPostJob = defineJob('indexPost', async (postId: string) => {
       body: {
         title: post.title,
         subtitle: post.subtitle,
+        category: post.category,
         ageRating: post.ageRating,
         publishedAt: post.publishedAt,
         reputation,

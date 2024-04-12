@@ -42,6 +42,7 @@ for (let i = 0; ; i++) {
       id: Posts.id,
       title: PostRevisions.title,
       subtitle: PostRevisions.subtitle,
+      category: Posts.category,
       ageRating: Posts.ageRating,
       publishedAt: Posts.publishedAt,
       spaceId: Spaces.id,
@@ -88,6 +89,7 @@ for (let i = 0; ; i++) {
       {
         title: post.title,
         subtitle: post.subtitle,
+        category: post.category,
         ageRating: post.ageRating,
         publishedAt: post.publishedAt?.toDate(),
         reputation: postReputations[index],
