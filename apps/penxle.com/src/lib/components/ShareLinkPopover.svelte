@@ -188,7 +188,7 @@
         borderColor: 'gray.200',
       })}
     >
-      <div class={css({ flexGrow: '1' })}>
+      <div class={css({ flexGrow: '1', minWidth: '0' })}>
         <TextInput readonly type="text" value={href} />
       </div>
       <Button
