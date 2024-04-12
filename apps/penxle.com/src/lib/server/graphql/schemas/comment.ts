@@ -59,7 +59,10 @@ PostComment.implement({
   },
   fields: (t) => ({
     id: t.exposeID('id'),
-    content: t.exposeString('content', { authScopes: { $granted: '$comment:read' } }),
+    content: t.exposeString('content', {
+      authScopes: { $granted: '$comment:read' },
+      unauthorizedResolver: () => '',
+    }),
     pinned: t.exposeBoolean('pinned'),
     visibility: t.expose('visibility', { type: PostCommentVisibility }),
     state: t.expose('state', { type: PostCommentState }),
