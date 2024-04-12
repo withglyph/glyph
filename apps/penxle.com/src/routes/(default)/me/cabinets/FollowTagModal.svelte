@@ -54,9 +54,18 @@
   <svelte:fragment slot="title">관심 태그 관리</svelte:fragment>
   <svelte:fragment slot="subtitle">태그를 선택해 관심태그를 해제할 수 있어요</svelte:fragment>
 
-  <ul class={flex({ wrap: 'wrap', gap: '10px', minHeight: '160px', maxHeight: '240px', overflowY: 'auto' })}>
+  <ul
+    class={flex({
+      alignContent: $user.followedTags.length > 0 ? 'flex-start' : 'center',
+      wrap: 'wrap',
+      gap: '10px',
+      minHeight: '160px',
+      maxHeight: '240px',
+      overflowY: 'auto',
+    })}
+  >
     {#each $user.followedTags as tag (tag.id)}
-      <li>
+      <li class={css({ height: 'fit' })}>
         <Tag as="label" checked={tags.includes(tag)} size="sm" on:change={(e) => handleChange(e, tag)}>
           #{tag.name}
         </Tag>
