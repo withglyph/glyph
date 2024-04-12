@@ -5,7 +5,7 @@
   import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
-  import { flex, grid } from '$styled-system/patterns';
+  import { center, grid } from '$styled-system/patterns';
   import Collection from '../Collection.svelte';
 
   let createCollectionOpen = false;
@@ -43,10 +43,10 @@
 
 {#if $query.space.collections.length === 0}
   <div class={css({ marginY: '32px' })}>
-    <p class={css({ color: 'gray.500', textAlign: 'center' })}>스페이스에 업로드된 컬렉션이 없어요</p>
+    <p class={css({ fontSize: '14px', color: 'gray.500', textAlign: 'center' })}>스페이스에 업로드된 컬렉션이 없어요</p>
     {#if $query.space.meAsMember}
       <Button
-        style={flex.raw({ align: 'center', gap: '4px', marginTop: '16px', marginX: 'auto' })}
+        style={center.raw({ gap: '4px', marginTop: '16px', marginX: 'auto', width: '142px' })}
         size="sm"
         variant="cyan-fill"
         on:click={() => (createCollectionOpen = true)}

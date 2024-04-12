@@ -1,4 +1,5 @@
 <script lang="ts">
+  import IconChevronRight from '~icons/tabler/chevron-right';
   import IconPencil from '~icons/tabler/pencil';
   import IconPlus from '~icons/tabler/plus';
   import { goto } from '$app/navigation';
@@ -8,7 +9,7 @@
   import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
-  import { flex, grid } from '$styled-system/patterns';
+  import { center, flex, grid } from '$styled-system/patterns';
   import PostCard from '../../../(feed)/PostCard.svelte';
   import Collection from '../Collection.svelte';
 
@@ -21,6 +22,7 @@
         name
         slug
         description
+        postCount
 
         collections {
           id
@@ -62,16 +64,22 @@
   title={$query.space.name}
 />
 
-<h2 class={css({ marginTop: '14px', marginBottom: '8px', fontSize: { base: '13px', sm: '14px' }, color: 'gray.500' })}>
-  포스트
-</h2>
+<a
+  class={flex({ align: 'center', gap: '2px', marginTop: '14px', marginBottom: '8px' })}
+  href={`/${$query.space.slug}/posts`}
+>
+  <h2 class={css({ fontSize: { base: '13px', sm: '14px' }, color: 'gray.500' })}>
+    총 {$query.space.postCount}개의 포스트
+  </h2>
+  <Icon icon={IconChevronRight} size={12} />
+</a>
 
 {#if $query.space.posts.length === 0}
   <div class={css({ marginY: '32px' })}>
-    <p class={css({ color: 'gray.500', textAlign: 'center' })}>스페이스에 업로드된 포스트가 없어요</p>
+    <p class={css({ fontSize: '14px', color: 'gray.500', textAlign: 'center' })}>스페이스에 업로드된 포스트가 없어요</p>
     {#if $query.space.meAsMember}
       <Button
-        style={flex.raw({ align: 'center', gap: '4px', marginTop: '16px', marginX: 'auto' })}
+        style={center.raw({ gap: '4px', marginTop: '16px', marginX: 'auto', width: '142px' })}
         size="sm"
         variant="cyan-fill"
         on:click={async () => {
@@ -97,16 +105,22 @@
 
 <hr class={css({ border: 'none', marginY: '32px', height: '1px', backgroundColor: 'gray.100' })} />
 
-<h2 class={css({ marginTop: '14px', marginBottom: '8px', fontSize: { base: '13px', sm: '14px' }, color: 'gray.500' })}>
-  컬렉션
-</h2>
+<a
+  class={flex({ align: 'center', gap: '2px', marginTop: '14px', marginBottom: '8px' })}
+  href={`/${$query.space.slug}/collections`}
+>
+  <h2 class={css({ fontSize: { base: '13px', sm: '14px' }, color: 'gray.500' })}>
+    총 {$query.space.collections.length}개의 컬렉션
+  </h2>
+  <Icon icon={IconChevronRight} size={12} />
+</a>
 
 {#if $query.space.collections.length === 0}
   <div class={css({ marginY: '32px' })}>
-    <p class={css({ color: 'gray.500', textAlign: 'center' })}>스페이스에 업로드된 컬렉션이 없어요</p>
+    <p class={css({ fontSize: '14px', color: 'gray.500', textAlign: 'center' })}>스페이스에 업로드된 컬렉션이 없어요</p>
     {#if $query.space.meAsMember}
       <Button
-        style={flex.raw({ align: 'center', gap: '4px', marginTop: '16px', marginX: 'auto' })}
+        style={center.raw({ gap: '4px', marginTop: '16px', marginX: 'auto', width: '142px' })}
         size="sm"
         variant="cyan-fill"
         on:click={() => (createCollectionOpen = true)}
