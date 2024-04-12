@@ -42,6 +42,7 @@
 <div>
   <h3
     class={flex({
+      align: 'center',
       gap: '4px',
       paddingBottom: '8px',
       fontSize: '14px',
@@ -49,7 +50,11 @@
   >
     {label}
     <Tooltip style={center.raw()} message={tooltip} placement="top">
-      <Icon style={css.raw({ color: 'gray.400' })} icon={IconHelpLine} size={12} />
+      <Icon
+        style={css.raw({ 'color': 'gray.400', 'size': '14px', '& *': { strokeWidth: '[1]' } })}
+        icon={IconHelpLine}
+        size={12}
+      />
     </Tooltip>
   </h3>
 

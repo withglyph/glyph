@@ -116,10 +116,14 @@
     </div>
 
     <div>
-      <h2 class={flex({ gap: '4px', paddingBottom: '8px', fontSize: '14px' })}>
+      <h2 class={flex({ align: 'center', gap: '4px', paddingBottom: '8px', fontSize: '14px' })}>
         <span>페어</span>
         <Tooltip style={center.raw()} message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
-          <Icon style={css.raw({ color: 'gray.400' })} icon={IconHelpLine} size={12} />
+          <Icon
+            style={css.raw({ 'color': 'gray.400', 'size': '14px', '& *': { strokeWidth: '[1]' } })}
+            icon={IconHelpLine}
+            size={12}
+          />
         </Tooltip>
       </h2>
 
