@@ -1483,7 +1483,7 @@
         maxWidth: '860px',
       })}
     >
-      <p class={css({ paddingY: '8px', fontWeight: 'semibold' })}>추천 포스트</p>
+      <p class={css({ paddingY: '8px', fontSize: '21px', fontWeight: 'bold' })}>추천 포스트</p>
 
       <ul class={grid({ columns: { base: 2, sm: 4 }, gap: '12px', rowGap: { base: '32px', sm: '42px' } })}>
         {#each $query.post.recommendedPosts as post (post.id)}
