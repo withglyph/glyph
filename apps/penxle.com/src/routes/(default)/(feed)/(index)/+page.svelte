@@ -1,7 +1,6 @@
 <script lang="ts">
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconChevronRight from '~icons/tabler/chevron-right';
-  import IconRefresh from '~icons/tabler/refresh';
   import { graphql } from '$glitch';
   import { Helmet, Icon, Tag } from '$lib/components';
   import { css } from '$styled-system/css';
@@ -157,10 +156,9 @@
         {$query.me ? `${$query.me.profile.name}님을 위한 추천` : '독자님을 위한 추천'}
       </h2>
 
-      <!-- TODO: refresh recommend feed -->
-      <button class={css({ color: 'gray.500' })} type="button">
+      <!-- <button class={css({ color: 'gray.500' })} type="button">
         <Icon icon={IconRefresh} size={20} />
-      </button>
+      </button> -->
     </div>
 
     <ul
