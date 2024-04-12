@@ -1,9 +1,11 @@
-import { and, count, desc, eq, ne } from 'drizzle-orm';
+import { and, count, desc, eq, ne, notExists } from 'drizzle-orm';
 import * as R from 'radash';
 import { useCache } from '$lib/server/cache';
 import {
+  CurationPosts,
   database,
   inArray,
+  notInArray,
   Posts,
   PostTags,
   PostViews,
@@ -11,6 +13,8 @@ import {
   Spaces,
   TagFollows,
   UserPersonalIdentities,
+  UserSpaceMutes,
+  UserTagMutes,
 } from '$lib/server/database';
 import { elasticSearch, indexName } from '$lib/server/search';
 import {
@@ -468,6 +472,45 @@ builder.queryFields((t) => ({
       });
 
       return searchResultToIds(searchResult);
+    },
+  }),
+
+  curatedPosts: t.field({
+    type: [Post],
+    resolve: async (_, __, context) => {
+      return R.shuffle(
+        await database
+          .select({ postId: CurationPosts.postId })
+          .from(CurationPosts)
+          .innerJoin(Posts, eq(CurationPosts.postId, Posts.id))
+          .innerJoin(Spaces, eq(Posts.spaceId, Spaces.id))
+          .where(
+            and(
+              eq(Posts.state, 'PUBLISHED'),
+              eq(Posts.visibility, 'PUBLIC'),
+              eq(Spaces.visibility, 'PUBLIC'),
+              context.session
+                ? notExists(
+                    database
+                      .select({ id: PostTags.id })
+                      .from(PostTags)
+                      .innerJoin(UserTagMutes, eq(UserTagMutes.tagId, PostTags.tagId))
+                      .where(and(eq(PostTags.postId, Posts.id), eq(UserTagMutes.userId, context.session.userId))),
+                  )
+                : undefined,
+              context.session
+                ? notInArray(
+                    Posts.spaceId,
+                    database
+                      .select({ spaceId: UserSpaceMutes.spaceId })
+                      .from(UserSpaceMutes)
+                      .where(eq(UserSpaceMutes.userId, context.session.userId)),
+                  )
+                : undefined,
+            ),
+          )
+          .then((rows) => rows.map((row) => row.postId)),
+      ).slice(0, 10);
     },
   }),
 

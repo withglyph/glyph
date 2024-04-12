@@ -999,3 +999,15 @@ export const ProvisionedUsers = pgTable('provisioned_users', {
     .notNull()
     .default(sql`now()`),
 });
+
+export const CurationPosts = pgTable('curation_posts', {
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  postId: text('post_id')
+    .notNull()
+    .references(() => Posts.id),
+  createdAt: datetime('created_at')
+    .notNull()
+    .default(sql`now()`),
+});

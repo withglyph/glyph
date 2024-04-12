@@ -617,6 +617,7 @@ type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
   collectionFeed: [SpaceCollection!]!
+  curatedPosts: [Post!]!
   draftPost(permalink: String!): Post!
   featuredTagFeed: [FeaturedTag!]!
   flash: Flash
