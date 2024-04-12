@@ -117,7 +117,7 @@
     {/if}
   </div>
 {:else}
-  <ul class={flex({ align: 'center', gap: '12px', wrap: 'wrap', marginTop: '14px', marginBottom: '20px' })}>
+  <ul class={flex({ align: 'center', gap: '12px', wrap: 'wrap', marginBottom: '20px' })}>
     {#each $query.space.collections.slice(0, 4) as collection (collection.id)}
       <li>
         <Collection $space={$query.space} $spaceCollection={collection} />
