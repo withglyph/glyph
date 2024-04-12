@@ -297,33 +297,69 @@
     {/if}
   </NodeView>
 {:else if node.attrs.__data.purchasable}
-  <NodeView style={center.raw({ paddingY: '10px' })}>
+  <NodeView style={center.raw({ paddingY: '20px' })}>
     <div
-      class={flex({
-        direction: 'column',
-        gap: '10px',
-        borderWidth: '1px',
-        borderColor: 'gray.150',
-        paddingX: '24px',
-        paddingY: '20px',
+      class={css({
+        borderTopWidth: '1px',
+        borderTopColor: 'gray.100',
+        paddingTop: '34px',
         width: 'full',
-        maxWidth: '500px',
         pointerEvents: 'auto',
       })}
     >
-      <div class={css({ fontSize: '14px', color: 'gray.500' })}>
+      <div class={css({ fontSize: '18px', fontWeight: 'bold', textAlign: 'center' })}>
         다음 내용을 감상해보시겠어요?
-        <br />
+      </div>
+      <div class={css({ marginTop: '4px', fontSize: '14px', color: 'gray.500', textAlign: 'center' })}>
         구매한 포스트는 영구 소장이 가능해요
       </div>
 
-      <div>
-        <div class={flex({ align: 'center' })}>
-          <span class={css({ flexGrow: '1', fontSize: '20px', fontWeight: 'semibold' })}>
-            {comma(node.attrs.price)}P
-          </span>
+      <div
+        class={css({
+          borderWidth: '1px',
+          borderColor: 'gray.200',
+          marginTop: '24px',
+          marginX: 'auto',
+          padding: '24px',
+          width: 'full',
+          maxWidth: '324px',
+        })}
+      >
+        <div class={flex({ align: 'center', gap: '24px' })}>
+          <div class={css({ flexGrow: '1' })}>
+            <span class={css({ fontSize: '18px', fontWeight: 'bold' })}>
+              {comma(node.attrs.price)}P
+            </span>
+
+            <div class={flex({ align: 'center', gap: '6px', wrap: 'wrap', marginTop: '2px' })}>
+              <div class={flex({ align: 'center', gap: '2px' })}>
+                <Icon style={css.raw({ color: 'gray.600' })} icon={IconTextRecognition} />
+                <span class={css({ fontSize: '14px', color: 'gray.500' })}>
+                  {comma(node.attrs.__data.counts.characters)}자
+                </span>
+              </div>
+
+              {#if node.attrs.__data.counts.images}
+                <div class={flex({ align: 'center', gap: '2px' })}>
+                  <Icon style={css.raw({ color: 'gray.600' })} icon={IconPhoto} />
+                  <span class={css({ fontSize: '14px', color: 'gray.500' })}>
+                    {comma(node.attrs.__data.counts.images)}개
+                  </span>
+                </div>
+              {/if}
+
+              {#if node.attrs.__data.counts.files}
+                <div class={flex({ align: 'center', gap: '2px' })}>
+                  <Icon style={css.raw({ color: 'gray.600' })} icon={IconFolder} />
+                  <span class={css({ fontSize: '14px', color: 'gray.500' })}>
+                    {comma(node.attrs.__data.counts.files)}개
+                  </span>
+                </div>
+              {/if}
+            </div>
+          </div>
           <Button
-            style={css.raw({ hideBelow: 'sm' })}
+            style={css.raw({ width: 'full', maxWidth: '96px' })}
             size="md"
             on:click={() => {
               if (node.attrs.__data.point === null) {
@@ -336,57 +372,6 @@
           >
             구매하기
           </Button>
-          <Button
-            style={css.raw({ hideFrom: 'sm' })}
-            size="sm"
-            on:click={() => {
-              if (node.attrs.__data.point === null) {
-                loginRequireOpen = true;
-                return;
-              }
-
-              postPurchaseOpen = true;
-            }}
-          >
-            구매하기
-          </Button>
-        </div>
-
-        <div
-          class={css({
-            marginTop: '12px',
-            marginBottom: '8px',
-            width: 'full',
-            height: '1px',
-            backgroundColor: 'gray.100',
-          })}
-        />
-
-        <div class={flex({ align: 'center', gap: '8px' })}>
-          <div class={flex({ align: 'center', gap: '4px' })}>
-            <Icon style={css.raw({ color: 'gray.400' })} icon={IconTextRecognition} />
-            <span class={css({ fontSize: '14px', color: 'gray.500' })}>
-              {comma(node.attrs.__data.counts.characters)}자
-            </span>
-          </div>
-
-          {#if node.attrs.__data.counts.images}
-            <div class={flex({ align: 'center', gap: '4px' })}>
-              <Icon style={css.raw({ color: 'gray.400' })} icon={IconPhoto} />
-              <span class={css({ fontSize: '14px', color: 'gray.500' })}>
-                {comma(node.attrs.__data.counts.images)}개
-              </span>
-            </div>
-          {/if}
-
-          {#if node.attrs.__data.counts.files}
-            <div class={flex({ align: 'center', gap: '4px' })}>
-              <Icon style={css.raw({ color: 'gray.400' })} icon={IconFolder} />
-              <span class={css({ fontSize: '14px', color: 'gray.500' })}>
-                {comma(node.attrs.__data.counts.files)}개
-              </span>
-            </div>
-          {/if}
         </div>
       </div>
     </div>
@@ -401,46 +386,38 @@
       class={flex({
         justify: 'space-between',
         align: 'center',
-        marginBottom: '8px',
-        paddingX: '14px',
-        paddingY: '12px',
-        backgroundColor: 'gray.50',
+        paddingY: '6px',
       })}
     >
-      <p class={css({ fontSize: '14px', color: 'gray.500' })}>현재 보유한 포인트</p>
+      <p class={css({ color: 'gray.600' })}>현재 보유한 포인트</p>
 
-      <p class={css({ paddingX: '8px', paddingY: '6px', width: '117px', color: 'gray.400' })}>
-        <span class={css({ fontWeight: 'semibold', color: 'gray.500' })}>{comma(node.attrs.__data.point)}</span>
+      <p class={css({ paddingX: '10px', paddingY: '8px', fontWeight: 'semibold', width: '120px', color: 'gray.500' })}>
+        {comma(node.attrs.__data.point)}
         P
       </p>
     </div>
+
+    <hr class={css({ border: 'none', height: '1px', backgroundColor: 'gray.100', marginY: '6px' })} />
 
     <div
       class={flex({
         justify: 'space-between',
         align: 'center',
-        marginBottom: '6px',
-        paddingX: '14px',
-        paddingY: '12px',
-        backgroundColor: 'gray.50',
+        paddingY: '6px',
       })}
     >
-      <p class={css({ fontSize: '14px', color: 'gray.500' })}>사용할 포인트</p>
+      <p class={css({ color: 'gray.600' })}>사용할 포인트</p>
 
       <p
         class={css({
-          outlineWidth: '1px',
-          outlineColor: 'gray.300',
-          paddingX: '8px',
-          paddingY: '6px',
-          width: '117px',
-          color: 'gray.400',
+          paddingX: '10px',
+          paddingY: '8px',
+          fontWeight: 'semibold',
+          width: '120px',
           backgroundColor: 'gray.100',
         })}
       >
-        <span class={css({ fontWeight: 'semibold', color: 'gray.500' })}>
-          {comma(node.attrs.price)}
-        </span>
+        {comma(node.attrs.price)}
         P
       </p>
     </div>
