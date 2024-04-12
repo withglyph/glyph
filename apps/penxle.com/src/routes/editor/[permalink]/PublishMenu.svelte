@@ -385,29 +385,21 @@
               offset={16}
               placement="top"
             >
-              {#if selectedSpace}
-                <div class={flex({ align: 'center', gap: '8px' })}>
-                  <Image style={css.raw({ flex: 'none', size: '38px' })} $image={selectedSpace.icon} />
-                  <div class={css({ truncate: true })}>
-                    <p class={css({ marginBottom: '2px', fontSize: '12px', color: 'gray.500' })}>
+              <div class={flex({ align: 'center', gap: '8px' })}>
+                <Image style={css.raw({ flex: 'none', size: '38px' })} $image={selectedSpace?.icon} placeholder />
+                <div class={css({ truncate: true, color: 'gray.500' })}>
+                  <p class={css({ marginBottom: '2px', fontSize: '12px' })}>
+                    {#if selectedSpace}
                       {selectedSpace.visibility === 'PUBLIC' ? '공개 스페이스' : '비공개 스페이스'}
-                    </p>
-                    <p class={css({ fontSize: '14px', fontWeight: 'semibold', truncate: true })}>
-                      {selectedSpace.name}
-                    </p>
-                  </div>
+                    {:else}
+                      스페이스 공개 여부
+                    {/if}
+                  </p>
+                  <p class={css({ fontSize: '14px', fontWeight: 'medium', truncate: true })}>
+                    {selectedSpace ? selectedSpace.name : '스페이스를 선택해주세요'}
+                  </p>
                 </div>
-              {:else}
-                <div class={flex({ align: 'center', gap: '8px' })}>
-                  <div class={css({ flex: 'none', size: '38px', backgroundColor: 'gray.50' })} />
-                  <div class={css({ truncate: true })}>
-                    <p class={css({ marginBottom: '2px', fontSize: '12px', color: 'gray.500' })}>스페이스 공개 여부</p>
-                    <p class={css({ fontSize: '14px', fontWeight: 'semibold', truncate: true })}>
-                      스페이스를 선택해주세요
-                    </p>
-                  </div>
-                </div>
-              {/if}
+              </div>
             </Tooltip>
 
             {#each $query.me.spaces as space (space.id)}
@@ -449,14 +441,24 @@
         <div>
           <h3 class={labelStyle}>컬렉션</h3>
 
-          <Select disabled={!selectedSpace} size="md" bind:open={collectionSelectorOpen}>
-            <span slot="placeholder">
+          <Select
+            style={css.raw({ height: '[fit-content]' })}
+            disabled={!selectedSpace}
+            size="md"
+            bind:open={collectionSelectorOpen}
+          >
+            <div slot="placeholder" class={flex({ alignItems: 'center', gap: '[15.6px]' })}>
+              <Image
+                style={css.raw({ height: '38px', aspectRatio: '3/4' })}
+                $image={selectedCollection?.thumbnail}
+                placeholder
+              />
               {#if selectedCollection}
                 {selectedCollection.name}
               {:else}
-                컬렉션을 선택해주세요
+                <span class={css({ color: 'gray.500' })}>컬렉션을 선택해주세요</span>
               {/if}
-            </span>
+            </div>
 
             {#if collectionSelectorOpen && selectedSpace?.collections}
               {#each selectedSpace?.collections as collection (collection.id)}
@@ -466,7 +468,14 @@
                     collectionSelectorOpen = false;
                   }}
                 >
-                  {collection.name}
+                  <div class={flex({ alignItems: 'center', gap: '[15.6px]' })}>
+                    <Image
+                      style={css.raw({ height: '38px', aspectRatio: '3/4' })}
+                      $image={collection?.thumbnail}
+                      placeholder
+                    />
+                    {collection.name}
+                  </div>
                 </SelectItem>
               {/each}
             {/if}
