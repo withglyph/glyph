@@ -55,7 +55,7 @@
             flexGrow: '1',
             fontSize: '11px',
             fontWeight: 'medium',
-            color: { base: 'gray.400', _peerChecked: 'gray.5' },
+            color: { base: 'gray.500', _peerChecked: 'gray.5' },
           },
         },
       },
@@ -77,8 +77,8 @@
         variant: 'gallery',
         size: 'lg',
         css: {
-          root: { size: '64px', marginBottom: '6px' },
-          item: { fontSize: '13px' },
+          root: { size: '60px', marginBottom: '6px' },
+          item: { fontSize: '14px', fontWeight: 'medium' },
         },
       },
     ],
@@ -89,7 +89,7 @@
 
 <fieldset
   class={css(
-    { display: 'flex', gap: '8px' },
+    { display: 'flex', gap: '16px' },
     variant === 'gallery' && size === 'sm' && { gap: '12px' },
     variant === 'icon-list' && { flexDirection: 'column' },
     style,

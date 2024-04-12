@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import IconGlobe from '~icons/glyph/globe';
   import IconLink from '~icons/glyph/link';
+  import IconLock from '~icons/glyph/lock';
   import IconUsers from '~icons/glyph/users';
   import IconAlertCircle from '~icons/tabler/alert-circle';
   import IconAlertTriangle from '~icons/tabler/alert-triangle';
@@ -21,10 +22,11 @@
   import ThumbnailPicker from '$lib/components/media/ThumbnailPicker.svelte';
   import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { Button } from '$lib/components/v2';
+  import { TextInput } from '$lib/components/v2/forms';
   import { Select, SelectItem } from '$lib/components/v2/select';
   import { createMutationForm } from '$lib/form';
   import { PublishPostInputSchema } from '$lib/validations/post';
-  import { css } from '$styled-system/css';
+  import { css, cx } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import CreateSpaceModal from '../../(default)/CreateSpaceModal.svelte';
   import { getEditorContext } from './context';
@@ -192,6 +194,7 @@
   });
 
   let enablePassword = false;
+  let passwordInputEl: HTMLInputElement;
   let createSpaceOpen = false;
   let createCollectionOpen = false;
 
@@ -663,7 +666,7 @@
         </div>
 
         <div>
-          <h3 class={labelStyle}>
+          <h3 class="{cx(labelStyle, css({ paddingBottom: '8px!' }))}}">
             비밀글
             <Tooltip style={center.raw()} message="설정하면 비밀번호를 입력한 독자만 내용을 열람할 수 있어요">
               <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
@@ -671,38 +674,32 @@
           </h3>
 
           <Checkbox
-            style={css.raw({ marginTop: '6px', marginBottom: '12px', fontSize: '14px' })}
+            style={css.raw({ marginBottom: '8px', fontSize: '14px' })}
             checked={enablePassword}
             on:change={() => {
               enablePassword = !enablePassword;
-              if (!enablePassword) {
+
+              if (enablePassword) {
+                void tick().then(() => passwordInputEl.focus());
+              } else {
                 $data.password = null;
               }
             }}
           >
             암호설정
           </Checkbox>
-
-          <input
+          <TextInput
             name="password"
-            class={css(
-              {
-                borderWidth: '1px',
-                borderColor: 'gray.200',
-                borderRadius: '4px',
-                paddingX: '16px',
-                paddingY: '14px',
-                width: '286px',
-                height: '40px',
-                fontSize: '14px',
-                backgroundColor: 'gray.50',
-              },
-              !enablePassword && { display: 'none' },
-            )}
+            hidden={!enablePassword}
             pattern="^[!-~]+$"
             placeholder="암호를 입력해주세요"
             type="text"
-          />
+            bind:inputEl={passwordInputEl}
+          >
+            <svelte:fragment slot="left-icon">
+              <Icon style={css.raw({ color: 'gray.500' })} icon={IconLock} size={16} />
+            </svelte:fragment>
+          </TextInput>
 
           <FormValidationMessage for="password" let:message>
             <div class={flex({ align: 'center', gap: '6px', fontSize: '12px', color: 'red.600' })}>
@@ -741,7 +738,7 @@
             </Tooltip>
           </h3>
 
-          <SegmentButtonGroup>
+          <SegmentButtonGroup style={css.raw({ maxWidth: '228px' })}>
             <ToggleButton
               checked={$data.externalSearchable}
               on:change={(event) => {
@@ -782,7 +779,7 @@
             <dd class={css({ marginBottom: '6px' })}>게시물에 대한 댓글을 달 수 있는 계정을 선택할 수 있어요</dd>
           </dl>
 
-          <SegmentButtonGroup>
+          <SegmentButtonGroup style={css.raw({ maxWidth: '336px' })}>
             <ToggleButton
               name="commentQualification"
               checked={$data.commentQualification === 'ANY'}
@@ -792,15 +789,18 @@
             >
               모든계정
             </ToggleButton>
-            <ToggleButton
-              name="commentQualification"
-              checked={$data.commentQualification === 'IDENTIFIED'}
-              disabled={$data.commentQualification === 'NONE' || $query.me.personalIdentity === null}
-              type="radio"
-              value="IDENTIFIED"
-            >
-              본인 인증된 계정
-            </ToggleButton>
+            <Tooltip enabled={$query.me.personalIdentity === null} message="본인 인증 후 이용할 수 있어요" offset={4}>
+              <ToggleButton
+                name="commentQualification"
+                style={css.raw({ width: 'full' })}
+                checked={$data.commentQualification === 'IDENTIFIED'}
+                disabled={$data.commentQualification === 'NONE' || $query.me.personalIdentity === null}
+                type="radio"
+                value="IDENTIFIED"
+              >
+                본인 인증된 계정
+              </ToggleButton>
+            </Tooltip>
           </SegmentButtonGroup>
         </div>
       </section>

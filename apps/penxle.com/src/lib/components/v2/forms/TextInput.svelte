@@ -10,6 +10,7 @@
   export let style: SystemStyleObject | undefined = undefined;
   export let size: Variants['size'] = 'md';
   export let inputEl: HTMLInputElement | undefined = undefined;
+  export let hidden = false;
 
   type $$Props = RecipeVariantProps<typeof recipe> &
     Omit<HTMLInputAttributes, 'class' | 'style' | 'size'> & { style?: SystemStyleObject; inputEl?: HTMLInputElement };
@@ -77,7 +78,7 @@
   });
 </script>
 
-<div class={cx(recipe({ size }), css(style))}>
+<div class={cx(recipe({ size }), css(style))} {hidden}>
   {#if 'left-icon' in $$slots}
     <label class={flex({ align: 'center', marginRight: '6px' })} for={name}>
       <slot name="left-icon" />

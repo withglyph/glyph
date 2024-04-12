@@ -30,6 +30,7 @@
       'backgroundColor': 'gray.50',
       'transition': 'common',
       'cursor': 'pointer',
+      '&:has(:disabled)': { cursor: 'not-allowed' },
       '_focus': { borderColor: 'cyan.400', color: 'gray.5' },
       '&:has(:checked)': {
         borderColor: 'cyan.400',
