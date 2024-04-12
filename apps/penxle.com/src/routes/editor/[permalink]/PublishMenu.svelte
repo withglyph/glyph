@@ -230,6 +230,39 @@
     selectedSpaceId = $post.space?.id;
     selectedCollectionId = $post.collection?.id;
   });
+
+  const tabHeadItemStyle = flex({
+    align: 'center',
+    textAlign: 'left',
+    smDown: {
+      borderBottomWidth: '2px',
+      borderBottomColor: 'gray.5',
+      fontSize: '15px',
+      fontWeight: 'semibold',
+      color: 'gray.300',
+      _pressed: { borderBottomColor: 'gray.900', color: 'gray.900' },
+    },
+    sm: {
+      fontSize: '13px',
+      borderRadius: '4px',
+      marginX: '8px',
+      paddingY: '4px',
+      _hover: { backgroundColor: 'gray.50' },
+      _pressed: { backgroundColor: 'gray.50' },
+    },
+  });
+
+  const tabContentStyle = flex({ flexDirection: 'column', gap: '32px' });
+
+  const labelStyleRaw = css.raw({
+    fontSize: { base: '15px', sm: '14px' },
+    fontWeight: { base: 'medium', sm: 'semibold' },
+  });
+  const labelStyle = css(labelStyleRaw, { display: 'flex', gap: '4px', paddingTop: '4px', paddingBottom: '8px' });
+  const labelWithDescriptionStyle = css({
+    '&>dt': { ...labelStyleRaw, paddingY: '4px' },
+    '&>dd': { fontSize: '11px', color: { base: 'gray.400', sm: 'gray.600' } },
+  });
 </script>
 
 <div
@@ -297,31 +330,7 @@
         },
       })}
     >
-      <button
-        class={flex({
-          align: 'center',
-          textAlign: 'left',
-          smDown: {
-            borderBottomWidth: '2px',
-            borderBottomColor: 'gray.5',
-            fontSize: '15px',
-            fontWeight: 'semibold',
-            color: 'gray.300',
-            _pressed: { borderBottomColor: 'gray.900', color: 'gray.900' },
-          },
-          sm: {
-            fontSize: '13px',
-            borderRadius: '4px',
-            marginX: '8px',
-            paddingY: '4px',
-            _hover: { backgroundColor: 'gray.50' },
-            _pressed: { backgroundColor: 'gray.50' },
-          },
-        })}
-        aria-pressed={tabIndex === 0}
-        type="button"
-        on:click={() => (tabIndex = 0)}
-      >
+      <button class={tabHeadItemStyle} aria-pressed={tabIndex === 0} type="button" on:click={() => (tabIndex = 0)}>
         {#if selectedSpaceId || $post.space}
           <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
         {:else}
@@ -330,31 +339,7 @@
         <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>발행</span>
       </button>
 
-      <button
-        class={flex({
-          align: 'center',
-          textAlign: 'left',
-          smDown: {
-            borderBottomWidth: '2px',
-            borderBottomColor: 'gray.5',
-            fontSize: '15px',
-            fontWeight: 'semibold',
-            color: 'gray.300',
-            _pressed: { borderBottomColor: 'gray.900', color: 'gray.900' },
-          },
-          sm: {
-            fontSize: '13px',
-            borderRadius: '4px',
-            marginX: '8px',
-            paddingY: '4px',
-            _hover: { backgroundColor: 'gray.50' },
-            _pressed: { backgroundColor: 'gray.50' },
-          },
-        })}
-        aria-pressed={tabIndex === 1}
-        type="button"
-        on:click={() => (tabIndex = 1)}
-      >
+      <button class={tabHeadItemStyle} aria-pressed={tabIndex === 1} type="button" on:click={() => (tabIndex = 1)}>
         {#if $data.tags?.length > 0}
           <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
         {:else}
@@ -362,31 +347,7 @@
         {/if}
         <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>태그</span>
       </button>
-      <button
-        class={flex({
-          align: 'center',
-          textAlign: 'left',
-          smDown: {
-            borderBottomWidth: '2px',
-            borderBottomColor: 'gray.5',
-            fontSize: '15px',
-            fontWeight: 'semibold',
-            color: 'gray.300',
-            _pressed: { borderBottomColor: 'gray.900', color: 'gray.900' },
-          },
-          sm: {
-            fontSize: '13px',
-            borderRadius: '4px',
-            marginX: '8px',
-            paddingY: '4px',
-            _hover: { backgroundColor: 'gray.50' },
-            _pressed: { backgroundColor: 'gray.50' },
-          },
-        })}
-        aria-pressed={tabIndex === 2}
-        type="button"
-        on:click={() => (tabIndex = 2)}
-      >
+      <button class={tabHeadItemStyle} aria-pressed={tabIndex === 2} type="button" on:click={() => (tabIndex = 2)}>
         {#if currentThumbnail}
           <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
         {:else}
@@ -396,89 +357,17 @@
           썸네일
         </span>
       </button>
-      <button
-        class={flex({
-          align: 'center',
-          textAlign: 'left',
-          smDown: {
-            borderBottomWidth: '2px',
-            borderBottomColor: 'gray.5',
-            fontSize: '15px',
-            fontWeight: 'semibold',
-            color: 'gray.300',
-            _pressed: { borderBottomColor: 'gray.900', color: 'gray.900' },
-          },
-          sm: {
-            fontSize: '13px',
-            borderRadius: '4px',
-            marginX: '8px',
-            paddingY: '4px',
-            _hover: { backgroundColor: 'gray.50' },
-            _pressed: { backgroundColor: 'gray.50' },
-          },
-        })}
-        aria-pressed={tabIndex === 3}
-        type="button"
-        on:click={() => (tabIndex = 3)}
-      >
+      <button class={tabHeadItemStyle} aria-pressed={tabIndex === 3} type="button" on:click={() => (tabIndex = 3)}>
         <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
         <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>
           대상 독자
         </span>
       </button>
-      <button
-        class={flex({
-          align: 'center',
-          textAlign: 'left',
-          smDown: {
-            borderBottomWidth: '2px',
-            borderBottomColor: 'gray.5',
-            fontSize: '15px',
-            fontWeight: 'semibold',
-            color: 'gray.300',
-            _pressed: { borderBottomColor: 'gray.900', color: 'gray.900' },
-          },
-          sm: {
-            fontSize: '13px',
-            borderRadius: '4px',
-            marginX: '8px',
-            paddingY: '4px',
-            _hover: { backgroundColor: 'gray.50' },
-            _pressed: { backgroundColor: 'gray.50' },
-          },
-        })}
-        aria-pressed={tabIndex === 4}
-        type="button"
-        on:click={() => (tabIndex = 4)}
-      >
+      <button class={tabHeadItemStyle} aria-pressed={tabIndex === 4} type="button" on:click={() => (tabIndex = 4)}>
         <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
         <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>댓글</span>
       </button>
-      <button
-        class={flex({
-          align: 'center',
-          textAlign: 'left',
-          smDown: {
-            borderBottomWidth: '2px',
-            borderBottomColor: 'gray.5',
-            fontSize: '15px',
-            fontWeight: 'semibold',
-            color: 'gray.300',
-            _pressed: { borderBottomColor: 'gray.900', color: 'gray.900' },
-          },
-          sm: {
-            fontSize: '13px',
-            borderRadius: '4px',
-            marginX: '8px',
-            paddingY: '4px',
-            _hover: { backgroundColor: 'gray.50' },
-            _pressed: { backgroundColor: 'gray.50' },
-          },
-        })}
-        aria-pressed={tabIndex === 5}
-        type="button"
-        on:click={() => (tabIndex = 5)}
-      >
+      <button class={tabHeadItemStyle} aria-pressed={tabIndex === 5} type="button" on:click={() => (tabIndex = 5)}>
         <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
         <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>
           세부 옵션
@@ -496,21 +385,9 @@
     >
       <input name="thumbnailId" type="hidden" value={currentThumbnail?.id} />
 
-      <div
-        class={css({ display: 'flex', flexDirection: 'column', gap: '32px' }, tabIndex !== 0 && { display: 'none' })}
-      >
+      <div class={tabContentStyle} hidden={tabIndex !== 0}>
         <div>
-          <p
-            class={flex({
-              gap: '4px',
-              paddingTop: '4px',
-              paddingBottom: '8px',
-              fontSize: { base: '15px', sm: '14px' },
-              fontWeight: { base: 'medium', sm: 'semibold' },
-            })}
-          >
-            스페이스
-          </p>
+          <p class={labelStyle}>스페이스</p>
 
           <Select
             style={css.raw({ height: '[66px!]' })}
@@ -588,17 +465,7 @@
         </div>
 
         <div>
-          <p
-            class={flex({
-              gap: '4px',
-              paddingTop: '4px',
-              paddingBottom: '8px',
-              fontSize: { base: '15px', sm: '14px' },
-              fontWeight: { base: 'medium', sm: 'semibold' },
-            })}
-          >
-            컬렉션
-          </p>
+          <p class={labelStyle}>컬렉션</p>
 
           <Select disabled={!selectedSpace} size="md" bind:open={collectionSelectorOpen}>
             <span slot="placeholder">
@@ -634,21 +501,9 @@
         </div>
       </div>
 
-      <div
-        class={css({ display: 'flex', flexDirection: 'column', gap: '32px' }, tabIndex !== 1 && { display: 'none' })}
-      >
+      <div class={tabContentStyle} hidden={tabIndex !== 1}>
         <div>
-          <p
-            class={flex({
-              gap: '4px',
-              paddingTop: '4px',
-              paddingBottom: '8px',
-              fontSize: { base: '15px', sm: '14px' },
-              fontWeight: { base: 'medium', sm: 'semibold' },
-            })}
-          >
-            카테고리
-          </p>
+          <p class={labelStyle}>카테고리</p>
 
           <SegmentButtonGroup>
             <ToggleButton name="category" type="radio" value="ORIGINAL">오리지널</ToggleButton>
@@ -659,15 +514,7 @@
         </div>
 
         <div>
-          <p
-            class={flex({
-              gap: '4px',
-              paddingTop: '4px',
-              paddingBottom: '8px',
-              fontSize: { base: '15px', sm: '14px' },
-              fontWeight: { base: 'medium', sm: 'semibold' },
-            })}
-          >
+          <p class={labelStyle}>
             <span>페어</span>
             <Tooltip style={center.raw()} message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
               <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
@@ -733,18 +580,8 @@
         />
       </div>
 
-      <div class={css(tabIndex !== 2 && { display: 'none' })}>
-        <p
-          class={flex({
-            gap: '4px',
-            paddingTop: '4px',
-            paddingBottom: '8px',
-            fontSize: { base: '15px', sm: '14px' },
-            fontWeight: { base: 'medium', sm: 'semibold' },
-          })}
-        >
-          썸네일
-        </p>
+      <div hidden={tabIndex !== 2}>
+        <p class={labelStyle}>썸네일</p>
 
         {#if currentThumbnail}
           <div
@@ -826,21 +663,9 @@
         {/if}
       </div>
 
-      <div
-        class={css({ display: 'flex', flexDirection: 'column', gap: '32px' }, tabIndex !== 3 && { display: 'none' })}
-      >
+      <div class={tabContentStyle} hidden={tabIndex !== 3}>
         <div>
-          <p
-            class={flex({
-              gap: '4px',
-              paddingTop: '4px',
-              paddingBottom: '8px',
-              fontSize: { base: '15px', sm: '14px' },
-              fontWeight: { base: 'medium', sm: 'semibold' },
-            })}
-          >
-            공개 범위
-          </p>
+          <p class={labelStyle}>공개 범위</p>
 
           <RadioGroup
             name="visibility"
@@ -858,15 +683,7 @@
         </div>
 
         <div>
-          <p
-            class={flex({
-              gap: '4px',
-              paddingTop: '4px',
-              paddingBottom: '8px',
-              fontSize: { base: '15px', sm: '14px' },
-              fontWeight: { base: 'medium', sm: 'semibold' },
-            })}
-          >
+          <p class={labelStyle}>
             <span>비밀글</span>
             <Tooltip style={center.raw()} message="설정하면 비밀번호를 입력한 독자만 내용을 열람할 수 있어요">
               <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
@@ -916,15 +733,7 @@
         </div>
 
         <div>
-          <p
-            class={flex({
-              gap: '4px',
-              paddingTop: '4px',
-              paddingBottom: '8px',
-              fontSize: { base: '15px', sm: '14px' },
-              fontWeight: { base: 'medium', sm: 'semibold' },
-            })}
-          >
+          <p class={labelStyle}>
             <span>연령 제한</span>
             <Tooltip
               style={center.raw()}
@@ -945,15 +754,7 @@
         </div>
 
         <div>
-          <p
-            class={flex({
-              gap: '4px',
-              paddingTop: '4px',
-              paddingBottom: '8px',
-              fontSize: { base: '15px', sm: '14px' },
-              fontWeight: { base: 'medium', sm: 'semibold' },
-            })}
-          >
+          <p class={labelStyle}>
             <span>검색 공개</span>
             <Tooltip style={center.raw()} message="외부 검색엔진에서 이 포스트를 검색할 수 있을지 설정해요">
               <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
@@ -981,9 +782,7 @@
         </div>
       </div>
 
-      <div
-        class={css({ display: 'flex', flexDirection: 'column', gap: '32px' }, tabIndex !== 4 && { display: 'none' })}
-      >
+      <div class={tabContentStyle} hidden={tabIndex !== 4}>
         <Switch
           style={flex.raw({ justify: 'space-between', align: 'center' })}
           checked={$data.commentQualification !== 'NONE' ?? true}
@@ -991,38 +790,17 @@
             $data.commentQualification = e.currentTarget.checked ? 'ANY' : 'NONE';
           }}
         >
-          <div>
-            <p
-              class={flex({
-                gap: '4px',
-                paddingTop: '4px',
-                paddingBottom: '8px',
-                fontSize: { base: '15px', sm: '14px' },
-                fontWeight: { base: 'medium', sm: 'semibold' },
-              })}
-            >
-              댓글 허용
-            </p>
-            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.600' } })}>
-              독자들이 게시물에 대한 의견을 나누고 소통할 수 있어요
-            </p>
-          </div>
+          <dl class={labelWithDescriptionStyle}>
+            <dt>댓글 허용</dt>
+            <dd>독자들이 게시물에 대한 의견을 나누고 소통할 수 있어요</dd>
+          </dl>
         </Switch>
 
         <div>
-          <p
-            class={flex({
-              gap: '4px',
-              paddingY: '4px',
-              fontSize: { base: '15px', sm: '14px' },
-              fontWeight: { base: 'medium', sm: 'semibold' },
-            })}
-          >
-            댓글을 달 수 있는 계정
-          </p>
-          <p class={css({ marginBottom: '6px', fontSize: '11px', color: 'gray.400' })}>
-            게시물에 대한 댓글을 달 수 있는 계정을 선택할 수 있어요
-          </p>
+          <dl class={labelWithDescriptionStyle}>
+            <dt>댓글을 달 수 있는 계정</dt>
+            <dd class={css({ marginBottom: '6px' })}>게시물에 대한 댓글을 달 수 있는 계정을 선택할 수 있어요</dd>
+          </dl>
 
           <SegmentButtonGroup>
             <ToggleButton
@@ -1047,29 +825,16 @@
         </div>
       </div>
 
-      <div
-        class={css({ display: 'flex', flexDirection: 'column', gap: '32px' }, tabIndex !== 5 && { display: 'none' })}
-      >
+      <div class={tabContentStyle} hidden={tabIndex !== 5}>
         <Switch
           name="receiveFeedback"
           style={flex.raw({ justify: 'space-between', align: 'center' })}
           checked={$data.receiveFeedback ?? true}
         >
-          <div>
-            <p
-              class={flex({
-                gap: '4px',
-                paddingY: '4px',
-                fontSize: { base: '15px', sm: '14px' },
-                fontWeight: { base: 'medium', sm: 'semibold' },
-              })}
-            >
-              피드백
-            </p>
-            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.600' } })}>
-              가장 오래 머무른 구간, 밑줄, 이모지 등 피드백을 받아요
-            </p>
-          </div>
+          <dl class={labelWithDescriptionStyle}>
+            <dt>피드백</dt>
+            <dd>가장 오래 머무른 구간, 밑줄, 이모지 등 피드백을 받아요</dd>
+          </dl>
         </Switch>
 
         <Switch
@@ -1077,21 +842,10 @@
           style={flex.raw({ justify: 'space-between', align: 'center' })}
           checked={$data.discloseStats ?? true}
         >
-          <div>
-            <p
-              class={flex({
-                gap: '4px',
-                paddingY: '4px',
-                fontSize: { base: '15px', sm: '14px' },
-                fontWeight: { base: 'medium', sm: 'semibold' },
-              })}
-            >
-              게시물 세부 공개
-            </p>
-            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.600' } })}>
-              독자에게 좋아요, 조회수를 공유해요
-            </p>
-          </div>
+          <dl class={labelWithDescriptionStyle}>
+            <dt>게시물 세부 공개</dt>
+            <dd>독자에게 좋아요, 조회수를 공유해요</dd>
+          </dl>
         </Switch>
 
         <Switch
@@ -1099,21 +853,12 @@
           style={flex.raw({ justify: 'space-between', align: 'center' })}
           checked={$data.receivePatronage ?? true}
         >
-          <div>
-            <p
-              class={flex({
-                gap: '4px',
-                paddingY: '4px',
-                fontSize: { base: '15px', sm: '14px' },
-                fontWeight: { base: 'medium', sm: 'semibold' },
-              })}
-            >
-              창작자 후원
-            </p>
-            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.600' } })}>
+          <dl class={labelWithDescriptionStyle}>
+            <dt>창작자 후원</dt>
+            <dd class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.600' } })}>
               독자들이 게시물에 자유롭게 후원할 수 있어요
-            </p>
-          </div>
+            </dd>
+          </dl>
         </Switch>
 
         <Switch
@@ -1121,21 +866,10 @@
           style={flex.raw({ justify: 'space-between', align: 'center' })}
           checked={$data.protectContent ?? true}
         >
-          <div>
-            <p
-              class={flex({
-                gap: '4px',
-                paddingY: '4px',
-                fontSize: { base: '15px', sm: '14px' },
-                fontWeight: { base: 'medium', sm: 'semibold' },
-              })}
-            >
-              게시물 내용 보호
-            </p>
-            <p class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.600' } })}>
-              게시물의 내용을 보호하기 위해 우클릭 또는 복사를 제한해요
-            </p>
-          </div>
+          <dl class={labelWithDescriptionStyle}>
+            <dt>게시물 내용 보호</dt>
+            <dd>게시물의 내용을 보호하기 위해 우클릭 또는 복사를 제한해요</dd>
+          </dl>
         </Switch>
       </div>
     </form>

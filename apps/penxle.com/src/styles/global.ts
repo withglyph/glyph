@@ -65,4 +65,8 @@ export const globalCss = defineGlobalStyles({
   '::-webkit-search-cancel-button': {
     WebkitAppearance: 'none',
   },
+
+  '[hidden]': {
+    display: 'none!',
+  },
 });
