@@ -567,7 +567,7 @@
   </svelte:fragment>
 </Modal>
 
-<Modal size="lg" bind:open={imageListOpen}>
+<Modal style={css.raw({ minHeight: { sm: '456px', smDown: '396px' } })} size="lg" bind:open={imageListOpen}>
   <svelte:fragment slot="title-left">
     <button type="button" on:click={() => (imageListOpen = false)}>
       <Icon icon={IconChevronLeft} size={24} />
