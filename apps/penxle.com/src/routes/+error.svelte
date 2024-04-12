@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { production } from '@penxle/lib/environment';
   import { page } from '$app/stores';
   import FullLogo from '$assets/logos/full.svg?component';
-  import { Button, Helmet, Link, Modal } from '$lib/components';
+  import { Helmet, Link } from '$lib/components';
+  import { Button, Modal } from '$lib/components/v2';
   import { AppError, UnknownError } from '$lib/errors';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
@@ -87,15 +89,16 @@
   </section>
 
   <div class={center({ flexDirection: 'column', gap: '8px' })}>
-    {#if error instanceof UnknownError && error.cause}
+    {#if !production}
       <button
         class={css({ fontSize: '14px', color: 'gray.600', cursor: 'pointer' })}
         type="button"
         on:click={() => (open = true)}
       >
-        디버깅 정보
+        추가 정보
       </button>
-    {:else if error.extra.id}
+    {/if}
+    {#if error.extra.id}
       <span class={css({ fontSize: '14px', color: 'gray.600' })}>
         추적 ID: {error.extra.id}
       </span>
@@ -103,13 +106,16 @@
   </div>
 </div>
 
-{#if error instanceof UnknownError && error.cause}
-  {@const { name, message, stack } = error.cause}
+{#if !production}
   <Modal bind:open>
-    <svelte:fragment slot="title">{name}: {message}</svelte:fragment>
+    <svelte:fragment slot="title">추가 정보</svelte:fragment>
 
-    <div class={css({ fontFamily: 'mono', overflow: 'auto', whiteSpace: 'pre' })}>
-      {stack ?? 'Stacktrace not available'}
+    <div class={css({ fontFamily: 'mono', overflow: 'auto', whiteSpace: 'pre', wordBreak: 'keep-all' })}>
+      {#if error instanceof UnknownError && error.cause}
+        {error.cause.stack}
+      {:else}
+        {JSON.stringify(error.extra, null, 2)}
+      {/if}
     </div>
 
     <Button slot="action" size="md" on:click={() => (open = false)}>닫기</Button>

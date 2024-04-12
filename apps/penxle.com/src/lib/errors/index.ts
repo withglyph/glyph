@@ -1,7 +1,8 @@
+import { production } from '@penxle/lib/environment';
 import * as Sentry from '@sentry/sveltekit';
 import { match } from 'ts-pattern';
 import { z } from 'zod';
-import { dev } from '$app/environment';
+import type { ForbiddenResult } from '@pothos/plugin-scope-auth';
 
 enum AppErrorKind {
   UnknownError = 'UnknownError',
@@ -74,7 +75,10 @@ export abstract class AppError extends Error {
           () => new UnknownError(extra.cause as unknown | undefined, extra.id as string | undefined),
         )
         .with(AppErrorKind.IntentionalError, () => new IntentionalError(message))
-        .with(AppErrorKind.PermissionDeniedError, () => new PermissionDeniedError())
+        .with(
+          AppErrorKind.PermissionDeniedError,
+          () => new PermissionDeniedError(extra.info as ForbiddenResult | undefined),
+        )
         .with(AppErrorKind.NotFoundError, () => new NotFoundError())
         .with(AppErrorKind.FormValidationError, () => new FormValidationError(extra.field as string, message))
         .exhaustive();
@@ -96,30 +100,30 @@ export class UnknownError extends AppError {
   public readonly id?: string;
 
   constructor(cause?: unknown, id?: string) {
-    if (dev && cause) {
+    if (!id && cause) {
+      id = Sentry.captureException(cause);
+    }
+
+    if (!production && cause) {
       const r = ErrorLikeSchema.safeParse(cause);
       const c = r.success ? r.data : new Error(String(cause));
 
       super({
         kind: AppErrorKind.UnknownError,
         message: `${c.name}: ${c.message}`,
-        extra: { cause: c },
+        extra: { id, cause: c },
       });
 
       this.cause = c;
     } else {
-      if (cause && !id) {
-        id = Sentry.captureException(cause);
-      }
-
       super({
         kind: AppErrorKind.UnknownError,
         message: `알 수 없는 오류가 발생했어요`,
         extra: { id },
       });
-
-      this.id = id;
     }
+
+    this.id = id;
   }
 }
 
@@ -133,11 +137,11 @@ export class IntentionalError extends AppError {
 }
 
 export class PermissionDeniedError extends AppError {
-  constructor() {
+  constructor(info?: ForbiddenResult) {
     super({
       kind: AppErrorKind.PermissionDeniedError,
       message: '권한이 없어요',
-      extra: { code: 403 },
+      extra: { code: 403, info },
     });
   }
 }

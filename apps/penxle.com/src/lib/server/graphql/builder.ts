@@ -41,7 +41,7 @@ export const builder = new SchemaBuilder<{
   plugins: [ScopeAuthPlugin, DataLoaderPlugin, SimpleObjectsPlugin, ValidationPlugin],
   scopeAuthOptions: {
     treatErrorsAsUnauthorized: true,
-    unauthorizedError: () => new PermissionDeniedError(),
+    unauthorizedError: (_, __, ___, result) => new PermissionDeniedError(result),
   },
 });
 
