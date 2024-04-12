@@ -19,6 +19,7 @@
 
   export let alignment: 'horizontal' | 'vertical' = 'vertical';
 
+  export let hideBackdrop = false;
   export let preventClose = false;
   export let disabled = false;
 
@@ -58,6 +59,7 @@
 {#if open}
   <div
     class={css({ position: 'fixed', inset: '0' })}
+    hidden={hideBackdrop}
     role="button"
     tabindex="-1"
     on:click={() => (open = false)}

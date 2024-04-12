@@ -914,24 +914,17 @@
             <Icon icon={IconSettings} size={24} />
           </button>
 
-          <Menu offset={16} placement="right-start" bind:open={paragraphIndentOpen}>
-            <button
+          <Menu as="div" hideBackdrop offset={16} placement="right-start" bind:open={paragraphIndentOpen}>
+            <MenuItem
               slot="value"
-              class={css({
-                paddingX: '14px',
-                paddingY: '12px',
-                width: 'full',
-                fontSize: '14px',
-                _hover: { backgroundColor: 'teal.50', color: 'teal.600' },
-              })}
-              type="button"
+              data-hover={paragraphIndentOpen}
               on:mouseenter={() => {
                 paragraphIndentOpen = true;
                 paragraphSpacingOpen = false;
               }}
             >
               문단 들여쓰기
-            </button>
+            </MenuItem>
 
             <MenuItem
               style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
@@ -999,24 +992,17 @@
             </MenuItem>
           </Menu>
 
-          <Menu offset={16} placement="right-start" bind:open={paragraphSpacingOpen}>
-            <button
+          <Menu as="div" hideBackdrop offset={16} placement="right-start" bind:open={paragraphSpacingOpen}>
+            <MenuItem
               slot="value"
-              class={css({
-                paddingX: '14px',
-                paddingY: '12px',
-                width: 'full',
-                fontSize: '14px',
-                _hover: { backgroundColor: 'teal.50', color: 'teal.600' },
-              })}
-              type="button"
+              data-hover={paragraphSpacingOpen}
               on:mouseenter={() => {
                 paragraphIndentOpen = false;
                 paragraphSpacingOpen = true;
               }}
             >
               문단 사이간격
-            </button>
+            </MenuItem>
 
             <MenuItem
               style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}

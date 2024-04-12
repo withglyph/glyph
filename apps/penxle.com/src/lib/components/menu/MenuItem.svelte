@@ -11,7 +11,7 @@
   } & (T extends 'link' ? { href: string; external?: boolean } : unknown) &
     (T extends 'button' ? Omit<HTMLButtonAttributes, 'type' | 'style' | 'disabled'> : unknown);
 
-  type $$Events = T extends 'link' ? unknown : { click: MouseEvent };
+  type $$Events = T extends 'link' ? unknown : { click: MouseEvent; mouseenter: MouseEvent };
 
   export let type: 'button' | 'div' | 'link' = 'button';
 
@@ -51,6 +51,7 @@
   tabindex="-1"
   on:click
   on:click={close}
+  on:mouseenter
   {...external && {
     target: '_blank',
     rel: 'noopener noreferrer',
