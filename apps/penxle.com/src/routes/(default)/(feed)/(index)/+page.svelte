@@ -136,7 +136,7 @@
   </HorizontalScroll>
 
   <div class={css({ paddingY: { base: '32px', sm: '40px' } })}>
-    <h2 class={css({ marginBottom: '14px', fontSize: '20px', fontWeight: 'semibold' })}>글리프 큐레이션</h2>
+    <h2 class={css({ marginBottom: '14px', fontSize: '21px', fontWeight: 'semibold' })}>에디터 Pick</h2>
 
     <HorizontalScroll
       style={css.raw({ gap: { base: '12px', sm: '14px' } })}
@@ -173,8 +173,8 @@
 
   <div class={css({ paddingTop: { base: '32px', sm: '40px' }, paddingBottom: { base: '40px', sm: '60px' } })}>
     <div class={flex({ align: 'center', justify: 'space-between', marginBottom: '14px' })}>
-      <h2 class={css({ fontSize: '20px', fontWeight: 'semibold' })}>
-        {$query.me?.profile.name}님을 위한 추천
+      <h2 class={css({ fontSize: '21px', fontWeight: 'semibold' })}>
+        {$query.me ? `${$query.me.profile.name}님을 위한 추천` : '독자님을 위한 추천'}
       </h2>
 
       <!-- TODO: refresh recommend feed -->
@@ -228,12 +228,12 @@
     <h2
       class={css({
         marginBottom: '16px',
-        fontSize: '20px',
+        fontSize: '21px',
         fontWeight: 'semibold',
         color: 'gray.5',
       })}
     >
-      추천 해시태그
+      지금 뜨는 태그
     </h2>
 
     <div
@@ -285,7 +285,7 @@
 
 <div class={css({ marginX: 'auto', paddingX: '20px', width: 'full', maxWidth: '1280px' })}>
   <div class={css({ paddingTop: { base: '40px', sm: '60px' } })}>
-    <h2 class={css({ marginBottom: '14px', fontSize: '20px', fontWeight: 'semibold' })}>추천 컬렉션</h2>
+    <h2 class={css({ marginBottom: '14px', fontSize: '21px', fontWeight: 'semibold' })}>많이 찾은 컬렉션</h2>
 
     <ul class={css({ sm: { display: 'grid', gridTemplateColumns: '3', columnGap: '10px' } })}>
       {#each collections.slice(0, 6) as collection (collection)}
