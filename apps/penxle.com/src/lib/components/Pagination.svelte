@@ -58,7 +58,7 @@
       currentPage = 1;
     }}
   >
-    <Icon icon={IconChevronLeftPipe} size={12} />
+    <Icon style={css.raw({ size: '14px' })} icon={IconChevronLeftPipe} />
   </button>
   <button
     class={center({
@@ -74,7 +74,7 @@
       currentPage = previousPageGroup * displayPage;
     }}
   >
-    <Icon icon={IconChevronLeft} size={12} />
+    <Icon style={css.raw({ size: '14px' })} icon={IconChevronLeft} />
   </button>
   {#each range as index (index)}
     <button
@@ -109,7 +109,7 @@
       currentPage = nextPageGroup * displayPage - (displayPage - 1);
     }}
   >
-    <Icon icon={IconChevronRight} size={12} />
+    <Icon style={css.raw({ size: '14px' })} icon={IconChevronRight} />
   </button>
   <button
     class={center({
@@ -124,6 +124,6 @@
       currentPage = maxPage;
     }}
   >
-    <Icon icon={IconChevronRightPipe} size={12} />
+    <Icon style={css.raw({ size: '14px' })} icon={IconChevronRightPipe} />
   </button>
 </div>
