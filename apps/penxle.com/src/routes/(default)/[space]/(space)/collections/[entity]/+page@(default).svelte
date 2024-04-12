@@ -218,7 +218,14 @@
 
       <ul>
         {#each collection.posts as post (post.id)}
-          <li>
+          <li
+            class={css({
+              _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' },
+              _lastOfType: {
+                _after: { display: 'none' },
+              },
+            })}
+          >
             <Post $post={post} showBookmark showDate showSpace />
           </li>
         {:else}
