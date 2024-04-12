@@ -58,6 +58,7 @@ builder.objectType(FeaturedTag, {
             function_score: {
               query: {
                 bool: {
+                  must: { match_all: {} },
                   must_not: makeQueryContainers([
                     {
                       query: { terms: { ['tags.id']: mutedTagIds } },
@@ -89,24 +90,7 @@ builder.objectType(FeaturedTag, {
           size: 10,
         });
 
-        const postIds = searchResultToIds(searchResult);
-
-        return postIds.length > 0
-          ? await database
-              .select({ Posts })
-              .from(Posts)
-              .innerJoin(Spaces, eq(Posts.spaceId, Spaces.id))
-              .where(
-                and(
-                  inArray(Posts.id, postIds),
-                  eq(Posts.state, 'PUBLISHED'),
-                  eq(Posts.visibility, 'PUBLIC'),
-                  eq(Spaces.state, 'ACTIVE'),
-                  eq(Spaces.visibility, 'PUBLIC'),
-                ),
-              )
-              .then((rows) => rows.map((row) => row.Posts))
-          : [];
+        return searchResultToIds(searchResult);
       },
     }),
   }),
