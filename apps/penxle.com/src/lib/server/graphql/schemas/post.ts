@@ -1071,6 +1071,7 @@ const TagInput = builder.inputType('TagInput', {
 const CreatePostInput = builder.inputType('CreatePostInput', {
   fields: (t) => ({
     spaceId: t.id({ required: false }),
+    collectionId: t.id({ required: false }),
   }),
 });
 
@@ -1309,6 +1310,36 @@ builder.mutationFields((t) => ({
         }
       }
 
+      if (input.collectionId) {
+        const collection = await database
+          .select({ id: SpaceCollections.id, spaceId: SpaceCollections.spaceId })
+          .from(SpaceCollections)
+          .where(eq(SpaceCollections.id, input.collectionId))
+          .then(useFirstRowOrThrow(new NotFoundError()));
+
+        if (input.spaceId) {
+          if (collection.spaceId !== input.spaceId) {
+            throw new PermissionDeniedError();
+          }
+        } else {
+          input.spaceId = collection.spaceId;
+        }
+      }
+      if (input.spaceId) {
+        await database
+          .select({ id: Spaces.id })
+          .from(Spaces)
+          .innerJoin(SpaceMembers, eq(SpaceMembers.spaceId, Spaces.id))
+          .where(
+            and(
+              eq(Spaces.id, input.spaceId),
+              eq(SpaceMembers.userId, context.session.userId),
+              eq(SpaceMembers.state, 'ACTIVE'),
+            ),
+          )
+          .then(useFirstRowOrThrow(new PermissionDeniedError()));
+      }
+
       return await database.transaction(async (tx) => {
         const [post] = await tx
           .insert(Posts)
@@ -1331,6 +1362,16 @@ builder.mutationFields((t) => ({
           userId: context.session.userId,
           kind: 'AUTO_SAVE',
         });
+
+        if (input.collectionId) {
+          await tx.insert(SpaceCollectionPosts).values({
+            collectionId: input.collectionId,
+            postId: post.id,
+            order: 2_147_483_647,
+          });
+
+          await defragmentSpaceCollectionPosts(tx, input.collectionId);
+        }
 
         return post.id;
       });

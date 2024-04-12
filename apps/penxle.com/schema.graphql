@@ -71,6 +71,7 @@ input CreateCommentInput {
 }
 
 input CreatePostInput {
+  collectionId: ID
   spaceId: ID
 }
 
