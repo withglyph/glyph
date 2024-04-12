@@ -23,14 +23,14 @@
       title: '펜슬이 글리프로 바뀌었어요',
       subtitle: '리브랜딩 이야기',
       color: '#504C575A',
-      backgroundImageUrl: 'https://glyph.pub/images/_/banner_rebranding.png',
+      backgroundImageUrl: 'https://glyph.pub/images/_/banner_rebranding_2.png',
       href: '/glyph',
     },
     {
       title: '4월 13일 업데이트 노트',
       subtitle: '새로워진 글리프를 만나보세요',
       color: '#1717175A',
-      backgroundImageUrl: 'https://glyph.pub/images/_/banner_updates.png',
+      backgroundImageUrl: 'https://glyph.pub/images/_/banner_updates_2.png',
       href: '/glyph',
     },
     {
@@ -46,7 +46,7 @@
       title: '트위터 프로필 연동하고\n포인트 받아가세요',
       subtitle: '2000P 적립 이벤트',
       color: '#124B8E5A',
-      backgroundImageUrl: 'https://glyph.pub/images/_/banner_twitter_events.png',
+      backgroundImageUrl: 'https://glyph.pub/images/_/banner_twitter_events_2.png',
       href: '/glyph',
     },
   ];
