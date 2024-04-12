@@ -40,18 +40,18 @@
 </script>
 
 <div>
-  <p
+  <h3
     class={flex({
       gap: '4px',
       paddingBottom: '8px',
       fontSize: '14px',
     })}
   >
-    <span>{label}</span>
+    {label}
     <Tooltip style={center.raw()} message={tooltip} placement="top">
       <Icon style={css.raw({ color: 'gray.400' })} icon={IconHelpLine} size={12} />
     </Tooltip>
-  </p>
+  </h3>
 
   <form
     bind:this={formEl}

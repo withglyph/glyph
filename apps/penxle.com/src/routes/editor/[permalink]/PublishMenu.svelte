@@ -387,7 +387,7 @@
 
       <div class={tabContentStyle} hidden={tabIndex !== 0}>
         <div>
-          <p class={labelStyle}>스페이스</p>
+          <h3 class={labelStyle}>스페이스</h3>
 
           <Select
             style={css.raw({ height: '[66px!]' })}
@@ -465,7 +465,7 @@
         </div>
 
         <div>
-          <p class={labelStyle}>컬렉션</p>
+          <h3 class={labelStyle}>컬렉션</h3>
 
           <Select disabled={!selectedSpace} size="md" bind:open={collectionSelectorOpen}>
             <span slot="placeholder">
@@ -503,7 +503,7 @@
 
       <div class={tabContentStyle} hidden={tabIndex !== 1}>
         <div>
-          <p class={labelStyle}>카테고리</p>
+          <h3 class={labelStyle}>카테고리</h3>
 
           <SegmentButtonGroup>
             <ToggleButton name="category" type="radio" value="ORIGINAL">오리지널</ToggleButton>
@@ -514,12 +514,12 @@
         </div>
 
         <div>
-          <p class={labelStyle}>
-            <span>페어</span>
+          <h3 class={labelStyle}>
+            페어
             <Tooltip style={center.raw()} message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
               <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
             </Tooltip>
-          </p>
+          </h3>
 
           <div class={grid({ columns: 4, gap: '9px' })}>
             <ToggleButton checked={$data.pairs?.includes('BL')} on:change={(e) => checkPair(e, 'BL')}>BL</ToggleButton>
@@ -581,7 +581,7 @@
       </div>
 
       <div hidden={tabIndex !== 2}>
-        <p class={labelStyle}>썸네일</p>
+        <h3 class={labelStyle}>썸네일</h3>
 
         {#if currentThumbnail}
           <div
@@ -665,7 +665,7 @@
 
       <div class={tabContentStyle} hidden={tabIndex !== 3}>
         <div>
-          <p class={labelStyle}>공개 범위</p>
+          <h3 class={labelStyle}>공개 범위</h3>
 
           <RadioGroup
             name="visibility"
@@ -683,12 +683,12 @@
         </div>
 
         <div>
-          <p class={labelStyle}>
-            <span>비밀글</span>
+          <h3 class={labelStyle}>
+            비밀글
             <Tooltip style={center.raw()} message="설정하면 비밀번호를 입력한 독자만 내용을 열람할 수 있어요">
               <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
             </Tooltip>
-          </p>
+          </h3>
 
           <Checkbox
             style={css.raw({ marginTop: '6px', marginBottom: '12px', fontSize: '14px' })}
@@ -733,15 +733,15 @@
         </div>
 
         <div>
-          <p class={labelStyle}>
-            <span>연령 제한</span>
+          <h3 class={labelStyle}>
+            연령 제한
             <Tooltip
               style={center.raw()}
               message="연령 제한을 설정하면 본인인증이 완료된 해당 나이 이상의 독자만 내용을 열람할 수 있어요"
             >
               <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
             </Tooltip>
-          </p>
+          </h3>
 
           <RadioGroup
             name="ageRating"
@@ -754,12 +754,12 @@
         </div>
 
         <div>
-          <p class={labelStyle}>
-            <span>검색 공개</span>
+          <h3 class={labelStyle}>
+            검색 공개
             <Tooltip style={center.raw()} message="외부 검색엔진에서 이 포스트를 검색할 수 있을지 설정해요">
               <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
             </Tooltip>
-          </p>
+          </h3>
 
           <SegmentButtonGroup>
             <ToggleButton
