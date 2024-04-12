@@ -172,7 +172,7 @@
             <Icon icon={IconFilter} />
           </Button>
 
-          <Select size="xs">
+          <Select style={css.raw({ width: '94px' })} size="xs">
             <div slot="placeholder">
               {orderBy === 'LATEST' ? '최신순' : '정확도순'}
             </div>
