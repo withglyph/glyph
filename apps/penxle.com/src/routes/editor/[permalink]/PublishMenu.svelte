@@ -1,15 +1,19 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import IconCheckmark from '~icons/glyph/checkmark';
-  import IconDot from '~icons/glyph/dot';
   import IconGlobe from '~icons/glyph/globe';
   import IconLink from '~icons/glyph/link';
   import IconUsers from '~icons/glyph/users';
   import IconAlertCircle from '~icons/tabler/alert-circle';
   import IconAlertTriangle from '~icons/tabler/alert-triangle';
+  import IconFileSettings from '~icons/tabler/file-settings';
+  import IconMessageCircle from '~icons/tabler/message-circle-2';
   import IconPhoto from '~icons/tabler/photo';
+  import IconPhotoCheck from '~icons/tabler/photo-check';
+  import IconPlanet from '~icons/tabler/planet';
   import IconPlus from '~icons/tabler/plus';
+  import IconTag from '~icons/tabler/tag';
   import IconTrash from '~icons/tabler/trash';
+  import IconUser from '~icons/tabler/user';
   import IconX from '~icons/tabler/x';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
@@ -232,27 +236,35 @@
   });
 
   const tabHeadItemStyle = flex({
-    align: 'center',
-    textAlign: 'left',
-    smDown: {
+    'align': 'center',
+    'textAlign': 'left',
+    'fontSize': '14px',
+    'fontWeight': 'medium',
+    '_pressed': { color: 'gray.900' },
+    'smDown': {
       borderBottomWidth: '2px',
       borderBottomColor: 'gray.5',
-      fontSize: '15px',
-      fontWeight: 'semibold',
-      color: 'gray.300',
-      _pressed: { borderBottomColor: 'gray.900', color: 'gray.900' },
+      color: 'gray.400',
+      _pressed: { borderBottomColor: 'gray.900' },
+      paddingBottom: '2px',
     },
-    sm: {
-      fontSize: '13px',
-      borderRadius: '4px',
-      marginX: '8px',
-      paddingY: '4px',
+    'sm': {
+      paddingX: '16px',
+      paddingY: '14px',
+      gap: '6px',
+      color: 'gray.500',
       _hover: { backgroundColor: 'gray.50' },
       _pressed: { backgroundColor: 'gray.50' },
     },
+    '& > svg': {
+      'hideBelow': 'sm',
+      '& path': {
+        strokeWidth: '2px',
+      },
+    },
   });
 
-  const tabContentStyle = flex({ flexDirection: 'column', gap: '32px' });
+  const tabContentStyle = flex({ flexDirection: 'column', gap: '42px' });
 
   const labelStyleRaw = css.raw({
     fontSize: { base: '15px', sm: '14px' },
@@ -271,7 +283,6 @@
       backgroundColor: 'gray.5',
       zIndex: '50',
       smDown: {
-        borderTopRadius: '14px',
         width: 'full',
         boxShadow: '[0 8px 24px 0 {colors.gray.900/28}]',
       },
@@ -279,7 +290,6 @@
         borderWidth: '1px',
         borderColor: 'gray.200',
         borderTopWidth: '0',
-        borderBottomRadius: '8px',
         boxShadow: '[0 5px 22px 0 {colors.gray.900/6}]',
       },
     },
@@ -289,31 +299,24 @@
   <div
     class={css({
       borderBottomWidth: '1px',
-      borderBottomColor: { base: 'gray.100', sm: 'gray.200' },
+      borderBottomColor: 'gray.150',
       paddingX: '24px',
       paddingY: '16px',
     })}
   >
-    <p class={css({ fontWeight: 'semibold', smDown: { position: 'relative', textAlign: 'center' } })}>
+    <p class={css({ fontWeight: 'semibold', position: 'relative', textAlign: 'center' })}>
       게시 옵션
-      <button
-        class={css({ position: 'absolute', right: '0', hideFrom: 'sm' })}
-        type="button"
-        on:click={() => (open = false)}
-      >
+      <button class={css({ position: 'absolute', right: '0' })} type="button" on:click={() => (open = false)}>
         <Icon icon={IconX} size={24} />
       </button>
     </p>
-    <span class={css({ marginTop: '2px', fontSize: '12px', color: 'gray.500', hideBelow: 'sm' })}>
-      다양한 옵션을 선택해 원하는 방식으로 게시글을 업로드할 수 있어요
-    </span>
   </div>
 
   <div class={flex({ smDown: { flexDirection: 'column' } })}>
     <div
       class={flex({
         smDown: {
-          gap: '28px',
+          gap: '32px',
           paddingX: '20px',
           paddingY: '16px',
           width: 'full',
@@ -322,56 +325,35 @@
         },
         sm: {
           flexDirection: 'column',
-          gap: '6px',
           borderRightWidth: '1px',
-          borderRightColor: 'gray.200',
-          paddingY: '6px',
+          borderRightColor: 'gray.100',
           width: '208px',
         },
       })}
     >
       <button class={tabHeadItemStyle} aria-pressed={tabIndex === 0} type="button" on:click={() => (tabIndex = 0)}>
-        {#if selectedSpaceId || $post.space}
-          <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
-        {:else}
-          <Icon style={css.raw({ color: 'red.600', hideBelow: 'sm' })} icon={IconDot} size={24} />
-        {/if}
-        <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>발행</span>
+        <Icon icon={IconPlanet} size={16} />
+        발행
       </button>
-
       <button class={tabHeadItemStyle} aria-pressed={tabIndex === 1} type="button" on:click={() => (tabIndex = 1)}>
-        {#if $data.tags?.length > 0}
-          <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
-        {:else}
-          <Icon style={css.raw({ color: 'gray.300', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
-        {/if}
-        <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>태그</span>
+        <Icon icon={IconTag} size={16} />
+        태그
       </button>
       <button class={tabHeadItemStyle} aria-pressed={tabIndex === 2} type="button" on:click={() => (tabIndex = 2)}>
-        {#if currentThumbnail}
-          <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
-        {:else}
-          <Icon style={css.raw({ color: 'gray.300', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
-        {/if}
-        <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>
-          썸네일
-        </span>
+        <Icon icon={IconPhotoCheck} size={16} />
+        썸네일
       </button>
       <button class={tabHeadItemStyle} aria-pressed={tabIndex === 3} type="button" on:click={() => (tabIndex = 3)}>
-        <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
-        <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>
-          대상 독자
-        </span>
+        <Icon icon={IconUser} size={16} />
+        대상 독자
       </button>
       <button class={tabHeadItemStyle} aria-pressed={tabIndex === 4} type="button" on:click={() => (tabIndex = 4)}>
-        <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
-        <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>댓글</span>
+        <Icon icon={IconMessageCircle} size={16} />
+        댓글
       </button>
       <button class={tabHeadItemStyle} aria-pressed={tabIndex === 5} type="button" on:click={() => (tabIndex = 5)}>
-        <Icon style={css.raw({ color: 'teal.500', hideBelow: 'sm' })} icon={IconCheckmark} size={24} />
-        <span class={css({ width: 'full', paddingBottom: '8px', sm: { paddingX: '4px', paddingY: '8px' } })}>
-          세부 옵션
-        </span>
+        <Icon icon={IconFileSettings} size={16} />
+        세부 옵션
       </button>
     </div>
 
@@ -379,7 +361,7 @@
       class={css({
         overflowY: 'auto',
         smDown: { paddingX: '20px', paddingBottom: '32px', width: 'full', height: '[50vh]' },
-        sm: { paddingX: '24px', paddingY: '20px', width: '384px', height: '432px' },
+        sm: { paddingX: '24px', paddingY: '20px', width: '504px', height: '432px' },
       })}
       use:form
     >
@@ -880,7 +862,7 @@
       justify: 'flex-end',
       paddingX: '24px',
       paddingY: '20px',
-      sm: { borderTopWidth: '1px', borderTopColor: 'gray.200' },
+      sm: { borderTopWidth: '1px', borderTopColor: 'gray.150' },
     })}
   >
     <Tooltip
@@ -899,6 +881,7 @@
         loading={$isSubmitting}
         size="lg"
         type="button"
+        variant="gradation-fill"
         on:click={handleSubmit}
       >
         발행
