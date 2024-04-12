@@ -1,11 +1,12 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
+  import IconHelpLine from '~icons/glyph/help-line';
   import IconCamera from '~icons/tabler/camera';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon, Image } from '$lib/components';
+  import { Icon, Image, Tooltip } from '$lib/components';
   import { ThumbnailPicker } from '$lib/components/media';
   import { Button, Modal } from '$lib/components/v2';
   import { FormField, TextInput } from '$lib/components/v2/forms';
@@ -99,7 +100,14 @@
     </FormField>
 
     <FormField name="slug" style={css.raw({ marginBottom: '24px' })} label="스페이스 URL">
-      <TextInput maxlength={20} placeholder="입력해주세요">
+      <Tooltip slot="label-icon" message="영문,숫자,대시(-)만 입력할 수 있어요 (최소 2글자)">
+        <Icon
+          style={css.raw({ 'color': 'gray.400', 'size': '14px', '& *': { strokeWidth: '[1]' } })}
+          icon={IconHelpLine}
+        />
+      </Tooltip>
+
+      <TextInput maxlength={20} placeholder="URL을 입력해주세요">
         <span slot="left-icon" class={css({ fontSize: '14px', color: 'gray.400' })}>{$page.url.host}/</span>
         <span slot="right-icon" class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.300' })}>
           {$data.slug?.length}/20
@@ -108,9 +116,16 @@
     </FormField>
 
     <div class={flex({ direction: 'column', gap: '8px' })}>
-      <p class={css({ fontSize: '14px' })}>
-        스페이스 표지 이미지
+      <p class={flex({ align: 'center', gap: '4px', fontSize: '14px' })}>
+        스페이스 표지
         <span class={css({ color: 'gray.400' })}>(선택)</span>
+
+        <Tooltip message="스페이스를 표현하는 이미지를 업로드해주세요">
+          <Icon
+            style={css.raw({ 'color': 'gray.400', 'size': '14px', '& *': { strokeWidth: '[1]' } })}
+            icon={IconHelpLine}
+          />
+        </Tooltip>
       </p>
 
       <button
@@ -149,7 +164,7 @@
         </div>
       </button>
 
-      <p class={css({ fontSize: '13px', color: 'gray.500' })}>800x800 픽셀 이상 (1:1 비율)</p>
+      <p class={css({ fontSize: '13px', color: 'gray.500' })}>추천 사이즈: 800x800픽셀 이상 (1:1 비율)</p>
     </div>
 
     <hr
@@ -158,6 +173,13 @@
 
     <div class={css({ display: 'flex', gap: '12px' })}>
       <FormField name="profileName" style={css.raw({ flexGrow: '1' })} label="이름">
+        <Tooltip slot="label-icon" message="스페이스에 사용할 프로필 이름을 작성해주세요">
+          <Icon
+            style={css.raw({ 'color': 'gray.400', 'size': '14px', '& *': { strokeWidth: '[1]' } })}
+            icon={IconHelpLine}
+          />
+        </Tooltip>
+
         <TextInput maxlength={20} placeholder="프로필명을 입력해주세요">
           <span slot="right-icon" class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.300' })}>
             {$data.profileName?.length ?? 0}/20

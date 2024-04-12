@@ -17,12 +17,14 @@
 <section class={css(style)}>
   <label
     class={css(
-      { display: 'inline-block', marginBottom: '6px', fontSize: '14px' },
+      { display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '6px', fontSize: '14px' },
       hideLabel && { visibility: 'hidden' },
     )}
     for={name}
   >
     {label}
+
+    <slot name="label-icon" />
   </label>
   <slot />
   <div
