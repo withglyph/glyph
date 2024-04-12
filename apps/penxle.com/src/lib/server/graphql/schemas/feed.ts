@@ -1,4 +1,5 @@
-import { and, count, desc, eq, ne, notExists } from 'drizzle-orm';
+import dayjs from 'dayjs';
+import { and, count, desc, eq, gt, ne, notExists } from 'drizzle-orm';
 import * as R from 'radash';
 import { useCache } from '$lib/server/cache';
 import {
@@ -352,7 +353,9 @@ builder.queryFields((t) => ({
           return database
             .select({ tagId: PostTags.tagId })
             .from(PostTags)
-            .where(and(inArray(PostTags.kind, ['CHARACTER', 'TITLE'])))
+            .where(
+              and(inArray(PostTags.kind, ['CHARACTER', 'TITLE']), gt(PostTags.createdAt, dayjs().subtract(1, 'month'))),
+            )
             .orderBy(desc(count()))
             .groupBy(PostTags.tagId)
             .limit(20)
