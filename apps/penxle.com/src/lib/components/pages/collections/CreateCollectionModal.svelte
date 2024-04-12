@@ -72,7 +72,7 @@
         borderColor: 'gray.200',
         marginY: '8px',
         width: '100px',
-        aspectRatio: '4/5',
+        aspectRatio: '3/4',
         backgroundColor: 'gray.50',
         overflow: 'hidden',
 
@@ -86,7 +86,7 @@
       type="button"
       on:click={() => thumbnailPicker.show()}
     >
-      <Image style={css.raw({ size: 'full', aspectRatio: '4/5' })} $image={thumbnail} placeholder />
+      <Image style={css.raw({ size: 'full', aspectRatio: '3/4' })} $image={thumbnail} placeholder />
 
       <div
         class={center({

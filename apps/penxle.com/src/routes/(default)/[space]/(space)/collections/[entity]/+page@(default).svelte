@@ -128,7 +128,7 @@
             borderColor: 'gray.100',
             width: { base: '84px', sm: '184px' },
             marginTop: { base: '-63px', sm: '-46px' },
-            aspectRatio: '[4/5]',
+            aspectRatio: '3/4',
           })}
           $image={collection.thumbnail}
           placeholder

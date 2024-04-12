@@ -1174,7 +1174,7 @@
           href={`/${$query.post.space?.slug}/collections/${$query.post.collection.id}`}
         >
           <Image
-            style={css.raw({ flex: 'none', width: '60px', aspectRatio: '4/5', objectFit: 'cover' })}
+            style={css.raw({ flex: 'none', width: '60px', aspectRatio: '3/4', objectFit: 'cover' })}
             $image={$query.post.collection.thumbnail}
             placeholder
           />

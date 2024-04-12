@@ -73,7 +73,7 @@
                 borderColor: 'gray.100',
                 width: { base: '161px', sm: '206px' },
                 backgroundColor: 'gray.50',
-                aspectRatio: '4/5',
+                aspectRatio: '3/4',
               })}
             />
             <Icon

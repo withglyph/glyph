@@ -42,7 +42,7 @@
       borderWidth: '[0.8px]',
       borderColor: 'gray.100',
       width: 'full',
-      aspectRatio: '4/5',
+      aspectRatio: '3/4',
     })}
     $image={$spaceCollection.thumbnail}
     placeholder

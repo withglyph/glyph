@@ -304,7 +304,7 @@
                 borderColor: 'gray.100',
                 flex: 'none',
                 width: { base: '48px', sm: '60px' },
-                aspectRatio: '[4/5]',
+                aspectRatio: '3/4',
               })}
               $image={collection.thumbnail}
               placeholder
@@ -363,7 +363,7 @@
                 borderColor: 'gray.100',
                 flex: 'none',
                 width: { base: '48px', sm: '60px' },
-                aspectRatio: '[4/5]',
+                aspectRatio: '3/4',
               })}
               $image={collection.thumbnail}
               placeholder
