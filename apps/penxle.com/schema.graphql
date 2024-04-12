@@ -806,7 +806,7 @@ type Tag {
   id: ID!
   muted: Boolean!
   name: String!
-  posts: [Post!]!
+  posts(page: Int! = 1, take: Int! = 10): [Post!]!
   usageCount: TagUsageCount!
 }
 

@@ -1,7 +1,17 @@
-import { and, eq } from 'drizzle-orm';
+import { and, desc, eq, notExists } from 'drizzle-orm';
 import { PostTagKind } from '$lib/enums';
 import { NotFoundError } from '$lib/errors';
-import { database, PostTags, TagFollows, Tags, UserTagMutes } from '$lib/server/database';
+import {
+  database,
+  notInArray,
+  Posts,
+  PostTags,
+  Spaces,
+  TagFollows,
+  Tags,
+  UserSpaceMutes,
+  UserTagMutes,
+} from '$lib/server/database';
 import { getTagUsageCount } from '$lib/server/utils';
 import { builder } from '../builder';
 import { createObjectRef } from '../utils';
@@ -42,8 +52,43 @@ Tag.implement({
 
     posts: t.field({
       type: [Post],
-      resolve: async () => {
-        return [];
+      args: { page: t.arg.int({ defaultValue: 1 }), take: t.arg.int({ defaultValue: 10 }) },
+      resolve: async (tag, args, context) => {
+        return database
+          .select({ postId: PostTags.postId })
+          .from(PostTags)
+          .innerJoin(Posts, eq(PostTags.postId, Posts.id))
+          .innerJoin(Spaces, eq(Posts.spaceId, Spaces.id))
+          .where(
+            and(
+              eq(PostTags.tagId, tag.id),
+              eq(Posts.state, 'PUBLISHED'),
+              eq(Posts.visibility, 'PUBLIC'),
+              eq(Spaces.visibility, 'PUBLIC'),
+              context.session
+                ? notExists(
+                    database
+                      .select({ id: PostTags.id })
+                      .from(PostTags)
+                      .innerJoin(UserTagMutes, eq(UserTagMutes.tagId, PostTags.tagId))
+                      .where(and(eq(PostTags.postId, Posts.id), eq(UserTagMutes.userId, context.session.userId))),
+                  )
+                : undefined,
+              context.session
+                ? notInArray(
+                    Posts.spaceId,
+                    database
+                      .select({ spaceId: Spaces.id })
+                      .from(UserSpaceMutes)
+                      .where(eq(UserSpaceMutes.userId, context.session.userId)),
+                  )
+                : undefined,
+            ),
+          )
+          .orderBy(desc(Posts.publishedAt))
+          .limit(args.take)
+          .offset((args.page - 1) * args.take)
+          .then((rows) => rows.map((row) => row.postId));
       },
     }),
 
