@@ -158,31 +158,42 @@
               <Icon icon={IconLock} size={24} />
             {/if}
           </h1>
-          <p class={css({ fontSize: '14px' })}>
-            by {$query.space.members[0].profile.name}
-          </p>
 
-          <dl
+          {#if $query.space.visibility === 'PUBLIC' || ($query.space.visibility === 'PRIVATE' && $query.space.meAsMember)}
+            <p class={css({ fontSize: '14px' })}>
+              by {$query.space.members[0].profile.name}
+            </p>
+
+            <dl
+              class={css(
+                {
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  marginTop: { base: '6px', sm: '8px' },
+                  marginBottom: '16px',
+                  fontSize: '13px',
+                  color: 'gray.500',
+                },
+                $query.space.myMasquerade?.blocked && { color: 'gray.400' },
+              )}
+            >
+              <dt>구독자</dt>
+              <dd class={css({ marginRight: '6px' })}>{$query.space.followerCount}명</dd>
+              <dt>포스트</dt>
+              <dd>{$query.space.postCount}개</dd>
+            </dl>
+          {/if}
+
+          <div
             class={css(
-              {
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                marginTop: { base: '6px', sm: '8px' },
-                marginBottom: '16px',
-                fontSize: '13px',
-                color: 'gray.500',
-              },
-              $query.space.myMasquerade?.blocked && { color: 'gray.400' },
+              { display: 'flex', alignItems: 'center', gap: '8px' },
+              $query.space.visibility === 'PRIVATE' &&
+                !$query.space.meAsMember && {
+                  marginTop: '20px',
+                },
             )}
           >
-            <dt>구독자</dt>
-            <dd class={css({ marginRight: '6px' })}>{$query.space.followerCount}명</dd>
-            <dt>포스트</dt>
-            <dd>{$query.space.postCount}개</dd>
-          </dl>
-
-          <div class={flex({ align: 'center', gap: '8px' })}>
             {#if $query.space.meAsMember}
               <Button
                 style={css.raw({ width: '96px', height: '37px' })}
@@ -207,7 +218,8 @@
             {:else}
               <Button
                 style={center.raw({ gap: '4px', width: '96px', height: '37px' })}
-                disabled={$query.space.myMasquerade?.blocked}
+                disabled={$query.space.myMasquerade?.blocked ||
+                  ($query.space.visibility === 'PRIVATE' && !$query.space.meAsMember)}
                 size="sm"
                 on:click={async () => {
                   if (!$query.me) {
@@ -224,8 +236,28 @@
               </Button>
             {/if}
 
-            <ShareLinkPopover href="{$page.url.origin}/{$query.space.slug}">
-              <div class={center({ outlineWidth: '1px', outlineColor: 'gray.200', size: '37px' })}>
+            <ShareLinkPopover
+              disabled={$query.space.visibility === 'PRIVATE' && !$query.space.meAsMember}
+              href="{$page.url.origin}/{$query.space.slug}"
+            >
+              <div
+                class={css(
+                  {
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    outlineWidth: '1px',
+                    outlineColor: 'gray.200',
+                    size: '37px',
+                  },
+                  $query.space.visibility === 'PRIVATE' &&
+                    !$query.space.meAsMember && {
+                      color: 'gray.400',
+                      backgroundColor: 'gray.150',
+                      outlineWidth: '0',
+                    },
+                )}
+              >
                 <Icon style={css.raw({ '& *': { strokeWidth: '[2]' } })} icon={IconShare2} />
               </div>
             </ShareLinkPopover>
@@ -238,8 +270,10 @@
                   backgroundColor: { _enabled: { _hover: 'gray.100' } },
                   size: '37px',
                   transition: 'common',
+                  _disabled: { color: 'gray.400', backgroundColor: 'gray.150', outlineWidth: '0' },
                 })}
-                disabled={$query.space.myMasquerade?.blocked}
+                disabled={$query.space.myMasquerade?.blocked ||
+                  ($query.space.visibility === 'PRIVATE' && !$query.space.meAsMember)}
                 placement="bottom-start"
               >
                 <Icon slot="value" style={css.raw({ '& *': { strokeWidth: '[2]' } })} icon={IconDotsVertical} />
@@ -317,6 +351,11 @@
         <div class={center({ flexDirection: 'column', flexGrow: '1', minHeight: '176px' })}>
           <p class={css({ marginBottom: '4px', fontSize: '24px', fontWeight: 'bold' })}>차단되었습니다</p>
           <p class={css({ color: 'gray.600' })}>{$query.space.name}을 구독하거나 게시물을 볼 수 없습니다</p>
+        </div>
+      {:else if $query.space.visibility === 'PRIVATE' && !$query.space.meAsMember}
+        <div class={center({ flexDirection: 'column', flexGrow: '1', minHeight: '176px' })}>
+          <p class={css({ marginBottom: '4px', fontSize: '24px', fontWeight: 'bold' })}>스페이스 비공개</p>
+          <p class={css({ color: 'gray.600' })}>이 스페이스는 작성자에 의해 비공개 설정되었습니다</p>
         </div>
       {:else}
         <slot />

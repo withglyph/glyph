@@ -20,10 +20,13 @@
   type $$Props = Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'class' | 'style'> & {
     href: string;
     style?: SystemStyleObject;
+    disabled?: boolean;
   };
 
   export let style: SystemStyleObject | undefined = undefined;
   export let href: string;
+  export let disabled = false;
+
   let open = false;
   const id = 'share-popover-' + uid(2);
   const twitterLinkId = id + '-twitter-button';
@@ -91,6 +94,7 @@
   class={css(style)}
   aria-controls={id}
   aria-expanded={open}
+  {disabled}
   type="button"
   on:click={() => (open = !open)}
   use:anchor
