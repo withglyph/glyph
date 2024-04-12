@@ -78,7 +78,7 @@ Tag.implement({
                 ? notInArray(
                     Posts.spaceId,
                     database
-                      .select({ spaceId: Spaces.id })
+                      .select({ spaceId: UserSpaceMutes.spaceId })
                       .from(UserSpaceMutes)
                       .where(eq(UserSpaceMutes.userId, context.session.userId)),
                   )

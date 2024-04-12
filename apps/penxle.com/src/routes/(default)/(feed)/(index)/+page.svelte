@@ -102,7 +102,7 @@
           index % 3 === 1 && { backgroundColor: 'gray.100' },
           index % 3 === 2 && { backgroundColor: 'gray.150' },
         )}
-        href={`/tag/${tag.name}/post`}
+        href={`/tag/${tag.name}`}
       >
         #{tag.name}
       </Tag>

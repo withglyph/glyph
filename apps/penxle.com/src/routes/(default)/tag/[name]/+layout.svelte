@@ -1,11 +1,9 @@
 <script lang="ts">
   import IconDotsVertical from '~icons/tabler/dots-vertical';
-  import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button, Icon } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
-  import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import LoginRequireAlert from '../../LoginRequireAlert.svelte';
@@ -165,11 +163,6 @@
       backgroundColor: 'gray.5',
     })}
   >
-    <TabHead style={css.raw({ fontSize: '18px', width: 'full' })}>
-      <TabHeadItem id={2} pathname={`/tag/${$page.params.name}/post`}>포스트</TabHeadItem>
-      <TabHeadItem id={1} pathname={`/tag/${$page.params.name}`}>위키</TabHeadItem>
-    </TabHead>
-
     <slot />
   </div>
 </div>

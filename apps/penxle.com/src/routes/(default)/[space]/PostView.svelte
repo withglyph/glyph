@@ -884,7 +884,7 @@
                       {#each $query.post.tags as { tag, kind } (tag.id)}
                         {#if kind === 'TITLE'}
                           <dd>
-                            <Tag href="/tag/{tag.name}/post" size="sm">
+                            <Tag href={`/tag/${tag.name}`} size="sm">
                               #{tag.name}
                             </Tag>
                           </dd>
@@ -929,7 +929,7 @@
                       {#each $query.post.tags as { tag, kind } (tag.id)}
                         {#if kind === 'CHARACTER'}
                           <dd>
-                            <Tag href="/tag/{tag.name}/post" size="sm">
+                            <Tag href={`/tag/${tag.name}`} size="sm">
                               #{tag.name}
                             </Tag>
                           </dd>
@@ -974,7 +974,7 @@
                       {#each $query.post.tags as { tag, kind } (tag.id)}
                         {#if kind === 'COUPLING'}
                           <dd>
-                            <Tag href="/tag/{tag.name}/post" size="sm">
+                            <Tag href={`/tag/${tag.name}`} size="sm">
                               #{tag.name}
                             </Tag>
                           </dd>
@@ -1001,7 +1001,7 @@
                       {#each $query.post.tags as { tag, kind } (tag.id)}
                         {#if kind === 'EXTRA'}
                           <dd>
-                            <Tag href="/tag/{tag.name}/post" size="sm">
+                            <Tag href={`/tag/${tag.name}`} size="sm">
                               #{tag.name}
                             </Tag>
                           </dd>
