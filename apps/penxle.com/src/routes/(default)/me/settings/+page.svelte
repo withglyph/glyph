@@ -7,8 +7,9 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Avatar, Button, Chip, Helmet, Icon } from '$lib/components';
+  import { Alert, Avatar, Button, Chip, Helmet, Icon } from '$lib/components';
   import { Switch } from '$lib/components/forms';
+  import { Button as ButtonV2 } from '$lib/components/v2';
   import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -20,6 +21,7 @@
   let updateEmailOpen = false;
   let updateProfileOpen = false;
   let verifyPassportIdentityOpen = false;
+  let marketingConsentOpen = false;
 
   $: query = graphql(`
     query MeSettingsPage_Query {
@@ -191,11 +193,7 @@
         const consent = !$query.me.marketingConsent;
         await updateUserMarketingConsent({ consent });
         mixpanel.track('user:marketing_consent:update', { consent });
-
-        // TODO: Alert
-        // toast.success(`${dayjs().formatAsDate()} ${consent ? '승인' : '거부'} 처리되었어요`, {
-        //   title: '펜슬 마케팅 수신 동의',
-        // });
+        marketingConsentOpen = true;
       }}
     />
   </div>
@@ -209,6 +207,19 @@
     </Button>
   </div>
 </div>
+
+<Alert actionStyle={css.raw({ gridTemplateColumns: '1' })} bind:open={marketingConsentOpen}>
+  <p slot="title" class={css({ textAlign: 'left' })}>글리프 마케팅 수신 동의</p>
+
+  <p slot="content" class={css({ textAlign: 'left' })}>
+    {dayjs().formatAsDate()}
+    {$query.me.marketingConsent ? '승인' : '거부'}처리되었어요
+  </p>
+
+  <svelte:fragment slot="action">
+    <ButtonV2 size="lg" on:click={() => (marketingConsentOpen = false)}>확인</ButtonV2>
+  </svelte:fragment>
+</Alert>
 
 <UpdateEmailModal bind:open={updateEmailOpen} />
 <UpdateProfileModal $profile={$query.me.profile} bind:open={updateProfileOpen} />

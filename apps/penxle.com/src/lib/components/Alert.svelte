@@ -2,8 +2,10 @@
   import { fade, fly } from 'svelte/transition';
   import { portal, scrollLock } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
+  import type { SystemStyleObject } from '$styled-system/types';
 
   export let open: boolean;
+  export let actionStyle: SystemStyleObject | undefined = undefined;
 </script>
 
 <svelte:window on:keydown={(e) => e.key === 'Escape' && (open = false)} />
@@ -79,20 +81,23 @@
         {/if}
 
         <div
-          class={css({
-            display: 'grid',
-            gridTemplateColumns: '2',
-            alignItems: 'center',
-            marginTop: { base: '40px', sm: '20px' },
-            width: 'full',
-            backgroundColor: 'gray.5',
-            sm: {
-              gap: '8px',
-              paddingTop: '12px',
-              paddingX: '86px',
-              paddingBottom: '24px',
+          class={css(
+            {
+              display: 'grid',
+              gridTemplateColumns: '2',
+              alignItems: 'center',
+              marginTop: { base: '40px', sm: '20px' },
+              width: 'full',
+              backgroundColor: 'gray.5',
+              sm: {
+                gap: '8px',
+                paddingTop: '12px',
+                paddingX: '86px',
+                paddingBottom: '24px',
+              },
             },
-          })}
+            actionStyle,
+          )}
         >
           <slot name="action" />
         </div>
