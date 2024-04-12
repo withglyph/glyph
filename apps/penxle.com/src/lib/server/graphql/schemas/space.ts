@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { and, count, desc, eq, isNotNull, ne, notExists } from 'drizzle-orm';
+import * as R from 'radash';
 import { match } from 'ts-pattern';
 import { SpaceMemberRole, SpaceVisibility } from '$lib/enums';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
@@ -26,8 +27,10 @@ import {
   createRandomIcon,
   directUploadImage,
   getSpaceMember,
+  Loader,
   makeMasquerade,
   useFirstRow,
+  useFirstRowOrThrow,
 } from '$lib/server/utils';
 import { CreateSpaceSchema, UpdateSpaceSchema } from '$lib/validations';
 import { builder } from '../builder';
@@ -43,6 +46,16 @@ import { Profile } from './user';
 
 export const Space = createObjectRef('Space', Spaces);
 Space.implement({
+  grantScopes: async (space, context) => {
+    const spaceMemberLoader = Loader.spaceMemberBySpaceId(context);
+    const meAsMember = await spaceMemberLoader.load(space.id);
+
+    return R.sift([
+      (space.visibility === 'PUBLIC' || !!meAsMember) && '$space:view',
+      !!meAsMember && '$space:member',
+      meAsMember?.role === 'ADMIN' && '$space:admin',
+    ]);
+  },
   fields: (t) => ({
     id: t.exposeID('id'),
     slug: t.exposeString('slug'),
@@ -115,6 +128,7 @@ Space.implement({
 
     members: t.field({
       type: [SpaceMember],
+      authScopes: { $granted: '$space:view' },
       resolve: async (space) => {
         const members = await database
           .select({ id: SpaceMembers.id })
@@ -123,10 +137,13 @@ Space.implement({
 
         return members.map((member) => member.id);
       },
+
+      unauthorizedResolver: () => [],
     }),
 
     posts: t.field({
       type: [Post],
+      authScopes: { $granted: '$space:view' },
       args: { mine: t.arg.boolean({ defaultValue: false }) },
       resolve: async (space, args, context) => {
         const meAsMember = await getSpaceMember(context, space.id);
@@ -159,10 +176,13 @@ Space.implement({
 
         return posts.map((post) => post.id);
       },
+
+      unauthorizedResolver: () => [],
     }),
 
     collections: t.field({
       type: [SpaceCollection],
+      authScopes: { $granted: '$space:view' },
       resolve: async (space) => {
         const collections = await database
           .select({ id: SpaceCollections.id })
@@ -172,6 +192,8 @@ Space.implement({
 
         return collections.map((collection) => collection.id);
       },
+
+      unauthorizedResolver: () => [],
     }),
 
     postCount: t.int({
@@ -220,6 +242,8 @@ Space.implement({
 
     blockedMasquerades: t.field({
       type: [SpaceMasquerade],
+      authScopes: { $granted: '$space:admin' },
+      grantScopes: ['$spaceMasquerade:spaceAdmin'],
       resolve: async (space) => {
         const masquerades = await database
           .select({ id: SpaceMasquerades.id })
@@ -273,7 +297,11 @@ export const SpaceMasquerade = createObjectRef('SpaceMasquerade', SpaceMasquerad
 SpaceMasquerade.implement({
   fields: (t) => ({
     id: t.exposeID('id'),
-    blockedAt: t.expose('blockedAt', { type: 'DateTime', nullable: true }),
+    blockedAt: t.expose('blockedAt', {
+      type: 'DateTime',
+      authScopes: { $granted: '$spaceMasquerade.spaceAdmin' },
+      nullable: true,
+    }),
 
     profile: t.field({
       type: Profile,
@@ -380,29 +408,12 @@ builder.queryFields((t) => ({
   space: t.field({
     type: Space,
     args: { slug: t.arg.string() },
-    resolve: async (_, args, context) => {
-      const spaces = await database
+    resolve: async (_, args) => {
+      const space = await database
         .select({ id: Spaces.id, visibility: Spaces.visibility })
         .from(Spaces)
-        .where(and(eq(Spaces.slug, args.slug), eq(Spaces.state, 'ACTIVE')));
-
-      if (spaces.length === 0) {
-        throw new NotFoundError();
-      }
-
-      const [space] = spaces;
-
-      if (space.visibility === 'PRIVATE') {
-        if (!context.session) {
-          throw new PermissionDeniedError();
-        }
-
-        const meAsMember = await getSpaceMember(context, space.id);
-
-        if (!meAsMember) {
-          throw new PermissionDeniedError();
-        }
-      }
+        .where(and(eq(Spaces.slug, args.slug), eq(Spaces.state, 'ACTIVE')))
+        .then(useFirstRowOrThrow(new NotFoundError()));
 
       return space.id;
     },

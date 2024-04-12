@@ -55,6 +55,7 @@ import {
   getUserPoint,
   isAdulthood,
   isGte15,
+  Loader,
   makeMasquerade,
   makePostContentId,
   makeQueryContainers,
@@ -106,6 +107,19 @@ const CommentOrderByKind = builder.enumType('CommentOrderByKind', {
 
 export const Post = createObjectRef('Post', Posts);
 Post.implement({
+  grantScopes: async (post, context) => {
+    if (context.session?.userId === post.userId) {
+      return ['$post:edit'];
+    }
+    if (!post.spaceId) {
+      return [];
+    }
+
+    const loader = Loader.spaceMemberBySpaceId(context);
+
+    const meAsMember = await loader.load(post.spaceId);
+    return meAsMember?.role === 'ADMIN' ? ['$post:edit'] : [];
+  },
   fields: (t) => ({
     id: t.exposeID('id'),
     state: t.expose('state', { type: PostState }),
@@ -283,6 +297,8 @@ Post.implement({
 
     revisions: t.field({
       type: [PostRevision],
+      authScopes: { $granted: '$post:edit' },
+      grantScopes: ['$postRevision:edit'],
       resolve: async (post) =>
         await database
           .select({ id: PostRevisions.id })
@@ -293,6 +309,8 @@ Post.implement({
 
     draftRevision: t.field({
       type: PostRevision,
+      authScopes: { $granted: '$post:edit' },
+      grantScopes: ['$postRevision:edit'],
       args: { revisionId: t.arg.id({ required: false }) },
       resolve: async (post, { revisionId }, context) => {
         if (revisionId) {
@@ -730,6 +748,76 @@ Post.implement({
 
 export const PostRevision = createObjectRef('PostRevision', PostRevisions);
 PostRevision.implement({
+  grantScopes: async (revision, context) => {
+    const postLoader = context.loader({
+      name: 'Post(postId)',
+      load: async (ids: string[]) => {
+        return await database.select().from(Posts).where(inArray(Posts.id, ids));
+      },
+      key: (post) => post.id,
+    });
+
+    const personalIdentityLoader = context.loader({
+      name: 'UserPersonalIdentity(userId)',
+      nullable: true,
+      load: async (userIds: string[]) => {
+        return await database
+          .select()
+          .from(UserPersonalIdentities)
+          .where(inArray(UserPersonalIdentities.userId, userIds));
+      },
+      key: (identity) => identity?.userId,
+    });
+
+    const spaceMasqueradeLoader = context.loader({
+      name: 'SpaceMasquerade(spaceId)',
+      nullable: true,
+      load: async (spaceIds: string[]) => {
+        if (!context.session) {
+          return [];
+        }
+
+        return await database
+          .select()
+          .from(SpaceMasquerades)
+          .where(and(inArray(SpaceMasquerades.spaceId, spaceIds), eq(SpaceMasquerades.userId, context.session.userId)));
+      },
+      key: (masquerade) => masquerade?.spaceId,
+    });
+
+    const post = await postLoader.load(revision.postId);
+
+    if (post.ageRating !== 'ALL') {
+      if (!context.session) {
+        return [];
+      }
+
+      const identity = await personalIdentityLoader.load(context.session.userId);
+      if (
+        !identity ||
+        (post.ageRating === 'R19' && !isAdulthood(identity.birthday)) ||
+        (post.ageRating === 'R15' && !isGte15(identity.birthday))
+      ) {
+        return [];
+      }
+    }
+
+    if (post.password && post.userId !== context.session?.userId) {
+      const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
+      if (!unlock || dayjs(unlock).isBefore(dayjs())) {
+        return [];
+      }
+    }
+
+    if (post.spaceId) {
+      const masquerade = await spaceMasqueradeLoader.load(post.spaceId);
+      if (masquerade?.blockedAt) {
+        return [];
+      }
+    }
+
+    return ['$postRevision:view'];
+  },
   fields: (t) => ({
     id: t.exposeID('id'),
     kind: t.expose('kind', { type: PostRevisionKind }),
@@ -767,6 +855,7 @@ PostRevision.implement({
 
     content: t.field({
       type: 'JSON',
+      authScopes: { $granted: '$postRevision:view' },
       resolve: async (revision, _, context) => {
         const [freeContentRaw, paidContentRaw] = await Promise.all([
           revision.freeContentId
@@ -909,9 +998,12 @@ PostRevision.implement({
           }),
         ]);
       },
+
+      unauthorizedResolver: () => createTiptapDocument([]),
     }),
 
     characterCount: t.int({
+      authScopes: { $granted: '$postRevision:view' },
       resolve: async (revision, _, context) => {
         const loader = context.loader(postRevisionContentLoader);
 
@@ -932,9 +1024,12 @@ PostRevision.implement({
 
         return freeContentLength + paidContentLength;
       },
+
+      unauthorizedResolver: () => 0,
     }),
 
     previewText: t.string({
+      authScopes: { $granted: '$postRevision:view' },
       resolve: async (revision, _, context) => {
         const loader = context.loader(postRevisionContentLoader);
 
@@ -944,6 +1039,8 @@ PostRevision.implement({
 
         return contentText.slice(0, 200).replaceAll(/\s+/g, ' ');
       },
+
+      unauthorizedResolver: () => '',
     }),
   }),
 });

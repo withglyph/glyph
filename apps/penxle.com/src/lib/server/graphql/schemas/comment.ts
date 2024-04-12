@@ -12,7 +12,7 @@ import {
   SpaceMasquerades,
   UserPersonalIdentities,
 } from '$lib/server/database';
-import { createNotification, getSpaceMember, makeMasquerade } from '$lib/server/utils';
+import { createNotification, getSpaceMember, Loader, makeMasquerade } from '$lib/server/utils';
 import { builder } from '../builder';
 import { createObjectRef } from '../utils';
 import { SpaceMasquerade } from './space';
@@ -24,9 +24,42 @@ import { Profile } from './user';
 
 export const PostComment = createObjectRef('PostComment', PostComments);
 PostComment.implement({
+  grantScopes: async (comment, context) => {
+    if (comment.state === 'INACTIVE') {
+      return [];
+    }
+    if (comment.visibility === 'PUBLIC') {
+      return ['$comment:read'];
+    }
+    if (!context.session) {
+      return [];
+    }
+    if (comment.userId === context.session.userId) {
+      return ['$comment:read'];
+    }
+
+    const postLoader = Loader.postById(context);
+    const post = await postLoader.load(comment.postId);
+
+    if (post.userId === context.session.userId) {
+      return ['$comment:read'];
+    }
+    if (!post.spaceId) {
+      return [];
+    }
+
+    const memberLoader = Loader.spaceMemberBySpaceId(context);
+    const member = await memberLoader.load(post.spaceId);
+
+    if (member?.role === 'ADMIN') {
+      return ['$comment:read'];
+    }
+
+    return [];
+  },
   fields: (t) => ({
     id: t.exposeID('id'),
-    content: t.exposeString('content'),
+    content: t.exposeString('content', { authScopes: { $granted: '$comment:read' } }),
     pinned: t.exposeBoolean('pinned'),
     visibility: t.expose('visibility', { type: PostCommentVisibility }),
     state: t.expose('state', { type: PostCommentState }),
