@@ -65,13 +65,16 @@
     {/each}
     {#if $query.space.meAsMember}
       <li>
-        <button class={css({ textAlign: 'left' })} type="button" on:click={() => (createCollectionOpen = true)}>
+        <button
+          class={css({ textAlign: 'left', width: 'full' })}
+          type="button"
+          on:click={() => (createCollectionOpen = true)}
+        >
           <div class={css({ position: 'relative' })}>
             <div
               class={css({
-                borderWidth: '2px',
+                borderWidth: '[0.8px]',
                 borderColor: 'gray.100',
-                width: { base: '161px', sm: '206px' },
                 backgroundColor: 'gray.50',
                 aspectRatio: '3/4',
               })}
