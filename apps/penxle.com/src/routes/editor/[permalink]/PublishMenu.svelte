@@ -27,7 +27,7 @@
   import { createMutationForm } from '$lib/form';
   import { PublishPostInputSchema } from '$lib/validations/post';
   import { css } from '$styled-system/css';
-  import { center, flex, grid } from '$styled-system/patterns';
+  import { center, flex } from '$styled-system/patterns';
   import CreateSpaceModal from '../../(default)/CreateSpaceModal.svelte';
   import { getEditorContext } from './context';
   import PublishMenuSearch from './PublishMenuSearch.svelte';
@@ -506,13 +506,21 @@
 
         <div>
           <h3 class={labelStyle}>
-            페어
+            카테고리 페어
             <Tooltip style={center.raw()} message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
               <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
             </Tooltip>
           </h3>
 
-          <div class={grid({ columns: 4, gap: '9px' })}>
+          <div
+            class={flex({
+              'gap': '8px',
+              'flexWrap': 'wrap',
+              '& > *': {
+                width: '84px',
+              },
+            })}
+          >
             <ToggleButton checked={$data.pairs?.includes('BL')} on:change={(e) => checkPair(e, 'BL')}>BL</ToggleButton>
             <ToggleButton checked={$data.pairs?.includes('GL')} on:change={(e) => checkPair(e, 'GL')}>GL</ToggleButton>
             <ToggleButton checked={$data.pairs?.includes('HL')} on:change={(e) => checkPair(e, 'HL')}>HL</ToggleButton>
@@ -554,7 +562,7 @@
 
         <PublishMenuSearch
           kind="TRIGGER"
-          label="트리거 주의"
+          label="읽기 전 주의사항"
           placeholder="작품을 읽기 전 주의해야할 사항을 입력해주세요 (예시: 스포일러, 폭력성 등)"
           tooltip="이 포스트를 독자들이 볼 때 주의해야 할 사항을 입력해주세요"
           bind:tags={$data.tags}
