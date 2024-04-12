@@ -738,6 +738,7 @@ type SpaceCollection {
   id: ID!
   name: String!
   posts: [Post!]!
+  space: Space!
   thumbnail: Image
 }
 

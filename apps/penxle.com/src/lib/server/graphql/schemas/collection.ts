@@ -8,6 +8,7 @@ import { builder } from '../builder';
 import { createObjectRef } from '../utils';
 import { Image } from './image';
 import { Post } from './post';
+import { Space } from './space';
 
 /**
  * * Types
@@ -24,6 +25,11 @@ SpaceCollection.implement({
       type: Image,
       nullable: true,
       resolve: (spaceCollection) => spaceCollection.thumbnailId,
+    }),
+
+    space: t.field({
+      type: Space,
+      resolve: (spaceCollection) => spaceCollection.spaceId,
     }),
 
     posts: t.field({
