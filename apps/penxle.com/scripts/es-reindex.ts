@@ -1,17 +1,29 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Client } from '@elastic/elasticsearch';
 import arg from 'arg';
-import { and, eq, inArray, isNull } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, isNull } from 'drizzle-orm';
 import * as R from 'radash';
-import { database, PostRevisions, Posts, PostTags, Spaces, Tags } from '$lib/server/database';
-import { calculatePostReputation } from '$lib/server/utils/post';
+import {
+  database,
+  PostRevisions,
+  Posts,
+  PostTags,
+  SpaceCollectionPosts,
+  SpaceCollections,
+  Spaces,
+  Tags,
+} from '$lib/server/database';
+import { calculateCollectionReputation, calculatePostReputation } from '$lib/server/utils/post';
 import { getTagUsageCount } from '$lib/server/utils/tag';
 import { disassembleHangulString, InitialHangulString } from '$lib/utils';
+
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 export const elasticSearch = new Client({
   cloud: { id: process.env.PRIVATE_ELASTICSEARCH_CLOUD_ID! },
   auth: { apiKey: process.env.PRIVATE_ELASTICSEARCH_API_KEY! },
 });
+
+/* eslint-enable @typescript-eslint/no-non-null-assertion */
 
 const args = arg({
   '--production': Boolean,
@@ -69,7 +81,7 @@ for (let i = 0; ; i++) {
 
   const postReputations = await Promise.all(posts.map((post) => calculatePostReputation(post.id)));
 
-  const res = await elasticSearch.bulk({
+  await elasticSearch.bulk({
     index: indexName('posts'),
     operations: posts.flatMap((post, index) => [
       { index: { _id: post.id } },
@@ -90,10 +102,7 @@ for (let i = 0; ; i++) {
     ]),
   });
 
-  console.log(res.items.find((item) => item.index?.error));
-
   const tags = R.unique(tagRows, (tagRow) => tagRow.tagId);
-
   const tagUsageCounts = await Promise.all(tags.map((tag) => getTagUsageCount(tag.tagId)));
 
   await elasticSearch.bulk({
@@ -116,3 +125,50 @@ for (let i = 0; ; i++) {
 }
 
 console.log('Post & Tag indexing completed!');
+
+for (let i = 0; ; i++) {
+  const collections = await database
+    .selectDistinctOn([SpaceCollections.id], {
+      id: SpaceCollections.id,
+      name: SpaceCollections.name,
+      spaceId: Spaces.id,
+      thumbnailId: SpaceCollections.thumbnailId,
+      lastPostPublishedAt: Posts.publishedAt,
+    })
+    .from(SpaceCollections)
+    .innerJoin(Spaces, eq(SpaceCollections.spaceId, Spaces.id))
+    .innerJoin(SpaceCollectionPosts, eq(SpaceCollections.id, SpaceCollectionPosts.collectionId))
+    .innerJoin(Posts, eq(SpaceCollectionPosts.postId, Posts.id))
+    .where(and(eq(SpaceCollections.state, 'ACTIVE'), eq(Spaces.visibility, 'PUBLIC')))
+    .orderBy(asc(SpaceCollections.id), desc(Posts.publishedAt))
+    .limit(batchSize)
+    .offset(i * batchSize);
+
+  if (collections.length === 0) {
+    break;
+  }
+
+  const collectionReputations = await Promise.all(
+    collections.map((collection) => calculateCollectionReputation(collection.id)),
+  );
+
+  await elasticSearch.bulk({
+    index: indexName('collections'),
+    operations: collections.flatMap((collection, index) => [
+      { index: { _id: collection.id } },
+      {
+        name: collection.name,
+        space: {
+          id: collection.spaceId,
+        },
+        reputation: collectionReputations[index],
+        hasThumbnail: collection.thumbnailId !== null,
+        lastPostPublishedAt: collection.lastPostPublishedAt?.toDate(),
+      },
+    ]),
+  });
+
+  console.log(`Indexed ${i * batchSize + collections.length} collections`);
+}
+
+console.log('Collection indexing completed!');

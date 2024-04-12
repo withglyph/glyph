@@ -444,7 +444,7 @@ builder.queryFields((t) => ({
                     condition: mutedSpaceIds.length > 0,
                   },
                 ]),
-                should: [{ rank_feature: { field: 'reputation' } }],
+                should: [{ rank_feature: { field: 'reputation', boost: 5 } }, { term: { hasThumbnail: true } }],
               },
             },
 
