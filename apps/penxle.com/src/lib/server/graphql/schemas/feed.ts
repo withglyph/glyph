@@ -1,4 +1,4 @@
-import { and, count, desc, eq } from 'drizzle-orm';
+import { and, count, desc, eq, ne } from 'drizzle-orm';
 import * as R from 'radash';
 import { useCache } from '$lib/server/cache';
 import {
@@ -266,6 +266,91 @@ builder.queryFields((t) => ({
           ),
         )
         .then((rows) => rows.map((row) => row.Posts));
+    },
+  }),
+
+  recommendedTags: t.field({
+    type: [Tag],
+    resolve: async (_, __, context) => {
+      if (context.session) {
+        const [mutedTagIds, followingTagIds, recentlyViewedTagIds] = await Promise.all([
+          getMutedTagIds({ userId: context.session.userId }),
+          database
+            .select({ tagId: TagFollows.tagId })
+            .from(TagFollows)
+            .where(eq(TagFollows.userId, context.session.userId))
+            .then((rows) => rows.map((row) => row.tagId)),
+          database
+            .select({ tagId: PostTags.tagId })
+            .from(PostViews)
+            .innerJoin(PostTags, eq(PostTags.postId, PostViews.postId))
+            .where(and(eq(PostViews.userId, context.session.userId), ne(PostTags.kind, 'TRIGGER')))
+            .orderBy(desc(PostViews.viewedAt))
+            .limit(100)
+            .then((rows) => rows.map((row) => row.tagId)),
+        ]);
+
+        const searchResult = await elasticSearch.search({
+          index: indexName('tags'),
+          query: {
+            function_score: {
+              query: {
+                bool: {
+                  should: makeQueryContainers([
+                    { query: { rank_feature: { field: 'usageCount.TITLE' } } },
+                    {
+                      query: { ids: { values: recentlyViewedTagIds } },
+                      condition: recentlyViewedTagIds.length > 0,
+                    },
+                  ]),
+                  must_not: makeQueryContainers([
+                    {
+                      query: { ids: { values: mutedTagIds } },
+                      condition: mutedTagIds.length > 0,
+                    },
+                    {
+                      query: { ids: { values: followingTagIds } },
+                      condition: followingTagIds.length > 0,
+                    },
+                  ]),
+                },
+              },
+
+              functions: [
+                {
+                  random_score: { seed: Math.floor(Math.random() * 1000), field: '_seq_no' },
+                },
+              ],
+            },
+          },
+
+          size: 20,
+        });
+
+        return searchResultToIds(searchResult);
+      } else {
+        const searchResult = await elasticSearch.search({
+          index: indexName('tags'),
+          query: {
+            function_score: {
+              query: {
+                bool: {
+                  should: [{ rank_feature: { field: 'usageCount.TITLE' } }],
+                },
+              },
+              functions: [
+                {
+                  random_score: { seed: Math.floor(Math.random() * 1000), field: '_seq_no' },
+                },
+              ],
+            },
+          },
+
+          size: 20,
+        });
+
+        return searchResultToIds(searchResult);
+      }
     },
   }),
 
