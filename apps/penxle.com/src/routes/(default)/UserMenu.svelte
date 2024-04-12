@@ -257,7 +257,7 @@
                     </a>
 
                     <button
-                      class={center({ flex: 'none', size: '32px', paddingRight: '12px' })}
+                      class={center({ flex: 'none', size: '40px', paddingX: '12px' })}
                       type="button"
                       on:click={async () => {
                         const { permalink } = await createPost({ spaceId: space.id });
