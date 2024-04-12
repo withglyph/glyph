@@ -136,11 +136,11 @@
     })}
   >
     <p>
-      새소식 <mark class={css({ color: 'teal.500' })}>
-        {unreadNotifications.length}
-      </mark>
+      <span class={css({ fontWeight: 'medium' })}>새소식</span>
+      {unreadNotifications.length}
     </p>
-    <Button size="xs" variant="gray-outline" on:click={async () => await readAllNotifications()}>모두 읽기</Button>
+
+    <Button size="sm" variant="gray-outline" on:click={async () => await readAllNotifications()}>모두 읽기</Button>
   </div>
 </header>
 
@@ -159,17 +159,12 @@
               transition: 'common',
               _hover: { backgroundColor: 'gray.100' },
             },
-            notification.state === 'UNREAD' && { backgroundColor: 'teal.50' },
+            notification.state === 'UNREAD' && { backgroundColor: 'gray.50' },
           )}
           type="button"
           on:click={() => redirect(notification)}
         >
-          <div
-            class={css(
-              { display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: 'gray.500' },
-              notification.state === 'UNREAD' && { color: 'teal.500' },
-            )}
-          >
+          <div class={css({ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: 'gray.500' })}>
             {#if notification.__typename === 'SubscribeNotification'}
               <Icon icon={IconCheck} size={12} />
               스페이스 구독
@@ -198,14 +193,14 @@
           <time
             class={css({
               display: 'inline-block',
-              fontSize: '10px',
-              fontWeight: 'light',
+              fontSize: '11px',
               color: 'gray.400',
               textAlign: 'right',
               width: 'full',
             })}
+            datetime={notification.createdAt}
           >
-            {dayjs(notification.createdAt).formatAsDateTime()}
+            {dayjs(notification.createdAt).fromNow()}
           </time>
         </button>
       </li>

@@ -91,7 +91,7 @@
 
   const { anchor, floating } = createFloatingActions({
     placement: 'bottom-end',
-    offset: 8,
+    offset: 12,
   });
 
   const markNotificationAsRead = graphql(`
@@ -175,7 +175,7 @@
         size: '8px',
         top: '4px',
         right: '4px',
-        backgroundColor: 'teal.500',
+        backgroundColor: 'cyan.400',
       })}
     />
   {/if}
@@ -195,11 +195,11 @@
     class={flex({
       direction: 'column',
       position: 'absolute',
-      borderRadius: '10px',
+      borderWidth: '1px',
+      borderColor: 'gray.600',
       width: 'full',
       maxWidth: '375px',
       backgroundColor: 'gray.5',
-      boxShadow: '[0px 5px 22px 0px {colors.gray.900/6}]',
       zIndex: '50',
     })}
     use:floating
@@ -215,7 +215,17 @@
         height: '55px',
       })}
     >
-      <p class={css({ fontSize: '16px', fontWeight: 'semibold' })}>알림</p>
+      <p
+        class={css({
+          paddingLeft: '20px',
+          fontSize: '16px',
+          fontWeight: 'semibold',
+          textAlign: 'center',
+          width: 'full',
+        })}
+      >
+        알림
+      </p>
 
       <button type="button" on:click={() => (open = false)}>
         <Icon icon={IconX} size={20} />
@@ -234,7 +244,8 @@
       })}
     >
       <p>
-        새소식 <span class={css({ fontSize: '16px', color: 'teal.500' })}>{unreadNotifications.length}</span>
+        <span class={css({ fontWeight: 'medium' })}>새소식</span>
+        {unreadNotifications.length}
       </p>
 
       {#if $user.notifications.length > 0}
@@ -263,17 +274,12 @@
                 transition: 'common',
                 _hover: { backgroundColor: 'gray.100' },
               },
-              notification.state === 'UNREAD' && { backgroundColor: 'teal.50' },
+              notification.state === 'UNREAD' && { backgroundColor: 'gray.50' },
             )}
             type="button"
             on:click={() => redirect(notification)}
           >
-            <div
-              class={css(
-                flex.raw({ align: 'center', gap: '4px', fontSize: '13px', color: 'gray.500' }),
-                notification.state === 'UNREAD' && { color: 'teal.500' },
-              )}
-            >
+            <div class={css(flex.raw({ align: 'center', gap: '4px', fontSize: '13px', color: 'gray.500' }))}>
               {#if notification.__typename === 'SubscribeNotification'}
                 <Icon icon={IconCheck} size={12} />
                 스페이스 구독
@@ -303,13 +309,13 @@
               class={css({
                 display: 'inline-block',
                 width: 'full',
-                fontSize: '10px',
-                fontWeight: 'light',
+                fontSize: '11px',
                 textAlign: 'right',
                 color: 'gray.400',
               })}
+              datetime={notification.createdAt}
             >
-              {dayjs(notification.createdAt).formatAsDateTime()}
+              {dayjs(notification.createdAt).fromNow()}
             </time>
           </button>
         </li>
@@ -330,22 +336,19 @@
         </li>
       {/each}
 
-      {#if $user.notifications.length > 20}
-        <li>
-          <a
-            class={css({
+      {#if $user.notifications.length > 2}
+        <li class={css({ marginTop: '32px', padding: '20px' })}>
+          <Button
+            style={css.raw({
               display: 'inline-block',
-              paddingY: '16px',
               width: 'full',
-              textAlign: 'center',
-              fontSize: '14px',
-              fontWeight: 'medium',
-              color: 'gray.400',
             })}
             href="/me/notifications"
+            type="link"
+            variant="gray-sub-fill"
           >
             더보기
-          </a>
+          </Button>
         </li>
       {/if}
     </ul>
