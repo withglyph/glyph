@@ -6,8 +6,8 @@
   import Post from '../Post.svelte';
 
   $: query = graphql(`
-    query FeedSpacesPage_Query {
-      spaceFeed {
+    query FeedPage_Query {
+      followingFeed {
         id
         ...Feed_Post_post
       }
@@ -39,7 +39,7 @@
   </h1>
 
   <ul class={flex({ direction: 'column', flexGrow: '1' })}>
-    {#each $query.spaceFeed as post (post.id)}
+    {#each $query.followingFeed as post (post.id)}
       <li
         class={css({
           _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' },
