@@ -38,6 +38,7 @@
       backgroundColor: 'gray.5',
       zIndex: '100',
       maxWidth: '230px',
+      wordBreak: 'keep-all',
     })}
     role="tooltip"
     use:floating
