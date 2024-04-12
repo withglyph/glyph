@@ -4,10 +4,11 @@
   import IconDotsVertical from '~icons/tabler/dots-vertical';
   import IconPlus from '~icons/tabler/plus';
   import IconShare2 from '~icons/tabler/share-2';
+  import IconVolume3 from '~icons/tabler/volume-3';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon, Image, ShareLinkPopover } from '$lib/components';
+  import { Alert, Icon, Image, ShareLinkPopover } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { Button } from '$lib/components/v2';
@@ -17,6 +18,7 @@
 
   let moveToLoginOpen = false;
   let revealMutedSpace = false;
+  let unmuteSpaceOpen = false;
 
   $: query = graphql(`
     query SpaceLayout_Query($slug: String!) {
@@ -236,6 +238,17 @@
               </Button>
             {/if}
 
+            {#if $query.space.muted}
+              <Button
+                style={css.raw({ outlineColor: 'red.200!', size: '37px' })}
+                size="sm"
+                variant="gray-outline"
+                on:click={() => (unmuteSpaceOpen = true)}
+              >
+                <Icon style={css.raw({ color: 'red.600' })} icon={IconVolume3} />
+              </Button>
+            {/if}
+
             <ShareLinkPopover
               disabled={$query.space.visibility === 'PRIVATE' && !$query.space.meAsMember}
               href="{$page.url.origin}/{$query.space.slug}"
@@ -279,14 +292,7 @@
                 <Icon slot="value" style={css.raw({ '& *': { strokeWidth: '[2]' } })} icon={IconDotsVertical} />
 
                 {#if $query.space.muted}
-                  <MenuItem
-                    on:click={async () => {
-                      await unmuteSpace({ spaceId: $query.space.id });
-                      mixpanel.track('space:unmute', { spaceId: $query.space.id, via: 'space' });
-                    }}
-                  >
-                    스페이스 숨기기 해제
-                  </MenuItem>
+                  <MenuItem on:click={() => (unmuteSpaceOpen = true)}>스페이스 숨기기 해제</MenuItem>
                 {:else}
                   <MenuItem
                     on:click={async () => {
@@ -363,5 +369,24 @@
     </div>
   </div>
 </main>
+
+<Alert bind:open={unmuteSpaceOpen}>
+  <svelte:fragment slot="title">스페이스 숨기기를 해제할까요?</svelte:fragment>
+
+  <svelte:fragment slot="action">
+    <Button size="lg" variant="gray-outline" on:click={() => (unmuteSpaceOpen = false)}>취소</Button>
+    <Button
+      size="lg"
+      variant="red-fill"
+      on:click={async () => {
+        await unmuteSpace({ spaceId: $query.space.id });
+        mixpanel.track('space:unmute', { spaceId: $query.space.id, via: 'space' });
+        unmuteSpaceOpen = false;
+      }}
+    >
+      해제
+    </Button>
+  </svelte:fragment>
+</Alert>
 
 <LoginRequireAlert bind:open={moveToLoginOpen} />
