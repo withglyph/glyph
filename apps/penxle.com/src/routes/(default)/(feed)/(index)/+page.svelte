@@ -20,12 +20,6 @@
           id
           name
         }
-
-        posts {
-          id
-          ...Feed_Post_post
-          ...Feed_PostCard_post
-        }
       }
 
       recommendFeed {
@@ -48,49 +42,24 @@
 
         posts {
           id
-          ...Feed_Post_post
           ...Feed_PostCard_post
         }
+      }
+
+      collectionFeed {
+        id
+        name
       }
     }
   `);
 
-  const tags = [
-    { id: '1', name: '태그 1' },
-    { id: '2', name: '태그 2' },
-    { id: '3', name: '태그 3' },
-    { id: '4', name: '태그 4' },
-    { id: '5', name: '태그 5' },
-    { id: '6', name: '태그 6' },
-    { id: '7', name: '태그 7' },
-    { id: '8', name: '태그 8' },
-    { id: '9', name: '태그 9' },
-    { id: '10', name: '태그 10' },
-    { id: '11', name: '태그 11' },
-    { id: '12', name: '태그 12' },
-    { id: '13', name: '태그 13' },
-    { id: '14', name: '태그 14' },
-    { id: '15', name: '태그 15' },
-    { id: '16', name: '태그 16' },
-    { id: '17', name: '태그 17' },
-    { id: '18', name: '태그 18' },
-    { id: '19', name: '태그 19' },
-    { id: '20', name: '태그 20' },
-  ];
+  let activeFeaturedTagId: string;
+  $: if (!activeFeaturedTagId) {
+    activeFeaturedTagId = $query.featuredTagFeed[0].tag.id;
+  }
 
-  let checkedTags = tags[0];
-
-  const collections = [
-    '컬렉션 제목 1',
-    '컬렉션 제목 2',
-    '컬렉션 제목 3',
-    '컬렉션 제목 4',
-    '컬렉션 제목 5',
-    '컬렉션 제목 6',
-    '컬렉션 제목 7',
-    '컬렉션 제목 8',
-    '컬렉션 제목 9',
-  ];
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  $: activeFeaturedTagFeed = $query.featuredTagFeed.find(({ tag }) => tag.id === activeFeaturedTagId)!;
 </script>
 
 <svelte:head>
@@ -169,11 +138,9 @@
         size={20}
       />
 
-      {#if $query.me}
-        {#each $query.me.posts as post (post.id)}
-          <PostCard style={css.raw({ width: { base: '200px', sm: '218px' } })} $post={post} />
-        {/each}
-      {/if}
+      {#each $query.recommendFeed as post (post.id)}
+        <PostCard style={css.raw({ width: { base: '200px', sm: '218px' } })} $post={post} />
+      {/each}
 
       <Icon
         slot="right-icon"
@@ -203,35 +170,33 @@
         columnGap: '60px',
       })}
     >
-      {#if $query.me}
-        {#each $query.me.posts.slice(0, 3) as post, index (post.id)}
-          <li
-            class={css({
-              sm: { _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' } },
-            })}
-          >
-            <Post
-              style={css.raw(index === 0 && { paddingTop: '0' }, index === 1 && { sm: { paddingTop: '0' } })}
-              $post={post}
-              showSpace
-            />
-          </li>
-        {/each}
-        {#each $query.me.posts.slice(3, 6) as post, index (post.id)}
-          <li
-            class={css(
-              {
-                hideBelow: 'sm',
-              },
-              index === 0 && {
-                _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' },
-              },
-            )}
-          >
-            <Post $post={post} showSpace />
-          </li>
-        {/each}
-      {/if}
+      {#each $query.recommendFeed.slice(0, 3) as post, index (post.id)}
+        <li
+          class={css({
+            sm: { _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' } },
+          })}
+        >
+          <Post
+            style={css.raw(index === 0 && { paddingTop: '0' }, index === 1 && { sm: { paddingTop: '0' } })}
+            $post={post}
+            showSpace
+          />
+        </li>
+      {/each}
+      {#each $query.recommendFeed.slice(3, 6) as post, index (post.id)}
+        <li
+          class={css(
+            {
+              hideBelow: 'sm',
+            },
+            index === 0 && {
+              _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' },
+            },
+          )}
+        >
+          <Post $post={post} showSpace />
+        </li>
+      {/each}
     </ul>
   </div>
 </div>
@@ -258,40 +223,44 @@
         scrollbar: 'hidden',
       })}
     >
-      {#each $query.featuredTagFeed.slice(0, 5) as { tag } (tag.id)}
-        <Tag
-          style={css.raw({
-            'paddingX': '12px',
-            'backgroundColor': 'gray.800',
-            'minWidth': 'fit',
-            'color': 'gray.300',
-            '&:has(:checked)': {
+      {#each $query.featuredTagFeed as { tag } (tag.id)}
+        <button
+          class={flex({
+            alignItems: 'center',
+            paddingX: '12px',
+            paddingY: '6px',
+            minWidth: 'fit',
+            height: 'fit',
+            fontSize: '13px',
+            fontWeight: 'medium',
+            color: 'gray.300',
+            backgroundColor: 'gray.800',
+            transition: 'common',
+            truncate: true,
+            _hover: { opacity: '[0.8]' },
+            _selected: {
               borderWidth: '0',
               backgroundColor: 'gray.50',
               color: 'gray.900',
             },
           })}
-          as="label"
-          checked={checkedTags.id === tag.id}
-          size="lg"
-          on:change={(e) => {
-            if (e.currentTarget.checked) checkedTags = tag;
-          }}
+          aria-selected={tag.id === activeFeaturedTagId}
+          role="tab"
+          type="button"
+          on:click={() => (activeFeaturedTagId = tag.id)}
         >
           #{tag.name}
-        </Tag>
+        </button>
       {/each}
     </div>
 
     <div class={grid({ columns: { base: 2, sm: 5 }, columnGap: '14px', rowGap: '36px' })}>
-      {#if $query.me}
-        {#each $query.me?.posts.slice(0, 6) as post (post.id)}
-          <PostCard $post={post} showTags theme="dark" />
-        {/each}
-        {#each $query.me.posts.slice(6, 10) as post (post.id)}
-          <PostCard style={css.raw({ hideBelow: 'sm' })} $post={post} showTags theme="dark" />
-        {/each}
-      {/if}
+      {#each activeFeaturedTagFeed.posts.slice(0, 6) as post (post.id)}
+        <PostCard $post={post} showTags theme="dark" />
+      {/each}
+      {#each activeFeaturedTagFeed.posts.slice(6, 10) as post (post.id)}
+        <PostCard style={css.raw({ hideBelow: 'sm' })} $post={post} showTags theme="dark" />
+      {/each}
     </div>
   </div>
 </div>
@@ -301,7 +270,7 @@
     <h2 class={css({ marginBottom: '14px', fontSize: '21px', fontWeight: 'semibold' })}>많이 찾은 컬렉션</h2>
 
     <ul class={css({ sm: { display: 'grid', gridTemplateColumns: '3', columnGap: '10px' } })}>
-      {#each collections.slice(0, 6) as collection (collection)}
+      {#each $query.collectionFeed.slice(0, 6) as collection (collection.id)}
         <li
           class={flex({
             align: 'center',
@@ -351,7 +320,7 @@
           </div>
         </li>
       {/each}
-      {#each collections.slice(6, 9) as collection (collection)}
+      {#each $query.collectionFeed.slice(6, 9) as collection (collection.id)}
         <li
           class={flex({
             align: 'center',
@@ -381,7 +350,7 @@
                 truncate: true,
               })}
             >
-              {collection}
+              {collection.name}
             </h3>
 
             <div class={flex({ align: 'center', gap: '4px', truncate: true })}>

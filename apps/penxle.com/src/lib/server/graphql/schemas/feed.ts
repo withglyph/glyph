@@ -470,7 +470,7 @@ builder.queryFields((t) => ({
               },
               {
                 exp: {
-                  lastUpdatedAt: {
+                  lastPostPublishedAt: {
                     scale: '30d',
                     offset: '7d',
                   },

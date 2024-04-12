@@ -2,4 +2,5 @@ import type { GraphCacheConfig } from '$glitch';
 
 export const keys: GraphCacheConfig['keys'] = {
   Flash: () => null,
+  FeaturedTag: () => null,
 };
