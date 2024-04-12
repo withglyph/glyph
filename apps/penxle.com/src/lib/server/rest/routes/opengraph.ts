@@ -13,10 +13,10 @@ import { createRouter } from '../router';
 
 export const opengraph = createRouter();
 
-const DefaultCover = await got('https://glyph.pub/assets/opengraph/default-cover.png').buffer();
-const PretendardLight = await got('https://glyph.pub/assets/fonts/Pretendard-Light.otf').buffer();
-const PretendardRegular = await got('https://glyph.pub/assets/fonts/Pretendard-Regular.otf').buffer();
-const PretendardSemibold = await got('https://glyph.pub/assets/fonts/Pretendard-SemiBold.otf').buffer();
+const DefaultCover = await got('https://glyph.pub/assets/opengraph/default-cover-light.png').buffer();
+const SUITRegular = await got('https://glyph.pub/assets/fonts/SUIT-Regular.otf').buffer();
+const SUITMedium = await got('https://glyph.pub/assets/fonts/SUIT-Medium.otf').buffer();
+const SUITBold = await got('https://glyph.pub/assets/fonts/SUIT-Bold.otf').buffer();
 const KoPubWorldDotumLight = await got('https://glyph.pub/assets/fonts/KoPubWorldDotumLight.otf').buffer();
 const KoPubWorldDotumMedium = await got('https://glyph.pub/assets/fonts/KoPubWorldDotumMedium.otf').buffer();
 const KoPubWorldDotumBold = await got('https://glyph.pub/assets/fonts/KoPubWorldDotumBold.otf').buffer();
@@ -60,7 +60,7 @@ opengraph.get('/opengraph/post/:postId', async (request) => {
                   type: 'img',
                   props: {
                     src: logoUrl,
-                    width: 125,
+                    width: 126,
                     style: {
                       opacity: 0.4,
                     },
@@ -71,12 +71,12 @@ opengraph.get('/opengraph/post/:postId', async (request) => {
                   props: {
                     children: post.publishedRevision.title ?? '(제목 없음)',
                     style: {
-                      marginTop: '60px',
                       display: 'block',
-                      fontSize: '60px',
-                      fontWeight: 600,
+                      marginTop: '12px',
+                      fontSize: '58px',
+                      fontWeight: 700,
                       lineHeight: '1.2',
-                      letterSpacing: '0.01em',
+                      letterSpacing: '-0.004em',
                       wordBreak: 'break-all',
                       lineClamp: 2,
                     },
@@ -89,15 +89,15 @@ opengraph.get('/opengraph/post/:postId', async (request) => {
                         props: {
                           children: post.publishedRevision.subtitle,
                           style: {
-                            marginTop: '8px',
                             display: 'block',
-                            fontSize: '32px',
-                            fontWeight: 400,
-                            lineHeight: '1.2',
-                            letterSpacing: '0.01em',
-                            opacity: 0.8,
+                            marginTop: '2px',
+                            paddingLeft: '2px',
+                            fontSize: '30px',
+                            fontWeight: 500,
+                            lineHeight: '1.44',
+                            letterSpacing: '-0.004em',
                             wordBreak: 'break-all',
-                            lineClamp: 1,
+                            lineClamp: 2,
                           },
                         },
                       },
@@ -117,11 +117,11 @@ opengraph.get('/opengraph/post/:postId', async (request) => {
                     children: post.space.name,
                     style: {
                       display: 'block',
+                      opacity: 0.7,
                       fontSize: '28px',
-                      fontWeight: 300,
+                      fontWeight: 400,
                       lineHeight: '1.2',
-                      letterSpacing: '0.01em',
-                      opacity: 0.8,
+                      letterSpacing: '-0.004em',
                       wordBreak: 'break-all',
                       lineClamp: 1,
                     },
@@ -132,13 +132,13 @@ opengraph.get('/opengraph/post/:postId', async (request) => {
                   props: {
                     children: `by ${post.member.name}`,
                     style: {
-                      marginTop: '3px',
                       display: 'block',
-                      fontSize: '27px',
-                      fontWeight: 300,
+                      opacity: 0.6,
+                      marginTop: '3px',
+                      fontSize: '28px',
+                      fontWeight: 400,
                       lineHeight: '1.2',
-                      letterSpacing: '0.01em',
-                      opacity: 0.7,
+                      letterSpacing: '-0.004em',
                       wordBreak: 'break-all',
                       lineClamp: 1,
                     },
@@ -148,7 +148,7 @@ opengraph.get('/opengraph/post/:postId', async (request) => {
               style: {
                 display: 'flex',
                 flexDirection: 'column',
-                width: post.thumbnail ? '620px' : '100%',
+                width: '100%',
                 height: '100%',
               },
             },
@@ -163,20 +163,8 @@ opengraph.get('/opengraph/post/:postId', async (request) => {
                     height: 630,
                     style: {
                       position: 'absolute',
-                      right: 0,
+                      right: '0',
                       objectFit: 'cover',
-                    },
-                  },
-                },
-                {
-                  type: 'div',
-                  props: {
-                    style: {
-                      position: 'absolute',
-                      right: 0,
-                      width: '420px',
-                      height: '630px',
-                      backgroundColor: 'rgba(0, 0, 0, 0.2)',
                     },
                   },
                 },
@@ -188,10 +176,13 @@ opengraph.get('/opengraph/post/:postId', async (request) => {
           flexDirection: 'column',
           width: '100%',
           height: '100%',
-          padding: '80px',
-          color: '#ffffff',
-          backgroundColor: '#18181B',
-          fontFamily: 'Pretendard, KoPubWorldDotum',
+          paddingTop: '117px',
+          paddingBottom: '86px',
+          paddingLeft: '54px',
+          paddingRight: post.thumbnail ? '474px' : '54px',
+          color: '#FDFDFD',
+          backgroundColor: '#171717',
+          fontFamily: 'SUIT, KoPubWorldDotum',
         },
       },
     },
@@ -199,12 +190,12 @@ opengraph.get('/opengraph/post/:postId', async (request) => {
       width: 1200,
       height: 630,
       fonts: [
-        { name: 'Pretendard', data: PretendardLight, weight: 300, style: 'normal' },
-        { name: 'Pretendard', data: PretendardRegular, weight: 400, style: 'normal' },
-        { name: 'Pretendard', data: PretendardSemibold, weight: 600, style: 'normal' },
-        { name: 'KoPubWorldDotum', data: KoPubWorldDotumLight, weight: 300, style: 'normal' },
-        { name: 'KoPubWorldDotum', data: KoPubWorldDotumMedium, weight: 400, style: 'normal' },
-        { name: 'KoPubWorldDotum', data: KoPubWorldDotumBold, weight: 600, style: 'normal' },
+        { name: 'SUIT', data: SUITRegular, weight: 400, style: 'normal' },
+        { name: 'SUIT', data: SUITMedium, weight: 500, style: 'normal' },
+        { name: 'SUIT', data: SUITBold, weight: 700, style: 'normal' },
+        { name: 'KoPubWorldDotum', data: KoPubWorldDotumLight, weight: 400, style: 'normal' },
+        { name: 'KoPubWorldDotum', data: KoPubWorldDotumMedium, weight: 500, style: 'normal' },
+        { name: 'KoPubWorldDotum', data: KoPubWorldDotumBold, weight: 700, style: 'normal' },
       ],
       loadAdditionalAsset: async (code, segment) => {
         if (code === 'emoji') {
