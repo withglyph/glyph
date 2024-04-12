@@ -16,7 +16,7 @@
     },
     variants: {
       size: {
-        12: { 'size': '12px', '& *': { strokeWidth: '[1]' } },
+        12: { 'size': '12px', '& *': { strokeWidth: '[1.5]' } },
         16: { 'size': '16px', '& *': { strokeWidth: '[1.5]' } },
         20: { 'size': '20px', '& *': { strokeWidth: '[1.5]' } },
         24: { 'size': '24px', '& *': { strokeWidth: '[1.5]' } },
