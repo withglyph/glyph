@@ -598,27 +598,10 @@ Post.implement({
             },
           },
 
-          size: 3,
+          size: 8,
         });
 
-        const postIds = searchResultToIds(searchResult);
-
-        return postIds.length > 0
-          ? await database
-              .select({ Posts })
-              .from(Posts)
-              .innerJoin(Spaces, eq(Posts.spaceId, Spaces.id))
-              .where(
-                and(
-                  inArray(Posts.id, postIds),
-                  eq(Posts.state, 'PUBLISHED'),
-                  eq(Posts.visibility, 'PUBLIC'),
-                  eq(Spaces.state, 'ACTIVE'),
-                  eq(Spaces.visibility, 'PUBLIC'),
-                ),
-              )
-              .then((rows) => rows.map((row) => row.Posts))
-          : [];
+        return searchResultToIds(searchResult);
       },
     }),
 
