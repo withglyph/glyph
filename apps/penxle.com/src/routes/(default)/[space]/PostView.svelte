@@ -788,6 +788,7 @@
               <dl class={flex({ wrap: 'wrap' })}>
                 <div
                   class={flex({
+                    align: 'center',
                     wrap: 'wrap',
                     marginBottom: '14px',
                     _after: {
@@ -824,7 +825,7 @@
                 </div>
 
                 {#if $query.post.pairs.length > 0}
-                  <div class={flex({ marginBottom: '14px' })}>
+                  <div class={flex({ align: 'center', marginBottom: '14px' })}>
                     <dt
                       class={css({
                         flex: 'none',
@@ -852,6 +853,7 @@
                 {#if $query.post.tags.some(({ kind }) => kind === 'TITLE')}
                   <div
                     class={flex({
+                      align: 'center',
                       wrap: 'wrap',
                       marginBottom: '14px',
                       _after: {
@@ -897,6 +899,7 @@
                 {#if $query.post.tags.some(({ kind }) => kind === 'CHARACTER')}
                   <div
                     class={flex({
+                      align: 'center',
                       wrap: 'wrap',
                       marginBottom: '14px',
                       _after: {
@@ -942,6 +945,7 @@
                 {#if $query.post.tags.some(({ kind }) => kind === 'COUPLING')}
                   <div
                     class={flex({
+                      align: 'center',
                       wrap: 'wrap',
                       marginBottom: '14px',
                       _after: {
@@ -985,7 +989,7 @@
                 {/if}
 
                 {#if $query.post.tags.some(({ kind }) => kind === 'EXTRA')}
-                  <div class={flex({ marginBottom: '14px' })}>
+                  <div class={flex({ align: 'center', marginBottom: '14px' })}>
                     <dt
                       class={flex({
                         flex: 'none',
@@ -1259,7 +1263,7 @@
           </div>
         {/if}
       </div>
-    {:else}
+    {:else if $query.post.previousPost || $query.post.nextPost}
       <div class={css({ smDown: { marginX: '-20px' }, sm: { borderWidth: '1px', borderColor: 'gray.200' } })}>
         {#if $query.post.previousPost}
           <a
