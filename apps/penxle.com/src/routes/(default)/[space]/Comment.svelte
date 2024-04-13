@@ -19,10 +19,12 @@
   import type { PostPage_Comment_postComment, PostPage_Comment_query } from '$glitch';
 
   export let editing = false;
+  export let parentId: string | undefined = undefined;
+
   let repliesOpen = false;
   let replyInputOpen = false;
   let blockMasqueradeOpen = false;
-  export let parentId: string | undefined = undefined;
+  let deleteCommentOpen = false;
 
   let _postComment: PostPage_Comment_postComment;
   let _query: PostPage_Comment_query;
@@ -286,20 +288,7 @@
               <MenuItem on:click={() => (blockMasqueradeOpen = true)}>차단</MenuItem>
             {/if}
             {#if $query.post.space.meAsMember || $query.post.space.commentProfile?.id === $postComment.profile.id}
-              <MenuItem
-                on:click={async () => {
-                  await deleteComment({ commentId: $postComment.id });
-
-                  if (!$postComment.masquerade || !$query.post.space) return;
-
-                  mixpanel.track('comment:delete', {
-                    masqueradeId: $postComment.masquerade.id,
-                    spaceId: $query.post.space.id,
-                  });
-                }}
-              >
-                삭제
-              </MenuItem>
+              <MenuItem on:click={() => (deleteCommentOpen = true)}>삭제</MenuItem>
             {/if}
           </Menu>
         </div>
@@ -492,6 +481,32 @@
         }}
       >
         차단
+      </Button>
+    </svelte:fragment>
+  </Alert>
+
+  <Alert bind:open={deleteCommentOpen}>
+    <svelte:fragment slot="title">댓글을 삭제하시겠어요?</svelte:fragment>
+
+    <svelte:fragment slot="action">
+      <Button size="lg" variant="gray-sub-fill" on:click={() => (deleteCommentOpen = false)}>취소</Button>
+      <Button
+        size="lg"
+        variant="red-fill"
+        on:click={async () => {
+          await deleteComment({ commentId: $postComment.id });
+
+          if (!$postComment.masquerade || !$query.post.space) return;
+
+          mixpanel.track('comment:delete', {
+            masqueradeId: $postComment.masquerade.id,
+            spaceId: $query.post.space.id,
+          });
+
+          deleteCommentOpen = false;
+        }}
+      >
+        삭제
       </Button>
     </svelte:fragment>
   </Alert>
