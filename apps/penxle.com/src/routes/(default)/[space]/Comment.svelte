@@ -20,6 +20,7 @@
 
   export let editing = false;
   export let parentId: string | undefined = undefined;
+  export let visible = false;
 
   let repliesOpen = false;
   let replyInputOpen = false;
@@ -85,6 +86,10 @@
 
             children {
               id
+
+              profile {
+                id
+              }
             }
           }
         }
@@ -198,6 +203,10 @@
       }
     }
   `);
+
+  $: if (!parentId) {
+    visible = $query.post.space?.commentProfile?.id === $postComment.profile.id || !!$query.post.space?.meAsMember;
+  }
 </script>
 
 {#if $query.post.space}
@@ -293,138 +302,136 @@
           </Menu>
         </div>
 
-        {#if $postComment.visibility === 'PRIVATE' && $query.post.space.commentProfile?.id !== $postComment.profile.id && !$query.post.space.meAsMember}
+        {#if $postComment.visibility === 'PRIVATE' && !visible}
           <p class={css({ fontSize: '14px', color: 'gray.400' })}>비밀댓글이에요</p>
+        {:else if $postComment.state === 'INACTIVE'}
+          <p class={css({ fontSize: '14px', color: 'gray.400' })}>삭제된 댓글이에요</p>
         {:else}
-          {#if $postComment.state === 'INACTIVE'}
-            <p class={css({ fontSize: '14px', color: 'gray.400' })}>삭제된 댓글이에요</p>
-          {:else}
-            <p class={css({ fontSize: '14px', whiteSpace: 'pre-wrap', wordBreak: 'break-all' })}>
-              {$postComment.content}
-            </p>
+          <p class={css({ fontSize: '14px', whiteSpace: 'pre-wrap', wordBreak: 'break-all' })}>
+            {$postComment.content}
+          </p>
+        {/if}
 
-            <time
-              class={css({ display: 'inline-block', marginTop: '4px', fontSize: '12px', color: 'gray.500' })}
-              datetime={$postComment.createdAt}
-            >
-              {dayjs($postComment.createdAt).formatAsDateTime()}
-            </time>
+        <time
+          class={css({ display: 'inline-block', marginTop: '4px', fontSize: '12px', color: 'gray.500' })}
+          datetime={$postComment.createdAt}
+        >
+          {dayjs($postComment.createdAt).formatAsDateTime()}
+        </time>
 
-            <div class={flex({ align: 'center', justify: 'space-between', height: '37px' })}>
-              <div class={flex({ align: 'center', marginTop: '6px' })}>
-                {#if !parentId}
-                  <button
-                    class={flex({
-                      align: 'center',
-                      marginRight: '14px',
-                      paddingY: '9px',
-                      fontSize: '13px',
-                      fontWeight: 'medium',
-                      color: 'gray.500',
-                      _after: {
-                        content: '""',
-                        display: 'block',
-                        width: '1px',
-                        height: '10px',
-                        backgroundColor: 'gray.100',
-                        marginLeft: '14px',
-                      },
-                    })}
-                    type="button"
-                    on:click={() => (replyInputOpen = !replyInputOpen)}
-                  >
-                    답글
-                  </button>
-                {/if}
-
+        <div class={flex({ align: 'center', justify: 'space-between', height: '37px' })}>
+          {#if ($postComment.visibility === 'PUBLIC' && $postComment.state === 'ACTIVE') || visible}
+            <div class={flex({ align: 'center', marginTop: '6px' })}>
+              {#if !parentId}
                 <button
                   class={flex({
                     align: 'center',
-                    gap: '2px',
-                    fontSize: '14px',
+                    marginRight: '14px',
+                    paddingY: '9px',
+                    fontSize: '13px',
                     fontWeight: 'medium',
                     color: 'gray.500',
-                    height: '37px',
+                    _after: {
+                      content: '""',
+                      display: 'block',
+                      width: '1px',
+                      height: '10px',
+                      backgroundColor: 'gray.100',
+                      marginLeft: '14px',
+                    },
                   })}
                   type="button"
-                  on:click={async () => {
-                    if ($postComment.liked) {
-                      await unlikeComment({ commentId: $postComment.id });
-                      mixpanel.track('comment:unlike', { postId: $query.post.id, commentId: $postComment.id });
-                    } else {
-                      await likeComment({ commentId: $postComment.id });
-                      mixpanel.track('comment:like', { postId: $query.post.id, commentId: $postComment.id });
-                    }
-                  }}
+                  on:click={() => (replyInputOpen = !replyInputOpen)}
                 >
-                  {#if $postComment.liked}
-                    <Icon icon={IconHeartFilled} />
-                  {:else}
-                    <Icon icon={IconHeart} />
-                  {/if}
-                  {#if $postComment.likeCount > 0}
-                    {$postComment.likeCount}
-                  {/if}
+                  답글
                 </button>
-              </div>
-
-              {#if $postComment.likedByPostUser}
-                <div
-                  class={center({
-                    position: 'relative',
-                    borderRadius: 'full',
-                    outlineWidth: '1px',
-                    outlineColor: 'gray.900',
-                    marginRight: '7px',
-                    size: '24px',
-                  })}
-                >
-                  {#if $query.post.member}
-                    <Avatar
-                      style={css.raw({ borderRadius: 'full', size: '24px' })}
-                      $profile={$query.post.member.profile}
-                    />
-                  {/if}
-
-                  <Icon
-                    style={css.raw({
-                      position: 'absolute',
-                      bottom: '-4px',
-                      right: '-4px',
-                      color: 'gray.900',
-                    })}
-                    icon={IconHeartFilled}
-                  />
-                </div>
               {/if}
+
+              <button
+                class={flex({
+                  align: 'center',
+                  gap: '2px',
+                  fontSize: '14px',
+                  fontWeight: 'medium',
+                  color: 'gray.500',
+                  height: '37px',
+                })}
+                type="button"
+                on:click={async () => {
+                  if ($postComment.liked) {
+                    await unlikeComment({ commentId: $postComment.id });
+                    mixpanel.track('comment:unlike', { postId: $query.post.id, commentId: $postComment.id });
+                  } else {
+                    await likeComment({ commentId: $postComment.id });
+                    mixpanel.track('comment:like', { postId: $query.post.id, commentId: $postComment.id });
+                  }
+                }}
+              >
+                {#if $postComment.liked}
+                  <Icon icon={IconHeartFilled} />
+                {:else}
+                  <Icon icon={IconHeart} />
+                {/if}
+                {#if $postComment.likeCount > 0}
+                  {$postComment.likeCount}
+                {/if}
+              </button>
             </div>
           {/if}
 
-          {#if !parentId && $postComment.children.length > 0}
-            <button
-              class={flex({
-                align: 'center',
-                gap: '4px',
-                marginTop: '2px',
-                paddingY: '6px',
-                fontSize: '13px',
-                fontWeight: 'medium',
-                color: 'gray.500',
+          {#if $postComment.likedByPostUser}
+            <div
+              class={center({
+                position: 'relative',
+                borderRadius: 'full',
+                outlineWidth: '1px',
+                outlineColor: 'gray.900',
+                marginLeft: 'auto',
+                marginRight: '7px',
+                size: '24px',
               })}
-              type="button"
-              on:click={() => {
-                repliesOpen = !repliesOpen;
-                replyInputOpen = repliesOpen ? true : false;
-              }}
             >
-              {$postComment.children.length}개의 답글
-              {#if repliesOpen}
-                <Icon icon={IconCaretUpFilled} />
-              {:else}
-                <Icon icon={IconCaretDownFilled} />
+              {#if $query.post.member}
+                <Avatar style={css.raw({ borderRadius: 'full', size: '24px' })} $profile={$query.post.member.profile} />
               {/if}
-            </button>
+
+              <Icon
+                style={css.raw({
+                  position: 'absolute',
+                  bottom: '-4px',
+                  right: '-4px',
+                  color: 'gray.900',
+                })}
+                icon={IconHeartFilled}
+              />
+            </div>
           {/if}
+        </div>
+
+        {#if !parentId && $postComment.children.length > 0}
+          <button
+            class={flex({
+              align: 'center',
+              gap: '4px',
+              marginTop: '2px',
+              paddingY: '6px',
+              fontSize: '13px',
+              fontWeight: 'medium',
+              color: 'gray.500',
+            })}
+            type="button"
+            on:click={() => {
+              repliesOpen = !repliesOpen;
+              replyInputOpen = repliesOpen ? true : false;
+            }}
+          >
+            {$postComment.children.length}개의 답글
+            {#if repliesOpen}
+              <Icon icon={IconCaretUpFilled} />
+            {:else}
+              <Icon icon={IconCaretDownFilled} />
+            {/if}
+          </button>
         {/if}
       </div>
     {/if}
@@ -432,17 +439,22 @@
 
   {#if repliesOpen}
     {#each $postComment.children as reply (reply)}
-      <svelte:self $postComment={reply} {$query} parentId={$postComment.id} />
+      <svelte:self
+        $postComment={reply}
+        {$query}
+        parentId={$postComment.id}
+        visible={$query.post.space?.commentProfile?.id === reply.profile.id || visible}
+      />
     {/each}
   {/if}
 
-  {#if replyInputOpen && $postComment.state !== 'INACTIVE'}
+  {#if replyInputOpen && (($postComment.visibility === 'PUBLIC' && $postComment.state === 'ACTIVE') || visible)}
     <li
       class={css({
         borderBottomWidth: '1px',
         borderBottomColor: 'gray.100',
         paddingTop: '18px',
-        paddingLeft: '40px',
+        paddingLeft: { base: '20px', sm: '40px' },
         paddingBottom: '24px',
         _lastOfType: { borderBottomWidth: '0' },
       })}
