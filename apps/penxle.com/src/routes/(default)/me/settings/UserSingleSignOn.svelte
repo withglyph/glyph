@@ -32,6 +32,11 @@
           provider
           email
         }
+
+        eventEnrollment(eventCode: "twitter_spacelink_2024") {
+          id
+          eligible
+        }
       }
     `),
   );
@@ -79,6 +84,9 @@
       {#if singleSignOns[provider]}
         <p class={css({ fontSize: '15px', color: 'gray.500', wordBreak: 'keep-all' })}>
           {singleSignOns[provider].email}
+          {#if provider === 'TWITTER' && $user.eventEnrollment?.eligible}
+            <span class={css({ fontSize: '13px' })}>| 링크 확인됨</span>
+          {/if}
         </p>
       {/if}
     </div>
