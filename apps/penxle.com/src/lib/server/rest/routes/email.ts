@@ -56,7 +56,7 @@ email.get('/email', async (_, context) => {
           .returning({ id: UserSessions.id });
 
         const accessToken = await createAccessToken(session.id);
-        context.event.cookies.set('penxle-at', accessToken, {
+        context.event.cookies.set('glyph-at', accessToken, {
           path: '/',
           maxAge: dayjs.duration(1, 'year').asSeconds(),
         });

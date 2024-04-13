@@ -223,7 +223,7 @@ const handle = async (context: Context, externalUser: ExternalUser & Partial<Twi
         .then(useFirstRowOrThrow());
 
       const accessToken = await createAccessToken(session.id);
-      context.event.cookies.set('penxle-at', accessToken, {
+      context.event.cookies.set('glyph-at', accessToken, {
         path: '/',
         maxAge: dayjs.duration(1, 'year').asSeconds(),
       });
@@ -256,7 +256,7 @@ const handle = async (context: Context, externalUser: ExternalUser & Partial<Twi
           .then(useFirstRowOrThrow());
 
         const accessToken = await createAccessToken(session.id);
-        context.event.cookies.set('penxle-at', accessToken, {
+        context.event.cookies.set('glyph-at', accessToken, {
           path: '/',
           maxAge: dayjs.duration(1, 'year').asSeconds(),
         });

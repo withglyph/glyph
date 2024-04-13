@@ -43,10 +43,10 @@ export type UserContext = {
 export type Context = DefaultContext & Partial<UserContext>;
 
 export const createContext = async (event: RequestEvent): Promise<Context> => {
-  let deviceId = event.cookies.get('penxle-did');
+  let deviceId = event.cookies.get('glyph-did');
   if (!deviceId) {
     deviceId = nanoid(32);
-    event.cookies.set('penxle-did', deviceId, {
+    event.cookies.set('glyph-did', deviceId, {
       path: '/',
       maxAge: dayjs.duration(1, 'year').asSeconds(),
     });
@@ -110,7 +110,7 @@ export const createContext = async (event: RequestEvent): Promise<Context> => {
     ' $loaders': new Map(),
   };
 
-  const accessToken = event.cookies.get('penxle-at');
+  const accessToken = event.cookies.get('glyph-at');
   if (accessToken) {
     let sessionId: string | undefined;
 

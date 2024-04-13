@@ -864,7 +864,7 @@ builder.mutationFields((t) => ({
     resolve: async (_, __, context) => {
       await database.delete(UserSessions).where(eq(UserSessions.id, context.session.id));
 
-      context.event.cookies.delete('penxle-at', { path: '/' });
+      context.event.cookies.delete('glyph-at', { path: '/' });
     },
   }),
 
@@ -967,7 +967,7 @@ builder.mutationFields((t) => ({
         const [session] = await tx.insert(UserSessions).values({ userId: user.id }).returning({ id: UserSessions.id });
 
         const accessToken = await createAccessToken(session.id);
-        context.event.cookies.set('penxle-at', accessToken, {
+        context.event.cookies.set('glyph-at', accessToken, {
           path: '/',
           maxAge: dayjs.duration(1, 'year').asSeconds(),
         });
@@ -1195,7 +1195,7 @@ builder.mutationFields((t) => ({
         await tx.update(Users).set({ state: 'INACTIVE' }).where(eq(Users.id, context.session.userId));
       });
 
-      context.event.cookies.delete('penxle-at', { path: '/' });
+      context.event.cookies.delete('glyph-at', { path: '/' });
     },
   }),
 
