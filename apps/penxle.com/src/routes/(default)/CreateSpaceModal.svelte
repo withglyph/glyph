@@ -171,22 +171,20 @@
       class={css({ borderStyle: 'none', marginY: '16px', marginX: '-20px', backgroundColor: 'gray.50', height: '8px' })}
     />
 
-    <div class={css({ display: 'flex', gap: '12px' })}>
-      <FormField name="profileName" style={css.raw({ flexGrow: '1' })} label="이름">
-        <Tooltip slot="label-icon" message="스페이스에 사용할 프로필 이름을 작성해주세요">
-          <Icon
-            style={css.raw({ 'color': 'gray.400', 'size': '14px', '& *': { strokeWidth: '[1]' } })}
-            icon={IconHelpLine}
-          />
-        </Tooltip>
+    <FormField name="profileName" label="이름">
+      <Tooltip slot="label-icon" message="스페이스에 사용할 프로필 이름을 작성해주세요">
+        <Icon
+          style={css.raw({ 'color': 'gray.400', 'size': '14px', '& *': { strokeWidth: '[1]' } })}
+          icon={IconHelpLine}
+        />
+      </Tooltip>
 
-        <TextInput maxlength={20} placeholder="프로필명을 입력해주세요">
-          <span slot="right-icon" class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.300' })}>
-            {$data.profileName?.length ?? 0}/20
-          </span>
-        </TextInput>
-      </FormField>
-    </div>
+      <TextInput maxlength={20} placeholder="프로필명을 입력해주세요">
+        <span slot="right-icon" class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.300' })}>
+          {$data.profileName?.length ?? 0}/20
+        </span>
+      </TextInput>
+    </FormField>
   </form>
 
   <Button slot="action" style={css.raw({ width: 'full' })} loading={$isSubmitting} size="lg" on:click={handleSubmit}>
