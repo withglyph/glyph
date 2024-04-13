@@ -24,44 +24,40 @@ import { Profile } from './user';
 
 export const PostComment = createObjectRef('PostComment', PostComments);
 PostComment.implement({
-  grantScopes: async (comment, context) => {
-    if (comment.state === 'INACTIVE') {
-      return [];
-    }
-    if (comment.visibility === 'PUBLIC') {
-      return ['$comment:read'];
-    }
-    if (!context.session) {
-      return [];
-    }
-    if (comment.userId === context.session.userId) {
-      return ['$comment:read'];
-    }
-
-    const postLoader = Loader.postById(context);
-    const post = await postLoader.load(comment.postId);
-
-    if (post.userId === context.session.userId) {
-      return ['$comment:read'];
-    }
-    if (!post.spaceId) {
-      return [];
-    }
-
-    const memberLoader = Loader.spaceMemberBySpaceId(context);
-    const member = await memberLoader.load(post.spaceId);
-
-    if (member?.role === 'ADMIN') {
-      return ['$comment:read'];
-    }
-
-    return [];
-  },
   fields: (t) => ({
     id: t.exposeID('id'),
-    content: t.exposeString('content', {
-      authScopes: { $granted: '$comment:read' },
-      unauthorizedResolver: () => '',
+    content: t.string({
+      resolve: async (comment, _, context) => {
+        if (comment.state === 'INACTIVE') {
+          return '';
+        }
+
+        if (comment.visibility !== 'PUBLIC') {
+          if (!context.session) {
+            return '';
+          }
+
+          if (context.session.userId !== comment.userId) {
+            const postLoader = Loader.postById(context);
+            const post = await postLoader.load(comment.postId);
+
+            if (post.userId !== context.session.userId) {
+              if (!post.spaceId) {
+                return '';
+              }
+
+              const memberLoader = Loader.spaceMemberBySpaceId(context);
+              const member = await memberLoader.load(post.spaceId);
+
+              if (member?.role !== 'ADMIN') {
+                return '';
+              }
+            }
+          }
+        }
+
+        return comment.content;
+      },
     }),
     pinned: t.exposeBoolean('pinned'),
     visibility: t.expose('visibility', { type: PostCommentVisibility }),
