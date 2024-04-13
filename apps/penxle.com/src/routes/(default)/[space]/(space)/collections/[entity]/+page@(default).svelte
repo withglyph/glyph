@@ -236,8 +236,12 @@
                 style={flex.raw({ align: 'center', gap: '4px', marginTop: '16px', marginX: 'auto' })}
                 variant="cyan-fill"
                 on:click={async () => {
-                  const { permalink } = await createPost({ spaceId: $query.space.id });
-                  mixpanel.track('post:create', { via: 'space-collection-home', spaceId: $query.space.id, collection });
+                  const { permalink } = await createPost({ spaceId: $query.space.id, collectionId: collection.id });
+                  mixpanel.track('post:create', {
+                    via: 'space-collection-home',
+                    spaceId: $query.space.id,
+                    collectionId: collection.id,
+                  });
                   await goto(`/editor/${permalink}`);
                 }}
               >
