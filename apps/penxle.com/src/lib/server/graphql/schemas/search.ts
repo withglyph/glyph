@@ -33,8 +33,8 @@ builder.objectType(SearchResult, {
 
     posts: t.field({
       type: [Post],
-      resolve: async () => {
-        return [];
+      resolve: ({ result }) => {
+        return result.hits.hits.map((hit) => hit._id);
       },
     }),
   }),
