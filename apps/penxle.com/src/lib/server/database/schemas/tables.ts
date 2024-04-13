@@ -270,6 +270,7 @@ export const Spaces = pgTable(
   },
   (t) => ({
     slugStateIdx: index().on(t.slug, t.state),
+    stateVisibilityIdx: index().on(t.state, t.visibility),
   }),
 );
 
@@ -389,7 +390,7 @@ export const PostViews = pgTable(
       .default(sql`now()`),
   },
   (t) => ({
-    viewedAtIdx: index().on(t.viewedAt),
+    userIdViewedAtIdx: index().on(t.userId, t.viewedAt),
     userIdPostIdUniqIdx: uniqueIndex().on(t.postId, t.userId),
   }),
 );
@@ -695,6 +696,9 @@ export const Posts = pgTable(
   },
   (t) => ({
     publishedAtIdx: index().on(t.publishedAt),
+    stateVisibilityIdx: index().on(t.state, t.visibility),
+    spaceIdStateVisibilityIdx: index().on(t.spaceId, t.state, t.visibility),
+    userIdStateVisibilityIdx: index().on(t.userId, t.state, t.visibility),
   }),
 );
 

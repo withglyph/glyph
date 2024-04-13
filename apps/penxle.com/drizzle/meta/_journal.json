@@ -15,6 +15,20 @@
       "when": 1712996924782,
       "tag": "0001_chemical_imperial_guard",
       "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1713000615314,
+      "tag": "0002_steady_turbo",
+      "breakpoints": false
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1713001106513,
+      "tag": "0003_lumpy_sabretooth",
+      "breakpoints": false
     }
   ]
 }
