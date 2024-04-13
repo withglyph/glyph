@@ -25,18 +25,10 @@
     marginX: 'auto',
     paddingX: '20px',
     width: 'full',
-    maxWidth: '1280px',
+    maxWidth: '860px',
   })}
 >
-  <h1
-    class={css({
-      marginBottom: { base: '14px', sm: '16px' },
-      fontSize: { base: '20px', sm: '24px' },
-      fontWeight: 'bold',
-    })}
-  >
-    관심 스페이스 & 태그
-  </h1>
+  <h1 class={css({ marginBottom: '14px', fontWeight: 'semibold' })}>구독 스페이스 & 태그</h1>
 
   <ul class={flex({ direction: 'column', flexGrow: '1' })}>
     {#each $query.followingFeed as post (post.id)}
@@ -46,7 +38,7 @@
           _lastOfType: { _after: { display: 'none' } },
         })}
       >
-        <Post $post={post} showBookmark showSpace />
+        <Post $post={post} showBookmark showDate showSpace />
       </li>
     {:else}
       <li class={css({ marginY: 'auto', fontWeight: 'semibold', color: 'gray.400', textAlign: 'center' })}>
