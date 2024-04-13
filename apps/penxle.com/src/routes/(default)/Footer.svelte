@@ -43,10 +43,10 @@
           lineHeight: 'none',
         })}
       >
-        <Link href="TODO">글리프 소식</Link>
+        <Link href="/glyph">글리프 소식</Link>
         <div class={css({ height: '12px', borderLeftWidth: '1px', borderLeftColor: 'gray.150', marginX: '4px' })} />
-        <Link href="TODO">글리프 소개</Link>
-        <div class={css({ height: '12px', borderLeftWidth: '1px', borderLeftColor: 'gray.150', marginX: '4px' })} />
+        <!-- <Link href="/glyph">글리프 소개</Link>
+        <div class={css({ height: '12px', borderLeftWidth: '1px', borderLeftColor: 'gray.150', marginX: '4px' })} /> -->
         <Link href="https://help.withglyph.com/">도움센터</Link>
       </section>
 
