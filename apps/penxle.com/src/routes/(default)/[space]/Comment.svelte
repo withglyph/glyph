@@ -199,20 +199,21 @@
 </script>
 
 {#if $query.post.space}
-  {#if editing}
-    <CommentInput {$query} commentId={$postComment.id} content={$postComment.content} {parentId} bind:editing />
-  {:else}
-    <li
-      class={css(
-        {
-          borderBottomWidth: '1px',
-          borderBottomColor: 'gray.100',
-          paddingY: '24px',
-          _lastOfType: { borderBottomWidth: '0' },
-        },
-        !!parentId && { paddingLeft: { base: '20px', sm: '40px' } },
-      )}
-    >
+  <li
+    class={css(
+      {
+        borderBottomWidth: '1px',
+        borderBottomColor: 'gray.100',
+        paddingY: '24px',
+        _lastOfType: { borderBottomWidth: '0' },
+      },
+      !!parentId && { paddingLeft: { base: '20px', sm: '40px' } },
+      !!parentId && editing && { paddingTop: '18px' },
+    )}
+  >
+    {#if editing}
+      <CommentInput {$query} commentId={$postComment.id} content={$postComment.content} {parentId} bind:editing />
+    {:else}
       <div class={css({ flexGrow: '1' })}>
         {#if $postComment.pinned}
           <span
@@ -437,8 +438,8 @@
           {/if}
         {/if}
       </div>
-    </li>
-  {/if}
+    {/if}
+  </li>
 
   {#if repliesOpen}
     {#each $postComment.children as reply (reply)}
@@ -447,7 +448,16 @@
   {/if}
 
   {#if replyInputOpen && $postComment.state !== 'INACTIVE'}
-    <li class={css({ paddingTop: '18px', paddingLeft: '40px', paddingBottom: '24px' })}>
+    <li
+      class={css({
+        borderBottomWidth: '1px',
+        borderBottomColor: 'gray.100',
+        paddingTop: '18px',
+        paddingLeft: '40px',
+        paddingBottom: '24px',
+        _lastOfType: { borderBottomWidth: '0' },
+      })}
+    >
       <CommentInput
         {$query}
         parentId={$postComment.id}
