@@ -20,7 +20,6 @@
   import { css, cx } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import LoginRequireAlert from '../../../../routes/(default)/LoginRequireAlert.svelte';
-  import { priceErrorMap } from './zod';
   import type { NodeViewProps } from '$lib/tiptap';
 
   type $$Props = NodeViewProps;
@@ -65,7 +64,13 @@
           price: z
             .string()
             .transform((value) => Number.parseInt(value.replaceAll(',', '')))
-            .pipe(z.number({ errorMap: priceErrorMap }).int().min(100).max(1_000_000).multipleOf(100)),
+            .pipe(
+              z
+                .number({ invalid_type_error: '가격을 입력해 주세요' })
+                .min(100, '100P 이상의 값으로 설정해야 해요')
+                .max(1_000_000, '1,000,000P 이하의 값으로 설정해야 해요')
+                .multipleOf(100, '100P 단위로 설정해 주세요'),
+            ),
         }),
       }),
     ],
