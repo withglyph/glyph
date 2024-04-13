@@ -51,13 +51,13 @@
     "graphql-tag": "^2.12.6",
     "radash": "^12.1.0",
     "recast": "^0.23.6",
-    "svelte": "^4.2.13",
+    "svelte": "^4.2.14",
     "wonka": "^6.3.4"
   },
   "devDependencies": {
     "@penxle/tsconfig": "workspace:^",
     "@sveltejs/kit": "^2.5.5",
-    "rollup": "^4.14.1",
+    "rollup": "^4.14.2",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5",
     "vite": "^5.2.8"
