@@ -112,27 +112,29 @@
     }}
   >
     <div class={css({ width: 'full' })}>
-      <div class={flex({ align: 'center', gap: '4px', marginBottom: '6px' })}>
-        {#if parentId}
-          <Icon icon={IconReplyBar} size={12} />
-        {/if}
-        <span class={css({ fontSize: '14px', fontWeight: 'medium' })}>
-          {$query.post.space.commentProfile?.name ?? ''}
-        </span>
-        {#if !$query.post.space?.meAsMember && $query.me}
-          <Tooltip
-            enabled={!$query.post.space?.meAsMember}
-            message="익명의 프로필명이 자동으로 생성돼요"
-            offset={10}
-            placement="top"
-          >
-            <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} size={12} />
-          </Tooltip>
-        {/if}
-        {#if $query.post.space.meAsMember}
-          <span class={css({ fontSize: '12px', color: 'cyan.400' })}>창작자</span>
-        {/if}
-      </div>
+      {#if $query.me}
+        <div class={flex({ align: 'center', gap: '4px', marginBottom: '6px' })}>
+          {#if parentId}
+            <Icon icon={IconReplyBar} size={12} />
+          {/if}
+          <span class={css({ fontSize: '14px', fontWeight: 'medium' })}>
+            {$query.post.space.commentProfile?.name ?? ''}
+          </span>
+          {#if !$query.post.space?.meAsMember && $query.me}
+            <Tooltip
+              enabled={!$query.post.space?.meAsMember}
+              message="익명의 프로필명이 자동으로 생성돼요"
+              offset={10}
+              placement="top"
+            >
+              <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} size={12} />
+            </Tooltip>
+          {/if}
+          {#if $query.post.space.meAsMember}
+            <span class={css({ fontSize: '12px', color: 'cyan.400' })}>창작자</span>
+          {/if}
+        </div>
+      {/if}
 
       <textarea
         class={css({
