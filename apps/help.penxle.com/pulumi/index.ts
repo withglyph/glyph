@@ -3,11 +3,11 @@ import * as pulumi from '@pulumi/pulumi';
 
 const config = new pulumi.Config('penxle');
 
-const site = new penxle.Site('help.penxle.com', {
+const site = new penxle.Site('help', {
   name: 'help',
 
   domain: {
-    production: 'help.penxle.com',
+    production: 'help.withglyph.com',
   },
 
   image: {

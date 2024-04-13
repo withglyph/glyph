@@ -4,62 +4,8 @@ import * as pulumi from '@pulumi/pulumi';
 
 const config = new pulumi.Config('penxle');
 
-const site = new penxle.Site('pencil.so', {
+const site = new penxle.Site('website', {
   name: 'website',
-
-  domain: {
-    production: 'pencil.so',
-  },
-
-  image: {
-    name: '721144421085.dkr.ecr.ap-northeast-2.amazonaws.com/penxle.com',
-    digest: config.require('image.digest'),
-  },
-
-  resources: {
-    cpu: '1000m',
-    memory: '2000Mi',
-  },
-
-  autoscale: {
-    minCount: 10,
-    maxCount: 50,
-    averageCpuUtilization: 20,
-  },
-
-  iam: {
-    policy: {
-      Version: '2012-10-17',
-      Statement: [
-        {
-          Effect: 'Allow',
-          Action: ['s3:GetObject', 's3:PutObject'],
-          Resource: [
-            pulumi.concat(bedrockRef('AWS_S3_BUCKET_DATA_ARN'), '/*'),
-            pulumi.concat(bedrockRef('AWS_S3_BUCKET_UPLOADS_ARN'), '/*'),
-          ],
-        },
-        {
-          Effect: 'Allow',
-          Action: ['s3:DeleteObject'],
-          Resource: [pulumi.concat(bedrockRef('AWS_S3_BUCKET_UPLOADS_ARN'), '/*')],
-        },
-        {
-          Effect: 'Allow',
-          Action: ['ses:SendEmail'],
-          Resource: ['*'],
-        },
-      ],
-    },
-  },
-
-  secret: {
-    project: 'penxle-com',
-  },
-});
-
-new penxle.Site('website', {
-  name: 'website2',
 
   domain: {
     production: 'withglyph.com',
@@ -78,7 +24,7 @@ new penxle.Site('website', {
   },
 
   autoscale: {
-    minCount: 2,
+    minCount: 10,
     maxCount: 50,
     averageCpuUtilization: 20,
   },
@@ -137,21 +83,21 @@ if (pulumi.getStack() === 'prod') {
     },
 
     to: {
-      host: 'pencil.so',
+      host: 'withglyph.com',
     },
 
     code: 301,
   });
 
-  new penxle.Redirect('penxle.com', {
-    name: 'penxle-com',
+  new penxle.Redirect('pencil.so', {
+    name: 'penxle-so',
 
     from: {
-      host: 'penxle.com',
+      host: 'pencil.so',
     },
 
     to: {
-      host: 'pencil.so',
+      host: 'withglyph.com',
     },
 
     code: 301,
@@ -165,7 +111,21 @@ if (pulumi.getStack() === 'prod') {
     },
 
     to: {
-      host: 'pencil.so',
+      host: 'withglyph.com',
+    },
+
+    code: 301,
+  });
+
+  new penxle.Redirect('penxle.com', {
+    name: 'penxle-com',
+
+    from: {
+      host: 'penxle.com',
+    },
+
+    to: {
+      host: 'withglyph.com',
     },
 
     code: 301,
@@ -194,7 +154,7 @@ if (pulumi.getStack() === 'prod') {
     },
 
     to: {
-      host: 'pencil.so',
+      host: 'withglyph.com',
       path: '/api/shortlink/#{path}',
     },
 
