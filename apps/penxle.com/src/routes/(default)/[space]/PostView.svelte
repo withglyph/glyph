@@ -1131,7 +1131,7 @@
         </ShareLinkPopover>
         <button
           class={css({
-            _hover: {
+            _supportHover: {
               '& path': {
                 fill: '[currentColor]',
               },

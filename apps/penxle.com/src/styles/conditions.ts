@@ -5,4 +5,5 @@ export const conditions = {
   disabled: '&:is(:disabled, [aria-disabled="true"])',
   busy: '&:is([aria-busy="true"])',
   hover: '&:is(:hover, [data-hover="true"])',
+  supportHover: ['@media (hover: hover) and (pointer: fine)', '&:hover'],
 };

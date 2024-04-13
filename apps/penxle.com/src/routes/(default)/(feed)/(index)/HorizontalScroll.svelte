@@ -32,10 +32,8 @@
         overflowX: 'auto',
         scrollbar: 'hidden',
         scrollBehavior: 'smooth',
-        sm: {
-          _hover: {
-            '& > div': { visibility: 'visible', opacity: '100', transition: 'opacity' },
-          },
+        _supportHover: {
+          '& > div': { visibility: 'visible', opacity: '100', transition: 'opacity' },
         },
       },
       style,
