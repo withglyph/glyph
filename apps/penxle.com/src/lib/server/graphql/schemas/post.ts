@@ -107,19 +107,6 @@ const CommentOrderByKind = builder.enumType('CommentOrderByKind', {
 
 export const Post = createObjectRef('Post', Posts);
 Post.implement({
-  grantScopes: async (post, context) => {
-    if (context.session?.userId === post.userId) {
-      return ['$post:edit'];
-    }
-    if (!post.spaceId) {
-      return [];
-    }
-
-    const loader = Loader.spaceMemberBySpaceId(context);
-
-    const meAsMember = await loader.load(post.spaceId);
-    return meAsMember?.role === 'ADMIN' ? ['$post:edit'] : [];
-  },
   fields: (t) => ({
     id: t.exposeID('id'),
     state: t.expose('state', { type: PostState }),
@@ -295,24 +282,47 @@ Post.implement({
       resolve: (post) => post.publishedRevisionId,
     }),
 
-    revisions: t.field({
+    revisions: t.withAuth({ user: true }).field({
       type: [PostRevision],
-      authScopes: { $granted: '$post:edit' },
       grantScopes: ['$postRevision:edit'],
-      resolve: async (post) =>
-        await database
+      resolve: async (post, _, context) => {
+        if (post.userId !== context.session.userId) {
+          if (!post.spaceId) {
+            throw new PermissionDeniedError();
+          }
+          const spaceMemberLoader = Loader.spaceMemberBySpaceId(context);
+          const meAsMember = await spaceMemberLoader.load(post.spaceId);
+
+          if (meAsMember?.role !== 'ADMIN') {
+            throw new PermissionDeniedError();
+          }
+        }
+
+        return await database
           .select({ id: PostRevisions.id })
           .from(PostRevisions)
           .where(eq(PostRevisions.postId, post.id))
-          .then((revisions) => revisions.map((revision) => revision.id)),
+          .then((revisions) => revisions.map((revision) => revision.id));
+      },
     }),
 
-    draftRevision: t.field({
+    draftRevision: t.withAuth({ user: true }).field({
       type: PostRevision,
-      authScopes: { $granted: '$post:edit' },
       grantScopes: ['$postRevision:edit'],
       args: { revisionId: t.arg.id({ required: false }) },
       resolve: async (post, { revisionId }, context) => {
+        if (post.userId !== context.session.userId) {
+          if (!post.spaceId) {
+            throw new PermissionDeniedError();
+          }
+          const spaceMemberLoader = Loader.spaceMemberBySpaceId(context);
+          const meAsMember = await spaceMemberLoader.load(post.spaceId);
+
+          if (meAsMember?.role !== 'ADMIN') {
+            throw new PermissionDeniedError();
+          }
+        }
+
         if (revisionId) {
           return revisionId;
         }
