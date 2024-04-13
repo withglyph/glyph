@@ -1350,7 +1350,6 @@
                 fontSize: '16px',
                 fontWeight: 'semibold',
                 truncate: true,
-                smDown: { textAlign: 'center' },
               })}
             >
               {#if $query.post.space}
@@ -1368,7 +1367,6 @@
                 fontSize: '12px',
                 color: 'gray.500',
                 wordBreak: 'break-all',
-                smDown: { textAlign: 'center' },
               })}
             >
               {$query.post.space?.description ?? ''}
