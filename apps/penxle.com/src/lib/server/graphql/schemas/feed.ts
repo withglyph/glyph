@@ -394,6 +394,10 @@ builder.queryFields((t) => ({
           .then((rows) => rows.map((row) => row.tagId)),
       ]);
 
+      if (followingSpaceIds.length === 0 && followingTagIds.length === 0) {
+        return [];
+      }
+
       const searchResult = await elasticSearch.search({
         index: indexName('posts'),
         query: {
