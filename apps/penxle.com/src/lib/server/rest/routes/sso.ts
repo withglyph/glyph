@@ -24,8 +24,8 @@ import type { Context } from '$lib/server/context';
 import type { TwitterUser } from '$lib/server/external-api/twitter';
 import type { ExternalUser } from '$lib/server/external-api/types';
 
-const penxleSpaceRegex = /^(?:penxle\.com|pencil\.so)\/([\d_a-z][\d._a-z]*[\d_a-z])/;
-const penxleShortlinkRegex = /^pnxl\.me\/([\da-z]+)/;
+const penxleSpaceRegex = /^(?:withglyph\.com|penxle\.com|pencil\.so)\/([\d_a-z][\d._a-z]*[\d_a-z])/;
+const penxleShortlinkRegex = /^(?:glph\.to|pnxl\.me)\/([\da-z]+)/;
 
 export const sso = createRouter();
 type State = { type: string };
