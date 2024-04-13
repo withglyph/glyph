@@ -299,7 +299,7 @@ SpaceMasquerade.implement({
     id: t.exposeID('id'),
     blockedAt: t.expose('blockedAt', {
       type: 'DateTime',
-      authScopes: { $granted: '$spaceMasquerade.spaceAdmin' },
+      authScopes: { $granted: '$spaceMasquerade:spaceAdmin' },
       nullable: true,
     }),
 
