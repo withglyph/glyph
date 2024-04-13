@@ -1,5 +1,5 @@
 import { pgEnum } from 'drizzle-orm/pg-core';
-import * as E from '$lib/enums';
+import * as E from '../../../enums';
 
 // createPgEnum 함수 정의
 function createPgEnum<T extends string>(enumName: string, obj: Record<string, T>) {
