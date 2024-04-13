@@ -455,10 +455,13 @@ builder.mutationFields((t) => ({
         throw new PermissionDeniedError();
       }
 
-      await database.update(PostComments).set({
-        content: input.content,
-        updatedAt: dayjs(),
-      });
+      await database
+        .update(PostComments)
+        .set({
+          content: input.content,
+          updatedAt: dayjs(),
+        })
+        .where(eq(PostComments.id, input.commentId));
 
       return input.commentId;
     },
