@@ -426,7 +426,7 @@
   `);
 
   $: triggerTags = $query.post.tags.filter(({ kind }) => kind === 'TRIGGER');
-  $: shortLink = `https://pnxl.me/${$query.post.shortlink}`;
+  $: shortLink = `https://glph.to/${$query.post.shortlink}`;
 </script>
 
 <article class={css({ flexGrow: '1', paddingX: '20px', width: 'full', backgroundColor: 'gray.5' }, style)}>
