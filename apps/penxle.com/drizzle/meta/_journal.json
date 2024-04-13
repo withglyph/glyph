@@ -8,6 +8,13 @@
       "when": 1712996780338,
       "tag": "0000_far_gorgon",
       "breakpoints": false
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1712996924782,
+      "tag": "0001_chemical_imperial_guard",
+      "breakpoints": false
     }
   ]
 }

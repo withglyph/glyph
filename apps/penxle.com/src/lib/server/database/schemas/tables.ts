@@ -485,7 +485,7 @@ export const PostRevisions = pgTable(
       .default(sql`now()`),
   },
   (t) => ({
-    createdAtIdx: index().on(t.createdAt),
+    postIdCreatedAtIdx: index().on(t.postId, t.createdAt),
   }),
 );
 
