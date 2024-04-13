@@ -24,14 +24,14 @@
       subtitle: '리브랜딩 이야기',
       color: '#504C575A',
       backgroundImageUrl: 'https://glyph.pub/images/_/banner_rebranding_2.png',
-      href: '/glyph',
+      href: '/glyph/1433497915',
     },
     {
       title: '4월 13일 업데이트 노트',
       subtitle: '새로워진 글리프를 만나보세요',
       color: '#1717175A',
       backgroundImageUrl: 'https://glyph.pub/images/_/banner_updates_2.png',
-      href: '/glyph',
+      href: '/glyph/1982661718',
     },
     {
       title: '시즌 2 컴백!\n<나의 밤을 그대에게>',
@@ -47,7 +47,7 @@
       subtitle: '2000P 적립 이벤트',
       color: '#124B8E5A',
       backgroundImageUrl: 'https://glyph.pub/images/_/banner_twitter_events_2.png',
-      href: '/glyph',
+      href: '/glyph/677483040',
     },
   ];
 
