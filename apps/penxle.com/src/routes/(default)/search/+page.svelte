@@ -214,12 +214,22 @@
       {:else}
         <ul>
           {#each $query.searchPosts.posts as post (post.id)}
-            <li>
+            <li
+              class={css({
+                _after: {
+                  content: '""',
+                  display: 'block',
+                  height: '1px',
+                  backgroundColor: 'gray.100',
+                },
+                _lastOfType: { _after: { display: 'none' } },
+              })}
+            >
               <Post $post={post} showBookmark showDate showSpace />
             </li>
           {/each}
-          <Pagination {initialPage} onChange={updateSearchFilter} totalItems={$query.searchPosts.count} />
         </ul>
+        <Pagination {initialPage} onChange={updateSearchFilter} totalItems={$query.searchPosts.count} />
       {/if}
     </div>
   </div>
