@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1712996780338,
+      "tag": "0000_far_gorgon",
+      "breakpoints": false
+    }
+  ]
+}
