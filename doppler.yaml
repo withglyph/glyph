@@ -1,4 +1,4 @@
 setup:
-  - project: penxle-com
+  - project: website
     path: apps/penxle.com
     config: dev
