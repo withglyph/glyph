@@ -51,7 +51,7 @@
 </script>
 
 <svelte:head>
-  <script data-domain="pencil.so" defer src="https://plausible.io/js/script.js"></script>
+  <script data-domain="withglyph.com" defer src="https://plausible.io/js/script.js"></script>
 </svelte:head>
 
 <div class={flex({ direction: 'column', position: 'relative', minHeight: 'dvh' })}>
