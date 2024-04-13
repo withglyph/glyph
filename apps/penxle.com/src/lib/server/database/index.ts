@@ -6,7 +6,7 @@ import * as enums from './schemas/enums';
 import * as tables from './schemas/tables';
 import type { PgDatabase, PgTransaction } from 'drizzle-orm/pg-core';
 
-const sql = postgres(env.PRIVATE_DATABASE_URL);
+const sql = postgres(env.PRIVATE_DATABASE_URL, { prepare: false });
 export const database = drizzle(sql, { schema: { ...tables, ...enums }, logger: new DrizzleLogger() });
 
 export type Database = typeof database;
