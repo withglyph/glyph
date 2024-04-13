@@ -21,11 +21,16 @@
         }
       }
 
+      curatedPosts {
+        id
+
+        ...Feed_PostCard_post
+      }
+
       recommendFeed {
         id
 
         ...Feed_Post_post
-        ...Feed_PostCard_post
       }
 
       recommendedTags {
@@ -153,7 +158,7 @@
         size={20}
       />
 
-      {#each $query.recommendFeed as post (post.id)}
+      {#each $query.curatedPosts as post (post.id)}
         <PostCard style={css.raw({ width: { base: '200px', sm: '218px' } })} $post={post} />
       {/each}
 
