@@ -500,27 +500,27 @@
 
     &[data-kind='4'] {
       height: 1.8rem;
-      background-image: url(https://pencil.so/horizontal-rules/4.svg);
+      background-image: url(https://withglyph.com/horizontal-rules/4.svg);
     }
 
     &[data-kind='5'] {
       height: 0.875rem;
-      background-image: url(https://pencil.so/horizontal-rules/5.svg);
+      background-image: url(https://withglyph.com/horizontal-rules/5.svg);
     }
 
     &[data-kind='6'] {
       height: 0.91027rem;
-      background-image: url(https://pencil.so/horizontal-rules/6.svg);
+      background-image: url(https://withglyph.com/horizontal-rules/6.svg);
     }
 
     &[data-kind='7'] {
       height: 1.25rem;
-      background-image: url(https://pencil.so/horizontal-rules/7.svg);
+      background-image: url(https://withglyph.com/horizontal-rules/7.svg);
     }
 
     &[data-kind='8'] {
       height: 0.75rem;
-      background-image: url(https://pencil.so/horizontal-rules/8.svg);
+      background-image: url(https://withglyph.com/horizontal-rules/8.svg);
     }
   }
 
@@ -534,7 +534,7 @@
       &:before {
         display: block;
         width: 16px;
-        content: url(https://pencil.so/blockquotes/carbon.svg);
+        content: url(https://withglyph.com/blockquotes/carbon.svg);
       }
     }
 
@@ -545,7 +545,7 @@
         width: 16px;
         margin-left: auto;
         margin-right: auto;
-        content: url(https://pencil.so/blockquotes/carbon.svg);
+        content: url(https://withglyph.com/blockquotes/carbon.svg);
       }
       &:after {
         display: block;
@@ -553,7 +553,7 @@
         margin-left: auto;
         margin-right: auto;
         transform: rotate(180deg);
-        content: url(https://pencil.so/blockquotes/carbon.svg);
+        content: url(https://withglyph.com/blockquotes/carbon.svg);
       }
     }
   }
