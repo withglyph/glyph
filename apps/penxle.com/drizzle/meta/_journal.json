@@ -29,6 +29,27 @@
       "when": 1713001106513,
       "tag": "0003_lumpy_sabretooth",
       "breakpoints": false
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1713080438787,
+      "tag": "0004_stiff_pixie",
+      "breakpoints": false
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1713082046095,
+      "tag": "0005_public_cannonball",
+      "breakpoints": false
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1713082423842,
+      "tag": "0006_red_demogoblin",
+      "breakpoints": false
     }
   ]
 }

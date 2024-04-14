@@ -1,0 +1,2 @@
+CREATE INDEX IF NOT EXISTS "space_members_space_id_user_id_state_index" ON "space_members" ("space_id","user_id","state");
+CREATE INDEX IF NOT EXISTS "space_members_user_id_space_id_state_index" ON "space_members" ("user_id","space_id","state");

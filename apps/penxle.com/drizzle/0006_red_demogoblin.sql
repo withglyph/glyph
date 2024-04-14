@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "space_collections_space_id_state_index" ON "space_collections" ("space_id","state");

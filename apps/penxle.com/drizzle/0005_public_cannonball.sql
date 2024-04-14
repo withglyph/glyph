@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "post_tags_tag_id_index" ON "post_tags" ("tag_id");

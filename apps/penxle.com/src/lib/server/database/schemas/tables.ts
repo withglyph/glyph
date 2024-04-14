@@ -119,6 +119,7 @@ export const PostTags = pgTable(
   },
   (t) => ({
     postIdTagIdKindUniqIdx: uniqueIndex().on(t.postId, t.tagId, t.kind),
+    tagIdIdx: index().on(t.tagId),
   }),
 );
 
@@ -297,6 +298,8 @@ export const SpaceMembers = pgTable(
   },
   (t) => ({
     spaceIdUserIdUniqIdx: uniqueIndex().on(t.spaceId, t.userId),
+    spaceIdUserIdStateIdx: index().on(t.spaceId, t.userId, t.state),
+    userIdSpaceIdStateIdx: index().on(t.userId, t.spaceId, t.state),
   }),
 );
 
@@ -395,20 +398,26 @@ export const PostViews = pgTable(
   }),
 );
 
-export const SpaceCollections = pgTable('space_collections', {
-  id: text('id')
-    .primaryKey()
-    .$defaultFn(() => createId()),
-  spaceId: text('space_id')
-    .notNull()
-    .references(() => Spaces.id),
-  thumbnailId: text('thumbnail_id').references(() => Images.id),
-  name: text('name').notNull(),
-  state: E._SpaceCollectionState('state').notNull(),
-  createdAt: datetime('created_at')
-    .notNull()
-    .default(sql`now()`),
-});
+export const SpaceCollections = pgTable(
+  'space_collections',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    spaceId: text('space_id')
+      .notNull()
+      .references(() => Spaces.id),
+    thumbnailId: text('thumbnail_id').references(() => Images.id),
+    name: text('name').notNull(),
+    state: E._SpaceCollectionState('state').notNull(),
+    createdAt: datetime('created_at')
+      .notNull()
+      .default(sql`now()`),
+  },
+  (t) => ({
+    spaceIdStateIdx: index().on(t.spaceId, t.state),
+  }),
+);
 
 export const SpaceCollectionPosts = pgTable(
   'space_collection_posts',
