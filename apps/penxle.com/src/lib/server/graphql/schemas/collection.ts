@@ -1,6 +1,6 @@
 import { and, asc, count, eq, or } from 'drizzle-orm';
 import { NotFoundError, PermissionDeniedError } from '$lib/errors';
-import { database, inArray, Posts, SpaceCollectionPosts, SpaceCollections } from '$lib/server/database';
+import { database, inArray, Posts, SpaceCollectionPosts, SpaceCollections, Spaces } from '$lib/server/database';
 import { enqueueJob } from '$lib/server/jobs';
 import { getSpaceMember } from '$lib/server/utils';
 import { CreateSpaceCollectionSchema, UpdateSpaceCollectionSchema } from '$lib/validations';
@@ -122,6 +122,44 @@ const UpdateSpaceCollectionInput = builder.inputType('UpdateSpaceCollectionInput
   }),
   validate: { schema: UpdateSpaceCollectionSchema },
 });
+
+/**
+ * * Queries
+ */
+
+builder.queryFields((t) => ({
+  spaceCollection: t.field({
+    type: SpaceCollection,
+    args: { slug: t.arg.string() },
+    resolve: async (_, args, context) => {
+      const collections = await database
+        .select({
+          id: SpaceCollections.id,
+          space: { id: Spaces.id, visibility: Spaces.visibility },
+        })
+        .from(SpaceCollections)
+        .innerJoin(Spaces, eq(SpaceCollections.spaceId, Spaces.id))
+        .where(
+          and(eq(SpaceCollections.id, args.slug), eq(SpaceCollections.state, 'ACTIVE'), eq(Spaces.state, 'ACTIVE')),
+        );
+
+      if (collections.length === 0) {
+        throw new NotFoundError();
+      }
+
+      const [collection] = collections;
+
+      if (collection.space.visibility === 'PRIVATE') {
+        const meAsMember = await getSpaceMember(context, collection.space.id);
+        if (!meAsMember) {
+          throw new PermissionDeniedError();
+        }
+      }
+
+      return collection.id;
+    },
+  }),
+}));
 
 /**
  * * Mutations

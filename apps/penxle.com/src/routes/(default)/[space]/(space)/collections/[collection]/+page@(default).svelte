@@ -14,69 +14,44 @@
 
   $: query = graphql(`
     query SpaceCollectionsEntityPage_Query($slug: String!) {
-      me {
+      spaceCollection(slug: $slug) {
         id
-      }
-
-      space(slug: $slug) {
-        id
-        slug
         name
-        followed
-        description
+        count
 
-        members {
+        thumbnail {
           id
-
-          profile {
-            id
-            name
-          }
+          ...Image_image
         }
 
         posts {
           id
-          collection {
-            id
-          }
+          permalink
 
-          ...SpaceCollectionsEntityPage_ManageCollectionModal_post
+          ...Feed_Post_post
         }
 
-        icon {
-          ...Image_image
-        }
-
-        collections {
+        space {
           id
+          slug
           name
-          count
 
-          thumbnail {
+          members {
             id
-            url
-            ...Image_image
+
+            profile {
+              id
+              name
+            }
           }
 
-          posts {
+          meAsMember {
             id
-            permalink
-
-            ...Feed_Post_post
           }
-
-          ...SpaceCollectionsEntityPage_ManageCollectionModal_collection
-        }
-
-        meAsMember {
-          id
         }
       }
     }
   `);
-  $: collectionId = $page.params.entity;
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  $: collection = $query.space.collections.find(({ id }) => id === collectionId)!;
 
   const createPost = graphql(`
     mutation SpaceCollectionsEntityPage_CreatePost_Mutation($input: CreatePostInput!) {
@@ -89,8 +64,8 @@
 </script>
 
 <Helmet
-  description={`${$query.space.name} 스페이스의 ${collection.name} 컬렉션`}
-  title={`${$query.space.name}의 ${collection.name}`}
+  description={`${$query.spaceCollection.space.name} 스페이스의 ${$query.spaceCollection.name} 컬렉션`}
+  title={`${$query.spaceCollection.space.name}의 ${$query.spaceCollection.name}`}
 />
 
 <main
@@ -130,7 +105,7 @@
             marginTop: { base: '-63px', sm: '-46px' },
             aspectRatio: '3/4',
           })}
-          $image={collection.thumbnail}
+          $image={$query.spaceCollection.thumbnail}
           placeholder
         />
         <div class={css({ marginTop: 'auto', smDown: { paddingY: '14px' } })}>
@@ -143,18 +118,18 @@
               color: 'gray.500',
               width: 'fit',
             })}
-            href="/{$query.space.slug}"
+            href="/{$query.spaceCollection.space.slug}"
           >
-            {$query.space.name}
+            {$query.spaceCollection.space.name}
             <Icon icon={IconChevronRight} />
           </a>
 
           <h1 class={css({ fontSize: { base: '20px', sm: '24px' }, fontWeight: 'bold' })}>
-            {collection.name}
+            {$query.spaceCollection.name}
           </h1>
 
           <p class={css({ fontSize: '14px' })}>
-            by {$query.space.members[0].profile.name}
+            by {$query.spaceCollection.space.members[0].profile.name}
           </p>
 
           <dl
@@ -169,24 +144,26 @@
             })}
           >
             <dt>포스트</dt>
-            <dd>{collection.count}개</dd>
+            <dd>{$query.spaceCollection.count}개</dd>
           </dl>
 
           <div class={flex({ align: 'center', gap: '8px', marginTop: '20px' })}>
             <Button
               style={css.raw({ width: '96px', height: '37px' })}
-              disabled={collection.posts.length === 0}
-              href={collection.posts.length > 0 ? `/${$query.space.slug}/${collection.posts[0].permalink}` : undefined}
+              disabled={$query.spaceCollection.posts.length === 0}
+              href={$query.spaceCollection.posts.length > 0
+                ? `/${$query.spaceCollection.space.slug}/${$query.spaceCollection.posts[0].permalink}`
+                : undefined}
               size="sm"
               type="link"
             >
               첫 회 보기
             </Button>
 
-            {#if $query.space.meAsMember}
+            {#if $query.spaceCollection.space.meAsMember}
               <Button
                 style={css.raw({ width: '96px', height: '37px' })}
-                href="/{$query.space.slug}/dashboard/posts/collections"
+                href="/{$query.spaceCollection.space.slug}/dashboard/posts/collections"
                 size="sm"
                 type="link"
                 variant="gray-outline"
@@ -196,7 +173,7 @@
             {:else}
               <Button
                 style={css.raw({ minWidth: '96px', height: '37px' })}
-                href="/{$query.space.slug}/collections"
+                href="/{$query.spaceCollection.space.slug}/collections"
                 size="sm"
                 type="link"
                 variant="gray-outline"
@@ -205,7 +182,9 @@
               </Button>
             {/if}
 
-            <ShareLinkPopover href="{$page.url.origin}/{$query.space.slug}/collections/{collection.id}">
+            <ShareLinkPopover
+              href="{$page.url.origin}/{$query.spaceCollection.space.slug}/collections/{$query.spaceCollection.id}"
+            >
               <div class={center({ outlineWidth: '1px', outlineColor: 'gray.200', size: '37px' })}>
                 <Icon icon={IconShare2} />
               </div>
@@ -214,10 +193,12 @@
         </div>
       </div>
 
-      <p class={css({ marginTop: '14px', fontSize: '13px', color: 'gray.500' })}>총 {collection.count}개의 포스트</p>
+      <p class={css({ marginTop: '14px', fontSize: '13px', color: 'gray.500' })}>
+        총 {$query.spaceCollection.count}개의 포스트
+      </p>
 
       <ul>
-        {#each collection.posts as post (post.id)}
+        {#each $query.spaceCollection.posts as post (post.id)}
           <li
             class={css({
               _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' },
@@ -231,16 +212,19 @@
         {:else}
           <li class={css({ marginY: '50px', textAlign: 'center', color: 'gray.400', fontWeight: 'semibold' })}>
             컬렉션에 업로드된 포스트가 없어요
-            {#if $query.space.meAsMember}
+            {#if $query.spaceCollection.space.meAsMember}
               <Button
                 style={flex.raw({ align: 'center', gap: '4px', marginTop: '16px', marginX: 'auto' })}
                 variant="cyan-fill"
                 on:click={async () => {
-                  const { permalink } = await createPost({ spaceId: $query.space.id, collectionId: collection.id });
+                  const { permalink } = await createPost({
+                    spaceId: $query.spaceCollection.space.id,
+                    collectionId: $query.spaceCollection.id,
+                  });
                   mixpanel.track('post:create', {
                     via: 'space-collection-home',
-                    spaceId: $query.space.id,
-                    collectionId: collection.id,
+                    spaceId: $query.spaceCollection.space.id,
+                    collectionId: $query.spaceCollection.id,
                   });
                   await goto(`/editor/${permalink}`);
                 }}

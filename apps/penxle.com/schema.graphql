@@ -636,6 +636,7 @@ type Query {
   searchSpaces(query: String!): [Space!]!
   searchTags(query: String!): [Tag!]!
   space(slug: String!): Space!
+  spaceCollection(slug: String!): SpaceCollection!
   spaceFeed: [Post!]!
   tag(name: String!): Tag!
 }
