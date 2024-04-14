@@ -1605,12 +1605,18 @@ builder.mutationFields((t) => ({
           })
           .where(eq(Posts.id, revision.post.id));
 
-        if (revision.collectionPost && (!input.collectionId || input.collectionId !== revision.collectionPost.id)) {
+        if (
+          revision.collectionPost &&
+          (!input.collectionId || input.collectionId !== revision.collectionPost.collectionId)
+        ) {
           await tx.delete(SpaceCollectionPosts).where(eq(SpaceCollectionPosts.postId, revision.post.id));
           await defragmentSpaceCollectionPosts(tx, revision.collectionPost.collectionId);
         }
 
-        if (input.collectionId && (!revision.collectionPost || input.collectionId !== revision.collectionPost.id)) {
+        if (
+          input.collectionId &&
+          (!revision.collectionPost || input.collectionId !== revision.collectionPost.collectionId)
+        ) {
           await tx
             .insert(SpaceCollectionPosts)
             .values({ collectionId: input.collectionId, postId: revision.post.id, order: 2_147_483_647 });
