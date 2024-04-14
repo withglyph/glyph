@@ -110,7 +110,7 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: PurchasePointInput }) },
     resolve: async (_, { input }, context) => {
       const paymentKey = `PX${input.pointAmount}${customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ')(8)}`;
-      const paymentAmount = input.pointAmount * 1.1;
+      const paymentAmount = Math.floor(input.pointAmount * 1.1);
       const expiresAt = dayjs().add(1, 'hour');
 
       const pgData = await match(input.paymentMethod)
