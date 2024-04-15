@@ -82,6 +82,7 @@
       class={css({
         sm: { marginTop: '20px', marginBottom: '17px' },
         smDown: { marginTop: '18px', marginBottom: '13px' },
+        height: '25px',
       })}
       href="/"
     >
