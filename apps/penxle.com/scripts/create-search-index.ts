@@ -74,6 +74,7 @@ const indexData: Record<string, Omit<IndicesCreateRequest, 'index'>> = {
         category: { type: 'keyword' },
         ageRating: { type: 'keyword' },
         reputation: { type: 'rank_feature' },
+        hasThumbnail: { type: 'boolean' },
         publishedAt: { type: 'date' },
       },
     },

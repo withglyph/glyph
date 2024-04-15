@@ -22,6 +22,7 @@ export const IndexPostJob = defineJob('indexPost', async (postId: string) => {
       subtitle: PostRevisions.subtitle,
       category: Posts.category,
       ageRating: Posts.ageRating,
+      thumbnailId: Posts.thumbnailId,
       publishedAt: Posts.publishedAt,
       spaceId: Spaces.id,
       spaceName: Spaces.name,
@@ -57,6 +58,7 @@ export const IndexPostJob = defineJob('indexPost', async (postId: string) => {
         subtitle: post.subtitle,
         category: post.category,
         ageRating: post.ageRating,
+        hasThumbnail: !!post.thumbnailId,
         publishedAt: post.publishedAt,
         reputation,
         tags: tags.map((tag) => ({

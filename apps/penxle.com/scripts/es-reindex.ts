@@ -44,6 +44,7 @@ for (let i = 0; ; i++) {
       subtitle: PostRevisions.subtitle,
       category: Posts.category,
       ageRating: Posts.ageRating,
+      thumbnailId: Posts.thumbnailId,
       publishedAt: Posts.publishedAt,
       spaceId: Spaces.id,
       spaceName: Spaces.name,
@@ -91,6 +92,7 @@ for (let i = 0; ; i++) {
         subtitle: post.subtitle,
         category: post.category,
         ageRating: post.ageRating,
+        hasThumbnail: !!post.thumbnailId,
         publishedAt: post.publishedAt?.toDate(),
         reputation: postReputations[index],
         tags: tagRows
