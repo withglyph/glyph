@@ -45,6 +45,7 @@
           id
           title
           subtitle
+          previewText
         }
 
         space @_required {
@@ -105,7 +106,7 @@
       {
         display: 'flex',
         justifyContent: 'space-between',
-        gap: { base: '24px', sm: '40px' },
+        gap: { base: '20px', sm: '32px' },
         paddingY: '20px',
         truncate: true,
       },
@@ -124,9 +125,35 @@
       >
         {$post.publishedRevision.title ?? '(제목 없음)'}
       </h3>
-      <h4 class={css({ fontSize: '13px', color: 'gray.600', height: '19px', truncate: true })}>
-        {$post.publishedRevision.subtitle ?? ''}
-      </h4>
+      <div class={flex({ align: 'center', fontSize: '13px', height: '19px', truncate: true })}>
+        {#if $post.publishedRevision.subtitle}
+          <h4
+            class={css(
+              {
+                display: 'flex',
+                alignItems: 'center',
+                flex: 'none',
+                fontWeight: 'medium',
+                color: 'gray.800',
+                truncate: true,
+              },
+              !!$post.publishedRevision.previewText && {
+                _after: {
+                  content: '""',
+                  display: 'block',
+                  marginX: '4px',
+                  width: '1px',
+                  height: '10px',
+                  backgroundColor: 'gray.500',
+                },
+              },
+            )}
+          >
+            {$post.publishedRevision.subtitle ?? ''}
+          </h4>
+        {/if}
+        <p class={css({ color: 'gray.600', truncate: true })}>{$post.publishedRevision.previewText}</p>
+      </div>
 
       <div
         class={flex({
@@ -134,19 +161,15 @@
           gap: '4px',
           marginY: '6px',
           height: '21px',
+          overflowX: 'hidden',
           truncate: true,
         })}
       >
-        {#each $post.tags.slice(0, 2) as tag (tag.id)}
-          <Tag style={css.raw({ maxWidth: { base: '62px', sm: '94px' }, truncate: true })} as="div" size="sm">
+        {#each $post.tags as tag (tag.id)}
+          <Tag style={css.raw({ flex: 'none', truncate: true })} as="div" size="sm">
             #{tag.tag.name}
           </Tag>
         {/each}
-        {#if $post.tags.length > 2}
-          <Tag style={css.raw({ maxWidth: { base: '62px', sm: '94px' }, truncate: true })} as="div" size="sm">
-            +{$post.tags.length - 2}
-          </Tag>
-        {/if}
       </div>
 
       {#if showSpace}
