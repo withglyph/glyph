@@ -192,7 +192,7 @@
         <TextInput readonly type="text" value={href} />
       </div>
       <Button
-        style={css.raw({ flex: 'none' })}
+        style={css.raw({ flex: 'none', width: '68px' })}
         type="button"
         on:click={async () => {
           try {
