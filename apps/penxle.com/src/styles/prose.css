@@ -1,4 +1,8 @@
 .tiptap {
+  font-feature-settings:
+    'calt' 0,
+    'ss05' 1;
+
   & p {
     caret-color: #09090b;
   }
