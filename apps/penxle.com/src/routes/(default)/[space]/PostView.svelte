@@ -521,6 +521,7 @@
                 size: '36px',
               })}
               $image={$query.post.space.icon}
+              size={48}
             />
             <Avatar
               style={css.raw({
@@ -532,6 +533,7 @@
                 size: '24px',
               })}
               $profile={$query.post.member.profile}
+              size={24}
             />
           </a>
         {:else}
@@ -1182,6 +1184,7 @@
             style={css.raw({ flex: 'none', width: '60px', aspectRatio: '3/4', objectFit: 'cover' })}
             $image={$query.post.collection.thumbnail}
             placeholder
+            size={96}
           />
 
           <div class={css({ truncate: true })}>
@@ -1339,6 +1342,7 @@
             style={css.raw({ borderWidth: '[0.8px]', borderColor: 'gray.100', size: '60px' })}
             $image={$query.post.space?.icon}
             placeholder
+            size={64}
           />
         </a>
 

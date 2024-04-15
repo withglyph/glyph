@@ -156,6 +156,7 @@
           <Image
             style={css.raw({ flex: 'none', borderWidth: '[0.8px]', borderColor: 'gray.100', size: '18px' })}
             $image={$post.space.icon}
+            size={24}
           />
 
           <div
@@ -244,6 +245,7 @@
           })}
           $image={$post.thumbnail}
           placeholder
+          size={256}
         />
 
         <div class={css({ position: 'absolute', left: '6px', bottom: '6px', display: 'flex', gap: '4px' })}>

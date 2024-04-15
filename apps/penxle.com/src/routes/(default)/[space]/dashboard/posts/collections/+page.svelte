@@ -93,6 +93,7 @@
               <Image
                 style={css.raw({ width: '96px', aspectRatio: '[3/4]', flexShrink: 0 })}
                 $image={collection.thumbnail}
+                size={128}
               />
             {/if}
             <dl

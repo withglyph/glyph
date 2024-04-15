@@ -78,12 +78,12 @@
           <RingSpinner style={css.raw({ size: '32px', color: '[#FCD242]' })} />
         </div>
       {:else if node.attrs.__data}
-        <Image style={css.raw({ maxWidth: 'full' })} $image={node.attrs.__data} />
+        <Image style={css.raw({ maxWidth: 'full' })} $image={node.attrs.__data} size="full" />
       {/if}
     </div>
   {:else if node.attrs.__data}
     <div class={css({ display: 'contents', pointerEvents: 'auto' })} role="presentation" on:click={() => (open = true)}>
-      <Image style={css.raw({ maxWidth: 'full' })} $image={node.attrs.__data} />
+      <Image style={css.raw({ maxWidth: 'full' })} $image={node.attrs.__data} size="full" />
     </div>
 
     {#if open}
@@ -98,6 +98,7 @@
         <Image
           style={css.raw({ maxWidth: 'full', maxHeight: 'full', overflow: 'scroll' })}
           $image={node.attrs.__data}
+          size="full"
         />
       </div>
     {/if}

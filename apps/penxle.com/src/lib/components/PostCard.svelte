@@ -128,6 +128,7 @@
           size: '42px',
         })}
         $image={$post.space.icon}
+        size={48}
       />
       <Avatar
         style={css.raw({
@@ -140,6 +141,7 @@
           size: '24px',
         })}
         $profile={$post.member.profile}
+        size={24}
       />
     </a>
     <a class={flex({ flexDirection: 'column', width: 'full', truncate: true })} href={`/${$post.space.slug}`}>
@@ -310,6 +312,7 @@
             <Image
               style={css.raw({ size: '120px', borderRadius: '6px', flex: 'none', sm: { aspectRatio: '1/1' } })}
               $image={$post.thumbnail}
+              size={128}
             />
           {/if}
         {/if}
@@ -347,6 +350,7 @@
           size: '24px',
         })}
         $image={$post.space.icon}
+        size={24}
       />
       <p class={css({ flexGrow: '1', fontSize: '15px', fontWeight: 'semibold', truncate: true })}>
         {$post.space.name} · {$post.member.profile.name}

@@ -17,7 +17,11 @@
 
 {#if $query.authLayoutBackgroundImage}
   <div class={css({ position: 'fixed', size: 'full', inset: '0' })}>
-    <Image style={css.raw({ size: 'full', objectFit: 'cover' })} $image={$query.authLayoutBackgroundImage} />
+    <Image
+      style={css.raw({ size: 'full', objectFit: 'cover' })}
+      $image={$query.authLayoutBackgroundImage}
+      size="full"
+    />
     <div
       class={css({
         position: 'absolute',

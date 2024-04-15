@@ -85,7 +85,7 @@
       on:click={() => thumbnailPicker.show()}
     >
       {#if thumbnail}
-        <Image style={css.raw({ size: 'full' })} $image={thumbnail} />
+        <Image style={css.raw({ size: 'full' })} $image={thumbnail} size="full" />
       {/if}
       <div
         class={css(

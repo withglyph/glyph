@@ -387,7 +387,12 @@
               placement="top"
             >
               <div class={flex({ align: 'center', gap: '8px' })}>
-                <Image style={css.raw({ flex: 'none', size: '38px' })} $image={selectedSpace?.icon} placeholder />
+                <Image
+                  style={css.raw({ flex: 'none', size: '38px' })}
+                  $image={selectedSpace?.icon}
+                  placeholder
+                  size={48}
+                />
                 <div class={css({ truncate: true, color: 'gray.500' })}>
                   <p class={css({ marginBottom: '2px', fontSize: '12px' })}>
                     {#if selectedSpace}
@@ -416,7 +421,7 @@
                 }}
               >
                 <div class={flex({ align: 'center', gap: '8px', truncate: true })}>
-                  <Image style={css.raw({ flex: 'none', size: '38px' })} $image={space.icon} />
+                  <Image style={css.raw({ flex: 'none', size: '38px' })} $image={space.icon} size={48} />
                   <div class={css({ truncate: true })}>
                     <p class={css({ marginBottom: '2px', fontSize: '12px', color: 'gray.500' })}>
                       {space.visibility === 'PUBLIC' ? '공개 스페이스' : '비공개 스페이스'}
@@ -453,6 +458,7 @@
                 style={css.raw({ height: '38px', aspectRatio: '3/4' })}
                 $image={selectedCollection?.thumbnail}
                 placeholder
+                size={48}
               />
               {#if selectedCollection}
                 {selectedCollection.name}
@@ -474,6 +480,7 @@
                       style={css.raw({ height: '38px', aspectRatio: '3/4' })}
                       $image={collection?.thumbnail}
                       placeholder
+                      size={48}
                     />
                     {collection.name}
                   </div>
@@ -597,6 +604,7 @@
             <Image
               style={css.raw({ height: '38px', aspectRatio: '16/10', objectFit: 'cover', backgroundColor: 'gray.300' })}
               $image={currentThumbnail}
+              size={64}
             />
             <div
               class={flex({
@@ -628,7 +636,7 @@
             })}
           >
             <div class={flex({ align: 'center', gap: '8px' })}>
-              <Image style={css.raw({ height: '38px', aspectRatio: '16/10' })} placeholder />
+              <Image style={css.raw({ height: '38px', aspectRatio: '16/10' })} placeholder size={64} />
               <span class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.500' })}>
                 썸네일을 업로드해주세요
               </span>

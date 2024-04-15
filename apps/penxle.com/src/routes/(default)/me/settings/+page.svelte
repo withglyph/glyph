@@ -117,7 +117,7 @@
 >
   <div class={flex({ align: 'center', justify: 'space-between', flexWrap: 'wrap', gap: '16px' })}>
     <div class={flex({ align: 'center', gap: '12px' })}>
-      <Avatar style={css.raw({ size: '50px' })} $profile={$query.me.profile} />
+      <Avatar style={css.raw({ size: '50px' })} $profile={$query.me.profile} size={64} />
       <div class={flex({ flexDirection: 'column', flexWrap: 'wrap' })}>
         <span class={css({ marginRight: '8px', fontSize: '18px', fontWeight: 'bold' })}>
           {$query.me.profile.name}

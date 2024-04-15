@@ -24,5 +24,5 @@
     </div>
   </div>
 {:else if image.kind === 'data'}
-  <Image style={css.raw(style)} $image={image.__data} />
+  <Image style={css.raw(style)} $image={image.__data} size="full" />
 {/if}

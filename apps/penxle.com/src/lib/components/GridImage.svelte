@@ -49,6 +49,6 @@
 
 <div class={css(styles.root, style)}>
   {#each images.slice(0, 4) as image, idx (idx)}
-    <Image style={styles.item} $image={image} />
+    <Image style={styles.item} $image={image} size="full" />
   {/each}
 </div>

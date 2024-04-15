@@ -70,7 +70,7 @@
     >
       <div class={flex({ flexDirection: 'column', align: 'center', gap: '16px', marginBottom: '24px' })}>
         <div class={center({ borderWidth: '1px', borderColor: 'gray.200', borderRadius: 'full', size: '84px' })}>
-          <Avatar style={css.raw({ size: '80px' })} $profile={$query.me.profile} />
+          <Avatar style={css.raw({ size: '80px' })} $profile={$query.me.profile} size={96} />
         </div>
         <div class={css({ textAlign: 'center' })}>
           <p class={css({ marginBottom: '8px', fontSize: '20px', fontWeight: 'bold' })}>{$query.me.profile.name}</p>

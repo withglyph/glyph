@@ -97,6 +97,7 @@
               size: '42px',
             })}
             $image={space.icon}
+            size={48}
           />
           <div class={css({ truncate: true })}>
             <p class={css({ flexGrow: '1', fontSize: '15px', fontWeight: 'bold', truncate: true })}>{space.name}</p>

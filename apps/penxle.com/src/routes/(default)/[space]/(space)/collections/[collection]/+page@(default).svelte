@@ -107,6 +107,7 @@
           })}
           $image={$query.spaceCollection.thumbnail}
           placeholder
+          size={256}
         />
         <div class={css({ marginTop: 'auto', smDown: { paddingY: '14px' } })}>
           <a

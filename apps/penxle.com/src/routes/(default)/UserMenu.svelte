@@ -87,7 +87,7 @@
   type="button"
   on:click={() => (open = true)}
 >
-  <Avatar style={css.raw({ size: '32px' })} $profile={$user.profile} />
+  <Avatar style={css.raw({ size: '32px' })} $profile={$user.profile} size={32} />
 </button>
 
 {#if open}
@@ -148,6 +148,7 @@
                 <Avatar
                   style={css.raw({ borderWidth: '[0.8px]', borderColor: 'gray.100', size: '36px' })}
                   $profile={$user.profile}
+                  size={48}
                 />
                 <div class={css({ truncate: true })}>
                   <p class={css({ fontSize: '14px', truncate: true })}>
@@ -231,6 +232,7 @@
                             size: '28px',
                           })}
                           $image={space.icon}
+                          size={32}
                         />
                         <Avatar
                           style={css.raw({
@@ -242,6 +244,7 @@
                             size: '20px',
                           })}
                           $profile={space.meAsMember.profile}
+                          size={24}
                         />
                       </div>
 

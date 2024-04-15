@@ -201,7 +201,11 @@
             href="/{slug}/{post.permalink}"
           >
             {#if post.thumbnail}
-              <Image style={css.raw({ flex: 'none', borderRadius: '8px', size: '42px' })} $image={post.thumbnail} />
+              <Image
+                style={css.raw({ flex: 'none', borderRadius: '8px', size: '42px' })}
+                $image={post.thumbnail}
+                size={48}
+              />
             {/if}
             <div class={css({ truncate: true })}>
               <p class={css({ flexGrow: '1', fontSize: '17px', fontWeight: 'bold', truncate: true })}>

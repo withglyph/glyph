@@ -36,6 +36,7 @@
     <Image
       style={css.raw({ flexGrow: '1', objectFit: 'cover', overflow: 'hidden' })}
       $image={$query.authLayoutBackgroundImage}
+      size="full"
     />
   {:else}
     <div class={css({ flexGrow: '1', backgroundColor: 'gray.100' })} />

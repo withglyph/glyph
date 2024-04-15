@@ -86,7 +86,7 @@
       type="button"
       on:click={() => thumbnailPicker.show()}
     >
-      <Image style={css.raw({ size: 'full' })} $image={avatar} />
+      <Image style={css.raw({ size: 'full' })} $image={avatar} size={512} />
       <div
         class={css({
           userSelect: 'none',

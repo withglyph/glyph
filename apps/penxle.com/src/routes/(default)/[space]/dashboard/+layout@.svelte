@@ -96,6 +96,7 @@
               <Avatar
                 style={css.raw({ flex: 'none', marginRight: '12px', size: '24px' })}
                 $profile={$query.space.meAsMember.profile}
+                size={24}
               />
               <span class={css({ flexGrow: '1', fontSize: '14px', fontWeight: 'bold', truncate: true })}>
                 {$query.space.meAsMember.profile.name}
@@ -313,6 +314,7 @@
           size: '48px',
         })}
         $image={$query.space.icon}
+        size={48}
       />
       <div class={css({ truncate: true })}>
         <p class={css({ marginBottom: '4px', fontSize: '15px', fontWeight: 'bold', truncate: true })}>
@@ -352,6 +354,7 @@
         <Avatar
           style={css.raw({ flex: 'none', marginRight: '12px', size: '24px' })}
           $profile={$query.space.meAsMember.profile}
+          size={24}
         />
         <span class={css({ flexGrow: '1', fontSize: '14px', fontWeight: 'bold', truncate: true })}>
           {$query.space.meAsMember.profile.name}

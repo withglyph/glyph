@@ -124,7 +124,7 @@
         type="button"
         on:click={() => thumbnailPicker.show()}
       >
-        <Image style={css.raw({ size: 'full' })} $image={avatar} />
+        <Image style={css.raw({ size: 'full' })} $image={avatar} size={96} />
       </button>
 
       <FormField name="profileName" style={css.raw({ flexGrow: '1' })} label="닉네임">

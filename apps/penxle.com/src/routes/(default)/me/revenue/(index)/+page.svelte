@@ -94,6 +94,7 @@
             style={css.raw({ flex: 'none', borderRadius: '6px', size: '86px' })}
             $image={revenue.post?.thumbnail}
             placeholder
+            size={128}
           />
         </svelte:element>
 

@@ -138,6 +138,7 @@
             marginTop: { base: '-63px', sm: '-34px' },
           })}
           $image={$query.space.icon}
+          size={256}
         />
 
         <div

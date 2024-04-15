@@ -144,7 +144,7 @@
         type="button"
         on:click={() => thumbnailPicker.show()}
       >
-        <Image style={css.raw({ size: 'full' })} $image={icon} placeholder />
+        <Image style={css.raw({ size: 'full' })} $image={icon} placeholder size={128} />
 
         <div
           class={center({

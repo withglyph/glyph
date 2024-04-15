@@ -18,12 +18,7 @@
         externalSearchable
         publishedAt
 
-        space {
-          id
-          slug
-        }
-
-        member {
+        member @_required {
           id
 
           profile {
@@ -95,10 +90,24 @@
   {/if}
   <meta content={dayjs($query.post.publishedAt).toISOString()} property="article:published_time" />
   <meta content={dayjs($query.post.publishedRevision.createdAt).toISOString()} property="article:modified_time" />
-  <meta content={$query.post.member?.profile.name} property="article:author" />
+  <meta content={$query.post.member.profile.name} property="article:author" />
   {#each $query.post.tags as { tag } (tag.id)}
     <meta content={tag.name} property="article:tag" />
   {/each}
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": `${$query.post.publishedRevision.title}`,
+      "datePublished": `${dayjs($query.post.publishedAt).toISOString()}`,
+      "dateModified": `${dayjs($query.post.publishedRevision.createdAt).toISOString()}`,
+      "author": {
+        "@type": "Person",
+        "name": `${$query.post.member.profile.name}`
+      },
+    }
+  </script>
 </svelte:head>
 
 <PostView $postRevision={$query.post.publishedRevision} {$query} />

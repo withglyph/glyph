@@ -312,6 +312,7 @@
               })}
               $image={collection.thumbnail}
               placeholder
+              size={64}
             />
 
             <div class={css({ truncate: true })}>
@@ -336,6 +337,7 @@
                   })}
                   $image={collection.space.icon}
                   placeholder
+                  size={24}
                 />
 
                 <span class={css({ fontSize: '12px', color: 'gray.600', truncate: true })}>
@@ -371,6 +373,7 @@
               })}
               $image={collection.thumbnail}
               placeholder
+              size={96}
             />
 
             <div class={css({ truncate: true })}>
@@ -395,6 +398,7 @@
                   })}
                   $image={collection.space.icon}
                   placeholder
+                  size={24}
                 />
 
                 <span class={css({ fontSize: '12px', color: 'gray.600', truncate: true })}>

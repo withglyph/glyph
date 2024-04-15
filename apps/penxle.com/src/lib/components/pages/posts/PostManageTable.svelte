@@ -342,6 +342,7 @@
                 })}
                 $image={post.thumbnail}
                 placeholder
+                size={96}
               />
 
               <dl class={css({ truncate: true })}>
@@ -358,7 +359,7 @@
             <div class={flex({ gap: '4px' })}>
               {#if post.member && post.space}
                 {#if type === 'space'}
-                  <Avatar style={css.raw({ flex: 'none', size: '20px' })} $profile={post.member.profile} />
+                  <Avatar style={css.raw({ flex: 'none', size: '20px' })} $profile={post.member.profile} size={24} />
                   <span class={css({ fontSize: '13px', fontWeight: 'bold', truncate: true })}>
                     {post.member.profile.name}
                   </span>
@@ -366,7 +367,7 @@
                     <Chip style={css.raw({ paddingX: '8px', paddingY: '4px', width: 'fit' })} color="grass">나</Chip>
                   {/if}
                 {:else if type === 'me'}
-                  <Avatar style={css.raw({ size: '20px' })} $profile={post.member.profile} />
+                  <Avatar style={css.raw({ size: '20px' })} $profile={post.member.profile} size={24} />
                   <span class={css({ fontSize: '13px', fontWeight: 'bold' })}>{post.space.name}</span>
                 {/if}
               {/if}
@@ -699,6 +700,7 @@
           })}
           $image={post.thumbnail}
           placeholder
+          size={96}
         />
         <dl class={css({ truncate: true })}>
           <dt class={css({ fontSize: '15px', fontWeight: 'bold', truncate: true })}>

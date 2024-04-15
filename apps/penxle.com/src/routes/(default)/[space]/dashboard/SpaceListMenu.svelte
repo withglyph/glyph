@@ -71,6 +71,7 @@
   <Image
     style={css.raw({ flex: 'none', borderWidth: '1px', borderColor: 'gray.200', borderRadius: '8px', size: '48px' })}
     $image={$query.space.icon}
+    size={48}
   />
   <div class={css({ truncate: true })}>
     <h3 class={css({ fontSize: '14px', fontWeight: 'bold', truncate: true })}>{$query.space.name}</h3>
@@ -129,6 +130,7 @@
               size: '42px',
             })}
             $image={space.icon}
+            size={48}
           />
           <div class={css({ truncate: true })}>
             <p class={css({ marginBottom: '4px', fontSize: '15px', fontWeight: 'bold', truncate: true })}>

@@ -113,6 +113,7 @@
             objectFit: 'cover',
           })}
           $image={$post.thumbnail}
+          size={128}
         />
       {/if}
     </div>

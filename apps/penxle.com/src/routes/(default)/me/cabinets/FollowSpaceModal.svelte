@@ -105,6 +105,7 @@
               size: '42px',
             })}
             $image={space.icon}
+            size={48}
           />
           <div class={css({ truncate: true })}>
             <div class={flex({ align: 'center', gap: '4px' })}>

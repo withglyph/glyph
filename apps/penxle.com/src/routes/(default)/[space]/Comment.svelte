@@ -392,7 +392,11 @@
               })}
             >
               {#if $query.post.member}
-                <Avatar style={css.raw({ borderRadius: 'full', size: '24px' })} $profile={$query.post.member.profile} />
+                <Avatar
+                  style={css.raw({ borderRadius: 'full', size: '24px' })}
+                  $profile={$query.post.member.profile}
+                  size={24}
+                />
               {/if}
 
               <Icon

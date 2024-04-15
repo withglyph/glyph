@@ -153,7 +153,7 @@
             type="button"
             on:click={() => thumbnailPicker.show()}
           >
-            <Image style={css.raw({ size: 'full' })} $image={icon} />
+            <Image style={css.raw({ size: 'full' })} $image={icon} size={96} />
           </button>
 
           <FormField name="name" style={css.raw({ flexGrow: '1' })} label="스페이스명">

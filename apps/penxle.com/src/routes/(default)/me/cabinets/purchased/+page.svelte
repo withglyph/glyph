@@ -91,6 +91,7 @@
             size: '50px',
           })}
           $image={post.space.icon}
+          size={64}
         />
       {/if}
 

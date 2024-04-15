@@ -127,6 +127,7 @@
       )}
       $image={$post.thumbnail}
       placeholder
+      size={512}
     />
 
     <div class={css({ position: 'absolute', left: '6px', bottom: '6px', display: 'flex', gap: '4px' })}>
@@ -179,6 +180,7 @@
           theme === 'dark' && { borderColor: 'gray.800' },
         )}
         $image={$post.space.icon}
+        size={24}
       />
 
       <div
