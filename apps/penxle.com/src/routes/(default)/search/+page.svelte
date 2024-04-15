@@ -133,7 +133,7 @@
       <AdultFilter {updateSearchFilter} bind:adultFilter />
     </aside>
 
-    <div class={css({ marginTop: '24px', width: 'full' })}>
+    <div class={css({ marginTop: '24px', width: 'full', minWidth: '0' })}>
       <h1 class={flex({ fontSize: '22px' })}>
         <strong class={css({ fontWeight: 'bold' })}>
           {keyword}
