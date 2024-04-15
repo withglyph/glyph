@@ -32,7 +32,7 @@ export const generateBaseTypes = async (context: GlitchContext) => {
       { urqlGraphcache: {} },
     ],
     config: {
-      documentNodeImport: '@penxle/glitch/runtime#TypedDocumentNode',
+      documentNodeImport: '@withglyph/glitch/runtime#TypedDocumentNode',
       documentVariablePrefix: 'DocumentNode_',
       documentVariableSuffix: '',
       enumsAsTypes: true,

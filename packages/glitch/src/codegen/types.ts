@@ -7,7 +7,7 @@ export const generateTypes = (context: GlitchContext): AST.Program => {
     AST.b.importDeclaration([AST.b.importNamespaceSpecifier(AST.b.identifier('base'))], AST.b.stringLiteral('./base')),
     AST.b.importDeclaration(
       [AST.b.importSpecifier(AST.b.identifier('MakeRequired'))],
-      AST.b.stringLiteral('@penxle/glitch/runtime'),
+      AST.b.stringLiteral('@withglyph/glitch/runtime'),
     ),
   ]);
 

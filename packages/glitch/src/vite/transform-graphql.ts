@@ -90,7 +90,7 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
     program.body.unshift(
       AST.b.importDeclaration(
         [AST.b.importSpecifier(AST.b.identifier('createManualQueryStore'))],
-        AST.b.stringLiteral('@penxle/glitch/runtime'),
+        AST.b.stringLiteral('@withglyph/glitch/runtime'),
       ),
       AST.b.importDeclaration(
         [AST.b.importNamespaceSpecifier(AST.b.identifier('__glitch_base'))],
@@ -209,7 +209,7 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
   };
 
   const sveltePreprocess: PreprocessorGroup = {
-    name: '@penxle/glitch:transform-graphql',
+    name: '@withglyph/glitch:transform-graphql',
     script: ({ content, filename }) => {
       if (!filename) {
         return;
@@ -234,7 +234,7 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
   };
 
   return {
-    name: '@penxle/glitch:transform-graphql',
+    name: '@withglyph/glitch:transform-graphql',
     enforce: 'post',
 
     api: { sveltePreprocess },

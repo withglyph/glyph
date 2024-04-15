@@ -1,1 +1,1 @@
-export { default } from '@penxle/lintconfig/eslint';
+export { default } from '@withglyph/lintconfig/eslint';

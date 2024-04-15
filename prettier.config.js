@@ -1,1 +1,1 @@
-export { default } from '@penxle/lintconfig/prettier';
+export { default } from '@withglyph/lintconfig/prettier';

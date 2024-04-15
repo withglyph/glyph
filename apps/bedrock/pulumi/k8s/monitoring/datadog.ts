@@ -1,5 +1,5 @@
-import * as penxle from '@penxle/pulumi/components';
 import * as k8s from '@pulumi/kubernetes';
+import * as withglyph from '@withglyph/pulumi/components';
 import { namespace } from '$k8s/monitoring';
 
 new k8s.helm.v3.Chart('datadog-operator', {
@@ -10,7 +10,7 @@ new k8s.helm.v3.Chart('datadog-operator', {
   },
 });
 
-const secret = new penxle.DopplerSecret('datadog', {
+const secret = new withglyph.DopplerSecret('datadog', {
   metadata: {
     name: 'datadog',
     namespace: namespace.metadata.name,

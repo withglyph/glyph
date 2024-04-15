@@ -7,7 +7,7 @@ import type { GlitchContext } from '../types';
 
 export const codegenPlugin = (context: GlitchContext): Plugin => {
   return {
-    name: '@penxle/glitch:codegen',
+    name: '@withglyph/glitch:codegen',
     enforce: 'pre',
 
     buildStart: async () => {

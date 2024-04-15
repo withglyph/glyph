@@ -1,5 +1,5 @@
 config:
   aws:defaultTags:
     tags:
-      pulumi.penxle.io/project: literoom
-      pulumi.penxle.io/stack: prod
+      pulumi.withglyph.io/project: literoom
+      pulumi.withglyph.io/stack: prod

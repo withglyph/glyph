@@ -22,7 +22,7 @@ export class IAMServiceAccount extends pulumi.ComponentResource {
   public readonly metadata: pulumi.Output<IAMServiceAccountOutputMetadata>;
 
   constructor(name: string, args: IAMServiceAccountArgs, opts?: pulumi.ComponentResourceOptions) {
-    super('penxle:index:IAMServiceAccount', name, {}, opts);
+    super('withglyph:index:IAMServiceAccount', name, {}, opts);
 
     const oidcProviderUrl = bedrockRef('AWS_EKS_CLUSTER_OIDC_PROVIDER_URL');
 

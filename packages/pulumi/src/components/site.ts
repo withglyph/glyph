@@ -44,7 +44,7 @@ export class Site extends pulumi.ComponentResource {
   public readonly url: pulumi.Output<string>;
 
   constructor(name: string, args: SiteArgs, opts?: pulumi.ComponentResourceOptions) {
-    super('penxle:index:Site', name, {}, opts);
+    super('withglyph:index:Site', name, {}, opts);
 
     const project = pulumi.getProject();
     const stack = pulumi.getStack();

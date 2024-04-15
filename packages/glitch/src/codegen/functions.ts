@@ -14,7 +14,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
         AST.b.importSpecifier(AST.b.identifier('MutationStore')),
         AST.b.importSpecifier(AST.b.identifier('FragmentStore')),
       ],
-      AST.b.stringLiteral('@penxle/glitch'),
+      AST.b.stringLiteral('@withglyph/glitch'),
     ),
   ]);
 

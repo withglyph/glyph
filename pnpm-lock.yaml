@@ -8,7 +8,7 @@ importers:
 
   .:
     devDependencies:
-      '@penxle/lintconfig':
+      '@withglyph/lintconfig':
         specifier: workspace:^
         version: link:packages/lintconfig
       cspell:
@@ -41,12 +41,6 @@ importers:
 
   apps/bedrock:
     devDependencies:
-      '@penxle/pulumi':
-        specifier: workspace:^
-        version: link:../../packages/pulumi
-      '@penxle/tsconfig':
-        specifier: workspace:^
-        version: link:../../packages/tsconfig
       '@pulumi/aws':
         specifier: ^6.30.0
         version: 6.30.0
@@ -68,6 +62,12 @@ importers:
       '@types/node':
         specifier: ^20.12.7
         version: 20.12.7
+      '@withglyph/pulumi':
+        specifier: workspace:^
+        version: link:../../packages/pulumi
+      '@withglyph/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
       fast-glob:
         specifier: ^3.3.2
         version: 3.3.2
@@ -75,17 +75,72 @@ importers:
         specifier: ^4.7.2
         version: 4.7.2
 
-  apps/help.penxle.com:
+  apps/company:
     dependencies:
-      '@penxle/adapter-docker':
-        specifier: workspace:^
-        version: link:../../packages/adapter-docker
-      '@penxle/lib':
-        specifier: workspace:^
-        version: link:../../packages/lib
       '@sveltejs/kit':
         specifier: ^2.5.5
         version: 2.5.5(@sveltejs/vite-plugin-svelte@3.1.0)(svelte@4.2.14)(vite@5.2.8)
+      '@withglyph/adapter-docker':
+        specifier: workspace:^
+        version: link:../../packages/adapter-docker
+      '@withglyph/lib':
+        specifier: workspace:^
+        version: link:../../packages/lib
+      svelte:
+        specifier: ^4.2.14
+        version: 4.2.14
+    devDependencies:
+      '@pandacss/dev':
+        specifier: ^0.37.2
+        version: 0.37.2(typescript@5.4.5)
+      '@pulumi/pulumi':
+        specifier: ^3.112.0
+        version: 3.112.0
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^3.1.0
+        version: 3.1.0(svelte@4.2.14)(vite@5.2.8)
+      '@types/node':
+        specifier: ^20.12.7
+        version: 20.12.7
+      '@withglyph/pulumi':
+        specifier: workspace:^
+        version: link:../../packages/pulumi
+      '@withglyph/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
+      postcss:
+        specifier: ^8.4.38
+        version: 8.4.38
+      postcss-load-config:
+        specifier: ^5.0.3
+        version: 5.0.3(postcss@8.4.38)
+      svelte-check:
+        specifier: ^3.6.9
+        version: 3.6.9(postcss-load-config@5.0.3)(postcss@8.4.38)(svelte@4.2.14)
+      svelte-preprocess:
+        specifier: ^5.1.3
+        version: 5.1.3(postcss-load-config@5.0.3)(postcss@8.4.38)(svelte@4.2.14)(typescript@5.4.5)
+      tsx:
+        specifier: ^4.7.2
+        version: 4.7.2
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+      vite:
+        specifier: ^5.2.8
+        version: 5.2.8(@types/node@20.12.7)
+
+  apps/help:
+    dependencies:
+      '@sveltejs/kit':
+        specifier: ^2.5.5
+        version: 2.5.5(@sveltejs/vite-plugin-svelte@3.1.0)(svelte@4.2.14)(vite@5.2.8)
+      '@withglyph/adapter-docker':
+        specifier: workspace:^
+        version: link:../../packages/adapter-docker
+      '@withglyph/lib':
+        specifier: workspace:^
+        version: link:../../packages/lib
       mdsvex:
         specifier: ^0.11.0
         version: 0.11.0(svelte@4.2.14)
@@ -99,12 +154,6 @@ importers:
       '@pandacss/dev':
         specifier: ^0.37.2
         version: 0.37.2(typescript@5.4.5)
-      '@penxle/pulumi':
-        specifier: workspace:^
-        version: link:../../packages/pulumi
-      '@penxle/tsconfig':
-        specifier: workspace:^
-        version: link:../../packages/tsconfig
       '@pulumi/pulumi':
         specifier: ^3.112.0
         version: 3.112.0
@@ -114,6 +163,12 @@ importers:
       '@types/node':
         specifier: ^20.12.7
         version: 20.12.7
+      '@withglyph/pulumi':
+        specifier: workspace:^
+        version: link:../../packages/pulumi
+      '@withglyph/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
       postcss:
         specifier: ^8.4.38
         version: 8.4.38
@@ -151,15 +206,6 @@ importers:
         specifier: ^0.33.3
         version: 0.33.3
     devDependencies:
-      '@penxle/lib':
-        specifier: workspace:^
-        version: link:../../packages/lib
-      '@penxle/pulumi':
-        specifier: workspace:^
-        version: link:../../packages/pulumi
-      '@penxle/tsconfig':
-        specifier: workspace:^
-        version: link:../../packages/tsconfig
       '@pulumi/aws':
         specifier: ^6.30.0
         version: 6.30.0
@@ -169,6 +215,15 @@ importers:
       '@pulumi/pulumi':
         specifier: ^3.112.0
         version: 3.112.0
+      '@withglyph/lib':
+        specifier: workspace:^
+        version: link:../../packages/lib
+      '@withglyph/pulumi':
+        specifier: workspace:^
+        version: link:../../packages/pulumi
+      '@withglyph/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
       tsup:
         specifier: ^8.0.2
         version: 8.0.2(typescript@5.4.5)
@@ -179,7 +234,7 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
 
-  apps/penxle.com:
+  apps/website:
     dependencies:
       '@aws-sdk/client-s3':
         specifier: ^3.554.0
@@ -223,15 +278,6 @@ importers:
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2
-      '@penxle/adapter-docker':
-        specifier: workspace:^
-        version: link:../../packages/adapter-docker
-      '@penxle/glitch':
-        specifier: workspace:^
-        version: link:../../packages/glitch
-      '@penxle/lib':
-        specifier: workspace:^
-        version: link:../../packages/lib
       '@pothos/core':
         specifier: ^3.41.0
         version: 3.41.0(graphql@16.8.1)
@@ -286,6 +332,15 @@ importers:
       '@use-gesture/vanilla':
         specifier: ^10.3.1
         version: 10.3.1
+      '@withglyph/adapter-docker':
+        specifier: workspace:^
+        version: link:../../packages/adapter-docker
+      '@withglyph/glitch':
+        specifier: workspace:^
+        version: link:../../packages/glitch
+      '@withglyph/lib':
+        specifier: workspace:^
+        version: link:../../packages/lib
       argon2:
         specifier: ^0.40.1
         version: 0.40.1
@@ -437,12 +492,6 @@ importers:
       '@pandacss/dev':
         specifier: ^0.37.2
         version: 0.37.2(typescript@5.4.5)
-      '@penxle/pulumi':
-        specifier: workspace:^
-        version: link:../../packages/pulumi
-      '@penxle/tsconfig':
-        specifier: workspace:^
-        version: link:../../packages/tsconfig
       '@playwright/test':
         specifier: ^1.43.1
         version: 1.43.1
@@ -470,6 +519,12 @@ importers:
       '@types/randomcolor':
         specifier: ^0.5.9
         version: 0.5.9
+      '@withglyph/pulumi':
+        specifier: workspace:^
+        version: link:../../packages/pulumi
+      '@withglyph/tsconfig':
+        specifier: workspace:^
+        version: link:../../packages/tsconfig
       arg:
         specifier: ^5.0.2
         version: 5.0.2
@@ -504,61 +559,6 @@ importers:
         specifier: ^5.2.8
         version: 5.2.8(@types/node@20.12.7)
 
-  apps/penxle.io:
-    dependencies:
-      '@penxle/adapter-docker':
-        specifier: workspace:^
-        version: link:../../packages/adapter-docker
-      '@penxle/lib':
-        specifier: workspace:^
-        version: link:../../packages/lib
-      '@sveltejs/kit':
-        specifier: ^2.5.5
-        version: 2.5.5(@sveltejs/vite-plugin-svelte@3.1.0)(svelte@4.2.14)(vite@5.2.8)
-      svelte:
-        specifier: ^4.2.14
-        version: 4.2.14
-    devDependencies:
-      '@pandacss/dev':
-        specifier: ^0.37.2
-        version: 0.37.2(typescript@5.4.5)
-      '@penxle/pulumi':
-        specifier: workspace:^
-        version: link:../../packages/pulumi
-      '@penxle/tsconfig':
-        specifier: workspace:^
-        version: link:../../packages/tsconfig
-      '@pulumi/pulumi':
-        specifier: ^3.112.0
-        version: 3.112.0
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^3.1.0
-        version: 3.1.0(svelte@4.2.14)(vite@5.2.8)
-      '@types/node':
-        specifier: ^20.12.7
-        version: 20.12.7
-      postcss:
-        specifier: ^8.4.38
-        version: 8.4.38
-      postcss-load-config:
-        specifier: ^5.0.3
-        version: 5.0.3(postcss@8.4.38)
-      svelte-check:
-        specifier: ^3.6.9
-        version: 3.6.9(postcss-load-config@5.0.3)(postcss@8.4.38)(svelte@4.2.14)
-      svelte-preprocess:
-        specifier: ^5.1.3
-        version: 5.1.3(postcss-load-config@5.0.3)(postcss@8.4.38)(svelte@4.2.14)(typescript@5.4.5)
-      tsx:
-        specifier: ^4.7.2
-        version: 4.7.2
-      typescript:
-        specifier: ^5.4.5
-        version: 5.4.5
-      vite:
-        specifier: ^5.2.8
-        version: 5.2.8(@types/node@20.12.7)
-
   packages/adapter-docker:
     dependencies:
       h3:
@@ -568,15 +568,15 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
     devDependencies:
-      '@penxle/tsconfig':
-        specifier: workspace:^
-        version: link:../tsconfig
       '@sveltejs/kit':
         specifier: ^2.5.5
         version: 2.5.5(@sveltejs/vite-plugin-svelte@3.1.0)(svelte@4.2.14)(vite@5.2.8)
       '@types/node':
         specifier: ^20.12.7
         version: 20.12.7
+      '@withglyph/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
       tsup:
         specifier: ^8.0.2
         version: 8.0.2(typescript@5.4.5)
@@ -638,12 +638,12 @@ importers:
         specifier: ^6.3.4
         version: 6.3.4
     devDependencies:
-      '@penxle/tsconfig':
-        specifier: workspace:^
-        version: link:../tsconfig
       '@sveltejs/kit':
         specifier: ^2.5.5
         version: 2.5.5(@sveltejs/vite-plugin-svelte@3.1.0)(svelte@4.2.14)(vite@5.2.8)
+      '@withglyph/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
       rollup:
         specifier: ^4.14.2
         version: 4.14.2
@@ -672,12 +672,12 @@ importers:
         specifier: ^5.2.8
         version: 5.2.8(@types/node@20.12.7)
     devDependencies:
-      '@penxle/tsconfig':
-        specifier: workspace:^
-        version: link:../tsconfig
       '@sveltejs/kit':
         specifier: ^2.5.5
         version: 2.5.5(@sveltejs/vite-plugin-svelte@3.1.0)(svelte@4.2.14)(vite@5.2.8)
+      '@withglyph/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
       tsup:
         specifier: ^8.0.2
         version: 8.0.2(typescript@5.4.5)
@@ -757,7 +757,7 @@ importers:
         specifier: ^5.1.1
         version: 5.1.1
     devDependencies:
-      '@penxle/tsconfig':
+      '@withglyph/tsconfig':
         specifier: workspace:^
         version: link:../tsconfig
       tsup:
@@ -2511,18 +2511,18 @@ packages:
     peerDependencies:
       postcss: ^8.4
     dependencies:
-      '@csstools/selector-specificity': 3.0.3(postcss-selector-parser@6.0.15)
+      '@csstools/selector-specificity': 3.0.3(postcss-selector-parser@6.0.16)
       postcss: 8.4.35
-      postcss-selector-parser: 6.0.15
+      postcss-selector-parser: 6.0.16
     dev: true
 
-  /@csstools/selector-specificity@3.0.3(postcss-selector-parser@6.0.15):
+  /@csstools/selector-specificity@3.0.3(postcss-selector-parser@6.0.16):
     resolution: {integrity: sha512-KEPNw4+WW5AVEIyzC80rTbWEUatTW2lXpN8+8ILC8PiPeWPjwUzrPZDIOZ2wwqDmeqOYTdSGyL3+vE5GC3FB3Q==}
     engines: {node: ^14 || ^16 || >=18}
     peerDependencies:
       postcss-selector-parser: ^6.0.13
     dependencies:
-      postcss-selector-parser: 6.0.15
+      postcss-selector-parser: 6.0.16
     dev: true
 
   /@drizzle-team/studio@0.0.39:
@@ -6310,7 +6310,7 @@ packages:
       '@vue/compiler-ssr': 3.4.19
       '@vue/shared': 3.4.19
       estree-walker: 2.0.2
-      magic-string: 0.30.8
+      magic-string: 0.30.9
       postcss: 8.4.38
       source-map-js: 1.2.0
     dev: true
@@ -12095,7 +12095,7 @@ packages:
       caniuse-api: 3.0.0
       cssnano-utils: 4.0.2(postcss@8.4.35)
       postcss: 8.4.35
-      postcss-selector-parser: 6.0.15
+      postcss-selector-parser: 6.0.16
     dev: true
 
   /postcss-minify-selectors@6.0.2(postcss@8.4.35):
@@ -12105,7 +12105,7 @@ packages:
       postcss: ^8.4.31
     dependencies:
       postcss: 8.4.35
-      postcss-selector-parser: 6.0.15
+      postcss-selector-parser: 6.0.16
     dev: true
 
   /postcss-nested@6.0.1(postcss@8.4.35):
@@ -12115,7 +12115,7 @@ packages:
       postcss: ^8.2.14
     dependencies:
       postcss: 8.4.35
-      postcss-selector-parser: 6.0.15
+      postcss-selector-parser: 6.0.16
     dev: true
 
   /postcss-normalize-whitespace@6.0.1(postcss@8.4.35):

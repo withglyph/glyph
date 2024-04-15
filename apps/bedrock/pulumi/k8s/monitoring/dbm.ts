@@ -14,7 +14,7 @@ new k8s.core.v1.Service('dbm', {
     namespace: namespace.metadata.name,
     labels: {
       'tags.datadoghq.com/env': 'prod',
-      'tags.datadoghq.com/service': 'penxle',
+      'tags.datadoghq.com/service': 'withglyph',
     },
     annotations: {
       'ad.datadoghq.com/service.checks': pulumi

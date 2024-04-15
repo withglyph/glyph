@@ -58,24 +58,6 @@ new aws.route53.Record('mail.withglyph.com|txt', {
   ttl: 300,
 });
 
-new aws.route53.Record('pencil.so|txt', {
-  zoneId: zones.pencil_so.zoneId,
-  type: 'TXT',
-  name: 'pencil.so',
-  // spell-checker:disable-next-line
-  records: ['google-site-verification=7lMNJhce63je2LK5iw8ZzBFh34dMrjjS2IfRDd06Sm0'],
-  ttl: 300,
-});
-
-new aws.route53.Record('penxle.com|txt', {
-  zoneId: zones.penxle_com.zoneId,
-  type: 'TXT',
-  name: 'penxle.com',
-  // spell-checker:disable-next-line
-  records: ['google-site-verification=bwCGvefwzolnCCx3lMbeJ0VmSp9sawDrbcaQ2WgehJo'],
-  ttl: 300,
-});
-
 new aws.route53.Record('channel._domainkey.penxle.com', {
   zoneId: zones.penxle_com.zoneId,
   type: 'CNAME',
@@ -89,22 +71,6 @@ new aws.route53.Record('feedback.penxle.com', {
   type: 'CNAME',
   name: 'feedback.penxle.com',
   records: ['custom-domain.nolt.io'],
-  ttl: 300,
-});
-
-new aws.route53.Record('mail.penxle.com|mx', {
-  zoneId: zones.penxle_com.zoneId,
-  type: 'MX',
-  name: 'mail.penxle.com',
-  records: ['10 feedback-smtp.ap-northeast-2.amazonses.com'],
-  ttl: 300,
-});
-
-new aws.route53.Record('mail.penxle.com|txt', {
-  zoneId: zones.penxle_com.zoneId,
-  type: 'TXT',
-  name: 'mail.penxle.com',
-  records: ['v=spf1 include:amazonses.com ~all'],
   ttl: 300,
 });
 

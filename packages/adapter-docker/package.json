@@ -1,5 +1,5 @@
 {
-  "name": "@penxle/adapter-docker",
+  "name": "@withglyph/adapter-docker",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -26,9 +26,9 @@
     "mrmime": "^2.0.0"
   },
   "devDependencies": {
-    "@penxle/tsconfig": "workspace:^",
     "@sveltejs/kit": "^2.5.5",
     "@types/node": "^20.12.7",
+    "@withglyph/tsconfig": "workspace:^",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5"
   }

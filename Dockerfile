@@ -27,7 +27,7 @@ ENV TURBO_TOKEN=${TURBO_TOKEN}
 ENV NODE_ENV=production
 
 RUN cd apps/${APP} && pnpm turbo build
-RUN pnpm deploy --filter=@penxle/${APP} --prod out
+RUN pnpm deploy --filter=@withglyph/${APP} --prod out
 
 # ---
 

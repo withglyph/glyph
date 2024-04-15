@@ -18,9 +18,9 @@ jobs:
       fail-fast: false
       matrix:
         app:
-          - penxle.com
-          - penxle.io
-          - help.penxle.com
+          - website
+          - company
+          - help
 
     concurrency:
       group: pr-${{ github.event.pull_request.number }}/${{ matrix.app }}
@@ -101,11 +101,11 @@ jobs:
         with:
           command: up
           work-dir: apps/${{ matrix.app }}
-          stack-name: penxle/pr-${{ github.event.pull_request.number }}
+          stack-name: withglyph/pr-${{ github.event.pull_request.number }}
           refresh: true
           upsert: true
           config-map: |
-            { "penxle:image.digest": { "value": "${{ steps.build.outputs.digest }}" } }
+            { "withglyph:image.digest": { "value": "${{ steps.build.outputs.digest }}" } }
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           PULUMI_K8S_ENABLE_PATCH_FORCE: 'true'

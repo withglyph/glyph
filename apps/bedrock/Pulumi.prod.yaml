@@ -1,5 +1,5 @@
 config:
   aws:defaultTags:
     tags:
-      pulumi.penxle.io/project: bedrock
-      pulumi.penxle.io/stack: prod
+      pulumi.withglyph.io/project: bedrock
+      pulumi.withglyph.io/stack: prod

@@ -22,7 +22,7 @@ export class DopplerSecret extends pulumi.ComponentResource {
   public readonly metadata: pulumi.Output<DopplerSecretOutputMetadata>;
 
   constructor(name: string, args: DopplerSecretArgs, opts?: pulumi.ComponentResourceOptions) {
-    super('penxle:index:DopplerSecret', name, {}, opts);
+    super('withglyph:index:DopplerSecret', name, {}, opts);
 
     const store = new k8s.apiextensions.CustomResource(
       name,

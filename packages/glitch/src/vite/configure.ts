@@ -5,7 +5,7 @@ import type { GlitchContext } from '../types';
 
 export const configurePlugin = (context: GlitchContext): Plugin => {
   return {
-    name: '@penxle/glitch:configure',
+    name: '@withglyph/glitch:configure',
     enforce: 'pre',
 
     configResolved: async (config) => {

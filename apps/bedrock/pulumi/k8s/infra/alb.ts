@@ -12,7 +12,7 @@ new k8s.networking.v1.Ingress('public-alb@infra', {
       'alb.ingress.kubernetes.io/scheme': 'internet-facing',
       'alb.ingress.kubernetes.io/listen-ports': JSON.stringify([{ HTTP: 80, HTTPS: 443 }]),
       'alb.ingress.kubernetes.io/security-groups': 'internal, public-web',
-      'alb.ingress.kubernetes.io/certificate-arn': certificates.penxle_com.arn,
+      'alb.ingress.kubernetes.io/certificate-arn': certificates.withglyph_com.arn,
       'alb.ingress.kubernetes.io/ssl-redirect': '443',
       'alb.ingress.kubernetes.io/healthcheck-path': '/healthz',
       'pulumi.com/skipAwait': 'true',

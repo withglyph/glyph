@@ -24,6 +24,6 @@ jobs:
 
             | 프로젝트 | 프리뷰 URL |
             | --- | --- |
-            | penxle.com | https://website-pr-${{ github.event.pull_request.number }}.withglyph.dev |
-            | penxle.io | https://company-pr-${{ github.event.pull_request.number }}.withglyph.dev |
-            | help.penxle.com | https://help-pr-${{ github.event.pull_request.number }}.withglyph.dev |
+            | website | https://website-pr-${{ github.event.pull_request.number }}.withglyph.dev |
+            | company | https://company-pr-${{ github.event.pull_request.number }}.withglyph.dev |
+            | help | https://help-pr-${{ github.event.pull_request.number }}.withglyph.dev |

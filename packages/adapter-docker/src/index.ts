@@ -4,7 +4,7 @@ import type { Adapter } from '@sveltejs/kit';
 
 export const docker = (): Adapter => {
   return {
-    name: '@penxle/adapter-docker',
+    name: '@withglyph/adapter-docker',
     adapt: async (builder) => {
       const out = 'dist';
 
@@ -30,7 +30,7 @@ export const docker = (): Adapter => {
         `
           import path from 'node:path';
           import { fileURLToPath } from 'node:url';
-          import { serve } from '@penxle/adapter-docker/server';
+          import { serve } from '@withglyph/adapter-docker/server';
           import { Server } from './server/index.js';
           import { manifest, prerendered } from './server/manifest.js';
 

@@ -6,7 +6,7 @@ import type { GlitchContext } from '../types';
 
 export const transformLoadPlugin = (context: GlitchContext): Plugin => {
   return {
-    name: '@penxle/glitch:transform-load',
+    name: '@withglyph/glitch:transform-load',
     enforce: 'post',
 
     transform: (code, id) => {
@@ -59,7 +59,7 @@ export const transformLoadPlugin = (context: GlitchContext): Plugin => {
       program.body.push(
         AST.b.importDeclaration(
           [AST.b.importSpecifier(AST.b.identifier('createQueryStore'))],
-          AST.b.stringLiteral('@penxle/glitch/runtime'),
+          AST.b.stringLiteral('@withglyph/glitch/runtime'),
         ),
         AST.b.importDeclaration(
           [AST.b.importNamespaceSpecifier(AST.b.identifier('__glitch_base'))],

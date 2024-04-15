@@ -18,9 +18,9 @@ jobs:
       fail-fast: false
       matrix:
         app:
-          - penxle.com
-          - penxle.io
-          - help.penxle.com
+          - website
+          - company
+          - help
 
     concurrency:
       group: pr-${{ github.event.pull_request.number }}/${{ matrix.app }}
@@ -50,7 +50,7 @@ jobs:
         with:
           command: destroy
           work-dir: apps/${{ matrix.app }}
-          stack-name: penxle/pr-${{ github.event.pull_request.number }}
+          stack-name: withglyph/pr-${{ github.event.pull_request.number }}
           refresh: true
           remove: true
         env:

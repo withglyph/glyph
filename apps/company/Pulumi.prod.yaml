@@ -1,0 +1,5 @@
+config:
+  aws:defaultTags:
+    tags:
+      pulumi.withglyph.io/project: company
+      pulumi.withglyph.io/stack: prod

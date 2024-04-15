@@ -4,7 +4,7 @@ let ref: pulumi.StackReference;
 
 export const bedrockRef = (name: pulumi.Input<string>) => {
   if (!ref) {
-    ref = new pulumi.StackReference('penxle/bedrock/prod');
+    ref = new pulumi.StackReference('withglyph/bedrock/prod');
   }
 
   return ref.requireOutput(name);

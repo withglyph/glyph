@@ -1,5 +1,5 @@
 {
-  "name": "@penxle/pulumi",
+  "name": "@withglyph/pulumi",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -36,7 +36,7 @@
     "ts-pattern": "^5.1.1"
   },
   "devDependencies": {
-    "@penxle/tsconfig": "workspace:^",
+    "@withglyph/tsconfig": "workspace:^",
     "tsup": "^8.0.2"
   }
 }

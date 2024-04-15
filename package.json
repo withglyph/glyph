@@ -1,5 +1,5 @@
 {
-  "name": "@penxle/monorepo",
+  "name": "@withglyph/monorepo",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -19,7 +19,7 @@
     "lint:typecheck": "turbo run lint:typecheck"
   },
   "devDependencies": {
-    "@penxle/lintconfig": "workspace:^",
+    "@withglyph/lintconfig": "workspace:^",
     "cspell": "^8.7.0",
     "eslint": "^8.57.0",
     "husky": "^9.0.11",

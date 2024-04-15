@@ -7,7 +7,7 @@ type RepositoryArgs = {
 
 class Repository extends pulumi.ComponentResource {
   constructor(name: string, args: RepositoryArgs, opts?: pulumi.ComponentResourceOptions) {
-    super('penxle:index:Repository', name, args, opts);
+    super('withglyph:index:Repository', name, args, opts);
 
     const repository = new aws.ecr.Repository(
       name,
@@ -53,3 +53,7 @@ createRepository('literoom');
 createRepository('penxle.com');
 createRepository('penxle.io');
 createRepository('help.penxle.com');
+
+createRepository('website');
+createRepository('company');
+createRepository('help');

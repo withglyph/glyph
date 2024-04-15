@@ -1,11 +1,9 @@
 {
-  "name": "@penxle/bedrock",
+  "name": "@withglyph/bedrock",
   "version": "0.0.1",
   "private": true,
   "type": "module",
   "devDependencies": {
-    "@penxle/pulumi": "workspace:^",
-    "@penxle/tsconfig": "workspace:^",
     "@pulumi/aws": "^6.30.0",
     "@pulumi/kubernetes": "^4.10.0",
     "@pulumi/pulumi": "^3.112.0",
@@ -13,6 +11,8 @@
     "@pulumi/tailscale": "^0.15.0",
     "@pulumi/tls": "^5.0.2",
     "@types/node": "^20.12.7",
+    "@withglyph/pulumi": "workspace:^",
+    "@withglyph/tsconfig": "workspace:^",
     "fast-glob": "^3.3.2",
     "tsx": "^4.7.2"
   }

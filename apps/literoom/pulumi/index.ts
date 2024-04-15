@@ -1,7 +1,7 @@
-import { bedrockRef } from '@penxle/pulumi';
 import * as aws from '@pulumi/aws';
 import * as awsnative from '@pulumi/aws-native';
 import * as pulumi from '@pulumi/pulumi';
+import { bedrockRef } from '@withglyph/pulumi';
 
 const image = aws.ecr.getImageOutput({
   repositoryName: 'literoom',

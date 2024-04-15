@@ -23,7 +23,7 @@ export const generateMainTypes = (): AST.Program => {
           exported: AST.b.identifier('FragmentType'),
         }),
       ],
-      AST.b.stringLiteral('@penxle/glitch/runtime'),
+      AST.b.stringLiteral('@withglyph/glitch/runtime'),
     ),
   ]);
 
@@ -31,7 +31,7 @@ export const generateMainTypes = (): AST.Program => {
 };
 
 export const generateMain = (): AST.Program => {
-  const program = AST.b.program([AST.b.exportAllDeclaration(AST.b.stringLiteral('@penxle/glitch/runtime'))]);
+  const program = AST.b.program([AST.b.exportAllDeclaration(AST.b.stringLiteral('@withglyph/glitch/runtime'))]);
 
   return program;
 };

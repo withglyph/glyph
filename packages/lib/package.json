@@ -1,5 +1,5 @@
 {
-  "name": "@penxle/lib",
+  "name": "@withglyph/lib",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -40,8 +40,8 @@
     "vite": "^5.2.8"
   },
   "devDependencies": {
-    "@penxle/tsconfig": "workspace:^",
     "@sveltejs/kit": "^2.5.5",
+    "@withglyph/tsconfig": "workspace:^",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5"
   },

@@ -1,5 +1,5 @@
 {
-  "extends": ["@penxle/tsconfig"],
+  "extends": ["@withglyph/tsconfig"],
   "compilerOptions": {
     "outDir": "dist"
   }

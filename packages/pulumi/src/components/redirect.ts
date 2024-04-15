@@ -19,7 +19,7 @@ type RedirectArgs = {
 
 export class Redirect extends pulumi.ComponentResource {
   constructor(name: string, args: RedirectArgs, opts?: pulumi.ComponentResourceOptions) {
-    super('penxle:index:Redirect', name, {}, opts);
+    super('withglyph:index:Redirect', name, {}, opts);
 
     new k8s.networking.v1.Ingress(
       name,

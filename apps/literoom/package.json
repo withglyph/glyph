@@ -1,5 +1,5 @@
 {
-  "name": "@penxle/literoom",
+  "name": "@withglyph/literoom",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -16,12 +16,12 @@
     "sharp": "^0.33.3"
   },
   "devDependencies": {
-    "@penxle/lib": "workspace:^",
-    "@penxle/pulumi": "workspace:^",
-    "@penxle/tsconfig": "workspace:^",
     "@pulumi/aws": "^6.30.0",
     "@pulumi/aws-native": "^0.101.0",
     "@pulumi/pulumi": "^3.112.0",
+    "@withglyph/lib": "workspace:^",
+    "@withglyph/pulumi": "workspace:^",
+    "@withglyph/tsconfig": "workspace:^",
     "tsup": "^8.0.2",
     "tsx": "^4.7.2",
     "typescript": "^5.4.5"
