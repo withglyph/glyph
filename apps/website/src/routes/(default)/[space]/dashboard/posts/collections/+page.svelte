@@ -89,13 +89,12 @@
       <TableRow>
         <TableData>
           <a class={flex({ gap: '12px' })} href={`/${$query.space.slug}/collections/${collection.id}`}>
-            {#if collection.thumbnail}
-              <Image
-                style={css.raw({ width: '96px', aspectRatio: '[3/4]', flexShrink: 0 })}
-                $image={collection.thumbnail}
-                size={128}
-              />
-            {/if}
+            <Image
+              style={css.raw({ flex: 'none', width: '96px', aspectRatio: '[3/4]', flexShrink: 0 })}
+              $image={collection.thumbnail}
+              placeholder
+              size={128}
+            />
             <dl
               class={css({
                 'overflow': 'hidden',
