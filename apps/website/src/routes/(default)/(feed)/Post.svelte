@@ -152,7 +152,9 @@
             {$post.publishedRevision.subtitle ?? ''}
           </h4>
         {/if}
-        <p class={css({ color: 'gray.600', truncate: true })}>{$post.publishedRevision.previewText}</p>
+        {#if $post.publishedRevision.previewText}
+          <p class={css({ color: 'gray.600', truncate: true })}>{$post.publishedRevision.previewText}</p>
+        {/if}
       </div>
 
       <div
@@ -161,7 +163,8 @@
           gap: '4px',
           marginY: '6px',
           height: '21px',
-          overflowX: 'hidden',
+          overflowX: 'auto',
+          scrollbar: 'hidden',
           truncate: true,
         })}
       >

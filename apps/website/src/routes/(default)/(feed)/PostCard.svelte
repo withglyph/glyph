@@ -36,6 +36,7 @@
           id
           title
           subtitle
+          previewText
         }
 
         space @_required {
@@ -76,10 +77,11 @@
         truncate: true,
       },
       subtitle: {
-        fontSize: { base: '13px', sm: '14px' },
-        wordBreak: 'break-all',
-        height: '19px',
-        width: 'full',
+        display: 'flex',
+        alignItems: 'center',
+        flex: 'none',
+        fontWeight: 'medium',
+        color: 'gray.800',
         truncate: true,
       },
       tag: { maxWidth: '94px', truncate: true },
@@ -144,11 +146,33 @@
   </div>
 
   <div class={flex({ flexDirection: 'column', align: 'flex-start', truncate: true })}>
-    <div class={css(classes.title)}>
+    <h3 class={css(classes.title)}>
       {$post.publishedRevision.title ?? '(제목 없음)'}
-    </div>
-    <div class={css(classes.subtitle)}>
-      {$post.publishedRevision.subtitle ?? ''}
+    </h3>
+
+    <div class={flex({ align: 'center', fontSize: '13px', width: 'full', height: '19px', truncate: true })}>
+      {#if $post.publishedRevision.subtitle}
+        <h4
+          class={css(
+            classes.subtitle,
+            !!$post.publishedRevision.previewText && {
+              _after: {
+                content: '""',
+                display: 'block',
+                marginX: '4px',
+                width: '1px',
+                height: '10px',
+                backgroundColor: 'gray.500',
+              },
+            },
+          )}
+        >
+          {$post.publishedRevision.subtitle ?? ''}
+        </h4>
+      {/if}
+      {#if $post.publishedRevision.previewText}
+        <p class={css({ color: 'gray.600', truncate: true })}>{$post.publishedRevision.previewText}</p>
+      {/if}
     </div>
   </div>
 
@@ -160,15 +184,16 @@
         marginTop: '6px',
         marginBottom: '12px',
         height: '21px',
+        overflowX: 'auto',
+        scrollbar: 'hidden',
         truncate: true,
       })}
     >
-      {#each $post.tags.slice(0, 2) as tag (tag.id)}
-        <Tag style={classes.tag} as="div" size="sm">#{tag.tag.name}</Tag>
+      {#each $post.tags as tag (tag.id)}
+        <Tag style={css.raw({ flex: 'none', truncate: true })} as="div" size="sm">
+          #{tag.tag.name}
+        </Tag>
       {/each}
-      {#if $post.tags.length > 2}
-        <Tag style={classes.tag} as="div" size="sm">+{$post.tags.length - 2}</Tag>
-      {/if}
     </div>
   {/if}
 
