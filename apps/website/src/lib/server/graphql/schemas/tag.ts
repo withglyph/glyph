@@ -1,4 +1,4 @@
-import { and, desc, eq, notExists } from 'drizzle-orm';
+import { and, count, desc, eq, notExists } from 'drizzle-orm';
 import { PostTagKind } from '$lib/enums';
 import { NotFoundError } from '$lib/errors';
 import {
@@ -89,6 +89,25 @@ Tag.implement({
           .limit(args.take)
           .offset((args.page - 1) * args.take)
           .then((rows) => rows.map((row) => row.postId));
+      },
+    }),
+
+    postCount: t.int({
+      resolve: async (tag) => {
+        return database
+          .select({ postCount: count() })
+          .from(PostTags)
+          .innerJoin(Posts, eq(PostTags.postId, Posts.id))
+          .innerJoin(Spaces, eq(Posts.spaceId, Spaces.id))
+          .where(
+            and(
+              eq(PostTags.tagId, tag.id),
+              eq(Posts.state, 'PUBLISHED'),
+              eq(Posts.visibility, 'PUBLIC'),
+              eq(Spaces.visibility, 'PUBLIC'),
+            ),
+          )
+          .then((rows) => rows[0]?.postCount ?? 0);
       },
     }),
 
