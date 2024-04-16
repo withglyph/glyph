@@ -17,7 +17,9 @@ export type EditorState = {
 
   canRevise: boolean;
   isRevising: boolean;
+  hasReviseError: boolean;
   lastRevision?: {
+    id?: string;
     kind: PostRevisionKind;
     updatedAt: string;
   };

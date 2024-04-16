@@ -7,6 +7,7 @@
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Helmet } from '$lib/components';
+  import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import Content from './Content.svelte';
@@ -67,6 +68,7 @@
   const state = writable<EditorState>({
     canRevise: true,
     isRevising: false,
+    hasReviseError: false,
   });
 
   $: if (!$store) {
@@ -88,6 +90,8 @@
 
   const makeRevisePost = (revisionKind: PostRevisionKind) => {
     return async () => {
+      $state.hasReviseError = false;
+
       const resp = await revisePost({
         revisionKind,
         postId: $post.id,
@@ -96,11 +100,17 @@
         content: $store.content,
         paragraphIndent: $store.paragraphIndent,
         paragraphSpacing: $store.paragraphSpacing,
+        lastRevisionId: $state.lastRevision?.id,
+      }).catch((err) => {
+        toast(err.message);
+        $state.hasReviseError = true;
+        throw err;
       });
 
       mixpanel.track('post:revise', { postId: $post.id, revisionKind });
 
       $state.lastRevision = {
+        id: resp.draftRevision.id,
         kind: resp.draftRevision.kind,
         updatedAt: resp.draftRevision.updatedAt,
       };

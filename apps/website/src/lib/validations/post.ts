@@ -9,6 +9,7 @@ export const RevisePostInputSchema = z.object({
   content: z.any(),
   paragraphIndent: z.number().int(),
   paragraphSpacing: z.number().int(),
+  lastRevisionId: z.string().nullable().optional(),
 });
 
 export const PublishPostInputSchema = z.object({

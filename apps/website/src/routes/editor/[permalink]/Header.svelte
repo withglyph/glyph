@@ -220,6 +220,8 @@
         >
           {#if $state.isRevising || !$state.lastRevision}
             {dayjs().formatAsTime()} 저장중
+          {:else if $state.hasReviseError}
+            저장 실패!
           {:else}
             {dayjs($state.lastRevision.updatedAt).formatAsTime()} 저장됨
           {/if}

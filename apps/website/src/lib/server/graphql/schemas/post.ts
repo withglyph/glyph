@@ -1077,6 +1077,8 @@ const RevisePostInput = builder.inputType('RevisePostInput', {
 
     paragraphIndent: t.int(),
     paragraphSpacing: t.int(),
+
+    lastRevisionId: t.id({ required: false }),
   }),
   validate: { schema: RevisePostInputSchema },
 });
@@ -1410,20 +1412,15 @@ builder.mutationFields((t) => ({
       const FreeContents = alias(PostRevisionContents, 'a1');
       const PaidContents = alias(PostRevisionContents, 'a2');
 
-      const revisions = await database
+      const lastRevision = await database
         .select({ id: PostRevisions.id, kind: PostRevisions.kind, createdAt: PostRevisions.createdAt })
         .from(PostRevisions)
         .leftJoin(FreeContents, eq(FreeContents.id, PostRevisions.freeContentId))
         .leftJoin(PaidContents, eq(PaidContents.id, PostRevisions.paidContentId))
         .where(eq(PostRevisions.postId, input.postId))
         .orderBy(desc(PostRevisions.createdAt))
-        .limit(1);
-
-      if (revisions.length === 0) {
-        throw new NotFoundError();
-      }
-
-      const [revision] = revisions;
+        .limit(1)
+        .then(useFirstRowOrThrow(new NotFoundError()));
 
       document = await sanitizeContent(document);
 
@@ -1450,8 +1447,10 @@ builder.mutationFields((t) => ({
         updatedAt: dayjs(),
       };
 
-      await (revision.kind === 'AUTO_SAVE' && revision.createdAt.isAfter(dayjs().subtract(1, 'minute'))
-        ? database.update(PostRevisions).set(revisionData).where(eq(PostRevisions.id, revision.id))
+      await (lastRevision.id === input.lastRevisionId &&
+      lastRevision.kind === 'AUTO_SAVE' &&
+      lastRevision.createdAt.isAfter(dayjs().subtract(1, 'minute'))
+        ? database.update(PostRevisions).set(revisionData).where(eq(PostRevisions.id, lastRevision.id))
         : database.insert(PostRevisions).values(revisionData));
 
       /// 게시글에 수정된 부분이 있을 경우 포스트 상태를 DRAFT로 변경

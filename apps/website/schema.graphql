@@ -689,6 +689,7 @@ enum RevenueWithdrawalState {
 
 input RevisePostInput {
   content: JSON!
+  lastRevisionId: ID
   paragraphIndent: Int!
   paragraphSpacing: Int!
   postId: ID!
