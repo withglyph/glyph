@@ -9,6 +9,7 @@ import {
   Spaces,
   TagFollows,
   Tags,
+  Users,
   UserSpaceMutes,
   UserTagMutes,
 } from '$lib/server/database';
@@ -108,6 +109,17 @@ Tag.implement({
             ),
           )
           .then((rows) => rows[0]?.postCount ?? 0);
+      },
+    }),
+
+    followerCount: t.int({
+      resolve: async (tag) => {
+        return database
+          .select({ followerCount: count() })
+          .from(TagFollows)
+          .innerJoin(Users, eq(TagFollows.userId, Users.id))
+          .where(and(eq(TagFollows.tagId, tag.id), eq(Users.state, 'ACTIVE')))
+          .then((rows) => rows[0]?.followerCount ?? 0);
       },
     }),
 

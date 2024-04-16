@@ -806,6 +806,7 @@ type SubscribeNotification implements IUserNotification {
 
 type Tag {
   followed: Boolean!
+  followerCount: Int!
   id: ID!
   muted: Boolean!
   name: String!
