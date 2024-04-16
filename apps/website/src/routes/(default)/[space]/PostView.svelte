@@ -136,7 +136,6 @@
               id
               title
               subtitle
-              previewText
               price
             }
 
@@ -285,7 +284,6 @@
         subtitle
         content
         createdAt
-        previewText
         paragraphIndent
         paragraphSpacing
       }
@@ -445,6 +443,7 @@
           align: 'center',
           gap: '2px',
           marginBottom: { base: '12px', sm: '24px' },
+          fontSize: { base: '14px', sm: '16px' },
           color: 'gray.500',
           width: 'fit',
         })}
@@ -1048,7 +1047,12 @@
             }
           }}
         >
-          <TextInput placeholder="비밀번호를 입력해주세요" type="password" bind:value={password} />
+          <TextInput
+            style={css.raw({ fontSize: '14px!' })}
+            placeholder="비밀번호를 입력해주세요"
+            type="password"
+            bind:value={password}
+          />
           <Button style={css.raw({ width: '68px' })} size="sm" type="submit">입력</Button>
         </form>
       </AlertText>
