@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const name = z.string().trim().min(1, '컬렉션 이름을 입력해주세요');
+const name = z.string().trim().min(1, '컬렉션 이름을 입력해주세요').max(50, '컬렉션 이름은 50자를 넘을 수 없어요');
 
 export const CreateSpaceCollectionSchema = z.object({
   spaceId: z.string(),

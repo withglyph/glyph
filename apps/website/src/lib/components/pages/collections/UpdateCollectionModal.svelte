@@ -36,7 +36,7 @@
   let thumbnail: typeof $collection.thumbnail;
   $: thumbnail = $collection.thumbnail;
 
-  const { form, setInitialValues, isSubmitting } = createMutationForm({
+  const { form, setInitialValues, isSubmitting, data } = createMutationForm({
     mutation: graphql(`
       mutation UpdateSpaceCollectionModal_UpdateSpaceCollection_Mutation($input: UpdateSpaceCollectionInput!) {
         updateSpaceCollection(input: $input) {
@@ -117,7 +117,11 @@
       JPG, PNG 업로드 가능
     </div>
     <FormField name="name" label="컬렉션명">
-      <TextInput style={css.raw({ width: 'full', fontWeight: 'bold' })} maxlength={20} required />
+      <TextInput style={css.raw({ width: 'full', fontWeight: 'bold' })} maxlength={50} required>
+        <span slot="right-icon" class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.300' })}>
+          {$data.name?.length}/50
+        </span>
+      </TextInput>
     </FormField>
     <Button style={css.raw({ marginTop: '24px', width: 'full' })} loading={$isSubmitting} size="xl" type="submit">
       컬렉션 수정하기

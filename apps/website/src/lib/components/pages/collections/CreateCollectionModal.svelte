@@ -110,9 +110,9 @@
     <div id="upload-restriction" class={css({ fontSize: '13px', color: 'gray.500' })}>800x1000 픽셀 이상 (4:5비율)</div>
 
     <FormField name="name" style={css.raw({ marginTop: '42px' })} label="컬렉션명">
-      <TextInput style={css.raw({ width: 'full' })} maxlength={20} placeholder="컬렉션명을 입력해주세요" required>
+      <TextInput style={css.raw({ width: 'full' })} maxlength={50} placeholder="컬렉션명을 입력해주세요" required>
         <span slot="right-icon" class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.300' })}>
-          {$data.name?.length}/20
+          {$data.name?.length}/50
         </span>
       </TextInput>
     </FormField>
