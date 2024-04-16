@@ -99,6 +99,7 @@
       >
         <Image
           style={css.raw({
+            flex: 'none',
             borderWidth: '[0.8px]',
             borderColor: 'gray.100',
             width: { base: '84px', sm: '184px' },
