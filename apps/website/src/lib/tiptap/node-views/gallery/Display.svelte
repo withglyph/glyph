@@ -29,6 +29,7 @@
     node.attrs.layout === 'grid' && node.attrs.gridColumns === 2 && { gridTemplateColumns: '2' },
     node.attrs.layout === 'grid' && node.attrs.gridColumns === 3 && { gridTemplateColumns: '3' },
     node.attrs.spacing && { gap: '6px' },
+    { smDown: { maxWidth: 'full' } },
   )}
 >
   {#if node.attrs.layout === 'slide'}
