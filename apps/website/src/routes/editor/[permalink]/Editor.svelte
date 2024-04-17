@@ -1,13 +1,10 @@
 <script lang="ts">
   import dayjs from 'dayjs';
   import { fromUint8Array, toUint8Array } from 'js-base64';
+  import { Loro, VersionVector } from 'loro-crdt';
   import { nanoid } from 'nanoid';
   import { onMount } from 'svelte';
-  import { readable, writable } from 'svelte/store';
-  import { IndexeddbPersistence } from 'y-indexeddb';
-  import * as YAwareness from 'y-protocols/awareness';
-  import * as Y from 'yjs';
-  import { browser } from '$app/environment';
+  import { writable } from 'svelte/store';
   import { fragment, graphql } from '$glitch';
   import { Helmet } from '$lib/components';
   import { css } from '$styled-system/css';
@@ -15,33 +12,18 @@
   import Content from './Content.svelte';
   import { setEditorContext } from './context';
   import Header from './Header.svelte';
+  import { createLoroStore } from './utils';
   import type { EditorPage_Editor_post, EditorPage_Editor_query } from '$glitch';
-  import type { EditorState } from './context';
+  import type { Document, EditorState } from './context';
 
   export { _post as $post, _query as $query };
   let _query: EditorPage_Editor_query;
   let _post: EditorPage_Editor_post;
 
-  const EDITOR: unique symbol = Symbol('editor');
-
   $: query = fragment(
     _query,
     graphql(`
       fragment EditorPage_Editor_query on Query {
-        me @_required {
-          id
-
-          profile {
-            id
-            name
-
-            avatar {
-              id
-              color
-            }
-          }
-        }
-
         ...EditorPage_Header_query
       }
     `),
@@ -52,25 +34,6 @@
     graphql(`
       fragment EditorPage_Editor_post on Post {
         id
-
-        space {
-          id
-
-          meAsMember {
-            id
-
-            profile {
-              id
-              name
-
-              avatar {
-                id
-                color
-              }
-            }
-          }
-        }
-
         ...EditorPage_Header_post
       }
     `),
@@ -96,9 +59,10 @@
     }
   `);
 
-  const yDoc = new Y.Doc();
-  const yAwareness = new YAwareness.Awareness(yDoc);
+  const loroDocument = new Loro<Document>();
+  loroDocument.setRecordTimestamp(true);
 
+  let lastExportedVersionVector: VersionVector | undefined = undefined;
   let lastPingMessageReceivedAt: dayjs.Dayjs | null = null;
 
   postSynchronization.on('data', ({ postSynchronization }) => {
@@ -106,93 +70,49 @@
       return;
     }
 
-    // eslint-disable-next-line unicorn/prefer-switch
     if (postSynchronization.kind === 'PING') {
       lastPingMessageReceivedAt = dayjs();
-    } else if (postSynchronization.kind === 'SYNCHRONIZE_3') {
-      if (postSynchronization.data === $state.clientId) {
-        $state.connectionState = 'synchronized';
-      }
-
-      synchronizePost({
-        postId: $post.id,
-        clientId: $state.clientId,
-        kind: 'AWARENESS',
-        data: fromUint8Array(YAwareness.encodeAwarenessUpdate(yAwareness, [yDoc.clientID])),
-      });
+    } else if (postSynchronization.kind === 'SYNCHRONIZE_3' && postSynchronization.data === $state.clientId) {
+      $state.connectionState = 'synchronized';
     } else if (postSynchronization.kind === 'UPDATE') {
-      applyUpdate(postSynchronization.data);
-    } else if (postSynchronization.kind === 'AWARENESS') {
-      YAwareness.applyAwarenessUpdate(yAwareness, toUint8Array(postSynchronization.data), EDITOR);
+      loroDocument.import(toUint8Array(postSynchronization.data));
     }
   });
-
-  yDoc.on('updateV2', async (update, origin) => {
-    if (origin !== EDITOR && $state.connectionState === 'synchronized') {
-      await synchronizePost({
-        postId: $post.id,
-        clientId: $state.clientId,
-        kind: 'UPDATE',
-        data: fromUint8Array(update),
-      });
-    }
-  });
-
-  yAwareness.on(
-    'update',
-    async (states: { added: number[]; updated: number[]; removed: number[] }, origin: unknown) => {
-      if (!browser || origin === EDITOR || $state.connectionState !== 'synchronized') {
-        return;
-      }
-
-      const update = YAwareness.encodeAwarenessUpdate(yAwareness, [
-        ...states.added,
-        ...states.updated,
-        ...states.removed,
-      ]);
-
-      await synchronizePost({
-        postId: $post.id,
-        clientId: $state.clientId,
-        kind: 'AWARENESS',
-        data: fromUint8Array(update),
-      });
-    },
-  );
 
   const state = writable<EditorState>({
     clientId: nanoid(),
-    document: yDoc,
-    awareness: yAwareness,
+    document: loroDocument,
     connectionState: 'connecting',
   });
 
   const forceSynchronize = async () => {
     $state.connectionState = 'synchronizing';
 
+    const clientVersionVector = loroDocument.version();
+
     const results = await synchronizePost({
       postId: $post.id,
       clientId: $state.clientId,
       kind: 'SYNCHRONIZE_1',
-      data: fromUint8Array(Y.encodeStateVector(yDoc)),
+      data: fromUint8Array(clientVersionVector.encode()),
     });
 
     for (const { kind, data } of results) {
       if (kind === 'SYNCHRONIZE_1') {
+        const serverVersionVector = VersionVector.decode(toUint8Array(data));
+        const serverMissingOps = loroDocument.exportFrom(serverVersionVector);
+
         await synchronizePost({
           postId: $post.id,
           clientId: $state.clientId,
           kind: 'SYNCHRONIZE_2',
-          data: fromUint8Array(Y.encodeStateAsUpdateV2(yDoc, toUint8Array(data))),
+          data: fromUint8Array(serverMissingOps),
         });
       } else if (kind === 'SYNCHRONIZE_2') {
-        applyUpdate(data);
+        const clientMissingOps = toUint8Array(data);
+        loroDocument.import(clientMissingOps);
       }
     }
-  };
-
-  const applyUpdate = (update: string) => {
-    Y.applyUpdateV2(yDoc, toUint8Array(update), EDITOR);
   };
 
   setEditorContext({
@@ -200,16 +120,7 @@
     forceSynchronize,
   });
 
-  const title = readable<string | null>(undefined, (set) => {
-    const yText = yDoc.getText('title');
-    const handler = () => {
-      const value = yText.toString();
-      set(value === '' ? null : value);
-    };
-
-    yText.observe(handler);
-    return () => yText.unobserve(handler);
-  });
+  const title = createLoroStore($state, 'title');
 
   let vvHeight: number | undefined;
 
@@ -232,18 +143,28 @@
     }
   };
 
-  $: {
-    const profile = $post.space?.meAsMember?.profile ?? $query.me.profile;
-    yAwareness.setLocalStateField('user', {
-      name: profile.name,
-      color: profile.avatar.color,
-    });
-  }
-
   onMount(() => {
-    const persistence = new IndexeddbPersistence(`withglyph:editor:${$post.id}`, yDoc);
-    persistence.on('synced', () => {
-      forceSynchronize();
+    // const persistence = new IndexeddbPersistence(`withglyph:editor:${$post.id}`, loroDocument);
+    // persistence.on('synced', () => {
+    //   forceSynchronize();
+    // });
+
+    forceSynchronize();
+
+    const subscriptionId = loroDocument.subscribe((event) => {
+      if (event.by !== 'local') {
+        return;
+      }
+
+      const update = loroDocument.exportFrom(lastExportedVersionVector);
+      lastExportedVersionVector = loroDocument.version();
+
+      synchronizePost({
+        postId: $post.id,
+        clientId: $state.clientId,
+        kind: 'UPDATE',
+        data: fromUint8Array(update),
+      });
     });
 
     const unsubscribe = postSynchronization.subscribe({ postId: $post.id });
@@ -254,10 +175,10 @@
     window.visualViewport?.addEventListener('scroll', handleVisualViewportChange);
 
     return () => {
+      // persistence.destroy();
+      loroDocument.unsubscribe(subscriptionId);
       unsubscribe();
       clearInterval(interval);
-      YAwareness.removeAwarenessStates(yAwareness, [yDoc.clientID], EDITOR);
-      yDoc.destroy();
 
       window.visualViewport?.removeEventListener('resize', handleVisualViewportChange);
       window.visualViewport?.removeEventListener('scroll', handleVisualViewportChange);

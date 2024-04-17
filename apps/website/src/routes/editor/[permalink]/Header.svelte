@@ -986,7 +986,8 @@
 
 <FileUploadModal bind:open={fileUploadModalOpen} />
 <DraftListModal {$post} $user={$query.me} bind:open={draftListOpen} />
-<TimeTravel {$post} bind:open={timeTravelOpen} />
+
+<!-- <TimeTravel {$post} bind:open={timeTravelOpen} /> -->
 
 <style>
   .divider-preview {

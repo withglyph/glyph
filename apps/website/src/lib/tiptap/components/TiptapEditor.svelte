@@ -1,17 +1,15 @@
 <script lang="ts">
   import { Editor } from '@tiptap/core';
   import { onMount } from 'svelte';
-  import * as YAwareness from 'y-protocols/awareness';
-  import * as Y from 'yjs';
   import { dev } from '$app/environment';
   import { extensions } from '$lib/tiptap';
   import { css, cx } from '$styled-system/css';
   import { Collaboration } from '../extensions';
+  import type { Loro } from 'loro-crdt';
   import type { SystemStyleObject } from '$styled-system/types';
 
   export let style: SystemStyleObject | undefined = undefined;
-  export let document: Y.Doc | undefined = undefined;
-  export let awareness: YAwareness.Awareness | undefined = undefined;
+  export let document: Loro | undefined = undefined;
 
   export let editor: Editor | undefined = undefined;
 
@@ -20,7 +18,7 @@
   onMount(() => {
     editor = new Editor({
       element,
-      extensions: [...extensions, Collaboration.configure({ document, awareness })],
+      extensions: [...extensions, Collaboration.configure({ document })],
       injectCSS: false,
       editorProps: {
         attributes: { class: css(style) },
@@ -77,6 +75,7 @@
       zIndex: '[100]',
     })}
   >
-    {JSON.stringify(editor?.getJSON(), null, 2)}
+    <!-- {JSON.stringify(editor?.getJSON(), null, 2)} -->
+    {JSON.stringify(document?.toJson(), null, 2)}
   </div>
 {/if}

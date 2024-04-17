@@ -5,8 +5,9 @@ import { and, asc, count, desc, eq, exists, gt, isNotNull, isNull, lt, ne, notEx
 import { alias } from 'drizzle-orm/pg-core';
 import { pipe, Repeater } from 'graphql-yoga';
 import { fromUint8Array, toUint8Array } from 'js-base64';
+import { Loro, VersionVector } from 'loro-crdt';
 import { match, P } from 'ts-pattern';
-import { prosemirrorToYDoc, yDocToProsemirrorJSON } from 'y-prosemirror';
+import { yDocToProsemirrorJSON } from 'y-prosemirror';
 import * as Y from 'yjs';
 import { emojiData } from '$lib/emoji';
 import {
@@ -69,7 +70,7 @@ import {
   useFirstRowOrThrow,
 } from '$lib/server/utils';
 import { revisionContentToText } from '$lib/server/utils/tiptap';
-import { base36To10, createEmptyTiptapDocumentNode } from '$lib/utils';
+import { base36To10 } from '$lib/utils';
 import { PublishPostInputSchema } from '$lib/validations/post';
 import { builder } from '../builder';
 import { pubsub } from '../pubsub';
@@ -1945,32 +1946,34 @@ builder.mutationFields((t) => ({
           .from(PostContentUpdates)
           .where(eq(PostContentUpdates.postId, input.postId));
 
-        let update;
+        const document = new Loro();
         if (updates.length === 0) {
-          update = Y.encodeStateAsUpdateV2(prosemirrorToYDoc(createEmptyTiptapDocumentNode(), 'content'));
-          await database.insert(PostContentUpdates).values({
-            postId: input.postId,
-            userId: context.session.userId,
-            clientId: input.clientId,
-            data: update,
-          });
+          // update = Y.encodeStateAsUpdateV2(prosemirrorToYDoc(createEmptyTiptapDocumentNode(), 'content'));
+          // await database.insert(PostContentUpdates).values({
+          //   postId: input.postId,
+          //   userId: context.session.userId,
+          //   clientId: input.clientId,
+          //   data: update,
+          // });
         } else {
-          update = Y.mergeUpdatesV2(updates.map(({ data }) => data));
+          document.importUpdateBatch(updates.map(({ data }) => data));
         }
 
-        const diff = Y.diffUpdateV2(update, toUint8Array(input.data));
-        const sv = Y.encodeStateVectorFromUpdateV2(update);
+        const serverVersionVector = document.version().encode();
+        const clientVersionVector = VersionVector.decode(toUint8Array(input.data));
+
+        const clientMissingOps = document.exportFrom(clientVersionVector);
 
         return [
           {
             postId: input.postId,
             kind: 'SYNCHRONIZE_2',
-            data: fromUint8Array(diff),
+            data: fromUint8Array(clientMissingOps),
           },
           {
             postId: input.postId,
             kind: 'SYNCHRONIZE_1',
-            data: fromUint8Array(sv),
+            data: fromUint8Array(serverVersionVector),
           },
         ] as const;
       } else if (input.kind == 'SYNCHRONIZE_2') {

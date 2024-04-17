@@ -1,13 +1,20 @@
 import { getContext, setContext } from 'svelte';
-import * as YAwareness from 'y-protocols/awareness';
 import type { Editor } from '@tiptap/core';
+import type { Loro, LoroMap } from 'loro-crdt';
 import type { Writable } from 'svelte/store';
-import type * as Y from 'yjs';
+import type { LoroProseMirrorNode } from '$lib/tiptap/extensions';
+
+export type Document = {
+  root: LoroMap<{
+    title: string;
+    subtitle: string;
+    content: LoroProseMirrorNode;
+  }>;
+};
 
 export type EditorState = {
   editor?: Editor;
-  document: Y.Doc;
-  awareness: YAwareness.Awareness;
+  document: Loro<Document>;
   clientId: string;
   connectionState: 'connecting' | 'synchronizing' | 'synchronized' | 'disconnected';
 };

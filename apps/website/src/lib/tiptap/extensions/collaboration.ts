@@ -1,9 +1,9 @@
 import { Extension } from '@tiptap/core';
-import { redo, undo, yCursorPlugin, ySyncPlugin, yUndoPlugin, yUndoPluginKey } from 'y-prosemirror';
-import * as YAwareness from 'y-protocols/awareness';
-import * as Y from 'yjs';
-import { css } from '$styled-system/css';
-import type { EditorView } from '@tiptap/pm/view';
+import { Node, Slice } from '@tiptap/pm/model';
+import { Plugin, PluginKey } from '@tiptap/pm/state';
+import { Loro, LoroList, LoroMap, LoroText } from 'loro-crdt';
+
+// import type { EditorView } from '@tiptap/pm/view';
 
 declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -16,8 +16,131 @@ declare module '@tiptap/core' {
 }
 
 type CollaborationOptions = {
-  document: Y.Doc;
-  awareness?: YAwareness.Awareness;
+  document: Loro;
+  content: LoroProseMirrorNode;
+};
+
+type LoroProseMirrorAttrsShape = Record<string, unknown>;
+type LoroProseMirrorAttrs = LoroMap<LoroProseMirrorAttrsShape>;
+
+type LoroProseMirrorMarkShape = {
+  type: string;
+  attrs: LoroProseMirrorAttrs;
+};
+type LoroProseMirrorMark = LoroMap<LoroProseMirrorMarkShape>;
+
+type LoroProseMirrorNodeShape = {
+  type: string;
+  attrs: LoroProseMirrorAttrs;
+  marks: LoroList<LoroProseMirrorMark>;
+  content: LoroList<LoroProseMirrorNode | undefined>;
+};
+
+type LoroProseMirrorTextNodeShape = {
+  type: 'text';
+  attrs: LoroProseMirrorAttrs;
+  marks: LoroList<LoroProseMirrorMark>;
+  text: LoroText;
+};
+
+export type LoroProseMirrorNode = LoroMap<LoroProseMirrorNodeShape>;
+export type LoroProseMirrorTextNode = LoroMap<LoroProseMirrorTextNodeShape>;
+
+const createLoroProseMirrorNode = (type: string): LoroProseMirrorNode => {
+  const node = new LoroMap<LoroProseMirrorNodeShape>();
+  node.set('type', type);
+  node.setContainer('attrs', new LoroMap<LoroProseMirrorAttrsShape>());
+  node.setContainer('marks', new LoroList<LoroProseMirrorMarkShape>());
+  node.setContainer('content', new LoroList<LoroProseMirrorNode>());
+  return node;
+};
+
+const createLoroProseMirrorTextNode = (): LoroProseMirrorTextNode => {
+  const node = new LoroMap<LoroProseMirrorTextNodeShape>();
+  node.set('type', 'text');
+  node.setContainer('attrs', new LoroMap<LoroProseMirrorAttrsShape>());
+  node.setContainer('marks', new LoroList<LoroProseMirrorMarkShape>());
+  node.setContainer('text', new LoroText());
+  return node;
+};
+
+const insertLoroProseMirrorNode = (
+  parent: LoroProseMirrorNode,
+  index: number,
+  node: LoroProseMirrorNode | LoroProseMirrorTextNode,
+) => {
+  const content = parent.get('content');
+  content.insertContainer(index, node);
+};
+
+const createLoroProseMirrorDocument = (node: Node): LoroProseMirrorNode => {
+  const doc = createLoroProseMirrorNode(node.type.name);
+  const mapping = new Map<Node, LoroProseMirrorNode>();
+  mapping.set(node, doc);
+
+  node.descendants((node, _, parent, index) => {
+    if (parent === null) {
+      return;
+    }
+
+    let loroNode;
+    if (node.isText) {
+      loroNode = createLoroProseMirrorTextNode();
+
+      const attrs = loroNode.get('attrs');
+      for (const [key, value] of Object.entries(node.attrs)) {
+        attrs.set(key, value);
+      }
+
+      const marks = loroNode.get('marks');
+      for (let i = 0; i < node.marks.length; i++) {
+        const mark = node.marks[i];
+
+        const loroMark = new LoroMap<LoroProseMirrorMarkShape>();
+        loroMark.set('type', mark.type.name);
+
+        const attrs = loroMark.setContainer('attrs', new LoroMap<LoroProseMirrorAttrsShape>());
+        for (const [key, value] of Object.entries(mark.attrs)) {
+          attrs.set(key, value);
+        }
+
+        marks.insertContainer(i, loroMark);
+      }
+
+      const text = loroNode.get('text');
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      text.insert(0, node.text!);
+    } else {
+      loroNode = createLoroProseMirrorNode(node.type.name);
+      mapping.set(node, loroNode);
+
+      const attrs = loroNode.get('attrs');
+      for (const [key, value] of Object.entries(node.attrs)) {
+        attrs.set(key, value);
+      }
+
+      const marks = loroNode.get('marks');
+      for (let i = 0; i < node.marks.length; i++) {
+        const mark = node.marks[i];
+
+        const loroMark = new LoroMap<LoroProseMirrorMarkShape>();
+        loroMark.set('type', mark.type.name);
+
+        const attrs = loroMark.setContainer('attrs', new LoroMap<LoroProseMirrorAttrsShape>());
+        for (const [key, value] of Object.entries(mark.attrs)) {
+          attrs.set(key, value);
+        }
+
+        marks.insertContainer(i, loroMark);
+      }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const parentLoroNode = mapping.get(parent)!;
+    insertLoroProseMirrorNode(parentLoroNode, index, loroNode);
+  });
+
+  return doc;
 };
 
 export const Collaboration = Extension.create<CollaborationOptions>({
@@ -26,129 +149,91 @@ export const Collaboration = Extension.create<CollaborationOptions>({
 
   addCommands() {
     return {
-      undo:
-        () =>
-        ({ state, tr, dispatch }) => {
-          tr.setMeta('preventDispatch', true);
-
-          const undoManager = yUndoPluginKey.getState(state).undoManager as Y.UndoManager;
-          if (undoManager.undoStack.length === 0) {
-            return false;
-          }
-
-          if (!dispatch) {
-            return true;
-          }
-
-          return undo(state);
-        },
-      redo:
-        () =>
-        ({ state, tr, dispatch }) => {
-          tr.setMeta('preventDispatch', true);
-
-          const undoManager = yUndoPluginKey.getState(state).undoManager as Y.UndoManager;
-          if (undoManager.redoStack.length === 0) {
-            return false;
-          }
-
-          if (!dispatch) {
-            return true;
-          }
-
-          return redo(state);
-        },
+      undo: () => () => {
+        // tr.setMeta('preventDispatch', true);
+        return true;
+      },
+      redo: () => () => {
+        // tr.setMeta('preventDispatch', true);
+        return true;
+      },
     };
   },
 
   addProseMirrorPlugins() {
-    const fragment = this.options.document.getXmlFragment('content');
+    const pluginKey = new PluginKey('collaboration');
+    const loroDocument = this.options.document;
+    // const loroContent =
+    // this.options.content ?? loroDocument.getMap('root').setContainer('content', createLoroProseMirrorNode('doc'));
 
-    const yUndoPluginInstance = yUndoPlugin();
-    const originalUndoPluginView = yUndoPluginInstance.spec.view;
+    loroDocument.subscribe((event) => {
+      return;
+      const content = loroDocument.getMap('root').get('content') as LoroProseMirrorNode;
+      console.log(event);
 
-    yUndoPluginInstance.spec.view = (view: EditorView) => {
-      const { undoManager } = yUndoPluginKey.getState(view.state);
+      const node = Node.fromJSON(this.editor.schema, content.toJson());
+      // this.editor.commands.setContent(loroDocument.toJson());
+      const { tr } = this.editor.state;
+      tr.setMeta('preventDispatch', true);
+      tr.setMeta(pluginKey, true);
 
-      if (undoManager.restore) {
-        undoManager.restore();
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        undoManager.restore = () => {};
-      }
+      const doc = this.editor.state.doc;
 
-      const viewRet = originalUndoPluginView ? originalUndoPluginView(view) : undefined;
-
-      return {
-        destroy: () => {
-          const hasUndoManSelf = undoManager.trackedOrigins.has(undoManager);
-          const observers = undoManager._observers;
-
-          undoManager.restore = () => {
-            if (hasUndoManSelf) {
-              undoManager.trackedOrigins.add(undoManager);
-            }
-
-            undoManager.doc.on('afterTransaction', undoManager.afterTransactionHandler);
-            undoManager._observers = observers;
-          };
-
-          if (viewRet?.destroy) {
-            viewRet.destroy();
-          }
-        },
-      };
-    };
-
-    type User = { name: string; color: string };
-
-    const cursorBuilder = (user: User) => {
-      const cursor = document.createElement('span');
-      cursor.className = css({
-        'position': 'relative',
-        'marginX': '-1px',
-        'borderXWidth': '1px',
-        'borderColor': 'var(--user-color)',
-        'pointerEvents': 'none',
-        '& + .ProseMirror-separator': {
-          display: 'none',
-        },
-        '& + .ProseMirror-separator + .ProseMirror-trailingBreak': {
-          display: 'none',
-        },
-        '_before': {
-          content: 'var(--user-name)',
-          position: 'absolute',
-          top: '0',
-          left: '-1px',
-          paddingX: '4px',
-          paddingY: '2px',
-          width: 'max',
-          fontFamily: 'ui',
-          fontSize: '13px',
-          lineHeight: 'none',
-          textIndent: '0',
-          color: 'gray.50',
-          backgroundColor: 'var(--user-color)',
-          translate: 'auto',
-          translateY: '-full',
-        },
-      });
-      cursor.style.setProperty('--user-name', `"${user.name}"`);
-      cursor.style.setProperty('--user-color', user.color);
-      return cursor;
-    };
-
-    const selectionBuilder = (user: User) => {
-      return {
-        style: `--user-color: color-mix(in srgb, ${user.color} 50%, transparent);`,
-        class: css({ backgroundColor: 'var(--user-color)' }),
-      };
-    };
+      tr.replace(0, doc.content.size, new Slice(node.content, 0, 0));
+      this.editor.view.dispatch(tr);
+    });
 
     return [
-      ySyncPlugin(fragment),
-      yUndoPluginInstance,
-      ...(this.options.awareness ? [yCursorPlugin(this.options.awareness, { cursorBuilder, selectionBuilder })] : []),
+      new Plugin({
+        key: pluginKey,
+        state: {
+          init: () => null,
+          apply: (tr, value) => {
+            if (!tr.docChanged || tr.getMeta(pluginKey) === true) {
+              return value;
+            }
+
+            const doc = createLoroProseMirrorDocument(tr.doc);
+            loroDocument.getMap('root').setContainer('content', doc);
+            loroDocument.commit();
+
+            // for (let i = 0; i < tr.steps.length; i++) {
+            //   const step = tr.steps[i];
+            //   const doc = tr.docs[i];
+
+            //   if (step instanceof ReplaceStep) {
+            //     const { from, to, slice } = step;
+            //     // const $from = doc.resolve(from);
+            //     // const $to = doc.resolve(to);
+
+            //     doc.nodesBetween(from, to, (node, pos, parent, index) => {
+            //       if (parent === null) {
+            //         return;
+            //       }
+            //     });
+
+            //     // root.getOrCreateContainer()
+
+            //     // console.log(from, to);
+
+            //     // $from.
+
+            //     // console.log({ from, to });
+            //     // doc.nodesBetween(from, to, (node, pos, parent) => {
+            //     //   if (parent === null) {
+            //     //     return;
+            //     //   }
+
+            //     //   console.log(node, pos);
+            //     // });
+            //     // slice.content.
+            //   }
+            // }
+
+            return null;
+          },
+        },
+      }),
     ];
   },
 
