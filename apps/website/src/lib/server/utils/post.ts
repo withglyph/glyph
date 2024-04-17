@@ -4,36 +4,35 @@ import stringify from 'fast-json-stable-stringify';
 import * as R from 'radash';
 import { redis, useCache } from '$lib/server/cache';
 import { database, inArray, PostPurchases, PostRevisionContents, PostViews, SpaceCollectionPosts } from '../database';
-import { useFirstRow, useFirstRowOrThrow } from './database';
-import { isEmptyContent } from './tiptap';
 import type { JSONContent } from '@tiptap/core';
 import type { Context } from '../context';
 import type { Transaction } from '../database';
 
-export const makePostContentId = async (data: JSONContent[] | null) => {
-  if (isEmptyContent(data)) {
+export const makePostContentId = async (tx: Transaction, nodes: JSONContent[]) => {
+  if (nodes.length === 0) {
     return null;
   }
 
   const hash = Buffer.from(
-    await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(stringify(data))),
+    await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(stringify(nodes))),
   ).toString('hex');
 
-  const contentId: string =
-    (await database
-      .select({ id: PostRevisionContents.id })
-      .from(PostRevisionContents)
-      .where(eq(PostRevisionContents.hash, hash))
-      .then(useFirstRow)
-      .then((row) => row?.id)) ??
-    (await database
-      .insert(PostRevisionContents)
-      .values({ hash, data })
-      .returning({ id: PostRevisionContents.id })
-      .then(useFirstRowOrThrow())
-      .then((row) => row.id));
+  const contents = await tx
+    .insert(PostRevisionContents)
+    .values({ hash, data: nodes })
+    .onConflictDoNothing({ target: PostRevisionContents.hash })
+    .returning({ id: PostRevisionContents.id });
 
-  return contentId;
+  if (contents.length > 0) {
+    return contents[0].id;
+  }
+
+  const [content] = await tx
+    .select({ id: PostRevisionContents.id })
+    .from(PostRevisionContents)
+    .where(eq(PostRevisionContents.hash, hash));
+
+  return content.id;
 };
 
 type GetPostViewCountParams = {

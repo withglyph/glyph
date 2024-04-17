@@ -29,7 +29,6 @@
   import { css, cx } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import CreateSpaceModal from '../../(default)/CreateSpaceModal.svelte';
-  import { getEditorContext } from './context';
   import PublishMenuSearch from './PublishMenuSearch.svelte';
   import RadioGroup from './RadioGroup.svelte';
   import type { ChangeEventHandler } from 'svelte/elements';
@@ -39,8 +38,6 @@
   let _post: EditorPage_PublishMenu_post;
   let _query: EditorPage_PublishMenu_query;
   export let open = false;
-
-  const { forceSave } = getEditorContext();
 
   $: query = fragment(
     _query,
@@ -74,10 +71,6 @@
                 ...Image_image
               }
             }
-          }
-
-          posts(state: DRAFT) {
-            id
           }
 
           ...CreateSpaceModal_user
@@ -125,15 +118,9 @@
           }
         }
 
-        draftRevision {
-          id
-        }
-
         collection {
           id
         }
-
-        ...EditorPage_RevisionListModal_Post
       }
     `),
   );
@@ -159,10 +146,8 @@
       }
     `),
     schema: PublishPostInputSchema,
-    extra: async () => {
-      const revisionId = await forceSave();
+    extra: () => {
       return {
-        revisionId,
         spaceId: selectedSpaceId,
         collectionId: selectedCollectionId,
         thumbnailId: currentThumbnail?.id,
@@ -175,9 +160,9 @@
   });
 
   $: setInitialValues({
-    revisionId: $post.draftRevision.id,
+    postId: $post.id,
     spaceId: $post.space ? $post.space.id : '',
-    collectionId: $post.collection ? $post.collection.id : undefined,
+    collectionId: $post.collection?.id ?? undefined,
     thumbnailId: $post.thumbnail?.id,
     visibility: $post.visibility,
     password: $post.hasPassword ? '' : undefined,

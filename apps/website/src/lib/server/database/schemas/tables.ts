@@ -2,7 +2,8 @@ import { init } from '@paralleldrive/cuid2';
 import { sql } from 'drizzle-orm';
 import { boolean, index, integer, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import * as E from './enums';
-import { datetime, jsonb } from './types';
+import { bytea, datetime, jsonb } from './types';
+import type { JSONContent } from '@tiptap/core';
 import type { AnyPgColumn } from 'drizzle-orm/pg-core';
 
 const createId = init({ length: 16 });
@@ -352,7 +353,7 @@ export const PostRevisionContents = pgTable('post_revision_contents', {
     .primaryKey()
     .$defaultFn(() => createId()),
   hash: text('hash').notNull().unique(),
-  data: jsonb('data').notNull(),
+  data: jsonb('data').$type<JSONContent[]>().notNull(),
   createdAt: datetime('created_at')
     .notNull()
     .default(sql`now()`),
@@ -487,6 +488,10 @@ export const PostRevisions = pgTable(
     subtitle: text('subtitle'),
     paragraphIndent: integer('paragraph_indent').notNull().default(100),
     paragraphSpacing: integer('paragraph_spacing').notNull().default(100),
+    attributes: jsonb('attributes')
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default(sql`'{}'`),
     createdAt: datetime('created_at')
       .notNull()
       .default(sql`now()`),
@@ -1024,3 +1029,45 @@ export const CurationPosts = pgTable('curation_posts', {
     .notNull()
     .default(sql`now()`),
 });
+
+export const PostContentUpdates = pgTable(
+  'post_content_updates',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    postId: text('post_id')
+      .notNull()
+      .references(() => Posts.id),
+    userId: text('user_id')
+      .notNull()
+      .references(() => Users.id),
+    clientId: text('client_id').notNull(),
+    data: bytea('data').notNull(),
+    createdAt: datetime('created_at')
+      .notNull()
+      .default(sql`now()`),
+  },
+  (t) => ({
+    postIdCreatedAtIdx: index().on(t.postId, t.createdAt),
+  }),
+);
+
+export const PostContentSnapshots = pgTable(
+  'post_content_snapshots',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    postId: text('post_id')
+      .notNull()
+      .references(() => Posts.id),
+    data: bytea('data').notNull(),
+    createdAt: datetime('created_at')
+      .notNull()
+      .default(sql`now()`),
+  },
+  (t) => ({
+    postIdCreatedAtIdx: index().on(t.postId, t.createdAt),
+  }),
+);

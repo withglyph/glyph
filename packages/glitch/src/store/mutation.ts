@@ -9,7 +9,7 @@ export const createMutationStore = (document: TypedDocumentNode<unknown, AnyVari
   const count = writable(0);
 
   const mutate = async (input?: AnyVariables) => {
-    const { client, transformError, onMutationError } = await getClient();
+    const { client, transformError, onMutationError } = getClient();
 
     const request = createRequest(document, input ? { input } : undefined);
     const operation = client.createRequestOperation('mutation', request, {

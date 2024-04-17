@@ -1,6 +1,7 @@
-import { Node } from '@tiptap/core';
+import { mergeAttributes, Node } from '@tiptap/core';
 import { values } from '$lib/tiptap/values';
 import { closest } from '$lib/utils';
+import { css } from '$styled-system/css';
 
 const textAligns = values.textAlign.map(({ value }) => value);
 type TextAlign = (typeof textAligns)[number];
@@ -75,7 +76,18 @@ export const Paragraph = Node.create({
   },
 
   renderHTML({ node, HTMLAttributes }) {
-    return ['p', HTMLAttributes, !this.editor?.isEditable && node.childCount === 0 ? ['br'] : 0];
+    return [
+      'p',
+      mergeAttributes(HTMLAttributes, {
+        class: css(
+          node.attrs.textAlign === 'left' && {
+            marginBottom: 'var(--document-paragraph-spacing)',
+            textIndent: 'var(--document-paragraph-indent)',
+          },
+        ),
+      }),
+      !this.editor?.isEditable && node.childCount === 0 ? ['br'] : 0,
+    ];
   },
 
   addCommands() {

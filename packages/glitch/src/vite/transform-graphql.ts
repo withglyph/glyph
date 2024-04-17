@@ -167,6 +167,50 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
     return true;
   };
 
+  const transformSubscription = (filename: string, program: AST.Program) => {
+    const subscriptions = context.artifacts.filter(
+      (artifact) => artifact.kind === 'subscription' && artifact.filePath === filename,
+    );
+
+    if (subscriptions.length === 0) {
+      return false;
+    }
+
+    AST.walk(program, {
+      visitCallExpression(p) {
+        const { node } = p;
+
+        if (
+          node.callee.type === 'Identifier' &&
+          node.callee.name === 'graphql' &&
+          node.arguments[0].type === 'TemplateLiteral'
+        ) {
+          const source = node.arguments[0].quasis[0].value.raw;
+          const subscription = subscriptions.find((subscription) => subscription.source === source);
+
+          if (subscription) {
+            node.arguments[0] = AST.b.stringLiteral('subscription');
+            node.arguments.push(
+              AST.b.identifier(`__glitch_base_s.DocumentNode_${subscription.name}`),
+              node.arguments[1],
+            );
+          }
+        }
+
+        this.traverse(p);
+      },
+    });
+
+    program.body.unshift(
+      AST.b.importDeclaration(
+        [AST.b.importNamespaceSpecifier(AST.b.identifier('__glitch_base_s'))],
+        AST.b.stringLiteral('$glitch/base'),
+      ),
+    );
+
+    return true;
+  };
+
   const transformFragment = (filename: string, program: AST.Program) => {
     const fragments = context.artifacts.filter(
       (artifact) => artifact.kind === 'fragment' && artifact.filePath === filename,
@@ -225,9 +269,10 @@ export const transformGraphQLPlugin = (context: GlitchContext): Plugin => {
       const automaticQuery = transformAutomaticQuery(filename, program);
       const manualQuery = transformManualQuery(filename, program);
       const mutation = transformMutation(filename, program);
+      const subscription = transformSubscription(filename, program);
       const fragment = transformFragment(filename, program);
 
-      if (automaticQuery || manualQuery || mutation || fragment) {
+      if (automaticQuery || manualQuery || mutation || subscription || fragment) {
         return AST.print(program);
       }
     },

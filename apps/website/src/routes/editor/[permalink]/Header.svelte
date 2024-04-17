@@ -1,5 +1,4 @@
 <script lang="ts">
-  import dayjs from 'dayjs';
   import { onMount } from 'svelte';
   import IconLetterSpacing from '~icons/glyph/letter-spacing';
   import IconLineHeight from '~icons/glyph/line-height';
@@ -32,9 +31,9 @@
   import CharacterCountWidget from './CharacterCountWidget.svelte';
   import { getEditorContext } from './context';
   import DraftListModal from './DraftListModal.svelte';
+  import FileUploadModal from './FileUploadModal.svelte';
   import MobileEditMenu from './MobileEditMenu.svelte';
   import PublishMenu from './PublishMenu.svelte';
-  import RevisionListModal from './RevisionListModal.svelte';
   import ToolbarButtonTooltip from './ToolbarButtonTooltip.svelte';
   import type { EditorPage_Header_post, EditorPage_Header_query } from '$glitch';
 
@@ -42,7 +41,7 @@
   let _query: EditorPage_Header_query;
   let _post: EditorPage_Header_post;
 
-  const { store, state, forceSave } = getEditorContext();
+  const { state, forceSynchronize } = getEditorContext();
   $: editor = $state.editor;
 
   $: query = fragment(
@@ -97,7 +96,6 @@
 
         ...EditorPage_PublishMenu_post
         ...EditorPage_DraftListModal_post
-        ...EditorPage_RevisionListModal_Post
       }
     `),
   );
@@ -106,30 +104,14 @@
 
   let colorPickerOpen = false;
 
+  let fileUploadModalOpen = false;
+
   let contentOptionsOpen = false;
   let paragraphIndentOpen = false;
   let paragraphSpacingOpen = false;
 
   let publishMenuOpen = false;
-  let revisionListOpen = false;
   let draftListOpen = false;
-
-  const handleInsertFile = () => {
-    const picker = document.createElement('input');
-    picker.type = 'file';
-
-    picker.addEventListener('change', async () => {
-      const file = picker.files?.[0];
-
-      if (!file) {
-        return;
-      }
-
-      editor?.chain().focus().setFile(file).run();
-    });
-
-    picker.showPicker();
-  };
 
   const { anchor: colorPickerAnchor, floating: colorPickerFloating } = createFloatingActions({
     placement: 'bottom-end',
@@ -213,15 +195,21 @@
         <span
           class={css(
             { transition: 'common', fontSize: '12px' },
-            !$state.isRevising && $state.lastRevision?.kind === 'MANUAL_SAVE'
-              ? { fontWeight: 'semibold', color: 'brand.400' }
-              : { color: 'gray.600' },
+            $state.connectionState === 'connecting' || $state.connectionState === 'synchronizing'
+              ? { color: 'gray.600' }
+              : $state.connectionState === 'synchronized'
+                ? { fontWeight: 'medium', color: 'brand.400' }
+                : { fontWeight: 'bold', color: 'red.600' },
           )}
         >
-          {#if $state.isRevising || !$state.lastRevision}
-            {dayjs().formatAsTime()} 저장중
+          {#if $state.connectionState === 'connecting'}
+            서버 연결 중
+          {:else if $state.connectionState === 'synchronizing'}
+            포스트 동기화 중
+          {:else if $state.connectionState === 'synchronized'}
+            실시간 저장 중
           {:else}
-            {dayjs($state.lastRevision.updatedAt).formatAsTime()} 저장됨
+            서버 연결 끊김
           {/if}
         </span>
       </div>
@@ -242,9 +230,9 @@
               paddingY: '9px',
               backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100' },
             })}
-            disabled={!$state.canRevise}
+            disabled={false}
             type="button"
-            on:click={() => forceSave()}
+            on:click={() => forceSynchronize()}
           >
             저장
           </button>
@@ -310,7 +298,7 @@
           <Icon icon={IconDotsVertical} size={24} />
         </div>
 
-        <MenuItem on:click={() => (revisionListOpen = true)}>저장이력</MenuItem>
+        <!-- <MenuItem on:click={() => (revisionListOpen = true)}>저장이력</MenuItem> -->
         <MenuItem external href={`/editor/${$post.permalink}/preview`} type="link">미리보기</MenuItem>
       </Menu>
     </div>
@@ -864,7 +852,7 @@
               _hover: { backgroundColor: 'gray.100' },
             })}
             type="button"
-            on:click={handleInsertFile}
+            on:click={() => (fileUploadModalOpen = true)}
           >
             <Icon icon={IconFolder} size={24} />
           </button>
@@ -926,70 +914,28 @@
               문단 들여쓰기
             </MenuItem>
 
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphIndentOpen = false;
-                $store.paragraphIndent = 0;
-              }}
-            >
-              없음
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphIndent !== 0 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
-
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphIndentOpen = false;
-                paragraphIndentOpen = false;
-                $store.paragraphIndent = 50;
-              }}
-            >
-              0.5칸
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphIndent !== 50 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
-
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphIndentOpen = false;
-                $store.paragraphIndent = 100;
-              }}
-            >
-              1칸
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphIndent !== 100 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
-
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphIndentOpen = false;
-                $store.paragraphIndent = 200;
-              }}
-            >
-              2칸
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphIndent !== 200 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
+            {#each values.documentParagraphIndent as documentParagraphIndent (documentParagraphIndent.value)}
+              <MenuItem
+                style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
+                on:click={() => {
+                  contentOptionsOpen = false;
+                  paragraphIndentOpen = false;
+                  editor?.commands.setDocumentParagraphIndent(documentParagraphIndent.value);
+                }}
+              >
+                {documentParagraphIndent.label}
+                <Icon
+                  style={css.raw(
+                    { color: 'brand.400' },
+                    !editor?.isActive({ documentParagraphIndent: documentParagraphIndent.value }) && {
+                      visibility: 'hidden',
+                    },
+                  )}
+                  icon={IconCheck}
+                  size={20}
+                />
+              </MenuItem>
+            {/each}
           </Menu>
 
           <Menu as="div" hideBackdrop offset={16} placement="right-start" bind:open={paragraphSpacingOpen}>
@@ -1004,69 +950,28 @@
               문단 사이간격
             </MenuItem>
 
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphSpacingOpen = false;
-                $store.paragraphSpacing = 0;
-              }}
-            >
-              없음
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphSpacing !== 0 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
-
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphSpacingOpen = false;
-                $store.paragraphSpacing = 50;
-              }}
-            >
-              0.5줄
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphSpacing !== 50 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
-
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphSpacingOpen = false;
-                $store.paragraphSpacing = 100;
-              }}
-            >
-              1줄
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphSpacing !== 100 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
-
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphSpacingOpen = false;
-                $store.paragraphSpacing = 200;
-              }}
-            >
-              2줄
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphSpacing !== 200 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
+            {#each values.documentParagraphSpacing as documentParagraphSpacing (documentParagraphSpacing.value)}
+              <MenuItem
+                style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
+                on:click={() => {
+                  contentOptionsOpen = false;
+                  paragraphSpacingOpen = false;
+                  editor?.commands.setDocumentParagraphSpacing(documentParagraphSpacing.value);
+                }}
+              >
+                {documentParagraphSpacing.label}
+                <Icon
+                  style={css.raw(
+                    { color: 'brand.400' },
+                    !editor?.isActive({ documentParagraphSpacing: documentParagraphSpacing.value }) && {
+                      visibility: 'hidden',
+                    },
+                  )}
+                  icon={IconCheck}
+                  size={20}
+                />
+              </MenuItem>
+            {/each}
           </Menu>
         </Menu>
       </ToolbarButtonTooltip>
@@ -1076,8 +981,8 @@
   <MobileEditMenu />
 </header>
 
+<FileUploadModal bind:open={fileUploadModalOpen} />
 <DraftListModal {$post} $user={$query.me} bind:open={draftListOpen} />
-<RevisionListModal {$post} bind:open={revisionListOpen} />
 
 <style>
   .divider-preview {

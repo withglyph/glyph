@@ -47,6 +47,7 @@ export const builder = new SchemaBuilder<{
 
 builder.queryType();
 builder.mutationType();
+builder.subscriptionType();
 
 builder.addScalarType('JSON', GraphQLJSON);
 builder.addScalarType('Void', GraphQLVoid);

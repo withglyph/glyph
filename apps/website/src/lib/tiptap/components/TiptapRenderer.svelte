@@ -6,12 +6,10 @@
   import { css, cx } from '$styled-system/css';
   import type { JSONContent } from '@tiptap/core';
   import type { SystemStyleObject } from '$styled-system/types';
-  import type { TiptapRendererOptions } from '../types';
 
   export let style: SystemStyleObject | undefined = undefined;
 
   export let content: JSONContent;
-  export let options: TiptapRendererOptions;
 
   export let editor: Editor | undefined = undefined;
 
@@ -19,13 +17,6 @@
   let loaded = false;
 
   $: html = generateHTML(content, extensions);
-
-  const handleContentProtection = (e: Event) => {
-    if (options.protectContent) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
 
   onMount(() => {
     editor = new Editor({
@@ -57,11 +48,6 @@
     'tiptap',
     css({ display: 'contents', fontFamily: 'prose', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }),
   )}
-  data-indent={options.paragraphIndent}
-  data-spacing={options.paragraphSpacing}
-  on:copy|capture={handleContentProtection}
-  on:cut|capture={handleContentProtection}
-  on:contextmenu|capture={handleContentProtection}
 >
   {#if !loaded}
     <div class={cx('ProseMirror', css(style))}>

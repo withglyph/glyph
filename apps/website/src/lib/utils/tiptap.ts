@@ -1,5 +1,5 @@
 import { getSchema, getText, getTextSerializersFromSchema } from '@tiptap/core';
-import { Node } from '@tiptap/pm/model';
+import { Node, Schema } from '@tiptap/pm/model';
 import { extensions } from '$lib/tiptap';
 import type { JSONContent } from '@tiptap/core';
 
@@ -25,3 +25,16 @@ export const validateTiptapDocument = (document: JSONContent) => {
 };
 
 export const isEmptyTextBlock = (node: Node) => node.isTextblock && node.textContent.trim().length === 0;
+
+export const createEmptyTiptapDocumentNode = (schema?: Schema): Node => {
+  schema ??= getSchema(extensions);
+
+  /* eslint-disable @typescript-eslint/no-non-null-assertion */
+  return schema.topNodeType.createAndFill(null, [
+    schema.nodes.document.createAndFill(null, [
+      schema.nodes.paragraph.createAndFill()!,
+      schema.nodes.access_barrier.createAndFill()!,
+    ])!,
+  ])!;
+  /* eslint-enable @typescript-eslint/no-non-null-assertion */
+};

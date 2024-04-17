@@ -1,35 +1,23 @@
 import { getContext, setContext } from 'svelte';
-import type { Editor, JSONContent } from '@tiptap/core';
+import * as YAwareness from 'y-protocols/awareness';
+import type { Editor } from '@tiptap/core';
 import type { Writable } from 'svelte/store';
-import type { PostRevisionKind } from '$glitch';
-
-export type EditorStore = {
-  title: string | undefined;
-  subtitle: string | undefined;
-  content: JSONContent | undefined;
-
-  paragraphIndent: number;
-  paragraphSpacing: number;
-};
+import type * as Y from 'yjs';
 
 export type EditorState = {
   editor?: Editor;
-
-  canRevise: boolean;
-  isRevising: boolean;
-  lastRevision?: {
-    kind: PostRevisionKind;
-    updatedAt: string;
-  };
+  document: Y.Doc;
+  awareness: YAwareness.Awareness;
+  clientId: string;
+  connectionState: 'connecting' | 'synchronizing' | 'synchronized' | 'disconnected';
 };
 
 type EditorContext = {
-  store: Writable<EditorStore>;
   state: Writable<EditorState>;
-  forceSave: () => Promise<string>;
+  forceSynchronize: () => Promise<void>;
 };
 
-const key = Symbol();
+const key: unique symbol = Symbol();
 
 export const setEditorContext = (context: EditorContext) => {
   setContext(key, context);

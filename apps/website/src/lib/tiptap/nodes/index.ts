@@ -1,5 +1,6 @@
 export * from './blockquote';
 export * from './bullet-list';
+export * from './doc';
 export * from './document';
 export * from './hard-break';
 export * from './horizontal-rule';

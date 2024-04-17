@@ -286,8 +286,8 @@ type Mutation {
   publishPost(input: PublishPostInput!): Post!
   purchasePoint(input: PurchasePointInput!): PointPurchase!
   purchasePost(input: PurchasePostInput!): Post!
-  revisePost(input: RevisePostInput!): Post!
   setSpaceCollectionPosts(input: SetSpaceCollectionPostsInput!): SpaceCollection!
+  synchronizePost(input: SynchronizePostInput!): [SynchronizePostResult!]!
   unblockMasquerade(input: UnblockMasqueradeInput!): Space!
   unbookmarkPost(input: UnbookmarkPostInput!): Post!
   unfollowSpace(input: UnfollowSpaceInput!): Space!
@@ -493,7 +493,6 @@ type PostRevision {
   characterCount: Int!
   content: JSON!
   createdAt: DateTime!
-  editableContent: JSON!
   id: ID!
   kind: PostRevisionKind!
   paragraphIndent: Int!
@@ -522,6 +521,15 @@ enum PostState {
   DRAFT
   EPHEMERAL
   PUBLISHED
+}
+
+enum PostSynchronizationKind {
+  AWARENESS
+  PING
+  SYNCHRONIZE_1
+  SYNCHRONIZE_2
+  SYNCHRONIZE_3
+  UPDATE
 }
 
 type PostTag {
@@ -582,11 +590,11 @@ input PublishPostInput {
   externalSearchable: Boolean!
   pairs: [PostPair!]! = []
   password: String
+  postId: ID!
   protectContent: Boolean!
   receiveFeedback: Boolean!
   receivePatronage: Boolean!
   receiveTagContribution: Boolean!
-  revisionId: ID!
   spaceId: ID!
   tags: [TagInput!]! = []
   thumbnailId: ID
@@ -686,16 +694,6 @@ enum RevenueWithdrawalState {
   FAILED
   PENDING
   SUCCESS
-}
-
-input RevisePostInput {
-  content: JSON!
-  paragraphIndent: Int!
-  paragraphSpacing: Int!
-  postId: ID!
-  revisionKind: PostRevisionKind!
-  subtitle: String
-  title: String
 }
 
 enum SearchOrderByKind {
@@ -808,6 +806,23 @@ type SubscribeNotification implements IUserNotification {
   id: ID!
   space: Space!
   state: UserNotificationState!
+}
+
+type Subscription {
+  postSynchronization(postId: ID!): SynchronizePostResult!
+}
+
+input SynchronizePostInput {
+  clientId: String!
+  data: String!
+  kind: PostSynchronizationKind!
+  postId: ID!
+}
+
+type SynchronizePostResult {
+  data: String!
+  kind: PostSynchronizationKind!
+  postId: ID!
 }
 
 type Tag {

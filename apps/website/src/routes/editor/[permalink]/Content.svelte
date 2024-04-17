@@ -6,8 +6,44 @@
   import { getEditorContext } from './context';
   import ArticleLinkEditMenu from './InlineLinkMenu.svelte';
   import ArticleRubyEditMenu from './InlineRubyMenu.svelte';
+  import type { Writable } from 'svelte/store';
 
-  const { store, state } = getEditorContext();
+  const { state } = getEditorContext();
+
+  const createStore = (name: string) => {
+    const yText = $state.document.getText(name);
+
+    const store: Writable<string> = {
+      subscribe: (run) => {
+        const handler = () => {
+          run(yText.toString());
+        };
+
+        yText.observe(handler);
+
+        return () => {
+          yText.unobserve(handler);
+        };
+      },
+      set: (value: string) => {
+        $state.document.transact(() => {
+          yText.delete(0, yText.length);
+          yText.insert(0, value);
+        });
+      },
+      update: (fn: (value: string) => string) => {
+        $state.document.transact(() => {
+          yText.delete(0, yText.length);
+          yText.insert(0, fn(yText.toString()));
+        });
+      },
+    };
+
+    return store;
+  };
+
+  const title = createStore('title');
+  const subtitle = createStore('subtitle');
 
   onMount(() => {
     const saveEventHandler = (event: KeyboardEvent) => {
@@ -51,7 +87,7 @@
         maxlength="100"
         placeholder="제목을 입력하세요"
         type="text"
-        bind:value={$store.title}
+        bind:value={$title}
       />
 
       <input
@@ -59,16 +95,16 @@
         maxlength="100"
         placeholder="부제목을 입력해주세요"
         type="text"
-        bind:value={$store.subtitle}
+        bind:value={$subtitle}
       />
     </div>
 
     <div class={flex({ grow: '1', paddingX: { base: '20px', sm: '40px' }, width: 'full' })}>
       <TiptapEditor
         style={css.raw({ flexGrow: '1', marginBottom: '100px', maxWidth: 'full' })}
-        options={$store}
+        awareness={$state.awareness}
+        document={$state.document}
         bind:editor={$state.editor}
-        bind:content={$store.content}
       />
     </div>
 

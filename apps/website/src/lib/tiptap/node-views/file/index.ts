@@ -1,4 +1,5 @@
 import { NodeSelection, TextSelection } from '@tiptap/pm/state';
+import { nanoid } from 'nanoid';
 import { createNodeView } from '../../lib';
 import Component from './Component.svelte';
 
@@ -11,7 +12,11 @@ declare module '@tiptap/core' {
   }
 }
 
-export const File = createNodeView(Component, {
+type Storage = {
+  files: Record<string, File>;
+};
+
+export const File = createNodeView<never, Storage>(Component, {
   name: 'file',
   group: 'block',
   draggable: true,
@@ -19,9 +24,12 @@ export const File = createNodeView(Component, {
   addAttributes() {
     return {
       id: {},
-      __data: { default: undefined },
-      __file: { default: undefined },
+      ephemeralId: {},
     };
+  },
+
+  onCreate() {
+    this.storage.files = {};
   },
 
   addCommands() {
@@ -34,7 +42,10 @@ export const File = createNodeView(Component, {
 
           const pos = selection instanceof TextSelection ? $to.end() + 1 : $to.pos;
 
-          tr.insert(pos, this.type.create({ __file: file }));
+          const key = nanoid();
+          this.storage.files[key] = file;
+
+          tr.insert(pos, this.type.create({ key }));
           tr.setSelection(NodeSelection.create(tr.doc, pos));
           tr.scrollIntoView();
 

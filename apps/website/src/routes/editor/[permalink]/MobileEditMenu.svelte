@@ -24,9 +24,10 @@
   import { css, cx } from '$styled-system/css';
   import { center, flex, grid } from '$styled-system/patterns';
   import { getEditorContext } from './context';
+  import FileUploadModal from './FileUploadModal.svelte';
   import MobileToolbarButton from './MobileToolbarButton.svelte';
 
-  const { store, state } = getEditorContext();
+  const { state } = getEditorContext();
   $: editor = $state.editor;
 
   type TopMenu = 'default' | 'text' | 'insert' | 'options';
@@ -44,6 +45,8 @@
   let topMenu: TopMenu = 'default';
   let subMenu: SubMenu | null = null;
   let bottomMenu: BottomMenu | null = null;
+
+  let fileUploadModalOpen = false;
 
   $: if (topMenu === 'default') {
     subMenu = null;
@@ -76,23 +79,6 @@
     picker.showPicker();
   };
 
-  const handleInsertFile = () => {
-    const picker = document.createElement('input');
-    picker.type = 'file';
-
-    picker.addEventListener('change', async () => {
-      const file = picker.files?.[0];
-
-      if (!file) {
-        return;
-      }
-
-      editor?.chain().focus().setFile(file).run();
-    });
-
-    picker.showPicker();
-  };
-
   const colorPresets = [
     '#09090B',
     '#6B7280',
@@ -104,20 +90,6 @@
     '#6366F1',
     '#8B5CF6',
     '#EC4899',
-  ];
-
-  const paragraphIndentPresets = [
-    { value: 0, label: '없음' },
-    { value: 50, label: '0.5칸' },
-    { value: 100, label: '1칸' },
-    { value: 200, label: '2칸' },
-  ];
-
-  const paragraphSpacingPresets = [
-    { value: 0, label: '없음' },
-    { value: 50, label: '0.5줄' },
-    { value: 100, label: '1줄' },
-    { value: 200, label: '2줄' },
   ];
 
   $: currentColor =
@@ -257,7 +229,7 @@
             <Icon icon={IconQuote} size={24} />
           </MobileToolbarButton>
 
-          <MobileToolbarButton on:click={handleInsertFile}>
+          <MobileToolbarButton on:click={() => (fileUploadModalOpen = true)}>
             <Icon icon={IconFolder} size={24} />
           </MobileToolbarButton>
 
@@ -400,29 +372,31 @@
         </div>
       {:else if subMenu === 'paragraphIndent'}
         <div class={flex({ gap: '20px' })}>
-          {#each paragraphIndentPresets as paragraphIndent (paragraphIndent.value)}
+          {#each values.documentParagraphIndent as documentParagraphIndent (documentParagraphIndent.value)}
             <MobileToolbarButton
               class={css(
                 { paddingX: '5px' },
-                $store.paragraphIndent === paragraphIndent.value && { color: 'brand.400' },
+                editor?.isActive({ documentParagraphIndent: documentParagraphIndent.value }) && { color: 'brand.400' },
               )}
-              on:click={() => ($store.paragraphIndent = paragraphIndent.value)}
+              on:click={() => editor?.commands.setDocumentParagraphIndent(documentParagraphIndent.value)}
             >
-              {paragraphIndent.label}
+              {documentParagraphIndent.label}
             </MobileToolbarButton>
           {/each}
         </div>
       {:else if subMenu === 'paragraphSpacing'}
         <div class={flex({ gap: '20px' })}>
-          {#each paragraphSpacingPresets as paragraphSpacing (paragraphSpacing.value)}
+          {#each values.documentParagraphSpacing as documentParagraphSpacing (documentParagraphSpacing.value)}
             <MobileToolbarButton
               class={css(
                 { paddingX: '5px' },
-                $store.paragraphSpacing === paragraphSpacing.value && { color: 'brand.400' },
+                editor?.isActive({ documentParagraphSpacing: documentParagraphSpacing.value }) && {
+                  color: 'brand.400',
+                },
               )}
-              on:click={() => ($store.paragraphSpacing = paragraphSpacing.value)}
+              on:click={() => editor?.commands.setDocumentParagraphSpacing(documentParagraphSpacing.value)}
             >
-              {paragraphSpacing.label}
+              {documentParagraphSpacing.label}
             </MobileToolbarButton>
           {/each}
         </div>
@@ -474,6 +448,8 @@
     </div>
   {/if}
 </div>
+
+<FileUploadModal bind:open={fileUploadModalOpen} />
 
 <style>
   .divider-preview {

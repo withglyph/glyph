@@ -424,9 +424,22 @@
     }
   `);
 
+  const handleContentProtection = (e: Event) => {
+    if ($query.post.protectContent) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   $: triggerTags = $query.post.tags.filter(({ kind }) => kind === 'TRIGGER');
   $: shortLink = `https://glph.to/${$query.post.shortlink}`;
 </script>
+
+<svelte:window
+  on:copy|capture={handleContentProtection}
+  on:cut|capture={handleContentProtection}
+  on:contextmenu|capture={handleContentProtection}
+/>
 
 <article class={css({ flexGrow: '1', paddingX: '20px', width: 'full', backgroundColor: 'gray.5' }, style)}>
   <div
@@ -783,11 +796,6 @@
             <TiptapRenderer
               style={css.raw({ paddingTop: '20px', paddingBottom: { base: '40px', sm: '60px' } })}
               content={$postRevision.content}
-              options={{
-                paragraphIndent: $postRevision.paragraphIndent,
-                paragraphSpacing: $postRevision.paragraphSpacing,
-                protectContent: $query.post.protectContent,
-              }}
               bind:editor
             />
           {/key}

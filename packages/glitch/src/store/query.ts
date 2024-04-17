@@ -11,7 +11,7 @@ export const createQueryStore = async (
   document: TypedDocumentNode<unknown, AnyVariables>,
   variablesLoader?: (event: LoadEvent) => AnyVariables,
 ) => {
-  const { client, transformError } = await getClient();
+  const { client, transformError } = getClient();
 
   const variables = variablesLoader ? variablesLoader(event) : undefined;
   const request = createRequest(document, variables);

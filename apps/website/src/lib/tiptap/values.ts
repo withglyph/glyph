@@ -86,4 +86,18 @@ export const values = {
   ],
 
   blockquote: [{ value: 1 }, { value: 2 }, { value: 3 }],
+
+  documentParagraphIndent: [
+    { label: '없음', value: 0 },
+    { label: '0.5칸', value: 0.5 },
+    { label: '1칸', value: 1 },
+    { label: '2칸', value: 2 },
+  ],
+
+  documentParagraphSpacing: [
+    { label: '없음', value: 0 },
+    { label: '0.5줄', value: 0.5 },
+    { label: '1줄', value: 1 },
+    { label: '2줄', value: 2 },
+  ],
 } as const;

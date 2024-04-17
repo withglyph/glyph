@@ -3,7 +3,11 @@ import { hash, verify } from 'argon2';
 import dayjs from 'dayjs';
 import { and, asc, count, desc, eq, exists, gt, isNotNull, isNull, lt, ne, notExists, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
+import { pipe, Repeater } from 'graphql-yoga';
+import { fromUint8Array, toUint8Array } from 'js-base64';
 import { match, P } from 'ts-pattern';
+import { prosemirrorToYDoc, yDocToProsemirrorJSON } from 'y-prosemirror';
+import * as Y from 'yjs';
 import { emojiData } from '$lib/emoji';
 import {
   PostAgeRating,
@@ -12,6 +16,7 @@ import {
   PostPair,
   PostRevisionKind,
   PostState,
+  PostSynchronizationKind,
   PostTagKind,
   PostVisibility,
 } from '$lib/enums';
@@ -23,6 +28,7 @@ import {
   database,
   inArray,
   PostComments,
+  PostContentUpdates,
   PostLikes,
   PostPurchases,
   PostReactions,
@@ -62,16 +68,11 @@ import {
   useFirstRow,
   useFirstRowOrThrow,
 } from '$lib/server/utils';
-import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
-import {
-  base36To10,
-  createTiptapDocument,
-  createTiptapNode,
-  makeNullableArrayElement,
-  validateTiptapDocument,
-} from '$lib/utils';
-import { PublishPostInputSchema, RevisePostInputSchema } from '$lib/validations/post';
+import { revisionContentToText } from '$lib/server/utils/tiptap';
+import { base36To10, createEmptyTiptapDocumentNode } from '$lib/utils';
+import { PublishPostInputSchema } from '$lib/validations/post';
 import { builder } from '../builder';
+import { pubsub } from '../pubsub';
 import { createObjectRef } from '../utils';
 import { BookmarkGroup } from './bookmark';
 import { SpaceCollection } from './collection';
@@ -820,176 +821,91 @@ PostRevision.implement({
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
 
-    editableContent: t.field({
-      type: 'JSON',
-      resolve: async (revision, _, context) => {
-        const loader = context.loader(postRevisionContentLoader);
-
-        const [freeContentRaw, paidContentRaw] = await Promise.all([
-          revision.freeContentId ? loader.load(revision.freeContentId) : undefined,
-          revision.paidContentId ? loader.load(revision.paidContentId) : undefined,
-        ]);
-
-        const [freeContent, paidContent] = await Promise.all([
-          freeContentRaw ? decorateContent(freeContentRaw.data as JSONContent[]) : [{ type: 'paragraph' }],
-          paidContentRaw ? decorateContent(paidContentRaw.data as JSONContent[]) : [],
-        ]);
-
-        return createTiptapDocument([
-          ...freeContent,
-          createTiptapNode({ type: 'access_barrier', attrs: { price: revision.price } }),
-          ...(paidContent ?? []),
-        ]);
-      },
-    }),
-
     content: t.field({
       type: 'JSON',
       authScopes: { $granted: '$postRevision:view' },
       resolve: async (revision, _, context) => {
-        const [freeContentRaw, paidContentRaw] = await Promise.all([
-          revision.freeContentId
-            ? database
-                .select({ data: PostRevisionContents.data })
-                .from(PostRevisionContents)
-                .where(eq(PostRevisionContents.id, revision.freeContentId))
-                .then((contents) => contents[0]?.data as JSONContent[])
-            : undefined,
-          revision.paidContentId
-            ? database
-                .select({ data: PostRevisionContents.data })
-                .from(PostRevisionContents)
-                .where(eq(PostRevisionContents.id, revision.paidContentId))
-                .then((contents) => contents[0]?.data as JSONContent[])
-            : undefined,
-        ]);
+        type CreateDocumentOptions = { accessBarrier?: Record<string, unknown>; withPaidContent?: boolean };
+        const createDocument = async (options?: CreateDocumentOptions) => {
+          const nodes: JSONContent[] = [];
 
-        const [freeContent, paidContent] = await Promise.all([
-          freeContentRaw ? decorateContent(freeContentRaw) : [{ type: 'paragraph' }],
-          paidContentRaw ? decorateContent(paidContentRaw) : null,
-        ]);
+          if (revision.freeContentId) {
+            const [freeContent] = await database
+              .select({ data: PostRevisionContents.data })
+              .from(PostRevisionContents)
+              .where(eq(PostRevisionContents.id, revision.freeContentId));
 
-        if (!paidContent || paidContent.length === 0) {
-          return createTiptapDocument(freeContent);
+            nodes.push(...freeContent.data);
+          }
+
+          if (options?.accessBarrier) {
+            nodes.push([{ type: 'access_barrier', attrs: { price: revision.price, __data: options.accessBarrier } }]);
+          }
+
+          if (options?.withPaidContent && revision.paidContentId) {
+            const [paidContent] = await database
+              .select({ data: PostRevisionContents.data })
+              .from(PostRevisionContents)
+              .where(eq(PostRevisionContents.id, revision.paidContentId));
+
+            nodes.push(...paidContent.data);
+          }
+
+          return {
+            type: 'doc',
+            content: [{ type: 'document', attrs: revision.attributes as never, content: nodes }],
+          };
+        };
+
+        if (!revision.paidContentId) {
+          return await createDocument();
         }
-
-        // 유료분이 있음 - 유료분을 볼 수 있는 경우는?
 
         if (context.session) {
-          const post = await database
-            .select()
+          const [post] = await database
+            .select({ userId: Posts.userId, spaceId: Posts.spaceId })
             .from(Posts)
-            .where(eq(Posts.id, revision.postId))
-            .then((posts) => posts[0]);
-
-          if (context.session.userId === post.userId) {
-            // 1. 글 작성자 자신
-            return createTiptapDocument([
-              ...freeContent,
-              createTiptapNode({
-                type: 'access_barrier',
-                attrs: {
-                  price: revision.price,
-                  __data: { purchasable: false },
-                },
-              }),
-              ...paidContent,
-            ]);
-          }
+            .where(eq(Posts.id, revision.postId));
 
           if (post.spaceId) {
-            const purchase = await database
-              .select({ createdAt: PostPurchases.createdAt })
-              .from(PostPurchases)
-              .where(and(eq(PostPurchases.postId, post.id), eq(PostPurchases.userId, context.session.userId)))
-              .then(makeNullableArrayElement)
-              .then((purchases) => purchases[0]);
-
-            if (purchase) {
-              // 2. 구매한 경우
-              return createTiptapDocument([
-                ...freeContent,
-                createTiptapNode({
-                  type: 'access_barrier',
-                  attrs: {
-                    price: revision.price,
-                    __data: {
-                      purchasable: false,
-                      purchasedAt: dayjs(purchase.createdAt).toISOString(),
-                    },
-                  },
-                }),
-                ...paidContent,
-              ]);
+            const member = await getSpaceMember(context, post.spaceId);
+            if (member) {
+              return await createDocument({
+                withPaidContent: true,
+                accessBarrier: { purchasable: false },
+              });
             }
+          }
 
-            const meAsMember = await database
-              .select({ id: SpaceMembers.id })
-              .from(SpaceMembers)
-              .where(and(eq(SpaceMembers.spaceId, post.spaceId), eq(SpaceMembers.userId, context.session.userId)))
-              .then(makeNullableArrayElement)
-              .then((members) => members[0]);
+          const purchases = await database
+            .select({ createdAt: PostPurchases.createdAt })
+            .from(PostPurchases)
+            .where(and(eq(PostPurchases.postId, revision.postId), eq(PostPurchases.userId, context.session.userId)));
 
-            if (meAsMember) {
-              // 3. 해당 스페이스의 멤버인 경우
-              return createTiptapDocument([
-                ...freeContent,
-                createTiptapNode({
-                  type: 'access_barrier',
-                  attrs: {
-                    price: revision.price,
-                    __data: { purchasable: false },
-                  },
-                }),
-                ...paidContent,
-              ]);
-            }
+          if (purchases.length > 0) {
+            return await createDocument({
+              withPaidContent: true,
+              accessBarrier: { purchasable: false, purchasedAt: dayjs(purchases[0].createdAt).toISOString() },
+            });
           }
         }
 
-        const paidContentText = revision.paidContentId
-          ? await revisionContentToText({ id: revision.paidContentId, data: paidContent })
-          : '';
-
-        let paidContentImageCount = 0,
-          paidContentFileCount = 0;
-        for (const node of paidContent) {
-          // eslint-disable-next-line unicorn/prefer-switch
-          if (node.type === 'image') {
-            paidContentImageCount++;
-          } else if (node.type === 'gallery') {
-            paidContentImageCount += node.attrs?.ids?.length ?? 0;
-          } else if (node.type === 'file') {
-            paidContentFileCount++;
-          }
-        }
-
-        return createTiptapDocument([
-          ...freeContent,
-          createTiptapNode({
-            type: 'access_barrier',
-            attrs: {
-              price: revision.price,
-              __data: {
-                purchasable: true,
-
-                point: context.session ? await getUserPoint({ userId: context.session.userId }) : null,
-
-                postId: revision.postId,
-                revisionId: revision.id,
-
-                counts: {
-                  characters: paidContentText.length,
-                  images: paidContentImageCount,
-                  files: paidContentFileCount,
-                },
-              },
+        return createDocument({
+          accessBarrier: {
+            purchasable: true,
+            point: context.session ? await getUserPoint({ userId: context.session.userId }) : null,
+            postId: revision.postId,
+            revisionId: revision.id,
+            counts: {
+              characters: 0,
+              images: 0,
+              files: 0,
             },
-          }),
-        ]);
+          },
+        });
       },
 
-      unauthorizedResolver: () => createTiptapDocument([]),
+      unauthorizedResolver: () => ({}),
     }),
 
     characterCount: t.int({
@@ -1047,6 +963,15 @@ PostReaction.implement({
   }),
 });
 
+export type SynchronizePostResultType = typeof SynchronizePostResult.$inferType;
+export const SynchronizePostResult = builder.simpleObject('SynchronizePostResult', {
+  fields: (t) => ({
+    postId: t.id(),
+    kind: t.field({ type: PostSynchronizationKind }),
+    data: t.string(),
+  }),
+});
+
 /**
  * * Inputs
  */
@@ -1065,25 +990,9 @@ const CreatePostInput = builder.inputType('CreatePostInput', {
   }),
 });
 
-const RevisePostInput = builder.inputType('RevisePostInput', {
-  fields: (t) => ({
-    revisionKind: t.field({ type: PostRevisionKind }),
-
-    postId: t.id(),
-
-    title: t.string({ required: false }),
-    subtitle: t.string({ required: false }),
-    content: t.field({ type: 'JSON' }),
-
-    paragraphIndent: t.int(),
-    paragraphSpacing: t.int(),
-  }),
-  validate: { schema: RevisePostInputSchema },
-});
-
 const PublishPostInput = builder.inputType('PublishPostInput', {
   fields: (t) => ({
-    revisionId: t.id(),
+    postId: t.id(),
     spaceId: t.id(),
     collectionId: t.id({ required: false }),
     thumbnailId: t.id({ required: false }),
@@ -1189,6 +1098,15 @@ const GeneratePostShareImageInput = builder.inputType('GeneratePostShareImageInp
     size: t.string(), // small, medium, large
     color: t.string(), // hex code
     background: t.string(), // hex code
+  }),
+});
+
+const SynchronizePostInput = builder.inputType('SynchronizePostInput', {
+  fields: (t) => ({
+    clientId: t.string(),
+    postId: t.id(),
+    kind: t.field({ type: PostSynchronizationKind }),
+    data: t.string(),
   }),
 });
 
@@ -1371,14 +1289,20 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  revisePost: t.withAuth({ user: true }).field({
+  publishPost: t.withAuth({ user: true }).field({
     type: Post,
-    args: { input: t.arg({ type: RevisePostInput }) },
+    args: { input: t.arg({ type: PublishPostInput }) },
     resolve: async (_, { input }, context) => {
       const posts = await database
-        .select({ userId: Posts.userId, spaceId: Posts.spaceId, state: Posts.state })
+        .select({
+          userId: Posts.userId,
+          state: Posts.state,
+          spaceId: Posts.spaceId,
+          collectionPost: { id: SpaceCollectionPosts.id, collectionId: SpaceCollectionPosts.collectionId },
+        })
         .from(Posts)
         .leftJoin(Spaces, eq(Spaces.id, Posts.spaceId))
+        .leftJoin(SpaceCollectionPosts, eq(SpaceCollectionPosts.postId, Posts.id))
         .where(
           and(
             eq(Posts.id, input.postId),
@@ -1393,114 +1317,7 @@ builder.mutationFields((t) => ({
 
       const [post] = posts;
 
-      if (post.userId !== context.session.userId) {
-        if (!post.spaceId) {
-          throw new PermissionDeniedError();
-        }
-
-        const meAsMember = await getSpaceMember(context, post.spaceId);
-        if (meAsMember?.role !== 'ADMIN') {
-          throw new PermissionDeniedError();
-        }
-      }
-
-      let document = (input.content as JSONContent).content;
-
-      if (!document || !validateTiptapDocument(input.content)) {
-        throw new FormValidationError('content', '잘못된 내용이에요');
-      }
-
-      const FreeContents = alias(PostRevisionContents, 'a1');
-      const PaidContents = alias(PostRevisionContents, 'a2');
-
-      const revisions = await database
-        .select({ id: PostRevisions.id, kind: PostRevisions.kind, createdAt: PostRevisions.createdAt })
-        .from(PostRevisions)
-        .leftJoin(FreeContents, eq(FreeContents.id, PostRevisions.freeContentId))
-        .leftJoin(PaidContents, eq(PaidContents.id, PostRevisions.paidContentId))
-        .where(eq(PostRevisions.postId, input.postId))
-        .orderBy(desc(PostRevisions.createdAt))
-        .limit(1);
-
-      if (revisions.length === 0) {
-        throw new NotFoundError();
-      }
-
-      const [revision] = revisions;
-
-      document = await sanitizeContent(document);
-
-      const accessBarrierPosition = document.findIndex((node) => node.type === 'access_barrier');
-      const accessBarrier = document[accessBarrierPosition];
-      const freeContentData = document.slice(0, accessBarrierPosition);
-      const paidContentData = document.slice(accessBarrierPosition + 1);
-
-      const freeContentId = await makePostContentId(freeContentData);
-      const paidContentId = await makePostContentId(paidContentData);
-      const price: number | null = paidContentId ? accessBarrier.attrs?.price ?? null : null;
-
-      const revisionData: typeof PostRevisions.$inferInsert = {
-        postId: input.postId,
-        userId: context.session.userId,
-        kind: input.revisionKind,
-        title: input.title?.length ? input.title : null,
-        subtitle: input.subtitle?.length ? input.subtitle : null,
-        freeContentId,
-        paidContentId,
-        price,
-        paragraphIndent: input.paragraphIndent,
-        paragraphSpacing: input.paragraphSpacing,
-        updatedAt: dayjs(),
-      };
-
-      await (revision.kind === 'AUTO_SAVE' && revision.createdAt.isAfter(dayjs().subtract(1, 'minute'))
-        ? database.update(PostRevisions).set(revisionData).where(eq(PostRevisions.id, revision.id))
-        : database.insert(PostRevisions).values(revisionData));
-
-      /// 게시글에 수정된 부분이 있을 경우 포스트 상태를 DRAFT로 변경
-      if (
-        post.state === 'EPHEMERAL' &&
-        (input.title?.length || input.subtitle?.length || freeContentId || paidContentId)
-      ) {
-        await database.update(Posts).set({ state: 'DRAFT' }).where(eq(Posts.id, input.postId));
-      }
-
-      return input.postId;
-    },
-  }),
-
-  publishPost: t.withAuth({ user: true }).field({
-    type: Post,
-    args: { input: t.arg({ type: PublishPostInput }) },
-    resolve: async (_, { input }, context) => {
-      const revisions = await database
-        .select({
-          userId: PostRevisions.userId,
-          paidContentId: PostRevisions.paidContentId,
-          price: PostRevisions.price,
-          post: { id: Posts.id, state: Posts.state },
-          space: { id: Spaces.id },
-          collectionPost: { id: SpaceCollectionPosts.id, collectionId: SpaceCollectionPosts.collectionId },
-        })
-        .from(PostRevisions)
-        .innerJoin(Posts, eq(Posts.id, PostRevisions.postId))
-        .leftJoin(Spaces, eq(Spaces.id, Posts.spaceId))
-        .leftJoin(SpaceCollectionPosts, eq(SpaceCollectionPosts.postId, Posts.id))
-        .where(
-          and(
-            eq(PostRevisions.id, input.revisionId),
-            ne(Posts.state, 'DELETED'),
-            or(eq(Spaces.state, 'ACTIVE'), isNull(Spaces.id)),
-          ),
-        );
-
-      if (revisions.length === 0) {
-        throw new NotFoundError();
-      }
-
-      const [revision] = revisions;
-
-      if (revision.post.state === 'PUBLISHED' && revision.space?.id !== input.spaceId) {
+      if (post.state === 'PUBLISHED' && post.spaceId !== input.spaceId) {
         throw new IntentionalError('발행된 포스트의 스페이스를 변경할 수 없어요');
       }
 
@@ -1509,7 +1326,7 @@ builder.mutationFields((t) => ({
         throw new PermissionDeniedError();
       }
 
-      if (revision.userId !== context.session.userId && meAsMember.role !== 'ADMIN') {
+      if (post.userId !== context.session.userId && meAsMember.role !== 'ADMIN') {
         throw new PermissionDeniedError();
       }
 
@@ -1518,7 +1335,6 @@ builder.mutationFields((t) => ({
           .select({ birthday: UserPersonalIdentities.birthday })
           .from(UserPersonalIdentities)
           .where(eq(UserPersonalIdentities.userId, context.session.userId));
-
         if (
           identities.length === 0 ||
           (input.ageRating === 'R19' && !isAdulthood(identities[0].birthday)) ||
@@ -1528,11 +1344,45 @@ builder.mutationFields((t) => ({
         }
       }
 
-      if (revision.paidContentId) {
-        if (revision.price === null) {
+      const updates = await database
+        .select({ data: PostContentUpdates.data })
+        .from(PostContentUpdates)
+        .where(eq(PostContentUpdates.postId, input.postId));
+      const update = Y.mergeUpdatesV2(updates.map(({ data }) => data));
+
+      const doc = new Y.Doc();
+      Y.applyUpdateV2(doc, update);
+
+      const title = doc.getText('title').toString();
+      const subtitle = doc.getText('subtitle').toString();
+      const content = yDocToProsemirrorJSON(doc, 'content') as JSONContent;
+
+      const documentNode = content.content?.[0];
+      if (!documentNode) {
+        throw new Error('invalid document');
+      }
+
+      const nodes = documentNode.content;
+      if (!nodes || nodes.length === 0) {
+        throw new Error('invalid document');
+      }
+
+      const attributes = documentNode.attrs ?? {};
+
+      const accessBarrierPosition = nodes.findIndex((node) => node.type === 'access_barrier');
+      const accessBarrier = nodes[accessBarrierPosition];
+
+      const freeNodes = nodes.slice(0, accessBarrierPosition);
+      const paidNodes = nodes.slice(accessBarrierPosition + 1);
+
+      let price: number | null = null;
+      if (paidNodes.length > 0) {
+        price = accessBarrier.attrs?.price ?? null;
+
+        if (price === null) {
           throw new IntentionalError('가격을 설정해주세요');
         } else {
-          if (revision.price <= 0 || revision.price > 1_000_000 || revision.price % 100 !== 0) {
+          if (price <= 0 || price > 1_000_000 || price % 100 !== 0) {
             throw new IntentionalError('잘못된 가격이에요');
           }
         }
@@ -1544,25 +1394,32 @@ builder.mutationFields((t) => ({
         .with(P.nullish, () => null)
         .exhaustive();
 
-      if (input.password) {
-        await redis.del(`Post:${revision.post.id}:passwordUnlock`);
-      }
-
       await database.transaction(async (tx) => {
-        await tx.update(PostRevisions).set({ kind: 'PUBLISHED' }).where(eq(PostRevisions.id, input.revisionId));
+        const freeContentId = await makePostContentId(tx, freeNodes);
+        const paidContentId = await makePostContentId(tx, paidNodes);
+
         await tx
           .update(PostRevisions)
           .set({ kind: 'ARCHIVED' })
-          .where(
-            and(
-              eq(PostRevisions.postId, revision.post.id),
-              eq(PostRevisions.kind, 'PUBLISHED'),
-              ne(PostRevisions.id, input.revisionId),
-            ),
-          );
+          .where(and(eq(PostRevisions.postId, input.postId), eq(PostRevisions.kind, 'PUBLISHED')));
 
-        await tx.delete(PostTags).where(eq(PostTags.postId, revision.post.id));
+        const [revision] = await tx
+          .insert(PostRevisions)
+          .values({
+            postId: input.postId,
+            userId: context.session.userId,
+            kind: 'PUBLISHED',
+            title: title.length > 0 ? title : null,
+            subtitle: subtitle.length > 0 ? subtitle : null,
+            freeContentId,
+            paidContentId,
+            attributes,
+            price,
+            updatedAt: dayjs(),
+          })
+          .returning({ id: PostRevisions.id });
 
+        await tx.delete(PostTags).where(eq(PostTags.postId, input.postId));
         for (const { name, kind } of input.tags) {
           const tagId: string =
             (await tx
@@ -1577,8 +1434,7 @@ builder.mutationFields((t) => ({
               .returning({ id: Tags.id })
               .then(useFirstRowOrThrow())
               .then((row) => row.id));
-
-          await tx.insert(PostTags).values({ postId: revision.post.id, tagId, kind });
+          await tx.insert(PostTags).values({ postId: input.postId, tagId, kind });
         }
 
         await tx
@@ -1587,8 +1443,8 @@ builder.mutationFields((t) => ({
             state: 'PUBLISHED',
             spaceId: input.spaceId,
             memberId: meAsMember.id,
-            publishedAt: revision.post.state === 'PUBLISHED' ? undefined : dayjs(),
-            publishedRevisionId: input.revisionId,
+            publishedAt: post.state === 'PUBLISHED' ? undefined : dayjs(),
+            publishedRevisionId: revision.id,
             visibility: input.visibility,
             ageRating: input.ageRating,
             thumbnailId: input.thumbnailId ?? null,
@@ -1603,31 +1459,29 @@ builder.mutationFields((t) => ({
             category: input.category,
             pairs: input.pairs,
           })
-          .where(eq(Posts.id, revision.post.id));
+          .where(eq(Posts.id, input.postId));
 
-        if (
-          revision.collectionPost &&
-          (!input.collectionId || input.collectionId !== revision.collectionPost.collectionId)
-        ) {
-          await tx.delete(SpaceCollectionPosts).where(eq(SpaceCollectionPosts.postId, revision.post.id));
-          await defragmentSpaceCollectionPosts(tx, revision.collectionPost.collectionId);
+        if (post.collectionPost && (!input.collectionId || input.collectionId !== post.collectionPost.collectionId)) {
+          await tx.delete(SpaceCollectionPosts).where(eq(SpaceCollectionPosts.postId, input.postId));
+          await defragmentSpaceCollectionPosts(tx, post.collectionPost.collectionId);
         }
 
-        if (
-          input.collectionId &&
-          (!revision.collectionPost || input.collectionId !== revision.collectionPost.collectionId)
-        ) {
+        if (input.collectionId && (!post.collectionPost || input.collectionId !== post.collectionPost.collectionId)) {
           await tx
             .insert(SpaceCollectionPosts)
-            .values({ collectionId: input.collectionId, postId: revision.post.id, order: 2_147_483_647 });
+            .values({ collectionId: input.collectionId, postId: input.postId, order: 2_147_483_647 });
           await defragmentSpaceCollectionPosts(tx, input.collectionId);
         }
       });
 
-      await enqueueJob('indexPost', revision.post.id);
-      await enqueueJob('notifyIndexNow', revision.post.id);
+      if (input.password) {
+        await redis.del(`Post:${input.postId}:passwordUnlock`);
+      }
 
-      return revision.post.id;
+      await enqueueJob('indexPost', input.postId);
+      await enqueueJob('notifyIndexNow', input.postId);
+
+      return input.postId;
     },
   }),
 
@@ -1993,5 +1847,193 @@ builder.mutationFields((t) => ({
       const png = await generatePostShareImage(input);
       return `data:image/png;base64,${png.toString('base64')}`;
     },
+  }),
+
+  synchronizePost: t.withAuth({ user: true }).field({
+    type: [SynchronizePostResult],
+    args: { input: t.arg({ type: SynchronizePostInput }) },
+    resolve: async (_, { input }, context) => {
+      const posts = await database
+        .select({ userId: Posts.userId, spaceId: Posts.spaceId })
+        .from(Posts)
+        .leftJoin(Spaces, eq(Spaces.id, Posts.spaceId))
+        .where(
+          and(
+            eq(Posts.id, input.postId),
+            ne(Posts.state, 'DELETED'),
+            or(eq(Spaces.state, 'ACTIVE'), isNull(Spaces.id)),
+          ),
+        );
+
+      if (posts.length === 0) {
+        throw new NotFoundError();
+      }
+
+      const [post] = posts;
+
+      if (post.userId !== context.session.userId) {
+        if (!post.spaceId) {
+          throw new PermissionDeniedError();
+        }
+
+        const meAsMember = await getSpaceMember(context, post.spaceId);
+        if (meAsMember?.role !== 'ADMIN') {
+          throw new PermissionDeniedError();
+        }
+      }
+
+      if (input.kind === 'UPDATE') {
+        pubsub.publish('post:synchronization', input.postId, {
+          postId: input.postId,
+          kind: 'UPDATE',
+          data: input.data,
+        });
+
+        await database.insert(PostContentUpdates).values({
+          postId: input.postId,
+          userId: context.session.userId,
+          clientId: input.clientId,
+          data: toUint8Array(input.data),
+        });
+
+        // await database.insert(PostContentSnapshots).values({
+        //   postId: input.postId,
+        //   data: toUint8Array(input.data),
+        // });
+
+        await database
+          .update(Posts)
+          .set({ state: 'DRAFT' })
+          .where(and(eq(Posts.id, input.postId), eq(Posts.state, 'EPHEMERAL')));
+        return [];
+      } else if (input.kind === 'SYNCHRONIZE_1') {
+        const updates = await database
+          .select({ data: PostContentUpdates.data })
+          .from(PostContentUpdates)
+          .where(eq(PostContentUpdates.postId, input.postId));
+
+        let update;
+        if (updates.length === 0) {
+          update = Y.encodeStateAsUpdateV2(prosemirrorToYDoc(createEmptyTiptapDocumentNode(), 'content'));
+          await database.insert(PostContentUpdates).values({
+            postId: input.postId,
+            userId: context.session.userId,
+            clientId: input.clientId,
+            data: update,
+          });
+        } else {
+          update = Y.mergeUpdatesV2(updates.map(({ data }) => data));
+        }
+
+        const diff = Y.diffUpdateV2(update, toUint8Array(input.data));
+        const sv = Y.encodeStateVectorFromUpdateV2(update);
+
+        return [
+          {
+            postId: input.postId,
+            kind: 'SYNCHRONIZE_2',
+            data: fromUint8Array(diff),
+          },
+          {
+            postId: input.postId,
+            kind: 'SYNCHRONIZE_1',
+            data: fromUint8Array(sv),
+          },
+        ] as const;
+      } else if (input.kind == 'SYNCHRONIZE_2') {
+        pubsub.publish('post:synchronization', input.postId, {
+          postId: input.postId,
+          kind: 'UPDATE',
+          data: input.data,
+        });
+
+        await database.insert(PostContentUpdates).values({
+          postId: input.postId,
+          userId: context.session.userId,
+          clientId: input.clientId,
+          data: toUint8Array(input.data),
+        });
+
+        pubsub.publish('post:synchronization', input.postId, {
+          postId: input.postId,
+          kind: 'SYNCHRONIZE_3',
+          data: input.clientId,
+        });
+
+        return [];
+      } else if (input.kind === 'AWARENESS') {
+        pubsub.publish('post:synchronization', input.postId, {
+          postId: input.postId,
+          kind: 'AWARENESS',
+          data: input.data,
+        });
+
+        return [];
+      }
+
+      throw new Error('Invalid kind');
+    },
+  }),
+}));
+
+/**
+ * * Subscriptions
+ */
+
+builder.subscriptionFields((t) => ({
+  postSynchronization: t.withAuth({ user: true }).field({
+    type: SynchronizePostResult,
+    args: { postId: t.arg.id() },
+    subscribe: async (_, args, context) => {
+      const posts = await database
+        .select({ userId: Posts.userId, spaceId: Posts.spaceId })
+        .from(Posts)
+        .leftJoin(Spaces, eq(Spaces.id, Posts.spaceId))
+        .where(
+          and(eq(Posts.id, args.postId), ne(Posts.state, 'DELETED'), or(eq(Spaces.state, 'ACTIVE'), isNull(Spaces.id))),
+        );
+
+      if (posts.length === 0) {
+        throw new NotFoundError();
+      }
+
+      const [post] = posts;
+
+      if (post.userId !== context.session.userId) {
+        if (!post.spaceId) {
+          throw new PermissionDeniedError();
+        }
+
+        const meAsMember = await getSpaceMember(context, post.spaceId);
+        if (meAsMember?.role !== 'ADMIN') {
+          throw new PermissionDeniedError();
+        }
+      }
+
+      return pipe(
+        Repeater.merge([
+          pubsub.subscribe('post:synchronization', args.postId),
+          new Repeater<SynchronizePostResultType>(async (push, stop) => {
+            push({
+              postId: args.postId,
+              kind: 'PING',
+              data: dayjs().valueOf().toString(),
+            });
+
+            const interval = setInterval(() => {
+              push({
+                postId: args.postId,
+                kind: 'PING',
+                data: dayjs().valueOf().toString(),
+              });
+            }, 1000);
+
+            await stop;
+            clearInterval(interval);
+          }),
+        ]),
+      );
+    },
+    resolve: (payload) => payload,
   }),
 }));

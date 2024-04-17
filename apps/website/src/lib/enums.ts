@@ -113,6 +113,15 @@ export const PostState = {
   PUBLISHED: 'PUBLISHED',
 } as const;
 
+export const PostSynchronizationKind = {
+  PING: 'PING',
+  UPDATE: 'UPDATE',
+  SYNCHRONIZE_1: 'SYNCHRONIZE_1',
+  SYNCHRONIZE_2: 'SYNCHRONIZE_2',
+  SYNCHRONIZE_3: 'SYNCHRONIZE_3',
+  AWARENESS: 'AWARENESS',
+} as const;
+
 export const PostTagKind = {
   CHARACTER: 'CHARACTER',
   COUPLING: 'COUPLING',

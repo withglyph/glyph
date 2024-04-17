@@ -31,7 +31,11 @@
   export let editor: NodeViewProps['editor'] | undefined;
   export let updateAttributes: NodeViewProps['updateAttributes'];
 
-  $: isLastChild = editor?.state.doc.lastChild?.eq(node) ?? false;
+  $: isLastChild = editor?.state.doc.firstChild?.lastChild?.eq(node) ?? false;
+
+  $: if (isLastChild) {
+    updateAttributes({ price: null });
+  }
 
   let priceOpen = false;
   let loginRequireOpen = false;
@@ -205,15 +209,12 @@
             _hover: { backgroundColor: 'gray.100' },
           })}
           type="button"
-          on:click={() => {
-            updateAttributes({ price: null });
-            // Hack: "RangeError: Index out of range" 가 일어나서 setTimeout 을 통해 이벤트 루프를 분리하니 해결됨
-            setTimeout(() =>
-              editor
-                ?.chain()
-                .cut({ from: getPos(), to: getPos() + node.nodeSize }, editor.state.doc.content.size)
-                .run(),
-            );
+          on:click={async () => {
+            await updateAttributes({ price: null });
+            if (editor) {
+              const pos = editor.state.doc.resolve(getPos());
+              editor.commands.cut({ from: getPos(), to: getPos() + node.nodeSize }, pos.end(pos.depth));
+            }
           }}
         >
           해제

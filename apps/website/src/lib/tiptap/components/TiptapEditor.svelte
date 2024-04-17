@@ -1,47 +1,41 @@
 <script lang="ts">
   import { Editor } from '@tiptap/core';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { onMount } from 'svelte';
+  import * as YAwareness from 'y-protocols/awareness';
+  import * as Y from 'yjs';
   import { dev } from '$app/environment';
   import { extensions } from '$lib/tiptap';
   import { css, cx } from '$styled-system/css';
-  import type { JSONContent } from '@tiptap/core';
+  import { Collaboration } from '../extensions';
   import type { SystemStyleObject } from '$styled-system/types';
-  import type { TiptapContentOptions } from '../types';
 
   export let style: SystemStyleObject | undefined = undefined;
-  export let content: JSONContent | undefined = undefined;
-  export let options: TiptapContentOptions;
+  export let document: Y.Doc | undefined = undefined;
+  export let awareness: YAwareness.Awareness | undefined = undefined;
 
   export let editor: Editor | undefined = undefined;
-
-  const dispatch = createEventDispatcher<{ change: JSONContent }>();
 
   let element: HTMLDivElement;
 
   onMount(() => {
     editor = new Editor({
       element,
-      content,
-      extensions,
+      extensions: [...extensions, Collaboration.configure({ document, awareness })],
       injectCSS: false,
       editorProps: {
         attributes: { class: css(style) },
         scrollMargin: { top: 150, bottom: 50, left: 0, right: 0 },
         scrollThreshold: { top: 150, bottom: 50, left: 0, right: 0 },
-        // handleKeyDown: (_, event) => {
-        //   // 맥 구름입력기에서 엔터키 입력시 마지막 글자 잘리는 문제 workaround
-        //   if (editor && event.key === 'Enter') {
-        //     const s = editor.view.state.selection;
-        //     editor.commands.setTextSelection(s.to);
-        //   }
-        // },
+        handleKeyDown: (_, event) => {
+          // 맥 구름입력기에서 엔터키 입력시 마지막 글자 잘리는 문제 workaround
+          if (editor && event.key === 'Enter') {
+            const s = editor.view.state.selection;
+            editor.commands.setTextSelection(s.to);
+          }
+        },
       },
-      onTransaction: ({ editor: editor_, transaction }) => {
+      onTransaction: ({ editor: editor_ }) => {
         editor = editor_;
-        if (transaction.docChanged) {
-          content = editor.getJSON();
-          dispatch('change', content);
-        }
       },
     });
 
@@ -60,8 +54,6 @@
   )}
   autocapitalize="off"
   autocorrect="off"
-  data-indent={options.paragraphIndent}
-  data-spacing={options.paragraphSpacing}
   spellcheck="false"
 />
 
@@ -82,9 +74,9 @@
       opacity: '50',
       overflow: 'scroll',
       pointerEvents: 'none',
-      zIndex: '50',
+      zIndex: '[100]',
     })}
   >
-    {JSON.stringify(content, null, 2)}
+    {JSON.stringify(editor?.getJSON(), null, 2)}
   </div>
 {/if}

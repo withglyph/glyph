@@ -1,6 +1,7 @@
 import { Extension } from '@tiptap/core';
 import { Plugin } from '@tiptap/pm/state';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
+import { createEmptyTiptapDocumentNode } from '$lib/utils';
 import { css } from '$styled-system/css';
 
 export const Placeholder = Extension.create({
@@ -15,20 +16,15 @@ export const Placeholder = Extension.create({
               return;
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const emptyDocument = doc.type.createAndFill(null, [
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              schema.nodes.paragraph.createAndFill()!,
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              schema.nodes.access_barrier.createAndFill()!,
-            ])!;
+            const emptyDocument = createEmptyTiptapDocumentNode(schema);
+
             if (
               doc.sameMarkup(emptyDocument) &&
               doc.content.findDiffStart(emptyDocument.content) === null &&
-              doc.firstChild
+              doc.firstChild?.firstChild
             ) {
               return DecorationSet.create(doc, [
-                Decoration.node(0, doc.firstChild.nodeSize, {
+                Decoration.node(1, doc.firstChild.firstChild.nodeSize + 1, {
                   'class': css({
                     _before: {
                       content: 'attr(data-placeholder)',

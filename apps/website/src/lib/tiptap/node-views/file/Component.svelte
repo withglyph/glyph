@@ -18,6 +18,7 @@
   type $$Props = NodeViewProps;
   $$restProps;
 
+  export let extension: NodeViewProps['extension'];
   export let node: NodeViewProps['node'];
   export let editor: NodeViewProps['editor'] | undefined;
   export let selected: NodeViewProps['selected'];
@@ -38,37 +39,33 @@
     mutation TiptapFile_FinalizeFileUpload_Mutation($input: FinalizeFileUploadInput!) {
       finalizeFileUpload(input: $input) {
         id
-        name
-        size
         url
       }
     }
   `);
 
   const upload = async () => {
-    const file = node.attrs.__file as File;
+    const file = extension.storage.files[node.attrs.key] as File | undefined;
+    if (!file) {
+      return;
+    }
 
     const { key, presignedUrl } = await prepareFileUpload();
     await ky.put(presignedUrl, { body: file });
     const resp = await finalizeFileUpload({ key, name: file.name });
 
-    updateAttributes({
-      id: resp.id,
-      __data: resp,
-      __file: undefined,
-    });
+    updateAttributes({ id: resp.id, ephemeralId: null }, { skipHistory: true });
+
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete extension.storage.files[node.attrs.key];
   };
 
   onMount(() => {
-    if (node.attrs.__file) {
-      upload();
-    }
+    upload();
   });
 </script>
 
 <NodeView style={center.raw({ paddingY: '4px' })} data-drag-handle draggable>
-  {@const data = node.attrs.__file ?? node.attrs.__data}
-
   <svelte:element
     this={editor?.isEditable ? 'div' : 'a'}
     class={css(
@@ -87,17 +84,19 @@
         outlineColor: 'brand.400',
       },
     )}
-    href={editor?.isEditable ? undefined : data.url}
+    href={editor?.isEditable ? undefined : node.attrs.url}
   >
     <div class={flex({ align: 'center', gap: '8px', grow: '1' })}>
       <div class={flex({ align: 'center', gap: '6px' })}>
         <Icon style={css.raw({ color: 'gray.300' })} icon={IconFolder} size={20} />
-        <div class={css({ fontSize: '14px', lineClamp: 1 })}>{data.name}</div>
+        <div class={css({ fontSize: '14px', lineClamp: 1 })}>{node.attrs.name}</div>
       </div>
 
       <div class={css({ width: '1px', height: '12px', backgroundColor: 'gray.300' })} />
 
-      <div class={css({ flex: 'none', fontSize: '14px', color: 'gray.400' })}>{numeral(data.size).format('0b')}</div>
+      <div class={css({ flex: 'none', fontSize: '14px', color: 'gray.400' })}>
+        {numeral(node.attrs.size).format('0b')}
+      </div>
     </div>
 
     <div
@@ -115,7 +114,7 @@
       {/if}
     </div>
 
-    {#if !node.attrs.id}
+    {#if !node.attrs.url}
       <div class={center({ position: 'absolute', inset: '0', backgroundColor: 'gray.5/50' })}>
         <RingSpinner style={css.raw({ size: '32px', color: 'brand.400' })} />
       </div>
