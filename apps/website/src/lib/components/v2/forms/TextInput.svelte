@@ -32,18 +32,18 @@
       'display': 'flex',
       'alignItems': 'center',
       'borderWidth': '1px',
-      'borderColor': { base: 'gray.50', _enabled: { _hover: 'gray.100', _focus: 'gray.400' } },
+      'borderColor': 'gray.50',
       'fontSize': '16px',
       'fontWeight': 'medium',
-      'backgroundColor': {
-        base: 'gray.50',
-        _enabled: { _hover: 'gray.100', _focus: 'gray.5' },
-        _disabled: 'gray.100',
-      },
+      'backgroundColor': 'gray.50',
       'transition': 'common',
-      '_disabled': {
+      '&:has(input:enabled)': {
+        borderColor: { _hover: 'gray.100', _focusWithin: 'gray.400' },
+        backgroundColor: { _hover: 'gray.100', _focusWithin: 'gray.5' },
+      },
+      '&:has(input:disabled)': {
         color: 'gray.400',
-        _placeholder: { color: 'gray.400' },
+        backgroundColor: 'gray.100',
       },
       '&:has(input[aria-invalid])': {
         borderColor: '[red.600!]',
