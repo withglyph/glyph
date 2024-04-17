@@ -390,6 +390,7 @@ type Post {
   commentCount(pagination: Boolean! = false): Int!
   commentQualification: PostCommentQualification!
   comments(orderBy: CommentOrderByKind! = OLDEST, page: Int! = 1, take: Int! = 5): [PostComment!]!
+  contentUpdates: [PostContentUpdate!]!
   createdAt: DateTime!
   discloseStats: Boolean!
   draftRevision(revisionId: ID): PostRevision!
@@ -472,6 +473,12 @@ enum PostCommentState {
 enum PostCommentVisibility {
   PRIVATE
   PUBLIC
+}
+
+type PostContentUpdate {
+  createdAt: DateTime!
+  data: String!
+  id: ID!
 }
 
 enum PostPair {

@@ -1,6 +1,6 @@
 import { init } from '@paralleldrive/cuid2';
 import { sql } from 'drizzle-orm';
-import { boolean, index, integer, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
+import { bigserial, boolean, index, integer, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import * as E from './enums';
 import { bytea, datetime, jsonb } from './types';
 import type { JSONContent } from '@tiptap/core';
@@ -1044,6 +1044,7 @@ export const PostContentUpdates = pgTable(
       .references(() => Users.id),
     clientId: text('client_id').notNull(),
     data: bytea('data').notNull(),
+    seq: bigserial('seq', { mode: 'bigint' }).notNull(),
     createdAt: datetime('created_at')
       .notNull()
       .default(sql`now()`),

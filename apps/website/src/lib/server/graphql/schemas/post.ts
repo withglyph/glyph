@@ -341,6 +341,30 @@ Post.implement({
       },
     }),
 
+    contentUpdates: t.withAuth({ user: true }).field({
+      type: [PostContentUpdate],
+      resolve: async (post, _, context) => {
+        if (post.userId !== context.session.userId) {
+          if (!post.spaceId) {
+            throw new PermissionDeniedError();
+          }
+
+          const meAsMember = await getSpaceMember(context, post.spaceId);
+          if (meAsMember?.role !== 'ADMIN') {
+            throw new PermissionDeniedError();
+          }
+        }
+
+        const updates = await database
+          .select({ id: PostContentUpdates.id })
+          .from(PostContentUpdates)
+          .where(eq(PostContentUpdates.postId, post.id))
+          .orderBy(asc(PostContentUpdates.seq));
+
+        return updates.map((update) => update.id);
+      },
+    }),
+
     liked: t.boolean({
       resolve: async (post, _, context) => {
         if (!context.session) {
@@ -960,6 +984,15 @@ PostReaction.implement({
     mine: t.boolean({
       resolve: (reaction, _, context) => !!context.session && reaction.userId === context.session.userId,
     }),
+  }),
+});
+
+export const PostContentUpdate = createObjectRef('PostContentUpdate', PostContentUpdates);
+PostContentUpdate.implement({
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    data: t.string({ resolve: (update) => fromUint8Array(update.data) }),
+    createdAt: t.expose('createdAt', { type: 'DateTime' }),
   }),
 });
 

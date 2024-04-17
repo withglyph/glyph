@@ -34,6 +34,7 @@
   import FileUploadModal from './FileUploadModal.svelte';
   import MobileEditMenu from './MobileEditMenu.svelte';
   import PublishMenu from './PublishMenu.svelte';
+  import TimeTravel from './TimeTravel.svelte';
   import ToolbarButtonTooltip from './ToolbarButtonTooltip.svelte';
   import type { EditorPage_Header_post, EditorPage_Header_query } from '$glitch';
 
@@ -96,6 +97,7 @@
 
         ...EditorPage_PublishMenu_post
         ...EditorPage_DraftListModal_post
+        ...EditorPage_TimeTravel_post
       }
     `),
   );
@@ -112,6 +114,7 @@
 
   let publishMenuOpen = false;
   let draftListOpen = false;
+  let timeTravelOpen = false;
 
   const { anchor: colorPickerAnchor, floating: colorPickerFloating } = createFloatingActions({
     placement: 'bottom-end',
@@ -298,7 +301,7 @@
           <Icon icon={IconDotsVertical} size={24} />
         </div>
 
-        <!-- <MenuItem on:click={() => (revisionListOpen = true)}>저장이력</MenuItem> -->
+        <MenuItem on:click={() => (timeTravelOpen = true)}>시간여행</MenuItem>
         <MenuItem external href={`/editor/${$post.permalink}/preview`} type="link">미리보기</MenuItem>
       </Menu>
     </div>
@@ -983,6 +986,7 @@
 
 <FileUploadModal bind:open={fileUploadModalOpen} />
 <DraftListModal {$post} $user={$query.me} bind:open={draftListOpen} />
+<TimeTravel {$post} bind:open={timeTravelOpen} />
 
 <style>
   .divider-preview {

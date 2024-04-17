@@ -17,7 +17,7 @@ declare module '@tiptap/core' {
 
 type CollaborationOptions = {
   document: Y.Doc;
-  awareness: YAwareness.Awareness;
+  awareness?: YAwareness.Awareness;
 };
 
 export const Collaboration = Extension.create<CollaborationOptions>({
@@ -148,7 +148,7 @@ export const Collaboration = Extension.create<CollaborationOptions>({
     return [
       ySyncPlugin(fragment),
       yUndoPluginInstance,
-      yCursorPlugin(this.options.awareness, { cursorBuilder, selectionBuilder }),
+      ...(this.options.awareness ? [yCursorPlugin(this.options.awareness, { cursorBuilder, selectionBuilder })] : []),
     ];
   },
 
