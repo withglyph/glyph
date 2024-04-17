@@ -2,7 +2,13 @@ import { production } from '@withglyph/lib/environment';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async () => {
-  const lines = ['User-agent: *', 'Disallow: /api/', 'Disallow: /_internal/', 'Disallow: /_playground/'];
+  const lines = [
+    'User-agent: *',
+    'Disallow: /api/',
+    'Disallow: /_internal/',
+    'Disallow: /_playground/',
+    'Allow: /api/opengraph/',
+  ];
 
   if (production) {
     lines.push('User-agent: Twitterbot', 'Allow: /api/shortlink/');
