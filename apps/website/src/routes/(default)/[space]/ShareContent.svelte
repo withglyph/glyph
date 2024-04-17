@@ -170,17 +170,16 @@
     <Icon icon={IconChevronLeft} size={24} />
   </button>
   <svelte:fragment slot="title">{showShareTargetMenu ? '공유 및 저장' : '이미지로 공유'}</svelte:fragment>
-  <form id="share-content-as-image" class={flex({ direction: 'column', position: 'relative' })}>
+  <form id="share-content-as-image" class={flex({ direction: 'column' })}>
     <article
       class={css({
         position: 'sticky',
         top: '0',
         marginX: '-20px',
-        paddingX: '20px',
+        paddingBottom: '16px',
         backgroundColor: 'gray.5',
-        maxHeight: '334px',
+        width: 'auto',
         flexGrow: '1',
-        aspectRatio: '[1/1]',
         zIndex: '1',
       })}
     >
@@ -191,6 +190,7 @@
           marginX: 'auto',
           size: 'full',
           maxSize: '334px',
+          aspectRatio: '1/1',
         })}
         alt="밑줄 이미지 미리보기"
         src={generatedPostShareImage || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"}
@@ -198,7 +198,7 @@
 
       {#if showSpinner}
         <div class={center({ position: 'absolute', inset: '0', paddingX: '16px', paddingY: '8px' })}>
-          <RingSpinner style={css.raw({ size: '80px', color: 'teal.400', opacity: '80' })} />
+          <RingSpinner style={css.raw({ size: '80px', color: 'cyan.400', opacity: '80' })} />
         </div>
       {/if}
     </article>
@@ -208,7 +208,6 @@
         <hr
           class={css({
             border: 'none',
-            marginTop: '16px',
             height: '8px',
             marginX: '-20px',
             backgroundColor: 'gray.50',
@@ -252,14 +251,13 @@
           class={flex({
             align: 'center',
             gap: '8px',
-            marginTop: '16px',
             marginBottom: '14px',
             overflowX: 'auto',
             scrollbar: 'hidden',
           })}
         >
           {#each backgroundColors as bgColor (bgColor)}
-            <label class={css({ position: 'relative', flex: 'none', size: '46px' })}>
+            <label class={css({ position: 'relative', flex: 'none', size: '46px', cursor: 'pointer' })}>
               <input
                 name="background-color-{bgColor}"
                 class={cx('peer', css({ appearance: 'none', visibility: 'hidden' }))}
