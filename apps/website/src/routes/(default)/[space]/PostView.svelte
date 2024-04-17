@@ -16,7 +16,7 @@
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Alert, Avatar, Icon, Image, ShareLinkPopover, Tag, Tooltip } from '$lib/components';
+  import { Alert, Avatar, Chip, Icon, Image, ShareLinkPopover, Tag, Tooltip } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Button } from '$lib/components/v2';
   import { TextInput } from '$lib/components/v2/forms';
@@ -286,6 +286,7 @@
         createdAt
         paragraphIndent
         paragraphSpacing
+        price
       }
     `),
   );
@@ -442,7 +443,7 @@
         class={flex({
           align: 'center',
           gap: '2px',
-          marginBottom: { base: '12px', sm: '24px' },
+          marginBottom: { base: '16px', sm: '20px' },
           fontSize: { base: '14px', sm: '16px' },
           color: 'gray.500',
           width: 'fit',
@@ -453,6 +454,13 @@
         <Icon icon={IconChevronRight} />
       </a>
     {/if}
+
+    {#if $postRevision.price}
+      <Chip style={css.raw({ marginBottom: '2px', paddingY: '3px', paddingX: '7px', width: 'fit' })} color="blue">
+        유료
+      </Chip>
+    {/if}
+
     <div class={flex({ justify: 'space-between', align: 'flex-start', gap: '16px' })}>
       <div>
         <h1 class={css({ fontSize: { base: '22px', sm: '28px' }, fontWeight: 'bold', wordBreak: 'break-all' })}>
