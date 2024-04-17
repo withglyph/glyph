@@ -81,16 +81,15 @@
         alignItems: 'center',
         flex: 'none',
         fontWeight: 'medium',
-        color: 'gray.800',
         truncate: true,
       },
-      tag: { maxWidth: '94px', truncate: true },
+      tag: { flex: 'none', truncate: true },
     },
     variants: {
       theme: {
         light: {
           title: {},
-          subtitle: { color: 'gray.600' },
+          subtitle: { color: 'gray.800' },
           tag: {},
         },
         dark: {
@@ -171,7 +170,9 @@
         </h4>
       {/if}
       {#if $post.publishedRevision.previewText}
-        <p class={css({ color: 'gray.600', truncate: true })}>{$post.publishedRevision.previewText}</p>
+        <p class={css({ color: 'gray.600', truncate: true }, theme === 'dark' && { color: 'gray.400' })}>
+          {$post.publishedRevision.previewText}
+        </p>
       {/if}
     </div>
   </div>
@@ -190,7 +191,7 @@
       })}
     >
       {#each $post.tags as tag (tag.id)}
-        <Tag style={css.raw({ flex: 'none', truncate: true })} as="div" size="sm">
+        <Tag style={classes.tag} as="div" size="sm">
           #{tag.tag.name}
         </Tag>
       {/each}
