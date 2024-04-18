@@ -276,7 +276,7 @@
   <div
     class={css({ flex: '1', backgroundColor: 'gray.50', overflow: 'auto', sm: { paddingX: '44px', paddingY: '40px' } })}
   >
-    <div class={css({ width: 'full', maxWidth: '872px' })}>
+    <div class={css({ width: 'full', sm: { maxWidth: '872px' } })}>
       <slot />
     </div>
   </div>
