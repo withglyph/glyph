@@ -86,7 +86,12 @@
       type="button"
       on:click={() => thumbnailPicker.show()}
     >
-      <Image style={css.raw({ size: 'full', aspectRatio: '3/4' })} $image={thumbnail} placeholder size={256} />
+      <Image
+        style={css.raw({ size: 'full', aspectRatio: '3/4', objectFit: 'cover' })}
+        $image={thumbnail}
+        placeholder
+        size={256}
+      />
 
       <div
         class={center({
@@ -107,7 +112,7 @@
       </div>
     </button>
 
-    <div id="upload-restriction" class={css({ fontSize: '13px', color: 'gray.500' })}>800x1000 픽셀 이상 (4:5비율)</div>
+    <div id="upload-restriction" class={css({ fontSize: '13px', color: 'gray.500' })}>600x800 픽셀 이상 (3:4 비율)</div>
 
     <FormField name="name" style={css.raw({ marginTop: '42px' })} label="컬렉션명">
       <TextInput style={css.raw({ width: 'full' })} maxlength={50} placeholder="컬렉션명을 입력해주세요" required>

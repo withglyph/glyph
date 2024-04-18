@@ -1,21 +1,28 @@
 <script lang="ts">
-  import dayjs from 'dayjs';
   import mixpanel from 'mixpanel-browser';
-  import { page } from '$app/stores';
+  import Sortable from 'sortablejs';
+  import { onDestroy } from 'svelte';
+  import IconHelpLine from '~icons/glyph/help-line';
+  import IconSearch from '~icons/glyph/search';
+  import IconAdjustmentsHorizontal from '~icons/tabler/adjustments-horizontal';
+  import IconChevronLeft from '~icons/tabler/chevron-left';
+  import IconGripVertical from '~icons/tabler/grip-vertical';
+  import IconLayoutGrid from '~icons/tabler/layout-grid';
+  import IconMinus from '~icons/tabler/minus';
+  import IconPlus from '~icons/tabler/plus';
   import { fragment, graphql } from '$glitch';
-  import { Button, Modal } from '$lib/components';
-  import { Editable, PopupSearch } from '$lib/components/forms';
+  import { Icon, Tooltip } from '$lib/components';
   import Image from '$lib/components/Image.svelte';
+  import { Button, Modal } from '$lib/components/v2';
+  import { TextInput } from '$lib/components/v2/forms';
   import { createMutationForm } from '$lib/form';
   import { SetSpaceCollectionPostSchema } from '$lib/validations';
-  import { css } from '$styled-system/css';
-  import { flex } from '$styled-system/patterns';
+  import { css, cx } from '$styled-system/css';
+  import { center, flex } from '$styled-system/patterns';
   import type {
     SpaceCollectionsEntityPage_ManageCollectionModal_collection,
     SpaceCollectionsEntityPage_ManageCollectionModal_post,
   } from '$glitch';
-
-  $: slug = $page.params.space;
 
   let _collection: SpaceCollectionsEntityPage_ManageCollectionModal_collection;
   let _posts: SpaceCollectionsEntityPage_ManageCollectionModal_post[];
@@ -45,6 +52,7 @@
         publishedRevision @_required {
           id
           title
+          subtitle
         }
       }
     `),
@@ -64,41 +72,31 @@
 
         posts {
           id
+
+          publishedRevision @_required {
+            id
+            title
+          }
+
+          thumbnail {
+            id
+            ...Image_image
+          }
         }
       }
     `),
   );
 
-  let submitButtonEl: HTMLButtonElement;
-  let name: string | null = null;
-
-  $: if (open) {
-    name = null;
-  }
-
-  $: if (name === null) {
-    name = $collection.name;
-  }
-
-  let registeredPostIds: Set<string>;
+  let registeredPosts: typeof $collection.posts = [];
   const initializeRegisteredPosts = () => {
-    registeredPostIds = new Set($collection.posts.map(({ id }) => id));
+    registeredPosts = $collection.posts;
   };
 
   $: if (open) {
     initializeRegisteredPosts();
   }
 
-  const updateSpaceCollection = graphql(`
-    mutation ManageSpaceCollectionModal_UpdateSpaceCollection_Mutation($input: UpdateSpaceCollectionInput!) {
-      updateSpaceCollection(input: $input) {
-        id
-        name
-      }
-    }
-  `);
-
-  const { form, setInitialValues, isSubmitting } = createMutationForm({
+  const { form, setInitialValues, isSubmitting, handleSubmit } = createMutationForm({
     mutation: graphql(`
       mutation SpaceCollectionsEntityPage_ManageCollectionModal_SetSpaceCollectionPosts_Mutation(
         $input: SetSpaceCollectionPostsInput!
@@ -108,172 +106,287 @@
         }
       }
     `),
-    extra: async () => ({ postIds: [...registeredPostIds.values()] }),
+    extra: async () => ({ postIds: registeredPosts.map((post) => post.id) }),
     schema: SetSpaceCollectionPostSchema,
     onSuccess: () => {
       open = false;
       mixpanel.track('space:collection:update', {
         spaceId,
         collectionId: $collection.id,
-        postIds: [...registeredPostIds.values()],
+        postIds: [registeredPosts.map((post) => post.id)],
       });
     },
   });
 
   $: setInitialValues({ spaceCollectionId: $collection.id, postIds: [] });
 
-  const registerPost = (postId: string) => {
-    registeredPostIds.add(postId);
-    registeredPostIds = registeredPostIds;
+  const registerPost = (post: (typeof $collection.posts)[number]) => {
+    registeredPosts = [...registeredPosts, post];
   };
-  const removePost = async (postId: string) => {
-    registeredPostIds.delete(postId);
-    registeredPostIds = registeredPostIds;
+
+  const removePost = (post: (typeof $collection.posts)[number]) => {
+    registeredPosts = registeredPosts.filter((p: (typeof $collection.posts)[number]) => p.id !== post.id);
   };
 
   $: filteredPosts = $posts.filter((post) => {
-    const searchResult = post.publishedRevision?.title?.includes(query);
+    const searchResult =
+      post.publishedRevision?.title?.includes(query) || (query === '' && !post.publishedRevision?.title);
     const isInOtherCollection = !!post.collection && post.collection.id !== $collection.id;
 
     return searchResult && !isInOtherCollection;
   });
+
+  let page: 'registerPosts' | 'reorderPosts' = 'registerPosts';
+
+  let sortable: Sortable;
+  let sortableContainer: HTMLUListElement;
+
+  const reorderArray = (arr: (typeof $collection.posts)[number][], newIndex: number, oldIndex: number) => {
+    const draggedItem = arr[oldIndex];
+
+    if (oldIndex > newIndex) {
+      arr = [...arr.slice(0, newIndex), draggedItem, ...arr.slice(newIndex, oldIndex), ...arr.slice(oldIndex + 1)];
+    } else {
+      arr = [
+        ...arr.slice(0, oldIndex),
+        ...arr.slice(oldIndex + 1, newIndex + 1),
+        draggedItem,
+        ...arr.slice(newIndex + 1),
+      ];
+    }
+
+    return arr;
+  };
+
+  let sortableOptions: Sortable.Options = {
+    scroll: true,
+    handle: '.post',
+    animation: 150,
+    delay: 50,
+    forceAutoScrollFallback: true,
+    scrollSensitivity: 60,
+    scrollSpeed: 10,
+    bubbleScroll: true,
+    onEnd: ({ newIndex, oldIndex }) => {
+      if (newIndex === undefined || oldIndex === undefined) return;
+
+      registeredPosts = reorderArray(registeredPosts, newIndex, oldIndex);
+    },
+  };
+
+  $: if (sortableContainer) {
+    sortable = Sortable.create(sortableContainer, sortableOptions);
+  }
+
+  onDestroy(() => {
+    if (sortable) {
+      sortable.destroy();
+    }
+  });
 </script>
 
-<Modal size="md" bind:open>
+<Modal style={flex.raw({ direction: 'column', minHeight: { base: '482px', sm: '540px' } })} bind:open>
+  <svelte:fragment slot="title-left">
+    {#if page === 'reorderPosts'}
+      <button type="button" on:click={() => (page = 'registerPosts')}>
+        <Icon icon={IconChevronLeft} size={24} />
+      </button>
+    {/if}
+  </svelte:fragment>
+
   <svelte:fragment slot="title">
-    <form
-      on:submit|preventDefault={async (e) => {
-        if (name && name.length > 0 && name !== $collection.name) {
-          await updateSpaceCollection({
-            spaceCollectionId: $collection.id,
-            name,
-            thumbnailId: $collection.thumbnail?.id,
-          });
-        }
-
-        // @ts-expect-error: currentTarget.name except HTMLInputElement
-        if (!('_name' in e.target && e.target._name instanceof HTMLInputElement))
-          throw new Error('Fail to access input element');
-
-        e.target._name.blur();
-      }}
-    >
-      <Editable
-        name="_name"
-        maxlength={20}
-        placeholder="컬렉션명"
-        bind:value={name}
-        on:blur={() => {
-          submitButtonEl.click();
-        }}
-      />
-      <button bind:this={submitButtonEl} class={css({ display: 'none' })} type="submit" />
-    </form>
-  </svelte:fragment>
-  <svelte:fragment slot="subtitle">
-    컬렉션에 노출되는 포스트를 관리하세요
-    <br />
-    한 포스트 당 한 컬렉션에만 속할 수 있어요
+    <p class={flex({ align: 'center', gap: '4px' })}>
+      {page === 'registerPosts' ? '포스트 관리' : '순서 변경'}<Tooltip
+        message={page === 'registerPosts'
+          ? '한 포스트는 하나의 컬렉션에만 포함될 수 있어요'
+          : '박스를 드래그해서 놓으면 순서를 변경할 수 있어요'}
+      >
+        <Icon style={css.raw({ 'color': 'gray.300', '& *': { strokeWidth: '[1]' } })} icon={IconHelpLine} />
+      </Tooltip>
+    </p>
   </svelte:fragment>
 
-  <PopupSearch
-    style={css.raw({ marginBottom: '16px' }, $posts.length === 0 && { display: 'none' })}
-    on:input={(e) => (query = e.currentTarget.value.trim())}
-  />
-  <form use:form>
-    <ul
-      class={css(
-        {
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px',
-          minHeight: '160px',
-          maxHeight: '240px',
-          overflowY: 'auto',
-        },
-        filteredPosts.length === 0 && { justifyContent: 'center' },
-      )}
+  {#if page === 'registerPosts'}
+    <TextInput
+      style={css.raw({ marginBottom: '8px' })}
+      placeholder="포스트를 검색해주세요"
+      on:input={(e) => (query = e.currentTarget.value.trim())}
     >
-      {#each filteredPosts as post (post.id)}
-        <li class={flex({ justify: 'space-between', align: 'center' })}>
-          <a
-            class={flex({ align: 'center', gap: '8px', marginRight: '8px', truncate: true })}
-            href="/{slug}/{post.permalink}"
+      <Icon slot="left-icon" icon={IconSearch} />
+    </TextInput>
+
+    <Button
+      style={flex.raw({
+        align: 'center',
+        gap: '4px',
+        marginLeft: 'auto',
+        marginBottom: '14px',
+        paddingY: '8px',
+      })}
+      size="sm"
+      variant="gray-outline"
+      on:click={() => (page = 'reorderPosts')}
+    >
+      <Icon icon={IconLayoutGrid} />
+      순서변경
+    </Button>
+  {:else}
+    <Button
+      style={flex.raw({
+        align: 'center',
+        gap: '4px',
+        marginLeft: 'auto',
+        marginBottom: '16px',
+        paddingY: '8px',
+      })}
+      size="sm"
+      variant="gray-outline"
+      on:click={() => (page = 'registerPosts')}
+    >
+      <Icon icon={IconAdjustmentsHorizontal} />
+      컬렉션관리
+    </Button>
+  {/if}
+
+  <form class={css(filteredPosts.length === 0 && { marginY: 'auto' })} use:form>
+    {#if page === 'registerPosts'}
+      <ul>
+        {#each filteredPosts as post (post.id)}
+          <li
+            class={flex({
+              gap: '16px',
+              borderTopWidth: '1px',
+              borderTopColor: 'gray.100',
+              paddingY: '20px',
+              _firstOfType: { paddingTop: '8px', borderStyle: 'none' },
+            })}
           >
-            {#if post.thumbnail}
-              <Image
-                style={css.raw({ flex: 'none', borderRadius: '8px', size: '42px' })}
-                $image={post.thumbnail}
-                size={48}
-              />
-            {/if}
-            <div class={css({ truncate: true })}>
-              <p class={css({ flexGrow: '1', fontSize: '17px', fontWeight: 'bold', truncate: true })}>
-                {post.publishedRevision?.title ?? '(제목 없음)'}
-              </p>
-              <time
-                class={css({ fontSize: '15px', fontWeight: 'medium', color: 'gray.500', truncate: true })}
-                datetime={post.publishedAt}
-              >
-                {dayjs(post.publishedAt).formatAsDate()}
-              </time>
+            <Image
+              style={css.raw({ flex: 'none', height: '60px', aspectRatio: '16/10', objectFit: 'cover' })}
+              $image={post.thumbnail}
+              placeholder
+              size={96}
+            />
+
+            <div class={flex({ direction: 'column', gap: '14px', flexGrow: '1', truncate: true })}>
+              <div class={css({ truncate: true })}>
+                <p class={css({ fontSize: '14px', fontWeight: 'semibold', truncate: true })}>
+                  {post.publishedRevision?.title ?? '(제목 없음)'}
+                </p>
+                <p class={css({ marginTop: '2px', fontSize: '13px', color: 'gray.600', height: '19px' })}>
+                  {post.publishedRevision?.subtitle ?? ''}
+                </p>
+              </div>
+              {#if registeredPosts.some((p) => p.id === post.id)}
+                <Button
+                  style={flex.raw({ align: 'center', gap: '4px', flex: 'none', marginLeft: 'auto', width: 'fit' })}
+                  size="sm"
+                  variant="gray-sub-fill"
+                  on:click={() => removePost(post)}
+                >
+                  <Icon icon={IconMinus} />
+                  컬렉션 제외
+                </Button>
+              {:else}
+                <Button
+                  style={flex.raw({ align: 'center', gap: '4px', flex: 'none', marginLeft: 'auto', width: 'fit' })}
+                  size="sm"
+                  variant="cyan-fill"
+                  on:click={() => registerPost(post)}
+                >
+                  <Icon icon={IconPlus} />
+                  컬렉션 추가
+                </Button>
+              {/if}
             </div>
-          </a>
-          {#if registeredPostIds.has(post.id)}
-            <Button
-              style={css.raw({ flex: 'none' })}
-              color="tertiary"
-              size="md"
-              variant="outlined"
-              on:click={() => removePost(post.id)}
+          </li>
+        {:else}
+          <li
+            class={css({
+              fontSize: '15px',
+              color: 'gray.500',
+              textAlign: 'center',
+              wordBreak: 'keep-all',
+            })}
+          >
+            {$posts.length === 0 ? '스페이스에 업로드 된 포스트가 없어요' : '일치하는 검색 결과가 없어요'}
+          </li>
+        {/each}
+      </ul>
+    {:else}
+      <ul bind:this={sortableContainer} class={css({ display: 'flex', flexDirection: 'column', gap: '8px' })}>
+        {#each registeredPosts as post, index (post.id)}
+          <li
+            class={cx(
+              'post',
+              flex({
+                align: 'center',
+                borderWidth: '1px',
+                borderColor: 'gray.100',
+                padding: '12px',
+                backgroundColor: 'gray.5',
+              }),
+            )}
+          >
+            <span class={css({ fontSize: '14px', color: 'gray.400', textAlign: 'center', minWidth: '26px' })}>
+              {index + 1}
+            </span>
+            <Image
+              style={css.raw({
+                flex: 'none',
+                marginRight: '6px',
+                height: '25px',
+                aspectRatio: '16/10',
+                objectFit: 'cover',
+              })}
+              $image={post.thumbnail}
+              placeholder
+              size={48}
+            />
+
+            <p class={css({ flexGrow: '1', fontSize: '14px', fontWeight: 'semibold', truncate: true })}>
+              {post.publishedRevision?.title ?? '(제목 없음)'}
+            </p>
+
+            <button
+              class={center({ flex: 'none', marginLeft: '20px', marginRight: '12px', size: '28px' })}
+              type="button"
+              on:click={() => removePost(post)}
             >
-              해제
-            </Button>
-          {:else}
-            <Button
-              style={css.raw({ flex: 'none' })}
-              color="secondary"
-              size="md"
-              on:click={() => registerPost(post.id)}
-            >
-              추가
-            </Button>
-          {/if}
-        </li>
-      {:else}
-        <article
-          class={flex({
-            direction: 'column',
-            alignSelf: 'center',
-            fontWeight: 'medium',
-            color: 'gray.500',
-            wordBreak: 'keep-all',
-          })}
-        >
-          {$posts.length === 0 ? '아직 스페이스에 업로드된 포스트가 없어요' : '일치하는 검색 결과가 없어요'}
-        </article>
-      {/each}
-    </ul>
-    <div class={flex({ gap: '12px', marginTop: '24px', width: 'full' })}>
+              <Icon style={css.raw({ color: 'red.600' })} icon={IconMinus} size={20} />
+            </button>
+
+            <button class={center({ flex: 'none', size: '28px' })} type="button">
+              <Icon icon={IconGripVertical} size={20} />
+            </button>
+          </li>
+        {/each}
+      </ul>
+    {/if}
+  </form>
+
+  <svelte:fragment slot="action">
+    {#if page === 'registerPosts'}
       <Button
-        style={css.raw({ flex: '1' })}
+        style={css.raw({ width: 'full' })}
         disabled={$posts.length === 0}
         loading={$isSubmitting}
-        size="xl"
         type="submit"
+        on:click={handleSubmit}
       >
-        저장하기
+        컬렉션 저장
       </Button>
+    {:else}
       <Button
-        color="tertiary"
-        size="xl"
-        variant="outlined"
-        on:click={() => {
-          open = false;
-        }}
+        style={css.raw({ width: 'full' })}
+        disabled={$posts.length === 0}
+        loading={$isSubmitting}
+        type="submit"
+        variant="gray-outline"
+        on:click={handleSubmit}
       >
-        닫기
+        순서 변경 완료
       </Button>
-    </div>
-  </form>
+    {/if}
+  </svelte:fragment>
 </Modal>
