@@ -1,4 +1,5 @@
-import { and, asc, count, eq, or } from 'drizzle-orm';
+import { and, asc, count, desc, eq, or } from 'drizzle-orm';
+import { match } from 'ts-pattern';
 import { NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { database, inArray, Posts, SpaceCollectionPosts, SpaceCollections, Spaces } from '$lib/server/database';
 import { enqueueJob } from '$lib/server/jobs';
@@ -13,6 +14,10 @@ import { Space } from './space';
 /**
  * * Types
  */
+
+const OrderByKind = builder.enumType('SpaceCollectionPostOrderByKind', {
+  values: ['OLDEST', 'LATEST'] as const,
+});
 
 export const SpaceCollection = createObjectRef('SpaceCollection', SpaceCollections);
 SpaceCollection.implement({
@@ -34,7 +39,8 @@ SpaceCollection.implement({
 
     posts: t.field({
       type: [Post],
-      resolve: async (spaceCollection, _, context) => {
+      args: { order: t.arg({ type: OrderByKind, defaultValue: 'LATEST' }) },
+      resolve: async (spaceCollection, { order }, context) => {
         const meAsMember = await getSpaceMember(context, spaceCollection.spaceId);
 
         const posts = await database
@@ -48,7 +54,12 @@ SpaceCollection.implement({
               meAsMember ? undefined : eq(Posts.visibility, 'PUBLIC'),
             ),
           )
-          .orderBy(asc(SpaceCollectionPosts.order));
+          .orderBy(
+            match(order)
+              .with('OLDEST', () => asc(SpaceCollectionPosts.order))
+              .with('LATEST', () => desc(SpaceCollectionPosts.order))
+              .exhaustive(),
+          );
 
         return posts.map((post) => post.id);
       },
