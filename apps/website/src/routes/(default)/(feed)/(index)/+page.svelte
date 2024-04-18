@@ -88,7 +88,8 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "글리프",
-      "url": "https://withglyph.com"
+      "alternateName": "Glyph",
+      "url": "https://withglyph.com/"
     }
   </script>
 </svelte:head>
