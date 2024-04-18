@@ -27,7 +27,6 @@ import {
   createRandomIcon,
   directUploadImage,
   getSpaceMember,
-  Loader,
   makeMasquerade,
   useFirstRow,
   useFirstRowOrThrow,
@@ -47,8 +46,7 @@ import { Profile } from './user';
 export const Space = createObjectRef('Space', Spaces);
 Space.implement({
   grantScopes: async (space, context) => {
-    const spaceMemberLoader = Loader.spaceMemberBySpaceId(context);
-    const meAsMember = await spaceMemberLoader.load(space.id);
+    const meAsMember = await getSpaceMember(context, space.id);
 
     return R.sift([
       (space.visibility === 'PUBLIC' || !!meAsMember) && '$space:view',

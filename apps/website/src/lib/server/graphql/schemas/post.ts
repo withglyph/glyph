@@ -55,7 +55,6 @@ import {
   getUserPoint,
   isAdulthood,
   isGte15,
-  Loader,
   makeMasquerade,
   makePostContentId,
   makeQueryContainers,
@@ -290,9 +289,8 @@ Post.implement({
           if (!post.spaceId) {
             throw new PermissionDeniedError();
           }
-          const spaceMemberLoader = Loader.spaceMemberBySpaceId(context);
-          const meAsMember = await spaceMemberLoader.load(post.spaceId);
 
+          const meAsMember = await getSpaceMember(context, post.spaceId);
           if (meAsMember?.role !== 'ADMIN') {
             throw new PermissionDeniedError();
           }
@@ -315,9 +313,8 @@ Post.implement({
           if (!post.spaceId) {
             throw new PermissionDeniedError();
           }
-          const spaceMemberLoader = Loader.spaceMemberBySpaceId(context);
-          const meAsMember = await spaceMemberLoader.load(post.spaceId);
 
+          const meAsMember = await getSpaceMember(context, post.spaceId);
           if (meAsMember?.role !== 'ADMIN') {
             throw new PermissionDeniedError();
           }

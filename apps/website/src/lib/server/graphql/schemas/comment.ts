@@ -46,9 +46,7 @@ PostComment.implement({
                 return '';
               }
 
-              const memberLoader = Loader.spaceMemberBySpaceId(context);
-              const member = await memberLoader.load(post.spaceId);
-
+              const member = await getSpaceMember(context, post.spaceId);
               if (member?.role !== 'ADMIN') {
                 return '';
               }
