@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { and, count, desc, eq, gt, ne, notExists } from 'drizzle-orm';
+import { and, countDistinct, desc, eq, gt, ne, notExists } from 'drizzle-orm';
 import * as R from 'radash';
 import { useCache } from '$lib/server/cache';
 import {
@@ -348,23 +348,24 @@ builder.queryFields((t) => ({
     resolve: async (_, __, context) => {
       const mutedTagIds = context.session ? await getMutedTagIds({ userId: context.session.userId }) : [];
       const tags = await useCache(
-        'tagFeed',
+        'featuredTagFeed',
         async () => {
           return database
             .select({ tagId: PostTags.tagId })
             .from(PostTags)
+            .innerJoin(Posts, eq(Posts.id, PostTags.postId))
             .where(
               and(inArray(PostTags.kind, ['CHARACTER', 'TITLE']), gt(PostTags.createdAt, dayjs().subtract(1, 'month'))),
             )
-            .orderBy(desc(count()))
             .groupBy(PostTags.tagId)
+            .orderBy(desc(countDistinct(Posts.userId)))
             .limit(20)
             .then((rows) => rows.map((row) => row.tagId));
         },
         60 * 60,
       );
 
-      return R.sift(tags.map((tagId) => (mutedTagIds.includes(tagId) ? null : { tagId }))).slice(0, 5);
+      return R.shuffle(R.sift(tags.map((tagId) => (mutedTagIds.includes(tagId) ? null : { tagId })))).slice(0, 5);
     },
   }),
 
