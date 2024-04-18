@@ -61,8 +61,8 @@
       },
     })}
   >
-    <a class={css({ smDown: { marginTop: '120px', marginBottom: '70px' } })} href="/">
-      <FullLogo class={css({ width: { base: 'full', sm: 'fit' }, height: { base: '38px', sm: '17px' } })} />
+    <a class={css({ smDown: { marginTop: '120px', marginBottom: '70px', textAlign: 'center' } })} href="/">
+      <FullLogo class={css({ height: { base: '38px', sm: '17px' } })} />
     </a>
     <slot />
   </div>

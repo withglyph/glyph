@@ -61,7 +61,7 @@
       })}
     >
       <a href="/">
-        <FullLogo class={css({ width: 'fit', height: { base: '38px', sm: '17px' }, smDown: { color: 'gray.5' } })} />
+        <FullLogo class={css({ height: { base: '38px', sm: '17px' }, smDown: { color: 'gray.5' } })} />
       </a>
 
       <h1
