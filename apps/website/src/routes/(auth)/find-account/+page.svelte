@@ -1,12 +1,50 @@
 <script lang="ts">
+  import { nanoid } from 'nanoid';
+  import qs from 'query-string';
   import IconDeviceMobile from '~icons/tabler/device-mobile';
+  import { page } from '$app/stores';
+  import { mixpanel } from '$lib/analytics';
   import { Alert, Helmet, Icon, Link } from '$lib/components';
   import { Button } from '$lib/components/v2';
+  import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
 
   let accountNotFoundOpen = false;
+
+  const handleUserIdentityVerification = () => {
+    mixpanel.track('user:personal-identity-verification:start');
+
+    // @ts-expect-error portone 관련 코드
+    IMP.init('imp72534540');
+
+    // @ts-expect-error portone 관련 코드
+    IMP.certification(
+      {
+        merchant_uid: nanoid(),
+        company: 'Glyph',
+        m_redirect_url: `${$page.url.origin}/api/identification/callback`,
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      async (resp: any) => {
+        if (resp.error_msg) {
+          toast(resp.error_msg);
+          return;
+        }
+
+        location.href = qs.stringifyUrl({
+          url: '/api/identification/callback',
+          query: { imp_uid: resp.imp_uid, action: 'find_account' },
+        });
+      },
+    );
+  };
 </script>
+
+<svelte:head>
+  <script src="https://cdn.iamport.kr/v1/iamport.js">
+  </script>
+</svelte:head>
 
 <Helmet description="휴대폰 본인인증을 통해 글리프 계정을 찾을 수 있어요" title="글리프 계정 찾기" />
 
@@ -32,6 +70,7 @@
     _hover: { backgroundColor: 'gray.50' },
   })}
   type="button"
+  on:click={handleUserIdentityVerification}
 >
   <Icon style={css.raw({ color: 'gray.500' })} icon={IconDeviceMobile} size={24} />
   휴대전화로 계정 찾기
