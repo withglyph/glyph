@@ -13,7 +13,6 @@
   import { pageSubTitle } from '$lib/stores';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import ComingSoonModal from '../../ComingSoonModal.svelte';
   import Footer from '../../Footer.svelte';
   import Header from '../../Header.svelte';
   import SpaceListMenu from './SpaceListMenu.svelte';
@@ -21,7 +20,6 @@
 
   let open = false;
   let updateSpaceProfileOpen = false;
-  let comingSoonOpen = false;
 
   $: query = graphql(`
     query SpaceDashboardLayout_Query($slug: String!) {
@@ -160,32 +158,34 @@
             </Tooltip>
           </li>
           <li>
-            <button
-              class={css(
-                {
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  borderRadius: '16px',
-                  paddingX: '8px',
-                  paddingY: '26px',
-                  width: 'full',
-                  _hover: {
+            <Tooltip message="준비중인 기능이에요">
+              <button
+                class={css(
+                  {
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    borderRadius: '16px',
+                    paddingX: '8px',
+                    paddingY: '26px',
+                    width: 'full',
+                    _hover: {
+                      color: 'gray.900',
+                      backgroundColor: 'gray.50',
+                    },
+                  },
+                  $page.url.pathname === `/${$query.space.slug}/dashboard/members` && {
                     color: 'gray.900',
                     backgroundColor: 'gray.50',
                   },
-                },
-                $page.url.pathname === `/${$query.space.slug}/dashboard/members` && {
-                  color: 'gray.900',
-                  backgroundColor: 'gray.50',
-                },
-              )}
-              type="button"
-              on:click={() => (comingSoonOpen = true)}
-            >
-              <Icon icon={IconUser} size={20} />
-              멤버 관리
-            </button>
+                )}
+                disabled
+                type="button"
+              >
+                <Icon icon={IconUser} size={20} />
+                멤버 관리
+              </button>
+            </Tooltip>
           </li>
           <li>
             <a
@@ -375,58 +375,64 @@
   <nav class={css({ width: 'full' })}>
     <ul class={css({ fontWeight: 'bold', color: 'gray.500' })}>
       <li>
-        <button
-          class={css(
-            {
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              borderRadius: '16px',
-              paddingX: '8px',
-              paddingY: '26px',
-              _hover: {
+        <Tooltip message="준비중인 기능이에요">
+          <button
+            class={css(
+              {
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                borderRadius: '16px',
+                paddingX: '8px',
+                paddingY: '26px',
+                width: 'full',
+                _hover: {
+                  color: 'gray.900',
+                  backgroundColor: 'gray.50',
+                },
+              },
+              $page.url.pathname === `/${$query.space.slug}/dashboard` && {
                 color: 'gray.900',
                 backgroundColor: 'gray.50',
               },
-            },
-            $page.url.pathname === `/${$query.space.slug}/dashboard` && {
-              color: 'gray.900',
-              backgroundColor: 'gray.50',
-            },
-          )}
-          type="button"
-          on:click={() => (comingSoonOpen = true)}
-        >
-          <Icon icon={IconHome} size={20} />
-          대시보드
-        </button>
+            )}
+            disabled
+            type="button"
+          >
+            <Icon icon={IconHome} size={20} />
+            대시보드
+          </button>
+        </Tooltip>
       </li>
       <li>
-        <button
-          class={css(
-            {
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              borderRadius: '16px',
-              paddingX: '8px',
-              paddingY: '26px',
-              _hover: {
+        <Tooltip message="준비중인 기능이에요">
+          <button
+            class={css(
+              {
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                borderRadius: '16px',
+                paddingX: '8px',
+                paddingY: '26px',
+                width: 'full',
+                _hover: {
+                  color: 'gray.900',
+                  backgroundColor: 'gray.50',
+                },
+              },
+              $page.url.pathname === `/${$query.space.slug}/dashboard/members` && {
                 color: 'gray.900',
                 backgroundColor: 'gray.50',
               },
-            },
-            $page.url.pathname === `/${$query.space.slug}/dashboard/members` && {
-              color: 'gray.900',
-              backgroundColor: 'gray.50',
-            },
-          )}
-          type="button"
-          on:click={() => (comingSoonOpen = true)}
-        >
-          <Icon icon={IconUser} size={20} />
-          멤버 관리
-        </button>
+            )}
+            disabled
+            type="button"
+          >
+            <Icon icon={IconUser} size={20} />
+            멤버 관리
+          </button>
+        </Tooltip>
       </li>
       <li>
         <a
@@ -511,4 +517,3 @@
 </BottomSheet>
 
 <UpdateSpaceProfileModal {$query} bind:open={updateSpaceProfileOpen} />
-<ComingSoonModal bind:open={comingSoonOpen} />

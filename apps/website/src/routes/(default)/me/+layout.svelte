@@ -2,15 +2,13 @@
   import { page } from '$app/stores';
   import PencilUnderline from '$assets/icons/pencil-underline.svg?component';
   import { graphql } from '$glitch';
-  import { Avatar, Button } from '$lib/components';
+  import { Avatar, Button, Tooltip } from '$lib/components';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import ComingSoonModal from '../ComingSoonModal.svelte';
   import UpdateProfileModal from './settings/UpdateProfileModal.svelte';
 
   let open = false;
-  let comingSoonOpen = false;
 
   $: query = graphql(`
     query MeLayout_Query {
@@ -130,29 +128,31 @@
             </a>
           </li>
           <li>
-            <button
-              class={css(
-                {
-                  display: 'flex',
-                  alignItems: 'center',
-                  borderRadius: '6px',
-                  padding: '12px',
-                  fontWeight: 'bold',
-                  color: 'gray.400',
-                  width: 'full',
-                  height: '60px',
-                  transition: 'common',
-                  _hover: {
-                    backgroundColor: 'gray.50',
+            <Tooltip message="준비중인 기능이에요">
+              <button
+                class={css(
+                  {
+                    display: 'flex',
+                    alignItems: 'center',
+                    borderRadius: '6px',
+                    padding: '12px',
+                    fontWeight: 'bold',
+                    color: 'gray.400',
+                    width: 'full',
+                    height: '60px',
+                    transition: 'common',
+                    _hover: {
+                      backgroundColor: 'gray.50',
+                    },
                   },
-                },
-                $page.url.pathname === '/me/dashboard' && { backgroundColor: 'gray.50', color: 'gray.900' },
-              )}
-              type="button"
-              on:click={() => (comingSoonOpen = true)}
-            >
-              대시보드
-            </button>
+                  $page.url.pathname === '/me/dashboard' && { backgroundColor: 'gray.50', color: 'gray.900' },
+                )}
+                disabled
+                type="button"
+              >
+                대시보드
+              </button>
+            </Tooltip>
           </li>
           <li>
             <a
@@ -237,4 +237,3 @@
 </div>
 
 <UpdateProfileModal $profile={$query.me.profile} bind:open />
-<ComingSoonModal bind:open={comingSoonOpen} />
