@@ -195,11 +195,19 @@ Space.implement({
     }),
 
     postCount: t.int({
-      resolve: async (space) => {
+      resolve: async (space, _, context) => {
+        const meAsMember = await getSpaceMember(context, space.id);
+
         const [{ value }] = await database
           .select({ value: count() })
           .from(Posts)
-          .where(and(eq(Posts.spaceId, space.id), eq(Posts.state, 'PUBLISHED')));
+          .where(
+            and(
+              eq(Posts.spaceId, space.id),
+              eq(Posts.state, 'PUBLISHED'),
+              meAsMember ? undefined : eq(Posts.visibility, 'PUBLIC'),
+            ),
+          );
 
         return value;
       },
