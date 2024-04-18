@@ -309,6 +309,7 @@
                 flex: 'none',
                 width: { base: '48px', sm: '60px' },
                 aspectRatio: '3/4',
+                objectFit: 'cover',
               })}
               $image={collection.thumbnail}
               placeholder
@@ -370,6 +371,7 @@
                 flex: 'none',
                 width: { base: '48px', sm: '60px' },
                 aspectRatio: '3/4',
+                objectFit: 'cover',
               })}
               $image={collection.thumbnail}
               placeholder

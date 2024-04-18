@@ -105,6 +105,7 @@
             width: { base: '84px', sm: '184px' },
             marginTop: { base: '-63px', sm: '-46px' },
             aspectRatio: '3/4',
+            objectFit: 'cover',
           })}
           $image={$query.spaceCollection.thumbnail}
           placeholder

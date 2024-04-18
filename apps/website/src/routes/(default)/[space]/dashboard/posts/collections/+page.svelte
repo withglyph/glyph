@@ -90,7 +90,7 @@
         <TableData>
           <a class={flex({ gap: '12px' })} href={`/${$query.space.slug}/collections/${collection.id}`}>
             <Image
-              style={css.raw({ flex: 'none', width: '96px', aspectRatio: '[3/4]', flexShrink: 0 })}
+              style={css.raw({ flex: 'none', width: '96px', aspectRatio: '[3/4]', flexShrink: 0, objectFit: 'cover' })}
               $image={collection.thumbnail}
               placeholder
               size={128}

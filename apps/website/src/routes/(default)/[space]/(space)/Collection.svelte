@@ -43,6 +43,7 @@
       borderColor: 'gray.100',
       width: 'full',
       aspectRatio: '3/4',
+      objectFit: 'cover',
     })}
     $image={$spaceCollection.thumbnail}
     placeholder
