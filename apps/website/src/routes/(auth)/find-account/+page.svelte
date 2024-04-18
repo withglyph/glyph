@@ -23,7 +23,7 @@
       {
         merchant_uid: nanoid(),
         company: 'Glyph',
-        m_redirect_url: `${$page.url.origin}/api/identification/callback`,
+        m_redirect_url: `${$page.url.origin}/api/identification/callback?action=find_account`,
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async (resp: any) => {
