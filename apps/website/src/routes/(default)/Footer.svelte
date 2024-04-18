@@ -90,14 +90,14 @@
         '&>a': { size: '34px', display: 'flex', justifyContent: 'center', alignItems: 'center' },
       })}
     >
-      <Link href="https://www.instagram.com/withglyph">
+      <Link aria-label="인스타그램" href="https://www.instagram.com/withglyph">
         <Icon style={css.raw({ color: { _hover: '[#E4405F]' } })} icon={IconInstagram} />
       </Link>
 
-      <Link href="https://twitter.com/withglyph">
+      <Link aria-label="트위터" href="https://twitter.com/withglyph">
         <Icon style={css.raw({ color: { _hover: '[#1DA1F2]' } })} icon={IconTwitter} />
       </Link>
-      <Link href="https://github.com/withglyph">
+      <Link aria-label="깃헙" href="https://github.com/withglyph">
         <Icon style={css.raw({ color: { _hover: '[#181717]' } })} icon={IconGithub} />
       </Link>
     </div>

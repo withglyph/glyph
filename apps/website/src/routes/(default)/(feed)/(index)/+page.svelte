@@ -241,6 +241,7 @@
         overflowX: 'auto',
         scrollbar: 'hidden',
       })}
+      role="tablist"
     >
       {#each $query.featuredTagFeed as { tag } (tag.id)}
         <button

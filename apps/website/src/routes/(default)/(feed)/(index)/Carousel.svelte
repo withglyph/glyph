@@ -1,5 +1,6 @@
 <script lang="ts">
   import { DragGesture } from '@use-gesture/vanilla';
+  import qs from 'query-string';
   import { onMount } from 'svelte';
   import { expoInOut } from 'svelte/easing';
   import { tweened } from 'svelte/motion';
@@ -193,7 +194,9 @@
               <img
                 class={css({ minWidth: '1180px', objectFit: 'cover' })}
                 alt={slide.title}
-                src={slide.backgroundImageUrl}
+                sizes="(min-width: 62rem) 1180px, 100vw"
+                src={qs.stringifyUrl({ url: slide.backgroundImageUrl, query: { s: 1180 } })}
+                srcset={`${qs.stringifyUrl({ url: slide.backgroundImageUrl, query: { s: 1180 } })} 1180w, ${qs.stringifyUrl({ url: slide.backgroundImageUrl, query: { s: 2360 } })} 2360w, ${qs.stringifyUrl({ url: slide.backgroundImageUrl, query: { s: 3540 } })} 3540w`}
               />
             </div>
 

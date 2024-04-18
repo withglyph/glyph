@@ -70,7 +70,12 @@
       }}
     >
       <TextInput placeholder="검색어를 입력하세요" size="sm" type="search" bind:inputEl bind:value>
-        <button slot="left-icon" class={center({ transition: 'common', color: 'gray.500' })} type="submit">
+        <button
+          slot="left-icon"
+          class={center({ transition: 'common', color: 'gray.500' })}
+          aria-label="검색"
+          type="submit"
+        >
           <Icon icon={IconSearch} size={20} />
         </button>
         <button

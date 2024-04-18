@@ -84,6 +84,7 @@
         smDown: { marginTop: '18px', marginBottom: '13px' },
         height: '25px',
       })}
+      aria-label="홈으로 이동"
       href="/"
     >
       <FullLogo class={css({ height: '25px', color: 'gray.900' })} />

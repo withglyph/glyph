@@ -20,6 +20,7 @@
     target: '_blank',
     rel: 'noopener noreferrer',
   }}
+  {...$$restProps}
 >
   <slot />
 </a>
