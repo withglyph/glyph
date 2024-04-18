@@ -3,7 +3,6 @@ import dayjs from 'dayjs';
 import { and, asc, desc, eq, or } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
-import { random } from 'radash';
 import * as R from 'radash';
 import { match } from 'ts-pattern';
 import {
@@ -826,7 +825,7 @@ builder.mutationFields((t) => ({
 
       const isEmailExists = users.length > 0;
 
-      const code = random(100_000, 999_999).toString();
+      const code = R.random(100_000, 999_999).toString();
       const token = nanoid();
 
       const [verification] = await database
