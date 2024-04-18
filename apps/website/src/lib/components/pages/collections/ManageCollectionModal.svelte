@@ -196,7 +196,7 @@
 
   <svelte:fragment slot="title">
     <p class={flex({ align: 'center', gap: '4px' })}>
-      {page === 'registerPosts' ? '포스트 관리' : '순서 변경'}<Tooltip
+      {page === 'registerPosts' ? '컬렉션 관리' : '순서 변경'}<Tooltip
         message={page === 'registerPosts'
           ? '한 포스트는 하나의 컬렉션에만 포함될 수 있어요'
           : '박스를 드래그해서 놓으면 순서를 변경할 수 있어요'}
@@ -270,7 +270,7 @@
 
             <div class={flex({ direction: 'column', gap: '14px', flexGrow: '1', truncate: true })}>
               <div class={css({ truncate: true })}>
-                <p class={css({ fontSize: '14px', fontWeight: 'semibold', truncate: true })}>
+                <p class={css({ fontSize: '14px', fontWeight: 'medium', truncate: true })}>
                   {post.publishedRevision?.title ?? '(제목 없음)'}
                 </p>
                 <p class={css({ marginTop: '2px', fontSize: '13px', color: 'gray.600', height: '19px' })}>

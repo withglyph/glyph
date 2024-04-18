@@ -24,7 +24,7 @@
     smDown: { marginX: '16px', marginY: '20px' },
   })}
 >
-  <h1 class={css({ fontSize: '20px', fontWeight: 'bold' })}>포스트 관리</h1>
+  <h1 class={css({ fontSize: '20px', fontWeight: 'bold' })}>포스트/컬렉션 관리</h1>
   <div>
     <TabHead style={css.raw({ paddingLeft: '0', fontSize: '18px' })}>
       <TabHeadItem id={0} pathname="/{$page.params.space}/dashboard/posts">포스트</TabHeadItem>

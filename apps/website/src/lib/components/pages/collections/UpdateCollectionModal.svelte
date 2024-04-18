@@ -2,7 +2,7 @@
   import mixpanel from 'mixpanel-browser';
   import IconCamera from '~icons/tabler/camera';
   import { fragment, graphql } from '$glitch';
-  import { Icon, Image } from '$lib/components';
+  import { Alert, Icon, Image } from '$lib/components';
   import { ThumbnailPicker } from '$lib/components/media';
   import { Button, Modal } from '$lib/components/v2';
   import { FormField, TextInput } from '$lib/components/v2/forms';
@@ -17,8 +17,9 @@
   export let spaceId: string;
 
   let _collection: UpdateCollectionModal_Collection_query;
-
   export { _collection as $collection };
+
+  let deleteCollectionOpen = false;
 
   $: collection = fragment(
     _collection,
@@ -62,10 +63,18 @@
     name: $collection.name,
     thumbnailId: $collection.thumbnail?.id,
   });
+
+  const deleteSpaceCollection = graphql(`
+    mutation UpdateCollectionModal_deleteSpaceCollection_Mutation($input: DeleteSpaceCollectionInput!) {
+      deleteSpaceCollection(input: $input) {
+        id
+      }
+    }
+  `);
 </script>
 
 <Modal bind:open>
-  <svelte:fragment slot="title">컬렉션 관리</svelte:fragment>
+  <svelte:fragment slot="title">컬렉션 수정</svelte:fragment>
 
   <form use:form>
     <p class={css({ fontSize: '14px' })}>표지 이미지</p>
@@ -126,7 +135,37 @@
     </FormField>
   </form>
 
-  <Button slot="action" style={css.raw({ width: 'full' })} loading={$isSubmitting} on:click={handleSubmit}>완료</Button>
+  <div slot="action" class={css({ width: 'full', textAlign: 'center' })}>
+    <button
+      class={css({ marginX: 'auto', marginBottom: '20px', color: 'red.600', fontSize: '14px' })}
+      type="button"
+      on:click={() => (deleteCollectionOpen = true)}
+    >
+      컬렉션 삭제
+    </button>
+
+    <Button style={css.raw({ width: 'full' })} loading={$isSubmitting} on:click={handleSubmit}>완료</Button>
+  </div>
 </Modal>
 
 <ThumbnailPicker bind:this={thumbnailPicker} ratio="collection" on:change={(e) => (thumbnail = e.detail)} />
+
+<Alert containerStyle={css.raw({ sm: { maxWidth: '460px' } })} bind:open={deleteCollectionOpen}>
+  <svelte:fragment slot="title">컬렉션을 삭제할까요?</svelte:fragment>
+
+  <svelte:fragment slot="action">
+    <Button size="lg" variant="gray-sub-fill" on:click={() => (deleteCollectionOpen = false)}>취소</Button>
+    <Button
+      size="lg"
+      variant="red-fill"
+      on:click={async () => {
+        await deleteSpaceCollection({ spaceCollectionId: $collection.id });
+        mixpanel.track('space:collection:delete', { spaceId, collectionId: $collection.id });
+        deleteCollectionOpen = false;
+        open = false;
+      }}
+    >
+      삭제
+    </Button>
+  </svelte:fragment>
+</Alert>

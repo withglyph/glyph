@@ -160,7 +160,7 @@
               size="sm"
               type="link"
             >
-              첫 회 보기
+              1화 보기
             </Button>
 
             {#if $query.spaceCollection.space.meAsMember}

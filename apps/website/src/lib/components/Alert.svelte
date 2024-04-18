@@ -5,6 +5,7 @@
   import type { SystemStyleObject } from '$styled-system/types';
 
   export let open: boolean;
+  export let containerStyle: SystemStyleObject | undefined = undefined;
   export let actionStyle: SystemStyleObject | undefined = undefined;
 </script>
 
@@ -34,16 +35,19 @@
       })}
     >
       <div
-        class={css({
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
-          width: 'full',
-          maxWidth: { base: '311px', sm: '420px' },
-          backgroundColor: 'gray.5',
-          pointerEvents: 'auto',
-          userSelect: 'text',
-        })}
+        class={css(
+          {
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            width: 'full',
+            maxWidth: { base: '311px', sm: '420px' },
+            backgroundColor: 'gray.5',
+            pointerEvents: 'auto',
+            userSelect: 'text',
+          },
+          containerStyle,
+        )}
         use:scrollLock
         in:fly={{ y: 10 }}
         out:fade={{ duration: 150 }}

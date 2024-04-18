@@ -1,8 +1,7 @@
 <script lang="ts">
   import dayjs from 'dayjs';
-  import IconTrash from '~icons/tabler/trash';
   import { graphql } from '$glitch';
-  import { Button, Helmet, Icon, Image } from '$lib/components';
+  import { Button, Helmet, Image } from '$lib/components';
   import {
     CreateCollectionModal,
     ManageCollectionModal,
@@ -51,16 +50,7 @@
     }
   `);
 
-  const deleteSpaceCollection = graphql(`
-    mutation SpaceSettingCollectionPage_deleteSpaceCollection_Mutation($input: DeleteSpaceCollectionInput!) {
-      deleteSpaceCollection(input: $input) {
-        id
-      }
-    }
-  `);
-
   let selectedCollection: (typeof $query.space.collections)[number] | null = null;
-  let deleting = false;
 </script>
 
 <Helmet description={`${$query.space.name} 스페이스 컬렉션 관리`} title={`컬렉션 관리 | ${$query.space.name}`} />
@@ -76,67 +66,46 @@
     <TableHeader>
       <TableRow>
         <TableHead>컬렉션</TableHead>
-        <TableHead style={css.raw({ hideBelow: 'sm' })}>생성일</TableHead>
-        <TableHead>관리</TableHead>
+        <TableHead style={css.raw({ width: '[20%]' })}>수정/관리</TableHead>
       </TableRow>
     </TableHeader>
-    <colgroup>
-      <col span="1" />
-      <col class={css({ width: '128px', hideBelow: 'sm' })} span="1" />
-      <col class={css({ width: '184px', smDown: { width: '80px' } })} span="1" />
-    </colgroup>
     {#each $query.space.collections as collection (collection.id)}
       <TableRow>
         <TableData>
-          <a class={flex({ gap: '12px' })} href={`/${$query.space.slug}/collections/${collection.id}`}>
+          <a
+            class={flex({ align: 'flex-end', gap: '12px' })}
+            href={`/${$query.space.slug}/collections/${collection.id}`}
+          >
             <Image
-              style={css.raw({ flex: 'none', width: '96px', aspectRatio: '[3/4]', flexShrink: 0, objectFit: 'cover' })}
+              style={css.raw({ flex: 'none', width: '48px', aspectRatio: '[3/4]', flexShrink: 0, objectFit: 'cover' })}
               $image={collection.thumbnail}
               placeholder
               size={128}
             />
-            <dl
-              class={css({
-                'overflow': 'hidden',
-                'textOverflow': 'ellipsis',
-                'whiteSpace': 'nowrap',
-                '&>dt': { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
-              })}
-            >
-              <dt class={css({ marginBottom: '4px', fontSize: '15px', fontWeight: 'bold' })}>
+            <dl class={css({ truncate: true })}>
+              <dt class={css({ marginBottom: '4px', fontSize: '15px', fontWeight: 'bold', truncate: true })}>
                 {collection.name}
               </dt>
               <dd
                 class={css({
+                  marginBottom: '4px',
                   fontSize: '13px',
                   fontWeight: 'bold',
                   color: 'gray.500',
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'keep-all',
+                  truncate: true,
                 })}
               >
                 {collection.count}개의 포스트
               </dd>
+              <div class={flex({ align: 'center', fontSize: '12px', fontWeight: 'semibold', color: 'gray.400' })}>
+                <dt>생성일:</dt>
+                <dd>{dayjs(collection.createdAt).formatAsDate()}</dd>
+              </div>
             </dl>
           </a>
         </TableData>
-        <TableData style={css.raw({ hideBelow: 'sm', fontSize: '13px', fontWeight: 'bold', color: 'gray.400' })}>
-          {dayjs(collection.createdAt).formatAsDate()}
-        </TableData>
         <TableData>
-          <div class={flex({ gap: '8px' })}>
-            <Button
-              style={css.raw({ hideBelow: 'sm' })}
-              color="tertiary"
-              size="sm"
-              variant="outlined"
-              on:click={() => {
-                selectedCollection = collection;
-                openManageCollectionModal = true;
-              }}
-            >
-              포스트 관리
-            </Button>
+          <div class={flex({ gap: '6px', wrap: 'wrap' })}>
             <Button
               color="tertiary"
               size="sm"
@@ -146,21 +115,18 @@
                 openUpdateCollectionModal = true;
               }}
             >
-              <span class={css({ hideBelow: 'sm', sm: { marginRight: '2px' } })}>컬렉션</span>
-              관리
+              수정
             </Button>
             <Button
-              style={css.raw({ padding: '0', _disabled: { visibility: 'hidden' } })}
-              loading={deleting}
+              color="tertiary"
               size="sm"
-              variant="text"
-              on:click={async () => {
-                deleting = true;
-                await deleteSpaceCollection({ spaceCollectionId: collection.id });
-                deleting = false;
+              variant="outlined"
+              on:click={() => {
+                selectedCollection = collection;
+                openManageCollectionModal = true;
               }}
             >
-              <Icon style={css.raw({ color: 'gray.500', _hover: { color: 'red.600' } })} icon={IconTrash} />
+              관리
             </Button>
           </div>
         </TableData>
