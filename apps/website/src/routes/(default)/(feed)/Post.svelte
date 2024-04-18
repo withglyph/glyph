@@ -118,7 +118,7 @@
       <h3
         class={css({
           marginBottom: '2px',
-          fontSize: { base: '14px', sm: '16px' },
+          fontSize: { base: '14px', sm: '15px' },
           fontWeight: 'semibold',
           truncate: true,
         })}
