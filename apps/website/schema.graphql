@@ -738,7 +738,7 @@ type SpaceCollection {
   createdAt: DateTime!
   id: ID!
   name: String!
-  posts: [Post!]!
+  posts(order: SpaceCollectionPostOrderByKind! = LATEST): [Post!]!
   space: Space!
   thumbnail: Image
 }
@@ -747,6 +747,11 @@ type SpaceCollectionPost {
   id: ID!
   order: Int!
   post: Post!
+}
+
+enum SpaceCollectionPostOrderByKind {
+  LATEST
+  OLDEST
 }
 
 enum SpaceCollectionState {
