@@ -22,7 +22,7 @@
   };
 </script>
 
-<div class={css({ position: 'relative', smDown: { marginRight: '-20px' } })}>
+<div class={css({ position: 'relative', smDown: { marginX: '-20px' } })}>
   <div
     bind:this={containerEl}
     class={css(
@@ -35,6 +35,7 @@
         _supportHover: {
           '& > div': { visibility: 'visible', opacity: '100', transition: 'opacity' },
         },
+        smDown: { paddingX: '20px' },
       },
       style,
     )}
