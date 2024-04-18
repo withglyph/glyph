@@ -787,9 +787,10 @@
             <dd class={css({ marginBottom: '6px' })}>게시물에 대한 댓글을 달 수 있는 계정을 선택할 수 있어요</dd>
           </dl>
 
-          <SegmentButtonGroup style={css.raw({ maxWidth: '336px' })}>
+          <SegmentButtonGroup>
             <ToggleButton
               name="commentQualification"
+              style={css.raw({ maxWidth: '168px' })}
               checked={$data.commentQualification === 'ANY'}
               disabled={$data.commentQualification === 'NONE'}
               type="radio"
@@ -800,7 +801,7 @@
             <Tooltip enabled={$query.me.personalIdentity === null} message="본인 인증 후 이용할 수 있어요" offset={4}>
               <ToggleButton
                 name="commentQualification"
-                style={css.raw({ width: 'full' })}
+                style={css.raw({ width: 'full', maxWidth: '168px' })}
                 checked={$data.commentQualification === 'IDENTIFIED'}
                 disabled={$data.commentQualification === 'NONE' || $query.me.personalIdentity === null}
                 type="radio"
