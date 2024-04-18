@@ -115,6 +115,7 @@
   style={css.raw({ marginTop: '20px', marginBottom: '32px', width: 'full' })}
   disabled={$data.code?.length < 6}
   size="lg"
+  variant="gradation-fill"
   on:click={handleSubmit}
 >
   시작하기

@@ -1,5 +1,6 @@
 <script lang="ts">
   import IconMail from '~icons/tabler/mail';
+  import IconUserSearch from '~icons/tabler/user-search';
   import Google from '$assets/icons/google.svg?component';
   import Naver from '$assets/icons/naver.svg?component';
   import FullLogo from '$assets/logos/full.svg?component';
@@ -101,6 +102,7 @@
           textAlign: 'left',
           backgroundColor: 'gray.5',
           height: '48px',
+          _hover: { backgroundColor: 'gray.50' },
           sm: { borderWidth: '1px', borderColor: 'gray.150' },
         })}
         type="button"
@@ -128,6 +130,7 @@
           textAlign: 'left',
           backgroundColor: 'gray.5',
           height: '48px',
+          _hover: { backgroundColor: 'gray.50' },
           sm: { borderWidth: '1px', borderColor: 'gray.150' },
         })}
         type="button"
@@ -155,12 +158,41 @@
           textAlign: 'left',
           backgroundColor: 'gray.5',
           height: '48px',
+          _hover: { backgroundColor: 'gray.50' },
           sm: { borderWidth: '1px', borderColor: 'gray.150' },
         })}
         href="/login/email"
       >
         <Icon icon={IconMail} size={20} />
         이메일로 시작하기
+      </a>
+
+      <a
+        class={flex({
+          align: 'center',
+          justify: { base: 'center', sm: 'flex-start' },
+          gap: '8px',
+          paddingX: '20px',
+          sm: {
+            borderWidth: '1px',
+            borderColor: 'gray.150',
+            backgroundColor: 'gray.5',
+            color: 'gray.500',
+            textAlign: 'left',
+            height: '48px',
+            _hover: { backgroundColor: 'gray.50' },
+          },
+          smDown: {
+            marginTop: '5px',
+            color: 'gray.100',
+            fontWeight: 'semibold',
+            textAlign: 'center',
+          },
+        })}
+        href="/find-account"
+      >
+        <Icon style={css.raw({ color: 'gray.400', hideBelow: 'sm' })} icon={IconUserSearch} size={20} />
+        계정 찾기
       </a>
     </div>
   </div>

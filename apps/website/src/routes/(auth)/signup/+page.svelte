@@ -100,7 +100,12 @@
     </Checkbox>
   </section>
 
-  <Button style={css.raw({ marginTop: 'auto', marginBottom: '32px', width: 'full' })} size="lg" type="submit">
+  <Button
+    style={css.raw({ marginTop: 'auto', marginBottom: '32px', width: 'full' })}
+    size="lg"
+    type="submit"
+    variant="gradation-fill"
+  >
     시작하기
   </Button>
 </form>
