@@ -291,13 +291,15 @@ builder.mutationFields((t) => ({
             ),
           );
 
-        await tx.insert(SpaceCollectionPosts).values(
-          input.postIds.map((postId, order) => ({
-            collectionId: input.spaceCollectionId,
-            postId,
-            order,
-          })),
-        );
+        if (input.postIds.length > 0) {
+          await tx.insert(SpaceCollectionPosts).values(
+            input.postIds.map((postId, order) => ({
+              collectionId: input.spaceCollectionId,
+              postId,
+              order,
+            })),
+          );
+        }
       });
 
       return input.spaceCollectionId;
