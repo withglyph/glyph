@@ -208,8 +208,8 @@
       >
         <a
           class={css(
-            { paddingY: '8px' },
-            $page.url.searchParams.get('order') !== 'OLDEST' && { fontWeight: 'semibold' },
+            { paddingY: '8px', color: 'gray.500' },
+            $page.url.searchParams.get('order') !== 'OLDEST' && { fontWeight: 'semibold', color: 'gray.900' },
           )}
           href="?order=LATEST"
         >
@@ -218,8 +218,8 @@
         <hr class={css({ border: 'none', width: '1px', height: '10px', backgroundColor: 'gray.100' })} />
         <a
           class={css(
-            { paddingY: '8px' },
-            $page.url.searchParams.get('order') === 'OLDEST' && { fontWeight: 'semibold' },
+            { paddingY: '8px', color: 'gray.500' },
+            $page.url.searchParams.get('order') === 'OLDEST' && { fontWeight: 'semibold', color: 'gray.900' },
           )}
           href="?order=OLDEST"
         >

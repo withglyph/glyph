@@ -110,6 +110,7 @@
     schema: SetSpaceCollectionPostSchema,
     onSuccess: () => {
       open = false;
+      page = 'registerPosts';
       mixpanel.track('space:collection:update', {
         spaceId,
         collectionId: $collection.id,
@@ -328,7 +329,15 @@
               }),
             )}
           >
-            <span class={css({ fontSize: '12px', color: 'gray.400', textAlign: 'center', minWidth: '30px' })}>
+            <span
+              class={css({
+                fontSize: '12px',
+                color: 'gray.500',
+                fontWeight: 'medium',
+                textAlign: 'center',
+                minWidth: '30px',
+              })}
+            >
               {index + 1}화
             </span>
             <Image
@@ -344,7 +353,7 @@
               size={48}
             />
 
-            <p class={css({ flexGrow: '1', fontSize: '14px', fontWeight: 'semibold', truncate: true })}>
+            <p class={css({ flexGrow: '1', fontSize: '14px', fontWeight: 'medium', truncate: true })}>
               {post.publishedRevision?.title ?? '(제목 없음)'}
             </p>
 
