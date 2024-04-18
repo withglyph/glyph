@@ -68,7 +68,7 @@
           display: 'flex',
           alignItems: 'center',
           gap: '4px',
-          backgroundColor: 'cyan.400',
+          backgroundColor: 'brand.400',
           width: 'fit',
           cursor: 'pointer',
         })}

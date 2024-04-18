@@ -60,9 +60,9 @@
             _checked: { borderWidth: '0', backgroundColor: 'gray.900' },
           },
         },
-        cyan: {
+        brand: {
           item: {
-            _checked: { borderWidth: '0', backgroundColor: 'cyan.400' },
+            _checked: { borderWidth: '0', backgroundColor: 'brand.400' },
           },
         },
       },

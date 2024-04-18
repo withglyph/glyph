@@ -80,22 +80,22 @@
     <Checkbox
       style={css.raw({ fontWeight: 'semibold', marginBottom: '20px' })}
       checked={consentAll}
-      variant="cyan"
+      variant="brand"
       on:change={handleConsentAll}
     >
       전체 동의
     </Checkbox>
 
-    <Checkbox name="termsConsent" style={css.raw({ color: 'gray.600' })} size="sm" variant="cyan">
+    <Checkbox name="termsConsent" style={css.raw({ color: 'gray.600' })} size="sm" variant="brand">
       (필수)
       <Link href="https://help.withglyph.com/legal/terms" underline>이용약관</Link>
       및
       <Link href="https://help.withglyph.com/legal/privacy" underline>개인정보처리방침</Link> 동의
     </Checkbox>
-    <Checkbox name="isGte14" style={css.raw({ color: 'gray.600' })} size="sm" variant="cyan">
+    <Checkbox name="isGte14" style={css.raw({ color: 'gray.600' })} size="sm" variant="brand">
       (필수) 만 14세 이상입니다
     </Checkbox>
-    <Checkbox name="marketingConsent" style={css.raw({ color: 'gray.600' })} size="sm" variant="cyan">
+    <Checkbox name="marketingConsent" style={css.raw({ color: 'gray.600' })} size="sm" variant="brand">
       (선택) 광고성 알림 수신 동의
     </Checkbox>
   </section>

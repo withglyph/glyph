@@ -163,7 +163,7 @@
         <Button
           style={css.raw({ flex: 'none', width: '86px' })}
           size="sm"
-          variant="cyan-fill"
+          variant="brand-fill"
           on:click={async () => {
             if (!$query.me) {
               loginRequireOpen = true;

@@ -313,7 +313,7 @@
         </FormField>
 
         {#if $data.bankCode === '012' || $data.bankCode === '011'}
-          <p class={flex({ align: 'center', gap: '2px', fontSize: '12px', color: 'teal.500' })}>
+          <p class={flex({ align: 'center', gap: '2px', fontSize: '12px', color: 'brand.400' })}>
             <Icon style={css.raw({ fontSize: '14px' })} icon={IconAlertCircle} />
             중앙농협은행인지 지역농축협은행인지 다시 한 번 확인해주세요
           </p>

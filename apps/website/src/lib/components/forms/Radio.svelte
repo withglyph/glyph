@@ -57,11 +57,11 @@
             },
           },
         },
-        cyan: {
+        brand: {
           item: {
             _checked: {
-              borderColor: 'cyan.400',
-              backgroundColor: 'cyan.400',
+              borderColor: 'brand.400',
+              backgroundColor: 'brand.400',
             },
           },
         },

@@ -402,7 +402,7 @@
                   'borderRadius': '4px',
                   'padding': '4px',
                   '_hover': { backgroundColor: 'gray.200' },
-                  '_pressed': { ringWidth: '[1.5px]', ringColor: 'teal.500', backgroundColor: 'teal.50' },
+                  '_pressed': { ringWidth: '[1.5px]', ringColor: 'brand.400', backgroundColor: 'brand.50' },
                   '& > div': { _pressed: { display: 'flex', alignItems: 'center', justifyContent: 'center' } },
                 })}
                 aria-pressed={selectedImages.includes(image.id)}
@@ -677,7 +677,7 @@
                 padding: '6px',
                 height: '127px',
                 _hover: { backgroundColor: 'gray.100' },
-                _pressed: { ringWidth: '[1.5px]', ringColor: 'teal.500', backgroundColor: 'teal.50' },
+                _pressed: { ringWidth: '[1.5px]', ringColor: 'brand.400', backgroundColor: 'brand.50' },
               }),
             )}
             aria-pressed={selectedImages.includes(image.id)}
@@ -711,7 +711,7 @@
                 backgroundColor: { base: 'gray.5', _hover: 'gray.100' },
                 height: '68px',
                 width: 'full',
-                _pressed: { borderWidth: '[1.5px]', borderColor: 'teal.500', backgroundColor: 'teal.50' },
+                _pressed: { borderWidth: '[1.5px]', borderColor: 'brand.400', backgroundColor: 'brand.50' },
               }),
             )}
             aria-pressed={selectedImages.includes(image.id)}
@@ -804,7 +804,7 @@
       <p class={css({ flexGrow: '1', fontSize: '14px' })}>
         이미지 {selectedImageName}
         {#if selectedImages.length > 1}
-          외 <mark class={css({ color: 'teal.500' })}>{selectedImages.length - 1}개</mark>
+          외 <mark class={css({ color: 'brand.400' })}>{selectedImages.length - 1}개</mark>
         {/if}
         선택됨
       </p>

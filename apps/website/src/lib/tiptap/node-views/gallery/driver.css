@@ -30,7 +30,7 @@
     padding: 0.09rem 0.25rem;
     line-height: 150%;
     color: rgba(255, 255, 255, 0.7);
-    background-color: #14b8a6;
+    background-color: #8162e8;
     font-size: 0.625rem;
     font-weight: 800;
     gap: 0.125rem;
@@ -91,22 +91,22 @@
   .driver-popover-next-btn {
     border-style: none;
     color: white;
-    background-color: #14b8a6;
+    background-color: #8162e8;
 
     &:hover {
-      background-color: #2dd4bf;
+      background-color: #49348d;
     }
 
     &:focus-visible {
-      background-color: #2dd4bf;
+      background-color: #49348d;
     }
 
     &:active {
-      box-shadow: 0px 0px 0px 2px #99f6e4;
+      box-shadow: 0px 0px 0px 2px #49348d;
     }
   }
 
   mark {
-    color: #14b8a6;
+    color: #8162e8;
   }
 }

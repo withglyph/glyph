@@ -48,7 +48,7 @@
       <Button
         style={center.raw({ gap: '4px', marginTop: '16px', marginX: 'auto', width: '142px' })}
         size="sm"
-        variant="cyan-fill"
+        variant="brand-fill"
         on:click={() => (createCollectionOpen = true)}
       >
         <Icon icon={IconPlus} />

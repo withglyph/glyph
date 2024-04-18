@@ -347,7 +347,7 @@
           <Button
             style={flex.raw({ align: 'center', justify: 'center', gap: '4px', marginTop: '16px', width: '140px' })}
             size="sm"
-            variant="cyan-fill"
+            variant="brand-fill"
             on:click={() => (revealMutedSpace = true)}
           >
             <Icon icon={IconClipboard} />

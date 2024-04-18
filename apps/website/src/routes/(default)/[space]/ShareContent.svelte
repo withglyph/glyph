@@ -198,7 +198,7 @@
 
       {#if showSpinner}
         <div class={center({ position: 'absolute', inset: '0', paddingX: '16px', paddingY: '8px' })}>
-          <RingSpinner style={css.raw({ size: '80px', color: 'cyan.400', opacity: '80' })} />
+          <RingSpinner style={css.raw({ size: '80px', color: 'brand.400', opacity: '80' })} />
         </div>
       {/if}
     </article>
@@ -275,7 +275,7 @@
                     size: '46px',
                     backgroundColor: 'gray.900',
                     userSelect: 'none',
-                    _peerChecked: { borderWidth: '2px', borderColor: 'cyan.400' },
+                    _peerChecked: { borderWidth: '2px', borderColor: 'brand.400' },
                   },
                   bgColor === '#FFFFFF' && { borderWidth: '1px', borderColor: 'gray.200' },
                 )}
@@ -298,7 +298,7 @@
                 height: '34px',
                 _hover: { backgroundColor: 'gray.100' },
                 _focus: { backgroundColor: 'gray.100' },
-                _pressed: { color: 'cyan.400' },
+                _pressed: { color: 'brand.400' },
               })}
               aria-pressed={fontFamily === family.value}
               type="button"
@@ -331,7 +331,7 @@
                 height: '34px',
                 _hover: { backgroundColor: 'gray.100' },
                 _focus: { backgroundColor: 'gray.100' },
-                _pressed: { fontWeight: 'bold', color: 'cyan.400' },
+                _pressed: { fontWeight: 'bold', color: 'brand.400' },
               })}
               aria-pressed={fontSize === size.value}
               type="button"

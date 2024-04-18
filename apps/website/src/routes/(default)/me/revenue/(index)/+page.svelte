@@ -130,7 +130,7 @@
           </div>
           <p
             class={css(
-              { fontWeight: 'semibold', color: 'teal.500', lineHeight: 'none' },
+              { fontWeight: 'semibold', color: 'brand.400', lineHeight: 'none' },
               revenue.post?.state === 'DELETED' && { color: 'gray.400' },
             )}
           >

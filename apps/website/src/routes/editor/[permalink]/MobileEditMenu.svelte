@@ -199,16 +199,16 @@
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleBold().run()}>
-            <Icon style={css.raw(editor?.isActive('bold') && { color: 'teal.500' })} icon={IconBold} size={24} />
+            <Icon style={css.raw(editor?.isActive('bold') && { color: 'brand.400' })} icon={IconBold} size={24} />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleItalic().run()}>
-            <Icon style={css.raw(editor?.isActive('italic') && { color: 'teal.500' })} icon={IconItalic} size={24} />
+            <Icon style={css.raw(editor?.isActive('italic') && { color: 'brand.400' })} icon={IconItalic} size={24} />
           </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleStrike().run()}>
             <Icon
-              style={css.raw(editor?.isActive('strike') && { color: 'teal.500' })}
+              style={css.raw(editor?.isActive('strike') && { color: 'brand.400' })}
               icon={IconStrikethrough}
               size={24}
             />
@@ -216,7 +216,7 @@
 
           <MobileToolbarButton on:click={() => editor?.chain().focus().toggleUnderline().run()}>
             <Icon
-              style={css.raw(editor?.isActive('underline') && { color: 'teal.500' })}
+              style={css.raw(editor?.isActive('underline') && { color: 'brand.400' })}
               icon={IconUnderline}
               size={24}
             />
@@ -329,7 +329,7 @@
               class={css(
                 { flex: 'none', paddingX: '5px', fontSize: fontFamily.value === 'Pretendard' ? '17px' : '16px' },
                 fontFamily.value === (editor?.getAttributes('font_family').fontFamily ?? 'Pretendard') && {
-                  color: 'teal.500',
+                  color: 'brand.400',
                 },
               )}
               on:click={() => {
@@ -350,7 +350,7 @@
             <MobileToolbarButton
               class={css(
                 { paddingX: '5px' },
-                fontSize.value === (editor?.getAttributes('font_size').fontSize ?? 16) && { color: 'teal.500' },
+                fontSize.value === (editor?.getAttributes('font_size').fontSize ?? 16) && { color: 'brand.400' },
               )}
               on:click={() => editor?.chain().focus().setFontSize(fontSize.value).focus().run()}
             >
@@ -363,7 +363,7 @@
           {#each values.textAlign as textAlign (textAlign.value)}
             <MobileToolbarButton on:click={() => editor?.chain().focus().setParagraphTextAlign(textAlign.value).run()}>
               <Icon
-                style={css.raw(editor?.isActive({ textAlign: textAlign.value }) && { color: 'teal.500' })}
+                style={css.raw(editor?.isActive({ textAlign: textAlign.value }) && { color: 'brand.400' })}
                 icon={textAlign.icon}
                 size={24}
               />
@@ -376,7 +376,7 @@
             <MobileToolbarButton
               class={css(
                 { paddingX: '5px' },
-                editor?.isActive({ lineHeight: lineHeight.value }) && { color: 'teal.500' },
+                editor?.isActive({ lineHeight: lineHeight.value }) && { color: 'brand.400' },
               )}
               on:click={() => editor?.chain().focus().setParagraphLineHeight(lineHeight.value).run()}
             >
@@ -390,7 +390,7 @@
             <MobileToolbarButton
               class={css(
                 { paddingX: '5px' },
-                editor?.isActive({ letterSpacing: letterSpacing.value }) && { color: 'teal.500' },
+                editor?.isActive({ letterSpacing: letterSpacing.value }) && { color: 'brand.400' },
               )}
               on:click={() => editor?.chain().focus().setParagraphLetterSpacing(letterSpacing.value).run()}
             >
@@ -404,7 +404,7 @@
             <MobileToolbarButton
               class={css(
                 { paddingX: '5px' },
-                $store.paragraphIndent === paragraphIndent.value && { color: 'teal.500' },
+                $store.paragraphIndent === paragraphIndent.value && { color: 'brand.400' },
               )}
               on:click={() => ($store.paragraphIndent = paragraphIndent.value)}
             >
@@ -418,7 +418,7 @@
             <MobileToolbarButton
               class={css(
                 { paddingX: '5px' },
-                $store.paragraphSpacing === paragraphSpacing.value && { color: 'teal.500' },
+                $store.paragraphSpacing === paragraphSpacing.value && { color: 'brand.400' },
               )}
               on:click={() => ($store.paragraphSpacing = paragraphSpacing.value)}
             >

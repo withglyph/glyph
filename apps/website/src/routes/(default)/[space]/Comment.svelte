@@ -254,7 +254,7 @@
               <Icon style={css.raw({ size: '14px' })} icon={IconLock} />
             {/if}
             {$postComment.profile.name}
-            <span class={css({ marginRight: '2px', fontSize: '12px', color: 'cyan.400' })}>
+            <span class={css({ marginRight: '2px', fontSize: '12px', color: 'brand.400' })}>
               {$postComment.purchased
                 ? '구매자'
                 : $query.post.member?.profile.id === $postComment.profile.id

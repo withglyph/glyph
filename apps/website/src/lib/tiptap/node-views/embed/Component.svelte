@@ -97,18 +97,18 @@
         },
         selected && {
           outlineWidth: '2px',
-          outlineColor: 'teal.500',
+          outlineColor: 'brand.400',
         },
       )}
     >
-      <RingSpinner style={css.raw({ size: '32px', color: 'teal.500' })} />
+      <RingSpinner style={css.raw({ size: '32px', color: 'brand.400' })} />
     </div>
   {:else if node.attrs.mode.startsWith('embed-')}
     <div
       class={css(
         { width: 'full', pointerEvents: 'auto' },
         node.attrs.mode === 'embed-compact' && { maxWidth: '500px' },
-        selected && { outlineWidth: '2px', outlineColor: 'teal.500' },
+        selected && { outlineWidth: '2px', outlineColor: 'brand.400' },
       )}
     >
       <div class={css({ display: 'contents' }, editor?.isEditable && { pointerEvents: 'none' })}>
@@ -131,7 +131,7 @@
         },
         selected && {
           outlineWidth: '2px',
-          outlineColor: 'teal.500',
+          outlineColor: 'brand.400',
         },
       )}
     >
@@ -154,7 +154,7 @@
           <div class={css({ fontSize: '12px', color: 'gray.400', lineClamp: 1 })}>
             {node.attrs.__data.description ?? ''}
           </div>
-          <div class={flex({ align: 'flex-end', grow: '1', fontSize: '12px', color: 'teal.500' })}>
+          <div class={flex({ align: 'flex-end', grow: '1', fontSize: '12px', color: 'brand.400' })}>
             {new URL(node.attrs.url).hostname}
           </div>
         </div>
@@ -182,7 +182,7 @@
         >
           <Icon
             style={css.raw({
-              color: node.attrs.mode === 'embed-full' ? 'teal.500' : 'gray.600',
+              color: node.attrs.mode === 'embed-full' ? 'brand.400' : 'gray.600',
             })}
             icon={IconEmbedFull}
             size={20}
@@ -203,7 +203,7 @@
         >
           <Icon
             style={css.raw({
-              color: node.attrs.mode === 'embed-compact' ? 'teal.500' : 'gray.600',
+              color: node.attrs.mode === 'embed-compact' ? 'brand.400' : 'gray.600',
             })}
             icon={IconEmbedCompact}
             size={20}
@@ -224,7 +224,7 @@
         >
           <Icon
             style={css.raw({
-              color: node.attrs.mode === 'opengraph' ? 'teal.500' : 'gray.600',
+              color: node.attrs.mode === 'opengraph' ? 'brand.400' : 'gray.600',
             })}
             icon={IconOpengraph}
             size={20}

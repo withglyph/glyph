@@ -78,39 +78,39 @@
             outlineColor: { _active: 'gray.200', _pressed: 'gray.200' },
           },
         },
-        'cyan-fill': {
+        'brand-fill': {
           _enabled: {
             backgroundColor: {
-              base: 'cyan.400',
-              _hover: 'cyan.600',
-              _focusVisible: 'cyan.600',
-              _active: 'cyan.400',
-              _pressed: 'cyan.400',
+              base: 'brand.400',
+              _hover: 'brand.600',
+              _focusVisible: 'brand.600',
+              _active: 'brand.400',
+              _pressed: 'brand.400',
             },
             outlineWidth: { _active: '2px', _pressed: '2px' },
 
-            outlineColor: { _active: 'cyan.600', _pressed: 'cyan.600' },
+            outlineColor: { _active: 'brand.600', _pressed: 'brand.600' },
           },
         },
         'gradation-fill': {
           _enabled: {
             bgGradient: 'to-r',
             gradientFrom: {
-              base: '[#34186B]',
-              _hover: '[#2F2058]',
-              _focusVisible: '[#2F2058]',
-              _active: '[#34186B]',
-              _pressed: '[#34186B]',
+              base: '[#B597F6]',
+              _hover: '[#9679D6]',
+              _focusVisible: '[#9679D6]',
+              _active: '[#B597F6]',
+              _pressed: '[#B597F6]',
             },
             gradientTo: {
-              base: '[#27A6BA]',
-              _hover: '[#207383]',
-              _focusVisible: '[#207383]',
-              _active: '[#27A6BA]',
-              _pressed: '[#27A6BA]',
+              base: '[#8364E8]',
+              _hover: '[#6345C3]',
+              _focusVisible: '[#6345C3]',
+              _active: '[#8364E8]',
+              _pressed: '[#8364E8]',
             },
             outlineWidth: { _active: '2px', _pressed: '2px' },
-            outlineColor: { _active: 'cyan.400', _pressed: 'cyan.400' },
+            outlineColor: { _active: 'brand.400', _pressed: 'brand.400' },
           },
         },
         'gray-outline': {
@@ -177,7 +177,7 @@
 >
   {#if showSpinner}
     <div class={center({ position: 'absolute', inset: '0', padding: '[inherit]' })}>
-      <RingSpinner style={css.raw({ height: 'full', color: variant === 'cyan-fill' ? 'gray.150' : 'gray.400' })} />
+      <RingSpinner style={css.raw({ height: 'full', color: variant === 'brand-fill' ? 'gray.150' : 'gray.400' })} />
     </div>
   {/if}
   <div class={css({ display: 'contents' }, showSpinner && { visibility: 'hidden' })}>

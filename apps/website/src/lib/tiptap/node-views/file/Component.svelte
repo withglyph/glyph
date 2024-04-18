@@ -84,7 +84,7 @@
       },
       selected && {
         outlineWidth: '2px',
-        outlineColor: 'teal.500',
+        outlineColor: 'brand.400',
       },
     )}
     href={editor?.isEditable ? undefined : data.url}
@@ -117,7 +117,7 @@
 
     {#if !node.attrs.id}
       <div class={center({ position: 'absolute', inset: '0', backgroundColor: 'gray.5/50' })}>
-        <RingSpinner style={css.raw({ size: '32px', color: 'teal.500' })} />
+        <RingSpinner style={css.raw({ size: '32px', color: 'brand.400' })} />
       </div>
     {/if}
   </svelte:element>

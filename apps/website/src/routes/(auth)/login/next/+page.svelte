@@ -90,13 +90,13 @@
         align: 'center',
         gap: '6px',
         borderWidth: '1px',
-        borderColor: '[#DDF3E4]',
+        borderColor: 'brand.200',
         marginBottom: '16px',
         paddingX: '16px',
         paddingY: '14px',
         fontSize: '13px',
-        color: '[#18794E]',
-        backgroundColor: 'cyan.50',
+        color: 'brand.400',
+        backgroundColor: 'brand.50',
       })}
     >
       <Icon icon={IconCheck} />

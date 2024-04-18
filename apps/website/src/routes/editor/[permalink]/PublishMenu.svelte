@@ -645,7 +645,7 @@
             <Button
               style={css.raw({ width: '68px' })}
               size="sm"
-              variant="cyan-fill"
+              variant="brand-fill"
               on:click={() => thumbnailPicker.show()}
             >
               업로드

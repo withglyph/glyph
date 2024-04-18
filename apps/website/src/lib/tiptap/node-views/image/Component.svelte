@@ -69,7 +69,7 @@
     <div
       class={css(
         { position: 'relative', maxWidth: 'full', pointerEvents: 'auto' },
-        selected && { ringWidth: '2px', ringColor: 'teal.500' },
+        selected && { ringWidth: '2px', ringColor: 'brand.400' },
       )}
     >
       {#if node.attrs.__file}

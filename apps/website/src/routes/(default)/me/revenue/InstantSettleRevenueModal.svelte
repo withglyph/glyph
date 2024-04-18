@@ -55,7 +55,7 @@
   <p>
     창작자님의 출금 요청하신 금액은
     <br />
-    <mark class={css({ fontSize: '20px', fontWeight: 'bold', color: 'teal.500' })}>
+    <mark class={css({ fontSize: '20px', fontWeight: 'bold', color: 'brand.400' })}>
       {comma($user.withdrawableRevenue)}원
     </mark>
     입니다

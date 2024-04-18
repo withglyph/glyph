@@ -175,7 +175,7 @@
         size: '8px',
         top: '4px',
         right: '4px',
-        backgroundColor: 'cyan.400',
+        backgroundColor: 'brand.400',
       })}
     />
   {/if}

@@ -9,13 +9,13 @@
     align: 'center',
     gap: '4px',
     borderWidth: '1px',
-    borderColor: 'teal.500',
+    borderColor: 'brand.400',
     borderRadius: 'full',
     paddingX: '12px',
     paddingY: '6px',
     fontSize: '12px',
-    color: 'teal.500',
-    backgroundColor: 'teal.50',
+    color: 'brand.400',
+    backgroundColor: 'brand.50',
   })}
   type="button"
   on:click

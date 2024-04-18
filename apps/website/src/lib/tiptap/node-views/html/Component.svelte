@@ -63,7 +63,7 @@
 <NodeView
   style={css.raw(
     { position: 'relative', borderWidth: '1px', borderStyle: 'dashed' },
-    selected && { ringWidth: '2px', ringColor: 'teal.500' },
+    selected && { ringWidth: '2px', ringColor: 'brand.400' },
   )}
   draggable
 >
@@ -88,7 +88,7 @@
         type="button"
         on:click={() => (preview = !preview)}
       >
-        <Icon style={css.raw(preview ? { color: 'teal.500' } : { color: 'gray.600' })} icon={IconEye} size={20} />
+        <Icon style={css.raw(preview ? { color: 'brand.400' } : { color: 'gray.600' })} icon={IconEye} size={20} />
       </button>
 
       <div

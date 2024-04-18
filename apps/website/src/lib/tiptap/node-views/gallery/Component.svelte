@@ -75,7 +75,7 @@
         smDown: { marginX: '-20px' },
       },
       node.attrs.ids.length === 0 && { backgroundColor: '[#D9D9D9]', width: '400px', height: '200px' },
-      selected && { ringWidth: '2px', ringColor: 'teal.500' },
+      selected && { ringWidth: '2px', ringColor: 'brand.400' },
     )}
   >
     <div class={css(editor?.isEditable && { pointerEvents: 'none' })}>
@@ -120,7 +120,7 @@
             {
               color: 'gray.600',
             },
-            node.attrs.align === 'left' && { color: 'teal.500' },
+            node.attrs.align === 'left' && { color: 'brand.400' },
           )}
           icon={IconAlignLeft}
           size={20}
@@ -145,7 +145,7 @@
             {
               color: 'gray.600',
             },
-            node.attrs.align === 'center' && { color: 'teal.500' },
+            node.attrs.align === 'center' && { color: 'brand.400' },
           )}
           icon={IconAlignCenter}
           size={20}
@@ -170,7 +170,7 @@
             {
               color: 'gray.600',
             },
-            node.attrs.align === 'right' && { color: 'teal.500' },
+            node.attrs.align === 'right' && { color: 'brand.400' },
           )}
           icon={IconAlignRight}
           size={20}
@@ -198,7 +198,7 @@
           {
             color: 'gray.600',
           },
-          node.attrs.size === 'full' && { color: 'teal.500' },
+          node.attrs.size === 'full' && { color: 'brand.400' },
         )}
         icon={IconEmbedFull}
         size={20}
@@ -222,7 +222,7 @@
           {
             color: 'gray.600',
           },
-          node.attrs.size === 'compact' && { color: 'teal.500' },
+          node.attrs.size === 'compact' && { color: 'brand.400' },
         )}
         icon={IconEmbedCompact}
         size={20}

@@ -199,7 +199,7 @@
         <p
           class={css(
             { display: 'flex', alignItems: 'center', gap: '2px', fontWeight: 'semibold', width: 'full' },
-            $query.me.withdrawalConfig?.monthlyWithdrawalEnabled ? { color: 'teal.500' } : { color: 'gray.500' },
+            $query.me.withdrawalConfig?.monthlyWithdrawalEnabled ? { color: 'brand.400' } : { color: 'gray.500' },
             !$query.me.settlementIdentity && { fontSize: '14px', fontWeight: 'medium' },
           )}
         >
@@ -241,7 +241,7 @@
         display: 'flex',
         alignItems: 'center',
         gap: '2px',
-        color: 'teal.500',
+        color: 'brand.400',
         width: 'fit',
         fontSize: '14px',
         fontWeight: 'medium',

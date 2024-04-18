@@ -115,7 +115,7 @@
         justifyContent: 'flex-end',
         paddingY: '10px',
       },
-      selected && { outlineWidth: '2px', outlineColor: 'cyan.400' },
+      selected && { outlineWidth: '2px', outlineColor: 'brand.400' },
     )}
     data-drag-handle
     draggable
@@ -176,7 +176,7 @@
             paddingX: '6px',
             paddingY: '4px',
             fontWeight: node.attrs.price ? 'medium' : 'normal',
-            color: node.attrs.price ? 'cyan.400' : 'red.600',
+            color: node.attrs.price ? 'brand.400' : 'red.600',
             backgroundColor: { _hover: 'gray.50', _pressed: 'gray.50' },
             transition: 'common',
             whiteSpace: 'nowrap',
@@ -296,7 +296,7 @@
             </div>
           </Tooltip>
 
-          <Button size="sm" type="submit" variant="cyan-fill">설정</Button>
+          <Button size="sm" type="submit" variant="brand-fill">설정</Button>
         </form>
       </div>
     {/if}
@@ -477,7 +477,7 @@
       },
       selected && {
         outlineWidth: '2px',
-        outlineColor: 'cyan.400',
+        outlineColor: 'brand.400',
       },
     )}
     data-drag-handle
@@ -517,7 +517,7 @@
       <div class={css({ width: '1px', height: '14px', backgroundColor: 'gray.200' })} />
 
       <div
-        class={center({ paddingX: '6px', paddingY: '4px', fontSize: '14px', fontWeight: 'medium', color: 'cyan.400' })}
+        class={center({ paddingX: '6px', paddingY: '4px', fontSize: '14px', fontWeight: 'medium', color: 'brand.400' })}
       >
         {comma(node.attrs.price)}P
       </div>

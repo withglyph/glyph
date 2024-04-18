@@ -291,7 +291,7 @@
                 <Button
                   style={flex.raw({ align: 'center', gap: '4px', flex: 'none', marginLeft: 'auto', width: 'fit' })}
                   size="sm"
-                  variant="cyan-fill"
+                  variant="brand-fill"
                   on:click={() => registerPost(post)}
                 >
                   <Icon icon={IconPlus} />

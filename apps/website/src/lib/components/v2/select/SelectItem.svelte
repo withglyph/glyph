@@ -59,7 +59,7 @@
       <slot />
 
       {#if pressed}
-        <Icon style={css.raw({ 'color': 'cyan.400', '& *': { strokeWidth: '[2]' } })} icon={IconCheck} />
+        <Icon style={css.raw({ 'color': 'brand.400', '& *': { strokeWidth: '[2]' } })} icon={IconCheck} />
       {/if}
     </div>
   </button>

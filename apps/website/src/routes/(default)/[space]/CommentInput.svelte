@@ -131,7 +131,7 @@
             </Tooltip>
           {/if}
           {#if $query.post.space.meAsMember}
-            <span class={css({ fontSize: '12px', color: 'cyan.400' })}>창작자</span>
+            <span class={css({ fontSize: '12px', color: 'brand.400' })}>창작자</span>
           {/if}
         </div>
       {/if}

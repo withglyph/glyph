@@ -24,7 +24,7 @@
         'alignItems': 'center',
         'backgroundColor': 'gray.50',
         '&:has(:checked)': {
-          backgroundColor: 'cyan.400',
+          backgroundColor: 'brand.400',
         },
       },
       icon: {

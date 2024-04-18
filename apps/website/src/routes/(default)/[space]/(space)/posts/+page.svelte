@@ -78,7 +78,7 @@
         <Button
           style={center.raw({ gap: '4px', marginTop: '16px', marginX: 'auto', width: '142px' })}
           size="sm"
-          variant="cyan-fill"
+          variant="brand-fill"
           on:click={async () => {
             const { permalink } = await createPost({ spaceId: $query.space.id });
             mixpanel.track('post:create', { via: 'space-home', spaceId: $query.space.id });

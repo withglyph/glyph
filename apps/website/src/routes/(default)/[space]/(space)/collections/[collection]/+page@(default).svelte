@@ -218,7 +218,7 @@
             {#if $query.spaceCollection.space.meAsMember}
               <Button
                 style={flex.raw({ align: 'center', gap: '4px', marginTop: '16px', marginX: 'auto' })}
-                variant="cyan-fill"
+                variant="brand-fill"
                 on:click={async () => {
                   const { permalink } = await createPost({
                     spaceId: $query.spaceCollection.space.id,
