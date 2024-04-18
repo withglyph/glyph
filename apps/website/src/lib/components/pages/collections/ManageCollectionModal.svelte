@@ -328,8 +328,8 @@
               }),
             )}
           >
-            <span class={css({ fontSize: '14px', color: 'gray.400', textAlign: 'center', minWidth: '26px' })}>
-              {index + 1}
+            <span class={css({ fontSize: '12px', color: 'gray.400', textAlign: 'center', minWidth: '30px' })}>
+              {index + 1}화
             </span>
             <Image
               style={css.raw({

@@ -13,7 +13,7 @@
   import Post from '../../../../(feed)/Post.svelte';
 
   $: query = graphql(`
-    query SpaceCollectionsEntityPage_Query($slug: String!) {
+    query SpaceCollectionsEntityPage_Query($slug: String!, $order: SpaceCollectionPostOrderByKind!) {
       spaceCollection(slug: $slug) {
         id
         name
@@ -24,7 +24,7 @@
           ...Image_image
         }
 
-        posts {
+        posts(order: $order) {
           id
           permalink
 
@@ -196,9 +196,36 @@
         </div>
       </div>
 
-      <p class={css({ marginTop: '14px', fontSize: '13px', color: 'gray.500' })}>
-        총 {$query.spaceCollection.count}개의 포스트
-      </p>
+      <div
+        class={flex({
+          align: 'center',
+          justifyContent: 'flex-end',
+          gap: '6px',
+          borderBottomWidth: '1px',
+          borderBottomColor: 'gray.100',
+          fontSize: '14px',
+        })}
+      >
+        <a
+          class={css(
+            { paddingY: '8px' },
+            $page.url.searchParams.get('order') !== 'OLDEST' && { fontWeight: 'semibold' },
+          )}
+          href="?order=LATEST"
+        >
+          최신화부터
+        </a>
+        <hr class={css({ border: 'none', width: '1px', height: '10px', backgroundColor: 'gray.100' })} />
+        <a
+          class={css(
+            { paddingY: '8px' },
+            $page.url.searchParams.get('order') === 'OLDEST' && { fontWeight: 'semibold' },
+          )}
+          href="?order=OLDEST"
+        >
+          1화부터
+        </a>
+      </div>
 
       <ul>
         {#each $query.spaceCollection.posts as post (post.id)}
