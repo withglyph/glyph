@@ -1,8 +1,14 @@
 <script lang="ts">
   import { fade, fly } from 'svelte/transition';
+  import IconArchive from '~icons/tabler/archive';
+  import IconBulb from '~icons/tabler/bulb';
   import IconCaretDownFilled from '~icons/tabler/caret-down-filled';
   import IconCaretUpFilled from '~icons/tabler/caret-up-filled';
+  import IconCoin from '~icons/tabler/coin';
+  import IconLogout from '~icons/tabler/logout';
   import IconPencil from '~icons/tabler/pencil';
+  import IconPigMoney from '~icons/tabler/pig-money';
+  import IconPlanet from '~icons/tabler/planet';
   import IconPlus from '~icons/tabler/plus';
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
@@ -132,7 +138,7 @@
         in:fly={{ x: '10%', duration: 150 }}
         out:fade={{ duration: 150 }}
       >
-        <div class={css({ overflowX: 'hidden' })}>
+        <nav class={css({ overflowX: 'hidden', paddingBottom: '120px' })}>
           {#if $user}
             <div
               class={flex({
@@ -160,16 +166,7 @@
               </a>
 
               <Button
-                style={css.raw({ whiteSpace: 'nowrap', flex: 'none', hideFrom: 'sm' })}
-                href="/me"
-                size="sm"
-                type="link"
-                variant="gray-outline"
-              >
-                계정 설정
-              </Button>
-              <Button
-                style={css.raw({ whiteSpace: 'nowrap', flex: 'none', hideBelow: 'sm' })}
+                style={css.raw({ whiteSpace: 'nowrap', flex: 'none' })}
                 href="/me/settings"
                 size="sm"
                 type="link"
@@ -194,7 +191,7 @@
                 spaceListOpen = !spaceListOpen;
               }}
             >
-              <p>내 스페이스</p>
+              <p class={flex({ align: 'center', gap: '6px' })}><Icon icon={IconPlanet} /> 내 스페이스</p>
 
               {#if spaceListOpen}
                 <Icon style={css.raw({ color: 'gray.400' })} icon={IconCaretUpFilled} />
@@ -215,7 +212,7 @@
                       borderBottomColor: 'gray.150',
                       padding: '14px',
                       paddingRight: '0',
-                      backgroundColor: { base: 'gray.5', _hover: 'gray.100' },
+                      backgroundColor: { base: 'gray.50', _hover: 'gray.100' },
                       transition: 'common',
                     })}
                   >
@@ -274,7 +271,7 @@
                 {/each}
 
                 <li
-                  class={css({ borderBottomWidth: '1px', borderBottomColor: 'gray.150', backgroundColor: 'gray.50' })}
+                  class={css({ borderBottomWidth: '1px', borderBottomColor: 'gray.150', backgroundColor: 'gray.100' })}
                 >
                   <button
                     class={flex({
@@ -296,8 +293,25 @@
             {/if}
 
             <a
-              class={css({
-                display: 'inline-block',
+              class={flex({
+                align: 'center',
+                gap: '6px',
+                borderBottomWidth: '1px',
+                borderBottomColor: 'gray.100',
+                padding: '14px',
+                fontSize: '14px',
+                width: 'full',
+              })}
+              href="/me/cabinets"
+            >
+              <Icon icon={IconArchive} />
+              보관함
+            </a>
+
+            <a
+              class={flex({
+                align: 'center',
+                gap: '6px',
                 borderBottomWidth: '1px',
                 borderBottomColor: 'gray.100',
                 padding: '14px',
@@ -306,12 +320,29 @@
               })}
               href="/point"
             >
+              <Icon icon={IconCoin} />
               포인트
+            </a>
+            <a
+              class={flex({
+                align: 'center',
+                gap: '6px',
+                borderBottomWidth: '1px',
+                borderBottomColor: 'gray.100',
+                padding: '14px',
+                fontSize: '14px',
+                width: 'full',
+              })}
+              href="/me/revenue"
+            >
+              <Icon icon={IconPigMoney} />
+              수익/출금
             </a>
 
             <Link
-              style={css.raw({
-                display: 'inline-block',
+              style={flex.raw({
+                align: 'center',
+                gap: '6px',
                 borderBottomWidth: '1px',
                 borderBottomColor: 'gray.100',
                 padding: '14px',
@@ -320,11 +351,14 @@
               })}
               href="https://penxle.nolt.io"
             >
+              <Icon icon={IconBulb} />
               글리프 피드백하기
             </Link>
 
             <button
-              class={css({
+              class={flex({
+                align: 'center',
+                gap: '6px',
                 padding: '14px',
                 width: 'full',
                 fontSize: '14px',
@@ -338,10 +372,11 @@
                 location.href = '/';
               }}
             >
+              <Icon icon={IconLogout} />
               로그아웃
             </button>
           {/if}
-        </div>
+        </nav>
       </div>
     </div>
   </div>
