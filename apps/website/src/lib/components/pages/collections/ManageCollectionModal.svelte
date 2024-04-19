@@ -70,7 +70,7 @@
           ...Image_image
         }
 
-        posts {
+        posts(order: OLDEST) {
           id
 
           publishedRevision @_required {
