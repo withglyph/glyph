@@ -12,7 +12,21 @@
   <p slot="content" class={css({ textAlign: 'left' })}>로그인하고 다양한 기능을 편리하게 이용해보세요</p>
 
   <svelte:fragment slot="action">
-    <Button size="lg" variant="gray-outline" on:click={() => (open = false)}>취소</Button>
-    <Button href="/login" size="lg" type="link">로그인</Button>
+    <Button
+      style={css.raw({ outlineWidth: '0!', borderWidth: '1px', borderColor: 'gray.200' })}
+      size="lg"
+      variant="gray-outline"
+      on:click={() => (open = false)}
+    >
+      취소
+    </Button>
+    <Button
+      style={css.raw({ outlineWidth: '0!', borderWidth: '1px', borderColor: 'gray.900' })}
+      href="/login"
+      size="lg"
+      type="link"
+    >
+      로그인
+    </Button>
   </svelte:fragment>
 </Alert>
