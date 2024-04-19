@@ -63,7 +63,6 @@ builder.objectType(FeaturedTag, {
             function_score: {
               query: {
                 bool: {
-                  must: { match_all: {} },
                   must_not: makeQueryContainers([
                     {
                       query: { terms: { ['tags.id']: mutedTagIds } },
@@ -74,6 +73,9 @@ builder.objectType(FeaturedTag, {
                       condition: mutedSpaceIds.length > 0,
                     },
                   ]),
+
+                  must: { match_all: {} },
+                  should: { term: { hasThumbnail: true } },
                   filter: [{ term: { ['tags.id']: tagId } }],
                 },
               },
@@ -186,6 +188,9 @@ builder.queryFields((t) => ({
                           },
                         },
                         condition: viewedTagIds.length > 0,
+                      },
+                      {
+                        query: { term: { hasThumbnail: true } },
                       },
                     ]),
                     filter: [{ terms: { ageRating: allowedAgeRating } }],
