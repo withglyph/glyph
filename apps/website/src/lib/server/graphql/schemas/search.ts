@@ -78,43 +78,39 @@ builder.queryFields((t) => ({
               },
             ],
 
-            filter: {
-              bool: {
-                must: makeQueryContainers([
-                  { query: { term: { ageRating: 'R19' } }, condition: args.adultFilter === true },
-                  ...args.includeTags.map((tag) => ({
-                    query: { term: { ['tags.nameRaw']: tag } },
-                  })),
-                ]),
-
-                must_not: makeQueryContainers([
-                  {
-                    query: {
-                      terms: { ['tags.id']: mutedTagIds },
-                    },
-                    condition: mutedTagIds.length > 0,
-                  },
-                  {
-                    query: {
-                      terms: { spaceId: mutedSpaceIds },
-                    },
-                    condition: mutedSpaceIds.length > 0,
-                  },
-                  {
-                    query: {
-                      terms: { ['tags.nameRaw']: args.excludeTags },
-                    },
-                    condition: args.excludeTags.length > 0,
-                  },
-                  {
-                    query: {
-                      term: { ageRating: 'R19' },
-                    },
-                    condition: args.adultFilter === false,
-                  },
-                ]),
+            must_not: makeQueryContainers([
+              {
+                query: {
+                  terms: { ['tags.id']: mutedTagIds },
+                },
+                condition: mutedTagIds.length > 0,
               },
-            },
+              {
+                query: {
+                  terms: { spaceId: mutedSpaceIds },
+                },
+                condition: mutedSpaceIds.length > 0,
+              },
+              {
+                query: {
+                  terms: { ['tags.name.raw']: args.excludeTags },
+                },
+                condition: args.excludeTags.length > 0,
+              },
+              {
+                query: {
+                  term: { ageRating: 'R19' },
+                },
+                condition: args.adultFilter === false,
+              },
+            ]),
+
+            filter: makeQueryContainers([
+              { query: { term: { ageRating: 'R19' } }, condition: args.adultFilter === true },
+              ...args.includeTags.map((tag) => ({
+                query: { term: { ['tags.name.raw']: tag } },
+              })),
+            ]),
           },
         },
 
