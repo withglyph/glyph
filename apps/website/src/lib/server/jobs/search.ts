@@ -73,26 +73,28 @@ export const IndexPostJob = defineJob('indexPost', async (postId: string) => {
       },
     });
 
-    const indexableTagData = await Promise.all(
-      tags.map(async (tag) => ({
-        id: tag.id,
-        name: {
-          raw: tag.name,
-          disassembled: disassembleHangulString(tag.name),
-          initial: InitialHangulString(tag.name) || null,
-        },
+    if (tags.length > 0) {
+      const indexableTagData = await Promise.all(
+        tags.map(async (tag) => ({
+          id: tag.id,
+          name: {
+            raw: tag.name,
+            disassembled: disassembleHangulString(tag.name),
+            initial: InitialHangulString(tag.name) || null,
+          },
 
-        usageCount: await getTagUsageCount(tag.id),
-      })),
-    );
+          usageCount: await getTagUsageCount(tag.id),
+        })),
+      );
 
-    await elasticSearch.bulk({
-      index: indexName('tags'),
-      operations: indexableTagData.flatMap((data) => {
-        const { id, ...idOmittedData } = data;
-        return [{ index: { _id: id } }, idOmittedData];
-      }),
-    });
+      await elasticSearch.bulk({
+        index: indexName('tags'),
+        operations: indexableTagData.flatMap((data) => {
+          const { id, ...idOmittedData } = data;
+          return [{ index: { _id: id } }, idOmittedData];
+        }),
+      });
+    }
   } else {
     await elasticSearch
       .delete({
