@@ -63,7 +63,7 @@
     <li
       class={css({
         _firstOfType: {
-          '& > a': { paddingTop: '0' },
+          '& > div > a': { marginTop: '8px', paddingTop: '0' },
         },
         _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' },
         _lastOfType: { _after: { display: 'none' } },

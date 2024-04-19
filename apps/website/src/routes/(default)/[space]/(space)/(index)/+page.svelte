@@ -65,10 +65,10 @@
 />
 
 <a
-  class={flex({ align: 'center', gap: '2px', marginTop: '14px', marginBottom: '8px' })}
+  class={flex({ align: 'center', gap: '2px', marginTop: '14px', marginBottom: '8px', color: 'gray.500' })}
   href={`/${$query.space.slug}/posts`}
 >
-  <h2 class={css({ fontSize: { base: '13px', sm: '14px' }, color: 'gray.500' })}>
+  <h2 class={css({ fontSize: { base: '13px', sm: '14px' } })}>
     총 {$query.space.postCount}개의 포스트
   </h2>
   <Icon icon={IconChevronRight} size={12} />
@@ -106,10 +106,10 @@
 <hr class={css({ border: 'none', marginY: '32px', height: '1px', backgroundColor: 'gray.100' })} />
 
 <a
-  class={flex({ align: 'center', gap: '2px', marginTop: '14px', marginBottom: '8px' })}
+  class={flex({ align: 'center', gap: '2px', marginTop: '14px', marginBottom: '8px', color: 'gray.500' })}
   href={`/${$query.space.slug}/collections`}
 >
-  <h2 class={css({ fontSize: { base: '13px', sm: '14px' }, color: 'gray.500' })}>
+  <h2 class={css({ fontSize: { base: '13px', sm: '14px' } })}>
     총 {$query.space.collections.length}개의 컬렉션
   </h2>
   <Icon icon={IconChevronRight} size={12} />

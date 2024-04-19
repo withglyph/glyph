@@ -57,7 +57,7 @@
     {/if}
   </div>
 {:else}
-  <ul class={grid({ columns: { base: 2, sm: 4 }, gap: '12px' })}>
+  <ul class={grid({ columns: { base: 2, sm: 4 }, gap: '12px', marginTop: '8px' })}>
     {#each $query.space.collections as collection (collection.id)}
       <li>
         <Collection $space={$query.space} $spaceCollection={collection} />
