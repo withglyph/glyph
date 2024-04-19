@@ -113,7 +113,7 @@
           포스트 {$query.tag.postCount}개
         </span>
         <span class={css({ marginTop: '2px', marginLeft: '10px', fontSize: '14px', color: 'gray.300' })}>
-          팔로워 {$query.tag.followerCount}명
+          구독자 {$query.tag.followerCount}명
         </span>
       </div>
 
