@@ -42,8 +42,9 @@
         backgroundColor: { _hover: 'gray.100', _focusWithin: 'gray.5' },
       },
       '&:has(input:disabled)': {
-        color: 'gray.400',
+        color: 'gray.300',
         backgroundColor: 'gray.100',
+        borderColor: 'gray.150',
       },
       '&:has(input[aria-invalid])': {
         borderColor: '[red.600!]',
