@@ -151,21 +151,9 @@
           </dl>
 
           <div class={flex({ align: 'center', gap: '8px', marginTop: '20px' })}>
-            <Button
-              style={css.raw({ width: '96px', height: '37px' })}
-              disabled={$query.spaceCollection.posts.length === 0}
-              href={$query.spaceCollection.posts.length > 0
-                ? `/${$query.spaceCollection.space.slug}/${$query.spaceCollection.posts[0].permalink}`
-                : undefined}
-              size="sm"
-              type="link"
-            >
-              1화 보기
-            </Button>
-
             {#if $query.spaceCollection.space.meAsMember}
               <Button
-                style={css.raw({ width: '96px', height: '37px' })}
+                style={css.raw({ width: '110px', height: '37px' })}
                 href="/{$query.spaceCollection.space.slug}/dashboard/posts/collections"
                 size="sm"
                 type="link"
@@ -175,7 +163,7 @@
               </Button>
             {:else}
               <Button
-                style={css.raw({ minWidth: '96px', height: '37px' })}
+                style={css.raw({ width: '110px', height: '37px' })}
                 href="/{$query.spaceCollection.space.slug}/collections"
                 size="sm"
                 type="link"
@@ -208,7 +196,7 @@
       >
         <a
           class={css(
-            { paddingY: '8px', color: 'gray.500' },
+            { paddingY: '8px', color: 'gray.400' },
             $page.url.searchParams.get('order') !== 'OLDEST' && { fontWeight: 'semibold', color: 'gray.900' },
           )}
           href="?order=LATEST"
@@ -218,7 +206,7 @@
         <hr class={css({ border: 'none', width: '1px', height: '10px', backgroundColor: 'gray.100' })} />
         <a
           class={css(
-            { paddingY: '8px', color: 'gray.500' },
+            { paddingY: '8px', color: 'gray.400' },
             $page.url.searchParams.get('order') === 'OLDEST' && { fontWeight: 'semibold', color: 'gray.900' },
           )}
           href="?order=OLDEST"
