@@ -50,6 +50,8 @@
           }
         }
       }
+
+      ...Feed_Post_query
     }
   `);
 
@@ -225,7 +227,7 @@
               },
             })}
           >
-            <Post $post={post} showBookmark showDate showSpace />
+            <Post $post={post} {$query} showBookmark showDate showSpace />
           </li>
         {:else}
           <li class={css({ marginY: '50px', textAlign: 'center', color: 'gray.400', fontWeight: 'semibold' })}>

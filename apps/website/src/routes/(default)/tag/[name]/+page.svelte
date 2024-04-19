@@ -34,6 +34,8 @@
           ...Feed_Post_post
         }
       }
+
+      ...Feed_Post_query
     }
   `);
 
@@ -191,7 +193,7 @@
             _lastOfType: { _after: { display: 'none' } },
           })}
         >
-          <Post $post={post} showBookmark showDate showSpace />
+          <Post $post={post} {$query} showBookmark showDate showSpace />
         </li>
       {/each}
     </ul>

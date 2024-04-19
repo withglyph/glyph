@@ -11,16 +11,31 @@
   import { humanizeNumber } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import type { Feed_Post_post } from '$glitch';
+  import LoginRequireAlert from '../LoginRequireAlert.svelte';
+  import type { Feed_Post_post, Feed_Post_query } from '$glitch';
   import type { SystemStyleObject } from '$styled-system/types';
 
   let _post: Feed_Post_post;
-  export { _post as $post };
+  let _query: Feed_Post_query;
+  export { _post as $post, _query as $query };
 
   export let showSpace = false;
   export let showBookmark = false;
   export let showDate = false;
   export let style: SystemStyleObject | undefined = undefined;
+
+  let loginRequireOpen = false;
+
+  $: query = fragment(
+    _query,
+    graphql(`
+      fragment Feed_Post_query on Query {
+        me {
+          id
+        }
+      }
+    `),
+  );
 
   $: post = fragment(
     _post,
@@ -334,6 +349,11 @@
         })}
         type="button"
         on:click={async () => {
+          if (!$query.me) {
+            loginRequireOpen = true;
+            return;
+          }
+
           await bookmarkPost({ postId: $post.id });
           mixpanel.track('post:bookmark', { postId: $post.id, via: 'feed' });
         }}
@@ -343,3 +363,5 @@
     {/if}
   {/if}
 </div>
+
+<LoginRequireAlert bind:open={loginRequireOpen} />

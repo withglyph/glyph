@@ -70,6 +70,8 @@
           }
         }
       }
+
+      ...Feed_Post_query
     }
   `);
 
@@ -198,6 +200,7 @@
           <Post
             style={css.raw(index === 0 && { paddingTop: '0' }, index === 1 && { sm: { paddingTop: '0' } })}
             $post={post}
+            {$query}
             showSpace
           />
         </li>
@@ -213,7 +216,7 @@
             },
           )}
         >
-          <Post $post={post} showSpace />
+          <Post $post={post} {$query} showSpace />
         </li>
       {/each}
     </ul>
