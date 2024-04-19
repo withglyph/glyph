@@ -136,7 +136,7 @@
       bind:this={imgEl}
       style:transform
       class={css(
-        { objectFit: 'cover', cursor: 'move', touchAction: 'none' },
+        { objectFit: 'cover', cursor: 'move', touchAction: 'none', overflow: 'visible' },
         naturalWidth > naturalHeight && { height: 'full' },
         naturalWidth < naturalHeight && { width: 'full' },
         naturalWidth === naturalHeight && { size: 'full' },
