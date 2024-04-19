@@ -202,45 +202,55 @@
         class={css({
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
           color: 'gray.400',
           fontSize: '12px',
           height: '17px',
         })}
       >
-        {#if $post.viewCount > 0 && $post.discloseStats}
-          <div class={flex({ align: 'center', gap: '2px' })}>
-            <Icon icon={IconEye} />
-            {humanizeNumber($post.viewCount)}
-          </div>
-        {/if}
-
-        {#if $post.reactionCount > 0 && $post.discloseStats}
-          <div class={flex({ align: 'center', gap: '2px' })}>
-            <Icon icon={IconMoodSmile} />
-            {humanizeNumber($post.reactionCount)}
-          </div>
-        {/if}
-
-        {#if $post.commentCount > 0 && $post.discloseStats}
-          <div class={flex({ align: 'center', gap: '2px' })}>
-            <Icon icon={IconMessageCircle} />
-            {humanizeNumber($post.commentCount)}
-          </div>
-        {/if}
-
         {#if showDate}
-          <time
-            class={flex({
-              align: 'center',
-              gap: '8px',
-              _before: { content: '""', display: 'block', width: '1px', height: '12px', backgroundColor: 'gray.100' },
-            })}
-            datetime={$post.publishedAt}
-          >
+          <time datetime={$post.publishedAt}>
             {dayjs($post.publishedAt).formatAsDate()}
           </time>
         {/if}
+
+        <div
+          class={css(
+            { display: 'flex', alignItems: 'center', gap: '8px' },
+            showDate &&
+              $post.discloseStats && {
+                _before: {
+                  content: '""',
+                  display: 'block',
+                  width: '1px',
+                  height: '12px',
+                  backgroundColor: 'gray.100',
+                  marginLeft: '8px',
+                  marginRight: '-2px',
+                },
+              },
+          )}
+        >
+          {#if $post.viewCount > 0 && $post.discloseStats}
+            <div class={flex({ align: 'center', gap: '2px' })}>
+              <Icon icon={IconEye} />
+              {humanizeNumber($post.viewCount)}
+            </div>
+          {/if}
+
+          {#if $post.reactionCount > 0 && $post.discloseStats}
+            <div class={flex({ align: 'center', gap: '2px' })}>
+              <Icon icon={IconMoodSmile} />
+              {humanizeNumber($post.reactionCount)}
+            </div>
+          {/if}
+
+          {#if $post.commentCount > 0 && $post.discloseStats}
+            <div class={flex({ align: 'center', gap: '2px' })}>
+              <Icon icon={IconMessageCircle} />
+              {humanizeNumber($post.commentCount)}
+            </div>
+          {/if}
+        </div>
       </div>
     </div>
 
@@ -305,7 +315,7 @@
           mixpanel.track('post:unbookmark', { postId: $post.id, via: 'feed' });
         }}
       >
-        <Icon style={css.raw({ color: 'gray.400' })} icon={IconBookmarkFilled} size={20} />
+        <Icon style={css.raw({ color: 'gray.900' })} icon={IconBookmarkFilled} size={20} />
       </button>
     {:else}
       <button
@@ -315,9 +325,10 @@
           bottom: '20px',
           zIndex: '1',
           marginTop: '8px',
-          _hover: {
+          _supportHover: {
             '& path': {
-              fill: '[currentColor]',
+              fill: 'gray.900',
+              stroke: 'gray.900',
             },
           },
         })}
