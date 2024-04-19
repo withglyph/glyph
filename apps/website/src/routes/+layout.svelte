@@ -52,6 +52,11 @@
 
 <svelte:head>
   <script data-domain="withglyph.com" defer src="https://plausible.io/js/script.js"></script>
+  <script
+    async
+    crossorigin="anonymous"
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4449202773959958"
+  ></script>
 </svelte:head>
 
 <div class={flex({ direction: 'column', position: 'relative', minHeight: 'dvh' })}>
