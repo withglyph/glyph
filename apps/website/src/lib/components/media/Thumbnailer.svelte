@@ -38,6 +38,8 @@
   let naturalWidth: number;
   let naturalHeight: number;
 
+  $: fullHeight = boxEl?.clientWidth / boxEl?.clientHeight < naturalWidth / naturalHeight;
+
   let translateX = bounds?.translateX ?? 0;
   let translateY = bounds?.translateY ?? 0;
   let scale = bounds?.scale ?? 1;
@@ -78,27 +80,14 @@
     }
 
     const { width: boxWidth, height: boxHeight } = boxEl.getBoundingClientRect();
-    const { width: imgClientWidth, height: imgClientHeight } = imgEl.getBoundingClientRect();
-
-    const originalRatio = imgEl.naturalWidth / imgEl.naturalHeight; // 이미지의 원본 비율
-    const clientRatio = imgClientWidth / imgClientHeight; // img 요소의 비율
-
-    // object-fit: cover 속성에 의해 확대된 이미지의 크기 계산
-    let imgWidth, imgHeight;
-    if (originalRatio < clientRatio) {
-      imgWidth = imgClientWidth;
-      imgHeight = imgClientWidth / originalRatio;
-    } else {
-      imgWidth = imgClientHeight * originalRatio;
-      imgHeight = imgClientHeight;
-    }
+    const { width: imgWidth, height: imgHeight } = imgEl.getBoundingClientRect();
 
     if (imgWidth === 0 || imgHeight === 0) {
       return;
     }
 
-    const thresholdX = ((imgWidth / 2 - boxWidth / 2) / imgClientWidth) * 100 * scale;
-    const thresholdY = ((imgHeight / 2 - boxHeight / 2) / imgClientHeight) * 100 * scale;
+    const thresholdX = ((imgWidth / 2 - boxWidth / 2) / imgWidth) * 100 * scale;
+    const thresholdY = ((imgHeight / 2 - boxHeight / 2) / imgHeight) * 100 * scale;
 
     translateX = clamp(translateX, -thresholdX, thresholdX);
     translateY = clamp(translateY, -thresholdY, thresholdY);
@@ -136,10 +125,8 @@
       bind:this={imgEl}
       style:transform
       class={css(
-        { objectFit: 'cover', cursor: 'move', touchAction: 'none', overflow: 'visible' },
-        naturalWidth > naturalHeight && { height: 'full' },
-        naturalWidth < naturalHeight && { width: 'full' },
-        naturalWidth === naturalHeight && { size: 'full' },
+        { cursor: 'move', touchAction: 'none', maxWidth: 'none' },
+        fullHeight ? { height: 'full' } : { width: 'full' },
         (!naturalWidth || !naturalHeight) && { display: 'none' },
       )}
       alt=""
