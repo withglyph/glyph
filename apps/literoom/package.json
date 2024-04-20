@@ -16,9 +16,9 @@
     "sharp": "^0.33.3"
   },
   "devDependencies": {
-    "@pulumi/aws": "^6.31.0",
+    "@pulumi/aws": "^6.32.0",
     "@pulumi/aws-native": "^0.102.0",
-    "@pulumi/pulumi": "^3.113.0",
+    "@pulumi/pulumi": "^3.113.3",
     "@withglyph/lib": "workspace:^",
     "@withglyph/pulumi": "workspace:^",
     "@withglyph/tsconfig": "workspace:^",

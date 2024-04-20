@@ -17,11 +17,11 @@
     "@sveltejs/kit": "^2.5.6",
     "@withglyph/adapter-docker": "workspace:^",
     "@withglyph/lib": "workspace:^",
-    "svelte": "^4.2.14"
+    "svelte": "^4.2.15"
   },
   "devDependencies": {
     "@pandacss/dev": "^0.37.2",
-    "@pulumi/pulumi": "^3.113.0",
+    "@pulumi/pulumi": "^3.113.3",
     "@sveltejs/vite-plugin-svelte": "^3.1.0",
     "@types/node": "^20.12.7",
     "@withglyph/pulumi": "workspace:^",

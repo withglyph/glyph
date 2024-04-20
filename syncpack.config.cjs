@@ -5,6 +5,11 @@ module.exports = {
   semverGroups: [
     {
       packages: ['**'],
+      dependencies: ['prosemirror-view'],
+      range: '',
+    },
+    {
+      packages: ['**'],
       dependencies: ['**'],
       range: '^',
     },
