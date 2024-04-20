@@ -115,7 +115,7 @@
   <div
     class={center({
       position: 'relative',
-      padding: '32px',
+      padding: '[10%]',
       width: 'full',
       overflow: 'hidden',
       aspectRatio: aspectRatio[ratio],
@@ -153,7 +153,7 @@
       class={css(
         {
           position: 'absolute',
-          inset: '32px',
+          inset: '[10%]',
           borderWidth: '4px',
           borderColor: 'gray.5',
           outlineWidth: '[10000px]',
