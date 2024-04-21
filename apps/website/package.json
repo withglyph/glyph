@@ -21,6 +21,7 @@
     "@aws-sdk/client-ses": "^3.556.0",
     "@aws-sdk/s3-request-presigner": "^3.556.0",
     "@codemirror/lang-html": "^6.4.9",
+    "@datadog/browser-rum": "^5.15.0",
     "@elastic/elasticsearch": "^8.13.1",
     "@emoji-mart/data": "^1.1.2",
     "@envelop/core": "^5.0.0",

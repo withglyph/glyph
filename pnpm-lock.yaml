@@ -248,6 +248,9 @@ importers:
       '@codemirror/lang-html':
         specifier: ^6.4.9
         version: 6.4.9
+      '@datadog/browser-rum':
+        specifier: ^5.15.0
+        version: 5.15.0
       '@elastic/elasticsearch':
         specifier: ^8.13.1
         version: 8.13.1
@@ -1506,6 +1509,20 @@ packages:
     engines: {node: ^14 || ^16 || >=18}
     peerDependencies:
       postcss-selector-parser: ^6.0.13
+
+  '@datadog/browser-core@5.15.0':
+    resolution: {integrity: sha512-vZeHK0aEqyQqJOal8skaGrGi788Tt+MSP+pH/+J56/Bj4tjLggeIw2SPN+j7XSS+3Q5atk1ZRoEMwvHVV7/s7Q==}
+
+  '@datadog/browser-rum-core@5.15.0':
+    resolution: {integrity: sha512-f8TghTfjEqEo/AexyfM0OCZ3aUOcN6+xg9XRohVC+kmmboo+7GcMLgNfW9zkEoCJvNOheSFN2xPZbNE6iUD3LA==}
+
+  '@datadog/browser-rum@5.15.0':
+    resolution: {integrity: sha512-bvY8Pgb92uB9+x7oVQTLq5P/fyMBTn+xoEzYJbMmJCEhKL1QPqtYdiRqTNhOLnemZFJ5OaaFNg9az68xJ/O0gg==}
+    peerDependencies:
+      '@datadog/browser-logs': 5.15.0
+    peerDependenciesMeta:
+      '@datadog/browser-logs':
+        optional: true
 
   '@effect/schema@0.56.1':
     resolution: {integrity: sha512-cfEyHLXPdzSKzJU/yYrPjFd0iVHPydh+NT0sgTe4bzXbcvOsKZuvQ86cAAwXN7lxY0N5cPes9ACxUxTdkEaNlw==}
@@ -9510,6 +9527,17 @@ snapshots:
   '@csstools/selector-specificity@3.0.3(postcss-selector-parser@6.0.15)':
     dependencies:
       postcss-selector-parser: 6.0.15
+
+  '@datadog/browser-core@5.15.0': {}
+
+  '@datadog/browser-rum-core@5.15.0':
+    dependencies:
+      '@datadog/browser-core': 5.15.0
+
+  '@datadog/browser-rum@5.15.0':
+    dependencies:
+      '@datadog/browser-core': 5.15.0
+      '@datadog/browser-rum-core': 5.15.0
 
   '@effect/schema@0.56.1(effect@2.0.0-next.62)(fast-check@3.15.0)':
     dependencies:
