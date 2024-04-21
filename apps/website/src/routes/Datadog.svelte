@@ -2,6 +2,7 @@
   import { datadogRum } from '@datadog/browser-rum';
   import { production } from '@withglyph/lib/environment';
   import { onMount } from 'svelte';
+  import { afterNavigate } from '$app/navigation';
   import { env } from '$env/dynamic/public';
 
   onMount(() => {
@@ -20,7 +21,14 @@
       trackUserInteractions: true,
       trackResources: true,
       trackLongTasks: true,
+      trackViewsManually: true,
       defaultPrivacyLevel: 'allow',
+    });
+  });
+
+  afterNavigate(({ to }) => {
+    datadogRum.startView({
+      name: to?.route.id ?? undefined,
     });
   });
 </script>

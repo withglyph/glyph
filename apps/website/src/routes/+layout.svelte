@@ -1,6 +1,7 @@
 <script lang="ts">
   import '../app.css';
 
+  import { datadogRum } from '@datadog/browser-rum';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { graphql } from '$glitch';
@@ -41,6 +42,12 @@
       $email: $query.me.email,
       $name: $query.me.profile.name,
       $avatar: $query.me.profile.avatar.url,
+    });
+
+    datadogRum.setUser({
+      id: $query.me.id,
+      email: $query.me.email,
+      name: $query.me.profile.name,
     });
   }
 
