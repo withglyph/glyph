@@ -6,6 +6,7 @@
   export let titleSuffix = ' | 글리프';
   export let description: string;
   export let image: string | { src: string; size: 'small' | 'large' } | undefined = undefined;
+  export let struct: Record<string, unknown> | undefined = undefined;
 
   $: ({
     url: { href },
@@ -36,4 +37,7 @@
   <meta content={type} property="og:type" />
   <meta content="ko_KR" property="og:locale" />
   <meta content="@withglyph" property="twitter:site" />
+  {#if struct}
+    {@html '<script type="application/ld+json">' + JSON.stringify(struct) + '</script>'}
+  {/if}
 </svelte:head>

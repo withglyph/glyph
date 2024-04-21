@@ -16,6 +16,7 @@
       post(permalink: $permalink) {
         id
         externalSearchable
+        visibility
         publishedAt
 
         member @_required {
@@ -25,6 +26,12 @@
             id
             name
           }
+        }
+
+        space @_required {
+          id
+          slug
+          name
         }
 
         publishedRevision @_required {
@@ -76,20 +83,39 @@
 
 <Helmet
   description={`${$query.post.publishedRevision.subtitle ? `${$query.post.publishedRevision.subtitle} | ` : ''}${$query.post.publishedRevision.previewText}`}
-  image={{
-    src: `${$page.url.origin}/api/opengraph/post/${$query.post.id}`,
-    size: 'large',
+  image={{ src: `${$page.url.origin}/api/opengraph/post/${$query.post.id}`, size: 'large' }}
+  struct={{
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    'headline': $query.post.publishedRevision.title ?? '(제목 없음)',
+    'description': `${$query.post.publishedRevision.subtitle ? `${$query.post.publishedRevision.subtitle} | ` : ''}${$query.post.publishedRevision.previewText}`,
+    'datePublished': dayjs($query.post.publishedAt).toISOString(),
+    'dateModified': dayjs($query.post.publishedRevision.createdAt).toISOString(),
+    'image': [`${$page.url.origin}/api/opengraph/post/${$query.post.id}`],
+    'author': [
+      {
+        '@type': 'Organization',
+        'name': $query.post.space.name,
+        'url': `${$page.url.origin}/${$query.post.space.slug}`,
+      },
+      {
+        '@type': 'Person',
+        'name': $query.post.member.profile.name,
+        'url': `${$page.url.origin}/${$query.post.space.slug}/about`,
+      },
+    ],
   }}
   title={$query.post.publishedRevision.title ?? '(제목 없음)'}
   type="article"
 />
 
 <svelte:head>
-  {#if !$query.post.externalSearchable}
+  {#if !$query.post.externalSearchable || $query.post.visibility !== 'PUBLIC'}
     <meta name="robots" content="noindex" />
   {/if}
   <meta content={dayjs($query.post.publishedAt).toISOString()} property="article:published_time" />
   <meta content={dayjs($query.post.publishedRevision.createdAt).toISOString()} property="article:modified_time" />
+  <meta content={$query.post.space.name} property="article:author" />
   <meta content={$query.post.member.profile.name} property="article:author" />
   {#each $query.post.tags as { tag } (tag.id)}
     <meta content={tag.name} property="article:tag" />

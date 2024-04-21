@@ -84,21 +84,16 @@
   $: activeFeaturedTagFeed = $query.featuredTagFeed.find(({ tag }) => tag.id === activeFeaturedTagId)!;
 </script>
 
-<svelte:head>
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "글리프",
-      "alternateName": "Glyph",
-      "url": "https://withglyph.com/"
-    }
-  </script>
-</svelte:head>
-
 <Helmet
   description="당신의 창작을 응원합니다. 만화, 소설, 일러스트, 영상 등 다양한 콘텐츠를 글리프에서 만나보세요."
   image={{ src: 'https://glyph.pub/assets/opengraph/default-cover-light.png', size: 'large' }}
+  struct={{
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    'name': '글리프',
+    'alternateName': 'Glyph',
+    'url': 'https://withglyph.com/',
+  }}
   title="글리프 - 창작자를 위한 콘텐츠 플랫폼"
   titleSuffix=""
 />
