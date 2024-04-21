@@ -3,6 +3,7 @@ export * as coocon from './coocon';
 export * as exim from './exim';
 export * as google from './google';
 export * as iframely from './iframely';
+export * as indexnow from './indexnow';
 export * as naver from './naver';
 export * as portone from './portone';
 export * as twitter from './twitter';

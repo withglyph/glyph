@@ -1622,6 +1622,7 @@ builder.mutationFields((t) => ({
       });
 
       await enqueueJob('indexPost', revision.post.id);
+      await enqueueJob('notifyIndexNow', revision.post.id);
 
       return revision.post.id;
     },
