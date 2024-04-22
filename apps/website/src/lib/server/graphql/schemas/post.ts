@@ -1,7 +1,7 @@
 import { init as cuid } from '@paralleldrive/cuid2';
 import { hash, verify } from 'argon2';
 import dayjs from 'dayjs';
-import { and, asc, count, desc, eq, exists, gt, isNotNull, isNull, lt, ne, notExists, or } from 'drizzle-orm';
+import { and, asc, count, desc, eq, exists, gt, isNotNull, isNull, lt, ne, notExists, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { match, P } from 'ts-pattern';
 import { emojiData } from '$lib/emoji';
@@ -1201,37 +1201,40 @@ builder.queryFields((t) => ({
     type: Post,
     args: { permalink: t.arg.string() },
     resolve: async (_, args, context) => {
-      const posts = await database
+      const post = await database
         .select({
           id: Posts.id,
           userId: Posts.userId,
           visibility: Posts.visibility,
           state: Posts.state,
           space: { id: Spaces.id, visibility: Spaces.visibility, state: Spaces.state },
+          purchaseId: PostPurchases.id,
         })
         .from(Posts)
         .leftJoin(Spaces, eq(Posts.spaceId, Spaces.id))
-        .where(
+        .leftJoin(
+          PostPurchases,
           and(
-            eq(Posts.permalink, args.permalink),
-            ne(Posts.state, 'DELETED'),
-            or(eq(Spaces.state, 'ACTIVE'), isNull(Spaces.id)),
+            eq(PostPurchases.postId, Posts.id),
+            context.session ? eq(PostPurchases.userId, context.session.userId) : sql`1 = 0`,
           ),
-        );
+        )
+        .where(eq(Posts.permalink, args.permalink))
+        .then(useFirstRowOrThrow(new NotFoundError()));
 
-      if (posts.length === 0) {
-        throw new NotFoundError();
-      }
+      if (!post.purchaseId) {
+        if (post.state === 'DELETED' || (post.space && post.space.state !== 'ACTIVE')) {
+          throw new NotFoundError();
+        }
 
-      const [post] = posts;
-
-      if (
-        post.userId !== context.session?.userId &&
-        (!post.space || post.space.visibility === 'PRIVATE' || post.visibility === 'SPACE')
-      ) {
-        const meAsMember = post.space ? await getSpaceMember(context, post.space.id) : null;
-        if (!meAsMember) {
-          throw new PermissionDeniedError();
+        if (
+          post.userId !== context.session?.userId &&
+          (!post.space || post.space.visibility === 'PRIVATE' || post.visibility === 'SPACE')
+        ) {
+          const meAsMember = post.space ? await getSpaceMember(context, post.space.id) : null;
+          if (!meAsMember) {
+            throw new PermissionDeniedError();
+          }
         }
       }
 
