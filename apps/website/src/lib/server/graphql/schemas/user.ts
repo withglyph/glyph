@@ -25,6 +25,7 @@ import {
   database,
   Images,
   PointTransactions,
+  PostComments,
   PostPurchases,
   PostReactions,
   Posts,
@@ -80,6 +81,7 @@ import {
 import { builder } from '../builder';
 import { createObjectRef } from '../utils';
 import { BookmarkGroup } from './bookmark';
+import { PostComment } from './comment';
 import { Image } from './image';
 import { IUserNotification } from './notification';
 import { PointTransaction } from './point';
@@ -526,6 +528,21 @@ User.implement({
         }
 
         return enrollments[0].id;
+      },
+    }),
+
+    comments: t.field({
+      type: [PostComment],
+      args: { page: t.arg.int({ defaultValue: 1 }), take: t.arg.int({ defaultValue: 10 }) },
+      resolve: async (user, args) => {
+        return await database
+          .select({ id: PostComments.id })
+          .from(PostComments)
+          .where(and(eq(PostComments.userId, user.id), eq(PostComments.state, 'ACTIVE')))
+          .orderBy(desc(PostComments.createdAt))
+          .limit(args.take)
+          .offset((args.page - 1) * args.take)
+          .then((rows) => rows.map((row) => row.id));
       },
     }),
   }),

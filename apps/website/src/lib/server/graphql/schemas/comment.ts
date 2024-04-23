@@ -15,6 +15,7 @@ import {
 import { createNotification, getSpaceMember, Loader, makeMasquerade } from '$lib/server/utils';
 import { builder } from '../builder';
 import { createObjectRef } from '../utils';
+import { Post } from './post';
 import { SpaceMasquerade } from './space';
 import { Profile } from './user';
 
@@ -62,6 +63,21 @@ PostComment.implement({
     state: t.expose('state', { type: PostCommentState }),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime', nullable: true }),
+
+    post: t.field({
+      type: Post,
+      nullable: true,
+      resolve: async (comment, _, context) => {
+        const loader = Loader.postById(context);
+        const post = await loader.load(comment.postId);
+
+        if (post.state !== 'PUBLISHED') {
+          return null;
+        }
+
+        return post;
+      },
+    }),
 
     profile: t.field({
       type: Profile,

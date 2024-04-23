@@ -450,6 +450,7 @@ type PostComment {
   masquerade: SpaceMasquerade
   parent: PostComment
   pinned: Boolean!
+  post: Post
   profile: Profile!
   purchased: Boolean!
   state: PostCommentState!
@@ -957,6 +958,7 @@ input UpdateUserProfileInput {
 type User {
   allowedAgeRating: [PostAgeRating!]!
   bookmarkGroups: [BookmarkGroup!]!
+  comments(page: Int! = 1, take: Int! = 10): [PostComment!]!
   contentFilterPreferences: [UserContentFilterPreference!]!
   email: String!
   emojiReactedPosts: [Post!]!
