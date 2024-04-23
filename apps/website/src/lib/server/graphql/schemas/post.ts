@@ -1727,8 +1727,8 @@ builder.mutationFields((t) => ({
       const posts = await database
         .select({ userId: Posts.userId, space: { id: Spaces.id } })
         .from(Posts)
-        .innerJoin(Spaces, eq(Spaces.id, Posts.spaceId))
-        .where(and(eq(Posts.id, input.postId), eq(Spaces.state, 'ACTIVE')));
+        .leftJoin(Spaces, eq(Spaces.id, Posts.spaceId))
+        .where(and(eq(Posts.id, input.postId)));
 
       if (posts.length === 0) {
         throw new NotFoundError();
@@ -1736,14 +1736,18 @@ builder.mutationFields((t) => ({
 
       const [post] = posts;
 
-      const meAsMember = await getSpaceMember(context, post.space.id);
-      if (!meAsMember || (post.userId !== context.session.userId && meAsMember.role !== 'ADMIN')) {
-        throw new PermissionDeniedError();
+      if (post.userId !== context.session.userId) {
+        const meAsMember = post.space ? await getSpaceMember(context, post.space.id) : null;
+        if (meAsMember?.role !== 'ADMIN') {
+          throw new PermissionDeniedError();
+        }
       }
 
       await database.transaction(async (tx) => {
-        await tx.delete(SpaceCollectionPosts).where(eq(SpaceCollectionPosts.postId, input.postId));
-        await defragmentSpaceCollectionPosts(tx, post.space.id);
+        if (post.space) {
+          await tx.delete(SpaceCollectionPosts).where(eq(SpaceCollectionPosts.postId, input.postId));
+          await defragmentSpaceCollectionPosts(tx, post.space.id);
+        }
 
         await tx.update(Posts).set({ state: 'DELETED' }).where(eq(Posts.id, input.postId));
         await tx
