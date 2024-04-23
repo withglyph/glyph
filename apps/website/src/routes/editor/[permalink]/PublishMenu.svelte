@@ -48,6 +48,7 @@
       fragment EditorPage_PublishMenu_query on Query {
         me @_required {
           id
+          isAdulthood
 
           personalIdentity {
             id
@@ -732,8 +733,22 @@
             name="ageRating"
             items={[
               { label: '모든 연령', value: 'ALL', text: 'ALL', checked: $data.ageRating === 'ALL' },
-              { label: '15세 이상', value: 'R15', text: '15+', checked: $data.ageRating === 'R15' },
-              { label: '성인물', value: 'R19', text: '20+', checked: $data.ageRating === 'R19' },
+              {
+                label: '15세 이상',
+                value: 'R15',
+                text: '15+',
+                checked: $data.ageRating === 'R15',
+                disabled: !$query.me.personalIdentity,
+                errorMessage: '본인인증 후 연령제한 컨텐츠를 게시할 수 있어요',
+              },
+              {
+                label: '성인물',
+                value: 'R19',
+                text: '20+',
+                checked: $data.ageRating === 'R19',
+                disabled: !$query.me.isAdulthood,
+                errorMessage: '성인인증 후 연령제한 컨텐츠를 게시할 수 있어요',
+              },
             ]}
           />
         </div>
