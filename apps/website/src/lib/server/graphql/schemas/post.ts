@@ -1728,7 +1728,7 @@ builder.mutationFields((t) => ({
         .select({ userId: Posts.userId, space: { id: Spaces.id } })
         .from(Posts)
         .innerJoin(Spaces, eq(Spaces.id, Posts.spaceId))
-        .where(and(eq(Posts.id, input.postId), eq(Posts.state, 'PUBLISHED'), eq(Spaces.state, 'ACTIVE')));
+        .where(and(eq(Posts.id, input.postId), eq(Spaces.state, 'ACTIVE')));
 
       if (posts.length === 0) {
         throw new NotFoundError();
