@@ -21,7 +21,7 @@
   $: selected = activeTabValue === id || pathnameRegex?.test($page.url.pathname);
 </script>
 
-<li role="presentation">
+<li class={css({ flex: 'none' })} role="presentation">
   <svelte:element
     this={element}
     id="{id}-tabhead"
