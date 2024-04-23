@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
 
 export const calculateFeeAmount = (revenueAmount: number, withdrawalFeeAmount = 0) => {
-  const settleAmount = Math.floor(revenueAmount * 0.85) - withdrawalFeeAmount;
-  const taxBaseAmount = Math.floor(settleAmount / (1 - 0.033));
-  const taxAmount = Math.floor(taxBaseAmount * 0.033);
+  const settleAmount = revenueAmount - withdrawalFeeAmount;
+  const taxBaseAmount = settleAmount;
+  const taxAmount = 0;
   const serviceFeeAmount = revenueAmount - settleAmount - taxAmount - withdrawalFeeAmount;
 
   return {

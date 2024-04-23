@@ -70,7 +70,7 @@ export const settleRevenue = async ({ userId, settlementType }: SettleRevenuePar
     if (
       !match(settlementType)
         .with('MONTHLY', () => totalRevenueAmount >= 30_000)
-        .with('INSTANT', () => totalRevenueAmount >= 1000)
+        .with('INSTANT', () => totalRevenueAmount > 1000)
         .exhaustive()
     ) {
       throw new IntentionalError('출금할 수 있는 금액이 없어요');
@@ -78,7 +78,7 @@ export const settleRevenue = async ({ userId, settlementType }: SettleRevenuePar
 
     const withdrawalFeeAmount = match(settlementType)
       .with('MONTHLY', () => 0)
-      .with('INSTANT', () => 500)
+      .with('INSTANT', () => 1000)
       .exhaustive();
 
     const { settleAmount, taxBaseAmount, taxAmount, serviceFeeAmount } = calculateFeeAmount(
@@ -90,10 +90,7 @@ export const settleRevenue = async ({ userId, settlementType }: SettleRevenuePar
       throw new IntentionalError('출금할 수 있는 금액이 없어요');
     }
 
-    if (
-      settleAmount + serviceFeeAmount + taxAmount + withdrawalFeeAmount !== totalRevenueAmount ||
-      Math.floor(taxBaseAmount * 0.033) !== taxAmount
-    ) {
+    if (settleAmount + serviceFeeAmount + taxAmount + withdrawalFeeAmount !== totalRevenueAmount) {
       throw new IntentionalError('출금 금액 계산에 문제가 발생했어요. 고객센터에 문의해주세요');
     }
 

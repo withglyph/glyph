@@ -46,7 +46,7 @@
     }
   `);
 
-  $: feeAmount = calculateFeeAmount($user.withdrawableRevenue, 500);
+  $: feeAmount = calculateFeeAmount($user.withdrawableRevenue, 1000);
 </script>
 
 <Modal bind:open>
