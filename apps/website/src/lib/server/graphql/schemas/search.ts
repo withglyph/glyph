@@ -81,13 +81,13 @@ builder.queryFields((t) => ({
             must_not: makeQueryContainers([
               {
                 query: {
-                  terms: { ['tags.id']: mutedTagIds },
+                  terms: { 'tags.id': mutedTagIds },
                 },
                 condition: mutedTagIds.length > 0,
               },
               {
                 query: {
-                  terms: { spaceId: mutedSpaceIds },
+                  terms: { 'space.id': mutedSpaceIds },
                 },
                 condition: mutedSpaceIds.length > 0,
               },

@@ -65,7 +65,7 @@ builder.objectType(FeaturedTag, {
                 bool: {
                   must_not: makeQueryContainers([
                     {
-                      query: { terms: { ['tags.id']: mutedTagIds } },
+                      query: { terms: { 'tags.id': mutedTagIds } },
                       condition: mutedTagIds.length > 0,
                     },
                     {
@@ -76,7 +76,7 @@ builder.objectType(FeaturedTag, {
 
                   must: { match_all: {} },
                   should: { term: { hasThumbnail: true } },
-                  filter: [{ term: { ['tags.id']: tagId } }],
+                  filter: [{ term: { 'tags.id': tagId } }],
                 },
               },
               functions: [
@@ -158,11 +158,11 @@ builder.queryFields((t) => ({
                   bool: {
                     must_not: makeQueryContainers([
                       {
-                        query: { terms: { ['tags.id']: mutedTagIds } },
+                        query: { terms: { 'tags.id': mutedTagIds } },
                         condition: mutedTagIds.length > 0,
                       },
                       {
-                        query: { terms: { spaceId: mutedSpaceIds } },
+                        query: { terms: { 'space.id': mutedSpaceIds } },
                         condition: mutedSpaceIds.length > 0,
                       },
                       {
@@ -177,14 +177,14 @@ builder.queryFields((t) => ({
                         query: { rank_feature: { field: 'reputation' } },
                       },
                       {
-                        query: { terms: { ['tags.id']: followingTagIds } },
+                        query: { terms: { 'tags.id': followingTagIds } },
                         condition: followingTagIds.length > 0,
                       },
                       {
                         query: {
                           terms: {
-                            ['tags.id']: viewedTagIds,
-                            boost: 0.2,
+                            'tags.id': viewedTagIds,
+                            'boost': 0.2,
                           },
                         },
                         condition: viewedTagIds.length > 0,
@@ -412,7 +412,7 @@ builder.queryFields((t) => ({
               bool: {
                 should: makeQueryContainers([
                   {
-                    query: { terms: { ['tags.id']: followingTagIds } },
+                    query: { terms: { 'tags.id': followingTagIds } },
                     condition: followingTagIds.length > 0,
                   },
                   {
@@ -424,7 +424,7 @@ builder.queryFields((t) => ({
             },
             must_not: makeQueryContainers([
               {
-                query: { terms: { ['tags.id']: mutedTagIds } },
+                query: { terms: { 'tags.id': mutedTagIds } },
                 condition: mutedTagIds.length > 0,
               },
               {
@@ -457,7 +457,7 @@ builder.queryFields((t) => ({
               bool: {
                 must_not: makeQueryContainers([
                   {
-                    query: { terms: { spaceId: mutedSpaceIds } },
+                    query: { terms: { 'space.id': mutedSpaceIds } },
                     condition: mutedSpaceIds.length > 0,
                   },
                 ]),
