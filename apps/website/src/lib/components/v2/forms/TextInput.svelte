@@ -68,6 +68,7 @@
         },
         md: {
           padding: '14px',
+          fontSize: '14px',
           height: '48px',
         },
         lg: {
