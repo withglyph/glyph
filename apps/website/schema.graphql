@@ -974,7 +974,7 @@ type User {
   notifications(category: UserNotificationCategory, unreadOnly: Boolean! = false): [IUserNotification!]!
   personalIdentity: UserPersonalIdentity
   point(kind: PointKind): Int!
-  points: [PointTransaction!]!
+  points(amountFilter: Int! = 0): [PointTransaction!]!
   posts(state: PostState! = PUBLISHED): [Post!]!
   profile: Profile!
   purchasedPosts: [Post!]!

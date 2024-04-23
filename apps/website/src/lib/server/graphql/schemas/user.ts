@@ -1,6 +1,6 @@
 import { webcrypto } from 'node:crypto';
 import dayjs from 'dayjs';
-import { and, asc, desc, eq, or } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, lt, or } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
 import * as R from 'radash';
@@ -248,11 +248,18 @@ User.implement({
 
     points: t.field({
       type: [PointTransaction],
-      resolve: async (user) => {
+      args: { amountFilter: t.arg.int({ defaultValue: 0 }) },
+      resolve: async (user, args) => {
         const transactions = await database
           .select({ id: PointTransactions.id })
           .from(PointTransactions)
-          .where(eq(PointTransactions.userId, user.id))
+          .where(
+            and(
+              eq(PointTransactions.userId, user.id),
+              args.amountFilter > 0 ? gt(PointTransactions.amount, 0) : undefined,
+              args.amountFilter < 0 ? lt(PointTransactions.amount, 0) : undefined,
+            ),
+          )
           .orderBy(desc(PointTransactions.createdAt));
 
         return transactions.map((transaction) => transaction.id);
