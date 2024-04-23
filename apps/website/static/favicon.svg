@@ -1,8 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-  <path d="M7.966 2H0v19.987h7.966V2ZM23.806 2H9.746v19.987h14.06V2Z" />
-  <style>
-    svg {
-      color: #171717;
-    }
-  </style>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <path fill="#171717" d="M0 0h512v512H0z" />
+  <path fill="#FDFDFD" d="M213.66 148.53H128v214.93h85.66V148.53Zm170.34 0H232.8v214.93H384V148.53Z" />
 </svg>
