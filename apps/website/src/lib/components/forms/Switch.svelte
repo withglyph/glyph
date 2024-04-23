@@ -26,7 +26,7 @@
       alignItems: 'center',
       borderRadius: 'full',
       aspectRatio: '[2/1]',
-      backgroundColor: { base: 'gray.200', _checked: 'gray.900' },
+      backgroundColor: { base: 'gray.200', _checked: 'brand.400' },
       transition: 'common',
       appearance: 'none',
       cursor: 'pointer',
