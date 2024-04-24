@@ -307,7 +307,7 @@
         {:else if $postComment.state === 'INACTIVE'}
           <p class={css({ fontSize: '14px', color: 'gray.400' })}>삭제된 댓글이에요</p>
         {:else}
-          <p class={css({ fontSize: '14px', whiteSpace: 'pre-wrap', wordBreak: 'break-all' })}>
+          <p class={css({ fontSize: '14px', whiteSpace: 'pre-wrap', wordBreak: 'break-word' })}>
             {$postComment.content}
           </p>
         {/if}
