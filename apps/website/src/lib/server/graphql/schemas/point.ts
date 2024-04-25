@@ -4,12 +4,13 @@ import { customAlphabet } from 'nanoid';
 import numeral from 'numeral';
 import { match } from 'ts-pattern';
 import { PaymentMethod, PointPurchaseState, PointTransactionCause } from '$lib/enums';
-import { NotFoundError } from '$lib/errors';
+import { NotFoundError, UnknownError } from '$lib/errors';
 import { database, inArray, PointPurchases, PointTransactions, PostPurchases, Users } from '$lib/server/database';
 import { exim, portone } from '$lib/server/external-api';
 import { builder } from '../builder';
-import { createObjectRef } from '../utils';
+import { createInterfaceRef, createObjectRef } from '../utils';
 import { Post } from './post';
+import { UserEventEnrollment } from './user';
 
 /**
  * * Types
@@ -29,25 +30,58 @@ PointPurchase.implement({
   }),
 });
 
-export const PointTransaction = createObjectRef('PointTransaction', PointTransactions);
-PointTransaction.implement({
+export const IPointTransaction = createInterfaceRef('IPointTransaction', PointTransactions);
+IPointTransaction.implement({
   fields: (t) => ({
     id: t.exposeID('id'),
     amount: t.exposeInt('amount'),
     cause: t.expose('cause', { type: PointTransactionCause }),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
+  }),
 
+  resolveType: (pointTransaction) =>
+    match(pointTransaction.cause)
+      .with('PURCHASE', () => 'PurchasePointTransaction')
+      .with('UNLOCK_CONTENT', () => 'UnlockContentPointTransaction')
+      .with('EVENT_REWARD', () => 'EventRewardPointTransaction')
+      .otherwise(() => 'PointTransaction'),
+});
+
+export const PointTransaction = createObjectRef('PointTransaction', PointTransactions);
+PointTransaction.implement({
+  interfaces: [IPointTransaction],
+});
+
+export const PurchasePointTransaction = createObjectRef('PurchasePointTransaction', PointTransactions);
+PurchasePointTransaction.implement({
+  interfaces: [IPointTransaction],
+  fields: (t) => ({
+    purchase: t.field({
+      type: PointPurchase,
+      resolve: async (pointTransaction) => {
+        if (!pointTransaction.targetId) {
+          throw new UnknownError();
+        }
+
+        return pointTransaction.targetId;
+      },
+    }),
+  }),
+});
+
+export const UnlockContentPointTransaction = createObjectRef('UnlockContentPointTransaction', PointTransactions);
+UnlockContentPointTransaction.implement({
+  interfaces: [IPointTransaction],
+  fields: (t) => ({
     post: t.field({
       type: Post,
-      nullable: true,
       resolve: async (pointTransaction, _, context) => {
         if (!pointTransaction.targetId) {
-          return null;
+          throw new UnknownError();
         }
 
         const loader = context.loader({
           name: 'PointTransaction.post',
-          nullable: true,
           load: async (postPurchaseIds: string[]) => {
             return await database
               .select({ id: PostPurchases.id, postId: PostPurchases.postId })
@@ -59,7 +93,24 @@ PointTransaction.implement({
 
         const postPurchase = await loader.load(pointTransaction.targetId);
 
-        return postPurchase?.postId;
+        return postPurchase.postId;
+      },
+    }),
+  }),
+});
+
+export const EventRewardPointTransaction = createObjectRef('EventRewardPointTransaction', PointTransactions);
+EventRewardPointTransaction.implement({
+  interfaces: [IPointTransaction],
+  fields: (t) => ({
+    eventEnrollment: t.field({
+      type: UserEventEnrollment,
+      resolve: async (pointTransaction) => {
+        if (!pointTransaction.targetId) {
+          throw new UnknownError();
+        }
+
+        return pointTransaction.targetId;
       },
     }),
   }),

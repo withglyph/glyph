@@ -84,7 +84,7 @@ import { BookmarkGroup } from './bookmark';
 import { PostComment } from './comment';
 import { Image } from './image';
 import { IUserNotification } from './notification';
-import { PointTransaction } from './point';
+import { IPointTransaction } from './point';
 import { Post } from './post';
 import { Revenue, RevenueWithdrawal } from './revenue';
 import { Space } from './space';
@@ -247,7 +247,7 @@ User.implement({
     }),
 
     points: t.field({
-      type: [PointTransaction],
+      type: [IPointTransaction],
       args: { amountFilter: t.arg.int({ defaultValue: 0 }) },
       resolve: async (user, args) => {
         const transactions = await database

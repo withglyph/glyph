@@ -154,6 +154,14 @@ type EmojiReactionNotification implements IUserNotification {
   state: UserNotificationState!
 }
 
+type EventRewardPointTransaction implements IPointTransaction {
+  amount: Int!
+  cause: PointTransactionCause!
+  createdAt: DateTime!
+  eventEnrollment: UserEventEnrollment!
+  id: ID!
+}
+
 type FeaturedTag {
   posts: [Post!]!
   tag: Tag!
@@ -198,6 +206,13 @@ input GeneratePostShareImageInput {
   size: String!
   space: String!
   title: String!
+}
+
+interface IPointTransaction {
+  amount: Int!
+  cause: PointTransactionCause!
+  createdAt: DateTime!
+  id: ID!
 }
 
 interface IUserNotification {
@@ -373,12 +388,11 @@ enum PointPurchaseState {
   UNDONE
 }
 
-type PointTransaction {
+type PointTransaction implements IPointTransaction {
   amount: Int!
   cause: PointTransactionCause!
   createdAt: DateTime!
   id: ID!
-  post: Post
 }
 
 enum PointTransactionCause {
@@ -618,6 +632,14 @@ input PurchasePointInput {
   paymentMethod: PaymentMethod!
   pointAgreement: Boolean!
   pointAmount: Int!
+}
+
+type PurchasePointTransaction implements IPointTransaction {
+  amount: Int!
+  cause: PointTransactionCause!
+  createdAt: DateTime!
+  id: ID!
+  purchase: PointPurchase!
 }
 
 input PurchasePostInput {
@@ -879,6 +901,14 @@ input UnlinkUserSingleSignOnInput {
   provider: UserSingleSignOnProvider!
 }
 
+type UnlockContentPointTransaction implements IPointTransaction {
+  amount: Int!
+  cause: PointTransactionCause!
+  createdAt: DateTime!
+  id: ID!
+  post: Post!
+}
+
 input UnlockPasswordedPostInput {
   password: String!
   postId: ID!
@@ -986,7 +1016,7 @@ type User {
   notifications(category: UserNotificationCategory, unreadOnly: Boolean! = false): [IUserNotification!]!
   personalIdentity: UserPersonalIdentity
   point(kind: PointKind): Int!
-  points(amountFilter: Int! = 0): [PointTransaction!]!
+  points(amountFilter: Int! = 0): [IPointTransaction!]!
   posts(state: PostState! = PUBLISHED): [Post!]!
   profile: Profile!
   purchasedPosts: [Post!]!

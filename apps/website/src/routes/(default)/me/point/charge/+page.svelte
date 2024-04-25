@@ -5,7 +5,7 @@
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import type { PointTransactionCause } from '$glitch';
+  import type { PaymentMethod, PointTransactionCause } from '$glitch';
 
   $: query = graphql(`
     query MePointChargePage_Query {
@@ -15,10 +15,25 @@
         id
 
         points(amountFilter: 1) {
+          __typename
           id
           amount
           cause
           createdAt
+
+          ... on PurchasePointTransaction {
+            purchase {
+              id
+              paymentMethod
+            }
+          }
+
+          ... on EventRewardPointTransaction {
+            eventEnrollment {
+              id
+              eventCode
+            }
+          }
         }
       }
     }
@@ -33,6 +48,22 @@
     UNDO_PURCHASE: '결제 취소',
     UNLOCK_CONTENT: '구매',
     EVENT_REWARD: '이벤트 보상',
+  };
+
+  const pointPurchasePaymentMethod: Record<PaymentMethod, string> = {
+    CREDIT_CARD: '신용카드',
+    BANK_ACCOUNT: '계좌이체',
+    VIRTUAL_BANK_ACCOUNT: '가상계좌',
+    PHONE_BILL: '휴대폰결제',
+    GIFTCARD_CULTURELAND: '문화상품권',
+    GIFTCARD_SMARTCULTURE: '스마트문화상품권',
+    GIFTCARD_BOOKNLIFE: '도서문화상품권',
+    PAYPAL: '페이팔',
+  };
+
+  const eventName: Record<string, string> = {
+    post_publish_202402: '포스트 업로드 이벤트 참여',
+    twitter_spacelink_2024: 'SNS 연동 이벤트 참여',
   };
 </script>
 
@@ -55,7 +86,13 @@
         +{comma(point.amount)}P
       </p>
       <p class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.600' })}>
-        {pointTransactionCause[point.cause]}
+        {#if point.__typename === 'PurchasePointTransaction'}
+          {pointPurchasePaymentMethod[point.purchase.paymentMethod]}
+        {:else if point.__typename === 'EventRewardPointTransaction'}
+          {eventName[point.eventEnrollment.eventCode] ?? '이벤트 참여'}
+        {:else}
+          {pointTransactionCause[point.cause]}
+        {/if}
       </p>
     </li>
   {:else}

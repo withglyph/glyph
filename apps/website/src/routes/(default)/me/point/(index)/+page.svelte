@@ -15,35 +15,38 @@
         id
 
         points(amountFilter: -1) {
+          __typename
           id
           amount
           cause
           createdAt
 
-          post {
-            id
-            permalink
-
-            thumbnail {
+          ... on UnlockContentPointTransaction {
+            post {
               id
-              ...Image_image
-            }
+              permalink
 
-            space {
-              id
-              slug
-              name
-
-              icon {
+              thumbnail {
                 id
                 ...Image_image
               }
-            }
 
-            publishedRevision {
-              id
-              title
-              subtitle
+              space {
+                id
+                slug
+                name
+
+                icon {
+                  id
+                  ...Image_image
+                }
+              }
+
+              publishedRevision {
+                id
+                title
+                subtitle
+              }
             }
           }
         }
@@ -74,78 +77,90 @@
         _firstOfType: { 'borderStyle': 'none', '& > a': { smDown: { paddingTop: '8px' } } },
       })}
     >
-      <a
-        class={flex({
-          align: 'flex-start',
-          justify: 'space-between',
-          gap: '14px',
-          paddingY: { base: '20px', sm: '24px' },
-        })}
-        href="/{point.post?.space?.slug}/{point.post?.permalink}"
-      >
-        <div class={css({ truncate: true })}>
-          <div class={flex({ align: 'center', wrap: 'wrap', marginBottom: '2px', fontSize: '13px' })}>
-            <time class={css({ color: 'gray.400' })} datetime={point.createdAt}>
-              {dayjs(point.createdAt).formatAsDateTime()}
-              {pointTransactionCause[point.cause]}
-            </time>
-            <span
-              class={flex({
-                align: 'center',
-                fontWeight: 'semibold',
-                color: 'brand.400',
-                _before: {
-                  content: '""',
-                  display: 'inline-block',
-                  marginX: '5px',
-                  width: '1px',
-                  height: '10px',
-                  backgroundColor: 'gray.400',
-                },
+      {#if point.__typename === 'UnlockContentPointTransaction'}
+        <a
+          class={flex({
+            align: 'flex-start',
+            justify: 'space-between',
+            gap: '14px',
+            paddingY: { base: '20px', sm: '24px' },
+          })}
+          href="/{point.post?.space?.slug}/{point.post?.permalink}"
+        >
+          <div class={css({ truncate: true })}>
+            <div class={flex({ align: 'center', wrap: 'wrap', marginBottom: '2px', fontSize: '13px' })}>
+              <time class={css({ color: 'gray.400' })} datetime={point.createdAt}>
+                {dayjs(point.createdAt).formatAsDateTime()}
+                {pointTransactionCause[point.cause]}
+              </time>
+              <span
+                class={flex({
+                  align: 'center',
+                  fontWeight: 'semibold',
+                  color: 'brand.400',
+                  _before: {
+                    content: '""',
+                    display: 'inline-block',
+                    marginX: '5px',
+                    width: '1px',
+                    height: '10px',
+                    backgroundColor: 'gray.400',
+                  },
+                })}
+              >
+                {comma(point.amount)}P
+              </span>
+            </div>
+            <h2 class={css({ fontSize: { base: '14px', sm: '15px' }, fontWeight: 'semibold', truncate: true })}>
+              {point.post?.publishedRevision?.title ?? '(제목 없음)'}
+            </h2>
+            <p
+              class={css({
+                fontSize: '13px',
+                fontWeight: { sm: 'medium' },
+                color: 'gray.600',
+                height: '19px',
+                truncate: true,
               })}
             >
-              {comma(point.amount)}P
-            </span>
-          </div>
-          <h2 class={css({ fontSize: { base: '14px', sm: '15px' }, fontWeight: 'semibold', truncate: true })}>
-            {point.post?.publishedRevision?.title ?? '(제목 없음)'}
-          </h2>
-          <p
-            class={css({
-              fontSize: '13px',
-              fontWeight: { sm: 'medium' },
-              color: 'gray.600',
-              height: '19px',
-              truncate: true,
-            })}
-          >
-            {point.post?.publishedRevision?.subtitle ?? ''}
-          </p>
-
-          <div class={flex({ align: 'center', gap: '4px', marginTop: '6px', height: '24px' })}>
-            <Image
-              style={css.raw({ flex: 'none', size: '18px' })}
-              $image={point.post?.space?.icon}
-              placeholder
-              size={24}
-            />
-            <p class={css({ fontSize: '12px', color: 'gray.600', truncate: true })}>
-              {point.post?.space?.name ?? '스페이스'}
+              {point.post?.publishedRevision?.subtitle ?? ''}
             </p>
-          </div>
-        </div>
 
-        <Image
-          style={css.raw({
-            flex: 'none',
-            width: { base: '100px', sm: '160px' },
-            aspectRatio: '16/10',
-          })}
-          $image={point.post?.thumbnail}
-          placeholder
-          size={256}
-        />
-      </a>
+            <div class={flex({ align: 'center', gap: '4px', marginTop: '6px', height: '24px' })}>
+              <Image
+                style={css.raw({ flex: 'none', size: '18px' })}
+                $image={point.post?.space?.icon}
+                placeholder
+                size={24}
+              />
+              <p class={css({ fontSize: '12px', color: 'gray.600', truncate: true })}>
+                {point.post?.space?.name ?? '스페이스'}
+              </p>
+            </div>
+          </div>
+
+          <Image
+            style={css.raw({
+              flex: 'none',
+              width: { base: '100px', sm: '160px' },
+              aspectRatio: '16/10',
+            })}
+            $image={point.post?.thumbnail}
+            placeholder
+            size={256}
+          />
+        </a>
+      {:else}
+        <time class={css({ fontSize: '13px', color: 'gray.500' })} datetime={point.createdAt}>
+          {dayjs(point.createdAt).formatAsDateTime()}
+        </time>
+        <p class={css({ marginTop: '4px', fontSize: '15px', fontWeight: 'semibold', color: 'brand.400' })}>
+          {comma(point.amount)}P
+        </p>
+        <p class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.600' })}>
+          {pointTransactionCause[point.cause]}
+        </p>
+      {/if}
     </li>
   {:else}
     <li class={css({ margin: 'auto', paddingY: '60px', fontSize: '14px', color: 'gray.500' })}>구매한 내역이 없어요</li>
