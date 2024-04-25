@@ -6,7 +6,7 @@
   import IconSettings from '~icons/tabler/settings';
   import IconStar from '~icons/tabler/star';
   import { flex } from '$styled-system/patterns';
-  import NavItem from './NavItem.svelte';
+  import NavItem from '../me/NavItem.svelte';
 </script>
 
 <div

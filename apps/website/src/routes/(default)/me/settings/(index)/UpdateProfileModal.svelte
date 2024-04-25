@@ -2,9 +2,10 @@
   import IconCamera from '~icons/tabler/camera';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Icon, Image, Modal } from '$lib/components';
-  import { FormField, TextInput } from '$lib/components/forms';
+  import { Icon, Image } from '$lib/components';
   import { ThumbnailPicker } from '$lib/components/media';
+  import { Button, Modal } from '$lib/components/v2';
+  import { FormField, TextInput } from '$lib/components/v2/forms';
   import { createMutationForm } from '$lib/form';
   import { UpdateUserProfileSchema } from '$lib/validations';
   import { css } from '$styled-system/css';
@@ -34,7 +35,7 @@
   let avatar: typeof $profile.avatar;
   $: avatar = $profile.avatar;
 
-  const { form, data, setInitialValues } = createMutationForm({
+  const { form, data, setInitialValues, isSubmitting, handleSubmit } = createMutationForm({
     mutation: graphql(`
       mutation MeSettingsPage_UpdateProfileModal_UpdateUserProfile_Mutation($input: UpdateUserProfileInput!) {
         updateUserProfile(input: $input) {
@@ -61,57 +62,64 @@
   });
 </script>
 
-<Modal size="md" bind:open>
+<Modal bind:open>
   <svelte:fragment slot="title">프로필 수정</svelte:fragment>
 
   <form use:form>
+    <p class={css({ fontSize: '14px' })}>프로필 이미지</p>
     <button
       class={center({
-        'position': 'relative',
-        'flexDirection': 'column',
-        'borderRadius': '[24px]',
-        'marginX': 'auto',
-        'marginBottom': '12px',
-        'backgroundColor': 'gray.50',
-        'size': '320px',
-        'overflow': 'hidden',
-        '& > div': {
-          _hover: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          },
-        },
+        position: 'relative',
+        flexDirection: 'column',
+        marginY: '8px',
+        borderWidth: '1px',
+        borderColor: 'gray.200',
+        backgroundColor: 'gray.50',
+        size: '100px',
       })}
       type="button"
       on:click={() => thumbnailPicker.show()}
     >
       <Image style={css.raw({ size: 'full' })} $image={avatar} size={512} />
       <div
-        class={css({
+        class={center({
           userSelect: 'none',
           position: 'absolute',
           top: '1/2',
+          translate: 'auto',
           translateY: '-1/2',
-          display: 'none',
           borderRadius: 'full',
           backgroundColor: 'gray.900/50',
-          size: '60px',
+          size: '32px',
         })}
       >
-        <Icon style={css.raw({ color: '[#FFF9F8]' })} icon={IconCamera} size={24} />
+        <Icon style={css.raw({ color: 'gray.5' })} icon={IconCamera} />
       </div>
     </button>
+    <p class={css({ fontSize: '13px', color: 'gray.500' })}>800x800 픽셀 이상 (1:1 비율)</p>
 
-    <FormField name="name" label="닉네임">
-      <TextInput style={css.raw({ fontWeight: 'bold', width: 'full' })} maxlength={20} placeholder="닉네임 입력">
-        <span slot="right-icon" class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.400' })}>
+    <FormField name="name" style={css.raw({ marginTop: '42px' })} label="이름">
+      <TextInput maxlength={20} placeholder="프로필 이름을 입력해주세요">
+        <span
+          slot="right-icon"
+          class={css({ flex: 'none', fontSize: '14px', fontWeight: 'medium', color: 'gray.300' })}
+        >
           {$data.name.length} / 20
         </span>
       </TextInput>
     </FormField>
-    <Button style={css.raw({ marginTop: '16px', width: 'full' })} size="xl" type="submit">수정</Button>
   </form>
+
+  <Button
+    slot="action"
+    style={css.raw({ width: 'full' })}
+    loading={$isSubmitting}
+    size="lg"
+    type="submit"
+    on:click={handleSubmit}
+  >
+    수정
+  </Button>
 </Modal>
 
 <ThumbnailPicker bind:this={thumbnailPicker} on:change={(e) => (avatar = e.detail)} />

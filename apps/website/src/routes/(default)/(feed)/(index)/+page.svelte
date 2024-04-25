@@ -121,6 +121,7 @@
           index % 3 === 2 && { backgroundColor: 'gray.150' },
         )}
         href={`/tag/${tag.name}`}
+        theme="light"
       >
         #{tag.name}
       </Tag>

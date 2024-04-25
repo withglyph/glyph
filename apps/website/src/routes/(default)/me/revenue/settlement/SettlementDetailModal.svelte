@@ -1,8 +1,8 @@
 <script lang="ts">
   import dayjs from 'dayjs';
-  import IconInfoCircle from '~icons/tabler/alert-circle';
+  import IconHelpLine from '~icons/glyph/help-line';
   import { fragment, graphql } from '$glitch';
-  import { Icon, Tooltip } from '$lib/components';
+  import { Chip, Icon, Tooltip } from '$lib/components';
   import { Modal } from '$lib/components/v2';
   import { banks } from '$lib/const/revenue';
   import { comma } from '$lib/utils';
@@ -11,7 +11,6 @@
   import type {
     MeRevenueSettlementPage_SettlementDetailModal_revenueWithdrawal,
     MeRevenueSettlementPage_SettlementDetailModal_user,
-    RevenueWithdrawalKind,
     RevenueWithdrawalState,
   } from '$glitch';
 
@@ -53,15 +52,10 @@
     `),
   );
 
-  const revenueWithdrawalKind: Record<RevenueWithdrawalKind, string> = {
-    INSTANT: '즉시출금',
-    MONTHLY: '자동출금',
-  };
-
   const revenueWithdrawalState: Record<RevenueWithdrawalState, string> = {
-    FAILED: '지급실패',
-    PENDING: '대기중',
-    SUCCESS: '지급완료',
+    FAILED: '실패',
+    PENDING: '진행중',
+    SUCCESS: '완료',
   };
 </script>
 
@@ -69,7 +63,7 @@
   <svelte:fragment slot="title">출금 상세 정보</svelte:fragment>
 
   {#if $revenueWithdrawal}
-    <div class={css({ paddingTop: '24px', paddingBottom: { base: '60px', sm: '24px' }, paddingX: '20px' })}>
+    <div class={css({ paddingBottom: '60px' })}>
       <div
         class={css({
           _after: {
@@ -81,8 +75,20 @@
           },
         })}
       >
-        <p class={css({ fontWeight: 'semibold' })}>{$revenueWithdrawal?.id.toUpperCase()}</p>
-        <time class={css({ marginTop: '5px', fontSize: '14px', color: 'gray.500' })}>
+        <div class={flex({ align: 'center', gap: '6px' })}>
+          <p class={css({ fontSize: '13px', fontWeight: 'semibold' })}>{$revenueWithdrawal?.id.toUpperCase()}</p>
+          <Chip
+            color={$revenueWithdrawal.state === 'SUCCESS'
+              ? 'grass'
+              : $revenueWithdrawal.state === 'PENDING'
+                ? 'violet'
+                : 'red'}
+            variant="fill"
+          >
+            {revenueWithdrawalState[$revenueWithdrawal.state]}
+          </Chip>
+        </div>
+        <time class={css({ marginTop: '2px', fontSize: '12px', color: 'gray.500' })}>
           {dayjs($revenueWithdrawal?.createdAt).formatAsDateTime()}
         </time>
 
@@ -90,28 +96,31 @@
           class={flex({
             align: 'center',
             gap: '2px',
-            marginY: '12px',
-            paddingX: '10px',
-            paddingY: '8px',
-            borderRadius: '6px',
+            marginTop: '10px',
+            marginBottom: '20px',
+            borderWidth: '1px',
+            borderColor: 'gray.100',
+            paddingX: '12px',
+            paddingY: '14px',
             fontSize: '13px',
             color: 'gray.500',
-            backgroundColor: 'gray.50',
           })}
         >
-          <span>{banks[$revenueWithdrawal?.bankCode ?? '']} {$revenueWithdrawal?.bankAccountNumber}</span>
-          <span>({$user.settlementIdentity?.bankAccountHolderName})</span>
+          지급 계좌:
+          {banks[$revenueWithdrawal?.bankCode ?? '']}
+          {$revenueWithdrawal?.bankAccountNumber}
+          ({$user.settlementIdentity?.bankAccountHolderName})
         </div>
       </div>
 
-      <div class={css({ marginTop: '16px' })}>
+      <div class={css({ paddingY: '16px' })}>
         <p
           class={css({
             borderBottomWidth: '1px',
-            borderColor: 'gray.300',
-            paddingX: '10px',
-            paddingY: '8px',
-            fontSize: '18px',
+            borderColor: 'gray.100',
+            paddingX: '12px',
+            paddingBottom: '8px',
+            fontSize: { base: '15px', sm: '16px' },
             fontWeight: 'semibold',
           })}
         >
@@ -124,127 +133,55 @@
               gap: '16px',
               borderBottomWidth: '1px',
               borderColor: 'gray.100',
-              paddingX: '10px',
+              paddingX: '12px',
               paddingY: '14px',
             })}
           >
-            <dt class={css({ width: '120px' })}>유형</dt>
-            <dd class={css({ fontWeight: 'semibold' })}>{revenueWithdrawalKind[$revenueWithdrawal.kind]}</dd>
-          </div>
-          <div
-            class={flex({
-              align: 'center',
-              gap: '16px',
-              borderBottomWidth: '1px',
-              borderColor: 'gray.100',
-              paddingX: '10px',
-              paddingY: '14px',
-            })}
-          >
-            <dt class={css({ width: '120px' })}>상태</dt>
-            <dd class={css({ fontWeight: 'semibold' })}>{revenueWithdrawalState[$revenueWithdrawal.state]}</dd>
-          </div>
-          <div
-            class={flex({
-              align: 'center',
-              gap: '16px',
-              borderBottomWidth: '1px',
-              borderColor: 'gray.100',
-              paddingX: '10px',
-              paddingY: '14px',
-            })}
-          >
-            <dt class={css({ width: '120px' })}>신청금액</dt>
+            <dt class={css({ width: '120px' })}>출금 신청 금액</dt>
             <dd class={css({ fontWeight: 'semibold' })}>{comma($revenueWithdrawal.revenueAmount)}원</dd>
           </div>
-        </dl>
-      </div>
-
-      <div class={css({ marginTop: '24px' })}>
-        <p
-          class={css({
-            borderBottomWidth: '1px',
-            borderColor: 'gray.300',
-            paddingX: '10px',
-            paddingY: '8px',
-            fontSize: '18px',
-            fontWeight: 'semibold',
-          })}
-        >
-          공제내역
-        </p>
-        <dl class={css({ fontSize: '14px' })}>
           <div
             class={flex({
               align: 'center',
               gap: '16px',
               borderBottomWidth: '1px',
               borderColor: 'gray.100',
-              paddingX: '10px',
+              paddingX: '12px',
               paddingY: '14px',
             })}
           >
             <dt class={css({ width: '120px' })}>서비스 이용료</dt>
-            <dd class={css({ fontWeight: 'semibold' })}>{comma($revenueWithdrawal.serviceFeeAmount)}원</dd>
+            <dd class={css({ fontWeight: 'semibold' })}>무료</dd>
           </div>
-          {#if $revenueWithdrawal.kind === 'INSTANT'}
-            <div
-              class={flex({
-                align: 'center',
-                gap: '16px',
-                borderBottomWidth: '1px',
-                borderColor: 'gray.100',
-                paddingX: '10px',
-                paddingY: '14px',
-              })}
-            >
-              <dt class={flex({ align: 'center', gap: '2px', width: '120px' })}>
-                즉시출금 수수료
-                <Tooltip message="즉시출금 신청 시 1건당 500원의 추가 수수료가 발생해요">
-                  <Icon style={css.raw({ color: 'gray.500', transform: 'rotate(180deg)' })} icon={IconInfoCircle} />
-                </Tooltip>
-              </dt>
-              <dd class={css({ fontWeight: 'semibold' })}>500원</dd>
-            </div>
-          {/if}
           <div
             class={flex({
               align: 'center',
               gap: '16px',
               borderBottomWidth: '1px',
               borderColor: 'gray.100',
-              paddingX: '10px',
+              paddingX: '12px',
               paddingY: '14px',
             })}
           >
             <dt class={flex({ align: 'center', gap: '2px', width: '120px' })}>
-              소득세
-              <Tooltip
-                style={flex.raw({ align: 'center' })}
-                message="소득에 대한 세금을 직접 납부하는 불편함을 줄여드리기 위해 회사가 원천징수를 통해 대리해 납부해 드리는 금액이에요"
-              >
-                <Icon style={css.raw({ color: 'gray.500', transform: 'rotate(180deg)' })} icon={IconInfoCircle} />
+              출금 수수료
+              <Tooltip message="출금에 필요한 금융망 이용료" offset={10} placement="top">
+                <Icon style={css.raw({ 'color': 'gray.400', '& *': { strokeWidth: '[1]' } })} icon={IconHelpLine} />
               </Tooltip>
             </dt>
-            <dd class={css({ fontWeight: 'semibold' })}>{comma($revenueWithdrawal.taxAmount)}원</dd>
+            <dd class={css({ fontWeight: 'semibold' })}>{comma(1000)}원</dd>
           </div>
         </dl>
       </div>
 
-      <p class={css({ paddingY: '10px', fontSize: '12px', color: 'gray.500' })}>
-        원천징수란 소득자가 자신의 세금을 직접 납부하는 게 아닌, 원천징수 대상 소득을 지급하는 원천징수 의무자(회사)가
-        소득자로부터 세금을 미리 징수하여 국가에 납부하는 제도를 말해요. 원천징수된 세금은 다음 해 5월 종합소득세 신고를
-        통해 돌려받을 수 있어요.
-      </p>
-
-      <div class={css({ marginTop: '24px' })}>
+      <div class={css({ paddingTop: '16px' })}>
         <p
           class={css({
             borderBottomWidth: '1px',
-            borderColor: 'gray.300',
-            paddingX: '10px',
-            paddingY: '8px',
-            fontSize: '18px',
+            borderColor: 'gray.100',
+            paddingX: '12px',
+            paddingBottom: '8px',
+            fontSize: { base: '15px', sm: '16px' },
             fontWeight: 'semibold',
           })}
         >
@@ -255,7 +192,7 @@
             class={flex({
               align: 'center',
               gap: '16px',
-              paddingX: '10px',
+              paddingX: '12px',
               paddingY: '14px',
             })}
           >

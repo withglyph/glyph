@@ -5,7 +5,8 @@
   import Twitter from '$assets/icons/twitter.svg?component';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Modal } from '$lib/components';
+  import { Alert } from '$lib/components';
+  import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import type { MeSettingsPage_UserSingleSignOn_user, UserSingleSignOnProvider } from '$glitch';
@@ -68,35 +69,36 @@
   $: singleSignOns = R.objectify($user.singleSignOns, (v) => v.provider);
 </script>
 
-<div class={flex({ align: 'center', justify: 'space-between', flexWrap: 'wrap', gap: '16px' })}>
-  <div class={flex({ align: 'center', gap: '12px' })}>
-    <div class={center({ size: '36px' })}>
-      {#if provider === 'GOOGLE'}
-        <Google class={css({ size: '36px' })} />
-      {:else if provider === 'NAVER'}
-        <Naver class={css({ size: '36px' })} />
-      {:else if provider === 'TWITTER'}
-        <Twitter class={css({ size: '36px' })} />
-      {/if}
-    </div>
-    <div>
-      <h3 class={css({ marginRight: '8px', fontSize: '18px', fontWeight: 'bold' })}>{R.capitalize(provider)}</h3>
-      {#if singleSignOns[provider]}
-        <p class={css({ fontSize: '15px', color: 'gray.500', wordBreak: 'keep-all' })}>
-          {singleSignOns[provider].email}
-          {#if provider === 'TWITTER' && $user.eventEnrollment?.eligible}
-            <span class={css({ fontSize: '13px' })}>| 링크 확인됨</span>
-          {/if}
-        </p>
-      {/if}
-    </div>
+<div class={flex({ align: 'center', gap: '16px' })}>
+  <div class={center({ size: '38px' })}>
+    {#if provider === 'GOOGLE'}
+      <Google class={css({ size: '38px' })} />
+    {:else if provider === 'NAVER'}
+      <Naver class={css({ size: '38px' })} />
+    {:else if provider === 'TWITTER'}
+      <Twitter class={css({ size: '38px' })} />
+    {/if}
+  </div>
+  <div class={css({ flexGrow: '1', truncate: true })}>
+    <h3 class={css({ marginRight: '8px', fontSize: '15px', fontWeight: 'medium' })}>{R.capitalize(provider)}</h3>
+    {#if singleSignOns[provider]}
+      <p class={css({ fontSize: '13px', color: 'gray.600', wordBreak: 'keep-all', truncate: true })}>
+        {singleSignOns[provider].email}
+        {#if provider === 'TWITTER' && $user.eventEnrollment?.eligible}
+          <span>| 링크확인됨</span>
+        {/if}
+      </p>
+    {/if}
   </div>
   {#if singleSignOns[provider]}
-    <Button color="tertiary" size="md" variant="outlined" on:click={() => (open = true)}>연동 해제</Button>
+    <Button style={css.raw({ flex: 'none' })} size="sm" variant="gray-outline" on:click={() => (open = true)}>
+      연동해제
+    </Button>
   {:else}
     <Button
-      color="secondary"
-      size="md"
+      style={css.raw({ flex: 'none' })}
+      size="sm"
+      variant="gray-sub-fill"
       on:click={async () => {
         const { url } = await issueUserSingleSignOnAuthorizationUrl({
           type: 'LINK',
@@ -112,23 +114,25 @@
   {/if}
 </div>
 
-<Modal size="sm" bind:open>
+<Alert bind:open>
   <svelte:fragment slot="title">{providerName} 계정 연동을 해제할까요?</svelte:fragment>
 
-  <div slot="action" class={flex({ gap: '12px', width: 'full' })}>
-    <Button style={css.raw({ width: 'full' })} color="secondary" size="xl" on:click={() => (open = false)}>
-      돌아가기
+  <svelte:fragment slot="action">
+    <Button style={css.raw({ hideFrom: 'sm' })} size="lg" variant="gray-sub-fill" on:click={() => (open = false)}>
+      취소
+    </Button>
+    <Button style={css.raw({ hideBelow: 'sm' })} size="lg" variant="gray-outline" on:click={() => (open = false)}>
+      취소
     </Button>
     <Button
-      style={css.raw({ width: 'full' })}
-      size="xl"
+      size="lg"
       on:click={async () => {
         await unlinkUserSingleSignOn({ provider });
         mixpanel.track('user:single-sign-on:unlink', { provider });
         open = false;
       }}
     >
-      해제하기
+      해제
     </Button>
-  </div>
-</Modal>
+  </svelte:fragment>
+</Alert>

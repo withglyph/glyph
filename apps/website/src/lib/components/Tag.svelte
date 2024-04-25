@@ -4,6 +4,7 @@
   import type { SystemStyleObject } from '$styled-system/types';
 
   export let size: 'sm' | 'lg' = 'lg';
+  export let theme: 'dark' | 'light' = 'light';
   export let style: SystemStyleObject | undefined = undefined;
 
   export let as: 'div' | 'a' | 'label' = 'a';
@@ -16,6 +17,7 @@
 
   const recipe = cva({
     base: {
+      display: 'inline-block',
       backgroundColor: 'gray.100',
       height: 'fit',
       transition: 'common',
@@ -27,21 +29,27 @@
     variants: {
       size: {
         sm: {
-          'paddingX': '6px',
-          'paddingY': '2px',
-          'fontSize': '12px',
+          paddingX: '6px',
+          paddingY: '2px',
+          fontSize: '12px',
+        },
+        lg: {
+          paddingX: '10px',
+          paddingY: '6px',
+          fontSize: '13px',
+          fontWeight: 'medium',
+        },
+      },
+      theme: {
+        light: {
           'color': 'gray.500',
-          'backgroundColor': 'gray.50',
+          'backgroundColor': { base: 'gray.50', _hover: 'gray.200' },
           '&:has(:checked)': {
             borderWidth: '1px',
             borderColor: 'gray.300',
           },
         },
-        lg: {
-          'paddingX': '14px',
-          'paddingY': '6px',
-          'fontSize': '13px',
-          'fontWeight': 'medium',
+        dark: {
           'color': 'gray.5',
           'backgroundColor': 'gray.900',
           '&:has(:checked)': {
@@ -58,10 +66,9 @@
   this={as}
   id={name}
   class={css(
-    recipe.raw({ size }),
+    recipe.raw({ size, theme }),
     as !== 'div' && { cursor: 'pointer' },
     'right-icon' in $$slots && {
-      paddingLeft: size === 'sm' ? '6px' : '10px',
       paddingRight: size === 'sm' ? '4px' : '8px',
     },
     style,

@@ -91,7 +91,7 @@
     bind:this={inputEl}
     id={name}
     {name}
-    class={css({ flexGrow: '1', minWidth: '0' })}
+    class={css({ flexGrow: '1', width: 'full', minWidth: '0' })}
     type="text"
     on:input
     on:keydown

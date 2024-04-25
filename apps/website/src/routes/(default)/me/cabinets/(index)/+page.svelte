@@ -2,7 +2,8 @@
   import { graphql } from '$glitch';
   import { Helmet } from '$lib/components';
   import { css } from '$styled-system/css';
-  import PostItem from '../PostItem.svelte';
+  import { flex } from '$styled-system/patterns';
+  import Post from '../../../(feed)/Post.svelte';
 
   $: query = graphql(`
     query MeCabinetsIndexPage_Query {
@@ -11,21 +12,43 @@
       me @_required {
         id
 
-        emojiReactedPosts {
+        bookmarkGroups {
           id
-          ...PostItem_post
+          name
+          postCount
+
+          posts {
+            id
+            ...Feed_Post_post
+          }
         }
       }
+
+      ...Feed_Post_query
     }
   `);
 </script>
 
-<Helmet description="이모지 반응을 남긴 포스트 목록을 둘러보세요" title="반응을 남긴 포스트" />
+<Helmet description="북마크한 포스트 목록을 둘러보세요" title="북마크한 포스트" />
 
-{#each $query.me.emojiReactedPosts as post (post.id)}
-  <PostItem $post={post} />
-{:else}
-  <p class={css({ paddingY: '40px', fontWeight: 'medium', color: 'gray.500', textAlign: 'center' })}>
-    이모지 반응을 남긴 포스트가 없어요
-  </p>
-{/each}
+<p class={css({ paddingTop: '12px', paddingBottom: '10px', fontSize: '12px', color: 'gray.500' })}>
+  총 {$query.me.bookmarkGroups[0].postCount}개의 포스트
+</p>
+
+<ul class={flex({ direction: 'column', flexGrow: '1' })}>
+  {#each $query.me.bookmarkGroups[0].posts as post (post.id)}
+    <li
+      class={css({
+        borderTopWidth: '1px',
+        borderTopColor: 'gray.100',
+        _firstOfType: { 'borderStyle': 'none', '& > div > a': { paddingTop: '0' } },
+      })}
+    >
+      <Post $post={post} {$query} showBookmark showDate showSpace />
+    </li>
+  {:else}
+    <li class={css({ marginY: 'auto', paddingY: '60px', fontSize: '14px', color: 'gray.500', textAlign: 'center' })}>
+      북마크한 포스트가 없어요
+    </li>
+  {/each}
+</ul>

@@ -318,7 +318,7 @@
                 fontSize: '14px',
                 width: 'full',
               })}
-              href="/point"
+              href="/me/point"
             >
               <Icon icon={IconCoin} />
               포인트

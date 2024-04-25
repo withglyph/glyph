@@ -77,7 +77,6 @@
     grow: '1',
     paddingBottom: { base: '96px', sm: '120px' },
     width: 'full',
-    background: 'gray.5',
   })}
 >
   <div

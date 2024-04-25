@@ -18,7 +18,7 @@
   <label
     class={css(
       { display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '6px', fontSize: '14px' },
-      hideLabel && { visibility: 'hidden' },
+      hideLabel && { display: 'none' },
     )}
     for={name}
   >
