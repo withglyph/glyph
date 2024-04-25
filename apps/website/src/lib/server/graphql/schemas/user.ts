@@ -599,6 +599,7 @@ UserPersonalIdentity.implement({
     name: t.exposeString('name'),
     birthday: t.expose('birthday', { type: 'DateTime' }),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
+    expiresAt: t.expose('expiresAt', { type: 'DateTime', nullable: true }),
   }),
 });
 

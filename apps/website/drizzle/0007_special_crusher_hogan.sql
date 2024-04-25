@@ -1,0 +1,1 @@
+ALTER TABLE "user_personal_identities" ADD COLUMN "expires_at" timestamp with time zone;

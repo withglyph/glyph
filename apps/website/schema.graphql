@@ -1052,6 +1052,7 @@ enum UserNotificationState {
 type UserPersonalIdentity {
   birthday: DateTime!
   createdAt: DateTime!
+  expiresAt: DateTime
   id: ID!
   name: String!
 }

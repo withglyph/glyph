@@ -996,6 +996,7 @@ export const UserPersonalIdentities = pgTable('user_personal_identities', {
   createdAt: datetime('created_at')
     .notNull()
     .default(sql`now()`),
+  expiresAt: datetime('expires_at'),
 });
 
 export const ProvisionedUsers = pgTable('provisioned_users', {
