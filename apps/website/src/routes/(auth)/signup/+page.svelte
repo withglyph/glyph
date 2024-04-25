@@ -69,7 +69,7 @@
 
   <FormField name="name" style={css.raw({ marginTop: '36px' })} label="닉네임">
     <TextInput style={css.raw({ width: 'full' })} maxlength={20} placeholder="닉네임을 입력해주세요">
-      <span slot="right-icon" class={css({ fontWeight: 'medium', color: 'gray.300' })}>
+      <span slot="right-icon" class={css({ fontWeight: 'medium', color: 'gray.300', flex: 'none' })}>
         <mark class={css({ color: 'gray.600' })}>{$data.name.length}</mark>
         /20
       </span>
