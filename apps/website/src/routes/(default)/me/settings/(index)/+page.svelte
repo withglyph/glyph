@@ -44,6 +44,7 @@
           id
           name
           createdAt
+          expiresAt
         }
 
         profile {
@@ -108,6 +109,8 @@
         break;
     }
   });
+
+  $: expired = dayjs().kst() > dayjs($query.me.personalIdentity?.expiresAt);
 </script>
 
 <svelte:head>
@@ -220,19 +223,22 @@
       <TableRow>
         <TableData>{$query.me.personalIdentity?.name ?? ''}</TableData>
         <TableData>
-          <!-- TODO: 기간 만료된 경우 -->
-          <Chip style={css.raw({ width: 'fit' })} color={$query.me.personalIdentity ? 'grass' : 'red'} variant="fill">
-            {$query.me.personalIdentity ? '인증완료' : '미인증'}
+          <Chip
+            style={css.raw({ width: 'fit' })}
+            color={$query.me.personalIdentity && !expired ? 'grass' : 'red'}
+            variant="fill"
+          >
+            {$query.me.personalIdentity ? (expired ? '인증만료' : '인증완료') : '미인증'}
           </Chip>
         </TableData>
-        <!-- TODO: 만료 기간 표시 -->
-        <TableData>2024.04.22</TableData>
+        <TableData>
+          {$query.me.personalIdentity ? dayjs($query.me.personalIdentity.expiresAt).formatAsDate() : ''}
+        </TableData>
       </TableRow>
     </TableBody>
   </Table>
 
-  <!-- TODO: 기간 만료된 경우 -->
-  {#if !$query.me.personalIdentity || false}
+  {#if !$query.me.personalIdentity || expired}
     <Button
       style={css.raw({ marginTop: '8px', width: 'full', height: '40px' })}
       size="sm"
