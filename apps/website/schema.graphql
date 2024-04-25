@@ -958,6 +958,7 @@ input UpdateUserProfileInput {
 type User {
   allowedAgeRating: [PostAgeRating!]!
   bookmarkGroups: [BookmarkGroup!]!
+  commentCount: Int!
   comments(page: Int! = 1, take: Int! = 10): [PostComment!]!
   contentFilterPreferences: [UserContentFilterPreference!]!
   email: String!

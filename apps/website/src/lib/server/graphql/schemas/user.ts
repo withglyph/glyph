@@ -1,6 +1,6 @@
 import { webcrypto } from 'node:crypto';
 import dayjs from 'dayjs';
-import { and, asc, desc, eq, gt, lt, or } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gt, lt, or } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
 import * as R from 'radash';
@@ -550,6 +550,16 @@ User.implement({
           .limit(args.take)
           .offset((args.page - 1) * args.take)
           .then((rows) => rows.map((row) => row.id));
+      },
+    }),
+
+    commentCount: t.int({
+      resolve: async (user) => {
+        return await database
+          .select({ count: count() })
+          .from(PostComments)
+          .where(and(eq(PostComments.userId, user.id), eq(PostComments.state, 'ACTIVE')))
+          .then((rows) => rows[0].count);
       },
     }),
   }),
