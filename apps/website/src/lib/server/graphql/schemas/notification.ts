@@ -35,6 +35,7 @@ IUserNotification.implement({
       .with('PURCHASE', () => 'PurchaseNotification')
       .with('SUBSCRIBE', () => 'SubscribeNotification')
       .with('COMMENT', () => 'CommentNotification')
+      .with('EMOJI_REACTION', () => 'EmojiReactionNotification')
       .run(),
 });
 
