@@ -1953,7 +1953,7 @@ builder.mutationFields((t) => ({
           spaceId: post.spaceId,
         });
 
-        createNotification({
+        await createNotification({
           userId: post.userId,
           category: 'EMOJI_REACTION',
           actorId: masquerade.profileId,
