@@ -33,16 +33,16 @@
   this={element}
   class={css(
     {
-      paddingX: '16px',
-      paddingY: '14px',
+      paddingX: '14px',
+      paddingY: '12px',
       width: 'full',
-      fontSize: '14px',
+      fontSize: '13px',
       fontWeight: 'medium',
       textAlign: 'left',
-      color: 'gray.900',
+      color: 'gray.600',
       borderBottomWidth: '1px',
-      borderBottomColor: 'gray.100',
-      _lastOfType: { borderBottomWidth: '0' },
+      borderBottomColor: 'gray.200',
+      _last: { borderBottomWidth: '0' },
     },
     disabled ? { cursor: 'not-allowed' } : { _hover: { backgroundColor: 'gray.100', color: 'gray.900' } },
     style,

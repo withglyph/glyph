@@ -80,7 +80,7 @@
         borderWidth: '1px',
         borderColor: 'gray.200',
         backgroundColor: 'gray.5',
-        minWidth: '148px',
+        minWidth: '128px',
         zIndex: '50',
       },
       alignment === 'horizontal' && { flexDirection: 'row', paddingY: '14px' },
