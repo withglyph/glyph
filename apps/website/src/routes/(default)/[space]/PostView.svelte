@@ -499,9 +499,9 @@
             }}
           >
             {#if $query.post.space?.muted}
-              스페이스 숨기기 해제
+              스페이스 뮤트 해제
             {:else}
-              스페이스 숨기기
+              스페이스 뮤트
             {/if}
           </MenuItem>
         {/if}
@@ -669,9 +669,9 @@
               }}
             >
               {#if $query.post.space?.muted}
-                스페이스 숨기기 해제
+                스페이스 뮤트 해제
               {:else}
-                스페이스 숨기기
+                스페이스 뮤트
               {/if}
             </MenuItem>
           {/if}

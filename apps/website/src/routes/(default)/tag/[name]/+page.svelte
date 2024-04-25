@@ -129,7 +129,7 @@
               mixpanel.track('tag:unmute', { tagId: $query.tag.id, via: 'tag' });
             }}
           >
-            태그 안보기 해제
+            태그 뮤트 해제
           </MenuItem>
         {:else}
           <MenuItem
@@ -143,7 +143,7 @@
               mixpanel.track('tag:mute', { tagId: $query.tag.id, via: 'tag' });
             }}
           >
-            태그 안보기
+            태그 뮤트
           </MenuItem>
         {/if}
       </Menu>

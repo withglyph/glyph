@@ -292,7 +292,7 @@
                 <Icon slot="value" style={css.raw({ '& *': { strokeWidth: '[2]' } })} icon={IconDotsVertical} />
 
                 {#if $query.space.muted}
-                  <MenuItem on:click={() => (unmuteSpaceOpen = true)}>스페이스 숨기기 해제</MenuItem>
+                  <MenuItem on:click={() => (unmuteSpaceOpen = true)}>스페이스 뮤트 해제</MenuItem>
                 {:else}
                   <MenuItem
                     on:click={async () => {
@@ -300,7 +300,7 @@
                       mixpanel.track('space:mute', { spaceId: $query.space.id, via: 'space' });
                     }}
                   >
-                    스페이스 숨기기
+                    스페이스 뮤트
                   </MenuItem>
                 {/if}
               </Menu>
@@ -340,7 +340,7 @@
           <p>
             해당 스페이스의 내용을 보시겠어요?
             <br />
-            스페이스 숨김은 그대로 유지됩니다
+            스페이스 뮤트는 그대로 유지됩니다
           </p>
 
           <Button
@@ -371,7 +371,7 @@
 </main>
 
 <Alert bind:open={unmuteSpaceOpen}>
-  <svelte:fragment slot="title">스페이스 숨기기를 해제할까요?</svelte:fragment>
+  <svelte:fragment slot="title">스페이스 뮤트를 해제할까요?</svelte:fragment>
 
   <svelte:fragment slot="action">
     <Button size="lg" variant="gray-outline" on:click={() => (unmuteSpaceOpen = false)}>취소</Button>
