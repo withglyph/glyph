@@ -1,0 +1,1 @@
+ALTER TYPE "_user_notification_category" ADD VALUE 'EMOJI_REACTION';

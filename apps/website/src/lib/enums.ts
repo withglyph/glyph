@@ -194,6 +194,7 @@ export const UserNotificationCategory = {
   ALL: 'ALL',
   COMMENT: 'COMMENT',
   DONATE: 'DONATE',
+  EMOJI_REACTION: 'EMOJI_REACTION',
   PURCHASE: 'PURCHASE',
   REPLY: 'REPLY',
   SUBSCRIBE: 'SUBSCRIBE',

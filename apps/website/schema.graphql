@@ -143,6 +143,17 @@ type Embed {
   url: String!
 }
 
+type EmojiReactionNotification implements IUserNotification {
+  actor: Profile
+  category: UserNotificationCategory!
+  createdAt: DateTime!
+  data: JSON!
+  emoji: String!
+  id: ID!
+  post: Post!
+  state: UserNotificationState!
+}
+
 type FeaturedTag {
   posts: [Post!]!
   tag: Tag!
@@ -1025,6 +1036,7 @@ enum UserNotificationCategory {
   ALL
   COMMENT
   DONATE
+  EMOJI_REACTION
   PURCHASE
   REPLY
   SUBSCRIBE

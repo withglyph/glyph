@@ -57,6 +57,13 @@
       "when": 1714025917565,
       "tag": "0007_special_crusher_hogan",
       "breakpoints": false
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1714031109941,
+      "tag": "0008_wandering_abomination",
+      "breakpoints": false
     }
   ]
 }

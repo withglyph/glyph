@@ -1928,16 +1928,13 @@ builder.mutationFields((t) => ({
         throw new IntentionalError('잘못된 이모지예요');
       }
 
-      const posts = await database
-        .select({ receiveFeedback: Posts.receiveFeedback })
+      const post = await database
+        .select({ userId: Posts.userId, spaceId: Posts.spaceId, receiveFeedback: Posts.receiveFeedback })
         .from(Posts)
-        .where(eq(Posts.id, input.postId));
+        .where(eq(Posts.id, input.postId))
+        .then(useFirstRowOrThrow(new NotFoundError()));
 
-      if (posts.length === 0) {
-        throw new NotFoundError();
-      }
-
-      if (!posts[0].receiveFeedback) {
+      if (!post.receiveFeedback) {
         throw new IntentionalError('피드백을 받지 않는 포스트예요');
       }
 
@@ -1949,6 +1946,21 @@ builder.mutationFields((t) => ({
           emoji: input.emoji,
         })
         .onConflictDoNothing();
+
+      if (post.userId !== context.session.userId && post.spaceId) {
+        const masquerade = await makeMasquerade({
+          userId: context.session.userId,
+          spaceId: post.spaceId,
+        });
+
+        createNotification({
+          userId: post.userId,
+          category: 'EMOJI_REACTION',
+          actorId: masquerade.profileId,
+          data: { postId: input.postId, emoji: input.emoji },
+          origin: context.event.url.origin,
+        });
+      }
 
       return input.postId;
     },

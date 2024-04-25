@@ -108,6 +108,28 @@ CommentNotification.implement({
     }),
   }),
 });
+
+export const EmojiReactionNotification = createObjectRef('EmojiReactionNotification', UserNotifications);
+EmojiReactionNotification.implement({
+  interfaces: [IUserNotification],
+  fields: (t) => ({
+    emoji: t.string({
+      resolve: (notification) => {
+        const data = notification.data as { emoji: string };
+        return data.emoji;
+      },
+    }),
+
+    post: t.field({
+      type: Post,
+      resolve: async (notification) => {
+        const data = notification.data as { postId: string };
+        return data.postId;
+      },
+    }),
+  }),
+});
+
 /**
  * * Inputs
  */

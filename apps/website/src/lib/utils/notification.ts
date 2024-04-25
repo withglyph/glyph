@@ -22,6 +22,20 @@ type CommentNotification = {
   };
 };
 
-export type Notification = (PurchaseNotification | SubscribeNotification | CommentNotification) & {
+type EmojiReactionNotification = {
+  category: 'EMOJI_REACTION';
+  actorId: string;
+  data: {
+    postId: string;
+    emoji: string;
+  };
+};
+
+export type Notification = (
+  | PurchaseNotification
+  | SubscribeNotification
+  | CommentNotification
+  | EmojiReactionNotification
+) & {
   userId: string;
 };
