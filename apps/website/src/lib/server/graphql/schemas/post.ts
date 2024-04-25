@@ -359,7 +359,15 @@ Post.implement({
       type: [PostReaction],
       resolve: async (post, _, context) => {
         if (!post.receiveFeedback) {
-          return [];
+          if (context.session) {
+            return await database
+              .select()
+              .from(PostReactions)
+              .where(and(eq(PostReactions.postId, post.id), eq(PostReactions.userId, context.session.userId)))
+              .orderBy(desc(PostReactions.createdAt));
+          } else {
+            return [];
+          }
         }
 
         if (!context.session) {
