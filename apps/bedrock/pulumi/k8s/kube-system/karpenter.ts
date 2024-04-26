@@ -118,7 +118,7 @@ new k8s.helm.v3.Chart('karpenter', {
   chart: 'oci://public.ecr.aws/karpenter/karpenter',
   namespace: 'kube-system',
   fetchOpts: {
-    version: '0.35.2',
+    version: '0.36.1',
   },
 
   values: {
