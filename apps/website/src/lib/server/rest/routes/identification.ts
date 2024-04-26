@@ -68,6 +68,7 @@ identification.get('/identification/callback', async (_, context) => {
         birthday: dayjs.kst(resp.response.birthday, 'YYYY-MM-DD'),
         phoneNumber: resp.response.phone,
         ci: resp.response.unique_key,
+        expiresAt: dayjs().add(1, 'year'),
       });
 
       await context.flash('success', '본인인증이 완료되었어요');

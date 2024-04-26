@@ -1359,6 +1359,7 @@ builder.mutationFields((t) => ({
         name: input.name,
         birthday: dayjs.kst(input.birthday, 'YYYYMMDD'),
         ci: input.passportNumber,
+        expiresAt: dayjs().add(1, 'year'),
       });
 
       return context.session.userId;
