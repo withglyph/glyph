@@ -297,9 +297,6 @@
     >
       재인증하기
     </Button>
-  {/if}
-
-  {#if $query.me.personalIdentity}
     <p class={css({ marginTop: '4px', fontSize: '12px', color: 'gray.600' })}>
       *최초에 인증했던 본인인증과 동일한 명의로 진행해주세요
     </p>
