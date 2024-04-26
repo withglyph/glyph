@@ -128,6 +128,7 @@
               flex: 'none',
               width: { base: '100px', sm: '160px' },
               aspectRatio: '16/10',
+              objectFit: 'cover',
             })}
             $image={point.post?.thumbnail}
             placeholder
