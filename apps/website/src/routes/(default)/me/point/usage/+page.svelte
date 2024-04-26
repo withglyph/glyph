@@ -106,13 +106,7 @@
             >
               {point.post?.publishedRevision?.subtitle ?? ''}
             </p>
-            <p
-              class={css({
-                marginTop: '4px',
-                fontWeight: 'semibold',
-                color: 'gray.600',
-              })}
-            >
+            <p class={css({ marginTop: '4px', fontWeight: 'semibold' })}>
               -{comma(point.amount)}P
             </p>
 
