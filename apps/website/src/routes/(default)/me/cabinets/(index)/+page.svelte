@@ -32,11 +32,11 @@
 <Helmet description="북마크한 포스트 목록을 둘러보세요" title="북마크한 포스트" />
 
 <p class={css({ paddingTop: '12px', paddingBottom: '10px', fontSize: '12px', color: 'gray.500' })}>
-  총 {$query.me.bookmarkGroups[0].postCount}개의 포스트
+  총 {$query.me.bookmarkGroups[0]?.postCount ?? 0}개의 포스트
 </p>
 
 <ul class={flex({ direction: 'column', flexGrow: '1' })}>
-  {#each $query.me.bookmarkGroups[0].posts as post (post.id)}
+  {#each $query.me.bookmarkGroups[0]?.posts as post (post.id)}
     <li
       class={css({
         borderTopWidth: '1px',
