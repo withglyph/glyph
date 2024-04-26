@@ -118,7 +118,7 @@
       backgroundColor: { base: 'gray.5', _enabled: { _hover: 'gray.100', _pressed: 'gray.200' } },
       _disabled: { cursor: 'not-allowed' },
     })}
-    disabled={currentPage === maxPage}
+    disabled={currentPageGroup === totalPageGroup || currentPage === maxPage}
     type="button"
     on:click={() => {
       currentPage = maxPage;
