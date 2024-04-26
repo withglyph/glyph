@@ -1,5 +1,6 @@
 import { createClient } from '@withglyph/glitch';
 import { AppError } from '$lib/errors';
+import { toast } from '$lib/notification';
 import { keys } from './keys';
 import { optimistic } from './optimistic';
 import { updates } from './updates';
@@ -10,6 +11,8 @@ export default createClient({
   cache: { keys, optimistic, updates },
   transformError: AppError.deserialize,
   onMutationError: (error) => {
-    console.log(error);
+    if (!error.extra.internal) {
+      toast(error.message);
+    }
   },
 });
