@@ -300,7 +300,7 @@
         currPage !== 3 && { display: 'none' },
       )}
     >
-      <div
+      <button
         class={flex({
           align: 'center',
           gap: '6px',
@@ -311,10 +311,12 @@
           backgroundColor: 'gray.50',
           width: 'fit',
         })}
+        type="button"
+        on:click={() => (currPage = 2)}
       >
         <Icon icon={bankIcons[$data.bankCode]} />
         {banks[$data.bankCode]}
-      </div>
+      </button>
 
       <FormField name="bankAccountNumber" label="계좌번호">
         <TextInput placeholder="'-'를 제외한 계좌번호를 입력해주세요" />
