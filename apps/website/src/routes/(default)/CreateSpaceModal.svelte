@@ -135,11 +135,6 @@
           borderColor: 'gray.200',
           backgroundColor: 'gray.50',
           size: '100px',
-          _hover: {
-            '& > div': {
-              visibility: 'visible',
-            },
-          },
         })}
         type="button"
         on:click={() => thumbnailPicker.show()}
@@ -157,7 +152,6 @@
             borderRadius: 'full',
             backgroundColor: 'gray.900/40',
             size: '32px',
-            visibility: 'hidden',
           })}
         >
           <Icon style={css.raw({ color: 'gray.5' })} icon={IconCamera} />

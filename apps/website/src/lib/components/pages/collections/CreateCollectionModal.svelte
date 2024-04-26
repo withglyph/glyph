@@ -75,12 +75,6 @@
         aspectRatio: '3/4',
         backgroundColor: 'gray.50',
         overflow: 'hidden',
-
-        _hover: {
-          '& > div': {
-            visibility: 'visible',
-          },
-        },
       })}
       aria-describedby="upload-restriction"
       type="button"
@@ -105,7 +99,6 @@
           translateX: '-1/2',
           translateY: '-1/2',
           userSelect: 'none',
-          visibility: 'hidden',
         })}
       >
         <Icon style={css.raw({ color: 'gray.50' })} icon={IconCamera} />
