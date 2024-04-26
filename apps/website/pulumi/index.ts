@@ -19,14 +19,14 @@ const site = new withglyph.Site('website', {
   },
 
   resources: {
-    cpu: '1000m',
-    memory: '2000Mi',
+    cpu: '500m',
+    memory: '1000Mi',
   },
 
   autoscale: {
-    minCount: 10,
+    minCount: 4,
     maxCount: 50,
-    averageCpuUtilization: 20,
+    averageCpuUtilization: 50,
   },
 
   iam: {
