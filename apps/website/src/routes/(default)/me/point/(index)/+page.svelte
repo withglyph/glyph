@@ -126,7 +126,14 @@
               {dayjs(point.createdAt).formatAsDateTime()}
               {pointTransactionCause[point.cause]}
             </time>
-            <h2 class={css({ fontSize: { base: '14px', sm: '15px' }, fontWeight: 'semibold', truncate: true })}>
+            <h2
+              class={css({
+                fontSize: { base: '14px', sm: '15px' },
+                fontWeight: 'semibold',
+                color: 'gray.600',
+                truncate: true,
+              })}
+            >
               {point.post?.publishedRevision?.title ?? '(제목 없음)'}
             </h2>
             <p
