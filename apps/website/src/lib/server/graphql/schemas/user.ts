@@ -425,9 +425,9 @@ User.implement({
 
     revenue: t.field({
       type: 'Int',
-      args: { withdrawable: t.arg.boolean({ defaultValue: false }) },
+      args: { withdrawable: t.arg.boolean({ required: false }) },
       resolve: async (user, args) => {
-        return await getUserRevenue({ userId: user.id, withdrawableOnly: args.withdrawable });
+        return await getUserRevenue({ userId: user.id, withdrawable: args.withdrawable ?? undefined });
       },
     }),
 
@@ -477,23 +477,6 @@ User.implement({
         }
 
         return identities[0].id;
-      },
-    }),
-
-    withdrawalConfig: t.field({
-      type: UserWithdrawalConfig,
-      nullable: true,
-      resolve: async (user) => {
-        const configs = await database
-          .select({ id: UserWithdrawalConfigs.id })
-          .from(UserWithdrawalConfigs)
-          .where(eq(UserWithdrawalConfigs.userId, user.id));
-
-        if (configs.length === 0) {
-          return null;
-        }
-
-        return configs[0].id;
       },
     }),
 

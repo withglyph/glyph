@@ -1,21 +1,21 @@
 import dayjs from 'dayjs';
-import { and, eq, isNull, lt, ne, sum } from 'drizzle-orm';
+import { and, eq, gt, isNull, lt, lte, ne, sum } from 'drizzle-orm';
 import { match } from 'ts-pattern';
 import { RevenueWithdrawalKind } from '$lib/enums';
 import { IntentionalError } from '$lib/errors';
 import * as coocon from '$lib/server/external-api/coocon';
 import { logToSlack } from '$lib/server/utils';
-import { calculateFeeAmount, getMonthlyWithdrawableDayjsBefore } from '$lib/utils';
+import { calculateFeeAmount } from '$lib/utils';
 import { database, inArray, Revenues, RevenueWithdrawals, UserSettlementIdentities } from '../database';
 
 const getWithdrawableDayjs = () => dayjs().subtract(7, 'day');
 
 type GetUserRevenueParams = {
   userId: string;
-  withdrawableOnly?: boolean;
+  withdrawable?: boolean;
   monthlyWithdrawableOnly?: boolean;
 };
-export const getUserRevenue = async ({ userId, withdrawableOnly, monthlyWithdrawableOnly }: GetUserRevenueParams) => {
+export const getUserRevenue = async ({ userId, withdrawable }: GetUserRevenueParams) => {
   const [{ value }] = await database
     .select({ value: sum(Revenues.amount).mapWith(Number) })
     .from(Revenues)
@@ -23,10 +23,10 @@ export const getUserRevenue = async ({ userId, withdrawableOnly, monthlyWithdraw
       and(
         eq(Revenues.userId, userId),
         ne(Revenues.state, 'PAID'),
-        monthlyWithdrawableOnly
-          ? lt(Revenues.createdAt, getMonthlyWithdrawableDayjsBefore())
-          : withdrawableOnly
-            ? lt(Revenues.createdAt, getWithdrawableDayjs())
+        withdrawable === true
+          ? lte(Revenues.createdAt, getWithdrawableDayjs())
+          : withdrawable === false
+            ? gt(Revenues.createdAt, getWithdrawableDayjs())
             : undefined,
       ),
     );

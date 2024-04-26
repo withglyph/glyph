@@ -25,12 +25,6 @@
         revenue
         withdrawableRevenue: revenue(withdrawable: true)
 
-        withdrawalConfig {
-          id
-          monthlyWithdrawalDue
-          monthlyWithdrawalEnabled
-        }
-
         personalIdentity {
           id
         }

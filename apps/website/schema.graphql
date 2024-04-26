@@ -1021,14 +1021,13 @@ type User {
   profile: Profile!
   purchasedPosts: [Post!]!
   recentlyViewedPosts: [Post!]!
-  revenue(withdrawable: Boolean! = false): Int!
+  revenue(withdrawable: Boolean): Int!
   revenueWithdrawals: [RevenueWithdrawal!]!
   revenues(page: Int! = 1, take: Int! = 10): [Revenue!]!
   settlementIdentity: UserSettlementIdentity
   singleSignOns: [UserSingleSignOn!]!
   spaces: [Space!]!
   state: UserState!
-  withdrawalConfig: UserWithdrawalConfig
 }
 
 type UserContentFilterPreference {
