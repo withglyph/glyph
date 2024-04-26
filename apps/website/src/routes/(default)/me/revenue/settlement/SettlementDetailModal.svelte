@@ -4,14 +4,13 @@
   import { fragment, graphql } from '$glitch';
   import { Chip, Icon, Tooltip } from '$lib/components';
   import { Modal } from '$lib/components/v2';
-  import { banks } from '$lib/const/revenue';
+  import { banks, revenueWithdrawalState } from '$lib/const/revenue';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type {
     MeRevenueSettlementPage_SettlementDetailModal_revenueWithdrawal,
     MeRevenueSettlementPage_SettlementDetailModal_user,
-    RevenueWithdrawalState,
   } from '$glitch';
 
   export let open = false;
@@ -51,12 +50,6 @@
       }
     `),
   );
-
-  const revenueWithdrawalState: Record<RevenueWithdrawalState, string> = {
-    FAILED: '실패',
-    PENDING: '진행중',
-    SUCCESS: '완료',
-  };
 </script>
 
 <Modal titleStyle={css.raw({ justifyContent: 'center', marginX: '32px' })} bind:open>

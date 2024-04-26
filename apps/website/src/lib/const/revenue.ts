@@ -1,3 +1,5 @@
+import type { RevenueWithdrawalState } from '$glitch';
+
 export const banks: Record<string, string> = {
   '090': '카카오뱅크',
   '092': '토스',
@@ -23,4 +25,10 @@ export const banks: Record<string, string> = {
   '045': '새마을금고',
   '048': '신협',
   '050': '상호저축은행',
+};
+
+export const revenueWithdrawalState: Record<RevenueWithdrawalState, string> = {
+  FAILED: '지급실패',
+  PENDING: '대기중',
+  SUCCESS: '출금완료',
 };

@@ -4,11 +4,11 @@
   import { graphql } from '$glitch';
   import { Helmet, Icon } from '$lib/components';
   import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/v2/table';
+  import { revenueWithdrawalState } from '$lib/const/revenue';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import SettlementDetailModal from './SettlementDetailModal.svelte';
-  import type { RevenueWithdrawalState } from '$glitch';
 
   let open = false;
 
@@ -33,12 +33,6 @@
       }
     }
   `);
-
-  const revenueWithdrawalState: Record<RevenueWithdrawalState, string> = {
-    FAILED: '지급실패',
-    PENDING: '대기중',
-    SUCCESS: '출금완료',
-  };
 
   let revenueWithdrawal: (typeof $query.me.revenueWithdrawals)[number] | null = null;
 </script>
