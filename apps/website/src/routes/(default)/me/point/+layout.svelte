@@ -69,11 +69,12 @@
   })}
 >
   <h1 class={css({ fontSize: { base: '18px', sm: '24px' }, fontWeight: { base: 'semibold', sm: 'bold' } })}>
-    사용내역
+    포인트 사용/충전 내역
   </h1>
 
   <TabHead style={css.raw({ marginTop: { sm: '20px' }, paddingY: { base: '12px', sm: '0' } })}>
-    <TabHeadItem id={1} pathname="/me/point">구매</TabHeadItem>
+    <TabHeadItem id={1} pathname="/me/point">전체</TabHeadItem>
+    <TabHeadItem id={1} pathname="/me/point/usage">사용</TabHeadItem>
     <TabHeadItem id={2} pathname="/me/point/charge">충전</TabHeadItem>
   </TabHead>
 

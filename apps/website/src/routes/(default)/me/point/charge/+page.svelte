@@ -75,25 +75,26 @@
       class={css({
         borderTopWidth: '1px',
         borderTopColor: 'gray.100',
-        paddingY: '24px',
-        _firstOfType: { borderStyle: 'none', smDown: { paddingTop: '8px' } },
+        _firstOfType: { 'borderStyle': 'none', '& > div': { paddingTop: { base: '8px', sm: '20px' } } },
       })}
     >
-      <time class={css({ fontSize: '13px', color: 'gray.500' })} datetime={point.createdAt}>
-        {dayjs(point.createdAt).formatAsDateTime()}
-      </time>
-      <p class={css({ marginTop: '4px', fontSize: '15px', fontWeight: 'semibold', color: 'brand.400' })}>
-        +{comma(point.amount)}P
-      </p>
-      <p class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.600' })}>
-        {#if point.__typename === 'PurchasePointTransaction'}
-          {pointPurchasePaymentMethod[point.purchase.paymentMethod]}
-        {:else if point.__typename === 'EventRewardPointTransaction'}
-          {eventName[point.eventEnrollment.eventCode] ?? '이벤트 참여'}
-        {:else}
-          {pointTransactionCause[point.cause]}
-        {/if}
-      </p>
+      <div class={css({ paddingY: { base: '20px', sm: '32px' } })}>
+        <time class={css({ fontSize: '13px', color: 'gray.400' })} datetime={point.createdAt}>
+          {dayjs(point.createdAt).formatAsDateTime()}
+        </time>
+        <p class={css({ marginTop: '4px', fontSize: '15px', fontWeight: 'semibold', color: 'brand.400' })}>
+          +{comma(point.amount)}P
+        </p>
+        <p class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.600' })}>
+          {#if point.__typename === 'PurchasePointTransaction'}
+            {pointPurchasePaymentMethod[point.purchase.paymentMethod]}
+          {:else if point.__typename === 'EventRewardPointTransaction'}
+            {eventName[point.eventEnrollment.eventCode] ?? '이벤트 참여'}
+          {:else}
+            {pointTransactionCause[point.cause]}
+          {/if}
+        </p>
+      </div>
     </li>
   {:else}
     <li class={css({ margin: 'auto', paddingY: '60px', fontSize: '14px', color: 'gray.500' })}>충전한 내역이 없어요</li>
