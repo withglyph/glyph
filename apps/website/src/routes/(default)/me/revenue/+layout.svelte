@@ -170,7 +170,7 @@
     fontWeight: 'bold',
   })}
 >
-  이용내역
+  수익/출금 내역
 </h2>
 
 <TabHead
