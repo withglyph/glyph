@@ -1,5 +1,4 @@
 <script lang="ts">
-  import dayjs from 'dayjs';
   import IconHelpLine from '~icons/glyph/help-line';
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
@@ -81,15 +80,7 @@
   >
     <div class={flex({ align: 'center', justify: { base: 'space-between', sm: 'flex-start' }, gap: '70px' })}>
       <div>
-        <div class={flex({ align: 'center', gap: '4px', fontWeight: 'medium' })}>
-          출금 가능 금액
-          <Tooltip
-            style={flex.raw({ align: 'center' })}
-            message="창작자의 권리보호를 위해 수익 발생 7일 이후 출금할 수 있어요"
-          >
-            <Icon style={css.raw({ 'color': 'gray.400', '& *': { strokeWidth: '[1]' } })} icon={IconHelpLine} />
-          </Tooltip>
-        </div>
+        <p class={css({ fontWeight: 'medium' })}>출금 가능 금액</p>
         <p class={css({ fontSize: { base: '20px', sm: '22px' }, fontWeight: 'bold' })}>
           {comma($query.me.withdrawableRevenue)}원
         </p>
@@ -117,14 +108,9 @@
 
     <hr class={css({ border: 'none', marginY: '14px', height: '1px', backgroundColor: 'gray.150' })} />
 
-    <time
-      class={css({ marginBottom: '4px', fontSize: '12px', color: 'gray.600' })}
-      datetime={dayjs().kst().formatAsDate()}
-    >
-      -{dayjs().kst().formatAsDate()}
-    </time>
-
-    <p class={css({ fontSize: '14px', fontWeight: 'medium' })}>포스트 수익 {comma($query.me.revenue)}P</p>
+    <p class={css({ fontSize: '14px', fontWeight: 'medium', color: 'gray.600' })}>
+      현재 수익금 {comma($query.me.revenue)}P
+    </p>
   </div>
 </div>
 
@@ -173,7 +159,7 @@
     color: 'gray.500',
   })}
 >
-  즉시출금 시 출금금액과 상관없이 고정적으로 1,000원의 수수료가 부과됩니다.
+  수익 발생 7일 후 수익금을 출금할 수 있으며, 즉시 출금 시 출금 금액과 상관없이 고정적으로 1,000원의 수수료가 부과됩니다
 </div>
 
 <h2
