@@ -34,6 +34,7 @@
         id
         email
         state
+        isAdulthood
 
         marketingConsent {
           id
@@ -125,9 +126,11 @@
 </h2>
 
 <p class={css({ fontSize: '13px', color: 'gray.500' })}>
-  해당 프로필은 자신에게만 보여지는 기본 프로필이며,
+  프로필은 기본 프로필과 스페이스 프로필로 나뉘어요.
   <br />
-  스페이스 관리에서 스페이스별로 프로필을 개별 설정할 수 있어요.
+  창작자는 스페이스를 생성할 때 기본 프로필을 이용하거나 해당 스페이스에서만 이용할 별도의 스페이스 프로필을 설정할 수 있어요.
+  <br />
+  스페이스 프로필을 이용할 경우 다른 이용자들은 각 프로필이 같은 사람인지 알 수 없어요.
 </p>
 
 <div
@@ -203,11 +206,11 @@
 <h2 class={css({ marginBottom: '4px', fontSize: { base: '16px', sm: '18px' }, fontWeight: 'semibold' })}>본인인증</h2>
 
 <p class={css({ fontSize: '13px', color: 'gray.500' })}>
-  - 본인인증은 1개의 계정에만 가능하며, 인증 완료일로부터 1년간 유효해요.
+  - 본인인증은 개인당 1개의 계정에만 가능해요.
   <br />
   - 계정을 분실한 경우, 본인인증을 통해 계정을 찾을 수 있어요.
   <br />
-  - 성인물 등 특정 콘텐츠를 이용하려면 본인인증이 필요해요.
+  - 본인인증을 통해 연령 제한 콘텐츠를 이용할 수 있어요.
 </p>
 
 <div class={css({ width: 'full', maxWidth: '450px' })}>
@@ -216,29 +219,21 @@
       <TableRow style={css.raw({ textAlign: 'left' })}>
         <TableHead>이름</TableHead>
         <TableHead>본인인증 여부</TableHead>
-        <TableHead>본인인증 유효기간</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
       <TableRow>
         <TableData>{$query.me.personalIdentity?.name ?? ''}</TableData>
         <TableData>
-          <Chip
-            style={css.raw({ width: 'fit' })}
-            color={$query.me.personalIdentity && !expired ? 'grass' : 'red'}
-            variant="fill"
-          >
-            {$query.me.personalIdentity ? (expired ? '인증만료' : '인증완료') : '미인증'}
+          <Chip style={css.raw({ width: 'fit' })} color={$query.me.personalIdentity ? 'grass' : 'gray'} variant="fill">
+            {$query.me.personalIdentity ? '인증완료' : '미인증'}
           </Chip>
-        </TableData>
-        <TableData>
-          {$query.me.personalIdentity ? dayjs($query.me.personalIdentity.expiresAt).formatAsDate() : ''}
         </TableData>
       </TableRow>
     </TableBody>
   </Table>
 
-  {#if !$query.me.personalIdentity || expired}
+  {#if !$query.me.personalIdentity}
     <Button
       style={css.raw({ marginTop: '8px', width: 'full', height: '40px' })}
       size="sm"
@@ -247,6 +242,67 @@
     >
       본인인증하기
     </Button>
+  {/if}
+</div>
+
+<hr class={css({ marginY: { base: '28px', sm: '48px' }, border: 'none', backgroundColor: 'gray.50', height: '1px' })} />
+
+<h2 class={css({ marginBottom: '4px', fontSize: { base: '16px', sm: '18px' }, fontWeight: 'semibold' })}>
+  연령 제한 콘텐츠
+</h2>
+
+<p class={css({ fontSize: '13px', color: 'gray.500' })}>
+  - 연령 제한 콘텐츠 이용은 본인 인증을 완료한 시점으로부터 1년간 유효해요.
+  <br />
+  - 연령 제한 콘텐츠를 계속해서 이용하려면 관련 법에 따라 1년마다 본인 인증을 다시 진행해야 해요.
+</p>
+
+<div class={css({ width: 'full', maxWidth: '450px' })}>
+  <Table style={css.raw({ marginTop: '20px' })}>
+    <TableHeader>
+      <TableRow style={css.raw({ textAlign: 'left' })}>
+        <TableHead>이용가능 콘텐츠</TableHead>
+        <TableHead>유효기간</TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      <TableRow>
+        <TableData style={flex.raw({ align: 'center', gap: '6px' })}>
+          {#if $query.me.personalIdentity}
+            {#if expired}
+              <Chip style={css.raw({ width: 'fit' })} color="gray" variant="fill">인증만료</Chip>
+            {:else}
+              <Chip style={css.raw({ width: 'fit' })} color="blue" variant="fill">15세</Chip>
+              {#if $query.me.isAdulthood}
+                <Chip style={css.raw({ width: 'fit' })} color="red" variant="fill">성인</Chip>
+              {/if}
+            {/if}
+          {:else}
+            <Chip style={css.raw({ width: 'fit' })} color="gray" variant="fill">미인증</Chip>
+          {/if}
+        </TableData>
+        <TableData>
+          {$query.me.personalIdentity ? dayjs($query.me.personalIdentity.expiresAt).formatAsDate() : ''}
+        </TableData>
+      </TableRow>
+    </TableBody>
+  </Table>
+
+  {#if expired}
+    <Button
+      style={css.raw({ marginTop: '8px', width: 'full', height: '40px' })}
+      size="sm"
+      variant="brand-fill"
+      on:click={() => (userVerifyOpen = true)}
+    >
+      재인증하기
+    </Button>
+  {/if}
+
+  {#if $query.me.personalIdentity}
+    <p class={css({ marginTop: '4px', fontSize: '12px', color: 'gray.600' })}>
+      *최초에 인증했던 본인인증과 동일한 명의로 진행해주세요
+    </p>
   {/if}
 </div>
 
@@ -318,7 +374,8 @@
 
   <p class={css({ fontWeight: 'medium' })}>본인인증 진행</p>
   <p class={css({ marginTop: '6px', marginBottom: '20px', fontSize: '13px', color: 'gray.500' })}>
-    본인인증은 1개의 계정에만 가능하며, 인증 완료일로부터 1년간 유효해요.
+    본인 명의의 휴대폰 및 대한민국 여권으로 본인인증을 진행할 수 있어요. 본인인증이 어려운 경우 고객센터로 문의해
+    주세요.
   </p>
 
   <Button

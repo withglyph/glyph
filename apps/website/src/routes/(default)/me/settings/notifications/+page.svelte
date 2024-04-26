@@ -30,7 +30,7 @@
   <NotificationSwitch
     $user={$query.me}
     category="COMMENT"
-    description="포스트에 댓글이 달렸을 때 알림을 받아요"
+    description="포스트에 댓글 및 답글이 달렸을 때 알림을 받아요"
     title="댓글/답글"
   />
 
