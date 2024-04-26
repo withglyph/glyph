@@ -22,6 +22,7 @@
   export let showSpace = false;
   export let showBookmark = false;
   export let showDate = false;
+  export let timeDisplay: 'relative' | 'absolute' = 'absolute';
   export let style: SystemStyleObject | undefined = undefined;
 
   let loginRequireOpen = false;
@@ -224,7 +225,7 @@
       >
         {#if showDate}
           <time datetime={$post.publishedAt}>
-            {dayjs($post.publishedAt).formatAsDate()}
+            {timeDisplay === 'relative' ? dayjs($post.publishedAt).fromNow() : dayjs($post.publishedAt).formatAsDate()}
           </time>
         {/if}
 

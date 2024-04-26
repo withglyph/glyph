@@ -40,7 +40,7 @@
           _lastOfType: { _after: { display: 'none' } },
         })}
       >
-        <Post $post={post} {$query} showBookmark showDate showSpace />
+        <Post $post={post} {$query} showBookmark showDate showSpace timeDisplay="relative" />
       </li>
     {:else}
       <li class={css({ marginY: 'auto', fontWeight: 'semibold', color: 'gray.400', textAlign: 'center' })}>
