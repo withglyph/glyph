@@ -217,7 +217,7 @@
   <Table style={css.raw({ marginTop: '20px' })}>
     <TableHeader>
       <TableRow style={css.raw({ textAlign: 'left' })}>
-        <TableHead>이름</TableHead>
+        <TableHead style={css.raw({ width: '150px' })}>이름</TableHead>
         <TableHead>본인인증 여부</TableHead>
       </TableRow>
     </TableHeader>
@@ -261,7 +261,7 @@
   <Table style={css.raw({ marginTop: '20px' })}>
     <TableHeader>
       <TableRow style={css.raw({ textAlign: 'left' })}>
-        <TableHead>이용가능 콘텐츠</TableHead>
+        <TableHead style={css.raw({ width: '150px' })}>이용가능 콘텐츠</TableHead>
         <TableHead>유효기간</TableHead>
       </TableRow>
     </TableHeader>
