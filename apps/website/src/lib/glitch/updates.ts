@@ -65,5 +65,8 @@ export const updates: GraphCacheConfig['updates'] = {
     unpinComment: (_, { input }, cache) => {
       cache.invalidate({ __typename: 'PostComment', id: input.commentId });
     },
+    verifySettlementIdentity: (_, __, cache) => {
+      cache.invalidate(me(cache), 'settlementIdentity');
+    },
   },
 };
