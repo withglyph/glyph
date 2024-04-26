@@ -1537,7 +1537,22 @@
   <p slot="content" class={css({ textAlign: 'left' })}>삭제된 글은 복구할 수 없어요</p>
 
   <svelte:fragment slot="action">
-    <Button size="lg" variant="gray-sub-fill" on:click={() => (openDeletePostWarning = false)}>취소</Button>
+    <Button
+      style={css.raw({ hideFrom: 'sm' })}
+      size="lg"
+      variant="gray-sub-fill"
+      on:click={() => (openDeletePostWarning = false)}
+    >
+      취소
+    </Button>
+    <Button
+      style={css.raw({ hideBelow: 'sm' })}
+      size="lg"
+      variant="gray-outline"
+      on:click={() => (openDeletePostWarning = false)}
+    >
+      취소
+    </Button>
     <Button
       size="lg"
       variant="red-fill"

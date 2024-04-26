@@ -84,7 +84,22 @@
   <svelte:fragment slot="title">가입되지 않았어요</svelte:fragment>
 
   <svelte:fragment slot="action">
-    <Button size="lg" variant="gray-sub-fill" on:click={() => (accountNotFoundOpen = false)}>닫기</Button>
+    <Button
+      style={css.raw({ hideFrom: 'sm' })}
+      size="lg"
+      variant="gray-sub-fill"
+      on:click={() => (accountNotFoundOpen = false)}
+    >
+      닫기
+    </Button>
+    <Button
+      style={css.raw({ hideBelow: 'sm' })}
+      size="lg"
+      variant="gray-outline"
+      on:click={() => (accountNotFoundOpen = false)}
+    >
+      닫기
+    </Button>
     <Button href="/login" size="lg" type="link">회원가입</Button>
   </svelte:fragment>
 </Alert>

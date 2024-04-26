@@ -374,7 +374,22 @@
   <svelte:fragment slot="title">스페이스 뮤트를 해제할까요?</svelte:fragment>
 
   <svelte:fragment slot="action">
-    <Button size="lg" variant="gray-outline" on:click={() => (unmuteSpaceOpen = false)}>취소</Button>
+    <Button
+      style={css.raw({ hideFrom: 'sm' })}
+      size="lg"
+      variant="gray-sub-fill"
+      on:click={() => (unmuteSpaceOpen = false)}
+    >
+      취소
+    </Button>
+    <Button
+      style={css.raw({ hideBelow: 'sm' })}
+      size="lg"
+      variant="gray-outline"
+      on:click={() => (unmuteSpaceOpen = false)}
+    >
+      취소
+    </Button>
     <Button
       size="lg"
       variant="red-fill"

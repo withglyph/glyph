@@ -147,7 +147,22 @@
   <svelte:fragment slot="title">컬렉션을 삭제할까요?</svelte:fragment>
 
   <svelte:fragment slot="action">
-    <Button size="lg" variant="gray-sub-fill" on:click={() => (deleteCollectionOpen = false)}>취소</Button>
+    <Button
+      style={css.raw({ hideFrom: 'sm' })}
+      size="lg"
+      variant="gray-sub-fill"
+      on:click={() => (deleteCollectionOpen = false)}
+    >
+      취소
+    </Button>
+    <Button
+      style={css.raw({ hideBelow: 'sm' })}
+      size="lg"
+      variant="gray-outline"
+      on:click={() => (deleteCollectionOpen = false)}
+    >
+      취소
+    </Button>
     <Button
       size="lg"
       variant="red-fill"
