@@ -107,7 +107,7 @@
               {point.post?.publishedRevision?.subtitle ?? ''}
             </p>
             <p class={css({ marginTop: '4px', fontWeight: 'semibold' })}>
-              -{comma(point.amount)}P
+              {comma(point.amount)}P
             </p>
 
             <div class={flex({ align: 'center', gap: '4px', marginTop: '6px', height: '24px' })}>
