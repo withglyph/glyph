@@ -104,7 +104,7 @@
             : `/${revenue.post?.space?.slug}/${revenue.post?.permalink}}`}
         >
           <div class={flex({ flexDirection: 'column', truncate: true })}>
-            <div class={flex({ align: 'center', marginBottom: '2px', fontSize: '13px', wrap: 'wrap' })}>
+            <div class={flex({ align: 'center', marginBottom: '2px', fontSize: '12px', wrap: 'wrap' })}>
               <time
                 class={css(
                   {
@@ -141,7 +141,15 @@
               {revenue.post?.publishedRevision?.title ?? '(제목 없음)'}
               {#if revenue.post?.state === 'DELETED'}(삭제된 포스트){/if}
             </p>
-            <p class={css({ fontSize: '13px', fontWeight: { sm: 'medium' }, height: '19px', truncate: true })}>
+            <p
+              class={css({
+                fontSize: '13px',
+                fontWeight: { sm: 'medium' },
+                color: 'gray.600',
+                height: '19px',
+                truncate: true,
+              })}
+            >
               {revenue.post?.publishedRevision?.subtitle ?? ''}
             </p>
             <div class={flex({ align: 'center', gap: '4px', marginTop: '6px', truncate: true })}>

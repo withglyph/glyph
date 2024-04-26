@@ -74,7 +74,7 @@
       class={css({
         borderTopWidth: '1px',
         borderTopColor: 'gray.100',
-        _firstOfType: { 'borderStyle': 'none', '& > a': { smDown: { paddingTop: '8px' } } },
+        _firstOfType: { 'borderStyle': 'none', '& > a': { paddingTop: { base: '8px', sm: '20px' } } },
       })}
     >
       {#if point.__typename === 'UnlockContentPointTransaction'}
@@ -88,7 +88,7 @@
           href="/{point.post?.space?.slug}/{point.post?.permalink}"
         >
           <div class={css({ truncate: true })}>
-            <time class={css({ marginBottom: '4px', fontSize: '13px', color: 'gray.400' })} datetime={point.createdAt}>
+            <time class={css({ marginBottom: '4px', fontSize: '12px', color: 'gray.400' })} datetime={point.createdAt}>
               {dayjs(point.createdAt).formatAsDateTime()}
               {pointTransactionCause[point.cause]}
             </time>
@@ -137,7 +137,7 @@
         </a>
       {:else}
         <div class={css({ paddingY: { base: '20px', sm: '32px' } })}>
-          <time class={css({ fontSize: '13px', color: 'gray.400' })} datetime={point.createdAt}>
+          <time class={css({ fontSize: '12px', color: 'gray.400' })} datetime={point.createdAt}>
             {dayjs(point.createdAt).formatAsDateTime()}
           </time>
           <p class={css({ marginTop: '4px', fontSize: '15px', fontWeight: 'semibold', color: 'brand.400' })}>

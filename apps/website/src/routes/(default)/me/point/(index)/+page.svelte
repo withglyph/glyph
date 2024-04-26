@@ -122,7 +122,7 @@
           href="/{point.post?.space?.slug}/{point.post?.permalink}"
         >
           <div class={css({ truncate: true })}>
-            <time class={css({ marginBottom: '4px', fontSize: '13px', color: 'gray.400' })} datetime={point.createdAt}>
+            <time class={css({ marginBottom: '4px', fontSize: '12px', color: 'gray.400' })} datetime={point.createdAt}>
               {dayjs(point.createdAt).formatAsDateTime()}
               {pointTransactionCause[point.cause]}
             </time>

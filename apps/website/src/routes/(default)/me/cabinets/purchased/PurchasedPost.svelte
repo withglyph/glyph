@@ -63,7 +63,10 @@
   href="/{$post.space.slug}/purchased/{$post.permalink}"
 >
   <div class={css({ flexGrow: '1', truncate: true })}>
-    <time class={css({ marginBottom: '4px', fontSize: '13px', color: 'gray.400' })} datetime={$post.purchasedAt}>
+    <time
+      class={css({ display: 'inline-block', marginBottom: '4px', fontSize: '12px', color: 'gray.400' })}
+      datetime={$post.purchasedAt}
+    >
       {dayjs($post.purchasedAt).formatAsDateTime()} 구매
     </time>
     <h3

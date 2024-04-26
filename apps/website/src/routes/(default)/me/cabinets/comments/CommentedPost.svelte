@@ -52,7 +52,7 @@
   class={flex({ direction: 'column', paddingY: '24px' })}
   href={$postComment.post ? `/${$postComment.post.space?.slug}/${$postComment.post.permalink}` : undefined}
 >
-  <time class={css({ fontSize: '13px', color: 'gray.500' })} datetime="$postComment.createdAt">
+  <time class={css({ fontSize: '12px', color: 'gray.400' })} datetime={$postComment.createdAt}>
     {dayjs($postComment.createdAt).formatAsDateTime()}에 작성
   </time>
   <p
@@ -71,7 +71,7 @@
 
   <div class={flex({ align: 'center', gap: '8px' })}>
     <Image
-      style={css.raw({ flex: 'none', width: '50px', aspectRatio: '16/10' })}
+      style={css.raw({ flex: 'none', height: '37px', aspectRatio: '16/10' })}
       $image={$postComment.post?.thumbnail}
       placeholder
       size={64}

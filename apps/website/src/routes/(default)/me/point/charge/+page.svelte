@@ -79,7 +79,7 @@
       })}
     >
       <div class={css({ paddingY: { base: '20px', sm: '32px' } })}>
-        <time class={css({ fontSize: '13px', color: 'gray.400' })} datetime={point.createdAt}>
+        <time class={css({ fontSize: '12px', color: 'gray.400' })} datetime={point.createdAt}>
           {dayjs(point.createdAt).formatAsDateTime()}
         </time>
         <p class={css({ marginTop: '4px', fontSize: '15px', fontWeight: 'semibold', color: 'brand.400' })}>

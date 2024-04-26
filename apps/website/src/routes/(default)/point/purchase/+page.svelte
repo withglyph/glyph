@@ -140,21 +140,12 @@
         width: 'full',
       })}
     >
-      <h2
-        class={css({
-          marginX: 'auto',
-          fontSize: { sm: '18px' },
-          fontWeight: 'semibold',
-          width: 'full',
-          maxWidth: '540px',
-        })}
-      >
-        보유중인 포인트 <span
-          class={css({ fontSize: { base: '20px', sm: '24px' }, fontWeight: 'bold', color: 'brand.400' })}
-        >
+      <div class={flex({ align: 'center', gap: '10px', marginX: 'auto', width: 'full', maxWidth: '540px' })}>
+        <h2 class={css({ fontSize: { sm: '18px' }, fontWeight: 'semibold' })}>보유중인 포인트</h2>
+        <span class={css({ fontSize: { base: '20px', sm: '24px' }, fontWeight: 'bold', color: 'brand.400' })}>
           {comma($query.me.point)}P
         </span>
-      </h2>
+      </div>
     </div>
 
     <div class={css({ width: 'full', maxWidth: '540px' })}>
