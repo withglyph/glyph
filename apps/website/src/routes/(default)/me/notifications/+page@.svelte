@@ -1,18 +1,16 @@
 <script lang="ts">
-  import dayjs from 'dayjs';
-  import ky from 'ky';
-  import IconCheck from '~icons/tabler/check';
   import IconChevronLeft from '~icons/tabler/chevron-left';
-  import IconCoin from '~icons/tabler/coin';
-  import IconMessageCircle from '~icons/tabler/message-circle';
   import IconSettings from '~icons/tabler/settings';
-  import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Helmet, Icon } from '$lib/components';
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
+  import CommentNotification from '../../CommentNotification.svelte';
+  import EmojiReactionNotification from '../../EmojiReactionNotification.svelte';
+  import PurchaseNotification from '../../PurchaseNotification.svelte';
+  import SubscribeNotification from '../../SubscribeNotification.svelte';
 
   $: query = graphql(`
     query MeNotificationsPage_Query {
@@ -22,50 +20,12 @@
         notifications {
           __typename
           id
-          category
-          createdAt
-          data
           state
 
-          actor {
-            id
-            name
-          }
-
-          ... on SubscribeNotification {
-            id
-
-            space {
-              id
-              name
-            }
-          }
-
-          ... on PurchaseNotification {
-            id
-
-            post {
-              id
-
-              publishedRevision {
-                id
-                title
-              }
-            }
-          }
-
-          ... on CommentNotification {
-            id
-
-            post {
-              id
-
-              publishedRevision {
-                id
-                title
-              }
-            }
-          }
+          ...CommentNotification_commentNotification
+          ...SubscribeNotification_subscribeNotification
+          ...PurchaseNotification_purchaseNotification
+          ...EmojiReactionNotification_emojiReactionNotification
         }
       }
     }
@@ -85,16 +45,6 @@
   const readAllNotifications = () => {
     mixpanel.track('user:notification-state:read', { via: 'notifications' });
     return Promise.all(unreadNotifications.map(({ id }) => markNotificationAsRead({ notificationId: id })));
-  };
-
-  const redirect = async (notification: (typeof $query.me.notifications)[0]) => {
-    if (notification.state === 'UNREAD') {
-      await markNotificationAsRead({ notificationId: notification.id });
-      mixpanel.track('user:notification-state:read', { via: 'notification-popup' });
-    }
-
-    const resp = await ky.get(`/api/notification/${notification.id}`);
-    await goto(resp.url);
   };
 </script>
 
@@ -148,61 +98,15 @@
   <ul class={css({ marginX: 'auto', marginBottom: '28px', minHeight: '120px', width: 'full', maxWidth: '800px' })}>
     {#each $query.me.notifications as notification (notification.id)}
       <li>
-        <button
-          class={css(
-            {
-              borderBottomWidth: '1px',
-              borderColor: 'gray.100',
-              paddingX: '16px',
-              paddingY: '20px',
-              width: 'full',
-              transition: 'common',
-              _hover: { backgroundColor: 'gray.100' },
-            },
-            notification.state === 'UNREAD' && { backgroundColor: 'gray.50' },
-          )}
-          type="button"
-          on:click={() => redirect(notification)}
-        >
-          <div class={css({ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: 'gray.500' })}>
-            {#if notification.__typename === 'SubscribeNotification'}
-              <Icon icon={IconCheck} size={12} />
-              스페이스 구독
-            {:else if notification.__typename === 'PurchaseNotification'}
-              <Icon icon={IconCoin} size={12} />
-              구매
-            {:else if notification.__typename === 'CommentNotification'}
-              <Icon icon={IconMessageCircle} size={12} />
-              댓글
-            {/if}
-          </div>
-          <div class={css({ paddingX: '12px', fontSize: '14px', fontWeight: 'medium', textAlign: 'left' })}>
-            {#if notification.__typename === 'SubscribeNotification'}
-              {notification.actor?.name}님이 {notification.space.name.length > 10
-                ? `${notification.space.name.slice(0, 10)}...`
-                : notification.space.name} 스페이스를 구독했어요
-            {:else if notification.category === 'TREND'}
-              포스트 조회수가 급상승하고 있어요
-            {:else if notification.__typename === 'PurchaseNotification'}
-              {notification.actor?.name}님이 {notification.post.publishedRevision?.title ?? '(제목 없음)'} 포스트를 구매했어요
-            {:else if notification.__typename === 'CommentNotification'}
-              {notification.actor?.name}님이 {notification.post.publishedRevision?.title ?? '(제목 없음)'}에 댓글을
-              달았어요
-            {/if}
-          </div>
-          <time
-            class={css({
-              display: 'inline-block',
-              fontSize: '11px',
-              color: 'gray.400',
-              textAlign: 'right',
-              width: 'full',
-            })}
-            datetime={notification.createdAt}
-          >
-            {dayjs(notification.createdAt).fromNow()}
-          </time>
-        </button>
+        {#if notification.__typename === 'CommentNotification'}
+          <CommentNotification $commentNotification={notification} />
+        {:else if notification.__typename === 'SubscribeNotification'}
+          <SubscribeNotification $subscribeNotification={notification} />
+        {:else if notification.__typename === 'PurchaseNotification'}
+          <PurchaseNotification $purchaseNotification={notification} />
+        {:else if notification.__typename === 'EmojiReactionNotification'}
+          <EmojiReactionNotification $emojiReactionNotification={notification} />
+        {/if}
       </li>
     {:else}
       <p class={css({ fontSize: '15px', color: 'gray.400', textAlign: 'center' })}>알림이 없어요</p>

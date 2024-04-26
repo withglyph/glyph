@@ -34,10 +34,9 @@
     title="댓글/답글"
   />
 
-  <!-- TODO: emoji reaction-->
   <NotificationSwitch
     $user={$query.me}
-    category="SUBSCRIBE"
+    category="EMOJI_REACTION"
     description="포스트에 이모지가 달렸을 때 알림을 받아요"
     title="이모지"
   />

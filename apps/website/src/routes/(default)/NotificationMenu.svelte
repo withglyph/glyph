@@ -1,12 +1,7 @@
 <script lang="ts">
-  import dayjs from 'dayjs';
-  import ky from 'ky';
   import IconBell from '~icons/tabler/bell';
-  import IconCheck from '~icons/tabler/check';
-  import IconCoin from '~icons/tabler/coin';
-  import IconMessageCircle from '~icons/tabler/message-circle';
   import IconX from '~icons/tabler/x';
-  import { beforeNavigate, goto } from '$app/navigation';
+  import { beforeNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
@@ -14,6 +9,10 @@
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
   import { center, circle, flex } from '$styled-system/patterns';
+  import CommentNotification from './CommentNotification.svelte';
+  import EmojiReactionNotification from './EmojiReactionNotification.svelte';
+  import PurchaseNotification from './PurchaseNotification.svelte';
+  import SubscribeNotification from './SubscribeNotification.svelte';
   import type { DefaultLayout_NotificationMenu_user } from '$glitch';
 
   let _user: DefaultLayout_NotificationMenu_user;
@@ -40,50 +39,12 @@
         notifications {
           __typename
           id
-          category
-          data
           state
-          createdAt
 
-          actor {
-            id
-            name
-          }
-
-          ... on SubscribeNotification {
-            id
-
-            space {
-              id
-              name
-            }
-          }
-
-          ... on PurchaseNotification {
-            id
-
-            post {
-              id
-
-              publishedRevision {
-                id
-                title
-              }
-            }
-          }
-
-          ... on CommentNotification {
-            id
-
-            post {
-              id
-
-              publishedRevision {
-                id
-                title
-              }
-            }
-          }
+          ...CommentNotification_commentNotification
+          ...SubscribeNotification_subscribeNotification
+          ...PurchaseNotification_purchaseNotification
+          ...EmojiReactionNotification_emojiReactionNotification
         }
       }
     `),
@@ -103,22 +64,18 @@
     }
   `);
 
-  $: checkUnreadNotification = $user.notifications.find((notification) => notification.state === 'UNREAD');
-  $: unreadNotifications = $user.notifications.filter((notification) => notification.state === 'UNREAD');
+  $: checkUnreadNotification = $user.notifications.find(
+    (notification: (typeof $user.notifications)[number]) => notification.state === 'UNREAD',
+  );
+  $: unreadNotifications = $user.notifications.filter(
+    (notification: (typeof $user.notifications)[number]) => notification.state === 'UNREAD',
+  );
 
   const readAllNotifications = () => {
     mixpanel.track('user:notification-state:read', { via: 'notification-popup' });
-    return Promise.all(unreadNotifications.map(({ id }) => markNotificationAsRead({ notificationId: id })));
-  };
-
-  const redirect = async (notification: (typeof $user.notifications)[0]) => {
-    if (notification.state === 'UNREAD') {
-      await markNotificationAsRead({ notificationId: notification.id });
-      mixpanel.track('user:notification-state:read', { via: 'notification-popup' });
-    }
-
-    const resp = await ky.get(`/api/notification/${notification.id}`);
-    await goto(resp.url);
+    return Promise.all(
+      unreadNotifications.map(({ id }: { id: string }) => markNotificationAsRead({ notificationId: id })),
+    );
   };
 
   beforeNavigate(() => {
@@ -263,61 +220,15 @@
     <ul class={css({ minHeight: '120px', maxHeight: '440px', overflowY: 'auto', position: 'relative' })}>
       {#each $user.notifications.slice(0, 20) as notification (notification.id)}
         <li>
-          <button
-            class={css(
-              {
-                borderBottomWidth: '1px',
-                borderBottomColor: 'gray.100',
-                paddingX: '16px',
-                paddingY: '20px',
-                width: 'full',
-                transition: 'common',
-                _hover: { backgroundColor: 'gray.100' },
-              },
-              notification.state === 'UNREAD' && { backgroundColor: 'gray.50' },
-            )}
-            type="button"
-            on:click={() => redirect(notification)}
-          >
-            <div class={css(flex.raw({ align: 'center', gap: '4px', fontSize: '13px', color: 'gray.500' }))}>
-              {#if notification.__typename === 'SubscribeNotification'}
-                <Icon icon={IconCheck} size={12} />
-                스페이스 구독
-              {:else if notification.__typename === 'PurchaseNotification'}
-                <Icon icon={IconCoin} size={12} />
-                구매
-              {:else if notification.__typename === 'CommentNotification'}
-                <Icon icon={IconMessageCircle} size={12} />
-                댓글
-              {/if}
-            </div>
-            <div class={css({ paddingX: '12px', fontSize: '14px', fontWeight: 'medium', textAlign: 'left' })}>
-              {#if notification.__typename === 'SubscribeNotification'}
-                {notification.actor?.name}님이 {notification.space.name.length > 10
-                  ? `${notification.space.name.slice(0, 10)}...`
-                  : notification.space.name} 스페이스를 구독했어요
-              {:else if notification.category === 'TREND'}
-                포스트 조회수가 급상승하고 있어요
-              {:else if notification.__typename === 'PurchaseNotification'}
-                {notification.actor?.name}님이 {notification.post.publishedRevision?.title ?? '(제목 없음)'} 포스트를 구매했어요
-              {:else if notification.__typename === 'CommentNotification'}
-                {notification.actor?.name}님이 {notification.post.publishedRevision?.title ?? '(제목 없음)'}에 댓글을
-                달았어요
-              {/if}
-            </div>
-            <time
-              class={css({
-                display: 'inline-block',
-                width: 'full',
-                fontSize: '11px',
-                textAlign: 'right',
-                color: 'gray.400',
-              })}
-              datetime={notification.createdAt}
-            >
-              {dayjs(notification.createdAt).fromNow()}
-            </time>
-          </button>
+          {#if notification.__typename === 'CommentNotification'}
+            <CommentNotification $commentNotification={notification} />
+          {:else if notification.__typename === 'SubscribeNotification'}
+            <SubscribeNotification $subscribeNotification={notification} />
+          {:else if notification.__typename === 'PurchaseNotification'}
+            <PurchaseNotification $purchaseNotification={notification} />
+          {:else if notification.__typename === 'EmojiReactionNotification'}
+            <EmojiReactionNotification $emojiReactionNotification={notification} />
+          {/if}
         </li>
       {:else}
         <li
@@ -336,7 +247,7 @@
         </li>
       {/each}
 
-      {#if $user.notifications.length > 2}
+      {#if $user.notifications.length > 20}
         <li class={css({ marginTop: '32px', padding: '20px' })}>
           <Button
             style={css.raw({
