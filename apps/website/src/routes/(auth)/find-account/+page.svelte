@@ -6,7 +6,6 @@
   import { mixpanel } from '$lib/analytics';
   import { Alert, Helmet, Icon, Link } from '$lib/components';
   import { Button } from '$lib/components/v2';
-  import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
 
@@ -28,7 +27,7 @@
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async (resp: any) => {
         if (resp.error_msg) {
-          toast(resp.error_msg);
+          accountNotFoundOpen = true;
           return;
         }
 
