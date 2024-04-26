@@ -802,7 +802,7 @@
                     marginBottom: '14px',
                     _after: {
                       content: '""',
-                      marginX: '14px',
+                      marginX: '10px',
                       marginY: 'auto',
                       width: '1px',
                       height: '8px',
@@ -826,7 +826,7 @@
                   >
                     카테고리
                   </dt>
-                  <dd>
+                  <dd class={flex({})}>
                     <Tag as="div" size="sm">
                       #{categoryFilter[$query.post.category]}
                     </Tag>
@@ -834,11 +834,11 @@
                 </div>
 
                 {#if $query.post.pairs.length > 0}
-                  <div class={flex({ align: 'center', marginBottom: '14px' })}>
+                  <div class={flex({ align: 'center', gap: '4px', wrap: 'wrap', marginBottom: '14px' })}>
                     <dt
                       class={css({
                         flex: 'none',
-                        marginRight: '8px',
+                        marginRight: '4px',
                         fontSize: '14px',
                         fontWeight: 'medium',
                         color: 'gray.500',
@@ -846,15 +846,13 @@
                     >
                       페어
                     </dt>
-                    <div class={flex({ align: 'center', gap: '4px', wrap: 'wrap' })}>
-                      {#each $query.post.pairs as pair (pair)}
-                        <dd>
-                          <Tag as="div" size="sm">
-                            #{pairFilter[pair]}
-                          </Tag>
-                        </dd>
-                      {/each}
-                    </div>
+                    {#each $query.post.pairs as pair (pair)}
+                      <dd class={flex({})}>
+                        <Tag as="div" size="sm">
+                          #{pairFilter[pair]}
+                        </Tag>
+                      </dd>
+                    {/each}
                   </div>
                 {/if}
               </dl>
@@ -863,11 +861,12 @@
                   <div
                     class={flex({
                       align: 'center',
+                      gap: '4px',
                       wrap: 'wrap',
                       marginBottom: '14px',
                       _after: {
                         content: '""',
-                        marginX: '14px',
+                        marginX: '10px',
                         marginY: 'auto',
                         width: '1px',
                         height: '8px',
@@ -883,7 +882,7 @@
                     <dt
                       class={css({
                         flex: 'none',
-                        marginRight: '8px',
+                        marginRight: '4px',
                         fontSize: '14px',
                         fontWeight: 'medium',
                         color: 'gray.500',
@@ -891,17 +890,15 @@
                     >
                       작품
                     </dt>
-                    <div class={flex({ align: 'center', gap: '4px', wrap: 'wrap' })}>
-                      {#each $query.post.tags as { tag, kind } (tag.id)}
-                        {#if kind === 'TITLE'}
-                          <dd>
-                            <Tag href={`/tag/${tag.name}`} size="sm">
-                              #{tag.name}
-                            </Tag>
-                          </dd>
-                        {/if}
-                      {/each}
-                    </div>
+                    {#each $query.post.tags as { tag, kind } (tag.id)}
+                      {#if kind === 'TITLE'}
+                        <dd class={flex({})}>
+                          <Tag href={`/tag/${tag.name}`} size="sm">
+                            #{tag.name}
+                          </Tag>
+                        </dd>
+                      {/if}
+                    {/each}
                   </div>
                 {/if}
 
@@ -909,11 +906,12 @@
                   <div
                     class={flex({
                       align: 'center',
+                      gap: '4px',
                       wrap: 'wrap',
                       marginBottom: '14px',
                       _after: {
                         content: '""',
-                        marginX: '14px',
+                        marginX: '10px',
                         marginY: 'auto',
                         width: '1px',
                         height: '8px',
@@ -929,7 +927,7 @@
                     <dt
                       class={flex({
                         flex: 'none',
-                        marginRight: '8px',
+                        marginRight: '4px',
                         fontSize: '14px',
                         fontWeight: 'medium',
                         color: 'gray.500',
@@ -937,17 +935,15 @@
                     >
                       캐릭터
                     </dt>
-                    <div class={flex({ align: 'center', gap: '4px', wrap: 'wrap' })}>
-                      {#each $query.post.tags as { tag, kind } (tag.id)}
-                        {#if kind === 'CHARACTER'}
-                          <dd>
-                            <Tag href={`/tag/${tag.name}`} size="sm">
-                              #{tag.name}
-                            </Tag>
-                          </dd>
-                        {/if}
-                      {/each}
-                    </div>
+                    {#each $query.post.tags as { tag, kind } (tag.id)}
+                      {#if kind === 'CHARACTER'}
+                        <dd class={flex({})}>
+                          <Tag href={`/tag/${tag.name}`} size="sm">
+                            #{tag.name}
+                          </Tag>
+                        </dd>
+                      {/if}
+                    {/each}
                   </div>
                 {/if}
 
@@ -955,11 +951,12 @@
                   <div
                     class={flex({
                       align: 'center',
+                      gap: '4px',
                       wrap: 'wrap',
                       marginBottom: '14px',
                       _after: {
                         content: '""',
-                        marginX: '14px',
+                        marginX: '10px',
                         marginY: 'auto',
                         width: '1px',
                         height: '8px',
@@ -975,7 +972,7 @@
                     <dt
                       class={flex({
                         flex: 'none',
-                        marginRight: '8px',
+                        marginRight: '4px',
                         fontSize: '14px',
                         fontWeight: 'medium',
                         color: 'gray.500',
@@ -983,26 +980,24 @@
                     >
                       커플링
                     </dt>
-                    <div class={flex({ align: 'center', gap: '4px', wrap: 'wrap' })}>
-                      {#each $query.post.tags as { tag, kind } (tag.id)}
-                        {#if kind === 'COUPLING'}
-                          <dd>
-                            <Tag href={`/tag/${tag.name}`} size="sm">
-                              #{tag.name}
-                            </Tag>
-                          </dd>
-                        {/if}
-                      {/each}
-                    </div>
+                    {#each $query.post.tags as { tag, kind } (tag.id)}
+                      {#if kind === 'COUPLING'}
+                        <dd class={flex({})}>
+                          <Tag href={`/tag/${tag.name}`} size="sm">
+                            #{tag.name}
+                          </Tag>
+                        </dd>
+                      {/if}
+                    {/each}
                   </div>
                 {/if}
 
                 {#if $query.post.tags.some(({ kind }) => kind === 'EXTRA')}
-                  <div class={flex({ align: 'center', marginBottom: '14px' })}>
+                  <div class={flex({ align: 'center', gap: '4px', wrap: 'wrap', marginBottom: '14px' })}>
                     <dt
                       class={flex({
                         flex: 'none',
-                        marginRight: '8px',
+                        marginRight: '4px',
                         fontSize: '14px',
                         fontWeight: 'medium',
                         color: 'gray.500',
@@ -1010,17 +1005,15 @@
                     >
                       추가태그
                     </dt>
-                    <div class={flex({ align: 'center', gap: '4px', wrap: 'wrap' })}>
-                      {#each $query.post.tags as { tag, kind } (tag.id)}
-                        {#if kind === 'EXTRA'}
-                          <dd>
-                            <Tag href={`/tag/${tag.name}`} size="sm">
-                              #{tag.name}
-                            </Tag>
-                          </dd>
-                        {/if}
-                      {/each}
-                    </div>
+                    {#each $query.post.tags as { tag, kind } (tag.id)}
+                      {#if kind === 'EXTRA'}
+                        <dd class={flex({})}>
+                          <Tag href={`/tag/${tag.name}`} size="sm">
+                            #{tag.name}
+                          </Tag>
+                        </dd>
+                      {/if}
+                    {/each}
                   </div>
                 {/if}
               </dl>
