@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { and, count, eq } from 'drizzle-orm';
+import { and, count, desc, eq } from 'drizzle-orm';
 import { PostCommentState, PostCommentVisibility } from '$lib/enums';
 import { NotFoundError, PermissionDeniedError } from '$lib/errors';
 import {
@@ -217,7 +217,8 @@ PostComment.implement({
             return await database
               .select()
               .from(PostComments)
-              .where(and(inArray(PostComments.parentId, parentIds), eq(PostComments.state, 'ACTIVE')));
+              .where(and(inArray(PostComments.parentId, parentIds), eq(PostComments.state, 'ACTIVE')))
+              .orderBy(desc(PostComments.createdAt));
           },
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           key: (comments) => comments.parentId!,
