@@ -227,7 +227,7 @@
           {:else if notification.__typename === 'PurchaseNotification'}
             <PurchaseNotification $purchaseNotification={notification} />
           {:else if notification.__typename === 'EmojiReactionNotification'}
-            <EmojiReactionNotification $emojiReactionNotification={notification} />
+            <EmojiReactionNotification $emojiReactionNotification={notification} via="menu" />
           {/if}
         </li>
       {:else}

@@ -16,6 +16,8 @@
   let _emojiReactionNotification: EmojiReactionNotification_emojiReactionNotification;
   export { _emojiReactionNotification as $emojiReactionNotification };
 
+  export let via: 'menu' | 'page' = 'page';
+
   $: emojiReactionNotification = fragment(
     _emojiReactionNotification,
     graphql(`
@@ -98,17 +100,23 @@
       $emojiReactionNotification.post.publishedRevision?.title.length > 10
         ? `${$emojiReactionNotification.post.publishedRevision?.title.slice(0, 10)}...`
         : $emojiReactionNotification.post.publishedRevision?.title ?? '(제목 없음)'}에
-      <em-emoji
-        id={$emojiReactionNotification.emoji}
-        class={center({
-          'marginLeft': '4px',
-          'marginBottom': '2px',
-          'size': '14px',
-          '& > span': { display: 'block', size: '14px' },
-        })}
-        set="twitter"
-      />
-      을 남겼어요
+
+      {#if via === 'menu'}
+        이모지를
+      {:else}
+        <em-emoji
+          id={$emojiReactionNotification.emoji}
+          class={center({
+            'marginLeft': '4px',
+            'marginBottom': '2px',
+            'size': '14px',
+            '& > span': { display: 'block', size: '14px' },
+          })}
+          set="twitter"
+        />
+        을
+      {/if}
+      남겼어요
     </div>
     <time
       class={css({
