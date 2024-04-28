@@ -34,7 +34,7 @@
     style="display:block"
     class={cx('adsbygoogle', css({ size: 'full' }))}
     data-ad-client="ca-pub-4449202773959958"
-    data-ad-format="horizontal"
+    data-ad-format="rectangle"
     data-ad-slot={slotId}
   ></ins>
 

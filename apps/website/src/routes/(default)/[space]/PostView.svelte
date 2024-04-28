@@ -1427,7 +1427,7 @@
     </aside>
 
     {#if $query.featureFlags.includes('SHOW_AD')}
-      <AdSense style={css.raw({ marginTop: '60px', width: 'full', height: '150px' })} slotId="3261823000" />
+      <AdSense style={css.raw({ marginTop: '60px', width: 'full', minHeight: '150px' })} slotId="3261823000" />
     {/if}
 
     {#if $query.post.space && !blurContent && !$query.post.space.myMasquerade?.blocked}
