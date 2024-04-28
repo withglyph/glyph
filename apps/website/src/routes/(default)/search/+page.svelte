@@ -141,7 +141,7 @@
       </h1>
 
       {#if $query.featureFlags.includes('SHOW_AD')}
-        <AdSense style={css.raw({ marginTop: '12px', width: 'full', minHeight: '150px' })} slotId="5370694172" />
+        <AdSense style={css.raw({ marginTop: '12px', width: 'full', height: '150px' })} slotId="5370694172" />
       {/if}
 
       <!-- <div class={flex({ gap: '6px', wrap: 'wrap', marginTop: '10px', marginBottom: '32px' })}>
@@ -234,7 +234,7 @@
         </ul>
 
         {#if $query.featureFlags.includes('SHOW_AD')}
-          <AdSense style={css.raw({ marginTop: '12px', width: 'full', minHeight: '150px' })} slotId="1252319916" />
+          <AdSense style={css.raw({ marginTop: '12px', width: 'full', height: '150px' })} slotId="1252319916" />
         {/if}
 
         <Pagination {initialPage} onChange={updateSearchFilter} totalItems={$query.searchPosts.count} />

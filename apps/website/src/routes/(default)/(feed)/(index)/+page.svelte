@@ -172,7 +172,7 @@
   </div>
 
   {#if $query.featureFlags.includes('SHOW_AD')}
-    <AdSense style={css.raw({ width: 'full', minHeight: '150px' })} slotId="3977220446" />
+    <AdSense style={css.raw({ width: 'full', height: '150px' })} slotId="3977220446" />
   {/if}
 
   <div class={css({ paddingTop: { base: '32px', sm: '40px' }, paddingBottom: { base: '40px', sm: '60px' } })}>
@@ -289,7 +289,7 @@
 <div class={css({ marginX: 'auto', paddingX: '20px', width: 'full', maxWidth: '1280px' })}>
   {#if $query.featureFlags.includes('SHOW_AD')}
     <AdSense
-      style={css.raw({ marginTop: { base: '40px', sm: '60px' }, width: 'full', minHeight: '150px' })}
+      style={css.raw({ marginTop: { base: '40px', sm: '60px' }, width: 'full', height: '150px' })}
       slotId="5096814705"
     />
   {/if}

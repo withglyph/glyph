@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import IconHelpLine from '~icons/glyph/help-line';
   import { css, cx } from '$styled-system/css';
-  import { flex } from '$styled-system/patterns';
+  import { center, flex } from '$styled-system/patterns';
   import Icon from './Icon.svelte';
   import Link from './Link.svelte';
   import Tooltip from './Tooltip.svelte';
@@ -17,26 +17,8 @@
   });
 </script>
 
-<div
-  class={css(
-    {
-      'position': 'relative',
-      'display': 'flex',
-      'justifyContent': 'center',
-      'alignItems': 'center',
-      'backgroundColor': 'gray.50',
-      '&:has(ins.adsbygoogle[data-ad-status="unfilled"])': { display: 'none' },
-    },
-    style,
-  )}
->
-  <ins
-    style="display:block"
-    class={cx('adsbygoogle', css({ size: 'full' }))}
-    data-ad-client="ca-pub-4449202773959958"
-    data-ad-format="rectangle"
-    data-ad-slot={slotId}
-  ></ins>
+<div class={css({ position: 'relative', backgroundColor: 'gray.50' }, style)}>
+  <ins class={cx('adsbygoogle', center())} data-ad-client="ca-pub-4449202773959958" data-ad-slot={slotId}></ins>
 
   <div
     class={flex({
