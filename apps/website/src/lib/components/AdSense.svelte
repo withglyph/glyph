@@ -18,18 +18,15 @@
 </script>
 
 <div
-  class={css(
-    {
-      'position': 'relative',
-      'backgroundColor': 'gray.200',
-      '&:has(ins.adsbygoogle[data-ad-status="unfilled"])': { display: 'none' },
-    },
-    style,
-  )}
+  class={css({
+    'position': 'relative',
+    'backgroundColor': 'gray.200',
+    '&:has(ins.adsbygoogle[data-ad-status="unfilled"])': { display: 'none' },
+  })}
 >
   <ins
     style="display:block"
-    class={cx('adsbygoogle', css({ size: 'full' }))}
+    class={cx('adsbygoogle', css(style))}
     data-ad-client="ca-pub-4449202773959958"
     data-ad-slot={slotId}
   ></ins>
