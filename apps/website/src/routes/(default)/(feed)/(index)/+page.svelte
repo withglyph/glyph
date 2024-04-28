@@ -2,7 +2,7 @@
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
-  import { Helmet, Icon, Image, Tag } from '$lib/components';
+  import { AdSense, Helmet, Icon, Image, Tag } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
   import Post from '../Post.svelte';
@@ -169,15 +169,13 @@
     </HorizontalScroll>
   </div>
 
+  <AdSense style={css.raw({ width: 'full', height: '120px' })} slotId="3977220446" />
+
   <div class={css({ paddingTop: { base: '32px', sm: '40px' }, paddingBottom: { base: '40px', sm: '60px' } })}>
     <div class={flex({ align: 'center', justify: 'space-between', marginBottom: '14px' })}>
       <h2 class={css({ fontSize: '21px', fontWeight: 'bold' })}>
         {$query.me ? `${$query.me.profile.name}님을 위한 추천` : '독자님을 위한 추천'}
       </h2>
-
-      <!-- <button class={css({ color: 'gray.500' })} type="button">
-        <Icon icon={IconRefresh} size={20} />
-      </button> -->
     </div>
 
     <ul
@@ -285,6 +283,11 @@
 </div>
 
 <div class={css({ marginX: 'auto', paddingX: '20px', width: 'full', maxWidth: '1280px' })}>
+  <AdSense
+    style={css.raw({ marginTop: { base: '40px', sm: '60px' }, width: 'full', height: '120px' })}
+    slotId="5096814705"
+  />
+
   <div class={css({ paddingTop: { base: '40px', sm: '60px' } })}>
     <h2 class={css({ marginBottom: '14px', fontSize: '21px', fontWeight: 'bold' })}>많이 찾은 컬렉션</h2>
 
