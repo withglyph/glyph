@@ -16,7 +16,7 @@
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Alert, Avatar, Chip, Icon, Image, ShareLinkPopover, Tag, Tooltip } from '$lib/components';
+  import { AdSense, Alert, Avatar, Chip, Icon, Image, ShareLinkPopover, Tag, Tooltip } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Button } from '$lib/components/v2';
   import { TextInput } from '$lib/components/v2/forms';
@@ -61,6 +61,8 @@
     _query,
     graphql(`
       fragment Post_query on Query {
+        featureFlags
+
         me {
           id
           isAdulthood
@@ -1423,6 +1425,10 @@
         {/if}
       {/if}
     </aside>
+
+    {#if $query.featureFlags.includes('SHOW_AD')}
+      <AdSense style={css.raw({ marginTop: '60px', width: 'full', height: '150px' })} slotId="3261823000" />
+    {/if}
 
     {#if $query.post.space && !blurContent && !$query.post.space.myMasquerade?.blocked}
       <div class={css({ marginTop: '60px' })}>

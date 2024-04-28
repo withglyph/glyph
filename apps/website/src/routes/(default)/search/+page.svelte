@@ -3,7 +3,7 @@
   import IconFilter from '~icons/tabler/adjustments-horizontal';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { Helmet, Icon, Pagination, Tag } from '$lib/components';
+  import { AdSense, Helmet, Icon, Pagination, Tag } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
   import { Select, SelectItem } from '$lib/components/v2/select';
   import { comma } from '$lib/utils';
@@ -35,6 +35,8 @@
       $orderBy: SearchOrderByKind!
       $page: Int! = 1
     ) {
+      featureFlags
+
       searchPosts(
         query: $query
         includeTags: $includeTags
@@ -143,6 +145,10 @@
         에 대한 결과 ({comma($query.searchPosts.count)})
       </h1>
 
+      {#if $query.featureFlags.includes('SHOW_AD')}
+        <AdSense style={css.raw({ marginTop: '12px', width: 'full', height: '150px' })} slotId="5370694172" />
+      {/if}
+
       <div class={flex({ gap: '6px', wrap: 'wrap', marginTop: '10px', marginBottom: '32px' })}>
         {#each $query.searchTags as tag (tag.id)}
           <Tag size="sm">
@@ -231,6 +237,11 @@
             </li>
           {/each}
         </ul>
+
+        {#if $query.featureFlags.includes('SHOW_AD')}
+          <AdSense style={css.raw({ marginTop: '12px', width: 'full', height: '150px' })} slotId="1252319916" />
+        {/if}
+
         <Pagination {initialPage} onChange={updateSearchFilter} totalItems={$query.searchPosts.count} />
       {/if}
     </div>

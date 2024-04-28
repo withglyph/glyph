@@ -17,7 +17,16 @@
   });
 </script>
 
-<div class={css({ position: 'relative', backgroundColor: 'gray.200' }, style)}>
+<div
+  class={css(
+    {
+      'position': 'relative',
+      'backgroundColor': 'gray.200',
+      '&:has(ins.adsbygoogle[data-ad-status="unfilled"])': { display: 'none' },
+    },
+    style,
+  )}
+>
   <ins
     style="display:block"
     class={cx('adsbygoogle', css({ size: 'full' }))}
@@ -28,7 +37,7 @@
   <div
     class={flex({
       position: 'absolute',
-      top: '0',
+      top: '-2px',
       right: '0',
       justify: 'flex-end',
       align: 'center',

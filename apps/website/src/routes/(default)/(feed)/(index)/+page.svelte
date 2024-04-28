@@ -3,7 +3,6 @@
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
   import { AdSense, Helmet, Icon, Image, Tag } from '$lib/components';
-  import { FeatureFlag } from '$lib/enums';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
   import Post from '../Post.svelte';
@@ -172,8 +171,8 @@
     </HorizontalScroll>
   </div>
 
-  {#if $query.featureFlags.includes(FeatureFlag.SHOW_AD)}
-    <AdSense style={css.raw({ width: 'full', height: '120px' })} slotId="3977220446" />
+  {#if $query.featureFlags.includes('SHOW_AD')}
+    <AdSense style={css.raw({ width: 'full', height: '150px' })} slotId="3977220446" />
   {/if}
 
   <div class={css({ paddingTop: { base: '32px', sm: '40px' }, paddingBottom: { base: '40px', sm: '60px' } })}>
@@ -288,9 +287,9 @@
 </div>
 
 <div class={css({ marginX: 'auto', paddingX: '20px', width: 'full', maxWidth: '1280px' })}>
-  {#if $query.featureFlags.includes(FeatureFlag.SHOW_AD)}
+  {#if $query.featureFlags.includes('SHOW_AD')}
     <AdSense
-      style={css.raw({ marginTop: { base: '40px', sm: '60px' }, width: 'full', height: '120px' })}
+      style={css.raw({ marginTop: { base: '40px', sm: '60px' }, width: 'full', height: '150px' })}
       slotId="5096814705"
     />
   {/if}
