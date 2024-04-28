@@ -36,7 +36,7 @@
 </p>
 
 <ul class={flex({ direction: 'column', flexGrow: '1' })}>
-  {#each $query.me.bookmarkGroups[0]?.posts as post (post.id)}
+  {#each $query.me.bookmarkGroups[0]?.posts ?? [] as post (post.id)}
     <li
       class={css({
         borderTopWidth: '1px',
