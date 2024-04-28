@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import IconHelpLine from '~icons/glyph/help-line';
-  import { css } from '$styled-system/css';
+  import { css, cx } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import Icon from './Icon.svelte';
   import Link from './Link.svelte';
@@ -21,7 +21,10 @@
   class={css(
     {
       'position': 'relative',
-      'backgroundColor': 'gray.200',
+      'display': 'flex',
+      'justifyContent': 'center',
+      'alignItems': 'center',
+      'backgroundColor': 'gray.50',
       '&:has(ins.adsbygoogle[data-ad-status="unfilled"])': { display: 'none' },
     },
     style,
@@ -29,11 +32,10 @@
 >
   <ins
     style="display:block"
-    class="adsbygoogle"
+    class={cx('adsbygoogle', css({ size: 'full' }))}
     data-ad-client="ca-pub-4449202773959958"
-    data-ad-format="auto"
+    data-ad-format="horizontal"
     data-ad-slot={slotId}
-    data-full-width-responsive="true"
   ></ins>
 
   <div
@@ -51,9 +53,9 @@
     <Link class={css({ fontSize: '12px', color: 'gray.400' })} external href="https://withglyph.com/glyph/1109158689">
       광고 테스트를 진행하고 있어요
     </Link>
-    <Tooltip message="일부 이용자 대상으로 5월 22일까지 랜덤하게 노출돼요">
+    <Tooltip message="일부 이용자 대상으로 5월 22일까지 랜덤하게 노출돼요" offset={4} placement="top">
       <Icon
-        style={css.raw({ 'color': 'gray.400', 'size': '14px', '& *': { strokeWidth: '[1]' } })}
+        style={css.raw({ 'color': 'gray.400', 'size': '12px', '& *': { strokeWidth: '[1]' } })}
         icon={IconHelpLine}
       />
     </Tooltip>
