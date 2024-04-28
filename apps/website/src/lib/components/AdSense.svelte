@@ -18,7 +18,11 @@
 </script>
 
 <div class={css({ position: 'relative', backgroundColor: 'gray.50' }, style)}>
-  <ins class={cx('adsbygoogle', center())} data-ad-client="ca-pub-4449202773959958" data-ad-slot={slotId}></ins>
+  <ins
+    class={cx('adsbygoogle', center({ size: 'full' }))}
+    data-ad-client="ca-pub-4449202773959958"
+    data-ad-slot={slotId}
+  ></ins>
 
   <div
     class={flex({
