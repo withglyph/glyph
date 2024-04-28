@@ -9,6 +9,7 @@ function createPgEnum<T extends string>(enumName: string, obj: Record<string, T>
 // createPgEnum 함수를 사용하여 pgEnum 호출, 알파벳 순으로 정렬
 export const _ContentFilterAction = createPgEnum('_content_filter_action', E.ContentFilterAction);
 export const _ContentFilterCategory = createPgEnum('_content_filter_category', E.ContentFilterCategory);
+export const _FeatureFlag = createPgEnum('_feature_flag', E.FeatureFlag);
 export const _PaymentMethod = createPgEnum('_payment_method', E.PaymentMethod);
 export const _PointKind = createPgEnum('_point_kind', E.PointKind);
 export const _PointPurchaseState = createPgEnum('_point_purchase_state', E.PointPurchaseState);

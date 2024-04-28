@@ -1025,3 +1025,14 @@ export const CurationPosts = pgTable('curation_posts', {
     .notNull()
     .default(sql`now()`),
 });
+
+export const FeatureFlags = pgTable('feature_flags', {
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  flag: E._FeatureFlag('flag').notNull().unique(),
+  ratio: integer('ratio').notNull(),
+  createdAt: datetime('created_at')
+    .notNull()
+    .default(sql`now()`),
+});

@@ -22,6 +22,10 @@ export const ContentFilterCategory = {
   VIOLENCE: 'VIOLENCE',
 } as const;
 
+export const FeatureFlag = {
+  SHOW_AD: 'SHOW_AD',
+} as const;
+
 export const PaymentMethod = {
   BANK_ACCOUNT: 'BANK_ACCOUNT',
   CREDIT_CARD: 'CREDIT_CARD',

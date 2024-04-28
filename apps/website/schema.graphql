@@ -162,6 +162,10 @@ type EventRewardPointTransaction implements IPointTransaction {
   id: ID!
 }
 
+enum FeatureFlag {
+  SHOW_AD
+}
+
 type FeaturedTag {
   posts: [Post!]!
   tag: Tag!
@@ -653,6 +657,7 @@ type Query {
   collectionFeed: [SpaceCollection!]!
   curatedPosts: [Post!]!
   draftPost(permalink: String!): Post!
+  featureFlags: [FeatureFlag!]!
   featuredTagFeed: [FeaturedTag!]!
   flash: Flash
   followingFeed(page: Int! = 1, take: Int! = 30): [Post!]!

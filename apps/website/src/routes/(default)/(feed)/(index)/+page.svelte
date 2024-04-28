@@ -3,6 +3,7 @@
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
   import { AdSense, Helmet, Icon, Image, Tag } from '$lib/components';
+  import { FeatureFlag } from '$lib/enums';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
   import Post from '../Post.svelte';
@@ -12,6 +13,8 @@
 
   $: query = graphql(`
     query IndexPage_Query {
+      featureFlags
+
       me {
         id
 
@@ -169,7 +172,9 @@
     </HorizontalScroll>
   </div>
 
-  <AdSense style={css.raw({ width: 'full', height: '120px' })} slotId="3977220446" />
+  {#if $query.featureFlags.includes(FeatureFlag.SHOW_AD)}
+    <AdSense style={css.raw({ width: 'full', height: '120px' })} slotId="3977220446" />
+  {/if}
 
   <div class={css({ paddingTop: { base: '32px', sm: '40px' }, paddingBottom: { base: '40px', sm: '60px' } })}>
     <div class={flex({ align: 'center', justify: 'space-between', marginBottom: '14px' })}>
@@ -283,10 +288,12 @@
 </div>
 
 <div class={css({ marginX: 'auto', paddingX: '20px', width: 'full', maxWidth: '1280px' })}>
-  <AdSense
-    style={css.raw({ marginTop: { base: '40px', sm: '60px' }, width: 'full', height: '120px' })}
-    slotId="5096814705"
-  />
+  {#if $query.featureFlags.includes(FeatureFlag.SHOW_AD)}
+    <AdSense
+      style={css.raw({ marginTop: { base: '40px', sm: '60px' }, width: 'full', height: '120px' })}
+      slotId="5096814705"
+    />
+  {/if}
 
   <div class={css({ paddingTop: { base: '40px', sm: '60px' } })}>
     <h2 class={css({ marginBottom: '14px', fontSize: '21px', fontWeight: 'bold' })}>많이 찾은 컬렉션</h2>
