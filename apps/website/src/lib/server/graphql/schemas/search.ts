@@ -3,8 +3,6 @@ import { elasticSearch, indexName } from '$lib/server/search';
 import { getMutedSpaceIds, getMutedTagIds, makeQueryContainers } from '$lib/server/utils';
 import { builder } from '../builder';
 import { Post } from './post';
-import { Space } from './space';
-import { Tag } from './tag';
 import type { SearchResponse } from '$lib/server/utils';
 
 /**
@@ -123,22 +121,6 @@ builder.queryFields((t) => ({
       });
 
       return { result: searchResult };
-    },
-  }),
-
-  searchSpaces: t.field({
-    type: [Space],
-    args: { query: t.arg.string() },
-    resolve: async () => {
-      return [];
-    },
-  }),
-
-  searchTags: t.field({
-    type: [Tag],
-    args: { query: t.arg.string() },
-    resolve: async () => {
-      return [];
     },
   }),
 }));

@@ -672,8 +672,6 @@ type Query {
   recommendedTags: [Tag!]!
   revenueWithdrawal(id: String!): RevenueWithdrawal!
   searchPosts(adultFilter: Boolean, excludeTags: [String!]! = [], includeTags: [String!]! = [], orderBy: SearchOrderByKind! = ACCURACY, page: Int! = 1, query: String!, take: Int! = 10): SearchResult!
-  searchSpaces(query: String!): [Space!]!
-  searchTags(query: String!): [Tag!]!
   space(slug: String!): Space!
   spaceCollection(slug: String!): SpaceCollection!
   spaceFeed: [Post!]!

@@ -3,7 +3,7 @@
   import IconFilter from '~icons/tabler/adjustments-horizontal';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { AdSense, Helmet, Icon, Pagination, Tag } from '$lib/components';
+  import { AdSense, Helmet, Icon, Pagination } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
   import { Select, SelectItem } from '$lib/components/v2/select';
   import { comma } from '$lib/utils';
@@ -51,11 +51,6 @@
           id
           ...Feed_Post_post
         }
-      }
-
-      searchTags(query: $query) {
-        id
-        name
       }
 
       ...Feed_Post_query
@@ -149,13 +144,13 @@
         <AdSense style={css.raw({ marginTop: '12px', width: 'full', height: '150px' })} slotId="5370694172" />
       {/if}
 
-      <div class={flex({ gap: '6px', wrap: 'wrap', marginTop: '10px', marginBottom: '32px' })}>
+      <!-- <div class={flex({ gap: '6px', wrap: 'wrap', marginTop: '10px', marginBottom: '32px' })}>
         {#each $query.searchTags as tag (tag.id)}
           <Tag size="sm">
             #{tag.name}
           </Tag>
         {/each}
-      </div>
+      </div> -->
 
       <div class={flex({ align: 'center', justify: 'space-between', paddingY: '12px' })}>
         <p class={css({ fontSize: { base: '14px', sm: '16px' }, fontWeight: 'semibold' })}>포스트</p>
