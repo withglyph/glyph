@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import IconHelpLine from '~icons/glyph/help-line';
-  import { css } from '$styled-system/css';
+  import { css, cx } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import Icon from './Icon.svelte';
   import Link from './Link.svelte';
@@ -20,11 +20,9 @@
 <div class={css({ position: 'relative', backgroundColor: 'gray.200' }, style)}>
   <ins
     style="display:block"
-    class="adsbygoogle"
+    class={cx('adsbygoogle', css({ size: 'full' }))}
     data-ad-client="ca-pub-4449202773959958"
-    data-ad-format="auto"
     data-ad-slot={slotId}
-    data-full-width-responsive="true"
   ></ins>
 
   <div
