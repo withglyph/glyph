@@ -36,6 +36,10 @@
           id
           commentQualification
 
+          member {
+            id
+          }
+
           space {
             id
 
@@ -120,7 +124,7 @@
           <span class={css({ fontSize: '14px', fontWeight: 'medium' })}>
             {$query.post.space.commentProfile?.name ?? ''}
           </span>
-          {#if !$query.post.space?.meAsMember && $query.me}
+          {#if !$query.post.space?.meAsMember}
             <Tooltip
               enabled={!$query.post.space?.meAsMember}
               message="익명의 프로필명이 자동으로 생성돼요"
@@ -129,8 +133,7 @@
             >
               <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} size={12} />
             </Tooltip>
-          {/if}
-          {#if $query.post.space.meAsMember}
+          {:else if $query.post.member?.id === $query.post.space?.meAsMember?.id}
             <span class={css({ fontSize: '12px', color: 'brand.400' })}>창작자</span>
           {/if}
         </div>
