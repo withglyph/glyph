@@ -21,9 +21,7 @@
   <ins
     class={cx('adsbygoogle', center({ size: 'full' }))}
     data-ad-client="ca-pub-4449202773959958"
-    data-ad-format="auto"
     data-ad-slot={slotId}
-    data-full-width-responsive="true"
   ></ins>
 
   <div
