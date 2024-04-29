@@ -7,7 +7,7 @@ const password = new random.RandomPassword('glyph@mq', {
   special: false,
 });
 
-const mq = new aws.mq.Broker('glyph', {
+const broker = new aws.mq.Broker('glyph', {
   brokerName: 'glyph',
 
   engineType: 'RabbitMQ',
@@ -33,7 +33,9 @@ const mq = new aws.mq.Broker('glyph', {
   applyImmediately: true,
 });
 
-export { mq };
+export const mq = {
+  broker,
+};
 
 export const outputs = {
   AWS_MQ_BROKER_PASSWORD: password.result,
