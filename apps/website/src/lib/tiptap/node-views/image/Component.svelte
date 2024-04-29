@@ -96,7 +96,7 @@
       >
         <div class={css({ position: 'fixed', inset: '0', backgroundColor: 'gray.900/50' })} />
         <Image
-          style={css.raw({ maxWidth: 'full', maxHeight: 'full', overflow: 'scroll' })}
+          style={css.raw({ maxWidth: 'full', maxHeight: 'full', overflow: 'scroll', zIndex: '50' })}
           $image={node.attrs.__data}
           size="full"
         />
