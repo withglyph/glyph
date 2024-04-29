@@ -12,6 +12,8 @@
       borderRightRadius: '8px',
       backgroundColor: 'gray.900',
       height: '3px',
+      transition: 'all',
+      transitionDuration: '0.3s',
     })}
   />
 </div>
