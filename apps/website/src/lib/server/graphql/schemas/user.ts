@@ -370,7 +370,7 @@ User.implement({
           .orderBy(asc(Posts.id), desc(PostViews.viewedAt))
           .as('sq');
 
-        const posts = await database.select({ id: sq.id }).from(sq).orderBy(desc(sq.viewedAt)).limit(100);
+        const posts = await database.select({ id: sq.id }).from(sq).orderBy(desc(sq.viewedAt)).limit(20);
 
         return posts.map((post) => post.id);
       },
