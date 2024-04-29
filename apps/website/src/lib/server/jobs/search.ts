@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, isNotNull } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
 import { disassembleHangulString, InitialHangulString } from '$lib/utils';
 import {
   database,
@@ -36,6 +36,7 @@ export const IndexPostJob = defineJob('indexPost', async (postId: string) => {
         eq(Posts.state, 'PUBLISHED'),
         eq(Posts.visibility, 'PUBLIC'),
         eq(Spaces.visibility, 'PUBLIC'),
+        isNull(Posts.password),
       ),
     )
     .then(useFirstRow);
