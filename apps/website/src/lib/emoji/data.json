@@ -110,7 +110,7 @@
       "id": "100",
       "name": "hundred points",
       "keywords": ["100", "full", "hundred", "hundred points", "score", "백점", "백점 표시"],
-      "skins": [{ "unified": "1f4af", "native": "💯", "x": 28, "y": 6 }],
+      "skins": [{ "unified": "1f4af", "native": "💯", "x": 28, "y": 7 }],
       "version": 1
     },
     "grinning": {
@@ -130,7 +130,7 @@
         "눈을 크게 뜨고 웃는 얼굴",
         "입 벌리고 웃는 얼굴"
       ],
-      "skins": [{ "unified": "1f600", "native": "😀", "x": 32, "y": 20 }],
+      "skins": [{ "unified": "1f600", "native": "😀", "x": 32, "y": 21 }],
       "version": 1
     },
     "smile": {
@@ -152,7 +152,7 @@
         "얼굴",
         "입 벌리고 웃는 눈웃음 얼굴"
       ],
-      "skins": [{ "unified": "1f604", "native": "😄", "x": 32, "y": 24 }],
+      "skins": [{ "unified": "1f604", "native": "😄", "x": 32, "y": 25 }],
       "version": 1
     },
     "laughing": {
@@ -172,7 +172,7 @@
         "얼굴",
         "입 벌리고 미소"
       ],
-      "skins": [{ "unified": "1f606", "native": "😆", "x": 32, "y": 26 }],
+      "skins": [{ "unified": "1f606", "native": "😆", "x": 32, "y": 27 }],
       "version": 1
     },
     "rolling_on_the_floor_laughing": {
@@ -191,7 +191,7 @@
         "바닥을 구르며 웃는 얼굴",
         "웃음"
       ],
-      "skins": [{ "unified": "1f923", "native": "🤣", "x": 40, "y": 15 }],
+      "skins": [{ "unified": "1f923", "native": "🤣", "x": 40, "y": 17 }],
       "version": 3
     },
     "wink": {
@@ -199,7 +199,7 @@
       "name": "winking face",
       "emoticons": [";)", ";-)"],
       "keywords": ["face", "wink", "winking face", "얼굴", "윙크", "윙크하는 얼굴"],
-      "skins": [{ "unified": "1f609", "native": "😉", "x": 32, "y": 29 }],
+      "skins": [{ "unified": "1f609", "native": "😉", "x": 32, "y": 30 }],
       "version": 1
     },
     "blush": {
@@ -219,7 +219,7 @@
         "얼굴",
         "웃는 얼굴"
       ],
-      "skins": [{ "unified": "1f60a", "native": "😊", "x": 32, "y": 30 }],
+      "skins": [{ "unified": "1f60a", "native": "😊", "x": 32, "y": 31 }],
       "version": 1
     },
     "innocent": {
@@ -239,7 +239,7 @@
         "후광이 비치는 웃는 얼굴",
         "천사"
       ],
-      "skins": [{ "unified": "1f607", "native": "😇", "x": 32, "y": 27 }],
+      "skins": [{ "unified": "1f607", "native": "😇", "x": 32, "y": 28 }],
       "version": 1
     },
     "smiling_face_with_3_hearts": {
@@ -256,7 +256,7 @@
         "사랑하는",
         "하트와 함께 웃는 얼굴"
       ],
-      "skins": [{ "unified": "1f970", "native": "🥰", "x": 43, "y": 58 }],
+      "skins": [{ "unified": "1f970", "native": "🥰", "x": 43, "y": 60 }],
       "version": 11
     },
     "heart_eyes": {
@@ -274,14 +274,14 @@
         "하트 눈 얼굴",
         "하트 뿅뿅 얼굴"
       ],
-      "skins": [{ "unified": "1f60d", "native": "😍", "x": 32, "y": 33 }],
+      "skins": [{ "unified": "1f60d", "native": "😍", "x": 32, "y": 34 }],
       "version": 1
     },
     "star-struck": {
       "id": "star-struck",
       "name": "star-struck",
       "keywords": ["eyes", "face", "grinning", "star", "star-struck", "반한 얼굴", "별 눈", "별 모양의 눈"],
-      "skins": [{ "unified": "1f929", "native": "🤩", "x": 40, "y": 38 }],
+      "skins": [{ "unified": "1f929", "native": "🤩", "x": 40, "y": 40 }],
       "version": 5
     },
     "kissing_heart": {
@@ -298,14 +298,14 @@
         "키스를 날리는 얼굴",
         "키스를 보내는 얼굴"
       ],
-      "skins": [{ "unified": "1f618", "native": "😘", "x": 32, "y": 44 }],
+      "skins": [{ "unified": "1f618", "native": "😘", "x": 32, "y": 45 }],
       "version": 1
     },
     "face_with_hand_over_mouth": {
       "id": "face_with_hand_over_mouth",
       "name": "face with hand over mouth",
       "keywords": ["face with hand over mouth", "whoops", "손으로 입을 가린 얼굴", "앗"],
-      "skins": [{ "unified": "1f92d", "native": "🤭", "x": 40, "y": 42 }],
+      "skins": [{ "unified": "1f92d", "native": "🤭", "x": 40, "y": 44 }],
       "version": 5
     },
     "face_with_peeking_eye": {
@@ -321,14 +321,14 @@
         "한쪽 눈을 가리고 훔쳐보는 얼굴",
         "훔쳐보기"
       ],
-      "skins": [{ "unified": "1fae3", "native": "🫣", "x": 55, "y": 15 }],
+      "skins": [{ "unified": "1fae3", "native": "🫣", "x": 55, "y": 33 }],
       "version": 14
     },
     "flushed": {
       "id": "flushed",
       "name": "flushed face",
       "keywords": ["dazed", "face", "flushed", "달아오른 얼굴", "붉힌 얼굴", "상기된 얼굴", "얼굴", "얼굴 붉힘"],
-      "skins": [{ "unified": "1f633", "native": "😳", "x": 33, "y": 11 }],
+      "skins": [{ "unified": "1f633", "native": "😳", "x": 33, "y": 12 }],
       "version": 1
     },
     "face_holding_back_tears": {
@@ -346,7 +346,7 @@
         "울음",
         "자랑스러움"
       ],
-      "skins": [{ "unified": "1f979", "native": "🥹", "x": 44, "y": 11 }],
+      "skins": [{ "unified": "1f979", "native": "🥹", "x": 44, "y": 13 }],
       "version": 14
     },
     "sob": {
@@ -365,14 +365,14 @@
         "얼굴",
         "엉엉 우는 얼굴"
       ],
-      "skins": [{ "unified": "1f62d", "native": "😭", "x": 33, "y": 4 }],
+      "skins": [{ "unified": "1f62d", "native": "😭", "x": 33, "y": 5 }],
       "version": 1
     },
     "smiley_cat": {
       "id": "smiley_cat",
       "name": "Grinning Cat",
       "keywords": ["smiley", "animal", "cats", "happy", "smile"],
-      "skins": [{ "unified": "1f63a", "native": "😺", "x": 33, "y": 20 }],
+      "skins": [{ "unified": "1f63a", "native": "😺", "x": 33, "y": 21 }],
       "version": 1
     },
     "heart_eyes_cat": {
@@ -391,28 +391,28 @@
         "사랑에 빠진 고양이",
         "하트 눈 고양이 얼굴"
       ],
-      "skins": [{ "unified": "1f63b", "native": "😻", "x": 33, "y": 21 }],
+      "skins": [{ "unified": "1f63b", "native": "😻", "x": 33, "y": 22 }],
       "version": 1
     },
     "kiss": {
       "id": "kiss",
       "name": "Kiss Mark",
       "keywords": ["face", "lips", "love", "like", "affection", "valentines", "뽀뽀", "입술", "쪼옥", "쪽", "키스"],
-      "skins": [{ "unified": "1f48b", "native": "💋", "x": 26, "y": 37 }],
+      "skins": [{ "unified": "1f48b", "native": "💋", "x": 26, "y": 38 }],
       "version": 1
     },
     "love_letter": {
       "id": "love_letter",
       "name": "Love Letter",
       "keywords": ["email", "like", "affection", "envelope", "valentines", "러브레터", "사랑 고백", "연애 편지"],
-      "skins": [{ "unified": "1f48c", "native": "💌", "x": 26, "y": 38 }],
+      "skins": [{ "unified": "1f48c", "native": "💌", "x": 26, "y": 39 }],
       "version": 1
     },
     "cupid": {
       "id": "cupid",
       "name": "Heart with Arrow",
       "keywords": ["cupid", "love", "like", "affection", "valentines", "사랑", "큐피드", "화살이 꽂힌 하트"],
-      "skins": [{ "unified": "1f498", "native": "💘", "x": 27, "y": 39 }],
+      "skins": [{ "unified": "1f498", "native": "💘", "x": 27, "y": 40 }],
       "version": 1
     },
     "gift_heart": {
@@ -429,7 +429,7 @@
         "선물 상자",
         "하트"
       ],
-      "skins": [{ "unified": "1f49d", "native": "💝", "x": 27, "y": 44 }],
+      "skins": [{ "unified": "1f49d", "native": "💝", "x": 27, "y": 45 }],
       "version": 1
     },
     "sparkling_heart": {
@@ -446,7 +446,7 @@
         "사랑의 기쁨",
         "설렘"
       ],
-      "skins": [{ "unified": "1f496", "native": "💖", "x": 27, "y": 37 }],
+      "skins": [{ "unified": "1f496", "native": "💖", "x": 27, "y": 38 }],
       "version": 1
     },
     "heartpulse": {
@@ -465,7 +465,7 @@
         "커지는 마음",
         "커지는 하트"
       ],
-      "skins": [{ "unified": "1f497", "native": "💗", "x": 27, "y": 38 }],
+      "skins": [{ "unified": "1f497", "native": "💗", "x": 27, "y": 39 }],
       "version": 1
     },
     "revolving_hearts": {
@@ -483,14 +483,14 @@
         "하트",
         "회전하는 하트"
       ],
-      "skins": [{ "unified": "1f49e", "native": "💞", "x": 27, "y": 45 }],
+      "skins": [{ "unified": "1f49e", "native": "💞", "x": 27, "y": 46 }],
       "version": 1
     },
     "two_hearts": {
       "id": "two_hearts",
       "name": "Two Hearts",
       "keywords": ["love", "like", "affection", "valentines", "heart", "사랑", "연인", "하트 두 개"],
-      "skins": [{ "unified": "1f495", "native": "💕", "x": 27, "y": 36 }],
+      "skins": [{ "unified": "1f495", "native": "💕", "x": 27, "y": 37 }],
       "version": 1
     },
     "heart_on_fire": {
@@ -509,7 +509,7 @@
         "사랑",
         "하트"
       ],
-      "skins": [{ "unified": "2764-fe0f-200d-1f525", "native": "❤️‍🔥", "x": 59, "y": 8 }],
+      "skins": [{ "unified": "2764-fe0f-200d-1f525", "native": "❤️‍🔥", "x": 59, "y": 39 }],
       "version": 13.1
     },
     "heart": {
@@ -517,14 +517,14 @@
       "name": "red heart",
       "emoticons": ["<3"],
       "keywords": ["heart", "red heart", "마음", "빨간색 하트", "하트"],
-      "skins": [{ "unified": "2764-fe0f", "native": "❤️", "x": 59, "y": 10 }],
+      "skins": [{ "unified": "2764-fe0f", "native": "❤️", "x": 59, "y": 41 }],
       "version": 1
     },
     "orange_heart": {
       "id": "orange_heart",
       "name": "orange heart",
       "keywords": ["orange", "orange heart", "주황색 하트"],
-      "skins": [{ "unified": "1f9e1", "native": "🧡", "x": 53, "y": 15 }],
+      "skins": [{ "unified": "1f9e1", "native": "🧡", "x": 53, "y": 17 }],
       "version": 5
     },
     "yellow_heart": {
@@ -532,7 +532,7 @@
       "name": "yellow heart",
       "emoticons": ["<3"],
       "keywords": ["yellow", "yellow heart", "노란 하트", "노란색 하트", "사랑", "하트"],
-      "skins": [{ "unified": "1f49b", "native": "💛", "x": 27, "y": 42 }],
+      "skins": [{ "unified": "1f49b", "native": "💛", "x": 27, "y": 43 }],
       "version": 1
     },
     "green_heart": {
@@ -540,7 +540,7 @@
       "name": "green heart",
       "emoticons": ["<3"],
       "keywords": ["green", "green heart", "녹색 하트", "사랑", "초록색 하트", "하트"],
-      "skins": [{ "unified": "1f49a", "native": "💚", "x": 27, "y": 41 }],
+      "skins": [{ "unified": "1f49a", "native": "💚", "x": 27, "y": 42 }],
       "version": 1
     },
     "blue_heart": {
@@ -548,7 +548,7 @@
       "name": "blue heart",
       "emoticons": ["<3"],
       "keywords": ["blue", "blue heart", "사랑", "파란 하트", "파란색 하트", "하트"],
-      "skins": [{ "unified": "1f499", "native": "💙", "x": 27, "y": 40 }],
+      "skins": [{ "unified": "1f499", "native": "💙", "x": 27, "y": 41 }],
       "version": 1
     },
     "purple_heart": {
@@ -556,42 +556,42 @@
       "name": "purple heart",
       "emoticons": ["<3"],
       "keywords": ["purple", "purple heart", "보라색 하트", "사랑", "하트"],
-      "skins": [{ "unified": "1f49c", "native": "💜", "x": 27, "y": 43 }],
+      "skins": [{ "unified": "1f49c", "native": "💜", "x": 27, "y": 44 }],
       "version": 1
     },
     "brown_heart": {
       "id": "brown_heart",
       "name": "brown heart",
       "keywords": ["brown", "heart", "갈색", "하트", "갈색 하트"],
-      "skins": [{ "unified": "1f90e", "native": "🤎", "x": 38, "y": 51 }],
+      "skins": [{ "unified": "1f90e", "native": "🤎", "x": 38, "y": 53 }],
       "version": 12
     },
     "black_heart": {
       "id": "black_heart",
       "name": "black heart",
       "keywords": ["black", "black heart", "wicked", "검은색 하트", "검정", "블랙", "하트"],
-      "skins": [{ "unified": "1f5a4", "native": "🖤", "x": 31, "y": 55 }],
+      "skins": [{ "unified": "1f5a4", "native": "🖤", "x": 31, "y": 56 }],
       "version": 3
     },
     "white_heart": {
       "id": "white_heart",
       "name": "white heart",
       "keywords": ["heart", "white", "pure", "하트", "흰색"],
-      "skins": [{ "unified": "1f90d", "native": "🤍", "x": 38, "y": 50 }],
+      "skins": [{ "unified": "1f90d", "native": "🤍", "x": 38, "y": 52 }],
       "version": 12
     },
     "dizzy": {
       "id": "dizzy",
       "name": "dizzy",
       "keywords": ["comic", "dizzy", "star", "띠용", "별", "어지러움", "어질어질"],
-      "skins": [{ "unified": "1f4ab", "native": "💫", "x": 28, "y": 2 }],
+      "skins": [{ "unified": "1f4ab", "native": "💫", "x": 28, "y": 3 }],
       "version": 1
     },
     "sweat_drops": {
       "id": "sweat_drops",
       "name": "sweat droplets",
       "keywords": ["comic", "splashing", "sweat", "sweat droplets", "곤란", "당황", "땀", "삐질삐질"],
-      "skins": [{ "unified": "1f4a6", "native": "💦", "x": 27, "y": 53 }],
+      "skins": [{ "unified": "1f4a6", "native": "💦", "x": 27, "y": 54 }],
       "version": 1
     },
     "+1": {
@@ -599,12 +599,12 @@
       "name": "thumbs up",
       "keywords": ["+1", "hand", "thumb", "thumbs up", "up", "따봉", "올린 엄지", "좋아요", "최고", "엄지 척"],
       "skins": [
-        { "unified": "1f44d", "native": "👍", "x": 12, "y": 50 },
-        { "unified": "1f44d-1f3fb", "native": "👍🏻", "x": 12, "y": 51 },
-        { "unified": "1f44d-1f3fc", "native": "👍🏼", "x": 12, "y": 52 },
-        { "unified": "1f44d-1f3fd", "native": "👍🏽", "x": 12, "y": 53 },
-        { "unified": "1f44d-1f3fe", "native": "👍🏾", "x": 12, "y": 54 },
-        { "unified": "1f44d-1f3ff", "native": "👍🏿", "x": 12, "y": 55 }
+        { "unified": "1f44d", "native": "👍", "x": 12, "y": 51 },
+        { "unified": "1f44d-1f3fb", "native": "👍🏻", "x": 12, "y": 52 },
+        { "unified": "1f44d-1f3fc", "native": "👍🏼", "x": 12, "y": 53 },
+        { "unified": "1f44d-1f3fd", "native": "👍🏽", "x": 12, "y": 54 },
+        { "unified": "1f44d-1f3fe", "native": "👍🏾", "x": 12, "y": 55 },
+        { "unified": "1f44d-1f3ff", "native": "👍🏿", "x": 12, "y": 56 }
       ],
       "version": 1
     },
@@ -613,12 +613,12 @@
       "name": "clapping hands",
       "keywords": ["clap", "clapping hands", "hand", "박수", "박수 치기", "손뼉", "손뼉 치기"],
       "skins": [
-        { "unified": "1f44f", "native": "👏", "x": 13, "y": 1 },
-        { "unified": "1f44f-1f3fb", "native": "👏🏻", "x": 13, "y": 2 },
-        { "unified": "1f44f-1f3fc", "native": "👏🏼", "x": 13, "y": 3 },
-        { "unified": "1f44f-1f3fd", "native": "👏🏽", "x": 13, "y": 4 },
-        { "unified": "1f44f-1f3fe", "native": "👏🏾", "x": 13, "y": 5 },
-        { "unified": "1f44f-1f3ff", "native": "👏🏿", "x": 13, "y": 6 }
+        { "unified": "1f44f", "native": "👏", "x": 13, "y": 2 },
+        { "unified": "1f44f-1f3fb", "native": "👏🏻", "x": 13, "y": 3 },
+        { "unified": "1f44f-1f3fc", "native": "👏🏼", "x": 13, "y": 4 },
+        { "unified": "1f44f-1f3fd", "native": "👏🏽", "x": 13, "y": 5 },
+        { "unified": "1f44f-1f3fe", "native": "👏🏾", "x": 13, "y": 6 },
+        { "unified": "1f44f-1f3ff", "native": "👏🏿", "x": 13, "y": 7 }
       ],
       "version": 1
     },
@@ -639,12 +639,12 @@
         "하이파이브"
       ],
       "skins": [
-        { "unified": "1f64c", "native": "🙌", "x": 34, "y": 45 },
-        { "unified": "1f64c-1f3fb", "native": "🙌🏻", "x": 34, "y": 46 },
-        { "unified": "1f64c-1f3fc", "native": "🙌🏼", "x": 34, "y": 47 },
-        { "unified": "1f64c-1f3fd", "native": "🙌🏽", "x": 34, "y": 48 },
-        { "unified": "1f64c-1f3fe", "native": "🙌🏾", "x": 34, "y": 49 },
-        { "unified": "1f64c-1f3ff", "native": "🙌🏿", "x": 34, "y": 50 }
+        { "unified": "1f64c", "native": "🙌", "x": 34, "y": 46 },
+        { "unified": "1f64c-1f3fb", "native": "🙌🏻", "x": 34, "y": 47 },
+        { "unified": "1f64c-1f3fc", "native": "🙌🏼", "x": 34, "y": 48 },
+        { "unified": "1f64c-1f3fd", "native": "🙌🏽", "x": 34, "y": 49 },
+        { "unified": "1f64c-1f3fe", "native": "🙌🏾", "x": 34, "y": 50 },
+        { "unified": "1f64c-1f3ff", "native": "🙌🏿", "x": 34, "y": 51 }
       ],
       "version": 1
     },
@@ -652,42 +652,42 @@
       "id": "cat",
       "name": "cat face",
       "keywords": ["cat", "face", "pet", "고양이", "고양이 얼굴", "동물"],
-      "skins": [{ "unified": "1f431", "native": "🐱", "x": 11, "y": 36 }],
+      "skins": [{ "unified": "1f431", "native": "🐱", "x": 11, "y": 37 }],
       "version": 1
     },
     "hamster": {
       "id": "hamster",
       "name": "hamster",
       "keywords": ["face", "hamster", "pet", "동물", "햄스터", "햄스터 얼굴"],
-      "skins": [{ "unified": "1f439", "native": "🐹", "x": 11, "y": 44 }],
+      "skins": [{ "unified": "1f439", "native": "🐹", "x": 11, "y": 45 }],
       "version": 1
     },
     "rabbit": {
       "id": "rabbit",
       "name": "rabbit face",
       "keywords": ["bunny", "face", "pet", "rabbit", "동물", "토끼", "토끼 얼굴", "토끼띠"],
-      "skins": [{ "unified": "1f430", "native": "🐰", "x": 11, "y": 35 }],
+      "skins": [{ "unified": "1f430", "native": "🐰", "x": 11, "y": 36 }],
       "version": 1
     },
     "bear": {
       "id": "bear",
       "name": "Bear",
       "keywords": ["animal", "nature", "wild", "곰", "곰 얼굴", "곰돌이", "동물"],
-      "skins": [{ "unified": "1f43b", "native": "🐻", "x": 11, "y": 47 }],
+      "skins": [{ "unified": "1f43b", "native": "🐻", "x": 11, "y": 48 }],
       "version": 1
     },
     "polar_bear": {
       "id": "polar_bear",
       "name": "Polar Bear",
       "keywords": ["animal", "arctic", "곰", "백곰", "북극", "북극곰", "흰곰"],
-      "skins": [{ "unified": "1f43b-200d-2744-fe0f", "native": "🐻‍❄️", "x": 11, "y": 46 }],
+      "skins": [{ "unified": "1f43b-200d-2744-fe0f", "native": "🐻‍❄️", "x": 11, "y": 47 }],
       "version": 13
     },
     "feet": {
       "id": "feet",
       "name": "Paw Prints",
       "keywords": ["feet", "animal", "tracking", "footprints", "dog", "cat", "pet", "곰발바닥", "곰발자국", "동물"],
-      "skins": [{ "unified": "1f43e", "native": "🐾", "x": 11, "y": 50 }],
+      "skins": [{ "unified": "1f43e", "native": "🐾", "x": 11, "y": 51 }],
       "version": 1
     },
     "hatching_chick": {
@@ -701,7 +701,7 @@
       "id": "butterfly",
       "name": "Butterfly",
       "keywords": ["animal", "insect", "nature", "caterpillar", "곤충", "나비", "날개"],
-      "skins": [{ "unified": "1f98b", "native": "🦋", "x": 44, "y": 29 }],
+      "skins": [{ "unified": "1f98b", "native": "🦋", "x": 44, "y": 31 }],
       "version": 3
     },
     "cherry_blossom": {
@@ -855,7 +855,7 @@
       "id": "rocket",
       "name": "Rocket",
       "keywords": ["launch", "ship", "staffmode", "NASA", "outer", "space", "fly", "로케트", "로켓", "발사", "우주"],
-      "skins": [{ "unified": "1f680", "native": "🚀", "x": 35, "y": 32 }],
+      "skins": [{ "unified": "1f680", "native": "🚀", "x": 35, "y": 33 }],
       "version": 1
     },
     "full_moon": {
@@ -869,7 +869,7 @@
       "id": "star",
       "name": "Star",
       "keywords": ["night", "yellow", "반짝이는 별", "반짝이다", "반짝임", "별"],
-      "skins": [{ "unified": "2b50", "native": "⭐", "x": 59, "y": 24 }],
+      "skins": [{ "unified": "2b50", "native": "⭐", "x": 59, "y": 55 }],
       "version": 1
     },
     "star2": {
@@ -890,7 +890,7 @@
       "id": "fire",
       "name": "Fire",
       "keywords": ["hot", "cook", "flame", "불", "불꽃", "화재"],
-      "skins": [{ "unified": "1f525", "native": "🔥", "x": 30, "y": 1 }],
+      "skins": [{ "unified": "1f525", "native": "🔥", "x": 30, "y": 2 }],
       "version": 1
     },
     "jack_o_lantern": {
@@ -925,7 +925,7 @@
       "id": "sparkles",
       "name": "sparkles",
       "keywords": ["*", "sparkle", "sparkles", "star", "반짝거림", "반짝반짝", "블링블링", "별"],
-      "skins": [{ "unified": "2728", "native": "✨", "x": 58, "y": 57 }],
+      "skins": [{ "unified": "2728", "native": "✨", "x": 59, "y": 27 }],
       "version": 1
     },
     "gift": {
@@ -939,7 +939,7 @@
       "id": "frame_with_picture",
       "name": "framed picture",
       "keywords": ["art", "frame", "framed picture", "museum", "painting", "picture", "그림", "박물관", "액자", "작품"],
-      "skins": [{ "unified": "1f5bc-fe0f", "native": "🖼️", "x": 31, "y": 60 }],
+      "skins": [{ "unified": "1f5bc-fe0f", "native": "🖼️", "x": 32, "y": 0 }],
       "version": 1
     },
     "art": {
@@ -953,14 +953,14 @@
       "id": "thread",
       "name": "Thread",
       "keywords": ["needle", "sewing", "spool", "string", "뜨개질", "바느질", "바늘", "실", "실타래", "스레드"],
-      "skins": [{ "unified": "1f9f5", "native": "🧵", "x": 53, "y": 35 }],
+      "skins": [{ "unified": "1f9f5", "native": "🧵", "x": 53, "y": 37 }],
       "version": 11
     },
     "pencil2": {
       "id": "pencil2",
       "name": "pencil",
       "keywords": ["pencil", "연필", "펜슬"],
-      "skins": [{ "unified": "270f-fe0f", "native": "✏️", "x": 58, "y": 51 }],
+      "skins": [{ "unified": "270f-fe0f", "native": "✏️", "x": 59, "y": 21 }],
       "version": 1
     }
   },
