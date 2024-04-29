@@ -19,8 +19,8 @@ const site = new withglyph.Site('website', {
   },
 
   resources: {
-    cpu: '500m',
-    memory: '1000Mi',
+    cpu: '1000m',
+    memory: '2000Mi',
   },
 
   autoscale: {
