@@ -428,7 +428,21 @@
 
   $: triggerTags = $query.post.tags.filter(({ kind }) => kind === 'TRIGGER');
   $: shortLink = `https://glph.to/${$query.post.shortlink}`;
+
+  let toolbarEl: HTMLElement;
+  let prevScrollpos = 0;
 </script>
+
+<svelte:window
+  on:scroll={(e) => {
+    if (e.currentTarget.innerWidth < 992) {
+      var currentScrollPos = e.currentTarget.scrollY;
+
+      toolbarEl.style.bottom = prevScrollpos > currentScrollPos ? '0' : '-64px';
+      prevScrollpos = currentScrollPos;
+    }
+  }}
+/>
 
 <article class={css({ flexGrow: '1', paddingX: '20px', width: 'full', backgroundColor: 'gray.5' }, style)}>
   <div
@@ -1062,6 +1076,7 @@
     {/if}
 
     <div
+      bind:this={toolbarEl}
       class={flex({
         align: 'center',
         justify: 'space-between',
@@ -1077,6 +1092,7 @@
           height: '64px',
           marginX: '-20px',
           paddingX: '20px',
+          transition: 'all',
         },
       })}
     >

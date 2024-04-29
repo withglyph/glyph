@@ -2,6 +2,8 @@
   import { graphql } from '$glitch';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
+  import Footer from '../../../Footer.svelte';
+  import Header from '../../../Header.svelte';
   import PostView from '../../PostView.svelte';
 
   $: query = graphql(`
@@ -25,10 +27,27 @@
         }
       }
 
+      ...DefaultLayout_Header_query
       ...Post_query
     }
   `);
+
+  let headerEl: HTMLElement;
+  let prevScrollpos = 0;
 </script>
+
+<svelte:window
+  on:scroll={(e) => {
+    if (e.currentTarget.innerWidth < 992) {
+      var currentScrollPos = e.currentTarget.scrollY;
+
+      headerEl.style.top = prevScrollpos > currentScrollPos ? '0' : '-62px';
+      prevScrollpos = currentScrollPos;
+    }
+  }}
+/>
+
+<Header style={css.raw({ transition: 'all' })} {$query} bind:headerEl />
 
 {#if $query.post.publishedRevision.id !== $query.post.purchasedRevision.id}
   <div
@@ -61,3 +80,5 @@
 {/if}
 
 <PostView $postRevision={$query.post.purchasedRevision} {$query} />
+
+<Footer />

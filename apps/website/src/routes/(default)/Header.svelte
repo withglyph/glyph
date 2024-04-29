@@ -18,6 +18,7 @@
   export { _query as $query };
 
   export let style: SystemStyleObject | undefined = undefined;
+  export let headerEl: HTMLElement | null = null;
 
   $: query = fragment(
     _query,
@@ -50,6 +51,7 @@
 </script>
 
 <header
+  bind:this={headerEl}
   class={css(
     {
       position: 'sticky',

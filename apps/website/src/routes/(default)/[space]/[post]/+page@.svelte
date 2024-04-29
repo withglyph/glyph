@@ -5,6 +5,9 @@
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Helmet } from '$lib/components';
+  import { css } from '$styled-system/css';
+  import Footer from '../../Footer.svelte';
+  import Header from '../../Header.svelte';
   import PostView from '../PostView.svelte';
 
   $: query = graphql(`
@@ -53,6 +56,7 @@
         }
       }
 
+      ...DefaultLayout_Header_query
       ...Post_query
     }
   `);
@@ -67,6 +71,8 @@
   `);
 
   let postId: string | undefined;
+  let headerEl: HTMLElement;
+  let prevScrollpos = 0;
 
   $: if (browser && postId !== $query.post.id) {
     postId = $query.post.id;
@@ -122,4 +128,19 @@
   {/each}
 </svelte:head>
 
+<svelte:window
+  on:scroll={(e) => {
+    if (e.currentTarget.innerWidth < 992) {
+      var currentScrollPos = e.currentTarget.scrollY;
+
+      headerEl.style.top = prevScrollpos > currentScrollPos ? '0' : '-62px';
+      prevScrollpos = currentScrollPos;
+    }
+  }}
+/>
+
+<Header style={css.raw({ transition: 'all' })} {$query} bind:headerEl />
+
 <PostView $postRevision={$query.post.publishedRevision} {$query} />
+
+<Footer />
