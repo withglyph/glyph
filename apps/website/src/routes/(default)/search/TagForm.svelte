@@ -68,6 +68,7 @@
           display: 'flex',
           alignItems: 'center',
           gap: '4px',
+          color: 'gray.5',
           backgroundColor: 'brand.400',
           width: 'fit',
           cursor: 'pointer',
