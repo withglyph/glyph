@@ -82,7 +82,7 @@
         <time class={css({ fontSize: '12px', color: 'gray.400' })} datetime={point.createdAt}>
           {dayjs(point.createdAt).formatAsDateTime()}
         </time>
-        <p class={css({ marginTop: '4px', fontSize: '15px', fontWeight: 'semibold', color: 'brand.400' })}>
+        <p class={css({ marginBottom: '2px', fontSize: '15px', fontWeight: 'semibold', color: 'brand.400' })}>
           +{comma(point.amount)}P
         </p>
         <p class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.600' })}>

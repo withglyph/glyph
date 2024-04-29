@@ -55,7 +55,10 @@
     smDown: { borderBottomWidth: '1px' },
   })}
 >
-  <a class={flex({ gap: '12px', paddingX: '16px', paddingTop: { base: '20px', sm: '16px' } })} href="/{$space.slug}">
+  <a
+    class={flex({ gap: '12px', paddingX: { sm: '16px' }, paddingTop: { base: '20px', sm: '16px' } })}
+    href="/{$space.slug}"
+  >
     <div class={css({ position: 'relative', flex: 'none', height: 'fit' })}>
       <Image
         style={css.raw({ borderWidth: '[0.8px]', borderColor: 'gray.100', size: '36px' })}
@@ -91,7 +94,7 @@
   </a>
 
   <Button
-    style={css.raw({ marginTop: '8px', marginLeft: 'auto', marginRight: '16px', width: '68px' })}
+    style={css.raw({ marginTop: '8px', marginLeft: 'auto', marginRight: { sm: '16px' }, width: '68px' })}
     size="sm"
     variant="gray-sub-fill"
     on:click={async () => {

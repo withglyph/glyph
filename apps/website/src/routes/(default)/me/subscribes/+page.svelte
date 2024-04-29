@@ -89,7 +89,7 @@
     <ul
       class={grid({
         columns: { base: 1, sm: 2 },
-        smDown: { marginX: '-20px', gap: '0' },
+        smDown: { gap: '0' },
         sm: { rowGap: '20px', columnGap: '14px' },
       })}
     >
