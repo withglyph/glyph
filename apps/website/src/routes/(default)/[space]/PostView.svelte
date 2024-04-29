@@ -173,7 +173,7 @@
               ...Image_image
             }
 
-            posts {
+            posts(order: OLDEST) {
               id
               permalink
 
