@@ -7,12 +7,12 @@
   import IconTwitter from '~icons/simple-icons/twitter';
   import IconX from '~icons/tabler/x';
   import { Icon } from '$lib/components';
-  import Button from '$lib/components/v2/Button.svelte';
+  import { Button } from '$lib/components/v2';
+  import { TextInput } from '$lib/components/v2/forms';
   import { toast } from '$lib/notification';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import { TextInput } from './v2/forms';
   import type { HTMLAttributes } from 'svelte/elements';
   import type { SystemStyleObject } from '$styled-system/types';
 
@@ -27,6 +27,7 @@
   export let disabled = false;
 
   let open = false;
+  let copied = false;
   const id = 'share-popover-' + uid(2);
   const twitterLinkId = id + '-twitter-button';
   const mastodonLinkId = id + '-mastodon-button';
@@ -48,8 +49,8 @@
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    size: '64px',
-    color: 'gray.500',
+    size: '80px',
+    color: 'gray.600',
     backgroundColor: { base: 'gray.50', _hover: 'gray.150', _focusVisible: 'gray.150' },
     _after: {
       content: '""',
@@ -151,7 +152,7 @@
       </button>
     </header>
 
-    <div class={flex({ justify: 'center', gap: '32px', paddingY: '48px' })} role="group">
+    <div class={flex({ justify: 'center', gap: '32px', paddingTop: '48px', paddingBottom: '28px' })} role="group">
       <div class={shareTargetMenuLinkWarpClassname}>
         <a
           id={twitterLinkId}
@@ -189,21 +190,27 @@
       })}
     >
       <div class={css({ flexGrow: '1', minWidth: '0' })}>
-        <TextInput readonly type="text" value={href} />
+        <TextInput readonly size="sm" type="text" value={href} />
       </div>
       <Button
-        style={css.raw({ flex: 'none', width: '68px' })}
+        style={css.raw({ flex: 'none', fontSize: '14px', width: '76px' })}
+        size="sm"
         type="button"
         on:click={async () => {
           try {
             navigator.clipboard.writeText(href);
+            copied = true;
+
+            setTimeout(() => {
+              copied = false;
+            }, 1000);
           } catch (err) {
             toast('클립보드 복사를 실패했어요');
             console.error(err);
           }
         }}
       >
-        복사
+        {copied ? '복사완료' : '복사'}
       </Button>
     </footer>
   </div>
