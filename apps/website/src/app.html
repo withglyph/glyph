@@ -7,9 +7,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <link rel="preconnect" href="https://glyph.pub" />
     %sveltekit.head%
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ 'gtm.start': new Date().getTime(), 'event': 'gtm.js' });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true;
+        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+        // spell-checker:disable-next-line
+      })(window, document, 'script', 'dataLayer', 'GTM-W5DDXW6M');
+    </script>
   </head>
 
   <body data-sveltekit-preload-data="hover" data-sveltekit-preload-code="eager">
+    <noscript>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-W5DDXW6M"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe>
+    </noscript>
     <div style="display: contents">%sveltekit.body%</div>
     <script data-domain="withglyph.com" defer src="https://plausible.io/js/script.js"></script>
     <script
