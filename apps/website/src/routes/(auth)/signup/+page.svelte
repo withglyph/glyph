@@ -101,6 +101,7 @@
   </section>
 
   <Button
+    id="signup-button"
     style={css.raw({ marginTop: 'auto', marginBottom: '32px', width: 'full' })}
     size="lg"
     type="submit"
