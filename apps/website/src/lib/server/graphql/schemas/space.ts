@@ -4,6 +4,7 @@ import * as R from 'radash';
 import { match } from 'ts-pattern';
 import { SpaceMemberRole, SpaceVisibility } from '$lib/enums';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
+import { redis } from '$lib/server/cache';
 import {
   database,
   inArray,
@@ -714,6 +715,8 @@ builder.mutationFields((t) => ({
         .values({ userId: context.session.userId, spaceId: input.spaceId })
         .onConflictDoNothing();
 
+      await redis.del(`mutedSpaceIds:${context.session.userId}`);
+
       return input.spaceId;
     },
   }),
@@ -725,6 +728,8 @@ builder.mutationFields((t) => ({
       await database
         .delete(UserSpaceMutes)
         .where(and(eq(UserSpaceMutes.userId, context.session.userId), eq(UserSpaceMutes.spaceId, input.spaceId)));
+
+      await redis.del(`mutedSpaceIds:${context.session.userId}`);
 
       return input.spaceId;
     },

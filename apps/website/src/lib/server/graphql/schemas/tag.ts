@@ -1,6 +1,7 @@
 import { and, count, desc, eq, notExists } from 'drizzle-orm';
 import { PostTagKind } from '$lib/enums';
 import { NotFoundError } from '$lib/errors';
+import { redis } from '$lib/server/cache';
 import {
   database,
   notInArray,
@@ -235,6 +236,8 @@ builder.mutationFields((t) => ({
         .values({ userId: context.session.userId, tagId: input.tagId })
         .onConflictDoNothing();
 
+      await redis.del(`mutedTagIds:${context.session.userId}`);
+
       return input.tagId;
     },
   }),
@@ -246,6 +249,8 @@ builder.mutationFields((t) => ({
       await database
         .delete(UserTagMutes)
         .where(and(eq(UserTagMutes.userId, context.session.userId), eq(UserTagMutes.tagId, input.tagId)));
+
+      await redis.del(`mutedTagIds:${context.session.userId}`);
 
       return input.tagId;
     },
