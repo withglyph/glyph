@@ -15,7 +15,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Avatar, Icon, Image, Link } from '$lib/components';
   import { Button } from '$lib/components/v2';
-  import { portal, scrollLock } from '$lib/svelte/actions';
+  import { scrollLock } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
@@ -97,14 +97,18 @@
 </button>
 
 {#if open}
-  <div class={css({ position: 'fixed', inset: '0', zIndex: '50' })} use:portal>
+  <div class={css({ position: 'fixed', top: '0', right: '0', bottom: '0', left: '0', width: 'full', zIndex: '50' })}>
     <div
       class={css({
         position: 'absolute',
-        inset: '0',
+        top: '0',
+        right: '0',
+        bottom: '0',
+        left: '0',
         backgroundColor: 'gray.900/50',
         backdropFilter: 'auto',
         backdropBlur: '8px',
+        width: 'full',
       })}
       role="button"
       tabindex="-1"
