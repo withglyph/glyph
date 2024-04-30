@@ -46,6 +46,13 @@ export const globalCss = defineGlobalStyles({
     height: 'auto',
   },
 
+  'input': {
+    _disabled: {
+      'opacity': '100',
+      '::-webkit-text-fill-color': '{colors.gray.300}',
+    },
+  },
+
   'ol, ul': {
     listStyle: 'none',
   },
