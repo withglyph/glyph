@@ -19,7 +19,7 @@ export const Gallery = createNodeView(Component, {
 
   addAttributes() {
     return {
-      size: { default: 'compact' },
+      size: { default: 'full' },
       align: { default: 'center' },
       layout: { default: 'initial' },
       gridColumns: { default: 2 },
