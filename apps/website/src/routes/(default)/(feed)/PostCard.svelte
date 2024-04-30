@@ -16,6 +16,7 @@
   export let theme: Variants['theme'] = 'light';
   export let showSpace = true;
   export let showTags = false;
+  export let showStats = true;
   export let style: SystemStyleObject | undefined = undefined;
 
   $: post = fragment(
@@ -227,31 +228,37 @@
     </div>
   {/if}
 
-  <div
-    class={css(
-      { display: 'flex', alignItems: 'center', gap: '6px', color: 'gray.400', fontSize: '12px', height: '17px' },
-      theme === 'dark' && { color: 'gray.500' },
-    )}
-  >
-    {#if $post.viewCount > 0 && $post.discloseStats}
-      <div class={flex({ align: 'center', gap: '2px' })}>
-        <Icon icon={IconEye} />
-        {humanizeNumber($post.viewCount)}
-      </div>
-    {/if}
+  {#if showStats}
+    <div
+      class={css({
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        color: 'gray.400',
+        fontSize: '12px',
+        height: '17px',
+      })}
+    >
+      {#if $post.viewCount > 0 && $post.discloseStats}
+        <div class={flex({ align: 'center', gap: '2px' })}>
+          <Icon icon={IconEye} />
+          {humanizeNumber($post.viewCount)}
+        </div>
+      {/if}
 
-    {#if $post.reactionCount > 0 && $post.discloseStats}
-      <div class={flex({ align: 'center', gap: '2px' })}>
-        <Icon icon={IconMoodSmile} />
-        {humanizeNumber($post.reactionCount)}
-      </div>
-    {/if}
+      {#if $post.reactionCount > 0 && $post.discloseStats}
+        <div class={flex({ align: 'center', gap: '2px' })}>
+          <Icon icon={IconMoodSmile} />
+          {humanizeNumber($post.reactionCount)}
+        </div>
+      {/if}
 
-    {#if $post.commentCount > 0 && $post.discloseStats}
-      <div class={flex({ align: 'center', gap: '2px' })}>
-        <Icon icon={IconMessageCircle} />
-        {humanizeNumber($post.commentCount)}
-      </div>
-    {/if}
-  </div>
+      {#if $post.commentCount > 0 && $post.discloseStats}
+        <div class={flex({ align: 'center', gap: '2px' })}>
+          <Icon icon={IconMessageCircle} />
+          {humanizeNumber($post.commentCount)}
+        </div>
+      {/if}
+    </div>
+  {/if}
 </a>

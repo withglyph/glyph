@@ -159,7 +159,7 @@
       />
 
       {#each $query.curatedPosts as post (post.id)}
-        <PostCard style={css.raw({ width: { base: '200px', sm: '218px' } })} $post={post} />
+        <PostCard style={css.raw({ width: { base: '200px', sm: '218px' } })} $post={post} showStats={false} />
       {/each}
 
       <Icon
@@ -200,6 +200,7 @@
             $post={post}
             {$query}
             showSpace
+            showStats={false}
           />
         </li>
       {/each}
@@ -277,10 +278,10 @@
 
     <div class={grid({ columns: { base: 2, sm: 5 }, columnGap: '14px', rowGap: '36px' })}>
       {#each activeFeaturedTagFeed.posts.slice(0, 6) as post (post.id)}
-        <PostCard $post={post} showTags theme="dark" />
+        <PostCard $post={post} showStats={false} showTags theme="dark" />
       {/each}
       {#each activeFeaturedTagFeed.posts.slice(6, 10) as post (post.id)}
-        <PostCard style={css.raw({ hideBelow: 'sm' })} $post={post} showTags theme="dark" />
+        <PostCard style={css.raw({ hideBelow: 'sm' })} $post={post} showStats={false} showTags theme="dark" />
       {/each}
     </div>
   </div>

@@ -22,6 +22,7 @@
   export let showSpace = false;
   export let showBookmark = false;
   export let showDate = false;
+  export let showStats = true;
   export let timeDisplay: 'relative' | 'absolute' = 'absolute';
   export let style: SystemStyleObject | undefined = undefined;
 
@@ -214,60 +215,66 @@
         </div>
       {/if}
 
-      <div
-        class={css({
-          display: 'flex',
-          alignItems: 'center',
-          color: 'gray.400',
-          fontSize: '12px',
-          height: '17px',
-        })}
-      >
-        {#if showDate}
-          <time datetime={$post.publishedAt}>
-            {timeDisplay === 'relative' ? dayjs($post.publishedAt).fromNow() : dayjs($post.publishedAt).formatAsDate()}
-          </time>
-        {/if}
-
+      {#if showDate || showStats}
         <div
-          class={css(
-            { display: 'flex', alignItems: 'center', gap: '8px' },
-            showDate &&
-              $post.discloseStats && {
-                _before: {
-                  content: '""',
-                  display: 'block',
-                  width: '1px',
-                  height: '12px',
-                  backgroundColor: 'gray.100',
-                  marginLeft: '8px',
-                  marginRight: '-2px',
-                },
-              },
-          )}
+          class={css({
+            display: 'flex',
+            alignItems: 'center',
+            color: 'gray.400',
+            fontSize: '12px',
+            height: '17px',
+          })}
         >
-          {#if $post.viewCount > 0 && $post.discloseStats}
-            <div class={flex({ align: 'center', gap: '2px' })}>
-              <Icon icon={IconEye} />
-              {humanizeNumber($post.viewCount)}
-            </div>
+          {#if showDate}
+            <time datetime={$post.publishedAt}>
+              {timeDisplay === 'relative'
+                ? dayjs($post.publishedAt).fromNow()
+                : dayjs($post.publishedAt).formatAsDate()}
+            </time>
           {/if}
 
-          {#if $post.reactionCount > 0 && $post.discloseStats}
-            <div class={flex({ align: 'center', gap: '2px' })}>
-              <Icon icon={IconMoodSmile} />
-              {humanizeNumber($post.reactionCount)}
-            </div>
-          {/if}
+          {#if showStats}
+            <div
+              class={css(
+                { display: 'flex', alignItems: 'center', gap: '8px' },
+                showDate &&
+                  $post.discloseStats && {
+                    _before: {
+                      content: '""',
+                      display: 'block',
+                      width: '1px',
+                      height: '12px',
+                      backgroundColor: 'gray.100',
+                      marginLeft: '8px',
+                      marginRight: '-2px',
+                    },
+                  },
+              )}
+            >
+              {#if $post.viewCount > 0 && $post.discloseStats}
+                <div class={flex({ align: 'center', gap: '2px' })}>
+                  <Icon icon={IconEye} />
+                  {humanizeNumber($post.viewCount)}
+                </div>
+              {/if}
 
-          {#if $post.commentCount > 0 && $post.discloseStats}
-            <div class={flex({ align: 'center', gap: '2px' })}>
-              <Icon icon={IconMessageCircle} />
-              {humanizeNumber($post.commentCount)}
+              {#if $post.reactionCount > 0 && $post.discloseStats}
+                <div class={flex({ align: 'center', gap: '2px' })}>
+                  <Icon icon={IconMoodSmile} />
+                  {humanizeNumber($post.reactionCount)}
+                </div>
+              {/if}
+
+              {#if $post.commentCount > 0 && $post.discloseStats}
+                <div class={flex({ align: 'center', gap: '2px' })}>
+                  <Icon icon={IconMessageCircle} />
+                  {humanizeNumber($post.commentCount)}
+                </div>
+              {/if}
             </div>
           {/if}
         </div>
-      </div>
+      {/if}
     </div>
 
     <div
