@@ -1,13 +1,12 @@
-import type { PgTable, TableConfig } from 'drizzle-orm/pg-core';
+import type { PgTable } from 'drizzle-orm/pg-core';
 import type { Context } from '$lib/server/context';
 
-export type ScopeFn<C extends TableConfig, P extends PgTable<C>> = (
-  data: P['$inferSelect'],
-  context: Context,
-) => Promise<string[]>;
+type TableDataWithId<P extends PgTable> = { id: string } & P['$inferSelect'];
 
-export const defineScopeGranter = <C extends TableConfig, P extends PgTable<C>>(table: P, granter: ScopeFn<C, P>) => {
-  return async (data: P['$inferSelect'], context: Context, scope: string) => {
+export type ScopeFn<P extends PgTable, S extends string> = (data: TableDataWithId<P>, context: Context) => Promise<S[]>;
+
+export const defineScopeGranter = <P extends PgTable, S extends string>(table: P, granter: ScopeFn<P, S>) => {
+  return async (data: TableDataWithId<P>, context: Context, scope: S) => {
     const scopes = await granter(data, context);
     return scopes.includes(scope);
   };
