@@ -215,7 +215,7 @@
             },
           )}
         >
-          <Post $post={post} {$query} showSpace />
+          <Post $post={post} {$query} showSpace showStats={false} />
         </li>
       {/each}
     </ul>
