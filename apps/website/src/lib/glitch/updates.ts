@@ -29,8 +29,9 @@ export const updates: GraphCacheConfig['updates'] = {
     unmuteSpace: (_, __, cache) => {
       cache.invalidate(me(cache), 'mutedSpaces');
     },
-    unmuteTag: (_, __, cache) => {
+    unmuteTag: (_, { input }, cache) => {
       cache.invalidate(me(cache), 'mutedTags');
+      cache.invalidate({ __typename: 'Tag', id: input.tagId });
     },
     unfollowTag: (_, __, cache) => {
       cache.invalidate(me(cache), 'followedTags');

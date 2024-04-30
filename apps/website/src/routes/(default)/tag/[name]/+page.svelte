@@ -1,18 +1,20 @@
 <script lang="ts">
   import qs from 'query-string';
   import IconDotsVertical from '~icons/tabler/dots-vertical';
+  import IconVolume from '~icons/tabler/volume-3';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Helmet, Icon, Pagination } from '$lib/components';
+  import { Alert, Helmet, Icon, Pagination } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
-  import { flex } from '$styled-system/patterns';
+  import { center, flex } from '$styled-system/patterns';
   import Post from '../../(feed)/Post.svelte';
   import LoginRequireAlert from '../../LoginRequireAlert.svelte';
 
   let loginRequireOpen = false;
+  let unmuteTagOpen = false;
   let initialPage = Number(qs.parseUrl($page.url.search).query.page) || 1;
 
   $: query = graphql(`
@@ -123,14 +125,7 @@
         <Icon slot="value" style={css.raw({ color: 'gray.50' })} icon={IconDotsVertical} size={24} />
 
         {#if $query.tag.muted}
-          <MenuItem
-            on:click={async () => {
-              await unmuteTag({ tagId: $query.tag.id });
-              mixpanel.track('tag:unmute', { tagId: $query.tag.id, via: 'tag' });
-            }}
-          >
-            태그 뮤트 해제
-          </MenuItem>
+          <MenuItem on:click={() => (unmuteTagOpen = true)}>태그 뮤트 해제</MenuItem>
         {:else}
           <MenuItem
             on:click={async () => {
@@ -148,10 +143,29 @@
         {/if}
       </Menu>
     </div>
-    <div class={css({ marginX: 'auto', width: 'full', maxWidth: '860px', textAlign: 'right' })}>
+    <div
+      class={flex({
+        align: 'center',
+        justify: 'flex-end',
+        gap: '8px',
+        marginX: 'auto',
+        width: 'full',
+        maxWidth: '860px',
+        textAlign: 'right',
+      })}
+    >
+      {#if $query.tag.muted}
+        <button
+          class={center({ backgroundColor: 'red.200', color: 'red.600', size: '37px' })}
+          type="button"
+          on:click={() => (unmuteTagOpen = true)}
+        >
+          <Icon icon={IconVolume} />
+        </button>
+      {/if}
       {#if $query.tag.followed}
         <Button
-          style={css.raw({ flex: 'none', backgroundColor: 'gray.300!', width: '86px' })}
+          style={css.raw({ flex: 'none', backgroundColor: 'gray.300!', width: '86px', height: '37px' })}
           size="sm"
           variant="gray-sub-fill"
           on:click={async () => {
@@ -163,7 +177,8 @@
         </Button>
       {:else}
         <Button
-          style={css.raw({ flex: 'none', width: '86px' })}
+          style={css.raw({ flex: 'none', width: '86px', height: '37px' })}
+          disabled={$query.tag.muted}
           size="sm"
           variant="brand-fill"
           on:click={async () => {
@@ -183,29 +198,71 @@
   </div>
 
   <div class={css({ marginX: 'auto', width: 'full', maxWidth: '860px' })}>
-    <h2 class={css({ marginTop: '24px', fontWeight: 'semibold' })}>포스트</h2>
+    {#if $query.tag.muted}
+      <p class={css({ paddingY: '140px', fontSize: '15px', color: 'gray.500', textAlign: 'center' })}>
+        해당 태그가 뮤트되어 있어 포스트를 볼 수 없습니다.
+        <br />
+        포스트를 보시려면 뮤트 설정을 해제해주세요.
+      </p>
+    {:else}
+      <h2 class={css({ marginTop: '24px', fontWeight: 'semibold' })}>포스트</h2>
 
-    <ul>
-      {#each $query.tag.posts as post (post.id)}
-        <li
-          class={css({
-            _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' },
-            _lastOfType: { _after: { display: 'none' } },
-          })}
-        >
-          <Post $post={post} {$query} showBookmark showDate showSpace />
-        </li>
-      {/each}
-    </ul>
+      <ul>
+        {#each $query.tag.posts as post (post.id)}
+          <li
+            class={css({
+              _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' },
+              _lastOfType: { _after: { display: 'none' } },
+            })}
+          >
+            <Post $post={post} {$query} showBookmark showDate showSpace />
+          </li>
+        {/each}
+      </ul>
 
-    <Pagination
-      style={css.raw({ marginTop: '60px', marginBottom: { base: '96px', sm: '120px' } })}
-      {initialPage}
-      itemsPerPage={20}
-      onChange={updatePage}
-      totalItems={$query.tag.postCount}
-    />
+      <Pagination
+        style={css.raw({ marginTop: '60px', marginBottom: { base: '96px', sm: '120px' } })}
+        {initialPage}
+        itemsPerPage={20}
+        onChange={updatePage}
+        totalItems={$query.tag.postCount}
+      />
+    {/if}
   </div>
 </div>
+
+<Alert bind:open={unmuteTagOpen}>
+  <svelte:fragment slot="title">태그 뮤트를 해제할까요?</svelte:fragment>
+
+  <svelte:fragment slot="action">
+    <Button
+      style={css.raw({ hideFrom: 'sm' })}
+      size="lg"
+      variant="gray-sub-fill"
+      on:click={() => (unmuteTagOpen = false)}
+    >
+      취소
+    </Button>
+    <Button
+      style={css.raw({ hideBelow: 'sm' })}
+      size="lg"
+      variant="gray-outline"
+      on:click={() => (unmuteTagOpen = false)}
+    >
+      취소
+    </Button>
+    <Button
+      size="lg"
+      variant="red-fill"
+      on:click={async () => {
+        await unmuteTag({ tagId: $query.tag.id });
+        mixpanel.track('tag:unmute', { tagId: $query.tag.id, via: 'tag' });
+        unmuteTagOpen = false;
+      }}
+    >
+      해제
+    </Button>
+  </svelte:fragment>
+</Alert>
 
 <LoginRequireAlert bind:open={loginRequireOpen} />
