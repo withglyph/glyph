@@ -62,6 +62,7 @@ import {
   useFirstRow,
   useFirstRowOrThrow,
 } from '$lib/server/utils';
+import { defineScopeGranter } from '$lib/server/utils/scope';
 import { decorateContent, revisionContentToText, sanitizeContent } from '$lib/server/utils/tiptap';
 import {
   base36To10,
@@ -745,77 +746,78 @@ Post.implement({
 });
 
 export const PostRevision = createObjectRef('PostRevision', PostRevisions);
-PostRevision.implement({
-  grantScopes: async (revision, context) => {
-    const postLoader = context.loader({
-      name: 'Post(postId)',
-      load: async (ids: string[]) => {
-        return await database.select().from(Posts).where(inArray(Posts.id, ids));
-      },
-      key: (post) => post.id,
-    });
+const postRevisionScope = defineScopeGranter(PostRevisions, async (revision, context) => {
+  const postLoader = context.loader({
+    name: 'Post(postId)',
+    load: async (ids: string[]) => {
+      return await database.select().from(Posts).where(inArray(Posts.id, ids));
+    },
+    key: (post) => post.id,
+  });
 
-    const personalIdentityLoader = context.loader({
-      name: 'UserPersonalIdentity(userId)',
-      nullable: true,
-      load: async (userIds: string[]) => {
-        return await database
-          .select()
-          .from(UserPersonalIdentities)
-          .where(inArray(UserPersonalIdentities.userId, userIds));
-      },
-      key: (identity) => identity?.userId,
-    });
+  const personalIdentityLoader = context.loader({
+    name: 'UserPersonalIdentity(userId)',
+    nullable: true,
+    load: async (userIds: string[]) => {
+      return await database
+        .select()
+        .from(UserPersonalIdentities)
+        .where(inArray(UserPersonalIdentities.userId, userIds));
+    },
+    key: (identity) => identity?.userId,
+  });
 
-    const spaceMasqueradeLoader = context.loader({
-      name: 'SpaceMasquerade(spaceId)',
-      nullable: true,
-      load: async (spaceIds: string[]) => {
-        if (!context.session) {
-          return [];
-        }
-
-        return await database
-          .select()
-          .from(SpaceMasquerades)
-          .where(and(inArray(SpaceMasquerades.spaceId, spaceIds), eq(SpaceMasquerades.userId, context.session.userId)));
-      },
-      key: (masquerade) => masquerade?.spaceId,
-    });
-
-    const post = await postLoader.load(revision.postId);
-
-    if (post.ageRating !== 'ALL') {
+  const spaceMasqueradeLoader = context.loader({
+    name: 'SpaceMasquerade(spaceId)',
+    nullable: true,
+    load: async (spaceIds: string[]) => {
       if (!context.session) {
         return [];
       }
 
-      const identity = await personalIdentityLoader.load(context.session.userId);
-      if (
-        !identity ||
-        (post.ageRating === 'R19' && !isAdulthood(identity.birthday)) ||
-        (post.ageRating === 'R15' && !isGte15(identity.birthday))
-      ) {
-        return [];
-      }
+      return await database
+        .select()
+        .from(SpaceMasquerades)
+        .where(and(inArray(SpaceMasquerades.spaceId, spaceIds), eq(SpaceMasquerades.userId, context.session.userId)));
+    },
+    key: (masquerade) => masquerade?.spaceId,
+  });
+
+  const post = await postLoader.load(revision.postId);
+
+  if (post.ageRating !== 'ALL') {
+    if (!context.session) {
+      return [];
     }
 
-    if (post.password && post.userId !== context.session?.userId) {
-      const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
-      if (!unlock || dayjs(unlock).isBefore(dayjs())) {
-        return [];
-      }
+    const identity = await personalIdentityLoader.load(context.session.userId);
+    if (
+      !identity ||
+      (post.ageRating === 'R19' && !isAdulthood(identity.birthday)) ||
+      (post.ageRating === 'R15' && !isGte15(identity.birthday))
+    ) {
+      return [];
     }
+  }
 
-    if (post.spaceId) {
-      const masquerade = await spaceMasqueradeLoader.load(post.spaceId);
-      if (masquerade?.blockedAt) {
-        return [];
-      }
+  if (post.password && post.userId !== context.session?.userId) {
+    const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
+    if (!unlock || dayjs(unlock).isBefore(dayjs())) {
+      return [];
     }
+  }
 
-    return ['$postRevision:view'];
-  },
+  if (post.spaceId) {
+    const masquerade = await spaceMasqueradeLoader.load(post.spaceId);
+    if (masquerade?.blockedAt) {
+      return [];
+    }
+  }
+
+  return ['$postRevision:view'];
+});
+
+PostRevision.implement({
   fields: (t) => ({
     id: t.exposeID('id'),
     kind: t.expose('kind', { type: PostRevisionKind }),
@@ -853,8 +855,11 @@ PostRevision.implement({
 
     content: t.field({
       type: 'JSON',
-      authScopes: { $granted: '$postRevision:view' },
       resolve: async (revision, _, context) => {
+        if (!(await postRevisionScope(revision, context, '$postRevision:view'))) {
+          return createTiptapDocument([]);
+        }
+
         const [freeContentRaw, paidContentRaw] = await Promise.all([
           revision.freeContentId
             ? database
@@ -996,13 +1001,14 @@ PostRevision.implement({
           }),
         ]);
       },
-
-      unauthorizedResolver: () => createTiptapDocument([]),
     }),
 
     characterCount: t.int({
-      authScopes: { $granted: '$postRevision:view' },
       resolve: async (revision, _, context) => {
+        if (!(await postRevisionScope(revision, context, '$postRevision:view'))) {
+          return 0;
+        }
+
         const loader = context.loader(postRevisionContentLoader);
 
         const [freeContentLength, paidContentLength] = await Promise.all([
@@ -1027,8 +1033,11 @@ PostRevision.implement({
     }),
 
     previewText: t.string({
-      authScopes: { $granted: '$postRevision:view' },
       resolve: async (revision, _, context) => {
+        if (!(await postRevisionScope(revision, context, '$postRevision:view'))) {
+          return '';
+        }
+
         const loader = context.loader(postRevisionContentLoader);
 
         const contentText = revision.freeContentId
