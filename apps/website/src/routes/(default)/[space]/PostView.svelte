@@ -293,6 +293,11 @@
     `),
   );
 
+  $: if (editor) {
+    editor.storage.permalink = $query.post.permalink;
+    editor.storage.revisionId = $postRevision.id;
+  }
+
   // $: comments = graphql(`
   //   query Post_Comments($permalink: String!, $orderBy: CommentOrderByKind!, $page: Int!, $take: Int!) @_manual {
   //     post(permalink: $permalink) {
@@ -426,6 +431,13 @@
     }
   `);
 
+  const handleContentProtection = (e: Event) => {
+    if ($query.post.protectContent) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   $: triggerTags = $query.post.tags.filter(({ kind }) => kind === 'TRIGGER');
   $: shortLink = `https://glph.to/${$query.post.shortlink}`;
 
@@ -434,6 +446,9 @@
 </script>
 
 <svelte:window
+  on:contextmenu={handleContentProtection}
+  on:copy={handleContentProtection}
+  on:cut={handleContentProtection}
   on:scroll={(e) => {
     if (e.currentTarget.innerWidth < 992) {
       var currentScrollPos = e.currentTarget.scrollY;
@@ -799,11 +814,6 @@
             <TiptapRenderer
               style={css.raw({ paddingTop: '20px', paddingBottom: { base: '40px', sm: '60px' } })}
               content={$postRevision.content}
-              options={{
-                paragraphIndent: $postRevision.paragraphIndent,
-                paragraphSpacing: $postRevision.paragraphSpacing,
-                protectContent: $query.post.protectContent,
-              }}
               bind:editor
             />
           {/key}

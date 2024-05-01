@@ -5,10 +5,11 @@ import { building, dev } from '$app/environment';
 import { pub, rabbit } from '../mq';
 import { finalizeResource, setResourceFinalizer } from '../utils';
 import { NotifyIndexNowJob } from './indexnow';
+import { UpdatePostContentStateJob } from './post';
 import { IndexAllPostsInSpaceJob, IndexCollectionJob, IndexPostJob } from './search';
 import type { JobFn } from './types';
 
-const jobs = [IndexAllPostsInSpaceJob, IndexPostJob, IndexCollectionJob, NotifyIndexNowJob];
+const jobs = [IndexAllPostsInSpaceJob, IndexPostJob, IndexCollectionJob, NotifyIndexNowJob, UpdatePostContentStateJob];
 
 type Jobs = typeof jobs;
 type JobNames = Jobs[number]['name'];

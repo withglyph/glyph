@@ -12,7 +12,7 @@
   export let placement: Placement;
 
   $: doc = editor?.state.doc;
-  $: text = doc?.textBetween(0, doc.content.size);
+  $: text = doc?.textBetween(0, doc.content.size, '\n');
   $: countWithWhitespace = text?.length ?? 0;
   $: countWithoutWhitespace = text?.replaceAll(/\s/g, '').length ?? 0;
 

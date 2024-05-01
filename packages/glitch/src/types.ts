@@ -83,3 +83,8 @@ export type MutationStore<D, V> = Readable<{
       : never);
 
 export type FragmentStore<D> = Readable<D>;
+
+export type SubscriptionStore<D, V> = {
+  subscribe: V extends Record<string, never> ? () => () => void : (variables: V) => () => void;
+  on: (event: 'data', handler: (data: D) => void) => void;
+};

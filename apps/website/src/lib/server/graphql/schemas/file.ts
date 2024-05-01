@@ -45,8 +45,15 @@ const FinalizeFileUploadInput = builder.inputType('FinalizeFileUploadInput', {
  * * Queries
  */
 
-// builder.queryFields((t) => ({
-// }));
+builder.queryFields((t) => ({
+  file: t.field({
+    type: File,
+    args: { id: t.arg.id() },
+    resolve: (_, args) => {
+      return args.id;
+    },
+  }),
+}));
 
 /**
  * * Mutations

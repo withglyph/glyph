@@ -11,7 +11,6 @@ export const AccessBarrier = createNodeView(Component, {
   addAttributes() {
     return {
       price: {},
-      __data: {},
     };
   },
 
@@ -32,16 +31,16 @@ export const AccessBarrier = createNodeView(Component, {
             return null;
           }
 
-          let pos = oldNodes[0].pos;
+          const [oldNode] = oldNodes;
+          let pos = oldNode.pos;
           for (const transaction of transactions) {
             // eslint-disable-next-line unicorn/no-array-callback-reference
             pos = transaction.mapping.map(pos);
           }
 
           if (newNodes.length === 0) {
-            tr.insert(pos, oldNodes[0].node.copy());
-            const newNode = findChildren(tr.doc, (node) => node.type.name === this.name)[0];
-            tr.setSelection(NodeSelection.create(tr.doc, newNode.pos));
+            tr.insert(pos, oldNode.node.copy());
+            tr.setSelection(NodeSelection.create(tr.doc, pos));
             return tr;
           } else if (newNodes.length > 1) {
             for (const newNode of newNodes) {

@@ -97,7 +97,7 @@ export const createContext = async (event: RequestEvent): Promise<Context> => {
               return [];
             }
 
-            return new Error('DataLoader: Missing key');
+            return new Error(`DataLoader(${name}): Missing key`);
           }) as (F | Error)[];
         },
         { cacheKeyFn: (key) => stringify(key) },

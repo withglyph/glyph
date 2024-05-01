@@ -316,13 +316,13 @@ type Mutation {
   publishPost(input: PublishPostInput!): Post!
   purchasePoint(input: PurchasePointInput!): PointPurchase!
   purchasePost(input: PurchasePostInput!): Post!
-  revisePost(input: RevisePostInput!): Post!
   setSpaceCollectionPosts(input: SetSpaceCollectionPostsInput!): SpaceCollection!
+  synchronizePost(input: SynchronizePostInput!): [SynchronizePostResult!]!
   unblockMasquerade(input: UnblockMasqueradeInput!): Space!
   unbookmarkPost(input: UnbookmarkPostInput!): Post!
   unfollowSpace(input: UnfollowSpaceInput!): Space!
   unfollowTag(input: UnfollowTagInput!): Tag!
-  unfurlEmbed(input: UnfurlEmbedInput!): Embed
+  unfurlEmbed(input: UnfurlEmbedInput!): Embed!
   unlikeComment(input: UnlikeCommentInput!): PostComment!
   unlikePost(input: UnlikePostInput!): Post!
   unlinkUserSingleSignOn(input: UnlinkUserSingleSignOnInput!): User!
@@ -419,9 +419,10 @@ type Post {
   commentCount(pagination: Boolean! = false): Int!
   commentQualification: PostCommentQualification!
   comments(orderBy: CommentOrderByKind! = OLDEST, page: Int! = 1, take: Int! = 5): [PostComment!]!
+  contentSnapshots: [PostContentSnapshot!]!
+  contentState: PostContentState!
   createdAt: DateTime!
   discloseStats: Boolean!
-  draftRevision(revisionId: ID): PostRevision!
   externalSearchable: Boolean!
   hasPassword: Boolean!
   id: ID!
@@ -443,7 +444,7 @@ type Post {
   receivePatronage: Boolean!
   receiveTagContribution: Boolean!
   recommendedPosts: [Post!]!
-  revisions: [PostRevision!]!
+  revision(id: ID!): PostRevision!
   shortlink: String!
   space: Space
   state: PostState!
@@ -503,6 +504,17 @@ enum PostCommentVisibility {
   PUBLIC
 }
 
+type PostContentSnapshot {
+  createdAt: DateTime!
+  data: String!
+  id: ID!
+}
+
+type PostContentState {
+  id: ID!
+  update: String!
+}
+
 enum PostPair {
   BL
   GL
@@ -519,12 +531,12 @@ type PostReaction {
 }
 
 type PostRevision {
-  characterCount: Int!
   content: JSON!
   createdAt: DateTime!
-  editableContent: JSON!
+  freeContent: PostRevisionContent
   id: ID!
   kind: PostRevisionKind!
+  paidContent: PostRevisionContent
   paragraphIndent: Int!
   paragraphSpacing: Int!
   previewText: String!
@@ -532,6 +544,13 @@ type PostRevision {
   subtitle: String
   title: String
   updatedAt: DateTime!
+}
+
+type PostRevisionContent {
+  characters: Int!
+  files: Int!
+  id: ID!
+  images: Int!
 }
 
 enum PostRevisionContentKind {
@@ -551,6 +570,15 @@ enum PostState {
   DRAFT
   EPHEMERAL
   PUBLISHED
+}
+
+enum PostSynchronizationKind {
+  AWARENESS
+  PING
+  SYNCHRONIZE_1
+  SYNCHRONIZE_2
+  SYNCHRONIZE_3
+  UPDATE
 }
 
 type PostTag {
@@ -611,11 +639,11 @@ input PublishPostInput {
   externalSearchable: Boolean!
   pairs: [PostPair!]! = []
   password: String
+  postId: ID!
   protectContent: Boolean!
   receiveFeedback: Boolean!
   receivePatronage: Boolean!
   receiveTagContribution: Boolean!
-  revisionId: ID!
   spaceId: ID!
   tags: [TagInput!]! = []
   thumbnailId: ID
@@ -659,6 +687,7 @@ type Query {
   draftPost(permalink: String!): Post!
   featureFlags: [FeatureFlag!]!
   featuredTagFeed: [FeaturedTag!]!
+  file(id: ID!): File!
   flash: Flash
   followingFeed(page: Int! = 1, take: Int! = 30): [Post!]!
   hello(name: String!): String!
@@ -722,16 +751,6 @@ enum RevenueWithdrawalState {
   FAILED
   PENDING
   SUCCESS
-}
-
-input RevisePostInput {
-  content: JSON!
-  paragraphIndent: Int!
-  paragraphSpacing: Int!
-  postId: ID!
-  revisionKind: PostRevisionKind!
-  subtitle: String
-  title: String
 }
 
 enum SearchOrderByKind {
@@ -844,6 +863,23 @@ type SubscribeNotification implements IUserNotification {
   id: ID!
   space: Space!
   state: UserNotificationState!
+}
+
+type Subscription {
+  postSynchronization(postId: ID!): SynchronizePostResult!
+}
+
+input SynchronizePostInput {
+  clientId: String!
+  data: String!
+  kind: PostSynchronizationKind!
+  postId: ID!
+}
+
+type SynchronizePostResult {
+  data: String!
+  kind: PostSynchronizationKind!
+  postId: ID!
 }
 
 type Tag {

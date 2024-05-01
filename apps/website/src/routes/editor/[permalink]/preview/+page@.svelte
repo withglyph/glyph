@@ -7,23 +7,17 @@
   import { Helmet, Icon } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex, grid } from '$styled-system/patterns';
-  import PostView from '../../../(default)/[space]/PostView.svelte';
   import Footer from '../../../(default)/Footer.svelte';
 
   let mode: 'desktop' | 'mobile' = 'desktop';
 
   $: hideHeader = $page.url.searchParams.get('hideHeader') === 'true';
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   $: query = graphql(`
     query EditorPermalinkPreviewPage_Query($permalink: String!, $revisionId: ID) {
       post(permalink: $permalink) {
         id
-
-        draftRevision(revisionId: $revisionId) @_required {
-          id
-          title
-          ...Post_postRevision
-        }
       }
 
       ...Post_query
@@ -31,7 +25,7 @@
   `);
 </script>
 
-<Helmet description="포스트 미리보기" title={`${$query.post.draftRevision?.title ?? '(제목 없음)'} 미리보기`} />
+<Helmet description="포스트 미리보기" title="(제목 없음) 미리보기" />
 
 {#if !hideHeader}
   <header
@@ -150,7 +144,7 @@
     backgroundColor: 'gray.50',
   })}
 >
-  <PostView
+  <!-- <PostView
     style={css.raw(
       mode === 'desktop'
         ? { borderXWidth: '1px', borderXColor: 'gray.200', paddingY: '30px', maxWidth: '1048px' }
@@ -158,7 +152,7 @@
     )}
     $postRevision={$query.post.draftRevision}
     {$query}
-  />
+  /> -->
 </main>
 
 <Footer />

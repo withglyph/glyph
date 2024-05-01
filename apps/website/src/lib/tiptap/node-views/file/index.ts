@@ -6,7 +6,7 @@ declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Commands<ReturnType> {
     file: {
-      setFile: (file: File) => ReturnType;
+      setFile: (id: string) => ReturnType;
     };
   }
 }
@@ -18,23 +18,25 @@ export const File = createNodeView(Component, {
 
   addAttributes() {
     return {
-      id: {},
-      __data: { default: undefined },
-      __file: { default: undefined },
+      id: { isRequired: true },
     };
+  },
+
+  onCreate() {
+    this.storage.files = {};
   },
 
   addCommands() {
     return {
       setFile:
-        (file) =>
+        (id) =>
         ({ state, tr }) => {
           const { selection } = state;
           const { $to } = selection;
 
           const pos = selection instanceof TextSelection ? $to.end() + 1 : $to.pos;
 
-          tr.insert(pos, this.type.create({ __file: file }));
+          tr.insert(pos, this.type.create({ id }));
           tr.setSelection(NodeSelection.create(tr.doc, pos));
           tr.scrollIntoView();
 

@@ -38,32 +38,30 @@
     }
   `);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let resp: any;
+
   const unfurl = async () => {
     try {
-      const resp = await unfurlEmbed({ url: node.attrs.url });
-      if (!resp) {
-        throw new Error('Unfurl failed');
-      }
-
-      updateAttributes?.({
-        url: resp.url,
-        mode: resp.html ? 'embed-full' : 'opengraph',
-        __data: resp,
-      });
+      resp = await unfurlEmbed({ url: node.attrs.url });
     } catch {
-      convertToLink();
+      convertToLink(true);
     }
   };
 
-  const convertToLink = () => {
-    editor?.chain().insertContentAt(getPos(), node.attrs.url).focus().run();
-    deleteNode?.();
+  const convertToLink = (skipHistory = false) => {
+    if (!editor) {
+      return;
+    }
+
+    const { tr } = editor.state;
+    tr.setMeta('addToHistory', !skipHistory);
+    tr.replaceWith(getPos(), getPos() + node.nodeSize, editor.schema.text(node.attrs.url));
+    editor.view.dispatch(tr);
   };
 
   onMount(() => {
-    if (!node.attrs.__data) {
-      unfurl();
-    }
+    unfurl();
   });
 </script>
 
@@ -79,7 +77,7 @@
   data-drag-handle
   draggable
 >
-  {#if !node.attrs.__data}
+  {#if !resp}
     <div
       class={css(
         {
@@ -112,7 +110,7 @@
       )}
     >
       <div class={css({ display: 'contents' }, editor?.isEditable && { pointerEvents: 'none' })}>
-        {@html node.attrs.__data.html}
+        {@html resp.html}
       </div>
     </div>
   {:else if node.attrs.mode === 'opengraph'}
@@ -139,20 +137,16 @@
         style={css.raw({ display: 'contents', pointerEvents: editor?.isEditable ? 'none' : 'auto' })}
         href={node.attrs.url}
       >
-        {#if node.attrs.__data.thumbnailUrl}
-          <img
-            class={css({ height: 'full', aspectRatio: '1/1', objectFit: 'cover' })}
-            alt=""
-            src={node.attrs.__data.thumbnailUrl}
-          />
+        {#if resp.thumbnailUrl}
+          <img class={css({ height: 'full', aspectRatio: '1/1', objectFit: 'cover' })} alt="" src={resp.thumbnailUrl} />
         {/if}
 
         <div class={flex({ direction: 'column', grow: '1', padding: '14px' })}>
           <div class={css({ fontSize: '14px', fontWeight: 'medium', lineClamp: 1 })}>
-            {node.attrs.__data.title ?? '(제목 없음)'}
+            {resp.title ?? '(제목 없음)'}
           </div>
           <div class={css({ fontSize: '12px', color: 'gray.400', lineClamp: 1 })}>
-            {node.attrs.__data.description ?? ''}
+            {resp.description ?? ''}
           </div>
           <div class={flex({ align: 'flex-end', grow: '1', fontSize: '12px', color: 'brand.400' })}>
             {new URL(node.attrs.url).hostname}
@@ -163,9 +157,9 @@
   {/if}
 </NodeView>
 
-{#if editor && selected && node.attrs.__data}
+{#if editor && selected && resp}
   <TiptapNodeViewBubbleMenu {editor} {getPos} {node}>
-    {#if node.attrs.__data.html}
+    {#if resp.html}
       <div class={flex({ smDown: { gap: '6px' } })}>
         <button
           class={css({
@@ -243,7 +237,7 @@
         _hover: { backgroundColor: 'gray.100' },
       })}
       type="button"
-      on:click={convertToLink}
+      on:click={() => convertToLink()}
     >
       <Icon style={css.raw({ color: 'gray.600' })} icon={IconLink} size={20} />
     </button>

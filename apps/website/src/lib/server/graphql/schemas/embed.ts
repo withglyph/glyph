@@ -45,7 +45,6 @@ const UnfurlEmbedInput = builder.inputType('UnfurlEmbedInput', {
 builder.mutationFields((t) => ({
   unfurlEmbed: t.withAuth({ user: true }).field({
     type: Embed,
-    nullable: true,
     args: { input: t.arg({ type: UnfurlEmbedInput }) },
     resolve: async (_, { input }) => {
       const embeds = await database.select({ id: Embeds.id }).from(Embeds).where(eq(Embeds.url, input.url));
@@ -53,25 +52,21 @@ builder.mutationFields((t) => ({
         return embeds[0].id;
       }
 
-      try {
-        const meta = await iframely.unfurl(input.url);
+      const meta = await iframely.unfurl(input.url);
 
-        const [embed] = await database
-          .insert(Embeds)
-          .values({
-            type: meta.type,
-            url: input.url,
-            title: meta.title,
-            description: meta.description,
-            thumbnailUrl: meta.thumbnailUrl,
-            html: meta.html,
-          })
-          .returning({ id: Embeds.id });
+      const [embed] = await database
+        .insert(Embeds)
+        .values({
+          type: meta.type,
+          url: input.url,
+          title: meta.title,
+          description: meta.description,
+          thumbnailUrl: meta.thumbnailUrl,
+          html: meta.html,
+        })
+        .returning({ id: Embeds.id });
 
-        return embed.id;
-      } catch {
-        return null;
-      }
+      return embed.id;
     },
   }),
 }));

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import dayjs from 'dayjs';
-  import IconCalendar from '~icons/tabler/calendar';
-  import IconTextRecognition from '~icons/tabler/text-recognition';
+  // import dayjs from 'dayjs';
+  // import IconCalendar from '~icons/tabler/calendar';
+  // import IconTextRecognition from '~icons/tabler/text-recognition';
   import IconTrash from '~icons/tabler/trash';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
@@ -28,13 +28,6 @@
         posts(state: DRAFT) {
           id
           permalink
-
-          draftRevision {
-            id
-            title
-            characterCount
-            updatedAt
-          }
         }
       }
     `),
@@ -85,7 +78,7 @@
             await goto(`/editor/${_post.permalink}`);
           }}
         >
-          <p
+          <!-- <p
             class={css(
               { marginBottom: '4px', textAlign: 'left', fontWeight: 'bold', truncate: true },
               _post.draftRevision?.title?.trim().length === 0 && { color: 'gray.500' },
@@ -105,7 +98,7 @@
               <Icon icon={IconTextRecognition} />
               {_post.draftRevision.characterCount}자
             </div>
-          </div>
+          </div> -->
         </button>
         <button
           class={css({ display: 'none', _groupHover: { display: 'block' } })}

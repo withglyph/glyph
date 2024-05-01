@@ -1,39 +1,51 @@
 import { webcrypto } from 'node:crypto';
-import { asc, count, eq } from 'drizzle-orm';
+import { and, asc, count, eq, gt } from 'drizzle-orm';
 import stringify from 'fast-json-stable-stringify';
 import * as R from 'radash';
+import * as Y from 'yjs';
 import { redis, useCache } from '$lib/server/cache';
-import { database, inArray, PostPurchases, PostRevisionContents, PostViews, SpaceCollectionPosts } from '../database';
-import { useFirstRow, useFirstRowOrThrow } from './database';
-import { isEmptyContent } from './tiptap';
+import { getMetadataFromTiptapDocument } from '$lib/utils';
+import {
+  database,
+  inArray,
+  PostContentStates,
+  PostContentUpdates,
+  PostPurchases,
+  PostRevisionContents,
+  PostViews,
+  SpaceCollectionPosts,
+} from '../database';
 import type { JSONContent } from '@tiptap/core';
 import type { Context } from '../context';
 import type { Transaction } from '../database';
 
-export const makePostContentId = async (data: JSONContent[] | null) => {
-  if (isEmptyContent(data)) {
+export const makePostContentId = async (tx: Transaction, nodes: JSONContent[]) => {
+  if (nodes.length === 0) {
     return null;
   }
 
   const hash = Buffer.from(
-    await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(stringify(data))),
+    await webcrypto.subtle.digest('SHA-256', new TextEncoder().encode(stringify(nodes))),
   ).toString('hex');
 
-  const contentId: string =
-    (await database
-      .select({ id: PostRevisionContents.id })
-      .from(PostRevisionContents)
-      .where(eq(PostRevisionContents.hash, hash))
-      .then(useFirstRow)
-      .then((row) => row?.id)) ??
-    (await database
-      .insert(PostRevisionContents)
-      .values({ hash, data })
-      .returning({ id: PostRevisionContents.id })
-      .then(useFirstRowOrThrow())
-      .then((row) => row.id));
+  const { text, characters, images, files } = getMetadataFromTiptapDocument({ type: 'document', content: nodes });
 
-  return contentId;
+  const contents = await tx
+    .insert(PostRevisionContents)
+    .values({ hash, data: nodes, text, characters, images, files })
+    .onConflictDoNothing({ target: PostRevisionContents.hash })
+    .returning({ id: PostRevisionContents.id });
+
+  if (contents.length > 0) {
+    return contents[0].id;
+  }
+
+  const [content] = await tx
+    .select({ id: PostRevisionContents.id })
+    .from(PostRevisionContents)
+    .where(eq(PostRevisionContents.hash, hash));
+
+  return content.id;
 };
 
 type GetPostViewCountParams = {
@@ -143,4 +155,37 @@ export const defragmentSpaceCollectionPosts = async (tx: Transaction, collection
   for (const [order, { id }] of posts.entries()) {
     await tx.update(SpaceCollectionPosts).set({ order }).where(eq(SpaceCollectionPosts.id, id));
   }
+};
+
+export const getPostContentState = async (postId: string) => {
+  const states = await database
+    .select({ update: PostContentStates.update, vector: PostContentStates.vector, upToSeq: PostContentStates.upToSeq })
+    .from(PostContentStates)
+    .where(eq(PostContentStates.postId, postId));
+
+  if (states.length === 0) {
+    throw new Error('Post content state not found');
+  }
+
+  const [state] = states;
+
+  const pendingUpdates = await database
+    .select({ data: PostContentUpdates.data })
+    .from(PostContentUpdates)
+    .where(and(eq(PostContentUpdates.postId, postId), gt(PostContentUpdates.seq, state.upToSeq)));
+
+  if (pendingUpdates.length === 0) {
+    return {
+      update: state.update,
+      vector: state.vector,
+    };
+  }
+
+  const updatedUpdate = Y.mergeUpdatesV2([state.update, ...pendingUpdates.map(({ data }) => data)]);
+  const updatedVector = Y.encodeStateVectorFromUpdateV2(updatedUpdate);
+
+  return {
+    update: updatedUpdate,
+    vector: updatedVector,
+  };
 };

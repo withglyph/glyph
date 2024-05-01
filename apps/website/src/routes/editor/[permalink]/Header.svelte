@@ -1,5 +1,4 @@
 <script lang="ts">
-  import dayjs from 'dayjs';
   import { onMount } from 'svelte';
   import IconLetterSpacing from '~icons/glyph/letter-spacing';
   import IconLineHeight from '~icons/glyph/line-height';
@@ -8,6 +7,7 @@
   import IconCheck from '~icons/tabler/check';
   import IconChevronDown from '~icons/tabler/chevron-down';
   import IconChevronLeft from '~icons/tabler/chevron-left';
+  import IconCode from '~icons/tabler/code';
   import IconDotsVertical from '~icons/tabler/dots-vertical';
   import IconFolder from '~icons/tabler/folder';
   import IconHtml from '~icons/tabler/html';
@@ -21,7 +21,7 @@
   import IconUnderline from '~icons/tabler/underline';
   import FullLogo from '$assets/logos/full.svg?component';
   import { fragment, graphql } from '$glitch';
-  import { Icon } from '$lib/components';
+  import { Alert, Icon } from '$lib/components';
   import ColorPicker from '$lib/components/ColorPicker.svelte';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Button } from '$lib/components/v2';
@@ -32,9 +32,9 @@
   import CharacterCountWidget from './CharacterCountWidget.svelte';
   import { getEditorContext } from './context';
   import DraftListModal from './DraftListModal.svelte';
+  import FileUploadModal from './FileUploadModal.svelte';
   import MobileEditMenu from './MobileEditMenu.svelte';
   import PublishMenu from './PublishMenu.svelte';
-  import RevisionListModal from './RevisionListModal.svelte';
   import ToolbarButtonTooltip from './ToolbarButtonTooltip.svelte';
   import type { EditorPage_Header_post, EditorPage_Header_query } from '$glitch';
 
@@ -42,7 +42,7 @@
   let _query: EditorPage_Header_query;
   let _post: EditorPage_Header_post;
 
-  const { store, state, forceSave } = getEditorContext();
+  const { state, forceSynchronize } = getEditorContext();
   $: editor = $state.editor;
 
   $: query = fragment(
@@ -97,7 +97,6 @@
 
         ...EditorPage_PublishMenu_post
         ...EditorPage_DraftListModal_post
-        ...EditorPage_RevisionListModal_Post
       }
     `),
   );
@@ -106,30 +105,15 @@
 
   let colorPickerOpen = false;
 
+  let fileUploadModalOpen = false;
+
   let contentOptionsOpen = false;
   let paragraphIndentOpen = false;
   let paragraphSpacingOpen = false;
 
   let publishMenuOpen = false;
-  let revisionListOpen = false;
   let draftListOpen = false;
-
-  const handleInsertFile = () => {
-    const picker = document.createElement('input');
-    picker.type = 'file';
-
-    picker.addEventListener('change', async () => {
-      const file = picker.files?.[0];
-
-      if (!file) {
-        return;
-      }
-
-      editor?.chain().focus().setFile(file).run();
-    });
-
-    picker.showPicker();
-  };
+  let timeTravelOpen = false;
 
   const { anchor: colorPickerAnchor, floating: colorPickerFloating } = createFloatingActions({
     placement: 'bottom-end',
@@ -200,119 +184,132 @@
     </a>
 
     <div class={flex({ flex: '1', justify: 'flex-end', align: 'flex-end' })}>
-      <div
-        class={flex({
-          direction: 'column',
-          marginRight: '8px',
-          textAlign: 'right',
-          fontSize: '12px',
-          alignSelf: 'flex-start',
-        })}
-      >
-        <CharacterCountWidget {editor} offset={8} placement="bottom-end" />
-        <span
-          class={css(
-            { transition: 'common', fontSize: '12px' },
-            !$state.isRevising && $state.lastRevision?.kind === 'MANUAL_SAVE'
-              ? { fontWeight: 'semibold', color: 'brand.400' }
-              : { color: 'gray.600' },
-          )}
-        >
-          {#if $state.isRevising || !$state.lastRevision}
-            {dayjs().formatAsTime()} 저장중
-          {:else}
-            {dayjs($state.lastRevision.updatedAt).formatAsTime()} 저장됨
-          {/if}
-        </span>
-      </div>
-
-      <div class={flex({ gap: '10px' })} role="group">
-        <Button
-          style={flex.raw({ alignItems: 'center', padding: '0!', backgroundColor: 'transparent!' })}
-          role="presentation"
-          size="sm"
-          tabindex={-1}
-          type="link"
-          variant="gray-outline"
-        >
-          <button
-            class={css({
-              paddingLeft: '12px',
-              paddingRight: '8px',
-              paddingY: '9px',
-              backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100' },
-            })}
-            disabled={!$state.canRevise}
-            type="button"
-            on:click={() => forceSave()}
-          >
-            저장
-          </button>
-          <hr class={css({ width: '1px', height: '8px', backgroundColor: 'gray.300' })} />
-          <button
-            class={css({
-              paddingLeft: '8px',
-              paddingRight: '12px',
-              paddingY: '9px',
-              fontWeight: 'bold',
-              color: 'gray.400',
-              backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100' },
-            })}
-            disabled={$query.me.posts.length === 0}
-            type="button"
-            on:click={() => (draftListOpen = true)}
-          >
-            {$query.me.posts?.length ?? 0}
-          </button>
-        </Button>
-
-        <div class={css({ width: 'fit' })} use:publishAnchor>
-          <Button
-            style={css.raw({ width: '68px' })}
-            aria-pressed={publishMenuOpen}
-            size="sm"
-            on:click={() => (publishMenuOpen = true)}
-          >
-            발행
-          </Button>
+      {#if $state.timeTravel}
+        <div class={flex({ gap: '10px' })} role="group">
+          <Button size="sm" variant="gray-outline" on:click={() => (timeTravelOpen = true)}>이 시점으로 복구</Button>
+          <Button size="sm" variant="brand-fill" on:click={() => ($state.timeTravel = false)}>시간여행 종료</Button>
         </div>
-      </div>
-
-      {#if publishMenuOpen}
+      {:else}
         <div
-          class={css({ position: 'fixed', inset: '0', zIndex: '40', smDown: { backgroundColor: 'gray.900/50' } })}
-          role="button"
-          tabindex="-1"
-          on:click={() => (publishMenuOpen = false)}
-          on:keypress={null}
-          use:portal
-        />
-      {/if}
-
-      <div
-        class={css({ position: 'fixed', left: '0', bottom: '0', width: 'full', zIndex: '50', hideFrom: 'sm' })}
-        use:portal
-      >
-        <PublishMenu {$post} {$query} bind:open={publishMenuOpen} />
-      </div>
-
-      <div class={css({ zIndex: '50', hideBelow: 'sm' })} use:publishFloating>
-        <PublishMenu {$post} {$query} bind:open={publishMenuOpen} />
-      </div>
-
-      <Menu
-        style={center.raw({ marginLeft: '28px', hideBelow: 'sm' })}
-        offset={menuOffset}
-        placement="bottom-end"
-        rounded={false}
-      >
-        <div slot="value" class={center({ height: '36px' })}>
-          <Icon icon={IconDotsVertical} size={24} />
+          class={flex({
+            direction: 'column',
+            marginRight: '8px',
+            textAlign: 'right',
+            fontSize: '12px',
+            alignSelf: 'flex-start',
+          })}
+        >
+          <CharacterCountWidget {editor} offset={8} placement="bottom-end" />
+          <span
+            class={css(
+              { transition: 'common', fontSize: '12px' },
+              $state.connectionState === 'connecting' || $state.connectionState === 'synchronizing'
+                ? { color: 'gray.600' }
+                : $state.connectionState === 'synchronized'
+                  ? { fontWeight: 'medium', color: 'brand.400' }
+                  : { fontWeight: 'bold', color: 'red.600' },
+            )}
+          >
+            {#if $state.connectionState === 'connecting'}
+              서버 연결 중
+            {:else if $state.connectionState === 'synchronizing'}
+              포스트 동기화 중
+            {:else if $state.connectionState === 'synchronized'}
+              실시간 저장 중
+            {:else}
+              서버 연결 끊김
+            {/if}
+          </span>
         </div>
 
-        <MenuItem on:click={() => (revisionListOpen = true)}>저장이력</MenuItem>
-        <MenuItem external href={`/editor/${$post.permalink}/preview`} type="link">미리보기</MenuItem>
-      </Menu>
+        <div class={flex({ gap: '10px' })} role="group">
+          <Button
+            style={flex.raw({ alignItems: 'center', padding: '0!', backgroundColor: 'transparent!' })}
+            role="presentation"
+            size="sm"
+            tabindex={-1}
+            type="link"
+            variant="gray-outline"
+          >
+            <button
+              class={css({
+                paddingLeft: '12px',
+                paddingRight: '8px',
+                paddingY: '9px',
+                backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100' },
+              })}
+              disabled={false}
+              type="button"
+              on:click={() => forceSynchronize()}
+            >
+              저장
+            </button>
+            <hr class={css({ width: '1px', height: '8px', backgroundColor: 'gray.300' })} />
+            <button
+              class={css({
+                paddingLeft: '8px',
+                paddingRight: '12px',
+                paddingY: '9px',
+                fontWeight: 'bold',
+                color: 'gray.400',
+                backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100' },
+              })}
+              disabled={$query.me.posts.length === 0}
+              type="button"
+              on:click={() => (draftListOpen = true)}
+            >
+              {$query.me.posts?.length ?? 0}
+            </button>
+          </Button>
+
+          <div class={css({ width: 'fit' })} use:publishAnchor>
+            <Button
+              style={css.raw({ width: '68px' })}
+              aria-pressed={publishMenuOpen}
+              size="sm"
+              on:click={() => (publishMenuOpen = true)}
+            >
+              발행
+            </Button>
+          </div>
+        </div>
+
+        {#if publishMenuOpen}
+          <div
+            class={css({ position: 'fixed', inset: '0', zIndex: '40', smDown: { backgroundColor: 'gray.900/50' } })}
+            role="button"
+            tabindex="-1"
+            on:click={() => (publishMenuOpen = false)}
+            on:keypress={null}
+            use:portal
+          />
+        {/if}
+
+        <div
+          class={css({ position: 'fixed', left: '0', bottom: '0', width: 'full', zIndex: '50', hideFrom: 'sm' })}
+          use:portal
+        >
+          <PublishMenu {$post} {$query} bind:open={publishMenuOpen} />
+        </div>
+
+        <div class={css({ zIndex: '50', hideBelow: 'sm' })} use:publishFloating>
+          <PublishMenu {$post} {$query} bind:open={publishMenuOpen} />
+        </div>
+
+        <Menu
+          style={center.raw({ marginLeft: '28px', hideBelow: 'sm' })}
+          offset={menuOffset}
+          placement="bottom-end"
+          rounded={false}
+        >
+          <div slot="value" class={center({ height: '36px' })}>
+            <Icon icon={IconDotsVertical} size={24} />
+          </div>
+
+          <MenuItem on:click={() => ($state.timeTravel = true)}>시간여행</MenuItem>
+          <MenuItem external href={`/editor/${$post.permalink}/preview`} type="link">미리보기</MenuItem>
+        </Menu>
+      {/if}
     </div>
   </div>
 
@@ -864,7 +861,7 @@
               _hover: { backgroundColor: 'gray.100' },
             })}
             type="button"
-            on:click={handleInsertFile}
+            on:click={() => (fileUploadModalOpen = true)}
           >
             <Icon icon={IconFolder} size={24} />
           </button>
@@ -881,6 +878,20 @@
             on:click={() => editor?.chain().focus().setLink('').run()}
           >
             <Icon icon={IconLink} size={24} />
+          </button>
+        </ToolbarButtonTooltip>
+
+        <ToolbarButtonTooltip message="코드 블럭">
+          <button
+            class={center({
+              size: '34px',
+              _hover: { backgroundColor: 'gray.100' },
+            })}
+            disabled={editor?.isActive('code_block')}
+            type="button"
+            on:click={() => editor?.chain().focus().setCodeBlock().run()}
+          >
+            <Icon icon={IconCode} size={24} />
           </button>
         </ToolbarButtonTooltip>
 
@@ -926,70 +937,28 @@
               문단 들여쓰기
             </MenuItem>
 
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphIndentOpen = false;
-                $store.paragraphIndent = 0;
-              }}
-            >
-              없음
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphIndent !== 0 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
-
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphIndentOpen = false;
-                paragraphIndentOpen = false;
-                $store.paragraphIndent = 50;
-              }}
-            >
-              0.5칸
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphIndent !== 50 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
-
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphIndentOpen = false;
-                $store.paragraphIndent = 100;
-              }}
-            >
-              1칸
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphIndent !== 100 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
-
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphIndentOpen = false;
-                $store.paragraphIndent = 200;
-              }}
-            >
-              2칸
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphIndent !== 200 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
+            {#each values.documentParagraphIndent as documentParagraphIndent (documentParagraphIndent.value)}
+              <MenuItem
+                style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
+                on:click={() => {
+                  contentOptionsOpen = false;
+                  paragraphIndentOpen = false;
+                  editor?.commands.setDocumentParagraphIndent(documentParagraphIndent.value);
+                }}
+              >
+                {documentParagraphIndent.label}
+                <Icon
+                  style={css.raw(
+                    { color: 'brand.400' },
+                    !editor?.isActive({ documentParagraphIndent: documentParagraphIndent.value }) && {
+                      visibility: 'hidden',
+                    },
+                  )}
+                  icon={IconCheck}
+                  size={20}
+                />
+              </MenuItem>
+            {/each}
           </Menu>
 
           <Menu as="div" hideBackdrop offset={16} placement="right-start" bind:open={paragraphSpacingOpen}>
@@ -1004,69 +973,28 @@
               문단 사이간격
             </MenuItem>
 
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphSpacingOpen = false;
-                $store.paragraphSpacing = 0;
-              }}
-            >
-              없음
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphSpacing !== 0 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
-
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphSpacingOpen = false;
-                $store.paragraphSpacing = 50;
-              }}
-            >
-              0.5줄
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphSpacing !== 50 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
-
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphSpacingOpen = false;
-                $store.paragraphSpacing = 100;
-              }}
-            >
-              1줄
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphSpacing !== 100 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
-
-            <MenuItem
-              style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
-              on:click={() => {
-                contentOptionsOpen = false;
-                paragraphSpacingOpen = false;
-                $store.paragraphSpacing = 200;
-              }}
-            >
-              2줄
-              <Icon
-                style={css.raw({ color: 'brand.400' }, $store.paragraphSpacing !== 200 && { visibility: 'hidden' })}
-                icon={IconCheck}
-                size={20}
-              />
-            </MenuItem>
+            {#each values.documentParagraphSpacing as documentParagraphSpacing (documentParagraphSpacing.value)}
+              <MenuItem
+                style={flex.raw({ justify: 'space-between', align: 'center', gap: '8px' })}
+                on:click={() => {
+                  contentOptionsOpen = false;
+                  paragraphSpacingOpen = false;
+                  editor?.commands.setDocumentParagraphSpacing(documentParagraphSpacing.value);
+                }}
+              >
+                {documentParagraphSpacing.label}
+                <Icon
+                  style={css.raw(
+                    { color: 'brand.400' },
+                    !editor?.isActive({ documentParagraphSpacing: documentParagraphSpacing.value }) && {
+                      visibility: 'hidden',
+                    },
+                  )}
+                  icon={IconCheck}
+                  size={20}
+                />
+              </MenuItem>
+            {/each}
           </Menu>
         </Menu>
       </ToolbarButtonTooltip>
@@ -1076,8 +1004,44 @@
   <MobileEditMenu />
 </header>
 
+<FileUploadModal bind:open={fileUploadModalOpen} />
 <DraftListModal {$post} $user={$query.me} bind:open={draftListOpen} />
-<RevisionListModal {$post} bind:open={revisionListOpen} />
+
+<Alert bind:open={timeTravelOpen}>
+  <p slot="title" class={css({ textAlign: 'left' })}>이 시점으로 돌아가시겠어요?</p>
+  <p slot="content" class={css({ textAlign: 'left' })}>
+    시간 여행은 몇 번이고 가능해요. 다시 시간여행을 하면 언제든 원하는 시점으로 돌아갈 수 있으니 안심하세요.
+  </p>
+
+  <svelte:fragment slot="action">
+    <Button
+      style={css.raw({ hideFrom: 'sm' })}
+      size="lg"
+      variant="gray-sub-fill"
+      on:click={() => (timeTravelOpen = false)}
+    >
+      취소
+    </Button>
+    <Button
+      style={css.raw({ hideBelow: 'sm' })}
+      size="lg"
+      variant="gray-outline"
+      on:click={() => (timeTravelOpen = false)}
+    >
+      취소
+    </Button>
+    <Button
+      size="lg"
+      on:click={() => {
+        $state.doTimeTravel?.();
+        $state.timeTravel = false;
+        timeTravelOpen = false;
+      }}
+    >
+      복구
+    </Button>
+  </svelte:fragment>
+</Alert>
 
 <style>
   .divider-preview {

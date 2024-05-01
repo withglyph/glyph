@@ -23,7 +23,7 @@
 
   export let type: 'button' | 'submit' | 'link' = 'button';
 
-  export let style: SystemStyleObject | undefined;
+  export let style: SystemStyleObject | undefined = undefined;
 
   export let disabled = false;
   export let loading = false;

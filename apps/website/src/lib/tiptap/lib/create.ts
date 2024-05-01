@@ -4,10 +4,14 @@ import { SvelteNodeViewRenderer } from './renderer';
 import type { NodeConfig } from '@tiptap/core';
 import type { NodeViewComponentType } from './renderer';
 
-type CreateNodeViewOptions = NodeConfig;
+type CreateNodeViewOptions<Options, Storage> = NodeConfig<Options, Storage>;
 
-export const createNodeView = (component: NodeViewComponentType, options: CreateNodeViewOptions) => {
-  return Node.create({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const createNodeView = <Options = any, Storage = any>(
+  component: NodeViewComponentType,
+  options: CreateNodeViewOptions<Options, Storage>,
+) => {
+  return Node.create<Options, Storage>({
     ...options,
 
     parseHTML() {

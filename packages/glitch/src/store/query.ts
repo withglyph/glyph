@@ -1,17 +1,16 @@
 import { createRequest } from '@urql/core';
 import { readable } from 'svelte/store';
-import { filter, makeSubject, map, pipe, share, subscribe, switchAll, switchMap, take, toPromise } from 'wonka';
+import { filter, makeSubject, map, pipe, subscribe, switchMap, take, toPromise } from 'wonka';
 import { getClient } from '../client/internal';
 import type { LoadEvent } from '@sveltejs/kit';
-import type { AnyVariables, GraphQLRequest, OperationResult, TypedDocumentNode } from '@urql/core';
-import type { Source } from 'wonka';
+import type { AnyVariables, GraphQLRequest, TypedDocumentNode } from '@urql/core';
 
 export const createQueryStore = async (
   event: LoadEvent,
   document: TypedDocumentNode<unknown, AnyVariables>,
   variablesLoader?: (event: LoadEvent) => AnyVariables,
 ) => {
-  const { client, transformError } = await getClient();
+  const { client, transformError } = getClient();
 
   const variables = variablesLoader ? variablesLoader(event) : undefined;
   const request = createRequest(document, variables);
@@ -92,12 +91,22 @@ export const createQueryStore = async (
 };
 
 export const createManualQueryStore = (document: TypedDocumentNode<unknown, AnyVariables>) => {
-  const { source, next } = makeSubject<Source<OperationResult>>();
+  const { client, transformError } = getClient();
+
+  const { source, next } = makeSubject<GraphQLRequest>();
 
   const store = readable<unknown>(undefined, (set) => {
     const { unsubscribe } = pipe(
       source,
-      switchAll,
+      switchMap((request) => {
+        const operation = client.createRequestOperation('query', request, {
+          meta: { source: 'store' },
+          requestPolicy: 'cache-only',
+        });
+
+        return client.executeRequestOperation(operation);
+      }),
+      filter(({ data }) => data),
       map(({ data }) => data),
       subscribe(set),
     );
@@ -107,15 +116,13 @@ export const createManualQueryStore = (document: TypedDocumentNode<unknown, AnyV
 
   const obj = {
     refetch: async (variables?: AnyVariables) => {
-      const { client, transformError } = await getClient();
-
       const request = createRequest(document, variables);
       const operation = client.createRequestOperation('query', request, {
         meta: { source: 'store' },
         requestPolicy: 'network-only',
       });
 
-      const source = pipe(client.executeRequestOperation(operation), share);
+      const source = client.executeRequestOperation(operation);
 
       const result = await pipe(
         source,
@@ -132,7 +139,7 @@ export const createManualQueryStore = (document: TypedDocumentNode<unknown, AnyV
         throw transformError(result.error.graphQLErrors[0]);
       }
 
-      next(source);
+      next(request);
 
       return result.data;
     },

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import DOMPurify from 'isomorphic-dompurify';
+  import { bundledLanguagesInfo } from 'shiki';
   import IconGripVertical from '~icons/tabler/grip-vertical';
   import { Icon } from '$lib/components';
   import { NodeView, NodeViewContentEditable } from '$lib/tiptap';
@@ -13,6 +13,7 @@
   export let node: NodeViewProps['node'];
   export let editor: NodeViewProps['editor'] | undefined;
   export let selected: NodeViewProps['selected'];
+  export let updateAttributes: NodeViewProps['updateAttributes'];
 </script>
 
 <NodeView
@@ -35,7 +36,17 @@
       data-drag-handle
       draggable
     >
-      <div class={css({ flexGrow: '1', fontWeight: 'semibold', color: 'gray.500' })}>HTML</div>
+      <div class={css({ flexGrow: '1', fontWeight: 'semibold', color: 'gray.500' })}>CodeBlock</div>
+
+      <select
+        class={css({ color: 'gray.900' })}
+        value={node.attrs.language}
+        on:change={(e) => updateAttributes({ language: e.currentTarget.value })}
+      >
+        {#each bundledLanguagesInfo as language (language.id)}
+          <option value={language.id}>{language.name}</option>
+        {/each}
+      </select>
 
       <div
         class={css({
@@ -54,34 +65,9 @@
       as="pre"
     />
   {:else}
-    <NodeViewContentEditable style={css.raw({ display: 'none' })} />
-
-    <div
-      class={css({
-        position: 'relative',
-        overflow: 'hidden',
-        isolation: 'isolate',
-        paddingX: '8px',
-        paddingY: '4px',
-      })}
-    >
-      {#if DOMPurify.isSupported}
-        <div class="html-content">
-          {@html DOMPurify.sanitize(node.textContent)}
-        </div>
-      {:else}
-        HTML 블럭을 지원하지 않는 브라우져입니다.
-      {/if}
-    </div>
+    <NodeViewContentEditable
+      style={css.raw({ padding: '8px', fontSize: '14px', fontFamily: 'mono', userSelect: 'text', overflowX: 'auto' })}
+      as="pre"
+    />
   {/if}
 </NodeView>
-
-<style>
-  .html-content {
-    all: initial;
-
-    & :global(:where(:not(svg, svg *))) {
-      all: revert;
-    }
-  }
-</style>

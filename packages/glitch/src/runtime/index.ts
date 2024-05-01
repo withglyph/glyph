@@ -1,5 +1,6 @@
 import { createFragmentStore } from '../store/fragment';
 import { createMutationStore } from '../store/mutation';
+import { createSubscriptionStore } from '../store/subscription';
 import type { AnyVariables, TypedDocumentNode } from '@urql/core';
 
 export const graphql = (
@@ -12,8 +13,8 @@ export const graphql = (
     return createMutationStore(document);
   } else if (kind === 'fragment') {
     return null;
-  } else if (kind === 'subscription') {
-    throw new Error('subscription is not supported yet');
+  } else if (kind === 'subscription' && document) {
+    return createSubscriptionStore(document);
   }
 };
 

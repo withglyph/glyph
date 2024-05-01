@@ -1,28 +1,48 @@
 <script lang="ts">
-  import * as R from 'radash';
+  import dayjs from 'dayjs';
+  import { fromUint8Array, toUint8Array } from 'js-base64';
+  import { nanoid } from 'nanoid';
   import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
-  import { browser, dev } from '$app/environment';
-  import { beforeNavigate } from '$app/navigation';
+  import { readable, writable } from 'svelte/store';
+  import { IndexeddbPersistence } from 'y-indexeddb';
+  import * as YAwareness from 'y-protocols/awareness';
+  import * as Y from 'yjs';
+  import { browser } from '$app/environment';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
   import { Helmet } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import Content from './Content.svelte';
   import { setEditorContext } from './context';
   import Header from './Header.svelte';
-  import type { EditorPage_Editor_post, EditorPage_Editor_query, PostRevisionKind } from '$glitch';
-  import type { EditorState, EditorStore } from './context';
+  import TimeTravel from './TimeTravel.svelte';
+  import type { EditorPage_Editor_post, EditorPage_Editor_query } from '$glitch';
+  import type { EditorState } from './context';
 
   export { _post as $post, _query as $query };
   let _query: EditorPage_Editor_query;
   let _post: EditorPage_Editor_post;
 
+  const EDITOR: unique symbol = Symbol('editor');
+
   $: query = fragment(
     _query,
     graphql(`
       fragment EditorPage_Editor_query on Query {
+        me @_required {
+          id
+
+          profile {
+            id
+            name
+
+            avatar {
+              id
+              color
+            }
+          }
+        }
+
         ...EditorPage_Header_query
       }
     `),
@@ -33,102 +53,170 @@
     graphql(`
       fragment EditorPage_Editor_post on Post {
         id
-        ...EditorPage_Header_post
 
-        draftRevision {
+        space {
           id
-          title
-          subtitle
-          editableContent
-          paragraphIndent
-          paragraphSpacing
+
+          meAsMember {
+            id
+
+            profile {
+              id
+              name
+
+              avatar {
+                id
+                color
+              }
+            }
+          }
         }
+
+        ...EditorPage_Header_post
+        ...EditorPage_TimeTravel_post
       }
     `),
   );
 
-  const revisePost = graphql(`
-    mutation EditorPage_Editor_RevisePost_Mutation($input: RevisePostInput!) {
-      revisePost(input: $input) {
-        id
-
-        draftRevision {
-          id
-          kind
-          updatedAt
-        }
+  const synchronizePost = graphql(`
+    mutation EditorPage_Editor_SynchronizePost_Mutation($input: SynchronizePostInput!) {
+      synchronizePost(input: $input) {
+        postId
+        kind
+        data
       }
     }
   `);
 
-  let warnUnload = false;
+  const postSynchronization = graphql(`
+    subscription EditorPage_Editor_PostSynchronization_Subscription($postId: ID!) {
+      postSynchronization(postId: $postId) {
+        postId
+        kind
+        data
+      }
+    }
+  `);
 
-  const store = writable<EditorStore>();
-  const state = writable<EditorState>({
-    canRevise: true,
-    isRevising: false,
-  });
+  const yDoc = new Y.Doc();
+  const yAwareness = new YAwareness.Awareness(yDoc);
 
-  $: if (!$store) {
-    $store = {
-      title: $post.draftRevision.title ?? undefined,
-      subtitle: $post.draftRevision.subtitle ?? undefined,
-      content: $post.draftRevision.editableContent,
-      paragraphIndent: $post.draftRevision.paragraphIndent,
-      paragraphSpacing: $post.draftRevision.paragraphSpacing,
-    };
-  }
+  let lastPingMessageReceivedAt: dayjs.Dayjs | null = null;
 
-  $: if (browser && $store) {
-    warnUnload = true;
-    autoSave();
-  }
-
-  $: $state.isRevising = $revisePost.inflight;
-
-  const makeRevisePost = (revisionKind: PostRevisionKind) => {
-    return async () => {
-      const resp = await revisePost({
-        revisionKind,
-        postId: $post.id,
-        title: $store.title,
-        subtitle: $store.subtitle,
-        content: $store.content,
-        paragraphIndent: $store.paragraphIndent,
-        paragraphSpacing: $store.paragraphSpacing,
-      });
-
-      mixpanel.track('post:revise', { postId: $post.id, revisionKind });
-
-      $state.lastRevision = {
-        kind: resp.draftRevision.kind,
-        updatedAt: resp.draftRevision.updatedAt,
-      };
-
-      warnUnload = false;
-
-      return resp.draftRevision.id;
-    };
-  };
-
-  const autoSave = R.debounce({ delay: 1000 }, makeRevisePost('AUTO_SAVE'));
-
-  beforeNavigate(({ cancel, willUnload }) => {
-    if (dev || !warnUnload) {
+  postSynchronization.on('data', ({ postSynchronization }) => {
+    if (postSynchronization.postId !== $post.id) {
       return;
     }
 
-    if (willUnload) {
-      cancel();
-    } else if (!confirm('작성 중인 포스트가 있어요. 정말 나가시겠어요?')) {
-      cancel();
+    // eslint-disable-next-line unicorn/prefer-switch
+    if (postSynchronization.kind === 'PING') {
+      lastPingMessageReceivedAt = dayjs();
+    } else if (postSynchronization.kind === 'SYNCHRONIZE_3') {
+      if (postSynchronization.data === $state.clientId) {
+        $state.connectionState = 'synchronized';
+      }
+
+      synchronizePost({
+        postId: $post.id,
+        clientId: $state.clientId,
+        kind: 'AWARENESS',
+        data: fromUint8Array(YAwareness.encodeAwarenessUpdate(yAwareness, [yDoc.clientID])),
+      });
+    } else if (postSynchronization.kind === 'UPDATE') {
+      Y.applyUpdateV2(yDoc, toUint8Array(postSynchronization.data), EDITOR);
+    } else if (postSynchronization.kind === 'AWARENESS') {
+      YAwareness.applyAwarenessUpdate(yAwareness, toUint8Array(postSynchronization.data), EDITOR);
     }
   });
 
+  yDoc.on('updateV2', async (update, origin) => {
+    if (origin !== EDITOR && $state.connectionState === 'synchronized') {
+      await synchronizePost({
+        postId: $post.id,
+        clientId: $state.clientId,
+        kind: 'UPDATE',
+        data: fromUint8Array(update),
+      });
+    }
+  });
+
+  yAwareness.on(
+    'update',
+    async (states: { added: number[]; updated: number[]; removed: number[] }, origin: unknown) => {
+      if (!browser || origin === EDITOR || $state.connectionState !== 'synchronized') {
+        return;
+      }
+
+      const update = YAwareness.encodeAwarenessUpdate(yAwareness, [
+        ...states.added,
+        ...states.updated,
+        ...states.removed,
+      ]);
+
+      await synchronizePost({
+        postId: $post.id,
+        clientId: $state.clientId,
+        kind: 'AWARENESS',
+        data: fromUint8Array(update),
+      });
+    },
+  );
+
+  const state = writable<EditorState>({
+    document: yDoc,
+    awareness: yAwareness,
+
+    clientId: nanoid(),
+    connectionState: 'connecting',
+
+    timeTravel: false,
+  });
+
+  const forceSynchronize = async () => {
+    $state.connectionState = 'synchronizing';
+
+    const clientStateVector = Y.encodeStateVector(yDoc);
+
+    const results = await synchronizePost({
+      postId: $post.id,
+      clientId: $state.clientId,
+      kind: 'SYNCHRONIZE_1',
+      data: fromUint8Array(clientStateVector),
+    });
+
+    for (const { kind, data } of results) {
+      if (kind === 'SYNCHRONIZE_1') {
+        const serverStateVector = toUint8Array(data);
+        const serverMissingUpdate = Y.encodeStateAsUpdateV2(yDoc, serverStateVector);
+
+        await synchronizePost({
+          postId: $post.id,
+          clientId: $state.clientId,
+          kind: 'SYNCHRONIZE_2',
+          data: fromUint8Array(serverMissingUpdate),
+        });
+      } else if (kind === 'SYNCHRONIZE_2') {
+        const clientMissingUpdate = toUint8Array(data);
+
+        Y.applyUpdateV2(yDoc, clientMissingUpdate, EDITOR);
+      }
+    }
+  };
+
   setEditorContext({
-    store,
     state,
-    forceSave: makeRevisePost('MANUAL_SAVE'),
+    forceSynchronize,
+  });
+
+  const title = readable<string | null>(undefined, (set) => {
+    const yText = yDoc.getText('title');
+    const handler = () => {
+      const value = yText.toString();
+      set(value === '' ? null : value);
+    };
+
+    yText.observe(handler);
+    return () => yText.unobserve(handler);
   });
 
   let vvHeight: number | undefined;
@@ -139,20 +227,53 @@
     }
   };
 
-  onMount(() => {
-    handleVisualViewportChange();
+  const updateConnectionState = async () => {
+    if (!lastPingMessageReceivedAt) {
+      return;
+    }
 
+    const connected = dayjs().diff(lastPingMessageReceivedAt, 'second') < 5;
+    if ($state.connectionState === 'disconnected' && connected) {
+      await forceSynchronize();
+    } else if (!connected) {
+      $state.connectionState = 'disconnected';
+    }
+  };
+
+  $: {
+    const profile = $post.space?.meAsMember?.profile ?? $query.me.profile;
+    yAwareness.setLocalStateField('user', {
+      name: profile.name,
+      color: profile.avatar.color,
+    });
+  }
+
+  onMount(() => {
+    const persistence = new IndexeddbPersistence(`withglyph:editor:${$post.id}`, yDoc);
+    persistence.on('synced', () => {
+      forceSynchronize();
+    });
+
+    const unsubscribe = postSynchronization.subscribe({ postId: $post.id });
+    const interval = setInterval(() => updateConnectionState(), 1000);
+
+    handleVisualViewportChange();
     window.visualViewport?.addEventListener('resize', handleVisualViewportChange);
     window.visualViewport?.addEventListener('scroll', handleVisualViewportChange);
 
     return () => {
+      unsubscribe();
+      clearInterval(interval);
+      YAwareness.removeAwarenessStates(yAwareness, [yDoc.clientID], EDITOR);
+      yDoc.destroy();
+
       window.visualViewport?.removeEventListener('resize', handleVisualViewportChange);
       window.visualViewport?.removeEventListener('scroll', handleVisualViewportChange);
     };
   });
 </script>
 
-<Helmet description="포스트 작성하기" title={`${$store.title ?? '(제목 없음)'} 작성`} />
+<Helmet description="포스트 작성하기" title={`${$title ?? '(제목 없음)'} 작성`} />
 
 <div
   class={css({ position: 'relative', flexGrow: '1', isolation: 'isolate', userSelect: 'none', touchAction: 'none' })}
@@ -161,7 +282,11 @@
     <Header {$post} {$query} />
 
     <div class={flex({ direction: 'column', grow: '1', marginTop: '112px', overflow: 'auto' })}>
-      <Content />
+      {#if $state.timeTravel}
+        <TimeTravel {$post} />
+      {:else}
+        <Content />
+      {/if}
     </div>
   </div>
 </div>

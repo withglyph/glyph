@@ -1,8 +1,10 @@
-import { DropCursor, GapCursor, History, Placeholder, Typography } from '$lib/tiptap/extensions';
+import { DropCursor, GapCursor, Placeholder, Typography } from '$lib/tiptap/extensions';
 import { Bold, FontColor, FontFamily, FontSize, Italic, Link, Ruby, Strike, Underline } from '$lib/tiptap/marks';
-import { AccessBarrier, Embed, File, Gallery, Html, Image } from '$lib/tiptap/node-views';
+import { AccessBarrier, CodeBlock, Embed, File, Gallery, Html, Image } from '$lib/tiptap/node-views';
 import {
+  Blockquote,
   BulletList,
+  Doc,
   Document,
   HardBreak,
   HorizontalRule,
@@ -11,10 +13,10 @@ import {
   Paragraph,
   Text,
 } from '$lib/tiptap/nodes';
-import { Blockquote } from './nodes/blockquote';
 
 export const extensions = [
   // special nodes
+  Doc,
   Document,
   Text,
 
@@ -41,12 +43,12 @@ export const extensions = [
   // extensions
   DropCursor,
   GapCursor,
-  History,
   Placeholder,
   Typography,
 
   // node views
   AccessBarrier,
+  CodeBlock,
   Embed,
   File,
   Gallery,

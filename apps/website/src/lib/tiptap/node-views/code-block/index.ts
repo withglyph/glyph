@@ -1,31 +1,31 @@
 import { findChildren } from '@tiptap/core';
 import { NodeSelection, Plugin, PluginKey, TextSelection } from '@tiptap/pm/state';
 import { Decoration, DecorationSet } from '@tiptap/pm/view';
-import { getHighlighter, getTokenStyleObject, stringifyTokenStyle } from 'shiki';
-import { createNodeView } from '$lib/tiptap';
+import { bundledLanguages, getHighlighter, getTokenStyleObject, stringifyTokenStyle } from 'shiki';
+import { createNodeView } from '../../lib';
 import Component from './Component.svelte';
 import type { Node } from '@tiptap/pm/model';
-import type { BuiltinTheme, Highlighter, TokenStyles } from 'shiki';
+import type { BundledTheme, Highlighter, TokenStyles } from 'shiki';
 
 declare module '@tiptap/core' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Commands<ReturnType> {
-    html: {
-      setHtml: () => ReturnType;
+    codeBlock: {
+      setCodeBlock: () => ReturnType;
     };
   }
 }
 
 type Options = {
-  theme: BuiltinTheme;
+  theme: BundledTheme;
 };
 
 type Storage = {
   highlighter: Highlighter | undefined;
 };
 
-export const Html = createNodeView<Options, Storage>(Component, {
-  name: 'html',
+export const CodeBlock = createNodeView<Options, Storage>(Component, {
+  name: 'code_block',
   group: 'block',
   draggable: true,
   content: 'text*',
@@ -39,9 +39,15 @@ export const Html = createNodeView<Options, Storage>(Component, {
     };
   },
 
+  addAttributes() {
+    return {
+      language: { default: 'text' },
+    };
+  },
+
   addCommands() {
     return {
-      setHtml:
+      setCodeBlock:
         () =>
         ({ state, tr }) => {
           const { selection } = state;
@@ -59,11 +65,7 @@ export const Html = createNodeView<Options, Storage>(Component, {
   },
 
   addProseMirrorPlugins() {
-    if (!this.editor.isEditable) {
-      return [];
-    }
-
-    const key = new PluginKey('html');
+    const key = new PluginKey('codeBlock');
 
     return [
       new Plugin({
@@ -72,7 +74,7 @@ export const Html = createNodeView<Options, Storage>(Component, {
           init: () => {
             getHighlighter({
               themes: [this.options.theme],
-              langs: ['html'],
+              langs: Object.keys(bundledLanguages),
             }).then((highlighter) => {
               this.storage.highlighter = highlighter;
 
@@ -110,12 +112,14 @@ const themedTokenToStyle = (token: TokenStyles) => {
   return token.htmlStyle || stringifyTokenStyle(getTokenStyleObject(token));
 };
 
-const getDecorations = (highlighter: Highlighter, theme: BuiltinTheme, doc: Node) => {
+const getDecorations = (highlighter: Highlighter, theme: BundledTheme, doc: Node) => {
   const decorations: Decoration[] = [];
 
-  const children = findChildren(doc, (node) => node.type.name === 'html');
+  const children = findChildren(doc, (node) => node.type.name === 'code_block');
   for (const child of children) {
-    const result = highlighter.codeToTokens(child.node.textContent, { theme, lang: 'html' });
+    const lang = child.node.attrs.language;
+
+    const result = highlighter.codeToTokens(child.node.textContent, { theme, lang });
 
     decorations.push(
       Decoration.node(child.pos, child.pos + child.node.nodeSize, {

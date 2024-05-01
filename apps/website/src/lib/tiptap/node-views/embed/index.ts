@@ -12,7 +12,6 @@ export const Embed = createNodeView(Component, {
     return {
       url: { isRequired: true },
       mode: { default: 'opengraph' },
-      __data: {},
     };
   },
 

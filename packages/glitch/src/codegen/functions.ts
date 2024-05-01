@@ -13,6 +13,7 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
         AST.b.importSpecifier(AST.b.identifier('QueryStore')),
         AST.b.importSpecifier(AST.b.identifier('MutationStore')),
         AST.b.importSpecifier(AST.b.identifier('FragmentStore')),
+        AST.b.importSpecifier(AST.b.identifier('SubscriptionStore')),
       ],
       AST.b.stringLiteral('@withglyph/glitch'),
     ),
@@ -76,7 +77,28 @@ export const generateFunctions = (context: GlitchContext): AST.Program => {
         break;
       }
       case 'subscription': {
-        // TODO: implement
+        program.body.push(
+          AST.b.exportNamedDeclaration(
+            AST.b.tsDeclareFunction(
+              AST.b.identifier('graphql'),
+              [
+                AST.b.identifier.from({
+                  name: 'document',
+                  typeAnnotation: AST.b.tsTypeAnnotation(AST.b.tsLiteralType(AST.b.stringLiteral(source))),
+                }),
+              ],
+              AST.b.tsTypeAnnotation(
+                AST.b.tsTypeReference(
+                  AST.b.identifier('SubscriptionStore'),
+                  AST.b.tsTypeParameterInstantiation([
+                    AST.b.tsTypeReference(AST.b.identifier(`types.${name}`)),
+                    AST.b.tsTypeReference(AST.b.identifier(`base.${name}Variables`)),
+                  ]),
+                ),
+              ),
+            ),
+          ),
+        );
 
         break;
       }

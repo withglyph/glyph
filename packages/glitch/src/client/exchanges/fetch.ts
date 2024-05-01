@@ -81,7 +81,7 @@ export const fetchExchange: Exchange = ({ forward, dispatchDebug }) => {
   return (ops$) => {
     const fetch$ = pipe(
       ops$,
-      filter((operation) => operation.kind !== 'teardown'),
+      filter((operation) => operation.kind !== 'teardown' && operation.kind !== 'subscription'),
       tap((operation) =>
         dispatchDebug({
           type: 'dataloader',
@@ -110,7 +110,7 @@ export const fetchExchange: Exchange = ({ forward, dispatchDebug }) => {
 
     const forward$ = pipe(
       ops$,
-      filter((operation) => operation.kind === 'teardown'),
+      filter((operation) => operation.kind === 'teardown' || operation.kind === 'subscription'),
       forward,
     );
 

@@ -1,18 +1,8 @@
 import { z } from 'zod';
 import { tagPattern } from '$lib/const/post';
 
-export const RevisePostInputSchema = z.object({
-  revisionKind: z.enum(['AUTO_SAVE', 'MANUAL_SAVE']),
-  postId: z.string(),
-  title: z.string().max(100).nullable().optional(),
-  subtitle: z.string().max(100).nullable().optional(),
-  content: z.any(),
-  paragraphIndent: z.number().int(),
-  paragraphSpacing: z.number().int(),
-});
-
 export const PublishPostInputSchema = z.object({
-  revisionId: z.string(),
+  postId: z.string(),
   spaceId: z.string(),
   collectionId: z.string().optional(),
   thumbnailId: z.string().optional(),
