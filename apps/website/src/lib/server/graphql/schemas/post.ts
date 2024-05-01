@@ -299,16 +299,15 @@ Post.implement({
           }
         }
 
-        const states = await database
-          .select({ id: PostContentStates.id })
-          .from(PostContentStates)
-          .where(eq(PostContentStates.postId, post.id));
+        const loader = context.loader({
+          name: 'Post.contentState',
+          load: async (ids: string[]) => {
+            return await database.select().from(PostContentStates).where(inArray(PostContentStates.postId, ids));
+          },
+          key: (row) => row.postId,
+        });
 
-        if (states.length === 0) {
-          throw new Error('Post content state not found');
-        }
-
-        return states[0].id;
+        return await loader.load(post.id);
       },
     }),
 
@@ -886,6 +885,18 @@ PostContentState.implement({
   fields: (t) => ({
     id: t.exposeID('id'),
     update: t.string({ resolve: (state) => fromUint8Array(state.update) }),
+    title: t.exposeString('title', { nullable: true }),
+    subtitle: t.exposeString('subtitle', { nullable: true }),
+    characters: t.exposeInt('characters'),
+    images: t.exposeInt('images'),
+    files: t.exposeInt('files'),
+    updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
+
+    previewText: t.string({
+      resolve: (state) => {
+        return state.text.slice(0, 200).replaceAll(/\s+/g, ' ');
+      },
+    }),
   }),
 });
 

@@ -511,8 +511,15 @@ type PostContentSnapshot {
 }
 
 type PostContentState {
+  characters: Int!
+  files: Int!
   id: ID!
+  images: Int!
+  previewText: String!
+  subtitle: String
+  title: String
   update: String!
+  updatedAt: DateTime!
 }
 
 enum PostPair {

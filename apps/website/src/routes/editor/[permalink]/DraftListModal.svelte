@@ -1,7 +1,7 @@
 <script lang="ts">
-  // import dayjs from 'dayjs';
-  // import IconCalendar from '~icons/tabler/calendar';
-  // import IconTextRecognition from '~icons/tabler/text-recognition';
+  import dayjs from 'dayjs';
+  import IconCalendar from '~icons/tabler/calendar';
+  import IconTextRecognition from '~icons/tabler/text-recognition';
   import IconTrash from '~icons/tabler/trash';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
@@ -28,6 +28,13 @@
         posts(state: DRAFT) {
           id
           permalink
+
+          contentState {
+            id
+            title
+            characters
+            updatedAt
+          }
         }
       }
     `),
@@ -78,27 +85,25 @@
             await goto(`/editor/${_post.permalink}`);
           }}
         >
-          <!-- <p
+          <p
             class={css(
               { marginBottom: '4px', textAlign: 'left', fontWeight: 'bold', truncate: true },
-              _post.draftRevision?.title?.trim().length === 0 && { color: 'gray.500' },
+              !_post.contentState.title && { color: 'gray.500' },
             )}
           >
-            {_post.draftRevision?.title?.trim().length === 0
-              ? '(제목 없음)'
-              : _post.draftRevision?.title ?? '(제목 없음)'}
+            {_post.contentState.title ?? '(제목 없음)'}
           </p>
           <div class={flex({ align: 'center', gap: '8px', fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
             <div class={flex({ align: 'center', gap: '2px' })}>
               <Icon icon={IconCalendar} />
-              {dayjs(_post.draftRevision?.updatedAt).formatAsDateTime()}
+              {dayjs(_post.contentState.updatedAt).formatAsDateTime()}
             </div>
 
             <div class={flex({ align: 'center', gap: '2px' })}>
               <Icon icon={IconTextRecognition} />
-              {_post.draftRevision.characterCount}자
+              {_post.contentState.characters}자
             </div>
-          </div> -->
+          </div>
         </button>
         <button
           class={css({ display: 'none', _groupHover: { display: 'block' } })}
