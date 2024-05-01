@@ -1,4 +1,4 @@
-const specialPrefixes = ['$app/', '$env/', '~icons/'];
+const specialPrefixes = ['$app/', '$env/', '$assets/', '~icons/'];
 
 export const resolve = async (specifier, context, nextResolve) => {
   if (specialPrefixes.some((prefix) => specifier.startsWith(prefix))) {
@@ -16,7 +16,7 @@ export const load = (url, context, nextLoad) => {
     const mod = url.replace(/^special:\/\//, '');
     let source;
 
-    if (mod.startsWith('~icons/')) {
+    if (mod.startsWith('~icons/') || mod.startsWith('$assets/')) {
       return {
         format: 'module',
         source: 'export default {};',
