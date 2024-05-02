@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { and, countDistinct, desc, eq, gt, isNull, ne } from 'drizzle-orm';
 import * as R from 'radash';
+import { PostCategory } from '$lib/enums';
 import { useCache } from '$lib/server/cache';
 import {
   CurationPosts,
@@ -98,6 +99,83 @@ builder.objectType(FeaturedTag, {
       },
     }),
   }),
+});
+
+class FeaturedCategory {
+  categoryId!: keyof typeof PostCategory;
+}
+
+builder.objectType(FeaturedCategory, {
+  name: 'FeaturedCategory',
+  fields: (t) => ({
+    categoryId: t.expose('categoryId', { type: PostCategory }),
+    posts: t.field({
+      type: [Post],
+      resolve: async ({ categoryId }, _, context) => {
+        const [mutedTagIds, mutedSpaceIds] = context.session
+          ? await Promise.all([
+              getMutedTagIds({ userId: context.session.userId }),
+              getMutedSpaceIds({ userId: context.session.userId }),
+            ])
+          : [[], []];
+
+        const searchResult = await elasticSearch.search({
+          index: indexName('posts'),
+          query: {
+            function_score: {
+              query: {
+                bool: {
+                  must_not: makeQueryContainers([
+                    {
+                      query: { terms: { 'tags.id': mutedTagIds } },
+                      condition: mutedTagIds.length > 0,
+                    },
+                    {
+                      query: { terms: { 'space.id': mutedSpaceIds } },
+                      condition: mutedSpaceIds.length > 0,
+                    },
+                  ]),
+
+                  must: { match_all: {} },
+                  should: { term: { hasThumbnail: true } },
+                  filter: [{ term: { category: categoryId } }],
+                },
+              },
+              functions: [
+                {
+                  random_score: { seed: Math.floor(Math.random() * 1000), field: '_seq_no' },
+                },
+                {
+                  exp: {
+                    publishedAt: {
+                      scale: '30d',
+                      offset: '7d',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          size: 10,
+        });
+
+        return searchResultToIds(searchResult);
+      },
+    }),
+  }),
+});
+
+const FeaturedFeed = builder.unionType('FeaturedFeed', {
+  types: [FeaturedTag, FeaturedCategory],
+  resolveType: (value) => {
+    if ('tagId' in value) {
+      return 'FeaturedTag';
+    } else if ('categoryId' in value) {
+      return 'FeaturedCategory';
+    } else {
+      throw new Error('Invalid value');
+    }
+  },
 });
 
 /**
@@ -346,7 +424,7 @@ builder.queryFields((t) => ({
   }),
 
   featuredTagFeed: t.field({
-    type: [FeaturedTag],
+    type: [FeaturedFeed],
     resolve: async (_, __, context) => {
       const mutedTagIds = context.session ? await getMutedTagIds({ userId: context.session.userId }) : [];
       const tags = await useCache(
@@ -367,7 +445,10 @@ builder.queryFields((t) => ({
         60 * 60,
       );
 
-      return R.shuffle(R.sift(tags.map((tagId) => (mutedTagIds.includes(tagId) ? null : { tagId })))).slice(0, 5);
+      return R.shuffle([
+        ...R.sift(tags.map((tagId) => (mutedTagIds.includes(tagId) ? null : { tagId }))),
+        { categoryId: 'ORIGINAL' as const },
+      ]).slice(0, 8);
     },
   }),
 

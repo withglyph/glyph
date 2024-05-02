@@ -166,6 +166,13 @@ enum FeatureFlag {
   SHOW_AD
 }
 
+type FeaturedCategory {
+  categoryId: PostCategory!
+  posts: [Post!]!
+}
+
+union FeaturedFeed = FeaturedCategory | FeaturedTag
+
 type FeaturedTag {
   posts: [Post!]!
   tag: Tag!
@@ -693,7 +700,7 @@ type Query {
   curatedPosts: [Post!]!
   draftPost(permalink: String!): Post!
   featureFlags: [FeatureFlag!]!
-  featuredTagFeed: [FeaturedTag!]!
+  featuredTagFeed: [FeaturedFeed!]!
   file(id: ID!): File!
   flash: Flash
   followingFeed(page: Int! = 1, take: Int! = 30): [Post!]!

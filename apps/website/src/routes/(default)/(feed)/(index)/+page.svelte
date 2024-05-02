@@ -3,6 +3,7 @@
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
   import { AdSense, Helmet, Icon, Image, Tag } from '$lib/components';
+  import { categoryFilter } from '$lib/const/feed';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
   import Post from '../Post.svelte';
@@ -41,14 +42,27 @@
       }
 
       featuredTagFeed {
-        tag {
-          id
-          name
+        __typename
+
+        ... on FeaturedTag {
+          tag {
+            id
+            name
+          }
+
+          posts {
+            id
+            ...Feed_PostCard_post
+          }
         }
 
-        posts {
-          id
-          ...Feed_PostCard_post
+        ... on FeaturedCategory {
+          categoryId
+
+          posts {
+            id
+            ...Feed_PostCard_post
+          }
         }
       }
 
@@ -79,11 +93,22 @@
 
   let activeFeaturedTagId: string;
   $: if (!activeFeaturedTagId) {
-    activeFeaturedTagId = $query.featuredTagFeed[0].tag.id;
+    activeFeaturedTagId =
+      $query.featuredTagFeed[0].__typename === 'FeaturedCategory'
+        ? $query.featuredTagFeed[0].categoryId
+        : $query.featuredTagFeed[0].tag.id;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  $: activeFeaturedTagFeed = $query.featuredTagFeed.find(({ tag }) => tag.id === activeFeaturedTagId)!;
+  $: activeFeaturedTagFeed = $query.featuredTagFeed.find((feed) => {
+    if (feed.__typename === 'FeaturedTag') {
+      return feed.tag.id === activeFeaturedTagId;
+    } else if (feed.__typename === 'FeaturedCategory') {
+      return feed.categoryId === activeFeaturedTagId;
+    } else {
+      return false;
+    }
+  })!;
 </script>
 
 <Helmet
@@ -245,7 +270,7 @@
       })}
       role="tablist"
     >
-      {#each $query.featuredTagFeed as { tag } (tag.id)}
+      {#each $query.featuredTagFeed as feed (feed.__typename === 'FeaturedTag' ? feed.tag.id : feed.categoryId)}
         <button
           class={flex({
             alignItems: 'center',
@@ -266,12 +291,12 @@
               color: 'gray.900',
             },
           })}
-          aria-selected={tag.id === activeFeaturedTagId}
+          aria-selected={(feed.__typename === 'FeaturedTag' ? feed.tag.id : feed.categoryId) === activeFeaturedTagId}
           role="tab"
           type="button"
-          on:click={() => (activeFeaturedTagId = tag.id)}
+          on:click={() => (activeFeaturedTagId = feed.__typename === 'FeaturedTag' ? feed.tag.id : feed.categoryId)}
         >
-          #{tag.name}
+          #{feed.__typename === 'FeaturedTag' ? feed.tag.name : categoryFilter[feed.categoryId]}
         </button>
       {/each}
     </div>
