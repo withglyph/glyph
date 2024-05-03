@@ -1,4 +1,6 @@
 <script lang="ts">
+  import './toolbar-preview.css';
+
   import IconHorizontalRule from '~icons/glyph/horizontal-rule';
   import IconLetterSpacing from '~icons/glyph/letter-spacing';
   import IconLineHeight from '~icons/glyph/line-height';
@@ -466,87 +468,3 @@
 </div>
 
 <FileUploadModal bind:open={fileUploadModalOpen} />
-
-<style>
-  .divider-preview {
-    border-style: none;
-    background-position: center;
-    background-repeat: no-repeat;
-
-    &[data-kind='1'] {
-      background-image: linear-gradient(to right, currentColor 50%, rgb(255 255 255 / 0) 50%);
-      background-repeat: repeat;
-      background-size: 16px 1px;
-      height: 0.0625rem;
-    }
-
-    &[data-kind='2'],
-    &[data-kind='3'] {
-      border: solid 1px currentColor;
-      background-color: currentColor;
-    }
-
-    &[data-kind='3'] {
-      width: 7.5rem;
-    }
-
-    &[data-kind='4'] {
-      height: 1.8rem;
-      background-image: url(https://withglyph.com/horizontal-rules/4.svg);
-    }
-
-    &[data-kind='5'] {
-      height: 0.875rem;
-      background-image: url(https://withglyph.com/horizontal-rules/5.svg);
-    }
-
-    &[data-kind='6'] {
-      height: 0.91027rem;
-      background-image: url(https://withglyph.com/horizontal-rules/6.svg);
-    }
-
-    &[data-kind='7'] {
-      height: 1.25rem;
-      background-image: url(https://withglyph.com/horizontal-rules/7.svg);
-    }
-
-    &[data-kind='8'] {
-      height: 0.75rem;
-      background-image: url(https://withglyph.com/horizontal-rules/8.svg);
-    }
-  }
-
-  .blockquote-preview {
-    border-left-width: 3px;
-    border-color: #09090b;
-    padding-left: 6px;
-    font-size: 9px;
-
-    &[data-kind='2'] {
-      &:before {
-        display: block;
-        width: 16px;
-        content: url(https://withglyph.com/blockquotes/carbon.svg);
-      }
-    }
-
-    &[data-kind='3'] {
-      border-left-style: none;
-      &:before {
-        display: block;
-        width: 16px;
-        margin-left: auto;
-        margin-right: auto;
-        content: url(https://withglyph.com/blockquotes/carbon.svg);
-      }
-      &:after {
-        display: block;
-        width: 16px;
-        margin-left: auto;
-        margin-right: auto;
-        transform: rotate(180deg);
-        content: url(https://withglyph.com/blockquotes/carbon.svg);
-      }
-    }
-  }
-</style>

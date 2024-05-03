@@ -142,7 +142,7 @@
   });
 </script>
 
-<main class={flex({ direction: 'column', grow: '1', backgroundColor: 'gray.50' })}>
+<main class={flex({ direction: 'column', grow: '1', backgroundColor: 'gray.800' })}>
   <div
     class={flex({
       direction: 'column',
@@ -152,7 +152,7 @@
       width: 'full',
       maxWidth: '940px',
       backgroundColor: 'gray.5',
-      sm: { paddingTop: '42px' },
+      sm: { paddingTop: '34px' },
     })}
   >
     <div
@@ -193,22 +193,23 @@
   class={center({
     position: 'fixed',
     left: '1/2',
-    bottom: '20px',
-    gap: '8px',
+    bottom: '57px',
+    gap: '6px',
     borderRadius: 'full',
-    paddingX: '20px',
-    paddingY: '15px',
-    width: '500px',
-    backgroundColor: 'gray.900',
+    paddingY: '12px',
+    paddingRight: '20px',
+    paddingLeft: '16px',
+    width: '602px',
+    backgroundColor: 'gray.800',
     zIndex: '30',
     translate: 'auto',
     translateX: '-1/2',
-    boxShadow: '[0 2px 8px 0 {colors.gray.900/25}]',
+    boxShadow: '[0 2px 7px 0 {colors.gray.900/10}]',
   })}
   use:portal
   in:fly={{ y: 50 }}
 >
-  <Icon style={css.raw({ color: 'gray.200' })} icon={IconClockPlay} size={20} />
+  <Icon style={css.raw({ color: 'gray.400' })} icon={IconClockPlay} size={20} />
 
   {#if $query}
     <div class={flex({ position: 'relative', align: 'center', grow: '1', marginX: '8px', height: '16px' })}>
@@ -216,8 +217,8 @@
         class={css({
           borderRadius: 'full',
           width: 'full',
-          height: '8px',
-          backgroundColor: 'gray.800',
+          height: '6px',
+          backgroundColor: 'gray.600',
           overflow: 'hidden',
         })}
         on:pointerdown={handler}
@@ -232,7 +233,7 @@
             top: '1/2',
             borderRadius: 'full',
             size: '16px',
-            backgroundColor: 'brand.200',
+            backgroundColor: 'brand.50',
             translate: 'auto',
             translateX: '-1/2',
             translateY: '-1/2',
@@ -256,7 +257,7 @@
       class={css({
         paddingX: '14px',
         paddingY: '10px',
-        backgroundColor: 'gray.800',
+        backgroundColor: 'gray.600',
         zIndex: '40',
       })}
       role="tooltip"
@@ -265,20 +266,19 @@
       <div
         class={css({
           position: 'relative',
-          fontSize: '12px',
-          fontWeight: 'bold',
+          fontSize: '13px',
           fontFeatureSettings: '"tnum" 1',
-          color: 'gray.200',
+          color: 'gray.5',
           zIndex: '2',
         })}
       >
-        {dayjs($query.post.contentSnapshots[targetIdx].createdAt).format('YYYY. MM. DD HH:mm:ss.SSS')}
+        {dayjs($query.post.contentSnapshots[targetIdx].createdAt).format('YYYY. MM. DD HH:mm:ss')}
       </div>
 
       <div
         class={css({
           size: '8px',
-          backgroundColor: 'gray.800',
+          backgroundColor: 'gray.600',
           zIndex: '1',
         })}
         use:arrow

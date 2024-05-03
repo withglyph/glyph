@@ -281,7 +281,14 @@
   <div style:height={vvHeight ? `${vvHeight}px` : '100dvh'} class={flex({ direction: 'column' })}>
     <Header {$post} {$query} />
 
-    <div class={flex({ direction: 'column', grow: '1', marginTop: '112px', overflow: 'auto' })}>
+    <div
+      class={flex({
+        direction: 'column',
+        grow: '1',
+        marginTop: $state.timeTravel ? '62px' : { base: '103px', sm: '168px' },
+        overflow: 'auto',
+      })}
+    >
       {#if $state.timeTravel}
         <TimeTravel {$post} />
       {:else}

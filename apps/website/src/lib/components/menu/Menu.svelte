@@ -24,8 +24,6 @@
   export let preventClose = false;
   export let disabled = false;
 
-  export let rounded = true;
-
   $: action = backdropPortal
     ? portal
     : () => {
@@ -86,7 +84,6 @@
       alignment === 'horizontal' && { flexDirection: 'row', paddingY: '14px' },
       alignment === 'vertical' && { flexDirection: 'column' },
       !padding && { padding: '0' },
-      !rounded && { borderTopRadius: '0' },
       menuStyle,
     )}
     use:floating

@@ -41,7 +41,7 @@
       textAlign: 'left',
       color: 'gray.600',
       borderBottomWidth: '1px',
-      borderBottomColor: 'gray.200',
+      borderBottomColor: 'gray.100',
       _last: { borderBottomWidth: '0' },
     },
     disabled ? { cursor: 'not-allowed' } : { _hover: { backgroundColor: 'gray.100', color: 'gray.900' } },

@@ -73,7 +73,7 @@
       width: 'full',
       maxWidth: '940px',
       backgroundColor: 'gray.5',
-      sm: { paddingTop: '42px' },
+      sm: { paddingTop: '34px' },
     })}
   >
     <div
