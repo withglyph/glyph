@@ -1,7 +1,7 @@
 <script lang="ts">
   import IconPencil from '~icons/tabler/pencil';
   import { goto } from '$app/navigation';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Helmet, Icon } from '$lib/components';
   import { Button } from '$lib/components/v2';

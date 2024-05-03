@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Helmet } from '$lib/components';
   import { pageSubTitle } from '$lib/stores';
 

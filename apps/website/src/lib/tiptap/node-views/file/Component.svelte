@@ -5,7 +5,7 @@
   import IconFolder from '~icons/tabler/folder';
   import IconGripVertical from '~icons/tabler/grip-vertical';
   import IconTrash from '~icons/tabler/trash';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Icon } from '$lib/components';
   import { RingSpinner } from '$lib/components/spinners';
   import { NodeView } from '$lib/tiptap';

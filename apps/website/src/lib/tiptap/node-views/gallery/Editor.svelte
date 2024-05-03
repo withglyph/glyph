@@ -24,7 +24,7 @@
   import IconPhotoUp from '~icons/tabler/photo-up';
   import IconPlus from '~icons/tabler/plus';
   import IconTrash from '~icons/tabler/trash';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Icon, Tooltip } from '$lib/components';
   import { Checkbox, Switch } from '$lib/components/forms';
   import { Button, Modal } from '$lib/components/v2';
@@ -34,7 +34,7 @@
   import Display from './Display.svelte';
   import IsomorphicImage from './IsomorphicImage.svelte';
   import RadioGroup from './RadioGroup.svelte';
-  import type { Image_image } from '$glitch';
+  import type { Image_image } from '$bifrost';
   import type { NodeViewProps } from '$lib/tiptap';
 
   export let open = false;

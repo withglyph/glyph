@@ -8,7 +8,7 @@
   import IconHeart from '~icons/tabler/heart';
   import IconHeartFilled from '~icons/tabler/heart-filled';
   import IconPinnedFilled from '~icons/tabler/pinned-filled';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Alert, Avatar, Icon } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
@@ -16,7 +16,7 @@
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import CommentInput from './CommentInput.svelte';
-  import type { PostPage_Comment_postComment, PostPage_Comment_query } from '$glitch';
+  import type { PostPage_Comment_postComment, PostPage_Comment_query } from '$bifrost';
 
   export let editing = false;
   export let parentId: string | undefined = undefined;

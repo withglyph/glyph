@@ -25,7 +25,7 @@
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconMinus from '~icons/tabler/minus';
   import { page } from '$app/stores';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon, ProgressBar } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
@@ -37,7 +37,7 @@
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
   import type { ComponentType } from 'svelte';
-  import type { MeRevenuePage_VerifySettlementIdentityModal_user } from '$glitch';
+  import type { MeRevenuePage_VerifySettlementIdentityModal_user } from '$bifrost';
 
   let _user: MeRevenuePage_VerifySettlementIdentityModal_user;
   export { _user as $user };

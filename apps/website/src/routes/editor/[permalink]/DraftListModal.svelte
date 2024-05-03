@@ -6,7 +6,7 @@
   import IconTextRecognition from '~icons/tabler/text-recognition';
   import IconTrash from '~icons/tabler/trash';
   import { goto } from '$app/navigation';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Alert, Chip, Icon } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
@@ -14,7 +14,7 @@
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import type { EditorPage_DraftListModal_post, EditorPage_DraftListModal_user } from '$glitch';
+  import type { EditorPage_DraftListModal_post, EditorPage_DraftListModal_user } from '$bifrost';
 
   let _user: EditorPage_DraftListModal_user;
   let _post: EditorPage_DraftListModal_post;

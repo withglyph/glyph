@@ -3,11 +3,11 @@
   import ky from 'ky';
   import IconMessageCircle from '~icons/tabler/message-circle';
   import { goto } from '$app/navigation';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { css } from '$styled-system/css';
-  import type { CommentNotification_commentNotification } from '$glitch';
+  import type { CommentNotification_commentNotification } from '$bifrost';
 
   let _commentNotification: CommentNotification_commentNotification;
   export { _commentNotification as $commentNotification };

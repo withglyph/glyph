@@ -14,7 +14,7 @@
   import IconPlus from '~icons/tabler/plus';
   import IconShare2 from '~icons/tabler/share-2';
   import { afterNavigate, goto } from '$app/navigation';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { AdSense, Alert, Avatar, Chip, Icon, Image, ShareLinkPopover, Tag, Tooltip } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
@@ -38,7 +38,7 @@
   import ShareContent from './ShareContent.svelte';
   import TagManageModal from './TagManageModal.svelte';
   import type { Editor } from '@tiptap/core';
-  import type { Post_postRevision, Post_query } from '$glitch';
+  import type { Post_postRevision, Post_query } from '$bifrost';
   import type { SystemStyleObject } from '$styled-system/types';
 
   let editor: Editor | undefined;

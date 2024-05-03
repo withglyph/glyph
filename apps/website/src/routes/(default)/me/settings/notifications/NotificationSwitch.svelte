@@ -1,11 +1,12 @@
 <script lang="ts">
   import * as R from 'radash';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Switch } from '$lib/components/forms';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import type { MeSettingsNotificationsPage_Notification_user, UserNotificationCategory } from '$glitch';
+  import type { MeSettingsNotificationsPage_Notification_user } from '$bifrost';
+  import type { UserNotificationCategory } from '$lib/enums';
 
   let _user: MeSettingsNotificationsPage_Notification_user;
   export { _user as $user };

@@ -21,7 +21,7 @@
   let open = !smBelow;
 
   afterNavigate(({ from, to }) => {
-    if (!from || !to) return;
+    if (!from?.url || !to?.url) return;
 
     const fromStartsWithSearch = from.url.pathname.startsWith('/search');
     const toStartsWithSearch = to.url.pathname.startsWith('/search');

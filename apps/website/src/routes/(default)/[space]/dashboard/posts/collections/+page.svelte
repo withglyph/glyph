@@ -1,6 +1,6 @@
 <script lang="ts">
   import dayjs from 'dayjs';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Button, Helmet, Image } from '$lib/components';
   import {
     CreateCollectionModal,

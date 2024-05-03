@@ -1,6 +1,6 @@
 <script lang="ts">
   import dayjs from 'dayjs';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Helmet } from '$lib/components';
   import { css } from '$styled-system/css';
 

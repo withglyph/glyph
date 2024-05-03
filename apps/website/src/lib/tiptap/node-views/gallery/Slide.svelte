@@ -6,7 +6,7 @@
   import { css } from '$styled-system/css';
   import IsomorphicImage from './IsomorphicImage.svelte';
   import type { SwiperContainer, SwiperSlide } from 'swiper/element-bundle';
-  import type { Image_image } from '$glitch';
+  import type { Image_image } from '$bifrost';
 
   type IsomorphicImage = { id: string } & (
     | { kind: 'file'; __file: File }

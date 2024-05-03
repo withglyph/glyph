@@ -1,7 +1,7 @@
 <script lang="ts">
   import mixpanel from 'mixpanel-browser';
   import IconCamera from '~icons/tabler/camera';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Icon, Image } from '$lib/components';
   import { ThumbnailPicker } from '$lib/components/media';
   import { Button, Modal } from '$lib/components/v2';
@@ -10,7 +10,7 @@
   import { UpdateSpaceCollectionSchema } from '$lib/validations';
   import { css } from '$styled-system/css';
   import { center } from '$styled-system/patterns';
-  import type { Image_image } from '$glitch';
+  import type { Image_image } from '$bifrost';
 
   let thumbnailPicker: ThumbnailPicker;
   export let open = false;

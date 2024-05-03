@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as EmojiMart from 'emoji-mart';
   import { onMount } from 'svelte';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Helmet } from '$lib/components';
   import { emojiData } from '$lib/emoji';
   import { css } from '$styled-system/css';

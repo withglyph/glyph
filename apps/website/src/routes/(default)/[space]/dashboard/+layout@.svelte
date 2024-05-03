@@ -7,7 +7,7 @@
   import IconUsers from '~icons/tabler/users';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Avatar, BottomSheet, Button, Icon, Image, Tooltip } from '$lib/components';
   import { pageSubTitle } from '$lib/stores';

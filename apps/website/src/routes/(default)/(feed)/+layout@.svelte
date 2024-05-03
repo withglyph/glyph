@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { css } from '$styled-system/css';
   import Footer from '../Footer.svelte';

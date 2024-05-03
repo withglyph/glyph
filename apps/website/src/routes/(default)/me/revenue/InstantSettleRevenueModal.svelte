@@ -1,6 +1,6 @@
 <script lang="ts">
   import IconHelpLine from '~icons/glyph/help-line';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon, Tooltip } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
@@ -9,7 +9,7 @@
   import { calculateFeeAmount } from '$lib/utils/revenue';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import type { MeRevenuePage_InstantSettleRevenueModal_user } from '$glitch';
+  import type { MeRevenuePage_InstantSettleRevenueModal_user } from '$bifrost';
 
   export let open = false;
 

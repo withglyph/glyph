@@ -1,5 +1,5 @@
 import type { Cache, Data } from '@urql/exchange-graphcache';
-import type { GraphCacheConfig } from '$glitch';
+import type { GraphCacheConfig } from '$bifrost';
 
 const me = (cache: Cache) => cache.resolve('Query', 'me') as Data;
 

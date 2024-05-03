@@ -2,7 +2,7 @@
   import dayjs from 'dayjs';
   import qs from 'query-string';
   import { page } from '$app/stores';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Helmet, Image, Pagination } from '$lib/components';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';

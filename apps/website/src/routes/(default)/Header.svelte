@@ -2,7 +2,7 @@
   import IconPencil from '~icons/tabler/pencil';
   import { goto } from '$app/navigation';
   import FullLogo from '$assets/logos/full.svg?component';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { Button } from '$lib/components/v2';
@@ -11,7 +11,7 @@
   import NotificationMenu from './NotificationMenu.svelte';
   import SearchBar from './SearchBar.svelte';
   import UserMenu from './UserMenu.svelte';
-  import type { DefaultLayout_Header_query } from '$glitch';
+  import type { DefaultLayout_Header_query } from '$bifrost';
   import type { SystemStyleObject } from '$styled-system/types';
 
   let _query: DefaultLayout_Header_query;

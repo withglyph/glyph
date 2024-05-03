@@ -4,7 +4,7 @@
   import { datadogRum } from '@datadog/browser-rum';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { toast, ToastProvider } from '$lib/notification';
   import { flex } from '$styled-system/patterns';

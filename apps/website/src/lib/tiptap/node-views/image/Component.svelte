@@ -2,7 +2,7 @@
   import ky from 'ky';
   import { onMount } from 'svelte';
   import IconTrash from '~icons/tabler/trash';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Icon, Image } from '$lib/components';
   import { RingSpinner } from '$lib/components/spinners';
   import { portal, scrollLock } from '$lib/svelte/actions';

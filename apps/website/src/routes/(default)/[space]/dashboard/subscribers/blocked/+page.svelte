@@ -4,7 +4,7 @@
   import IconAlertTriangle from '~icons/tabler/alert-triangle';
   import IconSelector from '~icons/tabler/selector';
   import { page } from '$app/stores';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';

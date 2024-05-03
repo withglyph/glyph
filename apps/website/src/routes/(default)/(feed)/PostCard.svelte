@@ -2,12 +2,12 @@
   import IconEye from '~icons/tabler/eye';
   import IconMessageCircle from '~icons/tabler/message-circle';
   import IconMoodSmile from '~icons/tabler/mood-smile';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { Chip, Icon, Image, Tag } from '$lib/components';
   import { humanizeNumber } from '$lib/utils';
   import { css, sva } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import type { Feed_PostCard_post } from '$glitch';
+  import type { Feed_PostCard_post } from '$bifrost';
   import type { RecipeVariant, SystemStyleObject } from '$styled-system/types';
 
   let _post: Feed_PostCard_post;

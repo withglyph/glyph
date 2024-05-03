@@ -6,7 +6,7 @@
   import IconDeviceMobile from '~icons/tabler/device-mobile';
   import IconEPassport from '~icons/tabler/e-passport';
   import { page } from '$app/stores';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Alert, Avatar, Chip, Helmet, Icon } from '$lib/components';
   import { Switch } from '$lib/components/forms';

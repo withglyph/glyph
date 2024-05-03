@@ -2,13 +2,14 @@
   import IconLock from '~icons/glyph/lock';
   import IconReplyBar from '~icons/glyph/reply-bar';
   import IconAlertCircle from '~icons/tabler/alert-circle';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon, Tooltip } from '$lib/components';
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import type { CommentInput_query, PostCommentVisibility } from '$glitch';
+  import type { CommentInput_query } from '$bifrost';
+  import type { PostCommentVisibility } from '$lib/enums';
 
   export let visibility: PostCommentVisibility = 'PUBLIC';
   export let content = '';

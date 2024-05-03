@@ -3,7 +3,7 @@
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconShare2 from '~icons/tabler/share-2';
   import { browser } from '$app/environment';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Icon } from '$lib/components';
   import { RingSpinner } from '$lib/components/spinners';
   import { Button, Modal } from '$lib/components/v2';

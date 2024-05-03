@@ -4,7 +4,7 @@
   import Google from '$assets/icons/google.svg?component';
   import Naver from '$assets/icons/naver.svg?component';
   import FullLogo from '$assets/logos/full.svg?component';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Helmet, Icon, Image } from '$lib/components';
   import { css } from '$styled-system/css';

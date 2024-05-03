@@ -5,7 +5,7 @@
   import IconOpengraph from '~icons/glyph/opengraph';
   import IconLink from '~icons/tabler/link';
   import IconTrash from '~icons/tabler/trash';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Icon, Link } from '$lib/components';
   import { RingSpinner } from '$lib/components/spinners';
   import { NodeView } from '$lib/tiptap';

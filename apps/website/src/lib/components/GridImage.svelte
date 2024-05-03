@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Image } from '$lib/components';
   import { css, sva } from '$styled-system/css';
-  import type { Image_image } from '$glitch';
+  import type { Image_image } from '$bifrost';
   import type { SystemStyleObject } from '$styled-system/types';
 
   export let style: SystemStyleObject | undefined = undefined;

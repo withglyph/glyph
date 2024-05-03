@@ -26,7 +26,7 @@
   import IconStrikethrough from '~icons/tabler/strikethrough';
   import IconUnderline from '~icons/tabler/underline';
   import FullLogo from '$assets/logos/full.svg?component';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { Alert, Icon } from '$lib/components';
   import ColorPicker from '$lib/components/ColorPicker.svelte';
   import { Menu, MenuItem } from '$lib/components/menu';
@@ -43,7 +43,7 @@
   import PublishMenu from './PublishMenu.svelte';
   import ToolbarButton from './ToolbarButton.svelte';
   import ToolbarButtonTooltip from './ToolbarButtonTooltip.svelte';
-  import type { EditorPage_Header_post, EditorPage_Header_query } from '$glitch';
+  import type { EditorPage_Header_post, EditorPage_Header_query } from '$bifrost';
 
   export { _post as $post, _query as $query };
   let _query: EditorPage_Header_query;

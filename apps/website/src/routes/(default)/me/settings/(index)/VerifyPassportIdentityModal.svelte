@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components/v2';
   import { FormField, TextInput } from '$lib/components/v2/forms';

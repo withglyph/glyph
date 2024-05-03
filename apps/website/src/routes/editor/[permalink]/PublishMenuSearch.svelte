@@ -11,7 +11,7 @@
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import type { HTMLInputAttributes } from 'svelte/elements';
-  import type { PostTagKind } from '$glitch';
+  import type { PostTagKind } from '$lib/enums';
 
   type TagInput = {
     name: string;

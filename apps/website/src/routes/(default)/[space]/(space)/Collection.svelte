@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { Image } from '$lib/components';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
-  import type { SpacePage_Collection_space, SpacePage_Collection_spaceCollection } from '$glitch';
+  import type { SpacePage_Collection_space, SpacePage_Collection_spaceCollection } from '$bifrost';
 
   let _space: SpacePage_Collection_space;
   let _spaceCollection: SpacePage_Collection_spaceCollection;

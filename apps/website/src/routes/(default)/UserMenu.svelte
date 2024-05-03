@@ -11,7 +11,7 @@
   import IconPlanet from '~icons/tabler/planet';
   import IconPlus from '~icons/tabler/plus';
   import { afterNavigate, goto } from '$app/navigation';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Avatar, Icon, Image, Link } from '$lib/components';
   import { Button } from '$lib/components/v2';
@@ -19,7 +19,7 @@
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import CreateSpaceModal from './CreateSpaceModal.svelte';
-  import type { DefaultLayout_UserMenu_user } from '$glitch';
+  import type { DefaultLayout_UserMenu_user } from '$bifrost';
 
   let _user: DefaultLayout_UserMenu_user;
   export { _user as $user };

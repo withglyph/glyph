@@ -3,11 +3,11 @@
   import ky from 'ky';
   import IconCoin from '~icons/tabler/coin';
   import { goto } from '$app/navigation';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { css } from '$styled-system/css';
-  import type { PurchaseNotification_purchaseNotification } from '$glitch';
+  import type { PurchaseNotification_purchaseNotification } from '$bifrost';
 
   let _purchaseNotification: PurchaseNotification_purchaseNotification;
   export { _purchaseNotification as $purchaseNotification };

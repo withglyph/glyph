@@ -27,6 +27,8 @@
     "buildx",
     "bytea",
     "csvg",
+    "denormalize",
+    "denormalized",
     "dopplerhq",
     "dotenv",
     "dotum",

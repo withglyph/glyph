@@ -1,7 +1,7 @@
 <script lang="ts">
   import dayjs from 'dayjs';
   import IconHelpLine from '~icons/glyph/help-line';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { Chip, Icon, Tooltip } from '$lib/components';
   import { Modal } from '$lib/components/v2';
   import { banks, revenueWithdrawalState } from '$lib/const/revenue';
@@ -11,7 +11,7 @@
   import type {
     MeRevenueSettlementPage_SettlementDetailModal_revenueWithdrawal,
     MeRevenueSettlementPage_SettlementDetailModal_user,
-  } from '$glitch';
+  } from '$bifrost';
 
   export let open = false;
 

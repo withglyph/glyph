@@ -1,6 +1,6 @@
 <script lang="ts">
   import IconX from '~icons/tabler/x';
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { cx } from '$styled-system/css';

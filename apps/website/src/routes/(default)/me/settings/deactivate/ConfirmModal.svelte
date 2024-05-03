@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { graphql } from '$glitch';
+  import { graphql } from '$bifrost';
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';

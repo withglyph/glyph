@@ -8,7 +8,7 @@
   import * as YAwareness from 'y-protocols/awareness';
   import * as Y from 'yjs';
   import { browser } from '$app/environment';
-  import { fragment, graphql } from '$glitch';
+  import { fragment, graphql } from '$bifrost';
   import { Helmet } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -16,7 +16,7 @@
   import { setEditorContext } from './context';
   import Header from './Header.svelte';
   import TimeTravel from './TimeTravel.svelte';
-  import type { EditorPage_Editor_post, EditorPage_Editor_query } from '$glitch';
+  import type { EditorPage_Editor_post, EditorPage_Editor_query } from '$bifrost';
   import type { EditorState } from './context';
 
   export { _post as $post, _query as $query };
