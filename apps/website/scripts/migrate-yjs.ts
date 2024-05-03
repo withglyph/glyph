@@ -58,6 +58,8 @@ for (let i = 0; ; i++) {
               price: PostRevisions.price,
               paragraphIndent: PostRevisions.paragraphIndent,
               paragraphSpacing: PostRevisions.paragraphSpacing,
+              createdAt: PostRevisions.createdAt,
+              updatedAt: PostRevisions.updatedAt,
             })
             .from(PostRevisions)
             .where(eq(PostRevisions.postId, post.id))
@@ -148,6 +150,8 @@ for (let i = 0; ; i++) {
             characters,
             images,
             files,
+            createdAt: lastRevisions[0]?.createdAt,
+            updatedAt: lastRevisions[0]?.updatedAt,
           });
 
           // 초기 상태의 스냅샷 생성 & 저장함
@@ -155,6 +159,7 @@ for (let i = 0; ; i++) {
           await tx.insert(PostContentSnapshots).values({
             postId: post.id,
             data: snapshot,
+            createdAt: lastRevisions[0]?.updatedAt,
           });
 
           // 마지막 리비전 기준으로 yjs 초기 상태 생성 끝
