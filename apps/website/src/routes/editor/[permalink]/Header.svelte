@@ -311,6 +311,7 @@
           disabled={editor?.isActive('ruby') || editor?.state.selection.empty}
           icon={IconRuby}
           label="루비"
+          size="lg"
           on:click={() => editor?.chain().focus().setRuby('').run()}
         />
         <Menu as="div" offset={menuOffset} placement="bottom">
