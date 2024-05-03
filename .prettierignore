@@ -6,3 +6,6 @@ pnpm-lock.yaml
 
 schema.graphql
 drizzle/
+
+apps/android
+apps/ios
