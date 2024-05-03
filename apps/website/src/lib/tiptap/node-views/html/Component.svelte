@@ -1,6 +1,7 @@
 <script lang="ts">
   import DOMPurify from 'isomorphic-dompurify';
   import IconGripVertical from '~icons/tabler/grip-vertical';
+  import IconTrash from '~icons/tabler/trash';
   import { Icon } from '$lib/components';
   import { NodeView, NodeViewContentEditable } from '$lib/tiptap';
   import { css } from '$styled-system/css';
@@ -13,52 +14,72 @@
   export let node: NodeViewProps['node'];
   export let editor: NodeViewProps['editor'] | undefined;
   export let selected: NodeViewProps['selected'];
+  export let deleteNode: NodeViewProps['deleteNode'];
 </script>
 
-<NodeView
-  style={css.raw(
-    { position: 'relative', borderWidth: '1px', borderStyle: 'dashed' },
-    selected && { ringWidth: '2px', ringColor: 'brand.400' },
-  )}
->
+<NodeView style={css.raw({ position: 'relative' }, selected && { ringWidth: '2px', ringColor: 'brand.400' })}>
   {#if editor?.isEditable}
     <div
       class={flex({
         align: 'center',
-        gap: '8px',
-        paddingX: '8px',
-        paddingY: '4px',
-        backgroundColor: 'gray.50',
+        paddingTop: '6px',
+        paddingX: '12px',
+        paddingBottom: '4px',
+        backgroundColor: '[#292D3E]',
         userSelect: 'none',
       })}
       contenteditable="false"
       data-drag-handle
       draggable
     >
-      <div class={css({ flexGrow: '1', fontWeight: 'semibold', color: 'gray.500' })}>HTML</div>
-
       <div
         class={css({
-          borderRadius: '4px',
-          padding: '4px',
-          transition: 'common',
-          _hover: { backgroundColor: 'gray.100' },
+          flexGrow: '1',
+          paddingLeft: '54px',
+          fontSize: '14px',
+          fontWeight: 'medium',
+          color: 'gray.50',
+          textAlign: 'center',
         })}
       >
-        <Icon style={css.raw({ color: 'gray.600' })} icon={IconGripVertical} size={20} />
+        HTML
+      </div>
+
+      <div class={flex({ align: 'center', gap: '10px', width: '54px' })}>
+        <button class={css({ padding: '4px' })} type="button" on:click={() => deleteNode()}>
+          <Icon style={css.raw({ color: 'gray.300' })} icon={IconTrash} />
+        </button>
+
+        <div class={css({ padding: '4px' })}>
+          <Icon style={css.raw({ color: 'gray.300' })} icon={IconGripVertical} />
+        </div>
       </div>
     </div>
 
     <NodeViewContentEditable
-      style={css.raw({ padding: '8px', fontSize: '14px', fontFamily: 'mono', overflowX: 'auto' })}
+      style={css.raw({ paddingY: '8px', paddingX: '12px', fontSize: '14px', fontFamily: 'mono', overflowX: 'auto' })}
       as="pre"
     />
   {:else}
+    <div
+      class={css({
+        paddingY: '5px',
+        paddingX: '10px',
+        fontSize: '12px',
+        color: 'gray.400',
+        backgroundColor: 'gray.100',
+        width: 'fit',
+      })}
+    >
+      HTML
+    </div>
     <NodeViewContentEditable style={css.raw({ display: 'none' })} />
 
     <div
       class={css({
         position: 'relative',
+        borderWidth: '1px',
+        borderColor: 'gray.150',
         overflow: 'hidden',
         isolation: 'isolate',
         paddingX: '8px',
