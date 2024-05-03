@@ -107,7 +107,7 @@
       {href}
     </span>
     <input
-      class={css({ position: 'absolute', left: '12px', width: 'full', maxWidth: '320px' })}
+      class={css({ position: 'absolute', left: '12px', minWidth: '132px', maxWidth: '320px' })}
       readonly={editor.isActive('link', { auto: true })}
       size={href?.length}
       type="url"

@@ -106,7 +106,9 @@
       {text}
     </span>
     <input
-      class={css({ position: 'absolute', left: '12px', width: 'full', maxWidth: '320px' })}
+      class={css({ position: 'absolute', left: '12px', minWidth: '132px', maxWidth: '320px' })}
+      readonly={editor.isActive('ruby', { auto: true })}
+      size={text?.length}
       type="text"
       on:mousedown|stopPropagation={() => (preventUpdate = true)}
       bind:value={text}
