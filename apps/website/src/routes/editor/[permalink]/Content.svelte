@@ -104,7 +104,7 @@
 
     <div class={flex({ grow: '1', paddingX: { base: '20px', sm: '40px' }, width: 'full' })}>
       <TiptapEditor
-        style={css.raw({ flexGrow: '1', marginBottom: '100px', maxWidth: 'full' })}
+        style={css.raw({ flexGrow: '1', paddingBottom: '100px', maxWidth: 'full' })}
         awareness={$state.awareness}
         document={$state.document}
         bind:editor={$state.editor}

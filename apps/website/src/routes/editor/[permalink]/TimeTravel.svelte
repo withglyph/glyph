@@ -184,7 +184,7 @@
     </div>
 
     <div class={flex({ grow: '1', paddingX: { base: '20px', sm: '40px' }, width: 'full' })}>
-      <TiptapEditor style={css.raw({ flexGrow: '1', marginBottom: '100px', maxWidth: 'full' })} frozen bind:editor />
+      <TiptapEditor style={css.raw({ flexGrow: '1', paddingBottom: '100px', maxWidth: 'full' })} frozen bind:editor />
     </div>
   </div>
 </main>
