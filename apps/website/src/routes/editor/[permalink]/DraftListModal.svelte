@@ -1,13 +1,18 @@
 <script lang="ts">
   import dayjs from 'dayjs';
-  import IconCalendar from '~icons/tabler/calendar';
+  import * as R from 'radash';
+  import IconFolder from '~icons/tabler/folder';
+  import IconPhoto from '~icons/tabler/photo';
   import IconTextRecognition from '~icons/tabler/text-recognition';
   import IconTrash from '~icons/tabler/trash';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Chip, Icon, Modal } from '$lib/components';
-  import { css, cx } from '$styled-system/css';
+  import { Alert, Chip, Icon } from '$lib/components';
+  import { Checkbox } from '$lib/components/forms';
+  import { Button, Modal } from '$lib/components/v2';
+  import { comma } from '$lib/utils';
+  import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type { EditorPage_DraftListModal_post, EditorPage_DraftListModal_user } from '$glitch';
 
@@ -18,6 +23,9 @@
 
   let deletePostId: string | undefined;
   let deletePostOpen = false;
+
+  let selectedPosts: string[] = [];
+  let deleteSelectedPosts = false;
 
   $: user = fragment(
     _user,
@@ -32,7 +40,10 @@
           contentState {
             id
             title
+            previewText
             characters
+            files
+            images
             updatedAt
           }
         }
@@ -56,98 +67,230 @@
       }
     }
   `);
+
+  $: allSelected =
+    $user.posts?.length > 0 &&
+    R.diff(
+      $user.posts.map((p: (typeof $user.posts)[number]) => p.id),
+      selectedPosts,
+    ).length === 0;
 </script>
 
-<Modal bind:open>
-  <svelte:fragment slot="title">임시저장된 포스트</svelte:fragment>
-  <svelte:fragment slot="subtitle">{$user.posts?.length ?? 0}개의 포스트</svelte:fragment>
+<Modal style={css.raw({ paddingTop: '0', paddingX: '0' })} bind:open>
+  <svelte:fragment slot="title">임시저장 포스트</svelte:fragment>
 
-  <ul class={css({ sm: { maxHeight: '240px', overflowY: 'auto' } })}>
-    {#each $user.posts as _post (_post.id)}
-      <li
-        class={cx(
-          'group',
-          flex({
-            justify: 'space-between',
-            align: 'center',
-            gap: '8px',
-            borderTopWidth: '1px',
-            borderTopColor: 'gray.200',
-            paddingY: '12px',
-          }),
-        )}
+  <div>
+    <div
+      class={flex({
+        position: 'sticky',
+        top: '0',
+        align: 'center',
+        borderBottomWidth: '1px',
+        borderBottomColor: 'gray.150',
+        backgroundColor: 'gray.50',
+        zIndex: '1',
+      })}
+    >
+      <div
+        class={css({
+          paddingX: '20px',
+          width: '62px',
+        })}
       >
-        <button
-          class={css({ width: 'full', truncate: true })}
-          type="button"
-          on:click={async () => {
-            open = false;
-            await goto(`/editor/${_post.permalink}`);
+        <Checkbox
+          style={css.raw({ width: 'fit' })}
+          checked={allSelected}
+          on:change={() => {
+            selectedPosts = allSelected ? [] : $user.posts.map((p) => p.id);
+          }}
+        />
+      </div>
+      <div
+        class={flex({
+          align: 'center',
+          justify: 'space-between',
+          gap: '32px',
+          paddingY: '10px',
+          paddingRight: '20px',
+          paddingLeft: '14px',
+          width: 'full',
+          truncate: true,
+        })}
+      >
+        <div
+          class={css({
+            fontSize: '14px',
+            truncate: true,
+          })}
+        >
+          총 <mark class={css({ color: 'brand.400' })}>{$user.posts?.length ?? 0}</mark>
+          개의 포스트
+        </div>
+        <Button
+          style={css.raw({ flex: 'none' })}
+          disabled={selectedPosts.length === 0}
+          size="xs"
+          variant="gray-outline"
+          on:click={() => {
+            deleteSelectedPosts = true;
+            deletePostOpen = true;
           }}
         >
-          <p
-            class={css(
-              { marginBottom: '4px', textAlign: 'left', fontWeight: 'bold', truncate: true },
-              !_post.contentState.title && { color: 'gray.500' },
-            )}
-          >
-            {_post.contentState.title ?? '(제목 없음)'}
-          </p>
-          <div class={flex({ align: 'center', gap: '8px', fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
-            <div class={flex({ align: 'center', gap: '2px' })}>
-              <Icon icon={IconCalendar} />
-              {dayjs(_post.contentState.updatedAt).formatAsDateTime()}
+          삭제
+        </Button>
+      </div>
+    </div>
+
+    <ul>
+      {#each $user.posts as _post (_post.id)}
+        <li
+          class={flex({
+            align: 'center',
+            borderBottomWidth: '1px',
+            borderBottomColor: 'gray.100',
+            truncate: true,
+            _last: { borderStyle: 'none' },
+          })}
+        >
+          <div class={css({ paddingY: '14px', paddingX: '20px' })}>
+            <Checkbox
+              checked={selectedPosts.includes(_post.id)}
+              on:change={() =>
+                (selectedPosts = selectedPosts.includes(_post.id)
+                  ? selectedPosts.filter((id) => id !== _post.id)
+                  : [...selectedPosts, _post.id])}
+            />
+          </div>
+
+          <div class={flex({ align: 'center', justify: 'space-between', gap: '32px', width: 'full', truncate: true })}>
+            <div class={css({ padding: '14px', width: 'full', truncate: true })}>
+              <a class={css({ truncate: true })} href={`/editor/${_post.permalink}`}>
+                {#if _post.id === $post.id}
+                  <Chip
+                    style={css.raw({ flex: 'none', marginBottom: '4px', width: 'fit' })}
+                    color="grass"
+                    variant="fill"
+                  >
+                    현재포스트
+                  </Chip>
+                {/if}
+
+                <p class={css({ fontWeight: 'semibold', truncate: true })}>
+                  {_post.contentState.title ?? '(제목 없음)'}
+                </p>
+                <p class={css({ fontSize: '14px', color: 'gray.600', truncate: true })}>
+                  {_post.contentState.previewText}
+                </p>
+
+                <div class={flex({ align: 'center', marginTop: '6px', fontSize: '12px', color: 'gray.500' })}>
+                  <Icon style={css.raw({ marginRight: '2px', size: '14px' })} icon={IconTextRecognition} />
+                  <span>{comma(_post.contentState.characters)}자</span>
+
+                  {#if _post.contentState.images > 0}
+                    <Icon style={css.raw({ marginLeft: '6px', marginRight: '2px', size: '14px' })} icon={IconPhoto} />
+                    <span>{comma(_post.contentState.images)}장</span>
+                  {/if}
+
+                  {#if _post.contentState.files > 0}
+                    <Icon style={css.raw({ marginLeft: '6px', marginRight: '2px', size: '14px' })} icon={IconFolder} />
+                    <span>{comma(_post.contentState.files)}개</span>
+                  {/if}
+
+                  <hr
+                    class={css({
+                      flex: 'none',
+                      marginX: '8px',
+                      border: 'none',
+                      width: '1px',
+                      height: '12px',
+                      backgroundColor: 'gray.100',
+                    })}
+                  />
+
+                  <time class={css({ truncate: true })} datetime={_post.contentState.updatedAt}>
+                    {dayjs(_post.contentState.updatedAt).formatAsDateTime()}
+                  </time>
+                </div>
+              </a>
             </div>
 
-            <div class={flex({ align: 'center', gap: '2px' })}>
-              <Icon icon={IconTextRecognition} />
-              {_post.contentState.characters}자
-            </div>
+            <button
+              class={css({ paddingY: '10px', paddingRight: '20px' })}
+              type="button"
+              on:click={() => {
+                deletePostOpen = true;
+                deletePostId = _post.id;
+              }}
+            >
+              <Icon style={css.raw({ color: 'gray.500' })} icon={IconTrash} size={20} />
+            </button>
           </div>
-        </button>
-        <button
-          class={css({ display: 'none', _groupHover: { display: 'block' } })}
-          type="button"
-          on:click={() => {
-            deletePostOpen = true;
-            deletePostId = _post.id;
-          }}
-        >
-          <Icon style={css.raw({ color: 'gray.400' })} icon={IconTrash} size={20} />
-        </button>
-        {#if _post.id === $post.id}
-          <div class={css({ flex: 'none', marginBottom: '4px' })}>
-            <Chip color="grass">현재 포스트</Chip>
-          </div>
-        {/if}
-      </li>
-    {/each}
-  </ul>
+        </li>
+      {/each}
+    </ul>
+  </div>
 </Modal>
 
-<Modal size="sm" bind:open={deletePostOpen}>
-  <svelte:fragment slot="title">임시저장글을 삭제할까요?</svelte:fragment>
+<Alert bind:open={deletePostOpen}>
+  <svelte:fragment slot="title">
+    {deleteSelectedPosts ? `총 ${selectedPosts.length}개의 임시저장글을` : ''}삭제하시겠습니까?
+  </svelte:fragment>
 
-  <div slot="action" class={flex({ gap: '12px', width: 'full' })}>
-    <Button style={css.raw({ width: 'full' })} color="secondary" size="xl" on:click={() => (deletePostOpen = false)}>
-      닫기
+  <svelte:fragment slot="action">
+    <Button
+      style={css.raw({ hideFrom: 'sm' })}
+      size="lg"
+      variant="gray-sub-fill"
+      on:click={() => {
+        deleteSelectedPosts = false;
+        deletePostOpen = false;
+      }}
+    >
+      취소
     </Button>
     <Button
-      style={css.raw({ width: 'full' })}
-      size="xl"
+      style={css.raw({ hideBelow: 'sm' })}
+      size="lg"
+      variant="gray-outline"
+      on:click={() => {
+        deleteSelectedPosts = false;
+        deletePostOpen = false;
+      }}
+    >
+      취소
+    </Button>
+
+    <Button
+      size="lg"
+      variant="red-fill"
       on:click={async () => {
-        if (deletePostId) {
-          await deletePost({ postId: deletePostId });
-          mixpanel.track('post:delete', { postId: deletePostId, via: 'editor' });
-          deletePostOpen = false;
+        if (deleteSelectedPosts) {
+          if (selectedPosts.includes($post.id)) {
+            await goto('/');
+          }
+
+          await Promise.all(selectedPosts.map((postId) => deletePost({ postId })));
+          mixpanel.track('post:delete', { postIds: selectedPosts, via: 'editor' });
+
+          deleteSelectedPosts = false;
+          selectedPosts = [];
+        } else if (deletePostId) {
+          if (selectedPosts.includes(deletePostId)) {
+            selectedPosts = selectedPosts.filter((id) => id !== deletePostId);
+          }
 
           if (deletePostId === $post.id) {
             await goto('/');
           }
+
+          await deletePost({ postId: deletePostId });
+          mixpanel.track('post:delete', { postId: deletePostId, via: 'editor' });
         }
+
+        deletePostOpen = false;
       }}
     >
       삭제
     </Button>
-  </div>
-</Modal>
+  </svelte:fragment>
+</Alert>
