@@ -26,6 +26,7 @@ import { enqueueJob } from '$lib/server/jobs';
 import {
   createNotification,
   createRandomIcon,
+  defineScopeGranter,
   directUploadImage,
   getSpaceMember,
   makeMasquerade,
@@ -45,16 +46,18 @@ import { Profile } from './user';
  */
 
 export const Space = createObjectRef('Space', Spaces);
-Space.implement({
-  grantScopes: async (space, context) => {
-    const meAsMember = await getSpaceMember(context, space.id);
 
-    return R.sift([
-      (space.visibility === 'PUBLIC' || !!meAsMember) && '$space:view',
-      !!meAsMember && '$space:member',
-      meAsMember?.role === 'ADMIN' && '$space:admin',
-    ]);
-  },
+const spaceScopeGranter = defineScopeGranter(Spaces, async (space, context) => {
+  const meAsMember = await getSpaceMember(context, space.id);
+
+  return R.sift([
+    (space.visibility === 'PUBLIC' || !!meAsMember) && '$space:view',
+    !!meAsMember && '$space:member',
+    meAsMember?.role === 'ADMIN' && '$space:admin',
+  ]);
+});
+
+Space.implement({
   fields: (t) => ({
     id: t.exposeID('id'),
     slug: t.exposeString('slug'),
@@ -127,8 +130,11 @@ Space.implement({
 
     members: t.field({
       type: [SpaceMember],
-      authScopes: { $granted: '$space:view' },
-      resolve: async (space) => {
+      resolve: async (space, _, context) => {
+        if (!(await spaceScopeGranter(space, context, '$space:view'))) {
+          return [];
+        }
+
         const members = await database
           .select({ id: SpaceMembers.id })
           .from(SpaceMembers)
@@ -136,15 +142,16 @@ Space.implement({
 
         return members.map((member) => member.id);
       },
-
-      unauthorizedResolver: () => [],
     }),
 
     posts: t.field({
       type: [Post],
-      authScopes: { $granted: '$space:view' },
       args: { mine: t.arg.boolean({ defaultValue: false }) },
       resolve: async (space, args, context) => {
+        if (!(await spaceScopeGranter(space, context, '$space:view'))) {
+          return [];
+        }
+
         const meAsMember = await getSpaceMember(context, space.id);
         if (args.mine && !meAsMember) {
           throw new PermissionDeniedError();
@@ -175,14 +182,15 @@ Space.implement({
 
         return posts.map((post) => post.id);
       },
-
-      unauthorizedResolver: () => [],
     }),
 
     collections: t.field({
       type: [SpaceCollection],
-      authScopes: { $granted: '$space:view' },
-      resolve: async (space) => {
+      resolve: async (space, _, context) => {
+        if (!(await spaceScopeGranter(space, context, '$space:view'))) {
+          return [];
+        }
+
         const collections = await database
           .select({ id: SpaceCollections.id })
           .from(SpaceCollections)
@@ -191,8 +199,6 @@ Space.implement({
 
         return collections.map((collection) => collection.id);
       },
-
-      unauthorizedResolver: () => [],
     }),
 
     postCount: t.int({
@@ -249,9 +255,12 @@ Space.implement({
 
     blockedMasquerades: t.field({
       type: [SpaceMasquerade],
-      authScopes: { $granted: '$space:admin' },
       grantScopes: ['$spaceMasquerade:spaceAdmin'],
-      resolve: async (space) => {
+      resolve: async (space, _, context) => {
+        if (!(await spaceScopeGranter(space, context, '$space:admin'))) {
+          throw new PermissionDeniedError();
+        }
+
         const masquerades = await database
           .select({ id: SpaceMasquerades.id })
           .from(SpaceMasquerades)
