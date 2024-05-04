@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@sveltejs/kit": "^2.5.7",
-    "@types/node": "^20.12.7",
+    "@types/node": "^20.12.8",
     "@withglyph/tsconfig": "workspace:^",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5"
