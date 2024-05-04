@@ -29,7 +29,7 @@
         attributes: { class: css(style) },
       },
 
-      onCreate: () => {
+      onBeforeCreate: () => {
         loaded = true;
       },
     });

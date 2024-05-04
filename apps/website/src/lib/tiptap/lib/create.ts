@@ -1,4 +1,4 @@
-import { Node } from '@tiptap/core';
+import { mergeAttributes, Node } from '@tiptap/core';
 import { browser } from '$app/environment';
 import { SvelteNodeViewRenderer } from './renderer';
 import type { NodeConfig } from '@tiptap/core';
@@ -18,9 +18,9 @@ export const createNodeView = <Options = any, Storage = any>(
       return [{ tag: 'node-view' }];
     },
 
-    renderHTML({ node }) {
+    renderHTML({ node, HTMLAttributes }) {
       if (browser) {
-        return ['node-view'];
+        return ['node-view', HTMLAttributes];
       } else {
         // @ts-expect-error svelte internal
         const { html } = component.render({
@@ -29,7 +29,7 @@ export const createNodeView = <Options = any, Storage = any>(
           selected: false,
         });
 
-        return ['node-view', { html, style: 'white-space: normal;' }];
+        return ['node-view', mergeAttributes(HTMLAttributes, { html, style: 'white-space: normal;' })];
       }
     },
 
