@@ -1,5 +1,5 @@
 import { findChildren } from '@tiptap/core';
-import { NodeSelection, Plugin } from '@tiptap/pm/state';
+import { Plugin, TextSelection } from '@tiptap/pm/state';
 import { createNodeView } from '../../lib';
 import Component from './Component.svelte';
 
@@ -14,45 +14,64 @@ export const AccessBarrier = createNodeView(Component, {
     };
   },
 
+  addKeyboardShortcuts() {
+    return {
+      'Mod-a': ({ editor }) => {
+        const nodes = findChildren(editor.state.doc, (node) => node.type === this.type);
+        if (nodes.length !== 1) {
+          return false;
+        }
+
+        const thisPos = nodes[0].pos;
+        const { $anchor } = editor.state.selection;
+
+        if ($anchor.pos < thisPos) {
+          return editor.commands.setTextSelection({
+            from: 0,
+            to: thisPos - 1,
+          });
+        } else if ($anchor.pos > thisPos) {
+          return editor.commands.setTextSelection({
+            from: thisPos + 1,
+            to: editor.state.doc.nodeSize,
+          });
+        } else {
+          return true;
+        }
+      },
+    };
+  },
+
   addProseMirrorPlugins() {
     return [
       new Plugin({
-        appendTransaction: (transactions, oldState, newState) => {
-          if (!this.editor.isEditable) {
+        appendTransaction: (_, __, newState) => {
+          const nodes = findChildren(newState.doc, (node) => node.type === this.type);
+
+          if (nodes.length !== 1) {
             return null;
           }
 
-          const { tr } = newState;
+          const thisPos = nodes[0].pos;
+          const { $from, $to, $anchor } = newState.selection;
 
-          const oldNodes = findChildren(oldState.doc, (node) => node.type.name === this.name);
-          const newNodes = findChildren(newState.doc, (node) => node.type.name === this.name);
+          if ($from.pos < thisPos && $to.pos > thisPos) {
+            const { tr } = newState;
 
-          if (oldNodes.length !== 1) {
-            return null;
-          }
-
-          const [oldNode] = oldNodes;
-          let pos = oldNode.pos;
-          for (const transaction of transactions) {
-            // eslint-disable-next-line unicorn/no-array-callback-reference
-            pos = transaction.mapping.map(pos);
-          }
-
-          if (newNodes.length === 0) {
-            tr.insert(pos, oldNode.node.copy());
-            tr.setSelection(NodeSelection.create(tr.doc, pos));
-            return tr;
-          } else if (newNodes.length > 1) {
-            for (const newNode of newNodes) {
-              if (newNode.pos === pos) {
-                continue;
-              }
-
-              tr.delete(newNode.pos, newNode.pos + newNode.node.nodeSize);
+            if ($anchor.pos < thisPos) {
+              tr.setSelection(TextSelection.create(newState.doc, $anchor.pos, thisPos - 1));
+            } else if ($anchor.pos > thisPos) {
+              tr.setSelection(TextSelection.create(newState.doc, thisPos + 1, $anchor.pos));
             }
 
             return tr;
           }
+
+          return null;
+        },
+        filterTransaction: (tr) => {
+          const nodes = findChildren(tr.doc, (node) => node.type === this.type);
+          return nodes.length === 1;
         },
       }),
     ];
