@@ -4,7 +4,7 @@
     'ss05' 1;
 
   & p {
-    caret-color: #09090b;
+    caret-color: #171717;
   }
 
   & li > p:first-child {
@@ -18,11 +18,12 @@
   }
 
   & .ProseMirror-focused .ProseMirror-gapcursor {
-    border-left: 1px solid black;
+    border-left: 1px solid #171717;
     width: 0;
-    height: 20px;
-    margin-top: 4px;
-    margin-bottom: 4px;
+    height: 1.2em;
+    margin-left: var(--document-paragraph-indent);
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
     animation: cursor-blink 1s steps(2, start) infinite;
   }
 }
