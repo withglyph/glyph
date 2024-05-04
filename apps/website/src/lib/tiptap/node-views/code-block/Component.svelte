@@ -23,39 +23,49 @@
   let copied = false;
 </script>
 
-<NodeView style={css.raw({ position: 'relative' }, selected && { ringWidth: '2px', ringColor: 'brand.400' })}>
+<NodeView style={css.raw({ paddingY: '8px' })}>
   {#if editor?.isEditable}
-    <div
-      class={flex({
-        align: 'center',
-        justifyContent: 'space-between',
-        paddingTop: '6px',
-        paddingX: '12px',
-        paddingBottom: '4px',
-        backgroundColor: '[#292D3E]',
-        userSelect: 'none',
-      })}
-      contenteditable="false"
-      data-drag-handle
-      draggable
-    >
-      <Select {node} {updateAttributes} />
+    <div class={css(selected && { ringWidth: '2px', ringColor: 'brand.400' })}>
+      <div
+        class={flex({
+          align: 'center',
+          justifyContent: 'space-between',
+          paddingTop: '6px',
+          paddingX: '12px',
+          paddingBottom: '4px',
+          backgroundColor: '[#292D3E]',
+          userSelect: 'none',
+        })}
+        contenteditable="false"
+        data-drag-handle
+        draggable
+      >
+        <Select {node} {updateAttributes} />
 
-      <div class={flex({ align: 'center', gap: '10px', width: '54px' })}>
-        <button class={css({ padding: '4px' })} type="button" on:click={() => deleteNode()}>
-          <Icon style={css.raw({ color: 'gray.300' })} icon={IconTrash} />
-        </button>
+        <div class={flex({ align: 'center', gap: '10px', width: '54px' })}>
+          <button class={css({ padding: '4px' })} type="button" on:click={() => deleteNode()}>
+            <Icon style={css.raw({ color: 'gray.300' })} icon={IconTrash} />
+          </button>
 
-        <div class={css({ padding: '4px' })}>
-          <Icon style={css.raw({ color: 'gray.300' })} icon={IconGripVertical} />
+          <div class={css({ padding: '4px' })}>
+            <Icon style={css.raw({ color: 'gray.300' })} icon={IconGripVertical} />
+          </div>
         </div>
       </div>
-    </div>
 
-    <NodeViewContentEditable
-      style={css.raw({ paddingY: '8px', paddingX: '12px', fontSize: '14px', fontFamily: 'mono', overflowX: 'auto' })}
-      as="pre"
-    />
+      <NodeViewContentEditable
+        style={css.raw({
+          paddingY: '8px',
+          paddingX: '12px',
+          fontSize: '13px',
+          fontFamily: 'mono',
+          color: '[#BABED8]',
+          backgroundColor: '[#292D3E]',
+          overflowX: 'auto',
+        })}
+        as="pre"
+      />
+    </div>
   {:else}
     <div
       class={flex({
@@ -66,6 +76,7 @@
         paddingX: '12px',
         paddingBottom: '4px',
         height: '34px',
+        backgroundColor: '[#292D3E]',
       })}
     >
       <div
@@ -107,8 +118,10 @@
       style={css.raw({
         paddingY: '8px',
         paddingX: '12px',
-        fontSize: '14px',
+        fontSize: '13px',
         fontFamily: 'mono',
+        color: '[#BABED8]',
+        backgroundColor: '[#292D3E]',
         userSelect: 'text',
         overflowX: 'auto',
       })}

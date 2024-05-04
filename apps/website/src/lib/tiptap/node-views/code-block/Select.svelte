@@ -1,5 +1,6 @@
 <script lang="ts">
   import { bundledLanguagesInfo } from 'shiki';
+  import { tick } from 'svelte';
   import { slide } from 'svelte/transition';
   import IconSearch from '~icons/glyph/search';
   import IconCheck from '~icons/tabler/check';
@@ -16,12 +17,46 @@
   export let node: NodeViewProps['node'];
   export let updateAttributes: NodeViewProps['updateAttributes'];
 
+  let containerEl: HTMLDivElement;
+  let inputEl: HTMLInputElement;
   let query = '';
 
   const { anchor, floating } = createFloatingActions({
     placement: 'bottom',
     offset: 6,
   });
+
+  const languages = [
+    ...bundledLanguagesInfo.map((language) => ({ id: language.id, name: language.name })),
+    { id: 'text', name: 'Plain Text' },
+  ].toSorted((a, b) => a.name.localeCompare(b.name));
+
+  const scrollIntoView = async () => {
+    await tick();
+
+    const top = containerEl.querySelector('button[aria-pressed="true"]')?.getBoundingClientRect().top ?? 0;
+    containerEl.scrollTop = top - 180;
+
+    inputEl.focus();
+  };
+
+  const onKeyDown = (event: KeyboardEvent) => {
+    if (!open) {
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      open = false;
+    }
+  };
+
+  $: currentLanguage = languages.find((language) => language.id === node.attrs.language)?.name ?? '?';
+
+  $: if (open) {
+    scrollIntoView();
+  } else {
+    query = '';
+  }
 </script>
 
 <button
@@ -38,7 +73,7 @@
   on:focus={() => (open = true)}
   use:anchor
 >
-  {node.attrs.language}
+  {currentLanguage}
 
   {#if open}
     <Icon icon={IconChevronUp} />
@@ -46,6 +81,8 @@
     <Icon icon={IconChevronDown} />
   {/if}
 </button>
+
+<svelte:window on:keydown={onKeyDown} />
 
 {#if open}
   <div
@@ -58,6 +95,7 @@
   />
 
   <div
+    bind:this={containerEl}
     class={css({
       position: 'relative',
       paddingBottom: '8px',
@@ -69,7 +107,7 @@
       boxShadow: '[2px 2px 8px 0 {colors.gray.900/15}]',
     })}
     use:floating
-    transition:slide={{ axis: 'y', duration: 250 }}
+    in:slide={{ axis: 'y', duration: 250 }}
   >
     <div class={css({ position: 'sticky', top: '0', padding: '14px', backgroundColor: '[#292D3E]' })}>
       <label
@@ -85,6 +123,7 @@
       >
         <Icon style={css.raw({ color: 'gray.400' })} icon={IconSearch} />
         <input
+          bind:this={inputEl}
           class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.100' })}
           placeholder="언어를 검색하세요"
           type="text"
@@ -94,7 +133,7 @@
     </div>
 
     <ul>
-      {#each bundledLanguagesInfo.filter((language) => language.name
+      {#each languages.filter((language) => language.name
           .toLowerCase()
           .includes(query.toLowerCase())) as language (language.id)}
         <li>

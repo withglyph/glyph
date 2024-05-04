@@ -32,6 +32,7 @@ export const CodeBlock = createNodeView<Options, Storage>(Component, {
   marks: '',
   code: true,
   defining: true,
+  isolating: true,
 
   addOptions() {
     return {
@@ -61,6 +62,32 @@ export const CodeBlock = createNodeView<Options, Storage>(Component, {
 
           return tr.docChanged;
         },
+    };
+  },
+
+  addKeyboardShortcuts() {
+    return {
+      'Backspace': ({ editor }) => {
+        const { $anchor, empty } = editor.state.selection;
+
+        if (!empty || $anchor.parent.type !== this.type || $anchor.parent.textContent.length > 0) {
+          return false;
+        }
+
+        return true;
+      },
+
+      'Mod-a': ({ editor }) => {
+        const { $anchor } = editor.state.selection;
+        if ($anchor.parent.type !== this.type) {
+          return false;
+        }
+
+        return editor.commands.setTextSelection({
+          from: $anchor.start(),
+          to: $anchor.end(),
+        });
+      },
     };
   },
 
@@ -120,12 +147,6 @@ const getDecorations = (highlighter: Highlighter, theme: BundledTheme, doc: Node
     const lang = child.node.attrs.language;
 
     const result = highlighter.codeToTokens(child.node.textContent, { theme, lang });
-
-    decorations.push(
-      Decoration.node(child.pos, child.pos + child.node.nodeSize, {
-        style: themedTokenToStyle({ color: result.fg, bgColor: result.bg, htmlStyle: result.rootStyle }),
-      }),
-    );
 
     for (const token of result.tokens.flat()) {
       const from = child.pos + token.offset + 1;
