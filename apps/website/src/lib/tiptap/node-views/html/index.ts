@@ -32,6 +32,7 @@ export const Html = createNodeView<Options, Storage>(Component, {
   marks: '',
   code: true,
   defining: true,
+  isolating: true,
 
   addOptions() {
     return {
@@ -55,6 +56,32 @@ export const Html = createNodeView<Options, Storage>(Component, {
 
           return tr.docChanged;
         },
+    };
+  },
+
+  addKeyboardShortcuts() {
+    return {
+      'Backspace': ({ editor }) => {
+        const { $anchor, empty } = editor.state.selection;
+
+        if (!empty || $anchor.parent.type !== this.type || $anchor.parent.textContent.length > 0) {
+          return false;
+        }
+
+        return true;
+      },
+
+      'Mod-a': ({ editor }) => {
+        const { $anchor } = editor.state.selection;
+        if ($anchor.parent.type !== this.type) {
+          return false;
+        }
+
+        return editor.commands.setTextSelection({
+          from: $anchor.start(),
+          to: $anchor.end(),
+        });
+      },
     };
   },
 
@@ -116,12 +143,6 @@ const getDecorations = (highlighter: Highlighter, theme: BuiltinTheme, doc: Node
   const children = findChildren(doc, (node) => node.type.name === 'html');
   for (const child of children) {
     const result = highlighter.codeToTokens(child.node.textContent, { theme, lang: 'html' });
-
-    decorations.push(
-      Decoration.node(child.pos, child.pos + child.node.nodeSize, {
-        style: themedTokenToStyle({ color: result.fg, bgColor: result.bg, htmlStyle: result.rootStyle }),
-      }),
-    );
 
     for (const token of result.tokens.flat()) {
       const from = child.pos + token.offset + 1;
