@@ -754,14 +754,12 @@ PostRevision.implement({
     freeContent: t.field({
       type: PostRevisionContent,
       nullable: true,
-      authScopes: { $granted: '$postRevision:view' },
       resolve: (revision) => revision.freeContentId,
     }),
 
     paidContent: t.field({
       type: PostRevisionContent,
       nullable: true,
-      authScopes: { $granted: '$postRevision:view' },
       resolve: (revision) => revision.paidContentId,
     }),
 
