@@ -325,13 +325,11 @@ Post.implement({
           }
         }
 
-        const snapshots = await database
-          .select({ id: PostContentSnapshots.id })
+        return await database
+          .select()
           .from(PostContentSnapshots)
           .where(eq(PostContentSnapshots.postId, post.id))
           .orderBy(asc(PostContentSnapshots.createdAt));
-
-        return snapshots.map((update) => update.id);
       },
     }),
 
