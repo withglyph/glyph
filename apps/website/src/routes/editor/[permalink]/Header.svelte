@@ -1,6 +1,7 @@
 <script lang="ts">
   import './toolbar-preview.css';
 
+  import { production } from '@withglyph/lib/environment';
   import { onMount } from 'svelte';
   import IconHorizontalRule from '~icons/glyph/horizontal-rule';
   import IconLetterSpacing from '~icons/glyph/letter-spacing';
@@ -9,6 +10,7 @@
   import IconArrowBackUp from '~icons/tabler/arrow-back-up';
   import IconArrowForwardUp from '~icons/tabler/arrow-forward-up';
   import IconBold from '~icons/tabler/bold';
+  import IconBug from '~icons/tabler/bug';
   import IconCheck from '~icons/tabler/check';
   import IconChevronDown from '~icons/tabler/chevron-down';
   import IconChevronLeft from '~icons/tabler/chevron-left';
@@ -37,6 +39,7 @@
   import { center, flex } from '$styled-system/patterns';
   import CharacterCountWidget from './CharacterCountWidget.svelte';
   import { getEditorContext } from './context';
+  import DebugModal from './DebugModal.svelte';
   import DraftListModal from './DraftListModal.svelte';
   import FileUploadModal from './FileUploadModal.svelte';
   import MobileEditMenu from './MobileEditMenu.svelte';
@@ -97,6 +100,8 @@
   let publishMenuOpen = false;
   let draftListOpen = false;
   let timeTravelOpen = false;
+
+  let debugModalOpen = false;
 
   const { anchor: colorPickerAnchor, floating: colorPickerFloating } = createFloatingActions({
     placement: 'bottom',
@@ -388,6 +393,9 @@
       </div>
 
       <div class={flex({ align: 'center', gap: '8px' })}>
+        {#if !production}
+          <ToolbarButton icon={IconBug} label="디버그" size="lg" on:click={() => (debugModalOpen = true)} />
+        {/if}
         <ToolbarButton icon={IconClockPlay} label="시간여행" size="lg" on:click={() => ($state.timeTravel = true)} />
         <ToolbarButton
           style={css.raw({ _hover: { backgroundColor: 'gray.100' } })}
@@ -847,3 +855,7 @@
     </Button>
   </svelte:fragment>
 </Alert>
+
+{#if !production}
+  <DebugModal bind:open={debugModalOpen} />
+{/if}

@@ -3,7 +3,6 @@
   import { onMount } from 'svelte';
   import * as YAwareness from 'y-protocols/awareness';
   import * as Y from 'yjs';
-  import { dev } from '$app/environment';
   import { extensions } from '$lib/tiptap';
   import { css, cx } from '$styled-system/css';
   import { Collaboration, Freeze } from '../extensions';
@@ -62,27 +61,3 @@
   autocorrect="off"
   spellcheck="false"
 />
-
-{#if dev}
-  <div
-    class={css({
-      position: 'fixed',
-      top: '0',
-      right: '0',
-      padding: '16px',
-      width: '[20vw]',
-      height: 'screen',
-      fontFamily: 'mono',
-      fontSize: '12px',
-      whiteSpace: 'pre-wrap',
-      wordBreak: 'break-all',
-      backgroundColor: 'gray.50',
-      opacity: '50',
-      overflow: 'scroll',
-      pointerEvents: 'none',
-      zIndex: '[100]',
-    })}
-  >
-    {JSON.stringify(editor?.getJSON(), null, 2)}
-  </div>
-{/if}
