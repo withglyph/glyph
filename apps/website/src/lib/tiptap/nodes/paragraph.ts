@@ -1,4 +1,5 @@
-import { mergeAttributes, Node } from '@tiptap/core';
+import { findChildrenInRange, mergeAttributes, Node } from '@tiptap/core';
+import { Plugin } from '@tiptap/pm/state';
 import { values } from '$lib/tiptap/values';
 import { closest } from '$lib/utils';
 import { css } from '$styled-system/css';
@@ -80,11 +81,9 @@ export const Paragraph = Node.create({
       'p',
       mergeAttributes(HTMLAttributes, {
         class: css(
+          { '& + &': { marginTop: 'var(--document-paragraph-spacing)' } },
           node.attrs.textAlign === 'left' && {
-            'textIndent': 'var(--document-paragraph-indent)',
-            '& + &': {
-              marginTop: 'var(--document-paragraph-spacing)',
-            },
+            textIndent: 'var(--document-paragraph-indent)',
           },
         ),
       }),
@@ -132,35 +131,38 @@ export const Paragraph = Node.create({
     };
   },
 
-  // addProseMirrorPlugins() {
-  //   return [
-  //     new Plugin({
-  //       appendTransaction: (_, __, newState) => {
-  //         const { doc, selection, storedMarks, tr } = newState;
-  //         const { $from, empty } = selection;
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        appendTransaction: (_, __, newState) => {
+          const { doc, selection, storedMarks, tr } = newState;
+          const { $from, empty } = selection;
 
-  //         if (
-  //           $from.parent.type.name !== this.name ||
-  //           !empty ||
-  //           $from.parentOffset !== 0 ||
-  //           $from.parent.childCount !== 0 ||
-  //           storedMarks?.length
-  //         ) {
-  //           return;
-  //         }
+          if (
+            $from.parent.type !== this.type ||
+            !empty ||
+            $from.parentOffset !== 0 ||
+            $from.parent.childCount !== 0 ||
+            storedMarks
+          ) {
+            return;
+          }
 
-  //         const lastNode = findChildren(doc, (node) => node.type.name === this.name).findLast(
-  //           ({ node, pos }) => node.childCount > 0 && pos < $from.pos,
-  //         );
+          const lastNode = findChildrenInRange(
+            doc,
+            { from: 0, to: $from.pos },
+            (node) =>
+              node.type === this.type && node.childCount > 0 && node.attrs.textAlign === $from.parent.attrs.textAlign,
+          ).pop();
 
-  //         const lastChild = lastNode?.node.lastChild;
-  //         if (!lastChild) {
-  //           return;
-  //         }
+          const lastChild = lastNode?.node.lastChild;
+          if (!lastChild) {
+            return;
+          }
 
-  //         return tr.setStoredMarks(lastChild.marks);
-  //       },
-  //     }),
-  //   ];
-  // },
+          return tr.setStoredMarks(lastChild.marks);
+        },
+      }),
+    ];
+  },
 });
