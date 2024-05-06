@@ -70,6 +70,10 @@ export const AccessBarrier = createNodeView(Component, {
           return null;
         },
         filterTransaction: (tr) => {
+          if (!this.editor.isEditable) {
+            return true;
+          }
+
           const nodes = findChildren(tr.doc, (node) => node.type === this.type);
           return nodes.length === 1;
         },
