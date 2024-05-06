@@ -12,7 +12,7 @@ declare module '@tiptap/core' {
 
 export const OrderedList = Node.create({
   name: 'ordered_list',
-  group: 'block',
+  group: 'block list',
   content: 'list_item+',
 
   parseHTML() {

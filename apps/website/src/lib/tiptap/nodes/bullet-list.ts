@@ -12,7 +12,7 @@ declare module '@tiptap/core' {
 
 export const BulletList = Node.create({
   name: 'bullet_list',
-  group: 'block',
+  group: 'block list',
   content: 'list_item+',
 
   parseHTML() {
