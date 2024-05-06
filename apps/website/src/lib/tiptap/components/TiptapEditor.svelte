@@ -4,8 +4,8 @@
   import * as YAwareness from 'y-protocols/awareness';
   import * as Y from 'yjs';
   import { extensions } from '$lib/tiptap';
+  import { Collaboration, Freeze } from '$lib/tiptap/extensions';
   import { css, cx } from '$styled-system/css';
-  import { Collaboration, Freeze } from '../extensions';
   import type { SystemStyleObject } from '$styled-system/types';
 
   export let style: SystemStyleObject | undefined = undefined;
