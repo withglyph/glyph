@@ -120,7 +120,7 @@
     subtitle = doc.getText('subtitle').toString();
     editor
       .chain()
-      .setMeta('ignoreFreezing', true)
+      .setMeta('antifreeze', true)
       .setContent(yDocToProsemirrorJSON(doc, 'content'))
       .setTextSelection(0)
       .run();

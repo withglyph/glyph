@@ -8,7 +8,7 @@ export const Freeze = Extension.create({
     return [
       new Plugin({
         filterTransaction: (tr) => {
-          return tr.getMeta('ignoreFreezing') || !tr.docChanged;
+          return tr.getMeta('antifreeze') || !tr.docChanged;
         },
       }),
     ];
