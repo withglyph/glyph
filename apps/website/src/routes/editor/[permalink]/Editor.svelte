@@ -13,7 +13,7 @@
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import Content from './Content.svelte';
-  import { setEditorContext } from './context';
+  import { NETWORK, setEditorContext } from './context';
   import Header from './Header.svelte';
   import TimeTravel from './TimeTravel.svelte';
   import type { EditorPage_Editor_post, EditorPage_Editor_query } from '$glitch';
@@ -22,8 +22,6 @@
   export { _post as $post, _query as $query };
   let _query: EditorPage_Editor_query;
   let _post: EditorPage_Editor_post;
-
-  const EDITOR: unique symbol = Symbol('editor');
 
   $: query = fragment(
     _query,
@@ -123,14 +121,14 @@
         data: fromUint8Array(YAwareness.encodeAwarenessUpdate(yAwareness, [yDoc.clientID])),
       });
     } else if (postSynchronization.kind === 'UPDATE') {
-      Y.applyUpdateV2(yDoc, toUint8Array(postSynchronization.data), EDITOR);
+      Y.applyUpdateV2(yDoc, toUint8Array(postSynchronization.data), NETWORK);
     } else if (postSynchronization.kind === 'AWARENESS') {
-      YAwareness.applyAwarenessUpdate(yAwareness, toUint8Array(postSynchronization.data), EDITOR);
+      YAwareness.applyAwarenessUpdate(yAwareness, toUint8Array(postSynchronization.data), NETWORK);
     }
   });
 
   yDoc.on('updateV2', async (update, origin) => {
-    if (origin !== EDITOR && $state.connectionState === 'synchronized') {
+    if (origin !== NETWORK && $state.connectionState === 'synchronized') {
       await synchronizePost({
         postId: $post.id,
         clientId: $state.clientId,
@@ -143,7 +141,7 @@
   yAwareness.on(
     'update',
     async (states: { added: number[]; updated: number[]; removed: number[] }, origin: unknown) => {
-      if (!browser || origin === EDITOR || $state.connectionState !== 'synchronized') {
+      if (!browser || origin === NETWORK || $state.connectionState !== 'synchronized') {
         return;
       }
 
@@ -198,7 +196,7 @@
       } else if (kind === 'SYNCHRONIZE_2') {
         const clientMissingUpdate = toUint8Array(data);
 
-        Y.applyUpdateV2(yDoc, clientMissingUpdate, EDITOR);
+        Y.applyUpdateV2(yDoc, clientMissingUpdate, NETWORK);
       }
     }
   };
@@ -264,7 +262,7 @@
     return () => {
       unsubscribe();
       clearInterval(interval);
-      YAwareness.removeAwarenessStates(yAwareness, [yDoc.clientID], EDITOR);
+      YAwareness.removeAwarenessStates(yAwareness, [yDoc.clientID], NETWORK);
       yDoc.destroy();
 
       window.visualViewport?.removeEventListener('resize', handleVisualViewportChange);

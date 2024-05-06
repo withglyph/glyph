@@ -14,7 +14,7 @@
   import { clamp } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import { getEditorContext } from './context';
+  import { getEditorContext, SNAPSHOT } from './context';
   import type { Editor } from '@tiptap/core';
   import type { PointerEventHandler } from 'svelte/elements';
   import type { EditorPage_TimeTravel_post } from '$glitch';
@@ -85,7 +85,6 @@
     const snapshotStateVector = Y.encodeStateVector(snapshotDoc);
 
     const snapshotMissingUpdate = Y.encodeStateAsUpdateV2($state.document, snapshotStateVector);
-    const SNAPSHOT: unique symbol = Symbol('snapshot');
 
     const undoManager = new Y.UndoManager(
       [snapshotDoc.getText('title'), snapshotDoc.getText('subtitle'), snapshotDoc.getXmlFragment('content')],
@@ -95,7 +94,7 @@
     undoManager.undo();
 
     const revertUpdate = Y.encodeStateAsUpdateV2(snapshotDoc, currentStateVector);
-    Y.applyUpdateV2($state.document, revertUpdate);
+    Y.applyUpdateV2($state.document, revertUpdate, SNAPSHOT);
   };
 
   const load = async () => {

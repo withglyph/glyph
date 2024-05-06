@@ -4,6 +4,9 @@ import type { Editor } from '@tiptap/core';
 import type { Writable } from 'svelte/store';
 import type * as Y from 'yjs';
 
+export const NETWORK: unique symbol = Symbol('network');
+export const SNAPSHOT: unique symbol = Symbol('snapshot');
+
 export type EditorState = {
   editor?: Editor;
 
