@@ -1,11 +1,12 @@
 <script lang="ts">
-  import DOMPurify from 'isomorphic-dompurify';
+  import { onMount } from 'svelte';
   import IconGripVertical from '~icons/tabler/grip-vertical';
   import IconTrash from '~icons/tabler/trash';
   import { Icon } from '$lib/components';
   import { NodeView, NodeViewContentEditable } from '$lib/tiptap';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
+  import { makeIFrameContent } from './utils';
   import type { NodeViewProps } from '$lib/tiptap';
 
   type $$Props = NodeViewProps;
@@ -15,6 +16,22 @@
   export let editor: NodeViewProps['editor'] | undefined;
   export let selected: NodeViewProps['selected'];
   export let deleteNode: NodeViewProps['deleteNode'];
+
+  let iframeEl: HTMLIFrameElement | null = null;
+
+  onMount(() => {
+    const handler = (event: MessageEvent) => {
+      if (event.source === iframeEl?.contentWindow && event.data.type === 'resize') {
+        iframeEl.height = `${event.data.height}px`;
+      }
+    };
+
+    window.addEventListener('message', handler);
+
+    return () => {
+      window.removeEventListener('message', handler);
+    };
+  });
 </script>
 
 <NodeView style={css.raw({ paddingY: '8px' })}>
@@ -83,36 +100,28 @@
     >
       HTML
     </div>
+
     <NodeViewContentEditable style={css.raw({ display: 'none' })} />
 
     <div
       class={css({
-        position: 'relative',
         borderWidth: '1px',
         borderColor: 'gray.150',
-        overflow: 'hidden',
-        isolation: 'isolate',
-        paddingX: '8px',
-        paddingY: '4px',
       })}
     >
-      {#if DOMPurify.isSupported}
-        <div class="html-content">
-          {@html DOMPurify.sanitize(node.textContent)}
-        </div>
-      {:else}
-        HTML 블럭을 지원하지 않는 브라우져입니다.
-      {/if}
+      <iframe
+        bind:this={iframeEl}
+        class={css({
+          display: 'block',
+          width: 'full',
+        })}
+        height="0"
+        loading="lazy"
+        referrerpolicy="no-referrer"
+        sandbox="allow-scripts"
+        srcdoc={makeIFrameContent(node.textContent)}
+        title="HTML"
+      />
     </div>
   {/if}
 </NodeView>
-
-<style>
-  .html-content {
-    all: initial;
-
-    & :global(:where(:not(svg, svg *))) {
-      all: revert;
-    }
-  }
-</style>
