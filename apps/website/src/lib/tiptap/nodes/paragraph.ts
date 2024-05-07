@@ -1,8 +1,9 @@
-import { findChildrenInRange, mergeAttributes, Node } from '@tiptap/core';
+import { mergeAttributes, Node } from '@tiptap/core';
 import { Plugin } from '@tiptap/pm/state';
 import { values } from '$lib/tiptap/values';
 import { closest } from '$lib/utils';
 import { css } from '$styled-system/css';
+import type { NodeType, ResolvedPos } from '@tiptap/pm/model';
 
 const textAligns = values.textAlign.map(({ value }) => value);
 type TextAlign = (typeof textAligns)[number];
@@ -135,34 +136,58 @@ export const Paragraph = Node.create({
     return [
       new Plugin({
         appendTransaction: (_, __, newState) => {
-          const { doc, selection, storedMarks, tr } = newState;
-          const { $from, empty } = selection;
+          const { selection, storedMarks, tr } = newState;
+          const { $anchor, empty } = selection;
 
-          if (
-            $from.parent.type !== this.type ||
-            !empty ||
-            $from.parentOffset !== 0 ||
-            $from.parent.childCount !== 0 ||
-            storedMarks
-          ) {
+          if ($anchor.parent.type !== this.type) {
             return;
           }
 
-          const lastNode = findChildrenInRange(
-            doc,
-            { from: 0, to: $from.pos },
-            (node) =>
-              node.type === this.type && node.childCount > 0 && node.attrs.textAlign === $from.parent.attrs.textAlign,
-          ).pop();
-
-          const lastChild = lastNode?.node.lastChild;
-          if (!lastChild) {
+          if (!empty || $anchor.parentOffset !== 0 || $anchor.parent.childCount !== 0) {
             return;
           }
 
-          return tr.setStoredMarks(lastChild.marks);
+          if (storedMarks !== null) {
+            return;
+          }
+
+          const textNode = getTextNodeToCopyMarks(this.type, $anchor);
+          if (textNode) {
+            tr.setStoredMarks(textNode.marks);
+            return tr;
+          }
         },
       }),
     ];
   },
 });
+
+const getTextNodeToCopyMarks = (type: NodeType, $pos: ResolvedPos) => {
+  const currentNode = $pos.parent;
+
+  for (let depth = $pos.depth - 1; depth > 0; depth--) {
+    const node = $pos.node(depth);
+    if (node.childCount === 0) {
+      continue;
+    }
+
+    for (let idx = $pos.index(depth) - 1; idx >= 0; idx--) {
+      let child = node.child(idx);
+      if (child.type.name === 'list_item') {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        child = child.firstChild!;
+      }
+
+      if (child.type === type && child.childCount > 0 && child.attrs.textAlign === currentNode.attrs.textAlign) {
+        for (let i = child.childCount - 1; i >= 0; i--) {
+          const n = child.child(i);
+          if (n.isText) {
+            return n;
+          }
+        }
+      }
+    }
+  }
+
+  return null;
+};
