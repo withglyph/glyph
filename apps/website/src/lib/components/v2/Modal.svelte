@@ -29,8 +29,8 @@
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
+        flexGrow: '1',
         width: 'full',
-        maxHeight: { base: '540px', sm: '600px' },
         backgroundColor: 'gray.5',
         pointerEvents: 'auto',
         userSelect: 'text',
@@ -48,12 +48,18 @@
       size: {
         sm: {
           container: {
-            sm: { maxWidth: '420px' },
+            maxHeight: { base: '540px', sm: '600px' },
+            maxWidth: { sm: '420px' },
           },
         },
         lg: {
+          root: {
+            paddingY: '40px',
+          },
           container: {
-            sm: { maxWidth: '712px' },
+            height: 'full',
+            maxHeight: { base: '540px', sm: '740px' },
+            maxWidth: { sm: '712px' },
           },
         },
       },
@@ -124,6 +130,7 @@
             position: 'relative',
             display: 'flex',
             flexDirection: 'column',
+            flexGrow: '1',
             width: 'full',
             overflowY: 'auto',
           })}
