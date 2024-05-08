@@ -1,5 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import IconEmbedCompact from '~icons/glyph/embed-compact';
+  import IconEmbedFull from '~icons/glyph/embed-full';
+  import IconAlignCenter from '~icons/tabler/align-center';
+  import IconAlignLeft from '~icons/tabler/align-left';
+  import IconAlignRight from '~icons/tabler/align-right';
   import IconTrash from '~icons/tabler/trash';
   import { graphql } from '$glitch';
   import { Icon, Image } from '$lib/components';
@@ -17,6 +22,7 @@
   export let editor: NodeViewProps['editor'] | undefined;
   export let selected: NodeViewProps['selected'];
   export let getPos: NodeViewProps['getPos'];
+  export let updateAttributes: NodeViewProps['updateAttributes'];
   export let deleteNode: NodeViewProps['deleteNode'];
 
   $: query = graphql(`
@@ -33,12 +39,33 @@
   });
 </script>
 
-<NodeView style={center.raw({ paddingY: '4px', smDown: { marginX: '-20px' } })} data-drag-handle draggable>
-  <div class={css({ maxWidth: 'full' }, selected && { ringWidth: '2px', ringColor: 'brand.400' })}>
+<NodeView
+  style={css.raw(
+    { display: 'flex', alignItems: 'center', paddingY: '4px', pointerEvents: 'none', smDown: { marginX: '-20px' } },
+    node.attrs.align === 'left' && { justifyContent: 'flex-start' },
+    node.attrs.align === 'center' && { justifyContent: 'center' },
+    node.attrs.align === 'right' && { justifyContent: 'flex-end' },
+  )}
+  data-drag-handle
+  draggable
+>
+  <div
+    class={css(
+      { minWidth: '0', pointerEvents: 'auto' },
+      node.attrs.size === 'full' && { maxWidth: 'full' },
+      node.attrs.size === 'compact' && { maxWidth: '500px' },
+      selected && { ringWidth: '2px', ringColor: 'brand.400' },
+    )}
+  >
     {#if $query}
       <Image style={css.raw({ maxWidth: 'full' })} $image={$query.image} size="full" />
     {:else}
-      <div class={center({ size: '400px', backgroundColor: 'gray.50' })}>
+      <div
+        class={center({
+          size: '200px',
+          backgroundColor: 'gray.50',
+        })}
+      >
         <RingSpinner style={css.raw({ size: '32px', color: 'brand.400' })} />
       </div>
     {/if}
@@ -47,6 +74,136 @@
 
 {#if editor && selected}
   <TiptapNodeViewBubbleMenu {editor} {getPos} {node}>
+    {#if node.attrs.size === 'compact'}
+      <button
+        class={css({
+          borderRadius: '2px',
+          padding: '4px',
+          transition: 'common',
+          _hover: { backgroundColor: 'gray.100' },
+        })}
+        type="button"
+        on:click={() => {
+          updateAttributes({ align: 'left' });
+          editor?.commands.focus();
+        }}
+      >
+        <Icon
+          style={css.raw(
+            {
+              color: 'gray.600',
+            },
+            node.attrs.align === 'left' && { color: 'brand.400' },
+          )}
+          icon={IconAlignLeft}
+          size={20}
+        />
+      </button>
+
+      <button
+        class={css({
+          borderRadius: '2px',
+          padding: '4px',
+          transition: 'common',
+          _hover: { backgroundColor: 'gray.100' },
+        })}
+        type="button"
+        on:click={() => {
+          updateAttributes({ align: 'center' });
+          editor?.commands.focus();
+        }}
+      >
+        <Icon
+          style={css.raw(
+            {
+              color: 'gray.600',
+            },
+            node.attrs.align === 'center' && { color: 'brand.400' },
+          )}
+          icon={IconAlignCenter}
+          size={20}
+        />
+      </button>
+
+      <button
+        class={css({
+          borderRadius: '2px',
+          padding: '4px',
+          transition: 'common',
+          _hover: { backgroundColor: 'gray.100' },
+        })}
+        type="button"
+        on:click={() => {
+          updateAttributes({ align: 'right' });
+          editor?.commands.focus();
+        }}
+      >
+        <Icon
+          style={css.raw(
+            {
+              color: 'gray.600',
+            },
+            node.attrs.align === 'right' && { color: 'brand.400' },
+          )}
+          icon={IconAlignRight}
+          size={20}
+        />
+      </button>
+
+      <div class={css({ backgroundColor: 'gray.200', width: '1px', height: '12px' })} />
+    {/if}
+
+    <button
+      class={css({
+        borderRadius: '2px',
+        padding: '4px',
+        transition: 'common',
+        _hover: { backgroundColor: 'gray.100' },
+      })}
+      type="button"
+      on:click={() => {
+        updateAttributes({ size: 'full' });
+        editor?.commands.focus();
+      }}
+    >
+      <Icon
+        style={css.raw(
+          {
+            color: 'gray.600',
+          },
+          node.attrs.size === 'full' && { color: 'brand.400' },
+        )}
+        icon={IconEmbedFull}
+        size={20}
+      />
+    </button>
+    <button
+      class={css({
+        borderRadius: '2px',
+        padding: '4px',
+        transition: 'common',
+        _hover: { backgroundColor: 'gray.100' },
+      })}
+      type="button"
+      on:click={() => {
+        updateAttributes({ size: 'compact' });
+        editor?.commands.focus();
+      }}
+    >
+      <Icon
+        style={css.raw(
+          {
+            color: 'gray.600',
+          },
+          node.attrs.size === 'compact' && { color: 'brand.400' },
+        )}
+        icon={IconEmbedCompact}
+        size={20}
+      />
+    </button>
+
+    <div class={css({ backgroundColor: 'gray.200', width: '1px', height: '12px' })} />
+
     <button
       class={css({
         borderRadius: '2px',

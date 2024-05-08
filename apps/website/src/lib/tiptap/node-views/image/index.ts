@@ -19,6 +19,8 @@ export const Image = createNodeView(Component, {
   addAttributes() {
     return {
       id: {},
+      size: { default: 'full' },
+      align: { default: 'center' },
     };
   },
 
