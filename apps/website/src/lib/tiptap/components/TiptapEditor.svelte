@@ -1,12 +1,14 @@
 <script lang="ts">
   import { Editor } from '@tiptap/core';
-  import { onMount } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import * as YAwareness from 'y-protocols/awareness';
   import * as Y from 'yjs';
   import { extensions } from '$lib/tiptap';
   import { Collaboration, Freeze } from '$lib/tiptap/extensions';
   import { css, cx } from '$styled-system/css';
   import type { SystemStyleObject } from '$styled-system/types';
+
+  const dispatch = createEventDispatcher<{ file: { pos: number; files: File[] } }>();
 
   export let style: SystemStyleObject | undefined = undefined;
 
@@ -36,6 +38,24 @@
           if (editor && event.key === 'Enter') {
             const s = editor.view.state.selection;
             editor.commands.setTextSelection(s.to);
+          }
+        },
+        handleDrop: (view, event) => {
+          if (event.dataTransfer?.files?.length) {
+            dispatch('file', {
+              pos: view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos ?? view.state.selection.to,
+              files: [...event.dataTransfer.files],
+            });
+            return true;
+          }
+        },
+        handlePaste: (view, event) => {
+          if (event.clipboardData?.files?.length) {
+            dispatch('file', {
+              pos: view.state.selection.to,
+              files: [...event.clipboardData.files],
+            });
+            return true;
           }
         },
       },

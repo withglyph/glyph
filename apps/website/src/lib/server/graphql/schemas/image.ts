@@ -53,6 +53,14 @@ const FinalizeImageUploadInput = builder.inputType('FinalizeImageUploadInput', {
  */
 
 builder.queryFields((t) => ({
+  image: t.field({
+    type: Image,
+    args: { id: t.arg.id() },
+    resolve: (_, args) => {
+      return args.id;
+    },
+  }),
+
   authLayoutBackgroundImage: t.field({
     type: Image,
     nullable: true,

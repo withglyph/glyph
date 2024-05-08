@@ -108,6 +108,7 @@
         awareness={$state.awareness}
         document={$state.document}
         bind:editor={$state.editor}
+        on:file={(event) => $state.fileHandler?.('auto', event.detail.files, event.detail.pos)}
       />
     </div>
 

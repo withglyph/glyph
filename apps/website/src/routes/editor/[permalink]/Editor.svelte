@@ -14,6 +14,7 @@
   import { flex } from '$styled-system/patterns';
   import Content from './Content.svelte';
   import { NETWORK, setEditorContext } from './context';
+  import FileHandler from './FileHandler.svelte';
   import Header from './Header.svelte';
   import TimeTravel from './TimeTravel.svelte';
   import type { EditorPage_Editor_post, EditorPage_Editor_query } from '$glitch';
@@ -295,3 +296,5 @@
     </div>
   </div>
 </div>
+
+<FileHandler />

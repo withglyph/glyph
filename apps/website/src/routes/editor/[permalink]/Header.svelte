@@ -35,13 +35,13 @@
   import { Button } from '$lib/components/v2';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { values } from '$lib/tiptap/values';
+  import { validImageMimes } from '$lib/utils';
   import { css, cx } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import CharacterCountWidget from './CharacterCountWidget.svelte';
   import { getEditorContext } from './context';
   import DebugModal from './DebugModal.svelte';
   import DraftListModal from './DraftListModal.svelte';
-  import FileUploadModal from './FileUploadModal.svelte';
   import MobileEditMenu from './MobileEditMenu.svelte';
   import PublishMenu from './PublishMenu.svelte';
   import ToolbarButton from './ToolbarButton.svelte';
@@ -90,8 +90,6 @@
   const menuOffset = 4;
 
   let colorPickerOpen = false;
-
-  let fileUploadModalOpen = false;
 
   let contentOptionsOpen = false;
   let paragraphIndentOpen = false;
@@ -302,9 +300,35 @@
           icon={IconPhoto}
           label="이미지"
           size="lg"
-          on:click={() => editor?.chain().focus().setGallery().run()}
+          on:click={() => {
+            const picker = document.createElement('input');
+            picker.type = 'file';
+            picker.accept = validImageMimes.join(',');
+            picker.multiple = true;
+            picker.addEventListener('change', () => {
+              if (picker.files?.length) {
+                $state.fileHandler?.('image', [...picker.files]);
+              }
+            });
+            picker.click();
+          }}
         />
-        <ToolbarButton icon={IconFolder} label="파일" size="lg" on:click={() => (fileUploadModalOpen = true)} />
+        <ToolbarButton
+          icon={IconFolder}
+          label="파일"
+          size="lg"
+          on:click={() => {
+            const picker = document.createElement('input');
+            picker.type = 'file';
+            picker.multiple = true;
+            picker.addEventListener('change', () => {
+              if (picker.files?.length) {
+                $state.fileHandler?.('file', [...picker.files]);
+              }
+            });
+            picker.click();
+          }}
+        />
         <ToolbarButton
           disabled={editor?.isActive('link') || editor?.state.selection.empty}
           icon={IconLink}
@@ -817,7 +841,6 @@
   <MobileEditMenu />
 </header>
 
-<FileUploadModal bind:open={fileUploadModalOpen} />
 <DraftListModal {$post} $user={$query.me} bind:open={draftListOpen} />
 
 <Alert bind:open={timeTravelOpen}>

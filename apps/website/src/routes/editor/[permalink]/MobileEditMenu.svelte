@@ -24,11 +24,10 @@
   import IconUnderline from '~icons/tabler/underline';
   import { Icon } from '$lib/components';
   import { values } from '$lib/tiptap/values';
-  import { isValidImageFile, validImageMimes } from '$lib/utils';
+  import { validImageMimes } from '$lib/utils';
   import { css, cx } from '$styled-system/css';
   import { center, flex, grid } from '$styled-system/patterns';
   import { getEditorContext } from './context';
-  import FileUploadModal from './FileUploadModal.svelte';
   import MobileToolbarButton from './MobileToolbarButton.svelte';
 
   const { state } = getEditorContext();
@@ -50,8 +49,6 @@
   let subMenu: SubMenu | null = null;
   let bottomMenu: BottomMenu | null = null;
 
-  let fileUploadModalOpen = false;
-
   $: if (topMenu === 'default') {
     subMenu = null;
     bottomMenu = null;
@@ -63,24 +60,6 @@
 
   const toggleBottomMenu = (menu: BottomMenu) => {
     bottomMenu = bottomMenu === menu ? null : menu;
-  };
-
-  const handleInsertImage = () => {
-    const picker = document.createElement('input');
-    picker.type = 'file';
-    picker.accept = validImageMimes.join(',');
-
-    picker.addEventListener('change', async () => {
-      const file = picker.files?.[0];
-
-      if (!file || !(await isValidImageFile(file))) {
-        return;
-      }
-
-      editor?.chain().focus().setImage(file).run();
-    });
-
-    picker.showPicker();
   };
 
   const colorPresets = [
@@ -123,7 +102,20 @@
         <Icon icon={IconText} size={24} />
       </MobileToolbarButton>
 
-      <MobileToolbarButton on:click={handleInsertImage}>
+      <MobileToolbarButton
+        on:click={() => {
+          const picker = document.createElement('input');
+          picker.type = 'file';
+          picker.accept = validImageMimes.join(',');
+          picker.multiple = true;
+          picker.addEventListener('change', () => {
+            if (picker.files?.length) {
+              $state.fileHandler?.('image', [...picker.files]);
+            }
+          });
+          picker.click();
+        }}
+      >
         <Icon icon={IconPhoto} size={24} />
       </MobileToolbarButton>
 
@@ -233,7 +225,19 @@
             <Icon icon={IconQuote} size={24} />
           </MobileToolbarButton>
 
-          <MobileToolbarButton on:click={() => (fileUploadModalOpen = true)}>
+          <MobileToolbarButton
+            on:click={() => {
+              const picker = document.createElement('input');
+              picker.type = 'file';
+              picker.multiple = true;
+              picker.addEventListener('change', () => {
+                if (picker.files?.length) {
+                  $state.fileHandler?.('file', [...picker.files]);
+                }
+              });
+              picker.click();
+            }}
+          >
             <Icon icon={IconFolder} size={24} />
           </MobileToolbarButton>
 
@@ -466,5 +470,3 @@
     </div>
   {/if}
 </div>
-
-<FileUploadModal bind:open={fileUploadModalOpen} />

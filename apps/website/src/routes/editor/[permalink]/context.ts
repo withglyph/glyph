@@ -18,6 +18,8 @@ export type EditorState = {
 
   timeTravel: boolean;
   doTimeTravel?: () => void;
+
+  fileHandler?: (as: 'auto' | 'image' | 'file', files: File[], pos?: number) => void;
 };
 
 type EditorContext = {
