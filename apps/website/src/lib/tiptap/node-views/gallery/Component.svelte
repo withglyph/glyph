@@ -10,7 +10,6 @@
   import { NodeView } from '$lib/tiptap';
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
   import { css } from '$styled-system/css';
-  import { flex } from '$styled-system/patterns';
   import Image from './Image.svelte';
   import ItemEditor from './ItemEditor.svelte';
   import Slide from './Slide.svelte';
@@ -69,10 +68,8 @@
 {#if editor && selected}
   <TiptapNodeViewBubbleMenu {editor} {getPos} {node}>
     <button
-      class={flex({
-        align: 'center',
-        gap: '6px',
-        padding: '2px',
+      class={css({
+        margin: '2px',
         paddingRight: '4px',
         transition: 'common',
         _hover: { backgroundColor: 'gray.100' },
@@ -80,73 +77,17 @@
       type="button"
       on:click={() => (openItemEditor = true)}
     >
-      <Icon icon={IconEdit} size={20} />
-      편집
+      <Icon style={css.raw({ size: '18px' })} icon={IconEdit} />
     </button>
 
     <div class={css({ backgroundColor: 'gray.200', width: '1px', height: '12px' })} />
 
-    {#if node.attrs.size === 'compact'}
-      <button
-        class={css({
-          padding: '2px',
-          transition: 'common',
-          _hover: { backgroundColor: 'gray.100' },
-          _pressed: { backgroundColor: { base: 'gray.800', _hover: 'gray.600' }, color: 'gray.50' },
-        })}
-        aria-pressed={node.attrs.align === 'left'}
-        type="button"
-        on:click={() => {
-          updateAttributes({ align: 'left' });
-          editor?.commands.focus();
-        }}
-      >
-        <Icon icon={IconAlignLeft} size={20} />
-      </button>
-
-      <button
-        class={css({
-          padding: '2px',
-          transition: 'common',
-          _hover: { backgroundColor: 'gray.100' },
-          _pressed: { backgroundColor: { base: 'gray.800', _hover: 'gray.600' }, color: 'gray.50' },
-        })}
-        aria-pressed={node.attrs.align === 'center'}
-        type="button"
-        on:click={() => {
-          updateAttributes({ align: 'center' });
-          editor?.commands.focus();
-        }}
-      >
-        <Icon icon={IconAlignCenter} size={20} />
-      </button>
-
-      <button
-        class={css({
-          padding: '2px',
-          transition: 'common',
-          _hover: { backgroundColor: 'gray.100' },
-          _pressed: { backgroundColor: { base: 'gray.800', _hover: 'gray.600' }, color: 'gray.50' },
-        })}
-        aria-pressed={node.attrs.align === 'right'}
-        type="button"
-        on:click={() => {
-          updateAttributes({ align: 'right' });
-          editor?.commands.focus();
-        }}
-      >
-        <Icon icon={IconAlignRight} size={20} />
-      </button>
-
-      <div class={css({ backgroundColor: 'gray.200', width: '1px', height: '12px' })} />
-    {/if}
-
     <button
       class={css({
-        padding: '2px',
+        margin: '2px',
         transition: 'common',
         _hover: { backgroundColor: 'gray.100' },
-        _pressed: { backgroundColor: { base: 'gray.800', _hover: 'gray.600' }, color: 'gray.50' },
+        _pressed: { backgroundColor: { base: 'brand.400', _hover: 'brand.600' }, color: 'gray.50' },
       })}
       aria-pressed={node.attrs.size === 'full'}
       type="button"
@@ -155,14 +96,14 @@
         editor?.commands.focus();
       }}
     >
-      <Icon icon={IconEmbedFull} size={20} />
+      <Icon style={css.raw({ size: '18px' })} icon={IconEmbedFull} />
     </button>
     <button
       class={css({
-        padding: '2px',
+        margin: '2px',
         transition: 'common',
         _hover: { backgroundColor: 'gray.100' },
-        _pressed: { backgroundColor: { base: 'gray.800', _hover: 'gray.600' }, color: 'gray.50' },
+        _pressed: { backgroundColor: { base: 'brand.400', _hover: 'brand.600' }, color: 'gray.50' },
       })}
       aria-pressed={node.attrs.size === 'compact'}
       type="button"
@@ -171,21 +112,76 @@
         editor?.commands.focus();
       }}
     >
-      <Icon icon={IconEmbedCompact} size={20} />
+      <Icon style={css.raw({ size: '18px' })} icon={IconEmbedCompact} />
     </button>
 
     <div class={css({ backgroundColor: 'gray.200', width: '1px', height: '12px' })} />
 
+    {#if node.attrs.size === 'compact'}
+      <button
+        class={css({
+          margin: '2px',
+          transition: 'common',
+          _hover: { backgroundColor: 'gray.100' },
+          _pressed: { backgroundColor: { base: 'brand.400', _hover: 'brand.600' }, color: 'gray.50' },
+        })}
+        aria-pressed={node.attrs.align === 'left'}
+        type="button"
+        on:click={() => {
+          updateAttributes({ align: 'left' });
+          editor?.commands.focus();
+        }}
+      >
+        <Icon style={css.raw({ size: '18px' })} icon={IconAlignLeft} />
+      </button>
+
+      <button
+        class={css({
+          margin: '2px',
+          transition: 'common',
+          _hover: { backgroundColor: 'gray.100' },
+          _pressed: { backgroundColor: { base: 'brand.400', _hover: 'brand.600' }, color: 'gray.50' },
+        })}
+        aria-pressed={node.attrs.align === 'center'}
+        type="button"
+        on:click={() => {
+          updateAttributes({ align: 'center' });
+          editor?.commands.focus();
+        }}
+      >
+        <Icon style={css.raw({ size: '18px' })} icon={IconAlignCenter} />
+      </button>
+
+      <button
+        class={css({
+          margin: '2px',
+          transition: 'common',
+          _hover: { backgroundColor: 'gray.100' },
+          _pressed: { backgroundColor: { base: 'brand.400', _hover: 'brand.600' }, color: 'gray.50' },
+        })}
+        aria-pressed={node.attrs.align === 'right'}
+        type="button"
+        on:click={() => {
+          updateAttributes({ align: 'right' });
+          editor?.commands.focus();
+        }}
+      >
+        <Icon style={css.raw({ size: '18px' })} icon={IconAlignRight} />
+      </button>
+
+      <div class={css({ backgroundColor: 'gray.200', width: '1px', height: '12px' })} />
+    {/if}
+
     <button
       class={css({
-        padding: '2px',
+        margin: '2px',
         transition: 'common',
         _hover: { backgroundColor: 'gray.100' },
       })}
       type="button"
       on:click={() => deleteNode()}
     >
-      <Icon style={css.raw({ color: 'gray.600' })} icon={IconTrash} size={20} />
+      <Icon style={css.raw({ color: 'gray.600', size: '18px' })} icon={IconTrash} />
     </button>
   </TiptapNodeViewBubbleMenu>
 
