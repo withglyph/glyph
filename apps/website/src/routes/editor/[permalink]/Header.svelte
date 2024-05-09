@@ -332,12 +332,12 @@
           }}
         />
 
-        <Menu as="div" offset={menuOffset} placement="bottom">
+        <Menu as="div" menuStyle={css.raw({ border: 'none' })} offset={menuOffset} placement="bottom">
           <ToolbarButton slot="value" icon={IconLink} label="링크" size="lg" />
           <LinkModal />
         </Menu>
 
-        <Menu as="div" offset={menuOffset} placement="bottom">
+        <Menu as="div" menuStyle={css.raw({ border: 'none' })} offset={menuOffset} placement="bottom">
           <ToolbarButton
             slot="value"
             disabled={editor?.state.selection.empty && !editor?.isActive('ruby')}

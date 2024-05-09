@@ -4,8 +4,6 @@
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import { getEditorContext } from './context';
-  import ArticleLinkEditMenu from './InlineLinkMenu.svelte';
-  import ArticleRubyEditMenu from './InlineRubyMenu.svelte';
   import type { Writable } from 'svelte/store';
   import type * as Y from 'yjs';
 
@@ -111,10 +109,5 @@
         on:file={(event) => $state.fileHandler?.('auto', event.detail.files, event.detail.pos)}
       />
     </div>
-
-    {#if $state.editor}
-      <ArticleLinkEditMenu editor={$state.editor} />
-      <ArticleRubyEditMenu editor={$state.editor} />
-    {/if}
   </div>
 </main>
