@@ -27,6 +27,39 @@ const migrateContent = (content: JSONContent) => {
       parent.content = [{ type: 'text', text: parent.attrs.content }];
       delete parent.attrs;
     }
+
+    if (parent.type === 'gallery' && parent.attrs) {
+      // eslint-disable-next-line unicorn/prefer-switch
+      if (parent.attrs.layout === 'standalone') {
+        parent.type = 'image';
+        parent.attrs = {
+          id: parent.attrs.ids[0],
+          size: parent.attrs.size,
+          align: parent.attrs.align,
+        };
+      } else if (parent.attrs.layout === 'scroll') {
+        parent.attrs = {
+          ids: parent.attrs.ids,
+          layout: 'scroll',
+          size: parent.attrs.size,
+          align: parent.attrs.align,
+        };
+      } else if (parent.attrs.layout === 'grid') {
+        parent.attrs = {
+          ids: parent.attrs.ids,
+          layout: parent.attrs.gridColumns === 2 ? 'grid-2' : 'grid-3',
+          size: parent.attrs.size,
+          align: parent.attrs.align,
+        };
+      } else if (parent.attrs.layout === 'slide') {
+        parent.attrs = {
+          ids: parent.attrs.ids,
+          layout: parent.attrs.slidesPerPage === 1 ? 'slide-1' : 'slide-2',
+          size: parent.attrs.size,
+          align: parent.attrs.align,
+        };
+      }
+    }
   });
 
   return content;
