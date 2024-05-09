@@ -47,8 +47,8 @@
       selected && { ringWidth: '2px', ringColor: 'brand.400' },
     )}
   >
-    {#if node.attrs.layout === 'slide-2' || node.attrs.layout === 'slide-3'}
-      <Slide ids={node.attrs.ids} pages={node.attrs.layout === 'slide-2' ? 2 : 3} />
+    {#if node.attrs.layout === 'slide-1' || node.attrs.layout === 'slide-2'}
+      <Slide ids={node.attrs.ids} pages={node.attrs.layout === 'slide-2' ? 2 : 1} />
     {:else}
       <div
         class={css(
