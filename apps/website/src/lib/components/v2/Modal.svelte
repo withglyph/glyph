@@ -54,7 +54,7 @@
         },
         lg: {
           root: {
-            paddingY: '40px',
+            paddingY: { sm: '40px' },
           },
           container: {
             height: 'full',
