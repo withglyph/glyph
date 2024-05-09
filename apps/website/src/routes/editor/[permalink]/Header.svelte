@@ -42,8 +42,10 @@
   import { getEditorContext } from './context';
   import DebugModal from './DebugModal.svelte';
   import DraftListModal from './DraftListModal.svelte';
+  import LinkModal from './LinkModal.svelte';
   import MobileEditMenu from './MobileEditMenu.svelte';
   import PublishMenu from './PublishMenu.svelte';
+  import RubyModal from './RubyModal.svelte';
   import ToolbarButton from './ToolbarButton.svelte';
   import ToolbarButtonTooltip from './ToolbarButtonTooltip.svelte';
   import type { EditorPage_Header_post, EditorPage_Header_query } from '$glitch';
@@ -329,20 +331,23 @@
             picker.click();
           }}
         />
-        <ToolbarButton
-          disabled={editor?.isActive('link') || editor?.state.selection.empty}
-          icon={IconLink}
-          label="링크"
-          size="lg"
-          on:click={() => editor?.chain().focus().setLink('').run()}
-        />
-        <ToolbarButton
-          disabled={editor?.isActive('ruby') || editor?.state.selection.empty}
-          icon={IconRuby}
-          label="루비"
-          size="lg"
-          on:click={() => editor?.chain().focus().setRuby('').run()}
-        />
+
+        <Menu as="div" offset={menuOffset} placement="bottom">
+          <ToolbarButton slot="value" icon={IconLink} label="링크" size="lg" />
+          <LinkModal />
+        </Menu>
+
+        <Menu as="div" offset={menuOffset} placement="bottom">
+          <ToolbarButton
+            slot="value"
+            disabled={editor?.state.selection.empty && !editor?.isActive('ruby')}
+            icon={IconRuby}
+            label="루비"
+            size="lg"
+          />
+          <RubyModal />
+        </Menu>
+
         <Menu as="div" offset={menuOffset} placement="bottom">
           <ToolbarButton slot="value" aria-pressed={open} icon={IconHorizontalRule} label="구분선" size="lg" let:open />
 
