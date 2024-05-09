@@ -53,6 +53,7 @@
 >
   <span
     class={css({
+      flex: 'none',
       marginRight: '12px',
       fontSize: '12px',
       fontWeight: 'medium',
@@ -64,7 +65,7 @@
     {index + 1}
   </span>
   <Image {id} style={css.raw({ marginRight: '8px', size: '48px', objectFit: 'cover' })} />
-  <p class={css({ flexGrow: '1', fontSize: '13px', textAlign: 'left' })}>
+  <p class={css({ flexGrow: '1', fontSize: '13px', textAlign: 'left', truncate: true })}>
     {$query?.image.name ?? ''}
   </p>
 
