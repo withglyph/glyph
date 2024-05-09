@@ -1,61 +1,61 @@
 <script lang="ts">
   import '../app.css';
 
-  // import { datadogRum } from '@datadog/browser-rum';
-  // import { onMount } from 'svelte';
-  // import { browser } from '$app/environment';
-  // import { graphql } from '$glitch';
-  // import { mixpanel } from '$lib/analytics';
-  import { /* toast, */ ToastProvider } from '$lib/notification';
+  import { datadogRum } from '@datadog/browser-rum';
+  import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
+  import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
+  import { toast, ToastProvider } from '$lib/notification';
   import { flex } from '$styled-system/patterns';
   import AutoUpdater from './AutoUpdater.svelte';
   import Datadog from './Datadog.svelte';
   import StackIndicator from './StackIndicator.svelte';
 
-  // $: query = graphql(`
-  //   query RootLayout_Query {
-  //     me {
-  //       id
-  //       email
+  $: query = graphql(`
+    query RootLayout_Query {
+      me {
+        id
+        email
 
-  //       profile {
-  //         id
-  //         name
+        profile {
+          id
+          name
 
-  //         avatar {
-  //           id
-  //           url
-  //         }
-  //       }
-  //     }
+          avatar {
+            id
+            url
+          }
+        }
+      }
 
-  //     flash {
-  //       type
-  //       message
-  //     }
-  //   }
-  // `);
+      flash {
+        type
+        message
+      }
+    }
+  `);
 
-  // $: if (browser && $query.me) {
-  //   mixpanel.identify($query.me.id);
-  //   mixpanel.people.set({
-  //     $email: $query.me.email,
-  //     $name: $query.me.profile.name,
-  //     $avatar: $query.me.profile.avatar.url,
-  //   });
+  $: if (browser && $query.me) {
+    mixpanel.identify($query.me.id);
+    mixpanel.people.set({
+      $email: $query.me.email,
+      $name: $query.me.profile.name,
+      $avatar: $query.me.profile.avatar.url,
+    });
 
-  //   datadogRum.setUser({
-  //     id: $query.me.id,
-  //     email: $query.me.email,
-  //     name: $query.me.profile.name,
-  //   });
-  // }
+    datadogRum.setUser({
+      id: $query.me.id,
+      email: $query.me.email,
+      name: $query.me.profile.name,
+    });
+  }
 
-  // onMount(() => {
-  //   if ($query.flash && $query.flash.type !== 'success') {
-  //     toast($query.flash.message);
-  //   }
-  // });
+  onMount(() => {
+    if ($query.flash && $query.flash.type !== 'success') {
+      toast($query.flash.message);
+    }
+  });
 </script>
 
 <div class={flex({ direction: 'column', position: 'relative', minHeight: 'dvh' })}>
