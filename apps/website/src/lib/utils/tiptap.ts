@@ -22,9 +22,7 @@ export const getMetadataFromTiptapDocument = (content: JSONContent) => {
 
   const text = doc.content.textBetween(0, doc.content.size, '\n', (node) => {
     // eslint-disable-next-line unicorn/prefer-switch
-    if (node.type.name === 'access_barrier') {
-      return '--- 결제선 ---';
-    } else if (node.type.name === 'image' || node.type.name === 'gallery') {
+    if (node.type.name === 'image' || node.type.name === 'gallery') {
       return '<이미지>';
     } else if (node.type.name === 'file') {
       return '<파일>';
