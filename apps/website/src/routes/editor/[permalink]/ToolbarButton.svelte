@@ -35,14 +35,12 @@
       flexDirection: 'column',
       gap: '2px',
       color: 'gray.800',
-      _enabled: {
-        _hover: { backgroundColor: 'gray.100' },
-      },
-      _disabled: { color: 'gray.400' },
+      _enabled: { backgroundColor: { _hover: 'gray.100' } },
+      _pressed: { backgroundColor: { base: 'gray.900', _hover: 'gray.600!' }, color: 'gray.5' },
+      _disabled: { color: 'gray.300' },
     },
     size === 'sm' && {
       size: '24px',
-      _pressed: { backgroundColor: 'gray.900!', color: 'gray.5' },
     },
     size === 'lg' && {
       size: '54px',

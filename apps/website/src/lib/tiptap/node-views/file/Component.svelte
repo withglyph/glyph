@@ -47,9 +47,8 @@
         position: 'relative',
         display: 'flex',
         borderWidth: '1px',
-        borderColor: 'gray.300',
-        borderRadius: '4px',
-        padding: '12px',
+        borderColor: 'gray.200',
+        padding: '14px',
         width: '400px',
         pointerEvents: 'auto',
       },
@@ -61,8 +60,8 @@
     href={editor?.isEditable ? undefined : $query?.file.url}
   >
     <div class={flex({ align: 'center', gap: '8px', grow: '1' })}>
-      <div class={flex({ align: 'center', gap: '6px' })}>
-        <Icon style={css.raw({ color: 'gray.300' })} icon={IconFolder} size={20} />
+      <div class={flex({ align: 'center', gap: '4px' })}>
+        <Icon style={css.raw({ color: 'gray.300' })} icon={IconFolder} />
         <div class={css({ fontSize: '14px', lineClamp: 1 })}>
           {$query?.file.name ?? '정보 가져오는 중...'}
         </div>
@@ -79,10 +78,9 @@
 
     <div
       class={css({
-        borderRadius: '4px',
-        padding: '4px',
+        padding: '2px',
         transition: 'common',
-        _hover: { backgroundColor: 'gray.100' },
+        _hover: { backgroundColor: 'gray.50' },
       })}
     >
       {#if editor?.isEditable}

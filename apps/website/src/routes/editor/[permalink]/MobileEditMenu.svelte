@@ -23,12 +23,15 @@
   import IconStrikethrough from '~icons/tabler/strikethrough';
   import IconUnderline from '~icons/tabler/underline';
   import { Icon } from '$lib/components';
+  import { Menu } from '$lib/components/menu';
   import { values } from '$lib/tiptap/values';
   import { validImageMimes } from '$lib/utils';
   import { css, cx } from '$styled-system/css';
   import { center, flex, grid } from '$styled-system/patterns';
   import { getEditorContext } from './context';
+  import LinkModal from './LinkModal.svelte';
   import MobileToolbarButton from './MobileToolbarButton.svelte';
+  import RubyModal from './RubyModal.svelte';
 
   const { state } = getEditorContext();
   $: editor = $state.editor;
@@ -190,12 +193,13 @@
             />
           </MobileToolbarButton>
 
-          <MobileToolbarButton
-            disabled={editor?.isActive('ruby') || editor?.state.selection.empty}
-            on:click={() => editor?.chain().focus().setRuby('').run()}
-          >
-            <Icon icon={IconRuby} size={24} />
-          </MobileToolbarButton>
+          <Menu style={css.raw({ size: '24px' })} as="div" menuStyle={css.raw({ border: 'none' })} placement="bottom">
+            <MobileToolbarButton slot="value" disabled={editor?.state.selection.empty && !editor?.isActive('ruby')}>
+              <Icon icon={IconRuby} size={24} />
+            </MobileToolbarButton>
+
+            <RubyModal />
+          </Menu>
 
           <MobileToolbarButton on:click={() => toggleSubMenu('textAlign')}>
             <Icon
@@ -241,12 +245,12 @@
             <Icon icon={IconFolder} size={24} />
           </MobileToolbarButton>
 
-          <MobileToolbarButton
-            disabled={editor?.isActive('link') || editor?.state.selection.empty}
-            on:click={() => editor?.chain().focus().setLink('').run()}
-          >
-            <Icon icon={IconLink} size={24} />
-          </MobileToolbarButton>
+          <Menu style={css.raw({ size: '24px' })} as="div" menuStyle={css.raw({ border: 'none' })} placement="bottom">
+            <MobileToolbarButton slot="value">
+              <Icon icon={IconLink} size={24} />
+            </MobileToolbarButton>
+            <LinkModal />
+          </Menu>
 
           <MobileToolbarButton
             disabled={editor?.isActive('codeBlock')}

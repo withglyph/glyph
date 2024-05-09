@@ -1,10 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="8.5" cy="20" r="1" fill="currentColor" />
+  <circle cx="12" cy="20" r="1" fill="currentColor" />
+  <circle cx="15.5" cy="20" r="1" fill="currentColor" />
+  <path d="M20.25 5H3.75V10.5V16H20.25V10.5V5Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" />
   <path
-    fill="none"
+    d="M15.7734 9.19922L16.9991 10.4763L15.7734 11.7877"
     stroke="currentColor"
+    stroke-width="1.2"
+    stroke-miterlimit="10"
     stroke-linecap="round"
     stroke-linejoin="round"
-    stroke-width="1.5"
-    d="M22 19h-1c-.3 0-.5-.1-.7-.3s-.3-.4-.3-.7V6c0-.3.1-.5.3-.7.2-.2.4-.3.7-.3h1M2 19h1c.3 0 .5-.1.7-.3.2-.2.3-.4.3-.7V6c0-.3-.1-.5-.3-.7-.2-.2-.4-.3-.7-.3H2m5 1c0-.3.1-.5.3-.7.2-.2.4-.3.7-.3h8c.3 0 .5.1.7.3.2.2.3.4.3.7v12c0 .3-.1.5-.3.7s-.4.3-.7.3H8c-.3 0-.5-.1-.7-.3-.2-.2-.3-.4-.3-.7V6z"
+  />
+  <path
+    d="M8.22656 9.19922L7.0009 10.4763L8.22656 11.7877"
+    stroke="currentColor"
+    stroke-width="1.2"
+    stroke-miterlimit="10"
+    stroke-linecap="round"
+    stroke-linejoin="round"
   />
 </svg>
