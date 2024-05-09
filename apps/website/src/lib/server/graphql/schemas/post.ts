@@ -54,6 +54,7 @@ import { elasticSearch, indexName } from '$lib/server/search';
 import {
   createNotification,
   deductUserPoint,
+  defineScopeGranter,
   defragmentSpaceCollectionPosts,
   generatePostShareImage,
   getMutedSpaceIds,
@@ -63,6 +64,7 @@ import {
   getSpaceMember,
   isAdulthood,
   isGte15,
+  Loader,
   makeMasquerade,
   makePostContentId,
   makeQueryContainers,
@@ -738,6 +740,70 @@ Post.implement({
 });
 
 export const PostRevision = createObjectRef('PostRevision', PostRevisions);
+
+const postRevisionScope = defineScopeGranter(PostRevisions, async (revision, context) => {
+  const personalIdentityLoader = context.loader({
+    name: 'UserPersonalIdentity(userId)',
+    nullable: true,
+    load: async (userIds: string[]) => {
+      return await database
+        .select()
+        .from(UserPersonalIdentities)
+        .where(inArray(UserPersonalIdentities.userId, userIds));
+    },
+    key: (identity) => identity?.userId,
+  });
+
+  const spaceMasqueradeLoader = context.loader({
+    name: 'SpaceMasquerade(spaceId)',
+    nullable: true,
+    load: async (spaceIds: string[]) => {
+      if (!context.session) {
+        return [];
+      }
+
+      return await database
+        .select()
+        .from(SpaceMasquerades)
+        .where(and(inArray(SpaceMasquerades.spaceId, spaceIds), eq(SpaceMasquerades.userId, context.session.userId)));
+    },
+    key: (masquerade) => masquerade?.spaceId,
+  });
+
+  const post = await Loader.postById(context).load(revision.postId);
+
+  if (post.ageRating !== 'ALL') {
+    if (!context.session) {
+      return [];
+    }
+
+    const identity = await personalIdentityLoader.load(context.session.userId);
+    if (
+      !identity ||
+      (post.ageRating === 'R19' && !isAdulthood(identity.birthday)) ||
+      (post.ageRating === 'R15' && !isGte15(identity.birthday))
+    ) {
+      return [];
+    }
+  }
+
+  if (post.password && post.userId !== context.session?.userId) {
+    const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
+    if (!unlock || dayjs(unlock).isBefore(dayjs())) {
+      return [];
+    }
+  }
+
+  if (post.spaceId) {
+    const masquerade = await spaceMasqueradeLoader.load(post.spaceId);
+    if (masquerade?.blockedAt) {
+      return [];
+    }
+  }
+
+  return ['$postRevision:view'];
+});
+
 PostRevision.implement({
   fields: (t) => ({
     id: t.exposeID('id'),
@@ -766,6 +832,10 @@ PostRevision.implement({
     content: t.field({
       type: 'JSON',
       resolve: async (revision, _, context) => {
+        if (!(await postRevisionScope(revision, context, '$postRevision:view'))) {
+          return {};
+        }
+
         type CreateDocumentOptions = { withPaidContent?: boolean };
         const createDocument = async (options?: CreateDocumentOptions) => {
           const nodes: JSONContent[] = [];
@@ -827,12 +897,14 @@ PostRevision.implement({
 
         return createDocument();
       },
-
-      unauthorizedResolver: () => ({}),
     }),
 
     previewText: t.string({
       resolve: async (revision, _, context) => {
+        if (!(await postRevisionScope(revision, context, '$postRevision:view'))) {
+          return '';
+        }
+
         const loader = context.loader({
           name: 'PostRevision.previewText',
           load: async (ids: string[]) => {
@@ -848,8 +920,6 @@ PostRevision.implement({
 
         return text.slice(0, 200).replaceAll(/\s+/g, ' ');
       },
-
-      unauthorizedResolver: () => '',
     }),
   }),
 });
