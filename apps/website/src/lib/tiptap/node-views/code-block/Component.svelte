@@ -44,11 +44,11 @@
 
         <div class={flex({ align: 'center', gap: '10px', width: '54px' })}>
           <button class={css({ padding: '4px' })} type="button" on:click={() => deleteNode()}>
-            <Icon style={css.raw({ color: 'gray.300' })} icon={IconTrash} />
+            <Icon style={css.raw({ color: 'gray.300' })} icon={IconTrash} size={20} />
           </button>
 
           <div class={css({ padding: '4px' })}>
-            <Icon style={css.raw({ color: 'gray.300' })} icon={IconGripVertical} />
+            <Icon style={css.raw({ color: 'gray.300' })} icon={IconGripVertical} size={20} />
           </div>
         </div>
       </div>
