@@ -711,6 +711,7 @@ export const Posts = pgTable(
       .notNull()
       .default(sql`now()`),
     publishedAt: datetime('published_at'),
+    migrated: boolean('migrated').notNull().default(false),
   },
   (t) => ({
     publishedAtIdx: index().on(t.publishedAt),

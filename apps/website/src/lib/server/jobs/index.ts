@@ -7,9 +7,17 @@ import { finalizeResource, setResourceFinalizer } from '../utils';
 import { NotifyIndexNowJob } from './indexnow';
 import { UpdatePostContentStateJob } from './post';
 import { IndexAllPostsInSpaceJob, IndexCollectionJob, IndexPostJob } from './search';
+import { MigrateYJSJob } from './temp';
 import type { JobFn } from './types';
 
-const jobs = [IndexAllPostsInSpaceJob, IndexPostJob, IndexCollectionJob, NotifyIndexNowJob, UpdatePostContentStateJob];
+const jobs = [
+  IndexAllPostsInSpaceJob,
+  IndexPostJob,
+  IndexCollectionJob,
+  NotifyIndexNowJob,
+  UpdatePostContentStateJob,
+  MigrateYJSJob,
+];
 
 type Jobs = typeof jobs;
 type JobNames = Jobs[number]['name'];
@@ -31,6 +39,8 @@ const startWorker = async () => {
       queue,
       queueOptions: { exclusive: dev },
       queueBindings: [{ exchange, queue, routingKey }],
+      concurrency: 1,
+      qos: { prefetchCount: 1 },
     },
     async (msg) => {
       const { name, payload, meta } = msg.body as Body;
