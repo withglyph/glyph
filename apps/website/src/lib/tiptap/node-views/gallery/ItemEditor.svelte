@@ -8,7 +8,7 @@
   import { Icon } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
   import { isMobile, validImageMimes } from '$lib/utils';
-  import { css, cx } from '$styled-system/css';
+  import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import Item from './Item.svelte';
   import type { NodeViewProps } from '$lib/tiptap';
@@ -142,24 +142,21 @@
       {#each node.attrs.ids as id, index (id)}
         <Item {index} {updateAttributes} bind:id />
       {/each}
-      <li>
+      <li class="prevent-dragging">
         <button
-          class={cx(
-            'prevent-dragging',
-            flex({
-              align: 'center',
-              gap: '4px',
-              borderWidth: '1px',
-              borderColor: 'gray.200',
-              borderStyle: 'dashed',
-              paddingX: '14px',
-              paddingY: '8px',
-              color: 'gray.400',
-              backgroundColor: 'gray.50',
-              width: 'full',
-              height: '64px',
-            }),
-          )}
+          class={flex({
+            align: 'center',
+            gap: '4px',
+            borderWidth: '1px',
+            borderColor: 'gray.200',
+            borderStyle: 'dashed',
+            paddingX: '14px',
+            paddingY: '8px',
+            color: 'gray.400',
+            backgroundColor: 'gray.50',
+            width: 'full',
+            height: '64px',
+          })}
           type="button"
           on:click={handleInsertImage}
         >
