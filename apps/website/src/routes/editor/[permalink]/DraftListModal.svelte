@@ -152,8 +152,9 @@
             _last: { borderStyle: 'none' },
           })}
         >
-          <div class={css({ paddingY: '14px', paddingX: '20px' })}>
+          <div class={css({ paddingY: '14px', paddingX: '20px', width: '62px' })}>
             <Checkbox
+              style={css.raw({ width: 'fit' })}
               checked={selectedPosts.includes(_post.id)}
               on:change={() =>
                 (selectedPosts = selectedPosts.includes(_post.id)
@@ -163,7 +164,7 @@
           </div>
 
           <div class={flex({ align: 'center', justify: 'space-between', gap: '32px', width: 'full', truncate: true })}>
-            <div class={css({ padding: '14px', width: 'full', truncate: true })}>
+            <div class={css({ paddingY: '14px', paddingX: '8px', width: 'full', truncate: true })}>
               <a class={css({ truncate: true })} href={`/editor/${_post.permalink}`}>
                 {#if _post.id === $post.id}
                   <Chip
