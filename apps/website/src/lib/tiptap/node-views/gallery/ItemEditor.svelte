@@ -7,7 +7,7 @@
   import { graphql } from '$glitch';
   import { Icon } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
-  import { validImageMimes } from '$lib/utils';
+  import { isMobile, validImageMimes } from '$lib/utils';
   import { css, cx } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import Item from './Item.svelte';
@@ -43,7 +43,7 @@
     scroll: true,
     handle: '.image',
     animation: 150,
-    delay: 0,
+    delay: isMobile() ? 50 : 0,
     forceAutoScrollFallback: true,
     scrollSensitivity: 100,
     scrollSpeed: 10,
