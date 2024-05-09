@@ -41,7 +41,7 @@
 >
   <div
     class={css(
-      { minWidth: '0', pointerEvents: 'auto', smDown: { marginX: '-20px' } },
+      { minWidth: '0', pointerEvents: 'auto', width: 'full', smDown: { marginX: '-20px' } },
       node.attrs.size === 'full' && { maxWidth: 'full' },
       node.attrs.size === 'compact' && { maxWidth: '500px' },
       selected && { ringWidth: '2px', ringColor: 'brand.400' },
