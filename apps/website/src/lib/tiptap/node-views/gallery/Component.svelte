@@ -10,6 +10,7 @@
   import { NodeView } from '$lib/tiptap';
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
   import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import Image from './Image.svelte';
   import ItemEditor from './ItemEditor.svelte';
   import Slide from './Slide.svelte';
@@ -68,9 +69,13 @@
 {#if editor && selected}
   <TiptapNodeViewBubbleMenu {editor} {getPos} {node}>
     <button
-      class={css({
-        margin: '2px',
+      class={flex({
+        align: 'center',
+        gap: '2px',
+        padding: '2px',
         paddingRight: '4px',
+        fontSize: '12px',
+        fontWeight: 'medium',
         transition: 'common',
         _hover: { backgroundColor: 'gray.100' },
       })}
@@ -78,6 +83,7 @@
       on:click={() => (openItemEditor = true)}
     >
       <Icon style={css.raw({ size: '18px' })} icon={IconEdit} />
+      그룹편집
     </button>
 
     <div class={css({ backgroundColor: 'gray.200', width: '1px', height: '12px' })} />

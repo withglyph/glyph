@@ -11,8 +11,6 @@
   import IconAlignCenter from '~icons/tabler/align-center';
   import IconAlignLeft from '~icons/tabler/align-left';
   import IconAlignRight from '~icons/tabler/align-right';
-  import IconEdit from '~icons/tabler/edit';
-  import { Icon } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import { getEditorContext } from './context';
@@ -22,7 +20,7 @@
   $: editor = $state.editor;
 </script>
 
-<hr class={css({ border: 'none', width: '1px', height: '12px', backgroundColor: '[#DAD7E2]' })} />
+<!-- <hr class={css({ border: 'none', width: '1px', height: '12px', backgroundColor: '[#DAD7E2]' })} />
 
 <button
   class={flex({
@@ -37,7 +35,7 @@
 >
   <Icon icon={IconEdit} size={20} />
   그룹 편집
-</button>
+</button> -->
 
 <hr class={css({ border: 'none', width: '1px', height: '12px', backgroundColor: '[#DAD7E2]' })} />
 
