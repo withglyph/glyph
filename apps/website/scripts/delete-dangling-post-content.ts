@@ -17,7 +17,7 @@ for (let i = 0; ; i++) {
     .leftJoin(RevisionsAsFreeContent, eq(PostRevisionContents.id, RevisionsAsFreeContent.freeContentId))
     .leftJoin(RevisionsAsPaidContent, eq(PostRevisionContents.id, RevisionsAsPaidContent.paidContentId))
     .where(and(isNull(RevisionsAsFreeContent.id), isNull(RevisionsAsPaidContent.id)))
-    .limit(100);
+    .limit(5000);
 
   if (posts.length === 0) {
     break;
@@ -26,7 +26,7 @@ for (let i = 0; ; i++) {
   const ids = posts.map((post) => post.id);
   await database.delete(PostRevisionContents).where(inArray(PostRevisionContents.id, ids));
 
-  console.log(`Deleted ${i * 100 + posts.length} contents`);
+  console.log(`Deleted ${i * 5000 + posts.length} contents`);
   console.timeEnd(`Elapsed Time`);
 }
 
