@@ -89,12 +89,7 @@
         }}
       >
         <Icon
-          style={css.raw(
-            {
-              color: 'gray.600',
-            },
-            node.attrs.align === 'left' && { color: 'brand.400' },
-          )}
+          style={css.raw({ color: 'gray.600' }, node.attrs.align === 'left' && { color: 'brand.400' })}
           icon={IconAlignLeft}
           size={20}
         />
@@ -114,12 +109,7 @@
         }}
       >
         <Icon
-          style={css.raw(
-            {
-              color: 'gray.600',
-            },
-            node.attrs.align === 'center' && { color: 'brand.400' },
-          )}
+          style={css.raw({ color: 'gray.600' }, node.attrs.align === 'center' && { color: 'brand.400' })}
           icon={IconAlignCenter}
           size={20}
         />
@@ -139,12 +129,7 @@
         }}
       >
         <Icon
-          style={css.raw(
-            {
-              color: 'gray.600',
-            },
-            node.attrs.align === 'right' && { color: 'brand.400' },
-          )}
+          style={css.raw({ color: 'gray.600' }, node.attrs.align === 'right' && { color: 'brand.400' })}
           icon={IconAlignRight}
           size={20}
         />
@@ -167,12 +152,7 @@
       }}
     >
       <Icon
-        style={css.raw(
-          {
-            color: 'gray.600',
-          },
-          node.attrs.size === 'full' && { color: 'brand.400' },
-        )}
+        style={css.raw({ color: 'gray.600' }, node.attrs.size === 'full' && { color: 'brand.400' })}
         icon={IconEmbedFull}
         size={20}
       />
@@ -191,12 +171,7 @@
       }}
     >
       <Icon
-        style={css.raw(
-          {
-            color: 'gray.600',
-          },
-          node.attrs.size === 'compact' && { color: 'brand.400' },
-        )}
+        style={css.raw({ color: 'gray.600' }, node.attrs.size === 'compact' && { color: 'brand.400' })}
         icon={IconEmbedCompact}
         size={20}
       />

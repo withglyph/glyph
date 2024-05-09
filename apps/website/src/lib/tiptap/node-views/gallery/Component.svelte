@@ -4,7 +4,6 @@
   import IconAlignCenter from '~icons/tabler/align-center';
   import IconAlignLeft from '~icons/tabler/align-left';
   import IconAlignRight from '~icons/tabler/align-right';
-  import IconArrowsExchange from '~icons/tabler/arrows-exchange';
   import IconEdit from '~icons/tabler/edit';
   import IconTrash from '~icons/tabler/trash';
   import { Icon } from '$lib/components';
@@ -12,8 +11,9 @@
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import Display from './Display.svelte';
-  import Editor from './Editor.svelte';
+  import Image from './Image.svelte';
+  import ItemEditor from './ItemEditor.svelte';
+  import Slide from './Slide.svelte';
   import type { NodeViewProps } from '$lib/tiptap';
 
   type $$Props = NodeViewProps;
@@ -26,43 +26,12 @@
   export let deleteNode: NodeViewProps['deleteNode'];
   export let updateAttributes: NodeViewProps['updateAttributes'];
 
-  let onClose: (() => void) | null;
-
-  let open = node.attrs.layout === 'initial';
-
-  const handleClose = () => {
-    if (node.attrs.layout !== 'initial' && node.attrs.__data.length === 0) {
-      deleteNode();
-      return;
-    }
-
-    if (editor && node.attrs.layout === 'standalone' && node.attrs.__data.length > 0) {
-      let chain = editor.chain();
-      for (const image of node.attrs.__data) {
-        chain = chain.setStandaloneGallery(image);
-      }
-      chain.run();
-      deleteNode();
-      return;
-    }
-  };
-
-  $: if (open) {
-    onClose = handleClose;
-  } else {
-    onClose?.();
-    onClose = null;
-  }
+  let openItemEditor = false;
 </script>
 
 <NodeView
   style={css.raw(
-    {
-      display: 'flex',
-      alignItems: 'center',
-      pointerEvents: 'none',
-      paddingY: '4px',
-    },
+    { display: 'flex', alignItems: 'center', pointerEvents: 'none', paddingY: '4px' },
     node.attrs.align === 'left' && { justifyContent: 'flex-start' },
     node.attrs.align === 'center' && { justifyContent: 'center' },
     node.attrs.align === 'right' && { justifyContent: 'flex-end' },
@@ -72,18 +41,28 @@
 >
   <div
     class={css(
-      {
-        minWidth: '0',
-        pointerEvents: 'auto',
-        smDown: { marginX: '-20px' },
-      },
-      node.attrs.ids.length === 0 && { backgroundColor: '[#D9D9D9]', width: '400px', height: '200px' },
+      { minWidth: '0', pointerEvents: 'auto', smDown: { marginX: '-20px' } },
+      node.attrs.size === 'full' && { maxWidth: 'full' },
+      node.attrs.size === 'compact' && { maxWidth: '500px' },
       selected && { ringWidth: '2px', ringColor: 'brand.400' },
     )}
   >
-    <div class={css(editor?.isEditable && { pointerEvents: 'none' })}>
-      <Display {node} {updateAttributes} />
-    </div>
+    {#if node.attrs.layout === 'slide-2' || node.attrs.layout === 'slide-3'}
+      <Slide ids={node.attrs.ids} pages={node.attrs.layout === 'slide-2' ? 2 : 3} />
+    {:else}
+      <div
+        class={css(
+          node.attrs.layout === 'scroll' && { display: 'flex', flexDirection: 'column', alignItems: 'center' },
+          node.attrs.layout === 'grid-2' && { display: 'grid', gridTemplateColumns: '2' },
+          node.attrs.layout === 'grid-3' && { display: 'grid', gridTemplateColumns: '3' },
+          { smDown: { maxWidth: 'full' } },
+        )}
+      >
+        {#each node.attrs.ids as id (id)}
+          <Image {id} style={css.raw({ size: 'full', objectFit: 'cover' })} />
+        {/each}
+      </div>
+    {/if}
   </div>
 </NodeView>
 
@@ -99,21 +78,10 @@
         _hover: { backgroundColor: 'gray.100' },
       })}
       type="button"
-      on:click={() => {
-        if (node.attrs.layout === 'standalone') {
-          // TODO: 이미지 교체
-        } else {
-          open = true;
-        }
-      }}
+      on:click={() => (openItemEditor = true)}
     >
-      {#if node.attrs.layout === 'standalone'}
-        <Icon icon={IconArrowsExchange} size={20} />
-        교체
-      {:else}
-        <Icon icon={IconEdit} size={20} />
-        편집
-      {/if}
+      <Icon icon={IconEdit} size={20} />
+      편집
     </button>
 
     <div class={css({ backgroundColor: 'gray.200', width: '1px', height: '12px' })} />
@@ -221,5 +189,5 @@
     </button>
   </TiptapNodeViewBubbleMenu>
 
-  <Editor {node} {updateAttributes} bind:open />
+  <ItemEditor {node} {updateAttributes} bind:open={openItemEditor} />
 {/if}

@@ -5,27 +5,19 @@
   import { Icon } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import IsomorphicImage from './IsomorphicImage.svelte';
-  import type { SwiperContainer, SwiperSlide } from 'swiper/element-bundle';
-  import type { Image_image } from '$glitch';
+  import Image from './Image.svelte';
+  import type { SwiperContainer } from 'swiper/element-bundle';
 
-  type IsomorphicImage = { id: string } & (
-    | { kind: 'file'; __file: File }
-    | { kind: 'data'; __data: { id: string; name: string; color: string } & Image_image }
-  );
-
-  export let isomorphicImages: IsomorphicImage[];
-  export let slidesPerPage: number;
-  export let spacing: boolean;
+  export let ids: string[];
+  export let pages: number;
 
   let swiperEl: SwiperContainer;
-  let swiperSlideEl: SwiperSlide;
   let swiperNextElem: HTMLElement;
   let swiperPrevElem: HTMLElement;
   let swiperPaginationElem: HTMLElement;
 
   let activeIndex = 0;
-  let totalIndex = isomorphicImages.length;
+  $: totalIndex = ids.length;
 
   $: swiperParams = {
     navigation: {
@@ -36,10 +28,10 @@
       el: swiperPaginationElem,
       type: 'fraction',
     },
-    slidesPerView: slidesPerPage,
-    slidesPerGroup: slidesPerPage,
+    slidesPerView: pages,
+    slidesPerGroup: pages,
     grabCursor: true,
-    spaceBetween: spacing ? 6 : 0,
+    spaceBetween: 0,
 
     on: {
       slideChangeTransitionEnd: () => {
@@ -77,7 +69,7 @@
       justifyContent: 'center',
       size: 'full',
     },
-    isomorphicImages.length === 0 && { display: 'none' },
+    ids.length === 0 && { display: 'none' },
   )}
   role="presentation"
   on:mouseenter={() => {
@@ -125,7 +117,7 @@
         backgroundColor: 'gray.900/20',
         zIndex: '2',
       },
-      isomorphicImages.length === 0 && { display: 'none' },
+      ids.length === 0 && { display: 'none' },
     )}
   />
 
@@ -146,34 +138,18 @@
         size: '24px',
         zIndex: '2',
       },
-      isomorphicImages.length === 0 && { display: 'none' },
+      ids.length === 0 && { display: 'none' },
     )}
     type="button"
   >
     <Icon icon={IconChevronLeft} size={20} />
   </button>
   <swiper-container bind:this={swiperEl} class={css({ position: 'relative', size: 'full' })} init="false">
-    {#each isomorphicImages as image (image)}
-      <swiper-slide bind:this={swiperSlideEl}>
-        <div
-          style:background-color={image.kind === 'data' ? image.__data.color : undefined}
-          class={css({ size: 'full' })}
-        >
-          <IsomorphicImage style={css.raw({ objectFit: 'contain', size: 'full' })} {image} />
-        </div>
+    {#each ids as id (id)}
+      <swiper-slide>
+        <Image {id} style={css.raw({ objectFit: 'contain', size: 'full' })} />
       </swiper-slide>
     {/each}
-    {#if slidesPerPage === 2 && isomorphicImages.length % 2 === 1}
-      {@const image = isomorphicImages.at(-1)}
-      {#if image}
-        <swiper-slide bind:this={swiperSlideEl}>
-          <div
-            style:background-color={image.kind === 'data' ? image.__data.color : undefined}
-            class={css({ size: 'full' })}
-          />
-        </swiper-slide>
-      {/if}
-    {/if}
   </swiper-container>
   <button
     bind:this={swiperNextElem}
@@ -192,7 +168,7 @@
         size: '24px',
         zIndex: '2',
       },
-      isomorphicImages.length === 0 && { display: 'none' },
+      ids.length === 0 && { display: 'none' },
     )}
     type="button"
   >
@@ -210,9 +186,9 @@
     })}
   >
     <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
-    {#each Array.from( { length: Math.ceil(totalIndex / slidesPerPage) > 5 ? 5 : Math.ceil(totalIndex / slidesPerPage) }, ) as _, i (i)}
-      {@const index = i * slidesPerPage}
-      {@const minus = Math.floor(totalIndex / slidesPerPage) > 5 ? 5 : Math.floor(totalIndex / slidesPerPage)}
+    {#each Array.from({ length: Math.ceil(totalIndex / pages) > 5 ? 5 : Math.ceil(totalIndex / pages) }) as _, i (i)}
+      {@const index = i * pages}
+      {@const minus = Math.floor(totalIndex / pages) > 5 ? 5 : Math.floor(totalIndex / pages)}
       <div
         class={css(
           { size: '6px', backgroundColor: 'gray.300', borderRadius: 'full' },

@@ -44,10 +44,8 @@
 
   const { state } = getEditorContext();
   const uploadingCount = writable(0);
-  const filesCount = writable(0);
-  const format = writable<'image' | 'file' | 'auto'>('auto');
 
-  const uploadImage = async (pos: number, file: File, multiple: boolean) => {
+  const uploadImage = async (file: File) => {
     try {
       uploadingCount.update((count) => count + 1);
 
@@ -55,14 +53,13 @@
       await ky.put(presignedUrl, { body: file });
       const resp = await finalizeImageUpload({ key, name: file.name });
 
-      if (!multiple) $state.editor?.commands.insertContentAt(pos, { type: 'image', attrs: { id: resp.id } });
-      // TODO: 이미지 업로드
+      return resp.id;
     } finally {
       uploadingCount.update((count) => count - 1);
     }
   };
 
-  const uploadFile = async (pos: number, file: File) => {
+  const uploadFile = async (file: File) => {
     try {
       uploadingCount.update((count) => count + 1);
 
@@ -70,7 +67,7 @@
       await ky.put(presignedUrl, { body: file });
       const resp = await finalizeFileUpload({ key, name: file.name });
 
-      $state.editor?.commands.insertContentAt(pos, { type: 'file', attrs: { id: resp.id } });
+      return resp.id;
     } finally {
       uploadingCount.update((count) => count - 1);
     }
@@ -104,18 +101,22 @@
       others.push(...files);
     }
 
-    filesCount.set(as === 'image' ? images.length : others.length);
-    format.set(as);
-
     if (images.length === 1) {
-      await uploadImage(pos, images[0], false);
+      const id = await uploadImage(images[0]);
+      $state.editor.commands.insertContentAt(pos, { type: 'image', attrs: { id } });
     } else if (images.length > 1) {
-      $state.editor?.chain().focus().setGallery().run();
-      await Promise.all(images.map((v) => uploadImage(pos, v, true)));
+      const ids = await Promise.all(images.map((v) => uploadImage(v)));
+      $state.editor.commands.insertContentAt(pos, { type: 'gallery', attrs: { ids } });
     }
 
     if (others.length > 0) {
-      await Promise.all(others.map((v) => uploadFile(pos, v)));
+      await Promise.all(
+        others.map((v) =>
+          uploadFile(v).then((id) => {
+            $state.editor?.commands.insertContentAt(pos, { type: 'file', attrs: { id } });
+          }),
+        ),
+      );
     }
   };
 </script>
@@ -141,36 +142,10 @@
     <RingSpinner style={css.raw({ color: 'gray.300', size: '32px' })} />
 
     <div>
-      <p class={css({ marginBottom: '2px', fontSize: '14px', fontWeight: 'semibold' })}>
-        {#if $format === 'file'}
-          파일을
-        {:else}
-          이미지를
-        {/if} 업로드하고 있어요
-      </p>
-      <div
-        class={css({
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '10px',
-          fontSize: '13px',
-          color: 'gray.500',
-        })}
-      >
-        <p>
-          총 {$filesCount}개의 {#if $format === 'file'}
-            파일
-          {:else}
-            이미지
-          {/if} 중
-          <mark class={css({ color: 'brand.400' })}>{$uploadingCount}개</mark>
-          업로드 중
-        </p>
-        <!-- prettier-ignore -->
-        <span>
-          <mark class={css({ color: 'brand.400' })}>{$filesCount - $uploadingCount}</mark>/{$filesCount}
-        </span>
+      <p class={css({ marginBottom: '2px', fontSize: '14px', fontWeight: 'semibold' })}>파일을 업로드하고 있어요</p>
+      <div class={css({ fontSize: '13px', color: 'gray.500' })}>
+        <mark class={css({ color: 'brand.400' })}>{$uploadingCount}개</mark>
+        업로드 중
       </div>
     </div>
   </div>
