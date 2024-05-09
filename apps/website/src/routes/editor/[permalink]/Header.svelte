@@ -32,6 +32,7 @@
   import { getEditorContext } from './context';
   import DebugModal from './DebugModal.svelte';
   import DraftListModal from './DraftListModal.svelte';
+  import GalleryEditToolbar from './GalleryEditToolbar.svelte';
   import ImageEditToolbar from './ImageEditToolbar.svelte';
   import LinkModal from './LinkModal.svelte';
   import MobileEditMenu from './MobileEditMenu.svelte';
@@ -88,10 +89,12 @@
   let timeTravelOpen = false;
 
   let debugModalOpen = false;
+
   const { anchor: publishAnchor, floating: publishFloating } = createFloatingActions({
     placement: 'bottom-end',
     offset: 11,
   });
+
   let vvOffset: number | undefined;
 
   const handleVisualViewportChange = () => {
@@ -421,8 +424,10 @@
           borderYColor: 'gray.100',
           hideBelow: 'sm',
         },
-        // TODO
-        { borderYColor: 'gray.50', backgroundColor: '[#F3F0FD]' },
+        (editor?.isActive('image') || editor?.isActive('gallery')) && {
+          borderYColor: 'gray.50',
+          backgroundColor: '[#F3F0FD]',
+        },
       )}
     >
       <div
@@ -454,11 +459,12 @@
             </ToolbarButtonTooltip>
           </div>
 
-          <!-- TODO -->
-          {#if true}
-            <TextEditToolbar />
-          {:else}
+          {#if editor?.isActive('image')}
             <ImageEditToolbar />
+          {:else if editor?.isActive('gallery')}
+            <GalleryEditToolbar />
+          {:else}
+            <TextEditToolbar />
           {/if}
         </div>
       </div>
