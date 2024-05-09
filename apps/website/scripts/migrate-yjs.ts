@@ -1,5 +1,5 @@
 import { getSchema } from '@tiptap/core';
-import { and, asc, eq } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import { traverse } from 'object-traversal';
 import { prosemirrorJSONToYDoc } from 'y-prosemirror';
 import * as Y from 'yjs';
@@ -99,7 +99,7 @@ for (let i = 0; ; i++) {
             })
             .from(PostRevisions)
             .where(eq(PostRevisions.postId, post.id))
-            .orderBy(asc(PostRevisions.createdAt))
+            .orderBy(desc(PostRevisions.updatedAt))
             .limit(1);
 
           let title: string | null = null;
