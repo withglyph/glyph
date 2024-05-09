@@ -261,7 +261,7 @@ for (let i = 0; ; i++) {
           // 마이그레이션 완료 마크
           await tx.update(Posts).set({ migrated: true }).where(eq(Posts.id, post.id));
         },
-        { isolationLevel: 'repeatable read' },
+        { isolationLevel: 'read committed' },
       ),
     ),
   );
