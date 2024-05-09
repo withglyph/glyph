@@ -48,8 +48,10 @@
     <button
       class={flex({
         align: 'center',
-        gap: '2px',
-        paddingX: '4px',
+        gap: '4px',
+        paddingY: '2px',
+        paddingLeft: '6px',
+        paddingRight: '4px',
         height: '24px',
         _hover: { backgroundColor: 'gray.100' },
         _pressed: { backgroundColor: 'gray.100' },
@@ -59,7 +61,7 @@
       on:click={() => (colorPickerOpen = true)}
       use:anchor
     >
-      <div style:background-color={currentColor} class={css({ borderRadius: 'full', size: '20px' })} />
+      <div style:background-color={currentColor} class={css({ borderRadius: 'full', size: '16px' })} />
       <Icon style={css.raw({ color: 'gray.400' }, colorPickerOpen && { rotate: '[180deg]' })} icon={IconChevronDown} />
     </button>
 
