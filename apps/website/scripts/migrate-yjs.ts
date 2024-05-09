@@ -68,7 +68,10 @@ const migrateContent = (content: JSONContent) => {
 const schema = getSchema(extensions);
 
 for (let i = 0; ; i++) {
-  const posts = await database.select({ id: Posts.id }).from(Posts).where(eq(Posts.migrated, false)).limit(100);
+  const posts = await database
+    .select({ id: Posts.id })
+    .from(Posts) /*.where(eq(Posts.migrated, false))*/
+    .limit(100);
 
   if (posts.length === 0) {
     break;
@@ -259,7 +262,7 @@ for (let i = 0; ; i++) {
           );
 
           // 마이그레이션 완료 마크
-          await tx.update(Posts).set({ migrated: true }).where(eq(Posts.id, post.id));
+          // await tx.update(Posts).set({ migrated: true }).where(eq(Posts.id, post.id));
         },
         { isolationLevel: 'read committed' },
       ),
