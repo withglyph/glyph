@@ -21,18 +21,18 @@
 
   const slides: Slide[] = [
     {
+      title: '5월 10일 업데이트 노트',
+      subtitle: '실시간 저장 도입, 이미지/파일 삽입 개선\n코드 블럭, HTML 블럭',
+      color: '#1717175A',
+      backgroundImageUrl: 'https://glyph.pub/images/_/banner_updates_2.png',
+      href: '/glyph/2101056115',
+    },
+    {
       title: '<정산 기능 업데이트>',
       subtitle: '창작자를 위한 정산 수수료 0%',
       color: '#1717175A',
       backgroundImageUrl: 'https://glyph.pub/images/_/banner_settlement.png',
       href: '/glyph/1858282558',
-    },
-    {
-      title: '4월 26일 업데이트 노트',
-      subtitle: '더욱 새로워진 글리프를 만나보세요',
-      color: '#1717175A',
-      backgroundImageUrl: 'https://glyph.pub/images/_/banner_updates_2.png',
-      href: '/glyph/1271764659',
     },
     {
       title: '펜슬이 글리프로 바뀌었어요',
