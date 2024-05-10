@@ -22,34 +22,6 @@
       value = editor.getAttributes('link').href;
     }
   });
-
-  const insertLink = () => {
-    if (editor?.state.selection.empty && !editor?.isActive('link')) {
-      const positionStart = editor?.state.selection.$from.pos;
-      editor?.chain().focus().insertContent(value).run();
-      const positionEnd = editor?.state.selection.$from.pos;
-
-      editor
-        ?.chain()
-        .focus()
-        .setTextSelection({ from: positionStart, to: positionEnd })
-        .setLink(value)
-        .setTextSelection(editor?.state.selection.$to.pos)
-        .insertContent(' ')
-        .run();
-    } else {
-      if (editor?.isActive('link')) {
-        alert(value);
-        editor?.chain().focus().updateLink(value).run();
-      } else {
-        editor?.chain().focus().setLink(value).run();
-      }
-    }
-
-    if (close) {
-      close();
-    }
-  };
 </script>
 
 <div
@@ -116,45 +88,75 @@
     </button>
   </header>
 
-  <TextInput style={css.raw({ marginTop: '12px', marginBottom: '26px' })} size="md" type="text" bind:value>
-    <Icon slot="left-icon" style={css.raw({ color: 'gray.400' })} icon={IconLink} />
-  </TextInput>
+  <form
+    on:submit={() => {
+      if (editor?.state.selection.empty && !editor?.isActive('link')) {
+        const positionStart = editor?.state.selection.$from.pos;
+        editor?.chain().focus().insertContent(value).run();
+        const positionEnd = editor?.state.selection.$from.pos;
 
-  <div
-    class={flex({
-      align: 'center',
-      justify: 'space-between',
-      smDown: { flexDirection: 'column', alignItems: 'flex-start', gap: '36px', marginTop: '4px' },
-    })}
+        editor
+          ?.chain()
+          .focus()
+          .setTextSelection({ from: positionStart, to: positionEnd })
+          .setLink(value)
+          .setTextSelection(editor?.state.selection.$to.pos)
+          .insertContent(' ')
+          .run();
+      } else {
+        if (editor?.isActive('link')) {
+          alert(value);
+          editor?.chain().focus().updateLink(value).run();
+        } else {
+          editor?.chain().focus().setLink(value).run();
+        }
+      }
+
+      if (close) {
+        close();
+      }
+    }}
   >
-    <button
+    <TextInput style={css.raw({ marginTop: '12px', marginBottom: '26px' })} size="md" type="text" bind:value>
+      <Icon slot="left-icon" style={css.raw({ color: 'gray.400' })} icon={IconLink} />
+    </TextInput>
+
+    <div
       class={flex({
         align: 'center',
-        gap: '4px',
-        paddingY: '9px',
-        paddingLeft: '10px',
-        paddingRight: '12px',
-        fontSize: '13px',
-        fontWeight: 'medium',
-        color: 'gray.600',
+        justify: 'space-between',
+        smDown: { flexDirection: 'column', alignItems: 'flex-start', gap: '36px', marginTop: '4px' },
       })}
-      type="button"
-      on:click={() => {
-        editor?.chain().focus().unsetLink().run();
-
-        if (close) {
-          close();
-        }
-      }}
     >
-      <Icon icon={IconTrash} />
-      링크제거
-    </button>
-    <Button style={css.raw({ width: 'full', hideFrom: 'sm' })} size="md" variant="brand-fill" on:click={insertLink}>
-      삽입
-    </Button>
-    <Button style={css.raw({ width: '68px', hideBelow: 'sm' })} size="sm" variant="brand-fill" on:click={insertLink}>
-      삽입
-    </Button>
-  </div>
+      <button
+        class={flex({
+          align: 'center',
+          gap: '4px',
+          paddingY: '9px',
+          paddingLeft: '10px',
+          paddingRight: '12px',
+          fontSize: '13px',
+          fontWeight: 'medium',
+          color: 'gray.600',
+        })}
+        type="button"
+        on:click={() => {
+          editor?.chain().focus().unsetLink().run();
+
+          if (close) {
+            close();
+          }
+        }}
+      >
+        <Icon icon={IconTrash} />
+        링크제거
+      </button>
+      <Button style={css.raw({ width: 'full', hideFrom: 'sm' })} size="md" type="submit" variant="brand-fill">
+        삽입
+      </Button>
+      <Button style={css.raw({ width: '68px', hideBelow: 'sm' })} size="sm" type="submit" variant="brand-fill">
+        삽입
+      </Button>
+    </div>
+  </form>
 </div>

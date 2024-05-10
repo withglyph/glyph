@@ -22,18 +22,6 @@
       value = editor.getAttributes('ruby').text;
     }
   });
-
-  const insertRuby = () => {
-    if (editor?.isActive('ruby')) {
-      editor?.chain().focus().updateRuby(value).run();
-    } else {
-      editor?.chain().focus().setRuby(value).run();
-    }
-
-    if (close) {
-      close();
-    }
-  };
 </script>
 
 <div
@@ -100,45 +88,59 @@
     </button>
   </header>
 
-  <TextInput style={css.raw({ marginTop: '12px', marginBottom: '26px' })} size="md" type="text" bind:value>
-    <Icon slot="left-icon" style={css.raw({ color: 'gray.400' })} icon={IconRuby} />
-  </TextInput>
+  <form
+    on:submit={() => {
+      if (editor?.isActive('ruby')) {
+        editor?.chain().focus().updateRuby(value).run();
+      } else {
+        editor?.chain().focus().setRuby(value).run();
+      }
 
-  <div
-    class={flex({
-      align: 'center',
-      justify: 'space-between',
-      smDown: { flexDirection: 'column', alignItems: 'flex-start', gap: '36px', marginTop: '4px' },
-    })}
+      if (close) {
+        close();
+      }
+    }}
   >
-    <button
+    <TextInput style={css.raw({ marginTop: '12px', marginBottom: '26px' })} size="md" type="text" bind:value>
+      <Icon slot="left-icon" style={css.raw({ color: 'gray.400' })} icon={IconRuby} />
+    </TextInput>
+
+    <div
       class={flex({
         align: 'center',
-        gap: '4px',
-        paddingY: '9px',
-        paddingLeft: '10px',
-        paddingRight: '12px',
-        fontSize: '13px',
-        fontWeight: 'medium',
-        color: 'gray.600',
+        justify: 'space-between',
+        smDown: { flexDirection: 'column', alignItems: 'flex-start', gap: '36px', marginTop: '4px' },
       })}
-      type="button"
-      on:click={() => {
-        editor?.chain().focus().unsetRuby().run();
-
-        if (close) {
-          close();
-        }
-      }}
     >
-      <Icon icon={IconTrash} />
-      루비제거
-    </button>
-    <Button style={css.raw({ width: 'full', hideFrom: 'sm' })} size="md" variant="brand-fill" on:click={insertRuby}>
-      삽입
-    </Button>
-    <Button style={css.raw({ width: '68px', hideBelow: 'sm' })} size="sm" variant="brand-fill" on:click={insertRuby}>
-      삽입
-    </Button>
-  </div>
+      <button
+        class={flex({
+          align: 'center',
+          gap: '4px',
+          paddingY: '9px',
+          paddingLeft: '10px',
+          paddingRight: '12px',
+          fontSize: '13px',
+          fontWeight: 'medium',
+          color: 'gray.600',
+        })}
+        type="button"
+        on:click={() => {
+          editor?.chain().focus().unsetRuby().run();
+
+          if (close) {
+            close();
+          }
+        }}
+      >
+        <Icon icon={IconTrash} />
+        루비제거
+      </button>
+      <Button style={css.raw({ width: 'full', hideFrom: 'sm' })} size="md" type="submit" variant="brand-fill">
+        삽입
+      </Button>
+      <Button style={css.raw({ width: '68px', hideBelow: 'sm' })} size="sm" type="submit" variant="brand-fill">
+        삽입
+      </Button>
+    </div>
+  </form>
 </div>
