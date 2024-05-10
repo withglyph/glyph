@@ -105,7 +105,6 @@
           .run();
       } else {
         if (editor?.isActive('link')) {
-          alert(value);
           editor?.chain().focus().updateLink(value).run();
         } else {
           editor?.chain().focus().setLink(value).run();
