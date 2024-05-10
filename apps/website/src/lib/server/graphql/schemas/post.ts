@@ -296,7 +296,7 @@ Post.implement({
           }
 
           const meAsMember = await getSpaceMember(context, post.spaceId);
-          if (meAsMember?.role !== 'ADMIN') {
+          if (!meAsMember) {
             throw new PermissionDeniedError();
           }
         }
@@ -322,7 +322,7 @@ Post.implement({
           }
 
           const meAsMember = await getSpaceMember(context, post.spaceId);
-          if (meAsMember?.role !== 'ADMIN') {
+          if (!meAsMember) {
             throw new PermissionDeniedError();
           }
         }
@@ -1202,7 +1202,7 @@ builder.queryFields((t) => ({
 
       if (post.space && post.userId !== context.session.userId) {
         const meAsMember = await getSpaceMember(context, post.space.id);
-        if (meAsMember?.role !== 'ADMIN') {
+        if (!meAsMember) {
           throw new PermissionDeniedError();
         }
       }
@@ -1527,7 +1527,7 @@ builder.mutationFields((t) => ({
       const [post] = posts;
 
       const meAsMember = await getSpaceMember(context, post.space.id);
-      if (!meAsMember || (post.userId !== context.session.userId && meAsMember.role !== 'ADMIN')) {
+      if (!meAsMember) {
         throw new PermissionDeniedError();
       }
 
@@ -1565,7 +1565,7 @@ builder.mutationFields((t) => ({
       const [post] = posts;
 
       const meAsMember = await getSpaceMember(context, post.space.id);
-      if (!meAsMember || (post.userId !== context.session.userId && meAsMember.role !== 'ADMIN')) {
+      if (!meAsMember) {
         throw new PermissionDeniedError();
       }
 
@@ -1914,7 +1914,7 @@ builder.mutationFields((t) => ({
         }
 
         const meAsMember = await getSpaceMember(context, post.spaceId);
-        if (meAsMember?.role !== 'ADMIN') {
+        if (!meAsMember) {
           throw new PermissionDeniedError();
         }
       }
@@ -2029,7 +2029,7 @@ builder.subscriptionFields((t) => ({
         }
 
         const meAsMember = await getSpaceMember(context, post.spaceId);
-        if (meAsMember?.role !== 'ADMIN') {
+        if (!meAsMember) {
           throw new PermissionDeniedError();
         }
       }

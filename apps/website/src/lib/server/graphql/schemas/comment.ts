@@ -48,7 +48,7 @@ PostComment.implement({
               }
 
               const member = await getSpaceMember(context, post.spaceId);
-              if (member?.role !== 'ADMIN') {
+              if (!member) {
                 return '';
               }
             }
@@ -497,7 +497,7 @@ builder.mutationFields((t) => ({
       if (comment.post.userId !== context.session.userId) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const meAsMember = await getSpaceMember(context, comment.post.spaceId!);
-        if (meAsMember?.role !== 'ADMIN') {
+        if (!meAsMember) {
           throw new PermissionDeniedError();
         }
       }
@@ -536,7 +536,7 @@ builder.mutationFields((t) => ({
       if (comment.post.userId !== context.session.userId) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const meAsMember = await getSpaceMember(context, comment.post.spaceId!);
-        if (meAsMember?.role !== 'ADMIN') {
+        if (!meAsMember) {
           throw new PermissionDeniedError();
         }
       }

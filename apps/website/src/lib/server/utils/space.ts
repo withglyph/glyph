@@ -14,7 +14,13 @@ export const getSpaceMember = async (context: Context, spaceId: string) => {
       return await database
         .select({ SpaceMembers })
         .from(SpaceMembers)
-        .where(and(inArray(SpaceMembers.spaceId, spaceIds), eq(SpaceMembers.userId, context.session.userId)))
+        .where(
+          and(
+            inArray(SpaceMembers.spaceId, spaceIds),
+            eq(SpaceMembers.userId, context.session.userId),
+            eq(SpaceMembers.state, 'ACTIVE'),
+          ),
+        )
         .then((rows) => rows.map((row) => row.SpaceMembers));
     },
     key: (row) => row?.spaceId,
