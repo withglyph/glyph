@@ -76,6 +76,7 @@
         paddingRight: '4px',
         fontSize: '12px',
         fontWeight: 'medium',
+        color: 'gray.500',
         transition: 'common',
         _hover: { backgroundColor: 'gray.100' },
       })}
@@ -90,7 +91,8 @@
 
     <button
       class={css({
-        margin: '2px',
+        padding: '2px',
+        color: 'gray.500',
         transition: 'common',
         _hover: { backgroundColor: 'gray.100' },
         _pressed: { backgroundColor: { base: 'brand.400', _hover: 'brand.600' }, color: 'gray.50' },
@@ -106,7 +108,8 @@
     </button>
     <button
       class={css({
-        margin: '2px',
+        padding: '2px',
+        color: 'gray.500',
         transition: 'common',
         _hover: { backgroundColor: 'gray.100' },
         _pressed: { backgroundColor: { base: 'brand.400', _hover: 'brand.600' }, color: 'gray.50' },
@@ -126,7 +129,8 @@
     {#if node.attrs.size === 'compact'}
       <button
         class={css({
-          margin: '2px',
+          padding: '2px',
+          color: 'gray.500',
           transition: 'common',
           _hover: { backgroundColor: 'gray.100' },
           _pressed: { backgroundColor: { base: 'brand.400', _hover: 'brand.600' }, color: 'gray.50' },
@@ -143,7 +147,8 @@
 
       <button
         class={css({
-          margin: '2px',
+          padding: '2px',
+          color: 'gray.500',
           transition: 'common',
           _hover: { backgroundColor: 'gray.100' },
           _pressed: { backgroundColor: { base: 'brand.400', _hover: 'brand.600' }, color: 'gray.50' },
@@ -160,7 +165,8 @@
 
       <button
         class={css({
-          margin: '2px',
+          padding: '2px',
+          color: 'gray.500',
           transition: 'common',
           _hover: { backgroundColor: 'gray.100' },
           _pressed: { backgroundColor: { base: 'brand.400', _hover: 'brand.600' }, color: 'gray.50' },
@@ -180,7 +186,8 @@
 
     <button
       class={css({
-        margin: '2px',
+        padding: '2px',
+        color: 'gray.500',
         transition: 'common',
         _hover: { backgroundColor: 'gray.100' },
       })}

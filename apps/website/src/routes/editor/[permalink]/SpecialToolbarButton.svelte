@@ -26,22 +26,26 @@
       alignItems: 'center',
       justifyContent: 'center',
       gap: '2px',
-      margin: '2px',
+      padding: '2px',
       fontSize: '12px',
       fontWeight: 'medium',
-      color: 'gray.600',
-      height: '20px',
-      transition: 'common',
+      height: '24px',
+      color: 'gray.500',
       _hover: { backgroundColor: 'brand.200' },
     },
     variants: {
       variant: {
-        fill: { _pressed: { backgroundColor: { base: 'brand.400', _hover: 'brand.600!' }, color: 'gray.50' } },
+        fill: {
+          _pressed: { backgroundColor: { base: 'brand.400', _hover: '[#603ECE!]' }, color: 'gray.50' },
+        },
         outline: {
-          _pressed: {
-            borderWidth: '1px',
-            borderColor: 'brand.400',
-            backgroundColor: { base: 'brand.200', _hover: '[#B098FF!]' },
+          '& > svg': { color: 'gray.500' },
+          '_pressed': {
+            'borderWidth': '[1.5px]',
+            'borderColor': 'brand.400',
+            'color': 'brand.400',
+            'backgroundColor': { base: 'brand.200', _hover: '[#CABAFF!]' },
+            '& > svg': { color: 'brand.400' },
           },
         },
       },
