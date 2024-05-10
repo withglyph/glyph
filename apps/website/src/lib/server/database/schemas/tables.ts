@@ -1055,7 +1055,7 @@ export const PostContentUpdates = pgTable(
       .default(sql`now()`),
   },
   (t) => ({
-    postIdCreatedAtIdx: index().on(t.postId, t.createdAt),
+    postIdSeqIdx: index().on(t.postId, t.seq),
   }),
 );
 
