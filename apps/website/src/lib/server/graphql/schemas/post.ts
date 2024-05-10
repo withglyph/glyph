@@ -1,7 +1,7 @@
 import { init as cuid } from '@paralleldrive/cuid2';
 import { hash, verify } from 'argon2';
 import dayjs from 'dayjs';
-import { and, asc, count, desc, eq, exists, gt, isNotNull, isNull, lt, ne, notExists, or, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, exists, gt, gte, isNotNull, isNull, lt, ne, notExists, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { pipe, Repeater } from 'graphql-yoga';
 import { fromUint8Array, toUint8Array } from 'js-base64';
@@ -330,7 +330,12 @@ Post.implement({
         return await database
           .select()
           .from(PostContentSnapshots)
-          .where(eq(PostContentSnapshots.postId, post.id))
+          .where(
+            and(
+              eq(PostContentSnapshots.postId, post.id),
+              gte(PostContentSnapshots.createdAt, dayjs().subtract(24, 'hours')),
+            ),
+          )
           .orderBy(asc(PostContentSnapshots.createdAt));
       },
     }),
