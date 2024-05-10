@@ -92,7 +92,7 @@
 
   const { anchor: publishAnchor, floating: publishFloating } = createFloatingActions({
     placement: 'bottom-end',
-    offset: 11,
+    offset: 13,
   });
 
   let vvOffset: number | undefined;
