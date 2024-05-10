@@ -4,7 +4,7 @@ import { customAlphabet } from 'nanoid';
 import numeral from 'numeral';
 import { match } from 'ts-pattern';
 import { PaymentMethod, PointPurchaseState, PointTransactionCause } from '$lib/enums';
-import { NotFoundError, UnknownError } from '$lib/errors';
+import { NotFoundError } from '$lib/errors';
 import { database, inArray, PointPurchases, PointTransactions, PostPurchases, Users } from '$lib/server/database';
 import { exim, portone } from '$lib/server/external-api';
 import { builder } from '../builder';
@@ -60,7 +60,7 @@ PurchasePointTransaction.implement({
       type: PointPurchase,
       resolve: async (pointTransaction) => {
         if (!pointTransaction.targetId) {
-          throw new UnknownError();
+          throw new Error('no targetId');
         }
 
         return pointTransaction.targetId;
@@ -77,7 +77,7 @@ UnlockContentPointTransaction.implement({
       type: Post,
       resolve: async (pointTransaction, _, context) => {
         if (!pointTransaction.targetId) {
-          throw new UnknownError();
+          throw new Error('no targetId');
         }
 
         const loader = context.loader({
@@ -107,7 +107,7 @@ EventRewardPointTransaction.implement({
       type: UserEventEnrollment,
       resolve: async (pointTransaction) => {
         if (!pointTransaction.targetId) {
-          throw new UnknownError();
+          throw new Error('no targetId');
         }
 
         return pointTransaction.targetId;

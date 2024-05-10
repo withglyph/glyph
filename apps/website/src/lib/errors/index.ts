@@ -70,10 +70,7 @@ export abstract class AppError extends Error {
       } = r.data;
 
       return match(kind)
-        .with(
-          AppErrorKind.UnknownError,
-          () => new UnknownError(extra.cause as unknown | undefined, extra.id as string | undefined),
-        )
+        .with(AppErrorKind.UnknownError, () => new UnknownError(extra.cause as unknown, extra.id as string | undefined))
         .with(AppErrorKind.IntentionalError, () => new IntentionalError(message))
         .with(
           AppErrorKind.PermissionDeniedError,
@@ -96,33 +93,24 @@ const ErrorLikeSchema = z.object({
 });
 
 export class UnknownError extends AppError {
-  public override readonly cause?: ErrorLike;
+  public override readonly cause: ErrorLike;
   public readonly id?: string;
 
-  constructor(cause?: unknown, id?: string) {
+  constructor(cause: unknown, id?: string) {
     if (!id && cause) {
       id = Sentry.captureException(cause);
     }
 
-    if (!production && cause) {
-      const r = ErrorLikeSchema.safeParse(cause);
-      const c = r.success ? r.data : new Error(String(cause));
+    const r = ErrorLikeSchema.safeParse(cause);
+    const c = r.success ? r.data : new Error(String(cause));
 
-      super({
-        kind: AppErrorKind.UnknownError,
-        message: `${c.name}: ${c.message}`,
-        extra: { id, cause: c },
-      });
+    super({
+      kind: AppErrorKind.UnknownError,
+      message: production ? '알 수 없는 오류가 발생했어요' : `${c.name}: ${c.message}`,
+      extra: { id, cause: c },
+    });
 
-      this.cause = c;
-    } else {
-      super({
-        kind: AppErrorKind.UnknownError,
-        message: `알 수 없는 오류가 발생했어요`,
-        extra: { id },
-      });
-    }
-
+    this.cause = c;
     this.id = id;
   }
 }

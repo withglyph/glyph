@@ -1,5 +1,6 @@
 <script lang="ts">
   import { production } from '@withglyph/lib/environment';
+  import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import FullLogo from '$assets/logos/full.svg?component';
   import { Helmet, Link } from '$lib/components';
@@ -12,6 +13,25 @@
 
   $: error = $page.error ? AppError.deserialize($page.error) : new UnknownError('Really unknown error');
   $: code = error.extra.code ?? $page.status;
+
+  onMount(() => {
+    let previousKeys: string[] = [];
+
+    const handler = (event: KeyboardEvent) => {
+      previousKeys.push(event.key);
+
+      if (
+        previousKeys.slice(-10).join(' ') ===
+        'ArrowUp ArrowUp ArrowDown ArrowDown ArrowLeft ArrowRight ArrowLeft ArrowRight b a'
+      ) {
+        open = true;
+        previousKeys = [];
+      }
+    };
+
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  });
 </script>
 
 <Helmet description="글리프 에러 페이지" title="글리프" />
@@ -106,18 +126,16 @@
   </div>
 </div>
 
-{#if !production}
-  <Modal bind:open>
-    <svelte:fragment slot="title">추가 정보</svelte:fragment>
+<Modal bind:open>
+  <svelte:fragment slot="title">추가 정보</svelte:fragment>
 
-    <div class={css({ fontFamily: 'mono', overflow: 'auto', whiteSpace: 'pre', wordBreak: 'keep-all' })}>
-      {#if error instanceof UnknownError && error.cause}
-        {error.cause.stack}
-      {:else}
-        {JSON.stringify(error.extra, null, 2)}
-      {/if}
-    </div>
+  <div class={css({ fontFamily: 'mono', overflow: 'auto', whiteSpace: 'pre', wordBreak: 'keep-all' })}>
+    {#if error instanceof UnknownError}
+      {error.cause.stack}
+    {:else}
+      {JSON.stringify(error, null, 2)}
+    {/if}
+  </div>
 
-    <Button slot="action" size="md" on:click={() => (open = false)}>닫기</Button>
-  </Modal>
-{/if}
+  <Button slot="action" size="md" on:click={() => (open = false)}>닫기</Button>
+</Modal>
