@@ -26,8 +26,8 @@
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: '16px',
-        outlineWidth: '1px',
-        outlineColor: { base: 'gray.150', _enabled: { _hover: 'gray.100', _focus: 'gray.600' } },
+        borderWidth: '1px',
+        borderColor: { base: 'gray.150', _enabled: { _hover: 'gray.100', _focus: 'gray.600' } },
         paddingLeft: '14px',
         paddingRight: '12px',
         fontWeight: 'medium',
@@ -42,14 +42,15 @@
       container: {
         position: 'absolute',
         left: '0',
-        outlineWidth: '1px',
-        outlineColor: { _focusWithin: 'gray.600' },
+        borderWidth: '1px',
+        borderColor: { _focusWithin: 'gray.600' },
         width: 'full',
         backgroundColor: 'gray.5',
         zIndex: '50',
       },
       list: {
         overflowY: 'auto',
+        scrollbar: 'hidden',
       },
     },
     variants: {
@@ -57,7 +58,7 @@
         xs: {
           root: {
             gap: '4px',
-            outlineColor: 'gray.100',
+            borderColor: 'gray.100',
             paddingY: '8px',
             color: 'gray.800',
             fontSize: '13px',

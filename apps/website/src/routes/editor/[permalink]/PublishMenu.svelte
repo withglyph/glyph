@@ -359,9 +359,9 @@
           <h3 class={labelStyle}>스페이스</h3>
 
           <Select
-            style={css.raw({ height: '[66px!]' })}
+            style={css.raw({ height: '66px' })}
             disabled={$post.state === 'PUBLISHED'}
-            listStyle={css.raw({ top: '66px' })}
+            listStyle={css.raw({ top: '66px!' })}
             bind:open={spaceSelectorOpen}
           >
             <Tooltip
@@ -434,20 +434,23 @@
           <h3 class={labelStyle}>컬렉션</h3>
 
           <Select
-            style={css.raw({ height: '[fit-content]' })}
+            style={css.raw({ height: '66px' })}
             disabled={!selectedSpace}
+            listStyle={css.raw({ top: '66px!' })}
             size="md"
             bind:open={collectionSelectorOpen}
           >
-            <div slot="placeholder" class={flex({ alignItems: 'center', gap: '[15.6px]' })}>
-              <Image
-                style={css.raw({ height: '38px', aspectRatio: '3/4' })}
-                $image={selectedCollection?.thumbnail}
-                placeholder
-                size={48}
-              />
+            <div slot="placeholder" class={flex({ alignItems: 'center', gap: '8px', truncate: true })}>
+              <div class={css({ size: '38px' })}>
+                <Image
+                  style={css.raw({ height: '38px', aspectRatio: '3/4' })}
+                  $image={selectedCollection?.thumbnail}
+                  placeholder
+                  size={48}
+                />
+              </div>
               {#if selectedCollection}
-                {selectedCollection.name}
+                <p class={css({ truncate: true })}>{selectedCollection.name}</p>
               {:else}
                 <span class={css({ color: 'gray.500' })}>컬렉션을 선택해주세요</span>
               {/if}
@@ -461,14 +464,16 @@
                     collectionSelectorOpen = false;
                   }}
                 >
-                  <div class={flex({ alignItems: 'center', gap: '[15.6px]' })}>
-                    <Image
-                      style={css.raw({ height: '38px', aspectRatio: '3/4' })}
-                      $image={collection?.thumbnail}
-                      placeholder
-                      size={48}
-                    />
-                    {collection.name}
+                  <div class={flex({ alignItems: 'center', gap: '8px', truncate: true })}>
+                    <div class={css({ flex: 'none', size: '38px' })}>
+                      <Image
+                        style={css.raw({ height: '38px', aspectRatio: '3/4' })}
+                        $image={collection?.thumbnail}
+                        placeholder
+                        size={48}
+                      />
+                    </div>
+                    <p class={css({ truncate: true })}>{collection.name}</p>
                   </div>
                 </SelectItem>
               {/each}
