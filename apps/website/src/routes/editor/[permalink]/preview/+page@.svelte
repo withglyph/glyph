@@ -9,10 +9,10 @@
   import { graphql } from '$glitch';
   import { Helmet, Icon } from '$lib/components';
   import { Button } from '$lib/components/v2';
-  import { TiptapEditor } from '$lib/tiptap/components';
+  import { TiptapRenderer } from '$lib/tiptap/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import type { Editor } from '@tiptap/core';
+  import type { JSONContent } from '@tiptap/core';
 
   let mode: 'desktop' | 'mobile' = 'desktop';
 
@@ -32,7 +32,7 @@
   let document: Y.Doc;
   let title = '';
   let subtitle = '';
-  let editor: Editor;
+  let content: JSONContent | null = null;
 
   onMount(() => {
     document = new Y.Doc({ gc: false });
@@ -40,12 +40,7 @@
 
     title = document.getText('title').toString();
     subtitle = document.getText('subtitle').toString();
-    editor
-      .chain()
-      .setMeta('antifreeze', true)
-      .setContent(yDocToProsemirrorJSON(document, 'content'))
-      .setTextSelection(0)
-      .run();
+    content = yDocToProsemirrorJSON(document, 'content');
   });
 </script>
 
@@ -154,27 +149,19 @@
         paddingBottom: '10px',
       })}
     >
-      <input
-        class={css({ width: 'full', fontSize: mode === 'desktop' ? '28px' : '22px', fontWeight: 'bold' })}
-        maxlength="100"
-        placeholder="제목을 입력하세요"
-        readonly
-        type="text"
-        value={title}
-      />
+      <div class={css({ width: 'full', fontSize: mode === 'desktop' ? '28px' : '22px', fontWeight: 'bold' })}>
+        {title === '' ? '(제목 없음)' : title}
+      </div>
 
-      <input
-        class={css({ marginTop: '4px', width: 'full', fontSize: '16px', fontWeight: 'medium' })}
-        maxlength="100"
-        placeholder="부제목을 입력해주세요"
-        readonly
-        type="text"
-        value={subtitle}
-      />
+      {#if subtitle !== ''}
+        <div class={css({ marginTop: '4px', width: 'full', fontSize: '16px', fontWeight: 'medium' })}>{subtitle}</div>
+      {/if}
     </div>
 
     <div class={flex({ grow: '1', paddingX: mode === 'desktop' ? '40px' : '20px', width: 'full' })}>
-      <TiptapEditor style={css.raw({ flexGrow: '1', maxWidth: 'full' })} frozen bind:editor />
+      {#if content}
+        <TiptapRenderer style={css.raw({ flexGrow: '1', maxWidth: 'full' })} {content} />
+      {/if}
     </div>
   </div>
 </main>
