@@ -18,20 +18,8 @@ export const createEmptyTiptapDocumentNode = (schema?: Schema): Node => {
 
 export const getMetadataFromTiptapDocument = (content: JSONContent) => {
   const doc = Node.fromJSON(getSchema(extensions), content);
-  const characters = doc.content.textBetween(0, doc.content.size, '\n').length;
-
-  const text = doc.content.textBetween(0, doc.content.size, '\n', (node) => {
-    // eslint-disable-next-line unicorn/prefer-switch
-    if (node.type.name === 'image' || node.type.name === 'gallery') {
-      return '<이미지>';
-    } else if (node.type.name === 'file') {
-      return '<파일>';
-    } else if (node.type.name === 'embed') {
-      return '<외부 미디어>';
-    } else {
-      return '';
-    }
-  });
+  const text = doc.content.textBetween(0, doc.content.size, '\n');
+  const characters = text.length;
 
   let images = 0;
   let files = 0;
