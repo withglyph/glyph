@@ -83,7 +83,7 @@ export const Paragraph = Node.create({
       mergeAttributes(HTMLAttributes, {
         class: css(
           { '& + &': { marginTop: 'var(--document-paragraph-spacing)' } },
-          node.attrs.textAlign === 'left' && {
+          (node.attrs.textAlign === 'left' || node.attrs.textAlign === 'justify') && {
             textIndent: 'var(--document-paragraph-indent)',
           },
         ),
