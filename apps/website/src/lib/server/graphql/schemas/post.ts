@@ -1360,10 +1360,6 @@ builder.mutationFields((t) => ({
         throw new PermissionDeniedError();
       }
 
-      if (post.userId !== context.session.userId && meAsMember.role !== 'ADMIN') {
-        throw new PermissionDeniedError();
-      }
-
       if (input.ageRating !== 'ALL') {
         const identities = await database
           .select({ birthday: UserPersonalIdentities.birthday })
