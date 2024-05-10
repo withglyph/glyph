@@ -48,7 +48,7 @@
     )}
   >
     {#if node.attrs.layout === 'slide-1' || node.attrs.layout === 'slide-2'}
-      <Slide ids={node.attrs.ids} pages={node.attrs.layout === 'slide-2' ? 2 : 1} />
+      <Slide ids={node.attrs.ids} pages={node.attrs.layout === 'slide-2' ? 2 : 1} size={node.attrs.size} />
     {:else}
       <div
         class={css(

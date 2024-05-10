@@ -10,6 +10,7 @@
 
   export let ids: string[];
   export let pages: number;
+  export let size: 'full' | 'compact';
 
   let swiperEl: SwiperContainer;
   let swiperNextElem: HTMLElement;
@@ -114,9 +115,10 @@
         paddingX: { base: '8px', sm: '10px' },
         fontSize: { base: '11px', sm: '13px' },
         color: 'gray.5',
-        backgroundColor: 'gray.900/20',
+        backgroundColor: 'gray.900/30',
         zIndex: '2',
       },
+      size === 'full' && { sm: { paddingY: '4px', paddingX: '10px' } },
       ids.length === 0 && { display: 'none' },
     )}
   />
@@ -134,10 +136,11 @@
         alignItems: 'center',
         justifyContent: 'center',
         color: { base: 'gray.50', _disabled: 'gray.300' },
-        backgroundColor: { base: 'gray.800/20', _disabled: 'gray.800/10' },
+        backgroundColor: { base: 'gray.800/40', _disabled: 'gray.800/10' },
         size: '24px',
         zIndex: '2',
       },
+      size === 'full' && { sm: { size: '34px' } },
       ids.length === 0 && { display: 'none' },
     )}
     type="button"
@@ -164,10 +167,11 @@
         alignItems: 'center',
         justifyContent: 'center',
         color: { base: 'gray.50', _disabled: 'gray.300' },
-        backgroundColor: { base: 'gray.800/20', _disabled: 'gray.800/10' },
+        backgroundColor: { base: 'gray.800/40', _disabled: 'gray.800/10' },
         size: '24px',
         zIndex: '2',
       },
+      size === 'full' && { sm: { size: '34px' } },
       ids.length === 0 && { display: 'none' },
     )}
     type="button"
@@ -179,7 +183,7 @@
     class={flex({
       align: 'center',
       gap: '6px',
-      marginTop: '8px',
+      marginTop: '2px',
       paddingTop: '8px',
       paddingX: '4px',
       paddingBottom: '10px',
