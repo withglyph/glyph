@@ -31,7 +31,7 @@
 
 <NodeView
   style={css.raw(
-    { display: 'flex', alignItems: 'center', pointerEvents: 'none', paddingY: '4px' },
+    { display: 'flex', alignItems: 'center', pointerEvents: 'none', paddingY: '4px', smDown: { marginX: '-20px' } },
     node.attrs.align === 'left' && { justifyContent: 'flex-start' },
     node.attrs.align === 'center' && { justifyContent: 'center' },
     node.attrs.align === 'right' && { justifyContent: 'flex-end' },
@@ -41,7 +41,7 @@
 >
   <div
     class={css(
-      { minWidth: '0', pointerEvents: 'auto', width: 'full', smDown: { marginX: '-20px' } },
+      { minWidth: '0', pointerEvents: 'auto', width: 'full' },
       node.attrs.size === 'full' && { maxWidth: 'full' },
       node.attrs.size === 'compact' && { maxWidth: '500px' },
       selected && { ringWidth: '2px', ringColor: 'brand.400' },
