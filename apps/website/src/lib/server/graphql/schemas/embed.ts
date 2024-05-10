@@ -43,7 +43,7 @@ const UnfurlEmbedInput = builder.inputType('UnfurlEmbedInput', {
  */
 
 builder.mutationFields((t) => ({
-  unfurlEmbed: t.withAuth({ user: true }).field({
+  unfurlEmbed: t.field({
     type: Embed,
     args: { input: t.arg({ type: UnfurlEmbedInput }) },
     resolve: async (_, { input }) => {
