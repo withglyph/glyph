@@ -194,7 +194,12 @@
           </MobileToolbarButton>
 
           <Menu style={css.raw({ size: '24px' })} as="div" menuStyle={css.raw({ border: 'none' })} placement="bottom">
-            <MobileToolbarButton slot="value" disabled={editor?.state.selection.empty && !editor?.isActive('ruby')}>
+            <MobileToolbarButton
+              slot="value"
+              aria-pressed={editor?.isActive('ruby') || open}
+              disabled={editor?.state.selection.empty && !editor?.isActive('ruby')}
+              let:open
+            >
               <Icon icon={IconRuby} size={24} />
             </MobileToolbarButton>
 
@@ -246,7 +251,7 @@
           </MobileToolbarButton>
 
           <Menu style={css.raw({ size: '24px' })} as="div" menuStyle={css.raw({ border: 'none' })} placement="bottom">
-            <MobileToolbarButton slot="value">
+            <MobileToolbarButton slot="value" aria-pressed={editor?.isActive('link') || open} let:open>
               <Icon icon={IconLink} size={24} />
             </MobileToolbarButton>
             <LinkModal />

@@ -312,17 +312,26 @@
         />
 
         <Menu as="div" menuStyle={css.raw({ border: 'none' })} offset={menuOffset} placement="bottom">
-          <ToolbarButton slot="value" icon={IconLink} label="링크" size="lg" />
+          <ToolbarButton
+            slot="value"
+            aria-pressed={editor?.isActive('link') || open}
+            icon={IconLink}
+            label="링크"
+            size="lg"
+            let:open
+          />
           <LinkModal />
         </Menu>
 
         <Menu as="div" menuStyle={css.raw({ border: 'none' })} offset={menuOffset} placement="bottom">
           <ToolbarButton
             slot="value"
+            aria-pressed={editor?.isActive('ruby') || open}
             disabled={editor?.state.selection.empty && !editor?.isActive('ruby')}
             icon={IconRuby}
             label="루비"
             size="lg"
+            let:open
           />
           <RubyModal />
         </Menu>
