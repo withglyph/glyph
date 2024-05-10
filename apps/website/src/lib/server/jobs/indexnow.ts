@@ -31,5 +31,9 @@ export const NotifyIndexNowJob = defineJob('notifyIndexNow', async (postId: stri
     return;
   }
 
-  await indexnow.notify(`https://withglyph.com/${post.space.slug}/${post.permalink}`);
+  try {
+    await indexnow.notify(`https://withglyph.com/${post.space.slug}/${post.permalink}`);
+  } catch {
+    // 네이버 indexnow에서 422를 너무 많이 던져서 일단 무시
+  }
 });
