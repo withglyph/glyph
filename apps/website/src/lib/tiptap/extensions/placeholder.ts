@@ -28,7 +28,7 @@ export const Placeholder = Extension.create({
                   'class': css({
                     _before: {
                       content: 'attr(data-placeholder)',
-                      float: 'left',
+                      float: '[left]',
                       height: '0',
                       color: 'gray.400',
                       pointerEvents: 'none',

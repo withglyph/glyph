@@ -50,8 +50,17 @@ export default [
         'error',
         {
           groups: [
-            ['^\\u0000'],
-            ['^node:', '^@?\\w', '^', '^\\.', '^node:.*\\u0000$', '^@?\\w.*\\u0000$', '\\u0000$', '^\\..*\\u0000$'],
+            [String.raw`^\u0000`],
+            [
+              '^node:',
+              String.raw`^@?\w`,
+              '^',
+              String.raw`^\.`,
+              String.raw`^node:.*\u0000$`,
+              String.raw`^@?\w.*\u0000$`,
+              String.raw`\u0000$`,
+              String.raw`^\..*\u0000$`,
+            ],
           ],
         },
       ],
@@ -101,7 +110,7 @@ export default [
       },
     },
     rules: {
-      '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^\\$\\$(Props|Events|Slots)$' }],
+      '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: String.raw`^\$\$(Props|Events|Slots)$` }],
       'unicorn/filename-case': ['error', { cases: { kebabCase: true, pascalCase: true } }],
     },
   },

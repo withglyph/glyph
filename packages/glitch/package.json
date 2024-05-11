@@ -42,7 +42,7 @@
     "@graphql-codegen/typescript-operations": "^4.2.0",
     "@graphql-codegen/typescript-urql-graphcache": "^3.1.0",
     "@graphql-typed-document-node/core": "^3.2.0",
-    "@urql/core": "^5.0.2",
+    "@urql/core": "^5.0.3",
     "@urql/devtools": "^2.0.3",
     "@urql/exchange-graphcache": "^6.5.1",
     "dataloader": "^2.2.2",
@@ -52,16 +52,16 @@
     "graphql-tag": "^2.12.6",
     "radash": "^12.1.0",
     "recast": "^0.23.6",
-    "svelte": "^4.2.15",
+    "svelte": "^4.2.16",
     "wonka": "^6.3.4"
   },
   "devDependencies": {
     "@sveltejs/kit": "^2.5.7",
     "@withglyph/tsconfig": "workspace:^",
-    "rollup": "^4.16.4",
+    "rollup": "^4.17.2",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5",
-    "vite": "^5.2.10"
+    "vite": "^5.2.11"
   },
   "peerDependencies": {
     "@sveltejs/kit": "^2.0.0"
