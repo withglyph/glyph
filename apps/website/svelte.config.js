@@ -21,9 +21,8 @@ export default {
         client: 'src/hooks/client',
       },
     },
-    paths: {
-      relative: false,
-    },
+    paths: { relative: false },
+    output: { preloadStrategy: 'preload-mjs' },
     typescript: {
       config: (config) => ({
         ...config,
