@@ -117,22 +117,6 @@ new aws.rds.ClusterInstance('penxle-dev-1', {
   applyImmediately: true,
 });
 
-new aws.route53.Record('db.pnxl.co', {
-  zoneId: zones.pnxl_co.zoneId,
-  type: 'CNAME',
-  name: 'db.pnxl.co',
-  records: [cluster.endpoint],
-  ttl: 300,
-});
-
-new aws.route53.Record('dev.db.pnxl.co', {
-  zoneId: zones.pnxl_co.zoneId,
-  type: 'CNAME',
-  name: 'dev.db.pnxl.co',
-  records: [devCluster.endpoint],
-  ttl: 300,
-});
-
 new aws.route53.Record('db.withglyph.io', {
   zoneId: zones.withglyph_io.zoneId,
   type: 'CNAME',

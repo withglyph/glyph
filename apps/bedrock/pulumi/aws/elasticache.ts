@@ -34,14 +34,6 @@ const cluster = new aws.elasticache.ReplicationGroup('penxle', {
   applyImmediately: true,
 });
 
-new aws.route53.Record('redis.pnxl.co', {
-  zoneId: zones.pnxl_co.zoneId,
-  type: 'CNAME',
-  name: 'redis.pnxl.co',
-  records: [cluster.primaryEndpointAddress],
-  ttl: 300,
-});
-
 new aws.route53.Record('redis.withglyph.io', {
   zoneId: zones.withglyph_io.zoneId,
   type: 'CNAME',
