@@ -28,11 +28,11 @@ export const createQueryStore = async (
   );
 
   if (result.error?.networkError) {
-    throw transformError(result.error.networkError);
+    throw transformError('query', result.error.networkError);
   }
 
   if (result.error?.graphQLErrors.length) {
-    throw transformError(result.error.graphQLErrors[0]);
+    throw transformError('query', result.error.graphQLErrors[0]);
   }
 
   const { source, next } = makeSubject<GraphQLRequest>();
@@ -74,11 +74,11 @@ export const createQueryStore = async (
       );
 
       if (result.error?.networkError) {
-        throw transformError(result.error.networkError);
+        throw transformError('query', result.error.networkError);
       }
 
       if (result.error?.graphQLErrors.length) {
-        throw transformError(result.error.graphQLErrors[0]);
+        throw transformError('query', result.error.graphQLErrors[0]);
       }
 
       next(request);
@@ -132,11 +132,11 @@ export const createManualQueryStore = (document: TypedDocumentNode<unknown, AnyV
       );
 
       if (result.error?.networkError) {
-        throw transformError(result.error.networkError);
+        throw transformError('query', result.error.networkError);
       }
 
       if (result.error?.graphQLErrors.length) {
-        throw transformError(result.error.graphQLErrors[0]);
+        throw transformError('query', result.error.graphQLErrors[0]);
       }
 
       next(request);

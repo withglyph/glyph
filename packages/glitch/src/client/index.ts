@@ -11,7 +11,8 @@ import type { GlitchClient } from '../types';
 type CreateClientParams<E> = {
   url: string;
   cache: CacheExchangeOpts;
-  transformError: (error: unknown) => E;
+  transformError: ((type: 'query' | 'subscription', error: unknown) => unknown) &
+    ((type: 'mutation', error: unknown) => E);
   onMutationError: (error: E) => void;
 };
 

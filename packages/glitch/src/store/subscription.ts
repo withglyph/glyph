@@ -20,11 +20,11 @@ export const createSubscriptionStore = (document: TypedDocumentNode<unknown, Any
       filter(({ stale }) => !stale),
       tap((result) => {
         if (result.error?.networkError) {
-          throw transformError(result.error.networkError);
+          throw transformError('subscription', result.error.networkError);
         }
 
         if (result.error?.graphQLErrors.length) {
-          throw transformError(result.error.graphQLErrors[0]);
+          throw transformError('subscription', result.error.graphQLErrors[0]);
         }
       }),
       map(({ data }) => data),

@@ -27,13 +27,13 @@ export const createMutationStore = (document: TypedDocumentNode<unknown, AnyVari
     );
 
     if (result.error?.networkError) {
-      const err = transformError(result.error.networkError);
+      const err = transformError('mutation', result.error.networkError);
       onMutationError(err);
       throw err;
     }
 
     if (result.error?.graphQLErrors.length) {
-      const err = transformError(result.error.graphQLErrors[0]);
+      const err = transformError('mutation', result.error.graphQLErrors[0]);
       onMutationError(err);
       throw err;
     }

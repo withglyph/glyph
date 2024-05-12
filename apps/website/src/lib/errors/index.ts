@@ -25,12 +25,17 @@ type AppErrorConstructorParams = {
 };
 
 export type PortableAppError = z.infer<typeof PortableAppErrorSchema>;
-const PortableAppErrorSchema = z.object({
+export const PortableAppErrorSchema = z.object({
   message: z.string(),
   extensions: z.object({
     __app: z.object({
       kind: z.nativeEnum(AppErrorKind),
-      extra: z.record(z.unknown()),
+      extra: z
+        .object({
+          code: z.number().optional(),
+          internal: z.boolean().optional(),
+        })
+        .passthrough(),
     }),
   }),
 });

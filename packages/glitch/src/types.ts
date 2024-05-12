@@ -61,7 +61,8 @@ export type GlitchContext = {
 
 export type GlitchClient<E = Error> = {
   client: Client;
-  transformError: (error: unknown) => E;
+  transformError: ((type: 'query' | 'subscription', error: unknown) => unknown) &
+    ((type: 'mutation', error: unknown) => E);
   onMutationError: (error: E) => void;
 };
 
