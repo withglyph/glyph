@@ -87,11 +87,23 @@
   let publishMenuOpen = false;
   let draftListOpen = false;
   let timeTravelOpen = false;
+  let linkOpen = false;
+  let rubyOpen = false;
 
   let debugModalOpen = false;
 
   const { anchor: publishAnchor, floating: publishFloating } = createFloatingActions({
     placement: 'bottom-end',
+    offset: 13,
+  });
+
+  const { anchor: linkAnchor, floating: linkFloating } = createFloatingActions({
+    placement: 'bottom',
+    offset: 13,
+  });
+
+  const { anchor: rubyAnchor, floating: rubyFloating } = createFloatingActions({
+    placement: 'bottom',
     offset: 13,
   });
 
@@ -311,30 +323,39 @@
           }}
         />
 
-        <Menu as="div" menuStyle={css.raw({ border: 'none' })} offset={menuOffset} placement="bottom">
+        <div use:linkAnchor>
           <ToolbarButton
             slot="value"
-            aria-pressed={editor?.isActive('link') || open}
+            aria-pressed={editor?.isActive('link') || linkOpen}
             icon={IconLink}
             label="링크"
             size="lg"
-            let:open
+            on:click={() => (linkOpen = true)}
           />
-          <LinkModal />
-        </Menu>
+        </div>
 
-        <Menu as="div" menuStyle={css.raw({ border: 'none' })} offset={menuOffset} placement="bottom">
+        {#if linkOpen}
+          <div use:linkFloating>
+            <LinkModal bind:open={linkOpen} />
+          </div>
+        {/if}
+
+        <div use:rubyAnchor>
           <ToolbarButton
-            slot="value"
-            aria-pressed={editor?.isActive('ruby') || open}
+            aria-pressed={editor?.isActive('ruby') || rubyOpen}
             disabled={editor?.state.selection.empty && !editor?.isActive('ruby')}
             icon={IconRuby}
             label="루비"
             size="lg"
-            let:open
+            on:click={() => (rubyOpen = true)}
           />
-          <RubyModal />
-        </Menu>
+        </div>
+
+        {#if rubyOpen}
+          <div use:rubyFloating>
+            <RubyModal bind:open={rubyOpen} />
+          </div>
+        {/if}
 
         <Menu as="div" offset={menuOffset} placement="bottom">
           <ToolbarButton slot="value" aria-pressed={open} icon={IconHorizontalRule} label="구분선" size="lg" let:open />

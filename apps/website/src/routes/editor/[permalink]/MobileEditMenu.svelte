@@ -23,7 +23,7 @@
   import IconStrikethrough from '~icons/tabler/strikethrough';
   import IconUnderline from '~icons/tabler/underline';
   import { Icon } from '$lib/components';
-  import { Menu } from '$lib/components/menu';
+  import { portal } from '$lib/svelte/actions';
   import { values } from '$lib/tiptap/values';
   import { validImageMimes } from '$lib/utils';
   import { css, cx } from '$styled-system/css';
@@ -51,6 +51,9 @@
   let topMenu: TopMenu = 'default';
   let subMenu: SubMenu | null = null;
   let bottomMenu: BottomMenu | null = null;
+
+  let rubyOpen = false;
+  let linkOpen = false;
 
   $: if (topMenu === 'default') {
     subMenu = null;
@@ -193,18 +196,13 @@
             />
           </MobileToolbarButton>
 
-          <Menu style={css.raw({ size: '24px' })} as="div" menuStyle={css.raw({ border: 'none' })} placement="bottom">
-            <MobileToolbarButton
-              slot="value"
-              aria-pressed={editor?.isActive('ruby') || open}
-              disabled={editor?.state.selection.empty && !editor?.isActive('ruby')}
-              let:open
-            >
-              <Icon icon={IconRuby} size={24} />
-            </MobileToolbarButton>
-
-            <RubyModal />
-          </Menu>
+          <MobileToolbarButton
+            aria-pressed={editor?.isActive('ruby') || rubyOpen}
+            disabled={editor?.state.selection.empty && !editor?.isActive('ruby')}
+            on:click={() => (rubyOpen = true)}
+          >
+            <Icon icon={IconRuby} size={24} />
+          </MobileToolbarButton>
 
           <MobileToolbarButton on:click={() => toggleSubMenu('textAlign')}>
             <Icon
@@ -250,12 +248,13 @@
             <Icon icon={IconFolder} size={24} />
           </MobileToolbarButton>
 
-          <Menu style={css.raw({ size: '24px' })} as="div" menuStyle={css.raw({ border: 'none' })} placement="bottom">
-            <MobileToolbarButton slot="value" aria-pressed={editor?.isActive('link') || open} let:open>
-              <Icon icon={IconLink} size={24} />
-            </MobileToolbarButton>
-            <LinkModal />
-          </Menu>
+          <MobileToolbarButton
+            slot="value"
+            aria-pressed={editor?.isActive('link') || linkOpen}
+            on:click={() => (linkOpen = true)}
+          >
+            <Icon icon={IconLink} size={24} />
+          </MobileToolbarButton>
 
           <MobileToolbarButton
             disabled={editor?.isActive('codeBlock')}
@@ -479,3 +478,15 @@
     </div>
   {/if}
 </div>
+
+{#if rubyOpen}
+  <div use:portal>
+    <RubyModal bind:open={rubyOpen} />
+  </div>
+{/if}
+
+{#if linkOpen}
+  <div use:portal>
+    <LinkModal bind:open={linkOpen} />
+  </div>
+{/if}
