@@ -356,7 +356,7 @@
       {:else if $query.space.myMasquerade?.blocked}
         <div class={center({ flexDirection: 'column', flexGrow: '1', minHeight: '176px' })}>
           <p class={css({ marginBottom: '4px', fontSize: '24px', fontWeight: 'bold' })}>차단되었습니다</p>
-          <p class={css({ color: 'gray.600' })}>{$query.space.name}을 구독하거나 게시물을 볼 수 없습니다</p>
+          <p class={css({ color: 'gray.600' })}>{$query.space.name}을 구독하거나 포스트를 볼 수 없습니다</p>
         </div>
       {:else if $query.space.visibility === 'PRIVATE' && !$query.space.meAsMember}
         <div class={center({ flexDirection: 'column', flexGrow: '1', minHeight: '176px' })}>

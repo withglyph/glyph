@@ -476,7 +476,7 @@
     <p slot="title" class={css({ textAlign: 'left' })}>{$postComment.profile.name}님을 차단할까요?</p>
 
     <div slot="content" class={css({ textAlign: 'left' })}>
-      차단된 유저는 스페이스의 모든 게시물을 볼 수 없으며, 댓글을 달 수 없어요
+      차단된 유저는 스페이스의 모든 포스트를 볼 수 없으며, 댓글을 달 수 없어요
       <br />
       차단 해지는 [스페이스 설정 - 독자관리]에서 가능해요
     </div>

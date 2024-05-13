@@ -292,7 +292,7 @@
     })}
   >
     <p class={css({ fontWeight: 'semibold', position: 'relative', textAlign: 'center' })}>
-      게시 옵션
+      발행 옵션
       <button class={css({ position: 'absolute', right: '0' })} type="button" on:click={() => (open = false)}>
         <Icon icon={IconX} size={24} />
       </button>
@@ -368,7 +368,7 @@
               slot="placeholder"
               style={css.raw({ flexGrow: '1', textAlign: 'left', truncate: true })}
               enabled={$post.state === 'PUBLISHED'}
-              message="이미 게시한 포스트는 스페이스를 바꿀 수 없어요"
+              message="이미 발행한 포스트는 스페이스를 바꿀 수 없어요"
               offset={16}
               placement="top"
             >
@@ -729,7 +729,7 @@
                 text: '15+',
                 checked: $data.ageRating === 'R15',
                 disabled: !$query.me.personalIdentity,
-                errorMessage: '본인인증 후 연령제한 컨텐츠를 게시할 수 있어요',
+                errorMessage: '본인인증 후 연령제한 컨텐츠를 발행할 수 있어요',
               },
               {
                 label: '성인물',
@@ -737,7 +737,7 @@
                 text: '20+',
                 checked: $data.ageRating === 'R19',
                 disabled: !$query.me.isAdulthood,
-                errorMessage: '성인인증 후 연령제한 컨텐츠를 게시할 수 있어요',
+                errorMessage: '성인인증 후 연령제한 컨텐츠를 발행할 수 있어요',
               },
             ]}
           />
@@ -782,14 +782,14 @@
         >
           <dl class={labelWithDescriptionStyle}>
             <dt>댓글 허용</dt>
-            <dd>독자들이 게시물에 대한 의견을 나누고 소통할 수 있어요</dd>
+            <dd>독자들이 포스트에 대한 의견을 나누고 소통할 수 있어요</dd>
           </dl>
         </Switch>
 
         <div>
           <dl class={labelWithDescriptionStyle}>
             <dt>댓글을 달 수 있는 계정</dt>
-            <dd class={css({ marginBottom: '6px' })}>게시물에 대한 댓글을 달 수 있는 계정을 선택할 수 있어요</dd>
+            <dd class={css({ marginBottom: '6px' })}>포스트에 대한 댓글을 달 수 있는 계정을 선택할 수 있어요</dd>
           </dl>
 
           <SegmentButtonGroup>
@@ -837,7 +837,7 @@
           checked={$data.discloseStats ?? true}
         >
           <dl class={labelWithDescriptionStyle}>
-            <dt>게시물 세부 공개</dt>
+            <dt>포스트 세부 공개</dt>
             <dd>독자에게 좋아요, 조회수를 공유해요</dd>
           </dl>
         </Switch>
@@ -850,7 +850,7 @@
           <dl class={labelWithDescriptionStyle}>
             <dt>창작자 후원</dt>
             <dd class={css({ fontSize: '11px', color: { base: 'gray.400', sm: 'gray.600' } })}>
-              독자들이 게시물에 자유롭게 후원할 수 있어요
+              독자들이 포스트에 자유롭게 후원할 수 있어요
             </dd>
           </dl>
         </Switch>
@@ -861,8 +861,8 @@
           checked={$data.protectContent ?? true}
         >
           <dl class={labelWithDescriptionStyle}>
-            <dt>게시물 내용 보호</dt>
-            <dd>게시물의 내용을 보호하기 위해 우클릭 또는 복사를 제한해요</dd>
+            <dt>포스트 내용 보호</dt>
+            <dd>포스트의 내용을 보호하기 위해 우클릭 또는 복사를 제한해요</dd>
           </dl>
         </Switch>
       </section>
@@ -880,7 +880,7 @@
     <Tooltip
       style={css.raw({ smDown: { flex: '1' } })}
       enabled={!selectedSpaceId}
-      message="게시할 스페이스를 선택해주세요"
+      message="발행할 스페이스를 선택해주세요"
       offset={12}
       placement="top"
     >

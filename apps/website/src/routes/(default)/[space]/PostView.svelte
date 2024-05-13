@@ -714,7 +714,7 @@
       <div>
         {#if $query.post.space?.myMasquerade?.blocked}
           <AlertText
-            description="해당 스페이스의 게시물을 볼 수 없어요"
+            description="해당 스페이스의 포스트를 볼 수 없어요"
             title="차단당했습니다"
             titleStyle={css.raw({ color: 'red.600' })}
           />
@@ -1114,7 +1114,7 @@
         {#if $query.post.commentQualification === 'NONE'}
           <Tooltip
             style={center.raw({ marginRight: '16px', size: '34px', hideFrom: 'sm' })}
-            message="해당 게시물은 댓글이 허용되어 있지 않아요"
+            message="해당 포스트는 댓글이 허용되어 있지 않아요"
             offset={10}
             placement="top"
           >
@@ -1513,7 +1513,7 @@
               color: 'gray.400',
             })}
           >
-            해당 게시물은 댓글이 허용되어 있지 않아요
+            해당 포스트는 댓글이 허용되어 있지 않아요
           </p>
         {/if}
       </div>
