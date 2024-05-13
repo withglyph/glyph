@@ -16,6 +16,8 @@
 
   export let open = false;
 
+  let inputEl: HTMLInputElement;
+
   let value = '';
 
   onMount(() => {
@@ -23,6 +25,10 @@
       value = editor.getAttributes('ruby').text;
     }
   });
+
+  $: if (open) {
+    inputEl?.focus();
+  }
 </script>
 
 {#if open}
@@ -99,7 +105,13 @@
         open = false;
       }}
     >
-      <TextInput style={css.raw({ marginTop: '12px', marginBottom: '26px' })} size="md" type="text" bind:value>
+      <TextInput
+        style={css.raw({ marginTop: '12px', marginBottom: '26px' })}
+        size="md"
+        type="text"
+        bind:value
+        bind:inputEl
+      >
         <Icon slot="left-icon" style={css.raw({ color: 'gray.400' })} icon={IconRuby} />
       </TextInput>
 
