@@ -51,12 +51,16 @@
 
   let timeout: NodeJS.Timeout;
 
-  const revealElement = (element: HTMLElement) => {
-    element.style.display = 'flex';
+  const revealElements = () => {
+    swiperPrevElem.style.display = 'flex';
+    swiperNextElem.style.display = 'flex';
+    swiperPaginationElem.style.display = 'flex';
   };
 
-  const hideElement = (element: HTMLElement) => {
-    element.style.display = 'none';
+  const hideElements = () => {
+    swiperPrevElem.style.display = 'none';
+    swiperNextElem.style.display = 'none';
+    swiperPaginationElem.style.display = 'none';
   };
 </script>
 
@@ -74,30 +78,22 @@
   )}
   role="presentation"
   on:mouseenter={() => {
-    revealElement(swiperPrevElem);
-    revealElement(swiperNextElem);
-    revealElement(swiperPaginationElem);
+    revealElements();
+
     timeout = setTimeout(() => {
-      hideElement(swiperPrevElem);
-      hideElement(swiperNextElem);
-      hideElement(swiperPaginationElem);
+      hideElements();
     }, 1500);
   }}
   on:mousemove={() => {
-    revealElement(swiperPrevElem);
-    revealElement(swiperNextElem);
-    revealElement(swiperPaginationElem);
+    revealElements();
+
     clearTimeout(timeout);
     timeout = setTimeout(() => {
-      hideElement(swiperPrevElem);
-      hideElement(swiperNextElem);
-      hideElement(swiperPaginationElem);
+      hideElements();
     }, 1500);
   }}
   on:mouseleave={() => {
-    hideElement(swiperPrevElem);
-    hideElement(swiperNextElem);
-    hideElement(swiperPaginationElem);
+    hideElements();
     clearTimeout(timeout);
   }}
 >
@@ -135,13 +131,14 @@
         display: 'none',
         alignItems: 'center',
         justifyContent: 'center',
-        color: { base: 'gray.50', _disabled: 'gray.300' },
-        backgroundColor: { base: 'gray.800/40', _disabled: 'gray.800/10' },
+        color: 'gray.50',
+        backgroundColor: 'gray.800/40',
         size: '24px',
         zIndex: '2',
       },
       size === 'full' && { sm: { size: '34px' } },
       ids.length === 0 && { display: 'none' },
+      activeIndex === 0 && { visibility: 'hidden' },
     )}
     type="button"
   >
@@ -166,13 +163,14 @@
         display: 'none',
         alignItems: 'center',
         justifyContent: 'center',
-        color: { base: 'gray.50', _disabled: 'gray.300' },
-        backgroundColor: { base: 'gray.800/40', _disabled: 'gray.800/10' },
+        color: 'gray.50',
+        backgroundColor: 'gray.800/40',
         size: '24px',
         zIndex: '2',
       },
       size === 'full' && { sm: { size: '34px' } },
       ids.length === 0 && { display: 'none' },
+      activeIndex === ids.length - pages && { visibility: 'hidden' },
     )}
     type="button"
   >
