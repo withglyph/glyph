@@ -241,7 +241,7 @@
                 left: { base: '18px', sm: '40px' },
                 bottom: { base: '16px', sm: '34px' },
                 width: '1000px',
-                color: 'gray.5',
+                color: 'gray.0',
                 whiteSpace: 'pre-line',
               })}
             >
@@ -279,7 +279,7 @@
                 gap: '2px',
                 paddingX: '2px',
                 paddingY: '2px',
-                color: 'gray.5',
+                color: 'gray.0',
                 fontSize: '11px',
               })}
             >
@@ -316,7 +316,7 @@
       class={center({
         borderRadius: 'full',
         size: '34px',
-        backgroundColor: 'gray.5',
+        backgroundColor: 'gray.0',
         filter: 'auto',
         dropShadow: '[drop-shadow(2px 2px 8px {colors.gray.900/15})]',
         pointerEvents: 'auto',
@@ -335,7 +335,7 @@
       class={center({
         borderRadius: 'full',
         size: '34px',
-        backgroundColor: 'gray.5',
+        backgroundColor: 'gray.0',
         filter: 'auto',
         dropShadow: '[drop-shadow(2px 2px 8px {colors.gray.900/15})]',
         pointerEvents: 'auto',

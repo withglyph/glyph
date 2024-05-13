@@ -77,7 +77,7 @@
         display: 'flex',
         borderWidth: '1px',
         borderColor: 'gray.200',
-        backgroundColor: 'gray.5',
+        backgroundColor: 'gray.0',
         minWidth: '128px',
         zIndex: '50',
       },

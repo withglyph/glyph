@@ -52,7 +52,7 @@
           paddingY: '24px',
           width: 'full',
           height: 'fit',
-          backgroundColor: 'gray.5',
+          backgroundColor: 'gray.0',
           pointerEvents: 'auto',
         })}
         in:fly={{ y: '20%', duration: 150 }}

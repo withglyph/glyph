@@ -31,7 +31,7 @@
         borderBottomWidth: '1px',
         paddingX: '20px',
         paddingY: '14px',
-        backgroundColor: 'gray.5',
+        backgroundColor: 'gray.0',
         height: '54px',
         scrollbar: 'hidden',
         overflowX: 'auto',

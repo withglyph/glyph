@@ -85,7 +85,7 @@
           paddingY: '4px',
           fontSize: '12px',
           fontWeight: 'medium',
-          color: 'gray.5',
+          color: 'gray.0',
           backgroundColor: 'gray.600',
           opacity: copied ? '100' : '0',
           transition: 'opacity',

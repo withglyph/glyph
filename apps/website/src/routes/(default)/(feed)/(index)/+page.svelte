@@ -134,7 +134,7 @@
   >
     <Icon
       slot="left-icon"
-      style={css.raw({ 'color': 'gray.5', '& *': { strokeWidth: '[2]' } })}
+      style={css.raw({ 'color': 'gray.0', '& *': { strokeWidth: '[2]' } })}
       icon={IconChevronLeft}
       size={20}
     />
@@ -156,7 +156,7 @@
 
     <Icon
       slot="right-icon"
-      style={css.raw({ 'color': 'gray.5', '& *': { strokeWidth: '[2]' } })}
+      style={css.raw({ 'color': 'gray.0', '& *': { strokeWidth: '[2]' } })}
       icon={IconChevronRight}
       size={20}
     />
@@ -178,7 +178,7 @@
     >
       <Icon
         slot="left-icon"
-        style={css.raw({ 'color': 'gray.5', '& *': { strokeWidth: '[2]' } })}
+        style={css.raw({ 'color': 'gray.0', '& *': { strokeWidth: '[2]' } })}
         icon={IconChevronLeft}
         size={20}
       />
@@ -189,7 +189,7 @@
 
       <Icon
         slot="right-icon"
-        style={css.raw({ 'color': 'gray.5', '& *': { strokeWidth: '[2]' } })}
+        style={css.raw({ 'color': 'gray.0', '& *': { strokeWidth: '[2]' } })}
         icon={IconChevronRight}
         size={20}
       />
@@ -254,7 +254,7 @@
         marginBottom: '16px',
         fontSize: '21px',
         fontWeight: 'bold',
-        color: 'gray.5',
+        color: 'gray.0',
       })}
     >
       지금 뜨는 태그

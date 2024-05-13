@@ -134,7 +134,7 @@
       borderColor: 'gray.300',
       paddingX: '20px',
       paddingY: '14px',
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       boxShadow: '[2 3px 8px 0 {colors.gray.900/8}]',
       zIndex: '50',
     })}

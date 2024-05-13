@@ -230,7 +230,7 @@
     '_pressed': { color: 'gray.900' },
     'smDown': {
       borderBottomWidth: '2px',
-      borderBottomColor: 'gray.5',
+      borderBottomColor: 'gray.0',
       color: 'gray.400',
       _pressed: { borderBottomColor: 'gray.900' },
       paddingBottom: '2px',
@@ -267,7 +267,7 @@
 <div
   class={css(
     {
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       zIndex: '50',
       smDown: {
         width: 'full',

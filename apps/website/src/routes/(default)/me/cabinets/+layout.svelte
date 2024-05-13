@@ -15,7 +15,7 @@
       paddingX: '20px',
       paddingY: '12px',
       width: 'full',
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       overflowX: 'auto',
       scrollbar: 'hidden',
       zIndex: '50',

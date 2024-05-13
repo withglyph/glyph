@@ -31,7 +31,7 @@
     borderRadius: '12px',
     paddingX: '24px',
     paddingY: '32px',
-    backgroundColor: 'gray.5',
+    backgroundColor: 'gray.0',
     smDown: {
       marginX: '20px',
       marginY: '16px',

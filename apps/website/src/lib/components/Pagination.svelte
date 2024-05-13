@@ -49,7 +49,7 @@
     class={center({
       color: { base: 'gray.600', _disabled: 'gray.300' },
       size: '32px',
-      backgroundColor: { base: 'gray.5', _enabled: { _hover: 'gray.100', _pressed: 'gray.200' } },
+      backgroundColor: { base: 'gray.0', _enabled: { _hover: 'gray.100', _pressed: 'gray.200' } },
       _disabled: { cursor: 'not-allowed' },
     })}
     disabled={currentPage === 1}
@@ -64,7 +64,7 @@
     class={center({
       color: { base: 'gray.600', _disabled: 'gray.300' },
       size: '32px',
-      backgroundColor: { base: 'gray.5', _enabled: { _hover: 'gray.100', _pressed: 'gray.200' } },
+      backgroundColor: { base: 'gray.0', _enabled: { _hover: 'gray.100', _pressed: 'gray.200' } },
       _disabled: { cursor: 'not-allowed' },
     })}
     disabled={currentPage <= displayPage}
@@ -81,9 +81,9 @@
       class={center({
         padding: '8px',
         size: '32px',
-        color: { base: 'gray.600', _focusVisible: 'gray.600', _pressed: 'gray.5' },
+        color: { base: 'gray.600', _focusVisible: 'gray.600', _pressed: 'gray.0' },
         fontSize: '14px',
-        backgroundColor: { base: 'gray.5', _hover: 'gray.100', _focusVisible: 'gray.200', _pressed: 'gray.900' },
+        backgroundColor: { base: 'gray.0', _hover: 'gray.100', _focusVisible: 'gray.200', _pressed: 'gray.900' },
         transition: 'common',
       })}
       aria-pressed={currentPage === index}
@@ -99,7 +99,7 @@
     class={center({
       color: { base: 'gray.600', _disabled: 'gray.300' },
       size: '32px',
-      backgroundColor: { base: 'gray.5', _enabled: { _hover: 'gray.100', _pressed: 'gray.200' } },
+      backgroundColor: { base: 'gray.0', _enabled: { _hover: 'gray.100', _pressed: 'gray.200' } },
       _disabled: { cursor: 'not-allowed' },
     })}
     disabled={currentPageGroup === totalPageGroup}
@@ -115,7 +115,7 @@
     class={center({
       color: { base: 'gray.600', _disabled: 'gray.300' },
       size: '32px',
-      backgroundColor: { base: 'gray.5', _enabled: { _hover: 'gray.100', _pressed: 'gray.200' } },
+      backgroundColor: { base: 'gray.0', _enabled: { _hover: 'gray.100', _pressed: 'gray.200' } },
       _disabled: { cursor: 'not-allowed' },
     })}
     disabled={currentPageGroup === totalPageGroup || currentPage === maxPage}

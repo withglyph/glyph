@@ -325,7 +325,7 @@
                 borderWidth: '1px',
                 borderColor: 'gray.100',
                 padding: '12px',
-                backgroundColor: 'gray.5',
+                backgroundColor: 'gray.0',
               }),
             )}
           >

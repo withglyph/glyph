@@ -108,7 +108,7 @@
         borderBottomColor: 'gray.150',
         paddingY: '13px',
         paddingX: '20px',
-        backgroundColor: 'gray.5',
+        backgroundColor: 'gray.0',
         zIndex: '50',
       },
     })}
@@ -165,7 +165,7 @@
               style={css.raw({
                 paddingY: { base: '12px', sm: '14px' },
                 fontWeight: 'semibold',
-                backgroundColor: 'gray.5',
+                backgroundColor: 'gray.0',
                 color: 'gray.900',
                 width: 'full',
               })}
@@ -218,7 +218,7 @@
               style={css.raw({
                 paddingY: { base: '12px', sm: '14px' },
                 fontWeight: 'semibold',
-                backgroundColor: 'gray.5',
+                backgroundColor: 'gray.0',
                 color: 'gray.900',
                 width: 'full',
               })}

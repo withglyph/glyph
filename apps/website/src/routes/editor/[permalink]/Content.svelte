@@ -70,7 +70,7 @@
       paddingY: '20px',
       width: 'full',
       maxWidth: '940px',
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       sm: { paddingTop: '34px' },
     })}
   >

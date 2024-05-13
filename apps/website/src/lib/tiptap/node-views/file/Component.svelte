@@ -91,7 +91,7 @@
     </div>
 
     {#if !$query}
-      <div class={center({ position: 'absolute', inset: '0', backgroundColor: 'gray.5/50' })}>
+      <div class={center({ position: 'absolute', inset: '0', backgroundColor: 'gray.0/50' })}>
         <RingSpinner style={css.raw({ size: '32px', color: 'brand.400' })} />
       </div>
     {/if}

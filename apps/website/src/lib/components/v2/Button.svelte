@@ -45,7 +45,7 @@
       textAlign: 'center',
       outlineOffset: '0',
       userSelect: 'none',
-      color: { _enabled: 'gray.5', _disabled: 'gray.400' },
+      color: { _enabled: 'gray.0', _disabled: 'gray.400' },
       backgroundColor: { _disabled: 'gray.150' },
       pointerEvents: { _disabled: 'none', _busy: 'none' },
     },
@@ -116,7 +116,7 @@
         'gray-outline': {
           _enabled: {
             color: 'gray.900',
-            backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100', _active: 'gray.5', _pressed: 'gray.5' },
+            backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100', _active: 'gray.0', _pressed: 'gray.0' },
             outlineWidth: { base: '1px', _active: '3px', _pressed: '3px' },
             outlineColor: 'gray.200',
           },
@@ -124,7 +124,7 @@
         'gray-text': {
           _enabled: {
             color: 'gray.900',
-            backgroundColor: { _hover: 'gray.50', _focusVisible: 'gray.50', _active: 'gray.5', _pressed: 'gray.5' },
+            backgroundColor: { _hover: 'gray.50', _focusVisible: 'gray.50', _active: 'gray.0', _pressed: 'gray.0' },
             outlineWidth: { base: '1px', _active: '2px', _pressed: '2px' },
             outlineColor: 'gray.200',
           },
@@ -132,7 +132,7 @@
         'red-outline': {
           _enabled: {
             color: 'red.600',
-            backgroundColor: { _hover: 'red.50', _focusVisible: 'red.50', _active: 'gray.5', _pressed: 'gray.5' },
+            backgroundColor: { _hover: 'red.50', _focusVisible: 'red.50', _active: 'gray.0', _pressed: 'gray.0' },
             outlineWidth: { base: '1px', _active: '3px', _pressed: '3px' },
             outlineColor: 'red.600',
           },

@@ -130,7 +130,7 @@
           direction: 'column',
           width: 'full',
           maxHeight: 'full',
-          backgroundColor: 'gray.5',
+          backgroundColor: 'gray.0',
           boxShadow: '[0px 6px 24px 0px {colors.gray.900/8}]',
           pointerEvents: 'auto',
         })}

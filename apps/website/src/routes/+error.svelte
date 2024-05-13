@@ -98,7 +98,7 @@
         paddingY: '8px',
         fontWeight: 'medium',
         lineHeight: 'none',
-        color: 'gray.5',
+        color: 'gray.0',
         backgroundColor: { base: 'gray.800', _hover: 'gray.900', _active: 'gray.900' },
         transition: 'common',
       })}

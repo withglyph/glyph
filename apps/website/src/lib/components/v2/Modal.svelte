@@ -31,7 +31,7 @@
         flexDirection: 'column',
         flexGrow: '1',
         width: 'full',
-        backgroundColor: 'gray.5',
+        backgroundColor: 'gray.0',
         pointerEvents: 'auto',
         userSelect: 'text',
         borderColor: 'gray.600',
@@ -157,7 +157,7 @@
                   paddingX: '20px',
                   paddingY: '20px',
                   width: 'full',
-                  backgroundColor: 'gray.5',
+                  backgroundColor: 'gray.0',
                 },
                 size === 'lg' && {
                   borderTopWidth: '1px',

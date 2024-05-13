@@ -84,7 +84,7 @@
 
 <Helmet description={`글리프에서 ${keyword} 검색을 한 결과에요`} title={`${keyword} 검색 결과`} />
 
-<div class={flex({ direction: 'column', flexGrow: '1', paddingX: '20px', width: 'full', backgroundColor: 'gray.5' })}>
+<div class={flex({ direction: 'column', flexGrow: '1', paddingX: '20px', width: 'full', backgroundColor: 'gray.0' })}>
   <div
     class={flex({
       gap: '48px',

@@ -18,7 +18,7 @@
     paddingX: '24px',
     paddingY: '32px',
     borderRadius: '12px',
-    backgroundColor: 'gray.5',
+    backgroundColor: 'gray.0',
     borderWidth: '1px',
     borderColor: 'gray.200',
     smDown: { marginX: '16px', marginY: '20px' },

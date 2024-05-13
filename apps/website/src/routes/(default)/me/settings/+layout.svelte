@@ -15,7 +15,7 @@
       top: '116px',
       paddingY: '12px',
       paddingX: '20px',
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       width: 'full',
       zIndex: '50',
     },

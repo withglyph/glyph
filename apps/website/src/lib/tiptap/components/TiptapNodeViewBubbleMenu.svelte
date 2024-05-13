@@ -70,7 +70,7 @@
     class={css({
       borderWidth: '1px',
       borderColor: 'gray.300',
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       boxShadow: '[2px 2px 8px 0 {colors.gray.900/15}]',
     })}
     use:floating
@@ -81,7 +81,7 @@
         gap: '8px',
         paddingX: '14px',
         paddingY: '8px',
-        backgroundColor: 'gray.5',
+        backgroundColor: 'gray.0',
         zIndex: '2',
       })}
     >
@@ -89,7 +89,7 @@
     </div>
 
     <div
-      class={css({ borderWidth: '1px', borderColor: 'gray.300', size: '12px', backgroundColor: 'gray.5', zIndex: '1' })}
+      class={css({ borderWidth: '1px', borderColor: 'gray.300', size: '12px', backgroundColor: 'gray.0', zIndex: '1' })}
       use:arrow
     />
   </div>

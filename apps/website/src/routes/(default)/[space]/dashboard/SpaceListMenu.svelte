@@ -103,7 +103,7 @@
       paddingY: '16px',
       borderRadius: '16px',
       width: '208px',
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       boxShadow: '[0 4px 4px 0px {colors.gray.900/10}]',
       zIndex: '50',
     })}

@@ -42,7 +42,7 @@
             translateY: '-1/2',
             display: 'block',
             borderRadius: 'full',
-            backgroundColor: 'gray.5',
+            backgroundColor: 'gray.0',
           },
         },
       },

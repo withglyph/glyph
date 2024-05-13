@@ -86,14 +86,14 @@
 
 <Helmet description={`글리프의 #${$query.tag.name} 태그`} title={`#${$query.tag.name}`} />
 
-<div class={flex({ direction: 'column', grow: '1', paddingX: '20px', backgroundColor: 'gray.5', width: 'full' })}>
+<div class={flex({ direction: 'column', grow: '1', paddingX: '20px', backgroundColor: 'gray.0', width: 'full' })}>
   <div
     class={flex({
       direction: 'column',
       marginX: '-20px',
       paddingX: '20px',
       paddingY: { base: '24px', sm: '28px' },
-      color: 'gray.5',
+      color: 'gray.0',
       backgroundGradient: 'to-r',
       gradientFrom: '[#323232]',
       gradientTo: 'gray.900',

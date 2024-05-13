@@ -155,7 +155,7 @@
           position: 'absolute',
           inset: '[10%]',
           borderWidth: '4px',
-          borderColor: 'gray.5',
+          borderColor: 'gray.0',
           outlineWidth: '[10000px]',
           outlineColor: 'gray.900/50',
           pointerEvents: 'none',

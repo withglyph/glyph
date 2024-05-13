@@ -180,7 +180,7 @@
       display: 'flex',
       flexDirection: 'column',
       width: 'full',
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       sm: {
         borderWidth: '1px',
         borderColor: 'gray.200',
@@ -248,7 +248,7 @@
               padding: '16px',
               color: 'gray.500',
               size: 'full',
-              backgroundColor: 'gray.5',
+              backgroundColor: 'gray.0',
             })}
             role="alert"
           >

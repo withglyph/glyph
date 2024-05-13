@@ -35,7 +35,7 @@
       paddingX: '14px',
       paddingY: '10px',
       fontSize: '12px',
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       zIndex: '100',
       maxWidth: '230px',
       wordBreak: 'keep-all',
@@ -53,7 +53,7 @@
         borderLeftWidth: '1px',
         borderColor: 'gray.300',
         size: '8px',
-        backgroundColor: 'gray.5',
+        backgroundColor: 'gray.0',
       })}
       use:arrow
     />

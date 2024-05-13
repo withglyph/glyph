@@ -105,7 +105,7 @@
           translate: 'auto',
           translateX: '-1/2',
           translateY: '-1/2',
-          color: 'gray.5',
+          color: 'gray.0',
           cursor: 'pointer',
           _peerChecked: { display: 'block' },
         })}

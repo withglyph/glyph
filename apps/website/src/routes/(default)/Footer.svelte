@@ -16,7 +16,7 @@
     paddingY: '40px',
     fontSize: '12px',
     letterSpacing: '[0.05em]',
-    backgroundColor: 'gray.5',
+    backgroundColor: 'gray.0',
   })}
 >
   <div

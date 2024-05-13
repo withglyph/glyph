@@ -177,7 +177,7 @@
         top: '0',
         marginX: '-20px',
         paddingBottom: '16px',
-        backgroundColor: 'gray.5',
+        backgroundColor: 'gray.0',
         width: 'auto',
         flexGrow: '1',
         zIndex: '1',
@@ -223,7 +223,7 @@
             paddingTop: '32px',
             paddingBottom: '52px',
             size: 'full',
-            backgroundColor: 'gray.5',
+            backgroundColor: 'gray.0',
             transition: 'opacity',
           })}
         >

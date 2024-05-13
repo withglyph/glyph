@@ -22,9 +22,9 @@
         <Logo class={css({ height: '25px', color: 'gray.900' })} />
       </a>
 
-      <div class={css({ borderLeftWidth: '1px', borderLeftColor: 'gray.5', marginX: '16px', height: '32px' })} />
+      <div class={css({ borderLeftWidth: '1px', borderLeftColor: 'gray.0', marginX: '16px', height: '32px' })} />
 
-      <a class={css({ fontSize: '18px', fontWeight: 'bold', color: 'gray.5', userSelect: 'none' })} href="/">
+      <a class={css({ fontSize: '18px', fontWeight: 'bold', color: 'gray.0', userSelect: 'none' })} href="/">
         도움 센터
       </a>
     </div>

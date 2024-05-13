@@ -55,7 +55,7 @@
     paddingX: '20px',
     paddingY: '12px',
     height: '62px',
-    backgroundColor: 'gray.5',
+    backgroundColor: 'gray.0',
     zIndex: '10',
   })}
 >
@@ -135,7 +135,7 @@
       marginX: 'auto',
       paddingY: '20px',
       width: 'full',
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       sm: { paddingTop: '34px' },
       maxWidth: mode === 'desktop' ? '940px' : '375px',
     })}

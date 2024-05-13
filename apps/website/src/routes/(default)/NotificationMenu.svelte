@@ -128,7 +128,7 @@
       class={circle({
         position: 'absolute',
         borderWidth: '1px',
-        borderColor: 'gray.5',
+        borderColor: 'gray.0',
         size: '8px',
         top: '4px',
         right: '4px',
@@ -156,7 +156,7 @@
       borderColor: 'gray.600',
       width: 'full',
       maxWidth: '375px',
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       zIndex: '50',
     })}
     use:floating

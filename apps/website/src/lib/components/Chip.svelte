@@ -20,7 +20,7 @@
     variants: {
       variant: {
         fill: { paddingX: '5px', paddingY: '3px' },
-        outline: { borderWidth: '1px', paddingX: '4px', paddingY: '1px', backgroundColor: 'gray.5' },
+        outline: { borderWidth: '1px', paddingX: '4px', paddingY: '1px', backgroundColor: 'gray.0' },
       },
       color: {
         red: { color: 'red.600' },

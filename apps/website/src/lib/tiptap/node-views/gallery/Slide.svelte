@@ -110,7 +110,7 @@
         paddingY: { base: '1px', sm: '3px' },
         paddingX: { base: '8px', sm: '10px' },
         fontSize: { base: '11px', sm: '13px' },
-        color: 'gray.5',
+        color: 'gray.0',
         backgroundColor: 'gray.900/30',
         zIndex: '2',
       },

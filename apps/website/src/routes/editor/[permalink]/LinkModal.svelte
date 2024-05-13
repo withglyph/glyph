@@ -47,7 +47,7 @@
 <div
   class={css({
     borderColor: 'gray.600',
-    backgroundColor: 'gray.5',
+    backgroundColor: 'gray.0',
     pointerEvents: 'auto',
     userSelect: 'text',
     zIndex: '50',

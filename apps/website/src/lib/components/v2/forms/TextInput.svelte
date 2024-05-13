@@ -39,7 +39,7 @@
       'transition': 'common',
       '&:has(input:enabled)': {
         borderColor: { _hover: 'gray.100', _focusWithin: 'gray.400' },
-        backgroundColor: { _hover: 'gray.100', _focusWithin: 'gray.5' },
+        backgroundColor: { _hover: 'gray.100', _focusWithin: 'gray.0' },
       },
       '&:has(input:disabled)': {
         color: 'gray.300',

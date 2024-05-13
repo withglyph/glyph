@@ -64,7 +64,7 @@
     paddingX: '20px',
     textAlign: 'left',
     fontWeight: 'semibold',
-    backgroundColor: 'gray.5',
+    backgroundColor: 'gray.0',
     height: '48px',
     _hover: { backgroundColor: 'gray.50' },
   })}

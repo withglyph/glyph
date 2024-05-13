@@ -49,7 +49,7 @@
       justifyContent: 'center',
       paddingX: { base: '20px', sm: '60px' },
       width: 'full',
-      backgroundColor: { base: '[black/40]', sm: 'gray.5' },
+      backgroundColor: { base: '[black/40]', sm: 'gray.0' },
       sm: { flex: 'none', width: '520px' },
       smDown: { position: 'fixed', zIndex: '1', size: 'full' },
     })}
@@ -62,7 +62,7 @@
       })}
     >
       <a href="/">
-        <FullLogo class={css({ height: { base: '38px', sm: '17px' }, smDown: { color: 'gray.5' } })} />
+        <FullLogo class={css({ height: { base: '38px', sm: '17px' }, smDown: { color: 'gray.0' } })} />
       </a>
 
       <h1
@@ -75,7 +75,7 @@
         class={css({
           fontSize: '16px',
           color: 'gray.500',
-          smDown: { textAlign: 'center', color: 'gray.5' },
+          smDown: { textAlign: 'center', color: 'gray.0' },
         })}
       >
         창작자를 위한 콘텐츠 플랫폼
@@ -100,7 +100,7 @@
           paddingX: '20px',
           fontSize: '16px',
           textAlign: 'left',
-          backgroundColor: 'gray.5',
+          backgroundColor: 'gray.0',
           height: '48px',
           _hover: { backgroundColor: 'gray.50' },
           sm: { borderWidth: '1px', borderColor: 'gray.150' },
@@ -128,7 +128,7 @@
           paddingX: '20px',
           fontSize: '16px',
           textAlign: 'left',
-          backgroundColor: 'gray.5',
+          backgroundColor: 'gray.0',
           height: '48px',
           _hover: { backgroundColor: 'gray.50' },
           sm: { borderWidth: '1px', borderColor: 'gray.150' },
@@ -156,7 +156,7 @@
           paddingX: '20px',
           fontSize: '16px',
           textAlign: 'left',
-          backgroundColor: 'gray.5',
+          backgroundColor: 'gray.0',
           height: '48px',
           _hover: { backgroundColor: 'gray.50' },
           sm: { borderWidth: '1px', borderColor: 'gray.150' },
@@ -176,7 +176,7 @@
           sm: {
             borderWidth: '1px',
             borderColor: 'gray.150',
-            backgroundColor: 'gray.5',
+            backgroundColor: 'gray.0',
             color: 'gray.500',
             textAlign: 'left',
             height: '48px',

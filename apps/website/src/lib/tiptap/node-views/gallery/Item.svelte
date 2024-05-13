@@ -43,7 +43,7 @@
       borderColor: 'gray.100',
       paddingX: '14px',
       paddingY: '8px',
-      backgroundColor: { base: 'gray.5', _hover: 'gray.100' },
+      backgroundColor: { base: 'gray.0', _hover: 'gray.100' },
       height: '64px',
       width: 'full',
       cursor: 'grab',

@@ -37,7 +37,7 @@
     marginTop: '36px',
     textAlign: 'left',
     fontWeight: 'semibold',
-    backgroundColor: 'gray.5',
+    backgroundColor: 'gray.0',
     height: '48px',
   })}
 >

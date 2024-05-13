@@ -50,7 +50,7 @@
           },
         },
         dark: {
-          'color': 'gray.5',
+          'color': 'gray.0',
           'backgroundColor': 'gray.900',
           '&:has(:checked)': {
             borderWidth: '1px',

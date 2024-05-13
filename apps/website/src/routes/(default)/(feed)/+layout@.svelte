@@ -26,7 +26,7 @@
     flexGrow: '1',
     paddingBottom: { base: '96px', sm: '120px' },
     width: 'full',
-    backgroundColor: 'gray.5',
+    backgroundColor: 'gray.0',
   })}
 >
   <TabHead

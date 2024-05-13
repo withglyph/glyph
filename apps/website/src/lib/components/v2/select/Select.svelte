@@ -33,7 +33,7 @@
         fontWeight: 'medium',
         color: 'gray.600',
         width: 'full',
-        backgroundColor: { base: 'gray.5', _enabled: { _hover: 'gray.100' }, _disabled: 'gray.50' },
+        backgroundColor: { base: 'gray.0', _enabled: { _hover: 'gray.100' }, _disabled: 'gray.50' },
         transition: 'common',
         _disabled: {
           cursor: 'not-allowed',
@@ -45,7 +45,7 @@
         borderWidth: '1px',
         borderColor: { _focusWithin: 'gray.600' },
         width: 'full',
-        backgroundColor: 'gray.5',
+        backgroundColor: 'gray.0',
         zIndex: '50',
       },
       list: {

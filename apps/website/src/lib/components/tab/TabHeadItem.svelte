@@ -37,7 +37,7 @@
         paddingBottom: '2px',
         textAlign: 'center',
         fontWeight: 'medium',
-        backgroundColor: { base: 'gray.5', sm: 'transparent' },
+        backgroundColor: { base: 'gray.0', sm: 'transparent' },
       },
       style,
     )}

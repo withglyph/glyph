@@ -182,7 +182,7 @@
           marginRight: '20px',
           width: 'fit',
           color: 'gray.600',
-          backgroundColor: 'gray.5',
+          backgroundColor: 'gray.0',
           boxShadow: '[0 2px 10px 0 {colors.gray.900/4}]',
           fontSize: '13px',
         })}
@@ -298,7 +298,7 @@
             paddingX: '10px',
             paddingTop: '8px',
             paddingBottom: '10px',
-            backgroundColor: 'gray.5',
+            backgroundColor: 'gray.0',
             zIndex: '50',
           })}
           use:floating
@@ -321,7 +321,7 @@
                     paddingRight: '24px',
                     paddingY: '10px',
                     width: '110px',
-                    backgroundColor: 'gray.5',
+                    backgroundColor: 'gray.0',
                     _invalid: {
                       borderColor: 'red.600',
                       backgroundColor: 'red.50',
@@ -552,7 +552,7 @@
           padding: '8px',
           width: 'fit',
           color: 'gray.600',
-          backgroundColor: 'gray.5',
+          backgroundColor: 'gray.0',
           boxShadow: '[0 2px 10px 0 {colors.gray.900/4}]',
         })}
       >

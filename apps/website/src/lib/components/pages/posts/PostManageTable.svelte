@@ -476,7 +476,7 @@
         borderRadius: '16px',
         paddingX: '24px',
         paddingY: '8px',
-        backgroundColor: 'gray.5',
+        backgroundColor: 'gray.0',
         boxShadow: '[0 4px 16px 0 {colors.gray.900/15}]',
         translate: 'auto',
         transition: 'all',

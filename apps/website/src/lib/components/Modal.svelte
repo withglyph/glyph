@@ -30,7 +30,7 @@
         borderRadius: '16px',
         width: 'full',
         maxHeight: 'full',
-        backgroundColor: 'gray.5',
+        backgroundColor: 'gray.0',
         pointerEvents: 'auto',
         userSelect: 'text',
       },

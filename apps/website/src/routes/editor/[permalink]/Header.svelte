@@ -120,7 +120,7 @@
     position: 'absolute',
     top: '0',
     width: 'full',
-    backgroundColor: 'gray.5',
+    backgroundColor: 'gray.0',
     transition: 'common',
     zIndex: '100',
   })}

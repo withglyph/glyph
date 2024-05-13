@@ -49,7 +49,7 @@
 
 <h1 class={css({ marginBottom: '24px', fontSize: '20px', fontWeight: 'bold', hideBelow: 'sm' })}>독자 관리</h1>
 
-<div class={css({ smDown: { backgroundColor: 'gray.5' } })}>
+<div class={css({ smDown: { backgroundColor: 'gray.0' } })}>
   <TabHead style={css.raw({ fontSize: '18px', paddingLeft: '0' })}>
     <TabHeadItem id={0} pathname="/{$page.params.space}/dashboard/subscribers/blocked">차단 계정</TabHeadItem>
   </TabHead>
@@ -67,7 +67,7 @@
       gap: '16px',
       borderRadius: '12px',
       padding: { base: '16px', sm: '24px' },
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       smDown: { marginY: '20px', marginX: '16px' },
     })}
   >

@@ -42,7 +42,7 @@
             flexDirection: 'column',
             width: 'full',
             maxWidth: { base: '311px', sm: '420px' },
-            backgroundColor: 'gray.5',
+            backgroundColor: 'gray.0',
             pointerEvents: 'auto',
             userSelect: 'text',
           },
@@ -92,7 +92,7 @@
               alignItems: 'center',
               marginTop: { base: '40px', sm: '20px' },
               width: 'full',
-              backgroundColor: 'gray.5',
+              backgroundColor: 'gray.0',
               sm: {
                 gap: '8px',
                 paddingTop: '12px',

@@ -36,7 +36,7 @@
         },
       },
       icon: {
-        color: { base: 'gray.400', _peerChecked: 'gray.5' },
+        color: { base: 'gray.400', _peerChecked: 'gray.0' },
       },
       item: {
         _after: { content: '""', position: 'absolute', inset: '0' },
@@ -63,7 +63,7 @@
             flexGrow: '1',
             fontSize: '11px',
             fontWeight: 'medium',
-            color: { base: 'gray.500', _peerChecked: 'gray.5' },
+            color: { base: 'gray.500', _peerChecked: 'gray.0' },
           },
         },
       },
@@ -126,7 +126,7 @@
               class={css({
                 fontSize: '18px',
                 fontWeight: 'semibold',
-                color: { base: 'gray.400', _peerChecked: 'gray.5' },
+                color: { base: 'gray.400', _peerChecked: 'gray.0' },
               })}
             >
               {item.text}

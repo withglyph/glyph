@@ -61,7 +61,7 @@
       borderBottomWidth: '1px',
       borderBottomColor: 'gray.100',
       top: '0',
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       height: '62px',
       zIndex: '10',
     },

@@ -35,7 +35,7 @@
         borderRadius: 'full',
         height: 'full',
         aspectRatio: '1/1',
-        backgroundColor: 'gray.5',
+        backgroundColor: 'gray.0',
       },
       _disabled: {
         backgroundColor: 'gray.200!',

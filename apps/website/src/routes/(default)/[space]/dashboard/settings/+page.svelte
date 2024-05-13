@@ -119,7 +119,7 @@
       marginY: '20px',
       paddingX: '16px',
       paddingY: '24px',
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
     },
   })}
 >
@@ -130,7 +130,7 @@
         borderColor: 'gray.200',
         borderRadius: '12px',
         padding: '24px',
-        backgroundColor: 'gray.5',
+        backgroundColor: 'gray.0',
       },
     })}
     use:form

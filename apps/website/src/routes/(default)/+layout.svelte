@@ -21,7 +21,7 @@
     marginX: 'auto',
     width: 'full',
     height: 'full',
-    backgroundColor: 'gray.5',
+    backgroundColor: 'gray.0',
   })}
 >
   <slot />

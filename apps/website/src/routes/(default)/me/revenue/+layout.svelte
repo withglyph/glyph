@@ -120,7 +120,7 @@
       borderYWidth: '1px',
       borderColor: 'gray.150',
       padding: '20px',
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       sm: {
         borderXWidth: '1px',
         marginTop: '12px',

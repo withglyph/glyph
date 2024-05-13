@@ -154,7 +154,7 @@
             size: '32px',
           })}
         >
-          <Icon style={css.raw({ color: 'gray.5' })} icon={IconCamera} />
+          <Icon style={css.raw({ color: 'gray.0' })} icon={IconCamera} />
         </div>
       </button>
 

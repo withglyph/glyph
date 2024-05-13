@@ -49,7 +49,7 @@
           alignItems: 'center',
           gap: '8px',
           paddingX: '20px',
-          backgroundColor: 'gray.5',
+          backgroundColor: 'gray.0',
           height: 'full',
         },
         '&[data-sm-below=false] > button.close-search-bar': {

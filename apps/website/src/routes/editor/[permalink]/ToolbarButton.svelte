@@ -36,7 +36,7 @@
       gap: '2px',
       color: 'gray.800',
       _enabled: { backgroundColor: { _hover: 'gray.100' } },
-      _pressed: { backgroundColor: { base: 'gray.900', _hover: 'gray.600!' }, color: 'gray.5' },
+      _pressed: { backgroundColor: { base: 'gray.900', _hover: 'gray.600!' }, color: 'gray.0' },
       _disabled: { color: 'gray.300' },
     },
     size === 'sm' && {

@@ -50,7 +50,7 @@
       paddingX: { base: '20px', sm: '32px' },
       width: 'full',
       height: { base: 'screen', sm: '536px' },
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       zIndex: '1',
       overflowY: 'auto',
       sm: {

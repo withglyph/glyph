@@ -110,7 +110,7 @@
     {...$$restProps}
     class={css({
       borderColor: 'gray.600',
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       sm: {
         borderWidth: '1px',
         width: '376px',

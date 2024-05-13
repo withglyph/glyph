@@ -93,7 +93,7 @@
           size: '32px',
         })}
       >
-        <Icon style={css.raw({ color: 'gray.5' })} icon={IconCamera} />
+        <Icon style={css.raw({ color: 'gray.0' })} icon={IconCamera} />
       </div>
     </button>
     <p class={css({ fontSize: '13px', color: 'gray.500' })}>800x800 픽셀 이상 (1:1 비율)</p>

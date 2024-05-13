@@ -31,10 +31,10 @@
       'transition': 'common',
       'cursor': 'pointer',
       '&:has(:disabled)': { cursor: 'not-allowed' },
-      '_focus': { borderColor: 'brand.400', color: 'gray.5' },
+      '_focus': { borderColor: 'brand.400', color: 'gray.0' },
       '&:has(:checked)': {
         borderColor: 'brand.400',
-        color: 'gray.5',
+        color: 'gray.0',
         backgroundColor: 'brand.400',
       },
     },

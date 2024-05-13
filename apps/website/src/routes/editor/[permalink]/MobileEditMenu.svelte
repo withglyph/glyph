@@ -83,7 +83,7 @@
 </script>
 
 <div
-  class={flex({ direction: 'column', color: 'gray.800', backgroundColor: 'gray.5', hideFrom: 'sm' })}
+  class={flex({ direction: 'column', color: 'gray.800', backgroundColor: 'gray.0', hideFrom: 'sm' })}
   on:touchend|nonpassive|preventDefault
 >
   <div
@@ -315,7 +315,7 @@
             >
               <Icon
                 style={css.raw(
-                  { color: color === '#FFFFFF' ? 'gray.900' : 'gray.5' },
+                  { color: color === '#FFFFFF' ? 'gray.900' : 'gray.0' },
                   currentColor.toUpperCase() !== color && { display: 'none' },
                 )}
                 icon={IconCheck}

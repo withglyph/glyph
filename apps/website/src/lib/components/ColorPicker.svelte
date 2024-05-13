@@ -151,7 +151,7 @@
     borderWidth: '1px',
     borderColor: 'gray.200',
     width: '192px',
-    backgroundColor: 'gray.5',
+    backgroundColor: 'gray.0',
     boxShadow: '[0 5px 22px 0 {colors.gray.900/6}]',
     display: open ? 'block' : 'none',
   })}
@@ -180,7 +180,7 @@
         class={css({
           position: 'absolute',
           borderWidth: '2px',
-          borderColor: 'gray.5',
+          borderColor: 'gray.0',
           borderRadius: 'full',
           size: '14px',
           backgroundColor: 'transparent',

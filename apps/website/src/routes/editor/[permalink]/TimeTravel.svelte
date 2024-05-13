@@ -150,7 +150,7 @@
       paddingY: '20px',
       width: 'full',
       maxWidth: '940px',
-      backgroundColor: 'gray.5',
+      backgroundColor: 'gray.0',
       sm: { paddingTop: '34px' },
     })}
   >
@@ -267,7 +267,7 @@
           position: 'relative',
           fontSize: '13px',
           fontFeatureSettings: '"tnum" 1',
-          color: 'gray.5',
+          color: 'gray.0',
           zIndex: '2',
         })}
       >

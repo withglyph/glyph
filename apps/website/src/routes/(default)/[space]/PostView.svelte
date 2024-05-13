@@ -459,7 +459,7 @@
   }}
 />
 
-<article class={css({ flexGrow: '1', paddingX: '20px', width: 'full', backgroundColor: 'gray.5' }, style)}>
+<article class={css({ flexGrow: '1', paddingX: '20px', width: 'full', backgroundColor: 'gray.0' }, style)}>
   <div
     class={flex({
       direction: 'column',
@@ -583,7 +583,7 @@
                 right: '-4px',
                 bottom: '-4px',
                 borderRadius: 'full',
-                backgroundColor: 'gray.5',
+                backgroundColor: 'gray.0',
                 size: '24px',
               })}
             />
@@ -1095,7 +1095,7 @@
         align: 'center',
         justify: 'space-between',
         paddingY: '18px',
-        backgroundColor: 'gray.5',
+        backgroundColor: 'gray.0',
         smDown: {
           flexGrow: '1',
           position: 'sticky',
@@ -1239,7 +1239,7 @@
         </a>
 
         {#if positionInCollection > -1}
-          <div class={css({ backgroundColor: 'gray.5' })}>
+          <div class={css({ backgroundColor: 'gray.0' })}>
             {#if positionInCollection > 0}
               {@const previousPost = $query.post.collection.posts[positionInCollection - 1]}
               <a
@@ -1520,7 +1520,7 @@
     {/if}
   </div>
 
-  <hr class={css({ border: 'none', marginTop: '24px', marginX: '-20px', height: '16px', backgroundColor: 'gray.5' })} />
+  <hr class={css({ border: 'none', marginTop: '24px', marginX: '-20px', height: '16px', backgroundColor: 'gray.0' })} />
 
   {#if $query.post.recommendedPosts.length > 0}
     <div
