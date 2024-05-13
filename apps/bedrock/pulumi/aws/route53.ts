@@ -1,5 +1,3 @@
-// spell-checker:words amazonses aspmx
-
 import * as aws from '@pulumi/aws';
 
 const createZone = (domain: string) => {
@@ -55,6 +53,15 @@ new aws.route53.Record('mail.withglyph.com|txt', {
   type: 'TXT',
   name: 'mail.withglyph.com',
   records: ['v=spf1 include:amazonses.com ~all'],
+  ttl: 300,
+});
+
+new aws.route53.Record('penxle.com|txt', {
+  zoneId: zones.penxle_com.zoneId,
+  type: 'TXT',
+  name: 'penxle.com',
+  // spell-checker:disable-next-line
+  records: ['google-site-verification=bwCGvefwzolnCCx3lMbeJ0VmSp9sawDrbcaQ2WgehJo'],
   ttl: 300,
 });
 

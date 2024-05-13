@@ -138,6 +138,40 @@ new aws.ec2.SecurityGroupRule('tailnet.egress', {
   cidrBlocks: ['0.0.0.0/0'],
 });
 
+const bastionSecurityGroup = new aws.ec2.SecurityGroup('bastion', {
+  name: 'bastion',
+  description: 'Bastion host',
+  vpcId: vpc.id,
+
+  tags: { Name: 'bastion' },
+});
+
+new aws.ec2.SecurityGroupRule('bastion.ingress', {
+  securityGroupId: bastionSecurityGroup.id,
+  type: 'ingress',
+  protocol: 'tcp',
+  fromPort: 22,
+  toPort: 22,
+  cidrBlocks: [
+    // Office
+    '211.38.136.91/32',
+
+    // Retool
+    '3.77.79.248/30',
+    '35.90.103.132/30',
+    '44.208.168.68/30',
+  ],
+});
+
+new aws.ec2.SecurityGroupRule('bastion.egress', {
+  securityGroupId: bastionSecurityGroup.id,
+  type: 'egress',
+  protocol: '-1',
+  fromPort: 0,
+  toPort: 0,
+  cidrBlocks: ['0.0.0.0/0'],
+});
+
 const internalSecurityGroup = new aws.ec2.SecurityGroup('internal', {
   name: 'internal',
   description: 'Connection between services',
@@ -162,6 +196,15 @@ new aws.ec2.SecurityGroupRule('internal.ingress[tailnet]', {
   fromPort: 0,
   toPort: 0,
   sourceSecurityGroupId: tailnetSecurityGroup.id,
+});
+
+new aws.ec2.SecurityGroupRule('internal.ingress[bastion]', {
+  securityGroupId: internalSecurityGroup.id,
+  type: 'ingress',
+  protocol: '-1',
+  fromPort: 0,
+  toPort: 0,
+  sourceSecurityGroupId: bastionSecurityGroup.id,
 });
 
 new aws.ec2.SecurityGroupRule('internal.egress', {
@@ -218,6 +261,7 @@ export const subnets = {
 export const securityGroups = {
   internal: internalSecurityGroup,
   tailnet: tailnetSecurityGroup,
+  bastion: bastionSecurityGroup,
 };
 
 export const outputs = {

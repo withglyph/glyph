@@ -81,11 +81,40 @@ runcmd:
   { ignoreChanges: ['ami'] },
 );
 
-new aws.route53.Record('pool.db.pnxl.co', {
-  zoneId: zones.pnxl_co.zoneId,
-  name: 'pool.db.pnxl.co',
+const bastion = new aws.ec2.Instance(
+  'bastion',
+  {
+    ami: aws.ec2.getAmiOutput({
+      owners: ['amazon'],
+      filters: [
+        { name: 'name', values: ['al2023-ami-minimal-*'] },
+        { name: 'architecture', values: ['arm64'] },
+      ],
+      mostRecent: true,
+    }).id,
+
+    instanceType: 't4g.nano',
+
+    subnetId: subnets.public.az1.id,
+    vpcSecurityGroupIds: [securityGroups.bastion.id],
+
+    keyName: keypair.keyName,
+    userData: pulumi.interpolate`
+#cloud-config
+runcmd:
+  - [ hostnamectl, hostname, bastion ]
+`.apply((v) => v.trim()),
+
+    tags: { Name: 'bastion' },
+  },
+  { ignoreChanges: ['ami'] },
+);
+
+new aws.route53.Record('bastion.withglyph.io', {
+  zoneId: zones.withglyph_io.zoneId,
+  name: 'bastion.withglyph.io',
   type: 'A',
-  records: [pgbouncer.privateIp],
+  records: [bastion.publicIp],
   ttl: 300,
 });
 
