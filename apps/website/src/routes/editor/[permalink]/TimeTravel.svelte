@@ -175,7 +175,7 @@
       <input
         class={css({ marginTop: '4px', width: 'full', fontSize: '16px', fontWeight: 'medium' })}
         maxlength="100"
-        placeholder="부제목을 입력해주세요"
+        placeholder="부제목을 입력하세요"
         readonly
         type="text"
         value={subtitle}
