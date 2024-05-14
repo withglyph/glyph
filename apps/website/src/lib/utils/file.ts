@@ -2,6 +2,7 @@
 const mimes = [
   { mime: 'image/jpeg', pattern: [0xff, 0xd8, 0xff] },
   { mime: 'image/png', pattern: [0x89, 0x50, 0x4e, 0x47] },
+  { mime: 'image/gif', pattern: [0x47, 0x49, 0x46, 0x38] },
 ];
 
 export const fileMime = async (file: File) => {

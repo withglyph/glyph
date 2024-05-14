@@ -51,7 +51,7 @@ export const handler = async (event: Event) => {
   const started = performance.now();
 
   const input = await resp.arrayBuffer();
-  let image = sharp(input, { failOn: 'none' });
+  let image = sharp(input, { failOn: 'none', animated: true });
 
   if (size) {
     image = image.resize({
@@ -62,10 +62,7 @@ export const handler = async (event: Event) => {
     });
   }
 
-  const output = await image
-    .flatten({ background: { r: 255, g: 255, b: 255 } })
-    .webp({ quality: 90 })
-    .toBuffer();
+  const output = await image.webp({ quality: 90 }).toBuffer();
 
   const finished = performance.now();
 

@@ -18,18 +18,27 @@ const PretendardRegular = await got('https://glyph.pub/assets/fonts/Pretendard-R
 const RIDIBatang = await got('https://glyph.pub/assets/fonts/RIDIBatang.otf').buffer();
 
 export const finalizeImage = async (source: ImageSource, bounds?: ImageBounds) => {
-  let image = sharp(source, { failOn: 'none' }).rotate().flatten({ background: '#ffffff' });
+  let image = sharp(source, { failOn: 'none', animated: true });
+  let singleImage = sharp(source, { failOn: 'none' });
 
   if (bounds) {
     image = image.extract(bounds);
+    singleImage = singleImage.extract(bounds);
   }
 
+  image = image.rotate();
+  singleImage = singleImage.rotate();
+
   const getOutput = async () => {
-    return await image.clone().toBuffer({ resolveWithObject: true });
+    return await image.clone().toBuffer();
+  };
+
+  const getMetadata = async () => {
+    return await image.clone().metadata();
   };
 
   const getColor = async () => {
-    const buffer = await image.clone().raw().toBuffer();
+    const buffer = await singleImage.clone().raw().toBuffer();
     return getDominantColor(buffer);
   };
 
@@ -37,7 +46,7 @@ export const finalizeImage = async (source: ImageSource, bounds?: ImageBounds) =
     const {
       data: raw,
       info: { width, height },
-    } = await image
+    } = await singleImage
       .clone()
       .resize({
         width: 100,
@@ -55,7 +64,7 @@ export const finalizeImage = async (source: ImageSource, bounds?: ImageBounds) =
   const getHash = async () => {
     const size = 16;
 
-    const raw = await image
+    const raw = await singleImage
       .clone()
       .greyscale()
       .resize({
@@ -84,18 +93,26 @@ export const finalizeImage = async (source: ImageSource, bounds?: ImageBounds) =
     return hash;
   };
 
-  const [output, color, placeholder, hash] = await Promise.all([getOutput(), getColor(), getPlaceholder(), getHash()]);
+  const [output, metadata, color, placeholder, hash] = await Promise.all([
+    getOutput(),
+    getMetadata(),
+    getColor(),
+    getPlaceholder(),
+    getHash(),
+  ]);
 
+  /* eslint-disable @typescript-eslint/no-non-null-assertion */
   return {
-    buffer: output.data,
-    format: output.info.format,
-    size: output.info.size,
-    width: output.info.width,
-    height: output.info.height,
+    buffer: output,
+    format: metadata.format!,
+    size: metadata.size!,
+    width: metadata.width!,
+    height: metadata.pageHeight ?? metadata.height!,
     color,
     placeholder,
     hash,
   };
+  /* eslint-enable @typescript-eslint/no-non-null-assertion */
 };
 
 type DirectUploadImageParams = {

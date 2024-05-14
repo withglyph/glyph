@@ -1,7 +1,7 @@
 import { toast } from '$lib/notification';
 import { fileMime } from './file';
 
-export const validImageMimes = ['image/jpeg', 'image/png'];
+export const validImageMimes = ['image/jpeg', 'image/png', 'image/gif'];
 const maxSize = 100 * 1024 * 1024; // 100MB
 
 export const isValidImageFile = async (file: File) => {
