@@ -223,6 +223,7 @@
     {:else}
       <div
         class={css(
+          { marginY: 'auto' },
           node.attrs.layout === 'scroll' && { display: 'flex', flexDirection: 'column', alignItems: 'center' },
           node.attrs.layout === 'grid-2' && { display: 'grid', gridTemplateColumns: '2' },
           node.attrs.layout === 'grid-3' && { display: 'grid', gridTemplateColumns: '3' },
