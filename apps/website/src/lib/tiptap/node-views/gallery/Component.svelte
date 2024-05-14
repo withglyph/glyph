@@ -12,6 +12,7 @@
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import Image from './Image.svelte';
+  import ImageViewer from './ImageViewer.svelte';
   import ItemEditor from './ItemEditor.svelte';
   import Slide from './Slide.svelte';
   import type { NodeViewProps } from '$lib/tiptap';
@@ -27,6 +28,7 @@
   export let updateAttributes: NodeViewProps['updateAttributes'];
 
   let openItemEditor = false;
+  let viewerOpen = false;
 </script>
 
 <NodeView
@@ -46,6 +48,14 @@
       node.attrs.size === 'compact' && { maxWidth: '500px' },
       selected && { ringWidth: '2px', ringColor: 'brand.400' },
     )}
+    role="button"
+    tabindex="-1"
+    on:click={() => {
+      if (!editor?.isEditable) {
+        viewerOpen = true;
+      }
+    }}
+    on:keypress={null}
   >
     {#if node.attrs.layout === 'slide-1' || node.attrs.layout === 'slide-2'}
       <Slide ids={node.attrs.ids} pages={node.attrs.layout === 'slide-2' ? 2 : 1} size={node.attrs.size} />
@@ -64,6 +74,8 @@
       </div>
     {/if}
   </div>
+
+  <ImageViewer {node} bind:open={viewerOpen} />
 </NodeView>
 
 {#if editor && selected}

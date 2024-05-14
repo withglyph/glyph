@@ -6,13 +6,15 @@
   import IconAlignLeft from '~icons/tabler/align-left';
   import IconAlignRight from '~icons/tabler/align-right';
   import IconTrash from '~icons/tabler/trash';
+  import IconX from '~icons/tabler/x';
   import { graphql } from '$glitch';
   import { Icon, Image } from '$lib/components';
   import { RingSpinner } from '$lib/components/spinners';
+  import { portal, scrollLock } from '$lib/svelte/actions';
   import { NodeView } from '$lib/tiptap';
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
   import { css } from '$styled-system/css';
-  import { center } from '$styled-system/patterns';
+  import { center, flex } from '$styled-system/patterns';
   import type { NodeViewProps } from '$lib/tiptap';
 
   type $$Props = NodeViewProps;
@@ -24,6 +26,12 @@
   export let getPos: NodeViewProps['getPos'];
   export let updateAttributes: NodeViewProps['updateAttributes'];
   export let deleteNode: NodeViewProps['deleteNode'];
+
+  let headerEl: HTMLElement;
+
+  let viewerOpen = false;
+  let prevScrollpos = 0;
+  let timer: NodeJS.Timeout;
 
   $: query = graphql(`
     query TiptapImageNodeView_Query($id: ID!) @_manual {
@@ -37,11 +45,22 @@
   onMount(() => {
     query.refetch({ id: node.attrs.id });
   });
+
+  $: {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      if (headerEl) {
+        headerEl.style.top = '-62px';
+      }
+    }, 1000);
+
+    [prevScrollpos];
+  }
 </script>
 
 <NodeView
   style={css.raw(
-    { display: 'flex', alignItems: 'center', paddingY: '4px', pointerEvents: 'none', smDown: { marginX: '-20px' } },
+    { display: 'flex', alignItems: 'center', paddingY: '4px', smDown: { marginX: '-20px' } },
     node.attrs.align === 'left' && { justifyContent: 'flex-start' },
     node.attrs.align === 'center' && { justifyContent: 'center' },
     node.attrs.align === 'right' && { justifyContent: 'flex-end' },
@@ -56,9 +75,78 @@
       node.attrs.size === 'compact' && { maxWidth: '500px' },
       selected && { ringWidth: '2px', ringColor: 'brand.400' },
     )}
+    role={editor?.isEditable ? 'presentation' : 'button'}
+    on:click={() => {
+      if (!editor?.isEditable) {
+        viewerOpen = true;
+      }
+    }}
+    on:keypress={null}
   >
     {#if $query}
       <Image style={css.raw({ maxWidth: 'full' })} $image={$query.image} size="full" />
+
+      {#if viewerOpen}
+        <div
+          class={flex({
+            direction: 'column',
+            align: 'center',
+            justify: 'flex-start',
+            position: 'fixed',
+            inset: '0',
+            zIndex: '50',
+            paddingX: { sm: '96px' },
+            backgroundColor: '[#212121]',
+            overflow: 'auto',
+            scrollbar: 'hidden',
+          })}
+          data-scroll-lock-ignore
+          role="presentation"
+          on:scroll={(e) => {
+            var currentScrollPos = e.currentTarget.scrollTop;
+
+            headerEl.style.top = prevScrollpos > currentScrollPos ? '0' : '-62px';
+            prevScrollpos = currentScrollPos;
+          }}
+          on:mousemove={() => {
+            if (!headerEl) return;
+
+            headerEl.style.top = '0';
+
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+              headerEl.style.top = '-62px';
+            }, 1000);
+          }}
+          use:portal
+          use:scrollLock
+        >
+          <div
+            bind:this={headerEl}
+            class={flex({
+              align: 'center',
+              justify: 'flex-end',
+              position: 'fixed',
+              top: '0',
+              paddingX: '20px',
+              paddingY: '15px',
+              color: 'gray.200',
+              backgroundColor: 'gray.900/60',
+              width: 'full',
+              height: '62px',
+              zIndex: '10',
+              transition: 'all',
+            })}
+          >
+            <button type="button" on:click={() => (viewerOpen = false)}>
+              <Icon style={css.raw({ hideFrom: 'sm' })} icon={IconX} size={24} />
+              <Icon style={css.raw({ hideBelow: 'sm' })} icon={IconX} size={32} />
+            </button>
+          </div>
+
+          <Image style={css.raw({ marginY: 'auto', width: 'full' })} $image={$query.image} size="full" />
+        </div>
+      {/if}
     {:else}
       <div
         class={center({
