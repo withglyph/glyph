@@ -66,6 +66,24 @@
   }
 </script>
 
+<svelte:window
+  on:keydown={(e) => {
+    if (e.key === 'Escape') {
+      open = false;
+    }
+
+    if ((node.attrs.layout === 'slide-1' || node.attrs.layout === 'slide-2') && swiperEl) {
+      if (e.key === 'ArrowLeft') {
+        swiperEl.swiper.slidePrev();
+      }
+
+      if (e.key === 'ArrowRight') {
+        swiperEl.swiper.slideNext();
+      }
+    }
+  }}
+/>
+
 {#if open}
   <div
     class={flex({
