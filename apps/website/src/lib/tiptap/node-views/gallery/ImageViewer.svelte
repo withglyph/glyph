@@ -110,8 +110,8 @@
         top: '0',
         paddingX: '20px',
         paddingY: '15px',
-        color: 'gray.200',
-        backgroundColor: 'gray.900/60',
+        color: 'gray.300',
+        backgroundColor: 'gray.900/50',
         width: 'full',
         height: '62px',
         zIndex: '10',
@@ -125,8 +125,7 @@
             marginRight: 'auto',
             fontSize: { base: '16px', sm: '20px' },
             fontWeight: 'semibold',
-            color: 'gray.0',
-            opacity: '40',
+            color: 'gray.300',
           })}
         />
       {/if}
@@ -169,7 +168,7 @@
           )}
           type="button"
         >
-          <Icon icon={IconArrowLeft} size={32} />
+          <Icon icon={IconArrowLeft} size={24} />
         </button>
         <swiper-container
           bind:this={swiperEl}
@@ -217,7 +216,7 @@
           )}
           type="button"
         >
-          <Icon icon={IconArrowRight} size={32} />
+          <Icon icon={IconArrowRight} size={24} />
         </button>
       </div>
     {:else}
