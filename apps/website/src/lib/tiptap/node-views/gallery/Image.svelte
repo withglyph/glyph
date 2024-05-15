@@ -27,7 +27,14 @@
   <Image {style} $image={$query.image} size="full" />
 {:else}
   <div
-    class={css(style, { display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'gray.50' })}
+    class={css(style, {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minWidth: '200px',
+      minHeight: '200px',
+      backgroundColor: 'gray.50',
+    })}
   >
     <RingSpinner style={css.raw({ size: '32px', color: 'brand.400' })} />
   </div>

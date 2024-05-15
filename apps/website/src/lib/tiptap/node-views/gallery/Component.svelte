@@ -43,8 +43,8 @@
 >
   <div
     class={css(
-      { minWidth: '0', pointerEvents: 'auto', width: 'full' },
-      node.attrs.size === 'full' && { maxWidth: 'full' },
+      { pointerEvents: 'auto' },
+      node.attrs.size === 'full' && { width: 'full' },
       node.attrs.size === 'compact' && { maxWidth: '500px' },
       selected && { ringWidth: '2px', ringColor: 'brand.400' },
     )}
@@ -69,7 +69,7 @@
         )}
       >
         {#each node.attrs.ids as id (id)}
-          <Image {id} style={css.raw({ size: 'full', objectFit: 'cover' })} />
+          <Image {id} style={css.raw({ width: 'full', objectFit: 'cover' })} />
         {/each}
       </div>
     {/if}

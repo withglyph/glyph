@@ -70,8 +70,8 @@
 >
   <div
     class={css(
-      { minWidth: '0', pointerEvents: 'auto' },
-      node.attrs.size === 'full' && { maxWidth: 'full' },
+      { display: 'flex', justifyContent: 'center', pointerEvents: 'auto' },
+      node.attrs.size === 'full' && { width: 'full' },
       node.attrs.size === 'compact' && { maxWidth: '500px' },
       selected && { ringWidth: '2px', ringColor: 'brand.400' },
     )}
@@ -84,7 +84,7 @@
     on:keypress={null}
   >
     {#if $query}
-      <Image style={css.raw({ maxWidth: 'full' })} $image={$query.image} size="full" />
+      <Image style={css.raw({ width: 'full' })} $image={$query.image} size="full" />
 
       {#if viewerOpen}
         <div
