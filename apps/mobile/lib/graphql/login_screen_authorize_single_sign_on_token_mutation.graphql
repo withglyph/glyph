@@ -1,0 +1,5 @@
+mutation LoginScreen_AuthorizeSingleSignOnToken_Mutation($input: AuthorizeSingleSignOnTokenInput!) {
+  authorizeSingleSignOnToken(input: $input) {
+    token
+  }
+}

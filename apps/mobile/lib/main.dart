@@ -1,64 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:get_it/get_it.dart';
+import 'package:glyph/signals.dart';
 
-void main() {
+import 'app.dart';
+import 'firebase_options.dart';
+import 'network/graphql.dart';
+
+void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    systemStatusBarContrastEnforced: true,
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarDividerColor: Colors.transparent,
+    systemNavigationBarIconBrightness: Brightness.dark,
+    statusBarIconBrightness: Brightness.dark,
+  ));
+
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,
+    overlays: [SystemUiOverlay.top],
+  );
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  GetIt.I.registerLazySingleton(() => createFerryClient(accessToken.value));
+
   runApp(const App());
-}
-
-class App extends StatelessWidget {
-  const App({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      color: Colors.white,
-      home: Home(),
-    );
-  }
-}
-
-class Home extends StatefulWidget {
-  const Home({super.key});
-
-  @override
-  State<Home> createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  final GlobalKey webViewKey = GlobalKey();
-
-  InAppWebViewController? webViewController;
-  InAppWebViewSettings settings = InAppWebViewSettings();
-
-  bool initialized = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: SafeArea(
-        bottom: false,
-        child: InAppWebView(
-          key: webViewKey,
-          initialUrlRequest: URLRequest(url: WebUri("https://withglyph.com")),
-          initialSettings: settings,
-          onProgressChanged: (_, progress) => {
-            if (!initialized && progress == 100)
-              {
-                setState(() {
-                  initialized = true;
-                  FlutterNativeSplash.remove();
-                })
-              }
-          },
-        ),
-      ),
-    );
-  }
 }

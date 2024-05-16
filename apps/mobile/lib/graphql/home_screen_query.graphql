@@ -1,0 +1,14 @@
+query HomeScreen_Query {
+  me {
+    id
+
+    profile {
+      id
+      name
+      avatar {
+        id
+        url
+      }
+    }
+  }
+}

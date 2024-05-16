@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "58678861052",
+    "project_id": "withglyph",
+    "storage_bucket": "withglyph.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:58678861052:android:a1ecff4792b696f9bd8b79",
+        "android_client_info": {
+          "package_name": "com.withglyph.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "58678861052-afsh5183jqgh7n1cv0gp5drctvdkfb1t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgxjmnK7vTehEYkrzN4dqIPCBAxpPYIsM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "58678861052-afsh5183jqgh7n1cv0gp5drctvdkfb1t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

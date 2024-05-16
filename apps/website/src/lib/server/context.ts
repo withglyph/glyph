@@ -110,7 +110,7 @@ export const createContext = async (event: RequestEvent): Promise<Context> => {
     ' $loaders': new Map(),
   };
 
-  const accessToken = event.cookies.get('glyph-at');
+  const accessToken = event.request.headers.get('authorization') ?? event.cookies.get('glyph-at');
   if (accessToken) {
     let sessionId: string | undefined;
 

@@ -1,0 +1,6 @@
+query LoginScreen_Query {
+  authLayoutBackgroundImage {
+    id
+    url
+  }
+}

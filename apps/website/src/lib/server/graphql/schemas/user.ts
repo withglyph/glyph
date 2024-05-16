@@ -677,6 +677,12 @@ const IssueUserEmailAuthorizationUrlResult = builder.simpleObject('IssueUserEmai
   }),
 });
 
+const AuthorizeSingleSignOnTokenResult = builder.simpleObject('AuthorizeSingleSignOnTokenResult', {
+  fields: (t) => ({
+    token: t.string(),
+  }),
+});
+
 /**
  * * Inputs
  */
@@ -685,6 +691,13 @@ const IssueUserSingleSignOnAuthorizationUrlInput = builder.inputType('IssueUserS
   fields: (t) => ({
     type: t.field({ type: UserSingleSignOnAuthorizationType }),
     provider: t.field({ type: UserSingleSignOnProvider }),
+  }),
+});
+
+const AuthorizeSingleSignOnTokenInput = builder.inputType('AuthorizeSingleSignOnTokenInput', {
+  fields: (t) => ({
+    provider: t.field({ type: UserSingleSignOnProvider }),
+    token: t.string(),
   }),
 });
 
@@ -1006,6 +1019,42 @@ builder.mutationFields((t) => ({
 
       return {
         url: await provider.generateAuthorizationUrl(context.event, input.type),
+      };
+    },
+  }),
+
+  authorizeSingleSignOnToken: t.field({
+    type: AuthorizeSingleSignOnTokenResult,
+    args: { input: t.arg({ type: AuthorizeSingleSignOnTokenInput }) },
+    resolve: async (_, { input }, context) => {
+      const externalUser = await match(input.provider)
+        .with('GOOGLE', () => google.authorizeUser(context.event, input.token))
+        .otherwise(() => null);
+
+      if (!externalUser) {
+        throw new Error('Not implemented');
+      }
+
+      const ssos = await database
+        .select({ userId: UserSingleSignOns.userId })
+        .from(UserSingleSignOns)
+        .where(
+          and(eq(UserSingleSignOns.provider, externalUser.provider), eq(UserSingleSignOns.principal, externalUser.id)),
+        );
+
+      if (ssos.length === 0) {
+        throw new Error('Not implemented');
+      }
+
+      const [session] = await database
+        .insert(UserSessions)
+        .values({ userId: ssos[0].userId })
+        .returning({ id: UserSessions.id });
+
+      const accessToken = await createAccessToken(session.id);
+
+      return {
+        token: accessToken,
       };
     },
   }),

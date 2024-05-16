@@ -4,8 +4,6 @@ docs/*
 .husky/_/
 pnpm-lock.yaml
 
-schema.graphql
-drizzle/
-
-apps/android
-apps/ios
+apps/mobile/
+apps/website/schema.graphql
+apps/website/drizzle/

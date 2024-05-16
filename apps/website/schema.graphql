@@ -3,6 +3,15 @@ enum AuthScope {
   USER
 }
 
+input AuthorizeSingleSignOnTokenInput {
+  provider: UserSingleSignOnProvider!
+  token: String!
+}
+
+type AuthorizeSingleSignOnTokenResult {
+  token: String!
+}
+
 input BlockMasqueradeInput {
   masqueradeId: ID!
   spaceId: ID!
@@ -285,6 +294,7 @@ input MarkNotificationAsReadInput {
 }
 
 type Mutation {
+  authorizeSingleSignOnToken(input: AuthorizeSingleSignOnTokenInput!): AuthorizeSingleSignOnTokenResult!
   blockMasquerade(input: BlockMasqueradeInput!): Space!
   bookmarkPost(input: BookmarkPostInput!): Post!
   createComment(input: CreateCommentInput!): PostComment!
