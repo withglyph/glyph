@@ -9,6 +9,7 @@
   import Post from '../Post.svelte';
   import PostCard from '../PostCard.svelte';
   import Carousel from './Carousel.svelte';
+  import DraftPost from './DraftPost.svelte';
   import HorizontalScroll from './HorizontalScroll.svelte';
 
   $: query = graphql(`
@@ -21,6 +22,11 @@
         profile {
           id
           name
+        }
+
+        posts(state: DRAFT) {
+          id
+          ...DraftPost_post
         }
       }
 
@@ -162,7 +168,51 @@
     />
   </HorizontalScroll>
 
-  <div class={css({ paddingY: { base: '32px', sm: '40px' } })}>
+  {#if $query.me && $query.me.posts.length > 0}
+    <div class={css({ paddingY: { base: '32px', sm: '40px' } })}>
+      <h2 class={css({ marginBottom: '14px', fontSize: '21px', fontWeight: 'bold' })}>이어서 써보세요</h2>
+
+      <HorizontalScroll
+        style={css.raw({ gap: '12px' })}
+        gradientStyle={css.raw({
+          gradientFrom: '[#ffffff/0]',
+          gradientTo: '[#ffffff]',
+          display: 'flex',
+          alignItems: 'center',
+          height: { base: '138px', sm: '140px' },
+          width: '80px',
+        })}
+      >
+        <Icon
+          slot="left-icon"
+          style={css.raw({ 'color': 'gray.0', '& *': { strokeWidth: '[2]' } })}
+          icon={IconChevronLeft}
+          size={20}
+        />
+
+        {#each $query.me.posts.slice(0, 10) as post (post.id)}
+          <DraftPost $post={post} />
+        {/each}
+
+        <Icon
+          slot="right-icon"
+          style={css.raw({ 'color': 'gray.0', '& *': { strokeWidth: '[2]' } })}
+          icon={IconChevronRight}
+          size={20}
+        />
+      </HorizontalScroll>
+    </div>
+  {/if}
+
+  <div
+    class={css(
+      { paddingY: { base: '32px', sm: '40px' } },
+      $query.me &&
+        $query.me.posts.length > 0 && {
+          paddingTop: { base: '24px', sm: '20px' },
+        },
+    )}
+  >
     <h2 class={css({ marginBottom: '14px', fontSize: '21px', fontWeight: 'bold' })}>에디터 Pick</h2>
 
     <HorizontalScroll
