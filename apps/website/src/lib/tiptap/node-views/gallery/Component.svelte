@@ -48,17 +48,15 @@
       node.attrs.size === 'compact' && { maxWidth: '500px' },
       selected && { ringWidth: '2px', ringColor: 'brand.400' },
     )}
-    role="button"
-    tabindex="-1"
-    on:click={() => {
-      if (!editor?.isEditable) {
-        viewerOpen = true;
-      }
-    }}
-    on:keypress={null}
   >
     {#if node.attrs.layout === 'slide-1' || node.attrs.layout === 'slide-2'}
-      <Slide ids={node.attrs.ids} pages={node.attrs.layout === 'slide-2' ? 2 : 1} size={node.attrs.size} />
+      <Slide
+        {editor}
+        ids={node.attrs.ids}
+        pages={node.attrs.layout === 'slide-2' ? 2 : 1}
+        size={node.attrs.size}
+        bind:viewerOpen
+      />
     {:else}
       <div
         class={css(
@@ -67,6 +65,14 @@
           node.attrs.layout === 'grid-3' && { display: 'grid', gridTemplateColumns: '3' },
           { smDown: { maxWidth: 'full' } },
         )}
+        role="button"
+        tabindex="-1"
+        on:click={() => {
+          if (!editor?.isEditable) {
+            viewerOpen = true;
+          }
+        }}
+        on:keypress={null}
       >
         {#each node.attrs.ids as id (id)}
           <Image {id} style={css.raw({ width: 'full', objectFit: 'cover' })} />

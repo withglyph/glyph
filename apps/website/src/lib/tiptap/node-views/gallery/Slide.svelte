@@ -7,10 +7,13 @@
   import { flex } from '$styled-system/patterns';
   import Image from './Image.svelte';
   import type { SwiperContainer } from 'swiper/element-bundle';
+  import type { NodeViewProps } from '$lib/tiptap';
 
+  export let editor: NodeViewProps['editor'] | undefined;
   export let ids: string[];
   export let pages: number;
   export let size: 'full' | 'compact';
+  export let viewerOpen = false;
 
   let swiperEl: SwiperContainer;
   let swiperNextElem: HTMLElement;
@@ -146,7 +149,16 @@
   </button>
   <swiper-container bind:this={swiperEl} class={css({ position: 'relative', size: 'full' })} init="false">
     {#each ids as id (id)}
-      <swiper-slide>
+      <swiper-slide
+        role="button"
+        tabindex="-1"
+        on:click={() => {
+          if (!editor?.isEditable) {
+            viewerOpen = true;
+          }
+        }}
+        on:keypress={null}
+      >
         <Image {id} style={css.raw({ objectFit: 'contain', size: 'full' })} />
       </swiper-slide>
     {/each}
