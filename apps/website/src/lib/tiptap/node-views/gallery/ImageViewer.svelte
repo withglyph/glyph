@@ -136,7 +136,7 @@
         transition: 'all',
       })}
     >
-      {#if node.attrs.layout === 'slide-1' || node.attrs.layout === 'slide-2'}
+      {#if node.attrs.layout !== 'scroll'}
         <div
           bind:this={swiperPaginationElem}
           class={css({
@@ -152,7 +152,7 @@
         <Icon style={css.raw({ hideBelow: 'sm' })} icon={IconX} size={32} />
       </button>
     </div>
-    {#if node.attrs.layout === 'slide-1' || node.attrs.layout === 'slide-2'}
+    {#if node.attrs.layout !== 'scroll'}
       <div
         class={css({
           position: 'relative',
@@ -242,21 +242,10 @@
         class={css(
           { marginY: 'auto' },
           node.attrs.layout === 'scroll' && { display: 'flex', flexDirection: 'column', alignItems: 'center' },
-          node.attrs.layout === 'grid-2' && { display: 'grid', gridTemplateColumns: '2' },
-          node.attrs.layout === 'grid-3' && { display: 'grid', gridTemplateColumns: '3' },
         )}
       >
         {#each node.attrs.ids as id (id)}
-          <Image
-            {id}
-            style={css.raw(
-              { width: 'full' },
-              (node.attrs.layout === 'grid-2' || node.attrs.layout === 'grid-3') && {
-                size: 'full',
-                objectFit: 'cover',
-              },
-            )}
-          />
+          <Image {id} style={css.raw({ width: 'full' })} />
         {/each}
       </div>
     {/if}
