@@ -1,4 +1,5 @@
 import { init as cuid } from '@paralleldrive/cuid2';
+import * as Sentry from '@sentry/sveltekit';
 import { hash, verify } from 'argon2';
 import dayjs from 'dayjs';
 import { and, asc, count, desc, eq, exists, gt, gte, isNotNull, isNull, lt, ne, notExists, or, sql } from 'drizzle-orm';
@@ -20,7 +21,7 @@ import {
   PostTagKind,
   PostVisibility,
 } from '$lib/enums';
-import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
+import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError, UnknownError } from '$lib/errors';
 import { redis } from '$lib/server/cache';
 import {
   BookmarkGroupPosts,
@@ -2035,29 +2036,38 @@ builder.subscriptionFields((t) => ({
         }
       }
 
-      return pipe(
-        Repeater.merge([
-          pubsub.subscribe('post:synchronization', args.postId),
-          new Repeater<SynchronizePostResultType>(async (push, stop) => {
-            push({
-              postId: args.postId,
-              kind: 'PING',
-              data: dayjs().valueOf().toString(),
-            });
-
-            const interval = setInterval(() => {
+      try {
+        return pipe(
+          Repeater.merge([
+            pubsub.subscribe('post:synchronization', args.postId),
+            new Repeater<SynchronizePostResultType>(async (push, stop) => {
               push({
                 postId: args.postId,
                 kind: 'PING',
                 data: dayjs().valueOf().toString(),
               });
-            }, 1000);
 
-            await stop;
-            clearInterval(interval);
-          }),
-        ]),
-      );
+              const interval = setInterval(() => {
+                push({
+                  postId: args.postId,
+                  kind: 'PING',
+                  data: dayjs().valueOf().toString(),
+                });
+              }, 1000);
+
+              await stop;
+              clearInterval(interval);
+            }),
+          ]),
+        );
+      } catch (err) {
+        const errId = Sentry.captureException(err, {
+          tags: {
+            section: 'gql_subscription_postSynchronization',
+          },
+        });
+        throw new UnknownError(err, errId);
+      }
     },
     resolve: (payload) => payload,
   }),
