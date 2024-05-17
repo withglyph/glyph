@@ -1,0 +1,5 @@
+query AuthProvider_Query {
+  me {
+    id
+  }
+}

@@ -1,24 +1,27 @@
-import 'package:ferry/ferry.dart';
 import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/components/button.dart';
 import 'package:glyph/graphql/__generated__/home_screen_query.req.gql.dart';
-import 'package:glyph/signals.dart';
-import 'package:go_router/go_router.dart';
+import 'package:glyph/providers/auth.dart';
+import 'package:glyph/providers/ferry.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   HomeScreen({super.key});
 
-  final client = GetIt.I<Client>();
+  final storage = GetIt.I<FlutterSecureStorage>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ferry = ref.watch(ferryProvider);
+
     return Container(
       color: Colors.white,
       child: Operation(
-        client: client,
+        client: ferry,
         operationRequest: GHomeScreen_QueryReq(),
         builder: (context, response, error) {
           if (response == null || response.loading) {
@@ -46,11 +49,8 @@ class HomeScreen extends StatelessWidget {
               const Gap(24),
               Button(
                 child: const Text('로그아웃'),
-                onPressed: () {
-                  accessToken.value = null;
-                  GetIt.I.resetLazySingleton<Client>();
-
-                  context.go('/login');
+                onPressed: () async {
+                  await ref.read(authProvider.notifier).clearAccessToken();
                 },
               )
             ],

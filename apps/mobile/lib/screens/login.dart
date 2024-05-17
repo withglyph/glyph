@@ -1,17 +1,15 @@
-import 'package:ferry/ferry.dart';
-import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:get_it/get_it.dart';
 import 'package:glyph/components/button.dart';
 import 'package:glyph/graphql/__generated__/login_screen_authorize_single_sign_on_token_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/login_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
-import 'package:glyph/signals.dart';
+import 'package:glyph/providers/auth.dart';
+import 'package:glyph/providers/ferry.dart';
+import 'package:glyph/screens/splash.dart';
 import 'package:glyph/themes/colors.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -21,48 +19,60 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
       '58678861052-afsh5183jqgh7n1cv0gp5drctvdkfb1t.apps.googleusercontent.com',
 );
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+class LoginScreen extends ConsumerStatefulWidget {
+  const LoginScreen({super.key});
 
-  final client = GetIt.I<Client>();
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  var _isInitialized = false;
+  var _showSplash = true;
+  String? _imageUrl;
 
   @override
   Widget build(BuildContext context) {
-    return Operation(
-      client: client,
-      operationRequest: GLoginScreen_QueryReq(),
-      builder: (context, response, error) {
-        if (response == null || response.loading) {
-          return Container();
-        }
+    final ferry = ref.watch(ferryProvider);
 
-        final imageUrl = response.data?.authLayoutBackgroundImage?.url;
-        NetworkImage? networkImage;
+    final req = GLoginScreen_QueryReq();
+    ferry.request(req).listen((resp) {
+      if (_isInitialized) {
+        return;
+      }
 
-        if (imageUrl == null) {
-          FlutterNativeSplash.remove();
-        } else {
-          networkImage = NetworkImage(imageUrl);
-          precacheImage(networkImage, context).then((_) {
-            FlutterNativeSplash.remove();
+      _imageUrl = resp.data?.authLayoutBackgroundImage?.url;
+      if (_imageUrl == null) {
+        setState(() {
+          _isInitialized = true;
+        });
+      } else {
+        final networkImage = NetworkImage(_imageUrl!);
+        precacheImage(networkImage, context).then((_) {
+          setState(() {
+            _isInitialized = true;
           });
-        }
+        });
+      }
+    });
 
-        return Container(
-          decoration: networkImage != null
-              ? BoxDecoration(
-                  image: DecorationImage(
-                    image: networkImage,
-                    alignment: Alignment.center,
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.4),
-                      BlendMode.srcATop,
-                    ),
-                  ),
-                )
-              : BoxDecoration(color: BrandColors.gray[900]),
-          child: SafeArea(
+    return Container(
+      decoration: _imageUrl != null
+          ? BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(_imageUrl!),
+                alignment: Alignment.center,
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.4),
+                  BlendMode.srcATop,
+                ),
+              ),
+            )
+          : BoxDecoration(color: BrandColors.gray[900]),
+      child: Stack(
+        children: [
+          SafeArea(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
@@ -130,14 +140,13 @@ class LoginScreen extends StatelessWidget {
                           ..vars.input.token = account.serverAuthCode,
                       );
 
-                      final resp = await client.request(req).first;
-                      accessToken.value =
-                          resp.data?.authorizeSingleSignOnToken.token;
-                      GetIt.I.resetLazySingleton<Client>();
-
-                      if (context.mounted) {
-                        context.go('/');
+                      final resp = await ferry.request(req).first;
+                      if (resp.hasErrors) {
+                        return;
                       }
+
+                      await ref.read(authProvider.notifier).setAccessToken(
+                          resp.data!.authorizeSingleSignOnToken.token);
                     },
                   ),
                   const Gap(11),
@@ -201,8 +210,20 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
           ),
-        );
-      },
+          if (_showSplash)
+            AnimatedOpacity(
+              opacity: _isInitialized ? 0 : 1,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              child: const SplashScreen(),
+              onEnd: () {
+                setState(() {
+                  _showSplash = false;
+                });
+              },
+            ),
+        ],
+      ),
     );
   }
 }

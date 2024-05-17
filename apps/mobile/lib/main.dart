@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:glyph/signals.dart';
+import 'package:glyph/storage.dart';
 
 import 'app.dart';
 import 'firebase_options.dart';
-import 'network/graphql.dart';
 
-void main() async {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     systemStatusBarContrastEnforced: true,
@@ -30,7 +29,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  GetIt.I.registerLazySingleton(() => createFerryClient(accessToken.value));
+  GetIt.I.registerSingleton<FlutterSecureStorage>(storage);
 
-  runApp(const App());
+  runApp(const ProviderScope(child: App()));
 }

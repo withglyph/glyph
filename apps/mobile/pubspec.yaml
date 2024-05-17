@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+50
+version: 1.0.0+70
 
 environment:
   sdk: '>=3.4.0 <4.0.0'
@@ -48,6 +48,11 @@ dependencies:
   go_router: ^14.1.1
   flutter_svg: ^2.0.10+1
   gap: ^3.0.1
+  permission_handler: ^11.3.1
+  flutter_secure_storage: ^9.2.1
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+  freezed_annotation: ^2.4.1
 
 dev_dependencies:
   flutter_test:
@@ -58,11 +63,15 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
 
   ferry_generator: ^0.10.0
   build_runner: ^2.4.10
   auto_route_generator: ^8.0.0
+  riverpod_generator: ^2.4.0
+  custom_lint: ^0.6.4
+  riverpod_lint: ^2.3.10
+  freezed: ^2.5.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -72,7 +81,7 @@ flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
-  # uses-material-design: true
+  uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -134,7 +143,6 @@ flutter:
 
 flutter_native_splash:
   color: '#171717'
-  image: assets/images/splash.png
 
   android_12:
     color: '#171717'
