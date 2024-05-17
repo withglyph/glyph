@@ -11,19 +11,20 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.564.0",
+    "@aws-sdk/client-s3": "^3.577.0",
     "aws-lambda-ric": "^3.1.0",
-    "sharp": "^0.33.3"
+    "sharp": "^0.33.4"
   },
   "devDependencies": {
-    "@pulumi/aws": "^6.34.1",
+    "@pulumi/aws": "^6.36.0",
     "@pulumi/aws-native": "^0.105.0",
-    "@pulumi/pulumi": "^3.115.2",
+    "@pulumi/pulumi": "^3.116.1",
+    "@types/node": "^20.12.12",
     "@withglyph/lib": "workspace:^",
     "@withglyph/pulumi": "workspace:^",
     "@withglyph/tsconfig": "workspace:^",
     "tsup": "^8.0.2",
-    "tsx": "^4.9.4",
+    "tsx": "^4.10.4",
     "typescript": "^5.4.5"
   }
 }

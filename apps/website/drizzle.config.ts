@@ -7,10 +7,10 @@ export default {
   schema: './src/lib/server/database/schemas/*',
   out: './drizzle',
 
-  driver: 'pg',
+  dialect: 'postgresql',
   dbCredentials: {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    connectionString: process.env.PRIVATE_DATABASE_URL!,
+    url: process.env.PRIVATE_DATABASE_DIRECT_URL!,
   },
 
   breakpoints: false,

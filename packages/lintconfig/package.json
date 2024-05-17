@@ -11,7 +11,7 @@
     "@eslint/eslintrc": "^3.0.2",
     "@eslint/js": "^8.57.0",
     "@prettier/plugin-xml": "^3.4.1",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/eslint-plugin": "^7.9.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-simple-import-sort": "^12.1.0",
@@ -23,6 +23,9 @@
     "prettier-plugin-sh": "^0.14.0",
     "prettier-plugin-svelte": "^3.2.3",
     "svelte-eslint-parser": "^0.36.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12"
   },
   "peerDependencies": {
     "eslint": "^8.0.0",

@@ -51,12 +51,12 @@
     "graphql-sse": "^2.5.3",
     "graphql-tag": "^2.12.6",
     "radash": "^12.1.0",
-    "recast": "^0.23.6",
-    "svelte": "^4.2.16",
+    "recast": "^0.23.7",
+    "svelte": "^4.2.17",
     "wonka": "^6.3.4"
   },
   "devDependencies": {
-    "@sveltejs/kit": "^2.5.7",
+    "@sveltejs/kit": "^2.5.8",
     "@withglyph/tsconfig": "workspace:^",
     "rollup": "^4.17.2",
     "tsup": "^8.0.2",

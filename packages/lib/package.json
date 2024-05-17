@@ -34,13 +34,13 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "@pnpm/find-workspace-dir": "^7.0.0",
-    "svelte": "^4.2.16",
+    "@pnpm/find-workspace-dir": "^7.0.1",
+    "svelte": "^4.2.17",
     "svgo": "^3.3.2",
     "vite": "^5.2.11"
   },
   "devDependencies": {
-    "@sveltejs/kit": "^2.5.7",
+    "@sveltejs/kit": "^2.5.8",
     "@withglyph/tsconfig": "workspace:^",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5"

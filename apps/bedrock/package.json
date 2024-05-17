@@ -4,16 +4,16 @@
   "private": true,
   "type": "module",
   "devDependencies": {
-    "@pulumi/aws": "^6.34.1",
+    "@pulumi/aws": "^6.36.0",
     "@pulumi/kubernetes": "^4.11.0",
-    "@pulumi/pulumi": "^3.115.2",
+    "@pulumi/pulumi": "^3.116.1",
     "@pulumi/random": "^4.16.1",
     "@pulumi/tailscale": "^0.16.0",
     "@pulumi/tls": "^5.0.3",
-    "@types/node": "^20.12.11",
+    "@types/node": "^20.12.12",
     "@withglyph/pulumi": "workspace:^",
     "@withglyph/tsconfig": "workspace:^",
     "fast-glob": "^3.3.2",
-    "tsx": "^4.9.4"
+    "tsx": "^4.10.4"
   }
 }
