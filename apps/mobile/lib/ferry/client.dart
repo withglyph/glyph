@@ -7,7 +7,7 @@ import 'package:gql_http_link/gql_http_link.dart';
 Client createFerryClient(String? accessToken) {
   final link = Link.from([
     if (accessToken != null) AuthLink(accessToken),
-    HttpLink('https://withglyph.com/api/graphql'),
+    HttpLink('https://dev.withglyph.com/api/graphql'),
   ]);
 
   final cache = Cache(possibleTypes: possibleTypesMap);

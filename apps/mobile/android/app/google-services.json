@@ -14,13 +14,17 @@
       },
       "oauth_client": [
         {
-          "client_id": "58678861052-afsh5183jqgh7n1cv0gp5drctvdkfb1t.apps.googleusercontent.com",
-          "client_type": 3
+          "client_id": "58678861052-5l5pkmjo47h6ff86rcaiqfdfdgusd73d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.withglyph.app",
+            "certificate_hash": "4627d21abafe784a10e1764ecd872304efb03413"
+          }
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAgxjmnK7vTehEYkrzN4dqIPCBAxpPYIsM"
+          "current_key": "AIzaSyAWaG3h7U3lTrylrxdsRdEaYIOKsp54wCQ"
         }
       ],
       "services": {
@@ -29,6 +33,14 @@
             {
               "client_id": "58678861052-afsh5183jqgh7n1cv0gp5drctvdkfb1t.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "58678861052-cn5n72vkh4t5eafgffeqjdk2u84chrnc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.withglyph.app",
+                "app_store_id": "6502156007"
+              }
             }
           ]
         }

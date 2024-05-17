@@ -45,6 +45,7 @@ import {
   UserNotificationPreferences,
   UserNotifications,
   UserPersonalIdentities,
+  UserPushNotificationTokens,
   Users,
   UserSessions,
   UserSettlementIdentities,
@@ -797,6 +798,18 @@ const VerifyPassportIdentityInput = builder.inputType('VerifyPassportIdentityInp
   validate: { schema: VerifyPassportIdentitySchema },
 });
 
+const RegisterPushNotificationTokenInput = builder.inputType('RegisterPushNotificationTokenInput', {
+  fields: (t) => ({
+    token: t.string(),
+  }),
+});
+
+const DeletePushNotificationTokenInput = builder.inputType('DeletePushNotificationTokenInput', {
+  fields: (t) => ({
+    token: t.string(),
+  }),
+});
+
 /**
  * * Queries
  */
@@ -1395,6 +1408,35 @@ builder.mutationFields((t) => ({
       });
 
       return context.session.userId;
+    },
+  }),
+
+  registerPushNotificationToken: t.withAuth({ user: true }).field({
+    type: 'Void',
+    args: { input: t.arg({ type: RegisterPushNotificationTokenInput }) },
+    resolve: async (_, { input }, context) => {
+      await database
+        .insert(UserPushNotificationTokens)
+        .values({
+          userId: context.session.userId,
+          token: input.token,
+        })
+        .onConflictDoNothing();
+    },
+  }),
+
+  deletePushNotificationToken: t.withAuth({ user: true }).field({
+    type: 'Void',
+    args: { input: t.arg({ type: DeletePushNotificationTokenInput }) },
+    resolve: async (_, { input }, context) => {
+      await database
+        .delete(UserPushNotificationTokens)
+        .where(
+          and(
+            eq(UserPushNotificationTokens.userId, context.session.userId),
+            eq(UserPushNotificationTokens.token, input.token),
+          ),
+        );
     },
   }),
 }));

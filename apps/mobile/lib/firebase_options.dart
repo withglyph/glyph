@@ -50,7 +50,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAgxjmnK7vTehEYkrzN4dqIPCBAxpPYIsM',
+    apiKey: 'AIzaSyAWaG3h7U3lTrylrxdsRdEaYIOKsp54wCQ',
     appId: '1:58678861052:android:a1ecff4792b696f9bd8b79',
     messagingSenderId: '58678861052',
     projectId: 'withglyph',
@@ -58,11 +58,15 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAi46ZZoHh12v67OUVBoHdO4NShQ902Okw',
+    apiKey: 'AIzaSyBHqPtrt1zJg25WnFB5kNEIqa2eN31kwLc',
     appId: '1:58678861052:ios:65d590f2311a51d6bd8b79',
     messagingSenderId: '58678861052',
     projectId: 'withglyph',
     storageBucket: 'withglyph.appspot.com',
+    androidClientId:
+        '58678861052-5l5pkmjo47h6ff86rcaiqfdfdgusd73d.apps.googleusercontent.com',
+    iosClientId:
+        '58678861052-cn5n72vkh4t5eafgffeqjdk2u84chrnc.apps.googleusercontent.com',
     iosBundleId: 'com.withglyph.app',
   );
 }

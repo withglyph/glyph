@@ -1114,3 +1114,16 @@ export const FeatureFlags = pgTable('feature_flags', {
     .notNull()
     .default(sql`now()`),
 });
+
+export const UserPushNotificationTokens = pgTable('user_push_notification_tokens', {
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  userId: text('user_id')
+    .notNull()
+    .references(() => Users.id),
+  token: text('token').notNull().unique(),
+  createdAt: datetime('created_at')
+    .notNull()
+    .default(sql`now()`),
+});

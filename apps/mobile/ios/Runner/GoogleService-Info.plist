@@ -1,30 +1,36 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-  <dict>
-    <key>API_KEY</key>
-    <string>AIzaSyAi46ZZoHh12v67OUVBoHdO4NShQ902Okw</string>
-    <key>GCM_SENDER_ID</key>
-    <string>58678861052</string>
-    <key>PLIST_VERSION</key>
-    <string>1</string>
-    <key>BUNDLE_ID</key>
-    <string>com.withglyph.app</string>
-    <key>PROJECT_ID</key>
-    <string>withglyph</string>
-    <key>STORAGE_BUCKET</key>
-    <string>withglyph.appspot.com</string>
-    <key>IS_ADS_ENABLED</key>
-    <false />
-    <key>IS_ANALYTICS_ENABLED</key>
-    <false />
-    <key>IS_APPINVITE_ENABLED</key>
-    <true />
-    <key>IS_GCM_ENABLED</key>
-    <true />
-    <key>IS_SIGNIN_ENABLED</key>
-    <true />
-    <key>GOOGLE_APP_ID</key>
-    <string>1:58678861052:ios:65d590f2311a51d6bd8b79</string>
-  </dict>
+<dict>
+	<key>CLIENT_ID</key>
+	<string>58678861052-cn5n72vkh4t5eafgffeqjdk2u84chrnc.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.58678861052-cn5n72vkh4t5eafgffeqjdk2u84chrnc</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>58678861052-5l5pkmjo47h6ff86rcaiqfdfdgusd73d.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBHqPtrt1zJg25WnFB5kNEIqa2eN31kwLc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>58678861052</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.withglyph.app</string>
+	<key>PROJECT_ID</key>
+	<string>withglyph</string>
+	<key>STORAGE_BUCKET</key>
+	<string>withglyph.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:58678861052:ios:65d590f2311a51d6bd8b79</string>
+</dict>
 </plist>

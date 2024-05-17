@@ -8,6 +8,7 @@ import 'package:glyph/components/button.dart';
 import 'package:glyph/graphql/__generated__/home_screen_query.req.gql.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
+import 'package:glyph/providers/push_notification.dart';
 
 class HomeScreen extends ConsumerWidget {
   HomeScreen({super.key});
@@ -51,6 +52,9 @@ class HomeScreen extends ConsumerWidget {
                 child: const Text('로그아웃'),
                 onPressed: () async {
                   await ref.read(authProvider.notifier).clearAccessToken();
+                  await ref
+                      .read(pushNotificationProvider.notifier)
+                      .clearToken();
                 },
               )
             ],

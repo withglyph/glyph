@@ -126,6 +126,10 @@ input DeletePostReactionInput {
   postId: ID!
 }
 
+input DeletePushNotificationTokenInput {
+  token: String!
+}
+
 input DeleteSpaceCollectionInput {
   spaceCollectionId: ID!
 }
@@ -306,6 +310,7 @@ type Mutation {
   deleteComment(input: DeleteCommentInput!): PostComment!
   deletePost(input: DeletePostInput!): Post!
   deletePostReaction(input: DeletePostReactionInput!): Post!
+  deletePushNotificationToken(input: DeletePushNotificationTokenInput!): Void!
   deleteSpace(input: DeleteSpaceInput!): Space!
   deleteSpaceCollection(input: DeleteSpaceCollectionInput!): SpaceCollection!
   deleteSpaceProfile(input: DeleteSpaceProfileInput!): SpaceMember!
@@ -333,6 +338,7 @@ type Mutation {
   publishPost(input: PublishPostInput!): Post!
   purchasePoint(input: PurchasePointInput!): PointPurchase!
   purchasePost(input: PurchasePostInput!): Post!
+  registerPushNotificationToken(input: RegisterPushNotificationTokenInput!): Void!
   setSpaceCollectionPosts(input: SetSpaceCollectionPostsInput!): SpaceCollection!
   synchronizePost(input: SynchronizePostInput!): [SynchronizePostResult!]!
   unblockMasquerade(input: UnblockMasqueradeInput!): Space!
@@ -730,6 +736,10 @@ type Query {
   spaceCollection(slug: String!): SpaceCollection!
   spaceFeed: [Post!]!
   tag(name: String!): Tag!
+}
+
+input RegisterPushNotificationTokenInput {
+  token: String!
 }
 
 type Revenue {

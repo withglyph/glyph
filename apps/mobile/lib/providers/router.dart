@@ -4,6 +4,7 @@ import 'package:glyph/screens/splash.dart';
 import 'package:glyph/screens/home.dart';
 import 'package:glyph/screens/login.dart';
 import 'package:glyph/screens/webview.dart';
+import 'package:glyph/widgets/shell.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -32,23 +33,7 @@ GoRouter router(RouterRef ref) {
           StatefulShellRoute.indexedStack(
             pageBuilder: (context, state, navigationShell) {
               return CustomTransitionPage(
-                child: Scaffold(
-                  body: navigationShell,
-                  bottomNavigationBar: BottomNavigationBar(
-                    items: const [
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.home),
-                        label: 'Home',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.web_asset),
-                        label: 'WebView',
-                      ),
-                    ],
-                    currentIndex: navigationShell.currentIndex,
-                    onTap: navigationShell.goBranch,
-                  ),
-                ),
+                child: Shell(navigationShell: navigationShell),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) {
                   return FadeTransition(

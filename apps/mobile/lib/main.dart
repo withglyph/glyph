@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,6 +31,7 @@ Future<void> main() async {
   );
 
   GetIt.I.registerSingleton<FlutterSecureStorage>(storage);
+  GetIt.I.registerSingleton<FirebaseMessaging>(FirebaseMessaging.instance);
 
   runApp(const ProviderScope(child: App()));
 }
