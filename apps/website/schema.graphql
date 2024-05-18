@@ -310,7 +310,7 @@ type Mutation {
   deleteComment(input: DeleteCommentInput!): PostComment!
   deletePost(input: DeletePostInput!): Post!
   deletePostReaction(input: DeletePostReactionInput!): Post!
-  deletePushNotificationToken(input: DeletePushNotificationTokenInput!): Void!
+  deletePushNotificationToken(input: DeletePushNotificationTokenInput!): Void
   deleteSpace(input: DeleteSpaceInput!): Space!
   deleteSpaceCollection(input: DeleteSpaceCollectionInput!): SpaceCollection!
   deleteSpaceProfile(input: DeleteSpaceProfileInput!): SpaceMember!
@@ -338,7 +338,7 @@ type Mutation {
   publishPost(input: PublishPostInput!): Post!
   purchasePoint(input: PurchasePointInput!): PointPurchase!
   purchasePost(input: PurchasePostInput!): Post!
-  registerPushNotificationToken(input: RegisterPushNotificationTokenInput!): Void!
+  registerPushNotificationToken(input: RegisterPushNotificationTokenInput!): Void
   setSpaceCollectionPosts(input: SetSpaceCollectionPostsInput!): SpaceCollection!
   synchronizePost(input: SynchronizePostInput!): [SynchronizePostResult!]!
   unblockMasquerade(input: UnblockMasqueradeInput!): Space!

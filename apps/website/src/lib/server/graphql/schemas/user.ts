@@ -1413,6 +1413,7 @@ builder.mutationFields((t) => ({
 
   registerPushNotificationToken: t.withAuth({ user: true }).field({
     type: 'Void',
+    nullable: true,
     args: { input: t.arg({ type: RegisterPushNotificationTokenInput }) },
     resolve: async (_, { input }, context) => {
       await database
@@ -1427,6 +1428,7 @@ builder.mutationFields((t) => ({
 
   deletePushNotificationToken: t.withAuth({ user: true }).field({
     type: 'Void',
+    nullable: true,
     args: { input: t.arg({ type: DeletePushNotificationTokenInput }) },
     resolve: async (_, { input }, context) => {
       await database

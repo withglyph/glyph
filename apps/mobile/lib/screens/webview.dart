@@ -17,7 +17,7 @@ class _WebViewScreenState extends ConsumerState<WebViewScreen> {
   final settings = InAppWebViewSettings();
   final cookieManager = CookieManager.instance();
 
-  final url = WebUri('https://withglyph.com');
+  final url = WebUri('https://dev.withglyph.com');
 
   @override
   Widget build(BuildContext context) {
