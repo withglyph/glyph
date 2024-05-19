@@ -8,7 +8,7 @@ import { finalizeResource, setResourceFinalizer } from '../utils';
 await finalizeResource('firebase');
 
 const app = initializeApp({
-  credential: cert(JSON.parse(env.PRIVATE_FIREBASE_SERVICE_ACCOUNT ?? '')),
+  credential: cert(JSON.parse(env.PRIVATE_FIREBASE_SERVICE_ACCOUNT ?? '{}')),
 });
 
 setResourceFinalizer('firebase', async () => await deleteApp(app));
