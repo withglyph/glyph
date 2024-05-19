@@ -1127,3 +1127,15 @@ export const UserPushNotificationTokens = pgTable('user_push_notification_tokens
     .notNull()
     .default(sql`now()`),
 });
+
+export const FeaturedImages = pgTable('featured_images', {
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  imageId: text('image_id')
+    .notNull()
+    .references(() => Images.id),
+  createdAt: datetime('created_at')
+    .notNull()
+    .default(sql`now()`),
+});

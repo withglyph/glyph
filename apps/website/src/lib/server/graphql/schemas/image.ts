@@ -2,7 +2,7 @@ import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from '@aws-sd
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { eq } from 'drizzle-orm';
 import * as R from 'radash';
-import { database, Images, PostRevisionContents, PostRevisions, Posts } from '$lib/server/database';
+import { database, FeaturedImages, Images, PostRevisionContents, PostRevisions, Posts } from '$lib/server/database';
 import { aws } from '$lib/server/external-api';
 import { finalizeImage } from '$lib/server/utils';
 import { builder } from '../builder';
@@ -58,6 +58,18 @@ builder.queryFields((t) => ({
     args: { id: t.arg.id() },
     resolve: (_, args) => {
       return args.id;
+    },
+  }),
+
+  featuredImage: t.field({
+    type: Image,
+    nullable: true,
+    resolve: async () => {
+      const images = await database.select({ imageId: FeaturedImages.imageId }).from(FeaturedImages);
+
+      const imageIds = images.map(({ imageId }) => imageId);
+
+      return R.draw(imageIds);
     },
   }),
 

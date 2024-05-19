@@ -48,7 +48,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         return;
       }
 
-      _imageUrl = resp.data?.authLayoutBackgroundImage?.url;
+      _imageUrl = resp.data?.featuredImage?.url;
       if (_imageUrl == null) {
         setState(() {
           _isInitialized = true;
@@ -182,10 +182,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ],
                 ),
                 onPressed: () async {
-                  if (await FlutterNaverLogin.isLoggedIn) {
-                    await FlutterNaverLogin.logOutAndDeleteToken();
-                  }
-
+                  await FlutterNaverLogin.logOut();
                   await FlutterNaverLogin.logIn();
                   final token = await FlutterNaverLogin.currentAccessToken;
 

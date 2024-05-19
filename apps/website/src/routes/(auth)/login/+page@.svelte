@@ -12,7 +12,7 @@
 
   $: query = graphql(`
     query LoginPage_Query {
-      authLayoutBackgroundImage {
+      featuredImage {
         id
         ...Image_image
       }
@@ -33,10 +33,10 @@
 <Helmet description="이메일을 통해 글리프에 가입하거나 로그인할 수 있어요" title="글리프 시작하기" />
 
 <div class={css({ position: 'fixed', inset: '0', display: 'flex' })}>
-  {#if $query.authLayoutBackgroundImage}
+  {#if $query.featuredImage}
     <Image
       style={css.raw({ flexGrow: '1', objectFit: 'cover', overflow: 'hidden' })}
-      $image={$query.authLayoutBackgroundImage}
+      $image={$query.featuredImage}
       size="full"
     />
   {:else}

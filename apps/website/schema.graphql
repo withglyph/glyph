@@ -716,6 +716,7 @@ type Query {
   curatedPosts: [Post!]!
   draftPost(permalink: String!): Post!
   featureFlags: [FeatureFlag!]!
+  featuredImage: Image
   featuredTagFeed: [FeaturedFeed!]!
   file(id: ID!): File!
   flash: Flash

@@ -7,7 +7,7 @@
 
   $: query = graphql(`
     query AuthLayout_Query {
-      authLayoutBackgroundImage {
+      featuredImage {
         id
         ...Image_image
       }
@@ -15,13 +15,9 @@
   `);
 </script>
 
-{#if $query.authLayoutBackgroundImage}
+{#if $query.featuredImage}
   <div class={css({ position: 'fixed', size: 'full', inset: '0' })}>
-    <Image
-      style={css.raw({ size: 'full', objectFit: 'cover' })}
-      $image={$query.authLayoutBackgroundImage}
-      size="full"
-    />
+    <Image style={css.raw({ size: 'full', objectFit: 'cover' })} $image={$query.featuredImage} size="full" />
     <div
       class={css({
         position: 'absolute',
