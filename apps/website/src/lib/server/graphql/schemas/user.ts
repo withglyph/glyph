@@ -1042,6 +1042,7 @@ builder.mutationFields((t) => ({
     resolve: async (_, { input }, context) => {
       const externalUser = await match(input.provider)
         .with('GOOGLE', () => google.authorizeUser(context.event, input.token))
+        .with('NAVER', () => naver.authorizeUser('token', input.token))
         .otherwise(() => null);
 
       if (!externalUser) {

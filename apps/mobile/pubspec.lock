@@ -478,6 +478,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.0"
+  flutter_naver_login:
+    dependency: "direct main"
+    description:
+      name: flutter_naver_login
+      sha256: "69d62da60e866b09894f2d632d7d1cb36eee17164b9e46e33d86ebee4b91cd42"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.8.0"
   flutter_riverpod:
     dependency: "direct main"
     description:

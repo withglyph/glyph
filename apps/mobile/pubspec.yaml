@@ -51,6 +51,7 @@ dependencies:
   freezed_annotation: ^2.4.1
   firebase_messaging: ^14.9.2
   collection: ^1.18.0
+  flutter_naver_login: ^1.8.0
 
 dev_dependencies:
   flutter_test:

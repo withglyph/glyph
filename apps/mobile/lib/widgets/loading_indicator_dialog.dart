@@ -28,9 +28,10 @@ class LoadingIndicatorDialog {
     }
   }
 
-  run(BuildContext context, Function() fn) async {
+  Future<T> run<T>(BuildContext context, Future<T> Function() fn) async {
     show(context);
-    await fn();
+    final r = await fn();
     dismiss();
+    return r;
   }
 }

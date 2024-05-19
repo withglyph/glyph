@@ -46,7 +46,7 @@ sso.get('/sso/naver', async (_, context) => {
     throw new Error('code is required');
   }
 
-  const externalUser = await naver.authorizeUser(code);
+  const externalUser = await naver.authorizeUser('code', code);
   return await handle(context, externalUser);
 });
 

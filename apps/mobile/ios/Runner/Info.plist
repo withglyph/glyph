@@ -29,6 +29,7 @@
 				<string>Editor</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
+					<string>withglyph</string>
 					<string>com.googleusercontent.apps.58678861052-lf5sv4oggv0ieiuitk9vnh6c6nmq2e4m</string>
 				</array>
 			</dict>
@@ -65,5 +66,18 @@
 			<string>UIInterfaceOrientationLandscapeLeft</string>
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>naversearchapp</string>
+      <string>naversearchthirdlogin</string>
+    </array>
+    <key>naverServiceAppUrlScheme</key>
+    <string>withglyph</string>
+    <key>naverConsumerKey</key>
+    <string>D2mh8VeGrpMV5Z8eWRKi</string>
+    <key>naverConsumerSecret</key>
+    <string>66kb3ApsAQ</string>
+    <key>naverServiceAppName</key>
+    <string>Glyph</string>
 	</dict>
 </plist>

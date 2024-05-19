@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -123,9 +124,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ],
                 ),
                 onPressed: () async {
-                  await _googleSignIn.disconnect();
-                  final account = await _googleSignIn.signIn();
-                  if (account == null) {
+                  await _googleSignIn.signOut();
+                  final authResult = await _googleSignIn.signIn();
+                  if (authResult == null) {
                     return;
                   }
 
@@ -133,24 +134,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     return;
                   }
 
-                  await loadingIndicatorDialog.run(context, () async {
+                  final success =
+                      await loadingIndicatorDialog.run(context, () async {
                     final req =
                         GLoginScreen_AuthorizeSingleSignOnToken_MutationReq(
                       (b) => b
                         ..vars.input.provider = GUserSingleSignOnProvider.GOOGLE
-                        ..vars.input.token = account.serverAuthCode,
+                        ..vars.input.token = authResult.serverAuthCode,
                     );
 
                     final resp = await ferry.request(req).first;
                     if (resp.hasErrors) {
-                      return;
+                      return false;
                     }
 
                     await ref.read(authProvider.notifier).setAccessToken(
                         resp.data!.authorizeSingleSignOnToken.token);
 
-                    widget.onResult(true);
+                    return true;
                   });
+
+                  if (success) {
+                    widget.onResult(true);
+                  }
                 },
               ),
               const Gap(11),
@@ -175,6 +181,46 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ],
                 ),
+                onPressed: () async {
+                  if (await FlutterNaverLogin.isLoggedIn) {
+                    await FlutterNaverLogin.logOutAndDeleteToken();
+                  }
+
+                  await FlutterNaverLogin.logIn();
+                  final token = await FlutterNaverLogin.currentAccessToken;
+
+                  if (!token.isValid()) {
+                    return;
+                  }
+
+                  if (!context.mounted) {
+                    return;
+                  }
+
+                  final success =
+                      await loadingIndicatorDialog.run(context, () async {
+                    final req =
+                        GLoginScreen_AuthorizeSingleSignOnToken_MutationReq(
+                      (b) => b
+                        ..vars.input.provider = GUserSingleSignOnProvider.NAVER
+                        ..vars.input.token = token.accessToken,
+                    );
+
+                    final resp = await ferry.request(req).first;
+                    if (resp.hasErrors) {
+                      return false;
+                    }
+
+                    await ref.read(authProvider.notifier).setAccessToken(
+                        resp.data!.authorizeSingleSignOnToken.token);
+
+                    return true;
+                  });
+
+                  if (success) {
+                    widget.onResult(true);
+                  }
+                },
               ),
               const Gap(11),
               Button(
