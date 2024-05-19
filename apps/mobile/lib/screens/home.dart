@@ -1,65 +1,80 @@
-import 'package:ferry_flutter/ferry_flutter.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:get_it/get_it.dart';
-import 'package:glyph/components/button.dart';
-import 'package:glyph/graphql/__generated__/home_screen_query.req.gql.dart';
-import 'package:glyph/providers/auth.dart';
-import 'package:glyph/providers/ferry.dart';
-import 'package:glyph/providers/push_notification.dart';
+import 'package:glyph/components/pressable.dart';
+import 'package:glyph/lib/screen.dart';
+import 'package:glyph/router.gr.dart';
+import 'package:glyph/themes/colors.dart';
 
-class HomeScreen extends ConsumerWidget {
-  HomeScreen({super.key});
-
-  final storage = GetIt.I<FlutterSecureStorage>();
+@RoutePage()
+class HomeScreen extends Screen {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ferry = ref.watch(ferryProvider);
-
-    return Container(
-      color: Colors.white,
-      child: Operation(
-        client: ferry,
-        operationRequest: GHomeScreen_QueryReq(),
-        builder: (context, response, error) {
-          if (response == null || response.loading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final me = response.data?.me;
-
-          if (me == null) {
-            return const Center(child: Text('No user'));
-          }
-
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 64,
-                backgroundImage: NetworkImage(me.profile.avatar.url),
-              ),
-              const Gap(8),
-              Text(
-                me.profile.name,
-                style: const TextStyle(fontSize: 24),
-              ),
-              const Gap(24),
-              Button(
-                child: const Text('로그아웃'),
-                onPressed: () async {
-                  await ref.read(authProvider.notifier).clearAccessToken();
-                  await ref
-                      .read(pushNotificationProvider.notifier)
-                      .clearToken();
-                },
-              )
-            ],
-          );
-        },
+    return SafeArea(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  'assets/logos/compact.svg',
+                  height: 24,
+                  colorFilter: const ColorFilter.mode(
+                      BrandColors.gray_900, BlendMode.srcIn),
+                ),
+                const Gap(16),
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      isDense: true,
+                      filled: true,
+                      fillColor: BrandColors.gray_100,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: SvgPicture.asset(
+                          'assets/icons/search.svg',
+                          height: 24,
+                          colorFilter: const ColorFilter.mode(
+                              BrandColors.gray_500, BlendMode.srcIn),
+                        ),
+                      ),
+                      prefixIconConstraints:
+                          const BoxConstraints(minHeight: 24),
+                      hintText: '포스트, 태그를 검색하세요',
+                      hintStyle: const TextStyle(color: BrandColors.gray_400),
+                    ),
+                    // BoxConstraints.tight(const Size.square(24))),
+                  ),
+                ),
+                const Gap(16),
+                Pressable(
+                  child: SvgPicture.asset(
+                    'assets/icons/notification.svg',
+                    height: 24,
+                    colorFilter: const ColorFilter.mode(
+                        BrandColors.gray_900, BlendMode.srcIn),
+                  ),
+                  onPressed: () {
+                    context.router.push(PlaceholderRoute(text: '알림'));
+                  },
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

@@ -18,13 +18,13 @@ class Button extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
-      style: (style ?? const ButtonStyle()).merge(ButtonStyle(
-        shape: const WidgetStatePropertyAll(LinearBorder.none),
-        elevation: const WidgetStatePropertyAll(0),
+      style: (style ?? const ButtonStyle()).merge(const ButtonStyle(
+        shape: WidgetStatePropertyAll(LinearBorder.none),
+        elevation: WidgetStatePropertyAll(0),
         splashFactory: NoSplash.splashFactory,
-        shadowColor: const WidgetStatePropertyAll(Colors.transparent),
-        foregroundColor: WidgetStatePropertyAll(BrandColors.gray[0]),
-        backgroundColor: WidgetStatePropertyAll(BrandColors.gray[900]),
+        shadowColor: WidgetStatePropertyAll(Colors.transparent),
+        foregroundColor: WidgetStatePropertyAll(BrandColors.gray_0),
+        backgroundColor: WidgetStatePropertyAll(BrandColors.gray_900),
       )),
       child: child,
     );

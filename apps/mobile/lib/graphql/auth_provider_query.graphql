@@ -1,5 +1,11 @@
 query AuthProvider_Query {
   me {
     id
+    profile {
+      id
+      avatar {
+        url
+      }
+    }
   }
 }

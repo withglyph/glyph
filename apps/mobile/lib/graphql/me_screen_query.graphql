@@ -1,4 +1,4 @@
-query HomeScreen_Query {
+query MeScreen_Query {
   me {
     id
 

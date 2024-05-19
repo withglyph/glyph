@@ -1,15 +1,17 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/button.dart';
 import 'package:glyph/graphql/__generated__/login_screen_authorize_single_sign_on_token_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/login_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
-import 'package:glyph/screens/splash.dart';
 import 'package:glyph/themes/colors.dart';
+import 'package:glyph/widgets/loading_indicator_dialog.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -19,8 +21,11 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
       '58678861052-afsh5183jqgh7n1cv0gp5drctvdkfb1t.apps.googleusercontent.com',
 );
 
+@RoutePage()
 class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, required this.onResult});
+
+  final Function(bool success) onResult;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _LoginScreenState();
@@ -28,8 +33,9 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   var _isInitialized = false;
-  var _showSplash = true;
   String? _imageUrl;
+
+  final loadingIndicatorDialog = GetIt.I<LoadingIndicatorDialog>();
 
   @override
   Widget build(BuildContext context) {
@@ -56,173 +62,149 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     });
 
-    return Container(
-      decoration: _imageUrl != null
-          ? BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(_imageUrl!),
-                alignment: Alignment.center,
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.4),
-                  BlendMode.srcATop,
+    return Scaffold(
+      body: Container(
+        decoration: _imageUrl != null
+            ? BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(_imageUrl!),
+                  alignment: Alignment.center,
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.4), BlendMode.srcATop),
+                ),
+              )
+            : const BoxDecoration(color: BrandColors.gray_900),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/logos/full.svg',
+                      height: 38,
+                      colorFilter: const ColorFilter.mode(
+                          BrandColors.gray_0, BlendMode.srcIn),
+                    ),
+                    const Gap(8),
+                    const Text(
+                      '창작자를 위한 콘텐츠 플랫폼\n글리프에 오신 것을 환영해요!',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: BrandColors.gray_0,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            )
-          : BoxDecoration(color: BrandColors.gray[900]),
-      child: Stack(
-        children: [
-          SafeArea(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/logos/full.svg',
-                          height: 38,
-                          colorFilter: ColorFilter.mode(
-                            BrandColors.gray[0]!,
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                        const Gap(8),
-                        Text(
-                          '창작자를 위한 콘텐츠 플랫폼\n글리프에 오신 것을 환영해요!',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: BrandColors.gray[0],
-                          ),
-                        ),
-                      ],
+              Button(
+                style: const ButtonStyle(
+                  foregroundColor: WidgetStatePropertyAll(BrandColors.gray_900),
+                  backgroundColor: WidgetStatePropertyAll(BrandColors.gray_0),
+                  minimumSize: WidgetStatePropertyAll(Size.fromHeight(48)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/google.svg',
+                      width: 18,
+                      height: 18,
                     ),
-                  ),
-                  Button(
-                    style: ButtonStyle(
-                      foregroundColor:
-                          WidgetStatePropertyAll(BrandColors.gray[900]),
-                      backgroundColor:
-                          WidgetStatePropertyAll(BrandColors.gray[0]),
-                      minimumSize:
-                          const WidgetStatePropertyAll(Size.fromHeight(48)),
+                    const Gap(10),
+                    const Text(
+                      '구글로 시작하기',
+                      style: TextStyle(fontSize: 16),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/icons/google.svg',
-                          width: 18,
-                          height: 18,
-                        ),
-                        const Gap(10),
-                        const Text(
-                          '구글로 시작하기',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
-                    onPressed: () async {
-                      await _googleSignIn.disconnect();
-                      final account = await _googleSignIn.signIn();
-                      if (account == null) {
-                        return;
-                      }
+                  ],
+                ),
+                onPressed: () async {
+                  await _googleSignIn.disconnect();
+                  final account = await _googleSignIn.signIn();
+                  if (account == null) {
+                    return;
+                  }
 
-                      final req =
-                          GLoginScreen_AuthorizeSingleSignOnToken_MutationReq(
-                        (b) => b
-                          ..vars.input.provider =
-                              GUserSingleSignOnProvider.GOOGLE
-                          ..vars.input.token = account.serverAuthCode,
-                      );
+                  if (!context.mounted) {
+                    return;
+                  }
 
-                      final resp = await ferry.request(req).first;
-                      if (resp.hasErrors) {
-                        return;
-                      }
+                  await loadingIndicatorDialog.run(context, () async {
+                    final req =
+                        GLoginScreen_AuthorizeSingleSignOnToken_MutationReq(
+                      (b) => b
+                        ..vars.input.provider = GUserSingleSignOnProvider.GOOGLE
+                        ..vars.input.token = account.serverAuthCode,
+                    );
 
-                      await ref.read(authProvider.notifier).setAccessToken(
-                          resp.data!.authorizeSingleSignOnToken.token);
-                    },
-                  ),
-                  const Gap(11),
-                  Button(
-                    style: ButtonStyle(
-                      foregroundColor:
-                          WidgetStatePropertyAll(BrandColors.gray[900]),
-                      backgroundColor:
-                          WidgetStatePropertyAll(BrandColors.gray[0]),
-                      minimumSize:
-                          const WidgetStatePropertyAll(Size.fromHeight(48)),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/icons/naver.svg',
-                          width: 16,
-                          height: 16,
-                        ),
-                        const Gap(10),
-                        const Text(
-                          '네이버로 시작하기',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Gap(11),
-                  Button(
-                    style: ButtonStyle(
-                      foregroundColor:
-                          WidgetStatePropertyAll(BrandColors.gray[900]),
-                      backgroundColor:
-                          WidgetStatePropertyAll(BrandColors.gray[0]),
-                      minimumSize:
-                          const WidgetStatePropertyAll(Size.fromHeight(48)),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/icons/mail.svg',
-                          width: 20,
-                          height: 20,
-                          colorFilter: ColorFilter.mode(
-                            BrandColors.gray[900]!,
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                        const Gap(10),
-                        const Text(
-                          '이메일로 시작하기',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Gap(32),
-                ],
+                    final resp = await ferry.request(req).first;
+                    if (resp.hasErrors) {
+                      return;
+                    }
+
+                    await ref.read(authProvider.notifier).setAccessToken(
+                        resp.data!.authorizeSingleSignOnToken.token);
+
+                    widget.onResult(true);
+                  });
+                },
               ),
-            ),
+              const Gap(11),
+              Button(
+                style: const ButtonStyle(
+                  foregroundColor: WidgetStatePropertyAll(BrandColors.gray_900),
+                  backgroundColor: WidgetStatePropertyAll(BrandColors.gray_0),
+                  minimumSize: WidgetStatePropertyAll(Size.fromHeight(48)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/naver.svg',
+                      width: 16,
+                      height: 16,
+                    ),
+                    const Gap(10),
+                    const Text(
+                      '네이버로 시작하기',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+              const Gap(11),
+              Button(
+                style: const ButtonStyle(
+                  foregroundColor: WidgetStatePropertyAll(BrandColors.gray_900),
+                  backgroundColor: WidgetStatePropertyAll(BrandColors.gray_0),
+                  minimumSize: WidgetStatePropertyAll(Size.fromHeight(48)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/mail.svg',
+                      width: 20,
+                      height: 20,
+                      colorFilter: const ColorFilter.mode(
+                          BrandColors.gray_900, BlendMode.srcIn),
+                    ),
+                    const Gap(10),
+                    const Text(
+                      '이메일로 시작하기',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+              const Gap(32),
+            ],
           ),
-          if (_showSplash)
-            AnimatedOpacity(
-              opacity: _isInitialized ? 0 : 1,
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeInOut,
-              child: const SplashScreen(),
-              onEnd: () {
-                setState(() {
-                  _showSplash = false;
-                });
-              },
-            ),
-        ],
+        ),
       ),
     );
   }

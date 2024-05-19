@@ -18,19 +18,22 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$AuthState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String accessToken) authenticated,
+    required TResult Function(String accessToken, GAuthProvider_QueryData_me me)
+        authenticated,
     required TResult Function() unauthenticated,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String accessToken)? authenticated,
+    TResult? Function(String accessToken, GAuthProvider_QueryData_me me)?
+        authenticated,
     TResult? Function()? unauthenticated,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String accessToken)? authenticated,
+    TResult Function(String accessToken, GAuthProvider_QueryData_me me)?
+        authenticated,
     TResult Function()? unauthenticated,
     required TResult orElse(),
   }) =>
@@ -79,7 +82,7 @@ abstract class _$$AuthenticatedImplCopyWith<$Res> {
           _$AuthenticatedImpl value, $Res Function(_$AuthenticatedImpl) then) =
       __$$AuthenticatedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String accessToken});
+  $Res call({String accessToken, GAuthProvider_QueryData_me me});
 }
 
 /// @nodoc
@@ -94,12 +97,17 @@ class __$$AuthenticatedImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? accessToken = null,
+    Object? me = null,
   }) {
     return _then(_$AuthenticatedImpl(
       accessToken: null == accessToken
           ? _value.accessToken
           : accessToken // ignore: cast_nullable_to_non_nullable
               as String,
+      me: null == me
+          ? _value.me
+          : me // ignore: cast_nullable_to_non_nullable
+              as GAuthProvider_QueryData_me,
     ));
   }
 }
@@ -107,14 +115,17 @@ class __$$AuthenticatedImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$AuthenticatedImpl extends Authenticated {
-  const _$AuthenticatedImpl({required this.accessToken}) : super._();
+  const _$AuthenticatedImpl({required this.accessToken, required this.me})
+      : super._();
 
   @override
   final String accessToken;
+  @override
+  final GAuthProvider_QueryData_me me;
 
   @override
   String toString() {
-    return 'AuthState.authenticated(accessToken: $accessToken)';
+    return 'AuthState.authenticated(accessToken: $accessToken, me: $me)';
   }
 
   @override
@@ -123,11 +134,12 @@ class _$AuthenticatedImpl extends Authenticated {
         (other.runtimeType == runtimeType &&
             other is _$AuthenticatedImpl &&
             (identical(other.accessToken, accessToken) ||
-                other.accessToken == accessToken));
+                other.accessToken == accessToken) &&
+            (identical(other.me, me) || other.me == me));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, accessToken);
+  int get hashCode => Object.hash(runtimeType, accessToken, me);
 
   @JsonKey(ignore: true)
   @override
@@ -138,30 +150,33 @@ class _$AuthenticatedImpl extends Authenticated {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String accessToken) authenticated,
+    required TResult Function(String accessToken, GAuthProvider_QueryData_me me)
+        authenticated,
     required TResult Function() unauthenticated,
   }) {
-    return authenticated(accessToken);
+    return authenticated(accessToken, me);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String accessToken)? authenticated,
+    TResult? Function(String accessToken, GAuthProvider_QueryData_me me)?
+        authenticated,
     TResult? Function()? unauthenticated,
   }) {
-    return authenticated?.call(accessToken);
+    return authenticated?.call(accessToken, me);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String accessToken)? authenticated,
+    TResult Function(String accessToken, GAuthProvider_QueryData_me me)?
+        authenticated,
     TResult Function()? unauthenticated,
     required TResult orElse(),
   }) {
     if (authenticated != null) {
-      return authenticated(accessToken);
+      return authenticated(accessToken, me);
     }
     return orElse();
   }
@@ -199,11 +214,13 @@ class _$AuthenticatedImpl extends Authenticated {
 }
 
 abstract class Authenticated extends AuthState {
-  const factory Authenticated({required final String accessToken}) =
-      _$AuthenticatedImpl;
+  const factory Authenticated(
+      {required final String accessToken,
+      required final GAuthProvider_QueryData_me me}) = _$AuthenticatedImpl;
   const Authenticated._() : super._();
 
   String get accessToken;
+  GAuthProvider_QueryData_me get me;
   @JsonKey(ignore: true)
   _$$AuthenticatedImplCopyWith<_$AuthenticatedImpl> get copyWith =>
       throw _privateConstructorUsedError;
@@ -247,7 +264,8 @@ class _$UnauthenticatedImpl extends Unauthenticated {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String accessToken) authenticated,
+    required TResult Function(String accessToken, GAuthProvider_QueryData_me me)
+        authenticated,
     required TResult Function() unauthenticated,
   }) {
     return unauthenticated();
@@ -256,7 +274,8 @@ class _$UnauthenticatedImpl extends Unauthenticated {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String accessToken)? authenticated,
+    TResult? Function(String accessToken, GAuthProvider_QueryData_me me)?
+        authenticated,
     TResult? Function()? unauthenticated,
   }) {
     return unauthenticated?.call();
@@ -265,7 +284,8 @@ class _$UnauthenticatedImpl extends Unauthenticated {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String accessToken)? authenticated,
+    TResult Function(String accessToken, GAuthProvider_QueryData_me me)?
+        authenticated,
     TResult Function()? unauthenticated,
     required TResult orElse(),
   }) {

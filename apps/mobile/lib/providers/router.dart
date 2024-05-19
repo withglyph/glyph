@@ -1,101 +1,28 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:glyph/providers/auth.dart';
-import 'package:glyph/screens/splash.dart';
-import 'package:glyph/screens/home.dart';
-import 'package:glyph/screens/login.dart';
-import 'package:glyph/screens/webview.dart';
-import 'package:glyph/widgets/shell.dart';
-import 'package:go_router/go_router.dart';
+import 'package:glyph/router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'router.g.dart';
 
 @riverpod
-GoRouter router(RouterRef ref) {
-  final key = GlobalKey<NavigatorState>();
-  final authenticated = ValueNotifier<AsyncValue<bool>>(const AsyncLoading());
+RouterConfig<Object> router(RouterRef ref) {
+  final router = AppRouter(ref: ref);
+  final authNotifier = ValueNotifier<AsyncValue<bool>>(const AsyncLoading());
+
   ref
-    ..onDispose(authenticated.dispose)
+    ..onDispose(authNotifier.dispose)
+    ..onDispose(router.dispose)
     ..listen(
       authProvider
           .select((value) => value.whenData((value) => value.isAuthenticated)),
-      (_, next) => authenticated.value = next,
+      (_, next) => authNotifier.value = next,
     );
 
-  final router = GoRouter(
-    navigatorKey: key,
-    refreshListenable: authenticated,
-    initialLocation: '/home',
-    debugLogDiagnostics: true,
-    routes: [
-      ShellRoute(
-        routes: [
-          StatefulShellRoute.indexedStack(
-            pageBuilder: (context, state, navigationShell) {
-              return CustomTransitionPage(
-                child: Shell(navigationShell: navigationShell),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: child,
-                  );
-                },
-              );
-            },
-            branches: [
-              StatefulShellBranch(routes: [
-                GoRoute(
-                  path: '/home',
-                  builder: (context, state) => HomeScreen(),
-                ),
-              ]),
-              StatefulShellBranch(routes: [
-                GoRoute(
-                  path: '/webview',
-                  builder: (context, state) => const WebViewScreen(),
-                ),
-              ]),
-            ],
-          ),
-          GoRoute(
-            path: '/login',
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: LoginScreen()),
-          ),
-          GoRoute(
-            path: '/_splash',
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: SplashScreen()),
-          ),
-        ],
-        redirect: (context, state) {
-          if (authenticated.value.unwrapPrevious().hasError) {
-            return '/login';
-          }
-
-          if (authenticated.value.isLoading || !authenticated.value.hasValue) {
-            return '/_splash';
-          }
-
-          final auth = authenticated.value.requireValue;
-          if (state.uri.path == '/_splash') {
-            return auth ? '/home' : '/login';
-          }
-
-          if (state.uri.path == '/login') {
-            return auth ? '/home' : null;
-          }
-
-          return auth ? null : '/_splash';
-        },
-        builder: (context, state, child) {
-          return Material(child: child);
-        },
-      )
-    ],
+  return router.config(
+    reevaluateListenable: authNotifier,
+    navigatorObservers: () => [AutoRouteObserver(), AppRouterObserver()],
   );
-  ref.onDispose(router.dispose);
-
-  return router;
 }
