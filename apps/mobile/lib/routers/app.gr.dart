@@ -11,17 +11,17 @@
 import 'package:auto_route/auto_route.dart' as _i13;
 import 'package:flutter/material.dart' as _i14;
 import 'package:glyph/routers/auth.dart' as _i2;
-import 'package:glyph/routers/main.dart' as _i7;
-import 'package:glyph/routers/root.dart' as _i10;
+import 'package:glyph/routers/main.dart' as _i8;
+import 'package:glyph/routers/root.dart' as _i11;
 import 'package:glyph/screens/archive.dart' as _i1;
 import 'package:glyph/screens/editor.dart' as _i3;
 import 'package:glyph/screens/feed.dart' as _i4;
 import 'package:glyph/screens/home.dart' as _i5;
-import 'package:glyph/screens/login.dart' as _i6;
-import 'package:glyph/screens/me.dart' as _i8;
-import 'package:glyph/screens/placeholder.dart' as _i9;
+import 'package:glyph/screens/login.dart' as _i7;
+import 'package:glyph/screens/me.dart' as _i9;
+import 'package:glyph/screens/placeholder.dart' as _i10;
 import 'package:glyph/screens/splash.dart' as _i12;
-import 'package:glyph/shells/root.dart' as _i11;
+import 'package:glyph/shells/lobby.dart' as _i6;
 
 abstract class $AppRouter extends _i13.RootStackRouter {
   $AppRouter({super.navigatorKey});
@@ -58,16 +58,22 @@ abstract class $AppRouter extends _i13.RootStackRouter {
         child: const _i5.HomeScreen(),
       );
     },
+    LobbyShell.name: (routeData) {
+      return _i13.AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const _i6.LobbyShell(),
+      );
+    },
     LoginRoute.name: (routeData) {
       return _i13.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i6.LoginScreen(),
+        child: const _i7.LoginScreen(),
       );
     },
     MainRouter.name: (routeData) {
       return _i13.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i7.MainRouter(),
+        child: const _i8.MainRouter(),
       );
     },
     MeRoute.name: (routeData) {
@@ -75,14 +81,14 @@ abstract class $AppRouter extends _i13.RootStackRouter {
           routeData.argsAs<MeRouteArgs>(orElse: () => const MeRouteArgs());
       return _i13.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i8.MeScreen(key: args.key),
+        child: _i9.MeScreen(key: args.key),
       );
     },
     PlaceholderRoute.name: (routeData) {
       final args = routeData.argsAs<PlaceholderRouteArgs>();
       return _i13.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i9.PlaceholderScreen(
+        child: _i10.PlaceholderScreen(
           key: args.key,
           text: args.text,
         ),
@@ -91,13 +97,7 @@ abstract class $AppRouter extends _i13.RootStackRouter {
     RootRouter.name: (routeData) {
       return _i13.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i10.RootRouter(),
-      );
-    },
-    RootShellRoute.name: (routeData) {
-      return _i13.AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const _i11.RootShellScreen(),
+        child: const _i11.RootRouter(),
       );
     },
     SplashRoute.name: (routeData) {
@@ -180,7 +180,21 @@ class HomeRoute extends _i13.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i6.LoginScreen]
+/// [_i6.LobbyShell]
+class LobbyShell extends _i13.PageRouteInfo<void> {
+  const LobbyShell({List<_i13.PageRouteInfo>? children})
+      : super(
+          LobbyShell.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'LobbyShell';
+
+  static const _i13.PageInfo<void> page = _i13.PageInfo<void>(name);
+}
+
+/// generated route for
+/// [_i7.LoginScreen]
 class LoginRoute extends _i13.PageRouteInfo<void> {
   const LoginRoute({List<_i13.PageRouteInfo>? children})
       : super(
@@ -194,7 +208,7 @@ class LoginRoute extends _i13.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i7.MainRouter]
+/// [_i8.MainRouter]
 class MainRouter extends _i13.PageRouteInfo<void> {
   const MainRouter({List<_i13.PageRouteInfo>? children})
       : super(
@@ -208,7 +222,7 @@ class MainRouter extends _i13.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i8.MeScreen]
+/// [_i9.MeScreen]
 class MeRoute extends _i13.PageRouteInfo<MeRouteArgs> {
   MeRoute({
     _i14.Key? key,
@@ -237,7 +251,7 @@ class MeRouteArgs {
 }
 
 /// generated route for
-/// [_i9.PlaceholderScreen]
+/// [_i10.PlaceholderScreen]
 class PlaceholderRoute extends _i13.PageRouteInfo<PlaceholderRouteArgs> {
   PlaceholderRoute({
     _i14.Key? key,
@@ -275,7 +289,7 @@ class PlaceholderRouteArgs {
 }
 
 /// generated route for
-/// [_i10.RootRouter]
+/// [_i11.RootRouter]
 class RootRouter extends _i13.PageRouteInfo<void> {
   const RootRouter({List<_i13.PageRouteInfo>? children})
       : super(
@@ -284,20 +298,6 @@ class RootRouter extends _i13.PageRouteInfo<void> {
         );
 
   static const String name = 'RootRouter';
-
-  static const _i13.PageInfo<void> page = _i13.PageInfo<void>(name);
-}
-
-/// generated route for
-/// [_i11.RootShellScreen]
-class RootShellRoute extends _i13.PageRouteInfo<void> {
-  const RootShellRoute({List<_i13.PageRouteInfo>? children})
-      : super(
-          RootShellRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'RootShellRoute';
 
   static const _i13.PageInfo<void> page = _i13.PageInfo<void>(name);
 }

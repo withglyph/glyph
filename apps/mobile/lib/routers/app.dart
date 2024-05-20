@@ -22,7 +22,7 @@ class AppRouter extends $AppRouter {
           transitionsBuilder: TransitionsBuilders.fadeIn,
           children: [
             AutoRoute(
-              page: RootShellRoute.page,
+              page: LobbyShell.page,
               initial: true,
               children: [
                 AutoRoute(page: HomeRoute.page, initial: true),

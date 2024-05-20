@@ -1,27 +1,25 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:collection/collection.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
-import 'package:glyph/lib/screen.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/push_notification.dart';
-import 'package:glyph/router.gr.dart';
+import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
-class RootShellScreen extends StatefulScreen {
-  const RootShellScreen({super.key});
+class LobbyShell extends ConsumerStatefulWidget {
+  const LobbyShell({super.key});
 
   @override
-  ScreenState<RootShellScreen> createState() {
-    return _RootShellScreenState();
+  ConsumerState<LobbyShell> createState() {
+    return _LobbyShellState();
   }
 }
 
-class _RootShellScreenState extends ScreenState<RootShellScreen> {
+class _LobbyShellState extends ConsumerState<LobbyShell> {
   final _messaging = GetIt.I<FirebaseMessaging>();
 
   @override
@@ -45,14 +43,12 @@ class _RootShellScreenState extends ScreenState<RootShellScreen> {
       routes: [
         const HomeRoute(),
         const FeedRoute(),
-        const EditorRoute(),
         const ArchiveRoute(),
         MeRoute(),
       ],
       transitionBuilder: (context, child, animation) => child,
       bottomNavigationBuilder: (context, tabsRouter) {
         return BottomNavigationBar(
-          currentIndex: tabsRouter.activeIndex,
           items: [
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
@@ -67,6 +63,8 @@ class _RootShellScreenState extends ScreenState<RootShellScreen> {
                 colorFilter: const ColorFilter.mode(
                     BrandColors.gray_900, BlendMode.srcIn),
               ),
+              isActive: tabsRouter.activeIndex == 0,
+              onTap: () => tabsRouter.setActiveIndex(0),
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
@@ -81,6 +79,8 @@ class _RootShellScreenState extends ScreenState<RootShellScreen> {
                 colorFilter: const ColorFilter.mode(
                     BrandColors.gray_900, BlendMode.srcIn),
               ),
+              isActive: tabsRouter.activeIndex == 1,
+              onTap: () => tabsRouter.setActiveIndex(1),
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
@@ -95,6 +95,9 @@ class _RootShellScreenState extends ScreenState<RootShellScreen> {
                 colorFilter: const ColorFilter.mode(
                     BrandColors.gray_900, BlendMode.srcIn),
               ),
+              onTap: () {
+                context.router.push(const EditorRoute());
+              },
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
@@ -109,53 +112,43 @@ class _RootShellScreenState extends ScreenState<RootShellScreen> {
                 colorFilter: const ColorFilter.mode(
                     BrandColors.gray_900, BlendMode.srcIn),
               ),
+              isActive: tabsRouter.activeIndex == 2,
+              onTap: () => tabsRouter.setActiveIndex(2),
             ),
-            me == null
-                ? BottomNavigationBarItem(
-                    icon: SvgPicture.asset(
-                      'assets/icons/person-circle.svg',
-                      width: 24,
-                      colorFilter: const ColorFilter.mode(
-                          BrandColors.gray_600, BlendMode.srcIn),
-                    ),
-                    activeIcon: SvgPicture.asset(
-                      'assets/icons/person-circle-filled.svg',
-                      width: 24,
-                      colorFilter: const ColorFilter.mode(
-                          BrandColors.gray_900, BlendMode.srcIn),
-                    ),
-                  )
-                : BottomNavigationBarItem(
-                    icon: CircleAvatar(
-                      radius: 12,
-                      backgroundColor: BrandColors.gray_200,
-                      child: Padding(
-                        padding: const EdgeInsets.all(1), // Border radius
-                        child: ClipOval(
-                            child: Image.network(me.profile.avatar.url)),
-                      ),
-                    ),
-                    activeIcon: CircleAvatar(
-                      key: const ValueKey('active'),
-                      radius: 15,
-                      backgroundColor: BrandColors.gray_900,
-                      child: Padding(
-                        padding: const EdgeInsets.all(2), // Border radius
-                        child: CircleAvatar(
-                          backgroundColor: BrandColors.gray_0,
-                          child: Padding(
-                            padding: const EdgeInsets.all(1),
-                            child: ClipOval(
-                                child: Image.network(me.profile.avatar.url)),
-                          ),
-                        ),
-                      ),
+            BottomNavigationBarItem(
+              icon: CircleAvatar(
+                radius: 12,
+                backgroundColor: BrandColors.gray_200,
+                child: Padding(
+                  padding: const EdgeInsets.all(1), // Border radius
+                  child: ClipOval(
+                      child: me == null
+                          ? null
+                          : Image.network(me.profile.avatar.url)),
+                ),
+              ),
+              activeIcon: CircleAvatar(
+                key: const ValueKey('active'),
+                radius: 15,
+                backgroundColor: BrandColors.gray_900,
+                child: Padding(
+                  padding: const EdgeInsets.all(2), // Border radius
+                  child: CircleAvatar(
+                    backgroundColor: BrandColors.gray_0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(1),
+                      child: ClipOval(
+                          child: me == null
+                              ? null
+                              : Image.network(me.profile.avatar.url)),
                     ),
                   ),
+                ),
+              ),
+              isActive: tabsRouter.activeIndex == 3,
+              onTap: () => tabsRouter.setActiveIndex(3),
+            ),
           ],
-          onTap: (index) {
-            tabsRouter.setActiveIndex(index);
-          },
         );
       },
     );
@@ -166,13 +159,9 @@ class BottomNavigationBar extends ConsumerWidget {
   const BottomNavigationBar({
     super.key,
     required this.items,
-    required this.currentIndex,
-    required this.onTap,
   });
 
   final List<BottomNavigationBarItem> items;
-  final int currentIndex;
-  final Function(int) onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -184,16 +173,14 @@ class BottomNavigationBar extends ConsumerWidget {
       ),
       child: SafeArea(
         child: Row(
-          children: items.mapIndexed((index, item) {
+          children: items.map((item) {
             return Expanded(
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
+                onTap: item.onTap,
                 child: Center(
-                  child: index == currentIndex ? item.activeIcon : item.icon,
+                  child: item.isActive == true ? item.activeIcon : item.icon,
                 ),
-                onTap: () {
-                  onTap(index);
-                },
               ),
             );
           }).toList(),
@@ -207,8 +194,12 @@ class BottomNavigationBarItem {
   const BottomNavigationBarItem({
     required this.icon,
     Widget? activeIcon,
+    this.isActive,
+    this.onTap,
   }) : activeIcon = activeIcon ?? icon;
 
   final Widget icon;
   final Widget? activeIcon;
+  final bool? isActive;
+  final Function()? onTap;
 }

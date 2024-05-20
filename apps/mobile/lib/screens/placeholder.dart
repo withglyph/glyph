@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/button.dart';
+import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
 class PlaceholderScreen extends ConsumerWidget {
@@ -13,6 +14,7 @@ class PlaceholderScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
+      backgroundColor: BrandColors.brand_200,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

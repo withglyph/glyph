@@ -4,12 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/lib/screen.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
-class HomeScreen extends Screen {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
