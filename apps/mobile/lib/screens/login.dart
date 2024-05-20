@@ -24,9 +24,7 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
 
 @RoutePage()
 class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key, required this.onResult});
-
-  final Function(bool success) onResult;
+  const LoginScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _LoginScreenState();
@@ -134,8 +132,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     return;
                   }
 
-                  final success =
-                      await loadingIndicatorDialog.run(context, () async {
+                  await loadingIndicatorDialog.run(context, () async {
                     final req =
                         GLoginScreen_AuthorizeSingleSignOnToken_MutationReq(
                       (b) => b
@@ -145,18 +142,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                     final resp = await ferry.request(req).first;
                     if (resp.hasErrors) {
-                      return false;
+                      return;
                     }
 
                     await ref.read(authProvider.notifier).setAccessToken(
                         resp.data!.authorizeSingleSignOnToken.token);
-
-                    return true;
                   });
-
-                  if (success) {
-                    widget.onResult(true);
-                  }
                 },
               ),
               const Gap(11),
@@ -194,8 +185,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     return;
                   }
 
-                  final success =
-                      await loadingIndicatorDialog.run(context, () async {
+                  await loadingIndicatorDialog.run(context, () async {
                     final req =
                         GLoginScreen_AuthorizeSingleSignOnToken_MutationReq(
                       (b) => b
@@ -205,18 +195,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                     final resp = await ferry.request(req).first;
                     if (resp.hasErrors) {
-                      return false;
+                      return;
                     }
 
                     await ref.read(authProvider.notifier).setAccessToken(
                         resp.data!.authorizeSingleSignOnToken.token);
-
-                    return true;
                   });
-
-                  if (success) {
-                    widget.onResult(true);
-                  }
                 },
               ),
               const Gap(11),

@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glyph/providers/router.dart';
+import 'package:glyph/routers/app.dart';
+import 'package:glyph/routers/observer.dart';
 import 'package:glyph/themes/colors.dart';
 
 class App extends ConsumerWidget {
-  const App({super.key});
+  App({super.key});
+
+  final _router = AppRouter();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(routerProvider);
-
     return MaterialApp.router(
-      routerConfig: router,
+      routerConfig: _router.config(
+        navigatorObservers: () => [AppRouterObserver()],
+      ),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'SUIT',

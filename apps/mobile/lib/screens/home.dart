@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/lib/screen.dart';
-import 'package:glyph/router.gr.dart';
+import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 
 @RoutePage()

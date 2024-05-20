@@ -37,5 +37,5 @@ Future<void> main() async {
   GetIt.I.registerSingleton<FirebaseMessaging>(FirebaseMessaging.instance);
   GetIt.I.registerSingleton<LoadingIndicatorDialog>(LoadingIndicatorDialog());
 
-  runApp(const ProviderScope(child: Material(child: App())));
+  runApp(ProviderScope(child: Material(child: App())));
 }
