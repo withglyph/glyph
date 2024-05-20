@@ -18,4 +18,7 @@ export default defineConfig({
     sveltekit(),
   ],
   server: { port: 4000 },
+  optimizeDeps: {
+    exclude: ['@resvg/resvg-js'],
+  },
 });
