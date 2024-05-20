@@ -41,9 +41,13 @@ abstract class $AppRouter extends _i13.RootStackRouter {
       );
     },
     EditorRoute.name: (routeData) {
+      final args = routeData.argsAs<EditorRouteArgs>();
       return _i13.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i3.EditorScreen(),
+        child: _i3.EditorScreen(
+          key: args.key,
+          permalink: args.permalink,
+        ),
       );
     },
     FeedRoute.name: (routeData) {
@@ -139,16 +143,40 @@ class AuthRouter extends _i13.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.EditorScreen]
-class EditorRoute extends _i13.PageRouteInfo<void> {
-  const EditorRoute({List<_i13.PageRouteInfo>? children})
-      : super(
+class EditorRoute extends _i13.PageRouteInfo<EditorRouteArgs> {
+  EditorRoute({
+    _i14.Key? key,
+    required String permalink,
+    List<_i13.PageRouteInfo>? children,
+  }) : super(
           EditorRoute.name,
+          args: EditorRouteArgs(
+            key: key,
+            permalink: permalink,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'EditorRoute';
 
-  static const _i13.PageInfo<void> page = _i13.PageInfo<void>(name);
+  static const _i13.PageInfo<EditorRouteArgs> page =
+      _i13.PageInfo<EditorRouteArgs>(name);
+}
+
+class EditorRouteArgs {
+  const EditorRouteArgs({
+    this.key,
+    required this.permalink,
+  });
+
+  final _i14.Key? key;
+
+  final String permalink;
+
+  @override
+  String toString() {
+    return 'EditorRouteArgs{key: $key, permalink: $permalink}';
+  }
 }
 
 /// generated route for

@@ -27,11 +27,11 @@ class AppRouter extends $AppRouter {
               children: [
                 AutoRoute(page: HomeRoute.page, initial: true),
                 AutoRoute(page: FeedRoute.page),
-                AutoRoute(page: EditorRoute.page),
                 AutoRoute(page: ArchiveRoute.page),
                 AutoRoute(page: MeRoute.page),
               ],
             ),
+            AutoRoute(page: EditorRoute.page, fullscreenDialog: true),
             AutoRoute(page: PlaceholderRoute.page),
           ],
         ),

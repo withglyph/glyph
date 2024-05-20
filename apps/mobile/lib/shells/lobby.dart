@@ -1,37 +1,20 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get_it/get_it.dart';
+import 'package:glyph/graphql/__generated__/lobby_shell_create_post_mutation.req.gql.dart';
 import 'package:glyph/providers/auth.dart';
-import 'package:glyph/providers/push_notification.dart';
+import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
-class LobbyShell extends ConsumerStatefulWidget {
+class LobbyShell extends ConsumerWidget {
   const LobbyShell({super.key});
 
   @override
-  ConsumerState<LobbyShell> createState() {
-    return _LobbyShellState();
-  }
-}
-
-class _LobbyShellState extends ConsumerState<LobbyShell> {
-  final _messaging = GetIt.I<FirebaseMessaging>();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _messaging.requestPermission();
-    ref.read(pushNotificationProvider.notifier).registerToken();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ferry = ref.watch(ferryProvider);
     final authValue = ref.watch(authProvider);
     final me = switch (authValue) {
       AsyncData(value: Authenticated(:final me)) => me,
@@ -48,9 +31,9 @@ class _LobbyShellState extends ConsumerState<LobbyShell> {
       ],
       transitionBuilder: (context, child, animation) => child,
       bottomNavigationBuilder: (context, tabsRouter) {
-        return BottomNavigationBar(
+        return LobbyBottomNavigationBar(
           items: [
-            BottomNavigationBarItem(
+            LobbyBottomNavigationBarItem(
               icon: SvgPicture.asset(
                 'assets/icons/home.svg',
                 width: 24,
@@ -66,7 +49,7 @@ class _LobbyShellState extends ConsumerState<LobbyShell> {
               isActive: tabsRouter.activeIndex == 0,
               onTap: () => tabsRouter.setActiveIndex(0),
             ),
-            BottomNavigationBarItem(
+            LobbyBottomNavigationBarItem(
               icon: SvgPicture.asset(
                 'assets/icons/newspaper.svg',
                 width: 24,
@@ -82,7 +65,7 @@ class _LobbyShellState extends ConsumerState<LobbyShell> {
               isActive: tabsRouter.activeIndex == 1,
               onTap: () => tabsRouter.setActiveIndex(1),
             ),
-            BottomNavigationBarItem(
+            LobbyBottomNavigationBarItem(
               icon: SvgPicture.asset(
                 'assets/icons/create.svg',
                 width: 24,
@@ -95,11 +78,21 @@ class _LobbyShellState extends ConsumerState<LobbyShell> {
                 colorFilter: const ColorFilter.mode(
                     BrandColors.gray_900, BlendMode.srcIn),
               ),
-              onTap: () {
-                context.router.push(const EditorRoute());
+              onTap: () async {
+                final req = GLobbyShell_CreatePost_MutationReq();
+                final resp = await ferry.request(req).first;
+
+                final data = resp.data?.createPost;
+                if (data == null) {
+                  return;
+                }
+
+                if (context.mounted) {
+                  context.router.push(EditorRoute(permalink: data.permalink));
+                }
               },
             ),
-            BottomNavigationBarItem(
+            LobbyBottomNavigationBarItem(
               icon: SvgPicture.asset(
                 'assets/icons/albums.svg',
                 width: 24,
@@ -115,7 +108,7 @@ class _LobbyShellState extends ConsumerState<LobbyShell> {
               isActive: tabsRouter.activeIndex == 2,
               onTap: () => tabsRouter.setActiveIndex(2),
             ),
-            BottomNavigationBarItem(
+            LobbyBottomNavigationBarItem(
               icon: CircleAvatar(
                 radius: 12,
                 backgroundColor: BrandColors.gray_200,
@@ -155,13 +148,13 @@ class _LobbyShellState extends ConsumerState<LobbyShell> {
   }
 }
 
-class BottomNavigationBar extends ConsumerWidget {
-  const BottomNavigationBar({
+class LobbyBottomNavigationBar extends ConsumerWidget {
+  const LobbyBottomNavigationBar({
     super.key,
     required this.items,
   });
 
-  final List<BottomNavigationBarItem> items;
+  final List<LobbyBottomNavigationBarItem> items;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -190,8 +183,8 @@ class BottomNavigationBar extends ConsumerWidget {
   }
 }
 
-class BottomNavigationBarItem {
-  const BottomNavigationBarItem({
+class LobbyBottomNavigationBarItem {
+  const LobbyBottomNavigationBarItem({
     required this.icon,
     Widget? activeIcon,
     this.isActive,

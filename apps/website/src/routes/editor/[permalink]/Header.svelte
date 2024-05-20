@@ -47,7 +47,7 @@
   let _query: EditorPage_Header_query;
   let _post: EditorPage_Header_post;
 
-  const { state, forceSynchronize } = getEditorContext();
+  const { state, forceSynchronize, isWebView } = getEditorContext();
   $: editor = $state.editor;
 
   $: query = fragment(
@@ -148,18 +148,24 @@
       height: { base: '56px', sm: '62px' },
     })}
   >
-    <a class={flex({ align: 'center', gap: '8px' })} href="/">
-      <FullLogo
-        class={css({
-          marginTop: '20px',
-          marginBottom: '17px',
-          color: 'gray.900',
-          height: '25px',
-          hideBelow: 'sm',
-        })}
-      />
-      <Icon style={css.raw({ hideFrom: 'sm' })} icon={IconChevronLeft} size={24} />
-    </a>
+    {#if isWebView}
+      <button type="button" on:click={() => window.flutter_inappwebview.callHandler('close')}>
+        <Icon icon={IconChevronLeft} size={24} />
+      </button>
+    {:else}
+      <a class={flex({ align: 'center', gap: '8px' })} href="/">
+        <FullLogo
+          class={css({
+            marginTop: '20px',
+            marginBottom: '17px',
+            color: 'gray.900',
+            height: '25px',
+            hideBelow: 'sm',
+          })}
+        />
+        <Icon style={css.raw({ hideFrom: 'sm' })} icon={IconChevronLeft} size={24} />
+      </a>
+    {/if}
 
     <div class={flex({ flex: '1', justify: 'flex-end', align: 'flex-end' })}>
       {#if $state.timeTravel}
