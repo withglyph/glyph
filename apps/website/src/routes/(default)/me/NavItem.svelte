@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { afterNavigate } from '$app/navigation';
   import { page } from '$app/stores';
   import { Icon } from '$lib/components';
   import { css } from '$styled-system/css';
@@ -7,9 +8,18 @@
   export let pathname: string;
   export let title: string;
   export let icon: ComponentType;
+
+  let navEl: HTMLElement;
+
+  afterNavigate(() => {
+    if (navEl && $page.url.pathname.startsWith(pathname)) {
+      navEl.scrollIntoView({ block: 'nearest', inline: 'center' });
+    }
+  });
 </script>
 
 <a
+  bind:this={navEl}
   class={css(
     {
       flex: 'none',
