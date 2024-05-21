@@ -132,9 +132,15 @@
         'red-outline': {
           _enabled: {
             color: 'red.600',
-            backgroundColor: { _hover: 'red.50', _focusVisible: 'red.50', _active: 'gray.0', _pressed: 'gray.0' },
+            backgroundColor: {
+              base: 'gray.0',
+              _hover: 'red.50',
+              _focusVisible: 'red.50',
+              _active: 'gray.0',
+              _pressed: 'gray.0',
+            },
             outlineWidth: { base: '1px', _active: '3px', _pressed: '3px' },
-            outlineColor: 'red.600',
+            outlineColor: 'red.200',
           },
         },
         'red-fill': {
