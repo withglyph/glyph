@@ -69,14 +69,21 @@
         await goto(qs.stringifyUrl({ url: '/search', query: { q: value } }));
       }}
     >
-      <TextInput placeholder="검색어를 입력하세요" size="sm" type="search" bind:inputEl bind:value>
+      <TextInput
+        style={css.raw({ backgroundColor: 'gray.50' })}
+        placeholder="검색어를 입력하세요"
+        size="md"
+        type="search"
+        bind:inputEl
+        bind:value
+      >
         <button
           slot="left-icon"
           class={center({ transition: 'common', color: 'gray.500' })}
           aria-label="검색"
           type="submit"
         >
-          <Icon icon={IconSearch} size={20} />
+          <Icon icon={IconSearch} />
         </button>
         <button
           slot="right-icon"
@@ -85,7 +92,7 @@
           disabled={value.length === 0}
           type="reset"
         >
-          <Icon icon={IconX} size={20} />
+          <Icon icon={IconX} />
         </button>
       </TextInput>
     </form>

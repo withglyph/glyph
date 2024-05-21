@@ -190,11 +190,11 @@
       })}
     >
       <div class={css({ flexGrow: '1', minWidth: '0' })}>
-        <TextInput readonly size="sm" type="text" value={href} />
+        <TextInput readonly size="md" type="text" value={href} />
       </div>
       <Button
         style={css.raw({ flex: 'none', fontSize: '14px', width: '76px' })}
-        size="sm"
+        size="md"
         type="button"
         on:click={async () => {
           try {

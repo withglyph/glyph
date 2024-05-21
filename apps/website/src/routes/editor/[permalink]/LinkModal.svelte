@@ -122,13 +122,7 @@
         open = false;
       }}
     >
-      <TextInput
-        style={css.raw({ marginTop: '12px', marginBottom: '26px' })}
-        size="md"
-        type="text"
-        bind:value
-        bind:inputEl
-      >
+      <TextInput style={css.raw({ marginTop: '12px', marginBottom: '26px' })} type="text" bind:value bind:inputEl>
         <Icon slot="left-icon" style={css.raw({ color: 'gray.400' })} icon={IconLink} />
       </TextInput>
 

@@ -1078,13 +1078,8 @@
             }
           }}
         >
-          <TextInput
-            style={css.raw({ fontSize: '14px!' })}
-            placeholder="비밀번호를 입력해주세요"
-            type="password"
-            bind:value={password}
-          />
-          <Button style={css.raw({ width: '68px' })} size="sm" type="submit">입력</Button>
+          <TextInput placeholder="비밀번호를 입력해주세요" size="lg" type="password" bind:value={password} />
+          <Button style={css.raw({ width: '68px' })} size="lg" type="submit">입력</Button>
         </form>
       </AlertText>
     {/if}

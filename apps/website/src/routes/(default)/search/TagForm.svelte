@@ -48,7 +48,7 @@
     on:reset={() => (value = '')}
     use:outsideClickEvent
   >
-    <TextInput size="sm" bind:value {...$$restProps}>
+    <TextInput size="md" bind:value {...$$restProps}>
       <Icon slot="left-icon" icon={IconHash} />
       <button
         slot="right-icon"

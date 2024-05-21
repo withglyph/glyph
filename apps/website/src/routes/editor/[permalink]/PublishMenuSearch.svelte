@@ -84,7 +84,7 @@
     use:outsideClickEvent
   >
     <TextInput
-      size="sm"
+      size="md"
       type="search"
       bind:value={query}
       on:blur={() => {
