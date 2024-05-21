@@ -43,8 +43,7 @@
 >
   <div
     class={css(
-      { pointerEvents: 'auto' },
-      node.attrs.size === 'full' && { width: 'full' },
+      { width: 'full', pointerEvents: 'auto' },
       node.attrs.size === 'compact' && { maxWidth: '500px' },
       selected && { ringWidth: '2px', ringColor: 'brand.400' },
     )}
