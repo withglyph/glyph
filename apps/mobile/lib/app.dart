@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glyph/routers/app.dart';
 import 'package:glyph/routers/observer.dart';
+import 'package:glyph/screens/splash.dart';
 import 'package:glyph/themes/colors.dart';
 
 class App extends ConsumerWidget {
@@ -13,6 +14,7 @@ class App extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
       routerConfig: _router.config(
+        placeholder: (context) => const SplashScreen(),
         navigatorObservers: () => [AppRouterObserver()],
       ),
       debugShowCheckedModeBanner: false,

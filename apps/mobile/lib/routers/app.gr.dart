@@ -69,11 +69,9 @@ abstract class $AppRouter extends _i13.RootStackRouter {
       );
     },
     LoginRoute.name: (routeData) {
-      final args = routeData.argsAs<LoginRouteArgs>(
-          orElse: () => const LoginRouteArgs());
       return _i13.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i7.LoginScreen(key: args.key),
+        child: const _i7.LoginScreen(),
       );
     },
     MainRouter.name: (routeData) {
@@ -83,11 +81,9 @@ abstract class $AppRouter extends _i13.RootStackRouter {
       );
     },
     MeRoute.name: (routeData) {
-      final args =
-          routeData.argsAs<MeRouteArgs>(orElse: () => const MeRouteArgs());
       return _i13.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i9.MeScreen(key: args.key),
+        child: const _i9.MeScreen(),
       );
     },
     PlaceholderRoute.name: (routeData) {
@@ -225,31 +221,16 @@ class LobbyShell extends _i13.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i7.LoginScreen]
-class LoginRoute extends _i13.PageRouteInfo<LoginRouteArgs> {
-  LoginRoute({
-    _i14.Key? key,
-    List<_i13.PageRouteInfo>? children,
-  }) : super(
+class LoginRoute extends _i13.PageRouteInfo<void> {
+  const LoginRoute({List<_i13.PageRouteInfo>? children})
+      : super(
           LoginRoute.name,
-          args: LoginRouteArgs(key: key),
           initialChildren: children,
         );
 
   static const String name = 'LoginRoute';
 
-  static const _i13.PageInfo<LoginRouteArgs> page =
-      _i13.PageInfo<LoginRouteArgs>(name);
-}
-
-class LoginRouteArgs {
-  const LoginRouteArgs({this.key});
-
-  final _i14.Key? key;
-
-  @override
-  String toString() {
-    return 'LoginRouteArgs{key: $key}';
-  }
+  static const _i13.PageInfo<void> page = _i13.PageInfo<void>(name);
 }
 
 /// generated route for
@@ -268,31 +249,16 @@ class MainRouter extends _i13.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i9.MeScreen]
-class MeRoute extends _i13.PageRouteInfo<MeRouteArgs> {
-  MeRoute({
-    _i14.Key? key,
-    List<_i13.PageRouteInfo>? children,
-  }) : super(
+class MeRoute extends _i13.PageRouteInfo<void> {
+  const MeRoute({List<_i13.PageRouteInfo>? children})
+      : super(
           MeRoute.name,
-          args: MeRouteArgs(key: key),
           initialChildren: children,
         );
 
   static const String name = 'MeRoute';
 
-  static const _i13.PageInfo<MeRouteArgs> page =
-      _i13.PageInfo<MeRouteArgs>(name);
-}
-
-class MeRouteArgs {
-  const MeRouteArgs({this.key});
-
-  final _i14.Key? key;
-
-  @override
-  String toString() {
-    return 'MeRouteArgs{key: $key}';
-  }
+  static const _i13.PageInfo<void> page = _i13.PageInfo<void>(name);
 }
 
 /// generated route for

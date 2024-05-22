@@ -23,10 +23,10 @@ class LobbyShell extends ConsumerWidget {
 
     return AutoTabsScaffold(
       resizeToAvoidBottomInset: false,
-      routes: [
-        const HomeRoute(),
-        const FeedRoute(),
-        const ArchiveRoute(),
+      routes: const [
+        HomeRoute(),
+        FeedRoute(),
+        ArchiveRoute(),
         MeRoute(),
       ],
       transitionBuilder: (context, child, animation) => child,

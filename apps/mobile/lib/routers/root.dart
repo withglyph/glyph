@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/routers/app.gr.dart';
-import 'package:glyph/lib/toast.dart';
+import 'package:glyph/context/toast.dart';
 
 @RoutePage()
 class RootRouter extends ConsumerWidget implements AutoRouteWrapper {

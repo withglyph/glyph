@@ -6,8 +6,6 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:glyph/storage.dart';
-import 'package:glyph/widgets/loading_indicator_dialog.dart';
 
 import 'app.dart';
 import 'firebase_options.dart';
@@ -33,9 +31,8 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  GetIt.I.registerSingleton<FlutterSecureStorage>(storage);
+  GetIt.I.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   GetIt.I.registerSingleton<FirebaseMessaging>(FirebaseMessaging.instance);
-  GetIt.I.registerSingleton<LoadingIndicatorDialog>(LoadingIndicatorDialog());
 
   runApp(ProviderScope(child: Material(child: App())));
 }

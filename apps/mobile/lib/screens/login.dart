@@ -4,17 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:get_it/get_it.dart';
 import 'package:glyph/components/button.dart';
 import 'package:glyph/components/svg_image.dart';
 import 'package:glyph/components/svg_icon.dart';
+import 'package:glyph/context/loader.dart';
 import 'package:glyph/graphql/__generated__/login_screen_authorize_single_sign_on_token_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/login_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/themes/colors.dart';
-import 'package:glyph/widgets/loading_indicator_dialog.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -27,9 +26,7 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
 
 @RoutePage()
 class LoginScreen extends ConsumerWidget {
-  LoginScreen({super.key});
-
-  final loadingIndicatorDialog = GetIt.I<LoadingIndicatorDialog>();
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -110,7 +107,7 @@ class LoginScreen extends ConsumerWidget {
                             return;
                           }
 
-                          await loadingIndicatorDialog.run(context, () async {
+                          await context.loader.run(() async {
                             final req =
                                 GLoginScreen_AuthorizeSingleSignOnToken_MutationReq(
                               (b) => b
@@ -163,7 +160,7 @@ class LoginScreen extends ConsumerWidget {
                             return;
                           }
 
-                          await loadingIndicatorDialog.run(context, () async {
+                          await context.loader.run(() async {
                             final req =
                                 GLoginScreen_AuthorizeSingleSignOnToken_MutationReq(
                               (b) => b
