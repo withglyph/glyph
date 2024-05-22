@@ -8,6 +8,7 @@ import 'package:glyph/components/button.dart';
 import 'package:glyph/components/svg_image.dart';
 import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/context/loader.dart';
+import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/login_screen_authorize_single_sign_on_token_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/login_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
@@ -116,15 +117,13 @@ class LoginScreen extends ConsumerWidget {
                                 ..vars.input.token = authResult.serverAuthCode,
                             );
 
-                            final resp = await ferry.request(req).first;
-                            if (resp.hasErrors) {
-                              return;
-                            }
+                            final resp = await ferry.req(req);
 
                             await ref
                                 .read(authProvider.notifier)
-                                .setAccessToken(resp
-                                    .data!.authorizeSingleSignOnToken.token);
+                                .setAccessToken(
+                                  resp.authorizeSingleSignOnToken.token,
+                                );
                           });
                         },
                       ),
@@ -169,15 +168,12 @@ class LoginScreen extends ConsumerWidget {
                                 ..vars.input.token = token.accessToken,
                             );
 
-                            final resp = await ferry.request(req).first;
-                            if (resp.hasErrors) {
-                              return;
-                            }
-
+                            final resp = await ferry.req(req);
                             await ref
                                 .read(authProvider.notifier)
-                                .setAccessToken(resp
-                                    .data!.authorizeSingleSignOnToken.token);
+                                .setAccessToken(
+                                  resp.authorizeSingleSignOnToken.token,
+                                );
                           });
                         },
                       ),

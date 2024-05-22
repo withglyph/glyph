@@ -1,14 +1,13 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/context/toast.dart';
+import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/notifications_screen_query.data.gql.dart';
 import 'package:glyph/graphql/__generated__/notifications_screen_query.req.gql.dart';
-import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
@@ -21,8 +20,6 @@ class NotificationScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ferry = ref.watch(ferryProvider);
-
     return DefaultShell(
       title: '알림',
       actions: [
@@ -39,16 +36,10 @@ class NotificationScreen extends ConsumerWidget {
           },
         ),
       ],
-      child: Operation(
-        client: ferry,
-        operationRequest: GNotificationsScreen_QueryReq(),
-        builder: (context, response, error) {
-          final notifications = response?.data?.me?.notifications;
-          if (notifications == null) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+      child: GraphQLOperation(
+        operation: GNotificationsScreen_QueryReq(),
+        builder: (context, client, data) {
+          final notifications = data.me!.notifications;
 
           return ListView.builder(
             itemCount: notifications.length,

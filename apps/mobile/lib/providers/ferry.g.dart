@@ -6,7 +6,7 @@ part of 'ferry.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$ferryHash() => r'af1a71aefbf54bb4ee393e786f03c029f273764d';
+String _$ferryHash() => r'2c720540b4a3ec0889e6e9ceeaad6b54e50386d4';
 
 /// See also [ferry].
 @ProviderFor(ferry)

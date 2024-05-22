@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:glyph/components/svg_icon.dart';
+import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/lobby_shell_create_post_mutation.req.gql.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
@@ -14,7 +15,6 @@ class LobbyShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ferry = ref.watch(ferryProvider);
     final authValue = ref.watch(authProvider);
     final me = switch (authValue) {
       AsyncData(value: Authenticated(:final me)) => me,
@@ -49,16 +49,14 @@ class LobbyShell extends ConsumerWidget {
               icon: const SvgIcon('create', color: BrandColors.gray_600),
               activeIcon: const SvgIcon('create-filled'),
               onTap: () async {
+                final client = ref.read(ferryProvider);
                 final req = GLobbyShell_CreatePost_MutationReq();
-                final resp = await ferry.request(req).first;
-
-                final data = resp.data?.createPost;
-                if (data == null) {
-                  return;
-                }
+                final resp = await client.req(req);
 
                 if (context.mounted) {
-                  context.router.push(EditorRoute(permalink: data.permalink));
+                  context.router.push(
+                    EditorRoute(permalink: resp.createPost.permalink),
+                  );
                 }
               },
             ),

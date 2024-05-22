@@ -1,14 +1,13 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/button.dart';
 import 'package:glyph/context/loader.dart';
 import 'package:glyph/extensions/color.dart';
+import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/me_screen_query.req.gql.dart';
 import 'package:glyph/providers/auth.dart';
-import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/providers/push_notification.dart';
 import 'package:glyph/themes/colors.dart';
 
@@ -18,21 +17,9 @@ class MeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ferry = ref.watch(ferryProvider);
-
-    return Operation(
-      client: ferry,
-      operationRequest: GMeScreen_QueryReq(),
-      builder: (context, response, error) {
-        if (response == null || response.loading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        final me = response.data?.me;
-        if (me == null) {
-          throw Exception();
-        }
-
+    return GraphQLOperation(
+      operation: GMeScreen_QueryReq(),
+      builder: (context, client, data) {
         return Column(
           children: [
             Stack(
@@ -44,7 +31,7 @@ class MeScreen extends ConsumerWidget {
                   height: 150,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: HexColor.fromHex(me.profile.avatar.color),
+                      color: HexColor.fromHex(data.me!.profile.avatar.color),
                     ),
                   ),
                 ),
@@ -55,8 +42,11 @@ class MeScreen extends ConsumerWidget {
                     backgroundColor: BrandColors.gray_0,
                     child: Padding(
                       padding: const EdgeInsets.all(4),
-                      child:
-                          ClipOval(child: Image.network(me.profile.avatar.url)),
+                      child: ClipOval(
+                        child: Image.network(
+                          data.me!.profile.avatar.url,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -64,7 +54,7 @@ class MeScreen extends ConsumerWidget {
             ),
             const Gap(64),
             Text(
-              me.profile.name,
+              data.me!.profile.name,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
             ),
             const Spacer(),

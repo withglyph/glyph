@@ -13,5 +13,7 @@ Client ferry(FerryRef ref) {
     _ => null,
   };
 
+  ref.keepAlive();
+
   return createFerryClient(accessToken);
 }
