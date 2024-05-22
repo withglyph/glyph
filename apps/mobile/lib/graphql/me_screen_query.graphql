@@ -5,9 +5,11 @@ query MeScreen_Query {
     profile {
       id
       name
+
       avatar {
         id
         url
+        color
       }
     }
   }

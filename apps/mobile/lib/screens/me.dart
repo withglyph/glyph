@@ -5,10 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/button.dart';
 import 'package:glyph/context/loader.dart';
+import 'package:glyph/extensions/color.dart';
 import 'package:glyph/graphql/__generated__/me_screen_query.req.gql.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/providers/push_notification.dart';
+import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
 class MeScreen extends ConsumerWidget {
@@ -32,18 +34,40 @@ class MeScreen extends ConsumerWidget {
         }
 
         return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: 64,
-              backgroundImage: NetworkImage(me.profile.avatar.url),
+            Stack(
+              alignment: Alignment.bottomCenter,
+              clipBehavior: Clip.none,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  height: 150,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: HexColor.fromHex(me.profile.avatar.color),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: -64,
+                  child: CircleAvatar(
+                    radius: 64,
+                    backgroundColor: BrandColors.gray_0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4),
+                      child:
+                          ClipOval(child: Image.network(me.profile.avatar.url)),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const Gap(8),
+            const Gap(64),
             Text(
               me.profile.name,
-              style: const TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
             ),
-            const Gap(24),
+            const Spacer(),
             Button(
               child: const Text('로그아웃'),
               onPressed: () async {
@@ -55,6 +79,7 @@ class MeScreen extends ConsumerWidget {
                 });
               },
             ),
+            const Gap(16),
           ],
         );
       },
