@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
-import { and, count, desc, eq, isNotNull, ne, notExists } from 'drizzle-orm';
+import { and, count, desc, eq, isNotNull, isNull, ne, notExists } from 'drizzle-orm';
 import * as R from 'radash';
 import { match } from 'ts-pattern';
-import { SpaceMemberRole, SpaceVisibility } from '$lib/enums';
+import { PostPriceCategory, PostVisibility, SpaceMemberRole, SpaceVisibility } from '$lib/enums';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { redis } from '$lib/server/cache';
 import {
@@ -13,6 +13,7 @@ import {
   Posts,
   PostTags,
   Profiles,
+  SpaceCollectionPosts,
   SpaceCollections,
   SpaceFollows,
   SpaceMasquerades,
@@ -146,7 +147,13 @@ Space.implement({
 
     posts: t.field({
       type: [Post],
-      args: { mine: t.arg.boolean({ defaultValue: false }) },
+      args: {
+        mine: t.arg.boolean({ defaultValue: false }),
+        visibility: t.arg({ type: PostVisibility, required: false }),
+        collectionId: t.arg.id({ required: false }),
+        collectionlessOnly: t.arg.boolean({ defaultValue: false }),
+        priceCategory: t.arg({ type: PostPriceCategory, required: false }),
+      },
       resolve: async (space, args, context) => {
         if (!(await spaceScopeGranter(space, context, '$space:view'))) {
           return [];
@@ -157,15 +164,24 @@ Space.implement({
           throw new PermissionDeniedError();
         }
 
+        // 한 포스트가 한 컬렉션에만 들어갈 수 있는 구조를 가정하고 구현, 만약 여러 컬렉션에 들어갈 수 있다면 수정 필요
+
         const posts = await database
           .select({ id: Posts.id })
           .from(Posts)
+          .innerJoin(PostRevisions, eq(PostRevisions.postId, Posts.id))
+          .leftJoin(SpaceCollectionPosts, eq(SpaceCollectionPosts.postId, Posts.id))
           .where(
             and(
               eq(Posts.spaceId, space.id),
               eq(Posts.state, 'PUBLISHED'),
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              args.mine ? eq(Posts.userId, meAsMember!.id) : undefined,
+              args.mine ? eq(Posts.userId, meAsMember!.userId) : undefined,
+              args.visibility ? eq(Posts.visibility, args.visibility) : undefined,
+              args.priceCategory === 'FREE' ? isNull(PostRevisions.price) : undefined,
+              args.priceCategory === 'PAID' ? isNotNull(PostRevisions.price) : undefined,
+              args.collectionId ? eq(SpaceCollectionPosts.collectionId, args.collectionId) : undefined,
+              args.collectionlessOnly ? isNull(SpaceCollectionPosts.collectionId) : undefined,
               meAsMember ? undefined : eq(Posts.visibility, 'PUBLIC'),
               context.session && !meAsMember
                 ? notExists(

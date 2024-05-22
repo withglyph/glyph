@@ -554,6 +554,11 @@ enum PostPair {
   OTHER
 }
 
+enum PostPriceCategory {
+  FREE
+  PAID
+}
+
 type PostReaction {
   emoji: String!
   id: ID!
@@ -820,7 +825,7 @@ type Space {
   myMasquerade: SpaceMasquerade
   name: String!
   postCount: Int!
-  posts(mine: Boolean! = false): [Post!]!
+  posts(collectionId: ID, collectionlessOnly: Boolean! = false, mine: Boolean! = false, priceCategory: PostPriceCategory, visibility: PostVisibility): [Post!]!
   slug: String!
   visibility: SpaceVisibility!
 }

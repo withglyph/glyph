@@ -98,6 +98,11 @@ export const PostPair = {
   OTHER: 'OTHER',
 } as const;
 
+export const PostPriceCategory = {
+  FREE: 'FREE',
+  PAID: 'PAID',
+} as const;
+
 export const PostRevisionContentKind = {
   ARTICLE: 'ARTICLE',
   GALLERY: 'GALLERY',
