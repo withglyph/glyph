@@ -2,10 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/components/button.dart';
+import 'package:glyph/components/svg_image.dart';
+import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/graphql/__generated__/login_screen_authorize_single_sign_on_token_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/login_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
@@ -79,23 +80,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
+              const Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(
-                      'assets/logos/full.svg',
-                      height: 38,
-                      colorFilter: const ColorFilter.mode(
-                          BrandColors.gray_0, BlendMode.srcIn),
-                    ),
-                    const Gap(8),
-                    const Text(
+                    SvgImage('logos/full',
+                        height: 38, color: BrandColors.gray_0),
+                    Gap(8),
+                    Text(
                       '창작자를 위한 콘텐츠 플랫폼\n글리프에 오신 것을 환영해요!',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: BrandColors.gray_0,
-                      ),
+                      style: TextStyle(fontSize: 16, color: BrandColors.gray_0),
                     ),
                   ],
                 ),
@@ -106,19 +100,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   backgroundColor: WidgetStatePropertyAll(BrandColors.gray_0),
                   minimumSize: WidgetStatePropertyAll(Size.fromHeight(48)),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(
-                      'assets/icons/google.svg',
-                      width: 18,
-                      height: 18,
-                    ),
-                    const Gap(10),
-                    const Text(
-                      '구글로 시작하기',
-                      style: TextStyle(fontSize: 16),
-                    ),
+                    SvgImage('icons/google', width: 18, height: 18),
+                    Gap(10),
+                    Text('구글로 시작하기', style: TextStyle(fontSize: 16)),
                   ],
                 ),
                 onPressed: () async {
@@ -157,19 +144,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   backgroundColor: WidgetStatePropertyAll(BrandColors.gray_0),
                   minimumSize: WidgetStatePropertyAll(Size.fromHeight(48)),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(
-                      'assets/icons/naver.svg',
-                      width: 16,
-                      height: 16,
-                    ),
-                    const Gap(10),
-                    const Text(
-                      '네이버로 시작하기',
-                      style: TextStyle(fontSize: 16),
-                    ),
+                    SvgImage('icons/naver', width: 16, height: 16),
+                    Gap(10),
+                    Text('네이버로 시작하기', style: TextStyle(fontSize: 16)),
                   ],
                 ),
                 onPressed: () async {
@@ -210,23 +190,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   backgroundColor: WidgetStatePropertyAll(BrandColors.gray_0),
                   minimumSize: WidgetStatePropertyAll(Size.fromHeight(48)),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(
-                      'assets/icons/mail.svg',
-                      width: 20,
-                      height: 20,
-                      colorFilter: const ColorFilter.mode(
-                          BrandColors.gray_900, BlendMode.srcIn),
-                    ),
-                    const Gap(10),
-                    const Text(
+                    SvgIcon('mail', size: 20),
+                    Gap(10),
+                    Text(
                       '이메일로 시작하기',
                       style: TextStyle(fontSize: 16),
                     ),
                   ],
                 ),
+                onPressed: () {
+                  // ! Implement it
+                },
               ),
               const Gap(32),
             ],

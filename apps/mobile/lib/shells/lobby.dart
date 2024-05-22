@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/graphql/__generated__/lobby_shell_create_post_mutation.req.gql.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
@@ -34,50 +34,20 @@ class LobbyShell extends ConsumerWidget {
         return LobbyBottomNavigationBar(
           items: [
             LobbyBottomNavigationBarItem(
-              icon: SvgPicture.asset(
-                'assets/icons/home.svg',
-                width: 24,
-                colorFilter: const ColorFilter.mode(
-                    BrandColors.gray_600, BlendMode.srcIn),
-              ),
-              activeIcon: SvgPicture.asset(
-                'assets/icons/home-filled.svg',
-                width: 24,
-                colorFilter: const ColorFilter.mode(
-                    BrandColors.gray_900, BlendMode.srcIn),
-              ),
+              icon: const SvgIcon('home', color: BrandColors.gray_600),
+              activeIcon: const SvgIcon('home-filled'),
               isActive: tabsRouter.activeIndex == 0,
               onTap: () => tabsRouter.setActiveIndex(0),
             ),
             LobbyBottomNavigationBarItem(
-              icon: SvgPicture.asset(
-                'assets/icons/newspaper.svg',
-                width: 24,
-                colorFilter: const ColorFilter.mode(
-                    BrandColors.gray_600, BlendMode.srcIn),
-              ),
-              activeIcon: SvgPicture.asset(
-                'assets/icons/newspaper-filled.svg',
-                width: 24,
-                colorFilter: const ColorFilter.mode(
-                    BrandColors.gray_900, BlendMode.srcIn),
-              ),
+              icon: const SvgIcon('newspaper', color: BrandColors.gray_600),
+              activeIcon: const SvgIcon('newspaper-filled'),
               isActive: tabsRouter.activeIndex == 1,
               onTap: () => tabsRouter.setActiveIndex(1),
             ),
             LobbyBottomNavigationBarItem(
-              icon: SvgPicture.asset(
-                'assets/icons/create.svg',
-                width: 24,
-                colorFilter: const ColorFilter.mode(
-                    BrandColors.gray_600, BlendMode.srcIn),
-              ),
-              activeIcon: SvgPicture.asset(
-                'assets/icons/create-filled.svg',
-                width: 24,
-                colorFilter: const ColorFilter.mode(
-                    BrandColors.gray_900, BlendMode.srcIn),
-              ),
+              icon: const SvgIcon('create', color: BrandColors.gray_600),
+              activeIcon: const SvgIcon('create-filled'),
               onTap: () async {
                 final req = GLobbyShell_CreatePost_MutationReq();
                 final resp = await ferry.request(req).first;
@@ -93,18 +63,8 @@ class LobbyShell extends ConsumerWidget {
               },
             ),
             LobbyBottomNavigationBarItem(
-              icon: SvgPicture.asset(
-                'assets/icons/albums.svg',
-                width: 24,
-                colorFilter: const ColorFilter.mode(
-                    BrandColors.gray_600, BlendMode.srcIn),
-              ),
-              activeIcon: SvgPicture.asset(
-                'assets/icons/albums-filled.svg',
-                width: 24,
-                colorFilter: const ColorFilter.mode(
-                    BrandColors.gray_900, BlendMode.srcIn),
-              ),
+              icon: const SvgIcon('albums', color: BrandColors.gray_600),
+              activeIcon: const SvgIcon('albums-filled'),
               isActive: tabsRouter.activeIndex == 2,
               onTap: () => tabsRouter.setActiveIndex(2),
             ),

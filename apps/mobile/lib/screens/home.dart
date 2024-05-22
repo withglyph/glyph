@@ -1,9 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
+import 'package:glyph/components/svg_image.dart';
+import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 
@@ -20,12 +21,7 @@ class HomeScreen extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
-                SvgPicture.asset(
-                  'assets/logos/compact.svg',
-                  height: 24,
-                  colorFilter: const ColorFilter.mode(
-                      BrandColors.gray_900, BlendMode.srcIn),
-                ),
+                const SvgImage('logos/compact', height: 24),
                 const Gap(16),
                 Expanded(
                   child: TextField(
@@ -41,14 +37,9 @@ class HomeScreen extends ConsumerWidget {
                         horizontal: 16,
                         vertical: 8,
                       ),
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: SvgPicture.asset(
-                          'assets/icons/search.svg',
-                          height: 24,
-                          colorFilter: const ColorFilter.mode(
-                              BrandColors.gray_500, BlendMode.srcIn),
-                        ),
+                      prefixIcon: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        child: SvgIcon('search', color: BrandColors.gray_500),
                       ),
                       prefixIconConstraints:
                           const BoxConstraints(minHeight: 24),
@@ -60,12 +51,7 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 const Gap(16),
                 Pressable(
-                  child: SvgPicture.asset(
-                    'assets/icons/notification.svg',
-                    height: 24,
-                    colorFilter: const ColorFilter.mode(
-                        BrandColors.gray_900, BlendMode.srcIn),
-                  ),
+                  child: const SvgIcon('notification'),
                   onPressed: () {
                     context.router.push(PlaceholderRoute(text: '알림'));
                   },
