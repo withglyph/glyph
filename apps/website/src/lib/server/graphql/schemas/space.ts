@@ -169,7 +169,7 @@ Space.implement({
         const posts = await database
           .select({ id: Posts.id })
           .from(Posts)
-          .innerJoin(PostRevisions, eq(PostRevisions.postId, Posts.id))
+          .innerJoin(PostRevisions, eq(PostRevisions.id, Posts.publishedRevisionId))
           .leftJoin(SpaceCollectionPosts, eq(SpaceCollectionPosts.postId, Posts.id))
           .where(
             and(
