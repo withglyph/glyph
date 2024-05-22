@@ -103,7 +103,7 @@ abstract class $AppRouter extends _i13.RootStackRouter {
     RootRouter.name: (routeData) {
       return _i13.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i11.RootRouter(),
+        child: _i13.WrappedRoute(child: const _i11.RootRouter()),
       );
     },
     SplashRoute.name: (routeData) {

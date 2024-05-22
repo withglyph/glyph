@@ -53,6 +53,7 @@ dependencies:
   collection: ^1.18.0
   flutter_naver_login: ^1.8.0
   transparent_image: ^2.0.1
+  fluttertoast: ^8.2.5
 
 dev_dependencies:
   flutter_test:

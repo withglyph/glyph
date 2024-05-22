@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/routers/app.gr.dart';
+import 'package:glyph/lib/toast.dart';
 
 @RoutePage()
-class RootRouter extends ConsumerWidget {
+class RootRouter extends ConsumerWidget implements AutoRouteWrapper {
   const RootRouter({super.key});
 
   @override
@@ -22,5 +23,10 @@ class RootRouter extends ConsumerWidget {
         },
       ],
     );
+  }
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return ToastScope(child: this);
   }
 }

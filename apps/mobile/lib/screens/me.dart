@@ -15,7 +15,7 @@ import 'package:glyph/widgets/loading_indicator_dialog.dart';
 class MeScreen extends ConsumerWidget {
   MeScreen({super.key});
 
-  final loadingIndicatorDialog = GetIt.I<LoadingIndicatorDialog>();
+  final _loadingIndicatorDialog = GetIt.I<LoadingIndicatorDialog>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -50,7 +50,7 @@ class MeScreen extends ConsumerWidget {
             Button(
               child: const Text('로그아웃'),
               onPressed: () async {
-                loadingIndicatorDialog.run(context, () async {
+                _loadingIndicatorDialog.run(context, () async {
                   await ref
                       .read(pushNotificationProvider.notifier)
                       .clearToken();
