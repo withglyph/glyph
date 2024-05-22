@@ -23,10 +23,10 @@
     "cspell": "^8.8.1",
     "eslint": "^8.57.0",
     "husky": "^9.0.11",
-    "lint-staged": "^15.2.2",
+    "lint-staged": "^15.2.4",
     "prettier": "^3.2.5",
     "syncpack": "^12.3.2",
-    "tsx": "^4.10.4",
+    "tsx": "^4.10.5",
     "turbo": "^1.13.3",
     "typescript": "^5.4.5"
   },
