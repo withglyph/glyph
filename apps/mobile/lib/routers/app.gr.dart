@@ -69,9 +69,11 @@ abstract class $AppRouter extends _i13.RootStackRouter {
       );
     },
     LoginRoute.name: (routeData) {
+      final args = routeData.argsAs<LoginRouteArgs>(
+          orElse: () => const LoginRouteArgs());
       return _i13.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i7.LoginScreen(),
+        child: _i7.LoginScreen(key: args.key),
       );
     },
     MainRouter.name: (routeData) {
@@ -223,16 +225,31 @@ class LobbyShell extends _i13.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i7.LoginScreen]
-class LoginRoute extends _i13.PageRouteInfo<void> {
-  const LoginRoute({List<_i13.PageRouteInfo>? children})
-      : super(
+class LoginRoute extends _i13.PageRouteInfo<LoginRouteArgs> {
+  LoginRoute({
+    _i14.Key? key,
+    List<_i13.PageRouteInfo>? children,
+  }) : super(
           LoginRoute.name,
+          args: LoginRouteArgs(key: key),
           initialChildren: children,
         );
 
   static const String name = 'LoginRoute';
 
-  static const _i13.PageInfo<void> page = _i13.PageInfo<void>(name);
+  static const _i13.PageInfo<LoginRouteArgs> page =
+      _i13.PageInfo<LoginRouteArgs>(name);
+}
+
+class LoginRouteArgs {
+  const LoginRouteArgs({this.key});
+
+  final _i14.Key? key;
+
+  @override
+  String toString() {
+    return 'LoginRouteArgs{key: $key}';
+  }
 }
 
 /// generated route for
