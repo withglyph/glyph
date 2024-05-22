@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
+import 'package:glyph/components/pull_to_refresh.dart';
 import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/context/toast.dart';
+import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/notifications_screen_query.data.gql.dart';
 import 'package:glyph/graphql/__generated__/notifications_screen_query.req.gql.dart';
@@ -28,7 +30,7 @@ class NotificationScreen extends ConsumerWidget {
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Text(
               '모두 읽기',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
           ),
           onPressed: () {
@@ -41,7 +43,7 @@ class NotificationScreen extends ConsumerWidget {
         builder: (context, client, data) {
           final notifications = data.me!.notifications;
 
-          return ListView.builder(
+          return PullToRefresh.listView(
             itemCount: notifications.length,
             itemBuilder: (context, index) {
               final notification = notifications.elementAtOrNull(index);
@@ -129,6 +131,10 @@ class NotificationScreen extends ConsumerWidget {
                 },
               );
             },
+            onRefresh: () async {
+              await client.req(GNotificationsScreen_QueryReq());
+            },
+            emptyText: '아직 받은 알림이 없어요',
           );
         },
       ),

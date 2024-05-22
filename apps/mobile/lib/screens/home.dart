@@ -47,7 +47,10 @@ class HomeScreen extends ConsumerWidget {
                       hintStyle: const TextStyle(color: BrandColors.gray_400),
                     ),
                     onSubmitted: (value) {
-                      context.router.push(PlaceholderRoute(text: '검색: $value'));
+                      if (value.isNotEmpty) {
+                        context.router
+                            .push(PlaceholderRoute(text: '검색: $value'));
+                      }
                     },
                   ),
                 ),

@@ -273,6 +273,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.3"
+  custom_refresh_indicator:
+    dependency: "direct main"
+    description:
+      name: custom_refresh_indicator
+      sha256: "841dd90ded708b6a73df3fcebbedc534bbb842b8c3a491570846b534cd0a2547"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   dart_style:
     dependency: transitive
     description:
@@ -317,10 +325,10 @@ packages:
     dependency: "direct main"
     description:
       name: ferry_flutter
-      sha256: a0ea3176f02fb8336a49b56f55c342377c8eba132dfee343a740c02aca6276c1
+      sha256: da272f66983342207b1e7de5b5c328cb7230deaa44994224f2b1340d16f98e61
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.0-dev.3"
+    version: "0.9.0-dev.6"
   ferry_generator:
     dependency: "direct dev"
     description:
