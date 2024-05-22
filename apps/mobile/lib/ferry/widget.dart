@@ -26,6 +26,14 @@ class GraphQLOperation<TData, TVars> extends ConsumerWidget {
       builder: (context, response, error) {
         final data = response?.data;
 
+        if (response!.graphqlErrors?.isNotEmpty == true) {
+          throw response.graphqlErrors!.first;
+        }
+
+        if (response.linkException != null) {
+          throw response.linkException!;
+        }
+
         if (data == null) {
           return const SizedBox.shrink();
         }
@@ -35,8 +43,6 @@ class GraphQLOperation<TData, TVars> extends ConsumerWidget {
           curve: Curves.easeInOut,
           child: builder(context, ferry, data),
         );
-
-        // return builder(context, ferry, data);
       },
     );
   }

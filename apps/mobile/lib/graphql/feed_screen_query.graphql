@@ -1,0 +1,12 @@
+query FeedScreen_Query {
+  followingFeed {
+    id
+    permalink
+
+    publishedRevision {
+      id
+      title
+      subtitle
+    }
+  }
+}

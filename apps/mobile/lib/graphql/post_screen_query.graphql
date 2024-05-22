@@ -1,0 +1,16 @@
+query PostScreen_Query($permalink: String!) {
+  post(permalink: $permalink) {
+    id
+    permalink
+
+    space {
+      id
+      slug
+    }
+
+    publishedRevision {
+      id
+      content
+    }
+  }
+}

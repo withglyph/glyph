@@ -46,8 +46,21 @@ class LobbyShell extends ConsumerWidget {
               onTap: () => tabsRouter.setActiveIndex(1),
             ),
             LobbyBottomNavigationBarItem(
-              icon: const SvgIcon('create', color: BrandColors.gray_600),
-              activeIcon: const SvgIcon('create-filled'),
+              icon: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xFFB597F6),
+                      Color(0xFF8364E8),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(4),
+                  child: SvgIcon('plus', color: BrandColors.gray_0),
+                ),
+              ),
               onTap: () async {
                 final client = ref.read(ferryProvider);
                 final req = GLobbyShell_CreatePost_MutationReq();

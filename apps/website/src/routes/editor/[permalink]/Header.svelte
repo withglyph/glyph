@@ -137,22 +137,18 @@
     zIndex: '100',
   })}
 >
-  <div
-    class={flex({
-      justify: 'space-between',
-      align: 'center',
-      borderBottomWidth: '1px',
-      borderBottomColor: 'gray.100',
-      paddingX: '20px',
-      width: 'full',
-      height: { base: '56px', sm: '62px' },
-    })}
-  >
-    {#if isWebView}
-      <button type="button" on:click={() => window.flutter_inappwebview.callHandler('close')}>
-        <Icon icon={IconChevronLeft} size={24} />
-      </button>
-    {:else}
+  {#if !isWebView}
+    <div
+      class={flex({
+        justify: 'space-between',
+        align: 'center',
+        borderBottomWidth: '1px',
+        borderBottomColor: 'gray.100',
+        paddingX: '20px',
+        width: 'full',
+        height: { base: '56px', sm: '62px' },
+      })}
+    >
       <a class={flex({ align: 'center', gap: '8px' })} href="/">
         <FullLogo
           class={css({
@@ -165,123 +161,123 @@
         />
         <Icon style={css.raw({ hideFrom: 'sm' })} icon={IconChevronLeft} size={24} />
       </a>
-    {/if}
 
-    <div class={flex({ flex: '1', justify: 'flex-end', align: 'flex-end' })}>
-      {#if $state.timeTravel}
-        <div class={flex({ gap: '10px' })} role="group">
-          <Button size="sm" variant="brand-fill" on:click={() => (timeTravelOpen = true)}>이 시점으로 복구</Button>
-          <Button size="sm" variant="gray-outline" on:click={() => ($state.timeTravel = false)}>시간여행 종료</Button>
-        </div>
-      {:else}
-        <div
-          class={flex({
-            direction: 'column',
-            marginRight: '8px',
-            textAlign: 'right',
-            fontSize: '12px',
-            alignSelf: 'flex-start',
-          })}
-        >
-          <CharacterCountWidget {editor} offset={8} placement="bottom-end" />
-          <span
-            class={css(
-              { transition: 'common', fontSize: '12px' },
-              $state.connectionState === 'connecting' || $state.connectionState === 'synchronizing'
-                ? { color: 'gray.600' }
-                : $state.connectionState === 'synchronized'
-                  ? { fontWeight: 'medium', color: 'brand.400' }
-                  : { fontWeight: 'bold', color: 'red.600' },
-            )}
-          >
-            {#if $state.connectionState === 'connecting'}
-              서버 연결 중
-            {:else if $state.connectionState === 'synchronizing'}
-              포스트 동기화 중
-            {:else if $state.connectionState === 'synchronized'}
-              실시간 저장 중
-            {:else}
-              서버 연결 끊김
-            {/if}
-          </span>
-        </div>
-
-        <div class={flex({ gap: '10px' })} role="group">
-          <Button
-            style={flex.raw({ alignItems: 'center', padding: '0!', backgroundColor: 'transparent!' })}
-            role="presentation"
-            size="sm"
-            tabindex={-1}
-            type="link"
-            variant="gray-outline"
-          >
-            <button
-              class={css({
-                paddingLeft: '12px',
-                paddingRight: '8px',
-                paddingY: '9px',
-                backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100' },
-              })}
-              disabled={false}
-              type="button"
-              on:click={() => forceSynchronize()}
-            >
-              저장
-            </button>
-            <hr class={css({ width: '1px', height: '8px', backgroundColor: 'gray.300' })} />
-            <button
-              class={css({
-                paddingLeft: '8px',
-                paddingRight: '12px',
-                paddingY: '9px',
-                fontWeight: 'bold',
-                color: 'gray.400',
-                backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100' },
-              })}
-              disabled={$query.me.posts.length === 0}
-              type="button"
-              on:click={() => (draftListOpen = true)}
-            >
-              {$query.me.posts?.length ?? 0}
-            </button>
-          </Button>
-
-          <div class={css({ width: 'fit' })} use:publishAnchor>
-            <Button
-              style={css.raw({ width: '68px' })}
-              aria-pressed={publishMenuOpen}
-              size="sm"
-              on:click={() => (publishMenuOpen = true)}
-            >
-              발행
-            </Button>
+      <div class={flex({ flex: '1', justify: 'flex-end', align: 'flex-end' })}>
+        {#if $state.timeTravel}
+          <div class={flex({ gap: '10px' })} role="group">
+            <Button size="sm" variant="brand-fill" on:click={() => (timeTravelOpen = true)}>이 시점으로 복구</Button>
+            <Button size="sm" variant="gray-outline" on:click={() => ($state.timeTravel = false)}>시간여행 종료</Button>
           </div>
-        </div>
-
-        {#if publishMenuOpen}
+        {:else}
           <div
-            class={css({ position: 'fixed', inset: '0', zIndex: '40', smDown: { backgroundColor: 'gray.900/50' } })}
-            role="button"
-            tabindex="-1"
-            on:click={() => (publishMenuOpen = false)}
-            on:keypress={null}
+            class={flex({
+              direction: 'column',
+              marginRight: '8px',
+              textAlign: 'right',
+              fontSize: '12px',
+              alignSelf: 'flex-start',
+            })}
+          >
+            <CharacterCountWidget {editor} offset={8} placement="bottom-end" />
+            <span
+              class={css(
+                { transition: 'common', fontSize: '12px' },
+                $state.connectionState === 'connecting' || $state.connectionState === 'synchronizing'
+                  ? { color: 'gray.600' }
+                  : $state.connectionState === 'synchronized'
+                    ? { fontWeight: 'medium', color: 'brand.400' }
+                    : { fontWeight: 'bold', color: 'red.600' },
+              )}
+            >
+              {#if $state.connectionState === 'connecting'}
+                서버 연결 중
+              {:else if $state.connectionState === 'synchronizing'}
+                포스트 동기화 중
+              {:else if $state.connectionState === 'synchronized'}
+                실시간 저장 중
+              {:else}
+                서버 연결 끊김
+              {/if}
+            </span>
+          </div>
+
+          <div class={flex({ gap: '10px' })} role="group">
+            <Button
+              style={flex.raw({ alignItems: 'center', padding: '0!', backgroundColor: 'transparent!' })}
+              role="presentation"
+              size="sm"
+              tabindex={-1}
+              type="link"
+              variant="gray-outline"
+            >
+              <button
+                class={css({
+                  paddingLeft: '12px',
+                  paddingRight: '8px',
+                  paddingY: '9px',
+                  backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100' },
+                })}
+                disabled={false}
+                type="button"
+                on:click={() => forceSynchronize()}
+              >
+                저장
+              </button>
+              <hr class={css({ width: '1px', height: '8px', backgroundColor: 'gray.300' })} />
+              <button
+                class={css({
+                  paddingLeft: '8px',
+                  paddingRight: '12px',
+                  paddingY: '9px',
+                  fontWeight: 'bold',
+                  color: 'gray.400',
+                  backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100' },
+                })}
+                disabled={$query.me.posts.length === 0}
+                type="button"
+                on:click={() => (draftListOpen = true)}
+              >
+                {$query.me.posts?.length ?? 0}
+              </button>
+            </Button>
+
+            <div class={css({ width: 'fit' })} use:publishAnchor>
+              <Button
+                style={css.raw({ width: '68px' })}
+                aria-pressed={publishMenuOpen}
+                size="sm"
+                on:click={() => (publishMenuOpen = true)}
+              >
+                발행
+              </Button>
+            </div>
+          </div>
+
+          {#if publishMenuOpen}
+            <div
+              class={css({ position: 'fixed', inset: '0', zIndex: '40', smDown: { backgroundColor: 'gray.900/50' } })}
+              role="button"
+              tabindex="-1"
+              on:click={() => (publishMenuOpen = false)}
+              on:keypress={null}
+              use:portal
+            />
+          {/if}
+
+          <div
+            class={css({ position: 'fixed', left: '0', bottom: '0', width: 'full', zIndex: '50', hideFrom: 'sm' })}
             use:portal
-          />
+          >
+            <PublishMenu {$post} {$query} bind:open={publishMenuOpen} />
+          </div>
+
+          <div class={css({ zIndex: '50', hideBelow: 'sm' })} use:publishFloating>
+            <PublishMenu {$post} {$query} bind:open={publishMenuOpen} />
+          </div>
         {/if}
-
-        <div
-          class={css({ position: 'fixed', left: '0', bottom: '0', width: 'full', zIndex: '50', hideFrom: 'sm' })}
-          use:portal
-        >
-          <PublishMenu {$post} {$query} bind:open={publishMenuOpen} />
-        </div>
-
-        <div class={css({ zIndex: '50', hideBelow: 'sm' })} use:publishFloating>
-          <PublishMenu {$post} {$query} bind:open={publishMenuOpen} />
-        </div>
-      {/if}
+      </div>
     </div>
-  </div>
+  {/if}
 
   {#if !$state.timeTravel}
     <div
