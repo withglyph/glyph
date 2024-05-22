@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glyph/providers/auth.dart';
-import 'package:glyph/themes/colors.dart';
+import 'package:glyph/shells/default.dart';
 
 @RoutePage()
 class EditorScreen extends ConsumerStatefulWidget {
@@ -30,8 +30,8 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
       _ => null,
     };
 
-    return Container(
-      color: BrandColors.gray_0,
+    return DefaultShell(
+      title: '작성하기',
       child: SafeArea(
         child: InAppWebView(
           key: webViewKey,

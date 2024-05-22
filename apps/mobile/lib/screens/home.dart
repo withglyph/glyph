@@ -46,19 +46,22 @@ class HomeScreen extends ConsumerWidget {
                       hintText: '포스트, 태그를 검색하세요',
                       hintStyle: const TextStyle(color: BrandColors.gray_400),
                     ),
-                    // BoxConstraints.tight(const Size.square(24))),
+                    onSubmitted: (value) {
+                      context.router.push(PlaceholderRoute(text: '검색: $value'));
+                    },
                   ),
                 ),
                 const Gap(16),
                 Pressable(
                   child: const SvgIcon('notification'),
                   onPressed: () {
-                    context.router.push(PlaceholderRoute(text: '알림'));
+                    context.router.push(const NotificationRoute());
                   },
                 ),
               ],
             ),
-          )
+          ),
+          const Expanded(child: Center(child: Text('홈'))),
         ],
       ),
     );

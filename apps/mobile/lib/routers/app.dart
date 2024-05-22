@@ -33,6 +33,7 @@ class AppRouter extends $AppRouter {
             ),
             AutoRoute(page: EditorRoute.page, fullscreenDialog: true),
             AutoRoute(page: PlaceholderRoute.page),
+            AutoRoute(page: NotificationRoute.page),
           ],
         ),
         CustomRoute(

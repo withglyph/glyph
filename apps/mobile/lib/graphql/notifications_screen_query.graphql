@@ -1,0 +1,65 @@
+query NotificationsScreen_Query {
+  me {
+    id
+
+    notifications {
+      __typename
+      id
+      state
+      category
+      createdAt
+
+      actor {
+        id
+        name
+
+        avatar {
+          url
+        }
+      }
+
+
+      ... on CommentNotification {
+        post {
+          id
+
+          publishedRevision {
+            id
+            title
+          }
+        }
+      }
+
+      ... on SubscribeNotification {
+        space {
+          id
+          name
+        }
+      }
+
+      ... on PurchaseNotification {
+        post {
+          id
+
+          publishedRevision {
+            id
+            title
+          }
+        }
+      }
+
+      ... on EmojiReactionNotification {
+        emoji
+
+        post {
+          id
+
+          publishedRevision {
+            id
+            title
+          }
+        }
+      }
+    }
+  }
+}

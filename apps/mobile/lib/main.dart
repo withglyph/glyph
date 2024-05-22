@@ -6,6 +6,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:jiffy/jiffy.dart';
 
 import 'app.dart';
 import 'firebase_options.dart';
@@ -30,6 +31,8 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await Jiffy.setLocale('ko');
 
   GetIt.I.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   GetIt.I.registerSingleton<FirebaseMessaging>(FirebaseMessaging.instance);

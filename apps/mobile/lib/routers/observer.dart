@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class AppRouterObserver extends AutoRouterObserver {
   @override
   void didPush(Route route, Route? previousRoute) {
-    print('New route pushed: ${route.settings.name}');
+    print('Route pushed: ${route.settings.name}');
   }
 
   @override
@@ -34,11 +34,11 @@ class AppRouterObserver extends AutoRouterObserver {
 
   @override
   void didInitTabRoute(TabPageRoute route, TabPageRoute? previousRoute) {
-    print('Tab route visited: ${route.name}');
+    print('Tab route initialized: ${route.name}');
   }
 
   @override
   void didChangeTabRoute(TabPageRoute route, TabPageRoute previousRoute) {
-    print('Tab route re-visited: ${route.name}');
+    print('Tab route changed: ${route.name}');
   }
 }

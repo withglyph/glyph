@@ -22,13 +22,13 @@ class LobbyShell extends ConsumerWidget {
     };
 
     return AutoTabsScaffold(
-      resizeToAvoidBottomInset: false,
       routes: const [
         HomeRoute(),
         FeedRoute(),
         ArchiveRoute(),
         MeRoute(),
       ],
+      resizeToAvoidBottomInset: false,
       transitionBuilder: (context, child, animation) => child,
       bottomNavigationBuilder: (context, tabsRouter) {
         return LobbyBottomNavigationBar(
