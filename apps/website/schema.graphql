@@ -339,6 +339,7 @@ type Mutation {
   purchasePoint(input: PurchasePointInput!): PointPurchase!
   purchasePost(input: PurchasePostInput!): Post!
   registerPushNotificationToken(input: RegisterPushNotificationTokenInput!): Void
+  sendPushNotification(input: SendPushNotificationInput!): Boolean!
   setSpaceCollectionPosts(input: SetSpaceCollectionPostsInput!): SpaceCollection!
   synchronizePost(input: SynchronizePostInput!): [SynchronizePostResult!]!
   unblockMasquerade(input: UnblockMasqueradeInput!): Space!
@@ -802,6 +803,12 @@ enum SearchOrderByKind {
 type SearchResult {
   count: Int!
   posts: [Post!]!
+}
+
+input SendPushNotificationInput {
+  body: String!
+  title: String!
+  userId: String!
 }
 
 input SetSpaceCollectionPostsInput {

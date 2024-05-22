@@ -27,7 +27,11 @@ export const sendPushNotification = async ({ userId, title, body }: SendPushNoti
     .from(UserPushNotificationTokens)
     .where(eq(UserPushNotificationTokens.userId, userId));
 
-  await messaging.sendEachForMulticast({
+  if (tokens.length === 0) {
+    return false;
+  }
+
+  const resp = await messaging.sendEachForMulticast({
     tokens: tokens.map(({ token }) => token),
     notification: {
       title,
@@ -48,4 +52,6 @@ export const sendPushNotification = async ({ userId, title, body }: SendPushNoti
       },
     },
   });
+
+  return resp.successCount > 0;
 };
