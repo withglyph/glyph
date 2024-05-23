@@ -1056,6 +1056,13 @@ const UpdatePostTagsInput = builder.inputType('UpdatePostTagsInput', {
   }),
 });
 
+const ReplacePostThumbnailInput = builder.inputType('ReplacePostThumbnailInput', {
+  fields: (t) => ({
+    postId: t.id(),
+    thumbnailId: t.id({ required: false }),
+  }),
+});
+
 const DeletePostInput = builder.inputType('DeletePostInput', {
   fields: (t) => ({
     postId: t.id(),
@@ -1600,6 +1607,27 @@ builder.mutationFields((t) => ({
       await enqueueJob('indexPost', input.postId);
 
       return input.postId;
+    },
+  }),
+
+  replacePostThumbnail: t.withAuth({ user: true }).field({
+    type: Post,
+    args: { input: t.arg({ type: ReplacePostThumbnailInput }) },
+    resolve: async (_, { input }, context) => {
+      const post = await database
+        .select({ id: Posts.id })
+        .from(Posts)
+        .innerJoin(Spaces, eq(Spaces.id, Posts.spaceId))
+        .innerJoin(SpaceMembers, and(eq(SpaceMembers.spaceId, Spaces.id), eq(SpaceMembers.state, 'ACTIVE')))
+        .where(and(eq(Posts.id, input.postId), eq(SpaceMembers.userId, context.session.userId)))
+        .then(useFirstRowOrThrow(new NotFoundError()));
+
+      await database
+        .update(Posts)
+        .set({ thumbnailId: input.thumbnailId ?? null })
+        .where(eq(Posts.id, post.id));
+
+      return post.id;
     },
   }),
 

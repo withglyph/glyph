@@ -345,6 +345,7 @@ type Mutation {
   purchasePoint(input: PurchasePointInput!): PointPurchase!
   purchasePost(input: PurchasePostInput!): Post!
   registerPushNotificationToken(input: RegisterPushNotificationTokenInput!): Void
+  replacePostThumbnail(input: ReplacePostThumbnailInput!): Post!
   sendPushNotification(input: SendPushNotificationInput!): Boolean!
   setSpaceCollectionPosts(input: SetSpaceCollectionPostsInput!): SpaceCollection!
   synchronizePost(input: SynchronizePostInput!): [SynchronizePostResult!]!
@@ -753,6 +754,11 @@ type Query {
 
 input RegisterPushNotificationTokenInput {
   token: String!
+}
+
+input ReplacePostThumbnailInput {
+  postId: ID!
+  thumbnailId: ID
 }
 
 type Revenue {
