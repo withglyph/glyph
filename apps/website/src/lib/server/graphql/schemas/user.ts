@@ -954,7 +954,7 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: AuthorizeUserEmailTokenInput }) },
     resolve: async (_, { input }) => {
       const emailVerifications = await database
-        .select({ userId: UserEmailVerifications.userId })
+        .select({ email: UserEmailVerifications.email })
         .from(UserEmailVerifications)
         .where(
           and(
@@ -968,10 +968,18 @@ builder.mutationFields((t) => ({
         throw new IntentionalError('올바르지 않은 코드예요.');
       }
 
+      const users = await database
+        .select({ id: Users.id })
+        .from(Users)
+        .where(and(eq(Users.email, emailVerifications[0].email.toLowerCase()), eq(Users.state, 'ACTIVE')));
+
+      if (users.length === 0) {
+        throw new Error('Not implemented');
+      }
+
       const [session] = await database
         .insert(UserSessions)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        .values({ userId: emailVerifications[0].userId! })
+        .values({ userId: users[0].id })
         .returning({ id: UserSessions.id });
 
       const accessToken = await createAccessToken(session.id);

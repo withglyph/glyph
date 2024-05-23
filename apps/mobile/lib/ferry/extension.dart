@@ -3,8 +3,7 @@ import 'package:ferry/ferry.dart';
 extension ClientX on Client {
   Future<TData> req<TData, TVars>(
       OperationRequest<TData, TVars> operationRequest) async {
-    final resp =
-        await request(operationRequest).firstWhere((value) => !value.loading);
+    final resp = await request(operationRequest).first;
 
     if (resp.linkException != null) {
       throw resp.linkException!;

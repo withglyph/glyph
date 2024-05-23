@@ -59,6 +59,8 @@ class AppRouter extends $AppRouter {
               initial: true,
               path: 'login',
             ),
+            AutoRoute(page: LoginWithEmailRoute.page),
+            AutoRoute(page: LoginWithCodeRoute.page),
           ],
         ),
       ],

@@ -1,0 +1,5 @@
+mutation LoginWithEmailScreen_LoginUser_Mutation($input: LoginUserInput!) {
+  loginUser(input: $input) {
+    email
+  }
+}

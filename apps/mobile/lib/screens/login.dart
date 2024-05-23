@@ -14,6 +14,7 @@ import 'package:glyph/graphql/__generated__/login_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
+import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -199,7 +200,7 @@ class LoginScreen extends ConsumerWidget {
                           ],
                         ),
                         onPressed: () {
-                          // ! Implement it
+                          context.router.push(const LoginWithEmailRoute());
                         },
                       ),
                       const Gap(32),

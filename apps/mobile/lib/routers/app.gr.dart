@@ -8,36 +8,38 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i15;
-import 'package:flutter/material.dart' as _i16;
+import 'package:auto_route/auto_route.dart' as _i17;
+import 'package:flutter/material.dart' as _i18;
 import 'package:glyph/routers/auth.dart' as _i2;
-import 'package:glyph/routers/main.dart' as _i8;
-import 'package:glyph/routers/root.dart' as _i13;
+import 'package:glyph/routers/main.dart' as _i10;
+import 'package:glyph/routers/root.dart' as _i15;
 import 'package:glyph/screens/archive.dart' as _i1;
 import 'package:glyph/screens/editor.dart' as _i3;
 import 'package:glyph/screens/feed.dart' as _i4;
 import 'package:glyph/screens/home.dart' as _i5;
 import 'package:glyph/screens/login.dart' as _i7;
-import 'package:glyph/screens/me.dart' as _i9;
-import 'package:glyph/screens/notification.dart' as _i10;
-import 'package:glyph/screens/placeholder.dart' as _i11;
-import 'package:glyph/screens/post.dart' as _i12;
-import 'package:glyph/screens/splash.dart' as _i14;
+import 'package:glyph/screens/login_with_code.dart' as _i8;
+import 'package:glyph/screens/login_with_email.dart' as _i9;
+import 'package:glyph/screens/me.dart' as _i11;
+import 'package:glyph/screens/notification.dart' as _i12;
+import 'package:glyph/screens/placeholder.dart' as _i13;
+import 'package:glyph/screens/post.dart' as _i14;
+import 'package:glyph/screens/splash.dart' as _i16;
 import 'package:glyph/shells/lobby.dart' as _i6;
 
-abstract class $AppRouter extends _i15.RootStackRouter {
+abstract class $AppRouter extends _i17.RootStackRouter {
   $AppRouter({super.navigatorKey});
 
   @override
-  final Map<String, _i15.PageFactory> pagesMap = {
+  final Map<String, _i17.PageFactory> pagesMap = {
     ArchiveRoute.name: (routeData) {
-      return _i15.AutoRoutePage<dynamic>(
+      return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i1.ArchiveScreen(),
       );
     },
     AuthRouter.name: (routeData) {
-      return _i15.AutoRoutePage<dynamic>(
+      return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i2.AuthRouter(),
       );
@@ -47,7 +49,7 @@ abstract class $AppRouter extends _i15.RootStackRouter {
       final args = routeData.argsAs<EditorRouteArgs>(
           orElse: () =>
               EditorRouteArgs(permalink: pathParams.getString('permalink')));
-      return _i15.AutoRoutePage<dynamic>(
+      return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: _i3.EditorScreen(
           key: args.key,
@@ -56,52 +58,68 @@ abstract class $AppRouter extends _i15.RootStackRouter {
       );
     },
     FeedRoute.name: (routeData) {
-      return _i15.AutoRoutePage<dynamic>(
+      return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i4.FeedScreen(),
       );
     },
     HomeRoute.name: (routeData) {
-      return _i15.AutoRoutePage<dynamic>(
+      return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i5.HomeScreen(),
       );
     },
     LobbyShell.name: (routeData) {
-      return _i15.AutoRoutePage<dynamic>(
+      return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i6.LobbyShell(),
       );
     },
     LoginRoute.name: (routeData) {
-      return _i15.AutoRoutePage<dynamic>(
+      return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i7.LoginScreen(),
       );
     },
-    MainRouter.name: (routeData) {
-      return _i15.AutoRoutePage<dynamic>(
+    LoginWithCodeRoute.name: (routeData) {
+      final args = routeData.argsAs<LoginWithCodeRouteArgs>();
+      return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i8.MainRouter(),
+        child: _i8.LoginWithCodeScreen(
+          key: args.key,
+          email: args.email,
+        ),
+      );
+    },
+    LoginWithEmailRoute.name: (routeData) {
+      return _i17.AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const _i9.LoginWithEmailScreen(),
+      );
+    },
+    MainRouter.name: (routeData) {
+      return _i17.AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const _i10.MainRouter(),
       );
     },
     MeRoute.name: (routeData) {
-      return _i15.AutoRoutePage<dynamic>(
+      return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i9.MeScreen(),
+        child: const _i11.MeScreen(),
       );
     },
     NotificationRoute.name: (routeData) {
-      return _i15.AutoRoutePage<dynamic>(
+      return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i10.NotificationScreen(),
+        child: const _i12.NotificationScreen(),
       );
     },
     PlaceholderRoute.name: (routeData) {
       final args = routeData.argsAs<PlaceholderRouteArgs>();
-      return _i15.AutoRoutePage<dynamic>(
+      return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i11.PlaceholderScreen(
+        child: _i13.PlaceholderScreen(
           key: args.key,
           text: args.text,
         ),
@@ -112,24 +130,24 @@ abstract class $AppRouter extends _i15.RootStackRouter {
       final args = routeData.argsAs<PostRouteArgs>(
           orElse: () =>
               PostRouteArgs(permalink: pathParams.getString('permalink')));
-      return _i15.AutoRoutePage<dynamic>(
+      return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i12.PostScreen(
+        child: _i14.PostScreen(
           key: args.key,
           permalink: args.permalink,
         ),
       );
     },
     RootRouter.name: (routeData) {
-      return _i15.AutoRoutePage<dynamic>(
+      return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i15.WrappedRoute(child: const _i13.RootRouter()),
+        child: _i17.WrappedRoute(child: const _i15.RootRouter()),
       );
     },
     SplashRoute.name: (routeData) {
-      return _i15.AutoRoutePage<dynamic>(
+      return _i17.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i14.SplashScreen(),
+        child: const _i16.SplashScreen(),
       );
     },
   };
@@ -137,8 +155,8 @@ abstract class $AppRouter extends _i15.RootStackRouter {
 
 /// generated route for
 /// [_i1.ArchiveScreen]
-class ArchiveRoute extends _i15.PageRouteInfo<void> {
-  const ArchiveRoute({List<_i15.PageRouteInfo>? children})
+class ArchiveRoute extends _i17.PageRouteInfo<void> {
+  const ArchiveRoute({List<_i17.PageRouteInfo>? children})
       : super(
           ArchiveRoute.name,
           initialChildren: children,
@@ -146,13 +164,13 @@ class ArchiveRoute extends _i15.PageRouteInfo<void> {
 
   static const String name = 'ArchiveRoute';
 
-  static const _i15.PageInfo<void> page = _i15.PageInfo<void>(name);
+  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i2.AuthRouter]
-class AuthRouter extends _i15.PageRouteInfo<void> {
-  const AuthRouter({List<_i15.PageRouteInfo>? children})
+class AuthRouter extends _i17.PageRouteInfo<void> {
+  const AuthRouter({List<_i17.PageRouteInfo>? children})
       : super(
           AuthRouter.name,
           initialChildren: children,
@@ -160,16 +178,16 @@ class AuthRouter extends _i15.PageRouteInfo<void> {
 
   static const String name = 'AuthRouter';
 
-  static const _i15.PageInfo<void> page = _i15.PageInfo<void>(name);
+  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i3.EditorScreen]
-class EditorRoute extends _i15.PageRouteInfo<EditorRouteArgs> {
+class EditorRoute extends _i17.PageRouteInfo<EditorRouteArgs> {
   EditorRoute({
-    _i16.Key? key,
+    _i18.Key? key,
     required String permalink,
-    List<_i15.PageRouteInfo>? children,
+    List<_i17.PageRouteInfo>? children,
   }) : super(
           EditorRoute.name,
           args: EditorRouteArgs(
@@ -182,8 +200,8 @@ class EditorRoute extends _i15.PageRouteInfo<EditorRouteArgs> {
 
   static const String name = 'EditorRoute';
 
-  static const _i15.PageInfo<EditorRouteArgs> page =
-      _i15.PageInfo<EditorRouteArgs>(name);
+  static const _i17.PageInfo<EditorRouteArgs> page =
+      _i17.PageInfo<EditorRouteArgs>(name);
 }
 
 class EditorRouteArgs {
@@ -192,7 +210,7 @@ class EditorRouteArgs {
     required this.permalink,
   });
 
-  final _i16.Key? key;
+  final _i18.Key? key;
 
   final String permalink;
 
@@ -204,8 +222,8 @@ class EditorRouteArgs {
 
 /// generated route for
 /// [_i4.FeedScreen]
-class FeedRoute extends _i15.PageRouteInfo<void> {
-  const FeedRoute({List<_i15.PageRouteInfo>? children})
+class FeedRoute extends _i17.PageRouteInfo<void> {
+  const FeedRoute({List<_i17.PageRouteInfo>? children})
       : super(
           FeedRoute.name,
           initialChildren: children,
@@ -213,13 +231,13 @@ class FeedRoute extends _i15.PageRouteInfo<void> {
 
   static const String name = 'FeedRoute';
 
-  static const _i15.PageInfo<void> page = _i15.PageInfo<void>(name);
+  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i5.HomeScreen]
-class HomeRoute extends _i15.PageRouteInfo<void> {
-  const HomeRoute({List<_i15.PageRouteInfo>? children})
+class HomeRoute extends _i17.PageRouteInfo<void> {
+  const HomeRoute({List<_i17.PageRouteInfo>? children})
       : super(
           HomeRoute.name,
           initialChildren: children,
@@ -227,13 +245,13 @@ class HomeRoute extends _i15.PageRouteInfo<void> {
 
   static const String name = 'HomeRoute';
 
-  static const _i15.PageInfo<void> page = _i15.PageInfo<void>(name);
+  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i6.LobbyShell]
-class LobbyShell extends _i15.PageRouteInfo<void> {
-  const LobbyShell({List<_i15.PageRouteInfo>? children})
+class LobbyShell extends _i17.PageRouteInfo<void> {
+  const LobbyShell({List<_i17.PageRouteInfo>? children})
       : super(
           LobbyShell.name,
           initialChildren: children,
@@ -241,13 +259,13 @@ class LobbyShell extends _i15.PageRouteInfo<void> {
 
   static const String name = 'LobbyShell';
 
-  static const _i15.PageInfo<void> page = _i15.PageInfo<void>(name);
+  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i7.LoginScreen]
-class LoginRoute extends _i15.PageRouteInfo<void> {
-  const LoginRoute({List<_i15.PageRouteInfo>? children})
+class LoginRoute extends _i17.PageRouteInfo<void> {
+  const LoginRoute({List<_i17.PageRouteInfo>? children})
       : super(
           LoginRoute.name,
           initialChildren: children,
@@ -255,13 +273,65 @@ class LoginRoute extends _i15.PageRouteInfo<void> {
 
   static const String name = 'LoginRoute';
 
-  static const _i15.PageInfo<void> page = _i15.PageInfo<void>(name);
+  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i8.MainRouter]
-class MainRouter extends _i15.PageRouteInfo<void> {
-  const MainRouter({List<_i15.PageRouteInfo>? children})
+/// [_i8.LoginWithCodeScreen]
+class LoginWithCodeRoute extends _i17.PageRouteInfo<LoginWithCodeRouteArgs> {
+  LoginWithCodeRoute({
+    _i18.Key? key,
+    required String email,
+    List<_i17.PageRouteInfo>? children,
+  }) : super(
+          LoginWithCodeRoute.name,
+          args: LoginWithCodeRouteArgs(
+            key: key,
+            email: email,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'LoginWithCodeRoute';
+
+  static const _i17.PageInfo<LoginWithCodeRouteArgs> page =
+      _i17.PageInfo<LoginWithCodeRouteArgs>(name);
+}
+
+class LoginWithCodeRouteArgs {
+  const LoginWithCodeRouteArgs({
+    this.key,
+    required this.email,
+  });
+
+  final _i18.Key? key;
+
+  final String email;
+
+  @override
+  String toString() {
+    return 'LoginWithCodeRouteArgs{key: $key, email: $email}';
+  }
+}
+
+/// generated route for
+/// [_i9.LoginWithEmailScreen]
+class LoginWithEmailRoute extends _i17.PageRouteInfo<void> {
+  const LoginWithEmailRoute({List<_i17.PageRouteInfo>? children})
+      : super(
+          LoginWithEmailRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'LoginWithEmailRoute';
+
+  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
+}
+
+/// generated route for
+/// [_i10.MainRouter]
+class MainRouter extends _i17.PageRouteInfo<void> {
+  const MainRouter({List<_i17.PageRouteInfo>? children})
       : super(
           MainRouter.name,
           initialChildren: children,
@@ -269,13 +339,13 @@ class MainRouter extends _i15.PageRouteInfo<void> {
 
   static const String name = 'MainRouter';
 
-  static const _i15.PageInfo<void> page = _i15.PageInfo<void>(name);
+  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i9.MeScreen]
-class MeRoute extends _i15.PageRouteInfo<void> {
-  const MeRoute({List<_i15.PageRouteInfo>? children})
+/// [_i11.MeScreen]
+class MeRoute extends _i17.PageRouteInfo<void> {
+  const MeRoute({List<_i17.PageRouteInfo>? children})
       : super(
           MeRoute.name,
           initialChildren: children,
@@ -283,13 +353,13 @@ class MeRoute extends _i15.PageRouteInfo<void> {
 
   static const String name = 'MeRoute';
 
-  static const _i15.PageInfo<void> page = _i15.PageInfo<void>(name);
+  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i10.NotificationScreen]
-class NotificationRoute extends _i15.PageRouteInfo<void> {
-  const NotificationRoute({List<_i15.PageRouteInfo>? children})
+/// [_i12.NotificationScreen]
+class NotificationRoute extends _i17.PageRouteInfo<void> {
+  const NotificationRoute({List<_i17.PageRouteInfo>? children})
       : super(
           NotificationRoute.name,
           initialChildren: children,
@@ -297,16 +367,16 @@ class NotificationRoute extends _i15.PageRouteInfo<void> {
 
   static const String name = 'NotificationRoute';
 
-  static const _i15.PageInfo<void> page = _i15.PageInfo<void>(name);
+  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i11.PlaceholderScreen]
-class PlaceholderRoute extends _i15.PageRouteInfo<PlaceholderRouteArgs> {
+/// [_i13.PlaceholderScreen]
+class PlaceholderRoute extends _i17.PageRouteInfo<PlaceholderRouteArgs> {
   PlaceholderRoute({
-    _i16.Key? key,
+    _i18.Key? key,
     required String text,
-    List<_i15.PageRouteInfo>? children,
+    List<_i17.PageRouteInfo>? children,
   }) : super(
           PlaceholderRoute.name,
           args: PlaceholderRouteArgs(
@@ -318,8 +388,8 @@ class PlaceholderRoute extends _i15.PageRouteInfo<PlaceholderRouteArgs> {
 
   static const String name = 'PlaceholderRoute';
 
-  static const _i15.PageInfo<PlaceholderRouteArgs> page =
-      _i15.PageInfo<PlaceholderRouteArgs>(name);
+  static const _i17.PageInfo<PlaceholderRouteArgs> page =
+      _i17.PageInfo<PlaceholderRouteArgs>(name);
 }
 
 class PlaceholderRouteArgs {
@@ -328,7 +398,7 @@ class PlaceholderRouteArgs {
     required this.text,
   });
 
-  final _i16.Key? key;
+  final _i18.Key? key;
 
   final String text;
 
@@ -339,12 +409,12 @@ class PlaceholderRouteArgs {
 }
 
 /// generated route for
-/// [_i12.PostScreen]
-class PostRoute extends _i15.PageRouteInfo<PostRouteArgs> {
+/// [_i14.PostScreen]
+class PostRoute extends _i17.PageRouteInfo<PostRouteArgs> {
   PostRoute({
-    _i16.Key? key,
+    _i18.Key? key,
     required String permalink,
-    List<_i15.PageRouteInfo>? children,
+    List<_i17.PageRouteInfo>? children,
   }) : super(
           PostRoute.name,
           args: PostRouteArgs(
@@ -357,8 +427,8 @@ class PostRoute extends _i15.PageRouteInfo<PostRouteArgs> {
 
   static const String name = 'PostRoute';
 
-  static const _i15.PageInfo<PostRouteArgs> page =
-      _i15.PageInfo<PostRouteArgs>(name);
+  static const _i17.PageInfo<PostRouteArgs> page =
+      _i17.PageInfo<PostRouteArgs>(name);
 }
 
 class PostRouteArgs {
@@ -367,7 +437,7 @@ class PostRouteArgs {
     required this.permalink,
   });
 
-  final _i16.Key? key;
+  final _i18.Key? key;
 
   final String permalink;
 
@@ -378,9 +448,9 @@ class PostRouteArgs {
 }
 
 /// generated route for
-/// [_i13.RootRouter]
-class RootRouter extends _i15.PageRouteInfo<void> {
-  const RootRouter({List<_i15.PageRouteInfo>? children})
+/// [_i15.RootRouter]
+class RootRouter extends _i17.PageRouteInfo<void> {
+  const RootRouter({List<_i17.PageRouteInfo>? children})
       : super(
           RootRouter.name,
           initialChildren: children,
@@ -388,13 +458,13 @@ class RootRouter extends _i15.PageRouteInfo<void> {
 
   static const String name = 'RootRouter';
 
-  static const _i15.PageInfo<void> page = _i15.PageInfo<void>(name);
+  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i14.SplashScreen]
-class SplashRoute extends _i15.PageRouteInfo<void> {
-  const SplashRoute({List<_i15.PageRouteInfo>? children})
+/// [_i16.SplashScreen]
+class SplashRoute extends _i17.PageRouteInfo<void> {
+  const SplashRoute({List<_i17.PageRouteInfo>? children})
       : super(
           SplashRoute.name,
           initialChildren: children,
@@ -402,5 +472,5 @@ class SplashRoute extends _i15.PageRouteInfo<void> {
 
   static const String name = 'SplashRoute';
 
-  static const _i15.PageInfo<void> page = _i15.PageInfo<void>(name);
+  static const _i17.PageInfo<void> page = _i17.PageInfo<void>(name);
 }

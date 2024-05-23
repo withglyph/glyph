@@ -1,0 +1,5 @@
+mutation LoginWithCodeScreen_AuthorizeUserEmailToken_Mutation($input: AuthorizeUserEmailTokenInput!) {
+  authorizeUserEmailToken(input: $input) {
+    token
+  }
+}
