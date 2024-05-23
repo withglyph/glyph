@@ -29,7 +29,7 @@
   }
 
   const uploading = trackable();
-  const dispatch = createEventDispatcher<{ change: { id: string } }>();
+  const dispatch = createEventDispatcher<{ change: { id: string; name: string } }>();
 
   export const show = (_src?: string) => {
     if (_src) {
@@ -53,6 +53,7 @@
     mutation ThumbnailPicker_FinalizeImageUpload_Mutation($input: FinalizeImageUploadInput!) {
       finalizeImageUpload(input: $input) {
         id
+        name
         ...Image_image
       }
     }
