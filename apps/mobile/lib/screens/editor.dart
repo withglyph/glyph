@@ -6,7 +6,7 @@ import 'package:glyph/shells/default.dart';
 
 @RoutePage()
 class EditorScreen extends ConsumerWidget {
-  const EditorScreen({super.key, required this.permalink});
+  const EditorScreen({super.key, @PathParam() required this.permalink});
 
   final String permalink;
 

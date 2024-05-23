@@ -17,6 +17,15 @@ type AuthorizeSingleSignOnTokenResult {
   token: String!
 }
 
+input AuthorizeUserEmailTokenInput {
+  email: String!
+  token: String!
+}
+
+type AuthorizeUserEmailTokenResult {
+  token: String!
+}
+
 input BlockMasqueradeInput {
   masqueradeId: ID!
   spaceId: ID!
@@ -263,13 +272,13 @@ type Image {
   width: Int!
 }
 
-input IssueUserEmailAuthorizationUrlInput {
+input IssueUserEmailAuthorizationTokenInput {
   code: String!
   email: String!
 }
 
-type IssueUserEmailAuthorizationUrlResult {
-  url: String!
+type IssueUserEmailAuthorizationTokenResult {
+  token: String!
 }
 
 input IssueUserSingleSignOnAuthorizationUrlInput {
@@ -305,6 +314,7 @@ input MarkNotificationAsReadInput {
 type Mutation {
   appendSpaceCollectionPosts(input: AppendSpaceCollectionPostsInput!): SpaceCollection!
   authorizeSingleSignOnToken(input: AuthorizeSingleSignOnTokenInput!): AuthorizeSingleSignOnTokenResult!
+  authorizeUserEmailToken(input: AuthorizeUserEmailTokenInput!): AuthorizeUserEmailTokenResult!
   blockMasquerade(input: BlockMasqueradeInput!): Space!
   bookmarkPost(input: BookmarkPostInput!): Post!
   createComment(input: CreateCommentInput!): PostComment!
@@ -329,7 +339,7 @@ type Mutation {
   followTag(input: FollowTagInput!): Tag!
   generatePostShareImage(input: GeneratePostShareImageInput!): String!
   instantSettleRevenue: User!
-  issueUserEmailAuthorizationUrl(input: IssueUserEmailAuthorizationUrlInput!): IssueUserEmailAuthorizationUrlResult!
+  issueUserEmailAuthorizationToken(input: IssueUserEmailAuthorizationTokenInput!): IssueUserEmailAuthorizationTokenResult!
   issueUserSingleSignOnAuthorizationUrl(input: IssueUserSingleSignOnAuthorizationUrlInput!): IssueUserSingleSignOnAuthorizationUrlResult!
   likeComment(input: LikeCommentInput!): PostComment!
   likePost(input: LikePostInput!): Post!

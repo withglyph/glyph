@@ -14,11 +14,15 @@ class WebView extends ConsumerStatefulWidget {
     super.key,
     required this.path,
     this.onJsMessage,
+    this.onNavigate,
   });
 
   final String path;
   final Future<void> Function(
       dynamic data, Future<void> Function(dynamic data) reply)? onJsMessage;
+  final Future<NavigationActionPolicy?> Function(
+          InAppWebViewController controller, NavigationAction navigationAction)?
+      onNavigate;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _WebviewState();
@@ -78,6 +82,7 @@ class _WebviewState extends ConsumerState<WebView> {
           ),
         );
       },
+      shouldOverrideUrlLoading: widget.onNavigate,
     );
   }
 }

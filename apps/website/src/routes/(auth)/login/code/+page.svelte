@@ -1,5 +1,6 @@
 <script lang="ts">
   import dayjs from 'dayjs';
+  import qs from 'query-string';
   import IconCheck from '~icons/tabler/check';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
@@ -8,7 +9,7 @@
   import { DigitsInput } from '$lib/components/forms';
   import { Button } from '$lib/components/v2';
   import { createMutationForm } from '$lib/form';
-  import { IssueUserEmailAuthorizationUrlSchema } from '$lib/validations';
+  import { IssueUserEmailAuthorizationTokenSchema } from '$lib/validations';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
 
@@ -16,16 +17,19 @@
 
   const { form, handleSubmit, data, setErrors } = createMutationForm({
     mutation: graphql(`
-      mutation LoginCodePage_IssueUserEmailAuthorizationUrl_Mutation($input: IssueUserEmailAuthorizationUrlInput!) {
-        issueUserEmailAuthorizationUrl(input: $input) {
-          url
+      mutation LoginCodePage_IssueUserEmailAuthorizationToken_Mutation($input: IssueUserEmailAuthorizationTokenInput!) {
+        issueUserEmailAuthorizationToken(input: $input) {
+          token
         }
       }
     `),
-    schema: IssueUserEmailAuthorizationUrlSchema,
+    schema: IssueUserEmailAuthorizationTokenSchema,
     onSuccess: (resp) => {
       mixpanel.track('user:login:success', { method: 'email:code' });
-      location.href = resp.url;
+      location.href = qs.stringifyUrl({
+        url: '/api/email',
+        query: { token: resp.token },
+      });
     },
     onError: (resp) => {
       // @ts-expect-error form validation error

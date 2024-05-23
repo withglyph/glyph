@@ -72,7 +72,7 @@ import { getMonthlyWithdrawalDayjs } from '$lib/utils';
 import {
   CreateUserSchema,
   DeleteUserSchema,
-  IssueUserEmailAuthorizationUrlSchema,
+  IssueUserEmailAuthorizationTokenSchema,
   LoginUserSchema,
   UpdateUserEmailSchema,
   UpdateUserProfileSchema,
@@ -672,13 +672,19 @@ const IssueUserSingleSignOnAuthorizationUrlResult = builder.simpleObject(
   },
 );
 
-const IssueUserEmailAuthorizationUrlResult = builder.simpleObject('IssueUserEmailAuthorizationUrlResult', {
+const IssueUserEmailAuthorizationTokenResult = builder.simpleObject('IssueUserEmailAuthorizationTokenResult', {
   fields: (t) => ({
-    url: t.string(),
+    token: t.string(),
   }),
 });
 
 const AuthorizeSingleSignOnTokenResult = builder.simpleObject('AuthorizeSingleSignOnTokenResult', {
+  fields: (t) => ({
+    token: t.string(),
+  }),
+});
+
+const AuthorizeUserEmailTokenResult = builder.simpleObject('AuthorizeUserEmailTokenResult', {
   fields: (t) => ({
     token: t.string(),
   }),
@@ -698,6 +704,13 @@ const IssueUserSingleSignOnAuthorizationUrlInput = builder.inputType('IssueUserS
 const AuthorizeSingleSignOnTokenInput = builder.inputType('AuthorizeSingleSignOnTokenInput', {
   fields: (t) => ({
     provider: t.field({ type: UserSingleSignOnProvider }),
+    token: t.string(),
+  }),
+});
+
+const AuthorizeUserEmailTokenInput = builder.inputType('AuthorizeUserEmailTokenInput', {
+  fields: (t) => ({
+    email: t.string(),
     token: t.string(),
   }),
 });
@@ -762,12 +775,12 @@ const UpdateUserProfileInput = builder.inputType('UpdateUserProfileInput', {
   validate: { schema: UpdateUserProfileSchema },
 });
 
-const IssueUserEmailAuthorizationUrlInput = builder.inputType('IssueUserEmailAuthorizationUrlInput', {
+const IssueUserEmailAuthorizationTokenInput = builder.inputType('IssueUserEmailAuthorizationTokenInput', {
   fields: (t) => ({
     email: t.string(),
     code: t.string(),
   }),
-  validate: { schema: IssueUserEmailAuthorizationUrlSchema },
+  validate: { schema: IssueUserEmailAuthorizationTokenSchema },
 });
 
 const DeleteUserInput = builder.inputType('DeleteUserInput', {
@@ -911,10 +924,10 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  issueUserEmailAuthorizationUrl: t.field({
-    type: IssueUserEmailAuthorizationUrlResult,
-    args: { input: t.arg({ type: IssueUserEmailAuthorizationUrlInput }) },
-    resolve: async (_, { input }, context) => {
+  issueUserEmailAuthorizationToken: t.field({
+    type: IssueUserEmailAuthorizationTokenResult,
+    args: { input: t.arg({ type: IssueUserEmailAuthorizationTokenInput }) },
+    resolve: async (_, { input }) => {
       const emailVerifications = await database
         .select({ token: UserEmailVerifications.token })
         .from(UserEmailVerifications)
@@ -931,10 +944,40 @@ builder.mutationFields((t) => ({
       }
 
       return {
-        url: qs.stringifyUrl({
-          url: `${context.event.url.origin}/api/email`,
-          query: { token: emailVerifications[0].token },
-        }),
+        token: emailVerifications[0].token,
+      };
+    },
+  }),
+
+  authorizeUserEmailToken: t.field({
+    type: AuthorizeUserEmailTokenResult,
+    args: { input: t.arg({ type: AuthorizeUserEmailTokenInput }) },
+    resolve: async (_, { input }) => {
+      const emailVerifications = await database
+        .select({ userId: UserEmailVerifications.userId })
+        .from(UserEmailVerifications)
+        .where(
+          and(
+            eq(UserEmailVerifications.kind, 'USER_LOGIN'),
+            eq(UserEmailVerifications.email, input.email),
+            eq(UserEmailVerifications.token, input.token),
+          ),
+        );
+
+      if (emailVerifications.length === 0) {
+        throw new IntentionalError('올바르지 않은 코드예요.');
+      }
+
+      const [session] = await database
+        .insert(UserSessions)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .values({ userId: emailVerifications[0].userId! })
+        .returning({ id: UserSessions.id });
+
+      const accessToken = await createAccessToken(session.id);
+
+      return {
+        token: accessToken,
       };
     },
   }),

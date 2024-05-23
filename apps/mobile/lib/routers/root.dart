@@ -22,12 +22,13 @@ class RootRouter extends ConsumerWidget implements AutoRouteWrapper {
     }
 
     return AutoRouter.declarative(
-      routes: (_) => [
+      routes: (handler) => [
         switch (isAuthenticated) {
           AsyncData(value: true) => const MainRouter(),
           AsyncData(value: false) => const AuthRouter(),
           _ => const SplashRoute(),
         },
+        ...?handler.initialPendingRoutes,
       ],
     );
   }

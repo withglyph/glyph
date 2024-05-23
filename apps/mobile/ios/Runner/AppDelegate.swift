@@ -1,3 +1,4 @@
+import airbridge_flutter_sdk
 import Flutter
 import NaverThirdPartyLogin
 import UIKit
@@ -9,6 +10,9 @@ import UIKit
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
+
+    AirbridgeFlutter.initSDK(appName: "withglyph", appToken: "80ab99a9b82145149fd7e24731bf3da9", withLaunchOptions: launchOptions)
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 

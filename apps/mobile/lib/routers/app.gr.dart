@@ -43,7 +43,10 @@ abstract class $AppRouter extends _i15.RootStackRouter {
       );
     },
     EditorRoute.name: (routeData) {
-      final args = routeData.argsAs<EditorRouteArgs>();
+      final pathParams = routeData.inheritedPathParams;
+      final args = routeData.argsAs<EditorRouteArgs>(
+          orElse: () =>
+              EditorRouteArgs(permalink: pathParams.getString('permalink')));
       return _i15.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: _i3.EditorScreen(
@@ -105,7 +108,10 @@ abstract class $AppRouter extends _i15.RootStackRouter {
       );
     },
     PostRoute.name: (routeData) {
-      final args = routeData.argsAs<PostRouteArgs>();
+      final pathParams = routeData.inheritedPathParams;
+      final args = routeData.argsAs<PostRouteArgs>(
+          orElse: () =>
+              PostRouteArgs(permalink: pathParams.getString('permalink')));
       return _i15.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: _i12.PostScreen(
@@ -170,6 +176,7 @@ class EditorRoute extends _i15.PageRouteInfo<EditorRouteArgs> {
             key: key,
             permalink: permalink,
           ),
+          rawPathParams: {'permalink': permalink},
           initialChildren: children,
         );
 
@@ -344,6 +351,7 @@ class PostRoute extends _i15.PageRouteInfo<PostRouteArgs> {
             key: key,
             permalink: permalink,
           ),
+          rawPathParams: {'permalink': permalink},
           initialChildren: children,
         );
 

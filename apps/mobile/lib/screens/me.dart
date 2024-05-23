@@ -57,6 +57,10 @@ class MeScreen extends ConsumerWidget {
               data.me!.profile.name,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
             ),
+            Text(
+              data.me!.email,
+              style: const TextStyle(fontSize: 16),
+            ),
             const Spacer(),
             Button(
               child: const Text('로그아웃'),

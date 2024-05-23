@@ -1,6 +1,7 @@
 query MeScreen_Query {
   me {
     id
+    email
 
     profile {
       id

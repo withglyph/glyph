@@ -22,7 +22,7 @@ export const UpdateUserProfileSchema = z.object({
   name,
 });
 
-export const IssueUserEmailAuthorizationUrlSchema = z.object({
+export const IssueUserEmailAuthorizationTokenSchema = z.object({
   email,
   code: z.string().min(1, '인증 코드를 입력해주세요'),
 });

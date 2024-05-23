@@ -10,15 +10,18 @@ class AppRouter extends $AppRouter {
   final List<AutoRoute> routes = [
     AutoRoute(
       page: RootRouter.page,
+      path: '/',
       initial: true,
       children: [
         CustomRoute(
           page: SplashRoute.page,
+          path: '_splash',
           initial: true,
           transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           page: MainRouter.page,
+          path: '',
           transitionsBuilder: TransitionsBuilders.fadeIn,
           children: [
             AutoRoute(
@@ -26,22 +29,36 @@ class AppRouter extends $AppRouter {
               initial: true,
               children: [
                 AutoRoute(page: HomeRoute.page, initial: true),
-                AutoRoute(page: FeedRoute.page),
-                AutoRoute(page: ArchiveRoute.page),
-                AutoRoute(page: MeRoute.page),
+                AutoRoute(page: FeedRoute.page, path: 'feed'),
+                AutoRoute(page: ArchiveRoute.page, path: 'archive'),
+                AutoRoute(page: MeRoute.page, path: 'me'),
               ],
             ),
-            AutoRoute(page: EditorRoute.page, fullscreenDialog: true),
+            AutoRoute(
+              page: EditorRoute.page,
+              fullscreenDialog: true,
+              path: 'editor/:permalink',
+              usesPathAsKey: true,
+            ),
             AutoRoute(page: PlaceholderRoute.page),
-            AutoRoute(page: NotificationRoute.page),
-            AutoRoute(page: PostRoute.page),
+            AutoRoute(page: NotificationRoute.page, path: 'notification'),
+            AutoRoute(
+              page: PostRoute.page,
+              path: ':space/:permalink',
+              usesPathAsKey: true,
+            ),
           ],
         ),
         CustomRoute(
           page: AuthRouter.page,
+          path: '',
           transitionsBuilder: TransitionsBuilders.fadeIn,
           children: [
-            AutoRoute(page: LoginRoute.page, initial: true),
+            AutoRoute(
+              page: LoginRoute.page,
+              initial: true,
+              path: 'login',
+            ),
           ],
         ),
       ],
