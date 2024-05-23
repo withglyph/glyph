@@ -17,3 +17,8 @@ export const SetSpaceCollectionPostSchema = z.object({
   spaceCollectionId: z.string(),
   postIds: z.array(z.string()),
 });
+
+export const AppendSpaceCollectionPostsSchema = z.object({
+  spaceCollectionId: z.string(),
+  postIds: z.array(z.string()),
+});

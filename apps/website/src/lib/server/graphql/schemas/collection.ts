@@ -3,8 +3,12 @@ import { match } from 'ts-pattern';
 import { NotFoundError, PermissionDeniedError } from '$lib/errors';
 import { database, inArray, Posts, SpaceCollectionPosts, SpaceCollections, Spaces } from '$lib/server/database';
 import { enqueueJob } from '$lib/server/jobs';
-import { getSpaceMember } from '$lib/server/utils';
-import { CreateSpaceCollectionSchema, UpdateSpaceCollectionSchema } from '$lib/validations';
+import { defragmentSpaceCollectionPosts, getSpaceMember, useFirstRow } from '$lib/server/utils';
+import {
+  AppendSpaceCollectionPostsSchema,
+  CreateSpaceCollectionSchema,
+  UpdateSpaceCollectionSchema,
+} from '$lib/validations';
 import { builder } from '../builder';
 import { createObjectRef } from '../utils';
 import { Image } from './image';
@@ -132,6 +136,14 @@ const UpdateSpaceCollectionInput = builder.inputType('UpdateSpaceCollectionInput
     thumbnailId: t.id({ required: false }),
   }),
   validate: { schema: UpdateSpaceCollectionSchema },
+});
+
+const AppendSpaceCollectionPostsInput = builder.inputType('AppendSpaceCollectionPostsInput', {
+  fields: (t) => ({
+    spaceCollectionId: t.id(),
+    postIds: t.idList(),
+  }),
+  validate: { schema: AppendSpaceCollectionPostsSchema },
 });
 
 /**
@@ -313,7 +325,72 @@ builder.mutationFields((t) => ({
         }
       });
 
+      await enqueueJob('indexCollection', { collectionId: input.spaceCollectionId });
+
       return input.spaceCollectionId;
+    },
+  }),
+
+  appendSpaceCollectionPosts: t.withAuth({ user: true }).field({
+    type: SpaceCollection,
+    args: { input: t.arg({ type: AppendSpaceCollectionPostsInput }) },
+    resolve: async (_, { input }, context) => {
+      const spaceCollections = await database
+        .select()
+        .from(SpaceCollections)
+        .where(and(eq(SpaceCollections.id, input.spaceCollectionId), eq(SpaceCollections.state, 'ACTIVE')));
+
+      if (spaceCollections.length === 0) {
+        throw new NotFoundError();
+      }
+
+      const isSpaceMember = await getSpaceMember(context, spaceCollections[0].spaceId);
+      if (!isSpaceMember) {
+        throw new PermissionDeniedError();
+      }
+
+      const targetPostIds = await database
+        .select({ id: Posts.id })
+        .from(Posts)
+        .where(
+          and(
+            inArray(Posts.id, input.postIds),
+            eq(Posts.spaceId, spaceCollections[0].spaceId),
+            eq(Posts.state, 'PUBLISHED'),
+          ),
+        )
+        .orderBy(Posts.publishedAt)
+        .then((posts) => posts.map((post) => post.id));
+
+      if (targetPostIds.length !== input.postIds.length) {
+        throw new PermissionDeniedError();
+      }
+
+      await database.transaction(async (tx) => {
+        await tx.delete(SpaceCollectionPosts).where(inArray(SpaceCollectionPosts.postId, targetPostIds));
+
+        const lastOrder = await tx
+          .select({ order: SpaceCollectionPosts.order })
+          .from(SpaceCollectionPosts)
+          .where(eq(SpaceCollectionPosts.collectionId, input.spaceCollectionId))
+          .orderBy(desc(SpaceCollectionPosts.order))
+          .limit(1)
+          .then(useFirstRow)
+          .then((lastPost) => lastPost?.order ?? 0);
+
+        await tx.insert(SpaceCollectionPosts).values(
+          targetPostIds.map((postId, i) => ({
+            collectionId: input.spaceCollectionId,
+            postId,
+            order: lastOrder + i + 1,
+          })),
+        );
+
+        await defragmentSpaceCollectionPosts(tx, input.spaceCollectionId);
+      });
+
+      await enqueueJob('indexCollection', { collectionId: input.spaceCollectionId });
+      return spaceCollections[0];
     },
   }),
 }));

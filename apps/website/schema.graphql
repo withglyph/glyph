@@ -1,3 +1,8 @@
+input AppendSpaceCollectionPostsInput {
+  postIds: [ID!]!
+  spaceCollectionId: ID!
+}
+
 enum AuthScope {
   STAFF
   USER
@@ -298,6 +303,7 @@ input MarkNotificationAsReadInput {
 }
 
 type Mutation {
+  appendSpaceCollectionPosts(input: AppendSpaceCollectionPostsInput!): SpaceCollection!
   authorizeSingleSignOnToken(input: AuthorizeSingleSignOnTokenInput!): AuthorizeSingleSignOnTokenResult!
   blockMasquerade(input: BlockMasqueradeInput!): Space!
   bookmarkPost(input: BookmarkPostInput!): Post!
