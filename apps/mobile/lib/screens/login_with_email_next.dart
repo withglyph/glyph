@@ -176,7 +176,6 @@ class _LoginWithEmailNextScreenState
                       final req2 =
                           GLoginWithEmailNextScreen_AuthorizeUserEmailToken_MutationReq(
                         (b) => b
-                          ..vars.input.email = widget.email
                           ..vars.input.token =
                               resp1.issueUserEmailAuthorizationToken.token,
                       );

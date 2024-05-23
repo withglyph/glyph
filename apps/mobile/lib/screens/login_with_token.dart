@@ -19,7 +19,7 @@ class LoginWithTokenScreen extends ConsumerStatefulWidget {
 
 class _LoginWithTokenScreenState extends ConsumerState<LoginWithTokenScreen> {
   @override
-  void initState() async {
+  void initState() {
     super.initState();
 
     final client = ref.read(ferryProvider);
@@ -27,10 +27,11 @@ class _LoginWithTokenScreenState extends ConsumerState<LoginWithTokenScreen> {
       (b) => b..vars.input.token = widget.token,
     );
 
-    final resp = await client.req(req);
-    await ref
-        .read(authProvider.notifier)
-        .setAccessToken(resp.authorizeUserEmailToken.token);
+    client.req(req).then((resp) async {
+      await ref
+          .read(authProvider.notifier)
+          .setAccessToken(resp.authorizeUserEmailToken.token);
+    });
   }
 
   @override
