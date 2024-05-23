@@ -317,6 +317,7 @@
         marginBottom: { base: '20px', sm: '14px' },
         overflowX: 'auto',
         scrollbar: 'hidden',
+        smDown: { marginX: '-20px', paddingX: '20px' },
       })}
       role="tablist"
     >
