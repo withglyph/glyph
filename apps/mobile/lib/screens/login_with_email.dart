@@ -51,7 +51,8 @@ class LoginWithEmailScreen extends ConsumerWidget {
                     await client.req(req);
 
                     if (context.mounted) {
-                      context.router.push(LoginWithCodeRoute(email: value));
+                      context.router
+                          .push(LoginWithEmailNextRoute(email: value));
                     }
                   }
                 },

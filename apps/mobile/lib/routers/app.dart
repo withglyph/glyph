@@ -20,6 +20,17 @@ class AppRouter extends $AppRouter {
           transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
+          page: AuthRouter.page,
+          path: '',
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+          children: [
+            AutoRoute(page: LoginRoute.page, initial: true, path: 'login'),
+            AutoRoute(page: LoginWithEmailRoute.page),
+            AutoRoute(page: LoginWithEmailNextRoute.page),
+            AutoRoute(page: LoginWithTokenRoute.page, path: 'api/email'),
+          ],
+        ),
+        CustomRoute(
           page: MainRouter.page,
           path: '',
           transitionsBuilder: TransitionsBuilders.fadeIn,
@@ -47,20 +58,6 @@ class AppRouter extends $AppRouter {
               path: ':space/:permalink',
               usesPathAsKey: true,
             ),
-          ],
-        ),
-        CustomRoute(
-          page: AuthRouter.page,
-          path: '',
-          transitionsBuilder: TransitionsBuilders.fadeIn,
-          children: [
-            AutoRoute(
-              page: LoginRoute.page,
-              initial: true,
-              path: 'login',
-            ),
-            AutoRoute(page: LoginWithEmailRoute.page),
-            AutoRoute(page: LoginWithCodeRoute.page),
           ],
         ),
       ],

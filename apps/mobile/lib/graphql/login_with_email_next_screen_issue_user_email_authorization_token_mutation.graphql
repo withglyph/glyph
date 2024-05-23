@@ -1,0 +1,5 @@
+mutation LoginWithEmailNextScreen_IssueUserEmailAuthorizationToken_Mutation($input: IssueUserEmailAuthorizationTokenInput!) {
+  issueUserEmailAuthorizationToken(input: $input) {
+    token
+  }
+}

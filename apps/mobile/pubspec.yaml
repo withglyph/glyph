@@ -58,6 +58,7 @@ dependencies:
   animate_do: ^3.3.4
   custom_refresh_indicator: ^3.1.0
   airbridge_flutter_sdk: ^3.5.3
+  external_app_launcher: ^4.0.0
 
 dev_dependencies:
   flutter_test:

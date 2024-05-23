@@ -1,6 +1,6 @@
 import { webcrypto } from 'node:crypto';
 import dayjs from 'dayjs';
-import { and, asc, count, desc, eq, gt, lt, or } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gt, gte, lt, or } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
 import * as R from 'radash';
@@ -710,7 +710,6 @@ const AuthorizeSingleSignOnTokenInput = builder.inputType('AuthorizeSingleSignOn
 
 const AuthorizeUserEmailTokenInput = builder.inputType('AuthorizeUserEmailTokenInput', {
   fields: (t) => ({
-    email: t.string(),
     token: t.string(),
   }),
 });
@@ -953,40 +952,46 @@ builder.mutationFields((t) => ({
     type: AuthorizeUserEmailTokenResult,
     args: { input: t.arg({ type: AuthorizeUserEmailTokenInput }) },
     resolve: async (_, { input }) => {
-      const emailVerifications = await database
-        .select({ email: UserEmailVerifications.email })
-        .from(UserEmailVerifications)
-        .where(
-          and(
-            eq(UserEmailVerifications.kind, 'USER_LOGIN'),
-            eq(UserEmailVerifications.email, input.email),
-            eq(UserEmailVerifications.token, input.token),
-          ),
-        );
+      return await database.transaction(async (tx) => {
+        const userEmailVerifications = await tx
+          .select({ id: UserEmailVerifications.id, email: UserEmailVerifications.email })
+          .from(UserEmailVerifications)
+          .where(
+            and(
+              eq(UserEmailVerifications.kind, 'USER_LOGIN'),
+              eq(UserEmailVerifications.token, input.token),
+              gte(UserEmailVerifications.expiresAt, dayjs()),
+            ),
+          );
 
-      if (emailVerifications.length === 0) {
-        throw new IntentionalError('올바르지 않은 코드예요.');
-      }
+        if (userEmailVerifications.length === 0) {
+          throw new Error('invalid token');
+        }
 
-      const users = await database
-        .select({ id: Users.id })
-        .from(Users)
-        .where(and(eq(Users.email, emailVerifications[0].email.toLowerCase()), eq(Users.state, 'ACTIVE')));
+        const [userEmailVerification] = userEmailVerifications;
 
-      if (users.length === 0) {
-        throw new Error('Not implemented');
-      }
+        await tx.delete(UserEmailVerifications).where(eq(UserEmailVerifications.id, userEmailVerification.id));
 
-      const [session] = await database
-        .insert(UserSessions)
-        .values({ userId: users[0].id })
-        .returning({ id: UserSessions.id });
+        const users = await tx
+          .select({ id: Users.id })
+          .from(Users)
+          .where(and(eq(Users.email, userEmailVerification.email.toLowerCase()), eq(Users.state, 'ACTIVE')));
 
-      const accessToken = await createAccessToken(session.id);
+        if (users.length === 0) {
+          throw new Error('Not implemented');
+        }
 
-      return {
-        token: accessToken,
-      };
+        const [session] = await tx
+          .insert(UserSessions)
+          .values({ userId: users[0].id })
+          .returning({ id: UserSessions.id });
+
+        const accessToken = await createAccessToken(session.id);
+
+        return {
+          token: accessToken,
+        };
+      });
     },
   }),
 

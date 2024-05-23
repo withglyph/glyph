@@ -9,6 +9,8 @@ PODS:
   - AppAuth/Core (1.7.5)
   - AppAuth/ExternalUserAgent (1.7.5):
     - AppAuth/Core
+  - external_app_launcher (0.0.1):
+    - Flutter
   - Firebase/CoreOnly (10.25.0):
     - FirebaseCore (= 10.25.0)
   - Firebase/Messaging (10.25.0):
@@ -121,6 +123,7 @@ PODS:
 
 DEPENDENCIES:
   - airbridge_flutter_sdk (from `.symlinks/plugins/airbridge_flutter_sdk/ios`)
+  - external_app_launcher (from `.symlinks/plugins/external_app_launcher/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
@@ -155,6 +158,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   airbridge_flutter_sdk:
     :path: ".symlinks/plugins/airbridge_flutter_sdk/ios"
+  external_app_launcher:
+    :path: ".symlinks/plugins/external_app_launcher/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
   firebase_messaging:
@@ -180,6 +185,7 @@ SPEC CHECKSUMS:
   AirBridge: 0a8f024b63b28545839c9e6433f833262bcda162
   airbridge_flutter_sdk: 8158f3114c856bcc0babddd59b31fc7e9d492515
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
+  external_app_launcher: ad55ac844aa21f2d2197d7cec58ff0d0dc40bbc0
   Firebase: 0312a2352584f782ea56f66d91606891d4607f06
   firebase_core: 22e117a2e0dec3cb318c8f53f2dd01c140375617
   firebase_messaging: 7c04a2151f0da85796b41e01ad7da870af6a27e2
