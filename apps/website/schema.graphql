@@ -1025,6 +1025,7 @@ input UpdateCommentInput {
 }
 
 input UpdatePostOptionsInput {
+  commentQualification: PostCommentQualification
   discloseStats: Boolean
   postId: ID!
   receiveFeedback: Boolean

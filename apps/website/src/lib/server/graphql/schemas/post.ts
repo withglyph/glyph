@@ -1043,6 +1043,7 @@ const UpdatePostOptionsInput = builder.inputType('UpdatePostOptionsInput', {
     receiveFeedback: t.boolean({ required: false }),
     receivePatronage: t.boolean({ required: false }),
     receiveTagContribution: t.boolean({ required: false }),
+    commentQualification: t.field({ type: PostCommentQualification, required: false }),
   }),
 });
 
@@ -1541,6 +1542,7 @@ builder.mutationFields((t) => ({
           receiveFeedback: input.receiveFeedback ?? undefined,
           receivePatronage: input.receivePatronage ?? undefined,
           receiveTagContribution: input.receiveTagContribution ?? undefined,
+          commentQualification: input.commentQualification ?? undefined,
         })
         .where(eq(Posts.id, input.postId));
 
