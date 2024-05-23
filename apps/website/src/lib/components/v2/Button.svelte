@@ -118,7 +118,7 @@
             color: 'gray.900',
             backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100', _active: 'gray.0', _pressed: 'gray.0' },
             outlineWidth: { base: '1px', _active: '3px', _pressed: '3px' },
-            outlineColor: 'gray.200',
+            outlineColor: 'gray.150',
           },
         },
         'gray-text': {
@@ -140,7 +140,7 @@
               _pressed: 'gray.0',
             },
             outlineWidth: { base: '1px', _active: '3px', _pressed: '3px' },
-            outlineColor: 'red.200',
+            outlineColor: 'gray.150',
           },
         },
         'red-fill': {
