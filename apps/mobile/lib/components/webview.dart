@@ -4,10 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:glyph/env.dart';
 import 'package:glyph/providers/auth.dart';
-
-const _baseUrl = 'https://dev.withglyph.com';
-// const _baseUrl = 'http://localhost:4000';
 
 class WebView extends ConsumerStatefulWidget {
   const WebView({
@@ -50,10 +48,10 @@ class _WebviewState extends ConsumerState<WebView> {
         // _webViewController = controller;
 
         await _cookieManager.setCookie(
-          url: WebUri(_baseUrl),
+          url: WebUri(Env.baseUrl),
           name: 'glyph-at',
           value: accessToken!,
-          isSecure: _baseUrl.startsWith('https'),
+          isSecure: Env.baseUrl.startsWith('https'),
         );
 
         if (defaultTargetPlatform != TargetPlatform.android ||
@@ -78,7 +76,7 @@ class _WebviewState extends ConsumerState<WebView> {
 
         controller.loadUrl(
           urlRequest: URLRequest(
-            url: WebUri('$_baseUrl${widget.path}'),
+            url: WebUri('${Env.baseUrl}${widget.path}'),
           ),
         );
       },

@@ -59,6 +59,7 @@ dependencies:
   custom_refresh_indicator: ^3.1.0
   airbridge_flutter_sdk: ^3.5.3
   external_app_launcher: ^4.0.0
+  envied: ^0.5.4+1
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +79,7 @@ dev_dependencies:
   custom_lint: ^0.6.4
   riverpod_lint: ^2.3.10
   freezed: ^2.5.2
+  envied_generator: ^0.5.4+1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
