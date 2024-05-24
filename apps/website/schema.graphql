@@ -1040,8 +1040,10 @@ input UpdateCommentInput {
 }
 
 input UpdatePostOptionsInput {
+  ageRating: PostAgeRating
   commentQualification: PostCommentQualification
   discloseStats: Boolean
+  externalSearchable: Boolean
   postId: ID!
   receiveFeedback: Boolean
   receivePatronage: Boolean

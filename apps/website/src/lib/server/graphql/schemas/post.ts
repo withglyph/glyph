@@ -1044,6 +1044,8 @@ const UpdatePostOptionsInput = builder.inputType('UpdatePostOptionsInput', {
     receivePatronage: t.boolean({ required: false }),
     receiveTagContribution: t.boolean({ required: false }),
     commentQualification: t.field({ type: PostCommentQualification, required: false }),
+    externalSearchable: t.boolean({ required: false }),
+    ageRating: t.field({ type: PostAgeRating, required: false }),
   }),
 });
 
@@ -1541,6 +1543,20 @@ builder.mutationFields((t) => ({
         throw new PermissionDeniedError();
       }
 
+      if (input.ageRating && input.ageRating !== 'ALL') {
+        const identities = await database
+          .select({ birthday: UserPersonalIdentities.birthday })
+          .from(UserPersonalIdentities)
+          .where(eq(UserPersonalIdentities.userId, context.session.userId));
+        if (
+          identities.length === 0 ||
+          (input.ageRating === 'R19' && !isAdulthood(identities[0].birthday)) ||
+          (input.ageRating === 'R15' && !isGte15(identities[0].birthday))
+        ) {
+          throw new IntentionalError('본인인증을 하지 않으면 연령 제한 컨텐츠를 게시할 수 없어요');
+        }
+      }
+
       await database
         .update(Posts)
         .set({
@@ -1550,6 +1566,8 @@ builder.mutationFields((t) => ({
           receivePatronage: input.receivePatronage ?? undefined,
           receiveTagContribution: input.receiveTagContribution ?? undefined,
           commentQualification: input.commentQualification ?? undefined,
+          externalSearchable: input.externalSearchable ?? undefined,
+          ageRating: input.ageRating ?? undefined,
         })
         .where(eq(Posts.id, input.postId));
 
