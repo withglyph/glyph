@@ -37,6 +37,7 @@ class _WebviewState extends ConsumerState<WebView> {
     disableHorizontalScroll: true,
     disableVerticalScroll: true,
     disallowOverScroll: true,
+    isTextInteractionEnabled: false,
     supportZoom: false,
     suppressesIncrementalRendering: true,
   );
@@ -90,7 +91,7 @@ class _WebviewState extends ConsumerState<WebView> {
 
           controller.loadUrl(
             urlRequest: URLRequest(
-              url: WebUri('${Env.baseUrl}${widget.path}'),
+              url: WebUri('${Env.baseUrl}${widget.path}?webview=true'),
             ),
           );
         },

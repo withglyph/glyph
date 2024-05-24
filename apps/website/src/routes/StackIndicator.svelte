@@ -2,10 +2,11 @@
   import { production, stack } from '@withglyph/lib/environment';
   import IconGitBranch from '~icons/tabler/git-branch';
   import { Icon } from '$lib/components';
+  import { isWebView } from '$lib/flutter';
   import { center } from '$styled-system/patterns';
 </script>
 
-{#if !production}
+{#if !production && !$isWebView}
   <div
     class={center({
       position: 'fixed',

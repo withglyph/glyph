@@ -21,6 +21,10 @@ class App extends ConsumerWidget {
       theme: ThemeData(
         fontFamily: 'SUIT',
         scaffoldBackgroundColor: Colors.white,
+        dividerTheme: const DividerThemeData(
+          color: BrandColors.gray_100,
+          space: 0,
+        ),
         textTheme: const TextTheme(
           bodySmall: TextStyle(color: BrandColors.gray_900),
           bodyMedium: TextStyle(color: BrandColors.gray_900),
