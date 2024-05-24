@@ -60,6 +60,7 @@ dependencies:
   airbridge_flutter_sdk: ^3.5.3
   external_app_launcher: ^4.0.0
   envied: ^0.5.4+1
+  dartx: ^1.2.0
 
 dev_dependencies:
   flutter_test:

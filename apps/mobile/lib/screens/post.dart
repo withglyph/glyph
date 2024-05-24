@@ -25,22 +25,21 @@ class _PostScreenState extends ConsumerState<PostScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultShell(
-      title: '포스트',
       child: GraphQLOperation(
         operation: GPostScreen_QueryReq(
           (b) => b..vars.permalink = widget.permalink,
         ),
         builder: (context, client, data) {
-          return Column(
-            children: [
-              Button(
-                child: const Text('open'),
-                onPressed: () {
-                  context.router.push(PostRoute(permalink: '1748834474'));
-                },
-              ),
-              Expanded(
-                child: WebView(
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                Button(
+                  child: const Text('open'),
+                  onPressed: () {
+                    context.router.push(PostRoute(permalink: '1748834474'));
+                  },
+                ),
+                WebView(
                   path: '/_webview/tiptap-renderer',
                   onJsMessage: (message, reply) async {
                     if (message['type'] == 'ready') {
@@ -68,8 +67,8 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                     return NavigationActionPolicy.ALLOW;
                   },
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),

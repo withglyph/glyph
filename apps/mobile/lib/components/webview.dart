@@ -29,9 +29,21 @@ class WebView extends ConsumerStatefulWidget {
 class _WebviewState extends ConsumerState<WebView> {
   final GlobalKey _key = GlobalKey();
 
-  // late InAppWebViewController _webViewController;
-  final _settings = InAppWebViewSettings();
+  // late final InAppWebViewController? _webViewController;
+  final _settings = InAppWebViewSettings(
+    allowsBackForwardNavigationGestures: false,
+    disableContextMenu: true,
+    disableLongPressContextMenuOnLinks: true,
+    disableHorizontalScroll: true,
+    disableVerticalScroll: true,
+    disallowOverScroll: true,
+    supportZoom: false,
+    suppressesIncrementalRendering: true,
+  );
   final _cookieManager = CookieManager.instance();
+
+  double _height = 0;
+  bool _isLoaded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -41,46 +53,63 @@ class _WebviewState extends ConsumerState<WebView> {
       _ => null,
     };
 
-    return InAppWebView(
-      key: _key,
-      initialSettings: _settings,
-      onWebViewCreated: (controller) async {
-        // _webViewController = controller;
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: _height),
+      child: InAppWebView(
+        key: _key,
+        initialSettings: _settings,
+        onWebViewCreated: (controller) async {
+          // _webViewController = controller;
 
-        await _cookieManager.setCookie(
-          url: WebUri(Env.baseUrl),
-          name: 'glyph-at',
-          value: accessToken!,
-          isSecure: Env.baseUrl.startsWith('https'),
-        );
+          await _cookieManager.setCookie(
+            url: WebUri(Env.baseUrl),
+            name: 'glyph-at',
+            value: accessToken!,
+            isSecure: Env.baseUrl.startsWith('https'),
+          );
 
-        if (defaultTargetPlatform != TargetPlatform.android ||
-            await WebViewFeature.isFeatureSupported(
-                WebViewFeature.WEB_MESSAGE_LISTENER)) {
-          await controller.addWebMessageListener(WebMessageListener(
-            jsObjectName: 'flutter',
-            allowedOriginRules: {'*'},
-            onPostMessage:
-                (message, sourceOrigin, isMainFrame, replyProxy) async {
-              await widget.onJsMessage?.call(
-                json.decode(utf8.decode(base64.decode(message!.data))),
-                (data) async => await replyProxy.postMessage(
-                  WebMessage(
-                    data: base64.encode(utf8.encode(json.encode(data))),
+          if (defaultTargetPlatform != TargetPlatform.android ||
+              await WebViewFeature.isFeatureSupported(
+                  WebViewFeature.WEB_MESSAGE_LISTENER)) {
+            await controller.addWebMessageListener(WebMessageListener(
+              jsObjectName: 'flutter',
+              allowedOriginRules: {'*'},
+              onPostMessage:
+                  (message, sourceOrigin, isMainFrame, replyProxy) async {
+                await widget.onJsMessage?.call(
+                  json.decode(utf8.decode(base64.decode(message!.data))),
+                  (data) async => await replyProxy.postMessage(
+                    WebMessage(
+                      data: base64.encode(utf8.encode(json.encode(data))),
+                    ),
                   ),
-                ),
-              );
-            },
-          ));
-        }
+                );
+              },
+            ));
+          }
 
-        controller.loadUrl(
-          urlRequest: URLRequest(
-            url: WebUri('${Env.baseUrl}${widget.path}'),
-          ),
-        );
-      },
-      shouldOverrideUrlLoading: widget.onNavigate,
+          controller.loadUrl(
+            urlRequest: URLRequest(
+              url: WebUri('${Env.baseUrl}${widget.path}'),
+            ),
+          );
+        },
+        shouldOverrideUrlLoading: widget.onNavigate,
+        onLoadStop: (controller, url) {
+          if (!_isLoaded) {
+            setState(() {
+              _isLoaded = true;
+            });
+          }
+        },
+        onContentSizeChanged: (controller, oldContentSize, newContentSize) {
+          if (_isLoaded) {
+            setState(() {
+              _height = newContentSize.height;
+            });
+          }
+        },
+      ),
     );
   }
 }

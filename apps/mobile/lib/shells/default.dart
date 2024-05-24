@@ -7,14 +7,16 @@ import 'package:glyph/themes/colors.dart';
 class DefaultShell extends StatelessWidget {
   const DefaultShell({
     super.key,
-    required this.title,
+    this.title,
     required this.child,
     this.actions,
+    this.bottomBar,
   });
 
-  final String title;
+  final String? title;
   final Widget child;
   final List<Widget>? actions;
+  final Widget? bottomBar;
 
   @override
   Widget build(BuildContext context) {
@@ -44,19 +46,23 @@ class DefaultShell extends StatelessWidget {
             );
           },
         ),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        title: title == null
+            ? null
+            : Text(
+                title!,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
         actions: actions,
         toolbarHeight: 48,
         backgroundColor: BrandColors.gray_0,
         scrolledUnderElevation: 0,
       ),
+      resizeToAvoidBottomInset: false,
       body: child,
+      bottomNavigationBar: bottomBar,
     );
   }
 }
