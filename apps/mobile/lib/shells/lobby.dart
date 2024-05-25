@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/lobby_shell_create_post_mutation.req.gql.dart';
@@ -139,9 +140,8 @@ class LobbyBottomNavigationBar extends ConsumerWidget {
         child: Row(
           children: items.map((item) {
             return Expanded(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: item.onTap,
+              child: Pressable(
+                onPressed: item.onTap,
                 child: Center(
                   child: item.isActive == true ? item.activeIcon : item.icon,
                 ),

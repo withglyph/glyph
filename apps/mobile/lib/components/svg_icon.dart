@@ -23,15 +23,4 @@ class SvgIcon extends StatelessWidget {
       color: color ?? BrandColors.gray_900,
     );
   }
-
-  //   return SvgPicture.asset(
-  //     'assets/icons/$iconName',
-  //     width: size ?? 24,
-  //     height: size ?? 24,
-  //     colorFilter: ColorFilter.mode(
-  //       color ?? BrandColors.gray_900,
-  //       BlendMode.srcIn,
-  //     ),
-  //   );
-  // }
 }

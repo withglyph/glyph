@@ -1,0 +1,9 @@
+mutation PostScreen_BookmarkPost_Mutation($input: BookmarkPostInput!) {
+  bookmarkPost(input: $input) {
+    id
+
+    bookmarkGroups {
+      id
+    }
+  }
+}

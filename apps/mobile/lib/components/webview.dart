@@ -11,11 +11,13 @@ class WebView extends ConsumerStatefulWidget {
   const WebView({
     super.key,
     required this.path,
+    this.fitToContent = false,
     this.onJsMessage,
     this.onNavigate,
   });
 
   final String path;
+  final bool fitToContent;
   final Future<void> Function(
       dynamic data, Future<void> Function(dynamic data) reply)? onJsMessage;
   final Future<NavigationActionPolicy?> Function(
@@ -55,10 +57,13 @@ class _WebviewState extends ConsumerState<WebView> {
     };
 
     return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: _height),
+      constraints: BoxConstraints(
+        maxHeight: widget.fitToContent ? _height : double.infinity,
+      ),
       child: InAppWebView(
         key: _key,
         initialSettings: _settings,
+        preventGestureDelay: true,
         onWebViewCreated: (controller) async {
           // _webViewController = controller;
 
