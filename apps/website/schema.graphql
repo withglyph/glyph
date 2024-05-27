@@ -1212,6 +1212,7 @@ type UserPersonalIdentity {
 }
 
 enum UserPersonalIdentityKind {
+  FOREIGN_PASSPORT
   PASSPORT
   PHONE
 }

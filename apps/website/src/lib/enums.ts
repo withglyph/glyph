@@ -234,6 +234,7 @@ export const UserNotificationState = {
 export const UserPersonalIdentityKind = {
   PASSPORT: 'PASSPORT',
   PHONE: 'PHONE',
+  FOREIGN_PASSPORT: 'FOREIGN_PASSPORT',
 } as const;
 
 export const UserSingleSignOnAuthorizationType = {
