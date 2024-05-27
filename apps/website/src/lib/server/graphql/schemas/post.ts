@@ -1046,6 +1046,7 @@ const UpdatePostOptionsInput = builder.inputType('UpdatePostOptionsInput', {
     commentQualification: t.field({ type: PostCommentQualification, required: false }),
     externalSearchable: t.boolean({ required: false }),
     ageRating: t.field({ type: PostAgeRating, required: false }),
+    protectContent: t.boolean({ required: false }),
   }),
 });
 
@@ -1568,6 +1569,7 @@ builder.mutationFields((t) => ({
           commentQualification: input.commentQualification ?? undefined,
           externalSearchable: input.externalSearchable ?? undefined,
           ageRating: input.ageRating ?? undefined,
+          protectContent: input.protectContent ?? undefined,
         })
         .where(eq(Posts.id, input.postId));
 

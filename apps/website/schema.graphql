@@ -1045,6 +1045,7 @@ input UpdatePostOptionsInput {
   discloseStats: Boolean
   externalSearchable: Boolean
   postId: ID!
+  protectContent: Boolean
   receiveFeedback: Boolean
   receivePatronage: Boolean
   receiveTagContribution: Boolean
