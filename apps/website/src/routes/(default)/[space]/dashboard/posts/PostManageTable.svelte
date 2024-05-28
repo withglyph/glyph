@@ -8,7 +8,7 @@
   import IconMoodSmile from '~icons/tabler/mood-smile';
   import IconUser from '~icons/tabler/user';
   import { fragment, graphql } from '$glitch';
-  import { Chip, Icon, Image, Tag } from '$lib/components';
+  import { Chip, Icon, Image, Tag, Tooltip } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Button } from '$lib/components/v2';
@@ -161,14 +161,34 @@
               listStyle={css.raw({ top: '25px!' })}
               size="xs"
             >
-              <svelte:fragment slot="placeholder">발행 옵션 변경</svelte:fragment>
+              <svelte:fragment slot="placeholder">
+                <Tooltip
+                  enabled={selectedPosts.length === 0}
+                  message="옵션을 변경할 포스트를 선택해주세요"
+                  placement="top"
+                >
+                  발행 옵션 변경
+                </Tooltip>
+              </svelte:fragment>
 
-              <SelectItem on:click={() => (switchCollectionOpen = true)}>컬렉션 변경</SelectItem>
-              <SelectItem on:click={() => (updateTagOpen = true)}>태그 변경</SelectItem>
-              <SelectItem on:click={() => (updateThumbnilOpen = true)}>썸네일 변경</SelectItem>
-              <SelectItem on:click={() => (updateReaderOptionOpen = true)}>대상 독자 변경</SelectItem>
-              <SelectItem on:click={() => (updateCommentOptionOpen = true)}>댓글옵션 변경</SelectItem>
-              <SelectItem on:click={() => (updatePostOptionsOpen = true)}>세부옵션 변경</SelectItem>
+              <SelectItem disabled={selectedPosts.length === 0} on:click={() => (switchCollectionOpen = true)}>
+                컬렉션 변경
+              </SelectItem>
+              <SelectItem disabled={selectedPosts.length === 0} on:click={() => (updateTagOpen = true)}>
+                태그 변경
+              </SelectItem>
+              <SelectItem disabled={selectedPosts.length === 0} on:click={() => (updateThumbnilOpen = true)}>
+                썸네일 변경
+              </SelectItem>
+              <SelectItem disabled={selectedPosts.length === 0} on:click={() => (updateReaderOptionOpen = true)}>
+                대상 독자 변경
+              </SelectItem>
+              <SelectItem disabled={selectedPosts.length === 0} on:click={() => (updateCommentOptionOpen = true)}>
+                댓글옵션 변경
+              </SelectItem>
+              <SelectItem disabled={selectedPosts.length === 0} on:click={() => (updatePostOptionsOpen = true)}>
+                세부옵션 변경
+              </SelectItem>
             </Select>
 
             <Button
