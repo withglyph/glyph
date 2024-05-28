@@ -607,7 +607,7 @@
               })}
               role="group"
             >
-              <Button size="sm" variant="red-fill" on:click={() => (thumbnail = null)}>삭제</Button>
+              <Button size="sm" variant="red-outline" on:click={() => (thumbnail = null)}>삭제</Button>
               <Button size="sm" variant="gray-outline" on:click={() => thumbnailPicker.show()}>변경</Button>
             </div>
           </div>
@@ -643,6 +643,10 @@
             </Button>
           </label>
         {/if}
+
+        <p class={css({ marginTop: '6px', fontSize: '13px', color: 'gray.500' })}>
+          추천 사이즈 : 800X500픽셀 이상 (16:10 비율)
+        </p>
       </div>
 
       <section class={tabContentStyle} hidden={tabIndex !== 3}>

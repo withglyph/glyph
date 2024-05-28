@@ -102,6 +102,10 @@
     </label>
   {/if}
 
+  <p class={css({ marginTop: '6px', fontSize: '13px', color: 'gray.500' })}>
+    추천 사이즈 : 800X500픽셀 이상 (16:10 비율)
+  </p>
+
   <Button
     slot="action"
     style={css.raw({ width: 'full' })}
