@@ -4,13 +4,12 @@
   import IconPlus from '~icons/tabler/plus';
   import { graphql } from '$glitch';
   import { Helmet, Icon, Image } from '$lib/components';
-  import { CreateCollectionModal, ManageCollectionModal } from '$lib/components/pages/collections';
+  import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { Button } from '$lib/components/v2';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
 
-  let openManageCollectionModal = false;
   let openCreateCollectionModal = false;
 
   $: query = graphql(`
@@ -19,10 +18,6 @@
         id
         name
         slug
-
-        posts {
-          ...SpaceCollectionsEntityPage_ManageCollectionModal_post
-        }
 
         collections {
           id
@@ -33,14 +28,10 @@
           thumbnail {
             ...Image_image
           }
-
-          ...SpaceCollectionsEntityPage_ManageCollectionModal_collection
         }
       }
     }
   `);
-
-  let selectedCollection: (typeof $query.space.collections)[number] | null = null;
 </script>
 
 <Helmet description={`${$query.space.name} 스페이스 컬렉션 관리`} title={`컬렉션 관리 | ${$query.space.name}`} />
@@ -111,12 +102,3 @@
 </ul>
 
 <CreateCollectionModal spaceId={$query.space.id} bind:open={openCreateCollectionModal} />
-
-{#if selectedCollection}
-  <ManageCollectionModal
-    $collection={selectedCollection}
-    $posts={$query.space.posts}
-    spaceId={$query.space.id}
-    bind:open={openManageCollectionModal}
-  />
-{/if}
