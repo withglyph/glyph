@@ -103,6 +103,7 @@ input CreatePostReactionInput {
 }
 
 input CreateSpaceCollectionInput {
+  description: String
   name: String!
   spaceId: ID!
 }
@@ -861,6 +862,7 @@ type Space {
 type SpaceCollection {
   count: Int!
   createdAt: DateTime!
+  description: String
   id: ID!
   name: String!
   posts(order: SpaceCollectionPostOrderByKind! = LATEST): [Post!]!
@@ -1064,6 +1066,7 @@ input UpdatePostViewInput {
 }
 
 input UpdateSpaceCollectionInput {
+  description: String
   name: String!
   spaceCollectionId: ID!
   thumbnailId: ID
