@@ -28,6 +28,7 @@ SpaceCollection.implement({
   fields: (t) => ({
     id: t.exposeID('id'),
     name: t.exposeString('name'),
+    description: t.exposeString('description', { nullable: true }),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
 
     thumbnail: t.field({
@@ -112,6 +113,7 @@ const CreateSpaceCollectionInput = builder.inputType('CreateSpaceCollectionInput
   fields: (t) => ({
     spaceId: t.id(),
     name: t.string(),
+    description: t.string({ required: false }),
   }),
   validate: { schema: CreateSpaceCollectionSchema },
 });
@@ -134,6 +136,7 @@ const UpdateSpaceCollectionInput = builder.inputType('UpdateSpaceCollectionInput
     spaceCollectionId: t.id(),
     name: t.string(),
     thumbnailId: t.id({ required: false }),
+    description: t.string({ required: false }),
   }),
   validate: { schema: UpdateSpaceCollectionSchema },
 });
@@ -200,7 +203,7 @@ builder.mutationFields((t) => ({
 
       const [collection] = await database
         .insert(SpaceCollections)
-        .values({ spaceId: input.spaceId, name: input.name, state: 'ACTIVE' })
+        .values({ spaceId: input.spaceId, name: input.name, description: input.description, state: 'ACTIVE' })
         .returning({ id: SpaceCollections.id });
 
       await enqueueJob('indexCollection', { collectionId: collection.id });
@@ -262,7 +265,7 @@ builder.mutationFields((t) => ({
 
       await database
         .update(SpaceCollections)
-        .set({ name: input.name, thumbnailId: input.thumbnailId ?? null })
+        .set({ name: input.name, thumbnailId: input.thumbnailId ?? null, description: input.description ?? null })
         .where(eq(SpaceCollections.id, input.spaceCollectionId));
 
       await enqueueJob('indexCollection', { collectionId: input.spaceCollectionId });

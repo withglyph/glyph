@@ -414,6 +414,7 @@ export const SpaceCollections = pgTable(
       .references(() => Spaces.id),
     thumbnailId: text('thumbnail_id').references(() => Images.id),
     name: text('name').notNull(),
+    description: text('description'),
     state: E._SpaceCollectionState('state').notNull(),
     createdAt: datetime('created_at')
       .notNull()

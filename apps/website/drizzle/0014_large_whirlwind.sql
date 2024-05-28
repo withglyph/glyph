@@ -1,0 +1,1 @@
+ALTER TABLE "space_collections" ADD COLUMN "description" text;
