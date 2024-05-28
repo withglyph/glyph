@@ -3,6 +3,7 @@
   import IconCamera from '~icons/tabler/camera';
   import { graphql } from '$glitch';
   import { Icon, Image } from '$lib/components';
+  import { TextArea } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
   import { Button, Modal } from '$lib/components/v2';
   import { FormField, TextInput } from '$lib/components/v2/forms';
@@ -27,6 +28,7 @@
       createSpaceCollection(input: $input) {
         id
         name
+        description
       }
     }
   `);
@@ -37,6 +39,8 @@
         updateSpaceCollection(input: $input) {
           id
           name
+          description
+
           thumbnail {
             ...Image_image
           }
@@ -58,6 +62,8 @@
       mixpanel.track('space:collection:create', { spaceId, collectionId: id });
     },
   });
+
+  $: console.log($data);
 </script>
 
 <Modal bind:open>
@@ -107,12 +113,23 @@
 
     <div id="upload-restriction" class={css({ fontSize: '13px', color: 'gray.500' })}>600x800 픽셀 이상 (3:4 비율)</div>
 
-    <FormField name="name" style={css.raw({ marginTop: '42px' })} label="컬렉션명">
+    <FormField name="name" style={css.raw({ marginTop: '32px' })} label="컬렉션명">
       <TextInput style={css.raw({ width: 'full' })} maxlength={50} placeholder="컬렉션명을 입력해주세요" required>
         <span slot="right-icon" class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.300' })}>
           {$data.name?.length}/50
         </span>
       </TextInput>
+    </FormField>
+
+    <FormField name="description" style={css.raw({ marginTop: '22px' })} label="설명">
+      <TextArea maxlength={200} placeholder="컬렉션을 간단하게 소개해보세요" rows={3}>
+        <span
+          slot="right-icon"
+          class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.300', textAlign: 'right' })}
+        >
+          {$data.description?.length}/200
+        </span>
+      </TextArea>
     </FormField>
   </form>
 

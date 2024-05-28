@@ -8,6 +8,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Helmet, Icon, Image, ShareLinkPopover } from '$lib/components';
   import { Button } from '$lib/components/v2';
+  import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import Post from '../../../../(feed)/Post.svelte';
@@ -17,6 +18,7 @@
       spaceCollection(slug: $slug) {
         id
         name
+        description
         count
 
         thumbnail {
@@ -136,22 +138,21 @@
             by {$query.spaceCollection.space.members[0].profile.name}
           </p>
 
-          <dl
-            class={css({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              marginTop: { base: '6px', sm: '8px' },
-              marginBottom: '16px',
-              fontSize: '13px',
-              color: 'gray.500',
-            })}
-          >
-            <dt>포스트</dt>
-            <dd>{$query.spaceCollection.count}개</dd>
-          </dl>
+          {#if $query.spaceCollection.description}
+            <p
+              class={css({
+                marginTop: '8px',
+                fontSize: '13px',
+                color: 'gray.500',
+                minHeight: '38px',
+                wordBreak: 'break-all',
+              })}
+            >
+              {$query.spaceCollection.description}
+            </p>
+          {/if}
 
-          <div class={flex({ align: 'center', gap: '8px', marginTop: '20px' })}>
+          <div class={flex({ align: 'center', gap: '8px', marginTop: '16px' })}>
             {#if $query.spaceCollection.space.meAsMember}
               <Button
                 style={css.raw({ width: '110px', height: '37px' })}
@@ -185,35 +186,48 @@
         </div>
       </div>
 
-      <div
-        class={flex({
-          align: 'center',
-          justifyContent: 'flex-end',
-          gap: '6px',
-          borderBottomWidth: '1px',
-          borderBottomColor: 'gray.100',
-          fontSize: '14px',
-        })}
-      >
-        <a
-          class={css(
-            { paddingY: '8px', color: 'gray.400' },
-            $page.url.searchParams.get('order') !== 'OLDEST' && { fontWeight: 'semibold', color: 'gray.900' },
-          )}
-          href="?order=LATEST"
+      <div class={flex({ justify: 'space-between' })}>
+        <dl
+          class={css({
+            display: 'flex',
+            alignItems: 'flex-end',
+            gap: '4px',
+            fontSize: '12px',
+            color: 'gray.500',
+          })}
         >
-          최신화부터
-        </a>
-        <hr class={css({ border: 'none', width: '1px', height: '10px', backgroundColor: 'gray.100' })} />
-        <a
-          class={css(
-            { paddingY: '8px', color: 'gray.400' },
-            $page.url.searchParams.get('order') === 'OLDEST' && { fontWeight: 'semibold', color: 'gray.900' },
-          )}
-          href="?order=OLDEST"
+          <dt>포스트</dt>
+          <dd>{comma($query.spaceCollection.count)}개</dd>
+        </dl>
+
+        <div
+          class={flex({
+            align: 'center',
+            justifyContent: 'flex-end',
+            gap: '6px',
+            fontSize: '14px',
+          })}
         >
-          1화부터
-        </a>
+          <a
+            class={css(
+              { paddingY: '8px', color: 'gray.400' },
+              $page.url.searchParams.get('order') !== 'OLDEST' && { fontWeight: 'semibold', color: 'gray.900' },
+            )}
+            href="?order=LATEST"
+          >
+            최신화부터
+          </a>
+          <hr class={css({ border: 'none', width: '1px', height: '10px', backgroundColor: 'gray.100' })} />
+          <a
+            class={css(
+              { paddingY: '8px', color: 'gray.400' },
+              $page.url.searchParams.get('order') === 'OLDEST' && { fontWeight: 'semibold', color: 'gray.900' },
+            )}
+            href="?order=OLDEST"
+          >
+            1화부터
+          </a>
+        </div>
       </div>
 
       <ul>

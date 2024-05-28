@@ -4,6 +4,7 @@
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Alert, Helmet, Icon, Image } from '$lib/components';
+  import { TextArea } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
   import { Button } from '$lib/components/v2';
   import { FormField, TextInput } from '$lib/components/v2/forms';
@@ -20,6 +21,7 @@
       spaceCollection(slug: $slug) {
         id
         name
+        description
 
         thumbnail {
           id
@@ -63,6 +65,7 @@
     spaceCollectionId: $query.spaceCollection.id,
     name: $query.spaceCollection.name,
     thumbnailId: $query.spaceCollection.thumbnail?.id,
+    description: $query.spaceCollection.description ?? '',
   });
 
   const deleteSpaceCollection = graphql(`
@@ -163,10 +166,17 @@
     설명
   </h3>
 
-  <!-- TODO: space collection description textarea -->
+  <TextArea name="description" maxlength={200} placeholder="컬렉션을 간단하게 소개해보세요" rows={3}>
+    <span
+      slot="right-icon"
+      class={css({ fontSize: '13px', fontWeight: 'medium', color: 'gray.300', textAlign: 'right' })}
+    >
+      {$data.description?.length}/200
+    </span>
+  </TextArea>
 
   <Button style={css.raw({ marginY: '24px', width: 'full' })} type="submit" variant="gradation-fill">
-    스페이스 수정
+    컬렉션 수정
   </Button>
 </form>
 

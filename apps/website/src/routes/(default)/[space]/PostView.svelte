@@ -166,6 +166,7 @@
           collection {
             id
             name
+            description
             count
 
             thumbnail {
@@ -1207,27 +1208,52 @@
 
     {#if $query.post.collection}
       {@const positionInCollection = $query.post.collection.posts.findIndex((post) => post.id === $query.post.id)}
-      <div class={css({ smDown: { marginX: '-20px' }, sm: { borderWidth: '1px', borderColor: 'gray.200' } })}>
+      <div class={css({ smDown: { marginX: '-20px' }, sm: { borderWidth: '1px', borderColor: 'gray.100' } })}>
         <a
-          class={flex({ align: 'center', gap: '10px', padding: '20px' })}
+          class={flex({ align: 'flex-start', gap: '10px', padding: '16px' })}
           href={`/${$query.post.space?.slug}/collections/${$query.post.collection.id}`}
         >
           <Image
-            style={css.raw({ flex: 'none', width: '60px', aspectRatio: '3/4', objectFit: 'cover' })}
+            style={css.raw({ flex: 'none', height: '82px', aspectRatio: '3/4', objectFit: 'cover' })}
             $image={$query.post.collection.thumbnail}
             placeholder
             size={96}
           />
 
-          <div class={css({ truncate: true })}>
-            <div class={flex({ align: 'center', fontSize: '12px', color: 'gray.600' })}>
+          <div class={flex({ direction: 'column', minHeight: '82px', width: 'full', truncate: true })}>
+            <div class={flex({ align: 'center', fontSize: '12px', color: 'gray.500' })}>
               <p>컬렉션</p>
               <Icon icon={IconChevronRight} size={12} />
             </div>
-            <p class={css({ marginBottom: '8px', fontSize: '16px', fontWeight: 'semibold', truncate: true })}>
+            <p
+              class={css({
+                marginTop: '4px',
+                fontSize: '16px',
+                fontWeight: 'semibold',
+                truncate: true,
+              })}
+            >
               {$query.post.collection.name}
             </p>
-            <p class={css({ fontSize: '12px', color: 'gray.500', truncate: true })}>
+            {#if $query.post.collection.description}
+              <p
+                class={css({
+                  fontSize: '12px',
+                  lineClamp: 2,
+                  whiteSpace: 'pre-wrap',
+                  color: '[#848489]',
+                  height: '37px',
+                })}
+              >
+                {$query.post.collection.description}
+              </p>
+            {/if}
+            <p
+              class={css(
+                { marginTop: 'auto', fontSize: '11px', color: 'gray.400' },
+                !!$query.post.collection.description && { marginTop: '6px' },
+              )}
+            >
               총 {$query.post.collection.count}개의 포스트
             </p>
           </div>
@@ -1242,9 +1268,9 @@
                   align: 'center',
                   gap: '32px',
                   borderTopWidth: '1px',
-                  borderTopColor: 'gray.200',
-                  padding: '20px',
-                  height: '82px',
+                  borderTopColor: 'gray.100',
+                  padding: '16px',
+                  height: '72px',
                   transition: 'common',
                   truncate: true,
                   _hover: { backgroundColor: 'gray.50' },
@@ -1254,7 +1280,7 @@
                 <span class={css({ fontSize: '14px', color: 'gray.500' })}>이전글</span>
 
                 <div class={css({ truncate: true })}>
-                  <p class={css({ fontSize: '14px', fontWeight: 'semibold', truncate: true })}>
+                  <p class={css({ fontSize: '14px', fontWeight: 'semibold', color: 'gray.800', truncate: true })}>
                     {previousPost.publishedRevision?.title ?? '(제목 없음)'}
                   </p>
                   {#if previousPost.publishedRevision?.subtitle}
@@ -1272,9 +1298,9 @@
                   align: 'center',
                   gap: '32px',
                   borderTopWidth: '1px',
-                  borderTopColor: 'gray.100',
-                  padding: '20px',
-                  height: '82px',
+                  borderTopColor: 'gray.50',
+                  padding: '16px',
+                  height: '72px',
                   transition: 'common',
                   truncate: true,
                   _hover: { backgroundColor: 'gray.50' },
@@ -1284,7 +1310,7 @@
                 <span class={css({ fontSize: '14px', color: 'gray.500' })}>다음글</span>
 
                 <div class={css({ truncate: true })}>
-                  <p class={css({ fontSize: '14px', fontWeight: 'semibold', truncate: true })}>
+                  <p class={css({ fontSize: '14px', fontWeight: 'semibold', color: 'gray.800', truncate: true })}>
                     {nextPost.publishedRevision?.title ?? '(제목 없음)'}
                   </p>
                   {#if nextPost.publishedRevision?.subtitle}
