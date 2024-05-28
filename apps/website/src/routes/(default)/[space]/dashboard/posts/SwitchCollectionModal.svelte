@@ -1,6 +1,7 @@
 <script lang="ts">
   import IconPlus from '~icons/tabler/plus';
   import { fragment, graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Icon, Image } from '$lib/components';
   import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { Button, Modal } from '$lib/components/v2';
@@ -15,8 +16,6 @@
   export let open = false;
   export let spaceId = '';
   export let selectedPostIds: string[] = [];
-
-  $: console.log(selectedPostIds);
 
   let selectedCollection: (typeof $collections)[number] | null = null;
   let collectionSelectorOpen = false;
@@ -36,6 +35,14 @@
       }
     `),
   );
+
+  const appendSpaceCollectionPosts = graphql(`
+    mutation SwitchCollectionModal_AppendSpaceCollectionPosts_Mutation($input: AppendSpaceCollectionPostsInput!) {
+      appendSpaceCollectionPosts(input: $input) {
+        id
+      }
+    }
+  `);
 </script>
 
 <Modal style={css.raw({ paddingBottom: '120px' })} bind:open>
@@ -96,8 +103,24 @@
     </svelte:fragment>
   </Select>
 
-  <!-- TODO: update post option -->
-  <Button slot="action" style={css.raw({ width: 'full' })} size="lg" variant="gradation-fill">확인</Button>
+  <Button
+    slot="action"
+    style={css.raw({ width: 'full' })}
+    size="lg"
+    variant="gradation-fill"
+    on:click={async () => {
+      if (!selectedCollection) return;
+
+      await appendSpaceCollectionPosts({ postIds: selectedPostIds, spaceCollectionId: selectedCollection.id });
+      mixpanel.track('space:collection:post:append', {
+        spaceCollectionId: selectedCollection.id,
+        postIds: selectedPostIds,
+      });
+      open = false;
+    }}
+  >
+    확인
+  </Button>
 </Modal>
 
 <CreateCollectionModal bind:open={createCollectionOpen} bind:spaceId />

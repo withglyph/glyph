@@ -70,5 +70,8 @@ export const updates: GraphCacheConfig['updates'] = {
     verifySettlementIdentity: (_, __, cache) => {
       cache.invalidate(me(cache), 'settlementIdentity');
     },
+    appendSpaceCollectionPosts: (_, { input }, cache) => {
+      cache.invalidate({ __typename: 'SpaceCollection', id: input.spaceCollectionId });
+    },
   },
 };

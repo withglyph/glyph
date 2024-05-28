@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Image } from '$lib/components';
   import { ThumbnailPicker } from '$lib/components/media';
   import { Button, Modal } from '$lib/components/v2';
@@ -9,11 +11,21 @@
   export let open = false;
   export let selectedPostIds: string[] = [];
 
-  $: console.log(selectedPostIds);
-
   let thumbnailPicker: ThumbnailPicker;
 
   let thumbnail: ({ id: string; name: string } & Image_image) | null | undefined = undefined;
+
+  const replacePostThumbnail = graphql(`
+    mutation UpdateThumbnailModal_ReplacePostThumbnail_Mutation($input: ReplacePostThumbnailInput!) {
+      replacePostThumbnail(input: $input) {
+        id
+
+        thumbnail {
+          id
+        }
+      }
+    }
+  `);
 </script>
 
 <Modal bind:open>
@@ -90,8 +102,21 @@
     </label>
   {/if}
 
-  <!-- update post thumbnail -->
-  <Button slot="action" style={css.raw({ width: 'full' })} size="lg" variant="gradation-fill">확인</Button>
+  <Button
+    slot="action"
+    style={css.raw({ width: 'full' })}
+    size="lg"
+    variant="gradation-fill"
+    on:click={() => {
+      if (!thumbnail) return;
+
+      mixpanel.track('post:replace:thumbnail', { postIds: selectedPostIds });
+      Promise.all(selectedPostIds.map((id) => replacePostThumbnail({ postId: id, thumbnailId: thumbnail?.id })));
+      open = false;
+    }}
+  >
+    확인
+  </Button>
 </Modal>
 
 <ThumbnailPicker

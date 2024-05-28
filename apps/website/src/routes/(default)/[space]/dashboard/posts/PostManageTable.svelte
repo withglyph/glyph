@@ -21,19 +21,43 @@
   import UpdateCommentOptionModal from './UpdateCommentOptionModal.svelte';
   import UpdatePostOptionsModal from './UpdatePostOptionsModal.svelte';
   import UpdateReaderOptionModal from './UpdateReaderOptionModal.svelte';
+  import UpdateTagModal from './UpdateTagModal.svelte';
   import UpdateThumbnailModal from './UpdateThumbnailModal.svelte';
-  import type { PostManageTable_post, PostManageTable_spaceCollection } from '$glitch';
+  import type { PostManageTable_post, PostManageTable_query } from '$glitch';
 
+  let _query: PostManageTable_query;
   let _posts: PostManageTable_post[];
-  let _collections: PostManageTable_spaceCollection[];
-  export { _collections as $collections, _posts as $posts };
+  export { _posts as $posts, _query as $query };
 
   let selectedPosts: string[] = [];
   let switchCollectionOpen = false;
+  let updateTagOpen = false;
   let updateThumbnilOpen = false;
   let updateReaderOptionOpen = false;
   let updateCommentOptionOpen = false;
   let updatePostOptionsOpen = false;
+
+  $: query = fragment(
+    _query,
+    graphql(`
+      fragment PostManageTable_query on Query {
+        me @_required {
+          id
+          ...UpdateReaderOptionModal_user
+          ...UpdateCommentOptionModal_user
+        }
+
+        space(slug: $slug) {
+          id
+
+          collections {
+            id
+            ...PostManageTable_SwitchCollectionModal_spaceCollection
+          }
+        }
+      }
+    `),
+  );
 
   $: posts = fragment(
     _posts,
@@ -89,16 +113,6 @@
     `),
   );
 
-  $: collections = fragment(
-    _collections,
-    graphql(`
-      fragment PostManageTable_spaceCollection on SpaceCollection {
-        id
-        ...PostManageTable_SwitchCollectionModal_spaceCollection
-      }
-    `),
-  );
-
   $: allSelected =
     $posts.length > 0 &&
     R.diff(
@@ -150,7 +164,7 @@
               <svelte:fragment slot="placeholder">발행 옵션 변경</svelte:fragment>
 
               <SelectItem on:click={() => (switchCollectionOpen = true)}>컬렉션 변경</SelectItem>
-              <SelectItem>태그 변경</SelectItem>
+              <SelectItem on:click={() => (updateTagOpen = true)}>태그 변경</SelectItem>
               <SelectItem on:click={() => (updateThumbnilOpen = true)}>썸네일 변경</SelectItem>
               <SelectItem on:click={() => (updateReaderOptionOpen = true)}>대상 독자 변경</SelectItem>
               <SelectItem on:click={() => (updateCommentOptionOpen = true)}>댓글옵션 변경</SelectItem>
@@ -319,20 +333,27 @@
           </div>
         </TableData>
       </TableRow>
+    {:else}
+      <TableRow>
+        <th
+          class={css({ paddingTop: '106px', paddingBottom: '48px', fontSize: '15px', color: 'gray.500' })}
+          colspan="3"
+        >
+          포스트가 없어요
+        </th>
+      </TableRow>
     {/each}
   </TableBody>
 </Table>
 
-{#if $posts.length > 0}
-  <SwitchCollectionModal
-    {$collections}
-    spaceId={$posts[0].space.id}
-    bind:open={switchCollectionOpen}
-    bind:selectedPostIds={selectedPosts}
-  />
-{/if}
-
+<SwitchCollectionModal
+  $collections={$query.space.collections}
+  spaceId={$query.space.id}
+  bind:open={switchCollectionOpen}
+  bind:selectedPostIds={selectedPosts}
+/>
+<UpdateTagModal bind:open={updateTagOpen} bind:selectedPostIds={selectedPosts} />
 <UpdateThumbnailModal bind:open={updateThumbnilOpen} bind:selectedPostIds={selectedPosts} />
-<UpdateReaderOptionModal bind:open={updateReaderOptionOpen} bind:selectedPostIds={selectedPosts} />
-<UpdateCommentOptionModal bind:open={updateCommentOptionOpen} bind:selectedPostIds={selectedPosts} />
+<UpdateReaderOptionModal $user={$query.me} bind:open={updateReaderOptionOpen} bind:selectedPostIds={selectedPosts} />
+<UpdateCommentOptionModal $user={$query.me} bind:open={updateCommentOptionOpen} bind:selectedPostIds={selectedPosts} />
 <UpdatePostOptionsModal bind:open={updatePostOptionsOpen} bind:selectedPostIds={selectedPosts} />

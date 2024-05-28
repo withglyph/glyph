@@ -183,9 +183,9 @@
       if (!$spacePostsQuery) return;
 
       await appendSpaceCollectionPosts({ postIds: selectedPostIds, spaceCollectionId: collectionId });
-      mixpanel.track('space:collection:post:add', {
+      mixpanel.track('space:collection:post:append', {
         spaceId: $spacePostsQuery.space.id,
-        collectionId,
+        spaceCollectionId: collectionId,
         postIds: selectedPostIds,
       });
       open = false;
