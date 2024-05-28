@@ -8,7 +8,8 @@
   import IconMoodSmile from '~icons/tabler/mood-smile';
   import IconUser from '~icons/tabler/user';
   import { fragment, graphql } from '$glitch';
-  import { Chip, Icon, Image, Tag, Tooltip } from '$lib/components';
+  import { mixpanel } from '$lib/analytics';
+  import { Alert, Chip, Icon, Image, Tag, Tooltip } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Button } from '$lib/components/v2';
@@ -36,6 +37,8 @@
   let updateReaderOptionOpen = false;
   let updateCommentOptionOpen = false;
   let updatePostOptionsOpen = false;
+  let deletePostOpen = false;
+  let deletePostId: string | null = null;
 
   $: query = fragment(
     _query,
@@ -125,6 +128,14 @@
     SPACE: '멤버공개',
     UNLISTED: '링크공개',
   };
+
+  const deletePost = graphql(`
+    mutation PostManageTable_DeletePost_Mutation($input: DeletePostInput!) {
+      deletePost(input: $input) {
+        id
+      }
+    }
+  `);
 </script>
 
 <Table>
@@ -201,6 +212,10 @@
               })}
               size="xs"
               variant="gray-outline"
+              on:click={() => {
+                deletePostOpen = true;
+                deletePostId = null;
+              }}
             >
               삭제
             </Button>
@@ -348,7 +363,15 @@
               <Icon slot="value" style={css.raw({ color: 'gray.400' })} icon={IconDotsVertical} size={24} />
 
               <MenuItem href="/editor/{post.permalink}" type="link">수정</MenuItem>
-              <MenuItem style={css.raw({ color: 'red.600' })}>삭제</MenuItem>
+              <MenuItem
+                style={css.raw({ color: 'red.600' })}
+                on:click={() => {
+                  deletePostOpen = true;
+                  deletePostId = post.id;
+                }}
+              >
+                삭제
+              </MenuItem>
             </Menu>
           </div>
         </TableData>
@@ -377,3 +400,45 @@
 <UpdateReaderOptionModal $user={$query.me} bind:open={updateReaderOptionOpen} bind:selectedPostIds={selectedPosts} />
 <UpdateCommentOptionModal $user={$query.me} bind:open={updateCommentOptionOpen} bind:selectedPostIds={selectedPosts} />
 <UpdatePostOptionsModal bind:open={updatePostOptionsOpen} bind:selectedPostIds={selectedPosts} />
+
+<Alert bind:open={deletePostOpen}>
+  <p slot="title" class={css({ textAlign: 'left' })}>포스트를 삭제하시겠어요?</p>
+  <p slot="content" class={css({ textAlign: 'left' })}>삭제된 글은 복구할 수 없어요</p>
+
+  <svelte:fragment slot="action">
+    <Button
+      style={css.raw({ hideFrom: 'sm' })}
+      size="lg"
+      variant="gray-sub-fill"
+      on:click={() => (deletePostOpen = false)}
+    >
+      취소
+    </Button>
+    <Button
+      style={css.raw({ hideBelow: 'sm' })}
+      size="lg"
+      variant="gray-outline"
+      on:click={() => (deletePostOpen = false)}
+    >
+      취소
+    </Button>
+    <Button
+      size="lg"
+      variant="red-fill"
+      on:click={async () => {
+        if (deletePostId) {
+          await deletePost({ postId: deletePostId });
+          mixpanel.track('post:delete', { postId: deletePostId, via: 'space-dashboard' });
+        } else {
+          await Promise.all(selectedPosts.map((postId) => deletePost({ postId })));
+          mixpanel.track('post:delete', { postIds: selectedPosts, via: 'space-dashboard' });
+          selectedPosts = [];
+        }
+        deletePostId = null;
+        deletePostOpen = false;
+      }}
+    >
+      삭제
+    </Button>
+  </svelte:fragment>
+</Alert>
