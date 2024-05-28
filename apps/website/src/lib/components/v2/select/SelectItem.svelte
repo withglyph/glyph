@@ -4,10 +4,16 @@
   import { Icon } from '$lib/components';
   import { css, cva } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
+  import type { HTMLButtonAttributes } from 'svelte/elements';
   import type { RecipeVariant } from '$styled-system/css';
 
   let close = getContext<undefined | (() => void)>('close');
   let size = getContext<Variants['size']>('size');
+
+  type $$Props = Omit<HTMLButtonAttributes, 'aria-pressed' | 'pressed'> & {
+    pressed?: boolean;
+    state?: Variants['state'];
+  };
 
   export let pressed = false;
   export let state: Variants['state'] = 'default';
@@ -19,12 +25,16 @@
       alignItems: 'center',
       justifyContent: 'space-between',
       paddingX: '14px',
-      // fontWeight: { _pressed: 'semibold'},
-      color: { base: 'gray.600', _hover: 'gray.900', _focus: 'gray.900', _pressed: 'gray.900' },
       textAlign: 'left',
       width: 'full',
       backgroundColor: { _hover: 'gray.100', _focus: 'gray.100' },
       transition: 'common',
+      _enabled: {
+        color: { base: 'gray.600', _hover: 'gray.900', _focus: 'gray.900', _pressed: 'gray.900' },
+      },
+      _disabled: {
+        color: 'gray.300',
+      },
     },
     variants: {
       state: {
@@ -54,6 +64,7 @@
     type="button"
     on:click
     on:click={close}
+    {...$$restProps}
   >
     <div class={flex({ align: 'center', justify: 'space-between', gap: '4px', flexGrow: '1', truncate: true })}>
       <slot />
