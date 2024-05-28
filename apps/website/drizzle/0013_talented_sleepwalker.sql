@@ -1,0 +1,1 @@
+ALTER TYPE "_user_personal_identity_kind" ADD VALUE 'FOREIGN_PASSPORT';
