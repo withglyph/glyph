@@ -155,7 +155,7 @@
             {#if $query.spaceCollection.space.meAsMember}
               <Button
                 style={css.raw({ width: '110px', height: '37px' })}
-                href="/{$query.spaceCollection.space.slug}/dashboard/posts/collections"
+                href="/{$query.spaceCollection.space.slug}/dashboard/collections"
                 size="sm"
                 type="link"
                 variant="gray-outline"

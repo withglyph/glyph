@@ -4,7 +4,7 @@
   import { css } from '$styled-system/css';
 </script>
 
-<h1 class={css({ marginBottom: '12px', fontSize: '24px', fontWeight: 'bold', hideBelow: 'sm' })}>계정설정</h1>
+<h1 class={css({ marginBottom: '20px', fontSize: '24px', fontWeight: 'bold', hideBelow: 'sm' })}>계정설정</h1>
 
 <TabHead
   style={css.raw({

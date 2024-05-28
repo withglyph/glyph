@@ -4,7 +4,7 @@
   import { flex } from '$styled-system/patterns';
 </script>
 
-<h1 class={css({ marginBottom: '12px', fontSize: '24px', fontWeight: 'bold', hideBelow: 'sm' })}>보관함</h1>
+<h1 class={css({ marginBottom: '20px', fontSize: '24px', fontWeight: 'bold', hideBelow: 'sm' })}>보관함</h1>
 
 <TabHead
   style={css.raw({

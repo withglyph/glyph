@@ -1,0 +1,338 @@
+<script lang="ts">
+  import dayjs from 'dayjs';
+  import * as R from 'radash';
+  import IconCoin from '~icons/tabler/coin';
+  import IconDotsVertical from '~icons/tabler/dots-vertical';
+  import IconEye from '~icons/tabler/eye';
+  import IconMessageCircle from '~icons/tabler/message-circle';
+  import IconMoodSmile from '~icons/tabler/mood-smile';
+  import IconUser from '~icons/tabler/user';
+  import { fragment, graphql } from '$glitch';
+  import { Chip, Icon, Image, Tag } from '$lib/components';
+  import { Checkbox } from '$lib/components/forms';
+  import { Menu, MenuItem } from '$lib/components/menu';
+  import { Button } from '$lib/components/v2';
+  import { Select, SelectItem } from '$lib/components/v2/select';
+  import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/v2/table';
+  import { comma, humanizeNumber } from '$lib/utils';
+  import { css } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
+  import SwitchCollectionModal from './SwitchCollectionModal.svelte';
+  import UpdateCommentOptionModal from './UpdateCommentOptionModal.svelte';
+  import UpdatePostOptionsModal from './UpdatePostOptionsModal.svelte';
+  import UpdateReaderOptionModal from './UpdateReaderOptionModal.svelte';
+  import UpdateThumbnailModal from './UpdateThumbnailModal.svelte';
+  import type { PostManageTable_post, PostManageTable_spaceCollection } from '$glitch';
+
+  let _posts: PostManageTable_post[];
+  let _collections: PostManageTable_spaceCollection[];
+  export { _collections as $collections, _posts as $posts };
+
+  let selectedPosts: string[] = [];
+  let switchCollectionOpen = false;
+  let updateThumbnilOpen = false;
+  let updateReaderOptionOpen = false;
+  let updateCommentOptionOpen = false;
+  let updatePostOptionsOpen = false;
+
+  $: posts = fragment(
+    _posts,
+    graphql(`
+      fragment PostManageTable_post on Post {
+        id
+        permalink
+        visibility
+        viewCount
+        reactionCount
+        commentCount
+        createdAt
+        discloseStats
+        ageRating
+        hasPassword
+
+        space {
+          id
+        }
+
+        publishedRevision @_required {
+          id
+          title
+          subtitle
+          price
+        }
+
+        tags {
+          id
+          kind
+
+          tag {
+            id
+            name
+          }
+        }
+
+        collection {
+          id
+          name
+        }
+
+        thumbnail {
+          id
+          ...Image_image
+        }
+
+        space @_required {
+          id
+          slug
+        }
+      }
+    `),
+  );
+
+  $: collections = fragment(
+    _collections,
+    graphql(`
+      fragment PostManageTable_spaceCollection on SpaceCollection {
+        id
+        ...PostManageTable_SwitchCollectionModal_spaceCollection
+      }
+    `),
+  );
+
+  $: allSelected =
+    $posts.length > 0 &&
+    R.diff(
+      $posts.map((p: (typeof $posts)[number]) => p.id),
+      selectedPosts,
+    ).length === 0;
+
+  const visibilityToLocaleString = {
+    PUBLIC: '전체공개',
+    SPACE: '멤버공개',
+    UNLISTED: '링크공개',
+  };
+</script>
+
+<Table>
+  <TableHeader>
+    <TableRow style={css.raw({ textAlign: 'left' })}>
+      <TableHead style={css.raw({ width: '50px' })}>
+        <Checkbox
+          checked={allSelected}
+          variant="brand"
+          on:change={() => {
+            selectedPosts = allSelected ? [] : $posts.map((p) => p.id);
+          }}
+        />
+      </TableHead>
+      <TableHead style={css.raw({ paddingLeft: '0', fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
+        <div class={flex({ align: 'center', justify: 'space-between', gap: { base: '20px', sm: '86px' } })}>
+          <p>
+            {#if selectedPosts.length > 0}
+              {selectedPosts.length}개 선택됨
+            {:else}
+              {$posts.length}개의 포스트
+            {/if}
+          </p>
+
+          <div class={flex({ align: 'center', gap: '8px' })}>
+            <Select
+              style={css.raw({
+                borderColor: 'gray.200',
+                paddingY: '4px',
+                paddingLeft: '8px',
+                paddingRight: '6px!',
+                height: '25px!',
+              })}
+              listStyle={css.raw({ top: '25px!' })}
+              size="xs"
+            >
+              <svelte:fragment slot="placeholder">발행 옵션 변경</svelte:fragment>
+
+              <SelectItem on:click={() => (switchCollectionOpen = true)}>컬렉션 변경</SelectItem>
+              <SelectItem>태그 변경</SelectItem>
+              <SelectItem on:click={() => (updateThumbnilOpen = true)}>썸네일 변경</SelectItem>
+              <SelectItem on:click={() => (updateReaderOptionOpen = true)}>대상 독자 변경</SelectItem>
+              <SelectItem on:click={() => (updateCommentOptionOpen = true)}>댓글옵션 변경</SelectItem>
+              <SelectItem on:click={() => (updatePostOptionsOpen = true)}>세부옵션 변경</SelectItem>
+            </Select>
+
+            <Button
+              style={css.raw({
+                height: '25px',
+                outlineWidth: '0!',
+                borderWidth: '1px',
+                borderColor: 'gray.200',
+                backgroundColor: 'gray.0',
+              })}
+              size="xs"
+              variant="gray-outline"
+            >
+              삭제
+            </Button>
+          </div>
+        </div>
+      </TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {#each $posts as post (post.id)}
+      <TableRow>
+        <TableData style={css.raw({ whiteSpace: 'no-wrap' })}>
+          <Checkbox
+            checked={selectedPosts.includes(post.id)}
+            variant="brand"
+            on:change={() =>
+              (selectedPosts = selectedPosts.includes(post.id)
+                ? selectedPosts.filter((id) => id !== post.id)
+                : [...selectedPosts, post.id])}
+          />
+        </TableData>
+        <TableData style={css.raw({ padding: '20px', paddingLeft: '0', maxWidth: '1px', truncate: true })}>
+          <div class={css({ position: 'relative' })}>
+            <a href="/{post.space.slug}/{post.permalink}">
+              <div class={flex({ align: 'flex-start', justify: 'space-between', gap: '86px' })}>
+                <div class={css({ truncate: true })}>
+                  {#if post.collection}
+                    <p class={css({ marginBottom: '2px', fontSize: '13px', fontWeight: 'medium', truncate: true })}>
+                      {post.collection.name}
+                    </p>
+                  {/if}
+                  <p class={css({ fontSize: '14px', fontWeight: 'semibold', truncate: true })}>
+                    {post.publishedRevision?.title ?? '(제목 없음)'}
+                  </p>
+                  <p
+                    class={css({
+                      marginBottom: '4px',
+                      fontSize: '13px',
+                      color: 'gray.600',
+                      height: '19px',
+                      truncate: true,
+                    })}
+                  >
+                    {post.publishedRevision?.subtitle ?? ''}
+                  </p>
+
+                  <ul
+                    class={flex({
+                      align: 'center',
+                      gap: '4px',
+                      height: '21px',
+                      overflow: 'auto',
+                      scrollbar: 'hidden',
+                    })}
+                  >
+                    {#each post.tags as { tag } (tag.id)}
+                      <Tag style={css.raw({ flex: 'none' })} as="div" size="sm">{tag.name}</Tag>
+                    {/each}
+                  </ul>
+                </div>
+
+                <div
+                  class={css({
+                    position: 'relative',
+                    flex: 'none',
+                    width: '124px',
+                    aspectRatio: '16/10',
+                  })}
+                >
+                  <Image
+                    style={css.raw({ size: 'full', aspectRatio: '16/10', objectFit: 'cover' })}
+                    $image={post.thumbnail}
+                    placeholder
+                    size={128}
+                  />
+
+                  <div class={css({ position: 'absolute', left: '6px', bottom: '6px', display: 'flex', gap: '4px' })}>
+                    {#if post.ageRating === 'R15'}
+                      <Chip color="pink">15세</Chip>
+                    {/if}
+                    {#if post.ageRating === 'R19'}
+                      <Chip color="pink">성인</Chip>
+                    {/if}
+                    {#if post.hasPassword}
+                      <Chip color="gray">비밀글</Chip>
+                    {/if}
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class={flex({
+                  direction: { base: 'column', sm: 'row' },
+                  align: { base: 'flex-start', sm: 'center' },
+                  gap: '8px',
+                  wrap: 'wrap',
+                  marginTop: '10px',
+                  paddingRight: '24px',
+                  fontSize: '12px',
+                  color: 'gray.400',
+                })}
+              >
+                <div class={flex({ align: 'center', gap: '2px' })}>
+                  <Icon icon={IconUser} />
+                  <p class={css({ marginRight: '4px' })}>{visibilityToLocaleString[post.visibility]}</p>
+                  <Icon style={css.raw(!!post.publishedRevision?.price && { color: 'brand.400' })} icon={IconCoin} />
+                  <p class={css(!!post.publishedRevision?.price && { color: 'brand.400' })}>
+                    {post.publishedRevision?.price ? `${comma(post.publishedRevision.price)}P` : '무료'}
+                  </p>
+                </div>
+                <div class={flex({ align: 'center', gap: '8px' })}>
+                  {#if post.discloseStats}
+                    <hr
+                      class={css({
+                        border: 'none',
+                        width: '1px',
+                        height: '12px',
+                        backgroundColor: 'gray.100',
+                        hideBelow: 'sm',
+                      })}
+                    />
+
+                    <div class={flex({ align: 'center', gap: '2px' })}>
+                      <Icon icon={IconEye} />
+                      <p class={css({ marginRight: '4px' })}>{humanizeNumber(post.viewCount)}</p>
+                      <Icon icon={IconMoodSmile} />
+                      <p class={css({ marginRight: '4px' })}>{humanizeNumber(post.reactionCount)}</p>
+                      <Icon icon={IconMessageCircle} />
+                      <p>{humanizeNumber(post.commentCount)}</p>
+                    </div>
+                  {/if}
+
+                  <hr
+                    class={css(
+                      { border: 'none', width: '1px', height: '12px', backgroundColor: 'gray.100' },
+                      !post.discloseStats && { hideBelow: 'sm' },
+                    )}
+                  />
+
+                  <time datetime={post.createdAt}>{dayjs(post.createdAt).formatAsDate()}</time>
+                </div>
+              </div>
+            </a>
+            <Menu style={css.raw({ position: 'absolute', bottom: '0', right: '-6px' })} placement="bottom-end">
+              <Icon slot="value" style={css.raw({ color: 'gray.400' })} icon={IconDotsVertical} size={24} />
+
+              <MenuItem href="/editor/{post.permalink}" type="link">수정</MenuItem>
+              <MenuItem style={css.raw({ color: 'red.600' })}>삭제</MenuItem>
+            </Menu>
+          </div>
+        </TableData>
+      </TableRow>
+    {/each}
+  </TableBody>
+</Table>
+
+{#if $posts.length > 0}
+  <SwitchCollectionModal
+    {$collections}
+    spaceId={$posts[0].space.id}
+    bind:open={switchCollectionOpen}
+    bind:selectedPostIds={selectedPosts}
+  />
+{/if}
+
+<UpdateThumbnailModal bind:open={updateThumbnilOpen} bind:selectedPostIds={selectedPosts} />
+<UpdateReaderOptionModal bind:open={updateReaderOptionOpen} bind:selectedPostIds={selectedPosts} />
+<UpdateCommentOptionModal bind:open={updateCommentOptionOpen} bind:selectedPostIds={selectedPosts} />
+<UpdatePostOptionsModal bind:open={updatePostOptionsOpen} bind:selectedPostIds={selectedPosts} />
