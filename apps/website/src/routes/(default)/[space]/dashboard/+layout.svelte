@@ -2,7 +2,7 @@
   import IconBook2 from '~icons/tabler/book2';
   import IconNotes from '~icons/tabler/notes';
   import IconPlanet from '~icons/tabler/planet';
-  import IconScan from '~icons/tabler/scan';
+  // import IconScan from '~icons/tabler/scan';
   import IconUserX from '~icons/tabler/user-x';
   import { graphql } from '$glitch';
   import { flex } from '$styled-system/patterns';
@@ -73,7 +73,7 @@
     <NavItem icon={IconPlanet} pathname="/{$query.space.slug}/dashboard/settings" title="스페이스" />
     <NavItem icon={IconNotes} pathname="/{$query.space.slug}/dashboard/posts" title="포스트" />
     <NavItem icon={IconBook2} pathname="/{$query.space.slug}/dashboard/collections" title="컬렉션" />
-    <NavItem icon={IconScan} pathname="/{$query.space.slug}/dashboard/redeem" title="리딤코드" />
+    <!-- <NavItem icon={IconScan} pathname="/{$query.space.slug}/dashboard/redeem" title="리딤코드" /> -->
     <NavItem icon={IconUserX} pathname="/{$query.space.slug}/dashboard/subscribers/blocked" title="차단" />
   </nav>
 
