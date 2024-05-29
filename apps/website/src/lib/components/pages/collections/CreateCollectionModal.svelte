@@ -62,8 +62,6 @@
       mixpanel.track('space:collection:create', { spaceId, collectionId: id });
     },
   });
-
-  $: console.log($data);
 </script>
 
 <Modal bind:open>
