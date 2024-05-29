@@ -53,6 +53,7 @@ class AppRouter extends $AppRouter {
             ),
             AutoRoute(page: PlaceholderRoute.page),
             AutoRoute(page: NotificationRoute.page, path: 'notification'),
+            AutoRoute(page: SettingsRoute.page, path: 'settings'),
             AutoRoute(
               page: PostRoute.page,
               path: ':space/:permalink',

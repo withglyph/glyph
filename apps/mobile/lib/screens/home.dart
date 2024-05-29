@@ -21,6 +21,8 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with TickerProviderStateMixin {
+  final _carouselKey = GlobalKey();
+
   final _scrollController = ScrollController();
   late AnimationController _headerAnimationController;
   late Animation<Color?> _headerBackgroundColorAnimation;
@@ -46,8 +48,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     ).animate(_headerAnimationController);
 
     _scrollController.addListener(() {
+      final box = _carouselKey.currentContext?.findRenderObject() as RenderBox;
+      final offset = box.localToGlobal(Offset.zero);
+      final safeAreaHeight = MediaQuery.of(context).padding.top;
+
+      final carouselBottomPosition =
+          offset.dy + box.size.height - 54 - safeAreaHeight;
+
       _headerAnimationController.value =
-          clampDouble(_scrollController.offset / 54, 0, 1);
+          clampDouble((-carouselBottomPosition + 50) / 50, 0, 1);
     });
   }
 
@@ -64,6 +73,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               mainAxisSize: MainAxisSize.max,
               children: [
                 Image.network(
+                  key: _carouselKey,
                   'https://glyph.pub/images/_/banner_twitter_events_2.png',
                   height: 416,
                   fit: BoxFit.cover,

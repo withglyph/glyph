@@ -3,15 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:glyph/themes/colors.dart';
 
 class LoaderController {
-  const LoaderController(this.context);
+  LoaderController(this.context);
 
   final BuildContext context;
+  BuildContext? _loaderContext;
 
   void show() {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
+        _loaderContext = context;
+
         return const Center(
           child: CircularProgressIndicator(
             color: BrandColors.brand_600,
@@ -22,7 +25,7 @@ class LoaderController {
   }
 
   void dismiss() {
-    context.router.maybePop();
+    _loaderContext?.router.maybePop();
   }
 
   Future<T> run<T>(Future<T> Function() fn) async {
