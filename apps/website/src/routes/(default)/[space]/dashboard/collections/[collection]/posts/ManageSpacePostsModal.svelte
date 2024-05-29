@@ -18,6 +18,7 @@
 
   let collectionlessOnly = false;
   let selectedPostIds: string[] = [];
+  let query = '';
 
   $: spacePostsQuery = graphql(`
     query ManageSpacePostsModal_Query($slug: String!, $collectionlessOnly: Boolean) @_manual {
@@ -75,7 +76,7 @@
       zIndex: '1',
     })}
   >
-    <TextInput style={css.raw({ marginBottom: '10px' })} placeholder="포스트를 검색해주세요">
+    <TextInput style={css.raw({ marginBottom: '10px' })} placeholder="포스트를 검색해주세요" bind:value={query}>
       <Icon slot="left-icon" style={css.raw({ color: 'gray.400' })} icon={IconSearch} />
     </TextInput>
     <Checkbox
@@ -93,7 +94,7 @@
 
   <ul class={flex({ direction: 'column', grow: '1' })}>
     {#if $spacePostsQuery}
-      {#each $spacePostsQuery.space.posts as post (post.id)}
+      {#each $spacePostsQuery.space.posts.filter((p) => p.publishedRevision?.title?.includes(query) || p.publishedRevision?.subtitle?.includes(query)) as post (post.id)}
         {@const included = !!post.collection?.id || post.collection?.id === collectionId}
 
         <li
@@ -187,12 +188,15 @@
     on:click={async () => {
       if (!$spacePostsQuery) return;
 
-      await appendSpaceCollectionPosts({ postIds: selectedPostIds, spaceCollectionId: collectionId });
-      mixpanel.track('space:collection:post:append', {
-        spaceId: $spacePostsQuery.space.id,
-        spaceCollectionId: collectionId,
-        postIds: selectedPostIds,
-      });
+      if (selectedPostIds.length > 0) {
+        await appendSpaceCollectionPosts({ postIds: selectedPostIds, spaceCollectionId: collectionId });
+        mixpanel.track('space:collection:post:append', {
+          spaceId: $spacePostsQuery.space.id,
+          spaceCollectionId: collectionId,
+          postIds: selectedPostIds,
+        });
+      }
+
       open = false;
     }}
   >
