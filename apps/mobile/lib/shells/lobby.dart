@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/ferry/extension.dart';
@@ -35,31 +36,33 @@ class LobbyShell extends ConsumerWidget {
         return LobbyBottomNavigationBar(
           items: [
             LobbyBottomNavigationBarItem(
-              icon: const SvgIcon('home', color: BrandColors.gray_600),
-              activeIcon: const SvgIcon('home-filled'),
+              icon:
+                  const SvgIcon('home', size: 22, color: BrandColors.gray_400),
+              label: '홈',
+              activeIcon: const SvgIcon('home-filled', size: 22),
               isActive: tabsRouter.activeIndex == 0,
               onTap: () => tabsRouter.setActiveIndex(0),
             ),
             LobbyBottomNavigationBarItem(
-              icon: const SvgIcon('newspaper', color: BrandColors.gray_600),
-              activeIcon: const SvgIcon('newspaper-filled'),
+              icon:
+                  const SvgIcon('star', size: 22, color: BrandColors.gray_400),
+              activeIcon: const SvgIcon('star-filled', size: 22),
+              label: '구독',
               isActive: tabsRouter.activeIndex == 1,
               onTap: () => tabsRouter.setActiveIndex(1),
             ),
             LobbyBottomNavigationBarItem(
-              icon: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFFB597F6),
-                      Color(0xFF8364E8),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(4),
+              icon: Container(
+                constraints: const BoxConstraints(
+                  maxWidth: 36,
+                  maxHeight: 36,
                 ),
-                child: const Padding(
-                  padding: EdgeInsets.all(4),
-                  child: SvgIcon('plus', color: BrandColors.gray_0),
+                decoration: BoxDecoration(
+                  color: BrandColors.gray_900,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: const Center(
+                  child: SvgIcon('plus', size: 20, color: BrandColors.gray_0),
                 ),
               ),
               onTap: () async {
@@ -75,15 +78,18 @@ class LobbyShell extends ConsumerWidget {
               },
             ),
             LobbyBottomNavigationBarItem(
-              icon: const SvgIcon('albums', color: BrandColors.gray_600),
-              activeIcon: const SvgIcon('albums-filled'),
+              icon: const SvgIcon('archive',
+                  size: 22, color: BrandColors.gray_400),
+              activeIcon: const SvgIcon('archive-filled', size: 22),
+              label: '보관함',
               isActive: tabsRouter.activeIndex == 2,
               onTap: () => tabsRouter.setActiveIndex(2),
             ),
             LobbyBottomNavigationBarItem(
               icon: CircleAvatar(
-                radius: 12,
-                backgroundColor: BrandColors.gray_200,
+                key: const ValueKey('inactive'),
+                radius: 11,
+                backgroundColor: BrandColors.gray_100,
                 child: Padding(
                   padding: const EdgeInsets.all(1), // Border radius
                   child: ClipOval(
@@ -94,22 +100,17 @@ class LobbyShell extends ConsumerWidget {
               ),
               activeIcon: CircleAvatar(
                 key: const ValueKey('active'),
-                radius: 15,
+                radius: 11,
                 backgroundColor: BrandColors.gray_900,
                 child: Padding(
-                  padding: const EdgeInsets.all(2), // Border radius
-                  child: CircleAvatar(
-                    backgroundColor: BrandColors.gray_0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(1),
-                      child: ClipOval(
-                          child: me == null
-                              ? null
-                              : Image.network(me.profile.avatar.url)),
-                    ),
-                  ),
+                  padding: const EdgeInsets.all(1), // Border radius
+                  child: ClipOval(
+                      child: me == null
+                          ? null
+                          : Image.network(me.profile.avatar.url)),
                 ),
               ),
+              label: 'MY글리프',
               isActive: tabsRouter.activeIndex == 3,
               onTap: () => tabsRouter.setActiveIndex(3),
             ),
@@ -130,40 +131,76 @@ class LobbyBottomNavigationBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      height: 85,
-      decoration: const BoxDecoration(
-        color: BrandColors.gray_0,
-        border: Border(top: BorderSide(color: BrandColors.gray_200)),
-      ),
-      child: SafeArea(
-        child: Row(
-          children: items.map((item) {
-            return Expanded(
-              child: Pressable(
-                onPressed: item.onTap,
-                child: Center(
-                  child: item.isActive == true ? item.activeIcon : item.icon,
-                ),
+    return SafeArea(
+      child: Container(
+        height: 56,
+        decoration: const BoxDecoration(
+          color: BrandColors.gray_0,
+          border: Border(top: BorderSide(color: BrandColors.gray_100)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 460),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: items,
               ),
-            );
-          }).toList(),
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-class LobbyBottomNavigationBarItem {
+class LobbyBottomNavigationBarItem extends ConsumerWidget {
   const LobbyBottomNavigationBarItem({
+    super.key,
     required this.icon,
-    Widget? activeIcon,
+    this.activeIcon,
+    this.label,
     this.isActive,
     this.onTap,
-  }) : activeIcon = activeIcon ?? icon;
+  });
 
   final Widget icon;
   final Widget? activeIcon;
+  final String? label;
   final bool? isActive;
   final Function()? onTap;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentIcon = isActive == true ? activeIcon ?? icon : icon;
+
+    return Pressable(
+      onPressed: onTap,
+      child: SizedBox(
+        width: 60,
+        child: Center(
+          child: label == null
+              ? currentIcon
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    currentIcon,
+                    const Gap(3),
+                    Text(
+                      label!,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: isActive == true
+                            ? BrandColors.gray_900
+                            : BrandColors.gray_400,
+                      ),
+                    ),
+                  ],
+                ),
+        ),
+      ),
+    );
+  }
 }

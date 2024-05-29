@@ -1,70 +1,143 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/components/svg_image.dart';
 import 'package:glyph/components/svg_icon.dart';
+import 'package:glyph/components/svg_image.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SafeArea(
-      child: Column(
+  createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen>
+    with TickerProviderStateMixin {
+  final _scrollController = ScrollController();
+  late AnimationController _headerAnimationController;
+  late Animation<Color?> _headerBackgroundColorAnimation;
+  late Animation<Color?> _headerForegroundColorAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _headerAnimationController = AnimationController(
+      vsync: this,
+      duration: Duration.zero,
+    );
+
+    _headerBackgroundColorAnimation = ColorTween(
+      begin: Colors.transparent,
+      end: BrandColors.gray_0,
+    ).animate(_headerAnimationController);
+
+    _headerForegroundColorAnimation = ColorTween(
+      begin: BrandColors.gray_0,
+      end: BrandColors.gray_900,
+    ).animate(_headerAnimationController);
+
+    _scrollController.addListener(() {
+      _headerAnimationController.value =
+          clampDouble(_scrollController.offset / 54, 0, 1);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+      child: Stack(
+        fit: StackFit.passthrough,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
+          SingleChildScrollView(
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
               children: [
-                const SvgImage('logos/compact', height: 24),
-                const Gap(16),
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      isDense: true,
-                      filled: true,
-                      fillColor: BrandColors.gray_100,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      prefixIcon: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: SvgIcon('search', color: BrandColors.gray_500),
-                      ),
-                      prefixIconConstraints:
-                          const BoxConstraints(minHeight: 24),
-                      hintText: '포스트, 태그를 검색하세요',
-                      hintStyle: const TextStyle(color: BrandColors.gray_400),
-                    ),
-                    onSubmitted: (value) {
-                      if (value.isNotEmpty) {
-                        context.router
-                            .push(PlaceholderRoute(text: '검색: $value'));
-                      }
-                    },
-                  ),
+                Image.network(
+                  'https://glyph.pub/images/_/banner_twitter_events_2.png',
+                  height: 416,
+                  fit: BoxFit.cover,
                 ),
-                const Gap(16),
-                Pressable(
-                  child: const SvgIcon('notification'),
-                  onPressed: () {
-                    context.router.push(const NotificationRoute());
-                  },
+                ...List.generate(
+                  20,
+                  (index) => Container(
+                    height: 200,
+                    color: BrandColors.gray_0,
+                    child: Center(
+                      child: Text('Post $index'),
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
-          const Expanded(child: Center(child: Text('홈'))),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            child: AnimatedBuilder(
+              animation: _headerAnimationController,
+              builder: (context, child) {
+                return Container(
+                  color: _headerBackgroundColorAnimation.value,
+                  child: SafeArea(
+                    child: SizedBox(
+                      height: 54,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            SvgImage(
+                              'logos/full',
+                              width: 86,
+                              color: _headerForegroundColorAnimation.value,
+                            ),
+                            const Spacer(),
+                            Pressable(
+                              child: Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: SvgIcon(
+                                  'search',
+                                  color: _headerForegroundColorAnimation.value,
+                                ),
+                              ),
+                              onPressed: () {
+                                context.router
+                                    .push(PlaceholderRoute(text: '검색'));
+                              },
+                            ),
+                            const Gap(18),
+                            Pressable(
+                              child: Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: SvgIcon(
+                                  'notification',
+                                  color: _headerForegroundColorAnimation.value,
+                                ),
+                              ),
+                              onPressed: () {
+                                context.router.push(const NotificationRoute());
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
         ],
       ),
     );

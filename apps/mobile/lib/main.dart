@@ -24,7 +24,11 @@ Future<void> main() async {
     statusBarIconBrightness: Brightness.dark,
   ));
 
-  SystemChrome.setEnabledSystemUIMode(
+  await SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp],
+  );
+
+  await SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.edgeToEdge,
     overlays: [SystemUiOverlay.top],
   );

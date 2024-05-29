@@ -12,6 +12,12 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    const defaultTextStyle = TextStyle(
+      color: BrandColors.gray_900,
+      height: 1.44,
+      letterSpacing: -0.04,
+    );
+
     return MaterialApp.router(
       routerConfig: _router.config(
         placeholder: (context) => const SplashScreen(),
@@ -26,21 +32,21 @@ class App extends ConsumerWidget {
           space: 0,
         ),
         textTheme: const TextTheme(
-          bodySmall: TextStyle(color: BrandColors.gray_900),
-          bodyMedium: TextStyle(color: BrandColors.gray_900),
-          bodyLarge: TextStyle(color: BrandColors.gray_900),
-          displaySmall: TextStyle(color: BrandColors.gray_900),
-          displayMedium: TextStyle(color: BrandColors.gray_900),
-          displayLarge: TextStyle(color: BrandColors.gray_900),
-          headlineSmall: TextStyle(color: BrandColors.gray_900),
-          headlineMedium: TextStyle(color: BrandColors.gray_900),
-          headlineLarge: TextStyle(color: BrandColors.gray_900),
-          labelSmall: TextStyle(color: BrandColors.gray_900),
-          labelMedium: TextStyle(color: BrandColors.gray_900),
-          labelLarge: TextStyle(color: BrandColors.gray_900),
-          titleSmall: TextStyle(color: BrandColors.gray_900),
-          titleMedium: TextStyle(color: BrandColors.gray_900),
-          titleLarge: TextStyle(color: BrandColors.gray_900),
+          bodySmall: defaultTextStyle,
+          bodyMedium: defaultTextStyle,
+          bodyLarge: defaultTextStyle,
+          displaySmall: defaultTextStyle,
+          displayMedium: defaultTextStyle,
+          displayLarge: defaultTextStyle,
+          headlineSmall: defaultTextStyle,
+          headlineMedium: defaultTextStyle,
+          headlineLarge: defaultTextStyle,
+          labelSmall: defaultTextStyle,
+          labelMedium: defaultTextStyle,
+          labelLarge: defaultTextStyle,
+          titleSmall: defaultTextStyle,
+          titleMedium: defaultTextStyle,
+          titleLarge: defaultTextStyle,
         ),
       ),
     );
