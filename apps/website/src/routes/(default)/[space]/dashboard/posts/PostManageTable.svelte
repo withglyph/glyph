@@ -205,13 +205,15 @@
             </Select>
 
             <Button
-              style={css.raw({
+              style={flex.raw({
+                align: 'center',
                 height: '25px',
                 outlineWidth: '0!',
                 borderWidth: '1px',
                 borderColor: 'gray.200',
                 backgroundColor: 'gray.0',
               })}
+              disabled={selectedPosts.length === 0}
               size="xs"
               variant="gray-outline"
               on:click={() => {
