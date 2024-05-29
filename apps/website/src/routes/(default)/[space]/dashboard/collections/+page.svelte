@@ -52,14 +52,14 @@
   </Button>
 </div>
 
-<ul class={flex({ direction: 'column', gap: '8px' })}>
+<ul class={flex({ direction: 'column', gap: { sm: '8px' } })}>
   {#each $query.space.collections as collection (collection.id)}
     <li class={css({ '& + & > a': { borderTopWidth: '1px' } })}>
       <a
         class={flex({
           justify: 'space-between',
           gap: '12px',
-          borderColor: 'gray.150',
+          borderColor: 'gray.100',
           paddingY: '14px',
           paddingLeft: '14px',
           paddingRight: '20px',
@@ -76,8 +76,16 @@
           size={128}
         />
 
-        <div class={flex({ direction: 'column', justify: 'space-between', align: 'flex-start', grow: '1' })}>
-          <div>
+        <div
+          class={flex({
+            direction: 'column',
+            justify: 'space-between',
+            align: 'flex-start',
+            width: 'full',
+            truncate: true,
+          })}
+        >
+          <div class={css({ width: 'full', truncate: true })}>
             <h2 class={css({ marginBottom: '2px', fontSize: '15px', fontWeight: 'semibold', truncate: true })}>
               {collection.name}
             </h2>

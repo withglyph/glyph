@@ -151,7 +151,9 @@
         />
       </TableHead>
       <TableHead style={css.raw({ paddingLeft: '0', fontSize: '13px', fontWeight: 'medium', color: 'gray.500' })}>
-        <div class={flex({ align: 'center', justify: 'space-between', gap: { base: '20px', sm: '86px' } })}>
+        <div
+          class={flex({ align: 'center', justify: 'space-between', gap: { base: '10px', sm: '86px' }, wrap: 'wrap' })}
+        >
           <p>
             {#if selectedPosts.length > 0}
               {selectedPosts.length}개 선택됨
@@ -160,7 +162,7 @@
             {/if}
           </p>
 
-          <div class={flex({ align: 'center', gap: '8px' })}>
+          <div class={flex({ align: 'center', gap: '8px', marginLeft: 'auto' })}>
             <Select
               style={css.raw({
                 borderColor: 'gray.200',
@@ -240,7 +242,7 @@
         <TableData style={css.raw({ padding: '20px', paddingLeft: '0', maxWidth: '1px', truncate: true })}>
           <div class={css({ position: 'relative' })}>
             <a href="/{post.space.slug}/{post.permalink}">
-              <div class={flex({ align: 'flex-start', justify: 'space-between', gap: '86px' })}>
+              <div class={flex({ align: 'flex-start', justify: 'space-between', gap: { base: '10px', sm: '86px' } })}>
                 <div class={css({ truncate: true })}>
                   {#if post.collection}
                     <p class={css({ marginBottom: '2px', fontSize: '13px', fontWeight: 'medium', truncate: true })}>

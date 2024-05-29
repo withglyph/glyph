@@ -60,7 +60,7 @@
   `);
 </script>
 
-<Modal style={css.raw({ paddingTop: '0' })} size="lg" bind:open>
+<Modal style={flex.raw({ direction: 'column', grow: '1', paddingTop: '0' })} size="lg" bind:open>
   <svelte:fragment slot="title">포스트 추가</svelte:fragment>
 
   <div
@@ -91,7 +91,7 @@
     </Checkbox>
   </div>
 
-  <ul class={flex({ direction: 'column' })}>
+  <ul class={flex({ direction: 'column', grow: '1' })}>
     {#if $spacePostsQuery}
       {#each $spacePostsQuery.space.posts as post (post.id)}
         {@const included = !!post.collection?.id || post.collection?.id === collectionId}
@@ -170,6 +170,12 @@
             {/if}
           </div>
         </li>
+      {:else}
+        <li
+          class={css({ marginY: 'auto', paddingY: '77px', fontSize: '15px', color: 'gray.500', textAlign: 'center' })}
+        >
+          포스트가 없어요
+        </li>
       {/each}
     {/if}
   </ul>
@@ -178,7 +184,6 @@
     slot="action"
     style={css.raw({ width: 'full' })}
     size="lg"
-    variant="gradation-fill"
     on:click={async () => {
       if (!$spacePostsQuery) return;
 
