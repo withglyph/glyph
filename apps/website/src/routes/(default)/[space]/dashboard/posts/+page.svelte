@@ -3,7 +3,7 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { Helmet } from '$lib/components';
-  import { Select, SelectItem } from '$lib/components/v2/select';
+  import { Select, SelectItem } from '$lib/components/select';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import { initFilter } from './filter';

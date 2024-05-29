@@ -8,11 +8,10 @@
 <td
   class={css(
     {
-      paddingRight: '16px',
-      paddingY: '16px',
-      whiteSpace: 'nowrap',
+      padding: '14px',
+      fontSize: { base: '14px', sm: '15px' },
+      color: 'gray.600',
       truncate: true,
-      _firstOfType: { paddingLeft: '16px' },
     },
     style,
   )}

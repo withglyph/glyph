@@ -8,11 +8,10 @@
 <th
   class={css(
     {
-      borderYWidth: '1px',
-      borderColor: 'gray.200',
-      paddingY: '8px',
-      _firstOfType: { borderLeftWidth: '1px', borderLeftRadius: '8px', paddingLeft: '16px' },
-      _lastOfType: { borderRightWidth: '1px', borderRightRadius: '8px', paddingRight: '16px' },
+      borderBottomWidth: '1px',
+      borderBottomColor: 'gray.150',
+      paddingY: '10px',
+      paddingX: '14px',
     },
     style,
   )}

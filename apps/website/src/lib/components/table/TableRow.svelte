@@ -13,12 +13,11 @@
 <tr
   class={css(
     {
-      'truncate': true,
       '& > td': {
         borderBottomWidth: '1px',
-        borderBottomColor: 'gray.200',
+        borderBottomColor: 'gray.150',
       },
-      '_lastOfType': { '& > td': { borderBottomWidth: '0' } },
+      'truncate': true,
     },
     style,
   )}

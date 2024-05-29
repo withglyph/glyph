@@ -10,8 +10,8 @@
   import { mixpanel } from '$lib/analytics';
   import { Alert, Avatar, Chip, Helmet, Icon } from '$lib/components';
   import { Switch } from '$lib/components/forms';
+  import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
   import { Button, Modal } from '$lib/components/v2';
-  import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/v2/table';
   import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';

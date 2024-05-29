@@ -4,8 +4,8 @@
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Checkbox } from '$lib/components/forms';
+  import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
   import { Button } from '$lib/components/v2';
-  import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/v2/table';
   import { css } from '$styled-system/css';
 
   $: query = graphql(`

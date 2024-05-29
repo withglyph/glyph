@@ -3,7 +3,7 @@
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
   import { Helmet, Icon } from '$lib/components';
-  import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/v2/table';
+  import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
   import { revenueWithdrawalState } from '$lib/const/revenue';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';

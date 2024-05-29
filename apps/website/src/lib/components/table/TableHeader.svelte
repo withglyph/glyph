@@ -9,9 +9,8 @@
   class={css(
     {
       '& > tr': {
-        fontSize: '13px',
-        fontWeight: 'bold',
-        color: 'gray.500',
+        fontSize: '14px',
+        fontWeight: 'semibold',
         backgroundColor: 'gray.50',
       },
     },
