@@ -1,7 +1,7 @@
 import { and, count, eq } from 'drizzle-orm';
 import * as R from 'radash';
 import { useCache } from '../cache';
-import { database, Posts, PostTags } from '../database';
+import { database, Posts, PostTags, TagFollows } from '../database';
 
 export const getTagUsageCount = (tagId: string) => {
   return useCache(
@@ -22,4 +22,16 @@ export const getTagUsageCount = (tagId: string) => {
     },
     60 * 60,
   );
+};
+
+export const getFollowingTagIds = async (userId?: string) => {
+  if (!userId) {
+    return [];
+  }
+
+  return await database
+    .select({ tagId: TagFollows.tagId })
+    .from(TagFollows)
+    .where(eq(TagFollows.userId, userId))
+    .then((rows) => rows.map((row) => row.tagId));
 };

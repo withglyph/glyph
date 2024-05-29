@@ -1,8 +1,16 @@
 import { match } from 'ts-pattern';
 import { elasticSearch, indexName } from '$lib/server/search';
-import { getMutedSpaceIds, getMutedTagIds, makeQueryContainers } from '$lib/server/utils';
+import {
+  getFollowingTagIds,
+  getMutedSpaceIds,
+  getMutedTagIds,
+  makeQueryContainers,
+  searchResultToIds,
+} from '$lib/server/utils';
+import { disassembleHangulString } from '$lib/utils';
 import { builder } from '../builder';
 import { Post } from './post';
+import { Tag } from './tag';
 import type { SearchResponse } from '$lib/server/utils';
 
 /**
@@ -121,6 +129,47 @@ builder.queryFields((t) => ({
       });
 
       return { result: searchResult };
+    },
+  }),
+
+  searchTags: t.field({
+    type: [Tag],
+    args: {
+      query: t.arg.string(),
+      excludeMute: t.arg.boolean({ defaultValue: true }),
+      excludeFollow: t.arg.boolean({ defaultValue: false }),
+    },
+    resolve: async (_, args, context) => {
+      const [mutedTagIds, followingTagIds] = await Promise.all([
+        args.excludeMute ? getMutedTagIds({ userId: context.session?.userId }) : [],
+        args.excludeFollow ? getFollowingTagIds(context.session?.userId) : [],
+      ]);
+
+      const excludeTagIds = [...mutedTagIds, ...followingTagIds];
+
+      const searchResult = await elasticSearch.search({
+        index: indexName('tags'),
+        query: {
+          bool: {
+            should: [
+              { match_phrase: { 'name.raw': { query: args.query, boost: 2 } } },
+              {
+                match_phrase: /^[ㄱ-ㅎ]+$/.test(args.query)
+                  ? { 'name.initial': args.query }
+                  : { 'name.disassembled': disassembleHangulString(args.query) },
+              },
+            ],
+            must_not: makeQueryContainers([
+              {
+                query: { ids: { values: excludeTagIds } },
+                condition: excludeTagIds.length > 0,
+              },
+            ]),
+          },
+        },
+      });
+
+      return searchResultToIds(searchResult);
     },
   }),
 }));
