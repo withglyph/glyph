@@ -6,6 +6,7 @@
   import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { Button, Modal } from '$lib/components/v2';
   import { Select, SelectItem } from '$lib/components/v2/select';
+  import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type { PostManageTable_SwitchCollectionModal_spaceCollection } from '$glitch';
@@ -109,13 +110,14 @@
     size="lg"
     variant="gradation-fill"
     on:click={async () => {
-      if (!selectedCollection) return;
-
-      await appendSpaceCollectionPosts({ postIds: selectedPostIds, spaceCollectionId: selectedCollection.id });
-      mixpanel.track('space:collection:post:append', {
-        spaceCollectionId: selectedCollection.id,
-        postIds: selectedPostIds,
-      });
+      if (selectedCollection) {
+        await appendSpaceCollectionPosts({ postIds: selectedPostIds, spaceCollectionId: selectedCollection.id });
+        mixpanel.track('space:collection:post:append', {
+          spaceCollectionId: selectedCollection.id,
+          postIds: selectedPostIds,
+        });
+        toast.success('컬렉션 변경이 완료되었어요');
+      }
       open = false;
     }}
   >

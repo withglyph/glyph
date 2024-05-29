@@ -4,6 +4,7 @@
   import { SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { Switch } from '$lib/components/forms';
   import { Button, Modal } from '$lib/components/v2';
+  import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
   import type { PostCommentQualification, UpdateCommentOptionModal_user } from '$glitch';
@@ -103,7 +104,7 @@
       mixpanel.track('post:update:option', { postIds: selectedPostIds, commentQualification });
 
       commentQualification = 'ANY';
-
+      toast.success('댓글옵션 변경이 완료되었어요');
       open = false;
     }}
   >

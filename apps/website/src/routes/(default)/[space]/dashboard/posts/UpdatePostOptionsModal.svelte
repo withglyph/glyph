@@ -3,6 +3,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Switch } from '$lib/components/forms';
   import { Button, Modal } from '$lib/components/v2';
+  import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
 
@@ -103,6 +104,7 @@
         receivePatronage,
         protectContent,
       });
+      toast.success('세부옵션 변경이 완료되었어요');
       open = false;
     }}
   >

@@ -4,6 +4,7 @@
   import { Image } from '$lib/components';
   import { ThumbnailPicker } from '$lib/components/media';
   import { Button, Modal } from '$lib/components/v2';
+  import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type { Image_image } from '$glitch';
@@ -112,10 +113,12 @@
     size="lg"
     variant="gradation-fill"
     on:click={() => {
-      if (!thumbnail) return;
+      if (thumbnail) {
+        Promise.all(selectedPostIds.map((id) => replacePostThumbnail({ postId: id, thumbnailId: thumbnail?.id })));
+        mixpanel.track('post:replace:thumbnail', { postIds: selectedPostIds });
+        toast.success('썸네일 변경이 완료되었어요');
+      }
 
-      mixpanel.track('post:replace:thumbnail', { postIds: selectedPostIds });
-      Promise.all(selectedPostIds.map((id) => replacePostThumbnail({ postId: id, thumbnailId: thumbnail?.id })));
       open = false;
     }}
   >

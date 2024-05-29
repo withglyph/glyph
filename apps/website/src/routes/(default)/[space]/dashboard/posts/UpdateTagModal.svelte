@@ -4,6 +4,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Icon, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
+  import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { center, flex, grid } from '$styled-system/patterns';
   import PublishMenuSearch from '../../../../editor/[permalink]/PublishMenuSearch.svelte';
@@ -172,6 +173,7 @@
     on:click={() => {
       Promise.all(selectedPostIds.map((id) => updatePostTags({ postId: id, category: selectedCategory, pairs, tags })));
       mixpanel.track('post:tags:update', { postIds: selectedPostIds, category: selectedCategory, pairs, tags });
+      toast.success('태그 변경이 완료되었어요');
       open = false;
     }}
   >

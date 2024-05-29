@@ -7,6 +7,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Icon, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
+  import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import RadioGroup from '../../../../editor/[permalink]/RadioGroup.svelte';
@@ -160,7 +161,7 @@
       visibility = null;
       ageRating = null;
       externalSearchable = null;
-
+      toast.success('대상독자 변경이 완료되었어요');
       open = false;
     }}
   >
