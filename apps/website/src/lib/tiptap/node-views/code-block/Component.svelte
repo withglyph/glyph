@@ -106,7 +106,7 @@
               copied = false;
             }, 1000);
           } catch (err) {
-            toast('클립보드 복사를 실패했어요');
+            toast.error('클립보드 복사를 실패했어요');
             console.error(err);
           }
         }}

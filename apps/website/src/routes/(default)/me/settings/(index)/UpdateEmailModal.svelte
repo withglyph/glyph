@@ -40,7 +40,7 @@
     },
     onError: (resp) => {
       // @ts-expect-error form validation error
-      toast(resp.message);
+      toast.error(resp.message);
     },
   });
 </script>

@@ -1075,7 +1075,7 @@
               });
               mixpanel.track('post:unlock', { postId: $query.post.id });
             } catch (err) {
-              if (err instanceof FormValidationError) toast(err.message);
+              if (err instanceof FormValidationError) toast.error(err.message);
             }
           }}
         >

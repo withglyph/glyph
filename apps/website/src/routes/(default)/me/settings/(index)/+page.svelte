@@ -91,7 +91,7 @@
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async (resp: any) => {
         if (resp.error_msg) {
-          toast(resp.error_msg);
+          toast.error(resp.error_msg);
           return;
         }
 
@@ -106,7 +106,7 @@
   onMount(() => {
     switch ($page.url.searchParams.get('message')) {
       case 'sso_already_linked_by_other':
-        toast('이 소셜 계정은 이미 다른 글리프 계정에 연동되어 있어요.');
+        toast.error('이 소셜 계정은 이미 다른 글리프 계정에 연동되어 있어요.');
         break;
     }
   });

@@ -29,7 +29,7 @@ export default createClient({
   },
   onMutationError: (error) => {
     if (error instanceof AppError && !error.extra.internal) {
-      toast(error.message);
+      toast.error(error.message);
     }
   },
 });
