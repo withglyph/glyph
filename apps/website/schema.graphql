@@ -854,7 +854,7 @@ type Space {
   myMasquerade: SpaceMasquerade
   name: String!
   postCount: Int!
-  posts(collectionId: ID, collectionlessOnly: Boolean! = false, mine: Boolean! = false, priceCategory: PostPriceCategory, visibility: PostVisibility): [Post!]!
+  posts(anyCollection: Boolean, collectionId: ID, mine: Boolean! = false, priceCategory: PostPriceCategory, visibility: PostVisibility): [Post!]!
   slug: String!
   visibility: SpaceVisibility!
 }

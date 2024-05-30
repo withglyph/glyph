@@ -151,7 +151,7 @@ Space.implement({
         mine: t.arg.boolean({ defaultValue: false }),
         visibility: t.arg({ type: PostVisibility, required: false }),
         collectionId: t.arg.id({ required: false }),
-        collectionlessOnly: t.arg.boolean({ defaultValue: false }),
+        anyCollection: t.arg.boolean({ required: false }),
         priceCategory: t.arg({ type: PostPriceCategory, required: false }),
       },
       resolve: async (space, args, context) => {
@@ -181,7 +181,8 @@ Space.implement({
               args.priceCategory === 'FREE' ? isNull(PostRevisions.price) : undefined,
               args.priceCategory === 'PAID' ? isNotNull(PostRevisions.price) : undefined,
               args.collectionId ? eq(SpaceCollectionPosts.collectionId, args.collectionId) : undefined,
-              args.collectionlessOnly ? isNull(SpaceCollectionPosts.collectionId) : undefined,
+              args.anyCollection === true ? isNotNull(SpaceCollectionPosts.collectionId) : undefined,
+              args.anyCollection === false ? isNull(SpaceCollectionPosts.collectionId) : undefined,
               meAsMember ? undefined : eq(Posts.visibility, 'PUBLIC'),
               context.session && !meAsMember
                 ? notExists(

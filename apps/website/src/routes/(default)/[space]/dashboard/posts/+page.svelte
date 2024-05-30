@@ -15,7 +15,7 @@
       $collectionId: ID
       $priceCategory: PostPriceCategory
       $visibility: PostVisibility
-      $collectionlessOnly: Boolean
+      $anyCollection: Boolean
     ) {
       space(slug: $slug) {
         id
@@ -26,7 +26,7 @@
           collectionId: $collectionId
           priceCategory: $priceCategory
           visibility: $visibility
-          collectionlessOnly: $collectionlessOnly
+          anyCollection: $anyCollection
         ) {
           id
           ...PostManageTable_post
@@ -42,13 +42,13 @@
     }
   `);
 
-  let { visibility, price, collectionId, collectionlessOnly } = initFilter($page.url.search);
+  let { visibility, price, collectionId, anyCollection } = initFilter($page.url.search);
 
   $: {
     visibility = initFilter($page.url.search).visibility;
     price = initFilter($page.url.search).price;
     collectionId = initFilter($page.url.search).collectionId;
-    collectionlessOnly = initFilter($page.url.search).collectionlessOnly;
+    anyCollection = initFilter($page.url.search).anyCollection;
 
     [$page.url.search];
   }
@@ -61,7 +61,7 @@
           visibility,
           price,
           collectionId,
-          collectionlessOnly,
+          anyCollection,
         },
       },
       { skipNull: true },
@@ -171,7 +171,7 @@
 
   <Select
     style={css.raw(
-      (!!collectionId || collectionlessOnly) && {
+      (!!collectionId || anyCollection === false) && {
         backgroundColor: { base: 'gray.900', _hover: 'gray.800!' },
         color: 'gray.0!',
       },
@@ -181,16 +181,16 @@
     <div slot="placeholder" class={css({ minWidth: '53px', maxWidth: '120px', textAlign: 'left', truncate: true })}>
       {collectionId
         ? $query.space.collections.find((c) => c.id === collectionId)?.name
-        : collectionlessOnly
+        : anyCollection === false
           ? '컬렉션 없음'
           : '컬렉션'}
     </div>
 
-    {#if !!collectionId || collectionlessOnly}
+    {#if !!collectionId || anyCollection === false}
       <SelectItem
         on:click={() => {
           collectionId = null;
-          collectionlessOnly = false;
+          anyCollection = undefined;
           updateSearchFilter();
         }}
       >
@@ -200,7 +200,7 @@
     <SelectItem
       on:click={() => {
         collectionId = null;
-        collectionlessOnly = true;
+        anyCollection = false;
         updateSearchFilter();
       }}
     >
@@ -210,7 +210,7 @@
       <SelectItem
         on:click={() => {
           collectionId = collection.id;
-          collectionlessOnly = false;
+          anyCollection = undefined;
           updateSearchFilter();
         }}
       >

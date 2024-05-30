@@ -22,11 +22,11 @@
   let query = '';
 
   $: spacePostsQuery = graphql(`
-    query ManageSpacePostsModal_Query($slug: String!, $collectionlessOnly: Boolean) @_manual {
+    query ManageSpacePostsModal_Query($slug: String!, $anyCollection: Boolean) @_manual {
       space(slug: $slug) {
         id
 
-        posts(collectionlessOnly: $collectionlessOnly) {
+        posts(anyCollection: $anyCollection) {
           id
 
           publishedRevision {
@@ -50,7 +50,7 @@
   `);
 
   onMount(() => {
-    spacePostsQuery.refetch({ slug: spaceSlug, collectionlessOnly: false });
+    spacePostsQuery.refetch({ slug: spaceSlug, anyCollection: undefined });
   });
 
   const appendSpaceCollectionPosts = graphql(`
@@ -91,7 +91,7 @@
       bind:checked={collectionlessOnly}
       on:change={() => {
         collectionlessOnly = !collectionlessOnly;
-        spacePostsQuery.refetch({ slug: spaceSlug, collectionlessOnly });
+        spacePostsQuery.refetch({ slug: spaceSlug, anyCollection: collectionlessOnly ? false : undefined });
       }}
     >
       타 컬렉션에 속하지 않은 포스트만 보기

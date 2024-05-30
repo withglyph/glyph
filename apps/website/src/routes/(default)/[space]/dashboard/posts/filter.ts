@@ -5,7 +5,7 @@ export const initFilter = (param: string) => {
   let visibility: PostVisibility | null = null;
   let price: PostPriceCategory | null = null;
   let collectionId: string | null = null;
-  let collectionlessOnly = false;
+  let anyCollection: false | undefined = undefined;
 
   const parsedURL = qs.parseUrl(param).query;
 
@@ -21,9 +21,9 @@ export const initFilter = (param: string) => {
     collectionId = parsedURL.collectionId as string;
   }
 
-  if (parsedURL.collectionlessOnly) {
-    collectionlessOnly = JSON.parse(parsedURL.collectionlessOnly.toString());
+  if (parsedURL.anyCollection) {
+    anyCollection = JSON.parse(parsedURL.anyCollection.toString());
   }
 
-  return { visibility, price, collectionId, collectionlessOnly };
+  return { visibility, price, collectionId, anyCollection };
 };
