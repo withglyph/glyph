@@ -125,4 +125,8 @@
   </Button>
 </Modal>
 
-<CreateCollectionModal bind:open={createCollectionOpen} bind:spaceId />
+<CreateCollectionModal
+  bind:open={createCollectionOpen}
+  bind:spaceId
+  on:success={(e) => (selectedCollection = e.detail)}
+/>

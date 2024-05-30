@@ -1,5 +1,6 @@
 <script lang="ts">
   import mixpanel from 'mixpanel-browser';
+  import { createEventDispatcher } from 'svelte';
   import IconCamera from '~icons/tabler/camera';
   import { graphql } from '$glitch';
   import { Icon, Image } from '$lib/components';
@@ -23,6 +24,10 @@
     thumbnail = null;
   }
 
+  const dispatch = createEventDispatcher<{
+    success: { id: string; name: string; thumbnail: (Image_image & { id: string }) | null };
+  }>();
+
   const createSpaceCollection = graphql(`
     mutation CreateCollectionModal_CreateSpaceCollection_Mutation($input: CreateSpaceCollectionInput!) {
       createSpaceCollection(input: $input) {
@@ -42,6 +47,7 @@
           description
 
           thumbnail {
+            id
             ...Image_image
           }
         }
@@ -57,9 +63,10 @@
     initialValues: {
       spaceCollectionId: '',
     },
-    onSuccess: ({ id }) => {
+    onSuccess: ({ id, name }) => {
       open = false;
       mixpanel.track('space:collection:create', { spaceId, collectionId: id });
+      dispatch('success', { id, name, thumbnail });
     },
   });
 </script>
