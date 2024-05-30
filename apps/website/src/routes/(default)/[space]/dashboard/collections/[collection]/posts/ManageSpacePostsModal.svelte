@@ -1,11 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import IconHelpLine from '~icons/glyph/help-line';
   import IconMinus from '~icons/tabler/minus';
   import IconPlus from '~icons/tabler/plus';
   import IconSearch from '~icons/tabler/search';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon, Image } from '$lib/components';
+  import { Icon, Image, Tooltip } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { Button, Modal } from '$lib/components/v2';
   import { TextInput } from '$lib/components/v2/forms';
@@ -62,7 +63,12 @@
 </script>
 
 <Modal style={flex.raw({ direction: 'column', grow: '1', paddingTop: '0' })} size="lg" bind:open>
-  <svelte:fragment slot="title">포스트 추가</svelte:fragment>
+  <div slot="title" class={flex({ align: 'center', gap: '4px' })}>
+    <p>포스트 추가</p>
+    <Tooltip message="다른 컬렉션에 속하지 않은 포스트만 컬렉션에 추가할 수 있어요" offset={4} placement="top">
+      <Icon style={css.raw({ 'color': 'gray.300', '& *': { strokeWidth: '[1]' } })} icon={IconHelpLine} />
+    </Tooltip>
+  </div>
 
   <div
     class={css({
