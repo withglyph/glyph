@@ -447,9 +447,9 @@
 </script>
 
 <svelte:window
-  on:contextmenu={handleContentProtection}
-  on:copy={handleContentProtection}
-  on:cut={handleContentProtection}
+  on:contextmenu|capture={handleContentProtection}
+  on:copy|capture={handleContentProtection}
+  on:cut|capture={handleContentProtection}
   on:scroll={(e) => {
     if (e.currentTarget.innerWidth < 992) {
       var currentScrollPos = e.currentTarget.scrollY;
