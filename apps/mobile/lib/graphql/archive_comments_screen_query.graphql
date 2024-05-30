@@ -1,0 +1,16 @@
+# import './fragments/post_card_post.graphql';
+
+query ArchiveCommentsScreen_Query {
+  me {
+    id
+
+    comments {
+      id
+
+      post {
+        id
+        ...PostCard_post
+      }
+    }
+  }
+}

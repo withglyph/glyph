@@ -1,0 +1,45 @@
+# import './tag_tag.graphql'
+# import './img_image.graphql'
+
+fragment PostCard_post on Post {
+  id
+  permalink
+  viewCount
+  reactionCount
+  commentCount
+  publishedAt
+
+  publishedRevision {
+    id
+    title
+    subtitle
+    previewText
+  }
+
+  thumbnail {
+    id
+    ...Img_image
+  }
+
+  space {
+    id
+    name
+
+    icon {
+      id
+      ...Img_image
+    }
+  }
+
+  tags {
+    id
+
+    tag {
+      ...Tag_tag
+    }
+  }
+
+  bookmarkGroups {
+    id
+  }
+}

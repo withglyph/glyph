@@ -27,6 +27,11 @@ class App extends ConsumerWidget {
       theme: ThemeData(
         fontFamily: 'SUIT',
         scaffoldBackgroundColor: Colors.white,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: BrandColors.gray_0,
+          scrolledUnderElevation: 0,
+          toolbarHeight: 54,
+        ),
         dividerTheme: const DividerThemeData(
           color: BrandColors.gray_100,
           space: 0,

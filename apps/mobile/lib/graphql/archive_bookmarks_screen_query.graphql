@@ -1,0 +1,16 @@
+# import './fragments/post_card_post.graphql';
+
+query ArchiveBookmarksScreen_Query {
+  me {
+    id
+
+    bookmarkGroups {
+      id
+
+      posts {
+        id
+        ...PostCard_post
+      }
+    }
+  }
+}

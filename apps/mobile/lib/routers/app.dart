@@ -41,7 +41,16 @@ class AppRouter extends $AppRouter {
               children: [
                 AutoRoute(page: HomeRoute.page, initial: true),
                 AutoRoute(page: FeedRoute.page, path: 'feed'),
-                AutoRoute(page: ArchiveRoute.page, path: 'archive'),
+                AutoRoute(
+                  page: ArchiveRoute.page,
+                  path: 'archive',
+                  children: [
+                    AutoRoute(page: ArchiveBookmarksRoute.page),
+                    AutoRoute(page: ArchiveRecentsRoute.page),
+                    AutoRoute(page: ArchiveEmojisRoute.page),
+                    AutoRoute(page: ArchiveCommentsRoute.page),
+                  ],
+                ),
                 AutoRoute(page: MeRoute.page, path: 'me'),
               ],
             ),

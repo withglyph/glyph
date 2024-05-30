@@ -1,0 +1,12 @@
+# import './fragments/post_card_post.graphql';
+
+query ArchiveRecentsScreen_Query {
+  me {
+    id
+
+    recentlyViewedPosts {
+      id
+      ...PostCard_post
+    }
+  }
+}

@@ -1,0 +1,12 @@
+# import './fragments/post_card_post.graphql';
+
+query ArchiveEmojisScreen_Query {
+  me {
+    id
+
+    emojiReactedPosts {
+      id
+      ...PostCard_post
+    }
+  }
+}
