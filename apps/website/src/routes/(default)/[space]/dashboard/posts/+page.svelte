@@ -87,7 +87,14 @@
 
 <h1 class={css({ marginBottom: '32px', fontSize: '24px', fontWeight: 'bold', hideBelow: 'sm' })}>포스트</h1>
 
-<div class={flex({ align: 'center', gap: '12px', wrap: 'wrap', marginBottom: { base: '24px', sm: '20px' } })}>
+<div
+  class={flex({
+    align: 'center',
+    gap: '12px',
+    wrap: 'wrap',
+    marginBottom: { base: '24px', sm: '20px' },
+  })}
+>
   <Select
     style={css.raw(!!visibility && { backgroundColor: { base: 'gray.900', _hover: 'gray.800!' }, color: 'gray.0!' })}
     size="xs"

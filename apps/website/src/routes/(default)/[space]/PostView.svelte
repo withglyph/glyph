@@ -1241,7 +1241,6 @@
                   lineClamp: 2,
                   whiteSpace: 'pre-wrap',
                   color: '[#848489]',
-                  height: '37px',
                 })}
               >
                 {$query.post.collection.description}

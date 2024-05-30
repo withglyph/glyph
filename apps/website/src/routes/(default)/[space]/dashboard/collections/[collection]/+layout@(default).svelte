@@ -56,7 +56,7 @@
       컬렉션 수정
     </h1>
 
-    <TabHead style={css.raw({ gap: '31px', smDown: { paddingY: '12px' }, sm: { paddingBottom: '0' } })}>
+    <TabHead style={css.raw({ gap: '31px', smDown: { paddingY: '12px' }, sm: { paddingBottom: '6px' } })}>
       <TabHeadItem
         id={1}
         pathname="/{$query.spaceCollection.space.slug}/dashboard/collections/{$query.spaceCollection.id}"
