@@ -357,6 +357,7 @@ type Mutation {
   registerPushNotificationToken(input: RegisterPushNotificationTokenInput!): Void
   replacePostThumbnail(input: ReplacePostThumbnailInput!): Post!
   sendPushNotification(input: SendPushNotificationInput!): Boolean!
+  setSpace(input: SetSpaceInput!): Space!
   setSpaceCollectionPosts(input: SetSpaceCollectionPostsInput!): SpaceCollection!
   synchronizePost(input: SynchronizePostInput!): [SynchronizePostResult!]!
   unblockMasquerade(input: UnblockMasqueradeInput!): Space!
@@ -836,6 +837,17 @@ input SendPushNotificationInput {
 input SetSpaceCollectionPostsInput {
   postIds: [ID!]!
   spaceCollectionId: ID!
+}
+
+input SetSpaceInput {
+  description: String
+  iconId: ID!
+  isPublic: Boolean!
+  name: String!
+  profileAvatarId: ID!
+  profileName: String!
+  slug: String!
+  spaceId: ID!
 }
 
 type Space {

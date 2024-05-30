@@ -34,7 +34,7 @@ import {
   useFirstRow,
   useFirstRowOrThrow,
 } from '$lib/server/utils';
-import { CreateSpaceSchema, UpdateSpaceSchema } from '$lib/validations';
+import { CreateSpaceSchema, SetSpaceSchema, UpdateSpaceSchema } from '$lib/validations';
 import { builder } from '../builder';
 import { createObjectRef } from '../utils';
 import { SpaceCollection } from './collection';
@@ -381,6 +381,20 @@ const UpdateSpaceInput = builder.inputType('UpdateSpaceInput', {
   validate: { schema: UpdateSpaceSchema },
 });
 
+const SetSpaceInput = builder.inputType('SetSpaceInput', {
+  fields: (t) => ({
+    spaceId: t.id(),
+    name: t.string(),
+    slug: t.string(),
+    iconId: t.id(),
+    description: t.string({ required: false }),
+    isPublic: t.boolean(),
+    profileName: t.string(),
+    profileAvatarId: t.id(),
+  }),
+  validate: { schema: SetSpaceSchema },
+});
+
 const UpdateSpaceProfileInput = builder.inputType('UpdateSpaceProfileInput', {
   fields: (t) => ({
     spaceId: t.id(),
@@ -609,6 +623,81 @@ builder.mutationFields((t) => ({
           ),
         );
       }
+
+      await enqueueJob('indexAllPostsInSpace', input.spaceId);
+
+      return input.spaceId;
+    },
+  }),
+
+  setSpace: t.withAuth({ user: true }).field({
+    type: Space,
+    args: { input: t.arg({ type: SetSpaceInput }) },
+    resolve: async (_, { input }, context) => {
+      const meAsMember = await getSpaceMember(context, input.spaceId);
+
+      if (meAsMember?.role !== 'ADMIN') {
+        throw new PermissionDeniedError();
+      }
+
+      if (input.slug) {
+        const slugUsages = await database
+          .select({ id: Spaces.id })
+          .from(Spaces)
+          .where(and(eq(Spaces.slug, input.slug), eq(Spaces.state, 'ACTIVE'), ne(Spaces.id, input.spaceId)));
+
+        if (slugUsages.length > 0) {
+          throw new IntentionalError('이미 사용중인 URL이에요.');
+        }
+      }
+
+      await database.transaction(async (tx) => {
+        await tx
+          .update(Spaces)
+          .set({
+            name: input.name,
+            slug: input.slug,
+            iconId: input.iconId,
+            description: input.description,
+            visibility: match(input.isPublic)
+              .with(true, () => 'PUBLIC' as const)
+              .with(false, () => 'PRIVATE' as const)
+              .exhaustive(),
+          })
+          .where(eq(Spaces.id, input.spaceId));
+
+        if (input.isPublic === false) {
+          await tx.delete(SpaceFollows).where(
+            and(
+              eq(SpaceFollows.spaceId, input.spaceId),
+              notInArray(
+                SpaceFollows.userId,
+                tx
+                  .select({ userId: SpaceMembers.userId })
+                  .from(SpaceMembers)
+                  .where(and(eq(SpaceMembers.spaceId, input.spaceId), eq(SpaceMembers.state, 'ACTIVE'))),
+              ),
+            ),
+          );
+        }
+
+        if (meAsMember.profileId === context.session.profileId) {
+          const [profile] = await tx
+            .insert(Profiles)
+            .values({
+              name: input.profileName,
+              avatarId: input.profileAvatarId,
+            })
+            .returning({ id: Profiles.id });
+
+          await tx.update(SpaceMembers).set({ profileId: profile.id }).where(eq(SpaceMembers.id, meAsMember.id));
+        } else {
+          await tx
+            .update(Profiles)
+            .set({ name: input.profileName, avatarId: input.profileAvatarId })
+            .where(eq(Profiles.id, meAsMember.profileId));
+        }
+      });
 
       await enqueueJob('indexAllPostsInSpace', input.spaceId);
 

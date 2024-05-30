@@ -39,6 +39,17 @@ export const UpdateSpaceSchema = z.object({
   isPublic: z.boolean().optional(),
 });
 
+export const SetSpaceSchema = z.object({
+  spaceId: z.string(),
+  iconId: z.string(),
+  name: spaceName,
+  slug: SpaceSlugSchema,
+  description: z.string().max(200, '스페이스 소개는 200자를 넘을 수 없어요').optional(),
+  isPublic: z.boolean(),
+  profileName,
+  profileAvatarId: z.string(),
+});
+
 export const CreateSpaceMemberInvitationSchema = z.object({
   spaceId: z.string(),
   email,
