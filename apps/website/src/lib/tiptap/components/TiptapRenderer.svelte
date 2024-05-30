@@ -45,7 +45,12 @@
   bind:this={element}
   class={cx(
     'tiptap',
-    css({ display: 'contents', fontFamily: 'prose', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }),
+    css({
+      display: 'contents',
+      fontFamily: 'prose',
+      whiteSpace: 'pre-wrap',
+      overflowWrap: 'break-word',
+    }),
   )}
 >
   {#if !loaded}

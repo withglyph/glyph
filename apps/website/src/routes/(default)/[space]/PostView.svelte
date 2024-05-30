@@ -816,7 +816,6 @@
               style={css.raw({
                 paddingTop: '20px',
                 paddingBottom: { base: '40px', sm: '60px' },
-                wordBreak: 'break-word',
               })}
               content={$postRevision.content}
               bind:editor
