@@ -41,7 +41,18 @@ class LobbyShell extends ConsumerWidget {
               label: '홈',
               activeIcon: const SvgIcon('home-filled', size: 22),
               isActive: tabsRouter.activeIndex == 0,
-              onTap: () => tabsRouter.setActiveIndex(0),
+              onTap: () {
+                if (tabsRouter.activeIndex == 0) {
+                  final controller = PrimaryScrollController.maybeOf(context);
+                  controller?.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 1000),
+                    curve: Curves.fastEaseInToSlowEaseOut,
+                  );
+                } else {
+                  tabsRouter.setActiveIndex(0);
+                }
+              },
             ),
             LobbyBottomNavigationBarItem(
               icon:
@@ -49,7 +60,18 @@ class LobbyShell extends ConsumerWidget {
               activeIcon: const SvgIcon('star-filled', size: 22),
               label: '구독',
               isActive: tabsRouter.activeIndex == 1,
-              onTap: () => tabsRouter.setActiveIndex(1),
+              onTap: () {
+                if (tabsRouter.activeIndex == 1) {
+                  final controller = PrimaryScrollController.maybeOf(context);
+                  controller?.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 1000),
+                    curve: Curves.fastEaseInToSlowEaseOut,
+                  );
+                } else {
+                  tabsRouter.setActiveIndex(1);
+                }
+              },
             ),
             LobbyBottomNavigationBarItem(
               icon: Container(
@@ -83,7 +105,18 @@ class LobbyShell extends ConsumerWidget {
               activeIcon: const SvgIcon('archive-filled', size: 22),
               label: '보관함',
               isActive: tabsRouter.activeIndex == 2,
-              onTap: () => tabsRouter.setActiveIndex(2),
+              onTap: () {
+                if (tabsRouter.activeIndex == 2) {
+                  final controller = PrimaryScrollController.maybeOf(context);
+                  controller?.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 1000),
+                    curve: Curves.fastEaseInToSlowEaseOut,
+                  );
+                } else {
+                  tabsRouter.setActiveIndex(2);
+                }
+              },
             ),
             LobbyBottomNavigationBarItem(
               icon: CircleAvatar(
@@ -112,7 +145,18 @@ class LobbyShell extends ConsumerWidget {
               ),
               label: 'MY글리프',
               isActive: tabsRouter.activeIndex == 3,
-              onTap: () => tabsRouter.setActiveIndex(3),
+              onTap: () {
+                if (tabsRouter.activeIndex == 3) {
+                  final controller = PrimaryScrollController.maybeOf(context);
+                  controller?.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 1000),
+                    curve: Curves.fastEaseInToSlowEaseOut,
+                  );
+                } else {
+                  tabsRouter.setActiveIndex(3);
+                }
+              },
             ),
           ],
         );

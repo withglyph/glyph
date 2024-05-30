@@ -30,7 +30,6 @@ Future<void> main() async {
 
   await SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.edgeToEdge,
-    overlays: [SystemUiOverlay.top],
   );
 
   await Firebase.initializeApp(

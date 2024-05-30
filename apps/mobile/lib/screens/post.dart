@@ -104,6 +104,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                                     ModalPresentationStyle.FULL_SCREEN,
                               ),
                             );
+
                             return NavigationActionPolicy.CANCEL;
                           }
 

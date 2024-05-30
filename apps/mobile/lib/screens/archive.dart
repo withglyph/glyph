@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/routers/app.gr.dart';
@@ -22,22 +22,15 @@ class ArchiveScreen extends ConsumerWidget {
         ArchiveCommentsRoute(),
       ],
       builder: (context, child, tabController) {
-        return SafeArea(
-          child: Column(
+        return Scaffold(
+          appBar: const Heading(
+            title: Text(
+              '보관함',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            ),
+          ),
+          body: Column(
             children: [
-              Container(
-                color: BrandColors.gray_0,
-                height: 54,
-                child: const Center(
-                  child: Text(
-                    '보관함',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
               const HorizontalDivider(),
               Container(
                 color: BrandColors.gray_0,
@@ -68,7 +61,7 @@ class ArchiveScreen extends ConsumerWidget {
                 ),
               ),
               const HorizontalDivider(color: BrandColors.gray_150),
-              Expanded(child: child),
+              Expanded(child: child)
             ],
           ),
         );
