@@ -1,48 +1,55 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import IconHelpLine from '~icons/glyph/help-line';
-  import IconMinus from '~icons/tabler/minus';
-  import IconPlus from '~icons/tabler/plus';
   import IconSearch from '~icons/tabler/search';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon, Image, Tooltip } from '$lib/components';
-  import { Checkbox } from '$lib/components/forms';
+  import { Icon, Tooltip } from '$lib/components';
   import { Button, Modal } from '$lib/components/v2';
   import { TextInput } from '$lib/components/v2/forms';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
+  import SpacePost from './SpacePost.svelte';
 
   export let open = false;
   export let collectionId: string;
   export let spaceSlug: string;
 
-  let collectionlessOnly = false;
   let selectedPostIds: string[] = [];
   let query = '';
 
   $: spacePostsQuery = graphql(`
-    query ManageSpacePostsModal_Query($slug: String!, $anyCollection: Boolean) @_manual {
+    query ManageSpacePostsModal_spacePostsQuery_Query($slug: String!, $anyCollection: Boolean) @_manual {
       space(slug: $slug) {
         id
 
         posts(anyCollection: $anyCollection) {
           id
+          ...ManageSpacePostsModal_SpacePost_post
 
           publishedRevision {
             id
             title
             subtitle
           }
+        }
+      }
+    }
+  `);
 
-          collection {
-            id
-            name
-          }
+  $: spaceAnyCollectionPostsQuery = graphql(`
+    query ManageSpacePostsModal_spaceAnyCollectionPostsQuery_Query($slug: String!, $anyCollection: Boolean) @_manual {
+      space(slug: $slug) {
+        id
 
-          thumbnail {
+        posts(anyCollection: $anyCollection) {
+          id
+          ...ManageSpacePostsModal_SpacePost_post
+
+          publishedRevision {
             id
-            ...Image_image
+            title
+            subtitle
           }
         }
       }
@@ -50,7 +57,8 @@
   `);
 
   onMount(() => {
-    spacePostsQuery.refetch({ slug: spaceSlug, anyCollection: undefined });
+    spacePostsQuery.refetch({ slug: spaceSlug, anyCollection: false });
+    spaceAnyCollectionPostsQuery.refetch({ slug: spaceSlug, anyCollection: true });
   });
 
   const appendSpaceCollectionPosts = graphql(`
@@ -60,6 +68,13 @@
       }
     }
   `);
+
+  $: postsNotInCollection = $spacePostsQuery?.space.posts.filter(
+    (p) => p.publishedRevision?.title?.includes(query) || p.publishedRevision?.subtitle?.includes(query),
+  );
+  $: postsInCollection = $spaceAnyCollectionPostsQuery?.space.posts.filter(
+    (p) => p.publishedRevision?.title?.includes(query) || p.publishedRevision?.subtitle?.includes(query),
+  );
 </script>
 
 <Modal style={flex.raw({ direction: 'column', grow: '1', paddingTop: '0' })} size="lg" bind:open>
@@ -85,105 +100,23 @@
     <TextInput style={css.raw({ marginBottom: '10px' })} placeholder="포스트를 검색해주세요" bind:value={query}>
       <Icon slot="left-icon" style={css.raw({ color: 'gray.400' })} icon={IconSearch} />
     </TextInput>
-    <Checkbox
-      style={css.raw({ marginLeft: 'auto', color: 'gray.500', width: 'fit' })}
-      size="sm"
-      bind:checked={collectionlessOnly}
-      on:change={() => {
-        collectionlessOnly = !collectionlessOnly;
-        spacePostsQuery.refetch({ slug: spaceSlug, anyCollection: collectionlessOnly ? false : undefined });
-      }}
-    >
-      타 컬렉션에 속하지 않은 포스트만 보기
-    </Checkbox>
   </div>
 
   <ul class={flex({ direction: 'column', grow: '1' })}>
-    {#if $spacePostsQuery}
-      {#each $spacePostsQuery.space.posts.filter((p) => p.publishedRevision?.title?.includes(query) || p.publishedRevision?.subtitle?.includes(query)) as post (post.id)}
-        {@const included = !!post.collection?.id || post.collection?.id === collectionId}
-
-        <li
-          class={css(
-            { display: 'flex', alignItems: 'flex-start', gap: '8px', paddingY: '16px' },
-            included && { paddingY: '20px' },
-          )}
-        >
-          <Image
-            style={css.raw(
-              { flex: 'none', width: '80px', aspectRatio: '16/10', objectFit: 'cover' },
-              included && { opacity: '80' },
-            )}
-            $image={post.thumbnail}
-            placeholder
-            size={96}
-          />
-
-          <div class={css({ flexGrow: '1', truncate: true })}>
-            {#if included}
-              <p class={css({ marginBottom: '2px', fontSize: '13px', fontWeight: 'medium', color: '[#898989]' })}>
-                [{post.collection?.name}]에 속해있음
-              </p>
-            {/if}
-            <p
-              class={css(
-                { fontSize: '14px', fontWeight: 'semibold', color: 'gray.600', truncate: true },
-                included && { color: 'gray.300' },
-              )}
-            >
-              {post.publishedRevision?.title ?? '(제목 없음)'}
-            </p>
-            <p
-              class={css(
-                {
-                  marginBottom: '8px',
-                  fontSize: '13px',
-                  color: 'gray.600',
-                  height: '19px',
-                  truncate: true,
-                },
-                included && { color: 'gray.300' },
-              )}
-            >
-              {post.publishedRevision?.subtitle ?? ''}
-            </p>
-
-            {#if !included}
-              <div class={flex({ justify: 'flex-end', paddingRight: '1px', paddingBottom: '1px' })}>
-                {#if selectedPostIds.includes(post.id)}
-                  <Button
-                    style={flex.raw({ gap: '4px' })}
-                    variant="brand-fill"
-                    on:click={() => {
-                      selectedPostIds = selectedPostIds.filter((id) => id !== post.id);
-                    }}
-                  >
-                    <Icon icon={IconMinus} />
-                    컬렉션 해제
-                  </Button>
-                {:else}
-                  <Button
-                    style={flex.raw({ gap: '4px' })}
-                    variant="gray-sub-fill"
-                    on:click={() => {
-                      selectedPostIds = [...selectedPostIds, post.id];
-                    }}
-                  >
-                    <Icon icon={IconPlus} />
-                    컬렉션 추가
-                  </Button>
-                {/if}
-              </div>
-            {/if}
-          </div>
-        </li>
-      {:else}
+    {#if postsNotInCollection && postsInCollection}
+      {#each postsNotInCollection as post (post.id)}
+        <SpacePost $post={post} bind:selectedPostIds />
+      {/each}
+      {#each postsInCollection as post (post.id)}
+        <SpacePost $post={post} included bind:selectedPostIds />
+      {/each}
+      {#if postsNotInCollection.length === 0 && postsInCollection.length === 0}
         <li
           class={css({ marginY: 'auto', paddingY: '77px', fontSize: '15px', color: 'gray.500', textAlign: 'center' })}
         >
           포스트가 없어요
         </li>
-      {/each}
+      {/if}
     {/if}
   </ul>
 
