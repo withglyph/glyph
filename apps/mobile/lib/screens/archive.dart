@@ -31,7 +31,7 @@ class ArchiveScreen extends ConsumerWidget {
           ),
           body: Column(
             children: [
-              const HorizontalDivider(),
+              const HorizontalDivider(color: BrandColors.gray_50),
               Container(
                 color: BrandColors.gray_0,
                 child: Row(
@@ -87,24 +87,23 @@ class _TabItem extends StatelessWidget {
       onPressed: onTap,
       child: Container(
         width: 80,
-        padding: const EdgeInsets.only(top: 8),
+        padding: const EdgeInsets.only(top: 12),
         child: Center(
           child: Column(
             children: [
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: isActive ? BrandColors.gray_900 : BrandColors.gray_300,
                 ),
               ),
               const Gap(6),
-              if (isActive)
-                const HorizontalDivider(
-                  height: 2,
-                  color: BrandColors.gray_900,
-                ),
+              HorizontalDivider(
+                height: 2,
+                color: isActive ? BrandColors.gray_900 : Colors.transparent,
+              ),
             ],
           ),
         ),
