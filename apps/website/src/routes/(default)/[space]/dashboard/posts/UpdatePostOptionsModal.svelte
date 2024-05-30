@@ -61,7 +61,7 @@
       </dl>
     </Switch>
 
-    <Switch
+    <!-- <Switch
       name="receivePatronage"
       style={flex.raw({ justify: 'space-between', align: 'center' })}
       bind:checked={receivePatronage}
@@ -71,7 +71,7 @@
         <dt>창작자 후원</dt>
         <dd>독자들이 포스트에 자유롭게 후원할 수 있어요</dd>
       </dl>
-    </Switch>
+    </Switch> -->
 
     <Switch
       name="protectContent"
