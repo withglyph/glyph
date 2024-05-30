@@ -9,6 +9,7 @@
   import { Button } from '$lib/components/v2';
   import { FormField, TextInput } from '$lib/components/v2/forms';
   import { createMutationForm } from '$lib/form';
+  import { toast } from '$lib/notification';
   import { UpdateSpaceCollectionSchema } from '$lib/validations';
   import { css } from '$styled-system/css';
   import { center } from '$styled-system/patterns';
@@ -58,6 +59,7 @@
     extra: () => ({ thumbnailId: thumbnail?.id }),
     onSuccess: ({ id }) => {
       mixpanel.track('space:collection:update', { spaceId: $query.spaceCollection.space.id, collectionId: id });
+      toast.success('컬렉션 정보가 수정되었어요');
     },
   });
 

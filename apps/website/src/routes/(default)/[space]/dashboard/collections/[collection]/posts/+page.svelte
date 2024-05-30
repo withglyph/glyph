@@ -8,6 +8,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Helmet, Icon, Image } from '$lib/components';
   import { Button } from '$lib/components/v2';
+  import { toast } from '$lib/notification';
   import { isMobile } from '$lib/utils';
   import { css, cx } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
@@ -251,6 +252,7 @@
         collectionId: $query.spaceCollection.id,
         postIds: [registeredPosts.map((post) => post.id)],
       });
+      toast.success('컬렉션의 포스트 순서가 변경되었어요');
     }}
   >
     저장
