@@ -7,6 +7,7 @@ import 'package:glyph/components/Img.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/components/tag.dart';
+import 'package:glyph/extensions/iterable.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/post_card_bookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_card_unbookmark_post_mutation.req.gql.dart';
@@ -14,7 +15,6 @@ import 'package:glyph/graphql/fragments/__generated__/post_card_post.data.gql.da
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
-import 'package:collection/collection.dart';
 import 'package:jiffy/jiffy.dart';
 
 class PostCard extends ConsumerWidget {
@@ -55,10 +55,16 @@ class PostCard extends ConsumerWidget {
                 ),
               const Gap(6),
               Row(
-                children: post.tags
-                    .map((tag) => [Tag(tag: tag.tag), const Gap(4)])
-                    .flattened
-                    .toList(),
+                children: [
+                  ...post.tags
+                      .take(2)
+                      .map((tag) => Flexible(child: Tag(tag.tag)))
+                      .intersperse(const Gap(4)),
+                  if (post.tags.length > 2) ...[
+                    const Gap(4),
+                    Tag.text('+${post.tags.length - 2}'),
+                  ],
+                ],
               ),
               const Gap(12),
               Row(
