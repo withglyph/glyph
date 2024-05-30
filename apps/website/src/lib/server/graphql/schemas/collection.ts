@@ -114,6 +114,7 @@ const CreateSpaceCollectionInput = builder.inputType('CreateSpaceCollectionInput
     spaceId: t.id(),
     name: t.string(),
     description: t.string({ required: false }),
+    thumbnailId: t.id({ required: false }),
   }),
   validate: { schema: CreateSpaceCollectionSchema },
 });
@@ -203,7 +204,13 @@ builder.mutationFields((t) => ({
 
       const [collection] = await database
         .insert(SpaceCollections)
-        .values({ spaceId: input.spaceId, name: input.name, description: input.description, state: 'ACTIVE' })
+        .values({
+          spaceId: input.spaceId,
+          name: input.name,
+          description: input.description,
+          thumbnailId: input.thumbnailId,
+          state: 'ACTIVE',
+        })
         .returning({ id: SpaceCollections.id });
 
       await enqueueJob('indexCollection', { collectionId: collection.id });
