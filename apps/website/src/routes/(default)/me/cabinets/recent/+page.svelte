@@ -34,7 +34,7 @@
     <li
       class={css({
         borderTopWidth: '1px',
-        borderTopColor: 'gray.100',
+        borderTopColor: 'gray.50',
         _firstOfType: { 'borderStyle': 'none', '& > div > a': { paddingTop: '0' } },
       })}
     >

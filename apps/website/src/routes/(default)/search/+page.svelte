@@ -223,7 +223,7 @@
                   content: '""',
                   display: 'block',
                   height: '1px',
-                  backgroundColor: 'gray.100',
+                  backgroundColor: 'gray.50',
                 },
                 _lastOfType: { _after: { display: 'none' } },
               })}

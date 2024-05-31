@@ -268,7 +268,7 @@
       {#each $query.recommendFeed.slice(0, 3) as post, index (post.id)}
         <li
           class={css({
-            sm: { _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' } },
+            sm: { _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.50' } },
           })}
         >
           <Post
@@ -287,7 +287,7 @@
               hideBelow: 'sm',
             },
             index === 0 && {
-              sm: { _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' } },
+              _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.50' },
             },
           )}
         >

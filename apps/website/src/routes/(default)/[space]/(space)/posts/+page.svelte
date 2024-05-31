@@ -65,7 +65,7 @@
         _firstOfType: {
           '& > div > a': { marginTop: '8px', paddingTop: '0' },
         },
-        _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' },
+        _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.50' },
         _lastOfType: { _after: { display: 'none' } },
       })}
     >

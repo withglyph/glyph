@@ -234,7 +234,7 @@
         {#each $query.spaceCollection.posts as post (post.id)}
           <li
             class={css({
-              _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' },
+              _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.50' },
               _lastOfType: {
                 _after: { display: 'none' },
               },
