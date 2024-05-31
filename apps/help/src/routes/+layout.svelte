@@ -13,20 +13,18 @@
       top: '0',
       paddingX: '32px',
       width: '100%',
-      backgroundColor: 'gray.900',
+      backgroundColor: 'white',
       zIndex: '10',
     })}
   >
     <div class={flex({ align: 'center', marginX: 'auto', height: '64px', maxWidth: '1000px' })}>
       <a href="https://withglyph.com">
-        <Logo class={css({ height: '25px', color: 'gray.900' })} />
+        <Logo class={css({ height: '25px' })} />
       </a>
 
-      <div class={css({ borderLeftWidth: '1px', borderLeftColor: 'gray.0', marginX: '16px', height: '32px' })} />
+      <div class={css({ borderLeftWidth: '1px', marginX: '16px', height: '32px' })} />
 
-      <a class={css({ fontSize: '18px', fontWeight: 'bold', color: 'gray.0', userSelect: 'none' })} href="/">
-        도움 센터
-      </a>
+      <a class={css({ fontSize: '18px', fontWeight: 'bold', userSelect: 'none' })} href="/">도움 센터</a>
     </div>
   </header>
 
