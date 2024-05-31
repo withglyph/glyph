@@ -57,46 +57,12 @@
     {/if}
   </div>
 {:else}
-  <ul class={grid({ columns: { base: 2, sm: 4 }, gap: '12px', marginTop: '8px' })}>
+  <ul class={grid({ columns: { base: 2, sm: 4 }, columnGap: '8px', rowGap: '16px', marginTop: '8px' })}>
     {#each $query.space.collections as collection (collection.id)}
       <li>
         <Collection $space={$query.space} $spaceCollection={collection} />
       </li>
     {/each}
-    {#if $query.space.meAsMember}
-      <li>
-        <button
-          class={css({ textAlign: 'left', width: 'full' })}
-          type="button"
-          on:click={() => (createCollectionOpen = true)}
-        >
-          <div class={css({ position: 'relative' })}>
-            <div
-              class={css({
-                borderWidth: '[0.8px]',
-                borderColor: 'gray.100',
-                backgroundColor: 'gray.50',
-                aspectRatio: '3/4',
-              })}
-            />
-            <Icon
-              style={css.raw({
-                position: 'absolute',
-                top: '1/2',
-                left: '1/2',
-                transform: 'translate(-50%, -50%)',
-                color: 'gray.300',
-              })}
-              icon={IconPlus}
-              size={32}
-            />
-          </div>
-          <p class={css({ marginTop: '6px', fontSize: '15px', fontWeight: 'semibold', color: 'gray.500' })}>
-            새 컬렉션 만들기
-          </p>
-        </button>
-      </li>
-    {/if}
   </ul>
 {/if}
 
