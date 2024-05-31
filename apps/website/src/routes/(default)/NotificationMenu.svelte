@@ -55,9 +55,9 @@
     offset: 12,
   });
 
-  const markNotificationAsRead = graphql(`
-    mutation DefaultLayout_Notification_MarkNotificationAsRead_Mutation($input: MarkNotificationAsReadInput!) {
-      markNotificationAsRead(input: $input) {
+  const markAllNotificationsAsRead = graphql(`
+    mutation DefaultLayout_Notification_MarkAllNotificationsAsRead_Mutation {
+      markAllNotificationsAsRead {
         id
         state
       }
@@ -73,9 +73,7 @@
 
   const readAllNotifications = () => {
     mixpanel.track('user:notification-state:read', { via: 'notification-popup' });
-    return Promise.all(
-      unreadNotifications.map(({ id }: { id: string }) => markNotificationAsRead({ notificationId: id })),
-    );
+    return markAllNotificationsAsRead();
   };
 
   beforeNavigate(() => {

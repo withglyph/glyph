@@ -345,6 +345,7 @@ type Mutation {
   likePost(input: LikePostInput!): Post!
   loginUser(input: LoginUserInput!): UserEmailVerification!
   logoutUser: Void
+  markAllNotificationsAsRead: [IUserNotification!]!
   markNotificationAsRead(input: MarkNotificationAsReadInput!): IUserNotification!
   muteSpace(input: MuteSpaceInput!): Space!
   muteTag(input: MuteTagInput!): Tag!

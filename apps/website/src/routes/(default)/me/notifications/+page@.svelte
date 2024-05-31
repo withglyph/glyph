@@ -31,9 +31,9 @@
     }
   `);
 
-  const markNotificationAsRead = graphql(`
-    mutation MeNotificationsPage_MarkNotificationAsRead_Mutation($input: MarkNotificationAsReadInput!) {
-      markNotificationAsRead(input: $input) {
+  const markAllNotificationsAsRead = graphql(`
+    mutation MeNotificationsPage_MarkAllNotificationsAsRead_Mutation {
+      markAllNotificationsAsRead {
         id
         state
       }
@@ -44,7 +44,7 @@
 
   const readAllNotifications = () => {
     mixpanel.track('user:notification-state:read', { via: 'notifications' });
-    return Promise.all(unreadNotifications.map(({ id }) => markNotificationAsRead({ notificationId: id })));
+    return markAllNotificationsAsRead();
   };
 </script>
 

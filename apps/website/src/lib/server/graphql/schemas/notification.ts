@@ -2,7 +2,7 @@ import { and, eq } from 'drizzle-orm';
 import { match } from 'ts-pattern';
 import { UserNotificationCategory, UserNotificationState } from '$lib/enums';
 import { NotFoundError } from '$lib/errors';
-import { database, PostComments, UserNotifications } from '$lib/server/database';
+import { database, inArray, PostComments, UserNotifications } from '$lib/server/database';
 import { builder } from '../builder';
 import { createInterfaceRef, createObjectRef } from '../utils';
 import { PostComment } from './comment';
@@ -158,6 +158,26 @@ builder.mutationFields((t) => ({
         );
 
       return input.notificationId;
+    },
+  }),
+
+  markAllNotificationsAsRead: t.withAuth({ user: true }).field({
+    type: [IUserNotification],
+    resolve: async (_, __, context) => {
+      const unreadNotificationIds = await database
+        .select({ id: UserNotifications.id })
+        .from(UserNotifications)
+        .where(and(eq(UserNotifications.userId, context.session.userId), eq(UserNotifications.state, 'UNREAD')))
+        .then((rows) => rows.map((row) => row.id));
+
+      if (unreadNotificationIds.length > 0) {
+        await database
+          .update(UserNotifications)
+          .set({ state: 'READ' })
+          .where(inArray(UserNotifications.id, unreadNotificationIds));
+      }
+
+      return unreadNotificationIds;
     },
   }),
 }));
