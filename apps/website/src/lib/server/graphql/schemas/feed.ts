@@ -12,11 +12,11 @@ import {
   PostViews,
   SpaceFollows,
   Spaces,
-  TagFollows,
   UserPersonalIdentities,
 } from '$lib/server/database';
 import { elasticSearch, indexName } from '$lib/server/search';
 import {
+  getFollowingTagIds,
   getMutedSpaceIds,
   getMutedTagIds,
   isAdulthood,
@@ -191,11 +191,7 @@ builder.queryFields((t) => ({
           const [mutedTagIds, mutedSpaceIds, followingTagIds, viewedPostIds, userBirthday] = await Promise.all([
             getMutedTagIds({ userId: context.session.userId }),
             getMutedSpaceIds({ userId: context.session.userId }),
-            database
-              .select({ tagId: TagFollows.tagId })
-              .from(TagFollows)
-              .where(eq(TagFollows.userId, context.session.userId))
-              .then((rows) => rows.map((row) => row.tagId)),
+            getFollowingTagIds(context.session.userId),
             database
               .select({ postId: PostViews.postId })
               .from(PostViews)
@@ -344,11 +340,7 @@ builder.queryFields((t) => ({
       if (context.session) {
         const [mutedTagIds, followingTagIds, recentlyViewedTagIds] = await Promise.all([
           getMutedTagIds({ userId: context.session.userId }),
-          database
-            .select({ tagId: TagFollows.tagId })
-            .from(TagFollows)
-            .where(eq(TagFollows.userId, context.session.userId))
-            .then((rows) => rows.map((row) => row.tagId)),
+          getFollowingTagIds(context.session.userId),
           database
             .select({ tagId: PostTags.tagId })
             .from(PostViews)
@@ -471,11 +463,7 @@ builder.queryFields((t) => ({
           .from(SpaceFollows)
           .where(eq(SpaceFollows.userId, context.session.userId))
           .then((rows) => rows.map((row) => row.spaceId)),
-        database
-          .select({ tagId: TagFollows.tagId })
-          .from(TagFollows)
-          .where(eq(TagFollows.userId, context.session.userId))
-          .then((rows) => rows.map((row) => row.tagId)),
+        getFollowingTagIds(context.session.userId),
       ]);
 
       if (followingSpaceIds.length === 0 && followingTagIds.length === 0) {
