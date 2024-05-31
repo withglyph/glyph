@@ -764,7 +764,7 @@ const postRevisionScope = defineScopeGranter(PostRevisions, async (revision, con
 
   const post = await Loader.postById(context).load(revision.postId);
 
-  if (await checkAgeRatingAllowed(context.session?.userId, post.ageRating, context)) {
+  if (!(await checkAgeRatingAllowed(context.session?.userId, post.ageRating, context))) {
     return [];
   }
 
@@ -1347,7 +1347,7 @@ builder.mutationFields((t) => ({
         throw new PermissionDeniedError();
       }
 
-      if (await checkAgeRatingAllowed(context.session.userId, input.ageRating, context)) {
+      if (!(await checkAgeRatingAllowed(context.session.userId, input.ageRating, context))) {
         throw new IntentionalError('본인인증을 하지 않으면 연령 제한 컨텐츠를 게시할 수 없어요');
       }
 
@@ -1509,7 +1509,7 @@ builder.mutationFields((t) => ({
         throw new PermissionDeniedError();
       }
 
-      if (input.ageRating && (await checkAgeRatingAllowed(context.session.userId, input.ageRating, context))) {
+      if (input.ageRating && !(await checkAgeRatingAllowed(context.session.userId, input.ageRating, context))) {
         throw new IntentionalError('본인인증을 하지 않으면 연령 제한 컨텐츠를 게시할 수 없어요');
       }
 
