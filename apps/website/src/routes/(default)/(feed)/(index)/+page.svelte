@@ -94,6 +94,7 @@
       }
 
       ...Feed_Post_query
+      ...Carousel_slides
     }
   `);
 
@@ -132,7 +133,7 @@
 />
 
 <div class={css({ marginX: 'auto', paddingX: '20px', width: 'full', maxWidth: '1280px' })}>
-  <Carousel />
+  <Carousel {$query} />
 
   <HorizontalScroll
     style={css.raw({ gap: '10px', paddingY: '10px' })}

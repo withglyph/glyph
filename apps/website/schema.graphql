@@ -25,6 +25,16 @@ type AuthorizeUserEmailTokenResult {
   token: String!
 }
 
+type Banner {
+  backgroundImageUrl: String!
+  bottomline: String
+  color: String!
+  href: String!
+  id: ID!
+  subtitle: String!
+  title: String!
+}
+
 input BlockMasqueradeInput {
   masqueradeId: ID!
   spaceId: ID!
@@ -738,6 +748,7 @@ input PurchasePostInput {
 type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
+  banners: [Banner!]!
   collectionFeed: [SpaceCollection!]!
   curatedPosts: [Post!]!
   draftPost(permalink: String!): Post!
