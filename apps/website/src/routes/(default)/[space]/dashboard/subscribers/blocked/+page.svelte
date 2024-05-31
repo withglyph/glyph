@@ -3,6 +3,7 @@
   import * as R from 'radash';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
+  import { Helmet } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
   import { Button } from '$lib/components/v2';
@@ -12,6 +13,7 @@
     query SpaceDashboardSubscribersBlockedPage_Query($slug: String!) {
       space(slug: $slug) {
         id
+        name
 
         blockedMasquerades {
           id
@@ -47,6 +49,8 @@
       selectedMasquerades,
     ).length === 0;
 </script>
+
+<Helmet description={`${$query.space.name} 스페이스 차단 관리`} title={`차단 관리 | ${$query.space.name}`} />
 
 <h1 class={css({ marginBottom: '2px', fontSize: '24px', fontWeight: 'bold', hideBelow: 'sm' })}>차단</h1>
 <p class={css({ marginBottom: { base: '16px', sm: '32px' }, fontSize: '13px', color: 'gray.500' })}>
