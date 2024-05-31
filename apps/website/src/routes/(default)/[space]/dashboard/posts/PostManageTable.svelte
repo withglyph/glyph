@@ -197,10 +197,10 @@
                 대상 독자 변경
               </SelectItem>
               <SelectItem disabled={selectedPosts.length === 0} on:click={() => (updateCommentOptionOpen = true)}>
-                댓글옵션 변경
+                댓글 옵션 변경
               </SelectItem>
               <SelectItem disabled={selectedPosts.length === 0} on:click={() => (updatePostOptionsOpen = true)}>
-                세부옵션 변경
+                세부 옵션 변경
               </SelectItem>
             </Select>
 

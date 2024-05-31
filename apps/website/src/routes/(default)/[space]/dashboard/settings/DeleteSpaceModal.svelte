@@ -48,7 +48,7 @@
   <svelte:fragment slot="title">스페이스 삭제</svelte:fragment>
 
   <p class={css({ fontSize: '14px', color: 'red.600' })}>
-    스페이스를 삭제 시 해당 스페이스에 저장된 모든 데이터가 영구적으로 삭제되며, 삭제된 데이터는 복구할 수 없어요.
+    스페이스 삭제 시 해당 스페이스에 저장된 모든 데이터가 영구적으로 삭제되며, 삭제된 데이터는 복구할 수 없어요.
   </p>
 
   <form class={css({ marginTop: '24px' })} on:submit|preventDefault={deleteSpace}>
