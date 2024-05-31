@@ -106,6 +106,7 @@ input CreateSpaceCollectionInput {
   description: String
   name: String!
   spaceId: ID!
+  thumbnailId: ID
 }
 
 input CreateSpaceInput {
