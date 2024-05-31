@@ -8,7 +8,7 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Alert, Avatar, Chip, Helmet, Icon } from '$lib/components';
+  import { Alert, Avatar, Chip, Helmet, Icon, Link } from '$lib/components';
   import { Switch } from '$lib/components/forms';
   import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
   import { Button, Modal } from '$lib/components/v2';
@@ -371,8 +371,7 @@
 
   <p class={css({ fontWeight: 'medium' })}>본인인증 진행</p>
   <p class={css({ marginTop: '6px', marginBottom: '20px', fontSize: '13px', color: 'gray.500' })}>
-    본인 명의의 휴대폰 및 대한민국 여권으로 본인인증을 진행할 수 있어요. 본인인증이 어려운 경우 고객센터로 문의해
-    주세요.
+    본인 명의의 휴대폰 및 여권으로 본인인증을 진행할 수 있어요. 본인인증이 어려운 경우 고객센터로 문의해 주세요.
   </p>
 
   <Button
@@ -404,8 +403,22 @@
     }}
   >
     <Icon style={css.raw({ color: 'gray.500' })} icon={IconEPassport} size={20} />
-    여권 인증
+    대한민국 여권 인증
   </Button>
+  <Link
+    style={css.raw({
+      display: 'inline-block',
+      fontSize: '13px',
+      color: 'gray.500',
+      marginY: '16px',
+      textDecorationLine: 'underline',
+    })}
+    href="https://forms.gle/TJGy7i5ZFEFfezVv8"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    외국인 여권 인증(Foreign Passport Verification)
+  </Link>
 </Modal>
 
 <UpdateEmailModal $user={$query.me} bind:open={updateEmailOpen} />
