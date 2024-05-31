@@ -70,7 +70,7 @@
       }}
     >
       <TextInput
-        style={css.raw({ backgroundColor: 'gray.50' })}
+        style={css.raw({ borderColor: 'gray.150' })}
         placeholder="검색어를 입력하세요"
         size="md"
         type="search"
