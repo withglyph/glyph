@@ -43,8 +43,14 @@
 >
   <div
     class={css(
-      { width: 'full', pointerEvents: 'auto' },
-      node.attrs.size === 'compact' && { maxWidth: '500px' },
+      { pointerEvents: 'auto' },
+      (node.attrs.size === 'full' || node.attrs.layout === 'slide-1' || node.attrs.layout === 'slide-2') && {
+        width: 'full',
+      },
+      node.attrs.size === 'compact' &&
+        node.attrs.layout !== 'scroll' && {
+          maxWidth: '500px',
+        },
       selected && { ringWidth: '2px', ringColor: 'brand.400' },
     )}
   >
@@ -74,7 +80,15 @@
         on:keypress={null}
       >
         {#each node.attrs.ids as id (id)}
-          <Image {id} style={css.raw({ width: 'full', objectFit: 'cover' })} />
+          <Image
+            {id}
+            style={css.raw(
+              { objectFit: 'cover' },
+              (node.attrs.size === 'full' || node.attrs.layout === 'grid-2' || node.attrs.layout === 'grid-3') && {
+                width: 'full',
+              },
+            )}
+          />
         {/each}
       </div>
     {/if}

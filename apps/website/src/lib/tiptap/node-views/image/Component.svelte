@@ -70,8 +70,8 @@
 >
   <div
     class={css(
-      { display: 'flex', justifyContent: 'center', width: 'full', pointerEvents: 'auto' },
-      node.attrs.size === 'compact' && { maxWidth: '500px' },
+      { display: 'flex', justifyContent: 'center', pointerEvents: 'auto' },
+      node.attrs.size === 'full' && { width: 'full' },
       selected && { ringWidth: '2px', ringColor: 'brand.400' },
     )}
     role={editor?.isEditable ? 'presentation' : 'button'}
