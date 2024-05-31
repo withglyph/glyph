@@ -145,14 +145,15 @@
       size={20}
     />
 
-    {#each $query.recommendedTags as tag, index (tag.id)}
+    {#each $query.recommendedTags as tag (tag.id)}
       <Tag
-        style={css.raw(
-          { paddingX: '24px', paddingY: '7px', color: 'gray.600', minWidth: 'fit' },
-          index % 3 === 0 && { backgroundColor: 'gray.50' },
-          index % 3 === 1 && { backgroundColor: 'gray.100' },
-          index % 3 === 2 && { backgroundColor: 'gray.150' },
-        )}
+        style={css.raw({
+          paddingX: '24px',
+          paddingY: '7px',
+          color: 'gray.600',
+          backgroundColor: 'gray.50',
+          minWidth: 'fit',
+        })}
         href={`/tag/${tag.name}`}
         theme="light"
       >
@@ -286,7 +287,7 @@
               hideBelow: 'sm',
             },
             index === 0 && {
-              _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' },
+              sm: { _after: { content: '""', display: 'block', height: '1px', backgroundColor: 'gray.100' } },
             },
           )}
         >
