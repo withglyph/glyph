@@ -21,11 +21,11 @@
 
   const slides: Slide[] = [
     {
-      title: '5월 10일 업데이트 노트',
-      subtitle: '실시간 저장 도입, 이미지/파일 삽입 개선\n코드 블럭, HTML 블럭',
+      title: '5월 30일 업데이트 노트',
+      subtitle: '스페이스 관리 리뉴얼 - 포스트 발행옵션 일괄 수정, 컬렉션 설명 추가',
       color: '#1717175A',
       backgroundImageUrl: 'https://glyph.pub/images/_/banner_updates_2.png',
-      href: '/glyph/2101056115',
+      href: '/glyph/2070481519',
     },
     {
       title: '<정산 기능 업데이트>',
