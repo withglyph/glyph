@@ -1,7 +1,8 @@
 <script lang="ts">
   import IconPencil from '~icons/tabler/pencil';
   import { goto } from '$app/navigation';
-  import FullLogo from '$assets/logos/full.svg?component';
+  // import FullLogo from '$assets/logos/full.svg?component';
+  import RainbowLogo from '$assets/logos/full-rainbow.svg?component';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Icon } from '$lib/components';
@@ -89,7 +90,7 @@
       aria-label="홈으로 이동"
       href="/"
     >
-      <FullLogo class={css({ height: '25px', color: 'gray.900' })} />
+      <RainbowLogo class={css({ height: '25px', color: 'gray.900' })} />
     </a>
 
     <SearchBar

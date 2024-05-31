@@ -18,7 +18,8 @@
   import IconListNumbers from '~icons/tabler/list-numbers';
   import IconPhoto from '~icons/tabler/photo';
   import IconQuote from '~icons/tabler/quote';
-  import FullLogo from '$assets/logos/full.svg?component';
+  // import FullLogo from '$assets/logos/full.svg?component';
+  import RainbowLogo from '$assets/logos/full-rainbow.svg?component';
   import { fragment, graphql } from '$glitch';
   import { Alert, Icon } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
@@ -150,7 +151,7 @@
       })}
     >
       <a class={flex({ align: 'center', gap: '8px' })} href="/">
-        <FullLogo
+        <RainbowLogo
           class={css({
             marginTop: '20px',
             marginBottom: '17px',
