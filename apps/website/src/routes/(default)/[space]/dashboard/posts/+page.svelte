@@ -85,14 +85,20 @@
 
 <Helmet description={`${$query.space.name} 스페이스 포스트 관리`} title={`포스트 관리 | ${$query.space.name}`} />
 
-<h1 class={css({ marginBottom: '32px', fontSize: '24px', fontWeight: 'bold', hideBelow: 'sm' })}>포스트</h1>
+<h1 class={css({ marginBottom: '12px', fontSize: '24px', fontWeight: 'bold', hideBelow: 'sm' })}>포스트</h1>
 
 <div
   class={flex({
     align: 'center',
     gap: '12px',
     wrap: 'wrap',
-    marginBottom: { base: '24px', sm: '20px' },
+    position: 'sticky',
+    top: { base: '116px', sm: '62px' },
+    paddingTop: '20px',
+    paddingBottom: { base: '24px', sm: '20px' },
+    backgroundColor: 'gray.0',
+    zIndex: '1',
+    smDown: { marginTop: '-20px' },
   })}
 >
   <Select

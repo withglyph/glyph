@@ -139,7 +139,7 @@
 </script>
 
 <Table>
-  <TableHeader>
+  <TableHeader style={css.raw({ position: 'sticky', top: { base: '194px', sm: '136px' }, zIndex: '1' })}>
     <TableRow style={css.raw({ textAlign: 'left' })}>
       <TableHead style={css.raw({ width: '50px' })}>
         <Checkbox
