@@ -63,10 +63,9 @@ import {
   decryptAES,
   directUploadImage,
   encryptAES,
+  getAllowedAgeRating,
   getUserPoint,
   getUserRevenue,
-  isAdulthood,
-  isGte15,
 } from '$lib/server/utils';
 import { getMonthlyWithdrawalDayjs } from '$lib/utils';
 import {
@@ -210,34 +209,16 @@ User.implement({
     }),
 
     isAdulthood: t.boolean({
-      resolve: async (user) => {
-        const identities = await database
-          .select({ birthday: UserPersonalIdentities.birthday })
-          .from(UserPersonalIdentities)
-          .where(eq(UserPersonalIdentities.userId, user.id));
-
-        if (identities.length === 0) {
-          return false;
-        }
-
-        return isAdulthood(identities[0].birthday);
+      resolve: async (user, _, context) => {
+        const allowedAgeRating = await getAllowedAgeRating(user.id, context);
+        return allowedAgeRating.includes('R19');
       },
+      deprecationReason: 'Use allowedAgeRating instead',
     }),
 
     allowedAgeRating: t.field({
       type: [PostAgeRating],
-      resolve: async (user) => {
-        const identities = await database
-          .select({ birthday: UserPersonalIdentities.birthday })
-          .from(UserPersonalIdentities)
-          .where(eq(UserPersonalIdentities.userId, user.id));
-
-        if (identities.length === 0) {
-          return ['ALL'] as const;
-        }
-
-        return R.sift([isAdulthood(identities[0].birthday) && 'R19', isGte15(identities[0].birthday) && 'R15', 'ALL']);
-      },
+      resolve: async (user, _, context) => await getAllowedAgeRating(user.id, context),
     }),
 
     point: t.int({
@@ -1272,12 +1253,9 @@ builder.mutationFields((t) => ({
     args: { input: t.arg({ type: UpdateUserContentFilterPreferenceInput }) },
     resolve: async (_, { input }, context) => {
       if (input.category === 'ADULT' && input.action === 'EXPOSE') {
-        const identities = await database
-          .select({ birthday: UserPersonalIdentities.birthday })
-          .from(UserPersonalIdentities)
-          .where(eq(UserPersonalIdentities.userId, context.session.userId));
+        const allowedAgeRating = await getAllowedAgeRating(context.session.userId, context);
 
-        if (identities.length === 0 || !isAdulthood(identities[0].birthday)) {
+        if (!allowedAgeRating.includes('R19')) {
           throw new IntentionalError('성인인증이 필요해요.');
         }
       }

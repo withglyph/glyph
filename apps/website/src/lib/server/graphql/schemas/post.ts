@@ -48,11 +48,11 @@ import {
   Spaces,
   Tags,
   UserContentFilterPreferences,
-  UserPersonalIdentities,
 } from '$lib/server/database';
 import { enqueueJob } from '$lib/server/jobs';
 import { elasticSearch, indexName } from '$lib/server/search';
 import {
+  checkAgeRatingAllowed,
   createNotification,
   deductUserPoint,
   defineScopeGranter,
@@ -63,8 +63,6 @@ import {
   getPostContentState,
   getPostViewCount,
   getSpaceMember,
-  isAdulthood,
-  isGte15,
   Loader,
   makeMasquerade,
   makePostContentId,
@@ -748,18 +746,6 @@ Post.implement({
 export const PostRevision = createObjectRef('PostRevision', PostRevisions);
 
 const postRevisionScope = defineScopeGranter(PostRevisions, async (revision, context) => {
-  const personalIdentityLoader = context.loader({
-    name: 'UserPersonalIdentity(userId)',
-    nullable: true,
-    load: async (userIds: string[]) => {
-      return await database
-        .select()
-        .from(UserPersonalIdentities)
-        .where(inArray(UserPersonalIdentities.userId, userIds));
-    },
-    key: (identity) => identity?.userId,
-  });
-
   const spaceMasqueradeLoader = context.loader({
     name: 'SpaceMasquerade(spaceId)',
     nullable: true,
@@ -778,19 +764,8 @@ const postRevisionScope = defineScopeGranter(PostRevisions, async (revision, con
 
   const post = await Loader.postById(context).load(revision.postId);
 
-  if (post.ageRating !== 'ALL') {
-    if (!context.session) {
-      return [];
-    }
-
-    const identity = await personalIdentityLoader.load(context.session.userId);
-    if (
-      !identity ||
-      (post.ageRating === 'R19' && !isAdulthood(identity.birthday)) ||
-      (post.ageRating === 'R15' && !isGte15(identity.birthday))
-    ) {
-      return [];
-    }
+  if (await checkAgeRatingAllowed(context.session?.userId, post.ageRating, context)) {
+    return [];
   }
 
   if (post.password && post.userId !== context.session?.userId) {
@@ -1372,18 +1347,8 @@ builder.mutationFields((t) => ({
         throw new PermissionDeniedError();
       }
 
-      if (input.ageRating !== 'ALL') {
-        const identities = await database
-          .select({ birthday: UserPersonalIdentities.birthday })
-          .from(UserPersonalIdentities)
-          .where(eq(UserPersonalIdentities.userId, context.session.userId));
-        if (
-          identities.length === 0 ||
-          (input.ageRating === 'R19' && !isAdulthood(identities[0].birthday)) ||
-          (input.ageRating === 'R15' && !isGte15(identities[0].birthday))
-        ) {
-          throw new IntentionalError('본인인증을 하지 않으면 연령 제한 컨텐츠를 게시할 수 없어요');
-        }
+      if (await checkAgeRatingAllowed(context.session.userId, input.ageRating, context)) {
+        throw new IntentionalError('본인인증을 하지 않으면 연령 제한 컨텐츠를 게시할 수 없어요');
       }
 
       const state = await getPostContentState(input.postId);
@@ -1544,18 +1509,8 @@ builder.mutationFields((t) => ({
         throw new PermissionDeniedError();
       }
 
-      if (input.ageRating && input.ageRating !== 'ALL') {
-        const identities = await database
-          .select({ birthday: UserPersonalIdentities.birthday })
-          .from(UserPersonalIdentities)
-          .where(eq(UserPersonalIdentities.userId, context.session.userId));
-        if (
-          identities.length === 0 ||
-          (input.ageRating === 'R19' && !isAdulthood(identities[0].birthday)) ||
-          (input.ageRating === 'R15' && !isGte15(identities[0].birthday))
-        ) {
-          throw new IntentionalError('본인인증을 하지 않으면 연령 제한 컨텐츠를 게시할 수 없어요');
-        }
+      if (input.ageRating && (await checkAgeRatingAllowed(context.session.userId, input.ageRating, context))) {
+        throw new IntentionalError('본인인증을 하지 않으면 연령 제한 컨텐츠를 게시할 수 없어요');
       }
 
       await database

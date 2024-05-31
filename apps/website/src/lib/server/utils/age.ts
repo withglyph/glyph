@@ -1,6 +1,11 @@
 import dayjs from 'dayjs';
+import { and, gt, inArray } from 'drizzle-orm';
+import * as R from 'radash';
+import * as E from '$lib/enums';
+import { database, UserPersonalIdentities } from '../database';
+import type { Context } from '../context';
 
-export const getKoreanAge = (birthday?: dayjs.Dayjs) => {
+const getKoreanAge = (birthday?: dayjs.Dayjs) => {
   if (!birthday) {
     return 0;
   }
@@ -13,10 +18,78 @@ export const getKoreanAge = (birthday?: dayjs.Dayjs) => {
   return koreanAge;
 };
 
-export const isAdulthood = (birthday?: dayjs.Dayjs) => {
-  return getKoreanAge(birthday) >= 20;
+const getBirthdayAge = (birthday?: dayjs.Dayjs) => {
+  if (!birthday) {
+    return 0;
+  }
+
+  const currentDate = dayjs();
+  const birthYear = birthday.year();
+  const currentYear = currentDate.year();
+  const age = currentYear - birthYear;
+
+  const hasBirthdayPassed = currentDate.isAfter(birthday.startOf('year').add(age, 'year'));
+
+  if (!hasBirthdayPassed) {
+    return age - 1;
+  }
+
+  return age;
 };
 
-export const isGte15 = (birthday?: dayjs.Dayjs) => {
-  return getKoreanAge(birthday) >= 15;
+type AgeIdentity = Pick<typeof UserPersonalIdentities.$inferSelect, 'kind' | 'birthday'>;
+
+const allowedAgeRating = (identity?: AgeIdentity): (keyof typeof E.PostAgeRating)[] => {
+  if (!identity) {
+    return ['ALL'];
+  }
+
+  if (identity.kind === 'FOREIGN_PASSPORT') {
+    return R.sift([
+      'ALL',
+      getBirthdayAge(identity.birthday) >= 18 && 'R19',
+      getBirthdayAge(identity.birthday) >= 14 && 'R15',
+    ]);
+  } else {
+    return R.sift([
+      'ALL',
+      getKoreanAge(identity.birthday) >= 20 && 'R19',
+      getKoreanAge(identity.birthday) >= 15 && 'R15',
+    ]);
+  }
+};
+
+export const getAllowedAgeRating = async (userId: string | undefined, context: Pick<Context, 'loader'>) => {
+  const loader = context.loader({
+    name: 'UserPersonalIdentities(userId)',
+    nullable: true,
+    load: async (userIds: string[]) => {
+      return database
+        .select()
+        .from(UserPersonalIdentities)
+        .where(and(inArray(UserPersonalIdentities.userId, userIds), gt(UserPersonalIdentities.expiresAt, dayjs())));
+    },
+
+    key: (identity) => identity?.userId,
+  });
+
+  if (!userId) {
+    return ['ALL' as const];
+  }
+
+  const identity = await loader.load(userId);
+  return allowedAgeRating(identity ?? undefined);
+};
+
+export const checkAgeRatingAllowed = async (
+  userId: string | undefined,
+  rating: keyof typeof E.PostAgeRating,
+  context: Pick<Context, 'loader'>,
+) => {
+  if (rating === 'ALL') {
+    return true;
+  }
+
+  const allowed = await getAllowedAgeRating(userId, context);
+  return allowed.includes(rating);
 };

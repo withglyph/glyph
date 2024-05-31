@@ -13,17 +13,14 @@ import {
   SpaceFollows,
   Spaces,
   TagFollows,
-  UserPersonalIdentities,
 } from '$lib/server/database';
 import { elasticSearch, indexName } from '$lib/server/search';
 import {
+  getAllowedAgeRating,
   getMutedSpaceIds,
   getMutedTagIds,
-  isAdulthood,
-  isGte15,
   makeQueryContainers,
   searchResultToIds,
-  useFirstRow,
 } from '$lib/server/utils';
 import { builder } from '../builder';
 import { SpaceCollection } from './collection';
@@ -188,7 +185,7 @@ builder.queryFields((t) => ({
     resolve: async (_, __, context) => {
       const searchResult = await (async () => {
         if (context.session) {
-          const [mutedTagIds, mutedSpaceIds, followingTagIds, viewedPostIds, userBirthday] = await Promise.all([
+          const [mutedTagIds, mutedSpaceIds, followingTagIds, viewedPostIds, allowedAgeRating] = await Promise.all([
             getMutedTagIds({ userId: context.session.userId }),
             getMutedSpaceIds({ userId: context.session.userId }),
             database
@@ -203,12 +200,7 @@ builder.queryFields((t) => ({
               .orderBy(desc(PostViews.viewedAt))
               .limit(100)
               .then((rows) => rows.map((row) => row.postId)),
-            database
-              .select({ birthday: UserPersonalIdentities.birthday })
-              .from(UserPersonalIdentities)
-              .where(eq(UserPersonalIdentities.userId, context.session.userId))
-              .then(useFirstRow)
-              .then((row) => row?.birthday),
+            getAllowedAgeRating(context.session.userId, context),
           ]);
 
           const viewedTagIds =
@@ -220,10 +212,6 @@ builder.queryFields((t) => ({
                   .groupBy(PostTags.tagId)
                   .then((rows) => rows.map((row) => row.tagId))
               : [];
-
-          const allowedAgeRating = userBirthday
-            ? R.sift([isAdulthood(userBirthday) && 'R19', isGte15(userBirthday) && 'R15', 'ALL'])
-            : ['ALL'];
 
           return elasticSearch.search({
             index: indexName('posts'),

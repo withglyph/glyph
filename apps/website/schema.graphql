@@ -1137,7 +1137,7 @@ type User {
   followedSpaces: [Space!]!
   followedTags: [Tag!]!
   id: ID!
-  isAdulthood: Boolean!
+  isAdulthood: Boolean! @deprecated(reason: "Use allowedAgeRating instead")
   marketingConsent: UserMarketingConsent
   mutedSpaces: [Space!]!
   mutedTags: [Tag!]!
