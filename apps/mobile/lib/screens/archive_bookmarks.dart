@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/post_card.dart';
 import 'package:glyph/ferry/widget.dart';
+import 'package:glyph/graphql/__generated__/archive_bookmarks_screen_query.data.gql.dart';
 import 'package:glyph/graphql/__generated__/archive_bookmarks_screen_query.req.gql.dart';
 import 'package:glyph/themes/colors.dart';
 
@@ -17,7 +18,9 @@ class ArchiveBookmarksScreen extends ConsumerWidget {
     return GraphQLOperation(
       operation: GArchiveBookmarksScreen_QueryReq(),
       builder: (context, client, data) {
-        final posts = data.me!.bookmarkGroups[0].posts;
+        final posts = data.me!.bookmarkGroups.isNotEmpty
+            ? data.me!.bookmarkGroups[0].posts.toList()
+            : <GArchiveBookmarksScreen_QueryData_me_bookmarkGroups_posts>[];
 
         return CustomScrollView(
           slivers: [
