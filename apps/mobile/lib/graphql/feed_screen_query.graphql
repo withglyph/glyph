@@ -1,12 +1,8 @@
+# import './fragments/post_card_post.graphql';
+
 query FeedScreen_Query {
   followingFeed {
     id
-    permalink
-
-    publishedRevision {
-      id
-      title
-      subtitle
-    }
+    ...PostCard_post
   }
 }
