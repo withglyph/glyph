@@ -43,3 +43,5 @@ app.*.map.json
 /android/app/release
 
 __generated__/
+
+**/fastlane/report.xml
