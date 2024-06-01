@@ -129,7 +129,6 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/logos/
-    - shorebird.yaml
     - airbridge.json
 
   fonts:
