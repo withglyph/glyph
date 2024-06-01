@@ -15,9 +15,12 @@ class LoaderController {
       builder: (BuildContext context) {
         _loaderContext = context;
 
-        return const Center(
-          child: CircularProgressIndicator(
-            color: BrandColors.brand_600,
+        return const PopScope(
+          canPop: false,
+          child: Center(
+            child: CircularProgressIndicator(
+              color: BrandColors.brand_600,
+            ),
           ),
         );
       },
@@ -25,7 +28,7 @@ class LoaderController {
   }
 
   void dismiss() {
-    _loaderContext?.router.maybePop();
+    _loaderContext!.router.popForced();
   }
 
   Future<T> run<T>(Future<T> Function() fn) async {
