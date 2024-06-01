@@ -21,6 +21,9 @@ class LoginWithEmailScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextField(
+                autofocus: true,
+                autocorrect: false,
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   isDense: true,
                   filled: true,

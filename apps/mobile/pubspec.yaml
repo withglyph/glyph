@@ -62,6 +62,7 @@ dependencies:
   dartx: ^1.2.0
   share_plus: ^9.0.0
   sliver_tools: ^0.2.12
+  pinput: ^4.0.0
 
 dev_dependencies:
   flutter_test:
