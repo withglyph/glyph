@@ -1,5 +1,8 @@
 {
   "scripts": {
-    "build": "dart run build_runner watch --delete-conflicting-outputs"
+    "beta": "pnpm run '/^beta:.+$/'",
+    "beta:android": "cd android && doppler run -- bundle exec fastlane beta",
+    "beta:ios": "cd ios && doppler run -- bundle exec fastlane beta",
+    "watch": "dart run build_runner watch --delete-conflicting-outputs"
   }
 }

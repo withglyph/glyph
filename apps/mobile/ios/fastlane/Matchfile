@@ -1,0 +1,2 @@
+git_url "git@github.com:withglyph/certificates.git"
+storage_mode "git"

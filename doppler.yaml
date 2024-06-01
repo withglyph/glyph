@@ -2,3 +2,7 @@ setup:
   - project: website
     path: apps/website
     config: dev
+
+  - project: mobile
+    path: apps/mobile
+    config: dev

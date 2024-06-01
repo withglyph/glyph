@@ -1,0 +1,23 @@
+default_platform(:ios)
+
+platform :ios do
+  lane :beta do
+    match(type: "appstore", readonly: true)
+
+    app_store_connect_api_key(
+      issuer_id: "790503b8-57bb-4621-a1e1-4cf096032add",
+      key_id: "DDU5R4JDX8",
+    )
+
+    current_build_number = latest_testflight_build_number()
+
+    Dir.chdir("../..") do
+      sh "flutter build ipa --build-number=#{current_build_number + 1} --export-options-plist=ios/ExportOptions.plist"
+    end
+
+    upload_to_testflight(
+      ipa: "../build/ios/ipa/글리프.ipa",
+      skip_waiting_for_build_processing: true,
+    )
+  end
+end
