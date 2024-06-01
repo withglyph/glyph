@@ -5,6 +5,7 @@ import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/button.dart';
+import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/svg_image.dart';
 import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/context/loader.dart';
@@ -41,6 +42,8 @@ class LoginScreen extends ConsumerWidget {
         final imageUrl = response?.data?.featuredImage?.url;
 
         return Scaffold(
+          appBar: const Heading(backgroundColor: Colors.transparent),
+          extendBodyBehindAppBar: true,
           body: Stack(
             children: [
               const SizedBox.expand(
