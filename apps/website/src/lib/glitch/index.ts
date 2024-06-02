@@ -1,7 +1,6 @@
 import { error as throwError } from '@sveltejs/kit';
 import { createClient } from '@withglyph/glitch';
 import { AppError, PortableAppErrorSchema } from '$lib/errors';
-import { toast } from '$lib/notification';
 import { keys } from './keys';
 import { optimistic } from './optimistic';
 import { updates } from './updates';
@@ -29,7 +28,8 @@ export default createClient({
   },
   onMutationError: (error) => {
     if (error instanceof AppError && !error.extra.internal) {
-      toast.error(error.message);
+      // toast.error(error.message);
+      console.error(error);
     }
   },
 });
