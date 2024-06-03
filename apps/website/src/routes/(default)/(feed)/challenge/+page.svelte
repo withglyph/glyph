@@ -1,9 +1,11 @@
 <script lang="ts">
-  import IconCheck from '~icons/tabler/check';
+  // import IconCheck from '~icons/tabler/check';
   import IconChevronRight from '~icons/tabler/chevron-right';
+  import { goto } from '$app/navigation';
   import ChallengeTitle from '$assets/icons/challenge-202406-1.svg?component';
   import CompactLogo from '$assets/logos/compact.svg?component';
   import { graphql } from '$glitch';
+  import { mixpanel } from '$lib/analytics';
   import { Helmet, Icon } from '$lib/components';
   import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
@@ -12,7 +14,11 @@
 
   $: query = graphql(`
     query FeedChallengePage_Query {
-      recommendFeed {
+      me {
+        id
+      }
+
+      challengeFeed {
         id
         ...Feed_Post_post
       }
@@ -20,12 +26,24 @@
       ...Feed_Post_query
     }
   `);
+
+  const createPost = graphql(`
+    mutation FeedChallengePage_CreatePost_Mutation($input: CreatePostInput!) {
+      createPost(input: $input) {
+        id
+        permalink
+      }
+    }
+  `);
 </script>
 
 <Helmet description="진행 중인 챌린지를 확인하고 참여해보세요" title="챌린지 피드" />
 
 <div
-  class={css({
+  class={flex({
+    align: 'center',
+    justify: 'center',
+    gap: '14px',
     paddingY: '14px',
     paddingX: '16px',
     bgGradient: 'to-r',
@@ -34,10 +52,10 @@
     textAlign: 'center',
   })}
 >
-  <span class={css({ marginRight: '14px', fontSize: '14px', fontWeight: 'semibold', color: 'gray.0' })}>
-    참여만 해도 2,000P 지급
-  </span>
-  <a class={css({ fontSize: '12px', color: 'gray.0', textDecoration: 'underline' })} href="/">자세히보기</a>
+  <span class={css({ fontSize: '14px', fontWeight: 'semibold', color: 'gray.0' })}>참여만 해도 2,000P 지급</span>
+  <a class={css({ fontSize: '12px', color: 'gray.0', textDecoration: 'underline' })} href="/glyph/956420498">
+    자세히보기
+  </a>
 </div>
 
 <div
@@ -67,7 +85,8 @@
 
       <ul class={flex({ align: 'center', justify: 'space-between', marginTop: '24px', marginBottom: '32px' })}>
         <li>
-          <div
+          <!-- TODO: 챌린지 참여 완료 표시 -->
+          <!-- <div
             class={center({
               position: 'relative',
               borderWidth: '2px',
@@ -90,6 +109,18 @@
             >
               <Icon style={css.raw({ color: 'gray.0' })} icon={IconCheck} size={12} />
             </div>
+          </div> -->
+          <div
+            class={center({
+              borderWidth: '1px',
+              borderColor: '[#d1d1d1]',
+              borderStyle: 'dashed',
+              borderRadius: 'full',
+              backgroundColor: 'gray.100',
+              size: '60px',
+            })}
+          >
+            <CompactLogo class={css({ color: 'gray.300', width: '1/4' })} />
           </div>
 
           <dl class={css({ marginTop: '8px', textAlign: 'center' })}>
@@ -159,6 +190,16 @@
       <Button
         style={flex.raw({ align: 'center', justify: 'center', gap: '4px', backgroundColor: 'gray.0', width: 'full' })}
         variant="gray-outline"
+        on:click={async () => {
+          if (!$query.me) {
+            await goto('/login');
+            return;
+          }
+
+          const { permalink } = await createPost({ spaceId: undefined });
+          mixpanel.track('post:create', { via: 'challenge-feed' });
+          await goto(`/editor/${permalink}`);
+        }}
       >
         참여하기
         <Icon icon={IconChevronRight} />
@@ -166,8 +207,10 @@
     </div>
   </div>
 
+  <p class={css({ marginTop: '6px', fontSize: '11px', color: 'gray.400' })}>* 참여 여부는 주기적으로 갱신됩니다</p>
+
   <ul class={flex({ direction: 'column', flexGrow: '1' })}>
-    {#each $query.recommendFeed as post (post.id)}
+    {#each $query.challengeFeed as post (post.id)}
       <li
         class={css({
           '& + &': { borderTopWidth: '1px', borderColor: 'gray.50' },

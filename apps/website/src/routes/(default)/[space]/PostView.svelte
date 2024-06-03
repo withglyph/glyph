@@ -1047,6 +1047,33 @@
                   </div>
                 {/if}
               </dl>
+
+              <dl>
+                {#if $query.post.tags.some(({ kind }) => kind === 'CHALLENGE')}
+                  <div class={flex({ align: 'center', gap: '4px', wrap: 'wrap', marginBottom: '14px' })}>
+                    <dt
+                      class={flex({
+                        flex: 'none',
+                        marginRight: '4px',
+                        fontSize: '14px',
+                        fontWeight: 'medium',
+                        color: 'gray.500',
+                      })}
+                    >
+                      챌린지
+                    </dt>
+                    {#each $query.post.tags as { tag, kind } (tag.id)}
+                      {#if kind === 'CHALLENGE'}
+                        <dd class={flex({})}>
+                          <Tag href={`/tag/${tag.name}`} size="sm">
+                            #{tag.name}
+                          </Tag>
+                        </dd>
+                      {/if}
+                    {/each}
+                  </div>
+                {/if}
+              </dl>
             </div>
 
             {#if $query.post.space?.meAsMember}

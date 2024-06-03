@@ -9,6 +9,7 @@
   import { UpdatePostTagsInputSchema } from '$lib/validations/post';
   import { css } from '$styled-system/css';
   import { center, flex, grid } from '$styled-system/patterns';
+  import ChallengeTag from '../../editor/[permalink]/ChallengeTag.svelte';
   import PublishMenuSearch from '../../editor/[permalink]/PublishMenuSearch.svelte';
   import type { ChangeEventHandler } from 'svelte/elements';
   import type { PostCategory, PostPair, TagManageModal_post } from '$glitch';
@@ -184,6 +185,8 @@
       bind:tags={$data.tags}
       bind:query={extraQuery}
     />
+
+    <ChallengeTag bind:tags={$data.tags} />
   </form>
 
   <svelte:fragment slot="action">
