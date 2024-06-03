@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_it/get_it.dart';
+import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/push_notification_provider_delete_push_notification_token_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/push_notification_provider_register_push_notification_token_mutation.req.gql.dart';
 import 'package:glyph/providers/ferry.dart';
@@ -50,7 +51,7 @@ class PushNotification extends _$PushNotification {
         GPushNotificationProvider_RegisterPushNotificationToken_MutationReq(
       (b) => b..vars.input.token = token,
     );
-    await ref.read(ferryProvider).request(req).first;
+    await ref.read(ferryProvider).req(req);
   }
 
   Future<void> clearToken() async {
@@ -72,6 +73,6 @@ class PushNotification extends _$PushNotification {
         GPushNotificationProvider_DeletePushNotificationToken_MutationReq(
       (b) => b..vars.input.token = token,
     );
-    await ref.read(ferryProvider).request(req).first;
+    await ref.read(ferryProvider).req(req);
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:glyph/ferry/error.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/login_with_email_next_screen_authorize_user_email_token_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/login_with_email_next_screen_issue_user_email_authorization_token_mutation.req.gql.dart';
@@ -28,21 +29,24 @@ class LoginWithCodeScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
+  final _pinFocusNode = FocusNode();
   final _pinController = TextEditingController();
   final _transitionCompleter = Completer();
-
-  Animation<double>? get _transitionAnimation =>
-      ModalRoute.of(context)?.animation;
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_transitionAnimation == null) {
+      final transitionAnimation = ModalRoute.of(context)?.animation;
+      if (transitionAnimation == null) {
         _transitionCompleter.complete();
       } else {
-        _transitionAnimation!.addStatusListener(_handleTransitionCompletion);
+        transitionAnimation.addStatusListener((status) {
+          if (status == AnimationStatus.completed) {
+            _transitionCompleter.complete();
+          }
+        });
       }
     });
   }
@@ -50,7 +54,6 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
   @override
   void dispose() {
     _pinController.dispose();
-    _transitionAnimation?.removeStatusListener(_handleTransitionCompletion);
 
     super.dispose();
   }
@@ -84,6 +87,7 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
               const Gap(32),
               Pinput(
                 controller: _pinController,
+                focusNode: _pinFocusNode,
                 autofocus: true,
                 length: 6,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -101,25 +105,31 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
                   await _transitionCompleter.future;
 
                   final client = ref.read(ferryProvider);
-                  final req1 =
-                      GLoginWithEmailNextScreen_IssueUserEmailAuthorizationToken_MutationReq(
-                    (b) => b
-                      ..vars.input.email = widget.email
-                      ..vars.input.code = value,
-                  );
-                  final resp1 = await client.req(req1);
 
-                  final req2 =
-                      GLoginWithEmailNextScreen_AuthorizeUserEmailToken_MutationReq(
-                    (b) => b
-                      ..vars.input.token =
-                          resp1.issueUserEmailAuthorizationToken.token,
-                  );
+                  try {
+                    final req1 =
+                        GLoginWithEmailNextScreen_IssueUserEmailAuthorizationToken_MutationReq(
+                      (b) => b
+                        ..vars.input.email = widget.email
+                        ..vars.input.code = value,
+                    );
+                    final resp1 = await client.req(req1);
 
-                  final resp2 = await client.req(req2);
-                  await ref
-                      .read(authProvider.notifier)
-                      .setAccessToken(resp2.authorizeUserEmailToken.token);
+                    final req2 =
+                        GLoginWithEmailNextScreen_AuthorizeUserEmailToken_MutationReq(
+                      (b) => b
+                        ..vars.input.token =
+                            resp1.issueUserEmailAuthorizationToken.token,
+                    );
+                    final resp2 = await client.req(req2);
+
+                    await ref
+                        .read(authProvider.notifier)
+                        .setAccessToken(resp2.authorizeUserEmailToken.token);
+                  } on OperationError catch (_) {
+                    _pinController.clear();
+                    _pinFocusNode.requestFocus();
+                  }
                 },
               ),
             ],
@@ -127,11 +137,5 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
         ),
       ),
     );
-  }
-
-  void _handleTransitionCompletion(AnimationStatus status) {
-    if (status == AnimationStatus.completed) {
-      _transitionCompleter.complete();
-    }
   }
 }
