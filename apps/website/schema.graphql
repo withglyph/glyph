@@ -739,6 +739,7 @@ input PurchasePostInput {
 type Query {
   auth(scope: AuthScope!): Void
   authLayoutBackgroundImage: Image
+  challengeFeed: [Post!]!
   collectionFeed: [SpaceCollection!]!
   curatedPosts: [Post!]!
   draftPost(permalink: String!): Post!
@@ -754,15 +755,12 @@ type Query {
   pointPurchase(paymentKey: String!): PointPurchase!
   post(permalink: String!): Post!
   provisionedUser(token: String!): ProvisionedUser!
-  recentFeed: [Post!]!
-  recentlyUsedTags: [Tag!]!
   recommendFeed: [Post!]!
   recommendedTags: [Tag!]!
   revenueWithdrawal(id: String!): RevenueWithdrawal!
   searchPosts(adultFilter: Boolean, excludeTags: [String!]! = [], includeTags: [String!]! = [], orderBy: SearchOrderByKind! = ACCURACY, page: Int! = 1, query: String!, take: Int! = 10): SearchResult!
   space(slug: String!): Space!
   spaceCollection(slug: String!): SpaceCollection!
-  spaceFeed: [Post!]!
   tag(name: String!): Tag!
 }
 

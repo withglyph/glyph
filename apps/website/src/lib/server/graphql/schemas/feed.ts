@@ -13,6 +13,7 @@ import {
   SpaceFollows,
   Spaces,
   TagFollows,
+  Tags,
 } from '$lib/server/database';
 import { elasticSearch, indexName } from '$lib/server/search';
 import {
@@ -625,24 +626,19 @@ builder.queryFields((t) => ({
     },
   }),
 
-  recentFeed: t.field({
+  challengeFeed: t.field({
     type: [Post],
     resolve: async () => {
-      return [];
-    },
-  }),
+      const posts = await database
+        .select({ id: Posts.id })
+        .from(Posts)
+        .innerJoin(PostTags, eq(PostTags.postId, Posts.id))
+        .innerJoin(Tags, eq(Tags.id, PostTags.tagId))
+        .where(and(eq(PostTags.kind, 'CHALLENGE'), eq(Tags.name, '주간창작_6월_1주차')))
+        .orderBy(desc(Posts.publishedAt))
+        .limit(100);
 
-  spaceFeed: t.withAuth({ user: true }).field({
-    type: [Post],
-    resolve: async () => {
-      return [];
-    },
-  }),
-
-  recentlyUsedTags: t.field({
-    type: [Tag],
-    resolve: async () => {
-      return [];
+      return posts.map((post) => post.id);
     },
   }),
 }));
