@@ -64,7 +64,18 @@ class ToastController {
   FToast get _ftoast => ToastScope.of(context)!.ftoast;
 
   void show(String message) {
-    _ftoast.showToast(child: TextToastWidget(message: message));
+    _ftoast.showToast(
+      child: TextToastWidget(message: message),
+      positionedToastBuilder: (context, child) {
+        final height = MediaQuery.of(context).padding.bottom;
+        return Positioned(
+          bottom: height + 28,
+          left: 16,
+          right: 16,
+          child: child,
+        );
+      },
+    );
   }
 }
 
