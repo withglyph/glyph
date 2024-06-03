@@ -4,6 +4,7 @@ import 'package:glyph/routers/app.dart';
 import 'package:glyph/routers/observer.dart';
 import 'package:glyph/screens/splash.dart';
 import 'package:glyph/themes/colors.dart';
+import 'package:glyph/widgets/errror.dart';
 
 class App extends ConsumerWidget {
   App({super.key});
@@ -54,6 +55,13 @@ class App extends ConsumerWidget {
           titleLarge: defaultTextStyle,
         ),
       ),
+      builder: (context, child) {
+        ErrorWidget.builder = (details) {
+          return const AppErrorWidget();
+        };
+
+        return child!;
+      },
     );
   }
 }
