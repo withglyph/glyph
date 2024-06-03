@@ -1,0 +1,6 @@
+mutation PostScreen_UpdatePostView_Mutation($input: UpdatePostViewInput!) {
+  updatePostView(input: $input) {
+    id
+    viewCount
+  }
+}

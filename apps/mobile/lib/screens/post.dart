@@ -12,6 +12,7 @@ import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/post_screen_bookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_unbookmark_post_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/post_screen_update_post_view_mutation.req.gql.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:share_plus/share_plus.dart';
@@ -27,13 +28,14 @@ class PostScreen extends ConsumerStatefulWidget {
 }
 
 class _PostScreenState extends ConsumerState<PostScreen> {
-  final browser = ChromeSafariBrowser();
-
   final _scrollController = ScrollController();
+  final _browser = ChromeSafariBrowser();
 
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    _scrollController.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -43,6 +45,12 @@ class _PostScreenState extends ConsumerState<PostScreen> {
         operation: GPostScreen_QueryReq(
           (b) => b..vars.permalink = widget.permalink,
         ),
+        onDataLoaded: (context, client, data) async {
+          final req = GPostScreen_UpdatePostView_MutationReq(
+            (b) => b..vars.input.postId = data.post.id,
+          );
+          await client.req(req);
+        },
         builder: (context, client, data) {
           return SizedBox.expand(
             child: Stack(
@@ -94,7 +102,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                         onNavigate: (controller, navigationAction) async {
                           if (navigationAction.navigationType ==
                               NavigationType.LINK_ACTIVATED) {
-                            await browser.open(
+                            await _browser.open(
                               url: navigationAction.request.url,
                               settings: ChromeSafariBrowserSettings(
                                 barCollapsingEnabled: true,
