@@ -30,7 +30,7 @@
         }
       }
 
-      curatedPosts {
+      challengeFeed {
         id
 
         ...Feed_PostCard_post
@@ -234,7 +234,7 @@
         size={20}
       />
 
-      {#each $query.curatedPosts as post (post.id)}
+      {#each $query.challengeFeed as post (post.id)}
         <PostCard style={css.raw({ width: { base: '200px', sm: '218px' } })} $post={post} showStats={false} />
       {/each}
 
