@@ -2,7 +2,17 @@
   "allowCompoundWords": true,
   "enableFiletypes": ["*"],
   "enableGlobDot": true,
-  "ignorePaths": [".git", ".gitignore", ".vscode", "pnpm-lock.yaml", "*.sql", "CODEOWNERS", "patches", "apps/mobile"],
+  "ignorePaths": [
+    ".git",
+    ".gitignore",
+    ".vscode",
+    "pnpm-lock.yaml",
+    "*.sql",
+    "CODEOWNERS",
+    "patches",
+    "drizzle",
+    "apps/mobile"
+  ],
   "numSuggestions": 0,
   "useGitignore": true,
   "words": [

@@ -137,6 +137,7 @@ export const PostTagKind = {
   EXTRA: 'EXTRA',
   TITLE: 'TITLE',
   TRIGGER: 'TRIGGER',
+  CHALLENGE: 'CHALLENGE',
 } as const;
 
 export const PostVisibility = {

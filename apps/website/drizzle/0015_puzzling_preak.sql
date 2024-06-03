@@ -1,0 +1,1 @@
+ALTER TYPE "_post_tag_kind" ADD VALUE 'CHALLENGE';
