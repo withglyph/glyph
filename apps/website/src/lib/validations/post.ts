@@ -23,7 +23,7 @@ export const PublishPostInputSchema = z.object({
   tags: z.array(
     z.object({
       name: z.string().regex(new RegExp(tagPattern, 'u'), '태그에 허용되지 않는 문자예요').trim(),
-      kind: z.enum(['TITLE', 'COUPLING', 'CHARACTER', 'TRIGGER', 'EXTRA']),
+      kind: z.enum(['TITLE', 'COUPLING', 'CHARACTER', 'TRIGGER', 'EXTRA', 'CHALLENGE']),
     }),
   ),
 });
@@ -37,7 +37,7 @@ export const UpdatePostTagsInputSchema = z.object({
   tags: z.array(
     z.object({
       name: z.string().regex(new RegExp(tagPattern, 'u'), '태그에 허용되지 않는 문자예요').trim(),
-      kind: z.enum(['TITLE', 'COUPLING', 'CHARACTER', 'TRIGGER', 'EXTRA']),
+      kind: z.enum(['TITLE', 'COUPLING', 'CHARACTER', 'TRIGGER', 'EXTRA', 'CHALLENGE']),
     }),
   ),
 });

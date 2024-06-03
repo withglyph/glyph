@@ -31,9 +31,10 @@
 >
   <TabHead
     style={css.raw({
+      gap: '18px',
       marginX: 'auto',
       paddingX: '20px',
-      paddingBottom: '20px',
+      paddingBottom: '16px',
       fontSize: { base: '20px', sm: '24px' },
       width: 'full',
       maxWidth: '1280px',
@@ -43,6 +44,7 @@
     {#if $query.me}
       <TabHeadItem id={2} style={css.raw({ fontWeight: '[800]' })} pathname="/feed">구독</TabHeadItem>
     {/if}
+    <TabHeadItem id={3} style={css.raw({ fontWeight: '[800]' })} pathname="/challenge">챌린지</TabHeadItem>
   </TabHead>
 
   <slot />

@@ -645,6 +645,7 @@ type PostTag {
 }
 
 enum PostTagKind {
+  CHALLENGE
   CHARACTER
   COUPLING
   EXTRA

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import IconGlobe from '~icons/glyph/globe';
+  import IconHelpLine from '~icons/glyph/help-line';
   import IconLink from '~icons/glyph/link';
   import IconLock from '~icons/glyph/lock';
   import IconUsers from '~icons/glyph/users';
@@ -347,8 +348,8 @@
     <form
       class={css({
         overflowY: 'auto',
-        smDown: { paddingX: '20px', paddingBottom: '32px', width: 'full', height: '[50vh]' },
-        sm: { paddingX: '24px', paddingY: '20px', width: '504px', height: '432px' },
+        smDown: { paddingX: '20px', paddingTop: '10px', paddingBottom: '52px', width: 'full', height: '[50vh]' },
+        sm: { paddingX: '24px', paddingTop: '24px', paddingBottom: '62px', width: '504px', height: '432px' },
       })}
       use:form
     >
@@ -576,6 +577,95 @@
           bind:tags={$data.tags}
           bind:query={extraQuery}
         />
+
+        <div>
+          <h3
+            class={flex({
+              align: 'center',
+              gap: '4px',
+              paddingBottom: '8px',
+              fontSize: '14px',
+            })}
+          >
+            챌린지 참여
+            <Tooltip style={center.raw()} message="챌린지 태그를 추가해 챌린지에 참여해보세요" placement="top">
+              <Icon
+                style={css.raw({ 'color': 'gray.400', 'size': '14px', '& *': { strokeWidth: '[1]' } })}
+                icon={IconHelpLine}
+                size={12}
+              />
+            </Tooltip>
+          </h3>
+
+          <div class={flex({ align: 'center', gap: '8px', marginTop: '8px' })}>
+            <button
+              class={css({
+                borderWidth: '1px',
+                borderColor: { base: 'gray.100', _pressed: 'brand.400' },
+                paddingY: '7px',
+                paddingX: '12px',
+                width: '86px',
+                fontSize: '14px',
+                fontWeight: 'medium',
+                color: { base: 'gray.500', _pressed: 'brand.400' },
+                backgroundColor: { base: 'gray.100', _pressed: 'brand.50' },
+              })}
+              type="button"
+            >
+              미참여
+            </button>
+            <button
+              class={css({
+                borderWidth: '1px',
+                borderColor: { base: 'gray.100', _pressed: 'brand.400' },
+                paddingY: '7px',
+                paddingX: '12px',
+                width: '86px',
+                fontSize: '14px',
+                fontWeight: 'medium',
+                color: { base: 'gray.500', _pressed: 'brand.400' },
+                backgroundColor: { base: 'gray.100', _pressed: 'brand.50' },
+              })}
+              aria-pressed={true}
+              type="button"
+            >
+              참여
+            </button>
+          </div>
+
+          {#if true}
+            <div class={css({ marginTop: '42px' })}>
+              <h4 class={css({ marginBottom: '8px', fontSize: '14px', color: 'brand.400' })}>이번주 챌린지 태그</h4>
+
+              <ul class={flex({ align: 'center', gap: '8px' })}>
+                <li
+                  class={css({
+                    paddingY: '7px',
+                    paddingX: '12px',
+                    fontSize: '14px',
+                    fontWeight: 'medium',
+                    color: 'brand.400',
+                    backgroundColor: 'brand.50',
+                  })}
+                >
+                  주간창작_6월_1주차
+                </li>
+                <li
+                  class={css({
+                    paddingY: '7px',
+                    paddingX: '12px',
+                    fontSize: '14px',
+                    fontWeight: 'medium',
+                    color: 'brand.400',
+                    backgroundColor: 'brand.50',
+                  })}
+                >
+                  무지개
+                </li>
+              </ul>
+            </div>
+          {/if}
+        </div>
       </section>
 
       <div hidden={tabIndex !== 2}>

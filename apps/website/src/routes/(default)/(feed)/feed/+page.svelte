@@ -27,7 +27,7 @@
     marginX: 'auto',
     paddingX: '20px',
     width: 'full',
-    maxWidth: '860px',
+    maxWidth: '900px',
   })}
 >
   <h1 class={css({ marginBottom: '14px', fontWeight: 'semibold' })}>구독 스페이스 & 태그</h1>
