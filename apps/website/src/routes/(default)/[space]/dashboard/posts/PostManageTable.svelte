@@ -85,6 +85,7 @@
           id
           title
           subtitle
+          previewText
           price
         }
 
@@ -241,7 +242,9 @@
                 : [...selectedPosts, post.id])}
           />
         </TableData>
-        <TableData style={css.raw({ padding: '20px', paddingLeft: '0', maxWidth: '1px', truncate: true })}>
+        <TableData
+          style={css.raw({ padding: '20px', paddingLeft: '0', color: '[inherit]', maxWidth: '1px', truncate: true })}
+        >
           <div class={css({ position: 'relative' })}>
             <a href="/{post.space.slug}/{post.permalink}">
               <div class={flex({ align: 'flex-start', justify: 'space-between', gap: { base: '10px', sm: '86px' } })}>
@@ -254,17 +257,45 @@
                   <p class={css({ fontSize: '14px', fontWeight: 'semibold', truncate: true })}>
                     {post.publishedRevision?.title ?? '(제목 없음)'}
                   </p>
-                  <p
-                    class={css({
+                  <div
+                    class={flex({
+                      align: 'center',
                       marginBottom: '4px',
                       fontSize: '13px',
-                      color: 'gray.600',
                       height: '19px',
                       truncate: true,
                     })}
                   >
-                    {post.publishedRevision?.subtitle ?? ''}
-                  </p>
+                    {#if post.publishedRevision.subtitle}
+                      <h4
+                        class={css(
+                          {
+                            display: 'flex',
+                            alignItems: 'center',
+                            flex: 'none',
+                            fontWeight: 'medium',
+                            color: 'gray.800',
+                            truncate: true,
+                          },
+                          !!post.publishedRevision.previewText && {
+                            _after: {
+                              content: '""',
+                              display: 'block',
+                              marginX: '4px',
+                              width: '1px',
+                              height: '10px',
+                              backgroundColor: 'gray.500',
+                            },
+                          },
+                        )}
+                      >
+                        {post.publishedRevision.subtitle ?? ''}
+                      </h4>
+                    {/if}
+                    {#if post.publishedRevision.previewText}
+                      <p class={css({ color: 'gray.600', truncate: true })}>{post.publishedRevision.previewText}</p>
+                    {/if}
+                  </div>
 
                   <ul
                     class={flex({
