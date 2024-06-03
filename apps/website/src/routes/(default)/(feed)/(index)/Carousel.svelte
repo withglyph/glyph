@@ -21,8 +21,15 @@
 
   const slides: Slide[] = [
     {
+      title: '주간창작 챌린지!',
+      subtitle: '주간창작 챌린지와 함께 꾸준히 창작해요!',
+      color: '#1717175A',
+      backgroundImageUrl: 'https://glyph.pub/images/_/banner_challenge_3.png',
+      href: '/glyph/956420498',
+    },
+    {
       title: '5월 30일 업데이트 노트',
-      subtitle: '스페이스 관리 리뉴얼 - 포스트 발행옵션 일괄 수정, 컬렉션 설명 추가',
+      subtitle: '스페이스 관리 리뉴얼\n포스트 발행옵션 일괄 수정, 컬렉션 설명 추가',
       color: '#1717175A',
       backgroundImageUrl: 'https://glyph.pub/images/_/banner_updates_2.png',
       href: '/glyph/2070481519',
