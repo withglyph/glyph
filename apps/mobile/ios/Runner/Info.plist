@@ -31,7 +31,7 @@
 			<string>com.withglyph.app</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>withglyph</string>
+				<string>com.withglyph.app</string>
 				<string>com.googleusercontent.apps.58678861052-lf5sv4oggv0ieiuitk9vnh6c6nmq2e4m</string>
 			</array>
 		</dict>
@@ -82,6 +82,6 @@
 	<key>naverServiceAppName</key>
 	<string>Glyph</string>
 	<key>naverServiceAppUrlScheme</key>
-	<string>withglyph</string>
+	<string>com.withglyph.app</string>
 </dict>
 </plist>
