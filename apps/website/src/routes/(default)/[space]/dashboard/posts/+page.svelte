@@ -97,7 +97,7 @@
     paddingTop: '20px',
     paddingBottom: { base: '24px', sm: '20px' },
     backgroundColor: 'gray.0',
-    zIndex: '1',
+    zIndex: '50',
     smDown: { marginTop: '-20px' },
   })}
 >
