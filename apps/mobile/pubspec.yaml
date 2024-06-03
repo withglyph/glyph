@@ -63,6 +63,7 @@ dependencies:
   share_plus: ^9.0.0
   sliver_tools: ^0.2.12
   pinput: ^4.0.0
+  card_swiper: ^3.0.1
 
 dev_dependencies:
   flutter_test:
