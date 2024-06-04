@@ -93,6 +93,12 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                         onJsMessage: (message, reply) async {
                           if (message['type'] == 'ready') {
                             await reply({
+                              'type': 'info',
+                              'permalink': widget.permalink,
+                              'revisionId': data.post.publishedRevision!.id,
+                            });
+
+                            await reply({
                               'type': 'content',
                               'content':
                                   data.post.publishedRevision!.content.value
