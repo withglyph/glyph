@@ -235,7 +235,7 @@ class LobbyBottomNavigationBarItem extends ConsumerWidget {
                       label!,
                       style: TextStyle(
                         fontSize: 10,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                         color: isActive == true
                             ? BrandColors.gray_900
                             : BrandColors.gray_400,

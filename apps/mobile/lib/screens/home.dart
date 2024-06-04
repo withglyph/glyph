@@ -116,25 +116,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             ),
             actions: [
               Pressable(
-                child: Padding(
-                  padding: const EdgeInsets.all(2),
-                  child: SvgIcon(
-                    'search',
-                    color: _headerForegroundColorAnimation.value,
-                  ),
+                child: SvgIcon(
+                  'search',
+                  color: _headerForegroundColorAnimation.value,
                 ),
                 onPressed: () {
                   context.router.push(PlaceholderRoute(text: '검색'));
                 },
               ),
-              const Gap(18),
+              const Gap(16),
               Pressable(
-                child: Padding(
-                  padding: const EdgeInsets.all(2),
-                  child: SvgIcon(
-                    'notification',
-                    color: _headerForegroundColorAnimation.value,
-                  ),
+                child: SvgIcon(
+                  'notification',
+                  color: _headerForegroundColorAnimation.value,
                 ),
                 onPressed: () {
                   context.router.push(const NotificationRoute());

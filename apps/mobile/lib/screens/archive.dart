@@ -1,10 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gap/gap.dart';
 import 'package:glyph/components/heading.dart';
-import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
+import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 
@@ -17,50 +16,69 @@ class ArchiveScreen extends ConsumerWidget {
     return AutoTabsRouter.tabBar(
       routes: const [
         ArchiveBookmarksRoute(),
+        ArchivePurchasesRoute(),
         ArchiveRecentsRoute(),
         ArchiveEmojisRoute(),
         ArchiveCommentsRoute(),
       ],
       builder: (context, child, tabController) {
         return Scaffold(
-          appBar: const Heading(
+          appBar: Heading(
             title: Text(
               '보관함',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
             ),
+            actions: [
+              Pressable(
+                child: SvgIcon('settings'),
+                onPressed: () {},
+              ),
+            ],
           ),
           body: Column(
             children: [
-              const HorizontalDivider(color: BrandColors.gray_50),
               Container(
-                color: BrandColors.gray_0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _TabItem(
-                      title: '북마크',
-                      isActive: tabController.index == 0,
-                      onTap: () => tabController.animateTo(0),
-                    ),
-                    _TabItem(
-                      title: '최근',
-                      isActive: tabController.index == 1,
-                      onTap: () => tabController.animateTo(1),
-                    ),
-                    _TabItem(
-                      title: '이모지',
-                      isActive: tabController.index == 2,
-                      onTap: () => tabController.animateTo(2),
-                    ),
-                    _TabItem(
-                      title: '댓글',
-                      isActive: tabController.index == 3,
-                      onTap: () => tabController.animateTo(3),
-                    ),
-                  ],
+                height: 40,
+                decoration: BoxDecoration(
+                  color: BrandColors.gray_0,
+                  border: Border(
+                    bottom: BorderSide(color: BrandColors.gray_100),
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _TabItem(
+                        title: '북마크',
+                        isActive: tabController.index == 0,
+                        onTap: () => tabController.animateTo(0),
+                      ),
+                      _TabItem(
+                        title: '구매',
+                        isActive: tabController.index == 1,
+                        onTap: () => tabController.animateTo(1),
+                      ),
+                      _TabItem(
+                        title: '최근',
+                        isActive: tabController.index == 2,
+                        onTap: () => tabController.animateTo(2),
+                      ),
+                      _TabItem(
+                        title: '이모지',
+                        isActive: tabController.index == 3,
+                        onTap: () => tabController.animateTo(3),
+                      ),
+                      _TabItem(
+                        title: '댓글',
+                        isActive: tabController.index == 4,
+                        onTap: () => tabController.animateTo(4),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              const HorizontalDivider(color: BrandColors.gray_150),
               Expanded(child: child)
             ],
           ),
@@ -83,29 +101,33 @@ class _TabItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Pressable(
-      onPressed: onTap,
-      child: Container(
-        width: 80,
-        padding: const EdgeInsets.only(top: 12),
-        child: Center(
-          child: Column(
-            children: [
-              Text(
+    return Expanded(
+      child: Pressable(
+        onPressed: onTap,
+        child: Stack(
+          children: [
+            Center(
+              child: Text(
                 title,
                 style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: isActive ? BrandColors.gray_900 : BrandColors.gray_300,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: isActive ? BrandColors.gray_900 : BrandColors.gray_400,
                 ),
               ),
-              const Gap(6),
-              HorizontalDivider(
-                height: 2,
-                color: isActive ? BrandColors.gray_900 : Colors.transparent,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: BrandColors.gray_900,
+                    width: 2,
+                    style: isActive ? BorderStyle.solid : BorderStyle.none,
+                  ),
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

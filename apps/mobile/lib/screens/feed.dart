@@ -47,7 +47,7 @@ class FeedScreen extends ConsumerWidget {
                   posts[index],
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
-                    vertical: 24,
+                    vertical: 18,
                   ),
                 );
               },

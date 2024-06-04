@@ -17,8 +17,9 @@ class Tag extends StatelessWidget {
         name,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(
-          fontSize: 12,
-          color: BrandColors.gray_500,
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+          color: Color(0xFF939393),
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -21,152 +22,127 @@ class PostCard extends ConsumerWidget {
   const PostCard(
     this.post, {
     super.key,
-    this.padding,
+    required this.padding,
   });
 
   final GPostCard_post post;
-  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry padding;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final child = Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
+    return Pressable(
+      child: Padding(
+        padding: padding,
+        child: SizedBox(
+          height: 120,
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                post.publishedRevision!.title ?? '(제목 없음)',
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              if (post.publishedRevision!.subtitle != null)
-                Text(
-                  post.publishedRevision!.subtitle!,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: BrandColors.gray_600,
-                  ),
-                ),
-              const Gap(6),
-              Row(
-                children: [
-                  ...post.tags
-                      .take(2)
-                      .map((tag) => Flexible(child: Tag(tag.tag)))
-                      .intersperse(const Gap(4)),
-                  if (post.tags.length > 2) ...[
-                    const Gap(4),
-                    Tag.text('+${post.tags.length - 2}'),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      post.publishedRevision!.title ?? '(제목 없음)',
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    if (post.publishedRevision!.subtitle != null)
+                      Text(
+                        post.publishedRevision!.subtitle!,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: BrandColors.gray_500,
+                        ),
+                      ),
+                    const Gap(6),
+                    const Spacer(),
+                    UnconstrainedBox(
+                      clipBehavior: Clip.hardEdge,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: post.tags
+                            .map((tag) => Tag(tag.tag))
+                            .intersperse(const Gap(4))
+                            .toList(),
+                      ),
+                    ),
+                    const Gap(14),
+                    Row(
+                      children: [
+                        Img(post.space!.icon, width: 18, height: 18),
+                        const Gap(4),
+                        Flexible(
+                          child: Text(
+                            post.space!.name,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: BrandColors.gray_400,
+                            ),
+                          ),
+                        ),
+                        const Gap(6),
+                        Container(
+                          width: 2,
+                          height: 2,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: BrandColors.gray_400,
+                          ),
+                        ),
+                        const Gap(6),
+                        Text(
+                          Jiffy.parse(post.publishedAt!.value).fromNow(),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: BrandColors.gray_400,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
-                ],
+                ),
               ),
-              const Gap(12),
-              Row(
+              const Gap(14),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Img(post.space!.icon, width: 18, height: 18),
-                  const Gap(4),
-                  Text(
-                    post.space!.name,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: BrandColors.gray_500,
-                    ),
-                  ),
-                ],
-              ),
-              const Gap(6),
-              Row(
-                children: [
-                  const SvgIcon('eye', size: 16, color: BrandColors.gray_400),
-                  const Gap(2),
-                  Text(
-                    post.viewCount.toString(),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: BrandColors.gray_400,
-                    ),
-                  ),
-                  const Gap(6),
-                  const SvgIcon('mood-smile',
-                      size: 15, color: BrandColors.gray_400),
-                  const Gap(2),
-                  Text(
-                    post.reactionCount.toString(),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: BrandColors.gray_400,
-                    ),
-                  ),
-                  const Gap(6),
-                  const SvgIcon('message-circle',
-                      size: 15, color: BrandColors.gray_400),
-                  const Gap(2),
-                  Text(
-                    post.commentCount.toString(),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: BrandColors.gray_400,
-                    ),
-                  ),
-                  const Gap(8),
-                  Container(width: 1, height: 12, color: BrandColors.gray_100),
-                  const Gap(8),
-                  Text(
-                    Jiffy.parse(post.publishedAt!.value)
-                        .format(pattern: 'yyyy.MM.dd'),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: BrandColors.gray_400,
-                    ),
+                  Img(post.thumbnail, width: 108, aspectRatio: 16 / 10),
+                  const Spacer(),
+                  Pressable(
+                    child: post.bookmarkGroups.isEmpty
+                        ? const SvgIcon('bookmark', color: BrandColors.gray_400)
+                        : const SvgIcon('bookmark-filled'),
+                    onPressed: () async {
+                      final client = ref.read(ferryProvider);
+
+                      if (post.bookmarkGroups.isEmpty) {
+                        final req = GPostCard_BookmarkPost_MutationReq(
+                          (b) => b..vars.input.postId = post.id,
+                        );
+                        await client.req(req);
+                      } else {
+                        final req = GPostCard_UnbookmarkPost_MutationReq(
+                          (b) => b
+                            ..vars.input.postId = post.id
+                            ..vars.input.bookmarkGroupId =
+                                post.bookmarkGroups.first.id,
+                        );
+                        await client.req(req);
+                      }
+                    },
                   ),
                 ],
               ),
             ],
           ),
         ),
-        const Gap(14),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Img(post.thumbnail, width: 118, aspectRatio: 16 / 10),
-            const Gap(24),
-            Pressable(
-              child: post.bookmarkGroups.isEmpty
-                  ? const SvgIcon('bookmark', color: BrandColors.gray_400)
-                  : const SvgIcon('bookmark-filled'),
-              onPressed: () async {
-                final client = ref.read(ferryProvider);
-
-                if (post.bookmarkGroups.isEmpty) {
-                  final req = GPostCard_BookmarkPost_MutationReq(
-                    (b) => b..vars.input.postId = post.id,
-                  );
-                  await client.req(req);
-                } else {
-                  final req = GPostCard_UnbookmarkPost_MutationReq(
-                    (b) => b
-                      ..vars.input.postId = post.id
-                      ..vars.input.bookmarkGroupId =
-                          post.bookmarkGroups.first.id,
-                  );
-                  await client.req(req);
-                }
-              },
-            ),
-          ],
-        ),
-      ],
-    );
-
-    return Pressable(
-      child: padding == null ? child : Padding(padding: padding!, child: child),
+      ),
       onPressed: () {
         context.router.push(PostRoute(permalink: post.permalink));
       },

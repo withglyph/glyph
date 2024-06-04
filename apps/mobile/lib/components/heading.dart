@@ -21,7 +21,7 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
   final Color? backgroundColor;
   final SystemUiOverlayStyle? fallbackSystemUiOverlayStyle;
 
-  static const _preferredSize = Size.fromHeight(54);
+  static const _preferredSize = Size.fromHeight(44);
 
   @override
   Widget build(BuildContext context) {
@@ -55,12 +55,10 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
                       return Pressable(
                         child: SvgIcon(
                           switch (leadingType) {
-                            LeadingType.back => 'chevron-left',
+                            LeadingType.back => 'arrow-left',
                             LeadingType.close => 'x',
                             _ => throw UnimplementedError(),
                           },
-                          color: BrandColors.gray_600,
-                          size: 24,
                         ),
                         onPressed: () => action?.call(),
                       );

@@ -18,34 +18,20 @@ class ArchiveRecentsScreen extends ConsumerWidget {
       builder: (context, client, data) {
         final posts = data.me!.recentlyViewedPosts;
 
-        return CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
-                child: Text(
-                  '포스트 ${posts.length}개',
-                  style: const TextStyle(
-                      fontSize: 12, color: BrandColors.gray_400),
-                ),
-              ),
-            ),
-            SliverList.separated(
-              itemCount: posts.length,
-              itemBuilder: (context, index) {
-                return PostCard(
-                  posts[index],
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-                  child: HorizontalDivider(color: BrandColors.gray_50),
-                );
-              },
-            ),
-          ],
+        return ListView.separated(
+          itemCount: posts.length,
+          itemBuilder: (context, index) {
+            return PostCard(
+              posts[index],
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+            );
+          },
+          separatorBuilder: (context, index) {
+            return const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: HorizontalDivider(color: BrandColors.gray_50),
+            );
+          },
         );
       },
     );

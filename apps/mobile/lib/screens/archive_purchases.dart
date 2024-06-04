@@ -4,19 +4,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/post_card.dart';
 import 'package:glyph/ferry/widget.dart';
-import 'package:glyph/graphql/__generated__/archive_comments_screen_query.req.gql.dart';
+import 'package:glyph/graphql/__generated__/archive_purchases_screen_query.req.gql.dart';
 import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
-class ArchiveCommentsScreen extends ConsumerWidget {
-  const ArchiveCommentsScreen({super.key});
+class ArchivePurchasesScreen extends ConsumerWidget {
+  const ArchivePurchasesScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GraphQLOperation(
-      operation: GArchiveCommentsScreen_QueryReq(),
+      operation: GArchivePurchasesScreen_QueryReq(),
       builder: (context, client, data) {
-        final posts = data.me!.comments.map((e) => e.post).nonNulls.toList();
+        final posts = data.me!.purchasedPosts;
 
         return ListView.separated(
           itemCount: posts.length,
