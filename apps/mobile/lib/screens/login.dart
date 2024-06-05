@@ -42,7 +42,10 @@ class LoginScreen extends ConsumerWidget {
         final imageUrl = response?.data?.featuredImage?.url;
 
         return Scaffold(
-          appBar: const Heading(backgroundColor: Colors.transparent),
+          appBar: const Heading(
+            backgroundColor: Colors.transparent,
+            bottomBorder: false,
+          ),
           extendBodyBehindAppBar: true,
           body: Stack(
             children: [

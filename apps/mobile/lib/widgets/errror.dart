@@ -13,7 +13,7 @@ class AppErrorWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            const Text(
               '오류!!!',
               style: TextStyle(
                 fontSize: 72,
@@ -23,10 +23,11 @@ class AppErrorWidget extends StatelessWidget {
             const Gap(16),
             GestureDetector(
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: BrandColors.gray_900,
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: const Text(
                   '뒤로 가기',
                   style: TextStyle(

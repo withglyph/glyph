@@ -1,0 +1,8 @@
+mutation PostScreen_Comments_UnlikeComment_Mutation($input: UnlikeCommentInput!) {
+  unlikeComment(input: $input) {
+    id
+    liked
+    likedByPostUser
+    likeCount
+  }
+}

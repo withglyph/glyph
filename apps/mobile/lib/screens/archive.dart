@@ -24,13 +24,14 @@ class ArchiveScreen extends ConsumerWidget {
       builder: (context, child, tabController) {
         return Scaffold(
           appBar: Heading(
-            title: Text(
+            bottomBorder: false,
+            title: const Text(
               '보관함',
               style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
             ),
             actions: [
               Pressable(
-                child: SvgIcon('settings'),
+                child: const SvgIcon('settings'),
                 onPressed: () {},
               ),
             ],
@@ -39,14 +40,14 @@ class ArchiveScreen extends ConsumerWidget {
             children: [
               Container(
                 height: 40,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: BrandColors.gray_0,
                   border: Border(
                     bottom: BorderSide(color: BrandColors.gray_100),
                   ),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

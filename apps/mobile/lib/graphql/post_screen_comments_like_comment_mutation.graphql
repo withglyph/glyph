@@ -1,0 +1,8 @@
+mutation PostScreen_Comments_LikeComment_Mutation($input: LikeCommentInput!) {
+  likeComment(input: $input) {
+    id
+    liked
+    likedByPostUser
+    likeCount
+  }
+}

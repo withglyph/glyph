@@ -59,6 +59,7 @@ class _MeScreenState extends ConsumerState<MeScreen>
             animation: _appBarAnimationController,
             builder: (context) {
               return Heading(
+                bottomBorder: false,
                 backgroundColor: _appBarBackgroundColorAnimation.value,
                 actions: [
                   Pressable(
@@ -90,7 +91,7 @@ class _MeScreenState extends ConsumerState<MeScreen>
               );
             },
           ),
-          body: NotificationListener<ScrollNotification>(
+          body: NotificationListener<ScrollUpdateNotification>(
             onNotification: (notification) {
               final box = _spaceHeaderKey.currentContext?.findRenderObject()
                   as RenderBox;

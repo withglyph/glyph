@@ -107,6 +107,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         animation: _headerAnimationController,
         builder: (context) {
           return Heading(
+            bottomBorder: false,
             backgroundColor: _headerBackgroundColorAnimation.value,
             fallbackSystemUiOverlayStyle: SystemUiOverlayStyle.light,
             leading: SvgImage(
@@ -138,7 +139,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           );
         },
       ),
-      body: NotificationListener<ScrollNotification>(
+      body: NotificationListener<ScrollUpdateNotification>(
         onNotification: (notification) {
           final box =
               _carouselKey.currentContext?.findRenderObject() as RenderBox;
@@ -159,7 +160,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             child: Column(
               children: [
                 ConstrainedBox(
-                  constraints: BoxConstraints.tightFor(height: 416),
+                  constraints: const BoxConstraints.tightFor(height: 416),
                   child: Builder(
                     builder: (context) {
                       return Swiper(
@@ -180,11 +181,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                   children: [
                                     ConstrainedBox(
                                       constraints:
-                                          BoxConstraints.tightFor(width: 13),
+                                          const BoxConstraints.tightFor(width: 13),
                                       child: Text(
                                         (config.activeIndex + 1).toString(),
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 11,
                                           color: BrandColors.gray_0,
                                         ),

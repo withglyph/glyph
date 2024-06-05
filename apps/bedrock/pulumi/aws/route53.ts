@@ -99,3 +99,12 @@ new aws.route53.Record('penxle.io|txt', {
   ],
   ttl: 300,
 });
+
+new aws.route53.Record('pencil.so|txt', {
+  zoneId: zones.pencil_so.zoneId,
+  type: 'TXT',
+  name: 'pencil.so',
+  // spell-checker:disable-next-line
+  records: ['google-site-verification=7lMNJhce63je2LK5iw8ZzBFh34dMrjjS2IfRDd06Sm0'],
+  ttl: 300,
+});

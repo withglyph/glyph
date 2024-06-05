@@ -13,6 +13,8 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.backgroundColor = BrandColors.gray_0,
     this.fallbackSystemUiOverlayStyle,
+    this.titleOnLeft = false,
+    this.bottomBorder = true,
   });
 
   final Widget? leading;
@@ -20,6 +22,8 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
   final Color? backgroundColor;
   final SystemUiOverlayStyle? fallbackSystemUiOverlayStyle;
+  final bool titleOnLeft;
+  final bool bottomBorder;
 
   static const _preferredSize = Size.fromHeight(44);
 
@@ -44,6 +48,16 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
           child: Container(
             constraints: BoxConstraints.tight(_preferredSize),
             padding: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              border: bottomBorder
+                  ? const Border(
+                      bottom: BorderSide(
+                        color: BrandColors.gray_100,
+                        width: 1,
+                      ),
+                    )
+                  : null,
+            ),
             child: NavigationToolbar(
               leading: leading ??
                   AutoLeadingButton(
@@ -65,6 +79,7 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
                     },
                   ),
               middle: title,
+              centerMiddle: !titleOnLeft,
               trailing: actions == null
                   ? null
                   : Row(mainAxisSize: MainAxisSize.min, children: actions!),

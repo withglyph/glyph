@@ -24,7 +24,7 @@ class DefaultShell extends StatelessWidget {
             : Text(
                 title!,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 17,
                   fontWeight: FontWeight.w700,
                 ),
               ),

@@ -11,6 +11,7 @@ class Img extends StatelessWidget {
     this.width,
     this.height,
     this.aspectRatio,
+    this.borderRadius = 2,
     this.fit = BoxFit.cover,
   });
 
@@ -18,6 +19,7 @@ class Img extends StatelessWidget {
   final double? width;
   final double? height;
   final double? aspectRatio;
+  final double borderRadius;
   final BoxFit fit;
 
   @override
@@ -31,9 +33,12 @@ class Img extends StatelessWidget {
 
     if (image == null) {
       return Container(
-        color: BrandColors.gray_50,
         width: width,
         height: height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(borderRadius),
+          color: BrandColors.gray_50,
+        ),
         child: const Center(
           child: FractionallySizedBox(
             widthFactor: 1 / 4,
@@ -45,13 +50,16 @@ class Img extends StatelessWidget {
         ),
       );
     } else {
-      return FadeInImage.memoryNetwork(
-        placeholder: kTransparentImage,
-        image: image!.url,
-        width: width,
-        height: height,
-        fit: fit,
-        fadeInDuration: const Duration(milliseconds: 150),
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: FadeInImage.memoryNetwork(
+          placeholder: kTransparentImage,
+          image: image!.url,
+          width: width,
+          height: height,
+          fit: fit,
+          fadeInDuration: const Duration(milliseconds: 150),
+        ),
       );
     }
   }

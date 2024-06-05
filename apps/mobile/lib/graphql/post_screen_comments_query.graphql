@@ -1,0 +1,87 @@
+# import './fragments/img_image.graphql'
+
+query PostScreen_Comnments_Query($permalink: String!) {
+  me {
+    id
+
+    personalIdentity {
+      id
+    }
+  }
+
+  post(permalink: $permalink) {
+    id
+    commentCount
+    commentQualification
+
+    member {
+      id
+
+      profile {
+        id
+        name
+
+        avatar {
+          id
+          ...Img_image
+        }
+      }
+    }
+
+    space {
+      id
+
+      meAsMember {
+        id
+
+        profile {
+          id
+          name
+        }
+      }
+
+      myMasquerade {
+        id
+
+        profile {
+          id
+          name
+        }
+      }
+    }
+
+    comments(take: 1000) {
+      id
+      pinned
+      visibility
+      purchased
+      liked
+      likedByPostUser
+      likeCount
+      content
+      createdAt
+
+      profile {
+        id
+        name
+      }
+
+      children {
+        id
+        pinned
+        visibility
+        purchased
+        liked
+        likedByPostUser
+        likeCount
+        content
+        createdAt
+
+        profile {
+          id
+          name
+        }
+      }
+    }
+  }
+}

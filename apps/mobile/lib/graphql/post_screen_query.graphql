@@ -1,12 +1,37 @@
+# import './fragments/img_image.graphql'
+
 query PostScreen_Query($permalink: String!) {
   post(permalink: $permalink) {
     id
     permalink
     shortlink
+    reactionCount
+    commentCount
+    publishedAt
 
     space {
       id
       slug
+      name
+
+      icon  {
+        id
+        ...Img_image
+      }
+    }
+
+    member {
+      id
+
+      profile {
+        id
+        name
+
+        avatar {
+          id
+          ...Img_image
+        }
+      }
     }
 
     publishedRevision {

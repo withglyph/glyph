@@ -34,7 +34,7 @@ dependencies:
   flutter_native_splash: ^2.4.0
   flutter_inappwebview: ^6.0.0
   google_sign_in: ^6.2.1
-  firebase_core: ^2.31.0
+  firebase_core: ^3.0.0
 
   ferry: ^0.16.0+1
   gql_http_link: ^1.0.1+1
@@ -49,7 +49,7 @@ dependencies:
   flutter_riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5
   freezed_annotation: ^2.4.1
-  firebase_messaging: ^14.9.2
+  firebase_messaging: ^15.0.0
   collection: ^1.18.0
   flutter_naver_login: ^1.8.0
   transparent_image: ^2.0.1
