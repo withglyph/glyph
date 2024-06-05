@@ -4,7 +4,6 @@
   import { nanoid } from 'nanoid';
   import { onMount } from 'svelte';
   import { readable, writable } from 'svelte/store';
-  import { IndexeddbPersistence } from 'y-indexeddb';
   import * as YAwareness from 'y-protocols/awareness';
   import * as Y from 'yjs';
   import { browser } from '$app/environment';
@@ -130,7 +129,7 @@
   });
 
   yDoc.on('updateV2', async (update, origin) => {
-    if (origin !== NETWORK && $state.connectionState === 'synchronized') {
+    if (origin !== NETWORK) {
       await synchronizePost({
         postId: $post.id,
         clientId: $state.clientId,
@@ -143,7 +142,7 @@
   yAwareness.on(
     'update',
     async (states: { added: number[]; updated: number[]; removed: number[] }, origin: unknown) => {
-      if (!browser || origin === NETWORK || $state.connectionState !== 'synchronized') {
+      if (!browser || origin === NETWORK) {
         return;
       }
 
@@ -250,10 +249,7 @@
   }
 
   onMount(() => {
-    const persistence = new IndexeddbPersistence(`withglyph:editor:${$post.id}`, yDoc);
-    persistence.on('synced', () => {
-      forceSynchronize();
-    });
+    forceSynchronize();
 
     const unsubscribe = postSynchronization.subscribe({ postId: $post.id });
     const interval = setInterval(() => updateConnectionState(), 1000);
