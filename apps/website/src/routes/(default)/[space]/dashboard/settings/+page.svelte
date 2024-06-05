@@ -4,7 +4,7 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Helmet, Icon, Image } from '$lib/components';
+  import { Alert, Helmet, Icon, Image } from '$lib/components';
   import { TextArea } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
   import { Button } from '$lib/components/v2';
@@ -19,6 +19,7 @@
   let thumbnailPicker: ThumbnailPicker;
   let spaceProfileThumbnailPicker: ThumbnailPicker;
   let deleteSpaceOpen = false;
+  let changeSpaceVisibilityOpen = false;
 
   $: query = graphql(`
     query SpaceDashboardSettingsPage_Query($slug: String!) {
@@ -99,6 +100,15 @@
     profileName: $query.space.meAsMember.profile.name,
     profileAvatarId: $query.space.meAsMember.profile.avatar.id,
   });
+
+  const updateSpace = graphql(`
+    mutation SpaceDashboardSettingsPage_UpdateSpace_Mutation($input: UpdateSpaceInput!) {
+      updateSpace(input: $input) {
+        id
+        visibility
+      }
+    }
+  `);
 </script>
 
 <Helmet description={`${$query.space.name} 스페이스 설정`} title={`설정 | ${$query.space.name}`} />
@@ -226,6 +236,26 @@
       </div>
     </div>
 
+    {#if $query.space.visibility === 'PRIVATE'}
+      <div>
+        <h2 class={css({ marginBottom: '4px', fontSize: { base: '15px', sm: '17px' }, fontWeight: 'semibold' })}>
+          스페이스 공개
+        </h2>
+
+        <p class={css({ marginBottom: '12px', fontSize: '12px', color: 'gray.500' })}>
+          스페이스를 공개설정할 경우 다시 비공개 스페이스로 돌아갈 수 없어요
+        </p>
+
+        <Button
+          style={css.raw({ width: 'full' })}
+          variant="gray-sub-fill"
+          on:click={() => (changeSpaceVisibilityOpen = true)}
+        >
+          공개 스페이스로 전환
+        </Button>
+      </div>
+    {/if}
+
     <div>
       <h2 class={css({ marginBottom: '6px', fontSize: { base: '15px', sm: '17px' }, fontWeight: 'semibold' })}>
         스페이스 소개
@@ -300,3 +330,41 @@
 
 <ThumbnailPicker bind:this={thumbnailPicker} on:change={(e) => (icon = e.detail)} />
 <ThumbnailPicker bind:this={spaceProfileThumbnailPicker} on:change={(e) => (avatar = e.detail)} />
+
+<Alert bind:open={changeSpaceVisibilityOpen}>
+  <p slot="title" class={css({ textAlign: 'left' })}>정말 스페이스를 공개하시겠어요?</p>
+
+  <p slot="content" class={css({ textAlign: 'left' })}>
+    스페이스를 공개설정할 경우 다시 비공개 스페이스로 돌아갈 수 없어요
+  </p>
+
+  <svelte:fragment slot="action">
+    <Button
+      style={css.raw({ hideFrom: 'sm' })}
+      size="lg"
+      variant="gray-sub-fill"
+      on:click={() => (changeSpaceVisibilityOpen = false)}
+    >
+      취소
+    </Button>
+    <Button
+      style={css.raw({ hideBelow: 'sm' })}
+      size="lg"
+      variant="gray-outline"
+      on:click={() => (changeSpaceVisibilityOpen = false)}
+    >
+      취소
+    </Button>
+    <Button
+      size="lg"
+      variant="brand-fill"
+      on:click={async () => {
+        await updateSpace({ spaceId: $query.space.id, isPublic: true });
+        mixpanel.track('space:update:visibility', { spaceId: $query.space.id, isPublic: true });
+        changeSpaceVisibilityOpen = false;
+      }}
+    >
+      공개
+    </Button>
+  </svelte:fragment>
+</Alert>
