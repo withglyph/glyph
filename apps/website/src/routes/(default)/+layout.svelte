@@ -1,5 +1,6 @@
 <script lang="ts">
   import { graphql } from '$glitch';
+  import { isWebView } from '$lib/flutter';
   import { flex } from '$styled-system/patterns';
   import Footer from './Footer.svelte';
   import Header from './Header.svelte';
@@ -11,7 +12,9 @@
   `);
 </script>
 
-<Header {$query} />
+{#if !$isWebView}
+  <Header {$query} />
+{/if}
 
 <main
   class={flex({
@@ -27,4 +30,6 @@
   <slot />
 </main>
 
-<Footer />
+{#if !$isWebView}
+  <Footer />
+{/if}

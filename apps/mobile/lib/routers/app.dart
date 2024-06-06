@@ -66,6 +66,11 @@ class AppRouter extends $AppRouter {
             AutoRoute(page: NotificationRoute.page, path: 'notification'),
             AutoRoute(page: SettingsRoute.page, path: 'settings'),
             AutoRoute(
+              page: WebViewRoute.page,
+              path: 'webview/:path',
+              usesPathAsKey: true,
+            ),
+            AutoRoute(
               page: PostRoute.page,
               path: ':space/:permalink',
               usesPathAsKey: true,

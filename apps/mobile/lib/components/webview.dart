@@ -32,17 +32,18 @@ class _WebviewState extends ConsumerState<WebView> {
   final GlobalKey _key = GlobalKey();
 
   // late final InAppWebViewController? _webViewController;
-  final _settings = InAppWebViewSettings(
-    allowsBackForwardNavigationGestures: false,
-    disableContextMenu: true,
-    disableLongPressContextMenuOnLinks: true,
-    disableHorizontalScroll: true,
-    disableVerticalScroll: true,
-    disallowOverScroll: true,
-    isTextInteractionEnabled: false,
-    supportZoom: false,
-    suppressesIncrementalRendering: true,
-  );
+  InAppWebViewSettings get _settings => InAppWebViewSettings(
+        allowsBackForwardNavigationGestures: false,
+        disableContextMenu: true,
+        disableLongPressContextMenuOnLinks: true,
+        disableHorizontalScroll: widget.fitToContent,
+        disableVerticalScroll: widget.fitToContent,
+        disallowOverScroll: widget.fitToContent,
+        isTextInteractionEnabled: false,
+        supportZoom: false,
+        suppressesIncrementalRendering: true,
+      );
+
   final _cookieManager = CookieManager.instance();
 
   double _height = 0;
@@ -74,6 +75,14 @@ class _WebviewState extends ConsumerState<WebView> {
             isSecure: Env.baseUrl.startsWith('https'),
           );
 
+          await _cookieManager.setCookie(
+            url: WebUri(Env.baseUrl),
+            name: 'glyph-wv',
+            value: 'true',
+            isSecure: Env.baseUrl.startsWith('https'),
+            isHttpOnly: false,
+          );
+
           if (defaultTargetPlatform != TargetPlatform.android ||
               await WebViewFeature.isFeatureSupported(
                   WebViewFeature.WEB_MESSAGE_LISTENER)) {
@@ -102,14 +111,14 @@ class _WebviewState extends ConsumerState<WebView> {
         },
         shouldOverrideUrlLoading: widget.onNavigate,
         onLoadStop: (controller, url) {
-          if (!_isLoaded) {
+          if (widget.fitToContent && !_isLoaded) {
             setState(() {
               _isLoaded = true;
             });
           }
         },
         onContentSizeChanged: (controller, oldContentSize, newContentSize) {
-          if (_isLoaded) {
+          if (widget.fitToContent && _isLoaded) {
             setState(() {
               _height = newContentSize.height;
             });
