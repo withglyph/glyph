@@ -127,6 +127,7 @@ export const PostState = {
   DRAFT: 'DRAFT',
   EPHEMERAL: 'EPHEMERAL',
   PUBLISHED: 'PUBLISHED',
+  TEMPLATE: 'TEMPLATE',
 } as const;
 
 export const PostSynchronizationKind = {
