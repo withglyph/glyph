@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,7 @@ import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -184,6 +187,58 @@ class LoginScreen extends ConsumerWidget {
                           });
                         },
                       ),
+                      if (Platform.isIOS) ...[
+                        const Gap(11),
+                        Button(
+                          style: const ButtonStyle(
+                            foregroundColor:
+                                WidgetStatePropertyAll(BrandColors.gray_900),
+                            backgroundColor:
+                                WidgetStatePropertyAll(BrandColors.gray_0),
+                            minimumSize:
+                                WidgetStatePropertyAll(Size.fromHeight(48)),
+                          ),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgImage('icons/apple', width: 16, height: 16),
+                              Gap(10),
+                              Text('애플로 시작하기', style: TextStyle(fontSize: 16)),
+                            ],
+                          ),
+                          onPressed: () async {
+                            try {
+                              final credential =
+                                  await SignInWithApple.getAppleIDCredential(
+                                scopes: [
+                                  AppleIDAuthorizationScopes.email,
+                                  AppleIDAuthorizationScopes.fullName,
+                                ],
+                              );
+
+                              await context.loader.run(() async {
+                                final req =
+                                    GLoginScreen_AuthorizeSingleSignOnToken_MutationReq(
+                                  (b) => b
+                                    ..vars.input.provider =
+                                        GUserSingleSignOnProvider.APPLE
+                                    ..vars.input.token =
+                                        credential.authorizationCode,
+                                );
+
+                                final resp = await ferry.req(req);
+                                await ref
+                                    .read(authProvider.notifier)
+                                    .setAccessToken(
+                                      resp.authorizeSingleSignOnToken.token,
+                                    );
+                              });
+                            } catch (e) {
+                              print(e);
+                            }
+                          },
+                        ),
+                      ],
                       const Gap(11),
                       Button(
                         style: const ButtonStyle(

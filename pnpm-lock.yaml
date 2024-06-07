@@ -237,6 +237,8 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
 
+  apps/mobile: {}
+
   apps/website:
     dependencies:
       '@aws-sdk/client-s3':
@@ -347,6 +349,9 @@ importers:
       '@withglyph/lib':
         specifier: workspace:^
         version: link:../../packages/lib
+      apple-signin-auth:
+        specifier: ^1.7.6
+        version: 1.7.6(encoding@0.1.13)
       argon2:
         specifier: ^0.40.1
         version: 0.40.1
@@ -3915,6 +3920,9 @@ packages:
     resolution: {integrity: sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==}
     engines: {node: '>= 8'}
 
+  apple-signin-auth@1.7.6:
+    resolution: {integrity: sha512-edXKmteQRbsaxZRvF1mJpbI5UgTvoTnUrdco8+KLiFvOIh/naEB4BYu0xkWZ9+OeFQup1YyvVf5PlaaNAJHpGg==}
+
   aproba@2.0.0:
     resolution: {integrity: sha512-lYe4Gx7QT+MKGbDsA+Z+he/Wtef0BiwDOlK/XkBrdfsh9J/jPPXbX0tE9x9cl27Tmu5gg3QUbUrQYa/y+KOHPQ==}
 
@@ -3979,6 +3987,9 @@ packages:
 
   asap@2.0.6:
     resolution: {integrity: sha512-BSHWgDSAiKs50o2Re8ppvp3seVHXSRM44cdSsT9FfNEUUZLOGWVCsiWaRPWM1Znn+mqZ1OfVZ3z3DWEzSp7hRA==}
+
+  asn1@0.2.6:
+    resolution: {integrity: sha512-ix/FxPn0MDjeyJ7i/yoHGFt/EX6LyNbxSEhPPXODPL+KB0VPk86UYfL0lMdy+KCnv+fmvIzySwaK5COwqVbWTQ==}
 
   ast-types@0.16.1:
     resolution: {integrity: sha512-6t10qk83GOG8p0vKmaCr8eiilZwO171AvbROMtvvNiwrTly62t+7XkA8RdIIVbpMhCASAsxgAzdRSwh6nw/5Dg==}
@@ -6753,6 +6764,9 @@ packages:
 
   node-releases@2.0.14:
     resolution: {integrity: sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==}
+
+  node-rsa@1.1.1:
+    resolution: {integrity: sha512-Jd4cvbJMryN21r5HgxQOpMEqv+ooke/korixNNK3mGqfGJmy0M77WDDzo/05969+OkMy3XW1UuZsSmW9KQm7Fw==}
 
   nopt@6.0.0:
     resolution: {integrity: sha512-ZwLpbTgdhuZUnZzjd7nb1ZV+4DoiC6/sfiVKok72ym/4Tlf+DFdlHYmT2JPmcNNWV6Pi3SDf1kT+A4r9RTuT9g==}
@@ -12943,6 +12957,14 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
+  apple-signin-auth@1.7.6(encoding@0.1.13):
+    dependencies:
+      jsonwebtoken: 9.0.2
+      node-fetch: 2.7.0(encoding@0.1.13)
+      node-rsa: 1.1.1
+    transitivePeerDependencies:
+      - encoding
+
   aproba@2.0.0: {}
 
   are-we-there-yet@3.0.1:
@@ -13027,6 +13049,10 @@ snapshots:
     optional: true
 
   asap@2.0.6: {}
+
+  asn1@0.2.6:
+    dependencies:
+      safer-buffer: 2.1.2
 
   ast-types@0.16.1:
     dependencies:
@@ -16290,6 +16316,10 @@ snapshots:
   node-int64@0.4.0: {}
 
   node-releases@2.0.14: {}
+
+  node-rsa@1.1.1:
+    dependencies:
+      asn1: 0.2.6
 
   nopt@6.0.0:
     dependencies:

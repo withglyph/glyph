@@ -56,7 +56,7 @@ import {
 } from '$lib/server/database';
 import { sendEmail } from '$lib/server/email';
 import { LoginUser, UpdateUserEmail } from '$lib/server/email/templates';
-import { coocon, google, naver, twitter } from '$lib/server/external-api';
+import { apple, coocon, google, naver, twitter } from '$lib/server/external-api';
 import {
   createAccessToken,
   createRandomAvatar,
@@ -1065,6 +1065,7 @@ builder.mutationFields((t) => ({
         .with('GOOGLE', () => google)
         .with('NAVER', () => naver)
         .with('TWITTER', () => twitter)
+        .with('APPLE', () => apple)
         .exhaustive();
 
       return {
@@ -1080,10 +1081,11 @@ builder.mutationFields((t) => ({
       const externalUser = await match(input.provider)
         .with('GOOGLE', () => google.authorizeUser(context.event, input.token))
         .with('NAVER', () => naver.authorizeUser('token', input.token))
+        .with('APPLE', () => apple.authorizeUser(context.event, input.token))
         .otherwise(() => null);
 
       if (!externalUser) {
-        throw new Error('Not implemented');
+        throw new Error('Provider not implemented');
       }
 
       const ssos = await database
@@ -1094,7 +1096,7 @@ builder.mutationFields((t) => ({
         );
 
       if (ssos.length === 0) {
-        throw new Error('Not implemented');
+        throw new Error('Signing up is not yet implemented');
       }
 
       const [session] = await database

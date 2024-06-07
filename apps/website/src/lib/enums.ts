@@ -246,6 +246,7 @@ export const UserSingleSignOnAuthorizationType = {
 export const UserSingleSignOnProvider = {
   GOOGLE: 'GOOGLE',
   NAVER: 'NAVER',
+  APPLE: 'APPLE',
   TWITTER: 'TWITTER',
 } as const;
 

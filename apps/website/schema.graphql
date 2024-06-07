@@ -1257,6 +1257,7 @@ enum UserSingleSignOnAuthorizationType {
 }
 
 enum UserSingleSignOnProvider {
+  APPLE
   GOOGLE
   NAVER
   TWITTER

@@ -17,6 +17,7 @@
   export let provider: UserSingleSignOnProvider;
   let open = false;
   let providerName = {
+    APPLE: '애플',
     GOOGLE: '구글',
     NAVER: '네이버',
     TWITTER: '트위터',
