@@ -64,6 +64,8 @@ dependencies:
   sliver_tools: ^0.2.12
   pinput: ^4.0.0
   card_swiper: ^3.0.1
+  package_info_plus: ^8.0.0
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:

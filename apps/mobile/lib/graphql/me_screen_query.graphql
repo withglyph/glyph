@@ -1,3 +1,5 @@
+# import './fragments/img_image.graphql'
+
 query MeScreen_Query {
   me {
     id
@@ -9,8 +11,31 @@ query MeScreen_Query {
 
       avatar {
         id
-        url
-        color
+        ...Img_image
+      }
+    }
+
+    spaces {
+      id
+      name
+
+      icon {
+        id
+        ...Img_image
+      }
+
+      meAsMember {
+        id
+
+        profile {
+          id
+          name
+
+          avatar {
+            id
+            ...Img_image
+          }
+        }
       }
     }
   }

@@ -1,0 +1,10 @@
+mutation SettingsScreen_UpdateUserMarketingConsent_Mutation($input: UpdateUserMarketingConsentInput!) {
+  updateUserMarketingConsent(input: $input) {
+    id
+
+    marketingConsent {
+      id
+      createdAt
+    }
+  }
+}

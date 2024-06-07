@@ -77,7 +77,7 @@ class _WebviewState extends ConsumerState<WebView> {
 
           await _cookieManager.setCookie(
             url: WebUri(Env.baseUrl),
-            name: 'glyph-wv',
+            name: 'glyph-wb',
             value: 'true',
             isSecure: Env.baseUrl.startsWith('https'),
             isHttpOnly: false,

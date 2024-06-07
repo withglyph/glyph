@@ -1,0 +1,10 @@
+query SettingsScreen_Query {
+  me {
+    id
+
+    marketingConsent {
+      id
+      createdAt
+    }
+  }
+}

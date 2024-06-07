@@ -63,8 +63,10 @@ class AppRouter extends $AppRouter {
               usesPathAsKey: true,
             ),
             AutoRoute(page: PlaceholderRoute.page),
-            AutoRoute(page: NotificationRoute.page, path: 'notification'),
-            AutoRoute(page: SettingsRoute.page, path: 'settings'),
+            AutoRoute(page: NotificationRoute.page),
+            AutoRoute(page: SettingsRoute.page),
+            AutoRoute(page: OssLicensesRoute.page),
+            AutoRoute(page: OssLicensesDetailsRoute.page),
             AutoRoute(
               page: WebViewRoute.page,
               path: 'webview/:path',
