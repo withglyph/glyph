@@ -35,11 +35,8 @@ fragment PostCard_post on Post {
     id
 
     tag {
+      id
       ...Tag_tag
     }
-  }
-
-  bookmarkGroups {
-    id
   }
 }
