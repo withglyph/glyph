@@ -634,7 +634,16 @@ builder.queryFields((t) => ({
         .from(Posts)
         .innerJoin(PostTags, eq(PostTags.postId, Posts.id))
         .innerJoin(Tags, eq(Tags.id, PostTags.tagId))
-        .where(and(eq(PostTags.kind, 'CHALLENGE'), eq(Tags.name, '주간창작_6월_1주차')))
+        .innerJoin(Spaces, eq(Spaces.id, Posts.spaceId))
+        .where(
+          and(
+            eq(PostTags.kind, 'CHALLENGE'),
+            eq(Tags.name, '주간창작_6월_1주차'),
+            eq(Posts.state, 'PUBLISHED'),
+            eq(Posts.visibility, 'PUBLIC'),
+            isNull(Posts.password),
+          ),
+        )
         .orderBy(desc(Posts.publishedAt))
         .limit(100);
 
