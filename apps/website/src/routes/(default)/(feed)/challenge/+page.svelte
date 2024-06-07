@@ -1,5 +1,5 @@
 <script lang="ts">
-  // import IconCheck from '~icons/tabler/check';
+  import IconCheck from '~icons/tabler/check';
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { goto } from '$app/navigation';
   import ChallengeTitle from '$assets/icons/challenge-202406-1.svg?component';
@@ -16,6 +16,10 @@
     query FeedChallengePage_Query {
       me {
         id
+        challengeEnrollment061: eventEnrollment(eventCode: "weekly_challenge_24061") {
+          id
+          eligible
+        }
       }
 
       challengeFeed {
@@ -86,43 +90,45 @@
       <ul class={flex({ align: 'center', justify: 'space-between', marginTop: '24px', marginBottom: '32px' })}>
         <li>
           <!-- TODO: 챌린지 참여 완료 표시 -->
-          <!-- <div
-            class={center({
-              position: 'relative',
-              borderWidth: '2px',
-              borderColor: 'brand.400',
-              borderRadius: 'full',
-              backgroundColor: '[#F2EEFF]',
-              size: '60px',
-            })}
-          >
-            <CompactLogo class={css({ color: 'brand.400', width: '1/4' })} />
+          {#if $query.me?.challengeEnrollment061?.eligible}
             <div
-              class={css({
-                position: 'absolute',
-                bottom: '0',
-                right: '0',
+              class={center({
+                position: 'relative',
+                borderWidth: '2px',
+                borderColor: 'brand.400',
                 borderRadius: 'full',
-                padding: '4px',
-                backgroundColor: 'brand.400',
+                backgroundColor: '[#F2EEFF]',
+                size: '60px',
               })}
             >
-              <Icon style={css.raw({ color: 'gray.0' })} icon={IconCheck} size={12} />
+              <CompactLogo class={css({ color: 'brand.400', width: '1/4' })} />
+              <div
+                class={css({
+                  position: 'absolute',
+                  bottom: '0',
+                  right: '0',
+                  borderRadius: 'full',
+                  padding: '4px',
+                  backgroundColor: 'brand.400',
+                })}
+              >
+                <Icon style={css.raw({ color: 'gray.0' })} icon={IconCheck} size={12} />
+              </div>
             </div>
-          </div> -->
-          <div
-            class={center({
-              borderWidth: '1px',
-              borderColor: '[#d1d1d1]',
-              borderStyle: 'dashed',
-              borderRadius: 'full',
-              backgroundColor: 'gray.100',
-              size: '60px',
-            })}
-          >
-            <CompactLogo class={css({ color: 'gray.300', width: '1/4' })} />
-          </div>
-
+          {:else}
+            <div
+              class={center({
+                borderWidth: '1px',
+                borderColor: '[#d1d1d1]',
+                borderStyle: 'dashed',
+                borderRadius: 'full',
+                backgroundColor: 'gray.100',
+                size: '60px',
+              })}
+            >
+              <CompactLogo class={css({ color: 'gray.300', width: '1/4' })} />
+            </div>
+          {/if}
           <dl class={css({ marginTop: '8px', textAlign: 'center' })}>
             <dt class={css({ fontSize: '12px', fontWeight: 'semibold', color: 'gray.600' })}>6월 1주차</dt>
             <dd class={css({ fontSize: '11px', color: '[#818181]' })}>06.03-06.09</dd>
