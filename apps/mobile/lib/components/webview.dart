@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -31,7 +32,7 @@ class WebView extends ConsumerStatefulWidget {
 class _WebviewState extends ConsumerState<WebView> {
   final GlobalKey _key = GlobalKey();
 
-  // late final InAppWebViewController? _webViewController;
+  InAppWebViewController? _webViewController;
   InAppWebViewSettings get _settings => InAppWebViewSettings(
         allowsBackForwardNavigationGestures: false,
         disableContextMenu: true,
@@ -47,7 +48,33 @@ class _WebviewState extends ConsumerState<WebView> {
   final _cookieManager = CookieManager.instance();
 
   double _height = 0;
-  bool _isLoaded = false;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.fitToContent) {
+      _timer = Timer.periodic(const Duration(milliseconds: 500), (_) async {
+        if (mounted && _webViewController != null) {
+          final height =
+              (await _webViewController!.getContentHeight())?.toDouble();
+          if (mounted && height != null && height != _height) {
+            setState(() {
+              _height = height;
+            });
+          }
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +93,7 @@ class _WebviewState extends ConsumerState<WebView> {
         initialSettings: _settings,
         preventGestureDelay: true,
         onWebViewCreated: (controller) async {
-          // _webViewController = controller;
+          _webViewController = controller;
 
           await _cookieManager.setCookie(
             url: WebUri(Env.baseUrl),
@@ -110,20 +137,6 @@ class _WebviewState extends ConsumerState<WebView> {
           );
         },
         shouldOverrideUrlLoading: widget.onNavigate,
-        onLoadStop: (controller, url) {
-          if (widget.fitToContent && !_isLoaded) {
-            setState(() {
-              _isLoaded = true;
-            });
-          }
-        },
-        onContentSizeChanged: (controller, oldContentSize, newContentSize) {
-          if (widget.fitToContent && _isLoaded) {
-            setState(() {
-              _height = newContentSize.height;
-            });
-          }
-        },
       ),
     );
   }
