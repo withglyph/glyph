@@ -1,0 +1,7 @@
+mutation TagScreen_UnfollowTag_Mutation($input: UnfollowTagInput!) {
+  unfollowTag(input: $input) {
+    id
+    followed
+    followerCount
+  }
+}

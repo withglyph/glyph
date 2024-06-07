@@ -73,6 +73,11 @@ class AppRouter extends $AppRouter {
               usesPathAsKey: true,
             ),
             AutoRoute(
+              page: TagRoute.page,
+              path: 'tag/:tag',
+              usesPathAsKey: true,
+            ),
+            AutoRoute(
               page: PostRoute.page,
               path: ':space/:permalink',
               usesPathAsKey: true,

@@ -1,0 +1,17 @@
+# import './fragments/post_card_post.graphql';
+
+query TagScreen_Query($name: String!) {
+  tag(name: $name) {
+    id
+    name
+    muted
+    followed
+    followerCount
+    postCount
+
+    posts {
+      id
+      ...PostCard_post
+    }
+  }
+}

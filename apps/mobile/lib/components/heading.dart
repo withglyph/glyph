@@ -11,6 +11,7 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.title,
     this.actions,
+    this.leadingColor = BrandColors.gray_900,
     this.backgroundColor = BrandColors.gray_0,
     this.fallbackSystemUiOverlayStyle,
     this.titleOnLeft = false,
@@ -20,6 +21,7 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leading;
   final Widget? title;
   final List<Widget>? actions;
+  final Color? leadingColor;
   final Color? backgroundColor;
   final SystemUiOverlayStyle? fallbackSystemUiOverlayStyle;
   final bool titleOnLeft;
@@ -73,6 +75,7 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
                             LeadingType.close => 'x',
                             _ => throw UnimplementedError(),
                           },
+                          color: leadingColor,
                         ),
                         onPressed: () => action?.call(),
                       );

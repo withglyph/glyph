@@ -122,7 +122,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   color: _headerForegroundColorAnimation.value,
                 ),
                 onPressed: () {
-                  context.router.push(PlaceholderRoute(text: '검색'));
+                  // context.router.push(PlaceholderRoute(text: '검색'));
+                  context.router.push(TagRoute(name: 'asdf'));
                 },
               ),
               const Gap(16),
@@ -181,7 +182,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                   children: [
                                     ConstrainedBox(
                                       constraints:
-                                          const BoxConstraints.tightFor(width: 13),
+                                          const BoxConstraints.tightFor(
+                                              width: 13),
                                       child: Text(
                                         (config.activeIndex + 1).toString(),
                                         textAlign: TextAlign.center,
