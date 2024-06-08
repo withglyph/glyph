@@ -5,6 +5,7 @@ import { nanoid } from 'nanoid';
 import qs from 'query-string';
 import * as R from 'radash';
 import { match } from 'ts-pattern';
+import { env } from '$env/dynamic/private';
 import {
   AuthScope,
   ContentFilterAction,
@@ -862,7 +863,11 @@ builder.mutationFields((t) => ({
 
       const isEmailExists = users.length > 0;
 
-      const code = R.random(100_000, 999_999).toString();
+      const code =
+        input.email === env.PRIVATE_APP_REVIEW_LOGIN_EMAIL
+          ? env.PRIVATE_APP_REVIEW_LOGIN_CODE
+          : R.random(100_000, 999_999).toString();
+
       const token = nanoid();
 
       const [verification] = await database
