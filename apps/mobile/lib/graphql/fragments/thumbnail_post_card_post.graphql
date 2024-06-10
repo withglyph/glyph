@@ -1,7 +1,6 @@
-# import './tag_tag.graphql'
 # import './img_image.graphql'
 
-fragment PostCard_post on Post {
+fragment ThumbnailPostCard_post on Post {
   id
   permalink
   publishedAt
@@ -25,15 +24,6 @@ fragment PostCard_post on Post {
     icon {
       id
       ...Img_image
-    }
-  }
-
-  tags {
-    id
-
-    tag {
-      id
-      ...Tag_tag
     }
   }
 }

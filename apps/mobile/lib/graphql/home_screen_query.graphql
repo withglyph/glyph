@@ -1,0 +1,81 @@
+# import './fragments/post_card_post.graphql'
+# import './fragments/thumbnail_post_card_post.graphql'
+
+query HomeScreen_Query {
+  me {
+    id
+
+    profile {
+      id
+      name
+    }
+
+    posts(state: DRAFT) {
+      id
+      permalink
+
+      contentState {
+        id
+        title
+        subtitle
+        previewText
+        characters
+        files
+        images
+        updatedAt
+      }
+    }
+  }
+
+  featuredTagFeed {
+    __typename
+
+    ... on FeaturedTag {
+      tag {
+        id
+        name
+      }
+
+      posts {
+        id
+        ...PostCard_post
+      }
+    }
+
+    ... on FeaturedCategory {
+      categoryId
+
+      posts {
+        id
+        ...PostCard_post
+      }
+    }
+  }
+
+  challengeFeed {
+    id
+
+    ...ThumbnailPostCard_post
+  }
+
+  collectionFeed {
+    id
+    name
+    description
+
+    thumbnail {
+      id
+      ...Img_image
+    }
+
+    space {
+      id
+      name
+
+      icon {
+        id
+        ...Img_image
+      }
+    }
+  }
+}
