@@ -1,13 +1,16 @@
 <script lang="ts">
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
-  import { Button, Helmet, Icon } from '$lib/components';
+  import { Helmet, Icon } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
+  import { Button } from '$lib/components/v2';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import ConfirmModal from './ConfirmModal.svelte';
 
+  let agreeToDelete = false;
+  let agreeToGiveUpFunds = false;
   let confirmModalOpen = false;
 
   $: query = graphql(`
@@ -25,21 +28,30 @@
 
 <Helmet description="글리프 계정을 탈퇴해요" title="계정 탈퇴" />
 
-<div class={css({ marginX: 'auto', paddingY: '28px', paddingX: { base: '20px', sm: '40px' } })}>
-  <div class={flex({ flexDirection: 'column', gap: '24px', width: 'full', maxWidth: '800px' })}>
-    <h1 class={css({ fontWeight: 'bold', fontSize: '24px' })}>계정을 탈퇴하시겠어요?</h1>
+<div class={flex({ backgroundColor: 'gray.50', width: 'full' })}>
+  <div
+    class={flex({
+      flexDirection: 'column',
+      gap: '24px',
+      marginX: 'auto',
+      paddingY: '28px',
+      paddingX: { base: '20px', sm: '40px' },
+      width: 'full',
+      maxWidth: '800px',
+    })}
+  >
+    <h1 class={css({ fontSize: { base: '20px', sm: '24px' }, fontWeight: 'bold' })}>계정을 탈퇴하시겠어요?</h1>
 
     <div
       class={flex({
         backgroundColor: 'gray.0',
-        borderRadius: '16px',
         borderWidth: '1px',
-        borderColor: 'gray.300',
+        borderColor: 'gray.200',
         paddingY: '32px',
         paddingX: { base: '24px', sm: '32px' },
         flexDirection: 'column',
         gap: '32px',
-        fontSize: '15px',
+        fontSize: '14px',
       })}
     >
       <h2 class={css({ fontWeight: 'bold', fontSize: '18px' })}>탈퇴 시 삭제되는 정보들, 꼭 확인해주세요!</h2>
@@ -64,10 +76,10 @@
           또한 환불 신청 후 환불 처리가 완료되기 전 탈퇴하는 경우 포인트 구매 기록을 확인할 수 없으므로 환불할 수
           없습니다.
         </p>
-        <p class={css({ color: 'gray.500' })}>
+        <p class={css({ marginBottom: '6px', color: 'gray.500' })}>
           아직 정산하지 않았거나 자동 출금 신청하지 않은 수익 역시 회원 탈퇴 즉시 소멸되며 복구할 수 없습니다.
         </p>
-        <span class={css({ color: '[#F66062]' })}>현재 남아있는 수익금 금액 : {comma($query.me.revenue)}원</span>
+        <span class={css({ color: 'red.400' })}>현재 남아있는 수익금 금액 : {comma($query.me.revenue)}원</span>
       </div>
 
       <div
@@ -75,30 +87,37 @@
           align: 'center',
           wrap: 'wrap',
           gap: { base: '10px', sm: '20px' },
-          borderRadius: '16px',
           paddingX: '14px',
           paddingY: '10px',
-          fontWeight: 'bold',
           backgroundColor: 'gray.50',
         })}
       >
         <label for="email">탈퇴 계정 이메일</label>
-        <input name="email" class={css({ color: 'gray.500' })} disabled type="email" value={$query.me.email} />
+        <input name="email" class={css({ color: 'gray.600' })} readonly type="email" value={$query.me.email} />
       </div>
     </div>
 
-    <div>
-      <Checkbox style={css.raw({ marginBottom: '12px', fontSize: '14px' })}>
+    <div class={css({ width: 'fit' })}>
+      <Checkbox style={css.raw({ marginBottom: '12px' })} bind:checked={agreeToDelete}>
         모든 데이터를 삭제하고 탈퇴하는 것에 동의해요
       </Checkbox>
-      <Checkbox style={css.raw({ fontSize: '14px' })}>모든 충전금, 수익금을 포기하는 것에 동의해요</Checkbox>
+      <Checkbox bind:checked={agreeToGiveUpFunds}>모든 충전금, 수익금을 포기하는 것에 동의해요</Checkbox>
     </div>
 
     <div>
-      <Button style={css.raw({ width: 'full' })} size="xl" on:click={() => (confirmModalOpen = true)}>
+      <Button
+        style={css.raw({ width: 'full' })}
+        disabled={!agreeToDelete || !agreeToGiveUpFunds}
+        size="lg"
+        on:click={() => (confirmModalOpen = true)}
+      >
         글리프 탈퇴하기
       </Button>
-      <Button style={css.raw({ marginBottom: '12px', width: 'full' })} color="secondary" size="xl">
+      <Button
+        style={css.raw({ marginTop: '12px', width: 'full', backgroundColor: 'gray.0' })}
+        size="lg"
+        variant="gray-outline"
+      >
         탈퇴를 취소할래요
       </Button>
     </div>
