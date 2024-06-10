@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/Img.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
@@ -22,6 +23,7 @@ import 'package:glyph/graphql/__generated__/post_screen_update_post_view_mutatio
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 @RoutePage()
@@ -36,6 +38,7 @@ class PostScreen extends ConsumerStatefulWidget {
 
 class _PostScreenState extends ConsumerState<PostScreen>
     with SingleTickerProviderStateMixin {
+  final _mixpanel = GetIt.I<Mixpanel>();
   final _browser = ChromeSafariBrowser();
 
   late AnimationController _scrollAnimationController;
@@ -78,6 +81,10 @@ class _PostScreenState extends ConsumerState<PostScreen>
           (b) => b..vars.permalink = widget.permalink,
         ),
         onDataLoaded: (context, client, data) async {
+          _mixpanel.track('post:view', properties: {
+            'postId': data.post.id,
+          });
+
           final req = GPostScreen_UpdatePostView_MutationReq(
             (b) => b..vars.input.postId = data.post.id,
           );

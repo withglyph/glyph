@@ -7,7 +7,9 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:glyph/env.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 import 'app.dart';
 import 'firebase_options.dart';
@@ -41,8 +43,12 @@ Future<void> main() async {
 
   PlatformInAppWebViewController.debugLoggingSettings.enabled = false;
 
+  final mixpanel =
+      await Mixpanel.init(Env.mixpanelToken, trackAutomaticEvents: false);
+
   GetIt.I.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   GetIt.I.registerSingleton<FirebaseMessaging>(FirebaseMessaging.instance);
+  GetIt.I.registerSingleton<Mixpanel>(mixpanel);
 
   runApp(ProviderScope(child: Material(child: App())));
 }

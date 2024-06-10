@@ -5,6 +5,7 @@ import 'package:glyph/ferry/client.dart';
 import 'package:glyph/graphql/__generated__/auth_provider_logout_user_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/auth_provider_query.data.gql.dart';
 import 'package:glyph/graphql/__generated__/auth_provider_query.req.gql.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -27,6 +28,7 @@ sealed class AuthState with _$AuthState {
 
 @riverpod
 class Auth extends _$Auth {
+  final _mixpanel = GetIt.I<Mixpanel>();
   final _storage = GetIt.I<FlutterSecureStorage>();
   final _storageKey = 'access_token';
 
@@ -79,6 +81,12 @@ class Auth extends _$Auth {
 
       return const AuthState.unauthenticated();
     } else {
+      _mixpanel.identify(resp.data!.me!.id);
+      _mixpanel.getPeople()
+        ..set('\$email', resp.data!.me!.email)
+        ..set('\$name', resp.data!.me!.profile.name)
+        ..set('\$avatar', resp.data!.me!.profile.avatar.url);
+
       return AuthState.authenticated(
         accessToken: accessToken,
         me: resp.data!.me!,

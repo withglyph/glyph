@@ -1,9 +1,14 @@
 query AuthProvider_Query {
   me {
     id
+    email
+
     profile {
       id
+      name
+
       avatar {
+        id
         url
       }
     }
