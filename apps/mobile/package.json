@@ -3,6 +3,9 @@
     "beta": "pnpm run '/^beta:.+$/'",
     "beta:android": "cd android && doppler run -- bundle exec fastlane beta",
     "beta:ios": "cd ios && doppler run -- bundle exec fastlane beta",
+    "release": "pnpm run '/^release:.+$/'",
+    "release:android": "cd android && doppler run -- bundle exec fastlane release",
+    "release:ios": "cd ios && doppler run -- bundle exec fastlane release",
     "watch": "dart run build_runner watch --delete-conflicting-outputs"
   }
 }

@@ -8,13 +8,27 @@ platform :android do
 
     Dir.chdir("../..") do
       sh "echo $PLAY_STORE_UPLOAD_KEYSTORE | base64 -d > android/keystore.jks"
-      sh "flutter build appbundle --build-number=#{current_build_number + 1}"
+      sh "flutter build appbundle --dart-define=ENV=release --build-number=#{current_build_number + 1}"
     end
 
     upload_to_play_store(
       aab: "../build/app/outputs/bundle/release/app-release.aab",
       track: "internal",
-      release_status: "draft",
+    )
+  end
+
+  lane :release do
+    current_build_number = google_play_track_version_codes(
+      track: "internal",
+    )[0]
+
+    upload_to_play_store(
+      version_code: current_build_number,
+      track: "internal",
+      track_promote_to: 'production',
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      sync_image_upload: true,
     )
   end
 end

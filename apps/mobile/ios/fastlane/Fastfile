@@ -6,18 +6,36 @@ platform :ios do
 
     app_store_connect_api_key(
       issuer_id: "790503b8-57bb-4621-a1e1-4cf096032add",
-      key_id: "DDU5R4JDX8",
+      key_id: "JSJ3753N49",
     )
 
     current_build_number = latest_testflight_build_number()
 
     Dir.chdir("../..") do
-      sh "flutter build ipa --build-number=#{current_build_number + 1} --export-options-plist=ios/ExportOptions.plist"
+      sh "flutter build ipa --dart-define=ENV=release --build-number=#{current_build_number + 1} --export-options-plist=ios/ExportOptions.plist"
     end
 
     upload_to_testflight(
       ipa: "../build/ios/ipa/글리프.ipa",
-      skip_waiting_for_build_processing: true,
+      expire_previous_builds: true,
+    )
+  end
+
+  lane :release do
+    app_store_connect_api_key(
+      issuer_id: "790503b8-57bb-4621-a1e1-4cf096032add",
+      key_id: "JSJ3753N49",
+    )
+
+    upload_to_app_store(
+      force: true,
+      skip_binary_upload: true,
+      reject_if_possible: true,
+      submit_for_review: true,
+      automatic_release: true,
+      submission_information: { add_id_info_uses_idfa: false },
+      precheck_include_in_app_purchases: false,
+      sync_screenshots: true,
     )
   end
 end

@@ -10,10 +10,18 @@
       "outputCapture": "std"
     },
     {
-      "name": "Flutter",
+      "name": "Flutter (dev)",
       "type": "dart",
       "request": "launch",
-      "program": "apps/mobile/lib/main.dart"
+      "program": "apps/mobile/lib/main.dart",
+      "toolArgs": ["--dart-define", "ENV=dev"]
+    },
+    {
+      "name": "Flutter (release)",
+      "type": "dart",
+      "request": "launch",
+      "program": "apps/mobile/lib/main.dart",
+      "toolArgs": ["--dart-define", "ENV=release"]
     }
   ]
 }

@@ -1,9 +1,9 @@
-import 'package:envied/envied.dart';
+class Env {
+  static String get _env => const String.fromEnvironment('ENV');
 
-part 'env.g.dart';
-
-@Envied(useConstantCase: true)
-abstract class Env {
-  @EnviedField()
-  static const String baseUrl = _Env.baseUrl;
+  static String get baseUrl => switch (_env) {
+        'dev' => 'https://dev.withglyph.com',
+        'release' => 'https://withglyph.com',
+        _ => throw Exception('Unknown environment: $_env'),
+      };
 }
