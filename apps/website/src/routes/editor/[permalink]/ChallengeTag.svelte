@@ -68,7 +68,7 @@
       aria-pressed={tags.some((tag) => tag.kind === 'CHALLENGE')}
       type="button"
       on:click={() => {
-        tags = [...tags, { kind: 'CHALLENGE', name: '주간창작_6월_1주차' }];
+        tags = [...tags, { kind: 'CHALLENGE', name: '주간창작_6월_2주차' }];
       }}
     >
       참여
