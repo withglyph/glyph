@@ -80,7 +80,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
 
     _headerBackgroundColorAnimation = ColorTween(
-      begin: BrandColors.gray_0.withOpacity(0),
+      begin: null,
       end: BrandColors.gray_0,
     ).animate(_headerAnimationController);
 

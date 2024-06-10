@@ -13,7 +13,6 @@ import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/tag_screen_follow_tag_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/tag_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/tag_screen_unfollow_tag_mutation.req.gql.dart';
-import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
