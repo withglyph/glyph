@@ -3,6 +3,7 @@
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
+  import { toast } from '$lib/notification';
   import { DeleteUserSchema } from '$lib/validations';
   import { css } from '$styled-system/css';
   import CompleteModal from './CompleteModal.svelte';
@@ -20,6 +21,10 @@
     schema: DeleteUserSchema,
     onSuccess: () => {
       completeModalOpen = true;
+    },
+    onError: (resp) => {
+      // @ts-expect-error form validation error
+      toast.error(resp.message);
     },
   });
 </script>
