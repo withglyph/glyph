@@ -1,8 +1,7 @@
 <script lang="ts">
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Avatar, Image } from '$lib/components';
-  import { Button } from '$lib/components/v2';
+  import { Avatar, Button, Image } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type { Space_space } from '$glitch';

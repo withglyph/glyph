@@ -6,8 +6,7 @@
   import IconPlus from '~icons/tabler/plus';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Helmet, Icon, Image } from '$lib/components';
-  import { Button } from '$lib/components/v2';
+  import { Button, Helmet, Icon, Image } from '$lib/components';
   import { toast } from '$lib/notification';
   import { isMobile } from '$lib/utils';
   import { css, cx } from '$styled-system/css';

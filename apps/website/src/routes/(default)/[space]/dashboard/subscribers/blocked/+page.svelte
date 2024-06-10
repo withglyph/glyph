@@ -3,10 +3,9 @@
   import * as R from 'radash';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Helmet } from '$lib/components';
+  import { Button, Helmet } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
-  import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
 
   $: query = graphql(`

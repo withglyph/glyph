@@ -3,17 +3,21 @@
   import { getFormContext } from '$lib/form';
   import { css, cva } from '$styled-system/css';
   import { center } from '$styled-system/patterns';
+  import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
   import type { RecipeVariant, RecipeVariantProps } from '$styled-system/css';
   import type { SystemStyleObject } from '$styled-system/types';
 
   type $$Props = RecipeVariantProps<typeof recipe> & {
-    'type'?: T;
-    'style'?: SystemStyleObject;
-    'loading'?: boolean;
-    'form'?: string;
-    'aria-hidden'?: boolean;
-  } & (T extends 'link' ? { href: string; external?: boolean } : unknown) &
-    (T extends 'button' ? { 'aria-pressed'?: boolean } : unknown);
+    type?: T;
+    loading?: boolean;
+    style?: SystemStyleObject;
+    disabled?: boolean;
+  } & Omit<
+      T extends 'link'
+        ? HTMLAnchorAttributes & { external?: boolean }
+        : Omit<HTMLButtonAttributes, 'type' | 'disabled'>,
+      'class' | 'style'
+    >;
 
   type $$Events = T extends 'link' ? unknown : { click: MouseEvent };
 
@@ -21,145 +25,165 @@
 
   export let style: SystemStyleObject | undefined = undefined;
 
-  export let disabled: Variants['disabled'] = false;
+  export let disabled = false;
   export let loading = false;
-  export let color: Variants['color'] = 'primary';
-  export let variant: Variants['variant'] = 'contained';
+  export let variant: Variants['variant'] = 'gray-primary-fill';
   export let size: Variants['size'] = 'md';
 
-  export let form: string | undefined = undefined;
+  export let external = false;
 
-  export let href: string | undefined = undefined;
-  export let external = !href?.startsWith('/');
-
-  let element: 'a' | 'button';
   $: element = type === 'link' ? 'a' : 'button';
-  $: props =
-    type === 'link'
-      ? { href: disabled || showSpinner ? undefined : href }
-      : { type, disabled: disabled || showSpinner, form };
 
   const { isSubmitting } = getFormContext().form ?? {};
 
   $: showSpinner = !!(loading || (type === 'submit' && $isSubmitting));
+  $: props = type === 'link' ? ({ 'aria-disabled': disabled ? 'true' : 'false' } as const) : { type, disabled };
 
   type Variants = RecipeVariant<typeof recipe>;
   const recipe = cva({
     base: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingX: '16px',
-      paddingY: '8px',
       textAlign: 'center',
-      textWrap: 'nowrap',
-      fontSize: '13px',
-      fontWeight: 'bold',
-      lineHeight: 'none',
-      transition: 'common',
+      outlineOffset: '0',
+      userSelect: 'none',
+      color: { _enabled: 'gray.0', _disabled: 'gray.400' },
+      backgroundColor: { _disabled: 'gray.150' },
+      pointerEvents: { _disabled: 'none', _busy: 'none' },
     },
     variants: {
-      color: { primary: {}, secondary: {}, tertiary: {}, red: {} },
-      variant: { text: {}, outlined: {}, contained: {} },
-      size: {
-        xs: { paddingX: '0', paddingY: '0', height: '23px', borderRadius: '16px' },
-        sm: { padding: '8px', height: '26px', borderRadius: '8px' },
-        md: { fontSize: '14px', height: '36px', borderRadius: '10px' },
-        lg: { fontSize: '16px', height: '40px', borderRadius: '12px' },
-        xl: { fontSize: '16px', height: '50px', borderRadius: '16px' },
+      variant: {
+        'gray-primary-fill': {
+          _enabled: {
+            backgroundColor: {
+              base: 'gray.900',
+              _hover: 'gray.800',
+              _focusVisible: 'gray.800',
+              _active: 'gray.900',
+              _pressed: 'gray.900',
+            },
+            outlineWidth: { _active: '2px', _pressed: '2px' },
+            outlineColor: { _active: 'gray.400', _pressed: 'gray.400' },
+          },
+        },
+        'gray-sub-fill': {
+          _enabled: {
+            color: 'gray.900',
+            backgroundColor: {
+              base: 'gray.50',
+              _hover: 'gray.100',
+              _focusVisible: 'gray.100',
+              _active: 'gray.50',
+              _pressed: 'gray.50',
+            },
+            outlineWidth: { _active: '2px', _pressed: '2px' },
+            outlineColor: { _active: 'gray.200', _pressed: 'gray.200' },
+          },
+        },
+        'brand-fill': {
+          _enabled: {
+            backgroundColor: {
+              base: 'brand.400',
+              _hover: 'brand.600',
+              _focusVisible: 'brand.600',
+              _active: 'brand.400',
+              _pressed: 'brand.400',
+            },
+            outlineWidth: { _active: '2px', _pressed: '2px' },
+
+            outlineColor: { _active: 'brand.600', _pressed: 'brand.600' },
+          },
+        },
+        'gradation-fill': {
+          _enabled: {
+            bgGradient: 'to-r',
+            gradientFrom: {
+              base: '[#B597F6]',
+              _hover: '[#9679D6]',
+              _focusVisible: '[#9679D6]',
+              _active: '[#B597F6]',
+              _pressed: '[#B597F6]',
+            },
+            gradientTo: {
+              base: '[#8364E8]',
+              _hover: '[#6345C3]',
+              _focusVisible: '[#6345C3]',
+              _active: '[#8364E8]',
+              _pressed: '[#8364E8]',
+            },
+            outlineWidth: { _active: '2px', _pressed: '2px' },
+            outlineColor: { _active: 'brand.400', _pressed: 'brand.400' },
+          },
+        },
+        'gray-outline': {
+          _enabled: {
+            color: 'gray.900',
+            backgroundColor: { _hover: 'gray.100', _focusVisible: 'gray.100', _active: 'gray.0', _pressed: 'gray.0' },
+            outlineWidth: { base: '1px', _active: '3px', _pressed: '3px' },
+            outlineColor: 'gray.150',
+          },
+        },
+        'gray-text': {
+          _enabled: {
+            color: 'gray.900',
+            backgroundColor: { _hover: 'gray.50', _focusVisible: 'gray.50', _active: 'gray.0', _pressed: 'gray.0' },
+            outlineWidth: { base: '1px', _active: '2px', _pressed: '2px' },
+            outlineColor: 'gray.200',
+          },
+        },
+        'red-outline': {
+          _enabled: {
+            color: 'red.600',
+            backgroundColor: {
+              base: 'gray.0',
+              _hover: 'red.50',
+              _focusVisible: 'red.50',
+              _active: 'gray.0',
+              _pressed: 'gray.0',
+            },
+            outlineWidth: { base: '1px', _active: '3px', _pressed: '3px' },
+            outlineColor: 'gray.150',
+          },
+        },
+        'red-fill': {
+          _enabled: {
+            backgroundColor: {
+              base: 'red.600',
+              _active: 'red.600',
+              _hover: 'red.800',
+              _focusVisible: 'red.600',
+              _pressed: 'red.600',
+            },
+            outlineWidth: { _active: '2px', _pressed: '2px' },
+            outlineColor: { _active: 'red.900', _pressed: 'red.900' },
+          },
+        },
       },
-      disabled: {
-        true: { color: 'gray.400', backgroundColor: 'gray.300' },
+      size: {
+        xs: { paddingX: '8px', paddingY: '4px', fontSize: '12px', fontWeight: 'medium' },
+        sm: { paddingX: '12px', paddingY: '9px', fontSize: '13px', fontWeight: 'medium' },
+        md: { padding: '12px', fontSize: '14px', fontWeight: 'semibold' },
+        lg: { paddingX: '16px', paddingY: '14px', fontSize: '14px', fontWeight: 'semibold' },
       },
     },
-    compoundVariants: [
-      {
-        variant: 'contained',
-        disabled: true,
-        css: { borderWidth: '1px', borderColor: 'transparent' },
-      },
-      {
-        variant: 'outlined',
-        disabled: true,
-        css: { color: 'gray.400', borderColor: 'gray.300', backgroundColor: 'transparent' },
-      },
-      {
-        variant: 'text',
-        disabled: false,
-        css: { color: 'gray.900', backgroundColor: 'transparent', _hover: { color: 'gray.800' } },
-      },
-      {
-        variant: 'contained',
-        color: 'primary',
-        disabled: false,
-        css: {
-          color: 'red.50',
-          backgroundColor: 'gray.800',
-          borderWidth: '1px',
-          borderColor: 'gray.800',
-          _hover: { borderColor: 'gray.900', backgroundColor: 'gray.900' },
-          _active: { backgroundColor: 'gray.900' },
-        },
-      },
-      {
-        variant: 'contained',
-        color: 'secondary',
-        disabled: false,
-        css: {
-          color: 'gray.900',
-          backgroundColor: 'gray.100',
-          borderWidth: '1px',
-          borderColor: 'gray.100',
-          _hover: { borderColor: 'gray.200', backgroundColor: 'gray.200' },
-          _active: { borderColor: 'gray.200', backgroundColor: 'gray.200' },
-        },
-      },
-      {
-        variant: 'contained',
-        color: 'red',
-        disabled: false,
-        css: {
-          borderColor: 'red.600',
-          color: 'red.50',
-          backgroundColor: 'red.600',
-          _hover: { borderColor: '[#F66062]', backgroundColor: '[#F66062]' },
-        },
-      },
-      {
-        variant: 'outlined',
-        color: 'tertiary',
-        disabled: false,
-        css: {
-          borderWidth: '1px',
-          borderColor: 'gray.200',
-          color: 'gray.900',
-          backgroundColor: 'transparent',
-          _hover: { borderColor: 'gray.400' },
-          _active: { borderColor: 'gray.900', backgroundColor: 'gray.50' },
-        },
-      },
-    ],
   });
-
-  $: _style = recipe.raw({ variant, size, color, disabled });
 </script>
 
 <svelte:element
   this={element}
-  class={css(_style, showSpinner && { position: 'relative' }, style)}
+  class={css(recipe.raw({ variant, size }), showSpinner && { position: 'relative' }, style)}
+  aria-busy={showSpinner}
   role="button"
   tabindex="0"
   on:click
+  {...$$restProps}
+  {...props}
   {...external && {
     target: '_blank',
     rel: 'noopener noreferrer',
   }}
-  {...props}
-  {...$$restProps}
 >
   {#if showSpinner}
-    <div class={center({ position: 'absolute', inset: '0', paddingX: '16px', paddingY: '8px' })}>
-      <RingSpinner style={css.raw({ height: 'full' })} />
+    <div class={center({ position: 'absolute', inset: '0', padding: '[inherit]' })}>
+      <RingSpinner style={css.raw({ height: 'full', color: variant === 'brand-fill' ? 'gray.150' : 'gray.400' })} />
     </div>
   {/if}
   <div class={css({ display: 'contents' }, showSpinner && { visibility: 'hidden' })}>

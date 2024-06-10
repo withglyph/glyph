@@ -1,18 +1,23 @@
 <script lang="ts">
   import { getFormContext } from '$lib/form';
-  import { css } from '$styled-system/css';
-  import { center, flex } from '$styled-system/patterns';
+  import { css, cva, cx } from '$styled-system/css';
+  import { flex } from '$styled-system/patterns';
   import type { HTMLInputAttributes } from 'svelte/elements';
-  import type { SystemStyleObject } from '$styled-system/types';
+  import type { RecipeVariant, RecipeVariantProps, SystemStyleObject } from '$styled-system/types';
 
   export let name: HTMLInputAttributes['name'] = undefined;
   export let value: HTMLInputAttributes['value'] = undefined;
   export let style: SystemStyleObject | undefined = undefined;
+  export let size: Variants['size'] = 'lg';
+  export let inputEl: HTMLInputElement | undefined = undefined;
+  export let hidden = false;
 
-  type $$Props = Omit<HTMLInputAttributes, 'class' | 'style'> & { style?: SystemStyleObject };
+  type $$Props = RecipeVariantProps<typeof recipe> &
+    Omit<HTMLInputAttributes, 'class' | 'style' | 'size'> & { style?: SystemStyleObject; inputEl?: HTMLInputElement };
   type $$Events = {
     input: Event & { currentTarget: HTMLInputElement };
     keydown: KeyboardEvent & { currentTarget: HTMLInputElement };
+    blur: FocusEvent & { currentTarget: HTMLInputElement };
   };
 
   const { field } = getFormContext();
@@ -20,49 +25,78 @@
   if (field) {
     name = field.name;
   }
+
+  type Variants = RecipeVariant<typeof recipe>;
+  const recipe = cva({
+    base: {
+      'display': 'flex',
+      'alignItems': 'center',
+      'borderWidth': '1px',
+      'borderColor': 'gray.50',
+      'fontWeight': 'medium',
+      'transition': 'common',
+      '&:has(input:enabled)': {
+        borderColor: { base: 'gray.100', _hover: 'gray.100', _focusWithin: 'gray.400' },
+        backgroundColor: { _hover: 'gray.100', _focusWithin: 'gray.0' },
+      },
+      '&:has(input:disabled)': {
+        color: 'gray.300',
+        backgroundColor: 'gray.100',
+        borderColor: 'gray.200',
+      },
+      '&:has(input[aria-invalid])': {
+        borderColor: '[red.600!]',
+        color: 'red.600',
+        _placeholder: { color: 'red.600' },
+      },
+    },
+    variants: {
+      size: {
+        sm: {
+          paddingX: '12px',
+          paddingY: '10px',
+          fontSize: '13px',
+          height: '37px',
+        },
+        md: {
+          paddingX: '14px',
+          paddingY: '12px',
+          fontSize: '14px',
+          height: '44px',
+        },
+        lg: {
+          padding: '14px',
+          fontSize: '14px',
+          height: '48px',
+        },
+      },
+    },
+  });
 </script>
 
-<div class={flex({ align: 'center', position: 'relative' })}>
+<label class={cx(recipe({ size }), css(style))} {hidden}>
   {#if 'left-icon' in $$slots}
-    <div class={center({ position: 'absolute', left: '16px', insetY: '0' })}>
+    <div class={flex({ align: 'center', marginRight: '4px' })}>
       <slot name="left-icon" />
     </div>
   {/if}
-  {#if 'left-text' in $$slots}
-    <div class={css({ fontSize: '15px', fontWeight: 'medium' })}>
-      <slot name="left-text" />
-    </div>
-  {/if}
+
   <input
+    bind:this={inputEl}
     id={name}
     {name}
-    class={css(
-      { width: 'full', fontSize: '15px', fontWeight: 'medium', backgroundColor: 'transparent' },
-      style,
-      'left-icon' in $$slots && { paddingLeft: '40px' },
-      'right-label' in $$slots && { paddingRight: '80px' },
-      'right-icon' in $$slots && { paddingRight: '40px' },
-      'left-text' in $$slots ? { borderRightRadius: '4px' } : { borderRadius: '4px' },
-    )}
+    class={css({ flexGrow: '1', width: 'full', minWidth: '0' })}
     type="text"
     on:input
     on:keydown
+    on:blur
     bind:value
     {...$$restProps}
   />
-  {#if 'right-label' in $$slots}
-    <div
-      class={css(
-        center.raw({ position: 'absolute', right: '0', insetY: '0' }),
-        'right-icon' in $$slots && { right: '24px' },
-      )}
-    >
-      <slot name="right-label" />
-    </div>
-  {/if}
+
   {#if 'right-icon' in $$slots}
-    <div class={center({ position: 'absolute', right: '0', insetY: '0' })}>
+    <div class={flex({ align: 'center', marginLeft: '4px' })}>
       <slot name="right-icon" />
     </div>
   {/if}
-</div>
+</label>

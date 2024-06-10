@@ -4,7 +4,7 @@
   import IconHash from '~icons/tabler/hash';
   import IconX from '~icons/tabler/x';
   import { Icon, Tag, Tooltip } from '$lib/components';
-  import { TextInput } from '$lib/components/v2/forms';
+  import { TextInput } from '$lib/components/forms';
   import { tagPattern } from '$lib/const/post';
   import { toast } from '$lib/notification';
   import { outsideClickEvent } from '$lib/svelte/actions';

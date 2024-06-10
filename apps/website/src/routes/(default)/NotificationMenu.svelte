@@ -4,8 +4,7 @@
   import { beforeNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon } from '$lib/components';
-  import { Button } from '$lib/components/v2';
+  import { Button, Icon } from '$lib/components';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
   import { center, circle, flex } from '$styled-system/patterns';

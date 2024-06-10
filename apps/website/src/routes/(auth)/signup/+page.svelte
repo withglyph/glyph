@@ -2,10 +2,8 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Helmet, Link } from '$lib/components';
-  import { Checkbox } from '$lib/components/forms';
-  import { Button } from '$lib/components/v2';
-  import { FormField, TextInput } from '$lib/components/v2/forms';
+  import { Button, Helmet, Link } from '$lib/components';
+  import { Checkbox, FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { CreateUserSchema } from '$lib/validations';
   import { css } from '$styled-system/css';

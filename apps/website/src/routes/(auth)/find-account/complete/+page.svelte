@@ -1,7 +1,6 @@
 <script lang="ts">
   import { graphql } from '$glitch';
-  import { Avatar, Helmet } from '$lib/components';
-  import { Button } from '$lib/components/v2';
+  import { Avatar, Button, Helmet } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
 

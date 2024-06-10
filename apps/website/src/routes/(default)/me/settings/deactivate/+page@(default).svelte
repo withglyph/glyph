@@ -1,9 +1,8 @@
 <script lang="ts">
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
-  import { Helmet, Icon } from '$lib/components';
+  import { Button, Helmet, Icon } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
-  import { Button } from '$lib/components/v2';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';

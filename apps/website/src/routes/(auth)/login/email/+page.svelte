@@ -2,9 +2,8 @@
   import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Helmet } from '$lib/components';
-  import { Button } from '$lib/components/v2';
-  import { FormField, TextInput } from '$lib/components/v2/forms';
+  import { Button, Helmet } from '$lib/components';
+  import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { LoginUserSchema } from '$lib/validations';
   import { css } from '$styled-system/css';

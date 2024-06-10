@@ -21,9 +21,8 @@
   // import FullLogo from '$assets/logos/full.svg?component';
   import RainbowLogo from '$assets/logos/full-rainbow.svg?component';
   import { fragment, graphql } from '$glitch';
-  import { Alert, Icon } from '$lib/components';
+  import { Alert, Button, Icon } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
-  import { Button } from '$lib/components/v2';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { values } from '$lib/tiptap/values';
   import { validImageMimes } from '$lib/utils';

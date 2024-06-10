@@ -2,8 +2,7 @@
   import dayjs from 'dayjs';
   import { onMount } from 'svelte';
   import { graphql } from '$glitch';
-  import { Helmet } from '$lib/components';
-  import { Button } from '$lib/components/v2';
+  import { Button, Helmet } from '$lib/components';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';

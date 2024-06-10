@@ -3,9 +3,8 @@
   import IconRuby from '~icons/glyph/ruby';
   import IconTrash from '~icons/tabler/trash';
   import IconX from '~icons/tabler/x';
-  import { Icon } from '$lib/components';
-  import { Button } from '$lib/components/v2';
-  import { TextInput } from '$lib/components/v2/forms';
+  import { Button, Icon } from '$lib/components';
+  import { TextInput } from '$lib/components/forms';
   import { scrollLock } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';

@@ -2,9 +2,8 @@
   import IconHelpLine from '~icons/glyph/help-line';
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
-  import { Icon, Tooltip } from '$lib/components';
+  import { Button, Icon, Tooltip } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
-  import { Button } from '$lib/components/v2';
   import { banks } from '$lib/const/revenue';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';

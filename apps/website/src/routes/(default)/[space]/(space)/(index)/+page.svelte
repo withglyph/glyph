@@ -5,9 +5,8 @@
   import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Helmet, Icon } from '$lib/components';
+  import { Button, Helmet, Icon } from '$lib/components';
   import { CreateCollectionModal } from '$lib/components/pages/collections';
-  import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
   import { center, flex, grid } from '$styled-system/patterns';
   import PostCard from '../../../(feed)/PostCard.svelte';

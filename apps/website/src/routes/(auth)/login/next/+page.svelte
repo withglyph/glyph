@@ -7,8 +7,7 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Helmet, Icon } from '$lib/components';
-  import { Button } from '$lib/components/v2';
+  import { Button, Helmet, Icon } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
 

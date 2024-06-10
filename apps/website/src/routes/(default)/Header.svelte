@@ -5,8 +5,7 @@
   import RainbowLogo from '$assets/logos/full-rainbow.svg?component';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon } from '$lib/components';
-  import { Button } from '$lib/components/v2';
+  import { Button, Icon } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import NotificationMenu from './NotificationMenu.svelte';

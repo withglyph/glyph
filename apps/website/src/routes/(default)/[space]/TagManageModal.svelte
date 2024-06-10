@@ -3,8 +3,7 @@
   import IconHelpLine from '~icons/glyph/help-line';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
-  import { Button, Modal } from '$lib/components/v2';
+  import { Button, Icon, Modal, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { createMutationForm } from '$lib/form';
   import { UpdatePostTagsInputSchema } from '$lib/validations/post';
   import { css } from '$styled-system/css';

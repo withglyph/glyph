@@ -3,8 +3,7 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import FullLogo from '$assets/logos/full.svg?component';
-  import { Helmet, Link } from '$lib/components';
-  import { Button, Modal } from '$lib/components/v2';
+  import { Button, Helmet, Link, Modal } from '$lib/components';
   import { AppError, UnknownError } from '$lib/errors';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';

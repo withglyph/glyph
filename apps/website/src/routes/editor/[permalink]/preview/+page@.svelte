@@ -7,8 +7,7 @@
   import IconDeviceMobile from '~icons/tabler/device-mobile';
   import FullLogo from '$assets/logos/full.svg?component';
   import { graphql } from '$glitch';
-  import { Helmet, Icon } from '$lib/components';
-  import { Button } from '$lib/components/v2';
+  import { Button, Helmet, Icon } from '$lib/components';
   import { TiptapRenderer } from '$lib/tiptap/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';

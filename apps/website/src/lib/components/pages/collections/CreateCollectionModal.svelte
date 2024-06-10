@@ -3,11 +3,9 @@
   import { createEventDispatcher } from 'svelte';
   import IconCamera from '~icons/tabler/camera';
   import { graphql } from '$glitch';
-  import { Icon, Image } from '$lib/components';
-  import { TextArea } from '$lib/components/forms';
+  import { Button, Icon, Image, Modal } from '$lib/components';
+  import { FormField, TextArea, TextInput } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
-  import { Button, Modal } from '$lib/components/v2';
-  import { FormField, TextInput } from '$lib/components/v2/forms';
   import { createMutationForm } from '$lib/form';
   import { UpdateSpaceCollectionSchema } from '$lib/validations';
   import { css } from '$styled-system/css';

@@ -2,8 +2,7 @@
   import IconTrash from '~icons/tabler/trash';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon } from '$lib/components';
-  import { Modal } from '$lib/components/v2';
+  import { Icon, Modal } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type { MeCabinetsPage_FollowTagModal_user } from '$glitch';

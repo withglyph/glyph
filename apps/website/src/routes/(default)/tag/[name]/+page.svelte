@@ -5,9 +5,8 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Alert, Helmet, Icon, Pagination } from '$lib/components';
+  import { Alert, Button, Helmet, Icon, Pagination } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
-  import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import Post from '../../(feed)/Post.svelte';

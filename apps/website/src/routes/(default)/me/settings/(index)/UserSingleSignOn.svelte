@@ -5,8 +5,7 @@
   import Twitter from '$assets/icons/twitter.svg?component';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Alert } from '$lib/components';
-  import { Button } from '$lib/components/v2';
+  import { Alert, Button } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import type { MeSettingsPage_UserSingleSignOn_user, UserSingleSignOnProvider } from '$glitch';

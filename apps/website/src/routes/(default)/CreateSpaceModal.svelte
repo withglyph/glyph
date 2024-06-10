@@ -6,10 +6,9 @@
   import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon, Image, Tooltip } from '$lib/components';
+  import { Button, Icon, Image, Modal, Tooltip } from '$lib/components';
+  import { FormField, TextInput } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
-  import { Button, Modal } from '$lib/components/v2';
-  import { FormField, TextInput } from '$lib/components/v2/forms';
   import { createMutationForm } from '$lib/form';
   import { CreateSpaceSchema } from '$lib/validations';
   import { css } from '$styled-system/css';

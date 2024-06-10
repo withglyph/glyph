@@ -2,8 +2,7 @@
   import IconHelpLine from '~icons/glyph/help-line';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon, Tooltip } from '$lib/components';
-  import { Button, Modal } from '$lib/components/v2';
+  import { Button, Icon, Modal, Tooltip } from '$lib/components';
   import { banks } from '$lib/const/revenue';
   import { comma } from '$lib/utils';
   import { calculateFeeAmount } from '$lib/utils/revenue';

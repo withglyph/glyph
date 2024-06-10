@@ -4,8 +4,7 @@
   import IconDeviceMobile from '~icons/tabler/device-mobile';
   import { page } from '$app/stores';
   import { mixpanel } from '$lib/analytics';
-  import { Alert, Helmet, Icon, Link } from '$lib/components';
-  import { Button } from '$lib/components/v2';
+  import { Alert, Button, Helmet, Icon, Link } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
 

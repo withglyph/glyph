@@ -10,9 +10,8 @@
   import IconPinnedFilled from '~icons/tabler/pinned-filled';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Alert, Avatar, Icon } from '$lib/components';
+  import { Alert, Avatar, Button, Icon } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
-  import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import CommentInput from './CommentInput.svelte';

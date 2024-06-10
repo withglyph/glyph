@@ -4,9 +4,8 @@
   import IconSearch from '~icons/tabler/search';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon, Tooltip } from '$lib/components';
-  import { Button, Modal } from '$lib/components/v2';
-  import { TextInput } from '$lib/components/v2/forms';
+  import { Button, Icon, Modal, Tooltip } from '$lib/components';
+  import { TextInput } from '$lib/components/forms';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import SpacePost from './SpacePost.svelte';

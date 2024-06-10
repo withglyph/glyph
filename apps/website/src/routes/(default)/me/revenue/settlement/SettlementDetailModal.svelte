@@ -2,8 +2,7 @@
   import dayjs from 'dayjs';
   import IconHelpLine from '~icons/glyph/help-line';
   import { fragment, graphql } from '$glitch';
-  import { Chip, Icon, Tooltip } from '$lib/components';
-  import { Modal } from '$lib/components/v2';
+  import { Chip, Icon, Modal, Tooltip } from '$lib/components';
   import { banks, revenueWithdrawalState } from '$lib/const/revenue';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';

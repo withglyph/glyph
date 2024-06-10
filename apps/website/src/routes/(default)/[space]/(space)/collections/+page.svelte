@@ -1,9 +1,8 @@
 <script lang="ts">
   import IconPlus from '~icons/tabler/plus';
   import { graphql } from '$glitch';
-  import { Helmet, Icon } from '$lib/components';
+  import { Button, Helmet, Icon } from '$lib/components';
   import { CreateCollectionModal } from '$lib/components/pages/collections';
-  import { Button } from '$lib/components/v2';
   import { css } from '$styled-system/css';
   import { center, grid } from '$styled-system/patterns';
   import Collection from '../Collection.svelte';

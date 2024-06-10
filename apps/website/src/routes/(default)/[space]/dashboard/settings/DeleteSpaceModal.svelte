@@ -2,8 +2,8 @@
   import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Modal } from '$lib/components/v2';
-  import { FormField, TextInput } from '$lib/components/v2/forms';
+  import { Button, Modal } from '$lib/components';
+  import { FormField, TextInput } from '$lib/components/forms';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type { SpaceDashboardSettingsPage_DeleteSpaceModal_space } from '$glitch';

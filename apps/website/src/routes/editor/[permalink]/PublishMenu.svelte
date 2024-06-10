@@ -17,13 +17,11 @@
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon, Image, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
-  import { Checkbox, FormValidationMessage, Switch } from '$lib/components/forms';
+  import { Button, Icon, Image, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
+  import { Checkbox, FormValidationMessage, Switch, TextInput } from '$lib/components/forms';
   import ThumbnailPicker from '$lib/components/media/ThumbnailPicker.svelte';
   import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { Select, SelectItem } from '$lib/components/select';
-  import { Button } from '$lib/components/v2';
-  import { TextInput } from '$lib/components/v2/forms';
   import { createMutationForm } from '$lib/form';
   import { PublishPostInputSchema } from '$lib/validations/post';
   import { css, cx } from '$styled-system/css';

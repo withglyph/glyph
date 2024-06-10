@@ -13,8 +13,7 @@
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Avatar, Icon, Image, Link } from '$lib/components';
-  import { Button } from '$lib/components/v2';
+  import { Avatar, Button, Icon, Image, Link } from '$lib/components';
   import { portal, scrollLock } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';

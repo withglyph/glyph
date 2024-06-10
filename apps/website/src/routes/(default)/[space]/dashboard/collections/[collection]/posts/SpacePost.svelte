@@ -2,8 +2,7 @@
   import IconMinus from '~icons/tabler/minus';
   import IconPlus from '~icons/tabler/plus';
   import { fragment, graphql } from '$glitch';
-  import { Icon, Image } from '$lib/components';
-  import { Button } from '$lib/components/v2';
+  import { Button, Icon, Image } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type { ManageSpacePostsModal_SpacePost_post } from '$glitch';

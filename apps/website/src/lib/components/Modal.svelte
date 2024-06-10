@@ -1,78 +1,66 @@
 <script lang="ts">
   import { fade, fly } from 'svelte/transition';
   import IconX from '~icons/tabler/x';
-  import { beforeNavigate } from '$app/navigation';
   import { Icon } from '$lib/components';
   import { portal, scrollLock } from '$lib/svelte/actions';
   import { css, sva } from '$styled-system/css';
   import { center } from '$styled-system/patterns';
-  import type { RecipeVariant, SystemStyleObject } from '$styled-system/types';
+  import type { SystemStyleObject } from '$styled-system/types';
 
-  export let style: SystemStyleObject | undefined = undefined;
   export let open: boolean;
-  export let size: Variants['size'] = 'md';
+  export let size: 'sm' | 'lg' = 'sm';
+  export let style: SystemStyleObject | undefined = undefined;
+  export let titleStyle: SystemStyleObject | undefined = undefined;
+  export let actionStyle: SystemStyleObject | undefined = undefined;
 
-  beforeNavigate(() => {
-    open = false;
-  });
-
-  type Variants = RecipeVariant<typeof recipe>;
   const recipe = sva({
-    slots: ['root', 'container', 'action'],
+    slots: ['root', 'container'],
     base: {
-      root: { position: 'absolute', display: 'flex', inset: '0', pointerEvents: 'none' },
+      root: {
+        position: 'absolute',
+        inset: '0',
+        display: 'flex',
+        alignItems: { base: 'flex-end', sm: 'center' },
+        justifyContent: 'center',
+        width: 'full',
+        pointerEvents: 'none',
+      },
       container: {
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: '16px',
+        flexGrow: '1',
         width: 'full',
-        maxHeight: 'full',
         backgroundColor: 'gray.0',
         pointerEvents: 'auto',
         userSelect: 'text',
+        borderColor: 'gray.600',
+
+        smDown: {
+          borderTopWidth: '1px',
+        },
+        sm: {
+          borderWidth: '1px',
+        },
       },
-      action: { display: 'flex', justifyContent: 'flex-end', alignItems: 'center' },
     },
     variants: {
       size: {
         sm: {
-          root: { justifyContent: 'center', alignItems: 'center', padding: '20px' },
-          container: { padding: '16px', paddingTop: '32px', maxWidth: '368px' },
-          action: { marginTop: '16px' },
-        },
-        md: {
-          root: {
-            justifyContent: 'center',
-            alignItems: 'flex-end',
-            width: 'full',
-            sm: { padding: '24px', alignItems: 'center' },
-          },
           container: {
-            paddingX: '24px',
-            paddingTop: '16px',
-            paddingBottom: '22px',
-            borderBottomRadius: '0',
-            sm: { maxWidth: '430px', borderRadius: '16px' },
+            maxHeight: { base: '540px', sm: '600px' },
+            maxWidth: { sm: '420px' },
           },
-          action: { marginTop: '24px' },
         },
         lg: {
           root: {
-            justifyContent: 'center',
-            alignItems: 'flex-end',
-            width: 'full',
-            sm: { padding: '36px', alignItems: 'center' },
+            paddingY: { sm: '40px' },
           },
           container: {
-            padding: '28px',
-            paddingTop: '20px',
-            borderBottomRadius: '0',
-            sm: { maxWidth: '748px', borderRadius: '16px' },
+            height: 'full',
+            maxHeight: { base: '540px', sm: '740px' },
+            maxWidth: { sm: '712px' },
           },
-          action: { marginTop: '16px' },
         },
       },
     },
@@ -86,13 +74,7 @@
 {#if open}
   <div class={css({ position: 'fixed', inset: '0', zIndex: '50' })} use:portal>
     <div
-      class={css({
-        position: 'absolute',
-        inset: '0',
-        backgroundColor: 'gray.900/50',
-        backdropFilter: 'auto',
-        backdropBlur: '8px',
-      })}
+      class={css({ position: 'absolute', inset: '0', backgroundColor: 'gray.900/60' })}
       role="button"
       tabindex="-1"
       on:click={() => (open = false)}
@@ -101,102 +83,89 @@
     />
 
     <div class={classes.root}>
-      <div class={classes.container} use:scrollLock in:fly={{ y: '10%', duration: 150 }} out:fade={{ duration: 150 }}>
+      <div class={classes.container} use:scrollLock in:fly={{ y: 10 }} out:fade={{ duration: 150 }}>
+        <header
+          class={css({
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            borderBottomWidth: '1px',
+            borderBottomColor: 'gray.150',
+            paddingX: '20px',
+            paddingY: '15px',
+          })}
+        >
+          <div class={center({ position: 'absolute', left: '0', paddingX: '20px' })}>
+            <slot name="title-left" />
+          </div>
+
+          <h3
+            class={css(
+              {
+                display: 'flex',
+                justifyContent: 'center',
+                flex: '1',
+                marginX: '32px',
+                fontSize: '18px',
+                fontWeight: 'semibold',
+                wordBreak: 'keep-all',
+              },
+              titleStyle,
+            )}
+          >
+            <slot name="title" />
+          </h3>
+
+          <button
+            class={css({ position: 'absolute', right: '0', paddingX: '20px' })}
+            type="button"
+            on:click={() => (open = false)}
+          >
+            <Icon icon={IconX} size={24} />
+          </button>
+        </header>
+
         <div
-          class={css(
-            { display: 'flex', flexDirection: 'column', width: 'full', overflowY: 'auto' },
-            size === 'sm' && { maxWidth: '368px' },
-            style,
-          )}
+          class={css({
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            flexGrow: '1',
+            width: 'full',
+            overflowY: 'auto',
+          })}
           data-scroll-lock-ignore
         >
-          {#if $$slots.title}
-            <div
-              class={css(
-                { display: 'flex', justifyContent: 'space-between', paddingY: '12px' },
-                size === 'sm'
-                  ? { justifyContent: 'center', textAlign: 'center' }
-                  : { paddingTop: '16px', paddingBottom: '0' },
-              )}
-            >
-              <div
-                class={css(
-                  { display: 'flex', flexDirection: 'column', wordBreak: 'break-all' },
-                  size !== 'sm' && { paddingRight: '36px', marginTop: '16px', marginBottom: '16px' },
-                  size !== 'sm' && 'text' in $$slots && { marginBottom: '8px' },
-                )}
-              >
-                <h3
-                  class={css(
-                    { wordBreak: 'keep-all' },
-                    size === 'sm' ? { fontSize: '18px', fontWeight: 'bold' } : { fontSize: '20px', fontWeight: 'bold' },
-                  )}
-                >
-                  <slot name="title" />
-                </h3>
-                {#if $$slots.subtitle}
-                  <div
-                    class={css(
-                      {
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        marginTop: '4px',
-                        fontSize: '16px',
-                        fontWeight: 'medium',
-                        color: 'gray.500',
-                      },
-                      size === 'sm' && { justifyContent: 'center', textAlign: 'center' },
-                    )}
-                  >
-                    <h4>
-                      <slot name="subtitle" />
-                    </h4>
-                  </div>
-                {/if}
-              </div>
-              {#if size !== 'sm'}
-                <button
-                  class={center({
-                    position: 'absolute',
-                    borderRadius: '4px',
-                    right: '24px',
-                    size: '28px',
-                    color: 'gray.500',
-                    transition: 'common',
-                    zIndex: '1',
-                    _hover: { backgroundColor: 'gray.100', color: 'gray.600' },
-                  })}
-                  type="button"
-                  on:click={() => (open = false)}
-                >
-                  <Icon icon={IconX} size={24} />
-                </button>
-              {/if}
-            </div>
-          {:else}
-            <button
-              class={center({
-                position: 'absolute',
-                borderRadius: '4px',
-                right: '24px',
-                size: '28px',
-                color: 'gray.500',
-                transition: 'common',
-                zIndex: '1',
-                _hover: { backgroundColor: 'gray.100', color: 'gray.600' },
-              })}
-              type="button"
-              on:click={() => (open = false)}
-            >
-              <Icon icon={IconX} size={24} />
-            </button>
-          {/if}
-
-          <slot name="text" />
-          <slot />
+          <div
+            class={css(
+              { paddingTop: '16px', paddingX: '20px', paddingBottom: { base: '52px', sm: '32px' }, overflowY: 'auto' },
+              style,
+            )}
+          >
+            <slot />
+          </div>
 
           {#if $$slots.action}
-            <div class={classes.action}>
+            <div
+              class={css(
+                {
+                  position: 'sticky',
+                  bottom: '0',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  alignItems: 'center',
+                  paddingX: '20px',
+                  paddingY: '20px',
+                  width: 'full',
+                  backgroundColor: 'gray.0',
+                },
+                size === 'lg' && {
+                  borderTopWidth: '1px',
+                  borderTopColor: 'gray.150',
+                },
+                actionStyle,
+              )}
+            >
               <slot name="action" />
             </div>
           {/if}
@@ -205,14 +174,3 @@
     </div>
   </div>
 {/if}
-
-<style>
-  * {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-
-    & ::-webkit-scrollbar {
-      display: none;
-    }
-  }
-</style>

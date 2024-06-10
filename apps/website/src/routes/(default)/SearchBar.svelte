@@ -7,7 +7,7 @@
   import { afterNavigate, goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { Icon } from '$lib/components';
-  import { TextInput } from '$lib/components/v2/forms';
+  import { TextInput } from '$lib/components/forms';
   import { css } from '$styled-system/css';
   import { center } from '$styled-system/patterns';
   import type { SystemStyleObject } from '$styled-system/types';

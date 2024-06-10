@@ -8,9 +8,8 @@
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Alert, Chip, Icon } from '$lib/components';
+  import { Alert, Button, Chip, Icon, Modal } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
-  import { Button, Modal } from '$lib/components/v2';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';

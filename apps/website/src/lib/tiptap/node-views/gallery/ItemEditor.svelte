@@ -5,8 +5,7 @@
   import { onDestroy } from 'svelte';
   import IconPlus from '~icons/tabler/plus';
   import { graphql } from '$glitch';
-  import { Icon } from '$lib/components';
-  import { Button, Modal } from '$lib/components/v2';
+  import { Button, Icon, Modal } from '$lib/components';
   import { isMobile, validImageMimes } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';

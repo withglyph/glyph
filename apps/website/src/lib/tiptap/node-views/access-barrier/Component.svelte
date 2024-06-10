@@ -13,8 +13,7 @@
   import { afterNavigate } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon, Tooltip } from '$lib/components';
-  import { Button, Modal } from '$lib/components/v2';
+  import { Button, Icon, Modal, Tooltip } from '$lib/components';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { NodeView } from '$lib/tiptap';
   import { comma } from '$lib/utils';

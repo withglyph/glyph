@@ -5,9 +5,8 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Helmet, Icon } from '$lib/components';
+  import { Button, Helmet, Icon } from '$lib/components';
   import { DigitsInput } from '$lib/components/forms';
-  import { Button } from '$lib/components/v2';
   import { createMutationForm } from '$lib/form';
   import { IssueUserEmailAuthorizationTokenSchema } from '$lib/validations';
   import { css } from '$styled-system/css';

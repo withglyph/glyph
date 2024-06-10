@@ -1,7 +1,7 @@
 <script lang="ts">
   import { NodeSelection } from '@tiptap/pm/state';
   import { codeToHtml } from 'shiki';
-  import { Button, Modal } from '$lib/components/v2';
+  import { Button, Modal } from '$lib/components';
   import { css } from '$styled-system/css';
   import { getEditorContext } from './context';
   import type { ResolvedPos } from '@tiptap/pm/model';

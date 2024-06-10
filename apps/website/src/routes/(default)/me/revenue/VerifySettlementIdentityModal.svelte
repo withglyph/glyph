@@ -27,9 +27,8 @@
   import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon, ProgressBar } from '$lib/components';
-  import { Button, Modal } from '$lib/components/v2';
-  import { FormField, TextInput } from '$lib/components/v2/forms';
+  import { Button, Icon, Modal, ProgressBar } from '$lib/components';
+  import { FormField, TextInput } from '$lib/components/forms';
   import { banks } from '$lib/const/revenue';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';

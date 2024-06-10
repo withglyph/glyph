@@ -1,8 +1,8 @@
 <script lang="ts">
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Modal } from '$lib/components/v2';
-  import { FormField, TextInput } from '$lib/components/v2/forms';
+  import { Button, Modal } from '$lib/components';
+  import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { VerifyPassportIdentitySchema } from '$lib/validations';

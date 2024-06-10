@@ -2,8 +2,7 @@
   import IconTrash from '~icons/tabler/trash';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon, Image } from '$lib/components';
-  import { Modal } from '$lib/components/v2';
+  import { Icon, Image, Modal } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type { MeContentFiltersPage_MutedSpaceModal_user } from '$glitch';

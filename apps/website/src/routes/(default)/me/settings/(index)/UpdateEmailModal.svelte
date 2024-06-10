@@ -1,9 +1,8 @@
 <script lang="ts">
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Alert } from '$lib/components';
-  import { Button, Modal } from '$lib/components/v2';
-  import { FormField, TextInput } from '$lib/components/v2/forms';
+  import { Alert, Button, Modal } from '$lib/components';
+  import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
   import { UpdateUserEmailSchema } from '$lib/validations';
   import { css } from '$styled-system/css';

@@ -8,10 +8,9 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Alert, Avatar, Chip, Helmet, Icon, Link } from '$lib/components';
+  import { Alert, Avatar, Button, Chip, Helmet, Icon, Link, Modal } from '$lib/components';
   import { Switch } from '$lib/components/forms';
   import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
-  import { Button, Modal } from '$lib/components/v2';
   import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';

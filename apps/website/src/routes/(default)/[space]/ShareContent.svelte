@@ -4,9 +4,8 @@
   import IconShare2 from '~icons/tabler/share-2';
   import { browser } from '$app/environment';
   import { graphql } from '$glitch';
-  import { Icon } from '$lib/components';
+  import { Button, Icon, Modal } from '$lib/components';
   import { RingSpinner } from '$lib/components/spinners';
-  import { Button, Modal } from '$lib/components/v2';
   import { toast } from '$lib/notification';
   import { dataurl2file } from '$lib/utils';
   import { css, cx } from '$styled-system/css';

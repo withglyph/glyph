@@ -4,9 +4,8 @@
   import Paypal from '$assets/icons/paypal.svg?component';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Helmet, Icon, Link, ToggleButton } from '$lib/components';
+  import { Button, Helmet, Icon, Link, Modal, ToggleButton } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
-  import { Button, Modal } from '$lib/components/v2';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { comma } from '$lib/utils';

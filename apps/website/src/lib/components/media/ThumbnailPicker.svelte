@@ -2,7 +2,7 @@
   import ky from 'ky';
   import { createEventDispatcher } from 'svelte';
   import { graphql } from '$glitch';
-  import { Button, Modal } from '$lib/components/v2';
+  import { Button, Modal } from '$lib/components';
   import { trackable } from '$lib/svelte/store';
   import { isValidImageFile, validImageMimes } from '$lib/utils';
   import { css } from '$styled-system/css';

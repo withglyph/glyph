@@ -1,9 +1,8 @@
 <script lang="ts">
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
+  import { Button, Modal, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { Switch } from '$lib/components/forms';
-  import { Button, Modal } from '$lib/components/v2';
   import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';

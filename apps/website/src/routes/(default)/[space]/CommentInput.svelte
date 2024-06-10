@@ -4,8 +4,7 @@
   import IconAlertCircle from '~icons/tabler/alert-circle';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon, Tooltip } from '$lib/components';
-  import { Button } from '$lib/components/v2';
+  import { Button, Icon, Tooltip } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import type { CommentInput_query, PostCommentVisibility } from '$glitch';

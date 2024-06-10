@@ -1,7 +1,7 @@
 <script lang="ts">
   import Color from 'color';
   import { createEventDispatcher, onMount, tick } from 'svelte';
-  import { Button } from '$lib/components/v2';
+  import { Button } from '$lib/components';
   import { values } from '$lib/tiptap/values';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';

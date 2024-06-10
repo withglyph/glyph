@@ -1,7 +1,7 @@
 <script lang="ts">
   import { graphql } from '$glitch';
+  import { Button } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
-  import { Button } from '$lib/components/v2';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';

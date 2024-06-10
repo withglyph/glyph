@@ -9,12 +9,11 @@
   import IconUser from '~icons/tabler/user';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Alert, Chip, Icon, Image, Tag, Tooltip } from '$lib/components';
+  import { Alert, Button, Chip, Icon, Image, Tag, Tooltip } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Select, SelectItem } from '$lib/components/select';
   import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
-  import { Button } from '$lib/components/v2';
   import { comma, humanizeNumber } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';

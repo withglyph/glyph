@@ -2,10 +2,9 @@
   import IconPlus from '~icons/tabler/plus';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon, Image } from '$lib/components';
+  import { Button, Icon, Image, Modal } from '$lib/components';
   import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { Select, SelectItem } from '$lib/components/select';
-  import { Button, Modal } from '$lib/components/v2';
   import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';

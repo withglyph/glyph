@@ -2,7 +2,7 @@
   import IconHash from '~icons/tabler/hash';
   import IconX from '~icons/tabler/x';
   import { Icon, Tag } from '$lib/components';
-  import { TextInput } from '$lib/components/v2/forms';
+  import { TextInput } from '$lib/components/forms';
   import { outsideClickEvent } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';

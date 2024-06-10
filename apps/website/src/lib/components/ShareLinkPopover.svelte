@@ -6,9 +6,8 @@
   import IconMastodon from '~icons/simple-icons/mastodon';
   import IconTwitter from '~icons/simple-icons/twitter';
   import IconX from '~icons/tabler/x';
-  import { Icon } from '$lib/components';
-  import { Button } from '$lib/components/v2';
-  import { TextInput } from '$lib/components/v2/forms';
+  import { Button, Icon } from '$lib/components';
+  import { TextInput } from '$lib/components/forms';
   import { toast } from '$lib/notification';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';

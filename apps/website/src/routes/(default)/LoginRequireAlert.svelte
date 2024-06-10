@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { Alert } from '$lib/components';
-  import { Button } from '$lib/components/v2';
+  import { Alert, Button } from '$lib/components';
   import { css } from '$styled-system/css';
 
   export let open = false;

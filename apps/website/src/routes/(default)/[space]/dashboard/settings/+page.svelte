@@ -4,11 +4,9 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Alert, Helmet, Icon, Image } from '$lib/components';
-  import { TextArea } from '$lib/components/forms';
+  import { Alert, Button, Helmet, Icon, Image } from '$lib/components';
+  import { FormField, TextArea, TextInput } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
-  import { Button } from '$lib/components/v2';
-  import { FormField, TextInput } from '$lib/components/v2/forms';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { SetSpaceSchema } from '$lib/validations';

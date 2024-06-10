@@ -3,9 +3,8 @@
   import IconFilter from '~icons/tabler/adjustments-horizontal';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { AdSense, Helmet, Icon, Pagination } from '$lib/components';
+  import { AdSense, Button, Helmet, Icon, Modal, Pagination } from '$lib/components';
   import { Select, SelectItem } from '$lib/components/select';
-  import { Button, Modal } from '$lib/components/v2';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';

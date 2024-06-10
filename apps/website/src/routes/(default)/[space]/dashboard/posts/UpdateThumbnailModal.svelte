@@ -1,9 +1,8 @@
 <script lang="ts">
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Image } from '$lib/components';
+  import { Button, Image, Modal } from '$lib/components';
   import { ThumbnailPicker } from '$lib/components/media';
-  import { Button, Modal } from '$lib/components/v2';
   import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';

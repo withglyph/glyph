@@ -16,13 +16,11 @@
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { AdSense, Alert, Avatar, Chip, Icon, Image, ShareLinkPopover, Tag, Tooltip } from '$lib/components';
+  import { AdSense, Alert, Avatar, Button, Chip, Icon, Image, ShareLinkPopover, Tag, Tooltip } from '$lib/components';
+  import { TextInput } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
-  import { Button } from '$lib/components/v2';
-  import { TextInput } from '$lib/components/v2/forms';
   import { categoryFilter, pairFilter } from '$lib/const/feed';
-  import { EmojiPicker } from '$lib/emoji';
-  import Emoji from '$lib/emoji/Emoji.svelte';
+  import { Emoji, EmojiPicker } from '$lib/emoji';
   import { FormValidationError } from '$lib/errors';
   import { toast } from '$lib/notification';
   import { TiptapRenderer } from '$lib/tiptap/components';
