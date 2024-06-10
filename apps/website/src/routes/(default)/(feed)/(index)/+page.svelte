@@ -214,7 +214,7 @@
         },
     )}
   >
-    <h2 class={css({ marginBottom: '14px', fontSize: '21px', fontWeight: 'bold' })}>이번주 챌린지 🌈</h2>
+    <h2 class={css({ marginBottom: '14px', fontSize: '21px', fontWeight: 'bold' })}>이번주 챌린지 🎸</h2>
 
     <HorizontalScroll
       style={css.raw({ gap: { base: '12px', sm: '14px' } })}

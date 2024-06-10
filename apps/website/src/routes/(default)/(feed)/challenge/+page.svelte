@@ -2,7 +2,7 @@
   import IconCheck from '~icons/tabler/check';
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { goto } from '$app/navigation';
-  import ChallengeTitle from '$assets/icons/challenge-202406-1.svg?component';
+  import ChallengeTitle from '$assets/icons/challenge.svg?component';
   import CompactLogo from '$assets/logos/compact.svg?component';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -56,7 +56,7 @@
   })}
 >
   <span class={css({ fontSize: '14px', fontWeight: 'semibold', color: 'gray.0' })}>참여만 해도 2,000P 지급</span>
-  <a class={css({ fontSize: '12px', color: 'gray.0', textDecoration: 'underline' })} href="/glyph/956420498">
+  <a class={css({ fontSize: '12px', color: 'gray.0', textDecoration: 'underline' })} href="/glyph/2041162742">
     자세히보기
   </a>
 </div>

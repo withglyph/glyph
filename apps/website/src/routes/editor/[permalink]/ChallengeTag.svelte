@@ -90,7 +90,7 @@
             backgroundColor: 'brand.50',
           })}
         >
-          주간창작_6월_1주차
+          주간창작_6월_2주차
         </li>
       </ul>
     </div>
