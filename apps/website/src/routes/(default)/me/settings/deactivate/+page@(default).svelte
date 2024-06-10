@@ -113,8 +113,10 @@
         글리프 탈퇴하기
       </Button>
       <Button
-        style={css.raw({ marginTop: '12px', width: 'full', backgroundColor: 'gray.0' })}
+        style={css.raw({ display: 'block', marginTop: '12px', width: 'full', backgroundColor: 'gray.0' })}
+        href="/me/settings"
         size="lg"
+        type="link"
         variant="gray-outline"
       >
         탈퇴를 취소할래요
