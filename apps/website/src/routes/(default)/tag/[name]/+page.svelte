@@ -45,6 +45,7 @@
       followTag(input: $input) {
         id
         followed
+        followerCount
       }
     }
   `);
@@ -54,6 +55,7 @@
       unfollowTag(input: $input) {
         id
         followed
+        followerCount
       }
     }
   `);
