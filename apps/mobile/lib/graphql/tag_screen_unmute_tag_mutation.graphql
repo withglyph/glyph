@@ -1,0 +1,6 @@
+mutation TagScreen_UnmuteTag_Mutation($input: UnmuteTagInput!) {
+  unmuteTag(input: $input) {
+    id
+    muted
+  }
+}
