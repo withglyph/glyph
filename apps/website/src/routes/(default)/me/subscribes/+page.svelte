@@ -1,6 +1,6 @@
 <script lang="ts">
   import { graphql } from '$glitch';
-  import { Tag } from '$lib/components';
+  import { Helmet, Tag } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
   import FollowTagModal from './FollowTagModal.svelte';
@@ -29,6 +29,8 @@
     }
   `);
 </script>
+
+<Helmet description="구독한 태그와 스페이스를 둘러보세요" title="구독" />
 
 <h1 class={css({ fontSize: '24px', fontWeight: 'bold', hideBelow: 'sm' })}>구독</h1>
 

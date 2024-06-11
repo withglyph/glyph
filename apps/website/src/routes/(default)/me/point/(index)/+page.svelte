@@ -97,7 +97,7 @@
   };
 </script>
 
-<Helmet description="포인트 사용 내역을 확인할 수 있어요" title="포인트 사용 내역" />
+<Helmet description="포인트 사용/충전 내역을 확인할 수 있어요" title="포인트 사용/충전 내역" />
 
 <ul class={flex({ direction: 'column', grow: '1' })}>
   {#each $query.me.points as point (point.id)}

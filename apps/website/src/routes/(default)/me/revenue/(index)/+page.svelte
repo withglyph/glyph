@@ -75,7 +75,7 @@
   };
 </script>
 
-<Helmet description="내 수익을 확인하세요" title="내 수익" />
+<Helmet description="수익 내역을 확인하세요" title="수익 내역" />
 
 {#if $query.me.revenues.length > 0}
   <ul>
