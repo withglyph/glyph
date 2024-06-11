@@ -1,5 +1,6 @@
 export * from './email';
 export * from './healthz';
+export * from './iap';
 export * from './identification';
 export * from './nolt';
 export * from './notification';
