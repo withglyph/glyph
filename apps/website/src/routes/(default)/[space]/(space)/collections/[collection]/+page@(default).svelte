@@ -158,7 +158,6 @@
                 href="/{$query.spaceCollection.space.slug}/dashboard/collections"
                 size="sm"
                 type="link"
-                variant="gray-outline"
               >
                 컬렉션 관리
               </Button>
