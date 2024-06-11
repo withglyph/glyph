@@ -6,6 +6,7 @@ export const CreateSpaceCollectionSchema = z.object({
   spaceId: z.string(),
   name,
   description: z.string().optional(),
+  thumbnailId: z.string().optional(),
 });
 
 export const UpdateSpaceCollectionSchema = z.object({

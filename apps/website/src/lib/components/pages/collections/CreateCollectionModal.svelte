@@ -7,7 +7,7 @@
   import { FormField, TextArea, TextInput } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
   import { createMutationForm } from '$lib/form';
-  import { UpdateSpaceCollectionSchema } from '$lib/validations';
+  import { CreateSpaceCollectionSchema } from '$lib/validations';
   import { css } from '$styled-system/css';
   import { center } from '$styled-system/patterns';
   import type { Image_image } from '$glitch';
@@ -26,20 +26,10 @@
     success: { id: string; name: string; thumbnail: (Image_image & { id: string }) | null };
   }>();
 
-  const createSpaceCollection = graphql(`
-    mutation CreateCollectionModal_CreateSpaceCollection_Mutation($input: CreateSpaceCollectionInput!) {
-      createSpaceCollection(input: $input) {
-        id
-        name
-        description
-      }
-    }
-  `);
-
   const { form, data, isSubmitting, handleSubmit } = createMutationForm({
     mutation: graphql(`
-      mutation CreateSpaceCollectionModal_UpdateSpaceCollection_Mutation($input: UpdateSpaceCollectionInput!) {
-        updateSpaceCollection(input: $input) {
+      mutation CreateSpaceCollectionModal_CreateSpaceCollection_Mutation($input: CreateSpaceCollectionInput!) {
+        createSpaceCollection(input: $input) {
           id
           name
           description
@@ -51,16 +41,8 @@
         }
       }
     `),
-    schema: UpdateSpaceCollectionSchema,
-    extra: async () => {
-      const defaultName = '_';
-      const createdCollection = await createSpaceCollection({ spaceId, name: defaultName });
-
-      return { spaceCollectionId: createdCollection.id, thumbnailId: thumbnail?.id };
-    },
-    initialValues: {
-      spaceCollectionId: '',
-    },
+    schema: CreateSpaceCollectionSchema,
+    extra: () => ({ thumbnailId: thumbnail?.id }),
     onSuccess: ({ id, name }) => {
       open = false;
       mixpanel.track('space:collection:create', { spaceId, collectionId: id });
@@ -71,7 +53,10 @@
 
 <Modal bind:open>
   <svelte:fragment slot="title">컬렉션 만들기</svelte:fragment>
+
   <form use:form>
+    <input name="spaceId" type="hidden" value={spaceId} />
+
     <p class={css({ fontSize: '14px' })}>표지 이미지</p>
 
     <button
