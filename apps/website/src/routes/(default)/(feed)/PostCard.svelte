@@ -105,78 +105,77 @@
   $: classes = recipe.raw({ theme });
 </script>
 
-<a
-  class={css({ display: 'block', truncate: true, flex: 'none' }, style)}
-  href={`/${$post.space.slug}/${$post.permalink}`}
->
-  <div
-    class={css(
-      { position: 'relative', flex: 'none', marginBottom: '6px', aspectRatio: '16/10', overflow: 'hidden' },
-      style,
-    )}
-  >
-    <Image
-      style={css.raw(
-        {
-          flex: 'none',
-          borderWidth: '[0.8px]',
-          borderColor: 'gray.100',
-          size: 'full',
-          aspectRatio: '16/10',
-          objectFit: 'cover',
-        },
-        theme === 'dark' && { borderColor: 'gray.800' },
+<div class={css({ display: 'block', truncate: true, flex: 'none' }, style)}>
+  <a href="/{$post.space.slug}/{$post.permalink}">
+    <div
+      class={css(
+        { position: 'relative', flex: 'none', marginBottom: '6px', aspectRatio: '16/10', overflow: 'hidden' },
+        style,
       )}
-      $image={$post.thumbnail}
-      placeholder
-      size={512}
-    />
+    >
+      <Image
+        style={css.raw(
+          {
+            flex: 'none',
+            borderWidth: '[0.8px]',
+            borderColor: 'gray.100',
+            size: 'full',
+            aspectRatio: '16/10',
+            objectFit: 'cover',
+          },
+          theme === 'dark' && { borderColor: 'gray.800' },
+        )}
+        $image={$post.thumbnail}
+        placeholder
+        size={512}
+      />
 
-    <div class={css({ position: 'absolute', left: '6px', bottom: '6px', display: 'flex', gap: '4px' })}>
-      {#if $post.ageRating === 'R15'}
-        <Chip color="pink">15세</Chip>
-      {/if}
-      {#if $post.ageRating === 'R19'}
-        <Chip color="pink">성인</Chip>
-      {/if}
-      {#if $post.hasPassword}
-        <Chip color="gray">비밀글</Chip>
-      {/if}
+      <div class={css({ position: 'absolute', left: '6px', bottom: '6px', display: 'flex', gap: '4px' })}>
+        {#if $post.ageRating === 'R15'}
+          <Chip color="pink">15세</Chip>
+        {/if}
+        {#if $post.ageRating === 'R19'}
+          <Chip color="pink">성인</Chip>
+        {/if}
+        {#if $post.hasPassword}
+          <Chip color="gray">비밀글</Chip>
+        {/if}
+      </div>
     </div>
-  </div>
 
-  <div class={flex({ flexDirection: 'column', align: 'flex-start', truncate: true })}>
-    <h3 class={css(classes.title)}>
-      {$post.publishedRevision.title ?? '(제목 없음)'}
-    </h3>
+    <div class={flex({ flexDirection: 'column', align: 'flex-start', truncate: true })}>
+      <h3 class={css(classes.title)}>
+        {$post.publishedRevision.title ?? '(제목 없음)'}
+      </h3>
 
-    <div class={flex({ align: 'center', fontSize: '13px', width: 'full', height: '19px', truncate: true })}>
-      {#if $post.publishedRevision.subtitle}
-        <h4
-          class={css(
-            classes.subtitle,
-            !!$post.publishedRevision.previewText && {
-              _after: {
-                content: '""',
-                display: 'block',
-                marginX: '4px',
-                width: '1px',
-                height: '10px',
-                backgroundColor: 'gray.500',
+      <div class={flex({ align: 'center', fontSize: '13px', width: 'full', height: '19px', truncate: true })}>
+        {#if $post.publishedRevision.subtitle}
+          <h4
+            class={css(
+              classes.subtitle,
+              !!$post.publishedRevision.previewText && {
+                _after: {
+                  content: '""',
+                  display: 'block',
+                  marginX: '4px',
+                  width: '1px',
+                  height: '10px',
+                  backgroundColor: 'gray.500',
+                },
               },
-            },
-          )}
-        >
-          {$post.publishedRevision.subtitle ?? ''}
-        </h4>
-      {/if}
-      {#if $post.publishedRevision.previewText}
-        <p class={css({ color: 'gray.600', truncate: true }, theme === 'dark' && { color: 'gray.400' })}>
-          {$post.publishedRevision.previewText}
-        </p>
-      {/if}
+            )}
+          >
+            {$post.publishedRevision.subtitle ?? ''}
+          </h4>
+        {/if}
+        {#if $post.publishedRevision.previewText}
+          <p class={css({ color: 'gray.600', truncate: true }, theme === 'dark' && { color: 'gray.400' })}>
+            {$post.publishedRevision.previewText}
+          </p>
+        {/if}
+      </div>
     </div>
-  </div>
+  </a>
 
   {#if showTags}
     <div
@@ -192,7 +191,7 @@
       })}
     >
       {#each $post.tags as tag (tag.id)}
-        <Tag style={classes.tag} as="div" size="sm">
+        <Tag style={classes.tag} href="/tag/{tag.tag.name}" size="sm">
           #{tag.tag.name}
         </Tag>
       {/each}
@@ -200,7 +199,10 @@
   {/if}
 
   {#if showSpace}
-    <div class={flex({ align: 'center', gap: '4px', marginY: '4px', height: '24px', width: 'full', truncate: true })}>
+    <a
+      class={flex({ align: 'center', gap: '4px', marginY: '4px', height: '24px', width: 'full', truncate: true })}
+      href="/{$post.space.slug}"
+    >
       <Image
         style={css.raw(
           { flex: 'none', borderWidth: '[0.8px]', borderColor: 'gray.100', size: '18px' },
@@ -225,7 +227,7 @@
       >
         {$post.space.name}
       </div>
-    </div>
+    </a>
   {/if}
 
   {#if showStats}
@@ -261,4 +263,4 @@
       {/if}
     </div>
   {/if}
-</a>
+</div>
