@@ -1,23 +1,23 @@
 <script lang="ts">
-  import IconCheck from '~icons/tabler/check';
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { goto } from '$app/navigation';
   import ChallengeTitle from '$assets/icons/challenge.svg?component';
-  import CompactLogo from '$assets/logos/compact.svg?component';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button, Helmet, Icon } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import Post from '../Post.svelte';
+  import ChallengeEnrollment from './ChallengeEnrollment.svelte';
 
   $: query = graphql(`
     query FeedChallengePage_Query {
       me {
         id
+
         challengeEnrollment061: eventEnrollment(eventCode: "weekly_challenge_24061") {
           id
-          eligible
+          ...ChallengeEnrollment_userEventEnrollment
         }
       }
 
@@ -87,109 +87,14 @@
       </div>
 
       <ul class={flex({ align: 'center', justify: 'space-between', marginTop: '24px', marginBottom: '32px' })}>
-        <li>
-          <!-- TODO: 챌린지 참여 완료 표시 -->
-          {#if $query.me?.challengeEnrollment061?.eligible}
-            <div
-              class={center({
-                position: 'relative',
-                borderWidth: '2px',
-                borderColor: 'brand.400',
-                borderRadius: 'full',
-                backgroundColor: '[#F2EEFF]',
-                size: '60px',
-              })}
-            >
-              <CompactLogo class={css({ color: 'brand.400', width: '1/4' })} />
-              <div
-                class={css({
-                  position: 'absolute',
-                  bottom: '0',
-                  right: '0',
-                  borderRadius: 'full',
-                  padding: '4px',
-                  backgroundColor: 'brand.400',
-                })}
-              >
-                <Icon style={css.raw({ color: 'gray.0' })} icon={IconCheck} size={12} />
-              </div>
-            </div>
-          {:else}
-            <div
-              class={center({
-                borderWidth: '1px',
-                borderColor: '[#d1d1d1]',
-                borderStyle: 'dashed',
-                borderRadius: 'full',
-                backgroundColor: 'gray.100',
-                size: '60px',
-              })}
-            >
-              <CompactLogo class={css({ color: 'gray.300', width: '1/4' })} />
-            </div>
-          {/if}
-          <dl class={css({ marginTop: '8px', textAlign: 'center' })}>
-            <dt class={css({ fontSize: '12px', fontWeight: 'semibold', color: 'gray.600' })}>6월 1주차</dt>
-            <dd class={css({ fontSize: '11px', color: '[#818181]' })}>06.03-06.09</dd>
-          </dl>
-        </li>
-        <li>
-          <div
-            class={center({
-              borderWidth: '1px',
-              borderColor: '[#d1d1d1]',
-              borderStyle: 'dashed',
-              borderRadius: 'full',
-              backgroundColor: 'gray.100',
-              size: '60px',
-            })}
-          >
-            <CompactLogo class={css({ color: 'gray.300', width: '1/4' })} />
-          </div>
-
-          <dl class={css({ marginTop: '8px', textAlign: 'center' })}>
-            <dt class={css({ fontSize: '12px', fontWeight: 'semibold', color: 'gray.600' })}>6월 2주차</dt>
-            <dd class={css({ fontSize: '11px', color: '[#818181]' })}>06.10-06.16</dd>
-          </dl>
-        </li>
-        <li>
-          <div
-            class={center({
-              borderWidth: '1px',
-              borderColor: '[#d1d1d1]',
-              borderStyle: 'dashed',
-              borderRadius: 'full',
-              backgroundColor: 'gray.100',
-              size: '60px',
-            })}
-          >
-            <CompactLogo class={css({ color: 'gray.300', width: '1/4' })} />
-          </div>
-
-          <dl class={css({ marginTop: '8px', textAlign: 'center' })}>
-            <dt class={css({ fontSize: '12px', fontWeight: 'semibold', color: 'gray.600' })}>6월 3주차</dt>
-            <dd class={css({ fontSize: '11px', color: '[#818181]' })}>06.17-06.23</dd>
-          </dl>
-        </li>
-        <li>
-          <div
-            class={center({
-              borderWidth: '1px',
-              borderColor: '[#d1d1d1]',
-              borderStyle: 'dashed',
-              borderRadius: 'full',
-              backgroundColor: 'gray.100',
-              size: '60px',
-            })}
-          >
-            <CompactLogo class={css({ color: 'gray.300', width: '1/4' })} />
-          </div>
-
-          <dl class={css({ marginTop: '8px', textAlign: 'center' })}>
-            <dt class={css({ fontSize: '12px', fontWeight: 'semibold', color: 'gray.600' })}>6월 4주차</dt>
-            <dd class={css({ fontSize: '11px', color: '[#818181]' })}>06.24-06.30</dd>
-          </dl>
-        </li>
+        <ChallengeEnrollment
+          $eventEnrollment={$query.me?.challengeEnrollment061}
+          dateRange="06.03-06.09"
+          weekOfMonth="6월 1주차"
+        />
+        <ChallengeEnrollment dateRange="06.10-06.16" weekOfMonth="6월 2주차" />
+        <ChallengeEnrollment dateRange="06.17-06.23" weekOfMonth="6월 3주차" />
+        <ChallengeEnrollment dateRange="06.24-06.30" weekOfMonth="6월 4주차" />
       </ul>
 
       <Button
@@ -224,7 +129,15 @@
         <Post $post={post} {$query} showBookmark showDate showSpace timeDisplay="relative" />
       </li>
     {:else}
-      <li class={css({ marginY: 'auto', fontWeight: 'semibold', color: 'gray.400', textAlign: 'center' })}>
+      <li
+        class={css({
+          marginY: 'auto',
+          paddingY: '77px',
+          fontSize: '15px',
+          color: 'gray.500',
+          textAlign: 'center',
+        })}
+      >
         아직 작성된 포스트가 없어요. 챌린지에 참여해보세요
       </li>
     {/each}
