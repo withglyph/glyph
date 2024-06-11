@@ -108,48 +108,53 @@ class _MeScreenState extends ConsumerState<MeScreen>
                     padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
                     child: Column(
                       children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 27,
-                              backgroundColor: BrandColors.gray_600,
-                              child: Padding(
-                                padding: const EdgeInsets.all(1),
-                                child: ClipOval(
-                                  child: Img(data.me!.profile.avatar),
+                        Pressable(
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 27,
+                                backgroundColor: BrandColors.gray_600,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(1),
+                                  child: ClipOval(
+                                    child: Img(data.me!.profile.avatar),
+                                  ),
                                 ),
                               ),
-                            ),
-                            const Gap(8),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  data.me!.profile.name,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: BrandColors.gray_0,
+                              const Gap(8),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    data.me!.profile.name,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: BrandColors.gray_0,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  data.me!.email,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: BrandColors.gray_300,
+                                  Text(
+                                    data.me!.email,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: BrandColors.gray_300,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            const Spacer(),
-                            const Gap(24),
-                            const SvgIcon(
-                              'chevron-right',
-                              color: BrandColors.gray_400,
-                            ),
-                          ],
+                                ],
+                              ),
+                              const Spacer(),
+                              const Gap(24),
+                              const SvgIcon(
+                                'chevron-right',
+                                color: BrandColors.gray_400,
+                              ),
+                            ],
+                          ),
+                          onPressed: () {
+                            context.router.push(const ProfileRoute());
+                          },
                         ),
                         const Gap(20),
                         Container(

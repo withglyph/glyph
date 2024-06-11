@@ -1,0 +1,15 @@
+query ProfileScreen_Query {
+  me {
+    id
+
+    profile {
+      id
+      name
+
+      avatar {
+        id
+        url
+      }
+    }
+  }
+}
