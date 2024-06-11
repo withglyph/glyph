@@ -21,9 +21,8 @@ iap.post('/iap/google', async (_, context) => {
 
 iap.post('/iap/apple', async (_, context) => {
   const payload = await context.event.request.json();
-  const jwt = fromBase64(payload.signedPayload);
 
-  console.log(jwt);
+  console.log(payload.signedPayload);
 
   return status(200);
 });
