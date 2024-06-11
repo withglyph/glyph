@@ -29,6 +29,14 @@ PostComment.implement({
     id: t.exposeID('id'),
     content: t.string({
       resolve: async (comment, _, context) => {
+        const commentLoader = context.loader({
+          name: 'comment(id)',
+          load: async (commentIds: string[]) => {
+            return await database.select().from(PostComments).where(inArray(PostComments.id, commentIds));
+          },
+          key: (comment) => comment.id,
+        });
+
         if (comment.state === 'INACTIVE') {
           return '';
         }
@@ -49,7 +57,11 @@ PostComment.implement({
 
               const member = await getSpaceMember(context, post.spaceId);
               if (!member) {
-                return '';
+                const parentComment = comment.parentId ? await commentLoader.load(comment.parentId) : null;
+
+                if (parentComment?.userId !== context.session.userId) {
+                  return '';
+                }
               }
             }
           }
