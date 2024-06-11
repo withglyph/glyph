@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/components/Img.dart';
+import 'package:glyph/context/bottom_sheet.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/svg_icon.dart';
@@ -417,20 +418,11 @@ class _PostScreenState extends ConsumerState<PostScreen>
                                 ),
                               ),
                               onPressed: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  backgroundColor: BrandColors.gray_0,
-                                  isScrollControlled: true,
-                                  useSafeArea: true,
+                                context.showBottomSheet(
+                                  expand: true,
                                   builder: (context) {
-                                    return Container(
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                      child: SafeArea(
-                                        child: Comments(
-                                          permalink: widget.permalink,
-                                        ),
-                                      ),
+                                    return Comments(
+                                      permalink: widget.permalink,
                                     );
                                   },
                                 );
@@ -617,68 +609,78 @@ class _CommentsState extends ConsumerState<Comments>
                         children: [
                           Row(
                             children: [
-                              Text(
-                                comment.profile.name,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: BrandColors.gray_800,
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        comment.profile.name,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: BrandColors.gray_800,
+                                        ),
+                                      ),
+                                    ),
+                                    if (comment.profile.id ==
+                                        data.post.member!.profile.id) ...[
+                                      const Gap(4),
+                                      Container(
+                                        width: 2,
+                                        height: 2,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: BrandColors.gray_500,
+                                        ),
+                                      ),
+                                      const Gap(4),
+                                      const Text(
+                                        '창작자',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: BrandColors.brand_600,
+                                        ),
+                                      ),
+                                      const Gap(2),
+                                    ],
+                                    if (comment.purchased) ...[
+                                      const Gap(4),
+                                      Container(
+                                        width: 2,
+                                        height: 2,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: BrandColors.gray_500,
+                                        ),
+                                      ),
+                                      const Gap(4),
+                                      const Text(
+                                        '구매자',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: BrandColors.brand_600,
+                                        ),
+                                      ),
+                                      const Gap(2),
+                                    ],
+                                    const Gap(6),
+                                    Text(
+                                      Jiffy.parse(comment.createdAt.value)
+                                          .format(
+                                        pattern: 'yyyy.MM.dd HH:mm',
+                                      ),
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: BrandColors.gray_400,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              if (comment.profile.id ==
-                                  data.post.member!.profile.id) ...[
-                                const Gap(4),
-                                Container(
-                                  width: 2,
-                                  height: 2,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: BrandColors.gray_500,
-                                  ),
-                                ),
-                                const Gap(4),
-                                const Text(
-                                  '창작자',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: BrandColors.brand_600,
-                                  ),
-                                ),
-                                const Gap(2),
-                              ],
-                              if (comment.purchased) ...[
-                                const Gap(4),
-                                Container(
-                                  width: 2,
-                                  height: 2,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: BrandColors.gray_500,
-                                  ),
-                                ),
-                                const Gap(4),
-                                const Text(
-                                  '구매자',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: BrandColors.brand_600,
-                                  ),
-                                ),
-                                const Gap(2),
-                              ],
-                              const Gap(6),
-                              Text(
-                                Jiffy.parse(comment.createdAt.value).format(
-                                  pattern: 'yyyy.MM.dd HH:mm',
-                                ),
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: BrandColors.gray_400,
-                                ),
-                              ),
-                              const Spacer(),
+                              const Gap(12),
                               const SvgIcon(
                                 'dots-vertical',
                                 size: 20,
