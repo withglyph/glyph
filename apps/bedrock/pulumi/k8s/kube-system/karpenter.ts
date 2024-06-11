@@ -100,9 +100,58 @@ new aws.iam.RolePolicy('karpenter@eks', {
         Action: 'iam:GetInstanceProfile',
         Resource: '*',
       },
+      {
+        Effect: 'Allow',
+        Action: ['sqs:DeleteMessage', 'sqs:GetQueueUrl', 'sqs:ReceiveMessage'],
+        Resource: '*',
+      },
     ],
   },
 });
+
+const interruptionQueue = new aws.sqs.Queue('karpenter-interruption', {
+  name: 'karpenter-interruption',
+  messageRetentionSeconds: 300,
+  sqsManagedSseEnabled: true,
+});
+
+new aws.sqs.QueuePolicy('karpenter-interruption', {
+  queueUrl: interruptionQueue.url,
+  policy: {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Action: 'sqs:SendMessage',
+        Resource: interruptionQueue.arn,
+        Principal: {
+          Service: ['events.amazonaws.com', 'sqs.amazonaws.com'],
+        },
+      },
+    ],
+  },
+});
+
+const declareEventRule = (name: string, source: string, detailType: string) => {
+  const rule = new aws.cloudwatch.EventRule(name, {
+    name,
+    eventPattern: JSON.stringify({
+      'source': [source],
+      'detail-type': [detailType],
+    }),
+  });
+
+  new aws.cloudwatch.EventTarget(name, {
+    targetId: name,
+    rule: rule.name,
+    arn: interruptionQueue.arn,
+  });
+};
+
+declareEventRule('karpenter-interruption.scheduled-change', 'aws.health', 'AWS Health Event');
+declareEventRule('karpenter-interruption.spot-interruption', 'aws.ec2', 'EC2 Spot Instance Interruption Warning');
+declareEventRule('karpenter-interruption.rebalance', 'aws.ec2', 'EC2 Instance Rebalance Recommendation');
+declareEventRule('karpenter-interruption.instance-state-change', 'aws.ec2', 'EC2 Instance State-change Notification');
 
 const serviceAccount = new k8s.core.v1.ServiceAccount('karpenter', {
   metadata: {
@@ -118,7 +167,7 @@ new k8s.helm.v3.Chart('karpenter', {
   chart: 'oci://public.ecr.aws/karpenter/karpenter',
   namespace: 'kube-system',
   fetchOpts: {
-    version: '0.36.1',
+    version: '0.37.0',
   },
 
   values: {
@@ -135,7 +184,7 @@ new k8s.helm.v3.Chart('karpenter', {
 
     settings: {
       clusterName: cluster.name,
-      // interruptionQueue: cluster.name,
+      interruptionQueue: interruptionQueue.name,
       featureGates: {
         spotToSpotConsolidation: true,
       },
