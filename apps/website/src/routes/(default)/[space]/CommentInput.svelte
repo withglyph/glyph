@@ -1,7 +1,7 @@
 <script lang="ts">
+  import IconHelpLine from '~icons/glyph/help-line';
   import IconLock from '~icons/glyph/lock';
   import IconReplyBar from '~icons/glyph/reply-bar';
-  import IconAlertCircle from '~icons/tabler/alert-circle';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button, Icon, Tooltip } from '$lib/components';
@@ -130,7 +130,11 @@
               offset={10}
               placement="top"
             >
-              <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} size={12} />
+              <Icon
+                style={css.raw({ 'color': 'gray.400', '& *': { strokeWidth: '[1]' } })}
+                icon={IconHelpLine}
+                size={12}
+              />
             </Tooltip>
           {:else if $query.post.member?.id === $query.post.space?.meAsMember?.id}
             <span class={css({ fontSize: '12px', color: 'brand.400' })}>창작자</span>

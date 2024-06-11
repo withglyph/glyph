@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import IconGlobe from '~icons/glyph/globe';
+  import IconHelpLine from '~icons/glyph/help-line';
   import IconLink from '~icons/glyph/link';
   import IconLock from '~icons/glyph/lock';
   import IconUsers from '~icons/glyph/users';
-  import IconAlertCircle from '~icons/tabler/alert-circle';
   import IconAlertTriangle from '~icons/tabler/alert-triangle';
   import IconFileSettings from '~icons/tabler/file-settings';
   import IconMessageCircle from '~icons/tabler/message-circle-2';
@@ -506,7 +506,10 @@
           <h3 class={labelStyle}>
             카테고리 페어
             <Tooltip style={center.raw()} message="중복 선택하거나 아무것도 선택하지 않을 수 있어요" placement="top">
-              <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
+              <Icon
+                style={css.raw({ 'color': 'gray.400', 'size': '14px', '& *': { strokeWidth: '[1]' } })}
+                icon={IconHelpLine}
+              />
             </Tooltip>
           </h3>
 
@@ -673,7 +676,10 @@
           <h3 class="{cx(labelStyle, css({ paddingBottom: '8px!' }))}}">
             비밀글
             <Tooltip style={center.raw()} message="설정하면 비밀번호를 입력한 독자만 내용을 열람할 수 있어요">
-              <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
+              <Icon
+                style={css.raw({ 'color': 'gray.400', 'size': '14px', '& *': { strokeWidth: '[1]' } })}
+                icon={IconHelpLine}
+              />
             </Tooltip>
           </h3>
 
@@ -720,7 +726,10 @@
               style={center.raw()}
               message="연령 제한을 설정하면 본인인증이 완료된 해당 나이 이상의 독자만 내용을 열람할 수 있어요"
             >
-              <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
+              <Icon
+                style={css.raw({ 'color': 'gray.400', 'size': '14px', '& *': { strokeWidth: '[1]' } })}
+                icon={IconHelpLine}
+              />
             </Tooltip>
           </h3>
 
@@ -752,7 +761,10 @@
           <h3 class={labelStyle}>
             검색 공개
             <Tooltip style={center.raw()} message="외부 검색엔진에서 이 포스트를 검색할 수 있을지 설정해요">
-              <Icon style={css.raw({ color: 'gray.400' })} icon={IconAlertCircle} />
+              <Icon
+                style={css.raw({ 'color': 'gray.400', 'size': '14px', '& *': { strokeWidth: '[1]' } })}
+                icon={IconHelpLine}
+              />
             </Tooltip>
           </h3>
 
