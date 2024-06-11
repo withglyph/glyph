@@ -3,7 +3,7 @@ class Env {
 
   static String get baseUrl => switch (current) {
         'dev' => 'https://dev.withglyph.com',
-        'release' => 'https://withglyph.com',
+        'release' => 'https://staging.withglyph.com',
         _ => throw Exception('Unknown environment: $current'),
       };
 

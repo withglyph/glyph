@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
@@ -6,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/ferry/extension.dart';
+import 'package:glyph/graphql/__generated__/point_purchase_screen_finalize_in_app_purchase_point.req.gql.dart';
 import 'package:glyph/graphql/__generated__/point_purchase_screen_in_app_purchase_point.req.gql.dart';
+import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -36,7 +39,21 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
           print(purchaseDetails.status);
           if (purchaseDetails.status == PurchaseStatus.pending) {
           } else {
-            print(purchaseDetails.purchaseID);
+            if (purchaseDetails.status == PurchaseStatus.purchased) {
+              final client = ref.read(ferryProvider);
+              final req =
+                  GPurchasePointScreen_FinalizeInAppPurchasePoint_MutationReq(
+                (b) => b
+                  ..vars.input.store = Platform.isIOS
+                      ? GStoreKind.APP_STORE
+                      : GStoreKind.PLAY_STORE
+                  ..vars.input.productId = purchaseDetails.productID
+                  ..vars.input.data =
+                      purchaseDetails.verificationData.serverVerificationData,
+              );
+
+              await client.req(req);
+            }
 
             if (purchaseDetails.pendingCompletePurchase) {
               await _iap.completePurchase(purchaseDetails);

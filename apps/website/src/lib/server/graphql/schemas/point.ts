@@ -138,7 +138,8 @@ const InAppPurchasePointInput = builder.inputType('InAppPurchasePointInput', {
 const FinalizeInAppPurchasePointInput = builder.inputType('FinalizeInAppPurchasePointInput', {
   fields: (t) => ({
     store: t.field({ type: StoreKind }),
-    transactionId: t.string(),
+    productId: t.string(),
+    data: t.string(),
   }),
 });
 
@@ -269,13 +270,12 @@ builder.mutationFields((t) => ({
     nullable: true,
     args: { input: t.arg({ type: FinalizeInAppPurchasePointInput }) },
     resolve: async (_, { input }) => {
-      const store = match(input.store)
-        .with('APP_STORE', () => apple)
-        .with('PLAY_STORE', () => google)
+      const payload = await match(input.store)
+        .with('APP_STORE', () => apple.getInAppPurchase({ receiptData: input.data }))
+        .with('PLAY_STORE', () => google.getInAppPurchase({ productId: input.productId, purchaseToken: input.data }))
         .exhaustive();
 
-      const purchase = await store.getInAppPurchase(input.transactionId);
-      console.log(purchase);
+      console.log(payload);
 
       return null;
     },
