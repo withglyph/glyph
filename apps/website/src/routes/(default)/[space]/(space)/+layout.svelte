@@ -8,12 +8,11 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Alert, Button, Icon, Image, ShareLinkPopover } from '$lib/components';
+  import { Alert, Button, Icon, Image, LoginRequireAlert, ShareLinkPopover } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import LoginRequireAlert from '../../LoginRequireAlert.svelte';
 
   let moveToLoginOpen = false;
   let revealMutedSpace = false;

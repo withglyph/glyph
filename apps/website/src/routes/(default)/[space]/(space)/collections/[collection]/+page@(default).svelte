@@ -6,11 +6,10 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Helmet, Icon, Image, ShareLinkPopover } from '$lib/components';
+  import { Button, Helmet, Icon, Image, Post, ShareLinkPopover } from '$lib/components';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import Post from '../../../../(feed)/Post.svelte';
 
   $: query = graphql(`
     query SpaceCollectionsEntityPage_Query($slug: String!, $order: SpaceCollectionPostOrderByKind!) {

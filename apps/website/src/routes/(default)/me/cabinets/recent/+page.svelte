@@ -1,9 +1,8 @@
 <script lang="ts">
   import { graphql } from '$glitch';
-  import { Helmet } from '$lib/components';
+  import { Helmet, Post } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import Post from '../../../(feed)/Post.svelte';
 
   $: query = graphql(`
     query MeCabinetsRecentPage_Query {

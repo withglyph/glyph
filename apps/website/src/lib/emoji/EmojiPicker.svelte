@@ -5,10 +5,9 @@
   import { afterNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Icon } from '$lib/components';
+  import { Icon, LoginRequireAlert } from '$lib/components';
   import { createFloatingActions } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
-  import LoginRequireAlert from '../../routes/(default)/LoginRequireAlert.svelte';
   import i18n from './i18n.json';
   import { emojiData as data } from './index';
   import type { Emoji } from '@emoji-mart/data';

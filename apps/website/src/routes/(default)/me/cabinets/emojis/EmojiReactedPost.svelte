@@ -7,11 +7,10 @@
   import IconMoodSmile from '~icons/tabler/mood-smile';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Chip, Icon, Image } from '$lib/components';
+  import { Chip, Icon, Image, LoginRequireAlert } from '$lib/components';
   import { humanizeNumber } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import LoginRequireAlert from '../../../LoginRequireAlert.svelte';
   import type {
     MeCabinetsEmojisPage_EmojiReactedPost_post,
     MeCabinetsEmojisPage_EmojiReactedPost_query,

@@ -4,10 +4,9 @@
   import ChallengeTitle from '$assets/icons/challenge.svg?component';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Helmet, Icon } from '$lib/components';
+  import { Button, Helmet, Icon, Post } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import Post from '../Post.svelte';
   import ChallengeEnrollment from './ChallengeEnrollment.svelte';
 
   $: query = graphql(`

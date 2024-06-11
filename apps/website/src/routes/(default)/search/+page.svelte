@@ -3,12 +3,11 @@
   import IconFilter from '~icons/tabler/adjustments-horizontal';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { AdSense, Button, Helmet, Icon, Modal, Pagination } from '$lib/components';
+  import { AdSense, Button, Helmet, Icon, Modal, Pagination, Post } from '$lib/components';
   import { Select, SelectItem } from '$lib/components/select';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import Post from '../(feed)/Post.svelte';
   import AdultFilter from './AdultFilter.svelte';
   import TagForm from './TagForm.svelte';
   import { initSearchFilter } from './util';

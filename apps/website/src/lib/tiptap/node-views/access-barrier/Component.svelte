@@ -13,13 +13,12 @@
   import { afterNavigate } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Icon, Modal, Tooltip } from '$lib/components';
+  import { Button, Icon, LoginRequireAlert, Modal, Tooltip } from '$lib/components';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { NodeView } from '$lib/tiptap';
   import { comma } from '$lib/utils';
   import { css, cx } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import LoginRequireAlert from '../../../../routes/(default)/LoginRequireAlert.svelte';
   import type { NodeViewProps } from '$lib/tiptap';
 
   type $$Props = NodeViewProps;

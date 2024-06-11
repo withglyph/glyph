@@ -2,12 +2,10 @@
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
-  import { AdSense, Helmet, Icon, Image, Tag } from '$lib/components';
+  import { AdSense, Helmet, Icon, Image, Post, PostCard, Tag } from '$lib/components';
   import { categoryFilter } from '$lib/const/feed';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
-  import Post from '../Post.svelte';
-  import PostCard from '../PostCard.svelte';
   import Carousel from './Carousel.svelte';
   import DraftPost from './DraftPost.svelte';
   import HorizontalScroll from './HorizontalScroll.svelte';

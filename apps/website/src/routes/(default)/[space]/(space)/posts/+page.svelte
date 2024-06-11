@@ -3,10 +3,9 @@
   import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Button, Helmet, Icon } from '$lib/components';
+  import { Button, Helmet, Icon, Post } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import Post from '../../../(feed)/Post.svelte';
 
   $: query = graphql(`
     query SpacePostsPage_Query($slug: String!) {

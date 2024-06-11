@@ -11,7 +11,7 @@
   import { humanizeNumber } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import LoginRequireAlert from '../LoginRequireAlert.svelte';
+  import LoginRequireAlert from './LoginRequireAlert.svelte';
   import type { Feed_Post_post, Feed_Post_query } from '$glitch';
   import type { SystemStyleObject } from '$styled-system/types';
 

@@ -5,12 +5,10 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Alert, Button, Helmet, Icon, Pagination } from '$lib/components';
+  import { Alert, Button, Helmet, Icon, LoginRequireAlert, Pagination, Post } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
-  import Post from '../../(feed)/Post.svelte';
-  import LoginRequireAlert from '../../LoginRequireAlert.svelte';
 
   let loginRequireOpen = false;
   let unmuteTagOpen = false;

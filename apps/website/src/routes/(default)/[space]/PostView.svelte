@@ -16,7 +16,20 @@
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { AdSense, Alert, Avatar, Button, Chip, Icon, Image, ShareLinkPopover, Tag, Tooltip } from '$lib/components';
+  import {
+    AdSense,
+    Alert,
+    Avatar,
+    Button,
+    Chip,
+    Icon,
+    Image,
+    LoginRequireAlert,
+    PostCard,
+    ShareLinkPopover,
+    Tag,
+    Tooltip,
+  } from '$lib/components';
   import { TextInput } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { categoryFilter, pairFilter } from '$lib/const/feed';
@@ -27,8 +40,6 @@
   import { comma, humanizeNumber } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { center, flex, grid } from '$styled-system/patterns';
-  import PostCard from '../(feed)/PostCard.svelte';
-  import LoginRequireAlert from '../LoginRequireAlert.svelte';
   import AlertText from './AlertText.svelte';
   import Comment from './Comment.svelte';
   import CommentInput from './CommentInput.svelte';
