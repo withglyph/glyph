@@ -51,7 +51,6 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                   ..vars.input.data =
                       purchaseDetails.verificationData.serverVerificationData,
               );
-
               await client.req(req);
             }
 
@@ -89,13 +88,13 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                       GPurchasePointScreen_InAppPurchasePoint_MutationReq(
                     (b) => b..vars.input.pointAmount = 1000,
                   );
-
                   final resp = await client.req(req);
 
                   await _iap.buyConsumable(
                     purchaseParam: PurchaseParam(
                       productDetails: product,
-                      applicationUserName: resp.inAppPurchasePoint.paymentKey,
+                      applicationUserName:
+                          resp.inAppPurchasePoint.paymentData.asMap['uuid'],
                     ),
                   );
                 },

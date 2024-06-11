@@ -346,7 +346,7 @@ type Mutation {
   enableMonthlyWithdrawal: UserWithdrawalConfig!
   finalizeFileUpload(input: FinalizeFileUploadInput!): File!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
-  finalizeInAppPurchasePoint(input: FinalizeInAppPurchasePointInput!): PointPurchase
+  finalizeInAppPurchasePoint(input: FinalizeInAppPurchasePointInput!): PointPurchase!
   followSpace(input: FollowSpaceInput!): Space!
   followTag(input: FollowTagInput!): Tag!
   generatePostShareImage(input: GeneratePostShareImageInput!): String!

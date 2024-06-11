@@ -1,11 +1,19 @@
 import dayjs from 'dayjs';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { customAlphabet } from 'nanoid';
 import numeral from 'numeral';
 import { match } from 'ts-pattern';
 import { PaymentMethod, PointPurchaseState, PointTransactionCause, StoreKind } from '$lib/enums';
 import { NotFoundError } from '$lib/errors';
-import { database, inArray, PointPurchases, PointTransactions, PostPurchases, Users } from '$lib/server/database';
+import {
+  database,
+  inArray,
+  PointBalances,
+  PointPurchases,
+  PointTransactions,
+  PostPurchases,
+  Users,
+} from '$lib/server/database';
 import { apple, exim, google, portone } from '$lib/server/external-api';
 import { builder } from '../builder';
 import { createInterfaceRef, createObjectRef } from '../utils';
@@ -244,18 +252,21 @@ builder.mutationFields((t) => ({
     type: PointPurchase,
     args: { input: t.arg({ type: InAppPurchasePointInput }) },
     resolve: async (_, { input }, context) => {
-      const paymentKey = crypto.randomUUID();
+      const paymentKey = `PX${input.pointAmount}${customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ')(8)}`;
+      const paymentAmount = Math.floor(input.pointAmount * 1.2);
       const expiresAt = dayjs().add(1, 'hour');
+
+      const uuid = crypto.randomUUID();
 
       const [pointPurchase] = await database
         .insert(PointPurchases)
         .values({
           userId: context.session.userId,
           pointAmount: input.pointAmount,
-          paymentAmount: input.pointAmount * 1.2,
+          paymentAmount,
           paymentMethod: 'IN_APP_PURCHASE',
           paymentKey,
-          paymentData: {},
+          paymentData: { uuid },
           state: 'PENDING',
           expiresAt,
         })
@@ -267,17 +278,65 @@ builder.mutationFields((t) => ({
 
   finalizeInAppPurchasePoint: t.withAuth({ user: true }).field({
     type: PointPurchase,
-    nullable: true,
     args: { input: t.arg({ type: FinalizeInAppPurchasePointInput }) },
     resolve: async (_, { input }) => {
-      const payload = await match(input.store)
-        .with('APP_STORE', () => apple.getInAppPurchase({ receiptData: input.data }))
-        .with('PLAY_STORE', () => google.getInAppPurchase({ productId: input.productId, purchaseToken: input.data }))
-        .exhaustive();
+      let payload;
+      let uuid;
 
-      console.log(payload);
+      if (input.store === 'APP_STORE') {
+        payload = await apple.getInAppPurchase({ receiptData: input.data });
+        uuid = payload.appAccountToken;
+      } else if (input.store === 'PLAY_STORE') {
+        payload = await google.getInAppPurchase({ productId: input.productId, purchaseToken: input.data });
+        uuid = payload.obfuscatedExternalAccountId;
+      } else {
+        throw new Error('Invalid store');
+      }
 
-      return null;
+      return await database.transaction(async (tx) => {
+        const purchases = await tx
+          .select({
+            id: PointPurchases.id,
+            state: PointPurchases.state,
+            userId: PointPurchases.userId,
+            paymentKey: PointPurchases.paymentKey,
+            pointAmount: PointPurchases.pointAmount,
+          })
+          .from(PointPurchases)
+          .where(sql`${PointPurchases.paymentData}->>'uuid' = ${uuid}`)
+          .for('update');
+
+        if (purchases.length === 0) {
+          throw new Error('purchase not found');
+        }
+
+        const [purchase] = purchases;
+
+        if (purchase.state === 'PENDING') {
+          await tx.insert(PointBalances).values({
+            userId: purchase.userId,
+            purchaseId: purchase.id,
+            kind: 'PAID',
+            initial: purchase.pointAmount,
+            leftover: purchase.pointAmount,
+            expiresAt: dayjs().add(5, 'years'),
+          });
+
+          await tx.insert(PointTransactions).values({
+            userId: purchase.userId,
+            amount: purchase.pointAmount,
+            cause: 'PURCHASE',
+            targetId: purchase.id,
+          });
+
+          await tx
+            .update(PointPurchases)
+            .set({ state: 'COMPLETED', paymentResult: payload, completedAt: dayjs() })
+            .where(eq(PointPurchases.id, purchase.id));
+        }
+
+        return purchase.id;
+      });
     },
   }),
 }));
