@@ -36,9 +36,12 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
         _iap.purchaseStream.listen((purchaseDetailsList) {
       purchaseDetailsList.forEach(
         (purchaseDetails) async {
-          print(purchaseDetails.status);
           if (purchaseDetails.status == PurchaseStatus.pending) {
           } else {
+            if (purchaseDetails.pendingCompletePurchase) {
+              await _iap.completePurchase(purchaseDetails);
+            }
+
             if (purchaseDetails.status == PurchaseStatus.purchased) {
               final client = ref.read(ferryProvider);
               final req =
@@ -52,10 +55,6 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                       purchaseDetails.verificationData.serverVerificationData,
               );
               await client.req(req);
-            }
-
-            if (purchaseDetails.pendingCompletePurchase) {
-              await _iap.completePurchase(purchaseDetails);
             }
           }
         },
@@ -86,7 +85,10 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                   final client = ref.read(ferryProvider);
                   final req =
                       GPurchasePointScreen_InAppPurchasePoint_MutationReq(
-                    (b) => b..vars.input.pointAmount = 1000,
+                    (b) => b
+                      ..vars.input.pointAmount = int.parse(
+                        product.id.split('_').last,
+                      ),
                   );
                   final resp = await client.req(req);
 
@@ -110,6 +112,10 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
       'point_1000',
       'point_3000',
       'point_5000',
+      'point_10000',
+      'point_30000',
+      'point_50000',
+      'point_100000',
     });
 
     setState(() {
