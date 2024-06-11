@@ -83,5 +83,7 @@
 	<string>Glyph</string>
 	<key>naverServiceAppUrlScheme</key>
 	<string>com.withglyph.app</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>원활한 동작을 위해 사진 앨범 접근이 필요합니다.</string>
 </dict>
 </plist>

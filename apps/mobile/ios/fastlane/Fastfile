@@ -1,6 +1,16 @@
 default_platform(:ios)
 
 platform :ios do
+  lane :certificates do
+    app_store_connect_api_key(
+      issuer_id: "790503b8-57bb-4621-a1e1-4cf096032add",
+      key_id: "JSJ3753N49",
+    )
+
+    match(type: "development")
+    match(type: "appstore")
+  end
+
   lane :beta do
     match(type: "appstore", readonly: true)
 

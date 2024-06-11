@@ -7,6 +7,8 @@ import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/profile_screen_query.req.gql.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 @RoutePage()
@@ -22,8 +24,12 @@ class _ProfileScreenState extends State<ProfileScreen>
   final _focusNode = FocusNode();
   final _textController = TextEditingController();
 
+  final _imagePicker = ImagePicker();
+
   late AnimationController _textFieldAnimationController;
   late Animation<Color?> _textFieldFillColorAnimation;
+
+  ImageProvider? _avatarProvider;
 
   @override
   void initState() {
@@ -71,17 +77,37 @@ class _ProfileScreenState extends State<ProfileScreen>
                             padding: const EdgeInsets.all(1),
                             child: ClipOval(
                               child: FadeInImage(
+                                width: 98,
+                                height: 98,
                                 placeholder: MemoryImage(kTransparentImage),
-                                image:
+                                image: _avatarProvider ??
                                     NetworkImage(data.me!.profile.avatar.url),
+                                fit: BoxFit.cover,
                                 fadeInDuration:
                                     const Duration(milliseconds: 150),
                               ),
                             ),
                           ),
                         ),
-                        onPressed: () {
-                          print('click');
+                        onPressed: () async {
+                          if (!await Permission.photos.request().isGranted) {
+                            await openAppSettings();
+                            return;
+                          }
+
+                          final file = await _imagePicker.pickImage(
+                            source: ImageSource.gallery,
+                          );
+
+                          if (file == null) {
+                            return;
+                          }
+
+                          final bytes = await file.readAsBytes();
+
+                          setState(() {
+                            _avatarProvider = MemoryImage(bytes);
+                          });
                         },
                       ),
                       Positioned.fill(
