@@ -273,6 +273,10 @@ type Image {
   width: Int!
 }
 
+input InAppPurchasePointInput {
+  pointAmount: Int!
+}
+
 input IssueUserEmailAuthorizationTokenInput {
   code: String!
   email: String!
@@ -339,6 +343,7 @@ type Mutation {
   followSpace(input: FollowSpaceInput!): Space!
   followTag(input: FollowTagInput!): Tag!
   generatePostShareImage(input: GeneratePostShareImageInput!): String!
+  inAppPurchasePoint(input: InAppPurchasePointInput!): PointPurchase!
   instantSettleRevenue: User!
   issueUserEmailAuthorizationToken(input: IssueUserEmailAuthorizationTokenInput!): IssueUserEmailAuthorizationTokenResult!
   issueUserSingleSignOnAuthorizationUrl(input: IssueUserSingleSignOnAuthorizationUrlInput!): IssueUserSingleSignOnAuthorizationUrlResult!
@@ -404,6 +409,7 @@ enum PaymentMethod {
   GIFTCARD_BOOKNLIFE
   GIFTCARD_CULTURELAND
   GIFTCARD_SMARTCULTURE
+  IN_APP_PURCHASE
   PAYPAL
   PHONE_BILL
   VIRTUAL_BANK_ACCOUNT
@@ -423,6 +429,7 @@ type PointPurchase {
   id: ID!
   paymentAmount: Int!
   paymentData: JSON!
+  paymentKey: String!
   paymentMethod: PaymentMethod!
   paymentResult: JSON
   pointAmount: Int!

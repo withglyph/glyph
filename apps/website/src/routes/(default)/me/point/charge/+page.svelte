@@ -59,6 +59,7 @@
     GIFTCARD_SMARTCULTURE: '스마트문화상품권',
     GIFTCARD_BOOKNLIFE: '도서문화상품권',
     PAYPAL: '페이팔',
+    IN_APP_PURCHASE: '앱 내 구매',
   };
 
   const eventName: Record<string, string> = {

@@ -22,6 +22,7 @@ PointPurchase.implement({
     id: t.exposeID('id'),
     pointAmount: t.exposeInt('pointAmount'),
     paymentAmount: t.exposeInt('paymentAmount'),
+    paymentKey: t.exposeString('paymentKey'),
     paymentMethod: t.expose('paymentMethod', { type: PaymentMethod }),
     paymentData: t.expose('paymentData', { type: 'JSON' }),
     paymentResult: t.expose('paymentResult', { type: 'JSON', nullable: true }),
@@ -128,6 +129,12 @@ const PurchasePointInput = builder.inputType('PurchasePointInput', {
   }),
 });
 
+const InAppPurchasePointInput = builder.inputType('InAppPurchasePointInput', {
+  fields: (t) => ({
+    pointAmount: t.int(),
+  }),
+});
+
 /**
  * * Queries
  */
@@ -181,6 +188,7 @@ builder.mutationFields((t) => ({
           pay_method: 'paypal',
           amount: numeral(paymentAmount / (await exim.getUSDExchangeRate())).format('0.00'),
         }))
+        .with('IN_APP_PURCHASE', () => ({}))
         .exhaustive();
 
       const users = await database
@@ -215,6 +223,31 @@ builder.mutationFields((t) => ({
           paymentMethod: input.paymentMethod,
           paymentKey,
           paymentData,
+          state: 'PENDING',
+          expiresAt,
+        })
+        .returning({ id: PointPurchases.id });
+
+      return pointPurchase.id;
+    },
+  }),
+
+  inAppPurchasePoint: t.withAuth({ user: true }).field({
+    type: PointPurchase,
+    args: { input: t.arg({ type: InAppPurchasePointInput }) },
+    resolve: async (_, { input }, context) => {
+      const paymentKey = crypto.randomUUID();
+      const expiresAt = dayjs().add(1, 'hour');
+
+      const [pointPurchase] = await database
+        .insert(PointPurchases)
+        .values({
+          userId: context.session.userId,
+          pointAmount: input.pointAmount,
+          paymentAmount: input.pointAmount * 1.2,
+          paymentMethod: 'IN_APP_PURCHASE',
+          paymentKey,
+          paymentData: {},
           state: 'PENDING',
           expiresAt,
         })

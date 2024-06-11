@@ -35,6 +35,7 @@ export const PaymentMethod = {
   PAYPAL: 'PAYPAL',
   PHONE_BILL: 'PHONE_BILL',
   VIRTUAL_BANK_ACCOUNT: 'VIRTUAL_BANK_ACCOUNT',
+  IN_APP_PURCHASE: 'IN_APP_PURCHASE',
 } as const;
 
 export const PointKind = {

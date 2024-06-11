@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glyph/routers/app.dart';
 import 'package:glyph/routers/observer.dart';
 import 'package:glyph/screens/splash.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:glyph/widgets/errror.dart';
 
-class App extends ConsumerWidget {
-  App({super.key});
+class App extends StatefulWidget {
+  const App({super.key});
 
+  @override
+  createState() => _AppState();
+}
+
+class _AppState extends State<App> {
   final _router = AppRouter();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     const defaultTextStyle = TextStyle(
       color: BrandColors.gray_900,
       height: 1.44,

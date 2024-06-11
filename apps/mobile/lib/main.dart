@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/env.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
@@ -48,7 +49,8 @@ Future<void> main() async {
 
   GetIt.I.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   GetIt.I.registerSingleton<FirebaseMessaging>(FirebaseMessaging.instance);
+  GetIt.I.registerSingleton<InAppPurchase>(InAppPurchase.instance);
   GetIt.I.registerSingleton<Mixpanel>(mixpanel);
 
-  runApp(ProviderScope(child: Material(child: App())));
+  runApp(const ProviderScope(child: App()));
 }

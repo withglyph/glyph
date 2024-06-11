@@ -163,20 +163,27 @@ class _MeScreenState extends ConsumerState<MeScreen>
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              const Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SvgIcon('scan', color: BrandColors.gray_0),
-                                  Gap(4),
-                                  Text(
-                                    '리딤코드',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500,
-                                      color: BrandColors.gray_0,
-                                    ),
-                                  )
-                                ],
+                              Pressable(
+                                child: const Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SvgIcon('scan', color: BrandColors.gray_0),
+                                    Gap(4),
+                                    Text(
+                                      '리딤코드',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                        color: BrandColors.gray_0,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                onPressed: () {
+                                  context.router.push(
+                                    const PointPurchaseRoute(),
+                                  );
+                                },
                               ),
                               Container(
                                 width: 1,

@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:glyph/graphql/__generated__/schema.ast.gql.dart';
 import 'package:glyph/routers/app.gr.dart';
 
 @AutoRouterConfig()
@@ -67,6 +66,7 @@ class AppRouter extends $AppRouter {
             AutoRoute(page: NotificationRoute.page),
             AutoRoute(page: SettingsRoute.page),
             AutoRoute(page: ProfileRoute.page),
+            AutoRoute(page: PointPurchaseRoute.page),
             AutoRoute(page: OssLicensesRoute.page),
             AutoRoute(page: OssLicensesDetailsRoute.page),
             AutoRoute(
