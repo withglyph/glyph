@@ -43,6 +43,9 @@
       "read-package-tree": "*",
       "readdir-scoped-modules": "*",
       "string-similarity": "*"
+    },
+    "patchedDependencies": {
+      "@repeaterjs/repeater@3.0.6": "patches/@repeaterjs__repeater@3.0.6.patch"
     }
   }
 }
