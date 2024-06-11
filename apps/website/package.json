@@ -17,6 +17,7 @@
     "test": "playwright test"
   },
   "dependencies": {
+    "@apple/app-store-server-library": "^1.2.0",
     "@aws-sdk/client-s3": "^3.577.0",
     "@aws-sdk/client-ses": "^3.577.0",
     "@aws-sdk/s3-request-presigner": "^3.577.0",

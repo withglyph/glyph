@@ -1,7 +1,17 @@
+import { AppStoreServerAPIClient, Environment } from '@apple/app-store-server-library';
+import { production } from '@withglyph/lib/environment';
 import appleSignIn from 'apple-signin-auth';
 import { env } from '$env/dynamic/private';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { ExternalUser } from './types';
+
+const client = new AppStoreServerAPIClient(
+  env.PRIVATE_APPLE_IAP_PRIVATE_KEY,
+  env.PRIVATE_APPLE_IAP_KEY_ID,
+  env.PRIVATE_APPLE_IAP_ISSUER_ID,
+  'com.withglyph.app',
+  production ? Environment.PRODUCTION : Environment.SANDBOX,
+);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const generateAuthorizationUrl = (event: RequestEvent, type: string) => {
@@ -37,4 +47,10 @@ export const authorizeUser = async (event: RequestEvent, code: string): Promise<
     name: null,
     avatarUrl: null,
   };
+};
+
+export const getInAppPurchase = async (transactionId: string) => {
+  const resp = await client.getTransactionInfo(transactionId);
+
+  return resp.signedTransactionInfo;
 };

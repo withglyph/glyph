@@ -224,6 +224,11 @@ input FinalizeImageUploadInput {
   name: String!
 }
 
+input FinalizeInAppPurchasePointInput {
+  store: StoreKind!
+  transactionId: String!
+}
+
 type Flash {
   message: String!
   type: String!
@@ -340,6 +345,7 @@ type Mutation {
   enableMonthlyWithdrawal: UserWithdrawalConfig!
   finalizeFileUpload(input: FinalizeFileUploadInput!): File!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
+  finalizeInAppPurchasePoint(input: FinalizeInAppPurchasePointInput!): PointPurchase
   followSpace(input: FollowSpaceInput!): Space!
   followTag(input: FollowTagInput!): Tag!
   generatePostShareImage(input: GeneratePostShareImageInput!): String!
@@ -944,6 +950,11 @@ enum SpaceState {
 enum SpaceVisibility {
   PRIVATE
   PUBLIC
+}
+
+enum StoreKind {
+  APP_STORE
+  PLAY_STORE
 }
 
 type SubscribeNotification implements IUserNotification {

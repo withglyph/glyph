@@ -3,10 +3,10 @@ import { and, eq } from 'drizzle-orm';
 import { customAlphabet } from 'nanoid';
 import numeral from 'numeral';
 import { match } from 'ts-pattern';
-import { PaymentMethod, PointPurchaseState, PointTransactionCause } from '$lib/enums';
+import { PaymentMethod, PointPurchaseState, PointTransactionCause, StoreKind } from '$lib/enums';
 import { NotFoundError } from '$lib/errors';
 import { database, inArray, PointPurchases, PointTransactions, PostPurchases, Users } from '$lib/server/database';
-import { exim, portone } from '$lib/server/external-api';
+import { apple, exim, google, portone } from '$lib/server/external-api';
 import { builder } from '../builder';
 import { createInterfaceRef, createObjectRef } from '../utils';
 import { Post } from './post';
@@ -135,6 +135,13 @@ const InAppPurchasePointInput = builder.inputType('InAppPurchasePointInput', {
   }),
 });
 
+const FinalizeInAppPurchasePointInput = builder.inputType('FinalizeInAppPurchasePointInput', {
+  fields: (t) => ({
+    store: t.field({ type: StoreKind }),
+    transactionId: t.string(),
+  }),
+});
+
 /**
  * * Queries
  */
@@ -254,6 +261,23 @@ builder.mutationFields((t) => ({
         .returning({ id: PointPurchases.id });
 
       return pointPurchase.id;
+    },
+  }),
+
+  finalizeInAppPurchasePoint: t.withAuth({ user: true }).field({
+    type: PointPurchase,
+    nullable: true,
+    args: { input: t.arg({ type: FinalizeInAppPurchasePointInput }) },
+    resolve: async (_, { input }) => {
+      const store = match(input.store)
+        .with('APP_STORE', () => apple)
+        .with('PLAY_STORE', () => google)
+        .exhaustive();
+
+      const purchase = await store.getInAppPurchase(input.transactionId);
+      console.log(purchase);
+
+      return null;
     },
   }),
 }));

@@ -36,6 +36,8 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
           print(purchaseDetails.status);
           if (purchaseDetails.status == PurchaseStatus.pending) {
           } else {
+            print(purchaseDetails.purchaseID);
+
             if (purchaseDetails.pendingCompletePurchase) {
               await _iap.completePurchase(purchaseDetails);
             }

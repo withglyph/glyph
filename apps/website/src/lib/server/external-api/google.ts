@@ -58,12 +58,11 @@ export const authorizeUser = async (event: RequestEvent, code: string): Promise<
   };
 };
 
-type GetInAppPurchaseParams = { productId: string; token: string };
-export const getInAppPurchase = async ({ productId, token }: GetInAppPurchaseParams) => {
+export const getInAppPurchase = async (purchaseToken: string) => {
   const resp = await androidPublisher.purchases.products.get({
-    packageName: 'com.withglyph.app',
-    productId,
-    token,
+    // packageName: 'com.withglyph.app',
+    // productId,
+    token: purchaseToken,
   });
 
   return resp.data;

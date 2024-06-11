@@ -38,6 +38,11 @@ export const PaymentMethod = {
   IN_APP_PURCHASE: 'IN_APP_PURCHASE',
 } as const;
 
+export const StoreKind = {
+  APP_STORE: 'APP_STORE',
+  PLAY_STORE: 'PLAY_STORE',
+} as const;
+
 export const PointKind = {
   FREE: 'FREE',
   PAID: 'PAID',

@@ -1,0 +1,115 @@
+{
+  "identifier" : "6DCB1344",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "6504187920",
+      "localizations" : [
+        {
+          "description" : "글리프 1,000P",
+          "displayName" : "글리프 1,000P",
+          "locale" : "ko"
+        }
+      ],
+      "productID" : "point_1000",
+      "referenceName" : "글리프 1,000P",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "6504187966",
+      "localizations" : [
+        {
+          "description" : "글리프 3,000P",
+          "displayName" : "글리프 3,000P",
+          "locale" : "ko"
+        }
+      ],
+      "productID" : "point_3000",
+      "referenceName" : "글리프 3,000P",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "3.99",
+      "familyShareable" : false,
+      "internalID" : "6504188209",
+      "localizations" : [
+        {
+          "description" : "글리프 5,000P",
+          "displayName" : "글리프 5,000P",
+          "locale" : "ko"
+        }
+      ],
+      "productID" : "point_5000",
+      "referenceName" : "글리프 5,000P",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6502156007",
+    "_developerTeamID" : "4V96GK9874",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 739775978.95983696,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
