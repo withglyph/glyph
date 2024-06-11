@@ -142,17 +142,19 @@ const getDecorations = (highlighter: Highlighter, theme: BuiltinTheme, doc: Node
 
   const children = findChildren(doc, (node) => node.type.name === 'html');
   for (const child of children) {
-    const result = highlighter.codeToTokens(child.node.textContent, { theme, lang: 'html' });
+    if (child.node.textContent.length <= 10_000) {
+      const result = highlighter.codeToTokens(child.node.textContent, { theme, lang: 'html' });
 
-    for (const token of result.tokens.flat()) {
-      const from = child.pos + token.offset + 1;
-      const to = from + token.content.length;
+      for (const token of result.tokens.flat()) {
+        const from = child.pos + token.offset + 1;
+        const to = from + token.content.length;
 
-      decorations.push(
-        Decoration.inline(from, to, {
-          style: themedTokenToStyle(token),
-        }),
-      );
+        decorations.push(
+          Decoration.inline(from, to, {
+            style: themedTokenToStyle(token),
+          }),
+        );
+      }
     }
   }
 
