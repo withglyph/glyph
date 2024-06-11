@@ -67,6 +67,7 @@
     "felte": "^1.2.14",
     "firebase-admin": "^12.1.1",
     "google-auth-library": "^9.10.0",
+    "googleapis": "^140.0.0",
     "got": "^14.3.0",
     "graphql": "^16.8.1",
     "graphql-scalars": "^1.23.0",
