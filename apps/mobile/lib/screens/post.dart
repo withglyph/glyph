@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/components/Img.dart';
+import 'package:glyph/components/button.dart';
 import 'package:glyph/context/bottom_sheet.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
@@ -224,21 +225,25 @@ class _PostScreenState extends ConsumerState<PostScreen>
                         WebView(
                           path: '/_webview/post-view/${widget.permalink}',
                           fitToContent: true,
-                          // onJsMessage: (message, reply) async {
-                          //   if (message['type'] == 'ready') {
-                          //     await reply({
-                          //       'type': 'content',
-                          //       'content':
-                          //           data.post.publishedRevision!.content.value
-                          //     });
+                          onJsMessage: (message, reply) async {
+                            if (message['type'] == 'purchase') {
+                              print('purchase');
+                              context.showBottomSheet(builder: (context) {
+                                return const Padding(
+                                  padding: EdgeInsets.all(20),
+                                  child: Button(
+                                    child: const Text('구매하기'),
+                                  ),
+                                );
+                              });
 
-                          //     await reply({
-                          //       'type': 'info',
-                          //       'permalink': widget.permalink,
-                          //       'revisionId': data.post.publishedRevision!.id,
-                          //     });
-                          //   }
-                          // },
+                              // await reply({
+                              //   'type': 'content',
+                              //   'content':
+                              //       data.post.publishedRevision!.content.value
+                              // });
+                            }
+                          },
                           onNavigate: (controller, navigationAction) async {
                             if (navigationAction.navigationType ==
                                 NavigationType.LINK_ACTIVATED) {

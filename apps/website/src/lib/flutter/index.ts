@@ -6,6 +6,10 @@ import { page } from '$app/stores';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const onFlutterMessage = (handler: (message: any) => void) => {
   onMount(() => {
+    if (!window.flutter) {
+      return;
+    }
+
     const fn = (event: { data: string }) => {
       handler(JSON.parse(fromBase64(event.data)));
     };
@@ -21,6 +25,10 @@ export const onFlutterMessage = (handler: (message: any) => void) => {
 };
 
 export const postFlutterMessage = (message: unknown) => {
+  if (!window.flutter) {
+    return;
+  }
+
   window.flutter.postMessage(toBase64(JSON.stringify(message)));
 };
 
