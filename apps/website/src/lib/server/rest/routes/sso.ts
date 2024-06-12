@@ -269,7 +269,7 @@ const handle = async (context: Context, externalUser: ExternalUser & Partial<Twi
         const token = nanoid();
 
         await database.insert(ProvisionedUsers).values({
-          email: externalUser.email,
+          email: externalUser.email.toLowerCase(),
           token,
           name: externalUser.name,
           avatarUrl: externalUser.avatarUrl,

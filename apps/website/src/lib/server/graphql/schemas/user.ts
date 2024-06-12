@@ -68,7 +68,7 @@ import {
   getUserPoint,
   getUserRevenue,
 } from '$lib/server/utils';
-import { getMonthlyWithdrawalDayjs } from '$lib/utils';
+import { generateRandomName, getMonthlyWithdrawalDayjs } from '$lib/utils';
 import {
   CreateUserSchema,
   DeleteUserSchema,
@@ -1101,19 +1101,89 @@ builder.mutationFields((t) => ({
         );
 
       if (ssos.length === 0) {
-        throw new Error('Signing up is not yet implemented');
+        const users = await database
+          .select({ id: Users.id })
+          .from(Users)
+          .where(and(eq(Users.email, externalUser.email.toLowerCase()), eq(Users.state, 'ACTIVE')));
+
+        if (users.length === 0) {
+          const avatarId = await directUploadImage({
+            name: 'avatar',
+            source: await createRandomAvatar(),
+          });
+
+          return await database.transaction(async (tx) => {
+            const [profile] = await tx
+              .insert(Profiles)
+              .values({
+                name: externalUser.name ?? generateRandomName(externalUser.id + externalUser.email),
+                avatarId,
+              })
+              .returning({ id: Profiles.id });
+
+            const [user] = await tx
+              .insert(Users)
+              .values({
+                email: externalUser.email.toLowerCase(),
+                profileId: profile.id,
+                role: 'USER',
+                state: 'ACTIVE',
+              })
+              .returning({ id: Users.id });
+
+            await tx.update(Images).set({ userId: user.id }).where(eq(Images.id, avatarId));
+
+            await tx.insert(UserSingleSignOns).values({
+              userId: user.id,
+              provider: externalUser.provider,
+              principal: externalUser.id,
+              email: externalUser.email.toLowerCase(),
+            });
+
+            const [session] = await tx
+              .insert(UserSessions)
+              .values({ userId: user.id })
+              .returning({ id: UserSessions.id });
+
+            const accessToken = await createAccessToken(session.id);
+
+            return {
+              token: accessToken,
+            };
+          });
+        } else {
+          const [user] = users;
+
+          await database.insert(UserSingleSignOns).values({
+            userId: user.id,
+            provider: externalUser.provider,
+            principal: externalUser.id,
+            email: externalUser.email,
+          });
+
+          const [session] = await database
+            .insert(UserSessions)
+            .values({ userId: ssos[0].userId })
+            .returning({ id: UserSessions.id });
+
+          const accessToken = await createAccessToken(session.id);
+
+          return {
+            token: accessToken,
+          };
+        }
+      } else {
+        const [session] = await database
+          .insert(UserSessions)
+          .values({ userId: ssos[0].userId })
+          .returning({ id: UserSessions.id });
+
+        const accessToken = await createAccessToken(session.id);
+
+        return {
+          token: accessToken,
+        };
       }
-
-      const [session] = await database
-        .insert(UserSessions)
-        .values({ userId: ssos[0].userId })
-        .returning({ id: UserSessions.id });
-
-      const accessToken = await createAccessToken(session.id);
-
-      return {
-        token: accessToken,
-      };
     },
   }),
 
