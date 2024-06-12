@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/components/horizontal_divider.dart';
+import 'package:glyph/context/loader.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/point_purchase_screen_in_app_purchase_point_mutation.req.gql.dart';
@@ -60,6 +61,10 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
               );
               await client.req(req);
               client.requestController.add(GPointPurchaseScreen_QueryReq());
+            }
+
+            if (context.mounted) {
+              context.loader.dismiss();
             }
           }
         },
@@ -130,6 +135,8 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 20),
                       onTap: () async {
+                        context.loader.show();
+
                         final client = ref.read(ferryProvider);
                         final req =
                             GPurchasePointScreen_PurchasePoint_MutationReq(
@@ -153,6 +160,8 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                             ),
                           );
                         } else {
+                          context.loader.dismiss();
+
                           client.requestController
                               .add(GPointPurchaseScreen_QueryReq());
                         }

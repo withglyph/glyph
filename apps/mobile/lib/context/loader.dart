@@ -2,11 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:glyph/themes/colors.dart';
 
+BuildContext? _loaderContext;
+
 class LoaderController {
   LoaderController(this.context);
 
   final BuildContext context;
-  BuildContext? _loaderContext;
 
   void show() {
     showDialog(
@@ -28,7 +29,7 @@ class LoaderController {
   }
 
   void dismiss() {
-    _loaderContext!.router.popForced();
+    _loaderContext?.router.popForced();
   }
 
   Future<T> run<T>(Future<T> Function() fn) async {

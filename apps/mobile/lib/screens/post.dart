@@ -252,10 +252,9 @@ class _PostScreenState extends ConsumerState<PostScreen>
                                             ? Button(
                                                 child: const Text('포인트 충전하기'),
                                                 onPressed: () async {
-                                                  context.router.push(
+                                                  context.router.popAndPush(
                                                     const PointPurchaseRoute(),
                                                   );
-                                                  // context.router.maybePop();
                                                 },
                                               )
                                             : Button(
