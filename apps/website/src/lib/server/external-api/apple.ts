@@ -37,7 +37,7 @@ const client = new AppStoreServerAPIClient(
   environment,
 );
 
-const verifier = new SignedDataVerifier(
+export const verifier = new SignedDataVerifier(
   rootCAs.map((v) => Buffer.from(v, 'base64')),
   true,
   environment,

@@ -1,7 +1,9 @@
+import dayjs from 'dayjs';
+import { eq, sql } from 'drizzle-orm';
 import { status } from 'itty-router';
-import * as jose from 'jose';
 import { fromBase64 } from 'js-base64';
-import { google } from '$lib/server/external-api';
+import { database, PointBalances, PointPurchases, PointTransactions } from '$lib/server/database';
+import { apple, google } from '$lib/server/external-api';
 import { createRouter } from '../router';
 
 export const iap = createRouter();
@@ -10,38 +12,82 @@ iap.post('/iap/google', async (_, context) => {
   const body = await context.event.request.json();
   const data = JSON.parse(fromBase64(body.message.data));
 
-  const resp = await google.getInAppPurchase(
-    // productId: data.oneTimeProductNotification.sku,
-    data.oneTimeProductNotification.purchaseToken,
-  );
+  if (!data.oneTimeProductNotification) {
+    return status(200);
+  }
 
-  console.log(resp);
+  const resp = await google.getInAppPurchase({
+    productId: data.oneTimeProductNotification.sku,
+    purchaseToken: data.oneTimeProductNotification.purchaseToken,
+  });
+
+  if (resp.consumptionState === 0) {
+    await google.consumeInAppPurchase({
+      productId: data.oneTimeProductNotification.sku,
+      purchaseToken: data.oneTimeProductNotification.purchaseToken,
+    });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  await purchasePoint(resp.obfuscatedExternalAccountId!, resp);
 
   return status(200);
 });
 
 iap.post('/iap/apple', async (_, context) => {
-  const decodeJws = async (jws: string) => {
-    const header = jose.decodeProtectedHeader(jws);
-
-    /* eslint-disable @typescript-eslint/no-non-null-assertion */
-    const x509 = await jose.importX509(
-      `-----BEGIN CERTIFICATE-----\n${header.x5c![0]}\n-----END CERTIFICATE-----`,
-      header.alg!,
-    );
-    /* eslint-enable @typescript-eslint/no-non-null-assertion */
-
-    const { payload } = await jose.compactVerify(jws, x509);
-
-    return JSON.parse(new TextDecoder().decode(payload));
-  };
-
   const body = await context.event.request.json();
-  const token = body.signedPayload;
+  const payload = await apple.verifier.verifyAndDecodeNotification(body.signedPayload);
 
-  const payload = await decodeJws(token);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const tx = await apple.verifier.verifyAndDecodeTransaction(payload.data!.signedTransactionInfo!);
 
-  console.log(payload);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  await purchasePoint(tx.appAccountToken!, tx);
 
   return status(200);
 });
+
+const purchasePoint = async (uuid: string, payload: unknown) => {
+  await database.transaction(async (tx) => {
+    const purchases = await tx
+      .select({
+        id: PointPurchases.id,
+        state: PointPurchases.state,
+        userId: PointPurchases.userId,
+        paymentKey: PointPurchases.paymentKey,
+        pointAmount: PointPurchases.pointAmount,
+      })
+      .from(PointPurchases)
+      .where(sql`${PointPurchases.paymentData}->>'uuid' = ${uuid}`)
+      .for('update');
+
+    if (purchases.length === 0) {
+      throw new Error('purchase not found');
+    }
+
+    const [purchase] = purchases;
+
+    if (purchase.state === 'PENDING') {
+      await tx.insert(PointBalances).values({
+        userId: purchase.userId,
+        purchaseId: purchase.id,
+        kind: 'PAID',
+        initial: purchase.pointAmount,
+        leftover: purchase.pointAmount,
+        expiresAt: dayjs().add(5, 'years'),
+      });
+
+      await tx.insert(PointTransactions).values({
+        userId: purchase.userId,
+        amount: purchase.pointAmount,
+        cause: 'PURCHASE',
+        targetId: purchase.id,
+      });
+
+      await tx
+        .update(PointPurchases)
+        .set({ state: 'COMPLETED', paymentResult: payload, completedAt: dayjs() })
+        .where(eq(PointPurchases.id, purchase.id));
+    }
+  });
+};

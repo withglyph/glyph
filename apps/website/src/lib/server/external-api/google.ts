@@ -5,6 +5,8 @@ import { env } from '$env/dynamic/private';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { ExternalUser } from './types';
 
+const packageName = 'com.withglyph.app';
+
 const androidPublisher = google.androidpublisher({
   version: 'v3',
   auth: new GoogleAuth({
@@ -61,10 +63,19 @@ export const authorizeUser = async (event: RequestEvent, code: string): Promise<
 type GetInAppPurchaseParams = { productId: string; purchaseToken: string };
 export const getInAppPurchase = async ({ productId, purchaseToken }: GetInAppPurchaseParams) => {
   const resp = await androidPublisher.purchases.products.get({
-    packageName: 'com.withglyph.app',
+    packageName,
     productId,
     token: purchaseToken,
   });
 
   return resp.data;
+};
+
+type ConsumeInAppPurchaseParams = { productId: string; purchaseToken: string };
+export const consumeInAppPurchase = async ({ productId, purchaseToken }: ConsumeInAppPurchaseParams) => {
+  await androidPublisher.purchases.products.consume({
+    packageName,
+    productId,
+    token: purchaseToken,
+  });
 };
