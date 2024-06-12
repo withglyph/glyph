@@ -222,23 +222,23 @@ class _PostScreenState extends ConsumerState<PostScreen>
                           ),
                         ),
                         WebView(
-                          path: '/_webview/tiptap-renderer',
+                          path: '/_webview/post-view/${widget.permalink}',
                           fitToContent: true,
-                          onJsMessage: (message, reply) async {
-                            if (message['type'] == 'ready') {
-                              await reply({
-                                'type': 'content',
-                                'content':
-                                    data.post.publishedRevision!.content.value
-                              });
+                          // onJsMessage: (message, reply) async {
+                          //   if (message['type'] == 'ready') {
+                          //     await reply({
+                          //       'type': 'content',
+                          //       'content':
+                          //           data.post.publishedRevision!.content.value
+                          //     });
 
-                              await reply({
-                                'type': 'info',
-                                'permalink': widget.permalink,
-                                'revisionId': data.post.publishedRevision!.id,
-                              });
-                            }
-                          },
+                          //     await reply({
+                          //       'type': 'info',
+                          //       'permalink': widget.permalink,
+                          //       'revisionId': data.post.publishedRevision!.id,
+                          //     });
+                          //   }
+                          // },
                           onNavigate: (controller, navigationAction) async {
                             if (navigationAction.navigationType ==
                                 NavigationType.LINK_ACTIVATED) {

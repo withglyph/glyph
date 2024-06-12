@@ -14,6 +14,7 @@
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button, Icon, LoginRequireAlert, Modal, Tooltip } from '$lib/components';
+  import { isWebView, onFlutterMessage, postFlutterMessage } from '$lib/flutter';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { NodeView } from '$lib/tiptap';
   import { comma } from '$lib/utils';
@@ -148,6 +149,20 @@
 
   afterNavigate(() => {
     priceOpen = false;
+  });
+
+  onFlutterMessage(async (message) => {
+    if (message.type === 'purchase:proceed') {
+      await purchasePost({
+        postId: $query?.post.id ?? '',
+        revisionId,
+      });
+
+      mixpanel.track('post:purchase', {
+        postId: $query?.post.id,
+        price: node.attrs.price,
+      });
+    }
   });
 </script>
 
@@ -410,6 +425,11 @@
               style={css.raw({ width: 'full', maxWidth: '96px' })}
               size="md"
               on:click={() => {
+                if ($isWebView) {
+                  postFlutterMessage({ type: 'purchase' });
+                  return;
+                }
+
                 if (!$query?.me) {
                   loginRequireOpen = true;
                   return;
