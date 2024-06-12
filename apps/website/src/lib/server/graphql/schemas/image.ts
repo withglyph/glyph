@@ -1,8 +1,7 @@
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { eq } from 'drizzle-orm';
 import * as R from 'radash';
-import { database, FeaturedImages, Images, PostRevisionContents, PostRevisions, Posts } from '$lib/server/database';
+import { database, FeaturedImages, Images } from '$lib/server/database';
 import { aws } from '$lib/server/external-api';
 import { finalizeImage } from '$lib/server/utils';
 import { builder } from '../builder';
@@ -73,26 +72,14 @@ builder.queryFields((t) => ({
     },
   }),
 
-  authLayoutBackgroundImage: t.field({
-    type: Image,
-    nullable: true,
+  featuredImages: t.field({
+    type: [Image],
     resolve: async () => {
-      const posts = await database
-        .select({ content: PostRevisionContents.data })
-        .from(Posts)
-        .innerJoin(PostRevisions, eq(PostRevisions.id, Posts.publishedRevisionId))
-        .innerJoin(PostRevisionContents, eq(PostRevisionContents.id, PostRevisions.freeContentId))
-        .where(eq(Posts.id, 'authlayout_bg'));
+      const images = await database.select({ imageId: FeaturedImages.imageId }).from(FeaturedImages);
 
-      if (posts.length === 0) {
-        return null;
-      }
+      const imageIds = images.map(({ imageId }) => imageId);
 
-      const ids = (posts[0].content as { type: string; attrs: Record<string, unknown> }[])
-        .filter(({ type }) => type === 'image')
-        .map(({ attrs }) => attrs.id as string);
-
-      return R.draw(ids);
+      return R.shuffle(imageIds);
     },
   }),
 }));

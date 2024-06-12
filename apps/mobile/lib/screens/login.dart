@@ -31,19 +31,57 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
 );
 
 @RoutePage()
-class LoginScreen extends ConsumerWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final ferry = ref.watch(ferryProvider);
+  createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends ConsumerState<LoginScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _animationController;
+  late final Animation<Alignment> _alignmentAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(minutes: 10),
+    );
+
+    _animationController.addListener(() {
+      if (_animationController.status == AnimationStatus.completed) {
+        final client = ref.read(ferryProvider);
+        client.requestController.add(GLoginScreen_QueryReq());
+      }
+    });
+
+    _animationController.repeat();
+
+    _alignmentAnimation = AlignmentTween(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    ).animate(_animationController);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final client = ref.watch(ferryProvider);
 
     return Operation(
-      client: ferry,
+      client: client,
       operationRequest: GLoginScreen_QueryReq(),
       builder: (context, response, error) {
-        final imageUrl = response?.data?.featuredImage?.url;
-
         return Scaffold(
           appBar: const Heading(
             backgroundColor: Colors.transparent,
@@ -57,17 +95,34 @@ class LoginScreen extends ConsumerWidget {
                   decoration: BoxDecoration(color: BrandColors.gray_900),
                 ),
               ),
-              if (imageUrl != null)
-                FadeInImage(
-                  placeholder: MemoryImage(kTransparentImage),
-                  image: NetworkImage(imageUrl),
-                  width: double.infinity,
-                  height: double.infinity,
-                  alignment: Alignment.center,
-                  fit: BoxFit.cover,
-                  fadeInDuration: const Duration(milliseconds: 150),
-                  color: Colors.black.withOpacity(0.4),
-                  colorBlendMode: BlendMode.srcATop,
+              if (response?.data != null)
+                Positioned.fill(
+                  child: AnimatedBuilder(
+                    animation: _animationController,
+                    builder: (context, child) {
+                      return UnconstrainedBox(
+                        constrainedAxis: Axis.vertical,
+                        clipBehavior: Clip.hardEdge,
+                        alignment: _alignmentAnimation.value,
+                        child: Row(
+                          children: response!.data!.featuredImages
+                              .map(
+                                (image) => FadeInImage(
+                                  placeholder: MemoryImage(kTransparentImage),
+                                  image: NetworkImage(image.url),
+                                  height: double.infinity,
+                                  fit: BoxFit.cover,
+                                  fadeInDuration:
+                                      const Duration(milliseconds: 150),
+                                  color: Colors.black.withOpacity(0.4),
+                                  colorBlendMode: BlendMode.srcATop,
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -127,7 +182,7 @@ class LoginScreen extends ConsumerWidget {
                                 ..vars.input.token = authResult.serverAuthCode,
                             );
 
-                            final resp = await ferry.req(req);
+                            final resp = await client.req(req);
 
                             await ref
                                 .read(authProvider.notifier)
@@ -178,7 +233,7 @@ class LoginScreen extends ConsumerWidget {
                                 ..vars.input.token = token.accessToken,
                             );
 
-                            final resp = await ferry.req(req);
+                            final resp = await client.req(req);
                             await ref
                                 .read(authProvider.notifier)
                                 .setAccessToken(
@@ -226,7 +281,7 @@ class LoginScreen extends ConsumerWidget {
                                         credential.authorizationCode,
                                 );
 
-                                final resp = await ferry.req(req);
+                                final resp = await client.req(req);
                                 await ref
                                     .read(authProvider.notifier)
                                     .setAccessToken(

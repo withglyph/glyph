@@ -30,7 +30,6 @@ class LobbyShell extends ConsumerWidget {
         ArchiveRoute(),
         MeRoute(),
       ],
-      resizeToAvoidBottomInset: false,
       transitionBuilder: (context, child, animation) => child,
       bottomNavigationBuilder: (context, tabsRouter) {
         return LobbyBottomNavigationBar(

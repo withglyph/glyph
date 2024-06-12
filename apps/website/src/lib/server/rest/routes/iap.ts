@@ -62,7 +62,7 @@ const purchasePoint = async (uuid: string, payload: unknown) => {
       .for('update');
 
     if (purchases.length === 0) {
-      throw new Error('purchase not found');
+      return;
     }
 
     const [purchase] = purchases;

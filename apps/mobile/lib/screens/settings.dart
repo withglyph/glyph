@@ -37,9 +37,9 @@ class SettingsScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const _Section('계정'),
-                _Item(title: '계정 / 정보 관리', onPressed: () {}),
-                const Gap(40),
+                // const _Section('계정'),
+                // _Item(title: '계정 / 정보 관리', onPressed: () {}),
+                // const Gap(40),
                 const _Section('문의 및 안내'),
                 _Item(
                   title: '고객센터',

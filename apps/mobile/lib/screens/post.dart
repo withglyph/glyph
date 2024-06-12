@@ -380,8 +380,8 @@ class _PostScreenState extends ConsumerState<PostScreen>
                             }
                           },
                         ),
-                        const Gap(16),
-                        const SvgIcon('dots-vertical'),
+                        // const Gap(16),
+                        // const SvgIcon('dots-vertical'),
                       ]),
                     ),
                   ),

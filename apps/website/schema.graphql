@@ -748,13 +748,13 @@ input PurchasePostInput {
 
 type Query {
   auth(scope: AuthScope!): Void
-  authLayoutBackgroundImage: Image
   challengeFeed: [Post!]!
   collectionFeed: [SpaceCollection!]!
   curatedPosts: [Post!]!
   draftPost(permalink: String!): Post!
   featureFlags: [FeatureFlag!]!
   featuredImage: Image
+  featuredImages: [Image!]!
   featuredTagFeed: [FeaturedFeed!]!
   file(id: ID!): File!
   flash: Flash

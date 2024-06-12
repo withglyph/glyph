@@ -1,5 +1,5 @@
 query LoginScreen_Query {
-  featuredImage {
+  featuredImages {
     id
     url
   }

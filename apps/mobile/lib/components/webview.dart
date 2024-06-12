@@ -100,6 +100,7 @@ class _WebviewState extends ConsumerState<WebView> {
             name: 'glyph-at',
             value: accessToken!,
             isSecure: Env.baseUrl.startsWith('https'),
+            isHttpOnly: true,
           );
 
           await _cookieManager.setCookie(
@@ -107,7 +108,6 @@ class _WebviewState extends ConsumerState<WebView> {
             name: 'glyph-wb',
             value: 'true',
             isSecure: Env.baseUrl.startsWith('https'),
-            isHttpOnly: false,
           );
 
           if (defaultTargetPlatform != TargetPlatform.android ||
