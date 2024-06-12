@@ -1,5 +1,0 @@
-mutation PurchasePointScreen_FinalizeInAppPurchasePoint_Mutation($input: FinalizeInAppPurchasePointInput!) {
-  finalizeInAppPurchasePoint(input: $input) {
-    id
-  }
-}

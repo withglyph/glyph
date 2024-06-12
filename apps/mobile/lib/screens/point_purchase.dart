@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -10,8 +11,8 @@ import 'package:get_it/get_it.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
-import 'package:glyph/graphql/__generated__/point_purchase_screen_finalize_in_app_purchase_point.req.gql.dart';
-import 'package:glyph/graphql/__generated__/point_purchase_screen_in_app_purchase_point.req.gql.dart';
+import 'package:glyph/graphql/__generated__/point_purchase_screen_in_app_purchase_point_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/point_purchase_screen_purchase_point_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/point_purchase_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/providers/ferry.dart';
@@ -48,8 +49,7 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
 
             if (purchaseDetails.status == PurchaseStatus.purchased) {
               final client = ref.read(ferryProvider);
-              final req =
-                  GPurchasePointScreen_FinalizeInAppPurchasePoint_MutationReq(
+              final req = GPurchasePointScreen_InAppPurchasePoint_MutationReq(
                 (b) => b
                   ..vars.input.store = Platform.isIOS
                       ? GStoreKind.APP_STORE
@@ -132,21 +132,30 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                       onTap: () async {
                         final client = ref.read(ferryProvider);
                         final req =
-                            GPurchasePointScreen_InAppPurchasePoint_MutationReq(
+                            GPurchasePointScreen_PurchasePoint_MutationReq(
                           (b) => b
+                            ..vars.input.paymentMethod = kReleaseMode
+                                ? GPaymentMethod.IN_APP_PURCHASE
+                                : GPaymentMethod.DUMMY
                             ..vars.input.pointAmount = int.parse(
                               product.id.split('_').last,
-                            ),
+                            )
+                            ..vars.input.pointAgreement = true,
                         );
                         final resp = await client.req(req);
 
-                        await _iap.buyConsumable(
-                          purchaseParam: PurchaseParam(
-                            productDetails: product,
-                            applicationUserName: resp
-                                .inAppPurchasePoint.paymentData.asMap['uuid'],
-                          ),
-                        );
+                        if (kReleaseMode) {
+                          await _iap.buyConsumable(
+                            purchaseParam: PurchaseParam(
+                              productDetails: product,
+                              applicationUserName:
+                                  resp.purchasePoint.paymentData.asMap['uuid'],
+                            ),
+                          );
+                        } else {
+                          client.requestController
+                              .add(GPointPurchaseScreen_QueryReq());
+                        }
                       },
                     );
                   },

@@ -10,6 +10,7 @@ export const PurchasePointSchema = z.object({
     'GIFTCARD_SMARTCULTURE',
     'GIFTCARD_BOOKNLIFE',
     'PAYPAL',
+    'DUMMY',
   ]),
   pointAmount: z.number(),
   pointAgreement: z.boolean().refine((v) => v, '약관에 동의해주세요'),

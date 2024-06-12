@@ -1,0 +1,1 @@
+ALTER TYPE "_payment_method" ADD VALUE 'DUMMY';

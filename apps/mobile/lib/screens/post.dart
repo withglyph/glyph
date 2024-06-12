@@ -23,6 +23,7 @@ import 'package:glyph/graphql/__generated__/post_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_unbookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_update_post_view_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
+import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
@@ -227,21 +228,51 @@ class _PostScreenState extends ConsumerState<PostScreen>
                           fitToContent: true,
                           onJsMessage: (message, reply) async {
                             if (message['type'] == 'purchase') {
-                              print('purchase');
-                              context.showBottomSheet(builder: (context) {
-                                return const Padding(
-                                  padding: EdgeInsets.all(20),
-                                  child: Button(
-                                    child: const Text('구매하기'),
-                                  ),
-                                );
-                              });
+                              context.showBottomSheet(
+                                builder: (context) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        Text(
+                                          '현재 보유 포인트: ${data.me!.point}P',
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                        Text(
+                                          '필요 포인트: ${data.post.publishedRevision!.price}P',
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                        const Gap(16),
+                                        data.me!.point <
+                                                data.post.publishedRevision!
+                                                    .price!
+                                            ? Button(
+                                                child: const Text('포인트 충전하기'),
+                                                onPressed: () async {
+                                                  context.router.push(
+                                                    const PointPurchaseRoute(),
+                                                  );
+                                                  // context.router.maybePop();
+                                                },
+                                              )
+                                            : Button(
+                                                child: const Text('구매하기'),
+                                                onPressed: () async {
+                                                  await reply({
+                                                    'type': 'purchase:proceed',
+                                                  });
 
-                              // await reply({
-                              //   'type': 'content',
-                              //   'content':
-                              //       data.post.publishedRevision!.content.value
-                              // });
+                                                  context.router.maybePop();
+                                                },
+                                              ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
                             }
                           },
                           onNavigate: (controller, navigationAction) async {

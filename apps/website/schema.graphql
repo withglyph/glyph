@@ -224,12 +224,6 @@ input FinalizeImageUploadInput {
   name: String!
 }
 
-input FinalizeInAppPurchasePointInput {
-  data: String!
-  productId: String!
-  store: StoreKind!
-}
-
 type Flash {
   message: String!
   type: String!
@@ -280,7 +274,9 @@ type Image {
 }
 
 input InAppPurchasePointInput {
-  pointAmount: Int!
+  data: String!
+  productId: String!
+  store: StoreKind!
 }
 
 input IssueUserEmailAuthorizationTokenInput {
@@ -346,7 +342,6 @@ type Mutation {
   enableMonthlyWithdrawal: UserWithdrawalConfig!
   finalizeFileUpload(input: FinalizeFileUploadInput!): File!
   finalizeImageUpload(input: FinalizeImageUploadInput!): Image!
-  finalizeInAppPurchasePoint(input: FinalizeInAppPurchasePointInput!): PointPurchase!
   followSpace(input: FollowSpaceInput!): Space!
   followTag(input: FollowTagInput!): Tag!
   generatePostShareImage(input: GeneratePostShareImageInput!): String!
@@ -413,6 +408,7 @@ input MuteTagInput {
 enum PaymentMethod {
   BANK_ACCOUNT
   CREDIT_CARD
+  DUMMY
   GIFTCARD_BOOKNLIFE
   GIFTCARD_CULTURELAND
   GIFTCARD_SMARTCULTURE

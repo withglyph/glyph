@@ -1,6 +1,11 @@
 # import './fragments/img_image.graphql'
 
 query PostScreen_Query($permalink: String!) {
+  me {
+    id
+    point
+  }
+
   post(permalink: $permalink) {
     id
     permalink
@@ -38,6 +43,7 @@ query PostScreen_Query($permalink: String!) {
       id
       title
       subtitle
+      price
     }
 
     bookmarkGroups {

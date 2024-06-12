@@ -89,6 +89,7 @@
     GIFTCARD_BOOKNLIFE: '도서문화상품권',
     PAYPAL: '페이팔',
     IN_APP_PURCHASE: '앱 내 구매',
+    DUMMY: '테스트 결제',
   };
 
   const eventName: Record<string, string> = {

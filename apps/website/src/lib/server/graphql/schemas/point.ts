@@ -1,3 +1,4 @@
+import { stack } from '@withglyph/lib/environment';
 import dayjs from 'dayjs';
 import { and, eq, sql } from 'drizzle-orm';
 import { customAlphabet } from 'nanoid';
@@ -139,12 +140,6 @@ const PurchasePointInput = builder.inputType('PurchasePointInput', {
 
 const InAppPurchasePointInput = builder.inputType('InAppPurchasePointInput', {
   fields: (t) => ({
-    pointAmount: t.int(),
-  }),
-});
-
-const FinalizeInAppPurchasePointInput = builder.inputType('FinalizeInAppPurchasePointInput', {
-  fields: (t) => ({
     store: t.field({ type: StoreKind }),
     productId: t.string(),
     data: t.string(),
@@ -183,11 +178,23 @@ builder.mutationFields((t) => ({
     type: PointPurchase,
     args: { input: t.arg({ type: PurchasePointInput }) },
     resolve: async (_, { input }, context) => {
+      if (
+        (stack === 'prod' || stack === 'staging') &&
+        input.paymentMethod === 'DUMMY' &&
+        context.session.role !== 'ADMIN'
+      ) {
+        throw new Error('Invalid payment method');
+      }
+
       const paymentKey = `PX${input.pointAmount}${customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ')(8)}`;
-      const paymentAmount = Math.floor(input.pointAmount * 1.1);
+      const paymentAmount =
+        input.paymentMethod === 'DUMMY'
+          ? 0
+          : Math.floor(input.pointAmount * (input.paymentMethod === 'IN_APP_PURCHASE' ? 1.2 : 1.1));
       const expiresAt = dayjs().add(1, 'hour');
 
-      const pgData = await match(input.paymentMethod)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let paymentData: any = await match(input.paymentMethod)
         .with('CREDIT_CARD', () => ({ pg: 'tosspayments', pay_method: 'card' }))
         .with('BANK_ACCOUNT', () => ({ pg: 'tosspayments', pay_method: 'trans' }))
         .with('VIRTUAL_BANK_ACCOUNT', () => ({
@@ -204,7 +211,8 @@ builder.mutationFields((t) => ({
           pay_method: 'paypal',
           amount: numeral(paymentAmount / (await exim.getUSDExchangeRate())).format('0.00'),
         }))
-        .with('IN_APP_PURCHASE', () => ({}))
+        .with('IN_APP_PURCHASE', () => ({ uuid: crypto.randomUUID() }))
+        .with('DUMMY', () => ({}))
         .exhaustive();
 
       const users = await database
@@ -216,69 +224,68 @@ builder.mutationFields((t) => ({
         throw new NotFoundError();
       }
 
-      const paymentData = {
-        merchant_uid: paymentKey,
-        name: `글리프 ${input.pointAmount} P`,
-        amount: paymentAmount,
-        buyer_email: users[0].email,
+      if (input.paymentMethod !== 'IN_APP_PURCHASE' && input.paymentMethod !== 'DUMMY') {
+        paymentData = {
+          merchant_uid: paymentKey,
+          name: `글리프 ${input.pointAmount} P`,
+          amount: paymentAmount,
+          buyer_email: users[0].email,
 
-        notice_url: `${context.event.url.origin}/api/payment/webhook`,
-        m_redirect_url: `${context.event.url.origin}/api/payment/callback`,
+          notice_url: `${context.event.url.origin}/api/payment/webhook`,
+          m_redirect_url: `${context.event.url.origin}/api/payment/callback`,
 
-        ...pgData,
-      };
+          ...paymentData,
+        };
 
-      await portone.registerPaymentAmount({ paymentKey, paymentAmount: paymentData.amount });
+        await portone.registerPaymentAmount({ paymentKey, paymentAmount: paymentData.amount });
+      }
 
-      const [pointPurchase] = await database
-        .insert(PointPurchases)
-        .values({
-          userId: context.session.userId,
-          pointAmount: input.pointAmount,
-          paymentAmount,
-          paymentMethod: input.paymentMethod,
-          paymentKey,
-          paymentData,
-          state: 'PENDING',
-          expiresAt,
-        })
-        .returning({ id: PointPurchases.id });
+      return await database.transaction(async (tx) => {
+        const [purchase] = await tx
+          .insert(PointPurchases)
+          .values({
+            userId: context.session.userId,
+            pointAmount: input.pointAmount,
+            paymentAmount,
+            paymentMethod: input.paymentMethod,
+            paymentKey,
+            paymentData,
+            state: 'PENDING',
+            expiresAt,
+          })
+          .returning({ id: PointPurchases.id });
 
-      return pointPurchase.id;
+        if (input.paymentMethod === 'DUMMY') {
+          await tx.insert(PointBalances).values({
+            userId: context.session.userId,
+            purchaseId: purchase.id,
+            kind: 'PAID',
+            initial: input.pointAmount,
+            leftover: input.pointAmount,
+            expiresAt: dayjs().add(5, 'years'),
+          });
+
+          await tx.insert(PointTransactions).values({
+            userId: context.session.userId,
+            amount: input.pointAmount,
+            cause: 'PURCHASE',
+            targetId: purchase.id,
+          });
+
+          await tx
+            .update(PointPurchases)
+            .set({ state: 'COMPLETED', paymentResult: {}, completedAt: dayjs() })
+            .where(eq(PointPurchases.id, purchase.id));
+        }
+
+        return purchase.id;
+      });
     },
   }),
 
   inAppPurchasePoint: t.withAuth({ user: true }).field({
     type: PointPurchase,
     args: { input: t.arg({ type: InAppPurchasePointInput }) },
-    resolve: async (_, { input }, context) => {
-      const paymentKey = `PX${input.pointAmount}${customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ')(8)}`;
-      const paymentAmount = Math.floor(input.pointAmount * 1.2);
-      const expiresAt = dayjs().add(1, 'hour');
-
-      const uuid = crypto.randomUUID();
-
-      const [pointPurchase] = await database
-        .insert(PointPurchases)
-        .values({
-          userId: context.session.userId,
-          pointAmount: input.pointAmount,
-          paymentAmount,
-          paymentMethod: 'IN_APP_PURCHASE',
-          paymentKey,
-          paymentData: { uuid },
-          state: 'PENDING',
-          expiresAt,
-        })
-        .returning({ id: PointPurchases.id });
-
-      return pointPurchase.id;
-    },
-  }),
-
-  finalizeInAppPurchasePoint: t.withAuth({ user: true }).field({
-    type: PointPurchase,
-    args: { input: t.arg({ type: FinalizeInAppPurchasePointInput }) },
     resolve: async (_, { input }) => {
       let payload;
       let uuid;
