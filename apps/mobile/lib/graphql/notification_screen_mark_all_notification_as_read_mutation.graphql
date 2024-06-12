@@ -1,0 +1,6 @@
+mutation NotificationScreen_MarkAllNotificationsAsRead_Mutation {
+  markAllNotificationsAsRead {
+    id
+    state
+  }
+}

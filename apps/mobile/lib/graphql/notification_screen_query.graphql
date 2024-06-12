@@ -1,4 +1,4 @@
-query NotificationsScreen_Query {
+query NotificationScreen_Query {
   me {
     id
 
@@ -22,6 +22,7 @@ query NotificationsScreen_Query {
       ... on CommentNotification {
         post {
           id
+          permalink
 
           publishedRevision {
             id
@@ -40,6 +41,7 @@ query NotificationsScreen_Query {
       ... on PurchaseNotification {
         post {
           id
+          permalink
 
           publishedRevision {
             id
@@ -53,6 +55,7 @@ query NotificationsScreen_Query {
 
         post {
           id
+          permalink
 
           publishedRevision {
             id

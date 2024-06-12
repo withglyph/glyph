@@ -135,8 +135,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   color: _headerForegroundColorAnimation.value,
                 ),
                 onPressed: () {
-                  // context.router.push(PlaceholderRoute(text: '검색'));
-                  context.router.push(TagRoute(name: 'asdf'));
+                  context.router.push(PlaceholderRoute(text: '검색'));
                 },
               ),
               const Gap(16),

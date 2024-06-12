@@ -1,0 +1,6 @@
+mutation NotificationScreen_MarkNotificationAsRead_Mutation($input: MarkNotificationAsReadInput!) {
+  markNotificationAsRead(input: $input) {
+    id
+    state
+  }
+}

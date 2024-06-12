@@ -20,7 +20,9 @@ extension BottomSheetX on BuildContext {
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
           ),
-          child: expand ? Scaffold(body: SafeArea(child: child)) : child,
+          child: expand
+              ? Scaffold(body: SafeArea(child: child))
+              : SizedBox(width: double.infinity, child: SafeArea(child: child)),
         );
       },
     );

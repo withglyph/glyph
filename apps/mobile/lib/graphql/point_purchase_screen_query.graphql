@@ -1,0 +1,7 @@
+query PointPurchaseScreen_Query {
+  me {
+    id
+
+    point
+  }
+}

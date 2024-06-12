@@ -5,10 +5,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
+import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/ferry/extension.dart';
+import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/point_purchase_screen_finalize_in_app_purchase_point.req.gql.dart';
 import 'package:glyph/graphql/__generated__/point_purchase_screen_in_app_purchase_point.req.gql.dart';
+import 'package:glyph/graphql/__generated__/point_purchase_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/shells/default.dart';
@@ -55,6 +59,7 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                       purchaseDetails.verificationData.serverVerificationData,
               );
               await client.req(req);
+              client.requestController.add(GPointPurchaseScreen_QueryReq());
             }
           }
         },
@@ -72,37 +77,84 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultShell(
-      title: '포인트 구매',
-      child: Column(
-        children: _products
-            .sorted((a, b) => a.rawPrice.compareTo(b.rawPrice))
-            .map(
-              (product) => ListTile(
-                title: Text(product.title),
-                subtitle: Text(product.description),
-                trailing: Text(product.price),
-                onTap: () async {
-                  final client = ref.read(ferryProvider);
-                  final req =
-                      GPurchasePointScreen_InAppPurchasePoint_MutationReq(
-                    (b) => b
-                      ..vars.input.pointAmount = int.parse(
-                        product.id.split('_').last,
-                      ),
-                  );
-                  final resp = await client.req(req);
-
-                  await _iap.buyConsumable(
-                    purchaseParam: PurchaseParam(
-                      productDetails: product,
-                      applicationUserName:
-                          resp.inAppPurchasePoint.paymentData.asMap['uuid'],
-                    ),
-                  );
-                },
+      title: '포인트',
+      child: GraphQLOperation(
+        operation: GPointPurchaseScreen_QueryReq(),
+        builder: (context, client, data) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Gap(20),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  '현재 포인트',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
-            )
-            .toList(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  '${data.me!.point} P',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const Gap(20),
+              const HorizontalDivider(),
+              const Gap(20),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  '포인트 구매',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const Gap(8),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _products.length,
+                  itemBuilder: (context, index) {
+                    final product = _products[index];
+                    return ListTile(
+                      title: Text(product.title),
+                      trailing: Text(product.price),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 20),
+                      onTap: () async {
+                        final client = ref.read(ferryProvider);
+                        final req =
+                            GPurchasePointScreen_InAppPurchasePoint_MutationReq(
+                          (b) => b
+                            ..vars.input.pointAmount = int.parse(
+                              product.id.split('_').last,
+                            ),
+                        );
+                        final resp = await client.req(req);
+
+                        await _iap.buyConsumable(
+                          purchaseParam: PurchaseParam(
+                            productDetails: product,
+                            applicationUserName: resp
+                                .inAppPurchasePoint.paymentData.asMap['uuid'],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -119,7 +171,9 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
     });
 
     setState(() {
-      _products.addAll(resp.productDetails);
+      _products.addAll(
+        resp.productDetails.sorted((a, b) => a.rawPrice.compareTo(b.rawPrice)),
+      );
     });
   }
 }

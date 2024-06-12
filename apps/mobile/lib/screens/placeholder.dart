@@ -13,7 +13,7 @@ class PlaceholderScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultShell(
       title: text,
-      child: const Center(child: Text('Not implemented yet')),
+      child: const Center(child: Text('곧 업데이트 될 예정이에요!')),
     );
   }
 }

@@ -8,8 +8,11 @@ import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/context/toast.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
-import 'package:glyph/graphql/__generated__/notifications_screen_query.data.gql.dart';
-import 'package:glyph/graphql/__generated__/notifications_screen_query.req.gql.dart';
+import 'package:glyph/graphql/__generated__/notification_screen_mark_all_notification_as_read_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/notification_screen_mark_notification_as_read_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/notification_screen_query.data.gql.dart';
+import 'package:glyph/graphql/__generated__/notification_screen_query.req.gql.dart';
+import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
@@ -33,13 +36,17 @@ class NotificationScreen extends ConsumerWidget {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
           ),
-          onPressed: () {
-            context.toast.show('모든 알림을 읽었어요 (미구현)');
+          onPressed: () async {
+            final client = ref.read(ferryProvider);
+            final req =
+                GNotificationScreen_MarkAllNotificationsAsRead_MutationReq();
+            await client.req(req);
+            context.toast.show('모든 알림을 읽었어요');
           },
         ),
       ],
       child: GraphQLOperation(
-        operation: GNotificationsScreen_QueryReq(),
+        operation: GNotificationScreen_QueryReq(),
         builder: (context, client, data) {
           final notifications = data.me!.notifications;
 
@@ -125,14 +132,32 @@ class NotificationScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                onPressed: () {
-                  context.router
-                      .push(PlaceholderRoute(text: '알림: ${notification.id}'));
+                onPressed: () async {
+                  final req =
+                      GNotificationScreen_MarkNotificationAsRead_MutationReq(
+                    (b) => b..vars.input.notificationId = notification.id,
+                  );
+                  await client.req(req);
+
+                  final route = notification.when(
+                    commentNotification: (notification) =>
+                        PostRoute(permalink: notification.post.permalink),
+                    subscribeNotification: (notification) => null,
+                    purchaseNotification: (notification) =>
+                        PostRoute(permalink: notification.post.permalink),
+                    emojiReactionNotification: (notification) =>
+                        PostRoute(permalink: notification.post.permalink),
+                    orElse: () => null,
+                  );
+
+                  if (route != null) {
+                    context.router.push(route);
+                  }
                 },
               );
             },
             onRefresh: () async {
-              await client.req(GNotificationsScreen_QueryReq());
+              await client.req(GNotificationScreen_QueryReq());
             },
             emptyText: '아직 받은 알림이 없어요',
           );

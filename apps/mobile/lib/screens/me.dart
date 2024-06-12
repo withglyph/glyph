@@ -7,6 +7,7 @@ import 'package:glyph/components/Img.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/svg_icon.dart';
+import 'package:glyph/context/dialog.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/me_screen_query.req.gql.dart';
 import 'package:glyph/routers/app.gr.dart';
@@ -167,10 +168,10 @@ class _MeScreenState extends ConsumerState<MeScreen>
                                 child: const Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    SvgIcon('scan', color: BrandColors.gray_0),
+                                    SvgIcon('coin', color: BrandColors.gray_0),
                                     Gap(4),
                                     Text(
-                                      '리딤코드',
+                                      '포인트',
                                       style: TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.w500,
@@ -300,6 +301,12 @@ class _MeScreenState extends ConsumerState<MeScreen>
                               ],
                             ),
                           ),
+                          onPressed: () {
+                            context.showDialog(
+                              title: '스페이스 만들기',
+                              content: '지금은 스페이스를 만들 수 없어요.',
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -310,67 +317,70 @@ class _MeScreenState extends ConsumerState<MeScreen>
                   itemBuilder: (context, index) {
                     final space = data.me!.spaces[index];
 
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 16,
-                      ),
-                      decoration: const BoxDecoration(
-                        color: BrandColors.gray_0,
-                        border: Border(
-                          bottom: BorderSide(color: BrandColors.gray_50),
+                    return Pressable(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 16,
                         ),
-                      ),
-                      child: Center(
-                        child: Row(
-                          children: [
-                            Stack(
-                              children: [
-                                Img(
-                                  space.icon,
-                                  width: 36,
-                                  height: 36,
-                                ),
-                                Positioned(
-                                  bottom: 0,
-                                  right: 0,
-                                  child: Transform.translate(
-                                    offset: const Offset(4, 4),
-                                    child: Img(
-                                      space.meAsMember!.profile.avatar,
-                                      width: 22,
-                                      height: 22,
-                                      borderRadius: 11,
+                        decoration: const BoxDecoration(
+                          color: BrandColors.gray_0,
+                          border: Border(
+                            bottom: BorderSide(color: BrandColors.gray_50),
+                          ),
+                        ),
+                        child: Center(
+                          child: Row(
+                            children: [
+                              Stack(
+                                children: [
+                                  Img(
+                                    space.icon,
+                                    width: 36,
+                                    height: 36,
+                                  ),
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Transform.translate(
+                                      offset: const Offset(4, 4),
+                                      child: Img(
+                                        space.meAsMember!.profile.avatar,
+                                        width: 22,
+                                        height: 22,
+                                        borderRadius: 11,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            const Gap(12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  space.name,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w500,
+                                ],
+                              ),
+                              const Gap(12),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    space.name,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  'by ${space.meAsMember!.profile.name}',
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: BrandColors.gray_500,
+                                  Text(
+                                    'by ${space.meAsMember!.profile.name}',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: BrandColors.gray_500,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
+                      onPressed: () {},
                     );
                   },
                 ),
