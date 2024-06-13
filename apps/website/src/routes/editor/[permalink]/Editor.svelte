@@ -8,7 +8,6 @@
   import * as YAwareness from 'y-protocols/awareness';
   import * as Y from 'yjs';
   import { browser } from '$app/environment';
-  import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
   import { Helmet } from '$lib/components';
   import { css } from '$styled-system/css';
@@ -206,7 +205,6 @@
   setEditorContext({
     state,
     forceSynchronize,
-    isWebView: $page.url.searchParams.has('webview'),
   });
 
   const title = readable<string | null>(undefined, (set) => {

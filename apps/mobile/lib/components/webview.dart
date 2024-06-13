@@ -13,12 +13,14 @@ class WebView extends ConsumerStatefulWidget {
     super.key,
     required this.path,
     this.fitToContent = false,
+    this.readOnly = true,
     this.onJsMessage,
     this.onNavigate,
   });
 
   final String path;
   final bool fitToContent;
+  final bool readOnly;
   final Future<void> Function(
       dynamic data, Future<void> Function(dynamic data) reply)? onJsMessage;
   final Future<NavigationActionPolicy?> Function(
@@ -40,7 +42,7 @@ class _WebviewState extends ConsumerState<WebView> {
         disableHorizontalScroll: widget.fitToContent,
         disableVerticalScroll: widget.fitToContent,
         disallowOverScroll: widget.fitToContent,
-        isTextInteractionEnabled: false,
+        isTextInteractionEnabled: !widget.readOnly,
         supportZoom: false,
         suppressesIncrementalRendering: true,
       );

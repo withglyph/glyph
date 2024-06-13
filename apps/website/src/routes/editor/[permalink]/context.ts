@@ -25,7 +25,6 @@ export type EditorState = {
 type EditorContext = {
   state: Writable<EditorState>;
   forceSynchronize: () => Promise<void>;
-  isWebView: boolean;
 };
 
 const key: unique symbol = Symbol();

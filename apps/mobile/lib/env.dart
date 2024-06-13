@@ -2,7 +2,8 @@ class Env {
   static String get current => const String.fromEnvironment('ENV');
 
   static String get baseUrl => switch (current) {
-        'dev' => 'https://dev.withglyph.com',
+        // 'dev' => 'https://dev.withglyph.com',
+        'dev' => 'http://localhost:4000',
         'release' => 'https://staging.withglyph.com',
         _ => throw Exception('Unknown environment: $current'),
       };
