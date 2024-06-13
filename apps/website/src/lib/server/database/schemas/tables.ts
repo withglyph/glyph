@@ -1140,3 +1140,37 @@ export const FeaturedImages = pgTable('featured_images', {
     .notNull()
     .default(sql`now()`),
 });
+
+export const RedeemCodeGroups = pgTable('redeem_code_groups', {
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  userId: text('user_id')
+    .notNull()
+    .references(() => Users.id),
+  postId: text('post_id')
+    .notNull()
+    .references(() => Posts.id),
+  state: E._RedeemCodeGroupState('state').notNull(),
+  description: text('description'),
+  createdAt: datetime('created_at')
+    .notNull()
+    .default(sql`now()`),
+  expiresAt: datetime('expires_at').notNull(),
+});
+
+export const RedeemCodes = pgTable('redeem_codes', {
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  groupId: text('group_id')
+    .notNull()
+    .references(() => RedeemCodeGroups.id),
+  purchaseId: text('purchase_id').references(() => PostPurchases.id),
+  state: E._RedeemCodeState('state').notNull(),
+  code: text('code').notNull().unique(),
+  createdAt: datetime('created_at')
+    .notNull()
+    .default(sql`now()`),
+  usedAt: datetime('used_at'),
+});

@@ -774,6 +774,18 @@ type Query {
   tag(name: String!): Tag!
 }
 
+enum RedeemCodeGroupState {
+  ACTIVE
+  INACTIVE
+}
+
+enum RedeemCodeState {
+  AVAILABLE
+  EXPIRED
+  REVOKED
+  USED
+}
+
 input RegisterPushNotificationTokenInput {
   token: String!
 }

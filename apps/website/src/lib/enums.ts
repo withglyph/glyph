@@ -158,6 +158,18 @@ export const PreferenceType = {
   MUTE: 'MUTE',
 } as const;
 
+export const RedeemCodeGroupState = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+} as const;
+
+export const RedeemCodeState = {
+  AVAILABLE: 'AVAILABLE',
+  USED: 'USED',
+  EXPIRED: 'EXPIRED',
+  REVOKED: 'REVOKED',
+} as const;
+
 export const RevenueKind = {
   POST_PATRONAGE: 'POST_PATRONAGE',
   POST_PURCHASE: 'POST_PURCHASE',
