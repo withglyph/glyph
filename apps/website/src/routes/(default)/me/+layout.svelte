@@ -3,6 +3,7 @@
   import IconCoin from '~icons/tabler/coin';
   import IconFilterCog from '~icons/tabler/filter-cog';
   import IconPigMoney from '~icons/tabler/pig-money';
+  import IconScan from '~icons/tabler/scan';
   import IconSettings from '~icons/tabler/settings';
   import IconStar from '~icons/tabler/star';
   import { isWebView } from '$lib/flutter';
@@ -50,6 +51,7 @@
       <NavItem icon={IconCoin} pathname="/me/point" title="포인트" />
       <NavItem icon={IconPigMoney} pathname="/me/revenue" title="수익/출금" />
       <NavItem icon={IconFilterCog} pathname="/me/contentfilters" title="컨텐츠필터링" />
+      <NavItem icon={IconScan} pathname="/me/redeem" title="리딤코드 등록" />
       <NavItem icon={IconSettings} pathname="/me/settings" title="계정설정" />
     </nav>
   {/if}
