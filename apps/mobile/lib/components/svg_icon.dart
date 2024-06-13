@@ -5,22 +5,22 @@ import 'package:glyph/themes/colors.dart';
 class SvgIcon extends StatelessWidget {
   const SvgIcon(
     this.iconName, {
-    this.size,
-    this.color,
     super.key,
+    this.size = 24,
+    this.color = BrandColors.gray_900,
   });
 
   final String iconName;
-  final double? size;
+  final double size;
   final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return SvgImage(
       'icons/$iconName',
-      width: size ?? 24,
-      height: size ?? 24,
-      color: color ?? BrandColors.gray_900,
+      width: size,
+      height: size,
+      color: color,
     );
   }
 }

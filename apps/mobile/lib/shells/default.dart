@@ -9,12 +9,14 @@ class DefaultShell extends StatelessWidget {
     required this.child,
     this.actions,
     this.useSafeArea = false,
+    this.bottomBorder = true,
   });
 
   final String? title;
   final Widget child;
   final List<Widget>? actions;
   final bool useSafeArea;
+  final bool bottomBorder;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class DefaultShell extends StatelessWidget {
               ),
         actions: actions,
         backgroundColor: BrandColors.gray_0,
+        bottomBorder: bottomBorder,
       ),
       body: useSafeArea ? SafeArea(child: child) : child,
     );

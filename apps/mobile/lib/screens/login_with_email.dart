@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
+import 'package:glyph/components/text_input_field.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/login_with_email_screen_login_user_mutation.req.gql.dart';
 import 'package:glyph/providers/ferry.dart';
@@ -22,17 +24,6 @@ class _LoginWithEmailScreenState extends ConsumerState<LoginWithEmailScreen> {
   final _textController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-
-    _focusNode.addListener(() {
-      // if (context.router.isTopMost && !_focusNode.hasFocus) {
-      // _focusNode.requestFocus();
-      // }
-    });
-  }
-
-  @override
   void dispose() {
     _focusNode.dispose();
     _textController.dispose();
@@ -43,64 +34,61 @@ class _LoginWithEmailScreenState extends ConsumerState<LoginWithEmailScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultShell(
-      useSafeArea: true,
-      title: '이메일로 시작',
+      bottomBorder: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
             padding: const EdgeInsets.all(20),
-            child: TextField(
-              controller: _textController,
-              focusNode: _focusNode,
-              autofocus: true,
-              autocorrect: false,
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.done,
-              decoration: InputDecoration(
-                isDense: true,
-                filled: true,
-                fillColor: BrandColors.gray_0,
-                enabledBorder: OutlineInputBorder(
-                  borderSide:
-                      const BorderSide(color: BrandColors.gray_200, width: 1),
-                  borderRadius: BorderRadius.circular(4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '이메일로 시작하기',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide:
-                      const BorderSide(color: BrandColors.gray_600, width: 1),
-                  borderRadius: BorderRadius.circular(4),
+                const Gap(24),
+                TextInputField(
+                  controller: _textController,
+                  focusNode: _focusNode,
+                  autofocus: true,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.done,
+                  labelText: '이메일',
+                  hintText: 'hello@example.com',
+                  onSubmitted: (value) => _next(),
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
-                hintText: '이메일을 입력해주세요',
-                hintStyle: const TextStyle(color: BrandColors.gray_400),
-              ),
-              onSubmitted: (value) => _next(),
-              // onTapOutside: (event) {
-              //   print('onTapOutside');
-              // },
+              ],
             ),
           ),
           const Spacer(),
           Pressable(
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              color: BrandColors.brand_400,
-              child: const Center(
-                child: Text(
-                  '다음',
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: BrandColors.gray_0,
+            onPressed: _next,
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  color: BrandColors.brand_400,
+                  child: const Center(
+                    child: Text(
+                      '다음',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: BrandColors.gray_0,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                Container(
+                  height: MediaQuery.of(context).padding.bottom,
+                  color: BrandColors.brand_400,
+                ),
+              ],
             ),
-            onPressed: _next,
           ),
         ],
       ),
@@ -121,6 +109,9 @@ class _LoginWithEmailScreenState extends ConsumerState<LoginWithEmailScreen> {
     );
     await client.req(req);
 
-    context.router.push(LoginWithEmailNextRoute(email: value));
+    final context = this.context;
+    if (context.mounted) {
+      context.router.push(LoginWithEmailNextRoute(email: value));
+    }
   }
 }

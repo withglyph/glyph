@@ -921,8 +921,11 @@ builder.mutationFields((t) => ({
             eq(UserEmailVerifications.kind, 'USER_LOGIN'),
             eq(UserEmailVerifications.email, input.email),
             eq(UserEmailVerifications.code, input.code),
+            gte(UserEmailVerifications.expiresAt, dayjs()),
           ),
-        );
+        )
+        .orderBy(desc(UserEmailVerifications.createdAt))
+        .limit(1);
 
       if (emailVerifications.length === 0) {
         throw new IntentionalError('올바르지 않은 코드예요.');

@@ -454,7 +454,7 @@ class _PostScreenState extends ConsumerState<PostScreen>
                               ),
                               onPressed: () {
                                 context.showBottomSheet(
-                                  expand: true,
+                                  // expand: true,
                                   builder: (context) {
                                     return Comments(
                                       permalink: widget.permalink,
