@@ -36,7 +36,12 @@ class RootRouter extends ConsumerWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) {
     return ToastScope(
-      child: this,
+      child: GestureDetector(
+        child: this,
+        onTapDown: (_) {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+      ),
     );
   }
 }

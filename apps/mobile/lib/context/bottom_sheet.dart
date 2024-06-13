@@ -21,9 +21,7 @@ extension BottomSheetX on BuildContext {
       builder: (context) {
         final child = builder(context);
 
-        // return child: child);
         return SafeArea(
-          maintainBottomViewPadding: true,
           child: child,
         );
       },

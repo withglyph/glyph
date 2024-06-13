@@ -22,6 +22,7 @@
   import ThumbnailPicker from '$lib/components/media/ThumbnailPicker.svelte';
   import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { Select, SelectItem } from '$lib/components/select';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { createMutationForm } from '$lib/form';
   import { PublishPostInputSchema } from '$lib/validations/post';
   import { css, cx } from '$styled-system/css';
@@ -154,7 +155,12 @@
     },
     onSuccess: async (resp) => {
       mixpanel.track('post:publish', { postId: resp.id });
-      await goto(`/${resp.space.slug}/${resp.permalink}`);
+
+      if ($isWebView) {
+        postFlutterMessage({ type: 'publish', permalink: resp.permalink });
+      } else {
+        await goto(`/${resp.space.slug}/${resp.permalink}`);
+      }
     },
   });
 

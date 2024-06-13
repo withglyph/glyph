@@ -31,22 +31,9 @@ query PostScreen_Comnments_Query($permalink: String!) {
     space {
       id
 
-      meAsMember {
+      commentProfile {
         id
-
-        profile {
-          id
-          name
-        }
-      }
-
-      myMasquerade {
-        id
-
-        profile {
-          id
-          name
-        }
+        name
       }
     }
 
