@@ -16,7 +16,20 @@ extension ClientX on Client {
     }
 
     if (resp.graphqlErrors?.isNotEmpty == true) {
-      throw OperationError.graphql(resp.graphqlErrors![0]);
+      final error = resp.graphqlErrors![0];
+      final appExtension = error.extensions?['__app'];
+
+      throw switch (appExtension?['kind']) {
+        'UnknownError' => AppError.unknown(appExtension['extra']['cause']),
+        'IntentionalError' => AppError.intentional(error.message),
+        'PermissionDeniedError' => const AppError.permissionDenied(),
+        'NotFoundError' => const AppError.notFound(),
+        'FormValidationError' => AppError.formValidation(
+            appExtension['extra']['field'],
+            error.message,
+          ),
+        _ => OperationError.graphql(error),
+      };
     }
 
     return resp.data!;

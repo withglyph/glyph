@@ -6,7 +6,7 @@ import ValidationPlugin from '@pothos/plugin-validation';
 import dayjs from 'dayjs';
 import { GraphQLJSON, GraphQLVoid } from 'graphql-scalars';
 import { dev } from '$app/environment';
-import { PermissionDeniedError } from '$lib/errors';
+import { IntentionalError, PermissionDeniedError } from '$lib/errors';
 import type { Context, UserContext } from '../context';
 
 if (dev) {
@@ -42,6 +42,9 @@ export const builder = new SchemaBuilder<{
   scopeAuthOptions: {
     treatErrorsAsUnauthorized: true,
     unauthorizedError: (_, __, ___, result) => new PermissionDeniedError(result),
+  },
+  validationOptions: {
+    validationError: (error) => new IntentionalError(error.issues[0].message),
   },
 });
 

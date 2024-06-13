@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/themes/colors.dart';
 
-class TextInputField extends StatefulWidget {
-  const TextInputField({
+class FormTextField extends StatefulWidget {
+  const FormTextField({
     super.key,
+    required this.name,
     this.controller,
     this.focusNode,
     this.labelText,
@@ -13,9 +17,11 @@ class TextInputField extends StatefulWidget {
     this.obscureText = false,
     this.keyboardType,
     this.textInputAction,
+    this.validators,
     this.onSubmitted,
   });
 
+  final String name;
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final String? labelText;
@@ -24,13 +30,14 @@ class TextInputField extends StatefulWidget {
   final bool obscureText;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
-  final ValueChanged<String>? onSubmitted;
+  final List<FormFieldValidator<String>>? validators;
+  final ValueChanged<String?>? onSubmitted;
 
   @override
-  createState() => _TextInputFieldState();
+  createState() => _FormTextFieldState();
 }
 
-class _TextInputFieldState extends State<TextInputField>
+class _FormTextFieldState extends State<FormTextField>
     with SingleTickerProviderStateMixin {
   late FocusNode _focusNode;
   late AnimationController _animationController;
@@ -104,6 +111,7 @@ class _TextInputFieldState extends State<TextInputField>
                 widget.labelText!,
                 style: TextStyle(
                   fontSize: 14,
+                  fontWeight: FontWeight.w400,
                   color: _labelColorAnimation.value,
                 ),
               );
@@ -111,24 +119,37 @@ class _TextInputFieldState extends State<TextInputField>
           ),
           const Gap(4),
         ],
-        TextField(
-          controller: widget.controller,
+        FormBuilderField(
+          name: widget.name,
           focusNode: _focusNode,
-          autocorrect: false,
-          obscureText: widget.obscureText,
-          keyboardType: widget.keyboardType,
-          textInputAction: widget.textInputAction,
-          decoration: InputDecoration(
-            isCollapsed: true,
-            border: InputBorder.none,
-            hintText: widget.hintText,
-            hintStyle: const TextStyle(
-              fontWeight: FontWeight.w400,
-              color: BrandColors.gray_400,
-            ),
-          ),
-          cursorColor: BrandColors.brand_400,
-          onSubmitted: widget.onSubmitted,
+          validator: widget.validators != null
+              ? FormBuilderValidators.compose(widget.validators!)
+              : null,
+          builder: (field) {
+            return TextField(
+              controller: widget.controller,
+              focusNode: _focusNode,
+              autocorrect: false,
+              obscureText: widget.obscureText,
+              keyboardType: widget.keyboardType,
+              textInputAction: widget.textInputAction,
+              decoration: InputDecoration(
+                isCollapsed: true,
+                border: InputBorder.none,
+                hintText: widget.hintText,
+                hintStyle: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: BrandColors.gray_400,
+                ),
+              ),
+              cursorColor: BrandColors.brand_400,
+              style: const TextStyle(
+                fontWeight: FontWeight.w500,
+              ),
+              onChanged: field.didChange,
+              onSubmitted: widget.onSubmitted,
+            );
+          },
         ),
         const Gap(8),
         AnimatedBuilder(
