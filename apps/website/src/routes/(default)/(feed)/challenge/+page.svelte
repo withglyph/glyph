@@ -18,6 +18,21 @@
           id
           ...ChallengeEnrollment_userEventEnrollment
         }
+
+        challengeEnrollment062: eventEnrollment(eventCode: "weekly_challenge_24062") {
+          id
+          ...ChallengeEnrollment_userEventEnrollment
+        }
+
+        challengeEnrollment063: eventEnrollment(eventCode: "weekly_challenge_24063") {
+          id
+          ...ChallengeEnrollment_userEventEnrollment
+        }
+
+        challengeEnrollment064: eventEnrollment(eventCode: "weekly_challenge_24064") {
+          id
+          ...ChallengeEnrollment_userEventEnrollment
+        }
       }
 
       challengeFeed {
@@ -91,9 +106,21 @@
           dateRange="06.03-06.09"
           weekOfMonth="6월 1주차"
         />
-        <ChallengeEnrollment dateRange="06.10-06.16" weekOfMonth="6월 2주차" />
-        <ChallengeEnrollment dateRange="06.17-06.23" weekOfMonth="6월 3주차" />
-        <ChallengeEnrollment dateRange="06.24-06.30" weekOfMonth="6월 4주차" />
+        <ChallengeEnrollment
+          $eventEnrollment={$query.me?.challengeEnrollment062}
+          dateRange="06.10-06.16"
+          weekOfMonth="6월 2주차"
+        />
+        <ChallengeEnrollment
+          $eventEnrollment={$query.me?.challengeEnrollment063}
+          dateRange="06.17-06.23"
+          weekOfMonth="6월 3주차"
+        />
+        <ChallengeEnrollment
+          $eventEnrollment={$query.me?.challengeEnrollment064}
+          dateRange="06.24-06.30"
+          weekOfMonth="6월 4주차"
+        />
       </ul>
 
       <Button
