@@ -11,6 +11,8 @@
   };
 
   export let tags: TagInput[] = [];
+
+  $: challengeTag = tags.find((tag) => tag.kind === 'CHALLENGE');
 </script>
 
 <div>
@@ -45,7 +47,7 @@
         color: { base: 'gray.500', _pressed: 'brand.400' },
         backgroundColor: { base: 'gray.100', _pressed: 'brand.50' },
       })}
-      aria-pressed={!tags.some((tag) => tag.kind === 'CHALLENGE')}
+      aria-pressed={!challengeTag}
       type="button"
       on:click={() => {
         tags = tags.filter((tag) => tag.kind !== 'CHALLENGE');
@@ -65,19 +67,21 @@
         color: { base: 'gray.500', _pressed: 'brand.400' },
         backgroundColor: { base: 'gray.100', _pressed: 'brand.50' },
       })}
-      aria-pressed={tags.some((tag) => tag.kind === 'CHALLENGE')}
+      aria-pressed={!!challengeTag}
       type="button"
       on:click={() => {
-        tags = [...tags, { kind: 'CHALLENGE', name: '주간창작_6월_2주차' }];
+        if (!challengeTag) tags = [...tags, { kind: 'CHALLENGE', name: '주간창작_6월_2주차' }];
       }}
     >
       참여
     </button>
   </div>
 
-  {#if tags.some((tag) => tag.kind === 'CHALLENGE')}
+  {#if !!challengeTag}
     <div class={css({ marginTop: '42px' })}>
-      <h4 class={css({ marginBottom: '8px', fontSize: '14px', color: 'brand.400' })}>이번주 챌린지 태그</h4>
+      <h4 class={css({ marginBottom: '8px', fontSize: '14px', color: 'brand.400' })}>
+        {challengeTag.name === '주간창작_6월_2주차' ? '이번주' : '참여한'} 챌린지 태그
+      </h4>
 
       <ul class={flex({ align: 'center', gap: '8px' })}>
         <li
@@ -90,7 +94,7 @@
             backgroundColor: 'brand.50',
           })}
         >
-          주간창작_6월_2주차
+          {challengeTag ? challengeTag.name : '주간창작_6월_2주차'}
         </li>
       </ul>
     </div>
