@@ -13,7 +13,7 @@ export const generateTypes = (context: GlitchContext): AST.Program => {
 
   for (const { name, documentNode } of context.artifacts) {
     const path: string[] = [];
-    const requiredPath: string[] = [''];
+    const requiredPath: string[] = [];
 
     graphql.visit(documentNode, {
       enter(node) {
@@ -33,17 +33,25 @@ export const generateTypes = (context: GlitchContext): AST.Program => {
       },
     });
 
+    const makeRequires = requiredPath.map((path) =>
+      AST.b.tsTypeReference(
+        AST.b.identifier('MakeRequired'),
+        AST.b.tsTypeParameterInstantiation([
+          AST.b.tsTypeReference(AST.b.identifier(`base.${name}`)),
+          AST.b.tsLiteralType(AST.b.stringLiteral(path)),
+        ]),
+      ),
+    );
+
     program.body.push(
       AST.b.exportNamedDeclaration(
         AST.b.tsTypeAliasDeclaration(
           AST.b.identifier(name),
-          AST.b.tsTypeReference(
-            AST.b.identifier('MakeRequired'),
-            AST.b.tsTypeParameterInstantiation([
-              AST.b.tsTypeReference(AST.b.identifier(`base.${name}`)),
-              AST.b.tsUnionType(requiredPath.map((path) => AST.b.tsLiteralType(AST.b.stringLiteral(path)))),
-            ]),
-          ),
+          requiredPath.length === 0
+            ? AST.b.tsTypeReference(AST.b.identifier(`base.${name}`))
+            : requiredPath.length === 1
+              ? makeRequires[0]
+              : AST.b.tsIntersectionType(makeRequires),
         ),
       ),
     );
