@@ -63,6 +63,7 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
             child: NavigationToolbar(
               leading: leading ??
                   AutoLeadingButton(
+                    showIfChildCanPop: false,
                     builder: (context, leadingType, action) {
                       if (leadingType == LeadingType.noLeading) {
                         return const SizedBox.shrink();

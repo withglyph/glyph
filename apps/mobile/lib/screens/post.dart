@@ -7,6 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/components/Img.dart';
 import 'package:glyph/components/button.dart';
+import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/context/bottom_sheet.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
@@ -380,8 +381,22 @@ class _PostScreenState extends ConsumerState<PostScreen>
                             }
                           },
                         ),
-                        // const Gap(16),
-                        // const SvgIcon('dots-vertical'),
+                        const Gap(16),
+                        Pressable(
+                          child: const SvgIcon('dots-vertical'),
+                          onPressed: () {
+                            context.showBottomMenu(
+                              items: [
+                                BottomMenuItem(
+                                  icon: 'volume-3',
+                                  title: '스페이스 뮤트',
+                                  color: BrandColors.red_600,
+                                  onTap: () {},
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ]),
                     ),
                   ),
@@ -402,7 +417,6 @@ class _PostScreenState extends ConsumerState<PostScreen>
                     ),
                     child: SafeArea(
                       child: Container(
-                        // height: 44,
                         height: _bottomBarHeightAnimation.value,
                         child: Row(
                           children: [
@@ -825,7 +839,6 @@ class _CommentsState extends ConsumerState<Comments>
                                     ],
                                   ),
                                 ),
-                                // const Spacer(),
                                 if (comment.likedByPostUser)
                                   Stack(
                                     children: [
