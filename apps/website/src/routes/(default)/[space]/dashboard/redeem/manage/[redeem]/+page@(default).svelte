@@ -9,6 +9,7 @@
   import { graphql } from '$glitch';
   import { Button, Helmet, Icon, Image, Modal } from '$lib/components';
   import { Radio } from '$lib/components/forms';
+  import { RedeemCodeStateString } from '$lib/const/redeem';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -16,28 +17,43 @@
   let saveRedeemFileOpen = false;
 
   $: query = graphql(`
-    query SpaceDashboardRedeemManageEntityPage_Query($permalink: String!) {
-      post(permalink: $permalink) {
+    query SpaceDashboardRedeemManageEntityPage_Query($id: ID!) {
+      redeemCodeGroup(id: $id) {
         id
-        permalink
+        availableCodeCount
+        codeCount
+        description
+        createdAt
+        expiresAt
 
-        space @_required {
+        codes {
           id
-          slug
-          name
+          state
+          code
         }
 
-        thumbnail {
+        post {
           id
-          ...Image_image
-        }
+          permalink
 
-        publishedRevision {
-          id
-          title
-          subtitle
-          price
-          createdAt
+          space @_required {
+            id
+            slug
+            name
+          }
+
+          thumbnail {
+            id
+            ...Image_image
+          }
+
+          publishedRevision {
+            id
+            title
+            subtitle
+            price
+            createdAt
+          }
         }
       }
     }
@@ -45,8 +61,8 @@
 </script>
 
 <Helmet
-  description={`${$query.post.space.name} 스페이스 리딤코드 세부사항`}
-  title={`리딤코드 세부사항 | ${$query.post.space.name}`}
+  description={`${$query.redeemCodeGroup.post.space.name} 스페이스 리딤코드 세부사항`}
+  title={`리딤코드 세부사항 | ${$query.redeemCodeGroup.post.space.name}`}
 />
 
 <div
@@ -68,7 +84,7 @@
         smDown: { borderBottomWidth: '1px', borderBottomColor: 'gray.50', paddingX: '20px', paddingY: '13px' },
       })}
     >
-      <a href="/{$query.post.space.slug}/dashboard/redeem/manage">
+      <a href="/{$query.redeemCodeGroup.post.space.slug}/dashboard/redeem/manage">
         <Icon style={css.raw({ hideFrom: 'sm' })} icon={IconArrowLeft} size={24} />
         <Icon style={css.raw({ hideBelow: 'sm' })} icon={IconArrowLeft} size={24} />
       </a>
@@ -97,17 +113,17 @@
         >
           <Image
             style={css.raw({ flex: 'none', width: '102px', aspectRatio: '16/10', objectFit: 'cover' })}
-            $image={$query.post.thumbnail}
+            $image={$query.redeemCodeGroup.post.thumbnail}
             placeholder
             size={96}
           />
 
           <div class={css({ width: 'full', truncate: true })}>
             <h3 class={css({ fontSize: '14px', fontWeight: 'semibold', color: 'gray.800', truncate: true })}>
-              {$query.post.publishedRevision?.title ?? '(제목 없음)'}
+              {$query.redeemCodeGroup.post.publishedRevision?.title ?? '(제목 없음)'}
             </h3>
             <h4 class={css({ fontSize: '13px', color: 'gray.600', height: '19px', truncate: true })}>
-              {$query.post.publishedRevision?.subtitle ?? ''}
+              {$query.redeemCodeGroup.post.publishedRevision?.subtitle ?? ''}
             </h4>
 
             <div
@@ -121,13 +137,13 @@
             >
               <div class={flex({ align: 'center', gap: '2px' })}>
                 <Icon icon={IconCoin} />
-                <span>{comma($query.post.publishedRevision?.price ?? 0)}원</span>
+                <span>{comma($query.redeemCodeGroup.post.publishedRevision?.price ?? 0)}원</span>
               </div>
 
               <hr class={css({ border: 'none', width: '1px', height: '12px', backgroundColor: 'gray.100' })} />
 
-              <time datetime={$query.post.publishedRevision?.createdAt}>
-                {dayjs($query.post.publishedRevision?.createdAt).formatAsDate()}
+              <time datetime={$query.redeemCodeGroup.post.publishedRevision?.createdAt}>
+                {dayjs($query.redeemCodeGroup.post.publishedRevision?.createdAt).formatAsDate()}
               </time>
             </div>
           </div>
@@ -135,20 +151,32 @@
 
         <dl class={flex({ direction: 'column', gap: '2px' })}>
           <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
-            <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>발급갯수</dt>
-            <dd class={css({ color: 'gray.600' })}>15개</dd>
+            <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>사용가능</dt>
+            <dd class={css({ color: 'gray.600' })}>
+              {$query.redeemCodeGroup.availableCodeCount}/{$query.redeemCodeGroup.codeCount}개
+            </dd>
           </div>
           <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
             <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>생성일</dt>
-            <dd class={css({ color: 'gray.600' })}>2024.05.24. 11:00</dd>
+            <dd class={css({ color: 'gray.600' })}>
+              <time datetime={$query.redeemCodeGroup.createdAt}>
+                {dayjs($query.redeemCodeGroup.createdAt).formatAsDateTime()}
+              </time>
+            </dd>
           </div>
           <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
             <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>만료일</dt>
-            <dd class={css({ color: 'gray.600' })}>2025.05.24. 11:00</dd>
+            <dd class={css({ color: 'gray.600' })}>
+              <time datetime={$query.redeemCodeGroup.expiresAt}>
+                {dayjs($query.redeemCodeGroup.expiresAt).formatAsDateTime()}
+              </time>
+            </dd>
           </div>
         </dl>
 
-        <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600' })}>리딤코드 설명 리딤코드 설명</p>
+        <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600' })}>
+          {$query.redeemCodeGroup.description}
+        </p>
       </div>
 
       <div
@@ -206,59 +234,59 @@
       sm: { maxWidth: '860px' },
     })}
   >
-    <li class={css({ borderWidth: '1px', borderColor: 'gray.100', padding: '14px' })}>
-      <div class={css({ marginBottom: '8px', backgroundColor: 'gray.200', size: '60px' })} />
+    {#each $query.redeemCodeGroup.codes as code (code.id)}
+      <li class={css({ borderWidth: '1px', borderColor: 'gray.100', padding: '14px' })}>
+        <div class={css({ marginBottom: '8px', backgroundColor: 'gray.200', size: '60px' })} />
 
-      <div
-        class={flex({
-          direction: { smDown: 'column' },
-          gap: '16px',
-          sm: { alignItems: 'flex-end', justifyContent: 'space-between' },
-        })}
-      >
-        <dl>
-          <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
-            <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>번호</dt>
-            <dd class={css({ color: 'gray.600' })}>2Q24SO3LA2412P</dd>
-          </div>
-          <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
-            <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>만료일</dt>
-            <dd class={css({ color: 'gray.600' })}>2025.05.24 11:00</dd>
-          </div>
-          <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
-            <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>사용여부</dt>
-            <dd class={css({ color: 'gray.600' }, true && { fontWeight: 'medium', color: 'brand.400' })}>사용가능</dd>
-          </div>
-        </dl>
+        <div
+          class={flex({
+            direction: { smDown: 'column' },
+            gap: '16px',
+            sm: { alignItems: 'flex-end', justifyContent: 'space-between' },
+          })}
+        >
+          <dl>
+            <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
+              <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>번호</dt>
+              <dd class={css({ color: 'gray.600' })}>{code.code}</dd>
+            </div>
+            <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
+              <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>사용여부</dt>
+              <dd class={css({ color: 'gray.600' }, true && { fontWeight: 'medium', color: 'brand.400' })}>
+                {RedeemCodeStateString[code.state]}
+              </dd>
+            </div>
+          </dl>
 
-        <div class={flex({ align: 'center', gap: '8px' })}>
-          <Button
-            style={flex.raw({ align: 'center', justify: 'center', gap: '4px', width: { base: 'full', sm: 'fit' } })}
-            size="sm"
-            variant="gray-outline"
-          >
-            <Icon icon={IconArrowBarToDown} />
-            PNG
-          </Button>
-          <Button
-            style={flex.raw({ align: 'center', justify: 'center', gap: '4px', width: { base: 'full', sm: 'fit' } })}
-            size="sm"
-            variant="gray-outline"
-          >
-            <Icon icon={IconArrowBarToDown} />
-            SVG
-          </Button>
-          <Button
-            style={flex.raw({ align: 'center', justify: 'center', gap: '4px', width: { base: 'full', sm: 'fit' } })}
-            size="sm"
-            variant="gray-outline"
-          >
-            <Icon icon={IconArrowBarToDown} />
-            PDF
-          </Button>
+          <div class={flex({ align: 'center', gap: '8px' })}>
+            <Button
+              style={flex.raw({ align: 'center', justify: 'center', gap: '4px', width: { base: 'full', sm: 'fit' } })}
+              size="sm"
+              variant="gray-outline"
+            >
+              <Icon icon={IconArrowBarToDown} />
+              PNG
+            </Button>
+            <Button
+              style={flex.raw({ align: 'center', justify: 'center', gap: '4px', width: { base: 'full', sm: 'fit' } })}
+              size="sm"
+              variant="gray-outline"
+            >
+              <Icon icon={IconArrowBarToDown} />
+              SVG
+            </Button>
+            <Button
+              style={flex.raw({ align: 'center', justify: 'center', gap: '4px', width: { base: 'full', sm: 'fit' } })}
+              size="sm"
+              variant="gray-outline"
+            >
+              <Icon icon={IconArrowBarToDown} />
+              PDF
+            </Button>
+          </div>
         </div>
-      </div>
-    </li>
+      </li>
+    {/each}
   </ul>
 </div>
 

@@ -1,10 +1,22 @@
 <script lang="ts">
+  import qs from 'query-string';
   import IconScan from '~icons/tabler/scan';
-  import { goto } from '$app/navigation';
+  import { graphql } from '$glitch';
   import { Button, Helmet, Icon } from '$lib/components';
   import { TextInput } from '$lib/components/forms';
+  import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
+
+  const registerRedeemCode = graphql(`
+    mutation RegisterRedeemCodeMutation($input: RegisterRedeemCodeInput!) {
+      registerRedeemCode(input: $input) {
+        id
+      }
+    }
+  `);
+
+  let code: string;
 </script>
 
 <Helmet description="리딤코드를 등록해보세요" title="리딤코드 등록" />
@@ -40,9 +52,24 @@
 
   <form
     class={flex({ align: 'center', marginTop: '40px', width: 'full', maxWidth: '366px' })}
-    on:submit|preventDefault={() => goto('/me/redeem/complete')}
+    on:submit|preventDefault={async () => {
+      try {
+        const { id } = await registerRedeemCode({ code });
+        location.href = qs.stringifyUrl({ url: '/me/redeem/complete/', query: { id } });
+      } catch (err) {
+        if (err instanceof Error) {
+          toast.error(err.message);
+        }
+      }
+    }}
   >
-    <TextInput style={css.raw({ width: 'full' })} placeholder="12자리 코드를 입력해주세요" size="md">
+    <TextInput
+      name="code"
+      style={css.raw({ width: 'full' })}
+      placeholder="코드를 입력해주세요"
+      size="md"
+      bind:value={code}
+    >
       <Icon slot="left-icon" style={css.raw({ color: 'gray.400' })} icon={IconScan} />
     </TextInput>
     <Button
@@ -54,6 +81,7 @@
         width: { base: '68px', sm: '86px' },
         height: '44px',
       })}
+      loading={$registerRedeemCode.inflight}
       type="submit"
       variant="brand-fill"
     >

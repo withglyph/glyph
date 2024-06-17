@@ -4,6 +4,7 @@
   import IconCoin from '~icons/tabler/coin';
   import IconMinus from '~icons/tabler/minus';
   import IconPlus from '~icons/tabler/plus';
+  import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
   import { Button, Helmet, Icon, Image } from '$lib/components';
   import { TextArea } from '$lib/components/forms';
@@ -12,6 +13,7 @@
   import { center, flex } from '$styled-system/patterns';
 
   let amount = 1;
+  let description = '';
 
   $: query = graphql(`
     query SpaceDashboardRedeemNextPage_Query($permalink: String!) {
@@ -40,6 +42,28 @@
       }
     }
   `);
+
+  const createRedeemCodeGroup = graphql(`
+    mutation CreateRedeemCodeGroupMutation($input: CreateRedeemCodeGroupInput!) {
+      createRedeemCodeGroup(input: $input) {
+        id
+      }
+    }
+  `);
+
+  const regularizeAmount = (amount: number) => {
+    if (Number.isNaN(Number(amount))) {
+      return 1;
+    } else {
+      if (amount < 1) {
+        return 1;
+      } else if (amount > 999) {
+        return 999;
+      } else {
+        return Math.floor(Number(amount));
+      }
+    }
+  };
 </script>
 
 <Helmet
@@ -146,6 +170,7 @@
           style={css.raw({ marginTop: { base: '8px', sm: '16px' } })}
           placeholder="리딤코드를 간단하게 설명해주세요. 해당 설명은 자신만 볼 수 있어요"
           rows={4}
+          bind:value={description}
         />
       </div>
 
@@ -185,10 +210,10 @@
         >
           <button
             class={css({ padding: '7px', backgroundColor: 'gray.50', _disabled: { color: 'gray.300' } })}
-            disabled={amount === 1}
+            disabled={amount <= 1}
             type="button"
             on:click={() => {
-              if (amount > 1) amount -= 1;
+              amount = Number.isNaN(Number(amount)) ? 1 : Math.max(amount - 1, 1);
             }}
           >
             <Icon icon={IconMinus} size={20} />
@@ -204,15 +229,20 @@
               width: '56px',
             })}
             inputmode="numeric"
-            min={1}
             type="text"
             bind:value={amount}
+            on:blur={() => {
+              regularizeAmount(amount);
+            }}
           />
 
           <button
             class={css({ padding: '7px', backgroundColor: 'gray.50', _disabled: { color: 'gray.300' } })}
+            disabled={amount >= 999}
             type="button"
-            on:click={() => (amount += 1)}
+            on:click={() => {
+              amount = Number.isNaN(Number(amount)) ? 1 : Math.min(Number(amount + 1), 999);
+            }}
           >
             <Icon icon={IconPlus} size={20} />
           </button>
@@ -245,9 +275,28 @@
         </Button>
         <Button
           style={css.raw({ width: 'full', sm: { maxWidth: '160px' } })}
-          href="/{$query.post.space.slug}/dashboard/redeem/complete?p={$query.post.permalink}"
-          type="link"
+          loading={$createRedeemCodeGroup.inflight}
+          type="button"
           variant="brand-fill"
+          on:click={async () => {
+            if ($createRedeemCodeGroup.inflight) {
+              return;
+            }
+
+            if (amount !== regularizeAmount(amount)) {
+              // 이 경우에는 숫자가 변하는 걸 인지하지 못할 수 있으니 버튼을 다시 누르게 만들어야함
+              amount = regularizeAmount(amount);
+              return;
+            }
+
+            const redeemCodeGroup = await createRedeemCodeGroup({
+              postId: $query.post.id,
+              count: amount,
+              description,
+            });
+
+            await goto(`/${$query.post.space.slug}/dashboard/redeem/complete?id=${redeemCodeGroup.id}`);
+          }}
         >
           리딤코드 만들기
         </Button>

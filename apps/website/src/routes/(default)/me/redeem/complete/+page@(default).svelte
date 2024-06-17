@@ -1,9 +1,47 @@
 <script lang="ts">
+  import dayjs from 'dayjs';
   import IconCoin from '~icons/tabler/coin';
-  import { Button, Helmet, Icon } from '$lib/components';
+  import { graphql } from '$glitch';
+  import { Button, Helmet, Icon, Image } from '$lib/components';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
+
+  $: query = graphql(`
+    query MeRedeemCompletePage_Query($id: ID!) {
+      redeemCodeRedemption(id: $id) {
+        id
+        createdAt
+
+        postPurchase {
+          id
+
+          post {
+            id
+            permalink
+            publishedAt
+
+            thumbnail {
+              id
+              ...Image_image
+            }
+
+            space @_required {
+              id
+              slug
+            }
+          }
+
+          revision {
+            id
+            title
+            subtitle
+            price
+          }
+        }
+      }
+    }
+  `);
 </script>
 
 <Helmet description="리딤코드 등록이 완료되었어요" title="리딤코드 등록 완료" />
@@ -55,21 +93,20 @@
       })}
     >
       <div class={flex({ align: 'center', gap: { base: '8px', sm: '12px' }, width: 'full', truncate: true })}>
-        <div
-          class={css({
-            flex: 'none',
-            width: { base: '88px', sm: '102px' },
-            aspectRatio: '16/10',
-            objectFit: 'cover',
-            backgroundColor: 'gray.200',
-          })}
+        <Image
+          style={css.raw({ flex: 'none', width: '88px', aspectRatio: '16/10', objectFit: 'cover' })}
+          $image={$query.redeemCodeRedemption.postPurchase.post.thumbnail}
+          placeholder
+          size={96}
         />
 
         <div class={css({ truncate: true })}>
           <h3 class={css({ fontSize: '14px', fontWeight: 'semibold', color: 'gray.800', truncate: true })}>
-            포스트 제목
+            {$query.redeemCodeRedemption.postPurchase.revision.title ?? '(제목 없음)'}
           </h3>
-          <h4 class={css({ fontSize: '13px', color: 'gray.600', height: '19px', truncate: true })}>포스트 부제목</h4>
+          <h4 class={css({ fontSize: '13px', color: 'gray.600', height: '19px', truncate: true })}>
+            {$query.redeemCodeRedemption.postPurchase.revision.subtitle ?? ''}
+          </h4>
           <div
             class={flex({
               align: 'center',
@@ -81,12 +118,14 @@
           >
             <div class={flex({ align: 'center', gap: '2px', color: 'brand.400' })}>
               <Icon icon={IconCoin} />
-              <span>{comma(2000)}원</span>
+              <span>{comma($query.redeemCodeRedemption.postPurchase.revision.price ?? 0)}원</span>
             </div>
 
             <hr class={css({ border: 'none', width: '1px', height: '12px', backgroundColor: 'gray.100' })} />
 
-            <time datetime="2024.01.01">2024.01.01</time>
+            <time datetime={$query.redeemCodeRedemption.postPurchase.post.publishedAt}>
+              {dayjs($query.redeemCodeRedemption.postPurchase.post.publishedAt).formatAsDate()}
+            </time>
           </div>
         </div>
       </div>
@@ -96,11 +135,22 @@
       <dl class={flex({ direction: 'column', gap: '2px' })}>
         <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
           <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>등록일</dt>
-          <dd class={css({ color: 'gray.600' })}>2024.05.24 11:00</dd>
+          <dd class={css({ color: 'gray.600' })}>
+            <time datetime={$query.redeemCodeRedemption.createdAt}>
+              {dayjs($query.redeemCodeRedemption.createdAt).formatAsDateTime()}
+            </time>
+          </dd>
         </div>
       </dl>
     </div>
 
-    <Button style={css.raw({ display: 'block' })} href="/" type="link" variant="gradation-fill">포스트 바로가기</Button>
+    <Button
+      style={css.raw({ display: 'block' })}
+      href={`/${$query.redeemCodeRedemption.postPurchase.post.space.slug}/${$query.redeemCodeRedemption.postPurchase.post.permalink}`}
+      type="link"
+      variant="gradation-fill"
+    >
+      포스트 바로가기
+    </Button>
   </div>
 </div>
