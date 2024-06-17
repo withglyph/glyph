@@ -67,12 +67,26 @@
   {#each $query.space.redeemCodeGroups as group (group.id)}
     <li
       class={css({
+        position: 'relative',
         borderWidth: '1px',
         borderColor: 'gray.100',
         paddingX: '14px',
         paddingY: { base: '15px', sm: '14px' },
       })}
     >
+      {#if group.availableCodeCount === 0}
+        <div
+          class={css({
+            position: 'absolute',
+            inset: '0',
+            size: 'full',
+            backgroundColor: 'gray.0',
+            opacity: '60',
+            pointerEvents: 'none',
+          })}
+        />
+      {/if}
+
       <a
         class={flex({ align: 'center', justify: 'space-between', width: 'full', truncate: true })}
         href="/{$query.space.slug}/dashboard/redeem/manage/{group.id}"
@@ -141,7 +155,7 @@
 
       <Button
         style={css.raw({ display: 'block', marginTop: '16px', width: 'full', hideFrom: 'sm' })}
-        href="/{$query.space.slug}/dashboard/redeem/manage/{group.post.permalink}"
+        href="/{$query.space.slug}/dashboard/redeem/manage/{group.id}"
         type="link"
         variant="gray-outline"
       >

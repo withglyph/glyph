@@ -1,12 +1,20 @@
 <script lang="ts">
   import qs from 'query-string';
+  import { onMount } from 'svelte';
   import IconScan from '~icons/tabler/scan';
+  import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { Button, Helmet, Icon } from '$lib/components';
   import { TextInput } from '$lib/components/forms';
   import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
+
+  let code = '';
+
+  onMount(() => {
+    code = $page.url.searchParams.get('code') ?? '';
+  });
 
   const registerRedeemCode = graphql(`
     mutation RegisterRedeemCodeMutation($input: RegisterRedeemCodeInput!) {
@@ -15,8 +23,6 @@
       }
     }
   `);
-
-  let code: string;
 </script>
 
 <Helmet description="리딤코드를 등록해보세요" title="리딤코드 등록" />
