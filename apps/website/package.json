@@ -85,6 +85,7 @@
     "nanoid": "^5.0.7",
     "numeral": "^2.0.6",
     "object-traversal": "^1.0.1",
+    "open": "^10.1.0",
     "pino": "^9.2.0",
     "postgres": "^3.4.4",
     "query-string": "^9.0.0",
